@@ -1,0 +1,1461 @@
+[
+ {
+  "code": "E325",
+  "nameDa": "Natriumlactat",
+  "nameEn": "Sodium lactate",
+  "category": "Surhedsregulerende middel / fugtighedsbevarende middel",
+  "euStatus": "approved",
+  "origin": "nature_identical",
+  "summary": "Natriumlactat er natriumsaltet af mælkesyre og bruges til at bevare fugt og hæmme bakterievækst, især i kødvarer.",
+  "description": "Natriumlactat fremstilles ved at neutralisere mælkesyre, som typisk produceres ved bakteriel fermentering af sukker fra majs eller sukkerroer, med natriumhydroxid. Det binder vand (fugtighedsbevarende), regulerer pH og hæmmer vækst af bakterier som Listeria i kødprodukter. Det kan også forstærke salt smag og forbedre saftighed.",
+  "uses": "Kødpålæg, pølser og færdigkød, fjerkræprodukter, fisk, bagværk, ost og slik. Tilladt quantum satis i de fleste kategorier.",
+  "health": "Laktater anses som sikre; mælkesyre og dens salte er normale stofskifteprodukter, og der er ikke fastsat en numerisk ADI (JECFA: 'ikke specificeret'). Trods navnet indeholder laktater ikke mælk eller laktose og er uproblematiske ved laktoseintolerans og mælkeallergi. D-mælkesyre omsættes langsomt af spædbørn, og derfor bruges kun L-formen i fødevarer til spædbørn. Natriumlactat bidrager lidt til natriumindtaget.",
+  "research": "Mælkesyre og dens salte er vurderet af JECFA og SCF uden sikkerhedsbekymringer. Forskningen fokuserer mest på den antimikrobielle effekt i kødvarer mod Listeria monocytogenes, som er veldokumenteret.",
+  "keyReferences": [],
+  "pubmedTerm": "sodium lactate",
+  "flags": [],
+  "classes": [
+   "antioxidant",
+   "emulsifier",
+   "humectant",
+   "thickener"
+  ],
+  "variants": [],
+  "efsa": null,
+  "wikipedia": "https://en.wikipedia.org/wiki/Sodium_lactate",
+  "wikidata": "Q418235",
+  "verification": {
+   "status": "verified",
+   "sources": [
+    "https://food.ec.europa.eu/food-safety/food-improvement-agents/additives/re-evaluation_en"
+   ],
+   "notes": "Godkendt (bilag II). JECFA-ADI 'ikke begrænset' for mælkesyre og laktater bekræftet; kun L(+)-form i spædbørnsmad. EFSA har endnu ikke afsluttet gen-evaluering."
+  }
+ },
+ {
+  "code": "E326",
+  "nameDa": "Kaliumlactat",
+  "nameEn": "Potassium lactate",
+  "category": "Surhedsregulerende middel / fugtighedsbevarende middel",
+  "euStatus": "approved",
+  "origin": "nature_identical",
+  "summary": "Kaliumlactat er kaliumsaltet af mælkesyre og bruges til at bevare fugt og holdbarhed.",
+  "description": "Kaliumlactat fremstilles ved neutralisering af fermenteringsbaseret mælkesyre med kaliumhydroxid. Det har samme funktioner som natriumlactat (fugtbevaring, pH-regulering, hæmning af bakterier) og bruges ofte, når man vil reducere natriumindholdet. Det er desuden en kaliumkilde.",
+  "uses": "Kødpålæg og pølser med reduceret salt, fjerkræ- og fiskeprodukter, færdigretter. Tilladt quantum satis i de fleste kategorier.",
+  "health": "Laktater anses som sikre; mælkesyre og dens salte er normale stofskifteprodukter, og der er ikke fastsat en numerisk ADI (JECFA: 'ikke specificeret'). Trods navnet indeholder laktater ikke mælk eller laktose og er uproblematiske ved laktoseintolerans og mælkeallergi. D-mælkesyre omsættes langsomt af spædbørn, og derfor bruges kun L-formen i fødevarer til spædbørn. Personer med nedsat nyrefunktion, som skal begrænse kalium, bør være opmærksomme på, at kaliumsalte i natriumreducerede produkter kan bidrage væsentligt.",
+  "research": "Kaliumlactat er ikke genstand for særskilte sikkerhedsbekymringer. Forskning viser effektiv hæmning af Listeria og anvendelighed til saltreduktion i kødvarer.",
+  "keyReferences": [],
+  "pubmedTerm": "potassium lactate",
+  "flags": [
+   "kidney_caution"
+  ],
+  "classes": [
+   "antioxidant",
+   "emulsifier",
+   "humectant"
+  ],
+  "variants": [],
+  "efsa": null,
+  "wikipedia": "https://en.wikipedia.org/wiki/Potassium_lactate",
+  "wikidata": "Q411342",
+  "verification": {
+   "status": "verified",
+   "sources": [
+    "https://food.ec.europa.eu/food-safety/food-improvement-agents/additives/re-evaluation_en"
+   ],
+   "notes": "Godkendt (bilag II). JECFA-ADI 'ikke begrænset' for mælkesyre og laktater bekræftet; kun L(+)-form i spædbørnsmad. EFSA har endnu ikke afsluttet gen-evaluering."
+  }
+ },
+ {
+  "code": "E327",
+  "nameDa": "Calciumlactat",
+  "nameEn": "Calcium lactate",
+  "category": "Surhedsregulerende middel / fortykningsmiddel",
+  "euStatus": "approved",
+  "origin": "nature_identical",
+  "summary": "Calciumlactat er calciumsaltet af mælkesyre og bruges til at give fasthed og tilsætte calcium.",
+  "description": "Calciumlactat fremstilles ved at neutralisere mælkesyre med calciumcarbonat eller calciumhydroxid. Det er let opløseligt og velsmagende sammenlignet med andre calciumsalte. Det bruges til at holde frugter og grøntsager faste, som calciumkilde i berigede fødevarer, og som surhedsregulerende middel. De hvide krystaller, der ses på lagret ost, kan bl.a. være calciumlactat.",
+  "uses": "Dåsefrugt og -grøntsager, marmelade, bagepulver, berigede drikke og mejeriprodukter, slik, tyggegummi og kosttilskud. Tilladt quantum satis i de fleste kategorier.",
+  "health": "Laktater anses som sikre; mælkesyre og dens salte er normale stofskifteprodukter, og der er ikke fastsat en numerisk ADI (JECFA: 'ikke specificeret'). Trods navnet indeholder laktater ikke mælk eller laktose og er uproblematiske ved laktoseintolerans og mælkeallergi. D-mælkesyre omsættes langsomt af spædbørn, og derfor bruges kun L-formen i fødevarer til spædbørn.",
+  "research": "Calciumlactat er grundigt kendt og uden sikkerhedskontrovers. Det er undersøgt som calciumkilde med god biotilgængelighed.",
+  "keyReferences": [],
+  "pubmedTerm": "calcium lactate",
+  "flags": [],
+  "classes": [
+   "thickener"
+  ],
+  "variants": [],
+  "efsa": null,
+  "wikipedia": "https://en.wikipedia.org/wiki/Calcium_lactate",
+  "wikidata": "Q419693",
+  "verification": {
+   "status": "verified",
+   "sources": [
+    "https://food.ec.europa.eu/food-safety/food-improvement-agents/additives/re-evaluation_en"
+   ],
+   "notes": "Godkendt (bilag II). JECFA-ADI 'ikke begrænset' for mælkesyre og laktater bekræftet; kun L(+)-form i spædbørnsmad. EFSA har endnu ikke afsluttet gen-evaluering."
+  }
+ },
+ {
+  "code": "E330",
+  "nameDa": "Citronsyre",
+  "nameEn": "Citric acid",
+  "category": "Syre / surhedsregulerende middel / antioxidant",
+  "euStatus": "approved",
+  "origin": "mixed",
+  "summary": "Citronsyre er den syre, der naturligt findes i citrusfrugter, og er et af de mest brugte tilsætningsstoffer.",
+  "description": "Citronsyre er en trikarboxylsyre, som indgår i citronsyrecyklussen i alle levende celler. Næsten al industriel citronsyre fremstilles ved fermentering af sukker (melasse eller glukose) med skimmelsvampen Aspergillus niger, hvorefter syren renses. Den giver frisk syrlig smag, sænker pH (hvilket hæmmer mikroorganismer), binder metalioner (kompleksbinder) og forstærker andre antioxidanters virkning. Det færdige produkt indeholder ikke svampen.",
+  "uses": "Sodavand og saftevand, slik og vingummi, marmelade, konserves og dåsetomater, dressinger og saucer, frosne fisk og frugt, is, ost og mejeriprodukter. Tilladt quantum satis i de fleste kategorier.",
+  "health": "Citronsyre anses som meget sikker; der er ikke fastsat en numerisk ADI (JECFA: 'ikke specificeret'). Hyppigt indtag af sure drikke og slik kan bidrage til syreerosion af tænderne. Der er rapporteret enkelte tilfælde af formodede reaktioner, som forfattere har spekuleret i skyldes rester fra fermenteringen (Sweis & Cressey 2018, fire case-rapporter), men dette er ikke bekræftet. Citronsyre er ikke det samme som citrusallergi.",
+  "research": "EFSA har vurderet citronsyre i flere sammenhænge (bl.a. 2013 som aktivt stof i fødevarekontaktmaterialer) uden sikkerhedsbekymring. En serie på fire case-rapporter (Sweis & Cressey, Toxicology Reports 2018) foreslog, at rester fra Aspergillus-fremstilling kunne udløse inflammatoriske reaktioner hos enkelte, men dette er hypotesegenererende og ikke bekræftet i kontrollerede studier. EFSA's egentlige gen-evaluering af citronsyre og citrater (E330-E333, E380) er endnu ikke afsluttet; der er indkaldt anvendelsesdata.",
+  "keyReferences": [
+   {
+    "citation": "Sweis IE, Cressey BC. Potential role of the common food additive manufactured citric acid in eliciting significant inflammatory reactions contributing to serious disease states: A series of four case reports. Toxicology Reports. 2018;5:808-812. doi:10.1016/j.toxrep.2018.08.002",
+    "searchTitle": "Potential role of the common food additive manufactured citric acid in eliciting significant inflammatory reactions contributing to serious disease states"
+   }
+  ],
+  "pubmedTerm": "citric acid",
+  "flags": [],
+  "classes": [
+   "antioxidant",
+   "sequestrant"
+  ],
+  "variants": [],
+  "efsa": {
+   "title": "Scientific Opinion on the safety evaluation of the active substances citric acid (E330) and sodium hydrogen carbonate (E500ii), used as carbon dioxide generators, together with liquid absorbers cellulose and polyacrylic acid sodium salt crosslinked, in active food contact materials.",
+   "url": "http://dx.doi.org/10.2903/j.efsa.2013.3152",
+   "date": "2013-04-09",
+   "adi": "",
+   "overexposureRisk": ""
+  },
+  "wikipedia": "https://en.wikipedia.org/wiki/Citric_acid",
+  "wikidata": "Q159683",
+  "verification": {
+   "status": "corrected",
+   "sources": [
+    "https://doi.org/10.1016/j.toxrep.2018.08.002",
+    "https://www.efsa.europa.eu/sites/default/files/consultation/160524.pdf",
+    "https://doi.org/10.2903/j.efsa.2013.3152"
+   ],
+   "notes": "Referencen var forkert: artiklen er af Sweis & Cressey (ikke Sumpter) med en anden titel; rettet i tekst og keyReferences. EFSA-gen-evaluering af citrater ikke afsluttet – tilføjet."
+  }
+ },
+ {
+  "code": "E331",
+  "nameDa": "Natriumcitrater",
+  "nameEn": "Sodium citrates",
+  "category": "Surhedsregulerende middel / emulgeringssalt",
+  "euStatus": "approved",
+  "origin": "nature_identical",
+  "summary": "Natriumcitrater er natriumsalte af citronsyre, som regulerer surhed og stabiliserer fødevarer.",
+  "description": "Natriumcitrater fremstilles ved at neutralisere citronsyre med natriumhydroxid eller -carbonat. Der findes tre varianter: (i) mononatriumcitrat (surest), (ii) dinatriumcitrat og (iii) trinatriumcitrat (mindst sur, mest almindelig). De bruges som buffer til at holde pH stabil, som emulgeringssalte i smelteost (de binder calcium, så osten smelter jævnt), og til at give en mild saltsyrlig smag.",
+  "uses": "Smelteost og osteskiver, sodavand og energidrikke, gelé og desserter, is, mælkeprodukter, kødprodukter og modermælkserstatning. Tilladt quantum satis i de fleste kategorier.",
+  "health": "Citrater anses som sikre, og der er ikke fastsat en numerisk ADI (JECFA: 'ikke specificeret'). Citrat er et naturligt stofskifteprodukt og omsættes hurtigt. Natriumcitrat bidrager med natrium, hvilket kan være relevant ved natriumbegrænset diæt. Medicinsk bruges natriumcitrat bl.a. til at hæmme blodets koagulation i blodposer og mod nyresten.",
+  "research": "Citrater er grundigt undersøgt og uden sikkerhedskontrovers som tilsætningsstoffer. Klinisk er citrat undersøgt for forebyggelse af calcium-nyresten, hvor det har dokumenteret effekt.",
+  "keyReferences": [],
+  "pubmedTerm": "sodium citrate",
+  "flags": [],
+  "classes": [
+   "emulsifier",
+   "sequestrant",
+   "stabiliser"
+  ],
+  "variants": [
+   {
+    "code": "E331(i)",
+    "nameDa": "Mononatriumcitrat",
+    "nameEn": "Monosodium citrate"
+   },
+   {
+    "code": "E331(ii)",
+    "nameDa": "Dinatriumcitrat",
+    "nameEn": "Disodium citrate"
+   },
+   {
+    "code": "E331(iii)",
+    "nameDa": "Trinatriumcitrat",
+    "nameEn": "Trisodium citrate"
+   }
+  ],
+  "efsa": null,
+  "wikipedia": "https://en.wikipedia.org/wiki/Monosodium_citrate",
+  "wikidata": "Q6460572",
+  "verification": {
+   "status": "verified",
+   "sources": [
+    "https://www.efsa.europa.eu/sites/default/files/consultation/160524.pdf"
+   ],
+   "notes": "Godkendt; varianter og JECFA-ADI 'ikke specificeret' bekræftet. EFSA-gen-evaluering ikke afsluttet (dataindkaldelse)."
+  }
+ },
+ {
+  "code": "E332",
+  "nameDa": "Kaliumcitrater",
+  "nameEn": "Potassium citrates",
+  "category": "Surhedsregulerende middel / stabilisator",
+  "euStatus": "approved",
+  "origin": "nature_identical",
+  "summary": "Kaliumcitrater er kaliumsalte af citronsyre, der regulerer surhed og stabiliserer fødevarer.",
+  "description": "Kaliumcitrater fremstilles ved neutralisering af citronsyre med kaliumhydroxid eller -carbonat. Varianterne er (i) monokaliumcitrat og (ii) trikaliumcitrat. De bruges som buffer, kompleksbinder og stabilisator, og som natriumfrit alternativ til natriumcitrat. De kan også give en let salt smag.",
+  "uses": "Sodavand og sportsdrikke, mejeriprodukter, smelteost, marmelade, desserter og natriumreducerede fødevarer. Tilladt quantum satis i de fleste kategorier.",
+  "health": "Citrater anses som sikre, og der er ikke fastsat en numerisk ADI (JECFA: 'ikke specificeret'). Citrat er et naturligt stofskifteprodukt og omsættes hurtigt. Personer med nedsat nyrefunktion, som skal begrænse kalium, bør være opmærksomme på kaliumsalte. Kaliumcitrat bruges medicinsk mod nyresten.",
+  "research": "Kaliumcitrat er uden sikkerhedskontrovers som tilsætningsstof. Klinisk forskning dokumenterer effekt mod visse typer nyresten.",
+  "keyReferences": [],
+  "pubmedTerm": "potassium citrate",
+  "flags": [
+   "kidney_caution"
+  ],
+  "classes": [
+   "sequestrant",
+   "stabiliser"
+  ],
+  "variants": [
+   {
+    "code": "E332(i)",
+    "nameDa": "Monokaliumcitrat",
+    "nameEn": "Monopotassium citrate"
+   },
+   {
+    "code": "E332(ii)",
+    "nameDa": "Trikaliumcitrat",
+    "nameEn": "Tripotassium citrate"
+   }
+  ],
+  "efsa": null,
+  "wikipedia": "https://en.wikipedia.org/wiki/Potassium_citrate",
+  "wikidata": "Q419921",
+  "verification": {
+   "status": "verified",
+   "sources": [
+    "https://www.efsa.europa.eu/sites/default/files/consultation/160524.pdf"
+   ],
+   "notes": "Godkendt; varianter og JECFA-ADI 'ikke specificeret' bekræftet. EFSA-gen-evaluering ikke afsluttet (dataindkaldelse)."
+  }
+ },
+ {
+  "code": "E333",
+  "nameDa": "Calciumcitrater",
+  "nameEn": "Calcium citrates",
+  "category": "Surhedsregulerende middel / stabilisator / fastgørende middel",
+  "euStatus": "approved",
+  "origin": "nature_identical",
+  "summary": "Calciumcitrater er calciumsalte af citronsyre, som bruges til at regulere surhed og tilføre calcium.",
+  "description": "Calciumcitrater fremstilles ved at neutralisere citronsyre med calciumcarbonat eller calciumhydroxid. Varianterne er (i) monocalciumcitrat, (ii) dicalciumcitrat og (iii) tricalciumcitrat. De bruges som buffer, til at give fasthed til frugt og grøntsager, som calciumkilde i berigede fødevarer og som hævemiddel-komponent.",
+  "uses": "Berigede juice og plantedrikke, bagværk, marmelade, dåsegrøntsager, slik og kosttilskud. Tilladt quantum satis i de fleste kategorier.",
+  "health": "Citrater anses som sikre, og der er ikke fastsat en numerisk ADI (JECFA: 'ikke specificeret'). Citrat er et naturligt stofskifteprodukt og omsættes hurtigt. Calciumcitrat er en velabsorberet calciumkilde, også ved lav mavesyre.",
+  "research": "Calciumcitrat er uden sikkerhedskontrovers. Forskning omhandler primært biotilgængelighed som calciumkilde sammenlignet med calciumcarbonat.",
+  "keyReferences": [],
+  "pubmedTerm": "calcium citrate",
+  "flags": [],
+  "classes": [
+   "sequestrant",
+   "stabiliser"
+  ],
+  "variants": [
+   {
+    "code": "E333(i)",
+    "nameDa": "Monocalciumcitrat",
+    "nameEn": "Monocalcium citrate"
+   },
+   {
+    "code": "E333(ii)",
+    "nameDa": "Dicalciumcitrat",
+    "nameEn": "Dicalcium citrate"
+   },
+   {
+    "code": "E333(iii)",
+    "nameDa": "Tricalciumcitrat",
+    "nameEn": "Tricalcium citrate"
+   }
+  ],
+  "efsa": null,
+  "wikipedia": "",
+  "wikidata": "Q420280",
+  "verification": {
+   "status": "verified",
+   "sources": [
+    "https://www.efsa.europa.eu/sites/default/files/consultation/160524.pdf"
+   ],
+   "notes": "Godkendt; varianter og JECFA-ADI 'ikke specificeret' bekræftet. EFSA-gen-evaluering ikke afsluttet (dataindkaldelse)."
+  }
+ },
+ {
+  "code": "E334",
+  "nameDa": "L(+)-vinsyre",
+  "nameEn": "L(+)-tartaric acid",
+  "category": "Syre / surhedsregulerende middel / antioxidant",
+  "euStatus": "approved",
+  "origin": "natural",
+  "summary": "Vinsyre er den naturlige syre fra vindruer, der giver syrlig smag og regulerer surhed.",
+  "description": "L(+)-vinsyre (2,3-dihydroxybutandisyre) findes naturligt i vindruer, tamarind og andre frugter. Den udvindes primært fra biprodukter fra vinproduktion (vinsten og bærme). Den giver en skarp, frisk syrlighed og bruges til at justere surhed i vin, i bagepulver (som vinsten) og i slik. Den binder metalioner og forstærker antioxidanters virkning.",
+  "uses": "Vin (syrejustering), sodavand og frugtdrikke, slik og vingummi, marmelade og gelé, bagepulver og bagværk. Tilladt quantum satis i de fleste kategorier.",
+  "health": "Vinsyre og tartrater anses som sikre i de anvendte mængder. JECFA har fastsat en gruppe-ADI for L(+)-vinsyre og dens salte på 30 mg/kg legemsvægt/dag (udtrykt som vinsyre); EFSA's gen-evaluering (2020) fastsatte en gruppe-ADI på 240 mg/kg lgv/dag. Meget store mængder kan virke afførende.",
+  "research": "EFSA's gen-evaluering af L(+)-vinsyre og tartrater (E334-E337, E354) fra 2020 fandt ingen sikkerhedsbekymring og hævede gruppe-ADI til 240 mg/kg lgv/dag udtrykt som vinsyre. Stofferne er ikke genstand for væsentlig forskningsmæssig kontrovers.",
+  "keyReferences": [],
+  "pubmedTerm": "tartaric acid",
+  "flags": [],
+  "classes": [
+   "antioxidant",
+   "sequestrant"
+  ],
+  "variants": [],
+  "efsa": {
+   "title": "Re-evaluation of l(+)-tartaric acid (E 334), sodium tartrates (E 335), potassium tartrates (E 336), potassium sodium tartrate (E 337) and calcium tartrate (E 354) as food additives",
+   "url": "https://doi.org/10.2903/j.efsa.2020.6030",
+   "date": "2020-03",
+   "adi": "240 mg/kg bw/day",
+   "overexposureRisk": ""
+  },
+  "wikipedia": "https://en.wikipedia.org/wiki/Tartaric_acid",
+  "wikidata": "Q194322",
+  "verification": {
+   "status": "corrected",
+   "sources": [
+    "https://doi.org/10.2903/j.efsa.2020.6030",
+    "https://pubmed.ncbi.nlm.nih.gov/32874248/"
+   ],
+   "notes": "Indhold bekræftet: EFSA 2020 (DOI 10.2903/j.efsa.2020.6030) gruppe-ADI 240 mg/kg lgv/dag som vinsyre; JECFA 0-30 mg/kg. Manglende efsa-objekt tilføjet."
+  }
+ },
+ {
+  "code": "E335",
+  "nameDa": "Natriumtartrater",
+  "nameEn": "Sodium tartrates",
+  "category": "Surhedsregulerende middel / stabilisator",
+  "euStatus": "approved",
+  "origin": "nature_identical",
+  "summary": "Natriumtartrater er natriumsalte af vinsyre, der regulerer surhed og stabiliserer fødevarer.",
+  "description": "Natriumtartrater fremstilles ved neutralisering af vinsyre med natrium. Varianterne er (i) mononatriumtartrat og (ii) dinatriumtartrat. De bruges som buffere, kompleksbindere og emulgeringssalte, fx i smelteost og marmelade.",
+  "uses": "Marmelade og gelé, smelteost, slik, bagværk og drikkevarer. Tilladt quantum satis i de fleste kategorier.",
+  "health": "Vinsyre og tartrater anses som sikre i de anvendte mængder. JECFA har fastsat en gruppe-ADI for L(+)-vinsyre og dens salte på 30 mg/kg legemsvægt/dag (udtrykt som vinsyre); EFSA's gen-evaluering (2020) fastsatte en gruppe-ADI på 240 mg/kg lgv/dag. Meget store mængder kan virke afførende.",
+  "research": "EFSA's gen-evaluering af L(+)-vinsyre og tartrater (E334-E337, E354) fra 2020 fandt ingen sikkerhedsbekymring og hævede gruppe-ADI til 240 mg/kg lgv/dag udtrykt som vinsyre. Stofferne er ikke genstand for væsentlig forskningsmæssig kontrovers.",
+  "keyReferences": [],
+  "pubmedTerm": "sodium tartrate",
+  "flags": [],
+  "classes": [
+   "sequestrant",
+   "stabiliser"
+  ],
+  "variants": [
+   {
+    "code": "E335(i)",
+    "nameDa": "Mononatriumtartrat",
+    "nameEn": "Monosodium tartrate"
+   },
+   {
+    "code": "E335(ii)",
+    "nameDa": "Dinatriumtartrat",
+    "nameEn": "Disodium tartrate"
+   }
+  ],
+  "efsa": {
+   "title": "Re-evaluation of l(+)-tartaric acid (E 334), sodium tartrates (E 335), potassium tartrates (E 336), potassium sodium tartrate (E 337) and calcium tartrate (E 354) as food additives",
+   "url": "https://doi.org/10.2903/j.efsa.2020.6030",
+   "date": "2020-03",
+   "adi": "240 mg/kg bw/day",
+   "overexposureRisk": ""
+  },
+  "wikipedia": "",
+  "wikidata": "Q58641683",
+  "verification": {
+   "status": "corrected",
+   "sources": [
+    "https://doi.org/10.2903/j.efsa.2020.6030",
+    "https://pubmed.ncbi.nlm.nih.gov/32874248/"
+   ],
+   "notes": "Indhold bekræftet: EFSA 2020 (DOI 10.2903/j.efsa.2020.6030) gruppe-ADI 240 mg/kg lgv/dag som vinsyre; JECFA 0-30 mg/kg. Manglende efsa-objekt tilføjet."
+  }
+ },
+ {
+  "code": "E336",
+  "nameDa": "Kaliumtartrater",
+  "nameEn": "Potassium tartrates",
+  "category": "Surhedsregulerende middel / hævemiddel",
+  "euStatus": "approved",
+  "origin": "natural",
+  "summary": "Kaliumtartrater, bl.a. vinsten (cream of tartar), bruges som hævemiddel og stabilisator.",
+  "description": "Kaliumtartrater omfatter (i) monokaliumtartrat (kaliumhydrogentartrat, vinsten) og (ii) dikaliumtartrat. Monokaliumtartrat udkrystalliserer naturligt i vintønder under vinproduktion og renses derfra. Det bruges som syrekomponent i bagepulver, til at stabilisere piskede æggehvider og til at forhindre sukkerkrystallisering.",
+  "uses": "Bagepulver, marengs og kager, slik og glasur, vin (stabilisering), gelé. Tilladt quantum satis i de fleste kategorier.",
+  "health": "Vinsyre og tartrater anses som sikre i de anvendte mængder. JECFA har fastsat en gruppe-ADI for L(+)-vinsyre og dens salte på 30 mg/kg legemsvægt/dag (udtrykt som vinsyre); EFSA's gen-evaluering (2020) fastsatte en gruppe-ADI på 240 mg/kg lgv/dag. Meget store mængder kan virke afførende.",
+  "research": "EFSA's gen-evaluering af L(+)-vinsyre og tartrater (E334-E337, E354) fra 2020 fandt ingen sikkerhedsbekymring og hævede gruppe-ADI til 240 mg/kg lgv/dag udtrykt som vinsyre. Stofferne er ikke genstand for væsentlig forskningsmæssig kontrovers.",
+  "keyReferences": [],
+  "pubmedTerm": "potassium bitartrate",
+  "flags": [],
+  "classes": [],
+  "variants": [
+   {
+    "code": "E336(i)",
+    "nameDa": "Monokaliumtartrat",
+    "nameEn": "Monopotassium tartrate"
+   },
+   {
+    "code": "E336(ii)",
+    "nameDa": "Dikaliumtartrat",
+    "nameEn": "Dipotassium tartrate"
+   }
+  ],
+  "efsa": {
+   "title": "Re-evaluation of l(+)-tartaric acid (E 334), sodium tartrates (E 335), potassium tartrates (E 336), potassium sodium tartrate (E 337) and calcium tartrate (E 354) as food additives",
+   "url": "https://doi.org/10.2903/j.efsa.2020.6030",
+   "date": "2020-03",
+   "adi": "240 mg/kg bw/day",
+   "overexposureRisk": ""
+  },
+  "wikipedia": "https://en.wikipedia.org/wiki/Potassium_tartrate",
+  "wikidata": "Q65770886",
+  "verification": {
+   "status": "corrected",
+   "sources": [
+    "https://doi.org/10.2903/j.efsa.2020.6030",
+    "https://pubmed.ncbi.nlm.nih.gov/32874248/"
+   ],
+   "notes": "Indhold bekræftet: EFSA 2020 (DOI 10.2903/j.efsa.2020.6030) gruppe-ADI 240 mg/kg lgv/dag som vinsyre; JECFA 0-30 mg/kg. Manglende efsa-objekt tilføjet."
+  }
+ },
+ {
+  "code": "E337",
+  "nameDa": "Natriumkaliumtartrat",
+  "nameEn": "Sodium potassium tartrate",
+  "category": "Surhedsregulerende middel / stabilisator",
+  "euStatus": "approved",
+  "origin": "nature_identical",
+  "summary": "Natriumkaliumtartrat (Seignettesalt) er et blandet salt af vinsyre, der bruges som stabilisator og surhedsregulerende middel.",
+  "description": "Natriumkaliumtartrat, også kendt som Seignettesalt eller Rochellesalt, fremstilles ud fra vinsten og natriumcarbonat. Det bruges som buffer og kompleksbinder, fx i ost og kødprodukter. Det har historisk også været brugt som mildt afføringsmiddel.",
+  "uses": "Smelteost, kødprodukter, marmelade, bagværk og slik. Tilladt quantum satis i de fleste kategorier.",
+  "health": "Vinsyre og tartrater anses som sikre i de anvendte mængder. JECFA har fastsat en gruppe-ADI for L(+)-vinsyre og dens salte på 30 mg/kg legemsvægt/dag (udtrykt som vinsyre); EFSA's gen-evaluering (2020) fastsatte en gruppe-ADI på 240 mg/kg lgv/dag. Meget store mængder kan virke afførende.",
+  "research": "EFSA's gen-evaluering af L(+)-vinsyre og tartrater (E334-E337, E354) fra 2020 fandt ingen sikkerhedsbekymring og hævede gruppe-ADI til 240 mg/kg lgv/dag udtrykt som vinsyre. Stofferne er ikke genstand for væsentlig forskningsmæssig kontrovers.",
+  "keyReferences": [],
+  "pubmedTerm": "potassium sodium tartrate",
+  "flags": [
+   "laxative"
+  ],
+  "classes": [
+   "sequestrant",
+   "stabiliser"
+  ],
+  "variants": [],
+  "efsa": {
+   "title": "Re-evaluation of l(+)-tartaric acid (E 334), sodium tartrates (E 335), potassium tartrates (E 336), potassium sodium tartrate (E 337) and calcium tartrate (E 354) as food additives",
+   "url": "https://doi.org/10.2903/j.efsa.2020.6030",
+   "date": "2020-03",
+   "adi": "240 mg/kg bw/day",
+   "overexposureRisk": ""
+  },
+  "wikipedia": "",
+  "wikidata": "Q303489",
+  "verification": {
+   "status": "corrected",
+   "sources": [
+    "https://doi.org/10.2903/j.efsa.2020.6030",
+    "https://pubmed.ncbi.nlm.nih.gov/32874248/"
+   ],
+   "notes": "Indhold bekræftet: EFSA 2020 (DOI 10.2903/j.efsa.2020.6030) gruppe-ADI 240 mg/kg lgv/dag som vinsyre; JECFA 0-30 mg/kg. Manglende efsa-objekt tilføjet."
+  }
+ },
+ {
+  "code": "E338",
+  "nameDa": "Fosforsyre",
+  "nameEn": "Phosphoric acid",
+  "category": "Syre / surhedsregulerende middel",
+  "euStatus": "approved",
+  "origin": "synthetic",
+  "summary": "Fosforsyre er en stærk uorganisk syre, der bl.a. giver den skarpe syrlighed i colasodavand.",
+  "description": "Fosforsyre (orthofosforsyre, H3PO4) fremstilles af fosfatmalm, enten ved behandling med svovlsyre (våd proces) eller via forbrænding af fosfor (termisk proces, som giver renere syre til fødevarer). Den giver en skarp syrlighed uden frugtsmag og sænker pH effektivt. Den bruges også til at rense sukker og som synergist for antioxidanter.",
+  "uses": "Colasodavand, visse andre læskedrikke, smelteost og oste, kødprodukter, sukkerraffinering. I EU tilladt med maksimumsgrænser (fx 700 mg/l i colaer).",
+  "health": "EFSA fastsatte i 2019 en gruppe-ADI for fosforsyre og fosfater på 40 mg/kg legemsvægt/dag udtrykt som fosfor. EFSA vurderede, at spædbørn, småbørn og andre børn med højt indtag kan overskride ADI, når man lægger det samlede fosforindtag (naturligt + tilsat) sammen. Personer med nedsat nyrefunktion skal begrænse fosfor, og tilsatte fosfater optages næsten fuldstændigt (i modsætning til naturligt bundet fosfor), hvorfor de er særligt relevante for nyrepatienter. Højt indtag af cola er i nogle observationelle studier forbundet med lavere knogletæthed hos kvinder og med syreerosion af tænder.",
+  "research": "EFSA's gen-evaluering af fosforsyre og fosfater (E338-E341, E343, E450-E452) fra 2019 fastsatte for første gang en gruppe-ADI på 40 mg/kg lgv/dag som fosfor og anbefalede lavere maksimumsgrænser i visse fødevarer. Observationelle studier har forbundet højt serumfosfat med hjerte-kar-sygdom og øget dødelighed hos nyrepatienter og i nogle studier i den generelle befolkning, men årsagssammenhængen er ikke fastslået. Ritz et al. (Deutsches Ärzteblatt 2012) har argumenteret for, at fosfattilsætningsstoffer udgør en undervurderet sundhedsrisiko. Tucker et al. (Am J Clin Nutr 2006) fandt i Framingham-studiet sammenhæng mellem colaindtag og lavere knogletæthed i hoften hos kvinder.",
+  "keyReferences": [
+   {
+    "citation": "Ritz E et al. Phosphate additives in food—a health risk. Deutsches Ärzteblatt International. 2012.",
+    "searchTitle": "Phosphate additives in food--a health risk"
+   },
+   {
+    "citation": "Tucker KL et al. Colas, but not other carbonated beverages, are associated with low bone mineral density in older women: The Framingham Osteoporosis Study. Am J Clin Nutr. 2006.",
+    "searchTitle": "Colas, but not other carbonated beverages, are associated with low bone mineral density in older women: The Framingham Osteoporosis Study"
+   }
+  ],
+  "pubmedTerm": "phosphoric acid",
+  "flags": [
+   "kidney_caution",
+   "children_caution"
+  ],
+  "classes": [
+   "antioxidant",
+   "sequestrant"
+  ],
+  "variants": [],
+  "efsa": {
+   "title": "Re‐evaluation of phosphoric acid–phosphates – di‐, tri‐ and polyphosphates (E 338–341, E 343, E 450–452) as food additives and the safety of proposed extension of use",
+   "url": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2019.5674",
+   "date": "2019/06/12",
+   "adi": "40 mg/kg bw/day (som fosfor)",
+   "overexposureRisk": "en:high"
+  },
+  "wikipedia": "https://en.wikipedia.org/wiki/Phosphoric_acid",
+  "wikidata": "Q184782",
+  "verification": {
+   "status": "verified",
+   "sources": [
+    "https://pmc.ncbi.nlm.nih.gov/articles/PMC7009158/",
+    "https://pmc.ncbi.nlm.nih.gov/articles/PMC3278747/",
+    "https://pubmed.ncbi.nlm.nih.gov/17023723/"
+   ],
+   "notes": "EFSA 2019 (DOI 10.2903/j.efsa.2019.5674) gruppe-ADI 40 mg/kg lgv/dag som P og mulig overskridelse hos børn bekræftet; Ritz et al. 2012 (Dtsch Arztebl Int 109:49-55) bekræftet, Tucker et al. 2006 bekræftet."
+  }
+ },
+ {
+  "code": "E339",
+  "nameDa": "Natriumfosfater",
+  "nameEn": "Sodium phosphates",
+  "category": "Surhedsregulerende middel / emulgeringssalt / stabilisator",
+  "euStatus": "approved",
+  "origin": "synthetic",
+  "summary": "Natriumfosfater er salte af fosforsyre, som bruges til at regulere surhed, binde vand og stabilisere fødevarer.",
+  "description": "Natriumfosfater fremstilles ved at neutralisere fosforsyre med den tilsvarende base. Varianterne er (i) mononatriumfosfat, (ii) dinatriumfosfat og (iii) trinatriumfosfat, der adskiller sig ved hvor mange hydrogenatomer der er erstattet med natrium og dermed ved pH (fra sur til basisk). Fosfater bruges fordi de binder vand og proteiner (saftigere kød og fisk), fungerer som emulgeringssalte i smelteost, buffer pH, forhindrer klumpning og indgår i hævemidler. De er blandt de mest udbredte tilsætningsstoffer i forarbejdede fødevarer.",
+  "uses": "Smelteost og osteskiver, kødpålæg og pølser (vandbinding), fiskefiletter, instant-pudding og -drikke, bagværk, kondenseret mælk og kaffefløde. Tilladt med maksimumsgrænser, som EFSA 2019 anbefalede at sænke.",
+  "health": "EFSA fastsatte i 2019 en gruppe-ADI for fosforsyre og fosfater på 40 mg/kg legemsvægt/dag udtrykt som fosfor. EFSA vurderede, at spædbørn, småbørn og andre børn med højt indtag kan overskride ADI, når man lægger det samlede fosforindtag (naturligt + tilsat) sammen. Personer med nedsat nyrefunktion skal begrænse fosfor, og tilsatte fosfater optages næsten fuldstændigt (i modsætning til naturligt bundet fosfor), hvorfor de er særligt relevante for nyrepatienter. Natriumfosfater bidrager også med natrium.",
+  "research": "EFSA's gen-evaluering af fosforsyre og fosfater (E338-E341, E343, E450-E452) fra 2019 fastsatte for første gang en gruppe-ADI på 40 mg/kg lgv/dag som fosfor og anbefalede lavere maksimumsgrænser i visse fødevarer. Observationelle studier har forbundet højt serumfosfat med hjerte-kar-sygdom og øget dødelighed hos nyrepatienter og i nogle studier i den generelle befolkning, men årsagssammenhængen er ikke fastslået. Ritz et al. (Deutsches Ärzteblatt 2012) har argumenteret for, at fosfattilsætningsstoffer udgør en undervurderet sundhedsrisiko.",
+  "keyReferences": [
+   {
+    "citation": "Ritz E et al. Phosphate additives in food—a health risk. Deutsches Ärzteblatt International. 2012.",
+    "searchTitle": "Phosphate additives in food--a health risk"
+   }
+  ],
+  "pubmedTerm": "sodium phosphate",
+  "flags": [
+   "kidney_caution",
+   "children_caution"
+  ],
+  "classes": [
+   "emulsifier",
+   "humectant",
+   "preservative",
+   "sequestrant",
+   "stabiliser",
+   "thickener"
+  ],
+  "variants": [
+   {
+    "code": "E339(i)",
+    "nameDa": "Mononatriumphosphat",
+    "nameEn": "Monosodium phosphate"
+   },
+   {
+    "code": "E339(ii)",
+    "nameDa": "Dinatriumphosphat",
+    "nameEn": "Disodium phosphate"
+   },
+   {
+    "code": "E339(iii)",
+    "nameDa": "Trinatriumphosphat",
+    "nameEn": "Trisodium phosphate"
+   }
+  ],
+  "efsa": {
+   "title": "Re‐evaluation of phosphoric acid–phosphates – di‐, tri‐ and polyphosphates (E 338–341, E 343, E 450–452) as food additives and the safety of proposed extension of use",
+   "url": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2019.5674",
+   "date": "2019/06/12",
+   "adi": "40 mg/kg bw/day (som fosfor)",
+   "overexposureRisk": "en:high"
+  },
+  "wikipedia": "https://en.wikipedia.org/wiki/Sodium_phosphates",
+  "wikidata": "Q3249706",
+  "verification": {
+   "status": "verified",
+   "sources": [
+    "https://pmc.ncbi.nlm.nih.gov/articles/PMC7009158/",
+    "https://pmc.ncbi.nlm.nih.gov/articles/PMC3278747/"
+   ],
+   "notes": "EFSA 2019 (DOI 10.2903/j.efsa.2019.5674) gruppe-ADI 40 mg/kg lgv/dag som P og mulig overskridelse hos børn bekræftet; Ritz et al. 2012 (Dtsch Arztebl Int 109:49-55) bekræftet."
+  }
+ },
+ {
+  "code": "E340",
+  "nameDa": "Kaliumfosfater",
+  "nameEn": "Potassium phosphates",
+  "category": "Surhedsregulerende middel / emulgeringssalt / stabilisator",
+  "euStatus": "approved",
+  "origin": "synthetic",
+  "summary": "Kaliumfosfater er salte af fosforsyre, som bruges til at regulere surhed, binde vand og stabilisere fødevarer.",
+  "description": "Kaliumfosfater fremstilles ved at neutralisere fosforsyre med den tilsvarende base. Varianterne er (i) monokaliumfosfat, (ii) dikaliumfosfat og (iii) trikaliumfosfat, med stigende basiskhed. Fosfater bruges fordi de binder vand og proteiner (saftigere kød og fisk), fungerer som emulgeringssalte i smelteost, buffer pH, forhindrer klumpning og indgår i hævemidler. De er blandt de mest udbredte tilsætningsstoffer i forarbejdede fødevarer.",
+  "uses": "Kaffefløde og plantedrikke, smelteost, kødprodukter, sportsdrikke, kosttilskud og bagværk. Tilladt med maksimumsgrænser.",
+  "health": "EFSA fastsatte i 2019 en gruppe-ADI for fosforsyre og fosfater på 40 mg/kg legemsvægt/dag udtrykt som fosfor. EFSA vurderede, at spædbørn, småbørn og andre børn med højt indtag kan overskride ADI, når man lægger det samlede fosforindtag (naturligt + tilsat) sammen. Personer med nedsat nyrefunktion skal begrænse fosfor, og tilsatte fosfater optages næsten fuldstændigt (i modsætning til naturligt bundet fosfor), hvorfor de er særligt relevante for nyrepatienter. Kaliumindholdet er desuden relevant for nyrepatienter.",
+  "research": "EFSA's gen-evaluering af fosforsyre og fosfater (E338-E341, E343, E450-E452) fra 2019 fastsatte for første gang en gruppe-ADI på 40 mg/kg lgv/dag som fosfor og anbefalede lavere maksimumsgrænser i visse fødevarer. Observationelle studier har forbundet højt serumfosfat med hjerte-kar-sygdom og øget dødelighed hos nyrepatienter og i nogle studier i den generelle befolkning, men årsagssammenhængen er ikke fastslået. Ritz et al. (Deutsches Ärzteblatt 2012) har argumenteret for, at fosfattilsætningsstoffer udgør en undervurderet sundhedsrisiko.",
+  "keyReferences": [
+   {
+    "citation": "Ritz E et al. Phosphate additives in food—a health risk. Deutsches Ärzteblatt International. 2012.",
+    "searchTitle": "Phosphate additives in food--a health risk"
+   }
+  ],
+  "pubmedTerm": "potassium phosphate",
+  "flags": [
+   "kidney_caution",
+   "children_caution"
+  ],
+  "classes": [
+   "emulsifier",
+   "humectant",
+   "sequestrant",
+   "stabiliser",
+   "thickener"
+  ],
+  "variants": [
+   {
+    "code": "E340(i)",
+    "nameDa": "Monokaliumphosphat",
+    "nameEn": "Monopotassium phosphate"
+   },
+   {
+    "code": "E340(ii)",
+    "nameDa": "Dikaliumphosphat",
+    "nameEn": "Dipotassium phosphate"
+   },
+   {
+    "code": "E340(iii)",
+    "nameDa": "Trikaliumphosphat",
+    "nameEn": "Tripotassium phosphate"
+   }
+  ],
+  "efsa": {
+   "title": "Re‐evaluation of phosphoric acid–phosphates – di‐, tri‐ and polyphosphates (E 338–341, E 343, E 450–452) as food additives and the safety of proposed extension of use",
+   "url": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2019.5674",
+   "date": "2019/06/12",
+   "adi": "40 mg/kg bw/day (som fosfor)",
+   "overexposureRisk": "en:high"
+  },
+  "wikipedia": "https://en.wikipedia.org/wiki/Potassium_phosphate",
+  "wikidata": "Q3381491",
+  "verification": {
+   "status": "verified",
+   "sources": [
+    "https://pmc.ncbi.nlm.nih.gov/articles/PMC7009158/",
+    "https://pmc.ncbi.nlm.nih.gov/articles/PMC3278747/"
+   ],
+   "notes": "EFSA 2019 (DOI 10.2903/j.efsa.2019.5674) gruppe-ADI 40 mg/kg lgv/dag som P og mulig overskridelse hos børn bekræftet; Ritz et al. 2012 (Dtsch Arztebl Int 109:49-55) bekræftet."
+  }
+ },
+ {
+  "code": "E341",
+  "nameDa": "Calciumfosfater",
+  "nameEn": "Calcium phosphates",
+  "category": "Hævemiddel / surhedsregulerende middel / antiklumpningsmiddel",
+  "euStatus": "approved",
+  "origin": "synthetic",
+  "summary": "Calciumfosfater er salte af fosforsyre, som bruges til at regulere surhed, binde vand og stabilisere fødevarer.",
+  "description": "Calciumfosfater fremstilles ved at neutralisere fosforsyre med den tilsvarende base. Varianterne er (i) monocalciumfosfat (bruges som syre i bagepulver), (ii) dicalciumfosfat og (iii) tricalciumfosfat (bruges som antiklumpningsmiddel og calciumkilde). Fosfater bruges fordi de binder vand og proteiner (saftigere kød og fisk), fungerer som emulgeringssalte i smelteost, buffer pH, forhindrer klumpning og indgår i hævemidler. De er blandt de mest udbredte tilsætningsstoffer i forarbejdede fødevarer.",
+  "uses": "Bagepulver og bagværk, salt og krydderier (antiklumpning), mælkepulver, berigede plantedrikke og morgenmadsprodukter, kosttilskud. Tilladt med maksimumsgrænser.",
+  "health": "EFSA fastsatte i 2019 en gruppe-ADI for fosforsyre og fosfater på 40 mg/kg legemsvægt/dag udtrykt som fosfor. EFSA vurderede, at spædbørn, småbørn og andre børn med højt indtag kan overskride ADI, når man lægger det samlede fosforindtag (naturligt + tilsat) sammen. Personer med nedsat nyrefunktion skal begrænse fosfor, og tilsatte fosfater optages næsten fuldstændigt (i modsætning til naturligt bundet fosfor), hvorfor de er særligt relevante for nyrepatienter.",
+  "research": "EFSA's gen-evaluering af fosforsyre og fosfater (E338-E341, E343, E450-E452) fra 2019 fastsatte for første gang en gruppe-ADI på 40 mg/kg lgv/dag som fosfor og anbefalede lavere maksimumsgrænser i visse fødevarer. Observationelle studier har forbundet højt serumfosfat med hjerte-kar-sygdom og øget dødelighed hos nyrepatienter og i nogle studier i den generelle befolkning, men årsagssammenhængen er ikke fastslået. Ritz et al. (Deutsches Ärzteblatt 2012) har argumenteret for, at fosfattilsætningsstoffer udgør en undervurderet sundhedsrisiko.",
+  "keyReferences": [
+   {
+    "citation": "Ritz E et al. Phosphate additives in food—a health risk. Deutsches Ärzteblatt International. 2012.",
+    "searchTitle": "Phosphate additives in food--a health risk"
+   }
+  ],
+  "pubmedTerm": "calcium phosphate",
+  "flags": [
+   "kidney_caution",
+   "children_caution"
+  ],
+  "classes": [
+   "emulsifier",
+   "humectant",
+   "sequestrant",
+   "stabiliser",
+   "thickener"
+  ],
+  "variants": [
+   {
+    "code": "E341(i)",
+    "nameDa": "Monocalciumphosphat",
+    "nameEn": "Monocalcium phosphate"
+   },
+   {
+    "code": "E341(ii)",
+    "nameDa": "dicalciumfosfat",
+    "nameEn": "Dicalcium phosphate"
+   },
+   {
+    "code": "E341(iii)",
+    "nameDa": "Tricalciumphosphat",
+    "nameEn": "Tricalcium phosphate"
+   }
+  ],
+  "efsa": {
+   "title": "Re‐evaluation of phosphoric acid–phosphates – di‐, tri‐ and polyphosphates (E 338–341, E 343, E 450–452) as food additives and the safety of proposed extension of use",
+   "url": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2019.5674",
+   "date": "2019/06/12",
+   "adi": "40 mg/kg bw/day (som fosfor)",
+   "overexposureRisk": "en:high"
+  },
+  "wikipedia": "https://en.wikipedia.org/wiki/Calcium_phosphate",
+  "wikidata": "Q426664",
+  "verification": {
+   "status": "verified",
+   "sources": [
+    "https://pmc.ncbi.nlm.nih.gov/articles/PMC7009158/",
+    "https://pmc.ncbi.nlm.nih.gov/articles/PMC3278747/"
+   ],
+   "notes": "EFSA 2019 (DOI 10.2903/j.efsa.2019.5674) gruppe-ADI 40 mg/kg lgv/dag som P og mulig overskridelse hos børn bekræftet; Ritz et al. 2012 (Dtsch Arztebl Int 109:49-55) bekræftet."
+  }
+ },
+ {
+  "code": "E343",
+  "nameDa": "Magnesiumfosfater",
+  "nameEn": "Magnesium phosphates",
+  "category": "Surhedsregulerende middel / antiklumpningsmiddel",
+  "euStatus": "approved",
+  "origin": "synthetic",
+  "summary": "Magnesiumfosfater er salte af fosforsyre, som bruges til at regulere surhed, binde vand og stabilisere fødevarer.",
+  "description": "Magnesiumfosfater fremstilles ved at neutralisere fosforsyre med den tilsvarende base. Varianterne er (i) monomagnesiumfosfat, (ii) dimagnesiumfosfat og (iii) trimagnesiumfosfat. Fosfater bruges fordi de binder vand og proteiner (saftigere kød og fisk), fungerer som emulgeringssalte i smelteost, buffer pH, forhindrer klumpning og indgår i hævemidler. De er blandt de mest udbredte tilsætningsstoffer i forarbejdede fødevarer.",
+  "uses": "Pulverprodukter (antiklumpning), salt, kosttilskud og berigede fødevarer. Tilladt med maksimumsgrænser.",
+  "health": "EFSA fastsatte i 2019 en gruppe-ADI for fosforsyre og fosfater på 40 mg/kg legemsvægt/dag udtrykt som fosfor. EFSA vurderede, at spædbørn, småbørn og andre børn med højt indtag kan overskride ADI, når man lægger det samlede fosforindtag (naturligt + tilsat) sammen. Personer med nedsat nyrefunktion skal begrænse fosfor, og tilsatte fosfater optages næsten fuldstændigt (i modsætning til naturligt bundet fosfor), hvorfor de er særligt relevante for nyrepatienter.",
+  "research": "EFSA's gen-evaluering af fosforsyre og fosfater (E338-E341, E343, E450-E452) fra 2019 fastsatte for første gang en gruppe-ADI på 40 mg/kg lgv/dag som fosfor og anbefalede lavere maksimumsgrænser i visse fødevarer. Observationelle studier har forbundet højt serumfosfat med hjerte-kar-sygdom og øget dødelighed hos nyrepatienter og i nogle studier i den generelle befolkning, men årsagssammenhængen er ikke fastslået. Ritz et al. (Deutsches Ärzteblatt 2012) har argumenteret for, at fosfattilsætningsstoffer udgør en undervurderet sundhedsrisiko.",
+  "keyReferences": [
+   {
+    "citation": "Ritz E et al. Phosphate additives in food—a health risk. Deutsches Ärzteblatt International. 2012.",
+    "searchTitle": "Phosphate additives in food--a health risk"
+   }
+  ],
+  "pubmedTerm": "magnesium phosphate",
+  "flags": [
+   "kidney_caution",
+   "children_caution"
+  ],
+  "classes": [
+   "stabiliser",
+   "thickener"
+  ],
+  "variants": [
+   {
+    "code": "E343(i)",
+    "nameDa": "Monomagnesiumphosphat",
+    "nameEn": "Monomagnesium phosphate"
+   },
+   {
+    "code": "E343(ii)",
+    "nameDa": "Dimagnesiumphosphat",
+    "nameEn": "Dimagnesium phosphate"
+   },
+   {
+    "code": "E343(iii)",
+    "nameDa": "",
+    "nameEn": "Trimagnesium phosphate"
+   }
+  ],
+  "efsa": {
+   "title": "Re‐evaluation of phosphoric acid–phosphates – di‐, tri‐ and polyphosphates (E 338–341, E 343, E 450–452) as food additives and the safety of proposed extension of use",
+   "url": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2019.5674",
+   "date": "2019/06/12",
+   "adi": "40 mg/kg bw/day (som fosfor)",
+   "overexposureRisk": "en:high"
+  },
+  "wikipedia": "https://en.wikipedia.org/wiki/Magnesium_phosphate",
+  "wikidata": "Q6731399",
+  "verification": {
+   "status": "verified",
+   "sources": [
+    "https://pmc.ncbi.nlm.nih.gov/articles/PMC7009158/",
+    "https://pmc.ncbi.nlm.nih.gov/articles/PMC3278747/"
+   ],
+   "notes": "EFSA 2019 (DOI 10.2903/j.efsa.2019.5674) gruppe-ADI 40 mg/kg lgv/dag som P og mulig overskridelse hos børn bekræftet; Ritz et al. 2012 (Dtsch Arztebl Int 109:49-55) bekræftet."
+  }
+ },
+ {
+  "code": "E350",
+  "nameDa": "Natriummalater",
+  "nameEn": "Sodium malates",
+  "category": "Surhedsregulerende middel / fugtighedsbevarende middel",
+  "euStatus": "approved",
+  "origin": "mixed",
+  "summary": "Natriummalater er natriumsalte af æblesyre, der regulerer surhed og bevarer fugt.",
+  "description": "Natriummalater fremstilles ved neutralisering af æblesyre med natrium. Varianterne er (i) natriummalat og (ii) natriumhydrogenmalat (den surere form). De bruges som buffer, fugtighedsbevarende middel og til at give en mild, afrundet syrlighed. Natriummalat kan også give salt smag og bruges i visse natriumreducerede produkter.",
+  "uses": "Slik og sure bolsjer, marmelade, drikkevarer, bagværk og desserter. Tilladt quantum satis i de fleste kategorier.",
+  "health": "Malater anses som sikre, da æblesyre er et normalt stofskifteprodukt; der er ikke fastsat en numerisk ADI (JECFA: 'ikke specificeret'). Som for æblesyre bør DL-formen undgås i fødevarer til spædbørn, og i EU er brugen i spædbørnsmad begrænset. Natriummalat bidrager med lidt natrium.",
+  "research": "Malater er vurderet af JECFA uden sikkerhedsbekymringer og er ikke genstand for væsentlig forskningsmæssig kontrovers. EFSA's gen-evaluering af æblesyre og malater (E296, E350-E352) er i gang; der er indkaldt data, men ingen udtalelse er offentliggjort.",
+  "keyReferences": [],
+  "pubmedTerm": "sodium malate",
+  "flags": [
+   "children_caution"
+  ],
+  "classes": [
+   "humectant"
+  ],
+  "variants": [
+   {
+    "code": "E350(i)",
+    "nameDa": "Natriummalat",
+    "nameEn": "Sodium malate"
+   },
+   {
+    "code": "E350(ii)",
+    "nameDa": "Natriumhydrogenmalat",
+    "nameEn": "Sodium hydrogen malate"
+   }
+  ],
+  "efsa": null,
+  "wikipedia": "https://en.wikipedia.org/wiki/Sodium_malate",
+  "wikidata": "Q836788",
+  "verification": {
+   "status": "verified",
+   "sources": [
+    "https://efsa.europa.eu/en/call/call-data-re-evaluation-malic-acid-and-malates-e-296-e-350-352-food-additives"
+   ],
+   "notes": "Godkendt; JECFA-ADI 'ikke specificeret' bekræftet. Tilføjet at EFSA-gen-evaluering er i gang."
+  }
+ },
+ {
+  "code": "E351",
+  "nameDa": "Kaliummalat",
+  "nameEn": "Potassium malate",
+  "category": "Surhedsregulerende middel",
+  "euStatus": "approved",
+  "origin": "mixed",
+  "summary": "Kaliummalat er kaliumsaltet af æblesyre, der regulerer surhed i fødevarer.",
+  "description": "Kaliummalat fremstilles ved neutralisering af æblesyre med kaliumhydroxid. I EU er kun kaliummalat (ikke kaliumhydrogenmalat) opført under E351. Det bruges som buffer og surhedsregulerende middel og som natriumfrit alternativ.",
+  "uses": "Drikkevarer, dåsegrøntsager, desserter, slik og natriumreducerede produkter. Tilladt quantum satis i mange kategorier.",
+  "health": "Malater anses som sikre, da æblesyre er et normalt stofskifteprodukt; der er ikke fastsat en numerisk ADI (JECFA: 'ikke specificeret'). Som for æblesyre bør DL-formen undgås i fødevarer til spædbørn, og i EU er brugen i spædbørnsmad begrænset. Kaliumindholdet kan være relevant for personer med nedsat nyrefunktion.",
+  "research": "Malater er vurderet af JECFA uden sikkerhedsbekymringer og er ikke genstand for væsentlig forskningsmæssig kontrovers. EFSA's gen-evaluering af æblesyre og malater (E296, E350-E352) er i gang; der er indkaldt data, men ingen udtalelse er offentliggjort.",
+  "keyReferences": [],
+  "pubmedTerm": "potassium malate",
+  "flags": [
+   "children_caution",
+   "kidney_caution"
+  ],
+  "classes": [],
+  "variants": [
+   {
+    "code": "E351(i)",
+    "nameDa": "",
+    "nameEn": "Potassium hydrogen malate"
+   },
+   {
+    "code": "E351(ii)",
+    "nameDa": "",
+    "nameEn": ""
+   }
+  ],
+  "efsa": null,
+  "wikipedia": "",
+  "wikidata": "Q408755",
+  "verification": {
+   "status": "verified",
+   "sources": [
+    "https://efsa.europa.eu/en/call/call-data-re-evaluation-malic-acid-and-malates-e-296-e-350-352-food-additives"
+   ],
+   "notes": "Godkendt; JECFA-ADI 'ikke specificeret' bekræftet. Tilføjet at EFSA-gen-evaluering er i gang."
+  }
+ },
+ {
+  "code": "E352",
+  "nameDa": "Calciummalater",
+  "nameEn": "Calcium malates",
+  "category": "Surhedsregulerende middel / fastgørende middel",
+  "euStatus": "approved",
+  "origin": "mixed",
+  "summary": "Calciummalater er calciumsalte af æblesyre, der regulerer surhed og giver fasthed.",
+  "description": "Calciummalater fremstilles ved neutralisering af æblesyre med calciumcarbonat. Varianterne er (i) calciummalat og (ii) calciumhydrogenmalat. De bruges som buffer, til at holde frugt og grøntsager faste og som calciumkilde; calciumcitratmalat bruges desuden i berigede juice.",
+  "uses": "Dåsefrugt og -grøntsager, marmelade, berigede juice, slik og bagværk. Tilladt quantum satis i mange kategorier.",
+  "health": "Malater anses som sikre, da æblesyre er et normalt stofskifteprodukt; der er ikke fastsat en numerisk ADI (JECFA: 'ikke specificeret'). Som for æblesyre bør DL-formen undgås i fødevarer til spædbørn, og i EU er brugen i spædbørnsmad begrænset.",
+  "research": "Malater er vurderet af JECFA uden sikkerhedsbekymringer og er ikke genstand for væsentlig forskningsmæssig kontrovers. EFSA's gen-evaluering af æblesyre og malater (E296, E350-E352) er i gang; der er indkaldt data, men ingen udtalelse er offentliggjort.",
+  "keyReferences": [],
+  "pubmedTerm": "calcium malate",
+  "flags": [
+   "children_caution"
+  ],
+  "classes": [],
+  "variants": [
+   {
+    "code": "E352(i)",
+    "nameDa": "Calciummalat",
+    "nameEn": "Calcium malate"
+   },
+   {
+    "code": "E352(ii)",
+    "nameDa": "Calciumhydrogenmalat",
+    "nameEn": "Calcium hydrogen malate"
+   }
+  ],
+  "efsa": null,
+  "wikipedia": "",
+  "wikidata": "Q1356722",
+  "verification": {
+   "status": "verified",
+   "sources": [
+    "https://efsa.europa.eu/en/call/call-data-re-evaluation-malic-acid-and-malates-e-296-e-350-352-food-additives"
+   ],
+   "notes": "Godkendt; JECFA-ADI 'ikke specificeret' bekræftet. Tilføjet at EFSA-gen-evaluering er i gang."
+  }
+ },
+ {
+  "code": "E353",
+  "nameDa": "Metavinsyre",
+  "nameEn": "Metatartaric acid",
+  "category": "Stabilisator",
+  "euStatus": "approved",
+  "origin": "nature_identical",
+  "summary": "Metavinsyre bruges i vin til at forhindre udfældning af vinsten-krystaller.",
+  "description": "Metavinsyre er en polyester dannet ved opvarmning af vinsyre (L(+)-vinsyre), hvorved molekylerne kobles sammen under fraspaltning af vand. Den hæmmer krystalvækst af kaliumhydrogentartrat og calciumtartrat og forhindrer dermed, at der dannes krystaller i vin på flasken. Effekten aftager over tid, fordi stoffet langsomt hydrolyseres tilbage til vinsyre, især ved stuetemperatur.",
+  "uses": "Primært vin og cider; i EU er brugen reguleret under vinlovgivningen (typisk maks. 100 mg/l) og som tilsætningsstof kun i få kategorier.",
+  "health": "Metavinsyre nedbrydes til vinsyre og anses som sikker ved de anvendte mængder. EFSA's gen-evaluering (2020) konkluderede, at der ikke var sikkerhedsbekymring, og at den kan inkluderes i gruppe-ADI for vinsyre og tartrater. Der er ikke kendte særlige risici for følsomme grupper. Gruppe-ADI er 240 mg/kg lgv/dag udtrykt som vinsyre.",
+  "research": "EFSA gen-evaluerede metavinsyre (E353) i 2020 (EFSA Journal 18(3):6031) under antagelse af fuld hydrolyse til L(+)-vinsyre og fandt ingen sikkerhedsbekymring ved anvendelse i vin. Forskning handler primært om vinteknologi og alternativer som carboxymethylcellulose og mannoproteiner.",
+  "keyReferences": [],
+  "pubmedTerm": "metatartaric acid",
+  "flags": [],
+  "classes": [],
+  "variants": [],
+  "efsa": {
+   "title": "Re-evaluation of metatartaric acid (E 353) as a food additive",
+   "url": "https://doi.org/10.2903/j.efsa.2020.6031",
+   "date": "2020-03",
+   "adi": "240 mg/kg bw/day",
+   "overexposureRisk": ""
+  },
+  "wikipedia": "",
+  "wikidata": "Q17997708",
+  "verification": {
+   "status": "corrected",
+   "sources": [
+    "https://doi.org/10.2903/j.efsa.2020.6031",
+    "https://pubmed.ncbi.nlm.nih.gov/32874249/"
+   ],
+   "notes": "Årstal for EFSA-gen-evaluering rettet fra 2018 til 2020; efsa-objekt tilføjet."
+  }
+ },
+ {
+  "code": "E354",
+  "nameDa": "Calciumtartrat",
+  "nameEn": "Calcium tartrate",
+  "category": "Surhedsregulerende middel / stabilisator",
+  "euStatus": "approved",
+  "origin": "nature_identical",
+  "summary": "Calciumtartrat er calciumsaltet af vinsyre, der bruges som surhedsregulerende middel og stabilisator.",
+  "description": "Calciumtartrat dannes ved reaktion mellem vinsyre og calciumforbindelser og forekommer naturligt som bundfald i vin. Som tilsætningsstof bruges det til pH-regulering og som stabilisator. Det er tungtopløseligt og findes også som krystaller i vinflasker.",
+  "uses": "Vin, bagværk, marmelade og slik. Tilladt i begrænsede kategorier.",
+  "health": "Calciumtartrat anses som sikkert og indgår i EFSA's gruppe-ADI for vinsyre og tartrater (gen-evaluering 2020: 240 mg/kg lgv/dag som vinsyre). Der er ikke kendte særlige risici ved normalt indtag.",
+  "research": "EFSA's gen-evaluering af L(+)-vinsyre og tartrater (E334-E337, E354) fra 2020 fandt ingen sikkerhedsbekymring og hævede gruppe-ADI til 240 mg/kg lgv/dag udtrykt som vinsyre. Stofferne er ikke genstand for væsentlig forskningsmæssig kontrovers.",
+  "keyReferences": [],
+  "pubmedTerm": "calcium tartrate",
+  "flags": [],
+  "classes": [],
+  "variants": [],
+  "efsa": {
+   "title": "Re-evaluation of l(+)-tartaric acid (E 334), sodium tartrates (E 335), potassium tartrates (E 336), potassium sodium tartrate (E 337) and calcium tartrate (E 354) as food additives",
+   "url": "https://doi.org/10.2903/j.efsa.2020.6030",
+   "date": "2020-03",
+   "adi": "240 mg/kg bw/day",
+   "overexposureRisk": ""
+  },
+  "wikipedia": "",
+  "wikidata": "Q416767",
+  "verification": {
+   "status": "corrected",
+   "sources": [
+    "https://doi.org/10.2903/j.efsa.2020.6030",
+    "https://pubmed.ncbi.nlm.nih.gov/32874248/"
+   ],
+   "notes": "Indhold bekræftet: EFSA 2020 (DOI 10.2903/j.efsa.2020.6030) gruppe-ADI 240 mg/kg lgv/dag som vinsyre; JECFA 0-30 mg/kg. Manglende efsa-objekt tilføjet."
+  }
+ },
+ {
+  "code": "E355",
+  "nameDa": "Adipinsyre",
+  "nameEn": "Adipic acid",
+  "category": "Syre / surhedsregulerende middel",
+  "euStatus": "approved",
+  "origin": "synthetic",
+  "summary": "Adipinsyre er en syntetisk syre, der giver syrlig smag i pulverprodukter og fungerer som surhedsregulerende middel.",
+  "description": "Adipinsyre (hexandisyre) fremstilles industrielt ved oxidation af cyclohexanol/cyclohexanon med salpetersyre og er primært kendt som råstof til nylon. Den findes kun i spormængder naturligt, fx i rødbeder. Den er ikke-hygroskopisk og giver en mild, vedvarende syrlighed, hvilket gør den god i pulverblandinger og gelepulver.",
+  "uses": "Gelé- og dessertpulver, pulverdrikke, fyld og glasur til bagværk, bagepulver og visse slik. I EU tilladt med maksimumsgrænser i specifikke kategorier.",
+  "health": "JECFA har fastsat en gruppe-ADI for adipinsyre og dens salte på 0-5 mg/kg legemsvægt/dag (udtrykt som adipinsyre, JECFA 1977). Stoffet udskilles hovedsagelig uomdannet med urinen og anses for at have lav toksicitet i de anvendte mængder.",
+  "research": "Adipinsyre er vurderet af JECFA og tidligere af EU's Videnskabelige Fødevarekomité uden alvorlige sikkerhedsfund. Stoffet er ikke genstand for væsentlig forskningsmæssig kontrovers, men en fuld EFSA-gen-evaluering af adipater er ikke afsluttet.",
+  "keyReferences": [],
+  "pubmedTerm": "adipic acid",
+  "flags": [],
+  "classes": [],
+  "variants": [],
+  "efsa": null,
+  "wikipedia": "",
+  "wikidata": "Q357415",
+  "verification": {
+   "status": "verified",
+   "sources": [
+    "https://inchem.org/documents/jecfa/jeceval/jec_44.htm",
+    "https://www.fao.org/fileadmin/user_upload/jecfa_additives/docs/Monograph1/Additive-007.pdf"
+   ],
+   "notes": "JECFA gruppe-ADI 0-5 mg/kg lgv bekræftet; ingen afsluttet EFSA-gen-evaluering."
+  }
+ },
+ {
+  "code": "E356",
+  "nameDa": "Natriumadipat",
+  "nameEn": "Sodium adipate",
+  "category": "Surhedsregulerende middel",
+  "euStatus": "approved",
+  "origin": "synthetic",
+  "summary": "Natriumadipat er natriumsaltet af adipinsyre og bruges som surhedsregulerende middel.",
+  "description": "Natriumadipat fremstilles ved neutralisering af adipinsyre med natrium. Det bruges som buffer og kan give en let salt smag, hvilket har gjort det interessant som delvis saltudskifter.",
+  "uses": "Dessertpulver, fyld, drikkevarer i pulverform og bagværk. Tilladt med maksimumsgrænser i specifikke kategorier.",
+  "health": "JECFA har fastsat en gruppe-ADI for adipinsyre og dens salte på 0-5 mg/kg legemsvægt/dag (udtrykt som adipinsyre, JECFA 1977). Stoffet udskilles hovedsagelig uomdannet med urinen og anses for at have lav toksicitet i de anvendte mængder.",
+  "research": "Adipinsyre er vurderet af JECFA og tidligere af EU's Videnskabelige Fødevarekomité uden alvorlige sikkerhedsfund. Stoffet er ikke genstand for væsentlig forskningsmæssig kontrovers, men en fuld EFSA-gen-evaluering af adipater er ikke afsluttet.",
+  "keyReferences": [],
+  "pubmedTerm": "sodium adipate",
+  "flags": [],
+  "classes": [],
+  "variants": [],
+  "efsa": null,
+  "wikipedia": "",
+  "wikidata": "Q423296",
+  "verification": {
+   "status": "verified",
+   "sources": [
+    "https://inchem.org/documents/jecfa/jeceval/jec_44.htm",
+    "https://www.fao.org/fileadmin/user_upload/jecfa_additives/docs/Monograph1/Additive-007.pdf"
+   ],
+   "notes": "JECFA gruppe-ADI 0-5 mg/kg lgv bekræftet; ingen afsluttet EFSA-gen-evaluering."
+  }
+ },
+ {
+  "code": "E357",
+  "nameDa": "Kaliumadipat",
+  "nameEn": "Potassium adipate",
+  "category": "Surhedsregulerende middel",
+  "euStatus": "approved",
+  "origin": "synthetic",
+  "summary": "Kaliumadipat er kaliumsaltet af adipinsyre og bruges som surhedsregulerende middel.",
+  "description": "Kaliumadipat fremstilles ved neutralisering af adipinsyre med kaliumhydroxid. Det bruges som buffer og natriumfrit alternativ til natriumadipat.",
+  "uses": "Dessertpulver, fyld, drikkevarer i pulverform og bagværk. Tilladt med maksimumsgrænser i specifikke kategorier.",
+  "health": "JECFA har fastsat en gruppe-ADI for adipinsyre og dens salte på 0-5 mg/kg legemsvægt/dag (udtrykt som adipinsyre, JECFA 1977). Stoffet udskilles hovedsagelig uomdannet med urinen og anses for at have lav toksicitet i de anvendte mængder. Kaliumindholdet kan være relevant ved nedsat nyrefunktion.",
+  "research": "Adipinsyre er vurderet af JECFA og tidligere af EU's Videnskabelige Fødevarekomité uden alvorlige sikkerhedsfund. Stoffet er ikke genstand for væsentlig forskningsmæssig kontrovers, men en fuld EFSA-gen-evaluering af adipater er ikke afsluttet.",
+  "keyReferences": [],
+  "pubmedTerm": "potassium adipate",
+  "flags": [
+   "kidney_caution"
+  ],
+  "classes": [],
+  "variants": [],
+  "efsa": null,
+  "wikipedia": "",
+  "wikidata": "Q931445",
+  "verification": {
+   "status": "verified",
+   "sources": [
+    "https://inchem.org/documents/jecfa/jeceval/jec_44.htm",
+    "https://www.fao.org/fileadmin/user_upload/jecfa_additives/docs/Monograph1/Additive-007.pdf"
+   ],
+   "notes": "JECFA gruppe-ADI 0-5 mg/kg lgv bekræftet; ingen afsluttet EFSA-gen-evaluering."
+  }
+ },
+ {
+  "code": "E363",
+  "nameDa": "Ravsyre",
+  "nameEn": "Succinic acid",
+  "category": "Syre / surhedsregulerende middel",
+  "euStatus": "approved",
+  "origin": "mixed",
+  "summary": "Ravsyre er en naturlig organisk syre, som giver syrlig og let bitter-saltet smag og regulerer surhed.",
+  "description": "Ravsyre (butandisyre) indgår i citronsyrecyklussen og findes naturligt i fx rav, kød, ost, vin og øl. Industrielt fremstilles den ved hydrogenering af maleinsyreanhydrid eller i stigende grad ved bakteriel fermentering af sukker. Den har en karakteristisk smag, der både er syrlig og 'umami-agtig', og bruges som surhedsregulerende middel og smagsforstærker.",
+  "uses": "Supper og bouillon i pulverform, dessertpulver og pulverdrikke. I EU kun tilladt i få kategorier med maksimumsgrænser.",
+  "health": "Ravsyre anses som sikker i de anvendte mængder, da den er et normalt stofskifteprodukt, og der er ikke fastsat en numerisk ADI (JECFA: 'ikke specificeret'). Der er ikke kendte særlige risici for følsomme grupper.",
+  "research": "Ravsyre er ikke genstand for væsentlig sikkerhedskontrovers. Nyere forskning har vist, at succinat fungerer som signalmolekyle i kroppen (via receptoren SUCNR1) ved inflammation og stofskifte, men betydningen af indtag fra fødevarer er uafklaret.",
+  "keyReferences": [],
+  "pubmedTerm": "succinic acid",
+  "flags": [],
+  "classes": [],
+  "variants": [],
+  "efsa": null,
+  "wikipedia": "",
+  "wikidata": "Q213050",
+  "verification": {
+   "status": "verified",
+   "sources": [
+    "https://www.inchem.org/documents/jecfa/jecmono/v05je01.htm"
+   ],
+   "notes": "JECFA: ADI 'not limited' (= ikke specificeret) bekræftet."
+  }
+ },
+ {
+  "code": "E380",
+  "nameDa": "Triammoniumcitrat",
+  "nameEn": "Triammonium citrate",
+  "category": "Surhedsregulerende middel",
+  "euStatus": "approved",
+  "origin": "synthetic",
+  "summary": "Ammoniumsaltet af citronsyre, der bruges til at regulere surhedsgraden i fødevarer.",
+  "description": "Triammoniumcitrat er citronsyre, hvor alle tre syregrupper er neutraliseret med ammoniak. Det fremstilles ved at lade citronsyre (normalt fremstillet ved fermentering med skimmelsvampen Aspergillus niger) reagere med ammoniak. Stoffet fungerer som buffer og surhedsregulerende middel og kan også binde metalioner. I kroppen omsættes citrat i citronsyrecyklussen, mens ammonium omdannes til urinstof i leveren. Det anvendes langt sjældnere end natrium- og kaliumcitrater.",
+  "uses": "Tilladt i EU efter quantum satis-princippet i en række fødevarer. Anvendes i praksis sjældent, fx i visse forarbejdede oste, drikkevarer og konfekture.",
+  "health": "Citrat er en normal del af stofskiftet, og ammonium i de små mængder der bruges, håndteres let af leveren. Der er ikke kendte bivirkninger ved normalt indtag. Personer med svær leversygdom har nedsat evne til at omsætte ammonium, men mængderne fra tilsætningsstoffer er ubetydelige i den sammenhæng. JECFA har ikke fundet behov for en numerisk ADI for citronsyre og dens salte ('ADI not limited').",
+  "research": "Citronsyre og citrater regnes generelt for nogle af de mest uproblematiske tilsætningsstoffer. EFSA's genvurderingsprogram omfatter citrater (E330–E333, E380), men vurderingen er endnu ikke afsluttet, men der er ikke rejst særlige sikkerhedsbekymringer for triammoniumcitrat. Forskning i stoffet som tilsætningsstof er sparsom.",
+  "keyReferences": [],
+  "pubmedTerm": "ammonium citrate",
+  "flags": [],
+  "classes": [],
+  "variants": [],
+  "efsa": null,
+  "wikipedia": "",
+  "wikidata": "Q13081798",
+  "verification": {
+   "status": "verified",
+   "sources": [
+    "https://www.efsa.europa.eu/sites/default/files/consultation/160524.pdf"
+   ],
+   "notes": "Godkendt; indgår i EFSA's dataindkaldelse for citrater. Ingen afsluttet EFSA-udtalelse."
+  }
+ },
+ {
+  "code": "E385",
+  "nameDa": "Calciumdinatrium-EDTA",
+  "nameEn": "Calcium disodium ethylenediaminetetraacetate",
+  "category": "Antioxidant / sekvestrant",
+  "euStatus": "approved",
+  "origin": "synthetic",
+  "summary": "Et syntetisk kompleksbindende stof (EDTA), der binder metalioner og derved forhindrer misfarvning og harskning.",
+  "description": "Calciumdinatrium-EDTA er calcium- og natriumsaltet af ethylendiamintetraeddikesyre (EDTA), et stærkt chelaterende molekyle. Det fremstilles syntetisk ud fra ethylendiamin, formaldehyd og cyanid efterfulgt af rensning. EDTA binder spormetaller som jern og kobber, der ellers katalyserer oxidation, farveændringer og smagsfejl. Calciumformen bruges i fødevarer, fordi den ikke trækker calcium ud af kroppen som fri EDTA. Stoffet optages kun i ringe grad fra tarmen (ca. 5 %).",
+  "uses": "Tilladt i EU i begrænsede kategorier med maksimumsgrænser: fx konserverede og glaserede bælgfrugter, svampe og artiskokker, konserverede krebsdyr og bløddyr, emulgerede saucer (mayonnaise), smørbare fedtstoffer med lavt fedtindhold og frosne krebsdyr.",
+  "health": "JECFA fastsatte i 1973 en ADI på 0-2,5 mg/kg legemsvægt/dag (udtrykt som CaNa2EDTA, svarende til ca. 1,9 mg/kg som fri EDTA). I højere doser kan EDTA påvirke optagelsen af mineraler som zink og jern. Ved normalt indtag fra fødevarer ligger eksponeringen langt under ADI. Stoffet anvendes også medicinsk til behandling af blyforgiftning, hvilket viser dets stærke metalbindende egenskaber.",
+  "research": "JECFA har vurderet EDTA flere gange, senest i forbindelse med brug af natriumjern-EDTA til jernberigelse. EFSA har endnu ikke gen-evalueret E385: i en udtalelse fra 2018 om ferrinatrium-EDTA (EFSA Journal 2018;16(8):5369) anbefalede ANS-panelet, at der skulle fremskaffes yderligere toksikologiske data for at afhjælpe mangler i databasen, før calciumdinatrium-EDTA kan gen-evalueres, og EFSA har siden indkaldt data. Nogle forskere har diskuteret, om EDTA kan påvirke tarmens barrierefunktion, men dette er ikke påvist ved relevante doser i mennesker.",
+  "keyReferences": [],
+  "pubmedTerm": "edetate calcium disodium",
+  "flags": [],
+  "classes": [
+   "antioxidant",
+   "preservative",
+   "sequestrant"
+  ],
+  "variants": [],
+  "efsa": null,
+  "wikipedia": "https://en.wikipedia.org/wiki/Ethylenediaminetetraacetic_acid",
+  "wikidata": "Q9189390",
+  "verification": {
+   "status": "corrected",
+   "sources": [
+    "https://www.inchem.org/documents/jecfa/jeceval/jec_311.htm",
+    "https://doi.org/10.2903/j.efsa.2018.5369",
+    "https://www.efsa.europa.eu/en/call/call-data-re-evaluation-calcium-disodium-edta-e-385-food-additive"
+   ],
+   "notes": "Ubekræftet påstand om EFSA-vurdering 2004 fjernet; erstattet med EFSA 2018-udtalelse (datamangler) og igangværende dataindkaldelse. JECFA-ADI 1973 bekræftet."
+  }
+ },
+ {
+  "code": "E392",
+  "nameDa": "Ekstrakter af rosmarin",
+  "nameEn": "Extracts of rosemary",
+  "category": "Antioxidant",
+  "euStatus": "approved",
+  "origin": "natural",
+  "summary": "Et naturligt antioxidantekstrakt fra rosmarinblade, der beskytter fedtstoffer mod harskning.",
+  "description": "Rosmarinekstrakt udvindes fra bladene af Rosmarinus officinalis med opløsningsmidler (fx ethanol, acetone, hexan) eller superkritisk CO2. De aktive stoffer er primært de fenoliske diterpener carnosolsyre og carnosol; specifikationen angiver indholdet som summen af disse. Ekstraktet deodoriseres ofte, så det ikke giver rosmarinsmag. Det bruges til at forsinke harskning af fedt og olier og til at stabilisere farve i kød. Stoffet blev godkendt i EU i 2010.",
+  "uses": "Tilladt i EU med maksimumsgrænser (udtrykt som carnosol + carnosolsyre), fx i vegetabilske olier, fedtstoffer, smørbare fedtstoffer, kødprodukter, pølser, fiskeprodukter, snacks, saucer, supper og kosttilskud.",
+  "health": "Rosmarinekstrakt anses for at have lav toksicitet. EFSA (2008) fandt ikke grundlag for at fastsætte en fuld ADI pga. utilstrækkelige data, men vurderede at eksponeringen fra de tilladte anvendelser gav tilstrækkelig sikkerhedsmargin. Personer med allergi over for rosmarin eller andre læbeblomstplanter kan i sjældne tilfælde reagere. Der er ikke kendte problemer for særlige grupper ved normalt indtag.",
+  "research": "EFSA's AFC-panel vurderede rosmarinekstrakter i 2008, og ANS-panelet har efterfølgende vurderet udvidede anvendelser, bl.a. i fedtbaserede smørepålæg (2015), og i 2018 offentliggjorde EFSA en forfinet eksponeringsvurdering (DOI 10.2903/j.efsa.2018.5373). Rosmarinekstrakt ses som et 'clean label'-alternativ til syntetiske antioxidanter som BHA og BHT. Der forskes i carnosolsyres mulige antiinflammatoriske og neurobeskyttende egenskaber, men dette er primært prækliniske studier.",
+  "keyReferences": [],
+  "pubmedTerm": "rosemary extract",
+  "flags": [],
+  "classes": [],
+  "variants": [],
+  "efsa": {
+   "title": "Extension of use of extracts of rosemary (E 392) in fat-based spreads",
+   "url": "http://dx.doi.org/10.2903/j.efsa.2015.4090",
+   "date": "2015-05-07",
+   "adi": "",
+   "overexposureRisk": ""
+  },
+  "wikipedia": "",
+  "wikidata": "",
+  "verification": {
+   "status": "verified",
+   "sources": [
+    "http://www.efsa.europa.eu/sites/default/files/scientific_output/files/main_documents/721.pdf",
+    "https://doi.org/10.2903/j.efsa.2015.4090",
+    "https://doi.org/10.2903/j.efsa.2018.5373"
+   ],
+   "notes": "EFSA 2008 (EFSA Journal 721): data utilstrækkelige til ADI men ingen bekymring – bekræftet. Tilføjet 2018-eksponeringsvurdering."
+  }
+ },
+ {
+  "code": "E400",
+  "nameDa": "Alginsyre",
+  "nameEn": "Alginic acid",
+  "category": "Fortykningsmiddel / stabilisator",
+  "euStatus": "approved",
+  "origin": "natural",
+  "summary": "Alginsyre er et naturligt kulhydrat fra brunalger, der danner geler og gør fødevarer tykkere.",
+  "description": "Alginsyre er et lineært polysakkarid opbygget af mannuronsyre og guluronsyre, der udvindes fra cellevæggene i brunalger (fx Laminaria og Ascophyllum). Tangen ekstraheres med alkali, og alginsyren fældes ud med syre. Alginsyre er i sig selv tungt opløselig; derfor bruges oftest saltene E401-E404. Den binder vand, fortykker og kan danne geler med calcium. Den fungerer i kroppen som opløselig kostfiber, der ikke nedbrydes i tyndtarmen.",
+  "uses": "Tilladt i EU efter quantum satis i mange fødevarer, fx is, desserter, saucer, dressinger, fyld til bagværk og kosttilskud. Må ikke bruges i gelékonfekture i minibægre (kvælningsrisiko) og har særlige regler i mad til spædbørn.",
+  "health": "Alginater optages ikke og anses for sikre. Store mængder kan give luft i maven eller løs mave, som andre kostfibre. EFSA's genvurdering (2017) fandt ikke behov for en numerisk ADI ('ADI not specified') for alginsyre og dens salte. EFSA bemærkede, at data ikke tillod en tilstrækkelig vurdering for spædbørn og småbørn, der får fødevarer til særlige medicinske formål.",
+  "research": "EFSA's ANS-panel genvurderede alginsyre og salte (E400-E404) i 2017 og konkluderede, at der ikke var sikkerhedsbekymring ved de rapporterede anvendelser. Alginat bruges medicinsk mod halsbrand (fx Gaviscon), og der forskes i alginatets mulige mæthedsfremmende effekt, med blandede resultater.",
+  "keyReferences": [],
+  "pubmedTerm": "alginic acid",
+  "flags": [],
+  "classes": [
+   "carrier",
+   "emulsifier",
+   "humectant",
+   "sequestrant",
+   "stabiliser",
+   "thickener"
+  ],
+  "variants": [],
+  "efsa": {
+   "title": "Re‐evaluation of alginic acid and its sodium, potassium, ammonium and calcium salts (E 400–E 404) as food additives",
+   "url": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2017.5049",
+   "date": "2017/11/10",
+   "adi": "not specified",
+   "overexposureRisk": ""
+  },
+  "wikipedia": "",
+  "wikidata": "Q422092",
+  "verification": {
+   "status": "corrected",
+   "sources": [
+    "https://doi.org/10.2903/j.efsa.2017.5049"
+   ],
+   "notes": "EFSA 2017 'ADI not specified' bekræftet; forbeholdet om spædbørn præciseret (FSMP til spædbørn/småbørn)."
+  }
+ },
+ {
+  "code": "E401",
+  "nameDa": "Natriumalginat",
+  "nameEn": "Sodium alginate",
+  "category": "Fortykningsmiddel / geleringsmiddel",
+  "euStatus": "approved",
+  "origin": "natural",
+  "summary": "Natriumsaltet af alginsyre fra brunalger, der er et af de mest brugte alginater til fortykkelse og gelering.",
+  "description": "Natriumalginat fremstilles ved at neutralisere alginsyre fra brunalger med natriumkarbonat. Det er let opløseligt i koldt vand og giver tyktflydende opløsninger. Ved kontakt med calciumioner dannes øjeblikkeligt en fast gel, hvilket udnyttes i fx 'sfærificering' i molekylær gastronomi og til restrukturerede produkter som oliven-fyld og kunstige kaviarperler. Molekylets forhold mellem mannuron- og guluronsyre bestemmer gelens styrke.",
+  "uses": "Tilladt quantum satis i mange fødevarer i EU: is, milkshakes, flødeskum, dressinger, bageri-creme, restrukturerede fisk/kød-produkter, fyldte oliven og øl (skumstabilisering). Ikke tilladt i gelékonfekture i minibægre.",
+  "health": "Anses for sikkert. EFSA (2017) fastsatte 'ADI not specified' for alginater. Høje indtag kan give luft og løs mave. Bidraget til natriumindtaget er ubetydeligt ved normale mængder.",
+  "research": "Omfattet af EFSA's genvurdering af E400-E404 (2017), der ikke fandt sikkerhedsbekymring. Natriumalginat er desuden brugt i sårbehandling og lægemidler, og det undersøges som vægttabsmiddel i form af 'alginat-drinks', uden overbevisende langtidseffekt.",
+  "keyReferences": [],
+  "pubmedTerm": "sodium alginate",
+  "flags": [],
+  "classes": [
+   "carrier",
+   "emulsifier",
+   "humectant",
+   "sequestrant",
+   "stabiliser",
+   "thickener"
+  ],
+  "variants": [],
+  "efsa": {
+   "title": "Re‐evaluation of alginic acid and its sodium, potassium, ammonium and calcium salts (E 400–E 404) as food additives",
+   "url": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2017.5049",
+   "date": "2017/11/10",
+   "adi": "not specified",
+   "overexposureRisk": ""
+  },
+  "wikipedia": "",
+  "wikidata": "Q1187513",
+  "verification": {
+   "status": "verified",
+   "sources": [
+    "https://doi.org/10.2903/j.efsa.2017.5049"
+   ],
+   "notes": "EFSA 2017 re-evaluering (ingen numerisk ADI, ingen bekymring) bekræftet."
+  }
+ },
+ {
+  "code": "E402",
+  "nameDa": "Kaliumalginat",
+  "nameEn": "Potassium alginate",
+  "category": "Fortykningsmiddel / stabilisator",
+  "euStatus": "approved",
+  "origin": "natural",
+  "summary": "Kaliumsaltet af alginsyre fra brunalger, som fortykker og stabiliserer fødevarer.",
+  "description": "Kaliumalginat fremstilles ved neutralisering af alginsyre med kaliumforbindelser. Det har samme funktioner som natriumalginat: vandbinding, fortykkelse og gelering med calcium. Det kan vælges, når man ønsker at reducere natriumindholdet. I praksis bruges det mindre end natriumalginat.",
+  "uses": "Tilladt quantum satis i EU i fx desserter, is, saucer og natriumreducerede produkter. Ikke tilladt i gelékonfekture i minibægre.",
+  "health": "Anses for sikkert; EFSA (2017) 'ADI not specified' for alginater. Kaliumbidraget er lille, men personer med svært nedsat nyrefunktion, der skal begrænse kalium, bør være opmærksomme på kaliumsalte generelt.",
+  "research": "Omfattet af EFSA's genvurdering af E400-E404 (2017) uden sikkerhedsbekymringer. Der er ikke stofspecifik forskning af betydning ud over den generelle alginatforskning.",
+  "keyReferences": [],
+  "pubmedTerm": "potassium alginate",
+  "flags": [],
+  "classes": [
+   "carrier",
+   "emulsifier",
+   "humectant",
+   "sequestrant",
+   "stabiliser",
+   "thickener"
+  ],
+  "variants": [],
+  "efsa": {
+   "title": "Re‐evaluation of alginic acid and its sodium, potassium, ammonium and calcium salts (E 400–E 404) as food additives",
+   "url": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2017.5049",
+   "date": "2017/11/10",
+   "adi": "not specified",
+   "overexposureRisk": ""
+  },
+  "wikipedia": "",
+  "wikidata": "Q16038950",
+  "verification": {
+   "status": "verified",
+   "sources": [
+    "https://doi.org/10.2903/j.efsa.2017.5049"
+   ],
+   "notes": "EFSA 2017 re-evaluering (ingen numerisk ADI, ingen bekymring) bekræftet."
+  }
+ },
+ {
+  "code": "E403",
+  "nameDa": "Ammoniumalginat",
+  "nameEn": "Ammonium alginate",
+  "category": "Fortykningsmiddel / stabilisator",
+  "euStatus": "approved",
+  "origin": "natural",
+  "summary": "Ammoniumsaltet af alginsyre fra brunalger, som bruges som fortykningsmiddel og stabilisator.",
+  "description": "Ammoniumalginat fremstilles ved neutralisering af alginsyre med ammoniak. Det har de samme fortykkende og stabiliserende egenskaber som de øvrige alginater. Det anvendes sjældent i fødevarer sammenlignet med natriumalginat.",
+  "uses": "Tilladt quantum satis i EU i de samme kategorier som øvrige alginater, men bruges sjældent. Ikke tilladt i gelékonfekture i minibægre.",
+  "health": "Anses for sikkert; EFSA (2017) fandt ikke behov for numerisk ADI for alginater. Mængden af ammonium er ubetydelig. Store indtag af alginat kan give maveluft og løs mave.",
+  "research": "Omfattet af EFSA's gruppevurdering af E400-E404 i 2017, som ikke fandt sikkerhedsbekymring og ikke fastsatte en numerisk ADI. Ammoniumalginat anvendes kun i begrænset omfang.",
+  "keyReferences": [],
+  "pubmedTerm": "ammonium alginate",
+  "flags": [],
+  "classes": [
+   "carrier",
+   "emulsifier",
+   "humectant",
+   "sequestrant",
+   "stabiliser",
+   "thickener"
+  ],
+  "variants": [],
+  "efsa": {
+   "title": "Re‐evaluation of alginic acid and its sodium, potassium, ammonium and calcium salts (E 400–E 404) as food additives",
+   "url": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2017.5049",
+   "date": "2017/11/10",
+   "adi": "not specified",
+   "overexposureRisk": ""
+  },
+  "wikipedia": "",
+  "wikidata": "Q16038948",
+  "verification": {
+   "status": "corrected",
+   "sources": [
+    "https://doi.org/10.2903/j.efsa.2017.5049"
+   ],
+   "notes": "Ubekræftet påstand om at industrien ikke rapporterede brug er omformuleret."
+  }
+ },
+ {
+  "code": "E404",
+  "nameDa": "Calciumalginat",
+  "nameEn": "Calcium alginate",
+  "category": "Fortykningsmiddel / geleringsmiddel",
+  "euStatus": "approved",
+  "origin": "natural",
+  "summary": "Calciumsaltet af alginsyre, som danner faste geler og bruges i restrukturerede fødevarer.",
+  "description": "Calciumalginat er den gelerede form af alginat, hvor calciumioner krydsbinder alginatkæderne ('æggebakke-modellen'). Det er uopløseligt i vand og danner varmestabile geler, der ikke smelter ved opvarmning. Derfor bruges det til produkter, der skal holde formen under bagning eller stegning, og som pølsetarme (co-extruderede alginattarme).",
+  "uses": "Tilladt quantum satis i EU, fx i bagefaste cremer og fyld, restruktureret frugt, fyldte oliven, dyrefoder-lignende 'bidder' og alginat-pølsetarme. Ikke tilladt i gelékonfekture i minibægre.",
+  "health": "Anses for sikkert; EFSA (2017) 'ADI not specified'. Bidrager med en lille mængde calcium. Ingen kendte særlige risikogrupper.",
+  "research": "Omfattet af EFSA's genvurdering af E400-E404 (2017). Calciumalginat bruges også bredt i sårbandager, og i fødevareforskning undersøges det som indkapslingsmateriale til probiotika.",
+  "keyReferences": [],
+  "pubmedTerm": "calcium alginate",
+  "flags": [],
+  "classes": [
+   "carrier",
+   "humectant",
+   "sequestrant",
+   "stabiliser",
+   "thickener"
+  ],
+  "variants": [],
+  "efsa": {
+   "title": "Re‐evaluation of alginic acid and its sodium, potassium, ammonium and calcium salts (E 400–E 404) as food additives",
+   "url": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2017.5049",
+   "date": "2017/11/10",
+   "adi": "not specified",
+   "overexposureRisk": ""
+  },
+  "wikipedia": "",
+  "wikidata": "Q2034064",
+  "verification": {
+   "status": "verified",
+   "sources": [
+    "https://doi.org/10.2903/j.efsa.2017.5049"
+   ],
+   "notes": "EFSA 2017 re-evaluering (ingen numerisk ADI, ingen bekymring) bekræftet."
+  }
+ },
+ {
+  "code": "E405",
+  "nameDa": "Propylenglycolalginat",
+  "nameEn": "Propane-1,2-diol alginate",
+  "category": "Fortykningsmiddel / emulgator",
+  "euStatus": "approved",
+  "origin": "mixed",
+  "summary": "En kemisk modificeret form af alginat fra brunalger, som er stabil i sure produkter og bruges bl.a. til at stabilisere ølskum og dressinger.",
+  "description": "Propylenglycolalginat (PGA) fremstilles ved at lade alginsyre fra brunalger reagere med propylenoxid, så en del af syregrupperne forestres med propan-1,2-diol. Forestringen gør molekylet mere tolerant over for syre og calcium end almindelige alginater, og det får let emulgerende egenskaber. Det bruges derfor i sure fødevarer, hvor andre alginater ville udfælde. I kroppen spaltes en del af esteren og frigiver propylenglycol.",
+  "uses": "Tilladt i EU med maksimumsgrænser, fx i øl (skumstabilisering), dressinger og emulgerede saucer, desserter, fyld og overtræk, is, konfekture og kosttilskud. Må ikke bruges i gelékonfekture i minibægre (kvælningsrisiko).",
+  "health": "PGA har lav toksicitet. Den frigivne propylenglycol (E1520) bidrager marginalt til det samlede propylenglycolindtag. EFSA genvurderede stoffet i 2018 og fastsatte en ADI på 55 mg/kg lgv/dag (baseret på ADI for propylenglycol på 25 mg/kg); eksponeringen oversteg ikke ADI i nogen befolkningsgruppe. Høje indtag kan give løs mave som andre fibre.",
+  "research": "EFSA's ANS-panel genvurderede propan-1,2-diol-alginat i 2018 og fandt ikke grundlag for bekymring ved aktuelt forbrug. Ældre dyre- og humanstudier viste god tolerance. Forskningen er i øvrigt begrænset.",
+  "keyReferences": [],
+  "pubmedTerm": "propylene glycol alginate",
+  "flags": [],
+  "classes": [
+   "carrier",
+   "emulsifier",
+   "stabiliser",
+   "thickener"
+  ],
+  "variants": [],
+  "efsa": {
+   "title": "Re-evaluation of propane-1,2-diol alginate (E 405) as a food additive",
+   "url": "https://doi.org/10.2903/j.efsa.2018.5371",
+   "date": "2018",
+   "adi": "55 mg/kg bw/day",
+   "overexposureRisk": ""
+  },
+  "wikipedia": "",
+  "wikidata": "Q2474785",
+  "verification": {
+   "status": "corrected",
+   "sources": [
+    "https://doi.org/10.2903/j.efsa.2018.5371",
+    "https://pubmed.ncbi.nlm.nih.gov/32625998/"
+   ],
+   "notes": "Tilføjet EFSA 2018 ADI 55 mg/kg lgv/dag og efsa-objekt."
+  }
+ },
+ {
+  "code": "E406",
+  "nameDa": "Agar",
+  "nameEn": "Agar",
+  "category": "Geleringsmiddel / fortykningsmiddel",
+  "euStatus": "approved",
+  "origin": "natural",
+  "summary": "Agar er et geleringsmiddel udvundet af rødalger, der bruges som vegetabilsk alternativ til gelatine.",
+  "description": "Agar består af polysakkariderne agarose og agaropektin og udvindes ved kogning af rødalger som Gelidium og Gracilaria. Efter filtrering, gelering og tørring fås et pulver eller flager. Agar danner faste geler allerede ved lave koncentrationer (ca. 1 %), og gelen smelter først ved ca. 85 °C, mens den stivner ved 32-40 °C. Det er vegansk og bruges derfor ofte som erstatning for gelatine. Agar nedbrydes ikke i tyndtarmen og fungerer som kostfiber.",
+  "uses": "Tilladt quantum satis i EU, fx i vingummi, gelé, marmelade, desserter, glasur, is, kødkonserves i gelé og veganske produkter. Må ikke bruges i gelékonfekture i minibægre (kvælningsrisiko).",
+  "health": "Agar anses for meget sikkert; EFSA's genvurdering (2016) fandt ikke behov for en numerisk ADI. I store mængder virker det laksativt og kan give oppustethed. Der har tidligere været tilfælde af kvælning og tarmobstruktion ved gelékonfekture i minibægre, hvorfor dette er forbudt. Personer der tager medicin, bør være opmærksomme på, at store fibermængder kan påvirke optagelsen.",
+  "research": "EFSA's ANS-panel genvurderede agar (E406) i 2016 uden at finde sikkerhedsbekymringer ved de anvendte niveauer. Der er begrænset forskning i agar som mættende fiber til vægttab (bl.a. japanske studier), men evidensen er sparsom.",
+  "keyReferences": [],
+  "pubmedTerm": "agar",
+  "flags": [
+   "laxative"
+  ],
+  "classes": [
+   "carrier",
+   "emulsifier",
+   "humectant",
+   "stabiliser",
+   "thickener"
+  ],
+  "variants": [],
+  "efsa": {
+   "title": "Re-evaluation of agar (E 406) as a food additive",
+   "url": "https://doi.org/10.2903/j.efsa.2016.4645",
+   "date": "2016-12-21",
+   "adi": "not specified",
+   "overexposureRisk": ""
+  },
+  "wikipedia": "https://en.wikipedia.org/wiki/Agar",
+  "wikidata": "Q177998",
+  "verification": {
+   "status": "verified",
+   "sources": [
+    "https://doi.org/10.2903/j.efsa.2016.4645"
+   ],
+   "notes": "EFSA 2016: ingen numerisk ADI, ingen bekymring – bekræftet; efsa-objekt tilføjet."
+  }
+ }
+]

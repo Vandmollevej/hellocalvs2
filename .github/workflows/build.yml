@@ -77,6 +77,26 @@ jobs:
           # Servicekonto-nøgler (fx Google Vision til logo-agent) lægges manuelt her.
           mkdir -p /deploy/secrets
 
+      - name: Ensure scan-app secrets
+        run: |
+          set -euo pipefail
+          cd /deploy
+          # Oprettelses-appens egne hemmeligheder: genereres én gang på serveren,
+          # hvis de mangler eller stadig er eksempelværdien. Eksisterende værdier
+          # røres aldrig (SCAN_PII_KEY må ikke skiftes). Værdier skrives aldrig i loggen.
+          for name in SCAN_SESSION_SECRET SCAN_PII_KEY; do
+            current="$(grep -E "^${name}=" .env.production | tail -n1 | cut -d= -f2- || true)"
+            if [ -z "$current" ] || [ "$current" = "replace-with-a-long-random-secret" ]; then
+              [ -f .env.production.bak-scan-secrets ] || cp -p .env.production .env.production.bak-scan-secrets
+              value="$(openssl rand -hex 32 2>/dev/null || head -c 32 /dev/urandom | od -An -tx1 | tr -d " \n")"
+              sed -i "/^${name}=/d" .env.production
+              printf '\n%s=%s\n' "$name" "$value" >> .env.production
+              echo "Genererede ${name}"
+            else
+              echo "${name} findes allerede"
+            fi
+          done
+
       - name: Select release and pull images
         run: |
           set -euo pipefail

@@ -1,0 +1,2707 @@
+[
+ {
+  "code": "E491",
+  "nameDa": "Sorbitanmonostearat",
+  "nameEn": "Sorbitan monostearate",
+  "category": "Emulgator / stabilisator",
+  "euStatus": "approved",
+  "origin": "mixed",
+  "summary": "Sorbitanmonostearat er en emulgator, der er en ester af sorbitan (dannet af sorbitol) og stearinsyre.",
+  "description": "Sorbitan dannes ved dehydrering af sorbitol og forestres derefter med stearinsyre. Handelsprodukterne er komplekse blandinger af forskellige sorbitaner og isosorbid i form af mono-, di- og triestere. Sorbitanestere er fedtopløselige (lipofile) emulgatorer og bruges ofte sammen med polysorbater (E432–E436), som fremstilles ved at lade sorbitanestere reagere med ethylenoxid. Fedtsyrerne kan stamme fra vegetabilske eller animalske fedtstoffer.",
+  "uses": "I EU tilladt i et afgrænset antal fødevarekategorier med maksimumsgrænser, bl.a. finere bagværk, kakao- og chokoladeprodukter, fedtemulsioner og kosttilskud. E491 er desuden tilladt quantum satis i tørgær og bagegær. Sorbitanmonostearat bruges teknologisk bl.a. i kageglasur og -fyld, piskbare toppings og flødeerstatninger.",
+  "health": "Efter indtagelse kan sorbitanestere dels spaltes til fedtsyrer og sorbitan-anhydrider, dels udskilles uændret med afføringen. EFSA's gen-evaluering (2017) fastsatte en gruppe-ADI på 10 mg/kg legemsvægt/dag udtrykt som sorbitan for E491–E495 (svarende til 26 mg sorbitanmonostearat/kg) og konkluderede, at der ikke var sikkerhedsbekymring ved de rapporterede anvendelser; middel- og 95-percentil-eksponeringen oversteg ikke ADI i nogen befolkningsgruppe. I EFSA's opdaterede eksponeringsberegning fra 2025 blev gruppe-ADI overskredet for småbørn og børn ved 95-percentilen, men EFSA vurderede, at det skyldtes klart overvurderende antagelser og ikke var en sikkerhedsbekymring. Open Food Facts angiver høj risiko for overeksponering for nogle befolkningsgrupper. I subkroniske dyreforsøg med sorbitanmonolaurat er set påvirkning af nyrevægten, hos hunrotter med forandringer i nyretubuli, som EFSA tilskriver udskillelse af store mængder sorbitan i urinen. Fedtsyrerne kan være af animalsk oprindelse.",
+  "research": "EFSA's ANS-panel gen-evaluerede E 491–E 495 i 2017 (DOI 10.2903/j.efsa.2017.4788) og fastsatte en gruppe-ADI på 10 mg sorbitan/kg legemsvægt/dag ud fra en NOAEL på 2.600 mg sorbitanmonostearat/kg legemsvægt/dag fra dyreforsøg og en usikkerhedsfaktor på 100. EFSA's FAF-panel vurderede i 2025 (DOI 10.2903/j.efsa.2025.9487) en ændring af anvendelsesbetingelserne for E491 i præparater af fødevareenzymet asparaginase og konkluderede, at ændringen kun har lille betydning for eksponeringen og ikke giver sikkerhedsbekymring.",
+  "keyReferences": [],
+  "pubmedTerm": "sorbitan monostearate",
+  "flags": [
+   "children_caution",
+   "animal_origin"
+  ],
+  "classes": [
+   "emulsifier"
+  ],
+  "variants": [],
+  "efsa": {
+   "title": "Re‐evaluation of sorbitan monostearate (E 491), sorbitan tristearate (E 492), sorbitan monolaurate (E 493), sorbitan monooleate (E 494) and sorbitan monopalmitate (E 495) when used as food additives",
+   "url": "https://doi.org/10.2903/j.efsa.2017.4788",
+   "date": "2017-05-05",
+   "adi": "10 mg/kg bw/day (som sorbitan)",
+   "overexposureRisk": "en:high"
+  },
+  "verification": {
+   "status": "corrected",
+   "sources": [
+    "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2017.4788",
+    "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7010202/",
+    "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2025.9487",
+    "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC12188131/",
+    "https://www.sciencedirect.com/topics/agricultural-and-biological-sciences/sorbitan-monostearate",
+    "https://www.sciencedirect.com/topics/pharmacology-toxicology-and-pharmaceutical-science/sorbitan-ester",
+    "https://world.openfoodfacts.org/additive/e491-sorbitan-monostearate",
+    "https://www.iamgoingvegan.com/sorbitan-monostearate-vegan/",
+    "https://www.ecfr.gov/current/title-21/chapter-I/subchapter-B/part-172/subpart-I/section-172.842",
+    "https://www.researchgate.net/publication/250922426_Effect_of_sorbitan_monostearate_on_the_physical_characteristics_and_whipping_properties_of_whipped_cream"
+   ],
+   "notes": "Runde 3: Alle udsagn kontrolleret. Bekræftet: fremstilling, lipofil karakter, sammenhæng med polysorbater, gruppe-ADI 10 mg sorbitan/kg (NOAEL 2.600 mg/kg, UF 100), EFSA 2017-konklusion og OFF-vurdering. Rettet: 'opvarme' → dehydrering; stofskifte (delvis hydrolyse, delvis uændret udskillelse); EFSA 2025 handler om asparaginase-enzympræparater og fandt P95-overskridelse hos småbørn/børn, vurderet som overestimat. Fjernet: diarré/forstørret lever (ikke belagt for sorbitanestere), 'forhindre fedtudskillelse', ubelagte kategorier (kagedekorationer, glasur, slik) og udsagnet om manglende humane studier. Tørgær og toppings belagt specifikt for E491."
+  },
+  "wikipedia": "https://en.wikipedia.org/wiki/Sorbitan_monostearate",
+  "wikidata": "Q907898",
+  "claims": [
+   {
+    "claim": "sorbitanmonostearat er en ester af sorbitan (fra sorbitol) og stearinsyre",
+    "source": "https://www.sciencedirect.com/topics/agricultural-and-biological-sciences/sorbitan-monostearate",
+    "result": "rettet"
+   },
+   {
+    "claim": "Sorbitan dannes ved dehydrering af sorbitol (tidligere: 'opvarme, så det mister vand')",
+    "source": "https://www.sciencedirect.com/topics/agricultural-and-biological-sciences/sorbitan-monostearate",
+    "result": "rettet"
+   },
+   {
+    "claim": "Handelsprodukter er komplekse blandinger af sorbitaner/isosorbid som mono-, di- og triestere",
+    "source": "https://www.sciencedirect.com/topics/agricultural-and-biological-sciences/sorbitan-monostearate",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Sorbitanestere er fedtopløselige (lipofile) emulgatorer",
+    "source": "https://www.sciencedirect.com/topics/pharmacology-toxicology-and-pharmaceutical-science/sorbitan-ester",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Bruges ofte sammen med polysorbater, der fremstilles ved reaktion med ethylenoxid",
+    "source": "https://www.sciencedirect.com/topics/pharmacology-toxicology-and-pharmaceutical-science/sorbitan-ester",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "'forhindre fedtudskillelse' som selvstændig funktion",
+    "source": "",
+    "result": "fjernet"
+   },
+   {
+    "claim": "Fedtsyrerne kan stamme fra vegetabilske eller animalske kilder",
+    "source": "https://www.iamgoingvegan.com/sorbitan-monostearate-vegan/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Tilladt i afgrænsede kategorier med maksimumsgrænser (bilag II til forordning 1333/2008)",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2017.4788",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Kategorier bl.a. finere bagværk, kakao/chokolade, fedtemulsioner og kosttilskud",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7010202/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Konkret liste 'kagedekorationer, glasur og overtræk, slikprodukter' som EU-kategorier",
+    "source": "",
+    "result": "fjernet"
+   },
+   {
+    "claim": "E491 tilladt quantum satis i gær og gærprodukter (kun tørgær og bagegær)",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7010202/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Anvendes i kageglasur/-fyld, piskbare toppings og flødeerstatninger (teknologisk anvendelse)",
+    "source": "https://www.ecfr.gov/current/title-21/chapter-I/subchapter-B/part-172/subpart-I/section-172.842",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Spaltes delvist til fedtsyrer og sorbitan-anhydrider; resten udskilles uændret i fæces",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7010202/",
+    "result": "rettet"
+   },
+   {
+    "claim": "Gruppe-ADI 10 mg/kg lgv/dag som sorbitan for E491–E495 (= 26 mg sorbitanmonostearat/kg)",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2017.4788",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Middel- og P95-eksponering oversteg ikke ADI; ingen sikkerhedsbekymring (2017)",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2017.4788",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "2025: ADI overskredet for småbørn/børn ved P95, men vurderet som overestimat uden sikkerhedsbekymring",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC12188131/",
+    "result": "rettet"
+   },
+   {
+    "claim": "Open Food Facts angiver høj risiko for overeksponering",
+    "source": "https://world.openfoodfacts.org/additive/e491-sorbitan-monostearate",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "'Store mængder giver diarré og forstørret lever' i dyreforsøg",
+    "source": "",
+    "result": "fjernet"
+   },
+   {
+    "claim": "Påvirket nyrevægt/tubulære forandringer i subkroniske forsøg med sorbitanmonolaurat",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7010202/",
+    "result": "rettet"
+   },
+   {
+    "claim": "NOAEL 2.600 mg sorbitanmonostearat/kg lgv/dag, usikkerhedsfaktor 100",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7010202/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "EFSA 2025: E491 i præparater af fødevareenzymet asparaginase – ingen sikkerhedsbekymring",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2025.9487",
+    "result": "rettet"
+   },
+   {
+    "claim": "'Der er ikke fundet humane studier, der viser skadelige effekter'",
+    "source": "",
+    "result": "fjernet"
+   },
+   {
+    "claim": "Flag children_caution (P95-overskridelse hos småbørn/børn i EFSA 2025)",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC12188131/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Flag animal_origin (fedtsyrer kan være animalske)",
+    "source": "https://www.iamgoingvegan.com/sorbitan-monostearate-vegan/",
+    "result": "bekræftet"
+   }
+  ]
+ },
+ {
+  "code": "E492",
+  "nameDa": "Sorbitantristearat",
+  "nameEn": "Sorbitan tristearate",
+  "category": "Emulgator / stabilisator",
+  "euStatus": "approved",
+  "origin": "mixed",
+  "summary": "Sorbitantristearat er en emulgator, der er en ester af sorbitan (dannet af sorbitol) og stearinsyre.",
+  "description": "Sorbitan dannes ved dehydrering af sorbitol og forestres derefter med stearinsyre i et forhold, så triestere dominerer. Handelsprodukterne er komplekse blandinger af forskellige sorbitaner og isosorbid i form af mono-, di- og triestere. Sorbitanestere er fedtopløselige (lipofile) emulgatorer og bruges ofte sammen med polysorbater (E432–E436), som fremstilles ved at lade sorbitanestere reagere med ethylenoxid. Sorbitantristearat bruges især som krystalmodifikator i fedtbaserede produkter, fx til at forsinke fedtblomstring i chokolade. Fedtsyrerne kan stamme fra vegetabilske eller animalske fedtstoffer.",
+  "uses": "I EU tilladt i et afgrænset antal fødevarekategorier med maksimumsgrænser, bl.a. finere bagværk, kakao- og chokoladeprodukter, fedtemulsioner og kosttilskud. Sorbitantristearat bruges især i chokolade og andre fedtbaserede produkter.",
+  "health": "Efter indtagelse kan sorbitanestere dels spaltes til fedtsyrer og sorbitan-anhydrider, dels udskilles uændret med afføringen. EFSA's gen-evaluering (2017) fastsatte en gruppe-ADI på 10 mg/kg legemsvægt/dag udtrykt som sorbitan for E491–E495 (svarende til 26 mg sorbitanmonostearat/kg) og konkluderede, at der ikke var sikkerhedsbekymring ved de rapporterede anvendelser; middel- og 95-percentil-eksponeringen oversteg ikke ADI i nogen befolkningsgruppe. I EFSA's opdaterede eksponeringsberegning fra 2025 blev gruppe-ADI overskredet for småbørn og børn ved 95-percentilen, men EFSA vurderede, at det skyldtes klart overvurderende antagelser og ikke var en sikkerhedsbekymring. Open Food Facts angiver høj risiko for overeksponering for nogle befolkningsgrupper. I subkroniske dyreforsøg med sorbitanmonolaurat er set påvirkning af nyrevægten, hos hunrotter med forandringer i nyretubuli, som EFSA tilskriver udskillelse af store mængder sorbitan i urinen. Fedtsyrerne kan være af animalsk oprindelse.",
+  "research": "EFSA's ANS-panel gen-evaluerede E 491–E 495 i 2017 (DOI 10.2903/j.efsa.2017.4788) og fastsatte en gruppe-ADI på 10 mg sorbitan/kg legemsvægt/dag ud fra en NOAEL på 2.600 mg sorbitanmonostearat/kg legemsvægt/dag fra dyreforsøg og en usikkerhedsfaktor på 100. EFSA's FAF-panel vurderede i 2025 (DOI 10.2903/j.efsa.2025.9487) en ændring af anvendelsesbetingelserne for E491 i præparater af fødevareenzymet asparaginase og konkluderede, at ændringen kun har lille betydning for eksponeringen og ikke giver sikkerhedsbekymring.",
+  "keyReferences": [],
+  "pubmedTerm": "sorbitan tristearate",
+  "flags": [
+   "children_caution",
+   "animal_origin"
+  ],
+  "classes": [
+   "emulsifier",
+   "stabiliser"
+  ],
+  "variants": [],
+  "efsa": {
+   "title": "Re‐evaluation of sorbitan monostearate (E 491), sorbitan tristearate (E 492), sorbitan monolaurate (E 493), sorbitan monooleate (E 494) and sorbitan monopalmitate (E 495) when used as food additives",
+   "url": "https://doi.org/10.2903/j.efsa.2017.4788",
+   "date": "2017-05-05",
+   "adi": "10 mg/kg bw/day (som sorbitan)",
+   "overexposureRisk": "en:high"
+  },
+  "verification": {
+   "status": "corrected",
+   "sources": [
+    "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2017.4788",
+    "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7010202/",
+    "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2025.9487",
+    "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC12188131/",
+    "https://www.sciencedirect.com/topics/agricultural-and-biological-sciences/sorbitan-monostearate",
+    "https://www.sciencedirect.com/topics/pharmacology-toxicology-and-pharmaceutical-science/sorbitan-ester",
+    "https://world.openfoodfacts.org/additive/e491-sorbitan-monostearate",
+    "https://www.iamgoingvegan.com/sorbitan-monostearate-vegan/",
+    "https://www.sciencedirect.com/topics/agricultural-and-biological-sciences/sorbitan-tristearate"
+   ],
+   "notes": "Runde 3: Alle udsagn kontrolleret. Bekræftet: fremstilling, lipofil karakter, sammenhæng med polysorbater, gruppe-ADI 10 mg sorbitan/kg (NOAEL 2.600 mg/kg, UF 100), EFSA 2017-konklusion og OFF-vurdering. Rettet: 'opvarme' → dehydrering; stofskifte (delvis hydrolyse, delvis uændret udskillelse); EFSA 2025 handler om asparaginase-enzympræparater og fandt P95-overskridelse hos småbørn/børn, vurderet som overestimat. Fjernet: diarré/forstørret lever (ikke belagt for sorbitanestere), 'forhindre fedtudskillelse', ubelagte kategorier (kagedekorationer, glasur, slik) og udsagnet om manglende humane studier. Tørgær/toppings fjernet, da kun belagt for E491."
+  },
+  "wikipedia": "",
+  "wikidata": "Q1416224",
+  "claims": [
+   {
+    "claim": "sorbitantristearat er en ester af sorbitan (fra sorbitol) og stearinsyre",
+    "source": "https://www.sciencedirect.com/topics/agricultural-and-biological-sciences/sorbitan-monostearate",
+    "result": "rettet"
+   },
+   {
+    "claim": "Sorbitan dannes ved dehydrering af sorbitol (tidligere: 'opvarme, så det mister vand')",
+    "source": "https://www.sciencedirect.com/topics/agricultural-and-biological-sciences/sorbitan-monostearate",
+    "result": "rettet"
+   },
+   {
+    "claim": "Handelsprodukter er komplekse blandinger af sorbitaner/isosorbid som mono-, di- og triestere",
+    "source": "https://www.sciencedirect.com/topics/agricultural-and-biological-sciences/sorbitan-monostearate",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Sorbitanestere er fedtopløselige (lipofile) emulgatorer",
+    "source": "https://www.sciencedirect.com/topics/pharmacology-toxicology-and-pharmaceutical-science/sorbitan-ester",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Bruges ofte sammen med polysorbater, der fremstilles ved reaktion med ethylenoxid",
+    "source": "https://www.sciencedirect.com/topics/pharmacology-toxicology-and-pharmaceutical-science/sorbitan-ester",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Sorbitantristearat bruges som krystalmodifikator/mod fedtblomstring i chokolade",
+    "source": "https://www.sciencedirect.com/topics/agricultural-and-biological-sciences/sorbitan-tristearate",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "'forhindre fedtudskillelse' som selvstændig funktion",
+    "source": "",
+    "result": "fjernet"
+   },
+   {
+    "claim": "Fedtsyrerne kan stamme fra vegetabilske eller animalske kilder",
+    "source": "https://www.iamgoingvegan.com/sorbitan-monostearate-vegan/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Tilladt i afgrænsede kategorier med maksimumsgrænser (bilag II til forordning 1333/2008)",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2017.4788",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Kategorier bl.a. finere bagværk, kakao/chokolade, fedtemulsioner og kosttilskud",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7010202/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Konkret liste 'kagedekorationer, glasur og overtræk, slikprodukter' som EU-kategorier",
+    "source": "",
+    "result": "fjernet"
+   },
+   {
+    "claim": "Tørgær som anvendelse (kun dokumenteret for E491)",
+    "source": "",
+    "result": "fjernet"
+   },
+   {
+    "claim": "Piskbare toppings og flødeerstatninger (kun dokumenteret for sorbitanmonostearat)",
+    "source": "",
+    "result": "fjernet"
+   },
+   {
+    "claim": "Spaltes delvist til fedtsyrer og sorbitan-anhydrider; resten udskilles uændret i fæces",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7010202/",
+    "result": "rettet"
+   },
+   {
+    "claim": "Gruppe-ADI 10 mg/kg lgv/dag som sorbitan for E491–E495 (= 26 mg sorbitanmonostearat/kg)",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2017.4788",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Middel- og P95-eksponering oversteg ikke ADI; ingen sikkerhedsbekymring (2017)",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2017.4788",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "2025: ADI overskredet for småbørn/børn ved P95, men vurderet som overestimat uden sikkerhedsbekymring",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC12188131/",
+    "result": "rettet"
+   },
+   {
+    "claim": "Open Food Facts angiver høj risiko for overeksponering",
+    "source": "https://world.openfoodfacts.org/additive/e491-sorbitan-monostearate",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "'Store mængder giver diarré og forstørret lever' i dyreforsøg",
+    "source": "",
+    "result": "fjernet"
+   },
+   {
+    "claim": "Påvirket nyrevægt/tubulære forandringer i subkroniske forsøg med sorbitanmonolaurat",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7010202/",
+    "result": "rettet"
+   },
+   {
+    "claim": "NOAEL 2.600 mg sorbitanmonostearat/kg lgv/dag, usikkerhedsfaktor 100",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7010202/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "EFSA 2025: E491 i præparater af fødevareenzymet asparaginase – ingen sikkerhedsbekymring",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2025.9487",
+    "result": "rettet"
+   },
+   {
+    "claim": "'Der er ikke fundet humane studier, der viser skadelige effekter'",
+    "source": "",
+    "result": "fjernet"
+   },
+   {
+    "claim": "Flag children_caution (P95-overskridelse hos småbørn/børn i EFSA 2025)",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC12188131/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Flag animal_origin (fedtsyrer kan være animalske)",
+    "source": "https://www.iamgoingvegan.com/sorbitan-monostearate-vegan/",
+    "result": "bekræftet"
+   }
+  ]
+ },
+ {
+  "code": "E493",
+  "nameDa": "Sorbitanmonolaurat",
+  "nameEn": "Sorbitan monolaurate",
+  "category": "Emulgator / stabilisator",
+  "euStatus": "approved",
+  "origin": "mixed",
+  "summary": "Sorbitanmonolaurat er en emulgator, der er en ester af sorbitan (dannet af sorbitol) og laurinsyre.",
+  "description": "Sorbitan dannes ved dehydrering af sorbitol og forestres derefter med laurinsyre. Handelsprodukterne er komplekse blandinger af forskellige sorbitaner og isosorbid i form af mono-, di- og triestere. Sorbitanestere er fedtopløselige (lipofile) emulgatorer og bruges ofte sammen med polysorbater (E432–E436), som fremstilles ved at lade sorbitanestere reagere med ethylenoxid. Fedtsyrerne kan stamme fra vegetabilske eller animalske fedtstoffer.",
+  "uses": "I EU tilladt i et afgrænset antal fødevarekategorier med maksimumsgrænser, bl.a. finere bagværk, kakao- og chokoladeprodukter, fedtemulsioner og kosttilskud.",
+  "health": "Efter indtagelse kan sorbitanestere dels spaltes til fedtsyrer og sorbitan-anhydrider, dels udskilles uændret med afføringen. EFSA's gen-evaluering (2017) fastsatte en gruppe-ADI på 10 mg/kg legemsvægt/dag udtrykt som sorbitan for E491–E495 (svarende til 26 mg sorbitanmonostearat/kg) og konkluderede, at der ikke var sikkerhedsbekymring ved de rapporterede anvendelser; middel- og 95-percentil-eksponeringen oversteg ikke ADI i nogen befolkningsgruppe. I EFSA's opdaterede eksponeringsberegning fra 2025 blev gruppe-ADI overskredet for småbørn og børn ved 95-percentilen, men EFSA vurderede, at det skyldtes klart overvurderende antagelser og ikke var en sikkerhedsbekymring. Open Food Facts angiver høj risiko for overeksponering for nogle befolkningsgrupper. I subkroniske dyreforsøg med sorbitanmonolaurat er set påvirkning af nyrevægten, hos hunrotter med forandringer i nyretubuli, som EFSA tilskriver udskillelse af store mængder sorbitan i urinen. Fedtsyrerne kan være af animalsk oprindelse.",
+  "research": "EFSA's ANS-panel gen-evaluerede E 491–E 495 i 2017 (DOI 10.2903/j.efsa.2017.4788) og fastsatte en gruppe-ADI på 10 mg sorbitan/kg legemsvægt/dag ud fra en NOAEL på 2.600 mg sorbitanmonostearat/kg legemsvægt/dag fra dyreforsøg og en usikkerhedsfaktor på 100. EFSA's FAF-panel vurderede i 2025 (DOI 10.2903/j.efsa.2025.9487) en ændring af anvendelsesbetingelserne for E491 i præparater af fødevareenzymet asparaginase og konkluderede, at ændringen kun har lille betydning for eksponeringen og ikke giver sikkerhedsbekymring.",
+  "keyReferences": [],
+  "pubmedTerm": "sorbitan monolaurate",
+  "flags": [
+   "children_caution",
+   "animal_origin"
+  ],
+  "classes": [
+   "emulsifier",
+   "stabiliser"
+  ],
+  "variants": [],
+  "efsa": {
+   "title": "Re‐evaluation of sorbitan monostearate (E 491), sorbitan tristearate (E 492), sorbitan monolaurate (E 493), sorbitan monooleate (E 494) and sorbitan monopalmitate (E 495) when used as food additives",
+   "url": "https://doi.org/10.2903/j.efsa.2017.4788",
+   "date": "2017-05-05",
+   "adi": "10 mg/kg bw/day (som sorbitan)",
+   "overexposureRisk": "en:high"
+  },
+  "verification": {
+   "status": "corrected",
+   "sources": [
+    "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2017.4788",
+    "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7010202/",
+    "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2025.9487",
+    "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC12188131/",
+    "https://www.sciencedirect.com/topics/agricultural-and-biological-sciences/sorbitan-monostearate",
+    "https://www.sciencedirect.com/topics/pharmacology-toxicology-and-pharmaceutical-science/sorbitan-ester",
+    "https://world.openfoodfacts.org/additive/e491-sorbitan-monostearate",
+    "https://www.iamgoingvegan.com/sorbitan-monostearate-vegan/"
+   ],
+   "notes": "Runde 3: Alle udsagn kontrolleret. Bekræftet: fremstilling, lipofil karakter, sammenhæng med polysorbater, gruppe-ADI 10 mg sorbitan/kg (NOAEL 2.600 mg/kg, UF 100), EFSA 2017-konklusion og OFF-vurdering. Rettet: 'opvarme' → dehydrering; stofskifte (delvis hydrolyse, delvis uændret udskillelse); EFSA 2025 handler om asparaginase-enzympræparater og fandt P95-overskridelse hos småbørn/børn, vurderet som overestimat. Fjernet: diarré/forstørret lever (ikke belagt for sorbitanestere), 'forhindre fedtudskillelse', ubelagte kategorier (kagedekorationer, glasur, slik) og udsagnet om manglende humane studier. Tørgær/toppings fjernet, da kun belagt for E491."
+  },
+  "wikipedia": "",
+  "wikidata": "Q15427856",
+  "claims": [
+   {
+    "claim": "sorbitanmonolaurat er en ester af sorbitan (fra sorbitol) og laurinsyre",
+    "source": "https://www.sciencedirect.com/topics/agricultural-and-biological-sciences/sorbitan-monostearate",
+    "result": "rettet"
+   },
+   {
+    "claim": "Sorbitan dannes ved dehydrering af sorbitol (tidligere: 'opvarme, så det mister vand')",
+    "source": "https://www.sciencedirect.com/topics/agricultural-and-biological-sciences/sorbitan-monostearate",
+    "result": "rettet"
+   },
+   {
+    "claim": "Handelsprodukter er komplekse blandinger af sorbitaner/isosorbid som mono-, di- og triestere",
+    "source": "https://www.sciencedirect.com/topics/agricultural-and-biological-sciences/sorbitan-monostearate",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Sorbitanestere er fedtopløselige (lipofile) emulgatorer",
+    "source": "https://www.sciencedirect.com/topics/pharmacology-toxicology-and-pharmaceutical-science/sorbitan-ester",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Bruges ofte sammen med polysorbater, der fremstilles ved reaktion med ethylenoxid",
+    "source": "https://www.sciencedirect.com/topics/pharmacology-toxicology-and-pharmaceutical-science/sorbitan-ester",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "'forhindre fedtudskillelse' som selvstændig funktion",
+    "source": "",
+    "result": "fjernet"
+   },
+   {
+    "claim": "Fedtsyrerne kan stamme fra vegetabilske eller animalske kilder",
+    "source": "https://www.iamgoingvegan.com/sorbitan-monostearate-vegan/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Tilladt i afgrænsede kategorier med maksimumsgrænser (bilag II til forordning 1333/2008)",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2017.4788",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Kategorier bl.a. finere bagværk, kakao/chokolade, fedtemulsioner og kosttilskud",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7010202/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Konkret liste 'kagedekorationer, glasur og overtræk, slikprodukter' som EU-kategorier",
+    "source": "",
+    "result": "fjernet"
+   },
+   {
+    "claim": "Tørgær som anvendelse (kun dokumenteret for E491)",
+    "source": "",
+    "result": "fjernet"
+   },
+   {
+    "claim": "Piskbare toppings og flødeerstatninger (kun dokumenteret for sorbitanmonostearat)",
+    "source": "",
+    "result": "fjernet"
+   },
+   {
+    "claim": "Spaltes delvist til fedtsyrer og sorbitan-anhydrider; resten udskilles uændret i fæces",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7010202/",
+    "result": "rettet"
+   },
+   {
+    "claim": "Gruppe-ADI 10 mg/kg lgv/dag som sorbitan for E491–E495 (= 26 mg sorbitanmonostearat/kg)",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2017.4788",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Middel- og P95-eksponering oversteg ikke ADI; ingen sikkerhedsbekymring (2017)",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2017.4788",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "2025: ADI overskredet for småbørn/børn ved P95, men vurderet som overestimat uden sikkerhedsbekymring",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC12188131/",
+    "result": "rettet"
+   },
+   {
+    "claim": "Open Food Facts angiver høj risiko for overeksponering",
+    "source": "https://world.openfoodfacts.org/additive/e491-sorbitan-monostearate",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "'Store mængder giver diarré og forstørret lever' i dyreforsøg",
+    "source": "",
+    "result": "fjernet"
+   },
+   {
+    "claim": "Påvirket nyrevægt/tubulære forandringer i subkroniske forsøg med sorbitanmonolaurat",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7010202/",
+    "result": "rettet"
+   },
+   {
+    "claim": "NOAEL 2.600 mg sorbitanmonostearat/kg lgv/dag, usikkerhedsfaktor 100",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7010202/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "EFSA 2025: E491 i præparater af fødevareenzymet asparaginase – ingen sikkerhedsbekymring",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2025.9487",
+    "result": "rettet"
+   },
+   {
+    "claim": "'Der er ikke fundet humane studier, der viser skadelige effekter'",
+    "source": "",
+    "result": "fjernet"
+   },
+   {
+    "claim": "Flag children_caution (P95-overskridelse hos småbørn/børn i EFSA 2025)",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC12188131/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Flag animal_origin (fedtsyrer kan være animalske)",
+    "source": "https://www.iamgoingvegan.com/sorbitan-monostearate-vegan/",
+    "result": "bekræftet"
+   }
+  ]
+ },
+ {
+  "code": "E494",
+  "nameDa": "Sorbitanmonooleat",
+  "nameEn": "Sorbitan monooleate",
+  "category": "Emulgator / stabilisator",
+  "euStatus": "approved",
+  "origin": "mixed",
+  "summary": "Sorbitanmonooleat er en emulgator, der er en ester af sorbitan (dannet af sorbitol) og oliesyre.",
+  "description": "Sorbitan dannes ved dehydrering af sorbitol og forestres derefter med oliesyre. Handelsprodukterne er komplekse blandinger af forskellige sorbitaner og isosorbid i form af mono-, di- og triestere. Sorbitanestere er fedtopløselige (lipofile) emulgatorer og bruges ofte sammen med polysorbater (E432–E436), som fremstilles ved at lade sorbitanestere reagere med ethylenoxid. Fedtsyrerne kan stamme fra vegetabilske eller animalske fedtstoffer.",
+  "uses": "I EU tilladt i et afgrænset antal fødevarekategorier med maksimumsgrænser, bl.a. finere bagværk, kakao- og chokoladeprodukter, fedtemulsioner og kosttilskud.",
+  "health": "Efter indtagelse kan sorbitanestere dels spaltes til fedtsyrer og sorbitan-anhydrider, dels udskilles uændret med afføringen. EFSA's gen-evaluering (2017) fastsatte en gruppe-ADI på 10 mg/kg legemsvægt/dag udtrykt som sorbitan for E491–E495 (svarende til 26 mg sorbitanmonostearat/kg) og konkluderede, at der ikke var sikkerhedsbekymring ved de rapporterede anvendelser; middel- og 95-percentil-eksponeringen oversteg ikke ADI i nogen befolkningsgruppe. I EFSA's opdaterede eksponeringsberegning fra 2025 blev gruppe-ADI overskredet for småbørn og børn ved 95-percentilen, men EFSA vurderede, at det skyldtes klart overvurderende antagelser og ikke var en sikkerhedsbekymring. Open Food Facts angiver høj risiko for overeksponering for nogle befolkningsgrupper. I subkroniske dyreforsøg med sorbitanmonolaurat er set påvirkning af nyrevægten, hos hunrotter med forandringer i nyretubuli, som EFSA tilskriver udskillelse af store mængder sorbitan i urinen. Fedtsyrerne kan være af animalsk oprindelse.",
+  "research": "EFSA's ANS-panel gen-evaluerede E 491–E 495 i 2017 (DOI 10.2903/j.efsa.2017.4788) og fastsatte en gruppe-ADI på 10 mg sorbitan/kg legemsvægt/dag ud fra en NOAEL på 2.600 mg sorbitanmonostearat/kg legemsvægt/dag fra dyreforsøg og en usikkerhedsfaktor på 100. EFSA's FAF-panel vurderede i 2025 (DOI 10.2903/j.efsa.2025.9487) en ændring af anvendelsesbetingelserne for E491 i præparater af fødevareenzymet asparaginase og konkluderede, at ændringen kun har lille betydning for eksponeringen og ikke giver sikkerhedsbekymring.",
+  "keyReferences": [],
+  "pubmedTerm": "sorbitan monooleate",
+  "flags": [
+   "children_caution",
+   "animal_origin"
+  ],
+  "classes": [
+   "emulsifier",
+   "stabiliser"
+  ],
+  "variants": [],
+  "efsa": {
+   "title": "Re‐evaluation of sorbitan monostearate (E 491), sorbitan tristearate (E 492), sorbitan monolaurate (E 493), sorbitan monooleate (E 494) and sorbitan monopalmitate (E 495) when used as food additives",
+   "url": "https://doi.org/10.2903/j.efsa.2017.4788",
+   "date": "2017-05-05",
+   "adi": "10 mg/kg bw/day (som sorbitan)",
+   "overexposureRisk": "en:high"
+  },
+  "verification": {
+   "status": "corrected",
+   "sources": [
+    "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2017.4788",
+    "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7010202/",
+    "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2025.9487",
+    "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC12188131/",
+    "https://www.sciencedirect.com/topics/agricultural-and-biological-sciences/sorbitan-monostearate",
+    "https://www.sciencedirect.com/topics/pharmacology-toxicology-and-pharmaceutical-science/sorbitan-ester",
+    "https://world.openfoodfacts.org/additive/e491-sorbitan-monostearate",
+    "https://www.iamgoingvegan.com/sorbitan-monostearate-vegan/"
+   ],
+   "notes": "Runde 3: Alle udsagn kontrolleret. Bekræftet: fremstilling, lipofil karakter, sammenhæng med polysorbater, gruppe-ADI 10 mg sorbitan/kg (NOAEL 2.600 mg/kg, UF 100), EFSA 2017-konklusion og OFF-vurdering. Rettet: 'opvarme' → dehydrering; stofskifte (delvis hydrolyse, delvis uændret udskillelse); EFSA 2025 handler om asparaginase-enzympræparater og fandt P95-overskridelse hos småbørn/børn, vurderet som overestimat. Fjernet: diarré/forstørret lever (ikke belagt for sorbitanestere), 'forhindre fedtudskillelse', ubelagte kategorier (kagedekorationer, glasur, slik) og udsagnet om manglende humane studier. Tørgær/toppings fjernet, da kun belagt for E491."
+  },
+  "wikipedia": "",
+  "wikidata": "Q18944664",
+  "claims": [
+   {
+    "claim": "sorbitanmonooleat er en ester af sorbitan (fra sorbitol) og oliesyre",
+    "source": "https://www.sciencedirect.com/topics/agricultural-and-biological-sciences/sorbitan-monostearate",
+    "result": "rettet"
+   },
+   {
+    "claim": "Sorbitan dannes ved dehydrering af sorbitol (tidligere: 'opvarme, så det mister vand')",
+    "source": "https://www.sciencedirect.com/topics/agricultural-and-biological-sciences/sorbitan-monostearate",
+    "result": "rettet"
+   },
+   {
+    "claim": "Handelsprodukter er komplekse blandinger af sorbitaner/isosorbid som mono-, di- og triestere",
+    "source": "https://www.sciencedirect.com/topics/agricultural-and-biological-sciences/sorbitan-monostearate",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Sorbitanestere er fedtopløselige (lipofile) emulgatorer",
+    "source": "https://www.sciencedirect.com/topics/pharmacology-toxicology-and-pharmaceutical-science/sorbitan-ester",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Bruges ofte sammen med polysorbater, der fremstilles ved reaktion med ethylenoxid",
+    "source": "https://www.sciencedirect.com/topics/pharmacology-toxicology-and-pharmaceutical-science/sorbitan-ester",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "'forhindre fedtudskillelse' som selvstændig funktion",
+    "source": "",
+    "result": "fjernet"
+   },
+   {
+    "claim": "Fedtsyrerne kan stamme fra vegetabilske eller animalske kilder",
+    "source": "https://www.iamgoingvegan.com/sorbitan-monostearate-vegan/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Tilladt i afgrænsede kategorier med maksimumsgrænser (bilag II til forordning 1333/2008)",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2017.4788",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Kategorier bl.a. finere bagværk, kakao/chokolade, fedtemulsioner og kosttilskud",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7010202/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Konkret liste 'kagedekorationer, glasur og overtræk, slikprodukter' som EU-kategorier",
+    "source": "",
+    "result": "fjernet"
+   },
+   {
+    "claim": "Tørgær som anvendelse (kun dokumenteret for E491)",
+    "source": "",
+    "result": "fjernet"
+   },
+   {
+    "claim": "Piskbare toppings og flødeerstatninger (kun dokumenteret for sorbitanmonostearat)",
+    "source": "",
+    "result": "fjernet"
+   },
+   {
+    "claim": "Spaltes delvist til fedtsyrer og sorbitan-anhydrider; resten udskilles uændret i fæces",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7010202/",
+    "result": "rettet"
+   },
+   {
+    "claim": "Gruppe-ADI 10 mg/kg lgv/dag som sorbitan for E491–E495 (= 26 mg sorbitanmonostearat/kg)",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2017.4788",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Middel- og P95-eksponering oversteg ikke ADI; ingen sikkerhedsbekymring (2017)",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2017.4788",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "2025: ADI overskredet for småbørn/børn ved P95, men vurderet som overestimat uden sikkerhedsbekymring",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC12188131/",
+    "result": "rettet"
+   },
+   {
+    "claim": "Open Food Facts angiver høj risiko for overeksponering",
+    "source": "https://world.openfoodfacts.org/additive/e491-sorbitan-monostearate",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "'Store mængder giver diarré og forstørret lever' i dyreforsøg",
+    "source": "",
+    "result": "fjernet"
+   },
+   {
+    "claim": "Påvirket nyrevægt/tubulære forandringer i subkroniske forsøg med sorbitanmonolaurat",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7010202/",
+    "result": "rettet"
+   },
+   {
+    "claim": "NOAEL 2.600 mg sorbitanmonostearat/kg lgv/dag, usikkerhedsfaktor 100",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7010202/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "EFSA 2025: E491 i præparater af fødevareenzymet asparaginase – ingen sikkerhedsbekymring",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2025.9487",
+    "result": "rettet"
+   },
+   {
+    "claim": "'Der er ikke fundet humane studier, der viser skadelige effekter'",
+    "source": "",
+    "result": "fjernet"
+   },
+   {
+    "claim": "Flag children_caution (P95-overskridelse hos småbørn/børn i EFSA 2025)",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC12188131/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Flag animal_origin (fedtsyrer kan være animalske)",
+    "source": "https://www.iamgoingvegan.com/sorbitan-monostearate-vegan/",
+    "result": "bekræftet"
+   }
+  ]
+ },
+ {
+  "code": "E495",
+  "nameDa": "Sorbitanmonopalmitat",
+  "nameEn": "Sorbitan monopalmitate",
+  "category": "Emulgator / stabilisator",
+  "euStatus": "approved",
+  "origin": "mixed",
+  "summary": "Sorbitanmonopalmitat er en emulgator, der er en ester af sorbitan (dannet af sorbitol) og palmitinsyre.",
+  "description": "Sorbitan dannes ved dehydrering af sorbitol og forestres derefter med palmitinsyre. Handelsprodukterne er komplekse blandinger af forskellige sorbitaner og isosorbid i form af mono-, di- og triestere. Sorbitanestere er fedtopløselige (lipofile) emulgatorer og bruges ofte sammen med polysorbater (E432–E436), som fremstilles ved at lade sorbitanestere reagere med ethylenoxid. Fedtsyrerne kan stamme fra vegetabilske eller animalske fedtstoffer.",
+  "uses": "I EU tilladt i et afgrænset antal fødevarekategorier med maksimumsgrænser, bl.a. finere bagværk, kakao- og chokoladeprodukter, fedtemulsioner og kosttilskud.",
+  "health": "Efter indtagelse kan sorbitanestere dels spaltes til fedtsyrer og sorbitan-anhydrider, dels udskilles uændret med afføringen. EFSA's gen-evaluering (2017) fastsatte en gruppe-ADI på 10 mg/kg legemsvægt/dag udtrykt som sorbitan for E491–E495 (svarende til 26 mg sorbitanmonostearat/kg) og konkluderede, at der ikke var sikkerhedsbekymring ved de rapporterede anvendelser; middel- og 95-percentil-eksponeringen oversteg ikke ADI i nogen befolkningsgruppe. I EFSA's opdaterede eksponeringsberegning fra 2025 blev gruppe-ADI overskredet for småbørn og børn ved 95-percentilen, men EFSA vurderede, at det skyldtes klart overvurderende antagelser og ikke var en sikkerhedsbekymring. Open Food Facts angiver høj risiko for overeksponering for nogle befolkningsgrupper. I subkroniske dyreforsøg med sorbitanmonolaurat er set påvirkning af nyrevægten, hos hunrotter med forandringer i nyretubuli, som EFSA tilskriver udskillelse af store mængder sorbitan i urinen. Fedtsyrerne kan være af animalsk oprindelse.",
+  "research": "EFSA's ANS-panel gen-evaluerede E 491–E 495 i 2017 (DOI 10.2903/j.efsa.2017.4788) og fastsatte en gruppe-ADI på 10 mg sorbitan/kg legemsvægt/dag ud fra en NOAEL på 2.600 mg sorbitanmonostearat/kg legemsvægt/dag fra dyreforsøg og en usikkerhedsfaktor på 100. EFSA's FAF-panel vurderede i 2025 (DOI 10.2903/j.efsa.2025.9487) en ændring af anvendelsesbetingelserne for E491 i præparater af fødevareenzymet asparaginase og konkluderede, at ændringen kun har lille betydning for eksponeringen og ikke giver sikkerhedsbekymring.",
+  "keyReferences": [],
+  "pubmedTerm": "sorbitan monopalmitate",
+  "flags": [
+   "children_caution",
+   "animal_origin"
+  ],
+  "classes": [
+   "emulsifier"
+  ],
+  "variants": [],
+  "efsa": {
+   "title": "Re‐evaluation of sorbitan monostearate (E 491), sorbitan tristearate (E 492), sorbitan monolaurate (E 493), sorbitan monooleate (E 494) and sorbitan monopalmitate (E 495) when used as food additives",
+   "url": "https://doi.org/10.2903/j.efsa.2017.4788",
+   "date": "2017-05-05",
+   "adi": "10 mg/kg bw/day (som sorbitan)",
+   "overexposureRisk": "en:high"
+  },
+  "verification": {
+   "status": "corrected",
+   "sources": [
+    "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2017.4788",
+    "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7010202/",
+    "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2025.9487",
+    "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC12188131/",
+    "https://www.sciencedirect.com/topics/agricultural-and-biological-sciences/sorbitan-monostearate",
+    "https://www.sciencedirect.com/topics/pharmacology-toxicology-and-pharmaceutical-science/sorbitan-ester",
+    "https://world.openfoodfacts.org/additive/e491-sorbitan-monostearate",
+    "https://www.iamgoingvegan.com/sorbitan-monostearate-vegan/"
+   ],
+   "notes": "Runde 3: Alle udsagn kontrolleret. Bekræftet: fremstilling, lipofil karakter, sammenhæng med polysorbater, gruppe-ADI 10 mg sorbitan/kg (NOAEL 2.600 mg/kg, UF 100), EFSA 2017-konklusion og OFF-vurdering. Rettet: 'opvarme' → dehydrering; stofskifte (delvis hydrolyse, delvis uændret udskillelse); EFSA 2025 handler om asparaginase-enzympræparater og fandt P95-overskridelse hos småbørn/børn, vurderet som overestimat. Fjernet: diarré/forstørret lever (ikke belagt for sorbitanestere), 'forhindre fedtudskillelse', ubelagte kategorier (kagedekorationer, glasur, slik) og udsagnet om manglende humane studier. Tørgær/toppings fjernet, da kun belagt for E491."
+  },
+  "wikipedia": "",
+  "wikidata": "Q18601367",
+  "claims": [
+   {
+    "claim": "sorbitanmonopalmitat er en ester af sorbitan (fra sorbitol) og palmitinsyre",
+    "source": "https://www.sciencedirect.com/topics/agricultural-and-biological-sciences/sorbitan-monostearate",
+    "result": "rettet"
+   },
+   {
+    "claim": "Sorbitan dannes ved dehydrering af sorbitol (tidligere: 'opvarme, så det mister vand')",
+    "source": "https://www.sciencedirect.com/topics/agricultural-and-biological-sciences/sorbitan-monostearate",
+    "result": "rettet"
+   },
+   {
+    "claim": "Handelsprodukter er komplekse blandinger af sorbitaner/isosorbid som mono-, di- og triestere",
+    "source": "https://www.sciencedirect.com/topics/agricultural-and-biological-sciences/sorbitan-monostearate",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Sorbitanestere er fedtopløselige (lipofile) emulgatorer",
+    "source": "https://www.sciencedirect.com/topics/pharmacology-toxicology-and-pharmaceutical-science/sorbitan-ester",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Bruges ofte sammen med polysorbater, der fremstilles ved reaktion med ethylenoxid",
+    "source": "https://www.sciencedirect.com/topics/pharmacology-toxicology-and-pharmaceutical-science/sorbitan-ester",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "'forhindre fedtudskillelse' som selvstændig funktion",
+    "source": "",
+    "result": "fjernet"
+   },
+   {
+    "claim": "Fedtsyrerne kan stamme fra vegetabilske eller animalske kilder",
+    "source": "https://www.iamgoingvegan.com/sorbitan-monostearate-vegan/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Tilladt i afgrænsede kategorier med maksimumsgrænser (bilag II til forordning 1333/2008)",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2017.4788",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Kategorier bl.a. finere bagværk, kakao/chokolade, fedtemulsioner og kosttilskud",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7010202/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Konkret liste 'kagedekorationer, glasur og overtræk, slikprodukter' som EU-kategorier",
+    "source": "",
+    "result": "fjernet"
+   },
+   {
+    "claim": "Tørgær som anvendelse (kun dokumenteret for E491)",
+    "source": "",
+    "result": "fjernet"
+   },
+   {
+    "claim": "Piskbare toppings og flødeerstatninger (kun dokumenteret for sorbitanmonostearat)",
+    "source": "",
+    "result": "fjernet"
+   },
+   {
+    "claim": "Spaltes delvist til fedtsyrer og sorbitan-anhydrider; resten udskilles uændret i fæces",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7010202/",
+    "result": "rettet"
+   },
+   {
+    "claim": "Gruppe-ADI 10 mg/kg lgv/dag som sorbitan for E491–E495 (= 26 mg sorbitanmonostearat/kg)",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2017.4788",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Middel- og P95-eksponering oversteg ikke ADI; ingen sikkerhedsbekymring (2017)",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2017.4788",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "2025: ADI overskredet for småbørn/børn ved P95, men vurderet som overestimat uden sikkerhedsbekymring",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC12188131/",
+    "result": "rettet"
+   },
+   {
+    "claim": "Open Food Facts angiver høj risiko for overeksponering",
+    "source": "https://world.openfoodfacts.org/additive/e491-sorbitan-monostearate",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "'Store mængder giver diarré og forstørret lever' i dyreforsøg",
+    "source": "",
+    "result": "fjernet"
+   },
+   {
+    "claim": "Påvirket nyrevægt/tubulære forandringer i subkroniske forsøg med sorbitanmonolaurat",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7010202/",
+    "result": "rettet"
+   },
+   {
+    "claim": "NOAEL 2.600 mg sorbitanmonostearat/kg lgv/dag, usikkerhedsfaktor 100",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7010202/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "EFSA 2025: E491 i præparater af fødevareenzymet asparaginase – ingen sikkerhedsbekymring",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2025.9487",
+    "result": "rettet"
+   },
+   {
+    "claim": "'Der er ikke fundet humane studier, der viser skadelige effekter'",
+    "source": "",
+    "result": "fjernet"
+   },
+   {
+    "claim": "Flag children_caution (P95-overskridelse hos småbørn/børn i EFSA 2025)",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC12188131/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Flag animal_origin (fedtsyrer kan være animalske)",
+    "source": "https://www.iamgoingvegan.com/sorbitan-monostearate-vegan/",
+    "result": "bekræftet"
+   }
+  ]
+ },
+ {
+  "code": "E499",
+  "nameDa": "Stigmasterolrige plantesteroler",
+  "nameEn": "Stigmasterol-rich plant sterols",
+  "category": "Stabilisator",
+  "euStatus": "approved",
+  "origin": "natural",
+  "summary": "Blanding af plantesteroler med højt indhold af stigmasterol, godkendt som stabilisator i frysefærdige alkoholiske cocktails.",
+  "description": "E499 udvindes fra sojabønner og består af plantesterolerne stigmasterol, beta-sitosterol, campesterol og brassicasterol; det samlede sterolindhold skal være mindst 95 %, heraf mindst 85 % stigmasterol. Plantesteroler ligner kolesterol kemisk. I drikken virker stoffet som iskernedanner, der danner og fastholder en isdispersion, så cocktailen bliver halvfrossen, når forbrugeren fryser den. Godkendt ved Kommissionens forordning (EU) nr. 739/2013.",
+  "uses": "Kun tilladt som stabilisator i frysefærdige alkoholiske cocktails (drikke der sælges flydende og fryses af forbrugeren) med en fastsat maksimumsgrænse. Må ikke forveksles med plantesteroler i kolesterolsænkende fødevarer, som vurderes og godkendes som nye fødevarer.",
+  "health": "EFSA (2012) fandt de toksikologiske data utilstrækkelige til at fastsætte en ADI, men konkluderede ud fra data for plantesteroler generelt (laveste NOAEL 1,54 g phytosteroler/kg legemsvægt/dag) og tilstrækkelige sikkerhedsmargener, at den foreslåede brug og mængde ikke giver sikkerhedsbekymring. Under 5 % af plantesteroler i kosten optages. Plantesteroler nedsætter optagelsen af kolesterol og mindsker biotilgængeligheden af beta-caroten og alfa-tocopherol. Personer med den sjældne arvelige sygdom sitosterolæmi bør undgå tilskud af plantesteroler.",
+  "research": "Der er omfattende forskning i plantesteroler generelt; EFSA har vurderet, at et dagligt indtag af 1,5–3 g plantesteroler/stanoler sænker LDL-kolesterol. Ansøgeren leverede ingen biologiske eller toksikologiske data specifikt for stigmasterolrige plantesteroler, så EFSA byggede sin vurdering på data for phytosteroler og deres estere.",
+  "keyReferences": [
+   {
+    "citation": "EFSA ANS Panel (2012). Scientific Opinion on the safety of stigmasterol-rich plant sterols as food additive. EFSA Journal 10(5):2659. doi:10.2903/j.efsa.2012.2659",
+    "searchTitle": "Scientific Opinion on the safety of stigmasterol-rich plant sterols as food additive"
+   }
+  ],
+  "pubmedTerm": "stigmasterol-rich plant sterols food additive",
+  "flags": [],
+  "classes": [],
+  "variants": [],
+  "efsa": {
+   "title": "Scientific Opinion on the safety of stigmasterol-rich plant sterols as food additive",
+   "url": "https://doi.org/10.2903/j.efsa.2012.2659",
+   "date": "2012",
+   "adi": "Ikke fastsat (utilstrækkelige data; ingen bekymring ved foreslået brug)",
+   "overexposureRisk": false
+  },
+  "verification": {
+   "status": "corrected",
+   "sources": [
+    "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:32013R0739",
+    "https://efsa.onlinelibrary.wiley.com/doi/abs/10.2903/j.efsa.2012.2659",
+    "https://pmc.ncbi.nlm.nih.gov/articles/PMC13151835/",
+    "https://en.wikipedia.org/wiki/Stigmasterol-rich_plant_sterols",
+    "https://pmc.ncbi.nlm.nih.gov/articles/PMC3040800/",
+    "https://pubmed.ncbi.nlm.nih.gov/15213045/",
+    "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2012.2693",
+    "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2020.6135"
+   ],
+   "notes": "Runde 3: Bekræftet: forordning 739/2013, anvendelse kun i frysefærdige alkoholiske cocktails, sammensætning (≥95 % steroler, ≥85 % stigmasterol), EFSA 2012 (ingen ADI, ingen sikkerhedsbekymring), sitosterolæmi, kolesterol-/carotenoideffekt og 1,5–3 g/dag. Rettet: funktionen er iskernedannelse (ikke 'forhindre at iskrystaller klumper'); 'sojabønneolie' → sojabønner; EFSA's begrundelse er sikkerhedsmargener ud fra NOAEL, ikke sammenligning med kostindtag. Fjernet: 'den teknologiske dosis har ingen ernæringsmæssig effekt' (ikke belagt)."
+  },
+  "wikipedia": "",
+  "wikidata": "",
+  "claims": [
+   {
+    "claim": "Blanding af plantesteroler med højt stigmasterolindhold",
+    "source": "https://en.wikipedia.org/wiki/Stigmasterol-rich_plant_sterols",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Stabilisator i frysefærdige alkoholiske cocktails",
+    "source": "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:32013R0739",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Udvindes fra sojabønner (tidligere: sojabønneolie)",
+    "source": "https://en.wikipedia.org/wiki/Stigmasterol-rich_plant_sterols",
+    "result": "rettet"
+   },
+   {
+    "claim": "Består af stigmasterol, beta-sitosterol, campesterol og brassicasterol",
+    "source": "https://en.wikipedia.org/wiki/Stigmasterol-rich_plant_sterols",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Specifikation: ≥95 % steroler, heraf ≥85 % stigmasterol",
+    "source": "https://en.wikipedia.org/wiki/Stigmasterol-rich_plant_sterols",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Plantesteroler ligner kolesterol kemisk",
+    "source": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3040800/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Virker som iskernedanner, der danner/fastholder isdispersion (tidligere: forhindrer klumpning af iskrystaller)",
+    "source": "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:32013R0739",
+    "result": "rettet"
+   },
+   {
+    "claim": "Godkendt ved forordning (EU) nr. 739/2013",
+    "source": "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:32013R0739",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Maksimumsgrænse fastsat",
+    "source": "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:32013R0739",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Kolesterolsænkende plantesteroler reguleres som nye fødevarer",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2020.6135",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "EFSA 2012: data utilstrækkelige til ADI; ingen sikkerhedsbekymring ved foreslået brug",
+    "source": "https://pmc.ncbi.nlm.nih.gov/articles/PMC13151835/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Begrundelse: sikkerhedsmargen ud fra NOAEL 1,54 g phytosteroler/kg (tidligere: lavt indtag vs. kost)",
+    "source": "https://pmc.ncbi.nlm.nih.gov/articles/PMC13151835/",
+    "result": "rettet"
+   },
+   {
+    "claim": "Under 5 % af plantesteroler optages",
+    "source": "https://pmc.ncbi.nlm.nih.gov/articles/PMC13151835/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Plantesteroler sænker optagelse af kolesterol og biotilgængelighed af beta-caroten",
+    "source": "https://pubmed.ncbi.nlm.nih.gov/15213045/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Personer med sitosterolæmi bør undgå plantesteroltilskud",
+    "source": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3040800/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Kolesterolsænkende virkning ved 1,5–3 g/dag",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2012.2693",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "'Den teknologiske dosis er langt lavere og har ingen ernæringsmæssig effekt'",
+    "source": "",
+    "result": "fjernet"
+   },
+   {
+    "claim": "Ingen specifikke toksikologiske data for stigmasterolrige steroler (tidligere: 'begrænset forskning')",
+    "source": "https://pmc.ncbi.nlm.nih.gov/articles/PMC13151835/",
+    "result": "rettet"
+   }
+  ]
+ },
+ {
+  "code": "E500",
+  "nameDa": "Natriumcarbonater",
+  "nameEn": "Sodium carbonates",
+  "category": "Hævemiddel / surhedsregulerende middel",
+  "euStatus": "approved",
+  "origin": "mixed",
+  "summary": "Natriumcarbonater er natriumsalte af kulsyre; den mest kendte er natron (natriumhydrogencarbonat), der bruges som hævemiddel.",
+  "description": "Varianten (i) er soda (natriumcarbonat), (ii) er natron/tvekulsurt natron (natriumhydrogencarbonat) og (iii) er natriumsesquicarbonat, et dobbeltsalt af de to. Soda fremstilles industrielt via Solvay-processen ud fra salt og kalksten eller udvindes fra mineraler som trona. Natron frigiver kuldioxid ved reaktion med syre eller ved opvarmning og får derved dej til at hæve; bagepulver er en blanding af natron og en spiselig syre. Natrium- og kaliumcarbonat bruges i alkalisk 'kansui' til ramen-nudler, og natriumcarbonat er et af de alkaliske midler, der bruges ved alkalisering af kakao.",
+  "uses": "Bagepulver og natron, kager, hurtigbrød og andet bagværk, alkaliske nudler (ramen), alkaliseret kakao. Tilladt quantum satis.",
+  "health": "Store mængder natron (fx brugt som husråd mod sure opstød) kan give metabolisk alkalose, forhøjet natrium og lavt kalium i blodet. Natron bidrager med natrium, og i behandlingsstudier ved kronisk nyresygdom er natriumbicarbonat forbundet med højere blodtryk. JECFA har vurderet natrium- og kaliumcarbonat med 'ADI not specified', dvs. at det samlede indtag ved nødvendige brugsniveauer ikke vurderes at udgøre en sundhedsrisiko.",
+  "research": "En færdig EFSA-gen-evaluering af E500–E504 er ikke fundet offentliggjort; stofferne er omfattet af EFSA's opkald om brugsdata. EFSA vurderede i 2013 natriumhydrogencarbonat (E500ii) sammen med citronsyre som kuldioxidgenerator i absorberende puder i aktive fødevarekontaktmaterialer uden sikkerhedsbekymring. Natriumbicarbonat undersøges i klinisk forskning, bl.a. til behandling af metabolisk acidose ved kronisk nyresygdom og som præstationsfremmende middel ved kortvarig, højintensiv træning.",
+  "keyReferences": [],
+  "pubmedTerm": "sodium bicarbonate",
+  "flags": [
+   "kidney_caution"
+  ],
+  "classes": [
+   "stabiliser",
+   "thickener"
+  ],
+  "variants": [
+   {
+    "code": "E500(i)",
+    "nameDa": "natriumkarbonat",
+    "nameEn": "Sodium carbonate"
+   },
+   {
+    "code": "E500(ii)",
+    "nameDa": "natriumhydrogenkarbonat",
+    "nameEn": "Sodium hydrogen carbonate"
+   },
+   {
+    "code": "E500(iii)",
+    "nameDa": "natriumsesquikarbonat",
+    "nameEn": "Sodium sesquicarbonate"
+   }
+  ],
+  "efsa": {
+   "title": "Scientific Opinion on the safety evaluation of the active substances citric acid (E330) and sodium hydrogen carbonate (E500ii), used as carbon dioxide generators, together with liquid absorbers cellulose and polyacrylic acid sodium salt crosslinked, in active food contact materials.",
+   "url": "http://dx.doi.org/10.2903/j.efsa.2013.3152",
+   "date": "2013-04-09",
+   "adi": "",
+   "overexposureRisk": ""
+  },
+  "verification": {
+   "status": "corrected",
+   "sources": [
+    "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:02008R1333-20240602",
+    "https://food.ec.europa.eu/food-safety/food-improvement-agents/additives/re-evaluation_en",
+    "https://www.efsa.europa.eu/sites/default/files/consultation/120706a.pdf",
+    "https://essentialchemicalindustry.org/chemicals/sodium-carbonate.html",
+    "https://chem.libretexts.org/Bookshelves/Biological_Chemistry/Chemistry_of_Cooking_(Rodriguez-Velazquez)/05:_Leavening_Agents/5.06:_Sodium_Bicarbonate",
+    "https://www.mcgill.ca/oss/article/student-contributors-general-science/whats-difference-between-baking-soda-and-baking-powder",
+    "https://en.wikipedia.org/wiki/Sodium_bicarbonate",
+    "https://www.yamatonoodle.com/noodle-master-labs/ramen-noodle-ingredients-kansui-etc/",
+    "https://en.wikipedia.org/wiki/Dutch_process_cocoa",
+    "https://pubmed.ncbi.nlm.nih.gov/2829142/",
+    "https://pmc.ncbi.nlm.nih.gov/articles/PMC11793077/",
+    "https://pmc.ncbi.nlm.nih.gov/articles/PMC11755234/",
+    "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8427947/",
+    "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2013.3152",
+    "https://www.inchem.org/documents/jecfa/jecmono/v17je02.htm"
+   ],
+   "notes": "Runde 3: Bekræftet: varianter, Solvay/trona, CO2-frigivelse, bagepulver, ramen (kansui), kakaoalkalisering, quantum satis, alkalose ved overforbrug, EFSA 2013 (fødevarekontaktmateriale), CKD- og sportsforskning, ingen EFSA-gen-evaluering fundet. Rettet: sesquicarbonat er et dobbeltsalt; natron er én af to hovedbestanddele i bagepulver; 'ADI ikke specificeret' er JECFA's vurdering, ikke en angivelse i EU-listen. Fjernet: pandekager, brusetabletter, antacida som anvendelse og 'hydrogencarbonat dannes naturligt i kroppen' (ikke belagt i denne runde)."
+  },
+  "wikipedia": "https://en.wikipedia.org/wiki/Sodium_bicarbonate",
+  "wikidata": "Q190227",
+  "claims": [
+   {
+    "claim": "Variant (i) soda, (ii) natron, (iii) natriumsesquicarbonat",
+    "source": "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:02008R1333-20240602",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Sesquicarbonat er dobbeltsalt af carbonat og hydrogencarbonat (tidligere: 'blanding')",
+    "source": "https://en.wikipedia.org/wiki/Sodium_bicarbonate",
+    "result": "rettet"
+   },
+   {
+    "claim": "Fremstilles via Solvay-processen af salt og kalksten eller udvindes fra trona",
+    "source": "https://essentialchemicalindustry.org/chemicals/sodium-carbonate.html",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Natron frigiver CO2 med syre eller varme og hæver dej",
+    "source": "https://chem.libretexts.org/Bookshelves/Biological_Chemistry/Chemistry_of_Cooking_(Rodriguez-Velazquez)/05:_Leavening_Agents/5.06:_Sodium_Bicarbonate",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Bagepulver = natron + spiselig syre (tidligere: natron er 'hovedbestanddelen')",
+    "source": "https://www.mcgill.ca/oss/article/student-contributors-general-science/whats-difference-between-baking-soda-and-baking-powder",
+    "result": "rettet"
+   },
+   {
+    "claim": "Soda i ramen-nudler (kansui)",
+    "source": "https://www.yamatonoodle.com/noodle-master-labs/ramen-noodle-ingredients-kansui-etc/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Soda ved alkalisering af kakao",
+    "source": "https://en.wikipedia.org/wiki/Dutch_process_cocoa",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Anvendelse i kager, hurtigbrød og bagværk",
+    "source": "https://chem.libretexts.org/Bookshelves/Biological_Chemistry/Chemistry_of_Cooking_(Rodriguez-Velazquez)/05:_Leavening_Agents/5.06:_Sodium_Bicarbonate",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Pandekager, brusetabletter og antacida som anvendelser",
+    "source": "",
+    "result": "fjernet"
+   },
+   {
+    "claim": "Tilladt quantum satis",
+    "source": "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:02008R1333-20240602",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "'Hydrogencarbonat dannes naturligt i kroppen'",
+    "source": "",
+    "result": "fjernet"
+   },
+   {
+    "claim": "Store mængder natron (husråd) kan give alkalose, hypernatriæmi og hypokaliæmi",
+    "source": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11793077/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Natriumbicarbonat forbundet med højere blodtryk i CKD-studier (tidligere: generelt relevant ved blodtryk/nyre/hjerte)",
+    "source": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11755234/",
+    "result": "rettet"
+   },
+   {
+    "claim": "'ADI ikke specificeret' er JECFA's vurdering (tidligere: angivet i EU's liste)",
+    "source": "https://www.inchem.org/documents/jecfa/jecmono/v17je02.htm",
+    "result": "rettet"
+   },
+   {
+    "claim": "Ingen offentliggjort EFSA-gen-evaluering af E500–E504 fundet",
+    "source": "https://www.efsa.europa.eu/sites/default/files/consultation/120706a.pdf",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "EFSA 2013: E500ii i aktive fødevarekontaktmaterialer uden sikkerhedsbekymring",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2013.3152",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Forskning i behandling af metabolisk acidose ved CKD",
+    "source": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11755234/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Forskning som præstationsfremmende middel i sport",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8427947/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Flag kidney_caution (natriumbelastning/blodtryk i CKD)",
+    "source": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11755234/",
+    "result": "bekræftet"
+   }
+  ]
+ },
+ {
+  "code": "E501",
+  "nameDa": "Kaliumcarbonater",
+  "nameEn": "Potassium carbonates",
+  "category": "Surhedsregulerende middel / hævemiddel / stabilisator",
+  "euStatus": "approved",
+  "origin": "mixed",
+  "summary": "Kaliumcarbonater er kaliumsalte af kulsyre, bl.a. potaske, der bruges i traditionelt julebag.",
+  "description": "Varianten (i) er kaliumcarbonat (potaske) og (ii) er kaliumhydrogencarbonat. Kaliumcarbonat fremstilles i dag ved at lade kaliumhydroxid reagere med kuldioxid; historisk blev potaske udvundet af aske fra brændte planter. Potaske bruges som hævemiddel i brunkager og tyske honningkager (Lebkuchen), og kaliumcarbonat bruges til alkalisering af kakao og i alkalisk 'kansui' til ramen-nudler. Kaliumhydrogencarbonat bruges som natriumfrit alternativ til natron.",
+  "uses": "Brunkager og honningkager, alkaliseret kakao, alkaliske nudler, natriumfrit hævemiddel og club soda. Kaliumhydrogencarbonat bruges desuden til afsyring af vin. Tilladt quantum satis.",
+  "health": "Personer med fremskreden kronisk nyresygdom, eller som tager kaliumbesparende vanddrivende medicin eller kaliumtilskud, har øget risiko for forhøjet kalium i blodet ved øget kaliumindtag. Koncentreret kaliumcarbonat er stærkt irriterende for øjne, hud og luftveje, og opløsninger er ætsende; det skal opbevares utilgængeligt for børn. JECFA har vurderet natrium- og kaliumcarbonat med 'ADI not specified'.",
+  "research": "En færdig EFSA-gen-evaluering af kaliumcarbonater er ikke fundet offentliggjort. Der er i denne gennemgang ikke fundet forskning, der rejser nye spørgsmål ved brug i fødevarer.",
+  "keyReferences": [],
+  "pubmedTerm": "potassium carbonate",
+  "flags": [
+   "kidney_caution"
+  ],
+  "classes": [
+   "stabiliser"
+  ],
+  "variants": [
+   {
+    "code": "E501(i)",
+    "nameDa": "kaliumkarbonat",
+    "nameEn": "Potassium carbonate"
+   },
+   {
+    "code": "E501(ii)",
+    "nameDa": "kaliumhydrogenkarbonat",
+    "nameEn": "Potassium hydrogen carbonate"
+   }
+  ],
+  "efsa": null,
+  "verification": {
+   "status": "corrected",
+   "sources": [
+    "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:02008R1333-20240602",
+    "https://food.ec.europa.eu/food-safety/food-improvement-agents/additives/re-evaluation_en",
+    "https://www.efsa.europa.eu/sites/default/files/consultation/120706a.pdf",
+    "https://en.wikipedia.org/wiki/Potassium_carbonate",
+    "https://madogvenner.dk/potaske/",
+    "https://gingerbread-world.com/products/village-classics-pottasche-potassium-carbonate-40-ml",
+    "https://en.wikipedia.org/wiki/Dutch_process_cocoa",
+    "https://www.yamatonoodle.com/noodle-master-labs/ramen-noodle-ingredients-kansui-etc/",
+    "https://bakerpedia.com/ingredients/potassium-bicarbonate/",
+    "https://www.oiv.int/standards/international-code-of-oenological-practices/part-ii-oenological-treatments-and-practices/product-derived-from-grapes,-grape-must-or-wine/chemical-deacidification",
+    "https://en.wikipedia.org/wiki/Club_soda",
+    "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC12295509/",
+    "https://www.ineos.com/globalassets/ineos-group/businesses/ineos-enterprises/businesses/ineos-koh/safety-data-sheet_potassium-carbonate-anhydrous_original-id-150561.pdf",
+    "https://www.inchem.org/documents/jecfa/jecmono/v17je02.htm"
+   ],
+   "notes": "Runde 3: Bekræftet: varianter, fremstilling (KOH + CO2), historisk udvinding af planteaske, potaske i brunkager/Lebkuchen, kakao, kansui, natriumfrit alternativ, vinafsyring, club soda, kaliumrisiko ved nyresygdom/medicin, irriterende/ætsende. Rettet: 'træaske' → aske fra brændte planter; ADI-formulering tilskrevet JECFA. Fjernet: pebernødder (traditionelt uden hævemiddel/med hjortetakssalt), 'bidraget fra tilsætningsstoffet er lille' (ikke belagt), 'sodavand og mineralvand' → club soda."
+  },
+  "wikipedia": "https://en.wikipedia.org/wiki/Potassium_carbonate",
+  "wikidata": "Q379885",
+  "claims": [
+   {
+    "claim": "Variant (i) kaliumcarbonat (potaske), (ii) kaliumhydrogencarbonat",
+    "source": "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:02008R1333-20240602",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Fremstilles ved reaktion mellem KOH og CO2",
+    "source": "https://en.wikipedia.org/wiki/Potassium_carbonate",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Potaske historisk udvundet af planteaske (tidligere: træaske)",
+    "source": "https://en.wikipedia.org/wiki/Potassium_carbonate",
+    "result": "rettet"
+   },
+   {
+    "claim": "Potaske som hævemiddel i brunkager",
+    "source": "https://madogvenner.dk/potaske/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Potaske i honningkager/Lebkuchen",
+    "source": "https://gingerbread-world.com/products/village-classics-pottasche-potassium-carbonate-40-ml",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Potaske i pebernødder",
+    "source": "",
+    "result": "fjernet"
+   },
+   {
+    "claim": "Kaliumcarbonat til alkalisering af kakao",
+    "source": "https://en.wikipedia.org/wiki/Dutch_process_cocoa",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Kaliumcarbonat i kansui til nudler",
+    "source": "https://www.yamatonoodle.com/noodle-master-labs/ramen-noodle-ingredients-kansui-etc/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Kaliumhydrogencarbonat som natriumfrit alternativ til natron",
+    "source": "https://bakerpedia.com/ingredients/potassium-bicarbonate/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Kaliumhydrogencarbonat til afsyring af vin",
+    "source": "https://www.oiv.int/standards/international-code-of-oenological-practices/part-ii-oenological-treatments-and-practices/product-derived-from-grapes,-grape-must-or-wine/chemical-deacidification",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Kaliumhydrogencarbonat i club soda (tidligere: sodavand og mineralvand)",
+    "source": "https://en.wikipedia.org/wiki/Club_soda",
+    "result": "rettet"
+   },
+   {
+    "claim": "Tilladt quantum satis",
+    "source": "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:02008R1333-20240602",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Kaliumrisiko ved nyresygdom og kaliumbesparende medicin",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC12295509/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "'Bidraget fra tilsætningsstoffet er lille'",
+    "source": "",
+    "result": "fjernet"
+   },
+   {
+    "claim": "Koncentreret potaske er irriterende/ætsende",
+    "source": "https://www.ineos.com/globalassets/ineos-group/businesses/ineos-enterprises/businesses/ineos-koh/safety-data-sheet_potassium-carbonate-anhydrous_original-id-150561.pdf",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "'ADI ikke specificeret' (JECFA; tidligere: EU's liste)",
+    "source": "https://www.inchem.org/documents/jecfa/jecmono/v17je02.htm",
+    "result": "rettet"
+   },
+   {
+    "claim": "Ingen offentliggjort EFSA-gen-evaluering fundet",
+    "source": "https://www.efsa.europa.eu/sites/default/files/consultation/120706a.pdf",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Flag kidney_caution",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC12295509/",
+    "result": "bekræftet"
+   }
+  ]
+ },
+ {
+  "code": "E503",
+  "nameDa": "Ammoniumcarbonater",
+  "nameEn": "Ammonium carbonates",
+  "category": "Hævemiddel / surhedsregulerende middel",
+  "euStatus": "approved",
+  "origin": "synthetic",
+  "summary": "Ammoniumcarbonater er hævemidler; ammoniumhydrogencarbonat kendes i Danmark som hjortetakssalt.",
+  "description": "Varianten (i) er ammoniumcarbonat og (ii) ammoniumhydrogencarbonat. Ammoniumhydrogencarbonat fremstilles ved at lede kuldioxid gennem koncentreret ammoniakvand. Ved opvarmning nedbrydes stoffet fuldstændigt til ammoniak, kuldioxid og vand, som alle virker hævende, og der efterlades intet salt. Det giver et sprødt resultat i tørre, flade bagværker, hvor ammoniakken kan slippe ud.",
+  "uses": "Vaniljekranse, klejner, brunkager, pebernødder og andre sprøde småkager samt tørre kiks. Tilladt quantum satis.",
+  "health": "Ammoniak opløses i vand og kan derfor blive siddende i fugtige eller tykke bagværker og give en skarp ammoniaklugt og -smag; stoffet bruges derfor kun i tørre produkter. Håndtering af hjortetakssalt kan irritere øjne, hud og luftveje. JECFA har vurderet ammoniumcarbonat og ammoniumhydrogencarbonat med 'ADI not specified', da mængderne fra tilsætningsstoffet er meget små sammenlignet med de mængder, der skal til for at give fysiologiske ændringer.",
+  "research": "En færdig EFSA-gen-evaluering af ammoniumcarbonater er ikke fundet offentliggjort. Der er i denne gennemgang ikke fundet nyere forskning af betydning.",
+  "keyReferences": [],
+  "pubmedTerm": "ammonium bicarbonate",
+  "flags": [],
+  "classes": [],
+  "variants": [
+   {
+    "code": "E503(i)",
+    "nameDa": "ammoniumkarbonat",
+    "nameEn": "Ammonium carbonate"
+   },
+   {
+    "code": "E503(ii)",
+    "nameDa": "ammoniumhydrogenkarbonat",
+    "nameEn": "Ammonium hydrogen carbonate"
+   }
+  ],
+  "efsa": null,
+  "verification": {
+   "status": "corrected",
+   "sources": [
+    "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:02008R1333-20240602",
+    "https://food.ec.europa.eu/food-safety/food-improvement-agents/additives/re-evaluation_en",
+    "https://www.efsa.europa.eu/sites/default/files/consultation/120706a.pdf",
+    "https://da.wikipedia.org/wiki/Hjortetakssalt",
+    "https://samvirke.dk/artikler/hvad-kan-erstatte-hjortetaksalt",
+    "https://www.sciencedirect.com/topics/agricultural-and-biological-sciences/ammonium-bicarbonate",
+    "https://en.wikipedia.org/wiki/Ammonium_bicarbonate",
+    "https://datasheets.scbt.com/sc-207281.pdf",
+    "https://www.inchem.org/documents/jecfa/jecmono/v17je02.htm"
+   ],
+   "notes": "Runde 3: Bekræftet: hjortetakssalt = ammoniumhydrogencarbonat (E503), fremstilling, fuldstændig nedbrydning uden saltrest, brug i tørre/flade bagværker, vaniljekranse, klejner, brunkager, pebernødder, irritation ved håndtering, JECFA 'ADI not specified'. Rettet: 'restmængden er lille' → ammoniak kan tilbageholdes i fugtige produkter; ADI tilskrevet JECFA. Fjernet: finske brød; 'knækbrød' → tørre kiks."
+  },
+  "wikipedia": "https://en.wikipedia.org/wiki/Ammonium_carbonate",
+  "wikidata": "Q204873",
+  "claims": [
+   {
+    "claim": "Ammoniumhydrogencarbonat kendes som hjortetakssalt (E503)",
+    "source": "https://da.wikipedia.org/wiki/Hjortetakssalt",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Fremstilles af ammoniak, kuldioxid og vand",
+    "source": "https://en.wikipedia.org/wiki/Ammonium_bicarbonate",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Nedbrydes fuldstændigt til CO2, ammoniak og vand uden saltrest",
+    "source": "https://www.sciencedirect.com/topics/agricultural-and-biological-sciences/ammonium-bicarbonate",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Giver sprødt resultat i tørre, flade bagværker",
+    "source": "https://www.sciencedirect.com/topics/agricultural-and-biological-sciences/ammonium-bicarbonate",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Vaniljekranse",
+    "source": "https://samvirke.dk/artikler/hvad-kan-erstatte-hjortetaksalt",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Klejner",
+    "source": "https://da.wikipedia.org/wiki/Hjortetakssalt",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Brunkager og pebernødder (tilføjet)",
+    "source": "https://samvirke.dk/artikler/hvad-kan-erstatte-hjortetaksalt",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Finske brød",
+    "source": "",
+    "result": "fjernet"
+   },
+   {
+    "claim": "Tørre kiks (tidligere: knækbrød)",
+    "source": "https://www.sciencedirect.com/topics/agricultural-and-biological-sciences/ammonium-bicarbonate",
+    "result": "rettet"
+   },
+   {
+    "claim": "Tilladt quantum satis",
+    "source": "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:02008R1333-20240602",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Ammoniak tilbageholdes i fugtige/tykke bagværker (tidligere: 'fordamper næsten helt')",
+    "source": "https://www.sciencedirect.com/topics/agricultural-and-biological-sciences/ammonium-bicarbonate",
+    "result": "rettet"
+   },
+   {
+    "claim": "Håndtering irriterer øjne og luftveje",
+    "source": "https://datasheets.scbt.com/sc-207281.pdf",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "JECFA: 'ADI not specified' (tidligere: EU's liste)",
+    "source": "https://www.inchem.org/documents/jecfa/jecmono/v17je02.htm",
+    "result": "rettet"
+   },
+   {
+    "claim": "Ingen offentliggjort EFSA-gen-evaluering fundet",
+    "source": "https://www.efsa.europa.eu/sites/default/files/consultation/120706a.pdf",
+    "result": "bekræftet"
+   }
+  ]
+ },
+ {
+  "code": "E504",
+  "nameDa": "Magnesiumcarbonater",
+  "nameEn": "Magnesium carbonates",
+  "category": "Surhedsregulerende middel / antiklumpningsmiddel / bærestof",
+  "euStatus": "approved",
+  "origin": "mixed",
+  "summary": "Magnesiumcarbonater er hvide mineralsalte, der bruges som antiklumpningsmiddel og surhedsregulerende middel.",
+  "description": "Varianten (i) er magnesiumcarbonat og (ii) magnesiumhydroxidcarbonat. Let magnesiumcarbonat er et porøst pulver, der binder fugt og holder salt og pulvere fritflydende. Det bruges også som magnesiumkilde i kosttilskud.",
+  "uses": "Bordsalt og krydderier (antiklumpning), slippemiddel ved fremstilling af kiks, kosttilskud. Tilladt quantum satis.",
+  "health": "Store mængder magnesium fra kosttilskud virker afførende; magnesiumcarbonat er blandt de former, der oftest nævnes at give diarré. Personer med nedsat nyrefunktion kan ophobe magnesium og bør undgå magnesiumholdige produkter som fx afføringsmidler uden lægelig vejledning.",
+  "research": "En færdig EFSA-gen-evaluering af magnesiumcarbonater er ikke fundet offentliggjort. Der er i denne gennemgang ikke fundet nyere forskning, der rejser nye spørgsmål.",
+  "keyReferences": [],
+  "pubmedTerm": "magnesium carbonate",
+  "flags": [
+   "laxative",
+   "kidney_caution"
+  ],
+  "classes": [
+   "carrier"
+  ],
+  "variants": [
+   {
+    "code": "E504(i)",
+    "nameDa": "magnesiumkarbonat",
+    "nameEn": "Magnesium carbonate"
+   },
+   {
+    "code": "E504(ii)",
+    "nameDa": "magnesiumhydroxidkarbonat",
+    "nameEn": "Magnesium hydroxide carbonate"
+   }
+  ],
+  "efsa": null,
+  "verification": {
+   "status": "corrected",
+   "sources": [
+    "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:02008R1333-20240602",
+    "https://food.ec.europa.eu/food-safety/food-improvement-agents/additives/re-evaluation_en",
+    "https://www.efsa.europa.eu/sites/default/files/consultation/120706a.pdf",
+    "https://en.wikipedia.org/wiki/Anticaking_agent",
+    "https://www.ulprospector.com/knowledge/9096/fbn-8-types-of-magnesium-food-applications/",
+    "https://ods.od.nih.gov/factsheets/Magnesium-HealthProfessional/",
+    "https://www.ncbi.nlm.nih.gov/sites/books/NBK554593/"
+   ],
+   "notes": "Runde 3: Bekræftet: antiklumpning i salt, magnesiumkilde i kosttilskud, afførende virkning (carbonat nævnt specifikt), risiko ved nedsat nyrefunktion, quantum satis, ingen EFSA-gen-evaluering fundet. Fjernet (ikke belagt): udvinding fra magnesit/kemisk fremstilling, antacida, kakao, tyggegummi og slik samt 'ADI ikke specificeret' (JECFA-vurdering for magnesiumcarbonat ikke fundet i denne runde)."
+  },
+  "wikipedia": "https://en.wikipedia.org/wiki/Magnesium_carbonate",
+  "wikidata": "Q407931",
+  "claims": [
+   {
+    "claim": "Variant (i) magnesiumcarbonat, (ii) magnesiumhydroxidcarbonat",
+    "source": "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:02008R1333-20240602",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Udvindes fra magnesit eller fremstilles kemisk",
+    "source": "",
+    "result": "fjernet"
+   },
+   {
+    "claim": "Binder fugt og holder salt/pulvere fritflydende",
+    "source": "https://www.ulprospector.com/knowledge/9096/fbn-8-types-of-magnesium-food-applications/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Magnesiumkilde i kosttilskud",
+    "source": "https://www.ulprospector.com/knowledge/9096/fbn-8-types-of-magnesium-food-applications/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Antacida",
+    "source": "",
+    "result": "fjernet"
+   },
+   {
+    "claim": "Bordsalt",
+    "source": "https://en.wikipedia.org/wiki/Anticaking_agent",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Slippemiddel ved kiksproduktion (tilføjet)",
+    "source": "https://www.ulprospector.com/knowledge/9096/fbn-8-types-of-magnesium-food-applications/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Kakao, tyggegummi og slik",
+    "source": "",
+    "result": "fjernet"
+   },
+   {
+    "claim": "Tilladt quantum satis",
+    "source": "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:02008R1333-20240602",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "'Ugiftigt i normale mængder'",
+    "source": "",
+    "result": "fjernet"
+   },
+   {
+    "claim": "Store mængder magnesium virker afførende (carbonat nævnt)",
+    "source": "https://ods.od.nih.gov/factsheets/Magnesium-HealthProfessional/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Forsigtighed ved nedsat nyrefunktion",
+    "source": "https://www.ncbi.nlm.nih.gov/sites/books/NBK554593/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "'ADI ikke specificeret' i EU's liste",
+    "source": "",
+    "result": "fjernet"
+   },
+   {
+    "claim": "Ingen offentliggjort EFSA-gen-evaluering fundet",
+    "source": "https://www.efsa.europa.eu/sites/default/files/consultation/120706a.pdf",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Flag laxative og kidney_caution",
+    "source": "https://ods.od.nih.gov/factsheets/Magnesium-HealthProfessional/",
+    "result": "bekræftet"
+   }
+  ]
+ },
+ {
+  "code": "E507",
+  "nameDa": "Saltsyre",
+  "nameEn": "Hydrochloric acid",
+  "category": "Surhedsregulerende middel",
+  "euStatus": "approved",
+  "origin": "synthetic",
+  "summary": "Saltsyre er en stærk syre, som i fødevareindustrien bruges til at regulere surhedsgraden og som hjælpestof i produktionen.",
+  "description": "Saltsyre er en opløsning af hydrogenchlorid i vand; den fremstilles industrielt bl.a. i tilknytning til chloralkali-produktion af klor og natriumhydroxid. Den bruges til syrehydrolyse, fx ved omdannelse af stivelse til glukosesirup og ved fremstilling af hydrolyseret vegetabilsk protein. Kroppen producerer selv saltsyre i mavesækken.",
+  "uses": "Hjælpestof ved produktion af glukosesirup, stivelsesprodukter og proteinhydrolysater samt til pH-justering. Tilladt quantum satis.",
+  "health": "SCF (1991) og JECFA har fastsat 'ADI not specified' for saltsyre og dens kalium-, calcium- og magnesiumsalte, og EFSA konkluderede i 2019, at der ikke er sikkerhedsbekymring ved de rapporterede anvendelser. Ved syrehydrolyse af proteiner med saltsyre kan der dannes 3-MCPD, som EU har fastsat grænseværdier for (forordning (EU) 2023/915).",
+  "research": "EFSA's FAF-panel gen-evaluerede i 2019 saltsyre (E 507), kaliumchlorid (E 508), calciumchlorid (E 509) og magnesiumchlorid (E 511) og konkluderede, at eksponeringen for chlorid fra disse tilsætningsstoffer ikke giver sikkerhedsbekymring ved de rapporterede anvendelser og brugsniveauer. Open Food Facts angiver moderat risiko for overeksponering; dette er Open Food Facts' egen vurdering og ikke en konklusion i EFSA's udtalelse.",
+  "keyReferences": [
+   {
+    "citation": "EFSA FAF Panel. Re-evaluation of hydrochloric acid (E 507), potassium chloride (E 508), calcium chloride (E 509) and magnesium chloride (E 511) as food additives. EFSA Journal. 2019;17(7):5751.",
+    "searchTitle": "Re-evaluation of hydrochloric acid (E 507), potassium chloride (E 508), calcium chloride (E 509) and magnesium chloride (E 511) as food additives"
+   }
+  ],
+  "pubmedTerm": "hydrochloric acid",
+  "flags": [],
+  "classes": [],
+  "variants": [],
+  "efsa": {
+   "title": "Re‐evaluation of hydrochloric acid (E 507), potassium chloride (E 508), calcium chloride (E 509) and magnesium chloride (E 511) as food additives",
+   "url": "https://doi.org/10.2903/j.efsa.2019.5751",
+   "date": "2019/07/06",
+   "adi": "",
+   "overexposureRisk": "en:moderate"
+  },
+  "verification": {
+   "status": "corrected",
+   "sources": [
+    "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2019.5751",
+    "https://pmc.ncbi.nlm.nih.gov/articles/PMC7009240/",
+    "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:02008R1333-20240602",
+    "https://www.essentialchemicalindustry.org/chemicals/hydrogen-chloride.html",
+    "https://eureka.patsnap.com/report-essential-use-cases-of-hydrochloric-acid-in-the-food-industry",
+    "https://www.ifst.org/resources/information-statements/3-monochloropropane-diol-3-mcpd-3-mcpd-esters-and-glycidyl-esters",
+    "https://eur-lex.europa.eu/eli/reg/2023/915/oj/eng",
+    "https://en.wikipedia.org/wiki/Gastric_acid",
+    "https://world.openfoodfacts.org/facets/additives/en:e507-hydrochloric-acid/1"
+   ],
+   "notes": "Runde 3: Bekræftet: HCl i vand, forbindelse til chloralkali-industrien, glukosesirup og HVP ved syrehydrolyse, mavesyre, 3-MCPD og EU-grænseværdier, SCF/JECFA 'ADI not specified', EFSA 2019 uden sikkerhedsbekymring, quantum satis, OFF moderat. Rettet: 'EFSA fandt ingen behov for numerisk ADI' → SCF/JECFA's 'ADI not specified' + EFSA's konklusion om ingen sikkerhedsbekymring. Fjernet (ikke belagt): 'neutraliseret og uden sundhedsmæssig betydning', 'dannelse af almindeligt salt ved neutralisering', 'koncentreret saltsyre er stærkt ætsende' og pH-justering specifikt i drikkevarer og konserves."
+  },
+  "wikipedia": "",
+  "wikidata": "Q2409",
+  "claims": [
+   {
+    "claim": "Saltsyre er opløsning af hydrogenchlorid i vand",
+    "source": "https://www.essentialchemicalindustry.org/chemicals/hydrogen-chloride.html",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Fremstilles bl.a. som biprodukt fra klorproduktion (chloralkali)",
+    "source": "https://www.essentialchemicalindustry.org/chemicals/hydrogen-chloride.html",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Syrehydrolyse ved glukosesirup",
+    "source": "https://eureka.patsnap.com/report-essential-use-cases-of-hydrochloric-acid-in-the-food-industry",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Syrehydrolyse ved hydrolyseret vegetabilsk protein",
+    "source": "https://www.ifst.org/resources/information-statements/3-monochloropropane-diol-3-mcpd-3-mcpd-esters-and-glycidyl-esters",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "'Ved neutralisering dannes almindeligt salt'",
+    "source": "",
+    "result": "fjernet"
+   },
+   {
+    "claim": "Kroppen producerer saltsyre i mavesækken",
+    "source": "https://en.wikipedia.org/wiki/Gastric_acid",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "pH-justering i drikkevarer og konserves (generaliseret til pH-justering)",
+    "source": "https://eureka.patsnap.com/report-essential-use-cases-of-hydrochloric-acid-in-the-food-industry",
+    "result": "rettet"
+   },
+   {
+    "claim": "Tilladt quantum satis",
+    "source": "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:02008R1333-20240602",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "'Neutraliseret i færdige fødevarer og uden sundhedsmæssig betydning'",
+    "source": "",
+    "result": "fjernet"
+   },
+   {
+    "claim": "'Koncentreret saltsyre er stærkt ætsende'",
+    "source": "",
+    "result": "fjernet"
+   },
+   {
+    "claim": "3-MCPD kan dannes ved syrehydrolyse af proteiner",
+    "source": "https://www.ifst.org/resources/information-statements/3-monochloropropane-diol-3-mcpd-3-mcpd-esters-and-glycidyl-esters",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "EU-grænseværdier for 3-MCPD (forordning 2023/915)",
+    "source": "https://eur-lex.europa.eu/eli/reg/2023/915/oj/eng",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "SCF 1991 og JECFA: 'ADI not specified' (tidligere: 'EFSA fandt intet behov for numerisk ADI')",
+    "source": "https://pmc.ncbi.nlm.nih.gov/articles/PMC7009240/",
+    "result": "rettet"
+   },
+   {
+    "claim": "EFSA 2019 (FAF): ingen sikkerhedsbekymring for E507–E509, E511",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2019.5751",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Open Food Facts angiver moderat overeksponeringsrisiko (OFF's egen vurdering)",
+    "source": "https://world.openfoodfacts.org/facets/additives/en:e507-hydrochloric-acid/1",
+    "result": "bekræftet"
+   }
+  ]
+ },
+ {
+  "code": "E520",
+  "nameDa": "Aluminiumsulfat",
+  "nameEn": "Aluminium sulphate",
+  "category": "Stabilisator / fasthedsgivende middel",
+  "euStatus": "approved",
+  "origin": "synthetic",
+  "summary": "Aluminiumsulfat er et aluminiumholdigt salt, som i EU kun må bruges i få fødevarer.",
+  "description": "Aluminiumsulfat fremstilles ved at lade svovlsyre reagere med bauxit, aluminiumoxid eller aluminiumhydroxid. Aluminiumsulfaterne bruges som stabilisator i æggehvideskum og som fasthedsgivende middel i kandiserede kirsebær. Efter EU's stramninger i 2014 er anvendelsen begrænset til flydende æggehvide til æggehvideskum og kandiserede kirsebær.",
+  "uses": "I EU kun tilladt i to anvendelser: flydende æggehvide (kun til æggehvideskum) og kandiserede kirsebær (maks. 200 mg/kg udtrykt som aluminium). Maksimumsgrænserne bør efterses i den konsoliderede tekst af bilag II.",
+  "health": "Aluminiumforbindelser har lav biotilgængelighed ved indtagelse, men aluminium kan ophobe sig i kroppen, især hos personer med nedsat nyrefunktion. EFSA fastsatte i 2008 et tolerabelt ugentligt indtag (TWI) på 1 mg aluminium/kg legemsvægt/uge og fandt, at dette kan overskrides for storforbrugere, især børn, i en betydelig del af EU ved indtag fra alle kilder. TWI'en bygger bl.a. på effekter på nervesystem, testikler, fosterudvikling og nervesystemets udvikling i dyreforsøg. EFSA vurderede i 2008, at aluminium fra kosten ikke udgør en risiko for udvikling af Alzheimers sygdom.",
+  "research": "EFSA's AFC-panel vurderede aluminium fra alle kilder i 2008 og fastsatte en TWI på 1 mg/kg legemsvægt/uge (JECFA's tidligere PTWI var 7 mg/kg). På den baggrund strammede EU med forordning (EU) nr. 380/2012 reglerne for aluminiumholdige tilsætningsstoffer betydeligt; ændringerne for E520–E523 gælder fra 1. februar 2014. EFSA's ANS-panel gen-evaluerede i 2018 aluminiumsulfaterne (E 520–523) og surt natriumaluminiumphosphat (E 541) (EFSA Journal 2018;16(7):5372) og konkluderede, at de ikke giver sikkerhedsbekymring ved de nuværende godkendte anvendelser og niveauer, da de kun må bruges i få produkter og eksponeringen sandsynligvis er tæt på nul. EFSA fandt ingen bekymring for genotoksicitet eller kræftfremkaldende effekt.",
+  "keyReferences": [
+   {
+    "citation": "EFSA ANS Panel. Re-evaluation of aluminium sulphates (E 520–523) and sodium aluminium phosphate (E 541) as food additives. EFSA Journal. 2018;16(7):5372.",
+    "searchTitle": "Re-evaluation of aluminium sulphates (E 520–523) and sodium aluminium phosphate (E 541) as food additives"
+   },
+   {
+    "citation": "EFSA AFC Panel. Safety of aluminium from dietary intake. EFSA Journal. 2008;754:1-34.",
+    "searchTitle": "Safety of aluminium from dietary intake"
+   }
+  ],
+  "pubmedTerm": "aluminium sulfate",
+  "flags": [
+   "children_caution",
+   "kidney_caution"
+  ],
+  "classes": [],
+  "variants": [],
+  "efsa": {
+   "title": "Re-evaluation of aluminium sulphates (E 520–523) and sodium aluminium phosphate (E 541) as food additives",
+   "url": "https://doi.org/10.2903/j.efsa.2018.5372",
+   "date": "2018",
+   "adi": "",
+   "overexposureRisk": ""
+  },
+  "verification": {
+   "status": "corrected",
+   "sources": [
+    "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2018.5372",
+    "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009639/",
+    "https://efsa.onlinelibrary.wiley.com/doi/pdfdirect/10.2903/j.efsa.2008.754",
+    "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:32012R0380",
+    "https://www.eufic.org/en/food-safety/article/aluminium-qa",
+    "https://link.springer.com/article/10.1007/s00204-019-02599-z",
+    "https://www.nzic.org.nz/unsecure_files/book/1F.pdf"
+   ],
+   "notes": "Runde 3: Bekræftet: EFSA 2008 TWI 1 mg/kg/uge og overskridelse især hos børn, forordning 380/2012 (fra 1.2.2014), EFSA 2018 (ingen sikkerhedsbekymring, eksponering ~0, lav biotilgængelighed, ingen genotoksicitet), ophobning ved nyresvigt, maks. 200 mg/kg Al i kandiserede kirsebær. Rettet: anvendelsen er efter 2014 kun flydende æggehvide til æggehvideskum og kandiserede kirsebær (ikke alle kandiserede frugter/grøntsager); EFSA vurderede ingen Alzheimer-risiko fra kosten; TWI sat i forhold til JECFA's PTWI 7 mg/kg. Fjernet: maks. 30 mg/kg for æggehvide (kilder angiver 25 eller 30 mg/kg – bør efterses i konsolideret bilag II) og udsagnet om 'åbent forskningsspørgsmål'."
+  },
+  "wikipedia": "",
+  "wikidata": "Q421857",
+  "claims": [
+   {
+    "claim": "Aluminiumsulfat er et aluminiumholdigt salt",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2018.5372",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Fremstilles ved reaktion mellem svovlsyre og bauxit/aluminiumhydroxid",
+    "source": "https://www.nzic.org.nz/unsecure_files/book/1F.pdf",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "'Aluminiumionerne stabiliserer proteinskum og gør frugt- og grøntsagsvæv fastere' (omformuleret til anvendelserne)",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009639/",
+    "result": "rettet"
+   },
+   {
+    "claim": "Anvendelse kun i flydende æggehvide til æggehvideskum og kandiserede kirsebær (tidligere: kandiserede frugter og grøntsager)",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009639/",
+    "result": "rettet"
+   },
+   {
+    "claim": "Maks. 200 mg/kg som aluminium i kandiserede kirsebær",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009639/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Maks. 30 mg/kg som aluminium i flydende æggehvide (modstridende kilder: 25 eller 30 mg/kg)",
+    "source": "",
+    "result": "fjernet"
+   },
+   {
+    "claim": "Lav biotilgængelighed (optages kun i små mængder)",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009639/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Ophobning især ved nedsat nyrefunktion",
+    "source": "https://link.springer.com/article/10.1007/s00204-019-02599-z",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "EFSA 2008: TWI 1 mg Al/kg lgv/uge",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/pdfdirect/10.2903/j.efsa.2008.754",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "TWI kan overskrides af en betydelig del af befolkningen, især børn",
+    "source": "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:32012R0380",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Effekter på nervesystem og forplantning i dyreforsøg (neuro-, testikel-, embryo- og udviklingstoksicitet)",
+    "source": "https://www.eufic.org/en/food-safety/article/aluminium-qa",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Alzheimers: 'foreslået, men ikke påvist' → EFSA vurderede ingen risiko fra kosten",
+    "source": "https://www.eufic.org/en/food-safety/article/aluminium-qa",
+    "result": "rettet"
+   },
+   {
+    "claim": "EFSA 'sænkede' TWI (præciseret: JECFA's tidligere PTWI var 7 mg/kg)",
+    "source": "https://link.springer.com/article/10.1007/s00204-019-02599-z",
+    "result": "rettet"
+   },
+   {
+    "claim": "Forordning 380/2012 strammede reglerne betydeligt, gældende fra 1. februar 2014",
+    "source": "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:32012R0380",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "'Sammenhæng med neurodegenerative sygdomme er fortsat et åbent forskningsspørgsmål'",
+    "source": "",
+    "result": "fjernet"
+   },
+   {
+    "claim": "EFSA 2018: ingen sikkerhedsbekymring; eksponering sandsynligvis tæt på nul",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2018.5372",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "EFSA 2018: ingen bekymring for genotoksicitet/kræft (tilføjet)",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009639/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Flag children_caution og kidney_caution",
+    "source": "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:32012R0380",
+    "result": "bekræftet"
+   }
+  ]
+ },
+ {
+  "code": "E521",
+  "nameDa": "Aluminiumnatriumsulfat",
+  "nameEn": "Aluminium sodium sulphate",
+  "category": "Stabilisator / fasthedsgivende middel",
+  "euStatus": "approved",
+  "origin": "synthetic",
+  "summary": "Aluminiumnatriumsulfat er et aluminiumholdigt dobbeltsalt (alun), som i EU kun må bruges i få fødevarer.",
+  "description": "Stoffet er et dobbeltsalt (alun) af aluminiumsulfat og natriumsulfat. Aluminiumsulfaterne bruges som stabilisator i æggehvideskum og som fasthedsgivende middel i kandiserede kirsebær. Efter EU's stramninger i 2014 er anvendelsen begrænset til flydende æggehvide til æggehvideskum og kandiserede kirsebær.",
+  "uses": "I EU kun tilladt i to anvendelser: flydende æggehvide (kun til æggehvideskum) og kandiserede kirsebær (maks. 200 mg/kg udtrykt som aluminium). Maksimumsgrænserne bør efterses i den konsoliderede tekst af bilag II.",
+  "health": "Aluminiumforbindelser har lav biotilgængelighed ved indtagelse, men aluminium kan ophobe sig i kroppen, især hos personer med nedsat nyrefunktion. EFSA fastsatte i 2008 et tolerabelt ugentligt indtag (TWI) på 1 mg aluminium/kg legemsvægt/uge og fandt, at dette kan overskrides for storforbrugere, især børn, i en betydelig del af EU ved indtag fra alle kilder. TWI'en bygger bl.a. på effekter på nervesystem, testikler, fosterudvikling og nervesystemets udvikling i dyreforsøg. EFSA vurderede i 2008, at aluminium fra kosten ikke udgør en risiko for udvikling af Alzheimers sygdom.",
+  "research": "EFSA's AFC-panel vurderede aluminium fra alle kilder i 2008 og fastsatte en TWI på 1 mg/kg legemsvægt/uge (JECFA's tidligere PTWI var 7 mg/kg). På den baggrund strammede EU med forordning (EU) nr. 380/2012 reglerne for aluminiumholdige tilsætningsstoffer betydeligt; ændringerne for E520–E523 gælder fra 1. februar 2014. EFSA's ANS-panel gen-evaluerede i 2018 aluminiumsulfaterne (E 520–523) og surt natriumaluminiumphosphat (E 541) (EFSA Journal 2018;16(7):5372) og konkluderede, at de ikke giver sikkerhedsbekymring ved de nuværende godkendte anvendelser og niveauer, da de kun må bruges i få produkter og eksponeringen sandsynligvis er tæt på nul. EFSA fandt ingen bekymring for genotoksicitet eller kræftfremkaldende effekt.",
+  "keyReferences": [
+   {
+    "citation": "EFSA ANS Panel. Re-evaluation of aluminium sulphates (E 520–523) and sodium aluminium phosphate (E 541) as food additives. EFSA Journal. 2018;16(7):5372.",
+    "searchTitle": "Re-evaluation of aluminium sulphates (E 520–523) and sodium aluminium phosphate (E 541) as food additives"
+   },
+   {
+    "citation": "EFSA AFC Panel. Safety of aluminium from dietary intake. EFSA Journal. 2008;754:1-34.",
+    "searchTitle": "Safety of aluminium from dietary intake"
+   }
+  ],
+  "pubmedTerm": "aluminium sodium sulfate",
+  "flags": [
+   "children_caution",
+   "kidney_caution"
+  ],
+  "classes": [],
+  "variants": [],
+  "efsa": {
+   "title": "Re-evaluation of aluminium sulphates (E 520–523) and sodium aluminium phosphate (E 541) as food additives",
+   "url": "https://doi.org/10.2903/j.efsa.2018.5372",
+   "date": "2018",
+   "adi": "",
+   "overexposureRisk": ""
+  },
+  "verification": {
+   "status": "corrected",
+   "sources": [
+    "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2018.5372",
+    "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009639/",
+    "https://efsa.onlinelibrary.wiley.com/doi/pdfdirect/10.2903/j.efsa.2008.754",
+    "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:32012R0380",
+    "https://www.eufic.org/en/food-safety/article/aluminium-qa",
+    "https://link.springer.com/article/10.1007/s00204-019-02599-z"
+   ],
+   "notes": "Runde 3: Bekræftet: EFSA 2008 TWI 1 mg/kg/uge og overskridelse især hos børn, forordning 380/2012 (fra 1.2.2014), EFSA 2018 (ingen sikkerhedsbekymring, eksponering ~0, lav biotilgængelighed, ingen genotoksicitet), ophobning ved nyresvigt, maks. 200 mg/kg Al i kandiserede kirsebær. Rettet: anvendelsen er efter 2014 kun flydende æggehvide til æggehvideskum og kandiserede kirsebær (ikke alle kandiserede frugter/grøntsager); EFSA vurderede ingen Alzheimer-risiko fra kosten; TWI sat i forhold til JECFA's PTWI 7 mg/kg. Fjernet: maks. 30 mg/kg for æggehvide (kilder angiver 25 eller 30 mg/kg – bør efterses i konsolideret bilag II), ubelagt fremstillingsbeskrivelse og udsagnet om 'åbent forskningsspørgsmål'."
+  },
+  "wikipedia": "",
+  "wikidata": "Q413559",
+  "claims": [
+   {
+    "claim": "Aluminiumnatriumsulfat er et aluminiumholdigt salt",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2018.5372",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Dobbeltsalt (alun) af aluminiumsulfat og natriumsulfat",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009639/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Fremstilling fra aluminiumhydroxid/bauxit, svovlsyre og et natrium-/kalium-/ammoniumsalt",
+    "source": "",
+    "result": "fjernet"
+   },
+   {
+    "claim": "'Aluminiumionerne stabiliserer proteinskum og gør frugt- og grøntsagsvæv fastere' (omformuleret til anvendelserne)",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009639/",
+    "result": "rettet"
+   },
+   {
+    "claim": "Anvendelse kun i flydende æggehvide til æggehvideskum og kandiserede kirsebær (tidligere: kandiserede frugter og grøntsager)",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009639/",
+    "result": "rettet"
+   },
+   {
+    "claim": "Maks. 200 mg/kg som aluminium i kandiserede kirsebær",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009639/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Maks. 30 mg/kg som aluminium i flydende æggehvide (modstridende kilder: 25 eller 30 mg/kg)",
+    "source": "",
+    "result": "fjernet"
+   },
+   {
+    "claim": "Lav biotilgængelighed (optages kun i små mængder)",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009639/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Ophobning især ved nedsat nyrefunktion",
+    "source": "https://link.springer.com/article/10.1007/s00204-019-02599-z",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "EFSA 2008: TWI 1 mg Al/kg lgv/uge",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/pdfdirect/10.2903/j.efsa.2008.754",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "TWI kan overskrides af en betydelig del af befolkningen, især børn",
+    "source": "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:32012R0380",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Effekter på nervesystem og forplantning i dyreforsøg (neuro-, testikel-, embryo- og udviklingstoksicitet)",
+    "source": "https://www.eufic.org/en/food-safety/article/aluminium-qa",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Alzheimers: 'foreslået, men ikke påvist' → EFSA vurderede ingen risiko fra kosten",
+    "source": "https://www.eufic.org/en/food-safety/article/aluminium-qa",
+    "result": "rettet"
+   },
+   {
+    "claim": "EFSA 'sænkede' TWI (præciseret: JECFA's tidligere PTWI var 7 mg/kg)",
+    "source": "https://link.springer.com/article/10.1007/s00204-019-02599-z",
+    "result": "rettet"
+   },
+   {
+    "claim": "Forordning 380/2012 strammede reglerne betydeligt, gældende fra 1. februar 2014",
+    "source": "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:32012R0380",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "'Sammenhæng med neurodegenerative sygdomme er fortsat et åbent forskningsspørgsmål'",
+    "source": "",
+    "result": "fjernet"
+   },
+   {
+    "claim": "EFSA 2018: ingen sikkerhedsbekymring; eksponering sandsynligvis tæt på nul",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2018.5372",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "EFSA 2018: ingen bekymring for genotoksicitet/kræft (tilføjet)",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009639/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Flag children_caution og kidney_caution",
+    "source": "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:32012R0380",
+    "result": "bekræftet"
+   }
+  ]
+ },
+ {
+  "code": "E522",
+  "nameDa": "Aluminiumkaliumsulfat",
+  "nameEn": "Aluminium potassium sulphate",
+  "category": "Stabilisator / fasthedsgivende middel",
+  "euStatus": "approved",
+  "origin": "synthetic",
+  "summary": "Aluminiumkaliumsulfat er et aluminiumholdigt dobbeltsalt (alun), som i EU kun må bruges i få fødevarer.",
+  "description": "Stoffet er et dobbeltsalt (alun) af aluminiumsulfat og kaliumsulfat. Aluminiumsulfaterne bruges som stabilisator i æggehvideskum og som fasthedsgivende middel i kandiserede kirsebær. Efter EU's stramninger i 2014 er anvendelsen begrænset til flydende æggehvide til æggehvideskum og kandiserede kirsebær.",
+  "uses": "I EU kun tilladt i to anvendelser: flydende æggehvide (kun til æggehvideskum) og kandiserede kirsebær (maks. 200 mg/kg udtrykt som aluminium). Maksimumsgrænserne bør efterses i den konsoliderede tekst af bilag II.",
+  "health": "Aluminiumforbindelser har lav biotilgængelighed ved indtagelse, men aluminium kan ophobe sig i kroppen, især hos personer med nedsat nyrefunktion. EFSA fastsatte i 2008 et tolerabelt ugentligt indtag (TWI) på 1 mg aluminium/kg legemsvægt/uge og fandt, at dette kan overskrides for storforbrugere, især børn, i en betydelig del af EU ved indtag fra alle kilder. TWI'en bygger bl.a. på effekter på nervesystem, testikler, fosterudvikling og nervesystemets udvikling i dyreforsøg. EFSA vurderede i 2008, at aluminium fra kosten ikke udgør en risiko for udvikling af Alzheimers sygdom.",
+  "research": "EFSA's AFC-panel vurderede aluminium fra alle kilder i 2008 og fastsatte en TWI på 1 mg/kg legemsvægt/uge (JECFA's tidligere PTWI var 7 mg/kg). På den baggrund strammede EU med forordning (EU) nr. 380/2012 reglerne for aluminiumholdige tilsætningsstoffer betydeligt; ændringerne for E520–E523 gælder fra 1. februar 2014. EFSA's ANS-panel gen-evaluerede i 2018 aluminiumsulfaterne (E 520–523) og surt natriumaluminiumphosphat (E 541) (EFSA Journal 2018;16(7):5372) og konkluderede, at de ikke giver sikkerhedsbekymring ved de nuværende godkendte anvendelser og niveauer, da de kun må bruges i få produkter og eksponeringen sandsynligvis er tæt på nul. EFSA fandt ingen bekymring for genotoksicitet eller kræftfremkaldende effekt.",
+  "keyReferences": [
+   {
+    "citation": "EFSA ANS Panel. Re-evaluation of aluminium sulphates (E 520–523) and sodium aluminium phosphate (E 541) as food additives. EFSA Journal. 2018;16(7):5372.",
+    "searchTitle": "Re-evaluation of aluminium sulphates (E 520–523) and sodium aluminium phosphate (E 541) as food additives"
+   },
+   {
+    "citation": "EFSA AFC Panel. Safety of aluminium from dietary intake. EFSA Journal. 2008;754:1-34.",
+    "searchTitle": "Safety of aluminium from dietary intake"
+   }
+  ],
+  "pubmedTerm": "aluminium potassium sulfate",
+  "flags": [
+   "children_caution",
+   "kidney_caution"
+  ],
+  "classes": [],
+  "variants": [],
+  "efsa": {
+   "title": "Re-evaluation of aluminium sulphates (E 520–523) and sodium aluminium phosphate (E 541) as food additives",
+   "url": "https://doi.org/10.2903/j.efsa.2018.5372",
+   "date": "2018",
+   "adi": "",
+   "overexposureRisk": ""
+  },
+  "verification": {
+   "status": "corrected",
+   "sources": [
+    "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2018.5372",
+    "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009639/",
+    "https://efsa.onlinelibrary.wiley.com/doi/pdfdirect/10.2903/j.efsa.2008.754",
+    "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:32012R0380",
+    "https://www.eufic.org/en/food-safety/article/aluminium-qa",
+    "https://link.springer.com/article/10.1007/s00204-019-02599-z"
+   ],
+   "notes": "Runde 3: Bekræftet: EFSA 2008 TWI 1 mg/kg/uge og overskridelse især hos børn, forordning 380/2012 (fra 1.2.2014), EFSA 2018 (ingen sikkerhedsbekymring, eksponering ~0, lav biotilgængelighed, ingen genotoksicitet), ophobning ved nyresvigt, maks. 200 mg/kg Al i kandiserede kirsebær. Rettet: anvendelsen er efter 2014 kun flydende æggehvide til æggehvideskum og kandiserede kirsebær (ikke alle kandiserede frugter/grøntsager); EFSA vurderede ingen Alzheimer-risiko fra kosten; TWI sat i forhold til JECFA's PTWI 7 mg/kg. Fjernet: maks. 30 mg/kg for æggehvide (kilder angiver 25 eller 30 mg/kg – bør efterses i konsolideret bilag II), ubelagt fremstillingsbeskrivelse og udsagnet om 'åbent forskningsspørgsmål'."
+  },
+  "wikipedia": "",
+  "wikidata": "Q411309",
+  "claims": [
+   {
+    "claim": "Aluminiumkaliumsulfat er et aluminiumholdigt salt",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2018.5372",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Dobbeltsalt (alun) af aluminiumsulfat og kaliumsulfat",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009639/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Fremstilling fra aluminiumhydroxid/bauxit, svovlsyre og et natrium-/kalium-/ammoniumsalt",
+    "source": "",
+    "result": "fjernet"
+   },
+   {
+    "claim": "'Aluminiumionerne stabiliserer proteinskum og gør frugt- og grøntsagsvæv fastere' (omformuleret til anvendelserne)",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009639/",
+    "result": "rettet"
+   },
+   {
+    "claim": "Anvendelse kun i flydende æggehvide til æggehvideskum og kandiserede kirsebær (tidligere: kandiserede frugter og grøntsager)",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009639/",
+    "result": "rettet"
+   },
+   {
+    "claim": "Maks. 200 mg/kg som aluminium i kandiserede kirsebær",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009639/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Maks. 30 mg/kg som aluminium i flydende æggehvide (modstridende kilder: 25 eller 30 mg/kg)",
+    "source": "",
+    "result": "fjernet"
+   },
+   {
+    "claim": "Lav biotilgængelighed (optages kun i små mængder)",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009639/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Ophobning især ved nedsat nyrefunktion",
+    "source": "https://link.springer.com/article/10.1007/s00204-019-02599-z",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "EFSA 2008: TWI 1 mg Al/kg lgv/uge",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/pdfdirect/10.2903/j.efsa.2008.754",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "TWI kan overskrides af en betydelig del af befolkningen, især børn",
+    "source": "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:32012R0380",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Effekter på nervesystem og forplantning i dyreforsøg (neuro-, testikel-, embryo- og udviklingstoksicitet)",
+    "source": "https://www.eufic.org/en/food-safety/article/aluminium-qa",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Alzheimers: 'foreslået, men ikke påvist' → EFSA vurderede ingen risiko fra kosten",
+    "source": "https://www.eufic.org/en/food-safety/article/aluminium-qa",
+    "result": "rettet"
+   },
+   {
+    "claim": "EFSA 'sænkede' TWI (præciseret: JECFA's tidligere PTWI var 7 mg/kg)",
+    "source": "https://link.springer.com/article/10.1007/s00204-019-02599-z",
+    "result": "rettet"
+   },
+   {
+    "claim": "Forordning 380/2012 strammede reglerne betydeligt, gældende fra 1. februar 2014",
+    "source": "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:32012R0380",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "'Sammenhæng med neurodegenerative sygdomme er fortsat et åbent forskningsspørgsmål'",
+    "source": "",
+    "result": "fjernet"
+   },
+   {
+    "claim": "EFSA 2018: ingen sikkerhedsbekymring; eksponering sandsynligvis tæt på nul",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2018.5372",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "EFSA 2018: ingen bekymring for genotoksicitet/kræft (tilføjet)",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009639/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Flag children_caution og kidney_caution",
+    "source": "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:32012R0380",
+    "result": "bekræftet"
+   }
+  ]
+ },
+ {
+  "code": "E523",
+  "nameDa": "Aluminiumammoniumsulfat",
+  "nameEn": "Aluminium ammonium sulphate",
+  "category": "Stabilisator / fasthedsgivende middel",
+  "euStatus": "approved",
+  "origin": "synthetic",
+  "summary": "Aluminiumammoniumsulfat er et aluminiumholdigt dobbeltsalt (alun), som i EU kun må bruges i få fødevarer.",
+  "description": "Stoffet er et dobbeltsalt (alun) af aluminiumsulfat og ammoniumsulfat. Aluminiumsulfaterne bruges som stabilisator i æggehvideskum og som fasthedsgivende middel i kandiserede kirsebær. Efter EU's stramninger i 2014 er anvendelsen begrænset til flydende æggehvide til æggehvideskum og kandiserede kirsebær.",
+  "uses": "I EU kun tilladt i to anvendelser: flydende æggehvide (kun til æggehvideskum) og kandiserede kirsebær (maks. 200 mg/kg udtrykt som aluminium). Maksimumsgrænserne bør efterses i den konsoliderede tekst af bilag II.",
+  "health": "Aluminiumforbindelser har lav biotilgængelighed ved indtagelse, men aluminium kan ophobe sig i kroppen, især hos personer med nedsat nyrefunktion. EFSA fastsatte i 2008 et tolerabelt ugentligt indtag (TWI) på 1 mg aluminium/kg legemsvægt/uge og fandt, at dette kan overskrides for storforbrugere, især børn, i en betydelig del af EU ved indtag fra alle kilder. TWI'en bygger bl.a. på effekter på nervesystem, testikler, fosterudvikling og nervesystemets udvikling i dyreforsøg. EFSA vurderede i 2008, at aluminium fra kosten ikke udgør en risiko for udvikling af Alzheimers sygdom.",
+  "research": "EFSA's AFC-panel vurderede aluminium fra alle kilder i 2008 og fastsatte en TWI på 1 mg/kg legemsvægt/uge (JECFA's tidligere PTWI var 7 mg/kg). På den baggrund strammede EU med forordning (EU) nr. 380/2012 reglerne for aluminiumholdige tilsætningsstoffer betydeligt; ændringerne for E520–E523 gælder fra 1. februar 2014. EFSA's ANS-panel gen-evaluerede i 2018 aluminiumsulfaterne (E 520–523) og surt natriumaluminiumphosphat (E 541) (EFSA Journal 2018;16(7):5372) og konkluderede, at de ikke giver sikkerhedsbekymring ved de nuværende godkendte anvendelser og niveauer, da de kun må bruges i få produkter og eksponeringen sandsynligvis er tæt på nul. EFSA fandt ingen bekymring for genotoksicitet eller kræftfremkaldende effekt.",
+  "keyReferences": [
+   {
+    "citation": "EFSA ANS Panel. Re-evaluation of aluminium sulphates (E 520–523) and sodium aluminium phosphate (E 541) as food additives. EFSA Journal. 2018;16(7):5372.",
+    "searchTitle": "Re-evaluation of aluminium sulphates (E 520–523) and sodium aluminium phosphate (E 541) as food additives"
+   },
+   {
+    "citation": "EFSA AFC Panel. Safety of aluminium from dietary intake. EFSA Journal. 2008;754:1-34.",
+    "searchTitle": "Safety of aluminium from dietary intake"
+   }
+  ],
+  "pubmedTerm": "aluminium ammonium sulfate",
+  "flags": [
+   "children_caution",
+   "kidney_caution"
+  ],
+  "classes": [
+   "stabiliser"
+  ],
+  "variants": [],
+  "efsa": {
+   "title": "Re-evaluation of aluminium sulphates (E 520–523) and sodium aluminium phosphate (E 541) as food additives",
+   "url": "https://doi.org/10.2903/j.efsa.2018.5372",
+   "date": "2018",
+   "adi": "",
+   "overexposureRisk": ""
+  },
+  "verification": {
+   "status": "corrected",
+   "sources": [
+    "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2018.5372",
+    "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009639/",
+    "https://efsa.onlinelibrary.wiley.com/doi/pdfdirect/10.2903/j.efsa.2008.754",
+    "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:32012R0380",
+    "https://www.eufic.org/en/food-safety/article/aluminium-qa",
+    "https://link.springer.com/article/10.1007/s00204-019-02599-z"
+   ],
+   "notes": "Runde 3: Bekræftet: EFSA 2008 TWI 1 mg/kg/uge og overskridelse især hos børn, forordning 380/2012 (fra 1.2.2014), EFSA 2018 (ingen sikkerhedsbekymring, eksponering ~0, lav biotilgængelighed, ingen genotoksicitet), ophobning ved nyresvigt, maks. 200 mg/kg Al i kandiserede kirsebær. Rettet: anvendelsen er efter 2014 kun flydende æggehvide til æggehvideskum og kandiserede kirsebær (ikke alle kandiserede frugter/grøntsager); EFSA vurderede ingen Alzheimer-risiko fra kosten; TWI sat i forhold til JECFA's PTWI 7 mg/kg. Fjernet: maks. 30 mg/kg for æggehvide (kilder angiver 25 eller 30 mg/kg – bør efterses i konsolideret bilag II), ubelagt fremstillingsbeskrivelse og udsagnet om 'åbent forskningsspørgsmål'."
+  },
+  "wikipedia": "",
+  "wikidata": "Q419370",
+  "claims": [
+   {
+    "claim": "Aluminiumammoniumsulfat er et aluminiumholdigt salt",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2018.5372",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Dobbeltsalt (alun) af aluminiumsulfat og ammoniumsulfat",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009639/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Fremstilling fra aluminiumhydroxid/bauxit, svovlsyre og et natrium-/kalium-/ammoniumsalt",
+    "source": "",
+    "result": "fjernet"
+   },
+   {
+    "claim": "'Aluminiumionerne stabiliserer proteinskum og gør frugt- og grøntsagsvæv fastere' (omformuleret til anvendelserne)",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009639/",
+    "result": "rettet"
+   },
+   {
+    "claim": "Anvendelse kun i flydende æggehvide til æggehvideskum og kandiserede kirsebær (tidligere: kandiserede frugter og grøntsager)",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009639/",
+    "result": "rettet"
+   },
+   {
+    "claim": "Maks. 200 mg/kg som aluminium i kandiserede kirsebær",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009639/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Maks. 30 mg/kg som aluminium i flydende æggehvide (modstridende kilder: 25 eller 30 mg/kg)",
+    "source": "",
+    "result": "fjernet"
+   },
+   {
+    "claim": "Lav biotilgængelighed (optages kun i små mængder)",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009639/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Ophobning især ved nedsat nyrefunktion",
+    "source": "https://link.springer.com/article/10.1007/s00204-019-02599-z",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "EFSA 2008: TWI 1 mg Al/kg lgv/uge",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/pdfdirect/10.2903/j.efsa.2008.754",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "TWI kan overskrides af en betydelig del af befolkningen, især børn",
+    "source": "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:32012R0380",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Effekter på nervesystem og forplantning i dyreforsøg (neuro-, testikel-, embryo- og udviklingstoksicitet)",
+    "source": "https://www.eufic.org/en/food-safety/article/aluminium-qa",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Alzheimers: 'foreslået, men ikke påvist' → EFSA vurderede ingen risiko fra kosten",
+    "source": "https://www.eufic.org/en/food-safety/article/aluminium-qa",
+    "result": "rettet"
+   },
+   {
+    "claim": "EFSA 'sænkede' TWI (præciseret: JECFA's tidligere PTWI var 7 mg/kg)",
+    "source": "https://link.springer.com/article/10.1007/s00204-019-02599-z",
+    "result": "rettet"
+   },
+   {
+    "claim": "Forordning 380/2012 strammede reglerne betydeligt, gældende fra 1. februar 2014",
+    "source": "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:32012R0380",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "'Sammenhæng med neurodegenerative sygdomme er fortsat et åbent forskningsspørgsmål'",
+    "source": "",
+    "result": "fjernet"
+   },
+   {
+    "claim": "EFSA 2018: ingen sikkerhedsbekymring; eksponering sandsynligvis tæt på nul",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2018.5372",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "EFSA 2018: ingen bekymring for genotoksicitet/kræft (tilføjet)",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009639/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Flag children_caution og kidney_caution",
+    "source": "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:32012R0380",
+    "result": "bekræftet"
+   }
+  ]
+ },
+ {
+  "code": "E524",
+  "nameDa": "Natriumhydroxid",
+  "nameEn": "Sodium hydroxide",
+  "category": "Surhedsregulerende middel",
+  "euStatus": "approved",
+  "origin": "synthetic",
+  "summary": "Natriumhydroxid (kaustisk soda, lud) er en stærk base, der bruges til at regulere surhedsgrad og behandle visse fødevarer.",
+  "description": "Stoffet fremstilles ved elektrolyse af saltvand (chloralkali-processen). I fødevareproduktion bruges det til pH-regulering, kemisk skrælning af frugt og grøntsager (fx mandarinbåde til dåse), alkalisering af kakao og behandling af oliven. Det bruges også i ludbadet, der giver kringler (pretzels) og laugenbrød deres brune, blanke skorpe, og til den traditionelle norske lutefisk.",
+  "uses": "Laugenbrød og kringler, oliven (bl.a. sorte oliven i californisk stil), alkaliseret kakao, lutefisk, mandariner i dåse (skrælning), pH-regulering. Tilladt quantum satis.",
+  "health": "Det koncentrerede stof (lud) er stærkt ætsende og skal håndteres forsigtigt og holdes utilgængeligt for børn. JECFA fastsatte i 1965 'ADI not limited' for natriumhydroxid.",
+  "research": "Stoffet indgår i EFSA's gen-evalueringsprogram for tilsætningsstoffer og i EFSA's opkald om brugsdata, men der er (pr. 2026) ikke fundet en offentliggjort EFSA-gen-evaluering. Der er i denne gennemgang ikke fundet relevant nyere forskning om stoffet som fødevaretilsætning.",
+  "keyReferences": [],
+  "pubmedTerm": "sodium hydroxide",
+  "flags": [],
+  "classes": [],
+  "variants": [],
+  "efsa": null,
+  "verification": {
+   "status": "corrected",
+   "sources": [
+    "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:02008R1333-20240602",
+    "https://food.ec.europa.eu/food-safety/food-improvement-agents/additives/re-evaluation_en",
+    "https://www.efsa.europa.eu/sites/default/files/consultation/160524.pdf",
+    "https://en.wikipedia.org/wiki/Chloralkali_process",
+    "https://bakerpedia.com/ingredients/lye/",
+    "https://www.kingarthurbaking.com/blog/2021/05/20/a-bakers-tips-for-safely-working-with-lye",
+    "https://www.amoytopfoods.com/newsinfo-how-do-we-make-canned-mandarin-oranges-without-the-skin-part.html",
+    "https://en.wikipedia.org/wiki/Dutch_process_cocoa",
+    "https://www.fao.org/fileadmin/user_upload/jecfa_additives/docs/Monograph1/Additive-410.pdf"
+   ],
+   "notes": "Runde 3: Bekræftet: chloralkali-processen, kringler/laugenbrød, oliven, kakao, skrælning (mandariner), lutefisk, quantum satis, lud er ætsende, JECFA 1965 'ADI not limited', ingen EFSA-gen-evaluering fundet. Rettet: JECFA's betegnelse er 'ADI not limited'; 'sorte oliven' præciseret. Fjernet: SCF-vurdering (ikke fundet), 'i de færdige fødevarer er baserne neutraliseret og uden sundhedsmæssig betydning' og begrundelsen om ioner i stofskiftet (ikke belagt). Fejlagtig note om magnesium-UL fjernet."
+  },
+  "wikipedia": "https://en.wikipedia.org/wiki/Sodium_hydroxide",
+  "wikidata": "Q102769",
+  "claims": [
+   {
+    "claim": "Fremstilles ved elektrolyse af saltvand (chloralkali)",
+    "source": "https://en.wikipedia.org/wiki/Chloralkali_process",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Neutralisering af syrer/pH-regulering",
+    "source": "https://bakerpedia.com/ingredients/lye/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Kemisk skrælning af frugt og grøntsager",
+    "source": "https://bakerpedia.com/ingredients/lye/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Alkalisering af kakao",
+    "source": "https://en.wikipedia.org/wiki/Dutch_process_cocoa",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Behandling af oliven (sorte oliven i californisk stil)",
+    "source": "https://bakerpedia.com/ingredients/lye/",
+    "result": "rettet"
+   },
+   {
+    "claim": "Kringler og laugenbrød får brun, blank skorpe",
+    "source": "https://bakerpedia.com/ingredients/lye/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Lutefisk",
+    "source": "https://bakerpedia.com/ingredients/lye/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Mandariner i dåse (skrælning)",
+    "source": "https://www.amoytopfoods.com/newsinfo-how-do-we-make-canned-mandarin-oranges-without-the-skin-part.html",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Tilladt quantum satis",
+    "source": "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:02008R1333-20240602",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "'I de færdige fødevarer er baserne neutraliseret og uden sundhedsmæssig betydning'",
+    "source": "",
+    "result": "fjernet"
+   },
+   {
+    "claim": "Koncentreret stof er stærkt ætsende",
+    "source": "https://www.kingarthurbaking.com/blog/2021/05/20/a-bakers-tips-for-safely-working-with-lye",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "SCF har vurderet stoffet som 'ADI ikke specificeret'",
+    "source": "",
+    "result": "fjernet"
+   },
+   {
+    "claim": "JECFA: 'ADI not limited' (1965)",
+    "source": "https://www.fao.org/fileadmin/user_upload/jecfa_additives/docs/Monograph1/Additive-410.pdf",
+    "result": "rettet"
+   },
+   {
+    "claim": "Indgår i EFSA's gen-evalueringsprogram; ingen offentliggjort gen-evaluering fundet",
+    "source": "https://www.efsa.europa.eu/sites/default/files/consultation/160524.pdf",
+    "result": "bekræftet"
+   }
+  ]
+ },
+ {
+  "code": "E525",
+  "nameDa": "Kaliumhydroxid",
+  "nameEn": "Potassium hydroxide",
+  "category": "Surhedsregulerende middel",
+  "euStatus": "approved",
+  "origin": "synthetic",
+  "summary": "Kaliumhydroxid (kaliumlud) er en stærk base, der bruges til at regulere surhedsgrad.",
+  "description": "Stoffet fremstilles ved elektrolyse af en kaliumchloridopløsning. Det bruges til pH-regulering og til alkalisering af kakao.",
+  "uses": "Alkaliseret kakao og chokolade samt pH-regulering i andre fødevarer. Tilladt quantum satis.",
+  "health": "JECFA fastsatte i 1965 'ADI not limited' for kaliumhydroxid.",
+  "research": "Stoffet indgår i EFSA's gen-evalueringsprogram for tilsætningsstoffer og i EFSA's opkald om brugsdata, men der er (pr. 2026) ikke fundet en offentliggjort EFSA-gen-evaluering. Der er i denne gennemgang ikke fundet relevant nyere forskning om stoffet som fødevaretilsætning.",
+  "keyReferences": [],
+  "pubmedTerm": "potassium hydroxide",
+  "flags": [],
+  "classes": [],
+  "variants": [],
+  "efsa": null,
+  "verification": {
+   "status": "corrected",
+   "sources": [
+    "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:02008R1333-20240602",
+    "https://food.ec.europa.eu/food-safety/food-improvement-agents/additives/re-evaluation_en",
+    "https://www.efsa.europa.eu/sites/default/files/consultation/160524.pdf",
+    "https://patents.google.com/patent/US4253923A/en",
+    "https://bakerpedia.com/ingredients/cocoa-alkalization/",
+    "https://apps.who.int/food-additives-contaminants-jecfa-database/Home/Chemical/2446"
+   ],
+   "notes": "Runde 3: Bekræftet: elektrolyse af KCl, kakaoalkalisering, quantum satis, JECFA 1965 'ADI not limited', ingen EFSA-gen-evaluering fundet. Fjernet (ikke belagt i denne runde): 'neutraliseret og uden sundhedsmæssig betydning', 'stærkt ætsende' (ingen kilde søgt for KOH), SCF-vurdering, 'svarer i funktion til natriumhydroxid' og neutralisering specifikt i drikkevarer. Fejlagtig note om magnesium-UL fjernet."
+  },
+  "wikipedia": "https://en.wikipedia.org/wiki/Potassium_hydroxide",
+  "wikidata": "Q132298",
+  "claims": [
+   {
+    "claim": "Fremstilles ved elektrolyse af kaliumchloridopløsning",
+    "source": "https://patents.google.com/patent/US4253923A/en",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Neutralisering/pH-regulering",
+    "source": "https://bakerpedia.com/ingredients/cocoa-alkalization/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Alkalisering af kakao",
+    "source": "https://bakerpedia.com/ingredients/cocoa-alkalization/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "'Svarer i funktion til natriumhydroxid'",
+    "source": "",
+    "result": "fjernet"
+   },
+   {
+    "claim": "Neutralisering i drikkevarer",
+    "source": "",
+    "result": "fjernet"
+   },
+   {
+    "claim": "Tilladt quantum satis",
+    "source": "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:02008R1333-20240602",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "'Baserne er neutraliseret og uden sundhedsmæssig betydning'",
+    "source": "",
+    "result": "fjernet"
+   },
+   {
+    "claim": "'Koncentreret stof er stærkt ætsende'",
+    "source": "",
+    "result": "fjernet"
+   },
+   {
+    "claim": "SCF 'ADI ikke specificeret'",
+    "source": "",
+    "result": "fjernet"
+   },
+   {
+    "claim": "JECFA: 'ADI not limited' (1965)",
+    "source": "https://apps.who.int/food-additives-contaminants-jecfa-database/Home/Chemical/2446",
+    "result": "rettet"
+   },
+   {
+    "claim": "Ingen offentliggjort EFSA-gen-evaluering fundet",
+    "source": "https://www.efsa.europa.eu/sites/default/files/consultation/160524.pdf",
+    "result": "bekræftet"
+   }
+  ]
+ },
+ {
+  "code": "E526",
+  "nameDa": "Calciumhydroxid",
+  "nameEn": "Calcium hydroxide",
+  "category": "Surhedsregulerende middel / fasthedsgivende middel",
+  "euStatus": "approved",
+  "origin": "synthetic",
+  "summary": "Calciumhydroxid (læsket kalk) er en base, der bruges til at regulere surhedsgrad og i traditionel majsbehandling.",
+  "description": "Stoffet fremstilles ved at brænde kalksten til calciumoxid (brændt kalk), som derefter tilsættes vand ('læskes'). I Mesoamerika bruges det traditionelt til nixtamalisering af majs, hvor den alkaliske kogning frigør bundet niacin og gør det biologisk tilgængeligt; den behandlede majs males til masa til tortillas. Det bruges også til at bevare fastheden i syltede grøntsager og i sukkerraffinering.",
+  "uses": "Majstortillas og andre produkter af nixtamaliseret majs, syltede grøntsager, sukker (raffinering), alkaliseret kakao. Tilladt quantum satis.",
+  "health": "JECFA fastsatte i 1965 'ADI not limited' for calciumhydroxid.",
+  "research": "Stoffet indgår i EFSA's gen-evalueringsprogram for tilsætningsstoffer og i EFSA's opkald om brugsdata, men der er (pr. 2026) ikke fundet en offentliggjort EFSA-gen-evaluering. Nixtamalisering er velbeskrevet i ernæringsforskningen som en metode, der forebygger pellagra ved at gøre niacin i majs tilgængeligt.",
+  "keyReferences": [],
+  "pubmedTerm": "calcium hydroxide",
+  "flags": [],
+  "classes": [],
+  "variants": [],
+  "efsa": null,
+  "verification": {
+   "status": "corrected",
+   "sources": [
+    "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:02008R1333-20240602",
+    "https://food.ec.europa.eu/food-safety/food-improvement-agents/additives/re-evaluation_en",
+    "https://www.efsa.europa.eu/sites/default/files/consultation/160524.pdf",
+    "https://www.lhoist.com/en/products-and-services/material/hydrated-lime",
+    "https://en.wikipedia.org/wiki/Nixtamalization",
+    "https://www.sciencedirect.com/topics/food-science/nixtamalization",
+    "https://www.foodadditivesasia.com/en/market-insights/applications-and-buyers/calcium-hydroxide-food-industry-uses-purification-ph-control",
+    "https://www.omri.org/sugar-lime-and-calcium-oxide",
+    "https://bakerpedia.com/ingredients/cocoa-alkalization/",
+    "https://apps.who.int/food-additives-contaminants-jecfa-database/Home/Chemical/82"
+   ],
+   "notes": "Runde 3: Bekræftet: fremstilling fra kalksten via brændt kalk, nixtamalisering/niacin/pellagra, syltede grøntsager, sukkerraffinering, kakao, quantum satis, JECFA 'ADI not limited'. Rettet: 'Mellemamerika' → Mesoamerika; tortilla-udsagn præciseret til masa. Fjernet (ikke belagt): 'calciumkilde', 'neutraliseret og uden sundhedsmæssig betydning', 'stærkt ætsende', SCF-vurdering. Fejlagtig note om magnesium-UL fjernet."
+  },
+  "wikipedia": "",
+  "wikidata": "Q182849",
+  "claims": [
+   {
+    "claim": "Fremstilles ved brænding af kalksten til CaO og læskning med vand",
+    "source": "https://www.lhoist.com/en/products-and-services/material/hydrated-lime",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Nixtamalisering af majs i Mesoamerika (tidligere: Mellemamerika)",
+    "source": "https://en.wikipedia.org/wiki/Nixtamalization",
+    "result": "rettet"
+   },
+   {
+    "claim": "Nixtamalisering frigør niacin",
+    "source": "https://www.sciencedirect.com/topics/food-science/nixtamalization",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Giver dejen (masa) til tortillas",
+    "source": "https://en.wikipedia.org/wiki/Nixtamalization",
+    "result": "rettet"
+   },
+   {
+    "claim": "Fasthed i syltede grøntsager",
+    "source": "https://www.foodadditivesasia.com/en/market-insights/applications-and-buyers/calcium-hydroxide-food-industry-uses-purification-ph-control",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Sukkerraffinering",
+    "source": "https://www.omri.org/sugar-lime-and-calcium-oxide",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Kakao (alkalisering)",
+    "source": "https://bakerpedia.com/ingredients/cocoa-alkalization/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Calciumkilde",
+    "source": "",
+    "result": "fjernet"
+   },
+   {
+    "claim": "Tilladt quantum satis",
+    "source": "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:02008R1333-20240602",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "'Baserne er neutraliseret og uden sundhedsmæssig betydning'",
+    "source": "",
+    "result": "fjernet"
+   },
+   {
+    "claim": "'Koncentreret stof er stærkt ætsende'",
+    "source": "",
+    "result": "fjernet"
+   },
+   {
+    "claim": "SCF 'ADI ikke specificeret'",
+    "source": "",
+    "result": "fjernet"
+   },
+   {
+    "claim": "JECFA: 'ADI not limited' (1965)",
+    "source": "https://apps.who.int/food-additives-contaminants-jecfa-database/Home/Chemical/82",
+    "result": "rettet"
+   },
+   {
+    "claim": "Ingen offentliggjort EFSA-gen-evaluering fundet",
+    "source": "https://www.efsa.europa.eu/sites/default/files/consultation/160524.pdf",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Nixtamalisering forebygger pellagra",
+    "source": "https://www.sciencedirect.com/topics/food-science/nixtamalization",
+    "result": "bekræftet"
+   }
+  ]
+ },
+ {
+  "code": "E527",
+  "nameDa": "Ammoniumhydroxid",
+  "nameEn": "Ammonium hydroxide",
+  "category": "Surhedsregulerende middel",
+  "euStatus": "approved",
+  "origin": "synthetic",
+  "summary": "Ammoniumhydroxid er en vandig opløsning af ammoniak, som bruges som base til at regulere surhedsgraden i fødevarer.",
+  "description": "Ammoniumhydroxid er ammoniakgas opløst i vand og er en base. Ammoniak fremstilles industrielt via Haber-Bosch-processen. I fødevareindustrien bruges det til pH-regulering og som hævemiddel, og ammoniumforbindelser som ammoniumhydroxid bruges ved fremstilling af farvestoffet ammoniakkaramel (E150c).",
+  "uses": "Bl.a. bageri- og konfektureprodukter samt som procesmiddel ved fremstilling af ammoniakkaramel. I EU er det godkendt efter quantum satis-princippet.",
+  "health": "Ammoniak dannes naturligt i kroppen ved nedbrydning af protein og omdannes i leveren til urinstof. Personer med alvorlig leversygdom har nedsat evne til at omsætte ammoniak. Ammoniakdampe fra koncentrerede opløsninger irriterer øjne og luftveje, men det er et arbejdsmiljøspørgsmål.",
+  "research": "Omtale i medierne har mest drejet sig om brugen af ammoniakgas til behandling af kød i USA. I EU er mælkesyre det eneste stof, der er godkendt til at reducere mikrobiel overfladeforurening på slagtekroppe af kvæg. Stoffet indgår i EFSA's gen-evalueringsprogram, men der er ikke fundet en offentliggjort EFSA-gen-evaluering.",
+  "keyReferences": [],
+  "pubmedTerm": "ammonium hydroxide",
+  "flags": [],
+  "classes": [],
+  "variants": [],
+  "efsa": null,
+  "verification": {
+   "status": "corrected",
+   "sources": [
+    "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:02008R1333-20240602",
+    "https://food.ec.europa.eu/food-safety/food-improvement-agents/additives/re-evaluation_en",
+    "https://www.efsa.europa.eu/sites/default/files/consultation/160524.pdf",
+    "https://www.encyclopedia.com/science/academic-and-educational-journals/ammonium-hydroxide",
+    "https://www.britannica.com/technology/Haber-Bosch-process",
+    "https://efsa.onlinelibrary.wiley.com/doi/pdfdirect/10.2903/j.efsa.2011.2004",
+    "https://www.fao.org/gsfaonline/additives/details.html?id=380",
+    "https://www.mcgill.ca/oss/article/controversial-science-food-health-you-asked/you-asked-can-consuming-food-such-beef-treated-ammonia-hydroxide-potentially-cause-any-health",
+    "https://www.efsa.europa.eu/en/topics/decontaminating-substances",
+    "https://www.aasld.org/liver-fellow-network/core-series/back-basics/level-ammonia-and-encephalopathy",
+    "https://www.cdc.gov/chemical-emergencies/chemical-fact-sheets/ammonia.html"
+   ],
+   "notes": "Runde 3: Bekræftet: ammoniak opløst i vand, Haber-Bosch, pH-regulering/hævemiddel, ammoniakkaramel, quantum satis, ammoniak fra proteinstofskiftet og leverens rolle, irritation fra ammoniakdampe, ammoniakbehandling af kød i USA, EU tillader kun mælkesyre til dekontaminering af kvægslagtekroppe, ingen EFSA-gen-evaluering fundet. Rettet: 'svag base' → base; EU-sammenligningen præciseret. Fjernet (ikke belagt): kakaoalkalisering, delvis fordampning ved opvarmning, JECFA 'ADI not limited' og JECFA's samlede vurdering af ammoniumsalte, 'bidraget er lille', 'gammelt og velkendt'. Fejlagtig note om magnesium-UL fjernet."
+  },
+  "wikipedia": "",
+  "wikidata": "Q421888",
+  "claims": [
+   {
+    "claim": "Ammoniakgas opløst i vand; base",
+    "source": "https://www.encyclopedia.com/science/academic-and-educational-journals/ammonium-hydroxide",
+    "result": "rettet"
+   },
+   {
+    "claim": "Ammoniak fremstilles via Haber-Bosch",
+    "source": "https://www.britannica.com/technology/Haber-Bosch-process",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Hæve pH (pH-regulering) og hævemiddel",
+    "source": "https://www.fao.org/gsfaonline/additives/details.html?id=380",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Kakaoalkalisering",
+    "source": "",
+    "result": "fjernet"
+   },
+   {
+    "claim": "Procesmiddel ved ammoniakkaramel (E150c)",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/pdfdirect/10.2903/j.efsa.2011.2004",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "'Ammoniakken fordamper delvist ved opvarmning'",
+    "source": "",
+    "result": "fjernet"
+   },
+   {
+    "claim": "Bageri- og konfektureprodukter",
+    "source": "https://www.fao.org/gsfaonline/additives/details.html?id=380",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Godkendt quantum satis i EU",
+    "source": "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:02008R1333-20240602",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Ammonium/ammoniak dannes naturligt i stofskiftet",
+    "source": "https://www.aasld.org/liver-fellow-network/core-series/back-basics/level-ammonia-and-encephalopathy",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Koncentreret ammoniak irriterer/ætser (arbejdsmiljø)",
+    "source": "https://www.cdc.gov/chemical-emergencies/chemical-fact-sheets/ammonia.html",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "JECFA 'ADI not limited'",
+    "source": "",
+    "result": "fjernet"
+   },
+   {
+    "claim": "Personer med alvorlig leversygdom har nedsat omsætning af ammoniak",
+    "source": "https://www.aasld.org/liver-fellow-network/core-series/back-basics/level-ammonia-and-encephalopathy",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "'Bidraget fra tilsætningsstoffet er lille'",
+    "source": "",
+    "result": "fjernet"
+   },
+   {
+    "claim": "'Stoffet er gammelt og velkendt ... ikke megen nyere forskning'",
+    "source": "",
+    "result": "fjernet"
+   },
+   {
+    "claim": "JECFA vurderede ammoniumsalte samlet uden bekymring",
+    "source": "",
+    "result": "fjernet"
+   },
+   {
+    "claim": "Ammoniakgas til kødbehandling i USA",
+    "source": "https://www.mcgill.ca/oss/article/controversial-science-food-health-you-asked/you-asked-can-consuming-food-such-beef-treated-ammonia-hydroxide-potentially-cause-any-health",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Ikke tilladt på samme måde i EU (kun mælkesyre godkendt til kvægslagtekroppe)",
+    "source": "https://www.efsa.europa.eu/en/topics/decontaminating-substances",
+    "result": "rettet"
+   },
+   {
+    "claim": "Indgår i EFSA's gen-evalueringsprogram; ingen offentliggjort gen-evaluering",
+    "source": "https://www.efsa.europa.eu/sites/default/files/consultation/160524.pdf",
+    "result": "bekræftet"
+   }
+  ]
+ }
+]

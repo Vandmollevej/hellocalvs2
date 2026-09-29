@@ -2,6 +2,13 @@
 
 This file records durable decisions. Add a dated entry when a later decision changes one of them.
 
+## 2026-09-29: Vitaminer og mineraler har egen info-side som E-numre
+
+Vitaminer/mineraler på varesiden er klikbare på samme måde som E-numre: popup
+→ `/vitaminer` med ét ankret afsnit pr. næringsstof. Indholdet ligger statisk
+i koden (ikke i databasen), da det er ~24 faste poster; referenceindtag er
+EU's NRV (forordning 1169/2011 bilag XIII), samme tal som "% RI".
+
 ## 2026-09-28: Produktcirklen viser kun brandets eget logo
 
 Hello Cal-frugten ligger ikke længere oven på produktcirklen. Har brandet et
@@ -3286,3 +3293,46 @@ Produktsiden viser aldrig teksten "Branded". Brandet vises kun som brandnavn/log
 - Produktsiden målt 1:1 mod HelloFresh-velkomsten (3×): cirkel 180 px (før
   190) og 62 px under appbaren, 41 px cirkel→h1-tekst, 40 px h1→h2, 20 px
   h2→næste tekst. Uden h2 bevares linjens 40 px luft, så resten ikke rykker op.
+## 2026-09-28: E-nummer-opslagsværk ligger i repoet, ikke i databasen
+
+E-numrenes beskrivelser er referenceindhold (ikke brugerdata) og versioneres som
+`src/data/e-numbers.json` (genereret af `scripts/e-numre/build_catalog.py`), så
+alle miljøer får samme indhold uden import på Synology. Hvert E-nummer har sin
+egen side `/e-numre/[kode]`, og kilderne skal være specifikke for netop det stof
+(EFSA-udtalelsens DOI og søgninger på stoffets præcise navn) — aldrig kun
+generelle forsider. DB-tabellen `additives` bruges kun som fallback.
+
+## 2026-09-28: "Mad på latin"-ordbog
+
+Ikke-danske ingrediensnavne i ingredienslister linkes til `/mad-paa-latin#<ord>` som almindelig tekst (ingen understregning eller fed). Ordlisten er statisk kode i `src/lib/food-latin.ts`; E-numre håndteres fortsat af `/e-numre`.
+
+Kilder på "Mad på latin" skal altid være officielle (Fødevarestyrelsen, Sundhedsstyrelsen, EFSA) når de findes; Wikipedia kun som sidste udvej (brugerkrav 2026-09-29).
+## 2026-09-29: Face ID-login i Oprettelses-appen
+
+- En verificeret passkey med brugerbekræftelse giver fuld medarbejdersession
+  (som admin-passkey): den erstatter adgangskode + TOTP, ikke kun TOTP.
+- Medarbejder-passkeys ligger i egen tabel `scan_worker_passkeys`, da
+  medarbejdere ikke er `User`.
+- `SCAN_PII_KEY` indføres uden datatab: dekryptering prøver `SCAN_PII_KEY`
+  og derefter `ADMIN_SESSION_SECRET`; nye værdier krypteres med `SCAN_PII_KEY`.
+## 2026-09-29: Mærkbart pulsudsving og brugertilføjede aktiviteter
+
+- Udsving: puls ≥ max(100, hvilepuls + 35) i mindst 10 min (huller ≤ 10 min
+  tæller med). Hvilepuls = seneste RESTING_HEART_RATE_BPM, ellers 10.-percentilen
+  af 7 dages puls, ellers 65. Mærkbart = mindst 150 ekstra kcal: urets
+  ACTIVE_ENERGY_KCAL i perioden, ellers Keytel-formlen minus samme ved hvilepuls.
+- Udsving, der overlapper en registreret aktivitet eller allerede er besvaret/
+  sprunget over (`HeartRateSpikeReview`), vises ikke.
+- Egne aktiviteter kan bruges straks af den, der tilføjede dem; andre ser dem
+  først efter godkendelse i Kvalitetskontrol → Aktiviteter.
+## 2026-09-29: Søvnstatistik sammenholder natten med dagen før
+
+- En søvnvurdering gælder datoen man vågnede; kalorier, sidste indtag, koffein og sport tages fra dagen FØR (aftenen op til natten). Målt søvn (HealthMetric `SLEEP_MINUTES`) tælles på vågne-datoen.
+- "Kaffe" genkendes med koffein-ordlisten fra `src/lib/toxins.ts` (kaffe, te, cola, energidrik) mod registreringens titel; mængde = antal registreringer.
+- Tidspunkter er registreringens `createdAt`; tidsbjælker skaleres fra kl. 12.
+
+## 2026-09-29 — Oplevelse af søvn som bundark, aldrig "Luk"
+
+- "Oplevelse af søvn" vises som bundark (popup, lukkes ved træk ned) i stedet for fuldskærmsside.
+- Der må aldrig bruges "Luk" på overlays/sider i HELLO CAL, selvom HelloFresh gør det — lukning sker ved træk ned.
+- Tallene 1–5 står i skærmens lodrette midte; "Slå fra" står nederst til venstre uden understregning.

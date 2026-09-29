@@ -10,9 +10,10 @@ import {
 import { useTranslation } from "@/i18n/LocaleProvider";
 
 const OPTIONS: { value: CalendarDefaultView; labelKey: string }[] = [
+  { value: "list", labelKey: "calendarViewSettings.optionList" },
   { value: "month", labelKey: "calendarViewSettings.optionMonth" },
   { value: "week", labelKey: "calendarViewSettings.optionWeek" },
-  { value: "list", labelKey: "calendarViewSettings.optionList" },
+  { value: "day", labelKey: "calendarViewSettings.optionDay" },
 ];
 
 export default function CalendarViewDisplaySettingsPage() {

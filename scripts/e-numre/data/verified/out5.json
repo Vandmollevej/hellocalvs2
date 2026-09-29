@@ -1,0 +1,1504 @@
+[
+ {
+  "code": "E463",
+  "nameDa": "Hydroxypropylcellulose",
+  "nameEn": "Hydroxypropyl cellulose",
+  "category": "Fortykningsmiddel / emulgator / stabilisator",
+  "euStatus": "approved",
+  "origin": "mixed",
+  "summary": "Hydroxypropylcellulose er kemisk modificeret cellulose, der fortykker og stabiliserer fødevarer og kosttilskud.",
+  "description": "Hydroxypropylcellulose fremstilles ved at lade alkalicellulose reagere med propylenoxid, så der dannes hydroxypropylethergrupper på cellulosekæden. Stoffet er opløseligt i koldt vand og i visse organiske opløsningsmidler og udfælder ved opvarmning. Det bruges som fortykker, emulgator, filmdanner og bindemiddel, især i tabletter og overtrukne kosttilskud. Det fordøjes ikke og fungerer som ufordøjelig fiber.",
+  "uses": "Tilladt quantum satis i EU, fx i kosttilskud (tabletovertræk), piskede toppings, desserter, saucer og glutenfrit bagværk.",
+  "health": "Anses for sikkert; EFSA's genvurdering af celluloser (E460-E466, E468, E469) fra 2018 fandt ikke behov for en numerisk ADI og ingen sikkerhedsbekymring ved de rapporterede anvendelser. Store mængder kan give fibereffekter som luft og løs mave. Ingen kendte særlige risikogrupper.",
+  "research": "EFSA genvurderede hydroxypropylcellulose i 2018 sammen med de øvrige celluloser uden fund af bekymring. Stoffet bruges bredt i lægemidler, og der er ikke fremkommet betydende nye sikkerhedsspørgsmål.",
+  "keyReferences": [],
+  "pubmedTerm": "hydroxypropyl cellulose",
+  "flags": [],
+  "classes": [
+   "emulsifier",
+   "stabiliser",
+   "thickener"
+  ],
+  "variants": [],
+  "efsa": {
+   "title": "Re-evaluation of celluloses E 460(i), E 460(ii), E 461, E 462, E 463, E 464, E 465, E 466, E 468 and E 469 as food additives",
+   "url": "https://doi.org/10.2903/j.efsa.2018.5047",
+   "date": "2018",
+   "adi": "",
+   "overexposureRisk": ""
+  },
+  "wikipedia": "",
+  "wikidata": "Q724426",
+  "verification": {
+   "status": "verified",
+   "sources": [
+    "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2018.5047"
+   ],
+   "notes": "Bekræftet: EFSA ANS 2018 (EFSA Journal 16(1):5047) – ADI 'not specified', ingen sikkerhedsbekymring. Fremstilling og anvendelse stemmer."
+  }
+ },
+ {
+  "code": "E464",
+  "nameDa": "Hydroxypropylmethylcellulose",
+  "nameEn": "Hydroxypropyl methyl cellulose",
+  "category": "Fortykningsmiddel / emulgator / stabilisator",
+  "euStatus": "approved",
+  "origin": "mixed",
+  "summary": "Hydroxypropylmethylcellulose (HPMC, hypromellose) er en kemisk modificeret cellulose fra plantefibre, der bruges som fortykningsmiddel, emulgator og stabilisator.",
+  "description": "HPMC fremstilles ved at behandle cellulose fra træmasse eller bomuld med natriumhydroxid og derefter med methylchlorid og propylenoxid, så en del af hydroxylgrupperne erstattes med methoxy- og hydroxypropylgrupper. Resultatet er et vandopløseligt polymer, der danner gel ved opvarmning og bliver flydende igen ved afkøling (termisk gelering). Denne egenskab udnyttes i glutenfri bagværk og plantebaserede kødalternativer, hvor HPMC giver struktur og binder vand. Stoffet er også meget udbredt som materiale til vegetariske kapsler i kosttilskud og lægemidler. Det er ufordøjeligt og fungerer i tarmen som en opløselig kostfiber.",
+  "uses": "Glutenfrit brød og bagværk, plantebaserede burgere og pølser, veganske kapsler til kosttilskud, frysevarer, saucer og dressinger, fyld og glasur. Godkendt quantum satis i mange fødevarekategorier.",
+  "health": "Modificerede celluloser optages stort set ikke i tarmen og udskilles uomsat med afføringen. Ved store indtag (flere gram om dagen) kan de virke fyldende og let afførende og give luft i maven. EFSA har ved gen-evalueringen af celluloser (2018) ikke fundet behov for en numerisk ADI og vurderede, at de anvendte mængder ikke giver sikkerhedsmæssig bekymring for befolkningen generelt. Stoffet er vegansk og glutenfrit.",
+  "research": "EFSA's ANS-panel gen-evaluerede i 2018 samlet E 460–E 466, E 468 og E 469 og fastsatte ingen numerisk ADI ('not specified'), da stofferne ikke optages og har lav toksicitet. Nyere forskning i emulgatorer og tarmflora har primært fokuseret på carboxymethylcellulose (E466), og det er uafklaret, i hvilket omfang fund herfra kan overføres til andre cellulosederivater. EFSA vurderede i 2015 desuden en ændring i specifikationerne for E 464 uden at finde sikkerhedsproblemer.",
+  "keyReferences": [],
+  "pubmedTerm": "hypromellose",
+  "flags": [
+   "laxative"
+  ],
+  "classes": [
+   "emulsifier",
+   "stabiliser",
+   "thickener"
+  ],
+  "variants": [],
+  "efsa": {
+   "title": "Safety of a change in specifications for the food additive hydroxypropyl methyl cellulose (E 464)",
+   "url": "http://dx.doi.org/10.2903/j.efsa.2015.4088",
+   "date": "2015-05-05",
+   "adi": "",
+   "overexposureRisk": ""
+  },
+  "wikipedia": "https://en.wikipedia.org/wiki/Hypromellose",
+  "wikidata": "Q423846",
+  "verification": {
+   "status": "verified",
+   "sources": [
+    "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2018.5047",
+    "http://dx.doi.org/10.2903/j.efsa.2015.4088"
+   ],
+   "notes": "Bekræftet: EFSA 2018 celluloser (ADI not specified) og 2015-vurdering af specifikationsændring for E464."
+  }
+ },
+ {
+  "code": "E465",
+  "nameDa": "Ethylmethylcellulose",
+  "nameEn": "Ethyl methyl cellulose",
+  "category": "Fortykningsmiddel / emulgator / stabilisator",
+  "euStatus": "approved",
+  "origin": "mixed",
+  "summary": "Ethylmethylcellulose er en kemisk modificeret cellulose, der bruges til at gøre fødevarer tykkere og mere stabile.",
+  "description": "Stoffet fremstilles ud fra cellulose (træmasse), som behandles med base og derefter med ethyl- og methylchlorid, så der indføres ethyl- og methylgrupper på cellulosekæden. Det er opløseligt i koldt vand og kan danne skum og stabile emulsioner. Det bruges i langt mindre omfang end E461 og E464. Som andre cellulosederivater er det ufordøjeligt.",
+  "uses": "Anvendes sjældent; kan forekomme i skum og desserter, saucer, frysevarer og bagværk. Godkendt quantum satis i en række fødevarekategorier.",
+  "health": "Modificerede celluloser optages stort set ikke i tarmen og udskilles uomsat med afføringen. Ved store indtag (flere gram om dagen) kan de virke fyldende og let afførende og give luft i maven. EFSA har ved gen-evalueringen af celluloser (2018) ikke fundet behov for en numerisk ADI og vurderede, at de anvendte mængder ikke giver sikkerhedsmæssig bekymring for befolkningen generelt.",
+  "research": "EFSA's ANS-panel gen-evaluerede i 2018 samlet E 460–E 466, E 468 og E 469 og fastsatte ingen numerisk ADI ('not specified'), da stofferne ikke optages og har lav toksicitet. Nyere forskning i emulgatorer og tarmflora har primært fokuseret på carboxymethylcellulose (E466), og det er uafklaret, i hvilket omfang fund herfra kan overføres til andre cellulosederivater.",
+  "keyReferences": [],
+  "pubmedTerm": "ethyl methyl cellulose",
+  "flags": [
+   "laxative"
+  ],
+  "classes": [
+   "emulsifier",
+   "stabiliser",
+   "thickener"
+  ],
+  "variants": [],
+  "efsa": {
+   "title": "Re-evaluation of celluloses E 460(i), E 460(ii), E 461, E 462, E 463, E 464, E 465, E 466, E 468 and E 469 as food additives",
+   "url": "https://doi.org/10.2903/j.efsa.2018.5047",
+   "date": "2018",
+   "adi": "",
+   "overexposureRisk": ""
+  },
+  "wikipedia": "",
+  "wikidata": "Q18579463",
+  "verification": {
+   "status": "verified",
+   "sources": [
+    "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2018.5047"
+   ],
+   "notes": "Bekræftet: EFSA ANS 2018 (EFSA Journal 16(1):5047) – ADI 'not specified', ingen sikkerhedsbekymring. Fremstilling og anvendelse stemmer."
+  }
+ },
+ {
+  "code": "E466",
+  "nameDa": "Natriumcarboxymethylcellulose",
+  "nameEn": "Sodium carboxy methyl cellulose",
+  "category": "Fortykningsmiddel / stabilisator / fugtighedsbevarende middel",
+  "euStatus": "approved",
+  "origin": "mixed",
+  "summary": "Natriumcarboxymethylcellulose (CMC, cellulosegummi) er en modificeret cellulose, der gør fødevarer tyktflydende og stabile og holder på fugt.",
+  "description": "CMC fremstilles ved at behandle cellulose med natriumhydroxid og monochloreddikesyre, så der indføres carboxymethylgrupper, som gør stoffet vandopløseligt. Det giver høj viskositet selv i små mængder, forhindrer iskrystaldannelse i is og holder proteiner opløst i sure mejeridrikke. CMC er et af de mest anvendte fortykningsmidler i industrien og bruges også i tandpasta og lægemidler. Det nedbrydes ikke i tyndtarmen og kun i ringe grad af tarmbakterierne.",
+  "uses": "Is og frysedesserter, drikkeyoghurt og sure mælkedrikke, dressinger og saucer, bagværk og kagefyld, instantprodukter, slik og light-produkter. Godkendt quantum satis i mange kategorier.",
+  "health": "CMC optages ikke og har meget lav akut toksicitet; store mængder kan give luft i maven og løs afføring. EFSA fastsatte i 2018 ingen numerisk ADI for celluloserne og så ingen sikkerhedsbekymring ved nuværende brug. Dyreforsøg og et lille humant forsøg har dog vist, at CMC kan påvirke tarmfloraen og slimlaget i tarmen, hvilket har rejst spørgsmål for personer med inflammatorisk tarmsygdom (Crohns sygdom, colitis ulcerosa). Der er ikke dokumenteret skadelige effekter hos raske mennesker ved normale indtag.",
+  "research": "Chassaing et al. (Nature 2015) viste, at CMC og polysorbat 80 i mus ændrede tarmfloraen, nedbrød slimlaget og fremmede lavgradig inflammation, colitis og metabolisk syndrom. Et randomiseret fodringsforsøg med raske frivillige (Chassaing et al., Gastroenterology 2022) fandt, at CMC reducerede tarmflorans diversitet og ændrede metabolomet, dog uden kliniske symptomer i den korte periode. I den franske NutriNet-Santé-kohorte (Sellem et al., BMJ 2023) var højere indtag af celluloser samlet (E460–E468) samt specifikt cellulose (E460) og CMC (E466) forbundet med øget risiko for hjerte-kar-sygdom og koronar hjertesygdom; observationsstudier kan ikke påvise årsagssammenhæng. EFSA's gen-evaluering 2018 fandt ikke grundlag for en ADI, men de nyere fund er fortsat genstand for debat.",
+  "keyReferences": [
+   {
+    "citation": "Chassaing B et al. Dietary emulsifiers impact the mouse gut microbiota promoting colitis and metabolic syndrome. Nature. 2015.",
+    "searchTitle": "Dietary emulsifiers impact the mouse gut microbiota promoting colitis and metabolic syndrome"
+   },
+   {
+    "citation": "Chassaing B et al. Randomized Controlled-Feeding Study of Dietary Emulsifier Carboxymethylcellulose Reveals Detrimental Impacts on the Gut Microbiota and Metabolome. Gastroenterology. 2022.",
+    "searchTitle": "Randomized Controlled-Feeding Study of Dietary Emulsifier Carboxymethylcellulose Reveals Detrimental Impacts on the Gut Microbiota and Metabolome"
+   },
+   {
+    "citation": "Sellem L et al. Food additive emulsifiers and cardiovascular disease risk in the NutriNet-Santé cohort: prospective cohort study. BMJ. 2023.",
+    "searchTitle": "Food additive emulsifiers and risk of cardiovascular disease in the NutriNet-Santé cohort: prospective cohort study"
+   }
+  ],
+  "pubmedTerm": "carboxymethylcellulose",
+  "flags": [
+   "laxative"
+  ],
+  "classes": [
+   "emulsifier",
+   "humectant",
+   "stabiliser",
+   "thickener"
+  ],
+  "variants": [],
+  "efsa": {
+   "title": "Re-evaluation of celluloses E 460(i), E 460(ii), E 461, E 462, E 463, E 464, E 465, E 466, E 468 and E 469 as food additives",
+   "url": "https://doi.org/10.2903/j.efsa.2018.5047",
+   "date": "2018",
+   "adi": "",
+   "overexposureRisk": ""
+  },
+  "wikipedia": "https://en.wikipedia.org/wiki/Carboxymethyl_cellulose",
+  "wikidata": "Q411030",
+  "verification": {
+   "status": "corrected",
+   "sources": [
+    "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2018.5047",
+    "https://pubmed.ncbi.nlm.nih.gov/37673430/",
+    "https://www.medscape.com/viewarticle/996465"
+   ],
+   "notes": "Referencer (Nature 2015, Gastroenterology 2022, BMJ 2023) bekræftet. Præciseret at BMJ-studiet specifikt fandt sammenhæng for E466 (og E460/celluloser samlet) med hjerte-kar- og koronar sygdom. EFSA 2018-objekt tilføjet."
+  }
+ },
+ {
+  "code": "E468",
+  "nameDa": "Tværbunden natriumcarboxymethylcellulose",
+  "nameEn": "Cross-linked sodium carboxymethylcellulose",
+  "category": "Fortykningsmiddel / stabilisator",
+  "euStatus": "approved",
+  "origin": "mixed",
+  "summary": "Tværbunden CMC (croscarmellose) er en CMC, hvor cellulosekæderne er kemisk forbundet, så stoffet svulmer op i vand i stedet for at opløses.",
+  "description": "Stoffet fremstilles som E466, men kæderne tværbindes, typisk ved varmebehandling i sure omgivelser. Det gør produktet uopløseligt, men meget vandabsorberende. Det bruges først og fremmest som sprængmiddel i tabletter, så tabletten hurtigt falder fra hinanden i maven. I fødevarer er anvendelsen i EU hovedsageligt begrænset til kosttilskud.",
+  "uses": "Kosttilskud i tabletform (vitamin- og mineraltabletter); ellers sjældent i almindelige fødevarer.",
+  "health": "Modificerede celluloser optages stort set ikke i tarmen og udskilles uomsat med afføringen. Ved store indtag (flere gram om dagen) kan de virke fyldende og let afførende og give luft i maven. EFSA har ved gen-evalueringen af celluloser (2018) ikke fundet behov for en numerisk ADI og vurderede, at de anvendte mængder ikke giver sikkerhedsmæssig bekymring for befolkningen generelt.",
+  "research": "EFSA's ANS-panel gen-evaluerede i 2018 samlet E 460–E 466, E 468 og E 469 og fastsatte ingen numerisk ADI ('not specified'), da stofferne ikke optages og har lav toksicitet. Nyere forskning i emulgatorer og tarmflora har primært fokuseret på carboxymethylcellulose (E466), og det er uafklaret, i hvilket omfang fund herfra kan overføres til andre cellulosederivater.",
+  "keyReferences": [],
+  "pubmedTerm": "croscarmellose sodium",
+  "flags": [
+   "laxative"
+  ],
+  "classes": [
+   "stabiliser",
+   "thickener"
+  ],
+  "variants": [],
+  "efsa": {
+   "title": "Re-evaluation of celluloses E 460(i), E 460(ii), E 461, E 462, E 463, E 464, E 465, E 466, E 468 and E 469 as food additives",
+   "url": "https://doi.org/10.2903/j.efsa.2018.5047",
+   "date": "2018",
+   "adi": "",
+   "overexposureRisk": ""
+  },
+  "wikipedia": "",
+  "wikidata": "Q18967204",
+  "verification": {
+   "status": "verified",
+   "sources": [
+    "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2018.5047"
+   ],
+   "notes": "Bekræftet: EFSA ANS 2018 (EFSA Journal 16(1):5047) – ADI 'not specified', ingen sikkerhedsbekymring. Fremstilling og anvendelse stemmer. E468 er i EU kun tilladt i kosttilskud."
+  }
+ },
+ {
+  "code": "E469",
+  "nameDa": "Enzymatisk hydrolyseret carboxymethylcellulose",
+  "nameEn": "Enzymatically hydrolysed carboxymethylcellulose",
+  "category": "Fortykningsmiddel / stabilisator",
+  "euStatus": "approved",
+  "origin": "mixed",
+  "summary": "Enzymatisk hydrolyseret CMC er carboxymethylcellulose, der er delvist nedbrudt med enzymer, så kæderne bliver kortere og stoffet mindre tyktflydende.",
+  "description": "Udgangspunktet er E466, som behandles med cellulase-enzymer fra fx Trichoderma-svampe, hvorved polymerkæderne klippes over. Det giver et produkt med lavere viskositet, der kan bruges, hvor man ønsker stabilisering eller fylde uden stærk fortykkelse. Stoffet bruges i begrænset omfang.",
+  "uses": "Kan forekomme i drikkevarer, desserter, saucer og kosttilskud; relativt sjældent anvendt.",
+  "health": "Modificerede celluloser optages stort set ikke i tarmen og udskilles uomsat med afføringen. Ved store indtag (flere gram om dagen) kan de virke fyldende og let afførende og give luft i maven. EFSA har ved gen-evalueringen af celluloser (2018) ikke fundet behov for en numerisk ADI og vurderede, at de anvendte mængder ikke giver sikkerhedsmæssig bekymring for befolkningen generelt.",
+  "research": "EFSA's ANS-panel gen-evaluerede i 2018 samlet E 460–E 466, E 468 og E 469 og fastsatte ingen numerisk ADI ('not specified'), da stofferne ikke optages og har lav toksicitet. Nyere forskning i emulgatorer og tarmflora har primært fokuseret på carboxymethylcellulose (E466), og det er uafklaret, i hvilket omfang fund herfra kan overføres til andre cellulosederivater.",
+  "keyReferences": [],
+  "pubmedTerm": "carboxymethylcellulose",
+  "flags": [
+   "laxative"
+  ],
+  "classes": [
+   "stabiliser",
+   "thickener"
+  ],
+  "variants": [],
+  "efsa": {
+   "title": "Re-evaluation of celluloses E 460(i), E 460(ii), E 461, E 462, E 463, E 464, E 465, E 466, E 468 and E 469 as food additives",
+   "url": "https://doi.org/10.2903/j.efsa.2018.5047",
+   "date": "2018",
+   "adi": "",
+   "overexposureRisk": ""
+  },
+  "wikipedia": "",
+  "wikidata": "Q18935689",
+  "verification": {
+   "status": "verified",
+   "sources": [
+    "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2018.5047"
+   ],
+   "notes": "Bekræftet: EFSA ANS 2018 (EFSA Journal 16(1):5047) – ADI 'not specified', ingen sikkerhedsbekymring. Fremstilling og anvendelse stemmer."
+  }
+ },
+ {
+  "code": "E470",
+  "nameDa": "Natrium-, kalium-, calcium- og magnesiumsalte af fedtsyrer",
+  "nameEn": "Sodium, potassium, calcium and magnesium salts of fatty acids",
+  "category": "Emulgator / stabilisator / antiklumpningsmiddel",
+  "euStatus": "approved",
+  "origin": "mixed",
+  "summary": "E470 er en ældre samlebetegnelse for salte af fedtsyrer (en form for 'sæbe' af spiselige fedtsyrer), som i dag er opdelt i E470a og E470b.",
+  "description": "Fedtsyresalte fremstilles ved at lade fedtsyrer fra vegetabilske eller animalske fedtstoffer reagere med natrium-, kalium-, calcium- eller magnesiumhydroxid eller -carbonat. De fungerer som emulgatorer, bindemidler og antiklumpningsmidler. I den gældende EU-liste er de opdelt i E470a (natrium-, kalium- og calciumsalte) og E470b (magnesiumsalte); varianterne (i), (ii) og (iii) svarer til de enkelte salte.",
+  "uses": "Se E470a og E470b: pulverprodukter, krydderiblandinger, kosttilskud (tabletter), tyggegummi og slik.",
+  "health": "Fedtsyresaltene spaltes i tarmen til fedtsyrer og de tilsvarende mineraler (natrium, kalium, calcium, magnesium), som også findes naturligt i kosten. EFSA's gen-evaluering (2018) fandt ingen grund til at fastsætte en numerisk ADI og ingen sikkerhedsbekymring ved de rapporterede anvendelser. Fedtsyrerne kan stamme fra både vegetabilske og animalske fedtstoffer, hvilket kan være relevant for veganere og visse religiøse kostregler.",
+  "research": "EFSA's ANS-panel gen-evaluerede E 470a og E 470b i 2018 og konkluderede, at der ikke er behov for en numerisk ADI, og at stofferne ikke giver sikkerhedsbekymring ved de rapporterede anvendelser (SCF havde i 1991 fastsat en gruppe-ADI 'not specified' for fedtsyrerne og deres salte). Stofferne betragtes som toksikologisk uproblematiske, fordi de omdannes til normale kostkomponenter. Der er ikke fundet nyere studier, der rejser særlige bekymringer.",
+  "keyReferences": [],
+  "pubmedTerm": "fatty acid salts",
+  "flags": [
+   "animal_origin"
+  ],
+  "classes": [
+   "emulsifier",
+   "stabiliser",
+   "thickener"
+  ],
+  "variants": [
+   {
+    "code": "E470(i)",
+    "nameDa": "",
+    "nameEn": ""
+   },
+   {
+    "code": "E470(ii)",
+    "nameDa": "",
+    "nameEn": ""
+   },
+   {
+    "code": "E470(iii)",
+    "nameDa": "",
+    "nameEn": ""
+   }
+  ],
+  "efsa": {
+   "title": "Re-evaluation of sodium, potassium and calcium salts of fatty acids (E 470a) and magnesium salts of fatty acids (E 470b) as food additives",
+   "url": "https://doi.org/10.2903/j.efsa.2018.5180",
+   "date": "2018-03",
+   "adi": "",
+   "overexposureRisk": ""
+  },
+  "wikipedia": "",
+  "wikidata": "",
+  "verification": {
+   "status": "uncertain",
+   "sources": [
+    "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2018.5180"
+   ],
+   "notes": "EFSA-konklusion bekræftet. E470 står ikke selvstændigt i bilag II til forordning 1333/2008 – kun E470a og E470b er opført; euStatus 'approved' dækker derfor reelt undernumrene."
+  }
+ },
+ {
+  "code": "E470a",
+  "nameDa": "Natrium-, kalium- og calciumsalte af fedtsyrer",
+  "nameEn": "Sodium, potassium and calcium salts of fatty acids",
+  "category": "Emulgator / stabilisator / antiklumpningsmiddel",
+  "euStatus": "approved",
+  "origin": "mixed",
+  "summary": "E470a er natrium-, kalium- og calciumsalte af spiselige fedtsyrer, som bruges som emulgatorer og antiklumpningsmidler.",
+  "description": "Stofferne fremstilles ved at neutralisere fedtsyrer (typisk stearinsyre, palmitinsyre og oliesyre fra vegetabilske olier eller animalsk fedt) med natrium-, kalium- eller calciumbaser. Varianten (i) er natriumsalte, (ii) kaliumsalte og (iii) calciumsalte; calciumstearat er fx et meget almindeligt glidemiddel i tabletproduktion. De hjælper pulvere med at flyde frit og stabiliserer emulsioner.",
+  "uses": "Kosttilskud i tablet- og kapselform, pulverprodukter, krydderiblandinger, tyggegummi, slik og bagværk. Godkendt quantum satis i en række kategorier.",
+  "health": "Fedtsyresaltene spaltes i tarmen til fedtsyrer og de tilsvarende mineraler (natrium, kalium, calcium, magnesium), som også findes naturligt i kosten. EFSA's gen-evaluering (2018) fandt ingen grund til at fastsætte en numerisk ADI og ingen sikkerhedsbekymring ved de rapporterede anvendelser. Fedtsyrerne kan stamme fra både vegetabilske og animalske fedtstoffer, hvilket kan være relevant for veganere og visse religiøse kostregler.",
+  "research": "EFSA's ANS-panel gen-evaluerede E 470a og E 470b i 2018 og konkluderede, at der ikke er behov for en numerisk ADI, og at stofferne ikke giver sikkerhedsbekymring ved de rapporterede anvendelser (SCF havde i 1991 fastsat en gruppe-ADI 'not specified' for fedtsyrerne og deres salte). Stofferne betragtes som toksikologisk uproblematiske, fordi de omdannes til normale kostkomponenter. Der er ikke fundet nyere studier, der rejser særlige bekymringer.",
+  "keyReferences": [],
+  "pubmedTerm": "calcium stearate",
+  "flags": [
+   "animal_origin"
+  ],
+  "classes": [
+   "emulsifier",
+   "stabiliser",
+   "thickener"
+  ],
+  "variants": [
+   {
+    "code": "E470a(i)",
+    "nameDa": "Natriumsalte af fedtsyrer",
+    "nameEn": "Sodium salts of fatty acids"
+   },
+   {
+    "code": "E470a(ii)",
+    "nameDa": "",
+    "nameEn": "Potassium salts of fatty acids"
+   },
+   {
+    "code": "E470a(iii)",
+    "nameDa": "Calciumsalte af fedtsyrer",
+    "nameEn": "Calcium salts of fatty acids"
+   }
+  ],
+  "efsa": {
+   "title": "Re-evaluation of sodium, potassium and calcium salts of fatty acids (E 470a) and magnesium salts of fatty acids (E 470b) as food additives",
+   "url": "https://doi.org/10.2903/j.efsa.2018.5180",
+   "date": "2018-03",
+   "adi": "",
+   "overexposureRisk": ""
+  },
+  "wikipedia": "",
+  "wikidata": "",
+  "verification": {
+   "status": "verified",
+   "sources": [
+    "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2018.5180"
+   ],
+   "notes": "Bekræftet: EFSA 2018 (DOI 10.2903/j.efsa.2018.5180), ingen numerisk ADI. SCF 1991-ADI tilføjet."
+  }
+ },
+ {
+  "code": "E470b",
+  "nameDa": "Magnesiumsalte af fedtsyrer",
+  "nameEn": "Magnesium salts of fatty acids",
+  "category": "Emulgator / antiklumpningsmiddel",
+  "euStatus": "approved",
+  "origin": "mixed",
+  "summary": "E470b er magnesiumsalte af spiselige fedtsyrer, især magnesiumstearat, der bruges som glidemiddel og antiklumpningsmiddel.",
+  "description": "Stoffet fremstilles ved at lade stearin- og palmitinsyre fra vegetabilsk eller animalsk fedt reagere med magnesiumoxid eller -hydroxid. Magnesiumstearat er et af de mest anvendte hjælpestoffer i tabletproduktion, fordi det forhindrer pulveret i at klæbe til maskinerne. I fødevarer bruges det i små mængder.",
+  "uses": "Kosttilskud i tabletform, pastiller og pebermyntebolsjer, pulvere og krydderiblandinger.",
+  "health": "Fedtsyresaltene spaltes i tarmen til fedtsyrer og de tilsvarende mineraler (natrium, kalium, calcium, magnesium), som også findes naturligt i kosten. EFSA's gen-evaluering (2018) fandt ingen grund til at fastsætte en numerisk ADI og ingen sikkerhedsbekymring ved de rapporterede anvendelser. Fedtsyrerne kan stamme fra både vegetabilske og animalske fedtstoffer, hvilket kan være relevant for veganere og visse religiøse kostregler. Magnesium i store mængder kan virke afførende, men mængderne fra E470b er små.",
+  "research": "EFSA's ANS-panel gen-evaluerede E 470a og E 470b i 2018 og konkluderede, at der ikke er behov for en numerisk ADI, og at stofferne ikke giver sikkerhedsbekymring ved de rapporterede anvendelser (SCF havde i 1991 fastsat en gruppe-ADI 'not specified' for fedtsyrerne og deres salte). Stofferne betragtes som toksikologisk uproblematiske, fordi de omdannes til normale kostkomponenter. Der er ikke fundet nyere studier, der rejser særlige bekymringer.",
+  "keyReferences": [],
+  "pubmedTerm": "magnesium stearate",
+  "flags": [
+   "animal_origin"
+  ],
+  "classes": [
+   "emulsifier",
+   "stabiliser",
+   "thickener"
+  ],
+  "variants": [],
+  "efsa": {
+   "title": "Re-evaluation of sodium, potassium and calcium salts of fatty acids (E 470a) and magnesium salts of fatty acids (E 470b) as food additives",
+   "url": "https://doi.org/10.2903/j.efsa.2018.5180",
+   "date": "2018-03",
+   "adi": "",
+   "overexposureRisk": ""
+  },
+  "wikipedia": "",
+  "wikidata": "",
+  "verification": {
+   "status": "verified",
+   "sources": [
+    "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2018.5180"
+   ],
+   "notes": "Bekræftet: EFSA 2018 (DOI 10.2903/j.efsa.2018.5180), ingen numerisk ADI."
+  }
+ },
+ {
+  "code": "E471",
+  "nameDa": "Mono- og diglycerider af fedtsyrer",
+  "nameEn": "Mono- and diglycerides of fatty acids",
+  "category": "Emulgator / stabilisator",
+  "euStatus": "approved",
+  "origin": "mixed",
+  "summary": "Mono- og diglycerider er delvist nedbrudte fedtstoffer og er den mest anvendte emulgator i fødevarer.",
+  "description": "Stofferne fremstilles typisk ved glycerolyse, hvor fedt eller olie opvarmes med glycerol, så triglyceriderne omdannes til en blanding af mono-, di- og triglycerider; alternativt ved direkte forestring af glycerol med fedtsyrer. Råvaren er oftest palme-, raps- eller solsikkeolie, men kan også være animalsk fedt. Molekylerne har en fedtopløselig og en vandopløselig ende, så de binder fedt og vand sammen, blødgør brødkrummen og forsinker, at brød bliver tørt. De samme stoffer dannes naturligt i tarmen, når vi fordøjer fedt.",
+  "uses": "Brød og bagværk, margarine og smørbare blandingsprodukter, is, flødeerstatninger, kager og kagemix, chokolade- og slikprodukter, færdigretter. Godkendt quantum satis i de fleste kategorier.",
+  "health": "E471 fordøjes som almindeligt fedt og bidrager med samme energi som andet fedt (ca. 9 kcal/g). EFSA fastsatte i 2017 ingen numerisk ADI og så ingen sikkerhedsbekymring ved nuværende brug, men anbefalede lavere grænser for forureninger, der kan dannes ved fremstillingen (glycidylestere, 3-MCPD, erukasyre og tungmetaller). Stoffet kan være af animalsk oprindelse, hvilket normalt ikke fremgår af etiketten. Der er ikke kendte allergiske reaktioner på stoffet selv.",
+  "research": "EFSA's ANS-panel gen-evaluerede E 471 i 2017 og fandt ikke behov for en numerisk ADI, men anbefalede strammere grænser for urenheder som glycidylestere, 3-MCPD og tungmetaller. I den franske NutriNet-Santé-kohorte var højere indtag af E471 forbundet med øget risiko for hjerte-kar-sygdom (Sellem et al., BMJ 2023; E471 og E472 samlet var forbundet med alle undersøgte hjerte-kar-udfald) og for kræft samlet set samt bryst- og prostatakræft (Sellem et al., PLoS Medicine 2024). Der er tale om observationsstudier, som ikke kan bevise årsagssammenhæng, men de har øget interessen for emulgatorers langtidseffekter.",
+  "keyReferences": [
+   {
+    "citation": "Sellem L et al. Food additive emulsifiers and cardiovascular disease risk in the NutriNet-Santé cohort: prospective cohort study. BMJ. 2023.",
+    "searchTitle": "Food additive emulsifiers and risk of cardiovascular disease in the NutriNet-Santé cohort: prospective cohort study"
+   },
+   {
+    "citation": "Sellem L et al. Food additive emulsifiers and cancer risk: Results from the French prospective NutriNet-Santé cohort. PLoS Medicine. 2024.",
+    "searchTitle": "Food additive emulsifiers and cancer risk: Results from the French prospective NutriNet-Santé cohort"
+   }
+  ],
+  "pubmedTerm": "monoglycerides",
+  "flags": [
+   "animal_origin"
+  ],
+  "classes": [
+   "emulsifier",
+   "stabiliser"
+  ],
+  "variants": [],
+  "efsa": {
+   "title": "Re-evaluation of mono- and di-glycerides of fatty acids (E 471) as food additive",
+   "url": "https://doi.org/10.2903/j.efsa.2017.5045",
+   "date": "2017",
+   "adi": "",
+   "overexposureRisk": ""
+  },
+  "wikipedia": "https://en.wikipedia.org/wiki/Mono-_and_diglycerides_of_fatty_acids",
+  "wikidata": "Q416711",
+  "verification": {
+   "status": "corrected",
+   "sources": [
+    "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2017.5045",
+    "https://pubmed.ncbi.nlm.nih.gov/37673430/",
+    "https://journals.plos.org/plosmedicine/article?id=10.1371%2Fjournal.pmed.1004338"
+   ],
+   "notes": "EFSA 2017 (ingen numerisk ADI, strammere urenhedsgrænser) og begge Sellem-studier bekræftet (kræft samlet HR 1,15, bryst 1,24, prostata 1,46). EFSA-objekt tilføjet; mindre præcisering."
+  }
+ },
+ {
+  "code": "E472",
+  "nameDa": "Syreestere af mono- og diglycerider af fedtsyrer",
+  "nameEn": "Acid esters of mono- and diglycerides of fatty acids",
+  "category": "Emulgator / stabilisator",
+  "euStatus": "approved",
+  "origin": "mixed",
+  "summary": "E472 er en samlebetegnelse for emulgatorer, hvor mono- og diglycerider (E471) er koblet sammen med en organisk syre.",
+  "description": "Gruppen omfatter E472a (eddikesyre), E472b (mælkesyre), E472c (citronsyre), E472d (vinsyre), E472e (mono- og diacetylvinsyre, DATEM) og E472f (blandede eddike- og vinsyreestere). De fremstilles ved at forestre mono- og diglycerider med den pågældende syre. Syregruppen ændrer emulgatorens egenskaber, fx styrker E472e glutennetværket i brød, mens E472a giver fedtstoffer bedre filmdannende evne. På etiketten står normalt den specifikke undergruppe.",
+  "uses": "Brød og bagværk, margarine, kager, is, chokoladeprodukter, flødeerstatninger og færdigretter.",
+  "health": "Esterne spaltes i tarmen til glycerol, fedtsyrer og den pågældende organiske syre (eddike-, mælke-, citron- eller vinsyre), som alle er normale kostbestanddele. EFSA fandt ved gen-evalueringen (2020) ingen sikkerhedsbekymring ved de rapporterede anvendelser; der blev ikke fastsat nogen numerisk ADI. Fedtsyrerne kan stamme fra animalsk fedt.",
+  "research": "EFSA's FAF-panel gen-evaluerede E 472a–f i 2020 (EFSA Journal 18(3):6032). For E472a, b og c fandt panelet ikke behov for en numerisk ADI; for E472d fastsattes en ADI på 480 mg/kg legemsvægt/dag og for E472e og E472f en ADI på 600 mg/kg legemsvægt/dag. Der var ingen sikkerhedsbekymring ved de rapporterede brugsniveauer, men panelet anbefalede strammere specifikationer for urenheder (fx glycidylestere, 3-MCPD og tungmetaller). I NutriNet-Santé-kohorten (Sellem et al., BMJ 2023) var højere indtag af E471/E472 samlet forbundet med øget risiko for hjerte-kar-sygdom; specifikt var E472b forbundet med hjerte-kar- og cerebrovaskulær sygdom og E472c med hjerte-kar- og koronar hjertesygdom. Resultaterne er observationelle og kræver bekræftelse.",
+  "keyReferences": [
+   {
+    "citation": "Sellem L et al. Food additive emulsifiers and cardiovascular disease risk in the NutriNet-Santé cohort: prospective cohort study. BMJ. 2023.",
+    "searchTitle": "Food additive emulsifiers and risk of cardiovascular disease in the NutriNet-Santé cohort: prospective cohort study"
+   }
+  ],
+  "pubmedTerm": "mono- and diglycerides esters",
+  "flags": [
+   "animal_origin"
+  ],
+  "classes": [],
+  "variants": [],
+  "efsa": {
+   "title": "Re-evaluation of acetic acid, lactic acid, citric acid, tartaric acid, mono- and diacetyltartaric acid, mixed acetic and tartaric acid esters of mono- and diglycerides of fatty acids (E 472a-f) as food additives",
+   "url": "https://doi.org/10.2903/j.efsa.2020.6032",
+   "date": "2020-03-11",
+   "adi": "",
+   "overexposureRisk": ""
+  },
+  "wikipedia": "",
+  "wikidata": "",
+  "verification": {
+   "status": "corrected",
+   "sources": [
+    "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2020.6032",
+    "https://pubmed.ncbi.nlm.nih.gov/37673430/"
+   ],
+   "notes": "Panel rettet til FAF (ikke ANS). EFSA 2020-ADI'er tilføjet (E472a-c ingen numerisk ADI; E472d 480; E472e,f 600 mg/kg). Uverificeret udsagn om E472e og kræft fjernet; BMJ-fund for E472b/E472c præciseret."
+  }
+ },
+ {
+  "code": "E472a",
+  "nameDa": "Eddikesyreestere af mono- og diglycerider af fedtsyrer",
+  "nameEn": "Acetic acid esters of mono- and diglycerides of fatty acids",
+  "category": "Emulgator / stabilisator",
+  "euStatus": "approved",
+  "origin": "mixed",
+  "summary": "Eddikesyreestere af mono- og diglycerider (ACETEM) er emulgatorer, der bl.a. bruges til at danne beskyttende fedtfilm på fødevarer.",
+  "description": "Stoffet fremstilles ved at forestre mono- og diglycerider med eddikesyre eller eddikesyreanhydrid. ACETEM er fleksible, voksagtige stoffer, der kan danne tynde belægninger, som mindsker udtørring og iltning. De bruges også til at stabilisere luftbobler i skum og kagedej og til at ændre krystalliseringen af fedt.",
+  "uses": "Overfladebehandling af pølser, ost og frugt, kagemix og piskbare toppings, margarine og shortening, is og desserter.",
+  "health": "Esterne spaltes i tarmen til glycerol, fedtsyrer og den pågældende organiske syre (eddike-, mælke-, citron- eller vinsyre), som alle er normale kostbestanddele. EFSA fandt ved gen-evalueringen (2020) ingen sikkerhedsbekymring ved de rapporterede anvendelser; der blev ikke fastsat nogen numerisk ADI. Fedtsyrerne kan stamme fra animalsk fedt.",
+  "research": "EFSA's FAF-panel gen-evaluerede E 472a–f i 2020 (EFSA Journal 18(3):6032). For E472a, b og c fandt panelet ikke behov for en numerisk ADI; for E472d fastsattes en ADI på 480 mg/kg legemsvægt/dag og for E472e og E472f en ADI på 600 mg/kg legemsvægt/dag. Der var ingen sikkerhedsbekymring ved de rapporterede brugsniveauer, men panelet anbefalede strammere specifikationer for urenheder (fx glycidylestere, 3-MCPD og tungmetaller). I NutriNet-Santé-kohorten (Sellem et al., BMJ 2023) var højere indtag af E471/E472 samlet forbundet med øget risiko for hjerte-kar-sygdom; specifikt var E472b forbundet med hjerte-kar- og cerebrovaskulær sygdom og E472c med hjerte-kar- og koronar hjertesygdom. Resultaterne er observationelle og kræver bekræftelse.",
+  "keyReferences": [],
+  "pubmedTerm": "acetylated monoglycerides",
+  "flags": [
+   "animal_origin"
+  ],
+  "classes": [
+   "emulsifier",
+   "sequestrant",
+   "stabiliser"
+  ],
+  "variants": [],
+  "efsa": {
+   "title": "Re-evaluation of acetic acid, lactic acid, citric acid, tartaric acid, mono- and diacetyltartaric acid, mixed acetic and tartaric acid esters of mono- and diglycerides of fatty acids (E 472a-f) as food additives",
+   "url": "https://doi.org/10.2903/j.efsa.2020.6032",
+   "date": "2020-03-11",
+   "adi": "",
+   "overexposureRisk": ""
+  },
+  "wikipedia": "",
+  "wikidata": "Q26806065",
+  "verification": {
+   "status": "corrected",
+   "sources": [
+    "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2020.6032",
+    "https://pubmed.ncbi.nlm.nih.gov/37673430/"
+   ],
+   "notes": "Panel rettet til FAF (ikke ANS). EFSA 2020-ADI'er tilføjet (E472a-c ingen numerisk ADI; E472d 480; E472e,f 600 mg/kg). Uverificeret udsagn om E472e og kræft fjernet; BMJ-fund for E472b/E472c præciseret."
+  }
+ },
+ {
+  "code": "E472b",
+  "nameDa": "Mælkesyreestere af mono- og diglycerider af fedtsyrer",
+  "nameEn": "Lactic acid esters of mono- and diglycerides of fatty acids",
+  "category": "Emulgator / stabilisator",
+  "euStatus": "approved",
+  "origin": "mixed",
+  "summary": "Mælkesyreestere af mono- og diglycerider (LACTEM) er emulgatorer, der især bruges til at give luftige kager og piskbare produkter.",
+  "description": "Stoffet fremstilles ved at forestre mono- og diglycerider med mælkesyre. LACTEM fremmer dannelsen af stabile luftbobler i fedtholdige systemer og forbedrer skummets holdbarhed. Mælkesyren er normalt fremstillet ved fermentering og indeholder ikke mælkeprotein eller laktose.",
+  "uses": "Kagemix og sukkerbrød, piskbare toppings og flødeerstatninger, desserter og mousser, margarine.",
+  "health": "Esterne spaltes i tarmen til glycerol, fedtsyrer og den pågældende organiske syre (eddike-, mælke-, citron- eller vinsyre), som alle er normale kostbestanddele. EFSA fandt ved gen-evalueringen (2020) ingen sikkerhedsbekymring ved de rapporterede anvendelser; der blev ikke fastsat nogen numerisk ADI. Fedtsyrerne kan stamme fra animalsk fedt. Trods navnet indeholder stoffet ikke mælk og er uproblematisk ved mælkeallergi.",
+  "research": "EFSA's FAF-panel gen-evaluerede E 472a–f i 2020 (EFSA Journal 18(3):6032). For E472a, b og c fandt panelet ikke behov for en numerisk ADI; for E472d fastsattes en ADI på 480 mg/kg legemsvægt/dag og for E472e og E472f en ADI på 600 mg/kg legemsvægt/dag. Der var ingen sikkerhedsbekymring ved de rapporterede brugsniveauer, men panelet anbefalede strammere specifikationer for urenheder (fx glycidylestere, 3-MCPD og tungmetaller). I NutriNet-Santé-kohorten (Sellem et al., BMJ 2023) var højere indtag af E471/E472 samlet forbundet med øget risiko for hjerte-kar-sygdom; specifikt var E472b forbundet med hjerte-kar- og cerebrovaskulær sygdom og E472c med hjerte-kar- og koronar hjertesygdom. Resultaterne er observationelle og kræver bekræftelse.",
+  "keyReferences": [],
+  "pubmedTerm": "lactylated monoglycerides",
+  "flags": [
+   "animal_origin"
+  ],
+  "classes": [
+   "emulsifier",
+   "sequestrant",
+   "stabiliser"
+  ],
+  "variants": [],
+  "efsa": {
+   "title": "Re-evaluation of acetic acid, lactic acid, citric acid, tartaric acid, mono- and diacetyltartaric acid, mixed acetic and tartaric acid esters of mono- and diglycerides of fatty acids (E 472a-f) as food additives",
+   "url": "https://doi.org/10.2903/j.efsa.2020.6032",
+   "date": "2020-03-11",
+   "adi": "",
+   "overexposureRisk": ""
+  },
+  "wikipedia": "",
+  "wikidata": "Q18967238",
+  "verification": {
+   "status": "corrected",
+   "sources": [
+    "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2020.6032",
+    "https://pubmed.ncbi.nlm.nih.gov/37673430/"
+   ],
+   "notes": "Panel rettet til FAF (ikke ANS). EFSA 2020-ADI'er tilføjet (E472a-c ingen numerisk ADI; E472d 480; E472e,f 600 mg/kg). Uverificeret udsagn om E472e og kræft fjernet; BMJ-fund for E472b/E472c præciseret."
+  }
+ },
+ {
+  "code": "E472c",
+  "nameDa": "Citronsyreestere af mono- og diglycerider af fedtsyrer",
+  "nameEn": "Citric acid esters of mono- and diglycerides of fatty acids",
+  "category": "Emulgator / stabilisator / antioxidant",
+  "euStatus": "approved",
+  "origin": "mixed",
+  "summary": "Citronsyreestere af mono- og diglycerider (CITREM) er emulgatorer, der også binder metaller og derved hjælper mod harskning.",
+  "description": "Stoffet fremstilles ved at forestre mono- og diglycerider med citronsyre. CITREM er god til at stabilisere olie-i-vand-emulsioner og forhindre sprøjt ved stegning i margarine. Citronsyredelen binder metalioner, hvilket forstærker virkningen af antioxidanter. Det anvendes også i modermælkserstatning og kliniske ernæringsprodukter.",
+  "uses": "Margarine og stegefedt, mayonnaise og dressinger, pålæg og kødprodukter, modermælkserstatning, bagværk.",
+  "health": "Esterne spaltes i tarmen til glycerol, fedtsyrer og den pågældende organiske syre (eddike-, mælke-, citron- eller vinsyre), som alle er normale kostbestanddele. EFSA fandt ved gen-evalueringen (2020) ingen sikkerhedsbekymring ved de rapporterede anvendelser; der blev ikke fastsat nogen numerisk ADI. Fedtsyrerne kan stamme fra animalsk fedt.",
+  "research": "EFSA's FAF-panel gen-evaluerede E 472a–f i 2020 (EFSA Journal 18(3):6032). For E472a, b og c fandt panelet ikke behov for en numerisk ADI; for E472d fastsattes en ADI på 480 mg/kg legemsvægt/dag og for E472e og E472f en ADI på 600 mg/kg legemsvægt/dag. Der var ingen sikkerhedsbekymring ved de rapporterede brugsniveauer, men panelet anbefalede strammere specifikationer for urenheder (fx glycidylestere, 3-MCPD og tungmetaller). I NutriNet-Santé-kohorten (Sellem et al., BMJ 2023) var højere indtag af E471/E472 samlet forbundet med øget risiko for hjerte-kar-sygdom; specifikt var E472b forbundet med hjerte-kar- og cerebrovaskulær sygdom og E472c med hjerte-kar- og koronar hjertesygdom. Resultaterne er observationelle og kræver bekræftelse. EFSA vurderede i 2025 desuden brugen af E472c i fødevarer til spædbørn under 16 uger (DOI 10.2903/j.efsa.2025.9202).",
+  "keyReferences": [
+   {
+    "citation": "Sellem L et al. Food additive emulsifiers and cardiovascular disease risk in the NutriNet-Santé cohort: prospective cohort study. BMJ. 2023.",
+    "searchTitle": "Food additive emulsifiers and risk of cardiovascular disease in the NutriNet-Santé cohort: prospective cohort study"
+   }
+  ],
+  "pubmedTerm": "citric acid esters of mono- and diglycerides",
+  "flags": [
+   "animal_origin"
+  ],
+  "classes": [
+   "antioxidant",
+   "emulsifier",
+   "sequestrant",
+   "stabiliser"
+  ],
+  "variants": [],
+  "efsa": {
+   "title": "Re-evaluation of acetic acid, lactic acid, citric acid, tartaric acid, mono- and diacetyltartaric acid, mixed acetic and tartaric acid esters of mono- and diglycerides of fatty acids (E 472a-f) as food additives",
+   "url": "https://doi.org/10.2903/j.efsa.2020.6032",
+   "date": "2020-03-11",
+   "adi": "",
+   "overexposureRisk": ""
+  },
+  "wikipedia": "",
+  "wikidata": "Q18967202",
+  "verification": {
+   "status": "corrected",
+   "sources": [
+    "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2020.6032",
+    "https://pubmed.ncbi.nlm.nih.gov/37673430/"
+   ],
+   "notes": "Panel rettet til FAF (ikke ANS). EFSA 2020-ADI'er tilføjet (E472a-c ingen numerisk ADI; E472d 480; E472e,f 600 mg/kg). Uverificeret udsagn om E472e og kræft fjernet; BMJ-fund for E472b/E472c præciseret. EFSA 2025 (j.efsa.2025.9202) har desuden vurderet E472c i modermælkserstatning."
+  }
+ },
+ {
+  "code": "E472d",
+  "nameDa": "Vinsyreestere af mono- og diglycerider af fedtsyrer",
+  "nameEn": "Tartaric acid esters of mono- and diglycerides of fatty acids",
+  "category": "Emulgator / stabilisator",
+  "euStatus": "approved",
+  "origin": "mixed",
+  "summary": "Vinsyreestere af mono- og diglycerider er emulgatorer, der bruges i begrænset omfang, især i bagværk.",
+  "description": "Stoffet fremstilles ved at forestre mono- og diglycerider med vinsyre. Det har egenskaber, der minder om E472e, men er langt mindre udbredt. Vinsyren stammer typisk fra vinproduktion eller kemisk syntese.",
+  "uses": "Bagværk og kagemix; forholdsvis sjældent anvendt.",
+  "health": "Esterne spaltes i tarmen til glycerol, fedtsyrer og den pågældende organiske syre (eddike-, mælke-, citron- eller vinsyre), som alle er normale kostbestanddele. EFSA fandt ved gen-evalueringen (2020) ingen sikkerhedsbekymring ved de rapporterede anvendelser og fastsatte en ADI på 480 mg/kg legemsvægt/dag. Fedtsyrerne kan stamme fra animalsk fedt.",
+  "research": "EFSA's FAF-panel gen-evaluerede E 472a–f i 2020 (EFSA Journal 18(3):6032). For E472a, b og c fandt panelet ikke behov for en numerisk ADI; for E472d fastsattes en ADI på 480 mg/kg legemsvægt/dag og for E472e og E472f en ADI på 600 mg/kg legemsvægt/dag. Der var ingen sikkerhedsbekymring ved de rapporterede brugsniveauer, men panelet anbefalede strammere specifikationer for urenheder (fx glycidylestere, 3-MCPD og tungmetaller). I NutriNet-Santé-kohorten (Sellem et al., BMJ 2023) var højere indtag af E471/E472 samlet forbundet med øget risiko for hjerte-kar-sygdom; specifikt var E472b forbundet med hjerte-kar- og cerebrovaskulær sygdom og E472c med hjerte-kar- og koronar hjertesygdom. Resultaterne er observationelle og kræver bekræftelse.",
+  "keyReferences": [],
+  "pubmedTerm": "tartaric acid esters of monoglycerides",
+  "flags": [
+   "animal_origin"
+  ],
+  "classes": [],
+  "variants": [],
+  "efsa": {
+   "title": "Re-evaluation of acetic acid, lactic acid, citric acid, tartaric acid, mono- and diacetyltartaric acid, mixed acetic and tartaric acid esters of mono- and diglycerides of fatty acids (E 472a-f) as food additives",
+   "url": "https://doi.org/10.2903/j.efsa.2020.6032",
+   "date": "2020-03-11",
+   "adi": "480 mg/kg bw/day",
+   "overexposureRisk": ""
+  },
+  "wikipedia": "",
+  "wikidata": "",
+  "verification": {
+   "status": "corrected",
+   "sources": [
+    "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2020.6032",
+    "https://pubmed.ncbi.nlm.nih.gov/37673430/"
+   ],
+   "notes": "Panel rettet til FAF (ikke ANS). EFSA 2020-ADI'er tilføjet (E472a-c ingen numerisk ADI; E472d 480; E472e,f 600 mg/kg). Uverificeret udsagn om E472e og kræft fjernet; BMJ-fund for E472b/E472c præciseret."
+  }
+ },
+ {
+  "code": "E472e",
+  "nameDa": "Mono- og diacetylvinsyreestere af mono- og diglycerider af fedtsyrer",
+  "nameEn": "Mono- and diacetyltartaric acid esters of mono- and diglycerides of fatty acids",
+  "category": "Emulgator / stabilisator",
+  "euStatus": "approved",
+  "origin": "mixed",
+  "summary": "DATEM (E472e) er en emulgator, der styrker glutennetværket i dej og giver brød større volumen og en jævn krumme.",
+  "description": "Stoffet fremstilles ved at lade diacetylvinsyreanhydrid reagere med mono- og diglycerider. DATEM binder sig til glutenproteinerne og gør dejen mere elastisk og gasholdende, hvilket er særligt nyttigt ved hvedemel af svingende kvalitet og i industrielt bagværk. Det bruges også i kaffefløde-erstatninger og drikkevareemulsioner.",
+  "uses": "Franskbrød, toastbrød, burgerboller, bake-off og frosne dejprodukter, kaffefløde og flødeerstatninger.",
+  "health": "Esterne spaltes i tarmen til glycerol, fedtsyrer og den pågældende organiske syre (eddike-, mælke-, citron- eller vinsyre), som alle er normale kostbestanddele. EFSA fandt ved gen-evalueringen (2020) ingen sikkerhedsbekymring ved de rapporterede anvendelser og fastsatte en ADI på 600 mg/kg legemsvægt/dag. Fedtsyrerne kan stamme fra animalsk fedt. JECFA har tidligere fastsat en ADI på 50 mg/kg legemsvægt/dag for DATEM.",
+  "research": "EFSA's FAF-panel gen-evaluerede E 472a–f i 2020 (EFSA Journal 18(3):6032). For E472a, b og c fandt panelet ikke behov for en numerisk ADI; for E472d fastsattes en ADI på 480 mg/kg legemsvægt/dag og for E472e og E472f en ADI på 600 mg/kg legemsvægt/dag. Der var ingen sikkerhedsbekymring ved de rapporterede brugsniveauer, men panelet anbefalede strammere specifikationer for urenheder (fx glycidylestere, 3-MCPD og tungmetaller). I NutriNet-Santé-kohorten (Sellem et al., BMJ 2023) var højere indtag af E471/E472 samlet forbundet med øget risiko for hjerte-kar-sygdom; specifikt var E472b forbundet med hjerte-kar- og cerebrovaskulær sygdom og E472c med hjerte-kar- og koronar hjertesygdom. Resultaterne er observationelle og kræver bekræftelse.",
+  "keyReferences": [
+   {
+    "citation": "Sellem L et al. Food additive emulsifiers and cancer risk: Results from the French prospective NutriNet-Santé cohort. PLoS Medicine. 2024.",
+    "searchTitle": "Food additive emulsifiers and cancer risk: Results from the French prospective NutriNet-Santé cohort"
+   }
+  ],
+  "pubmedTerm": "diacetyl tartaric acid esters of mono- and diglycerides",
+  "flags": [
+   "animal_origin"
+  ],
+  "classes": [
+   "emulsifier",
+   "sequestrant",
+   "stabiliser"
+  ],
+  "variants": [],
+  "efsa": {
+   "title": "Re-evaluation of acetic acid, lactic acid, citric acid, tartaric acid, mono- and diacetyltartaric acid, mixed acetic and tartaric acid esters of mono- and diglycerides of fatty acids (E 472a-f) as food additives",
+   "url": "https://doi.org/10.2903/j.efsa.2020.6032",
+   "date": "2020-03-11",
+   "adi": "600 mg/kg bw/day",
+   "overexposureRisk": ""
+  },
+  "wikipedia": "",
+  "wikidata": "Q409406",
+  "verification": {
+   "status": "corrected",
+   "sources": [
+    "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2020.6032",
+    "https://pubmed.ncbi.nlm.nih.gov/37673430/"
+   ],
+   "notes": "Panel rettet til FAF (ikke ANS). EFSA 2020-ADI'er tilføjet (E472a-c ingen numerisk ADI; E472d 480; E472e,f 600 mg/kg). Uverificeret udsagn om E472e og kræft fjernet; BMJ-fund for E472b/E472c præciseret."
+  }
+ },
+ {
+  "code": "E472f",
+  "nameDa": "Blandede eddikesyre- og vinsyreestere af mono- og diglycerider af fedtsyrer",
+  "nameEn": "Mixed acetic and tartaric acid esters of mono- and diglycerides of fatty acids",
+  "category": "Emulgator / stabilisator",
+  "euStatus": "approved",
+  "origin": "mixed",
+  "summary": "E472f er en emulgator, hvor mono- og diglycerider er forestret med både eddikesyre og vinsyre.",
+  "description": "Stoffet fremstilles ved at lade mono- og diglycerider reagere med en blanding af eddikesyre og vinsyre (eller deres anhydrider). Det har egenskaber, der ligger mellem E472a og E472e, og bruges især i bagværk. Anvendelsen er begrænset.",
+  "uses": "Bagværk og brødprodukter; sjældent anvendt.",
+  "health": "Esterne spaltes i tarmen til glycerol, fedtsyrer og den pågældende organiske syre (eddike-, mælke-, citron- eller vinsyre), som alle er normale kostbestanddele. EFSA fandt ved gen-evalueringen (2020) ingen sikkerhedsbekymring ved de rapporterede anvendelser og fastsatte en ADI på 600 mg/kg legemsvægt/dag. Fedtsyrerne kan stamme fra animalsk fedt.",
+  "research": "EFSA's FAF-panel gen-evaluerede E 472a–f i 2020 (EFSA Journal 18(3):6032). For E472a, b og c fandt panelet ikke behov for en numerisk ADI; for E472d fastsattes en ADI på 480 mg/kg legemsvægt/dag og for E472e og E472f en ADI på 600 mg/kg legemsvægt/dag. Der var ingen sikkerhedsbekymring ved de rapporterede brugsniveauer, men panelet anbefalede strammere specifikationer for urenheder (fx glycidylestere, 3-MCPD og tungmetaller). I NutriNet-Santé-kohorten (Sellem et al., BMJ 2023) var højere indtag af E471/E472 samlet forbundet med øget risiko for hjerte-kar-sygdom; specifikt var E472b forbundet med hjerte-kar- og cerebrovaskulær sygdom og E472c med hjerte-kar- og koronar hjertesygdom. Resultaterne er observationelle og kræver bekræftelse.",
+  "keyReferences": [],
+  "pubmedTerm": "acetic and tartaric acid esters of monoglycerides",
+  "flags": [
+   "animal_origin"
+  ],
+  "classes": [],
+  "variants": [],
+  "efsa": {
+   "title": "Re-evaluation of acetic acid, lactic acid, citric acid, tartaric acid, mono- and diacetyltartaric acid, mixed acetic and tartaric acid esters of mono- and diglycerides of fatty acids (E 472a-f) as food additives",
+   "url": "https://doi.org/10.2903/j.efsa.2020.6032",
+   "date": "2020-03-11",
+   "adi": "600 mg/kg bw/day",
+   "overexposureRisk": ""
+  },
+  "wikipedia": "",
+  "wikidata": "Q18967248",
+  "verification": {
+   "status": "corrected",
+   "sources": [
+    "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2020.6032",
+    "https://pubmed.ncbi.nlm.nih.gov/37673430/"
+   ],
+   "notes": "Panel rettet til FAF (ikke ANS). EFSA 2020-ADI'er tilføjet (E472a-c ingen numerisk ADI; E472d 480; E472e,f 600 mg/kg). Uverificeret udsagn om E472e og kræft fjernet; BMJ-fund for E472b/E472c præciseret."
+  }
+ },
+ {
+  "code": "E473",
+  "nameDa": "Saccharoseestere af fedtsyrer",
+  "nameEn": "Sucrose esters of fatty acids",
+  "category": "Emulgator / stabilisator",
+  "euStatus": "approved",
+  "origin": "mixed",
+  "summary": "Saccharoseestere er emulgatorer dannet af almindeligt sukker (saccharose) og fedtsyrer.",
+  "description": "Stofferne fremstilles ved at forestre saccharose med fedtsyrer fra vegetabilske eller animalske fedtstoffer, ofte via methylestere af fedtsyrerne i et opløsningsmiddel, som efterfølgende fjernes. Afhængigt af hvor mange fedtsyrer der bindes til sukkermolekylet, kan emulgatoren være mere vand- eller fedtopløselig. De bruges til at stabilisere emulsioner, forbedre skum og som overfladebehandling af frisk frugt.",
+  "uses": "Overfladebehandling af frugt, drikkevarer med aroma-emulsioner, kaffefløde-erstatninger, bagværk, is, slik og tyggegummi, desserter.",
+  "health": "Saccharoseestere spaltes delvist i tarmen til sukker og fedtsyrer. EFSA (AFC-panelet) fastsatte i 2004 en gruppe-ADI på 40 mg/kg legemsvægt/dag for saccharoseestere (E473) og saccharoseglycerider (E474). Ifølge EFSA's forfinede eksponeringsberegninger (2018, bekræftet 2023) overstiger indtaget ADI i mange befolkningsgrupper, især småbørn og børn, hvorfor Open Food Facts angiver høj risiko for overeksponering. Der er ingen kendt allergirisiko.",
+  "research": "EFSA's AFC-panel fastsatte i 2004 en gruppe-ADI på 40 mg/kg legemsvægt/dag for E 473 og E 474. En forfinet eksponeringsvurdering fra ANS-panelet (2018, DOI 10.2903/j.efsa.2018.5087) viste, at indtaget overstiger gruppe-ADI i mange befolkningsgrupper, især småbørn og børn, og FAF-panelets opfølgning fra 2023 (DOI 10.2903/j.efsa.2023.7961) bekræftede dette. Der findes få studier af langtidseffekter på mennesker.",
+  "keyReferences": [],
+  "pubmedTerm": "sucrose esters",
+  "flags": [
+   "children_caution"
+  ],
+  "classes": [
+   "emulsifier",
+   "stabiliser"
+  ],
+  "variants": [],
+  "efsa": {
+   "title": "Refined exposure assessment of sucrose esters of fatty acids (E 473) from its use as a food additive",
+   "url": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2018.5087",
+   "date": "2018/01/05",
+   "adi": "40",
+   "overexposureRisk": "en:high"
+  },
+  "wikipedia": "https://en.wikipedia.org/wiki/Sucrose_esters",
+  "wikidata": "Q55648666",
+  "verification": {
+   "status": "corrected",
+   "sources": [
+    "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2018.5087",
+    "https://www.efsa.europa.eu/en/efsajournal/pub/7961"
+   ],
+   "notes": "Årstal rettet: gruppe-ADI 40 mg/kg blev fastsat i 2004, ikke 2018; 2018 var en forfinet eksponeringsvurdering (overskridelse i mange grupper), bekræftet af EFSA 2023."
+  }
+ },
+ {
+  "code": "E474",
+  "nameDa": "Saccharoseglycerider",
+  "nameEn": "Sucroglycerides",
+  "category": "Emulgator",
+  "euStatus": "approved",
+  "origin": "mixed",
+  "summary": "Saccharoseglycerider er en blanding af saccharoseestere og mono-, di- og triglycerider af fedtsyrer.",
+  "description": "Stoffet fremstilles ved at lade saccharose reagere med naturlige fedtstoffer (fx palme- eller talgolie), hvorved der dannes en blanding af saccharoseestere og glycerider. Det fungerer som emulgator i fedt- og vandholdige produkter.",
+  "uses": "Bagværk, desserter, is, flødeerstatninger og drikkevarer; forholdsvis sjældent anvendt.",
+  "health": "Saccharoseestere spaltes delvist i tarmen til sukker og fedtsyrer. EFSA (AFC-panelet) fastsatte i 2004 en gruppe-ADI på 40 mg/kg legemsvægt/dag for saccharoseestere (E473) og saccharoseglycerider (E474). Ifølge EFSA's forfinede eksponeringsberegninger (2018, bekræftet 2023) overstiger indtaget ADI i mange befolkningsgrupper, især småbørn og børn, hvorfor Open Food Facts angiver høj risiko for overeksponering. Der er ingen kendt allergirisiko.",
+  "research": "EFSA's AFC-panel vurderede E 473 og E 474 i 2004 og fastsatte en gruppe-ADI på 40 mg/kg legemsvægt/dag. Senere eksponeringsvurderinger (2018 og 2023) har primært omhandlet E 473 og vist overskridelse af gruppe-ADI i flere befolkningsgrupper.",
+  "keyReferences": [],
+  "pubmedTerm": "sucroglycerides",
+  "flags": [
+   "children_caution",
+   "animal_origin"
+  ],
+  "classes": [
+   "emulsifier"
+  ],
+  "variants": [],
+  "efsa": {
+   "title": "Opinion of the Scientific Panel on Food Additives, Flavourings, Processing Aids and Materials in Contact with Food on Sucrose esters of fatty acids, E 473 and sucroglycerides, E 474 based on a request from the Commission related to Sucrose Esters of Fatty Acids (E 473)",
+   "url": "http://dx.doi.org/10.2903/j.efsa.2004.106",
+   "date": "2004-11-23",
+   "adi": "",
+   "overexposureRisk": ""
+  },
+  "wikipedia": "",
+  "wikidata": "Q18608931",
+  "verification": {
+   "status": "corrected",
+   "sources": [
+    "http://dx.doi.org/10.2903/j.efsa.2004.106",
+    "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2018.5087"
+   ],
+   "notes": "Rettet: gruppe-ADI fastsat 2004, ikke ved en 'gen-evaluering i 2018'."
+  }
+ },
+ {
+  "code": "E475",
+  "nameDa": "Polyglycerolestere af fedtsyrer",
+  "nameEn": "Polyglycerol esters of fatty acids",
+  "category": "Emulgator / stabilisator",
+  "euStatus": "approved",
+  "origin": "mixed",
+  "summary": "Polyglycerolestere er emulgatorer, hvor fedtsyrer er bundet til korte kæder af glycerol.",
+  "description": "Glycerol kondenseres ved opvarmning til polyglycerol, som derefter forestres med fedtsyrer fra vegetabilske eller animalske fedtstoffer. Stofferne forbedrer luftindblanding og stabiliserer emulsioner. De bruges især i kager, piskbare produkter og visse fedtstoffer.",
+  "uses": "Kager og kagemix, piskbare toppings, desserter, margarine og fedtblandinger, slik.",
+  "health": "Polyglycerolestere spaltes i tarmen til fedtsyrer og polyglycerol, som udskilles stort set uomdannet. JECFA har fastsat en ADI på 25 mg/kg legemsvægt/dag (godkendt af SCF i 1978). EFSA's gen-evaluering (2017) fandt ikke behov for en numerisk ADI og ingen sikkerhedsbekymring ved de rapporterede brugsniveauer. Fedtsyrerne kan være af animalsk oprindelse.",
+  "research": "EFSA's ANS-panel gen-evaluerede E 475 i 2017 (DOI 10.2903/j.efsa.2017.5089) og konkluderede, at der ikke var behov for en numerisk ADI, da stoffet næsten fuldstændigt hydrolyseres i mave-tarm-kanalen, og at der ikke var sikkerhedsbekymring. En opfølgning i 2022 (DOI 10.2903/j.efsa.2022.7308) behandlede de identificerede datahuller. Der er ikke fundet nyere studier, der rejser specifikke bekymringer.",
+  "keyReferences": [],
+  "pubmedTerm": "polyglycerol esters of fatty acids",
+  "flags": [
+   "animal_origin"
+  ],
+  "classes": [
+   "emulsifier",
+   "stabiliser"
+  ],
+  "variants": [],
+  "efsa": {
+   "title": "Re-evaluation of polyglycerol esters of fatty acids (E 475) as a food additive",
+   "url": "https://doi.org/10.2903/j.efsa.2017.5089",
+   "date": "2017",
+   "adi": "",
+   "overexposureRisk": ""
+  },
+  "wikipedia": "",
+  "wikidata": "Q4037764",
+  "verification": {
+   "status": "corrected",
+   "sources": [
+    "https://www.efsa.europa.eu/en/efsajournal/pub/5089",
+    "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2022.7308"
+   ],
+   "notes": "Rettet: EFSA 2017 fastsatte ingen numerisk ADI (JECFA/SCF 25 mg/kg er den ældre værdi). 2022-opfølgning tilføjet."
+  }
+ },
+ {
+  "code": "E476",
+  "nameDa": "Polyglycerolpolyricinoleat",
+  "nameEn": "Polyglycerol polyricinoleate",
+  "category": "Emulgator",
+  "euStatus": "approved",
+  "origin": "synthetic",
+  "summary": "Polyglycerolpolyricinoleat (PGPR) er en emulgator, der især bruges i chokolade for at gøre den mere flydende.",
+  "description": "PGPR fremstilles ved at forestre polyglycerol med kondenserede ricinolsyrer fra ricinusolie. Stoffet nedsætter chokolademassens flydegrænse, så producenten kan bruge mindre kakaosmør og få en mere jævn støbning og overtrækning. Det bruges ofte sammen med lecithin (E322). Det anvendes også i smørbare fedtprodukter med lavt fedtindhold.",
+  "uses": "Chokolade og chokoladeovertræk, chokoladebaserede slik og kiks, fedtfattige smørbare produkter og dressinger. Maks. 5 g/kg i kakao- og chokoladeprodukter.",
+  "health": "PGPR spaltes i tarmen til polyglycerol, ricinolsyre og andre fedtsyrer. EFSA hævede i sin gen-evaluering (2017) ADI fra SCF's 7,5 til 25 mg/kg legemsvægt/dag og fandt, at indtaget ikke overstiger denne. I dyreforsøg med meget høje doser er der set forstørrelse af lever og nyrer, men ikke ved relevante doser.",
+  "research": "EFSA's ANS-panel gen-evaluerede E 476 i 2017 og hævede ADI fra 7,5 mg/kg legemsvægt/dag (SCF 1978) til 25 mg/kg legemsvægt/dag på baggrund af et 2-årigt rottestudie (NOAEL 2.500 mg/kg). Eksponeringen oversteg ikke ADI. En opfølgning i 2022 (DOI 10.2903/j.efsa.2022.7294) behandlede specifikationerne. Der er ikke fundet nyere studier, der rejser bekymring.",
+  "keyReferences": [],
+  "pubmedTerm": "polyglycerol polyricinoleate",
+  "flags": [],
+  "classes": [
+   "emulsifier"
+  ],
+  "variants": [],
+  "efsa": {
+   "title": "Re-evaluation of polyglycerol polyricinoleate (E 476) as a food additive",
+   "url": "https://doi.org/10.2903/j.efsa.2017.4743",
+   "date": "2017-03-24",
+   "adi": "25 mg/kg bw/day",
+   "overexposureRisk": ""
+  },
+  "wikipedia": "https://en.wikipedia.org/wiki/Polyglycerol_polyricinoleate",
+  "wikidata": "Q168686",
+  "verification": {
+   "status": "corrected",
+   "sources": [
+    "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2017.4743",
+    "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2022.7294"
+   ],
+   "notes": "Rettet: EFSA 2017 'fastholdt' ikke ADI men hævede den fra 7,5 (SCF 1978) til 25 mg/kg. Uverificeret påstand om brug siden 1950'erne fjernet. Maks. 5 g/kg i chokolade beholdt."
+  }
+ },
+ {
+  "code": "E477",
+  "nameDa": "Propylenglycolestere af fedtsyrer",
+  "nameEn": "Propane-1,2-diol esters of fatty acids",
+  "category": "Emulgator",
+  "euStatus": "approved",
+  "origin": "mixed",
+  "summary": "Propylenglycolestere af fedtsyrer er emulgatorer, der fremmer luftighed i kager og piskbare produkter.",
+  "description": "Stoffet fremstilles ved at forestre propylenglycol (propan-1,2-diol) med fedtsyrer fra vegetabilske eller animalske fedtstoffer. Det bruges ofte sammen med mono- og diglycerider til at stabilisere luftbobler og give et fint, jævnt kageskum.",
+  "uses": "Kagemix og sukkerbrød, piskbare toppings og flødeerstatninger, desserter og mousser.",
+  "health": "Estrene spaltes i tarmen til propylenglycol og fedtsyrer. EFSA's gen-evaluering (2018) bekræftede ADI på 25 mg/kg legemsvægt/dag udtrykt som propylenglycol (svarende til 80 mg E477/kg) og fandt ingen sikkerhedsbekymring ved de rapporterede anvendelser. Fedtsyrerne kan være af animalsk oprindelse.",
+  "research": "EFSA's ANS-panel gen-evaluerede E 477 i 2018 (DOI 10.2903/j.efsa.2018.5497) og bekræftede den ADI på 25 mg/kg legemsvægt/dag udtrykt som propan-1,2-diol, som JECFA fastsatte i 1974 og SCF godkendte i 1978; det svarer til 80 mg E 477/kg legemsvægt/dag. Eksponeringen oversteg ikke ADI i nogen befolkningsgruppe. Der er ikke fundet nyere forskning, der rejser specifikke bekymringer.",
+  "keyReferences": [],
+  "pubmedTerm": "propylene glycol esters of fatty acids",
+  "flags": [
+   "animal_origin"
+  ],
+  "classes": [
+   "emulsifier"
+  ],
+  "variants": [],
+  "efsa": {
+   "title": "Re-evaluation of propane-1,2-diol esters of fatty acids (E 477) as a food additive",
+   "url": "https://doi.org/10.2903/j.efsa.2018.5497",
+   "date": "2018",
+   "adi": "80 mg/kg bw/day",
+   "overexposureRisk": ""
+  },
+  "wikipedia": "",
+  "wikidata": "Q18944660",
+  "verification": {
+   "status": "corrected",
+   "sources": [
+    "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2018.5497"
+   ],
+   "notes": "ADI (25 mg/kg som propylenglycol = 80 mg/kg E477) tilføjet; EFSA 2018 bekræftet."
+  }
+ },
+ {
+  "code": "E479b",
+  "nameDa": "Termisk oxideret sojaolie omsat med mono- og diglycerider af fedtsyrer",
+  "nameEn": "Thermally oxidised soya bean oil interacted with mono- and diglycerides of fatty acids",
+  "category": "Emulgator",
+  "euStatus": "approved",
+  "origin": "synthetic",
+  "summary": "E479b er en emulgator fremstillet af opvarmet og oxideret sojaolie, som kun må bruges i stegefedt.",
+  "description": "Sojaolie opvarmes under lufttilførsel, så den oxideres, og omsættes derefter med mono- og diglycerider. Produktet forhindrer, at stegefedt sprøjter under opvarmning. Anvendelsen er i EU begrænset til fedtemulsioner beregnet til stegning.",
+  "uses": "Kun i fedtemulsioner til stegning (fx flydende margarine til stegning), maks. 5 g/kg.",
+  "health": "EFSA har ikke rejst sikkerhedsbekymringer ved det tilladte brugsniveau. Stoffet er fremstillet af sojaolie, men raffineret olie indeholder normalt ikke nævneværdige mængder sojaprotein. Personer med sojaallergi kan dog vælge at være opmærksomme.",
+  "research": "EFSA's FAF-panel gen-evaluerede E 479b i 2018 (DOI 10.2903/j.efsa.2018.5420). SCF og JECFA havde tidligere fastsat ADI på henholdsvis 25 og 30 mg/kg legemsvægt/dag. Panelet fandt ingen sikkerhedsbekymring, især i lyset af den meget begrænsede anvendelse. Forskningen om stoffet er sparsom.",
+  "keyReferences": [],
+  "pubmedTerm": "thermally oxidized soybean oil",
+  "flags": [],
+  "classes": [
+   "emulsifier"
+  ],
+  "variants": [],
+  "efsa": {
+   "title": "Re-evaluation of oxidised soya bean oil interacted with mono- and diglycerides of fatty acids (E 479b) as a food additive",
+   "url": "https://doi.org/10.2903/j.efsa.2018.5420",
+   "date": "2018-10-10",
+   "adi": "",
+   "overexposureRisk": ""
+  },
+  "wikipedia": "",
+  "wikidata": "",
+  "verification": {
+   "status": "corrected",
+   "sources": [
+    "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2018.5420"
+   ],
+   "notes": "Panel rettet til FAF; SCF/JECFA-ADI (25/30 mg/kg) tilføjet. Anvendelsesbegrænsning (fedtemulsioner til stegning, 5 g/kg) stemmer."
+  }
+ },
+ {
+  "code": "E481",
+  "nameDa": "Natriumstearoyl-2-lactylat",
+  "nameEn": "Sodium stearoyl-2-lactylate",
+  "category": "Emulgator / stabilisator",
+  "euStatus": "approved",
+  "origin": "mixed",
+  "summary": "Natriumstearoyllactylat (SSL) er en emulgator og dejforbedrer dannet af stearinsyre og mælkesyre.",
+  "description": "Stoffet fremstilles ved at forestre stearinsyre med mælkesyre og neutralisere med natriumcarbonat eller -hydroxid. SSL styrker dejen, giver større brødvolumen og blødere krumme, som holder sig frisk længere. Varianten (i) er natriumstearoyllactylat, mens (ii) er natriumoleyllactylat baseret på oliesyre.",
+  "uses": "Toastbrød, burgerboller og industrielt brød, kager, kaffefløde-erstatninger, desserter og instantprodukter.",
+  "health": "Lactylaterne spaltes i tarmen til stearinsyre og mælkesyre, som begge er normale kostbestanddele. EFSA fastsatte i 2013 en gruppe-ADI på 22 mg/kg legemsvægt/dag for E481 og E482 og fandt, at indtaget i nogle grupper — især børn med højt forbrug af bagværk — kan overstige ADI. Stoffet indeholder ikke mælk trods navnet. Fedtsyrerne kan være af animalsk oprindelse.",
+  "research": "EFSA's ANS-panel gen-evaluerede E 481 og E 482 i 2013 og fastsatte en gruppe-ADI på 22 mg/kg legemsvægt/dag. Eksponeringsberegningerne viste mulig overskridelse hos børn ved de højeste tilladte niveauer, hvilket gav anledning til overvejelser om at justere brugsgrænserne. Der er ikke fundet humane studier, der påviser skadelige effekter ved normale indtag.",
+  "keyReferences": [],
+  "pubmedTerm": "sodium stearoyl lactylate",
+  "flags": [
+   "children_caution",
+   "animal_origin"
+  ],
+  "classes": [
+   "emulsifier",
+   "stabiliser"
+  ],
+  "variants": [
+   {
+    "code": "E481(i)",
+    "nameDa": "",
+    "nameEn": ""
+   },
+   {
+    "code": "E481(ii)",
+    "nameDa": "",
+    "nameEn": "Sodium oleyl lactylate"
+   }
+  ],
+  "efsa": {
+   "title": "Scientific Opinion on the re-evaluation of sodium stearoyl-2-lactylate (E 481) and calcium stearoyl-2-lactylate (E 482) as food additives.",
+   "url": "http://dx.doi.org/10.2903/j.efsa.2013.3144",
+   "date": "2013-05-13",
+   "adi": "22",
+   "overexposureRisk": "en:high"
+  },
+  "wikipedia": "https://en.wikipedia.org/wiki/Sodium_stearoyl_lactylate",
+  "wikidata": "Q416058",
+  "verification": {
+   "status": "verified",
+   "sources": [
+    "http://dx.doi.org/10.2903/j.efsa.2013.3144"
+   ],
+   "notes": "Bekræftet: EFSA ANS 2013, gruppe-ADI 22 mg/kg for E481 og E482; mulig overskridelse hos børn."
+  }
+ },
+ {
+  "code": "E482",
+  "nameDa": "Calciumstearoyl-2-lactylat",
+  "nameEn": "Calcium stearoyl-2-lactylate",
+  "category": "Emulgator / stabilisator",
+  "euStatus": "approved",
+  "origin": "mixed",
+  "summary": "Calciumstearoyllactylat (CSL) er en emulgator og dejforbedrer, der svarer til E481, men med calcium i stedet for natrium.",
+  "description": "Stoffet fremstilles ved at forestre stearinsyre med mælkesyre og neutralisere med en calciumforbindelse. Det styrker glutennetværket og forsinker, at brød bliver tørt. Varianten (i) er calciumstearoyllactylat og (ii) calciumoleyllactylat.",
+  "uses": "Brød og bagværk, kager, desserter og flødeerstatninger.",
+  "health": "Lactylaterne spaltes i tarmen til stearinsyre og mælkesyre, som begge er normale kostbestanddele. EFSA fastsatte i 2013 en gruppe-ADI på 22 mg/kg legemsvægt/dag for E481 og E482 og fandt, at indtaget i nogle grupper — især børn med højt forbrug af bagværk — kan overstige ADI. Stoffet indeholder ikke mælk trods navnet. Fedtsyrerne kan være af animalsk oprindelse.",
+  "research": "EFSA's ANS-panel gen-evaluerede E 481 og E 482 i 2013 og fastsatte en gruppe-ADI på 22 mg/kg legemsvægt/dag. Eksponeringsberegningerne viste mulig overskridelse hos børn ved de højeste tilladte niveauer, hvilket gav anledning til overvejelser om at justere brugsgrænserne. Der er ikke fundet humane studier, der påviser skadelige effekter ved normale indtag.",
+  "keyReferences": [],
+  "pubmedTerm": "calcium stearoyl lactylate",
+  "flags": [
+   "children_caution",
+   "animal_origin"
+  ],
+  "classes": [
+   "emulsifier",
+   "stabiliser"
+  ],
+  "variants": [
+   {
+    "code": "E482(i)",
+    "nameDa": "",
+    "nameEn": "Calcium stearoyl lactylate"
+   },
+   {
+    "code": "E482(ii)",
+    "nameDa": "",
+    "nameEn": "Calcium oleyl lactylate"
+   }
+  ],
+  "efsa": {
+   "title": "Scientific Opinion on the re-evaluation of sodium stearoyl-2-lactylate (E 481) and calcium stearoyl-2-lactylate (E 482) as food additives.",
+   "url": "http://dx.doi.org/10.2903/j.efsa.2013.3144",
+   "date": "2013-05-13",
+   "adi": "22",
+   "overexposureRisk": "en:high"
+  },
+  "wikipedia": "",
+  "wikidata": "Q788535",
+  "verification": {
+   "status": "verified",
+   "sources": [
+    "http://dx.doi.org/10.2903/j.efsa.2013.3144"
+   ],
+   "notes": "Bekræftet: EFSA ANS 2013, gruppe-ADI 22 mg/kg for E481 og E482; mulig overskridelse hos børn."
+  }
+ },
+ {
+  "code": "E483",
+  "nameDa": "Stearyltartrat",
+  "nameEn": "Stearyl tartrate",
+  "category": "Emulgator / dejforbedrer",
+  "euStatus": "banned",
+  "origin": "synthetic",
+  "summary": "Stearyltartrat er en ester af stearylalkohol og vinsyre, der tidligere blev brugt som dejforbedrer; stoffet er forbudt i EU fra 23. april 2024.",
+  "description": "Stoffet fremstilles ved at forestre vinsyre med stearylalkohol (eller en blanding med palmitylalkohol). Det forbedrer dejens egenskaber i bagværk. Det var i EU kun tilladt i bestemte bageriprodukter og blev næsten ikke brugt. Efter EFSA's gen-evaluering er det fjernet fra EU's liste over godkendte tilsætningsstoffer.",
+  "uses": "Ikke længere tilladt i EU (fra 23. april 2024). Var tidligere tilladt i fint bagværk og bageriprodukter, men blev næsten ikke anvendt.",
+  "health": "Der findes kun få data om stoffet. EFSA kunne i 2020 ikke bekræfte stoffets sikkerhed, fordi de oprindelige toksikologiske studier ikke var tilgængelige, der manglede data om genotoksicitet, og det ikke var dokumenteret, at stoffet spaltes fuldstændigt til vinsyre og fedtalkohol i tarmen.",
+  "research": "EFSA's FAF-panel gen-evaluerede E 483 i 2020 (DOI 10.2903/j.efsa.2020.6033) og konkluderede, at der manglede tilstrækkelige toksikologiske data. Ingen medlemsstater eller virksomheder indrapporterede brug, og Mintel GNPD viste kun to produkter siden 1996. EU fjernede derfor stoffet fra listen over godkendte tilsætningsstoffer med virkning fra 23. april 2024.",
+  "keyReferences": [],
+  "pubmedTerm": "stearyl tartrate",
+  "flags": [],
+  "classes": [],
+  "variants": [],
+  "efsa": {
+   "title": "Re-evaluation of stearyl tartrate (E 483) as a food additive",
+   "url": "https://doi.org/10.2903/j.efsa.2020.6033",
+   "date": "2020-03",
+   "adi": "",
+   "overexposureRisk": ""
+  },
+  "wikipedia": "",
+  "wikidata": "Q673260",
+  "verification": {
+   "status": "corrected",
+   "sources": [
+    "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2020.6033",
+    "https://agrinfo.eu/book-of-reports/food-additives-eu-bans-stearyl-tartrate/"
+   ],
+   "notes": "VIGTIGT: euStatus rettet til 'banned' – E483 er forbudt i EU fra 23.4.2024, da EFSA 2020 ikke kunne bekræfte sikkerheden. Tekster omskrevet."
+  }
+ },
+ {
+  "code": "E491",
+  "nameDa": "Sorbitanmonostearat",
+  "nameEn": "Sorbitan monostearate",
+  "category": "Emulgator / stabilisator",
+  "euStatus": "approved",
+  "origin": "mixed",
+  "summary": "Sorbitanmonostearat er en emulgator dannet af sorbitol og stearinsyre.",
+  "description": "Stoffet fremstilles ved at opvarme sorbitol, så det mister vand og danner sorbitan, som derefter forestres med stearinsyre. Sorbitanestere er fedtopløselige emulgatorer, der ofte bruges sammen med polysorbater (E432–E436). De bruges bl.a. til at stabilisere emulsioner, forhindre fedtudskillelse og som hjælpestof i tørgær. Fedtsyrerne kan stamme fra vegetabilske eller animalske kilder.",
+  "uses": "Kager og kagedekorationer, glasur og overtræk, chokolade- og slikprodukter, piskbare toppings, flødeerstatninger, tørgær og kosttilskud. Tilladt i afgrænsede kategorier med maksimumsgrænser.",
+  "health": "Sorbitanestere spaltes delvist i tarmen til sorbitan (et sukkeralkohol-derivat) og fedtsyrer. EFSA's gen-evaluering (2017) fastsatte en gruppe-ADI på 10 mg/kg legemsvægt/dag udtrykt som sorbitan for E491–E495 (svarende til 26 mg sorbitanmonostearat/kg) og konkluderede, at der ikke var sikkerhedsbekymring ved de rapporterede anvendelser; de forfinede eksponeringsestimater oversteg ikke ADI. Open Food Facts angiver dog høj risiko for overeksponering, baseret på mere konservative beregninger ved maksimalt tilladte niveauer. Store mængder kan i dyreforsøg give diarré og forstørret lever og nyrer. Fedtsyrerne kan være af animalsk oprindelse.",
+  "research": "EFSA's ANS-panel gen-evaluerede E 491–E 495 i 2017 (DOI 10.2903/j.efsa.2017.4788) og fastsatte en gruppe-ADI på 10 mg sorbitan/kg legemsvægt/dag baseret på en NOAEL på 2.600 mg sorbitanmonostearat/kg fra dyreforsøg. Middel- og 95-percentil-eksponeringen i den forfinede vurdering oversteg ikke ADI i nogen befolkningsgruppe. EFSA vurderede i 2025 en udvidet brug af E491 i enzympræparater (DOI 10.2903/j.efsa.2025.9487). Der er ikke fundet humane studier, der viser skadelige effekter ved normalt indtag.",
+  "keyReferences": [],
+  "pubmedTerm": "sorbitan monostearate",
+  "flags": [
+   "children_caution",
+   "animal_origin"
+  ],
+  "classes": [
+   "emulsifier"
+  ],
+  "variants": [],
+  "efsa": {
+   "title": "Re‐evaluation of sorbitan monostearate (E 491), sorbitan tristearate (E 492), sorbitan monolaurate (E 493), sorbitan monooleate (E 494) and sorbitan monopalmitate (E 495) when used as food additives",
+   "url": "https://doi.org/10.2903/j.efsa.2017.4788",
+   "date": "2017-05-05",
+   "adi": "10 mg/kg bw/day (som sorbitan)",
+   "overexposureRisk": "en:high"
+  },
+  "wikipedia": "https://en.wikipedia.org/wiki/Sorbitan_monostearate",
+  "wikidata": "Q907898",
+  "verification": {
+   "status": "corrected",
+   "sources": [
+    "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2017.4788",
+    "https://pubmed.ncbi.nlm.nih.gov/40567513/"
+   ],
+   "notes": "Rettet: EFSA 2017 gruppe-ADI er 10 mg/kg udtrykt som sorbitan (= 26 mg/kg som sorbitanmonostearat), og EFSA fandt IKKE overskridelse af ADI i sin forfinede vurdering. Fejl i efsa-URL ('hhttps') rettet."
+  }
+ },
+ {
+  "code": "E492",
+  "nameDa": "Sorbitantristearat",
+  "nameEn": "Sorbitan tristearate",
+  "category": "Emulgator / stabilisator",
+  "euStatus": "approved",
+  "origin": "mixed",
+  "summary": "Sorbitantristearat er en emulgator dannet af sorbitol og stearinsyre.",
+  "description": "Stoffet fremstilles ved at opvarme sorbitol, så det mister vand og danner sorbitan, som derefter forestres med stearinsyre (tre fedtsyrer pr. molekyle). Sorbitanestere er fedtopløselige emulgatorer, der ofte bruges sammen med polysorbater (E432–E436). De bruges bl.a. til at stabilisere emulsioner, forhindre fedtudskillelse og som hjælpestof i tørgær. Fedtsyrerne kan stamme fra vegetabilske eller animalske kilder.",
+  "uses": "Kager og kagedekorationer, glasur og overtræk, chokolade- og slikprodukter, piskbare toppings, flødeerstatninger, tørgær og kosttilskud. Tilladt i afgrænsede kategorier med maksimumsgrænser.",
+  "health": "Sorbitanestere spaltes delvist i tarmen til sorbitan (et sukkeralkohol-derivat) og fedtsyrer. EFSA's gen-evaluering (2017) fastsatte en gruppe-ADI på 10 mg/kg legemsvægt/dag udtrykt som sorbitan for E491–E495 (svarende til 26 mg sorbitanmonostearat/kg) og konkluderede, at der ikke var sikkerhedsbekymring ved de rapporterede anvendelser; de forfinede eksponeringsestimater oversteg ikke ADI. Open Food Facts angiver dog høj risiko for overeksponering, baseret på mere konservative beregninger ved maksimalt tilladte niveauer. Store mængder kan i dyreforsøg give diarré og forstørret lever og nyrer. Fedtsyrerne kan være af animalsk oprindelse.",
+  "research": "EFSA's ANS-panel gen-evaluerede E 491–E 495 i 2017 (DOI 10.2903/j.efsa.2017.4788) og fastsatte en gruppe-ADI på 10 mg sorbitan/kg legemsvægt/dag baseret på en NOAEL på 2.600 mg sorbitanmonostearat/kg fra dyreforsøg. Middel- og 95-percentil-eksponeringen i den forfinede vurdering oversteg ikke ADI i nogen befolkningsgruppe. EFSA vurderede i 2025 en udvidet brug af E491 i enzympræparater (DOI 10.2903/j.efsa.2025.9487). Der er ikke fundet humane studier, der viser skadelige effekter ved normalt indtag.",
+  "keyReferences": [],
+  "pubmedTerm": "sorbitan tristearate",
+  "flags": [
+   "children_caution",
+   "animal_origin"
+  ],
+  "classes": [
+   "emulsifier",
+   "stabiliser"
+  ],
+  "variants": [],
+  "efsa": {
+   "title": "Re‐evaluation of sorbitan monostearate (E 491), sorbitan tristearate (E 492), sorbitan monolaurate (E 493), sorbitan monooleate (E 494) and sorbitan monopalmitate (E 495) when used as food additives",
+   "url": "https://doi.org/10.2903/j.efsa.2017.4788",
+   "date": "2017-05-05",
+   "adi": "10 mg/kg bw/day (som sorbitan)",
+   "overexposureRisk": "en:high"
+  },
+  "wikipedia": "",
+  "wikidata": "Q1416224",
+  "verification": {
+   "status": "corrected",
+   "sources": [
+    "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2017.4788",
+    "https://pubmed.ncbi.nlm.nih.gov/40567513/"
+   ],
+   "notes": "Rettet: EFSA 2017 gruppe-ADI er 10 mg/kg udtrykt som sorbitan (= 26 mg/kg som sorbitanmonostearat), og EFSA fandt IKKE overskridelse af ADI i sin forfinede vurdering. Fejl i efsa-URL ('hhttps') rettet."
+  }
+ },
+ {
+  "code": "E493",
+  "nameDa": "Sorbitanmonolaurat",
+  "nameEn": "Sorbitan monolaurate",
+  "category": "Emulgator / stabilisator",
+  "euStatus": "approved",
+  "origin": "mixed",
+  "summary": "Sorbitanmonolaurat er en emulgator dannet af sorbitol og laurinsyre.",
+  "description": "Stoffet fremstilles ved at opvarme sorbitol, så det mister vand og danner sorbitan, som derefter forestres med laurinsyre. Sorbitanestere er fedtopløselige emulgatorer, der ofte bruges sammen med polysorbater (E432–E436). De bruges bl.a. til at stabilisere emulsioner, forhindre fedtudskillelse og som hjælpestof i tørgær. Fedtsyrerne kan stamme fra vegetabilske eller animalske kilder.",
+  "uses": "Kager og kagedekorationer, glasur og overtræk, chokolade- og slikprodukter, piskbare toppings, flødeerstatninger, tørgær og kosttilskud. Tilladt i afgrænsede kategorier med maksimumsgrænser.",
+  "health": "Sorbitanestere spaltes delvist i tarmen til sorbitan (et sukkeralkohol-derivat) og fedtsyrer. EFSA's gen-evaluering (2017) fastsatte en gruppe-ADI på 10 mg/kg legemsvægt/dag udtrykt som sorbitan for E491–E495 (svarende til 26 mg sorbitanmonostearat/kg) og konkluderede, at der ikke var sikkerhedsbekymring ved de rapporterede anvendelser; de forfinede eksponeringsestimater oversteg ikke ADI. Open Food Facts angiver dog høj risiko for overeksponering, baseret på mere konservative beregninger ved maksimalt tilladte niveauer. Store mængder kan i dyreforsøg give diarré og forstørret lever og nyrer. Fedtsyrerne kan være af animalsk oprindelse.",
+  "research": "EFSA's ANS-panel gen-evaluerede E 491–E 495 i 2017 (DOI 10.2903/j.efsa.2017.4788) og fastsatte en gruppe-ADI på 10 mg sorbitan/kg legemsvægt/dag baseret på en NOAEL på 2.600 mg sorbitanmonostearat/kg fra dyreforsøg. Middel- og 95-percentil-eksponeringen i den forfinede vurdering oversteg ikke ADI i nogen befolkningsgruppe. EFSA vurderede i 2025 en udvidet brug af E491 i enzympræparater (DOI 10.2903/j.efsa.2025.9487). Der er ikke fundet humane studier, der viser skadelige effekter ved normalt indtag.",
+  "keyReferences": [],
+  "pubmedTerm": "sorbitan monolaurate",
+  "flags": [
+   "children_caution",
+   "animal_origin"
+  ],
+  "classes": [
+   "emulsifier",
+   "stabiliser"
+  ],
+  "variants": [],
+  "efsa": {
+   "title": "Re‐evaluation of sorbitan monostearate (E 491), sorbitan tristearate (E 492), sorbitan monolaurate (E 493), sorbitan monooleate (E 494) and sorbitan monopalmitate (E 495) when used as food additives",
+   "url": "https://doi.org/10.2903/j.efsa.2017.4788",
+   "date": "2017-05-05",
+   "adi": "10 mg/kg bw/day (som sorbitan)",
+   "overexposureRisk": "en:high"
+  },
+  "wikipedia": "",
+  "wikidata": "Q15427856",
+  "verification": {
+   "status": "corrected",
+   "sources": [
+    "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2017.4788",
+    "https://pubmed.ncbi.nlm.nih.gov/40567513/"
+   ],
+   "notes": "Rettet: EFSA 2017 gruppe-ADI er 10 mg/kg udtrykt som sorbitan (= 26 mg/kg som sorbitanmonostearat), og EFSA fandt IKKE overskridelse af ADI i sin forfinede vurdering. Fejl i efsa-URL ('hhttps') rettet."
+  }
+ },
+ {
+  "code": "E494",
+  "nameDa": "Sorbitanmonooleat",
+  "nameEn": "Sorbitan monooleate",
+  "category": "Emulgator / stabilisator",
+  "euStatus": "approved",
+  "origin": "mixed",
+  "summary": "Sorbitanmonooleat er en emulgator dannet af sorbitol og oliesyre.",
+  "description": "Stoffet fremstilles ved at opvarme sorbitol, så det mister vand og danner sorbitan, som derefter forestres med oliesyre. Sorbitanestere er fedtopløselige emulgatorer, der ofte bruges sammen med polysorbater (E432–E436). De bruges bl.a. til at stabilisere emulsioner, forhindre fedtudskillelse og som hjælpestof i tørgær. Fedtsyrerne kan stamme fra vegetabilske eller animalske kilder.",
+  "uses": "Kager og kagedekorationer, glasur og overtræk, chokolade- og slikprodukter, piskbare toppings, flødeerstatninger, tørgær og kosttilskud. Tilladt i afgrænsede kategorier med maksimumsgrænser.",
+  "health": "Sorbitanestere spaltes delvist i tarmen til sorbitan (et sukkeralkohol-derivat) og fedtsyrer. EFSA's gen-evaluering (2017) fastsatte en gruppe-ADI på 10 mg/kg legemsvægt/dag udtrykt som sorbitan for E491–E495 (svarende til 26 mg sorbitanmonostearat/kg) og konkluderede, at der ikke var sikkerhedsbekymring ved de rapporterede anvendelser; de forfinede eksponeringsestimater oversteg ikke ADI. Open Food Facts angiver dog høj risiko for overeksponering, baseret på mere konservative beregninger ved maksimalt tilladte niveauer. Store mængder kan i dyreforsøg give diarré og forstørret lever og nyrer. Fedtsyrerne kan være af animalsk oprindelse.",
+  "research": "EFSA's ANS-panel gen-evaluerede E 491–E 495 i 2017 (DOI 10.2903/j.efsa.2017.4788) og fastsatte en gruppe-ADI på 10 mg sorbitan/kg legemsvægt/dag baseret på en NOAEL på 2.600 mg sorbitanmonostearat/kg fra dyreforsøg. Middel- og 95-percentil-eksponeringen i den forfinede vurdering oversteg ikke ADI i nogen befolkningsgruppe. EFSA vurderede i 2025 en udvidet brug af E491 i enzympræparater (DOI 10.2903/j.efsa.2025.9487). Der er ikke fundet humane studier, der viser skadelige effekter ved normalt indtag.",
+  "keyReferences": [],
+  "pubmedTerm": "sorbitan monooleate",
+  "flags": [
+   "children_caution",
+   "animal_origin"
+  ],
+  "classes": [
+   "emulsifier",
+   "stabiliser"
+  ],
+  "variants": [],
+  "efsa": {
+   "title": "Re‐evaluation of sorbitan monostearate (E 491), sorbitan tristearate (E 492), sorbitan monolaurate (E 493), sorbitan monooleate (E 494) and sorbitan monopalmitate (E 495) when used as food additives",
+   "url": "https://doi.org/10.2903/j.efsa.2017.4788",
+   "date": "2017-05-05",
+   "adi": "10 mg/kg bw/day (som sorbitan)",
+   "overexposureRisk": "en:high"
+  },
+  "wikipedia": "",
+  "wikidata": "Q18944664",
+  "verification": {
+   "status": "corrected",
+   "sources": [
+    "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2017.4788",
+    "https://pubmed.ncbi.nlm.nih.gov/40567513/"
+   ],
+   "notes": "Rettet: EFSA 2017 gruppe-ADI er 10 mg/kg udtrykt som sorbitan (= 26 mg/kg som sorbitanmonostearat), og EFSA fandt IKKE overskridelse af ADI i sin forfinede vurdering. Fejl i efsa-URL ('hhttps') rettet."
+  }
+ },
+ {
+  "code": "E495",
+  "nameDa": "Sorbitanmonopalmitat",
+  "nameEn": "Sorbitan monopalmitate",
+  "category": "Emulgator / stabilisator",
+  "euStatus": "approved",
+  "origin": "mixed",
+  "summary": "Sorbitanmonopalmitat er en emulgator dannet af sorbitol og palmitinsyre.",
+  "description": "Stoffet fremstilles ved at opvarme sorbitol, så det mister vand og danner sorbitan, som derefter forestres med palmitinsyre. Sorbitanestere er fedtopløselige emulgatorer, der ofte bruges sammen med polysorbater (E432–E436). De bruges bl.a. til at stabilisere emulsioner, forhindre fedtudskillelse og som hjælpestof i tørgær. Fedtsyrerne kan stamme fra vegetabilske eller animalske kilder.",
+  "uses": "Kager og kagedekorationer, glasur og overtræk, chokolade- og slikprodukter, piskbare toppings, flødeerstatninger, tørgær og kosttilskud. Tilladt i afgrænsede kategorier med maksimumsgrænser.",
+  "health": "Sorbitanestere spaltes delvist i tarmen til sorbitan (et sukkeralkohol-derivat) og fedtsyrer. EFSA's gen-evaluering (2017) fastsatte en gruppe-ADI på 10 mg/kg legemsvægt/dag udtrykt som sorbitan for E491–E495 (svarende til 26 mg sorbitanmonostearat/kg) og konkluderede, at der ikke var sikkerhedsbekymring ved de rapporterede anvendelser; de forfinede eksponeringsestimater oversteg ikke ADI. Open Food Facts angiver dog høj risiko for overeksponering, baseret på mere konservative beregninger ved maksimalt tilladte niveauer. Store mængder kan i dyreforsøg give diarré og forstørret lever og nyrer. Fedtsyrerne kan være af animalsk oprindelse.",
+  "research": "EFSA's ANS-panel gen-evaluerede E 491–E 495 i 2017 (DOI 10.2903/j.efsa.2017.4788) og fastsatte en gruppe-ADI på 10 mg sorbitan/kg legemsvægt/dag baseret på en NOAEL på 2.600 mg sorbitanmonostearat/kg fra dyreforsøg. Middel- og 95-percentil-eksponeringen i den forfinede vurdering oversteg ikke ADI i nogen befolkningsgruppe. EFSA vurderede i 2025 en udvidet brug af E491 i enzympræparater (DOI 10.2903/j.efsa.2025.9487). Der er ikke fundet humane studier, der viser skadelige effekter ved normalt indtag.",
+  "keyReferences": [],
+  "pubmedTerm": "sorbitan monopalmitate",
+  "flags": [
+   "children_caution",
+   "animal_origin"
+  ],
+  "classes": [
+   "emulsifier"
+  ],
+  "variants": [],
+  "efsa": {
+   "title": "Re‐evaluation of sorbitan monostearate (E 491), sorbitan tristearate (E 492), sorbitan monolaurate (E 493), sorbitan monooleate (E 494) and sorbitan monopalmitate (E 495) when used as food additives",
+   "url": "https://doi.org/10.2903/j.efsa.2017.4788",
+   "date": "2017-05-05",
+   "adi": "10 mg/kg bw/day (som sorbitan)",
+   "overexposureRisk": "en:high"
+  },
+  "wikipedia": "",
+  "wikidata": "Q18601367",
+  "verification": {
+   "status": "corrected",
+   "sources": [
+    "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2017.4788",
+    "https://pubmed.ncbi.nlm.nih.gov/40567513/"
+   ],
+   "notes": "Rettet: EFSA 2017 gruppe-ADI er 10 mg/kg udtrykt som sorbitan (= 26 mg/kg som sorbitanmonostearat), og EFSA fandt IKKE overskridelse af ADI i sin forfinede vurdering. Fejl i efsa-URL ('hhttps') rettet."
+  }
+ },
+ {
+  "code": "E500",
+  "nameDa": "Natriumcarbonater",
+  "nameEn": "Sodium carbonates",
+  "category": "Hævemiddel / surhedsregulerende middel",
+  "euStatus": "approved",
+  "origin": "mixed",
+  "summary": "Natriumcarbonater er salte af kulsyre og natrium; den mest kendte er natron (natriumhydrogencarbonat), der bruges som hævemiddel.",
+  "description": "Varianten (i) er soda (natriumcarbonat), (ii) er natron/tvekulsurt natron (natriumhydrogencarbonat) og (iii) er natriumsesquicarbonat, en blanding af de to. De fremstilles industrielt via Solvay-processen ud fra salt og kalksten eller udvindes fra mineralet trona. Natron frigiver kuldioxid ved kontakt med syre eller varme og får derved dej til at hæve; det er hovedbestanddelen i bagepulver. Soda bruges som surhedsregulerende middel, fx i ramen-nudler og ved behandling af kakao.",
+  "uses": "Bagepulver og natron, kager, kiks og brød, pandekager, ramen/nudler, kakao (alkaliseret), brusetabletter og antacida. Tilladt quantum satis.",
+  "health": "I normale mængder er natriumcarbonater uskadelige; hydrogencarbonat dannes også naturligt i kroppen. Store mængder natron (fx brugt som husråd mod halsbrand) kan give alkalose og bidrager med natrium, hvilket er relevant for personer med forhøjet blodtryk eller nyre- og hjertesygdom. Stoffet er optaget i EU's liste med 'ADI ikke specificeret', da det indgår i kroppens normale stofskifte.",
+  "research": "Natrium-, kalium- og magnesiumcarbonater er tidligere vurderet af SCF og JECFA med ADI 'not specified', da de indgår i kroppens normale stofskifte; en færdig EFSA-gen-evaluering af E500–E504 er ikke fundet offentliggjort. EFSA har i 2013 vurderet natriumhydrogencarbonat (E500ii) som aktivt stof i fødevarekontaktmaterialer uden sikkerhedsbekymring. Natriumbicarbonat undersøges i klinisk forskning, bl.a. til behandling af metabolisk acidose ved kronisk nyresygdom og som præstationsfremmende middel i sport.",
+  "keyReferences": [],
+  "pubmedTerm": "sodium bicarbonate",
+  "flags": [
+   "kidney_caution"
+  ],
+  "classes": [
+   "stabiliser",
+   "thickener"
+  ],
+  "variants": [
+   {
+    "code": "E500(i)",
+    "nameDa": "natriumkarbonat",
+    "nameEn": "Sodium carbonate"
+   },
+   {
+    "code": "E500(ii)",
+    "nameDa": "natriumhydrogenkarbonat",
+    "nameEn": "Sodium hydrogen carbonate"
+   },
+   {
+    "code": "E500(iii)",
+    "nameDa": "natriumsesquikarbonat",
+    "nameEn": "Sodium sesquicarbonate"
+   }
+  ],
+  "efsa": {
+   "title": "Scientific Opinion on the safety evaluation of the active substances citric acid (E330) and sodium hydrogen carbonate (E500ii), used as carbon dioxide generators, together with liquid absorbers cellulose and polyacrylic acid sodium salt crosslinked, in active food contact materials.",
+   "url": "http://dx.doi.org/10.2903/j.efsa.2013.3152",
+   "date": "2013-04-09",
+   "adi": "",
+   "overexposureRisk": ""
+  },
+  "wikipedia": "https://en.wikipedia.org/wiki/Sodium_bicarbonate",
+  "wikidata": "Q190227",
+  "verification": {
+   "status": "uncertain",
+   "sources": [
+    "https://food.ec.europa.eu/food-safety/food-improvement-agents/additives/re-evaluation_en",
+    "https://www.efsa.europa.eu/sites/default/files/consultation/120706a.pdf"
+   ],
+   "notes": "Kemi, fremstilling og anvendelser bekræftet. Udsagn om at 'EFSA har gen-evalueret carbonaterne' kunne ikke bekræftes (ingen publiceret EFSA-gen-evaluering fundet) og er omskrevet. Bemærk: efsa-objektet (2013) handler om fødevarekontaktmaterialer, ikke brug som tilsætningsstof."
+  }
+ },
+ {
+  "code": "E501",
+  "nameDa": "Kaliumcarbonater",
+  "nameEn": "Potassium carbonates",
+  "category": "Surhedsregulerende middel / hævemiddel / stabilisator",
+  "euStatus": "approved",
+  "origin": "mixed",
+  "summary": "Kaliumcarbonater er salte af kulsyre og kalium, bl.a. potaske, der bruges i traditionelt julebag.",
+  "description": "Varianten (i) er kaliumcarbonat (potaske) og (ii) er kaliumhydrogencarbonat. De fremstilles industrielt ved at lade kaliumhydroxid reagere med kuldioxid; historisk blev potaske udvundet af træaske. Potaske bruges som hævemiddel i tunge, honningholdige dejer som brunkager og pebernødder, og som surhedsregulerende middel i kakao og visse nudler. Kaliumhydrogencarbonat bruges som natriumfrit alternativ til natron.",
+  "uses": "Brunkager, honningkager og pebernødder, alkaliseret kakao, natriumreduceret bagepulver, vin (afsyring), sodavand og mineralvand. Tilladt quantum satis.",
+  "health": "I normale mængder er kaliumcarbonater uskadelige. Personer med nedsat nyrefunktion eller som tager kaliumbesparende medicin bør være opmærksomme på det samlede kaliumindtag, men bidraget fra tilsætningsstoffet er lille. Koncentreret potaske er ætsende og skal opbevares utilgængeligt for børn. Stoffet er optaget i EU's liste med 'ADI ikke specificeret', da det indgår i kroppens normale stofskifte.",
+  "research": "Kaliumcarbonater er tidligere vurderet af SCF/JECFA med ADI 'not specified'; en færdig EFSA-gen-evaluering er ikke fundet offentliggjort. Der er ikke fundet forskning, der rejser nye spørgsmål ved brug i fødevarer.",
+  "keyReferences": [],
+  "pubmedTerm": "potassium carbonate",
+  "flags": [
+   "kidney_caution"
+  ],
+  "classes": [
+   "stabiliser"
+  ],
+  "variants": [
+   {
+    "code": "E501(i)",
+    "nameDa": "kaliumkarbonat",
+    "nameEn": "Potassium carbonate"
+   },
+   {
+    "code": "E501(ii)",
+    "nameDa": "kaliumhydrogenkarbonat",
+    "nameEn": "Potassium hydrogen carbonate"
+   }
+  ],
+  "efsa": null,
+  "wikipedia": "https://en.wikipedia.org/wiki/Potassium_carbonate",
+  "wikidata": "Q379885",
+  "verification": {
+   "status": "uncertain",
+   "sources": [
+    "https://food.ec.europa.eu/food-safety/food-improvement-agents/additives/re-evaluation_en",
+    "https://www.efsa.europa.eu/sites/default/files/consultation/120706a.pdf"
+   ],
+   "notes": "Kemi, fremstilling og anvendelser bekræftet. Udsagn om at 'EFSA har gen-evalueret carbonaterne' kunne ikke bekræftes (ingen publiceret EFSA-gen-evaluering fundet) og er omskrevet."
+  }
+ },
+ {
+  "code": "E503",
+  "nameDa": "Ammoniumcarbonater",
+  "nameEn": "Ammonium carbonates",
+  "category": "Hævemiddel / surhedsregulerende middel",
+  "euStatus": "approved",
+  "origin": "synthetic",
+  "summary": "Ammoniumcarbonater er hævemidler; ammoniumhydrogencarbonat kendes i Danmark som hjortetakssalt.",
+  "description": "Varianten (i) er ammoniumcarbonat og (ii) ammoniumhydrogencarbonat. De fremstilles ved at lade ammoniak reagere med kuldioxid og vand. Ved opvarmning nedbrydes stofferne fuldstændigt til kuldioxid, ammoniak og vand, som fordamper, så der ikke efterlades salt i produktet. Det giver et meget sprødt resultat i tørre, flade bagværker, hvor ammoniakken kan slippe ud.",
+  "uses": "Vaniljekranse, klejner, finske brød, knækbrød og andre sprøde småkager. Tilladt quantum satis.",
+  "health": "Ved bagning fordamper stoffet næsten helt, så restmængden i det færdige produkt er lille. I tykke eller fugtige bagværker kan der blive en ubehagelig ammoniaksmag. Håndtering af hjortetakssalt kan irritere øjne og luftveje på grund af ammoniakdampe. Stoffet er optaget i EU's liste med 'ADI ikke specificeret', da det indgår i kroppens normale stofskifte.",
+  "research": "Ammoniumcarbonater er tidligere vurderet af SCF/JECFA med ADI 'not specified'; en færdig EFSA-gen-evaluering er ikke fundet offentliggjort. Der er ikke fundet nyere forskning af betydning.",
+  "keyReferences": [],
+  "pubmedTerm": "ammonium bicarbonate",
+  "flags": [],
+  "classes": [],
+  "variants": [
+   {
+    "code": "E503(i)",
+    "nameDa": "ammoniumkarbonat",
+    "nameEn": "Ammonium carbonate"
+   },
+   {
+    "code": "E503(ii)",
+    "nameDa": "ammoniumhydrogenkarbonat",
+    "nameEn": "Ammonium hydrogen carbonate"
+   }
+  ],
+  "efsa": null,
+  "wikipedia": "https://en.wikipedia.org/wiki/Ammonium_carbonate",
+  "wikidata": "Q204873",
+  "verification": {
+   "status": "uncertain",
+   "sources": [
+    "https://food.ec.europa.eu/food-safety/food-improvement-agents/additives/re-evaluation_en",
+    "https://www.efsa.europa.eu/sites/default/files/consultation/120706a.pdf"
+   ],
+   "notes": "Kemi, fremstilling og anvendelser bekræftet. Udsagn om at 'EFSA har gen-evalueret carbonaterne' kunne ikke bekræftes (ingen publiceret EFSA-gen-evaluering fundet) og er omskrevet."
+  }
+ },
+ {
+  "code": "E504",
+  "nameDa": "Magnesiumcarbonater",
+  "nameEn": "Magnesium carbonates",
+  "category": "Surhedsregulerende middel / antiklumpningsmiddel / bærestof",
+  "euStatus": "approved",
+  "origin": "mixed",
+  "summary": "Magnesiumcarbonater er hvide mineralsalte, der bruges som antiklumpningsmiddel og surhedsregulerende middel.",
+  "description": "Varianten (i) er magnesiumcarbonat og (ii) magnesiumhydroxidcarbonat (basisk magnesiumcarbonat). De udvindes fra mineralet magnesit eller fremstilles kemisk ud fra magnesiumsalte og carbonater. Pulveret binder fugt og holder salt og pulvere fritflydende; det bruges også som magnesiumkilde i kosttilskud og i antacida.",
+  "uses": "Bordsalt, kakao og pulverprodukter, kosttilskud, tyggegummi og slik. Tilladt quantum satis.",
+  "health": "Magnesiumcarbonat er ugiftigt i normale mængder. Store mængder magnesium kan virke afførende, og personer med svært nedsat nyrefunktion bør være forsigtige med magnesium fra fx kosttilskud. Stoffet er optaget i EU's liste med 'ADI ikke specificeret', da det indgår i kroppens normale stofskifte.",
+  "research": "Magnesiumcarbonater er tidligere vurderet af SCF/JECFA med ADI 'not specified'; en færdig EFSA-gen-evaluering er ikke fundet offentliggjort. Der er ikke fundet nyere forskning, der rejser nye spørgsmål.",
+  "keyReferences": [],
+  "pubmedTerm": "magnesium carbonate",
+  "flags": [
+   "laxative",
+   "kidney_caution"
+  ],
+  "classes": [
+   "carrier"
+  ],
+  "variants": [
+   {
+    "code": "E504(i)",
+    "nameDa": "magnesiumkarbonat",
+    "nameEn": "Magnesium carbonate"
+   },
+   {
+    "code": "E504(ii)",
+    "nameDa": "magnesiumhydroxidkarbonat",
+    "nameEn": "Magnesium hydroxide carbonate"
+   }
+  ],
+  "efsa": null,
+  "wikipedia": "https://en.wikipedia.org/wiki/Magnesium_carbonate",
+  "wikidata": "Q407931",
+  "verification": {
+   "status": "uncertain",
+   "sources": [
+    "https://food.ec.europa.eu/food-safety/food-improvement-agents/additives/re-evaluation_en",
+    "https://www.efsa.europa.eu/sites/default/files/consultation/120706a.pdf"
+   ],
+   "notes": "Kemi, fremstilling og anvendelser bekræftet. Udsagn om at 'EFSA har gen-evalueret carbonaterne' kunne ikke bekræftes (ingen publiceret EFSA-gen-evaluering fundet) og er omskrevet. 'Mel' fjernet fra anvendelser (ikke bekræftet)."
+  }
+ }
+]

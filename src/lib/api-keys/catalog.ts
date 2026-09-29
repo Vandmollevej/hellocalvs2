@@ -225,7 +225,7 @@ export const KEY_SERVICES: KeyService[] = [
     id: "google-places",
     name: "Google Places",
     group: "ai",
-    purpose: "Butikker og steder. Bruges ikke af appen endnu — nøglen ligger klar.",
+    purpose: "Butiksnavn ud fra lokationen på Oprettelses-appens hyldebilleder.",
     fields: [{ key: "GOOGLE_PLACES_API_KEY", label: "API-nøgle", kind: "secret" }],
     setupUrl: "https://console.cloud.google.com/google/maps-apis/credentials",
     testable: true,

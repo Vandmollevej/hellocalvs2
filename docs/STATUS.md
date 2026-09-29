@@ -1,8 +1,56 @@
 # HELLO CAL — project status
 
-Last updated: 2026-09-28
+Last updated: 2026-09-29
+
+## 2026-09-29: Klikbare vitaminer og mineraler
+
+Samme mønster som E-numre: i varesidens "Vis mere"-tabel er hvert vitamin/
+mineral nu klikbart og åbner en info-popup (`MicronutrientInfoModal`) med link
+til ny samlet side `/vitaminer#<nøgle>` (fx `#vitaminc`). Indholdet er et
+statisk katalog i `src/lib/micronutrient-info.ts` (funktion, kilder,
+EU-referenceindtag, for lidt/for meget, eksterne kilder). Rækker med
+usikkerheds-~ er nu `div role=button`, så navnet kan være sin egen knap.
+Lint og build grønne.
 
 
+## 2026-09-29: Oprettelses-appen — Face ID-login og egne nøgler
+
+- Face ID/passkey som alternativ til adgangskode + TOTP: tabel
+  `scan_worker_passkeys` (migration `20260929090000_scan_worker_passkeys`),
+  `/api/scan/passkey/*`, "Log ind med Face ID" på `/scan/login` (vises når
+  Face ID er slået til på telefonen) og "Face ID" under Profil (slå til/fjern).
+- `SCAN_PII_KEY`: CPR/bank krypteret med `ADMIN_SESSION_SECRET` før nøglen
+  blev sat, kan stadig læses (reserve-nøgle) — så nøglen kan sættes nu uden
+  datatab.
+- Deployet genererer `SCAN_SESSION_SECRET` og `SCAN_PII_KEY` i
+  `/deploy/.env.production`, hvis de mangler (røres aldrig igen; backup i `.env.production.bak-scan-secrets`). Tag
+  selv en kopi af `SCAN_PII_KEY` — den må aldrig skiftes.
+- Mangler stadig: test af hyldebillede med rigtig hylde.
+
+
+
+## 2026-09-29: Pulsudsving → "Hvad foretog du dig?" + aktiviteter overalt
+
+- Forsiden åbner med `HeartRateSpikePrompt`, når en integration har sendt puls
+  med et mærkbart udsving de sidste 48 timer (`src/lib/heart-rate-spikes.ts`):
+  graf over 4 timer med udsvinget i midten, tider under, og overskriften
+  "Du har i dag/d. X forbrændt N ekstra kalorier. Hvad foretog du dig?".
+  Søgefelt blandt aktiviteter + "Tilføj … som aktivitet". Valg gemmer en
+  aktivitet med udsvingets tid/varighed/kcal; "Spring over" spørger ikke igen.
+- Ny side `/activity/create` og "Aktivitet" i tilføj-menuen (også kalenderens
+  "Tilføj"-ark) og widget-listen.
+- Brugertilføjede aktiviteter (`CustomActivityType`) venter i admin →
+  Kvalitetskontrol → Aktiviteter; alle aktiviteter listes på `/admin/activities`.
+- Migration `20260929120000_activity_spikes`. Ikke live-testet: ingen lokal DB
+  og ingen integration sender pulsdata endnu.
+
+## 2026-09-29: Søvnstatistik (/statistics/sleep)
+
+- Kalenderens søvnbjælke har "Statistik" i lille skrift til venstre (ikke understreget), som linker til `/statistics/sleep`.
+- Siden har periodevalg (sidste 7 dage, seneste 30 dage, sidste måned, seneste tre måneder, i år) og graferne: søvnkvalitet 1–5 med tilvalg af sidste indtag om aftenen, kalorier, kaffe (antal + sidste tidspunkt), sport (minutter + sluttidspunkt) og — kun med tilsluttet smartudstyr — oplevet mod målt søvn. Uden tilsluttet udstyr vises integrationerne nederst.
+- Grafen "Fedtprocent og søvn" viser fedtprocent, oplevet søvn (1–5 som 20–100) og målt søvn (8 t = 100) på én 0–100-akse uden %-tegn.
+- Graferne kan også tilføjes i statistikmodulet (`sleep:*` i `src/lib/stat-charts.ts`). Logik: `src/lib/sleep-stats.ts`.
+- Ikke visuelt testet (kræver login + DB). Lint og build er grønne.
 
 ## 2026-09-28: Produktsidens skelet følger layoutet
 
@@ -15,6 +63,26 @@ Last updated: 2026-09-28
 - 2026-09-28: Startmængde i mængdevælgeren = seneste egne mængde, ellers typisk
   mængde for kategorien (`src/lib/default-amount.ts`), ikke længere producentens
   portion. OFF-drikkevarer får `productCategory = DRINK`. Se DECISIONS.md.
+## 2026-09-28: E-numre — egen side pr. nummer med detaljeret beskrivelse og stof-specifikke kilder
+
+- Nyt opslagsværk `src/data/e-numbers.json` (541 E-numre inkl. varianter), bygget af `scripts/e-numre/build_catalog.py` fra Open Food Facts' additives-taxonomi (navne, varianter, EFSA-udtalelse med DOI/ADI) + redaktionelle danske tekster (`scripts/e-numre/data/texts/`).
+- `/e-numre/[code]`: navn, EU-status, kategori, oprindelse, ADI, hvad er det, varianter, hvor findes det, sundhed og risici, forskningen, EFSA's vurdering og links til forskning om netop dette stof (EFSA-DOI, PubMed/reviews, EFSA Journal, JECFA, Europe PMC, nøglestudier, Open Food Facts). Varianter (E331(iii)) viser forældersiden.
+- `/e-numre`: liste grupperet i nummerområder med søgning og filter (godkendt / forbudt-ikke godkendt); gamle `#e330`-links omdirigeres.
+- `/api/additives` leverer katalogets data (DB-tabellen `additives` kun som supplement).
+- Kun EU-godkendte numre vises (333). Alle er faktatjekket i tre runder: EU-status/ADI/EFSA (runde 1) og udsagn for udsagn via websøgning (runde 2–3, ~4.200 udsagn: bekræftet, rettet eller fjernet). Kilder pr. nummer i `verification.sources`; britiske kilder bruges aldrig som belæg for EU-regler. Poster med status `uncertain` har enkelte udsagn, der ikke kunne afklares — se `verification.notes`.
+## 2026-09-29: "Viden om" (fra profilsiden)
+
+- `/viden-om` med søgefelt og blokke (profilsidens række-stil): Vitaminer, E-numre, Sundhedstips, Mad på latin.
+- Hver blok åbner en ny side med tilbagepil; hver række åbner en egen artikelside `/viden-om/<kategori>/<slug>` (linkbar fra popups via `knowledgeHref`/`foodTermHref`).
+- Artikler i `src/lib/knowledge.ts` med officielle kilder (Fødevarestyrelsen). E-numre-listen genbruger `/e-numre/<kode>` uændret.
+- Ingrediens-links fra "Mad på latin" peger nu på `/viden-om/mad-paa-latin/<ord>`.
+
+## 2026-09-28: "Mad på latin" — ordbog over ikke-danske ingredienser
+
+- Ny side `/mad-paa-latin` med søgefelt øverst; ét afsnit pr. ord med anker (`#dextrose`).
+- Ordbogen ligger i `src/lib/food-latin.ts` (fx dextrose, acerola, maltodextrin).
+- `IngredientsText` linker ordene stille (ingen understregning/fed); E-numre er uændrede.
+
 ## 2026-09-28: Produktsiden — centreret, kcal under mængdeboksen (PR #90)
 
 - Tidspunkt vises ikke længere på produktsiden (ses i kalender og oversigt); registreringens tid bevares ved gem.
@@ -4897,3 +4965,12 @@ Lint + build grønne; ikke verificeret i browser (ingen database).
 statistik og knappen i kalenderen, indtil der er en volumengrænse (se
 DECISIONS.md). Næste skridt: indfør grænser og sæt flaget til `true`.
 - 2026-09-28: Opgave 32 (varesidens titel/varetype/branding) implementeret i `AddProductView.tsx` — se DECISIONS 2026-09-28. Certifikatlogoerne er forenklede badges; rigtige logofiler kan erstatte dem i `CertificationLogo.tsx`.
+
+## 2026-09-29 — Kalendervisning: "Dag" + trin i opsætningsguiden
+
+- Indstillinger → Visning → Kalendervisning har nu fire valg: Liste, Måned, Uge, Dag (`src/lib/calendar-view-pref.ts`). "Dag" åbner dagens fuldskærms dagsvisning (`DayDetails`) når kalenderen indlæses.
+- Opsætningsguiden (`OnboardingWizard`) har fået trinnet "calendar-view" før sundhedsimport, så standardvisningen vælges ved opstart.
+- Lint og build kørt grønt.
+
+## 2026-09-29 — Samlet merge af åbne PR'er
+Flettet: #100, #98, #104, #105, #107, #108, #109, #110, #111, #112, #103 og lighter-deploy. Docs-konflikter løst ved at beholde begge sider. Ikke flettet: #6 og #8 (ingen fælles historik med master) samt dubletterne #26, #32, #41, #43, #45, #54, #57, #59 (erstattet af nyere grene i master). Lint, tsc og build grønne.

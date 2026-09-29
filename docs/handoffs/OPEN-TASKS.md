@@ -90,7 +90,7 @@ Ejer: G5-overtagelse, konto B (2026-09-24)
 
 | Id | Opgave | Status | Næste skridt |
 | --- | --- | --- | --- |
-| 548ca51e | Ny invite-only agent-app (hyldebillede, opret vare, 2FA, admin-oversigt, aflønnings-backend) | Deployet (2026-09-26) | Merget til master (29b7f28); `scan-app` (port 3101) startes i deploy-workflowet. Mangler: brugeren opretter Cloudflare *Published application route* `scanhellocal.packroff.dk` → `http://192.168.1.90:3101`. `SCAN_PII_KEY`/`SCAN_APP_BASE_URL` valgfri (fallback: ADMIN_SESSION_SECRET / scanhellocal-adressen). Passkey som 2. faktor ikke bygget |
+| 548ca51e | Ny invite-only agent-app (hyldebillede, opret vare, 2FA, admin-oversigt, aflønnings-backend) | Deployet (2026-09-26) | Merget til master (29b7f28); `scan-app` (port 3101) startes i deploy-workflowet. Mangler: brugeren opretter Cloudflare *Published application route* `scanhellocal.packroff.dk` → `http://192.168.1.90:3101`. `SCAN_PII_KEY`/`SCAN_APP_BASE_URL` valgfri (fallback: ADMIN_SESSION_SECRET / scanhellocal-adressen). Face ID-login bygget 2026-09-29 (branch `claude/scan-passkey-keys`). Nøgler genereres af deployet. Mangler: merge af PR #104 og test med rigtig hylde |
 | 850e575e / 0669f736 | Logo-robot: isolér logo ved scanning, match mod DB, natlig Google-søgning, admin-kø under 90 % | Deployet (2026-09-26) | `logo-agent` i deploy-workflowet; bruger eksisterende `GOOGLE_API_KEY` (Cloud Vision API skal være slået til på nøglens Google-projekt). Logo-match i selve scanningen hører til kamera-flowet (ikke G5) |
 
 ## G6 — Madvare-flow (Tilføj madvare, Madvarer-siden)
@@ -226,6 +226,13 @@ Ejer: "Ensartet højde på inputfelter og knapper" (2026-09-26)
 | Id | Opgave | Status | Næste skridt |
 | --- | --- | --- | --- |
 | — | 48 px på alle enkeltlinje-felter, dropdowns, fuldbredde-knapper, rækker (inkl. admin) | Færdig | — |
+
+## Opsætningsguide (ikke fordelt)
+Filer: `src/components/OnboardingWizard.tsx`. Krav i `docs/DESIGN_V2.md` §8.
+
+| Id | Opgave | Status | Næste skridt |
+| --- | --- | --- | --- |
+| onboarding-integration | Vægt + Aktivitetsniveau: tekstlink nederst "Tilføj gennem integration i stedet"; Aktivitetsniveau som HelloFresh-slidersider (ét spørgsmål pr. side) | Ikke startet | Spørgsmål afklaret (5 sider, se DESIGN_V2 §8) — klar til bygning |
 
 ## Ikke fordelt
 Ændret og ikke committet uden kendt ejer: `docs/AI.md`, `src/components/AddButton.tsx`,

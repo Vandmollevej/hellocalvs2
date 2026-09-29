@@ -337,7 +337,8 @@
     "intro": "Choose which view the calendar opens in by default.",
     "optionMonth": "Month view",
     "optionWeek": "Week view",
-    "optionList": "List view"
+    "optionList": "List view",
+    "optionDay": "Day view"
   },
   "displaySettings": {
     "title": "Recommended limits",
@@ -1105,6 +1106,7 @@
       "notifications": "Communication",
       "reportBug": "Found a mistake?",
       "recipes": "Recipes",
+      "knowledge": "Knowledge",
       "settings": "Settings"
     },
     "changePasswordButton": "Change password",
@@ -1809,6 +1811,24 @@
       "micCouldNotStart": "The microphone couldn't be started. Please try again."
     }
   },
+  "activity": {
+    "title": "Activity",
+    "searchPlaceholder": "Search activities",
+    "addManual": "Add \"{name}\" as an activity",
+    "pending": "awaiting approval",
+    "spikeTitle": "You burned {kcal} extra calories {day}. What were you doing?",
+    "spikeHint": "Your heart rate reached {peak} (resting {rest}) for {minutes} min.",
+    "spikeQuestion": "Choose activity",
+    "today": "today",
+    "skip": "Skip",
+    "change": "change",
+    "startedAt": "Start time",
+    "minutes": "Duration (minutes)",
+    "kcal": "Calories burned",
+    "save": "Save activity",
+    "invalid": "Enter a duration and calories above 0.",
+    "saveError": "The activity could not be saved."
+  },
   "addButton": {
     "closeMenu": "Close add menu",
     "openMenu": "Open add menu",
@@ -1817,6 +1837,7 @@
     "search": "Search",
     "weight": "Weight",
     "water": "Water",
+    "activity": "Activity",
     "camera": "Scan with camera",
     "list": "See all",
     "menstrualCycle": "Period",
@@ -1825,6 +1846,8 @@
     }
   },
   "onboarding": {
+    "calendarViewQuestion": "Which view should the calendar open in?",
+    "calendarViewHint": "You can change it anytime under Settings → Display → Calendar view.",
     "stepProgress": "Step {current} of {total} completed",
     "sleepPatternQuestion": "Do you have a regular sleep pattern?",
     "shiftWorkQuestion": "Is that due to varying work hours or night work?",
@@ -2128,5 +2151,46 @@
     "add": "Add",
     "moveUp": "Move section up",
     "moveDown": "Move section down"
+  },
+  "sleepStats": {
+    "title": "Sleep statistics",
+    "calendarLink": "Statistics",
+    "periodAria": "Choose period",
+    "period": {
+      "last7": "Last 7 days",
+      "last30": "Last 30 days",
+      "lastMonth": "Last month",
+      "last3Months": "Last three months",
+      "thisYear": "This year"
+    },
+    "chart": {
+      "quality": "Sleep quality",
+      "kcal": "Calories and sleep quality",
+      "coffee": "Coffee and sleep quality",
+      "sport": "Exercise and sleep quality",
+      "device": "Perceived and measured sleep",
+      "bodyFat": "Body fat and sleep"
+    },
+    "chartInfo": {
+      "quality": "Your rating of the night, 1–5. Turn on last intake to see when you last logged something the evening before.",
+      "kcal": "Total calories the day before the night.",
+      "coffee": "Number of coffees, teas, colas and energy drinks the day before, and when the last one was logged.",
+      "sport": "Minutes of exercise the day before and when the last workout ended.",
+      "device": "Your own rating compared with the sleep your device measured.",
+      "bodyFat": "Body fat, perceived sleep and measured sleep on one scale. Perceived sleep 5 = 100, and measured sleep 8 hours = 100."
+    },
+    "experienced": "Perceived sleep (1–5)",
+    "lastMeal": "Last intake",
+    "kcal": "Calories",
+    "coffeeCount": "Count",
+    "lastCoffee": "Last time",
+    "sportMinutes": "Minutes",
+    "lastSport": "Workout end",
+    "deviceSleep": "Measured sleep (hours)",
+    "measuredSleep": "Measured sleep",
+    "bodyFat": "Body fat",
+    "noRatings": "No sleep ratings in this period yet.",
+    "devicesHeading": "Track sleep with a smart device",
+    "devicesIntro": "Connect a watch or an app to compare perceived sleep with actual sleep."
   }
 }

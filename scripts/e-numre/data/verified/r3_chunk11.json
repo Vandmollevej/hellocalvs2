@@ -1,0 +1,1938 @@
+[
+ {
+  "code": "E959",
+  "nameDa": "Neohesperidin-dihydrochalcon",
+  "nameEn": "Neohesperidine dihydrochalcone",
+  "category": "Sødemiddel",
+  "euStatus": "approved",
+  "origin": "nature_identical",
+  "summary": "Et intenst sødemiddel fremstillet ud fra et stof fra bitre appelsiner (pomerans); ved tærskelkoncentration ca. 1500-1800 gange sødere end sukker.",
+  "description": "Neohesperidin-dihydrochalcon (NHDC) fremstilles ved katalytisk hydrogenering under basiske forhold af neohesperidin, et flavonoid fra skallen af pomerans (bitter appelsin, Citrus aurantium). Stoffet er et halvsyntetisk derivat af et naturligt stof. Ved tærskelkoncentration er det ca. 1500-1800 gange sødere end sukker, på vægtbasis ca. 340 gange. Sødmen kommer langsommere end sukkers og varer længe, med en let menthol-agtig eftersmag. I små mængder bruges det også som smagsforstærker.",
+  "uses": "Godkendt som sødemiddel i EU i 38 fødevarekategorier med maksimalniveauer; ifølge EFSA er den faktiske brug begrænset og ses især i læskedrikke. Bruges desuden i dyrefoder, aromaer og lægemidler.",
+  "health": "NHDC nedbrydes af tarmbakterier bl.a. til hesperetin-dihydrochalcon. SCF fastsatte i 1985/1989 en ADI på 5 mg/kg legemsvægt/dag; EFSA fastsatte i sin gen-evaluering (2022) en ny ADI på 20 mg/kg legemsvægt/dag og fandt ingen sikkerhedsbekymring ved de rapporterede anvendelser.",
+  "research": "EFSA's gen-evaluering af NHDC (EFSA Journal 2022, DOI 10.2903/j.efsa.2022.7595) baserede den nye ADI på 20 mg/kg på et 13-ugers rotteforsøg (NOAEL 4000 mg/kg, med ekstra faktor 2 for ekstrapolering fra subkronisk til kronisk eksponering) og fandt, at indtaget i alle aldersgrupper ligger under ADI.",
+  "keyReferences": [],
+  "pubmedTerm": "neohesperidin dihydrochalcone",
+  "flags": [],
+  "classes": [
+   "sweetener"
+  ],
+  "variants": [],
+  "efsa": {
+   "title": "Re-evaluation of neohesperidine dihydrochalcone (E 959) as a food additive",
+   "url": "https://doi.org/10.2903/j.efsa.2022.7595",
+   "date": "2022-11",
+   "adi": "20 mg/kg bw/day",
+   "overexposureRisk": ""
+  },
+  "verification": {
+   "status": "corrected",
+   "sources": [
+    "https://en.wikipedia.org/wiki/Neohesperidin_dihydrochalcone",
+    "https://www.sciencedirect.com/topics/agricultural-and-biological-sciences/neohesperidin-dihydrochalcone",
+    "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2025.9358",
+    "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2022.7595"
+   ],
+   "notes": "Bekræftet: fremstilling ved hydrogenering af neohesperidin fra pomerans, halvsyntetisk, langsom og vedvarende sødme med menthol-agtig eftersmag, 1500-1800 gange sødere ved tærskelkoncentration, brug som smagsforstærker, i foder og lægemidler, SCF-ADI 5 mg/kg (1985/1989), EFSA 2022 ADI 20 mg/kg (NOAEL 4000 mg/kg, 13-ugers rotteforsøg, indtag under ADI i alle aldersgrupper), nedbrydning af tarmbakterier. Rettet: sødme præciseret (ca. 340 gange på vægtbasis); anvendelser gjort generelle (38 kategorier, især læskedrikke) i stedet for ubelagt liste; SCF-årstal præciseret. Fjernet: 'lakridsagtig' eftersmag, 'maskere bitterhed', 'lavtoksisk', 'ingen kendte risikogrupper' og 'begrænset uafhængig forskning/mindre udforsket end aspartam' (ingen kilde)."
+  },
+  "wikipedia": "https://en.wikipedia.org/wiki/Neohesperidin_dihydrochalcone",
+  "wikidata": "Q424595",
+  "claims": [
+   {
+    "claim": "NHDC fremstilles ved (katalytisk) hydrogenering af neohesperidin fra bitter appelsin (pomerans)",
+    "source": "https://en.wikipedia.org/wiki/Neohesperidin_dihydrochalcone",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Halvsyntetisk derivat, findes ikke som sådan i naturen",
+    "source": "https://www.sciencedirect.com/topics/agricultural-and-biological-sciences/neohesperidin-dihydrochalcone",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "1500-1800 gange sødere end sukker (ved tærskelkoncentration); ca. 340 gange på vægtbasis",
+    "source": "https://en.wikipedia.org/wiki/Neohesperidin_dihydrochalcone",
+    "result": "rettet"
+   },
+   {
+    "claim": "Sødmen kommer langsomt og varer længe; menthol-agtig eftersmag",
+    "source": "https://en.wikipedia.org/wiki/Neohesperidin_dihydrochalcone",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Lakridsagtig eftersmag",
+    "source": "https://en.wikipedia.org/wiki/Neohesperidin_dihydrochalcone",
+    "result": "fjernet"
+   },
+   {
+    "claim": "Bruges som smagsforstærker i små mængder",
+    "source": "https://www.sciencedirect.com/topics/agricultural-and-biological-sciences/neohesperidin-dihydrochalcone",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Bruges til at maskere bitterhed i lægemidler",
+    "source": "https://www.sciencedirect.com/topics/agricultural-and-biological-sciences/neohesperidin-dihydrochalcone",
+    "result": "fjernet"
+   },
+   {
+    "claim": "Anvendes i fødevarer, foder, aromaer og lægemidler",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2025.9358",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Godkendt i 38 fødevarekategorier; brugsdata især for læskedrikke",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2022.7595",
+    "result": "rettet"
+   },
+   {
+    "claim": "Konkret liste (tyggegummi, sukkervarer, desserter)",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2022.7595",
+    "result": "fjernet"
+   },
+   {
+    "claim": "Nedbrydes af tarmbakterier (til bl.a. hesperetin-dihydrochalcon)",
+    "source": "https://www.sciencedirect.com/topics/agricultural-and-biological-sciences/neohesperidin-dihydrochalcone",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "SCF fastsatte ADI 5 mg/kg lgv/dag (1985 og 1989)",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2022.7595",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "EFSA 2022: ADI 20 mg/kg lgv/dag, NOAEL 4000 mg/kg fra 13-ugers rotteforsøg",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2022.7595",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Indtaget i alle aldersgrupper under ADI; ingen sikkerhedsbekymring",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2022.7595",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "'Lavtoksisk', 'ingen kendte risikogrupper', 'begrænset uafhængig forskning'",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2022.7595",
+    "result": "fjernet"
+   }
+  ]
+ },
+ {
+  "code": "E960",
+  "nameDa": "Steviolglycosider",
+  "nameEn": "Steviol glycosides",
+  "category": "Sødemiddel",
+  "euStatus": "approved",
+  "origin": "mixed",
+  "summary": "Søde stoffer fra stevia-planten, ca. 200-300 gange sødere end sukker og praktisk talt uden kalorier.",
+  "description": "Steviolglycosider (fx steviosid og rebaudiosid A, M og D) udvindes af bladene fra planten Stevia rebaudiana. Bladene ekstraheres med vand, og ekstraktet renses med adsorptionsharpiks, evt. ionbytning og omkrystallisation fra methanol eller vandig ethanol til mindst 95 % steviolglycosider. I EU er E 960 nu underopdelt: E 960a (fra stevia-planten), E 960b(i) (rebaudiosid M fremstillet ved fermentering med Yarrowia lipolytica), E 960c (enzymatisk fremstillede) og E 960d (glucosylerede). Glycosiderne nedbrydes af tarmbakterier i tyktarmen til steviol, som optages, bindes til glucuronsyre i leveren og udskilles med urinen.",
+  "uses": "Tilladt i en række fødevarekategorier, bl.a. smagsatte drikkevarer og bordsødemidler, med maksimalniveauer udtrykt som steviolækvivalenter (fx 80 mg/l i smagsatte drikkevarer).",
+  "health": "EFSA fastsatte i 2010 en ADI på 4 mg/kg legemsvægt/dag udtrykt som steviol, og JECFA har samme ADI. EFSA's eksponeringsvurderinger (bl.a. ved vurdering af udvidet brug i 2015 og 2024) har vist, at småbørn med højt forbrug i de mest konservative scenarier kan komme over ADI, hvorfor overskridelsesrisikoen vurderes som moderat. Metaanalyser af kliniske forsøg har ikke fundet signifikant effekt på blodsukker. Stevia tilhører kurvblomstfamilien, men der er ikke fundet belæg for, at højrensede steviolglycosider er allergifremkaldende.",
+  "research": "EFSA's vurdering (2010) fandt ikke tegn på genotoksicitet eller kræftfremkaldende effekt og baserede ADI på et toårigt rotteforsøg. Senere EFSA-udtalelser har vurderet nye fremstillingsmetoder (fermentering, enzymatisk omdannelse) og udvidede anvendelser. Humane data om effekter på tarmfloraen er begrænsede og uensartede. WHO's retningslinje fra 2023 om ikke-sukker-sødemidler omfatter også stevia. EFSA vurderede i 2024 en ansøgning om at hæve ADI til 6 eller 16 mg/kg, men fandt ikke tilstrækkeligt grundlag, så ADI forbliver 4 mg/kg (EFSA Journal 2024, DOI 10.2903/j.efsa.2024.9045).",
+  "keyReferences": [],
+  "pubmedTerm": "steviol glycosides",
+  "flags": [
+   "children_caution"
+  ],
+  "classes": [
+   "sweetener"
+  ],
+  "variants": [],
+  "efsa": {
+   "title": "Scientific opinion on the safety of the extension of use of steviol glycosides (E 960) as a food additive",
+   "url": "https://doi.org/10.2903/j.efsa.2015.4146",
+   "date": "2015-06-30",
+   "adi": "4 mg/kg bw/day",
+   "overexposureRisk": "en:moderate"
+  },
+  "verification": {
+   "status": "corrected",
+   "sources": [
+    "https://www.fao.org/fileadmin/user_upload/jecfa_additives/docs/monograph5/additive-442-m5.pdf",
+    "https://www.fao.org/fileadmin/templates/agns/pdf/jecfa/cta/63/Steviol.pdf",
+    "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2024.9045",
+    "https://eur-lex.europa.eu/eli/reg/2025/652/oj",
+    "https://pmc.ncbi.nlm.nih.gov/articles/PMC6775443/",
+    "https://eur-lex.europa.eu/eli/reg/2017/335/oj/eng",
+    "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2010.1537",
+    "https://apps.who.int/food-additives-contaminants-jecfa-database/Home/Chemical/270",
+    "http://www.efsa.europa.eu/en/efsajournal/doc/4146.pdf",
+    "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6770957/",
+    "https://www.sciencedirect.com/science/article/abs/pii/S0278691514004785",
+    "https://www.sciencedirect.com/science/article/pii/S002231662400110X",
+    "https://www.who.int/news/item/15-05-2023-who-advises-not-to-use-non-sugar-sweeteners-for-weight-control-in-newly-released-guideline"
+   ],
+   "notes": "Bekræftet: udvinding af Stevia rebaudiana-blade med vand, rensning (adsorption, ionbytning, omkrystallisation fra methanol/ethanol) til ≥95 %, underopdeling E 960a-d, nedbrydning til steviol i tyktarmen, glucuronidering i leveren og udskillelse i urin, EFSA 2010 ADI 4 mg/kg (toårigt rotteforsøg, ikke genotoksisk/kræftfremkaldende), JECFA samme ADI, EFSA 2015-eksponering (småbørn 95. percentil over ADI), EFSA 2024 (ADI ikke hævet), WHO 2023 omfatter stevia, blandede/begrænsede humane data om tarmflora. Rettet: sødme 200-300 (ikke 200-400) gange; E 960b præciseret til E 960b(i) godkendt 2025; blodsukker-udsagn omformuleret; allergi omformuleret (ingen belæg for allergi over for højrensede glycosider). Fjernet: 'lakridsagtig' eftersmag, blodtryk/insulin-forskning uden kilde, konkret anvendelsesliste uden kilde."
+  },
+  "wikipedia": "https://en.wikipedia.org/wiki/Steviol_glycoside",
+  "wikidata": "Q2805600",
+  "claims": [
+   {
+    "claim": "Udvindes af bladene fra Stevia rebaudiana ved vandekstraktion",
+    "source": "https://www.fao.org/fileadmin/user_upload/jecfa_additives/docs/monograph5/additive-442-m5.pdf",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Rensning med adsorptionsharpiks, ionbytning og omkrystallisation fra methanol eller vandig ethanol til ≥95 % steviolglycosider",
+    "source": "https://www.fao.org/fileadmin/templates/agns/pdf/jecfa/cta/63/Steviol.pdf",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "200-300 gange sødere end sukker (ikke 200-400)",
+    "source": "https://www.fao.org/fileadmin/templates/agns/pdf/jecfa/cta/63/Steviol.pdf",
+    "result": "rettet"
+   },
+   {
+    "claim": "Underopdeling E 960a (stevia), E 960b(i) (rebaudiosid M ved fermentering med Yarrowia lipolytica), E 960c (enzymatisk), E 960d (glucosylerede)",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2024.9045",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "E 960b(i) godkendt ved forordning (EU) 2025/652",
+    "source": "https://eur-lex.europa.eu/eli/reg/2025/652/oj",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Nedbrydes i tyktarmen til steviol, som optages, glucuronideres i leveren og udskilles i urin",
+    "source": "https://pmc.ncbi.nlm.nih.gov/articles/PMC6775443/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Bitter/lakridsagtig eftersmag",
+    "source": "https://www.fao.org/fileadmin/user_upload/jecfa_additives/docs/monograph5/additive-442-m5.pdf",
+    "result": "fjernet"
+   },
+   {
+    "claim": "Maksimalniveauer udtrykt som steviolækvivalenter (fx 80 mg/l i smagsatte drikke)",
+    "source": "https://eur-lex.europa.eu/eli/reg/2017/335/oj/eng",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Konkret anvendelsesliste (saftevand, yoghurt, chokolade, proteinprodukter, marmelade)",
+    "source": "https://eur-lex.europa.eu/eli/reg/2017/335/oj/eng",
+    "result": "fjernet"
+   },
+   {
+    "claim": "EFSA 2010: ADI 4 mg/kg; toårigt rotteforsøg; ikke genotoksisk eller kræftfremkaldende",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2010.1537",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "JECFA har samme ADI (0-4 mg/kg som steviol, 2008)",
+    "source": "https://apps.who.int/food-additives-contaminants-jecfa-database/Home/Chemical/270",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "EFSA 2015: småbørn ved høj eksponering over ADI",
+    "source": "http://www.efsa.europa.eu/en/efsajournal/doc/4146.pdf",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "EFSA 2024: ikke grundlag for at hæve ADI til 6 eller 16 mg/kg",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2024.9045",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Påvirker ikke blodsukkeret (metaanalyse: ingen signifikant effekt)",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6770957/",
+    "result": "rettet"
+   },
+   {
+    "claim": "Allergi ved kurvblomstallergi: ingen dokumentation for allergenicitet af højrensede steviolglycosider",
+    "source": "https://www.sciencedirect.com/science/article/abs/pii/S0278691514004785",
+    "result": "rettet"
+   },
+   {
+    "claim": "Effekter på tarmflora: begrænsede og blandede humane data",
+    "source": "https://www.sciencedirect.com/science/article/pii/S002231662400110X",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Effekter på blodtryk og insulin viser blandede resultater",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6770957/",
+    "result": "fjernet"
+   },
+   {
+    "claim": "WHO 2023-retningslinjen om ikke-sukker-sødemidler omfatter stevia",
+    "source": "https://www.who.int/news/item/15-05-2023-who-advises-not-to-use-non-sugar-sweeteners-for-weight-control-in-newly-released-guideline",
+    "result": "bekræftet"
+   }
+  ]
+ },
+ {
+  "code": "E960a",
+  "nameDa": "Steviolglycosider fra stevia",
+  "nameEn": "Steviol glycosides from Stevia",
+  "category": "Sødemiddel",
+  "euStatus": "approved",
+  "origin": "natural",
+  "summary": "Intense sødestoffer udvundet af bladene fra planten Stevia rebaudiana. De er ca. 200-300 gange sødere end sukker og næsten kaloriefri.",
+  "description": "Steviolglycosider er en gruppe af stoffer (bl.a. steviosid og rebaudiosid A, M og D), hvor aglyconen steviol er bundet til forskellige sukkerenheder. De udvindes ved at ekstrahere stevia-blade med vand, hvorefter ekstraktet renses via adsorption, evt. ionbytning og omkrystallisation til en renhed på mindst 95 % steviolglycosider. Betegnelsen E 960a blev indført med forordning (EU) 2021/1156, da EU begyndte at skelne mellem steviolglycosider fra planten og enzymatisk fremstillede (E 960c); glucosylerede steviolglycosider (E 960d) og fermenteringsproduceret rebaudiosid M (E 960b(i)) kom til med forordning (EU) 2023/447 og 2025/652.",
+  "uses": "Bruges som sødemiddel i bl.a. smagsatte drikkevarer og bordsødemidler. Der gælder specifikke maksimumgrænser pr. fødevarekategori (fx 80 mg/l som steviolækvivalenter i smagsatte drikkevarer).",
+  "health": "EFSA fastsatte i 2010 en ADI på 4 mg/kg legemsvægt/dag udtrykt som steviolækvivalenter, og samme ADI anvendes for alle steviolglycosider (E 960a-d). I 2024 fandt EFSA ikke grundlag for at hæve ADI til 6 eller 16 mg/kg. EFSA's eksponeringsvurderinger har vist, at høje forbrugere blandt småbørn i de mest konservative scenarier kan overskride ADI. Metaanalyser af kliniske forsøg har ikke fundet signifikant effekt på fasteblodsukker eller HbA1c.",
+  "research": "JECFA fastsatte i 2008 en ADI på 4 mg/kg legemsvægt/dag (som steviol), og EFSA's ANS-panel nåede samme ADI i sin udtalelse fra 2010, hvorefter stoffet blev godkendt i EU i 2011. Vurderingerne fandt ingen tegn på genotoksicitet eller kræftfremkaldende effekt, og steviolglycosider nedbrydes af tarmbakterier til steviol, som optages og udskilles som steviolglucuronid i urinen. Humane data om effekter på tarmmikrobiota er begrænsede. WHO's retningslinje fra 2023 fraråder ikke-sukker-sødemidler til vægtkontrol; anbefalingen er betinget og bygger på evidens af lav sikkerhed. EFSA vurderede i 2024 en ansøgning om at hæve ADI til 6 eller 16 mg/kg, men fandt ikke tilstrækkeligt grundlag, så ADI forbliver 4 mg/kg (EFSA Journal 2024, DOI 10.2903/j.efsa.2024.9045).",
+  "keyReferences": [],
+  "pubmedTerm": "steviol glycosides",
+  "flags": [],
+  "classes": [
+   "sweetener"
+  ],
+  "variants": [],
+  "efsa": null,
+  "verification": {
+   "status": "corrected",
+   "sources": [
+    "https://www.fao.org/fileadmin/user_upload/jecfa_additives/docs/monograph5/additive-442-m5.pdf",
+    "https://www.fao.org/fileadmin/templates/agns/pdf/jecfa/cta/63/Steviol.pdf",
+    "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A32021R1156",
+    "https://eur-lex.europa.eu/eli/reg/2025/652/oj",
+    "https://eur-lex.europa.eu/eli/reg/2017/335/oj/eng",
+    "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2010.1537",
+    "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2024.9045",
+    "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6770957/",
+    "https://apps.who.int/food-additives-contaminants-jecfa-database/Home/Chemical/270",
+    "https://eur-lex.europa.eu/eli/reg/2011/1131/oj",
+    "https://pmc.ncbi.nlm.nih.gov/articles/PMC6775443/",
+    "https://www.sciencedirect.com/science/article/pii/S002231662400110X",
+    "https://www.who.int/news/item/15-05-2023-who-advises-not-to-use-non-sugar-sweeteners-for-weight-control-in-newly-released-guideline"
+   ],
+   "notes": "Bekræftet: steviol bundet til sukkerenheder, vandekstraktion af blade, rensning (adsorption, ionbytning, omkrystallisation) til ≥95 %, 200-300 gange sødere, E 960a indført med forordning (EU) 2021/1156, 80 mg/l i smagsatte drikke, ADI 4 mg/kg, JECFA 2008, EU-godkendelse 2011, ikke genotoksisk/kræftfremkaldende, nedbrydning til steviol og udskillelse som steviolglucuronid, WHO 2023. Rettet: E 960b/E 960d kom med senere forordninger (2025/652 og 2023/447); eksponeringsudsagn præciseret til småbørn; blodsukker-udsagn omformuleret. Fjernet: 'tåler varme og syre', 'maskeres med andre sødestoffer', 'kan bruges af diabetikere', mave-tarm-ubehag, appetitregulering og 'små studier' (ingen kilde)."
+  },
+  "wikipedia": "",
+  "wikidata": "",
+  "claims": [
+   {
+    "claim": "Steviolglycosider er steviol bundet til sukkerenheder (steviosid, rebaudiosid A, M, D)",
+    "source": "https://www.fao.org/fileadmin/user_upload/jecfa_additives/docs/monograph5/additive-442-m5.pdf",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Udvindes ved vandekstraktion af blade; rensning via adsorption, ionbytning og omkrystallisation til ≥95 %",
+    "source": "https://www.fao.org/fileadmin/templates/agns/pdf/jecfa/cta/63/Steviol.pdf",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "200-300 gange sødere end sukker",
+    "source": "https://www.fao.org/fileadmin/templates/agns/pdf/jecfa/cta/63/Steviol.pdf",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Tåler varme og syre godt",
+    "source": "https://www.fao.org/fileadmin/user_upload/jecfa_additives/docs/monograph5/additive-442-m5.pdf",
+    "result": "fjernet"
+   },
+   {
+    "claim": "E 960a indført med forordning (EU) 2021/1156",
+    "source": "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A32021R1156",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "E 960b og E 960d blev tilføjet med senere forordninger (2025/652 og 2023/447)",
+    "source": "https://eur-lex.europa.eu/eli/reg/2025/652/oj",
+    "result": "rettet"
+   },
+   {
+    "claim": "Bitterhed maskeres ofte ved kombination med andre sødestoffer",
+    "source": "https://www.fao.org/fileadmin/user_upload/jecfa_additives/docs/monograph5/additive-442-m5.pdf",
+    "result": "fjernet"
+   },
+   {
+    "claim": "Maksimalniveau 80 mg/l som steviolækvivalenter i smagsatte drikkevarer",
+    "source": "https://eur-lex.europa.eu/eli/reg/2017/335/oj/eng",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Konkret anvendelsesliste (drikkeyoghurt, proteinbarer, syltetøj m.m.)",
+    "source": "https://eur-lex.europa.eu/eli/reg/2017/335/oj/eng",
+    "result": "fjernet"
+   },
+   {
+    "claim": "ADI 4 mg/kg lgv/dag som steviolækvivalenter (EFSA 2010)",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2010.1537",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "ADI gælder alle steviolglycosider E 960a-d; ikke grundlag for at hæve til 6 eller 16 mg/kg (EFSA 2024)",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2024.9045",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Høje forbrugere (småbørn, 95. percentil) kan overskride ADI i konservative scenarier",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2024.9045",
+    "result": "rettet"
+   },
+   {
+    "claim": "Påvirker ikke blodsukkeret nævneværdigt (metaanalyse: ingen signifikant effekt på fasteblodsukker/HbA1c)",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6770957/",
+    "result": "rettet"
+   },
+   {
+    "claim": "'Kan bruges af diabetikere', 'let mave-tarm-ubehag ved høje indtag', 'bitter/lakridsagtig eftersmag' (health)",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6770957/",
+    "result": "fjernet"
+   },
+   {
+    "claim": "JECFA fastsatte i 2008 ADI 0-4 mg/kg som steviol",
+    "source": "https://apps.who.int/food-additives-contaminants-jecfa-database/Home/Chemical/270",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Godkendt i EU i 2011 (forordning (EU) nr. 1131/2011)",
+    "source": "https://eur-lex.europa.eu/eli/reg/2011/1131/oj",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Ingen tegn på genotoksicitet eller kræftfremkaldende effekt",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2010.1537",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Nedbrydes af tarmbakterier til steviol; udskilles som steviolglucuronid i urinen",
+    "source": "https://pmc.ncbi.nlm.nih.gov/articles/PMC6775443/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Forskning i appetitregulering; 'primært små studier'",
+    "source": "https://www.sciencedirect.com/science/article/pii/S002231662400110X",
+    "result": "fjernet"
+   },
+   {
+    "claim": "WHO 2023 fraråder ikke-sukker-sødemidler til vægtkontrol (betinget anbefaling, lav evidenssikkerhed)",
+    "source": "https://www.who.int/news/item/15-05-2023-who-advises-not-to-use-non-sugar-sweeteners-for-weight-control-in-newly-released-guideline",
+    "result": "rettet"
+   }
+  ]
+ },
+ {
+  "code": "E960b",
+  "nameDa": "Steviolglycosider fremstillet ved fermentering",
+  "nameEn": "Rebaudioside from multiple gene donors expressed in Yarrowia lipolytica",
+  "category": "Sødemiddel",
+  "euStatus": "approved",
+  "origin": "nature_identical",
+  "summary": "Steviolglycosider (især rebaudiosid M) fremstillet af genmodificeret gær (Yarrowia lipolytica) ved fermentering i stedet for at blive udvundet af stevia-planten.",
+  "description": "Ved denne metode er gæren Yarrowia lipolytica genmodificeret, så den danner steviolglycosider ved fermentering af simple sukre. Slutproduktet indeholder ikke levende celler eller DNA fra produktionsstammen. Produktet består af mindst 95 % steviolglycosider med rebaudiosid M som hovedkomponent og noget rebaudiosid D samt mindre mængder rebaudiosid A og B. E 960b(i) (rebaudiosid M fremstillet ved fermentering med Y. lipolytica) har været godkendt i EU fra 23. april 2025 med egne specifikationer, fordi fremstillingen kan give andre urenheder end de øvrige steviolglycosider.",
+  "uses": "Godkendt på samme betingelser som de øvrige steviolglycosider (E 960a-d); maksimumgrænser er fælles og angives som steviolækvivalenter.",
+  "health": "EFSA fastsatte i 2010 en ADI på 4 mg/kg legemsvægt/dag udtrykt som steviolækvivalenter, og samme ADI anvendes for alle steviolglycosider (E 960a-d). I 2024 fandt EFSA ikke grundlag for at hæve ADI til 6 eller 16 mg/kg. EFSA's eksponeringsvurderinger har vist, at høje forbrugere blandt småbørn i de mest konservative scenarier kan overskride ADI. Metaanalyser af kliniske forsøg har ikke fundet signifikant effekt på fasteblodsukker eller HbA1c.",
+  "research": "EFSA's FAF-panel vurderede i december 2023 steviolglycosider (overvejende rebaudiosid M) fremstillet ved fermentering med den genmodificerede Y. lipolytica-stamme VRM (EFSA Journal 2023, DOI 10.2903/j.efsa.2023.8387). Panelet fandt, at levende celler og DNA fra produktionsstammen ikke er til stede, at dokumentation for fravær af kaurensyre fjerner bekymringen for genotoksicitet, og at der kræves separate specifikationer. Godkendelsen fulgte med forordning (EU) 2025/652.",
+  "keyReferences": [],
+  "pubmedTerm": "rebaudioside M",
+  "flags": [],
+  "classes": [
+   "sweetener"
+  ],
+  "variants": [],
+  "efsa": null,
+  "verification": {
+   "status": "corrected",
+   "sources": [
+    "https://eur-lex.europa.eu/eli/reg/2025/652/oj",
+    "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2023.8387",
+    "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2010.1537",
+    "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2024.9045",
+    "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6770957/"
+   ],
+   "notes": "Bekræftet: genmodificeret Yarrowia lipolytica (stamme VRM) fermenterer simple sukre, levende celler og DNA fra produktionsstammen er ikke til stede i slutproduktet, separate specifikationer pga. andre urenheder, EFSA-udtalelse december 2023 (EFSA Journal 2023, 10.2903/j.efsa.2023.8387), godkendelse ved forordning (EU) 2025/652 gældende fra 23. april 2025, ≥95 % rebaudiosid M, D, A og B, samme anvendelser som E 960a-d. Rettet: navngivet E 960b(i); sammensætning præciseret (rebaudiosid M som hovedkomponent med noget D); EFSA-konklusion knyttet til fravær af kaurensyre. Fjernet: 'mindre bitre', 'kun i små mængder i planten', 'ingen humane studier/ikke nødvendigt', 'gener fra flere donorer' (ikke eftervist), fælles health-udsagn uden kilde."
+  },
+  "wikipedia": "",
+  "wikidata": "",
+  "claims": [
+   {
+    "claim": "Genmodificeret Yarrowia lipolytica danner steviolglycosider ved fermentering af simple sukre",
+    "source": "https://eur-lex.europa.eu/eli/reg/2025/652/oj",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Levende celler og DNA fra produktionsstammen findes ikke i slutproduktet",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2023.8387",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Hovedkomponent rebaudiosid M med noget rebaudiosid D og mindre mængder A og B; ≥95 %",
+    "source": "https://eur-lex.europa.eu/eli/reg/2025/652/oj",
+    "result": "rettet"
+   },
+   {
+    "claim": "Rebaudiosid M og D er mindre bitre og findes kun i små mængder i planten",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2023.8387",
+    "result": "fjernet"
+   },
+   {
+    "claim": "Separate specifikationer fordi fremstillingen kan give andre urenheder",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2023.8387",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "E 960b(i) godkendt fra 23. april 2025 (forordning (EU) 2025/652)",
+    "source": "https://eur-lex.europa.eu/eli/reg/2025/652/oj",
+    "result": "rettet"
+   },
+   {
+    "claim": "Samme anvendelsesbetingelser som E 960a-d; maksimumgrænser som steviolækvivalenter",
+    "source": "https://eur-lex.europa.eu/eli/reg/2025/652/oj",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "EFSA (december 2023) fandt ingen sikkerhedsbekymring; fravær af kaurensyre fjerner genotoksicitetsbekymring",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2023.8387",
+    "result": "rettet"
+   },
+   {
+    "claim": "Ingen humane studier; anses ikke for nødvendigt",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2023.8387",
+    "result": "fjernet"
+   },
+   {
+    "claim": "ADI 4 mg/kg lgv/dag som steviolækvivalenter (EFSA 2010)",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2010.1537",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "ADI gælder alle steviolglycosider E 960a-d; ikke grundlag for at hæve til 6 eller 16 mg/kg (EFSA 2024)",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2024.9045",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Høje forbrugere (småbørn, 95. percentil) kan overskride ADI i konservative scenarier",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2024.9045",
+    "result": "rettet"
+   },
+   {
+    "claim": "Påvirker ikke blodsukkeret nævneværdigt (metaanalyse: ingen signifikant effekt på fasteblodsukker/HbA1c)",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6770957/",
+    "result": "rettet"
+   },
+   {
+    "claim": "'Kan bruges af diabetikere', 'let mave-tarm-ubehag ved høje indtag', 'bitter/lakridsagtig eftersmag' (health)",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6770957/",
+    "result": "fjernet"
+   }
+  ]
+ },
+ {
+  "code": "E960c",
+  "nameDa": "Enzymatisk fremstillede steviolglycosider",
+  "nameEn": "Enzymatically produced steviol glycosides",
+  "category": "Sødemiddel",
+  "euStatus": "approved",
+  "origin": "nature_identical",
+  "summary": "Steviolglycosider, hvor højrensede stoffer fra stevia-blade omdannes med enzymer til fx rebaudiosid M, D eller AM.",
+  "description": "Udgangsmaterialet er et højrenset stevia-ekstrakt (typisk steviosid eller rebaudiosid A), som behandles med enzymer, der omdanner det til andre steviolglycosider som rebaudiosid M, D eller AM. Enzymerne til flere af varianterne produceres af genmodificerede E. coli K-12-stammer. Forordning (EU) 2022/1922 opdelte E 960c i underposter (i)-(iv) for de forskellige rebaudiosider. Funktionen og anvendelsesbetingelserne er de samme som for øvrige steviolglycosider.",
+  "uses": "Følger de fælles anvendelser og maksimumgrænser for steviolglycosider (udtrykt som steviolækvivalenter), bl.a. i smagsatte drikkevarer og bordsødemidler.",
+  "health": "EFSA fastsatte i 2010 en ADI på 4 mg/kg legemsvægt/dag udtrykt som steviolækvivalenter, og samme ADI anvendes for alle steviolglycosider (E 960a-d). I 2024 fandt EFSA ikke grundlag for at hæve ADI til 6 eller 16 mg/kg. EFSA's eksponeringsvurderinger har vist, at høje forbrugere blandt småbørn i de mest konservative scenarier kan overskride ADI. Metaanalyser af kliniske forsøg har ikke fundet signifikant effekt på fasteblodsukker eller HbA1c.",
+  "research": "EFSA's FAF-panel har vurderet flere enzymatisk fremstillede rebaudiosider, bl.a. præparater med rebaudiosid AM (2021). I udtalelsen om rebaudiosid D fremstillet ved enzymatisk bioomdannelse (EFSA Journal 2022, DOI 10.2903/j.efsa.2022.7291) konkluderede panelet, at sikkerheden ikke var tilstrækkeligt påvist, fordi fravær af rekombinant DNA fra produktionsstammen ikke var dokumenteret. I 2026 fandt EFSA ingen sikkerhedsbekymring ved en ændring af E 960c med nye genmodificerede produktionsstammer. E 960c blev struktureret med underposter (i-iv) for rebaudiosid M, D og AM ved forordning (EU) 2022/1922.",
+  "keyReferences": [],
+  "pubmedTerm": "rebaudioside",
+  "flags": [],
+  "classes": [
+   "sweetener"
+  ],
+  "variants": [],
+  "efsa": {
+   "title": "Safety of the proposed amendment of the specifications for enzymatically produced steviol glycosides (E 960c): Rebaudioside D produced via enzymatic bioconversion of purified stevia leaf extract",
+   "url": "https://doi.org/10.2903/j.efsa.2022.7291",
+   "date": "2022",
+   "adi": "",
+   "overexposureRisk": ""
+  },
+  "verification": {
+   "status": "corrected",
+   "sources": [
+    "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32022R1922",
+    "https://pmc.ncbi.nlm.nih.gov/articles/PMC8329987/",
+    "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2022.7291",
+    "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2026.9779",
+    "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2010.1537",
+    "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2024.9045",
+    "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6770957/"
+   ],
+   "notes": "Bekræftet: udgangsmateriale højrenset steviosid/rebaudiosid A-ekstrakt, enzymer fra genmodificerede E. coli K-12-stammer, forordning (EU) 2022/1922 med underposter (i)-(iv) for rebaudiosid M, D og AM, ADI 4 mg/kg fælles. Rettet (vigtigt): EFSA 2022 (DOI 10.2903/j.efsa.2022.7291) konkluderede, at sikkerheden af rebaudiosid D ved enzymatisk bioomdannelse IKKE var tilstrækkeligt påvist, fordi fravær af rekombinant DNA ikke var vist – ikke at den var 'lige så sikker'; tilføjet EFSA 2026 (ingen bekymring for nye GM-stammer). Fjernet: 'smager mere som sukker/mindre bitter', 'glucosyltransferaser på bestemte positioner', 'kosttilskud', 'ingen nye toksikologiske signaler' og ubelagt anvendelsesliste."
+  },
+  "wikipedia": "",
+  "wikidata": "",
+  "claims": [
+   {
+    "claim": "Udgangsmateriale er højrenset stevia-ekstrakt (steviosid eller rebaudiosid A)",
+    "source": "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32022R1922",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Enzymerne produceres af genmodificerede mikroorganismer (E. coli K-12-stammer)",
+    "source": "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32022R1922",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Glucosyltransferaser tilføjer glucoseenheder på bestemte positioner; mindre bitter smag",
+    "source": "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32022R1922",
+    "result": "fjernet"
+   },
+   {
+    "claim": "Forordning (EU) 2022/1922 indførte E 960c(i)-(iv) for rebaudiosid M, D og AM",
+    "source": "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32022R1922",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "EFSA 2021 vurderede præparater med rebaudiosid AM ved enzymatisk bioomdannelse",
+    "source": "https://pmc.ncbi.nlm.nih.gov/articles/PMC8329987/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "EFSA 2022: sikkerheden af rebaudiosid D (enzymatisk) ikke tilstrækkeligt påvist, da fravær af rekombinant DNA ikke var vist",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2022.7291",
+    "result": "rettet"
+   },
+   {
+    "claim": "EFSA 2026: ingen sikkerhedsbekymring for modifikation med nye GM-stammer",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2026.9779",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Anvendelser inkl. kosttilskud; konkret liste",
+    "source": "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32022R1922",
+    "result": "fjernet"
+   },
+   {
+    "claim": "ADI 4 mg/kg lgv/dag som steviolækvivalenter (EFSA 2010)",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2010.1537",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "ADI gælder alle steviolglycosider E 960a-d; ikke grundlag for at hæve til 6 eller 16 mg/kg (EFSA 2024)",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2024.9045",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Høje forbrugere (småbørn, 95. percentil) kan overskride ADI i konservative scenarier",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2024.9045",
+    "result": "rettet"
+   },
+   {
+    "claim": "Påvirker ikke blodsukkeret nævneværdigt (metaanalyse: ingen signifikant effekt på fasteblodsukker/HbA1c)",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6770957/",
+    "result": "rettet"
+   },
+   {
+    "claim": "'Kan bruges af diabetikere', 'let mave-tarm-ubehag ved høje indtag', 'bitter/lakridsagtig eftersmag' (health)",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6770957/",
+    "result": "fjernet"
+   }
+  ]
+ },
+ {
+  "code": "E960d",
+  "nameDa": "Glucosylerede steviolglycosider",
+  "nameEn": "Glucosylated steviol glycosides",
+  "category": "Sødemiddel",
+  "euStatus": "approved",
+  "origin": "nature_identical",
+  "summary": "Steviolglycosider, som ved enzymbehandling har fået tilføjet ekstra glucoseenheder.",
+  "description": "Ved fremstillingen behandles et stevia-ekstrakt med stivelse og enzymet cyclodextrin-glucosyltransferase (fra en ikke-genmodificeret stamme af Anoxybacillus caldiproteolyticus), som overfører 1-20 ekstra glucoseenheder til steviolglycosiderne. Produktet er en blanding af glucosylerede steviolglycosider og de oprindelige steviolglycosider. E 960d blev godkendt i EU i marts 2023.",
+  "uses": "Godkendt i de samme fødevarekategorier som øvrige steviolglycosider (E 960a-c); grænseværdierne udtrykkes som steviolækvivalenter.",
+  "health": "EFSA fastsatte i 2010 en ADI på 4 mg/kg legemsvægt/dag udtrykt som steviolækvivalenter, og samme ADI anvendes for alle steviolglycosider (E 960a-d). I 2024 fandt EFSA ikke grundlag for at hæve ADI til 6 eller 16 mg/kg. EFSA's eksponeringsvurderinger har vist, at høje forbrugere blandt småbørn i de mest konservative scenarier kan overskride ADI. Metaanalyser af kliniske forsøg har ikke fundet signifikant effekt på fasteblodsukker eller HbA1c.",
+  "research": "EFSA's FAF-panel vurderede glucosylerede steviolglycosider i februar 2022 (EFSA Journal 2022, DOI 10.2903/j.efsa.2022.7066) med udgangspunkt i den fælles ADI på 4 mg/kg legemsvægt/dag for steviolækvivalenter. EFSA's CEP-panel fandt, at enzymet fra A. caldiproteolyticus ikke giver anledning til sikkerhedsbekymring, bl.a. fordi det fjernes under fremstillingen. EU-godkendelsen kom med forordning (EU) 2023/447 i marts 2023.",
+  "keyReferences": [],
+  "pubmedTerm": "glucosylated steviol glycosides",
+  "flags": [],
+  "classes": [
+   "sweetener"
+  ],
+  "variants": [],
+  "efsa": null,
+  "verification": {
+   "status": "corrected",
+   "sources": [
+    "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2022.7066",
+    "https://eur-lex.europa.eu/eli/reg/2025/652/oj",
+    "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A32023R0447",
+    "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2010.1537",
+    "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2024.9045",
+    "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6770957/"
+   ],
+   "notes": "Bekræftet: cyclodextrin-glucosyltransferase fra ikke-genmodificeret Anoxybacillus caldiproteolyticus (CEP-panelet: ingen bekymring), 1-20 ekstra glucoseenheder, EFSA 2022 (FAF), ADI 4 mg/kg, forordning (EU) 2023/447 marts 2023, samme kategorier som E 960a-c. Rettet: 'nyeste variant' ændret (E 960b(i) kom i 2025); EFSA-år præciseret (februar 2022, DOI 10.2903/j.efsa.2022.7066). Fjernet: 'mindre søde pr. gram/mere sukkerlignende smag', 'rester af kulhydrater', 'glucoseenheder spaltes af i tarmen' (ikke fundet i kilden), 'få/ingen humane studier', 'brugen i danske produkter er begrænset'."
+  },
+  "wikipedia": "",
+  "wikidata": "",
+  "claims": [
+   {
+    "claim": "Stevia-ekstrakt behandles med stivelse og cyclodextrin-glucosyltransferase fra ikke-GM Anoxybacillus caldiproteolyticus",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2022.7066",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Produktet indeholder glucosylerede steviolglycosider med 1-20 ekstra glucoseenheder",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2022.7066",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Mindre søde pr. gram, mere sukkerlignende smag; rester af kulhydrater",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2022.7066",
+    "result": "fjernet"
+   },
+   {
+    "claim": "E 960d er den nyeste steviol-variant (E 960b(i) blev godkendt senere, 2025)",
+    "source": "https://eur-lex.europa.eu/eli/reg/2025/652/oj",
+    "result": "rettet"
+   },
+   {
+    "claim": "Godkendt ved forordning (EU) 2023/447 i marts 2023 i samme kategorier som E 960a-c",
+    "source": "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A32023R0447",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "EFSA FAF 2022 vurderede glucosylerede steviolglycosider; ADI 4 mg/kg som steviolækvivalenter lagt til grund",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2022.7066",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Glucoseenhederne spaltes af i tarmen; få humane studier; begrænset brug i Danmark",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2022.7066",
+    "result": "fjernet"
+   },
+   {
+    "claim": "ADI 4 mg/kg lgv/dag som steviolækvivalenter (EFSA 2010)",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2010.1537",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "ADI gælder alle steviolglycosider E 960a-d; ikke grundlag for at hæve til 6 eller 16 mg/kg (EFSA 2024)",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2024.9045",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Høje forbrugere (småbørn, 95. percentil) kan overskride ADI i konservative scenarier",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2024.9045",
+    "result": "rettet"
+   },
+   {
+    "claim": "Påvirker ikke blodsukkeret nævneværdigt (metaanalyse: ingen signifikant effekt på fasteblodsukker/HbA1c)",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6770957/",
+    "result": "rettet"
+   },
+   {
+    "claim": "'Kan bruges af diabetikere', 'let mave-tarm-ubehag ved høje indtag', 'bitter/lakridsagtig eftersmag' (health)",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6770957/",
+    "result": "fjernet"
+   }
+  ]
+ },
+ {
+  "code": "E961",
+  "nameDa": "Neotam",
+  "nameEn": "Neotame",
+  "category": "Sødemiddel",
+  "euStatus": "approved",
+  "origin": "synthetic",
+  "summary": "Et syntetisk, meget kraftigt sødestof, der er beslægtet med aspartam, men omkring 7.000-13.000 gange sødere end sukker.",
+  "description": "Neotam er et aspartam-derivat, hvor der er koblet en 3,3-dimethylbutylgruppe på aminogruppen i asparaginsyredelen. Ændringen gør molekylet langt sødere og mere stabilt over for varme og pH, og strukturen forhindrer, at der frigøres frit phenylalanin som fra aspartam. Stoffet bruges både som sødemiddel og smagsforstærker. Det blev godkendt i EU fra januar 2010.",
+  "uses": "Bruges i meget små mængder som sødemiddel og smagsforstærker. Der gælder specifikke maksimumgrænser pr. fødevarekategori.",
+  "health": "EFSA fastsatte i 2007 en ADI på 2 mg/kg legemsvægt/dag, men hævede den i sin gen-evaluering (2025) til 10 mg/kg legemsvægt/dag og fandt ingen sikkerhedsbekymring ved de nuværende anvendelser. Da strukturen forhindrer frigivelse af frit phenylalanin, kræves der ikke phenylalanin-advarsel som for aspartam.",
+  "research": "EFSA's gen-evaluering (EFSA Journal 2025, DOI 10.2903/j.efsa.2025.9480) fastsatte ADI på 10 mg/kg baseret på et 52-ugers kronisk og et 104-ugers kræftstudie i rotter (NOAEL 1000 mg/kg), fandt ingen bekymring for genotoksicitet eller for eksponering for methanol/formaldehyd og konkluderede, at der ikke er sikkerhedsbekymring ved de nuværende anvendelser. Den erstatter AFC-panelets ADI fra 2007. Et laboratoriestudie (Shil et al., Frontiers in Nutrition 2024) fandt skadelige effekter på tarmceller og ændret adfærd hos modelbakterier; resultaterne er foreløbige og ikke vist i mennesker.",
+  "keyReferences": [],
+  "pubmedTerm": "neotame",
+  "flags": [],
+  "classes": [
+   "sweetener"
+  ],
+  "variants": [],
+  "efsa": {
+   "title": "Re-evaluation of neotame (E 961) as food additive",
+   "url": "https://doi.org/10.2903/j.efsa.2025.9480",
+   "date": "2025-07-04",
+   "adi": "10 mg/kg bw/day",
+   "overexposureRisk": ""
+  },
+  "verification": {
+   "status": "corrected",
+   "sources": [
+    "https://www.ift.org/food-technology-magazine/neotame-the-next-generation-sweetener",
+    "https://www.fao.org/fileadmin/templates/agns/pdf/jecfa/cta/61/Neotame.pdf",
+    "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:32009L0163",
+    "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2025.9480",
+    "https://www.frontiersin.org/journals/nutrition/articles/10.3389/fnut.2024.1366409/full"
+   ],
+   "notes": "Bekræftet: 7.000-13.000 gange sødere, 3,3-dimethylbutyl på aspartams N-terminal, stabilitet, smagsforstærker, ingen PKU-mærkning, EU-godkendelse januar 2010 (direktiv 2009/163/EU), EFSA 2007 ADI 2 mg/kg, EFSA 2025 ADI 10 mg/kg (NOAEL 1000 mg/kg, 52-/104-ugers rotteforsøg), ingen genotoksicitets- eller methanol/formaldehyd-bekymring, laboratoriestudie om tarmceller/-bakterier (Shil et al. 2024). Rettet: mekanisme omformuleret (strukturen forhindrer spaltning til phenylalanin); laboratoriestudiet dateret 2024. Fjernet: JECFA 2003 ADI 0-2 (ikke bekræftet i fundne kilder), 'sjælden i danske produkter', 'optages delvist, udskilles via urin og afføring', konkret anvendelsesliste, 'ingen særlige risikogrupper'."
+  },
+  "wikipedia": "",
+  "wikidata": "Q415698",
+  "claims": [
+   {
+    "claim": "7.000-13.000 gange sødere end sukker",
+    "source": "https://www.ift.org/food-technology-magazine/neotame-the-next-generation-sweetener",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Aspartam-derivat med 3,3-dimethylbutylgruppe på aminogruppen",
+    "source": "https://www.fao.org/fileadmin/templates/agns/pdf/jecfa/cta/61/Neotame.pdf",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Strukturen forhindrer nedbrydning til frit phenylalanin; ingen PKU-mærkning",
+    "source": "https://www.ift.org/food-technology-magazine/neotame-the-next-generation-sweetener",
+    "result": "rettet"
+   },
+   {
+    "claim": "Stabilt ved varme og forskellige pH; bruges også som smagsforstærker",
+    "source": "https://www.ift.org/food-technology-magazine/neotame-the-next-generation-sweetener",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Godkendt i EU fra januar 2010 (direktiv 2009/163/EU)",
+    "source": "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:32009L0163",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Konkret anvendelsesliste; sjælden i danske produkter",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2025.9480",
+    "result": "fjernet"
+   },
+   {
+    "claim": "EFSA 2007 (AFC) ADI 2 mg/kg; EFSA 2025 ADI 10 mg/kg (NOAEL 1000 mg/kg fra 52-/104-ugers rotteforsøg)",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2025.9480",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Ingen bekymring for genotoksicitet eller methanol/formaldehyd; ingen sikkerhedsbekymring ved nuværende brug",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2025.9480",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "JECFA 2003 ADI 0-2 mg/kg",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2025.9480",
+    "result": "fjernet"
+   },
+   {
+    "claim": "Optages delvist og udskilles via urin og afføring",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2025.9480",
+    "result": "fjernet"
+   },
+   {
+    "claim": "Laboratoriestudie (Shil et al., Front Nutr 2024) om effekter på tarmceller og modelbakterier",
+    "source": "https://www.frontiersin.org/journals/nutrition/articles/10.3389/fnut.2024.1366409/full",
+    "result": "rettet"
+   }
+  ]
+ },
+ {
+  "code": "E962",
+  "nameDa": "Aspartam-acesulfamsalt",
+  "nameEn": "Salt of aspartame-acesulfame",
+  "category": "Sødemiddel",
+  "euStatus": "approved",
+  "origin": "synthetic",
+  "summary": "Et salt af aspartam og acesulfam i ét stof. Det er ca. 350 gange sødere end sukker.",
+  "description": "Stoffet fremstilles ved at opvarme aspartam (E 951) og acesulfam-K (E 950) i forholdet ca. 2:1 (vægt) i opløsning ved sur pH, hvorefter saltet krystalliserer, og kalium og vand fjernes. I kroppen spaltes saltet til aspartam og acesulfam. Saltet er mere stabilt end aspartam alene. Da det indeholder aspartam, frigøres phenylalanin ved fordøjelsen.",
+  "uses": "Bruges som sødemiddel med maksimumgrænser udtrykt som acesulfam K- eller aspartamækvivalenter; grænserne for E 950 og E 951 må ikke overskrides ved brug af saltet alene eller sammen med disse.",
+  "health": "Produkter med stoffet skal mærkes med, at de indeholder en phenylalaninkilde, fordi det frigør phenylalanin, som personer med fenylketonuri (PKU) skal undgå. Indtaget skal medregnes i ADI for både aspartam (40 mg/kg legemsvægt/dag, EFSA 2013) og acesulfam-K (15 mg/kg legemsvægt/dag, EFSA 2025), da saltet spaltes til begge stoffer i kroppen. EFSA fandt i 2026 ingen sikkerhedsbekymring ved de nuværende anvendelser.",
+  "research": "EFSA afsluttede i 2026 gen-evalueringen af E 962 (EFSA Journal 2026, DOI 10.2903/j.efsa.2026.10259) og konkluderede, at saltet ikke giver anledning til sikkerhedsbekymring ved de rapporterede anvendelser, da det spaltes til de samme bestanddele som aspartam og acesulfam K; panelet anbefalede opdaterede specifikationer. IARC klassificerede i 2023 aspartam som 'muligvis kræftfremkaldende' (gruppe 2B), mens JECFA samme år fastholdt ADI på 40 mg/kg.",
+  "keyReferences": [],
+  "pubmedTerm": "aspartame-acesulfame salt",
+  "flags": [
+   "pku"
+  ],
+  "classes": [
+   "sweetener"
+  ],
+  "variants": [],
+  "efsa": {
+   "title": "Re-evaluation of salt of aspartame-acesulfame (E 962) as food additive",
+   "url": "https://doi.org/10.2903/j.efsa.2026.10259",
+   "date": "2026",
+   "adi": "",
+   "overexposureRisk": ""
+  },
+  "verification": {
+   "status": "corrected",
+   "sources": [
+    "https://www.fao.org/fileadmin/user_upload/jecfa_additives/docs/Monograph1/Additive-047.pdf",
+    "https://en.wikipedia.org/wiki/Aspartame-acesulfame_salt",
+    "https://www.efsa.europa.eu/en/news/efsa-concludes-salt-aspartame-acesulfame-e-962-safe-current-exposure-levels",
+    "https://eur-lex.europa.eu/legal-content/EN/TXT/PDF/?uri=CELEX:02008R1333-20200702",
+    "https://efsa.onlinelibrary.wiley.com/doi/abs/10.2903/j.efsa.2013.3496",
+    "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2025.9317",
+    "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2026.10259",
+    "https://www.who.int/news/item/14-07-2023-aspartame-hazard-and-risk-assessment-results-released"
+   ],
+   "notes": "Bekræftet: fremstilling ved opvarmning af ca. 2:1 aspartam og acesulfam K ved sur pH, kalium fjernes, ca. 350 gange sødere, mere stabil end aspartam, spaltes til aspartam og acesulfam, maksimumgrænser udtrykt som ækvivalenter og må ikke overskride grænserne for E 950/E 951, phenylalanin-mærkning, aspartam ADI 40 mg/kg (EFSA 2013), acesulfam K ADI 15 mg/kg (EFSA 2025), EFSA 2026 gen-evaluering (ingen bekymring, opdaterede specifikationer), IARC 2B og JECFA fastholdt ADI 2023. Rettet: 'hurtigere og mere sukkerlignende sødme' ændret til dokumenteret 'mere stabil end aspartam alene'. Fjernet: konkret anvendelsesliste og 'debat om observationsstudier' (ingen kilde)."
+  },
+  "wikipedia": "https://en.wikipedia.org/wiki/Aspartame-acesulfame_salt",
+  "wikidata": "Q409847",
+  "claims": [
+   {
+    "claim": "Fremstilles ved opvarmning af ca. 2:1 (vægt) aspartam og acesulfam K ved sur pH; kalium og vand fjernes",
+    "source": "https://www.fao.org/fileadmin/user_upload/jecfa_additives/docs/Monograph1/Additive-047.pdf",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Ca. 350 gange sødere end sukker",
+    "source": "https://en.wikipedia.org/wiki/Aspartame-acesulfame_salt",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Mere stabil end aspartam alene",
+    "source": "https://en.wikipedia.org/wiki/Aspartame-acesulfame_salt",
+    "result": "rettet"
+   },
+   {
+    "claim": "Hurtigere og mere sukkerlignende sødme",
+    "source": "https://en.wikipedia.org/wiki/Aspartame-acesulfame_salt",
+    "result": "fjernet"
+   },
+   {
+    "claim": "Spaltes i kroppen til aspartam og acesulfam",
+    "source": "https://www.efsa.europa.eu/en/news/efsa-concludes-salt-aspartame-acesulfame-e-962-safe-current-exposure-levels",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Maksimumgrænser udtrykt som acesulfam K- eller aspartamækvivalenter; grænserne for E 950/E 951 må ikke overskrides",
+    "source": "https://eur-lex.europa.eu/legal-content/EN/TXT/PDF/?uri=CELEX:02008R1333-20200702",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Konkret anvendelsesliste (tyggegummi, slik, desserter)",
+    "source": "https://eur-lex.europa.eu/legal-content/EN/TXT/PDF/?uri=CELEX:02008R1333-20200702",
+    "result": "fjernet"
+   },
+   {
+    "claim": "Mærkning 'indeholder en phenylalaninkilde'; ikke egnet ved PKU",
+    "source": "https://en.wikipedia.org/wiki/Aspartame-acesulfame_salt",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Aspartam ADI 40 mg/kg (EFSA 2013)",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/abs/10.2903/j.efsa.2013.3496",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Acesulfam K ADI 15 mg/kg (EFSA 2025)",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2025.9317",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "EFSA 2026: ingen sikkerhedsbekymring; anbefalede opdaterede specifikationer",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2026.10259",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "IARC 2023: aspartam gruppe 2B; JECFA fastholdt ADI 40 mg/kg",
+    "source": "https://www.who.int/news/item/14-07-2023-aspartame-hazard-and-risk-assessment-results-released",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Debat om observationsstudier om kræft og hjerte-kar-sygdom",
+    "source": "https://www.who.int/news/item/14-07-2023-aspartame-hazard-and-risk-assessment-results-released",
+    "result": "fjernet"
+   }
+  ]
+ },
+ {
+  "code": "E964",
+  "nameDa": "Polyglycitolsirup",
+  "nameEn": "Polyglycitol syrup",
+  "category": "Sødemiddel",
+  "euStatus": "approved",
+  "origin": "synthetic",
+  "summary": "En sukkeralkohol-sirup fremstillet ved hydrogenering af delvist nedbrudt stivelse. Den bruges som sødemiddel og fyldstof.",
+  "description": "Polyglycitolsirup (hydrogeneret stivelseshydrolysat) laves ved delvis nedbrydning (hydrolyse) af stivelse til en blanding af glucose, maltose og længere kæder, som derefter hydrogeneres. Resultatet er en blanding af sorbitol, maltitol og højere hydrogenerede sakkarider; ifølge JECFA's specifikation højst 50 % maltitol og højst 20 % sorbitol. Den er ca. 25-50 % så sød som sukker. Den giver 2,4 kcal/g efter EU's regler for polyoler. Den regnes for ikke-kariogen, fordi mundbakterier kun i ringe grad kan fermentere den.",
+  "uses": "Godkendt i EU som E 964 siden 2012. I modsætning til de øvrige polyoler er brugen ikke quantum satis, men underlagt numeriske maksimumgrænser i de tilladte fødevarekategorier.",
+  "health": "Ved større indtag kan stoffet have afførende virkning og give oppustethed og luft i maven. I EU skal fødevarer med mere end 10 % tilsatte polyoler mærkes med 'overdreven indtagelse kan have en afførende virkning'. JECFA har tildelt ADI 'not specified'; EFSA fandt i 2009 data utilstrækkelige til at fastsætte en ADI, men ingen tegn på sikkerhedsbekymring ved de foreslåede anvendelser. Personer med irritabel tyktarm (IBS) kan være særligt følsomme over for polyoler.",
+  "research": "Stoffet er vurderet af JECFA (gruppe-ADI 'not specified' for polyglycitol- og maltitolsirup, 1998) og af EFSA (2009, DOI 10.2903/j.efsa.2009.1413). Forskning i polyoler generelt fokuserer på mave-tarm-tolerance og på brug i FODMAP-restriktiv kost ved IBS. EFSA's gen-evaluering af de sødende polyoler var fortsat i gang i 2026.",
+  "keyReferences": [],
+  "pubmedTerm": "hydrogenated starch hydrolysate",
+  "flags": [
+   "laxative"
+  ],
+  "classes": [
+   "sweetener"
+  ],
+  "variants": [],
+  "efsa": null,
+  "verification": {
+   "status": "corrected",
+   "sources": [
+    "https://en.wikipedia.org/wiki/Hydrogenated_starch_hydrolysate",
+    "https://www.fao.org/fileadmin/user_upload/jecfa_additives/docs/Monograph1/Additive-319.pdf",
+    "https://apps.who.int/food-additives-contaminants-jecfa-database/Home/Chemical/3167",
+    "https://polyols-eu.org/legislation/food/",
+    "https://polyols.org/learn-the-label/hydrogenated-starch-hydrolysates/",
+    "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32012R1049",
+    "https://www.monashfodmap.com/blog/what-are-polyols/",
+    "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2023.8430",
+    "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2009.1413",
+    "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2011.2076"
+   ],
+   "notes": "Bekræftet: fremstilling ved delvis hydrolyse af stivelse og hydrogenering, blanding af sorbitol, maltitol og højere hydrogenerede sakkarider (JECFA: højst 50 % maltitol og 20 % sorbitol), 25-50 % af sukkers sødme, 2,4 kcal/g, ikke-kariogen, afførende virkning og mærkningskrav, JECFA gruppe-ADI 'not specified' (1998), EU-godkendelse 2012 (forordning 1049/2012). Rettet (vigtigt): E 964 er i modsætning til andre polyoler IKKE tilladt quantum satis, men med numeriske grænser; EFSA 2009 fandt data utilstrækkelige til en ADI, men ingen tegn på sikkerhedsbekymring (i stedet for 'SCF'); polyglycitol er ikke blandt de polyoler, der har EFSA-vurderet tandanprisning. Fjernet: 'ikke i drikkevarer', konkret anvendelsesliste, 'børn særligt følsomme'."
+  },
+  "wikipedia": "",
+  "wikidata": "Q18601425",
+  "claims": [
+   {
+    "claim": "Fremstilles ved delvis hydrolyse af stivelse og hydrogenering (hydrogeneret stivelseshydrolysat)",
+    "source": "https://en.wikipedia.org/wiki/Hydrogenated_starch_hydrolysate",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Blanding af sorbitol, maltitol og højere hydrogenerede sakkarider; højst 50 % maltitol og 20 % sorbitol",
+    "source": "https://www.fao.org/fileadmin/user_upload/jecfa_additives/docs/Monograph1/Additive-319.pdf",
+    "result": "rettet"
+   },
+   {
+    "claim": "Ca. 25-50 % så sød som sukker",
+    "source": "https://apps.who.int/food-additives-contaminants-jecfa-database/Home/Chemical/3167",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Polyoler: 2,4 kcal/g efter EU's regler (forordning 1169/2011)",
+    "source": "https://polyols-eu.org/legislation/food/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Ikke-kariogen: fermenteres kun lidt af mundbakterier",
+    "source": "https://polyols.org/learn-the-label/hydrogenated-starch-hydrolysates/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Anvendes med numeriske maksimumgrænser (ikke quantum satis som andre polyoler)",
+    "source": "https://polyols-eu.org/legislation/food/",
+    "result": "rettet"
+   },
+   {
+    "claim": "Ikke i drikkevarer; konkret anvendelsesliste",
+    "source": "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32012R1049",
+    "result": "fjernet"
+   },
+   {
+    "claim": "Godkendt og tildelt E 964 ved forordning (EU) nr. 1049/2012",
+    "source": "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32012R1049",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Afførende virkning, oppustethed og luft ved større indtag",
+    "source": "https://www.monashfodmap.com/blog/what-are-polyols/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Fødevarer med >10 % tilsatte polyoler skal mærkes 'overdreven indtagelse kan have en afførende virkning'",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2023.8430",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "JECFA gruppe-ADI 'not specified' for polyglycitol- og maltitolsirup (1998)",
+    "source": "https://apps.who.int/food-additives-contaminants-jecfa-database/Home/Chemical/3167",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "EFSA 2009: data utilstrækkelige til ADI, men ingen tegn på sikkerhedsbekymring (ikke SCF)",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2009.1413",
+    "result": "rettet"
+   },
+   {
+    "claim": "Personer med IBS kan være følsomme over for polyoler (FODMAP)",
+    "source": "https://www.monashfodmap.com/blog/what-are-polyols/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Børn særligt følsomme",
+    "source": "https://www.monashfodmap.com/blog/what-are-polyols/",
+    "result": "fjernet"
+   },
+   {
+    "claim": "EFSA's tandanprisning for sukkererstatninger omfatter ikke polyglycitol",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2011.2076",
+    "result": "rettet"
+   }
+  ]
+ },
+ {
+  "code": "E965",
+  "nameDa": "Maltitol",
+  "nameEn": "Maltitol",
+  "category": "Sødemiddel",
+  "euStatus": "approved",
+  "origin": "synthetic",
+  "summary": "En sukkeralkohol fremstillet af maltose fra stivelse. Den er næsten lige så sød som sukker og meget brugt i sukkerfri chokolade og slik.",
+  "description": "Maltitol er et disaccharid-polyol (4-O-α-glucopyranosyl-D-sorbitol) fremstillet ved hydrogenering af maltose, der fås ved enzymatisk nedbrydning af stivelse fra fx majs eller hvede. E 965(i) er maltitol med høj renhed, mens E 965(ii) maltitolsirup er en blanding af maltitol, sorbitol og højere hydrogenerede sukkerarter. Maltitol er ca. 75-90 % så sødt som sukker. Den giver 2,4 kcal/g efter EU's regler, men optages langsomt og delvist og kan derfor påvirke blodsukkeret mere end andre polyoler. Ud over sødemiddel bruges den som fugtighedsbevarende middel, stabilisator og fyldstof.",
+  "uses": "Sukkerfri chokolade, bolsjer, tyggegummi, bagværk og is. Polyoler er i EU tilladt quantum satis i en række kategorier, typisk energireducerede produkter eller produkter uden tilsat sukker.",
+  "health": "Maltitol har et højere glykæmisk indeks end de fleste andre polyoler (ca. 35 for pulver og ca. 52 for sirup), hvilket diabetikere bør være opmærksomme på. Større mængder kan give oppustethed, mavekneb og diarré; tolerancen varierer, men afførende virkning ses typisk ved 30-50 g om dagen. I EU skal fødevarer med mere end 10 % tilsatte polyoler mærkes med 'overdreven indtagelse kan have en afførende virkning'. JECFA har ikke fastsat en numerisk ADI ('not specified').",
+  "research": "EFSA udtalte sig i 2006 om en ny produktionsproces for maltitolsirup (E 965(ii)) og konkluderede, at produktet svarer til den eksisterende specifikation, hvorefter definitionen blev udvidet. JECFA har tildelt ADI 'not specified'. Kliniske studier af mave-tarm-tolerance viser dosisafhængige gener. Maltitol er sammen med øvrige polyoler omfattet af EFSA's igangværende gen-evaluering af sødestoffer.",
+  "keyReferences": [],
+  "pubmedTerm": "maltitol",
+  "flags": [
+   "laxative"
+  ],
+  "classes": [
+   "emulsifier",
+   "humectant",
+   "stabiliser",
+   "sweetener",
+   "thickener"
+  ],
+  "variants": [
+   {
+    "code": "E965(i)",
+    "nameDa": "D-Maltitol",
+    "nameEn": "D-Maltitol"
+   },
+   {
+    "code": "E965(ii)",
+    "nameDa": "Maltitolsirup",
+    "nameEn": "Maltitol syrup"
+   }
+  ],
+  "efsa": {
+   "title": "Opinion of the Scientific Panel on Food Additives, Flavourings, Processing Aids and Materials in Contact with Food on a request from the Commission related to Maltitol Syrup E 965(ii) new production process. Change of specification",
+   "url": "https://doi.org/10.2903/j.efsa.2006.354",
+   "date": "2006-05-18",
+   "adi": "",
+   "overexposureRisk": ""
+  },
+  "verification": {
+   "status": "corrected",
+   "sources": [
+    "https://en.wikipedia.org/wiki/Maltitol",
+    "https://food.ec.europa.eu/system/files/2020-12/sci-com_scf_out48_en.pdf",
+    "https://www.sciencedirect.com/topics/agricultural-and-biological-sciences/maltitol",
+    "https://polyols-eu.org/legislation/food/",
+    "https://pubmed.ncbi.nlm.nih.gov/12548293/",
+    "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2023.8430",
+    "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2006.354",
+    "https://www.efsa.europa.eu/sites/default/files/2026-07/Annex%20II_10.1%20Update%20on%20the%20re-evaluation%20of%20sweeteners_%201-2%20July%202026.pdf"
+   ],
+   "notes": "Bekræftet: hydrogenering af maltose fra stivelse (majs/hvede), E 965(i)/(ii), ca. 75-90 % sødme, 2,4 kcal/g, langsom/delvis optagelse og højere glykæmisk indeks end de fleste polyoler (pulver ca. 35, sirup ca. 52), funktioner som sødemiddel, fugtighedsbevarende middel, stabilisator og fyldstof, afførende virkning ved ca. 30-50 g/dag, mærkningskrav, JECFA ADI 'not specified', EFSA 2006 (ny produktionsproces, specifikation ændret), EFSA's gen-evaluering i gang. Rettet: EFSA 2006 konkluderede, at produktet svarer til den eksisterende specifikation, og definitionen blev udvidet. Fjernet: glutenudsagn (ingen EU-kilde fundet), kartoffelstivelse, 'ikke i drikkevarer', konkret anvendelsesliste (lakrids, proteinbarer, syltetøj), 'én portion frem for fordelt'."
+  },
+  "wikipedia": "https://en.wikipedia.org/wiki/Maltitol",
+  "wikidata": "Q423882",
+  "claims": [
+   {
+    "claim": "Fremstilles ved hydrogenering af maltose fra enzymatisk nedbrudt stivelse (majs eller hvede)",
+    "source": "https://en.wikipedia.org/wiki/Maltitol",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "E 965(i) maltitol; E 965(ii) maltitolsirup (blanding med sorbitol og højere hydrogenerede sukre)",
+    "source": "https://food.ec.europa.eu/system/files/2020-12/sci-com_scf_out48_en.pdf",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Ca. 75-90 % så sød som sukker",
+    "source": "https://www.sciencedirect.com/topics/agricultural-and-biological-sciences/maltitol",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Polyoler: 2,4 kcal/g efter EU's regler (forordning 1169/2011)",
+    "source": "https://polyols-eu.org/legislation/food/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Optages langsomt/delvist; højere glykæmisk indeks end de fleste polyoler (pulver ca. 35, sirup ca. 52)",
+    "source": "https://www.sciencedirect.com/topics/agricultural-and-biological-sciences/maltitol",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Funktioner: sødemiddel, fyldstof, fugtighedsbevarende middel, stabilisator",
+    "source": "https://en.wikipedia.org/wiki/Maltitol",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Bruges i sukkerfri chokolade, bolsjer, tyggegummi, bagværk og is",
+    "source": "https://www.sciencedirect.com/topics/agricultural-and-biological-sciences/maltitol",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Lakrids, proteinbarer, syltetøj; 'ikke i drikkevarer'",
+    "source": "https://www.sciencedirect.com/topics/agricultural-and-biological-sciences/maltitol",
+    "result": "fjernet"
+   },
+   {
+    "claim": "Afførende virkning ved ca. 30-50 g/dag; tolerance varierer",
+    "source": "https://pubmed.ncbi.nlm.nih.gov/12548293/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Fødevarer med >10 % tilsatte polyoler skal mærkes 'overdreven indtagelse kan have en afførende virkning'",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2023.8430",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "JECFA ADI 'not specified'",
+    "source": "https://food.ec.europa.eu/system/files/2020-12/sci-com_scf_out48_en.pdf",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Glutenindhold ikke et problem",
+    "source": "https://en.wikipedia.org/wiki/Maltitol",
+    "result": "fjernet"
+   },
+   {
+    "claim": "EFSA 2006: maltitolsirup fra ny produktionsproces svarer til eksisterende specifikation; definitionen udvidet",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2006.354",
+    "result": "rettet"
+   },
+   {
+    "claim": "Dosisafhængige gener i tolerancestudier",
+    "source": "https://pubmed.ncbi.nlm.nih.gov/12548293/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Omfattet af EFSA's igangværende gen-evaluering af polyoler",
+    "source": "https://www.efsa.europa.eu/sites/default/files/2026-07/Annex%20II_10.1%20Update%20on%20the%20re-evaluation%20of%20sweeteners_%201-2%20July%202026.pdf",
+    "result": "bekræftet"
+   }
+  ]
+ },
+ {
+  "code": "E966",
+  "nameDa": "Lactitol",
+  "nameEn": "Lactitol",
+  "category": "Sødemiddel",
+  "euStatus": "approved",
+  "origin": "synthetic",
+  "summary": "En sukkeralkohol fremstillet af mælkesukker (lactose). Den er ca. 30-40 % så sød som sukker.",
+  "description": "Lactitol (4-O-β-galactopyranosyl-D-glucitol) fremstilles ved katalytisk hydrogenering af lactose (mælkesukker). Det er en disaccharid-polyol, som næsten ikke optages i tyndtarmen, men fermenteres af bakterier i tyktarmen og derfor kan virke prebiotisk og afførende. Den er ca. 30-40 % så sød som sukker. Lactitol anvendes også som lægemiddel mod forstoppelse og ved hepatisk encephalopati.",
+  "uses": "Bruges som sødemiddel og fyldstof i sukkerfri og sukkerreducerede produkter. Polyoler er i EU tilladt quantum satis i en række kategorier, typisk energireducerede produkter eller produkter uden tilsat sukker.",
+  "health": "Stoffet har afførende virkning i større doser og kan give luft og oppustethed. I EU skal fødevarer med mere end 10 % tilsatte polyoler mærkes med 'overdreven indtagelse kan have en afførende virkning'. JECFA har tildelt ADI 'not specified'. Lactitol indeholder ikke intakt lactose, men stammer fra mælk. Det påvirker blodsukker og insulin meget lidt.",
+  "research": "JECFA vurderede lactitol i 1983 og tildelte ADI 'not specified'. Kliniske studier (bl.a. på lactitol som laksantium og ved hepatisk encephalopati, hvor en metaanalyse fandt samme effekt som lactulose) dokumenterer den afførende effekt, og lactitol øger bifidobakterier i tarmen. Stoffet indgår i EFSA's løbende gen-evaluering af sødestoffer.",
+  "keyReferences": [],
+  "pubmedTerm": "lactitol",
+  "flags": [
+   "laxative"
+  ],
+  "classes": [
+   "emulsifier",
+   "sweetener",
+   "thickener"
+  ],
+  "variants": [],
+  "efsa": null,
+  "verification": {
+   "status": "corrected",
+   "sources": [
+    "https://en.wikipedia.org/wiki/Lactitol",
+    "https://polyols.org/learn-the-label/lactitol/",
+    "https://pubmed.ncbi.nlm.nih.gov/1531204/",
+    "https://polyols-eu.org/legislation/food/",
+    "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2023.8430",
+    "https://www.fao.org/fileadmin/user_upload/jecfa_additives/docs/Monograph1/Additive-249.pdf",
+    "https://www.efsa.europa.eu/sites/default/files/2026-07/Annex%20II_10.1%20Update%20on%20the%20re-evaluation%20of%20sweeteners_%201-2%20July%202026.pdf"
+   ],
+   "notes": "Bekræftet: katalytisk hydrogenering af lactose, 30-40 % sødme, fermentering i tyktarmen med øgning af bifidobakterier, afførende virkning og brug som laksantium mod forstoppelse, brug ved hepatisk encephalopati (sammenlignelig med lactulose i metaanalyse), minimal effekt på blodsukker/insulin, ingen intakt lactose, JECFA ADI 'not specified' (1983), mærkningskrav, EFSA's gen-evaluering i gang. Rettet: 'lactose fra valle' ændret til lactose; JECFA-år tilføjet. Fjernet: ubelagt anvendelsesliste og 'ikke drikkevarer', 'kombineres ofte med intense sødestoffer'."
+  },
+  "wikipedia": "",
+  "wikidata": "Q415020",
+  "claims": [
+   {
+    "claim": "Fremstilles ved katalytisk hydrogenering af lactose",
+    "source": "https://en.wikipedia.org/wiki/Lactitol",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Ca. 30-40 % så sød som sukker",
+    "source": "https://en.wikipedia.org/wiki/Lactitol",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Optages næppe i tyndtarmen; fermenteres i tyktarmen; øger bifidobakterier (prebiotisk)",
+    "source": "https://polyols.org/learn-the-label/lactitol/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Anvendes som laksantium mod forstoppelse",
+    "source": "https://en.wikipedia.org/wiki/Lactitol",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Anvendes ved hepatisk encephalopati (sammenlignelig effekt med lactulose)",
+    "source": "https://pubmed.ncbi.nlm.nih.gov/1531204/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Kombineres ofte med intense sødestoffer; konkret anvendelsesliste",
+    "source": "https://polyols.org/learn-the-label/lactitol/",
+    "result": "fjernet"
+   },
+   {
+    "claim": "Polyoler: 2,4 kcal/g efter EU's regler (forordning 1169/2011)",
+    "source": "https://polyols-eu.org/legislation/food/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Fødevarer med >10 % tilsatte polyoler skal mærkes 'overdreven indtagelse kan have en afførende virkning'",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2023.8430",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Påvirker blodsukker og insulin minimalt",
+    "source": "https://polyols.org/learn-the-label/lactitol/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Indeholder ikke intakt lactose, men stammer fra mælk",
+    "source": "https://polyols.org/learn-the-label/lactitol/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "JECFA ADI 'not specified' (1983)",
+    "source": "https://www.fao.org/fileadmin/user_upload/jecfa_additives/docs/Monograph1/Additive-249.pdf",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Indgår i EFSA's igangværende gen-evaluering",
+    "source": "https://www.efsa.europa.eu/sites/default/files/2026-07/Annex%20II_10.1%20Update%20on%20the%20re-evaluation%20of%20sweeteners_%201-2%20July%202026.pdf",
+    "result": "bekræftet"
+   }
+  ]
+ },
+ {
+  "code": "E967",
+  "nameDa": "Xylitol",
+  "nameEn": "Xylitol",
+  "category": "Sødemiddel",
+  "euStatus": "approved",
+  "origin": "nature_identical",
+  "summary": "En sukkeralkohol, der er lige så sød som sukker og kendt fra tandvenligt tyggegummi.",
+  "description": "Xylitol er en polyol med fem kulstofatomer, som findes naturligt i små mængder i frugt og grøntsager. Industrielt fremstilles det ved at hydrolysere xylan fra fx birketræ eller majskolber til xylose, som derefter hydrogeneres til xylitol. Det har omtrent samme sødme som sukker og giver en kølende fornemmelse i munden. Plakbakterier som Streptococcus mutans kan ikke omsætte det til syre, hvilket gør det tandvenligt. Det giver 2,4 kcal/g efter EU's regler.",
+  "uses": "Særligt tyggegummi og pastiller (ofte med tandvenlige anprisninger) samt sukkerfri slik. Polyoler er i EU tilladt quantum satis i en række kategorier, typisk energireducerede produkter eller produkter uden tilsat sukker.",
+  "health": "Større indtag kan give diarré og mavegener. I EU skal fødevarer med mere end 10 % tilsatte polyoler mærkes med 'overdreven indtagelse kan have en afførende virkning'. Xylitol er meget giftigt for hunde, selv i små mængder, så produkter skal holdes væk fra kæledyr. Et studie fra 2024 (Witkowski et al.) har rejst spørgsmål om en sammenhæng mellem høje blodniveauer af xylitol og hjerte-kar-hændelser; observationsdelen kan ikke påvise årsagssammenhæng.",
+  "research": "EFSA har vurderet sundhedsanprisninger om, at tyggegummi sødet med xylitol bidrager til at bevare tændernes mineralisering, og Turku-sukkerstudierne i Finland i 1970'erne viste mindre caries. Cochrane-gennemgangen (2015) vurderede dog evidensen for caries-forebyggelse som af lav til meget lav kvalitet. Et studie fra Cleveland Clinic (Witkowski et al., Eur Heart J 2024) fandt sammenhæng mellem xylitolniveauer i blodet og hjerte-kar-risiko samt øget blodpladeaktivering efter indtag; observationsdata kræver bekræftelse. Stoffet indgår i EFSA's gen-evaluering af sødestoffer, som endnu ikke er afsluttet for xylitol.",
+  "keyReferences": [
+   {
+    "citation": "Witkowski M, Nemet I, Li XS, et al. Xylitol is prothrombotic and associated with cardiovascular risk. Eur Heart J. 2024;45(27):2439-2452.",
+    "searchTitle": "Xylitol is prothrombotic and associated with cardiovascular risk"
+   }
+  ],
+  "pubmedTerm": "xylitol",
+  "flags": [
+   "laxative"
+  ],
+  "classes": [
+   "emulsifier",
+   "humectant",
+   "stabiliser",
+   "sweetener",
+   "thickener"
+  ],
+  "variants": [],
+  "efsa": null,
+  "verification": {
+   "status": "corrected",
+   "sources": [
+    "https://ific.org/resources/articles/what-is-xylitol/",
+    "https://www.sciencedirect.com/topics/engineering/xylitol-production",
+    "https://pubmed.ncbi.nlm.nih.gov/7607748/",
+    "https://polyols-eu.org/legislation/food/",
+    "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2011.2266",
+    "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2023.8430",
+    "https://www.merckvetmanual.com/toxicology/food-hazards/xylitol-toxicosis-in-dogs",
+    "https://www.tandfonline.com/doi/abs/10.3109/00016357608997711",
+    "https://www.cochranelibrary.com/cdsr/doi/10.1002/14651858.CD010743.pub2/abstract",
+    "https://academic.oup.com/eurheartj/article/45/27/2439/7683453",
+    "https://www.efsa.europa.eu/sites/default/files/2026-07/Annex%20II_10.1%20Update%20on%20the%20re-evaluation%20of%20sweeteners_%201-2%20July%202026.pdf"
+   ],
+   "notes": "Bekræftet: findes naturligt i små mængder i frugt og grøntsager, fremstilling ved hydrolyse af xylan (birk, majskolber) til xylose og hydrogenering, sødme som sukker, kølende fornemmelse, plakbakterier kan ikke fermentere det til syre, 2,4 kcal/g, giftig for hunde selv i små mængder, mærkningskrav, EFSA-anprisning for tyggegummi med xylitol, Turku-studierne, Cochrane (lav evidens), Witkowski 2024. Rettet: 'findes i træ' ændret til frugt/grøntsager; Witkowski 2024 beskrevet som observations- plus mekanistiske data. Fjernet: 'fermenteringsbaserede processer' (kun patenter), 'tandpasta/birkesukker' og konkret anvendelsesliste, 'især børn', 'endnu ikke afsluttet'-formulering bevaret via EFSA-kilde."
+  },
+  "wikipedia": "https://en.wikipedia.org/wiki/Xylitol",
+  "wikidata": "Q212093",
+  "claims": [
+   {
+    "claim": "Findes naturligt i små mængder i frugt og grøntsager",
+    "source": "https://ific.org/resources/articles/what-is-xylitol/",
+    "result": "rettet"
+   },
+   {
+    "claim": "Fremstilles ved hydrolyse af xylan (fx birk, majskolber) til xylose, som hydrogeneres",
+    "source": "https://www.sciencedirect.com/topics/engineering/xylitol-production",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Fermenteringsbaserede processer anvendes industrielt",
+    "source": "https://www.sciencedirect.com/topics/engineering/xylitol-production",
+    "result": "fjernet"
+   },
+   {
+    "claim": "Sødme som sukker; kølende fornemmelse",
+    "source": "https://www.sciencedirect.com/topics/engineering/xylitol-production",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Plakbakterier (S. mutans) kan ikke fermentere xylitol til syre",
+    "source": "https://pubmed.ncbi.nlm.nih.gov/7607748/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Polyoler: 2,4 kcal/g efter EU's regler (forordning 1169/2011)",
+    "source": "https://polyols-eu.org/legislation/food/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Konkret anvendelsesliste (tandpasta, birkesukker, chokolade)",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2011.2266",
+    "result": "fjernet"
+   },
+   {
+    "claim": "Fødevarer med >10 % tilsatte polyoler skal mærkes 'overdreven indtagelse kan have en afførende virkning'",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2023.8430",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Meget giftigt for hunde selv i små mængder",
+    "source": "https://www.merckvetmanual.com/toxicology/food-hazards/xylitol-toxicosis-in-dogs",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "EFSA: tyggegummi sødet med xylitol – anprisning om vedligeholdelse af tændernes mineralisering",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2011.2266",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Turku-sukkerstudierne (1970'erne) viste mindre caries",
+    "source": "https://www.tandfonline.com/doi/abs/10.3109/00016357608997711",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Cochrane (2015): evidensen er af lav til meget lav kvalitet",
+    "source": "https://www.cochranelibrary.com/cdsr/doi/10.1002/14651858.CD010743.pub2/abstract",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Witkowski et al., Eur Heart J 2024: sammenhæng med hjerte-kar-hændelser og øget blodpladereaktivitet",
+    "source": "https://academic.oup.com/eurheartj/article/45/27/2439/7683453",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Indgår i EFSA's igangværende gen-evaluering af polyoler",
+    "source": "https://www.efsa.europa.eu/sites/default/files/2026-07/Annex%20II_10.1%20Update%20on%20the%20re-evaluation%20of%20sweeteners_%201-2%20July%202026.pdf",
+    "result": "bekræftet"
+   }
+  ]
+ },
+ {
+  "code": "E968",
+  "nameDa": "Erythritol",
+  "nameEn": "Erythritol",
+  "category": "Sødemiddel",
+  "euStatus": "approved",
+  "origin": "nature_identical",
+  "summary": "En sukkeralkohol, der næsten ikke giver kalorier og er ca. 60-70 % så sød som sukker. Den tåles bedre i maven end andre polyoler.",
+  "description": "Erythritol er en polyol med fire kulstofatomer, som findes naturligt i fx melon, pærer, druer og svampe. Industrielt fremstilles det ved fermentering af glucose med gæren Moniliella pollinis, hvorefter det renses og krystalliseres. Det er ca. 60-70 % så sødt som sukker. Størstedelen (60-90 %) optages i tyndtarmen og udskilles uomdannet med urinen, og den resterende del fermenteres ikke af tarmbakterierne, så det giver praktisk talt ingen energi (0 kcal/g efter EU's regler).",
+  "uses": "Bruges som sødemiddel og fyldstof, ofte sammen med intense sødestoffer. Polyoler er i EU tilladt quantum satis i en række kategorier, typisk energireducerede produkter eller produkter uden tilsat sukker.",
+  "health": "EFSA's gen-evaluering fra 2023 (DOI 10.2903/j.efsa.2023.8430) fastsatte en ADI på 0,5 g/kg legemsvægt/dag baseret på den afførende virkning og konkluderede, at eksponeringsestimaterne for både akut og kronisk indtag lå over ADI, så personer med højt indtag kan få gener. I EU skal fødevarer med mere end 10 % tilsatte polyoler mærkes med 'overdreven indtagelse kan have en afførende virkning'. Et studie fra 2023 (Witkowski et al.) fandt sammenhæng mellem høje erythritolniveauer i blodet og hjerte-kar-hændelser, men årsagssammenhæng er ikke påvist.",
+  "research": "EFSA vurderede i 2010 erythritol i drikkevarer på baggrund af et nyt pædiatrisk studie om mave-tarm-tolerance og konkluderede, at der var en sikkerhedsbekymring ved brug i drikkevarer på 2,5 %, fordi sikkerhedsmarginen var for lav til at beskytte børn. EFSA's gen-evaluering 2023 fastsatte ADI på 0,5 g/kg – første gang en ADI er baseret på en umiddelbar effekt som diarré. Witkowski et al. (Nature Medicine 2023) fandt, at høje plasmaniveauer var forbundet med øget risiko for hjerteanfald og slagtilfælde samt øget blodpladeaktivering i laboratorieforsøg; da kroppen også selv danner erythritol, og studiet er observationelt, er fortolkningen omdiskuteret.",
+  "keyReferences": [
+   {
+    "citation": "Witkowski M, Nemet I, Alamri H, et al. The artificial sweetener erythritol and cardiovascular event risk. Nat Med. 2023;29(3):710-718.",
+    "searchTitle": "The artificial sweetener erythritol and cardiovascular event risk"
+   }
+  ],
+  "pubmedTerm": "erythritol",
+  "flags": [
+   "laxative",
+   "children_caution"
+  ],
+  "classes": [
+   "humectant",
+   "sweetener"
+  ],
+  "variants": [],
+  "efsa": {
+   "title": "Re-evaluation of erythritol (E 968) as a food additive",
+   "url": "https://doi.org/10.2903/j.efsa.2023.8430",
+   "date": "2023-12-20",
+   "adi": "500 mg/kg bw/day",
+   "overexposureRisk": "en:high"
+  },
+  "verification": {
+   "status": "corrected",
+   "sources": [
+    "https://en.wikipedia.org/wiki/Erythritol",
+    "https://www.cambridge.org/core/journals/british-journal-of-nutrition/article/human-gut-microbiota-does-not-ferment-erythritol/87A2797F505A71C1E5EA3ADDD2E2A166",
+    "https://polyols-eu.org/legislation/food/",
+    "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2023.8430",
+    "https://efsa.onlinelibrary.wiley.com/doi/pdf/10.2903/j.efsa.2010.1650",
+    "https://www.nature.com/articles/s41591-023-02223-9",
+    "https://www.fda.gov/media/182122/download"
+   ],
+   "notes": "Bekræftet: findes i melon, pærer, svampe m.m., fermentering af glucose med Moniliella pollinis, 60-70 % sødme, størstedelen optages og udskilles uomdannet i urin, fermenteres ikke i tyktarmen, 0 kcal/g, EFSA 2023 ADI 0,5 g/kg baseret på afførende virkning og eksponering over ADI, mærkningskrav, Witkowski 2023 og debat om endogen dannelse. Rettet (vigtigt): EFSA 2010 konkluderede, at der VAR en sikkerhedsbekymring for erythritol i drikkevarer (2,5 %) pga. for lav sikkerhedsmargin for børn – ikke det modsatte; optagelse præciseret til 60-90 %. Fjernet: 'flere interventionsstudier er i gang', 'fermenterede fødevarer', 'hvedestivelse', konkret anvendelsesliste."
+  },
+  "wikipedia": "https://en.wikipedia.org/wiki/Erythritol",
+  "wikidata": "Q421873",
+  "claims": [
+   {
+    "claim": "Findes naturligt i fx melon, pærer, druer og svampe",
+    "source": "https://en.wikipedia.org/wiki/Erythritol",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Fremstilles ved fermentering af glucose med gæren Moniliella pollinis",
+    "source": "https://en.wikipedia.org/wiki/Erythritol",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Ca. 60-70 % så sød som sukker",
+    "source": "https://en.wikipedia.org/wiki/Erythritol",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "60-90 % optages i tyndtarmen og udskilles uomdannet med urinen (ikke 'omkring 90 %')",
+    "source": "https://en.wikipedia.org/wiki/Erythritol",
+    "result": "rettet"
+   },
+   {
+    "claim": "Fermenteres ikke af tarmbakterier i tyktarmen",
+    "source": "https://www.cambridge.org/core/journals/british-journal-of-nutrition/article/human-gut-microbiota-does-not-ferment-erythritol/87A2797F505A71C1E5EA3ADDD2E2A166",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "0 kcal/g efter EU's regler",
+    "source": "https://polyols-eu.org/legislation/food/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Konkret anvendelsesliste",
+    "source": "https://en.wikipedia.org/wiki/Erythritol",
+    "result": "fjernet"
+   },
+   {
+    "claim": "EFSA 2023: ADI 0,5 g/kg baseret på afførende virkning; akut og kronisk eksponering over ADI",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2023.8430",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Fødevarer med >10 % tilsatte polyoler skal mærkes 'overdreven indtagelse kan have en afførende virkning'",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2023.8430",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "EFSA 2010: sikkerhedsbekymring for brug i drikkevarer (2,5 %) pga. for lav sikkerhedsmargin for børn",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/pdf/10.2903/j.efsa.2010.1650",
+    "result": "rettet"
+   },
+   {
+    "claim": "Witkowski et al., Nat Med 2023: høje plasmaniveauer forbundet med hjerte-kar-hændelser; blodpladeaktivering",
+    "source": "https://www.nature.com/articles/s41591-023-02223-9",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Kroppen danner selv erythritol; observationsdata kan ikke påvise årsagssammenhæng",
+    "source": "https://www.fda.gov/media/182122/download",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Flere interventionsstudier er i gang",
+    "source": "https://www.fda.gov/media/182122/download",
+    "result": "fjernet"
+   }
+  ]
+ },
+ {
+  "code": "E969",
+  "nameDa": "Advantam",
+  "nameEn": "Advantame",
+  "category": "Sødemiddel",
+  "euStatus": "approved",
+  "origin": "synthetic",
+  "summary": "Et syntetisk, ekstremt kraftigt sødestof afledt af aspartam. Det er ca. 20.000 gange sødere end sukker.",
+  "description": "Advantam fremstilles kemisk ved at koble aspartam med 3-(3-hydroxy-4-methoxyphenyl)propanal, som selv fremstilles ud fra isovanillin. Strukturen gør det langt sødere end aspartam. Da der bruges meget små mængder, frigøres kun ubetydelige mængder phenylalanin og methanol. Stoffet blev godkendt i EU i 2014.",
+  "uses": "Bruges i meget små mængder som sødemiddel. Der gælder maksimumgrænser pr. fødevarekategori.",
+  "health": "EFSA fastsatte i 2013 en ADI på 5 mg/kg legemsvægt/dag. Mængden af phenylalanin er så lille, at advantam ikke kræver PKU-advarsel. Stoffet optages kun i ringe grad (ca. 8 %) og udskilles hovedsageligt med afføringen.",
+  "research": "EFSA's ANS-panel vurderede advantam i 2013, fandt ingen bekymring for genotoksicitet eller kræftfremkaldende effekt og baserede ADI på en NOAEL på 500 mg/kg for maternel toksicitet i et kaninstudie. JECFA fastsatte ligeledes en ADI på 0-5 mg/kg.",
+  "keyReferences": [],
+  "pubmedTerm": "advantame",
+  "flags": [],
+  "classes": [
+   "sweetener"
+  ],
+  "variants": [],
+  "efsa": {
+   "title": "Scientific Opinion on the safety of advantame for the proposed uses as a food additive",
+   "url": "https://doi.org/10.2903/j.efsa.2013.3301",
+   "date": "2013",
+   "adi": "5 mg/kg bw/day",
+   "overexposureRisk": ""
+  },
+  "verification": {
+   "status": "corrected",
+   "sources": [
+    "https://openknowledge.fao.org/server/api/core/bitstreams/8138976b-8986-4364-bd68-fa16ba530aee/content",
+    "https://www.federalregister.gov/documents/2014/05/21/2014-11584/food-additives-permitted-for-direct-addition-to-food-for-human-consumption-advantame",
+    "https://academic.oup.com/ijfst/article/61/2/vvag132/8715453",
+    "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=celex%3A32014R0497",
+    "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2013.3301",
+    "https://apps.who.int/food-additives-contaminants-jecfa-database/Home/Chemical/6181"
+   ],
+   "notes": "Bekræftet: fremstilling ved N-alkylering af aspartam med HMPA, som fremstilles fra isovanillin; ca. 20.000 gange sødere; ubetydelig phenylalanin og methanol; godkendt i EU 2014 (forordning 497/2014); ingen PKU-mærkning; EFSA 2013 ADI 5 mg/kg (NOAEL 500 mg/kg fra kaninstudie), ikke genotoksisk/kræftfremkaldende; JECFA 0-5 mg/kg; ca. 8 % biotilgængelighed og udskillelse hovedsageligt med afføringen. Rettet: sødme 20.000 (ikke 20.000-37.000); kemi præciseret; reproduktionstoksicitet ændret til, at ADI bygger på maternel toksicitet i kaninstudie. Fjernet: 'langvarig sødme', 'smagsforstærker', 'sjælden i danske produkter', 'ikke genstand for særlig debat', konkret anvendelsesliste."
+  },
+  "wikipedia": "",
+  "wikidata": "",
+  "claims": [
+   {
+    "claim": "Fremstilles ved N-alkylering af aspartam med 3-(3-hydroxy-4-methoxyphenyl)propanal, fremstillet ud fra isovanillin",
+    "source": "https://openknowledge.fao.org/server/api/core/bitstreams/8138976b-8986-4364-bd68-fa16ba530aee/content",
+    "result": "rettet"
+   },
+   {
+    "claim": "Ca. 20.000 gange sødere end sukker (ikke 20.000-37.000)",
+    "source": "https://openknowledge.fao.org/server/api/core/bitstreams/8138976b-8986-4364-bd68-fa16ba530aee/content",
+    "result": "rettet"
+   },
+   {
+    "claim": "Kun ubetydelige mængder phenylalanin og methanol frigøres",
+    "source": "https://www.federalregister.gov/documents/2014/05/21/2014-11584/food-additives-permitted-for-direct-addition-to-food-for-human-consumption-advantame",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Langvarig sødme; smagsforstærker",
+    "source": "https://academic.oup.com/ijfst/article/61/2/vvag132/8715453",
+    "result": "fjernet"
+   },
+   {
+    "claim": "Godkendt i EU i 2014 (forordning (EU) nr. 497/2014)",
+    "source": "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=celex%3A32014R0497",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Kræver ikke PKU-advarsel",
+    "source": "https://academic.oup.com/ijfst/article/61/2/vvag132/8715453",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Konkret anvendelsesliste; sjælden i danske produkter",
+    "source": "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=celex%3A32014R0497",
+    "result": "fjernet"
+   },
+   {
+    "claim": "EFSA 2013: ADI 5 mg/kg (NOAEL 500 mg/kg, maternel toksicitet i kaninstudie); ikke genotoksisk eller kræftfremkaldende",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2013.3301",
+    "result": "rettet"
+   },
+   {
+    "claim": "JECFA ADI 0-5 mg/kg",
+    "source": "https://apps.who.int/food-additives-contaminants-jecfa-database/Home/Chemical/6181",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Lav biotilgængelighed (ca. 8 %); udskilles hovedsageligt med afføringen",
+    "source": "https://academic.oup.com/ijfst/article/61/2/vvag132/8715453",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Begrænset uafhængig forskning; ikke genstand for særlig debat",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2013.3301",
+    "result": "fjernet"
+   }
+  ]
+ },
+ {
+  "code": "E999",
+  "nameDa": "Quillaiaekstrakt",
+  "nameEn": "Quillaia extract",
+  "category": "Emulgator / skumdannende middel",
+  "euStatus": "approved",
+  "origin": "natural",
+  "summary": "Et saponinholdigt ekstrakt fra det chilenske sæbebarktræ (Quillaja saponaria). Det bruges især til at give skum i drikkevarer.",
+  "description": "Ekstraktet fremstilles ved vandig ekstraktion af bark eller ved fra Quillaja saponaria, efterfulgt af filtrering og evt. oprensning. Det aktive indhold er triterpen-saponiner (glykosider af quillajasyre), som er overfladeaktive og danner stabilt skum og emulsioner. E 999(i) (type 1) er et uraffineret ekstrakt, mens E 999(ii) (type 2) er renset med højere saponinindhold.",
+  "uses": "Godkendt i smagsatte, ikke-alkoholiske drikkevarer og i cider og perry med højst 200 mg/l beregnet som vandfrit ekstrakt. Med forordning (EU) 2025/2084 er brugen udvidet til kosttilskud (ikke til spædbørn og småbørn).",
+  "health": "EFSA's gen-evaluering fra 2019 fastsatte en ADI på 3 mg saponiner/kg legemsvægt/dag. Saponiner optages dårligt i tarmen. Saponiner kan i laboratorieforsøg nedbryde røde blodlegemer (hæmolyse).",
+  "research": "EFSA's gen-evaluering (2019, DOI 10.2903/j.efsa.2019.5622) konkluderede, at eventuel toksicitet skyldes saponinerne, og baserede ADI på en NOAEL på 1500 mg ekstrakt/kg under antagelse af 20 % saponiner. I en opfølgende udtalelse (2024, DOI 10.2903/j.efsa.2024.8563) anbefalede EFSA lavere grænser for bly, kviksølv og arsen samt nye grænser for cadmium og calciumoxalat og konkluderede, at en foreslået udvidet anvendelse kunne føre til overskridelse af ADI. JECFA har fastsat en gruppe-ADI på 0-1 mg quillaja-saponiner/kg for type 1 og 2. Quillaja-saponiner bruges også som adjuvans i vacciner (fx QS-21), hvilket er et separat forskningsfelt.",
+  "keyReferences": [],
+  "pubmedTerm": "quillaja saponaria extract",
+  "flags": [],
+  "classes": [
+   "emulsifier"
+  ],
+  "variants": [
+   {
+    "code": "E999(i)",
+    "nameDa": "",
+    "nameEn": "Quillaia extract type 1"
+   },
+   {
+    "code": "E999(ii)",
+    "nameDa": "",
+    "nameEn": "Quillaia extract type 2"
+   }
+  ],
+  "efsa": {
+   "title": "Re-evaluation of Quillaia extract (E 999) as a food additive and safety of the proposed extension of use",
+   "url": "https://doi.org/10.2903/j.efsa.2019.5622",
+   "date": "2019-03-06",
+   "adi": "3 mg/kg bw/day (saponiner)",
+   "overexposureRisk": ""
+  },
+  "verification": {
+   "status": "corrected",
+   "sources": [
+    "https://www.fao.org/fileadmin/templates/agns/pdf/jecfa/cta/61/QUILLAIA.pdf",
+    "https://www.fao.org/fileadmin/user_upload/jecfa_additives/docs/monograph16/additive-368-m16.pdf",
+    "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2024.8563",
+    "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=OJ:L_202502084",
+    "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2019.5622",
+    "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4874334/"
+   ],
+   "notes": "Bekræftet: vandig ekstraktion af Quillaja saponaria, triterpen-saponiner, type 1 (urenset) og type 2 (renset) jf. JECFA, godkendt i smagsatte drikkevarer og cider/perry med 200 mg/l beregnet som vandfrit ekstrakt, udvidet til kosttilskud ved forordning (EU) 2025/2084, EFSA 2019 ADI 3 mg saponiner/kg (NOAEL 1500 mg ekstrakt/kg, 20 % saponiner), toksicitet skyldes saponinerne, ringe optagelse, hæmolytisk effekt in vitro, EFSA 2024 (lavere grænser for bly, kviksølv, arsen; nye for cadmium og calciumoxalat; udvidet brug kunne overskride ADI), QS-21 som vaccineadjuvans. Rettet: JECFA-gruppe-ADI 0-1 mg saponiner/kg tilføjet; hæmolyse præciseret. Fjernet: 'ginger beer', 'holde smagsolier opløst', 'irritere slimhinder', 'ingen kendte risikogrupper', 'eksponering under ADI ved normalt indtag'."
+  },
+  "wikipedia": "",
+  "wikidata": "Q118843",
+  "claims": [
+   {
+    "claim": "Fremstilles ved vandig ekstraktion af Quillaja saponaria (bark/ved)",
+    "source": "https://www.fao.org/fileadmin/templates/agns/pdf/jecfa/cta/61/QUILLAIA.pdf",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Indeholder triterpen-saponiner (glykosider af quillajasyre), der danner skum og emulsioner",
+    "source": "https://www.fao.org/fileadmin/templates/agns/pdf/jecfa/cta/61/QUILLAIA.pdf",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Type 1 uraffineret ekstrakt; type 2 renset med højere saponinindhold",
+    "source": "https://www.fao.org/fileadmin/user_upload/jecfa_additives/docs/monograph16/additive-368-m16.pdf",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Holder smagsolier opløst",
+    "source": "https://www.fao.org/fileadmin/templates/agns/pdf/jecfa/cta/61/QUILLAIA.pdf",
+    "result": "fjernet"
+   },
+   {
+    "claim": "Godkendt i smagsatte drikkevarer og cider/perry, 200 mg/l som vandfrit ekstrakt",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2024.8563",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Ginger beer som eksempel",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2024.8563",
+    "result": "fjernet"
+   },
+   {
+    "claim": "Udvidet til kosttilskud (ikke til spædbørn/småbørn) ved forordning (EU) 2025/2084",
+    "source": "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=OJ:L_202502084",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "EFSA 2019: ADI 3 mg saponiner/kg; NOAEL 1500 mg ekstrakt/kg; toksicitet skyldes saponinerne",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2019.5622",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Saponiner optages i ringe grad fra tarmen",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2019.5622",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Saponiner har hæmolytisk effekt på røde blodlegemer (in vitro)",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4874334/",
+    "result": "rettet"
+   },
+   {
+    "claim": "Irriterer slimhinder; eksponering under ADI ved normalt indtag; ingen risikogrupper",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2019.5622",
+    "result": "fjernet"
+   },
+   {
+    "claim": "EFSA 2024: lavere grænser for bly, kviksølv, arsen; nye for cadmium og calciumoxalat; udvidet brug kunne overskride ADI",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2024.8563",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "JECFA gruppe-ADI 0-1 mg saponiner/kg (2005)",
+    "source": "https://www.fao.org/fileadmin/user_upload/jecfa_additives/docs/monograph16/additive-368-m16.pdf",
+    "result": "rettet"
+   },
+   {
+    "claim": "QS-21 fra Quillaja saponaria anvendes som vaccineadjuvans",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4874334/",
+    "result": "bekræftet"
+   }
+  ]
+ },
+ {
+  "code": "E1103",
+  "nameDa": "Invertase",
+  "nameEn": "Invertase",
+  "category": "Stabilisator (enzym)",
+  "euStatus": "approved",
+  "origin": "natural",
+  "summary": "Et enzym, der spalter sukker (saccharose) til glucose og fructose. Det bruges til at gøre fyld flydende i fx chokolader.",
+  "description": "Invertase (β-fructofuranosidase) udvindes typisk fra gær (Saccharomyces cerevisiae). Enzymet hydrolyserer saccharose til invertsukker, en blanding af glucose og fructose. I konfekture tilsættes det til fondantfyld, så fyldet i løbet af et par uger bliver delvist flydende inde i chokoladeovertrækket. Invertase (E 1103) og lysozym (E 1105) er enzymer, der er godkendt som tilsætningsstoffer i EU; de skal overgå til EU-listen over fødevareenzymer, når den bliver vedtaget.",
+  "uses": "Chokolader og konfekture med flydende eller blødt fyld (fx fondantfyld) samt fremstilling af invertsukkersirup.",
+  "health": "JECFA har vurderet invertase fra S. cerevisiae som acceptabelt, med brug begrænset af god fremstillingspraksis. EFSA's enzympanel har ikke fundet sikkerhedsbekymring ved de præparater, der er vurderet.",
+  "research": "Invertase er ikke gen-evalueret som tilsætningsstof, men EFSA's panel for fødevareenzymer har de senere år vurderet flere β-fructofuranosidase-præparater (bl.a. fra ikke-genmodificeret Saccharomyces cerevisiae stamme CNCM I-3399, 2024) og fundet, at de ikke giver anledning til sikkerhedsbekymring under de tilsigtede anvendelser. I 2026 vurderede EFSA desuden ændrede specifikationer for E 1103 med en ny produktionsstamme.",
+  "keyReferences": [
+   {
+    "citation": "EFSA CEP Panel (2024). Safety evaluation of the food enzyme β-fructofuranosidase from the non-genetically modified Saccharomyces cerevisiae strain CNCM I-3399. EFSA Journal 22:e9128.",
+    "searchTitle": "Safety evaluation of the food enzyme β-fructofuranosidase from the non-genetically modified Saccharomyces cerevisiae strain CNCM I-3399"
+   }
+  ],
+  "pubmedTerm": "invertase",
+  "flags": [],
+  "classes": [
+   "stabiliser"
+  ],
+  "variants": [],
+  "efsa": null,
+  "verification": {
+   "status": "corrected",
+   "sources": [
+    "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2024.9128",
+    "https://www.ncbe.reading.ac.uk/invertase/",
+    "https://food.ec.europa.eu/food-safety/food-improvement-agents/enzymes/eu-list-and-applications_en",
+    "https://apps.who.int/food-additives-contaminants-jecfa-database/Home/Chemical/1726",
+    "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2026.10180"
+   ],
+   "notes": "Bekræftet: β-fructofuranosidase fra Saccharomyces cerevisiae, spalter saccharose til glucose og fructose (invertsukker), bruges til at gøre fondantfyld flydende i chokolade over uger, JECFA fandt det acceptabelt (begrænset af god fremstillingspraksis), EFSA CEP 2024 (stamme CNCM I-3399, QPS, ingen bekymring), EFSA 2026 om ændrede specifikationer for E 1103, E 1103/E 1105 skal overgå til EU-listen over fødevareenzymer, som endnu ikke er vedtaget. Rettet: ADI 'not specified' ændret til JECFA's formulering; 'et af de få enzymer' præciseret. Fjernet: 'allergi meget sjælden', 'sukkerindhold ændres ikke', 'ingen risikogrupper', marcipan/sirupper, 'quantum satis'."
+  },
+  "wikipedia": "https://en.wikipedia.org/wiki/Invertase",
+  "wikidata": "Q419189",
+  "claims": [
+   {
+    "claim": "Invertase (β-fructofuranosidase) udvindes typisk fra gær (Saccharomyces cerevisiae)",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2024.9128",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Hydrolyserer saccharose til glucose og fructose (invertsukker)",
+    "source": "https://www.ncbe.reading.ac.uk/invertase/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Tilsættes fondantfyld, som bliver flydende inde i chokoladeovertrækket over uger",
+    "source": "https://www.ncbe.reading.ac.uk/invertase/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "E 1103 og E 1105 er enzymer på tilsætningsstoflisten; overgår til EU-listen over fødevareenzymer, når den vedtages",
+    "source": "https://food.ec.europa.eu/food-safety/food-improvement-agents/enzymes/eu-list-and-applications_en",
+    "result": "rettet"
+   },
+   {
+    "claim": "Marcipan og sirupper; quantum satis",
+    "source": "https://www.ncbe.reading.ac.uk/invertase/",
+    "result": "fjernet"
+   },
+   {
+    "claim": "JECFA: acceptabelt, begrænset af god fremstillingspraksis (i stedet for 'ADI not specified')",
+    "source": "https://apps.who.int/food-additives-contaminants-jecfa-database/Home/Chemical/1726",
+    "result": "rettet"
+   },
+   {
+    "claim": "Allergi meget sjælden; sukkerindhold ændres ikke; ingen risikogrupper",
+    "source": "https://apps.who.int/food-additives-contaminants-jecfa-database/Home/Chemical/1726",
+    "result": "fjernet"
+   },
+   {
+    "claim": "EFSA CEP 2024: β-fructofuranosidase fra ikke-GM S. cerevisiae CNCM I-3399 – ingen sikkerhedsbekymring",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2024.9128",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "EFSA 2026 vurderede ændrede specifikationer for E 1103 (Trichoderma reesei-stamme)",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2026.10180",
+    "result": "bekræftet"
+   }
+  ]
+ },
+ {
+  "code": "E1105",
+  "nameDa": "Lysozym",
+  "nameEn": "Lysozyme",
+  "category": "Konserveringsmiddel",
+  "euStatus": "approved",
+  "origin": "natural",
+  "summary": "Et enzym fra hønseæggehvide, som nedbryder bakteriers cellevægge. Det bruges til at forhindre, at modne oste 'blæser'.",
+  "description": "Lysozym er et lille protein, som findes naturligt i æggehvide, tårer, spyt og modermælk. Kommercielt udvindes det fra hønseæggehvide ved krystallisation og/eller ionbytning. Enzymet spalter peptidoglycan i bakteriers cellevæg og virker især på grampositive bakterier. I ost hæmmer det især Clostridium tyrobutyricum, som ellers giver gasdannelse og revner ('sen blæsning'). Det bruges også i vinproduktion til at kontrollere mælkesyrebakterier.",
+  "uses": "Modnede oste (fx Grana Padano og andre hårde, lagrede oste) og vin. I EU tilladt quantum satis i modnet ost.",
+  "health": "Lysozym stammer fra æg, og produkter med stoffet skal derfor mærkes med æg som allergen. Personer med æggeallergi bør undgå det. EFSA fandt i 2023 ingen sikkerhedsbekymring ud over risikoen for allergiske reaktioner hos æggeallergikere.",
+  "research": "Kommissionen besluttede, at lysozym skal vurderes som fødevareenzym frem for at blive gen-evalueret som tilsætningsstof. EFSA's enzympanel konkluderede i 2023, at lysozym fra hønseæg ikke giver sikkerhedsbekymring under de tilsigtede anvendelser (ost, øl, vin og vineddike), bortset fra risikoen for allergiske reaktioner hos æggeallergikere. JECFA vurderede lysozym i 1992.",
+  "keyReferences": [
+   {
+    "citation": "EFSA CEP Panel (2023). Safety evaluation of the food enzyme lysozyme from hens' eggs. EFSA Journal 21:e07916.",
+    "searchTitle": "Safety evaluation of the food enzyme lysozyme from hens' eggs"
+   }
+  ],
+  "pubmedTerm": "lysozyme",
+  "flags": [
+   "allergen",
+   "animal_origin"
+  ],
+  "classes": [
+   "preservative"
+  ],
+  "variants": [],
+  "efsa": {
+   "title": "Safety evaluation of the food enzyme lysozyme from hens' eggs",
+   "url": "https://doi.org/10.2903/j.efsa.2023.7916",
+   "date": "2023",
+   "adi": "",
+   "overexposureRisk": ""
+  },
+  "verification": {
+   "status": "corrected",
+   "sources": [
+    "https://en.wikipedia.org/wiki/Lysozyme",
+    "https://www.sciencedirect.com/science/article/pii/S2772502224002427",
+    "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC10177814/",
+    "https://wineserver.ucdavis.edu/industry-info/enology/methods-and-techniques/common-chemical-reagents/lysozyme",
+    "https://pmc.ncbi.nlm.nih.gov/articles/PMC6332064/",
+    "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2023.7916",
+    "https://www.inchem.org/documents/jecfa/jecmono/v30je04.htm"
+   ],
+   "notes": "Bekræftet: findes i æggehvide, tårer, spyt og modermælk; udvindes fra hønseæggehvide (krystallisation/ionbytning); spalter peptidoglycan, især virksom mod grampositive bakterier; hæmmer Clostridium tyrobutyricum og 'sen blæsning' i fx Grana Padano; bruges i vin; quantum satis i modnet ost; allergenmærkning som æg; Kommissionens beslutning om vurdering som fødevareenzym; EFSA 2023 (ost, øl, vin, vineddike; allergirisiko for æggeallergikere; ingen øvrig bekymring); JECFA-vurdering 1992. Rettet: 'kontrollere mælkesyrebakterier' i vin bekræftet via UC Davis; JECFA-formulering præciseret. Fjernet: 'helt ufarligt for personer uden æggeallergi' og 'undersøges i andre fødevarer' (ingen kilde)."
+  },
+  "wikipedia": "https://en.wikipedia.org/wiki/Lysozyme",
+  "wikidata": "Q21114915",
+  "claims": [
+   {
+    "claim": "Findes naturligt i æggehvide, tårer, spyt og modermælk",
+    "source": "https://en.wikipedia.org/wiki/Lysozyme",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Udvindes fra hønseæggehvide ved krystallisation og/eller ionbytning",
+    "source": "https://www.sciencedirect.com/science/article/pii/S2772502224002427",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Spalter peptidoglycan i bakteriers cellevæg; mest virksom mod grampositive bakterier",
+    "source": "https://en.wikipedia.org/wiki/Lysozyme",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Hæmmer Clostridium tyrobutyricum, som giver 'sen blæsning' i modne oste (fx Grana Padano)",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC10177814/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Bruges i vinfremstilling til at kontrollere mælkesyrebakterier",
+    "source": "https://wineserver.ucdavis.edu/industry-info/enology/methods-and-techniques/common-chemical-reagents/lysozyme",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Tilladt quantum satis i modnet ost",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC10177814/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Skal mærkes med æg som allergen; personer med æggeallergi bør undgå det",
+    "source": "https://pmc.ncbi.nlm.nih.gov/articles/PMC6332064/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Kommissionen besluttede at vurdere lysozym som fødevareenzym frem for gen-evaluering som tilsætningsstof",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2023.7916",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "EFSA 2023: ingen sikkerhedsbekymring (ost, øl, vin, vineddike) bortset fra allergirisiko for æggeallergikere",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2023.7916",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "JECFA vurderede lysozym(hydrochlorid) i 1992",
+    "source": "https://www.inchem.org/documents/jecfa/jecmono/v30je04.htm",
+    "result": "rettet"
+   },
+   {
+    "claim": "'Helt ufarligt' for personer uden æggeallergi; undersøges i andre fødevarer",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2023.7916",
+    "result": "fjernet"
+   }
+  ]
+ }
+]

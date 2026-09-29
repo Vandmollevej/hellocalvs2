@@ -1,5 +1,6 @@
 import { useEffect, useState, useSyncExternalStore } from "react";
 import {
+  IconActivity,
   IconCalendarHeart,
   IconCamera,
   IconMicrophone,
@@ -22,6 +23,7 @@ export type AddActionKey =
   | "search"
   | "weight"
   | "water"
+  | "activity"
   | "camera"
   | "targetWeight"
   | "bodyMeasurements"
@@ -79,6 +81,12 @@ export const ADD_ACTIONS: AddAction[] = [
     href: "/water/create",
     icon: IconWaterGlass,
     labelKey: "addButton.water",
+  },
+  {
+    key: "activity",
+    href: "/activity/create",
+    icon: IconActivity,
+    labelKey: "addButton.activity",
   },
   {
     key: "camera",

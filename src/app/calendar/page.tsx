@@ -208,7 +208,7 @@ const HOUR_MARKS = Array.from({ length: 25 }, (_, hour) => hour);
 // Dagvisningens tidskolonne: smal, med tallene centreret (lige meget luft på
 // begge sider) — "Kl."-overskriften bruger samme bredde, så de flugter.
 const DAY_TIME_GUTTER_WIDTH = 32;
-const ADD_BAR_HOLD_MS = 1000;
+const ADD_BAR_HOLD_MS = 500;
 const ADD_BAR_MOVE_TOLERANCE = 10;
 const MOVE_ENTRY_HOLD_MS = 500;
 const MOVE_ENTRY_MOVE_TOLERANCE = 10;
@@ -304,7 +304,7 @@ export default function CalendarPage() {
   const [visibleDate, setVisibleDate] = useState(() => new Date(today));
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const defaultView = useDefaultCalendarView();
-  const [view, setView] = useState<CalendarView>(defaultView);
+  const [view, setView] = useState<CalendarView>(defaultView === "day" ? "month" : defaultView);
   const appliedDefaultView = useRef(false);
   // Settings → Visning → Kalendervisning determines only the INITIAL view on
   // load (useState above already SSR-safely defaults to "month" before the
@@ -313,8 +313,11 @@ export default function CalendarPage() {
   useEffect(() => {
     if (appliedDefaultView.current) return;
     appliedDefaultView.current = true;
-    setView(defaultView);
-  }, [defaultView]);
+    // "Dag" opens today's full-screen day view (DayDetails) over the month view.
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- localStorage-præferencen findes først efter hydrering
+    if (defaultView === "day") setSelectedDate(new Date(today));
+    else setView(defaultView);
+  }, [defaultView, today]);
   const [monthMenuOpen, setMonthMenuOpen] = useState(false);
   const [viewMenuOpen, setViewMenuOpen] = useState(false);
   const [slideDirection, setSlideDirection] = useState<"next" | "previous">("next");
@@ -1959,9 +1962,15 @@ function DayDetails({
       </div>
       {sleepRating !== null && (
         <div className="px-4 pt-4">
-          <p className="hf-type-body hf-type-strong rounded-lg bg-hf-black px-4 py-2 text-center text-hf-white">
-            {t("sleepQuality.calendarBar", { rating: sleepRating })}
-          </p>
+          <div className="relative rounded-lg bg-hf-black px-4 py-2 text-center text-hf-white">
+            <Link
+              href="/statistics/sleep"
+              className="hf-type-small absolute inset-y-0 left-4 flex items-center text-hf-white no-underline"
+            >
+              {t("sleepStats.calendarLink")}
+            </Link>
+            <p className="hf-type-body hf-type-strong">{t("sleepQuality.calendarBar", { rating: sleepRating })}</p>
+          </div>
         </div>
       )}
       <div
@@ -2012,6 +2021,7 @@ function DayDetails({
               onPointerMove={handleTimelinePointerMove}
               onPointerUp={handleTimelinePointerEnd}
               onPointerCancel={handleTimelinePointerEnd}
+              onScroll={() => setAddBarHour(null)}
             >
               <div className="relative" style={{ height: timelineHeight, marginLeft: DAY_TIME_GUTTER_WIDTH }}>
                 <div

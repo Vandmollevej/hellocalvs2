@@ -337,7 +337,8 @@
     "intro": "Vælg hvilken visning kalenderen skal åbne i som standard.",
     "optionMonth": "Månedsvisning",
     "optionWeek": "Ugevisning",
-    "optionList": "Listevisning"
+    "optionList": "Listevisning",
+    "optionDay": "Dagsvisning"
   },
   "displaySettings": {
     "title": "Anbefalede grænser",
@@ -352,13 +353,13 @@
     "toggleDescription": "Første gang du åbner appen hver dag, bliver du bedt om at vurdere nattens søvn fra 1 til 5. Vurderingen vises på dagen i kalenderen og i statistikken."
   },
   "sleepQuality": {
-    "question": "Hvordan oplever du at din nat har været?",
+    "question": "Hvordan har du oplevet din søvnkvalitet?",
     "close": "Luk",
     "disable": "Slå fra",
     "ratingAriaLabel": "Vurdér nattens søvn til {rating} af 5",
     "infoAriaLabel": "Hvad bruges det til?",
-    "info": "Vurdér hvordan du har sovet i nat — 1 er meget dårligt og 5 er rigtig godt. Når der er samlet nok data, kan du se din søvnkvalitet i forhold til dit kalorieindtag og eventuelle ændringer i din kost.",
-    "calendarBar": "Søvnkvalitet: {rating} af 5"
+    "info": "Vurdér hvordan du har sovet i nat — 1 er meget dårligt og 5 er rigtig godt. Når der er samlet nok data, kan du se din oplevede søvnkvalitet i forhold til dit kalorieindtag og eventuelle ændringer i din kost.",
+    "calendarBar": "Oplevet søvnkvalitet: {rating} af 5"
   },
   "menstrualCycleSettings": {
     "intro": "Log din menstruationscyklus og få den som en mulighed i tilføj-menuen.",
@@ -1105,6 +1106,7 @@
       "notifications": "Kommunikation",
       "reportBug": "Har du fundet en fejl?",
       "recipes": "Opskrifter",
+      "knowledge": "Viden om",
       "settings": "Indstillinger"
     },
     "changePasswordButton": "Skift adgangskode",
@@ -1720,8 +1722,8 @@
     "weight": "Vægt",
     "trendWeight": "Trendvægt (AI-estimat)",
     "caloriesAndWeightChart": "Kalorier og vægt",
-    "sleepQuality": "Søvnkvalitet",
-    "sleepQualityChart": "Søvnkvalitet og kalorier"
+    "sleepQuality": "Oplevet søvnkvalitet",
+    "sleepQualityChart": "Oplevet søvnkvalitet og kalorier"
   },
   "statUnusedCards": {
     "title": "Tilføj til statistik",
@@ -1809,6 +1811,24 @@
       "micCouldNotStart": "Mikrofonen kunne ikke startes. Prøv igen."
     }
   },
+  "activity": {
+    "title": "Aktivitet",
+    "searchPlaceholder": "Søg efter aktivitet",
+    "addManual": "Tilføj \"{name}\" som aktivitet",
+    "pending": "afventer godkendelse",
+    "spikeTitle": "Du har {day} forbrændt {kcal} ekstra kalorier. Hvad foretog du dig?",
+    "spikeHint": "Pulsen var op til {peak} (hvilepuls {rest}) i {minutes} min.",
+    "spikeQuestion": "Vælg aktivitet",
+    "today": "i dag",
+    "skip": "Spring over",
+    "change": "skift",
+    "startedAt": "Starttidspunkt",
+    "minutes": "Varighed (minutter)",
+    "kcal": "Forbrændte kalorier",
+    "save": "Gem aktivitet",
+    "invalid": "Angiv varighed og kalorier over 0.",
+    "saveError": "Aktiviteten kunne ikke gemmes."
+  },
   "addButton": {
     "closeMenu": "Luk tilføj-menu",
     "openMenu": "Åbn tilføj-menu",
@@ -1817,6 +1837,7 @@
     "search": "Søg",
     "weight": "Vægt",
     "water": "Vand",
+    "activity": "Aktivitet",
     "camera": "Scan med kamera",
     "list": "Se alle",
     "menstrualCycle": "Menstruation",
@@ -1825,6 +1846,8 @@
     }
   },
   "onboarding": {
+    "calendarViewQuestion": "Hvilken visning skal kalenderen åbne i?",
+    "calendarViewHint": "Du kan altid ændre det under Indstillinger → Visning → Kalendervisning.",
     "stepProgress": "Trin {current} af {total} gennemført",
     "sleepPatternQuestion": "Har du et fast søvnmønster?",
     "shiftWorkQuestion": "Skyldes det varierende arbejdstider eller natarbejde?",
@@ -2128,5 +2151,46 @@
     "add": "Tilføj",
     "moveUp": "Flyt sektion op",
     "moveDown": "Flyt sektion ned"
+  },
+  "sleepStats": {
+    "title": "Søvnstatistik",
+    "calendarLink": "Statistik",
+    "periodAria": "Vælg periode",
+    "period": {
+      "last7": "Sidste 7 dage",
+      "last30": "Seneste 30 dage",
+      "lastMonth": "Sidste måned",
+      "last3Months": "Seneste tre måneder",
+      "thisYear": "I år"
+    },
+    "chart": {
+      "quality": "Søvnkvalitet",
+      "kcal": "Kalorier og søvnkvalitet",
+      "coffee": "Kaffe og søvnkvalitet",
+      "sport": "Sport og søvnkvalitet",
+      "device": "Oplevet og målt søvn",
+      "bodyFat": "Fedtprocent og søvn"
+    },
+    "chartInfo": {
+      "quality": "Din vurdering af natten, 1–5. Slå sidste indtag til for at se, hvornår du sidst registrerede noget aftenen før.",
+      "kcal": "Samlet antal kalorier dagen før natten.",
+      "coffee": "Antal kaffe, te, cola og energidrikke dagen før og hvornår den sidste blev registreret.",
+      "sport": "Minutters træning dagen før og hvornår den sidste træning sluttede.",
+      "device": "Din egen vurdering sammenholdt med den søvn, dit smartudstyr har målt.",
+      "bodyFat": "Fedtprocent, oplevet søvn og målt søvn på samme skala. Oplevet søvn 5 = 100, og målt søvn 8 timer = 100."
+    },
+    "experienced": "Oplevet søvn (1–5)",
+    "lastMeal": "Sidste indtag",
+    "kcal": "Kalorier",
+    "coffeeCount": "Antal",
+    "lastCoffee": "Sidste tidspunkt",
+    "sportMinutes": "Minutter",
+    "lastSport": "Slut på træning",
+    "deviceSleep": "Målt søvn (timer)",
+    "measuredSleep": "Målt søvn",
+    "bodyFat": "Fedtprocent",
+    "noRatings": "Ingen vurderinger af søvn i perioden endnu.",
+    "devicesHeading": "Track søvn med smartudstyr",
+    "devicesIntro": "Forbind et ur eller en app, så kan du sammenligne oplevet søvn med faktisk søvn."
   }
 }

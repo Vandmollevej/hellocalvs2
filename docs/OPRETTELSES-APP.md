@@ -207,7 +207,7 @@ lortet". Bygget i denne omgang:
 - **Login**: brugernavn + adgangskode + TOTP (`src/lib/scan/auth.ts`),
   invitation via tidsbegrænset link (7 dage) sendt med
   `sendTransientMail`; kan mailen ikke sendes, vises linket én gang for
-  admin. Passkey/Face ID som alternativ 2. faktor er **ikke** bygget endnu.
+  admin. Face ID/passkey kan bruges i stedet for adgangskode + TOTP (slås til under Profil; 2026-09-29).
 - **App** (`src/app/scan/**`): Billede af hylde (overlay med ✓/−/?, 1 px
   kant, swipe, kamera-cirkel, tandhjul = slet helt, "Opret denne vare",
   "Ret tildeling"), Opret vare (Hello Cals fire bokse + felter, sendes
@@ -230,7 +230,8 @@ Mangler før den kan bruges i drift (kræver brugeren/serveren):
    (en ændring af produktionsdeployet, som kræver brugerens godkendelse).
 2. Et hostname (fx `scan.hellocal.io`) i Cloudflare Tunnel → NAS-port
    3101, og `SCAN_APP_BASE_URL` i `.env.production`.
-3. Anbefalet: egne hemmeligheder `SCAN_SESSION_SECRET` og `SCAN_PII_KEY`
-   (ellers bruges `ADMIN_SESSION_SECRET`). `SCAN_PII_KEY` må ikke ændres
+3. Egne hemmeligheder `SCAN_SESSION_SECRET` og `SCAN_PII_KEY` i
+   `.env.production` (ellers bruges `ADMIN_SESSION_SECRET`). Felter krypteret
+   før `SCAN_PII_KEY` blev sat, læses fortsat via reserve-nøglen. `SCAN_PII_KEY` må ikke ændres
    senere — så kan gemte CPR-/bankfelter ikke længere læses.
 4. Valgfrit: `GOOGLE_PLACES_API_KEY` til butiksnavn.

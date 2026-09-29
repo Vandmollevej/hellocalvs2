@@ -8,14 +8,18 @@ import { SignJWT, jwtVerify } from "jose";
 export const SCAN_SESSION_COOKIE = "hc_scan_session";
 export const SCAN_MFA_COOKIE = "hc_scan_mfa";
 export const SCAN_SETUP_COOKIE = "hc_scan_setup";
+export const SCAN_WEBAUTHN_REG_COOKIE = "hc_scan_webauthn_reg";
+export const SCAN_WEBAUTHN_AUTH_COOKIE = "hc_scan_webauthn_auth";
 
 const SESSION_TTL_SECONDS = 12 * 60 * 60;
 const MFA_TTL_SECONDS = 5 * 60;
 const SETUP_TTL_SECONDS = 15 * 60;
+const WEBAUTHN_TTL_SECONDS = 2 * 60;
 
 export const SCAN_SESSION_MAX_AGE = SESSION_TTL_SECONDS;
 export const SCAN_MFA_MAX_AGE = MFA_TTL_SECONDS;
 export const SCAN_SETUP_MAX_AGE = SETUP_TTL_SECONDS;
+export const SCAN_WEBAUTHN_MAX_AGE = WEBAUTHN_TTL_SECONDS;
 
 function getSecretKey() {
   const secret = process.env.SCAN_SESSION_SECRET || process.env.ADMIN_SESSION_SECRET;
@@ -86,6 +90,24 @@ export async function verifyScanSetupPending(token: string): Promise<SetupPendin
       passwordHash: payload.passwordHash,
       totpSecret: payload.totpSecret,
     };
+  } catch {
+    return null;
+  }
+}
+
+// Face ID/passkey: udfordringen holdes i en kortlivet signeret cookie mellem
+// options- og verify-kaldet. Registrering binder også medarbejderens id.
+export function signScanWebauthnChallenge(challenge: string, workerId?: string) {
+  const purpose = workerId ? "scan-webauthn-reg" : "scan-webauthn-auth";
+  return sign({ challenge, purpose, ...(workerId ? { sub: workerId } : {}) }, WEBAUTHN_TTL_SECONDS);
+}
+
+export async function verifyScanWebauthnChallenge(token: string, kind: "reg" | "auth") {
+  try {
+    const { payload } = await jwtVerify(token, getSecretKey());
+    if (payload.purpose !== `scan-webauthn-${kind}` || typeof payload.challenge !== "string") return null;
+    if (kind === "reg" && typeof payload.sub !== "string") return null;
+    return { challenge: payload.challenge, workerId: typeof payload.sub === "string" ? payload.sub : null };
   } catch {
     return null;
   }

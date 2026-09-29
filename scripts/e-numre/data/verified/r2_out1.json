@@ -1,0 +1,1805 @@
+[
+ {
+  "code": "E162",
+  "nameDa": "Rødbedefarve (betanin)",
+  "nameEn": "Beetroot red",
+  "category": "Farvestof (rød)",
+  "euStatus": "approved",
+  "origin": "natural",
+  "summary": "Rød farve udvundet af rødbeder.",
+  "description": "Rødbedefarve udvindes af rødbeder (Beta vulgaris). Hovedpigmentet er betanin, et betalain (betacyanin), og betanin er det eneste betalain, der er godkendt som rødt farvestof i fødevarer. Farven er rød til violet, men pigmentet er meget følsomt over for lys, varme og ilt, og det bruges derfor især i frosne produkter, produkter med kort holdbarhed eller tørre produkter.",
+  "uses": "Is og andre frosne mejeriprodukter, kødprodukter, pulver til læskedrikke og visse sukkervarer.",
+  "health": "EFSA's gen-evaluering fra 2015 fandt databasen utilstrækkelig til at fastsætte en ADI, men konkluderede, at E162 ved de rapporterede anvendelser ikke giver sikkerhedsbekymring, da farvestofferne er naturlige kostbestanddele, og eksponeringen for betanin svarer til den fra almindelig kost. Betanin kan farve urinen rød (beeturi).",
+  "research": "EFSA's gen-evaluering fra 2015 (EFSA Journal 2015;13(12):4318) konkluderede, at den toksikologiske database var utilstrækkelig til at fastsætte en ADI (bl.a. kunne genotoksicitet ikke vurderes), men at E162 ikke giver sikkerhedsbekymring ved de rapporterede anvendelser. Panelet fandt det relevant at revidere specifikationen, så betaninindholdet angives på tørstofbasis.",
+  "keyReferences": [],
+  "pubmedTerm": "betanin",
+  "flags": [],
+  "classes": [
+   "colour"
+  ],
+  "variants": [],
+  "efsa": {
+   "title": "Scientific Opinion on the re-evaluation of beetroot red (E 162) as a food additive",
+   "url": "http://dx.doi.org/10.2903/j.efsa.2015.4318",
+   "date": "2015-12-09",
+   "adi": "",
+   "overexposureRisk": ""
+  },
+  "verification": {
+   "status": "corrected",
+   "sources": [
+    "https://www.efsa.europa.eu/en/efsajournal/pub/4318",
+    "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6384587/",
+    "https://www.intechopen.com/chapters/70710"
+   ],
+   "notes": "Bekræftet: kilde, betanin/betalain, følsomhed for lys/varme/ilt, EFSA 2015 (ingen ADI, ingen sikkerhedsbekymring), beeturi. Rettet: 'kølede produkter' -> frosne/kort holdbarhed/tørre; anvendelser tilpasset kilden; specifikationsanbefaling er betanin på tørstofbasis (ikke nitrat/tungmetaller). Fjernet: presning/koncentrering, sukker/salt/nitrat i ekstrakt, nitrat ved store indtag, 'quantum satis', yoghurt/supper/saft/kager."
+  },
+  "wikipedia": "",
+  "wikidata": "Q420138",
+  "claims": [
+   {
+    "claim": "Udvindes af rødbeder; hovedpigment betanin (betalain)",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6384587/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Følsom for lys, varme, ilt; bruges i frosne/kort holdbare/tørre produkter",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6384587/",
+    "result": "rettet"
+   },
+   {
+    "claim": "Anvendelser: is, frosne mejeriprodukter, kød, pulverdrikke, slik",
+    "source": "https://www.intechopen.com/chapters/70710",
+    "result": "rettet"
+   },
+   {
+    "claim": "EFSA 2015: data utilstrækkelige til ADI",
+    "source": "https://www.efsa.europa.eu/en/efsajournal/pub/4318",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "EFSA 2015: ingen sikkerhedsbekymring ved rapporterede anvendelser",
+    "source": "https://www.efsa.europa.eu/en/efsajournal/pub/4318",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Specifikation: betanin på tørstofbasis (ikke nitrat/tungmetaller)",
+    "source": "https://www.efsa.europa.eu/en/efsajournal/pub/4318",
+    "result": "rettet"
+   },
+   {
+    "claim": "Beeturi",
+    "source": "https://www.intechopen.com/chapters/70710",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Ekstrakt indeholder sukker, salte, nitrat; nitrat ved store indtag",
+    "source": "",
+    "result": "fjernet"
+   },
+   {
+    "claim": "Quantum satis; yoghurt, supper, saft, kager",
+    "source": "",
+    "result": "fjernet"
+   }
+  ]
+ },
+ {
+  "code": "E163",
+  "nameDa": "Anthocyaniner",
+  "nameEn": "Anthocyanins",
+  "category": "Farvestof (rød-violet-blå)",
+  "euStatus": "approved",
+  "origin": "natural",
+  "summary": "Røde, violette og blå plantepigmenter udvundet af fx druer, bær og rødkål.",
+  "description": "Anthocyaniner er vandopløselige flavonoid-pigmenter, som giver farve til bl.a. bær, druer og rødkål. Som tilsætningsstof udvindes de ved udtrækning med vand, syrnet vand, svovlsyrlingholdigt vand, kuldioxid, methanol eller ethanol fra spiselige frugter og grøntsager, fx drueskaller, solbær, rødkål, sort gulerod og hyldebær. Farven afhænger af pH: rød i surt miljø og violet til blå ved basisk pH. De mest udbredte aglykoner (anthocyanidiner) er cyanidin, delphinidin, pelargonidin, peonidin, malvidin og petunidin.",
+  "uses": "Drikkevarer, sukkervarer, desserter, is, frugtpræparater og syltetøj, yoghurt, gelédesserter samt fyld og overtræk til bagværk.",
+  "health": "EFSA fandt i 2013 databasen utilstrækkelig til en numerisk ADI, men konkluderede, at så længe eksponeringen fra brug som tilsætningsstof svarer til den fra almindelig kost, gælder konklusionen i SCF's vurdering fra 1975 fortsat.",
+  "research": "EFSA's gen-evaluering fra 2013 vurderede, at eksponeringen fra de nuværende anvendelser af vandige drueskal- og solbærekstrakter – som størstedelen af data vedrører – næppe giver sikkerhedsbekymring. For anthocyaniner fra andre kilder eller udvundet med ikke-vandige metoder tillod manglende karakterisering ikke en tilsvarende konklusion. Anthocyaniner undersøges desuden for mulige effekter på hjerte-kar-sygdomme og neurodegenerative sygdomme.",
+  "keyReferences": [],
+  "pubmedTerm": "anthocyanins",
+  "flags": [],
+  "classes": [
+   "colour"
+  ],
+  "variants": [
+   {
+    "code": "E163(ii)",
+    "nameDa": "",
+    "nameEn": ""
+   },
+   {
+    "code": "E163(iii)",
+    "nameDa": "",
+    "nameEn": ""
+   },
+   {
+    "code": "E163(iv)",
+    "nameDa": "",
+    "nameEn": ""
+   },
+   {
+    "code": "E163(v)",
+    "nameDa": "",
+    "nameEn": ""
+   },
+   {
+    "code": "E163(vi)",
+    "nameDa": "",
+    "nameEn": ""
+   },
+   {
+    "code": "E163(vii)",
+    "nameDa": "",
+    "nameEn": ""
+   },
+   {
+    "code": "E163(viii)",
+    "nameDa": "",
+    "nameEn": ""
+   },
+   {
+    "code": "E163(ix)",
+    "nameDa": "",
+    "nameEn": ""
+   },
+   {
+    "code": "E163(x)",
+    "nameDa": "",
+    "nameEn": ""
+   },
+   {
+    "code": "E163(xi)",
+    "nameDa": "",
+    "nameEn": ""
+   }
+  ],
+  "efsa": {
+   "title": "Scientific Opinion on the re-evaluation of anthocyanins (E 163) as a food additive",
+   "url": "http://dx.doi.org/10.2903/j.efsa.2013.3145",
+   "date": "2013-04-23",
+   "adi": "",
+   "overexposureRisk": ""
+  },
+  "verification": {
+   "status": "corrected",
+   "sources": [
+    "https://www.efsa.europa.eu/en/efsajournal/pub/3145",
+    "https://efsa.onlinelibrary.wiley.com/doi/abs/10.2903/j.efsa.2013.3145",
+    "https://iacmcolor.org/color-profile/anthocyanins/",
+    "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5613902/",
+    "https://pmc.ncbi.nlm.nih.gov/articles/PMC7504512/"
+   ],
+   "notes": "Bekræftet: flavonoid-pigmenter, kilder (drueskal, solbær, rødkål, sort gulerod, hyldebær), udtrækningsmidler, pH-afhængig farve, de seks aglykoner, anvendelser, EFSA 2013 (ingen numerisk ADI, SCF 1975). Rettet: forskningsafsnittet gengiver nu EFSA's faktiske forbehold. Fjernet: 'fra vinproduktion', betegnelsen E163a-f, vin som anvendelse, quantum satis, 'ingen særlige risikogrupper', 'ingen tegn på toksicitet', 'evidensen primært observationel'. Varianter (kun koder E163(ii)-(xi)) er ikke selvstændigt eftersøgt."
+  },
+  "wikipedia": "",
+  "wikidata": "Q262547",
+  "claims": [
+   {
+    "claim": "Flavonoid-pigmenter i bær/druer/rødkål",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5613902/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Kilder: drueskal, solbær, rødkål, sort gulerod, hyldebær",
+    "source": "https://iacmcolor.org/color-profile/anthocyanins/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Udtrækning med vand/syrnet vand/alkohol m.m.",
+    "source": "https://iacmcolor.org/color-profile/anthocyanins/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Rød i surt, violet-blå ved basisk pH",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5613902/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Seks hovedaglykoner",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5613902/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Anvendelser: drikke, slik, desserter, is, syltetøj, yoghurt",
+    "source": "https://iacmcolor.org/color-profile/anthocyanins/",
+    "result": "rettet"
+   },
+   {
+    "claim": "EFSA 2013: ingen numerisk ADI; SCF 1975 gælder ved kostlignende eksponering",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/abs/10.2903/j.efsa.2013.3145",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "EFSA 2013: data primært drueskal/solbær; andre kilder ikke karakteriseret",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/abs/10.2903/j.efsa.2013.3145",
+    "result": "rettet"
+   },
+   {
+    "claim": "Forskning i hjerte-kar-effekter",
+    "source": "https://pmc.ncbi.nlm.nih.gov/articles/PMC7504512/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "E163a-f-betegnelser; vin; quantum satis; ingen risikogrupper; 'primært observationel'",
+    "source": "",
+    "result": "fjernet"
+   }
+  ]
+ },
+ {
+  "code": "E170",
+  "nameDa": "Calciumkarbonater",
+  "nameEn": "Calcium carbonates",
+  "category": "Farvestof / surhedsregulerende middel / antiklumpningsmiddel",
+  "euStatus": "approved",
+  "origin": "natural",
+  "summary": "Calciumkarbonat er det samme mineral som kridt og kalksten. Det bruges som hvidt farvestof, surhedsregulerende middel og calciumkilde.",
+  "description": "Calciumkarbonat (CaCO3) er et hvidt, lugtfrit mineral, der findes naturligt som kridt, kalksten og marmor. Til fødevarebrug udvindes det af disse mineraler eller fremstilles som udfældet calciumkarbonat. Stoffet bruges som hvidt farvestof, surhedsregulerende middel, antiklumpningsmiddel, hævemiddel og til calciumberigelse.",
+  "uses": "Calciumberigede drikke, morgenmadsprodukter (antiklumpning), tyggegummi (fyldstof) samt glasur og kagepynt (hvid farve).",
+  "health": "Calciumkarbonat betragtes som uproblematisk i de mængder, der bruges i fødevarer; EFSA tilsluttede sig SCF's gruppe-ADI 'ikke specificeret'. Det samlede calciumindtag vurderes op mod den øvre grænse på 2500 mg calcium om dagen. Store mængder fra kosttilskud eller syreneutraliserende tabletter kan give forstoppelse, luft og oppustethed og i sjældne tilfælde mælk-alkali-syndrom med hypercalcæmi. Calciumtilskud – i modsætning til calcium fra kosten – synes at øge risikoen for nyresten.",
+  "research": "EFSA's gen-evaluering fra 2011 tilsluttede sig gruppe-ADI 'ikke specificeret' og fandt, at det samlede calciumindtag inkl. tilsætningsstoffer, tilskud og berigelse lå under den øvre grænse på 2500 mg/dag. Studier af calciumtilskud og hjerte-kar-hændelser har givet blandede resultater. Nogle studier har vist, at calcium fra tilskud optages lige så godt som calcium fra mælk; calciumkarbonat bør tages med mad for bedre optagelse.",
+  "keyReferences": [],
+  "pubmedTerm": "calcium carbonate",
+  "flags": [],
+  "classes": [],
+  "variants": [
+   {
+    "code": "E170(i)",
+    "nameDa": "calciumkarbonat",
+    "nameEn": "Calcium carbonate"
+   },
+   {
+    "code": "E170(ii)",
+    "nameDa": "calciumhydrogenkarbonat",
+    "nameEn": "Calcium hydrogen carbonate"
+   }
+  ],
+  "efsa": {
+   "title": "Scientific Opinion on re‐evaluation of calcium carbonate (E 170) as a food additive",
+   "url": "https://doi.org/10.2903/j.efsa.2011.2318",
+   "date": "2011/07/26",
+   "adi": "",
+   "overexposureRisk": ""
+  },
+  "verification": {
+   "status": "corrected",
+   "sources": [
+    "https://efsa.onlinelibrary.wiley.com/doi/abs/10.2903/j.efsa.2011.2318",
+    "https://pmc.ncbi.nlm.nih.gov/articles/PMC10373136/",
+    "https://www.foodcontents.com/additives/calcium-carbonate.html",
+    "https://ods.od.nih.gov/factsheets/Calcium-HealthProfessional/",
+    "https://en.wikipedia.org/wiki/Calcium_supplement",
+    "https://pmc.ncbi.nlm.nih.gov/articles/PMC10111600/"
+   ],
+   "notes": "Bekræftet: mineralformer, udfældet form, funktioner, anvendelser, EFSA 2011, UL 2500 mg, mave-tarm-bivirkninger, mælk-alkali, nyresten ved tilskud, blandede hjerte-kar-fund, optagelse med mad. Rettet: 'ingen numerisk ADI' præciseret til ADI 'ikke specificeret'; optagelse 'som mælk' nuanceret til 'nogle studier'. Fjernet: æggeskaller/muslingeskaller, kalkmælk+CO2-proces, E170(ii) kun i opløsning, plantedrikke/bagepulver/ost/kosttilskud som specifikke eksempler, quantum satis, nedsat nyrefunktion som gruppe."
+  },
+  "wikipedia": "https://en.wikipedia.org/wiki/Calcium_carbonate",
+  "wikidata": "",
+  "claims": [
+   {
+    "claim": "CaCO3 som kridt, kalksten, marmor",
+    "source": "https://www.foodcontents.com/additives/calcium-carbonate.html",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Udvundet eller udfældet",
+    "source": "https://pmc.ncbi.nlm.nih.gov/articles/PMC10373136/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Funktioner: farve, pH, antiklumpning, hævemiddel, berigelse",
+    "source": "https://www.foodcontents.com/additives/calcium-carbonate.html",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Anvendelser: berigede drikke, cerealier, tyggegummi, glasur",
+    "source": "https://www.foodcontents.com/additives/calcium-carbonate.html",
+    "result": "rettet"
+   },
+   {
+    "claim": "EFSA 2011: gruppe-ADI ikke specificeret",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/abs/10.2903/j.efsa.2011.2318",
+    "result": "rettet"
+   },
+   {
+    "claim": "UL 2500 mg/dag",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/abs/10.2903/j.efsa.2011.2318",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Forstoppelse/luft ved tilskud",
+    "source": "https://ods.od.nih.gov/factsheets/Calcium-HealthProfessional/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Mælk-alkali-syndrom/hypercalcæmi",
+    "source": "https://en.wikipedia.org/wiki/Calcium_supplement",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Tilskud øger risiko for nyresten",
+    "source": "https://ods.od.nih.gov/factsheets/Calcium-HealthProfessional/",
+    "result": "rettet"
+   },
+   {
+    "claim": "Blandede fund om hjerte-kar",
+    "source": "https://pmc.ncbi.nlm.nih.gov/articles/PMC10111600/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Optagelse med mad / som mælk",
+    "source": "https://en.wikipedia.org/wiki/Calcium_supplement",
+    "result": "rettet"
+   },
+   {
+    "claim": "Æggeskaller, kalkmælk-proces, E170(ii) i opløsning, quantum satis",
+    "source": "",
+    "result": "fjernet"
+   }
+  ]
+ },
+ {
+  "code": "E172",
+  "nameDa": "Jernoxider og jernhydroxider",
+  "nameEn": "Iron oxides and iron hydroxides",
+  "category": "Farvestof",
+  "euStatus": "approved",
+  "origin": "synthetic",
+  "summary": "Jernoxider er mineralske farvepigmenter i sort, rød og gul – kemisk beslægtet med rust. De bruges til at farve overflader på fx slik og kosttilskud.",
+  "description": "Jernoxider og -hydroxider er uorganiske pigmenter, der giver røde, gule, brune og sorte nuancer. Til fødevarebrug fremstilles de overvejende syntetisk ved kontrolleret udfældning, kalcinering eller oxidation af jernsalte, bl.a. for at undgå urenheder som tungmetaller, der findes i naturlige forekomster. E172(i) sort jernoxid (FeO·Fe2O3), E172(ii) rød jernoxid (Fe2O3) og E172(iii) gul jernoxid (hydratiseret jernoxid).",
+  "uses": "Sukkervarer, osteskorper, fiske- og skaldyrspastaer, overtræk på tabletter og kosttilskud samt pølsetarme.",
+  "health": "Jern fra jernoxider optages kun i ringe grad. EFSA's gen-evaluering fra 2015 konkluderede, at en fyldestgørende sikkerhedsvurdering ikke kunne gennemføres, fordi der ikke fandtes en tilstrækkelig biologisk og toksikologisk database. Rød og sort jernoxid var positive i in vitro-genotoksicitetstest, og genotoksiciteten kunne ikke vurderes på det foreliggende grundlag.",
+  "research": "JECFA har fastsat en ADI på 0–0,5 mg/kg legemsvægt/dag. EFSA's gen-evaluering fra 2015 (EFSA Journal 2015;13(12):4317) noterede, at rød og sort jernoxid (både nano- og mikroform) var positive i in vitro-genotoksicitetstest i pattedyrceller, og at genotoksiciteten ikke kunne vurderes, bl.a. fordi der ikke kan læses på tværs mellem jernoxider med forskellig oxidationstrin. Panelet anbefalede, at partikelstørrelse og partikelstørrelsesfordeling indgår i specifikationerne.",
+  "keyReferences": [],
+  "pubmedTerm": "iron oxide",
+  "flags": [],
+  "classes": [
+   "colour"
+  ],
+  "variants": [
+   {
+    "code": "E172(i)",
+    "nameDa": "Sort jernoxid",
+    "nameEn": "Black iron oxide"
+   },
+   {
+    "code": "E172(ii)",
+    "nameDa": "Rød jernoxid",
+    "nameEn": "Red iron oxide"
+   },
+   {
+    "code": "E172(iii)",
+    "nameDa": "Gul jernoxid",
+    "nameEn": "Yellow iron oxide"
+   }
+  ],
+  "efsa": {
+   "title": "Scientific Opinion on the re-evaluation of iron oxides and hydroxides (E 172) as food additives",
+   "url": "http://dx.doi.org/10.2903/j.efsa.2015.4317",
+   "date": "2015-12-08",
+   "adi": "",
+   "overexposureRisk": ""
+  },
+  "verification": {
+   "status": "corrected",
+   "sources": [
+    "https://www.efsa.europa.eu/en/efsajournal/pub/4317",
+    "https://www.fao.org/fileadmin/user_upload/jecfa_additives/docs/Monograph1/Additive-238.pdf",
+    "https://www.eadditives.com/e172-iron-oxides-hydroxides/",
+    "https://www.sciencedirect.com/science/article/pii/S2590157526005857"
+   ],
+   "notes": "Bekræftet: pigmenttyper, syntetisk fremstilling pga. urenheder, anvendelser, lav optagelse, EFSA 2015 (ingen vurdering mulig, in vitro-genotoksicitet), JECFA ADI 0–0,5, anbefaling om partikelstørrelse. Rettet: formler angivet som i EFSA. Fjernet: lys-/varmestabilitet, titandioxid-alternativ, olivener/kagepynt, maksimumsgrænser, bly/arsen/nikkel som hovedbekymring, sammenligning med kostjern, Kommissionens dataindkaldelse (ikke fundet)."
+  },
+  "wikipedia": "",
+  "wikidata": "Q3045754",
+  "claims": [
+   {
+    "claim": "Uorganiske pigmenter rød/gul/sort",
+    "source": "https://www.eadditives.com/e172-iron-oxides-hydroxides/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Syntetisk fremstilling for at undgå tungmetaller",
+    "source": "https://www.eadditives.com/e172-iron-oxides-hydroxides/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Anvendelser: slik, ost, fiskepasta, tabletter, pølsetarme",
+    "source": "https://www.sciencedirect.com/science/article/pii/S2590157526005857",
+    "result": "rettet"
+   },
+   {
+    "claim": "Lav optagelse",
+    "source": "https://www.fao.org/fileadmin/user_upload/jecfa_additives/docs/Monograph1/Additive-238.pdf",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "EFSA 2015: vurdering ikke mulig",
+    "source": "https://www.efsa.europa.eu/en/efsajournal/pub/4317",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Rød/sort positive in vitro, nano og mikro",
+    "source": "https://www.efsa.europa.eu/en/efsajournal/pub/4317",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "JECFA ADI 0–0,5 mg/kg",
+    "source": "https://www.fao.org/fileadmin/user_upload/jecfa_additives/docs/Monograph1/Additive-238.pdf",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Partikelstørrelse i specifikationer",
+    "source": "https://www.sciencedirect.com/science/article/pii/S2590157526005857",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "TiO2-alternativ, stabilitet, oliven, Pb/As/Ni, dataindkaldelse",
+    "source": "",
+    "result": "fjernet"
+   }
+  ]
+ },
+ {
+  "code": "E173",
+  "nameDa": "Aluminium",
+  "nameEn": "Aluminium",
+  "category": "Farvestof",
+  "euStatus": "approved",
+  "origin": "natural",
+  "summary": "Aluminium i form af tynde metalflager eller pulver, der giver en sølvfarvet overflade. Det må i EU kun bruges til udvendig dekoration af sukkervarer og kagepynt.",
+  "description": "E173 er metallisk aluminium brugt som dekorativt overfladefarvestof med sølvfarve. Anvendelsen af aluminiumholdige tilsætningsstoffer blev begrænset i EU med forordning (EU) nr. 380/2012, efter at EFSA i 2008 havde sænket det tolerable ugentlige indtag og fundet, at det overskrides af storforbrugere, især børn. Forordningen omfatter også andre aluminiumholdige tilsætningsstoffer.",
+  "uses": "Kun tilladt til udvendig dekoration af sukkervarer og kagepynt.",
+  "health": "EFSA fastsatte i 2008 et tolerabelt ugentligt indtag (TWI) på 1 mg aluminium/kg legemsvægt fra kosten, og storforbrugere, især børn, kan overskride det. Aluminium fra kosten vurderes ikke som et problem for personer med normal nyrefunktion, men aluminium har vist nervetoksicitet hos dialysepatienter.",
+  "research": "EFSA fastsatte i 2008 TWI på 1 mg/kg legemsvægt/uge; JECFA fastsatte i 2011 en PTWI på 2 mg/kg. Det har været foreslået, at aluminium er involveret i Alzheimers sygdom, men hypotesen er omstridt, og EFSA vurderede ikke, at aluminium fra kosten udgør en risiko for at udvikle Alzheimers.",
+  "keyReferences": [],
+  "pubmedTerm": "aluminium",
+  "flags": [
+   "children_caution",
+   "kidney_caution"
+  ],
+  "classes": [],
+  "variants": [],
+  "efsa": {
+   "title": "Safety of aluminium from dietary intake - Scientific Opinion of the Panel on Food Additives, Flavourings, Processing Aids and Food Contact Materials (AFC)",
+   "url": "https://doi.org/10.2903/j.efsa.2008.754",
+   "date": "2008",
+   "adi": "",
+   "overexposureRisk": ""
+  },
+  "verification": {
+   "status": "corrected",
+   "sources": [
+    "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=celex%3A32012R0380",
+    "https://www.efsa.europa.eu/en/news/efsa-advises-safety-aluminium-food",
+    "https://efsa.onlinelibrary.wiley.com/doi/pdfdirect/10.2903/j.efsa.2008.754",
+    "https://www.eufic.org/en/food-safety/article/aluminium-qa",
+    "https://www.ivyroses.com/Define/E173"
+   ],
+   "notes": "Bekræftet: anvendelsesbegrænsning, forordning 380/2012 og dens begrundelse, EFSA TWI 2008 og overskridelse hos børn, JECFA PTWI 2011, dialysepatienter, Alzheimer-vurdering. Rettet: anvendelse ('sukkervarer og kagepynt'), nyre-udsagnet præciseret til dialysepatienter. Fjernet: bauxit/elektrolyse, dyreforsøgseffekter på knogler/forplantning, 'ikke i almindelige dagligvarer', 'ingen separat gen-evaluering'. Britiske kilder er ikke brugt som belæg for EU-regler."
+  },
+  "wikipedia": "",
+  "wikidata": "Q663",
+  "claims": [
+   {
+    "claim": "Kun udvendig dekoration af sukkervarer/kagepynt",
+    "source": "https://www.ivyroses.com/Define/E173",
+    "result": "rettet"
+   },
+   {
+    "claim": "Forordning 380/2012 begrænsede aluminiumholdige tilsætningsstoffer",
+    "source": "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=celex%3A32012R0380",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "EFSA 2008 TWI 1 mg/kg/uge",
+    "source": "https://www.efsa.europa.eu/en/news/efsa-advises-safety-aluminium-food",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Børn kan overskride TWI",
+    "source": "https://www.efsa.europa.eu/en/news/efsa-advises-safety-aluminium-food",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "JECFA 2011 PTWI 2 mg/kg",
+    "source": "https://www.eufic.org/en/food-safety/article/aluminium-qa",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Dialysepatienter/nyrefunktion",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/pdfdirect/10.2903/j.efsa.2008.754",
+    "result": "rettet"
+   },
+   {
+    "claim": "Alzheimer ikke risiko fra kost",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/pdfdirect/10.2903/j.efsa.2008.754",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Bauxit/elektrolyse; dyreforsøgseffekter; ingen separat gen-evaluering",
+    "source": "",
+    "result": "fjernet"
+   }
+  ]
+ },
+ {
+  "code": "E174",
+  "nameDa": "Sølv",
+  "nameEn": "Silver",
+  "category": "Farvestof",
+  "euStatus": "approved",
+  "origin": "natural",
+  "summary": "Metallisk sølv brugt som dekorativ sølvfarve på overfladen af slik og kagepynt.",
+  "description": "E174 er metallisk sølv i form af blade, flager eller pulver. Hovedparten af verdens sølv udvindes som biprodukt ved forarbejdning af kobber-, bly- og zinkmalm. Det bruges udelukkende dekorativt.",
+  "uses": "Sukkervarer som dragéer og bolsjer, chokolade samt visse likører og spiritus.",
+  "health": "Indtaget fra E174 er meget lille. Ophobning af sølv kan give argyri – en permanent blågrå misfarvning af huden – som bl.a. er beskrevet efter brug af kolloidt sølv. EFSA kunne hverken i 2016 eller i opfølgningen i 2025 konkludere om sikkerheden, bl.a. pga. utilstrækkelig karakterisering (fx nanopartikelandel), frigivelse af sølvioner og utilstrækkelige genotoksicitetsdata.",
+  "research": "EFSA's gen-evaluering fra 2016 (EFSA Journal 2016;14(1):4364) konkluderede, at data var utilstrækkelige til at vurdere sikkerheden af sølv som tilsætningsstof; hovedproblemerne var begrænset karakterisering (fx mængden af nanopartikler) og frigivelse af sølvioner. I opfølgningen fra april 2025 (EFSA Journal 2025;23:9316) fandt EFSA de indsendte data om partikelkarakterisering samt genotoksicitets- og subkroniske toksicitetsdata utilstrækkelige og kunne fortsat ikke konkludere om sikkerheden. Panelet vurderede, at E174 skal risikovurderes på nanoskala.",
+  "keyReferences": [],
+  "pubmedTerm": "silver",
+  "flags": [],
+  "classes": [],
+  "variants": [],
+  "efsa": {
+   "title": "Follow-up of the re-evaluation of silver (E 174) as a food additive (EFSA-Q-2023-00169)",
+   "url": "https://doi.org/10.2903/j.efsa.2025.9316",
+   "date": "2025-04-23",
+   "adi": "",
+   "overexposureRisk": ""
+  },
+  "verification": {
+   "status": "corrected",
+   "sources": [
+    "https://efsa.onlinelibrary.wiley.com/doi/pdf/10.2903/j.efsa.2016.4364",
+    "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC12015561/",
+    "https://www.rivm.nl/en/weblog/efsas-re-evaluation-of-silver-as-food-additive-is-inconclusive",
+    "https://dermnetnz.org/topics/argyria",
+    "https://pubs.usgs.gov/periodicals/mcs2024/mcs2024-silver.pdf"
+   ],
+   "notes": "Bekræftet: sølv som biprodukt fra kobber/bly/zink, anvendelser, argyri og kolloidt sølv, EFSA 2016 og 2025. Rettet: 'store og langvarige indtag' -> ophobning; tilføjet nanoskala-krav. Fjernet: 'ingen smag', 'kun tilladt i få kategorier', 'op til Kommissionen'."
+  },
+  "wikipedia": "",
+  "wikidata": "Q1090",
+  "claims": [
+   {
+    "claim": "Biprodukt fra bly/zink/kobber",
+    "source": "https://pubs.usgs.gov/periodicals/mcs2024/mcs2024-silver.pdf",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Anvendelser: dragéer, slik, chokolade, likører",
+    "source": "https://infocons.org/blog/2024/06/25/e174-silver/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Argyri, kolloidt sølv, permanent",
+    "source": "https://dermnetnz.org/topics/argyria",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "EFSA 2016 utilstrækkelige data; nano, ioner",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/pdf/10.2903/j.efsa.2016.4364",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "EFSA 2025 kan ikke konkludere",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC12015561/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Ingen smag; få kategorier; Kommissionen",
+    "source": "",
+    "result": "fjernet"
+   }
+  ]
+ },
+ {
+  "code": "E175",
+  "nameDa": "Guld",
+  "nameEn": "Gold",
+  "category": "Farvestof",
+  "euStatus": "approved",
+  "origin": "natural",
+  "summary": "Metallisk guld brugt som bladguld eller flager til dekoration af fødevarer.",
+  "description": "E175 er metallisk guld, typisk i form af tyndt bladguld eller flager. Guld er meget tungtopløseligt. Spiseligt bladguld er ikke nødvendigvis 100 % rent; fx indeholder 23 karat bladguld små mængder sølv og kobber. Det bruges udelukkende af æstetiske grunde.",
+  "uses": "Dekoration af fødevarer, fx konfekture og desserter.",
+  "health": "EFSA fastsatte i 2016 ingen ADI pga. manglende toksicitetsdata, men vurderede, at systemisk tilgængelighed og dermed systemiske effekter ikke forventes pga. guldets meget lave opløselighed. Kontaktallergi over for guld forekommer (især fra smykker og tandrestaureringer), mens eksponering via fødevarer (bladguld) regnes for ubetydelig.",
+  "research": "EFSA's gen-evaluering fra 2016 (EFSA Journal 2016;14(1):4362) konkluderede, at systemisk tilgængelighed og dermed systemiske effekter ikke forventes pga. lav opløselighed, trods manglende toksicitetsdata. EFSA anbefalede, at specifikationerne omfatter gennemsnitlig partikelstørrelse, partikelstørrelsesfordeling og andelen af partikler i nanoskala.",
+  "keyReferences": [],
+  "pubmedTerm": "gold",
+  "flags": [],
+  "classes": [],
+  "variants": [],
+  "efsa": {
+   "title": "Scientific Opinion on the re-evaluation of gold (E 175) as a food additive",
+   "url": "http://dx.doi.org/10.2903/j.efsa.2016.4362",
+   "date": "2016-01-20",
+   "adi": "",
+   "overexposureRisk": ""
+  },
+  "verification": {
+   "status": "uncertain",
+   "sources": [
+    "https://www.efsa.europa.eu/en/efsajournal/pub/4362",
+    "https://efsa.onlinelibrary.wiley.com/doi/abs/10.2903/j.efsa.2016.4362",
+    "https://dermnetnz.org/topics/contact-allergy-to-gold",
+    "https://www.gildedplanet.com/23kthome.html"
+   ],
+   "notes": "Bekræftet: EFSA 2016 (ingen ADI, lav opløselighed, nano i specifikationer), guldallergi og ubetydelig fødevareeksponering, sølv/kobber i bladguld. Fjernet: 'smagsløs', 'udskilles med afføringen', 'kun udvendig dekoration og visse likører'. Usikkert: konkrete anvendelser (chokolade/likører) blev ikke fundet i en kilde – 'uses' er derfor gjort generel."
+  },
+  "wikipedia": "",
+  "wikidata": "Q897",
+  "claims": [
+   {
+    "claim": "EFSA 2016 ingen ADI; lav opløselighed",
+    "source": "https://www.efsa.europa.eu/en/efsajournal/pub/4362",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Nano i specifikationer",
+    "source": "https://www.efsa.europa.eu/en/efsajournal/pub/4362",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Bladguld indeholder sølv/kobber",
+    "source": "https://www.gildedplanet.com/23kthome.html",
+    "result": "rettet"
+   },
+   {
+    "claim": "Kontaktallergi; fødevareeksponering ubetydelig",
+    "source": "https://dermnetnz.org/topics/contact-allergy-to-gold",
+    "result": "rettet"
+   },
+   {
+    "claim": "Konkrete anvendelser (chokolade, likører)",
+    "source": "",
+    "result": "fjernet"
+   },
+   {
+    "claim": "Smagsløs; udskilles med afføring",
+    "source": "",
+    "result": "fjernet"
+   }
+  ]
+ },
+ {
+  "code": "E180",
+  "nameDa": "Rubinpigment BK",
+  "nameEn": "Litholrubine BK",
+  "category": "Farvestof (azofarvestof)",
+  "euStatus": "approved",
+  "origin": "synthetic",
+  "summary": "Et syntetisk rødt azofarvestof, der i EU kun må bruges på spiselige osteskorper.",
+  "description": "Litholrubin BK (Pigment Rubine, CI 15850) er et calciumsalt af et syntetisk azopigment, fremstillet ud fra petrokemiske råvarer. Det er uopløseligt i vand og derfor egnet som overfladefarve. Det giver en dyb rød-magenta farve. Brugen i fødevarer er meget snævert afgrænset.",
+  "uses": "Kun tilladt i spiselige osteskorper (fx rødt overfladelag på visse faste oste). Ellers bredt brugt i kosmetik som CI 15850.",
+  "health": "SCF havde fastsat en ADI på 0–1,5 mg/kg legemsvægt/dag, men EFSA's gen-evaluering fra 2010 konkluderede, at denne ADI skulle trækkes tilbage pga. utilstrækkelige data. EFSA vurderede dog, at det er usandsynligt, at den eneste godkendte anvendelse (spiselige osteskorper) giver væsentlig sikkerhedsbekymring. Som andre azofarvestoffer kan det muligvis give overfølsomhedsreaktioner hos enkelte følsomme personer, men der er ikke gode data specifikt for E180. Man spiser normalt ikke osteskorpen, så indtaget er lavt.",
+  "research": "EFSA's gen-evaluering fra 2010 (EFSA Journal 2010;8(4):1586) trak SCF's ADI på 0–1,5 mg/kg legemsvægt/dag tilbage, da det underliggende datagrundlag var utilstrækkeligt, men fandt det usandsynligt, at anvendelsen i osteskorper udgør en væsentlig risiko. Stoffet indgik ikke i Southampton-studiet (McCann et al., Lancet 2007) og er ikke omfattet af den særlige advarselsmærkning ('kan have negativ indvirkning på aktivitet og opmærksomhed hos børn'), som gælder seks andre azofarvestoffer.",
+  "keyReferences": [],
+  "pubmedTerm": "lithol rubine BK",
+  "flags": [],
+  "classes": [],
+  "variants": [],
+  "efsa": {
+   "title": "Scientific Opinion on the re-evaluation of Litholrubine BK (E 180) as a food additive",
+   "url": "https://doi.org/10.2903/j.efsa.2010.1586",
+   "date": "2010-05-07",
+   "adi": "",
+   "overexposureRisk": ""
+  },
+  "verification": {
+   "status": "uncertain",
+   "sources": [
+    "https://www.efsa.europa.eu/en/efsajournal/pub/1586",
+    "https://efsa.onlinelibrary.wiley.com/doi/abs/10.2903/j.efsa.2010.1586"
+   ],
+   "notes": "Delvist gennemgået: bekræftet EFSA 2010 (SCF-ADI 0–1,5 trukket tilbage, usandsynlig sikkerhedsbekymring ved osteskorper, eneste godkendte anvendelse) og at stoffet er et calciumsalt af et azopigment. IKKE eftersøgt (søgebudget opbrugt): CI 15850/kosmetik, petrokemisk oprindelse, vanduopløselighed, overfølsomhed, Southampton/advarselsmærkning. Teksten er uændret."
+  },
+  "wikipedia": "",
+  "wikidata": "Q427230",
+  "claims": [
+   {
+    "claim": "EFSA 2010 trak ADI 0–1,5 tilbage",
+    "source": "https://www.efsa.europa.eu/en/efsajournal/pub/1586",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Kun spiselige osteskorper; usandsynlig bekymring",
+    "source": "https://www.efsa.europa.eu/en/efsajournal/pub/1586",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Calciumsalt af azopigment",
+    "source": "https://www.efsa.europa.eu/en/efsajournal/pub/1586",
+    "result": "bekræftet"
+   }
+  ]
+ },
+ {
+  "code": "E200",
+  "nameDa": "Sorbinsyre",
+  "nameEn": "Sorbic acid",
+  "category": "Konserveringsmiddel",
+  "euStatus": "approved",
+  "origin": "synthetic",
+  "summary": "Sorbinsyre er et af de mest brugte konserveringsmidler mod skimmel og gær. Det findes oprindeligt i rønnebær, men fremstilles i dag syntetisk.",
+  "description": "Sorbinsyre (2,4-hexadiensyre) er en kortkædet, umættet fedtsyre, der første gang blev isoleret fra rønnebær. Industrielt fremstilles den syntetisk ud fra keten og crotonaldehyd. Den hæmmer vækst af skimmelsvampe og gær og virker bedst i sure fødevarer. Da sorbinsyre er tungtopløselig i vand, bruges saltet kaliumsorbat (E202) ofte i stedet. Kroppen nedbryder sorbinsyre som en almindelig fedtsyre.",
+  "uses": "Ost og skiveost, bagværk og kager, marmelade og syltetøj, dressinger og mayonnaise, pålægssalater, vin og cider samt tørret frugt. Tilladt med maksimumsgrænser, typisk mellem 200 og 2000 mg/kg afhængigt af produkt.",
+  "health": "Sorbinsyre regnes for et af de mindst problematiske konserveringsmidler og er ikke kræftfremkaldende eller genotoksisk. Det kan i sjældne tilfælde give hudirritation eller pseudoallergiske reaktioner, især ved hudkontakt. EFSA satte i 2015 en midlertidig gruppe-ADI på 3 mg/kg legemsvægt/dag for sorbinsyre og sorbater og vurderede, at især børn kunne overskride den; i 2019 blev gruppe-ADI fastsat til 11 mg/kg legemsvægt/dag på baggrund af nye data, hvorefter overskridelse ikke forventes ved de vurderede eksponeringsniveauer.",
+  "research": "EFSA's gen-evaluering fra 2015 fastsatte en midlertidig ADI på 3 mg/kg legemsvægt/dag pga. usikkerhed om reproduktionstoksicitet og efterlyste et udvidet studie. EFSA's opfølgende udtalelse i 2019 fastsatte på baggrund af et nyt reproduktionsstudie en gruppe-ADI på 11 mg/kg legemsvægt/dag for sorbinsyre og kaliumsorbat. Der er ingen væsentlig videnskabelig uenighed om stoffets sikkerhed ved normale mængder.",
+  "keyReferences": [],
+  "pubmedTerm": "sorbic acid",
+  "flags": [],
+  "classes": [
+   "preservative"
+  ],
+  "variants": [],
+  "efsa": {
+   "title": "Opinion on the follow-up of the re-evaluation of sorbic acid (E200) and potassium sorbate (E202) as food additives",
+   "url": "https://doi.org/10.2903/j.efsa.2019.5625",
+   "date": "2019-03-01",
+   "adi": "11 mg/kg bw/day",
+   "overexposureRisk": ""
+  },
+  "verification": {
+   "status": "uncertain",
+   "sources": [
+    "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2015.4144",
+    "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2019.5625"
+   ],
+   "notes": "Runde 2 IKKE gennemført for denne post: sessionens søgebudget (200 WebSearch) blev opbrugt, før posten kunne gennemgås udsagn for udsagn. Teksten er uændret fra runde 1 (kun EU-status/ADI/EFSA kontrolleret). Runde 1-note: Godkendt. Midlertidig ADI 3 (2015) og gruppe-ADI 11 mg/kg (2019, EOGRTS, BMDL 1110) bekræftet. efsa-objekt opdateret til den seneste udtalelse (2019)."
+  },
+  "wikipedia": "https://en.wikipedia.org/wiki/Sorbic_acid",
+  "wikidata": "Q407131",
+  "claims": []
+ },
+ {
+  "code": "E202",
+  "nameDa": "Kaliumsorbat",
+  "nameEn": "Potassium sorbate",
+  "category": "Konserveringsmiddel",
+  "euStatus": "approved",
+  "origin": "synthetic",
+  "summary": "Kaliumsorbat er kaliumsaltet af sorbinsyre og et meget almindeligt konserveringsmiddel mod skimmel og gær.",
+  "description": "Kaliumsorbat fremstilles ved at neutralisere sorbinsyre (E200) med kaliumhydroxid. Det er langt mere vandopløseligt end sorbinsyre og derfor lettere at bruge i drikke, saucer og fyld. I fødevaren omdannes det delvist til sorbinsyre, som er den aktive form, og virkningen er bedst ved lav pH. Det hæmmer skimmel og gær, men er mindre effektivt mod bakterier.",
+  "uses": "Saftevand og læskedrikke, vin, ost, pakket brød og kager, marmelade, pålægssalater, dressinger, remoulade, oliven og syltede grøntsager. Maksimumsgrænser afhænger af produktkategori.",
+  "health": "Kaliumsorbat anses for sikkert ved normal brug og er ikke kræftfremkaldende eller genotoksisk. Enkelte personer kan få kløe, nældefeber eller andre pseudoallergiske reaktioner. EFSA's midlertidige gruppe-ADI fra 2015 var 3 mg/kg legemsvægt/dag (med risiko for overskridelse hos børn), men blev i 2019 fastsat til 11 mg/kg legemsvægt/dag.",
+  "research": "EFSA gen-evaluerede sorbinsyre og sorbater i 2015 og fastsatte en midlertidig ADI på 3 mg/kg. En opfølgende EFSA-udtalelse i 2019, baseret på et nyt udvidet en-generations reproduktionsstudie, fastsatte gruppe-ADI til 11 mg/kg legemsvægt/dag for sorbinsyre og kaliumsorbat. In vitro-studier har rejst spørgsmål om genotoksicitet ved høje koncentrationer, men dette er ikke bekræftet in vivo.",
+  "keyReferences": [],
+  "pubmedTerm": "potassium sorbate",
+  "flags": [],
+  "classes": [
+   "preservative"
+  ],
+  "variants": [],
+  "efsa": {
+   "title": "Opinion on the follow-up of the re-evaluation of sorbic acid (E200) and potassium sorbate (E202) as food additives",
+   "url": "https://doi.org/10.2903/j.efsa.2019.5625",
+   "date": "2019-03-01",
+   "adi": "11 mg/kg bw/day",
+   "overexposureRisk": ""
+  },
+  "verification": {
+   "status": "uncertain",
+   "sources": [
+    "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2015.4144",
+    "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2019.5625"
+   ],
+   "notes": "Runde 2 IKKE gennemført for denne post: sessionens søgebudget (200 WebSearch) blev opbrugt, før posten kunne gennemgås udsagn for udsagn. Teksten er uændret fra runde 1 (kun EU-status/ADI/EFSA kontrolleret). Runde 1-note: Godkendt. Midlertidig ADI 3 (2015) og gruppe-ADI 11 mg/kg (2019, EOGRTS, BMDL 1110) bekræftet. efsa-objekt opdateret til den seneste udtalelse (2019)."
+  },
+  "wikipedia": "https://en.wikipedia.org/wiki/Potassium_sorbate",
+  "wikidata": "Q410744",
+  "claims": []
+ },
+ {
+  "code": "E210",
+  "nameDa": "Benzoesyre",
+  "nameEn": "Benzoic acid",
+  "category": "Konserveringsmiddel",
+  "euStatus": "approved",
+  "origin": "synthetic",
+  "summary": "Benzoesyre er et klassisk konserveringsmiddel mod gær, skimmel og visse bakterier i sure fødevarer. Det forekommer også naturligt i fx tranebær og kanel.",
+  "description": "Benzoesyre (C6H5COOH) er den simpleste aromatiske carboxylsyre. Den findes naturligt i bær, krydderier og fermenterede mejeriprodukter, men fremstilles industrielt ved oxidation af toluen. Den virker bedst ved lav pH (under ca. 4,5), hvor den udissocierede syre kan trænge ind i mikroorganismernes celler. Da selve syren er tungtopløselig i vand, bruges ofte saltene E211–E213. I kroppen bindes benzoesyre til glycin og udskilles som hippursyre med urinen.",
+  "uses": "Læskedrikke og saftevand (typisk maks. 150 mg/l), syltede agurker og rødbeder, pålægssalater og mayonnaisebaserede salater, marinerede sild og fiskekonserves, ketchup og saucer, marmelade med lavt sukkerindhold og frugtfyld.",
+  "health": "EFSA fastholdt i 2016 gruppe-ADI på 5 mg/kg legemsvægt/dag (udtrykt som benzoesyre) for benzoesyre og benzoater og fandt, at den blev overskredet i det 'mærkeloyale' scenarie, især for småbørn og børn, der jævnligt drikker læskedrikke/saftevand med benzoat. Benzoater kan udløse pseudoallergiske reaktioner som nældefeber og forværring af astma hos følsomme personer, ofte hos dem, der også reagerer på acetylsalicylsyre. I drikke med C-vitamin (ascorbinsyre) kan der under visse forhold (varme, lys) dannes små mængder af det kræftfremkaldende stof benzen. Benzoater er ikke tilladt i modermælkserstatning.",
+  "research": "EFSA's gen-evaluering fra 2016 (EFSA Journal 2016;14(3):4433) fastholdt gruppe-ADI 5 mg/kg legemsvægt/dag og fandt ikke tegn på genotoksicitet eller kræftfremkaldende effekt. Southampton-studiet (McCann et al., Lancet 2007) brugte en blanding af natriumbenzoat og azofarvestoffer og fandt øget hyperaktivitet hos børn; det var dog ikke muligt at adskille benzoatets bidrag fra farvestoffernes, og EFSA vurderede i 2008, at resultaterne ikke kunne danne grundlag for at ændre ADI. Fund af benzen i læskedrikke i 2005–2006 fik industrien til at reformulere mange produkter. Benzoesyre findes også naturligt i fx tranebær, kanel og fermenterede mejeriprodukter.",
+  "keyReferences": [
+   {
+    "citation": "McCann D et al. Food additives and hyperactive behaviour in 3-year-old and 8/9-year-old children in the community: a randomised, double-blinded, placebo-controlled trial. Lancet. 2007;370(9598):1560-1567.",
+    "searchTitle": "Food additives and hyperactive behaviour in 3-year-old and 8/9-year-old children in the community: a randomised, double-blinded, placebo-controlled trial"
+   }
+  ],
+  "pubmedTerm": "benzoic acid",
+  "flags": [
+   "children_caution",
+   "asthma_caution"
+  ],
+  "classes": [
+   "preservative"
+  ],
+  "variants": [],
+  "efsa": {
+   "title": "Scientific Opinion on the re-evaluation of benzoic acid (E 210), sodium benzoate (E 211), potassium benzoate (E 212) and calcium benzoate (E 213) as food additives",
+   "url": "https://doi.org/10.2903/j.efsa.2016.4433",
+   "date": "2016-03-31",
+   "adi": "5",
+   "overexposureRisk": "en:high"
+  },
+  "verification": {
+   "status": "uncertain",
+   "sources": [
+    "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2016.4433",
+    "https://pubmed.ncbi.nlm.nih.gov/17825405/"
+   ],
+   "notes": "Runde 2 IKKE gennemført for denne post: sessionens søgebudget (200 WebSearch) blev opbrugt, før posten kunne gennemgås udsagn for udsagn. Teksten er uændret fra runde 1 (kun EU-status/ADI/EFSA kontrolleret). Runde 1-note: Godkendt. ADI 5 mg/kg bekræftet; overskridelse præciseret til mærkeloyalt scenarie for småbørn/børn. Uunderbygget udsagn om spædbørns omsætning fjernet. McCann 2007 (Lancet 370:1560) bekræftet og tilføjet."
+  },
+  "wikipedia": "",
+  "wikidata": "Q191700",
+  "claims": []
+ },
+ {
+  "code": "E211",
+  "nameDa": "Natriumbenzoat",
+  "nameEn": "Sodium benzoate",
+  "category": "Konserveringsmiddel",
+  "euStatus": "approved",
+  "origin": "synthetic",
+  "summary": "Natriumbenzoat er natriumsaltet af benzoesyre og et af de mest udbredte konserveringsmidler i læskedrikke og sure fødevarer.",
+  "description": "Natriumbenzoat fremstilles ved at neutralisere benzoesyre med natriumhydroxid. Saltet er let opløseligt i vand og omdannes i sure fødevarer til den aktive benzoesyre. Det hæmmer især gær og skimmel og er billigt og smagsneutralt i lave doser. I kroppen omdannes det til hippursyre og udskilles med urinen. Stoffet bruges også medicinsk til behandling af visse medfødte stofskiftesygdomme (ureacyklusdefekter).",
+  "uses": "Læskedrikke og saftevand (typisk maks. 150 mg/l), syltede agurker og rødbeder, pålægssalater og mayonnaisebaserede salater, marinerede sild og fiskekonserves, ketchup og saucer, marmelade med lavt sukkerindhold og frugtfyld.",
+  "health": "EFSA fastholdt i 2016 gruppe-ADI på 5 mg/kg legemsvægt/dag (udtrykt som benzoesyre) for benzoesyre og benzoater og fandt, at den blev overskredet i det 'mærkeloyale' scenarie, især for småbørn og børn, der jævnligt drikker læskedrikke/saftevand med benzoat. Benzoater kan udløse pseudoallergiske reaktioner som nældefeber og forværring af astma hos følsomme personer, ofte hos dem, der også reagerer på acetylsalicylsyre. I drikke med C-vitamin (ascorbinsyre) kan der under visse forhold (varme, lys) dannes små mængder af det kræftfremkaldende stof benzen. Benzoater er ikke tilladt i modermælkserstatning.",
+  "research": "EFSA's gen-evaluering fra 2016 (EFSA Journal 2016;14(3):4433) fastholdt gruppe-ADI 5 mg/kg legemsvægt/dag og fandt ikke tegn på genotoksicitet eller kræftfremkaldende effekt. Southampton-studiet (McCann et al., Lancet 2007) brugte en blanding af natriumbenzoat og azofarvestoffer og fandt øget hyperaktivitet hos børn; det var dog ikke muligt at adskille benzoatets bidrag fra farvestoffernes, og EFSA vurderede i 2008, at resultaterne ikke kunne danne grundlag for at ændre ADI. Fund af benzen i læskedrikke i 2005–2006 fik industrien til at reformulere mange produkter. Benzoesyre findes også naturligt i fx tranebær, kanel og fermenterede mejeriprodukter.",
+  "keyReferences": [
+   {
+    "citation": "McCann D et al. Food additives and hyperactive behaviour in 3-year-old and 8/9-year-old children in the community: a randomised, double-blinded, placebo-controlled trial. Lancet. 2007;370(9598):1560-1567.",
+    "searchTitle": "Food additives and hyperactive behaviour in 3-year-old and 8/9-year-old children in the community: a randomised, double-blinded, placebo-controlled trial"
+   }
+  ],
+  "pubmedTerm": "sodium benzoate",
+  "flags": [
+   "children_caution",
+   "asthma_caution"
+  ],
+  "classes": [
+   "preservative"
+  ],
+  "variants": [],
+  "efsa": {
+   "title": "Scientific Opinion on the re-evaluation of benzoic acid (E 210), sodium benzoate (E 211), potassium benzoate (E 212) and calcium benzoate (E 213) as food additives",
+   "url": "https://doi.org/10.2903/j.efsa.2016.4433",
+   "date": "2016-03-31",
+   "adi": "5",
+   "overexposureRisk": "en:high"
+  },
+  "verification": {
+   "status": "uncertain",
+   "sources": [
+    "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2016.4433",
+    "https://pubmed.ncbi.nlm.nih.gov/17825405/"
+   ],
+   "notes": "Runde 2 IKKE gennemført for denne post: sessionens søgebudget (200 WebSearch) blev opbrugt, før posten kunne gennemgås udsagn for udsagn. Teksten er uændret fra runde 1 (kun EU-status/ADI/EFSA kontrolleret). Runde 1-note: Godkendt. ADI 5 mg/kg bekræftet; overskridelse præciseret til mærkeloyalt scenarie for småbørn/børn. Uunderbygget udsagn om spædbørns omsætning fjernet. McCann 2007 (Lancet 370:1560) bekræftet og tilføjet."
+  },
+  "wikipedia": "https://en.wikipedia.org/wiki/Sodium_benzoate",
+  "wikidata": "Q423971",
+  "claims": []
+ },
+ {
+  "code": "E212",
+  "nameDa": "Kaliumbenzoat",
+  "nameEn": "Potassium benzoate",
+  "category": "Konserveringsmiddel",
+  "euStatus": "approved",
+  "origin": "synthetic",
+  "summary": "Kaliumbenzoat er kaliumsaltet af benzoesyre. Det bruges som natriumbenzoat, fx i natriumreducerede produkter.",
+  "description": "Kaliumbenzoat fremstilles ved at neutralisere benzoesyre med kaliumhydroxid. Det virker på samme måde som natriumbenzoat og vælges ofte, når producenten ønsker at nedsætte natriumindholdet. Det er let vandopløseligt og omdannes til benzoesyre ved lav pH. Omsætningen i kroppen svarer til de andre benzoater.",
+  "uses": "Læskedrikke og saftevand (typisk maks. 150 mg/l), syltede agurker og rødbeder, pålægssalater og mayonnaisebaserede salater, marinerede sild og fiskekonserves, ketchup og saucer, marmelade med lavt sukkerindhold og frugtfyld.",
+  "health": "EFSA fastholdt i 2016 gruppe-ADI på 5 mg/kg legemsvægt/dag (udtrykt som benzoesyre) for benzoesyre og benzoater og fandt, at den blev overskredet i det 'mærkeloyale' scenarie, især for småbørn og børn, der jævnligt drikker læskedrikke/saftevand med benzoat. Benzoater kan udløse pseudoallergiske reaktioner som nældefeber og forværring af astma hos følsomme personer, ofte hos dem, der også reagerer på acetylsalicylsyre. I drikke med C-vitamin (ascorbinsyre) kan der under visse forhold (varme, lys) dannes små mængder af det kræftfremkaldende stof benzen. Benzoater er ikke tilladt i modermælkserstatning.",
+  "research": "EFSA's gen-evaluering fra 2016 (EFSA Journal 2016;14(3):4433) fastholdt gruppe-ADI 5 mg/kg legemsvægt/dag og fandt ikke tegn på genotoksicitet eller kræftfremkaldende effekt. Southampton-studiet (McCann et al., Lancet 2007) brugte en blanding af natriumbenzoat og azofarvestoffer og fandt øget hyperaktivitet hos børn; det var dog ikke muligt at adskille benzoatets bidrag fra farvestoffernes, og EFSA vurderede i 2008, at resultaterne ikke kunne danne grundlag for at ændre ADI. Fund af benzen i læskedrikke i 2005–2006 fik industrien til at reformulere mange produkter. Benzoesyre findes også naturligt i fx tranebær, kanel og fermenterede mejeriprodukter.",
+  "keyReferences": [
+   {
+    "citation": "McCann D et al. Food additives and hyperactive behaviour in 3-year-old and 8/9-year-old children in the community: a randomised, double-blinded, placebo-controlled trial. Lancet. 2007;370(9598):1560-1567.",
+    "searchTitle": "Food additives and hyperactive behaviour in 3-year-old and 8/9-year-old children in the community: a randomised, double-blinded, placebo-controlled trial"
+   }
+  ],
+  "pubmedTerm": "potassium benzoate",
+  "flags": [
+   "children_caution",
+   "asthma_caution"
+  ],
+  "classes": [
+   "preservative"
+  ],
+  "variants": [],
+  "efsa": {
+   "title": "Scientific Opinion on the re-evaluation of benzoic acid (E 210), sodium benzoate (E 211), potassium benzoate (E 212) and calcium benzoate (E 213) as food additives",
+   "url": "https://doi.org/10.2903/j.efsa.2016.4433",
+   "date": "2016-03-31",
+   "adi": "5",
+   "overexposureRisk": "en:high"
+  },
+  "verification": {
+   "status": "uncertain",
+   "sources": [
+    "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2016.4433",
+    "https://pubmed.ncbi.nlm.nih.gov/17825405/"
+   ],
+   "notes": "Runde 2 IKKE gennemført for denne post: sessionens søgebudget (200 WebSearch) blev opbrugt, før posten kunne gennemgås udsagn for udsagn. Teksten er uændret fra runde 1 (kun EU-status/ADI/EFSA kontrolleret). Runde 1-note: Godkendt. ADI 5 mg/kg bekræftet; overskridelse præciseret til mærkeloyalt scenarie for småbørn/børn. Uunderbygget udsagn om spædbørns omsætning fjernet. McCann 2007 (Lancet 370:1560) bekræftet og tilføjet."
+  },
+  "wikipedia": "",
+  "wikidata": "Q413611",
+  "claims": []
+ },
+ {
+  "code": "E213",
+  "nameDa": "Calciumbenzoat",
+  "nameEn": "Calcium benzoate",
+  "category": "Konserveringsmiddel",
+  "euStatus": "approved",
+  "origin": "synthetic",
+  "summary": "Calciumbenzoat er calciumsaltet af benzoesyre og bruges sjældnere end natrium- og kaliumbenzoat.",
+  "description": "Calciumbenzoat fremstilles ved at neutralisere benzoesyre med calciumhydroxid eller calciumkarbonat. Det er mindre opløseligt end natriumsaltet, men virker på samme måde, når det omdannes til benzoesyre i sure fødevarer. Det er omfattet af samme regler og gruppe-ADI som de øvrige benzoater.",
+  "uses": "Læskedrikke og saftevand (typisk maks. 150 mg/l), syltede agurker og rødbeder, pålægssalater og mayonnaisebaserede salater, marinerede sild og fiskekonserves, ketchup og saucer, marmelade med lavt sukkerindhold og frugtfyld.",
+  "health": "EFSA fastholdt i 2016 gruppe-ADI på 5 mg/kg legemsvægt/dag (udtrykt som benzoesyre) for benzoesyre og benzoater og fandt, at den blev overskredet i det 'mærkeloyale' scenarie, især for småbørn og børn, der jævnligt drikker læskedrikke/saftevand med benzoat. Benzoater kan udløse pseudoallergiske reaktioner som nældefeber og forværring af astma hos følsomme personer, ofte hos dem, der også reagerer på acetylsalicylsyre. I drikke med C-vitamin (ascorbinsyre) kan der under visse forhold (varme, lys) dannes små mængder af det kræftfremkaldende stof benzen. Benzoater er ikke tilladt i modermælkserstatning.",
+  "research": "EFSA's gen-evaluering fra 2016 (EFSA Journal 2016;14(3):4433) fastholdt gruppe-ADI 5 mg/kg legemsvægt/dag og fandt ikke tegn på genotoksicitet eller kræftfremkaldende effekt. Southampton-studiet (McCann et al., Lancet 2007) brugte en blanding af natriumbenzoat og azofarvestoffer og fandt øget hyperaktivitet hos børn; det var dog ikke muligt at adskille benzoatets bidrag fra farvestoffernes, og EFSA vurderede i 2008, at resultaterne ikke kunne danne grundlag for at ændre ADI. Fund af benzen i læskedrikke i 2005–2006 fik industrien til at reformulere mange produkter. Benzoesyre findes også naturligt i fx tranebær, kanel og fermenterede mejeriprodukter.",
+  "keyReferences": [
+   {
+    "citation": "McCann D et al. Food additives and hyperactive behaviour in 3-year-old and 8/9-year-old children in the community: a randomised, double-blinded, placebo-controlled trial. Lancet. 2007;370(9598):1560-1567.",
+    "searchTitle": "Food additives and hyperactive behaviour in 3-year-old and 8/9-year-old children in the community: a randomised, double-blinded, placebo-controlled trial"
+   }
+  ],
+  "pubmedTerm": "calcium benzoate",
+  "flags": [
+   "children_caution",
+   "asthma_caution"
+  ],
+  "classes": [
+   "preservative"
+  ],
+  "variants": [],
+  "efsa": {
+   "title": "Scientific Opinion on the re-evaluation of benzoic acid (E 210), sodium benzoate (E 211), potassium benzoate (E 212) and calcium benzoate (E 213) as food additives",
+   "url": "https://doi.org/10.2903/j.efsa.2016.4433",
+   "date": "2016-03-31",
+   "adi": "5",
+   "overexposureRisk": "en:high"
+  },
+  "verification": {
+   "status": "uncertain",
+   "sources": [
+    "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2016.4433",
+    "https://pubmed.ncbi.nlm.nih.gov/17825405/"
+   ],
+   "notes": "Runde 2 IKKE gennemført for denne post: sessionens søgebudget (200 WebSearch) blev opbrugt, før posten kunne gennemgås udsagn for udsagn. Teksten er uændret fra runde 1 (kun EU-status/ADI/EFSA kontrolleret). Runde 1-note: Godkendt. ADI 5 mg/kg bekræftet; overskridelse præciseret til mærkeloyalt scenarie for småbørn/børn. Uunderbygget udsagn om spædbørns omsætning fjernet. McCann 2007 (Lancet 370:1560) bekræftet og tilføjet."
+  },
+  "wikipedia": "",
+  "wikidata": "Q414509",
+  "claims": []
+ },
+ {
+  "code": "E214",
+  "nameDa": "Ethylparaben",
+  "nameEn": "Ethyl p-hydroxybenzoate",
+  "category": "Konserveringsmiddel",
+  "euStatus": "approved",
+  "origin": "synthetic",
+  "summary": "Ethylparaben er et konserveringsmiddel fra paraben-familien. I EU må det kun bruges i få produkter som overfladebehandling af tørret kød og overtræk.",
+  "description": "Ethylparaben er ethylesteren af p-hydroxybenzoesyre og fremstilles syntetisk. Det hæmmer skimmel, gær og grampositive bakterier og virker over et bredere pH-område end benzoater og sorbater. I kroppen hydrolyseres det hurtigt til p-hydroxybenzoesyre, som udskilles med urinen. Brugen i fødevarer er blevet stærkt indskrænket over tid.",
+  "uses": "I EU tilladt i gelatineovertræk på kødprodukter, visse snacks og konfekture med overtræk samt flydende kosttilskud – med maksimumsgrænser (fx 300 mg/kg i snacks og overtrukne nødder, højere i flydende kosttilskud). Bruges bredt i kosmetik og lægemidler.",
+  "health": "EFSA fastsatte i 2004 en gruppe-ADI på 0–10 mg/kg legemsvægt/dag for methyl- og ethylparaben samt deres natriumsalte. Parabener kan give allergiske reaktioner, især ved hudkontakt (kosmetik), og i sjældne tilfælde ved indtag. De korte parabener (methyl og ethyl) har meget svag hormonlignende aktivitet sammenlignet med propyl- og butylparaben, og EFSA fandt ikke effekter på forplantningsorganer for disse.",
+  "research": "EFSA's vurdering fra 2004 skelnede mellem de kortkædede parabener (methyl, ethyl), som fik en gruppe-ADI, og propylparaben, hvor der blev set effekter på hanrotters forplantningsorganer, og som derfor blev fjernet fra EU-listen med direktiv 2006/52/EF. EFSA har ikke siden gen-evalueret E214–E219 i en ny udtalelse. Debatten om parabener og hormonforstyrrelse har været intens, især for kosmetik, og EU's videnskabelige komité for forbrugersikkerhed (SCCS) har vurderet parabener i kosmetik flere gange. Der er fortsat åben diskussion om kombinationseffekter af flere hormonforstyrrende stoffer.",
+  "keyReferences": [],
+  "pubmedTerm": "ethylparaben",
+  "flags": [
+   "allergen"
+  ],
+  "classes": [
+   "preservative"
+  ],
+  "variants": [],
+  "efsa": {
+   "title": "Opinion of the Scientific Panel on Food Additives, Flavourings, Processing Aids and Materials in Contact with Food on a Request from the Commission related to para hydroxybenzoates (E 214-219)",
+   "url": "http://dx.doi.org/10.2903/j.efsa.2004.83",
+   "date": "2004-09-28",
+   "adi": "",
+   "overexposureRisk": ""
+  },
+  "verification": {
+   "status": "uncertain",
+   "sources": [
+    "https://doi.org/10.2903/j.efsa.2004.83",
+    "https://www.efsa.europa.eu/en/efsajournal/pub/83"
+   ],
+   "notes": "Runde 2 IKKE gennemført for denne post: sessionens søgebudget (200 WebSearch) blev opbrugt, før posten kunne gennemgås udsagn for udsagn. Teksten er uændret fra runde 1 (kun EU-status/ADI/EFSA kontrolleret). Runde 1-note: Godkendt i EU. Gruppe-ADI 0–10 mg/kg (EFSA 2004) og fjernelse af propylparaben (dir. 2006/52/EF) bekræftet. Præcise maks-niveauer pr. kategori ikke fuldt verificeret."
+  },
+  "wikipedia": "",
+  "wikidata": "Q229976",
+  "claims": []
+ },
+ {
+  "code": "E215",
+  "nameDa": "Natriumethylparaben",
+  "nameEn": "Sodium ethyl p-hydroxybenzoate",
+  "category": "Konserveringsmiddel",
+  "euStatus": "approved",
+  "origin": "synthetic",
+  "summary": "Natriumsaltet af ethylparaben, som er mere vandopløseligt. Det har samme begrænsede anvendelse som E214.",
+  "description": "Natriumethyl-p-hydroxybenzoat fremstilles ved at omsætte ethylparaben med natriumhydroxid. Saltet opløses lettere i vand og bruges, når konserveringsmidlet skal fordeles i vandige systemer. I fødevaren og i kroppen virker det som ethylparaben. Anvendelsesbetingelserne er de samme som for E214.",
+  "uses": "Gelatineovertræk på kødprodukter, visse overtrukne snacks og konfekture samt flydende kosttilskud. Omfattet af samme maksimumsgrænser som E214.",
+  "health": "EFSA fastsatte i 2004 en gruppe-ADI på 0–10 mg/kg legemsvægt/dag for methyl- og ethylparaben samt deres natriumsalte. Parabener kan give allergiske reaktioner, især ved hudkontakt (kosmetik), og i sjældne tilfælde ved indtag. De korte parabener (methyl og ethyl) har meget svag hormonlignende aktivitet sammenlignet med propyl- og butylparaben, og EFSA fandt ikke effekter på forplantningsorganer for disse.",
+  "research": "EFSA's vurdering fra 2004 skelnede mellem de kortkædede parabener (methyl, ethyl), som fik en gruppe-ADI, og propylparaben, hvor der blev set effekter på hanrotters forplantningsorganer, og som derfor blev fjernet fra EU-listen med direktiv 2006/52/EF. EFSA har ikke siden gen-evalueret E214–E219 i en ny udtalelse. Debatten om parabener og hormonforstyrrelse har været intens, især for kosmetik, og EU's videnskabelige komité for forbrugersikkerhed (SCCS) har vurderet parabener i kosmetik flere gange. Der er fortsat åben diskussion om kombinationseffekter af flere hormonforstyrrende stoffer.",
+  "keyReferences": [],
+  "pubmedTerm": "ethylparaben",
+  "flags": [
+   "allergen"
+  ],
+  "classes": [],
+  "variants": [],
+  "efsa": {
+   "title": "Opinion of the Scientific Panel on Food Additives, Flavourings, Processing Aids and Materials in Contact with Food on a request from the Commission related to para hydroxybenzoates (E 214-219)",
+   "url": "https://doi.org/10.2903/j.efsa.2004.83",
+   "date": "2004-09-28",
+   "adi": "10 mg/kg bw/day",
+   "overexposureRisk": ""
+  },
+  "verification": {
+   "status": "uncertain",
+   "sources": [
+    "https://doi.org/10.2903/j.efsa.2004.83",
+    "https://www.efsa.europa.eu/en/efsajournal/pub/83"
+   ],
+   "notes": "Runde 2 IKKE gennemført for denne post: sessionens søgebudget (200 WebSearch) blev opbrugt, før posten kunne gennemgås udsagn for udsagn. Teksten er uændret fra runde 1 (kun EU-status/ADI/EFSA kontrolleret). Runde 1-note: Godkendt i EU. Gruppe-ADI 0–10 mg/kg (EFSA 2004) og fjernelse af propylparaben (dir. 2006/52/EF) bekræftet. Tilføjet efsa-objekt (2004). Præcise maks-niveauer pr. kategori ikke fuldt verificeret."
+  },
+  "wikipedia": "",
+  "wikidata": "",
+  "claims": []
+ },
+ {
+  "code": "E218",
+  "nameDa": "Methylparaben",
+  "nameEn": "Methyl p-hydroxybenzoate",
+  "category": "Konserveringsmiddel",
+  "euStatus": "approved",
+  "origin": "synthetic",
+  "summary": "Methylparaben er den mest udbredte paraben. I EU må den kun bruges i få fødevarer som overfladebehandling og i overtræk.",
+  "description": "Methylparaben er methylesteren af p-hydroxybenzoesyre. Det forekommer naturligt i små mængder i nogle planter (fx blåbær), men fremstilles til industrien syntetisk. Det hæmmer skimmel og gær og virker over et bredt pH-område. I kroppen hydrolyseres det hurtigt og udskilles med urinen. Det er et af de mest anvendte konserveringsmidler i kosmetik og lægemidler.",
+  "uses": "Gelatineovertræk på kødprodukter, visse overtrukne snacks, konfekture med overtræk og flydende kosttilskud i EU. Meget udbredt i kosmetik, cremer og flydende medicin.",
+  "health": "EFSA fastsatte i 2004 en gruppe-ADI på 0–10 mg/kg legemsvægt/dag for methyl- og ethylparaben samt deres natriumsalte. Parabener kan give allergiske reaktioner, især ved hudkontakt (kosmetik), og i sjældne tilfælde ved indtag. De korte parabener (methyl og ethyl) har meget svag hormonlignende aktivitet sammenlignet med propyl- og butylparaben, og EFSA fandt ikke effekter på forplantningsorganer for disse.",
+  "research": "EFSA's vurdering fra 2004 skelnede mellem de kortkædede parabener (methyl, ethyl), som fik en gruppe-ADI, og propylparaben, hvor der blev set effekter på hanrotters forplantningsorganer, og som derfor blev fjernet fra EU-listen med direktiv 2006/52/EF. EFSA har ikke siden gen-evalueret E214–E219 i en ny udtalelse. Debatten om parabener og hormonforstyrrelse har været intens, især for kosmetik, og EU's videnskabelige komité for forbrugersikkerhed (SCCS) har vurderet parabener i kosmetik flere gange. Der er fortsat åben diskussion om kombinationseffekter af flere hormonforstyrrende stoffer.",
+  "keyReferences": [],
+  "pubmedTerm": "methylparaben",
+  "flags": [
+   "allergen"
+  ],
+  "classes": [
+   "preservative"
+  ],
+  "variants": [],
+  "efsa": {
+   "title": "Opinion of the Scientific Panel on Food Additives, Flavourings, Processing Aids and Materials in Contact with Food on a request from the Commission related to para hydroxybenzoates (E 214-219)",
+   "url": "https://doi.org/10.2903/j.efsa.2004.83",
+   "date": "2004-09-28",
+   "adi": "10 mg/kg bw/day",
+   "overexposureRisk": ""
+  },
+  "verification": {
+   "status": "uncertain",
+   "sources": [
+    "https://doi.org/10.2903/j.efsa.2004.83",
+    "https://www.efsa.europa.eu/en/efsajournal/pub/83"
+   ],
+   "notes": "Runde 2 IKKE gennemført for denne post: sessionens søgebudget (200 WebSearch) blev opbrugt, før posten kunne gennemgås udsagn for udsagn. Teksten er uændret fra runde 1 (kun EU-status/ADI/EFSA kontrolleret). Runde 1-note: Godkendt i EU. Gruppe-ADI 0–10 mg/kg (EFSA 2004) og fjernelse af propylparaben (dir. 2006/52/EF) bekræftet. Tilføjet efsa-objekt (2004). Præcise maks-niveauer pr. kategori ikke fuldt verificeret."
+  },
+  "wikipedia": "",
+  "wikidata": "Q229987",
+  "claims": []
+ },
+ {
+  "code": "E219",
+  "nameDa": "Natriummethylparaben",
+  "nameEn": "Sodium methyl p-hydroxybenzoate",
+  "category": "Konserveringsmiddel",
+  "euStatus": "approved",
+  "origin": "synthetic",
+  "summary": "Natriumsaltet af methylparaben med samme begrænsede anvendelse som E218.",
+  "description": "Natriummethyl-p-hydroxybenzoat fremstilles ved at omdanne methylparaben til natriumsalt, hvilket gør det lettere opløseligt i vand. Virkningen i fødevaren og i kroppen svarer til methylparaben. Anvendelsesbetingelserne er de samme som for E218.",
+  "uses": "Gelatineovertræk på kødprodukter, visse overtrukne snacks og konfekture samt flydende kosttilskud.",
+  "health": "EFSA fastsatte i 2004 en gruppe-ADI på 0–10 mg/kg legemsvægt/dag for methyl- og ethylparaben samt deres natriumsalte. Parabener kan give allergiske reaktioner, især ved hudkontakt (kosmetik), og i sjældne tilfælde ved indtag. De korte parabener (methyl og ethyl) har meget svag hormonlignende aktivitet sammenlignet med propyl- og butylparaben, og EFSA fandt ikke effekter på forplantningsorganer for disse.",
+  "research": "EFSA's vurdering fra 2004 skelnede mellem de kortkædede parabener (methyl, ethyl), som fik en gruppe-ADI, og propylparaben, hvor der blev set effekter på hanrotters forplantningsorganer, og som derfor blev fjernet fra EU-listen med direktiv 2006/52/EF. EFSA har ikke siden gen-evalueret E214–E219 i en ny udtalelse. Debatten om parabener og hormonforstyrrelse har været intens, især for kosmetik, og EU's videnskabelige komité for forbrugersikkerhed (SCCS) har vurderet parabener i kosmetik flere gange. Der er fortsat åben diskussion om kombinationseffekter af flere hormonforstyrrende stoffer.",
+  "keyReferences": [],
+  "pubmedTerm": "methylparaben",
+  "flags": [
+   "allergen"
+  ],
+  "classes": [],
+  "variants": [],
+  "efsa": {
+   "title": "Opinion of the Scientific Panel on Food Additives, Flavourings, Processing Aids and Materials in Contact with Food on a request from the Commission related to para hydroxybenzoates (E 214-219)",
+   "url": "https://doi.org/10.2903/j.efsa.2004.83",
+   "date": "2004-09-28",
+   "adi": "10 mg/kg bw/day",
+   "overexposureRisk": ""
+  },
+  "verification": {
+   "status": "uncertain",
+   "sources": [
+    "https://doi.org/10.2903/j.efsa.2004.83",
+    "https://www.efsa.europa.eu/en/efsajournal/pub/83"
+   ],
+   "notes": "Runde 2 IKKE gennemført for denne post: sessionens søgebudget (200 WebSearch) blev opbrugt, før posten kunne gennemgås udsagn for udsagn. Teksten er uændret fra runde 1 (kun EU-status/ADI/EFSA kontrolleret). Runde 1-note: Godkendt i EU. Gruppe-ADI 0–10 mg/kg (EFSA 2004) og fjernelse af propylparaben (dir. 2006/52/EF) bekræftet. Tilføjet efsa-objekt (2004). Præcise maks-niveauer pr. kategori ikke fuldt verificeret."
+  },
+  "wikipedia": "",
+  "wikidata": "Q3963920",
+  "claims": []
+ },
+ {
+  "code": "E220",
+  "nameDa": "Svovldioxid",
+  "nameEn": "Sulphur dioxide",
+  "category": "Konserveringsmiddel / antioxidant",
+  "euStatus": "approved",
+  "origin": "synthetic",
+  "summary": "Svovldioxid er en skarpt lugtende gas, som bruges til at konservere og hindre brunfarvning, især i vin og tørret frugt.",
+  "description": "Svovldioxid (SO2) fremstilles ved forbrænding af svovl eller ved ristning af sulfidmalme. I vandige fødevarer danner det svovlsyrling og sulfit/bisulfit-ioner, som virker antimikrobielt og hæmmer enzymatisk og ikke-enzymatisk brunfarvning. Det har været brugt til at 'svovle' vinfade siden oldtiden. Svovldioxid og de øvrige sulfitter (E221–E228) reguleres og vurderes samlet, og mængden angives som SO2-ækvivalenter.",
+  "uses": "Vin (næsten al vin, maks. typisk 150–200 mg/l for tør rød/hvid vin), tørrede abrikoser og andet tørret frugt, kartoffelprodukter, frugtsaft- og sirupskoncentrater, øl og cider, eddike og visse skaldyr (rejer). Deklareres som allergen ('sulfitter') over 10 mg/kg eller 10 mg/l.",
+  "health": "Sulfitter er en kendt årsag til overfølsomhedsreaktioner, især hos personer med astma, hvor de kan udløse bronkiekonstriktion (vejrtrækningsbesvær); reaktioner ses hos anslået 3–10 % af astmatikere. Sulfitter over 10 mg/kg (som SO2) skal derfor deklareres som allergen i EU. EFSA fastholdt i 2016 midlertidigt en gruppe-ADI på 0,7 mg SO2-ækvivalenter/kg legemsvægt/dag, men trak den tilbage i 2022 og vurderede med en margin-of-exposure-tilgang, at eksponeringen for de fleste befolkningsgrupper, herunder børn, giver anledning til sikkerhedsbekymring. Sulfitter nedbryder desuden vitamin B1 (thiamin) i fødevarer.",
+  "research": "EFSA's gen-evaluering fra 2016 af svovldioxid og sulfitter (E220–E228) (EFSA Journal 2016;14(4):4438) fastholdt midlertidigt en gruppe-ADI på 0,7 mg SO2-ækvivalenter/kg legemsvægt/dag, men pegede på væsentlige datahuller. I opfølgningen fra 2022 (EFSA Journal 2022;20(11):7594) konkluderede EFSA, at datagrundlaget var utilstrækkeligt til at udlede en ADI, og trak den midlertidige gruppe-ADI tilbage. I stedet blev der brugt en margin-of-exposure-tilgang baseret på et BMDL på 38 mg SO2-ækvivalenter/kg legemsvægt/dag (forlænget latens af visuelle fremkaldte potentialer, dvs. effekt på nervesystemet); i det raffinerede scenarie lå MOE under 80 for alle befolkningsgrupper undtagen unge, hvilket giver anledning til sikkerhedsbekymring. Mekanismen bag sulfitoverfølsomhed er ikke fuldt forstået og er i mange tilfælde ikke IgE-medieret.",
+  "keyReferences": [],
+  "pubmedTerm": "sulfur dioxide",
+  "flags": [
+   "asthma_caution",
+   "allergen",
+   "children_caution"
+  ],
+  "classes": [
+   "antioxidant",
+   "preservative"
+  ],
+  "variants": [],
+  "efsa": {
+   "title": "Follow-up of the re-evaluation of sulfur dioxide (E 220), sodium sulfite (E 221), sodium bisulfite (E 222), sodium metabisulfite (E 223), potassium metabisulfite (E 224), calcium sulfite (E 226), calcium bisulfite (E 227) and potassium bisulfite (E 228)",
+   "url": "https://doi.org/10.2903/j.efsa.2022.7594",
+   "date": "2022-11",
+   "adi": "",
+   "overexposureRisk": "en:high"
+  },
+  "verification": {
+   "status": "uncertain",
+   "sources": [
+    "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2016.4438",
+    "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2022.7594",
+    "https://www.efsa.europa.eu/sites/default/files/2022-11/7594-PLS-sulfites.pdf"
+   ],
+   "notes": "Runde 2 IKKE gennemført for denne post: sessionens søgebudget (200 WebSearch) blev opbrugt, før posten kunne gennemgås udsagn for udsagn. Teksten er uændret fra runde 1 (kun EU-status/ADI/EFSA kontrolleret). Runde 1-note: Godkendt. Præciseret: EFSA 2022 trak den midlertidige ADI tilbage (MOE-tilgang, BMDL 38, MOE<80). efsa-objekt opdateret til 2022-opfølgningen. Mærkning >10 mg/kg bekræftet."
+  },
+  "wikipedia": "https://en.wikipedia.org/wiki/Sulfur_dioxide",
+  "wikidata": "Q5282",
+  "claims": []
+ },
+ {
+  "code": "E221",
+  "nameDa": "Natriumsulfit",
+  "nameEn": "Sodium sulphite",
+  "category": "Konserveringsmiddel / antioxidant",
+  "euStatus": "approved",
+  "origin": "synthetic",
+  "summary": "Natriumsulfit er et sulfit, der frigiver svovldioxid og bruges til at konservere og forhindre brunfarvning af fødevarer.",
+  "description": "Natriumsulfit (Na2SO3) fremstilles ved at lede svovldioxid gennem en opløsning af natriumhydroxid eller natriumkarbonat. I fødevaren indgår det i en ligevægt mellem svovldioxid, bisulfit og sulfit, og virkningen er den samme som for E220. Sulfitter hæmmer mikroorganismer, især bakterier og gær, og bremser brunfarvning af frugt og grønt. Alle sulfitter reguleres samlet, og indholdet angives som SO2-ækvivalenter.",
+  "uses": "Vin og cider, tørret frugt, kartoffelprodukter (fx færdige pommes frites og kartoffelmos-pulver), frugtfyld, sirup og saftkoncentrater, rejer og andre krebsdyr samt eddike. Deklareres som 'sulfitter' på ingredienslisten, når indholdet overstiger 10 mg/kg eller 10 mg/l.",
+  "health": "Sulfitter er en kendt årsag til overfølsomhedsreaktioner, især hos personer med astma, hvor de kan udløse bronkiekonstriktion (vejrtrækningsbesvær); reaktioner ses hos anslået 3–10 % af astmatikere. Sulfitter over 10 mg/kg (som SO2) skal derfor deklareres som allergen i EU. EFSA fastholdt i 2016 midlertidigt en gruppe-ADI på 0,7 mg SO2-ækvivalenter/kg legemsvægt/dag, men trak den tilbage i 2022 og vurderede med en margin-of-exposure-tilgang, at eksponeringen for de fleste befolkningsgrupper, herunder børn, giver anledning til sikkerhedsbekymring. Sulfitter nedbryder desuden vitamin B1 (thiamin) i fødevarer.",
+  "research": "EFSA's gen-evaluering fra 2016 af svovldioxid og sulfitter (E220–E228) (EFSA Journal 2016;14(4):4438) fastholdt midlertidigt en gruppe-ADI på 0,7 mg SO2-ækvivalenter/kg legemsvægt/dag, men pegede på væsentlige datahuller. I opfølgningen fra 2022 (EFSA Journal 2022;20(11):7594) konkluderede EFSA, at datagrundlaget var utilstrækkeligt til at udlede en ADI, og trak den midlertidige gruppe-ADI tilbage. I stedet blev der brugt en margin-of-exposure-tilgang baseret på et BMDL på 38 mg SO2-ækvivalenter/kg legemsvægt/dag (forlænget latens af visuelle fremkaldte potentialer, dvs. effekt på nervesystemet); i det raffinerede scenarie lå MOE under 80 for alle befolkningsgrupper undtagen unge, hvilket giver anledning til sikkerhedsbekymring. Mekanismen bag sulfitoverfølsomhed er ikke fuldt forstået og er i mange tilfælde ikke IgE-medieret.",
+  "keyReferences": [],
+  "pubmedTerm": "sodium sulphite",
+  "flags": [
+   "asthma_caution",
+   "allergen",
+   "children_caution"
+  ],
+  "classes": [
+   "antioxidant",
+   "preservative"
+  ],
+  "variants": [],
+  "efsa": {
+   "title": "Follow-up of the re-evaluation of sulfur dioxide (E 220), sodium sulfite (E 221), sodium bisulfite (E 222), sodium metabisulfite (E 223), potassium metabisulfite (E 224), calcium sulfite (E 226), calcium bisulfite (E 227) and potassium bisulfite (E 228)",
+   "url": "https://doi.org/10.2903/j.efsa.2022.7594",
+   "date": "2022-11",
+   "adi": "",
+   "overexposureRisk": "en:high"
+  },
+  "verification": {
+   "status": "uncertain",
+   "sources": [
+    "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2016.4438",
+    "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2022.7594",
+    "https://www.efsa.europa.eu/sites/default/files/2022-11/7594-PLS-sulfites.pdf"
+   ],
+   "notes": "Runde 2 IKKE gennemført for denne post: sessionens søgebudget (200 WebSearch) blev opbrugt, før posten kunne gennemgås udsagn for udsagn. Teksten er uændret fra runde 1 (kun EU-status/ADI/EFSA kontrolleret). Runde 1-note: Godkendt. Præciseret: EFSA 2022 trak den midlertidige ADI tilbage (MOE-tilgang, BMDL 38, MOE<80). efsa-objekt opdateret til 2022-opfølgningen. Mærkning >10 mg/kg bekræftet."
+  },
+  "wikipedia": "https://en.wikipedia.org/wiki/Sodium_sulfite",
+  "wikidata": "Q407806",
+  "claims": []
+ },
+ {
+  "code": "E222",
+  "nameDa": "Natriumhydrogensulfit",
+  "nameEn": "Sodium bisulphite",
+  "category": "Konserveringsmiddel / antioxidant",
+  "euStatus": "approved",
+  "origin": "synthetic",
+  "summary": "Natriumhydrogensulfit er et sulfit, der frigiver svovldioxid og bruges til at konservere og forhindre brunfarvning af fødevarer.",
+  "description": "Natriumhydrogensulfit (NaHSO3) fremstilles ved at lede svovldioxid gennem en natriumkarbonatopløsning og findes primært i opløsning. I fødevaren indgår det i en ligevægt mellem svovldioxid, bisulfit og sulfit, og virkningen er den samme som for E220. Sulfitter hæmmer mikroorganismer, især bakterier og gær, og bremser brunfarvning af frugt og grønt. Alle sulfitter reguleres samlet, og indholdet angives som SO2-ækvivalenter.",
+  "uses": "Vin og cider, tørret frugt, kartoffelprodukter (fx færdige pommes frites og kartoffelmos-pulver), frugtfyld, sirup og saftkoncentrater, rejer og andre krebsdyr samt eddike. Deklareres som 'sulfitter' på ingredienslisten, når indholdet overstiger 10 mg/kg eller 10 mg/l.",
+  "health": "Sulfitter er en kendt årsag til overfølsomhedsreaktioner, især hos personer med astma, hvor de kan udløse bronkiekonstriktion (vejrtrækningsbesvær); reaktioner ses hos anslået 3–10 % af astmatikere. Sulfitter over 10 mg/kg (som SO2) skal derfor deklareres som allergen i EU. EFSA fastholdt i 2016 midlertidigt en gruppe-ADI på 0,7 mg SO2-ækvivalenter/kg legemsvægt/dag, men trak den tilbage i 2022 og vurderede med en margin-of-exposure-tilgang, at eksponeringen for de fleste befolkningsgrupper, herunder børn, giver anledning til sikkerhedsbekymring. Sulfitter nedbryder desuden vitamin B1 (thiamin) i fødevarer.",
+  "research": "EFSA's gen-evaluering fra 2016 af svovldioxid og sulfitter (E220–E228) (EFSA Journal 2016;14(4):4438) fastholdt midlertidigt en gruppe-ADI på 0,7 mg SO2-ækvivalenter/kg legemsvægt/dag, men pegede på væsentlige datahuller. I opfølgningen fra 2022 (EFSA Journal 2022;20(11):7594) konkluderede EFSA, at datagrundlaget var utilstrækkeligt til at udlede en ADI, og trak den midlertidige gruppe-ADI tilbage. I stedet blev der brugt en margin-of-exposure-tilgang baseret på et BMDL på 38 mg SO2-ækvivalenter/kg legemsvægt/dag (forlænget latens af visuelle fremkaldte potentialer, dvs. effekt på nervesystemet); i det raffinerede scenarie lå MOE under 80 for alle befolkningsgrupper undtagen unge, hvilket giver anledning til sikkerhedsbekymring. Mekanismen bag sulfitoverfølsomhed er ikke fuldt forstået og er i mange tilfælde ikke IgE-medieret.",
+  "keyReferences": [],
+  "pubmedTerm": "sodium bisulphite",
+  "flags": [
+   "asthma_caution",
+   "allergen",
+   "children_caution"
+  ],
+  "classes": [
+   "antioxidant",
+   "preservative"
+  ],
+  "variants": [],
+  "efsa": {
+   "title": "Follow-up of the re-evaluation of sulfur dioxide (E 220), sodium sulfite (E 221), sodium bisulfite (E 222), sodium metabisulfite (E 223), potassium metabisulfite (E 224), calcium sulfite (E 226), calcium bisulfite (E 227) and potassium bisulfite (E 228)",
+   "url": "https://doi.org/10.2903/j.efsa.2022.7594",
+   "date": "2022-11",
+   "adi": "",
+   "overexposureRisk": "en:high"
+  },
+  "verification": {
+   "status": "uncertain",
+   "sources": [
+    "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2016.4438",
+    "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2022.7594",
+    "https://www.efsa.europa.eu/sites/default/files/2022-11/7594-PLS-sulfites.pdf"
+   ],
+   "notes": "Runde 2 IKKE gennemført for denne post: sessionens søgebudget (200 WebSearch) blev opbrugt, før posten kunne gennemgås udsagn for udsagn. Teksten er uændret fra runde 1 (kun EU-status/ADI/EFSA kontrolleret). Runde 1-note: Godkendt. Præciseret: EFSA 2022 trak den midlertidige ADI tilbage (MOE-tilgang, BMDL 38, MOE<80). efsa-objekt opdateret til 2022-opfølgningen. Mærkning >10 mg/kg bekræftet."
+  },
+  "wikipedia": "https://en.wikipedia.org/wiki/Sodium_bisulfite",
+  "wikidata": "Q407891",
+  "claims": []
+ },
+ {
+  "code": "E223",
+  "nameDa": "Natriumdisulfit",
+  "nameEn": "Sodium metabisulphite",
+  "category": "Konserveringsmiddel / antioxidant",
+  "euStatus": "approved",
+  "origin": "synthetic",
+  "summary": "Natriumdisulfit er et sulfit, der frigiver svovldioxid og bruges til at konservere og forhindre brunfarvning af fødevarer.",
+  "description": "Natriumdisulfit (natriummetabisulfit, Na2S2O5) fremstilles af svovldioxid og natriumhydroxid/-karbonat og er et stabilt, hvidt pulver, der frigiver SO2 i vandige fødevarer. I fødevaren indgår det i en ligevægt mellem svovldioxid, bisulfit og sulfit, og virkningen er den samme som for E220. Sulfitter hæmmer mikroorganismer, især bakterier og gær, og bremser brunfarvning af frugt og grønt. Alle sulfitter reguleres samlet, og indholdet angives som SO2-ækvivalenter.",
+  "uses": "Vin og cider, tørret frugt, kartoffelprodukter (fx færdige pommes frites og kartoffelmos-pulver), frugtfyld, sirup og saftkoncentrater, rejer og andre krebsdyr samt eddike. Deklareres som 'sulfitter' på ingredienslisten, når indholdet overstiger 10 mg/kg eller 10 mg/l.",
+  "health": "Sulfitter er en kendt årsag til overfølsomhedsreaktioner, især hos personer med astma, hvor de kan udløse bronkiekonstriktion (vejrtrækningsbesvær); reaktioner ses hos anslået 3–10 % af astmatikere. Sulfitter over 10 mg/kg (som SO2) skal derfor deklareres som allergen i EU. EFSA fastholdt i 2016 midlertidigt en gruppe-ADI på 0,7 mg SO2-ækvivalenter/kg legemsvægt/dag, men trak den tilbage i 2022 og vurderede med en margin-of-exposure-tilgang, at eksponeringen for de fleste befolkningsgrupper, herunder børn, giver anledning til sikkerhedsbekymring. Sulfitter nedbryder desuden vitamin B1 (thiamin) i fødevarer.",
+  "research": "EFSA's gen-evaluering fra 2016 af svovldioxid og sulfitter (E220–E228) (EFSA Journal 2016;14(4):4438) fastholdt midlertidigt en gruppe-ADI på 0,7 mg SO2-ækvivalenter/kg legemsvægt/dag, men pegede på væsentlige datahuller. I opfølgningen fra 2022 (EFSA Journal 2022;20(11):7594) konkluderede EFSA, at datagrundlaget var utilstrækkeligt til at udlede en ADI, og trak den midlertidige gruppe-ADI tilbage. I stedet blev der brugt en margin-of-exposure-tilgang baseret på et BMDL på 38 mg SO2-ækvivalenter/kg legemsvægt/dag (forlænget latens af visuelle fremkaldte potentialer, dvs. effekt på nervesystemet); i det raffinerede scenarie lå MOE under 80 for alle befolkningsgrupper undtagen unge, hvilket giver anledning til sikkerhedsbekymring. Mekanismen bag sulfitoverfølsomhed er ikke fuldt forstået og er i mange tilfælde ikke IgE-medieret.",
+  "keyReferences": [],
+  "pubmedTerm": "sodium metabisulphite",
+  "flags": [
+   "asthma_caution",
+   "allergen",
+   "children_caution"
+  ],
+  "classes": [
+   "antioxidant",
+   "preservative"
+  ],
+  "variants": [],
+  "efsa": {
+   "title": "Follow-up of the re-evaluation of sulfur dioxide (E 220), sodium sulfite (E 221), sodium bisulfite (E 222), sodium metabisulfite (E 223), potassium metabisulfite (E 224), calcium sulfite (E 226), calcium bisulfite (E 227) and potassium bisulfite (E 228)",
+   "url": "https://doi.org/10.2903/j.efsa.2022.7594",
+   "date": "2022-11",
+   "adi": "",
+   "overexposureRisk": "en:high"
+  },
+  "verification": {
+   "status": "uncertain",
+   "sources": [
+    "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2016.4438",
+    "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2022.7594",
+    "https://www.efsa.europa.eu/sites/default/files/2022-11/7594-PLS-sulfites.pdf"
+   ],
+   "notes": "Runde 2 IKKE gennemført for denne post: sessionens søgebudget (200 WebSearch) blev opbrugt, før posten kunne gennemgås udsagn for udsagn. Teksten er uændret fra runde 1 (kun EU-status/ADI/EFSA kontrolleret). Runde 1-note: Godkendt. Præciseret: EFSA 2022 trak den midlertidige ADI tilbage (MOE-tilgang, BMDL 38, MOE<80). efsa-objekt opdateret til 2022-opfølgningen. Mærkning >10 mg/kg bekræftet."
+  },
+  "wikipedia": "https://en.wikipedia.org/wiki/Sodium_metabisulfite",
+  "wikidata": "Q284549",
+  "claims": []
+ },
+ {
+  "code": "E224",
+  "nameDa": "Kaliumdisulfit",
+  "nameEn": "Potassium metabisulphite",
+  "category": "Konserveringsmiddel / antioxidant",
+  "euStatus": "approved",
+  "origin": "synthetic",
+  "summary": "Kaliumdisulfit er et sulfit, der frigiver svovldioxid og bruges til at konservere og forhindre brunfarvning af fødevarer.",
+  "description": "Kaliumdisulfit (kaliummetabisulfit, K2S2O5) fremstilles af svovldioxid og kaliumhydroxid og er især udbredt i vinfremstilling, hvor det tilsættes som pulver eller tabletter. I fødevaren indgår det i en ligevægt mellem svovldioxid, bisulfit og sulfit, og virkningen er den samme som for E220. Sulfitter hæmmer mikroorganismer, især bakterier og gær, og bremser brunfarvning af frugt og grønt. Alle sulfitter reguleres samlet, og indholdet angives som SO2-ækvivalenter.",
+  "uses": "Vin og cider, tørret frugt, kartoffelprodukter (fx færdige pommes frites og kartoffelmos-pulver), frugtfyld, sirup og saftkoncentrater, rejer og andre krebsdyr samt eddike. Deklareres som 'sulfitter' på ingredienslisten, når indholdet overstiger 10 mg/kg eller 10 mg/l.",
+  "health": "Sulfitter er en kendt årsag til overfølsomhedsreaktioner, især hos personer med astma, hvor de kan udløse bronkiekonstriktion (vejrtrækningsbesvær); reaktioner ses hos anslået 3–10 % af astmatikere. Sulfitter over 10 mg/kg (som SO2) skal derfor deklareres som allergen i EU. EFSA fastholdt i 2016 midlertidigt en gruppe-ADI på 0,7 mg SO2-ækvivalenter/kg legemsvægt/dag, men trak den tilbage i 2022 og vurderede med en margin-of-exposure-tilgang, at eksponeringen for de fleste befolkningsgrupper, herunder børn, giver anledning til sikkerhedsbekymring. Sulfitter nedbryder desuden vitamin B1 (thiamin) i fødevarer.",
+  "research": "EFSA's gen-evaluering fra 2016 af svovldioxid og sulfitter (E220–E228) (EFSA Journal 2016;14(4):4438) fastholdt midlertidigt en gruppe-ADI på 0,7 mg SO2-ækvivalenter/kg legemsvægt/dag, men pegede på væsentlige datahuller. I opfølgningen fra 2022 (EFSA Journal 2022;20(11):7594) konkluderede EFSA, at datagrundlaget var utilstrækkeligt til at udlede en ADI, og trak den midlertidige gruppe-ADI tilbage. I stedet blev der brugt en margin-of-exposure-tilgang baseret på et BMDL på 38 mg SO2-ækvivalenter/kg legemsvægt/dag (forlænget latens af visuelle fremkaldte potentialer, dvs. effekt på nervesystemet); i det raffinerede scenarie lå MOE under 80 for alle befolkningsgrupper undtagen unge, hvilket giver anledning til sikkerhedsbekymring. Mekanismen bag sulfitoverfølsomhed er ikke fuldt forstået og er i mange tilfælde ikke IgE-medieret.",
+  "keyReferences": [],
+  "pubmedTerm": "potassium metabisulphite",
+  "flags": [
+   "asthma_caution",
+   "allergen",
+   "children_caution"
+  ],
+  "classes": [
+   "antioxidant",
+   "preservative"
+  ],
+  "variants": [],
+  "efsa": {
+   "title": "Follow-up of the re-evaluation of sulfur dioxide (E 220), sodium sulfite (E 221), sodium bisulfite (E 222), sodium metabisulfite (E 223), potassium metabisulfite (E 224), calcium sulfite (E 226), calcium bisulfite (E 227) and potassium bisulfite (E 228)",
+   "url": "https://doi.org/10.2903/j.efsa.2022.7594",
+   "date": "2022-11",
+   "adi": "",
+   "overexposureRisk": "en:high"
+  },
+  "verification": {
+   "status": "uncertain",
+   "sources": [
+    "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2016.4438",
+    "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2022.7594",
+    "https://www.efsa.europa.eu/sites/default/files/2022-11/7594-PLS-sulfites.pdf"
+   ],
+   "notes": "Runde 2 IKKE gennemført for denne post: sessionens søgebudget (200 WebSearch) blev opbrugt, før posten kunne gennemgås udsagn for udsagn. Teksten er uændret fra runde 1 (kun EU-status/ADI/EFSA kontrolleret). Runde 1-note: Godkendt. Præciseret: EFSA 2022 trak den midlertidige ADI tilbage (MOE-tilgang, BMDL 38, MOE<80). efsa-objekt opdateret til 2022-opfølgningen. Mærkning >10 mg/kg bekræftet."
+  },
+  "wikipedia": "https://en.wikipedia.org/wiki/Potassium_metabisulfite",
+  "wikidata": "Q417881",
+  "claims": []
+ },
+ {
+  "code": "E226",
+  "nameDa": "Calciumsulfit",
+  "nameEn": "Calcium sulphite",
+  "category": "Konserveringsmiddel / antioxidant",
+  "euStatus": "approved",
+  "origin": "synthetic",
+  "summary": "Calciumsulfit er et sulfit, der frigiver svovldioxid og bruges til at konservere og forhindre brunfarvning af fødevarer.",
+  "description": "Calciumsulfit (CaSO3) fremstilles af svovldioxid og calciumhydroxid og er tungtopløseligt i vand. I fødevaren indgår det i en ligevægt mellem svovldioxid, bisulfit og sulfit, og virkningen er den samme som for E220. Sulfitter hæmmer mikroorganismer, især bakterier og gær, og bremser brunfarvning af frugt og grønt. Alle sulfitter reguleres samlet, og indholdet angives som SO2-ækvivalenter.",
+  "uses": "Vin og cider, tørret frugt, kartoffelprodukter (fx færdige pommes frites og kartoffelmos-pulver), frugtfyld, sirup og saftkoncentrater, rejer og andre krebsdyr samt eddike. Deklareres som 'sulfitter' på ingredienslisten, når indholdet overstiger 10 mg/kg eller 10 mg/l.",
+  "health": "Sulfitter er en kendt årsag til overfølsomhedsreaktioner, især hos personer med astma, hvor de kan udløse bronkiekonstriktion (vejrtrækningsbesvær); reaktioner ses hos anslået 3–10 % af astmatikere. Sulfitter over 10 mg/kg (som SO2) skal derfor deklareres som allergen i EU. EFSA fastholdt i 2016 midlertidigt en gruppe-ADI på 0,7 mg SO2-ækvivalenter/kg legemsvægt/dag, men trak den tilbage i 2022 og vurderede med en margin-of-exposure-tilgang, at eksponeringen for de fleste befolkningsgrupper, herunder børn, giver anledning til sikkerhedsbekymring. Sulfitter nedbryder desuden vitamin B1 (thiamin) i fødevarer.",
+  "research": "EFSA's gen-evaluering fra 2016 af svovldioxid og sulfitter (E220–E228) (EFSA Journal 2016;14(4):4438) fastholdt midlertidigt en gruppe-ADI på 0,7 mg SO2-ækvivalenter/kg legemsvægt/dag, men pegede på væsentlige datahuller. I opfølgningen fra 2022 (EFSA Journal 2022;20(11):7594) konkluderede EFSA, at datagrundlaget var utilstrækkeligt til at udlede en ADI, og trak den midlertidige gruppe-ADI tilbage. I stedet blev der brugt en margin-of-exposure-tilgang baseret på et BMDL på 38 mg SO2-ækvivalenter/kg legemsvægt/dag (forlænget latens af visuelle fremkaldte potentialer, dvs. effekt på nervesystemet); i det raffinerede scenarie lå MOE under 80 for alle befolkningsgrupper undtagen unge, hvilket giver anledning til sikkerhedsbekymring. Mekanismen bag sulfitoverfølsomhed er ikke fuldt forstået og er i mange tilfælde ikke IgE-medieret.",
+  "keyReferences": [],
+  "pubmedTerm": "calcium sulphite",
+  "flags": [
+   "asthma_caution",
+   "allergen",
+   "children_caution"
+  ],
+  "classes": [],
+  "variants": [],
+  "efsa": {
+   "title": "Follow-up of the re-evaluation of sulfur dioxide (E 220), sodium sulfite (E 221), sodium bisulfite (E 222), sodium metabisulfite (E 223), potassium metabisulfite (E 224), calcium sulfite (E 226), calcium bisulfite (E 227) and potassium bisulfite (E 228)",
+   "url": "https://doi.org/10.2903/j.efsa.2022.7594",
+   "date": "2022-11",
+   "adi": "",
+   "overexposureRisk": "en:high"
+  },
+  "verification": {
+   "status": "uncertain",
+   "sources": [
+    "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2016.4438",
+    "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2022.7594",
+    "https://www.efsa.europa.eu/sites/default/files/2022-11/7594-PLS-sulfites.pdf"
+   ],
+   "notes": "Runde 2 IKKE gennemført for denne post: sessionens søgebudget (200 WebSearch) blev opbrugt, før posten kunne gennemgås udsagn for udsagn. Teksten er uændret fra runde 1 (kun EU-status/ADI/EFSA kontrolleret). Runde 1-note: Godkendt. Præciseret: EFSA 2022 trak den midlertidige ADI tilbage (MOE-tilgang, BMDL 38, MOE<80). efsa-objekt opdateret til 2022-opfølgningen. Mærkning >10 mg/kg bekræftet."
+  },
+  "wikipedia": "",
+  "wikidata": "Q899410",
+  "claims": []
+ },
+ {
+  "code": "E227",
+  "nameDa": "Calciumhydrogensulfit",
+  "nameEn": "Calcium bisulphite",
+  "category": "Konserveringsmiddel / antioxidant",
+  "euStatus": "approved",
+  "origin": "synthetic",
+  "summary": "Calciumhydrogensulfit er et sulfit, der frigiver svovldioxid og bruges til at konservere og forhindre brunfarvning af fødevarer.",
+  "description": "Calciumhydrogensulfit (Ca(HSO3)2) findes kun i opløsning og fremstilles ved at lede svovldioxid gennem kalkmælk. I fødevaren indgår det i en ligevægt mellem svovldioxid, bisulfit og sulfit, og virkningen er den samme som for E220. Sulfitter hæmmer mikroorganismer, især bakterier og gær, og bremser brunfarvning af frugt og grønt. Alle sulfitter reguleres samlet, og indholdet angives som SO2-ækvivalenter.",
+  "uses": "Vin og cider, tørret frugt, kartoffelprodukter (fx færdige pommes frites og kartoffelmos-pulver), frugtfyld, sirup og saftkoncentrater, rejer og andre krebsdyr samt eddike. Deklareres som 'sulfitter' på ingredienslisten, når indholdet overstiger 10 mg/kg eller 10 mg/l.",
+  "health": "Sulfitter er en kendt årsag til overfølsomhedsreaktioner, især hos personer med astma, hvor de kan udløse bronkiekonstriktion (vejrtrækningsbesvær); reaktioner ses hos anslået 3–10 % af astmatikere. Sulfitter over 10 mg/kg (som SO2) skal derfor deklareres som allergen i EU. EFSA fastholdt i 2016 midlertidigt en gruppe-ADI på 0,7 mg SO2-ækvivalenter/kg legemsvægt/dag, men trak den tilbage i 2022 og vurderede med en margin-of-exposure-tilgang, at eksponeringen for de fleste befolkningsgrupper, herunder børn, giver anledning til sikkerhedsbekymring. Sulfitter nedbryder desuden vitamin B1 (thiamin) i fødevarer.",
+  "research": "EFSA's gen-evaluering fra 2016 af svovldioxid og sulfitter (E220–E228) (EFSA Journal 2016;14(4):4438) fastholdt midlertidigt en gruppe-ADI på 0,7 mg SO2-ækvivalenter/kg legemsvægt/dag, men pegede på væsentlige datahuller. I opfølgningen fra 2022 (EFSA Journal 2022;20(11):7594) konkluderede EFSA, at datagrundlaget var utilstrækkeligt til at udlede en ADI, og trak den midlertidige gruppe-ADI tilbage. I stedet blev der brugt en margin-of-exposure-tilgang baseret på et BMDL på 38 mg SO2-ækvivalenter/kg legemsvægt/dag (forlænget latens af visuelle fremkaldte potentialer, dvs. effekt på nervesystemet); i det raffinerede scenarie lå MOE under 80 for alle befolkningsgrupper undtagen unge, hvilket giver anledning til sikkerhedsbekymring. Mekanismen bag sulfitoverfølsomhed er ikke fuldt forstået og er i mange tilfælde ikke IgE-medieret.",
+  "keyReferences": [],
+  "pubmedTerm": "calcium bisulphite",
+  "flags": [
+   "asthma_caution",
+   "allergen",
+   "children_caution"
+  ],
+  "classes": [],
+  "variants": [],
+  "efsa": {
+   "title": "Follow-up of the re-evaluation of sulfur dioxide (E 220), sodium sulfite (E 221), sodium bisulfite (E 222), sodium metabisulfite (E 223), potassium metabisulfite (E 224), calcium sulfite (E 226), calcium bisulfite (E 227) and potassium bisulfite (E 228)",
+   "url": "https://doi.org/10.2903/j.efsa.2022.7594",
+   "date": "2022-11",
+   "adi": "",
+   "overexposureRisk": "en:high"
+  },
+  "verification": {
+   "status": "uncertain",
+   "sources": [
+    "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2016.4438",
+    "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2022.7594",
+    "https://www.efsa.europa.eu/sites/default/files/2022-11/7594-PLS-sulfites.pdf"
+   ],
+   "notes": "Runde 2 IKKE gennemført for denne post: sessionens søgebudget (200 WebSearch) blev opbrugt, før posten kunne gennemgås udsagn for udsagn. Teksten er uændret fra runde 1 (kun EU-status/ADI/EFSA kontrolleret). Runde 1-note: Godkendt. Præciseret: EFSA 2022 trak den midlertidige ADI tilbage (MOE-tilgang, BMDL 38, MOE<80). efsa-objekt opdateret til 2022-opfølgningen. Mærkning >10 mg/kg bekræftet."
+  },
+  "wikipedia": "",
+  "wikidata": "Q419619",
+  "claims": []
+ },
+ {
+  "code": "E228",
+  "nameDa": "Kaliumhydrogensulfit",
+  "nameEn": "Potassium bisulphite",
+  "category": "Konserveringsmiddel / antioxidant",
+  "euStatus": "approved",
+  "origin": "synthetic",
+  "summary": "Kaliumhydrogensulfit er et sulfit, der frigiver svovldioxid og bruges til at konservere og forhindre brunfarvning af fødevarer.",
+  "description": "Kaliumhydrogensulfit (KHSO3) findes primært i opløsning og fremstilles af svovldioxid og kaliumhydroxid. I fødevaren indgår det i en ligevægt mellem svovldioxid, bisulfit og sulfit, og virkningen er den samme som for E220. Sulfitter hæmmer mikroorganismer, især bakterier og gær, og bremser brunfarvning af frugt og grønt. Alle sulfitter reguleres samlet, og indholdet angives som SO2-ækvivalenter.",
+  "uses": "Vin og cider, tørret frugt, kartoffelprodukter (fx færdige pommes frites og kartoffelmos-pulver), frugtfyld, sirup og saftkoncentrater, rejer og andre krebsdyr samt eddike. Deklareres som 'sulfitter' på ingredienslisten, når indholdet overstiger 10 mg/kg eller 10 mg/l.",
+  "health": "Sulfitter er en kendt årsag til overfølsomhedsreaktioner, især hos personer med astma, hvor de kan udløse bronkiekonstriktion (vejrtrækningsbesvær); reaktioner ses hos anslået 3–10 % af astmatikere. Sulfitter over 10 mg/kg (som SO2) skal derfor deklareres som allergen i EU. EFSA fastholdt i 2016 midlertidigt en gruppe-ADI på 0,7 mg SO2-ækvivalenter/kg legemsvægt/dag, men trak den tilbage i 2022 og vurderede med en margin-of-exposure-tilgang, at eksponeringen for de fleste befolkningsgrupper, herunder børn, giver anledning til sikkerhedsbekymring. Sulfitter nedbryder desuden vitamin B1 (thiamin) i fødevarer.",
+  "research": "EFSA's gen-evaluering fra 2016 af svovldioxid og sulfitter (E220–E228) (EFSA Journal 2016;14(4):4438) fastholdt midlertidigt en gruppe-ADI på 0,7 mg SO2-ækvivalenter/kg legemsvægt/dag, men pegede på væsentlige datahuller. I opfølgningen fra 2022 (EFSA Journal 2022;20(11):7594) konkluderede EFSA, at datagrundlaget var utilstrækkeligt til at udlede en ADI, og trak den midlertidige gruppe-ADI tilbage. I stedet blev der brugt en margin-of-exposure-tilgang baseret på et BMDL på 38 mg SO2-ækvivalenter/kg legemsvægt/dag (forlænget latens af visuelle fremkaldte potentialer, dvs. effekt på nervesystemet); i det raffinerede scenarie lå MOE under 80 for alle befolkningsgrupper undtagen unge, hvilket giver anledning til sikkerhedsbekymring. Mekanismen bag sulfitoverfølsomhed er ikke fuldt forstået og er i mange tilfælde ikke IgE-medieret.",
+  "keyReferences": [],
+  "pubmedTerm": "potassium bisulphite",
+  "flags": [
+   "asthma_caution",
+   "allergen",
+   "children_caution"
+  ],
+  "classes": [],
+  "variants": [],
+  "efsa": {
+   "title": "Follow-up of the re-evaluation of sulfur dioxide (E 220), sodium sulfite (E 221), sodium bisulfite (E 222), sodium metabisulfite (E 223), potassium metabisulfite (E 224), calcium sulfite (E 226), calcium bisulfite (E 227) and potassium bisulfite (E 228)",
+   "url": "https://doi.org/10.2903/j.efsa.2022.7594",
+   "date": "2022-11",
+   "adi": "",
+   "overexposureRisk": "en:high"
+  },
+  "verification": {
+   "status": "uncertain",
+   "sources": [
+    "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2016.4438",
+    "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2022.7594",
+    "https://www.efsa.europa.eu/sites/default/files/2022-11/7594-PLS-sulfites.pdf"
+   ],
+   "notes": "Runde 2 IKKE gennemført for denne post: sessionens søgebudget (200 WebSearch) blev opbrugt, før posten kunne gennemgås udsagn for udsagn. Teksten er uændret fra runde 1 (kun EU-status/ADI/EFSA kontrolleret). Runde 1-note: Godkendt. Præciseret: EFSA 2022 trak den midlertidige ADI tilbage (MOE-tilgang, BMDL 38, MOE<80). efsa-objekt opdateret til 2022-opfølgningen. Mærkning >10 mg/kg bekræftet."
+  },
+  "wikipedia": "",
+  "wikidata": "Q412524",
+  "claims": []
+ },
+ {
+  "code": "E234",
+  "nameDa": "Nisin",
+  "nameEn": "Nisin",
+  "category": "Konserveringsmiddel",
+  "euStatus": "approved",
+  "origin": "natural",
+  "summary": "Nisin er et naturligt antibakterielt peptid, som produceres af mælkesyrebakterier. Det bruges især i ost og desserter mod sporedannende bakterier.",
+  "description": "Nisin er et lille peptid (bakteriocin) på 34 aminosyrer, som dannes af bakterien Lactococcus lactis. Det fremstilles ved fermentering af mælk eller sukkerholdige medier og oprenses efterfølgende. Nisin virker ved at lave huller i cellemembranen på grampositive bakterier og hæmmer bl.a. Clostridium- og Listeria-arter og sporespiring. Det virker ikke mod gær, skimmel eller gramnegative bakterier. I tarmen nedbrydes det af fordøjelsesenzymer som andre proteiner.",
+  "uses": "Smelteost og smøreost, modnet ost, desserter som mannagrynsgrød og budding, clotted cream, pasteuriserede flydende æg. Maksimumsgrænser typisk mellem 3 og 12,5 mg/kg.",
+  "health": "Nisin betragtes som meget sikkert, da det nedbrydes i fordøjelsen og ikke påvirker tarmfloraen væsentligt ved de brugte mængder. EFSA fastsatte i 2017 en ADI på 1 mg/kg legemsvægt/dag og fandt ingen sikkerhedsbekymring ved anvendelserne. Der er ikke rapporteret allergiske reaktioner i nævneværdigt omfang.",
+  "research": "EFSA's udtalelse fra 2017 (EFSA Journal 2017;15(12):5063) hævede ADI fra 0,13 til 1 mg nisin A/kg legemsvægt/dag baseret på et nyt 90-dages rottestudie (NOAEL 225 mg/kg legemsvægt/dag, usikkerhedsfaktor 200) og fandt ingen sikkerhedsbekymring ved de godkendte og de foreslåede nye anvendelser (umoden ost og varmebehandlede kødprodukter). Der forskes i nisin som alternativ til antibiotika og i risikoen for resistensudvikling, men dette har indtil videre ikke vist sig som et praktisk problem i fødevarer.",
+  "keyReferences": [],
+  "pubmedTerm": "nisin",
+  "flags": [],
+  "classes": [
+   "preservative"
+  ],
+  "variants": [],
+  "efsa": {
+   "title": "Safety of nisin (E 234) as a food additive in the light of new toxicological data and the proposed extension of use",
+   "url": "https://doi.org/10.2903/j.efsa.2017.5063",
+   "date": "2017",
+   "adi": "1 mg/kg bw/day",
+   "overexposureRisk": ""
+  },
+  "verification": {
+   "status": "uncertain",
+   "sources": [
+    "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2017.5063",
+    "https://pubmed.ncbi.nlm.nih.gov/32625365/"
+   ],
+   "notes": "Runde 2 IKKE gennemført for denne post: sessionens søgebudget (200 WebSearch) blev opbrugt, før posten kunne gennemgås udsagn for udsagn. Teksten er uændret fra runde 1 (kun EU-status/ADI/EFSA kontrolleret). Runde 1-note: Godkendt. ADI 0,13→1 mg/kg (2017) bekræftet; det er en sikkerhedsvurdering, ikke formel gen-evaluering. efsa-objekt opdateret fra 2006 til 2017."
+  },
+  "wikipedia": "",
+  "wikidata": "Q415798",
+  "claims": []
+ },
+ {
+  "code": "E235",
+  "nameDa": "Natamycin",
+  "nameEn": "Natamycin",
+  "category": "Konserveringsmiddel",
+  "euStatus": "approved",
+  "origin": "natural",
+  "summary": "Natamycin (pimaricin) er et svampedræbende stof dannet af bakterier. Det bruges på overfladen af ost og pølser mod skimmel.",
+  "description": "Natamycin er et polyen-makrolid, der dannes ved fermentering med bakterien Streptomyces natalensis. Det binder sig til ergosterol i svampes cellemembraner og hæmmer derved skimmel og gær effektivt, men virker ikke mod bakterier. Stoffet er tungtopløseligt og trænger kun lidt ind i fødevaren, så det er velegnet til overfladebehandling. Det bruges også som lægemiddel mod svampeinfektioner i øjet.",
+  "uses": "Kun tilladt til overfladebehandling af hårde, halvhårde og halvbløde oste (fx i ostevoks/coating) og af tørrede, saltede pølser, med maks. 1 mg/dm2 overflade og ikke dybere end 5 mm. Osteskorpen på behandlet ost bør ikke spises.",
+  "health": "Natamycin optages kun i meget lille grad fra tarmen og anses for sikkert ved de godkendte anvendelser. EFSA fandt i 2009 datagrundlaget for spinkelt til at fastsætte en ny ADI, men vurderede, at JECFA's ADI på 0,3 mg/kg legemsvægt/dag giver en tilstrækkelig sikkerhedsmargin. Der har været rejst spørgsmål om risiko for svamperesistens, da natamycin også bruges medicinsk, men EFSA fandt ingen bekymring for resistensudvikling.",
+  "research": "EFSA's udtalelse fra 2009 (EFSA Journal 2009;7(12):1412) konkluderede, at natamycin ikke giver sikkerhedsbekymring, når det kun bruges til overfladebehandling af skorpen på halvhårde og halvbløde oste og på tarme/overflader af visse pølser, og at der ikke er bekymring for induktion af antimikrobiel resistens. Brug i fx yoghurt eller drikke er ikke godkendt i EU. Stoffet er et eksempel på et tilsætningsstof, der primært sidder på overfladen, og som forbrugeren kan undgå ved at fjerne skorpen.",
+  "keyReferences": [],
+  "pubmedTerm": "natamycin",
+  "flags": [],
+  "classes": [
+   "preservative"
+  ],
+  "variants": [],
+  "efsa": {
+   "title": "Scientific Opinion on the use of natamycin (E 235) as a food additive",
+   "url": "https://doi.org/10.2903/j.efsa.2009.1412",
+   "date": "2009-12-14",
+   "adi": "",
+   "overexposureRisk": ""
+  },
+  "verification": {
+   "status": "uncertain",
+   "sources": [
+    "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2009.1412",
+    "https://en.wikipedia.org/wiki/Natamycin"
+   ],
+   "notes": "Runde 2 IKKE gennemført for denne post: sessionens søgebudget (200 WebSearch) blev opbrugt, før posten kunne gennemgås udsagn for udsagn. Teksten er uændret fra runde 1 (kun EU-status/ADI/EFSA kontrolleret). Runde 1-note: Godkendt. EFSA 2009 bekræftet (JECFA-ADI 0,3 tilstrækkelig; ingen resistensbekymring). Fjernet ubekræftet påstand om EFSA-yoghurtvurdering i 2014."
+  },
+  "wikipedia": "https://en.wikipedia.org/wiki/Natamycin",
+  "wikidata": "Q248466",
+  "claims": []
+ },
+ {
+  "code": "E239",
+  "nameDa": "Hexamethylentetramin",
+  "nameEn": "Hexamethylene tetramine",
+  "category": "Konserveringsmiddel",
+  "euStatus": "approved",
+  "origin": "synthetic",
+  "summary": "Hexamethylentetramin (hexamin) er et konserveringsmiddel, der frigiver formaldehyd. I EU er det kun tilladt i den italienske ost Provolone.",
+  "description": "Hexamethylentetramin fremstilles ved at lade formaldehyd reagere med ammoniak. I sure miljøer spaltes det langsomt tilbage til formaldehyd og ammoniak, og det er formaldehyden, der hæmmer bakterier. I ostefremstilling bruges det til at forhindre 'sen gæring' forårsaget af Clostridium-sporer, som giver huller og revner i osten. Stoffet bruges også medicinsk (methenamin) mod urinvejsinfektioner.",
+  "uses": "Kun tilladt i Provolone-ost med en maksimal restmængde på 25 mg/kg udtrykt som formaldehyd.",
+  "health": "Bekymringen knytter sig til frigivelsen af formaldehyd, som IARC klassificerer som kræftfremkaldende (gruppe 1) ved indånding; i kosten optræder det i små mængder og omsættes hurtigt. EFSA kunne i 2014 ikke fastsætte en ADI, men den meget begrænsede anvendelse (kun Provolone) gør indtaget lavt for de fleste. Stoffet kan give hudallergi ved kontakt.",
+  "research": "EFSA's gen-evaluering fra 2014 (EFSA Journal 2014;12(6):3696) kunne pga. begrænsninger i datagrundlaget ikke identificere et kritisk studie og dermed ikke fastsætte en ADI (JECFA fastsatte i 1974 en ADI på 0,15 mg/kg legemsvægt/dag). EFSA estimerede eksponeringen for formaldehyd fra E239 til op til 18 µg/kg legemsvægt/dag hos voksne storforbrugere af Provolone og op til 87 µg/kg hos børn under et konservativt worst case-scenarie. EFSA har desuden i 2014 udtalt, at formaldehyd fra kosten udgør et lille bidrag i forhold til kroppens egen dannelse.",
+  "keyReferences": [],
+  "pubmedTerm": "methenamine",
+  "flags": [
+   "allergen"
+  ],
+  "classes": [
+   "preservative"
+  ],
+  "variants": [],
+  "efsa": {
+   "title": "Scientific Opinion on the re-evaluation of hexamethylene tetramine (E 239) as a food additive",
+   "url": "https://doi.org/10.2903/j.efsa.2014.3696",
+   "date": "2014-06-05",
+   "adi": "",
+   "overexposureRisk": ""
+  },
+  "verification": {
+   "status": "uncertain",
+   "sources": [
+    "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2014.3696",
+    "https://www.efsa.europa.eu/en/efsajournal/pub/3696"
+   ],
+   "notes": "Runde 2 IKKE gennemført for denne post: sessionens søgebudget (200 WebSearch) blev opbrugt, før posten kunne gennemgås udsagn for udsagn. Teksten er uændret fra runde 1 (kun EU-status/ADI/EFSA kontrolleret). Runde 1-note: Rettet: Der ER en fuld EFSA-gen-evaluering (2014) – ADI kunne ikke fastsættes; JECFA-ADI 0,15 (1974) og eksponeringstal tilføjet. Kun Provolone, 25 mg/kg bekræftet."
+  },
+  "wikipedia": "",
+  "wikidata": "Q71969",
+  "claims": []
+ },
+ {
+  "code": "E242",
+  "nameDa": "Dimethyldikarbonat",
+  "nameEn": "Dimethyl dicarbonate",
+  "category": "Konserveringsmiddel",
+  "euStatus": "approved",
+  "origin": "synthetic",
+  "summary": "Dimethyldikarbonat (DMDC) er et 'koldsteriliserende' konserveringsmiddel til drikke, som nedbrydes kort efter tilsætning.",
+  "description": "Dimethyldikarbonat fremstilles syntetisk og er en meget reaktiv forbindelse, der hæmmer gær, skimmel og bakterier ved at inaktivere deres enzymer. Det tilsættes drikken ved aftapning og hydrolyseres i løbet af få timer til methanol og kuldioxid. Derfor er der ikke aktivt stof tilbage i det færdige produkt. Metoden gør det muligt at undgå varmebehandling og beholde frisk smag.",
+  "uses": "Aromatiserede ikke-alkoholiske drikke (læskedrikke, iste), alkoholfri vin, flydende tekoncentrater, cider og perry, frugtvin og mjød. Maks. 250 mg/l ved tilsætning, uden påviselige rester. I vin er DMDC tilladt som ønologisk behandling efter vinreglerne (maks. 200 mg/l).",
+  "health": "Selve DMDC er ætsende og giftigt i koncentreret form, men er nedbrudt, før drikken indtages. Nedbrydningen danner små mængder methanol (under det, der findes naturligt i fx frugtjuice) samt spor af methylcarbamat. Ved godkendt brug anses risikoen som lav. Der er ingen ADI, da stoffet ikke er til stede ved indtag.",
+  "research": "EFSA's gen-evaluering fra 2015 (EFSA Journal 2015;13(12):4319) lagde til grund, at DMDC hydrolyseres fuldstændigt til methanol og kuldioxid og ikke findes i den færdige drik, og vurderede derfor eksponeringen for methanol og reaktionsprodukterne dimethylcarbonat, methylethylcarbonat og methylcarbamat. Methylcarbamat har givet leverkræft hos rotter i høje doser, hvilket er baggrunden for renhedskravene og grænsen for tilsat mængde.",
+  "keyReferences": [],
+  "pubmedTerm": "dimethyl dicarbonate",
+  "flags": [],
+  "classes": [
+   "preservative"
+  ],
+  "variants": [],
+  "efsa": {
+   "title": "Scientific opinion on the re-evaluation of dimethyl dicarbonate (DMDC, E 242) as a food additive",
+   "url": "http://dx.doi.org/10.2903/j.efsa.2015.4319",
+   "date": "2015-12-10",
+   "adi": "",
+   "overexposureRisk": ""
+  },
+  "verification": {
+   "status": "uncertain",
+   "sources": [
+    "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2015.4319",
+    "https://www.efsa.europa.eu/de/efsajournal/pub/4319"
+   ],
+   "notes": "Runde 2 IKKE gennemført for denne post: sessionens søgebudget (200 WebSearch) blev opbrugt, før posten kunne gennemgås udsagn for udsagn. Teksten er uændret fra runde 1 (kun EU-status/ADI/EFSA kontrolleret). Runde 1-note: EFSA 2015 var en gen-evaluering, ikke en vurdering af udvidet brug – rettet. Anvendelser justeret til EU-bilag II (juice/nektar fjernet, vin henført til ønologiske regler)."
+  },
+  "wikipedia": "https://en.wikipedia.org/wiki/Dimethyl_dicarbonate",
+  "wikidata": "Q416985",
+  "claims": []
+ },
+ {
+  "code": "E243",
+  "nameDa": "Ethyllauroylarginat",
+  "nameEn": "Ethyl lauroyl arginate",
+  "category": "Konserveringsmiddel",
+  "euStatus": "approved",
+  "origin": "synthetic",
+  "summary": "Ethyllauroylarginat (LAE) er et konserveringsmiddel afledt af aminosyren arginin og laurinsyre. Det bruges især i varmebehandlede kødprodukter.",
+  "description": "Ethyllauroylarginat fremstilles ved at forestre arginin med ethanol og koble det med laurinsyre fra kokos- eller palmekerneolie. Det er et kationisk overfladeaktivt stof, der beskadiger bakteriers cellemembran og virker mod både gram-positive og gram-negative bakterier samt gær og skimmel. I kroppen nedbrydes det hurtigt til arginin, laurinsyre og ethanol, som er normale fødevarebestanddele. Det blev godkendt i EU i 2014.",
+  "uses": "Varmebehandlede kødprodukter såsom pølser, skinke og pålæg, maks. 160 mg/kg (undtagen emulgerede pølser, røgede pølser og leverpostej).",
+  "health": "EFSA fastsatte i 2007 en ADI på 0,5 mg/kg legemsvægt/dag. I 2019 fandt EFSA, at ADI allerede nås hos småbørn og børn med højt forbrug (95. percentil) ved de nuværende maksimumsgrænser. Stoffet er ikke genotoksisk og nedbrydes til ufarlige komponenter.",
+  "research": "EFSA vurderede stoffet første gang i 2007 og fastsatte ADI på 0,5 mg/kg legemsvægt/dag. I EFSA's udtalelse fra 2019 (EFSA Journal 2019;17(3):5621) om ny information og foreslået udvidet brug fastholdt panelet ADI'en, men konkluderede, at den ville blive overskredet ved gennemsnitligt forbrug i alle aldersgrupper med de foreslåede nye anvendelser; udvidelsen blev derfor ikke understøttet. Der er begrænset uafhængig forskning i langtidseffekter, men metabolismen er velbeskrevet.",
+  "keyReferences": [],
+  "pubmedTerm": "lauric arginate",
+  "flags": [
+   "children_caution"
+  ],
+  "classes": [
+   "preservative"
+  ],
+  "variants": [],
+  "efsa": {
+   "title": "Safety of ethyl lauroyl arginate (E 243) as a food additive in the light of the new information provided and the proposed extension of use",
+   "url": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2019.5621",
+   "date": "2019-03-08",
+   "adi": "",
+   "overexposureRisk": ""
+  },
+  "verification": {
+   "status": "uncertain",
+   "sources": [
+    "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2019.5621",
+    "https://pmc.ncbi.nlm.nih.gov/articles/PMC7009305/"
+   ],
+   "notes": "Runde 2 IKKE gennemført for denne post: sessionens søgebudget (200 WebSearch) blev opbrugt, før posten kunne gennemgås udsagn for udsagn. Teksten er uændret fra runde 1 (kun EU-status/ADI/EFSA kontrolleret). Runde 1-note: Konklusionen fra EFSA 2019 præciseret: ADI nås hos børn ved nuværende brug og overskrides ved foreslået udvidelse. Godkendelse 2014 og 160 mg/kg bekræftet."
+  },
+  "wikipedia": "",
+  "wikidata": "Q18608852",
+  "claims": []
+ },
+ {
+  "code": "E249",
+  "nameDa": "Kaliumnitrit",
+  "nameEn": "Potassium nitrite",
+  "category": "Konserveringsmiddel",
+  "euStatus": "approved",
+  "origin": "synthetic",
+  "summary": "Kaliumnitrit er kaliumsaltet af salpetersyrling og bruges til at konservere kødprodukter og give dem rød farve.",
+  "description": "Kaliumnitrit (KNO2) fremstilles syntetisk, typisk ved reduktion af kaliumnitrat eller ved at lede nitrøse gasser gennem kaliumhydroxid. I kød omdannes nitrit til nitrogenoxid, som binder til myoglobin og giver den karakteristiske lyserøde farve og den typiske smag af saltet kød. Nitrit hæmmer bakterien Clostridium botulinum og forsinker harskning. Det bruges langt sjældnere end natriumnitrit (E250) og altid i blanding med salt (nitritsalt).",
+  "uses": "Spegepølse, skinke, bacon, hamburgerryg, kogt og røget pålæg, rullepølse, leverpostej, wienerpølser og saltet kød. Med forordning (EU) 2023/2108 blev grænsen for tilsat nitrit i de fleste kødprodukter sænket til 80 mg/kg (55 mg/kg i steriliserede kødprodukter) efter en overgangsperiode på to år. Danmark har traditionelt haft strengere nationale regler end EU.",
+  "health": "Nitrit kan i kødet og i maven reagere med aminer og danne nitrosaminer, hvoraf mange er kræftfremkaldende, især ved stegning ved høj temperatur. EFSA fastsatte i 2017 en ADI på 0,07 mg nitrit-ion/kg legemsvægt/dag og vurderede, at eksponeringen fra tilsætningsstoffer alene ligger under ADI bortset fra en lille overskridelse hos børn med det højeste forbrug; når nitrit fra alle kilder medregnes, kan ADI overskrides. Høje indtag af nitrit kan give methæmoglobinæmi (nedsat iltbinding i blodet), og spædbørn er særligt følsomme; nitrit må ikke bruges i mad til spædbørn. Samtidig beskytter nitrit effektivt mod Clostridium botulinum, som kan give dødelig botulisme.",
+  "research": "IARC klassificerede i 2010 indtaget nitrat og nitrit under forhold, der fører til nitrosering, som sandsynligt kræftfremkaldende (gruppe 2A), og i 2015 forarbejdet kød som kræftfremkaldende (gruppe 1) for tarmkræft (Bouvard et al., Lancet Oncology 2015). EFSA's gen-evaluering fra 2017 fastsatte ved en benchmarkdosis-tilgang en ADI på 0,07 mg nitrit-ion/kg (mod tidligere 0,06) og fastholdt nitrat-ADI'en på 3,7 mg/kg,, men konkluderede, at nitrosamindannelse ikke kunne vurderes fuldt ud; EFSA's udtalelse om nitrosaminer i fødevarer fra 2023 fandt, at eksponeringen giver anledning til sundhedsbekymring. På den baggrund sænkede EU med forordning (EU) 2023/2108 maksimumsgrænserne for tilsat nitrit og nitrat i kødprodukter. Der er fortsat diskussion om, hvor meget af kræftrisikoen ved forarbejdet kød der skyldes nitrit, og om nitrit fra grøntsager opfører sig anderledes pga. antioxidanter.",
+  "keyReferences": [
+   {
+    "citation": "Bouvard V et al. Carcinogenicity of consumption of red and processed meat. Lancet Oncol. 2015.",
+    "searchTitle": "Carcinogenicity of consumption of red and processed meat"
+   }
+  ],
+  "pubmedTerm": "potassium nitrite",
+  "flags": [
+   "children_caution",
+   "pregnancy_caution"
+  ],
+  "classes": [
+   "preservative"
+  ],
+  "variants": [],
+  "efsa": {
+   "title": "Re-evaluation of potassium nitrite (E 249) and sodium nitrite (E 250) as food additives",
+   "url": "https://doi.org/10.2903/j.efsa.2017.4786",
+   "date": "2017-06-15",
+   "adi": "0.07 mg/kg bw/day",
+   "overexposureRisk": ""
+  },
+  "verification": {
+   "status": "uncertain",
+   "sources": [
+    "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2017.4786",
+    "https://pmc.ncbi.nlm.nih.gov/articles/PMC7009987/",
+    "https://www.thelancet.com/journals/lanonc/article/PIIS1470-2045(15)00444-1/fulltext"
+   ],
+   "notes": "Runde 2 IKKE gennemført for denne post: sessionens søgebudget (200 WebSearch) blev opbrugt, før posten kunne gennemgås udsagn for udsagn. Teksten er uændret fra runde 1 (kun EU-status/ADI/EFSA kontrolleret). Runde 1-note: ADI 0,07 var en ny værdi (ikke 'fastholdt'); eksponeringskonklusion præciseret; efsa-objekt sat til DOI 10.2903/j.efsa.2017.4786. IARC 2A (2010), Bouvard 2015 og forordning 2023/2108 bekræftet."
+  },
+  "wikipedia": "",
+  "wikidata": "Q409179",
+  "claims": []
+ },
+ {
+  "code": "E250",
+  "nameDa": "Natriumnitrit",
+  "nameEn": "Sodium nitrite",
+  "category": "Konserveringsmiddel",
+  "euStatus": "approved",
+  "origin": "synthetic",
+  "summary": "Natriumnitrit er det klassiske nitrit i saltet kød. Det giver pålæg og pølser den røde farve og beskytter mod botulisme.",
+  "description": "Natriumnitrit (NaNO2) fremstilles industrielt ved at lede nitrøse gasser gennem natriumhydroxid- eller natriumkarbonatopløsning. Det sælges i fødevareindustrien blandet med almindeligt salt som nitritsalt (typisk 0,4–0,6 % nitrit), så overdosering undgås. I kødet danner det nitrosomyoglobin, som giver den stabile lyserøde farve, og bidrager til den saltede smag. Den vigtigste funktion er at hæmme Clostridium botulinum og andre sporedannere. Nitrit dannes også i kroppen fra nitrat i grøntsager.",
+  "uses": "Spegepølse, skinke, bacon, hamburgerryg, kogt og røget pålæg, rullepølse, leverpostej, wienerpølser og saltet kød. Med forordning (EU) 2023/2108 blev grænsen for tilsat nitrit i de fleste kødprodukter sænket til 80 mg/kg (55 mg/kg i steriliserede kødprodukter) efter en overgangsperiode på to år. Danmark har traditionelt haft strengere nationale regler end EU.",
+  "health": "Nitrit kan i kødet og i maven reagere med aminer og danne nitrosaminer, hvoraf mange er kræftfremkaldende, især ved stegning ved høj temperatur. EFSA fastsatte i 2017 en ADI på 0,07 mg nitrit-ion/kg legemsvægt/dag og vurderede, at eksponeringen fra tilsætningsstoffer alene ligger under ADI bortset fra en lille overskridelse hos børn med det højeste forbrug; når nitrit fra alle kilder medregnes, kan ADI overskrides. Høje indtag af nitrit kan give methæmoglobinæmi (nedsat iltbinding i blodet), og spædbørn er særligt følsomme; nitrit må ikke bruges i mad til spædbørn. Samtidig beskytter nitrit effektivt mod Clostridium botulinum, som kan give dødelig botulisme.",
+  "research": "IARC klassificerede i 2010 indtaget nitrat og nitrit under forhold, der fører til nitrosering, som sandsynligt kræftfremkaldende (gruppe 2A), og i 2015 forarbejdet kød som kræftfremkaldende (gruppe 1) for tarmkræft (Bouvard et al., Lancet Oncology 2015). EFSA's gen-evaluering fra 2017 fastsatte ved en benchmarkdosis-tilgang en ADI på 0,07 mg nitrit-ion/kg (mod tidligere 0,06) og fastholdt nitrat-ADI'en på 3,7 mg/kg,, men konkluderede, at nitrosamindannelse ikke kunne vurderes fuldt ud; EFSA's udtalelse om nitrosaminer i fødevarer fra 2023 fandt, at eksponeringen giver anledning til sundhedsbekymring. På den baggrund sænkede EU med forordning (EU) 2023/2108 maksimumsgrænserne for tilsat nitrit og nitrat i kødprodukter. Der er fortsat diskussion om, hvor meget af kræftrisikoen ved forarbejdet kød der skyldes nitrit, og om nitrit fra grøntsager opfører sig anderledes pga. antioxidanter.",
+  "keyReferences": [
+   {
+    "citation": "Bouvard V et al. Carcinogenicity of consumption of red and processed meat. Lancet Oncol. 2015.",
+    "searchTitle": "Carcinogenicity of consumption of red and processed meat"
+   }
+  ],
+  "pubmedTerm": "sodium nitrite",
+  "flags": [
+   "children_caution",
+   "pregnancy_caution"
+  ],
+  "classes": [
+   "preservative"
+  ],
+  "variants": [],
+  "efsa": {
+   "title": "Re-evaluation of potassium nitrite (E 249) and sodium nitrite (E 250) as food additives",
+   "url": "https://doi.org/10.2903/j.efsa.2017.4786",
+   "date": "2017-06-15",
+   "adi": "0.07 mg/kg bw/day",
+   "overexposureRisk": "en:high"
+  },
+  "verification": {
+   "status": "uncertain",
+   "sources": [
+    "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2017.4786",
+    "https://pmc.ncbi.nlm.nih.gov/articles/PMC7009987/",
+    "https://www.thelancet.com/journals/lanonc/article/PIIS1470-2045(15)00444-1/fulltext"
+   ],
+   "notes": "Runde 2 IKKE gennemført for denne post: sessionens søgebudget (200 WebSearch) blev opbrugt, før posten kunne gennemgås udsagn for udsagn. Teksten er uændret fra runde 1 (kun EU-status/ADI/EFSA kontrolleret). Runde 1-note: ADI 0,07 var en ny værdi (ikke 'fastholdt'); eksponeringskonklusion præciseret; efsa-objekt sat til DOI 10.2903/j.efsa.2017.4786. IARC 2A (2010), Bouvard 2015 og forordning 2023/2108 bekræftet."
+  },
+  "wikipedia": "https://en.wikipedia.org/wiki/Sodium_nitrite",
+  "wikidata": "Q339975",
+  "claims": []
+ },
+ {
+  "code": "E251",
+  "nameDa": "Natriumnitrat",
+  "nameEn": "Sodium nitrate",
+  "category": "Konserveringsmiddel",
+  "euStatus": "approved",
+  "origin": "synthetic",
+  "summary": "Natriumnitrat (salpeter) bruges til langsom saltning af kød og i visse oste, hvor det omdannes til nitrit.",
+  "description": "Natriumnitrat (NaNO3, chilesalpeter) udvindes af naturlige aflejringer i Chile eller fremstilles syntetisk af salpetersyre og natriumkarbonat. I fødevaren omdannes nitrat langsomt til nitrit af bakterier, hvilket gør det egnet til traditionel langtidsmodning af fx rullepølse, spegeskinke og spegepølse. I visse oste (fx Gouda-typer) bruges det til at hæmme sporedannende bakterier, der giver 'sen gæring'. Nitrat har selv ingen direkte konserverende virkning; effekten kommer fra nitritten.",
+  "uses": "Traditionelt saltede og lufttørrede kødprodukter (spegeskinke, spegepølse), visse hårde og halvfaste oste og syltede sild. Med forordning (EU) 2023/2108 blev grænsen for tilsat nitrat i de fleste kødprodukter sat til 150 mg/kg og i ost til 75 mg/kg.",
+  "health": "Nitrat er i sig selv ikke særligt giftigt, men omdannes delvist til nitrit af bakterier i mund og tarm, og kan derved bidrage til nitrosamindannelse. EFSA's ADI for nitrat er 3,7 mg nitrat-ion/kg legemsvægt/dag. Hovedparten af nitratindtaget kommer fra grøntsager (fx spinat, salat, rødbeder), ikke fra tilsætningsstoffer. Spædbørn er særligt følsomme over for methæmoglobinæmi.",
+  "research": "EFSA's gen-evaluering fra 2017 bekræftede ADI 3,7 mg/kg legemsvægt/dag for nitrat og vurderede, at tilsat nitrat kun bidrager med en lille del (ca. 5 %) af det samlede indtag. IARC klassificerede i 2010 indtaget nitrat under nitroserende forhold som sandsynligt kræftfremkaldende (gruppe 2A). Samtidig undersøges nitrat fra rødbedesaft og grøntsager for mulige gavnlige effekter på blodtryk og muskelpræstation via nitrogenoxid, så billedet er nuanceret. EU sænkede maksimumsgrænserne for tilsat nitrat i kød og ost med forordning (EU) 2023/2108.",
+  "keyReferences": [],
+  "pubmedTerm": "sodium nitrate",
+  "flags": [
+   "children_caution"
+  ],
+  "classes": [
+   "preservative"
+  ],
+  "variants": [],
+  "efsa": {
+   "title": "Re‐evaluation of sodium nitrate (E 251) and potassium nitrate (E 252) as food additives",
+   "url": "https://doi.org/10.2903/j.efsa.2017.4787",
+   "date": "2017-06-15",
+   "adi": "3.7 mg/kg bw/day",
+   "overexposureRisk": "en:high"
+  },
+  "verification": {
+   "status": "uncertain",
+   "sources": [
+    "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2017.4787",
+    "https://eur-lex.europa.eu/eli/reg/2023/2108/oj"
+   ],
+   "notes": "Runde 2 IKKE gennemført for denne post: sessionens søgebudget (200 WebSearch) blev opbrugt, før posten kunne gennemgås udsagn for udsagn. Teksten er uændret fra runde 1 (kun EU-status/ADI/EFSA kontrolleret). Runde 1-note: ADI 3,7 og IARC 2A bekræftet; grænser efter 2023/2108 præciseret (kød 150, ost 75 mg/kg); efsa-url sat til DOI."
+  },
+  "wikipedia": "https://en.wikipedia.org/wiki/Sodium_nitrate",
+  "wikidata": "Q184373",
+  "claims": []
+ }
+]

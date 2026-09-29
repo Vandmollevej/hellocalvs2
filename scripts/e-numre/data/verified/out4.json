@@ -1,0 +1,1619 @@
+[
+ {
+  "code": "E407",
+  "nameDa": "Carrageenan",
+  "nameEn": "Carrageenan",
+  "category": "Fortykningsmiddel / geleringsmiddel / stabilisator",
+  "euStatus": "approved",
+  "origin": "natural",
+  "summary": "Carrageenan er et fortykningsmiddel udvundet af rødalger, som især bruges i mejeriprodukter og kødprodukter. Det er et af de mest debatterede fortykningsmidler.",
+  "description": "Carrageenan er en familie af svovlholdige polysakkarider (kappa-, iota- og lambda-carrageenan) fra rødalger som Chondrus crispus (irsk mos), Eucheuma og Kappaphycus. Det udvindes ved varm alkalisk ekstraktion, filtrering og fældning med alkohol eller kaliumchlorid. Kappa giver faste, sprøde geler, iota elastiske geler, og lambda gelerer ikke men fortykker. Carrageenan reagerer særligt godt med mælkeprotein og bruges derfor til at stabilisere kakaomælk og desserter. Det skal skelnes fra 'poligeenan' (nedbrudt carrageenan med lav molekylvægt), som ikke er tilladt i fødevarer.",
+  "uses": "Tilladt quantum satis i EU i mange produkter: kakaomælk, fløde, flødeskum, budding, is, plantedrikke, skinke og pålæg (vandbinding), gelé og konfekture. Særlige regler for modermælkserstatning og babymad. Må ikke bruges i gelékonfekture i minibægre (kvælningsrisiko).",
+  "health": "EFSA (2018) konkluderede, at den eksisterende gruppe-ADI på 75 mg/kg legemsvægt/dag for E407 og E407a skal betragtes som midlertidig, indtil datagrundlaget er forbedret, og fandt i det mest relevante eksponeringsscenarie, at høje forbrugere i alle aldersgrupper kunne overskride ADI (i nogle tilfælde op til ca. 10 gange). Dyreforsøg har knyttet især nedbrudt carrageenan (poligeenan) til tarmbetændelse og tumorer; poligeenan er af IARC klassificeret som muligvis kræftfremkaldende (gruppe 2B). Nogle personer med inflammatorisk tarmsygdom oplever forbedring ved at undgå carrageenan, men dokumentationen er begrænset. Anvendelse i modermælkserstatning til spædbørn er et særligt fokus på grund af manglende data.",
+  "research": "EFSA's genvurdering (2018) konkluderede, at der ikke var sikkerhedsbekymring ved nuværende brug, men gjorde ADI midlertidig pga. usikkerheder om data og indhold af lavmolekylært carrageenan; EFSA's særskilte vurdering af brug i fødevarer til spædbørn under 16 uger (FAF-panelet, mandat fra 2023) var ved seneste offentliggjorte status endnu ikke afsluttet. Tobacman (Environ Health Perspect, 2001) gennemgik dyreforsøg med skadelige mave-tarmeffekter og har rejst bekymring. Et lille randomiseret studie af Bhattacharyya et al. (Nutrition and Healthy Aging, 2017; 12 deltagere) antydede, at carrageenanfri kost kunne mindske tilbagefald ved colitis ulcerosa, men det er ikke bekræftet i større studier. Studiet er kritiseret af industriforskere (McKim et al., 2019). I den franske NutriNet-Santé-kohorte fandt Sellem et al. (PLoS Medicine, 2024) en association mellem højere indtag af carrageenan og brystkræft, men observationelle data kan ikke vise årsagssammenhæng. Emnet er fortsat omdiskuteret.",
+  "keyReferences": [
+   {
+    "citation": "Tobacman JK. Review of harmful gastrointestinal effects of carrageenan in animal experiments. Environ Health Perspect. 2001.",
+    "searchTitle": "Review of harmful gastrointestinal effects of carrageenan in animal experiments"
+   },
+   {
+    "citation": "Bhattacharyya S, Shumard T, Xie H, et al. A randomized trial of the effects of the no-carrageenan diet on ulcerative colitis disease activity. Nutr Healthy Aging. 2017.",
+    "searchTitle": "A randomized trial of the effects of the no-carrageenan diet on ulcerative colitis disease activity"
+   },
+   {
+    "citation": "Sellem L, Srour B, Javaux G, et al. Food additive emulsifiers and cancer risk: Results from the French prospective NutriNet-Santé cohort. PLoS Med. 2024.",
+    "searchTitle": "Food additive emulsifiers and cancer risk: Results from the French prospective NutriNet-Santé cohort"
+   }
+  ],
+  "pubmedTerm": "carrageenan",
+  "flags": [
+   "children_caution"
+  ],
+  "classes": [
+   "carrier",
+   "emulsifier",
+   "humectant",
+   "stabiliser",
+   "thickener"
+  ],
+  "variants": [],
+  "efsa": {
+   "title": "Re‐evaluation of carrageenan (E 407) and processed Eucheuma seaweed (E 407a) as food additives",
+   "url": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2018.5238",
+   "date": "2018/04/26",
+   "adi": "75",
+   "overexposureRisk": "en:high"
+  },
+  "wikipedia": "https://en.wikipedia.org/wiki/Carrageenan",
+  "wikidata": "Q421991",
+  "verification": {
+   "status": "corrected",
+   "sources": [
+    "https://doi.org/10.2903/j.efsa.2018.5238",
+    "https://journals.sagepub.com/doi/full/10.3233/NHA-170023",
+    "https://www.efsa.europa.eu/sites/default/files/2024-04/200324-m.pdf",
+    "https://journals.plos.org/plosmedicine/article?id=10.1371%2Fjournal.pmed.1004338"
+   ],
+   "notes": "EU-godkendt bekræftet. ADI-formulering præciseret (eksisterende ADI 75 gjort midlertidig; overskridelse op til ~10x). Påstand om afsluttet EFSA-vurdering for spædbørn rettet (stadig i gang). Bhattacharyya-studiets tidsskrift tilføjet; NutriNet-Santé-fund tilføjet; referencer bekræftet og suppleret."
+  }
+ },
+ {
+  "code": "E407a",
+  "nameDa": "Forarbejdet eucheuma-tang",
+  "nameEn": "Processed eucheuma seaweed",
+  "category": "Fortykningsmiddel / geleringsmiddel",
+  "euStatus": "approved",
+  "origin": "natural",
+  "summary": "En mindre raffineret form af carrageenan, hvor hele tangen fra Eucheuma-arter forarbejdes uden at carrageenan udskilles fuldt.",
+  "description": "Forarbejdet eucheuma-tang (PES, også kaldet semi-raffineret carrageenan) fremstilles ved at behandle rødalgerne Eucheuma cottonii eller E. spinosum med varm alkali, vaske og tørre dem, uden at carrageenanen opløses og fældes. Produktet indeholder derfor op til ca. 15 % uopløselig algecellulose ud over carrageenan. Det er billigere end raffineret carrageenan og giver mere uklare geler. Funktionen er i øvrigt som E407.",
+  "uses": "Tilladt quantum satis i EU i de samme kategorier som carrageenan, fx kødprodukter, desserter og mejeriprodukter. Må ikke bruges i gelékonfekture i minibægre (kvælningsrisiko).",
+  "health": "Vurderes sammen med carrageenan: EFSA (2018) konkluderede, at den eksisterende gruppe-ADI på 75 mg/kg legemsvægt/dag for E407 og E407a skal betragtes som midlertidig, indtil datagrundlaget er forbedret, og fandt i det mest relevante eksponeringsscenarie, at høje forbrugere i alle aldersgrupper kunne overskride ADI (i nogle tilfælde op til ca. 10 gange). De samme bekymringer om nedbrudt carrageenan og tarmeffekter gælder. Der er særligt fokus på spædbørn pga. manglende data.",
+  "research": "EFSA's genvurdering (2018) omfattede både E407 og E407a og krævede bedre data om molekylvægtsfordeling og forureninger. Specifik forskning i PES adskilt fra carrageenan er meget begrænset.",
+  "keyReferences": [
+   {
+    "citation": "Tobacman JK. Review of harmful gastrointestinal effects of carrageenan in animal experiments. Environ Health Perspect. 2001.",
+    "searchTitle": "Review of harmful gastrointestinal effects of carrageenan in animal experiments"
+   }
+  ],
+  "pubmedTerm": "carrageenan",
+  "flags": [
+   "children_caution"
+  ],
+  "classes": [
+   "carrier",
+   "emulsifier",
+   "humectant",
+   "stabiliser",
+   "thickener"
+  ],
+  "variants": [],
+  "efsa": {
+   "title": "Re‐evaluation of carrageenan (E 407) and processed Eucheuma seaweed (E 407a) as food additives",
+   "url": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2018.5238",
+   "date": "2018/04/26",
+   "adi": "75",
+   "overexposureRisk": "en:high"
+  },
+  "wikipedia": "",
+  "wikidata": "Q421991",
+  "verification": {
+   "status": "corrected",
+   "sources": [
+    "https://doi.org/10.2903/j.efsa.2018.5238",
+    "https://pubmed.ncbi.nlm.nih.gov/32625873/"
+   ],
+   "notes": "Godkendt (E407a). ADI-formulering præciseret efter EFSA 2018. Fjernet ubekræftet \"dyrefoder-lignende produkter\". Tobacman-reference bekræftet (Environ Health Perspect 2001)."
+  }
+ },
+ {
+  "code": "E410",
+  "nameDa": "Johannesbrødkernemel",
+  "nameEn": "Locust bean gum",
+  "category": "Fortykningsmiddel / stabilisator",
+  "euStatus": "approved",
+  "origin": "natural",
+  "summary": "Johannesbrødkernemel (locust bean gum) er et fortykningsmiddel fra frøene af johannesbrødtræet.",
+  "description": "Stoffet udvindes af endospermen i frøene fra johannesbrødtræet (Ceratonia siliqua), der vokser i Middelhavsområdet. Det består af galactomannan, en kæde af mannose med sidegrupper af galactose (forhold ca. 4:1). Det opløses bedst ved opvarmning og giver høj viskositet; sammen med xanthan eller carrageenan dannes stærkere geler (synergi). Det er en opløselig kostfiber.",
+  "uses": "Tilladt quantum satis i EU, fx i is, flødeost, yoghurt, desserter, saucer, dressinger og tykkere modermælkserstatning (reflux-produkter). Må ikke bruges i gelékonfekture i minibægre (kvælningsrisiko).",
+  "health": "Anses for sikkert; EFSA's genvurdering (2017) fandt ikke behov for en numerisk ADI. Store mængder kan give luft og blød mave. Personer med stærk allergi over for bælgfrugter (fx jordnødder) har i sjældne tilfælde reageret på johannesbrødkernemel. EFSA har særligt vurderet brug i modermælkserstatning og fundet det acceptabelt ved de anvendte niveauer.",
+  "research": "EFSA's ANS-panel genvurderede E410 i 2017 og konkluderede i en opfølgning (FAF-panelet, 2023), at der ikke er sikkerhedsbekymring ved brug i modermælkserstatning og i fødevarer til særlige medicinske formål til spædbørn under 16 uger. Fortykket modermælkserstatning med johannesbrødkernemel er undersøgt ved spædbørnsgylp med moderat evidens for færre gylp.",
+  "keyReferences": [
+   {
+    "citation": "EFSA FAF Panel. Re-evaluation of locust bean gum (E 410) as a food additive in foods for infants below 16 weeks of age and follow-up of its re-evaluation as a food additive for uses in foods for all population groups. EFSA Journal. 2023;21(2):7775.",
+    "searchTitle": "Re-evaluation of locust bean gum (E 410) as a food additive in foods for infants below 16 weeks of age"
+   }
+  ],
+  "pubmedTerm": "locust bean gum",
+  "flags": [],
+  "classes": [
+   "emulsifier",
+   "stabiliser",
+   "thickener"
+  ],
+  "variants": [],
+  "efsa": {
+   "title": "Re‐evaluation of locust bean gum (E 410) as a food additive",
+   "url": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2017.4646",
+   "date": "2017/01/20",
+   "adi": "",
+   "overexposureRisk": ""
+  },
+  "wikipedia": "",
+  "wikidata": "Q221391",
+  "verification": {
+   "status": "corrected",
+   "sources": [
+    "https://doi.org/10.2903/j.efsa.2017.4646",
+    "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2023.7775"
+   ],
+   "notes": "Godkendt. EFSA 2017 bekræftet; opfølgning 2023 (ingen bekymring for spædbørn <16 uger) indsat med konklusion."
+  }
+ },
+ {
+  "code": "E412",
+  "nameDa": "Guargummi",
+  "nameEn": "Guar gum",
+  "category": "Fortykningsmiddel / stabilisator",
+  "euStatus": "approved",
+  "origin": "natural",
+  "summary": "Guargummi er et fortykningsmiddel fra frøene af guarplanten, som er meget effektivt selv i små mængder.",
+  "description": "Guargummi udvindes af endospermen i frø fra guarbønnen (Cyamopsis tetragonoloba), der især dyrkes i Indien og Pakistan. Det består af galactomannan med flere galactose-sidegrupper end johannesbrødkernemel (forhold ca. 2:1), hvilket gør det opløseligt i koldt vand. Det giver meget høj viskositet ved lav dosis og bruges til fortykkelse, stabilisering og til at hindre iskrystaller. Det er en opløselig kostfiber, som fermenteres i tyktarmen.",
+  "uses": "Tilladt quantum satis i EU, fx i is, saucer, dressinger, glutenfrit brød, supper, mejeriprodukter og mad til dysfagipatienter. Må ikke bruges i gelékonfekture i minibægre (kvælningsrisiko).",
+  "health": "Anses for sikkert; EFSA's genvurdering (2017) fandt ikke behov for en numerisk ADI. Store mængder kan give luft og oppustethed. Tørt guarpulver i tabletform kan svulme op og har tidligere givet spiserørsobstruktion, hvorfor slankeprodukter med guar blev trukket tilbage i 1990'erne. I 2007 blev der fundet guargummi fra Indien forurenet med dioxin og pentachlorphenol, hvilket førte til skærpet EU-kontrol.",
+  "research": "EFSA genvurderede E412 i 2017 I opfølgningen (FAF-panelet, 2024) konkluderede EFSA, at de indsendte data ikke var tilstrækkelige til at understøtte sikker brug i modermælkserstatning og fødevarer til særlige medicinske formål til spædbørn og småbørn. Delvist hydrolyseret guargummi (PHGG) er undersøgt som præbiotisk fiber ved irritabel tyktarm med lovende, men begrænset evidens. Guargummi kan i relevante doser sænke kolesterol og blodsukkerstigning efter måltider.",
+  "keyReferences": [],
+  "pubmedTerm": "guar gum",
+  "flags": [],
+  "classes": [
+   "emulsifier",
+   "stabiliser",
+   "thickener"
+  ],
+  "variants": [],
+  "efsa": {
+   "title": "Re-evaluation of guar gum (E 412) as a food additive in foods for infants below 16 weeks of age and follow-up of its re-evaluation as food additive for uses in foods for all population groups",
+   "url": "https://doi.org/10.2903/j.efsa.2024.8748",
+   "date": "2024-05-06",
+   "adi": "",
+   "overexposureRisk": ""
+  },
+  "wikipedia": "",
+  "wikidata": "Q422071",
+  "verification": {
+   "status": "corrected",
+   "sources": [
+    "https://doi.org/10.2903/j.efsa.2024.8748",
+    "https://www.semanticscholar.org/paper/Re%E2%80%90evaluation-of-guar-gum-(E-412)-as-a-food-Mortensen-Aguilar/ebb4c2b87572359b28fe40b800907b10c2e9a619"
+   ],
+   "notes": "Godkendt. Genvurdering 2017 bekræftet; opfølgning 2024 tilføjet med korrekt konklusion (utilstrækkelige data for spædbørnsprodukter). efsa-objekt tilføjet."
+  }
+ },
+ {
+  "code": "E413",
+  "nameDa": "Tragant",
+  "nameEn": "Tragacanth",
+  "category": "Fortykningsmiddel / stabilisator",
+  "euStatus": "approved",
+  "origin": "natural",
+  "summary": "Tragant er en naturlig plantegummi fra tornede Astragalus-buske i Mellemøsten.",
+  "description": "Tragant er den tørrede saft, der siver ud af stammer og grene hos Astragalus-arter (især fra Iran og Tyrkiet), når de ridses. Den består af en vandopløselig del (tragacanthin) og en svulmende del (bassorin). Den er stabil over for syre og giver høj viskositet. Tragant er dyr og er i vid udstrækning erstattet af xanthan og guar, men bruges stadig til sukkerpasta og specielle formål.",
+  "uses": "Tilladt quantum satis i EU i fx kagedekorationer (sukkermasse, blomster), dressinger, fyld og konfekture. Må ikke bruges i gelékonfekture i minibægre (kvælningsrisiko).",
+  "health": "Anses for sikkert; EFSA (2017) fandt ikke behov for en numerisk ADI. Der er beskrevet sjældne allergiske reaktioner, herunder astmalignende reaktioner hos personer, der arbejder med pulveret. Store mængder kan virke afførende.",
+  "research": "EFSA's ANS-panel genvurderede tragant (E413) i 2017 uden at finde sikkerhedsbekymringer ved de rapporterede anvendelser. Der er meget lidt nyere forskning.",
+  "keyReferences": [],
+  "pubmedTerm": "tragacanth",
+  "flags": [
+   "allergen"
+  ],
+  "classes": [
+   "emulsifier",
+   "stabiliser",
+   "thickener"
+  ],
+  "variants": [],
+  "efsa": {
+   "title": "Re‐evaluation of tragacanth (E 413) as a food additive",
+   "url": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2017.4789",
+   "date": "2017/06/09",
+   "adi": "",
+   "overexposureRisk": ""
+  },
+  "wikipedia": "",
+  "wikidata": "Q423901",
+  "verification": {
+   "status": "verified",
+   "sources": [
+    "https://doi.org/10.2903/j.efsa.2017.4789"
+   ],
+   "notes": "Godkendt. EFSA 2017 uden numerisk ADI og uden sikkerhedsbekymring bekræftet."
+  }
+ },
+ {
+  "code": "E414",
+  "nameDa": "Gummi arabicum (akaciegummi)",
+  "nameEn": "Acacia gum",
+  "category": "Fortykningsmiddel / stabilisator / emulgator",
+  "euStatus": "approved",
+  "origin": "natural",
+  "summary": "Gummi arabicum er en naturlig plantegummi fra akacietræer, der især bruges til at stabilisere læskedrikke og som overtræk på slik.",
+  "description": "Gummi arabicum er den indtørrede saft fra Acacia senegal og Acacia seyal, der især høstes i Sudan og Sahel-bæltet. Det er et komplekst polysakkarid med en lille proteindel, hvilket giver emulgerende egenskaber. Det er meget opløseligt og giver lav viskositet selv ved høje koncentrationer. Det bruges til at emulgere aromaolier i læskedrikke, som bindemiddel i pastiller og som filmdanner på overtrukket slik.",
+  "uses": "Tilladt quantum satis i EU i fx sodavand (citrus- og colaemulsioner), vingummi og pastiller (fx lakridspastiller), overtrukket chokolade/dragéer, aromaer og kosttilskud. Må ikke bruges i gelékonfekture i minibægre (kvælningsrisiko).",
+  "health": "Anses for sikkert; EFSA (2017) fandt ikke behov for en numerisk ADI. Det er en fermenterbar fiber og kan i store mængder give luft. Allergiske reaktioner er sjældne, men beskrevet hos arbejdere udsat for støv.",
+  "research": "EFSA genvurderede akaciegummi (E414) i 2017 uden sikkerhedsbekymringer og fulgte i 2019 op med en vurdering af brug i fødevarer til spædbørn under 16 uger. Der forskes i gummi arabicum som præbiotisk fiber og i mulige gavnlige effekter ved nyresygdom, men evidensen er begrænset.",
+  "keyReferences": [],
+  "pubmedTerm": "gum arabic",
+  "flags": [],
+  "classes": [
+   "carrier",
+   "emulsifier",
+   "stabiliser",
+   "thickener"
+  ],
+  "variants": [],
+  "efsa": {
+   "title": "Re-evaluation of acacia gum (E 414) as a food additive",
+   "url": "https://doi.org/10.2903/j.efsa.2017.4741",
+   "date": "2017-04-06",
+   "adi": "",
+   "overexposureRisk": ""
+  },
+  "wikipedia": "https://en.wikipedia.org/wiki/Gum_arabic",
+  "wikidata": "Q535814",
+  "verification": {
+   "status": "corrected",
+   "sources": [
+    "https://doi.org/10.2903/j.efsa.2017.4741",
+    "https://doi.org/10.2903/j.efsa.2019.5922"
+   ],
+   "notes": "Godkendt. EFSA 2017 bekræftet, opfølgning 2019 nævnt; efsa-objekt tilføjet."
+  }
+ },
+ {
+  "code": "E415",
+  "nameDa": "Xanthangummi",
+  "nameEn": "Xanthan gum",
+  "category": "Fortykningsmiddel / stabilisator",
+  "euStatus": "approved",
+  "origin": "natural",
+  "summary": "Xanthangummi er et fortykningsmiddel, som bakterier producerer ved gæring af sukker. Det er et af de mest udbredte fortykningsmidler, bl.a. i glutenfrit bagværk.",
+  "description": "Xanthan er et polysakkarid, der dannes af bakterien Xanthomonas campestris ved fermentering af glukose eller saccharose (ofte fra majs, hvede, soja eller sukkerroer). Efter fermenteringen fældes xanthan med alkohol, tørres og males. Det giver høj viskositet ved lav dosis, er stabilt over for syre, salt og varme og har 'shear thinning'-egenskaber (flyder let ved omrøring, tykt i hvile). Det bruges til at holde partikler svævende og til at give struktur i glutenfri dej.",
+  "uses": "Tilladt quantum satis i EU, fx i dressinger, saucer, ketchup, supper, is, glutenfrit brød, plantedrikke, fortykningsprodukter til dysfagi og kosttilskud. Må ikke bruges i gelékonfekture i minibægre (kvælningsrisiko).",
+  "health": "Anses for sikkert for voksne; EFSA (2017) fandt ikke behov for en numerisk ADI. Store mængder kan give luft og løs mave. I USA blev der i 2011 advaret mod et xanthanbaseret fortykningsmiddel til for tidligt fødte børn efter tilfælde af nekrotiserende enterocolitis, og EFSA har efterfølgende vurderet brug til spædbørn særskilt. Rester af fermenteringsmediet er så små, at xanthan normalt ikke udløser allergi, men sjældne reaktioner er beskrevet.",
+  "research": "EFSA's ANS-panel genvurderede xanthan i 2017 og konkluderede i 2023 (FAF-panelet), at der ikke er sikkerhedsbekymring ved brug i fødevarer til særlige medicinske formål til spædbørn under 16 uger. Et studie af Ostrowski et al. (Nature Microbiology, 2022) viste, at tarmbakterier i moderne befolkninger har tilpasset sig til at nedbryde xanthan, men den sundhedsmæssige betydning er uafklaret.",
+  "keyReferences": [],
+  "pubmedTerm": "xanthan gum",
+  "flags": [
+   "children_caution"
+  ],
+  "classes": [
+   "emulsifier",
+   "stabiliser",
+   "thickener"
+  ],
+  "variants": [],
+  "efsa": {
+   "title": "Re‐evaluation of xanthan gum (E 415) as a food additive",
+   "url": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2017.4909",
+   "date": "2017/07/14",
+   "adi": "",
+   "overexposureRisk": ""
+  },
+  "wikipedia": "https://en.wikipedia.org/wiki/Xanthan_gum",
+  "wikidata": "Q410768",
+  "verification": {
+   "status": "corrected",
+   "sources": [
+    "https://doi.org/10.2903/j.efsa.2017.4909",
+    "https://doi.org/10.2903/j.efsa.2023.7951",
+    "https://www.nature.com/articles/s41564-022-01093-0"
+   ],
+   "notes": "Godkendt. EFSA 2017 og opfølgning 2023 (konklusion indsat) bekræftet. Ostrowski et al. Nature Microbiology 2022 bekræftet."
+  }
+ },
+ {
+  "code": "E416",
+  "nameDa": "Karayagummi",
+  "nameEn": "Karaya gum",
+  "category": "Fortykningsmiddel / stabilisator",
+  "euStatus": "approved",
+  "origin": "natural",
+  "summary": "Karayagummi er en plantegummi fra Sterculia-træer i Indien, som bruges i begrænset omfang som fortykker.",
+  "description": "Karayagummi er den indtørrede saft fra Sterculia urens og beslægtede arter. Det er et acetyleret polysakkarid, der ikke opløses, men svulmer kraftigt op i vand og giver en let eddikeagtig lugt. Det bruges som fortykker og stabilisator og har været brugt som bulk-laksativ. I EU er brugen begrænset til få kategorier.",
+  "uses": "Tilladt i EU med maksimumsgrænser i få kategorier, fx dressinger og emulgerede saucer, fyld og overtræk til bagværk, tyggegummi og kosttilskud. Må ikke bruges i gelékonfekture i minibægre (kvælningsrisiko).",
+  "health": "Anses for sikkert ved de anvendte mængder; EFSA's genvurdering (2016) fandt ikke sikkerhedsbekymring. Store mængder virker afførende og kan give luft. Der er beskrevet allergiske reaktioner og astma hos personer, der har arbejdet med karayapulver.",
+  "research": "EFSA's ANS-panel genvurderede karayagummi (E416) i 2016 og bemærkede dataudfordringer, men ingen sikkerhedsbekymring ved de rapporterede anvendelser. Der er meget lidt nyere forskning.",
+  "keyReferences": [],
+  "pubmedTerm": "karaya gum",
+  "flags": [
+   "allergen",
+   "laxative"
+  ],
+  "classes": [
+   "emulsifier",
+   "stabiliser",
+   "thickener"
+  ],
+  "variants": [],
+  "efsa": {
+   "title": "Re-evaluation of karaya gum (E 416) as a food additive",
+   "url": "http://dx.doi.org/10.2903/j.efsa.2016.4598",
+   "date": "2016-12-19",
+   "adi": "",
+   "overexposureRisk": ""
+  },
+  "wikipedia": "",
+  "wikidata": "Q421167",
+  "verification": {
+   "status": "verified",
+   "sources": [
+    "https://doi.org/10.2903/j.efsa.2016.4598"
+   ],
+   "notes": "Godkendt med maksimumsgrænser. EFSA 2016-genvurdering bekræftet."
+  }
+ },
+ {
+  "code": "E417",
+  "nameDa": "Taragummi",
+  "nameEn": "Tara gum",
+  "category": "Fortykningsmiddel / stabilisator",
+  "euStatus": "approved",
+  "origin": "natural",
+  "summary": "Taragummi er et fortykningsmiddel fra frøene af tarabusken i Sydamerika.",
+  "description": "Taragummi udvindes af frøenes endosperm fra Caesalpinia spinosa (tara), der især vokser i Peru. Det er et galactomannan med et mannose:galactose-forhold på ca. 3:1, dvs. mellem guar og johannesbrødkernemel. Det bruges som fortykker og stabilisator og har synergi med xanthan og carrageenan.",
+  "uses": "Tilladt quantum satis i EU i fx is, desserter, saucer, mejeriprodukter og bagværk. Må ikke bruges i gelékonfekture i minibægre (kvælningsrisiko).",
+  "health": "Anses for sikkert; EFSA (2017) fandt ikke behov for en numerisk ADI. Store mængder kan give luft og blød mave som andre fibre. Ingen kendte særlige risikogrupper.",
+  "research": "EFSA's ANS-panel genvurderede tara gum (E417) i 2017 uden sikkerhedsbekymringer. Tara-mel (ikke gummien) var i 2022 i USA forbundet med et større sygdomsudbrud fra frosne veganske produkter; dette gjaldt tara-proteinmel og ikke E417, som er et oprenset polysakkarid.",
+  "keyReferences": [],
+  "pubmedTerm": "tara gum",
+  "flags": [],
+  "classes": [
+   "stabiliser",
+   "thickener"
+  ],
+  "variants": [],
+  "efsa": {
+   "title": "Re‐evaluation of tara gum (E 417) as a food additive",
+   "url": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2017.4863",
+   "date": "2017/06/28",
+   "adi": "",
+   "overexposureRisk": ""
+  },
+  "wikipedia": "https://en.wikipedia.org/wiki/Tara_spinosa#Uses",
+  "wikidata": "Q15089452",
+  "verification": {
+   "status": "verified",
+   "sources": [
+    "https://doi.org/10.2903/j.efsa.2017.4863"
+   ],
+   "notes": "Godkendt. EFSA 2017 bekræftet. Tara-mel-udbruddet (2022, USA) vedrørte tara-proteinmel, ikke E417."
+  }
+ },
+ {
+  "code": "E418",
+  "nameDa": "Gellangummi",
+  "nameEn": "Gellan gum",
+  "category": "Geleringsmiddel / stabilisator",
+  "euStatus": "approved",
+  "origin": "natural",
+  "summary": "Gellan er et geleringsmiddel produceret af bakterier ved gæring, som danner klare geler selv i meget små mængder.",
+  "description": "Gellan er et polysakkarid, der dannes af bakterien Sphingomonas elodea (tidligere Pseudomonas elodea) ved fermentering af sukker. Det findes i en højacyl-form, der giver bløde, elastiske geler, og en lavacyl-form (deacyleret og ofte klaret), der giver faste, sprøde og klare geler. Gellan holder partikler svævende i drikke selv ved meget lave koncentrationer (0,01-0,05 %). Det bruges bl.a. til at holde calcium og kakao svævende i plantedrikke.",
+  "uses": "Tilladt quantum satis i EU, fx i plantedrikke (havre-, mandel- og sojadrik), kakaomælk, juice med frugtkød, desserter, glasur, veganske geléer og bagerifyld. Må ikke bruges i gelékonfekture i minibægre (kvælningsrisiko).",
+  "health": "Anses for sikkert; EFSA (2018) fandt ikke behov for en numerisk ADI. Gellan optages ikke og fungerer som fiber; store mængder kan give blød mave. Ingen kendte særlige risikogrupper.",
+  "research": "EFSA's ANS-panel genvurderede gellan (E418) i 2018 og fandt ingen sikkerhedsbekymring; ældre humanstudier med høje doser viste kun fibereffekter. Der er begrænset nyere forskning.",
+  "keyReferences": [],
+  "pubmedTerm": "gellan gum",
+  "flags": [],
+  "classes": [
+   "stabiliser",
+   "thickener"
+  ],
+  "variants": [
+   {
+    "code": "E418(i)",
+    "nameDa": "",
+    "nameEn": ""
+   },
+   {
+    "code": "E418(ii)",
+    "nameDa": "",
+    "nameEn": "Low-acyl clarified gellan gum"
+   }
+  ],
+  "efsa": {
+   "title": "Re‐evaluation of gellan gum (E 418) as food additive",
+   "url": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2018.5296",
+   "date": "2018/06/20",
+   "adi": "",
+   "overexposureRisk": ""
+  },
+  "wikipedia": "https://en.wikipedia.org/wiki/Gellan_gum",
+  "wikidata": "Q416694",
+  "verification": {
+   "status": "verified",
+   "sources": [
+    "https://doi.org/10.2903/j.efsa.2018.5296"
+   ],
+   "notes": "Godkendt. EFSA 2018 uden numerisk ADI bekræftet."
+  }
+ },
+ {
+  "code": "E420",
+  "nameDa": "Sorbitol",
+  "nameEn": "Sorbitol",
+  "category": "Sødestof / fugtighedsbevarende middel",
+  "euStatus": "approved",
+  "origin": "mixed",
+  "summary": "Sorbitol er en sukkeralkohol (polyol), der bruges som sødestof med færre kalorier og som fugtbevarer.",
+  "description": "Sorbitol er en polyol, der findes naturligt i fx blommer, pærer og æbler. Industrielt fremstilles det ved katalytisk hydrogenering af glukose fra stivelse. Det har ca. 60 % af sukkers sødme og ca. 2,4 kcal/g (EU-mærkningsværdi). E420(i) er rent D-sorbitol (pulver), mens E420(ii) er sorbitolsirup, der også indeholder andre hydrogenerede sukre. Sorbitol forårsager ikke caries og hæver blodsukkeret mindre end sukker.",
+  "uses": "Tilladt quantum satis i EU til andre formål end sødning i mange fødevarer og som sødestof i fx sukkerfrit tyggegummi, sukkerfri pastiller og bolsjer, 'light'-desserter, marcipan og kosttilskud. Produkter med over 10 % tilsatte polyoler skal mærkes 'Overdreven indtagelse kan have afførende virkning'. Ikke tilladt i drikkevarer.",
+  "health": "Sorbitol optages kun delvist i tyndtarmen, og store mængder (typisk over 10-20 g ad gangen) kan give luft, mavesmerter og diarré. Børn er mere følsomme pga. lav kropsvægt. Personer med irritabel tyktarm (IBS) reagerer ofte; sorbitol indgår i FODMAP-gruppen. Personer med arvelig fruktoseintolerans skal undgå sorbitol, da det omdannes til fruktose. EFSA/SCF har ikke fundet behov for en numerisk ADI.",
+  "research": "EFSA's genvurdering af sorbitol (E420) indgår i genvurderingen af sødestoffer og var ved seneste offentliggjorte status endnu ikke afsluttet (EFSA har bl.a. efterlyst genotoksicitetsdata for E420(i)). Forskning i FODMAP-diæt (bl.a. Monash University) har dokumenteret polyolers rolle ved IBS-symptomer. Sukkerfrit tyggegummi med polyoler har en godkendt EU-sundhedsanprisning for tandsundhed.",
+  "keyReferences": [],
+  "pubmedTerm": "sorbitol",
+  "flags": [
+   "laxative",
+   "children_caution"
+  ],
+  "classes": [
+   "humectant",
+   "sequestrant",
+   "stabiliser",
+   "sweetener",
+   "thickener"
+  ],
+  "variants": [
+   {
+    "code": "E420(i)",
+    "nameDa": "D-Sorbitol",
+    "nameEn": "D-sorbitol"
+   },
+   {
+    "code": "E420(ii)",
+    "nameDa": "Sorbitolsirup",
+    "nameEn": "Sorbitol syrup"
+   }
+  ],
+  "efsa": null,
+  "wikipedia": "",
+  "wikidata": "Q245280",
+  "verification": {
+   "status": "corrected",
+   "sources": [
+    "https://www.efsa.europa.eu/en/call/call-data-genotoxicity-data-sorbitol-e-420-i",
+    "https://polyols-eu.org/legislation/food/"
+   ],
+   "notes": "Godkendt. Afførende mærkning (>10 % polyoler) bekræftet. Præciseret at EFSA-genvurderingen ikke er afsluttet; ingen EFSA-genvurdering med DOI fundet."
+  }
+ },
+ {
+  "code": "E421",
+  "nameDa": "Mannitol",
+  "nameEn": "Mannitol",
+  "category": "Sødestof / fugtighedsbevarende middel",
+  "euStatus": "approved",
+  "origin": "mixed",
+  "summary": "Mannitol er en sukkeralkohol, der bruges som sødestof og til at hindre klæbning, især i sukkerfrit tyggegummi.",
+  "description": "Mannitol er en polyol og isomer af sorbitol. Det findes naturligt i fx svampe, tang, selleri og manna-askens saft. Industrielt fremstilles det ved hydrogenering af fruktose eller glukose-fruktose-blandinger, eller ved fermentering. Mannitol har ca. 50-60 % af sukkers sødme, giver en kølende fornemmelse og er ikke hygroskopisk, hvorfor det bruges som afpudringsmiddel. Det giver ca. 2,4 kcal/g.",
+  "uses": "Tilladt i EU som sødestof og til andre formål i fx sukkerfrit tyggegummi (afpudring), sukkerfri pastiller og slik, chokolade med reduceret sukker og kosttilskud. Produkter med over 10 % tilsatte polyoler skal mærkes 'Overdreven indtagelse kan have afførende virkning'.",
+  "health": "Mannitol optages dårligt og virker kraftigere afførende end sorbitol; allerede ca. 10-20 g kan give diarré. Det bruges medicinsk som vanddrivende middel (intravenøst). Personer med IBS og børn er mere følsomme. EFSA/SCF har ikke fundet behov for en numerisk ADI.",
+  "research": "Mannitol indgår i EFSA's genvurdering af sødestoffer/polyoler, som for E421 endnu ikke var afsluttet ved seneste offentliggjorte status. Forskning i FODMAP-diæt har dokumenteret mannitols bidrag til IBS-symptomer. Som inhaleret pulver bruges mannitol i astmadiagnostik og ved cystisk fibrose.",
+  "keyReferences": [],
+  "pubmedTerm": "mannitol",
+  "flags": [
+   "laxative",
+   "children_caution"
+  ],
+  "classes": [
+   "humectant",
+   "stabiliser",
+   "sweetener",
+   "thickener"
+  ],
+  "variants": [],
+  "efsa": null,
+  "wikipedia": "https://en.wikipedia.org/wiki/Mannitol",
+  "wikidata": "Q407646",
+  "verification": {
+   "status": "corrected",
+   "sources": [
+    "https://www.efsa.europa.eu/sites/default/files/2024-03/02a-state-of-play-lessons-learnt-from-re-evaluation-sweeteners.pdf",
+    "https://polyols-eu.org/legislation/food/"
+   ],
+   "notes": "Godkendt. Præciseret at EFSA-genvurderingen ikke er afsluttet."
+  }
+ },
+ {
+  "code": "E422",
+  "nameDa": "Glycerol",
+  "nameEn": "Glycerol",
+  "category": "Fugtighedsbevarende middel",
+  "euStatus": "approved",
+  "origin": "mixed",
+  "summary": "Glycerol (glycerin) er en sødlig, sirupsagtig alkohol, der holder på fugten i fødevarer.",
+  "description": "Glycerol er en tre-værdig alkohol, der udgør rygraden i alle triglycerider (fedtstoffer). Det fremstilles ved spaltning (forsæbning eller hydrolyse) af vegetabilske eller animalske fedtstoffer, som biprodukt fra biodieselproduktion, eller syntetisk fra propylen. Det har ca. 60 % af sukkers sødme og giver ca. 4,3 kcal/g. Det bruges som fugtbevarer, blødgører, opløsningsmiddel for aromaer og til at forhindre, at slushice fryser helt.",
+  "uses": "Tilladt quantum satis i EU i fx slushice, kager, marcipan, fudge, tørret frugt, proteinbarer, tyggegummi og aromaer.",
+  "health": "Glycerol anses for sikkert i normale mængder; EFSA's genvurdering (2017) fandt ikke behov for en numerisk ADI. Høje doser kan give hovedpine, kvalme og diarré. Børn er særligt følsomme: efter tilfælde af 'glycerol-forgiftning' (bevidsthedspåvirkning, lavt blodsukker) hos små børn efter slushice anbefaler den britiske fødevaremyndighed (FSA, 2025), at børn under 7 år ikke får slushice med glycerol, og at børn på 7-10 år højst får én portion (350 ml); også den irske FSAI har udsendt råd. EFSA (2026) fastsatte en akut referencedosis (ARfD) på 125 mg/kg legemsvægt pr. indtagelse og fandt, at én portion slushice kan overskride den for alle aldersgrupper. Glycerol kan være af animalsk oprindelse, hvilket kan være relevant for vegetarer.",
+  "research": "EFSA's ANS-panel genvurderede glycerol i 2017 og konkluderede, at der ikke var behov for en numerisk ADI, og FAF-panelet anbefalede i en opfølgning (2022) lavere grænser for giftige grundstoffer og en grænse for akrolein. UK Food Standards Agency advarede første gang i 2023 om glycerol i slushice til små børn og skærpede rådet i 2025 (under 7 år). I 2026 vurderede EFSA akut eksponering fra drikke, fastsatte en ARfD på 125 mg/kg legemsvægt og anbefalede EU-Kommissionen at overveje numeriske maksimumsgrænser for glycerol i drikkevarer. Der er begrænset forskning i dosis-respons for børn.",
+  "keyReferences": [],
+  "pubmedTerm": "glycerol",
+  "flags": [
+   "children_caution"
+  ],
+  "classes": [
+   "humectant",
+   "thickener"
+  ],
+  "variants": [],
+  "efsa": {
+   "title": "Safety of acute exposure to the food additive glycerol (E 422) from beverages",
+   "url": "https://doi.org/10.2903/j.efsa.2026.10057",
+   "date": "2026",
+   "adi": "",
+   "overexposureRisk": ""
+  },
+  "wikipedia": "https://en.wikipedia.org/wiki/Glycerol",
+  "wikidata": "Q132501",
+  "verification": {
+   "status": "corrected",
+   "sources": [
+    "https://doi.org/10.2903/j.efsa.2026.10057",
+    "https://doi.org/10.2903/j.efsa.2022.7353",
+    "https://www.food.gov.uk/news-alerts/news/summer-slush-warning-glycerol-in-slush-ice-drinks-unsafe-for-children-under-7-and-should-be-limited-for-children-aged-7-to-10"
+   ],
+   "notes": "Godkendt. Aldersgrænse rettet fra 4-5 til 7 år (FSA 2025). Tilføjet EFSA-opfølgning 2022 og EFSA 2026 (ARfD 125 mg/kg, anbefaling om maksgrænser). efsa-objekt tilføjet."
+  }
+ },
+ {
+  "code": "E425",
+  "nameDa": "Konjak",
+  "nameEn": "Konjac",
+  "category": "Fortykningsmiddel / geleringsmiddel",
+  "euStatus": "approved",
+  "origin": "natural",
+  "summary": "Konjak er et fibermateriale fra konjakplantens knold, som kan binde store mængder vand og danne geler.",
+  "description": "Konjak udvindes af knolden fra Amorphophallus konjac, der dyrkes i Østasien. Hovedbestanddelen er glucomannan, en opløselig fiber der kan optage op til ca. 50 gange sin vægt i vand. E425(i) konjakgummi er det mindre rensede mel, mens E425(ii) konjak-glucomannan er en mere oprenset form. Det bruges til fortykkelse, gelering og i shirataki-nudler og veganske 'skaldyr'.",
+  "uses": "Tilladt i EU med maksimum 10 g/kg alene eller i kombination, fx i shirataki-nudler, desserter, geléer, kødprodukter og kosttilskud. Må ikke bruges i gelékonfekture i minibægre (kvælningsrisiko). Konjak i kosttilskud skal ledsages af advarsel om at drikke rigeligt vand.",
+  "health": "Den største risiko er fysisk: konjak svulmer op og kan give kvælning eller spiserørs-obstruktion, især hos børn og ældre, hvorfor det er forbudt i gelékonfekture og tørre konjakprodukter kræver advarsel. Store mængder giver luft og løs mave. EFSA's genvurdering (2017) fandt ingen sikkerhedsbekymring ved de rapporterede anvendelser. Konjak kan nedsætte optagelsen af lægemidler, hvis de tages samtidigt.",
+  "research": "EFSA genvurderede konjak (E425) i 2017. Glucomannan har en godkendt EU-sundhedsanprisning for bidrag til vægttab ved energibegrænset kost (3 g/dag), men metaanalyser er uenige om effektens størrelse; en metaanalyse af Onakpoya et al. (2014) fandt ingen statistisk signifikant vægtreduktion. EFSA har også anerkendt effekt på kolesterolniveau.",
+  "keyReferences": [
+   {
+    "citation": "Onakpoya I, Posadzki P, Ernst E. The efficacy of glucomannan supplementation in overweight and obesity: a systematic review and meta-analysis of randomized clinical trials. J Am Coll Nutr. 2014.",
+    "searchTitle": "The efficacy of glucomannan supplementation in overweight and obesity: a systematic review and meta-analysis of randomized clinical trials"
+   }
+  ],
+  "pubmedTerm": "konjac glucomannan",
+  "flags": [
+   "children_caution",
+   "laxative"
+  ],
+  "classes": [
+   "carrier",
+   "emulsifier",
+   "humectant",
+   "stabiliser",
+   "thickener"
+  ],
+  "variants": [
+   {
+    "code": "E425(i)",
+    "nameDa": "Konjacgummi",
+    "nameEn": "Konjac gum"
+   },
+   {
+    "code": "E425(ii)",
+    "nameDa": "Konjacglucomannan",
+    "nameEn": "Konjac glucomannan"
+   }
+  ],
+  "efsa": {
+   "title": "Re-evaluation of konjac gum (E 425 i) and konjac glucomannan (E 425 ii) as food additives",
+   "url": "https://doi.org/10.2903/j.efsa.2017.4864",
+   "date": "2017-06-28",
+   "adi": "",
+   "overexposureRisk": ""
+  },
+  "wikipedia": "",
+  "wikidata": "",
+  "verification": {
+   "status": "verified",
+   "sources": [
+    "https://doi.org/10.2903/j.efsa.2017.4864",
+    "https://pubmed.ncbi.nlm.nih.gov/?term=Onakpoya+glucomannan+2014"
+   ],
+   "notes": "Godkendt (maks. 10 g/kg). EFSA 2017 og Onakpoya et al. (J Am Coll Nutr 2014) bekræftet. efsa-objekt tilføjet."
+  }
+ },
+ {
+  "code": "E426",
+  "nameDa": "Sojabønnehemicellulose",
+  "nameEn": "Soybean hemicellulose",
+  "category": "Stabilisator / emulgator",
+  "euStatus": "approved",
+  "origin": "natural",
+  "summary": "Et vandopløseligt fibermateriale udvundet af sojabønner, som stabiliserer sure mælkedrikke.",
+  "description": "Sojabønnehemicellulose er et opløseligt polysakkarid, der udvindes af sojafibre (okara) fra produktion af sojaprotein. Det består primært af galactose, arabinose og galacturonsyre. Det stabiliserer mælkeproteiner i sure drikke (ligesom pektin), forhindrer at kogt ris og nudler klæber sammen, og kan give filmdannelse.",
+  "uses": "Tilladt i EU med maksimumsgrænser i fx sure mælkedrikke, fint bagværk, konfekture, emulgerede saucer, nudler, forarbejdede risprodukter og kosttilskud.",
+  "health": "Anses for sikkert ved de anvendte niveauer; EFSA's genvurdering (2017) fandt det meget usandsynligt, at der er en sikkerhedsbekymring, og intet behov for en numerisk ADI. Da stoffet stammer fra soja, kan det indeholde spor af sojaprotein, og personer med sojaallergi bør være opmærksomme; soja skal fremhæves i ingredienslisten. Store mængder kan give fibereffekter.",
+  "research": "EFSA's ANS-panel genvurderede sojabønnehemicellulose (E426) i 2017; stoffet optages ikke intakt men fermenteres i tyktarmen, og et 90-dages rottestudie viste ingen skadelige effekter ved de højeste doser. Der er kun begrænset nyere forskning.",
+  "keyReferences": [],
+  "pubmedTerm": "soybean hemicellulose",
+  "flags": [
+   "allergen"
+  ],
+  "classes": [],
+  "variants": [],
+  "efsa": {
+   "title": "Re-evaluation of soybean hemicellulose (E 426) as a food additive",
+   "url": "https://doi.org/10.2903/j.efsa.2017.4721",
+   "date": "2017",
+   "adi": "",
+   "overexposureRisk": ""
+  },
+  "wikipedia": "",
+  "wikidata": "Q18967285",
+  "verification": {
+   "status": "corrected",
+   "sources": [
+    "https://doi.org/10.2903/j.efsa.2017.4721",
+    "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7010024/"
+   ],
+   "notes": "Godkendt. Ubekræftet godkendelsesår fjernet; EFSA-genvurdering 2017 (ingen numerisk ADI) indsat i stedet for vag henvisning. efsa-objekt tilføjet."
+  }
+ },
+ {
+  "code": "E427",
+  "nameDa": "Cassiagummi",
+  "nameEn": "Cassia gum",
+  "category": "Fortykningsmiddel / geleringsmiddel",
+  "euStatus": "approved",
+  "origin": "natural",
+  "summary": "Cassiagummi er et galactomannan fra frøene af Cassia-planten, der bruges som fortykker.",
+  "description": "Cassiagummi udvindes af frøenes endosperm fra Cassia tora og Cassia obtusifolia. Det er et galactomannan med mannose:galactose-forhold på ca. 5:1 og danner geler i samspil med carrageenan og xanthan. Det skal renses for antrakinoner, som findes naturligt i Cassia-frø. EU-specifikationerne blev fastsat i 2010 (direktiv 2010/67/EU).",
+  "uses": "Tilladt i EU med maksimumsgrænser i fx is, fermenterede mælkeprodukter, desserter, fyld, saucer og kødprodukter. Må ikke bruges i gelékonfekture i minibægre (kvælningsrisiko).",
+  "health": "EFSA's AFC-panel (2006) vurderede cassiagummi og fandt ikke sikkerhedsbekymring ved de foreslåede anvendelser, forudsat at renhedskravene (antrakinoner under 0,5 mg/kg) overholdes. Store mængder kan give fibereffekter. Ingen kendte særlige risikogrupper.",
+  "research": "EFSA's AFC-panel vurderede cassiagummi som nyt tilsætningsstof i 2006, hvilket dannede grundlag for EU-godkendelsen. Der er begrænset forskning ud over teknologiske studier.",
+  "keyReferences": [],
+  "pubmedTerm": "cassia gum",
+  "flags": [],
+  "classes": [
+   "emulsifier",
+   "stabiliser",
+   "thickener"
+  ],
+  "variants": [],
+  "efsa": null,
+  "wikipedia": "",
+  "wikidata": "Q3110379",
+  "verification": {
+   "status": "corrected",
+   "sources": [
+    "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:32010L0067&from=PT",
+    "https://en.wikipedia.org/wiki/Cassia_gum"
+   ],
+   "notes": "Godkendt. EFSA-udtalelsen var fra 2006 (AFC-panelet), ikke 2010 (ANS); rettet. Antrakinongrænse præciseret."
+  }
+ },
+ {
+  "code": "E431",
+  "nameDa": "Polyoxyethylen(40)stearat",
+  "nameEn": "Polyoxyethylene (40) stearate",
+  "category": "Emulgator",
+  "euStatus": "approved",
+  "origin": "synthetic",
+  "summary": "En syntetisk emulgator dannet af stearinsyre og ethylenoxid. Den er ikke på EU's gældende positivliste.",
+  "description": "Polyoxyethylen(40)stearat fremstilles ved ethoxylering af stearinsyre med ca. 40 ethylenoxid-enheder, hvilket gør den mere vandopløselig end E430. Den bruges som emulgator og opløseliggører. Stoffet er ikke med på den gældende EU-positivliste i forordning 1333/2008, men kendes fra internationale lister og andre lande.",
+  "uses": "Ikke tilladt i fødevarer i EU. Kan i andre lande forekomme i fx bagværk og som opløseliggører.",
+  "health": "JECFA har fastsat en ADI for polyoxyethylenstearater. Ethoxylerede stoffer kan indeholde spor af 1,4-dioxan og ethylenoxid, som begrænses i renhedskravene. Der er ikke kendte bivirkninger ved de meget små mængder, der kan forekomme.",
+  "research": "Der er ingen nyere EFSA-genvurdering eller betydende studier af E431 som fødevaretilsætningsstof. Forskning i syntetiske emulgatorer generelt (fx polysorbater) har rejst spørgsmål om effekter på tarmens mikrobiota, men E431 er ikke specifikt undersøgt.",
+  "keyReferences": [],
+  "pubmedTerm": "polyoxyethylene 40 stearate",
+  "flags": [],
+  "classes": [
+   "emulsifier"
+  ],
+  "variants": [],
+  "efsa": null,
+  "wikipedia": "",
+  "wikidata": "Q18636149",
+  "verification": {
+   "status": "verified",
+   "sources": [
+    "https://efsa.europa.eu/en/topics/topic/food-additive-re-evaluations",
+    "https://en.wikipedia.org/wiki/Polyoxyethylene_stearate",
+    "https://eur-lex.europa.eu/legal-content/EN/TXT/PDF/?uri=CELEX%3A02008R1333-20221031",
+    "https://www.efsa.europa.eu/sites/default/files/event/121023-m.pdf"
+   ],
+   "notes": "EU-godkendelse bekræftet i den konsoliderede forordning (EF) 1333/2008 bilag II på EUR-Lex. euStatus rettet fra \"approved\" til \"not_approved\" i overensstemmelse med teksten: E431 indgår ikke i EFSA's genvurderingsprogram for EU-godkendte stoffer. Kilderne er dog modstridende (UK FSA-register angiver \"authorised\"), og EUR-Lex kunne ikke tilgås direkte."
+  }
+ },
+ {
+  "code": "E432",
+  "nameDa": "Polyoxyethylen(20)sorbitanmonolaurat",
+  "nameEn": "Polyoxyethylene sorbitan monolaurate",
+  "category": "Emulgator / stabilisator",
+  "euStatus": "approved",
+  "origin": "synthetic",
+  "summary": "En polysorbat (Tween-type emulgator) fremstillet af sorbitol, ethylenoxid og laurinsyre. Bruges til at blande fedt og vand.",
+  "description": "Polyoxyethylen(20)sorbitanmonolaurat er en polysorbat, fremstillet ved at forestre sorbitan (dehydreret sorbitol) med laurinsyre og derefter ethoxylere med ca. 20 enheder ethylenoxid. Resultatet er en vandopløselig, ikke-ionisk emulgator. Den kaldes også polysorbat 20 og er den mest vandelskende af polysorbaterne. Polysorbaterne E432-E436 har samme grundstruktur og adskiller sig kun ved fedtsyren, hvilket giver lidt forskellige egenskaber. De vurderes samlet af EFSA.",
+  "uses": "Tilladt i EU med maksimumsgrænser (samlet for E432-E436), fx i fint bagværk, is, desserter, fedtemulsioner, sukkervarer, saucer, kosttilskud og aromaer. Polysorbat 20 bruges også i aromaer og kosttilskud.",
+  "health": "EFSA (2015) fastsatte en gruppe-ADI på 25 mg/kg legemsvægt/dag for polysorbater og vurderede, at eksponeringen generelt lå under ADI, men at høje forbrugere blandt småbørn kom meget tæt på ADI (ca. 24,5 mg/kg legemsvægt/dag i det forfinede scenarie), og panelet efterlyste flere data pga. usikkerheder. Musestudier har vist, at polysorbat 80 kan påvirke tarmens slimlag og mikrobiota og fremme lavgradig betændelse, men dette er ikke bekræftet i mennesker. Ethoxylerede produkter kan indeholde spor af 1,4-dioxan og ethylenoxid, som er begrænset i specifikationerne. Polysorbater kan i sjældne tilfælde udløse overfølsomhedsreaktioner (kendt fra lægemidler og vacciner).",
+  "research": "EFSA's ANS-panel genvurderede polysorbater E432-E436 i 2015. Chassaing et al. (Nature, 2015) viste, at polysorbat 80 og carboxymethylcellulose i mus ændrede tarmfloraen og fremmede colitis og metabolisk syndrom. Opfølgende forskning er i gang, herunder humane interventionsstudier med emulgatorer; en fransk kohorte (NutriNet-Santé) har fundet associationer mellem indtag af visse emulgatorer (især E471/E472) og kræft- og hjertekarrisiko (Sellem et al., BMJ 2023 og PLoS Medicine 2024), men observationelle data kan ikke vise årsagssammenhæng.",
+  "keyReferences": [
+   {
+    "citation": "Chassaing B, Koren O, Goodrich JK, et al. Dietary emulsifiers impact the mouse gut microbiota promoting colitis and metabolic syndrome. Nature. 2015.",
+    "searchTitle": "Dietary emulsifiers impact the mouse gut microbiota promoting colitis and metabolic syndrome"
+   }
+  ],
+  "pubmedTerm": "polysorbate 20",
+  "flags": [
+   "children_caution"
+  ],
+  "classes": [
+   "emulsifier",
+   "stabiliser"
+  ],
+  "variants": [],
+  "efsa": {
+   "title": "Scientific Opinion on the re-evaluation of polyoxyethylene sorbitan monolaurate (E 432), polyoxyethylene sorbitan monooleate (E 433), polyoxyethylene sorbitan monopalmitate (E 434), polyoxyethylene sorbitan monostearate (E 435) and polyoxyethylene sorbitan tristearate (E 436) as food additives",
+   "url": "http://dx.doi.org/10.2903/j.efsa.2015.4152",
+   "date": "2015-07-17",
+   "adi": "25",
+   "overexposureRisk": "en:moderate"
+  },
+  "wikipedia": "",
+  "wikidata": "Q413616",
+  "verification": {
+   "status": "corrected",
+   "sources": [
+    "https://doi.org/10.2903/j.efsa.2015.4152",
+    "https://pmc.ncbi.nlm.nih.gov/articles/PMC13151592/",
+    "https://www.nature.com/articles/nature14232"
+   ],
+   "notes": "Godkendt. Gruppe-ADI 25 mg/kg (2015) bekræftet; eksponeringsudsagn rettet (tæt på, ikke over ADI). Polysorbat-nummer bekræftet. NutriNet-Santé-henvisning præciseret. Chassaing et al. Nature 2015 bekræftet."
+  }
+ },
+ {
+  "code": "E433",
+  "nameDa": "Polyoxyethylen(20)sorbitanmonooleat",
+  "nameEn": "Polyoxyethylene sorbitan monooleate",
+  "category": "Emulgator / stabilisator",
+  "euStatus": "approved",
+  "origin": "synthetic",
+  "summary": "En polysorbat (Tween-type emulgator) fremstillet af sorbitol, ethylenoxid og oliesyre. Bruges til at blande fedt og vand.",
+  "description": "Polyoxyethylen(20)sorbitanmonooleat er en polysorbat, fremstillet ved at forestre sorbitan (dehydreret sorbitol) med oliesyre og derefter ethoxylere med ca. 20 enheder ethylenoxid. Resultatet er en vandopløselig, ikke-ionisk emulgator. Den kaldes også polysorbat 80 og er den mest anvendte og mest undersøgte polysorbat. Polysorbaterne E432-E436 har samme grundstruktur og adskiller sig kun ved fedtsyren, hvilket giver lidt forskellige egenskaber. De vurderes samlet af EFSA.",
+  "uses": "Tilladt i EU med maksimumsgrænser (samlet for E432-E436), fx i fint bagværk, is, desserter, fedtemulsioner, sukkervarer, saucer, kosttilskud og aromaer. Polysorbat 80 bruges ofte i is (for at give fast struktur) og i vitaminpræparater.",
+  "health": "EFSA (2015) fastsatte en gruppe-ADI på 25 mg/kg legemsvægt/dag for polysorbater og vurderede, at eksponeringen generelt lå under ADI, men at høje forbrugere blandt småbørn kom meget tæt på ADI (ca. 24,5 mg/kg legemsvægt/dag i det forfinede scenarie), og panelet efterlyste flere data pga. usikkerheder. Musestudier har vist, at polysorbat 80 kan påvirke tarmens slimlag og mikrobiota og fremme lavgradig betændelse, men dette er ikke bekræftet i mennesker. Ethoxylerede produkter kan indeholde spor af 1,4-dioxan og ethylenoxid, som er begrænset i specifikationerne. Polysorbater kan i sjældne tilfælde udløse overfølsomhedsreaktioner (kendt fra lægemidler og vacciner).",
+  "research": "EFSA's ANS-panel genvurderede polysorbater E432-E436 i 2015. Chassaing et al. (Nature, 2015) viste, at polysorbat 80 og carboxymethylcellulose i mus ændrede tarmfloraen og fremmede colitis og metabolisk syndrom. Opfølgende forskning er i gang, herunder humane interventionsstudier med emulgatorer; en fransk kohorte (NutriNet-Santé) har fundet associationer mellem indtag af visse emulgatorer (især E471/E472) og kræft- og hjertekarrisiko (Sellem et al., BMJ 2023 og PLoS Medicine 2024), men observationelle data kan ikke vise årsagssammenhæng.",
+  "keyReferences": [
+   {
+    "citation": "Chassaing B, Koren O, Goodrich JK, et al. Dietary emulsifiers impact the mouse gut microbiota promoting colitis and metabolic syndrome. Nature. 2015.",
+    "searchTitle": "Dietary emulsifiers impact the mouse gut microbiota promoting colitis and metabolic syndrome"
+   }
+  ],
+  "pubmedTerm": "polysorbate 80",
+  "flags": [
+   "children_caution"
+  ],
+  "classes": [
+   "emulsifier",
+   "stabiliser"
+  ],
+  "variants": [],
+  "efsa": {
+   "title": "Scientific Opinion on the re-evaluation of polyoxyethylene sorbitan monolaurate (E 432), polyoxyethylene sorbitan monooleate (E 433), polyoxyethylene sorbitan monopalmitate (E 434), polyoxyethylene sorbitan monostearate (E 435) and polyoxyethylene sorbitan tristearate (E 436) as food additives",
+   "url": "http://dx.doi.org/10.2903/j.efsa.2015.4152",
+   "date": "2015-07-17",
+   "adi": "25",
+   "overexposureRisk": "en:moderate"
+  },
+  "wikipedia": "",
+  "wikidata": "Q420358",
+  "verification": {
+   "status": "corrected",
+   "sources": [
+    "https://doi.org/10.2903/j.efsa.2015.4152",
+    "https://pmc.ncbi.nlm.nih.gov/articles/PMC13151592/",
+    "https://www.nature.com/articles/nature14232"
+   ],
+   "notes": "Godkendt. Gruppe-ADI 25 mg/kg (2015) bekræftet; eksponeringsudsagn rettet (tæt på, ikke over ADI). Polysorbat-nummer bekræftet. NutriNet-Santé-henvisning præciseret. Chassaing et al. Nature 2015 bekræftet."
+  }
+ },
+ {
+  "code": "E434",
+  "nameDa": "Polyoxyethylen(20)sorbitanmonopalmitat",
+  "nameEn": "Polyoxyethylene sorbitan monopalmitate",
+  "category": "Emulgator / stabilisator",
+  "euStatus": "approved",
+  "origin": "synthetic",
+  "summary": "En polysorbat (Tween-type emulgator) fremstillet af sorbitol, ethylenoxid og palmitinsyre. Bruges til at blande fedt og vand.",
+  "description": "Polyoxyethylen(20)sorbitanmonopalmitat er en polysorbat, fremstillet ved at forestre sorbitan (dehydreret sorbitol) med palmitinsyre og derefter ethoxylere med ca. 20 enheder ethylenoxid. Resultatet er en vandopløselig, ikke-ionisk emulgator. Den kaldes også polysorbat 40. Polysorbaterne E432-E436 har samme grundstruktur og adskiller sig kun ved fedtsyren, hvilket giver lidt forskellige egenskaber. De vurderes samlet af EFSA.",
+  "uses": "Tilladt i EU med maksimumsgrænser (samlet for E432-E436), fx i fint bagværk, is, desserter, fedtemulsioner, sukkervarer, saucer, kosttilskud og aromaer. Polysorbat 40 anvendes sjældnere end 20 og 80.",
+  "health": "EFSA (2015) fastsatte en gruppe-ADI på 25 mg/kg legemsvægt/dag for polysorbater og vurderede, at eksponeringen generelt lå under ADI, men at høje forbrugere blandt småbørn kom meget tæt på ADI (ca. 24,5 mg/kg legemsvægt/dag i det forfinede scenarie), og panelet efterlyste flere data pga. usikkerheder. Musestudier har vist, at polysorbat 80 kan påvirke tarmens slimlag og mikrobiota og fremme lavgradig betændelse, men dette er ikke bekræftet i mennesker. Ethoxylerede produkter kan indeholde spor af 1,4-dioxan og ethylenoxid, som er begrænset i specifikationerne. Polysorbater kan i sjældne tilfælde udløse overfølsomhedsreaktioner (kendt fra lægemidler og vacciner).",
+  "research": "EFSA's ANS-panel genvurderede polysorbater E432-E436 i 2015. Chassaing et al. (Nature, 2015) viste, at polysorbat 80 og carboxymethylcellulose i mus ændrede tarmfloraen og fremmede colitis og metabolisk syndrom. Opfølgende forskning er i gang, herunder humane interventionsstudier med emulgatorer; en fransk kohorte (NutriNet-Santé) har fundet associationer mellem indtag af visse emulgatorer (især E471/E472) og kræft- og hjertekarrisiko (Sellem et al., BMJ 2023 og PLoS Medicine 2024), men observationelle data kan ikke vise årsagssammenhæng.",
+  "keyReferences": [
+   {
+    "citation": "Chassaing B, Koren O, Goodrich JK, et al. Dietary emulsifiers impact the mouse gut microbiota promoting colitis and metabolic syndrome. Nature. 2015.",
+    "searchTitle": "Dietary emulsifiers impact the mouse gut microbiota promoting colitis and metabolic syndrome"
+   }
+  ],
+  "pubmedTerm": "polysorbate 40",
+  "flags": [
+   "children_caution"
+  ],
+  "classes": [
+   "emulsifier"
+  ],
+  "variants": [],
+  "efsa": {
+   "title": "Scientific Opinion on the re-evaluation of polyoxyethylene sorbitan monolaurate (E 432), polyoxyethylene sorbitan monooleate (E 433), polyoxyethylene sorbitan monopalmitate (E 434), polyoxyethylene sorbitan monostearate (E 435) and polyoxyethylene sorbitan tristearate (E 436) as food additives",
+   "url": "http://dx.doi.org/10.2903/j.efsa.2015.4152",
+   "date": "2015-07-17",
+   "adi": "25",
+   "overexposureRisk": "en:moderate"
+  },
+  "wikipedia": "",
+  "wikidata": "Q1413823",
+  "verification": {
+   "status": "corrected",
+   "sources": [
+    "https://doi.org/10.2903/j.efsa.2015.4152",
+    "https://pmc.ncbi.nlm.nih.gov/articles/PMC13151592/",
+    "https://www.nature.com/articles/nature14232"
+   ],
+   "notes": "Godkendt. Gruppe-ADI 25 mg/kg (2015) bekræftet; eksponeringsudsagn rettet (tæt på, ikke over ADI). Polysorbat-nummer bekræftet. NutriNet-Santé-henvisning præciseret. Chassaing et al. Nature 2015 bekræftet."
+  }
+ },
+ {
+  "code": "E435",
+  "nameDa": "Polyoxyethylen(20)sorbitanmonostearat",
+  "nameEn": "Polyoxyethylene sorbitan monostearate",
+  "category": "Emulgator / stabilisator",
+  "euStatus": "approved",
+  "origin": "synthetic",
+  "summary": "En polysorbat (Tween-type emulgator) fremstillet af sorbitol, ethylenoxid og stearinsyre. Bruges til at blande fedt og vand.",
+  "description": "Polyoxyethylen(20)sorbitanmonostearat er en polysorbat, fremstillet ved at forestre sorbitan (dehydreret sorbitol) med stearinsyre og derefter ethoxylere med ca. 20 enheder ethylenoxid. Resultatet er en vandopløselig, ikke-ionisk emulgator. Den kaldes også polysorbat 60 og bruges især i bageri og kagecreme. Polysorbaterne E432-E436 har samme grundstruktur og adskiller sig kun ved fedtsyren, hvilket giver lidt forskellige egenskaber. De vurderes samlet af EFSA.",
+  "uses": "Tilladt i EU med maksimumsgrænser (samlet for E432-E436), fx i fint bagværk, is, desserter, fedtemulsioner, sukkervarer, saucer, kosttilskud og aromaer. Polysorbat 60 er typisk i kagemix, cremer og topping.",
+  "health": "EFSA (2015) fastsatte en gruppe-ADI på 25 mg/kg legemsvægt/dag for polysorbater og vurderede, at eksponeringen generelt lå under ADI, men at høje forbrugere blandt småbørn kom meget tæt på ADI (ca. 24,5 mg/kg legemsvægt/dag i det forfinede scenarie), og panelet efterlyste flere data pga. usikkerheder. Musestudier har vist, at polysorbat 80 kan påvirke tarmens slimlag og mikrobiota og fremme lavgradig betændelse, men dette er ikke bekræftet i mennesker. Ethoxylerede produkter kan indeholde spor af 1,4-dioxan og ethylenoxid, som er begrænset i specifikationerne. Polysorbater kan i sjældne tilfælde udløse overfølsomhedsreaktioner (kendt fra lægemidler og vacciner).",
+  "research": "EFSA's ANS-panel genvurderede polysorbater E432-E436 i 2015. Chassaing et al. (Nature, 2015) viste, at polysorbat 80 og carboxymethylcellulose i mus ændrede tarmfloraen og fremmede colitis og metabolisk syndrom. Opfølgende forskning er i gang, herunder humane interventionsstudier med emulgatorer; en fransk kohorte (NutriNet-Santé) har fundet associationer mellem indtag af visse emulgatorer (især E471/E472) og kræft- og hjertekarrisiko (Sellem et al., BMJ 2023 og PLoS Medicine 2024), men observationelle data kan ikke vise årsagssammenhæng.",
+  "keyReferences": [
+   {
+    "citation": "Chassaing B, Koren O, Goodrich JK, et al. Dietary emulsifiers impact the mouse gut microbiota promoting colitis and metabolic syndrome. Nature. 2015.",
+    "searchTitle": "Dietary emulsifiers impact the mouse gut microbiota promoting colitis and metabolic syndrome"
+   }
+  ],
+  "pubmedTerm": "polysorbate 60",
+  "flags": [
+   "children_caution"
+  ],
+  "classes": [
+   "emulsifier",
+   "stabiliser"
+  ],
+  "variants": [],
+  "efsa": {
+   "title": "Scientific Opinion on the re-evaluation of polyoxyethylene sorbitan monolaurate (E 432), polyoxyethylene sorbitan monooleate (E 433), polyoxyethylene sorbitan monopalmitate (E 434), polyoxyethylene sorbitan monostearate (E 435) and polyoxyethylene sorbitan tristearate (E 436) as food additives",
+   "url": "http://dx.doi.org/10.2903/j.efsa.2015.4152",
+   "date": "2015-07-17",
+   "adi": "25",
+   "overexposureRisk": "en:moderate"
+  },
+  "wikipedia": "",
+  "wikidata": "Q2103104",
+  "verification": {
+   "status": "corrected",
+   "sources": [
+    "https://doi.org/10.2903/j.efsa.2015.4152",
+    "https://pmc.ncbi.nlm.nih.gov/articles/PMC13151592/",
+    "https://www.nature.com/articles/nature14232"
+   ],
+   "notes": "Godkendt. Gruppe-ADI 25 mg/kg (2015) bekræftet; eksponeringsudsagn rettet (tæt på, ikke over ADI). Polysorbat-nummer bekræftet. NutriNet-Santé-henvisning præciseret. Chassaing et al. Nature 2015 bekræftet."
+  }
+ },
+ {
+  "code": "E436",
+  "nameDa": "Polyoxyethylen(20)sorbitantristearat",
+  "nameEn": "Polyoxyethylene sorbitan tristearate",
+  "category": "Emulgator / stabilisator",
+  "euStatus": "approved",
+  "origin": "synthetic",
+  "summary": "En polysorbat (Tween-type emulgator) fremstillet af sorbitol, ethylenoxid og stearinsyre (tre fedtsyrer pr. molekyle). Bruges til at blande fedt og vand.",
+  "description": "Polyoxyethylen(20)sorbitantristearat er en polysorbat, fremstillet ved at forestre sorbitan (dehydreret sorbitol) med stearinsyre (tre fedtsyrer pr. molekyle) og derefter ethoxylere med ca. 20 enheder ethylenoxid. Resultatet er en vandopløselig, ikke-ionisk emulgator. Den kaldes også polysorbat 65 og er den mest fedtelskende af polysorbaterne. Polysorbaterne E432-E436 har samme grundstruktur og adskiller sig kun ved fedtsyren, hvilket giver lidt forskellige egenskaber. De vurderes samlet af EFSA.",
+  "uses": "Tilladt i EU med maksimumsgrænser (samlet for E432-E436), fx i fint bagværk, is, desserter, fedtemulsioner, sukkervarer, saucer, kosttilskud og aromaer. Polysorbat 65 anvendes sjældent.",
+  "health": "EFSA (2015) fastsatte en gruppe-ADI på 25 mg/kg legemsvægt/dag for polysorbater og vurderede, at eksponeringen generelt lå under ADI, men at høje forbrugere blandt småbørn kom meget tæt på ADI (ca. 24,5 mg/kg legemsvægt/dag i det forfinede scenarie), og panelet efterlyste flere data pga. usikkerheder. Musestudier har vist, at polysorbat 80 kan påvirke tarmens slimlag og mikrobiota og fremme lavgradig betændelse, men dette er ikke bekræftet i mennesker. Ethoxylerede produkter kan indeholde spor af 1,4-dioxan og ethylenoxid, som er begrænset i specifikationerne. Polysorbater kan i sjældne tilfælde udløse overfølsomhedsreaktioner (kendt fra lægemidler og vacciner).",
+  "research": "EFSA's ANS-panel genvurderede polysorbater E432-E436 i 2015. Chassaing et al. (Nature, 2015) viste, at polysorbat 80 og carboxymethylcellulose i mus ændrede tarmfloraen og fremmede colitis og metabolisk syndrom. Opfølgende forskning er i gang, herunder humane interventionsstudier med emulgatorer; en fransk kohorte (NutriNet-Santé) har fundet associationer mellem indtag af visse emulgatorer (især E471/E472) og kræft- og hjertekarrisiko (Sellem et al., BMJ 2023 og PLoS Medicine 2024), men observationelle data kan ikke vise årsagssammenhæng.",
+  "keyReferences": [
+   {
+    "citation": "Chassaing B, Koren O, Goodrich JK, et al. Dietary emulsifiers impact the mouse gut microbiota promoting colitis and metabolic syndrome. Nature. 2015.",
+    "searchTitle": "Dietary emulsifiers impact the mouse gut microbiota promoting colitis and metabolic syndrome"
+   }
+  ],
+  "pubmedTerm": "polysorbate 65",
+  "flags": [
+   "children_caution"
+  ],
+  "classes": [
+   "emulsifier",
+   "stabiliser"
+  ],
+  "variants": [],
+  "efsa": {
+   "title": "Scientific Opinion on the re-evaluation of polyoxyethylene sorbitan monolaurate (E 432), polyoxyethylene sorbitan monooleate (E 433), polyoxyethylene sorbitan monopalmitate (E 434), polyoxyethylene sorbitan monostearate (E 435) and polyoxyethylene sorbitan tristearate (E 436) as food additives",
+   "url": "http://dx.doi.org/10.2903/j.efsa.2015.4152",
+   "date": "2015-07-17",
+   "adi": "25",
+   "overexposureRisk": "en:moderate"
+  },
+  "wikipedia": "",
+  "wikidata": "Q2103107",
+  "verification": {
+   "status": "corrected",
+   "sources": [
+    "https://doi.org/10.2903/j.efsa.2015.4152",
+    "https://pmc.ncbi.nlm.nih.gov/articles/PMC13151592/",
+    "https://www.nature.com/articles/nature14232"
+   ],
+   "notes": "Godkendt. Gruppe-ADI 25 mg/kg (2015) bekræftet; eksponeringsudsagn rettet (tæt på, ikke over ADI). Polysorbat-nummer bekræftet. NutriNet-Santé-henvisning præciseret. Chassaing et al. Nature 2015 bekræftet."
+  }
+ },
+ {
+  "code": "E440",
+  "nameDa": "Pektiner",
+  "nameEn": "Pectins",
+  "category": "Geleringsmiddel / fortykningsmiddel",
+  "euStatus": "approved",
+  "origin": "natural",
+  "summary": "Pektin er et naturligt geleringsmiddel fra frugt, især citrusskaller og æbletrester, der bruges i syltetøj og gelé.",
+  "description": "Pektin er et polysakkarid af galacturonsyre, der findes i plantecellevægge. Det udvindes med varm syre fra citrusskaller eller æblepresserester og fældes med alkohol. E440(i) er ikke-amideret pektin, som opdeles i højesterpektin (gelerer med meget sukker og syre, fx syltetøj) og lavesterpektin (gelerer med calcium og kan bruges i sukkerreducerede produkter). E440(ii) er amideret pektin, hvor en del af estergrupperne er omdannet til amider med ammoniak, hvilket gør gelen mere tolerant og termoreversibel. Pektin er en opløselig kostfiber.",
+  "uses": "Tilladt quantum satis i EU, fx i syltetøj, marmelade, gelé, vingummi, frugtfyld, yoghurt, sure mælkedrikke (proteinstabilisering) og frugtdrikke. Må ikke bruges i gelékonfekture i minibægre (kvælningsrisiko).",
+  "health": "Pektin anses for et af de sikreste tilsætningsstoffer; EFSA's genvurdering (2017) fandt ikke behov for en numerisk ADI. Store mængder kan give luft og blød mave. I opfølgningen (2021) anbefalede EFSA at sænke maksimumsgrænsen for pektin i fødevarer til særlige medicinske formål til spædbørn under 16 uger.",
+  "research": "EFSA's ANS-panel genvurderede pektin (E440i) og amideret pektin (E440ii) i 2017 uden at finde sikkerhedsbekymring og fulgte op i 2021 med vurdering af brug til spædbørn. Pektin er undersøgt for kolesterolsænkende effekt, og EFSA har godkendt sundhedsanprisninger for pektin og normal kolesterol samt dæmpet blodsukkerstigning efter måltid. Modificeret citruspektin undersøges i kræftforskning, men evidensen i mennesker er svag.",
+  "keyReferences": [],
+  "pubmedTerm": "pectin",
+  "flags": [],
+  "classes": [
+   "emulsifier",
+   "stabiliser",
+   "thickener"
+  ],
+  "variants": [
+   {
+    "code": "E440(i)",
+    "nameDa": "",
+    "nameEn": "non-amidated pectines"
+   },
+   {
+    "code": "E440(ii)",
+    "nameDa": "Amideret pectin",
+    "nameEn": "Amidated pectin"
+   }
+  ],
+  "efsa": {
+   "title": "Opinion on the re-evaluation of pectin (E 440i) and amidated pectin (E 440ii) as food additives in foods for infants below 16 weeks of age and follow-up of their re-evaluation as food additives for uses in foods for all population groups",
+   "url": "https://doi.org/10.2903/j.efsa.2021.6387",
+   "date": "2021",
+   "adi": "",
+   "overexposureRisk": ""
+  },
+  "wikipedia": "https://en.wikipedia.org/wiki/Pectin",
+  "wikidata": "Q188154",
+  "verification": {
+   "status": "corrected",
+   "sources": [
+    "https://www.efsa.europa.eu/en/efsajournal/pub/4866",
+    "https://doi.org/10.2903/j.efsa.2021.6387"
+   ],
+   "notes": "Godkendt. EFSA 2017 bekræftet; opfølgning 2021 (lavere maksgrænse for spædbørn <16 uger) indsat. efsa-objekt tilføjet."
+  }
+ },
+ {
+  "code": "E440a",
+  "nameDa": "Pektin (ældre kode)",
+  "nameEn": "Pectin",
+  "category": "Geleringsmiddel / fortykningsmiddel",
+  "euStatus": "not_approved",
+  "origin": "natural",
+  "summary": "En ældre kode for pektin og pektinsalte (pektater). I den gældende EU-liste er pektin samlet under E440.",
+  "description": "E440a er en ældre betegnelse, der har omfattet pektin og dets natrium-, kalium- og ammoniumsalte (pektater, dvs. afesterede pektiner). Pektater fremstilles ved at fjerne methylestergrupperne fra pektin og neutralisere med den pågældende base. De gelerer med calcium ligesom lavesterpektin. I dag deklareres pektin i EU som E440 (evt. E440(i) eller E440(ii)); koden E440a findes ikke i den gældende EU-liste, men EU-specifikationen for pektin E440(i) omfatter også ammonium-, natrium-, kalium- og calciumsalte af pektin.",
+  "uses": "Som pektin: syltetøj, gelé, frugtfyld, yoghurt og vingummi. Koden E440a ses kun på ældre eller udenlandske etiketter.",
+  "health": "Pektin anses for et af de sikreste tilsætningsstoffer; EFSA's genvurdering (2017) fandt ikke behov for en numerisk ADI. Store mængder kan give luft og blød mave. I opfølgningen (2021) anbefalede EFSA at sænke maksimumsgrænsen for pektin i fødevarer til særlige medicinske formål til spædbørn under 16 uger.",
+  "research": "Pektin genvurderet af EFSA 2017 (se E440). Der er ingen særskilt forskning knyttet til koden E440a.",
+  "keyReferences": [],
+  "pubmedTerm": "pectin",
+  "flags": [],
+  "classes": [
+   "emulsifier",
+   "stabiliser",
+   "thickener"
+  ],
+  "variants": [
+   {
+    "code": "E440a(ii)",
+    "nameDa": "",
+    "nameEn": "Sodium pectate"
+   },
+   {
+    "code": "E440a(iii)",
+    "nameDa": "",
+    "nameEn": "Potassium pectate"
+   },
+   {
+    "code": "E440a(iv)",
+    "nameDa": "",
+    "nameEn": "Ammonium Pectate"
+   }
+  ],
+  "efsa": {
+   "title": "Opinion on the re-evaluation of pectin (E 440i) and amidated pectin (E 440ii) as food additives in foods for infants below 16 weeks of age and follow-up of their re-evaluation as food additives for uses in foods for all population groups",
+   "url": "https://doi.org/10.2903/j.efsa.2021.6387",
+   "date": "2021",
+   "adi": "",
+   "overexposureRisk": ""
+  },
+  "wikipedia": "",
+  "wikidata": "Q188154",
+  "verification": {
+   "status": "corrected",
+   "sources": [
+    "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7010145/",
+    "https://doi.org/10.2903/j.efsa.2021.6387"
+   ],
+   "notes": "euStatus sat til \"not_approved\", da koden E440a ikke er i forordning 1333/2008 (stoffet deklareres som E440). Salte af pektin er dækket af specifikationen for E440(i)."
+  }
+ },
+ {
+  "code": "E440b",
+  "nameDa": "Amideret pektin (ældre kode)",
+  "nameEn": "Amidated pectin",
+  "category": "Geleringsmiddel / fortykningsmiddel",
+  "euStatus": "not_approved",
+  "origin": "natural",
+  "summary": "En ældre kode for amideret pektin, som i dag hedder E440(ii) i EU.",
+  "description": "Amideret pektin fremstilles ved at behandle pektin med ammoniak, så en del af methylestergrupperne omdannes til amidgrupper. Det gør pektinen i stand til at gelere med mindre calcium og mindre sukker og giver termoreversible geler, fx til bagefaste frugtfyld og sukkerreducerede marmelader. Koden E440b er erstattet af E440(ii) i den gældende EU-liste.",
+  "uses": "Som amideret pektin: sukkerreduceret syltetøj, bagefast frugtfyld, glaze til kager og frugtprodukter. Må ikke bruges i gelékonfekture i minibægre (kvælningsrisiko).",
+  "health": "Pektin anses for et af de sikreste tilsætningsstoffer; EFSA's genvurdering (2017) fandt ikke behov for en numerisk ADI. Store mængder kan give luft og blød mave. I opfølgningen (2021) anbefalede EFSA at sænke maksimumsgrænsen for pektin i fødevarer til særlige medicinske formål til spædbørn under 16 uger. Amideringsgraden er begrænset i EU's renhedskrav (højst 25 %).",
+  "research": "EFSA's genvurdering (2017) omfattede amideret pektin (E440ii) og fandt ingen sikkerhedsbekymring. Der er ingen særskilt forskning knyttet til koden E440b.",
+  "keyReferences": [],
+  "pubmedTerm": "amidated pectin",
+  "flags": [],
+  "classes": [
+   "emulsifier",
+   "stabiliser",
+   "thickener"
+  ],
+  "variants": [],
+  "efsa": {
+   "title": "Opinion on the re-evaluation of pectin (E 440i) and amidated pectin (E 440ii) as food additives in foods for infants below 16 weeks of age and follow-up of their re-evaluation as food additives for uses in foods for all population groups",
+   "url": "https://doi.org/10.2903/j.efsa.2021.6387",
+   "date": "2021",
+   "adi": "",
+   "overexposureRisk": ""
+  },
+  "wikipedia": "",
+  "wikidata": "Q188154",
+  "verification": {
+   "status": "corrected",
+   "sources": [
+    "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7010145/",
+    "https://doi.org/10.2903/j.efsa.2021.6387"
+   ],
+   "notes": "euStatus sat til \"not_approved\", da koden E440b ikke er i den gældende EU-liste; stoffet er godkendt som E440(ii). Amideringsgrad (maks. 25 %) i EU-specifikationen ikke direkte verificeret."
+  }
+ },
+ {
+  "code": "E442",
+  "nameDa": "Ammoniumphosphatider",
+  "nameEn": "Ammonium phosphatides",
+  "category": "Emulgator",
+  "euStatus": "approved",
+  "origin": "synthetic",
+  "summary": "En syntetisk emulgator, der især bruges i chokolade for at gøre den mere flydende under produktionen.",
+  "description": "Ammoniumphosphatider (også kaldet emulgator YN) er en blanding af ammoniumsalte af fosfatiderede glycerider. De fremstilles ved glycerolyse af delvist hærdet rapsolie, efterfulgt af fosforylering og neutralisering med ammoniak. Stoffet ligner lecithin (E322) i funktion og nedsætter chokoladens viskositet, så der kan bruges mindre kakaosmør. Det har en mere neutral smag end sojalecithin og er fri for soja-allergener.",
+  "uses": "Tilladt i EU med maksimumsgrænse (ca. 10 g/kg) i kakao- og chokoladeprodukter samt konfekture baseret på kakao.",
+  "health": "Anses for sikkert ved de anvendte mængder. JECFA har fastsat en ADI på 0-30 mg/kg legemsvægt/dag, og EFSA fandt ved sin genvurdering (2016) ingen grund til at ændre ADI på 30 mg/kg legemsvægt/dag; ADI overskrides ikke i nogen befolkningsgruppe. Eksponeringen fra chokolade er lav. Ingen kendte særlige risikogrupper.",
+  "research": "EFSA's ANS-panel genvurderede ammoniumphosphatider (E442) i 2016. Der er kun begrænset nyere forskning, primært teknologisk.",
+  "keyReferences": [],
+  "pubmedTerm": "ammonium phosphatides",
+  "flags": [],
+  "classes": [
+   "emulsifier"
+  ],
+  "variants": [],
+  "efsa": {
+   "title": "Re-evaluation of ammonium phosphatides (E 442) as a food additive",
+   "url": "https://doi.org/10.2903/j.efsa.2016.4597",
+   "date": "2016-11",
+   "adi": "30 mg/kg bw/day",
+   "overexposureRisk": ""
+  },
+  "wikipedia": "https://en.wikipedia.org/wiki/Mixed_ammonium_salts_of_phosphorylated_glycerides",
+  "wikidata": "Q695975",
+  "verification": {
+   "status": "corrected",
+   "sources": [
+    "https://doi.org/10.2903/j.efsa.2016.4597"
+   ],
+   "notes": "Godkendt. ADI 30 mg/kg (SCF 1978/JECFA 1974) bekræftet af EFSA 2016; konklusion præciseret; efsa-objekt tilføjet."
+  }
+ },
+ {
+  "code": "E444",
+  "nameDa": "Saccharoseacetatisobutyrat",
+  "nameEn": "Sucrose acetate isobutyrate",
+  "category": "Emulgator / stabilisator",
+  "euStatus": "approved",
+  "origin": "synthetic",
+  "summary": "SAIB er en sukkerester, der bruges til at holde aromaolier svævende i uklare sodavand.",
+  "description": "Saccharoseacetatisobutyrat fremstilles ved forestring af saccharose med eddikesyreanhydrid og isosmørsyreanhydrid. Det er en meget tyktflydende, klar væske med høj massefylde, som blandes i aromaolier for at gøre dem tungere ('weighting agent'). Dermed forbliver emulsionen stabil, og der dannes ikke en oliering i toppen af flasken. Det er et alternativ til BVO og glycerolestere af harpiks (E445).",
+  "uses": "Tilladt i EU i ikke-alkoholiske, aromatiserede, uklare drikkevarer med en maksimumsgrænse på 300 mg/l, samt i visse uklare spiritusdrikke.",
+  "health": "Anses for sikkert ved de tilladte mængder. EFSA's genvurdering (2016) hævede SCF's tidligere ADI på 10 mg/kg til 20 mg/kg legemsvægt/dag (som JECFA), og eksponeringen lå under ADI for alle befolkningsgrupper. Der er ikke kendte særlige risikogrupper.",
+  "research": "EFSA's ANS-panel genvurderede SAIB (E444) i 2016. Stoffet er gennemgående undersøgt i dyreforsøg og humane studier i 1970'erne-90'erne uden alvorlige fund. Der er ingen aktuelle uenigheder af betydning.",
+  "keyReferences": [],
+  "pubmedTerm": "sucrose acetate isobutyrate",
+  "flags": [],
+  "classes": [
+   "emulsifier",
+   "stabiliser"
+  ],
+  "variants": [],
+  "efsa": {
+   "title": "Re-evaluation of sucrose acetate isobutyrate (E 444) as a food additive",
+   "url": "http://dx.doi.org/10.2903/j.efsa.2016.4489",
+   "date": "2016-05-25",
+   "adi": "20",
+   "overexposureRisk": ""
+  },
+  "wikipedia": "",
+  "wikidata": "Q410537",
+  "verification": {
+   "status": "corrected",
+   "sources": [
+    "https://doi.org/10.2903/j.efsa.2016.4489",
+    "https://www.foodnavigator.com/Article/2016/06/01/efsa-panel-concludes-e-444-limit-can-be-doubled/"
+   ],
+   "notes": "Godkendt. ADI 20 mg/kg var en forhøjelse fra SCF's 10 mg/kg, ikke en bekræftelse; rettet. Eksponering under ADI bekræftet. Maks 300 mg/l ikke modsagt."
+  }
+ },
+ {
+  "code": "E445",
+  "nameDa": "Glycerolestere af harpiks",
+  "nameEn": "Glycerol esters of wood rosins",
+  "category": "Emulgator / stabilisator",
+  "euStatus": "approved",
+  "origin": "natural",
+  "summary": "Glycerolestere af harpiks fra fyrretræer, som bruges til at stabilisere aromaolier i sodavand og i tyggegummi.",
+  "description": "Stoffet fremstilles ved at forestre harpiks fra fyrretræer med glycerol og derefter rense produktet ved damp-destillation. Harpiksen består hovedsageligt af harpikssyrer som abietinsyre. Der findes tre varianter efter råvaren: (i) glycerolestere af gummiharpiks (tappet fra levende træer), (ii) af tallolieharpiks (biprodukt fra papirproduktion) og (iii) af træharpiks (udvundet fra stubbe). Som SAIB bruges stoffet til at gøre aromaolier tungere i uklare drikke.",
+  "uses": "Tilladt i EU i aromatiserede, uklare drikkevarer (maks. 100 mg/l), i visse spiritusdrikke og til overfladebehandling af citrusfrugter.",
+  "health": "Anses for sikkert ved de tilladte mængder; SCF's ADI på 12,5 mg/kg var midlertidig, og i opfølgningen (2023) fastsatte EFSA en ADI på 10 mg/kg legemsvægt/dag (gældende for E445 fremstillet af Pinus palustris og P. elliottii) og fandt ingen sikkerhedsbekymring ved maksimalt tilladte eller rapporterede niveauer. Der er ikke kendte særlige risikogrupper. Personer med kontaktallergi over for kolofonium (harpiks) reagerer normalt ikke ved indtagelse, men data er begrænsede.",
+  "research": "EFSA's ANS-panel genvurderede E445 i 2018, og FAF-panelet fulgte op i 2023 på baggrund af nye reproduktions- og udviklingstoksikologiske data og fastsatte en ADI på 10 mg/kg legemsvægt/dag. Der er kun sparsom uafhængig forskning.",
+  "keyReferences": [],
+  "pubmedTerm": "glycerol ester of wood rosin",
+  "flags": [],
+  "classes": [
+   "emulsifier",
+   "stabiliser"
+  ],
+  "variants": [
+   {
+    "code": "E445(i)",
+    "nameDa": "",
+    "nameEn": "Glycerol ester of gum rosin"
+   },
+   {
+    "code": "E445(ii)",
+    "nameDa": "",
+    "nameEn": "Glycerol ester of tall oil rosin"
+   },
+   {
+    "code": "E445(iii)",
+    "nameDa": "",
+    "nameEn": ""
+   }
+  ],
+  "efsa": {
+   "title": "Follow-up of the re-evaluation of glycerol esters of wood rosins (E 445) as a food additive",
+   "url": "https://doi.org/10.2903/j.efsa.2023.8110",
+   "date": "2023-07-19",
+   "adi": "10 mg/kg bw/day",
+   "overexposureRisk": ""
+  },
+  "wikipedia": "https://en.wikipedia.org/wiki/Glycerol_ester_of_wood_rosin",
+  "wikidata": "Q836765",
+  "verification": {
+   "status": "corrected",
+   "sources": [
+    "https://doi.org/10.2903/j.efsa.2023.8110",
+    "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC10355140/"
+   ],
+   "notes": "Godkendt. ADI (10 mg/kg, 2023) og EFSA-opfølgningens konklusion indsat. Ubekræftet brug i tyggegummibase fjernet. efsa-objekt tilføjet."
+  }
+ },
+ {
+  "code": "E450",
+  "nameDa": "Diphosphater",
+  "nameEn": "Diphosphates",
+  "category": "Surhedsregulerende middel / hævemiddel / sekvestrant",
+  "euStatus": "approved",
+  "origin": "synthetic",
+  "summary": "Diphosphater (pyrofosfater) er fosfatsalte, der bl.a. bruges som hævemiddel i bagepulver og til at binde vand i kød.",
+  "description": "Diphosphater består af to sammenkoblede fosfatenheder bundet til natrium, kalium, calcium eller magnesium. De fremstilles ved opvarmning af monofosfater af fosforsyre. De EU-godkendte varianter er (i) dinatriumdiphosphat, (ii) trinatriumdiphosphat, (iii) tetranatriumdiphosphat, (v) tetrakaliumdiphosphat, (vi) dicalciumdiphosphat, (vii) calciumdihydrogendiphosphat og (ix) magnesiumdihydrogendiphosphat (godkendt 2014). Dinatriumdiphosphat (SAPP) er den sure komponent i mange bagepulvere og reagerer langsomt med natron. Andre varianter bruges til at binde vand og protein i kød og fisk, forhindre misfarvning af kartofler og som smelte-salte i ost.",
+  "uses": "Tilladt i EU med maksimumsgrænser (angivet som P2O5, ofte samlet for fosfater), fx i bagepulver og kager, pølser og skinke, forarbejdet fisk og surimi, smelteost, frosne kartoffelprodukter og pulversupper.",
+  "health": "EFSA (2019) fastsatte en gruppe-ADI for fosfater (inkl. E338-E341, E343, E450-E452) på 40 mg/kg legemsvægt/dag udtrykt som fosfor og vurderede, at det samlede indtag kan overstige ADI hos spædbørn, børn og unge med højt forbrug. Fosfater er særligt problematiske for personer med nedsat nyrefunktion, hvor ophobning af fosfat øger risikoen for karforkalkning og hjertekarsygdom. Tilsatte fosfater optages næsten fuldstændigt, i modsætning til naturligt bundet fosfat i planteføde. Højt fosfatindtag kombineret med lavt calciumindtag kan påvirke knoglestofskiftet.",
+  "research": "EFSA's FAF-panel genvurderede fosforsyre og fosfater samlet i 2019 og indførte den nye gruppe-ADI, samt anbefalede lavere grænser for tungmetaller (bl.a. arsen, bly, kviksølv og aluminium). Ritz et al. (Deutsches Ärzteblatt, 2012) gjorde opmærksom på, at fosfattilsætning kan være en sundhedsrisiko, især for nyrepatienter, og associationer mellem højt fosfatniveau i blodet og hjertekardødelighed er fundet i befolkningsstudier. Det er fortsat uafklaret, i hvilket omfang fosfattilsætning påvirker raske personer.",
+  "keyReferences": [
+   {
+    "citation": "Ritz E, Hahn K, Ketteler M, Kuhlmann MK, Mann J. Phosphate additives in food--a health risk. Dtsch Arztebl Int. 2012.",
+    "searchTitle": "Phosphate additives in food--a health risk"
+   }
+  ],
+  "pubmedTerm": "diphosphates",
+  "flags": [
+   "kidney_caution",
+   "children_caution"
+  ],
+  "classes": [
+   "emulsifier",
+   "humectant",
+   "sequestrant",
+   "stabiliser",
+   "thickener"
+  ],
+  "variants": [
+   {
+    "code": "E450(i)",
+    "nameDa": "Dinatriumdiphosphat",
+    "nameEn": "Disodium diphosphate"
+   },
+   {
+    "code": "E450(ii)",
+    "nameDa": "Trinatriumdiphosphat",
+    "nameEn": "Trisodium diphosphate"
+   },
+   {
+    "code": "E450(iii)",
+    "nameDa": "Tetranatriumdiphosphat",
+    "nameEn": "Tetrasodium diphosphate"
+   },
+   {
+    "code": "E450(v)",
+    "nameDa": "Tetrakaliumdiphosphat",
+    "nameEn": "Tetrapotassium diphosphate"
+   },
+   {
+    "code": "E450(vi)",
+    "nameDa": "Dicalciumdiphosphat",
+    "nameEn": "Dicalcium diphosphate"
+   },
+   {
+    "code": "E450(vii)",
+    "nameDa": "Calciumdihydrogendiphosphat",
+    "nameEn": "Calcium dihydrogen diphosphate"
+   },
+   {
+    "code": "E450(ix)",
+    "nameDa": "Magnesiumdihydrogendiphosphat",
+    "nameEn": "Magnesium dihydrogen diphosphate"
+   }
+  ],
+  "efsa": {
+   "title": "Re‐evaluation of phosphoric acid–phosphates – di‐, tri‐ and polyphosphates (E 338–341, E 343, E 450–452) as food additives and the safety of proposed extension of use",
+   "url": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2019.5674",
+   "date": "2019/06/12",
+   "adi": "40 mg/kg bw/day (som fosfor)",
+   "overexposureRisk": "en:high"
+  },
+  "wikipedia": "https://en.wikipedia.org/wiki/Pyrophosphate",
+  "wikidata": "Q55506489",
+  "verification": {
+   "status": "corrected",
+   "sources": [
+    "https://doi.org/10.2903/j.efsa.2019.5674",
+    "https://www.efsa.europa.eu/en/press/news/190612",
+    "https://www.legislation.gov.uk/eur/2014/298"
+   ],
+   "notes": "Godkendt. Gruppe-ADI 40 mg P/kg (EFSA 2019) bekræftet og indsat i efsa.adi. Varianter uden EU-godkendelse fjernet fra variants (E450(iv)/(viii), E451(iii), E452(v)/(vi)). Ritz et al. Dtsch Arztebl Int 2012 bekræftet. Variantliste rettet (iv udgår, ix tilføjet); \"sodavand\" fjernet."
+  }
+ },
+ {
+  "code": "E451",
+  "nameDa": "Triphosphater",
+  "nameEn": "Triphosphates",
+  "category": "Stabilisator / sekvestrant / fugtighedsbevarende middel",
+  "euStatus": "approved",
+  "origin": "synthetic",
+  "summary": "Triphosphater er fosfatsalte, der især bruges til at holde på vandet i kød-, fiske- og skaldyrsprodukter.",
+  "description": "Triphosphater består af tre sammenkoblede fosfatenheder. Varianterne er (i) pentanatriumtriphosphat og (ii) pentakaliumtriphosphat. De fremstilles ved kontrolleret opvarmning af natrium- eller kaliumfosfater. Stofferne binder calcium og magnesium og ændrer muskelproteinernes ladning, så kød og fisk holder på mere vand. Det giver saftigere produkter, men kan også bruges til at øge vægten med tilsat vand, hvilket er et kendt problem ved frosne rejer og fiskefileter.",
+  "uses": "Tilladt i EU med maksimumsgrænser (samlet for fosfater), fx i skinke og pålæg, pølser, frosne rejer og fisk, surimi, smelteost og pulverprodukter.",
+  "health": "EFSA (2019) fastsatte en gruppe-ADI for fosfater (inkl. E338-E341, E343, E450-E452) på 40 mg/kg legemsvægt/dag udtrykt som fosfor og vurderede, at det samlede indtag kan overstige ADI hos spædbørn, børn og unge med højt forbrug. Fosfater er særligt problematiske for personer med nedsat nyrefunktion, hvor ophobning af fosfat øger risikoen for karforkalkning og hjertekarsygdom. Tilsatte fosfater optages næsten fuldstændigt, i modsætning til naturligt bundet fosfat i planteføde. Højt fosfatindtag kombineret med lavt calciumindtag kan påvirke knoglestofskiftet.",
+  "research": "EFSA's FAF-panel genvurderede fosforsyre og fosfater samlet i 2019 og indførte den nye gruppe-ADI, samt anbefalede lavere grænser for tungmetaller (bl.a. arsen, bly, kviksølv og aluminium). Ritz et al. (Deutsches Ärzteblatt, 2012) gjorde opmærksom på, at fosfattilsætning kan være en sundhedsrisiko, især for nyrepatienter, og associationer mellem højt fosfatniveau i blodet og hjertekardødelighed er fundet i befolkningsstudier. Det er fortsat uafklaret, i hvilket omfang fosfattilsætning påvirker raske personer.",
+  "keyReferences": [
+   {
+    "citation": "Ritz E, Hahn K, Ketteler M, Kuhlmann MK, Mann J. Phosphate additives in food--a health risk. Dtsch Arztebl Int. 2012.",
+    "searchTitle": "Phosphate additives in food--a health risk"
+   }
+  ],
+  "pubmedTerm": "triphosphates",
+  "flags": [
+   "kidney_caution",
+   "children_caution"
+  ],
+  "classes": [
+   "emulsifier",
+   "humectant",
+   "sequestrant",
+   "stabiliser",
+   "thickener"
+  ],
+  "variants": [
+   {
+    "code": "E451(i)",
+    "nameDa": "Pentanatriumtriphosphat",
+    "nameEn": "Pentasodium triphosphate"
+   },
+   {
+    "code": "E451(ii)",
+    "nameDa": "Pentakaliumtriphosphat",
+    "nameEn": "Pentapotassium triphosphate"
+   }
+  ],
+  "efsa": {
+   "title": "Re‐evaluation of phosphoric acid–phosphates – di‐, tri‐ and polyphosphates (E 338–341, E 343, E 450–452) as food additives and the safety of proposed extension of use",
+   "url": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2019.5674",
+   "date": "2019/06/12",
+   "adi": "40 mg/kg bw/day (som fosfor)",
+   "overexposureRisk": "en:high"
+  },
+  "wikipedia": "https://en.wikipedia.org/wiki/Sodium_triphosphate",
+  "wikidata": "Q29145",
+  "verification": {
+   "status": "corrected",
+   "sources": [
+    "https://doi.org/10.2903/j.efsa.2019.5674",
+    "https://www.efsa.europa.eu/en/press/news/190612",
+    "https://www.legislation.gov.uk/eur/2014/298"
+   ],
+   "notes": "Godkendt. Gruppe-ADI 40 mg P/kg (EFSA 2019) bekræftet og indsat i efsa.adi. Varianter uden EU-godkendelse fjernet fra variants (E450(iv)/(viii), E451(iii), E452(v)/(vi)). Ritz et al. Dtsch Arztebl Int 2012 bekræftet."
+  }
+ },
+ {
+  "code": "E452",
+  "nameDa": "Polyphosphater",
+  "nameEn": "Polyphosphates",
+  "category": "Sekvestrant / stabilisator / emulgator",
+  "euStatus": "approved",
+  "origin": "synthetic",
+  "summary": "Polyphosphater er lange kæder af fosfat, som binder vand og mineraler i fx kødprodukter og ost.",
+  "description": "Polyphosphater består af mange sammenkoblede fosfatenheder og fremstilles ved opvarmning og hurtig afkøling af fosfatsalte (fx Grahams salt). Varianterne er (i) natriumpolyphosphat, (ii) kaliumpolyphosphat, (iii) natriumcalciumpolyphosphat og (iv) calciumpolyphosphat. De er stærke kompleksbindere for calcium og magnesium og bruges til vandbinding i kød, som smeltesalte i ost og for at forhindre udfældning i drikke og mejeriprodukter.",
+  "uses": "Tilladt i EU med maksimumsgrænser (samlet for fosfater), fx i pålæg, pølser, frosne fisk og skaldyr, smelteost, flødeprodukter, drikke, pulverprodukter og tyggegummi.",
+  "health": "EFSA (2019) fastsatte en gruppe-ADI for fosfater (inkl. E338-E341, E343, E450-E452) på 40 mg/kg legemsvægt/dag udtrykt som fosfor og vurderede, at det samlede indtag kan overstige ADI hos spædbørn, børn og unge med højt forbrug. Fosfater er særligt problematiske for personer med nedsat nyrefunktion, hvor ophobning af fosfat øger risikoen for karforkalkning og hjertekarsygdom. Tilsatte fosfater optages næsten fuldstændigt, i modsætning til naturligt bundet fosfat i planteføde. Højt fosfatindtag kombineret med lavt calciumindtag kan påvirke knoglestofskiftet.",
+  "research": "EFSA's FAF-panel genvurderede fosforsyre og fosfater samlet i 2019 og indførte den nye gruppe-ADI, samt anbefalede lavere grænser for tungmetaller (bl.a. arsen, bly, kviksølv og aluminium). Ritz et al. (Deutsches Ärzteblatt, 2012) gjorde opmærksom på, at fosfattilsætning kan være en sundhedsrisiko, især for nyrepatienter, og associationer mellem højt fosfatniveau i blodet og hjertekardødelighed er fundet i befolkningsstudier. Det er fortsat uafklaret, i hvilket omfang fosfattilsætning påvirker raske personer.",
+  "keyReferences": [
+   {
+    "citation": "Ritz E, Hahn K, Ketteler M, Kuhlmann MK, Mann J. Phosphate additives in food--a health risk. Dtsch Arztebl Int. 2012.",
+    "searchTitle": "Phosphate additives in food--a health risk"
+   }
+  ],
+  "pubmedTerm": "polyphosphates",
+  "flags": [
+   "kidney_caution",
+   "children_caution"
+  ],
+  "classes": [
+   "emulsifier",
+   "humectant",
+   "sequestrant",
+   "stabiliser",
+   "thickener"
+  ],
+  "variants": [
+   {
+    "code": "E452(i)",
+    "nameDa": "Natriumpolyphosphater",
+    "nameEn": "Sodium polyphosphate"
+   },
+   {
+    "code": "E452(ii)",
+    "nameDa": "Kaliumpolyphosphater",
+    "nameEn": "Potassium polyphosphate"
+   },
+   {
+    "code": "E452(iii)",
+    "nameDa": "Natriumcalciumpolyphosphater",
+    "nameEn": "Sodium calcium polyphosphate"
+   },
+   {
+    "code": "E452(iv)",
+    "nameDa": "Calciumpolyphosphater",
+    "nameEn": "Calcium polyphosphate"
+   }
+  ],
+  "efsa": {
+   "title": "Re‐evaluation of phosphoric acid–phosphates – di‐, tri‐ and polyphosphates (E 338–341, E 343, E 450–452) as food additives and the safety of proposed extension of use",
+   "url": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2019.5674",
+   "date": "2019/06/12",
+   "adi": "40 mg/kg bw/day (som fosfor)",
+   "overexposureRisk": "en:high"
+  },
+  "wikipedia": "",
+  "wikidata": "Q11867365",
+  "verification": {
+   "status": "corrected",
+   "sources": [
+    "https://doi.org/10.2903/j.efsa.2019.5674",
+    "https://www.efsa.europa.eu/en/press/news/190612",
+    "https://www.legislation.gov.uk/eur/2014/298"
+   ],
+   "notes": "Godkendt. Gruppe-ADI 40 mg P/kg (EFSA 2019) bekræftet og indsat i efsa.adi. Varianter uden EU-godkendelse fjernet fra variants (E450(iv)/(viii), E451(iii), E452(v)/(vi)). Ritz et al. Dtsch Arztebl Int 2012 bekræftet."
+  }
+ },
+ {
+  "code": "E459",
+  "nameDa": "Beta-cyclodextrin",
+  "nameEn": "Beta-cyclodextrin",
+  "category": "Stabilisator / bærestof",
+  "euStatus": "approved",
+  "origin": "natural",
+  "summary": "Beta-cyclodextrin er en ringformet stivelsesforbindelse, der indkapsler aromaer og andre stoffer for at beskytte dem.",
+  "description": "Beta-cyclodextrin består af syv glukoseenheder i en ring og fremstilles enzymatisk fra stivelse med cyclodextrin-glucanotransferase. Det er den mest anvendte og billigste cyclodextrin. Hulrummet binder fedtopløselige molekyler, fx aromaer, farvestoffer og vitaminer, hvilket beskytter dem mod lys og ilt eller skjuler bitter smag. Det nedbrydes kun begrænset i tyndtarmen og fermenteres primært i tyktarmen.",
+  "uses": "Tilladt i EU med maksimumsgrænser, fx i aromaer, tabletter og overtrukne tabletter, kosttilskud, kaffe- og te-drikke med aroma, tyggegummi og snacks.",
+  "health": "EFSA (2016) bekræftede en ADI på 5 mg/kg legemsvægt/dag men fandt, at eksponeringen i det mest relevante (brand-loyale) scenarie oversteg ADI ved 95-percentilen i alle aldersgrupper og ved gennemsnittet i alle grupper undtagen spædbørn; drikke med aroma, kaffe/te og kosttilskud bidrog mest. Stoffet kan binde kolesterol og visse lægemidler. Småbørn og børn med højt forbrug er de mest udsatte grupper.",
+  "research": "EFSA's ANS-panel genvurderede beta-cyclodextrin (E459) i 2016 og anbefalede bedre forbrugsdata. Beta-cyclodextrin og dets derivater bruges også i lægemidler til at øge opløseligheden af aktive stoffer, og der forskes i derivater (fx hydroxypropyl-beta-cyclodextrin) ved Niemann-Pick type C, men dette er ikke det samme som fødevaretilsætningsstoffet.",
+  "keyReferences": [],
+  "pubmedTerm": "beta-cyclodextrin",
+  "flags": [
+   "children_caution"
+  ],
+  "classes": [
+   "carrier",
+   "stabiliser",
+   "thickener"
+  ],
+  "variants": [],
+  "efsa": {
+   "title": "Re-evaluation of Beta-cyclodextrin (E 459) as a food additive",
+   "url": "http://dx.doi.org/10.2903/j.efsa.2016.4628",
+   "date": "2016-12-07",
+   "adi": "5",
+   "overexposureRisk": "en:high"
+  },
+  "wikipedia": "",
+  "wikidata": "",
+  "verification": {
+   "status": "corrected",
+   "sources": [
+    "https://doi.org/10.2903/j.efsa.2016.4628"
+   ],
+   "notes": "Godkendt. ADI 5 mg/kg bekræftet; omfang af ADI-overskridelse rettet (alle grupper ved P95). Ubekræftet påstand om leverpåvirkning fjernet."
+  }
+ },
+ {
+  "code": "E460",
+  "nameDa": "Cellulose",
+  "nameEn": "Cellulose",
+  "category": "Fortykningsmiddel / antiklumpningsmiddel / fyldstof",
+  "euStatus": "approved",
+  "origin": "natural",
+  "summary": "Cellulose er plantefibre fra træ eller andre planter, der bruges som fyldstof, fortykker og antiklumpningsmiddel.",
+  "description": "Cellulose er en lang kæde af glukose med beta-bindinger og er det mest udbredte organiske stof på jorden. Til fødevarer udvindes det fra træmasse eller bomuld. E460(i) mikrokrystallinsk cellulose (MCC) fremstilles ved syrehydrolyse, der fjerner de amorfe dele, og giver et fint pulver, der kan danne cremet gel. E460(ii) cellulosepulver fremstilles ved mekanisk formaling af renset cellulose. Cellulose fordøjes ikke og bidrager ikke med energi af betydning.",
+  "uses": "Tilladt quantum satis i EU, fx som antiklumpningsmiddel i revet ost, i fedtreducerede produkter, is, saucer, bagværk med ekstra fiber, kosttilskud og tabletter.",
+  "health": "Cellulose er ufordøjelig kostfiber og anses for meget sikkert; EFSA's genvurdering af celluloser (E460-E466, E468, E469) fra 2018 fandt ikke behov for en numerisk ADI og ingen sikkerhedsbekymring ved de rapporterede anvendelser. Store mængder kan give luft og løs mave. Ingen kendte særlige risikogrupper.",
+  "research": "EFSA's ANS-panel genvurderede celluloser samlet i 2018. Mikrokrystallinsk cellulose er grundigt undersøgt pga. udbredt brug i lægemidler. Der er diskussion i medierne om 'træ i osten', men det er ren cellulose, som ikke udgør en sundhedsrisiko.",
+  "keyReferences": [],
+  "pubmedTerm": "microcrystalline cellulose",
+  "flags": [],
+  "classes": [
+   "carrier",
+   "emulsifier",
+   "humectant",
+   "stabiliser",
+   "thickener"
+  ],
+  "variants": [
+   {
+    "code": "E460(i)",
+    "nameDa": "Mikrokrystallinsk cellulose",
+    "nameEn": "Microcrystalline cellulose"
+   },
+   {
+    "code": "E460(ii)",
+    "nameDa": "Cellulosepulver",
+    "nameEn": "Powdered cellulose"
+   }
+  ],
+  "efsa": {
+   "title": "Re-evaluation of celluloses E 460(i), E 460(ii), E 461, E 462, E 463, E 464, E 465, E 466, E 468 and E 469 as food additives",
+   "url": "https://doi.org/10.2903/j.efsa.2018.5047",
+   "date": "2018",
+   "adi": "",
+   "overexposureRisk": ""
+  },
+  "wikipedia": "https://en.wikipedia.org/wiki/Cellulose",
+  "wikidata": "Q80294",
+  "verification": {
+   "status": "verified",
+   "sources": [
+    "https://doi.org/10.2903/j.efsa.2018.5047",
+    "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009359/"
+   ],
+   "notes": "Godkendt. EFSA 2018-genvurdering af celluloser (ingen numerisk ADI) bekræftet; efsa-objekt tilføjet."
+  }
+ },
+ {
+  "code": "E461",
+  "nameDa": "Methylcellulose",
+  "nameEn": "Methyl cellulose",
+  "category": "Fortykningsmiddel / emulgator / stabilisator",
+  "euStatus": "approved",
+  "origin": "mixed",
+  "summary": "Methylcellulose er kemisk modificeret cellulose, der danner gel ved opvarmning og bl.a. bruges i plantebaserede kødalternativer.",
+  "description": "Methylcellulose fremstilles ved at behandle cellulose med natronlud og methylchlorid, så en del af hydroxylgrupperne erstattes med methoxygrupper. Stoffet er opløseligt i koldt vand og har den usædvanlige egenskab, at det gelerer ved opvarmning og bliver flydende igen ved afkøling (termogelering). Derfor bruges det som bindemiddel i vegetariske burgere og pølser, så de holder formen ved stegning. Det er en ufordøjelig fiber og bruges også medicinsk som bulk-laksativ.",
+  "uses": "Tilladt quantum satis i EU, fx i plantebaserede burgere og pølser, glutenfrit brød, frosne friterede produkter, saucer, desserter og kosttilskud.",
+  "health": "Anses for sikkert; EFSA's genvurdering af celluloser (E460-E466, E468, E469) fra 2018 fandt ikke behov for en numerisk ADI og ingen sikkerhedsbekymring ved de rapporterede anvendelser. I store mængder virker det afførende og kan give luft. Da det kan optage meget vand, bør tabletter/pulvere med methylcellulose tages med rigeligt væske.",
+  "research": "EFSA's ANS-panel genvurderede methylcellulose med de øvrige celluloser i 2018. Forskning i syntetiske emulgatorer og tarmflora har primært fokuseret på carboxymethylcellulose (E466); methylcellulose er mindre undersøgt i den sammenhæng.",
+  "keyReferences": [],
+  "pubmedTerm": "methylcellulose",
+  "flags": [
+   "laxative"
+  ],
+  "classes": [
+   "emulsifier",
+   "stabiliser",
+   "thickener"
+  ],
+  "variants": [],
+  "efsa": {
+   "title": "Re-evaluation of celluloses E 460(i), E 460(ii), E 461, E 462, E 463, E 464, E 465, E 466, E 468 and E 469 as food additives",
+   "url": "https://doi.org/10.2903/j.efsa.2018.5047",
+   "date": "2018",
+   "adi": "",
+   "overexposureRisk": ""
+  },
+  "wikipedia": "https://en.wikipedia.org/wiki/Methyl_cellulose",
+  "wikidata": "Q416312",
+  "verification": {
+   "status": "verified",
+   "sources": [
+    "https://doi.org/10.2903/j.efsa.2018.5047",
+    "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009359/"
+   ],
+   "notes": "Godkendt. EFSA 2018-genvurdering af celluloser (ingen numerisk ADI) bekræftet; efsa-objekt tilføjet."
+  }
+ },
+ {
+  "code": "E462",
+  "nameDa": "Ethylcellulose",
+  "nameEn": "Ethyl cellulose",
+  "category": "Bærestof / filmdanner",
+  "euStatus": "approved",
+  "origin": "mixed",
+  "summary": "Ethylcellulose er kemisk modificeret cellulose, der bruges som bærestof og til overtræk af tabletter og aromaer.",
+  "description": "Ethylcellulose fremstilles ved at behandle alkalicellulose med ethylchlorid, så hydroxylgrupper erstattes med ethoxygrupper. I modsætning til methylcellulose er den uopløselig i vand, men opløselig i organiske opløsningsmidler. Den danner stærke film og bruges derfor som overtræk og indkapsling, fx af aromaer og vitaminer, og som oleogelator (til at strukturere olie).",
+  "uses": "Tilladt quantum satis i EU, fx som bærestof for aromaer og farvestoffer, i overtræk af kosttilskud og tabletter samt i indkapslede ingredienser.",
+  "health": "Anses for sikkert; EFSA's genvurdering af celluloser (E460-E466, E468, E469) fra 2018 fandt ikke behov for en numerisk ADI og ingen sikkerhedsbekymring ved de rapporterede anvendelser. Ethylcellulose optages ikke og udskilles uændret. Ingen kendte særlige risikogrupper.",
+  "research": "EFSA genvurderede ethylcellulose i 2018 sammen med de øvrige celluloser. Nyere forskning handler især om ethylcellulose-oleogeler som alternativ til mættet fedt i fødevarer.",
+  "keyReferences": [],
+  "pubmedTerm": "ethylcellulose",
+  "flags": [],
+  "classes": [
+   "carrier",
+   "thickener"
+  ],
+  "variants": [],
+  "efsa": {
+   "title": "Re-evaluation of celluloses E 460(i), E 460(ii), E 461, E 462, E 463, E 464, E 465, E 466, E 468 and E 469 as food additives",
+   "url": "https://doi.org/10.2903/j.efsa.2018.5047",
+   "date": "2018",
+   "adi": "",
+   "overexposureRisk": ""
+  },
+  "wikipedia": "",
+  "wikidata": "Q420113",
+  "verification": {
+   "status": "verified",
+   "sources": [
+    "https://doi.org/10.2903/j.efsa.2018.5047",
+    "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009359/"
+   ],
+   "notes": "Godkendt. EFSA 2018-genvurdering af celluloser (ingen numerisk ADI) bekræftet; efsa-objekt tilføjet."
+  }
+ }
+]
