@@ -136,7 +136,7 @@ function ReportBugContent() {
 
   return (
     <HfScreen
-      title="Indberet fejl"
+      title="Har du fundet en fejl?"
     >
       <div className="px-4 pt-4">
         <PointsPromoBanner
