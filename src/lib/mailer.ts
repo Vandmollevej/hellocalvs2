@@ -1,5 +1,6 @@
 import nodemailer from "nodemailer";
 import { prisma } from "@/lib/prisma";
+import { fromForEvent } from "@/lib/mail-senders";
 import { DEFAULT_REPLY_TO, htmlToText, wrapEmailHtml } from "@/lib/email-format";
 
 // Reel SMTP-afsendelse, forberedt men ikke aktiveret (docs/DECISIONS.md
@@ -55,7 +56,6 @@ async function flushOnce(limit: number) {
   const transport = getTransport();
   if (!transport) return { sent: 0 };
 
-  const fromAddress = process.env.SMTP_FROM || "Hello Cal <no-reply@hellocal.local>";
   const pending = await prisma.outboundMessage.findMany({
     where: { status: "QUEUED", channel: { in: ["EMAIL", "BOTH"] } },
     include: { user: true },
@@ -75,7 +75,7 @@ async function flushOnce(limit: number) {
     }
     try {
       await transport.sendMail({
-        from: fromAddress,
+        from: fromForEvent(message.event),
         replyTo: process.env.SMTP_REPLY_TO || DEFAULT_REPLY_TO,
         to,
         subject: message.subject,

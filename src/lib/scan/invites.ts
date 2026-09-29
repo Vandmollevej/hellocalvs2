@@ -1,6 +1,7 @@
 import { createHash, randomBytes } from "crypto";
 import { prisma } from "@/lib/prisma";
 import { sendTransientMail } from "@/lib/transient-mail";
+import { INVITE_FROM } from "@/lib/mail-senders";
 
 // Invitation fra admin "scan-invites" (docs/OPRETTELSES-APP.md): admin
 // opretter navn + mail, medarbejderen får et tidsbegrænset opsætningslink og
@@ -34,6 +35,7 @@ export async function issueScanInvite(workerId: string) {
   let mailSent = true;
   try {
     await sendTransientMail({
+      from: INVITE_FROM,
       to: worker.email,
       subject: "Invitation til Hello Cal Oprettelses-app",
       devLink: link,

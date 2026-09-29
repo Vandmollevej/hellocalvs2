@@ -1,4 +1,5 @@
 import nodemailer from "nodemailer";
+import { defaultFrom } from "@/lib/mail-senders";
 import { DEFAULT_REPLY_TO, htmlToText, wrapEmailHtml } from "@/lib/email-format";
 
 // docs/PRIVACY.md "Login og e-mail": mails til almindelige brugere sendes
@@ -18,7 +19,9 @@ export async function sendTransientMail({
   subject,
   html,
   devLink,
+  from,
 }: {
+  from?: string;
   to: string;
   subject: string;
   html: string;
@@ -44,7 +47,7 @@ export async function sendTransientMail({
     auth: { user, pass },
   });
   await transport.sendMail({
-    from: process.env.SMTP_FROM || "Hello Cal <no-reply@hellocal.local>",
+    from: from ?? defaultFrom(),
     replyTo: process.env.SMTP_REPLY_TO || DEFAULT_REPLY_TO,
     to,
     subject,
