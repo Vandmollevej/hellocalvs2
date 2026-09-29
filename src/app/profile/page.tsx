@@ -9,6 +9,7 @@ import {
   IconBook2,
   IconCreditCard,
   IconWallet,
+  IconBulb,
 } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
 import { AccordionCard, ChevronRow } from "@/components/hf/AccordionCard";
@@ -127,6 +128,11 @@ export default function ProfilePage() {
               icon={<IconBook2 size={20} />}
               label={t("profile.row.recipes")}
               href="/profile/recipes"
+            />
+            <ChevronRow
+              icon={<IconBulb size={20} />}
+              label={t("profile.row.knowledge")}
+              href="/viden-om"
               divider={false}
             />
           </AccordionCard>

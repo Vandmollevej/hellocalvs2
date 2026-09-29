@@ -2,6 +2,13 @@
 
 Last updated: 2026-09-28
 
+## 2026-09-29: "Viden om" (fra profilsiden)
+
+- `/viden-om` med søgefelt og blokke (profilsidens række-stil): Vitaminer, E-numre, Sundhedstips, Mad på latin.
+- Hver blok åbner en ny side med tilbagepil; hver række åbner en egen artikelside `/viden-om/<kategori>/<slug>` (linkbar fra popups via `knowledgeHref`/`foodTermHref`).
+- Artikler i `src/lib/knowledge.ts` med officielle kilder (Fødevarestyrelsen). E-numre-listen genbruger `/e-numre/<kode>` uændret.
+- Ingrediens-links fra "Mad på latin" peger nu på `/viden-om/mad-paa-latin/<ord>`.
+
 ## 2026-09-28: "Mad på latin" — ordbog over ikke-danske ingredienser
 
 - Ny side `/mad-paa-latin` med søgefelt øverst; ét afsnit pr. ord med anker (`#dextrose`).

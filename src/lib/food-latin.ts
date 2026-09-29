@@ -64,7 +64,7 @@ export function foodTermAnchor(term: string): string {
 }
 
 export function foodTermHref(term: string): string {
-  return `/mad-paa-latin#${foodTermAnchor(term)}`;
+  return `/viden-om/mad-paa-latin/${foodTermAnchor(term)}`;
 }
 
 export function matchesFoodTerm(item: FoodTerm, query: string): boolean {
