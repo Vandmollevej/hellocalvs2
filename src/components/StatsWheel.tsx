@@ -100,8 +100,16 @@ const CAPTION_SPACE = 16;
 /** A row is its number plus the caption under it. */
 const ROW_HEIGHT = FONT_SIZE + CAPTION_SPACE;
 const WHEEL_HEIGHT = 2 * (rowOffset(SIDE_ROWS) + ROW_HEIGHT);
-/** Distance from the screen edge (user 2026-09-27: right-side wheel a little further right). */
-const EDGE_OFFSET = { left: 22, right: 12 } as const;
+/** Distance from the screen edge (user 2026-09-27: right-side wheel a little further right; 2026-09-29: 40% closer to the edge again). */
+const EDGE_OFFSET = { left: 13, right: 7 } as const;
+/**
+ * Vertical shift from the hero's middle (user 2026-09-29): the wheel sits
+ * midway between the header and the "Dagens tilføjelser" divider line. The
+ * hero starts 32px below the header (page `mt-8`) and the line lies 18px below
+ * the hero (page `pt-2` + half the 20px title line): (32 + 300 + 18) / 2 = 175
+ * from the header vs. the hero's middle at 32 + 150 = 182.
+ */
+const VERTICAL_SHIFT = -7;
 // Temporary grey caption under every number (user 2026-09-27) until
 // the real text is decided.
 const CAPTION_PLACEHOLDER = "Dummytekst";
@@ -319,7 +327,7 @@ export function StatsWheel({ side }: { side: "left" | "right" }) {
       style={
         {
           [side]: EDGE_OFFSET[side],
-          top: "50%",
+          top: `calc(50% + ${VERTICAL_SHIFT}px)`,
           width: side === "right" ? 178 : 200,
           height: WHEEL_HEIGHT,
           transform: "translateY(-50%)",
