@@ -227,6 +227,14 @@ Ejer: "Ensartet højde på inputfelter og knapper" (2026-09-26)
 | --- | --- | --- | --- |
 | — | 48 px på alle enkeltlinje-felter, dropdowns, fuldbredde-knapper, rækker (inkl. admin) | Færdig | — |
 
+## G14 — Daglig kaloriegrænse pr. bruger + forslags-popup
+Filer: `src/lib/kcal-goal-suggestion.ts`, `src/lib/use-daily-kcal-goal.ts`, `src/components/KcalGoalPrompt.tsx`, `src/app/api/profile/kcal-goal/**`. Rører også kalender, statistik, StatsWheel, widget-data (kun grænse-læsningen).
+Ejer: cloud-session `claude/kcal-goal-prompt` (2026-09-29)
+
+| Id | Opgave | Status | Næste skridt |
+| --- | --- | --- | --- |
+| — | Popup: "opdater din daglige kaloriegrænse fra X til Y" med Opdater / Senere / Spørg ikke igen | Færdig (kode, PR åben) | Migration 20260929190000 skal med deployet. Mangler: side til manuel ændring af grænsen + brugerens test med rigtige data |
+
 ## Opsætningsguide (ikke fordelt)
 Filer: `src/components/OnboardingWizard.tsx`. Krav i `docs/DESIGN_V2.md` §8.
 

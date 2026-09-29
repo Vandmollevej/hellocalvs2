@@ -30,7 +30,6 @@ import {
   type Icon,
 } from "@tabler/icons-react";
 import { IconWaterGlass } from "@/components/icons/WaterGlass";
-import { DAILY_KCAL_GOAL } from "@/lib/goals";
 import type { DailyTotal } from "@/lib/daily-totals";
 import { getSportMeta } from "@/lib/sport-icons";
 import { NUTRIENT_BY_KEY, isNutrientKey, type NutrientKey } from "@/lib/nutrients";
@@ -88,6 +87,8 @@ export type HealthMetricTotals = {
 
 export type StatCardData = {
   days: DailyTotal[];
+  /** The user's daily kcal limit (User.dailyKcalGoal). */
+  goalKcal: number;
   // Only set when at least one real integration (Fitbit/Withings) is CONNECTED,
   // per docs/DECISIONS.md — see where computeStatCards() is called from.
   activities?: ActivityTotals[];
@@ -350,7 +351,7 @@ export const STAT_CARD_DEFS: {
     key: "goalsMet",
     label: "Mål nået",
     icon: IconTargetArrow,
-    compute: (data) => `${data.days.filter((d) => d.kcal > 0 && d.kcal <= DAILY_KCAL_GOAL).length} dage`,
+    compute: (data) => `${data.days.filter((d) => d.kcal > 0 && d.kcal <= data.goalKcal).length} dage`,
   },
   // Sport og aktivitet. Manglende integrationsdata vises som en streg — aldrig
   // som et opdigtet eksempeltal.

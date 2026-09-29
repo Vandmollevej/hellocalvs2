@@ -5000,3 +5000,7 @@ DECISIONS.md). Næste skridt: indfør grænser og sæt flaget til `true`.
 
 ## 2026-09-29 — Samlet merge af åbne PR'er
 Flettet: #100, #98, #104, #105, #107, #108, #109, #110, #111, #112, #103 og lighter-deploy. Docs-konflikter løst ved at beholde begge sider. Ikke flettet: #6 og #8 (ingen fælles historik med master) samt dubletterne #26, #32, #41, #43, #45, #54, #57, #59 (erstattet af nyere grene i master). Lint, tsc og build grønne.
+
+## 2026-09-29 — Daglig kaloriegrænse pr. bruger + popup
+
+Se DECISIONS samme dato. Ny migration `20260929190000_daily_kcal_goal` (skal køres af deployet), `GET/POST /api/profile/kcal-goal`, `KcalGoalPrompt` i `layout.tsx`, `src/lib/kcal-goal-suggestion.ts`. Nyt: grænsen var før en fast konstant. Lint, `tsc` og build grønne; forslagsberegningen testet med syntetiske data. Ikke testet i browser (kræver login + 4 ugers data). Der er endnu ingen side til manuelt at ændre grænsen.

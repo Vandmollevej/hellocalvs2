@@ -9,6 +9,7 @@ import {
   type FrontpageNutritionTotals,
 } from "@/lib/frontpage-stats";
 import { useTranslation } from "@/i18n/LocaleProvider";
+import { useDailyKcalGoal } from "@/lib/use-daily-kcal-goal";
 
 type Registration = {
   kcalSnapshot: number;
@@ -147,6 +148,7 @@ function offsetAt(absDistance: number) {
 }
 
 export function StatsWheel({ side }: { side: "left" | "right" }) {
+  const goalKcal = useDailyKcalGoal();
   const { t } = useTranslation();
   const activeKeys = useFrontpageStatKeys();
   const [activeIndex, setActiveIndex] = useState(0);
@@ -223,7 +225,7 @@ export function StatsWheel({ side }: { side: "left" | "right" }) {
       .map((key) => FRONTPAGE_STAT_DEFS.find((def) => def.key === key))
       .filter((def): def is NonNullable<typeof def> => Boolean(def))
       .map((def) => {
-        const { value, unit } = def.compute({ totals, metrics: metricTotals });
+        const { value, unit } = def.compute({ totals, metrics: metricTotals, goalKcal });
         return {
           key: def.key,
           label: t(def.labelKey),
@@ -234,7 +236,7 @@ export function StatsWheel({ side }: { side: "left" | "right" }) {
       });
     const missing = Math.max(0, SIDE_ROWS * 2 + 1 - own.length);
     return [...own, ...PLACEHOLDER_STATS.slice(0, missing)];
-  }, [activeKeys, loading, metrics, registrations, t]);
+  }, [activeKeys, loading, metrics, registrations, t, goalKcal]);
 
   // Rows fade out half a row past the outermost visible one. With too few
   // stats for all 7 rows, the range shrinks so the item that wraps from the

@@ -323,6 +323,13 @@
     "terms": "Vilkår og betingelser",
     "termsGoTo": "Gå til vilkår og betingelser"
   },
+  "kcalGoalPrompt": {
+    "title": "Opdater din kaloriegrænse",
+    "body": "Hvis du har logget alle kalorier og aktiviteter de seneste {weeks} uger, anbefaler vi, at du opdaterer den estimerede daglige kaloriegrænse fra {from} til {to} kcal.",
+    "update": "Opdater",
+    "later": "Senere",
+    "dontAskAgain": "Spørg ikke igen"
+  },
   "startupTips": {
     "close": "Luk",
     "disable": "Slå fra",

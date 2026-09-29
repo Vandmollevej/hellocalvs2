@@ -22,7 +22,8 @@ import {
   type HealthMetricTotals,
 } from "@/lib/stat-cards";
 import { groupByDay, type RegistrationTotals } from "@/lib/daily-totals";
-import { DAILY_KCAL_GOAL, WEIGHT_GOAL_KG } from "@/lib/goals";
+import { WEIGHT_GOAL_KG } from "@/lib/goals";
+import { useDailyKcalGoal } from "@/lib/use-daily-kcal-goal";
 import { DEFAULT_STAT_SELECTION, filterDaysInRange, selectionRange, type StatPeriodSelection } from "@/lib/stat-periods";
 import type { IntegrationCardStatus } from "@/lib/integrations";
 import { dailyChartLabel, statChartDef } from "@/lib/stat-charts";
@@ -110,6 +111,7 @@ function trendByDay(points: { dateKey: string; trendKg: number }[]) {
 }
 
 export default function StatisticsPage() {
+  const goalKcal = useDailyKcalGoal();
   const { t } = useTranslation();
   const [registrations, setRegistrations] = useState<RegistrationTotals[]>([]);
   const [weightEntries, setWeightEntries] = useState<WeightEntry[]>([]);
@@ -251,7 +253,7 @@ export default function StatisticsPage() {
         color: "var(--hf-green)",
         unit: "kcal",
         values: kcalDaily,
-        goal: DAILY_KCAL_GOAL,
+        goal: goalKcal,
         colorByGoal: true,
       },
       {
@@ -276,7 +278,7 @@ export default function StatisticsPage() {
           ]
         : []),
     ],
-    [kcalDaily, weightDaily, weightTrendDaily, t],
+    [kcalDaily, weightDaily, weightTrendDaily, t, goalKcal],
   );
 
   const sleepChartSeries = useMemo<ChartSeries[]>(() => {
@@ -330,6 +332,7 @@ export default function StatisticsPage() {
     const days = filterDaysInRange(allDays, activePeriodRange);
     const cards = computeStatCards({
       days,
+      goalKcal,
       activities: hasConnectedIntegration ? filterActivitiesInRange(activities, activePeriodRange) : undefined,
       metrics: metrics.filter((m) => {
         const time = new Date(m.recordedAt).getTime();
@@ -338,7 +341,7 @@ export default function StatisticsPage() {
       sources: sourcesLoading ? undefined : periodSources,
     });
     return cards.map((c) => ({ ...c, value: loading ? "—" : c.value, loading }));
-  }, [allDays, activities, hasConnectedIntegration, metrics, loading, activePeriodRange, sourcesLoading, periodSources]);
+  }, [allDays, activities, hasConnectedIntegration, metrics, loading, activePeriodRange, sourcesLoading, periodSources, goalKcal]);
 
   const recentRegistrations = useMemo(
     () => filterActivitiesInRangeRegistrations(registrations, activePeriodRange),

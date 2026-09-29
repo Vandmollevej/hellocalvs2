@@ -20,7 +20,7 @@ import { AddMenuSheet } from "@/components/add/AddMenuSheet";
 import { HfChevron } from "@/components/hf/HfChevron";
 import { ActionLink } from "@/components/hf/ActionButton";
 import { FoodRow } from "@/components/FoodRow";
-import { DAILY_KCAL_GOAL } from "@/lib/goals";
+import { useDailyKcalGoal } from "@/lib/use-daily-kcal-goal";
 import { isIntakeTooLow, minimumHealthyKcal } from "@/lib/healthy-intake";
 import { groupByDay } from "@/lib/daily-totals";
 import {
@@ -184,9 +184,9 @@ function totalKcalForDate(dailyTotals: Map<string, number>, date: Date) {
   return dailyTotals.get(dayKey(date)) ?? 0;
 }
 
-function dailyGoalMet(dailyTotals: Map<string, number>, date: Date) {
+function dailyGoalMet(dailyTotals: Map<string, number>, date: Date, goalKcal: number) {
   const total = totalKcalForDate(dailyTotals, date);
-  return total > 0 && total <= DAILY_KCAL_GOAL;
+  return total > 0 && total <= goalKcal;
 }
 
 function buildMonthGrid(year: number, month: number) {
@@ -299,6 +299,7 @@ function useIsLandscape() {
 }
 
 export default function CalendarPage() {
+  const goalKcal = useDailyKcalGoal();
   const { t } = useTranslation();
   const WEEKDAYS = useMemo(() => WEEKDAY_KEYS.map((key) => t(key)), [t]);
   const VIEW_OPTIONS = useMemo(
@@ -432,21 +433,21 @@ export default function CalendarPage() {
     for (let day = 1; day <= consideredDays; day += 1) {
       const total = totalKcalForDate(dailyTotals, new Date(year, month, day));
       consumed += total;
-      if (total > 0 && total <= DAILY_KCAL_GOAL) metCount += 1;
+      if (total > 0 && total <= goalKcal) metCount += 1;
     }
-    const remaining = DAILY_KCAL_GOAL * consideredDays - consumed;
+    const remaining = goalKcal * consideredDays - consumed;
 
     let sevenDayConsumed = 0;
     for (let offset = 0; offset < 7; offset += 1) {
       sevenDayConsumed += totalKcalForDate(dailyTotals, addDays(today, -offset));
     }
-    const sevenDayRemaining = DAILY_KCAL_GOAL * 7 - sevenDayConsumed;
+    const sevenDayRemaining = goalKcal * 7 - sevenDayConsumed;
 
     let streak = 0;
-    while (dailyGoalMet(dailyTotals, addDays(today, -streak))) streak += 1;
+    while (dailyGoalMet(dailyTotals, addDays(today, -streak), goalKcal)) streak += 1;
 
     return { isCurrentMonth, consideredDays, metCount, remaining, sevenDayRemaining, streak };
-  }, [dailyTotals, year, month, today]);
+  }, [dailyTotals, year, month, today, goalKcal]);
 
   useEffect(() => {
     function handleEscape(event: KeyboardEvent) {
@@ -959,6 +960,7 @@ function MonthView({
   onOpenDate: (date: Date) => void;
   weekdays: string[];
 }) {
+  const goalKcal = useDailyKcalGoal();
   const { t } = useTranslation();
   // Fejlretninger: brugeren bekræftede eksplicit at ISO-ugenumre til venstre
   // for hver uge i månedsvisningen MÅ bryde det ellers faste layout (kolonnen
@@ -991,7 +993,7 @@ function MonthView({
               <div className="grid flex-1 grid-cols-7 gap-1.5">
                 {week.map((date, index) => {
                   if (!date) return <div key={`empty-${weekIndex}-${index}`} className="aspect-square" aria-hidden="true" />;
-                  const met = dailyGoalMet(dailyTotals, date);
+                  const met = dailyGoalMet(dailyTotals, date, goalKcal);
                   const logged = totalKcalForDate(dailyTotals, date) > 0;
                   const current = isSameDay(date, today);
                   const isOtherMonth = date.getMonth() !== month;
@@ -1065,17 +1067,18 @@ function WeekView({
   goalsByDate: GoalsByDate;
   onOpenDate: (date: Date) => void;
 }) {
+  const goalKcal = useDailyKcalGoal();
   const { t } = useTranslation();
   return (
     <div className="space-y-2">
       {days.map((date) => {
         const kcal = totalKcalForDate(dailyTotals, date);
-        const met = dailyGoalMet(dailyTotals, date);
+        const met = dailyGoalMet(dailyTotals, date, goalKcal);
         // An unlogged day is not a missed goal: it shows "Ingen indtastninger"
         // and the full remaining budget, both in gray.
         const logged = kcal > 0;
-        const over = kcal > DAILY_KCAL_GOAL;
-        const diff = Math.round(Math.abs(DAILY_KCAL_GOAL - kcal));
+        const over = kcal > goalKcal;
+        const diff = Math.round(Math.abs(goalKcal - kcal));
         const current = isSameDay(date, today);
         // Days that haven't happened yet have no status to show.
         const future = stripTime(date).getTime() > stripTime(today).getTime();
@@ -1160,8 +1163,9 @@ function WeeklyEnergySummaryRow({
   dailyTotals: Map<string, number>;
   weightEstimate: WeightChangeEstimate | null;
 }) {
+  const goalKcal = useDailyKcalGoal();
   const { t } = useTranslation();
-  const summary = computeWeeklyEnergySummary(days, today, dailyTotals, DAILY_KCAL_GOAL);
+  const summary = computeWeeklyEnergySummary(days, today, dailyTotals, goalKcal);
   if (!summary) return null;
   // Same sign convention as the day rows above ("+" = under the goal), so the
   // total reads as the sum of the column it sits under.
@@ -1208,6 +1212,7 @@ function ListView({
   onPrevWeek: () => void;
   onNextWeek: () => void;
 }) {
+  const goalKcal = useDailyKcalGoal();
   const { t } = useTranslation();
   const scrollRef = useRef<HTMLDivElement | null>(null);
   const overscroll = useRef(0);
@@ -1282,12 +1287,12 @@ function ListView({
     >
       {days.map((date) => {
         const kcal = totalKcalForDate(dailyTotals, date);
-        const met = dailyGoalMet(dailyTotals, date);
+        const met = dailyGoalMet(dailyTotals, date, goalKcal);
         // An unlogged day is not a missed goal: it shows "Ingen indtastninger"
         // and the full remaining budget, both in gray.
         const logged = kcal > 0;
-        const over = kcal > DAILY_KCAL_GOAL;
-        const diff = Math.round(Math.abs(DAILY_KCAL_GOAL - kcal));
+        const over = kcal > goalKcal;
+        const diff = Math.round(Math.abs(goalKcal - kcal));
         const current = isSameDay(date, today);
         // Days that haven't happened yet have no status to show.
         const future = stripTime(date).getTime() > stripTime(today).getTime();
@@ -1370,6 +1375,7 @@ function WeekTimelineView({
   getSleepWindow: (date: Date) => SleepWindow | null;
   onSleepAdjust: (date: Date, type: SleepAdjustType, minutes: number) => void;
 }) {
+  const goalKcal = useDailyKcalGoal();
   const headerDrag = useRef<{ x: number; scrollLeft: number } | null>(null);
   const gridDrag = useRef<{ x: number; y: number; scrollLeft: number; scrollTop: number } | null>(null);
   const gridScrollRef = useRef<HTMLDivElement | null>(null);
@@ -1427,7 +1433,7 @@ function WeekTimelineView({
       >
         <div className="h-12 w-12 shrink-0 border-b border-r border-hf-tan" />
         {days.map((date) => {
-          const met = dailyGoalMet(dailyTotals, date);
+          const met = dailyGoalMet(dailyTotals, date, goalKcal);
           const current = isSameDay(date, today);
           return (
             <button
@@ -1752,6 +1758,7 @@ function DayDetails({
   onToggleViewMenu: () => void;
   onSelectView: (view: CalendarView) => void;
 }) {
+  const goalKcal = useDailyKcalGoal();
   const router = useRouter();
   const { t } = useTranslation();
   const canGoForward = stripTime(date) < stripTime(today);
@@ -1862,9 +1869,9 @@ function DayDetails({
   }, [loading, dateKey]);
 
   const dayKcal = registrations.reduce((sum, registration) => sum + registration.kcalSnapshot, 0);
-  const remaining = DAILY_KCAL_GOAL - dayKcal;
+  const remaining = goalKcal - dayKcal;
   const hasEntries = registrations.length > 0;
-  const met = hasEntries && dayKcal <= DAILY_KCAL_GOAL;
+  const met = hasEntries && dayKcal <= goalKcal;
   // Dagsstatus: fremtidige dage viser ingen status, historiske dage i datid.
   const todayKey = dayKey(new Date());
   const isFutureDay = dateKey > todayKey;
@@ -2156,7 +2163,7 @@ function DayDetails({
           </div>
           )}
           <p className="hf-type-body whitespace-nowrap text-right text-text-muted">
-            {t("calendar.goalLabel", { goal: DAILY_KCAL_GOAL })}
+            {t("calendar.goalLabel", { goal: goalKcal })}
           </p>
           {remaining >= 0 ? (
             <p className="hf-type-body whitespace-nowrap text-right text-hf-black">

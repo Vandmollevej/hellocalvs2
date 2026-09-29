@@ -103,6 +103,15 @@ model User {
   // bestemmer kun, om den grå usikkerhedslinje er foldet ud automatisk.
   autoExpandUncertainty   Boolean @default(false)
 
+  // Daglig kaloriegrænse pr. bruger (src/lib/goals.ts). Null = standardværdien
+  // DAILY_KCAL_GOAL. Opdateres af brugeren via "Opdater"-popuppen
+  // (src/lib/kcal-goal-suggestion.ts), som også husker "Senere" (udsat til) og
+  // "Spørg ikke igen" (slået fra).
+  dailyKcalGoal                Int?
+  kcalGoalUpdatedAt            DateTime?
+  kcalGoalPromptSnoozedUntil   DateTime?
+  kcalGoalPromptDisabled       Boolean   @default(false)
+
   // Region (ISO 3166-1 alpha-2), used to prioritize product search results
   // by the country's GS1 barcode prefix (see src/lib/regions.ts). Denmark is
   // the default, since it's the app's primary market.

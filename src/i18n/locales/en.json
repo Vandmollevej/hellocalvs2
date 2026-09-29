@@ -323,6 +323,13 @@
     "terms": "Terms and conditions",
     "termsGoTo": "Go to terms and conditions"
   },
+  "kcalGoalPrompt": {
+    "title": "Update your calorie limit",
+    "body": "If you have logged all calories and activities for the past {weeks} weeks, we recommend updating your estimated daily calorie limit from {from} to {to} kcal.",
+    "update": "Update",
+    "later": "Later",
+    "dontAskAgain": "Don't ask again"
+  },
   "startupTips": {
     "close": "Close",
     "disable": "Turn off",
