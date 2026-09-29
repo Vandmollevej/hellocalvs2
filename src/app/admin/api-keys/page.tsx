@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import { requireAdminUser } from "@/lib/require-admin";
 import { KEY_GROUPS } from "@/lib/api-keys/catalog";
 import { ensureSecretsLoaded } from "@/lib/api-keys/store";
+import { loadCustomApis } from "@/lib/api-keys/custom";
 import { allServiceStatuses } from "@/lib/api-keys/status";
 import { ApiKeysManager } from "@/components/admin/ApiKeysManager";
 
@@ -12,6 +13,7 @@ export default async function AdminApiKeysPage() {
   if (!admin) redirect("/admin/login");
 
   await ensureSecretsLoaded();
+  const custom = await loadCustomApis();
 
   return (
     <div className="flex flex-col gap-4">
@@ -23,7 +25,7 @@ export default async function AdminApiKeysPage() {
           .env.production.
         </p>
       </div>
-      <ApiKeysManager groups={KEY_GROUPS} initialServices={allServiceStatuses()} />
+      <ApiKeysManager groups={KEY_GROUPS} initialServices={allServiceStatuses()} initialCustom={custom} />
     </div>
   );
 }

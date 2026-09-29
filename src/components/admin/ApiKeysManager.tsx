@@ -4,6 +4,7 @@ import { useState } from "react";
 import type { KeyGroupId } from "@/lib/api-keys/catalog";
 import type { CheckResult } from "@/lib/api-keys/checks";
 import type { FieldStatus, ServiceStatus } from "@/lib/api-keys/status";
+import type { CustomApiView } from "@/lib/api-keys/custom";
 
 // Admin → API-nøgler. Status, redigering og live-test pr. tjeneste
 // (docs/DECISIONS.md 2026-09-25 "API-nøgler i admin").
@@ -43,15 +44,35 @@ async function send(method: "PUT" | "DELETE", body: object) {
   return data.service as ServiceStatus;
 }
 
+type CustomState = { groups: string[]; apis: CustomApiView[] };
+
+async function sendCustom(method: "POST" | "DELETE", body: object) {
+  const res = await fetch("/api/admin/api-keys/custom", {
+    method,
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(body),
+  });
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(data.message ?? "Kunne ikke gemme");
+  return data as CustomState;
+}
+
 export function ApiKeysManager({
   groups,
   initialServices,
+  initialCustom,
 }: {
   groups: { id: KeyGroupId; title: string }[];
   initialServices: ServiceStatus[];
+  initialCustom: CustomState;
 }) {
   const [services, setServices] = useState(initialServices);
   const [tests, setTests] = useState<Record<string, TestState>>({});
+  const [custom, setCustom] = useState(initialCustom);
+  const [addingGroup, setAddingGroup] = useState(false);
+  const [addingApiIn, setAddingApiIn] = useState<string | null>(null);
+
+  const allGroupTitles = [...groups.map((g) => g.title), ...custom.groups.filter((g) => !groups.some((b) => b.title === g))];
 
   async function runTest(serviceId: string) {
     setTests((prev) => ({ ...prev, [serviceId]: "running" }));
@@ -88,14 +109,50 @@ export function ApiKeysManager({
       <div className="flex flex-col gap-3 rounded-lg border border-hf-tan-dark bg-hf-white p-4">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <p className="hf-type-body hf-type-strong text-hf-black">Status</p>
-          <button
-            type="button"
-            onClick={testAll}
-            className="hf-type-body hf-type-strong rounded-md bg-hf-green-dark px-3 py-1.5 text-hf-white"
-          >
-            Test alle
-          </button>
+          <div className="flex flex-wrap gap-2">
+            <button
+              type="button"
+              onClick={() => setAddingGroup(true)}
+              className="hf-type-body rounded-md border border-hf-green-dark px-3 py-1.5 text-hf-green-dark"
+            >
+              Tilføj gruppe
+            </button>
+            <button
+              type="button"
+              onClick={() => setAddingApiIn(allGroupTitles[0] ?? "")}
+              className="hf-type-body rounded-md border border-hf-green-dark px-3 py-1.5 text-hf-green-dark"
+            >
+              Tilføj API
+            </button>
+            <button
+              type="button"
+              onClick={testAll}
+              className="hf-type-body hf-type-strong rounded-md bg-hf-green-dark px-3 py-1.5 text-hf-white"
+            >
+              Test alle
+            </button>
+          </div>
         </div>
+        {addingGroup && (
+          <AddGroupForm
+            onCancel={() => setAddingGroup(false)}
+            onSave={async (title) => {
+              setCustom(await sendCustom("POST", { type: "group", title }));
+              setAddingGroup(false);
+            }}
+          />
+        )}
+        {addingApiIn !== null && (
+          <AddApiForm
+            groups={allGroupTitles}
+            initialGroup={addingApiIn}
+            onCancel={() => setAddingApiIn(null)}
+            onSave={async (input) => {
+              setCustom(await sendCustom("POST", { type: "api", ...input }));
+              setAddingApiIn(null);
+            }}
+          />
+        )}
         {incomplete.length === 0 && problems.length === 0 ? (
           <p className="hf-type-body text-text-secondary">Alle tjenester har deres nøgler.</p>
         ) : (
@@ -138,7 +195,174 @@ export function ApiKeysManager({
           </section>
         );
       })}
+
+      {custom.groups.map((title) => {
+        const apis = custom.apis.filter((a) => a.group === title);
+        return (
+          <section key={`custom-${title}`} className="flex flex-col gap-3">
+            <div className="flex items-center justify-between gap-3">
+              <h2 className="hf-type-body hf-type-strong uppercase tracking-wide text-text-muted">{title}</h2>
+              <div className="flex gap-3">
+                <button type="button" onClick={() => setAddingApiIn(title)} className="hf-btn-text text-hf-green-dark">
+                  Tilføj API
+                </button>
+                {apis.length === 0 && (
+                  <button
+                    type="button"
+                    onClick={async () => setCustom(await sendCustom("DELETE", { type: "group", title }))}
+                    className="hf-btn-text text-text-secondary"
+                  >
+                    Slet gruppe
+                  </button>
+                )}
+              </div>
+            </div>
+            {apis.length === 0 && <p className="hf-type-body text-text-secondary">Ingen API’er i gruppen endnu.</p>}
+            {apis.map((api) => (
+              <div key={api.id} className="flex flex-col gap-2 rounded-lg border border-hf-tan-dark bg-hf-white p-4">
+                <div className="flex items-start justify-between gap-3">
+                  <p className="hf-type-strong text-hf-black">{api.name}</p>
+                  <button
+                    type="button"
+                    onClick={async () => {
+                      if (confirm(`Slet ${api.name}?`)) setCustom(await sendCustom("DELETE", { type: "api", id: api.id }));
+                    }}
+                    className="hf-btn-text text-hf-red-dark"
+                  >
+                    Slet
+                  </button>
+                </div>
+                <div>
+                  <p className="hf-type-small text-text-muted">ID</p>
+                  <p className="hf-type-body break-all font-mono text-text-secondary">{api.keyId}</p>
+                </div>
+                <div>
+                  <p className="hf-type-small text-text-muted">Hemmelighed</p>
+                  <p className="hf-type-body break-all font-mono text-text-secondary">{api.secretDisplay}</p>
+                </div>
+              </div>
+            ))}
+          </section>
+        );
+      })}
     </div>
+  );
+}
+
+const formInputClass =
+  "hf-type-body hf-field w-full rounded-md border border-hf-tan-dark bg-hf-white px-3 text-hf-black";
+
+function AddGroupForm({ onSave, onCancel }: { onSave: (title: string) => Promise<void>; onCancel: () => void }) {
+  const [title, setTitle] = useState("");
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  return (
+    <form
+      className="flex flex-col gap-2 border-t border-hf-tan-dark pt-3"
+      onSubmit={async (e) => {
+        e.preventDefault();
+        setBusy(true);
+        setError(null);
+        try {
+          await onSave(title);
+        } catch (err) {
+          setError(err instanceof Error ? err.message : "Kunne ikke gemme");
+          setBusy(false);
+        }
+      }}
+    >
+      <p className="hf-type-body hf-type-strong text-hf-black">Ny gruppe</p>
+      <input value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Gruppens navn" className={formInputClass} />
+      {error && <p className="hf-type-body text-hf-red-dark">{error}</p>}
+      <div className="flex gap-2">
+        <button
+          type="submit"
+          disabled={busy || !title.trim()}
+          className="hf-type-body hf-type-strong rounded-md bg-hf-green-dark px-3 py-1.5 text-hf-white disabled:opacity-50"
+        >
+          {busy ? "Gemmer…" : "Gem"}
+        </button>
+        <button type="button" onClick={onCancel} className="hf-type-body rounded-md px-3 py-1.5 text-text-secondary">
+          Annullér
+        </button>
+      </div>
+    </form>
+  );
+}
+
+function AddApiForm({
+  groups,
+  initialGroup,
+  onSave,
+  onCancel,
+}: {
+  groups: string[];
+  initialGroup: string;
+  onSave: (input: { group: string; name: string; keyId: string; secret: string }) => Promise<void>;
+  onCancel: () => void;
+}) {
+  const [group, setGroup] = useState(initialGroup);
+  const [name, setName] = useState("");
+  const [keyId, setKeyId] = useState("");
+  const [secret, setSecret] = useState("");
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const ready = group && name.trim() && keyId.trim() && secret.trim();
+  return (
+    <form
+      className="flex flex-col gap-2 border-t border-hf-tan-dark pt-3"
+      onSubmit={async (e) => {
+        e.preventDefault();
+        setBusy(true);
+        setError(null);
+        try {
+          await onSave({ group, name, keyId, secret });
+        } catch (err) {
+          setError(err instanceof Error ? err.message : "Kunne ikke gemme");
+          setBusy(false);
+        }
+      }}
+    >
+      <p className="hf-type-body hf-type-strong text-hf-black">Nyt API</p>
+      <select value={group} onChange={(e) => setGroup(e.target.value)} className={formInputClass}>
+        {groups.map((g) => (
+          <option key={g} value={g}>
+            {g}
+          </option>
+        ))}
+      </select>
+      <input value={name} onChange={(e) => setName(e.target.value)} placeholder="Navn" className={formInputClass} />
+      <input
+        value={keyId}
+        onChange={(e) => setKeyId(e.target.value)}
+        placeholder="ID"
+        autoComplete="off"
+        spellCheck={false}
+        className={`${formInputClass} font-mono`}
+      />
+      <input
+        type="password"
+        value={secret}
+        onChange={(e) => setSecret(e.target.value)}
+        placeholder="Hemmelighed"
+        autoComplete="new-password"
+        spellCheck={false}
+        className={`${formInputClass} font-mono`}
+      />
+      {error && <p className="hf-type-body text-hf-red-dark">{error}</p>}
+      <div className="flex gap-2">
+        <button
+          type="submit"
+          disabled={busy || !ready}
+          className="hf-type-body hf-type-strong rounded-md bg-hf-green-dark px-3 py-1.5 text-hf-white disabled:opacity-50"
+        >
+          {busy ? "Gemmer…" : "Gem"}
+        </button>
+        <button type="button" onClick={onCancel} className="hf-type-body rounded-md px-3 py-1.5 text-text-secondary">
+          Annullér
+        </button>
+      </div>
+    </form>
   );
 }
 
