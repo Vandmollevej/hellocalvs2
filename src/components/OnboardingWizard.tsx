@@ -12,6 +12,7 @@ import {
 } from "@/lib/calendar-view-pref";
 import { ACTIVITY_PAGES, ActivityStep, EMPTY_ACTIVITY_ANSWERS, type ActivityPage } from "@/components/onboarding/ActivityStep";
 import type { EnergySummary } from "@/lib/activity-profile";
+import type { EnergyGoalUser } from "@/components/EnergyGoalEditor";
 import type { ActivityAnswers, ActivityLevelKey } from "@/lib/pal-model";
 
 // Hvordan arket blev lukket — bestemmer hvad der gemmes, når glid-ud-
@@ -21,6 +22,11 @@ type ExitReason = "remind" | "dismiss" | "complete";
 type DailyLogPreference = "WORK_HOURS" | "SLEEP_TIMES";
 
 type OnboardingUser = {
+  goalMode: EnergyGoalUser["goalMode"];
+  goalPaceKgPerWeek: number | null;
+  targetWeightKg: number | null;
+  weightKg: number | null;
+  heightCm: number | null;
   onboardingStep: number;
   onboardingCompletedAt: string | null;
   onboardingRemindLaterAt: string | null;
@@ -83,6 +89,7 @@ export function OnboardingWizard({
   const [activityAnswers, setActivityAnswers] = useState<ActivityAnswers>(EMPTY_ACTIVITY_ANSWERS);
   const [activitySummary, setActivitySummary] = useState<EnergySummary | null>(null);
   const [suggestedLevel, setSuggestedLevel] = useState<ActivityLevelKey | null>(null);
+  const [goalUser, setGoalUser] = useState<EnergyGoalUser | null>(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -92,6 +99,13 @@ export function OnboardingWizard({
         if (cancelled || !data) return;
         const { user } = data;
         setUser(user);
+        setGoalUser({
+          goalMode: user.goalMode ?? null,
+          goalPaceKgPerWeek: user.goalPaceKgPerWeek ?? null,
+          targetWeightKg: user.targetWeightKg ?? null,
+          weightKg: user.weightKg ?? null,
+          heightCm: user.heightCm ?? null,
+        });
         setShiftWork(user.shiftWorkEnabled || null);
         setDailyLogPreference(user.dailyLogPreference);
         setCanDismissPermanently(Boolean(user.onboardingRemindLaterAt));
@@ -293,6 +307,11 @@ export function OnboardingWizard({
             summary={activitySummary}
             suggestedLevel={suggestedLevel}
             onPickLevel={pickActivityLevel}
+            goalUser={goalUser}
+            onGoalChange={(nextUser, nextSummary) => {
+              setGoalUser(nextUser);
+              if (nextSummary) setActivitySummary(nextSummary);
+            }}
           />
         )}
 

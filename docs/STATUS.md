@@ -11,6 +11,7 @@ Last updated: 2026-09-29
 - F3 bygget: `/activity/create` spørger om anstrengelse (taletest) og distance for gang/løb og anslår kalorier fra MET (`src/lib/activity-met.ts`, netto), som placeholder i kcal-feltet; eget tal vinder. Migration `20260929200000_activity_met` (nye kolonner på `activities`). Ikke live-testet.
 - F4 bygget: kalenderens vægtestimat bruger nu beregnet PAL + træningstillæg, og enhedsdata pr. dag (målt aktiv energi erstatter PAL-delen; skridt alene justerer PAL højst ±0,15). Integrationers aktiviteter markeres `energySource = DEVICE`. Ikke live-testet.
 - F5 bygget: løbende kalibrering mod trendvægt (`src/lib/energy-calibration.ts`, tests grønne). Kører ved hver visning af regnestykket; skriver kun ny PAL (kilde CALIBRATED) når den flytter sig, højst én gang i døgnet. Regnestykket forklarer justeringen. Ikke live-testet.
+- F6 bygget: kaloriemål (`/profile/energy-goal`, række på Målsætning, og sidste side i guidens aktivitetstrin): holde/tabe/tage på, tempo inden for sundhedsgrænsen, målvægt, forventet dato-interval og budget. **Mangler:** kalender/statistik/forside bruger stadig den faste `DAILY_KCAL_GOAL` (G1/G2, se OPEN-TASKS). Ikke live-testet.
 - Bemærk: `page-tree.test.mjs` fejler også på master (uvedkommende).
 
 ## 2026-09-29: Admin-brugere

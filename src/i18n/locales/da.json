@@ -1986,6 +1986,20 @@
       "GAIN_PACE_CAPPED": "Tempoet er sat ned til det, der er sundt at tage på om ugen."
     }
   },
+  "energyGoal": {
+    "title": "Kaloriemål",
+    "intro": "Vælg, hvad du vil med din vægt. Vi regner et dagligt budget ud fra dit energibehov — altid inden for det, der er sundt.",
+    "mode": "Hvad vil du?",
+    "modes": { "MAINTAIN": "Holde vægten", "LOSE": "Tabe mig", "GAIN": "Tage på" },
+    "pace": "Tempo",
+    "paceValue": "{kg} kg/uge",
+    "paceHintLose": "Sundt tempo for dig: højst {kg} kg om ugen. Hurtigere kan ikke vælges.",
+    "paceHintGain": "Langsom vægtøgning giver mest muskel og mindst fedt.",
+    "targetWeight": "Målvægt (kg)",
+    "targetRaised": "Vi bruger {kg} kg som mål — lavere ligger under det, vi regner som sundt for din højde.",
+    "eta": "Med det tempo tager det ca. {weeks} uger — sandsynligvis mellem {from} og {to}. Datoen flytter sig, når din vægt gør.",
+    "disclaimer": "Budgettet er et estimat og justeres løbende. Ved graviditet, amning, sygdom eller spiseforstyrrelse: tal med din læge, før du følger et kaloriemål."
+  },
   "swipeableRow": {
     "saveAsFavorite": "Gem som favorit",
     "favorite": "Favorit",

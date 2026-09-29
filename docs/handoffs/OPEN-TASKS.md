@@ -245,7 +245,7 @@ Ejer: cloud-session (2026-09-29)
 
 | Id | Opgave | Status | Næste skridt |
 | --- | --- | --- | --- |
-| pal-plan | Plan for aktivitetsniveau, PAL, MET, kalibrering og kaloriemål (`docs/ACTIVITY-PAL.md`); erstatter de 5 sider i `onboarding-integration` | I gang | F0–F5 færdige på branch `claude/activity-pal-plan` (PR #114). **Bemærk G1:** `src/app/calendar/page.tsx` har fået to små ændringer (energyProfile får `palBase`/`trainingAllowanceKcal`; ny fetch af `/api/health-metrics` sendt til vægtestimatet) — ingen UI-ændring. Næste: F6 kaloriemål-UI (målform, tempo, dato-interval; erstat konstanterne i `goals.ts` — kræver aftale med G1/G2 om kalender/statistik) |
+| pal-plan | Plan for aktivitetsniveau, PAL, MET, kalibrering og kaloriemål (`docs/ACTIVITY-PAL.md`); erstatter de 5 sider i `onboarding-integration` | I gang | F0–F6 færdige på branch `claude/activity-pal-plan` (PR #114). **Bemærk G1:** `src/app/calendar/page.tsx` har fået to små ændringer (energyProfile får `palBase`/`trainingAllowanceKcal`; ny fetch af `/api/health-metrics` sendt til vægtestimatet) — ingen UI-ændring. **Til G1/G2:** kalender, statistik, `frontpage-stats.ts` og `widget-data.ts` bruger stadig `DAILY_KCAL_GOAL` = 3299; skift til `summary.budget.budgetKcal` fra `GET /api/profile/activity` (fald tilbage til konstanten, når budgettet er null). G-PAL rører ikke de filer uden aftale. Derefter: brugerens test af guiden på telefon |
 
 ## G-FAM — Familieabonnement og børneprofiler
 Filer: `docs/FAMILY.md`, Prisma-skema (Family*, ProfileAccessLog), `src/lib/family*.ts`, `src/lib/session.ts`, `src/app/api/family/**`, `src/app/profile/family/**`, profilvælger/panel-komponenter, dagbogs-API'erne der skal følge den valgte profil.

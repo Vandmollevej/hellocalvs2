@@ -6,6 +6,7 @@ import { getProfileUser } from "@/lib/family-access";
 import { getUserSubscriptionTier } from "@/lib/subscription";
 import { isActivityLevel } from "@/lib/activity-level";
 import { applyManualLevel } from "@/lib/activity-profile";
+import { GOAL_MODES, type GoalMode } from "@/lib/energy-budget";
 
 export async function GET() {
   try {
@@ -40,6 +41,8 @@ export async function PATCH(req: Request) {
     birthDate,
     sex,
     activityLevel,
+    goalMode,
+    goalPaceKgPerWeek,
     cycleTrackingEnabled,
     sleepQualityPromptEnabled,
     averageCycleLengthDays,
@@ -75,6 +78,8 @@ export async function PATCH(req: Request) {
     birthDate?: string | null;
     sex?: "FEMALE" | "MALE" | null;
     activityLevel?: unknown;
+    goalMode?: unknown;
+    goalPaceKgPerWeek?: number | null;
     cycleTrackingEnabled?: boolean;
     sleepQualityPromptEnabled?: boolean;
     averageCycleLengthDays?: number;
@@ -140,6 +145,12 @@ export async function PATCH(req: Request) {
         sex,
         activityLevel:
           activityLevel === undefined ? undefined : activityLevel === null ? null : isActivityLevel(activityLevel) ? activityLevel : undefined,
+        // Kaloriemål (docs/ACTIVITY-PAL.md): ønsket tempo gemmes som brugerens
+        // ønske; det anvendte tempo regnes i energy-budget.ts inden for grænserne.
+        goalMode:
+          goalMode === undefined ? undefined : goalMode === null ? null : (GOAL_MODES as readonly string[]).includes(goalMode as string) ? (goalMode as GoalMode) : undefined,
+        goalPaceKgPerWeek:
+          goalPaceKgPerWeek === undefined ? undefined : goalPaceKgPerWeek === null ? null : goalPaceKgPerWeek > 0 && goalPaceKgPerWeek <= 2 ? goalPaceKgPerWeek : undefined,
         cycleTrackingEnabled,
         sleepQualityPromptEnabled,
         averageCycleLengthDays,

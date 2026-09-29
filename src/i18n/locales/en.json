@@ -1986,6 +1986,20 @@
       "GAIN_PACE_CAPPED": "The pace was lowered to what is healthy to gain per week."
     }
   },
+  "energyGoal": {
+    "title": "Calorie goal",
+    "intro": "Choose what you want for your weight. We work out a daily budget from your energy needs — always within what is healthy.",
+    "mode": "What do you want?",
+    "modes": { "MAINTAIN": "Keep my weight", "LOSE": "Lose weight", "GAIN": "Gain weight" },
+    "pace": "Pace",
+    "paceValue": "{kg} kg/week",
+    "paceHintLose": "A healthy pace for you: at most {kg} kg per week. Faster can't be chosen.",
+    "paceHintGain": "Slow weight gain builds the most muscle and the least fat.",
+    "targetWeight": "Target weight (kg)",
+    "targetRaised": "We use {kg} kg as the target — lower is below what we consider healthy for your height.",
+    "eta": "At that pace it takes about {weeks} weeks — probably between {from} and {to}. The date moves as your weight does.",
+    "disclaimer": "The budget is an estimate and is adjusted continuously. If pregnant, breastfeeding, ill or living with an eating disorder: talk to your doctor before following a calorie goal."
+  },
   "swipeableRow": {
     "saveAsFavorite": "Save as favorite",
     "favorite": "Favorite",

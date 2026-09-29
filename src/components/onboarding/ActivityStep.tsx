@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useTranslation } from "@/i18n/LocaleProvider";
 import { EnergyBreakdown } from "@/components/EnergyBreakdown";
+import { EnergyGoalEditor, type EnergyGoalUser } from "@/components/EnergyGoalEditor";
 import type { EnergySummary } from "@/lib/activity-profile";
 import {
   ACTIVITY_LEVEL_KEYS,
@@ -20,7 +21,7 @@ import {
 // spørgsmål inde i guidens trin, "Ved ikke" altid muligt, og til sidst
 // regnestykket med forslag til niveau, som brugeren kan rette selv.
 
-export const ACTIVITY_PAGES = ["intro", "work", "walkStand", "transport", "steps", "training", "intensity", "result"] as const;
+export const ACTIVITY_PAGES = ["intro", "work", "walkStand", "transport", "steps", "training", "intensity", "result", "goal"] as const;
 export type ActivityPage = (typeof ACTIVITY_PAGES)[number];
 
 export const EMPTY_ACTIVITY_ANSWERS: ActivityAnswers = {
@@ -69,6 +70,8 @@ export function ActivityStep({
   summary,
   suggestedLevel,
   onPickLevel,
+  goalUser,
+  onGoalChange,
 }: {
   page: ActivityPage;
   answers: ActivityAnswers;
@@ -76,6 +79,8 @@ export function ActivityStep({
   summary: EnergySummary | null;
   suggestedLevel: ActivityLevelKey | null;
   onPickLevel: (level: ActivityLevelKey) => void;
+  goalUser: EnergyGoalUser | null;
+  onGoalChange: (user: EnergyGoalUser, summary: EnergySummary | null) => void;
 }) {
   const { t } = useTranslation();
   const training = answers.training ?? { sessionsPerWeek: 0, sessionMinutes: 45, intensity: null };
@@ -174,6 +179,22 @@ export function ActivityStep({
           <Choice key={key} label={t(`onboarding.activity.intensity.${key}`)} selected={training.intensity === key} onClick={() => setTraining({ intensity: key })} />
         ))}
       </Question>
+    );
+  }
+
+  if (page === "goal") {
+    return (
+      <div className="flex flex-col gap-4">
+        <h2 id="onboarding-title" className="hf-type-body-lg hf-heading text-hf-black">
+          {t("energyGoal.title")}
+        </h2>
+        <p className="hf-type-body text-text-secondary">{t("energyGoal.intro")}</p>
+        {goalUser ? (
+          <EnergyGoalEditor user={goalUser} summary={summary} onChange={onGoalChange} />
+        ) : (
+          <p className="hf-type-body text-text-secondary">{t("onboarding.activity.calculating")}</p>
+        )}
+      </div>
     );
   }
 

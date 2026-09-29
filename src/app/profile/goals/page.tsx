@@ -87,6 +87,16 @@ export default function GoalsPage() {
           {t("goals.createSubGoal")}
         </button>
 
+        {/* Kaloriemål (docs/ACTIVITY-PAL.md F6): energibehov → dagligt budget. */}
+        <button
+          type="button"
+          onClick={() => router.push("/profile/energy-goal")}
+          className="hf-control-row flex w-full items-center gap-2 rounded-2xl bg-hf-tan px-4 text-left text-hf-black focus-visible:outline-2 focus-visible:outline-hf-black"
+        >
+          <span className="hf-type-body hf-type-strong flex-1">{t("energyGoal.title")}</span>
+          <IconChevronRight size={19} className="shrink-0" aria-hidden="true" />
+        </button>
+
         <button
           type="button"
           onClick={() => router.push("/profile/goals/upcoming")}
