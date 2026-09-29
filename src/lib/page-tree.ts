@@ -230,7 +230,7 @@ export const PAGE_TREE: PageArea[] = [
           { path: "/settings/display/limits", label: "Visning: grænser" },
           { path: "/settings/display/uncertainty", label: "Visning: usikkerhed" },
           { path: "/settings/display/calendar-view", label: "Visning: kalender" },
-          { path: "/settings/display/sleep-quality", label: "Visning: søvnkvalitet" },
+          { path: "/settings/display/sleep-quality", label: "Visning: oplevet søvnkvalitet" },
           { path: "/settings/display/menstrual-cycle", label: "Visning: menstruationscyklus" },
           { path: "/betingelser", label: "Betingelser" },
           { path: "/privatlivspolitik", label: "Privatlivspolitik" },
