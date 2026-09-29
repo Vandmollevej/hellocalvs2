@@ -29,6 +29,7 @@ const DICTIONARY = {
   nav_page_tree: { DA: "Sidetræ", EN: "Page tree" },
   nav_statistics: { DA: "Statistik", EN: "Statistics" },
   nav_log: { DA: "Log", EN: "Log" },
+  nav_hello_doc: { DA: "Hello Doc", EN: "Hello Doc" },
   nav_ingredient_requests: { DA: "Ønskede ingredienser", EN: "Requested ingredients" },
   nav_support: { DA: "Beskeder", EN: "Messages" },
   support_title: { DA: "Supporthenvendelser", EN: "Support requests" },

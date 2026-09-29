@@ -86,6 +86,7 @@ const NAV: NavEntry[] = [
     ],
   },
   { kind: "link", href: "/admin/statistics", key: "nav_statistics", icon: "chart" },
+  { kind: "link", href: "/admin/hello-doc", key: "nav_hello_doc", icon: "users" },
   {
     kind: "group",
     id: "people",
