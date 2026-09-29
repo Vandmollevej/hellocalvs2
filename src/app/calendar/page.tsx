@@ -1959,9 +1959,15 @@ function DayDetails({
       </div>
       {sleepRating !== null && (
         <div className="px-4 pt-4">
-          <p className="hf-type-body hf-type-strong rounded-lg bg-hf-black px-4 py-2 text-center text-hf-white">
-            {t("sleepQuality.calendarBar", { rating: sleepRating })}
-          </p>
+          <div className="relative rounded-lg bg-hf-black px-4 py-2 text-center text-hf-white">
+            <Link
+              href="/statistics/sleep"
+              className="hf-type-small absolute inset-y-0 left-4 flex items-center text-hf-white no-underline"
+            >
+              {t("sleepStats.calendarLink")}
+            </Link>
+            <p className="hf-type-body hf-type-strong">{t("sleepQuality.calendarBar", { rating: sleepRating })}</p>
+          </div>
         </div>
       )}
       <div

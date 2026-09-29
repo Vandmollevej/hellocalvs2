@@ -4,6 +4,13 @@ Last updated: 2026-09-28
 
 
 
+## 2026-09-29: Søvnstatistik (/statistics/sleep)
+
+- Kalenderens søvnbjælke har "Statistik" i lille skrift til venstre (ikke understreget), som linker til `/statistics/sleep`.
+- Siden har periodevalg (sidste 7 dage, seneste 30 dage, sidste måned, seneste tre måneder, i år) og graferne: søvnkvalitet 1–5 med tilvalg af sidste indtag om aftenen, kalorier, kaffe (antal + sidste tidspunkt), sport (minutter + sluttidspunkt) og — kun med tilsluttet smartudstyr — oplevet mod målt søvn. Uden tilsluttet udstyr vises integrationerne nederst.
+- Graferne kan også tilføjes i statistikmodulet (`sleep:*` i `src/lib/stat-charts.ts`). Logik: `src/lib/sleep-stats.ts`.
+- Ikke visuelt testet (kræver login + DB). Lint og build er grønne.
+
 ## 2026-09-28: Produktsidens skelet følger layoutet
 
 - `AddProductView` tegner under hentning den rigtige produktside med tom vare;

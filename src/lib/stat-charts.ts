@@ -8,6 +8,7 @@
 
 import type { DailyTotal } from "@/lib/daily-totals";
 import { STAT_CARD_DEFS } from "@/lib/stat-cards";
+import type { SleepInsightKind } from "@/components/SleepInsightChart";
 
 // Kun talfelter (ikke dateKey eller næringsstof-maps som nutrients).
 export type DailyChartField = Exclude<
@@ -20,6 +21,8 @@ export type StatChartDef =
   | { key: "intradayKcal"; kind: "intradayKcal" }
   // Oplevelse af søvn (docs/DECISIONS.md 2026-09-26): søvnkvalitet 1–5 mod kalorier.
   | { key: "sleepQuality"; kind: "sleepQuality" }
+  // Søvnstatistikkens grafer (/statistics/sleep), som tilvalg her.
+  | { key: `sleep:${SleepInsightKind}`; kind: "sleepInsight"; insight: SleepInsightKind }
   | { key: `daily:${DailyChartField}`; kind: "daily"; field: DailyChartField; unit: string };
 
 function daily(field: DailyChartField, unit: string): StatChartDef {
@@ -30,6 +33,9 @@ export const STAT_CHART_DEFS: StatChartDef[] = [
   { key: "caloriesAndWeight", kind: "caloriesAndWeight" },
   { key: "intradayKcal", kind: "intradayKcal" },
   { key: "sleepQuality", kind: "sleepQuality" },
+  ...(["quality", "kcal", "coffee", "sport", "device"] as const).map(
+    (insight): StatChartDef => ({ key: `sleep:${insight}`, kind: "sleepInsight", insight }),
+  ),
   daily("protein", "g"),
   daily("carbs", "g"),
   daily("fat", "g"),

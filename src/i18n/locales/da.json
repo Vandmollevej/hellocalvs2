@@ -2127,5 +2127,42 @@
     "add": "Tilføj",
     "moveUp": "Flyt sektion op",
     "moveDown": "Flyt sektion ned"
+  },
+  "sleepStats": {
+    "title": "Søvnstatistik",
+    "calendarLink": "Statistik",
+    "periodAria": "Vælg periode",
+    "period": {
+      "last7": "Sidste 7 dage",
+      "last30": "Seneste 30 dage",
+      "lastMonth": "Sidste måned",
+      "last3Months": "Seneste tre måneder",
+      "thisYear": "I år"
+    },
+    "chart": {
+      "quality": "Søvnkvalitet",
+      "kcal": "Kalorier og søvnkvalitet",
+      "coffee": "Kaffe og søvnkvalitet",
+      "sport": "Sport og søvnkvalitet",
+      "device": "Oplevet og målt søvn"
+    },
+    "chartInfo": {
+      "quality": "Din vurdering af natten, 1–5. Slå sidste indtag til for at se, hvornår du sidst registrerede noget aftenen før.",
+      "kcal": "Samlet antal kalorier dagen før natten.",
+      "coffee": "Antal kaffe, te, cola og energidrikke dagen før og hvornår den sidste blev registreret.",
+      "sport": "Minutters træning dagen før og hvornår den sidste træning sluttede.",
+      "device": "Din egen vurdering sammenholdt med den søvn, dit smartudstyr har målt."
+    },
+    "experienced": "Oplevet søvn (1–5)",
+    "lastMeal": "Sidste indtag",
+    "kcal": "Kalorier",
+    "coffeeCount": "Antal",
+    "lastCoffee": "Sidste tidspunkt",
+    "sportMinutes": "Minutter",
+    "lastSport": "Slut på træning",
+    "deviceSleep": "Målt søvn (timer)",
+    "noRatings": "Ingen vurderinger af søvn i perioden endnu.",
+    "devicesHeading": "Track søvn med smartudstyr",
+    "devicesIntro": "Forbind et ur eller en app, så kan du sammenligne oplevet søvn med faktisk søvn."
   }
 }

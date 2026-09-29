@@ -2127,5 +2127,42 @@
     "add": "Add",
     "moveUp": "Move section up",
     "moveDown": "Move section down"
+  },
+  "sleepStats": {
+    "title": "Sleep statistics",
+    "calendarLink": "Statistics",
+    "periodAria": "Choose period",
+    "period": {
+      "last7": "Last 7 days",
+      "last30": "Last 30 days",
+      "lastMonth": "Last month",
+      "last3Months": "Last three months",
+      "thisYear": "This year"
+    },
+    "chart": {
+      "quality": "Sleep quality",
+      "kcal": "Calories and sleep quality",
+      "coffee": "Coffee and sleep quality",
+      "sport": "Exercise and sleep quality",
+      "device": "Perceived and measured sleep"
+    },
+    "chartInfo": {
+      "quality": "Your rating of the night, 1–5. Turn on last intake to see when you last logged something the evening before.",
+      "kcal": "Total calories the day before the night.",
+      "coffee": "Number of coffees, teas, colas and energy drinks the day before, and when the last one was logged.",
+      "sport": "Minutes of exercise the day before and when the last workout ended.",
+      "device": "Your own rating compared with the sleep your device measured."
+    },
+    "experienced": "Perceived sleep (1–5)",
+    "lastMeal": "Last intake",
+    "kcal": "Calories",
+    "coffeeCount": "Count",
+    "lastCoffee": "Last time",
+    "sportMinutes": "Minutes",
+    "lastSport": "Workout end",
+    "deviceSleep": "Measured sleep (hours)",
+    "noRatings": "No sleep ratings in this period yet.",
+    "devicesHeading": "Track sleep with a smart device",
+    "devicesIntro": "Connect a watch or an app to compare perceived sleep with actual sleep."
   }
 }
