@@ -25,10 +25,6 @@ type NavEntry =
 // Søgealgoritmer) er lagt i den gruppe de hører til.
 const NAV: NavEntry[] = [
   { kind: "link", href: "/admin", key: "nav_overview", icon: "home" },
-  { kind: "link", href: "/admin/analytics", key: "nav_analytics", icon: "chart" },
-  { kind: "link", href: "/admin/statistics", key: "nav_statistics", icon: "chart" },
-  // Test-log indtil appen går live (docs/DECISIONS.md 2026-09-28).
-  { kind: "link", href: "/admin/log", key: "nav_log", icon: "log" },
   {
     kind: "group",
     id: "approval",
@@ -67,44 +63,6 @@ const NAV: NavEntry[] = [
       { href: "/admin/dishes/valdemarsro", key: "nav_dishes_valdemarsro" },
     ],
   },
-  {
-    kind: "group",
-    id: "people",
-    key: "nav_group_people",
-    icon: "users",
-    links: [
-      { href: "/admin/users", key: "nav_users_all" },
-      { href: "/admin/bug-reports", key: "nav_bug_reports" },
-      { href: "/admin/support", key: "nav_support" },
-    ],
-  },
-  { kind: "link", href: "/admin/partners", key: "nav_partners", icon: "handshake" },
-  {
-    kind: "group",
-    id: "administration",
-    key: "nav_group_administration",
-    icon: "shield",
-    links: [
-      { href: "/admin/scan-invites", key: "nav_scan_invites" },
-      { href: "/admin/jobs", key: "nav_jobs" },
-      { href: "/admin/agents", key: "nav_agents" },
-      { href: "/admin/robots", key: "nav_robots" },
-    ],
-  },
-  {
-    kind: "group",
-    id: "settings",
-    key: "nav_group_settings",
-    icon: "cog",
-    links: [
-      { href: "/admin/api-keys", key: "nav_api_keys" },
-      { href: "/admin/cron-jobs", key: "nav_cron_jobs" },
-      { href: "/admin/passkeys", key: "nav_passkeys" },
-      { href: "/admin/support/templates", key: "nav_standard_mails" },
-      { href: "/admin/messaging", key: "nav_messaging" },
-      { href: "/admin/search-ranking", key: "nav_search_ranking" },
-    ],
-  },
   // Flows (docs/DECISIONS.md 2026-09-27): egne flow-sider og
   // Guide-builderen (startup-guide + tooltip-popups).
   {
@@ -127,6 +85,46 @@ const NAV: NavEntry[] = [
       { href: "/admin/page-tree", key: "nav_page_tree" },
     ],
   },
+  { kind: "link", href: "/admin/analytics", key: "nav_analytics", icon: "chart" },
+  { kind: "link", href: "/admin/statistics", key: "nav_statistics", icon: "chart" },
+  {
+    kind: "group",
+    id: "people",
+    key: "nav_group_people",
+    icon: "users",
+    links: [
+      { href: "/admin/users", key: "nav_users_all" },
+      { href: "/admin/bug-reports", key: "nav_bug_reports" },
+      { href: "/admin/support", key: "nav_support" },
+    ],
+  },
+  {
+    kind: "group",
+    id: "settings",
+    key: "nav_group_settings",
+    icon: "cog",
+    links: [
+      { href: "/admin/api-keys", key: "nav_api_keys" },
+      { href: "/admin/cron-jobs", key: "nav_cron_jobs" },
+      { href: "/admin/passkeys", key: "nav_passkeys" },
+      { href: "/admin/support/templates", key: "nav_standard_mails" },
+      { href: "/admin/messaging", key: "nav_messaging" },
+      { href: "/admin/search-ranking", key: "nav_search_ranking" },
+    ],
+  },
+  {
+    kind: "group",
+    id: "administration",
+    key: "nav_group_administration",
+    icon: "shield",
+    links: [
+      { href: "/admin/scan-invites", key: "nav_scan_invites" },
+      { href: "/admin/jobs", key: "nav_jobs" },
+      { href: "/admin/agents", key: "nav_agents" },
+      { href: "/admin/robots", key: "nav_robots" },
+    ],
+  },
+  { kind: "link", href: "/admin/partners", key: "nav_partners", icon: "handshake" },
   {
     kind: "group",
     id: "roadmap",
@@ -137,6 +135,8 @@ const NAV: NavEntry[] = [
       { href: "/admin/claude", key: "nav_claude" },
     ],
   },
+  // Test-log indtil appen går live (docs/DECISIONS.md 2026-09-28).
+  { kind: "link", href: "/admin/log", key: "nav_log", icon: "log" },
 ];
 
 const OPEN_GROUPS_KEY = "hc-admin-open-groups";
@@ -739,7 +739,7 @@ export function AdminShell({
       {/* Sidebjælken går i ét stykke fra top til bund (som Cloudflare): logo
           og "Gå til…"-søgning ligger øverst i kolonnen, ikke i topbaren. */}
       <aside
-        className={`sticky top-0 hidden h-dvh shrink-0 flex-col border-r border-hf-tan-dark bg-hf-white lg:flex ${
+        className={`sticky top-0 z-30 hidden h-dvh shrink-0 flex-col border-r border-hf-tan-dark bg-hf-white lg:flex ${
           collapsed ? "w-16" : "w-64"
         }`}
       >
@@ -767,16 +767,16 @@ export function AdminShell({
             toggleGroup={toggleGroup}
           />
         </nav>
+        {/* Sammenfold-ikonet hænger på sidebjælkens kant, inde i hovedsiden,
+            så det altid er synligt — også når sidebjælken er minimeret. */}
         <button
           type="button"
           onClick={toggleCollapsed}
           title={t(currentLocale, collapsed ? "nav_expand" : "nav_collapse")}
-          className={`hf-type-body flex items-center gap-3 border-t border-hf-tan-dark px-5 py-3 text-text-secondary hover:bg-hf-tan ${
-            collapsed ? "justify-center px-0" : ""
-          }`}
+          aria-label={t(currentLocale, collapsed ? "nav_expand" : "nav_collapse")}
+          className="absolute left-full top-16 z-30 flex h-9 w-7 items-center justify-center rounded-r-md border border-l-0 border-hf-tan-dark bg-hf-white text-text-secondary hover:bg-hf-tan"
         >
           <Icon name="collapse" className={`h-4 w-4 transition-transform ${collapsed ? "rotate-180" : ""}`} />
-          {!collapsed && t(currentLocale, "nav_collapse")}
         </button>
       </aside>
 
