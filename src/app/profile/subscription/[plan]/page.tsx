@@ -8,7 +8,12 @@ import { Toggle } from "@/components/ui/Toggle";
 import { useTranslation } from "@/i18n/LocaleProvider";
 import { TermsSheet } from "@/components/hf/TermsSheet";
 import { SUBSCRIPTION_PLAN_TERMS } from "@/lib/terms-hints";
-import { isSubscriptionPlan, SUBSCRIPTION_PERIODS, type SubscriptionPeriodMonths } from "@/lib/subscription-plans";
+import {
+  isSubscriptionPeriod,
+  isSubscriptionPlan,
+  SUBSCRIPTION_PERIODS,
+  type SubscriptionPeriodMonths,
+} from "@/lib/subscription-plans";
 import { marketPrice, STRIPE_MARKETS, type StripeMarket } from "@/lib/payments/stripe-markets";
 import { PaymentMethodBadges } from "@/components/hf/PaymentMethodBadges";
 
@@ -58,7 +63,11 @@ export default function SubscriptionPlanPage() {
   const [preview, setPreview] = useState(false);
 
   useEffect(() => {
-    const previewCountry = new URLSearchParams(window.location.search).get("preview")?.toUpperCase();
+    const query = new URLSearchParams(window.location.search);
+    // Periode valgt i forsidens betalings-ark (?months=1|3|12).
+    const presetMonths = Number(query.get("months"));
+    if (isSubscriptionPeriod(presetMonths)) queueMicrotask(() => setMonths(presetMonths));
+    const previewCountry = query.get("preview")?.toUpperCase();
     if (previewCountry === "DK" || previewCountry === "DE") {
       queueMicrotask(() => {
         setPreview(true);

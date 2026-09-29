@@ -10,6 +10,15 @@ This file records durable decisions. Add a dated entry when a later decision cha
 - Guiden dækker også **kaloriemålet** (vedligehold/tabe/tage på med tempo), aldrig under `minimumHealthyKcal`, ingen underskud for børn. Erstatter de faste konstanter i `src/lib/goals.ts`.
 - Estimater vises som "ca." med interval; ikke som laboratorietal.
 
+## 2026-09-29: Offentlig forside (udlogget) — hent appen, ingen telefonramme
+
+- Udloggede besøgende på `/` ser en hent-appen-side i fuld browserbredde (`src/components/landing/`): menu med "Log ind" øverst til højre, hero med butiksknapper + QR-koder (App Store og Google Play), bundark-overlay over en vægtgraf, funktioner, tegnede skærmbilleder, nøgletal, Hello Doc-bjælke, planer + FAQ og "I medierne".
+- **Aldrig telefonramme eller app-skal på de offentlige sider** (brugerens krav): `MarketingShell` skjuler WebShell-sidebjælke/topbjælke på `/` (samme teknik som den tidligere landingpage), og `/business` + `/presse` vises i fuld viewport af `AppFrame`. AuthGate sender ikke længere udloggede fra `/` til `/welcome`. Afløser "app-først"-landingpagen fra samme dag.
+- Nøgletal er rigtige tal fra databasen (godkendte varer, mærker, delte opskrifter, E-numre) — aldrig opfundne. "I medierne" (omtale + bedømmelser) vises først, når der står rigtige citater i `PRESS_MENTIONS` (`src/lib/landing-content.ts`).
+- Planer: "Vælg" på Seriøs/Seriøs Familie åbner et bundark med periode og betaling. Uden konto → `/signup?next=/profile/subscription/<plan>?months=<n>`, som lander på købssiden med samme valg.
+- Footer: kun Business-partnere (`/business`: muligheder + den eneste kontaktformular, mailes til `BUSINESS_CONTACT_EMAIL` eller support@) og Presse (`/presse`: fakta, logoer, kontakt via business-formularen). Ingen andre kontaktformularer og ingen sociale medier.
+- Butikslinks står i `APP_STORE_URL`/`PLAY_STORE_URL` (`src/lib/landing-content.ts`); QR-koderne følger dem automatisk.
+
 ## 2026-09-29: Admin-brugere (adgang til admin-panelet)
 
 - Punktet "Admin-brugere" ligger i profil-menuen (avatar øverst til højre) — bevidst uden for sidemenuen. `/admin/admin-users`, kun for fuld administratoradgang.

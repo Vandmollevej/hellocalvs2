@@ -15,6 +15,8 @@ function TilmeldContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const referralCode = searchParams.get("ref") ?? undefined;
+  // Fx forsidens betalings-ark: efter oprettelse direkte til abonnementssiden.
+  const next = searchParams.get("next") ?? "/";
   const [displayName, setDisplayName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -43,7 +45,7 @@ function TilmeldContent() {
         setSubmitting(false);
         return;
       }
-      router.push(afterLoginPath("/"));
+      router.push(afterLoginPath(next));
     } catch {
       setError(t("signup.networkError"));
       setSubmitting(false);
@@ -67,12 +69,12 @@ function TilmeldContent() {
 
       <form onSubmit={handleSubmit} className="flex flex-1 flex-col gap-4 px-4 pt-8">
         <div className="flex flex-col gap-4">
-          <SocialLoginButton provider="google" label={t("login.continueWithGoogle")} onClick={() => startOAuth("google", "/")} />
-          <SocialLoginButton provider="apple" label={t("login.continueWithApple")} onClick={() => startOAuth("apple", "/")} />
+          <SocialLoginButton provider="google" label={t("login.continueWithGoogle")} onClick={() => startOAuth("google", next)} />
+          <SocialLoginButton provider="apple" label={t("login.continueWithApple")} onClick={() => startOAuth("apple", next)} />
           <SocialLoginButton
             provider="facebook"
             label={t("login.continueWithFacebook")}
-            onClick={() => startOAuth("facebook", "/")}
+            onClick={() => startOAuth("facebook", next)}
           />
         </div>
         <p className="text-text-secondary hf-type-body text-center">{t("common.or")}</p>
@@ -124,7 +126,8 @@ function TilmeldContent() {
           {submitting ? t("signup.submitting") : t("signup.submit")}
         </button>
         <p className="hf-type-body-lg mb-6 mt-1 text-center">
-          {t("signup.haveAccount")} <Link href="/login" className="underline">{t("signup.logIn")}</Link>
+          {t("signup.haveAccount")}{" "}
+          <Link href={next === "/" ? "/login" : `/login?next=${encodeURIComponent(next)}`} className="underline">{t("signup.logIn")}</Link>
         </p>
       </form>
     </div>

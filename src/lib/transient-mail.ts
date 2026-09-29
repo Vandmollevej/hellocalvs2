@@ -20,8 +20,11 @@ export async function sendTransientMail({
   html,
   devLink,
   from,
+  replyTo,
 }: {
   from?: string;
+  /** Svar-adresse, fx afsenderen af en business-henvendelse. */
+  replyTo?: string;
   to: string;
   subject: string;
   html: string;
@@ -49,7 +52,7 @@ export async function sendTransientMail({
   await transport.sendMail({
     from: from ?? defaultFrom(),
     headers: NO_TRACKING_HEADERS,
-    replyTo: process.env.SMTP_REPLY_TO || DEFAULT_REPLY_TO,
+    replyTo: replyTo || process.env.SMTP_REPLY_TO || DEFAULT_REPLY_TO,
     to,
     subject,
     html: wrapEmailHtml(html),

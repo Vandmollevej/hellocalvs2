@@ -26,8 +26,13 @@ export function AppFrame({ children }: { children: React.ReactNode }) {
 
   // The admin surface (docs/ADMIN.md) is a separate, desktop-and-mobile
   // responsive interface, and /hello-doc/[token] is opened by an external
-  // doctor/dietitian from an email link — both render full-viewport.
-  const isFullViewport = pathname.startsWith("/admin") || pathname.startsWith("/hello-doc");
+  // doctor/dietitian from an email link — both render full-viewport. So do the
+  // public marketing pages linked from the landing page's footer.
+  const isFullViewport =
+    pathname.startsWith("/admin") ||
+    pathname.startsWith("/hello-doc") ||
+    pathname.startsWith("/business") ||
+    pathname.startsWith("/presse");
   if (isFullViewport) return <>{children}</>;
 
   if (isDesktop) {

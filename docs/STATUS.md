@@ -2,6 +2,10 @@
 
 Last updated: 2026-09-29
 
+## 2026-09-29: Offentlig forside for udloggede
+
+- Ny hent-appen-forside uden telefonramme, med QR-koder, planer med betalings-ark, Hello Doc-bjælke, nøgletal fra databasen, `/business` (kontaktformular) og `/presse`. Se DECISIONS.md samme dato.
+- Mangler fra ejeren: rigtige App Store/Google Play-links, billede af badevægt (plads i "Om"-sektionen) og rigtige medie-citater/bedømmelser.
 ## 2026-09-29: Hello Doc-insight på admins design + fælles designklasser
 
 - Nye fælles klasser i `globals.css` (`.hf-insight*`, `.hf-panel`, `.hf-kpi`, `.hf-avatar-initials`) og komponenter i `src/components/hf/HelloDocInsight.tsx`; dokumenteret i design.md §6.15 og DECISIONS. Bruges af `/hello-doc/[token]`, `/admin/hello-doc` og `/settings/hello-doc/preview`.

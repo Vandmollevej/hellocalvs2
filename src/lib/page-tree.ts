@@ -50,6 +50,8 @@ export const PAGE_TREE: PageArea[] = [
           },
         ],
       },
+      { path: "/business", label: "Business-partnere", note: "Offentlig, fra forsidens footer (udlogget)" },
+      { path: "/presse", label: "Presse", note: "Offentlig, fra forsidens footer (udlogget)" },
     ],
   },
   {

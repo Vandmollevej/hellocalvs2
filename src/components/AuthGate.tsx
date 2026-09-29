@@ -20,6 +20,9 @@ const PUBLIC_PREFIXES = [
   "/forward",
   "/betingelser",
   "/privatlivspolitik",
+  // Offentlige sider fra forsidens footer (docs/DECISIONS.md 2026-09-29).
+  "/business",
+  "/presse",
   "/admin",
   // Familiemedlem sætter sit eget login med en kode fra betaleren (docs/FAMILY.md).
   "/family-code",
@@ -42,7 +45,8 @@ export function AuthGate() {
     fetch("/api/auth/me")
       .then((res) => {
         // Kun et klart "ikke logget ind" sender videre; offline/serverfejl gør ikke.
-        if (!cancelled && res.status === 401) router.replace("/welcome");
+        // Forsiden viser selv den offentlige hent-appen-side uden login.
+        if (!cancelled && res.status === 401 && pathname !== "/") router.replace("/welcome");
         return res.ok ? res.json() : null;
       })
       .then((data: { user?: { emailVerified?: boolean } } | null) => {
