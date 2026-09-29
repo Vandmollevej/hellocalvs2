@@ -2,6 +2,7 @@ import nodemailer from "nodemailer";
 import webpush from "web-push";
 import { importPKCS8 } from "jose";
 import { getAccessToken, listWebhooks, MobilePayError } from "@/lib/payments/mobilepay-client";
+import { retrieveAccount, StripeError } from "@/lib/payments/stripe-client";
 
 // Live-test af API-nøgler (admin → API-nøgler → "Test"). Hver test kalder
 // udbyderen med de nøgler, serveren bruger lige nu, uden at logge nogen
@@ -248,6 +249,20 @@ async function checkMobilePay(): Promise<CheckResult> {
   return { status: "ok", message: env("MOBILEPAY_ENV") === "test" ? "Nøglerne virker (testmiljø)." : "Nøglerne virker (produktion)." };
 }
 
+// Læser Stripe-kontoen med nøglen — virker det, er nøglen gyldig.
+async function checkStripe(): Promise<CheckResult> {
+  try {
+    const account = await retrieveAccount();
+    const live = env("STRIPE_SECRET_KEY").includes("_live_");
+    return { status: "ok", message: `Nøglen virker (${live ? "produktion" : "testmiljø"}, konto ${account.id}).` };
+  } catch (error) {
+    return {
+      status: "fail",
+      message: error instanceof StripeError ? `Stripe afviser nøglen (${error.status}).` : "Stripe svarer ikke.",
+    };
+  }
+}
+
 // requiredKeys: de ikke-valgfrie felter fra kataloget.
 export async function runCheck(serviceId: string, requiredKeys: string[], redirectUris: string[]): Promise<CheckResult> {
   const absent = missing(requiredKeys);
@@ -282,6 +297,8 @@ export async function runCheck(serviceId: string, requiredKeys: string[], redire
         return await checkSmtp();
       case "push":
         return await checkPush();
+      case "stripe":
+        return await checkStripe();
       case "mobilepay":
         return await checkMobilePay();
       default:

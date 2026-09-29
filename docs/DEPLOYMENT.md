@@ -411,3 +411,10 @@ explicitly approved.
 
 - Push til master, der kun ændrer `docs/**` eller `*.md`, starter intet build/deploy (`paths-ignore` i `build.yml`).
 - `.dockerignore` udelukker `docs`, rod-`*.md`, `.github` og `.claude`, så de ikke sendes med til Docker-buildet.
+
+## Stripe (2026-09-29)
+
+1. Opret Stripe-konto, aktivér **MobilePay** og **kort** under Indstillinger → Betalingsmetoder (kortet dækker EC/girocard for Tyskland).
+2. Læg `STRIPE_SECRET_KEY` (sk_live_… / sk_test_…) i admin → API-nøgler → Betaling → Stripe og tryk "Test".
+3. Deploy med migrationen `20260929150000_stripe_payments`. Serveren registrerer selv webhooken `https://<APP_BASE_URL>/api/payments/stripe/webhook` inden for 15 min. (eller sæt `STRIPE_WEBHOOK_SECRET` fra dashboardet).
+4. `APP_BASE_URL` skal være den offentlige https-adresse (bruges til retur- og webhook-adresser).

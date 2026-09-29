@@ -2244,6 +2244,8 @@ enum PaymentMethodBrand {
   APPLE_PAY
   GOOGLE_PAY
   MOBILEPAY
+  CARD
+  GIROCARD
 }
 
 model Subscription {
@@ -3416,4 +3418,101 @@ model FlowPage {
 
   @@index([flowId, sortOrder])
   @@map("flow_pages")
+}
+
+// --- Partnere: kontakter, reklamer og rapporter (docs/DECISIONS.md 2026-09-29) ---
+
+model Partner {
+  id        String            @id @default(cuid())
+  name      String
+  createdAt DateTime          @default(now())
+  contacts  PartnerContact[]
+  locations AdLocation[]
+  schedules PartnerReportSchedule[]
+  sends     PartnerReportSend[]
+
+  @@map("partners")
+}
+
+// Modtagere af rapporter. En rapport kan KUN sendes til aktive kontakter på
+// samme partner som rapportens data (src/lib/partner-reports.ts).
+model PartnerContact {
+  id        String   @id @default(cuid())
+  partnerId String
+  partner   Partner  @relation(fields: [partnerId], references: [id], onDelete: Cascade)
+  name      String
+  email     String
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+
+  @@index([partnerId])
+  @@map("partner_contacts")
+}
+
+// En reklame-lokation (placering i appen) tilhører præcis én partner.
+model AdLocation {
+  id        String    @id @default(cuid())
+  partnerId String
+  partner   Partner   @relation(fields: [partnerId], references: [id], onDelete: Cascade)
+  name      String
+  placement String    @default("")
+  createdAt DateTime  @default(now())
+  events    AdEvent[]
+
+  @@index([partnerId])
+  @@map("ad_locations")
+}
+
+enum AdEventType {
+  IMPRESSION
+  CLICK
+}
+
+model AdEvent {
+  id         String      @id @default(cuid())
+  locationId String
+  location   AdLocation  @relation(fields: [locationId], references: [id], onDelete: Cascade)
+  type       AdEventType
+  createdAt  DateTime    @default(now())
+
+  @@index([locationId, type, createdAt])
+  @@map("ad_events")
+}
+
+enum ReportFrequency {
+  WEEKLY
+  MONTHLY
+}
+
+// Fast interval: sendes automatisk til partnerens aktive kontakter.
+model PartnerReportSchedule {
+  id         String          @id @default(cuid())
+  partnerId  String
+  partner    Partner         @relation(fields: [partnerId], references: [id], onDelete: Cascade)
+  frequency  ReportFrequency
+  enabled    Boolean         @default(true)
+  nextRunAt  DateTime
+  lastSentAt DateTime?
+  createdAt  DateTime        @default(now())
+
+  @@index([enabled, nextRunAt])
+  @@map("partner_report_schedules")
+}
+
+// Log over hver afsendt (eller fejlet) rapport — hvem, hvilken periode.
+model PartnerReportSend {
+  id          String   @id @default(cuid())
+  partnerId   String
+  partner     Partner  @relation(fields: [partnerId], references: [id], onDelete: Cascade)
+  toEmail     String
+  contactName String
+  trigger     String
+  periodStart DateTime
+  periodEnd   DateTime
+  status      String
+  error       String?
+  createdAt   DateTime @default(now())
+
+  @@index([partnerId, createdAt])
+  @@map("partner_report_sends")
 }

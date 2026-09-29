@@ -1216,13 +1216,13 @@
         "3": "3 måneder",
         "12": "1 år"
       },
-      "price": "{price} kr.",
-      "perMonth": "{price} kr./md.",
+      "price": "{price}",
+      "perMonth": "{price}/md.",
       "save": "Spar {pct} %",
       "renewalNote": "Abonnementet fornyes automatisk for samme periode, indtil du opsiger det. Du kan opsige når som helst.",
       "buyCta": "Abonner",
       "buyError": "Købet kunne ikke startes lige nu",
-      "summaryPrice": "{price} kr. pr. {unit}",
+      "summaryPrice": "{price} pr. {unit}",
       "unit": { "1": "måned", "3": "kvartal (3 måneder)", "12": "år" },
       "summaryBinding": "Bindingsperiode: {period}. Betales forud for hele perioden.",
       "bindingPeriod": { "1": "1 måned", "3": "3 måneder", "12": "12 måneder" },
@@ -1713,6 +1713,16 @@
       "none": "Aftalen blev ikke godkendt. Du kan prøve igen fra Abonnement.",
       "back": "Til Betaling"
     },
+    "stripeReturn": {
+      "title": "Betaling",
+      "checking": "Henter status fra betalingen…",
+      "active": "Tak! Dit abonnement er aktivt.",
+      "pending": "Vi venter på bekræftelse fra betalingen — siden opdateres af sig selv.",
+      "none": "Betalingen blev ikke gennemført. Du kan prøve igen fra Abonnement.",
+      "back": "Til Betaling"
+    },
+    "stopSubscription": "Opsig abonnement",
+    "methodLabel": { "MOBILEPAY": "MobilePay", "VISA": "Visa", "MASTERCARD": "Mastercard", "GIROCARD": "EC-kort (girocard)", "CARD": "Kort", "APPLE_PAY": "Apple Pay", "GOOGLE_PAY": "Google Pay" },
     "supportedMethodsTitle": "Understøttede metoder",
     "noPaymentMethodHint": "Kommer, når Hello Cal har en betalingsudbyder tilknyttet. Understøtter Visa, Apple Pay, Google Pay og MobilePay, når det er klar."
   },

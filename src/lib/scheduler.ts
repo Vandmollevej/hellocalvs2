@@ -7,8 +7,10 @@ import { runDueAppJobs } from "@/lib/jobs/runner";
 import { rerunUncertainAnalyses } from "@/lib/uncertainty-rerun";
 import { grantEligibleReferralRewards } from "@/lib/referrals";
 import { runMobilePayTick } from "@/lib/payments/mobilepay-subscription";
+import { runStripeTick } from "@/lib/payments/stripe-subscription";
 import { alertOverdueSupportRequests } from "@/lib/support-inbox";
 import { syncAllIntegrations } from "@/lib/integrations/handlers";
+import { sendDueReports } from "@/lib/partner-reports";
 
 // In-process baggrundsjob (docs/DECISIONS.md 2026-09-02): DB-drevet, kører i
 // selve Next.js-serverprocessen uanset hvor den hostes (Synology i dag,
@@ -92,8 +94,12 @@ export async function runSchedulerTick(now: Date = new Date()) {
   await backfillMissingProductNutritionFeatures();
   // MobilePay: synk aftaler/træk og opret fornyelsestræk (docs/DECISIONS.md 2026-09-26).
   await runMobilePayTick(now).catch((error) => console.error("[scheduler] MobilePay fejlede", error));
+  // Stripe: registrér webhook og synk abonnementer nær fornyelse (docs/DECISIONS.md 2026-09-29).
+  await runStripeTick(now).catch((error) => console.error("[scheduler] Stripe fejlede", error));
   // Integrationer: hent og send data efter brugerens til/fra-valg (docs/DECISIONS.md 2026-09-26).
   await syncAllIntegrations().catch((error) => console.error("[scheduler] Integrationer fejlede", error));
+  // Partnerrapporter på fast interval (docs/DECISIONS.md 2026-09-29).
+  await sendDueReports(now).catch((error) => console.error("[scheduler] Partnerrapporter fejlede", error));
 }
 
 export function startScheduler() {

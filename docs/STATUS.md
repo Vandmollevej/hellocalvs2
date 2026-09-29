@@ -623,6 +623,11 @@ uændrede. Mangler brugerens visuelle godkendelse.
 - Nyt admin-hovedpunkt "Statistik" med periode-, land/region- og abonnementsfilter: nøgletal, nye oprettelser, betalende vs. gratis, log-ins, loggede produkter, trends (beregnet + "Analysér med AI"), HelloFresh-menuer, fastholdelse/churn, omsætning, top-produkter/søgninger og support/fejl. Se DECISIONS 2026-09-27.
 - Migration `20260927120000_admin_statistics` (login_events, search_misses) køres automatisk ved deploy; log-ins og søgninger uden resultat tælles først fra deploy.
 
+## 2026-09-29: Stripe-betaling (DK MobilePay, DE kort/EC)
+
+- Backend + betalingsflow bygget: Checkout, webhook, sync, opsigelse, scheduler, admin-nøgler + test. Se DECISIONS 2026-09-29.
+- Mangler for at gå live: Stripe-konto med MobilePay + kort aktiveret, `STRIPE_SECRET_KEY` i admin → API-nøgler, migration `20260929150000_stripe_payments`, deploy, godkendelse af euro-priser. Ikke testet mod Stripe (ingen nøgler endnu).
+
 ## 2026-09-26: MobilePay-betaling + Opsætning delt op
 
 - Opsætning er nu en oversigt med undersiderne "Sprog og region" (også fra Indstillinger) og "Resultatvisning" (allergener + udvidet næringsindhold).

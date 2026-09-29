@@ -1216,13 +1216,13 @@
         "3": "3 months",
         "12": "1 year"
       },
-      "price": "{price} kr.",
-      "perMonth": "{price} kr./mo.",
+      "price": "{price}",
+      "perMonth": "{price}/mo.",
       "save": "Save {pct}%",
       "renewalNote": "The subscription renews automatically for the same period until you cancel. You can cancel at any time.",
       "buyCta": "Subscribe",
       "buyError": "The purchase couldn't be started right now",
-      "summaryPrice": "DKK {price} per {unit}",
+      "summaryPrice": "{price} per {unit}",
       "unit": { "1": "month", "3": "quarter (3 months)", "12": "year" },
       "summaryBinding": "Commitment period: {period}. Paid upfront for the whole period.",
       "bindingPeriod": { "1": "1 month", "3": "3 months", "12": "12 months" },
@@ -1713,6 +1713,16 @@
       "none": "The agreement was not approved. You can try again from Subscription.",
       "back": "Go to Payment"
     },
+    "stripeReturn": {
+      "title": "Payment",
+      "checking": "Fetching payment status…",
+      "active": "Thank you! Your subscription is active.",
+      "pending": "Waiting for confirmation of the payment — this page updates by itself.",
+      "none": "The payment was not completed. You can try again from Subscription.",
+      "back": "Back to Payment"
+    },
+    "stopSubscription": "Cancel subscription",
+    "methodLabel": { "MOBILEPAY": "MobilePay", "VISA": "Visa", "MASTERCARD": "Mastercard", "GIROCARD": "EC card (girocard)", "CARD": "Card", "APPLE_PAY": "Apple Pay", "GOOGLE_PAY": "Google Pay" },
     "supportedMethodsTitle": "Supported methods",
     "noPaymentMethodHint": "Coming once Hello Cal has a payment provider connected. Supports Visa, Apple Pay, Google Pay and MobilePay when it's ready."
   },

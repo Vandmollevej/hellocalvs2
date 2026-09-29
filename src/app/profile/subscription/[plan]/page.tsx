@@ -8,12 +8,8 @@ import { Toggle } from "@/components/ui/Toggle";
 import { useTranslation } from "@/i18n/LocaleProvider";
 import { TermsSheet } from "@/components/hf/TermsSheet";
 import { SUBSCRIPTION_PLAN_TERMS } from "@/lib/terms-hints";
-import {
-  isSubscriptionPlan,
-  SUBSCRIPTION_PERIODS,
-  SUBSCRIPTION_PRICES_DKK,
-  type SubscriptionPeriodMonths,
-} from "@/lib/subscription-plans";
+import { isSubscriptionPlan, SUBSCRIPTION_PERIODS, type SubscriptionPeriodMonths } from "@/lib/subscription-plans";
+import { marketPrice, type StripeMarket } from "@/lib/payments/stripe-markets";
 
 // Egen side pr. abonnement — Seriøs og Seriøs Familie — med tre vandrette
 // periodebokse: 1, 3 eller 12 måneder med fuld adgang (docs/DECISIONS.md
@@ -32,8 +28,14 @@ const FEATURE_KEYS = [
   "helloDoc",
 ] as const;
 
-function formatDkk(value: number) {
-  return value.toLocaleString("da-DK", { maximumFractionDigits: 0 });
+// Beløb i brugerens markedsvaluta (DKK i Danmark, EUR i Tyskland).
+function formatMoney(value: number, currency: "dkk" | "eur") {
+  return new Intl.NumberFormat(currency === "eur" ? "de-DE" : "da-DK", {
+    style: "currency",
+    currency: currency.toUpperCase(),
+    minimumFractionDigits: Number.isInteger(value) ? 0 : 2,
+    maximumFractionDigits: 2,
+  }).format(value);
 }
 
 export default function SubscriptionPlanPage() {
@@ -45,28 +47,36 @@ export default function SubscriptionPlanPage() {
   // docs/DECISIONS.md 2026-09-25) før køb.
   const [withdrawalAck, setWithdrawalAck] = useState(false);
   const [paymentAvailable, setPaymentAvailable] = useState(false);
+  // Stripe (DK: MobilePay, DE: kort/EC) hvis brugerens land er åbent; ellers MobilePay Recurring.
+  const [useStripe, setUseStripe] = useState(false);
+  const [market, setMarket] = useState<StripeMarket | null>(null);
   const [buying, setBuying] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     fetch("/api/subscription")
       .then((res) => (res.ok ? res.json() : null))
-      .then((json: { mobilePayAvailable?: boolean } | null) => setPaymentAvailable(Boolean(json?.mobilePayAvailable)))
+      .then((json: { mobilePayAvailable?: boolean; stripeAvailable?: boolean; paymentMarket?: StripeMarket | null } | null) => {
+        setUseStripe(Boolean(json?.stripeAvailable));
+        setMarket(json?.paymentMarket ?? null);
+        setPaymentAvailable(Boolean(json?.stripeAvailable || json?.mobilePayAvailable));
+      })
       .catch(() => setPaymentAvailable(false));
   }, []);
 
   if (!isSubscriptionPlan(plan)) notFound();
 
-  const prices = SUBSCRIPTION_PRICES_DKK[plan];
-  const monthlyBase = prices[1];
-  const price = prices[months];
+  const currency = market?.currency ?? "dkk";
+  const priceFor = (period: SubscriptionPeriodMonths) => marketPrice(market, plan, period);
+  const monthlyBase = priceFor(1);
+  const price = priceFor(months);
 
   async function buy() {
     if (!paymentAvailable || !withdrawalAck || buying) return;
     setBuying(true);
     setError(null);
     try {
-      const res = await fetch("/api/payments/mobilepay/agreement", {
+      const res = await fetch(useStripe ? "/api/payments/stripe/checkout" : "/api/payments/mobilepay/agreement", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ plan, months, withdrawalAck: true }),
@@ -138,8 +148,8 @@ export default function SubscriptionPlanPage() {
         <h2 className="hf-type-section-title mt-2">{t("subscription.planPage.periodHeading")}</h2>
         <div className="grid grid-cols-3 gap-2" role="radiogroup" aria-label={t("subscription.planPage.periodHeading")}>
           {SUBSCRIPTION_PERIODS.map((period) => {
-            const total = prices[period];
-            const perMonth = Math.round(total / period);
+            const total = priceFor(period);
+            const perMonth = total / period;
             const savingPct = Math.round((1 - total / (monthlyBase * period)) * 100);
             const selected = months === period;
             return (
@@ -154,9 +164,9 @@ export default function SubscriptionPlanPage() {
                 }`}
               >
                 <span className="hf-type-small hf-type-strong">{t(`subscription.planPage.period.${period}`)}</span>
-                <span className="hf-type-section-title">{t("subscription.planPage.price", { price: formatDkk(total) })}</span>
+                <span className="hf-type-section-title">{t("subscription.planPage.price", { price: formatMoney(total, currency) })}</span>
                 <span className="text-text-secondary hf-type-caption">
-                  {t("subscription.planPage.perMonth", { price: formatDkk(perMonth) })}
+                  {t("subscription.planPage.perMonth", { price: formatMoney(Math.round(perMonth * (currency === "eur" ? 100 : 1)) / (currency === "eur" ? 100 : 1), currency) })}
                 </span>
                 {savingPct > 0 && (
                   <span className="hf-type-caption hf-type-strong rounded-full bg-hf-green px-2 py-0.5 text-hf-white">
@@ -172,7 +182,7 @@ export default function SubscriptionPlanPage() {
         <div className="rounded-lg bg-hf-tan p-4" aria-live="polite">
           <p className="hf-type-section-title">
             {t("subscription.planPage.summaryPrice", {
-              price: formatDkk(price),
+              price: formatMoney(price, currency),
               unit: t(`subscription.planPage.unit.${months}`),
             })}
           </p>

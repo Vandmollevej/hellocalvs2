@@ -3343,3 +3343,13 @@ Kilder på "Mad på latin" skal altid være officielle (Fødevarestyrelsen, Sund
 - Sammenfold-ikonet sidder på sidebjælkens kant i hovedsiden (altid synligt), ikke som "Skjul sidebjælke" nederst.
 - Analyse er slået sammen med Statistik: `/admin/statistics` har faner (Brugere og indtjening / Trafik / Reklamer). `/admin/analytics` omdirigerer til Trafik-fanen. Indtjening og betalingsmetoder ligger i fanen Brugere og indtjening.
 - Reklamer: fanen læser fra partner-reklamernes tabeller (`ad_locations`, `ad_events`, `partners`, ejet af Partnere-arbejdet) via rå SQL med try/catch, så den er tom, indtil tabellerne findes og der er hændelser.
+
+## 2026-09-29: Stripe-betaling — MobilePay i Danmark, kort/EC i Tyskland
+
+- **Startlande: Danmark og Tyskland** (`src/lib/payments/stripe-markets.ts`). Land = brugerens `region`. DK betaler med **MobilePay** (DKK), DE med **kort inkl. EC-kort/girocard** (EUR). Andre lande får ingen Stripe-betaling (faldback: MobilePay Recurring, hvis den er sat op).
+- Stripe Checkout i abonnementstilstand med dynamisk pris (`price_data`, interval måned × 1/3/12). Pris og betalingsmetode slås op på serveren ud fra land + plan + periode. Ingen Stripe-SDK (REST via fetch), ingen kortdata hos Hello Cal.
+- EC-kort kører som kort-metoden i Stripe (der findes ikke en separat girocard-metode i Checkout); girocard kræver, at kortet er co-brandet eller at girocard er slået til på Stripe-kontoen. SEPA-lastskrift er bevidst ikke med.
+- Euro-priser (foreløbige, `SUBSCRIPTION_PRICES_EUR`): Seriøs 15,99 / 39,99 / 143,99 €, Familie 23,99 / 59,99 / 215,99 €. Skal godkendes af ejeren (moms/OSS i Tyskland er ikke afklaret).
+- Status hentes altid fra Stripe. Webhook (`/api/payments/stripe/webhook`, registreres automatisk af scheduleren, hemmelighed krypteret i `payment_webhooks`, eller manuelt via `STRIPE_WEBHOOK_SECRET`) er kun et signal. Retursiden `/settings/payment/stripe` kobler sessionen med det samme.
+- Opsigelse = `cancel_at_period_end`; Seriøs løber perioden ud. Kører der allerede en gavekode/points-periode ≥ 48 t, bruges den som `trial_end`, så første træk først sker bagefter. **Gratis måneder fra points (freeMonthsRemaining) bruges endnu ikke mod Stripe-fornyelser.**
+- Nøgler: admin → API-nøgler → Betaling → Stripe (`STRIPE_SECRET_KEY`, valgfri `STRIPE_WEBHOOK_SECRET`). Migration `20260929150000_stripe_payments` (brand CARD/GIROCARD).

@@ -14,11 +14,12 @@ type Subscription = {
   freeMonthsRemaining: number;
   currentPeriodEnd?: string | null;
 };
-type PaymentMethod = { id: string; brand: string; last4: string | null };
+type PaymentMethod = { id: string; brand: string; provider?: string; last4: string | null };
 type SubscriptionResponse = {
   subscription: Subscription | null;
   paymentMethods: PaymentMethod[];
   mobilePayAvailable: boolean;
+  stripeAvailable?: boolean;
   mobilePayPending: boolean;
 };
 
@@ -62,7 +63,10 @@ export default function PaymentPage() {
     setStopping(true);
     setError(null);
     try {
-      const res = await fetch("/api/payments/mobilepay/cancel", { method: "POST" });
+      const res = await fetch(
+        stripeMethod ? "/api/payments/stripe/cancel" : "/api/payments/mobilepay/cancel",
+        { method: "POST" },
+      );
       if (!res.ok) {
         const json = await res.json().catch(() => ({}));
         setError(json.message ?? t("payment.stopError"));
@@ -80,8 +84,13 @@ export default function PaymentPage() {
   const periodEnd = subscription?.currentPeriodEnd
     ? new Date(subscription.currentPeriodEnd).toLocaleDateString("da-DK")
     : null;
-  const mobilePayMethod = data?.paymentMethods.find((pm) => pm.brand === "MOBILEPAY") ?? null;
-  const otherMethods = data?.paymentMethods.filter((pm) => pm.brand !== "MOBILEPAY") ?? [];
+  // Stripe-betaling (MobilePay i DK, kort/EC i DE) og MobilePay Recurring kan begge opsiges her.
+  const stripeMethod = data?.paymentMethods.find((pm) => pm.provider === "STRIPE") ?? null;
+  const mobilePayMethod =
+    stripeMethod ?? data?.paymentMethods.find((pm) => pm.brand === "MOBILEPAY") ?? null;
+  const otherMethods = data?.paymentMethods.filter((pm) => pm !== mobilePayMethod) ?? [];
+
+  const stopLabel = stripeMethod && stripeMethod.brand !== "MOBILEPAY" ? t("payment.stopSubscription") : t("payment.stopAgreement");
 
   const statusDetail =
     status === "ACTIVE" && periodEnd
@@ -118,7 +127,14 @@ export default function PaymentPage() {
                 style={{ borderColor: "var(--hf-color-line)" }}
               >
                 <div className="flex items-center justify-between">
-                  <MobilePayMark />
+                  {mobilePayMethod.brand === "MOBILEPAY" ? (
+                    <MobilePayMark />
+                  ) : (
+                    <span className="hf-type-body">
+                      {t(`payment.methodLabel.${mobilePayMethod.brand}`)}
+                      {mobilePayMethod.last4 ? ` •••• ${mobilePayMethod.last4}` : ""}
+                    </span>
+                  )}
                   <span className="text-text-secondary hf-type-caption">{t("payment.mobilePayAgreement")}</span>
                 </div>
                 {confirmStop ? (
@@ -141,7 +157,7 @@ export default function PaymentPage() {
                         className="hf-control hf-btn-primary flex-1 disabled:opacity-40"
                         disabled={stopping}
                       >
-                        {stopping ? t("payment.stopping") : t("payment.stopAgreement")}
+                        {stopping ? t("payment.stopping") : stopLabel}
                       </button>
                     </div>
                   </div>
@@ -151,7 +167,7 @@ export default function PaymentPage() {
                     onClick={() => setConfirmStop(true)}
                     className="hf-control hf-btn-secondary w-full"
                   >
-                    {t("payment.stopAgreement")}
+                    {stopLabel}
                   </button>
                 )}
                 {error && <p className="hf-type-caption">{error}</p>}
@@ -177,7 +193,7 @@ export default function PaymentPage() {
               </div>
             )}
 
-            {data && !mobilePayMethod && !data.mobilePayPending && data.mobilePayAvailable && (
+            {data && !mobilePayMethod && !data.mobilePayPending && (data.mobilePayAvailable || data.stripeAvailable) && (
               <Link href="/profile/subscription" className="hf-control hf-btn-primary w-full">
                 {t("payment.chooseSubscription")}
               </Link>

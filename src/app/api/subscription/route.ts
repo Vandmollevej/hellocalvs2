@@ -12,6 +12,8 @@ import {
 } from "@/lib/subscription";
 import { MAX_FAMILY_PROFILES } from "@/lib/family";
 import { isMobilePayConfigured } from "@/lib/payments/mobilepay-client";
+import { isStripeConfigured } from "@/lib/payments/stripe-client";
+import { stripeMarketFor } from "@/lib/payments/stripe-markets";
 
 export async function GET() {
   const user = await getSessionUser();
@@ -43,6 +45,10 @@ export async function GET() {
     familyMaxProfiles: MAX_FAMILY_PROFILES,
     retentionDays: FREE_TIER_RETENTION_DAYS,
     // MobilePay-nøgler er sat op (admin → API-nøgler), så køb kan gennemføres.
+    // Stripe (DK: MobilePay, DE: kort/EC) vælges ud fra brugerens land; ellers
+    // bruges MobilePay Recurring direkte, hvis den er sat op.
+    stripeAvailable: isStripeConfigured() && Boolean(stripeMarketFor(user.region)),
+    paymentMarket: stripeMarketFor(user.region),
     mobilePayAvailable: isMobilePayConfigured(),
     mobilePayPending: Boolean(subscription?.pendingAgreementId),
     // Ældre felter, allerede forventet af /settings/payment

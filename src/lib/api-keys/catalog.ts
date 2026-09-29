@@ -231,6 +231,25 @@ export const KEY_SERVICES: KeyService[] = [
     testable: true,
   },
   {
+    id: "stripe",
+    name: "Stripe (MobilePay i Danmark, kort/EC i Tyskland)",
+    group: "payment",
+    purpose: "Abonnementsbetaling: MobilePay for danske og kort inkl. EC-kort (girocard) for tyske brugere.",
+    fields: [
+      { key: "STRIPE_SECRET_KEY", label: "Secret key (sk_live_… / sk_test_…)", kind: "secret" },
+      {
+        key: "STRIPE_WEBHOOK_SECRET",
+        label: "Webhook-hemmelighed (whsec_…)",
+        kind: "secret",
+        optional: true,
+        hint: "Kun hvis webhooken er lavet i Stripe-dashboardet. Tomt = serveren registrerer webhooken selv.",
+      },
+    ],
+    setupUrl: "https://dashboard.stripe.com/apikeys",
+    testable: true,
+    note: "Slå MobilePay og kort til under Indstillinger → Betalingsmetoder i Stripe. Webhooken (/api/payments/stripe/webhook) registreres automatisk af serveren.",
+  },
+  {
     id: "mobilepay",
     name: "MobilePay (Vipps MobilePay Recurring)",
     group: "payment",
