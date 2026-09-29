@@ -1,6 +1,16 @@
 # HELLO CAL — project status
 
-Last updated: 2026-09-28
+Last updated: 2026-09-29
+
+## 2026-09-29: Klikbare vitaminer og mineraler
+
+Samme mønster som E-numre: i varesidens "Vis mere"-tabel er hvert vitamin/
+mineral nu klikbart og åbner en info-popup (`MicronutrientInfoModal`) med link
+til ny samlet side `/vitaminer#<nøgle>` (fx `#vitaminc`). Indholdet er et
+statisk katalog i `src/lib/micronutrient-info.ts` (funktion, kilder,
+EU-referenceindtag, for lidt/for meget, eksterne kilder). Rækker med
+usikkerheds-~ er nu `div role=button`, så navnet kan være sin egen knap.
+Lint og build grønne.
 
 
 
