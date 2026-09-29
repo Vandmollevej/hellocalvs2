@@ -1469,3 +1469,8 @@ textarea::selection,
   font-weight: 700;
   color: var(--hf-color-text);
 }
+
+/* Desktop-skallen (WebShell) har egen topbjælke, så appens bundmenu skjules. */
+.web-shell .hf-bottom-nav {
+  display: none;
+}

@@ -61,12 +61,12 @@ function PhoneMockup() {
 
 export function LandingPage() {
   return (
-    <div className="fixed inset-0 z-0 overflow-y-auto bg-[#faf8f3] text-[#242424]">
+    <div className="fixed inset-0 z-50 overflow-y-auto bg-[#faf8f3] text-[#242424]">
       <header className="sticky top-0 z-20 flex items-center justify-between border-b border-[#dfd9cc] bg-[#faf8f3]/95 px-4 py-3 backdrop-blur sm:px-8">
         <Image src="/hello-cal-logo.png" alt="Hello Cal" width={240} height={80} className="h-auto w-28 sm:w-32" priority />
         <Link
-          href="/login"
-          className="flex h-11 items-center rounded-lg border border-[#232323] px-5 text-sm font-semibold transition hover:bg-[#eee9df]"
+          href="/welcome"
+          className="flex h-11 items-center px-2 text-sm font-medium text-[#656565] transition hover:text-[#242424] hover:underline"
         >
           Log ind
         </Link>
@@ -87,7 +87,7 @@ export function LandingPage() {
             </div>
             <p className="mt-6 text-sm text-[#656565]">
               Har du allerede en konto?{" "}
-              <Link href="/login" className="font-semibold text-[#067a46] hover:underline">
+              <Link href="/welcome" className="font-semibold text-[#067a46] hover:underline">
                 Log ind her
               </Link>
             </p>
