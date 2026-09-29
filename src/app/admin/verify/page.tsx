@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 
 export default function AdminVerifyPage() {
@@ -19,13 +20,15 @@ export default function AdminVerifyPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ code }),
       });
-      const data = await res.json();
+      const data = await res.json().catch(() => ({}));
       if (!res.ok) {
         setError(data.message ?? "Verifikation mislykkedes");
         return;
       }
       router.push("/admin");
       router.refresh();
+    } catch {
+      setError("Kunne ikke bekræfte — tjek din forbindelse og prøv igen");
     } finally {
       setLoading(false);
     }
@@ -59,6 +62,9 @@ export default function AdminVerifyPage() {
           {loading ? "Bekræfter…" : "Log ind"}
         </button>
       </form>
+      <Link href="/admin/login" className="mt-4 text-center text-sm text-hf-green-dark underline">
+        Ingen adgang til authenticator? Log ind med Face ID / passkey
+      </Link>
     </div>
   );
 }

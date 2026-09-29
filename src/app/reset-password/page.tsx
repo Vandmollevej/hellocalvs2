@@ -21,6 +21,10 @@ function ResetPasswordContent() {
     e.preventDefault();
     setError(null);
 
+    if (password.length < 8) {
+      setError(t("resetPassword.tooShortError"));
+      return;
+    }
     if (password !== confirmPassword) {
       setError(t("resetPassword.mismatchError"));
       return;
@@ -39,7 +43,12 @@ function ResetPasswordContent() {
         setSubmitting(false);
         return;
       }
-      router.push("/");
+      // En admin skal videre til admin-login (2FA), ikke til appens forside.
+      if (data.isAdmin) {
+        window.location.assign("/admin/login");
+      } else {
+        router.push("/");
+      }
     } catch {
       setError(t("resetPassword.networkError"));
       setSubmitting(false);
@@ -69,7 +78,7 @@ function ResetPasswordContent() {
           </Link>
         </div>
       ) : (
-        <form onSubmit={handleSubmit} className="flex flex-1 flex-col gap-4 px-4 pt-8">
+        <form onSubmit={handleSubmit} noValidate className="flex flex-1 flex-col gap-4 px-4 pt-8">
           <TextField
             label={t("resetPassword.newPasswordLabel")}
             type="password"
@@ -94,7 +103,7 @@ function ResetPasswordContent() {
 
           <button
             type="submit"
-            disabled={submitting || !password || !confirmPassword}
+            disabled={submitting}
             className="hf-control hf-btn-primary mb-8 w-full disabled:opacity-50"
           >
             {submitting ? t("resetPassword.submitting") : t("resetPassword.submit")}

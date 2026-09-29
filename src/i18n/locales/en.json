@@ -68,6 +68,7 @@
     "genericError": "Something went wrong — try again",
     "networkError": "Could not reset the password — check your connection and try again",
     "mismatchError": "The passwords don't match",
+    "tooShortError": "The password must be at least 8 characters",
     "missingToken": "The reset link is missing or invalid.",
     "requestNewLink": "Request a new link"
   },

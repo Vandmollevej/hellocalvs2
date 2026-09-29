@@ -34,6 +34,7 @@ export async function POST(req: Request) {
 
   const response = NextResponse.json({
     user: { id: user.id, email: user.email, displayName: user.displayName },
+    isAdmin: user.role === "ADMIN",
   });
   return completeLogin(req, response, user.id, "password");
 }

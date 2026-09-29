@@ -68,6 +68,7 @@
     "genericError": "Noget gik galt — prøv igen",
     "networkError": "Kunne ikke nulstille adgangskoden — tjek din forbindelse og prøv igen",
     "mismatchError": "Adgangskoderne er ikke ens",
+    "tooShortError": "Adgangskoden skal være mindst 8 tegn",
     "missingToken": "Nulstillingslinket mangler eller er ugyldigt.",
     "requestNewLink": "Anmod om et nyt link"
   },
