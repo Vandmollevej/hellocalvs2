@@ -21,7 +21,7 @@
   "variants": [],
   "efsa": null,
   "verification": {
-   "status": "uncertain",
+   "status": "corrected",
    "sources": [
     "https://en.wikipedia.org/wiki/Magnesium_hydroxide",
     "https://patents.google.com/patent/US2405055A/en",
@@ -30,9 +30,10 @@
     "https://eur-lex.europa.eu/legal-content/EN/ALL/?uri=CELEX%3A32011R1129",
     "https://ec.europa.eu/food/fs/sc/scf/out105_en.pdf",
     "https://www.fao.org/fileadmin/user_upload/jecfa_additives/docs/Monograph1/Additive-262.pdf",
-    "https://food.ec.europa.eu/food-safety/food-improvement-agents/additives/re-evaluation_en"
+    "https://food.ec.europa.eu/food-safety/food-improvement-agents/additives/re-evaluation_en",
+    "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:32011R1129"
    ],
-   "notes": "RUNDE 3: Bekræftet: kemi/brucit, udvinding fra havvand med kalk, antacidum, kakao-alkalisering, EU gruppe I (quantum satis), SCF-UL 250 mg/dag (2001), JECFA ADI 'not limited' (1965), nyrerisiko ved magnesiumholdig medicin. Rettet: JECFA-formulering præciseret. Fjernet: farvestabilisator, konfekture, udsagn om forskningsfokus/kontroverser (ikke kildebelagt). Uncertain: det kunne ikke entydigt afgøres via søgning, om EFSA har offentliggjort en gen-evaluering; ingen blev fundet."
+   "notes": "RUNDE 3: Bekræftet: kemi/brucit, udvinding fra havvand med kalk, antacidum, kakao-alkalisering, EU gruppe I (quantum satis), SCF-UL 250 mg/dag (2001), JECFA ADI 'not limited' (1965), nyrerisiko ved magnesiumholdig medicin. Rettet: JECFA-formulering præciseret. Fjernet: farvestabilisator, konfekture, udsagn om forskningsfokus/kontroverser (ikke kildebelagt). Chrome-tjek (runde 3b): EU-status som gruppe I/quantum satis bekræftet i selve EUR-Lex-teksten (Forordning 1129/2011), og fraværet af en EFSA-gen-evaluering er bekræftet i Kommissionens oversigtstabel (ingen udtalelse opført; frist 31.12.2018). Status ændret fra uncertain til corrected."
   },
   "wikipedia": "",
   "wikidata": "Q407548",
@@ -111,6 +112,16 @@
     "claim": "Ingen offentliggjort EFSA-gen-evaluering fundet",
     "source": "https://food.ec.europa.eu/food-safety/food-improvement-agents/additives/re-evaluation_en",
     "result": "bekræftet"
+   },
+   {
+    "claim": "Gruppe I-tilsætningsstof med quantum satis i Annex-tabellen (Forordning 1129/2011: E 528 opført med quantum satis)",
+    "source": "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:32011R1129",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Ingen offentliggjort EFSA-gen-evalueringsudtalelse: Kommissionens oversigtstabel (status 10. sep. 2026) angiver tilsætningsstoffet som godkendt før 20. jan. 2009, ikke gen-evalueret før forordning 257/2010, frist 31.12.2018, uden dato eller link til EFSA-udtalelse",
+    "source": "https://food.ec.europa.eu/food-safety/food-improvement-agents/additives/re-evaluation_en",
+    "result": "bekræftet"
    }
   ]
  },
@@ -133,7 +144,7 @@
   "variants": [],
   "efsa": null,
   "verification": {
-   "status": "uncertain",
+   "status": "corrected",
    "sources": [
     "https://en.wikipedia.org/wiki/Calcium_oxide",
     "https://www.lhoist.com/en-US/products-and-services/material/quicklime",
@@ -142,9 +153,10 @@
     "https://eur-lex.europa.eu/legal-content/EN/ALL/?uri=CELEX%3A32011R1129",
     "https://www.graymont.com/safety-data-sheet/high-calcium-quicklime-nz-ghs/download/",
     "https://www.fao.org/fileadmin/user_upload/jecfa_additives/docs/Monograph1/additive-091-m1.pdf",
-    "https://food.ec.europa.eu/food-safety/food-improvement-agents/additives/re-evaluation_en"
+    "https://food.ec.europa.eu/food-safety/food-improvement-agents/additives/re-evaluation_en",
+    "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:32011R1129"
    ],
-   "notes": "RUNDE 3: Bekræftet: fremstilling ved kalkbrænding, reaktion med vand, funktioner (surhedsregulering, melbehandling, calciumkilde, sukkerklaring), nixtamalisering/niacin, ætsende egenskaber, EU gruppe I, JECFA ADI 'not limited' (1965). Rettet: JECFA-formulering. Fjernet: kakaoprodukter (ikke fundet som anvendelse), 'omdannes til calciumsalte', 'beskedent calciumbidrag', 'begrænset forskning' (ikke kildebelagt). Uncertain: ingen EFSA-gen-evaluering fundet, men fravær kunne ikke bekræftes endeligt."
+   "notes": "RUNDE 3: Bekræftet: fremstilling ved kalkbrænding, reaktion med vand, funktioner (surhedsregulering, melbehandling, calciumkilde, sukkerklaring), nixtamalisering/niacin, ætsende egenskaber, EU gruppe I, JECFA ADI 'not limited' (1965). Rettet: JECFA-formulering. Fjernet: kakaoprodukter (ikke fundet som anvendelse), 'omdannes til calciumsalte', 'beskedent calciumbidrag', 'begrænset forskning' (ikke kildebelagt). Chrome-tjek (runde 3b): EU-status som gruppe I/quantum satis bekræftet i selve EUR-Lex-teksten (Forordning 1129/2011), og fraværet af en EFSA-gen-evaluering er bekræftet i Kommissionens oversigtstabel (ingen udtalelse opført; frist 31.12.2018). Status ændret fra uncertain til corrected."
   },
   "wikipedia": "https://en.wikipedia.org/wiki/Calcium_oxide",
   "wikidata": "Q185006",
@@ -243,6 +255,16 @@
     "claim": "Ingen offentliggjort EFSA-gen-evaluering fundet",
     "source": "https://food.ec.europa.eu/food-safety/food-improvement-agents/additives/re-evaluation_en",
     "result": "bekræftet"
+   },
+   {
+    "claim": "Gruppe I-tilsætningsstof med quantum satis i Annex-tabellen (Forordning 1129/2011: E 529 opført med quantum satis)",
+    "source": "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:32011R1129",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Ingen offentliggjort EFSA-gen-evalueringsudtalelse: Kommissionens oversigtstabel (status 10. sep. 2026) angiver tilsætningsstoffet som godkendt før 20. jan. 2009, ikke gen-evalueret før forordning 257/2010, frist 31.12.2018, uden dato eller link til EFSA-udtalelse",
+    "source": "https://food.ec.europa.eu/food-safety/food-improvement-agents/additives/re-evaluation_en",
+    "result": "bekræftet"
    }
   ]
  },
@@ -268,7 +290,7 @@
   "variants": [],
   "efsa": null,
   "verification": {
-   "status": "uncertain",
+   "status": "corrected",
    "sources": [
     "https://foodcom.pl/en/term-e/e530/",
     "https://en.wikipedia.org/wiki/Magnesium_(medication)",
@@ -277,9 +299,10 @@
     "https://ec.europa.eu/food/fs/sc/scf/out105_en.pdf",
     "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC10384947/",
     "https://www.fao.org/fileadmin/user_upload/jecfa_additives/docs/Monograph1/Additive-266.pdf",
-    "https://food.ec.europa.eu/food-safety/food-improvement-agents/additives/re-evaluation_en"
+    "https://food.ec.europa.eu/food-safety/food-improvement-agents/additives/re-evaluation_en",
+    "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:32011R1129"
    ],
-   "notes": "RUNDE 3: Bekræftet: fremstilling, funktioner, anvendelser (kakao, mælkepulver, salt, kosttilskud), EU gruppe I, SCF-UL, JECFA ADI 'not limited', dårligere optagelse end organiske salte, nyrerisiko. Rettet: anvendelser præciseret, JECFA-formulering. Fjernet: 'svag base/koncentreret kilde', 'omdannes langsomt til hydroxid', 'mest undersøgt som...' (ikke kildebelagt). Uncertain: et søgeresumé nævnte en EFSA-udtalelse om E530 fra 2018, men den kunne ikke findes ved målrettet søgning; derfor ikke medtaget."
+   "notes": "RUNDE 3: Bekræftet: fremstilling, funktioner, anvendelser (kakao, mælkepulver, salt, kosttilskud), EU gruppe I, SCF-UL, JECFA ADI 'not limited', dårligere optagelse end organiske salte, nyrerisiko. Rettet: anvendelser præciseret, JECFA-formulering. Fjernet: 'svag base/koncentreret kilde', 'omdannes langsomt til hydroxid', 'mest undersøgt som...' (ikke kildebelagt). Chrome-tjek (runde 3b): EU-status som gruppe I/quantum satis bekræftet i selve EUR-Lex-teksten (Forordning 1129/2011), og fraværet af en EFSA-gen-evaluering er bekræftet i Kommissionens oversigtstabel (ingen udtalelse opført; frist 31.12.2018). Status ændret fra uncertain til corrected."
   },
   "wikipedia": "https://en.wikipedia.org/wiki/Magnesium_oxide",
   "wikidata": "Q214769",
@@ -356,6 +379,16 @@
    },
    {
     "claim": "Ingen offentliggjort EFSA-gen-evaluering fundet",
+    "source": "https://food.ec.europa.eu/food-safety/food-improvement-agents/additives/re-evaluation_en",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Gruppe I-tilsætningsstof med quantum satis i Annex-tabellen (Forordning 1129/2011: E 530 opført med quantum satis)",
+    "source": "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:32011R1129",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Ingen offentliggjort EFSA-gen-evalueringsudtalelse: Kommissionens oversigtstabel (status 10. sep. 2026) angiver tilsætningsstoffet som godkendt før 20. jan. 2009, ikke gen-evalueret før forordning 257/2010, frist 31.12.2018, uden dato eller link til EFSA-udtalelse",
     "source": "https://food.ec.europa.eu/food-safety/food-improvement-agents/additives/re-evaluation_en",
     "result": "bekræftet"
    }
