@@ -108,7 +108,7 @@ Fuldskærms first-run-wizard med trin-progression, "Næste"/"Påmind mig senere"
 
 **Krav (bruger 2026-09-29, ikke bygget endnu):**
 - Trinene **Vægt** og **Aktivitetsniveau** skal nederst have tekstlinket "Tilføj gennem integration i stedet", som fører til Integrationer (Apple Health, Withings, Google Health m.fl.) i stedet for manuel indtastning.
-- **Aktivitetsniveau** bygges som HelloFresh-slidersider: en side pr. spørgsmål, der glider sidelæns (sider i siden) inde i guidens trin, med egen trin-progression. Niveauet beregnes ud fra svarene (jf. `SPECIFICATION.md` §5: kan ikke vælges manuelt). De konkrete spørgsmål er ikke fastlagt og skal afklares med brugeren før bygning.
+- **Aktivitetsniveau** bygges som HelloFresh-slidersider: en side pr. spørgsmål, der glider sidelæns (sider i siden) inde i guidens trin, med egen trin-progression. Niveauet beregnes ud fra svarene (jf. `SPECIFICATION.md` §5: kan ikke vælges manuelt). Spørgsmål (brugerens valg 2026-09-29), 5 sider: 1) arbejdstype (stillesiddende/stående/fysisk), 2) skridt pr. dag, 3) træning pr. uge, 4) træningens intensitet, 5) aktiv transport (cykel/gang).
 
 ## 9. Bundmenu
 
