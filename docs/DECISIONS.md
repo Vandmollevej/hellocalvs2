@@ -2,6 +2,18 @@
 
 This file records durable decisions. Add a dated entry when a later decision changes one of them.
 
+## 2026-10-02: Flere integrationer — Garmin, WHOOP, Huawei + mærker via telefonen
+
+Brugerens krav: Garmin, Health Connect, eufy, Renpho, Tuya, Xiaomi, Huawei, WHOOP og Samsung (også ure/ringe, ikke kun vægte). "Vi må ikke videregive nogen informationer om brugeren."
+
+- **Cloud (OAuth):** Garmin (Health + Activity API, OAuth 2.0 med PKCE), WHOOP (API v2) og Huawei Health (Health Kit REST). Samme fælles adapter-mønster som Withings/Polar (`src/lib/integrations/registry.ts`).
+- **Kun læsning for alle nye.** Hello Cal sender ingen data om brugeren til Garmin, WHOOP eller Huawei (`write: []` i `sync-settings.ts`). Der bedes ikke om profil-scopes (navn/e-mail). Ved frakobling får appen besked om at stoppe adgangen (`revoke`: Garmin afregistrering, WHOOP `DELETE /user/access`, Huawei token-revoke).
+- **Garmin bruger ping-notifikationer** (`POST /api/integrations/garmin/webhook`). Kun Ping/Pull: Hello Cal henter selv data hos `apis.garmin.com` med brugerens token; data i selve notifikationen (Push) bruges ikke, da Garmin ikke signerer dem. Garmins pseudonyme bruger-ID gemmes i `Integration.externalUserId` for at koble ping til bruger. Valgfri `GARMIN_WEBHOOK_KEY` i adressen.
+- **Mærker uden åben API = kind "via":** Samsung Health (inkl. Galaxy Watch/Ring/Fit), eufy, Renpho, Xiaomi (Mi Fitness/Zepp Life) og Tuya/Smart Life. Deres app deler til Health Connect/Apple Health, og data kommer ind gennem Hello Cal-appen. Kortet viser vejledning + knap til Health Connect/Apple Health og bliver "Forbundet", når ingest ser data med deres afsender-app (`origin`, `src/lib/integrations/origins.ts`). Ingen forbindelse til mærket selv.
+- **Tuya:** direkte forbindelse kræver partneraftale (Tuya IoT-projekt + godkendt app-konto-kobling); vises som "via" med note om det.
+- Health Connect-delen af Hello Cal-appen er skrevet som Android-modul `native/android/healthconnect/` (ikke kompileret endnu).
+- Nye mærker har intet logo endnu (`icon: null` → forbogstav); brugeren lægger logoer i `public/integrations/`.
+
 ## 2026-10-01: Bølge-baggrund på forsiden
 
 - Forsiden får en rolig, tilfældig bølge-animation bag topbar og hero (til ca. halvvejen mellem skillestregen og "Ingen registreringer i dag"), grønne nuancer øverst mod gullig creme nedenfor, så den næsten går i et med baggrunden. Bløde bånd (hverken tynde streger eller brede bølger), ingen prikker/tern/striber, ingen DNA-agtig regelmæssighed; langsom og rolig, ikke pulserende lydbølger.

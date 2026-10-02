@@ -4,6 +4,7 @@ import { Suspense, useEffect, useRef, useState, type ReactNode } from "react";
 import Link from "next/link";
 import { IconChefHat, IconChevronRight } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
+import { IntegrationIcon } from "@/components/IntegrationIcon";
 import type { IntegrationCardStatus } from "@/lib/integrations";
 import type { IntegrationProvider } from "@prisma/client";
 import { useTranslation } from "@/i18n/LocaleProvider";
@@ -121,16 +122,7 @@ function IntegrationerContent() {
         chevron={!unavailable}
         title={integration.label}
         description={description}
-        icon={
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
-            src={integration.icon}
-            alt=""
-            width={36}
-            height={36}
-            className="h-9 w-9 shrink-0 rounded-[8px] object-contain"
-          />
-        }
+        icon={<IntegrationIcon icon={integration.icon} label={integration.label} size={36} className="h-9 w-9 rounded-[8px]" />}
       >
         {unavailable ? (
           <p className="hf-type-small text-text-secondary">{t("integrations.unavailable")}</p>
@@ -145,13 +137,17 @@ function IntegrationerContent() {
           </div>
         ) : (
           <span className="hf-btn-primary block w-full py-2.5 text-center">
-            {integration.kind === "companion" ? t("integrations.manage") : t("integrations.connect")}
+            {integration.kind === "companion"
+              ? t("integrations.manage")
+              : integration.kind === "via"
+                ? t("integrations.howTo")
+                : t("integrations.connect")}
           </span>
         )}
       </Card>
     );
 
-    // Garmin afventer partneraftale og har intet at vælge endnu.
+    // En integration, der afventer partneraftale, har intet at vælge endnu.
     if (unavailable) return <div key={integration.provider}>{card}</div>;
     return (
       <Link key={integration.provider} href={`/settings/integrations/${integration.pageSlug}`} className="block">

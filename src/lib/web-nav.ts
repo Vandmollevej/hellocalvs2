@@ -15,7 +15,7 @@ import {
   IconWallet,
 } from "@tabler/icons-react";
 import { IconBathroomScale } from "@/components/icons/BathroomScale";
-import { IconChampagne } from "@/components/icons/Champagne";
+import { IconPartyPopper } from "@/components/icons/PartyPopper";
 import { IconCookingPot } from "@/components/icons/CookingPot";
 import { IconWaterGlass } from "@/components/icons/WaterGlass";
 import { TrendIcon } from "@/components/BottomNav";
@@ -60,7 +60,7 @@ export const WEB_SHORTCUTS: WebNavItem[] = [
 export const WEB_SETTINGS: WebNavItem[] = [
   { key: "profil", href: "/profile", labelKey: "nav.profile", icon: IconUser },
   { key: "rediger", href: "/profile/edit", labelKey: "web.editProfile", icon: IconUser },
-  { key: "maal", href: "/profile/goals", labelKey: "web.goals", icon: IconChampagne },
+  { key: "maal", href: "/profile/goals", labelKey: "web.goals", icon: IconPartyPopper },
   { key: "abonnement", href: "/profile/subscription", labelKey: "web.subscription", icon: IconCreditCard },
   { key: "integrationer", href: "/settings/integrations", labelKey: "web.integrations", icon: IconPlugConnected },
   { key: "visning", href: "/settings/display", labelKey: "web.display", icon: IconAdjustments },

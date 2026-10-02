@@ -279,3 +279,11 @@ Ejer: bølge-sessionen (2026-10-01)
 | Id | Opgave | Status | Næste skridt |
 | --- | --- | --- | --- |
 | — | Rolig, tilfældig bølge-animation bag forsiden med frostet-glas-bund og tåge | Færdig (kode) | Afventer brugerens visuelle godkendelse på telefon; justér tempo/farve efter feedback |
+
+## G-INT2 — Flere integrationer (Garmin, WHOOP, Huawei, via-mærker, Health Connect-modul)
+Filer: `src/lib/integrations/**`, `src/lib/integrations.ts`, `src/app/settings/integrations/**`, `src/app/api/integrations/**`, `src/lib/api-keys/*`, `native/android/healthconnect/**`.
+Ejer: cloud-session `claude/integrations-more-brands` (2026-10-02)
+
+| Id | Opgave | Status | Næste skridt |
+| --- | --- | --- | --- |
+| — | Garmin, WHOOP, Huawei (OAuth, kun læsning) + eufy/Renpho/Xiaomi/Tuya/Samsung via Health Connect/Apple Health + Android Health Connect-modul | Venter på bruger | Kode færdig på branchen. Brugeren: Garmin-partnerprogram, Huawei Health Kit-godkendelse, WHOOP-app, nøgler i admin, logoer. Android-modulet skal bygges i Android Studio |
