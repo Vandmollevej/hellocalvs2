@@ -233,6 +233,7 @@ const MOVE_ENTRY_HOLD_MS = 500;
 const MOVE_ENTRY_MOVE_TOLERANCE = 10;
 const MIN_HOUR_HEIGHT = HOUR_HEIGHT;
 const MAX_HOUR_HEIGHT = HOUR_HEIGHT * 4;
+const VISIT_COOKIE = "hc_cal_visit";
 const ZOOM_SENSITIVITY = 220; // px to fingers must move for a full 1x scale step
 const HOUR_HEIGHT_STORAGE_KEY = "hellocal.kalender.hourHeight";
 
@@ -1849,6 +1850,7 @@ function DayDetails({
   const zoomStart = useRef<{ avgY: number; hourHeight: number } | null>(null);
   const mouseDrag = useRef<{ y: number; scrollTop: number } | null>(null);
   const timelineScrollRef = useRef<HTMLDivElement | null>(null);
+  const visitedTodayRef = useRef<boolean | null>(null);
   const [sleepDrag, setSleepDrag] = useState<{ type: SleepAdjustType; minutes: number } | null>(null);
   // Oplevelse af søvn (docs/DECISIONS.md 2026-09-26): the day's 1–5 rating,
   // shown as a black bar at the top. DayDetails is keyed by date, so this
@@ -1940,7 +1942,26 @@ function DayDetails({
     const node = timelineScrollRef.current;
     if (!node) return;
     const wakeHour = sleepWindow.wakeTime / 60;
-    node.scrollTop = Math.max(0, (wakeHour - 1) * hourHeight);
+    // Første besøg i dag (cookie): morgenen med nattens søvn. Derefter, for
+    // i dag: nu ±2 timer i fokus.
+    const todayStr = localDateKey(new Date());
+    // Cookien læses kun første gang pr. visning (effekten kører igen ved indlæsning).
+    if (visitedTodayRef.current === null) {
+      try {
+        visitedTodayRef.current = document.cookie.split("; ").some((c) => c === `${VISIT_COOKIE}=${todayStr}`);
+        document.cookie = `${VISIT_COOKIE}=${todayStr}; path=/; max-age=172800; SameSite=Lax`;
+      } catch {
+        visitedTodayRef.current = false;
+      }
+    }
+    const visitedToday = visitedTodayRef.current;
+    if (visitedToday && localDateKey(date) === todayStr) {
+      const now = new Date();
+      const nowHour = now.getHours() + now.getMinutes() / 60;
+      node.scrollTop = Math.max(0, (nowHour - 2) * hourHeight);
+    } else {
+      node.scrollTop = Math.max(0, (wakeHour - 1) * hourHeight);
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loading, dateKey]);
 
@@ -2270,7 +2291,7 @@ function DayDetails({
       {addSheetHour !== null && (
         <AddMenuSheet
           date={isoDate(date)}
-          time={`${String(addSheetHour).padStart(2, "0")}:00`}
+          time={`${String(Math.floor(addSheetHour)).padStart(2, "0")}:${addSheetHour % 1 ? "30" : "00"}`}
           onClose={() => setAddSheetHour(null)}
         />
       )}
@@ -2351,7 +2372,8 @@ function HourRow({
       onDoubleClick={(event) => {
         if ((event.target as HTMLElement).closest("button")) return;
         clearTimer();
-        onTapAddBar(hour);
+        const rect = event.currentTarget.getBoundingClientRect();
+        onTapAddBar(hour + (event.clientY - rect.top >= rect.height / 2 ? 0.5 : 0));
       }}
     >
       {/* Timen med en målsætning kan trykkes på i hele sin bredde og åbner
