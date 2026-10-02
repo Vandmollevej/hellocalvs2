@@ -161,6 +161,21 @@ export default function StatisticsPage() {
     syncSectionOrder();
   }, []);
 
+  // Sektionsoverskrifterne ("Grafer"/"Kort") med op/ned-pile hører kun til
+  // redigeringstilstanden (langt tryk på en graf eller et kort). I almindelig
+  // visning står indholdet uden overskrifter.
+  const [editingSections, setEditingSections] = useState<Record<StatSectionKey, boolean>>({
+    charts: false,
+    cards: false,
+  });
+  const onChartsEditModeChange = useCallback((editing: boolean) => {
+    setEditingSections((prev) => (prev.charts === editing ? prev : { ...prev, charts: editing }));
+  }, []);
+  const onCardsEditModeChange = useCallback((editing: boolean) => {
+    setEditingSections((prev) => (prev.cards === editing ? prev : { ...prev, cards: editing }));
+  }, []);
+  const showSectionHeaders = editingSections.charts || editingSections.cards;
+
   function onMoveSection(key: StatSectionKey, delta: -1 | 1) {
     setSectionOrder((prev) => {
       const next = moveSection(prev, key, delta);
@@ -414,6 +429,7 @@ export default function StatisticsPage() {
   );
 
   function renderSectionHeader(key: StatSectionKey, title: string) {
+    if (!showSectionHeaders) return null;
     const index = sectionOrder.indexOf(key);
     return (
       <div className="flex items-center justify-between gap-2">
@@ -447,7 +463,7 @@ export default function StatisticsPage() {
       return (
         <>
           {renderSectionHeader(key, t("statSections.chartsHeading"))}
-          <StatChartsSection renderChart={renderChart} />
+          <StatChartsSection renderChart={renderChart} onEditModeChange={onChartsEditModeChange} />
         </>
       );
     }
@@ -462,6 +478,7 @@ export default function StatisticsPage() {
           defaultActiveKeys={DEFAULT_ACTIVE_STAT_KEYS}
           highlightRecommendedLimits={warnOnRecommendedLimits}
           autoExpandUncertainty={autoExpandUncertainty}
+          onEditModeChange={onCardsEditModeChange}
         />
         {SINNERS_ENABLED && <TopSinnersCard registrations={periodSources} loading={sourcesLoading} />}
       </>
