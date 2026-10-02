@@ -907,7 +907,7 @@ textarea::selection,
   padding: 0;
   border: 0;
   border-radius: 9999px;
-  background: rgb(35 35 35 / 72%);
+  background: rgb(45 45 45 / 78%);
   color: var(--hf-white);
 }
 
