@@ -9,6 +9,7 @@ This file records durable decisions. Add a dated entry when a later decision cha
 - Ingen grafer pr. enkelt mineral eller vitamin. Der findes én "Mineraler"- og én "Vitaminer"-graf; brugeren vælger selv linjerne i grafens dropdown. Standard: calcium, jern, kalium og vitamin A, C, D.
 - Ældre gemte layouts med de gamle enkelt-grafer omskrives til gruppegraferne.
 - Grafernes linjevalg vises inde i kortet (ikke svævende), så det ikke klippes af omgivende bokse.
+- Sprogregel fra ejeren: "krydse af", "slå til" o.l. betyder altid til/fra-knapper (`Toggle`), aldrig afkrydsningsfelter.
 
 ## 2026-09-29: Aktivitetsniveau, PAL og kaloriemål
 
