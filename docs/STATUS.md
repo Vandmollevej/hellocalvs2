@@ -9,6 +9,19 @@ Last updated: 2026-10-02
 - Efter brugerens svar: også USDA-varer og også fra søgningen; points straks efter AI. Genscannede Open Food Facts-/USDA-varer overtages som vores egne og bliver søgbare; originalen fjernes.
 - Tests (`src/lib/product-rescan-offer.test.mjs`), lint, typecheck og build grønne. Ikke live-testet (ingen lokal DB/login/kamera) — test på telefon: scan en Open Food Facts-vare, træk banneret ned, tag de tre fotos.
 
+## 2026-10-02: Drikkevarer starter på pakkestørrelsen
+
+- Mængdefeltet viser nu 33 cl / 25 cl / 50 cl for dåser og små flasker, også når størrelsen kun står i navnet, og også for øl/vin uden kategorien DRINK. Vin, spiritus og færdigblandede drinks har egne regler (DECISIONS.md 2026-09-28, tilføjelse 2026-10-02).
+- Flere typiske mængder (kød, fisk, frugt, suppe, pizza m.m.), så færre varer starter på 100 g. Videresendte varer bruger samme startmængde.
+- Tests: `src/lib/default-amount.test.mjs` (ny) + udvidet `product-display-unit.test.mjs`, grønne. Lint, typecheck og build grønne. Ikke live-testet (ingen lokal DB).
+
+## 2026-10-02: Rigtige certifikat-logoer på varesiden
+
+- Brugerens logofiler fra `Certifikater/` er omdøbt og beskåret til `public/certifications/` (ens navne uden mellemrum/æøå) og erstatter de tegnede SVG-mærker i `CertificationLogos.tsx` (under energifordelingen) og `CertificationLogo.tsx` (på produktcirklen).
+- `src/lib/certification-badges.ts` kobler tekstværdierne i `ProductFilters` til logo: Økologisk → Ø-mærket, Biologisch → tysk BIO, Bioland, Ökologischer Landbau, EU-blad, Nøglehul, Fuldkorn, Bedre Dyrevelfærd 1/2/3 (hjerter), Anbefalet af Dyrenes Beskyttelse, NaturSkånsom, MSC, ASC, Fairtrade, Rainforest Alliance, UTZ. Ukendte mærker vises som tekst-pille.
+- Rettelser bør komme fra brugeren: `Bedre-dyrevelfærd-2-stjerner.png` var identisk med 3-stjerner-filen, så 2-hjerte-logoet er afledt (3-stjerner + den tomme 3. hjerte fra 1-stjerne-filen). `Fairtrade logo.webp` har "cleanpng"-vandmærke og `Økologimærket.png` er et beskåret udsnit uden tekst — erstat med originale filer.
+- Lint og typecheck grønne. Ikke visuelt testet (ingen login/DB lokalt).
+
 ## 2026-09-29: Offentlig forside for udloggede
 
 - Ny hent-appen-forside uden telefonramme, med QR-koder, planer med betalings-ark, Hello Doc-bjælke, nøgletal fra databasen, `/business` (kontaktformular) og `/presse`. Se DECISIONS.md samme dato.
