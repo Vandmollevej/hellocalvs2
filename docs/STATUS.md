@@ -1,6 +1,12 @@
 # HELLO CAL — project status
 
-Last updated: 2026-09-29
+Last updated: 2026-10-02
+
+## 2026-10-02: Fælles målstatus-blok i kalenderen
+
+- Ny fælles komponent `src/components/calendar/GoalStatusSummary.tsx` bruges både nederst i dagvisningen og i månedsstatussen over gitteret. Venstre: cirkel + kort status ("Inden for målet" / "Målet ikke opnået" / "Intet registreret"); højre, højrestillet: "Mål: X kcal", "Indtag: Y kcal" og — når der er registreret motion — rød flamme + "+ N kcal" (summen af dagens/månedens `Activity.caloriesBurned`). Blokken er bundjusteret.
+- "Tilbage for i dag" og "Du er overskredet med …" er erstattet af "Indtag" (brugerens formulering: "målet og dagens indtag"). Flammens kalorier er kun visning; "inden for målet" regnes stadig uden motionstillæg (uændret `dailyGoalMet`).
+- Lint, typecheck og `npm run build` grønne. Ikke visuelt testet (ingen lokal DB/login) — tjek dag- og månedsvisning på telefon.
 
 ## 2026-09-29: Offentlig forside for udloggede
 

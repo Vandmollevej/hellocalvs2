@@ -800,6 +800,21 @@ appen, samme udseende som admin: side #FAF8F3, hvid topbjælke/panel med 1 px
   panel eller en klasse, følger alle sider med.
 - Mangler en variation, udvides klasserne her og i `globals.css` én gang.
 
+### 6.16 Målstatus-blok (kalender) — tilføjet 2026-10-02
+
+`src/components/calendar/GoalStatusSummary.tsx` — én fælles blok under
+dagvisningens tidslinje og i månedsstatussen. Ingen side må lave sin egen
+variant.
+
+- Venstre: 20 px cirkel (`bg-hf-green` + hvidt flueben / `bg-hf-red-dark` +
+  hvid prik / `bg-hf-gray` + hvid prik) og `.hf-type-body .hf-type-strong`
+  status: "Inden for målet", "Målet ikke opnået", "Intet registreret".
+- Højre, højrestillet og `tabular-nums`: "Mål: X kcal" (`text-text-muted`),
+  "Indtag: Y kcal" (`text-hf-black`) og — kun når der er registreret motion —
+  `IconFlame` 16 px i `text-hf-red-dark` efterfulgt af "+ N kcal".
+- Blokken er `flex items-end justify-between`: statusteksten står ud for
+  nederste linje i højre side. Fremtidige dage viser kun højre side.
+
 ### Velkomst/start
 
 - Viewport-gutter: 16 px.
