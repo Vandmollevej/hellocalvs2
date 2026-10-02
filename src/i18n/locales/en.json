@@ -445,7 +445,15 @@
     "distanceKm": "Kilometers moved"
   },
   "addMenu": {
-    "title": "Add"
+    "title": "Add",
+    "food": "Add food",
+    "scan": "Scan product",
+    "platePhoto": "Photo of plate",
+    "dish": "Create dish",
+    "voice": "Record",
+    "weight": "Weight",
+    "drink": "Drinks",
+    "body": "Body measurements"
   },
   "helloDoc": {
     "title": "Hello Doc",
