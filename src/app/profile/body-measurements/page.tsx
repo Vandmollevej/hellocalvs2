@@ -3,6 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
 import { HfScreen } from "@/components/HfScreen";
 import { useTranslation } from "@/i18n/LocaleProvider";
 import {
@@ -12,6 +13,7 @@ import {
   type BodyMeasurementSex,
 } from "@/lib/body-measurements";
 import { SkeletonCards, SkeletonScreen } from "@/components/hf/Skeleton";
+import { addChartsToLayout, BODY_MEASUREMENT_CHART_KEYS } from "@/lib/stat-charts";
 
 type BodyMeasurementEntry = {
   id: string;
@@ -79,6 +81,7 @@ function InlineMeasurementInput({
 
 export default function BodyMeasurementsPage() {
   const { t } = useTranslation();
+  const router = useRouter();
   const [entries, setEntries] = useState<BodyMeasurementEntry[]>([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -215,6 +218,18 @@ export default function BodyMeasurementsPage() {
             </label>
           ))}
         </div>
+        {/* Lægger kropsmål-graferne (tegning til venstre, forløb til højre)
+            nederst i Statistik-sidens grafer og åbner den. */}
+        <button
+          type="button"
+          onClick={() => {
+            addChartsToLayout(BODY_MEASUREMENT_CHART_KEYS);
+            router.push("/statistics");
+          }}
+          className="hf-type-small hf-type-strong text-hf-black underline text-center"
+        >
+          {t("bodyMeasurementChart.showInStats")}
+        </button>
         <Link href="/statistics/body-water" className="hf-type-small hf-type-strong text-hf-black underline text-center">
           {t("waterStats.link")}
         </Link>

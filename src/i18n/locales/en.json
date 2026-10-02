@@ -1368,6 +1368,14 @@
     "deleteAria": "Delete measurement",
     "delete": "Delete"
   },
+  "bodyMeasurementChart": {
+    "noData": "No measurements yet.",
+    "register": "Log body measurements",
+    "aria": "Trend for {name}",
+    "change": "{value} since last",
+    "subtitle": "Latest measurements",
+    "showInStats": "Show body measurements as charts in Statistics"
+  },
   "goals": {
     "title": "Goals",
     "loading": "Loading…",

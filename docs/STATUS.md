@@ -1,6 +1,12 @@
 # HELLO CAL — project status
 
-Last updated: 2026-09-29
+Last updated: 2026-10-02
+
+## 2026-10-02: Kropsmål som statistikgrafer
+
+- Nye grafer `body:<felt>` i statistikmodulet (bryst, talje, hofte, overarm, lår): samme kort som på Kropsmål-siden med tegningen til venstre, men til højre et forløb over de seneste 10 målinger (x efter dato), seneste værdi, min/maks og ændring siden sidst. Komponent `src/components/BodyMeasurementChart.tsx`, logik `src/lib/body-measurement-series.ts` (tests grønne).
+- Tilføjes under "Ubrugte grafer" → blokken Kropsmål, eller med linket "Vis kropsmål som grafer i Statistik" på Kropsmål-siden (lægger alle fem nederst i graferne og åbner Statistik).
+- Hofte har stadig ingen godkendt tegning, så venstre felt er tomt dér. Lint, typecheck og build grønne; ikke visuelt testet (ingen lokal DB/login).
 
 ## 2026-09-29: Offentlig forside for udloggede
 
