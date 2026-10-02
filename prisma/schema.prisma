@@ -213,6 +213,7 @@ model User {
   sleepQualityEntries     SleepQualityEntry[]
   workShifts              WorkShift[]
   integrations            Integration[]
+  integrationTesterSlots  IntegrationTester[]
   activities              Activity[]
   customActivityTypes     CustomActivityType[]
   heartRateSpikeReviews   HeartRateSpikeReview[]
@@ -704,6 +705,28 @@ model Integration {
 
   @@unique([userId, provider])
   @@map("integrations")
+}
+
+// Testperson-program pr. integration (docs/DECISIONS.md 2026-10-02): kun
+// den allerførste, der tilmelder sig, får pladsen (unik pr. provider). 300
+// points gives først, når admin godkender under Admin → Brugere →
+// Test-programmes; afvisning sletter rækken, så pladsen bliver ledig igen.
+model IntegrationTester {
+  id         String                  @id @default(cuid())
+  provider   IntegrationProvider     @unique
+  user       User                    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId     String
+  status     IntegrationTesterStatus @default(PENDING)
+  createdAt  DateTime                @default(now())
+  approvedAt DateTime?
+
+  @@index([userId])
+  @@map("integration_testers")
+}
+
+enum IntegrationTesterStatus {
+  PENDING
+  APPROVED
 }
 
 enum IntegrationProvider {
@@ -2075,6 +2098,8 @@ enum PointsReason {
   // fik godkendt et erstatningsbillede for et lavt-confidence stregkode-/
   // næring-/ingrediensfoto, se ProductPhotoAward.
   QUALITY_CONTROL_PHOTO
+  // Første testperson af en integration, godkendt af admin (2026-10-02).
+  INTEGRATION_TESTER
 }
 
 model PointsTransaction {

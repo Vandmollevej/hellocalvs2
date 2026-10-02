@@ -1,6 +1,13 @@
 # HELLO CAL — project status
 
-Last updated: 2026-10-01
+Last updated: 2026-10-02
+
+## 2026-10-02: Testperson-popup på integrationssiderne
+
+- Popup-banner på hver integrations side: "Bliv den første testperson … og optjen 300 points" med tilmeldingslink nederst (`TesterPromoSheet.tsx`, `/api/integrations/<app>/tester`). Én plads pr. integration; points ved admin-godkendelse. Se DECISIONS.md samme dato.
+- Admin → Brugere → **Test-programmes** (`/admin/test-programmes`): alle integrationer med ledig plads / testperson, forbindelsesstatus, Godkend (+300 points) / Afvis. Betingelsernes pointsafsnit er opdateret.
+- Migration `20261002120000_integration_testers` skal køre ved deploy. Rettet byggefejl fra master: `web-nav.ts` importerede det slettede champagne-ikon (nu konfetti-ikonet).
+- Lint, typecheck og build grønne; `page-tree.test.mjs` fejler som før på master (uvedkommende sider). Ikke live-testet (ingen lokal DB/login) — tjek popuppen på telefon.
 
 ## 2026-10-01: Rolig bølge-baggrund på forsiden
 

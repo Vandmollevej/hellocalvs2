@@ -1681,6 +1681,18 @@
     "openHealthConnect": "Open Health Connect",
     "companionHowTo": "The Hello Cal phone app reads and writes your data according to the choices above. It signs in with a device code.",
     "saveError": "Couldn't save your choice. Try again.",
+    "tester": {
+      "headline": "Become the first tester of {name} and earn {points} points",
+      "body": "Activate {name} on this page and sign up with the link at the bottom. Once we see the connection works, you get {points} points.",
+      "signUp": "Sign me up as the first tester",
+      "terms": "Read the terms",
+      "signedUp": "You are signed up as the tester of {name}. Activate the app, and you get {points} points once we have approved the connection.",
+      "taken": "Someone else became the first tester of {name}.",
+      "error": "Sign-up failed. Please try again.",
+      "close": "Close",
+      "pending": "You are the first tester. You get {points} points once we have approved the connection.",
+      "approved": "Thanks for testing. You have received {points} points."
+    },
     "readTypes": {
       "weight": "Weight",
       "bodyFat": "Body fat",

@@ -17,6 +17,8 @@ import type { IntegrationCardStatus } from "@/lib/integrations";
 import type { ReadType, SyncSettings, WriteType } from "@/lib/integrations/sync-settings";
 import { useTranslation } from "@/i18n/LocaleProvider";
 import { TermsSheet } from "@/components/hf/TermsSheet";
+import { TesterPromoSheet, testerPromoDismissKey } from "@/components/hf/TesterPromoSheet";
+import type { TesterOffer } from "@/lib/integration-testers";
 import { integrationTerms } from "@/lib/terms-hints";
 import { formatDateTime, integrationStatusKey } from "../status-badge";
 
@@ -57,6 +59,8 @@ function IntegrationContent() {
   const [saveError, setSaveError] = useState(false);
   const [tokens, setTokens] = useState<DeviceToken[]>([]);
   const [newToken, setNewToken] = useState<string | null>(null);
+  const [testerOffer, setTesterOffer] = useState<TesterOffer | null>(null);
+  const [showTesterPromo, setShowTesterPromo] = useState(false);
 
   function load() {
     fetch("/api/integrations")
@@ -73,9 +77,28 @@ function IntegrationContent() {
       .catch(() => setTokens([]));
   }
 
+  // Testperson-programmet (docs/DECISIONS.md 2026-10-02): popup-banneret
+  // vises, mens pladsen er ledig, og brugeren ikke har lukket det før.
+  function loadTesterOffer() {
+    fetch(`/api/integrations/${app}/tester`)
+      .then(async (res) => (res.ok ? ((await res.json()) as TesterOffer) : null))
+      .then((offer) => {
+        setTesterOffer(offer);
+        let dismissed = false;
+        try {
+          dismissed = window.localStorage.getItem(testerPromoDismissKey(app)) === "1";
+        } catch {
+          // Ingen lagring: vis tilbuddet.
+        }
+        setShowTesterPromo(Boolean(offer?.available) && !dismissed);
+      })
+      .catch(() => setTesterOffer(null));
+  }
+
   useEffect(() => {
     load();
     loadTokens();
+    loadTesterOffer();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [app]);
 
@@ -283,6 +306,13 @@ function IntegrationContent() {
         <AccessFooter>{t("integrations.writeNone", { name })}</AccessFooter>
       )}
       {saveError && <AccessFooter error>{t("integrations.saveError")}</AccessFooter>}
+      {testerOffer?.mine && (
+        <AccessFooter>
+          {t(testerOffer.mine === "APPROVED" ? "integrations.tester.approved" : "integrations.tester.pending", {
+            points: testerOffer.points,
+          })}
+        </AccessFooter>
+      )}
 
       {isSamsung && (
         <AccessGroup
@@ -357,6 +387,16 @@ function IntegrationContent() {
             </AccessRow>
           )}
         </AccessGroup>
+      )}
+
+      {showTesterPromo && testerOffer && (
+        <TesterPromoSheet
+          name={name}
+          pageSlug={integration.pageSlug}
+          points={testerOffer.points}
+          onClose={() => setShowTesterPromo(false)}
+          onSignedUp={setTesterOffer}
+        />
       )}
     </HfAccessSheet>
   );
