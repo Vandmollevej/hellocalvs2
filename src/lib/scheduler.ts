@@ -5,6 +5,7 @@ import { flushQueuedPush } from "@/lib/push";
 import { backfillMissingProductNutritionFeatures } from "@/lib/product-nutrition-features";
 import { runDueAppJobs } from "@/lib/jobs/runner";
 import { rerunUncertainAnalyses } from "@/lib/uncertainty-rerun";
+import { recoverQuickEnrichments } from "@/lib/quick-enrichment-jobs";
 import { grantEligibleReferralRewards } from "@/lib/referrals";
 import { runMobilePayTick } from "@/lib/payments/mobilepay-subscription";
 import { runStripeTick } from "@/lib/payments/stripe-subscription";
@@ -114,6 +115,7 @@ export function startScheduler() {
         return null;
       },
       "uncertainty-rerun": rerunUncertainAnalyses,
+      "quick-enrichment-recovery": () => recoverQuickEnrichments(),
     }).catch((error) => {
       console.error("[scheduler] tick fejlede", error);
     });

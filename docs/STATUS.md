@@ -15,6 +15,13 @@ Last updated: 2026-10-02
 - Rettelser bør komme fra brugeren: `Bedre-dyrevelfærd-2-stjerner.png` var identisk med 3-stjerner-filen, så 2-hjerte-logoet er afledt (3-stjerner + den tomme 3. hjerte fra 1-stjerne-filen). `Fairtrade logo.webp` har "cleanpng"-vandmærke og `Økologimærket.png` er et beskåret udsnit uden tekst — erstat med originale filer.
 - Lint og typecheck grønne. Ikke visuelt testet (ingen login/DB lokalt).
 
+## 2026-10-02: Ny vare fra kameraet — aflæsningen genoptages efter genstart
+
+- Fejl: marmeladeglas uden ingredienser og med navnet stående som "læses" en time efter. Navnet ventede stadig, energien var læst. Forside-aflæsningen blev altså afbrudt, sandsynligvis af et deploy (master får flere push i timen, og hvert push genstarter appen). Intet prøvede igen.
+- Rettet: fotos og OCR gemmes ved oprettelsen, og jobbet "Ny vare: genoptag aflæsning" genoptager, opgiver efter 3 forsøg, og prøver ingredienserne igen på stregkode- og energifotoet. Se DECISIONS.md samme dato.
+- Migration `20261002070000_quick_enrichment_jobs` kører ved deploy. Typecheck, lint og nye tests grønne; ikke live-testet (ingen adgang til produktionens DB/log herfra).
+- Tjek efter deploy: admin "Log" for marmeladens stregkode skal vise `enrichment_recovery` og `enrich_ingredients_retry`, og varen skal få navn og ingredienser inden for få minutter.
+
 ## 2026-09-29: Offentlig forside for udloggede
 
 - Ny hent-appen-forside uden telefonramme, med QR-koder, planer med betalings-ark, Hello Doc-bjælke, nøgletal fra databasen, `/business` (kontaktformular) og `/presse`. Se DECISIONS.md samme dato.

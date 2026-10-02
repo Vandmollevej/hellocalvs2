@@ -26,6 +26,15 @@ export const JOBS: JobDefinition[] = [
     defaultRunAtTime: null,
   },
   {
+    key: "quick-enrichment-recovery",
+    name: "Ny vare: genoptag aflæsning",
+    description:
+      "Genoptager baggrundsaflæsningen af nye varer fra kameraet, hvis appen blev genstartet undervejs (navn/næring/ingredienser stod som \"læses\"), og prøver ingredienslisten igen på de andre fotos fra scanningen, når den ikke blev fundet første gang.",
+    runtime: "app",
+    defaultIntervalMinutes: 2,
+    defaultRunAtTime: null,
+  },
+  {
     key: "uncertainty-rerun",
     name: "Usikkerheder: AI-genkørsel",
     description:
