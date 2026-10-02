@@ -1,6 +1,12 @@
 # HELLO CAL — project status
 
-Last updated: 2026-09-29
+Last updated: 2026-10-02
+
+## 2026-10-02: Dyre-ikoner på kød/fisk-felterne i Statistik
+
+- De otte kød/fisk-kort (Oksekød, Grisekød, Fjerkræ, Fisk; g og kcal) bruger nu ejerens egne silhuetter fra `public/icons/animals/` (cow, pig, chicken, fish) via `iconSrc` i `src/lib/stat-cards.ts` — samme mekanisme som mineral- og vitaminikonerne. Tabler-ikonerne står tilbage som fallback.
+- Lint, typecheck og `npm run build` grønne. Ikke visuelt testet (ingen lokal DB/login) — tjek Statistik-siden på telefon.
+- Mappen har også deer, duck, goat, goose, lamb, rabbit, turkey, crab, lobster, mussel, octopus, shrimp; de bruges ikke endnu (kødtyperne i `food-classification.ts` er stadig BEEF/PORK/POULTRY/FISH).
 
 ## 2026-09-29: Offentlig forside for udloggede
 
