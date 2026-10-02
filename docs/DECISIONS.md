@@ -3312,6 +3312,25 @@ Produktsiden viser aldrig teksten "Branded". Brandet vises kun som brandnavn/log
   (vægt ÷ N). Aldrig gættet; 2-80 g. Agenten skriver den kun, når varen ikke
   har en portionsstørrelse.
 
+### Tilføjelse 2026-10-02 — drikkevarer og alkohol starter på pakkestørrelsen
+
+- Brugerens regel: står der 33 cl, 25 cl eller 50 cl ved en drikkevare eller
+  alkohol, er det tallet i mængdefeltet. Størrelsen læses fra
+  `packageSizeText`, ellers fra navnet ("Tuborg Classic 33 cl"); multipak
+  ("6 x 33 cl") giver én enhed.
+- Varer uden kategorien DRINK tæller som drikkevare, når både navnet har et
+  drikke-ord (øl, vin, cola …) og en størrelse i ml/cl/dl/l. Fløde, olie,
+  eddike, sirup, saucer o.l. tages aldrig som hel pakke.
+- Vin: flaske ≤ 25 cl = hele flasken, ellers 150 ml. Spiritus (≥ 20 % eller
+  spiritus-ord uden mixer): ≤ 10 cl = hele flasken, ellers 4 cl.
+  Færdigblandede drinks (gin & tonic, rom og cola) = hele dåsen. Øvrige
+  drikkevarer: ≤ 50 cl = hele pakken, ellers 250 ml.
+- Visningsenheden er cl, når pakningsstørrelsen eller navnet angiver cl (også
+  "33 cl dåse"). Kategorien afgør stadig g mod ml.
+- Tabellen med typiske mængder er udvidet (kød 150 g, fisk 125 g, frugt,
+  suppe, pizza, færdigretter, fløde, æg m.m.), så færre varer ender på 100 g.
+- Videresendte varer (`/forward/[token]`) tilføjes med samme startmængde.
+
 ## 2026-09-28: Produktsidens lodrette rytme + beskårne brand-logoer
 
 - Produktsiden (`AddProductView`): 32 px fra produktcirklen til titlen (som
