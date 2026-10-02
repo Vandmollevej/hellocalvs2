@@ -5,6 +5,7 @@ import { Suspense, useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { HfScreen } from "@/components/HfScreen";
 import { useTranslation } from "@/i18n/LocaleProvider";
+import { parseWeightInput, useUnits, weightToInputValue, weightUnitLabel } from "@/lib/units";
 
 // Landingsside fra verificeringsmailen (docs/DECISIONS.md 2026-09-22) — kun
 // tilgængelig via linket, ikke fra menuer. Tokenet valideres server-side
@@ -22,6 +23,7 @@ function VerifyStartWeightContent() {
   const { t } = useTranslation();
   const router = useRouter();
   const token = useSearchParams().get("token") ?? "";
+  const { weight: weightUnit } = useUnits();
   const [state, setState] = useState<VerifyState>(token ? "loading" : "invalid");
   const [weight, setWeight] = useState("");
   const [error, setError] = useState<string | null>(null);
@@ -41,7 +43,7 @@ function VerifyStartWeightContent() {
           return;
         }
         if (data.currentWeightKg !== null) {
-          setWeight(String(data.currentWeightKg).replace(".", ","));
+          setWeight(weightToInputValue(data.currentWeightKg, weightUnit));
         }
         setState("valid");
       })
@@ -57,8 +59,9 @@ function VerifyStartWeightContent() {
     event.preventDefault();
     if (state === "saving") return;
 
-    const parsed = Number(weight.trim().replace(",", "."));
-    if (!weight.trim() || !Number.isFinite(parsed) || parsed < MIN_KG || parsed > MAX_KG) {
+    const kg = parseWeightInput(weight, weightUnit);
+    const parsed = kg === null ? NaN : Math.round(kg * 10) / 10;
+    if (!Number.isFinite(parsed) || parsed < MIN_KG || parsed > MAX_KG) {
       setError(t("profile.startWeight.invalidWeight"));
       return;
     }
@@ -136,14 +139,14 @@ function VerifyStartWeightContent() {
             <span className="hf-field flex items-center rounded-xl bg-hf-tan px-4 focus-within:ring-2 focus-within:ring-hf-green">
               <input
                 type="text"
-                inputMode="decimal"
+                inputMode={weightUnit === "st" ? "text" : "decimal"}
                 autoComplete="off"
                 value={weight}
                 disabled={state === "saving"}
                 onChange={(event) => setWeight(event.target.value)}
                 className="hf-type-body min-w-0 flex-1 bg-transparent text-hf-black outline-none"
               />
-              <span className="hf-type-body ml-2 text-hf-black">KG</span>
+              <span className="hf-type-body ml-2 text-hf-black">{weightUnitLabel(weightUnit).toUpperCase()}</span>
             </span>
           </label>
 
