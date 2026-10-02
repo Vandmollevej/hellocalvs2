@@ -44,6 +44,7 @@ import {
 import { computeAge } from "@/lib/age";
 import { getSportMeta } from "@/lib/sport-icons";
 import { useDefaultCalendarView } from "@/lib/calendar-view-pref";
+import { readOpenDay, syncOpenDay } from "@/lib/calendar-open-day";
 import { useTranslation } from "@/i18n/LocaleProvider";
 import { fetchSleepQuality, localDateKey } from "@/lib/sleep-quality";
 import { IconPartyPopper, PartyPopperImage } from "@/components/icons/PartyPopper";
@@ -331,13 +332,32 @@ export default function CalendarPage() {
   useEffect(() => {
     if (appliedDefaultView.current) return;
     appliedDefaultView.current = true;
+    // En dag, brugeren havde åben, da siden sidst blev forladt (?date= i
+    // URL'en ved Tilbage, ellers sessionStorage ved tryk på "Kalender"),
+    // genåbnes — ellers viste kalenderen måneden igen (src/lib/calendar-open-day.ts).
+    const reopenedDay = readOpenDay();
     // "Dag" opens today's full-screen day view (DayDetails) over the month view.
     // ?view=day does the same: desktop-skallen starter dér (src/lib/web-nav.ts).
     const forcedDay = new URLSearchParams(window.location.search).get("view") === "day";
-    // eslint-disable-next-line react-hooks/set-state-in-effect -- localStorage-præferencen findes først efter hydrering
-    if (defaultView === "day" || forcedDay) setSelectedDate(new Date(today));
-    else setView(defaultView);
+    if (reopenedDay) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- URL/sessionStorage findes først efter hydrering
+      setVisibleDate(new Date(reopenedDay));
+      setSelectedDate(reopenedDay);
+    } else if (defaultView === "day" || forcedDay) {
+      setSelectedDate(new Date(today));
+    } else {
+      setView(defaultView);
+    }
   }, [defaultView, today]);
+  // Spejl den åbne dag i URL + sessionStorage, så den overlever navigation
+  // væk fra siden. Første kørsel (ingen dag åben endnu) springes over, så
+  // den ikke sletter det, effekten ovenfor er ved at gendanne.
+  const hadOpenDay = useRef(false);
+  useEffect(() => {
+    if (!selectedDate && !hadOpenDay.current) return;
+    hadOpenDay.current = selectedDate !== null;
+    syncOpenDay(selectedDate);
+  }, [selectedDate]);
   const [monthMenuOpen, setMonthMenuOpen] = useState(false);
   const [viewMenuOpen, setViewMenuOpen] = useState(false);
   const [slideDirection, setSlideDirection] = useState<"next" | "previous">("next");

@@ -2,6 +2,12 @@
 
 This file records durable decisions. Add a dated entry when a later decision changes one of them.
 
+## 2026-10-02: Kalenderen husker den åbne dag
+
+- Går brugeren ind på en dag (dagsvisningen) og forlader /calendar (åbner en registrering, en anden side i bundmenuen osv.), genåbnes samme dag, når brugeren kommer tilbage — ikke månedsvisningen. Bruger-feedback 2026-10-02 ("det er irriterende").
+- Mekanik (`src/lib/calendar-open-day.ts`): den åbne dag spejles i URL'en som `/calendar?date=YYYY-MM-DD` (replaceState, så Tilbage-knappen lander på dagen) og i sessionStorage (så "Kalender" i bundmenuen, der linker til ren `/calendar`, også genåbner den — højst 6 timer efter, så en gammel dag ikke dukker op dagen efter i app'ens WebView).
+- Lukker brugeren selv dagsvisningen (tilbagepil, Escape, skift til anden visning), glemmes dagen igen, og indstillingen Kalendervisning gælder som før. Rækkefølge ved indlæsning: `?date=` → nylig dag i sessionStorage → `?view=day`/indstillingen Kalendervisning.
+
 ## 2026-09-29: Aktivitetsniveau, PAL og kaloriemål
 
 - Erstatter faktorerne i 2026-09-28 "Aktivitetsniveau i 5 trin" (1,2–1,9). Nye niveauer og PAL-intervaller: se `docs/ACTIVITY-PAL.md` (planen; intet bygget). Ingen aktive brugere, så gamle niveauer erstattes uden overgangslogik.

@@ -1,6 +1,11 @@
 # HELLO CAL — project status
 
-Last updated: 2026-09-29
+Last updated: 2026-10-02
+
+## 2026-10-02: Kalenderen husker den åbne dag
+
+- Dagsvisningen genåbnes efter navigation væk fra `/calendar` (Tilbage eller "Kalender" i menuen) i stedet for at falde tilbage til måneden. Ny `src/lib/calendar-open-day.ts` (URL `?date=` + sessionStorage), koblet ind i `src/app/calendar/page.tsx`. Se DECISIONS.md samme dato.
+- Lint, typecheck og build grønne. Ikke live-testet (ingen lokal DB/login) — test på telefon: åbn en dag → tryk en registrering → Tilbage, og åbn en dag → Statistik → Kalender.
 
 ## 2026-09-29: Offentlig forside for udloggede
 
