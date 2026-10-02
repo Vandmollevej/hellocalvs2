@@ -1,6 +1,11 @@
 # HELLO CAL — project status
 
-Last updated: 2026-09-29
+Last updated: 2026-10-02
+
+## 2026-10-02: Tilføj til statistik — kun én overskrift-knap
+
+- `/statistics/unused-cards`: den stiplede "+ Overskrift"-knap er fjernet. Den linje-knap, der før hed "+ Skillelinje", hedder nu "Overskrift" (uden plus) og tilføjer en redigerbar overskrift med streger (header-element) øverst i layoutet. Rene skillelinjer uden tekst kan ikke længere tilføjes fra siden; eksisterende skillelinjer i gemte layouts vises og kan fjernes som før.
+- Lint og `npm run build` grønne. Ikke visuelt testet (ingen lokal DB/login) — tjek på telefon.
 
 ## 2026-09-29: Offentlig forside for udloggede
 

@@ -9,7 +9,6 @@ import { StatCardIcon } from "@/components/StatCardIcon";
 import {
   activeStatKeys,
   computeStatCards,
-  addDividerToLayout,
   addHeaderToLayout,
   addStatCardToLayout,
   DEFAULT_ACTIVE_STAT_KEYS,
@@ -340,11 +339,6 @@ export default function UnusedStatCardsPage() {
     router.back();
   }
 
-  function addDivider() {
-    addDividerToLayout(DEFAULT_LAYOUT);
-    router.back();
-  }
-
   return (
     <HfScreen
       title={t("statUnusedCards.title")}
@@ -365,7 +359,7 @@ export default function UnusedStatCardsPage() {
           />
         </div>
 
-        {/* Søgeresultater står lige under søgefeltet, før Overskrift/Skillelinje. */}
+        {/* Søgeresultater står lige under søgefeltet, før Overskrift. */}
         {normalizedQuery && (
           <section className="flex flex-col gap-2 pb-2">
             <p className="hf-type-body hf-type-strong px-1 text-hf-black">
@@ -394,21 +388,13 @@ export default function UnusedStatCardsPage() {
           )}
         </AccordionSection>
 
+        {/* Én knap, der ser ud som den overskrift med streger, den tilføjer (.hf-type-section-title). */}
         <button
           type="button"
           onClick={addHeader}
-          className="hf-control hf-type-body hf-type-strong text-text-secondary flex w-full items-center justify-center gap-2 rounded-2xl border border-dashed border-hf-black/30 active:opacity-100"
-        >
-          {t("statUnusedCards.addHeading")}
-        </button>
-
-        {/* Samme overskrift med streger som alle andre sider (.hf-type-section-title). */}
-        <button
-          type="button"
-          onClick={addDivider}
           className="hf-type-section-title min-h-11 w-full active:opacity-60"
         >
-          {t("statUnusedCards.addDivider")}
+          {t("statUnusedCards.addHeading")}
         </button>
 
         {categories.map((category, index) => (

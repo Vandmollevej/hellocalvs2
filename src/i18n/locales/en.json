@@ -1800,8 +1800,7 @@
     "noSearchResults": "No charts or cards match your search.",
     "add": "+ Add",
     "noCardsYet": "No cards here yet.",
-    "addHeading": "+ Heading",
-    "addDivider": "+ Divider"
+    "addHeading": "Heading"
   },
   "statUnusedCharts": {
     "title": "Unused charts",
