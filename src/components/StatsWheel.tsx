@@ -11,6 +11,7 @@ import {
   type FrontpageNutritionTotals,
 } from "@/lib/frontpage-stats";
 import { useTranslation } from "@/i18n/LocaleProvider";
+import { HERO_HEIGHT } from "./AddButton";
 
 type Registration = {
   kcalSnapshot: number;
@@ -349,6 +350,10 @@ export function StatsWheel({ side }: { side: "left" | "right" }) {
           width: side === "right" ? 178 : 200,
           height: WHEEL_HEIGHT,
           transform: "translateY(-50%)",
+          // Rækkerne klippes ved hero-bunden: de drejer ind bag listen. Listen
+          // har ikke længere en dækkende baggrund (bølge-baggrunden skinner
+          // igennem, 2026-10-01), så klippet overtager det job.
+          clipPath: `inset(-400px -400px ${HERO_HEIGHT / 2 + VERTICAL_SHIFT + WHEEL_HEIGHT / 2 - HERO_HEIGHT}px -400px)`,
         } as React.CSSProperties
       }
     >

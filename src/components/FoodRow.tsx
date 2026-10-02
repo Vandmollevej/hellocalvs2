@@ -24,7 +24,7 @@ export function FoodRow({
 }) {
   return (
     <div className="flex items-center gap-2.5 py-2.5">
-      <div className="flex h-11 w-11 flex-shrink-0 items-center justify-center overflow-hidden rounded-lg bg-hf-tan">
+      <div className="hf-foodrow-thumb flex h-11 w-11 flex-shrink-0 items-center justify-center overflow-hidden rounded-lg bg-hf-tan">
         {thumbnail}
         {!thumbnail && image && (
           // Multiply blends the photos' white backdrop into the tan tile (HelloFresh-style).

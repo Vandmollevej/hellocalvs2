@@ -2,6 +2,23 @@
 
 This file records durable decisions. Add a dated entry when a later decision changes one of them.
 
+## 2026-10-02: "Til info sendte vi dig …" (mail/sms var ikke spam)
+
+- Hver mail eller sms til en kendt bruger giver (1) en push med det samme: "Vi har netop sendt dig en e-mail om "emne". Dette var ikke spam." og (2) et bundark som det første ved næste besøg (app og web): "Til info sendte vi dig den <dato> en <e-mail/sms> om "<emne>". Dette var ikke spam." med sort knap "Læst".
+- "Læst" kvitterer (`OutboundMessage.noticeAckAt`); et træk ned lukker kun til næste besøg. Beskeder ældre end 30 dage vises ikke. Gælder ikke mails til admin, ikke-brugere (invitationer) eller rene push-beskeder.
+- Bygger på den eksisterende `OutboundMessage`-log — ingen adresse eller telefonnummer gemmes. Sms sendes via `src/lib/sms.ts` (GatewayAPI-format, no-op uden `SMS_GATEWAY_TOKEN`); brugere har endnu intet telefonnummer-felt, så ingen sms sendes i dag.
+
+## 2026-10-02: Vægt- og længdeenheder (kg/lb/st, cm/in)
+
+- Brugeren vælger vægtenhed (kg, pund eller stone+pund) og højde-/kropsmål-enhed (cm eller tommer) i startguidens første trin og under Indstillinger → Sprog og region. Valget gemmes pr. enhed i localStorage (som kalendervisning); databasen gemmer stadig altid kg og cm.
+- Standard udledes af landet (profilens region, ellers browserens): USA/Canada → pund + tommer, UK/Irland → stone+pund + tommer, resten kg + cm. Stone indtastes som `11 5` (stone pund). Tempo (kg/uge) og statistik-grafen bruger pund i stedet for stone.
+
+## 2026-10-01: Bølge-baggrund på forsiden
+
+- Forsiden får en rolig, tilfældig bølge-animation bag topbar og hero (til ca. halvvejen mellem skillestregen og "Ingen registreringer i dag"), grønne nuancer øverst mod gullig creme nedenfor, så den næsten går i et med baggrunden. Bløde bånd (hverken tynde streger eller brede bølger), ingen prikker/tern/striber, ingen DNA-agtig regelmæssighed; langsom og rolig, ikke pulserende lydbølger.
+- Nederste del er sløret som frostet glas (tre lag med stigende blur) og toner ud. Tegnes i canvas; farver læses fra tokens ved kørsel.
+- Layout-konsekvens: DailyList-containeren har ikke længere `bg-hf-cream`; tal-hjulets rækker klippes ved hero-bunden i `StatsWheel` i stedet for at blive dækket af listen.
+
 ## 2026-09-29: Aktivitetsniveau, PAL og kaloriemål
 
 - Erstatter faktorerne i 2026-09-28 "Aktivitetsniveau i 5 trin" (1,2–1,9). Nye niveauer og PAL-intervaller: se `docs/ACTIVITY-PAL.md` (planen; intet bygget). Ingen aktive brugere, så gamle niveauer erstattes uden overgangslogik.
@@ -3146,6 +3163,11 @@ Apple Health-adgangsarket (som HelloFresh viser), med alle Hello Cals punkter.
 
 Brugere med `role = ADMIN` behandles som Seriøs i `getUserSubscriptionTier` og `/api/subscription`, uden en Subscription-række, så alle Seriøs-funktioner kan testes. Ingen databaseændring.
 
+## 2026-10-02 — Familie kun synlig for familieabonnenter; admin har familieabonnement
+
+- `hasActiveFamilyPlan` (src/lib/family.ts) og `/api/subscription` (`plan`) giver `role = ADMIN` altid familieabonnement, uden Subscription-række, så alle familiefelter kan testes. Ingen databaseændring. Familien oprettes stadig med knappen "Opret familie".
+- Indstillinger viser kun "Familie"-kortet, når brugeren har familieabonnement eller er med i en familie. Uden familieabonnement ligger indgangen til at indtaste en familiekode på Abonnement-siden ("Har du fået en kode?"). Købstilbuddet på Familieabonnement står uændret på Abonnement-siden.
+
 ## 2026-09-28: Samtykke på tilmeldingssiden i stedet for separat side
 
 Brugerens opgave 35: det separate samtykke-step (`/samtykke`) fjernes. Samtykket
@@ -3312,6 +3334,25 @@ Produktsiden viser aldrig teksten "Branded". Brandet vises kun som brandnavn/log
   (vægt ÷ N). Aldrig gættet; 2-80 g. Agenten skriver den kun, når varen ikke
   har en portionsstørrelse.
 
+### Tilføjelse 2026-10-02 — drikkevarer og alkohol starter på pakkestørrelsen
+
+- Brugerens regel: står der 33 cl, 25 cl eller 50 cl ved en drikkevare eller
+  alkohol, er det tallet i mængdefeltet. Størrelsen læses fra
+  `packageSizeText`, ellers fra navnet ("Tuborg Classic 33 cl"); multipak
+  ("6 x 33 cl") giver én enhed.
+- Varer uden kategorien DRINK tæller som drikkevare, når både navnet har et
+  drikke-ord (øl, vin, cola …) og en størrelse i ml/cl/dl/l. Fløde, olie,
+  eddike, sirup, saucer o.l. tages aldrig som hel pakke.
+- Vin: flaske ≤ 25 cl = hele flasken, ellers 150 ml. Spiritus (≥ 20 % eller
+  spiritus-ord uden mixer): ≤ 10 cl = hele flasken, ellers 4 cl.
+  Færdigblandede drinks (gin & tonic, rom og cola) = hele dåsen. Øvrige
+  drikkevarer: ≤ 50 cl = hele pakken, ellers 250 ml.
+- Visningsenheden er cl, når pakningsstørrelsen eller navnet angiver cl (også
+  "33 cl dåse"). Kategorien afgør stadig g mod ml.
+- Tabellen med typiske mængder er udvidet (kød 150 g, fisk 125 g, frugt,
+  suppe, pizza, færdigretter, fløde, æg m.m.), så færre varer ender på 100 g.
+- Videresendte varer (`/forward/[token]`) tilføjes med samme startmængde.
+
 ## 2026-09-28: Produktsidens lodrette rytme + beskårne brand-logoer
 
 - Produktsiden (`AddProductView`): 32 px fra produktcirklen til titlen (som
@@ -3439,6 +3480,22 @@ Kilder på "Mad på latin" skal altid være officielle (Fødevarestyrelsen, Sund
   det), og et bart "Vand" normaliseres til "Flaskevand" (`normalizeProductType`
   i `src/lib/product-naming.ts`), så søgning på "vand" viser en præcis betegnelse.
 - Eksisterende produkter, der allerede hedder "Vand", omdøbes ikke automatisk.
+
+## 2026-10-02: Userback feedback-widget
+
+- Scriptet indlæses globalt fra src/components/UserbackWidget.tsx (rodlayoutet) med det offentlige widget-token. Der sendes bevidst ingen Userback.user_data (ingen navn/e-mail), så feedback er anonym i tråd med anonymitetsreglerne.
+
+
+## 2026-10-02 – Rigtige certifikat-logoer (public/certifications)
+
+- Mærker på varesiden vises med brugerens rigtige logofiler (`public/certifications/*.png`, kind → fil i `CERTIFICATION_LOGO_FILES` i `src/lib/certification-badges.ts`), ikke tegnede SVG-erstatninger. Originalerne ligger i mappen `Certifikater/` (ikke i git).
+- Kobling sker på tekstværdien i `ProductFilters` (økologisk, nøglehul, fuldkorn, dyrevelfærd-liste, certificeringer-liste); ukendte mærker vises som tekst-pille.
+- "Bedre Dyrevelfærd 2" er afledt af 1- og 3-hjerte-filerne, fordi den leverede 2-stjerner-fil var identisk med 3-stjerner. Erstat med original, når den findes.
+## 2026-10-02 Kontoindstillinger: Luk konto og Ret til at blive glemt
+
+- Ny side /settings/account (Indstillinger -> Kontoindstillinger) med to knapper, begge i bundark med bekraeftelse (skriv SLET).
+- Begge kalder POST /api/account/close, som koerer anonymizeUser() (src/lib/gdpr.ts) paa brugeren selv, rydder session-cookies og logger ud. Forskellen er kun ordlyd; GDPR-sletning er fortsat anonymisering (se 2026-09-02).
+- Ikke gjort: aktivt abonnement hos betalingsudbyder opsiges ikke automatisk.
 
 ## 2026-10-02: Før/efter-sammenligning i billede-dagbogen
 

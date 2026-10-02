@@ -45,6 +45,7 @@ import { computeAge } from "@/lib/age";
 import { getSportMeta } from "@/lib/sport-icons";
 import { useDefaultCalendarView } from "@/lib/calendar-view-pref";
 import { useTranslation } from "@/i18n/LocaleProvider";
+import { useInWebShell } from "@/components/web/WebShell";
 import { fetchSleepQuality, localDateKey } from "@/lib/sleep-quality";
 import { IconPartyPopper, PartyPopperImage } from "@/components/icons/PartyPopper";
 import { BODY_MEASUREMENT_FIELDS } from "@/lib/body-measurements";
@@ -235,11 +236,19 @@ const MAX_HOUR_HEIGHT = HOUR_HEIGHT * 4;
 const ZOOM_SENSITIVITY = 220; // px to fingers must move for a full 1x scale step
 const HOUR_HEIGHT_STORAGE_KEY = "hellocal.kalender.hourHeight";
 
-function loadStoredHourHeight(): number {
-  if (typeof window === "undefined") return HOUR_HEIGHT;
-  const raw = window.localStorage.getItem(HOUR_HEIGHT_STORAGE_KEY);
+// Desktop-skallen (WebShell) viser dagen højere: ca. 8 timer ad gangen med en
+// linje hver halve time, så indtastninger kan sættes i 30-minutters trin. Natten
+// står uden for billedet — kun den første/sidste time vises, og resten scrolles
+// til, som på mobilen. Egen nøgle, så zoom på webben ikke ændrer mobilen.
+const WEB_HOUR_HEIGHT = 96;
+const WEB_HOUR_HEIGHT_STORAGE_KEY = "hellocal.kalender.hourHeight.web";
+
+function loadStoredHourHeight(web = false): number {
+  const fallback = web ? WEB_HOUR_HEIGHT : HOUR_HEIGHT;
+  if (typeof window === "undefined") return fallback;
+  const raw = window.localStorage.getItem(web ? WEB_HOUR_HEIGHT_STORAGE_KEY : HOUR_HEIGHT_STORAGE_KEY);
   const parsed = raw ? Number(raw) : NaN;
-  if (Number.isNaN(parsed)) return HOUR_HEIGHT;
+  if (Number.isNaN(parsed)) return fallback;
   return Math.min(MAX_HOUR_HEIGHT, Math.max(MIN_HOUR_HEIGHT, parsed));
 }
 
@@ -1834,7 +1843,8 @@ function DayDetails({
   // (DayDetails er keyed på datoen); et tryk udenfor lukker den, og derefter
   // står kun det lille ikon ud for kl. GOAL_HOUR.
   const [goalPopupDismissed, setGoalPopupDismissed] = useState(false);
-  const [hourHeight, setHourHeight] = useState(() => loadStoredHourHeight());
+  const inWebShell = useInWebShell();
+  const [hourHeight, setHourHeight] = useState(() => loadStoredHourHeight(inWebShell));
   const activeZoomPointers = useRef(new Map<number, number>());
   const zoomStart = useRef<{ avgY: number; hourHeight: number } | null>(null);
   const mouseDrag = useRef<{ y: number; scrollTop: number } | null>(null);
@@ -1906,7 +1916,10 @@ function DayDetails({
     mouseDrag.current = null;
     if (activeZoomPointers.current.size === 0) {
       try {
-        window.localStorage.setItem(HOUR_HEIGHT_STORAGE_KEY, String(hourHeight));
+        window.localStorage.setItem(
+          inWebShell ? WEB_HOUR_HEIGHT_STORAGE_KEY : HOUR_HEIGHT_STORAGE_KEY,
+          String(hourHeight),
+        );
       } catch {
         // localStorage unavailable — ignore.
       }
@@ -1915,7 +1928,7 @@ function DayDetails({
 
   const timelineHeight = hourHeight * 24;
   const showMinuteLines = hourHeight >= HOUR_HEIGHT * 2;
-  const minuteStep = hourHeight >= HOUR_HEIGHT * 3 ? 5 : 15;
+  const minuteStep = hourHeight >= HOUR_HEIGHT * 3 ? 5 : inWebShell ? 30 : 15;
 
   // Tidslinjen løber altid fra 00:00 (top) til 24:00 (bund) — ikke roteret om
   // stå-op-tiden. Ved åbning af en dag scroller vi ned, så den sidste hele
@@ -2041,7 +2054,7 @@ function DayDetails({
           <div className="relative rounded-lg bg-hf-black px-4 py-2 text-center text-hf-white">
             <Link
               href="/statistics/sleep"
-              className="hf-type-small absolute inset-y-0 left-4 flex items-center text-hf-white no-underline"
+              className="hf-type-small absolute inset-y-0 right-4 flex items-center text-hf-white no-underline"
             >
               {t("sleepStats.calendarLink")}
             </Link>
