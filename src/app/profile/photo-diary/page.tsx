@@ -3,11 +3,12 @@
 import { useEffect, useRef, useState } from "react";
 import { HfScreen } from "@/components/HfScreen";
 import { PhotoCarousel } from "@/components/photo-diary/PhotoCarousel";
+import { PhotoCompare } from "@/components/photo-diary/PhotoCompare";
 import { PhotoViewer } from "@/components/photo-diary/PhotoViewer";
 import { Toggle } from "@/components/ui/Toggle";
 import { useTranslation } from "@/i18n/LocaleProvider";
 import { confirmOnDevice, isPasskeySupported } from "@/lib/passkey-client";
-import { sortOldestFirst, wrapIndex, type DiaryPhoto } from "@/lib/photo-diary";
+import { defaultComparePair, sortOldestFirst, wrapIndex, type DiaryPhoto } from "@/lib/photo-diary";
 import {
   addDiaryPhoto,
   deleteDiaryPhoto,
@@ -57,6 +58,8 @@ export default function BilledeDagbogPage() {
   // Billedet i karrusellens midte (og i fuldskærm). null = det nyeste.
   const [activeId, setActiveId] = useState<string | null>(null);
   const [viewerOpen, setViewerOpen] = useState(false);
+  // Før/efter-sammenligningen (PhotoCompare); null = lukket.
+  const [comparePair, setComparePair] = useState<{ beforeId: string; afterId: string } | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const cameraOpenedAt = useRef(0);
   const objectUrls = useRef(new Set<string>());
@@ -123,6 +126,7 @@ export default function BilledeDagbogPage() {
       if (Date.now() - cameraOpenedAt.current < CAMERA_HIDE_GRACE_MS) return;
       setLocked(true);
       setViewerOpen(false);
+      setComparePair(null);
     }
     document.addEventListener("visibilitychange", onVisibilityChange);
     return () => document.removeEventListener("visibilitychange", onVisibilityChange);
@@ -304,12 +308,23 @@ export default function BilledeDagbogPage() {
                   {t("photoDiary.noPhotosYet")}
                 </p>
               ) : (
-                <PhotoCarousel
-                  photos={ordered}
-                  index={activeIndex}
-                  onIndexChange={selectIndex}
-                  onOpen={openViewer}
-                />
+                <>
+                  <PhotoCarousel
+                    photos={ordered}
+                    index={activeIndex}
+                    onIndexChange={selectIndex}
+                    onOpen={openViewer}
+                  />
+                  {ordered.length >= 2 && (
+                    <button
+                      type="button"
+                      onClick={() => setComparePair(defaultComparePair(ordered, activeIndex))}
+                      className="hf-control hf-btn-secondary w-full"
+                    >
+                      {t("photoDiary.compare.button")}
+                    </button>
+                  )}
+                </>
               )}
             </>
           )}
@@ -323,6 +338,15 @@ export default function BilledeDagbogPage() {
           onIndexChange={selectIndex}
           onClose={() => setViewerOpen(false)}
           onDelete={onViewerDelete}
+        />
+      )}
+
+      {comparePair && ordered.length >= 2 && (
+        <PhotoCompare
+          photos={ordered}
+          initialBeforeId={comparePair.beforeId}
+          initialAfterId={comparePair.afterId}
+          onClose={() => setComparePair(null)}
         />
       )}
     </HfScreen>

@@ -3439,3 +3439,15 @@ Kilder på "Mad på latin" skal altid være officielle (Fødevarestyrelsen, Sund
   det), og et bart "Vand" normaliseres til "Flaskevand" (`normalizeProductType`
   i `src/lib/product-naming.ts`), så søgning på "vand" viser en præcis betegnelse.
 - Eksisterende produkter, der allerede hedder "Vand", omdøbes ikke automatisk.
+
+## 2026-10-02: Før/efter-sammenligning i billede-dagbogen
+
+- Billede-dagbogen får en før/efter-slider (`PhotoCompare`) med to tilstande:
+  "Glid" (skillelinje; før til venstre, efter til højre — samme retning som
+  karrusellen, ældst til venstre) og "Ton" (efter tones ind over før).
+- Begge billeder fylder én boks formet efter før-billedet (`object-cover`), så
+  kroppen står samme sted; billeder med andet format beskæres let i stedet for
+  at få sorte kanter, der flytter skillelinjen væk fra billedet.
+- Brugeren vælger frit begge billeder; der tvinges ikke kronologisk rækkefølge.
+- Alt sker på enheden ud fra billederne i IndexedDB; intet nyt sendes til
+  serveren, og visningslåsen gælder også sammenligningen.

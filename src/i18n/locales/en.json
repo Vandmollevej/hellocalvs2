@@ -1459,6 +1459,25 @@
     "recentTitle": "Recent entries"
   },
   "photoDiary": {
+    "compare": {
+      "button": "Compare before and after",
+      "title": "Before and after",
+      "before": "Before",
+      "after": "After",
+      "beforeAlt": "Before photo from {date}",
+      "afterAlt": "After photo from {date}",
+      "wipeSlider": "Divider between before and after",
+      "fadeSlider": "Fade the after photo over the before photo",
+      "modeLabel": "View",
+      "modeWipe": "Slide",
+      "modeFade": "Fade",
+      "pickLabel": "Choose photo for",
+      "pickPhoto": "Use the photo from {date}",
+      "swap": "Swap",
+      "sameDay": "Same day",
+      "oneDayApart": "1 day apart",
+      "daysApart": "{count} days apart"
+    },
     "title": "Photo diary",
     "loading": "Loading…",
     "loadError": "Couldn't load photo diary.",

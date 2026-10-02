@@ -1459,6 +1459,25 @@
     "recentTitle": "Seneste registreringer"
   },
   "photoDiary": {
+    "compare": {
+      "button": "Sammenlign før og efter",
+      "title": "Før og efter",
+      "before": "Før",
+      "after": "Efter",
+      "beforeAlt": "Før-billede fra {date}",
+      "afterAlt": "Efter-billede fra {date}",
+      "wipeSlider": "Skillelinje mellem før og efter",
+      "fadeSlider": "Ton efter-billedet ind over før-billedet",
+      "modeLabel": "Visning",
+      "modeWipe": "Glid",
+      "modeFade": "Ton",
+      "pickLabel": "Vælg billede til",
+      "pickPhoto": "Brug billedet fra {date}",
+      "swap": "Byt om",
+      "sameDay": "Samme dag",
+      "oneDayApart": "1 dag imellem",
+      "daysApart": "{count} dage imellem"
+    },
     "title": "Billede-dagbog",
     "loading": "Henter…",
     "loadError": "Kunne ikke hente billede-dagbog.",
