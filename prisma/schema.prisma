@@ -60,6 +60,17 @@ model User {
   // email once SMTP exists.
   emailVerifiedAt DateTime?
 
+  // Telefonnummer (2026-10-02, docs/DECISIONS.md): obligatorisk for alle
+  // brugere, der kan logge ind, fordi det skal bruges til tofaktor-
+  // godkendelse. Gemmes normaliseret i E.164 (fx +4512345678,
+  // src/lib/phone.ts). Nullable i databasen, fordi ældre konti, familie-
+  // profiler uden eget login og admin-konti (TOTP) kan mangle det — appen
+  // kræver det ved tilmelding og spærrer indloggede brugere uden nummer,
+  // indtil det er udfyldt (/account/phone). phoneVerifiedAt reserveres til
+  // SMS-bekræftelsen, når tofaktor bygges.
+  phone           String?
+  phoneVerifiedAt DateTime?
+
   // Sleep pattern: default bedtime/wake time, with the option of
   // individual times per weekday (SleepSchedule) for users with shifting
   // work hours.

@@ -1,6 +1,13 @@
 # HELLO CAL — project status
 
-Last updated: 2026-09-29
+Last updated: 2026-10-02
+
+## 2026-10-02: Telefonnummer obligatorisk (til tofaktor-godkendelse)
+
+- `User.phone` (E.164, fx `+4512345678`) + `phoneVerifiedAt` (reserveret til SMS-bekræftelsen). Migration `20261002090000_user_phone` skal køre ved deploy. Normalisering/validering i `src/lib/phone.ts` (tests i `phone.test.mjs`, grønne).
+- Tilmelding (`/signup`, `/api/auth/register`) kræver nummeret. Profilsiden viser feltet under e-mail: kan rettes, ikke slettes (`PATCH /api/profile` afviser tomt/ugyldigt med 400).
+- Indloggede uden nummer (Google/Apple/Facebook-konti og konti fra før kravet) sendes af `AuthGate` til `/account/phone` (ingen tilbagepil, ingen "spring over"), til det er udfyldt. Børneprofiler i en familie er undtaget; admin-konti (TOTP) og familieprofiler uden eget login oprettes uden nummer. "Glem mig" sletter nummeret.
+- Selve SMS-tofaktoren er **ikke** bygget — kun feltet. Ikke live-testet (ingen lokal DB); test tilmelding og profilsiden på telefon. Se DECISIONS.md samme dato.
 
 ## 2026-09-29: Offentlig forside for udloggede
 

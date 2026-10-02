@@ -14,6 +14,7 @@ import { latestTrendWeight, type MealSample, type WeightSample } from "@/lib/wei
 import { computeAge } from "@/lib/age";
 import { ACTIVITY_LEVELS, type ActivityLevel } from "@/lib/activity-level";
 import { useTranslation } from "@/i18n/LocaleProvider";
+import { formatPhone, normalizePhone } from "@/lib/phone";
 import { FaceIdButton } from "@/components/FaceIdButton";
 import { SkeletonForm, SkeletonScreen } from "@/components/hf/Skeleton";
 import { EnergyBreakdown } from "@/components/EnergyBreakdown";
@@ -24,6 +25,8 @@ type Sex = "FEMALE" | "MALE";
 type ProfileUser = {
   displayName: string;
   email: string;
+  phone: string | null;
+  region: string;
   weightKg: number | null;
   startWeightUpdatedAt: string | null;
   createdAt: string;
@@ -127,6 +130,10 @@ export default function ProfileEditPage() {
   const [trendWeightKg, setTrendWeightKg] = useState<number | null>(null);
   const [energySummary, setEnergySummary] = useState<EnergySummary | null>(null);
   const saveTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
+  // Telefonnummer (docs/DECISIONS.md 2026-10-02): obligatorisk, kan rettes
+  // men ikke slettes. Kladden gemmes først, når den er et gyldigt nummer.
+  const [phoneDraft, setPhoneDraft] = useState<string | null>(null);
+  const [phoneError, setPhoneError] = useState<string | null>(null);
 
   // Regnestykket (docs/ACTIVITY-PAL.md) hentes igen, hver gang profilen
   // gemmes, så det følger vægt, højde, alder, køn og niveau.
@@ -218,6 +225,18 @@ export default function ProfileEditPage() {
     }).catch(() => {});
   }
 
+  function commitPhone() {
+    if (!user || phoneDraft === null) return;
+    const parsed = normalizePhone(phoneDraft, user.region);
+    if (!parsed.ok) {
+      setPhoneError(t(parsed.reason === "empty" ? "profile.phoneRequired" : "profile.phoneInvalid"));
+      return;
+    }
+    setPhoneError(null);
+    setPhoneDraft(null);
+    if (parsed.e164 !== user.phone) updateNow("phone", parsed.e164);
+  }
+
   return (
     <HfScreen
       title={t("profile.section.profile")}
@@ -257,6 +276,29 @@ export default function ProfileEditPage() {
 
           <Field label={t("profile.field.email")}>
             <input className={`${inputClass} opacity-60`} value={user.email} disabled />
+          </Field>
+
+          <Field label={t("profile.field.phone")}>
+            <input
+              className={inputClass}
+              type="tel"
+              inputMode="tel"
+              autoComplete="tel"
+              required
+              aria-invalid={phoneError !== null}
+              value={phoneDraft ?? formatPhone(user.phone)}
+              onChange={(event) => {
+                setPhoneDraft(event.target.value);
+                setPhoneError(null);
+              }}
+              onBlur={commitPhone}
+              onKeyDown={(event) => {
+                if (event.key === "Enter") event.currentTarget.blur();
+              }}
+            />
+            <span className={`hf-type-micro ${phoneError ? "text-hf-red-dark" : "text-text-secondary"}`}>
+              {phoneError ?? t("profile.phoneHint")}
+            </span>
           </Field>
 
           <div className="grid grid-cols-2 gap-4">

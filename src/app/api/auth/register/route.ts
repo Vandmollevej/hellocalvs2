@@ -3,6 +3,7 @@ import bcrypt from "bcryptjs";
 import { prisma } from "@/lib/prisma";
 import { completeLogin } from "@/lib/user-login";
 import { sendEmailVerification } from "@/lib/email-verification";
+import { normalizePhone } from "@/lib/phone";
 
 // Rigtig e-mail-tilmelding (kalder ikke admin-login-koden). Blød bekræftelse
 // (docs/DECISIONS.md 2026-09-25): brugeren logges ind med det samme, men
@@ -19,6 +20,7 @@ export async function POST(req: Request) {
   const email = typeof body.email === "string" ? body.email.trim().toLowerCase() : "";
   const password = typeof body.password === "string" ? body.password : "";
   const referralCode = typeof body.referralCode === "string" ? body.referralCode.trim() : "";
+  const phoneInput = typeof body.phone === "string" ? body.phone : "";
 
   if (!displayName) {
     return NextResponse.json({ message: "Angiv dit navn" }, { status: 400 });
@@ -29,6 +31,19 @@ export async function POST(req: Request) {
   if (password.length < 8) {
     return NextResponse.json(
       { message: "Adgangskoden skal være mindst 8 tegn" },
+      { status: 400 }
+    );
+  }
+
+  // Telefonnummer er obligatorisk (docs/DECISIONS.md 2026-10-02): det skal
+  // bruges til tofaktor-godkendelse. Gemmes i E.164.
+  const phone = normalizePhone(phoneInput);
+  if (!phone.ok) {
+    return NextResponse.json(
+      {
+        message:
+          phone.reason === "empty" ? "Angiv dit telefonnummer" : "Angiv et gyldigt telefonnummer (fx +45 12 34 56 78)",
+      },
       { status: 400 }
     );
   }
@@ -55,6 +70,7 @@ export async function POST(req: Request) {
     data: {
       email,
       displayName,
+      phone: phone.e164,
       passwordHash,
       healthDataConsentAt: new Date(),
     },

@@ -19,6 +19,7 @@ function TilmeldContent() {
   const next = searchParams.get("next") ?? "/";
   const [displayName, setDisplayName] = useState("");
   const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
   const [healthDataConsent, setHealthDataConsent] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -37,7 +38,7 @@ function TilmeldContent() {
       const response = await fetch("/api/auth/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ displayName, email, password, referralCode, healthDataConsent }),
+        body: JSON.stringify({ displayName, email, phone, password, referralCode, healthDataConsent }),
       });
       const data = await response.json();
       if (!response.ok) {
@@ -95,6 +96,21 @@ function TilmeldContent() {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
         />
+
+        {/* Obligatorisk (docs/DECISIONS.md 2026-10-02): bruges til tofaktor-godkendelse. */}
+        <div className="flex flex-col gap-1">
+          <TextField
+            label={t("signup.phoneLabel")}
+            type="tel"
+            inputMode="tel"
+            autoComplete="tel"
+            required
+            value={phone}
+            onChange={(e) => setPhone(e.target.value)}
+            placeholder={t("signup.phonePlaceholder")}
+          />
+          <span className="hf-type-caption text-text-secondary">{t("signup.phoneHint")}</span>
+        </div>
 
         <TextField
           label={t("signup.passwordLabel")}

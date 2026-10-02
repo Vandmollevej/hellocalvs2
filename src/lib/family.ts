@@ -327,6 +327,8 @@ export async function deleteFamilyProfile(ownerId: string, profileId: string) {
       data: {
         email: `slettet-${profileId}@hellocal.invalid`,
         displayName: "Slettet bruger",
+        phone: null,
+        phoneVerifiedAt: null,
         weightKg: null,
         heightCm: null,
         birthDate: null,

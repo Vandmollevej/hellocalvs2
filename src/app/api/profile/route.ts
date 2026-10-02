@@ -7,6 +7,7 @@ import { getUserSubscriptionTier } from "@/lib/subscription";
 import { isActivityLevel } from "@/lib/activity-level";
 import { applyManualLevel } from "@/lib/activity-profile";
 import { GOAL_MODES, type GoalMode } from "@/lib/energy-budget";
+import { normalizePhone } from "@/lib/phone";
 
 export async function GET() {
   try {
@@ -35,6 +36,7 @@ export async function PATCH(req: Request) {
   const body = await req.json();
   const {
     displayName,
+    phone,
     weightKg,
     targetWeightKg,
     heightCm,
@@ -72,6 +74,7 @@ export async function PATCH(req: Request) {
     wantsPartnerOffersEmails,
   } = body as {
     displayName?: string;
+    phone?: unknown;
     weightKg?: unknown;
     targetWeightKg?: number | null;
     heightCm?: number | null;
@@ -114,6 +117,21 @@ export async function PATCH(req: Request) {
 
     if (!user) return unauthorized();
 
+    // Telefonnummer er obligatorisk (docs/DECISIONS.md 2026-10-02): det kan
+    // rettes, men aldrig slettes. Gemmes normaliseret (E.164); et nyt nummer
+    // nulstiller en evt. SMS-bekræftelse.
+    let normalizedPhone: string | undefined;
+    if (phone !== undefined) {
+      const parsed = normalizePhone(typeof phone === "string" ? phone : "", user.region);
+      if (!parsed.ok) {
+        return NextResponse.json(
+          { message: parsed.reason === "empty" ? "Angiv dit telefonnummer" : "Angiv et gyldigt telefonnummer", field: "phone" },
+          { status: 400 }
+        );
+      }
+      normalizedPhone = parsed.e164;
+    }
+
     // Start-vægten er låst (docs/DECISIONS.md 2026-09-22): her kan den kun
     // sættes første gang (mens den er tom). Enhver senere ændring skal gå
     // gennem det e-mailverificerede flow i /api/profile/start-weight.
@@ -136,6 +154,9 @@ export async function PATCH(req: Request) {
       where: { id: user.id },
       data: {
         displayName,
+        phone: normalizedPhone,
+        phoneVerifiedAt:
+          normalizedPhone !== undefined && normalizedPhone !== user.phone ? null : undefined,
         weightKg: initialWeightKg,
         startWeightUpdatedAt: initialWeightKg !== undefined ? new Date() : undefined,
         targetWeightKg,

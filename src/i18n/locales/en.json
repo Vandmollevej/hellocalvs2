@@ -136,6 +136,9 @@
     "nameLabel": "Name",
     "namePlaceholder": "Your name",
     "emailLabel": "Email address",
+    "phoneLabel": "Phone number",
+    "phonePlaceholder": "+45 12 34 56 78",
+    "phoneHint": "Required — used for two-factor authentication.",
     "passwordLabel": "Password",
     "passwordPlaceholder": "At least 8 characters",
     "submit": "Create account",
@@ -1091,6 +1094,7 @@
     "field": {
       "name": "Name",
       "email": "Email",
+      "phone": "Phone number",
       "weight": "Starting weight",
       "height": "Height",
       "birthDate": "Date of birth",
@@ -1102,6 +1106,9 @@
       "female": "Female",
       "male": "Male"
     },
+    "phoneHint": "Used for two-factor authentication. Can be changed, but not removed.",
+    "phoneRequired": "Enter your phone number.",
+    "phoneInvalid": "Enter a valid phone number, e.g. +45 12 34 56 78.",
     "activityLevel": {
       "notSet": "Pick the step that best fits your everyday life.",
       "note": "Training you log is added on top.",
@@ -2143,6 +2150,17 @@
     "deleteAccount": "Delete account and all data",
     "deleteAccountConfirm": "Are you sure? Your data is deleted permanently and cannot be recovered.",
     "lastUsed": "Last used"
+  },
+  "phoneRequired": {
+    "title": "Phone number",
+    "intro": "We need your phone number. It is required because it is used for two-factor authentication, so only you can log in to your account.",
+    "label": "Phone number",
+    "placeholder": "+45 12 34 56 78",
+    "submit": "Continue",
+    "submitting": "Saving…",
+    "empty": "Enter your phone number.",
+    "invalid": "Enter a valid phone number, e.g. +45 12 34 56 78.",
+    "networkError": "The number could not be saved — check your connection and try again."
   },
   "faceIdOffer": {
     "title": "Log in with Face ID",
