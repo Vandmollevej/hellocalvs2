@@ -11,6 +11,7 @@ export function HfScreen({
   titleClassName,
   alwaysShowBackButton,
   showAppSettingsButton,
+  leading,
 }: {
   title: string;
   icon?: React.ReactNode;
@@ -21,6 +22,7 @@ export function HfScreen({
   titleClassName?: string;
   alwaysShowBackButton?: boolean;
   showAppSettingsButton?: boolean;
+  leading?: React.ReactNode;
 }) {
   return (
     <div className="flex h-full min-h-0 flex-1 flex-col overflow-hidden bg-hf-cream">
@@ -32,6 +34,7 @@ export function HfScreen({
         titleClassName={titleClassName}
         alwaysShowBackButton={alwaysShowBackButton}
         showAppSettingsButton={showAppSettingsButton}
+        leading={leading}
       />
       <div className="relative min-h-0 flex-1 overflow-y-auto overscroll-contain">{children}</div>
       {footer && (

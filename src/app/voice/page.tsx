@@ -7,7 +7,9 @@ import { useRouter } from "next/navigation";
 import { IconCheck, IconChevronRight, IconRefresh } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
 import { SwipeableRow } from "@/components/SwipeableRow";
-import { regionToSpeechLang } from "@/lib/regions";
+import { defaultMealInputLanguage, readStoredMealInputLanguage, speechLangFor, type MealInputLanguageCode } from "@/lib/meal-input-language";
+import { MealLanguagePicker } from "@/components/voice/MealLanguagePicker";
+import { useMealInputLanguage } from "@/components/voice/useMealInputLanguage";
 import { useTranslation } from "@/i18n/LocaleProvider";
 
 type Item = {
@@ -239,27 +241,23 @@ export default function VoicePage() {
   const rafIdRef = useRef<number | null>(null);
   const micButtonRef = useRef<HTMLButtonElement | null>(null);
   const resetButtonRef = useRef<HTMLButtonElement | null>(null);
-  // Region (not the phone's/browser's display language) decides which
-  // language the user is expected to speak — EU-lovkrav om lokalsprog gælder
-  // ikke tale, men samme princip: en bruger med engelsk visningssprog, bosat
-  // i Danmark, taler stadig dansk (docs/DECISIONS.md 2026-09-12). A ref, not
+  // Sproget vælges med flaget i venstre hjørne (brugerens krav 2026-10-02);
+  // uden valg er det regionens sprog — ikke telefonens/browserens
+  // visningssprog (docs/DECISIONS.md 2026-09-12 og 2026-10-02). Refs, not
   // state, since startListening() is a plain closure invoked from a
-  // mount-only effect and must read the latest fetched value even if that
-  // effect's own closure is stale.
-  const regionRef = useRef("DK");
-
+  // mount-only effect and must read the latest value even if that effect's
+  // own closure is stale.
+  const { language, region, setLanguage } = useMealInputLanguage();
+  const regionRef = useRef<string | null>(null);
   useEffect(() => {
-    let cancelled = false;
-    fetch("/api/profile")
-      .then((response) => (response.ok ? response.json() : null))
-      .then((data: { user?: { region?: string } } | null) => {
-        if (!cancelled && data?.user?.region) regionRef.current = data.user.region;
-      })
-      .catch(() => {});
-    return () => {
-      cancelled = true;
-    };
-  }, []);
+    regionRef.current = region;
+  }, [region]);
+
+  // Læses direkte fra lageret, så første start (før hydreringen har givet
+  // hooket den gemte værdi) også bruger brugerens valg.
+  function currentLanguage(): MealInputLanguageCode {
+    return readStoredMealInputLanguage() ?? defaultMealInputLanguage(regionRef.current);
+  }
 
   const isListening = phase === "listening";
   const isProcessing = phase === "processing";
@@ -359,6 +357,8 @@ export default function VoicePage() {
       const target = event.target as Node | null;
       if (micButtonRef.current?.contains(target)) return;
       if (resetButtonRef.current?.contains(target)) return;
+      // Sprogflaget og dets bundark: et sprogskift genstarter selv mikrofonen.
+      if (target instanceof Element && target.closest("[data-meal-language], .hf-bottom-sheet")) return;
       stopListening();
     }
     document.addEventListener("pointerdown", handleOutsideInteraction, true);
@@ -380,7 +380,7 @@ export default function VoicePage() {
       const res = await fetch("/api/ai/interpret-meal", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ transcript: text }),
+        body: JSON.stringify({ transcript: text, language: currentLanguage() }),
       });
       if (!res.ok) return;
       const data = await res.json();
@@ -409,7 +409,7 @@ export default function VoicePage() {
       const res = await fetch("/api/ai/interpret-meal", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ transcript: spokenText }),
+        body: JSON.stringify({ transcript: spokenText, language: currentLanguage() }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.message ?? "AI-tolkning slog fejl");
@@ -450,13 +450,19 @@ export default function VoicePage() {
 
     recognition.continuous = true;
     recognition.interimResults = true;
-    recognition.lang = regionToSpeechLang(regionRef.current);
+    recognition.lang = speechLangFor(currentLanguage(), regionRef.current);
     recognition.maxAlternatives = 1;
+    // Hændelser fra en afbrudt (gammel) session ignoreres, så et sprogskift
+    // eller "start forfra" ikke viser "afbrudt"-fejlen eller tolker den
+    // gamle tekst.
+    const isCurrent = () => recognitionRef.current === recognition;
     recognition.onstart = () => {
+      if (!isCurrent()) return;
       setPhase("listening");
       startAudioMeter();
     };
     recognition.onresult = (event) => {
+      if (!isCurrent()) return;
       let interimTranscript = "";
       let newFinalTranscript = "";
 
@@ -470,6 +476,7 @@ export default function VoicePage() {
       setTranscript(`${finalTranscriptRef.current}${interimTranscript}`.trim());
     };
     recognition.onerror = (event) => {
+      if (!isCurrent()) return;
       recognitionFailed = true;
       recognitionRef.current = null;
       stopAudioMeter();
@@ -483,6 +490,7 @@ export default function VoicePage() {
       );
     };
     recognition.onend = () => {
+      if (!isCurrent()) return;
       recognitionRef.current = null;
       if (!recognitionFailed) finishProcessing();
     };
@@ -585,8 +593,22 @@ export default function VoicePage() {
 
   const hasPendingItems = items.some((item) => !item.saved);
 
+  function changeLanguage(code: MealInputLanguageCode) {
+    if (code === language) return;
+    setLanguage(code);
+    // Lytter mikrofonen, startes en ny session på det nye sprog.
+    if (recognitionRef.current) restartListening();
+  }
+
   return (
-    <HfScreen title={isListening ? t("voice.listeningTitle") : ""}>
+    <HfScreen
+      title={isListening ? t("voice.listeningTitle") : ""}
+      leading={
+        <span data-meal-language>
+          <MealLanguagePicker language={language} region={region} onChange={changeLanguage} />
+        </span>
+      }
+    >
       <div className="flex flex-col px-4 pb-8 pt-4">
         <section className="flex flex-col items-center" aria-live="polite">
           <button

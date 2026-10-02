@@ -1844,6 +1844,12 @@
     "usePeriod": "Use period"
   },
   "voice": {
+    "language": {
+      "button": "Speech and text language: {language}. Tap to change",
+      "title": "Which language do you speak?",
+      "hint": "Speech and text are interpreted only in the selected language. English product names are always understood too.",
+      "selected": "Selected"
+    },
     "aiEstimate": "AI estimate",
     "resetTranscript": "Reset text",
     "listeningTitle": "Listening...",

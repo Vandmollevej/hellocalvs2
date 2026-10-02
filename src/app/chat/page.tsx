@@ -5,6 +5,8 @@ import { IconSend } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
 import { useTranslation } from "@/i18n/LocaleProvider";
 import { mealShareBody } from "@/lib/meal-share";
+import { MealLanguagePicker } from "@/components/voice/MealLanguagePicker";
+import { useMealInputLanguage } from "@/components/voice/useMealInputLanguage";
 
 // Chat afløser mikrofonen på desktop-versionen: beskrivelsen skrives i stedet
 // for at tales og tolkes af samme endpoint som stemmesiden.
@@ -25,6 +27,8 @@ type Message =
 
 export default function ChatPage() {
   const { t } = useTranslation();
+  // Sprogflaget i venstre hjørne (samme valg som tale-siden på mobil).
+  const { language, region, setLanguage } = useMealInputLanguage();
   const [messages, setMessages] = useState<Message[]>([]);
   const [text, setText] = useState("");
   const [busy, setBusy] = useState(false);
@@ -45,7 +49,7 @@ export default function ChatPage() {
       const res = await fetch("/api/ai/interpret-meal", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ transcript: value }),
+        body: JSON.stringify({ transcript: value, language }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error();
@@ -99,6 +103,7 @@ export default function ChatPage() {
     <HfScreen
       title={t("web.chatTitle")}
       hideBackButton
+      leading={<MealLanguagePicker language={language} region={region} onChange={setLanguage} />}
       footer={
         <form
           onSubmit={(e) => {

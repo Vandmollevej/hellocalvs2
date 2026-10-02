@@ -2,6 +2,15 @@
 
 This file records durable decisions. Add a dated entry when a later decision changes one of them.
 
+## 2026-10-02: Sprogflag på tale- og chat-siden (ændrer 2026-09-12 for tale)
+
+Brugerens krav: flag/sprogvalg i venstre hjørne på tale-siden (mobil) og chat-siden (web); tale og tekst tolkes KUN på det valgte sprog, med engelsk som fallback, fordi mange varer hedder noget på engelsk.
+
+- Sprogene ligger ét sted (`src/lib/meal-input-language.ts`): dansk, svensk, norsk, tysk, hollandsk, fransk, italiensk, spansk og engelsk. Standard er regionens sprog som før; brugerens flagvalg vinder og huskes på enheden (localStorage, delt mellem de to sider).
+- Talegenkendelsen får kun det valgte sprog (Web Speech API tager ét sprog; regionens variant bruges, når sproget er regionens eget, fx de-AT). Den engelske fallback sker derfor i AI-tolkningen: `/api/ai/interpret-meal` får `language` og må kun læse teksten som det sprog eller engelsk. Varenavne skrives på det valgte sprog, engelske varenavne beholdes.
+- Flaget sidder i headerens venstre slot (ny `leading`-plads i `ScreenHeader`/`HfScreen`), til højre for tilbagepilen, når den vises. Valget åbner et bundark.
+- Et sprogskift mens mikrofonen lytter starter en ny session på det nye sprog. Hændelser fra en afbrudt session ignoreres, så skiftet ikke viser "Talegenkendelsen blev afbrudt".
+
 ## 2026-09-29: Aktivitetsniveau, PAL og kaloriemål
 
 - Erstatter faktorerne i 2026-09-28 "Aktivitetsniveau i 5 trin" (1,2–1,9). Nye niveauer og PAL-intervaller: se `docs/ACTIVITY-PAL.md` (planen; intet bygget). Ingen aktive brugere, så gamle niveauer erstattes uden overgangslogik.
