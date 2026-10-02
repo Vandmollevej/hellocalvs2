@@ -1032,6 +1032,7 @@ function MonthView({
     for (let index = 0; index < cells.length; index += 7) rows.push(cells.slice(index, index + 7));
     return rows;
   }, [cells]);
+  const todayStart = new Date(today.getFullYear(), today.getMonth(), today.getDate()).getTime();
   return (
     <>
       <div className="mb-2 flex items-center gap-1.5">
@@ -1058,6 +1059,11 @@ function MonthView({
                   const met = dailyGoalMet(dailyTotals, date, goalForDate(date));
                   const logged = totalKcalForDate(dailyTotals, date) > 0;
                   const current = isSameDay(date, today);
+                  // Afsluttede dage (før i dag) uden registreringer tæller som
+                  // "mål ikke nået" og får ÷ (brugerens valg 2026-10-02, se
+                  // docs/DECISIONS.md). Dagen i dag og fremtidige dage er blanke.
+                  const pastEmpty = !current && !logged && date.getTime() < todayStart;
+                  const marked = logged || pastEmpty;
                   const isOtherMonth = date.getMonth() !== month;
                   const hasGoal = goalsForDate(goalsByDate, date).length > 0;
                   return (
@@ -1066,7 +1072,7 @@ function MonthView({
                       type="button"
                       onClick={() => onOpenDate(date)}
                       aria-label={`${date.toLocaleDateString("da-DK", { dateStyle: "long" })}${current ? t("calendar.todaySuffix") : ""}${
-                        !logged ? "" : met ? t("calendar.goalMetSuffix") : t("calendar.goalMissedSuffix")
+                        !marked ? "" : met ? t("calendar.goalMetSuffix") : t("calendar.goalMissedSuffix")
                       }${hasGoal ? t("calendar.targetDateSuffix") : ""}`}
                       className={`hf-type-body hf-type-strong relative flex aspect-square items-center justify-center rounded-lg border focus-visible:outline-2 focus-visible:outline-hf-black ${
                         current
@@ -1086,7 +1092,7 @@ function MonthView({
                         />
                       )}
                       {!current &&
-                        logged &&
+                        marked &&
                         (met ? (
                           <IconCheck
                             size={12}

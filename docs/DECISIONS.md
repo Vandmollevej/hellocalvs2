@@ -2,6 +2,18 @@
 
 This file records durable decisions. Add a dated entry when a later decision changes one of them.
 
+## 2026-10-02: Månedsgitteret viser ÷ på afsluttede dage uden registreringer
+
+Brugerens valg efter skærmbillede: ændringen 2026-09-25, hvor tomme dage i
+månedsgitteret blev blanke, var ikke bestilt og er rullet tilbage for
+månedsgitteret. Regel for dagfelterne i månedsvisningen:
+- Dag med registreringer: ✓ (lime) når indtaget er på eller under målet,
+  ÷ (rød) når målet er overskredet. Uændret.
+- Afsluttet dag (før i dag) uden registreringer: ÷. En dag, der ikke er
+  registreret, tæller som ikke nået.
+- I dag og fremtidige dage: ingen markering.
+Uge- og Liste-visningen beholder "Ingen indtastninger" i gråt på tomme dage.
+
 ## 2026-09-29: Aktivitetsniveau, PAL og kaloriemål
 
 - Erstatter faktorerne i 2026-09-28 "Aktivitetsniveau i 5 trin" (1,2–1,9). Nye niveauer og PAL-intervaller: se `docs/ACTIVITY-PAL.md` (planen; intet bygget). Ingen aktive brugere, så gamle niveauer erstattes uden overgangslogik.

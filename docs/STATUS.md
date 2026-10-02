@@ -1,6 +1,14 @@
 # HELLO CAL — project status
 
-Last updated: 2026-09-29
+Last updated: 2026-10-02
+
+## 2026-10-02: Kalender — ÷ tilbage på tomme afsluttede dage i månedsgitteret
+
+- Månedsgitteret (`src/app/calendar/page.tsx`, `MonthView`) viser igen ÷ på
+  dage før i dag uden registreringer; ✓/÷ på dage med registreringer er
+  uændret, og i dag/fremtid er blanke. Se DECISIONS.md samme dato. Uge/Liste
+  rører vi ikke.
+- Lint og build grønne. Ikke set på telefon.
 
 ## 2026-09-29: Offentlig forside for udloggede
 
