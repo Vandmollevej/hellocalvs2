@@ -3,8 +3,14 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter, usePathname } from "next/navigation";
-import { createContext, useContext, useEffect, useState } from "react";
-import { IconPlus } from "@tabler/icons-react";
+import { createContext, useContext, useEffect, useRef, useState } from "react";
+import {
+  IconChevronDown,
+  IconPlus,
+  IconSettings,
+  IconUser,
+  IconWorld,
+} from "@tabler/icons-react";
 import { useAddActionsProfile, visibleAddActions } from "@/lib/add-actions";
 import { useFamilyStatus } from "@/components/family/FamilyStatusProvider";
 import { ProfileCircle } from "@/components/family/ProfileCircle";
@@ -24,6 +30,13 @@ import {
 // bundmenu (uden kamera og stemme, med chat) og profilindstillinger yderst til
 // højre. Ingen telefonramme. Selve siderne er appens egne.
 const COLLAPSED_KEY = "hc-web-sidebar-collapsed";
+
+// Profil-dropdown yderst til højre i topbjælken.
+const PROFILE_MENU = [
+  { href: "/profile", labelKey: "nav.profile", icon: IconUser },
+  { href: "/profile/settings/language-region", labelKey: "settings.languageAndRegion", icon: IconWorld },
+  { href: "/settings", labelKey: "web.allSettings", icon: IconSettings },
+];
 
 // Sider kan spørge, om de vises i desktop-skallen (ScreenHeader bruger det
 // til at udelade tilbagepilen på topniveau-sider).
@@ -137,6 +150,22 @@ export function WebShell({ children }: { children: React.ReactNode }) {
   const { status } = useFamilyStatus();
   const [collapsed, setCollapsed] = useState(false);
   const [addOpen, setAddOpen] = useState(false);
+  const [profileOpen, setProfileOpen] = useState(false);
+  const profileMenuRef = useRef<HTMLDivElement>(null);
+
+  // Luk profil-dropdown ved klik udenfor og ved sideskift.
+  useEffect(() => {
+    if (!profileOpen) return;
+    const onDown = (e: MouseEvent) => {
+      if (!profileMenuRef.current?.contains(e.target as Node)) setProfileOpen(false);
+    };
+    document.addEventListener("mousedown", onDown);
+    return () => document.removeEventListener("mousedown", onDown);
+  }, [profileOpen]);
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setProfileOpen(false);
+  }, [pathname]);
   const addProfile = useAddActionsProfile();
   // Mikrofonen findes ikke på desktop (chat afløser den).
   const addActions = visibleAddActions(addProfile).filter((a) => a.key !== "microphone");
@@ -289,22 +318,50 @@ export function WebShell({ children }: { children: React.ReactNode }) {
             >
               <IconPlus size={28} stroke={2} />
             </button>
-            <Link
-              href="/profile"
-              aria-label={t("web.profileSettings")}
-              className={`hf-type-body flex h-9 items-center gap-2 rounded-md pl-1.5 pr-3 ${
-                profileActive
-                  ? "hf-type-strong bg-hf-tan text-hf-green-dark"
-                  : "text-text-secondary hover:bg-hf-tan hover:text-text-primary"
-              }`}
-            >
-              <ProfileCircle
-                name={status?.activeProfile.displayName ?? ""}
-                size={32}
-                className="hf-avatar--outlined"
-              />
-              {t("web.profileSettings")}
-            </Link>
+            <div ref={profileMenuRef} className="relative">
+              <button
+                type="button"
+                aria-label={t("web.profileSettings")}
+                aria-haspopup="menu"
+                aria-expanded={profileOpen}
+                onClick={() => setProfileOpen((open) => !open)}
+                className={`hf-type-body flex h-9 items-center gap-2 rounded-md pl-1.5 pr-3 ${
+                  profileActive || profileOpen
+                    ? "hf-type-strong bg-hf-tan text-hf-green-dark"
+                    : "text-text-secondary hover:bg-hf-tan hover:text-text-primary"
+                }`}
+              >
+                <ProfileCircle
+                  name={status?.activeProfile.displayName ?? ""}
+                  size={32}
+                  className="hf-avatar--outlined"
+                />
+                {t("web.profileSettings")}
+                <IconChevronDown size={16} stroke={1.75} />
+              </button>
+              {profileOpen && (
+                <ul
+                  role="menu"
+                  className="absolute right-0 top-full z-40 mt-1 w-60 rounded-md border border-hf-tan-dark bg-hf-white p-1 shadow-lg"
+                >
+                  {PROFILE_MENU.map((item) => {
+                    const Icon = item.icon;
+                    return (
+                      <li key={item.href} role="none">
+                        <Link
+                          href={item.href}
+                          role="menuitem"
+                          className="hf-type-body flex h-9 items-center gap-3 rounded-md px-2.5 text-text-secondary hover:bg-hf-tan hover:text-text-primary"
+                        >
+                          <Icon size={18} stroke={1.75} />
+                          {t(item.labelKey)}
+                        </Link>
+                      </li>
+                    );
+                  })}
+                </ul>
+              )}
+            </div>
             </div>
             {addOpen && (
               <div className="absolute left-0 right-0 top-full z-20 border-b border-hf-tan-dark bg-hf-white pt-4 shadow-sm">
