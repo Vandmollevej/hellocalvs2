@@ -1801,7 +1801,10 @@
     "add": "+ Add",
     "noCardsYet": "No cards here yet.",
     "addHeading": "+ Heading",
-    "addDivider": "+ Divider"
+    "addDivider": "+ Divider",
+    "addAccordion": "+ Fold-out section",
+    "layoutTools": "Layout",
+    "accordionTitle": "Section"
   },
   "statUnusedCharts": {
     "title": "Unused charts",
@@ -1827,6 +1830,10 @@
     "removeHeading": "Remove heading",
     "dragHeading": "Move heading",
     "removeDivider": "Remove divider",
+    "removeAccordion": "Remove section",
+    "renameAccordion": "Rename section",
+    "openAccordion": "Expand",
+    "closeAccordion": "Collapse",
     "noData": "No data for this period"
   },
   "statChart": {

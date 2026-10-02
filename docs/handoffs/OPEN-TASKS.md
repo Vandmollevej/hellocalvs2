@@ -58,6 +58,7 @@ Ikke visuelt testet: lokalt sender appen til /welcome uden login. Test på mobil
 | 7fd0a9a3 | Rettelser til kort-redigering: fjern 6 prikker, skillelinje, vibration stop, scroll, slette-cirkel, ét slider-design | Færdig (32995ab) | Slider-delen var allerede lavet (23163ec) |
 | fb445e0d / 1ac06755 | Drag/drop til frie felter, stiplede rammer, dropzone til overskrift (1ac06755 er samme opgave) | Færdig (32995ab) | — |
 | 2fb90f13 | Dublet af 7fd0a9a3 (samme 6 punkter) | Færdig (32995ab) | — |
+| — | Fold-ud-boks (accordion) som layout-element: kort kan trækkes ind, hele boksen flyttes også lukket; opbygningsknapper samlet øverst med egen baggrund på tilføj-siden | Færdig (branch `claude/statistik-accordion-blok`) | Afventer brugerens test af træk-og-slip på telefon |
 | 961d7953 | Tal-slider på forsiden: midterste tal 25px indrykket, aftager til 0 som transparensen | Færdig (eba3638) | — |
 | 00cf8440 | Gradient i højre side af tallene (synlighed) skal være helt flydende | Færdig (32995ab) | Opacity går nu lineært til 0 ved kanten |
 | a9819635 | Trinløs størrelse/farve på slider (ingen spring pr. position) | Færdig (32995ab) | Ikonfarve + "/ mål"-linje glider nu trinløst |

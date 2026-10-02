@@ -1801,7 +1801,10 @@
     "add": "+ Tilføj",
     "noCardsYet": "Ingen kort her endnu.",
     "addHeading": "+ Overskrift",
-    "addDivider": "+ Skillelinje"
+    "addDivider": "+ Skillelinje",
+    "addAccordion": "+ Fold-ud-boks",
+    "layoutTools": "Opbygning",
+    "accordionTitle": "Fold-ud-boks"
   },
   "statUnusedCharts": {
     "title": "Ubrugte grafer",
@@ -1827,6 +1830,10 @@
     "removeHeading": "Fjern overskrift",
     "dragHeading": "Flyt overskrift",
     "removeDivider": "Fjern skillelinje",
+    "removeAccordion": "Fjern fold-ud-boks",
+    "renameAccordion": "Omdøb fold-ud-boks",
+    "openAccordion": "Fold ud",
+    "closeAccordion": "Fold sammen",
     "noData": "Ingen data i perioden"
   },
   "statChart": {
