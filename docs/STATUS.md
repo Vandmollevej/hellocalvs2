@@ -7,6 +7,35 @@ Last updated: 2026-10-02
 - Lygte-knap på kameraet (hvor telefonen/browseren tillader det), hvid tekst ved for mørkt/ude af fokus, og fokus-skift til ~20 cm på stregkodetrinnet. Se DECISIONS.md.
 - Lint, typecheck og `npm run build` grønne. Ikke testet på telefon — tjek i køleskabet på Android (lygte + fokus) og iPhone (forventet: kun advarselsteksten).
 
+## 2026-10-02: "Til info sendte vi dig …"-popup + push
+
+- Nyt: `src/lib/sent-notices.ts`, `src/lib/sms.ts`, `/api/messages/sent-notices`, `SentMessageNotice` (bundark i layoutet), `sendPushToUser` i `push.ts`. Se DECISIONS 2026-10-02.
+- Migration `20261002090000_sent_message_notice` skal køre ved deploy. Lint og typecheck grønne; ikke live-testet (ingen lokal DB).
+- Bemærk: push kræver VAPID-nøgler og at appen tilmelder enheden (findes ikke endnu); sms kræver `SMS_GATEWAY_TOKEN` og et telefonnummer på brugeren (findes ikke endnu).
+
+## 2026-10-02: Vægt- og længdeenheder
+
+- Nyt src/lib/units.ts (valg, landestandard, omregning, useUnits()), nyt startguide-trin units og to valg under Sprog og region. Brugt i: profil (vægt, højde-hjul), vægtlog, vægt-kalibrering, startvægt-verificering, målsætninger (vægt + kropsmål), energimål-editoren, kropsmål og statistik-grafen.
+- Lint og typecheck grønne for de berørte filer. Ikke visuelt testet (brugerregel). Ikke omregnet endnu: widgets/native, Hello Doc-rapport, kalender-vægtvisning og admin (kg/cm vises der stadig).
+
+## 2026-10-01: Rolig bølge-baggrund på forsiden
+
+- Ny baggrund bag topbar + hero, der fortsætter ca. 40 px under "Dagens tilføjelser"-stregen: tilfældige, langsomme bånd af bløde bølgelinjer (grønt øverst → gullig creme nedenfor) plus lidt tåge. Tre lag af samme canvas-scene (skarp / mellem-sløret / kraftigt sløret) giver frostet-glas-effekten nederst. Farver kun fra tokens. Står stille ved "reducer bevægelse" og standser når fanen er skjult.
+- Filer: `src/lib/home-waves.ts` (tegnelogik + test `home-waves.test.mjs`), `src/components/HomeWaves.tsx`, `.home-wave*` i `globals.css`, `src/app/page.tsx`. Listen er ikke længere dækkende; tal-hjulets rækker klippes i stedet ved hero-bunden (`StatsWheel.tsx`, `clipPath`).
+- Lint, typecheck og `node --test` (home-waves) grønne. Ikke visuelt testet (brugerregel: ingen skærmbilleder) — tjek udseende, tempo og lag på telefon. Justér tempo/farve/tykkelse i `createWaveScene` (hastigheder i px/s, `alpha`, `width`) og maskerne i `globals.css`.
+## 2026-10-02: Drikkevarer starter på pakkestørrelsen
+
+- Mængdefeltet viser nu 33 cl / 25 cl / 50 cl for dåser og små flasker, også når størrelsen kun står i navnet, og også for øl/vin uden kategorien DRINK. Vin, spiritus og færdigblandede drinks har egne regler (DECISIONS.md 2026-09-28, tilføjelse 2026-10-02).
+- Flere typiske mængder (kød, fisk, frugt, suppe, pizza m.m.), så færre varer starter på 100 g. Videresendte varer bruger samme startmængde.
+- Tests: `src/lib/default-amount.test.mjs` (ny) + udvidet `product-display-unit.test.mjs`, grønne. Lint, typecheck og build grønne. Ikke live-testet (ingen lokal DB).
+
+## 2026-10-02: Rigtige certifikat-logoer på varesiden
+
+- Brugerens logofiler fra `Certifikater/` er omdøbt og beskåret til `public/certifications/` (ens navne uden mellemrum/æøå) og erstatter de tegnede SVG-mærker i `CertificationLogos.tsx` (under energifordelingen) og `CertificationLogo.tsx` (på produktcirklen).
+- `src/lib/certification-badges.ts` kobler tekstværdierne i `ProductFilters` til logo: Økologisk → Ø-mærket, Biologisch → tysk BIO, Bioland, Ökologischer Landbau, EU-blad, Nøglehul, Fuldkorn, Bedre Dyrevelfærd 1/2/3 (hjerter), Anbefalet af Dyrenes Beskyttelse, NaturSkånsom, MSC, ASC, Fairtrade, Rainforest Alliance, UTZ. Ukendte mærker vises som tekst-pille.
+- Rettelser bør komme fra brugeren: `Bedre-dyrevelfærd-2-stjerner.png` var identisk med 3-stjerner-filen, så 2-hjerte-logoet er afledt (3-stjerner + den tomme 3. hjerte fra 1-stjerne-filen). `Fairtrade logo.webp` har "cleanpng"-vandmærke og `Økologimærket.png` er et beskåret udsnit uden tekst — erstat med originale filer.
+- Lint og typecheck grønne. Ikke visuelt testet (ingen login/DB lokalt).
+
 ## 2026-09-29: Offentlig forside for udloggede
 
 - Ny hent-appen-forside uden telefonramme, med QR-koder, planer med betalings-ark, Hello Doc-bjælke, nøgletal fra databasen, `/business` (kontaktformular) og `/presse`. Se DECISIONS.md samme dato.
@@ -703,7 +732,8 @@ uændrede. Mangler brugerens visuelle godkendelse.
 - Email Routing: peter@packroff.dk bekræftet; `support@hellocal.io` + catch-all videresendes til peter@packroff.dk.
 - Google OAuth-klienten har allerede hellocal.io-URIer; server `GOOGLE_HEALTH_REDIRECT_URI` sat til hellocal.io (slår igennem ved næste deploy).
 - Facebook: brugeren har tilføjet `https://hellocal.io/api/auth/oauth/facebook/callback` (2026-09-28).
-- Mangler (brugeren tager det en anden dag): Withings (logget ud) → `https://hellocal.io/api/withings/callback`; Strava (logget ud) → callback-domæne `hellocal.io`; Apple (logget ud) → domæne + Return URL. Derefter `INTEGRATIONS_REDIRECT_BASE_URL`/`WITHINGS_REDIRECT_URI` på serveren til hellocal.io.
+- Withings (2026-10-02): brugeren har registreret `https://hellocal.io/api/withings/callback` hos Withings; server `WITHINGS_REDIRECT_URI` sat til samme (backup `.env.production.bak-20261002-withings`). Løste `redirect_uri_mismatch`.
+- Mangler (brugeren tager det en anden dag): Strava (logget ud) → callback-domæne `hellocal.io`; Apple (logget ud) → domæne + Return URL. Derefter `INTEGRATIONS_REDIRECT_BASE_URL` på serveren til hellocal.io (står stadig på `hellocal.packroff.dk`, så Strava ikke brydes).
 
 ## 2026-09-27: Tilføj-kamera med fire knapper + "opret straks"
 
@@ -816,7 +846,7 @@ kalenderens dagvisning og graf "Søvnkvalitet og kalorier" på Statistik. Se
 DECISIONS 2026-09-26. Kræver migration `20260926130000_sleep_quality` ved
 deploy. Ikke visuelt testet (brugeren tjekker selv).
 
-Last updated: 2026-09-27
+Last updated: 2026-10-01
 ## 2026-09-26: Support-indbakke i admin
 
 Se DECISIONS 2026-09-26 "Support-indbakke". Tråde, svar, interne noter,
