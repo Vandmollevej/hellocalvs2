@@ -391,7 +391,7 @@ export function WebShell({ children }: { children: React.ReactNode }) {
               aria-expanded={addOpen}
               aria-label={t("addMenu.title")}
               title={t("addMenu.title")}
-              className="-mb-5 flex h-[52px] w-[52px] shrink-0 items-center justify-center rounded-full bg-hf-green text-hf-white shadow-md transition hover:bg-hf-green-dark"
+              className="absolute bottom-[-10px] left-1/2 z-30 flex h-[52px] w-[52px] -translate-x-1/2 items-center justify-center rounded-full bg-hf-green text-hf-white shadow-md transition hover:bg-hf-green-dark"
             >
               <IconPlus size={28} stroke={2} />
             </button>
