@@ -156,16 +156,18 @@ export default function SubscriptionPage() {
 
           {/* Seriøs Familie: invitation, profiler og adgang styres på
               /profile/family (docs/FAMILY.md). */}
-          {(data.plan === "FAMILY" || data.coveredByFamily) && (
-            <Link
-              href="/profile/family"
-              className="hf-control-row hf-type-body flex items-center gap-3 rounded-lg bg-hf-tan px-4"
-            >
-              <IconUsers size={20} aria-hidden="true" />
-              <span className="min-w-0 flex-1">{t("family.switcher.manage")}</span>
-              <IconChevronRight size={20} aria-hidden="true" className="opacity-60" />
-            </Link>
-          )}
+          {/* Uden familieabonnement vises kun indgangen til at tilmelde sig en
+              families kode (/profile/family er ellers skjult i Indstillinger). */}
+          <Link
+            href="/profile/family"
+            className="hf-control-row hf-type-body flex items-center gap-3 rounded-lg bg-hf-tan px-4"
+          >
+            <IconUsers size={20} aria-hidden="true" />
+            <span className="min-w-0 flex-1">
+              {data.plan === "FAMILY" || data.coveredByFamily ? t("family.switcher.manage") : t("family.join.title")}
+            </span>
+            <IconChevronRight size={20} aria-hidden="true" className="opacity-60" />
+          </Link>
 
           <Link href="/settings/payment" className="hf-control hf-btn-secondary w-full">
             {t("subscription.paymentMethods")}
