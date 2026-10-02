@@ -42,7 +42,7 @@ import { extractCertifications } from "@/lib/product-certifications";
 import { CertificationLogo } from "@/components/hf/CertificationLogo";
 import { Skeleton } from "@/components/hf/Skeleton";
 import { HandSizePicker } from "@/components/hf/HandSizePicker";
-import { findHandSizeItem } from "@/lib/hand-sizes";
+import { findHandSizeItem, mediumHandSizeGrams } from "@/lib/hand-sizes";
 
 // "Opret straks" (docs/DECISIONS.md 2026-09-27): mens OpenAI stadig læser
 // felter (Product.pendingFields), eller den fritlagte forside endnu ikke er
@@ -320,7 +320,7 @@ export function AddProductView({
         setState({ status: "loaded", product: applyRegistrationSnapshot(data.product, registration) });
         // Startmængde: seneste egne mængde, portionsenhed, typisk mængde for
         // kategorien — se src/lib/default-amount.ts.
-        if (!registration && data.product) setAmount(defaultAmountGrams(data.product));
+        if (!registration && data.product) setAmount(defaultAmountGrams(data.product, mediumHandSizeGrams(data.product.name)));
       })
       .catch(() => setState({ status: "error" }));
 

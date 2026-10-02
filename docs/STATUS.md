@@ -2,12 +2,26 @@
 
 Last updated: 2026-10-02
 
+## 2026-10-02: Drikkevarer starter på pakkestørrelsen
+
+- Mængdefeltet viser nu 33 cl / 25 cl / 50 cl for dåser og små flasker, også når størrelsen kun står i navnet, og også for øl/vin uden kategorien DRINK. Vin, spiritus og færdigblandede drinks har egne regler (DECISIONS.md 2026-09-28, tilføjelse 2026-10-02).
+- Flere typiske mængder (kød, fisk, frugt, suppe, pizza m.m.), så færre varer starter på 100 g. Videresendte varer bruger samme startmængde.
+- Tests: `src/lib/default-amount.test.mjs` (ny) + udvidet `product-display-unit.test.mjs`, grønne. Lint, typecheck og build grønne. Ikke live-testet (ingen lokal DB).
+
+## 2026-10-02: Rigtige certifikat-logoer på varesiden
+
+- Brugerens logofiler fra `Certifikater/` er omdøbt og beskåret til `public/certifications/` (ens navne uden mellemrum/æøå) og erstatter de tegnede SVG-mærker i `CertificationLogos.tsx` (under energifordelingen) og `CertificationLogo.tsx` (på produktcirklen).
+- `src/lib/certification-badges.ts` kobler tekstværdierne i `ProductFilters` til logo: Økologisk → Ø-mærket, Biologisch → tysk BIO, Bioland, Ökologischer Landbau, EU-blad, Nøglehul, Fuldkorn, Bedre Dyrevelfærd 1/2/3 (hjerter), Anbefalet af Dyrenes Beskyttelse, NaturSkånsom, MSC, ASC, Fairtrade, Rainforest Alliance, UTZ. Ukendte mærker vises som tekst-pille.
+- Rettelser bør komme fra brugeren: `Bedre-dyrevelfærd-2-stjerner.png` var identisk med 3-stjerner-filen, så 2-hjerte-logoet er afledt (3-stjerner + den tomme 3. hjerte fra 1-stjerne-filen). `Fairtrade logo.webp` har "cleanpng"-vandmærke og `Økologimærket.png` er et beskåret udsnit uden tekst — erstat med originale filer.
+- Lint og typecheck grønne. Ikke visuelt testet (ingen login/DB lokalt).
+
 ## 2026-10-02: Håndfrugter og æg i Lille / Normal / Stor
 
 - Ny størrelsesvælger på produktsiden for 18 håndfrugter/snack-grøntsager og æg (`src/lib/hand-sizes.ts`, `src/components/hf/HandSizePicker.tsx`). Liste og tal i `docs/HAND-SIZES.md`; beslutning i DECISIONS samme dato.
 - Tests (`npm test`), lint, typecheck og build grønne. Ikke visuelt testet i browser (ingen lokal DB).
 - Fliserne viser hel vægt og spiselig vægt; spiselig = hel vægt minus USDA's spild-procent (kiwi og bladselleri er skøn).
 - Venter på brugerens godkendelse af listen og tallene, før PR'en merges.
+
 ## 2026-09-29: Offentlig forside for udloggede
 
 - Ny hent-appen-forside uden telefonramme, med QR-koder, planer med betalings-ark, Hello Doc-bjælke, nøgletal fra databasen, `/business` (kontaktformular) og `/presse`. Se DECISIONS.md samme dato.
