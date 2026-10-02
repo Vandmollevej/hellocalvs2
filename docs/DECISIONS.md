@@ -2,6 +2,12 @@
 
 This file records durable decisions. Add a dated entry when a later decision changes one of them.
 
+## 2026-10-01: Bølge-baggrund på forsiden
+
+- Forsiden får en rolig, tilfældig bølge-animation bag topbar og hero (til ca. halvvejen mellem skillestregen og "Ingen registreringer i dag"), grønne nuancer øverst mod gullig creme nedenfor, så den næsten går i et med baggrunden. Bløde bånd (hverken tynde streger eller brede bølger), ingen prikker/tern/striber, ingen DNA-agtig regelmæssighed; langsom og rolig, ikke pulserende lydbølger.
+- Nederste del er sløret som frostet glas (tre lag med stigende blur) og toner ud. Tegnes i canvas; farver læses fra tokens ved kørsel.
+- Layout-konsekvens: DailyList-containeren har ikke længere `bg-hf-cream`; tal-hjulets rækker klippes ved hero-bunden i `StatsWheel` i stedet for at blive dækket af listen.
+
 ## 2026-09-29: Aktivitetsniveau, PAL og kaloriemål
 
 - Erstatter faktorerne i 2026-09-28 "Aktivitetsniveau i 5 trin" (1,2–1,9). Nye niveauer og PAL-intervaller: se `docs/ACTIVITY-PAL.md` (planen; intet bygget). Ingen aktive brugere, så gamle niveauer erstattes uden overgangslogik.
