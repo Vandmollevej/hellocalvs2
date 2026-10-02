@@ -199,6 +199,19 @@
     "expandAriaLabel": "Show bottom menu",
     "collapseAriaLabel": "Hide bottom menu"
   },
+  "accountSettings": {
+    "title": "Account settings",
+    "closeTitle": "Close account",
+    "closeIntro": "Closes your account and logs you out. Your personal data is removed and you cannot log in again.",
+    "closeButton": "Close account",
+    "forgetTitle": "Right to be forgotten",
+    "forgetIntro": "Have all your personal data erased (GDPR). Anonymised data that cannot be linked to you is kept.",
+    "forgetButton": "Delete my data",
+    "confirmWarning": "This cannot be undone. Type SLET to confirm.",
+    "confirmPlaceholder": "SLET",
+    "confirmButton": "Confirm",
+    "error": "Something went wrong — try again"
+  },
   "settings": {
     "title": "Settings",
     "support": {
@@ -445,7 +458,15 @@
     "distanceKm": "Kilometers moved"
   },
   "addMenu": {
-    "title": "Add"
+    "title": "Add",
+    "food": "Add food",
+    "scan": "Scan product",
+    "platePhoto": "Photo of plate",
+    "dish": "Create dish",
+    "voice": "Record",
+    "weight": "Weight",
+    "drink": "Drinks",
+    "body": "Body measurements"
   },
   "helloDoc": {
     "title": "Hello Doc",

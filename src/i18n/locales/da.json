@@ -199,6 +199,19 @@
     "expandAriaLabel": "Vis bundmenu",
     "collapseAriaLabel": "Skjul bundmenu"
   },
+  "accountSettings": {
+    "title": "Kontoindstillinger",
+    "closeTitle": "Luk konto",
+    "closeIntro": "Lukker din konto og logger dig ud. Dine personoplysninger fjernes, og du kan ikke logge ind igen.",
+    "closeButton": "Luk konto",
+    "forgetTitle": "Ret til at blive glemt",
+    "forgetIntro": "Få alle dine personoplysninger slettet (GDPR). Anonymiserede data, der ikke kan kobles til dig, bevares.",
+    "forgetButton": "Slet mine data",
+    "confirmWarning": "Dette kan ikke fortrydes. Skriv SLET for at bekræfte.",
+    "confirmPlaceholder": "SLET",
+    "confirmButton": "Bekræft",
+    "error": "Noget gik galt — prøv igen"
+  },
   "settings": {
     "title": "Indstillinger",
     "support": {
@@ -445,7 +458,15 @@
     "distanceKm": "Kilometer bevæget"
   },
   "addMenu": {
-    "title": "Tilføj"
+    "title": "Tilføj",
+    "food": "Tilføj mad",
+    "scan": "Scan vare",
+    "platePhoto": "Billede af tallerken",
+    "dish": "Opret ret",
+    "voice": "Optag",
+    "weight": "Vægt",
+    "drink": "Drikkevare",
+    "body": "Kropsmål"
   },
   "helloDoc": {
     "title": "Hello Doc",
