@@ -1859,3 +1859,18 @@ textarea::selection,
 .home-wave__layer--heavy canvas {
   filter: blur(17px);
 }
+
+/* Webvisning af søgesiden: indholdet fylder halvdelen (2/4) i midten, mens
+   sideoverskriften forbliver bred. Søgefeltet og resultaterne deler samme
+   kolonne, og produktbillederne er større end på telefonen. */
+.web-shell .web-search-page {
+  width: 50%;
+  min-width: 480px;
+  max-width: 100%;
+  margin-inline: auto;
+}
+
+.web-shell .web-search-page .hf-foodrow-thumb {
+  width: 80px;
+  height: 80px;
+}
