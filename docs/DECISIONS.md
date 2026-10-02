@@ -2,6 +2,11 @@
 
 This file records durable decisions. Add a dated entry when a later decision changes one of them.
 
+## 2026-10-02: Vægt- og længdeenheder (kg/lb/st, cm/in)
+
+- Brugeren vælger vægtenhed (kg, pund eller stone+pund) og højde-/kropsmål-enhed (cm eller tommer) i startguidens første trin og under Indstillinger → Sprog og region. Valget gemmes pr. enhed i localStorage (som kalendervisning); databasen gemmer stadig altid kg og cm.
+- Standard udledes af landet (profilens region, ellers browserens): USA/Canada → pund + tommer, UK/Irland → stone+pund + tommer, resten kg + cm. Stone indtastes som `11 5` (stone pund). Tempo (kg/uge) og statistik-grafen bruger pund i stedet for stone.
+
 ## 2026-10-01: Bølge-baggrund på forsiden
 
 - Forsiden får en rolig, tilfældig bølge-animation bag topbar og hero (til ca. halvvejen mellem skillestregen og "Ingen registreringer i dag"), grønne nuancer øverst mod gullig creme nedenfor, så den næsten går i et med baggrunden. Bløde bånd (hverken tynde streger eller brede bølger), ingen prikker/tern/striber, ingen DNA-agtig regelmæssighed; langsom og rolig, ikke pulserende lydbølger.

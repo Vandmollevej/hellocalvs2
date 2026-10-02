@@ -6,6 +6,11 @@ Last updated: 2026-10-02
 
 - `StatPeriodPicker`: panelet var 256 px og højrestillet, så det så ud til at åbne væk fra "Vis:"-knappen. Nu `left-0 right-0` (hele indholdsbredden) og fra/til-datoerne ligger i ét grid (`1fr auto 1fr`) med `white-space: nowrap` på iOS' datotekst, så "30 Sep 2026" ikke ombrydes til to linjer.
 - Lint, typecheck og build grønne. Ikke visuelt testet på telefon (ingen lokal DB/login).
+## 2026-10-02: Vægt- og længdeenheder
+
+- Nyt src/lib/units.ts (valg, landestandard, omregning, useUnits()), nyt startguide-trin units og to valg under Sprog og region. Brugt i: profil (vægt, højde-hjul), vægtlog, vægt-kalibrering, startvægt-verificering, målsætninger (vægt + kropsmål), energimål-editoren, kropsmål og statistik-grafen.
+- Lint og typecheck grønne for de berørte filer. Ikke visuelt testet (brugerregel). Ikke omregnet endnu: widgets/native, Hello Doc-rapport, kalender-vægtvisning og admin (kg/cm vises der stadig).
+
 ## 2026-10-01: Rolig bølge-baggrund på forsiden
 
 - Ny baggrund bag topbar + hero, der fortsætter ca. 40 px under "Dagens tilføjelser"-stregen: tilfældige, langsomme bånd af bløde bølgelinjer (grønt øverst → gullig creme nedenfor) plus lidt tåge. Tre lag af samme canvas-scene (skarp / mellem-sløret / kraftigt sløret) giver frostet-glas-effekten nederst. Farver kun fra tokens. Står stille ved "reducer bevægelse" og standser når fanen er skjult.

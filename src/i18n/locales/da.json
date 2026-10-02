@@ -317,6 +317,15 @@
     "thirdPartyDisclaimer": "Vi henter data fra 3. part og fraskriver os ansvar for manglende data.",
     "languageLabel": "Sprog",
     "languageDescription": "Vælg det sprog appen skal vises på.",
+    "unitsWeightLabel": "Vægtenhed",
+    "unitsWeightDescription": "Sættes automatisk efter dit land, men kan ændres her.",
+    "unitsHeightLabel": "Højde og kropsmål",
+    "unitsHeightDescription": "Centimeter eller tommer. Sættes automatisk efter dit land.",
+    "unitKg": "Kilogram (kg)",
+    "unitLb": "Pund (lb)",
+    "unitSt": "Stone og pund (st lb)",
+    "unitCm": "Centimeter (cm)",
+    "unitIn": "Tommer (in)",
     "languageDanish": "Dansk",
     "languageEnglish": "English",
     "setupProgress": "Trin {done} af {total} gennemført",
@@ -1134,7 +1143,7 @@
       "VERY_HIGH": { "short": "Ekstremt", "label": "Meget høj", "description": "Hårdt fysisk arbejde hele dagen, fx byggeri, landbrug eller skov." }
     },
     "age": "{age} år",
-    "trendWeight": "Trendvægt (AI-estimat): {value} kg",
+    "trendWeight": "Trendvægt (AI-estimat): {value}",
     "startWeightUpdated": "Opdateret d. {date}",
     "startWeight": {
       "title": "Startvægt",
@@ -1325,7 +1334,7 @@
     "lastCalibrated": "Senest kalibreret d. {date}",
     "neverCalibrated": "Ikke kalibreret endnu",
     "intro": "Vej dig på forskellige tidspunkter og under forskellige forhold — så får du en fornemmelse af dit udsving i løbet af dagen, uden at skulle veje dig nøgen hver gang.",
-    "weightLabel": "Vægt (kg)",
+    "weightLabel": "Vægt",
     "weightPlaceholder": "fx 78,4",
     "timeGrid": {
       "title": "Vægt over dagen",
@@ -1445,7 +1454,7 @@
   "weightLog": {
     "title": "Vægt",
     "intro": "Registrér din vægt. Den gemmes med det samme og indgår i kalenderen og statistikken.",
-    "weightLabel": "Vægt (kg)",
+    "weightLabel": "Vægt",
     "weightPlaceholder": "fx 78,4",
     "save": "Gem",
     "saving": "Gemmer…",
@@ -1933,6 +1942,8 @@
     }
   },
   "onboarding": {
+    "unitsQuestion": "Hvilke enheder vil du bruge?",
+    "unitsHint": "Vi har valgt efter dit land. Du kan altid ændre det under Indstillinger → Sprog og region.",
     "calendarViewQuestion": "Hvilken visning skal kalenderen åbne i?",
     "calendarViewHint": "Du kan altid ændre det under Indstillinger → Visning → Kalendervisning.",
     "stepProgress": "Trin {current} af {total} gennemført",
@@ -2059,11 +2070,11 @@
     "mode": "Hvad vil du?",
     "modes": { "MAINTAIN": "Holde vægten", "LOSE": "Tabe mig", "GAIN": "Tage på" },
     "pace": "Tempo",
-    "paceValue": "{kg} kg/uge",
-    "paceHintLose": "Sundt tempo for dig: højst {kg} kg om ugen. Hurtigere kan ikke vælges.",
+    "paceValue": "{value}/uge",
+    "paceHintLose": "Sundt tempo for dig: højst {value} om ugen. Hurtigere kan ikke vælges.",
     "paceHintGain": "Langsom vægtøgning giver mest muskel og mindst fedt.",
     "targetWeight": "Målvægt (kg)",
-    "targetRaised": "Vi bruger {kg} kg som mål — lavere ligger under det, vi regner som sundt for din højde.",
+    "targetRaised": "Vi bruger {value} som mål — lavere ligger under det, vi regner som sundt for din højde.",
     "eta": "Med det tempo tager det ca. {weeks} uger — sandsynligvis mellem {from} og {to}. Datoen flytter sig, når din vægt gør.",
     "disclaimer": "Budgettet er et estimat og justeres løbende. Ved graviditet, amning, sygdom eller spiseforstyrrelse: tal med din læge, før du følger et kaloriemål."
   },
