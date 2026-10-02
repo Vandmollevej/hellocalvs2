@@ -20,6 +20,7 @@ import { syncProductNutritionFeaturesSafely } from "@/lib/product-nutrition-feat
 import type { IngredientsAnalysis, NutritionAnalysis } from "@/lib/product-analysis-types";
 import { debugLog, errorText } from "@/lib/debug-log";
 import { composeProductName, normalizeProductName } from "@/lib/product-naming";
+import { addCertificationFilters } from "@/lib/product-certification-filters";
 
 // "Opret straks" (docs/DECISIONS.md 2026-09-27): kameraflowet opretter varen,
 // så snart den lokale OCR er kørt, og sender brugeren videre til /add/[id].
@@ -50,6 +51,9 @@ export type QuickEnrichmentInput = {
   // Stregkode-fotoets AiProductAnalysis (kind=BARCODE), hvis det nåede at
   // blive gemt — læses for logo og variant.
   barcodeAnalysisId?: string | null;
+  // Sat, når en tynd Open Food Facts-vare fyldes op: kun registreringer fra
+  // og med dette tidspunkt regnes om — ældre beholder deres snapshot.
+  snapshotsSince?: Date;
 };
 
 // Atomisk i SQL: aflæsningerne rydder hver sine felter samtidig.
@@ -65,14 +69,14 @@ async function clearPending(productId: string, fields: PendingField[]) {
 // Registreringer lavet, mens næringen stadig blev aflæst, fik et foreløbigt
 // snapshot. Varen er få minutter gammel, så alle dens registreringer stammer
 // fra den periode og regnes om med de aflæste tal.
-async function refreshRegistrationSnapshots(productId: string) {
+async function refreshRegistrationSnapshots(productId: string, since?: Date) {
   const product = await prisma.product.findUnique({
     where: { id: productId },
     select: { name: true, kcalPer100g: true, proteinPer100g: true, carbsPer100g: true, fatPer100g: true },
   });
   if (!product) return;
   const registrations = await prisma.registration.findMany({
-    where: { productId },
+    where: { productId, ...(since ? { createdAt: { gte: since } } : {}) },
     select: { id: true, amountGrams: true },
   });
   for (const registration of registrations) {
@@ -130,6 +134,11 @@ async function enrichFront(input: QuickEnrichmentInput) {
       select: { id: true, name: true, createdAt: true },
     });
     await flagSimultaneousDuplicates(product.id, product.name, product.createdAt);
+    // Mærkningslogoerne (Ø-mærket, Nøglehullet …) vises på varesiden.
+    const certifications = await addCertificationFilters(productId, result.certifications ?? []).catch((error) => {
+      console.error("Could not save certifications", productId, error);
+      return [];
+    });
     await linkCutoutJobsToProduct({
       frontAnalysisId: analysisId,
       productId,
@@ -149,6 +158,8 @@ async function enrichFront(input: QuickEnrichmentInput) {
         subbrand: result.subbrand ?? null,
         variant: result.variant ?? null,
         packageSizeText: result.packageSizeText ?? null,
+        certificationsRead: result.certifications ?? [],
+        certificationsSaved: certifications,
       },
     });
   } catch (error) {
@@ -164,7 +175,7 @@ async function enrichFront(input: QuickEnrichmentInput) {
   } finally {
     await clearPending(productId, ["name", "brand"]);
     // Navnet indgår i registreringernes titleSnapshot.
-    await refreshRegistrationSnapshots(productId).catch(() => {});
+    await refreshRegistrationSnapshots(productId, input.snapshotsSince).catch(() => {});
   }
 }
 
@@ -220,7 +231,7 @@ async function enrichBarcodeLogo(input: QuickEnrichmentInput) {
     }
     if (Object.keys(changes).length) {
       await prisma.product.update({ where: { id: productId }, data: changes });
-      if (changes.name) await refreshRegistrationSnapshots(productId).catch(() => {});
+      if (changes.name) await refreshRegistrationSnapshots(productId, input.snapshotsSince).catch(() => {});
     }
 
     // Logo-jobbet kobles til varens brand, når logoet er det brand;
@@ -388,7 +399,7 @@ async function enrichLabel(input: QuickEnrichmentInput) {
   } finally {
     await recordNutrientSources(productId, nutrition?.analysisId ?? null);
     await clearPending(productId, ["nutrition", "ingredients"]);
-    await refreshRegistrationSnapshots(productId).catch(() => {});
+    await refreshRegistrationSnapshots(productId, input.snapshotsSince).catch(() => {});
   }
 
   const read = nutrition?.result;

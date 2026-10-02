@@ -2,6 +2,13 @@
 
 This file records durable decisions. Add a dated entry when a later decision changes one of them.
 
+## 2026-10-02: Tynde Open Food Facts-varer udløser fotoene + mærkninger fra forsiden
+
+- Stregkodeopslaget gemmer ikke længere en OFF-vare, der mangler billede, ingrediensliste eller salt. Svaret er 404 (`source: "incomplete"`), så kameraflowet fortsætter til forside/energi/indhold, og AI'en udfylder varen fra fotoene. Baggrund: "Fire Forskellige Flødeboller" (Premieur) blev oprettet fra OFF med kun navn, brand og kalorier — uden billede, certifikat, ingredienser og salt — og kameraflowet sprang fotoene over.
+- En tynd OFF-vare, der allerede ligger i databasen (`externalSource = OPEN_FOOD_FACTS`, PENDING, ingen `createdByUserId`, mangler billede eller ingredienser), behandles som ukendt ved næste scanning, og `/api/products/quick` fylder samme vare op i stedet for at oprette en dublet. Kun registreringer fra opfyldningen og frem får nye snapshots; ældre beholder deres.
+- Forside-AI'en (prompt `front-v4-2026-10-02-certifications`) returnerer nu `certifications` (Ø-mærket, EU-blad, Nøglehul, Fuldkorn, Bedre Dyrevelfærd, MSC, ASC, Fairtrade …). De gemmes i `ProductFilters` via `src/lib/label-certifications.ts` + `product-certification-filters.ts`, og OFF's `labels_tags` gør det samme. Eksisterende felter overskrives aldrig.
+- "EU-økologisk" giver EU-bladet (ikke Ø-mærket) i `certification-badges.ts`.
+
 ## 2026-10-02: "Til info sendte vi dig …" (mail/sms var ikke spam)
 
 - Hver mail eller sms til en kendt bruger giver (1) en push med det samme: "Vi har netop sendt dig en e-mail om "emne". Dette var ikke spam." og (2) et bundark som det første ved næste besøg (app og web): "Til info sendte vi dig den <dato> en <e-mail/sms> om "<emne>". Dette var ikke spam." med sort knap "Læst".
