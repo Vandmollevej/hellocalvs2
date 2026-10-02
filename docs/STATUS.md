@@ -1,7 +1,12 @@
 # HELLO CAL — project status
 
-Last updated: 2026-09-29
+Last updated: 2026-10-02
 
+## 2026-10-02: Håndfrugter og æg i Lille / Normal / Stor
+
+- Ny størrelsesvælger på produktsiden for 18 håndfrugter/snack-grøntsager og æg (`src/lib/hand-sizes.ts`, `src/components/hf/HandSizePicker.tsx`). Liste og tal i `docs/HAND-SIZES.md`; beslutning i DECISIONS samme dato.
+- Tests (`npm test`), lint, typecheck og build grønne. Ikke visuelt testet i browser (ingen lokal DB).
+- Venter på brugerens godkendelse af listen og tallene, før PR'en merges.
 ## 2026-09-29: Offentlig forside for udloggede
 
 - Ny hent-appen-forside uden telefonramme, med QR-koder, planer med betalings-ark, Hello Doc-bjælke, nøgletal fra databasen, `/business` (kontaktformular) og `/presse`. Se DECISIONS.md samme dato.

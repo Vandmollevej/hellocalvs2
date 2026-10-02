@@ -4,12 +4,15 @@
 // 1. Brugerens egen seneste mængde for varen.
 // 2. En rigtig portionsenhed (servingSizeGrams + enhedsnavne, fx HelloFresh
 //    "portion") — tælles i hele portioner.
-// 3. Typisk mængde for varens kategori (tabellen nedenfor).
+// 3. Håndfrugt/æg: ét stk. i størrelsen "Normal" (src/lib/hand-sizes.ts).
+// 4. Typisk mængde for varens kategori (tabellen nedenfor).
 // 6. Producentens portion (fx Open Food Facts' serving_quantity).
 // 7. 100 g/ml som sidste udvej.
 //
 // Producentens portion bruges bevidst ikke før kategorien: den er ofte
 // urealistisk lille (musli 30 g, sodavand 10 cl).
+
+import { mediumHandSizeGrams } from "@/lib/hand-sizes";
 
 export type DefaultAmountProduct = {
   name?: string | null;
@@ -97,5 +100,7 @@ export function defaultAmountGrams(product: DefaultAmountProduct): number {
   const serving = product.servingSizeGrams && product.servingSizeGrams > 0 ? product.servingSizeGrams : null;
   if (serving && product.servingSizeUnitSingular && product.servingSizeUnitPlural) return serving;
   if (serving && isSlicedProduct(product)) return serving;
+  const handSize = mediumHandSizeGrams(product.name);
+  if (handSize) return handSize;
   return drinkAmountMl(product) ?? typicalAmountGrams(product) ?? serving ?? 100;
 }

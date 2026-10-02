@@ -42,6 +42,8 @@ import { UncertaintyLine } from "@/components/ui/UncertaintyLine";
 import { extractCertifications } from "@/lib/product-certifications";
 import { CertificationLogo } from "@/components/hf/CertificationLogo";
 import { Skeleton } from "@/components/hf/Skeleton";
+import { HandSizePicker } from "@/components/hf/HandSizePicker";
+import { findHandSizeItem } from "@/lib/hand-sizes";
 
 // "Opret straks" (docs/DECISIONS.md 2026-09-27): mens OpenAI stadig læser
 // felter (Product.pendingFields), eller den fritlagte forside endnu ikke er
@@ -404,6 +406,8 @@ export function AddProductView({
           : (product.imageUrl ?? null))
     : null;
   const factor = amount / 100;
+  // Håndfrugt/æg: Lille / Normal / Stor (src/lib/hand-sizes.ts).
+  const handSizeItem = useMemo(() => findHandSizeItem(product?.name), [product?.name]);
   const servingSizeGrams = product?.servingSizeGrams ?? null;
   // Enheden ("portion"/"portioner", "person"/"personer" osv.) vises kun når
   // varen faktisk har den i databasen — UI må ikke gætte en generisk enhed
@@ -818,6 +822,15 @@ export function AddProductView({
                     {baseUnitLabel}
                   </button>
                 </div>
+              )}
+
+              {handSizeItem && amountUnit === "gram" && (
+                <HandSizePicker
+                  item={handSizeItem}
+                  imageUrl={displayImageUrl}
+                  amount={amount}
+                  onSelect={setAmount}
+                />
               )}
 
               <div className="mx-auto mb-2 flex w-full max-w-[320px] items-center gap-2">
