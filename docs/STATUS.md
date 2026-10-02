@@ -1,6 +1,11 @@
 # HELLO CAL — project status
 
-Last updated: 2026-09-29
+Last updated: 2026-10-02
+
+## 2026-10-02: Points flyttet op i profilmenuen
+
+- Rækken "Points" på `/profile` ligger nu som nr. 2 lige under "Profil" (før lå den mellem Billede-dagbog og Opskrifter). Kun rækkefølgen i `src/app/profile/page.tsx` er ændret.
+- Lint, typecheck og `npm run build` grønne.
 
 ## 2026-09-29: Offentlig forside for udloggede
 

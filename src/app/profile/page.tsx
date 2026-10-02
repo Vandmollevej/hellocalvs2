@@ -93,6 +93,7 @@ export default function ProfilePage() {
               label={t("profile.section.profile")}
               href="/profile/edit"
             />
+            <ChevronRow icon={<IconStar size={20} />} label={t("profile.row.points")} href="/profile/points" />
             <ChevronRow
               icon={<IconCreditCard size={20} />}
               label={t("profile.row.subscription")}
@@ -123,7 +124,6 @@ export default function ProfilePage() {
               label={t("profile.row.photoDiary")}
               href="/profile/photo-diary"
             />
-            <ChevronRow icon={<IconStar size={20} />} label={t("profile.row.points")} href="/profile/points" />
             <ChevronRow
               icon={<IconBook2 size={20} />}
               label={t("profile.row.recipes")}
