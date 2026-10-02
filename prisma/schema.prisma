@@ -2225,6 +2225,8 @@ enum MessageChannel {
   EMAIL
   PUSH
   BOTH
+  // Sendt via sms-gatewayen (src/lib/sms.ts).
+  SMS
 }
 
 // Admin-redigerbar skabelon pr. event ("Besked automatisering"-fanen).
@@ -2266,6 +2268,9 @@ model OutboundMessage {
   createdAt DateTime       @default(now())
   sentAt    DateTime?
   readAt    DateTime?
+  // "Til info sendte vi dig ..."-popuppen (src/lib/sent-notices.ts): sat, når
+  // brugeren har trykket "Læst". Kun relevant for sendte mails/sms'er.
+  noticeAckAt DateTime?
 
   @@index([status])
   @@index([userId, readAt])

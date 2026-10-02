@@ -3,6 +3,7 @@
 import { activitySummaryUrl } from "@/lib/daily-budget";
 import { useState } from "react";
 import { useTranslation } from "@/i18n/LocaleProvider";
+import { formatWeight, kgToLb, parseWeightInput, useUnits, weightToInputValue, weightUnitLabel, type WeightUnit } from "@/lib/units";
 import type { EnergySummary } from "@/lib/activity-profile";
 import { EnergyBreakdown } from "@/components/EnergyBreakdown";
 import { GAIN_PACES_KG_PER_WEEK, GOAL_MODES, LOSS_PACES_KG_PER_WEEK, maxLossPace, type GoalMode } from "@/lib/energy-budget";
@@ -20,8 +21,11 @@ export type EnergyGoalUser = {
   heightCm: number | null;
 };
 
-function formatKg(value: number) {
-  return new Intl.NumberFormat("da-DK", { maximumFractionDigits: 2 }).format(value);
+// Ugentligt tempo vises i kg eller pund (stone er for groft til et tempo).
+function formatPace(kg: number, unit: WeightUnit) {
+  return unit === "kg"
+    ? `${new Intl.NumberFormat("da-DK", { maximumFractionDigits: 2 }).format(kg)} kg`
+    : `${new Intl.NumberFormat("da-DK", { maximumFractionDigits: 1 }).format(kgToLb(kg))} lb`;
 }
 
 function formatDate(date: Date) {
@@ -38,7 +42,10 @@ export function EnergyGoalEditor({
   onChange: (user: EnergyGoalUser, summary: EnergySummary | null) => void;
 }) {
   const { t } = useTranslation();
-  const [targetInput, setTargetInput] = useState(user.targetWeightKg?.toString() ?? "");
+  const units = useUnits();
+  const [targetInput, setTargetInput] = useState(
+    user.targetWeightKg !== null ? weightToInputValue(user.targetWeightKg, units.weight) : "",
+  );
   const mode = user.goalMode ?? "MAINTAIN";
   const paceCap = maxLossPace({ weightKg: user.weightKg, heightCm: user.heightCm });
 
@@ -108,13 +115,13 @@ export function EnergyGoalEditor({
                     disabled={blocked}
                     onClick={() => void save({ goalPaceKgPerWeek: pace })}
                   >
-                    {t("energyGoal.paceValue", { kg: formatKg(pace) })}
+                    {t("energyGoal.paceValue", { value: formatPace(pace, units.weight) })}
                   </button>
                 );
               })}
             </div>
             <p className="hf-type-small text-text-secondary">
-              {mode === "LOSE" ? t("energyGoal.paceHintLose", { kg: formatKg(paceCap) }) : t("energyGoal.paceHintGain")}
+              {mode === "LOSE" ? t("energyGoal.paceHintLose", { value: formatPace(paceCap, units.weight) }) : t("energyGoal.paceHintGain")}
             </p>
           </div>
 
@@ -122,19 +129,19 @@ export function EnergyGoalEditor({
             <span className="hf-type-label text-text-secondary">{t("energyGoal.targetWeight")}</span>
             <input
               className="hf-field"
-              type="number"
-              inputMode="decimal"
-              min={20}
-              step={0.5}
+              type="text"
+              inputMode={units.weight === "st" ? "text" : "decimal"}
+              aria-label={`${t("energyGoal.targetWeight")} (${weightUnitLabel(units.weight)})`}
+              placeholder={weightUnitLabel(units.weight)}
               value={targetInput}
               onChange={(event) => setTargetInput(event.target.value)}
               onBlur={() => {
-                const value = Number(targetInput.replace(",", "."));
-                void save({ targetWeightKg: value > 0 ? value : null });
+                const kg = parseWeightInput(targetInput, units.weight);
+                void save({ targetWeightKg: kg !== null ? Math.round(kg * 10) / 10 : null });
               }}
             />
             {budget?.targetWeightKg !== null && budget?.targetWeightKg !== undefined && user.targetWeightKg !== null && budget.targetWeightKg !== user.targetWeightKg && (
-              <span className="hf-type-small text-hf-warning">{t("energyGoal.targetRaised", { kg: formatKg(budget.targetWeightKg) })}</span>
+              <span className="hf-type-small text-hf-warning">{t("energyGoal.targetRaised", { value: formatWeight(budget.targetWeightKg, units.weight) })}</span>
             )}
           </label>
 
