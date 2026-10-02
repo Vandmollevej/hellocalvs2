@@ -5,6 +5,7 @@ import { BottomSheet, BottomSheetCloseButton, BottomSheetDots, useBottomSheetClo
 import { TermsSheet } from "@/components/hf/TermsSheet";
 import { useTranslation } from "@/i18n/LocaleProvider";
 import { ONBOARDING_TERMS } from "@/lib/terms-hints";
+import { HEIGHT_UNITS, WEIGHT_UNITS, saveUnits, setUnitsRegion, useUnits } from "@/lib/units";
 import {
   CALENDAR_DEFAULT_VIEWS,
   saveDefaultCalendarView,
@@ -27,6 +28,7 @@ type OnboardingUser = {
   targetWeightKg: number | null;
   weightKg: number | null;
   heightCm: number | null;
+  region?: string | null;
   onboardingStep: number;
   onboardingCompletedAt: string | null;
   onboardingRemindLaterAt: string | null;
@@ -41,6 +43,7 @@ type OnboardingUser = {
 // have a regular sleep pattern. See docs/UI.md "Onboarding og hjælp" — only
 // these steps are specified today (+ "calendar-view", user request 2026-09-29); more can be added to the wizard later.
 type StepId =
+  | "units"
   | "sleep-pattern"
   | "shift-work"
   | "daily-log-preference"
@@ -49,6 +52,7 @@ type StepId =
   | "health-import";
 
 const ALL_STEPS: StepId[] = [
+  "units",
   "sleep-pattern",
   "shift-work",
   "daily-log-preference",
@@ -85,6 +89,7 @@ export function OnboardingWizard({
   const [canDismissPermanently, setCanDismissPermanently] = useState(false);
   const exitRef = useRef<ExitReason>("remind");
   const calendarView = useDefaultCalendarView();
+  const units = useUnits();
   const [activityPageIndex, setActivityPageIndex] = useState(0);
   const [activityAnswers, setActivityAnswers] = useState<ActivityAnswers>(EMPTY_ACTIVITY_ANSWERS);
   const [activitySummary, setActivitySummary] = useState<EnergySummary | null>(null);
@@ -99,6 +104,7 @@ export function OnboardingWizard({
         if (cancelled || !data) return;
         const { user } = data;
         setUser(user);
+        setUnitsRegion(user.region);
         setGoalUser({
           goalMode: user.goalMode ?? null,
           goalPaceKgPerWeek: user.goalPaceKgPerWeek ?? null,
@@ -230,6 +236,35 @@ export function OnboardingWizard({
       }
     >
       <div className="flex min-h-full flex-col justify-center gap-8 px-4">
+        {currentStep === "units" && (
+          <div className="flex flex-col gap-4">
+            <h2 id="onboarding-title" className="hf-type-body-lg hf-heading text-hf-black">
+              {t("onboarding.unitsQuestion")}
+            </h2>
+            <p className="hf-type-body text-text-secondary">{t("onboarding.unitsHint")}</p>
+            <div className="grid grid-cols-3 gap-3">
+              {WEIGHT_UNITS.map((unit) => (
+                <ChoiceButton
+                  key={unit}
+                  label={unit === "st" ? "st lb" : unit}
+                  selected={units.weight === unit}
+                  onClick={() => saveUnits({ weight: unit })}
+                />
+              ))}
+            </div>
+            <div className="grid grid-cols-2 gap-3">
+              {HEIGHT_UNITS.map((unit) => (
+                <ChoiceButton
+                  key={unit}
+                  label={unit}
+                  selected={units.height === unit}
+                  onClick={() => saveUnits({ height: unit })}
+                />
+              ))}
+            </div>
+          </div>
+        )}
+
         {currentStep === "sleep-pattern" && (
           <YesNoStep
             id="onboarding-title"

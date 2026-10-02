@@ -13,6 +13,7 @@ import {
   IconToiletOff,
 } from "@/components/icons/WeighConditions";
 import { useTranslation } from "@/i18n/LocaleProvider";
+import { formatWeight, parseWeightInput, useUnits, weightToInputValue, weightUnitLabel, type WeightUnit } from "@/lib/units";
 import { SkeletonCards, SkeletonScreen } from "@/components/hf/Skeleton";
 
 type RelativeTime = "BEFORE" | "AFTER" | "UNKNOWN";
@@ -45,14 +46,6 @@ function formatDateTime(value: string) {
   }).format(new Date(value));
 }
 
-function formatKg(value: number) {
-  return new Intl.NumberFormat("da-DK", { maximumFractionDigits: 1 }).format(value);
-}
-
-function parseKg(raw: string) {
-  const parsed = Number(raw.trim().replace(",", "."));
-  return raw.trim() !== "" && parsed > 0 ? parsed : null;
-}
 
 function todayAtHour(hour: number) {
   const date = new Date();
@@ -94,30 +87,32 @@ function describeEntry(entry: WeightEntry, t: T) {
     .join(" · ");
 }
 
-// A real, visible number field with a "kg" suffix inside it.
+// A real, visible number field with the weight unit as suffix inside it.
 function KgField({
   id,
   value,
   onChange,
   placeholder,
+  unit,
 }: {
   id: string;
   value: string;
   onChange: (value: string) => void;
   placeholder: string;
+  unit: WeightUnit;
 }) {
   return (
     <div className="flex h-12 items-center gap-2 rounded-lg border border-hf-gray-border bg-hf-white px-3 focus-within:border-hf-black">
       <input
         id={id}
         type="text"
-        inputMode="decimal"
+        inputMode={unit === "st" ? "text" : "decimal"}
         value={value}
         onChange={(event) => onChange(event.target.value)}
-        placeholder={placeholder}
+        placeholder={unit === "st" ? "11 5" : placeholder}
         className="hf-type-title min-w-0 flex-1 bg-transparent text-hf-black outline-none placeholder:text-hf-black/35"
       />
-      <span className="hf-type-body hf-type-strong text-hf-black/60">kg</span>
+      <span className="hf-type-body hf-type-strong text-hf-black/60">{weightUnitLabel(unit)}</span>
     </div>
   );
 }
@@ -160,6 +155,8 @@ function conditionPairs(t: T): [Condition, Condition][] {
 
 export default function WeightCalibrationPage() {
   const { t } = useTranslation();
+  const { weight: weightUnit } = useUnits();
+  const parseKg = (raw: string) => parseWeightInput(raw, weightUnit);
   const [entries, setEntries] = useState<WeightEntry[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -182,7 +179,7 @@ export default function WeightCalibrationPage() {
         const slots = todaysSlotEntries(data.entries);
         const next: Record<number, string> = {};
         for (const hour of TIME_GRID_HOURS) {
-          if (slots[hour]) next[hour] = formatKg(slots[hour].weightKg);
+          if (slots[hour]) next[hour] = weightToInputValue(slots[hour].weightKg, weightUnit);
         }
         setGridValues(next);
       })
@@ -215,7 +212,7 @@ export default function WeightCalibrationPage() {
     for (const hour of TIME_GRID_HOURS) {
       const weightKg = parseKg(gridValues[hour] ?? "");
       const existing = slotEntries[hour];
-      if (weightKg === null || existing?.weightKg === weightKg) continue;
+      if (weightKg === null || (existing && Math.abs(existing.weightKg - weightKg) < 0.05)) continue;
       requests.push(
         existing
           ? fetch(`/api/weight-entries/${existing.id}`, {
@@ -281,6 +278,7 @@ export default function WeightCalibrationPage() {
                     value={conditionValues[condition.key] ?? ""}
                     onChange={(value) => setConditionValues((current) => ({ ...current, [condition.key]: value }))}
                     placeholder={t("weightCalibration.weightPlaceholder")}
+                    unit={weightUnit}
                   />
                 </label>
               ))}
@@ -305,7 +303,7 @@ export default function WeightCalibrationPage() {
                 <input
                   id={`weight-slot-${hour}`}
                   type="text"
-                  inputMode="decimal"
+                  inputMode={weightUnit === "st" ? "text" : "decimal"}
                   value={gridValues[hour] ?? ""}
                   onChange={(event) =>
                     setGridValues((current) => ({ ...current, [hour]: event.target.value }))
@@ -313,7 +311,7 @@ export default function WeightCalibrationPage() {
                   placeholder={t("weightCalibration.timeGrid.placeholder")}
                   className="hf-type-title h-full min-w-0 flex-1 bg-transparent text-hf-black outline-none placeholder:text-hf-black/30"
                 />
-                <span className="hf-type-body hf-type-strong text-hf-black/60">kg</span>
+                <span className="hf-type-body hf-type-strong text-hf-black/60">{weightUnitLabel(weightUnit)}</span>
               </label>
             ))}
           </div>
@@ -333,7 +331,7 @@ export default function WeightCalibrationPage() {
               <div key={entry.id} className="hf-control-row flex items-center justify-between rounded-2xl bg-hf-tan px-4">
                 <div>
                   <p className="hf-type-body hf-type-strong text-hf-black">
-                    {formatKg(entry.weightKg)} kg
+                    {formatWeight(entry.weightKg, weightUnit)}
                     <span className="hf-type-small text-text-secondary ml-2">
                       {formatDateTime(entry.weighedAt)}
                     </span>

@@ -12,6 +12,7 @@ import {
   type BodyMeasurementSex,
 } from "@/lib/body-measurements";
 import { SkeletonCards, SkeletonScreen } from "@/components/hf/Skeleton";
+import { cmToIn, formatLength, inToCm, lengthUnitLabel, useUnits, type HeightUnit } from "@/lib/units";
 
 type BodyMeasurementEntry = {
   id: string;
@@ -45,9 +46,13 @@ function formatDateTime(value: string) {
   }).format(new Date(value));
 }
 
-function formatEntrySummary(entry: BodyMeasurementEntry, t: (key: string, params?: Record<string, string | number>) => string) {
+function formatEntrySummary(
+  entry: BodyMeasurementEntry,
+  t: (key: string, params?: Record<string, string | number>) => string,
+  unit: HeightUnit,
+) {
   return BODY_MEASUREMENT_FIELDS.filter(({ field }) => entry[field] != null)
-    .map(({ field, labelKey }) => `${t(labelKey)}: ${entry[field]} cm`)
+    .map(({ field, labelKey }) => `${t(labelKey)}: ${formatLength(entry[field] as number, unit)}`)
     .join(" · ");
 }
 
@@ -79,6 +84,7 @@ function InlineMeasurementInput({
 
 export default function BodyMeasurementsPage() {
   const { t } = useTranslation();
+  const { height: lengthUnit } = useUnits();
   const [entries, setEntries] = useState<BodyMeasurementEntry[]>([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -120,7 +126,8 @@ export default function BodyMeasurementsPage() {
         todaysEntryId.current = today?.id ?? null;
         const next = emptyBodyMeasurementValues();
         for (const { field } of BODY_MEASUREMENT_FIELDS) {
-          if (today?.[field] != null) next[field] = String(today[field]);
+          const cm = today?.[field];
+          if (cm != null) next[field] = String(lengthUnit === "in" ? Math.round(cmToIn(cm) * 10) / 10 : cm);
         }
         setValues(next);
       })
@@ -134,8 +141,10 @@ export default function BodyMeasurementsPage() {
 
   async function commitField(field: MeasurementField) {
     const raw = values[field];
-    const parsed = raw.trim() === "" ? null : Number(raw.replace(",", "."));
-    if (parsed !== null && (!parsed || parsed <= 0)) return;
+    const typed = raw.trim() === "" ? null : Number(raw.replace(",", "."));
+    if (typed !== null && (!typed || typed <= 0)) return;
+    // Indtastet i den valgte enhed, gemmes altid i cm.
+    const parsed = typed === null ? null : lengthUnit === "in" ? Math.round(inToCm(typed) * 10) / 10 : typed;
 
     setSaving(true);
     try {
@@ -209,7 +218,7 @@ export default function BodyMeasurementsPage() {
                     onCommit={() => commitField(field)}
                     placeholder={t("bodyMeasurements.placeholder")}
                   />
-                  <span className="hf-type-body text-text-secondary shrink-0">cm</span>
+                  <span className="hf-type-body text-text-secondary shrink-0">{lengthUnitLabel(lengthUnit)}</span>
                 </span>
               </span>
             </label>
@@ -239,7 +248,7 @@ export default function BodyMeasurementsPage() {
             <div key={entry.id} className="hf-control-row flex items-center justify-between rounded-2xl bg-hf-tan px-4">
               <div>
                 <p className="hf-type-small hf-type-strong text-hf-black">
-                  {formatEntrySummary(entry, t)}
+                  {formatEntrySummary(entry, t, lengthUnit)}
                   <span className="hf-type-small text-text-secondary ml-2">
                     {formatDateTime(entry.measuredAt)}
                   </span>

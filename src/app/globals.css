@@ -1765,3 +1765,74 @@ textarea::selection,
 .web-shell .hf-appbar__slot:first-child:empty {
   width: 0;
 }
+
+/* Forsidens bølge-baggrund (bruger 2026-10-01), src/components/HomeWaves.tsx.
+   Tre lag af samme scene: skarp øverst, mellem-sløret i midten, kraftigt
+   sløret nederst — som frostet glas. Hele baggrunden toner ud nederst, ca.
+   halvvejen mellem "Dagens tilføjelser"-stregen og teksten under den. */
+.home-wave {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  height: calc(100% + 40px);
+  overflow: hidden;
+  pointer-events: none;
+  -webkit-mask-image: linear-gradient(to bottom, black 0%, black 56%, transparent 100%);
+  mask-image: linear-gradient(to bottom, black 0%, black 56%, transparent 100%);
+}
+
+.home-wave__layer {
+  position: absolute;
+  inset: 0;
+}
+
+.home-wave__layer canvas {
+  position: absolute;
+  top: calc(var(--home-wave-bleed) * -1);
+  left: calc(var(--home-wave-bleed) * -1);
+  width: calc(100% + var(--home-wave-bleed) * 2);
+  height: calc(100% + var(--home-wave-bleed) * 2);
+}
+
+.home-wave__layer--sharp {
+  -webkit-mask-image: linear-gradient(to bottom, black 0%, black 28%, transparent 56%);
+  mask-image: linear-gradient(to bottom, black 0%, black 28%, transparent 56%);
+}
+
+.home-wave__layer--sharp canvas {
+  filter: blur(0.8px);
+}
+
+.home-wave__layer--mid {
+  -webkit-mask-image: linear-gradient(to bottom, transparent 20%, black 44%, black 52%, transparent 80%);
+  mask-image: linear-gradient(to bottom, transparent 20%, black 44%, black 52%, transparent 80%);
+}
+
+.home-wave__layer--mid canvas {
+  filter: blur(7px);
+}
+
+.home-wave__layer--heavy {
+  -webkit-mask-image: linear-gradient(to bottom, transparent 44%, black 74%);
+  mask-image: linear-gradient(to bottom, transparent 44%, black 74%);
+}
+
+.home-wave__layer--heavy canvas {
+  filter: blur(17px);
+}
+
+/* Webvisning af søgesiden: indholdet fylder halvdelen (2/4) i midten, mens
+   sideoverskriften forbliver bred. Søgefeltet og resultaterne deler samme
+   kolonne, og produktbillederne er større end på telefonen. */
+.web-shell .web-search-page {
+  width: 50%;
+  min-width: 480px;
+  max-width: 100%;
+  margin-inline: auto;
+}
+
+.web-shell .web-search-page .hf-foodrow-thumb {
+  width: 80px;
+  height: 80px;
+}
