@@ -405,6 +405,20 @@ textarea::selection,
   .hf-type-strong {
     font-weight: 700;
   }
+
+  /* Vand-siden i webvisning (≥1024px): "Mængde" og ml-tallet går ét trin op
+     i typeskalaen (13 → 17 px og 17 → 22 px). Mobil er uændret. */
+  @media (min-width: 1024px) {
+    .hf-water-amount__label {
+      font-size: 17px;
+      line-height: 24px;
+    }
+
+    .hf-water-amount__value {
+      font-size: 22px;
+      line-height: 28px;
+    }
+  }
 }
 
 /* ---- Appbar-shell, jf. design.md §6.1/§9.3. Fast 44/1fr/44px-slotgrid, så
