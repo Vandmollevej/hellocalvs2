@@ -35,6 +35,17 @@ export const JOBS: JobDefinition[] = [
     defaultRunAtTime: "03:00",
   },
   {
+    // Mærkater er lavere prioritet end selve scanningen (brugerregel
+    // 2026-10-02): kun om natten, aldrig i scan-flowet.
+    key: "label-scan",
+    name: "Mærkater: AI-aflæsning",
+    description:
+      "Finder mærkater på vareforsiden (laktosefri, Haltungsform, QMilch, Øko, Nøglehul, MSC …) for varer, der ikke er scannet for mærkater endnu. Mærkerne fritskrabes af billedrobotten, og sikre fund udfylder tomme filtre på varen.",
+    runtime: "app",
+    defaultIntervalMinutes: null,
+    defaultRunAtTime: "04:00",
+  },
+  {
     key: "frida-import",
     name: "Frida-import",
     description:

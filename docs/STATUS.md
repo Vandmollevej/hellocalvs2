@@ -1,6 +1,12 @@
 # HELLO CAL — project status
 
-Last updated: 2026-09-29
+Last updated: 2026-10-02
+
+## 2026-10-02: Mærkater på forsiden (natligt job)
+
+- Nyt job `label-scan` (Cron-jobs, kl. 04:00) finder alle mærkater på vareforsiden (laktosefri "-L", Haltungsform, QMilch, Øko, Nøglehul, MSC …), gemmer dem i `product_labels`, fritskraber dem via image-agent (`PRODUCT_LABEL`) og udfylder tomme filtre. Varesiden viser dem som badges (fritskrabet mærke, når det findes). Se DECISIONS.md samme dato.
+- Migration `20261002090000_product_labels` skal køre ved deploy; image-agent-containeren skal genbygges (cutout.py). Lint, typecheck, `npm test` (5 nye) og build grønne; ikke live-testet (ingen lokal DB/OpenAI-nøgle).
+- Næste: admin-visning af fundne mærkater på `/admin/products/[id]` (ret/slet) og evt. en kø for usikre mærkater (0,5–0,8) som ved logoer.
 
 ## 2026-09-29: Offentlig forside for udloggede
 

@@ -19,6 +19,11 @@ export async function GET(
         filters: {
           select: { organic: true, keyhole: true, wholeGrain: true, animalWelfare: true, certifications: true },
         },
+        // Mærkater fra det natlige mærkat-job (docs/DECISIONS.md 2026-10-02).
+        labels: {
+          select: { key: true, name: true, category: true, imageUrl: true, confidence: true },
+          orderBy: { confidence: "desc" },
+        },
         nutritionFeatures: {
           select: {
             sugarsPer100g: true,

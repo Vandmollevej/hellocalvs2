@@ -1187,6 +1187,10 @@ model Product {
   // Filtertabellen (økologisk, glutenfri, kødtype, nøglehul …), højst én
   // række pr. produkt — docs/DECISIONS.md 2026-09-27.
   filters            ProductFilters?
+  // Mærkater fundet på forsiden af det natlige job "label-scan"
+  // (docs/DECISIONS.md 2026-10-02). labelsScannedAt = sidste kørsel.
+  labels             ProductLabel[]
+  labelsScannedAt    DateTime?
   registrations      Registration[]
   favorites          Favorite[]
   dishIngredients    DishIngredient[]
@@ -1375,8 +1379,9 @@ model ImageCutoutJob {
   analysisId     String?
   createdAt      DateTime           @default(now())
   processedAt    DateTime?
-  // Sat når resultatet er skrevet videre (Brand.logoUrl / Product.pendingImageUrl).
+  // Sat når resultatet er skrevet videre (Brand.logoUrl / Product.pendingImageUrl / ProductLabel.imageUrl).
   appliedAt      DateTime?
+  label          ProductLabel?
 
   @@index([status, createdAt])
   @@index([brandId])
@@ -1387,6 +1392,50 @@ model ImageCutoutJob {
 enum ImageCutoutKind {
   BRAND_LOGO
   PRODUCT_FRONT
+  // Mærkat/badge på forsiden (laktosefri, Haltungsform, QMilch …),
+  // docs/DECISIONS.md 2026-10-02.
+  PRODUCT_LABEL
+}
+
+// Mærkater på vareforsiden (docs/DECISIONS.md 2026-10-02): det natlige job
+// "label-scan" lader OpenAI finde alle mærker/badges ud over hovedlogoet
+// (laktosefri "-L", Haltungsform 3, QMilch, Øko, Nøglehul, MSC …), gemmer
+// dem her og fritskraber hvert mærke via ImageCutoutJob (PRODUCT_LABEL).
+// Sikre fund (>= 0,8) udfylder tomme felter i ProductFilters.
+model ProductLabel {
+  id          String               @id @default(cuid())
+  product     Product              @relation(fields: [productId], references: [id], onDelete: Cascade)
+  productId   String
+  // Stabil nøgle, fx "lactose-free", "haltungsform-3", "qmilch", "organic-eu".
+  key         String
+  // Dansk visningsnavn, fx "Laktosefri", "Haltungsform 3 (Frischluftstall)".
+  name        String
+  // Teksten som den står på mærket, fx "-L Laktosefrei".
+  text        String?
+  category    ProductLabelCategory
+  // Rektangel i 0-1 af forsidefotoet ({ x, y, width, height }).
+  box         Json?
+  confidence  Float
+  // Fritskrabet PNG af mærket (fra image-agent), ellers null.
+  imageUrl    String?
+  cutoutJob   ImageCutoutJob?      @relation(fields: [cutoutJobId], references: [id], onDelete: SetNull)
+  cutoutJobId String?              @unique
+  createdAt   DateTime             @default(now())
+
+  @@unique([productId, key])
+  @@index([key])
+  @@map("product_labels")
+}
+
+enum ProductLabelCategory {
+  DIET
+  ORGANIC
+  ANIMAL_WELFARE
+  QUALITY
+  SUSTAINABILITY
+  HEALTH
+  ORIGIN
+  OTHER
 }
 
 enum ImageCutoutStatus {

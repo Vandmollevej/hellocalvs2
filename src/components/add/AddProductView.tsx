@@ -23,7 +23,7 @@ import { appendDishDraftIngredient } from "@/lib/dish-draft";
 import { selectRawContextImageUrl } from "@/lib/image-tags";
 import { MacroSliderBar } from "@/components/hf/MacroSliderBar";
 import { CertificationLogos } from "@/components/hf/CertificationLogos";
-import { certificationBadges, type CertificationFilters } from "@/lib/certification-badges";
+import { certificationBadges, type CertificationFilters, type ProductLabelView } from "@/lib/certification-badges";
 import { AdditiveInfoModal } from "@/components/hf/AdditiveInfoModal";
 import { getAdditiveInfo, splitENumbers } from "@/lib/additives";
 import { IngredientsText } from "@/components/hf/IngredientsText";
@@ -114,6 +114,8 @@ type Product = {
   additives?: string[];
   // Mærkninger (økologisk, nøglehul, MSC …) vist som logoer, opgave 29.
   filters?: CertificationFilters | null;
+  // Mærkater fundet på forsiden af det natlige job (docs/DECISIONS.md 2026-10-02).
+  labels?: ProductLabelView[] | null;
   barcodes?: { code: string }[];
   createdByUserId?: string | null;
   // HelloFresh-recipe extra nutrition, per Product.servingSizeGrams — see
@@ -1015,7 +1017,7 @@ export function AddProductView({
                   />
                 </div>
                 )}
-                <CertificationLogos badges={certificationBadges(view.filters)} className="mt-4" />
+                <CertificationLogos badges={certificationBadges(view.filters, view.labels)} className="mt-4" />
               </div>
 
               {/* Toksiner (G11): kendte stoffer ud fra navn + indholdsfortegnelse,

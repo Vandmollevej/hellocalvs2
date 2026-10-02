@@ -16,6 +16,12 @@ const STYLE: Record<CertificationKind, { bg: string; fg: string; mark: string }>
 
 function Logo({ badge }: { badge: CertificationBadge }) {
   const style = STYLE[badge.kind];
+  // Fritskrabet mærke fra emballagen (docs/DECISIONS.md 2026-10-02) — det
+  // rigtige mærke vinder over den stiliserede udgave.
+  if (badge.imageUrl) {
+    // eslint-disable-next-line @next/next/no-img-element
+    return <img src={badge.imageUrl} alt="" width={44} height={44} className="h-11 w-11 object-contain" aria-hidden />;
+  }
   const fontSize = style.mark.length > 2 ? 11 : style.mark.length > 1 ? 14 : 20;
   if (badge.kind === "keyhole") {
     return (
