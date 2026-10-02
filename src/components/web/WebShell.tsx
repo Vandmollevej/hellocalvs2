@@ -4,7 +4,9 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter, usePathname } from "next/navigation";
 import { createContext, useContext, useEffect, useState } from "react";
-import { IconChevronLeft, IconSearch, IconUser } from "@tabler/icons-react";
+import { IconChevronLeft, IconSearch } from "@tabler/icons-react";
+import { useFamilyStatus } from "@/components/family/FamilyStatusProvider";
+import { ProfileCircle } from "@/components/family/ProfileCircle";
 import { useTranslation } from "@/i18n/LocaleProvider";
 import {
   WEB_HOME,
@@ -89,6 +91,7 @@ export function WebShell({ children }: { children: React.ReactNode }) {
   const { t } = useTranslation();
   const pathname = usePathname() ?? "/";
   const router = useRouter();
+  const { status } = useFamilyStatus();
   const [query, setQuery] = useState("");
   const [collapsed, setCollapsed] = useState(false);
 
@@ -140,14 +143,14 @@ export function WebShell({ children }: { children: React.ReactNode }) {
           className={`relative z-30 flex h-dvh shrink-0 flex-col border-r border-hf-tan-dark bg-hf-white ${collapsed ? "w-16" : "w-64"}`}
         >
           <div
-            className={`flex h-14 shrink-0 items-center border-b border-hf-tan-dark ${collapsed ? "justify-center" : "px-4"}`}
+            className={`flex h-20 shrink-0 items-center border-b border-hf-tan-dark ${collapsed ? "justify-center" : "px-4"}`}
           >
             <Link href={WEB_HOME} className="flex items-center">
               <Image
                 src="/hello-cal-logo.png"
                 alt="Hello Cal"
-                width={collapsed ? 44 : 90}
-                height={collapsed ? 20 : 40}
+                width={collapsed ? 48 : 124}
+                height={collapsed ? 21 : 55}
                 priority
               />
             </Link>
@@ -249,7 +252,7 @@ export function WebShell({ children }: { children: React.ReactNode }) {
         </aside>
 
         <div className="flex min-w-0 flex-1 flex-col">
-          <header className="flex h-14 shrink-0 items-center justify-between gap-3 border-b border-hf-tan-dark bg-hf-white px-6">
+          <header className="flex h-20 shrink-0 items-end justify-between gap-3 border-b border-hf-tan-dark bg-hf-white px-6 pb-2.5">
             <nav aria-label={t("web.mainNav")}>
               <ul className="flex items-center gap-1">
                 {WEB_TOP_NAV.map((item) => {
@@ -283,9 +286,11 @@ export function WebShell({ children }: { children: React.ReactNode }) {
                   : "text-text-secondary hover:bg-hf-tan hover:text-text-primary"
               }`}
             >
-              <span className="flex h-7 w-7 items-center justify-center rounded-full bg-hf-green-dark text-hf-white">
-                <IconUser size={16} stroke={1.75} />
-              </span>
+              <ProfileCircle
+                name={status?.activeProfile.displayName ?? ""}
+                size={32}
+                className="hf-avatar--outlined"
+              />
               {t("web.profileSettings")}
             </Link>
           </header>
