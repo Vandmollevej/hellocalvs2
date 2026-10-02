@@ -1,9 +1,18 @@
 "use client";
 
-import { useCallback, useEffect, useEffectEvent, useMemo, useRef, useState } from "react";
+import {
+  useCallback,
+  useEffect,
+  useEffectEvent,
+  useMemo,
+  useRef,
+  useState,
+  type ComponentType,
+} from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { IconBarcode, IconCamera, IconFlame, IconList, IconPhoto, type Icon } from "@tabler/icons-react";
+import { IconCamera, IconFlame, IconList, IconPhoto } from "@tabler/icons-react";
+import { IconBarcodeCard } from "@/components/icons/BarcodeCard";
 import { BarcodeScanOverlay, type BarcodeDetection } from "@/components/hf/BarcodeScanOverlay";
 import { CaptureCheckOverlay } from "@/components/hf/CaptureCheckOverlay";
 import { PhotoWorkingOverlay } from "@/components/hf/HfLoader";
@@ -58,8 +67,8 @@ const DECODE_ANIMATION_REDUCED_MS = 300;
 // En aflæsning uden ny læsning i så lang tid regnes for væk.
 const DETECTION_STALE_MS = 1200;
 
-const STEP_ICONS: Record<CaptureStep, Icon> = {
-  barcode: IconBarcode,
+const STEP_ICONS: Record<CaptureStep, ComponentType<{ size?: number; stroke?: number }>> = {
+  barcode: IconBarcodeCard,
   front: IconPhoto,
   nutrition: IconFlame,
   ingredients: IconList,
