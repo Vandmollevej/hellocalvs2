@@ -38,6 +38,27 @@ function htmlToPushText(html: string) {
     .trim();
 }
 
+// Sender én push direkte til alle brugerens enheder (uden om køen). No-op
+// uden VAPID-nøgler eller abonnement.
+export async function sendPushToUser(userId: string, title: string, body: string) {
+  if (!isConfigured()) return { sent: 0 };
+  configure();
+  const subscriptions = await prisma.pushSubscription.findMany({ where: { userId } });
+  let sent = 0;
+  for (const sub of subscriptions) {
+    try {
+      await webpush.sendNotification(
+        { endpoint: sub.endpoint, keys: { p256dh: sub.p256dh, auth: sub.auth } },
+        JSON.stringify({ title, body })
+      );
+      sent += 1;
+    } catch {
+      await prisma.pushSubscription.delete({ where: { id: sub.id } }).catch(() => {});
+    }
+  }
+  return { sent };
+}
+
 // Sender alle QUEUED push/BOTH-beskeder. Kaldes fra scheduleren. Er VAPID
 // ikke opsat, rører den ikke ved køen.
 export async function flushQueuedPush(limit = 25) {

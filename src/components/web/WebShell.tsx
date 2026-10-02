@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useRouter, usePathname } from "next/navigation";
 import { createContext, useContext, useEffect, useState } from "react";
 import { IconPlus } from "@tabler/icons-react";
-import { AddMenuSheet } from "@/components/add/AddMenuSheet";
+import { useAddActionsProfile, visibleAddActions } from "@/lib/add-actions";
 import { useFamilyStatus } from "@/components/family/FamilyStatusProvider";
 import { ProfileCircle } from "@/components/family/ProfileCircle";
 import { useTranslation } from "@/i18n/LocaleProvider";
@@ -14,6 +14,7 @@ import {
   WEB_SETTINGS,
   WEB_SHORTCUTS,
   WEB_TOP_NAV,
+  isWebRootPath,
   type WebNavItem,
 } from "@/lib/web-nav";
 
@@ -88,6 +89,47 @@ function SideLink({
   );
 }
 
+// Brødkrummer øverst i indholdsfladen (som i admin) på sider under topniveau.
+const CRUMB_LABELS: Record<string, string> = {
+  betingelser: "Betingelser",
+  privatlivspolitik: "Privatlivspolitik",
+};
+
+function Crumbs({ pathname }: { pathname: string }) {
+  const { t } = useTranslation();
+  const all = [...WEB_SHORTCUTS, ...WEB_SETTINGS];
+  const segs = pathname.split("/").filter(Boolean);
+  const crumbs: { label: string; href?: string }[] = [{ label: "Hello Cal", href: WEB_HOME }];
+  let acc = "";
+  segs.forEach((seg, i) => {
+    acc += `/${seg}`;
+    const item = all.find((n) => n.href.split("?")[0] === acc);
+    const last = i === segs.length - 1;
+    const label = item ? t(item.labelKey) : last ? CRUMB_LABELS[seg] : undefined;
+    if (label) crumbs.push({ label, href: last ? undefined : acc });
+  });
+  if (crumbs.length < 2) return null;
+  return (
+    <nav
+      aria-label="Breadcrumb"
+      className="hf-type-body flex shrink-0 items-center gap-1.5 border-b border-hf-tan-dark bg-hf-white px-6 py-2 text-text-muted"
+    >
+      {crumbs.map((c, i) => (
+        <span key={`${c.label}-${i}`} className="flex items-center gap-1.5">
+          {i > 0 && <span aria-hidden="true">/</span>}
+          {c.href ? (
+            <Link href={c.href} className="hover:text-text-primary hover:underline">
+              {c.label}
+            </Link>
+          ) : (
+            <span className="text-hf-black">{c.label}</span>
+          )}
+        </span>
+      ))}
+    </nav>
+  );
+}
+
 export function WebShell({ children }: { children: React.ReactNode }) {
   const { t } = useTranslation();
   const pathname = usePathname() ?? "/";
@@ -95,6 +137,14 @@ export function WebShell({ children }: { children: React.ReactNode }) {
   const { status } = useFamilyStatus();
   const [collapsed, setCollapsed] = useState(false);
   const [addOpen, setAddOpen] = useState(false);
+  const addProfile = useAddActionsProfile();
+  // Mikrofonen findes ikke på desktop (chat afløser den).
+  const addActions = visibleAddActions(addProfile).filter((a) => a.key !== "microphone");
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setAddOpen(false);
+  }, [pathname]);
 
   useEffect(() => {
     // localStorage findes først efter hydrering.
@@ -231,7 +281,8 @@ export function WebShell({ children }: { children: React.ReactNode }) {
             {/* Grøn cirkel med hvidt plus; 20 % af den hænger ned over headerens streg. */}
             <button
               type="button"
-              onClick={() => setAddOpen(true)}
+              onClick={() => setAddOpen((value) => !value)}
+              aria-expanded={addOpen}
               aria-label={t("addMenu.title")}
               title={t("addMenu.title")}
               className="-mb-5 flex h-[52px] w-[52px] shrink-0 items-center justify-center rounded-full bg-hf-green text-hf-white shadow-md transition hover:bg-hf-green-dark"
@@ -255,6 +306,26 @@ export function WebShell({ children }: { children: React.ReactNode }) {
               {t("web.profileSettings")}
             </Link>
             </div>
+            {addOpen && (
+              <div className="absolute left-0 right-0 top-full z-20 border-b border-hf-tan-dark bg-hf-white pt-4 shadow-sm">
+                <ul className="flex items-start justify-center gap-2 overflow-x-auto px-6 py-3">
+                  {addActions.map((action) => {
+                    const Icon = action.icon;
+                    return (
+                      <li key={action.key}>
+                        <Link
+                          href={action.href}
+                          className="hf-type-small flex w-24 flex-col items-center gap-1.5 rounded-md px-2 py-2 text-center text-text-secondary hover:bg-hf-tan hover:text-text-primary"
+                        >
+                          {Icon && <Icon size={28} stroke={1.75} />}
+                          <span>{t(action.labelKey)}</span>
+                        </Link>
+                      </li>
+                    );
+                  })}
+                </ul>
+              </div>
+            )}
           </header>
 
           <main className="min-h-0 min-w-0 flex-1 overflow-y-auto">
@@ -263,11 +334,11 @@ export function WebShell({ children }: { children: React.ReactNode }) {
               className="web-shell-content mx-auto flex h-full w-full max-w-7xl flex-col overflow-hidden bg-hf-cream"
               style={{ transform: "translateZ(0)" }}
             >
-              {children}
+              {!isWebRootPath(pathname) && <Crumbs pathname={pathname} />}
+              <div className="flex min-h-0 flex-1 flex-col">{children}</div>
             </div>
           </main>
         </div>
-        {addOpen && <AddMenuSheet onClose={() => setAddOpen(false)} />}
       </div>
     </WebShellContext.Provider>
   );
