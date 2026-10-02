@@ -2363,6 +2363,14 @@ enum PaymentMethodBrand {
   GIROCARD
 }
 
+// Wallet, kortet ligger i hos Stripe (card.wallet.type). Kortets mærke og
+// sidste 4 cifre gemmes stadig i brand/last4, så "Apple Pay · Visa •••• 4242"
+// kan vises (docs/DECISIONS.md 2026-10-02).
+enum PaymentWallet {
+  APPLE_PAY
+  GOOGLE_PAY
+}
+
 model Subscription {
   id                     String             @id @default(cuid())
   user                   User               @relation(fields: [userId], references: [id])
@@ -2399,6 +2407,7 @@ model PaymentMethod {
   last4                   String?
   expiryMonth             Int?
   expiryYear              Int?
+  wallet                  PaymentWallet?
   isDefault               Boolean            @default(true)
   providerPaymentMethodId String?
   createdAt               DateTime           @default(now())

@@ -82,8 +82,23 @@ export async function stripeRequest<T>(
 export type StripePaymentMethod = {
   id: string;
   type: string;
-  card?: { brand?: string; last4?: string; exp_month?: number; exp_year?: number };
+  card?: {
+    brand?: string;
+    last4?: string;
+    exp_month?: number;
+    exp_year?: number;
+    // Sat, når kortet er betalt via en wallet (apple_pay, google_pay, link …).
+    wallet?: { type?: string } | null;
+  };
 };
+
+export type StripeCustomer = {
+  id: string;
+  invoice_settings?: { default_payment_method?: StripePaymentMethod | string | null } | null;
+};
+
+export type StripeBillingPortalSession = { id: string; url: string };
+export type StripeBillingPortalConfiguration = { id: string; is_default: boolean; active: boolean };
 
 export type StripeSubscription = {
   id: string;
@@ -133,9 +148,62 @@ export function getStripeSubscription(id: string) {
   });
 }
 
+export function getStripePaymentMethod(id: string) {
+  return stripeRequest<StripePaymentMethod>("GET", `/v1/payment_methods/${encodeURIComponent(id)}`);
+}
+
+export function getStripeCustomer(id: string) {
+  return stripeRequest<StripeCustomer>("GET", `/v1/customers/${encodeURIComponent(id)}`, {
+    expand: ["invoice_settings.default_payment_method"],
+  });
+}
+
 export function setCancelAtPeriodEnd(id: string, cancel: boolean) {
   return stripeRequest<StripeSubscription>("POST", `/v1/subscriptions/${encodeURIComponent(id)}`, {
     cancel_at_period_end: cancel,
+  });
+}
+
+// Kundeportal (Billing Portal): brugeren skifter betalingskort/wallet hos
+// Stripe og sendes tilbage til return_url. Opsigelse sker ikke her (vi har
+// vores egen "Opsig abonnement"), så portalen åbnes direkte i kort-skift-flowet.
+export function createBillingPortalSession(params: {
+  customer: string;
+  return_url: string;
+  configuration?: string;
+  locale?: string;
+}) {
+  return stripeRequest<StripeBillingPortalSession>("POST", "/v1/billing_portal/sessions", {
+    customer: params.customer,
+    return_url: params.return_url,
+    configuration: params.configuration,
+    locale: params.locale,
+    flow_data: { type: "payment_method_update" },
+  });
+}
+
+export function listBillingPortalConfigurations() {
+  return stripeRequest<{ data: StripeBillingPortalConfiguration[] }>("GET", "/v1/billing_portal/configurations", {
+    active: true,
+    limit: 10,
+  });
+}
+
+export function createBillingPortalConfiguration(params: { privacyPolicyUrl: string; termsOfServiceUrl: string }) {
+  return stripeRequest<StripeBillingPortalConfiguration>("POST", "/v1/billing_portal/configurations", {
+    business_profile: {
+      headline: "Hello Cal",
+      privacy_policy_url: params.privacyPolicyUrl,
+      terms_of_service_url: params.termsOfServiceUrl,
+    },
+    features: {
+      payment_method_update: { enabled: true },
+      invoice_history: { enabled: true },
+      // Opsigelse og planskift styres i appen, ikke i portalen.
+      subscription_cancel: { enabled: false },
+      subscription_update: { enabled: false },
+      customer_update: { enabled: false },
+    },
   });
 }
 

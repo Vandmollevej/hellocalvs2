@@ -7,8 +7,6 @@ import {
   IconCamera,
   IconStar,
   IconBook2,
-  IconCreditCard,
-  IconWallet,
   IconBulb,
 } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
@@ -93,16 +91,7 @@ export default function ProfilePage() {
               label={t("profile.section.profile")}
               href="/profile/edit"
             />
-            <ChevronRow
-              icon={<IconCreditCard size={20} />}
-              label={t("profile.row.subscription")}
-              href="/profile/subscription"
-            />
-            <ChevronRow
-              icon={<IconWallet size={20} />}
-              label={t("profile.row.paymentMethods")}
-              href="/settings/payment"
-            />
+            {/* Abonnement og betalingsmetode ligger under Indstillinger (ejerens valg 2026-10-02). */}
             <ChevronRow
               icon={<IconBathScale size={20} />}
               label={t("profile.row.weightCalibration")}

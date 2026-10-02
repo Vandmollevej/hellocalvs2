@@ -58,6 +58,10 @@ export default function SettingsPage() {
   // the rest of the settings page on it.
   const [isFemale, setIsFemale] = useState(false);
   const [unreadMessages, setUnreadMessages] = useState(0);
+  // "Betalingsmetode" vises kun for betalende (rigtig Stripe-/MobilePay-aftale,
+  // eller en MobilePay-aftale, der venter på godkendelse) — gavekode, points og
+  // familiemedlemmer har intet kort at vise (docs/DECISIONS.md 2026-10-02).
+  const [showPaymentMethod, setShowPaymentMethod] = useState(false);
   const { status: familyStatus } = useFamilyStatus();
   // Kontrol-loggen vises for den, der er med i en andens familie (barn,
   // partner — den, der kontrolleres), se docs/FAMILY.md.
@@ -89,6 +93,15 @@ export default function SettingsPage() {
         if (!cancelled) setUnreadMessages(data.unreadCount);
       })
       .catch(() => {});
+    fetch("/api/subscription")
+      .then(async (response) => {
+        if (!response.ok) throw new Error("failed");
+        return (await response.json()) as { paying?: boolean; mobilePayPending?: boolean };
+      })
+      .then((data) => {
+        if (!cancelled) setShowPaymentMethod(Boolean(data.paying || data.mobilePayPending));
+      })
+      .catch(() => {});
     return () => {
       cancelled = true;
     };
@@ -110,13 +123,16 @@ export default function SettingsPage() {
             icon={<IconCreditCard size={20} />}
             label={t("profile.row.subscription")}
             href="/profile/subscription"
+            divider={showPaymentMethod}
           />
-          <ChevronRow
-            icon={<IconWallet size={20} />}
-            label={t("settings.payment")}
-            href="/settings/payment"
-            divider={false}
-          />
+          {showPaymentMethod && (
+            <ChevronRow
+              icon={<IconWallet size={20} />}
+              label={t("settings.paymentMethod")}
+              href="/settings/payment"
+              divider={false}
+            />
+          )}
         </AccordionCard>
 
         <AccordionCard>

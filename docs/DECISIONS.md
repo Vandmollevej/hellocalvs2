@@ -3381,6 +3381,14 @@ Kilder på "Mad på latin" skal altid være officielle (Fødevarestyrelsen, Sund
 - Analyse er slået sammen med Statistik: `/admin/statistics` har faner (Brugere og indtjening / Trafik / Reklamer). `/admin/analytics` omdirigerer til Trafik-fanen. Indtjening og betalingsmetoder ligger i fanen Brugere og indtjening.
 - Reklamer: fanen læser fra partner-reklamernes tabeller (`ad_locations`, `ad_events`, `partners`, ejet af Partnere-arbejdet) via rå SQL med try/catch, så den er tom, indtil tabellerne findes og der er hændelser.
 
+## 2026-10-02: Abonnement og betalingsmetode hører til under Indstillinger; betalingsmetode kun for betalende
+
+- **Abonnement og Betalingsmetode ligger kun under Indstillinger** (ejerens krav 2026-10-02). Profilsidens to rækker er fjernet; `/profile/subscription` og `/settings/payment` er uændrede adresser.
+- **"Betalingsmetode" vises kun for betalende.** Betalende = en rigtig udbyder-aftale (Stripe eller MobilePay Recurring) med status ACTIVE eller CANCELED med betalt restperiode — samme definition som admin → Statistik. Gavekode-, points-, prøve- og familiemedlems-Seriøs har intet kort og ser ikke rækken. En MobilePay-aftale, der venter på godkendelse, ser den også (så "Afventer godkendelse" kan findes). Felt: `paying` i `GET /api/subscription`.
+- **Siden viser det, der faktisk trækkes på** — det abonnementets `default_payment_method` hos Stripe (ellers kundens `invoice_settings.default_payment_method`): kortmærke, sidste 4 cifre og udløb; Apple Pay/Google Pay vises som wallet med kortet bagved (`PaymentMethod.wallet`, enum `PaymentWallet`, migration `20261002090000_payment_method_wallet`); MobilePay som MobilePay. Siden kalder `GET /api/subscription?refresh=1`, som synker fra Stripe først, så et kortskift ses med det samme. Kortet slettes ikke længere ved opsigelse — først når aftalen er helt afsluttet hos Stripe.
+- **Kortskift sker i Stripes kundeportal** (`POST /api/payments/stripe/portal` → Billing Portal med `flow_data.type = payment_method_update`, retur til `/settings/payment`). Hello Cal ser aldrig kortdata. Portalen kræver en konfiguration pr. Stripe-konto (test/live): findes ingen aktiv, opretter serveren én med kun kortskift + kvitteringshistorik (opsigelse/planskift slået fra — det styres i appen; privatlivs-/betingelseslinks peger på appens sider). MobilePay Recurring (Vipps) har intet kortskift; der kan kun aftalen stoppes.
+- Mastercard og EC-kort vises med tekst (ingen logo i `public/payment/`), som på købssiden.
+
 ## 2026-09-29: Stripe-betaling — MobilePay i Danmark, kort/EC i Tyskland
 
 - **Startlande: Danmark og Tyskland** (`src/lib/payments/stripe-markets.ts`). Land = brugerens `region`. DK betaler med **MobilePay** (DKK), DE med **kort inkl. EC-kort/girocard** (EUR). Andre lande får ingen Stripe-betaling (faldback: MobilePay Recurring, hvis den er sat op).

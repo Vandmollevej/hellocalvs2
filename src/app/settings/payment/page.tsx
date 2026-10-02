@@ -3,18 +3,31 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { HfScreen } from "@/components/HfScreen";
+import { SkeletonCards, SkeletonScreen } from "@/components/hf/Skeleton";
 import { useTranslation } from "@/i18n/LocaleProvider";
 
-// Betaling (docs/DECISIONS.md 2026-09-26): MobilePay er koblet på via Vipps
-// MobilePay Recurring — brugeren godkender aftalen i MobilePay-appen, og
-// Hello Cal gemmer kun aftale-id'et. Kortnumre indtastes aldrig her.
+// Betalingsmetode (docs/DECISIONS.md 2026-10-02): siden findes kun for
+// betalende (Indstillinger viser rækken kun til dem) og viser det kort eller
+// den wallet, Stripe trækker abonnementet på — Visa/Mastercard/EC-kort med
+// sidste 4 cifre og udløb, Apple Pay/Google Pay med kortet bagved, eller
+// MobilePay. Kortnumre indtastes aldrig her: "Skift betalingsmetode" åbner
+// Stripes kundeportal, og MobilePay Recurring godkendes i MobilePay-appen.
 
 type Subscription = {
   status: string;
+  provider?: string | null;
   freeMonthsRemaining: number;
   currentPeriodEnd?: string | null;
 };
-type PaymentMethod = { id: string; brand: string; provider?: string; last4: string | null };
+type PaymentMethod = {
+  id: string;
+  brand: string;
+  provider?: string;
+  last4: string | null;
+  expiryMonth?: number | null;
+  expiryYear?: number | null;
+  wallet?: "APPLE_PAY" | "GOOGLE_PAY" | null;
+};
 type SubscriptionResponse = {
   subscription: Subscription | null;
   paymentMethods: PaymentMethod[];
@@ -30,14 +43,53 @@ const SUPPORTED_METHODS = [
   { id: "mobilepay", label: "MobilePay", logo: "/payment/mobilepay.svg", className: "h-7" },
 ];
 
-function MobilePayMark() {
-  return (
-    <span className="flex items-center gap-2">
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img src="/payment/mobilepay.svg" alt="" className="h-7 w-7" />
-      <span className="hf-type-body">MobilePay</span>
-    </span>
-  );
+// Logo for det, brugeren betaler med. Mastercard/EC-kort har intet logo i
+// public/payment/ og vises med tekst (som på købssiden, PaymentMethodBadges).
+const METHOD_LOGOS: Record<string, { src: string; className: string }> = {
+  APPLE_PAY: { src: "/payment/applepay.svg", className: "h-8" },
+  GOOGLE_PAY: { src: "/payment/googlepay.svg", className: "h-8" },
+  MOBILEPAY: { src: "/payment/mobilepay.svg", className: "h-8 w-8" },
+  VISA: { src: "/payment/visa.svg", className: "h-8" },
+};
+
+function formatExpiry(month?: number | null, year?: number | null) {
+  if (!month || !year) return null;
+  return `${String(month).padStart(2, "0")}/${String(year).slice(-2)}`;
+}
+
+function previewData(kind: string): SubscriptionResponse {
+  const end = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString();
+  const method: PaymentMethod =
+    kind === "DK"
+      ? { id: "preview", brand: "MOBILEPAY", provider: "STRIPE", last4: null }
+      : kind === "APPLE"
+        ? { id: "preview", brand: "VISA", provider: "STRIPE", last4: "4242", expiryMonth: 9, expiryYear: 2027, wallet: "APPLE_PAY" }
+        : kind === "GOOGLE"
+          ? { id: "preview", brand: "MASTERCARD", provider: "STRIPE", last4: "4444", expiryMonth: 3, expiryYear: 2028, wallet: "GOOGLE_PAY" }
+          : { id: "preview", brand: "GIROCARD", provider: "STRIPE", last4: "4242", expiryMonth: 12, expiryYear: 2026 };
+  return {
+    subscription: { status: "ACTIVE", provider: "STRIPE", freeMonthsRemaining: 0, currentPeriodEnd: end },
+    paymentMethods: [method],
+    mobilePayAvailable: false,
+    stripeAvailable: true,
+    mobilePayPending: false,
+  };
+}
+
+function MethodLogo({ kind, label }: { kind: string; label: string }) {
+  const logo = METHOD_LOGOS[kind];
+  if (!logo) {
+    return (
+      <span
+        className="hf-type-small hf-type-strong flex h-10 items-center rounded-[8px] border bg-hf-white px-3"
+        style={{ borderColor: "var(--hf-color-line)" }}
+      >
+        {label}
+      </span>
+    );
+  }
+  // eslint-disable-next-line @next/next/no-img-element
+  return <img src={logo.src} alt="" className={`${logo.className} w-auto`} />;
 }
 
 export default function PaymentPage() {
@@ -45,27 +97,24 @@ export default function PaymentPage() {
   const [data, setData] = useState<SubscriptionResponse | null>(null);
   const [stopping, setStopping] = useState(false);
   const [confirmStop, setConfirmStop] = useState(false);
+  const [opening, setOpening] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  function isPreview() {
+    return Boolean(new URLSearchParams(window.location.search).get("preview"));
+  }
+
   function load() {
-    // Dummy-visning uden Stripe-nøgle: /settings/payment?preview=DK eller =DE.
-    const previewCountry = new URLSearchParams(window.location.search).get("preview")?.toUpperCase();
-    if (previewCountry === "DK" || previewCountry === "DE") {
-      const end = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString();
-      queueMicrotask(() => setData({
-        subscription: { status: "ACTIVE", freeMonthsRemaining: 0, currentPeriodEnd: end },
-        paymentMethods: [
-          previewCountry === "DK"
-            ? { id: "preview", brand: "MOBILEPAY", provider: "STRIPE", last4: null }
-            : { id: "preview", brand: "GIROCARD", provider: "STRIPE", last4: "4242" },
-        ],
-        mobilePayAvailable: false,
-        stripeAvailable: true,
-        mobilePayPending: false,
-      }));
+    // Dummy-visning uden Stripe-nøgle: ?preview=DK (MobilePay), =DE (EC-kort),
+    // =APPLE (Apple Pay med Visa bagved) eller =GOOGLE (Google Pay med Mastercard).
+    const preview = new URLSearchParams(window.location.search).get("preview")?.toUpperCase();
+    if (preview) {
+      queueMicrotask(() => setData(previewData(preview)));
       return;
     }
-    fetch("/api/subscription")
+    // refresh=1: status og kort hentes fra Stripe først, så siden viser det
+    // kort, der faktisk trækkes på — også lige efter et kortskift i portalen.
+    fetch("/api/subscription?refresh=1")
       .then((res) => (res.ok ? res.json() : null))
       .then((json) => {
         if (json) setData(json);
@@ -76,18 +125,39 @@ export default function PaymentPage() {
     load();
   }, []);
 
+  const subscription = data?.subscription ?? null;
+  const status = subscription?.status ?? "INACTIVE";
+  const periodEnd = subscription?.currentPeriodEnd
+    ? new Date(subscription.currentPeriodEnd).toLocaleDateString("da-DK")
+    : null;
+  // Stripe-betaling (MobilePay i DK, kort/wallet i DE) og MobilePay Recurring kan begge opsiges her.
+  const stripeMethod = data?.paymentMethods.find((pm) => pm.provider === "STRIPE") ?? null;
+  const activeMethod =
+    stripeMethod ?? data?.paymentMethods.find((pm) => pm.brand === "MOBILEPAY") ?? data?.paymentMethods[0] ?? null;
+  const canChangeMethod = Boolean(stripeMethod) && (status === "ACTIVE" || status === "CANCELED");
+  const canStop = Boolean(activeMethod) && status === "ACTIVE";
+
+  const stopLabel =
+    stripeMethod && stripeMethod.brand !== "MOBILEPAY" ? t("payment.stopSubscription") : t("payment.stopAgreement");
+
+  const statusDetail =
+    status === "ACTIVE" && periodEnd
+      ? t("payment.nextPayment", { date: periodEnd })
+      : status === "CANCELED" && periodEnd
+        ? t("payment.canceledUntil", { date: periodEnd })
+        : null;
+
   async function stopAgreement() {
-    if (new URLSearchParams(window.location.search).get("preview")) {
+    if (isPreview()) {
       setConfirmStop(false);
       return;
     }
     setStopping(true);
     setError(null);
     try {
-      const res = await fetch(
-        stripeMethod ? "/api/payments/stripe/cancel" : "/api/payments/mobilepay/cancel",
-        { method: "POST" },
-      );
+      const res = await fetch(stripeMethod ? "/api/payments/stripe/cancel" : "/api/payments/mobilepay/cancel", {
+        method: "POST",
+      });
       if (!res.ok) {
         const json = await res.json().catch(() => ({}));
         setError(json.message ?? t("payment.stopError"));
@@ -100,145 +170,162 @@ export default function PaymentPage() {
     }
   }
 
-  const subscription = data?.subscription ?? null;
-  const status = subscription?.status ?? "INACTIVE";
-  const periodEnd = subscription?.currentPeriodEnd
-    ? new Date(subscription.currentPeriodEnd).toLocaleDateString("da-DK")
-    : null;
-  // Stripe-betaling (MobilePay i DK, kort/EC i DE) og MobilePay Recurring kan begge opsiges her.
-  const stripeMethod = data?.paymentMethods.find((pm) => pm.provider === "STRIPE") ?? null;
-  const mobilePayMethod =
-    stripeMethod ?? data?.paymentMethods.find((pm) => pm.brand === "MOBILEPAY") ?? null;
-  const otherMethods = data?.paymentMethods.filter((pm) => pm !== mobilePayMethod) ?? [];
+  async function changeMethod() {
+    if (isPreview()) return;
+    setOpening(true);
+    setError(null);
+    try {
+      const res = await fetch("/api/payments/stripe/portal", { method: "POST" });
+      const json = (await res.json().catch(() => ({}))) as { url?: string; message?: string };
+      if (!res.ok || !json.url) {
+        setError(json.message ?? t("payment.changeError"));
+        return;
+      }
+      window.location.assign(json.url);
+    } catch {
+      setError(t("payment.changeError"));
+    } finally {
+      setOpening(false);
+    }
+  }
 
-  const stopLabel = stripeMethod && stripeMethod.brand !== "MOBILEPAY" ? t("payment.stopSubscription") : t("payment.stopAgreement");
-
-  const statusDetail =
-    status === "ACTIVE" && periodEnd
-      ? t("payment.nextPayment", { date: periodEnd })
-      : status === "CANCELED" && periodEnd
-        ? t("payment.canceledUntil", { date: periodEnd })
-        : null;
+  // Overskrift + undertekst for det aktive kort/wallet.
+  function describeMethod(method: PaymentMethod) {
+    const brandLabel = t(`payment.methodLabel.${method.brand}`);
+    const card = method.last4 ? t("payment.walletCard", { brand: brandLabel, last4: method.last4 }) : brandLabel;
+    const expiry = formatExpiry(method.expiryMonth, method.expiryYear);
+    const expires = expiry ? t("payment.expires", { date: expiry }) : null;
+    if (method.wallet) {
+      return {
+        logoKind: method.wallet,
+        title: t(`payment.methodLabel.${method.wallet}`),
+        caption: [card, expires].filter(Boolean).join(" · "),
+      };
+    }
+    if (method.brand === "MOBILEPAY") {
+      return { logoKind: "MOBILEPAY", title: "MobilePay", caption: t("payment.mobilePayAgreement") };
+    }
+    return { logoKind: method.brand, title: card, caption: expires ?? t("payment.recurringNote") };
+  }
 
   return (
     <HfScreen title={t("payment.title")}>
-      <div className="flex flex-col gap-4 p-4">
-        <div className="rounded-[8px] p-4" style={{ background: "var(--hf-black)" }}>
-          <p className="hf-type-body" style={{ color: "var(--hf-color-white)" }}>
-            {t(`payment.status.${statusKey(status)}`)}
-          </p>
-          {statusDetail && (
-            <p className="hf-type-caption mt-1 opacity-90" style={{ color: "var(--hf-color-white)" }}>
-              {statusDetail}
-            </p>
-          )}
-          {subscription && subscription.freeMonthsRemaining > 0 && (
-            <p className="hf-type-caption mt-1 opacity-90" style={{ color: "var(--hf-color-white)" }}>
-              {t("payment.freeMonthsRemaining", { count: subscription.freeMonthsRemaining })}
-            </p>
-          )}
-        </div>
+      {!data ? (
+        <SkeletonScreen>
+          <SkeletonCards count={2} height={88} />
+        </SkeletonScreen>
+      ) : (
+        <div className="flex flex-col gap-4 p-4">
+          <div className="rounded-[8px] p-4" style={{ background: "var(--hf-black)" }}>
+            <p className="hf-type-body text-hf-white">{t(`payment.status.${statusKey(status)}`)}</p>
+            {statusDetail && <p className="hf-type-small mt-1 text-hf-white">{statusDetail}</p>}
+            {subscription && subscription.freeMonthsRemaining > 0 && (
+              <p className="hf-type-small mt-1 text-hf-white">
+                {t("payment.freeMonthsRemaining", { count: subscription.freeMonthsRemaining })}
+              </p>
+            )}
+          </div>
 
-        <div>
-          <p className="hf-type-section-title">{t("payment.paymentMethodsTitle")}</p>
-          <div className="mt-2 flex flex-col gap-2">
-            {mobilePayMethod && (
-              <div
-                className="flex flex-col gap-3 rounded-[8px] border p-3"
-                style={{ borderColor: "var(--hf-color-line)" }}
-              >
-                <div className="flex items-center justify-between">
-                  {mobilePayMethod.brand === "MOBILEPAY" ? (
-                    <MobilePayMark />
-                  ) : (
-                    <span className="hf-type-body">
-                      {t(`payment.methodLabel.${mobilePayMethod.brand}`)}
-                      {mobilePayMethod.last4 ? ` •••• ${mobilePayMethod.last4}` : ""}
-                    </span>
+          <div>
+            <p className="hf-type-section-title">{t("payment.paymentMethodsTitle")}</p>
+            <div className="mt-2 flex flex-col gap-2">
+              {activeMethod && (
+                <div
+                  className="flex flex-col gap-3 rounded-[8px] border p-3"
+                  style={{ borderColor: "var(--hf-color-line)" }}
+                >
+                  {(() => {
+                    const described = describeMethod(activeMethod);
+                    return (
+                      <div className="flex items-center gap-3">
+                        <MethodLogo kind={described.logoKind} label={described.title} />
+                        <div className="min-w-0 flex-1">
+                          <p className="hf-type-body text-hf-black truncate">{described.title}</p>
+                          <p className="hf-type-caption truncate">{described.caption}</p>
+                        </div>
+                      </div>
+                    );
+                  })()}
+
+                  {canChangeMethod && !confirmStop && (
+                    <button
+                      type="button"
+                      onClick={changeMethod}
+                      className="hf-control hf-btn-secondary w-full disabled:opacity-40"
+                      disabled={opening}
+                    >
+                      {opening ? t("payment.opening") : t("payment.changeMethod")}
+                    </button>
                   )}
-                  <span className="text-text-secondary hf-type-caption">{t("payment.mobilePayAgreement")}</span>
+
+                  {canStop &&
+                    (confirmStop ? (
+                      <div className="flex flex-col gap-2">
+                        <p className="hf-type-caption">
+                          {periodEnd ? t("payment.stopConfirmUntil", { date: periodEnd }) : t("payment.stopConfirm")}
+                        </p>
+                        <div className="flex gap-2">
+                          <button
+                            type="button"
+                            onClick={() => setConfirmStop(false)}
+                            className="hf-control hf-btn-secondary flex-1"
+                            disabled={stopping}
+                          >
+                            {t("payment.keepAgreement")}
+                          </button>
+                          <button
+                            type="button"
+                            onClick={stopAgreement}
+                            className="hf-control hf-btn-primary flex-1 disabled:opacity-40"
+                            disabled={stopping}
+                          >
+                            {stopping ? t("payment.stopping") : stopLabel}
+                          </button>
+                        </div>
+                      </div>
+                    ) : (
+                      <button type="button" onClick={() => setConfirmStop(true)} className="hf-control hf-btn-text self-start">
+                        {stopLabel}
+                      </button>
+                    ))}
+                  {error && <p className="hf-type-small text-hf-red-dark">{error}</p>}
                 </div>
-                {confirmStop ? (
-                  <div className="flex flex-col gap-2">
-                    <p className="text-text-secondary hf-type-caption">
-                      {periodEnd ? t("payment.stopConfirmUntil", { date: periodEnd }) : t("payment.stopConfirm")}
-                    </p>
-                    <div className="flex gap-2">
-                      <button
-                        type="button"
-                        onClick={() => setConfirmStop(false)}
-                        className="hf-control hf-btn-secondary flex-1"
-                        disabled={stopping}
-                      >
-                        {t("payment.keepAgreement")}
-                      </button>
-                      <button
-                        type="button"
-                        onClick={stopAgreement}
-                        className="hf-control hf-btn-primary flex-1 disabled:opacity-40"
-                        disabled={stopping}
-                      >
-                        {stopping ? t("payment.stopping") : stopLabel}
-                      </button>
-                    </div>
-                  </div>
-                ) : (
-                  <button
-                    type="button"
-                    onClick={() => setConfirmStop(true)}
-                    className="hf-control hf-btn-secondary w-full"
-                  >
-                    {stopLabel}
-                  </button>
-                )}
-                {error && <p className="hf-type-caption">{error}</p>}
-              </div>
-            )}
+              )}
 
-            {otherMethods.map((pm) => (
-              <div
-                key={pm.id}
-                className="flex items-center justify-between rounded-[8px] border p-3"
-                style={{ borderColor: "var(--hf-color-line)" }}
-              >
-                <span className="hf-type-body">{pm.brand}</span>
-                {pm.last4 && <span className="text-text-secondary hf-type-body">•••• {pm.last4}</span>}
-              </div>
-            ))}
+              {!activeMethod && (
+                <div className="rounded-[8px] bg-hf-tan p-4 text-center">
+                  <p className="hf-type-body text-hf-black">
+                    {data.mobilePayPending ? t("payment.pendingApproval") : t("payment.noPaymentMethod")}
+                  </p>
+                </div>
+              )}
 
-            {data && !mobilePayMethod && otherMethods.length === 0 && (
-              <div className="rounded-[8px] bg-hf-tan p-4 text-center">
-                <p className="hf-type-body text-hf-black">
-                  {data.mobilePayPending ? t("payment.pendingApproval") : t("payment.noPaymentMethod")}
-                </p>
-              </div>
-            )}
+              {!activeMethod && !data.mobilePayPending && (data.mobilePayAvailable || data.stripeAvailable) && (
+                <Link href="/profile/subscription" className="hf-control hf-btn-primary w-full">
+                  {t("payment.chooseSubscription")}
+                </Link>
+              )}
+            </div>
+          </div>
 
-            {data && !mobilePayMethod && !data.mobilePayPending && (data.mobilePayAvailable || data.stripeAvailable) && (
-              <Link href="/profile/subscription" className="hf-control hf-btn-primary w-full">
-                {t("payment.chooseSubscription")}
-              </Link>
-            )}
+          <div>
+            <p className="hf-type-section-title">{t("payment.supportedMethodsTitle")}</p>
+            <div className="mt-2 grid grid-cols-2 gap-2">
+              {SUPPORTED_METHODS.map((method) => (
+                <div
+                  key={method.id}
+                  className="flex h-16 items-center justify-center gap-2 rounded-[8px] border bg-hf-white"
+                  style={{ borderColor: "var(--hf-color-line)" }}
+                >
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={method.logo} alt={method.label} className={`${method.className} w-auto`} />
+                  {method.id === "mobilepay" && <span className="hf-type-body">MobilePay</span>}
+                </div>
+              ))}
+            </div>
           </div>
         </div>
-
-        <div>
-          <p className="hf-type-section-title">{t("payment.supportedMethodsTitle")}</p>
-          <div className="mt-2 grid grid-cols-2 gap-2">
-            {SUPPORTED_METHODS.map((method) => (
-              <div
-                key={method.id}
-                className="flex h-16 items-center justify-center gap-2 rounded-[8px] border bg-hf-white"
-                style={{ borderColor: "var(--hf-color-line)" }}
-              >
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={method.logo} alt={method.label} className={`${method.className} w-auto`} />
-                {method.id === "mobilepay" && <span className="hf-type-body">MobilePay</span>}
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
+      )}
     </HfScreen>
   );
 }
