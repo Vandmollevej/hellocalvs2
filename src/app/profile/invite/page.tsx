@@ -271,7 +271,7 @@ export default function InvitePage() {
                 className="flex items-center justify-between border-b py-3 last:border-b-0"
                 style={{ borderColor: "var(--hf-color-line)" }}
               >
-                <span className="hf-type-body">{r.referredUser.displayName}</span>
+                <span className="userback-ignore userback-block hf-type-body">{r.referredUser.displayName}</span>
                 <span className="text-text-secondary hf-type-caption">
                   {r.rewardGrantedAt ? "300 points givet" : "Venter (min. 3 måneder)"}
                 </span>
