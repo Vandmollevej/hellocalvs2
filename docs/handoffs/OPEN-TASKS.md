@@ -272,3 +272,11 @@ Ejer: Flows-sessionen (2026-09-27)
 | --- | --- | --- | --- |
 | 745f1ab5 | Telefon-editor (iPhone 17) til mails/notifikationer/svarskabeloner + hovedmenu "Flows" med flow-sider | Færdig (se git log "Admin: phone editor") | Guide-builderen (tooltips) er flyttet ind i `flows`-gruppen i `AdminShell.tsx` efter brugerens ønske |
 | 41 | Design-screening af admin-flowsider mod HelloFresh-retningen | Færdig (branch `claude/admin-flowsider-design-4tzgb4`) | Afventer brugerens visuelle test på desktop + telefon |
+
+## G-WAVES — Bølge-baggrund på forsiden
+Filer: `src/lib/home-waves.ts`, `src/components/HomeWaves.tsx`, `.home-wave*` i `globals.css`, `src/app/page.tsx` (lag-opbygning), `StatsWheel.tsx` (kun `clipPath`).
+Ejer: bølge-sessionen (2026-10-01)
+
+| Id | Opgave | Status | Næste skridt |
+| --- | --- | --- | --- |
+| — | Rolig, tilfældig bølge-animation bag forsiden med frostet-glas-bund og tåge | Færdig (kode) | Afventer brugerens visuelle godkendelse på telefon; justér tempo/farve efter feedback |

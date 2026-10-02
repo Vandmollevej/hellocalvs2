@@ -2,7 +2,8 @@
 
 import { Suspense, useEffect, useState } from "react";
 import { useParams, useSearchParams } from "next/navigation";
-import { IconBookmark, IconBookmarkFilled, IconInfoCircle, IconSoup } from "@tabler/icons-react";
+import { IconInfoCircle, IconSoup } from "@tabler/icons-react";
+import { IconFavorite as IconBookmark, IconFavoriteFilled as IconBookmarkFilled } from "@/components/icons/Favorite";
 import { HfScreen } from "@/components/HfScreen";
 import { PersonsSlider } from "@/components/hf/PersonsSlider";
 import { Toggle } from "@/components/ui/Toggle";
