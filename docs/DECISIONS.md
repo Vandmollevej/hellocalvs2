@@ -3439,3 +3439,11 @@ Kilder på "Mad på latin" skal altid være officielle (Fødevarestyrelsen, Sund
   det), og et bart "Vand" normaliseres til "Flaskevand" (`normalizeProductType`
   i `src/lib/product-naming.ts`), så søgning på "vand" viser en præcis betegnelse.
 - Eksisterende produkter, der allerede hedder "Vand", omdøbes ikke automatisk.
+
+## 2026-10-02: SMS-kode via TeamMessage ved tilmelding og glemt adgangskode
+
+- Tilmelding (e-mail + adgangskode) kraever mobilnummer + 6-cifret SMS-kode (gyldig 10 min, 5 forsoeg, engangs). Kontoen oprettes foerst efter korrekt kode (/api/auth/sms/signup -> /api/auth/register).
+- Glemt adgangskode: har kontoen et bekraeftet nummer, kraeves baade e-mail-linket og en SMS-kode (/api/auth/reset-password/sms). Konti uden nummer (fx Google/Apple/Facebook, gamle konti) nulstilles kun med e-mail-link.
+- Koder gemmes som HMAC-hash i sms_verifications; klient: src/lib/teammessage.ts (env TEAMMESSAGE_*). Uden opsaetning i produktion afvises tilmelding (fail-closed).
+- Ikke bygget: godkendelse af online-login i den installerede app (kraver push/native app).
+

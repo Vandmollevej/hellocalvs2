@@ -60,6 +60,12 @@ model User {
   // email once SMTP exists.
   emailVerifiedAt DateTime?
 
+  // Mobilnummer (E.164) bekræftet med 6-cifret SMS-kode via TeamMessage
+  // (docs/DECISIONS.md 2026-10-02). Har kontoen et bekræftet nummer, kræver
+  // "glemt adgangskode" også en SMS-kode. Null = konto uden nummer.
+  phone           String?
+  phoneVerifiedAt DateTime?
+
   // Sleep pattern: default bedtime/wake time, with the option of
   // individual times per weekday (SleepSchedule) for users with shifting
   // work hours.
@@ -442,6 +448,26 @@ model PasswordResetToken {
 
   @@index([userId])
   @@map("password_reset_tokens")
+}
+
+// Engangs SMS-koder (6 cifre) ved tilmelding og glemt adgangskode, sendt via
+// TeamMessage (src/lib/sms-verification.ts). Kun hash af koden gemmes.
+// purpose: "SIGNUP" | "PASSWORD_RESET". For PASSWORD_RESET peger resetTokenHash
+// på det e-mail-link, koden hører til.
+model SmsVerification {
+  id             String    @id @default(cuid())
+  purpose        String
+  phone          String
+  userId         String?
+  resetTokenHash String?
+  codeHash       String
+  attempts       Int       @default(0)
+  expiresAt      DateTime
+  usedAt         DateTime?
+  createdAt      DateTime  @default(now())
+
+  @@index([phone, createdAt])
+  @@map("sms_verifications")
 }
 
 // Engangslink til ændring af den låste start-vægt (docs/DECISIONS.md

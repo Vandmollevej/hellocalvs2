@@ -59,6 +59,23 @@
     "sentMessage": "If the account exists, we've sent an email with a link to reset the password.",
     "backToLogin": "Back to log in"
   },
+  "sms": {
+    "phoneLabel": "Mobile number",
+    "phonePlaceholder": "12 34 56 78",
+    "phoneHint": "We'll text you a 6-digit code to confirm your number.",
+    "codeLabel": "SMS code",
+    "codePlaceholder": "6 digits",
+    "codeSent": "We sent a 6-digit code to {phone}. The code is valid for 10 minutes.",
+    "signupConfirm": "Confirm and create account",
+    "signupConfirming": "Creating…",
+    "resetConfirm": "Change password",
+    "sendCode": "Send SMS code",
+    "sendingCode": "Sending…",
+    "resend": "Send the code again",
+    "changeNumber": "Change number",
+    "networkError": "Couldn't send the SMS — check your connection and try again",
+    "resetRequired": "For your security, please also confirm with an SMS code sent to {phone}."
+  },
   "resetPassword": {
     "title": "Reset password",
     "newPasswordLabel": "New password",

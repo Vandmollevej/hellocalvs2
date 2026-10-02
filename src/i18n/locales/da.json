@@ -59,6 +59,23 @@
     "sentMessage": "Hvis kontoen findes, har vi sendt en mail med et link til at nulstille adgangskoden.",
     "backToLogin": "Tilbage til log ind"
   },
+  "sms": {
+    "phoneLabel": "Mobilnummer",
+    "phonePlaceholder": "12 34 56 78",
+    "phoneHint": "Vi sender en 6-cifret kode som SMS for at bekræfte dit nummer.",
+    "codeLabel": "SMS-kode",
+    "codePlaceholder": "6 cifre",
+    "codeSent": "Vi har sendt en 6-cifret kode til {phone}. Koden gælder i 10 minutter.",
+    "signupConfirm": "Bekræft og opret konto",
+    "signupConfirming": "Opretter…",
+    "resetConfirm": "Skift adgangskode",
+    "sendCode": "Send SMS-kode",
+    "sendingCode": "Sender…",
+    "resend": "Send koden igen",
+    "changeNumber": "Skift nummer",
+    "networkError": "Kunne ikke sende SMS — tjek din forbindelse og prøv igen",
+    "resetRequired": "Af sikkerhedshensyn skal du også bekræfte med en SMS-kode til {phone}."
+  },
   "resetPassword": {
     "title": "Nulstil adgangskode",
     "newPasswordLabel": "Ny adgangskode",
