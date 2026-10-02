@@ -3550,3 +3550,17 @@ Kilder på "Mad på latin" skal altid være officielle (Fødevarestyrelsen, Sund
 - Banneret fører til `/add/[id]/update`: et kort pr. manglende ting (forside = billede + logo, energi, indhold). Fotoet læses af AI via `POST /api/products/[id]/update`; kun tomme felter udfyldes, eksisterende data overskrives aldrig. Forsiden bruger den eksisterende fritskrabning (logo → Brand.logoUrl, billede → `pendingImageUrl` til admin-godkendelse).
 - Points: ny `PointsReason.PRODUCT_UPDATED` (migration `20261003100000_points_product_updated`), 20 points højst én gang pr. bruger og vare, udbetales når fotoet faktisk udfyldte noget. Gælder også admin (brugerens krav, så det kan testes). Banneret skjules for den bruger, når point er optjent på varen.
 - Logik: `src/lib/product-update.ts`; `GET /api/products/[id]` returnerer `updateOffer` (null når intet mangler eller varen er privat).
+## 2026-10-02: Admin "Billeder i kø til frilæggelse"
+
+- Brugerkrav: under godkendelser skal der være en fane "Billeder i kø til
+  frilæggelse" med besked nedenunder om, at billederne scannes i nat.
+- Bygget som nyt punkt i gruppen Varegodkendelse (`/admin/images/cutout-queue`)
+  og som fane på Billedforslag (`ImagesTabs`). Siden læser kun:
+  `image_cutout_jobs` med status PENDING (listen) og FAILED (egen sektion;
+  de prøves ikke igen af sig selv). Udsnittet tegnes med CSS fra jobbets
+  `cropBox`, så admin ser det område, robotten fritlægger.
+- Beskeden under listen er brugerens tekst. Har jobbet `image-cutout` en fast
+  tid i `scheduled_jobs`, skrives klokkeslættet med; derudover vises
+  robottens faktiske plan (`describeNextRun`) og sidste kørsel, så teksten
+  aldrig lyver om, hvad der sker. Planen selv er ikke ændret (stadig
+  "Løbende", 2026-09-28) — det er ejerens valg.

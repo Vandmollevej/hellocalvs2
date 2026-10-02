@@ -4,6 +4,10 @@
 
 - Hvidt, sammenklappeligt banner øverst på varesiden når indhold, energi, logo eller produktbillede mangler; fører til ny side `/add/[id]/update` med kamera pr. manglende ting. Giver 20 points én gang pr. bruger og vare — også for admin, så det kan testes. Se DECISIONS 2026-10-03.
 - Migration `20261003100000_points_product_updated` skal med deployet. Lint, typecheck og build kørt; ikke set i browser eller prøvet med rigtigt foto/AI-nøgle her — test: åbn en vare uden indhold/logo som admin, tag billede, tjek Profil → Points.
+## 2026-10-02: Admin — Billeder i kø til frilæggelse
+
+- Varegodkendelse har nyt punkt "Billeder i kø til frilæggelse" (`/admin/images/cutout-queue`), også som fane på Billedforslag. Viser ventende `ImageCutoutJob`s (forside/logo) med det udsnit robotten vil fritlægge, vare/brand og tidspunkt; fejlede jobs i egen sektion nederst. Under listen en besked, der følger robottens rigtige plan ("Disse billeder bliver scannet løbende" så længe jobbet står som Løbende; "… i nat kl. X" ved fast tid; advarsel hvis robotten er slået fra) + robottens faktiske plan og sidste kørsel (link til Robotter). Logik i `src/lib/cutout-queue.ts`.
+- Planen for `image-cutout` er bevaret som "Løbende" (DECISIONS 2026-09-28). Lint og build grønne; ikke live-testet (ingen lokal DB).
 
 
 ## 2026-10-03: Butiksimporten — alt fra Bilka- og REMA-arkene med
