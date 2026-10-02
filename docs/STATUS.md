@@ -1,6 +1,12 @@
 # HELLO CAL — project status
 
-Last updated: 2026-10-01
+Last updated: 2026-10-02
+
+## 2026-10-02: "Til info sendte vi dig …"-popup + push
+
+- Nyt: `src/lib/sent-notices.ts`, `src/lib/sms.ts`, `/api/messages/sent-notices`, `SentMessageNotice` (bundark i layoutet), `sendPushToUser` i `push.ts`. Se DECISIONS 2026-10-02.
+- Migration `20261002090000_sent_message_notice` skal køre ved deploy. Lint og typecheck grønne; ikke live-testet (ingen lokal DB).
+- Bemærk: push kræver VAPID-nøgler og at appen tilmelder enheden (findes ikke endnu); sms kræver `SMS_GATEWAY_TOKEN` og et telefonnummer på brugeren (findes ikke endnu).
 
 ## 2026-10-02: Vægt- og længdeenheder
 
