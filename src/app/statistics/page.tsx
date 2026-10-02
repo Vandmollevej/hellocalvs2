@@ -40,6 +40,16 @@ import {
 
 const DAY_COUNT = 7;
 
+// Serier under vægten i "Kalorier og vægt" (kun når integrationens opsætning
+// har fedtprocent m.m. slået til). Samme HealthMetricType-navne som
+// integrationerne skriver (src/lib/goal-composition.ts). Farver: grafernes
+// tilladte undtagelser i design.md §3 + familie-blå til væske.
+const BODY_COMPOSITION_SERIES = [
+  { type: "BODY_FAT_PERCENT", labelKey: "statistics.bodyFat", unit: "%", color: "var(--hf-red-muted)" },
+  { type: "MUSCLE_MASS_KG", labelKey: "statistics.muscleMass", unit: "kg", color: "var(--hf-green-muted)" },
+  { type: "BODY_WATER_PERCENT", labelKey: "statistics.bodyWater", unit: "%", color: "var(--hf-color-watch)" },
+] as const;
+
 type WeightEntry = {
   weightKg: number;
   weighedAt: string;
@@ -117,6 +127,10 @@ export default function StatisticsPage() {
   const [activities, setActivities] = useState<ActivityTotals[]>([]);
   const [metrics, setMetrics] = useState<HealthMetricTotals[]>([]);
   const [hasConnectedIntegration, setHasConnectedIntegration] = useState(false);
+  // Kropssammensætning (fedt, muskel, kropsvand) vises kun under vægten, når
+  // en tilsluttet integration har "Fedtprocent m.m." slået til i sin opsætning
+  // (brugerkrav 2026-09-30: væske hører under vægt, ikke på Kropsmål-siden).
+  const [bodyCompositionEnabled, setBodyCompositionEnabled] = useState(false);
   // Kaloriemål pr. dato — kun fremadrettet (src/lib/daily-budget.ts).
   const [budgetSnapshots, setBudgetSnapshots] = useState<BudgetSnapshot[]>([]);
   useEffect(() => {
@@ -221,6 +235,9 @@ export default function StatisticsPage() {
         setHasConnectedIntegration(
           integrationData.integrations.some((i) => i.connectable && i.status === "CONNECTED"),
         );
+        setBodyCompositionEnabled(
+          integrationData.integrations.some((i) => i.status === "CONNECTED" && i.settings.read.bodyFat === true),
+        );
         setMetrics(metricData.metrics);
         setWarnOnRecommendedLimits(Boolean(profileData.user.warnOnRecommendedLimits));
         setAutoExpandUncertainty(Boolean(profileData.user.autoExpandUncertainty));
@@ -231,6 +248,7 @@ export default function StatisticsPage() {
           setWeightEntries([]);
           setActivities([]);
           setHasConnectedIntegration(false);
+          setBodyCompositionEnabled(false);
           setMetrics([]);
           setWarnOnRecommendedLimits(false);
         }
@@ -268,6 +286,28 @@ export default function StatisticsPage() {
     [trendPoints],
   );
 
+  // Dagsgennemsnit pr. kropssammensætnings-mål fra smartvægt/sundhedsapp.
+  const bodyCompositionSeries = useMemo<ChartSeries[]>(() => {
+    if (!bodyCompositionEnabled) return [];
+    return BODY_COMPOSITION_SERIES.flatMap(({ type, labelKey, unit, color }) => {
+      const byDay = new Map<string, { sum: number; count: number }>();
+      for (const metric of metrics) {
+        if (metric.type !== type) continue;
+        const key = dateKeyFromDate(new Date(metric.recordedAt));
+        const existing = byDay.get(key) ?? { sum: 0, count: 0 };
+        existing.sum += metric.value;
+        existing.count += 1;
+        byDay.set(key, existing);
+      }
+      if (byDay.size === 0) return [];
+      const values = dailySeries(
+        Array.from(byDay.entries()).map(([dateKey, { sum, count }]) => ({ dateKey, value: sum / count })),
+        DAY_COUNT,
+      );
+      return [{ key: type, label: t(labelKey), color, unit, values, showPointStatus: true }];
+    });
+  }, [bodyCompositionEnabled, metrics, t]);
+
   const chartSeries = useMemo<ChartSeries[]>(
     () => [
       {
@@ -301,8 +341,9 @@ export default function StatisticsPage() {
             } satisfies ChartSeries,
           ]
         : []),
+      ...bodyCompositionSeries,
     ],
-    [kcalDaily, kcalGoalDaily, weightDaily, weightTrendDaily, t],
+    [kcalDaily, kcalGoalDaily, weightDaily, weightTrendDaily, bodyCompositionSeries, t],
   );
 
   const sleepChartSeries = useMemo<ChartSeries[]>(() => {
