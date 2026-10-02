@@ -17,7 +17,7 @@ export function ProfileCircle({
   const toneClass = tone === "card" ? "border border-hf-gray-border bg-hf-cream" : "bg-hf-tan";
   return (
     <span
-      className={`hf-type-strong flex shrink-0 items-center justify-center rounded-full text-hf-black ${toneClass} ${className}`}
+      className={`userback-ignore userback-block hf-type-strong flex shrink-0 items-center justify-center rounded-full text-hf-black ${toneClass} ${className}`}
       style={{ width: size, height: size, fontSize: Math.round(size * 0.375) }}
     >
       {initialsOf(name)}

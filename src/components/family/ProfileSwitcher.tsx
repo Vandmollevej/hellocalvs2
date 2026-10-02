@@ -60,7 +60,7 @@ export function ProfileSwitcher() {
             ))}
           </span>
           <span className="min-w-0 flex-1">
-            <span className="hf-type-body block truncate">{status.activeProfile.displayName}</span>
+            <span className="userback-ignore userback-block hf-type-body block truncate">{status.activeProfile.displayName}</span>
             <span className="hf-type-caption block text-text-secondary">
               {status.activeProfile.id === status.me.id ? t("family.switcher.you") : t("family.switcher.managing")}
             </span>
@@ -79,7 +79,7 @@ export function ProfileSwitcher() {
                   className="flex h-14 w-full items-center gap-4 px-4 text-left"
                 >
                   <ProfileCircle name={profile.displayName} tone="card" />
-                  <span className="hf-type-body flex-1 truncate">
+                  <span className="userback-ignore userback-block hf-type-body flex-1 truncate">
                     {profile.id === status.me.id ? t("family.switcher.meLabel", { name: profile.displayName }) : profile.displayName}
                   </span>
                   {profile.isChild && <span className="hf-type-caption text-text-secondary">{t("family.child")}</span>}
