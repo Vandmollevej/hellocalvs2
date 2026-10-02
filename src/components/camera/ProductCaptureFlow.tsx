@@ -2,7 +2,6 @@
 
 import { useCallback, useEffect, useEffectEvent, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
 import { IconBarcode, IconCamera, IconFlame, IconList, IconPhoto, type Icon } from "@tabler/icons-react";
 import { BarcodeScanOverlay, type BarcodeDetection } from "@/components/hf/BarcodeScanOverlay";
 import { CaptureCheckOverlay } from "@/components/hf/CaptureCheckOverlay";
@@ -874,10 +873,6 @@ export function ProductCaptureFlow({ returnSuffix }: { returnSuffix: string }) {
           )}
         </>
       )}
-
-      <Link href={`/foods/new${returnSuffix}`} className="hf-control hf-btn-secondary justify-center">
-        {t("camera.addManually")}
-      </Link>
     </div>
   );
 }

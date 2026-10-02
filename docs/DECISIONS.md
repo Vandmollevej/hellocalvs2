@@ -2,6 +2,16 @@
 
 This file records durable decisions. Add a dated entry when a later decision changes one of them.
 
+## 2026-10-02: Ingen manuel produktoprettelse — kun scanning
+
+- Nye produkter oprettes udelukkende gennem scanning (stregkode → foto-flowet
+  i `/camera?mode=product` og agent-appens `/scan/opret`). Den manuelle
+  formular på `/foods/new` er nedlagt; ruten omdirigerer til scanneren, så
+  gamle links og bogmærker ikke giver 404. Beslutningerne 2026-09-19 og
+  2026-09-23 om den manuelle formular er dermed ophævet.
+- `POST /api/products` beholdes (bruges af foto-flowet). Private
+  ingredienser (`/ingredients/new`) er ikke produkter og berøres ikke.
+
 ## 2026-09-29: Aktivitetsniveau, PAL og kaloriemål
 
 - Erstatter faktorerne i 2026-09-28 "Aktivitetsniveau i 5 trin" (1,2–1,9). Nye niveauer og PAL-intervaller: se `docs/ACTIVITY-PAL.md` (planen; intet bygget). Ingen aktive brugere, så gamle niveauer erstattes uden overgangslogik.

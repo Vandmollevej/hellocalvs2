@@ -1,6 +1,11 @@
 # HELLO CAL — project status
 
-Last updated: 2026-09-29
+Last updated: 2026-10-02
+
+## 2026-10-02: Manuel produktoprettelse fjernet — kun scanning
+
+- Brugerens krav: der må slet ikke findes en manuel produktoprettelse; nye varer oprettes kun via scanning. Fjernet: "Opret nyt produkt manuelt" på `/foods` (erstattet af "Scan nyt produkt" → `/camera?mode=product`), "Opret manuelt"-feltet i Opret ret, og "Tilføj manuelt"-linkene i kamera-flowet. `/foods/new` er nu kun en omdirigering til stregkode-flowet (`?for=ret` bevares). Private ingredienser (`/ingredients/new`) er urørt — de er ikke produkter.
+- Lint, typecheck og build grønne. `page-tree.test.mjs` fejler fortsat som på master (uvedkommende). Ikke testet i browser.
 
 ## 2026-09-29: Offentlig forside for udloggede
 

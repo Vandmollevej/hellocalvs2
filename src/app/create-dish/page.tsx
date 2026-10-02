@@ -5,7 +5,6 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import {
   IconCamera,
-  IconHandClick,
   IconInfoCircle,
   IconListNumbers,
   IconPhoto,
@@ -354,20 +353,14 @@ export default function CreateDishPage() {
             </div>
           )}
 
-          <div className="mt-4 grid grid-cols-2 gap-2">
+          {/* Nye varer oprettes kun ved scanning — ingen manuel formular (DECISIONS 2026-10-02). */}
+          <div className="mt-4">
             <a
               href="/camera?mode=product&for=ret"
               className="flex flex-col items-center gap-2 rounded-2xl bg-hf-tan py-3 text-center"
             >
               <IconCamera size={20} color="var(--hf-black)" />
               <span className="hf-type-small hf-type-strong text-hf-black">{t("createDish.scan")}</span>
-            </a>
-            <a
-              href="/foods/new?for=ret"
-              className="flex flex-col items-center gap-2 rounded-2xl bg-hf-tan py-3 text-center"
-            >
-              <IconHandClick size={20} color="var(--hf-black)" />
-              <span className="hf-type-small hf-type-strong text-hf-black">{t("createDish.manually")}</span>
             </a>
           </div>
           <Link
