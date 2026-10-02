@@ -684,6 +684,19 @@ bjælke (`bg-black/70`) nederst i viewfinderet mellem to hints ("hold hele
 stregkoden inde i billedet — den må gerne vende lodret" / "prøv større
 afstand, hvis den er sløret").
 
+**Levende scanning i opret-flowet** (`ProductCaptureFlow`, 2026-10-02):
+kameraet fryser aldrig på forside/energi/indhold. Øverst i viewfinderet står
+trin-overskriften i `.hf-scan-heading`: `.hf-type-body` + `.hf-type-strong`,
+hvid med let tekstskygge på en blød sort gradient (55 % → 0) fra toppen —
+"Scan stregkode" / "Scan billede" / "Scan energi" / "Scan indholdsfortegnelse".
+Når et trin er klaret, fyldes varens kontur (forsiden, fra `ProductOutlineOverlay`s
+maske) eller det læste tekstfelt (energi/indhold, `LabelFillOverlay`, radius 2 %
+af billedets korteste side) helt hvidt (`--hf-color-white`) med `.hf-scan-fill`:
+toner op på 0,3 s, står til 1,0 s og fader ud ved 1,4 s; derefter skifter trinnet.
+Ingen kontur/boks → midterrammen (inset 12 %, radius 12) fyldes i stedet. Ved
+`prefers-reduced-motion` vises fladen uden animation. Scanningsstriben
+(`.hf-scan-sweep`) fejer over den levende video på alle fototrin.
+
 ### 6.13 Bundark (screen-overlay/popup) — tilføjet 2026-09-27
 
 Standard for alle screen-overlays og popups (KRAV.md "Bundark"). Klasse

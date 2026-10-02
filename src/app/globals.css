@@ -1247,6 +1247,47 @@ textarea::selection,
   }
 }
 
+/* Levende scanning i kameraflowet (design.md §6.11, 2026-10-02): når et
+   trin er klaret, fyldes varens kontur (eller det læste tekstfelt) hvidt —
+   toner hurtigt op, står et øjeblik og fader ud. Varigheden matcher
+   FLASH_MS i ProductCaptureFlow. */
+@keyframes hf-scan-fill {
+  0% {
+    opacity: 0;
+  }
+  20%,
+  70% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+.hf-scan-fill {
+  animation: hf-scan-fill 1.4s ease-in-out forwards;
+}
+
+/* Trin-overskriften øverst i kamerabilledet står i det mørke overlay. */
+.hf-scan-heading {
+  position: absolute;
+  inset-inline: 0;
+  top: 0;
+  padding: 14px 16px 28px;
+  text-align: center;
+  color: var(--hf-color-white, #ffffff);
+  text-shadow: 0 1px 3px rgb(0 0 0 / 0.6);
+  background: linear-gradient(to bottom, rgb(0 0 0 / 0.55), rgb(0 0 0 / 0));
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hf-scan-fill {
+    animation: none;
+    opacity: 1;
+  }
+}
+
 /* Live stregkode-afkodning, jf. design.md §6.11 — BarcodeScanOverlay tegner
    den aflæste kodes rigtige streger én for én, en lyslinje fejer hen over,
    og cifrene skrives bagefter. Forsinkelser sættes inline pr. streg/ciffer. */
