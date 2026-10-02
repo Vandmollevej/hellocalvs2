@@ -1,6 +1,12 @@
 # HELLO CAL — project status
 
-Last updated: 2026-09-29
+Last updated: 2026-10-02
+
+## 2026-10-02: "Scan varen igen" — points-banner + natlig AI på Open Food Facts-billeder
+
+- Bygget efter brugerens krav (se DECISIONS.md samme dato): banner under headeren på `/add/[id]` efter scanning (`src/components/add/RescanBanner.tsx`), kameraflowet har en genscannings-tilstand (`ProductCaptureFlow` med `rescan`), API `POST /api/products/[id]/rescan` og `/rescan/offer`, baggrundsaflæsning i `src/lib/product-rescan.ts`, natligt job `external-image-ai` (`src/lib/external-image-ai.ts`).
+- Migration `20261002090000_product_rescan` skal køre ved deploy.
+- Tests (`src/lib/product-rescan-offer.test.mjs`), lint, typecheck og build grønne. Ikke live-testet (ingen lokal DB/login/kamera) — test på telefon: scan en Open Food Facts-vare, træk banneret ned, tag de tre fotos.
 
 ## 2026-09-29: Offentlig forside for udloggede
 

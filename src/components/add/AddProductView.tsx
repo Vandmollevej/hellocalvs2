@@ -41,6 +41,8 @@ import { UncertaintyLine } from "@/components/ui/UncertaintyLine";
 import { extractCertifications } from "@/lib/product-certifications";
 import { CertificationLogo } from "@/components/hf/CertificationLogo";
 import { Skeleton } from "@/components/hf/Skeleton";
+import { RescanBanner } from "@/components/add/RescanBanner";
+import { rescanStepsFor, type RescanStep } from "@/lib/product-rescan-offer";
 
 // "Opret straks" (docs/DECISIONS.md 2026-09-27): mens OpenAI stadig læser
 // felter (Product.pendingFields), eller den fritlagte forside endnu ikke er
@@ -115,6 +117,11 @@ type Product = {
   filters?: CertificationFilters | null;
   barcodes?: { code: string }[];
   createdByUserId?: string | null;
+  // Kilde + genscanning — styrer banneret "Optjen 10 points"
+  // (src/lib/product-rescan-offer.ts, docs/DECISIONS.md 2026-10-02).
+  externalSource?: string | null;
+  rescannedAt?: string | null;
+  privateOwnerId?: string | null;
   // HelloFresh-recipe extra nutrition, per Product.servingSizeGrams — see
   // docs/DECISIONS.md 2026-08-29/2026-09-10.
   nutritionExtra?: Record<string, number> | null;
@@ -238,9 +245,12 @@ export function AddProductView({
   inSheet = false,
   onClose,
   registration,
+  scanned = false,
 }: {
   id: string;
   forDish: boolean;
+  // Åbnet direkte fra scanneren (?scanned=1): brugeren har varen i hånden.
+  scanned?: boolean;
   initialTime?: string | null;
   initialDate?: string | null;
   inSheet?: boolean;
@@ -392,6 +402,26 @@ export function AddProductView({
   }
 
   const product = state.status === "loaded" ? state.product : null;
+
+  // "Scan varen igen" (docs/DECISIONS.md 2026-10-02): banneret vises efter en
+  // scanning, når varen kommer fra Open Food Facts eller er en egen online-
+  // vare uden fritlagt PNG. Felterne låses ved første visning, så banneret
+  // ikke forsvinder midt i takken, når varen hentes igen efter indsendelsen.
+  const [rescanSteps, setRescanSteps] = useState<RescanStep[] | null>(null);
+  const candidateRescanSteps =
+    scanned && !isEditing && !inSheet && product && profile?.id ? rescanStepsFor(product) : [];
+  if (rescanSteps === null && candidateRescanSteps.length) setRescanSteps(candidateRescanSteps);
+
+  function reloadProduct() {
+    fetch(`/api/products/${id}`)
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data) => {
+        if (!data?.product) return;
+        setState({ status: "loaded", product: applyRegistrationSnapshot(data.product, registration) });
+      })
+      .catch(() => {});
+  }
+
   // Når varen tilføjes til en opskrift/ret (for=ret), vis den rå-varen
   // (Multiple/Raw-tags, se src/lib/image-tags.ts) i stedet for
   // standardbilledet, som ofte viser det tilberedte/emballerede produkt.
@@ -672,6 +702,14 @@ export function AddProductView({
         ) : undefined
       }
     >
+      {rescanSteps && product?.barcodes?.[0] && (
+        <RescanBanner
+          productId={product.id}
+          barcode={product.barcodes[0].code}
+          steps={rescanSteps}
+          onSubmitted={reloadProduct}
+        />
+      )}
       <div className="flex h-full flex-col overflow-y-auto">
         {(state.status === "not_found" || state.status === "error") && (
           <div className="m-4 rounded-2xl bg-hf-tan p-4 text-center">

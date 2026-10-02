@@ -35,6 +35,16 @@ export const JOBS: JobDefinition[] = [
     defaultRunAtTime: "03:00",
   },
   {
+    // "Scan varen igen" (docs/DECISIONS.md 2026-10-02).
+    key: "external-image-ai",
+    name: "Open Food Facts-billeder: AI-aflæsning",
+    description:
+      "Sender billedet af Open Food Facts-varer, hvor brugeren fik tilbudt 10 points for at scanne varen igen, men ikke gjorde det, gennem samme OpenAI-aflæsning som kameraets forsidefoto (logo, vareboks, brand) og lægger fritlægning i kø.",
+    runtime: "app",
+    defaultIntervalMinutes: null,
+    defaultRunAtTime: "03:30",
+  },
+  {
     key: "frida-import",
     name: "Frida-import",
     description:

@@ -31,10 +31,12 @@ import {
   readIngredientsPhoto,
   readNutritionPhoto,
   saveBarcodePhoto,
+  submitProductRescan,
   type CaptureData,
   type LabelRead,
   type CaptureStep,
 } from "@/lib/product-capture";
+import type { RescanStep } from "@/lib/product-rescan-offer";
 import { useAutoCapture } from "./useAutoCapture";
 import { newScanFlowId, scanFlowHeaders, scanLog } from "@/lib/scan-debug-log";
 import { useTranslation } from "@/i18n/LocaleProvider";
@@ -48,6 +50,18 @@ import { useTranslation } from "@/i18n/LocaleProvider";
 // klaret, oprettes varen (POST /api/products/quick), og skærmen går til
 // /add/[id]; serveren udfylder navn/brand/næring/indhold bagefter — energi og
 // indhold fra telefonens egen aflæsning, når den er sikker, ellers OpenAI.
+//
+// Med `rescan` (docs/DECISIONS.md 2026-10-02, banneret "Optjen 10 points" på
+// /add/[id]) er stregkoden kendt: kun de felter, varen mangler, vises
+// (forside/energi/indhold eller kun forside), og fotos sendes til
+// POST /api/products/[id]/rescan i stedet for at oprette en ny vare.
+
+export type RescanTarget = {
+  productId: string;
+  barcode: string;
+  steps: RescanStep[];
+  onSubmitted: () => void;
+};
 
 type CameraStatus = "starting" | "active" | "denied" | "unavailable" | "error";
 
@@ -99,8 +113,12 @@ function wait(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-export function ProductCaptureFlow({ returnSuffix }: { returnSuffix: string }) {
+export function ProductCaptureFlow({ returnSuffix, rescan }: { returnSuffix: string; rescan?: RescanTarget }) {
   const { t, locale } = useTranslation();
+  const visibleSteps: CaptureStep[] = rescan ? rescan.steps : CAPTURE_STEPS;
+  // En kendt vare fra scanneren åbnes med ?scanned=1, så /add/[id] ved, at
+  // brugeren står med varen i hånden (banneret "Optjen 10 points").
+  const scannedSuffix = returnSuffix ? `${returnSuffix}&scanned=1` : "?scanned=1";
   const router = useRouter();
   const videoRef = useRef<HTMLVideoElement>(null);
   const streamRef = useRef<MediaStream | null>(null);
@@ -109,22 +127,22 @@ export function ProductCaptureFlow({ returnSuffix }: { returnSuffix: string }) {
   const activeCodeRef = useRef<string | null>(null);
   const lookupTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const lastBarcodeSeenAtRef = useRef(0);
-  const dataRef = useRef<CaptureData>({});
+  const dataRef = useRef<CaptureData>(rescan ? { barcode: rescan.barcode } : {});
   const leavingRef = useRef(false);
   // Admin "Log" (docs/DECISIONS.md 2026-09-28): ét flow-id pr. åbning af
   // kameraet samler alle trin, telefonens og serverens.
   const [flowId] = useState(newScanFlowId);
   const flowStartedAtRef = useRef(0);
   const cameraReadyAtRef = useRef(0);
-  const stepRef = useRef<CaptureStep>("barcode");
+  const stepRef = useRef<CaptureStep>(rescan ? rescan.steps[0] : "barcode");
 
   const [cameraStatus, setCameraStatus] = useState<CameraStatus>("starting");
   const [restartKey, setRestartKey] = useState(0);
-  const [step, setStep] = useState<CaptureStep>("barcode");
-  const [done, setDone] = useState<Partial<Record<CaptureStep, boolean>>>({});
+  const [step, setStep] = useState<CaptureStep>(rescan ? rescan.steps[0] : "barcode");
+  const [done, setDone] = useState<Partial<Record<CaptureStep, boolean>>>(rescan ? { barcode: true } : {});
   // Spejler `done`/`working` til stregkodefotoets baggrunds-OCR, som bliver
   // færdig på et vilkårligt tidspunkt senere i flowet.
-  const doneRef = useRef<Partial<Record<CaptureStep, boolean>>>({});
+  const doneRef = useRef<Partial<Record<CaptureStep, boolean>>>(rescan ? { barcode: true } : {});
   const workingRef = useRef(false);
   const [photo, setPhoto] = useState<string | null>(null);
   const [working, setWorking] = useState(false);
@@ -292,14 +310,49 @@ export function ProductCaptureFlow({ returnSuffix }: { returnSuffix: string }) {
   }, [restartKey, stopCamera, flowId]);
 
   function goToNextStep(completed: Partial<Record<CaptureStep, boolean>>) {
-    const next = CAPTURE_STEPS.find((item) => !completed[item]);
+    const next = visibleSteps.find((item) => !completed[item]);
     if (next) {
       setPhoto(null);
       setWorking(false);
       setStep(next);
       return;
     }
-    void createProduct();
+    void (rescan ? submitRescan() : createProduct());
+  }
+
+  // Sprogsignalerne fastfryses ved åbningen, ligesom ved en scannet stregkode.
+  useEffect(() => {
+    if (rescan && !dataRef.current.languageSignals) dataRef.current.languageSignals = readLanguageSignals(locale);
+  }, [rescan, locale]);
+
+  async function submitRescan() {
+    if (!rescan) return;
+    setWorking(true);
+    setCreateFailed(false);
+    const startedAt = Date.now();
+    try {
+      await submitProductRescan(rescan.productId, { ...dataRef.current, flowId }, marketRegion());
+      scanLog(flowId, "flow_done", {
+        message: "Genscanning sendt — AI læser fotos i baggrunden",
+        barcode: rescan.barcode,
+        productId: rescan.productId,
+        durationMs: Date.now() - flowStartedAtRef.current,
+        data: { outcome: "rescan", steps: rescan.steps, submitMs: Date.now() - startedAt },
+      });
+      leavingRef.current = true;
+      stopCamera();
+      rescan.onSubmitted();
+    } catch (error) {
+      scanLog(flowId, "rescan_failed", {
+        level: "error",
+        message: `Genscanningen kunne ikke sendes: ${String(error).slice(0, 200)}`,
+        barcode: rescan.barcode,
+        productId: rescan.productId,
+        durationMs: Date.now() - startedAt,
+      });
+      setWorking(false);
+      setCreateFailed(true);
+    }
   }
 
   function markDone(...steps: CaptureStep[]) {
@@ -421,7 +474,7 @@ export function ProductCaptureFlow({ returnSuffix }: { returnSuffix: string }) {
             durationMs: Date.now() - flowStartedAtRef.current,
             data: { outcome: "existing", source: data.source ?? null, lookupMs: Date.now() - startedAt },
           });
-          leaveTo(`/add/${data.product.id}${returnSuffix}`);
+          leaveTo(`/add/${data.product.id}${scannedSuffix}`);
           return;
         }
         if (response.status !== 404) throw new Error(`Product lookup failed (${response.status})`);
@@ -466,7 +519,7 @@ export function ProductCaptureFlow({ returnSuffix }: { returnSuffix: string }) {
         lookupInProgressRef.current = false;
       }
     },
-    [flowId, leaveTo, locale, region, returnSuffix, stopScanner],
+    [flowId, leaveTo, locale, region, scannedSuffix, stopScanner],
   );
 
   // Hver aflæsning: start decode-animationen på en ny kode (og opslaget, når
@@ -612,7 +665,8 @@ export function ProductCaptureFlow({ returnSuffix }: { returnSuffix: string }) {
         data: { ...front, languages },
       });
       if (leavingRef.current) return;
-      if (front.duplicateId) {
+      // Ved en genscanning er "dubletten" netop varen selv.
+      if (front.duplicateId && !rescan) {
         scanLog(flowId, "flow_done", {
           message: "Forsideteksten matcher en eksisterende vare — går til den",
           barcode: data.barcode,
@@ -696,6 +750,7 @@ export function ProductCaptureFlow({ returnSuffix }: { returnSuffix: string }) {
 
   function selectStep(next: CaptureStep) {
     if (working || pickObjects || next === step) return;
+    if (!visibleSteps.includes(next)) return;
     // Uden stregkode kan intet andet trin aflæses (sprog/region følger den).
     if (next !== "barcode" && !done.barcode) return;
     if (next === "barcode" && done.barcode) return;
@@ -819,8 +874,11 @@ export function ProductCaptureFlow({ returnSuffix }: { returnSuffix: string }) {
         )}
       </div>
 
-      <div className="grid grid-cols-4 gap-2">
-        {CAPTURE_STEPS.map((item) => {
+      <div
+        className="grid gap-2"
+        style={{ gridTemplateColumns: `repeat(${visibleSteps.length}, minmax(0, 1fr))` }}
+      >
+        {visibleSteps.map((item) => {
           const StepIcon = STEP_ICONS[item];
           const disabled = working || (item !== "barcode" && !done.barcode) || (item === "barcode" && !!done.barcode);
           return (
@@ -849,8 +907,12 @@ export function ProductCaptureFlow({ returnSuffix }: { returnSuffix: string }) {
 
       {createFailed ? (
         <div className="flex flex-col items-center gap-2">
-          <p className="hf-type-small text-center">{t("cameraCreate.createFailed")}</p>
-          <button type="button" onClick={() => void createProduct()} className="hf-control hf-btn-primary px-6">
+          <p className="hf-type-small text-center">{t(rescan ? "rescan.submitFailed" : "cameraCreate.createFailed")}</p>
+          <button
+            type="button"
+            onClick={() => void (rescan ? submitRescan() : createProduct())}
+            className="hf-control hf-btn-primary px-6"
+          >
             {t("cameraCreate.retry")}
           </button>
         </div>
@@ -875,9 +937,11 @@ export function ProductCaptureFlow({ returnSuffix }: { returnSuffix: string }) {
         </>
       )}
 
-      <Link href={`/foods/new${returnSuffix}`} className="hf-control hf-btn-secondary justify-center">
-        {t("camera.addManually")}
-      </Link>
+      {!rescan && (
+        <Link href={`/foods/new${returnSuffix}`} className="hf-control hf-btn-secondary justify-center">
+          {t("camera.addManually")}
+        </Link>
+      )}
     </div>
   );
 }

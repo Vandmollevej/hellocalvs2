@@ -271,3 +271,11 @@ Ejer: Flows-sessionen (2026-09-27)
 | --- | --- | --- | --- |
 | 745f1ab5 | Telefon-editor (iPhone 17) til mails/notifikationer/svarskabeloner + hovedmenu "Flows" med flow-sider | Færdig (se git log "Admin: phone editor") | Guide-builderen (tooltips) er flyttet ind i `flows`-gruppen i `AdminShell.tsx` efter brugerens ønske |
 | 41 | Design-screening af admin-flowsider mod HelloFresh-retningen | Færdig (branch `claude/admin-flowsider-design-4tzgb4`) | Afventer brugerens visuelle test på desktop + telefon |
+
+## G-RESCAN — "Scan varen igen" (10 points) + natlig AI på Open Food Facts-billeder
+Filer: `src/components/add/RescanBanner.tsx`, `src/lib/product-rescan*.ts`, `src/lib/external-image-ai.ts`, `src/app/api/products/[id]/rescan/**`. Rører også `ProductCaptureFlow.tsx` (ny `rescan`-prop + `?scanned=1`), `AddProductView.tsx` (banneret), `quick-product-enrichment.ts` (eksporterede funktioner, snapshot-værn), jobregistret og scheduleren.
+Ejer: cloud-session `claude/open-food-facts-scan-banner-rihp53` (2026-10-02)
+
+| Id | Opgave | Status | Næste skridt |
+| --- | --- | --- | --- |
+| — | Banner "Optjen 10 points" efter scanning af Open Food Facts-vare / egen vare uden PNG, kamera med felterne, natlig OpenAI-aflæsning hvis brugeren ikke reagerer | Færdig (kode, PR åben) | Migration 20261002090000 med i deployet. Brugerens test på telefon |
