@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { IconSend } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
+import { EnergyChip } from "@/components/calendar/EnergyChip";
 import { useTranslation } from "@/i18n/LocaleProvider";
 import { mealShareBody } from "@/lib/meal-share";
 
@@ -155,7 +156,7 @@ export default function ChatPage() {
                         <span>
                           {item.title} <span className="text-[var(--hf-color-text-secondary)]">{item.amountLabel}</span>
                         </span>
-                        <span className="tabular-nums">{Math.round(item.kcal)} kcal</span>
+                        <EnergyChip kind="intake" value={item.kcal} className="tabular-nums" />
                       </li>
                     ))}
                   </ul>

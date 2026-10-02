@@ -7,7 +7,6 @@ import {
   IconApple,
   IconAtom2,
   IconBeer,
-  IconBolt,
   IconBone,
   IconBottle,
   IconCandy,
@@ -29,6 +28,7 @@ import {
   IconWalk,
   type Icon,
 } from "@tabler/icons-react";
+import { IconDrumstick } from "@/components/icons/Drumstick";
 import { IconWaterGlass } from "@/components/icons/WaterGlass";
 import { DAILY_KCAL_GOAL } from "@/lib/goals";
 import type { DailyTotal } from "@/lib/daily-totals";
@@ -173,7 +173,7 @@ export const STAT_CARD_DEFS: {
   {
     key: "calories",
     label: "Kalorier",
-    icon: IconFlame,
+    icon: IconDrumstick,
     compute: (data) => `${formatNumber(average(data.days, (d) => d.kcal))} kcal`,
   },
   {
@@ -372,7 +372,7 @@ export const STAT_CARD_DEFS: {
   {
     key: "burned",
     label: "Forbrændt",
-    icon: IconBolt,
+    icon: IconFlame,
     compute: (data) => metricValue(data, "ACTIVE_ENERGY_KCAL", "kcal"),
   },
   {

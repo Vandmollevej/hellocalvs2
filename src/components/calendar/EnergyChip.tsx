@@ -16,25 +16,30 @@ export type EnergyChipKind = "intake" | "burned" | "water";
  */
 export function EnergyChip({
   kind,
-  value,
+  value = 0,
+  text: textOverride,
   iconSize = 16,
   className = "",
 }: {
   kind: EnergyChipKind;
   /** kcal for intake/burned, ml for water. */
-  value: number;
+  value?: number;
+  /** Færdigformateret tal, der erstatter standardteksten (fx "÷120" eller "1.234"). */
+  text?: string;
   iconSize?: number;
   className?: string;
 }) {
   const { t } = useTranslation();
   const rounded = Math.round(value);
-  const text = kind === "water" ? formatCl(value) : kind === "burned" ? `+${rounded}` : String(rounded);
+  const text =
+    textOverride ?? (kind === "water" ? formatCl(value) : kind === "burned" ? `+${rounded}` : String(rounded));
+  const amount = textOverride ?? (kind === "water" ? formatCl(value) : rounded);
   const label =
     kind === "water"
-      ? t("calendar.waterChipAriaLabel", { amount: formatCl(value) })
+      ? t("calendar.waterChipAriaLabel", { amount })
       : kind === "burned"
-        ? t("calendar.burnedChipAriaLabel", { amount: rounded })
-        : t("calendar.intakeChipAriaLabel", { amount: rounded });
+        ? t("calendar.burnedChipAriaLabel", { amount })
+        : t("calendar.intakeChipAriaLabel", { amount });
   const Icon = kind === "water" ? IconWaterGlass : kind === "burned" ? IconFlame : IconDrumstick;
   const iconClass = kind === "burned" ? "text-hf-green" : "text-hf-black";
   return (

@@ -4,7 +4,8 @@ Last updated: 2026-10-02
 
 ## 2026-10-02: Kalenderens miniature-tal (kyllingelår, flamme, vand i cl)
 
-- Dagvisningens timerække, timens oversigt og ugens tidslinje bruger `EnergyChip`: kyllingelår + tal for indtag, flamme + tal for forbrændt, glas + cl for vand. Kalenderen henter nu også `/api/water-entries` og viser glas vand pr. time og i timens oversigt. Se DECISIONS.md og design.md §6.16.
+- `EnergyChip` (kyllingelår + tal for indtag, flamme + tal for forbrændt, glas + cl for vand) bruges nu generelt: kalenderens dag-/time-/uge-/månedsvisninger, forsidens tal-hjul (rækkeikon + tom enhed), statistikbokse, widget-forhåndsvisninger og listerne i chat/tale/kamera. Kalenderen henter nu også `/api/water-entries` og viser glas vand pr. time og i timens oversigt. Se DECISIONS.md og design.md §6.16.
+- Ikke ændret: sætninger ("Tilbage for i dag: … kcal"), indtastningsfelter, "kcal / 100 g", grafakser, opskriftssider og de native widgets (`native/`).
 - Lint, typecheck og build grønne. Ikonet er tjekket som rendering i headless Chromium, men ikke live-testet i appen (ingen lokal DB/login) — tjek timerækken på telefon, især at kyllingelåret (16 px) og glasset står pænt ved siden af hinanden.
 - Næste: hvis kyllingelåret skal bruges flere steder (forside, widgets), så genbrug `IconDrumstick` og tokenet `--hf-meat`.
 

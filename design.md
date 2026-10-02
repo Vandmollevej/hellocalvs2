@@ -802,10 +802,12 @@ appen, samme udseende som admin: side #FAF8F3, hvid topbjælke/panel med 1 px
 
 ### 6.16 Kalenderens miniature-tal: kyllingelår, flamme og glas — tilføjet 2026-10-02
 
-Hello Cal-specifik primitiv uden HelloFresh-reference (jf. §1). I kalenderens
-små flader (timerækken i dagvisningen, timens oversigt og ugens tidslinje)
-erstattes ordene "kalorier"/"kcal" af et ikon; den fulde tekst ligger i
-`aria-label`.
+Hello Cal-specifik primitiv uden HelloFresh-reference (jf. §1). Overalt hvor
+et kalorietal står kompakt ved siden af en ting (kalenderens celler og
+timerækker, forsidens tal-hjul, statistikbokse, widget-forhåndsvisninger,
+lister i chat/tale/kamera) erstattes ordene "kalorier"/"kcal" af et ikon; den
+fulde tekst ligger i `aria-label`. Brugerens regel 2026-10-02: "generelt,
+overalt".
 
 **`EnergyChip`** (`src/components/calendar/EnergyChip.tsx`), tre varianter:
 
@@ -825,8 +827,19 @@ erstattes ordene "kalorier"/"kcal" af et ikon; den fulde tekst ligger i
   kød i `--hf-meat` (#8C5A32, nyt navngivet token til netop denne rolle) og
   ben i `--hf-white` med kødfarvet kant, så benet også ses på creme og tan.
   `color`/`currentColor` ændrer ikke ikonet.
-- Månedsgitter, ugegitter og listevisning viser stadig afstanden til målet
-  som tal + "kcal" — det er ikke et indtag og får ingen chip.
+- Måneds- og ugelisten viser afstanden til målet som chip med fortegn:
+  `text="+120"` / `text="÷120"` (fortegnet som symbol, jf. G1-beslutningen).
+- Forsidens tal-hjul (`frontpage-stats.ts`): rækkerne Kalorier og Kalorier i
+  plus bruger `IconDrumstick` som rækkeikon og tom enhed; Forbrændt bruger
+  `IconFlame` og tom enhed. Hjulet viser derfor "2.140 🍗" i stedet for
+  "2.140 kcal 🔥".
+- Statistikbokse (`StatCardsGrid`): en værdi, der ender på " kcal", vises som
+  tal + chip (flamme for "Forbrændt" og sportsgrene, ellers kyllingelår).
+  Boksene "Kalorier" og "Forbrændt" har allerede kyllingelår/flamme som
+  boksikon og viser kun tallet.
+- Tekst, der ikke er et kompakt tal, forbliver tekst: sætninger ("Tilbage for
+  i dag: 3282 kcal"), indtastningsfelter, "kcal / 100 g"-tætheder, grafakser
+  og de native widgets (kan ikke bruge React-ikonet).
 
 ### Velkomst/start
 

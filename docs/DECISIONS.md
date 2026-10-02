@@ -4,13 +4,15 @@ This file records durable decisions. Add a dated entry when a later decision cha
 
 ## 2026-10-02: Kalenderens miniature-tal — kyllingelår, flamme og vand i cl
 
-- I kalenderens små flader (dagvisningens timerække, timens oversigt, ugens
-  tidslinje) vises indtagne kalorier som et brunt/hvidt kyllingelår + tal,
-  forbrændte kalorier (aktiviteter) som en flamme + tal, og vand som det
-  eksisterende glas-ikon + mængde i cl. Ordet "kalorier"/"kcal" udgår dér;
-  den fulde tekst ligger i aria-label. Fælles komponent `EnergyChip`
-  (design.md §6.16). Månedsgitter, ugegitter og listevisning er uændrede
-  (afstand til mål).
+- Generelt i appen ("overalt", brugerens svar 2026-10-02) vises indtagne
+  kalorier som et brunt/hvidt kyllingelår + tal, forbrændte kalorier
+  (aktiviteter, aktiv energi) som en flamme + tal, og vand som det
+  eksisterende glas-ikon + mængde i cl. Ordet "kalorier"/"kcal" udgår, hvor
+  tallet står kompakt: kalenderens dag-/time-/uge-/månedsvisninger, forsidens
+  tal-hjul, statistikbokse, widget-forhåndsvisninger og listerne i chat, tale
+  og kamera. Den fulde tekst ligger i aria-label. Fælles komponent
+  `EnergyChip` (design.md §6.16). Sætninger, indtastningsfelter,
+  "kcal / 100 g", grafakser og native widgets beholder teksten.
 - Vand vises aldrig som "0 kcal". To kilder tælles sammen pr. time:
   `WaterEntry` fra /water/create (ml), som kalenderen nu også henter, og
   almindelige registreringer af en vare, der er vand: 0 kcal og enten et
