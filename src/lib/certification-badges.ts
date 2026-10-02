@@ -99,6 +99,8 @@ function kindForOrganic(label: string): CertificationKind {
 function kindForAnimalWelfare(label: string): CertificationKind {
   const value = label.toLowerCase();
   if (value.includes("dyrenes beskyttelse")) return "animalProtection";
+  if (value.includes("tierwohl")) return "tierwohl";
+  if (value.includes("haltungsform")) return "haltungsform";
   if (value.includes("dyrevelfærd")) {
     const level = value.match(/[123]/)?.[0];
     if (level === "1") return "welfare1";
