@@ -701,6 +701,9 @@
     "hintFront": "Take a photo of the front",
     "hintNutrition": "Take a photo of the energy/nutrition info",
     "hintIngredients": "Take a photo of the ingredients list",
+    "retakeStillUnreadable": "The ingredients still could not be read. Hold the camera closer and try again.",
+    "retakeFailed": "The photo could not be read right now. Try again.",
+    "retakeBack": "Back to the product",
     "createFailed": "The item couldn't be created. Try again.",
     "retry": "Try again",
     "title": "Add item",
@@ -1578,6 +1581,8 @@
   "addProduct": {
     "reportBug": "Found a mistake?",
     "reading": "Reading…",
+    "ingredientsUnreadable": "The ingredients could not be read from the photo.",
+    "retakeIngredients": "Take a new photo of the ingredients",
     "title": "Add",
     "titleForDish": "Add ingredient",
     "unlockEditing": "Unlock editing",

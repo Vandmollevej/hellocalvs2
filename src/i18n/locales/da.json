@@ -701,6 +701,9 @@
     "hintFront": "Tag et billede af forsiden",
     "hintNutrition": "Tag et billede af energi/næringsindholdet",
     "hintIngredients": "Tag et billede af indholdsfortegnelsen",
+    "retakeStillUnreadable": "Indholdet kunne stadig ikke læses. Hold tættere på, og prøv igen.",
+    "retakeFailed": "Billedet kunne ikke læses lige nu. Prøv igen.",
+    "retakeBack": "Tilbage til varen",
     "createFailed": "Varen kunne ikke oprettes. Prøv igen.",
     "retry": "Prøv igen",
     "title": "Tilføj vare",
@@ -1578,6 +1581,8 @@
   "addProduct": {
     "reportBug": "Har du fundet en fejl?",
     "reading": "Læses…",
+    "ingredientsUnreadable": "Indholdet kunne ikke læses på billedet.",
+    "retakeIngredients": "Tag nyt billede af indholdet",
     "title": "Tilføj",
     "titleForDish": "Tilføj ingrediens",
     "unlockEditing": "Lås op for redigering",

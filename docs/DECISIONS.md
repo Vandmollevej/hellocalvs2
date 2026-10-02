@@ -2,6 +2,14 @@
 
 This file records durable decisions. Add a dated entry when a later decision changes one of them.
 
+## 2026-10-02: Kameraflowet tager rigtige stillbilleder + "tag nyt billede af indholdet"
+
+- Årsag: en marmelades ingrediensliste (30. sept.) blev aldrig aflæst. Loggen viste, at OpenAI fik fotoet, men svarede "for sløret til sikker aflæsning" (tom liste, sikkerhed 12 %). Fotoet var et 1080p-videobillede; appen sagde intet og prøvede ikke igen. Der var ingen genstart — PR #151 (genoptagelse efter genstart) byggede på et forkert gæt og er droppet.
+- Forside, energi og indhold tages nu som kameraets stillbillede (`ImageCapture.takePhoto`, `src/lib/camera-still.ts`) — stadig automatisk, uden tryk. Har browseren ikke funktionen, bedes videostrømmen om 4K, og det skarpeste af tre videobilleder bruges. Stregkodefotoet er stadig ét videobillede (må ikke forsinke scanningen).
+- Energi- og indholdsfotoet beskæres til det kvadrat, brugeren så i søgeren (ændrer "ingen beskæring" fra 2026-09-17 for de to trin; forsiden er stadig hele fotoet). Længste side højst 2048 px.
+- Hvert foto logges (`photo_captured`: stillbillede/videobillede, opløsning, skarphed).
+- Kunne AI ikke læse ingredienslisten, viser varesiden "Indholdet kunne ikke læses på billedet" med knappen "Tag nyt billede af indholdet" — kun for den, der oprettede varen (`ingredientsUnreadable` i `GET /api/products/[id]`). Knappen åbner `/camera?retake=ingredients&product=<id>` (`IngredientsRetakeFlow`), og `POST /api/products/[id]/ingredients-photo` læser det nye foto med OpenAI. Intet automatisk genforsøg på det samme foto (brugerens valg).
+
 ## 2026-10-02: "Til info sendte vi dig …" (mail/sms var ikke spam)
 
 - Hver mail eller sms til en kendt bruger giver (1) en push med det samme: "Vi har netop sendt dig en e-mail om "emne". Dette var ikke spam." og (2) et bundark som det første ved næste besøg (app og web): "Til info sendte vi dig den <dato> en <e-mail/sms> om "<emne>". Dette var ikke spam." med sort knap "Læst".
