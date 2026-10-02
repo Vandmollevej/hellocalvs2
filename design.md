@@ -806,14 +806,18 @@ appen, samme udseende som admin: side #FAF8F3, hvid topbjælke/panel med 1 px
 dagvisningens tidslinje og i månedsstatussen. Ingen side må lave sin egen
 variant.
 
-- Venstre: 20 px cirkel (`bg-hf-green` + hvidt flueben / `bg-hf-red-dark` +
-  hvid prik / `bg-hf-gray` + hvid prik) og `.hf-type-body .hf-type-strong`
-  status: "Inden for målet", "Målet ikke opnået", "Intet registreret".
-- Højre, højrestillet og `tabular-nums`: "Mål: X kcal" (`text-text-muted`),
-  "Indtag: Y kcal" (`text-hf-black`) og — kun når der er registreret motion —
-  `IconFlame` 16 px i `text-hf-red-dark` efterfulgt af "+ N kcal".
-- Blokken er `flex items-end justify-between`: statusteksten står ud for
-  nederste linje i højre side. Fremtidige dage viser kun højre side.
+Oppefra og ned (`space-y-1`):
+
+- Højrestillet, `tabular-nums`: kun ved registreret motion `IconFlame` 16 px
+  i `text-hf-red-dark` + "+ N kcal" i `text-hf-green`; derunder "Mål: X kcal"
+  (`text-text-muted`, budgettet uden motion).
+- Statusbjælke: 20 px cirkel (`bg-hf-green` + hvidt flueben / `bg-hf-red-dark`
+  + hvid prik / `bg-hf-gray` + hvid prik) og `.hf-type-body .hf-type-strong`
+  tekst: "Inden for målet", "Målet ikke opnået", "Intet registreret".
+  Skjules på fremtidige dage.
+- Højrestillet under bjælken: "Tilbage for i dag: N kcal" (måned: "Tilbage i
+  måneden") i `text-hf-black`, eller "Overskredet med N kcal" i
+  `text-hf-red-dark` + `.hf-type-strong`. Regnes mod mål + motion.
 
 ### Velkomst/start
 

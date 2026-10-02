@@ -46,7 +46,7 @@ Ejer: G1-overtagelse, konto C (2026-09-24)
 | 116d3656 | Dagvisning: søvn-slider med to grå nuancer kan ikke trækkes + fjern dialogen "Kun denne dato / Standardmønster" | Færdig (se G1-commit) | Ét gråt felt ved dagsøvn, feltet følger håndtaget, tryk uden træk gemmer intet, dialog fjernet (gælder kun datoen). Ikke live-testet: lokal DB mangler |
 | — | Dagvisning: træk søvn-håndtag forbi kanten (scroller med) + "Nattens søvn: X,XX timer" i nattens grå felt | Færdig (flettet i master fra cloud-branch `claude/cloud-session-credits-expired-7504pf`) | Afventer brugerens test på telefon |
 | — | Dagvisning: sengetids-håndtag altid nederst (også ved sengetid 00:00) + manglende tekst "calendar.remainingToday" | Færdig (flettet i master fra `claude/calendar-slider-bedtime-text-1cp8lf`) | Afventer brugerens test på telefon |
-| — | Statusblok (dag + måned): kort tekst "Inden for målet"/"Målet ikke opnået", højre side Mål + Indtag + rød flamme "+ N kcal" ved motion, fælles komponent `GoalStatusSummary` | Færdig (branch `claude/kalender-maalstatus-blok`) | Afventer brugerens test på telefon; afklar om motionstillæg skal tælle med i "inden for målet" |
+| — | Statusblok (dag + måned): flamme + grøn "+ N kcal" og "Mål" øverst, kort statusbjælke, "Tilbage"/"Overskredet" under; motion tæller med i målet i hele kalenderen; fælles komponent `GoalStatusSummary` | Færdig (PR #122, branch `claude/kalender-maalstatus-blok`) | Afventer brugerens test på telefon. Forside-kort/widgets regner stadig uden motion (G2/andre) |
 
 ## G2 — Statistik-siden (redigering, drag/drop)
 Filer: statistik-siden, `src/components/StatsWheel.tsx`, `src/lib/frontpage-layout.ts`, `src/lib/frontpage-stats.ts`.

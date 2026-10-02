@@ -192,10 +192,23 @@ function totalKcalForDate(dailyTotals: Map<string, number>, date: Date) {
 // budget gælder kun fra den dag, det blev sat; ældre dage beholder det gamle
 // faste mål. Deles med alle visninger via context, så props ikke skal
 // trækkes gennem hver visning.
-const DailyGoalContext = createContext<(date: Date) => number>(() => DAILY_KCAL_GOAL);
+// `effective` = budget + dagens registrerede motion (Activity.caloriesBurned):
+// det er den grænse, alle "inden for målet"-afgørelser i kalenderen bruger
+// (DECISIONS 2026-10-02). `base` er budgettet alene og vises som "Mål: X kcal".
+type DailyGoalLookup = { base: (date: Date) => number; effective: (date: Date) => number };
+const DailyGoalContext = createContext<DailyGoalLookup>({
+  base: () => DAILY_KCAL_GOAL,
+  effective: () => DAILY_KCAL_GOAL,
+});
 
+/** Mål inkl. motion — bruges til nået/ikke nået, "over" og balancer. */
 function useDailyGoal() {
-  return useContext(DailyGoalContext);
+  return useContext(DailyGoalContext).effective;
+}
+
+/** Mål uden motion — kun til visning af "Mål: X kcal". */
+function useBaseDailyGoal() {
+  return useContext(DailyGoalContext).base;
 }
 
 function dailyGoalMet(dailyTotals: Map<string, number>, date: Date, goalKcal: number) {
@@ -353,7 +366,24 @@ export default function CalendarPage() {
   // Enhedsdata (aktiv energi, skridt) pr. dag — docs/ACTIVITY-PAL.md F4.
   const [healthMetrics, setHealthMetrics] = useState<HealthMetricSample[]>([]);
   const [budgetSnapshots, setBudgetSnapshots] = useState<BudgetSnapshot[]>([]);
-  const goalForDate = useMemo(() => makeBudgetLookup(budgetSnapshots, DAILY_KCAL_GOAL), [budgetSnapshots]);
+  const baseGoalForDate = useMemo(() => makeBudgetLookup(budgetSnapshots, DAILY_KCAL_GOAL), [budgetSnapshots]);
+  // Registreret motion pr. dag lægges oven i dagens mål (DECISIONS 2026-10-02).
+  const activityBonusByDay = useMemo(() => {
+    const map = new Map<string, number>();
+    for (const activity of activities) {
+      const key = dayKey(new Date(activity.startedAt));
+      map.set(key, (map.get(key) ?? 0) + activity.caloriesBurned);
+    }
+    return map;
+  }, [activities]);
+  const goalForDate = useMemo(
+    () => (date: Date) => baseGoalForDate(date) + (activityBonusByDay.get(dayKey(date)) ?? 0),
+    [baseGoalForDate, activityBonusByDay],
+  );
+  const dailyGoalLookup = useMemo<DailyGoalLookup>(
+    () => ({ base: baseGoalForDate, effective: goalForDate }),
+    [baseGoalForDate, goalForDate],
+  );
   const [weekdaySchedules, setWeekdaySchedules] = useState<Record<number, SleepScheduleEntry>>({});
   const [workShifts, setWorkShifts] = useState<Record<string, WorkShiftEntry>>({});
   const [goals, setGoals] = useState<GoalDTO[]>([]);
@@ -453,22 +483,17 @@ export default function CalendarPage() {
     let consumed = 0;
     let metCount = 0;
     let goalSum = 0;
+    let bonusKcal = 0;
     for (let day = 1; day <= consideredDays; day += 1) {
       const date = new Date(year, month, day);
       const total = totalKcalForDate(dailyTotals, date);
-      const goal = goalForDate(date);
       consumed += total;
-      goalSum += goal;
-      if (total > 0 && total <= goal) metCount += 1;
+      // "Mål" vises uden motion; motionen står som egen linje og tæller med i nået/tilbage.
+      goalSum += baseGoalForDate(date);
+      bonusKcal += activityBonusByDay.get(dayKey(date)) ?? 0;
+      if (total > 0 && total <= goalForDate(date)) metCount += 1;
     }
-    const remaining = goalSum - consumed;
-    // Motion i de medregnede dage: lægges oven i månedens mål (flamme i statusblokken).
-    const lastConsidered = new Date(year, month, consideredDays, 23, 59, 59, 999);
-    const firstConsidered = new Date(year, month, 1);
-    const bonusKcal = activities.reduce((sum, activity) => {
-      const startedAt = new Date(activity.startedAt);
-      return startedAt >= firstConsidered && startedAt <= lastConsidered ? sum + activity.caloriesBurned : sum;
-    }, 0);
+    const remaining = goalSum + bonusKcal - consumed;
 
     let sevenDayConsumed = 0;
     for (let offset = 0; offset < 7; offset += 1) {
@@ -482,7 +507,7 @@ export default function CalendarPage() {
     while (dailyGoalMet(dailyTotals, addDays(today, -streak), goalForDate(addDays(today, -streak)))) streak += 1;
 
     return { isCurrentMonth, consideredDays, metCount, remaining, sevenDayRemaining, streak, goalSum, consumed, bonusKcal };
-  }, [dailyTotals, activities, year, month, today, goalForDate]);
+  }, [dailyTotals, activityBonusByDay, year, month, today, goalForDate, baseGoalForDate]);
 
   useEffect(() => {
     function handleEscape(event: KeyboardEvent) {
@@ -699,7 +724,7 @@ export default function CalendarPage() {
   const periodLabel = effectiveView === "week" || effectiveView === "list" ? weekLabel : monthLabel;
 
   return (
-    <DailyGoalContext.Provider value={goalForDate}>
+    <DailyGoalContext.Provider value={dailyGoalLookup}>
     <HfScreen
       title={isLandscape ? periodLabel : t("nav.calendar")}
       titleClassName={isLandscape ? "hf-appbar__title--tight capitalize" : undefined}
@@ -1941,9 +1966,10 @@ function DayDetails({
 
   const dayKcal = registrations.reduce((sum, registration) => sum + registration.kcalSnapshot, 0);
   const dayBonusKcal = activities.reduce((sum, activity) => sum + activity.caloriesBurned, 0);
-  const dayGoalKcal = useDailyGoal()(date);
+  // Mål uden motion til visning; nået/ikke nået regnes mod mål + motion.
+  const dayGoalKcal = useBaseDailyGoal()(date);
   const hasEntries = registrations.length > 0;
-  const met = hasEntries && dayKcal <= dayGoalKcal;
+  const met = hasEntries && dayKcal <= dayGoalKcal + dayBonusKcal;
   // Dagsstatus: fremtidige dage viser ingen status.
   const todayKey = dayKey(new Date());
   const isFutureDay = dateKey > todayKey;
@@ -2683,6 +2709,7 @@ function MonthlyStatus({ status }: { status: MonthlyStatusData }) {
 
       <GoalStatusSummary
         className="text-left"
+        period="month"
         status={withinGoal ? "met" : "missed"}
         goalKcal={status.goalSum}
         intakeKcal={status.consumed}

@@ -2,6 +2,19 @@
 
 This file records durable decisions. Add a dated entry when a later decision changes one of them.
 
+## 2026-10-02: Motion lægges oven i dagens mål i kalenderen
+
+- Registreret motion (`Activity.caloriesBurned`, uanset kilde) lægges oven i
+  dagens kaloriebudget, når kalenderen afgør "inden for målet": dagvisning,
+  månedsstatus, prikker i månedsgitteret, uge-/listevisning (over/under og
+  ugebalance), årsvisning og stribe. Brugerens valg 2026-10-02.
+- "Mål: X kcal" viser fortsat budgettet uden motion; motionen står som egen
+  linje (rød flamme + grøn "+ N kcal") over målet, og "Tilbage"/"Overskredet"
+  regnes mod mål + motion. Fælles blok: `GoalStatusSummary` (design.md §6.16).
+- Ikke ændret endnu: forsidens "Tilbage"-kort (`frontpage-stats.ts`) og
+  widgets (`widget-data.ts`) regner stadig mod budgettet alene — skal følge
+  samme regel, når de rettes (andre gruppers filer).
+
 ## 2026-09-29: Aktivitetsniveau, PAL og kaloriemål
 
 - Erstatter faktorerne i 2026-09-28 "Aktivitetsniveau i 5 trin" (1,2–1,9). Nye niveauer og PAL-intervaller: se `docs/ACTIVITY-PAL.md` (planen; intet bygget). Ingen aktive brugere, så gamle niveauer erstattes uden overgangslogik.

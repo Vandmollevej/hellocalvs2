@@ -4,8 +4,8 @@ Last updated: 2026-10-02
 
 ## 2026-10-02: Fælles målstatus-blok i kalenderen
 
-- Ny fælles komponent `src/components/calendar/GoalStatusSummary.tsx` bruges både nederst i dagvisningen og i månedsstatussen over gitteret. Venstre: cirkel + kort status ("Inden for målet" / "Målet ikke opnået" / "Intet registreret"); højre, højrestillet: "Mål: X kcal", "Indtag: Y kcal" og — når der er registreret motion — rød flamme + "+ N kcal" (summen af dagens/månedens `Activity.caloriesBurned`). Blokken er bundjusteret.
-- "Tilbage for i dag" og "Du er overskredet med …" er erstattet af "Indtag" (brugerens formulering: "målet og dagens indtag"). Flammens kalorier er kun visning; "inden for målet" regnes stadig uden motionstillæg (uændret `dailyGoalMet`).
+- Ny fælles komponent `src/components/calendar/GoalStatusSummary.tsx` bruges både nederst i dagvisningen og i månedsstatussen over gitteret. Oppefra: højrestillet rød flamme + grøn "+ N kcal" (kun ved registreret motion) og "Mål: X kcal"; statusbjælke med cirkel + kort tekst ("Inden for målet" / "Målet ikke opnået" / "Intet registreret"); under bjælken højrestillet "Tilbage for i dag: N kcal" (måned: "Tilbage i måneden") eller "Overskredet med N kcal" i rødt.
+- Motion tæller nu med i målet i hele kalenderen (DECISIONS 2026-10-02): `DailyGoalContext` giver `base` (til "Mål") og `effective` (= base + dagens motion) — alle nået/over/balance-afgørelser bruger `effective`. Forside-kort og widgets er ikke rettet (andre gruppers filer).
 - Lint, typecheck og `npm run build` grønne. Ikke visuelt testet (ingen lokal DB/login) — tjek dag- og månedsvisning på telefon.
 
 ## 2026-09-29: Offentlig forside for udloggede
