@@ -17,17 +17,20 @@ type ChatItem = {
   carbs: number;
   fat: number;
   productId: string | null;
+  /** Suggestions are only saved when the user presses their add button. */
+  saved?: boolean;
 };
 
 type Message =
   | { id: number; role: "user"; text: string }
-  | { id: number; role: "assistant"; text?: string; items?: ChatItem[]; saved?: boolean; error?: boolean };
+  | { id: number; role: "assistant"; text?: string; items?: ChatItem[]; error?: boolean };
 
 export default function ChatPage() {
   const { t } = useTranslation();
   const [messages, setMessages] = useState<Message[]>([]);
   const [text, setText] = useState("");
   const [busy, setBusy] = useState(false);
+  const [busySave, setBusySave] = useState(false);
   const nextId = useRef(1);
   const endRef = useRef<HTMLDivElement>(null);
 
@@ -63,11 +66,18 @@ export default function ChatPage() {
     }
   }
 
-  async function save(message: Message) {
-    if (message.role !== "assistant" || !message.items || message.saved) return;
+  // Saves the given suggestions of one assistant message (a single row, or
+  // all unsaved rows) and marks those that succeeded as added. Nothing is
+  // saved without the user asking for it (docs/AI.md).
+  async function save(message: Message, indexes: number[]) {
+    if (message.role !== "assistant" || !message.items || busySave) return;
+    const toSave = indexes.filter((i) => message.items?.[i] && !message.items[i].saved);
+    if (toSave.length === 0) return;
+    setBusySave(true);
     const results = await Promise.all(
-      message.items.map((item) =>
-        fetch("/api/registrations", {
+      toSave.map((i) => {
+        const item = message.items![i];
+        return fetch("/api/registrations", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
@@ -85,12 +95,18 @@ export default function ChatPage() {
           }),
         })
           .then((r) => r.ok)
-          .catch(() => false),
-      ),
+          .catch(() => false);
+      }),
     );
-    const ok = results.every(Boolean);
+    const savedIndexes = new Set(toSave.filter((_, n) => results[n]));
+    const ok = savedIndexes.size === toSave.length;
+    setBusySave(false);
     setMessages((all) => [
-      ...all.map((m) => (m.id === message.id && m.role === "assistant" && ok ? { ...m, saved: true } : m)),
+      ...all.map((m) =>
+        m.id === message.id && m.role === "assistant" && m.items
+          ? { ...m, items: m.items.map((item, i) => (savedIndexes.has(i) ? { ...item, saved: true } : item)) }
+          : m,
+      ),
       ...(ok ? [] : [{ id: nextId.current++, role: "assistant" as const, text: t("web.chatSaveError"), error: true }]),
     ]);
   }
@@ -149,24 +165,40 @@ export default function ChatPage() {
               {m.text}
               {m.items && (
                 <>
+                  <p className="hf-type-small hf-type-strong mb-1 text-[var(--hf-color-text-secondary)]">{t("web.chatSuggested")}</p>
                   <ul className="flex flex-col gap-1">
                     {m.items.map((item, i) => (
-                      <li key={i} className="flex justify-between gap-4">
-                        <span>
+                      <li key={i} className="flex items-center justify-between gap-3">
+                        <span className="min-w-0 flex-1">
                           {item.title} <span className="text-[var(--hf-color-text-secondary)]">{item.amountLabel}</span>
                         </span>
                         <span className="tabular-nums">{Math.round(item.kcal)} kcal</span>
+                        {item.saved ? (
+                          <span className="hf-type-small hf-type-strong shrink-0 text-[var(--hf-color-text-secondary)]">{t("web.chatSaved")}</span>
+                        ) : (
+                          <button
+                            type="button"
+                            onClick={() => void save(m, [i])}
+                            disabled={busySave}
+                            aria-label={`${t("web.chatAddOne")}: ${item.title}`}
+                            className="hf-btn-secondary h-10 shrink-0 px-3"
+                          >
+                            {t("web.chatAddOne")}
+                          </button>
+                        )}
                       </li>
                     ))}
                   </ul>
-                  <button
-                    type="button"
-                    onClick={() => void save(m)}
-                    disabled={m.saved}
-                    className="mt-3 h-10 rounded-lg bg-[var(--hf-color-action)] px-4 text-sm font-semibold text-white disabled:bg-[var(--hf-color-disabled)]"
-                  >
-                    {m.saved ? t("web.chatSaved") : t("web.chatSave")}
-                  </button>
+                  {m.items.filter((item) => !item.saved).length > 1 && (
+                    <button
+                      type="button"
+                      onClick={() => void save(m, m.items!.map((_, i) => i))}
+                      disabled={busySave}
+                      className="hf-btn-primary mt-3 h-12 w-full px-4"
+                    >
+                      {t("web.chatAddAll")}
+                    </button>
+                  )}
                 </>
               )}
             </div>

@@ -24,6 +24,13 @@ type Item = {
   estimated?: boolean;
   /** Whether this item is a saved registration (has a real, server-issued id) or still an unconfirmed preview. */
   saved: boolean;
+  /**
+   * Which recording (or typed text) a suggestion came from. The live
+   * interpretation of one recording replaces only its own suggestions, so
+   * suggestions from earlier recordings stay until the user adds or deletes
+   * them — several suggestions may be waiting at once.
+   */
+  batch?: number;
 };
 
 type InterpretedItem = {
@@ -87,9 +94,9 @@ function getAudioContextConstructor() {
   return audioWindow.AudioContext ?? audioWindow.webkitAudioContext;
 }
 
-function mapInterpretedItems(interpreted: InterpretedItem[]): Item[] {
+function mapInterpretedItems(interpreted: InterpretedItem[], batch: number): Item[] {
   return interpreted.map((item, index) => ({
-    id: `pending-${Date.now()}-${index}`,
+    id: `pending-${batch}-${Date.now()}-${index}`,
     title: item.title,
     kcal: item.kcal,
     amountGrams: item.amountGrams,
@@ -101,7 +108,13 @@ function mapInterpretedItems(interpreted: InterpretedItem[]): Item[] {
     productId: item.productId,
     estimated: item.estimated,
     saved: false,
+    batch,
   }));
+}
+
+/** Everything that is not a suggestion from the given recording: saved rows and suggestions from other recordings. */
+function keepOtherItems(items: Item[], batch: number) {
+  return items.filter((item) => item.saved || item.batch !== batch);
 }
 
 const VOICE_ITEMS_STORAGE_KEY = "hf-voice-added-items";
@@ -173,12 +186,17 @@ function VoiceItemRow({
   onFavorite,
   onReportError,
   onDelete,
+  onAdd,
+  adding = false,
   t,
 }: {
   item: Item;
   onFavorite?: () => void;
   onReportError?: () => void;
   onDelete: () => void;
+  /** Suggestions are never saved automatically — each row has its own add button. */
+  onAdd?: () => void;
+  adding?: boolean;
   t: T;
 }) {
   const content = (
@@ -200,6 +218,17 @@ function VoiceItemRow({
       </div>
       <span className="hf-type-small text-text-secondary flex-shrink-0">{item.kcal} kcal</span>
       {item.saved && <IconChevronRight size={18} className="flex-shrink-0 text-hf-black opacity-40" />}
+      {!item.saved && onAdd && (
+        <button
+          type="button"
+          onClick={onAdd}
+          disabled={adding}
+          aria-label={`${t("voice.addOne")}: ${item.title}`}
+          className="hf-btn-secondary h-10 flex-shrink-0 px-3"
+        >
+          {t("voice.addOne")}
+        </button>
+      )}
     </div>
   );
 
@@ -232,6 +261,8 @@ export default function VoicePage() {
   const isListeningRef = useRef(false);
   const itemsRef = useRef<Item[]>([]);
   const liveRequestIdRef = useRef(0);
+  // Incremented for every new recording; see Item.batch.
+  const batchRef = useRef(0);
   const barRefs = useRef<(HTMLDivElement | null)[]>([]);
   const audioCtxRef = useRef<AudioContext | null>(null);
   const analyserRef = useRef<AnalyserNode | null>(null);
@@ -386,7 +417,8 @@ export default function VoicePage() {
       const data = await res.json();
       if (requestId !== liveRequestIdRef.current) return;
       if (!isListeningRef.current) return;
-      setItems((current) => [...current.filter((item) => item.saved), ...mapInterpretedItems(data.items as InterpretedItem[])]);
+      const batch = batchRef.current;
+      setItems((current) => [...keepOtherItems(current, batch), ...mapInterpretedItems(data.items as InterpretedItem[], batch)]);
     } catch {
       // Ignore errors in the ongoing, preliminary interpretation — the final call happens on stop.
     }
@@ -396,11 +428,12 @@ export default function VoicePage() {
     setPhase("processing");
     stopAudioMeter();
     const spokenText = finalTranscriptRef.current.trim();
+    const batch = batchRef.current;
 
     if (!spokenText) {
-      const remaining = itemsRef.current.filter((item) => item.saved);
+      const remaining = keepOtherItems(itemsRef.current, batch);
       setItems(remaining);
-      setPhase(remaining.length > 0 ? "added" : "error");
+      setPhase(remaining.some((item) => item.saved) ? "added" : remaining.length > 0 ? "idle" : "error");
       if (remaining.length === 0) setErrorMessage(t("voice.error.noSpeech"));
       return;
     }
@@ -414,21 +447,21 @@ export default function VoicePage() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.message ?? "AI-tolkning slog fejl");
 
-      const interpreted = mapInterpretedItems(data.items as InterpretedItem[]);
-      const alreadySaved = itemsRef.current.filter((item) => item.saved);
+      const interpreted = mapInterpretedItems(data.items as InterpretedItem[], batch);
+      const others = keepOtherItems(itemsRef.current, batch);
 
       if (interpreted.length === 0) {
-        setItems(alreadySaved);
-        setPhase(alreadySaved.length > 0 ? "added" : "error");
-        if (alreadySaved.length === 0) setErrorMessage(t("voice.error.noFoodRecognized"));
+        setItems(others);
+        setPhase(others.some((item) => item.saved) ? "added" : others.length > 0 ? "idle" : "error");
+        if (others.length === 0) setErrorMessage(t("voice.error.noFoodRecognized"));
         return;
       }
 
-      setItems([...alreadySaved, ...interpreted]);
+      setItems([...others, ...interpreted]);
       setPhase("idle");
       setErrorMessage(null);
     } catch {
-      setItems(itemsRef.current.filter((item) => item.saved));
+      setItems(keepOtherItems(itemsRef.current, batch));
       setPhase("error");
       setErrorMessage(t("voice.error.aiInterpretFailed"));
     }
@@ -444,6 +477,8 @@ export default function VoicePage() {
     const recognition = new SpeechRecognition();
     let recognitionFailed = false;
 
+    // A new recording = a new batch of suggestions; earlier suggestions stay.
+    batchRef.current += 1;
     finalTranscriptRef.current = "";
     setTranscript("");
     setErrorMessage(null);
@@ -514,8 +549,9 @@ export default function VoicePage() {
     startListening();
   }
 
-  async function addShownItems() {
-    const pending = items.filter((item) => !item.saved);
+  // Nothing is saved without the user asking for it (docs/AI.md): one row's
+  // own button adds that suggestion, the button under the list adds them all.
+  async function addItems(pending: Item[]) {
     if (pending.length === 0) return;
     setIsAdding(true);
     setErrorMessage(null);
@@ -564,6 +600,10 @@ export default function VoicePage() {
     }
   }
 
+  function addAllSuggestions() {
+    return addItems(items.filter((item) => !item.saved));
+  }
+
   function deleteItem(item: Item) {
     setItems((current) => current.filter((existing) => existing.id !== item.id));
     if (item.saved) {
@@ -583,7 +623,8 @@ export default function VoicePage() {
     }
   }
 
-  const hasPendingItems = items.some((item) => !item.saved);
+  const suggestedItems = items.filter((item) => !item.saved);
+  const savedItems = items.filter((item) => item.saved);
 
   return (
     <HfScreen title={isListening ? t("voice.listeningTitle") : ""}>
@@ -651,32 +692,49 @@ export default function VoicePage() {
           )}
         </section>
 
-        <section className="mt-4">
-          <h2 className="hf-type-body hf-heading mb-1 text-hf-black">{t("voice.added")}</h2>
-          <ul className="max-h-[45vh] overflow-y-auto">
-            {items.map((item) => (
-              <li key={item.id} className="border-b border-hf-tan-dark last:border-b-0">
-                <VoiceItemRow
-                  item={item}
-                  onFavorite={item.productId ? () => void favoriteItem(item.productId as string) : undefined}
-                  onReportError={item.saved ? () => router.push(`/registration/${item.id}/report-error`) : undefined}
-                  onDelete={() => deleteItem(item)}
-                  t={t}
-                />
-              </li>
-            ))}
-          </ul>
-          {hasPendingItems && (
-            <button
-              type="button"
-              onClick={() => void addShownItems()}
-              disabled={isAdding}
-              className="hf-type-body hf-type-strong hf-control mt-4 flex w-full items-center justify-center rounded-xl bg-hf-green text-hf-white disabled:opacity-60"
-            >
-              {isAdding ? t("voice.adding") : t("voice.addShownItems")}
-            </button>
-          )}
-        </section>
+        {suggestedItems.length > 0 && (
+          <section className="mt-4">
+            <h2 className="hf-type-body hf-heading mb-1 text-hf-black">{t("voice.suggested")}</h2>
+            <ul className="max-h-[45vh] overflow-y-auto">
+              {suggestedItems.map((item) => (
+                <li key={item.id} className="border-b border-hf-tan-dark last:border-b-0">
+                  <VoiceItemRow
+                    item={item}
+                    onFavorite={item.productId ? () => void favoriteItem(item.productId as string) : undefined}
+                    onDelete={() => deleteItem(item)}
+                    onAdd={() => void addItems([item])}
+                    adding={isAdding}
+                    t={t}
+                  />
+                </li>
+              ))}
+            </ul>
+            {suggestedItems.length > 1 && (
+              <button type="button" onClick={() => void addAllSuggestions()} disabled={isAdding} className="hf-btn-primary mt-4 h-12 w-full px-4">
+                {isAdding ? t("voice.adding") : t("voice.addShownItems")}
+              </button>
+            )}
+          </section>
+        )}
+
+        {savedItems.length > 0 && (
+          <section className="mt-4">
+            <h2 className="hf-type-body hf-heading mb-1 text-hf-black">{t("voice.added")}</h2>
+            <ul className="max-h-[45vh] overflow-y-auto">
+              {savedItems.map((item) => (
+                <li key={item.id} className="border-b border-hf-tan-dark last:border-b-0">
+                  <VoiceItemRow
+                    item={item}
+                    onFavorite={item.productId ? () => void favoriteItem(item.productId as string) : undefined}
+                    onReportError={() => router.push(`/registration/${item.id}/report-error`)}
+                    onDelete={() => deleteItem(item)}
+                    t={t}
+                  />
+                </li>
+              ))}
+            </ul>
+          </section>
+        )}
       </div>
     </HfScreen>
   );
