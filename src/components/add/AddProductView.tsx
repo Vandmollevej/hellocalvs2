@@ -40,6 +40,7 @@ import { NUTRIENT_BY_KEY, type ResolvedNutrient } from "@/lib/nutrients";
 import { UncertaintyTilde } from "@/components/ui/UncertaintyTilde";
 import { UncertaintyLine } from "@/components/ui/UncertaintyLine";
 import { extractCertifications } from "@/lib/product-certifications";
+import { splitProductHeading } from "@/lib/product-naming";
 import { CertificationLogo } from "@/components/hf/CertificationLogo";
 import { Skeleton } from "@/components/hf/Skeleton";
 
@@ -98,6 +99,10 @@ type Product = {
   productCategory?: string | null;
   packageSizeText?: string | null;
   variant?: string | null;
+  // Smag (adskilt fra variant) og produkttype — bruges af splitProductHeading,
+  // så smagen kun står i H2 (docs/DECISIONS.md 2026-10-02).
+  flavor?: string | null;
+  productType?: string | null;
   imageUrl?: string | null;
   // Fritlagt forside, der venter på admin-godkendelse — vises kun for den,
   // der selv oprettede varen (docs/DECISIONS.md 2026-09-27).
@@ -631,10 +636,15 @@ export function AddProductView({
     router.push("/create-dish");
   }
 
+  // Smagsvarianten må kun stå i H2: den fjernes fra navnet, før certificeringer
+  // trækkes ud og titlen vises i H1 (docs/DECISIONS.md 2026-10-02).
+  const heading =
+    state.status === "loaded" ? splitProductHeading(state.product) : { title: "", variants: [] as string[] };
   const { title: productTitle, certifications } =
-    state.status === "loaded" ? extractCertifications(state.product.name) : { title: "", certifications: [] };
+    state.status === "loaded" ? extractCertifications(heading.title) : { title: "", certifications: [] };
   // Siden tegnes med en tom vare, mens den rigtige hentes.
   const view = state.status === "loaded" ? state.product : isLoading ? LOADING_PRODUCT : null;
+  const subtitle = view ? [view.packageSizeText, ...heading.variants].filter(Boolean).join(" · ") : "";
 
   const title = forDish ? t("addProduct.titleForDish") : t("addProduct.title");
   const Frame = inSheet ? SheetFrame : ScreenFrame;
@@ -774,10 +784,8 @@ export function AddProductView({
                   <h1 className="hf-type-hero text-hf-black">{productTitle}</h1>
                 )}
                 {/* Uden grøn linje står luften tilbage, så resten ikke rykker op. */}
-                {view.packageSizeText || view.variant ? (
-                  <h2 className="hf-type-hero text-hf-green">
-                    {[view.packageSizeText, view.variant].filter(Boolean).join(" · ")}
-                  </h2>
+                {subtitle ? (
+                  <h2 className="hf-type-hero text-hf-green">{subtitle}</h2>
                 ) : (
                   <div aria-hidden="true" className="hf-type-hero">&nbsp;</div>
                 )}

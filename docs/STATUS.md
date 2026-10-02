@@ -1,6 +1,11 @@
 # HELLO CAL — project status
 
-Last updated: 2026-09-29
+Last updated: 2026-10-02
+
+## 2026-10-02: Smagsvariant kun i H2 på varesiden
+
+- Varesiden viste fx "Marmelade Pære & havtorn" i H1 og "Pære & havtorn" i H2. Nu fjerner `splitProductHeading` smagen fra H1 (se DECISIONS.md samme dato). Gælder alle eksisterende varer, uden datamigrering.
+- Lint, typecheck og nye tests grønne. Ikke visuelt testet (ingen lokal DB).
 
 ## 2026-09-29: Offentlig forside for udloggede
 
