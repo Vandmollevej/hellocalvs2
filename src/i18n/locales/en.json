@@ -2092,13 +2092,21 @@
     "reportError": "Error",
     "delete": "Delete"
   },
+  "myScans": {
+    "title": "Your scans",
+    "today": "Today",
+    "yesterday": "Yesterday",
+    "empty": "You haven't photographed any products yet.",
+    "loadError": "Could not load your scans"
+  },
   "dailyList": {
     "heading": "Today's additions",
     "loading": "Loading today's registrations...",
     "noEntriesToday": "No registrations today",
     "loadError": "Couldn't load today's registrations",
     "deleteError": "Couldn't delete the registration",
-    "atTime": "At {time}"
+    "atTime": "At {time}",
+    "seeScans": "See your scans"
   },
   "account": {
     "newsletterTitle": "Newsletter",

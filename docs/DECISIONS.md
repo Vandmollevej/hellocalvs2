@@ -2,6 +2,12 @@
 
 This file records durable decisions. Add a dated entry when a later decision changes one of them.
 
+## 2026-10-02: "Se dine indscanninger"
+
+- En indscanning er en vare, brugeren selv har oprettet med en stregkode (`Product.createdByUserId` + mindst én `Barcode`) — altså fotograferet i kameraflowet. Kendte stregkoder, der blot slås op, gemmes ikke og er ikke indscanninger.
+- Forsiden viser øverst under "Dagens tilføjelser" linket "Se dine indscanninger" (almindelig tekst, understreget), kun når en vare fotograferet i dag (telefonens tidszone) ikke er registreret på den, der scannede, eller den aktive familieprofil.
+- Siden `/my-scans` viser de seneste 90 dages indscanninger (højst 200), grupperet under en overskrift med skillelinje pr. dato taget, som almindelige søgerækker (favorit + Tilføj i bundarket). API: `GET /api/my-scans` (`src/lib/user-scans.ts`).
+
 ## 2026-10-02: "Til info sendte vi dig …" (mail/sms var ikke spam)
 
 - Hver mail eller sms til en kendt bruger giver (1) en push med det samme: "Vi har netop sendt dig en e-mail om "emne". Dette var ikke spam." og (2) et bundark som det første ved næste besøg (app og web): "Til info sendte vi dig den <dato> en <e-mail/sms> om "<emne>". Dette var ikke spam." med sort knap "Læst".

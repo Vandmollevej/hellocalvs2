@@ -57,6 +57,9 @@ export function DailyList() {
   const [error, setError] = useState<string | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
   const [copyingId, setCopyingId] = useState<string | null>(null);
+  // "Se dine indscanninger" vises kun, når en vare fotograferet i dag endnu
+  // ikke er tilføjet (bruger 2026-10-02, src/lib/user-scans.ts).
+  const [hasUnaddedScans, setHasUnaddedScans] = useState(false);
   const { status } = useFamilyStatus();
   // "Kopier til konto" kun på egne indtastninger, og kun når man styrer
   // andre profiler (docs/FAMILY.md).
@@ -89,6 +92,18 @@ export function DailyList() {
       .catch(() => setError(t("dailyList.loadError")))
       .finally(() => setLoading(false));
   }, [t]);
+
+  useEffect(() => {
+    const controller = new AbortController();
+    fetch("/api/my-scans", { signal: controller.signal })
+      .then(async (res) => {
+        if (!res.ok) throw new Error("offline");
+        return (await res.json()) as { scans: Array<{ createdAt: string; added: boolean }> };
+      })
+      .then((data) => setHasUnaddedScans(data.scans.some((scan) => !scan.added && isToday(scan.createdAt))))
+      .catch(() => {});
+    return () => controller.abort();
+  }, []);
 
   async function favoriteEntry(productId: string | null) {
     if (!productId) return;
@@ -142,6 +157,11 @@ export function DailyList() {
     <div className="relative flex h-full min-h-0 flex-col">
       <h2 className="hf-type-section-title px-4">{t("dailyList.heading")}</h2>
       <div className="min-h-0 flex-1 overflow-y-auto px-4 pb-9">
+      {hasUnaddedScans && (
+        <Link href="/my-scans" className="hf-type-body mb-2 inline-block text-hf-black underline underline-offset-2">
+          {t("dailyList.seeScans")}
+        </Link>
+      )}
       {/* Samme tan-kort som søgelisterne (src/app/search/page.tsx). */}
       <ul className={entries.length > 0 ? "overflow-hidden rounded-[8px] bg-hf-tan" : ""}>
         {entries.map((entry, i) => (

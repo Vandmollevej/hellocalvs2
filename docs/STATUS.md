@@ -2,6 +2,11 @@
 
 Last updated: 2026-10-02
 
+## 2026-10-02: "Se dine indscanninger"
+
+- Forsiden: understreget link "Se dine indscanninger" øverst under "Dagens tilføjelser", når en vare fotograferet i dag ikke er tilføjet. Ny side `/my-scans` grupperet pr. dato. Søgerækken er flyttet til `src/components/ProductResultRow.tsx` og bruges af begge. Se DECISIONS.
+- Lint (ændrede filer), typecheck og `npm run build` grønne. Ikke live-testet (ingen lokal DB). `page-tree.test.mjs` fejler stadig som før (andre sider mangler); `/my-scans` er tilføjet.
+
 ## 2026-10-02: "Til info sendte vi dig …"-popup + push
 
 - Nyt: `src/lib/sent-notices.ts`, `src/lib/sms.ts`, `/api/messages/sent-notices`, `SentMessageNotice` (bundark i layoutet), `sendPushToUser` i `push.ts`. Se DECISIONS 2026-10-02.

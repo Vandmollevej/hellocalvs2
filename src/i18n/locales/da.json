@@ -2092,13 +2092,21 @@
     "reportError": "Fejl",
     "delete": "Slet"
   },
+  "myScans": {
+    "title": "Dine indscanninger",
+    "today": "I dag",
+    "yesterday": "I går",
+    "empty": "Du har ikke fotograferet nogen varer endnu.",
+    "loadError": "Kunne ikke hente dine indscanninger"
+  },
   "dailyList": {
     "heading": "Dagens tilføjelser",
     "loading": "Henter dagens registreringer...",
     "noEntriesToday": "Ingen registreringer i dag",
     "loadError": "Kunne ikke hente dagens registreringer",
     "deleteError": "Kunne ikke slette registreringen",
-    "atTime": "Kl. {time}"
+    "atTime": "Kl. {time}",
+    "seeScans": "Se dine indscanninger"
   },
   "account": {
     "newsletterTitle": "Nyhedsbrev",
