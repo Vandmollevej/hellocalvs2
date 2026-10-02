@@ -1,6 +1,12 @@
 # HELLO CAL — project status
 
-Last updated: 2026-09-29
+Last updated: 2026-10-02
+
+## 2026-10-02: Vejninger vises i kalenderen
+
+- Fejl fra ejeren (skærmbillede 30/9): en gemt vægt kom ikke frem i kalenderen. Kalenderen hentede allerede `/api/weight-entries`, men brugte kun vejningerne til vægtestimatet.
+- Nu: badevægt-ikon på dagen i måneds- (nederste venstre hjørne), uge-, liste- og ugetidslinje-visningen (kun ikon — der er ikke plads til tallet). Dagvisningen viser vægt + klokkeslæt i timerækken, i timens oversigt (tryk på timen) og som linje under dagsstatus. Nye tekster `calendar.weighIn*`/`calendar.dayWeighIn` (da/en).
+- Lint, typecheck og `npm run build` grønne. Ikke live-testet (ingen lokal DB) — tjek på telefon. Bemærk: listen henter højst 200 vejninger (nyeste først), så meget gamle måneder kan mangle ikonet.
 
 ## 2026-09-29: Offentlig forside for udloggede
 

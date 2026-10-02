@@ -18,6 +18,7 @@ import {
 import { HfScreen } from "@/components/HfScreen";
 import { AddMenuSheet } from "@/components/add/AddMenuSheet";
 import { HfChevron } from "@/components/hf/HfChevron";
+import { IconBathScale } from "@/components/hf/IconBathScale";
 import { ActionLink } from "@/components/hf/ActionButton";
 import { FoodRow } from "@/components/FoodRow";
 import { DAILY_KCAL_GOAL } from "@/lib/goals";
@@ -84,6 +85,24 @@ type Activity = {
   durationMinutes: number;
   caloriesBurned: number;
 };
+
+// Vejninger i kalenderen (brugerkrav 2026-09-30): en vejning vises på den
+// dag, den er taget — kun som badevægt-ikon i oversigterne (der er ikke plads
+// til mere), og med vægt og klokkeslæt i dagvisningen.
+type WeightEntry = WeighIn & { id: string };
+type WeighInsByDate = Map<string, WeightEntry[]>;
+
+function weighInsForDate(weighInsByDate: WeighInsByDate, date: Date) {
+  return weighInsByDate.get(isoDate(date)) ?? [];
+}
+
+function formatKg(value: number) {
+  return new Intl.NumberFormat("da-DK", { maximumFractionDigits: 1 }).format(value);
+}
+
+function formatClock(value: string) {
+  return new Intl.DateTimeFormat("da-DK", { hour: "2-digit", minute: "2-digit" }).format(new Date(value));
+}
 
 type SleepDefaults = {
   defaultBedtime: string | null;
@@ -348,7 +367,7 @@ export default function CalendarPage() {
   const [activities, setActivities] = useState<Activity[]>([]);
   const [sleepDefaults, setSleepDefaults] = useState<SleepDefaults | null>(null);
   const [energyProfile, setEnergyProfile] = useState<EnergyProfile | null>(null);
-  const [weighIns, setWeighIns] = useState<WeighIn[]>([]);
+  const [weighIns, setWeighIns] = useState<WeightEntry[]>([]);
   // Enhedsdata (aktiv energi, skridt) pr. dag — docs/ACTIVITY-PAL.md F4.
   const [healthMetrics, setHealthMetrics] = useState<HealthMetricSample[]>([]);
   const [budgetSnapshots, setBudgetSnapshots] = useState<BudgetSnapshot[]>([]);
@@ -578,11 +597,23 @@ export default function CalendarPage() {
     return map;
   }, [goals]);
 
+  const weighInsByDate = useMemo<WeighInsByDate>(() => {
+    const map: WeighInsByDate = new Map();
+    const sorted = [...weighIns].sort(
+      (a, b) => new Date(a.weighedAt).getTime() - new Date(b.weighedAt).getTime(),
+    );
+    for (const entry of sorted) {
+      const key = isoDate(new Date(entry.weighedAt));
+      map.set(key, [...(map.get(key) ?? []), entry]);
+    }
+    return map;
+  }, [weighIns]);
+
   useEffect(() => {
     let cancelled = false;
     fetch("/api/weight-entries")
       .then((response) => (response.ok ? response.json() : { entries: [] }))
-      .then((data: { entries?: WeighIn[] }) => {
+      .then((data: { entries?: WeightEntry[] }) => {
         if (!cancelled) setWeighIns(data.entries ?? []);
       })
       .catch(() => {});
@@ -827,6 +858,7 @@ export default function CalendarPage() {
                 today={today}
                 dailyTotals={dailyTotals}
                 goalsByDate={goalsByDate}
+                weighInsByDate={weighInsByDate}
                 onOpenDate={openDate}
                 weekdays={WEEKDAYS}
               />
@@ -839,6 +871,7 @@ export default function CalendarPage() {
                   dailyTotals={dailyTotals}
                   registrations={registrations}
                   goalsByDate={goalsByDate}
+                  weighInsByDate={weighInsByDate}
                   onOpenDate={openDate}
                   getSleepWindow={resolveSleepWindow}
                   onSleepAdjust={requestSleepAdjust}
@@ -850,6 +883,7 @@ export default function CalendarPage() {
                   dailyTotals={dailyTotals}
                   minimumKcal={minimumKcal}
                   goalsByDate={goalsByDate}
+                  weighInsByDate={weighInsByDate}
                   onOpenDate={openDate}
                 />
               ))}
@@ -868,6 +902,7 @@ export default function CalendarPage() {
                 dailyTotals={dailyTotals}
                 minimumKcal={minimumKcal}
                 goalsByDate={goalsByDate}
+                weighInsByDate={weighInsByDate}
                 onOpenDate={openDate}
                 onPrevWeek={() => movePeriod(-1)}
                 onNextWeek={() => movePeriod(1)}
@@ -910,6 +945,7 @@ export default function CalendarPage() {
           )}
           activities={activities.filter((activity) => isSameDay(new Date(activity.startedAt), selectedDate))}
           goals={goalsForDate(goalsByDate, selectedDate)}
+          weighIns={weighInsForDate(weighInsByDate, selectedDate)}
           loading={registrationsLoading}
           error={registrationsError}
           sleepWindow={resolveSleepWindow(selectedDate)}
@@ -1011,6 +1047,7 @@ function MonthView({
   today,
   dailyTotals,
   goalsByDate,
+  weighInsByDate,
   onOpenDate,
   weekdays,
 }: {
@@ -1019,6 +1056,7 @@ function MonthView({
   today: Date;
   dailyTotals: Map<string, number>;
   goalsByDate: GoalsByDate;
+  weighInsByDate: WeighInsByDate;
   onOpenDate: (date: Date) => void;
   weekdays: string[];
 }) {
@@ -1060,6 +1098,8 @@ function MonthView({
                   const current = isSameDay(date, today);
                   const isOtherMonth = date.getMonth() !== month;
                   const hasGoal = goalsForDate(goalsByDate, date).length > 0;
+                  const dayWeighIns = weighInsForDate(weighInsByDate, date);
+                  const lastWeighIn = dayWeighIns[dayWeighIns.length - 1];
                   return (
                     <button
                       key={date.toISOString()}
@@ -1067,7 +1107,9 @@ function MonthView({
                       onClick={() => onOpenDate(date)}
                       aria-label={`${date.toLocaleDateString("da-DK", { dateStyle: "long" })}${current ? t("calendar.todaySuffix") : ""}${
                         !logged ? "" : met ? t("calendar.goalMetSuffix") : t("calendar.goalMissedSuffix")
-                      }${hasGoal ? t("calendar.targetDateSuffix") : ""}`}
+                      }${hasGoal ? t("calendar.targetDateSuffix") : ""}${
+                        lastWeighIn ? t("calendar.weighInSuffix", { value: formatKg(lastWeighIn.weightKg) }) : ""
+                      }`}
                       className={`hf-type-body hf-type-strong relative flex aspect-square items-center justify-center rounded-lg border focus-visible:outline-2 focus-visible:outline-hf-black ${
                         current
                           ? "border-transparent hf-selected"
@@ -1083,6 +1125,14 @@ function MonthView({
                         <IconPartyPopper
                           size={12}
                           className={`absolute left-0.5 top-0.5 ${current ? "text-hf-white" : "text-hf-black"}`}
+                        />
+                      )}
+                      {/* Vejning: badevægten i nederste venstre hjørne — kun
+                          ikonet, cellen har ikke plads til tallet. */}
+                      {lastWeighIn && (
+                        <IconBathScale
+                          size={11}
+                          className={`absolute bottom-0.5 left-0.5 ${current ? "text-hf-white" : "text-hf-black"}`}
                         />
                       )}
                       {!current &&
@@ -1120,6 +1170,7 @@ function WeekView({
   dailyTotals,
   minimumKcal,
   goalsByDate,
+  weighInsByDate,
   onOpenDate,
 }: {
   days: Date[];
@@ -1127,6 +1178,7 @@ function WeekView({
   dailyTotals: Map<string, number>;
   minimumKcal: number;
   goalsByDate: GoalsByDate;
+  weighInsByDate: WeighInsByDate;
   onOpenDate: (date: Date) => void;
 }) {
   const { t } = useTranslation();
@@ -1147,6 +1199,7 @@ function WeekView({
         const future = stripTime(date).getTime() > stripTime(today).getTime();
         const tooLow = isIntakeTooLow(kcal, minimumKcal, stripTime(date).getTime() < stripTime(today).getTime());
         const hasGoal = goalsForDate(goalsByDate, date).length > 0;
+        const dayWeighIns = weighInsForDate(weighInsByDate, date);
         return (
           <button
             key={date.toISOString()}
@@ -1163,8 +1216,9 @@ function WeekView({
               {date.getDate()}
             </span>
             {future ? (
-              <span className="flex flex-1 items-center">
+              <span className="flex flex-1 items-center gap-1.5">
                 {hasGoal && <IconPartyPopper size={18} className="shrink-0 text-hf-black" />}
+                <WeighInMark entries={dayWeighIns} />
               </span>
             ) : (
               <>
@@ -1183,6 +1237,7 @@ function WeekView({
                         : t("calendar.goalMissed")}
                   {/* Målsætningsdato: konfettikanonen efter teksten. */}
                   {hasGoal && <IconPartyPopper size={18} className="shrink-0 text-hf-black" />}
+                  <WeighInMark entries={dayWeighIns} />
                 </span>
                 <span className="ml-auto flex shrink-0 items-center gap-1">
                   <span
@@ -1202,6 +1257,21 @@ function WeekView({
         );
       })}
     </div>
+  );
+}
+
+// Vejningsmærke i uge- og listerækkerne: kun badevægt-ikonet (rækken har
+// ikke plads til tallet ved siden af status og kcal); vægten læses op for
+// skærmlæsere og vises i dagvisningen.
+function WeighInMark({ entries }: { entries: WeightEntry[] }) {
+  const { t } = useTranslation();
+  const latest = entries[entries.length - 1];
+  if (!latest) return null;
+  return (
+    <>
+      <IconBathScale size={18} className="shrink-0 text-hf-black" />
+      <span className="sr-only">{t("calendar.weighInSrLabel", { value: formatKg(latest.weightKg) })}</span>
+    </>
   );
 }
 
@@ -1262,6 +1332,7 @@ function ListView({
   dailyTotals,
   minimumKcal,
   goalsByDate,
+  weighInsByDate,
   onOpenDate,
   onPrevWeek,
   onNextWeek,
@@ -1271,6 +1342,7 @@ function ListView({
   dailyTotals: Map<string, number>;
   minimumKcal: number;
   goalsByDate: GoalsByDate;
+  weighInsByDate: WeighInsByDate;
   onOpenDate: (date: Date) => void;
   onPrevWeek: () => void;
   onNextWeek: () => void;
@@ -1362,6 +1434,7 @@ function ListView({
         const future = stripTime(date).getTime() > stripTime(today).getTime();
         const tooLow = isIntakeTooLow(kcal, minimumKcal, stripTime(date).getTime() < stripTime(today).getTime());
         const hasGoal = goalsForDate(goalsByDate, date).length > 0;
+        const dayWeighIns = weighInsForDate(weighInsByDate, date);
         return (
           <button
             key={date.toISOString()}
@@ -1378,8 +1451,9 @@ function ListView({
               {date.getDate()}
             </span>
             {future ? (
-              <span className="flex flex-1 items-center">
+              <span className="flex flex-1 items-center gap-1.5">
                 {hasGoal && <IconPartyPopper size={18} className="shrink-0 text-hf-black" />}
+                <WeighInMark entries={dayWeighIns} />
               </span>
             ) : (
               <>
@@ -1398,6 +1472,7 @@ function ListView({
                         : t("calendar.goalMissed")}
                   {/* Målsætningsdato: konfettikanonen efter teksten. */}
                   {hasGoal && <IconPartyPopper size={18} className="shrink-0 text-hf-black" />}
+                  <WeighInMark entries={dayWeighIns} />
                 </span>
                 <span className="ml-auto flex shrink-0 items-center gap-1">
                   <span
@@ -1426,6 +1501,7 @@ function WeekTimelineView({
   dailyTotals,
   registrations,
   goalsByDate,
+  weighInsByDate,
   onOpenDate,
   getSleepWindow,
   onSleepAdjust,
@@ -1435,10 +1511,12 @@ function WeekTimelineView({
   dailyTotals: Map<string, number>;
   registrations: Registration[];
   goalsByDate: GoalsByDate;
+  weighInsByDate: WeighInsByDate;
   onOpenDate: (date: Date) => void;
   getSleepWindow: (date: Date) => SleepWindow | null;
   onSleepAdjust: (date: Date, type: SleepAdjustType, minutes: number) => void;
 }) {
+  const { t } = useTranslation();
   const goalForDate = useDailyGoal();
   const headerDrag = useRef<{ x: number; scrollLeft: number } | null>(null);
   const gridDrag = useRef<{ x: number; y: number; scrollLeft: number; scrollTop: number } | null>(null);
@@ -1515,6 +1593,7 @@ function WeekTimelineView({
                 {date.getDate()}
                 {met && <IconCheck size={15} stroke={3.5} className="text-hf-lime" aria-hidden="true" />}
                 {goalsForDate(goalsByDate, date).length > 0 && <IconPartyPopper size={15} />}
+                {weighInsForDate(weighInsByDate, date).length > 0 && <IconBathScale size={15} />}
               </span>
             </button>
           );
@@ -1579,6 +1658,20 @@ function WeekTimelineView({
                       title={`${registration.titleSnapshot} · ${Math.round(registration.kcalSnapshot)} kcal`}
                     >
                       {Math.round(registration.kcalSnapshot)} kcal
+                    </div>
+                  );
+                })}
+                {weighInsForDate(weighInsByDate, date).map((entry) => {
+                  const time = new Date(entry.weighedAt);
+                  return (
+                    <div
+                      key={entry.id}
+                      className="hf-type-micro hf-type-strong absolute left-0.5 right-0.5 flex items-center gap-1 truncate rounded-md border border-hf-tan-dark bg-hf-tan px-1 text-hf-black"
+                      style={{ top: (minutesFromMidnight(time) / 60) * HOUR_HEIGHT, minHeight: 18 }}
+                      title={t("calendar.dayWeighIn", { value: formatKg(entry.weightKg), time: formatClock(entry.weighedAt) })}
+                    >
+                      <IconBathScale size={12} />
+                      {formatKg(entry.weightKg)} kg
                     </div>
                   );
                 })}
@@ -1788,6 +1881,7 @@ function DayDetails({
   registrations,
   activities,
   goals,
+  weighIns,
   loading,
   error,
   sleepWindow,
@@ -1807,6 +1901,7 @@ function DayDetails({
   registrations: Registration[];
   activities: Activity[];
   goals: GoalDTO[];
+  weighIns: WeightEntry[];
   loading: boolean;
   error: boolean;
   sleepWindow: SleepWindow;
@@ -2168,6 +2263,7 @@ function DayDetails({
                   const hourActivities = activities.filter(
                     (activity) => new Date(activity.startedAt).getHours() === hour,
                   );
+                  const hourWeighIns = weighIns.filter((entry) => new Date(entry.weighedAt).getHours() === hour);
                   return (
                     <HourRow
                       key={hour}
@@ -2176,6 +2272,7 @@ function DayDetails({
                       height={hourHeight}
                       kcalTotal={kcalTotal}
                       activities={hourActivities}
+                      weighIns={hourWeighIns}
                       hasEntries={hourRegistrations.length > 0}
                       hasGoal={hour === GOAL_HOUR && goals.length > 0}
                       showAddBar={addBarHour === hour}
@@ -2226,6 +2323,16 @@ function DayDetails({
             </p>
           </div>
           )}
+          {/* Dagens vejning(er) med klokkeslæt — her er der plads til tallet. */}
+          {weighIns.map((entry) => (
+            <p
+              key={entry.id}
+              className="hf-type-body flex items-center justify-end gap-1.5 whitespace-nowrap text-right text-hf-black"
+            >
+              <IconBathScale size={16} />
+              {t("calendar.dayWeighIn", { value: formatKg(entry.weightKg), time: formatClock(entry.weighedAt) })}
+            </p>
+          ))}
           <p className="hf-type-body whitespace-nowrap text-right text-text-muted">
             {t("calendar.goalLabel", { goal: dayGoalKcal })}
           </p>
@@ -2250,6 +2357,7 @@ function DayDetails({
           hour={openHour}
           registrations={registrations.filter((registration) => new Date(registration.createdAt).getHours() === openHour)}
           goals={openHour === GOAL_HOUR ? goals : []}
+          weighIns={weighIns.filter((entry) => new Date(entry.weighedAt).getHours() === openHour)}
           onClose={() => setOpenHour(null)}
         />
       )}
@@ -2271,6 +2379,7 @@ function HourRow({
   height,
   kcalTotal,
   activities,
+  weighIns,
   hasEntries,
   hasGoal,
   showAddBar,
@@ -2283,6 +2392,7 @@ function HourRow({
   height: number;
   kcalTotal: number;
   activities: Activity[];
+  weighIns: WeightEntry[];
   hasEntries: boolean;
   hasGoal: boolean;
   showAddBar: boolean;
@@ -2337,19 +2447,25 @@ function HourRow({
       {/* Timen med en målsætning kan trykkes på i hele sin bredde og åbner
           timens oversigt med målsætningen øverst (men ikke lige efter et
           langt tryk, der viser "Tilføj"-baren). */}
-      {hasGoal && (
+      {(hasGoal || weighIns.length > 0) && (
         <button
           type="button"
-          aria-label={t("calendar.openTargetDateAriaLabel")}
+          aria-label={t(hasGoal ? "calendar.openTargetDateAriaLabel" : "calendar.openWeighInAriaLabel")}
           onClick={() => {
             if (!longPressedRef.current && !movedRef.current) onOpenDetails(hour);
           }}
           className="absolute inset-0 z-[4] focus-visible:outline-2 focus-visible:outline-hf-black"
         />
       )}
-      {(activities.length > 0 || hasGoal) && (
+      {(activities.length > 0 || hasGoal || weighIns.length > 0) && (
         <div className="pointer-events-none absolute inset-y-0 left-1 z-[5] flex items-center gap-1">
           {hasGoal && <IconPartyPopper size={16} className="text-hf-black" />}
+          {weighIns.map((entry) => (
+            <span key={entry.id} className="hf-type-small hf-type-strong flex items-center gap-1 text-hf-black">
+              <IconBathScale size={16} />
+              {formatKg(entry.weightKg)} kg
+            </span>
+          ))}
           {activities.map((activity) => {
             const { icon: SportIcon, label } = getSportMeta(activity.sportType);
             return <SportIcon key={activity.id} size={16} className="text-hf-black opacity-70" aria-label={label} />;
@@ -2566,11 +2682,13 @@ function HourEntriesOverlay({
   hour,
   registrations,
   goals,
+  weighIns,
   onClose,
 }: {
   hour: number;
   registrations: Registration[];
   goals: GoalDTO[];
+  weighIns: WeightEntry[];
   onClose: () => void;
 }) {
   const { t } = useTranslation();
@@ -2623,6 +2741,15 @@ function HourEntriesOverlay({
       <div className="flex-1 overflow-y-auto p-4">
         {goals.map((goal) => (
           <GoalAccordion key={goal.id} goal={goal} />
+        ))}
+        {weighIns.map((entry) => (
+          <div key={entry.id} className="hf-control-row mb-2 flex items-center justify-between rounded-2xl bg-hf-tan px-4">
+            <span className="hf-type-body hf-type-strong text-hf-black">{formatClock(entry.weighedAt)}</span>
+            <span className="hf-type-body hf-type-strong flex items-center gap-1.5 text-hf-black">
+              <IconBathScale size={18} />
+              {formatKg(entry.weightKg)} kg
+            </span>
+          </div>
         ))}
         {groups.map((group) => {
           const isOpen = openKeys.has(group.key);
