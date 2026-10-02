@@ -124,7 +124,15 @@ function CheckoutSheet({ plan, name, onClose }: { plan: SubscriptionPlan; name: 
   );
 }
 
-export function LandingPlans({ plans }: { plans: LandingPlan[] }) {
+// currentPlan sættes kun inde i appen (abonnementssiden): brugerens egen plan
+// markeres "Din plan", og Gratis har ingen "Kom i gang", da kontoen findes.
+export function LandingPlans({
+  plans,
+  currentPlan,
+}: {
+  plans: LandingPlan[];
+  currentPlan?: SubscriptionPlan | "free";
+}) {
   const router = useRouter();
   const [open, setOpen] = useState<{ plan: SubscriptionPlan; name: string } | null>(null);
 
@@ -133,6 +141,7 @@ export function LandingPlans({ plans }: { plans: LandingPlan[] }) {
       <div className="grid items-start gap-6 md:grid-cols-3">
         {plans.map((p) => {
           const key = p.plan;
+          const isCurrent = currentPlan !== undefined && currentPlan === (key ?? "free");
           return (
             <div
               key={p.name}
@@ -161,13 +170,19 @@ export function LandingPlans({ plans }: { plans: LandingPlan[] }) {
                 ))}
               </ul>
               <div className="px-8 pb-8 text-center">
-                <button
-                  type="button"
-                  onClick={() => (key ? setOpen({ plan: key, name: p.name }) : router.push("/signup"))}
-                  className="rounded-full bg-hf-black px-8 py-3 text-sm font-semibold uppercase tracking-wide text-hf-white transition hover:bg-[#353535]"
-                >
-                  {key ? "Vælg" : "Kom i gang"}
-                </button>
+                {isCurrent ? (
+                  <span className="inline-block rounded-full bg-hf-tan px-8 py-3 text-sm font-semibold uppercase tracking-wide text-hf-black">
+                    Din plan
+                  </span>
+                ) : currentPlan !== undefined && !key ? null : (
+                  <button
+                    type="button"
+                    onClick={() => (key ? setOpen({ plan: key, name: p.name }) : router.push("/signup"))}
+                    className="rounded-full bg-hf-black px-8 py-3 text-sm font-semibold uppercase tracking-wide text-hf-white transition hover:bg-[#353535]"
+                  >
+                    {key ? "Vælg" : "Kom i gang"}
+                  </button>
+                )}
               </div>
             </div>
           );

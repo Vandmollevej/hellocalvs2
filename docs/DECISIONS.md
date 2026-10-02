@@ -3333,6 +3333,25 @@ Produktsiden viser aldrig teksten "Branded". Brandet vises kun som brandnavn/log
   (vægt ÷ N). Aldrig gættet; 2-80 g. Agenten skriver den kun, når varen ikke
   har en portionsstørrelse.
 
+### Tilføjelse 2026-10-02 — drikkevarer og alkohol starter på pakkestørrelsen
+
+- Brugerens regel: står der 33 cl, 25 cl eller 50 cl ved en drikkevare eller
+  alkohol, er det tallet i mængdefeltet. Størrelsen læses fra
+  `packageSizeText`, ellers fra navnet ("Tuborg Classic 33 cl"); multipak
+  ("6 x 33 cl") giver én enhed.
+- Varer uden kategorien DRINK tæller som drikkevare, når både navnet har et
+  drikke-ord (øl, vin, cola …) og en størrelse i ml/cl/dl/l. Fløde, olie,
+  eddike, sirup, saucer o.l. tages aldrig som hel pakke.
+- Vin: flaske ≤ 25 cl = hele flasken, ellers 150 ml. Spiritus (≥ 20 % eller
+  spiritus-ord uden mixer): ≤ 10 cl = hele flasken, ellers 4 cl.
+  Færdigblandede drinks (gin & tonic, rom og cola) = hele dåsen. Øvrige
+  drikkevarer: ≤ 50 cl = hele pakken, ellers 250 ml.
+- Visningsenheden er cl, når pakningsstørrelsen eller navnet angiver cl (også
+  "33 cl dåse"). Kategorien afgør stadig g mod ml.
+- Tabellen med typiske mængder er udvidet (kød 150 g, fisk 125 g, frugt,
+  suppe, pizza, færdigretter, fløde, æg m.m.), så færre varer ender på 100 g.
+- Videresendte varer (`/forward/[token]`) tilføjes med samme startmængde.
+
 ## 2026-09-28: Produktsidens lodrette rytme + beskårne brand-logoer
 
 - Produktsiden (`AddProductView`): 32 px fra produktcirklen til titlen (som
@@ -3460,3 +3479,14 @@ Kilder på "Mad på latin" skal altid være officielle (Fødevarestyrelsen, Sund
   det), og et bart "Vand" normaliseres til "Flaskevand" (`normalizeProductType`
   i `src/lib/product-naming.ts`), så søgning på "vand" viser en præcis betegnelse.
 - Eksisterende produkter, der allerede hedder "Vand", omdøbes ikke automatisk.
+
+## 2026-10-02: Userback feedback-widget
+
+- Scriptet indlæses globalt fra src/components/UserbackWidget.tsx (rodlayoutet) med det offentlige widget-token. Der sendes bevidst ingen Userback.user_data (ingen navn/e-mail), så feedback er anonym i tråd med anonymitetsreglerne.
+
+
+## 2026-10-02 – Rigtige certifikat-logoer (public/certifications)
+
+- Mærker på varesiden vises med brugerens rigtige logofiler (`public/certifications/*.png`, kind → fil i `CERTIFICATION_LOGO_FILES` i `src/lib/certification-badges.ts`), ikke tegnede SVG-erstatninger. Originalerne ligger i mappen `Certifikater/` (ikke i git).
+- Kobling sker på tekstværdien i `ProductFilters` (økologisk, nøglehul, fuldkorn, dyrevelfærd-liste, certificeringer-liste); ukendte mærker vises som tekst-pille.
+- "Bedre Dyrevelfærd 2" er afledt af 1- og 3-hjerte-filerne, fordi den leverede 2-stjerner-fil var identisk med 3-stjerner. Erstat med original, når den findes.

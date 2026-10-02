@@ -544,7 +544,7 @@ fuld bredde).
 
 **`.hf-favorite-button` / `FavoriteButton`**
 
-- Bookmark, ikke stjerne.
+- Bookmark, ikke stjerne. Ikonet er brugerens eget artwork (`public/icons/favorite.png`, udfyldt `favorite-filled.png`, cirkel-reference `favorite-circle.png`) via `src/components/icons/Favorite.tsx` — aldrig tabler-bookmark. Cirkel: `rgb(45 45 45 / 78%)`.
 - 44 × 44 px rund mørk/translucent overlay-knap på billeder.
 - 24 × 24 hvid outline-bookmark, ens stroke på alle kort.
 - Standardplacering: 8 px fra top og højre billedkant.

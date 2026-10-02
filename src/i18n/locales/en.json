@@ -152,7 +152,7 @@
     "expand": "Show side menu",
     "shortcuts": "Shortcuts",
       "settings": "Settings",
-      "searchPlaceholder": "Search the menu…",
+      "searchPlaceholder": "Search",
       "noResults": "No results",
       "mainNav": "Main navigation",
       "sideNav": "Side menu",
@@ -1144,7 +1144,7 @@
     },
     "row": {
       "subscription": "Subscription",
-      "paymentMethods": "Payment methods",
+      "paymentMethods": "Payment",
       "weightCalibration": "Weight calibration",
       "bodyMeasurements": "Body measurements",
       "sleep": "Sleep pattern",
@@ -1220,7 +1220,7 @@
     },
     "activeUntil": "Active until {date}",
     "nextPayment": "Next payment on {date}",
-    "paymentMethods": "Payment methods",
+    "paymentMethods": "Payment",
     "freePlan": {
       "title": "Free",
       "description": "Logging, calendar and your goal. Only the last 3 months of history are shown — older data is kept and comes back if you go Serious."
