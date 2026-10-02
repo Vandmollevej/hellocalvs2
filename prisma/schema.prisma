@@ -65,8 +65,8 @@ model User {
   // godkendelse. Gemmes normaliseret i E.164 (fx +4512345678,
   // src/lib/phone.ts). Nullable i databasen, fordi ældre konti, familie-
   // profiler uden eget login og admin-konti (TOTP) kan mangle det — appen
-  // kræver det ved tilmelding og spærrer indloggede brugere uden nummer,
-  // indtil det er udfyldt (/account/phone). phoneVerifiedAt reserveres til
+  // kræver det ved tilmelding og spærrer alle indloggede uden nummer (også
+  // børneprofiler), indtil det er udfyldt (/account/phone). phoneVerifiedAt reserveres til
   // SMS-bekræftelsen, når tofaktor bygges.
   phone           String?
   phoneVerifiedAt DateTime?

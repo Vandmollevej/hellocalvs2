@@ -6,15 +6,12 @@ import { getSessionUser, unauthorized } from "@/lib/session";
 export async function GET() {
   const user = await getSessionUser();
   if (!user) return unauthorized();
-  const [passkeys, familyMember] = await Promise.all([
-    prisma.passkey.count({ where: { userId: user.id } }),
-    prisma.familyMember.findUnique({ where: { userId: user.id }, select: { isChild: true } }),
-  ]);
+  const passkeys = await prisma.passkey.count({ where: { userId: user.id } });
   // Telefonnummer er obligatorisk (docs/DECISIONS.md 2026-10-02) for alle, der
-  // logger ind — undtagen børneprofiler i en familie, som ikke nødvendigvis
-  // har egen telefon. AuthGate sender brugeren til /account/phone, til det
-  // er udfyldt.
-  const phoneRequired = !user.phone && !familyMember?.isChild;
+  // logger ind — også børneprofiler i en familie (brugerens valg: de kan
+  // fjerne forældrenes adgang, når de fylder 18). AuthGate sender brugeren
+  // til /account/phone, til det er udfyldt.
+  const phoneRequired = !user.phone;
   return NextResponse.json({
     user: {
       id: user.id,
