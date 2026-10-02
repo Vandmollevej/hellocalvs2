@@ -1,6 +1,11 @@
 # HELLO CAL — project status
 
-Last updated: 2026-09-29
+Last updated: 2026-10-02
+
+## 2026-10-02: Kamera — lygte, fokus og lys/fokus-advarsel
+
+- Lygte-knap på kameraet (hvor telefonen/browseren tillader det), hvid tekst ved for mørkt/ude af fokus, og fokus-skift til ~20 cm på stregkodetrinnet. Se DECISIONS.md.
+- Lint, typecheck og `npm run build` grønne. Ikke testet på telefon — tjek i køleskabet på Android (lygte + fokus) og iPhone (forventet: kun advarselsteksten).
 
 ## 2026-09-29: Offentlig forside for udloggede
 
