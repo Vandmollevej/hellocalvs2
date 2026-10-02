@@ -1,6 +1,12 @@
 # HELLO CAL — project status
 
-Last updated: 2026-09-29
+Last updated: 2026-10-02
+
+## 2026-10-02: Statistik — kort kan igen trækkes på iPhone
+
+- Fejl: i redigering scrollede siden i stedet for at flytte kortet. Når et kort løftes, udskiftes dets indhold med pladsmarkeringen; iOS sender fortsat fingerens touch-hændelser til det fjernede element, så de nåede aldrig dokumentets scroll-blokering eller pointer-lytterne.
+- Rettet i `StatCardsGrid.tsx`: trykket lytter også på selve elementet fingeren rammer, og løftet registreres synkront (ref), så scroll blokeres med det samme. Gælder også overskrifter/skillelinjer.
+- Testet i Chromium med touch-emulering: fejlen genskabt på gammel kode; med rettelsen flyttes kortet, og et hurtigt swipe på et kort scroller stadig. Ikke testet på fysisk iPhone.
 
 ## 2026-09-29: Offentlig forside for udloggede
 
