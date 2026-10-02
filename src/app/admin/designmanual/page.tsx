@@ -2,7 +2,6 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import {
   IconAlertTriangle,
-  IconBookmark,
   IconCircleCheck,
   IconHeart,
   IconInfoCircle,
@@ -12,6 +11,7 @@ import {
   IconUser,
   IconX,
 } from "@tabler/icons-react";
+import { IconFavorite } from "@/components/icons/Favorite";
 import { requireAdminUser } from "@/lib/require-admin";
 import { HfChevron } from "@/components/hf/HfChevron";
 import { NumberedBadge } from "@/components/hf/NumberedBadge";
@@ -365,7 +365,7 @@ export default async function DesignManualPage() {
               <Tile title="Favorit på billede">
                 <div className="relative h-24 rounded-xl bg-hf-tan-dark">
                   <span className="hf-favorite-button" aria-hidden="true">
-                    <IconBookmark size={24} />
+                    <IconFavorite size={24} />
                   </span>
                 </div>
                 <p className="hf-type-small text-text-secondary">44 × 44 rund, 8 px fra top/højre. Bookmark — ikke stjerne.</p>

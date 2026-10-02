@@ -1,5 +1,5 @@
-// Den samme roterende load-cirkel som på forsiden (/welcome, .hf-loader i
-// globals.css). Farven følger currentColor — standard er Hello Cal-grøn.
+// Roterende load-cirkel (.hf-loader i globals.css). Forsiden (/welcome) bruger
+// sin egen .hello-loader. Farven følger currentColor — standard er Hello Cal-grøn.
 export function HfLoader({
   size = 36,
   className = "text-hf-green",

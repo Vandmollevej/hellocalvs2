@@ -2,6 +2,7 @@ import nodemailer from "nodemailer";
 import { prisma } from "@/lib/prisma";
 import { NO_TRACKING_HEADERS, fromForEvent } from "@/lib/mail-senders";
 import { DEFAULT_REPLY_TO, htmlToText, wrapEmailHtml } from "@/lib/email-format";
+import { pushSentNotice } from "@/lib/sent-notices";
 
 // Reel SMTP-afsendelse, forberedt men ikke aktiveret (docs/DECISIONS.md
 // 2026-09-02): uden SMTP_HOST/SMTP_PORT/SMTP_USER/SMTP_PASS i miljøet er
@@ -87,6 +88,7 @@ async function flushOnce(limit: number) {
         where: { id: message.id },
         data: { status: "SENT", sentAt: new Date() },
       });
+      if (message.userId) void pushSentNotice(message.userId, "EMAIL", message.subject);
       sent += 1;
     } catch (error) {
       await prisma.outboundMessage.update({
