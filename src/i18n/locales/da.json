@@ -445,7 +445,15 @@
     "distanceKm": "Kilometer bevæget"
   },
   "addMenu": {
-    "title": "Tilføj"
+    "title": "Tilføj",
+    "food": "Tilføj mad",
+    "scan": "Scan vare",
+    "platePhoto": "Billede af tallerken",
+    "dish": "Opret ret",
+    "voice": "Optag",
+    "weight": "Vægt",
+    "drink": "Drikkevare",
+    "body": "Kropsmål"
   },
   "helloDoc": {
     "title": "Hello Doc",
@@ -994,6 +1002,7 @@
     "searching": "Søger...",
     "noResults": "Ingen varer matcher din søgning",
     "scan": "Tag billede",
+    "scanWeb": "Upload billede eller drop dem her",
     "manually": "Opret manuelt",
     "createOwnIngredient": "Opret egen ingrediens",
     "kcalUnknown": "{grams} g · kcal ukendt",

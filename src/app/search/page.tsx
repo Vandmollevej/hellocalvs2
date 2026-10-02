@@ -86,7 +86,7 @@ function ResultRow({
                 onToggleFavorite(id, !isFavorite);
               }}
               aria-label={t(isFavorite ? "search.removeFavorite" : "search.addFavorite")}
-              className="text-hf-green"
+              className="mr-2 text-hf-green"
             >
               {isFavorite ? <IconBookmarkFilled size={20} /> : <IconBookmark size={20} />}
             </button>

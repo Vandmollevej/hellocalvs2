@@ -445,7 +445,15 @@
     "distanceKm": "Kilometers moved"
   },
   "addMenu": {
-    "title": "Add"
+    "title": "Add",
+    "food": "Add food",
+    "scan": "Scan product",
+    "platePhoto": "Photo of plate",
+    "dish": "Create dish",
+    "voice": "Record",
+    "weight": "Weight",
+    "drink": "Drinks",
+    "body": "Body measurements"
   },
   "helloDoc": {
     "title": "Hello Doc",
@@ -994,6 +1002,7 @@
     "searching": "Searching...",
     "noResults": "No products match your search",
     "scan": "Take photo",
+    "scanWeb": "Upload an image or drop them here",
     "manually": "Create manually",
     "createOwnIngredient": "Create your own ingredient",
     "kcalUnknown": "{grams} g · kcal unknown",
