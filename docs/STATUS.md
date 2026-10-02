@@ -8,6 +8,12 @@ Last updated: 2026-10-02
 - Rettet: gemt rækkefølge bruges fra første billede; abonnementsniveauet huskes mellem sider; mens niveauet hentes, tegnes statistiksiden som skelet med løbende gradient, og data fyldes ind på pladserne. Se DECISIONS.md 2026-10-02.
 - Lint, typecheck og `npm run build` grønne. Ikke visuelt testet (ingen lokal DB/login) — test på telefon: åbn Statistik både via bundmenuen og ved genindlæsning.
 
+## 2026-10-02: Drikkevarer starter på pakkestørrelsen
+
+- Mængdefeltet viser nu 33 cl / 25 cl / 50 cl for dåser og små flasker, også når størrelsen kun står i navnet, og også for øl/vin uden kategorien DRINK. Vin, spiritus og færdigblandede drinks har egne regler (DECISIONS.md 2026-09-28, tilføjelse 2026-10-02).
+- Flere typiske mængder (kød, fisk, frugt, suppe, pizza m.m.), så færre varer starter på 100 g. Videresendte varer bruger samme startmængde.
+- Tests: `src/lib/default-amount.test.mjs` (ny) + udvidet `product-display-unit.test.mjs`, grønne. Lint, typecheck og build grønne. Ikke live-testet (ingen lokal DB).
+
 ## 2026-09-29: Offentlig forside for udloggede
 
 - Ny hent-appen-forside uden telefonramme, med QR-koder, planer med betalings-ark, Hello Doc-bjælke, nøgletal fra databasen, `/business` (kontaktformular) og `/presse`. Se DECISIONS.md samme dato.

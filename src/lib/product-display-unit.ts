@@ -25,6 +25,9 @@ export type ProductDisplayUnit = "g" | "ml" | "cl";
 export type ProductUnitSource = {
   productCategory?: string | null;
   packageSizeText?: string | null;
+  // Bruges kun til at vælge cl frem for ml, når pakningsstørrelsen mangler
+  // ("Tuborg Classic 33 cl"). Kategorien afgør stadig g mod ml.
+  name?: string | null;
 };
 
 export function isProductCategory(value: unknown): value is ProductCategory {
@@ -43,6 +46,7 @@ export function normalizeUnit(unit?: string | null): ProductDisplayUnit | null {
       return "g";
     case "ml":
     case "milliliter":
+    case "dl":
     case "l":
     case "ltr":
     case "liter":
@@ -55,16 +59,18 @@ export function normalizeUnit(unit?: string | null): ProductDisplayUnit | null {
   }
 }
 
-// Enheden i en pakningsstørrelse som "33cl", "50 cl", "1Ltr", "500 ml".
+// Enheden i en pakningsstørrelse som "33cl", "50 cl", "1Ltr", "500 ml",
+// "6 x 33 cl" eller "33 cl dåse".
 export function unitFromPackageSize(text?: string | null): ProductDisplayUnit | null {
-  const match = text?.match(/\d\s*([a-zA-Z.]+)\s*$/);
+  const match = text?.match(/\d\s*(ml|cl|dl|g|gr\.?|gram|l|ltr|liter|milliliter|centiliter)(?![a-zæøå])/i);
   return match ? normalizeUnit(match[1]) : null;
 }
 
 export function getProductDisplayUnit(product: ProductUnitSource | null | undefined): ProductDisplayUnit {
   if (product?.productCategory !== "DRINK") return "g";
   // Et fejlagtigt "g" på en drikkevare må aldrig give gram.
-  return unitFromPackageSize(product.packageSizeText) === "cl" ? "cl" : "ml";
+  const unit = unitFromPackageSize(product.packageSizeText) ?? unitFromPackageSize(product.name);
+  return unit === "cl" ? "cl" : "ml";
 }
 
 // Basismængde (g/ml) → tal i visningsenheden.
