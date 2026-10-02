@@ -5,23 +5,28 @@ import { useRouter } from "next/navigation";
 import { IconSearch } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
 import { AccordionSection } from "@/components/hf/AccordionSection";
-import { TrendIcon } from "@/components/BottomNav";
+import { StatChartPreviewList } from "@/components/StatChartPreviewList";
+import { useStatChartRenderer } from "@/components/useStatChartRenderer";
+import { withinLastDays, type RegistrationTotals } from "@/lib/daily-totals";
+import type { ActivityTotals, HealthMetricTotals } from "@/lib/stat-cards";
 import { nutritionSectionLabel } from "@/lib/nutrition-terminology";
 import { useTranslation } from "@/i18n/LocaleProvider";
 import {
   addChartsToLayout,
-  dailyChartLabel,
   DEFAULT_ACTIVE_CHART_KEYS,
   loadChartLayout,
   statChartDef,
+  statChartLabel,
   type StatChartDef,
 } from "@/lib/stat-charts";
 
 // Samme opbygning som /statistics/unused-cards, men for graferne øverst på
 // statistiksiden: søgning på tværs af blokkene og "+ Tilføj" på hver graf
-// (én ad gangen, ingen "tilføj alle" pr. blok).
+// (én ad gangen, ingen "tilføj alle" pr. blok). Graferne vises i fuld bredde,
+// som de vil se ud.
 
-type ChartOption = { key: string; label: string; subtitle: string };
+type ChartOption = { key: string; label: string };
+const PREVIEW_INTRADAY_DAYS = 7;
 type CategoryDef = { title: string; keys: string[] };
 
 function categoryDefs(t: (key: string) => string, region: string): CategoryDef[] {
@@ -35,25 +40,14 @@ function categoryDefs(t: (key: string) => string, region: string): CategoryDef[]
       ],
     },
     { title: t("statUnusedCards.category.carbsFibre"), keys: ["daily:sugar", "daily:fiber"] },
-    { title: t("statUnusedCards.category.minerals"), keys: ["daily:potassium", "daily:calcium", "daily:iron"] },
-    { title: t("statUnusedCards.category.vitamins"), keys: ["daily:vitaminA", "daily:vitaminC"] },
+    { title: t("statUnusedCards.category.sleep"), keys: ["sleep:quality", "sleep:kcal", "sleep:coffee", "sleep:sport", "sleep:device", "sleep:bodyFat"] },
+    { title: t("statUnusedCards.category.minerals"), keys: ["minerals"] },
+    { title: t("statUnusedCards.category.vitamins"), keys: ["vitamins"] },
   ];
 }
 
 function chartOption(def: StatChartDef, t: (key: string) => string): ChartOption {
-  if (def.kind === "caloriesAndWeight") {
-    return { key: def.key, label: t("statistics.caloriesAndWeightChart"), subtitle: t("statChart.last7Days") };
-  }
-  if (def.kind === "sleepQuality") {
-    return { key: def.key, label: t("statistics.sleepQualityChart"), subtitle: t("statChart.last7Days") };
-  }
-  if (def.kind === "intradayKcal") {
-    return { key: def.key, label: t("statUnusedCharts.intradayKcal"), subtitle: t("statUnusedCharts.dayProfile") };
-  }
-  if (def.kind === "sleepInsight") {
-    return { key: def.key, label: t(`sleepStats.chart.${def.insight}`), subtitle: t("statChart.last7Days") };
-  }
-  return { key: def.key, label: dailyChartLabel(def.field), subtitle: t("statChart.last7Days") };
+  return { key: def.key, label: statChartLabel(def, t) };
 }
 
 export default function UnusedStatChartsPage() {
@@ -63,6 +57,36 @@ export default function UnusedStatChartsPage() {
   // localStorage er usynlig for serveren: start med standardgraferne og skift efter mount.
   const [activeKeys, setActiveKeys] = useState<Set<string>>(() => new Set(DEFAULT_ACTIVE_CHART_KEYS));
   const [query, setQuery] = useState("");
+  const [registrations, setRegistrations] = useState<RegistrationTotals[]>([]);
+  const [activities, setActivities] = useState<ActivityTotals[]>([]);
+  const [metrics, setMetrics] = useState<HealthMetricTotals[]>([]);
+
+  // Data til forhåndsvisningen af graferne.
+  useEffect(() => {
+    let cancelled = false;
+    const load = <T,>(url: string, pick: (data: T) => void) =>
+      fetch(url)
+        .then(async (response) => (response.ok ? ((await response.json()) as T) : null))
+        .then((data) => {
+          if (!cancelled && data) pick(data);
+        })
+        .catch(() => undefined);
+    load<{ registrations: RegistrationTotals[] }>("/api/registrations", (d) => setRegistrations(d.registrations));
+    load<{ activities: ActivityTotals[] }>("/api/activities", (d) => setActivities(d.activities));
+    load<{ metrics: HealthMetricTotals[] }>("/api/health-metrics", (d) => setMetrics(d.metrics));
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const previewRegistrations = useMemo(() => withinLastDays(registrations, PREVIEW_INTRADAY_DAYS), [registrations]);
+  const renderChart = useStatChartRenderer({
+    registrations,
+    activities,
+    metrics,
+    intradayRegistrations: previewRegistrations,
+    intradayWindowDays: PREVIEW_INTRADAY_DAYS,
+  });
 
   useEffect(() => {
     function syncActiveKeys() {
@@ -122,27 +146,11 @@ export default function UnusedStatChartsPage() {
 
   function renderGrid(options: ChartOption[]) {
     return (
-      <div className="grid grid-cols-2 gap-4">
-        {options.map((option) => (
-          <button
-            key={option.key}
-            type="button"
-            onClick={() => addCharts([option.key])}
-            className="flex flex-col justify-between gap-1 rounded-2xl bg-hf-tan p-4 text-left active:opacity-80"
-          >
-            <span className="flex items-start justify-between gap-2">
-              <span className="hf-type-small text-text-secondary min-w-0">{option.subtitle}</span>
-              <span className="hf-type-small hf-type-strong shrink-0 whitespace-nowrap text-hf-black">
-                {t("statUnusedCards.add")}
-              </span>
-            </span>
-            <span className="hf-type-body hf-heading flex items-center gap-1.5 text-hf-black">
-              <TrendIcon color="currentColor" size={16} />
-              {option.label}
-            </span>
-          </button>
-        ))}
-      </div>
+      <StatChartPreviewList
+        keys={options.map((option) => option.key)}
+        renderChart={renderChart}
+        onAdd={(key) => addCharts([key])}
+      />
     );
   }
 
@@ -181,6 +189,7 @@ export default function UnusedStatChartsPage() {
             title={category.title}
             count={category.options.length}
             defaultOpen={index === 0}
+            bodyClassName={category.options.length === 0 ? "p-3" : "py-3"}
           >
             {category.options.length === 0 ? (
               <p className="hf-type-small rounded-2xl bg-hf-tan/60 p-4 text-hf-black opacity-50">

@@ -2,6 +2,13 @@
 
 Last updated: 2026-10-02
 
+## 2026-10-02: "Tilføj til statistik" viser graferne i fuld bredde
+
+- Graferne på `/statistics/unused-cards` (og `/statistics/unused-charts`) vises nu i fuld bredde og præcis som på statistiksiden, med "+ Tilføj" under hver. Fælles tegner: `src/components/useStatChartRenderer.tsx` (statistiksiden bruger den samme).
+- De fem enkelt-grafer for kalium, calcium, jern, vitamin A og C er erstattet af to grafer, "Mineraler" og "Vitaminer". Alle mineraler/vitaminer fra `src/lib/nutrients.ts` kan krydses til og fra i grafens dropdown. Gemte layouts flyttes automatisk over.
+- Grafernes linjevalg folder sig nu ud inde i kortet og kan rulle, så lange lister ikke klippes.
+- Lint og build grønne. Testet i Chromium i telefonbredde med falske API-svar (ingen lokal DB). `page-tree.test.mjs` fejler stadig, som på master.
+
 ## 2026-10-02: Drikkevarer starter på pakkestørrelsen
 
 - Mængdefeltet viser nu 33 cl / 25 cl / 50 cl for dåser og små flasker, også når størrelsen kun står i navnet, og også for øl/vin uden kategorien DRINK. Vin, spiritus og færdigblandede drinks har egne regler (DECISIONS.md 2026-09-28, tilføjelse 2026-10-02).
