@@ -888,42 +888,6 @@ textarea::selection,
   color: var(--hf-white);
 }
 
-/* "Notched" felt (border-kant med indlejret label), Hello Doc — bevidst
-   afvigelse fra den generelle .hf-field-kontrakt, matcher direkte det
-   HelloFresh-checkout-skærmbillede brugeren gav som reference for
-   Hello Doc-invitationssiden (2026-09-12). Native <fieldset>/<legend> giver
-   "hakket" i kantlinjen uden JS. Ikke en generel afløser for TextField. */
-.hd-notched-field {
-  min-width: 0;
-  margin: 0;
-  padding: 0 16px;
-  border: 1px solid var(--hf-color-field-border);
-  border-radius: 10px;
-}
-
-.hd-notched-field legend {
-  margin-left: 4px;
-  padding: 0 6px;
-  color: var(--hf-color-text-secondary);
-  font-family: var(--font-hf-body);
-  font-size: 13px;
-}
-
-.hd-notched-field input {
-  width: 100%;
-  height: var(--hf-control-height);
-  border: none;
-  background: transparent;
-  outline: none;
-  color: var(--hf-color-text);
-  font-family: var(--font-hf-body);
-  font-size: 17px;
-}
-
-.hd-notched-field input::placeholder {
-  color: var(--hf-color-placeholder);
-}
-
 /* Valg-chip/kort (fx "Hvad er dine mål?") */
 .hf-chip {
   font-family: var(--font-hf-body);

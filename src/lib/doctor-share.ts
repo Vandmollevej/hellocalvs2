@@ -71,3 +71,21 @@ export function isDoctorSharePendingExpired(share: { status: string; expiresAt: 
   if (share.status !== "PENDING" || !share.expiresAt) return false;
   return new Date(share.expiresAt).getTime() <= Date.now();
 }
+
+type Translate = (key: string, params?: Record<string, string | number>) => string;
+
+// Varighed/udløb som vist i oversigten og øverst på brugerens egen side.
+export function doctorShareDurationLabel(
+  share: { status: "PENDING" | "ACTIVE" | "EXPIRED" | "REVOKED"; expiresAt: string | null },
+  t: Translate
+): string {
+  if (share.status === "REVOKED") return t("helloDoc.statusRevoked");
+  if (share.status === "EXPIRED") return t("helloDoc.expired");
+  if (share.status === "ACTIVE" && !share.expiresAt) return t("helloDoc.permanent");
+  if (!share.expiresAt) return t("helloDoc.pending");
+
+  const msLeft = new Date(share.expiresAt).getTime() - Date.now();
+  if (msLeft <= 0) return t("helloDoc.expired");
+  const daysLeft = Math.ceil(msLeft / (24 * 60 * 60 * 1000));
+  return daysLeft <= 1 ? t("helloDoc.expiresToday") : t("helloDoc.expiresIn", { days: daysLeft });
+}

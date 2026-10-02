@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { IconChevronDown } from "@tabler/icons-react";
-import { NotchedTextField } from "@/components/hf/NotchedTextField";
+import { TextField } from "@/components/hf/TextField";
 import { Toggle } from "@/components/ui/Toggle";
 import { useTranslation } from "@/i18n/LocaleProvider";
 import {
@@ -52,6 +52,7 @@ export function DoctorShareEditor({
   historyRange,
   onHistoryRangeChange,
   previewHref,
+  previewExternal = false,
 }: {
   name: string;
   onNameChange: (value: string) => void;
@@ -62,6 +63,7 @@ export function DoctorShareEditor({
   historyRange: DoctorShareHistoryRange;
   onHistoryRangeChange: (range: DoctorShareHistoryRange) => void;
   previewHref: string;
+  previewExternal?: boolean;
 }) {
   const { t } = useTranslation();
 
@@ -73,13 +75,15 @@ export function DoctorShareEditor({
   return (
     <div className="flex flex-col gap-8">
       <div className="flex flex-col gap-4">
-        <NotchedTextField
+        <TextField
+          variant="standard"
           label={t("helloDoc.nameLabel")}
           value={name}
           placeholder={t("helloDoc.namePlaceholder")}
           onChange={(event) => onNameChange(event.target.value)}
         />
-        <NotchedTextField
+        <TextField
+          variant="standard"
           label={t("helloDoc.emailLabel")}
           type="email"
           value={email}
@@ -90,6 +94,7 @@ export function DoctorShareEditor({
 
       <Link
         href={previewHref}
+        {...(previewExternal ? { target: "_blank", rel: "noopener noreferrer" } : {})}
         className="hf-control hf-btn-secondary flex w-full items-center justify-center bg-hf-white"
       >
         {t("helloDoc.previewButton")}

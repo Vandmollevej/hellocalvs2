@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { IconChevronLeft, IconMenu2, IconChevronDown } from "@tabler/icons-react";
+import { IconChevronLeft, IconMenu2, IconChevronDown, IconLock } from "@tabler/icons-react";
 import { HelloDocInsight, type InsightData } from "@/components/hf/HelloDocInsight";
 import { useTranslation } from "@/i18n/LocaleProvider";
 import {
@@ -118,6 +118,17 @@ export default function HelloDocPreviewPage() {
             </>
           )}
         </div>
+      </div>
+
+      <div
+        className="hf-type-caption flex flex-shrink-0 items-center gap-2 border-b bg-hf-cream px-4 py-2 text-text-secondary"
+        style={{ borderColor: "var(--hf-color-line)" }}
+      >
+        <IconLock size={14} stroke={2.5} />
+        <span className="truncate">
+          {t("helloDoc.previewAddress")}
+          ••••••••••••
+        </span>
       </div>
 
       <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain">
