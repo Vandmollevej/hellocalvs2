@@ -676,7 +676,7 @@
     "lookingUp": "Looking up {code}...",
     "barcodeNotFound": "The barcode was read, but the product was not found. Try a different code.",
     "barcodeLookupError": "The barcode was read, but the product lookup failed. Try again.",
-    "autoCaptureHint": "The photo is taken automatically when the product is sharp and held still.",
+    "autoCaptureHint": "The photo is taken automatically when the product is sharp and held still. Tap the picture to take it now.",
     "autoScanHint": "The camera scans automatically. You can also enter the number below the barcode.",
     "barcodeNumberAriaLabel": "Barcode number",
     "lookUp": "Look up",

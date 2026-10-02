@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useEffectEvent, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { IconBarcode, IconCamera, IconFlame, IconList, IconPhoto, type Icon } from "@tabler/icons-react";
+import { IconBarcode, IconFlame, IconList, IconPhoto, type Icon } from "@tabler/icons-react";
 import { BarcodeScanOverlay, type BarcodeDetection } from "@/components/hf/BarcodeScanOverlay";
 import { CaptureCheckOverlay } from "@/components/hf/CaptureCheckOverlay";
 import { PhotoWorkingOverlay } from "@/components/hf/HfLoader";
@@ -36,6 +36,7 @@ import {
   type CaptureStep,
 } from "@/lib/product-capture";
 import { useAutoCapture } from "./useAutoCapture";
+import { captureBestFrame } from "@/lib/camera-burst";
 import { newScanFlowId, scanFlowHeaders, scanLog } from "@/lib/scan-debug-log";
 import { useTranslation } from "@/i18n/LocaleProvider";
 
@@ -127,6 +128,8 @@ export function ProductCaptureFlow({ returnSuffix }: { returnSuffix: string }) {
   const doneRef = useRef<Partial<Record<CaptureStep, boolean>>>({});
   const workingRef = useRef(false);
   const [photo, setPhoto] = useState<string | null>(null);
+  // Spærrer dobbelt-udløsning (auto + tryk) mens et foto er under arbejde.
+  const photoRef = useRef(false);
   const [working, setWorking] = useState(false);
   // Flere mulige objekter på forsidefotoet: brugeren trykker på det rigtige.
   const [pickObjects, setPickObjects] = useState<ObjectBox[] | null>(null);
@@ -293,6 +296,7 @@ export function ProductCaptureFlow({ returnSuffix }: { returnSuffix: string }) {
 
   function goToNextStep(completed: Partial<Record<CaptureStep, boolean>>) {
     const next = CAPTURE_STEPS.find((item) => !completed[item]);
+    photoRef.current = false;
     if (next) {
       setPhoto(null);
       setWorking(false);
@@ -583,9 +587,13 @@ export function ProductCaptureFlow({ returnSuffix }: { returnSuffix: string }) {
   }
 
   async function capturePhoto() {
-    if (working || step === "barcode") return;
-    const frame = captureFrame(videoRef.current);
+    if (working || step === "barcode" || photoRef.current) return;
+    // Bedste af tre billeder (src/lib/camera-burst.ts) — ingen knap, så
+    // billedet skal være så godt som muligt i første hug.
+    photoRef.current = true;
+    const frame = await captureBestFrame(videoRef.current);
     if (!frame) {
+      photoRef.current = false;
       scanLog(flowId, "photo_capture_failed", { level: "warn", message: `Intet kamerabillede på trinnet "${step}"`, barcode: dataRef.current.barcode });
       return;
     }
@@ -703,6 +711,7 @@ export function ProductCaptureFlow({ returnSuffix }: { returnSuffix: string }) {
     highlightTimerRef.current = null;
     setHighlight(null);
     setPhoto(null);
+    photoRef.current = false;
     setStep(next);
   }
 
@@ -742,7 +751,16 @@ export function ProductCaptureFlow({ returnSuffix }: { returnSuffix: string }) {
 
   return (
     <div className="flex flex-col gap-4">
-      <div className="relative aspect-square w-full overflow-hidden rounded-[12px] bg-hf-black">
+      {/* Ingen "Tag billede"-knap (brugerens krav 2026-10-02): billedet tages
+          automatisk; et tryk på selve kamerabilledet tager det med det samme. */}
+      <div
+        className="relative aspect-square w-full overflow-hidden rounded-[12px] bg-hf-black"
+        onClick={() => {
+          if (step !== "barcode" && cameraStatus === "active" && !working && !pickObjects && !photo && !highlight) {
+            void capturePhoto();
+          }
+        }}
+      >
         <video
           ref={videoRef}
           className="h-full w-full object-cover"
@@ -773,7 +791,7 @@ export function ProductCaptureFlow({ returnSuffix }: { returnSuffix: string }) {
 
         {!scanning && !photo && (
           <div
-            className="pointer-events-none absolute inset-[12%] rounded-[12px] border-2 shadow-[0_0_0_999px_rgba(0,0,0,0.2)] transition-colors"
+            className="pointer-events-none absolute inset-[4%] rounded-[12px] border-2 shadow-[0_0_0_999px_rgba(0,0,0,0.2)] transition-colors"
             style={{ borderColor: autoCaptureProgress > 0 ? "var(--hf-color-brand)" : "rgba(255,255,255,0.8)" }}
           >
             <div
@@ -859,18 +877,6 @@ export function ProductCaptureFlow({ returnSuffix }: { returnSuffix: string }) {
           <p className="hf-type-small text-text-secondary text-center">{stepHints[step]}</p>
           {step !== "barcode" && (
             <p className="hf-type-micro text-text-secondary text-center">{t("camera.autoCaptureHint")}</p>
-          )}
-          {step !== "barcode" && (
-            <div className="flex justify-center">
-              <button
-                type="button"
-                onClick={() => void capturePhoto()}
-                disabled={cameraStatus !== "active" || working || !!pickObjects}
-                className="hf-control hf-btn-primary gap-2 px-6 disabled:opacity-40"
-              >
-                <IconCamera size={19} /> {t("camera.takePhoto")}
-              </button>
-            </div>
           )}
         </>
       )}

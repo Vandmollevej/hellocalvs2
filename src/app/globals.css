@@ -1200,15 +1200,29 @@ textarea::selection,
    3D-effekt: striben bliver bredere og lysere, når den passerer midten
    (objektet i fokus), og billedet (.hf-scan-lift) løfter/zoomer sig samtidig.
    Begge animationer deler varighed og starter sammen, så de er i takt. */
+/* Rytme (brugerens ønske 2026-10-02): striben kommer hurtigt ind, bremser op
+   og glider langsomt hen over varen i midten, og forsvinder hurtigt igen. */
 @keyframes hf-scan-sweep {
   0% {
     transform: translateX(-100%) scaleX(0.7);
     opacity: 0.8;
+    animation-timing-function: ease-out;
+  }
+  22% {
+    transform: translateX(30%) scaleX(1.2);
+    opacity: 1;
+    animation-timing-function: linear;
   }
   50% {
     /* Stribens midte ligger over billedets midte. */
     transform: translateX(75%) scaleX(1.5);
     opacity: 1;
+    animation-timing-function: linear;
+  }
+  78% {
+    transform: translateX(120%) scaleX(1.2);
+    opacity: 1;
+    animation-timing-function: ease-in;
   }
   100% {
     transform: translateX(250%) scaleX(0.7);
@@ -1218,13 +1232,14 @@ textarea::selection,
 
 @keyframes hf-scan-lift {
   0%,
-  20%,
-  80%,
+  15%,
+  85%,
   100% {
     transform: scale(1);
     filter: brightness(1);
   }
-  50% {
+  30%,
+  70% {
     transform: scale(1.06);
     filter: brightness(1.08);
   }
@@ -1244,11 +1259,11 @@ textarea::selection,
     rgb(255 255 255 / 35%) 60%,
     rgb(255 255 255 / 0%)
   );
-  animation: hf-scan-sweep 1.8s ease-in-out infinite;
+  animation: hf-scan-sweep 2.2s linear infinite;
 }
 
 .hf-scan-lift {
-  animation: hf-scan-lift 1.8s ease-in-out infinite;
+  animation: hf-scan-lift 2.2s ease-in-out infinite;
 }
 
 @media (prefers-reduced-motion: reduce) {

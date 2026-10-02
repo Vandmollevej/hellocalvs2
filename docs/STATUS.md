@@ -2,6 +2,14 @@
 
 Last updated: 2026-10-02
 
+## 2026-10-02: Kameraflow + vareside efter test af mælk og flødeboller
+
+- Kamera (`ProductCaptureFlow`): "Tag billede"-knappen er væk — billedet tages automatisk (skarpt + stille), ellers efter 2,4 s stille eller senest 8 s; tryk på kamerabilledet tager det straks. Rammen er 92 % af billedet (før 76 %), så man ikke holder telefonen for langt væk. Hvert foto er bedste-af-tre (`src/lib/camera-burst.ts`). Scan-striben kommer hurtigt ind, glider langsomt over midten og hurtigt ud (`.hf-scan-sweep`, 2,2 s).
+- Vareside: h1/h2 gentager aldrig hinanden (`splitProductHeadings`, test `product-naming.test.mjs`); berigelsen fjerner variant og pakningsstørrelse fra navnet; AI-prompt front-v4. Brandlogoet er 70 % højde (66 px). Fritskrabet billede ligger oven på cirklen med 10 % overskud (stående: op over toppen, liggende: ud til højre), råfoto vises `object-contain` i stedet for zoomet. Næringsdetaljer (salt, sukker, fibre, mættet/umættet fedt) vises altid som dropdown under energifordelingen — åben for brugere med udvidet næringsindhold slået til. Umættet fedt udledes som fedt − mættet − trans (~), når deklarationen ikke oplyser det.
+- Brand: står et kendt brand ordret på forsiden (fx EDEKA ved serien Herzstücke), vinder databasens brand, og AI'ens brand bliver subbrand (`matchBrandInTexts`). Prompt: hjerter/kvalitetsmærker/segl er ikke logoer.
+- Billedrobot (`cutout.py`): et PRODUCT_FRONT-udklip, der dækker under 12 % af udsnittet eller er under 30 % i bredde/højde, fejler nu i stedet for at blive et tomt billede (mælkekartonen 2026-10-01).
+- Lint, typecheck og `npm test` grønne (page-tree-testen fejler også på master). Ikke live-testet: ingen DB/kamera her. **Ikke gjort:** loggen for de to scanninger (mælk + flødeboller) ligger i produktionsdatabasen (admin → Log) og kan ikke nås fra cloud-sessionen — eksportér flow-rækkerne (JSON) eller skærmbilleder af dem, så analyseres de. Det forkerte hjerte-logo skal fjernes manuelt på brandet i admin → Logoer, og prompt-ændringerne virker først for nye scanninger.
+
 ## 2026-10-02: "Til info sendte vi dig …"-popup + push
 
 - Nyt: `src/lib/sent-notices.ts`, `src/lib/sms.ts`, `/api/messages/sent-notices`, `SentMessageNotice` (bundark i layoutet), `sendPushToUser` i `push.ts`. Se DECISIONS 2026-10-02.
