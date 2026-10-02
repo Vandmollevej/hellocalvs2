@@ -3,7 +3,8 @@
 import { Suspense, useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { IconApple, IconBookmark, IconBookmarkFilled, IconSearch } from "@tabler/icons-react";
+import { IconApple, IconSearch } from "@tabler/icons-react";
+import { IconFavorite as IconBookmark, IconFavoriteFilled as IconBookmarkFilled } from "@/components/icons/Favorite";
 import { HfScreen } from "@/components/HfScreen";
 import { FoodRow } from "@/components/FoodRow";
 import { ActionLink } from "@/components/hf/ActionButton";

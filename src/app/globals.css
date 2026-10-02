@@ -405,6 +405,20 @@ textarea::selection,
   .hf-type-strong {
     font-weight: 700;
   }
+
+  /* Vand-siden i webvisning (≥1024px): "Mængde" og ml-tallet går ét trin op
+     i typeskalaen (13 → 17 px og 17 → 22 px). Mobil er uændret. */
+  @media (min-width: 1024px) {
+    .hf-water-amount__label {
+      font-size: 17px;
+      line-height: 24px;
+    }
+
+    .hf-water-amount__value {
+      font-size: 22px;
+      line-height: 28px;
+    }
+  }
 }
 
 /* ---- Appbar-shell, jf. design.md §6.1/§9.3. Fast 44/1fr/44px-slotgrid, så
@@ -884,7 +898,7 @@ textarea::selection,
   padding: 0;
   border: 0;
   border-radius: 9999px;
-  background: rgb(35 35 35 / 72%);
+  background: rgb(45 45 45 / 78%);
   color: var(--hf-white);
 }
 
@@ -1357,6 +1371,76 @@ textarea::selection,
   }
 }
 
+/* Hello-loader på forsiden (/welcome), jf. Loader-design.png: en konstant lys
+   cirkel med en mørk "slange", der roterer, vokser fremad og lader halen
+   indhente hovedet igen. Værdierne er brugerens godkendte udgave — ret dem
+   ikke uden aftale. */
+.hello-loader {
+  width: 96px;
+  height: 96px;
+}
+
+.hello-loader svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.hello-loader-bg {
+  fill: #dfff78;
+}
+
+.hello-loader-snake {
+  fill: none;
+  stroke: #087a4b;
+  stroke-width: 14;
+  stroke-linecap: round;
+  transform-origin: 50px 50px;
+  animation:
+    hello-loader-spin 1.25s linear infinite,
+    hello-loader-length 1.25s ease-in-out infinite;
+}
+
+@keyframes hello-loader-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes hello-loader-length {
+  0% {
+    stroke-dasharray: 18 139;
+    stroke-dashoffset: 0;
+  }
+  35% {
+    stroke-dasharray: 82 75;
+    stroke-dashoffset: -8;
+  }
+  58% {
+    stroke-dasharray: 82 75;
+    stroke-dashoffset: -35;
+  }
+  82% {
+    stroke-dasharray: 28 129;
+    stroke-dashoffset: -105;
+  }
+  100% {
+    stroke-dasharray: 18 139;
+    stroke-dashoffset: -157;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hello-loader-snake {
+    animation: none;
+    stroke-dasharray: 82 75;
+    stroke-dashoffset: -35;
+  }
+}
+
 /* ---- Skelet-loading (HelloFresh "Opdag"-mønster, design.md §6.14) ----
    Mens en side henter data, tegnes indholdets form som grå/brune flader, og
    en lys gradient løber konstant hen over dem. Alle skeletter på skærmen
@@ -1677,4 +1761,60 @@ textarea::selection,
 
 .web-shell .hf-appbar__slot:first-child:empty {
   width: 0;
+}
+
+/* Forsidens bølge-baggrund (bruger 2026-10-01), src/components/HomeWaves.tsx.
+   Tre lag af samme scene: skarp øverst, mellem-sløret i midten, kraftigt
+   sløret nederst — som frostet glas. Hele baggrunden toner ud nederst, ca.
+   halvvejen mellem "Dagens tilføjelser"-stregen og teksten under den. */
+.home-wave {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  height: calc(100% + 40px);
+  overflow: hidden;
+  pointer-events: none;
+  -webkit-mask-image: linear-gradient(to bottom, black 0%, black 56%, transparent 100%);
+  mask-image: linear-gradient(to bottom, black 0%, black 56%, transparent 100%);
+}
+
+.home-wave__layer {
+  position: absolute;
+  inset: 0;
+}
+
+.home-wave__layer canvas {
+  position: absolute;
+  top: calc(var(--home-wave-bleed) * -1);
+  left: calc(var(--home-wave-bleed) * -1);
+  width: calc(100% + var(--home-wave-bleed) * 2);
+  height: calc(100% + var(--home-wave-bleed) * 2);
+}
+
+.home-wave__layer--sharp {
+  -webkit-mask-image: linear-gradient(to bottom, black 0%, black 28%, transparent 56%);
+  mask-image: linear-gradient(to bottom, black 0%, black 28%, transparent 56%);
+}
+
+.home-wave__layer--sharp canvas {
+  filter: blur(0.8px);
+}
+
+.home-wave__layer--mid {
+  -webkit-mask-image: linear-gradient(to bottom, transparent 20%, black 44%, black 52%, transparent 80%);
+  mask-image: linear-gradient(to bottom, transparent 20%, black 44%, black 52%, transparent 80%);
+}
+
+.home-wave__layer--mid canvas {
+  filter: blur(7px);
+}
+
+.home-wave__layer--heavy {
+  -webkit-mask-image: linear-gradient(to bottom, transparent 44%, black 74%);
+  mask-image: linear-gradient(to bottom, transparent 44%, black 74%);
+}
+
+.home-wave__layer--heavy canvas {
+  filter: blur(17px);
 }

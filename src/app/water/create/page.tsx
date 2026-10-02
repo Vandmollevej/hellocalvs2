@@ -162,12 +162,15 @@ export default function WaterCreatePage() {
           })}
         </div>
 
-        <div className="flex flex-col gap-4 rounded-2xl bg-hf-tan p-4">
+        <div className="flex flex-col gap-4 rounded-2xl bg-hf-tan p-4 lg:gap-5 lg:p-6">
           <div className="flex items-baseline justify-between">
-            <span className="hf-type-small hf-type-strong text-hf-black">{t("waterLog.amountLabel")}</span>
-            <span className="hf-type-title text-hf-black">{amountMl} ml</span>
+            <span className="hf-type-small hf-type-strong hf-water-amount__label text-hf-black">
+              {t("waterLog.amountLabel")}
+            </span>
+            <span className="hf-type-title hf-water-amount__value text-hf-black">{amountMl} ml</span>
           </div>
           <HfSlider
+            largeOnWeb
             min={MIN_ML}
             max={MAX_ML}
             step={STEP_ML}

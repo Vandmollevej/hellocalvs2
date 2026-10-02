@@ -27,6 +27,7 @@ import { RecipeImagesPicker } from "@/components/recipes/RecipeImagesPicker";
 import { RecipeStepsEditor, isEmptyStep } from "@/components/recipes/RecipeStepsEditor";
 import { RecipeCategoriesDialog } from "@/components/recipes/RecipeCategoriesDialog";
 import { useTranslation } from "@/i18n/LocaleProvider";
+import { useInWebShell } from "@/components/web/WebShell";
 import { isPrivateIngredientId } from "@/lib/private-ingredient-ids";
 import { SkeletonMediaRows, SkeletonScreen } from "@/components/hf/Skeleton";
 
@@ -37,6 +38,7 @@ function round(value: number, decimals = 0) {
 
 export default function CreateDishPage() {
   const { t, locale } = useTranslation();
+  const inWebShell = useInWebShell();
   const router = useRouter();
   // Navn, billeder og fremgangsmåde gemmes i kladden, så de overlever
   // turen ud efter ingredienser (docs/DECISIONS.md 2026-09-25).
@@ -207,8 +209,10 @@ export default function CreateDishPage() {
         />
 
         <div>
-          <div className="hf-control-row flex items-center gap-3 rounded-2xl bg-hf-tan px-4">
+          <div className="hf-control-row flex items-center gap-3 rounded-2xl bg-hf-tan px-4 lg:w-fit">
             <span className="hf-type-body hf-type-strong flex-1 text-hf-black">{t("createDish.shareLabel")}</span>
+            <Toggle checked={shared && !hasPrivateIngredient} onChange={setShared} disabled={hasPrivateIngredient} />
+            {/* Infotegnet står til højre for skyderen. */}
             <button
               type="button"
               onClick={() => setShowShareInfo((open) => !open)}
@@ -218,7 +222,6 @@ export default function CreateDishPage() {
             >
               <IconInfoCircle size={20} />
             </button>
-            <Toggle checked={shared && !hasPrivateIngredient} onChange={setShared} disabled={hasPrivateIngredient} />
           </div>
           {hasPrivateIngredient && (
             <p className="hf-type-small text-text-secondary mt-2 px-1">{t("createDish.shareBlockedPrivate")}</p>
@@ -360,7 +363,9 @@ export default function CreateDishPage() {
               className="flex flex-col items-center gap-2 rounded-2xl bg-hf-tan py-3 text-center"
             >
               <IconCamera size={20} color="var(--hf-black)" />
-              <span className="hf-type-small hf-type-strong text-hf-black">{t("createDish.scan")}</span>
+              <span className="hf-type-small hf-type-strong text-hf-black">
+                {inWebShell ? t("createDish.scanWeb") : t("createDish.scan")}
+              </span>
             </a>
           </div>
           <Link
