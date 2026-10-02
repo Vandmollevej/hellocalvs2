@@ -36,6 +36,7 @@ const NAV: NavEntry[] = [
       { href: "/admin/duplicate-products", key: "nav_duplicate_products" },
       { href: "/admin/ingredient-requests", key: "nav_ingredient_requests" },
       { href: "/admin/images", key: "nav_images" },
+      { href: "/admin/images/cutout-queue", key: "nav_cutout_queue" },
       { href: "/admin/products", key: "nav_products" },
       { href: "/admin/logos", key: "nav_logos" },
     ],

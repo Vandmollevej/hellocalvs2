@@ -1,6 +1,11 @@
 # HELLO CAL — project status
 
-Last updated: 2026-09-29
+Last updated: 2026-10-02
+
+## 2026-10-02: Admin — Billeder i kø til frilæggelse
+
+- Varegodkendelse har nyt punkt "Billeder i kø til frilæggelse" (`/admin/images/cutout-queue`), også som fane på Billedforslag. Viser ventende `ImageCutoutJob`s (forside/logo) med det udsnit robotten vil fritlægge, vare/brand og tidspunkt; fejlede jobs i egen sektion nederst. Under listen: "Disse billeder vil blive scannet i nat" + robottens faktiske plan og sidste kørsel (link til Robotter). Logik i `src/lib/cutout-queue.ts`.
+- Bemærk: jobbet `image-cutout` står stadig som "Løbende" (DECISIONS 2026-09-28), så beskeden og planen kan modsige hinanden, indtil ejeren vælger — se spørgsmålet i sessionen. Lint, typecheck og build grønne; ikke live-testet (ingen lokal DB).
 
 ## 2026-09-29: Offentlig forside for udloggede
 
