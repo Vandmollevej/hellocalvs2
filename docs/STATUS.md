@@ -8,6 +8,29 @@ Last updated: 2026-10-02
 - Tesseract-arbejderen genbruges mellem billederne. `useAutoCapture` og `LabelTextHighlight` er fjernet.
 - Ikke live-testet (ingen kamera i cloud-sessionen): test på iPhone, at (1) overskriften står læseligt i det mørke felt, (2) kartonen bliver hvid efter forsiden, (3) energi/indhold afsluttes af sig selv på en mælkekarton, og (4) "Tag billede" afslutter trinnet med det samme. Juster evt. `LABEL_DONE_CONFIDENCE`/`MAX_LABEL_ATTEMPTS` i `live-scan.ts`.
 
+## 2026-10-02: Vægt- og længdeenheder
+
+- Nyt src/lib/units.ts (valg, landestandard, omregning, useUnits()), nyt startguide-trin units og to valg under Sprog og region. Brugt i: profil (vægt, højde-hjul), vægtlog, vægt-kalibrering, startvægt-verificering, målsætninger (vægt + kropsmål), energimål-editoren, kropsmål og statistik-grafen.
+- Lint og typecheck grønne for de berørte filer. Ikke visuelt testet (brugerregel). Ikke omregnet endnu: widgets/native, Hello Doc-rapport, kalender-vægtvisning og admin (kg/cm vises der stadig).
+
+## 2026-10-01: Rolig bølge-baggrund på forsiden
+
+- Ny baggrund bag topbar + hero, der fortsætter ca. 40 px under "Dagens tilføjelser"-stregen: tilfældige, langsomme bånd af bløde bølgelinjer (grønt øverst → gullig creme nedenfor) plus lidt tåge. Tre lag af samme canvas-scene (skarp / mellem-sløret / kraftigt sløret) giver frostet-glas-effekten nederst. Farver kun fra tokens. Står stille ved "reducer bevægelse" og standser når fanen er skjult.
+- Filer: `src/lib/home-waves.ts` (tegnelogik + test `home-waves.test.mjs`), `src/components/HomeWaves.tsx`, `.home-wave*` i `globals.css`, `src/app/page.tsx`. Listen er ikke længere dækkende; tal-hjulets rækker klippes i stedet ved hero-bunden (`StatsWheel.tsx`, `clipPath`).
+- Lint, typecheck og `node --test` (home-waves) grønne. Ikke visuelt testet (brugerregel: ingen skærmbilleder) — tjek udseende, tempo og lag på telefon. Justér tempo/farve/tykkelse i `createWaveScene` (hastigheder i px/s, `alpha`, `width`) og maskerne i `globals.css`.
+## 2026-10-02: Drikkevarer starter på pakkestørrelsen
+
+- Mængdefeltet viser nu 33 cl / 25 cl / 50 cl for dåser og små flasker, også når størrelsen kun står i navnet, og også for øl/vin uden kategorien DRINK. Vin, spiritus og færdigblandede drinks har egne regler (DECISIONS.md 2026-09-28, tilføjelse 2026-10-02).
+- Flere typiske mængder (kød, fisk, frugt, suppe, pizza m.m.), så færre varer starter på 100 g. Videresendte varer bruger samme startmængde.
+- Tests: `src/lib/default-amount.test.mjs` (ny) + udvidet `product-display-unit.test.mjs`, grønne. Lint, typecheck og build grønne. Ikke live-testet (ingen lokal DB).
+
+## 2026-10-02: Rigtige certifikat-logoer på varesiden
+
+- Brugerens logofiler fra `Certifikater/` er omdøbt og beskåret til `public/certifications/` (ens navne uden mellemrum/æøå) og erstatter de tegnede SVG-mærker i `CertificationLogos.tsx` (under energifordelingen) og `CertificationLogo.tsx` (på produktcirklen).
+- `src/lib/certification-badges.ts` kobler tekstværdierne i `ProductFilters` til logo: Økologisk → Ø-mærket, Biologisch → tysk BIO, Bioland, Ökologischer Landbau, EU-blad, Nøglehul, Fuldkorn, Bedre Dyrevelfærd 1/2/3 (hjerter), Anbefalet af Dyrenes Beskyttelse, NaturSkånsom, MSC, ASC, Fairtrade, Rainforest Alliance, UTZ. Ukendte mærker vises som tekst-pille.
+- Rettelser bør komme fra brugeren: `Bedre-dyrevelfærd-2-stjerner.png` var identisk med 3-stjerner-filen, så 2-hjerte-logoet er afledt (3-stjerner + den tomme 3. hjerte fra 1-stjerne-filen). `Fairtrade logo.webp` har "cleanpng"-vandmærke og `Økologimærket.png` er et beskåret udsnit uden tekst — erstat med originale filer.
+- Lint og typecheck grønne. Ikke visuelt testet (ingen login/DB lokalt).
+
 ## 2026-09-29: Offentlig forside for udloggede
 
 - Ny hent-appen-forside uden telefonramme, med QR-koder, planer med betalings-ark, Hello Doc-bjælke, nøgletal fra databasen, `/business` (kontaktformular) og `/presse`. Se DECISIONS.md samme dato.
@@ -817,7 +840,7 @@ kalenderens dagvisning og graf "Søvnkvalitet og kalorier" på Statistik. Se
 DECISIONS 2026-09-26. Kræver migration `20260926130000_sleep_quality` ved
 deploy. Ikke visuelt testet (brugeren tjekker selv).
 
-Last updated: 2026-09-27
+Last updated: 2026-10-01
 ## 2026-09-26: Support-indbakke i admin
 
 Se DECISIONS 2026-09-26 "Support-indbakke". Tråde, svar, interne noter,
@@ -5111,6 +5134,13 @@ ingen tilbagepil (`useInWebShell` + `isWebRootPath`). Set i Chromium ved
 1440×900 med login mocket: kalender/dag, søg, indstillinger, chat, statistik.
 Beslutning: docs/DECISIONS.md 2026-09-29. Butiksknapperne på landingpagen er
 uafklarede (spørgsmål stillet, ikke besvaret).
+
+Header-justering 2026-10-02 (bruger): skallens topbjælke og sidebjælkens logo-felt er
+80 px høje (før 56) — kun toppen fik luft: menuerne har samme afstand til bunden som før
+(`items-end` + `pb-2.5`), og logoet er større (124×55, sammenfoldet 48×21). Profil-knappen
+bruger nu samme `ProfileCircle` med initialer som mobilvisningen (32 px, før 28 px med
+person-ikon). Lint kørt; ikke set visuelt.
+
 ## 2026-09-28: Opgave 32 — samlet E-nummer-side
 
 - Ny offentlig side `/e-numre` (`src/app/e-numre/page.tsx`) med hele E-nummer-databasen, numerisk sorteret, et hurtignavigations-chipfelt og ét `<section>` pr. E-nummer med eget anchor (`/e-numre#e100`, `#e150a`; se `src/lib/additive-anchor.ts`).

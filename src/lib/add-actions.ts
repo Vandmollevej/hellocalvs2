@@ -8,7 +8,7 @@ import {
   type Icon,
 } from "@tabler/icons-react";
 import { IconBathroomScale } from "@/components/icons/BathroomScale";
-import { IconChampagne } from "@/components/icons/Champagne";
+import { IconPartyPopper } from "@/components/icons/PartyPopper";
 import { IconCookingPot } from "@/components/icons/CookingPot";
 import { IconWaterGlass } from "@/components/icons/WaterGlass";
 import { IconWaistMeasureFemale, IconWaistMeasureMale } from "@/components/icons/WaistMeasure";
@@ -97,7 +97,7 @@ export const ADD_ACTIONS: AddAction[] = [
   {
     key: "targetWeight",
     href: "/profile/goals",
-    icon: IconChampagne,
+    icon: IconPartyPopper,
     labelKey: "profile.actions.target",
   },
   {
