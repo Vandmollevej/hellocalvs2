@@ -5105,6 +5105,13 @@ ingen tilbagepil (`useInWebShell` + `isWebRootPath`). Set i Chromium ved
 1440×900 med login mocket: kalender/dag, søg, indstillinger, chat, statistik.
 Beslutning: docs/DECISIONS.md 2026-09-29. Butiksknapperne på landingpagen er
 uafklarede (spørgsmål stillet, ikke besvaret).
+
+Header-justering 2026-10-02 (bruger): skallens topbjælke og sidebjælkens logo-felt er
+80 px høje (før 56) — kun toppen fik luft: menuerne har samme afstand til bunden som før
+(`items-end` + `pb-2.5`), og logoet er større (124×55, sammenfoldet 48×21). Profil-knappen
+bruger nu samme `ProfileCircle` med initialer som mobilvisningen (32 px, før 28 px med
+person-ikon). Lint kørt; ikke set visuelt.
+
 ## 2026-09-28: Opgave 32 — samlet E-nummer-side
 
 - Ny offentlig side `/e-numre` (`src/app/e-numre/page.tsx`) med hele E-nummer-databasen, numerisk sorteret, et hurtignavigations-chipfelt og ét `<section>` pr. E-nummer med eget anchor (`/e-numre#e100`, `#e150a`; se `src/lib/additive-anchor.ts`).
