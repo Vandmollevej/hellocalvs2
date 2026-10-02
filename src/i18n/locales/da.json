@@ -199,6 +199,19 @@
     "expandAriaLabel": "Vis bundmenu",
     "collapseAriaLabel": "Skjul bundmenu"
   },
+  "accountSettings": {
+    "title": "Kontoindstillinger",
+    "closeTitle": "Luk konto",
+    "closeIntro": "Lukker din konto og logger dig ud. Dine personoplysninger fjernes, og du kan ikke logge ind igen.",
+    "closeButton": "Luk konto",
+    "forgetTitle": "Ret til at blive glemt",
+    "forgetIntro": "Få alle dine personoplysninger slettet (GDPR). Anonymiserede data, der ikke kan kobles til dig, bevares.",
+    "forgetButton": "Slet mine data",
+    "confirmWarning": "Dette kan ikke fortrydes. Skriv SLET for at bekræfte.",
+    "confirmPlaceholder": "SLET",
+    "confirmButton": "Bekræft",
+    "error": "Noget gik galt — prøv igen"
+  },
   "settings": {
     "title": "Indstillinger",
     "support": {
