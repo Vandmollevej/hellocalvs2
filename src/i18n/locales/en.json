@@ -388,6 +388,13 @@
     "later": "Later",
     "dontAskAgain": "Don't ask again"
   },
+  "sentNotice": {
+    "title": "For your information",
+    "body": "For your information, on {date} we sent you {type} about \"{subject}\". This was not spam.",
+    "typeEmail": "an email",
+    "typeSms": "a text message",
+    "read": "Read"
+  },
   "startupTips": {
     "close": "Close",
     "disable": "Turn off",

@@ -388,6 +388,13 @@
     "later": "Senere",
     "dontAskAgain": "Spørg ikke igen"
   },
+  "sentNotice": {
+    "title": "Til info",
+    "body": "Til info sendte vi dig den {date} en {type} om \"{subject}\". Dette var ikke spam.",
+    "typeEmail": "e-mail",
+    "typeSms": "sms",
+    "read": "Læst"
+  },
   "startupTips": {
     "close": "Luk",
     "disable": "Slå fra",
