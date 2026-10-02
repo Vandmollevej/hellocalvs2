@@ -44,6 +44,14 @@ This file records durable decisions. Add a dated entry when a later decision cha
 - Footer: kun Business-partnere (`/business`: muligheder + den eneste kontaktformular, mailes til `BUSINESS_CONTACT_EMAIL` eller support@) og Presse (`/presse`: fakta, logoer, kontakt via business-formularen). Ingen andre kontaktformularer og ingen sociale medier.
 - Butikslinks står i `APP_STORE_URL`/`PLAY_STORE_URL` (`src/lib/landing-content.ts`); QR-koderne følger dem automatisk.
 
+## 2026-10-02: Sukkerpåstande til søgning (ikke mærker)
+
+- Nye filterkolonner på `ProductFilters`: `lowSugar` ("Lavt sukkerindhold"), `noAddedSugar` ("Uden tilsat sukker"), `reducedSugar` ("Reduceret sukker") og `lightSugar` ("Light"), ved siden af den eksisterende `sugarFree`. Samme mønster som øvrige filtre: tom = nej/ukendt, udfyldt = ja. Migration `20261002100000_sugar_claim_filters`.
+- **De vises ikke som mærker i appen** (brugerens krav) — de findes kun, så man kan søge på dem: `GET /api/products?q=` matcher nu også de fem sukkerkolonner (fx "sukkerfri", "light", "uden tilsat").
+- Udledes i `scripts/store-products-import/build_data.py` (`sugar_claims`): først og fremmest af nøgleord, derefter navn, variant, smag og produkttype (påstanden står ofte kun i nøgleordene). `lowSugar` udledes også af sukker pr. 100 g: højst 5 g (drikkevarer 2,5 g), og sukkerfri tæller som lavt.
+- Kendt begrænsning: en påstand, der kun står som ikon på emballagen, kan ikke aflæses; den må tilføjes manuelt i admin (Dubletter/Butiksdata). Produkter uden sukkertal får ikke `lowSugar` af næringen.
+- Nye kolonner fyldes først ved næste kørsel af `build_data.py` + `store-products-agent`.
+
 ## 2026-09-29: Admin-brugere (adgang til admin-panelet)
 
 - Punktet "Admin-brugere" ligger i profil-menuen (avatar øverst til højre) — bevidst uden for sidemenuen. `/admin/admin-users`, kun for fuld administratoradgang.
