@@ -11,6 +11,7 @@ export function HfSlider({
   max,
   step = 1,
   onChange,
+  largeOnWeb = false,
   "aria-label": ariaLabel,
 }: {
   value: number;
@@ -18,6 +19,8 @@ export function HfSlider({
   max: number;
   step?: number;
   onChange: (value: number) => void;
+  // Webvisning (≥1024px): tykkere bane og 24 px-greb. Mobil er uændret.
+  largeOnWeb?: boolean;
   "aria-label"?: string;
 }) {
   const trackRef = useRef<HTMLDivElement>(null);
@@ -69,13 +72,15 @@ export function HfSlider({
       onPointerDown={handlePointerDown}
       onPointerMove={handlePointerMove}
       onKeyDown={handleKeyDown}
-      className="relative flex h-5 touch-none items-center outline-none"
+      className={`relative flex h-5 touch-none items-center outline-none ${largeOnWeb ? "lg:h-7" : ""}`}
     >
-      <div className="relative h-1 w-full rounded bg-hf-tan-dark">
+      <div className={`relative h-1 w-full rounded bg-hf-tan-dark ${largeOnWeb ? "lg:h-1.5" : ""}`}>
         <div className="absolute inset-y-0 left-0 rounded bg-hf-green" style={{ width: `${pct}%` }} />
       </div>
       <div
-        className="absolute h-[18px] w-[18px] -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-hf-green bg-hf-white"
+        className={`absolute h-[18px] w-[18px] -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-hf-green bg-hf-white ${
+          largeOnWeb ? "lg:h-6 lg:w-6" : ""
+        }`}
         style={{ left: `${pct}%`, top: "50%" }}
       />
     </div>
