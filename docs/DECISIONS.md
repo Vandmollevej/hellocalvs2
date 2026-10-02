@@ -2,6 +2,25 @@
 
 This file records durable decisions. Add a dated entry when a later decision changes one of them.
 
+## 2026-10-02: Kalenderens miniature-tal — kyllingelår, flamme og vand i cl
+
+- I kalenderens små flader (dagvisningens timerække, timens oversigt, ugens
+  tidslinje) vises indtagne kalorier som et brunt/hvidt kyllingelår + tal,
+  forbrændte kalorier (aktiviteter) som en flamme + tal, og vand som det
+  eksisterende glas-ikon + mængde i cl. Ordet "kalorier"/"kcal" udgår dér;
+  den fulde tekst ligger i aria-label. Fælles komponent `EnergyChip`
+  (design.md §6.16). Månedsgitter, ugegitter og listevisning er uændrede
+  (afstand til mål).
+- Vand vises aldrig som "0 kcal". To kilder tælles sammen pr. time:
+  `WaterEntry` fra /water/create (ml), som kalenderen nu også henter, og
+  almindelige registreringer af en vare, der er vand: 0 kcal og enten et
+  vand-navn ("Vand", "Flaskevand", "Kildevand", "Danskvand", "Water" …)
+  eller en drikkevare (`classification.isDrink`); mængden er `amountGrams`
+  som ml (1 g ≈ 1 ml). Logik i `src/lib/water-display.ts`.
+- `/api/water-entries` returnerer nu de seneste 2.000 poster (før 200), så
+  kalenderens historik dækker mere end få uger.
+- Nyt farvetoken `--hf-meat` (#8C5A32) kun til kyllingelårets kød.
+
 ## 2026-09-29: Aktivitetsniveau, PAL og kaloriemål
 
 - Erstatter faktorerne i 2026-09-28 "Aktivitetsniveau i 5 trin" (1,2–1,9). Nye niveauer og PAL-intervaller: se `docs/ACTIVITY-PAL.md` (planen; intet bygget). Ingen aktive brugere, så gamle niveauer erstattes uden overgangslogik.
