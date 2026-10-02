@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { resolveGenericIngredientNutrients, resolveProductNutrients } from "@/lib/nutrient-resolution";
 import { getSessionUser } from "@/lib/session";
+import { productPageTags } from "@/lib/product-page-tags";
+import { getProductPageTagSettings } from "@/lib/product-page-tags-settings";
 
 export async function GET(
   _req: Request,
@@ -17,7 +19,27 @@ export async function GET(
         barcodes: true,
         images: { orderBy: { order: "asc" } },
         filters: {
-          select: { organic: true, keyhole: true, wholeGrain: true, animalWelfare: true, certifications: true },
+          select: {
+            organic: true,
+            keyhole: true,
+            wholeGrain: true,
+            animalWelfare: true,
+            certifications: true,
+            // Nøgleord på produktsiden (src/lib/product-page-tags.ts).
+            glutenFree: true,
+            lactoseFree: true,
+            sugarFree: true,
+            sweeteners: true,
+            vegan: true,
+            vegetarian: true,
+            meatType: true,
+            alcohol: true,
+            alcoholPercent: true,
+            fatPercent: true,
+            countryOfOrigin: true,
+            storage: true,
+            size: true,
+          },
         },
         nutritionFeatures: {
           select: {
@@ -53,7 +75,11 @@ export async function GET(
             select: { amountGrams: true },
           })
         : null;
-      return NextResponse.json({ product: { ...product, nutrients, lastAmountGrams: last?.amountGrams ?? null } });
+      // Admins valgte nøgleord (smag, økologisk …) vist over "Energifordeling".
+      const pageTags = productPageTags(product, await getProductPageTagSettings());
+      return NextResponse.json({
+        product: { ...product, nutrients, pageTags, lastAmountGrams: last?.amountGrams ?? null },
+      });
     }
 
     // Not a Product — try the separate GenericIngredient table (loose

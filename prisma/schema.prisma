@@ -3492,6 +3492,19 @@ model DebugLogSettings {
   @@map("debug_log_settings")
 }
 
+// Nøgleord på produktsiden (docs/DECISIONS.md 2026-10-02): én række
+// ("default") med de felter (src/lib/product-page-tags.ts) og frie nøgleord
+// fra Product.keywords, som admin har valgt at vise over "Energifordeling".
+model ProductPageTagSettings {
+  id          String   @id @default("default")
+  fields      String[] @default([])
+  keywords    String[] @default([])
+  updatedById String?
+  updatedAt   DateTime @default(now()) @updatedAt
+
+  @@map("product_page_tag_settings")
+}
+
 // Admin guide-builder (docs/DECISIONS.md 2026-09-27): én række pr. slags
 // ("startup" = startup-guiden, "tooltips" = tooltips). `config` er den
 // saniterede builder-opsætning fra src/lib/guide-builder.ts.

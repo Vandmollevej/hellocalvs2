@@ -23,6 +23,7 @@ import { selectRawContextImageUrl } from "@/lib/image-tags";
 import { MacroSliderBar } from "@/components/hf/MacroSliderBar";
 import { CertificationLogos } from "@/components/hf/CertificationLogos";
 import { certificationBadges, type CertificationFilters } from "@/lib/certification-badges";
+import type { ProductPageTag } from "@/lib/product-page-tags";
 import { AdditiveInfoModal } from "@/components/hf/AdditiveInfoModal";
 import { getAdditiveInfo, splitENumbers } from "@/lib/additives";
 import { IngredientsText } from "@/components/hf/IngredientsText";
@@ -113,6 +114,9 @@ type Product = {
   additives?: string[];
   // Mærkninger (økologisk, nøglehul, MSC …) vist som logoer, opgave 29.
   filters?: CertificationFilters | null;
+  // Admins valgte nøgleord (smag, økologisk …), vist over energifordelingen
+  // (src/lib/product-page-tags.ts, docs/DECISIONS.md 2026-10-02).
+  pageTags?: ProductPageTag[];
   barcodes?: { code: string }[];
   createdByUserId?: string | null;
   // HelloFresh-recipe extra nutrition, per Product.servingSizeGrams — see
@@ -949,6 +953,22 @@ export function AddProductView({
                     })}
                   </div>
                 </section>
+              )}
+
+              {!!view.pageTags?.length && (
+                <p className="hf-type-body-lg text-hf-black">
+                  {view.pageTags
+                    .map((tag) =>
+                      tag.kind === "text"
+                        ? tag.text
+                        : tag.kind === "countryOfOrigin"
+                        ? t("addProduct.tagCountryOfOrigin", { country: tag.text })
+                        : t(tag.kind === "alcoholPercent" ? "addProduct.tagAlcoholPercent" : "addProduct.tagFatPercent", {
+                            percent: formatDaNumber(tag.value, 1),
+                          }),
+                    )
+                    .join(" · ")}
+                </p>
               )}
 
               <div>
