@@ -770,6 +770,10 @@ konstant hen over dem (1400 ms, lineær).
   aldrig vedligeholdes et separat "skelet-layout" ved siden af det rigtige.
   Statiske tekster (overskrifter, knaptekster) vises som de er; ikoner og
   knapper, der kræver data, skjules uden at ændre pladsen.
+- **Brugerens egen rækkefølge (2026-10-02):** hvis en side har en gemt
+  rækkefølge (localStorage), skal skelettet tegnes i den rækkefølge fra
+  første billede — aldrig standarden først. Se DECISIONS 2026-10-02 og
+  statistiksiden som eksempel.
 
 ### 6.15 Insight/dashboard-sider (bygget på adminfladens design) — tilføjet 2026-09-29
 

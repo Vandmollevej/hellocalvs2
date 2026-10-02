@@ -12,11 +12,13 @@ export async function loadSourceRegistrations(): Promise<SourceRegistration[]> {
   return ((await response.json()) as { registrations: SourceRegistration[] }).registrations;
 }
 
-export function useSourceRegistrations() {
+/** enabled=false venter med at hente (fx mens Seriøs-niveauet hentes). */
+export function useSourceRegistrations(enabled = true) {
   const [registrations, setRegistrations] = useState<SourceRegistration[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    if (!enabled) return;
     let cancelled = false;
     loadSourceRegistrations()
       .then((result) => {
@@ -31,7 +33,7 @@ export function useSourceRegistrations() {
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [enabled]);
 
   return { registrations, loading };
 }

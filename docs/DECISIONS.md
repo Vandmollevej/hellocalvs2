@@ -3444,3 +3444,10 @@ Kilder på "Mad på latin" skal altid være officielle (Fødevarestyrelsen, Sund
 
 - Scriptet indlæses globalt fra src/components/UserbackWidget.tsx (rodlayoutet) med det offentlige widget-token. Der sendes bevidst ingen Userback.user_data (ingen navn/e-mail), så feedback er anonym i tråd med anonymitetsreglerne.
 
+## 2026-10-02: Statistiksiden flytter sig aldrig under indlæsning
+
+- Brugerens gemte rækkefølge (sektioner, kort, grafer) læses fra localStorage **før første billede males**: kort- og grafgitteret bruger den gemte rækkefølge som startværdi, når de tegnes i browseren (`useIsClientRender()` i `src/lib/use-client-render.ts`), og statistiksiden tegner sine sektioner først efter en layout-effekt har læst sektionsrækkefølgen. Det tidligere mønster "tegn standarden, skift efter mount" må ikke bruges på sider, hvor rækkefølgen er brugerens egen.
+- `useSubscriptionTier()` husker det hentede niveau i modulet, så Seriøs-låste sider vises straks ved fanebytte i stedet for at starte tomme.
+- `PremiumGate` har `renderWhilePending`: mens niveauet hentes, tegnes siden selv som skelet (design.md §6.14), og siden venter med datahentning via `usePremiumPending()`. Bruges kun af `/statistics` (undersiderne venter ikke på niveauet og vises derfor først, når det er kendt), så gratisbrugeres data stadig ikke hentes til låste sider.
+- Kort, der først findes, når data er hentet (fx sportskort), tegnes som skitser i fuld højde i stedet for "ingen data" under hentning.
+

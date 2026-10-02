@@ -16,6 +16,7 @@ import { UncertaintyTilde } from "@/components/ui/UncertaintyTilde";
 import { UncertaintyLine } from "@/components/ui/UncertaintyLine";
 import { RemoveCircleButton } from "@/components/ui/RemoveCircleButton";
 import { Skeleton } from "@/components/hf/Skeleton";
+import { useIsClientRender } from "@/lib/use-client-render";
 
 // The grid is two columns of physical slots: a run of half-width items (cards
 // and explicit empty slots) always has an even length, so every item's index
@@ -174,7 +175,31 @@ class GridReflow extends Component<GridReflowProps, unknown, Map<string, Positio
   }
 }
 
-function StatCardFace({ card, noDataText }: { card: StatCardValue | undefined; noDataText: string }) {
+function StatCardFace({
+  card,
+  noDataText,
+  loading = false,
+}: {
+  card: StatCardValue | undefined;
+  noDataText: string;
+  loading?: boolean;
+}) {
+  if (!card && loading) {
+    // Kort, der først findes, når data er hentet (fx sportskort): samme to
+    // linjer som et færdigt kort, men som skitser (design.md §6.14), så
+    // kortet har sin endelige højde fra første billede.
+    return (
+      <>
+        <p className="hf-type-small flex items-center" style={{ minHeight: "1lh" }}>
+          <Skeleton type="caption" width="70%" height={14} />
+        </p>
+        <p className="hf-type-body-lg hf-heading mt-1 flex items-center gap-1.5" style={{ minHeight: "1lh" }}>
+          <Skeleton type="icon" />
+          <Skeleton type="body" width={56} height={20} />
+        </p>
+      </>
+    );
+  }
   if (!card) {
     // The key is a real, saved part of the layout (e.g. a sport-activity
     // card with no data in the currently selected period) — keep its slot.
@@ -239,6 +264,7 @@ export function StatCardsGrid({
   defaultActiveKeys,
   highlightRecommendedLimits = false,
   autoExpandUncertainty = false,
+  loading = false,
   onShowAddChange,
 }: {
   cards: StatCardValue[];
@@ -247,6 +273,8 @@ export function StatCardsGrid({
   autoExpandUncertainty?: boolean;
   /** True while editing — or when the grid is empty, so cards can always be added back. */
   onShowAddChange?: (show: boolean) => void;
+  /** Data hentes stadig: kort uden værdi endnu tegnes som skitser i stedet for "ingen data". */
+  loading?: boolean;
 }) {
   // Kort hvor brugeren har vendt den grå usikkerhedslinje i forhold til
   // udgangspunktet (autoExpandUncertainty).
@@ -267,9 +295,15 @@ export function StatCardsGrid({
     [defaultActiveKeys],
   );
 
-  // The saved layout lives in localStorage, which the server can't see: render
-  // the default first (matching the server HTML) and switch after mount.
-  const [layout, setLayout] = useState<LayoutItem[]>(() => normalizeStatLayout(defaultLayout));
+  // The saved layout lives in localStorage, which the server can't see. When
+  // the grid is drawn in the browser (always on the statistics page) the saved
+  // layout is used from the very first frame, so no card ever changes place
+  // after loading; only during hydration of server HTML does the default come
+  // first (and the focus effect below switches after mount).
+  const clientRender = useIsClientRender();
+  const [layout, setLayout] = useState<LayoutItem[]>(() =>
+    clientRender ? loadStatLayout(defaultLayout) : normalizeStatLayout(defaultLayout),
+  );
   const [editMode, setEditMode] = useState(false);
   const [drag, setDrag] = useState<DragState | null>(null);
   // Card drag: the slot (layout index) the card lands in — null while the
@@ -686,13 +720,13 @@ export function StatCardsGrid({
     const card = cardByKey.get(item.key);
     return (
       <div
-        className={`relative h-full w-full rounded-2xl p-4 ${card ? "bg-hf-tan" : "bg-hf-tan/50"} ${cardBorder(card)}`}
+        className={`relative h-full w-full rounded-2xl p-4 ${card || loading ? "bg-hf-tan" : "bg-hf-tan/50"} ${cardBorder(card)}`}
       >
         <RemoveCircleButton
           ariaLabel={t("nav.removeItemAriaLabel", { item: card?.label ?? item.key })}
           onRemove={() => undefined}
         />
-        <StatCardFace card={card} noDataText={t("statCardsGrid.noData")} />
+        <StatCardFace card={card} noDataText={t("statCardsGrid.noData")} loading={loading} />
       </div>
     );
   }
@@ -828,7 +862,7 @@ export function StatCardsGrid({
                   }`}
                 >
                   <div className="invisible">
-                    <StatCardFace card={card} noDataText={t("statCardsGrid.noData")} />
+                    <StatCardFace card={card} noDataText={t("statCardsGrid.noData")} loading={loading} />
                   </div>
                 </div>
               );
@@ -842,7 +876,7 @@ export function StatCardsGrid({
                 data-slot-index={index}
                 style={wobbleDelay}
                 onPointerDown={(e) => onItemPointerDown(e, id, item)}
-                className={`${itemBase} rounded-2xl p-4 ${card ? "bg-hf-tan" : "bg-hf-tan/50"} ${cardBorder(card)} ${
+                className={`${itemBase} rounded-2xl p-4 ${card || loading ? "bg-hf-tan" : "bg-hf-tan/50"} ${cardBorder(card)} ${
                   editMode ? "stat-card-editing cursor-grab active:cursor-grabbing" : ""
                 }`}
               >
@@ -852,7 +886,7 @@ export function StatCardsGrid({
                     onRemove={() => removeItem(id)}
                   />
                 )}
-                <StatCardFace card={card} noDataText={t("statCardsGrid.noData")} />
+                <StatCardFace card={card} noDataText={t("statCardsGrid.noData")} loading={loading} />
                 {card && !editMode && (
                   <CardUncertainty
                     card={card}

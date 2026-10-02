@@ -2,6 +2,7 @@
 
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { RemoveCircleButton } from "@/components/ui/RemoveCircleButton";
+import { useIsClientRender } from "@/lib/use-client-render";
 import { useTranslation } from "@/i18n/LocaleProvider";
 import { loadChartLayout, saveChartLayout, statChartDef, DEFAULT_ACTIVE_CHART_KEYS } from "@/lib/stat-charts";
 
@@ -28,8 +29,11 @@ export function StatChartsSection({
   onShowAddChange?: (show: boolean) => void;
 }) {
   const { t } = useTranslation();
-  // localStorage er usynlig for serveren: render standarden først og skift efter mount.
-  const [order, setOrder] = useState<string[]>(DEFAULT_ACTIVE_CHART_KEYS);
+  // localStorage er usynlig for serveren. Tegnes graferne i browseren (altid
+  // på statistiksiden), bruges den gemte rækkefølge fra første billede, så
+  // intet bytter plads; kun under hydrering kommer standarden først.
+  const clientRender = useIsClientRender();
+  const [order, setOrder] = useState<string[]>(() => (clientRender ? loadChartLayout() : DEFAULT_ACTIVE_CHART_KEYS));
   const [editMode, setEditMode] = useState(false);
   const [drag, setDrag] = useState<Drag | null>(null);
 
