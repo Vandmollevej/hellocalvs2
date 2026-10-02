@@ -2346,6 +2346,7 @@ function HourRow({
       onPointerMove={handlePointerMove}
       onPointerUp={clearTimer}
       onPointerCancel={clearTimer}
+      onDoubleClick={() => onTapAddBar(hour)}
     >
       {/* Timen med en målsætning kan trykkes på i hele sin bredde og åbner
           timens oversigt med målsætningen øverst (men ikke lige efter et
