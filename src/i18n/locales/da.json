@@ -1140,7 +1140,7 @@
     },
     "row": {
       "subscription": "Abonnement",
-      "paymentMethods": "Betalingsmetoder",
+      "paymentMethods": "Betaling",
       "weightCalibration": "Vægt kalibrering",
       "bodyMeasurements": "Kropsmål",
       "sleep": "Søvnmønster",
@@ -1216,7 +1216,7 @@
     },
     "activeUntil": "Aktiv til {date}",
     "nextPayment": "Næste betaling d. {date}",
-    "paymentMethods": "Betalingsmetoder",
+    "paymentMethods": "Betaling",
     "freePlan": {
       "title": "Gratis",
       "description": "Registrering, kalender og din målsætning. Kun de seneste 3 måneders historik vises — ældre data gemmes og kommer tilbage, hvis du bliver Seriøs."
