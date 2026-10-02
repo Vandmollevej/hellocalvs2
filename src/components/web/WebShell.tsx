@@ -4,7 +4,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter, usePathname } from "next/navigation";
 import { createContext, useContext, useEffect, useState } from "react";
-import { IconChevronLeft, IconSearch } from "@tabler/icons-react";
+import { IconPlus } from "@tabler/icons-react";
+import { useAddActionsProfile, visibleAddActions } from "@/lib/add-actions";
 import { useFamilyStatus } from "@/components/family/FamilyStatusProvider";
 import { ProfileCircle } from "@/components/family/ProfileCircle";
 import { useTranslation } from "@/i18n/LocaleProvider";
@@ -92,8 +93,16 @@ export function WebShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname() ?? "/";
   const router = useRouter();
   const { status } = useFamilyStatus();
-  const [query, setQuery] = useState("");
   const [collapsed, setCollapsed] = useState(false);
+  const [addOpen, setAddOpen] = useState(false);
+  const addProfile = useAddActionsProfile();
+  // Mikrofonen findes ikke på desktop (chat afløser den).
+  const addActions = visibleAddActions(addProfile).filter((a) => a.key !== "microphone");
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setAddOpen(false);
+  }, [pathname]);
 
   useEffect(() => {
     // localStorage findes først efter hydrering.
@@ -118,19 +127,8 @@ export function WebShell({ children }: { children: React.ReactNode }) {
     });
   }
 
-  const q = query.trim().toLowerCase();
-  const match = (item: WebNavItem) =>
-    !q || t(item.labelKey).toLowerCase().includes(q);
-  const shortcuts = WEB_SHORTCUTS.filter(match);
-  const settings = WEB_SETTINGS.filter(match);
-  const noResults = shortcuts.length === 0 && settings.length === 0;
-
-  function onSearchSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    const first = shortcuts[0] ?? settings[0];
-    if (first) router.push(first.href);
-    setQuery("");
-  }
+  const shortcuts = WEB_SHORTCUTS;
+  const settings = WEB_SETTINGS;
 
   const profileActive =
     isActive(pathname, "/profile") || isActive(pathname, "/settings");
@@ -154,38 +152,6 @@ export function WebShell({ children }: { children: React.ReactNode }) {
                 priority
               />
             </Link>
-          </div>
-
-          <div className="shrink-0 px-2.5 pt-2.5">
-            {collapsed ? (
-              <button
-                type="button"
-                onClick={toggleCollapsed}
-                title={t("web.searchPlaceholder")}
-                aria-label={t("web.searchPlaceholder")}
-                className="flex h-9 w-full items-center justify-center rounded-md text-text-secondary hover:bg-hf-tan"
-              >
-                <IconSearch size={16} stroke={1.75} />
-              </button>
-            ) : (
-              <form onSubmit={onSearchSubmit} role="search">
-                <label className="hf-type-body flex h-9 w-full items-center gap-2 rounded-md border border-hf-tan-dark bg-hf-white px-3 focus-within:border-hf-green">
-                  <IconSearch
-                    size={16}
-                    stroke={1.75}
-                    className="shrink-0 text-text-muted"
-                  />
-                  <input
-                    type="search"
-                    value={query}
-                    onChange={(e) => setQuery(e.target.value)}
-                    placeholder={t("web.searchPlaceholder")}
-                    aria-label={t("web.searchPlaceholder")}
-                    className="min-w-0 flex-1 bg-transparent text-hf-black outline-none placeholder:text-text-muted"
-                  />
-                </label>
-              </form>
-            )}
           </div>
 
           <nav className="min-h-0 flex-1 overflow-y-auto p-2.5">
@@ -229,11 +195,6 @@ export function WebShell({ children }: { children: React.ReactNode }) {
                 </ul>
               </section>
             )}
-            {noResults && (
-              <p className="hf-type-body px-2.5 py-4 text-text-muted">
-                {t("web.noResults")}
-              </p>
-            )}
           </nav>
 
           <button
@@ -241,18 +202,15 @@ export function WebShell({ children }: { children: React.ReactNode }) {
             onClick={toggleCollapsed}
             title={t(collapsed ? "web.expand" : "web.collapse")}
             aria-label={t(collapsed ? "web.expand" : "web.collapse")}
-            className="absolute left-full top-1/2 z-30 -translate-y-1/2 flex h-9 w-7 items-center justify-center rounded-r-md border border-l-0 border-hf-tan-dark bg-hf-white text-text-secondary hover:bg-hf-tan"
+            className="absolute left-full top-1/2 z-30 flex h-[72px] w-7 -translate-y-1/2 items-center justify-center rounded-r-md border border-l-0 border-hf-tan-dark bg-hf-white hover:bg-hf-tan"
           >
-            <IconChevronLeft
-              size={16}
-              stroke={1.75}
-              className={`transition-transform ${collapsed ? "rotate-180" : ""}`}
-            />
+            {/* Præcis som i admin: samme grå træk-streg som kalenderens og bundarkenes håndtag, blot lodret. */}
+            <span className="block h-10 w-1 rounded-full bg-hf-gray" />
           </button>
         </aside>
 
         <div className="flex min-w-0 flex-1 flex-col">
-          <header className="flex h-20 shrink-0 items-end justify-between gap-3 border-b border-hf-tan-dark bg-hf-white px-6 pb-2.5">
+          <header className="relative z-20 flex h-20 shrink-0 items-end justify-between gap-3 border-b border-hf-tan-dark bg-hf-white px-6 pb-2.5">
             <nav aria-label={t("web.mainNav")}>
               <ul className="flex items-center gap-1">
                 {WEB_TOP_NAV.map((item) => {
@@ -277,6 +235,18 @@ export function WebShell({ children }: { children: React.ReactNode }) {
                 })}
               </ul>
             </nav>
+            <div className="flex items-end gap-4">
+            {/* Grøn cirkel med hvidt plus; 20 % af den hænger ned over headerens streg. */}
+            <button
+              type="button"
+              onClick={() => setAddOpen((value) => !value)}
+              aria-expanded={addOpen}
+              aria-label={t("addMenu.title")}
+              title={t("addMenu.title")}
+              className="-mb-5 flex h-[52px] w-[52px] shrink-0 items-center justify-center rounded-full bg-hf-green text-hf-white shadow-md transition hover:bg-hf-green-dark"
+            >
+              <IconPlus size={28} stroke={2} />
+            </button>
             <Link
               href="/profile"
               aria-label={t("web.profileSettings")}
@@ -293,6 +263,27 @@ export function WebShell({ children }: { children: React.ReactNode }) {
               />
               {t("web.profileSettings")}
             </Link>
+            </div>
+            {addOpen && (
+              <div className="absolute left-0 right-0 top-full z-20 border-b border-hf-tan-dark bg-hf-white pt-4 shadow-sm">
+                <ul className="flex items-start justify-center gap-2 overflow-x-auto px-6 py-3">
+                  {addActions.map((action) => {
+                    const Icon = action.icon;
+                    return (
+                      <li key={action.key}>
+                        <Link
+                          href={action.href}
+                          className="hf-type-small flex w-24 flex-col items-center gap-1.5 rounded-md px-2 py-2 text-center text-text-secondary hover:bg-hf-tan hover:text-text-primary"
+                        >
+                          {Icon && <Icon size={28} stroke={1.75} />}
+                          <span>{t(action.labelKey)}</span>
+                        </Link>
+                      </li>
+                    );
+                  })}
+                </ul>
+              </div>
+            )}
           </header>
 
           <main className="min-h-0 min-w-0 flex-1 overflow-y-auto">

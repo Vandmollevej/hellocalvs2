@@ -273,9 +273,17 @@ Ejer: Flows-sessionen (2026-09-27)
 | 41 | Design-screening af admin-flowsider mod HelloFresh-retningen | Færdig (branch `claude/admin-flowsider-design-4tzgb4`) | Afventer brugerens visuelle test på desktop + telefon |
 
 ## G-RESCAN — "Scan varen igen" (10 points) + natlig AI på Open Food Facts-billeder
-Filer: `src/components/add/RescanBanner.tsx`, `src/lib/product-rescan*.ts`, `src/lib/external-image-ai.ts`, `src/app/api/products/[id]/rescan/**`. Rører også `ProductCaptureFlow.tsx` (ny `rescan`-prop + `?scanned=1`), `AddProductView.tsx` (banneret), `quick-product-enrichment.ts` (eksporterede funktioner, snapshot-værn), jobregistret og scheduleren.
+Filer: `src/components/add/RescanBanner.tsx`, `src/lib/product-rescan*.ts`, `src/lib/external-image-ai.ts`, `src/app/api/products/[id]/rescan/**`. Rører også `ProductCaptureFlow.tsx` (ny `rescan`-prop), `AddProductView.tsx` (banneret), `quick-product-enrichment.ts` (eksporterede funktioner, snapshot-værn), `image-cutout-jobs.ts` (`discardPendingFrontImage`), jobregistret og scheduleren.
 Ejer: cloud-session `claude/open-food-facts-scan-banner-rihp53` (2026-10-02)
 
 | Id | Opgave | Status | Næste skridt |
 | --- | --- | --- | --- |
-| — | Banner "Optjen 10 points" efter scanning af Open Food Facts-vare / egen vare uden PNG, kamera med felterne, natlig OpenAI-aflæsning hvis brugeren ikke reagerer | Færdig (kode, PR åben) | Migration 20261002090000 med i deployet. Brugerens test på telefon |
+| — | Banner "Optjen 10 points" for Open Food Facts-/USDA-varer og egne varer uden PNG (efter scanning og fra søgning), kamera med felterne, genscannede eksterne varer overtages som egne, natlig OpenAI-aflæsning hvis ingen reagerer | Færdig (kode, PR #138 åben) | Migration 20261002090000 med i deployet. Brugerens test på telefon |
+
+## G-WAVES — Bølge-baggrund på forsiden
+Filer: `src/lib/home-waves.ts`, `src/components/HomeWaves.tsx`, `.home-wave*` i `globals.css`, `src/app/page.tsx` (lag-opbygning), `StatsWheel.tsx` (kun `clipPath`).
+Ejer: bølge-sessionen (2026-10-01)
+
+| Id | Opgave | Status | Næste skridt |
+| --- | --- | --- | --- |
+| — | Rolig, tilfældig bølge-animation bag forsiden med frostet-glas-bund og tåge | Færdig (kode) | Afventer brugerens visuelle godkendelse på telefon; justér tempo/farve efter feedback |

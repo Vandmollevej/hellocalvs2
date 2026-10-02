@@ -994,6 +994,7 @@
     "searching": "Searching...",
     "noResults": "No products match your search",
     "scan": "Take photo",
+    "scanWeb": "Upload an image or drop them here",
     "manually": "Create manually",
     "createOwnIngredient": "Create your own ingredient",
     "kcalUnknown": "{grams} g · kcal unknown",

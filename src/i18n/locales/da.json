@@ -994,6 +994,7 @@
     "searching": "Søger...",
     "noResults": "Ingen varer matcher din søgning",
     "scan": "Tag billede",
+    "scanWeb": "Upload billede eller drop dem her",
     "manually": "Opret manuelt",
     "createOwnIngredient": "Opret egen ingrediens",
     "kcalUnknown": "{grams} g · kcal ukendt",
