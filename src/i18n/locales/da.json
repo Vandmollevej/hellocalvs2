@@ -223,6 +223,12 @@
       "until": "Til",
       "dataTitle": "Data Support må se",
       "selectAll": "Vælg alle",
+      "groups": {
+        "food": "Mad og drikke",
+        "activityOverview": "Aktivitet og overblik",
+        "body": "Krop og helbred",
+        "account": "Konto og indstillinger"
+      },
       "saveAccess": "Gem tilladelse",
       "saving": "Gemmer…",
       "saved": "Tilladelsen er gemt",

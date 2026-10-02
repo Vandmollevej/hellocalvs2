@@ -223,6 +223,12 @@
       "until": "To",
       "dataTitle": "Data Support may view",
       "selectAll": "Select all",
+      "groups": {
+        "food": "Food and drink",
+        "activityOverview": "Activity and overview",
+        "body": "Body and health",
+        "account": "Account and settings"
+      },
       "saveAccess": "Save permission",
       "saving": "Saving…",
       "saved": "The permission has been saved",
