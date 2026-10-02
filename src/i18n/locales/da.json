@@ -152,7 +152,7 @@
     "expand": "Vis sidemenu",
     "shortcuts": "Genveje",
       "settings": "Indstillinger",
-      "searchPlaceholder": "Søg i menuen…",
+      "searchPlaceholder": "Søg",
       "noResults": "Ingen resultater",
       "mainNav": "Hovednavigation",
       "sideNav": "Sidemenu",
@@ -312,7 +312,6 @@
     "setupProgressStepWeight": "Vægtkalibrering",
     "setupProgressHint": "Gennemfør vægtkalibrering for at afslutte opsætningen.",
     "payment": "Betaling",
-    "paymentMethod": "Betalingsmetode",
     "logOut": "Log ud",
     "helpCenter": "Hjælpecenter",
     "learnTheApp": "Lær appen at kende",
@@ -1141,7 +1140,7 @@
     },
     "row": {
       "subscription": "Abonnement",
-      "paymentMethods": "Betalingsmetoder",
+      "paymentMethods": "Betaling",
       "weightCalibration": "Vægt kalibrering",
       "bodyMeasurements": "Kropsmål",
       "sleep": "Søvnmønster",
@@ -1217,7 +1216,7 @@
     },
     "activeUntil": "Aktiv til {date}",
     "nextPayment": "Næste betaling d. {date}",
-    "paymentMethods": "Betalingsmetoder",
+    "paymentMethods": "Betaling",
     "freePlan": {
       "title": "Gratis",
       "description": "Registrering, kalender og din målsætning. Kun de seneste 3 måneders historik vises — ældre data gemmes og kommer tilbage, hvis du bliver Seriøs."
@@ -1732,7 +1731,7 @@
     }
   },
   "payment": {
-    "title": "Betalingsmetode",
+    "title": "Betaling",
     "expires": "Udløber {date}",
     "changeMethod": "Skift betalingsmetode",
     "opening": "Åbner…",

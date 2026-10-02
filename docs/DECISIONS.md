@@ -3312,6 +3312,25 @@ Produktsiden viser aldrig teksten "Branded". Brandet vises kun som brandnavn/log
   (vægt ÷ N). Aldrig gættet; 2-80 g. Agenten skriver den kun, når varen ikke
   har en portionsstørrelse.
 
+### Tilføjelse 2026-10-02 — drikkevarer og alkohol starter på pakkestørrelsen
+
+- Brugerens regel: står der 33 cl, 25 cl eller 50 cl ved en drikkevare eller
+  alkohol, er det tallet i mængdefeltet. Størrelsen læses fra
+  `packageSizeText`, ellers fra navnet ("Tuborg Classic 33 cl"); multipak
+  ("6 x 33 cl") giver én enhed.
+- Varer uden kategorien DRINK tæller som drikkevare, når både navnet har et
+  drikke-ord (øl, vin, cola …) og en størrelse i ml/cl/dl/l. Fløde, olie,
+  eddike, sirup, saucer o.l. tages aldrig som hel pakke.
+- Vin: flaske ≤ 25 cl = hele flasken, ellers 150 ml. Spiritus (≥ 20 % eller
+  spiritus-ord uden mixer): ≤ 10 cl = hele flasken, ellers 4 cl.
+  Færdigblandede drinks (gin & tonic, rom og cola) = hele dåsen. Øvrige
+  drikkevarer: ≤ 50 cl = hele pakken, ellers 250 ml.
+- Visningsenheden er cl, når pakningsstørrelsen eller navnet angiver cl (også
+  "33 cl dåse"). Kategorien afgør stadig g mod ml.
+- Tabellen med typiske mængder er udvidet (kød 150 g, fisk 125 g, frugt,
+  suppe, pizza, færdigretter, fløde, æg m.m.), så færre varer ender på 100 g.
+- Videresendte varer (`/forward/[token]`) tilføjes med samme startmængde.
+
 ## 2026-09-28: Produktsidens lodrette rytme + beskårne brand-logoer
 
 - Produktsiden (`AddProductView`): 32 px fra produktcirklen til titlen (som
@@ -3383,8 +3402,8 @@ Kilder på "Mad på latin" skal altid være officielle (Fødevarestyrelsen, Sund
 
 ## 2026-10-02: Abonnement og betalingsmetode hører til under Indstillinger; betalingsmetode kun for betalende
 
-- **Abonnement og Betalingsmetode ligger kun under Indstillinger** (ejerens krav 2026-10-02). Profilsidens to rækker er fjernet; `/profile/subscription` og `/settings/payment` er uændrede adresser.
-- **"Betalingsmetode" vises kun for betalende.** Betalende = en rigtig udbyder-aftale (Stripe eller MobilePay Recurring) med status ACTIVE eller CANCELED med betalt restperiode — samme definition som admin → Statistik. Gavekode-, points-, prøve- og familiemedlems-Seriøs har intet kort og ser ikke rækken. En MobilePay-aftale, der venter på godkendelse, ser den også (så "Afventer godkendelse" kan findes). Felt: `paying` i `GET /api/subscription`.
+- **Abonnement og Betaling ligger kun under Indstillinger** (ejerens krav 2026-10-02; menupunktet hedder "Betaling", jf. e8ad1b3 samme dag). Profilsidens to rækker er fjernet; `/profile/subscription` og `/settings/payment` er uændrede adresser.
+- **Menupunktet "Betaling" (betalingsmetode-siden) vises kun for betalende.** Betalende = en rigtig udbyder-aftale (Stripe eller MobilePay Recurring) med status ACTIVE eller CANCELED med betalt restperiode — samme definition som admin → Statistik. Gavekode-, points-, prøve- og familiemedlems-Seriøs har intet kort og ser ikke rækken. En MobilePay-aftale, der venter på godkendelse, ser den også (så "Afventer godkendelse" kan findes). Felt: `paying` i `GET /api/subscription`.
 - **Siden viser det, der faktisk trækkes på** — det abonnementets `default_payment_method` hos Stripe (ellers kundens `invoice_settings.default_payment_method`): kortmærke, sidste 4 cifre og udløb; Apple Pay/Google Pay vises som wallet med kortet bagved (`PaymentMethod.wallet`, enum `PaymentWallet`, migration `20261002090000_payment_method_wallet`); MobilePay som MobilePay. Siden kalder `GET /api/subscription?refresh=1`, som synker fra Stripe først, så et kortskift ses med det samme. Kortet slettes ikke længere ved opsigelse — først når aftalen er helt afsluttet hos Stripe.
 - **Kortskift sker i Stripes kundeportal** (`POST /api/payments/stripe/portal` → Billing Portal med `flow_data.type = payment_method_update`, retur til `/settings/payment`). Hello Cal ser aldrig kortdata. Portalen kræver en konfiguration pr. Stripe-konto (test/live): findes ingen aktiv, opretter serveren én med kun kortskift + kvitteringshistorik (opsigelse/planskift slået fra — det styres i appen; privatlivs-/betingelseslinks peger på appens sider). MobilePay Recurring (Vipps) har intet kortskift; der kan kun aftalen stoppes.
 - Kortmærket vises med Stripes brand-værdi (`card.brand`) som lille logo i en fast kortramme: Visa og Mastercard (`public/payment/mastercard.svg`, officiel cirkelgeometri) med sidste 4 cifre; EC-kort/Amex/ukendt får et neutralt kort-ikon. Alle betalingsikoner er små (20 px høje) — også logoerne for understøttede metoder, der nu er chips som på købssiden.
@@ -3447,3 +3466,14 @@ Kilder på "Mad på latin" skal altid være officielle (Fødevarestyrelsen, Sund
   det), og et bart "Vand" normaliseres til "Flaskevand" (`normalizeProductType`
   i `src/lib/product-naming.ts`), så søgning på "vand" viser en præcis betegnelse.
 - Eksisterende produkter, der allerede hedder "Vand", omdøbes ikke automatisk.
+
+## 2026-10-02: Userback feedback-widget
+
+- Scriptet indlæses globalt fra src/components/UserbackWidget.tsx (rodlayoutet) med det offentlige widget-token. Der sendes bevidst ingen Userback.user_data (ingen navn/e-mail), så feedback er anonym i tråd med anonymitetsreglerne.
+
+
+## 2026-10-02 – Rigtige certifikat-logoer (public/certifications)
+
+- Mærker på varesiden vises med brugerens rigtige logofiler (`public/certifications/*.png`, kind → fil i `CERTIFICATION_LOGO_FILES` i `src/lib/certification-badges.ts`), ikke tegnede SVG-erstatninger. Originalerne ligger i mappen `Certifikater/` (ikke i git).
+- Kobling sker på tekstværdien i `ProductFilters` (økologisk, nøglehul, fuldkorn, dyrevelfærd-liste, certificeringer-liste); ukendte mærker vises som tekst-pille.
+- "Bedre Dyrevelfærd 2" er afledt af 1- og 3-hjerte-filerne, fordi den leverede 2-stjerner-fil var identisk med 3-stjerner. Erstat med original, når den findes.

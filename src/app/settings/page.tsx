@@ -128,7 +128,7 @@ export default function SettingsPage() {
           {showPaymentMethod && (
             <ChevronRow
               icon={<IconWallet size={20} />}
-              label={t("settings.paymentMethod")}
+              label={t("settings.payment")}
               href="/settings/payment"
               divider={false}
             />
