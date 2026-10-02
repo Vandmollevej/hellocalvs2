@@ -1548,6 +1548,18 @@
     "sizeSmall": "Small",
     "sizeMedium": "Normal",
     "sizeLarge": "Large",
+    "refuse": {
+      "core": "without core",
+      "peel": "without peel",
+      "pit": "without pit",
+      "stem": "without stem",
+      "peelCalyx": "without peel and calyx",
+      "topPeel": "without top and peel",
+      "ends": "without ends",
+      "stemSeeds": "without stem and seeds",
+      "stemEnd": "without stem end",
+      "shell": "without shell"
+    },
     "additivesWarning": "This product contains E-numbers",
     "reportError": "Found a mistake?",
     "alternativeServing": "{label}: {kcal} kcal",

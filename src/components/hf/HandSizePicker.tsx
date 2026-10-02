@@ -9,7 +9,7 @@ import {
 } from "@/lib/hand-sizes";
 
 // Billedhøjden for "Stor" — bevidst større end de 46–56 px, vandsidens
-// beholdere bruger. "Lille" og "Normal" skaleres lineært efter gram
+// beholdere bruger. "Lille" og "Normal" skaleres lineært efter hel vægt
 // (src/lib/hand-sizes.ts), og alle står på samme bundlinje.
 const LARGEST_IMAGE_PX = 76;
 
@@ -21,7 +21,8 @@ const LABEL_KEY: Record<HandSizeKey, "addProduct.sizeSmall" | "addProduct.sizeMe
 
 // Lille / Normal / Stor for håndfrugt og æg, største til højre — samme
 // flise-mønster som vandsidens beholdere. Et tryk sætter mængden til ét stk.
-// i den størrelse; gram og kalorier i mængdeboksen følger med.
+// i den størrelse: den spiselige vægt sættes i mængdeboksen, og kalorierne
+// følger med.
 export function HandSizePicker({
   item,
   imageUrl,
@@ -64,7 +65,14 @@ export function HandSizePicker({
             )}
             <span className="hf-type-small hf-type-strong">{t(LABEL_KEY[size.key])}</span>
             <span className="hf-type-micro">{formatHandSizeDimensions(size)}</span>
-            <span className="hf-type-micro hf-type-strong">{size.grams} g</span>
+            {/* Hel vægt som på køkkenvægten; den spiselige del er den, der
+                registreres i mængdeboksen. */}
+            <span className="hf-type-micro hf-type-strong">{size.wholeGrams} g</span>
+            {size.grams !== size.wholeGrams && (
+              <span className="hf-type-micro text-center">
+                {`${size.grams} g ${t(`addProduct.refuse.${item.refuseKey}`)}`}
+              </span>
+            )}
           </button>
         );
       })}

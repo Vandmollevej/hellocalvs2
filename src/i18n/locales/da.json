@@ -1548,6 +1548,18 @@
     "sizeSmall": "Lille",
     "sizeMedium": "Normal",
     "sizeLarge": "Stor",
+    "refuse": {
+      "core": "uden kernehus",
+      "peel": "uden skræl",
+      "pit": "uden sten",
+      "stem": "uden stilk",
+      "peelCalyx": "uden skræl og bæger",
+      "topPeel": "uden top og skræl",
+      "ends": "uden ender",
+      "stemSeeds": "uden stilk og kerner",
+      "stemEnd": "uden stilkfæste",
+      "shell": "uden skal"
+    },
     "additivesWarning": "Varen indeholder E-numre",
     "reportError": "Har du fundet en fejl?",
     "alternativeServing": "{label}: {kcal} kcal",

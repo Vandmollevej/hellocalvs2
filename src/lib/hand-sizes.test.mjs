@@ -32,16 +32,26 @@ test("hver vare har stigende gram og mål fra Lille til Stor", () => {
   for (const item of HAND_SIZE_ITEMS) {
     const [s, m, l] = item.sizes;
     assert.ok(s.grams < m.grams && m.grams < l.grams, item.id);
+    assert.ok(s.wholeGrams < m.wholeGrams && m.wholeGrams < l.wholeGrams, item.id);
+    for (const size of item.sizes) assert.ok(size.grams <= size.wholeGrams, item.id);
     assert.ok(s.diameterCm <= m.diameterCm && m.diameterCm <= l.diameterCm, item.id);
     assert.deepEqual(item.sizes.map((size) => size.key), ["small", "medium", "large"], item.id);
   }
 });
 
-test("billedskala følger gram lineært, Stor = 1", () => {
+test("billedskala følger hel vægt lineært, Stor = 1", () => {
   const apple = findHandSizeItem("Æble");
   assert.equal(handSizeImageScale(apple.sizes[2], apple), 1);
-  assert.equal(handSizeImageScale(apple.sizes[0], apple), 120 / 230);
-  assert.equal(mediumHandSizeGrams("Æble"), 165);
+  assert.equal(handSizeImageScale(apple.sizes[0], apple), 135 / 255);
+});
+
+test("spiselig vægt = hel vægt minus USDA-spild", () => {
+  // Banan Normal: 185 g hel, 36 % skræl → 118 g (USDA's mellemstore banan)
+  assert.equal(mediumHandSizeGrams("Banan"), 118);
+  // Fersken Normal: 150 g hel, 4 % sten → 144 g
+  assert.equal(mediumHandSizeGrams("Fersken"), 144);
+  // Æg M: 58 g med skal, 12 % skal → 51 g
+  assert.equal(mediumHandSizeGrams("Æg"), 51);
 });
 
 test("mål vises som Ø for runde og længde × Ø for aflange", () => {

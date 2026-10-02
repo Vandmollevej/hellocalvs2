@@ -6,6 +6,7 @@ Last updated: 2026-10-02
 
 - Ny størrelsesvælger på produktsiden for 18 håndfrugter/snack-grøntsager og æg (`src/lib/hand-sizes.ts`, `src/components/hf/HandSizePicker.tsx`). Liste og tal i `docs/HAND-SIZES.md`; beslutning i DECISIONS samme dato.
 - Tests (`npm test`), lint, typecheck og build grønne. Ikke visuelt testet i browser (ingen lokal DB).
+- Fliserne viser hel vægt og spiselig vægt; spiselig = hel vægt minus USDA's spild-procent (kiwi og bladselleri er skøn).
 - Venter på brugerens godkendelse af listen og tallene, før PR'en merges.
 ## 2026-09-29: Offentlig forside for udloggede
 
