@@ -201,6 +201,7 @@ export const PAGE_TREE: PageArea[] = [
             label: "Betaling",
             children: [{ path: "/settings/payment/mobilepay", label: "MobilePay" }],
           },
+          { path: "/settings/account", label: "Kontoindstillinger" },
           { path: "/settings/delete-permissions", label: "Sletterettigheder" },
           { path: "/settings/control-log", label: "Kontrollog" },
           {
