@@ -317,6 +317,15 @@
     "thirdPartyDisclaimer": "We fetch data from third parties and take no responsibility for missing data.",
     "languageLabel": "Language",
     "languageDescription": "Choose which language the app is shown in.",
+    "unitsWeightLabel": "Weight unit",
+    "unitsWeightDescription": "Set automatically from your country, but you can change it here.",
+    "unitsHeightLabel": "Height and body measurements",
+    "unitsHeightDescription": "Centimetres or inches. Set automatically from your country.",
+    "unitKg": "Kilograms (kg)",
+    "unitLb": "Pounds (lb)",
+    "unitSt": "Stones and pounds (st lb)",
+    "unitCm": "Centimetres (cm)",
+    "unitIn": "Inches (in)",
     "languageDanish": "Dansk",
     "languageEnglish": "English",
     "setupProgress": "Step {done} of {total} complete",
@@ -1134,7 +1143,7 @@
       "VERY_HIGH": { "short": "Extreme", "label": "Very high", "description": "Hard physical work all day, e.g. construction, farming or forestry." }
     },
     "age": "{age} years old",
-    "trendWeight": "Trend weight (AI estimate): {value} kg",
+    "trendWeight": "Trend weight (AI estimate): {value}",
     "startWeightUpdated": "Updated on {date}",
     "startWeight": {
       "title": "Starting weight",
@@ -1325,7 +1334,7 @@
     "lastCalibrated": "Last calibrated on {date}",
     "neverCalibrated": "Not calibrated yet",
     "intro": "Weigh yourself at different times and under different conditions — this gives you a sense of your fluctuation throughout the day, without having to weigh yourself naked every time.",
-    "weightLabel": "Weight (kg)",
+    "weightLabel": "Weight",
     "weightPlaceholder": "e.g. 78.4",
     "timeGrid": {
       "title": "Weight throughout the day",
@@ -1445,7 +1454,7 @@
   "weightLog": {
     "title": "Weight",
     "intro": "Log your weight. It's saved right away and shows up in the calendar and statistics.",
-    "weightLabel": "Weight (kg)",
+    "weightLabel": "Weight",
     "weightPlaceholder": "e.g. 78.4",
     "save": "Save",
     "saving": "Saving…",
@@ -1933,6 +1942,8 @@
     }
   },
   "onboarding": {
+    "unitsQuestion": "Which units would you like to use?",
+    "unitsHint": "We picked these based on your country. You can change them anytime under Settings → Language and region.",
     "calendarViewQuestion": "Which view should the calendar open in?",
     "calendarViewHint": "You can change it anytime under Settings → Display → Calendar view.",
     "stepProgress": "Step {current} of {total} completed",
@@ -2059,11 +2070,11 @@
     "mode": "What do you want?",
     "modes": { "MAINTAIN": "Keep my weight", "LOSE": "Lose weight", "GAIN": "Gain weight" },
     "pace": "Pace",
-    "paceValue": "{kg} kg/week",
-    "paceHintLose": "A healthy pace for you: at most {kg} kg per week. Faster can't be chosen.",
+    "paceValue": "{value}/week",
+    "paceHintLose": "A healthy pace for you: at most {value} per week. Faster can't be chosen.",
     "paceHintGain": "Slow weight gain builds the most muscle and the least fat.",
     "targetWeight": "Target weight (kg)",
-    "targetRaised": "We use {kg} kg as the target — lower is below what we consider healthy for your height.",
+    "targetRaised": "We use {value} as the target — lower is below what we consider healthy for your height.",
     "eta": "At that pace it takes about {weeks} weeks — probably between {from} and {to}. The date moves as your weight does.",
     "disclaimer": "The budget is an estimate and is adjusted continuously. If pregnant, breastfeeding, ill or living with an eating disorder: talk to your doctor before following a calorie goal."
   },
