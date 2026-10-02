@@ -13,7 +13,6 @@ import {
   IconToiletOff,
 } from "@/components/icons/WeighConditions";
 import { useTranslation } from "@/i18n/LocaleProvider";
-import { SkeletonCards, SkeletonScreen } from "@/components/hf/Skeleton";
 
 type RelativeTime = "BEFORE" | "AFTER" | "UNKNOWN";
 type TimeOfDay = "MORNING" | "EVENING" | "UNKNOWN";
@@ -34,16 +33,6 @@ type WeightEntry = {
 type T = (key: string) => string;
 
 const TIME_GRID_HOURS = [8, 10, 12, 14, 16, 18, 20, 22];
-const RECENT_ENTRY_LIMIT = 5;
-
-function formatDateTime(value: string) {
-  return new Intl.DateTimeFormat("da-DK", {
-    day: "numeric",
-    month: "short",
-    hour: "2-digit",
-    minute: "2-digit",
-  }).format(new Date(value));
-}
 
 function formatKg(value: number) {
   return new Intl.NumberFormat("da-DK", { maximumFractionDigits: 1 }).format(value);
@@ -76,22 +65,6 @@ function todaysSlotEntries(entries: WeightEntry[]) {
     }
   }
   return map;
-}
-
-function describeEntry(entry: WeightEntry, t: T) {
-  return [
-    entry.clothed ? t("weightCalibration.clothed.true") : t("weightCalibration.clothed.false"),
-    entry.shoes === "ON" ? t("weightCalibration.shoes.on") : entry.shoes === "OFF" ? t("weightCalibration.shoes.off") : null,
-    entry.timeOfDay === "MORNING"
-      ? t("weightCalibration.timeOfDay.morning")
-      : entry.timeOfDay === "EVENING"
-        ? t("weightCalibration.timeOfDay.evening")
-        : null,
-    entry.toilet === "BEFORE" ? t("weightCalibration.toilet.before") : entry.toilet === "AFTER" ? t("weightCalibration.toilet.after") : null,
-    entry.meal === "BEFORE" ? t("weightCalibration.meal.before") : entry.meal === "AFTER" ? t("weightCalibration.meal.after") : null,
-  ]
-    .filter(Boolean)
-    .join(" · ");
 }
 
 // A real, visible number field with a "kg" suffix inside it.
@@ -161,7 +134,6 @@ function conditionPairs(t: T): [Condition, Condition][] {
 export default function WeightCalibrationPage() {
   const { t } = useTranslation();
   const [entries, setEntries] = useState<WeightEntry[]>([]);
-  const [loading, setLoading] = useState(true);
 
   const [conditionValues, setConditionValues] = useState<Record<string, string>>({});
   const [gridValues, setGridValues] = useState<Record<number, string>>({});
@@ -186,8 +158,7 @@ export default function WeightCalibrationPage() {
         }
         setGridValues(next);
       })
-      .catch(() => setEntries([]))
-      .finally(() => setLoading(false));
+      .catch(() => setEntries([]));
   }
 
   useEffect(() => {
@@ -253,13 +224,6 @@ export default function WeightCalibrationPage() {
     }
   }
 
-  async function remove(id: string) {
-    setEntries((current) => current.filter((entry) => entry.id !== id));
-    await fetch(`/api/weight-entries/${id}`, { method: "DELETE" }).catch(() => {});
-  }
-
-  const recentEntries = entries.slice(0, RECENT_ENTRY_LIMIT);
-
   return (
     <HfScreen title={t("weightCalibration.title")}>
       <div className="hf-page hf-page--sections">
@@ -318,40 +282,6 @@ export default function WeightCalibrationPage() {
             ))}
           </div>
         </section>
-
-        {(loading || recentEntries.length > 0) && (
-          <section className="flex flex-col gap-2">
-            <h2 className="hf-type-title text-left text-hf-black">
-              {t("weightCalibration.recentTitle")}
-            </h2>
-            {loading && (
-              <SkeletonScreen className="">
-                <SkeletonCards count={3} height={48} radius={16} />
-              </SkeletonScreen>
-            )}
-            {recentEntries.map((entry) => (
-              <div key={entry.id} className="hf-control-row flex items-center justify-between rounded-2xl bg-hf-tan px-4">
-                <div>
-                  <p className="hf-type-body hf-type-strong text-hf-black">
-                    {formatKg(entry.weightKg)} kg
-                    <span className="hf-type-small text-text-secondary ml-2">
-                      {formatDateTime(entry.weighedAt)}
-                    </span>
-                  </p>
-                  <p className="hf-type-small text-text-secondary">{describeEntry(entry, t)}</p>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => remove(entry.id)}
-                  aria-label={t("weightCalibration.deleteAria")}
-                  className="hf-type-small hf-type-strong text-text-secondary px-2"
-                >
-                  {t("weightCalibration.delete")}
-                </button>
-              </div>
-            ))}
-          </section>
-        )}
 
         <div className="flex flex-col gap-2">
           {status !== "idle" && !saving && (
