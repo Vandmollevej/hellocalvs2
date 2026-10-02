@@ -36,7 +36,7 @@ Ejer: cloud-session på branch `claude/handfrugt-sizes-grams-2z4p3i` (2026-10-02
 
 | Id | Opgave | Status | Næste skridt |
 | --- | --- | --- | --- |
-| hand-sizes | Håndfrugter + æg i S/M/L med mål, gram og skalerede billeder | Venter på bruger | Bygget i draft-PR. Brugeren skal godkende listen og tallene i `docs/HAND-SIZES.md` og teste fliserne på telefon |
+| hand-sizes | Håndfrugter + æg i S/M/L med mål, gram og skalerede billeder | Venter på bruger | Bygget i draft-PR #128. Brugeren skal godkende listen og tallene i `docs/HAND-SIZES.md` og teste fliserne på telefon |
 
 ---
 
