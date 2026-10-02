@@ -7,7 +7,8 @@ import { HfScreen } from "@/components/HfScreen";
 import { TermsSheet } from "@/components/hf/TermsSheet";
 import { SUBSCRIPTION_OVERVIEW_TERMS } from "@/lib/terms-hints";
 import { useTranslation } from "@/i18n/LocaleProvider";
-import { SUBSCRIPTION_PLANS, SUBSCRIPTION_PRICES_DKK } from "@/lib/subscription-plans";
+import { LandingPlans } from "@/components/landing/LandingPlans";
+import { PLANS } from "@/lib/landing-content";
 import { Skeleton, SkeletonCards, SkeletonScreen } from "@/components/hf/Skeleton";
 
 type SubscriptionData = {
@@ -171,27 +172,14 @@ export default function SubscriptionPage() {
             {t("subscription.paymentMethods")}
           </Link>
 
-          {/* Seriøs og Seriøs Familie har hver deres side med periodevalg og
-              køb (docs/DECISIONS.md 2026-09-26). */}
           <h2 className="hf-type-section-title mt-2">{t("subscription.plansHeading")}</h2>
-          {SUBSCRIPTION_PLANS.map((plan) => (
-            <Link
-              key={plan}
-              href={`/profile/subscription/${plan}`}
-              className="flex items-center gap-3 rounded-lg border p-4"
-              style={{ borderColor: "var(--hf-color-line)" }}
-            >
-              <div className="min-w-0 flex-1">
-                <p className="hf-type-section-title">{t(`subscription.plans.${plan}.title`)}</p>
-                <p className="text-text-secondary hf-type-body mt-1">{t(`subscription.plans.${plan}.teaser`)}</p>
-                <p className="hf-type-body hf-type-strong mt-1">
-                  {t("subscription.planPage.fromPrice", { price: SUBSCRIPTION_PRICES_DKK[plan][1] })}
-                </p>
-              </div>
-              <IconChevronRight size={20} aria-hidden="true" className="shrink-0 opacity-60" />
-            </Link>
-          ))}
-
+          {/* Samme tre plankort som på den offentlige forside (LandingPlans). */}
+          <div className="md:mt-4">
+            <LandingPlans
+              plans={PLANS}
+              currentPlan={data.tier !== "SERIOUS" ? "free" : data.plan === "FAMILY" ? "family" : "serious"}
+            />
+          </div>
           {/* Vilkår og betingelser står nederst i sidens indhold, ikke i en
               fast footer midt på skærmen. */}
           <div className="mt-2">
