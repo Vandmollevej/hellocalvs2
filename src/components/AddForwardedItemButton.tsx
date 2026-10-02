@@ -11,10 +11,12 @@ export function AddForwardedItemButton({
   kind,
   itemId,
   name,
+  amountGrams = 100,
 }: {
   kind: "PRODUCT" | "DISH";
   itemId: string;
   name: string;
+  amountGrams?: number;
 }) {
   const router = useRouter();
   const [saving, setSaving] = useState(false);
@@ -30,7 +32,7 @@ export function AddForwardedItemButton({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           [kind === "PRODUCT" ? "productId" : "dishId"]: itemId,
-          amountGrams: 100,
+          amountGrams,
           ...mealShareBody(),
         }),
       });

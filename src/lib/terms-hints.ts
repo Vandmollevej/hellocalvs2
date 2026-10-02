@@ -43,9 +43,16 @@ export function termsParagraphs(text: string) {
 }
 
 // Startguidens trin (samme id'er som i OnboardingWizard).
-export type OnboardingTermsStep = "sleep-pattern" | "shift-work" | "daily-log-preference" | "calendar-view" | "activity" | "health-import";
+export type OnboardingTermsStep = "units" | "sleep-pattern" | "shift-work" | "daily-log-preference" | "calendar-view" | "activity" | "health-import";
 
 export const ONBOARDING_TERMS: Record<OnboardingTermsStep, TermsHint> = {
+  units: {
+    anchor: "hvad-er-hello-cal",
+    paragraphs: [
+      "Valget af vægt- og længdeenheder gemmes kun på denne enhed og ændrer blot, hvordan tallene vises og indtastes. Din vægt og højde gemmes altid ens, uanset hvilken enhed du vælger.",
+      "Du kan altid skifte under Indstillinger → Sprog og region.",
+    ],
+  },
   "sleep-pattern": {
     anchor: "hvad-er-hello-cal",
     paragraphs: [

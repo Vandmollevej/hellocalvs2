@@ -3,7 +3,6 @@
 import { useState } from "react";
 import {
   IconAlertTriangle,
-  IconBookmark,
   IconCalendarWeek,
   IconChartBar,
   IconHome2,
@@ -15,6 +14,7 @@ import {
   IconUser,
   IconX,
 } from "@tabler/icons-react";
+import { IconFavorite } from "@/components/icons/Favorite";
 import { HfChevron } from "@/components/hf/HfChevron";
 
 // Samlet oversigt over alle bokstyper i appen, vist i en telefonramme i
@@ -427,7 +427,7 @@ function PhoneFrame({ showGuides }: { showGuides: boolean }) {
               <img src="/dummy/rye-bread.png" alt="" className="block h-full w-full object-contain p-8" />
             </div>
             <span className="hf-favorite-button" aria-hidden="true">
-              <IconBookmark size={24} />
+              <IconFavorite size={24} />
             </span>
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src="/hello-cal-fruit.png" alt="" className="pointer-events-none absolute bottom-0 left-1/2 z-10 h-[95px] w-[95px] object-contain object-left-bottom" />
