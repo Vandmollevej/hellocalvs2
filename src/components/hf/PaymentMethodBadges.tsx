@@ -36,7 +36,7 @@ export function PaymentMethodBadges({ country }: { country: StripeCountry }) {
       ) : (
         <>
           <LogoBadge src="/payment/visa.svg" label="Visa" />
-          <TextBadge label="Mastercard" />
+          <LogoBadge src="/payment/mastercard.svg" label="Mastercard" />
           <TextBadge label="EC-Karte" />
         </>
       )}

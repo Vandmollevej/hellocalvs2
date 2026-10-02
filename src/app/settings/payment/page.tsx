@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { IconCreditCard } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
 import { SkeletonCards, SkeletonScreen } from "@/components/hf/Skeleton";
 import { useTranslation } from "@/i18n/LocaleProvider";
@@ -36,20 +37,24 @@ type SubscriptionResponse = {
   mobilePayPending: boolean;
 };
 
+// Små logo-chips nederst (samme størrelse som købssidens PaymentMethodBadges).
 const SUPPORTED_METHODS = [
-  { id: "visa", label: "Visa", logo: "/payment/visa.svg", className: "h-14" },
-  { id: "applepay", label: "Apple Pay", logo: "/payment/applepay.svg", className: "h-12" },
-  { id: "googlepay", label: "Google Pay", logo: "/payment/googlepay.svg", className: "h-12" },
-  { id: "mobilepay", label: "MobilePay", logo: "/payment/mobilepay.svg", className: "h-7" },
+  { id: "visa", label: "Visa", logo: "/payment/visa.svg" },
+  { id: "mastercard", label: "Mastercard", logo: "/payment/mastercard.svg" },
+  { id: "applepay", label: "Apple Pay", logo: "/payment/applepay.svg" },
+  { id: "googlepay", label: "Google Pay", logo: "/payment/googlepay.svg" },
+  { id: "mobilepay", label: "MobilePay", logo: "/payment/mobilepay.svg", withName: true },
 ];
 
-// Logo for det, brugeren betaler med. Mastercard/EC-kort har intet logo i
-// public/payment/ og vises med tekst (som på købssiden, PaymentMethodBadges).
-const METHOD_LOGOS: Record<string, { src: string; className: string }> = {
-  APPLE_PAY: { src: "/payment/applepay.svg", className: "h-8" },
-  GOOGLE_PAY: { src: "/payment/googlepay.svg", className: "h-8" },
-  MOBILEPAY: { src: "/payment/mobilepay.svg", className: "h-8 w-8" },
-  VISA: { src: "/payment/visa.svg", className: "h-8" },
+// Ikon for det, Stripe faktisk trækker på (card.brand / card.wallet.type):
+// kortmærke som Stripe selv viser det i Checkout. Andre mærker (EC-kort,
+// Amex, ukendt) får et neutralt kort-ikon.
+const METHOD_LOGOS: Record<string, string> = {
+  APPLE_PAY: "/payment/applepay.svg",
+  GOOGLE_PAY: "/payment/googlepay.svg",
+  MOBILEPAY: "/payment/mobilepay.svg",
+  VISA: "/payment/visa.svg",
+  MASTERCARD: "/payment/mastercard.svg",
 };
 
 function formatExpiry(month?: number | null, year?: number | null) {
@@ -76,20 +81,23 @@ function previewData(kind: string): SubscriptionResponse {
   };
 }
 
-function MethodLogo({ kind, label }: { kind: string; label: string }) {
+// Kort-ikon i fast ramme (som et lille betalingskort), så Visa, Mastercard,
+// wallets og MobilePay fylder det samme i rækken.
+function MethodLogo({ kind }: { kind: string }) {
   const logo = METHOD_LOGOS[kind];
-  if (!logo) {
-    return (
-      <span
-        className="hf-type-small hf-type-strong flex h-10 items-center rounded-[8px] border bg-hf-white px-3"
-        style={{ borderColor: "var(--hf-color-line)" }}
-      >
-        {label}
-      </span>
-    );
-  }
-  // eslint-disable-next-line @next/next/no-img-element
-  return <img src={logo.src} alt="" className={`${logo.className} w-auto`} />;
+  return (
+    <span
+      className="flex h-8 w-12 shrink-0 items-center justify-center rounded-[6px] border bg-hf-white"
+      style={{ borderColor: "var(--hf-color-line)" }}
+    >
+      {logo ? (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img src={logo} alt="" className="h-5 w-auto" />
+      ) : (
+        <IconCreditCard size={20} className="text-hf-black" aria-hidden="true" />
+      )}
+    </span>
+  );
 }
 
 export default function PaymentPage() {
@@ -238,7 +246,7 @@ export default function PaymentPage() {
                     const described = describeMethod(activeMethod);
                     return (
                       <div className="flex items-center gap-3">
-                        <MethodLogo kind={described.logoKind} label={described.title} />
+                        <MethodLogo kind={described.logoKind} />
                         <div className="min-w-0 flex-1">
                           <p className="hf-type-body text-hf-black truncate">{described.title}</p>
                           <p className="hf-type-caption truncate">{described.caption}</p>
@@ -310,17 +318,17 @@ export default function PaymentPage() {
 
           <div>
             <p className="hf-type-section-title">{t("payment.supportedMethodsTitle")}</p>
-            <div className="mt-2 grid grid-cols-2 gap-2">
+            <div className="mt-2 flex flex-wrap items-center gap-2">
               {SUPPORTED_METHODS.map((method) => (
-                <div
+                <span
                   key={method.id}
-                  className="flex h-16 items-center justify-center gap-2 rounded-[8px] border bg-hf-white"
+                  className="flex h-10 items-center gap-2 rounded-[8px] border bg-hf-white px-3"
                   style={{ borderColor: "var(--hf-color-line)" }}
                 >
                   {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={method.logo} alt={method.label} className={`${method.className} w-auto`} />
-                  {method.id === "mobilepay" && <span className="hf-type-body">MobilePay</span>}
-                </div>
+                  <img src={method.logo} alt={method.withName ? "" : method.label} className="h-5 w-auto" />
+                  {method.withName && <span className="hf-type-small hf-type-strong">{method.label}</span>}
+                </span>
               ))}
             </div>
           </div>
