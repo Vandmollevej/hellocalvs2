@@ -1,6 +1,12 @@
 # HELLO CAL — project status
 
-Last updated: 2026-09-29
+Last updated: 2026-10-02
+
+## 2026-10-02: Drikkevarer starter på pakkestørrelsen
+
+- Mængdefeltet viser nu 33 cl / 25 cl / 50 cl for dåser og små flasker, også når størrelsen kun står i navnet, og også for øl/vin uden kategorien DRINK. Vin, spiritus og færdigblandede drinks har egne regler (DECISIONS.md 2026-09-28, tilføjelse 2026-10-02).
+- Flere typiske mængder (kød, fisk, frugt, suppe, pizza m.m.), så færre varer starter på 100 g. Videresendte varer bruger samme startmængde.
+- Tests: `src/lib/default-amount.test.mjs` (ny) + udvidet `product-display-unit.test.mjs`, grønne. Lint, typecheck og build grønne. Ikke live-testet (ingen lokal DB).
 
 ## 2026-09-29: Offentlig forside for udloggede
 
