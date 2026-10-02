@@ -4,7 +4,7 @@ import { activitySummaryUrl } from "@/lib/daily-budget";
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { IconCamera, IconLock } from "@tabler/icons-react";
-import { IconChampagne } from "@/components/icons/Champagne";
+import { IconPartyPopper } from "@/components/icons/PartyPopper";
 import { IconWaistMeasure } from "@/components/icons/WaistMeasure";
 import { HfScreen } from "@/components/HfScreen";
 import { IconBathScale } from "@/components/hf/IconBathScale";
@@ -350,7 +350,7 @@ export default function ProfileEditPage() {
               {t("profile.actions.newWeight")}
             </button>
             <button type="button" onClick={() => router.push("/profile/goals")} className={tileClass}>
-              <IconChampagne size={34} />
+              <IconPartyPopper size={34} />
               {t("profile.actions.target")}
             </button>
             <button type="button" onClick={() => router.push("/profile/body-measurements")} className={tileClass}>

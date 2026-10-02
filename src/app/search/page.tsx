@@ -2,7 +2,8 @@
 
 import { Suspense, useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
-import { IconBookmark, IconBookmarkFilled, IconSearch } from "@tabler/icons-react";
+import { IconSearch } from "@tabler/icons-react";
+import { IconFavorite as IconBookmark, IconFavoriteFilled as IconBookmarkFilled } from "@/components/icons/Favorite";
 import { HfScreen } from "@/components/HfScreen";
 import { AddProductView } from "@/components/add/AddProductView";
 import { FoodRow } from "@/components/FoodRow";
@@ -85,7 +86,7 @@ function ResultRow({
                 onToggleFavorite(id, !isFavorite);
               }}
               aria-label={t(isFavorite ? "search.removeFavorite" : "search.addFavorite")}
-              className="text-hf-green"
+              className="mr-2 text-hf-green"
             >
               {isFavorite ? <IconBookmarkFilled size={20} /> : <IconBookmark size={20} />}
             </button>
