@@ -148,6 +148,11 @@ export default function StatisticsPage() {
   // usynlig for serveren: render standarden først og skift efter mount.
   const [sectionOrder, setSectionOrder] = useState<StatSectionKey[]>(DEFAULT_STAT_SECTION_ORDER);
   const [periodSelection, setPeriodSelection] = useState<StatPeriodSelection>(DEFAULT_STAT_SELECTION);
+  // "Tilføj" vises kun mens en sektion er i redigeringstilstand (blokkene
+  // vibrerer) — eller er tom, så indhold altid kan tilføjes igen.
+  const [showAddChart, setShowAddChart] = useState(false);
+  const [showAddCard, setShowAddCard] = useState(false);
+  const showAdd = showAddChart || showAddCard;
   // G3: registreringer med klassifikation til kød/drikke-kortene og "Største syndere".
   const { registrations: sourceRegistrations, loading: sourcesLoading } = useSourceRegistrations();
   // Oplevelse af søvn (docs/DECISIONS.md 2026-09-26): 1–5 per day, plotted
@@ -447,7 +452,7 @@ export default function StatisticsPage() {
       return (
         <>
           {renderSectionHeader(key, t("statSections.chartsHeading"))}
-          <StatChartsSection renderChart={renderChart} />
+          <StatChartsSection renderChart={renderChart} onShowAddChange={setShowAddChart} />
         </>
       );
     }
@@ -462,6 +467,7 @@ export default function StatisticsPage() {
           defaultActiveKeys={DEFAULT_ACTIVE_STAT_KEYS}
           highlightRecommendedLimits={warnOnRecommendedLimits}
           autoExpandUncertainty={autoExpandUncertainty}
+          onShowAddChange={setShowAddCard}
         />
         {SINNERS_ENABLED && <TopSinnersCard registrations={periodSources} loading={sourcesLoading} />}
       </>
@@ -471,16 +477,19 @@ export default function StatisticsPage() {
   return (
     <HfScreen title={t("statistics.title")} icon={<TrendIcon color="currentColor" size={20} />}>
       <div className="hf-page">
-        {/* Ét samlet "Tilføj" øverst: grafer og kort vælges på samme side. */}
-        <div className="flex justify-end">
-          <Link
-            href="/statistics/unused-cards"
-            className="hf-type-small hf-type-strong flex min-h-8 items-center gap-1 text-hf-black"
-          >
-            <IconPlus size={14} stroke={2.5} />
-            {t("statSections.add")}
-          </Link>
-        </div>
+        {/* Ét samlet "Tilføj" øverst: grafer og kort vælges på samme side.
+            Kun synlig i redigeringstilstand (eller når en sektion er tom). */}
+        {showAdd && (
+          <div className="flex justify-end">
+            <Link
+              href="/statistics/unused-cards"
+              className="hf-type-small hf-type-strong flex min-h-8 items-center gap-1 text-hf-black"
+            >
+              <IconPlus size={14} stroke={2.5} />
+              {t("statSections.add")}
+            </Link>
+          </div>
+        )}
 
         {sectionOrder.map((key, index) => (
           <section
