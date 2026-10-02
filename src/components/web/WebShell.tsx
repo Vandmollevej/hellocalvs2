@@ -52,9 +52,11 @@ function isActive(pathname: string, href: string) {
 }
 
 // Kun det længste match er aktivt, så /profile/edit ikke også markerer /profile.
-const ALL_HREFS = [...WEB_SHORTCUTS, ...WEB_SETTINGS].map(
-  (item) => item.href.split("?")[0],
-);
+const ALL_ITEMS: WebNavItem[] = [...WEB_SHORTCUTS, ...WEB_SETTINGS].flatMap((item) => [
+  item,
+  ...(item.children ?? []),
+]);
+const ALL_HREFS = ALL_ITEMS.map((item) => item.href.split("?")[0]);
 function isBestMatch(pathname: string, href: string) {
   if (!isActive(pathname, href)) return false;
   return !ALL_HREFS.some(
@@ -102,6 +104,56 @@ function SideLink({
   );
 }
 
+// Punkt med undermenu (Visning): folder ud, når en af siderne er åben, eller
+// når der trykkes på punktet. Foldet sammen sidebjælke linker direkte videre.
+function SideGroup({
+  item,
+  pathname,
+  label,
+  collapsed,
+  isFemale,
+}: {
+  item: WebNavItem;
+  pathname: string;
+  label: string;
+  collapsed: boolean;
+  isFemale: boolean;
+}) {
+  const { t } = useTranslation();
+  const children = (item.children ?? []).filter((child) => !child.femaleOnly || isFemale);
+  const inside = children.some((child) => isActive(pathname, child.href));
+  const [open, setOpen] = useState(inside);
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    if (inside) setOpen(true);
+  }, [inside]);
+  const Icon = item.icon;
+  if (collapsed) return <SideLink item={item} pathname={pathname} label={label} collapsed />;
+  return (
+    <li>
+      <button
+        type="button"
+        onClick={() => setOpen((value) => !value)}
+        aria-expanded={open}
+        className={`hf-type-body flex w-full items-center gap-3 rounded-md px-2.5 py-2 ${
+          inside ? "hf-type-strong text-hf-green-dark" : "text-text-secondary hover:bg-hf-tan hover:text-text-primary"
+        }`}
+      >
+        <Icon size={20} stroke={1.75} />
+        <span className="flex-1 truncate text-left">{label}</span>
+        <IconChevronDown size={16} className={open ? "rotate-180" : ""} />
+      </button>
+      {open && (
+        <ul className="mt-0.5 flex flex-col gap-0.5 pl-4">
+          {children.map((child) => (
+            <SideLink key={child.key} item={child} pathname={pathname} label={t(child.labelKey)} collapsed={false} />
+          ))}
+        </ul>
+      )}
+    </li>
+  );
+}
+
 // Brødkrummer øverst i indholdsfladen (som i admin) på sider under topniveau.
 const CRUMB_LABELS: Record<string, string> = {
   betingelser: "Betingelser",
@@ -110,7 +162,7 @@ const CRUMB_LABELS: Record<string, string> = {
 
 function Crumbs({ pathname }: { pathname: string }) {
   const { t } = useTranslation();
-  const all = [...WEB_SHORTCUTS, ...WEB_SETTINGS];
+  const all = ALL_ITEMS;
   const segs = pathname.split("/").filter(Boolean);
   const crumbs: { label: string; href?: string }[] = [{ label: "Hello Cal", href: WEB_HOME }];
   let acc = "";
@@ -166,6 +218,7 @@ export function WebShell({ children }: { children: React.ReactNode }) {
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setProfileOpen(false);
   }, [pathname]);
+  const [isFemale, setIsFemale] = useState(false);
   const addProfile = useAddActionsProfile();
   // Mikrofonen findes ikke på desktop (chat afløser den).
   const addActions = visibleAddActions(addProfile).filter((a) => a.key !== "microphone");
@@ -174,6 +227,19 @@ export function WebShell({ children }: { children: React.ReactNode }) {
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setAddOpen(false);
   }, [pathname]);
+
+  useEffect(() => {
+    let cancelled = false;
+    fetch("/api/profile")
+      .then(async (response) => (response.ok ? ((await response.json()) as { user: { sex: "FEMALE" | "MALE" | null } }) : null))
+      .then((data) => {
+        if (!cancelled && data) setIsFemale(data.user.sex === "FEMALE");
+      })
+      .catch(() => {});
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   useEffect(() => {
     // localStorage findes først efter hydrering.
@@ -254,15 +320,26 @@ export function WebShell({ children }: { children: React.ReactNode }) {
                   </h2>
                 )}
                 <ul className="flex flex-col gap-0.5">
-                  {settings.map((item) => (
-                    <SideLink
-                      key={item.key}
-                      item={item}
-                      pathname={pathname}
-                      label={t(item.labelKey)}
-                      collapsed={collapsed}
-                    />
-                  ))}
+                  {settings.map((item) =>
+                    item.children ? (
+                      <SideGroup
+                        key={item.key}
+                        item={item}
+                        pathname={pathname}
+                        label={t(item.labelKey)}
+                        collapsed={collapsed}
+                        isFemale={isFemale}
+                      />
+                    ) : (
+                      <SideLink
+                        key={item.key}
+                        item={item}
+                        pathname={pathname}
+                        label={t(item.labelKey)}
+                        collapsed={collapsed}
+                      />
+                    ),
+                  )}
                 </ul>
               </section>
             )}
