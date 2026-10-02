@@ -1,6 +1,13 @@
 # HELLO CAL — project status
 
-Last updated: 2026-10-01
+Last updated: 2026-10-02
+
+## 2026-10-02: Billede-dagbog — før/efter med skyder
+
+- Hvert billede i dagbogens karrusel har en hvid afkrydsningsboks i øverste højre hjørne (kun ved 2+ billeder). Afkrydsning åbner et mørkt fuldskærms-overlay: billede 1 med et 1-tal til venstre, tom plads med "Efter"-knappen i midten til højre. "Efter" viser de andre billeder i et gitter; det valgte bliver billede 2.
+- De to billeder lægges oven på hinanden med en lodret skyder (før til venstre, efter til højre); træk med finger eller mus, eller piletaster på håndtaget. Byt-om-knap øverst til højre og "Vælg et andet efter-billede" nederst.
+- Filer: `src/components/photo-diary/PhotoCompare.tsx`, `PhotoCompareSlider.tsx`, `PhotoSelectBox.tsx`, regler i `src/lib/photo-compare.ts` (+ test). Nye klasser `.hf-photo-check`/`.hf-photo-pill` (design.md §6.8). Tekster da/en.
+- Testet i Chromium (telefon 393 px og desktop 1280 px) med efterlignet login og billeder: hele flowet og træk i skyderen virker. Ikke testet på rigtig iPhone/Android. Lint, `npm test`-filen og `npm run build` grønne — men build på master fejler pt. uden for denne ændring: `src/lib/web-nav.ts` importerer `@/components/icons/Champagne`, som ikke findes i repoet.
 
 ## 2026-10-02: Vægt- og længdeenheder
 

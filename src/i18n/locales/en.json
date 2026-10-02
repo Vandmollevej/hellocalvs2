@@ -1524,7 +1524,21 @@
     "saving": "Saving photo…",
     "saveError": "The photo couldn't be saved on this phone. Try again.",
     "deleteError": "The photo couldn't be deleted. Try again.",
-    "storageLoadError": "The photos couldn't be loaded from this phone."
+    "storageLoadError": "The photos couldn't be loaded from this phone.",
+    "compare": {
+      "selectAria": "Select photo for before/after",
+      "title": "Before and after",
+      "before": "Before",
+      "after": "After",
+      "unselectBefore": "Deselect photo 1",
+      "firstSelectedHint": "Photo 1 is selected. Tap After to choose photo 2.",
+      "pickAfterTitle": "Choose after photo",
+      "pickAfterHint": "Tap the photo you want to compare with.",
+      "chooseAsAfter": "Choose as photo 2",
+      "sliderAria": "Before/after slider",
+      "swap": "Swap before and after",
+      "changeAfter": "Choose another after photo"
+    }
   },
   "registration": {
     "title": "Registration",

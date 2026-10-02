@@ -902,6 +902,61 @@ textarea::selection,
   color: var(--hf-white);
 }
 
+/* Foto-overlay: hvid afkrydsningsboks i billedets øverste højre hjørne
+   (billede-dagbogens før/efter, 2026-10-02). Knappen er 44 × 44 for fingeren;
+   den synlige boks (__box) er 24 × 24, hvid med skygge, så den ses på både
+   lyse og mørke billeder. Valgt viser boksen et nummer (1/2) eller et flueben. */
+.hf-photo-check {
+  position: absolute;
+  top: 0;
+  right: 0;
+  z-index: 10;
+  display: flex;
+  width: 44px;
+  height: 44px;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--hf-black);
+}
+
+.hf-photo-check__box {
+  display: flex;
+  width: 24px;
+  height: 24px;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid var(--hf-white);
+  border-radius: 4px;
+  background: var(--hf-white);
+  box-shadow: 0 1px 4px rgb(0 0 0 / 35%);
+  font-family: var(--font-hf-body);
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+/* Foto-overlay: hvid pille-knap på mørk flade (fx "Efter" midt i den tomme
+   plads i før/efter-sammenligningen). */
+.hf-photo-pill {
+  display: inline-flex;
+  height: 48px;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 0 20px;
+  border: 0;
+  border-radius: 9999px;
+  background: var(--hf-white);
+  color: var(--hf-black);
+  font-family: var(--font-hf-body);
+  font-size: 17px;
+  font-weight: 700;
+  line-height: 22px;
+}
+
 /* "Notched" felt (border-kant med indlejret label), Hello Doc — bevidst
    afvigelse fra den generelle .hf-field-kontrakt, matcher direkte det
    HelloFresh-checkout-skærmbillede brugeren gav som reference for
