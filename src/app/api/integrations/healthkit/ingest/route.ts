@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { storeIntegrationItems, type IntegrationItem } from "@/lib/integrations/store-items";
 import { authenticateDeviceToken, companionIntegration, companionSource } from "@/lib/integrations/companion";
 import { filterItemsBySettings } from "@/lib/integrations/sync-settings";
+import { recordIntegrationEvent } from "@/lib/integrations/events";
 
 type IngestBody = {
   source?: "APPLE_HEALTH" | "HEALTH_CONNECT" | "GOOGLE_HEALTH";
@@ -64,6 +65,7 @@ export async function POST(req: Request) {
       where: { id: integration.id },
       data: { status: "CONNECTED", connectedAt: integration.connectedAt ?? new Date(), lastSyncedAt: new Date(), lastError: null },
     });
+    await recordIntegrationEvent(token.userId, source, "SYNC", delivered);
     return NextResponse.json({ ok: true, delivered });
   } catch (error) {
     console.error("HealthKit ingest failed", error instanceof Error ? error.message : "ukendt");

@@ -8,6 +8,7 @@ import { newOAuthState, readOAuthState, saveIntegrationTokens, setOAuthCookie } 
 import { storeIntegrationItems } from "@/lib/integrations/store-items";
 import { filterItemsBySettings, missingWriteScopes, resolveSyncSettings } from "@/lib/integrations/sync-settings";
 import { collectPushData, pushCount } from "@/lib/integrations/push";
+import { recordIntegrationEvent } from "@/lib/integrations/events";
 import { OAUTH_PROVIDERS, adapterBySlug, isConfigured, publicUrl, redirectUri } from "./registry";
 import { DAY_MS, type OAuthProviderAdapter } from "./types";
 
@@ -140,11 +141,14 @@ export async function runIntegrationSync(userId: string, adapter: OAuthProviderA
       where: { id: integration.id },
       data: { status: "CONNECTED", lastSyncedAt: new Date(), lastPushedAt, lastError: null },
     });
+    await recordIntegrationEvent(userId, adapter.provider, "SYNC", delivered);
+    if (pushed > 0) await recordIntegrationEvent(userId, adapter.provider, "PUSH", pushed);
     return { delivered, pushed };
   } catch (error) {
     await prisma.integration
       .updateMany({ where: { userId, provider: adapter.provider }, data: { status: "ERROR", lastError: errorMessage(error) } })
       .catch(() => {});
+    await recordIntegrationEvent(userId, adapter.provider, "SYNC_ERROR");
     throw error;
   }
 }
@@ -182,10 +186,11 @@ export async function disconnect(adapter: OAuthProviderAdapter) {
   try {
     const user = await getSessionUser();
     if (!user) return NextResponse.json({ message: "Log ind først" }, { status: 401 });
-    await prisma.integration.updateMany({
-      where: { userId: user.id, provider: adapter.provider },
+    const result = await prisma.integration.updateMany({
+      where: { userId: user.id, provider: adapter.provider, status: { not: "DISCONNECTED" } },
       data: { status: "DISCONNECTED", accessToken: null, refreshToken: null, expiresAt: null, lastError: null, lastPushedAt: null },
     });
+    if (result.count > 0) await recordIntegrationEvent(user.id, adapter.provider, "DISCONNECTED");
     return NextResponse.json({ ok: true });
   } catch (error) {
     console.error(`${adapter.label} disconnect failed`, errorMessage(error));

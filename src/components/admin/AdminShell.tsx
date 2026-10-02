@@ -14,7 +14,7 @@ import { AdminCountryDialog, readAdminCountry } from "@/components/admin/AdminCo
 // brødkrummer og brugermenu. Under lg bliver sidebjælken en skuffe bag en menuknap.
 // Farverne er de eksisterende Hello Cal-tokens.
 
-type IconName = "home" | "chart" | "box" | "database" | "users" | "handshake" | "shield" | "cog" | "palette" | "road" | "flow" | "pot" | "log";
+type IconName = "home" | "chart" | "box" | "database" | "users" | "handshake" | "shield" | "cog" | "palette" | "road" | "flow" | "pot" | "log" | "plug";
 type NavLink = { href: string; key: AdminI18nKey };
 type NavEntry =
   | { kind: "link"; href: string; key: AdminI18nKey; icon: IconName }
@@ -86,6 +86,7 @@ const NAV: NavEntry[] = [
     ],
   },
   { kind: "link", href: "/admin/statistics", key: "nav_statistics", icon: "chart" },
+  { kind: "link", href: "/admin/integrations", key: "nav_integrations", icon: "plug" },
   { kind: "link", href: "/admin/hello-doc", key: "nav_hello_doc", icon: "users" },
   {
     kind: "group",
@@ -228,6 +229,7 @@ function Icon({ name, className = "h-5 w-5" }: { name: IconName | "search" | "ch
       </>
     ),
     road: <path d="M5 21 9 3M19 21 15 3M12 4v2.5M12 10.5v3M12 17.5V20" />,
+    plug: <path d="M9 3v5M15 3v5M6 8h12v3a6 6 0 0 1-12 0zM12 17v4" />,
     log: (
       <>
         <rect x="4" y="3" width="16" height="18" rx="2" />

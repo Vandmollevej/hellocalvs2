@@ -3486,3 +3486,11 @@ Kilder på "Mad på latin" skal altid være officielle (Fødevarestyrelsen, Sund
 - Begge kalder POST /api/account/close, som koerer anonymizeUser() (src/lib/gdpr.ts) paa brugeren selv, rydder session-cookies og logger ud. Forskellen er kun ordlyd; GDPR-sletning er fortsat anonymisering (se 2026-09-02).
 - Ikke gjort: aktivt abonnement hos betalingsudbyder opsiges ikke automatisk.
 
+## 2026-10-02: Admin → Integrationer og hændelseslog
+
+- Nyt menupunkt "Integrationer" i admin (`/admin/integrations`) med dashboard over alle integrationer og en side pr. integration (`/admin/integrations/[slug]`): aktive installationer, installeret/afinstalleret i alt, nye tilkoblinger og frakoblinger (graf op/ned), aktive installationer over tid, synkroniseringer, datapunkter hentet/sendt, fejlrate, til/fra-valg blandt forbundne, data gemt pr. type, seneste tilmeldinger/frakoblinger (med hvor længe brugeren havde den), median tid før frakobling og forbindelser i fejl.
+- `Integration` holder kun nuværende status, så historikken gemmes i en ny tabel `IntegrationEvent` (CONNECTED, DISCONNECTED, SYNC, SYNC_ERROR, PUSH, SETTINGS_CHANGED, evt. antal datapunkter). Den skrives kun fra serverens egne integrationsruter (`src/lib/integrations/events.ts`), og en fejl i loggen vælter aldrig brugerens handling. Slettes med brugeren (cascade).
+- Fornyet adgang på en allerede forbundet integration tæller ikke som ny installation. Telefon-integrationer (Apple Health/Health Connect) tæller som tilkoblet første gang appen melder sig.
+- Migrationen giver nuværende forbindelser en CONNECTED-hændelse på deres tilkoblingsdato; allerede frakoblede får ingen (frakoblingsdato ukendt). "Afinstalleret i alt" tæller derfor rækker med status DISCONNECTED og en tilkoblingsdato.
+- Admin ser brugerens e-mail i tabellerne (som på Brugere-siden); siden er kun for admins.
+
