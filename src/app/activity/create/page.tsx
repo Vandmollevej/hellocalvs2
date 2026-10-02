@@ -9,6 +9,7 @@ import type { ActivityOption } from "@/lib/activity-types";
 import { useTranslation } from "@/i18n/LocaleProvider";
 import { TRAINING_INTENSITIES, type TrainingIntensity } from "@/lib/pal-model";
 import type { ActivityEstimate } from "@/lib/activity-met";
+import { durationMinutes, endClock, minutesUntil, splitDuration } from "@/lib/activity-duration";
 
 // Tilføj aktivitet (tilføj-menuen og kalenderens "Tilføj"). date/time fra
 // kalenderen forudfylder starttidspunktet.
@@ -25,7 +26,11 @@ function ActivityCreateContent() {
   const params = useSearchParams();
   const [option, setOption] = useState<ActivityOption | null>(null);
   const [startedAt, setStartedAt] = useState(() => defaultStart(params.get("date"), params.get("time")));
-  const [minutes, setMinutes] = useState("30");
+  // Varighed som timer + minutter; sluttidspunktet regnes ud og kan rettes.
+  const [hours, setHours] = useState("0");
+  const [mins, setMins] = useState("30");
+  const totalMinutes = durationMinutes(hours, mins);
+  const minutes = String(totalMinutes);
   const [kcal, setKcal] = useState("");
   const [intensity, setIntensity] = useState<TrainingIntensity>("MODERATE");
   const [distanceKm, setDistanceKm] = useState("");
@@ -55,11 +60,18 @@ function ActivityCreateContent() {
     };
   }, [option, minutes, intensity, distanceKm, showsDistance]);
 
+  function setEnd(value: string) {
+    const next = minutesUntil(startedAt, value);
+    if (next === null) return;
+    const split = splitDuration(next);
+    setHours(split.hours);
+    setMins(split.minutes);
+  }
+
   async function save() {
     if (!option) return;
-    const durationMinutes = Number(minutes);
     const ownKcal = kcal.trim() === "" ? undefined : Number(kcal);
-    if (!(durationMinutes > 0) || (ownKcal !== undefined && !(ownKcal > 0)) || (ownKcal === undefined && !(estimate?.kcal))) {
+    if (!(totalMinutes > 0) || (ownKcal !== undefined && !(ownKcal > 0)) || (ownKcal === undefined && !(estimate?.kcal))) {
       setError(t("activity.invalid"));
       return;
     }
@@ -72,7 +84,7 @@ function ActivityCreateContent() {
         body: JSON.stringify({
           sportType: option.key,
           startedAt: new Date(startedAt).toISOString(),
-          durationMinutes,
+          durationMinutes: totalMinutes,
           caloriesBurned: ownKcal,
           intensity,
           distanceKm: showsDistance && Number(distanceKm) > 0 ? Number(distanceKm) : null,
@@ -102,10 +114,47 @@ function ActivityCreateContent() {
               <span className="hf-type-small text-text-secondary">{t("activity.startedAt")}</span>
               <input className="hf-field" type="datetime-local" value={startedAt} onChange={(e) => setStartedAt(e.target.value)} />
             </label>
-            <label className="flex flex-col gap-1">
-              <span className="hf-type-small text-text-secondary">{t("activity.minutes")}</span>
-              <input className="hf-field" type="number" inputMode="numeric" min={1} value={minutes} onChange={(e) => setMinutes(e.target.value)} />
-            </label>
+            <div className="flex flex-col gap-1">
+              <span className="hf-type-small text-text-secondary">{t("activity.duration")}</span>
+              <div className="grid grid-cols-3 gap-2">
+                <label className="flex flex-col gap-1">
+                  <input
+                    className="hf-field"
+                    type="number"
+                    inputMode="numeric"
+                    min={0}
+                    max={23}
+                    value={hours}
+                    onChange={(e) => setHours(e.target.value)}
+                    aria-label={t("activity.hours")}
+                  />
+                  <span className="hf-type-small text-text-secondary">{t("activity.hours")}</span>
+                </label>
+                <label className="flex flex-col gap-1">
+                  <input
+                    className="hf-field"
+                    type="number"
+                    inputMode="numeric"
+                    min={0}
+                    max={59}
+                    value={mins}
+                    onChange={(e) => setMins(e.target.value)}
+                    aria-label={t("activity.minutesShort")}
+                  />
+                  <span className="hf-type-small text-text-secondary">{t("activity.minutesShort")}</span>
+                </label>
+                <label className="flex flex-col gap-1">
+                  <input
+                    className="hf-field"
+                    type="time"
+                    value={endClock(startedAt, totalMinutes)}
+                    onChange={(e) => setEnd(e.target.value)}
+                    aria-label={t("activity.endedAt")}
+                  />
+                  <span className="hf-type-small text-text-secondary">{t("activity.endedAt")}</span>
+                </label>
+              </div>
+            </div>
             <div className="flex flex-col gap-2">
               <span className="hf-type-small text-text-secondary">{t("activity.intensity")}</span>
               <p className="hf-type-small text-text-secondary">{t("activity.intensityHint")}</p>
