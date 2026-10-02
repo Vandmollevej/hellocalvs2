@@ -158,6 +158,15 @@ function SideGroup({
 const CRUMB_LABELS: Record<string, string> = {
   betingelser: "Betingelser",
   privatlivspolitik: "Privatlivspolitik",
+  login: "Log ind",
+  signup: "Opret konto",
+  "forgot-password": "Glemt adgangskode",
+  "reset-password": "Nulstil adgangskode",
+  "verify-email": "Bekræft e-mail",
+  forward: "Videresend",
+  "family-code": "Familiekode",
+  scan: "Scan",
+  welcome: "Velkommen",
 };
 
 function Crumbs({ pathname }: { pathname: string }) {
