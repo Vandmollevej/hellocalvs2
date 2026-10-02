@@ -2,6 +2,15 @@
 
 Last updated: 2026-10-02
 
+## 2026-10-02: Bølge-baggrunden justeret + lime puls-linje
+
+- Tal-hjulets rækker klippes nu ved "Dagens tilføjelser"-stregen (18 px under hero), så de forsvinder ned bag stregen i stedet for at blive skåret af over den (`StatsWheel.tsx`, `DIVIDER_BELOW_HERO`).
+- Farverampen er vendt: gul-brunlige nuancer øverst, grønt længere nede. Hvert bånd får en lille tilfældig farveforskydning, og ca. hvert femte en tydeligt anden nuance (overvejende tendens, ikke statisk).
+- Frostet glas nederst: kraftigere slør (24 px) + mælket creme-lag (`.home-wave__frost`).
+- Jævnere bølger: kortere bølgelængder (hele bølger ses), så ingen side konsekvent får de største udsving; ca. hvert femte bånd må variere mere. Strengene har større, uregelmæssig afstand, egne småbølger og spreder sig/samler sig langsomt — ikke længere "tov".
+- Ny lysende lime puls-linje (pulsmåler) fejer hen over toppen af skærmen og tegner ét hjerteslag omkring midten; tempo, højde og placering er tilfældige pr. besøg og pr. fej (`drawPulse`, `heartbeatShape` i `home-waves.ts`).
+- Lint, typecheck og `node --test` (home-waves) grønne. Ikke visuelt testet (brugerregel) — tjek på telefon.
+
 ## 2026-10-02: "Til info sendte vi dig …"-popup + push
 
 - Nyt: `src/lib/sent-notices.ts`, `src/lib/sms.ts`, `/api/messages/sent-notices`, `SentMessageNotice` (bundark i layoutet), `sendPushToUser` i `push.ts`. Se DECISIONS 2026-10-02.

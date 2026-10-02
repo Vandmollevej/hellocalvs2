@@ -113,6 +113,8 @@ const EDGE_OFFSET = { left: 13, right: 7 } as const;
  * from the header vs. the hero's middle at 32 + 150 = 182.
  */
 const VERTICAL_SHIFT = -7;
+/** The divider line lies 18px below the hero: the list's `pt-2` + half the 20px title line. */
+const DIVIDER_BELOW_HERO = 18;
 // Temporary grey caption under every number (user 2026-09-27) until
 // the real text is decided.
 const CAPTION_PLACEHOLDER = "Dummytekst";
@@ -350,10 +352,12 @@ export function StatsWheel({ side }: { side: "left" | "right" }) {
           width: side === "right" ? 178 : 200,
           height: WHEEL_HEIGHT,
           transform: "translateY(-50%)",
-          // Rækkerne klippes ved hero-bunden: de drejer ind bag listen. Listen
-          // har ikke længere en dækkende baggrund (bølge-baggrunden skinner
-          // igennem, 2026-10-01), så klippet overtager det job.
-          clipPath: `inset(-400px -400px ${HERO_HEIGHT / 2 + VERTICAL_SHIFT + WHEEL_HEIGHT / 2 - HERO_HEIGHT}px -400px)`,
+          // Rækkerne klippes ved "Dagens tilføjelser"-stregen, så de drejer
+          // ned bag den (bruger 2026-10-02) i stedet for at blive skåret af
+          // over den. Listen har ikke længere en dækkende baggrund
+          // (bølge-baggrunden skinner igennem, 2026-10-01), så klippet
+          // overtager det job.
+          clipPath: `inset(-400px -400px ${HERO_HEIGHT / 2 + VERTICAL_SHIFT + WHEEL_HEIGHT / 2 - HERO_HEIGHT - DIVIDER_BELOW_HERO}px -400px)`,
         } as React.CSSProperties
       }
     >

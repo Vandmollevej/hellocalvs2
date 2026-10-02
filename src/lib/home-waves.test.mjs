@@ -1,7 +1,7 @@
 // Kør: npm test  (node --test, Node 24 fjerner TypeScript-typer selv)
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { createWaveScene, drawWaveScene, mulberry32, WAVE_BLEED } from "./home-waves.ts";
+import { createWaveScene, drawWaveScene, heartbeatShape, mulberry32, WAVE_BLEED } from "./home-waves.ts";
 
 const palette = {
   ramp: [
@@ -10,6 +10,8 @@ const palette = {
     { at: 1, color: [244, 240, 233] },
   ],
   deep: [80, 160, 110],
+  pulse: [163, 230, 53],
+  pulseCore: [140, 200, 60],
 };
 
 /** Minimal canvas-stand-in, der registrerer tegnekald og tjekker for NaN. */
@@ -76,6 +78,12 @@ test("scenen tegner uden NaN på mobil og desktop, til alle tider", () => {
     }
   }
   assert.ok(WAVE_BLEED > 0);
+});
+
+test("hjerteslaget har én tydelig R-tak op og er fladt langt fra midten", () => {
+  assert.ok(heartbeatShape(0) < -0.9);
+  assert.ok(Math.abs(heartbeatShape(1)) < 1e-3);
+  assert.ok(Math.abs(heartbeatShape(-1)) < 1e-3);
 });
 
 test("bølgerne holder sig inden for rimelige grænser og bevæger sig langsomt", () => {

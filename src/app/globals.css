@@ -1816,7 +1816,20 @@ textarea::selection,
 }
 
 .home-wave__layer--heavy canvas {
-  filter: blur(17px);
+  filter: blur(24px);
+}
+
+/* Frostet glas nederst (bruger 2026-10-02): et mælket creme-slør oven på
+   det kraftigt slørede lag, så bevægelserne forneden kun anes svagt. */
+.home-wave__frost {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    transparent 38%,
+    color-mix(in srgb, var(--hf-cream) 45%, transparent) 62%,
+    color-mix(in srgb, var(--hf-cream) 68%, transparent) 100%
+  );
 }
 
 /* Webvisning af søgesiden: indholdet fylder halvdelen (2/4) i midten, mens
