@@ -147,7 +147,7 @@ function ActivityCreateContent() {
               </span>
             </label>
             {error && <p className="hf-type-small text-hf-red-dark">{error}</p>}
-            <button type="button" className="hf-btn-primary" onClick={() => void save()} disabled={saving}>
+            <button type="button" className="hf-control hf-btn-primary w-full px-4" onClick={() => void save()} disabled={saving}>
               {t("activity.save")}
             </button>
           </div>
