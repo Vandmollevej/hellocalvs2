@@ -178,6 +178,7 @@ input[type="date"] {
 }
 input[type="date"]::-webkit-date-and-time-value {
   text-align: left;
+  white-space: nowrap;
 }
 
 /* Global lås: ingen skærm må kunne skubbes fra side til side. Alle lodrette

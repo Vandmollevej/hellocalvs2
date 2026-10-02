@@ -1,6 +1,11 @@
 # HELLO CAL — project status
 
-Last updated: 2026-09-29
+Last updated: 2026-10-02
+
+## 2026-10-02: Statistik — periodevælgeren åbner under knappen og fylder hele bredden
+
+- `StatPeriodPicker`: panelet var 256 px og højrestillet, så det så ud til at åbne væk fra "Vis:"-knappen. Nu `left-0 right-0` (hele indholdsbredden) og fra/til-datoerne ligger i ét grid (`1fr auto 1fr`) med `white-space: nowrap` på iOS' datotekst, så "30 Sep 2026" ikke ombrydes til to linjer.
+- Lint, typecheck og build grønne. Ikke visuelt testet på telefon (ingen lokal DB/login).
 
 ## 2026-09-29: Offentlig forside for udloggede
 
