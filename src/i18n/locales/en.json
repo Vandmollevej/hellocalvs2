@@ -178,6 +178,8 @@
       "chatThinking": "Interpreting…",
       "chatSave": "Add to today",
       "chatSaved": "Added",
+      "chatAdd": "Add",
+      "chatAddAll": "Add all",
       "chatNothing": "I couldn't find anything edible in that message.",
       "chatError": "Something went wrong. Try again.",
       "chatSaveError": "Could not save. Try again."

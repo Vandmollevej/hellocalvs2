@@ -52,7 +52,21 @@ function loadPersistedItems(): Item[] {
   }
 }
 
-function ItemRow({ item, estimateLabel, onDelete }: { item: Item; estimateLabel: string; onDelete: () => void }) {
+function ItemRow({
+  item,
+  estimateLabel,
+  addLabel,
+  disabled,
+  onAdd,
+  onDelete,
+}: {
+  item: Item;
+  estimateLabel: string;
+  addLabel: string;
+  disabled: boolean;
+  onAdd: () => void;
+  onDelete: () => void;
+}) {
   const content = (
     <div className="flex items-center gap-2.5 py-2.5">
       <div className="h-11 w-11 flex-shrink-0 overflow-hidden rounded-lg bg-hf-tan">
@@ -71,7 +85,18 @@ function ItemRow({ item, estimateLabel, onDelete }: { item: Item; estimateLabel:
         <span className="hf-type-small text-text-secondary mt-1 block">{item.amountLabel}</span>
       </div>
       <span className="hf-type-small text-text-secondary flex-shrink-0">{Math.round(item.kcal)} kcal</span>
-      {item.saved && <IconChevronRight size={18} className="flex-shrink-0 text-hf-black opacity-40" />}
+      {item.saved ? (
+        <IconChevronRight size={18} className="flex-shrink-0 text-hf-black opacity-40" />
+      ) : (
+        <button
+          type="button"
+          onClick={onAdd}
+          disabled={disabled}
+          className="hf-type-small hf-type-strong h-9 flex-shrink-0 rounded-lg border border-[var(--hf-color-action)] px-3 text-[var(--hf-color-action)] disabled:opacity-60"
+        >
+          {addLabel}
+        </button>
+      )}
     </div>
   );
 
@@ -150,8 +175,9 @@ export default function ChatPage() {
     }
   }
 
-  async function addShownItems() {
-    const pending = items.filter((item) => !item.saved);
+  // Tilføjer enten alle viste forslag eller kun den ene række (ids).
+  async function addShownItems(ids?: string[]) {
+    const pending = items.filter((item) => !item.saved && (!ids || ids.includes(item.id)));
     if (pending.length === 0 || isAdding) return;
     setIsAdding(true);
     setErrorMessage(null);
@@ -206,7 +232,7 @@ export default function ChatPage() {
 
   return (
     <HfScreen title={t("web.chatTitle")} hideBackButton>
-      <div className="flex flex-col px-4 pb-8 pt-4">
+      <div className="mx-auto flex w-full flex-col px-4 pb-8 pt-4 lg:w-1/2">
         <form
           onSubmit={(e) => {
             e.preventDefault();
@@ -243,24 +269,31 @@ export default function ChatPage() {
         </div>
 
         <section className="mt-4">
-          <h2 className="hf-type-body hf-heading mb-1 text-hf-black">{t("voice.added")}</h2>
-          <ul>
-            {items.map((item) => (
-              <li key={item.id} className="border-b border-hf-tan-dark last:border-b-0">
-                <ItemRow item={item} estimateLabel={t("voice.aiEstimate")} onDelete={() => deleteItem(item)} />
-              </li>
-            ))}
-          </ul>
           {hasPendingItems && (
             <button
               type="button"
               onClick={() => void addShownItems()}
               disabled={isAdding}
-              className="hf-type-body hf-type-strong hf-control mt-4 flex w-full items-center justify-center rounded-xl bg-hf-green text-hf-white disabled:opacity-60"
+              className="hf-type-body hf-type-strong hf-control mb-3 flex w-full items-center justify-center rounded-xl bg-hf-green text-hf-white disabled:opacity-60"
             >
-              {isAdding ? t("voice.adding") : t("voice.addShownItems")}
+              {isAdding ? t("voice.adding") : t("web.chatAddAll")}
             </button>
           )}
+          <h2 className="hf-type-body hf-heading mb-1 text-hf-black">{t("voice.added")}</h2>
+          <ul>
+            {items.map((item) => (
+              <li key={item.id} className="border-b border-hf-tan-dark last:border-b-0">
+                <ItemRow
+                  item={item}
+                  estimateLabel={t("voice.aiEstimate")}
+                  addLabel={t("web.chatAdd")}
+                  disabled={isAdding}
+                  onAdd={() => void addShownItems([item.id])}
+                  onDelete={() => deleteItem(item)}
+                />
+              </li>
+            ))}
+          </ul>
         </section>
       </div>
     </HfScreen>
