@@ -1,5 +1,10 @@
 # HELLO CAL — project status
 
+
+## 2026-10-02: Desktop — alle sider i skallen
+
+- På desktop vises alle sider (også login, betingelser, privatlivspolitik) i WebShell med sidebjælke, topmenu og brødkrummer; kun admin, hello-doc, business og presse er fuld bredde.
+- Lint og typecheck grønne; ikke set i browser — tjek login-siderne på desktop.
 Last updated: 2026-10-02
 
 ## 2026-10-02: Kameraflowet — rigtige stillbilleder + nyt foto af indholdet
