@@ -289,7 +289,11 @@ type Read<T> = { analysisId: string; result: T } | null;
 //   OCR-sikkerhed >= 85 % (src/lib/local-label.ts).
 // - Mangler næringen, og står indholdet på samme foto: ét kald til begge.
 // - Ellers kun det kald, der mangler (to separate fotos kræver to kald).
-export async function enrichLabel(input: QuickEnrichmentInput) {
+// Hvad der blev læst fra brugerens fotos — "Scan varen igen" bruger det til
+// at afgøre, om varen kan overtages som vores egen (src/lib/product-rescan.ts).
+export type LabelReadOutcome = { nutritionComplete: boolean; ingredientsRead: boolean; saturatedFatRead: boolean };
+
+export async function enrichLabel(input: QuickEnrichmentInput): Promise<LabelReadOutcome> {
   const { productId } = input;
   const base = { barcode: input.barcode, marketRegion: input.marketRegion, signals: input.signals };
   const nutritionText = input.nutritionOcrText ?? "";
@@ -422,6 +426,14 @@ export async function enrichLabel(input: QuickEnrichmentInput) {
       errors: labelErrors,
     },
   });
+  return {
+    nutritionComplete,
+    ingredientsRead: Boolean(ingredients?.result.ingredientsText),
+    saturatedFatRead:
+      (read?.basis === "100g" || read?.basis === "100ml") &&
+      typeof read?.saturatedFatPer100g === "number" &&
+      read.saturatedFatPer100g >= 0,
+  };
 }
 
 export async function enrichQuickProduct(input: QuickEnrichmentInput) {

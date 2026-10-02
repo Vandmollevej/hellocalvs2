@@ -1,7 +1,7 @@
 import type { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { analyzeFrontPhoto } from "@/lib/product-photo-analysis";
-import { createFrontCutoutJobs, linkCutoutJobsToProduct } from "@/lib/image-cutout-jobs";
+import { createFrontCutoutJobs, discardPendingFrontImage, linkCutoutJobsToProduct } from "@/lib/image-cutout-jobs";
 import { debugLog, errorText } from "@/lib/debug-log";
 
 // Natlig robot "external-image-ai" (docs/DECISIONS.md 2026-10-02). Når en
@@ -77,6 +77,9 @@ export async function analyzeDeclinedExternalImages(): Promise<string> {
 
       // analyzeFrontPhoto gemmer kun data-URL'er lokalt; Open Food Facts-
       // billedet fritlægges direkte fra deres https-adresse.
+      // Den beskårne fritlægning erstatter den rå fra stregkodeopslaget, som
+      // ellers ville spærre for den (kun ét ventende forslag ad gangen).
+      await discardPendingFrontImage(product.id, product.imageUrl);
       await createFrontCutoutJobs({ analysisId, sourceUrl: product.imageUrl!, front: result, brandMatch });
       await linkCutoutJobsToProduct({ frontAnalysisId: analysisId, productId: product.id, brand });
 

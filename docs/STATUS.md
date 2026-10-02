@@ -6,6 +6,7 @@ Last updated: 2026-10-02
 
 - Bygget efter brugerens krav (se DECISIONS.md samme dato): banner under headeren på `/add/[id]` efter scanning (`src/components/add/RescanBanner.tsx`), kameraflowet har en genscannings-tilstand (`ProductCaptureFlow` med `rescan`), API `POST /api/products/[id]/rescan` og `/rescan/offer`, baggrundsaflæsning i `src/lib/product-rescan.ts`, natligt job `external-image-ai` (`src/lib/external-image-ai.ts`).
 - Migration `20261002090000_product_rescan` skal køre ved deploy.
+- Efter brugerens svar: også USDA-varer og også fra søgningen; points straks efter AI. Genscannede Open Food Facts-/USDA-varer overtages som vores egne og bliver søgbare; originalen fjernes.
 - Tests (`src/lib/product-rescan-offer.test.mjs`), lint, typecheck og build grønne. Ikke live-testet (ingen lokal DB/login/kamera) — test på telefon: scan en Open Food Facts-vare, træk banneret ned, tag de tre fotos.
 
 ## 2026-09-29: Offentlig forside for udloggede
