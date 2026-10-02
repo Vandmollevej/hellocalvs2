@@ -13,7 +13,6 @@ function AddContent() {
       forDish={searchParams.get("for") === "ret"}
       initialTime={searchParams.get("time")}
       initialDate={searchParams.get("date")}
-      scanned={searchParams.get("scanned") === "1"}
     />
   );
 }

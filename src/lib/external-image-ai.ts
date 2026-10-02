@@ -5,7 +5,7 @@ import { createFrontCutoutJobs, linkCutoutJobsToProduct } from "@/lib/image-cuto
 import { debugLog, errorText } from "@/lib/debug-log";
 
 // Natlig robot "external-image-ai" (docs/DECISIONS.md 2026-10-02). Når en
-// Open Food Facts-vare scannes første gang, tilbydes brugeren 10 points for at
+// Open Food Facts-/USDA-vare vises første gang, tilbydes brugeren 10 points for at
 // scanne den igen. Reagerer brugeren ikke (banneret vist, ingen genscanning),
 // sendes Open Food Facts-billedet her om natten gennem samme OpenAI-aflæsning
 // som kameraets forsidefoto: logo, vareboks, brand, subbrand, variant og
@@ -23,7 +23,7 @@ const DEFAULT_MARKET_REGION = "DK";
 export async function analyzeDeclinedExternalImages(): Promise<string> {
   const products = await prisma.product.findMany({
     where: {
-      externalSource: "OPEN_FOOD_FACTS",
+      externalSource: { in: ["OPEN_FOOD_FACTS", "USDA"] },
       rescanOfferedAt: { not: null },
       rescannedAt: null,
       externalImageAnalyzedAt: null,

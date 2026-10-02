@@ -7,8 +7,8 @@ import { RESCAN_POINTS, type RescanStep } from "@/lib/product-rescan-offer";
 import { useTranslation } from "@/i18n/LocaleProvider";
 
 // "Scan varen igen" (docs/DECISIONS.md 2026-10-02). Banneret glider ned under
-// headeren, så snart /add/[id] efter en scanning ser, at varen kommer fra
-// Open Food Facts eller mangler et fritlagt PNG. Det ligger OVEN PÅ siden —
+// headeren, så snart /add/[id] ser, at varen kommer fra Open Food Facts/USDA
+// eller mangler et fritlagt PNG. Det ligger OVEN PÅ siden —
 // indholdet rykker aldrig ned.
 // - "peek": grøn stribe "Optjen 10 points" + kamera-ikon og trækstregen.
 // - "open": træk ned / tryk på stregen: teksten øverst, derefter samme kamera

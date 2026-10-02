@@ -116,9 +116,6 @@ function wait(ms: number) {
 export function ProductCaptureFlow({ returnSuffix, rescan }: { returnSuffix: string; rescan?: RescanTarget }) {
   const { t, locale } = useTranslation();
   const visibleSteps: CaptureStep[] = rescan ? rescan.steps : CAPTURE_STEPS;
-  // En kendt vare fra scanneren åbnes med ?scanned=1, så /add/[id] ved, at
-  // brugeren står med varen i hånden (banneret "Optjen 10 points").
-  const scannedSuffix = returnSuffix ? `${returnSuffix}&scanned=1` : "?scanned=1";
   const router = useRouter();
   const videoRef = useRef<HTMLVideoElement>(null);
   const streamRef = useRef<MediaStream | null>(null);
@@ -474,7 +471,7 @@ export function ProductCaptureFlow({ returnSuffix, rescan }: { returnSuffix: str
             durationMs: Date.now() - flowStartedAtRef.current,
             data: { outcome: "existing", source: data.source ?? null, lookupMs: Date.now() - startedAt },
           });
-          leaveTo(`/add/${data.product.id}${scannedSuffix}`);
+          leaveTo(`/add/${data.product.id}${returnSuffix}`);
           return;
         }
         if (response.status !== 404) throw new Error(`Product lookup failed (${response.status})`);
@@ -519,7 +516,7 @@ export function ProductCaptureFlow({ returnSuffix, rescan }: { returnSuffix: str
         lookupInProgressRef.current = false;
       }
     },
-    [flowId, leaveTo, locale, region, scannedSuffix, stopScanner],
+    [flowId, leaveTo, locale, region, returnSuffix, stopScanner],
   );
 
   // Hver aflæsning: start decode-animationen på en ny kode (og opslaget, når

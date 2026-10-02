@@ -23,6 +23,10 @@ test("egen online-vare: kun forsiden, og kun uden fritlagt PNG", () => {
   );
 });
 
+test("USDA-vare: alle tre felter som Open Food Facts", () => {
+  assert.deepEqual(rescanStepsFor({ externalSource: "USDA", barcodes }), ["front", "nutrition", "ingredients"]);
+});
+
 test("intet banner for brugeroprettede, private eller stregkodeløse varer", () => {
   assert.deepEqual(rescanStepsFor({ externalSource: null, barcodes, imageUrl: null }), []);
   assert.deepEqual(rescanStepsFor({ externalSource: "OPEN_FOOD_FACTS", barcodes: [] }), []);

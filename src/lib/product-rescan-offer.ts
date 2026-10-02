@@ -28,13 +28,17 @@ export function hasProperCutout(product: RescanCandidate): boolean {
   return (product.images ?? []).some((image) => image.tags.some((tag) => tag.toLowerCase() === "cutout"));
 }
 
-// Tom liste = intet banner. Open Food Facts: alle tre felter (forside, energi,
-// indhold). Egne online-varer uden PNG: kun forsiden. Kun første gang — er
+// Varer hentet automatisk ved stregkodeopslag (Open Food Facts, USDA) —
+// ingen har set emballagen, så både billede, næring og indhold tjekkes.
+const LOOKUP_SOURCES = new Set(["OPEN_FOOD_FACTS", "USDA"]);
+
+// Tom liste = intet banner. Open Food Facts/USDA: alle tre felter (forside,
+// energi, indhold). Egne online-varer uden PNG: kun forsiden. Kun første gang — er
 // varen allerede scannet igen af nogen, vises banneret ikke mere.
 export function rescanStepsFor(product: RescanCandidate): RescanStep[] {
   if (product.rescannedAt || product.privateOwnerId) return [];
   if (!product.barcodes?.length) return [];
-  if (product.externalSource === "OPEN_FOOD_FACTS") return ["front", "nutrition", "ingredients"];
+  if (product.externalSource && LOOKUP_SOURCES.has(product.externalSource)) return ["front", "nutrition", "ingredients"];
   if (product.externalSource && OWN_ONLINE_SOURCES.has(product.externalSource) && !hasProperCutout(product)) {
     return ["front"];
   }

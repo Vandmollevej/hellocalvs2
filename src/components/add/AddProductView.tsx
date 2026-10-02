@@ -245,12 +245,9 @@ export function AddProductView({
   inSheet = false,
   onClose,
   registration,
-  scanned = false,
 }: {
   id: string;
   forDish: boolean;
-  // Åbnet direkte fra scanneren (?scanned=1): brugeren har varen i hånden.
-  scanned?: boolean;
   initialTime?: string | null;
   initialDate?: string | null;
   inSheet?: boolean;
@@ -403,13 +400,13 @@ export function AddProductView({
 
   const product = state.status === "loaded" ? state.product : null;
 
-  // "Scan varen igen" (docs/DECISIONS.md 2026-10-02): banneret vises efter en
-  // scanning, når varen kommer fra Open Food Facts eller er en egen online-
-  // vare uden fritlagt PNG. Felterne låses ved første visning, så banneret
+  // "Scan varen igen" (docs/DECISIONS.md 2026-10-02): banneret vises, når
+  // varen kommer fra Open Food Facts/USDA eller er en egen online-vare uden
+  // fritlagt PNG — både efter scanning og fra søgningen (brugerens valg). Felterne låses ved første visning, så banneret
   // ikke forsvinder midt i takken, når varen hentes igen efter indsendelsen.
   const [rescanSteps, setRescanSteps] = useState<RescanStep[] | null>(null);
   const candidateRescanSteps =
-    scanned && !isEditing && !inSheet && product && profile?.id ? rescanStepsFor(product) : [];
+    !isEditing && !inSheet && product && profile?.id ? rescanStepsFor(product) : [];
   if (rescanSteps === null && candidateRescanSteps.length) setRescanSteps(candidateRescanSteps);
 
   function reloadProduct() {
