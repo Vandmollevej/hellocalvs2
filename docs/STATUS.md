@@ -8,7 +8,7 @@ Last updated: 2026-10-02
 - Varighed: timer + minutter + "slut kl.", som følger med begge veje.
 - Rettet: `src/lib/web-nav.ts` importerede det slettede champagne-ikon (brød typecheck/build på master) — bruger nu konfetti-ikonet.
 - Tests: `activity-met.test.mjs` (katalog) og ny `activity-duration.test.mjs`, grønne. Lint og typecheck grønne. Ikke live-testet (ingen lokal DB).
-- Mangler: brugerens 3D-aktivitetsikon er ikke i repoet endnu — når filen ligger i `public/icons/`, kan tilføj-menuens aktivitetsknap bruge den (`imageSrc` i `src/lib/add-actions.ts`).
+- Brugerens 3D-aktivitetsikon er nu sat på aktivitetsknappen under Tilføj (`public/icons/activity-3d.png`, `imageSrc` i `src/lib/add-actions.ts`); hjulet, `/add/menu`, Indstillinger → Visning → Forside og widgets viser det.
 
 ## 2026-10-01: Rolig bølge-baggrund på forsiden
 
