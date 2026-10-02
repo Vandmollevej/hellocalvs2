@@ -2041,7 +2041,7 @@ function DayDetails({
           <div className="relative rounded-lg bg-hf-black px-4 py-2 text-center text-hf-white">
             <Link
               href="/statistics/sleep"
-              className="hf-type-small absolute inset-y-0 left-4 flex items-center text-hf-white no-underline"
+              className="hf-type-small absolute inset-y-0 right-4 flex items-center text-hf-white no-underline"
             >
               {t("sleepStats.calendarLink")}
             </Link>
