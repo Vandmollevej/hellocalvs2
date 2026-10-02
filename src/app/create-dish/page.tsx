@@ -25,6 +25,7 @@ import {
   type DishDraftIngredient,
 } from "@/lib/dish-draft";
 import { RecipeImagesPicker } from "@/components/recipes/RecipeImagesPicker";
+import { ProductPhotoDropZone } from "@/components/recipes/ProductPhotoDropZone";
 import { RecipeStepsEditor, isEmptyStep } from "@/components/recipes/RecipeStepsEditor";
 import { RecipeCategoriesDialog } from "@/components/recipes/RecipeCategoriesDialog";
 import { useTranslation } from "@/i18n/LocaleProvider";
@@ -358,15 +359,17 @@ export default function CreateDishPage() {
           )}
 
           <div className="mt-4 grid grid-cols-2 gap-2">
-            <a
-              href="/camera?mode=product&for=ret"
-              className="flex flex-col items-center gap-2 rounded-2xl bg-hf-tan py-3 text-center"
-            >
-              <IconCamera size={20} color="var(--hf-black)" />
-              <span className="hf-type-small hf-type-strong text-hf-black">
-                {inWebShell ? t("createDish.scanWeb") : t("createDish.scan")}
-              </span>
-            </a>
+            {inWebShell ? (
+              <ProductPhotoDropZone returnSuffix="?for=ret" />
+            ) : (
+              <a
+                href="/camera?mode=product&for=ret"
+                className="flex flex-col items-center gap-2 rounded-2xl bg-hf-tan py-3 text-center"
+              >
+                <IconCamera size={20} color="var(--hf-black)" />
+                <span className="hf-type-small hf-type-strong text-hf-black">{t("createDish.scan")}</span>
+              </a>
+            )}
             <a
               href="/foods/new?for=ret"
               className="flex flex-col items-center gap-2 rounded-2xl bg-hf-tan py-3 text-center"

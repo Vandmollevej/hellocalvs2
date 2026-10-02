@@ -1043,6 +1043,8 @@
     "noResults": "Ingen varer matcher din søgning",
     "scan": "Tag billede",
     "scanWeb": "Upload billede eller drop dem her",
+    "scanWebWorking": "Læser billedet …",
+    "scanWebNotFound": "Vi kunne ikke genkende varen på billedet. Prøv et billede af forsiden, eller søg efter varen.",
     "manually": "Opret manuelt",
     "createOwnIngredient": "Opret egen ingrediens",
     "kcalUnknown": "{grams} g · kcal ukendt",

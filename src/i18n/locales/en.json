@@ -1043,6 +1043,8 @@
     "noResults": "No products match your search",
     "scan": "Take photo",
     "scanWeb": "Upload an image or drop them here",
+    "scanWebWorking": "Reading the image …",
+    "scanWebNotFound": "We couldn't recognise the product in the image. Try a photo of the front, or search for it.",
     "manually": "Create manually",
     "createOwnIngredient": "Create your own ingredient",
     "kcalUnknown": "{grams} g · kcal unknown",
