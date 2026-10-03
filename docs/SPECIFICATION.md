@@ -30,6 +30,7 @@ Status: Rekonstrueret fra den fulde ChatGPT-designsamtale (OCR'et PDF-eksport, 1
 - Kontooprettelse er invite-baseret: administrator sender invitation via e-mail, SMS eller link.
 - Login: e-mail/adgangskode, Apple, Google, 2FA og passkeys (Face ID/Touch ID/Windows Hello). Flere loginmetoder kan knyttes til samme konto.
 - Kontooprettelse kræver e-mail-bekræftelse, accept af vilkår og valg om AI-samtykke. Ingen gæstetilstand.
+- Telefonnummer er obligatorisk for alle, der kan logge ind (bruges til tofaktor-godkendelse, se `docs/DECISIONS.md` 2026-10-02). Kræves ved tilmelding; konti uden nummer (fx Google/Apple-login) skal udfylde det, før appen kan bruges. Kan rettes, men ikke slettes.
 - Én profil pr. konto, men med familieabonnement kan betaleren oprette og styre familieprofiler, også børneprofiler (under 15 år kun oprettet af en forælder). Se `docs/FAMILY.md` og `docs/DECISIONS.md` 2026-09-25 "Familieabonnement".
 - Flere aktive enheder er tilladt, data synkroniseres. Enheder kan logges ud enkeltvis (ingen "log ud af alle enheder"-funktion).
 - Ingen automatisk logout ved inaktivitet. Ingen biometrisk lås ved hver åbning — appen åbner direkte hvis allerede logget ind.

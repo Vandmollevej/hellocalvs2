@@ -186,6 +186,9 @@
     "nameLabel": "Navn",
     "namePlaceholder": "Dit navn",
     "emailLabel": "E-mailadresse",
+    "phoneLabel": "Telefonnummer",
+    "phonePlaceholder": "+45 12 34 56 78",
+    "phoneHint": "Obligatorisk — bruges til tofaktor-godkendelse.",
     "passwordLabel": "Adgangskode",
     "passwordPlaceholder": "Mindst 8 tegn",
     "submit": "Opret konto",
@@ -1209,7 +1212,7 @@
     "field": {
       "name": "Navn",
       "email": "E-mail",
-      "phone": "Mobilnummer",
+      "phone": "Telefonnummer",
       "weight": "Start-vægt",
       "height": "Højde",
       "birthDate": "Fødselsdato",
@@ -1221,6 +1224,9 @@
       "female": "Kvinde",
       "male": "Mand"
     },
+    "phoneHint": "Bruges til tofaktor-godkendelse. Kan rettes, men ikke slettes.",
+    "phoneRequired": "Angiv dit telefonnummer.",
+    "phoneInvalid": "Angiv et gyldigt telefonnummer, fx +45 12 34 56 78.",
     "activityLevel": {
       "notSet": "Vælg det trin, der passer bedst på din hverdag.",
       "note": "Træning, du logger, lægges oveni.",
@@ -2345,6 +2351,17 @@
     "deleteAccount": "Slet konto og alle data",
     "deleteAccountConfirm": "Er du sikker? Dine data slettes permanent og kan ikke gendannes.",
     "lastUsed": "Sidst brugt"
+  },
+  "phoneRequired": {
+    "title": "Telefonnummer",
+    "intro": "Vi mangler dit telefonnummer. Det er obligatorisk, fordi det bruges til tofaktor-godkendelse, så kun du kan logge ind på din konto.",
+    "label": "Telefonnummer",
+    "placeholder": "+45 12 34 56 78",
+    "submit": "Fortsæt",
+    "submitting": "Gemmer…",
+    "empty": "Angiv dit telefonnummer.",
+    "invalid": "Angiv et gyldigt telefonnummer, fx +45 12 34 56 78.",
+    "networkError": "Nummeret kunne ikke gemmes — tjek din forbindelse og prøv igen."
   },
   "faceIdOffer": {
     "title": "Log ind med Face ID",

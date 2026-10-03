@@ -25,6 +25,8 @@ export async function anonymizeUser(targetUserId: string, adminId: string) {
         phone: null,
         passwordHash: null,
         totpSecret: null,
+        phone: null,
+        phoneVerifiedAt: null,
         weightKg: null,
         heightCm: null,
         birthDate: null,
