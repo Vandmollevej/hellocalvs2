@@ -9,6 +9,7 @@ import { applyManualLevel } from "@/lib/activity-profile";
 import { GOAL_MODES, type GoalMode } from "@/lib/energy-budget";
 import { validatePhone } from "@/lib/phone";
 import { isValidHeightCm } from "@/lib/height";
+import type { Locale } from "@/i18n";
 
 export async function GET() {
   try {
@@ -105,7 +106,7 @@ export async function PATCH(req: Request) {
     warnOnRecommendedLimits?: boolean;
     autoExpandUncertainty?: boolean;
     region?: string;
-    appLocale?: "da" | "en";
+    appLocale?: Locale;
     photoDiaryRequiresPasscode?: boolean;
     wantsPushNotifications?: boolean;
     wantsUpdateNewsEmails?: boolean;

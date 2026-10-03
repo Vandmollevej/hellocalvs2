@@ -8,6 +8,7 @@
 // Deliberately free of React hooks so route handlers can import it.
 
 import type { AddActionKey } from "@/lib/add-actions";
+import type { Locale } from "@/i18n";
 
 export type WidgetPlatform = "ios" | "android";
 
@@ -146,6 +147,11 @@ export const DEFAULT_STAT_BOX_KEY = "kcalLeft";
 export const WIDGET_LABELS = {
   da: { kcalLeft: "Kalorier tilbage", kcalOver: "Over dagens mål", kcalEatenVsGoal: "Spist i dag / mål" },
   en: { kcalLeft: "Calories left", kcalOver: "Over today's goal", kcalEatenVsGoal: "Eaten today / goal" },
+  de: { kcalLeft: "Kalorien übrig", kcalOver: "Über dem Tagesziel", kcalEatenVsGoal: "Heute gegessen / Ziel" },
+  fr: { kcalLeft: "Calories restantes", kcalOver: "Au-dessus de l'objectif du jour", kcalEatenVsGoal: "Mangé aujourd'hui / objectif" },
+  nl: { kcalLeft: "Calorieën over", kcalOver: "Boven het dagdoel", kcalEatenVsGoal: "Vandaag gegeten / doel" },
+  sv: { kcalLeft: "Kalorier kvar", kcalOver: "Över dagens mål", kcalEatenVsGoal: "Ätit idag / mål" },
+  no: { kcalLeft: "Kalorier igjen", kcalOver: "Over dagens mål", kcalEatenVsGoal: "Spist i dag / mål" },
 } as const;
 
 // ---------------------------------------------------------------------------
@@ -168,7 +174,7 @@ export function recentEntriesRowsForHeight(heightDp: number) {
 
 export type WidgetSnapshot = {
   generatedAt: string;
-  locale: "da" | "en";
+  locale: Locale;
   tzOffsetMinutes: number;
   /** Suggested next refresh for WidgetKit timelines / Android WorkManager. */
   refreshAfterSeconds: number;

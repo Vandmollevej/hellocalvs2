@@ -29,6 +29,7 @@ import { AccordionCard, ChevronRow } from "@/components/hf/AccordionCard";
 import { IconPaymentCard } from "@/components/icons/PaymentCard";
 import { OnboardingWizard } from "@/components/OnboardingWizard";
 import { useTranslation } from "@/i18n/LocaleProvider";
+import { helpPagePath } from "@/i18n";
 import { SearchField } from "@/components/knowledge/SearchField";
 import { useFamilyStatus } from "@/components/family/FamilyStatusProvider";
 
@@ -46,7 +47,7 @@ function resetOnboardingProgress() {
 }
 
 export default function SettingsPage() {
-  const { t } = useTranslation();
+  const { t, locale } = useTranslation();
   const router = useRouter();
   const [showOnboarding, setShowOnboarding] = useState(false);
   // "Menstruationscyklus" (Visning) only shows up for sex = FEMALE, per
@@ -119,7 +120,7 @@ export default function SettingsPage() {
     ...(isFemale
       ? [{ icon: <IconCalendarHeart size={20} />, label: t("settings.menstrualCycle"), href: "/settings/display/menstrual-cycle" }]
       : []),
-    { icon: <IconHelp size={20} />, label: t("settings.helpCenter"), onClick: () => window.location.assign("/hjaelp.html") },
+    { icon: <IconHelp size={20} />, label: t("settings.helpCenter"), onClick: () => window.location.assign(helpPagePath(locale)) },
     { icon: <IconBug size={20} />, label: t("profile.row.reportBug"), href: "/profile/report-bug" },
     { icon: <IconLifebuoy size={20} />, label: t("settings.contactSupport"), href: "/settings/support" },
     { icon: <IconFileText size={20} />, label: t("settings.terms"), href: "/betingelser" },
@@ -305,7 +306,7 @@ export default function SettingsPage() {
           <ChevronRow
             icon={<IconHelp size={20} />}
             label={t("settings.helpCenter")}
-            onClick={() => window.location.assign("/hjaelp.html")}
+            onClick={() => window.location.assign(helpPagePath(locale))}
           />
           <ChevronRow icon={<IconBug size={20} />} label={t("profile.row.reportBug")} href="/profile/report-bug" />
           <ChevronRow

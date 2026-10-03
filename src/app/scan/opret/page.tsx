@@ -189,7 +189,7 @@ function OpretContent() {
         value={media}
         onChange={handleMedia}
         region="DK"
-        uiLang={locale}
+        uiLang={locale === "da" ? "da" : "en"}
         onNutritionExtracted={applyNutrition}
         onIngredientsExtracted={(text) => update("ingredientsText", text)}
       />
