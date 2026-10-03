@@ -4353,3 +4353,8 @@ Ejerens krav: "Hvis man er familiekontoejer skal 'skift profil' stå øverst og 
 
 - Admin → Brugere kan sende mail og/eller push til alle aktive brugere. Ejerens krav: adgangskoden skal tastes ind igen før hver afsendelse.
 - Udsendelsen er kun for fuld admin-adgang, bruger de eksisterende `OutboundMessage`-køer (ingen ny enum/migration) og har separate rækker pr. kanal, fordi en `BOTH`-række markeres SENT af mail-flushet, før push når at gå.
+
+## 2026-10-03 Kun ét banner øverst på varesiden
+
+- Det grønne "Scan varen igen"-banner (`RescanBanner`, 10 points) vises ikke længere på varesiden (brugerens valg: "Hvorfor skulle der være to?"). Kun det hvide "Optjen 20 points ved at opdatere varen" bruges. `RescanBanner`, `product-rescan-offer.ts` og rescan-API'et ligger uændret, men er ikke koblet på siden.
+- Det hvide banners greb er samme grå streg som det grønne bannerets (ikke en pil), `src/components/hf/UpdatePointsBanner.tsx`.
