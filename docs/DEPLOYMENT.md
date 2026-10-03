@@ -119,6 +119,9 @@ formally migrated or archived.
   (fallback `GOOGLE_API_KEY`). Ingen `:?`-krav, så en manglende nøgle ikke
   stopper stakken. Heller ikke med i deploy-workflowet endnu.
 - Se `.env.production.example` for alle nye variabler.
+- Hjælpe-chatbot (2026-10-02): valgfri `OPENAI_CHATBOT_MODEL` (standard
+  `gpt-4o-mini`). Bruger den eksisterende `OPENAI_API_KEY`. Migration
+  `20261002120000_chatbot` køres af deployet.
 
 ## Umami (analyse, 2026-09-27)
 

@@ -6,6 +6,13 @@ Last updated: 2026-10-02
 
 - Rækken "Betalingsmetoder" på `/profile` og `/settings` bruger nu et eget kortikon (`src/components/icons/PaymentCard.tsx`): kortomrids med én massiv sort stribe nederst og ingen andre elementer (ejerens regel 2026-10-02). Tabler-ikonet `IconWallet` er ikke længere i brug der.
 - Lint, typecheck og `npm run build` grønne. Ikke set i browser med login (ingen lokal DB); ikonet er kontrolleret som SVG-render.
+Last updated: 2026-10-03
+
+## 2026-10-02: Hjælpe-chatbot øverst i app og web + admin "Chatbot"
+
+- Hjælpe-knap øverst (til venstre for profilcirklen; "Hjælp" i desktop-topbjælken) åbner AI-chatbotten med "Tal med en medarbejder" (bliver en sag i Support-indbakken med hele tråden) og "Kontaktformular". Ingen telefon, region = land, kun indloggede (ejerens valg 2026-10-03). Se DECISIONS.md 2026-10-02.
+- Admin → Brugere → Chatbot: oftest spurgte kategorier, tabel med alle spørgsmål og svar, hele tråde og brugerinfo (alder, køn, region, abonnement).
+- Migration `20261002120000_chatbot` skal køre ved deploy. Lint, typecheck og build grønne. Ikke live-testet (ingen lokal DB/OpenAI-nøgle): test chatten på telefon og desktop efter deploy.
 
 ## 2026-10-03: Butiksimporten — alt fra Bilka- og REMA-arkene med
 

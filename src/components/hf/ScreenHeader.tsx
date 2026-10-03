@@ -6,6 +6,7 @@ import { IconSettings } from "@tabler/icons-react";
 import { isMainFooterRoute, useFooterRootHrefs } from "@/lib/navigation";
 import { HfChevron } from "@/components/hf/HfChevron";
 import { ProfileAvatarLink } from "@/components/ProfileAvatarLink";
+import { HelpChatButton } from "@/components/help/HelpChatButton";
 import { useTranslation } from "@/i18n/LocaleProvider";
 import { useIsCompactLandscape } from "@/hooks/useIsCompactLandscape";
 import { useFamilyStatus } from "@/components/family/FamilyStatusProvider";
@@ -59,6 +60,9 @@ export function ScreenHeader({
   const inWebShell = useInWebShell();
   const isRoot = inWebShell ? isWebRootPath(pathname) : isMainFooterRoute(pathname, footerRoots);
   const showBack = !hideBackButton && (alwaysShowBackButton || !isRoot);
+  // Hjælpe-chatten (docs/DECISIONS.md 2026-10-02) sidder til venstre for
+  // profilcirklen. Desktop-skallen har sin egen knap i topbjælken.
+  const showHelp = !inWebShell;
 
   function handleBack() {
     if (onBack) {
@@ -77,7 +81,7 @@ export function ScreenHeader({
     <div
       className={`hf-appbar ${variant === "main" ? "hf-appbar--main" : "hf-appbar--brand"} ${
         isCompact ? "hf-appbar--compact" : ""
-      }`}
+      } ${showHelp ? "hf-appbar--help" : ""}`}
     >
       <div className="hf-appbar__slot">
         {showBack && (
@@ -100,7 +104,12 @@ export function ScreenHeader({
         <h1 className={`hf-type-nav-title hf-appbar__title ${titleClassName ?? ""}`}>{title}</h1>
         {icon && <span className="h-6 w-6 shrink-0" aria-hidden="true" />}
       </div>
-      <div className="hf-appbar__slot relative">
+      <div className="hf-appbar__end relative">
+        {showHelp && (
+          <span className="text-hf-white">
+            <HelpChatButton />
+          </span>
+        )}
         {watcher && (
           <span className="absolute right-full mr-1 flex items-center">
             <WatchPhoneIcon name={watcher.displayName} title={t("family.watch.onAccount", { name: watcher.displayName })} />
@@ -110,7 +119,7 @@ export function ScreenHeader({
           <Link
             href="/settings"
             aria-label={t("settings.openAppSettings")}
-            className="flex h-full w-full items-center justify-center text-hf-white focus-visible:outline-2 focus-visible:outline-hf-white"
+            className="hf-appbar__slot text-hf-white focus-visible:outline-2 focus-visible:outline-hf-white"
           >
             {/* Samme størrelse som profilcirklen (h-8 = 32 px). Tabler-
                 tandhjulets ydre kant fylder ca. 19,5 af ikonets 24 enheder,

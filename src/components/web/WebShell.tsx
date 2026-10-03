@@ -15,6 +15,7 @@ import { useAddActionsProfile, visibleAddActions } from "@/lib/add-actions";
 import { useFamilyStatus } from "@/components/family/FamilyStatusProvider";
 import { ProfileCircle } from "@/components/family/ProfileCircle";
 import { useTranslation } from "@/i18n/LocaleProvider";
+import { HelpChatButton } from "@/components/help/HelpChatButton";
 import {
   WEB_HOME,
   WEB_SETTINGS,
@@ -404,6 +405,7 @@ export function WebShell({ children }: { children: React.ReactNode }) {
             >
               <IconPlus size={28} stroke={2} />
             </button>
+            <HelpChatButton labelled />
             <div ref={profileMenuRef} className="relative">
               <button
                 type="button"

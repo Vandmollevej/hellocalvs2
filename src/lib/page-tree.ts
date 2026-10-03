@@ -303,6 +303,12 @@ export const PAGE_TREE: PageArea[] = [
           { path: "/admin/users", label: "Brugere" },
           { path: "/admin/economy", label: "Economy", note: "Betalende abonnementer, sikret indkomst og forventet indtjening" },
           {
+            path: "/admin/chatbot",
+            label: "Chatbot",
+            note: "Oftest spurgt, alle spørgsmål og svar",
+            children: [{ path: "/admin/chatbot/[id]", label: "Chatbot-samtale" }],
+          },
+          {
             path: "/admin/support",
             label: "Support",
             children: [

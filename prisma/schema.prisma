@@ -260,6 +260,8 @@ model User {
   // tilladelser til Support + brugerens henvendelser til Support.
   supportAccessGrants     SupportAccessGrant[]
   supportRequests         SupportRequest[]
+  // Hjælpe-chatbot øverst i appen (docs/DECISIONS.md 2026-10-02).
+  chatbotConversations    ChatbotConversation[]
   productsCreated         Product[]                @relation("ProductsCreatedByUser")
   passwordResetTokens     PasswordResetToken[]
   startWeightChangeTokens StartWeightChangeToken[]
@@ -2660,6 +2662,8 @@ model SupportRequest {
   resolvedAt         DateTime?
 
   messages SupportMessage[]
+  // Chatbot-samtaler, der er sendt videre til en medarbejder.
+  chatbotConversations ChatbotConversation[]
 
   @@index([status, createdAt])
   @@index([status, awaitingReply, lastUserMessageAt])
@@ -2697,6 +2701,93 @@ model SupportAttachment {
 
   @@index([messageId])
   @@map("support_attachments")
+}
+
+// --- Hjælpe-chatbot (docs/DECISIONS.md 2026-10-02) ---
+//
+// AI-chatbotten øverst i appen og på web. Hvert brugerspørgsmål får en
+// kategori (admin → Brugere → Chatbot: "Oftest spurgt"). Samtalen gemmer et
+// øjebliksbillede af brugeren ved start (alder, køn, region, abonnement,
+// sprog), så statistikken ikke ændrer sig, når profilen ændres senere.
+enum ChatbotCategory {
+  GETTING_STARTED
+  FOOD_LOGGING
+  PRODUCTS_SCANNING
+  DISHES
+  GOALS_NUTRITION
+  WEIGHT_STATS
+  ACCOUNT_LOGIN
+  SUBSCRIPTION_PAYMENT
+  PRIVACY_DATA
+  INTEGRATIONS
+  FAMILY
+  BUG
+  OTHER
+}
+
+// SYSTEM = appens egne linjer i tråden (fx "sendt til Support").
+enum ChatbotMessageRole {
+  USER
+  ASSISTANT
+  SYSTEM
+}
+
+enum ChatbotChannel {
+  APP
+  WEB
+}
+
+model ChatbotConversation {
+  id                 String            @id @default(cuid())
+  user               User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId             String
+  channel            ChatbotChannel    @default(APP)
+  // Den hyppigste kategori blandt brugerens spørgsmål i samtalen.
+  category           ChatbotCategory   @default(OTHER)
+  questionCount      Int               @default(0)
+  // Øjebliksbillede af brugeren ved samtalens start.
+  userAgeSnapshot    Int?
+  userSexSnapshot    Sex?
+  userRegionSnapshot String            @default("DK")
+  // "FREE" | "SERIOUS" (src/lib/subscription.ts).
+  userTierSnapshot   String            @default("FREE")
+  userPlanSnapshot   SubscriptionPlan?
+  userLocaleSnapshot String            @default("da")
+  // "Tal med en medarbejder": samtalen er sendt til Support-indbakken.
+  escalatedAt        DateTime?
+  supportRequest     SupportRequest?   @relation(fields: [supportRequestId], references: [id], onDelete: SetNull)
+  supportRequestId   String?
+  lastMessageAt      DateTime          @default(now())
+  createdAt          DateTime          @default(now())
+  updatedAt          DateTime          @default(now()) @updatedAt
+
+  messages ChatbotMessage[]
+
+  @@index([userId, lastMessageAt])
+  @@index([lastMessageAt])
+  @@index([category])
+  @@map("chatbot_conversations")
+}
+
+model ChatbotMessage {
+  id             String              @id @default(cuid())
+  conversation   ChatbotConversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  conversationId String
+  role           ChatbotMessageRole
+  body           String
+  // Kun på brugerens spørgsmål.
+  category       ChatbotCategory?
+  // Kun på svar: AI'en mener, at en medarbejder bør tage over.
+  needsHuman     Boolean             @default(false)
+  // Kun på svar: links fra src/lib/chatbot-knowledge.ts (CHATBOT_LINKS).
+  links          String[]            @default([])
+  model          String?
+  createdAt      DateTime            @default(now())
+
+  @@index([conversationId, createdAt])
+  @@index([role, createdAt])
+  @@index([category, createdAt])
+  @@map("chatbot_messages")
 }
 
 // Admins standardsvar til Support-indbakken. {{navn}} erstattes med
