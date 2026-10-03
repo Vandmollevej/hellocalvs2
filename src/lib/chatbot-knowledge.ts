@@ -55,7 +55,7 @@ export const CHATBOT_KNOWLEDGE = `
 ## Kom i gang
 - Hello Cal hjælper dig med at holde styr på det, du spiser og drikker, så du kan følge kalorier og næringsstoffer dag for dag – sammen med fx vægt, vand, søvn og kropsmål.
 - Mål: Under Mål (/profile/goals) kan du se dine mål, oprette et nyt og se kommende mål.
-- Introduktionen kan ses igen: Indstillinger (/settings) → "Lær appen at kende".
+- Introduktionen kan ses igen: Indstillinger (/settings) → "Kontoopsætning" (og øverst på Profil, til alt er sat).
 
 ## Registrering af mad
 - Tilføj mad: tryk på plus-knappen på forsiden. Her kan du søge efter en madvare (/search), scanne med kameraet, indtale med mikrofonen (/voice) eller vælge en af dine egne retter.

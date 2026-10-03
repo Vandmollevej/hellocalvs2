@@ -4347,3 +4347,8 @@ Ejerens krav: "Hvis man er familiekontoejer skal 'skift profil' stå øverst og 
 
 - Admin → Brugere kan sende mail og/eller push til alle aktive brugere. Ejerens krav: adgangskoden skal tastes ind igen før hver afsendelse.
 - Udsendelsen er kun for fuld admin-adgang, bruger de eksisterende `OutboundMessage`-køer (ingen ny enum/migration) og har separate rækker pr. kanal, fordi en `BOTH`-række markeres SENT af mail-flushet, før push når at gå.
+
+## 2026-10-03: Kontoopsætning vises øverst på Profil, til alt er sat
+
+- Ejerens krav: kassen "Kontoopsætning" (den, der starter guiden igen) står allerøverst på Profil, indtil alle felter og indstillinger er sat; så forsvinder både kassen og proceslinjen. Felterne må gerne udfyldes uden om guiden.
+- Færdig regnes ud fra data (`src/lib/account-setup.ts`), ikke fra et "afsluttet"-flag: Om dig, Mål og Vaner skal alle være klaret.

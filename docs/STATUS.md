@@ -2,6 +2,13 @@
 
 Last updated: 2026-10-03
 
+## 2026-10-03: Kontoopsætning øverst på Profil
+
+- "Lær appen at kende" hedder nu "Kontoopsætning" (Indstillinger, hjælpecenter, chatbot-tekst).
+- Så længe opsætningen ikke er færdig, står en kasse "Kontoopsætning" allerøverst på Profil; den starter guiden (`OnboardingWizard`) igen. Proceslinjen (Om dig / Mål / Vaner) følger med og viser nu rigtig fremdrift.
+- Færdig = alle tre trin klaret, regnet fra felterne (`src/lib/account-setup.ts`): Om dig (køn, fødselsdato, højde, vægt), Mål (målsætning valgt), Vaner (aktivitetsniveau + sengetid + opvågning). Det tæller, uanset om felterne er udfyldt i guiden eller ved selv at åbne dem. Når alt er klaret, forsvinder både kassen og proceslinjen.
+- Typecheck og lint grønne. Ikke set på telefon.
+
 ## 2026-10-03: Beskeder på Profil, Resultatvisning under Visning, Opsætning uden Sprog og region
 
 - Beskeder er flyttet fra Indstillinger til Profil som egen række lige under "Profil" øverst. Ulæst-tallet er en grøn cirkel (`--hf-color-brand`) med hvidt tal (`ChevronRow.badgeCount`, også Kontrol-log).
