@@ -433,6 +433,8 @@
     "sleepQuality": "Sleep experience",
     "calendarView": "Calendar view",
     "displayHelpTip": "Here you decide how the front page, the calendar and warnings look on this device.",
+    "contactSupport": "Contact support",
+    "tipsTitle": "Tips and help texts",
     "showTooltips": "Show tooltips",
     "showTooltipsDescription": "Shows a small help text under the various settings and windows.",
     "showStartupTips": "Show start-up tips",

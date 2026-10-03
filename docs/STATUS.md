@@ -19,6 +19,14 @@ Last updated: 2026-10-03
 - Lint (0 fejl), typecheck, test og build grønne; skærmbilleder med mockede API-svar. Ikke testet med login mod en rigtig database.
 
 
+## 2026-10-03: Admin → Brugere → Tildel points
+
+- Ny side under Brugere: "Tildel points" (`/admin/users/points`). Søg brugeren frem (eller tryk mønt-ikonet på Alle brugere), skriv antal (1–300) og en begrundelse. Højst 300 points (én gratis måned) ad gangen og én gang om måneden pr. bruger; siden viser saldo, seneste tildeling og næste mulige dato, og nederst de seneste 50 tildelinger med begrundelse og admin. Se DECISIONS.md samme dato.
+- Brugeren ser "Tildelt af HELLO CAL" i Points-historikken; begrundelsen er kun synlig for admin.
+- **Migration, der skal køre ved deploy:** `20261003220000_admin_points_grant` (ny points-type `ADMIN_GRANT`, revisionsspor-type `ADMIN_GRANT_POINTS`, kolonnerne `note`/`grantedById` på `points_transactions`).
+- Testet: typecheck, lint (0 fejl), nye regel-tests og build. Tildelingen er kørt mod en lokal Postgres med alle migrationer: 300 points gives, en samtidig anden tildeling afvises, admin-konti/ukendte id'er afvises, og efter en måned kan der gives igen. Admin-siden er ikke set i browser (kræver admin-login).
+
+
 ## 2026-10-03: Forsidens puls forsvinder bagfra (samler #195 og #198)
 
 - Før tonede hele det forrige pulsspor ud på én gang (`previousFade`), mens det nye fej tegnedes. Nu står det gamle spor uændret foran det nye fejs spids og fjernes gradvist bagfra, i samme tempo som sporet kom frem fra venstre, med en blød kant (`PULSE_TAIL_TAPER`, 60 px). Næste fej starter straks, så sporet når aldrig at være væk, før det nye fejs slag er tegnet. Pulsen slår stadig i urets bpm (#195). PR #198 (ét slag pr. fej, pause før halen trækkes) er erstattet af dette og lukket.

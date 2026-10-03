@@ -139,6 +139,9 @@ deploy, jf. `AGENTS.md`/`design.md` §12.
 - [x] "Log ind som bruger"-ikon (impersonation uden password, ny fane, logget
       i revisionsspor)
 - [x] "Ret til at blive glemt"-knap (GDPR-anonymisering, historik bevares)
+- [x] "Tildel points" (Brugere → Tildel points, 2026-10-03): højst 300 points
+      (én gratis måned) ad gangen, højst én gang om måneden pr. bruger,
+      begrundelse påkrævet (kun synlig for admin), logget i revisionsspor
 
 ## Admin — sprog
 

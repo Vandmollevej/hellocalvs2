@@ -29,7 +29,7 @@ export default async function AdminUsersPage() {
       <div>
         <h1 className="hf-type-title text-hf-black">{t(admin.locale, "users_title")}</h1>
         <p className="hf-type-body text-text-secondary">
-          {users.length} registranter. Klik ikonet for at anonymisere kontoen.
+          {users.length} registranter. Mønt-ikonet tildeler points; det røde ikon anonymiserer kontoen.
         </p>
       </div>
 

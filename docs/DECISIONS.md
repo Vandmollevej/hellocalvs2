@@ -20,6 +20,17 @@ Brugerens krav: "i stedet for administrator skal der stå med fed Skift profil i
 - **Håndhævelse:** `canActFor(…, "write")` kræves for alle ændringer på en andens profil (`getProfileContext` med CREATED/UPDATED/DELETED, fælles måltid og "Kopier til konto"). Må man kun se, afvises ændringen (401) i stedet for at falde tilbage til ens egen profil. "Til:"-rækken og "Kopier til konto" viser kun profiler, man må oprette for. Kontrol-loggen viser "Må se" eller "Må se og oprette" ud for hver person.
 - **Beslutning ved sammenfletning (2026-10-03, brugerens valg):** dette design erstatter "Skift profil som række med buet pil" fra PR #206; "Inviter familiemedlem" (PR #199) er uændret ved siden af.
 
+## 2026-10-03: Admin → Brugere → Tildel points
+
+- Brugerens krav: en administrator kan tildele et medlem points, fx som kompensation. Højst svarende til én gratis måned ad gangen og højst én gang om måneden. Ligger under Brugere som "Tildel points" (`/admin/users/points`); mønt-ikonet på Alle brugere åbner siden med brugeren valgt.
+- **Loft pr. tildeling:** 300 points = `FREE_MONTH_COST` (`ADMIN_GRANT_MAX_POINTS`, en test holder dem ens).
+- **"Én gang om måneden"** tolkes løbende pr. bruger: næste tildeling tidligst samme dato måneden efter den seneste (31. jan → 28./29. feb). Ikke kalendermåned, så man ikke kan give 300 d. 31. og 300 igen d. 1. Grænsen gælder pr. bruger, uanset hvilken admin der tildelte.
+- Kun fuld administratoradgang kan tildele; læseadgang ser siden. Kun almindelige konti (`role USER`), ikke lukkede eller anonymiserede.
+- Ny `PointsReason.ADMIN_GRANT` i ledgeren (ingen saldo-cache, jf. 2026-09-02). Rækken gemmer admins begrundelse (`note`, påkrævet) og hvem der tildelte (`grantedById`). Begrundelsen er intern: `/api/points` returnerer den ikke, og brugeren ser "Tildelt af HELLO CAL" i sin historik. Hver tildeling skrives også i revisionssporet (`AdminAuditAction.ADMIN_GRANT_POINTS`, vises under Admin → Log).
+- Tildelte points tæller som alle andre points (kan indløses til gratis måned under de eksisterende regler, inkl. loftet på 12 gratis måneder). Brugeren får ingen besked/mail ved tildelingen — kan tilføjes senere.
+- Månedsgrænsen håndhæves i en transaktion med rækkelås på brugeren, så to samtidige tildelinger ikke begge går igennem.
+
+
 ## 2026-10-03: Flere sider kan lægges i bundmenuen
 
 - Brugerens ønske: Favoritter, Viden om, Opskrifter, Status, Billeddagbog og Kropsmål kan vælges som ikoner i bundmenuen. De ligger i puljen (ikke i standardmenuen, som stadig er Tilføj/Madvarer/Kalender/Statistik).

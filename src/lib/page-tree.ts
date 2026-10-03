@@ -249,6 +249,7 @@ export const PAGE_TREE: PageArea[] = [
           { path: "/settings/display/uncertainty", label: "Visning: usikkerhed" },
           { path: "/settings/display/calendar-view", label: "Visning: kalender" },
           { path: "/settings/display/sleep-quality", label: "Visning: oplevet søvnkvalitet" },
+          { path: "/settings/display/tips", label: "Visning: tips og hjælpetekster" },
           { path: "/settings/display/menstrual-cycle", label: "Visning: menstruationscyklus" },
           { path: "/betingelser", label: "Betingelser" },
           { path: "/privatlivspolitik", label: "Privatlivspolitik" },
@@ -317,7 +318,10 @@ export const PAGE_TREE: PageArea[] = [
           {
             path: "/admin/users",
             label: "Brugere",
-            children: [{ path: "/admin/users/personas", label: "Personas" }],
+            children: [
+              { path: "/admin/users/personas", label: "Personas" },
+              { path: "/admin/users/points", label: "Tildel points", note: "Points som kompensation: højst 300 ad gangen, én gang om måneden" },
+            ],
           },
           { path: "/admin/test-programmes", label: "Test-programmes" },
           { path: "/admin/economy", label: "Economy", note: "Betalende abonnementer, sikret indkomst og forventet indtjening" },

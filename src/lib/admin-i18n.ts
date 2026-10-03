@@ -51,6 +51,7 @@ const DICTIONARY = {
   nav_dishes_hellofresh: { DA: "HelloFresh", EN: "HelloFresh" },
   nav_dishes_valdemarsro: { DA: "Valdemarsro", EN: "Valdemarsro" },
   nav_users_all: { DA: "Alle brugere", EN: "All users" },
+  nav_grant_points: { DA: "Tildel points", EN: "Grant points" },
   nav_chatbot: { DA: "Chatbot", EN: "Chatbot" },
   nav_personas: { DA: "Personas", EN: "Personas" },
   nav_test_programmes: { DA: "Test-programmes", EN: "Test programmes" },
