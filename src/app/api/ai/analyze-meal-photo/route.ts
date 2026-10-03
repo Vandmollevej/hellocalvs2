@@ -20,6 +20,7 @@ async function findLocalMatch(name: string) {
     where: {
       name: { contains: firstWord, mode: "insensitive" },
       discontinued: false,
+      nutritionMissing: false,
       status: "APPROVED",
     },
     orderBy: { createdAt: "desc" },

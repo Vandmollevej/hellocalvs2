@@ -2,14 +2,15 @@
 
 import { Suspense, useEffect, useState } from "react";
 import { useParams, useSearchParams } from "next/navigation";
-import { IconBookmark, IconBookmarkFilled, IconInfoCircle, IconSoup } from "@tabler/icons-react";
+import { IconInfoCircle, IconSoup } from "@tabler/icons-react";
+import { IconFavorite as IconBookmark, IconFavoriteFilled as IconBookmarkFilled } from "@/components/icons/Favorite";
 import { HfScreen } from "@/components/HfScreen";
 import { PersonsSlider } from "@/components/hf/PersonsSlider";
 import { Toggle } from "@/components/ui/Toggle";
 import { useTranslation } from "@/i18n/LocaleProvider";
 import { loadRecipeFilters, saveRecipeFilters } from "@/lib/recipe-filters";
 import { MAX_RECIPE_PERSONS, portionKcalFor, scaleFactorFor, type PortionProfile } from "@/lib/recipe-portions";
-import { SkeletonDetail, SkeletonScreen } from "@/components/hf/Skeleton";
+import { Skeleton, SkeletonTitleLines } from "@/components/hf/Skeleton";
 
 // En ret fra Indstillinger → Opskrifter (docs/DECISIONS.md 2026-09-24).
 // kind=own: brugerens egen ret fra boksen, med deling til/fra.
@@ -51,6 +52,9 @@ type SharedRecipe = {
     fatPer100g: number;
   }[];
 };
+
+// Navnebredder (px) til ingrediensrækkerne, mens retten hentes.
+const LOADING_INGREDIENT_WIDTHS = [148, 112, 176];
 
 function round(value: number, decimals = 0) {
   const factor = 10 ** decimals;
@@ -208,33 +212,44 @@ function RecipeDetailContent() {
     { grams: 0, kcal: 0, protein: 0, carbs: 0, fat: 0 }
   );
 
+  // Under hentning tegnes siden selv med flader på datafelternes pladser
+  // (design.md §6.14): faste tekster står som de er, og knapper der kræver
+  // data er skjult uden at ændre pladsen.
+  const loading = state === "loading";
+  const hideWhileLoading = loading ? "invisible" : "";
+
   return (
     <HfScreen
       title={view?.name ?? t("recipes.title")}
       icon={<IconSoup size={20} stroke={2} />}
       footer={
-        state === "ready" && kind === "shared" ? (
-          <button type="button" onClick={saveCopy} disabled={busy} className="hf-control hf-btn-primary w-full disabled:opacity-60">
+        state !== "missing" && kind === "shared" ? (
+          <button
+            type="button"
+            onClick={saveCopy}
+            disabled={busy || loading}
+            className="hf-control hf-btn-primary w-full disabled:opacity-60"
+          >
             {t("recipeDetail.saveCopy")}
           </button>
         ) : undefined
       }
     >
-      <div className="hf-page">
-        {state === "loading" && (
-          <SkeletonScreen className="contents">
-            <SkeletonDetail />
-          </SkeletonScreen>
+      <div className="hf-page" aria-busy={loading || undefined}>
+        {loading && (
+          <span role="status" className="sr-only">
+            {t("common.loading")}
+          </span>
         )}
         {state === "missing" && (
           <p className="hf-type-body text-text-secondary py-8 text-center">{t("recipeDetail.notFound")}</p>
         )}
 
-        {state === "ready" && view && (
+        {(loading || (state === "ready" && view)) && (
           <>
             {notice && <p className="hf-type-small rounded-[8px] bg-hf-tan px-4 py-3 text-hf-black">{notice}</p>}
 
-            {view.images.length > 0 && (
+            {view && view.images.length > 0 && (
               <div className="no-scrollbar -mx-4 flex snap-x gap-2 overflow-x-auto px-4">
                 {view.images.map((image) => (
                   // eslint-disable-next-line @next/next/no-img-element
@@ -263,7 +278,9 @@ function RecipeDetailContent() {
                   >
                     <IconInfoCircle size={20} />
                   </button>
-                  <Toggle checked={shared} onChange={changeSharing} disabled={busy} />
+                  <span className={`flex shrink-0 ${hideWhileLoading}`}>
+                    <Toggle checked={shared} onChange={changeSharing} disabled={busy || loading} />
+                  </span>
                 </div>
                 {showShareInfo && (
                   <p className="hf-type-small mt-2 rounded-[8px] border border-hf-tan-dark bg-hf-white px-3 py-2 text-hf-black">
@@ -274,7 +291,7 @@ function RecipeDetailContent() {
             )}
 
             {kind === "shared" && (
-              <div className="flex items-center justify-between">
+              <div className={`flex items-center justify-between ${hideWhileLoading}`}>
                 <button
                   type="button"
                   onClick={toggleFavorite}
@@ -296,7 +313,7 @@ function RecipeDetailContent() {
               </div>
             )}
 
-            {portionKcal !== null && baseKcal > 0 && (
+            {(loading || (portionKcal !== null && baseKcal > 0)) && (
               <div className="rounded-2xl bg-hf-tan px-4 py-3">
                 <PersonsSlider
                   label={t("recipeFilters.personsTitle")}
@@ -304,15 +321,33 @@ function RecipeDetailContent() {
                   max={MAX_RECIPE_PERSONS}
                   onChange={changePersons}
                 />
-                <p className="hf-type-small text-text-secondary pt-3">
-                  {t("recipeFilters.kcalPerServing", { kcal: round(totals.kcal / persons) })}
-                </p>
+                {loading ? (
+                  <div className="pt-3">
+                    <Skeleton type="caption" width={128} height={12} className="my-[3px]" />
+                  </div>
+                ) : (
+                  <p className="hf-type-small text-text-secondary pt-3">
+                    {t("recipeFilters.kcalPerServing", { kcal: round(totals.kcal / persons) })}
+                  </p>
+                )}
               </div>
             )}
 
             <div>
               <p className="hf-type-small hf-type-strong mb-2 text-hf-black">{t("recipeDetail.ingredients")}</p>
               <div className="overflow-hidden rounded-2xl bg-hf-tan">
+                {loading &&
+                  LOADING_INGREDIENT_WIDTHS.map((width) => (
+                    <div
+                      key={width}
+                      className="flex items-center gap-2.5 border-b border-hf-tan-dark px-4 py-3 last:border-b-0"
+                    >
+                      <Skeleton type="tile" width={36} height={36} />
+                      <div className="flex-1">
+                        <SkeletonTitleLines titleWidth={width} subWidth={104} />
+                      </div>
+                    </div>
+                  ))}
                 {ingredients.map((ingredient) => (
                   <div
                     key={ingredient.key}
@@ -337,19 +372,25 @@ function RecipeDetailContent() {
 
             <div className="hf-card">
               <p className="hf-type-small hf-type-strong text-hf-black">{t("recipeDetail.total")}</p>
-              <p className="hf-type-body text-hf-black">
-                {t("recipeDetail.gramsKcal", { grams: round(totals.grams), kcal: round(totals.kcal) })}
-              </p>
-              <p className="hf-type-small text-text-secondary">
-                {t("recipeDetail.macrosSummary", {
-                  protein: round(totals.protein, 1),
-                  carbs: round(totals.carbs, 1),
-                  fat: round(totals.fat, 1),
-                })}
-              </p>
+              {loading ? (
+                <SkeletonTitleLines titleWidth={120} subWidth={216} />
+              ) : (
+                <>
+                  <p className="hf-type-body text-hf-black">
+                    {t("recipeDetail.gramsKcal", { grams: round(totals.grams), kcal: round(totals.kcal) })}
+                  </p>
+                  <p className="hf-type-small text-text-secondary">
+                    {t("recipeDetail.macrosSummary", {
+                      protein: round(totals.protein, 1),
+                      carbs: round(totals.carbs, 1),
+                      fat: round(totals.fat, 1),
+                    })}
+                  </p>
+                </>
+              )}
             </div>
 
-            {view.steps.length > 0 && (
+            {view && view.steps.length > 0 && (
               <div>
                 <p className="hf-type-small hf-type-strong mb-2 text-hf-black">{t("recipeSteps.title")}</p>
                 <div className="overflow-hidden rounded-2xl bg-hf-tan">

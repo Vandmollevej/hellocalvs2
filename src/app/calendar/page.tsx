@@ -45,6 +45,7 @@ import { computeAge } from "@/lib/age";
 import { getSportMeta } from "@/lib/sport-icons";
 import { useDefaultCalendarView } from "@/lib/calendar-view-pref";
 import { useTranslation } from "@/i18n/LocaleProvider";
+import { useInWebShell } from "@/components/web/WebShell";
 import { fetchSleepQuality, localDateKey } from "@/lib/sleep-quality";
 import { IconPartyPopper, PartyPopperImage } from "@/components/icons/PartyPopper";
 import { BODY_MEASUREMENT_FIELDS } from "@/lib/body-measurements";
@@ -232,14 +233,23 @@ const MOVE_ENTRY_HOLD_MS = 500;
 const MOVE_ENTRY_MOVE_TOLERANCE = 10;
 const MIN_HOUR_HEIGHT = HOUR_HEIGHT;
 const MAX_HOUR_HEIGHT = HOUR_HEIGHT * 4;
+const VISIT_COOKIE = "hc_cal_visit";
 const ZOOM_SENSITIVITY = 220; // px to fingers must move for a full 1x scale step
 const HOUR_HEIGHT_STORAGE_KEY = "hellocal.kalender.hourHeight";
 
-function loadStoredHourHeight(): number {
-  if (typeof window === "undefined") return HOUR_HEIGHT;
-  const raw = window.localStorage.getItem(HOUR_HEIGHT_STORAGE_KEY);
+// Desktop-skallen (WebShell) viser dagen højere: ca. 8 timer ad gangen med en
+// linje hver halve time, så indtastninger kan sættes i 30-minutters trin. Natten
+// står uden for billedet — kun den første/sidste time vises, og resten scrolles
+// til, som på mobilen. Egen nøgle, så zoom på webben ikke ændrer mobilen.
+const WEB_HOUR_HEIGHT = 96;
+const WEB_HOUR_HEIGHT_STORAGE_KEY = "hellocal.kalender.hourHeight.web";
+
+function loadStoredHourHeight(web = false): number {
+  const fallback = web ? WEB_HOUR_HEIGHT : HOUR_HEIGHT;
+  if (typeof window === "undefined") return fallback;
+  const raw = window.localStorage.getItem(web ? WEB_HOUR_HEIGHT_STORAGE_KEY : HOUR_HEIGHT_STORAGE_KEY);
   const parsed = raw ? Number(raw) : NaN;
-  if (Number.isNaN(parsed)) return HOUR_HEIGHT;
+  if (Number.isNaN(parsed)) return fallback;
   return Math.min(MAX_HOUR_HEIGHT, Math.max(MIN_HOUR_HEIGHT, parsed));
 }
 
@@ -914,6 +924,7 @@ export default function CalendarPage() {
           error={registrationsError}
           sleepWindow={resolveSleepWindow(selectedDate)}
           previousSleepWindow={resolveSleepWindow(addDays(selectedDate, -1))}
+          hasHistory={registrations.length > 0}
           onEntryMoved={handleEntryMoved}
           onSleepAdjust={(type, minutes) => requestSleepAdjust(selectedDate, type, minutes)}
           onClose={() => setSelectedDate(null)}
@@ -1443,6 +1454,7 @@ function WeekTimelineView({
   const headerDrag = useRef<{ x: number; scrollLeft: number } | null>(null);
   const gridDrag = useRef<{ x: number; y: number; scrollLeft: number; scrollTop: number } | null>(null);
   const gridScrollRef = useRef<HTMLDivElement | null>(null);
+  const [addTarget, setAddTarget] = useState<{ date: string; time: string } | null>(null);
   const getSleepWindowRef = useRef(getSleepWindow);
   useEffect(() => {
     getSleepWindowRef.current = getSleepWindow;
@@ -1487,6 +1499,7 @@ function WeekTimelineView({
   }
 
   return (
+    <>
     <div className="overflow-hidden rounded-2xl border border-hf-tan bg-hf-white">
       <div
         onPointerDown={handleHeaderPointerDown}
@@ -1548,6 +1561,14 @@ function WeekTimelineView({
             return (
               <div key={date.toISOString()} className="relative min-w-[92px] flex-1 border-r border-hf-tan last:border-r-0">
                 <SleepBands window={sleepWindow} />
+                <div
+                  className="absolute inset-0"
+                  onDoubleClick={(event) => {
+                    const rect = event.currentTarget.getBoundingClientRect();
+                    const minutes = Math.floor(((event.clientY - rect.top) / HOUR_HEIGHT) * 2) * 30;
+                    setAddTarget({ date: isoDate(date), time: minutesToTime(Math.min(minutes, 23 * 60 + 30)) });
+                  }}
+                />
                 {HOUR_MARKS.map((hour) => (
                   <div
                     key={hour}
@@ -1588,6 +1609,8 @@ function WeekTimelineView({
         </div>
       </div>
     </div>
+    {addTarget && <AddMenuSheet date={addTarget.date} time={addTarget.time} onClose={() => setAddTarget(null)} />}
+    </>
   );
 }
 
@@ -1792,6 +1815,7 @@ function DayDetails({
   error,
   sleepWindow,
   previousSleepWindow,
+  hasHistory,
   onSleepAdjust,
   onEntryMoved,
   onClose,
@@ -1812,6 +1836,8 @@ function DayDetails({
   sleepWindow: SleepWindow;
   /** The day before's window — its bedtime starts the night that ends this morning. */
   previousSleepWindow: SleepWindow;
+  /** Har brugeren registreret noget før? Ellers vises altid morgenen. */
+  hasHistory: boolean;
   onSleepAdjust: (type: SleepAdjustType, minutes: number) => void;
   onEntryMoved: (registrationId: string, newCreatedAt: Date) => void;
   onClose: () => void;
@@ -1834,11 +1860,13 @@ function DayDetails({
   // (DayDetails er keyed på datoen); et tryk udenfor lukker den, og derefter
   // står kun det lille ikon ud for kl. GOAL_HOUR.
   const [goalPopupDismissed, setGoalPopupDismissed] = useState(false);
-  const [hourHeight, setHourHeight] = useState(() => loadStoredHourHeight());
+  const inWebShell = useInWebShell();
+  const [hourHeight, setHourHeight] = useState(() => loadStoredHourHeight(inWebShell));
   const activeZoomPointers = useRef(new Map<number, number>());
   const zoomStart = useRef<{ avgY: number; hourHeight: number } | null>(null);
   const mouseDrag = useRef<{ y: number; scrollTop: number } | null>(null);
   const timelineScrollRef = useRef<HTMLDivElement | null>(null);
+  const visitedTodayRef = useRef<boolean | null>(null);
   const [sleepDrag, setSleepDrag] = useState<{ type: SleepAdjustType; minutes: number } | null>(null);
   // Oplevelse af søvn (docs/DECISIONS.md 2026-09-26): the day's 1–5 rating,
   // shown as a black bar at the top. DayDetails is keyed by date, so this
@@ -1906,7 +1934,10 @@ function DayDetails({
     mouseDrag.current = null;
     if (activeZoomPointers.current.size === 0) {
       try {
-        window.localStorage.setItem(HOUR_HEIGHT_STORAGE_KEY, String(hourHeight));
+        window.localStorage.setItem(
+          inWebShell ? WEB_HOUR_HEIGHT_STORAGE_KEY : HOUR_HEIGHT_STORAGE_KEY,
+          String(hourHeight),
+        );
       } catch {
         // localStorage unavailable — ignore.
       }
@@ -1915,7 +1946,7 @@ function DayDetails({
 
   const timelineHeight = hourHeight * 24;
   const showMinuteLines = hourHeight >= HOUR_HEIGHT * 2;
-  const minuteStep = hourHeight >= HOUR_HEIGHT * 3 ? 5 : 15;
+  const minuteStep = hourHeight >= HOUR_HEIGHT * 3 ? 5 : inWebShell ? 30 : 15;
 
   // Tidslinjen løber altid fra 00:00 (top) til 24:00 (bund) — ikke roteret om
   // stå-op-tiden. Ved åbning af en dag scroller vi ned, så den sidste hele
@@ -1927,7 +1958,26 @@ function DayDetails({
     const node = timelineScrollRef.current;
     if (!node) return;
     const wakeHour = sleepWindow.wakeTime / 60;
-    node.scrollTop = Math.max(0, (wakeHour - 1) * hourHeight);
+    // Første besøg i dag (cookie): morgenen med nattens søvn. Derefter, for
+    // i dag: nu ±2 timer i fokus.
+    const todayStr = localDateKey(new Date());
+    // Cookien læses kun første gang pr. visning (effekten kører igen ved indlæsning).
+    if (visitedTodayRef.current === null) {
+      try {
+        visitedTodayRef.current = document.cookie.split("; ").some((c) => c === `${VISIT_COOKIE}=${todayStr}`);
+        document.cookie = `${VISIT_COOKIE}=${todayStr}; path=/; max-age=172800; SameSite=Lax`;
+      } catch {
+        visitedTodayRef.current = false;
+      }
+    }
+    const visitedToday = visitedTodayRef.current;
+    if (visitedToday && hasHistory && localDateKey(date) === todayStr) {
+      const now = new Date();
+      const nowHour = now.getHours() + now.getMinutes() / 60;
+      node.scrollTop = Math.max(0, (nowHour - 2) * hourHeight);
+    } else {
+      node.scrollTop = Math.max(0, (wakeHour - 1) * hourHeight);
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loading, dateKey]);
 
@@ -2041,7 +2091,7 @@ function DayDetails({
           <div className="relative rounded-lg bg-hf-black px-4 py-2 text-center text-hf-white">
             <Link
               href="/statistics/sleep"
-              className="hf-type-small absolute inset-y-0 left-4 flex items-center text-hf-white no-underline"
+              className="hf-type-small absolute inset-y-0 right-4 flex items-center text-hf-white no-underline"
             >
               {t("sleepStats.calendarLink")}
             </Link>
@@ -2257,7 +2307,7 @@ function DayDetails({
       {addSheetHour !== null && (
         <AddMenuSheet
           date={isoDate(date)}
-          time={`${String(addSheetHour).padStart(2, "0")}:00`}
+          time={`${String(Math.floor(addSheetHour)).padStart(2, "0")}:${addSheetHour % 1 ? "30" : "00"}`}
           onClose={() => setAddSheetHour(null)}
         />
       )}
@@ -2333,6 +2383,14 @@ function HourRow({
       onPointerMove={handlePointerMove}
       onPointerUp={clearTimer}
       onPointerCancel={clearTimer}
+      // Dobbeltklik (mus) / dobbelttryk åbner tilføj-menuen direkte på timen —
+      // det lange tryk med "Tilføj"-baren er ikke til at gætte med en mus.
+      onDoubleClick={(event) => {
+        if ((event.target as HTMLElement).closest("button")) return;
+        clearTimer();
+        const rect = event.currentTarget.getBoundingClientRect();
+        onTapAddBar(hour + (event.clientY - rect.top >= rect.height / 2 ? 0.5 : 0));
+      }}
     >
       {/* Timen med en målsætning kan trykkes på i hele sin bredde og åbner
           timens oversigt med målsætningen øverst (men ikke lige efter et

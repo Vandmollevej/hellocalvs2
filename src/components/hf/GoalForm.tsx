@@ -5,8 +5,16 @@ import { IconCalendar } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
 import { useTranslation } from "@/i18n/LocaleProvider";
 import {
+  lengthToInputValue,
+  lengthUnitLabel,
+  parseLengthInput,
+  parseWeightInput,
+  useUnits,
+  weightToInputValue,
+  weightUnitLabel,
+} from "@/lib/units";
+import {
   BODY_MEASUREMENT_FIELDS,
-  BODY_MEASUREMENT_UNIT,
   emptyBodyMeasurementValues,
   type BodyMeasurementField,
 } from "@/lib/body-measurements";
@@ -39,6 +47,14 @@ function parseValue(raw: string): number | "" | null {
   if (trimmed === "") return "";
   const parsed = Number(trimmed.replace(",", "."));
   return Number.isFinite(parsed) && parsed > 0 ? parsed : null;
+}
+
+// Som parseValue, men tallet oversættes først fra den valgte enhed til kg/cm
+// (afrundet til 0,1) af `convert`.
+function parseConverted(raw: string, convert: (raw: string) => number | null): number | "" | null {
+  if (raw.trim() === "") return "";
+  const value = convert(raw);
+  return value === null ? null : Math.round(value * 10) / 10;
 }
 
 // Dags dato som lokal "YYYY-MM-DD" — tidligste valgbare målsætningsdato.
@@ -76,7 +92,7 @@ function GoalInput({
         <input
           ref={ref}
           type="text"
-          inputMode="decimal"
+          inputMode={unit.includes(" ") ? "text" : "decimal"}
           value={value}
           onChange={(event) => onChange(event.target.value)}
           className="hf-type-body-lg w-full min-w-0 bg-transparent text-hf-black outline-none"
@@ -103,16 +119,35 @@ export function GoalForm({
 }) {
   const { t } = useTranslation();
   const [targetDate, setTargetDate] = useState(initial.targetDate);
-  const [weight, setWeight] = useState(initial.weight);
-  const [measurements, setMeasurements] = useState(initial.measurements);
+  const units = useUnits();
+  // Startværdierne kommer i kg/cm; vis dem i den valgte enhed.
+  const [weight, setWeight] = useState(() => {
+    const kg = Number(initial.weight.replace(",", "."));
+    return initial.weight.trim() !== "" && Number.isFinite(kg) ? weightToInputValue(kg, units.weight) : initial.weight;
+  });
+  const [measurements, setMeasurements] = useState(() =>
+    Object.fromEntries(
+      BODY_MEASUREMENT_FIELDS.map(({ field }) => {
+        const raw = initial.measurements[field];
+        const cm = Number(raw.replace(",", "."));
+        return [field, raw.trim() !== "" && Number.isFinite(cm) ? lengthToInputValue(cm, units.height) : raw];
+      }),
+    ) as GoalFormValues["measurements"],
+  );
   const [composition, setComposition] = useState(initial.composition);
   const [nutrition, setNutrition] = useState(initial.nutrition);
   const [saving, setSaving] = useState(false);
   const [saveError, setSaveError] = useState(false);
 
+  // Vægt og kropsmål indtastes i den valgte enhed, men gemmes altid som kg/cm.
   const parsed = {
-    weight: parseValue(weight),
-    ...Object.fromEntries(BODY_MEASUREMENT_FIELDS.map(({ field }) => [field, parseValue(measurements[field])])),
+    weight: parseConverted(weight, (raw) => parseWeightInput(raw, units.weight)),
+    ...Object.fromEntries(
+      BODY_MEASUREMENT_FIELDS.map(({ field }) => [
+        field,
+        parseConverted(measurements[field], (raw) => parseLengthInput(raw, units.height)),
+      ]),
+    ),
     ...Object.fromEntries(COMPOSITION_GOAL_FIELDS.map(({ field }) => [field, parseValue(composition[field])])),
     ...Object.fromEntries(NUTRITION_GOAL_FIELDS.map(({ field }) => [field, parseValue(nutrition[field])])),
   } as Record<string, number | "" | null>;
@@ -203,9 +238,9 @@ export function GoalForm({
         <div className="hf-card">
           <GoalInput
             label={t("goals.targetWeight")}
-            unit="kg"
+            unit={weightUnitLabel(units.weight)}
             value={weight}
-            placeholder={t("goals.weightPlaceholder")}
+            placeholder={weightToInputValue(72, units.weight)}
             autoFocus={focus === "weight"}
             onChange={setWeight}
           />
@@ -218,9 +253,9 @@ export function GoalForm({
               <GoalInput
                 key={field}
                 label={t(nameKey)}
-                unit={BODY_MEASUREMENT_UNIT}
+                unit={lengthUnitLabel(units.height)}
                 value={measurements[field]}
-                placeholder={t("goals.measurementPlaceholder")}
+                placeholder={lengthToInputValue(82, units.height)}
                 autoFocus={focus === field}
                 onChange={(value) => setMeasurements((current) => ({ ...current, [field]: value }))}
               />
