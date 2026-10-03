@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import { useWheelSnap } from "./useWheelSnap";
 
 const ITEM_HEIGHT = 40;
@@ -80,7 +81,8 @@ export function BirthDatePicker({
         {saved ? `${saved.day}. ${MONTHS[saved.month - 1]} ${saved.year}` : "Vælg"}
       </button>
 
-      {draft && (
+      {/* Portales til <body> — se WheelPicker.tsx (2026-10-03). */}
+      {draft && createPortal(
         <div
           className="fixed inset-0 z-[70] flex flex-col justify-end bg-hf-black/40"
           role="dialog"
@@ -133,7 +135,8 @@ export function BirthDatePicker({
               </div>
             </div>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </>
   );

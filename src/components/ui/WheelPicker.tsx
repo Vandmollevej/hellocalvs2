@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import { useWheelSnap } from "./useWheelSnap";
 
 const ITEM_HEIGHT = 40;
@@ -70,7 +71,10 @@ export function WheelPicker({
         {value !== null ? `${value}${unit ? ` ${unit}` : ""}` : "Vælg"}
       </button>
 
-      {open && (
+      {/* Arket portales til <body> (2026-10-03): ligger hjulet i et <label>
+          (Profil), sendte iOS ellers tryk på "Færdig" videre til
+          åbne-knappen, så arket åbnede igen og intet skete. */}
+      {open && createPortal(
         <div
           className="fixed inset-0 z-[70] flex flex-col justify-end bg-hf-black/40"
           role="dialog"
@@ -119,7 +123,8 @@ export function WheelPicker({
               </div>
             </div>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </>
   );

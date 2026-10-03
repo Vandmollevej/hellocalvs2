@@ -1,6 +1,7 @@
 import { ActivitySource, HealthMetricSource, HealthMetricType, WeightSource } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { normalizeSportType } from "@/lib/sport-icons";
+import { isValidHeightCm } from "@/lib/height";
 
 // Data hentet fra integrationer (Withings, Google Health, Strava, Polar,
 // Fitbit, Apple Health/Health Connect) gemmes direkte på brugeren i de
@@ -17,6 +18,8 @@ import { normalizeSportType } from "@/lib/sport-icons";
 //   Google "BIKING" lander i samme "Cykling"-kort.
 // - Målinger (skridt, puls, søvn, mineraler …) gemmes kun med en gyldig
 //   HealthMetricType, så de altid rammer det tilsvarende Statistik-kort.
+// - Højde: den låste profilhøjde (User.heightCm) følger den nyeste målte
+//   højde fra en integration (docs/DECISIONS.md 2026-10-03).
 
 export type IntegrationItem = { kind: "weight" | "activity" | "metric" | string; payload: unknown };
 type Payload = Record<string, unknown>;
@@ -136,5 +139,21 @@ export async function storeIntegrationItems(userId: string, items: IntegrationIt
       await prisma.healthMetric.update({ where: { id: existing.id }, data: { value: m.value } });
     }
   }
+
+  if (metrics.some((m) => m.type === "HEIGHT_CM")) await syncProfileHeight(userId);
   return stored;
+}
+
+// Profilens højde er låst for brugeren og følger den nyeste gyldige højde,
+// en integration har målt — uanset kilde og rækkefølgen, data kom ind i.
+async function syncProfileHeight(userId: string) {
+  const latest = await prisma.healthMetric.findMany({
+    where: { userId, type: "HEIGHT_CM" },
+    orderBy: { recordedAt: "desc" },
+    select: { value: true },
+    take: 10,
+  });
+  const height = latest.find((m) => isValidHeightCm(m.value));
+  if (!height) return;
+  await prisma.user.update({ where: { id: userId }, data: { heightCm: Math.round(height.value) } });
 }

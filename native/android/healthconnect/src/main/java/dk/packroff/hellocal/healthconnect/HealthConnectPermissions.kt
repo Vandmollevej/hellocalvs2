@@ -13,6 +13,7 @@ import androidx.health.connect.client.records.ActiveCaloriesBurnedRecord
 import androidx.health.connect.client.records.BasalMetabolicRateRecord
 import androidx.health.connect.client.records.BodyFatRecord
 import androidx.health.connect.client.records.BodyWaterMassRecord
+import androidx.health.connect.client.records.BoneMassRecord
 import androidx.health.connect.client.records.DistanceRecord
 import androidx.health.connect.client.records.ExerciseSessionRecord
 import androidx.health.connect.client.records.FloorsClimbedRecord
@@ -20,6 +21,7 @@ import androidx.health.connect.client.records.HeartRateRecord
 import androidx.health.connect.client.records.HeartRateVariabilityRmssdRecord
 import androidx.health.connect.client.records.HeightRecord
 import androidx.health.connect.client.records.HydrationRecord
+import androidx.health.connect.client.records.LeanBodyMassRecord
 import androidx.health.connect.client.records.NutritionRecord
 import androidx.health.connect.client.records.OxygenSaturationRecord
 import androidx.health.connect.client.records.Record
@@ -34,8 +36,11 @@ import kotlin.reflect.KClass
 object HealthConnectPermissions {
     val READ_TYPES: Map<String, List<KClass<out Record>>> = mapOf(
         "weight" to listOf(WeightRecord::class),
+        "bodyFat" to listOf(BodyFatRecord::class),
+        "fatFreeMass" to listOf(LeanBodyMassRecord::class),
         // Weight is needed to turn body water mass into a percentage.
-        "bodyFat" to listOf(BodyFatRecord::class, BodyWaterMassRecord::class, WeightRecord::class),
+        "bodyWater" to listOf(BodyWaterMassRecord::class, WeightRecord::class),
+        "boneMass" to listOf(BoneMassRecord::class),
         "activities" to listOf(ExerciseSessionRecord::class, ActiveCaloriesBurnedRecord::class),
         "steps" to listOf(StepsRecord::class, DistanceRecord::class, FloorsClimbedRecord::class),
         "energy" to listOf(ActiveCaloriesBurnedRecord::class, BasalMetabolicRateRecord::class),
