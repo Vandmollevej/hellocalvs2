@@ -11,6 +11,7 @@ import { runStripeTick } from "@/lib/payments/stripe-subscription";
 import { alertOverdueSupportRequests } from "@/lib/support-inbox";
 import { syncAllIntegrations } from "@/lib/integrations/handlers";
 import { sendDueReports } from "@/lib/partner-reports";
+import { runPersonaJob } from "@/lib/personas";
 
 // In-process baggrundsjob (docs/DECISIONS.md 2026-09-02): DB-drevet, kører i
 // selve Next.js-serverprocessen uanset hvor den hostes (Synology i dag,
@@ -114,6 +115,7 @@ export function startScheduler() {
         return null;
       },
       "uncertainty-rerun": rerunUncertainAnalyses,
+      personas: runPersonaJob,
     }).catch((error) => {
       console.error("[scheduler] tick fejlede", error);
     });

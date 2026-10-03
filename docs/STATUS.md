@@ -1,6 +1,14 @@
 # HELLO CAL — project status
 
-Last updated: 2026-09-29
+Last updated: 2026-10-02
+
+## 2026-10-02: Admin → Brugere → Personas (AI-udledte brugergrupper)
+
+- Ny side `/admin/users/personas` (menupunkt "Personas" under Brugere): anonyme gruppetal pr. land, by, sprog, aldersgruppe, køn, abonnement og enhed (logins/90 d, login-dage, aktive, registreringer/30 d, betalende, smartur, vejninger, motion, inaktive, weekend-andel, typisk tidspunkt på døgnet, toptime/-dag, kvindeandel), adfærdssegmenter (storbrugere/faste/lejlighedsvise/kigger/nye/inaktive), logins pr. time og ugedag, abonnement pr. alder, sprog pr. land, og AI-personas fra seneste snapshot. Grupper under 5 brugere samles i "Øvrige". Se DECISIONS.md samme dato.
+- Logik: `src/lib/persona-groups.ts` (rene beregninger, tests i `persona-groups.test.mjs`, 6 grønne), `src/lib/personas.ts` (DB + snapshot), `src/lib/persona-ai.ts` (OpenAI, struktureret JSON, kun aggregater, `store: false`; model `OPENAI_PERSONA_MODEL` → `OPENAI_STATS_MODEL` → produktmodellen).
+- Nyt cronjob "personas" (app-runtime, dagligt kl. 04:00) + knappen "Beregn personas med AI" (kun fuld administratoradgang; `POST /api/admin/personas`). Hver kørsel gemmes som `persona_snapshots` (også ved AI-fejl, med fejltekst); historik vises nederst på siden.
+- `login_events` har nu kolonnen `city` (fra Cloudflares `cf-ipcity`, kræver "Add visitor location headers" — ellers kun land). Migration `20261002090000_personas` skal køre ved deploy.
+- Lint, typecheck og `npm run build` grønne. Ikke live-testet (ingen lokal DB/OpenAI-nøgle). `page-tree.test.mjs` fejler fortsat på master (uvedkommende; den nye side er tilføjet i sidetræet).
 
 ## 2026-09-29: Offentlig forside for udloggede
 

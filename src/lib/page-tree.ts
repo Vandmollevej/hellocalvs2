@@ -299,7 +299,11 @@ export const PAGE_TREE: PageArea[] = [
             label: "Nye varer",
             children: [{ path: "/admin/products/[id]", label: "Vare" }],
           },
-          { path: "/admin/users", label: "Brugere" },
+          {
+            path: "/admin/users",
+            label: "Brugere",
+            children: [{ path: "/admin/users/personas", label: "Personas" }],
+          },
           {
             path: "/admin/support",
             label: "Support",

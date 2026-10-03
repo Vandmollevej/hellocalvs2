@@ -47,6 +47,7 @@ const DICTIONARY = {
   nav_dishes_hellofresh: { DA: "HelloFresh", EN: "HelloFresh" },
   nav_dishes_valdemarsro: { DA: "Valdemarsro", EN: "Valdemarsro" },
   nav_users_all: { DA: "Alle brugere", EN: "All users" },
+  nav_personas: { DA: "Personas", EN: "Personas" },
   nav_partners: { DA: "Partnere", EN: "Partners" },
   nav_partners_ads: { DA: "Reklamer", EN: "Ads" },
   nav_partners_contacts: { DA: "Kontakter", EN: "Contacts" },

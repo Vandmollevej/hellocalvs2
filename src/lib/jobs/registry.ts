@@ -35,6 +35,17 @@ export const JOBS: JobDefinition[] = [
     defaultRunAtTime: "03:00",
   },
   {
+    // Personas (docs/DECISIONS.md 2026-10-02): anonyme gruppetal + AI-personas
+    // under admin → Brugere → Personas. Kun aggregater sendes til OpenAI.
+    key: "personas",
+    name: "Personas: AI-analyse af brugergrupper",
+    description:
+      "Beregner anonyme gruppetal (land, by, sprog, alder, køn, abonnement, enhed, logins, brug af appen) og lader AI'en udlede personas. Resultatet vises under Brugere → Personas.",
+    runtime: "app",
+    defaultIntervalMinutes: null,
+    defaultRunAtTime: "04:00",
+  },
+  {
     key: "frida-import",
     name: "Frida-import",
     description:
