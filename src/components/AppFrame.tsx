@@ -32,7 +32,9 @@ export function AppFrame({ children }: { children: React.ReactNode }) {
     pathname.startsWith("/admin") ||
     pathname.startsWith("/hello-doc") ||
     pathname.startsWith("/business") ||
-    pathname.startsWith("/presse");
+    pathname.startsWith("/presse") ||
+    // Partnerportalen for B2B-brugere har eget login (docs/DECISIONS.md 2026-10-02).
+    pathname.startsWith("/partner");
   if (isFullViewport) return <>{children}</>;
 
   if (isDesktop) {

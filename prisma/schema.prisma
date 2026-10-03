@@ -288,6 +288,7 @@ model User {
   adminLoginEvents    AdminLoginEvent[]
   adminDevices        AdminDevice[]
   adminLoginApprovals AdminLoginApproval[]
+  partnerUsersInvited PartnerUser[]        @relation("PartnerUserInviter")
 
   @@map("users")
 }
@@ -3545,8 +3546,37 @@ model Partner {
   locations AdLocation[]
   schedules PartnerReportSchedule[]
   sends     PartnerReportSend[]
+  users     PartnerUser[]
 
   @@map("partners")
+}
+
+// B2B-brugere (docs/DECISIONS.md 2026-10-02): login til partnerportalen
+// (/partner) for en partners egne folk. Oprettes KUN af en administrator med
+// fuld adgang via invitation — der findes ingen offentlig tilmelding. Samme
+// række er både invitation og bruger: før accept er passwordHash null og
+// inviteTokenHash sat; ved accept sættes adgangskoden og tokenet nulstilles.
+model PartnerUser {
+  id                String    @id @default(cuid())
+  partnerId         String
+  partner           Partner   @relation(fields: [partnerId], references: [id], onDelete: Cascade)
+  name              String
+  email             String    @unique
+  passwordHash      String?
+  active            Boolean   @default(true)
+  // Kun hashen af invitationstokenet gemmes; linket gælder 72 timer.
+  inviteTokenHash   String?   @unique
+  inviteExpiresAt   DateTime?
+  invitedBy         User      @relation("PartnerUserInviter", fields: [invitedById], references: [id], onDelete: Cascade)
+  invitedById       String
+  acceptedAt        DateTime?
+  lastLoginAt       DateTime?
+  // Sessioner udstedt før dette tidspunkt afvises (deaktivering, "log ud overalt").
+  sessionsValidFrom DateTime?
+  createdAt         DateTime  @default(now())
+
+  @@index([partnerId])
+  @@map("partner_users")
 }
 
 // Modtagere af rapporter. En rapport kan KUN sendes til aktive kontakter på
