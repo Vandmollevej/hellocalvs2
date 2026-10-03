@@ -14,7 +14,7 @@ import { latestTrendWeight, type MealSample, type WeightSample } from "@/lib/wei
 import { computeAge } from "@/lib/age";
 import { ACTIVITY_LEVELS, type ActivityLevel } from "@/lib/activity-level";
 import { useTranslation } from "@/i18n/LocaleProvider";
-import { cmToIn, formatWeight, inToCm, useUnits, weightUnitLabel } from "@/lib/units";
+import { formatLength, formatWeight, inToCm, useUnits, weightUnitLabel } from "@/lib/units";
 import { FaceIdButton } from "@/components/FaceIdButton";
 import { SkeletonForm, SkeletonScreen } from "@/components/hf/Skeleton";
 import { EnergyBreakdown } from "@/components/EnergyBreakdown";
@@ -302,21 +302,38 @@ export default function ProfileEditPage() {
               )}
             </div>
 
-            <Field label={t("profile.field.height")}>
-              <WheelPicker
-                label={t("profile.field.height")}
-                value={
-                  user.heightCm !== null
-                    ? Math.round(units.height === "in" ? cmToIn(user.heightCm) : user.heightCm)
-                    : null
-                }
-                min={units.height === "in" ? 39 : 100}
-                max={units.height === "in" ? 91 : 230}
-                unit={units.height.toUpperCase()}
-                initialScrollValue={units.height === "in" ? 69 : 175}
-                onChange={(value) => updateNow("heightCm", units.height === "in" ? Math.round(inToCm(value)) : value)}
-              />
-            </Field>
+            <div className="flex flex-col gap-2">
+              <span className="hf-type-small hf-type-strong text-text-secondary uppercase tracking-[0.06em]">
+                {t("profile.field.height")}
+              </span>
+              {/* Låst ligesom vægten (docs/DECISIONS.md 2026-10-03): kan kun
+                  vælges, mens den er tom; derefter opdateres den kun fra en
+                  integration, og et tryk åbner "Lås"-siden. Ikke i et <label>,
+                  så hjulets "Færdig" ikke sendes videre til åbne-knappen. */}
+              {user.heightCm !== null ? (
+                <button
+                  type="button"
+                  onClick={() => router.push("/profile/height")}
+                  aria-label={t("profile.height.openLockedInfo")}
+                  className={`${inputClass} flex items-center gap-2 text-left opacity-60`}
+                >
+                  <IconLock size={18} className="shrink-0" />
+                  <span className="truncate">
+                    {formatLength(user.heightCm, units.height).toUpperCase()}
+                  </span>
+                </button>
+              ) : (
+                <WheelPicker
+                  label={t("profile.field.height")}
+                  value={null}
+                  min={units.height === "in" ? 39 : 100}
+                  max={units.height === "in" ? 91 : 230}
+                  unit={units.height.toUpperCase()}
+                  initialScrollValue={units.height === "in" ? 69 : 175}
+                  onChange={(value) => updateNow("heightCm", units.height === "in" ? Math.round(inToCm(value)) : value)}
+                />
+              )}
+            </div>
 
             <Field label={t("profile.field.birthDate")}>
               <BirthDatePicker

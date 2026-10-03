@@ -3,6 +3,14 @@
 Last updated: 2026-10-02
 Last updated: 2026-10-03
 
+## 2026-10-03: Højde låst + alt fra smartvægten
+
+- "Færdig" i højde- og fødselsdato-hjulet virkede ikke på iPhone (arket lå inde i et `<label>`); arkene portales nu til `<body>`.
+- Højden låses ligesom vægten: kan kun vælges, mens den er tom; ellers lås-ikon → `/profile/height`. Integrationer med højde (Withings, Apple Health, Health Connect) opdaterer den. Hvorfor højden var forsvundet, kunne ikke findes i koden (ingen kodevej nulstiller den undtagen sletning af profil) — er den tom, kan den vælges igen én gang.
+- Withings henter nu alt: højde, fedtprocent, fedtmasse, fedtfri masse, muskelmasse, kropsvand, knoglemasse, visceralt fedt, puls, iltmætning, temperatur, VO2 max. Hver kropsmåling har egen række på integrationssiden. Se DECISIONS.md samme dato.
+- Migration `20261003150000_full_body_composition` skal køre ved deploy. Withings skal synkronisere igen for at hente de nye målinger (sker automatisk). Ingen statistikkort for de nye typer endnu (fedtmasse, fedtfri masse, knoglemasse, visceralt fedt) — data gemmes.
+- Lint, typecheck, tests og build: se commit. Ikke live-testet (ingen lokal DB/login) — test på telefon: Profil → Højde.
+
 ## 2026-10-02: Kalenderen husker den åbne dag
 
 - Dagsvisningen genåbnes efter navigation væk fra `/calendar` (Tilbage eller "Kalender" i menuen) i stedet for at falde tilbage til måneden. Ny `src/lib/calendar-open-day.ts` (URL `?date=` + sessionStorage), koblet ind i `src/app/calendar/page.tsx`. Se DECISIONS.md samme dato.

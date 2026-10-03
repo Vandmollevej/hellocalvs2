@@ -2,6 +2,16 @@
 
 This file records durable decisions. Add a dated entry when a later decision changes one of them.
 
+## 2026-10-03: Højden låses ligesom vægten + hele kropssammensætningen fra integrationer
+
+Brugerens krav: "Denne [højden] skal også låses ligesom vægten. I integrationen skal ALT med. Fedtprocent, muskelmasse og alt."
+
+- Højden (`User.heightCm`) kan kun vælges på Profil, mens den er tom. Derefter vises den med lås; et tryk åbner `/profile/height`, der henviser til integrationer. `PATCH /api/profile` afviser en ny højde med 403, når den er sat (`src/lib/height.ts`, 50–250 cm).
+- Den låste højde følger den nyeste gyldige `HEIGHT_CM`, en integration har målt (alle kilder), hver gang en integration leverer højde (`store-items.ts`). Withings henter altid hele højdehistorikken, da højden typisk er indtastet for længe siden.
+- Withings henter alt, vægten måler: vægt, højde, fedtprocent, fedtmasse, fedtfri masse, muskelmasse, kropsvand, knoglemasse, visceralt fedt, puls, iltmætning, temperatur og VO2 max. Nye `HealthMetricType`: `FAT_MASS_KG`, `FAT_FREE_MASS_KG`, `BONE_MASS_KG`, `VISCERAL_FAT_INDEX` (migration `20261003150000_full_body_composition`). Garmin henter også knoglemasse; Health Connect-modulet læser også knoglemasse og fedtfri masse (LeanBodyMass).
+- Hver kropsmåling har sin egen til/fra-række på integrationssiden (`ReadType`: `bodyFat` = fedtprocent og fedtmasse, `muscleMass`, `fatFreeMass`, `bodyWater`, `boneMass`, `visceralFat`; `body` = højde, BMI og temperatur). Nye rækker er slået til, indtil brugeren slår dem fra — også hvor "Fedtprocent" før var slået fra og dækkede muskler/kropsvand.
+- Hjul-arkene (`WheelPicker`, `BirthDatePicker`) portales til `<body>`: inde i et `<label>` sendte iOS tryk på "Færdig" videre til åbne-knappen, så arket ikke lukkede.
+
 ## 2026-10-02: Flere integrationer — Garmin, WHOOP, Huawei + mærker via telefonen
 
 Brugerens krav: Garmin, Health Connect, eufy, Renpho, Tuya, Xiaomi, Huawei, WHOOP og Samsung (også ure/ringe, ikke kun vægte). "Vi må ikke videregive nogen informationer om brugeren."

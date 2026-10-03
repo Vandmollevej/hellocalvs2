@@ -1,20 +1,15 @@
-// Withings Health API (OAuth2, developer.withings.com). Vægt og fedtprocent
-// fra en tilknyttet smart-vægt. Env: WITHINGS_CLIENT_ID/WITHINGS_CLIENT_SECRET.
+// Withings Health API (OAuth2, developer.withings.com). Alt, en tilknyttet
+// smart-vægt måler: vægt, højde, fedt, muskler, fedtfri masse, kropsvand,
+// knogler, visceralt fedt, puls m.m. (withings-items.ts).
+// Env: WITHINGS_CLIENT_ID/WITHINGS_CLIENT_SECRET.
 
-import type { IntegrationItem } from "@/lib/integrations/store-items";
+import { WITHINGS_MEASURE, WITHINGS_MEASURE_TYPES, withingsItems, type WithingsMeasureGroup } from "./withings-items";
 import { clientCredentials, postForm, type OAuthProviderAdapter, type OAuthTokens } from "./types";
 
 const AUTHORIZE_URL = "https://account.withings.com/oauth2_user/authorize2";
 const TOKEN_URL = "https://wbsapi.withings.net/v2/oauth2";
 const MEASURE_URL = "https://wbsapi.withings.net/measure";
 const SCOPES = "user.info,user.metrics";
-
-// Withings-måletyper: 1 = vægt (kg), 6 = fedtprocent. Værdi = value * 10^unit.
-const WEIGHT = 1;
-const FAT_RATIO = 6;
-// 76 = muskelmasse (kg), 77 = kropsvand (kg; gemmes som % af vægten i samme måling).
-const MUSCLE_MASS = 76;
-const HYDRATION = 77;
 
 type WithingsEnvelope<T> = { status: number; body: T; error?: string };
 
@@ -29,19 +24,20 @@ async function callOAuth(params: Record<string, string>): Promise<OAuthTokens> {
   return data.body;
 }
 
-type MeasureGroup = { date: number; measures: { value: number; type: number; unit: number }[] };
-type MeasureBody = { measuregrps?: MeasureGroup[]; more?: number; offset?: number };
+type MeasureBody = { measuregrps?: WithingsMeasureGroup[]; more?: number; offset?: number };
 
-async function fetchMeasureGroups(accessToken: string, sinceUnixSeconds: number) {
-  const groups: MeasureGroup[] = [];
+// sinceUnixSeconds = null henter hele historikken (bruges til højde, som
+// typisk er indtastet i Withings for længe siden).
+async function fetchMeasureGroups(accessToken: string, meastypes: readonly number[], sinceUnixSeconds: number | null) {
+  const groups: WithingsMeasureGroup[] = [];
   let offset: number | undefined;
   for (let page = 0; page < 20; page++) {
     const params: Record<string, string> = {
       action: "getmeas",
-      meastypes: `${WEIGHT},${FAT_RATIO},${MUSCLE_MASS},${HYDRATION}`,
+      meastypes: meastypes.join(","),
       category: "1",
-      lastupdate: String(sinceUnixSeconds),
     };
+    if (sinceUnixSeconds !== null) params.lastupdate = String(sinceUnixSeconds);
     if (offset) params.offset = String(offset);
     const data = await postForm<WithingsEnvelope<MeasureBody>>(MEASURE_URL, params, "Withings måling-opslag", {
       Authorization: `Bearer ${accessToken}`,
@@ -77,31 +73,12 @@ export const withings: OAuthProviderAdapter = {
     return callOAuth({ grant_type: "refresh_token", refresh_token: refreshToken });
   },
   async fetchItems(accessToken, since) {
-    const groups = await fetchMeasureGroups(accessToken, Math.floor(since.getTime() / 1000));
-    const items: IntegrationItem[] = [];
-    for (const group of groups) {
-      const at = new Date(group.date * 1000).toISOString();
-      const valueOf = (type: number) => {
-        const found = group.measures.find((measure) => measure.type === type);
-        return found ? found.value * Math.pow(10, found.unit) : null;
-      };
-      for (const m of group.measures) {
-        const value = m.value * Math.pow(10, m.unit);
-        if (m.type === WEIGHT) {
-          items.push({ kind: "weight", payload: { source: "WITHINGS", weightKg: value, weighedAt: at } });
-        } else if (m.type === FAT_RATIO) {
-          items.push({ kind: "metric", payload: { source: "WITHINGS", type: "BODY_FAT_PERCENT", value, recordedAt: at } });
-        } else if (m.type === MUSCLE_MASS) {
-          items.push({ kind: "metric", payload: { source: "WITHINGS", type: "MUSCLE_MASS_KG", value, recordedAt: at } });
-        } else if (m.type === HYDRATION) {
-          const weight = valueOf(WEIGHT);
-          if (weight && weight > 0) {
-            const percent = Math.round((value / weight) * 1000) / 10;
-            items.push({ kind: "metric", payload: { source: "WITHINGS", type: "BODY_WATER_PERCENT", value: percent, recordedAt: at } });
-          }
-        }
-      }
-    }
-    return items;
+    const [groups, heights] = await Promise.all([
+      fetchMeasureGroups(accessToken, WITHINGS_MEASURE_TYPES, Math.floor(since.getTime() / 1000)),
+      // Højden er ofte indtastet én gang for år tilbage; hent den altid, så
+      // den låste profilhøjde følger Withings (dubletter springes over).
+      fetchMeasureGroups(accessToken, [WITHINGS_MEASURE.HEIGHT], null).catch(() => []),
+    ]);
+    return withingsItems([...groups, ...heights]);
   },
 };

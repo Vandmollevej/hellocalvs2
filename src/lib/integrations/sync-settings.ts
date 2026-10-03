@@ -7,7 +7,24 @@ import type { IntegrationItem } from "@/lib/integrations/store-items";
 // - "read": data, Hello Cal henter fra appen.
 // - "write": data, Hello Cal sender fra sig til appen.
 
-export type ReadType = "weight" | "bodyFat" | "activities" | "steps" | "energy" | "heart" | "sleep" | "water" | "body";
+// Kropssammensætningen er delt op, så hver måling har sin egen række
+// (docs/DECISIONS.md 2026-10-03): fedt, muskler, fedtfri masse, kropsvand,
+// knogler og visceralt fedt.
+export type ReadType =
+  | "weight"
+  | "bodyFat"
+  | "muscleMass"
+  | "fatFreeMass"
+  | "bodyWater"
+  | "boneMass"
+  | "visceralFat"
+  | "activities"
+  | "steps"
+  | "energy"
+  | "heart"
+  | "sleep"
+  | "water"
+  | "body";
 export type WriteType = "nutrition" | "water" | "weight" | "activities";
 
 export type SyncSettings = { read: Partial<Record<ReadType, boolean>>; write: Partial<Record<WriteType, boolean>> };
@@ -23,21 +40,43 @@ export type ProviderSyncCapabilities = { read: ReadType[]; write: WriteType[] };
 // Health og følger valgene dér.
 export const SYNC_CAPABILITIES: Partial<Record<IntegrationProvider, ProviderSyncCapabilities>> = {
   APPLE_HEALTH: {
-    read: ["weight", "bodyFat", "activities", "steps", "energy", "heart", "sleep", "water", "body"],
+    read: ["weight", "bodyFat", "muscleMass", "bodyWater", "activities", "steps", "energy", "heart", "sleep", "water", "body"],
     write: ["nutrition", "water", "weight", "activities"],
   },
   HEALTH_CONNECT: {
-    read: ["weight", "bodyFat", "activities", "steps", "energy", "heart", "sleep", "water", "body"],
+    read: [
+      "weight",
+      "bodyFat",
+      "fatFreeMass",
+      "bodyWater",
+      "boneMass",
+      "activities",
+      "steps",
+      "energy",
+      "heart",
+      "sleep",
+      "water",
+      "body",
+    ],
     write: ["nutrition", "water", "weight", "activities"],
   },
   GOOGLE_HEALTH: { read: ["weight", "bodyFat", "activities", "steps"], write: ["nutrition", "water", "weight"] },
   STRAVA: { read: ["activities"], write: ["activities"] },
-  WITHINGS: { read: ["weight", "bodyFat"], write: [] },
+  WITHINGS: {
+    read: ["weight", "bodyFat", "muscleMass", "fatFreeMass", "bodyWater", "boneMass", "visceralFat", "body", "heart"],
+    write: [],
+  },
   POLAR: { read: ["activities"], write: [] },
   FITBIT: { read: ["weight", "bodyFat", "activities"], write: [] },
-  GARMIN: { read: ["weight", "bodyFat", "activities", "steps", "energy", "heart", "sleep", "body"], write: [] },
+  GARMIN: {
+    read: ["weight", "bodyFat", "muscleMass", "bodyWater", "boneMass", "activities", "steps", "energy", "heart", "sleep", "body"],
+    write: [],
+  },
   WHOOP: { read: ["activities", "heart", "sleep"], write: [] },
-  HUAWEI_HEALTH: { read: ["weight", "bodyFat", "activities", "steps", "energy", "heart", "sleep", "body"], write: [] },
+  HUAWEI_HEALTH: {
+    read: ["weight", "bodyFat", "muscleMass", "activities", "steps", "energy", "heart", "sleep", "body"],
+    write: [],
+  },
 };
 
 export function capabilitiesFor(provider: IntegrationProvider): ProviderSyncCapabilities {
@@ -92,8 +131,13 @@ const METRIC_READ_TYPE: Record<string, ReadType> = {
   VO2_MAX: "heart",
   SLEEP_MINUTES: "sleep",
   BODY_FAT_PERCENT: "bodyFat",
-  MUSCLE_MASS_KG: "bodyFat",
-  BODY_WATER_PERCENT: "bodyFat",
+  FAT_MASS_KG: "bodyFat",
+  MUSCLE_MASS_KG: "muscleMass",
+  FAT_FREE_MASS_KG: "fatFreeMass",
+  BODY_WATER_PERCENT: "bodyWater",
+  BONE_MASS_KG: "boneMass",
+  VISCERAL_FAT_INDEX: "visceralFat",
+  TEMPERATURE_C: "body",
   HEIGHT_CM: "body",
   BMI: "body",
   WATER_ML: "water",

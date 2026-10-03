@@ -13,6 +13,7 @@ import androidx.health.connect.client.records.ActiveCaloriesBurnedRecord
 import androidx.health.connect.client.records.BasalMetabolicRateRecord
 import androidx.health.connect.client.records.BodyFatRecord
 import androidx.health.connect.client.records.BodyWaterMassRecord
+import androidx.health.connect.client.records.BoneMassRecord
 import androidx.health.connect.client.records.DistanceRecord
 import androidx.health.connect.client.records.ExerciseSessionRecord
 import androidx.health.connect.client.records.FloorsClimbedRecord
@@ -20,6 +21,7 @@ import androidx.health.connect.client.records.HeartRateRecord
 import androidx.health.connect.client.records.HeartRateVariabilityRmssdRecord
 import androidx.health.connect.client.records.HeightRecord
 import androidx.health.connect.client.records.HydrationRecord
+import androidx.health.connect.client.records.LeanBodyMassRecord
 import androidx.health.connect.client.records.OxygenSaturationRecord
 import androidx.health.connect.client.records.Record
 import androidx.health.connect.client.records.RespiratoryRateRecord
@@ -61,12 +63,18 @@ class HealthConnectReader(
         val window = Window(fromDay, from, until)
 
         val metrics = mutableListOf<IngestMetric>()
-        val needsWeights = settings.reads("weight") || settings.reads("bodyFat")
+        val needsWeights = settings.reads("weight") || settings.reads("bodyWater")
         val weights = if (needsWeights) safely { readAll(WeightRecord::class, from, until) } else emptyList()
 
         if (settings.reads("bodyFat")) {
             metrics += safely { samples(BodyFatRecord::class, "BODY_FAT_PERCENT", window, { it.time }) { round1(it.percentage.value) } }
-            metrics += safely { bodyWater(window, weights) }
+        }
+        if (settings.reads("fatFreeMass")) {
+            metrics += safely { samples(LeanBodyMassRecord::class, "FAT_FREE_MASS_KG", window, { it.time }) { round2(it.mass.inKilograms) } }
+        }
+        if (settings.reads("bodyWater")) metrics += safely { bodyWater(window, weights) }
+        if (settings.reads("boneMass")) {
+            metrics += safely { samples(BoneMassRecord::class, "BONE_MASS_KG", window, { it.time }) { round2(it.mass.inKilograms) } }
         }
         if (settings.reads("steps")) {
             metrics += safely { perDay(StepsRecord::class, "STEPS", StepsRecord.COUNT_TOTAL, window) { it.toDouble() } }

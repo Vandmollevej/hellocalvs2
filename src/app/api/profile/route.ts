@@ -7,6 +7,7 @@ import { getUserSubscriptionTier } from "@/lib/subscription";
 import { isActivityLevel } from "@/lib/activity-level";
 import { applyManualLevel } from "@/lib/activity-profile";
 import { GOAL_MODES, type GoalMode } from "@/lib/energy-budget";
+import { isValidHeightCm } from "@/lib/height";
 
 export async function GET() {
   try {
@@ -74,7 +75,7 @@ export async function PATCH(req: Request) {
     displayName?: string;
     weightKg?: unknown;
     targetWeightKg?: number | null;
-    heightCm?: number | null;
+    heightCm?: unknown;
     birthDate?: string | null;
     sex?: "FEMALE" | "MALE" | null;
     activityLevel?: unknown;
@@ -132,6 +133,23 @@ export async function PATCH(req: Request) {
       initialWeightKg = parsed;
     }
 
+    // Højden er låst ligesom start-vægten (docs/DECISIONS.md 2026-10-03): her
+    // kan den kun sættes, mens den er tom. Derefter opdateres den kun af en
+    // integration, der måler højde (src/lib/integrations/store-items.ts).
+    let initialHeightCm: number | undefined;
+    if (heightCm !== undefined && heightCm !== null) {
+      if (user.heightCm !== null) {
+        return NextResponse.json(
+          { message: "Højden er låst og opdateres kun fra en integration." },
+          { status: 403 }
+        );
+      }
+      if (typeof heightCm !== "number" || !isValidHeightCm(heightCm)) {
+        return NextResponse.json({ message: "Angiv en gyldig højde." }, { status: 400 });
+      }
+      initialHeightCm = Math.round(heightCm);
+    }
+
     const updated = await prisma.user.update({
       where: { id: user.id },
       data: {
@@ -139,7 +157,7 @@ export async function PATCH(req: Request) {
         weightKg: initialWeightKg,
         startWeightUpdatedAt: initialWeightKg !== undefined ? new Date() : undefined,
         targetWeightKg,
-        heightCm,
+        heightCm: initialHeightCm,
         birthDate:
           birthDate === undefined ? undefined : birthDate === null ? null : new Date(birthDate),
         sex,
