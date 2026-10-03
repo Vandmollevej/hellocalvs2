@@ -17,6 +17,14 @@ This file records durable decisions. Add a dated entry when a later decision cha
 - Valg sker med en hvid afkrydsningsboks på billedkortet; første afkrydsning åbner straks overlayet med billede 1 som "Før" og en tom "Efter"-plads. Rækkefølgen er brugerens valg (ikke dato), og kan byttes om.
 - Sammenligningen er kun visning: intet nyt billede gemmes, og intet forlader telefonen. Billedfeltet får før-billedets format; efter-billedet beskæres til samme felt (object-cover), så linjen deler samme udsnit.
 - Overlayet følger den eksisterende fuldskærmsvisning (mørk flade) og lukker, når siden låses (adgangskode-låsen).
+## 2026-10-03: Adgangsarkets knapper ligger under listen, ikke ovenpå
+
+Ændrer "faste knapper nederst" fra 2026-09-27: knapperne og "Vilkår og
+betingelser"-bjælken står stadig fast i bunden af `HfAccessSheet`, men i deres
+egen hvide bund under den scrollbare liste i stedet for ovenpå den med
+gennemsigtig toning. Brugeren kunne ikke se, hvad der skete i bunden (rækkerne
+skinnede igennem bjælken). Kun en 32 px toning over kanten viser, at listen
+fortsætter.
 
 ## 2026-10-02: Flere integrationer — Garmin, WHOOP, Huawei + mærker via telefonen
 

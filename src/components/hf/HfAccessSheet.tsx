@@ -195,7 +195,7 @@ export function HfAccessSheet({
       <div className={styles.frame}>
         {onDismiss && <div className={styles.dismissArea} onClick={onDismiss} aria-hidden="true" />}
         <div className={styles.peek} aria-hidden="true" />
-        <div className={`${styles.sheet} ${terms ? styles.withTerms : ""}`} role="dialog" aria-modal={!embedded} aria-label={title}>
+        <div className={styles.sheet} role="dialog" aria-modal={!embedded} aria-label={title}>
           <h1 className={styles.titleBar}>{title}</h1>
           <div className={styles.scroll}>
             {icon && <div className={styles.appIcon}>{icon}</div>}
