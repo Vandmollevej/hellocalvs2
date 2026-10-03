@@ -35,6 +35,11 @@ Brugerens krav: "I Withings og øvrige integrationer skal ALT med. Fedtprocent, 
 - **ALT fra integrationen:** Withings henter alle måletyper (vægt, fedtprocent, fedtmasse, fedtfri masse, muskelmasse, knoglemasse, kropsvæske kg+%, ekstra-/intracellulær væske, visceralt fedt, basalstofskifte, metabolisk alder, blodtryk, puls, pulsbølgehastighed, karalder, nervesundhed, hudledningsevne, iltmætning, temperatur, hudtemperatur, VO2 max, højde). Segmentmålinger pr. kropsdel (Body Comp, typer 173–175) gemmes ikke, da `HealthMetric` ikke har en kropsdel. Garmin sender også knoglemasse; Huawei fedtmasse, knoglemasse, kropsvæske, visceralt fedt, basalstofskifte og kropsalder; Fitbit BMI. 16 nye `HealthMetricType`-værdier (migration `20261003180000_all_scale_metrics`).
 - **Historik hentes igen:** `Integration.fetchVersion` + `OAuthProviderAdapter.fetchVersion`. Har adapteren en højere version end integrationen, hentes hele `initialDays`-perioden igen én gang (Withings 365 dage, Huawei/Fitbit 30), så gamle vejninger også får de nye målinger. Dubletter springes over som før.
 - **Valg pr. integration:** Withings har nu også "Puls, blodtryk og kondition" og "Højde, BMI og temperatur"; "Fedtprocent" hedder nu "Kropssammensætning" og dækker alle kropssammensætningstyperne.
+## 2026-10-03: Profil → Status
+
+- **Placering:** rækken "Status" står som nr. 3 i profilmenuen, lige under Points (brugerens ønske: "under Profil, Points"). Points bliver som nr. 2 (beslutning 2026-10-02).
+- **Nuværende vægt** = seneste `WeightEntry`. Uden vejninger vises start-vægten (`User.weightKg`). **Mål** = `User.targetWeightKg`, som følger den nyeste vægt-målsætning (`user-goals.ts`). Felterne linker til vægtloggen og Målsætning; siden redigerer intet selv.
+- **Historik:** én dropdown pr. punkt — Vægt og hvert kropsmål i `BODY_MEASUREMENT_FIELDS` — lukket som standard, med en forløbsgraf øverst (alle målinger, x efter tid) og listen nyeste først under den (10 ad gangen). Vægtgrafen viser målet som stiplet linje. Enheder følger brugerens valg (kg/lb/st, cm/in).
 
 ## 2026-10-02: Hjælpe-chatbot øverst i app og web + admin "Chatbot"
 

@@ -80,6 +80,12 @@ Last updated: 2026-10-03
 - Synkroniserede vejninger kan ikke slettes/rettes (API 403); listen viser "Synkroniseret", som åbner et info-vindue med kilde og alle målinger. Samme vindue advarer før sletning af indtastede vejninger og indtag (dagens liste, stemme, chat). Withings henter nu alle måletyper; Garmin/Huawei/Fitbit flere. Se DECISIONS.md samme dato.
 - Kræver migration `20261003180000_all_scale_metrics` (16 enum-værdier + `integrations.fetchVersion`). Første synkronisering efter deploy henter Withings' historik (365 dage) igen.
 - Lint, typecheck, tests (undtagen den kendte `page-tree`-fejl, som også fejler på master) og build kørt. Ikke live-testet (ingen DB/Withings-konto i sessionen) — test på telefon: Profil → Vægt kalibrering → tryk "Synkroniseret" og "Slet"; swipe-slet et indtag på forsiden.
+## 2026-10-03: Profil → Status (nuværende vægt, mål og historik)
+
+- Ny række "Status" i profilmenuen lige under Points (Profil → Points → Status). Siden `/profile/status` viser øverst to felter: nuværende vægt (seneste vejning, ellers start-vægten) og mål (målvægten fra Målsætning), samt "x kg til målet". Uden mål vises "Sæt et mål" → `/profile/goals`.
+- Under overskriften "Historik": én dropdown til vægt og én pr. kropsmål (Bryst, Talje, Hofte, Overarm, Lår). Hver dropdown har en graf øverst (alle målinger, mål som stiplet linje for vægt) og derunder målingerne nyeste først (10 ad gangen, "Vis alle"). Se DECISIONS.md samme dato.
+- Kode: `src/lib/profile-status.ts` (ren beregning, tests i `profile-status.test.mjs`), `src/components/HistoryLineChart.tsx`, `src/app/profile/status/page.tsx`, i18n `profileStatus.*` + `profile.row.status`. Ingen nye API'er eller migrationer — læser `/api/profile`, `/api/weight-entries` og `/api/body-measurements`.
+- Lint (0 fejl), typecheck og build grønne; nye tests grønne. `page-tree.test.mjs` fejlede allerede før (mange sider mangler i `page-tree.ts`); `/profile/status` er tilføjet. Set i Chromium med falske API-svar (402 px) — ikke prøvet mod rigtig database.
 
 ## 2026-10-02: Kalenderen husker den åbne dag
 
