@@ -55,6 +55,10 @@ Last updated: 2026-10-02
 - De otte kød/fisk-kort (Oksekød, Grisekød, Fjerkræ, Fisk; g og kcal) bruger nu ejerens egne silhuetter fra `public/icons/animals/` (cow, pig, chicken, fish) via `iconSrc` i `src/lib/stat-cards.ts` — samme mekanisme som mineral- og vitaminikonerne. Tabler-ikonerne står tilbage som fallback.
 - Lint, typecheck og `npm run build` grønne. Ikke visuelt testet (ingen lokal DB/login) — tjek Statistik-siden på telefon.
 - Mappen har også deer, duck, goat, goose, lamb, rabbit, turkey, crab, lobster, mussel, octopus, shrimp; de bruges ikke endnu (kødtyperne i `food-classification.ts` er stadig BEEF/PORK/POULTRY/FISH).
+## 2026-10-02: Kamera — lygte, fokus og lys/fokus-advarsel
+
+- Lygte-knap på kameraet (hvor telefonen/browseren tillader det), hvid tekst ved for mørkt/ude af fokus, og fokus-skift til ~20 cm på stregkodetrinnet. Se DECISIONS.md.
+- Lint, typecheck og `npm run build` grønne. Ikke testet på telefon — tjek i køleskabet på Android (lygte + fokus) og iPhone (forventet: kun advarselsteksten).
 
 ## 2026-10-02: Kameraflowet — rigtige stillbilleder + nyt foto af indholdet
 

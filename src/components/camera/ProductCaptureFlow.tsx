@@ -11,7 +11,7 @@ import {
 } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { IconCamera, IconFlame, IconList, IconPhoto } from "@tabler/icons-react";
+import { IconBolt, IconBoltOff, IconCamera, IconFlame, IconList, IconPhoto } from "@tabler/icons-react";
 import { IconBarcodeCard } from "@/components/icons/BarcodeCard";
 import { BarcodeScanOverlay, type BarcodeDetection } from "@/components/hf/BarcodeScanOverlay";
 import { CaptureCheckOverlay } from "@/components/hf/CaptureCheckOverlay";
@@ -45,6 +45,15 @@ import {
   type CaptureStep,
 } from "@/lib/product-capture";
 import { useAutoCapture } from "./useAutoCapture";
+import { useFrameQuality } from "./useFrameQuality";
+import {
+  BARCODE_FOCUS_DISTANCE_M,
+  lockFocusDistance,
+  readCameraControls,
+  setContinuousFocus,
+  setTorch,
+  type CameraControls,
+} from "@/lib/camera-controls";
 import { cameraVideoConstraints, captureStill, captureVideoFrame } from "@/lib/camera-still";
 import { newScanFlowId, scanFlowHeaders, scanLog } from "@/lib/scan-debug-log";
 import { useTranslation } from "@/i18n/LocaleProvider";
@@ -66,6 +75,10 @@ const DECODE_ANIMATION_MS = 1300;
 const DECODE_ANIMATION_REDUCED_MS = 300;
 // En aflæsning uden ny læsning i så lang tid regnes for væk.
 const DETECTION_STALE_MS = 1200;
+// Er stregkodebilledet stadig uskarpt, skiftes der så ofte mellem
+// autofokus og fast fokus på ~20 cm (kun hvor kameraet tillader det).
+const BARCODE_FOCUS_TOGGLE_MS = 2500;
+const NO_CAMERA_CONTROLS: CameraControls = { torch: false, continuousFocus: false, focusDistance: null };
 
 const STEP_ICONS: Record<CaptureStep, ComponentType<{ size?: number; stroke?: number }>> = {
   barcode: IconBarcodeCard,
@@ -150,6 +163,8 @@ export function ProductCaptureFlow({ returnSuffix }: { returnSuffix: string }) {
   const fakeBarcode = useMemo(() => buildFakeBarcodeForRegion(region), [region]);
 
   const scanning = step === "barcode" && !done.barcode;
+  const [cameraControls, setCameraControls] = useState<CameraControls>(NO_CAMERA_CONTROLS);
+  const [torchOn, setTorchOn] = useState(false);
 
   useEffect(() => {
     stepRef.current = step;
@@ -271,12 +286,24 @@ export function ProductCaptureFlow({ returnSuffix }: { returnSuffix: string }) {
         videoRef.current.srcObject = stream;
         await videoRef.current.play();
         if (!cancelled) {
+          const track = stream.getVideoTracks()[0];
+          const controls = readCameraControls(track);
+          if (track) void setContinuousFocus(track, controls);
+          setCameraControls(controls);
+          setTorchOn(false);
           setCameraStatus("active");
           cameraReadyAtRef.current = Date.now();
           scanLog(flowId, "camera_ready", {
             message: `Kamera klar (${videoRef.current.videoWidth}×${videoRef.current.videoHeight})`,
             durationMs: Date.now() - requestedAt,
-            data: { width: videoRef.current.videoWidth, height: videoRef.current.videoHeight, restart: restartKey },
+            data: {
+              width: videoRef.current.videoWidth,
+              height: videoRef.current.videoHeight,
+              restart: restartKey,
+              torch: controls.torch,
+              continuousFocus: controls.continuousFocus,
+              focusDistance: controls.focusDistance,
+            },
           });
         }
       } catch (error) {
@@ -558,6 +585,64 @@ export function ProductCaptureFlow({ returnSuffix }: { returnSuffix: string }) {
     return () => clearInterval(interval);
   }, [scanning]);
 
+  // Lys/fokus i billedet: hvid tekst på kameraet, når det er for mørkt eller
+  // uskarpt (docs/DECISIONS.md 2026-10-02).
+  const frameIssue = useFrameQuality(
+    videoRef,
+    cameraStatus === "active" && !photo && !working && !highlight && !createFailed && !barcodeDetection,
+  );
+  const frameIssueRef = useRef(frameIssue);
+  useEffect(() => {
+    frameIssueRef.current = frameIssue;
+    if (frameIssue) {
+      scanLog(flowId, "frame_issue", {
+        level: "warn",
+        message: frameIssue === "dark" ? "Billedet er for mørkt" : "Billedet er ude af fokus",
+        data: { issue: frameIssue, step: stepRef.current },
+      });
+    }
+  }, [frameIssue, flowId]);
+
+  // Stregkoden holdes ca. 20 cm fra kameraet. Autofokus er standard; er
+  // billedet stadig uskarpt, skiftes der mellem fast fokus på 20 cm og
+  // autofokus, til koden læses. Andre trin bruger altid autofokus.
+  useEffect(() => {
+    const track = streamRef.current?.getVideoTracks()[0];
+    if (!scanning || cameraStatus !== "active" || !track || !cameraControls.focusDistance) return;
+    let locked = false;
+    const interval = setInterval(() => {
+      if (!locked && frameIssueRef.current !== "blurry") return;
+      locked = !locked;
+      if (locked) {
+        void lockFocusDistance(track, cameraControls, BARCODE_FOCUS_DISTANCE_M).then((ok) =>
+          scanLog(flowId, "focus_locked", {
+            message: ok ? "Fokus låst på ~20 cm til stregkoden" : "Kameraet afviste fast fokus",
+            level: ok ? "info" : "warn",
+          }),
+        );
+      } else {
+        void setContinuousFocus(track, cameraControls);
+      }
+    }, BARCODE_FOCUS_TOGGLE_MS);
+    return () => {
+      clearInterval(interval);
+      if (locked && track.readyState === "live") void setContinuousFocus(track, cameraControls);
+    };
+  }, [scanning, cameraStatus, cameraControls, flowId]);
+
+  async function toggleTorch() {
+    const track = streamRef.current?.getVideoTracks()[0];
+    if (!track) return;
+    const next = !torchOn;
+    const ok = await setTorch(track, next);
+    if (ok) setTorchOn(next);
+    scanLog(flowId, "torch", {
+      level: ok ? "info" : "warn",
+      message: ok ? (next ? "Lygte tændt" : "Lygte slukket") : "Lygten kunne ikke styres",
+      data: { on: next, step: stepRef.current },
+    });
+  }
+
   // Ved flere objekter på billedet vises grønne cirkler, og billedet beskæres
   // til det objekt, brugeren trykker på. Ét eller ingen objekt: hele billedet.
   async function chooseObject(frame: string): Promise<string> {
@@ -806,6 +891,33 @@ export function ProductCaptureFlow({ returnSuffix }: { returnSuffix: string }) {
           active={!scanning && !photo && !highlight && !working && cameraStatus === "active"}
           flowId={flowId}
         />
+
+        {frameIssue && !cameraMessage && (
+          <div className="pointer-events-none absolute inset-x-3 bottom-3 flex justify-center" aria-live="polite">
+            <p className="hf-type-small hf-type-strong rounded-[8px] bg-hf-black/60 px-3 py-1.5 text-center text-hf-white">
+              {frameIssue === "dark"
+                ? cameraControls.torch && !torchOn
+                  ? t("camera.qualityDarkTorch")
+                  : t("camera.qualityDark")
+                : scanning
+                  ? t("camera.qualityBlurryBarcode")
+                  : t("camera.qualityBlurry")}
+            </p>
+          </div>
+        )}
+
+        {cameraControls.torch && cameraStatus === "active" && !photo && !working && (
+          <button
+            type="button"
+            onClick={() => void toggleTorch()}
+            aria-pressed={torchOn}
+            aria-label={torchOn ? t("camera.torchOff") : t("camera.torchOn")}
+            className="absolute right-3 top-3 flex h-11 w-11 items-center justify-center rounded-full text-hf-white"
+            style={{ background: torchOn ? "var(--hf-color-brand)" : "rgba(0,0,0,0.5)" }}
+          >
+            {torchOn ? <IconBolt size={22} stroke={1.8} /> : <IconBoltOff size={22} stroke={1.8} />}
+          </button>
+        )}
 
         {cameraMessage && (
           <div

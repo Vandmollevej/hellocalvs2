@@ -38,6 +38,7 @@ Ejer: G1-overtagelse, konto C (2026-09-24)
 
 | Id | Opgave | Status | Næste skridt |
 | --- | --- | --- | --- |
+| 018jYb36 | Kamera: lygte-knap, fokus ~20 cm ved stregkode, hvid tekst ved for mørkt/ude af fokus (PR #145, branch `claude/barcode-autofocus-issues-ouca0n`) | Venter på bruger | Kode færdig, lint/typecheck/build grønne, master merget ind. Mangler: test på telefon (Android: lygte+fokus; iPhone: kun tekst), derefter PR klar + merge. Ved konflikt: merge master ind, behold begge sider i docs. |
 | 5ac89589 | Flyt "Du er inden for din målsætning" op mellem måned og kalendergitter | Færdig (06599b0) | — |
 | 85b824f8 | Statusfelt nederst: bottom-align, "Tilbage for i dag" ikke fed | Færdig (3ab3d8d) | — |
 | 70e219fb | Dagvisning: fjern dropdown, ugedag-stil, "Kl." over tider, luft | Færdig (d0fd708) | — |
