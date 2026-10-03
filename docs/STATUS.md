@@ -2,6 +2,10 @@
 
 Last updated: 2026-10-03
 
+## 2026-10-03: Kalenderens flueben er signaturgrønne
+
+- Fluebenet for "inden for målet" var lime (`text-hf-lime`) i månedsgitteret, uge-, liste- og dagvisningen. Alle fire bruger nu signaturgrøn `text-hf-green` (`src/app/calendar/page.tsx`). Reglen står i DECISIONS (2026-10-03).
+
 ## 2026-10-03: Forsidens puls forsvinder bagfra (samler #195 og #198)
 
 - Før tonede hele det forrige pulsspor ud på én gang (`previousFade`), mens det nye fej tegnedes. Nu står det gamle spor uændret foran det nye fejs spids og fjernes gradvist bagfra, i samme tempo som sporet kom frem fra venstre, med en blød kant (`PULSE_TAIL_TAPER`, 60 px). Næste fej starter straks, så sporet når aldrig at være væk, før det nye fejs slag er tegnet. Pulsen slår stadig i urets bpm (#195). PR #198 (ét slag pr. fej, pause før halen trækkes) er erstattet af dette og lukket.

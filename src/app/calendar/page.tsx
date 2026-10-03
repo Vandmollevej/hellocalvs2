@@ -1260,7 +1260,7 @@ function MonthView({
                           <IconCheck
                             size={15}
                             stroke={3}
-                            className="absolute right-0.5 top-0.5 text-hf-lime"
+                            className="absolute right-0.5 top-0.5 text-hf-green"
                             aria-hidden="true"
                           />
                         ) : (
@@ -1346,7 +1346,7 @@ function WeekView({
             ) : (
               <>
                 {met && !tooLow && (
-                  <IconCheck size={16} stroke={3} className="shrink-0 text-hf-lime" aria-hidden="true" />
+                  <IconCheck size={16} stroke={3} className="shrink-0 text-hf-green" aria-hidden="true" />
                 )}
                 <span
                   className={`hf-type-body flex items-center gap-1.5 ${tooLow ? "hf-type-strong text-hf-warning" : logged ? "font-normal" : "font-normal text-text-muted"}`}
@@ -1585,7 +1585,7 @@ function ListView({
             ) : (
               <>
                 {met && !tooLow && (
-                  <IconCheck size={16} stroke={3} className="shrink-0 text-hf-lime" aria-hidden="true" />
+                  <IconCheck size={16} stroke={3} className="shrink-0 text-hf-green" aria-hidden="true" />
                 )}
                 <span
                   className={`hf-type-body flex items-center gap-1.5 ${tooLow ? "hf-type-strong text-hf-warning" : logged ? "font-normal" : "font-normal text-text-muted"}`}
@@ -1720,7 +1720,7 @@ function WeekTimelineView({
               </span>
               <span className="hf-type-body hf-heading flex items-center gap-2">
                 {date.getDate()}
-                {met && <IconCheck size={15} stroke={3.5} className="text-hf-lime" aria-hidden="true" />}
+                {met && <IconCheck size={15} stroke={3.5} className="text-hf-green" aria-hidden="true" />}
                 {goalsForDate(goalsByDate, date).length > 0 && <IconPartyPopper size={15} />}
                 {weighInsForDate(weighInsByDate, date).length > 0 && <IconBathScale size={15} />}
               </span>
