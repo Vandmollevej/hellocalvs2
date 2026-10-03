@@ -161,7 +161,7 @@ Brugerens krav: Garmin, Health Connect, eufy, Renpho, Tuya, Xiaomi, Huawei, WHOO
 ## 2026-10-02: "Se dine indscanninger"
 
 - En indscanning er en vare, brugeren selv har oprettet med en stregkode (`Product.createdByUserId` + mindst én `Barcode`) — altså fotograferet i kameraflowet. Kendte stregkoder, der blot slås op, gemmes ikke og er ikke indscanninger.
-- Forsiden viser øverst under "Dagens tilføjelser" linket "Se dine indscanninger" (almindelig tekst, understreget), kun når en vare fotograferet i dag (telefonens tidszone) ikke er registreret på den, der scannede, eller den aktive familieprofil.
+- Forsiden viser linket "Se dine indscanninger" (almindelig tekst, understreget) nederst under "Dagens tilføjelser"; er listen tom, står det lige under "Ingen registreringer i dag". Det vises, så længe brugeren har indscanninger i historikken (ændret 2026-10-03, brugerkrav — før kun ved ikke-tilføjede indscanninger fra i dag, hvilket fik linket til at forsvinde).
 - Siden `/my-scans` viser de seneste 90 dages indscanninger (højst 200), grupperet under en overskrift med skillelinje pr. dato taget, som almindelige søgerækker (favorit + Tilføj i bundarket). API: `GET /api/my-scans` (`src/lib/user-scans.ts`).
 ## 2026-10-02: Sprogflag på tale- og chat-siden (ændrer 2026-09-12 for tale)
 
