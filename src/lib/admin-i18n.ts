@@ -51,6 +51,7 @@ const DICTIONARY = {
   nav_partners_ads: { DA: "Reklamer", EN: "Ads" },
   nav_partners_contacts: { DA: "Kontakter", EN: "Contacts" },
   nav_reports: { DA: "Rapporter", EN: "Reports" },
+  nav_partner_page: { DA: "Partnerside", EN: "Partner page" },
   nav_group_administration: { DA: "Administration", EN: "Administration" },
   nav_jobs: { DA: "Jobs", EN: "Jobs" },
   nav_agents: { DA: "Agenter", EN: "Agents" },

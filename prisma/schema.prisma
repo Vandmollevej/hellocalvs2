@@ -3546,7 +3546,61 @@ model Partner {
   schedules PartnerReportSchedule[]
   sends     PartnerReportSend[]
 
+  // Partnersiden (/admin/partners/[id], docs/DECISIONS.md 2026-10-02):
+  // virksomhedsoplysninger og kontakter øverst i venstre bjælke.
+  cvr           String @default("")
+  addressStreet String @default("")
+  addressZip    String @default("")
+  addressCity   String @default("")
+  phone         String @default("") // virksomhedens telefon
+  contactName   String @default("")
+  contactEmail  String @default("")
+  contactPhone  String @default("") // kontaktens telefon (ikke lederens)
+  managerName   String @default("")
+  managerTitle  String @default("") // lederens funktion
+  managerEmail  String @default("")
+
+  // Faktureringsdetaljer og betalingsmetode (egne menupunkter på partnersiden).
+  billingName      String               @default("")
+  billingEmail     String               @default("")
+  billingAddress   String               @default("")
+  ean              String               @default("")
+  billingReference String               @default("")
+  paymentTermsDays Int                  @default(14)
+  paymentMethod    PartnerPaymentMethod @default(INVOICE)
+  paymentNote      String               @default("")
+
+  agreements SponsorAgreement[]
+
   @@map("partners")
+}
+
+enum PartnerPaymentMethod {
+  INVOICE
+  BANK_TRANSFER
+  CARD
+  MOBILEPAY
+}
+
+// Sponsoraftale: budget (DKK) og priser, som forbruget beregnes af
+// (visninger/1000 × CPM + klik × CPC) for de spots, der hører til aftalen.
+model SponsorAgreement {
+  id        String       @id @default(cuid())
+  partnerId String
+  partner   Partner      @relation(fields: [partnerId], references: [id], onDelete: Cascade)
+  title     String
+  startsAt  DateTime
+  endsAt    DateTime?
+  active    Boolean      @default(true)
+  budgetDkk Int          @default(0)
+  cpmDkk    Float        @default(0)
+  cpcDkk    Float        @default(0)
+  notes     String       @default("")
+  createdAt DateTime     @default(now())
+  locations AdLocation[]
+
+  @@index([partnerId])
+  @@map("sponsor_agreements")
 }
 
 // Modtagere af rapporter. En rapport kan KUN sendes til aktive kontakter på
@@ -3574,7 +3628,21 @@ model AdLocation {
   createdAt DateTime  @default(now())
   events    AdEvent[]
 
+  // Reklamespot (docs/DECISIONS.md 2026-10-02): hvilken reklamemulighed fra
+  // kataloget (src/lib/ad-inventory.ts), banner, link, aftalte tal og
+  // triggere (vises kun ved produktkategori/-type), samt sponsoraftale.
+  inventoryKey       String            @default("")
+  bannerUrl          String            @default("")
+  targetUrl          String            @default("")
+  agreedImpressions  Int?
+  agreedClicks       Int?
+  triggerCategory    ProductCategory?
+  triggerProductType String?
+  agreementId        String?
+  agreement          SponsorAgreement? @relation(fields: [agreementId], references: [id], onDelete: SetNull)
+
   @@index([partnerId])
+  @@index([agreementId])
   @@map("ad_locations")
 }
 
@@ -3589,6 +3657,10 @@ model AdEvent {
   location   AdLocation  @relation(fields: [locationId], references: [id], onDelete: Cascade)
   type       AdEventType
   createdAt  DateTime    @default(now())
+  // Siden (sti) reklamen blev vist på, og hvor mange sekunder den var synlig
+  // (sættes af klienten, når visningen slutter).
+  path       String?
+  seconds    Int?
 
   @@index([locationId, type, createdAt])
   @@map("ad_events")

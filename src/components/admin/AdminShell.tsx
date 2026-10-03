@@ -610,8 +610,20 @@ function SearchField({ label, collapsed, onOpen }: { label: string; collapsed: b
   );
 }
 
+// Partnersiderne (/admin/partners/<id>, docs/DECISIONS.md 2026-10-02) har
+// egen venstre bjælke med virksomhedsoplysninger og intet søgefelt.
+const PARTNER_SUBPAGES = new Set(["ads", "contacts", "reports"]);
+export function isPartnerDetailPath(pathname: string) {
+  const match = pathname.match(/^\/admin\/partners\/([^/]+)/);
+  return !!match && !PARTNER_SUBPAGES.has(match[1]);
+}
+
 function Breadcrumbs({ locale, pathname }: { locale: Locale; pathname: string }) {
   const crumbs: { label: string; href?: string }[] = [{ label: "Admin", href: "/admin" }];
+  if (isPartnerDetailPath(pathname)) {
+    crumbs.push({ label: t(locale, "nav_partners"), href: "/admin/partners/contacts" });
+    crumbs.push({ label: t(locale, "nav_partner_page") });
+  }
   for (const entry of NAV) {
     if (entry.kind === "link") {
       if (entry.href !== "/admin" && isActive(pathname, entry.href)) crumbs.push({ label: t(locale, entry.key) });
@@ -767,6 +779,7 @@ export function AdminShell({
   const badges: Badges = { support, uncertainties: hasOpenUncertainties };
 
   const searchLabel = t(currentLocale, "nav_quick_search");
+  const hideSearch = isPartnerDetailPath(pathname);
 
   return (
     <div ref={scrollRootRef} className="flex h-dvh overflow-y-auto bg-page-bg text-hf-black">
@@ -788,9 +801,11 @@ export function AdminShell({
             />
           </Link>
         </div>
-        <div className="shrink-0 px-2.5 pt-2.5">
-          <SearchField label={searchLabel} collapsed={collapsed} onOpen={() => setSearchOpen(true)} />
-        </div>
+        {!hideSearch && (
+          <div className="shrink-0 px-2.5 pt-2.5">
+            <SearchField label={searchLabel} collapsed={collapsed} onOpen={() => setSearchOpen(true)} />
+          </div>
+        )}
         <nav className="flex-1 overflow-y-auto p-2.5">
           <SidebarNav
             locale={currentLocale}
@@ -829,15 +844,17 @@ export function AdminShell({
             <Image src="/hello-cal-logo.png" alt="Hello Cal" width={90} height={40} priority />
           </Link>
           <Breadcrumbs locale={currentLocale} pathname={pathname} />
-          <button
-            type="button"
-            onClick={() => setSearchOpen(true)}
-            aria-label={searchLabel}
-            className="hf-btn-icon ml-auto rounded-md text-text-secondary hover:bg-hf-tan lg:hidden"
-          >
-            <Icon name="search" />
-          </button>
-          <div className="lg:ml-auto">
+          {!hideSearch && (
+            <button
+              type="button"
+              onClick={() => setSearchOpen(true)}
+              aria-label={searchLabel}
+              className="hf-btn-icon ml-auto rounded-md text-text-secondary hover:bg-hf-tan lg:hidden"
+            >
+              <Icon name="search" />
+            </button>
+          )}
+          <div className="ml-auto">
             <UserMenu
               email={email}
               locale={currentLocale}
