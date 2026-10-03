@@ -4225,3 +4225,8 @@ Brugerens krav: "Luk konto kan reverses inde. For 3 måneder, med mindre man væ
 - `GoalStatusSummary` lægger derfor de to i én fælles flex-række. De må
   aldrig deles i separate blokke under hinanden; flammen ("+ N kcal") står
   over rækken og "Tilbage"/"Overskredet" under den, begge højrestillet.
+
+## 2026-10-03: Forsidens puls fjernes bagfra, ikke med alpha-udtoning
+
+Brugerens ord: pulsen skal begynde at forsvinde bagfra og frem, ligesom den kom frem fra venstre, og den må ikke nå at forsvinde helt, før et nyt pulsslag kommer. Det forrige fejs spor toner derfor ikke ud (ingen fælles alpha), men fjernes af det nye fejs spids med en blød bagkant. Pulsen slår fortsat i urets bpm med flere slag pr. fej (`pulseTrace`); et slag pr. fej med pause (PR #198) droppes.
+

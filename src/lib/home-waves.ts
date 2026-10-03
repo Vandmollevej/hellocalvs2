@@ -375,6 +375,9 @@ export function drawWaveScene(
   ctx.globalAlpha = 1;
 }
 
+/** Px, over hvilke det gamle spors bagkant toner ud, mens det fjernes. */
+const PULSE_TAIL_TAPER = 60;
+
 /** Pulsen for et fej: den, der gjaldt, da fejet startede. */
 function bpmForCycle(pulse: Pulse, cycle: number, bpm: number) {
   if (pulse.lockedBpm[cycle] === undefined) {
@@ -415,7 +418,10 @@ export function pulseTrace(pulse: Pulse, cycle: number, bpm: number, width: numb
 /**
  * Puls-linjen: et lime spor, der tegnes fra venstre kant mod højre som på en
  * pulsmåler og slår i brugerens puls. Næste fej starter straks fra venstre og
- * visker det forrige ud foran sig, mens det toner væk.
+ * fjerner det forrige bagfra: det gamle spor står uændret, indtil det nye fejs
+ * spids når det, og forsvinder så gradvist fra venstre mod højre (med en blød
+ * kant) — i samme tempo, som sporet kom frem. Det når aldrig at være væk, før
+ * det nye fejs slag er tegnet (bruger 2026-10-03).
  */
 function drawPulse(
   ctx: CanvasRenderingContext2D,
@@ -436,36 +442,51 @@ function drawPulse(
   const step = 1.5;
 
   // Lidt svagere ude ved kanten end ved spidsen, men synlig hele vejen ind.
-  const fade = (color: Rgb, to: number) => {
+  // `taperFrom`: sporets bagkant er blød over PULSE_TAIL_TAPER px, så det gamle
+  // spor glider væk i stedet for at blive klippet af.
+  const fade = (color: Rgb, to: number, taperFrom?: number) => {
     const gradient = ctx.createLinearGradient(left, 0, Math.max(to, left + 1), 0);
     gradient.addColorStop(0, rgba(color, 0.55));
+    if (taperFrom !== undefined) {
+      const span = Math.max(to, left + 1) - left;
+      const start = Math.min(1, Math.max(0, (taperFrom - left) / span));
+      const end = Math.min(1, Math.max(start, (taperFrom + PULSE_TAIL_TAPER - left) / span));
+      gradient.addColorStop(start, rgba(color, 0));
+      gradient.addColorStop(end, rgba(color, 0.55 + 0.45 * end));
+    }
     gradient.addColorStop(1, rgba(color, 1));
     return gradient;
   };
-  const strokeTrace = (from: number, to: number, yAt: (x: number) => number, gradientEnd: number, alpha: number) => {
+  const strokeTrace = (
+    from: number,
+    to: number,
+    yAt: (x: number) => number,
+    gradientEnd: number,
+    taperFrom?: number
+  ) => {
     ctx.beginPath();
     ctx.moveTo(from, baseY + yAt(from));
     for (let x = from + step; x < to; x += step) ctx.lineTo(x, baseY + yAt(x));
     ctx.lineTo(to, baseY + yAt(to));
-    ctx.strokeStyle = fade(palette.pulse, gradientEnd);
-    ctx.globalAlpha = 0.25 * alpha;
+    ctx.strokeStyle = fade(palette.pulse, gradientEnd, taperFrom);
+    ctx.globalAlpha = 0.25;
     ctx.lineWidth = 5;
     ctx.stroke();
-    ctx.strokeStyle = fade(palette.pulseCore, gradientEnd);
-    ctx.globalAlpha = 0.85 * alpha;
+    ctx.strokeStyle = fade(palette.pulseCore, gradientEnd, taperFrom);
+    ctx.globalAlpha = 0.85;
     ctx.lineWidth = 1.6;
     ctx.stroke();
   };
 
   const yAt = pulseTrace(pulse, cycle, bpmForCycle(pulse, cycle, bpm), width);
-  if (head > left) strokeTrace(left, head, yAt, head, 1);
+  if (head > left) strokeTrace(left, head, yAt, head);
 
-  // Det forrige fej, foran spidsen, toner ud i løbet af det nye fejs første del.
-  const previousFade = Math.max(0, 1 - progress * 1.6);
+  // Det forrige fej står uændret foran spidsen og fjernes bagfra, i takt med at
+  // det nye fej tegnes hen over det (halen følger efter spidsen).
   const eraseFrom = head + 28;
-  if (previousFade > 0 && eraseFrom < right) {
+  if (eraseFrom < right) {
     const previous = pulseTrace(pulse, cycle - 1, bpmForCycle(pulse, cycle - 1, bpm), width);
-    strokeTrace(eraseFrom, right, previous, right, previousFade);
+    strokeTrace(eraseFrom, right, previous, right, eraseFrom);
   }
 
   // Lille lysende punkt ved spidsen.

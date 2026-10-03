@@ -2,6 +2,11 @@
 
 Last updated: 2026-10-03
 
+## 2026-10-03: Forsidens puls forsvinder bagfra (samler #195 og #198)
+
+- Før tonede hele det forrige pulsspor ud på én gang (`previousFade`), mens det nye fej tegnedes. Nu står det gamle spor uændret foran det nye fejs spids og fjernes gradvist bagfra, i samme tempo som sporet kom frem fra venstre, med en blød kant (`PULSE_TAIL_TAPER`, 60 px). Næste fej starter straks, så sporet når aldrig at være væk, før det nye fejs slag er tegnet. Pulsen slår stadig i urets bpm (#195). PR #198 (ét slag pr. fej, pause før halen trækkes) er erstattet af dette og lukket.
+- Test: `home-waves.test.mjs` ("det forrige pulsspor toner ikke ud på én gang…"). Lint, typecheck og build grønne. Ikke set på telefon — tjek forsiden.
+
 ## 2026-10-03: Kalender — profilcirklen er tilbage i dagsvisningen
 
 - Dagsvisningen (`DayDetails` i `src/app/calendar/page.tsx`) tegner sin egen grønne topbjælke som fuldskærmsdialog over siden, og dens højre hjørne var et tomt felt — så profilcirklen forsvandt, så snart en dag blev åbnet. Den viser nu `ProfileAvatarLink` som alle andre sider.

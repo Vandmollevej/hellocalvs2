@@ -173,3 +173,36 @@ test("puls-linjen ligger på den givne grundlinje (over tal-hjulets midte)", () 
   assert.equal(x, -WAVE_BLEED);
   assert.ok(Math.abs(y - 150) <= scene.pulse.amplitude * 1.2, `starter i y=${y}`);
 });
+
+test("det forrige pulsspor toner ikke ud på én gang, men fjernes bagfra af det nye fej", () => {
+  const scene = createWaveScene(5);
+  const width = 393;
+  const left = -WAVE_BLEED;
+  const right = width + WAVE_BLEED;
+  const trace = (progress) => {
+    const starts = [];
+    const alphas = [];
+    const ctx = fakeContext();
+    ctx.moveTo = (x) => starts.push(x);
+    let alpha = 1;
+    Object.defineProperty(ctx, "globalAlpha", {
+      get: () => alpha,
+      set: (v) => {
+        alpha = v;
+      },
+    });
+    ctx.stroke = () => alphas.push(alpha);
+    const time = scene.pulse.sweep * 10 - scene.pulse.offset + scene.pulse.sweep * progress;
+    drawWaveScene(ctx, { ...scene, bundles: [], fog: [] }, palette, { t: time, width, height: 430, scale: 1 });
+    return { starts, alphas, head: left + progress * (right - left) };
+  };
+  // Langt inde i fejet står det gamle spor stadig foran spidsen — med fuld styrke.
+  const late = trace(0.8);
+  assert.ok(late.starts.some((x) => Math.abs(x - (late.head + 28)) < 0.01), "det gamle spor mangler foran spidsen");
+  assert.ok(Math.max(...late.alphas) >= 0.85, "det gamle spor må ikke være toner ud");
+  // Tæt på fejets slutning er det gamle spor fjernet bagfra: der er intet tilbage
+  // at tegne foran spidsen, og det nye fejs spor står fuldt.
+  const end = trace(0.99);
+  assert.ok(end.head + 28 >= right, "forudsætning: spidsen er tæt på højre kant");
+  assert.deepEqual(end.starts.filter((x) => x > end.head + 0.01), []);
+});
