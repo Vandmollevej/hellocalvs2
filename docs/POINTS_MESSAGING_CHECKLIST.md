@@ -28,7 +28,17 @@ deploy, jf. `AGENTS.md`/`design.md` §12.
 - [x] Loft: maks. 50 videresend-points pr. kalendermåned pr. bruger
 - [x] 300 points ved gennemført "invitér en ven" — til BÅDE afsender og ny
       bruger, ikke direkte en gratis måned
-- [x] Points-saldo og historik vises under Profil → Points
+- [x] 20 points for at udfylde manglende indhold, energi, logo eller
+      produktbillede på en eksisterende vare (opdater-varen-banneret), højst
+      én gang pr. bruger og vare (2026-10-03)
+- [x] 10 points for "Scan varen igen" på Open Food Facts-/USDA-varer og egne
+      varer uden PNG, højst én gang pr. bruger og vare (2026-10-02)
+- [x] 300 points til den første testperson af en integration, ved
+      admin-godkendelse (2026-10-02)
+- [x] Points for godkendt erstatningsbillede i kvalitetskontrollen (beløb
+      sat pr. forespørgsel, 2026-09-19)
+- [x] Points-saldo og historik vises under Profil → Points — alle
+      points-typer har en dansk etiket (typetjekket mod `PointsReason`)
 
 ## Misbrugsspærring (videresend til en ven)
 

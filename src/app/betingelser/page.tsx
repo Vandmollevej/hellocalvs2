@@ -147,6 +147,8 @@ export default function BetingelserPage() {
             <li>10 points, når en ny vare, du har oprettet (titel, producent, næringsindhold og billede), bliver godkendt.</li>
             <li>+5 points ekstra, hvis varen også har en varedeklaration (indholdsfortegnelse).</li>
             <li>+5 points ekstra, hvis varen har billeder fra flere vinkler.</li>
+            <li>20 points, når du udfylder noget, der mangler på en eksisterende vare (indhold, energi, logo eller produktbillede), højst én gang pr. vare.</li>
+            <li>10 points, når du scanner en vare igen via banneret &ldquo;Optjen 10 points&rdquo; på varesiden, højst én gang pr. vare.</li>
             <li>10 points, når en fejlindberetning, du har sendt, bliver godkendt og rettet.</li>
             <li>5 points, hver gang en ven rent faktisk tilføjer en vare eller en ret, du har videresendt, dog højst 50 points pr. kalendermåned.</li>
             <li>300 points til både dig og din ven, når en ven, du har inviteret, har haft en konto i mindst 3 måneder.</li>

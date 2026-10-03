@@ -69,6 +69,12 @@ Last updated: 2026-10-03
 - Fold-ud-rækkerne (Vægt + hvert kropsmål) viser seneste måling i ikke-fed skrift: "d. 3. okt. 82,4 kg" (årstal kun, hvis ikke i år). `DropdownSection` har fået en valgfri `detail`.
 - Ingen nye API'er — siden henter også `/api/goals` (fejler den, vises siden uden kropsmålenes mål). Lint, typecheck, `profile-status`-tests og build grønne. Ikke set med login (ingen lokal DB) — test på telefon: Profil → Status.
 
+## 2026-10-03: Alle points-typer vises nu i oversigterne
+
+- Profil → Points-historikken viste den rå kode "SIGNUP_BONUS" og "INTEGRATION_TESTER" i stedet for en tekst — etiketten "Startbonus" gik tabt ved merge af `claude/signup-teaser-points` (prefer master). Nu "Startbonus" og "Testperson af integration"; listen er typet som `Record<PointsReason, string>`, så en ny points-type ikke bygger uden etiket.
+- Betingelser §8 manglede 20 points (opdatér varen) og 10 points (scan varen igen); begge tilføjet. `docs/POINTS_MESSAGING_CHECKLIST.md` har fået de manglende optjeningsmåder (20, 10, 300 testperson, kvalitetskontrol-billede).
+- Lint (0 fejl), typecheck og build grønne. Ikke set i browser (ingen lokal DB).
+
 ## 2026-10-03: Kalender — profilcirklen er tilbage i dagsvisningen
 
 - Dagsvisningen (`DayDetails` i `src/app/calendar/page.tsx`) tegner sin egen grønne topbjælke som fuldskærmsdialog over siden, og dens højre hjørne var et tomt felt — så profilcirklen forsvandt, så snart en dag blev åbnet. Den viser nu `ProfileAvatarLink` som alle andre sider.
