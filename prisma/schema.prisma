@@ -512,6 +512,8 @@ enum WeightSource {
   APPLE_HEALTH
   GOOGLE_HEALTH
   HEALTH_CONNECT
+  GARMIN
+  HUAWEI_HEALTH
 }
 
 // --- Body measurements ---
@@ -700,9 +702,13 @@ model Integration {
   syncSettings Json?
   // Seneste gang Hello Cal-data blev sendt til appen (push).
   lastPushedAt DateTime?
+  // 2026-10-02: appens eget, pseudonyme bruger-ID (Garmin), så push-
+  // notifikationer kan kobles til den rigtige Hello Cal-bruger.
+  externalUserId String?
   createdAt    DateTime            @default(now())
 
   @@unique([userId, provider])
+  @@index([provider, externalUserId])
   @@map("integrations")
 }
 
@@ -718,6 +724,14 @@ enum IntegrationProvider {
   POLAR
   SAMSUNG_HEALTH
   STRAVA
+  // 2026-10-02: Whoop og Huawei Health (cloud, OAuth). Eufy, Renpho, Xiaomi
+  // og Tuya har ingen åben API og deler via Health Connect/Apple Health.
+  WHOOP
+  HUAWEI_HEALTH
+  EUFY
+  RENPHO
+  XIAOMI
+  TUYA
 }
 
 enum IntegrationStatus {
@@ -814,6 +828,8 @@ enum ActivitySource {
   HEALTH_CONNECT
   STRAVA
   POLAR
+  WHOOP
+  HUAWEI_HEALTH
 }
 
 // A personal, long-lived access token a future native companion app
@@ -860,6 +876,8 @@ enum HealthMetricSource {
   WITHINGS
   GARMIN
   HEALTH_CONNECT
+  WHOOP
+  HUAWEI_HEALTH
 }
 
 enum HealthMetricType {
@@ -1123,6 +1141,12 @@ model Product {
   // indtil src/lib/quick-product-enrichment.ts fjerner dem igen.
   pendingFields    String[]               @default([])
   discontinued     Boolean                @default(false)
+  // Butiksvare uden kalorietal i produktarkene (docs/DECISIONS.md 2026-10-02):
+  // kcal/protein/kulhydrat/fedt er 0 som pladsholder, ikke målte værdier.
+  // Varen er skjult i søgning og genkendelse og har ingen stregkode-række,
+  // før den har fået næring (planlagt: fra Frida). Sættes og fjernes af
+  // scripts/store-products-import/agent.py.
+  nutritionMissing Boolean                @default(false)
   createdAt        DateTime               @default(now())
 
   // Login-frit admin-godkendelseslink (points-system 2026-09-02, se
@@ -2075,6 +2099,9 @@ enum PointsReason {
   // fik godkendt et erstatningsbillede for et lavt-confidence stregkode-/
   // næring-/ingrediensfoto, se ProductPhotoAward.
   QUALITY_CONTROL_PHOTO
+  // Brugeren udfyldte en manglende ting (billede, logo, energi, indhold) paa
+  // en eksisterende vare via banneret paa varesiden. Gaelder ogsaa admin.
+  PRODUCT_UPDATED
 }
 
 model PointsTransaction {
@@ -2211,6 +2238,8 @@ enum MessageChannel {
   EMAIL
   PUSH
   BOTH
+  // Sendt via sms-gatewayen (src/lib/sms.ts).
+  SMS
 }
 
 // Admin-redigerbar skabelon pr. event ("Besked automatisering"-fanen).
@@ -2252,6 +2281,9 @@ model OutboundMessage {
   createdAt DateTime       @default(now())
   sentAt    DateTime?
   readAt    DateTime?
+  // "Til info sendte vi dig ..."-popuppen (src/lib/sent-notices.ts): sat, når
+  // brugeren har trykket "Læst". Kun relevant for sendte mails/sms'er.
+  noticeAckAt DateTime?
 
   @@index([status])
   @@index([userId, readAt])
@@ -2735,6 +2767,13 @@ model ProductFilters {
   glutenFree      String?
   lactoseFree     String?
   sugarFree       String?
+  // Sukkerpåstande (docs/DECISIONS.md 2026-10-02). Kun til søgning og filtre —
+  // vises ikke som mærker i appen. Udledt af nøgleord, navn/variant og
+  // sukker pr. 100 g (se scripts/store-products-import/build_data.py).
+  lowSugar        String?
+  noAddedSugar    String?
+  reducedSugar    String?
+  lightSugar      String?
   sweeteners      String?
   vegan           String?
   vegetarian      String?
@@ -2765,6 +2804,10 @@ model ProductFilters {
   @@index([glutenFree])
   @@index([lactoseFree])
   @@index([sugarFree])
+  @@index([lowSugar])
+  @@index([noAddedSugar])
+  @@index([reducedSugar])
+  @@index([lightSugar])
   @@index([sweeteners])
   @@index([vegan])
   @@index([vegetarian])
@@ -3455,8 +3498,10 @@ model LoginEvent {
 model PersonaSnapshot {
   id         String   @id @default(cuid())
   createdAt  DateTime @default(now())
-  // "cron" | "manual"
+  // "job" (cronjob-runneren: deploy eller "Kør nu" under Cronjobs) | "manual" (knappen på siden)
   source     String
+  // Next.js-buildets id. Én automatisk kørsel pr. deploy (src/lib/personas.ts).
+  buildId    String?
   userCount  Int
   model      String?
   aggregates Json
@@ -3465,6 +3510,7 @@ model PersonaSnapshot {
   durationMs Int?
 
   @@index([createdAt])
+  @@index([buildId])
   @@map("persona_snapshots")
 }
 

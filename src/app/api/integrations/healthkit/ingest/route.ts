@@ -3,16 +3,19 @@ import { prisma } from "@/lib/prisma";
 import { storeIntegrationItems, type IntegrationItem } from "@/lib/integrations/store-items";
 import { authenticateDeviceToken, companionIntegration, companionSource } from "@/lib/integrations/companion";
 import { filterItemsBySettings } from "@/lib/integrations/sync-settings";
+import { brandForOrigin, type ViaBrand } from "@/lib/integrations/origins";
 
 type IngestBody = {
   source?: "APPLE_HEALTH" | "HEALTH_CONNECT" | "GOOGLE_HEALTH";
-  metrics?: { type?: string; value?: number; recordedAt?: string }[];
-  weights?: { weightKg?: number; weighedAt?: string }[];
+  // origin (valgfri på hver post): afsender-appens pakke-/bundle-ID.
+  metrics?: { type?: string; value?: number; recordedAt?: string; origin?: string }[];
+  weights?: { weightKg?: number; weighedAt?: string; origin?: string }[];
   activities?: {
     sportType?: string;
     startedAt?: string;
     durationMinutes?: number;
     caloriesBurned?: number;
+    origin?: string;
   }[];
 };
 
@@ -35,6 +38,12 @@ export async function POST(req: Request) {
   }
 
   const items: IntegrationItem[] = [];
+  // Mærker (Samsung Health, Renpho, eufy …), hvis app har delt data hertil.
+  const brands = new Set<ViaBrand>();
+  for (const entry of [...(body.metrics ?? []), ...(body.weights ?? []), ...(body.activities ?? [])]) {
+    const brand = brandForOrigin(entry.origin);
+    if (brand) brands.add(brand);
+  }
   for (const m of body.metrics ?? []) {
     const recordedAt = validDate(m.recordedAt);
     if (m.type && typeof m.value === "number" && recordedAt) {
@@ -64,6 +73,15 @@ export async function POST(req: Request) {
       where: { id: integration.id },
       data: { status: "CONNECTED", connectedAt: integration.connectedAt ?? new Date(), lastSyncedAt: new Date(), lastError: null },
     });
+    // Mærkets kort viser "Forbundet" og hvornår data sidst kom ind.
+    for (const provider of brands) {
+      const now = new Date();
+      await prisma.integration.upsert({
+        where: { userId_provider: { userId: token.userId, provider } },
+        create: { userId: token.userId, provider, status: "CONNECTED", connectedAt: now, lastSyncedAt: now, scope: `via:${source}` },
+        update: { status: "CONNECTED", lastSyncedAt: now, scope: `via:${source}` },
+      });
+    }
     return NextResponse.json({ ok: true, delivered });
   } catch (error) {
     console.error("HealthKit ingest failed", error instanceof Error ? error.message : "ukendt");

@@ -1,15 +1,94 @@
 # HELLO CAL — project status
 
-Last updated: 2026-10-02
+Last updated: 2026-10-03
 
 ## 2026-10-02: Admin → Brugere → Personas (AI-udledte brugergrupper)
 
 - Ny side `/admin/users/personas` (menupunkt "Personas" under Brugere): anonyme gruppetal pr. land, by, sprog, aldersgruppe, køn, abonnement og enhed (logins/90 d, login-dage, aktive, registreringer/30 d, betalende, smartur, vejninger, motion, inaktive, weekend-andel, typisk tidspunkt på døgnet, toptime/-dag, kvindeandel), adfærdssegmenter (storbrugere/faste/lejlighedsvise/kigger/nye/inaktive), logins pr. time og ugedag, abonnement pr. alder, sprog pr. land, og AI-personas fra seneste snapshot. Grupper under 5 brugere samles i "Øvrige". Se DECISIONS.md samme dato.
 - Logik: `src/lib/persona-groups.ts` (rene beregninger, tests i `persona-groups.test.mjs`, 6 grønne), `src/lib/personas.ts` (DB + snapshot), `src/lib/persona-ai.ts` (OpenAI, struktureret JSON, kun aggregater, `store: false`; model `OPENAI_PERSONA_MODEL` → `OPENAI_STATS_MODEL` → produktmodellen).
-- Nyt cronjob "personas" (app-runtime, dagligt kl. 04:00) + knappen "Beregn personas med AI" (kun fuld administratoradgang; `POST /api/admin/personas`). Hver kørsel gemmes som `persona_snapshots` (også ved AI-fejl, med fejltekst); historik vises nederst på siden.
+- Nyt cronjob "personas" uden fast plan: kører automatisk én gang pr. deploy (ny build-id ved opstart) og ved "Kør nu" under Cronjobs, plus knappen "Beregn personas med AI" (kun fuld administratoradgang; `POST /api/admin/personas`). Ejerens valg 2026-10-03: ingen natlig kørsel for nu. Hver kørsel gemmes som `persona_snapshots` (også ved AI-fejl, med fejltekst); historik vises nederst på siden.
 - `login_events` har nu kolonnen `city` (fra Cloudflares `cf-ipcity`, kræver "Add visitor location headers" — ellers kun land). Migration `20261002090000_personas` skal køre ved deploy.
 - Lint, typecheck og `npm run build` grønne. Ikke live-testet (ingen lokal DB/OpenAI-nøgle). `page-tree.test.mjs` fejler fortsat på master (uvedkommende; den nye side er tilføjet i sidetræet).
 
+## 2026-10-03: Opdater-varen-banner (20 points)
+
+- Hvidt, sammenklappeligt banner øverst på varesiden når indhold, energi, logo eller produktbillede mangler; fører til ny side `/add/[id]/update` med kamera pr. manglende ting. Giver 20 points én gang pr. bruger og vare — også for admin, så det kan testes. Se DECISIONS 2026-10-03.
+- Migration `20261003100000_points_product_updated` skal med deployet. Lint, typecheck og build kørt; ikke set i browser eller prøvet med rigtigt foto/AI-nøgle her — test: åbn en vare uden indhold/logo som admin, tag billede, tjek Profil → Points.
+## 2026-10-02: Admin — Billeder i kø til frilæggelse
+
+- Varegodkendelse har nyt punkt "Billeder i kø til frilæggelse" (`/admin/images/cutout-queue`), også som fane på Billedforslag. Viser ventende `ImageCutoutJob`s (forside/logo) med det udsnit robotten vil fritlægge, vare/brand og tidspunkt; fejlede jobs i egen sektion nederst. Under listen en besked, der følger robottens rigtige plan ("Disse billeder bliver scannet løbende" så længe jobbet står som Løbende; "… i nat kl. X" ved fast tid; advarsel hvis robotten er slået fra) + robottens faktiske plan og sidste kørsel (link til Robotter). Logik i `src/lib/cutout-queue.ts`.
+- Planen for `image-cutout` er bevaret som "Løbende" (DECISIONS 2026-09-28). Lint og build grønne; ikke live-testet (ingen lokal DB).
+
+
+## 2026-10-03: Butiksimporten — alt fra Bilka- og REMA-arkene med
+
+- 13.039 varer (før 10.524): 2.364 uden kalorietal er skjult (`nutritionMissing`, migration `20261002213000_product_nutrition_missing`), 151 med kun kalorier vises med ~ på makroerne, 107 uden stregkode er med under butikkens vare-id. Se DECISIONS 2026-10-02 "Butiksimporten: alt fra arkene med" og `docs/PRODUCT_IMPORT_MAPPING.md`.
+- Rettet: kJ 1000× for småt på ca. 4.900 varer, 25 forkerte kalorietal, 44 "Sukkerfri" med sukker, 129 navne som "0"/"M appelsin"; Labels-filtre og oprindelsesland.
+- Kildearkene ligger nu på NAS-sharet `\\192.168.1.90\Hello Cal\Arkiv - historiske kilde- og importfiler\Oprydning 2026-09-29\`. Det nye katalog (`store_products.json`) + de nye varers 1.408 billeder ligger klar i `C:\Users\Peter\Desktop\Butiksimport 2026-10-03\`; de skal kopieres til NAS'ens `data/store-products-import/` (sessionen fik ikke lov at skrive på serveren), og jobbet `store-products-import` køres (admin → Cron-jobs → Kør nu, eller næste deploy). Indtil da kører den nye agent med det gamle katalog, hvilket er ufarligt og retter kJ-fejlen.
+- Testet: agenten mod lokal PostgreSQL med alle migrationer (live-katalog → nyt katalog, 0 fejl); lint, typecheck og `next build --webpack` grønne.
+- Brugeren: kør `bilka_vitamins.py` (vitaminpanelet på bilkatogo.dk, nogle timer); byg og importér derefter igen. Næring fra Frida til de skjulte varer er egen opgave (OPEN-TASKS).
+
+## 2026-10-02: Desktop — alle sider i skallen
+
+- På desktop vises alle sider (også login, betingelser, privatlivspolitik) i WebShell med sidebjælke, topmenu og brødkrummer; kun admin, hello-doc, business og presse er fuld bredde.
+- Lint og typecheck grønne; ikke set i browser — tjek login-siderne på desktop.
+Last updated: 2026-10-02
+
+## 2026-10-02: Garmin, WHOOP, Huawei + eufy/Renpho/Xiaomi/Tuya/Samsung via telefonen
+
+- Nye cloud-integrationer: Garmin (`garmin.ts`, PKCE, ping-webhook `garmin-webhook.ts`), WHOOP (`whoop.ts`) og Huawei Health (`huawei-health.ts`). Kun læsning; afmelding hos appen ved frakobling. Parsere i `*-items.ts` med tests i `src/lib/integration-items.test.mjs` (9 grønne).
+- eufy, Renpho, Xiaomi, Tuya og Samsung Health (ure, ring, vægt) er "via"-kort: data via Health Connect/Apple Health; kortet bliver "Forbundet", når ingest ser deres app som `origin`. Se DECISIONS.md samme dato.
+- Health Connect: Android-modul `native/android/healthconnect/` (læs + skriv, timevis baggrundssync, `origin` på alle poster). Ikke kompileret (ingen Android SDK her); se `native/README.md`.
+- Migration `20261002120000_more_integrations` (enum-værdier + `integrations.externalUserId`) skal køre ved deploy. Nye nøgler i admin → API-nøgler og `compose.production.yaml`: `GARMIN_CLIENT_ID/SECRET`, `GARMIN_WEBHOOK_KEY`, `WHOOP_CLIENT_ID/SECRET`, `HUAWEI_HEALTH_CLIENT_ID/SECRET`, `HUAWEI_HEALTH_API_BASE`. `.env.production.example` er ikke opdateret (adgang nægtet her).
+- Lint, typecheck og build grønne. `page-tree.test.mjs` fejler stadig (også på master). Ikke live-testet: ingen nøgler/DB her; Garmin- og Huawei-feltnavne er ikke prøvet mod live-API.
+- Mangler fra brugeren: Garmin-partnergodkendelse, Huawei Health Kit-godkendelse, WHOOP-app, logoer til de nye mærker, og evt. Tuya-partneraftale.
+
+## 2026-10-02: Kameraflowet — rigtige stillbilleder + nyt foto af indholdet
+
+- Fejlen: marmelade (5711954020055) fik ingen ingredienser, fordi indholdsfotoet var et sløret 1080p-videobillede, og OpenAI svarede tomt ("for sløret"). Ingen genstart var involveret. Se DECISIONS 2026-10-02.
+- Nyt: `src/lib/camera-still.ts` (stillbillede via `ImageCapture.takePhoto`, ellers skarpeste af tre 4K-videobilleder; energi/indhold beskæres til søgerens kvadrat), brugt i `ProductCaptureFlow`. Log-trin `photo_captured` viser kilde, opløsning og skarphed.
+- Nyt: varesiden viser "Indholdet kunne ikke læses på billedet" + knap; `IngredientsRetakeFlow` (`/camera?retake=ingredients&product=<id>`) og `POST /api/products/[id]/ingredients-photo`.
+- Lint grøn; typecheck uden fejl i de berørte filer. Build ikke kørt lokalt (delt `node_modules` har forældet Prisma-klient). Ikke testet på telefon: tjek i admin "Log", om `photo_captured` siger "stillbillede" på iPhone — ellers bruges 4K-videobilledet.
+
+## 2026-10-02: Retter — skelettet er nu sidens egne rækker
+
+- `/profile/recipes` (begge faner) og `/profile/recipes/[id]` brugte generiske skeletter (`SkeletonMediaRows`/`SkeletonDetail`) med bjælker i procent af sidebredden — enorme på bred skærm og uden lighed med indholdet. Nu tegner `RecipeRow` og ret-siden sig selv uden data (design.md §6.14): samme billedfelt, titel + undertekst i tekstbredde (`SkeletonTitleLines` i `Skeleton.tsx`), 3 rækker under "Trender netop nu".
+- Lint grøn; typecheck uden fejl i de berørte filer. Build ikke kørt lokalt (delt `node_modules` har forældet Prisma-klient). Ikke visuelt testet (brugerregel).
+
+## 2026-10-02: "Til info sendte vi dig …"-popup + push
+
+- Nyt: `src/lib/sent-notices.ts`, `src/lib/sms.ts`, `/api/messages/sent-notices`, `SentMessageNotice` (bundark i layoutet), `sendPushToUser` i `push.ts`. Se DECISIONS 2026-10-02.
+- Migration `20261002090000_sent_message_notice` skal køre ved deploy. Lint og typecheck grønne; ikke live-testet (ingen lokal DB).
+- Bemærk: push kræver VAPID-nøgler og at appen tilmelder enheden (findes ikke endnu); sms kræver `SMS_GATEWAY_TOKEN` og et telefonnummer på brugeren (findes ikke endnu).
+
+## 2026-10-02: Vægt- og længdeenheder
+
+- Nyt src/lib/units.ts (valg, landestandard, omregning, useUnits()), nyt startguide-trin units og to valg under Sprog og region. Brugt i: profil (vægt, højde-hjul), vægtlog, vægt-kalibrering, startvægt-verificering, målsætninger (vægt + kropsmål), energimål-editoren, kropsmål og statistik-grafen.
+- Lint og typecheck grønne for de berørte filer. Ikke visuelt testet (brugerregel). Ikke omregnet endnu: widgets/native, Hello Doc-rapport, kalender-vægtvisning og admin (kg/cm vises der stadig).
+
+## 2026-10-01: Rolig bølge-baggrund på forsiden
+
+- Ny baggrund bag topbar + hero, der fortsætter ca. 40 px under "Dagens tilføjelser"-stregen: tilfældige, langsomme bånd af bløde bølgelinjer (grønt øverst → gullig creme nedenfor) plus lidt tåge. Tre lag af samme canvas-scene (skarp / mellem-sløret / kraftigt sløret) giver frostet-glas-effekten nederst. Farver kun fra tokens. Står stille ved "reducer bevægelse" og standser når fanen er skjult.
+- Filer: `src/lib/home-waves.ts` (tegnelogik + test `home-waves.test.mjs`), `src/components/HomeWaves.tsx`, `.home-wave*` i `globals.css`, `src/app/page.tsx`. Listen er ikke længere dækkende; tal-hjulets rækker klippes i stedet ved hero-bunden (`StatsWheel.tsx`, `clipPath`).
+- Lint, typecheck og `node --test` (home-waves) grønne. Ikke visuelt testet (brugerregel: ingen skærmbilleder) — tjek udseende, tempo og lag på telefon. Justér tempo/farve/tykkelse i `createWaveScene` (hastigheder i px/s, `alpha`, `width`) og maskerne i `globals.css`.
+## 2026-10-02: Drikkevarer starter på pakkestørrelsen
+
+- Mængdefeltet viser nu 33 cl / 25 cl / 50 cl for dåser og små flasker, også når størrelsen kun står i navnet, og også for øl/vin uden kategorien DRINK. Vin, spiritus og færdigblandede drinks har egne regler (DECISIONS.md 2026-09-28, tilføjelse 2026-10-02).
+- Flere typiske mængder (kød, fisk, frugt, suppe, pizza m.m.), så færre varer starter på 100 g. Videresendte varer bruger samme startmængde.
+- Tests: `src/lib/default-amount.test.mjs` (ny) + udvidet `product-display-unit.test.mjs`, grønne. Lint, typecheck og build grønne. Ikke live-testet (ingen lokal DB).
+
+## 2026-10-02: Rigtige certifikat-logoer på varesiden
+
+- Brugerens logofiler fra `Certifikater/` er omdøbt og beskåret til `public/certifications/` (ens navne uden mellemrum/æøå) og erstatter de tegnede SVG-mærker i `CertificationLogos.tsx` (under energifordelingen) og `CertificationLogo.tsx` (på produktcirklen).
+- `src/lib/certification-badges.ts` kobler tekstværdierne i `ProductFilters` til logo: Økologisk → Ø-mærket, Biologisch → tysk BIO, Bioland, Ökologischer Landbau, EU-blad, Nøglehul, Fuldkorn, Bedre Dyrevelfærd 1/2/3 (hjerter), Anbefalet af Dyrenes Beskyttelse, NaturSkånsom, MSC, ASC, Fairtrade, Rainforest Alliance, UTZ. Ukendte mærker vises som tekst-pille.
+- Rettelser bør komme fra brugeren: `Bedre-dyrevelfærd-2-stjerner.png` var identisk med 3-stjerner-filen, så 2-hjerte-logoet er afledt (3-stjerner + den tomme 3. hjerte fra 1-stjerne-filen). `Fairtrade logo.webp` har "cleanpng"-vandmærke og `Økologimærket.png` er et beskåret udsnit uden tekst — erstat med originale filer.
+- Lint og typecheck grønne. Ikke visuelt testet (ingen login/DB lokalt).
+
+## 2026-10-02: Kalender dagvisning pa web - cookie, fokus pa nu, dobbeltklik
+
+- Cookie `hc_cal_visit` (dato): forste besog i dag viser morgenen med nattens sovn; senere besog i dag (og kun hvis brugeren har registreret noget for) scroller til nu +-2 timer.
+- Dobbeltklik pa en time i dagvisningen og pa en dag i ugens tidslinje abner tilfoej-menuen pa den halve time.
+- Lint og typecheck groenne; ikke testet i browser.
 ## 2026-09-29: Offentlig forside for udloggede
 
 - Ny hent-appen-forside uden telefonramme, med QR-koder, planer med betalings-ark, Hello Doc-bjælke, nøgletal fra databasen, `/business` (kontaktformular) og `/presse`. Se DECISIONS.md samme dato.
@@ -706,7 +785,8 @@ uændrede. Mangler brugerens visuelle godkendelse.
 - Email Routing: peter@packroff.dk bekræftet; `support@hellocal.io` + catch-all videresendes til peter@packroff.dk.
 - Google OAuth-klienten har allerede hellocal.io-URIer; server `GOOGLE_HEALTH_REDIRECT_URI` sat til hellocal.io (slår igennem ved næste deploy).
 - Facebook: brugeren har tilføjet `https://hellocal.io/api/auth/oauth/facebook/callback` (2026-09-28).
-- Mangler (brugeren tager det en anden dag): Withings (logget ud) → `https://hellocal.io/api/withings/callback`; Strava (logget ud) → callback-domæne `hellocal.io`; Apple (logget ud) → domæne + Return URL. Derefter `INTEGRATIONS_REDIRECT_BASE_URL`/`WITHINGS_REDIRECT_URI` på serveren til hellocal.io.
+- Withings (2026-10-02): brugeren har registreret `https://hellocal.io/api/withings/callback` hos Withings; server `WITHINGS_REDIRECT_URI` sat til samme (backup `.env.production.bak-20261002-withings`). Løste `redirect_uri_mismatch`.
+- Mangler (brugeren tager det en anden dag): Strava (logget ud) → callback-domæne `hellocal.io`; Apple (logget ud) → domæne + Return URL. Derefter `INTEGRATIONS_REDIRECT_BASE_URL` på serveren til hellocal.io (står stadig på `hellocal.packroff.dk`, så Strava ikke brydes).
 
 ## 2026-09-27: Tilføj-kamera med fire knapper + "opret straks"
 
@@ -819,7 +899,7 @@ kalenderens dagvisning og graf "Søvnkvalitet og kalorier" på Statistik. Se
 DECISIONS 2026-09-26. Kræver migration `20260926130000_sleep_quality` ved
 deploy. Ikke visuelt testet (brugeren tjekker selv).
 
-Last updated: 2026-09-27
+Last updated: 2026-10-01
 ## 2026-09-26: Support-indbakke i admin
 
 Se DECISIONS 2026-09-26 "Support-indbakke". Tråde, svar, interne noter,
@@ -5113,7 +5193,25 @@ ingen tilbagepil (`useInWebShell` + `isWebRootPath`). Set i Chromium ved
 1440×900 med login mocket: kalender/dag, søg, indstillinger, chat, statistik.
 Beslutning: docs/DECISIONS.md 2026-09-29. Butiksknapperne på landingpagen er
 uafklarede (spørgsmål stillet, ikke besvaret).
+
+Header-justering 2026-10-02 (bruger): skallens topbjælke og sidebjælkens logo-felt er
+80 px høje (før 56) — kun toppen fik luft: menuerne har samme afstand til bunden som før
+(`items-end` + `pb-2.5`), og logoet er større (124×55, sammenfoldet 48×21). Profil-knappen
+bruger nu samme `ProfileCircle` med initialer som mobilvisningen (32 px, før 28 px med
+person-ikon). Lint kørt; ikke set visuelt.
+
 ## 2026-09-28: Opgave 32 — samlet E-nummer-side
 
 - Ny offentlig side `/e-numre` (`src/app/e-numre/page.tsx`) med hele E-nummer-databasen, numerisk sorteret, et hurtignavigations-chipfelt og ét `<section>` pr. E-nummer med eget anchor (`/e-numre#e100`, `#e150a`; se `src/lib/additive-anchor.ts`).
 - Info-vinduet (`AdditiveInfoModal`) linker nu til nummerets anchor ("Se alle E-numre").
+
+## 2026-10-03: Roadmap — SMS-kode (TeamMessage) + login-godkendelse med push
+
+Bygget og pushet på branch `claude/teammessage-sms` (IKKE flettet til master, ikke deployet — brugerens valg: skrevet på roadmap så det huskes). Typecheck + lint er rene; fuld `npm run build` og test med rigtig SMS/push er ikke kørt.
+
+Skal gøres, før branchen flettes:
+1. Læg TeamMessage-oplysninger i serverens `.env`: `TEAMMESSAGE_API_TOKEN`, `TEAMMESSAGE_TEAM_ID`, `TEAMMESSAGE_TEAMLIST_EMAIL`, `TEAMMESSAGE_SENDER_EMAIL` (valgfri: `TEAMMESSAGE_FROM`, `TEAMMESSAGE_TEST_MODE=1`). Uden dem kan ingen oprette konto (tilmelding kræver SMS-kode, fail-closed i produktion).
+2. Generér VAPID-nøgler (`npx web-push generate-vapid-keys`) og sæt `VAPID_PUBLIC_KEY`, `VAPID_PRIVATE_KEY`, `VAPID_CONTACT_EMAIL`. Uden dem er push-godkendelse automatisk slået fra.
+3. Afklar overlap med `src/lib/sms.ts` (GatewayAPI, anden session) — login-koder bruger `src/lib/teammessage.ts`.
+4. Flet til master (kører migrationerne `20261002100000` og `20261003100000`), `npm run build`, test med rigtigt nummer og rigtig telefon (på iPhone kræver Web Push, at appen ligger på hjemmeskærmen).
+5. Senere: native app (APNs/FCM) skal bruge samme endpoints (`/api/push/subscribe`, `/api/auth/login-approval/*`). Push-godkendelse gælder kun adgangskode-login; Google/Apple/Facebook og Face ID er uændrede.

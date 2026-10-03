@@ -1,3 +1,5 @@
+import { readFile } from "node:fs/promises";
+import path from "node:path";
 import type { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { computeAge } from "@/lib/age";
@@ -15,7 +17,8 @@ import { analysePersonasWithAi, type PersonaAiResult } from "@/lib/persona-ai";
 // Admin → Brugere → Personas (docs/DECISIONS.md 2026-10-02): samler ét
 // anonymt sæt træk pr. bruger fra databasen, grupperer (persona-groups.ts),
 // lader AI'en udlede personas (persona-ai.ts) og gemmer resultatet som
-// PersonaSnapshot. Kører natligt (cronjob "personas") og ved "Beregn nu".
+// PersonaSnapshot. Kører kun ved deploy (én gang pr. build) og manuelt —
+// ingen natlig plan (ejerens valg 2026-10-03, docs/DECISIONS.md).
 
 const DAY_MS = 24 * 60 * 60 * 1000;
 const LOGIN_WINDOW_DAYS = 90;
@@ -177,7 +180,20 @@ export type PersonaSnapshotView = {
 
 // Beregner grupperne, kører AI'en og gemmer et snapshot. Fejler AI'en,
 // gemmes snapshottet stadig med gruppetallene og fejlteksten.
-export async function runPersonaAnalysis(source: "cron" | "manual"): Promise<PersonaSnapshotView> {
+// Next.js skriver buildets id i .next/BUILD_ID (også i standalone-output).
+let buildIdCache: string | null | undefined;
+export async function currentBuildId(): Promise<string | null> {
+  if (buildIdCache !== undefined) return buildIdCache;
+  try {
+    const id = (await readFile(path.join(process.cwd(), ".next", "BUILD_ID"), "utf8")).trim();
+    buildIdCache = id && id !== "development" ? id : null;
+  } catch {
+    buildIdCache = null;
+  }
+  return buildIdCache;
+}
+
+export async function runPersonaAnalysis(source: "job" | "manual"): Promise<PersonaSnapshotView> {
   const started = Date.now();
   const aggregates = await computePersonaAggregates();
   let personas: PersonaAiResult | null = null;
@@ -197,6 +213,7 @@ export async function runPersonaAnalysis(source: "cron" | "manual"): Promise<Per
   const row = await prisma.personaSnapshot.create({
     data: {
       source,
+      buildId: await currentBuildId(),
       userCount: aggregates.userCount,
       model,
       aggregates: aggregates as unknown as Prisma.InputJsonValue,
@@ -208,9 +225,11 @@ export async function runPersonaAnalysis(source: "cron" | "manual"): Promise<Per
   return { ...row, aggregates, personas };
 }
 
-// Cronjob-runner (src/lib/jobs/registry.ts "personas").
+// Cronjob-runner (src/lib/jobs/registry.ts "personas"): kaldes ved deploy
+// (requestPersonaRunOnDeploy) og ved "Kør nu" under Cronjobs.
 export async function runPersonaJob(): Promise<string> {
-  const snapshot = await runPersonaAnalysis("cron");
+  if (!process.env.OPENAI_API_KEY) return "Sprunget over: OPENAI_API_KEY er ikke sat";
+  const snapshot = await runPersonaAnalysis("job");
   if (snapshot.error) throw new Error(snapshot.error);
   return `${snapshot.userCount} brugere, ${snapshot.personas?.personas.length ?? 0} personas (${snapshot.model})`;
 }
@@ -230,5 +249,23 @@ export async function listPersonaSnapshots(limit = 12) {
     orderBy: { createdAt: "desc" },
     take: limit,
     select: { id: true, createdAt: true, source: true, userCount: true, model: true, error: true, durationMs: true },
+  });
+}
+
+// Ved opstart af en ny build (= deploy efter push til master): bed
+// cronjob-runneren om én kørsel, hvis der endnu ikke findes et snapshot for
+// denne build. Kun i produktion og kun med OpenAI-nøgle. En genstart af
+// samme build udløser ingen ny kørsel.
+export async function requestPersonaRunOnDeploy(): Promise<void> {
+  if (process.env.NODE_ENV !== "production" || !process.env.OPENAI_API_KEY) return;
+  const buildId = await currentBuildId();
+  if (!buildId) return;
+  const existing = await prisma.personaSnapshot.findFirst({ where: { buildId }, select: { id: true } });
+  if (existing) return;
+  const now = new Date();
+  await prisma.scheduledJob.upsert({
+    where: { key: "personas" },
+    create: { key: "personas", intervalMinutes: null, runAtTime: null, runRequestedAt: now },
+    update: { runRequestedAt: now },
   });
 }

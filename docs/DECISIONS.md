@@ -2,6 +2,57 @@
 
 This file records durable decisions. Add a dated entry when a later decision changes one of them.
 
+## 2026-10-02: Flere integrationer — Garmin, WHOOP, Huawei + mærker via telefonen
+
+Brugerens krav: Garmin, Health Connect, eufy, Renpho, Tuya, Xiaomi, Huawei, WHOOP og Samsung (også ure/ringe, ikke kun vægte). "Vi må ikke videregive nogen informationer om brugeren."
+
+- **Cloud (OAuth):** Garmin (Health + Activity API, OAuth 2.0 med PKCE), WHOOP (API v2) og Huawei Health (Health Kit REST). Samme fælles adapter-mønster som Withings/Polar (`src/lib/integrations/registry.ts`).
+- **Kun læsning for alle nye.** Hello Cal sender ingen data om brugeren til Garmin, WHOOP eller Huawei (`write: []` i `sync-settings.ts`). Der bedes ikke om profil-scopes (navn/e-mail). Ved frakobling får appen besked om at stoppe adgangen (`revoke`: Garmin afregistrering, WHOOP `DELETE /user/access`, Huawei token-revoke).
+- **Garmin bruger ping-notifikationer** (`POST /api/integrations/garmin/webhook`). Kun Ping/Pull: Hello Cal henter selv data hos `apis.garmin.com` med brugerens token; data i selve notifikationen (Push) bruges ikke, da Garmin ikke signerer dem. Garmins pseudonyme bruger-ID gemmes i `Integration.externalUserId` for at koble ping til bruger. Valgfri `GARMIN_WEBHOOK_KEY` i adressen.
+- **Mærker uden åben API = kind "via":** Samsung Health (inkl. Galaxy Watch/Ring/Fit), eufy, Renpho, Xiaomi (Mi Fitness/Zepp Life) og Tuya/Smart Life. Deres app deler til Health Connect/Apple Health, og data kommer ind gennem Hello Cal-appen. Kortet viser vejledning + knap til Health Connect/Apple Health og bliver "Forbundet", når ingest ser data med deres afsender-app (`origin`, `src/lib/integrations/origins.ts`). Ingen forbindelse til mærket selv.
+- **Tuya:** direkte forbindelse kræver partneraftale (Tuya IoT-projekt + godkendt app-konto-kobling); vises som "via" med note om det.
+- Health Connect-delen af Hello Cal-appen er skrevet som Android-modul `native/android/healthconnect/` (ikke kompileret endnu).
+- Nye mærker har intet logo endnu (`icon: null` → forbogstav); brugeren lægger logoer i `public/integrations/`.
+
+## 2026-10-02: Butiksimporten: alt fra arkene med (Bilka + REMA 1000)
+
+Erstatter "Varer uden kcal/protein/kulhydrat/fedt springes over" fra 2026-09-27.
+
+- **Alle rækker importeres** (brugerens valg: "Det er lige meget om de har protein mv. med. Så tager vi det fra Frida senere"). 13.039 varer i stedet for 10.524.
+- **Uden kalorietal** (2.364 varer: mest vin/øl/spiritus, krydderier, kaffe/te, frisk frugt/grønt og kød): `Product.nutritionMissing = true`, kcal/protein/kulhydrat/fedt = 0 som pladsholder. Varen er skjult i alle opslag, hvor en bruger kan finde og logge den (søgning, tekst-/foto-/måltidsgenkendelse, næringsmatch, generiske kandidater), og får **ingen stregkode-række** — scanning ender derfor stadig i Open Food Facts eller kameraflowet, hvor brugeren kan oprette varen med rigtig næring. Opretter en bruger den, opdateres brugerens vare ved næste import, og den skjulte kopi slettes. Varesiden viser "Næringsindhold ukendt" og admin "Mangler – skjult i appen". Næring hentes senere fra Frida (egen opgave): udfyld, sæt `nutritionMissing = false`, opret stregkoden.
+- **Med kalorietal men uden protein/kulhydrat/fedt** (151, mest spiritus og øl, hvor kun energien er deklareret): synlige; den manglende makro er 0 og markeret `ESTIMATED` i `nutrientSources` (~). En eksisterende vare beholder sine egne makroer.
+- **Energi repareres**: Bilka-arkets kJ er tal, så 1105 kJ stod som 1,105 (ca. 4.900 varer). Desuden byttede kolonner, kJ = 0 ved siden af kcal, og 25 kcal-værdier, hvor arkets egen kJ og makroerne (4P + 4C + 9F + 2 fiber) er enige mod kcal (fx Marineret flanksteak 15 → 152, Chiliolie 37 → 392); aldrig på alkohol. Alle rettelser står i tjeklisten. kJ på admin-gennemgåede varer repareres også (en tusind-fejl er intet valg).
+- **"Sukkerfri" kun op til 0,5 g sukker pr. 100 g** (EU's grænse; brugerens valg). REMA's "Sukkerfri" på 44 varer med mere sukker var REMA's mærke "Ikke tilsat sukker" → filteret "Uden tilsat sukker" (sukkerpåstandene fra samme dag). Det samme gælder "sukkerfri"/"uden sukker" i titlen på en vare med over 0,5 g sukker. Butikkens eget Sukkerfri-mærke i Bilka-arket (`_is_sugar_free`) står ved magt.
+- **Info-arkenes "Labels"** udfylder filtre, arkene lod stå tomme (fuldkorn, vegetarisk, certificeringer, dyrevelfærd, oprindelsesland), og REMA's "Additional Product Information" giver oprindelsesland.
+- **Vitaminer/mineraler**: findes ikke i arkene (kolonnerne var tomme) — bilka.py åbnede aldrig panelet "Info om vitaminer og mineraler". Nyt tillægs-script `bilka_vitamins.py` (brugeren kører det selv) skriver `bilka_vitamins.xlsx`; importen gemmer værdierne i `micronutrientsPer100g` med kilde LABEL, så de afløser Frida-skønnene (~) på varesiden.
+- **Navne**: varer opkaldt efter brandet alene hed "0"/"1"/"M appelsin" (titlen minus brand og mængde); nu butikkens egen titel ("Coca cola", "Breezer m. appelsin"), og første bogstav er stort.
+- Admin-gennemgang i Dubletter nulstilles ikke af kJ-rettelsen eller de afledte sukkerpåstande.
+
+## 2026-10-02: Kameraflowet tager rigtige stillbilleder + "tag nyt billede af indholdet"
+
+- Årsag: en marmelades ingrediensliste (30. sept.) blev aldrig aflæst. Loggen viste, at OpenAI fik fotoet, men svarede "for sløret til sikker aflæsning" (tom liste, sikkerhed 12 %). Fotoet var et 1080p-videobillede; appen sagde intet og prøvede ikke igen. Der var ingen genstart — PR #151 (genoptagelse efter genstart) byggede på et forkert gæt og er droppet.
+- Forside, energi og indhold tages nu som kameraets stillbillede (`ImageCapture.takePhoto`, `src/lib/camera-still.ts`) — stadig automatisk, uden tryk. Har browseren ikke funktionen, bedes videostrømmen om 4K, og det skarpeste af tre videobilleder bruges. Stregkodefotoet er stadig ét videobillede (må ikke forsinke scanningen).
+- Energi- og indholdsfotoet beskæres til det kvadrat, brugeren så i søgeren (ændrer "ingen beskæring" fra 2026-09-17 for de to trin; forsiden er stadig hele fotoet). Længste side højst 2048 px.
+- Hvert foto logges (`photo_captured`: stillbillede/videobillede, opløsning, skarphed).
+- Kunne AI ikke læse ingredienslisten, viser varesiden "Indholdet kunne ikke læses på billedet" med knappen "Tag nyt billede af indholdet" — kun for den, der oprettede varen (`ingredientsUnreadable` i `GET /api/products/[id]`). Knappen åbner `/camera?retake=ingredients&product=<id>` (`IngredientsRetakeFlow`), og `POST /api/products/[id]/ingredients-photo` læser det nye foto med OpenAI. Intet automatisk genforsøg på det samme foto (brugerens valg).
+
+## 2026-10-02: "Til info sendte vi dig …" (mail/sms var ikke spam)
+
+- Hver mail eller sms til en kendt bruger giver (1) en push med det samme: "Vi har netop sendt dig en e-mail om "emne". Dette var ikke spam." og (2) et bundark som det første ved næste besøg (app og web): "Til info sendte vi dig den <dato> en <e-mail/sms> om "<emne>". Dette var ikke spam." med sort knap "Læst".
+- "Læst" kvitterer (`OutboundMessage.noticeAckAt`); et træk ned lukker kun til næste besøg. Beskeder ældre end 30 dage vises ikke. Gælder ikke mails til admin, ikke-brugere (invitationer) eller rene push-beskeder.
+- Bygger på den eksisterende `OutboundMessage`-log — ingen adresse eller telefonnummer gemmes. Sms sendes via `src/lib/sms.ts` (GatewayAPI-format, no-op uden `SMS_GATEWAY_TOKEN`); brugere har endnu intet telefonnummer-felt, så ingen sms sendes i dag.
+
+## 2026-10-02: Vægt- og længdeenheder (kg/lb/st, cm/in)
+
+- Brugeren vælger vægtenhed (kg, pund eller stone+pund) og højde-/kropsmål-enhed (cm eller tommer) i startguidens første trin og under Indstillinger → Sprog og region. Valget gemmes pr. enhed i localStorage (som kalendervisning); databasen gemmer stadig altid kg og cm.
+- Standard udledes af landet (profilens region, ellers browserens): USA/Canada → pund + tommer, UK/Irland → stone+pund + tommer, resten kg + cm. Stone indtastes som `11 5` (stone pund). Tempo (kg/uge) og statistik-grafen bruger pund i stedet for stone.
+
+## 2026-10-01: Bølge-baggrund på forsiden
+
+- Forsiden får en rolig, tilfældig bølge-animation bag topbar og hero (til ca. halvvejen mellem skillestregen og "Ingen registreringer i dag"), grønne nuancer øverst mod gullig creme nedenfor, så den næsten går i et med baggrunden. Bløde bånd (hverken tynde streger eller brede bølger), ingen prikker/tern/striber, ingen DNA-agtig regelmæssighed; langsom og rolig, ikke pulserende lydbølger.
+- Nederste del er sløret som frostet glas (tre lag med stigende blur) og toner ud. Tegnes i canvas; farver læses fra tokens ved kørsel.
+- Layout-konsekvens: DailyList-containeren har ikke længere `bg-hf-cream`; tal-hjulets rækker klippes ved hero-bunden i `StatsWheel` i stedet for at blive dækket af listen.
+
 ## 2026-09-29: Aktivitetsniveau, PAL og kaloriemål
 
 - Erstatter faktorerne i 2026-09-28 "Aktivitetsniveau i 5 trin" (1,2–1,9). Nye niveauer og PAL-intervaller: se `docs/ACTIVITY-PAL.md` (planen; intet bygget). Ingen aktive brugere, så gamle niveauer erstattes uden overgangslogik.
@@ -18,6 +69,14 @@ This file records durable decisions. Add a dated entry when a later decision cha
 - Planer: "Vælg" på Seriøs/Seriøs Familie åbner et bundark med periode og betaling. Uden konto → `/signup?next=/profile/subscription/<plan>?months=<n>`, som lander på købssiden med samme valg.
 - Footer: kun Business-partnere (`/business`: muligheder + den eneste kontaktformular, mailes til `BUSINESS_CONTACT_EMAIL` eller support@) og Presse (`/presse`: fakta, logoer, kontakt via business-formularen). Ingen andre kontaktformularer og ingen sociale medier.
 - Butikslinks står i `APP_STORE_URL`/`PLAY_STORE_URL` (`src/lib/landing-content.ts`); QR-koderne følger dem automatisk.
+
+## 2026-10-02: Sukkerpåstande til søgning (ikke mærker)
+
+- Nye filterkolonner på `ProductFilters`: `lowSugar` ("Lavt sukkerindhold"), `noAddedSugar` ("Uden tilsat sukker"), `reducedSugar` ("Reduceret sukker") og `lightSugar` ("Light"), ved siden af den eksisterende `sugarFree`. Samme mønster som øvrige filtre: tom = nej/ukendt, udfyldt = ja. Migration `20261002100000_sugar_claim_filters`.
+- **De vises ikke som mærker i appen** (brugerens krav) — de findes kun, så man kan søge på dem: `GET /api/products?q=` matcher nu også de fem sukkerkolonner (fx "sukkerfri", "light", "uden tilsat").
+- Udledes i `scripts/store-products-import/build_data.py` (`sugar_claims`): først og fremmest af nøgleord, derefter navn, variant, smag og produkttype (påstanden står ofte kun i nøgleordene). `lowSugar` udledes også af sukker pr. 100 g: højst 5 g (drikkevarer 2,5 g), og sukkerfri tæller som lavt.
+- Kendt begrænsning: en påstand, der kun står som ikon på emballagen, kan ikke aflæses; den må tilføjes manuelt i admin (Dubletter/Butiksdata). Produkter uden sukkertal får ikke `lowSugar` af næringen.
+- Nye kolonner fyldes først ved næste kørsel af `build_data.py` + `store-products-agent`.
 
 ## 2026-09-29: Admin-brugere (adgang til admin-panelet)
 
@@ -3146,6 +3205,11 @@ Apple Health-adgangsarket (som HelloFresh viser), med alle Hello Cals punkter.
 
 Brugere med `role = ADMIN` behandles som Seriøs i `getUserSubscriptionTier` og `/api/subscription`, uden en Subscription-række, så alle Seriøs-funktioner kan testes. Ingen databaseændring.
 
+## 2026-10-02 — Familie kun synlig for familieabonnenter; admin har familieabonnement
+
+- `hasActiveFamilyPlan` (src/lib/family.ts) og `/api/subscription` (`plan`) giver `role = ADMIN` altid familieabonnement, uden Subscription-række, så alle familiefelter kan testes. Ingen databaseændring. Familien oprettes stadig med knappen "Opret familie".
+- Indstillinger viser kun "Familie"-kortet, når brugeren har familieabonnement eller er med i en familie. Uden familieabonnement ligger indgangen til at indtaste en familiekode på Abonnement-siden ("Har du fået en kode?"). Købstilbuddet på Familieabonnement står uændret på Abonnement-siden.
+
 ## 2026-09-28: Samtykke på tilmeldingssiden i stedet for separat side
 
 Brugerens opgave 35: det separate samtykke-step (`/samtykke`) fjernes. Samtykket
@@ -3312,6 +3376,25 @@ Produktsiden viser aldrig teksten "Branded". Brandet vises kun som brandnavn/log
   (vægt ÷ N). Aldrig gættet; 2-80 g. Agenten skriver den kun, når varen ikke
   har en portionsstørrelse.
 
+### Tilføjelse 2026-10-02 — drikkevarer og alkohol starter på pakkestørrelsen
+
+- Brugerens regel: står der 33 cl, 25 cl eller 50 cl ved en drikkevare eller
+  alkohol, er det tallet i mængdefeltet. Størrelsen læses fra
+  `packageSizeText`, ellers fra navnet ("Tuborg Classic 33 cl"); multipak
+  ("6 x 33 cl") giver én enhed.
+- Varer uden kategorien DRINK tæller som drikkevare, når både navnet har et
+  drikke-ord (øl, vin, cola …) og en størrelse i ml/cl/dl/l. Fløde, olie,
+  eddike, sirup, saucer o.l. tages aldrig som hel pakke.
+- Vin: flaske ≤ 25 cl = hele flasken, ellers 150 ml. Spiritus (≥ 20 % eller
+  spiritus-ord uden mixer): ≤ 10 cl = hele flasken, ellers 4 cl.
+  Færdigblandede drinks (gin & tonic, rom og cola) = hele dåsen. Øvrige
+  drikkevarer: ≤ 50 cl = hele pakken, ellers 250 ml.
+- Visningsenheden er cl, når pakningsstørrelsen eller navnet angiver cl (også
+  "33 cl dåse"). Kategorien afgør stadig g mod ml.
+- Tabellen med typiske mængder er udvidet (kød 150 g, fisk 125 g, frugt,
+  suppe, pizza, færdigretter, fløde, æg m.m.), så færre varer ender på 100 g.
+- Videresendte varer (`/forward/[token]`) tilføjes med samme startmængde.
+
 ## 2026-09-28: Produktsidens lodrette rytme + beskårne brand-logoer
 
 - Produktsiden (`AddProductView`): 32 px fra produktcirklen til titlen (som
@@ -3440,10 +3523,52 @@ Kilder på "Mad på latin" skal altid være officielle (Fødevarestyrelsen, Sund
   i `src/lib/product-naming.ts`), så søgning på "vand" viser en præcis betegnelse.
 - Eksisterende produkter, der allerede hedder "Vand", omdøbes ikke automatisk.
 
+## 2026-10-02: Userback feedback-widget
+
+- Scriptet indlæses globalt fra src/components/UserbackWidget.tsx (rodlayoutet) med det offentlige widget-token. Der sendes bevidst ingen Userback.user_data (ingen navn/e-mail), så feedback er anonym i tråd med anonymitetsreglerne.
+
+
+## 2026-10-02 – Rigtige certifikat-logoer (public/certifications)
+
+- Mærker på varesiden vises med brugerens rigtige logofiler (`public/certifications/*.png`, kind → fil i `CERTIFICATION_LOGO_FILES` i `src/lib/certification-badges.ts`), ikke tegnede SVG-erstatninger. Originalerne ligger i mappen `Certifikater/` (ikke i git).
+- Kobling sker på tekstværdien i `ProductFilters` (økologisk, nøglehul, fuldkorn, dyrevelfærd-liste, certificeringer-liste); ukendte mærker vises som tekst-pille.
+- "Bedre Dyrevelfærd 2" er afledt af 1- og 3-hjerte-filerne, fordi den leverede 2-stjerner-fil var identisk med 3-stjerner. Erstat med original, når den findes.
+## 2026-10-02 Kontoindstillinger: Luk konto og Ret til at blive glemt
+
+- Ny side /settings/account (Indstillinger -> Kontoindstillinger) med to knapper, begge i bundark med bekraeftelse (skriv SLET).
+- Begge kalder POST /api/account/close, som koerer anonymizeUser() (src/lib/gdpr.ts) paa brugeren selv, rydder session-cookies og logger ud. Forskellen er kun ordlyd; GDPR-sletning er fortsat anonymisering (se 2026-09-02).
+- Ikke gjort: aktivt abonnement hos betalingsudbyder opsiges ikke automatisk.
+## 2026-10-02 — Admin: Economy
+
+- Ny side /admin/economy: årsabonnementer (årlig sikker indkomst, sikret løbetid), månedsabonnementer (+ 3 mdr.) og næste måneds forventede indtjening. Kun betalende (provider sat); pris/periode fra MobilePay-træk og Stripe live (skønnet 1 md. ved mangel).
+- Afmelding: observeret 30-dages rate blandet med prior 7 %/md.; AI-knap lader OpenAI vurdere % pr. type (kun aggregater, store:false), forventningen regnes i koden. Grov model, ikke regnskab.
+
+
+## 2026-10-03 Opdater-varen-banner: 20 points
+
+- Mangler en vare indhold, energi (kun butiksvarer med `nutritionMissing`), logo eller produktbillede, vises et hvidt banner øverst på varesiden: "Optjen 20 points ved at opdatere varen". Det kan trækkes ned/skubbes op, så kun den smalle bar med grebet vises (`src/components/hf/UpdatePointsBanner.tsx`).
+- Banneret fører til `/add/[id]/update`: et kort pr. manglende ting (forside = billede + logo, energi, indhold). Fotoet læses af AI via `POST /api/products/[id]/update`; kun tomme felter udfyldes, eksisterende data overskrives aldrig. Forsiden bruger den eksisterende fritskrabning (logo → Brand.logoUrl, billede → `pendingImageUrl` til admin-godkendelse).
+- Points: ny `PointsReason.PRODUCT_UPDATED` (migration `20261003100000_points_product_updated`), 20 points højst én gang pr. bruger og vare, udbetales når fotoet faktisk udfyldte noget. Gælder også admin (brugerens krav, så det kan testes). Banneret skjules for den bruger, når point er optjent på varen.
+- Logik: `src/lib/product-update.ts`; `GET /api/products/[id]` returnerer `updateOffer` (null når intet mangler eller varen er privat).
+## 2026-10-02: Admin "Billeder i kø til frilæggelse"
+
+- Brugerkrav: under godkendelser skal der være en fane "Billeder i kø til
+  frilæggelse" med besked nedenunder om, at billederne scannes i nat.
+- Bygget som nyt punkt i gruppen Varegodkendelse (`/admin/images/cutout-queue`)
+  og som fane på Billedforslag (`ImagesTabs`). Siden læser kun:
+  `image_cutout_jobs` med status PENDING (listen) og FAILED (egen sektion;
+  de prøves ikke igen af sig selv). Udsnittet tegnes med CSS fra jobbets
+  `cropBox`, så admin ser det område, robotten fritlægger.
+- Beskeden under listen er brugerens tekst. Har jobbet `image-cutout` en fast
+  tid i `scheduled_jobs`, skrives klokkeslættet med; derudover vises
+  robottens faktiske plan (`describeNextRun`) og sidste kørsel, så teksten
+  aldrig lyver om, hvad der sker. Planen selv er ikke ændret (stadig
+  "Løbende", 2026-09-28) — det er ejerens valg.
+
 ## 2026-10-02: Admin → Brugere → Personas
 
 - Nyt menupunkt "Personas" under gruppen Brugere (`/admin/users/personas`). Formål: finde mønstre og parametre for brugergrupper — lokation (land, by), sprog, alder, køn, anvendelse af appen og antal logins — og lade en AI-model udlede personas (ejerens ønske 2026-10-02).
 - **Privatliv:** AI'en (OpenAI, `store: false`, samme regel som Statistik 2026-09-27) får KUN aggregerede gruppetal — aldrig navne, e-mails, bruger-id'er eller enkeltpersoners rækker. Grupper under 5 brugere (`MIN_GROUP_SIZE`) slås sammen i "Øvrige" både i tabellerne og i det, AI'en får, så ingen kan genkendes. Glemte brugere (`forgottenAt`) og admin-konti indgår ikke.
 - **Definitioner:** Land = seneste login-land (Cloudflare), ellers profilens `region`. By = seneste login-by (`login_events.city`, ny kolonne fra `cf-ipcity`; null uden Cloudflares "visitor location headers"). Sprog = `appLocale`. Alder i grupper (under 18, 18–24 … 65+, ukendt) fra `birthDate`. Abonnement som i Statistik (gratis/seriøs/familie, inkl. familiemedlemmer). Enhed = OS fra seneste kendte enhed. Logins tælles over 90 dage, brug (registreringer, aktive dage, HelloFresh, motion, vejninger) over 30 dage. Adfærdssegmenter: nye (< 14 dage), storbrugere (≥ 20 aktive dage/md.), faste (8–19), lejlighedsvise (1–7), kigger (logger ind uden mad), inaktive (ingen login og ingen registrering i 30 dage). Typisk tidspunkt = den del af døgnet (morgen 05–10, dag 10–16, aften 16–22, nat 22–05) med ≥ 50 % af gruppens logins, ellers "blandet".
-- **Kørsel:** Gruppetallene beregnes live ved hvert sidekald (gratis). AI-personas beregnes af cronjobbet "personas" (dagligt kl. 04:00, styres under Cronjobs) og af knappen "Beregn personas med AI" (kun fuld administratoradgang). Hvert resultat gemmes i `persona_snapshots` med aggregater, AI-svar (struktureret JSON: navn, andel, beskrivelse, demografi, adfærd, mønstre, behov, handlinger + vigtigste fund og forbehold), model og evt. fejl. Model: `OPENAI_PERSONA_MODEL`, ellers `OPENAI_STATS_MODEL`, ellers produktmodellen.
+- **Kørsel (ejerens valg 2026-10-03):** Gruppetallene beregnes live ved hvert sidekald (gratis). AI-personas beregnes kun ved deploy og manuelt — ingen natlig plan for nu. Ved opstart af en ny build (`.next/BUILD_ID`) bestilles én kørsel af cronjobbet "personas", hvis der ikke allerede findes et snapshot for den build (genstart af samme build giver ingen ny kørsel; kun i produktion og med OpenAI-nøgle). Derudover "Kør nu" under Cronjobs og knappen "Beregn personas med AI" (kun fuld administratoradgang). En fast plan kan sættes senere under Cronjobs uden kodeændring. Hvert resultat gemmes i `persona_snapshots` med aggregater, AI-svar (struktureret JSON: navn, andel, beskrivelse, demografi, adfærd, mønstre, behov, handlinger + vigtigste fund og forbehold), model og evt. fejl. Model: `OPENAI_PERSONA_MODEL`, ellers `OPENAI_STATS_MODEL`, ellers produktmodellen.
 

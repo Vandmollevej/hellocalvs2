@@ -271,3 +271,37 @@ Ejer: Flows-sessionen (2026-09-27)
 | --- | --- | --- | --- |
 | 745f1ab5 | Telefon-editor (iPhone 17) til mails/notifikationer/svarskabeloner + hovedmenu "Flows" med flow-sider | Færdig (se git log "Admin: phone editor") | Guide-builderen (tooltips) er flyttet ind i `flows`-gruppen i `AdminShell.tsx` efter brugerens ønske |
 | 41 | Design-screening af admin-flowsider mod HelloFresh-retningen | Færdig (branch `claude/admin-flowsider-design-4tzgb4`) | Afventer brugerens visuelle test på desktop + telefon |
+
+## G-WAVES — Bølge-baggrund på forsiden
+Filer: `src/lib/home-waves.ts`, `src/components/HomeWaves.tsx`, `.home-wave*` i `globals.css`, `src/app/page.tsx` (lag-opbygning), `StatsWheel.tsx` (kun `clipPath`).
+Ejer: bølge-sessionen (2026-10-01)
+
+| Id | Opgave | Status | Næste skridt |
+| --- | --- | --- | --- |
+| — | Rolig, tilfældig bølge-animation bag forsiden med frostet-glas-bund og tåge | Færdig (kode) | Afventer brugerens visuelle godkendelse på telefon; justér tempo/farve efter feedback |
+
+## G-INT2 — Flere integrationer (Garmin, WHOOP, Huawei, via-mærker, Health Connect-modul)
+Filer: `src/lib/integrations/**`, `src/lib/integrations.ts`, `src/app/settings/integrations/**`, `src/app/api/integrations/**`, `src/lib/api-keys/*`, `native/android/healthconnect/**`.
+Ejer: cloud-session `claude/integrations-more-brands` (2026-10-02)
+
+| Id | Opgave | Status | Næste skridt |
+| --- | --- | --- | --- |
+| — | Garmin, WHOOP, Huawei (OAuth, kun læsning) + eufy/Renpho/Xiaomi/Tuya/Samsung via Health Connect/Apple Health + Android Health Connect-modul | Færdig (flettet i master via PR #157) | Kode i master; migration `20261002120000_more_integrations` kører ved deploy. Brugeren: Garmin-partnerprogram, Huawei Health Kit-godkendelse, WHOOP-app, nøgler i admin, logoer. Android-modulet skal bygges i Android Studio |
+
+## G-STORE — Butiksimport (Bilka + REMA 1000)
+Filer: `scripts/store-products-import/**`, `docs/PRODUCT_IMPORT_MAPPING.md`, `Product.nutritionMissing`.
+Ejer: "Indholdsfortegnelse og feltsammenflettning" (89f1295c, 2026-10-03)
+
+| Id | Opgave | Status | Næste skridt |
+| --- | --- | --- | --- |
+| 89f1295c | Alt fra arkene flettet ind: ingredienser, `_is_`-felter, energi (kJ-fejl + forkerte kcal rettet), Labels, alle 13.039 varer (2.364 skjulte uden næring) | Færdig i kode (se git log "Store import") — data venter på bruger | Kopiér `C:\Users\Peter\Desktop\Butiksimport 2026-10-03\` (store_products.json + images) til NAS'ens `data/store-products-import/` og kør jobbet `store-products-import` (admin → Cron-jobs). Forventet: "Imported/updated 13039 of 13039 … (2364 hidden …)" |
+| 89f1295c | Vitaminer fra Bilka (`bilka_vitamins.py`) | Venter på bruger | Brugeren kører `py bilka_vitamins.py` i Bilka-mappen på NAS'en (nogle timer). Derefter: `py build_data.py --all --out <mappe> --images-from <NAS-json>`, kopiér `store_products.json` til NAS'ens `data/store-products-import/` og kør jobbet |
+| — | Næring fra Frida til de 2.364 skjulte varer (`WHERE "nutritionMissing"`) | Ikke startet | Brugerens plan ("så tager vi det fra Frida senere"): match på produkttype/navn, udfyld som ESTIMATED (~), sæt `nutritionMissing = false` og opret stregkode-rækken (EAN = `externalId`) |
+
+## G-AUTH — SMS-kode + login-godkendelse
+Filer: `src/lib/teammessage.ts`, `src/lib/sms-verification.ts`, `src/lib/login-approval.ts`, `src/app/api/auth/{sms,login-approval,reset-password}/**`, `src/app/signup`, `src/app/reset-password`, `src/app/approve-login`, `src/app/profile/login-approval`, `public/sw.js`.
+Ejer: SMS-sessionen (2026-10-02)
+
+| Id | Opgave | Status | Næste skridt |
+| --- | --- | --- | --- |
+| — | 6-cifret SMS-kode ved tilmelding + glemt adgangskode (TeamMessage) og login-godkendelse med push | Venter på bruger | Branch `claude/teammessage-sms` er klar, men ikke flettet. Se STATUS 2026-10-03 "Roadmap": TeamMessage-env + VAPID-nøgler på serveren, derefter flet + test |

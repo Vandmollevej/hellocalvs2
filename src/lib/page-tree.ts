@@ -201,6 +201,7 @@ export const PAGE_TREE: PageArea[] = [
             label: "Betaling",
             children: [{ path: "/settings/payment/mobilepay", label: "MobilePay" }],
           },
+          { path: "/settings/account", label: "Kontoindstillinger" },
           { path: "/settings/delete-permissions", label: "Sletterettigheder" },
           { path: "/settings/control-log", label: "Kontrollog" },
           {
@@ -304,6 +305,7 @@ export const PAGE_TREE: PageArea[] = [
             label: "Brugere",
             children: [{ path: "/admin/users/personas", label: "Personas" }],
           },
+          { path: "/admin/economy", label: "Economy", note: "Betalende abonnementer, sikret indkomst og forventet indtjening" },
           {
             path: "/admin/support",
             label: "Support",
@@ -318,7 +320,11 @@ export const PAGE_TREE: PageArea[] = [
             label: "Besked automatisering",
             children: [{ path: "/admin/messaging/[event]", label: "Rediger mail/notifikation" }],
           },
-          { path: "/admin/images", label: "Billedforslag" },
+          {
+            path: "/admin/images",
+            label: "Billedforslag",
+            children: [{ path: "/admin/images/cutout-queue", label: "Billeder i kø til frilæggelse" }],
+          },
           {
             path: "/admin/quality-control",
             label: "Kvalitetskontrol",

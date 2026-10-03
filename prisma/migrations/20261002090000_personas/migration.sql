@@ -6,6 +6,7 @@ CREATE TABLE "persona_snapshots" (
   "id" TEXT NOT NULL,
   "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
   "source" TEXT NOT NULL,
+  "buildId" TEXT,
   "userCount" INTEGER NOT NULL,
   "model" TEXT,
   "aggregates" JSONB NOT NULL,
@@ -16,3 +17,4 @@ CREATE TABLE "persona_snapshots" (
 );
 
 CREATE INDEX "persona_snapshots_createdAt_idx" ON "persona_snapshots"("createdAt");
+CREATE INDEX "persona_snapshots_buildId_idx" ON "persona_snapshots"("buildId");

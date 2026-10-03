@@ -18,8 +18,8 @@ import { PersonaRecompute } from "@/components/admin/personas/PersonaRecompute";
 
 // Admin → Brugere → Personas (docs/DECISIONS.md 2026-10-02): anonyme
 // gruppetal pr. land, by, sprog, alder, køn, abonnement og enhed (beregnes
-// live) + AI-modellens personas fra det seneste snapshot (natligt cronjob
-// "personas" eller "Beregn nu"). Grupper under MIN_GROUP_SIZE vises som
+// live) + AI-modellens personas fra det seneste snapshot (én gang pr.
+// deploy via cronjobbet "personas", eller "Beregn nu"). Grupper under MIN_GROUP_SIZE vises som
 // "Øvrige". Logik: src/lib/personas.ts, src/lib/persona-groups.ts.
 
 export const dynamic = "force-dynamic";
@@ -78,8 +78,8 @@ export default async function AdminPersonasPage({
         title="AI-personas"
         intro={
           snapshot
-            ? `Seneste beregning ${formatWhen(snapshot.createdAt)} (${snapshot.source === "cron" ? "natligt cronjob" : "manuel"}, ${num.format(snapshot.userCount)} brugere${snapshot.model ? `, ${snapshot.model}` : ""}). Cronjobbet "Personas" kører hver nat kl. 04:00 (kan ændres under Indstillinger → Cronjobs).`
-            : "Ingen beregning endnu. Tryk \"Beregn personas med AI\" eller vent på det natlige cronjob (kl. 04:00)."
+            ? `Seneste beregning ${formatWhen(snapshot.createdAt)} (${snapshot.source === "manual" ? "manuel" : "automatisk"}, ${num.format(snapshot.userCount)} brugere${snapshot.model ? `, ${snapshot.model}` : ""}). Beregnes automatisk én gang efter hvert deploy og ellers kun med knappen.`
+            : "Ingen beregning endnu. Tryk \"Beregn personas med AI\" — den beregnes også automatisk efter næste deploy."
         }
       >
         {snapshot?.error && (
@@ -217,7 +217,7 @@ export default async function AdminPersonasPage({
           rows={history.map((row) => ({
             label: formatWhen(row.createdAt),
             values: [
-              row.source === "cron" ? "Cronjob" : "Manuel",
+              row.source === "manual" ? "Manuel" : "Deploy/cronjob",
               row.userCount,
               row.model ?? "—",
               row.error ? `Fejl: ${row.error}` : `OK${row.durationMs ? ` (${num.format(row.durationMs / 1000)} s)` : ""}`,

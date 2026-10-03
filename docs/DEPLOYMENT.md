@@ -233,9 +233,9 @@ packroff.dk-zonen har redirect-regler (308, sti + query bevares):
 `hellocal.packroff.dk` → `hellocal.io`, `adminhellocal.packroff.dk` →
 `admin.hellocal.io`, `scanhellocal.packroff.dk` → `scan.hellocal.io`.
 `www.hellocal.io` → `hellocal.io` (301). Derfor virker OAuth-callbacks, der
-stadig er registreret på det gamle domæne (`INTEGRATIONS_REDIRECT_BASE_URL`,
-`WITHINGS_REDIRECT_URI`, `GOOGLE_HEALTH_REDIRECT_URI` står bevidst på
-`hellocal.packroff.dk`, indtil udbyderne har fået den nye URI).
+stadig er registreret på det gamle domæne (`INTEGRATIONS_REDIRECT_BASE_URL`
+står bevidst på `hellocal.packroff.dk`, indtil Strava har fået den nye URI;
+`WITHINGS_REDIRECT_URI` og `GOOGLE_HEALTH_REDIRECT_URI` peger på `hellocal.io`).
 `middleware.ts` accepterer begge admin-hostnavne. Email Routing: MX, SPF
 (`include:_spf.mx.cloudflare.net include:spf.mailjet.com`) og DMARC `p=none`
 er sat; `support@` + catch-all → `peter@packroff.dk` (kræver at modtager-
@@ -246,7 +246,7 @@ og `SMTP_FROM=Hello Cal <no-reply@hellocal.io>` (kræver at `hellocal.io` er
 verificeret afsenderdomæne i Mailjet: SPF + DKIM-TXT i Cloudflare-zonen).
 Kontaktadresse `support@hellocal.io` videresendes med Cloudflare Email
 Routing. OAuth-redirect-URI'er hos Google, Facebook, Apple, Strava, Withings,
-Polar m.fl. og MobilePay-webhooken skal pege på `hellocal.io`. Passkeys er
+Polar, Garmin, WHOOP, Huawei m.fl. og MobilePay-webhooken skal pege på `hellocal.io`. Garmins ping-adresse er `https://hellocal.io/api/integrations/garmin/webhook?key=<GARMIN_WEBHOOK_KEY>`. Passkeys er
 bundet til hostnavnet og skal oprettes igen på det nye domæne.
 
 ## Search indexing

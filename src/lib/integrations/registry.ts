@@ -1,13 +1,16 @@
 import type { IntegrationProvider } from "@prisma/client";
 import { hasClientCredentials, type OAuthProviderAdapter } from "./types";
 import { fitbit } from "./fitbit";
+import { garmin } from "./garmin";
 import { googleHealth } from "./google-health";
+import { huaweiHealth } from "./huawei-health";
 import { polar } from "./polar";
 import { strava } from "./strava";
+import { whoop } from "./whoop";
 import { withings } from "./withings";
 
 // Alle cloud-integrationer, der forbindes med OAuth fra serveren.
-export const OAUTH_PROVIDERS: OAuthProviderAdapter[] = [withings, googleHealth, strava, polar, fitbit];
+export const OAUTH_PROVIDERS: OAuthProviderAdapter[] = [withings, googleHealth, strava, polar, fitbit, garmin, whoop, huaweiHealth];
 
 export function adapterBySlug(slug: string) {
   return OAUTH_PROVIDERS.find((p) => p.slug === slug) ?? null;

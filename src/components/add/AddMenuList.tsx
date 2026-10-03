@@ -1,47 +1,74 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { MealShareBar } from "@/components/family/MealShareBar";
 import { AccordionCard, ChevronRow } from "@/components/hf/AccordionCard";
 import { useAddActionsProfile, visibleAddActions } from "@/lib/add-actions";
 import { useTranslation } from "@/i18n/LocaleProvider";
 
-// Every real add-element in the app in one list, regardless of which subset
-// the user picked for the front-page wheel (settings → Visning → Forside).
-// Shown by AddMenuSheet (the wheel's fixed "Se alle" slot and the calendar's
-// hour "Tilføj" bar) and by the /add/menu route.
+// "Tilføj"-menuen: otte 3D-ikon-felter (2 kolonner på mobil, én række på
+// bredere skærme) i det beige kort. Vises af AddMenuSheet (forsidehjulets
+// "Se alle" og kalenderens "Tilføj" på en time) og af /add/menu.
+// Aktivitet har intet 3D-ikon og ligger som almindelig række under feltet.
+// Målvægt og menstruation vises ikke her (menstruation kun i kalenderen).
 //
-// date/time (the calendar's case) are forwarded onto every action's href as
-// extra query params — harmless for actions that ignore them, and what lets
-// /foods land the registration at the tapped hour.
+// date/time (kalenderens tilfælde) sendes videre på hver href som ekstra
+// query-parametre, så /foods lander registreringen på det valgte klokkeslæt.
+const TILES = [
+  { key: "food", href: "/search", icon: "food" },
+  { key: "scan", href: "/camera?mode=product", icon: "scan" },
+  { key: "platePhoto", href: "/camera?mode=meal", icon: "plate-photo" },
+  { key: "dish", href: "/create-dish", icon: "dish" },
+  { key: "voice", href: "/voice", icon: "voice" },
+  { key: "weight", href: "/weight/create", icon: "weight" },
+  { key: "drink", href: "/water/create", icon: "drink" },
+  { key: "body", href: "/profile/body-measurements", icon: "body" },
+] as const;
+
 export function AddMenuList({ date, time }: { date?: string | null; time?: string | null }) {
   const { t } = useTranslation();
   const profile = useAddActionsProfile();
-  const actions = visibleAddActions(profile);
+  const extraActions = visibleAddActions(profile).filter((action) => action.key === "activity");
 
   const context = new URLSearchParams();
   if (date) context.set("date", date);
   if (time) context.set("time", time);
   const suffix = context.toString();
+  const withContext = (href: string) =>
+    suffix ? `${href}${href.includes("?") ? "&" : "?"}${suffix}` : href;
 
   return (
     <div className="hf-page">
       <MealShareBar />
       <AccordionCard>
-        {actions.map((action, index) => (
-          <ChevronRow
-            key={action.key}
-            icon={
-              action.icon ? (
-                <action.icon size={20} />
-              ) : (
-                <Image src={action.imageSrc!} alt="" width={20} height={20} className="object-contain" />
-              )
-            }
-            label={t(action.labelKey)}
-            href={suffix ? `${action.href}${action.href.includes("?") ? "&" : "?"}${suffix}` : action.href}
-            divider={index < actions.length - 1}
-          />
+        <div className="grid grid-cols-2 gap-2 p-3 md:grid-cols-8">
+          {TILES.map((tile) => (
+            <Link
+              key={tile.key}
+              href={withContext(tile.href)}
+              className="flex flex-col items-center gap-1 rounded-[8px] p-2 text-center"
+            >
+              <Image
+                src={`/icons/add/${tile.icon}.webp`}
+                alt=""
+                width={96}
+                height={96}
+                className="h-24 w-24 object-contain"
+              />
+              <span className="hf-type-body">{t(`addMenu.${tile.key}`)}</span>
+            </Link>
+          ))}
+        </div>
+        {extraActions.map((action) => (
+          <div key={action.key} className="border-t border-hf-tan-dark">
+            <ChevronRow
+              icon={action.icon ? <action.icon size={20} /> : null}
+              label={t(action.labelKey)}
+              href={withContext(action.href)}
+              divider={false}
+            />
+          </div>
         ))}
       </AccordionCard>
     </div>

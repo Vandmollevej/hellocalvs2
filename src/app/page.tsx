@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { TopBar } from "@/components/TopBar";
 import { Hero } from "@/components/Hero";
+import { HomeWaves } from "@/components/HomeWaves";
 import { DailyList } from "@/components/DailyList";
 import { BottomNav } from "@/components/BottomNav";
 import { LandingPage } from "@/components/landing/LandingPage";
@@ -17,16 +18,25 @@ export default async function Home() {
 
   return (
     <div className="flex min-h-full flex-1 flex-col bg-hf-cream">
-      <TopBar />
-
-      <div className="mt-8">
-        <Hero />
+      {/* Bølge-baggrunden (bruger 2026-10-01) ligger bag topbar og hero og
+          fortsætter 40 px ind i listen. Alt andet her er `relative`, så det
+          males oven på bølgerne. */}
+      <div className="relative flex-none">
+        <HomeWaves />
+        <div className="relative">
+          <TopBar />
+        </div>
+        <div className="relative mt-8">
+          <Hero />
+        </div>
       </div>
 
-      {/* Ligger over tal-hjulet (z-10 + baggrund), så hjulets rækker drejer
-          ind bag listen i stedet for ned over skillestregen (bruger
-          2026-09-29). Tilføj-knappens vifte (z-30) ligger stadig øverst. */}
-      <div className="relative z-10 min-h-0 flex-1 overflow-hidden bg-hf-cream pt-2">
+      {/* Ligger over hero (z-10). Listen har ikke længere en dækkende
+          baggrund, så bølgerne kan skinne igennem; tal-hjulets rækker klippes
+          i stedet ved hero-bunden (StatsWheel), så de stadig drejer ind bag
+          listen og ikke ned over skillestregen (bruger 2026-09-29).
+          Tilføj-knappens vifte (z-30) ligger stadig øverst. */}
+      <div className="relative z-10 min-h-0 flex-1 overflow-hidden pt-2">
         <DailyList />
       </div>
 
