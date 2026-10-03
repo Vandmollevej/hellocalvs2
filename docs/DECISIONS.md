@@ -3523,6 +3523,13 @@ Kilder på "Mad på latin" skal altid være officielle (Fødevarestyrelsen, Sund
   i `src/lib/product-naming.ts`), så søgning på "vand" viser en præcis betegnelse.
 - Eksisterende produkter, der allerede hedder "Vand", omdøbes ikke automatisk.
 
+## 2026-10-02: SMS-kode via TeamMessage ved tilmelding og glemt adgangskode
+
+- Tilmelding (e-mail + adgangskode) kraever mobilnummer + 6-cifret SMS-kode (gyldig 10 min, 5 forsoeg, engangs). Kontoen oprettes foerst efter korrekt kode (/api/auth/sms/signup -> /api/auth/register).
+- Glemt adgangskode: har kontoen et bekraeftet nummer, kraeves baade e-mail-linket og en SMS-kode (/api/auth/reset-password/sms). Konti uden nummer (fx Google/Apple/Facebook, gamle konti) nulstilles kun med e-mail-link.
+- Koder gemmes som HMAC-hash i sms_verifications; klient: src/lib/teammessage.ts (env TEAMMESSAGE_*). Uden opsaetning i produktion afvises tilmelding (fail-closed).
+- Ikke bygget: godkendelse af online-login i den installerede app (kraver push/native app).
+
 ## 2026-10-02: Userback feedback-widget
 
 - Scriptet indlæses globalt fra src/components/UserbackWidget.tsx (rodlayoutet) med det offentlige widget-token. Der sendes bevidst ingen Userback.user_data (ingen navn/e-mail), så feedback er anonym i tråd med anonymitetsreglerne.
@@ -3543,3 +3550,10 @@ Kilder på "Mad på latin" skal altid være officielle (Fødevarestyrelsen, Sund
 - Ny side /admin/economy: årsabonnementer (årlig sikker indkomst, sikret løbetid), månedsabonnementer (+ 3 mdr.) og næste måneds forventede indtjening. Kun betalende (provider sat); pris/periode fra MobilePay-træk og Stripe live (skønnet 1 md. ved mangel).
 - Afmelding: observeret 30-dages rate blandet med prior 7 %/md.; AI-knap lader OpenAI vurdere % pr. type (kun aggregater, store:false), forventningen regnes i koden. Grov model, ikke regnskab.
 
+
+## 2026-10-03: Login-godkendelse med push (brugerens valg: byg det)
+
+- Valgfri funktion (`User.loginApprovalEnabled`, slås til på /profile/login-approval): et login med adgangskode fra en NY enhed (ukendt hc_device) skal godkendes med Web Push på en anden enhed, hvor brugeren allerede er logget ind. Siden /approve-login viser Godkend/Afvis; den ventende browser får først session, når status er godkendt (src/lib/login-approval.ts, 5 min.).
+- Bruger Web Push (VAPID) via PWA + public/sw.js — ikke en native app. Kræver VAPID_PUBLIC_KEY/VAPID_PRIVATE_KEY på serveren; uden dem, uden abonnement eller hvis ingen enhed kan nås, springes kravet over (ingen låses ude). Social login, Face ID og nulstilling af adgangskode er upåvirket.
+- Native app (APNs/FCM) er fortsat ikke bygget; når den findes, skal den bruge samme endpoints.
+- SMS: login-koder bruger src/lib/teammessage.ts; src/lib/sms.ts (GatewayAPI) fra en anden session er et separat spor til notifikationer.

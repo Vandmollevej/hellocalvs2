@@ -222,13 +222,22 @@ export default function ProfileEditPage() {
       title={t("profile.section.profile")}
       footer={
         user ? (
-          <button
-            type="button"
-            onClick={() => router.push("/profile/change-password")}
-            className="hf-control hf-btn-primary w-full px-4"
-          >
-            {t("profile.changePasswordButton")}
-          </button>
+          <div className="flex flex-col gap-3">
+            <button
+              type="button"
+              onClick={() => router.push("/profile/login-approval")}
+              className="hf-control w-full rounded-full border border-hf-gray-border px-4"
+            >
+              {t("loginApproval.toggle")}
+            </button>
+            <button
+              type="button"
+              onClick={() => router.push("/profile/change-password")}
+              className="hf-control hf-btn-primary w-full px-4"
+            >
+              {t("profile.changePasswordButton")}
+            </button>
+          </div>
         ) : undefined
       }
     >

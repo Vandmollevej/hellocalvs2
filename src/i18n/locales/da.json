@@ -59,6 +59,47 @@
     "sentMessage": "Hvis kontoen findes, har vi sendt en mail med et link til at nulstille adgangskoden.",
     "backToLogin": "Tilbage til log ind"
   },
+  "loginApproval": {
+    "title": "Godkend login",
+    "description": "Når det er slået til, skal et login med adgangskode fra en ny enhed godkendes med en notifikation på en enhed, hvor du allerede er logget ind.",
+    "toggle": "Godkend nye logins med notifikation",
+    "on": "Til",
+    "off": "Fra",
+    "hint": "Tillad notifikationer på denne enhed, når du bliver spurgt. På iPhone skal appen først lægges på hjemmeskærmen.",
+    "approveTitle": "Godkend login",
+    "nonePending": "Der er ingen logins, der venter på godkendelse.",
+    "question": "Er det dig, der logger ind fra {device}?",
+    "approve": "Godkend",
+    "deny": "Afvis",
+    "waitingTitle": "Godkend på din anden enhed",
+    "waitingBody": "Vi har sendt en notifikation til en enhed, hvor du er logget ind. Tryk Godkend dér for at fortsætte.",
+    "waitingCancel": "Annuller",
+    "denied": "Login blev afvist.",
+    "expired": "Godkendelsen udløb. Prøv at logge ind igen.",
+    "error": {
+      "unsupported": "Denne browser understøtter ikke notifikationer.",
+      "denied": "Notifikationer er blokeret. Tillad dem i browserens indstillinger.",
+      "not-configured": "Notifikationer er ikke slået til på serveren endnu.",
+      "failed": "Noget gik galt — prøv igen"
+    }
+  },
+  "sms": {
+    "phoneLabel": "Mobilnummer",
+    "phonePlaceholder": "12 34 56 78",
+    "phoneHint": "Vi sender en 6-cifret kode som SMS for at bekræfte dit nummer.",
+    "codeLabel": "SMS-kode",
+    "codePlaceholder": "6 cifre",
+    "codeSent": "Vi har sendt en 6-cifret kode til {phone}. Koden gælder i 10 minutter.",
+    "signupConfirm": "Bekræft og opret konto",
+    "signupConfirming": "Opretter…",
+    "resetConfirm": "Skift adgangskode",
+    "sendCode": "Send SMS-kode",
+    "sendingCode": "Sender…",
+    "resend": "Send koden igen",
+    "changeNumber": "Skift nummer",
+    "networkError": "Kunne ikke sende SMS — tjek din forbindelse og prøv igen",
+    "resetRequired": "Af sikkerhedshensyn skal du også bekræfte med en SMS-kode til {phone}."
+  },
   "resetPassword": {
     "title": "Nulstil adgangskode",
     "newPasswordLabel": "Ny adgangskode",

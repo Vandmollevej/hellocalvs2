@@ -1,7 +1,12 @@
 import { NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import { prisma } from "@/lib/prisma";
-import { consumePasswordResetToken } from "@/lib/password-reset";
+import {
+  consumePasswordResetToken,
+  hashPasswordResetToken,
+  peekPasswordResetToken,
+} from "@/lib/password-reset";
+import { checkVerificationCode } from "@/lib/sms-verification";
 import { completeLogin } from "@/lib/user-login";
 
 export async function POST(req: Request) {
@@ -19,6 +24,22 @@ export async function POST(req: Request) {
   }
   if (password.length < 8) {
     return NextResponse.json({ message: "Adgangskoden skal være mindst 8 tegn" }, { status: 400 });
+  }
+
+  // Har kontoen et bekræftet mobilnummer, kræves også SMS-koden (sendt via
+  // /api/auth/reset-password/sms), før linket forbruges.
+  const pending = await peekPasswordResetToken(token);
+  if (pending?.phone && pending.phoneVerifiedAt) {
+    const smsOk = await checkVerificationCode({
+      verificationId: typeof body.verificationId === "string" ? body.verificationId : "",
+      code: typeof body.smsCode === "string" ? body.smsCode : "",
+      purpose: "PASSWORD_RESET",
+      phone: pending.phone,
+      resetTokenHash: hashPasswordResetToken(token),
+    });
+    if (!smsOk) {
+      return NextResponse.json({ message: "Forkert eller udløbet SMS-kode" }, { status: 400 });
+    }
   }
 
   const user = await consumePasswordResetToken(token);

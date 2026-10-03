@@ -174,6 +174,25 @@ export async function completeLogin<T extends NextResponse>(
   return response;
 }
 
+// Er denne browser/app-installation allerede kendt for brugeren (har logget
+// ind før)? Bruges til at kræve login-godkendelse kun på nye enheder.
+export async function isKnownDevice(req: Request, userId: string): Promise<boolean> {
+  const deviceId = readCookie(req, DEVICE_COOKIE);
+  if (!deviceId || deviceId.length < 16 || deviceId.length > 128) return false;
+  const known = await prisma.userKnownDevice.findUnique({
+    where: { userId_deviceHash: { userId, deviceHash: hash(deviceId) } },
+    select: { userId: true },
+  });
+  return known !== null;
+}
+
+export function requestLoginInfo(req: Request) {
+  return {
+    device: describeDevice(req.headers.get("user-agent")),
+    country: requestCountry(req),
+  };
+}
+
 async function logOwnLoginForFamilyMember(userId: string) {
   const member = await prisma.familyMember.findUnique({ where: { userId }, select: { id: true } });
   if (member) await logProfileAccess(userId, userId, "OPENED", "login");

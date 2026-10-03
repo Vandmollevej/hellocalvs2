@@ -27,6 +27,7 @@ function LogIndContent() {
     oauthError ? t(oauthError.key, oauthError.vars) : null
   );
   const [submitting, setSubmitting] = useState(false);
+  const [approval, setApproval] = useState<{ approvalId: string; secret: string } | null>(null);
   // Face ID kun, når det er slået til på denne enhed efter et almindeligt login.
   const [faceIdOnDevice, setFaceIdOnDevice] = useState(false);
   const [country, setCountry] = useState<LoginCountry>(() => findLoginCountry(null));
@@ -66,6 +67,11 @@ function LogIndContent() {
         body: JSON.stringify({ email, password }),
       });
       const data = await response.json();
+      if (data.approvalRequired) {
+        // Login skal godkendes via push på en anden enhed (docs/DECISIONS.md 2026-10-03).
+        setApproval({ approvalId: data.approvalId, secret: data.secret });
+        return;
+      }
       if (!response.ok) {
         setError(data.message ?? t("login.genericError"));
         setSubmitting(false);
@@ -77,6 +83,33 @@ function LogIndContent() {
       setSubmitting(false);
     }
   }
+
+  // Spørger hvert andet sekund, om login er godkendt på den anden enhed.
+  useEffect(() => {
+    if (!approval) return;
+    const timer = window.setInterval(async () => {
+      try {
+        const response = await fetch("/api/auth/login-approval/status", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(approval),
+        });
+        const data = await response.json();
+        if (data.status === "approved") {
+          window.clearInterval(timer);
+          router.push(afterLoginPath(next));
+        } else if (data.status === "denied" || data.status === "expired") {
+          window.clearInterval(timer);
+          setApproval(null);
+          setSubmitting(false);
+          setError(t(data.status === "denied" ? "loginApproval.denied" : "loginApproval.expired"));
+        }
+      } catch {
+        // Netværksfejl: prøv igen ved næste tik.
+      }
+    }, 2000);
+    return () => window.clearInterval(timer);
+  }, [approval, next, router, t]);
 
   return (
     <div className="flex h-full min-h-full flex-col bg-hf-cream">
@@ -168,6 +201,25 @@ function LogIndContent() {
           {t("login.newHere")} <Link href="/signup" className="underline">{t("login.createAccount")}</Link>
         </p>
       </div>
+
+      {approval && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-hf-black/40 p-4">
+          <div className="flex w-full max-w-sm flex-col gap-4 rounded-[28px] bg-hf-cream p-6 shadow-xl">
+            <h2 className="hf-type-body-lg font-semibold">{t("loginApproval.waitingTitle")}</h2>
+            <p className="hf-type-body">{t("loginApproval.waitingBody")}</p>
+            <button
+              type="button"
+              onClick={() => {
+                setApproval(null);
+                setSubmitting(false);
+              }}
+              className="hf-control w-full rounded-full border border-hf-gray-border"
+            >
+              {t("loginApproval.waitingCancel")}
+            </button>
+          </div>
+        </div>
+      )}
 
       {faceIdPhase && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-hf-black/40 p-4">

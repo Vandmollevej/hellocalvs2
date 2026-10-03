@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import { prisma } from "@/lib/prisma";
 import { completeLogin } from "@/lib/user-login";
+import { startLoginApprovalIfRequired } from "@/lib/login-approval";
 import { isLocked, recordFailure, recordSuccess } from "@/lib/rate-limit";
 
 const GENERIC_FAILURE = { message: "Forkert e-mail eller adgangskode" };
@@ -38,6 +39,14 @@ export async function POST(req: Request) {
     return NextResponse.json(GENERIC_FAILURE, { status: 401 });
   }
   recordSuccess(rateLimitKey);
+
+  // Slået til af brugeren: et login fra en ny enhed skal godkendes via push på
+  // en anden enhed (src/lib/login-approval.ts). Sessionen sættes først, når
+  // godkendelsen er hentet i /api/auth/login-approval/status.
+  const approval = await startLoginApprovalIfRequired(req, user);
+  if (approval) {
+    return NextResponse.json({ approvalRequired: true, ...approval }, { status: 202 });
+  }
 
   const response = NextResponse.json({
     user: { id: user.id, email: user.email, displayName: user.displayName },

@@ -59,6 +59,47 @@
     "sentMessage": "If the account exists, we've sent an email with a link to reset the password.",
     "backToLogin": "Back to log in"
   },
+  "loginApproval": {
+    "title": "Approve login",
+    "description": "When on, a password login from a new device must be approved with a notification on a device where you are already logged in.",
+    "toggle": "Approve new logins with a notification",
+    "on": "On",
+    "off": "Off",
+    "hint": "Allow notifications on this device when asked. On iPhone, add the app to the home screen first.",
+    "approveTitle": "Approve login",
+    "nonePending": "No logins are waiting for approval.",
+    "question": "Is it you logging in from {device}?",
+    "approve": "Approve",
+    "deny": "Deny",
+    "waitingTitle": "Approve on your other device",
+    "waitingBody": "We sent a notification to a device where you are logged in. Tap Approve there to continue.",
+    "waitingCancel": "Cancel",
+    "denied": "The login was denied.",
+    "expired": "The approval expired. Try logging in again.",
+    "error": {
+      "unsupported": "This browser does not support notifications.",
+      "denied": "Notifications are blocked. Allow them in your browser settings.",
+      "not-configured": "Notifications are not enabled on the server yet.",
+      "failed": "Something went wrong — try again"
+    }
+  },
+  "sms": {
+    "phoneLabel": "Mobile number",
+    "phonePlaceholder": "12 34 56 78",
+    "phoneHint": "We'll text you a 6-digit code to confirm your number.",
+    "codeLabel": "SMS code",
+    "codePlaceholder": "6 digits",
+    "codeSent": "We sent a 6-digit code to {phone}. The code is valid for 10 minutes.",
+    "signupConfirm": "Confirm and create account",
+    "signupConfirming": "Creating…",
+    "resetConfirm": "Change password",
+    "sendCode": "Send SMS code",
+    "sendingCode": "Sending…",
+    "resend": "Send the code again",
+    "changeNumber": "Change number",
+    "networkError": "Couldn't send the SMS — check your connection and try again",
+    "resetRequired": "For your security, please also confirm with an SMS code sent to {phone}."
+  },
   "resetPassword": {
     "title": "Reset password",
     "newPasswordLabel": "New password",
