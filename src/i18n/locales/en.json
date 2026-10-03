@@ -2666,10 +2666,12 @@
     },
     "join": {
       "title": "Did you get a code?",
-      "intro": "If someone in your family sent you a code, you can link your account to their family.",
+      "intro": "If the person paying for the family created a code for you, you can link your account. The code only works together with the email you are logged in with.",
       "codeLabel": "Family code",
       "submit": "Link me to the family",
-      "confirm": "The person paying for the family can see and change everything on your profile while you are a member. Continue?"
+      "confirm": "The person paying for the family can see and change everything on your profile while you are a member. Continue?",
+      "emailLabel": "Your email",
+      "scanHint": "Got a QR code? Scan it with your phone camera."
     },
     "member": {
       "title": "Your family",
@@ -2691,10 +2693,6 @@
       "deleteProfile": "Delete profile and all data",
       "deleteProfileConfirm": "Everything on {name}'s profile is deleted and cannot be restored. Type SLET to confirm."
     },
-    "code": {
-      "claimHelp": "The person opens Hello Cal, chooses \"Got a family code?\" on the login page and enters the code. Valid until {date}.",
-      "joinHelp": "The person logs in to their own account and enters the code under Settings → Family. Valid until {date}."
-    },
     "add": {
       "title": "Add profile",
       "newProfile": "Create new profile",
@@ -2713,33 +2711,6 @@
       "submitChild": "Add child",
       "childTooOld": "A child must be under 18. Invite the person instead."
     },
-    "invite": {
-      "title": "Invite family member",
-      "intro": "The person gets an email with a link and accepts it themselves. As part of the family they get Serious at no cost.",
-      "name": "Name",
-      "email": "Email",
-      "insightTitle": "Who should the person have insight into?",
-      "insightHelp": "The person can see and log for the profiles you switch on. You can always change this under Access.",
-      "addChild": "Add child under 18",
-      "addChildTitle": "Add child under 18",
-      "addChildIntro": "Children under 15 cannot create an account themselves, so you create the profile here. The child is then selected in the invitation.",
-      "send": "Send invitation",
-      "sent": "The invitation has been sent to {name} ({email}). The link is valid for 7 days.",
-      "done": "OK",
-      "pendingTitle": "Pending invitations",
-      "pendingUntil": "Valid until {date}",
-      "cancel": "Withdraw",
-      "cancelConfirm": "Withdraw the invitation to {name}? The link in the email will stop working.",
-      "acceptTitle": "Family invitation",
-      "acceptIntro": "Hi {name}. {owner} has invited you to join their family in Hello Cal.",
-      "acceptInsight": "You get insight into",
-      "acceptNoProfiles": "No profiles yet. You can be given access later.",
-      "acceptTerms": "When you accept, you get Serious at no cost, and {owner} can see and change everything on your profile while you are a member. Everything others do on your profile is listed in your Control log, and you can leave at any time.",
-      "accept": "Accept the invitation",
-      "acceptLoginFirst": "Log in or create an account to accept. The invitation was sent to {email}.",
-      "acceptLogin": "Log in",
-      "acceptSignup": "Create account"
-    },
     "access": {
       "title": "Access",
       "intro": "You always have access to every profile. Here you decide who else may view and log for whom.",
@@ -2751,7 +2722,8 @@
       "code": "Code",
       "email": "Email",
       "password": "Password (at least 8 characters)",
-      "submit": "Create my login"
+      "submit": "Create my login",
+      "introQr": "You are creating your own login with the email {email}. Choose your password."
     },
     "copy": {
       "action": "Copy to account",
@@ -2767,7 +2739,7 @@
       "nameRequired": "Enter a name.",
       "notMember": "The person is not in the family.",
       "notAllowed": "Not allowed.",
-      "invalidCode": "The code is invalid or has expired.",
+      "invalidCode": "The code and email don't match, or the code has expired.",
       "emailTaken": "The email is already used by another account.",
       "ownerCannotLeave": "The payer cannot leave the family.",
       "tooYoungToLeave": "You can leave the family once you are 15.",
@@ -2780,9 +2752,9 @@
       "unknown": "Something went wrong. Try again.",
       "profileHasLogin": "The profile has its own login. Remove it from the family instead.",
       "confirmRequired": "Type SLET to confirm.",
-      "invalidInvitation": "The invitation is invalid, expired or already used.",
+      "emailMismatch": "The code was created for a different email than the one you are logged in with.",
       "alreadyMember": "The person is already in the family.",
-      "inviteeInOtherFamily": "The person is already in another family."
+      "inOtherFamily": "The person is already in another family."
     },
     "deletePermissions": {
       "title": "Deleting entries",
@@ -2796,6 +2768,55 @@
       "portionHelp": "Portion compared with your amount:",
       "portionFor": "{name}",
       "portionOption": "{factor} portion"
+    },
+    "seats": {
+      "title": "Subscription",
+      "membersCount": "{count} of {max}",
+      "membersLabel": "subscribers joined",
+      "extraCount": "{count}/{max}",
+      "extraLabel": "extra add-ons"
+    },
+    "invite": {
+      "emailLabel": "The person's email",
+      "emailHelp": "The code only works together with exactly this email.",
+      "submit": "Create code and QR code",
+      "title": "Invite family member",
+      "intro": "The person gets an email with a link and a code and accepts with their account on that email. As part of the family they get Serious at no cost.",
+      "name": "Name",
+      "email": "Email",
+      "insightTitle": "Who should the person have insight into?",
+      "insightHelp": "The person can see and log for the profiles you switch on. You can always change this under Access.",
+      "addChild": "Add child under 18",
+      "addChildTitle": "Add child under 18",
+      "addChildIntro": "Children under 15 cannot create an account themselves, so you create the profile here. The child is then selected in the invitation.",
+      "send": "Send invitation",
+      "sent": "The invitation has been sent to {name} ({email}). It is listed under Pending invitations with a QR code and is valid for 7 days.",
+      "done": "OK"
+    },
+    "pending": {
+      "title": "Pending invitations",
+      "joinTitle": "Invitation for {email}",
+      "claimTitle": "Login for {name} ({email})",
+      "joinHelp": "Let the person scan the QR code with their phone camera and log in with {email}. Or enter the code and email under Profile → Family. Valid until {date}.",
+      "claimHelp": "Let {name} scan the QR code with their phone camera and choose a password. Or choose \"Did you get a family code?\" on the login page and enter the code and {email}. Valid until {date}.",
+      "revoke": "Revoke",
+      "revokeConfirm": "Revoke the code for {email}? It can no longer be used.",
+      "qrAlt": "QR code for {email}",
+      "inviteTitle": "Invitation to {name} ({email})"
+    },
+    "joinPage": {
+      "title": "Join family",
+      "intro": "{owner} has invited you to their family subscription.",
+      "emailInfo": "The invitation only applies to the account with the email {email}.",
+      "loginFirst": "Log in with {email} to join. If you don't have an account, create one with that email.",
+      "login": "Log in",
+      "signup": "Create account",
+      "wrongAccount": "You are logged in as {current}. Log out and log in with {email}.",
+      "logout": "Log out",
+      "done": "You are now part of {owner}'s family.",
+      "goToFamily": "Go to Family",
+      "missing": "The link is missing its code. Scan the QR code again.",
+      "insight": "You get insight into: {profiles}."
     }
   },
   "statSections": {

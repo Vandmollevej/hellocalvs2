@@ -62,9 +62,10 @@ export function DailyList() {
   const [copyingId, setCopyingId] = useState<string | null>(null);
   // Sletning af indtag kræver bekræftelse i info-vinduet (brugerkrav 2026-10-03).
   const [confirmDelete, setConfirmDelete] = useState<Entry | null>(null);
-  // "Se dine indscanninger" vises kun, når en vare fotograferet i dag endnu
-  // ikke er tilføjet (bruger 2026-10-02, src/lib/user-scans.ts).
-  const [hasUnaddedScans, setHasUnaddedScans] = useState(false);
+  // "Se dine indscanninger" står nederst i listen — under "Ingen registreringer
+  // i dag", når listen er tom — så længe der findes indscanninger
+  // (bruger 2026-10-03, src/lib/user-scans.ts).
+  const [hasScans, setHasScans] = useState(false);
   const { status } = useFamilyStatus();
   // "Kopier til konto" kun på egne indtastninger, og kun når man styrer
   // andre profiler (docs/FAMILY.md).
@@ -105,9 +106,9 @@ export function DailyList() {
     fetch("/api/my-scans", { signal: controller.signal })
       .then(async (res) => {
         if (!res.ok) throw new Error("offline");
-        return (await res.json()) as { scans: Array<{ createdAt: string; added: boolean }> };
+        return (await res.json()) as { scans: unknown[] };
       })
-      .then((data) => setHasUnaddedScans(data.scans.some((scan) => !scan.added && isToday(scan.createdAt))))
+      .then((data) => setHasScans(data.scans.length > 0))
       .catch(() => {});
     return () => controller.abort();
   }, []);
@@ -164,11 +165,6 @@ export function DailyList() {
     <div className="relative flex h-full min-h-0 flex-col">
       <h2 className="hf-type-section-title px-4">{t("dailyList.heading")}</h2>
       <div className="min-h-0 flex-1 overflow-y-auto px-4 pb-9">
-      {hasUnaddedScans && (
-        <Link href="/my-scans" className="hf-type-body mb-2 inline-block text-hf-black underline underline-offset-2">
-          {t("dailyList.seeScans")}
-        </Link>
-      )}
       {/* Samme tan-kort som søgelisterne (src/app/search/page.tsx). */}
       <ul className={entries.length > 0 ? "overflow-hidden rounded-[8px] bg-hf-tan" : ""}>
         {entries.map((entry, i) => (
@@ -215,6 +211,13 @@ export function DailyList() {
         )}
         {error && <li className="hf-type-small pb-4 text-center text-hf-red-dark">{error}</li>}
       </ul>
+      {hasScans && !loading && (
+        <div className={entries.length > 0 ? "mt-3" : "-mt-5 text-center"}>
+          <Link href="/my-scans" className="hf-type-body inline-block text-hf-black underline underline-offset-2">
+            {t("dailyList.seeScans")}
+          </Link>
+        </div>
+      )}
       </div>
       {notice && (
         <p role="status" className="hf-type-body absolute inset-x-4 bottom-10 rounded-[8px] bg-hf-black px-4 py-2 text-center text-hf-white">

@@ -841,16 +841,17 @@ appen, samme udseende som admin: side #FAF8F3, hvid topbjælke/panel med 1 px
 ### 6.16 Kalenderens miniature-tal: kyllingelår, flamme og glas — tilføjet 2026-10-02
 
 Hello Cal-specifik primitiv uden HelloFresh-reference (jf. §1). I kalenderens
-dagvisning (timerækken og timens oversigt) står et ikon foran tallet. Ikonet
-er et **supplement** til "kcal" — enheden fjernes aldrig (brugerens rettelse
-2026-10-03). Andre steder bruges kyllingelåret kun, hvor der i forvejen stod
-et ikon.
+dagvisning (timerækken og timens oversigt) står flamme/glas foran tallet.
+Indtagne kalorier vises **uden ikon** — kun "540 kcal" med enheden bagerst
+(brugerens rettelse 2026-10-03, anden runde). Ikoner er et supplement til
+"kcal" — enheden fjernes aldrig. Kyllingelåret bruges kun, hvor der i forvejen
+stod et ikon (forsidens tal-hjul, statistikboksen Kalorier).
 
 **`EnergyChip`** (`src/components/calendar/EnergyChip.tsx`), tre varianter:
 
 | Variant | Ikon | Tekst | Farve |
 | --- | --- | --- | --- |
-| `intake` (indtagne kalorier) | `IconDrumstick` — brunt kød, hvidt ben | `540 kcal` | tekst `text-hf-black`, kød `--hf-meat` |
+| `intake` (indtagne kalorier) | intet ikon | `540 kcal` | arver forælderens farve |
 | `burned` (forbrændte kalorier) | tabler `IconFlame` | `+120 kcal` | `text-hf-green`, både ikon og tal |
 | `water` (vand) | `IconWaterGlass` (den eksisterende) | mængde i cl, fx `25 cl` | `text-hf-black` |
 
@@ -859,7 +860,7 @@ et ikon.
 - Tekststørrelse og vægt arves fra forælderen; chippen sætter aldrig selv
   typografi.
 - Vand vises aldrig som "0 kcal"/"0 kalorier". Står mad og vand på samme
-  tidspunkt, vises begge chips: kyllingelår først, glas sidst.
+  tidspunkt, vises begge chips: kcal først, glas sidst.
 - `IconDrumstick` (`src/components/icons/Drumstick.tsx`) er altid tofarvet:
   kød i `--hf-meat` (#8C5A32, nyt navngivet token til netop denne rolle) og
   ben i `--hf-white` med kødfarvet kant, så benet også ses på creme og tan.

@@ -4,11 +4,50 @@ Last updated: 2026-10-03
 
 ## 2026-10-03: "Inviter familiemedlem" + ejerens konto har Seriøs Familie
 
-- Familie-siden (`/profile/family`) og profilvælgeren har "Inviter familiemedlem", der åbner et bundark: navn, e-mail og "Hvem skal personen have indsigt i?" (en toggle pr. familieprofil). Knappen "Tilføj barn under 18" i arket opretter en børneprofil (`FamilyProfileForm`, `childOnly`), som derefter er valgt. Invitationen sendes som mail (`MessageEvent.FAMILY_INVITATION`, fra `invite@hellocal.io`) med link til `/family-invite/<token>` (offentlig side; log ind/opret konto sender tilbage). Når personen siger ja, kobles kontoen på familien og får adgang til de valgte profiler.
-- Afventende invitationer vises på Familie-siden og kan trækkes tilbage. En ny invitation til samme e-mail erstatter den gamle. Familien oprettes automatisk ved første invitation/profil — "Opret familie"-knappen er væk. Den gamle "Inviter en med egen konto"-kode er fjernet fra UI'et (API'en virker stadig).
-- Ejerens egen app-konto (peter@packroff.dk) får Seriøs Familie uden udløb via migration `20261003200100_owner_family_plan`. Familiemedlemmer i en administrators familie er nu også Seriøs (`isCoveredByFamilyPlan`).
-- **Migrationer, der skal køre ved deploy:** `20261003200000_family_invitations` (ny enum-værdi + kolonner på `family_login_codes`) og `20261003200100_owner_family_plan`.
-- Testet: typecheck, lint, build; skærmbilleder af Familie-siden, arket, "Tilføj barn"-trinnet og invitationssiden med mockede API-svar. Ikke testet mod en rigtig database eller med rigtig mailafsendelse.
+- Familie-siden (`/profile/family`) og profilvælgeren har "Inviter familiemedlem", der åbner et bundark: navn, e-mail og "Hvem skal personen have indsigt i?" (en toggle pr. familieprofil). "Tilføj barn under 18" i arket opretter en børneprofil (`FamilyProfileForm`, `childOnly`), som derefter er valgt.
+- Bygget oven på de e-mail-bundne koder fra PR #196: invitationen er en familiekode til personens e-mail, som også gemmer navnet og de valgte profiler (`inviteeName`, `grantSubjectIds`). Personen får en mail (`MessageEvent.FAMILY_INVITATION`, fra `invite@hellocal.io`) med det krypterede tilknytningslink (`/family-code/join?t=…`) og koden. Invitationen står under "Ventende invitationer" med QR-kode. Når personen siger ja, får vedkommende adgang til de valgte profiler. Tilknytningssiden viser, hvem man får indsigt i.
+- "Inviter en med egen konto" er erstattet af "Inviter familiemedlem" (samme kode + mail + valg af indsigt). Familien oprettes automatisk ved første invitation/profil — "Opret familie"-knappen er væk.
+- Ejerens egen app-konto (peter@packroff.dk) får Seriøs Familie uden udløb via migration `20261003210100_owner_family_plan`. Familiemedlemmer i en administrators familie er nu også Seriøs (`isCoveredByFamilyPlan`).
+- **Migrationer, der skal køre ved deploy:** `20261003210000_family_invitation_mail` og `20261003210100_owner_family_plan` (efter `20261003200000_family_invite_email_qr`).
+- Testet: typecheck, lint, build; skærmbilleder med mockede API-svar. Ikke testet mod en rigtig database eller med rigtig mailafsendelse.
+
+## 2026-10-03: Kalender — profilcirklen er tilbage i dagsvisningen
+
+- Dagsvisningen (`DayDetails` i `src/app/calendar/page.tsx`) tegner sin egen grønne topbjælke som fuldskærmsdialog over siden, og dens højre hjørne var et tomt felt — så profilcirklen forsvandt, så snart en dag blev åbnet. Den viser nu `ProfileAvatarLink` som alle andre sider.
+- Lint (0 fejl), typecheck og build grønne. Ikke set med login (ingen lokal DB) — test på telefon: Kalender → åbn en dag.
+
+## 2026-10-03: Kyllingelåret fjernet fra kalenderens dagvisning
+
+- Brugerens rettelse: indtagne kalorier i timerækken og timens oversigt står nu kun som "540 kcal" — intet kyllingelår foran (`EnergyChip`, kind `intake`). Flamme (forbrændt) og glas (vand) er uændrede. Forsidens tal-hjul og statistikboksen Kalorier har stadig kyllingelåret som rækkeikon.
+- Uge-/listevisningen viser bevidst ingen kcal på fremtidige dage (siden 2026-09-28) — ikke ændret.
+
+
+## 2026-10-03: Forsidens puls-linje slår i urets puls (60 bpm uden ur)
+
+- Puls-linjen bag hero slår nu i den målte puls: nyeste puls fra en tilsluttet integration, højst 30 min gammel, ellers 60 bpm. Flere slag pr. fej, ingen pause mellem fejene. Se DECISIONS.md samme dato.
+- Linjen ligger nu over tal-hjulets midterste tal (26 px over midten, målt i siden), så den ikke går om bag det.
+- Nyt: `src/lib/live-heart-rate.ts`, `GET /api/health-metrics/heart-rate`; `HomeWaves` henter pulsen hvert minut; `home-waves.ts` tegner et slag hvert 60/bpm s. Ingen migration.
+- Lint (0 fejl), typecheck, tests (undtagen den kendte `page-tree`-fejl) og build kørt; tegningen tjekket i Chromium ved 60 og 120 bpm. Ikke live-testet med et rigtigt ur (ingen DB/integration i sessionen) — test på telefon med fx Garmin/Apple Health tilsluttet.
+
+## 2026-10-03: Familie — kode bundet til e-mail, QR-kode og pladstællere
+
+- Familiekoder virker nu kun sammen med den e-mail, betaleren skrev, og (ved
+  tilknytning) kun for kontoen med den e-mail. Betalerens familieside viser
+  "Ventende invitationer" med QR-kode, kode, udløb og "Træk tilbage", plus
+  "x ud af y abonnenter tilmeldt" og "0/5 ekstra tilkøb" øverst. Se
+  DECISIONS.md samme dato og `docs/FAMILY.md`.
+- Ny side `/family-code/join?t=…` (QR-kodens mål); `/family-code?t=…` udfylder
+  kode og e-mail for login-koder. Nye ruter `GET /api/family/codes`,
+  `DELETE /api/family/codes/[id]`, `GET /api/family/invite`. Tilknytning er
+  nu også begrænset mod gentagne forsøg.
+- Migration `20261003200000_family_invite_email_qr` **skal køre ved deploy**.
+  Kræver `ADMIN_SESSION_SECRET` (findes allerede) og `APP_BASE_URL` til QR-linket.
+- Testet mod lokal Postgres: 18 tjek af kode/e-mail-match, engangsbrug,
+  manipuleret link, tilbagetrækning, login-kode via QR og pladstal; skærmbilleder
+  af familieside, tilknytning (rigtig konto, forkert konto, ikke logget ind) og
+  gennemført tilknytning. Ikke testet med rigtig telefonkamera-scanning.
+- Mangler: køb af ekstra pladser (pris/betaling skal afklares).
+
 
 ## 2026-10-03: Betaling viser det aktive kort fra Stripe (PR #132 flettet med master)
 
@@ -297,6 +336,9 @@ Last updated: 2026-10-02
 - Nye grafer `body:<felt>` i statistikmodulet (bryst, talje, hofte, overarm, lår): samme kort som på Kropsmål-siden med tegningen til venstre, men til højre et forløb over de seneste 10 målinger (x efter dato), seneste værdi, min/maks og ændring siden sidst. Komponent `src/components/BodyMeasurementChart.tsx`, logik `src/lib/body-measurement-series.ts` (tests grønne).
 - Tilføjes under "Ubrugte grafer" → blokken Kropsmål, eller med linket "Vis kropsmål som grafer i Statistik" på Kropsmål-siden (lægger alle fem nederst i graferne og åbner Statistik).
 - Hofte har stadig ingen godkendt tegning, så venstre felt er tomt dér. Lint, typecheck og build grønne; ikke visuelt testet (ingen lokal DB/login).
+## 2026-10-03: "Se dine indscanninger" nederst på forsiden
+
+- Linket står nu nederst i "Dagens tilføjelser" (under "Ingen registreringer i dag", når listen er tom) og vises, når brugeren har indscanninger — ikke kun ved ikke-tilføjede fra i dag. Se DECISIONS 2026-10-02.
 ## 2026-10-02: "Se dine indscanninger"
 
 - Forsiden: understreget link "Se dine indscanninger" øverst under "Dagens tilføjelser", når en vare fotograferet i dag ikke er tilføjet. Ny side `/my-scans` grupperet pr. dato. Søgerækken er flyttet til `src/components/ProductResultRow.tsx` og bruges af begge. Se DECISIONS.
@@ -412,7 +454,7 @@ Last updated: 2026-10-02
 
 ## 2026-10-02: Fælles målstatus-blok i kalenderen
 
-- Ny fælles komponent `src/components/calendar/GoalStatusSummary.tsx` bruges både nederst i dagvisningen og i månedsstatussen over gitteret. Oppefra: højrestillet rød flamme + grøn "+ N kcal" (kun ved registreret motion) og "Mål: X kcal"; statusbjælke med cirkel + kort tekst ("Inden for målet" / "Målet ikke opnået" / "Intet registreret"); under bjælken højrestillet "Tilbage for i dag: N kcal" (måned: "Tilbage i måneden") eller "Overskredet med N kcal" i rødt.
+- Ny fælles komponent `src/components/calendar/GoalStatusSummary.tsx` bruges både nederst i dagvisningen og i månedsstatussen over gitteret. Oppefra: højrestillet rød flamme + grøn "+ N kcal" (kun ved registreret motion); statusbjælke med cirkel + kort tekst ("Inden for målet" / "Målet ikke opnået" / "Intet registreret") på samme linje som "Mål" (rettet 2026-10-03, se DECISIONS.md); under rækken højrestillet "Tilbage for i dag: N kcal" (måned: "Tilbage i måneden") eller "Overskredet med N kcal" i rødt.
 - Motion tæller nu med i målet i hele kalenderen (DECISIONS 2026-10-02): `DailyGoalContext` giver `base` (til "Mål") og `effective` (= base + dagens motion) — alle nået/over/balance-afgørelser bruger `effective`. Forside-kort og widgets er ikke rettet (andre gruppers filer).
 - Lint, typecheck og `npm run build` grønne. Ikke visuelt testet (ingen lokal DB/login) — tjek dag- og månedsvisning på telefon.
 

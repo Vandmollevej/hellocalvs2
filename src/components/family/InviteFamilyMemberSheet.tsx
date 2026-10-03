@@ -38,7 +38,7 @@ export function InviteFamilyMemberSheet({ onClose }: { onClose: () => void }) {
   if (!status) return null;
   const me = status.me;
   const members = status.family?.members ?? [{ userId: me.id, displayName: me.displayName, isChild: false }];
-  const canAddChild = members.length < status.maxProfiles;
+  const canAddChild = members.length < (status.family?.capacity ?? status.maxProfiles);
 
   function errorText(data: Record<string, unknown>) {
     return t(`family.error.${typeof data.code === "string" ? data.code : "unknown"}`);

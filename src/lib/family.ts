@@ -3,19 +3,22 @@
 // hvem. Kun betalt — en familie kræver et aktivt familieabonnement.
 
 import { createHash, randomBytes, randomUUID } from "node:crypto";
-import type { Sex } from "@prisma/client";
+import { Prisma, type Sex } from "@prisma/client";
+import QRCode from "qrcode";
 import { prisma } from "@/lib/prisma";
+import { createInviteToken, decryptFamilyValue, encryptFamilyValue, inviteUrl, readInviteToken } from "@/lib/family-invite-token";
 import { computeAge } from "@/lib/age";
 import { getSubscriptionTier } from "@/lib/subscription";
 import { queueMessage } from "@/lib/messaging";
 
 export const MAX_FAMILY_PROFILES = 5;
+// Højst så mange ekstra pladser kan tilkøbes ud over de 5 (ejerens valg
+// 2026-10-03: "0/5 ekstra tilkøb"). Selve købet er ikke bygget endnu.
+export const MAX_EXTRA_SEATS = 5;
 // Under denne alder kan man ikke selv oprette en konto eller melde sig ud af
 // familien (databeskyttelsesloven § 6, stk. 2, se docs/FAMILY.md).
 export const FAMILY_SELF_CONSENT_AGE = 15;
 const CODE_TTL_MS = 7 * 24 * 60 * 60 * 1000;
-const APP_BASE_URL = process.env.APP_BASE_URL || "https://hellocal.io";
-const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export class FamilyError extends Error {
   constructor(
@@ -26,26 +29,29 @@ export class FamilyError extends Error {
   }
 }
 
+export function familyCapacity(extraSeats: number) {
+  return MAX_FAMILY_PROFILES + Math.min(Math.max(extraSeats, 0), MAX_EXTRA_SEATS);
+}
+
+export function normalizeEmail(email: string) {
+  return email.trim().toLowerCase();
+}
+
+export function isValidEmail(email: string) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+}
+
 export function hashFamilyCode(code: string) {
   return createHash("sha256").update(code.trim().toUpperCase().replace(/[\s-]/g, "")).digest("hex");
 }
 
-const CODE_ALPHABET = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
-
-function randomCode(length: number) {
-  let code = "";
-  for (const byte of randomBytes(length)) code += CODE_ALPHABET[byte % CODE_ALPHABET.length];
-  return code;
-}
-
 // 8 tegn uden tvetydige bogstaver/tal (0/O, 1/I), vist som XXXX-XXXX.
 function newCode() {
-  const code = randomCode(8);
+  const alphabet = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+  const bytes = randomBytes(8);
+  let code = "";
+  for (const byte of bytes) code += alphabet[byte % alphabet.length];
   return `${code.slice(0, 4)}-${code.slice(4)}`;
-}
-
-function escapeHtml(value: string) {
-  return value.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
 }
 
 export async function hasActiveFamilyPlan(userId: string) {
@@ -72,20 +78,17 @@ export async function getFamilyOverview(userId: string) {
         },
       },
       grants: { select: { granteeId: true, subjectId: true } },
-      codes: {
-        where: { usedAt: null, profileId: null, email: { not: null }, expiresAt: { gt: new Date() } },
-        orderBy: { createdAt: "desc" },
-        select: { id: true, email: true, inviteeName: true, expiresAt: true },
-      },
     },
   });
   if (!family) return null;
-  const isOwner = family.ownerId === userId;
   return {
     id: family.id,
     ownerId: family.ownerId,
     ownerName: family.owner.displayName,
-    isOwner,
+    isOwner: family.ownerId === userId,
+    extraSeats: family.extraSeats,
+    maxExtraSeats: MAX_EXTRA_SEATS,
+    capacity: familyCapacity(family.extraSeats),
     members: family.members.map((member) => ({
       userId: member.userId,
       displayName: member.user.displayName,
@@ -98,15 +101,6 @@ export async function getFamilyOverview(userId: string) {
       canDeleteOthersEntries: member.canDeleteOthersEntries,
     })),
     grants: family.grants,
-    // Afventende mailinvitationer — kun betaleren ser dem.
-    invitations: isOwner
-      ? family.codes.map((code) => ({
-          id: code.id,
-          email: code.email ?? "",
-          name: code.inviteeName ?? "",
-          expiresAt: code.expiresAt,
-        }))
-      : [],
   };
 }
 
@@ -159,7 +153,7 @@ export async function createFamilyProfile(
   input: { displayName: string; birthDate: Date | null; sex: Sex | null; isChild: boolean; heightCm: number | null; weightKg: number | null }
 ) {
   const family = await ensureOwnedFamily(ownerId);
-  if (family.members.length >= MAX_FAMILY_PROFILES) throw new FamilyError("familyFull", 409);
+  if (family.members.length >= familyCapacity(family.extraSeats)) throw new FamilyError("familyFull", 409);
   if (!input.displayName.trim()) throw new FamilyError("nameRequired");
 
   return prisma.$transaction(async (tx) => {
@@ -232,148 +226,216 @@ export async function setAccessGrant(ownerId: string, granteeId: string, subject
 }
 
 // Kode til at sætte login på en profil uden login (profileId), eller til at
-// koble en eksisterende bruger på familien (uden profileId). Returnerer koden
-// i klartekst én gang; kun hashen gemmes.
-export async function createFamilyCode(ownerId: string, profileId: string | null) {
+// koble en eksisterende bruger på familien (uden profileId). Koden er bundet
+// til den e-mail, betaleren skriver: den virker kun sammen med præcis den
+// e-mail (ejerens krav 2026-10-03). Kun hashen bruges til opslag; koden
+// gemmes også krypteret, så betaleren kan se kode og QR-kode igen.
+export async function createFamilyCode(ownerId: string, profileId: string | null, rawEmail: string) {
   const family = await requireOwnedFamily(ownerId);
+  const email = normalizeEmail(rawEmail);
+  if (!isValidEmail(email)) throw new FamilyError("invalidEmail");
+  const existingUser = await prisma.user.findUnique({
+    where: { email },
+    select: { id: true, familyMembership: { select: { familyId: true } } },
+  });
   if (profileId) {
     if (!family.members.some((m) => m.userId === profileId) || profileId === ownerId) {
       throw new FamilyError("notMember", 404);
     }
-  } else if (family.members.length >= MAX_FAMILY_PROFILES) {
-    throw new FamilyError("familyFull", 409);
+    // Profilen skal have en e-mail, ingen anden konto bruger.
+    if (existingUser) throw new FamilyError("emailTaken", 409);
+  } else {
+    if (family.members.length >= familyCapacity(family.extraSeats)) throw new FamilyError("familyFull", 409);
+    if (existingUser?.familyMembership) {
+      throw new FamilyError(existingUser.familyMembership.familyId === family.id ? "alreadyMember" : "inOtherFamily", 409);
+    }
   }
-  const code = newCode();
+
+  // En ny kode til samme person erstatter den gamle.
+  await prisma.familyLoginCode.deleteMany({ where: { familyId: family.id, profileId, email, usedAt: null } });
+
   const expiresAt = new Date(Date.now() + CODE_TTL_MS);
-  await prisma.familyLoginCode.create({
-    data: { familyId: family.id, profileId, codeHash: hashFamilyCode(code), expiresAt },
-  });
-  return { code, expiresAt };
+  // codeHash er unik i databasen; ved det usandsynlige sammenfald laves en ny.
+  for (let attempt = 0; attempt < 5; attempt += 1) {
+    const code = newCode();
+    try {
+      await prisma.familyLoginCode.create({
+        data: {
+          familyId: family.id,
+          profileId,
+          email,
+          codeHash: hashFamilyCode(code),
+          codeCipher: encryptFamilyValue(code),
+          expiresAt,
+        },
+      });
+      return { code, email, expiresAt };
+    } catch (error) {
+      if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === "P2002") continue;
+      throw error;
+    }
+  }
+  throw new FamilyError("unknown", 500);
 }
 
-// "Inviter familiemedlem" (docs/FAMILY.md 2026-10-03): betaleren sender en
-// mail med et link. Når personen siger ja, kobles vedkommendes konto på
-// familien og får indsigt i (adgang til) de valgte profiler.
+// Betalerens ventende koder med kode, link og QR-kode (vises på
+// familiesiden, indtil koden er brugt, udløbet eller trukket tilbage).
+export async function listPendingFamilyCodes(ownerId: string) {
+  const family = await prisma.family.findUnique({ where: { ownerId }, select: { id: true } });
+  if (!family) throw new FamilyError("notOwner", 403);
+  const rows = await prisma.familyLoginCode.findMany({
+    where: { familyId: family.id, usedAt: null, expiresAt: { gt: new Date() }, email: { not: null }, codeCipher: { not: null } },
+    orderBy: { createdAt: "desc" },
+    select: { id: true, profileId: true, email: true, inviteeName: true, codeCipher: true, expiresAt: true },
+  });
+  const result = [];
+  for (const row of rows) {
+    const code = decryptFamilyValue(row.codeCipher!);
+    if (!code) continue;
+    const url = inviteUrl(createInviteToken(code, row.email!), row.profileId ? "claim" : "join");
+    result.push({
+      id: row.id,
+      profileId: row.profileId,
+      email: row.email!,
+      name: row.inviteeName,
+      code,
+      expiresAt: row.expiresAt,
+      url,
+      qrDataUrl: await QRCode.toDataURL(url, { margin: 1, width: 480, errorCorrectionLevel: "M" }),
+    });
+  }
+  return result;
+}
+
+function escapeHtml(value: string) {
+  return value.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+}
+
+// "Inviter familiemedlem" (docs/FAMILY.md 2026-10-03): en kode bundet til
+// personens e-mail, som også husker navnet og de profiler, personen får
+// indsigt i. Personen får en mail med det krypterede tilknytningslink og
+// siger selv ja (joinFamily opretter så adgangen til de valgte profiler).
 export async function createFamilyInvitation(
   ownerId: string,
   input: { name: string; email: string; subjectIds: string[] }
 ) {
   const name = input.name.trim().slice(0, 80);
-  const email = input.email.trim().toLowerCase();
   if (!name) throw new FamilyError("nameRequired");
-  if (!EMAIL_PATTERN.test(email) || email.length > 254) throw new FamilyError("invalidEmail");
   const family = await ensureOwnedFamily(ownerId);
-  if (family.members.length >= MAX_FAMILY_PROFILES) throw new FamilyError("familyFull", 409);
-
-  const existing = await prisma.user.findFirst({
-    where: { email: { equals: email, mode: "insensitive" }, forgottenAt: null },
-    select: { id: true, familyMembership: { select: { familyId: true } } },
-  });
-  if (existing?.familyMembership) {
-    throw new FamilyError(existing.familyMembership.familyId === family.id ? "alreadyMember" : "inviteeInOtherFamily", 409);
-  }
+  const { code, email, expiresAt } = await createFamilyCode(ownerId, null, input.email);
 
   const memberIds = new Set(family.members.map((m) => m.userId));
-  const subjectIds = [...new Set(input.subjectIds)].filter((id) => memberIds.has(id) && id !== existing?.id);
-
-  // En ny invitation til samme e-mail erstatter den gamle, så kun ét link virker.
-  await prisma.familyLoginCode.deleteMany({ where: { familyId: family.id, email, usedAt: null, profileId: null } });
-  const token = randomCode(24);
-  const expiresAt = new Date(Date.now() + CODE_TTL_MS);
-  await prisma.familyLoginCode.create({
-    data: {
-      familyId: family.id,
-      profileId: null,
-      codeHash: hashFamilyCode(token),
-      email,
-      inviteeName: name,
-      grantSubjectIds: subjectIds,
-      expiresAt,
-    },
+  const subjectIds = [...new Set(input.subjectIds)].filter((id) => memberIds.has(id));
+  await prisma.familyLoginCode.update({
+    where: { codeHash: hashFamilyCode(code) },
+    data: { inviteeName: name, grantSubjectIds: subjectIds },
   });
 
   const [owner, subjects] = await Promise.all([
     prisma.user.findUnique({ where: { id: ownerId }, select: { displayName: true } }),
-    prisma.user.findMany({ where: { id: { in: subjectIds } }, select: { id: true, displayName: true } }),
+    prisma.user.findMany({ where: { id: { in: subjectIds } }, select: { displayName: true } }),
   ]);
-  const ownerName = owner?.displayName || "Et familiemedlem";
-  const subjectNames = subjects.map((subject) => (subject.id === ownerId ? ownerName : subject.displayName));
   await queueMessage("FAMILY_INVITATION", {
     toEmail: email,
     vars: {
-      ownerName: escapeHtml(ownerName),
+      ownerName: escapeHtml(owner?.displayName || "Et familiemedlem"),
       inviteeName: escapeHtml(name),
-      profiles: subjectNames.length > 0 ? escapeHtml(subjectNames.join(", ")) : "ingen endnu",
-      inviteUrl: `${APP_BASE_URL}/family-invite/${token}`,
+      profiles: subjects.length > 0 ? escapeHtml(subjects.map((subject) => subject.displayName).join(", ")) : "ingen endnu",
+      code,
+      inviteUrl: inviteUrl(createInviteToken(code, email), "join"),
     },
   });
   return { email, expiresAt };
 }
 
-export async function cancelFamilyInvitation(ownerId: string, invitationId: string) {
-  const family = await requireOwnedFamily(ownerId);
-  await prisma.familyLoginCode.deleteMany({ where: { id: invitationId, familyId: family.id, usedAt: null } });
+export async function revokeFamilyCode(ownerId: string, codeId: string) {
+  const family = await prisma.family.findUnique({ where: { ownerId }, select: { id: true } });
+  if (!family) throw new FamilyError("notOwner", 403);
+  const { count } = await prisma.familyLoginCode.deleteMany({ where: { id: codeId, familyId: family.id, usedAt: null } });
+  if (!count) throw new FamilyError("notFound", 404);
 }
 
-// Det, modtageren ser på invitationssiden, før vedkommende siger ja.
-export async function getFamilyInvitation(token: string) {
-  const row = await prisma.familyLoginCode.findUnique({
-    where: { codeHash: hashFamilyCode(token) },
-    include: { family: { select: { ownerId: true, owner: { select: { displayName: true } } } } },
-  });
-  if (!row || row.profileId || !row.email || row.usedAt || row.expiresAt.getTime() < Date.now()) {
-    throw new FamilyError("invalidInvitation", 404);
+// Kode + e-mail skrevet af personen, eller begge læst fra en QR-kode.
+export type FamilyCodeInput = { code: string; email: string } | { token: string };
+
+function resolveCodeInput(input: FamilyCodeInput) {
+  if ("token" in input) {
+    const parsed = readInviteToken(input.token);
+    if (!parsed) throw new FamilyError("invalidCode", 404);
+    return parsed;
   }
-  const subjects = await prisma.user.findMany({
-    where: { id: { in: row.grantSubjectIds }, forgottenAt: null },
-    select: { id: true, displayName: true },
-  });
+  return input;
+}
+
+// Koden og e-mailen skal passe sammen. Samme fejl uanset hvad der er galt, så
+// man ikke kan gætte sig frem til, om en kode findes.
+async function findUsableCode(input: FamilyCodeInput) {
+  const { code, email } = resolveCodeInput(input);
+  const row = await prisma.familyLoginCode.findUnique({ where: { codeHash: hashFamilyCode(code) } });
+  if (!row || row.usedAt || row.expiresAt.getTime() < Date.now()) throw new FamilyError("invalidCode", 404);
+  if (!row.email || row.email !== normalizeEmail(email)) throw new FamilyError("invalidCode", 404);
+  return { ...row, email: row.email };
+}
+
+// Til tilknytningssiden: hvem inviterer, og til hvilken e-mail.
+export async function previewFamilyInvite(token: string) {
+  const row = await findUsableCode({ token });
+  const [family, subjects] = await Promise.all([
+    prisma.family.findUnique({
+      where: { id: row.familyId },
+      select: { owner: { select: { displayName: true } } },
+    }),
+    prisma.user.findMany({
+      where: { id: { in: row.grantSubjectIds }, forgottenAt: null },
+      select: { displayName: true },
+    }),
+  ]);
   return {
-    ownerName: row.family.owner.displayName,
+    kind: row.profileId ? ("claim" as const) : ("join" as const),
+    ownerName: family?.owner.displayName ?? "",
     inviteeName: row.inviteeName ?? "",
     email: row.email,
     expiresAt: row.expiresAt,
-    profiles: subjects.map((subject) => ({
-      displayName: subject.displayName,
-      isOwner: subject.id === row.family.ownerId,
-    })),
+    // Profiler, personen får indsigt i ved at sige ja ("Inviter familiemedlem").
+    profiles: subjects.map((subject) => subject.displayName),
   };
 }
 
-async function findUsableCode(code: string) {
-  const row = await prisma.familyLoginCode.findUnique({ where: { codeHash: hashFamilyCode(code) } });
-  if (!row || row.usedAt || row.expiresAt.getTime() < Date.now()) throw new FamilyError("invalidCode", 404);
-  return row;
-}
-
-// Et familiemedlem uden login sætter e-mail og adgangskode på sin profil.
-export async function claimFamilyProfile(code: string, email: string, passwordHash: string) {
-  const row = await findUsableCode(code);
+// Et familiemedlem uden login sætter e-mail og adgangskode på sin profil. Den
+// e-mail, der skrives, skal være den, betaleren lavede koden til.
+export async function claimFamilyProfile(input: FamilyCodeInput, passwordHash: string) {
+  const row = await findUsableCode(input);
   if (!row.profileId) throw new FamilyError("invalidCode", 404);
-  const taken = await prisma.user.findUnique({ where: { email }, select: { id: true } });
+  const taken = await prisma.user.findUnique({ where: { email: row.email }, select: { id: true } });
   if (taken) throw new FamilyError("emailTaken", 409);
   const profileId = row.profileId;
   return prisma.$transaction(async (tx) => {
     await tx.familyLoginCode.update({ where: { id: row.id }, data: { usedAt: new Date() } });
     return tx.user.update({
       where: { id: profileId },
-      data: { email, passwordHash, emailVerifiedAt: new Date() },
+      data: { email: row.email, passwordHash, emailVerifiedAt: new Date() },
     });
   });
 }
 
-// En eksisterende bruger siger ja til at blive koblet på en familie. Fra da
-// af bestemmer betaleren over profilen (docs/FAMILY.md punkt 2).
-export async function joinFamily(userId: string, code: string) {
-  const row = await findUsableCode(code);
+// En eksisterende bruger siger ja til at blive koblet på en familie. Koden
+// virker kun, når den indloggede kontos e-mail er den, koden blev lavet til.
+// Fra da af bestemmer betaleren over profilen (docs/FAMILY.md punkt 2).
+export async function joinFamily(userId: string, input: FamilyCodeInput) {
+  const row = await findUsableCode(input);
   if (row.profileId) throw new FamilyError("invalidCode", 404);
+  const user = await prisma.user.findUnique({ where: { id: userId }, select: { email: true } });
+  if (!user || normalizeEmail(user.email) !== row.email) throw new FamilyError("emailMismatch", 403);
   const existing = await prisma.familyMember.findUnique({ where: { userId } });
   if (existing) throw new FamilyError("alreadyInFamily", 409);
-  const members = await prisma.familyMember.findMany({ where: { familyId: row.familyId }, select: { userId: true } });
-  if (members.length >= MAX_FAMILY_PROFILES) throw new FamilyError("familyFull", 409);
-  // Mailinvitationer giver indsigt i de profiler, betaleren valgte — kun dem,
-  // der stadig er med i familien.
-  const memberIds = new Set(members.map((member) => member.userId));
+  const family = await prisma.family.findUnique({
+    where: { id: row.familyId },
+    select: { extraSeats: true, members: { select: { userId: true } } },
+  });
+  if (!family || family.members.length >= familyCapacity(family.extraSeats)) throw new FamilyError("familyFull", 409);
+  // Invitationer giver indsigt i de profiler, betaleren valgte — kun dem, der
+  // stadig er med i familien.
+  const memberIds = new Set(family.members.map((member) => member.userId));
   const subjectIds = row.grantSubjectIds.filter((id) => memberIds.has(id) && id !== userId);
   await prisma.$transaction([
     prisma.familyLoginCode.update({ where: { id: row.id }, data: { usedAt: new Date() } }),

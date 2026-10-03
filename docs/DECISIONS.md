@@ -2,6 +2,42 @@
 
 This file records durable decisions. Add a dated entry when a later decision changes one of them.
 
+## 2026-10-03: Forsidens puls-linje slår i den målte puls
+
+Brugerens krav: "Pulsen skal svare til den rigtige puls som måles, hvis ur tilsluttet. Ellers svarende til 60bpm."
+
+- Puls-linjen slår ét hjerteslag hvert 60/bpm sekund i stedet for ét slag pr. fej. Fejet tager stadig 3–4 s over skærmen, så der ses ca. 3–4 slag ved 60 bpm og dobbelt så mange ved 120. Næste fej starter straks og visker det forrige ud foran spidsen (som en pulsmåler); den tidligere pause mellem fejene er væk.
+- Pulsen = nyeste `HEART_RATE_BPM` fra en integration med status `CONNECTED`, højst 30 minutter gammel (integrationerne synkroniserer hvert 15. minut) og mellem 30 og 220 bpm (`src/lib/live-heart-rate.ts`, `GET /api/health-metrics/heart-rate`). Ellers 60 bpm. Forsiden spørger én gang i minuttet, mens siden er synlig.
+- Pulsen låses pr. fej, så slagene ikke hopper, hvis en ny måling kommer midt i et fej.
+- Placering (bruger samme dag: "ovenover midten … så den ikke går om bag det tal i hjulet, som står i midten"): grundlinjen ligger 26 px over tal-hjulets midterste række, målt i siden (`data-stats-wheel` på hjulets boks). Det rækker til, at dykket efter R-takken og stregens glød går fri af det midterste tal. Ændrer placeringen fra 2026-10-03 ("omkring tal-hjulets midte").
+
+## 2026-10-03: Familiekoder er bundet til en e-mail og vises som krypteret QR-kode
+
+- **Ejerens krav:** koden skal være helt unik og kan kun bruges sammen med den
+  e-mail, den er lavet til. Betaleren skriver personens e-mail, når koden
+  laves (både "Inviter en med egen konto" og "Lav login-kode" til en profil
+  uden login). Koden (8 tegn, `XXXX-XXXX`) er unik i databasen (`codeHash`
+  `@unique`; ved sammenfald laves en ny).
+- **Tilknytning (eksisterende konto):** koden + e-mailen skal passe sammen,
+  og den indloggede kontos e-mail skal være præcis den e-mail. Forkert
+  kombination giver samme fejl som ukendt kode, så man ikke kan gætte koder.
+- **QR-kode:** betalerens familieside viser hver ventende kode med QR-kode,
+  kode og udløb, indtil den er brugt, udløbet (7 dage) eller trukket tilbage.
+  QR-koden er et link (`/family-code/join?t=…`, login-koder
+  `/family-code?t=…`), hvor kode og e-mail er AES-256-GCM-krypteret med en
+  nøgle afledt af `ADMIN_SESSION_SECRET` (`src/lib/family-invite-token.ts`).
+  Hverken kode eller e-mail står i klartekst i linket, og et ændret link
+  afvises. Scannes den med telefonens kamera, åbnes tilknytningssiden; er man
+  ikke logget ind, sendes man til login og tilbage. Koden gemmes krypteret
+  (`codeCipher`) ud over hashen, så betaleren kan se den igen.
+- **En ny kode til samme e-mail erstatter den gamle.** Koder fra før denne
+  ændring (uden e-mail) virker ikke længere — betaleren laver en ny.
+- **Tællere på betalerens familieside:** "x ud af y abonnenter tilmeldt"
+  (profiler i familien / pladser) og "n/5 ekstra tilkøb". `Family.extraSeats`
+  (højst 5) lægges oven i de 5 pladser. Selve købet af ekstra pladser er
+  **ikke bygget** — pris og betaling skal afklares med ejeren.
+
+
 ## 2026-10-03: Adgangsarkets knapper ligger under listen, ikke ovenpå
 
 Ændrer "faste knapper nederst" fra 2026-09-27: knapperne og "Vilkår og
@@ -125,7 +161,7 @@ Brugerens krav: Garmin, Health Connect, eufy, Renpho, Tuya, Xiaomi, Huawei, WHOO
 ## 2026-10-02: "Se dine indscanninger"
 
 - En indscanning er en vare, brugeren selv har oprettet med en stregkode (`Product.createdByUserId` + mindst én `Barcode`) — altså fotograferet i kameraflowet. Kendte stregkoder, der blot slås op, gemmes ikke og er ikke indscanninger.
-- Forsiden viser øverst under "Dagens tilføjelser" linket "Se dine indscanninger" (almindelig tekst, understreget), kun når en vare fotograferet i dag (telefonens tidszone) ikke er registreret på den, der scannede, eller den aktive familieprofil.
+- Forsiden viser linket "Se dine indscanninger" (almindelig tekst, understreget) nederst under "Dagens tilføjelser"; er listen tom, står det lige under "Ingen registreringer i dag". Det vises, så længe brugeren har indscanninger i historikken (ændret 2026-10-03, brugerkrav — før kun ved ikke-tilføjede indscanninger fra i dag, hvilket fik linket til at forsvinde).
 - Siden `/my-scans` viser de seneste 90 dages indscanninger (højst 200), grupperet under en overskrift med skillelinje pr. dato taget, som almindelige søgerækker (favorit + Tilføj i bundarket). API: `GET /api/my-scans` (`src/lib/user-scans.ts`).
 ## 2026-10-02: Sprogflag på tale- og chat-siden (ændrer 2026-09-12 for tale)
 
@@ -167,6 +203,9 @@ Erstatter "Varer uden kcal/protein/kulhydrat/fedt springes over" fra 2026-09-27.
 - Admin-gennemgang i Dubletter nulstilles ikke af kJ-rettelsen eller de afledte sukkerpåstande.
 ## 2026-10-02: Kalenderens miniature-tal — kyllingelår, flamme og vand i cl
 
+- **Rettet igen 2026-10-03 (brugeren):** kyllingelåret er fjernet fra
+  kalenderens dagvisning. Indtagne kalorier står som ren tekst "540 kcal"
+  med enheden bagerst. Flamme og glas bliver.
 - **Rettet 2026-10-03 (brugeren):** ikonet er et supplement til "kcal",
   aldrig en erstatning, og kyllingelåret bruges kun, hvor der i forvejen stod
   et ikon. "Overalt"-udrulningen fra 2026-10-02 er rullet tilbage: måneds-/
@@ -176,7 +215,7 @@ Erstatter "Varer uden kcal/protein/kulhydrat/fedt springes over" fra 2026-09-27.
   statistikboksen Kalorier (kyllingelår) beholder ikonskiftet og viser igen
   "kcal".
 - Kalenderens dagvisning (timerækken og timens oversigt) viser indtagne
-  kalorier som kyllingelår + "540 kcal", forbrændte som flamme +
+  kalorier som "540 kcal" (uden ikon, se rettelsen ovenfor), forbrændte som flamme +
   "+120 kcal", og vand som det eksisterende glas-ikon + mængde i cl. Fælles
   komponent `EnergyChip` (design.md §6.16).
 - Vand vises aldrig som "0 kcal". To kilder tælles sammen pr. time:
@@ -4178,11 +4217,19 @@ Brugerens krav: "Luk konto kan reverses inde. For 3 måneder, med mindre man væ
 - `useSubscriptionTier()` husker det hentede niveau i modulet, så Seriøs-låste sider vises straks ved fanebytte i stedet for at starte tomme.
 - `PremiumGate` har `renderWhilePending`: mens niveauet hentes, tegnes siden selv som skelet (design.md §6.14), og siden venter med datahentning via `usePremiumPending()`. Bruges kun af `/statistics` (undersiderne venter ikke på niveauet og vises derfor først, når det er kendt), så gratisbrugeres data stadig ikke hentes til låste sider.
 - Kort, der først findes, når data er hentet (fx sportskort), tegnes som skitser i fuld højde i stedet for "ingen data" under hentning.
+## 2026-10-03: Status og "Mål" står altid på samme linje i kalenderen
+
+- Brugerkrav (gentaget, fordi det gik i stykker igen): statusbjælken
+  ("Inden for målet" / "Målet ikke opnået" / "Intet registreret") står på
+  samme linje som "Mål: X kcal" — status til venstre, mål til højre.
+- `GoalStatusSummary` lægger derfor de to i én fælles flex-række. De må
+  aldrig deles i separate blokke under hinanden; flammen ("+ N kcal") står
+  over rækken og "Tilbage"/"Overskredet" under den, begge højrestillet.
 
 ## 2026-10-03: "Inviter familiemedlem" pr. mail med valg af indsigt
 
-- Ejerens valg: invitationen sendes som **mail med link** (ikke en kode, man selv sender videre). Betaleren vælger i et bundark, **hvilke profiler** personen får indsigt i (samme adgang som `FamilyAccessGrant`: se og taste ind). Ingen opdeling pr. dataområde.
+- Ejerens valg: invitationen sendes som **mail med link** (og koden). Betaleren vælger i et bundark, **hvilke profiler** personen får indsigt i (samme adgang som `FamilyAccessGrant`: se og taste ind). Ingen opdeling pr. dataområde.
 - "Tilføj barn under 18" ligger som knap i arket og opretter en børneprofil (altid `isChild`), der derefter er valgt i invitationen.
-- Datamodel: invitationer er `FamilyLoginCode`-rækker uden `profileId` med `email`, `inviteeName` og `grantSubjectIds`. Linkets token er 24 tegn (kun SHA-256 gemmes), gyldigt 7 dage, kun én brug. `joinFamily` opretter tildelingerne til de valgte profiler, der stadig er med i familien.
-- Modtageren skal selv sige ja (docs/FAMILY.md punkt 8) og får at vide, at betaleren kan se og ændre alt på profilen. Kontoens e-mail behøver ikke matche invitationens.
-- Ejerens egen app-konto får Seriøs Familie (status ACTIVE, ingen udløb, ingen udbyder) via migration; har kontoen en rigtig betalingsaftale, sættes kun planen. Administratorers familier dækker nu også medlemmerne.
+- Invitationen genbruger de e-mail-bundne familiekoder (samme dag, ovenfor): `createFamilyInvitation` laver en kode til e-mailen og gemmer `inviteeName` og `grantSubjectIds` på den. `joinFamily` opretter tildelingerne til de valgte profiler, der stadig er med i familien. Kontoen skal stadig have præcis invitationens e-mail.
+- Ejerens egen app-konto får Seriøs Familie (status ACTIVE, intet udløb, ingen udbyder) via migration; har kontoen en rigtig betalingsaftale, sættes kun planen. Administratorers familier dækker nu også medlemmerne.
+

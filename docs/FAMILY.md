@@ -145,6 +145,11 @@ Kilder:
 - **Sider:** `/profile` (Skift profil), `/profile/family` (familie, profiler,
   koder, adgang, udmelding), `/settings/control-log`, `/family-code` (barnet
   sætter sit eget login med en kode; link fra login-siden).
+- **Koder og QR-kode (2026-10-03):** hver kode er bundet til en e-mail og
+  virker kun sammen med den. Betalerens familieside viser ventende koder med
+  krypteret QR-kode (`/family-code/join?t=…` til eksisterende konti,
+  `/family-code?t=…` til login-koder), samt "x ud af y abonnenter tilmeldt" og
+  "n/5 ekstra tilkøb" (`Family.extraSeats`; købet er ikke bygget).
 - **Kopier til konto:** `POST /api/family/copy-registration` kopierer en egen
   registrering som nyt snapshot til en profil, man styrer. Findes indtil
   videre kun på forsidens dagsliste (`DailyList`).
@@ -158,9 +163,9 @@ Kilder:
 - **Inviter familiemedlem (2026-10-03):** bundark på `/profile/family`
   (`?invite=1` åbner det, også fra profilvælgeren) med navn, e-mail og
   hvilke profiler personen får indsigt i, plus "Tilføj barn under 18".
-  Mail med link til `/family-invite/<token>`; modtageren siger selv ja.
-  Ruter: `POST /api/family/invitations`, `DELETE /api/family/invitations/[id]`,
-  `GET|POST /api/family/invite/[token]`.
+  Laver en e-mail-bundet kode (med navn og valgte profiler) og sender en mail
+  med tilknytningslinket; modtageren siger selv ja på `/family-code/join`.
+  Rute: `POST /api/family/invitations`.
 
 ## Mangler / kendte begrænsninger
 

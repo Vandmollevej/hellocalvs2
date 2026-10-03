@@ -3332,6 +3332,9 @@ model Family {
   id        String              @id @default(cuid())
   owner     User                @relation("FamilyOwner", fields: [ownerId], references: [id])
   ownerId   String              @unique
+  // Tilkøbte ekstra pladser ud over de 5 i abonnementet (højst
+  // MAX_EXTRA_SEATS i src/lib/family.ts). Selve købet er ikke bygget endnu.
+  extraSeats Int                @default(0)
   createdAt DateTime            @default(now())
   members   FamilyMember[]
   grants    FamilyAccessGrant[]
@@ -3381,7 +3384,10 @@ model FamilyAccessGrant {
 
 // Engangskode fra betaleren. Med profileId: et familiemedlem uden login
 // sætter e-mail og adgangskode på sin profil. Uden profileId: en eksisterende
-// bruger kobler sig på familien. Kun SHA-256 af koden gemmes.
+// bruger kobler sig på familien. Koden virker kun sammen med den e-mail,
+// betaleren skrev (docs/DECISIONS.md 2026-10-03). Opslag sker på SHA-256 af
+// koden; codeCipher er koden AES-256-GCM-krypteret, så betaleren kan se koden
+// og QR-koden igen, indtil den er brugt.
 model FamilyLoginCode {
   id        String    @id @default(cuid())
   family    Family    @relation(fields: [familyId], references: [id], onDelete: Cascade)
@@ -3389,12 +3395,13 @@ model FamilyLoginCode {
   profile   User?     @relation("FamilyLoginCodeProfile", fields: [profileId], references: [id])
   profileId String?
   codeHash  String    @unique
-  // Invitation pr. mail ("Inviter familiemedlem", docs/FAMILY.md 2026-10-03):
-  // modtagerens navn og e-mail, og hvilke af familiens profiler personen får
-  // indsigt i, når invitationen tages imod. Tomme for almindelige koder.
-  email           String?
+  // Krypteret kode og den e-mail, koden er bundet til (små bogstaver).
+  codeCipher String?
+  email     String?
+  // "Inviter familiemedlem" (docs/FAMILY.md 2026-10-03): modtagerens navn og
+  // de af familiens profiler, personen får indsigt i, når koden bruges.
   inviteeName     String?
-  grantSubjectIds String[]  @default([])
+  grantSubjectIds String[] @default([])
   expiresAt DateTime
   usedAt    DateTime?
   createdAt DateTime  @default(now())

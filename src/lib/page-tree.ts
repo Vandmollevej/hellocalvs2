@@ -42,7 +42,6 @@ export const PAGE_TREE: PageArea[] = [
               { path: "/login/face-id", label: "Face ID" },
               { path: "/account/phone", label: "Telefonnummer", note: "Obligatorisk; vises efter login, hvis kontoen mangler nummer (tofaktor)" },
               { path: "/family-code", label: "Familiekode" },
-              { path: "/family-invite/[token]", label: "Familieinvitation" },
               {
                 path: "/forgot-password",
                 label: "Glemt adgangskode",

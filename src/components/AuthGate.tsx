@@ -33,8 +33,6 @@ const PUBLIC_PREFIXES = [
   "/admin",
   // Familiemedlem sætter sit eget login med en kode fra betaleren (docs/FAMILY.md).
   "/family-code",
-  // Invitationslinket fra "Inviter familiemedlem"-mailen (docs/FAMILY.md).
-  "/family-invite",
   // Oprettelses-appen har eget medarbejder-login og ingen klient-boks.
   "/scan",
 ];

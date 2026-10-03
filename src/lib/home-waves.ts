@@ -2,7 +2,8 @@
 // få, afdæmpede og skarpe bånd af bølgelinjer med overvejende gul-brunlige
 // nuancer øverst og grønne længere nede, lidt tåge kun forneden og en lime
 // puls-linje (pulsmåler), der tegnes helt inde fra venstre kant omkring
-// midten af hero. Alt er tilfældigt pr. besøg.
+// midten af hero og slår i brugerens målte puls (60 bpm uden ur, bruger
+// 2026-10-03). Alt andet er tilfældigt pr. besøg.
 // Ren tegnelogik uden React — komponenten ligger i components/HomeWaves.tsx.
 
 export type Rgb = [number, number, number];
@@ -147,17 +148,18 @@ type Fog = {
 type Pulse = {
   /** Grundlinjens højde som andel af højden (lige under hero-hjulets midterrække). */
   y: number;
-  /** Hjerteslagets placering som andel af bredden (mellem knappen og tallene). */
-  centerX: number;
   /** Udslagets højde i px. */
   amplitude: number;
-  /** Sekunder mellem to fej. */
-  period: number;
-  /** Sekunder et fej tager hen over skærmen. */
+  /** Sekunder et fej tager hen over skærmen; næste fej starter straks. */
   sweep: number;
   offset: number;
   seed: number;
+  /** Pulsen låses pr. fej, så slagene ikke flytter sig, hvis pulsen skifter midt i et fej. */
+  lockedBpm: Record<number, number>;
 };
+
+/** Puls uden tilsluttet ur (bruger 2026-10-03). */
+export const DEFAULT_PULSE_BPM = 60;
 
 export type WaveScene = { bundles: Bundle[]; fog: Fog[]; pulse: Pulse; startTime: number };
 
@@ -240,15 +242,13 @@ export function createWaveScene(seed: number): WaveScene {
     });
   }
 
-  const sweep = between(3, 4);
   const pulse: Pulse = {
     y: between(0.58, 0.62),
-    centerX: between(0.36, 0.44),
     amplitude: between(18, 26),
-    period: sweep + between(3, 5),
-    sweep,
+    sweep: between(3, 4),
     offset: between(0, 20),
     seed: Math.floor(rand() * 4294967296),
+    lockedBpm: {},
   };
 
   return { bundles, fog, pulse, startTime: between(0, 600) };
@@ -293,6 +293,10 @@ export type WaveFrame = {
   height: number;
   /** Canvas-pixels pr. CSS-pixel. */
   scale: number;
+  /** Pulsen, linjen slår i (DEFAULT_PULSE_BPM uden ur). */
+  bpm?: number;
+  /** Puls-linjens grundlinje i px fra toppen; uden den bruges scenens andel af højden. */
+  pulseY?: number;
 };
 
 const STEP_TARGET = 7;
@@ -303,7 +307,7 @@ export function drawWaveScene(
   palette: WavePalette,
   frame: WaveFrame
 ) {
-  const { t, width, height, scale } = frame;
+  const { t, width, height, scale, bpm = DEFAULT_PULSE_BPM, pulseY } = frame;
   ctx.setTransform(1, 0, 0, 1, 0, 0);
   ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
   ctx.setTransform(scale, 0, 0, scale, WAVE_BLEED * scale, WAVE_BLEED * scale);
@@ -367,71 +371,113 @@ export function drawWaveScene(
     }
   }
 
-  drawPulse(ctx, scene.pulse, palette, t, width, height);
+  drawPulse(ctx, scene.pulse, palette, t, width, height, bpm, pulseY ?? scene.pulse.y * height);
   ctx.globalAlpha = 1;
+}
+
+/** Pulsen for et fej: den, der gjaldt, da fejet startede. */
+function bpmForCycle(pulse: Pulse, cycle: number, bpm: number) {
+  if (pulse.lockedBpm[cycle] === undefined) {
+    pulse.lockedBpm[cycle] = bpm;
+    for (const key of Object.keys(pulse.lockedBpm)) if (Number(key) < cycle - 1) delete pulse.lockedBpm[Number(key)];
+  }
+  return pulse.lockedBpm[cycle];
+}
+
+/**
+ * Lodret udslag i x for ét fej: et slag hvert 60/bpm sekund regnet i fejets
+ * egen tid, så afstanden mellem slagene svarer til pulsen.
+ */
+export function pulseTrace(pulse: Pulse, cycle: number, bpm: number, width: number) {
+  const left = -WAVE_BLEED;
+  const span = width + WAVE_BLEED * 2;
+  const speed = span / pulse.sweep;
+  // Slagets bredde i px som før; omregnet til sekunder ligger P→T på ca. 0,8 s.
+  const beatSeconds = Math.max(90, Math.min(150, width * 0.3)) / speed;
+  const interval = 60 / Math.min(220, Math.max(30, Number.isFinite(bpm) ? bpm : DEFAULT_PULSE_BPM));
+  const cycleRand = mulberry32(pulse.seed + cycle);
+  const firstBeat = cycleRand() * interval;
+  const beats: Array<{ at: number; amplitude: number }> = [];
+  for (let at = firstBeat - interval; at < pulse.sweep + interval; at += interval) {
+    beats.push({ at, amplitude: pulse.amplitude * (0.88 + 0.24 * cycleRand()) });
+  }
+  return (x: number) => {
+    const time = ((x - left) / span) * pulse.sweep;
+    let y = 0;
+    for (const beat of beats) {
+      const u = (time - beat.at) / beatSeconds;
+      if (u > -1 && u < 1) y += beat.amplitude * heartbeatShape(u);
+    }
+    return y;
+  };
 }
 
 /**
  * Puls-linjen: et lime spor, der tegnes fra venstre kant mod højre som på en
- * pulsmåler og slår ét hjerteslag på vejen. Når sporet når højre kant, står
- * hele linjen et øjeblik og toner så ud før næste fej. Højde og placering af
- * slaget varierer lidt pr. fej.
+ * pulsmåler og slår i brugerens puls. Næste fej starter straks fra venstre og
+ * visker det forrige ud foran sig, mens det toner væk.
  */
-function drawPulse(ctx: CanvasRenderingContext2D, pulse: Pulse, palette: WavePalette, t: number, width: number, height: number) {
+function drawPulse(
+  ctx: CanvasRenderingContext2D,
+  pulse: Pulse,
+  palette: WavePalette,
+  t: number,
+  width: number,
+  height: number,
+  bpm: number,
+  baseY: number
+) {
   const time = t + pulse.offset;
-  const cycle = Math.floor(time / pulse.period);
-  const phase = time - cycle * pulse.period;
+  const cycle = Math.floor(time / pulse.sweep);
+  const progress = (time - cycle * pulse.sweep) / pulse.sweep;
   const left = -WAVE_BLEED;
   const right = width + WAVE_BLEED;
-  const progress = Math.min(1, phase / pulse.sweep);
   const head = left + progress * (right - left);
-  // Efter fejet: hold linjen kort og ton den ud resten af perioden.
-  const rest = pulse.period - pulse.sweep;
-  const after = phase - pulse.sweep;
-  const fadeOut = after <= 0 ? 1 : Math.max(0, 1 - Math.max(0, after - rest * 0.25) / (rest * 0.75));
-  if (fadeOut <= 0 || head <= left) return;
-
-  const cycleRand = mulberry32(pulse.seed + cycle);
-  const amplitude = pulse.amplitude * (0.85 + 0.3 * cycleRand());
-  const centerX = (pulse.centerX + (cycleRand() - 0.5) * 0.04) * width;
-  const beatWidth = Math.max(90, Math.min(150, width * 0.3));
-  const baseY = pulse.y * height;
-  const yAt = (x: number) => baseY + amplitude * heartbeatShape((x - centerX) / beatWidth);
-
   const step = 1.5;
-  ctx.beginPath();
-  ctx.moveTo(left, yAt(left));
-  for (let x = left + step; x < head; x += step) ctx.lineTo(x, yAt(x));
-  ctx.lineTo(head, yAt(head));
 
   // Lidt svagere ude ved kanten end ved spidsen, men synlig hele vejen ind.
-  const fade = (color: Rgb) => {
-    const gradient = ctx.createLinearGradient(left, 0, Math.max(head, left + 1), 0);
+  const fade = (color: Rgb, to: number) => {
+    const gradient = ctx.createLinearGradient(left, 0, Math.max(to, left + 1), 0);
     gradient.addColorStop(0, rgba(color, 0.55));
     gradient.addColorStop(1, rgba(color, 1));
     return gradient;
   };
-  ctx.strokeStyle = fade(palette.pulse);
-  ctx.globalAlpha = 0.25 * fadeOut;
-  ctx.lineWidth = 5;
-  ctx.stroke();
-  ctx.strokeStyle = fade(palette.pulseCore);
-  ctx.globalAlpha = 0.85 * fadeOut;
-  ctx.lineWidth = 1.6;
-  ctx.stroke();
-
-  // Lille lysende punkt ved spidsen, mens sporet bevæger sig.
-  if (progress < 1) {
+  const strokeTrace = (from: number, to: number, yAt: (x: number) => number, gradientEnd: number, alpha: number) => {
     ctx.beginPath();
-    ctx.moveTo(head, yAt(head));
-    ctx.lineTo(head + 0.01, yAt(head));
-    ctx.strokeStyle = rgba(palette.pulse, 1);
-    ctx.globalAlpha = 0.3;
-    ctx.lineWidth = 9;
+    ctx.moveTo(from, baseY + yAt(from));
+    for (let x = from + step; x < to; x += step) ctx.lineTo(x, baseY + yAt(x));
+    ctx.lineTo(to, baseY + yAt(to));
+    ctx.strokeStyle = fade(palette.pulse, gradientEnd);
+    ctx.globalAlpha = 0.25 * alpha;
+    ctx.lineWidth = 5;
     ctx.stroke();
-    ctx.strokeStyle = rgba(palette.pulseCore, 1);
-    ctx.globalAlpha = 1;
-    ctx.lineWidth = 3;
+    ctx.strokeStyle = fade(palette.pulseCore, gradientEnd);
+    ctx.globalAlpha = 0.85 * alpha;
+    ctx.lineWidth = 1.6;
     ctx.stroke();
+  };
+
+  const yAt = pulseTrace(pulse, cycle, bpmForCycle(pulse, cycle, bpm), width);
+  if (head > left) strokeTrace(left, head, yAt, head, 1);
+
+  // Det forrige fej, foran spidsen, toner ud i løbet af det nye fejs første del.
+  const previousFade = Math.max(0, 1 - progress * 1.6);
+  const eraseFrom = head + 28;
+  if (previousFade > 0 && eraseFrom < right) {
+    const previous = pulseTrace(pulse, cycle - 1, bpmForCycle(pulse, cycle - 1, bpm), width);
+    strokeTrace(eraseFrom, right, previous, right, previousFade);
   }
+
+  // Lille lysende punkt ved spidsen.
+  ctx.beginPath();
+  ctx.moveTo(head, baseY + yAt(head));
+  ctx.lineTo(head + 0.01, baseY + yAt(head));
+  ctx.strokeStyle = rgba(palette.pulse, 1);
+  ctx.globalAlpha = 0.3;
+  ctx.lineWidth = 9;
+  ctx.stroke();
+  ctx.strokeStyle = rgba(palette.pulseCore, 1);
+  ctx.globalAlpha = 1;
+  ctx.lineWidth = 3;
+  ctx.stroke();
 }
