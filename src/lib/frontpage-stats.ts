@@ -100,9 +100,9 @@ export const FRONTPAGE_STAT_DEFS: {
   {
     key: "calories",
     labelKey: "frontPageStats.calories",
-    // Kyllingelår = indtagne kalorier; ikonet erstatter enheden (design.md §6.16).
+    // Kyllingelår = indtagne kalorier; ikonet supplerer enheden "kcal" (design.md §6.16).
     icon: IconDrumstick,
-    compute: (data) => ({ value: formatNumber(data.totals.kcal), unit: "", goal: data.goalKcal }),
+    compute: (data) => ({ value: formatNumber(data.totals.kcal), unit: "kcal", goal: data.goalKcal }),
   },
   {
     key: "kcalRemaining",
@@ -110,7 +110,7 @@ export const FRONTPAGE_STAT_DEFS: {
     // (mål minus indtag, aldrig negativ) — ikke det samme som en overskridelse.
     labelKey: "frontPageStats.kcalRemaining",
     icon: IconDrumstick,
-    compute: (data) => ({ value: formatNumber(Math.max(0, data.goalKcal - data.totals.kcal)), unit: "" }),
+    compute: (data) => ({ value: formatNumber(Math.max(0, data.goalKcal - data.totals.kcal)), unit: "kcal" }),
   },
   {
     key: "protein",
@@ -220,7 +220,7 @@ export const FRONTPAGE_STAT_DEFS: {
     icon: IconFlame,
     compute: (data) => ({
       value: data.metrics.burnedKcal !== null ? formatNumber(data.metrics.burnedKcal) : "642",
-      unit: "",
+      unit: "kcal",
     }),
   },
   {

@@ -1358,7 +1358,8 @@ function WeekView({
                       !logged ? "text-text-muted" : tooLow ? "text-hf-warning" : over ? "text-hf-red-dark" : "text-hf-green"
                     }`}
                   >
-                    <EnergyChip kind="intake" value={diff} text={`${over ? "÷" : "+"}${diff}`} iconSize={18} />
+                    {over ? "÷" : "+"}
+                    {diff} kcal
                   </span>
                   <IconChevronRight size={19} className="shrink-0" />
                 </span>
@@ -1596,7 +1597,8 @@ function ListView({
                       !logged ? "text-text-muted" : tooLow ? "text-hf-warning" : over ? "text-hf-red-dark" : "text-hf-green"
                     }`}
                   >
-                    <EnergyChip kind="intake" value={diff} text={`${over ? "÷" : "+"}${diff}`} iconSize={18} />
+                    {over ? "÷" : "+"}
+                    {diff} kcal
                   </span>
                   <IconChevronRight size={19} className="shrink-0" />
                 </span>

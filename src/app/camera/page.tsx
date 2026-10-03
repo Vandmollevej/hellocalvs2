@@ -3,7 +3,6 @@
 import { mealShareBody } from "@/lib/meal-share";
 import { Suspense, useCallback, useEffect, useRef, useState } from "react";
 import { IconCamera } from "@tabler/icons-react";
-import { EnergyChip } from "@/components/calendar/EnergyChip";
 import { useRouter, useSearchParams } from "next/navigation";
 import { HfScreen } from "@/components/HfScreen";
 import { HelloFreshMatchReview } from "@/components/HelloFreshMatchReview";
@@ -427,7 +426,7 @@ function PhotoModeContent({ mode, forDish }: { mode: "meal" | "hellofresh"; forD
                         )}
                       </p>
                       <p className="hf-type-small text-text-secondary">
-                        {item.amountLabel} · <EnergyChip kind="intake" value={item.kcal} />
+                        {item.amountLabel} · {item.kcal} kcal
                       </p>
                     </div>
                     <button
