@@ -29,27 +29,20 @@ import type { IntegrationCardStatus } from "@/lib/integrations";
 import { useTranslation } from "@/i18n/LocaleProvider";
 import { useSourceRegistrations } from "@/lib/use-source-registrations";
 import { registrationsWithinLastDays } from "@/lib/food-classification";
-import { TrendIcon } from "@/components/BottomNav";
+import { StatChartPreviewList } from "@/components/StatChartPreviewList";
+import { useStatChartRenderer } from "@/components/useStatChartRenderer";
 import {
   addChartsToLayout,
-  dailyChartLabel,
   DEFAULT_ACTIVE_CHART_KEYS,
   loadChartLayout,
   STAT_CHART_DEFS,
-  bodyMeasurementChartLabel,
-  type StatChartDef,
+  statChartLabel,
 } from "@/lib/stat-charts";
 
 type ChartOption = { key: string; label: string };
 
-function chartLabel(def: StatChartDef, t: (key: string) => string): string {
-  if (def.kind === "caloriesAndWeight") return t("statistics.caloriesAndWeightChart");
-  if (def.kind === "sleepQuality") return t("statistics.sleepQualityChart");
-  if (def.kind === "intradayKcal") return t("statUnusedCharts.intradayKcal");
-  if (def.kind === "sleepInsight") return t(`sleepStats.chart.${def.insight}`);
-  if (def.kind === "bodyMeasurement") return bodyMeasurementChartLabel(def.field, t);
-  return dailyChartLabel(def.field);
-}
+// Dagsprofilen i forhåndsvisningen bruger statistiksidens standardperiode.
+const PREVIEW_INTRADAY_DAYS = 7;
 
 function withinLastDaysActivities(activities: ActivityTotals[], days: number) {
   const cutoff = Date.now() - days * 24 * 60 * 60 * 1000;
@@ -159,7 +152,7 @@ export default function UnusedStatCardsPage() {
     () =>
       STAT_CHART_DEFS.filter((def) => !activeChartKeys.has(def.key)).map((def) => ({
         key: def.key,
-        label: chartLabel(def, t),
+        label: statChartLabel(def, t),
       })),
     [activeChartKeys, t],
   );
@@ -279,29 +272,21 @@ export default function UnusedStatCardsPage() {
     router.back();
   }
 
+  const previewRegistrations = useMemo(
+    () => withinLastDays(registrations, PREVIEW_INTRADAY_DAYS),
+    [registrations],
+  );
+  const renderChart = useStatChartRenderer({
+    registrations,
+    activities,
+    metrics,
+    intradayRegistrations: previewRegistrations,
+    intradayWindowDays: PREVIEW_INTRADAY_DAYS,
+  });
+
   function renderChartGrid(options: ChartOption[]) {
     return (
-      <div className="grid grid-cols-2 gap-4">
-        {options.map((option) => (
-          <button
-            key={option.key}
-            type="button"
-            onClick={() => addChart(option.key)}
-            className="flex flex-col justify-between gap-1 rounded-2xl bg-hf-tan p-4 text-left active:opacity-80"
-          >
-            <span className="flex items-start justify-between gap-2">
-              <span className="hf-type-small text-text-secondary min-w-0">{t("statSections.chartsHeading")}</span>
-              <span className="hf-type-small hf-type-strong shrink-0 whitespace-nowrap text-hf-black">
-                {t("statUnusedCards.add")}
-              </span>
-            </span>
-            <span className="hf-type-body hf-heading flex items-center gap-1.5 text-hf-black">
-              <TrendIcon color="currentColor" size={16} />
-              {option.label}
-            </span>
-          </button>
-        ))}
-      </div>
+      <StatChartPreviewList keys={options.map((option) => option.key)} renderChart={renderChart} onAdd={addChart} />
     );
   }
 
@@ -428,7 +413,11 @@ export default function UnusedStatCardsPage() {
           </button>
         </section>
 
-        <AccordionSection title={t("statSections.chartsHeading")} count={chartOptions.length}>
+        <AccordionSection
+          title={t("statSections.chartsHeading")}
+          count={chartOptions.length}
+          bodyClassName={chartOptions.length === 0 ? "p-3" : "py-3"}
+        >
           {chartOptions.length === 0 ? (
             <p className="hf-type-small rounded-2xl bg-hf-tan/60 p-4 text-hf-black opacity-50">
               {t("statUnusedCharts.noChartsLeft")}
