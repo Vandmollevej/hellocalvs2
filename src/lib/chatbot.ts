@@ -106,6 +106,7 @@ async function findOpenConversation(userId: string, now = new Date()) {
     orderBy: { lastMessageAt: "desc" },
     select: {
       id: true,
+      userTierSnapshot: true,
       escalatedAt: true,
       supportRequestId: true,
       messages: { orderBy: { createdAt: "asc" }, select: messageSelect },
@@ -280,6 +281,7 @@ export async function askChatbot(input: {
       data: { userId: user.id, channel, ...snapshot, lastMessageAt: now },
       select: {
         id: true,
+        userTierSnapshot: true,
         escalatedAt: true,
         supportRequestId: true,
         messages: { orderBy: { createdAt: "asc" }, select: messageSelect },
@@ -292,16 +294,12 @@ export async function askChatbot(input: {
     data: { conversationId, role: "USER", body: question, createdAt: now },
   });
 
-  const meta = await prisma.chatbotConversation.findUniqueOrThrow({
-    where: { id: conversationId },
-    select: { userTierSnapshot: true },
-  });
   const history = [...conversation.messages, { role: "USER" as const, body: question }].slice(-HISTORY_LIMIT);
 
   let reply: AiReply;
   let model: string | null = null;
   try {
-    const result = await requestAiReply({ history, locale: user.appLocale, tier: meta.userTierSnapshot });
+    const result = await requestAiReply({ history, locale: user.appLocale, tier: conversation.userTierSnapshot });
     reply = result.reply;
     model = result.model;
   } catch (error) {
@@ -440,9 +438,10 @@ export async function escalateChatbotConversation(input: {
       escalatedAt: now,
       supportRequestId: supportRequest.id,
       lastMessageAt: now,
+      questionCount: conversation.messages.filter((m) => m.role === "USER").length + (note ? 1 : 0),
       messages: {
         create: [
-          ...(note ? [{ role: "USER" as const, body: note, createdAt: now }] : []),
+          ...(note ? [{ role: "USER" as const, body: note, category: conversation.category, createdAt: now }] : []),
           {
             role: "SYSTEM" as const,
             body: en
@@ -470,7 +469,10 @@ export const CHATBOT_ADMIN_PERIODS = ["7", "30", "90", "all"] as const;
 export type ChatbotAdminPeriod = (typeof CHATBOT_ADMIN_PERIODS)[number];
 export const CHATBOT_ADMIN_PAGE_SIZE = 50;
 
+export type ChatbotAdminView = "questions" | "threads";
+
 export type ChatbotAdminFilter = {
+  view: ChatbotAdminView;
   period: ChatbotAdminPeriod;
   category: ChatbotCategoryKey | null;
   q: string;
@@ -487,6 +489,7 @@ export function parseChatbotAdminFilter(params: Record<string, string | string[]
   const category = first(params.category);
   const page = Number.parseInt(first(params.page) ?? "1", 10);
   return {
+    view: first(params.view) === "threads" ? "threads" : "questions",
     period: (CHATBOT_ADMIN_PERIODS as readonly string[]).includes(period ?? "") ? (period as ChatbotAdminPeriod) : "30",
     category: isChatbotCategory(category) ? category : null,
     q: (first(params.q) ?? "").trim().slice(0, 200),
@@ -571,6 +574,36 @@ export async function listChatbotQuestions(filter: ChatbotAdminFilter) {
     return { ...q, answer };
   });
   return { total, rows, pages: Math.max(1, Math.ceil(total / CHATBOT_ADMIN_PAGE_SIZE)) };
+}
+
+export const CHATBOT_ADMIN_THREADS_PAGE_SIZE = 20;
+
+// Visningen "Tråde": hele samtaler med alle spørgsmål og svar.
+export async function listChatbotConversations(filter: ChatbotAdminFilter) {
+  const since = periodStart(filter.period);
+  const where: Prisma.ChatbotConversationWhereInput = {
+    questionCount: { gt: 0 },
+    ...(since ? { lastMessageAt: { gte: since } } : {}),
+    ...(filter.category ? { messages: { some: { role: "USER", category: filter.category } } } : {}),
+    ...(filter.escalated ? { escalatedAt: { not: null } } : {}),
+  };
+  if (filter.q) {
+    where.AND = [{ messages: { some: { body: { contains: filter.q, mode: "insensitive" } } } }];
+  }
+  const [total, conversations] = await Promise.all([
+    prisma.chatbotConversation.count({ where }),
+    prisma.chatbotConversation.findMany({
+      where,
+      orderBy: { lastMessageAt: "desc" },
+      skip: (filter.page - 1) * CHATBOT_ADMIN_THREADS_PAGE_SIZE,
+      take: CHATBOT_ADMIN_THREADS_PAGE_SIZE,
+      include: {
+        messages: { orderBy: { createdAt: "asc" } },
+        user: { select: { id: true, displayName: true, email: true } },
+      },
+    }),
+  ]);
+  return { total, conversations, pages: Math.max(1, Math.ceil(total / CHATBOT_ADMIN_THREADS_PAGE_SIZE)) };
 }
 
 export async function getChatbotThreadForAdmin(conversationId: string) {

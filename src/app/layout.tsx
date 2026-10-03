@@ -13,6 +13,7 @@ import { StartupTipsGate } from "@/components/StartupTipsGate";
 import { KcalGoalPrompt } from "@/components/KcalGoalPrompt";
 import { SleepQualityGate } from "@/components/SleepQualityGate";
 import { UmamiTracker } from "@/components/UmamiTracker";
+import { HelpChat } from "@/components/help/HelpChat";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -70,6 +71,7 @@ export default function RootLayout({
               <FamilyWatchFrame />
               <AccessLogPanel />
             </AppFrame>
+            <HelpChat />
           </FamilyStatusProvider>
         </LocaleProvider>
       </body>

@@ -438,6 +438,12 @@ disse roller frem for egne styles.
 - Titel, venstre handling og højre handling ligger i tre faste slots, så titlen
   ikke flytter sig, når én side får et ikon.
 - Hello Cal-reglen om profil venstre/luk højre har forrang på appskærme.
+- **Hjælpe-knap (tilføjet 2026-10-02):** `.hf-appbar--help` udvider begge
+  sidekolonner symmetrisk til 88 px (80 px i kompakt liggende), så titlen stadig
+  står i midten. Højre ende (`.hf-appbar__end`) indeholder chatbot-ikonet som
+  `.hf-btn-icon` (44 × 44, ikon 28 px, arver hvid) lige til venstre for
+  profilcirklen. Forsidens lyse topbjælke viser samme knap i mørk. Ikke i
+  desktop-skallens sidehoved; der står "Hjælp" i topbjælken.
 
 ### 6.2 Knapper — EN fast regel (implementeret 2026-09-26)
 

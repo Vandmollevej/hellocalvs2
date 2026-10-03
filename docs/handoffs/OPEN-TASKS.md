@@ -271,3 +271,11 @@ Ejer: Flows-sessionen (2026-09-27)
 | --- | --- | --- | --- |
 | 745f1ab5 | Telefon-editor (iPhone 17) til mails/notifikationer/svarskabeloner + hovedmenu "Flows" med flow-sider | Færdig (se git log "Admin: phone editor") | Guide-builderen (tooltips) er flyttet ind i `flows`-gruppen i `AdminShell.tsx` efter brugerens ønske |
 | 41 | Design-screening af admin-flowsider mod HelloFresh-retningen | Færdig (branch `claude/admin-flowsider-design-4tzgb4`) | Afventer brugerens visuelle test på desktop + telefon |
+
+## G-CHAT — Hjælpe-chatbot (app + web) og admin "Chatbot"
+Filer: `src/lib/chatbot*.ts`, `src/lib/support-contact.ts`, `src/lib/help-chat-events.ts`, `src/components/help/**`, `src/app/api/chatbot/**`, `src/app/admin/chatbot/**`, `src/components/admin/chatbot/**`. Små indgreb i `ScreenHeader`, `TopBar`, `WebShell`, `layout.tsx`, `AdminShell` og `globals.css` (`.hf-appbar--help`).
+Ejer: Chatbot-sessionen (cloud), branch `claude/ai-chatbot-support`
+
+| Id | Opgave | Status | Næste skridt |
+| --- | --- | --- | --- |
+| chatbot | AI-chatbot øverst i app og web med medarbejder, telefon og kontaktformular; admin → Brugere → Chatbot med oftest spurgt, Q&A-tabel, hele tråde og brugerinfo | Færdig (kode, se DECISIONS 2026-10-02) | Merge + deploy (migration `20261002120000_chatbot`). Ejeren: sæt `SUPPORT_PHONE`/`SUPPORT_PHONE_HOURS`. Test på telefon og desktop |

@@ -2,6 +2,16 @@
 
 This file records durable decisions. Add a dated entry when a later decision changes one of them.
 
+## 2026-10-02: Hjælpe-chatbot øverst i app og web + admin "Chatbot"
+
+- **Placering:** en hjælpe-knap (chatbot-ikon) står øverst på alle app-sider lige til venstre for profilcirklen (`ScreenHeader` og forsidens `TopBar`). På desktop står "Hjælp" i topbjælken ved siden af profilindstillinger. Knappen åbner ét fuldt bundark (`src/components/help/HelpChat.tsx`, monteret én gang i layoutet). Den eksisterende måltids-chat (`/chat`) er uændret og noget andet.
+- **Kontaktveje i toppen af arket:** "Tal med en medarbejder", "Ring til os" og "Kontaktformular" (`/settings/support/contact`). Telefonknappen vises kun, når `SUPPORT_PHONE` er sat på serveren (valgfrit `SUPPORT_PHONE_HOURS`). Nummeret hentes ved kørsel, så det kan skiftes uden nyt build.
+- **"Tal med en medarbejder"** opretter en almindelig sag i Support-indbakken (samme flow, kvitteringsmail og 24-timers-frist som "Kontakt os") med hele chat-tråden som første besked, så brugeren ikke skal forklare sig igen. Kategorien oversættes til Supports kategori. Virker også uden forudgående spørgsmål (så er brugerens tekst beskeden). Efter videresendelse er samtalen lukket; næste spørgsmål starter en ny.
+- **AI:** OpenAI Responses API med `store: false` og kun beskedtekster (ingen ID'er, navn eller e-mail), som de øvrige AI-kald. Model `OPENAI_CHATBOT_MODEL`, standard `gpt-4o-mini`. Chatbotten svarer kun ud fra `src/lib/chatbot-knowledge.ts` (bygget på Hjælpecentret) og må aldrig gætte; ved tvivl, penge tilbage, kontosletning, kontoadgang og utilfredshed foreslår den en medarbejder. Links i svar vælges kun fra en fast liste (enum i svar-skemaet). Fejler AI-kaldet, får brugeren et fast svar med tilbud om en medarbejder.
+- **Data:** `chatbot_conversations` + `chatbot_messages` (migration `20261002120000_chatbot`). Hvert brugerspørgsmål får én kategori (13 faste, `src/lib/chatbot-categories.ts`); samtalens kategori er den hyppigste. Samtalen gemmer et **øjebliksbillede** af brugeren ved start (alder, køn, region, Gratis/Seriøs + plan, app-sprog) — samme snapshot-princip som registreringer. Slettes med brugeren (cascade). En samtale fortsætter, til den har været stille i 12 timer. Højst 30 spørgsmål pr. bruger pr. time.
+- **Admin → Brugere → Chatbot** (`/admin/chatbot`): periode (7/30/90 dage/altid), nøgletal, "Oftest spurgt" pr. kategori (klik filtrerer), tabel med alle spørgsmål og svar (søgning, kategori, kun videresendte) og visningen "Hele tråde" med alle spørgsmål og svar inline. `/admin/chatbot/[id]` viser hele tråden, brugeren nu (alder, køn, region, abonnement + status, sprog, bruger siden, antal samtaler/sager), øjebliksbilledet og link til supportsagen.
+- **Region** er landekoden fra profilen (`User.region`, fx Danmark). Danske regioner/postnumre findes ikke i profilen.
+
 ## 2026-09-29: Aktivitetsniveau, PAL og kaloriemål
 
 - Erstatter faktorerne i 2026-09-28 "Aktivitetsniveau i 5 trin" (1,2–1,9). Nye niveauer og PAL-intervaller: se `docs/ACTIVITY-PAL.md` (planen; intet bygget). Ingen aktive brugere, så gamle niveauer erstattes uden overgangslogik.

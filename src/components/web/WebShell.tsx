@@ -6,6 +6,7 @@ import { useRouter, usePathname } from "next/navigation";
 import { createContext, useContext, useEffect, useState } from "react";
 import { IconChevronLeft, IconSearch, IconUser } from "@tabler/icons-react";
 import { useTranslation } from "@/i18n/LocaleProvider";
+import { HelpChatButton } from "@/components/help/HelpChatButton";
 import {
   WEB_HOME,
   WEB_SETTINGS,
@@ -274,6 +275,8 @@ export function WebShell({ children }: { children: React.ReactNode }) {
                 })}
               </ul>
             </nav>
+            <div className="flex items-center gap-1">
+            <HelpChatButton labelled />
             <Link
               href="/profile"
               aria-label={t("web.profileSettings")}
@@ -288,6 +291,7 @@ export function WebShell({ children }: { children: React.ReactNode }) {
               </span>
               {t("web.profileSettings")}
             </Link>
+            </div>
           </header>
 
           <main className="min-h-0 min-w-0 flex-1 overflow-y-auto">

@@ -462,6 +462,34 @@ textarea::selection,
   justify-content: center;
 }
 
+/* Højre ende af appbaren: profilcirklen (44 px slot) og, med
+   .hf-appbar--help, hjælpe-chattens knap til venstre for den
+   (docs/DECISIONS.md 2026-10-02, design.md §6.1). Kolonnerne udvides
+   symmetrisk, så titlen stadig står i midten. */
+.hf-appbar__end {
+  display: flex;
+  height: 44px;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.hf-appbar--help {
+  grid-template-columns: 88px minmax(0, 1fr) 88px;
+}
+
+.hf-appbar--compact.hf-appbar--help {
+  grid-template-columns: 80px minmax(0, 1fr) 80px;
+}
+
+.hf-appbar--compact .hf-appbar__end,
+.hf-appbar--compact .hf-appbar__end .hf-btn-icon {
+  height: 40px;
+}
+
+.hf-appbar--compact .hf-appbar__end .hf-btn-icon {
+  width: 40px;
+}
+
 /* Ring uden for cirklen på lys baggrund (forsiden) — box-shadow i stedet for
    border, så den farvede flade forbliver 32 px som i den grønne header. */
 .hf-avatar--outlined {
