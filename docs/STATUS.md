@@ -9,6 +9,14 @@ Last updated: 2026-10-03
 - Migration `20261002120000_chatbot` skal køre ved deploy. Lint, typecheck og build grønne. Ikke live-testet (ingen lokal DB/OpenAI-nøgle): test chatten på telefon og desktop efter deploy.
 - Mangler fra ejeren: supporttelefonnummer og åbningstider (`SUPPORT_PHONE`, `SUPPORT_PHONE_HOURS` i `/deploy/.env.production`) — indtil da vises telefonknappen ikke. `.env.production.example` er ikke opdateret (agenten må ikke læse den); tilføj de to linjer.
 
+## 2026-10-03: Butiksimporten — alt fra Bilka- og REMA-arkene med
+
+- 13.039 varer (før 10.524): 2.364 uden kalorietal er skjult (`nutritionMissing`, migration `20261002213000_product_nutrition_missing`), 151 med kun kalorier vises med ~ på makroerne, 107 uden stregkode er med under butikkens vare-id. Se DECISIONS 2026-10-02 "Butiksimporten: alt fra arkene med" og `docs/PRODUCT_IMPORT_MAPPING.md`.
+- Rettet: kJ 1000× for småt på ca. 4.900 varer, 25 forkerte kalorietal, 44 "Sukkerfri" med sukker, 129 navne som "0"/"M appelsin"; Labels-filtre og oprindelsesland.
+- Kildearkene ligger nu på NAS-sharet `\\192.168.1.90\Hello Cal\Arkiv - historiske kilde- og importfiler\Oprydning 2026-09-29\`. Det nye katalog (`store_products.json`) + de nye varers 1.408 billeder ligger klar i `C:\Users\Peter\Desktop\Butiksimport 2026-10-03\`; de skal kopieres til NAS'ens `data/store-products-import/` (sessionen fik ikke lov at skrive på serveren), og jobbet `store-products-import` køres (admin → Cron-jobs → Kør nu, eller næste deploy). Indtil da kører den nye agent med det gamle katalog, hvilket er ufarligt og retter kJ-fejlen.
+- Testet: agenten mod lokal PostgreSQL med alle migrationer (live-katalog → nyt katalog, 0 fejl); lint, typecheck og `next build --webpack` grønne.
+- Brugeren: kør `bilka_vitamins.py` (vitaminpanelet på bilkatogo.dk, nogle timer); byg og importér derefter igen. Næring fra Frida til de skjulte varer er egen opgave (OPEN-TASKS).
+
 ## 2026-10-02: Desktop — alle sider i skallen
 
 - På desktop vises alle sider (også login, betingelser, privatlivspolitik) i WebShell med sidebjælke, topmenu og brødkrummer; kun admin, hello-doc, business og presse er fuld bredde.
