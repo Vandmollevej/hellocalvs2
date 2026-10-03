@@ -137,6 +137,13 @@ Last updated: 2026-10-03
 - Planen for `image-cutout` er bevaret som "Løbende" (DECISIONS 2026-09-28). Lint og build grønne; ikke live-testet (ingen lokal DB).
 
 
+## 2026-10-02: Testperson-popup på integrationssiderne
+
+- Popup-banner på hver integrations side: "Bliv den første testperson … og optjen 300 points" med tilmeldingslink nederst (`TesterPromoSheet.tsx`, `/api/integrations/<app>/tester`). Én plads pr. integration; points ved admin-godkendelse. Se DECISIONS.md samme dato.
+- Admin → Brugere → **Test-programmes** (`/admin/test-programmes`): alle integrationer med ledig plads / testperson, forbindelsesstatus, Godkend (+300 points) / Afvis. Betingelsernes pointsafsnit er opdateret.
+- Migration `20261002120000_integration_testers` skal køre ved deploy.
+- Lint, typecheck og build grønne; `page-tree.test.mjs` fejler som før på master (uvedkommende sider). Ikke live-testet (ingen lokal DB/login) — tjek popuppen på telefon.
+
 ## 2026-10-03: Butiksimporten — alt fra Bilka- og REMA-arkene med
 
 - 13.039 varer (før 10.524): 2.364 uden kalorietal er skjult (`nutritionMissing`, migration `20261002213000_product_nutrition_missing`), 151 med kun kalorier vises med ~ på makroerne, 107 uden stregkode er med under butikkens vare-id. Se DECISIONS 2026-10-02 "Butiksimporten: alt fra arkene med" og `docs/PRODUCT_IMPORT_MAPPING.md`.
@@ -162,6 +169,13 @@ Last updated: 2026-10-02
 - Nye grafer `body:<felt>` i statistikmodulet (bryst, talje, hofte, overarm, lår): samme kort som på Kropsmål-siden med tegningen til venstre, men til højre et forløb over de seneste 10 målinger (x efter dato), seneste værdi, min/maks og ændring siden sidst. Komponent `src/components/BodyMeasurementChart.tsx`, logik `src/lib/body-measurement-series.ts` (tests grønne).
 - Tilføjes under "Ubrugte grafer" → blokken Kropsmål, eller med linket "Vis kropsmål som grafer i Statistik" på Kropsmål-siden (lægger alle fem nederst i graferne og åbner Statistik).
 - Hofte har stadig ingen godkendt tegning, så venstre felt er tomt dér. Lint, typecheck og build grønne; ikke visuelt testet (ingen lokal DB/login).
+## 2026-10-02: Kameraflow + vareside efter test af mælk og flødeboller
+
+- Kamera (`ProductCaptureFlow`): "Tag billede"-knappen er væk — billedet tages automatisk (skarpt + stille), ellers efter 2,4 s stille eller senest 8 s; tryk på kamerabilledet tager det straks. Rammen er 92 % af billedet (før 76 %), så man ikke holder telefonen for langt væk. Fotos tages som stillbilleder (masters `camera-still.ts`, 2026-10-02). Scan-striben kommer hurtigt ind, glider langsomt over midten og hurtigt ud (`.hf-scan-sweep`, 2,2 s).
+- Vareside: h1/h2 gentager aldrig hinanden (`splitProductHeadings`, test `product-naming.test.mjs`); berigelsen fjerner variant og pakningsstørrelse fra navnet; AI-prompt front-v4. Brandlogoet er 70 % højde (66 px). Fritskrabet billede ligger oven på cirklen med 10 % overskud (stående: op over toppen, liggende: ud til højre), råfoto vises `object-contain` i stedet for zoomet. Næringsdetaljer (salt, sukker, fibre, mættet/umættet fedt) vises altid som dropdown under energifordelingen — åben for brugere med udvidet næringsindhold slået til. Umættet fedt udledes som fedt − mættet − trans (~), når deklarationen ikke oplyser det.
+- Brand: står et kendt brand ordret på forsiden (fx EDEKA ved serien Herzstücke), vinder databasens brand, og AI'ens brand bliver subbrand (`matchBrandInTexts`). Prompt: hjerter/kvalitetsmærker/segl er ikke logoer.
+- Billedrobot (`cutout.py`): et PRODUCT_FRONT-udklip, der dækker under 12 % af udsnittet eller er under 30 % i bredde/højde, fejler nu i stedet for at blive et tomt billede (mælkekartonen 2026-10-01).
+- Lint, typecheck og `npm test` grønne (page-tree-testen fejler også på master). Ikke live-testet: ingen DB/kamera her. **Ikke gjort:** loggen for de to scanninger (mælk + flødeboller) ligger i produktionsdatabasen (admin → Log) og kan ikke nås fra cloud-sessionen — eksportér flow-rækkerne (JSON) eller skærmbilleder af dem, så analyseres de. Det forkerte hjerte-logo skal fjernes manuelt på brandet i admin → Logoer, og prompt-ændringerne virker først for nye scanninger.
 
 ## 2026-10-02: Garmin, WHOOP, Huawei + eufy/Renpho/Xiaomi/Tuya/Samsung via telefonen
 
@@ -209,6 +223,12 @@ Last updated: 2026-10-02
 - Tale: forslag fra en tidligere optagelse bliver stående, når en ny optagelse starter (hver optagelse er sin egen "batch"; kun den igangværende optagelses forslag erstattes af live-tolkningen), så flere forslag kan vente samtidig.
 - Knapperne bruger `.hf-btn-primary`/`.hf-btn-secondary` (design.md §6.2); den grønne knap på talesiden er væk. Nye tekster da/en (`voice.suggested`, `voice.addOne`, `web.chatSuggested`, `web.chatAddOne`, `web.chatAddAll`).
 - Lint, typecheck og build grønne. Ikke live-testet (ingen lokal DB/mikrofon) — test på telefon og i desktop-chatten.
+## 2026-10-02: Opret vare — levende scanning, trin-overskrift, hvid udfyldning
+
+- Kameraflowet (`/camera/create`, `ProductCaptureFlow`) fryser ikke længere et foto pr. trin: forside/energi/indhold scannes live fra videoen (`useLiveFrames`), energi/indhold læser op til ti billeder og lægger aflæsningerne sammen (`src/lib/live-scan.ts`, tests grønne). Fed trin-overskrift øverst ("Scan stregkode/billede/energi/indholdsfortegnelse"); når et trin er klaret, fyldes varens kontur eller det læste tekstfelt hvidt (`.hf-scan-fill`). Se DECISIONS.md samme dato.
+- Tesseract-arbejderen genbruges mellem billederne. `useAutoCapture` og `LabelTextHighlight` er fjernet.
+- Ikke live-testet (ingen kamera i cloud-sessionen): test på iPhone, at (1) overskriften står læseligt i det mørke felt, (2) kartonen bliver hvid efter forsiden, (3) energi/indhold afsluttes af sig selv på en mælkekarton, og (4) "Tag billede" afslutter trinnet med det samme. Juster evt. `LABEL_DONE_CONFIDENCE`/`MAX_LABEL_ATTEMPTS` i `live-scan.ts`.
+
 ## 2026-10-02: Kameraflowet — rigtige stillbilleder + nyt foto af indholdet
 
 - Fejlen: marmelade (5711954020055) fik ingen ingredienser, fordi indholdsfotoet var et sløret 1080p-videobillede, og OpenAI svarede tomt ("for sløret"). Ingen genstart var involveret. Se DECISIONS 2026-10-02.

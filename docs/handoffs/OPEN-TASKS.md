@@ -151,6 +151,7 @@ Ejer: G8-sessionen, konto C (overtaget 2026-09-24)
 | 5c45b0d7 | Opskrift-scrapere som Valdemarsro: Arla, Coop, REMA 1000, MENY, Hjerteforeningen, TV2 (+ Børnevenlig og måltidstype) | Færdig (kode) | Scrapere + kalorie-matcher i scripts/recipe-sites-import (README). Testet på de rigtige sider. Brugeren kører dem selv i VS Code; import i appen hører under Valdemarsro-integrationen |
 | 300489b5 | Push til Health/integrationer + egen side pr. app med til/fra (hent/send) ved tilkobling og bagefter | Færdig (ce1bc7f, deployet) | Brugeren: skriveadgang i Google Cloud-klienten (nutrition/health_metrics writeonly) og Strava-appen (activity:write); native app til Apple Health/Health Connect mangler |
 | admin-integrationer | Admin → Integrationer: oversigt (installationer, brug, frakoblinger) + side pr. integration med grafer | Færdig (kode), branch `claude/admin-integrationer` | Ny tabel `integration_events` (migration `20261002120000_integration_events`) skrives fra `handlers.ts`, `integrations-oauth.ts`, `companion.ts` og healthkit-/settings-ruterne. Næste: deploy + brugerens test på admin |
+| tester-popup | Popup "første testperson, 300 points" på hver integrations side + Admin → Brugere → Test-programmes | Færdig (kode, branch `claude/integration-tester-popup`) | Migration `20261002120000_integration_testers` ved deploy; brugerens test på telefon |
 
 ## G9 — Ikoner (forside + vand)
 Filer: forsidens grydeikon, Vand-siden, `public/` assets.
@@ -270,6 +271,14 @@ Ejer: bølge-sessionen (2026-10-01)
 | --- | --- | --- | --- |
 | — | Rolig, tilfældig bølge-animation bag forsiden med frostet-glas-bund og tåge | Færdig (kode) | Afventer brugerens visuelle godkendelse på telefon; justér tempo/farve efter feedback |
 | — | Ommer: afdæmpet, skarp top, kun sløret forneden, puls lavere og fra venstre kant (branch `claude/forside-boelger-ommer`) | Venter på bruger | Brugeren tester på telefon; justér alfa/bredde i `createWaveScene` og maskerne i `globals.css` efter feedback |
+
+## G-SCAN — Kameraflow og vareside efter test (mælk/flødeboller)
+Filer: `src/components/camera/**`, `src/lib/focus-detection.ts`, `src/lib/product-naming*`, `src/lib/quick-product-enrichment.ts`, `src/lib/product-photo-analysis.ts`, `src/lib/brand-match.ts`, `src/lib/nutrient-resolution.ts`, `src/components/add/AddProductView.tsx` (cirkel/titel/næringspanel), `scripts/image-agent/cutout.py`.
+Ejer: cloud-session `claude/scan-flow-rettelser` (2026-10-02) — arkiveres; næste session overtager via PR #162
+
+| Id | Opgave | Status | Næste skridt |
+| --- | --- | --- | --- |
+| — | Ingen Tag billede-knap, større ramme, scan-rytme, h1/h2 uden gentagelser, brand fra DB, logo 70 %, 10 %-udklip, næringsdetaljer altid, tomme udklip afvises | Færdig (kode, draft-PR #162, master flettet ind 2026-10-03) | Næste session: flet master ind igen ved konflikt, sæt PR #162 til ready og merge efter brugerens OK. Brugerens test på telefon. Log-analyse af de to scanninger (mælk + flødeboller) kræver eksport fra admin → Log (cloud-sessionen når ikke produktions-DB'en). Fjern hjerte-logoet manuelt i admin → Logoer |
 
 ## G-INT2 — Flere integrationer (Garmin, WHOOP, Huawei, via-mærker, Health Connect-modul)
 Filer: `src/lib/integrations/**`, `src/lib/integrations.ts`, `src/app/settings/integrations/**`, `src/app/api/integrations/**`, `src/lib/api-keys/*`, `native/android/healthconnect/**`.

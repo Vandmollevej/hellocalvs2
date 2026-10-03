@@ -153,10 +153,15 @@ async function sharpestVideoFrame(video: HTMLVideoElement, crop: StillCrop, maxS
   return bestCanvas ? toStill(bestCanvas, "video") : null;
 }
 
-// Ét videobillede med det samme (stregkodefotoet — må ikke forsinke flowet).
-export function captureVideoFrame(video: HTMLVideoElement | null, maxSide = MAX_SIDE): Still | null {
+// Ét videobillede med det samme (stregkodefotoet — må ikke forsinke flowet —
+// og den levende scannings billeder, docs/DECISIONS.md 2026-10-02).
+export function captureVideoFrame(
+  video: HTMLVideoElement | null,
+  maxSide = MAX_SIDE,
+  crop: StillCrop = "none",
+): Still | null {
   if (!video || !video.videoWidth || !video.videoHeight) return null;
-  const canvas = render(video, video.videoWidth, video.videoHeight, "none", maxSide);
+  const canvas = render(video, video.videoWidth, video.videoHeight, crop, maxSide);
   return canvas ? toStill(canvas, "video") : null;
 }
 

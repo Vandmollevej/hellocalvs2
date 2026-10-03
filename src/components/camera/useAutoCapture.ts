@@ -12,6 +12,9 @@ import {
 const SAMPLE_INTERVAL_MS = 200;
 // Giver brugeren tid til at få varen på plads, før vi må udløse.
 const ARM_DELAY_MS = 1200;
+// Sidste udvej: uanset skarphed og bevægelse tages billedet efter så lang
+// tid — der er ingen "Tag billede"-knap (brugerens krav 2026-10-02).
+const MAX_WAIT_MS = 8000;
 
 // Måler fokus løbende og kalder onFocused én gang, når varen er skarp og stille.
 // Returnerer fremskridt 0–1 til en visuel indikator.
@@ -46,7 +49,8 @@ export function useAutoCapture(
         motion,
       });
       setProgress(value);
-      if (value >= 1 && Date.now() >= armedAt) {
+      const now = Date.now();
+      if ((value >= 1 && now >= armedAt) || now >= armedAt + MAX_WAIT_MS) {
         fired = true;
         onFocusedRef.current();
       }

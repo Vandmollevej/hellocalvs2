@@ -103,10 +103,17 @@ async function readLabel(photo: string, languages: string[], tableLayout: boolea
   }
 }
 
+// Energi/indhold i den levende scanning (docs/DECISIONS.md 2026-10-02): hvert
+// billede fra videoen læses med tabel-layout; næring og ingredienser findes
+// i samme aflæsning, og flere billeder lægges sammen i src/lib/live-scan.ts.
+export function readLabelPhoto(photo: string, languages: string[]) {
+  return readLabel(photo, languages, true);
+}
+
 // Energi: næringstabellen læses lokalt; står ingredienslisten ved siden af,
 // er indholds-trinnet også klaret.
 export function readNutritionPhoto(photo: string, languages: string[]) {
-  return readLabel(photo, languages, true);
+  return readLabelPhoto(photo, languages);
 }
 
 // Stregkodefotoet: står næringstabellen og/eller ingredienslisten ved

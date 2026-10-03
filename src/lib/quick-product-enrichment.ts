@@ -94,7 +94,7 @@ async function enrichFront(input: QuickEnrichmentInput) {
   const { productId } = input;
   const startedAt = Date.now();
   try {
-    const { analysisId, result, brandMatch } = await analyzeFrontPhoto({
+    const { analysisId, result, brandMatch, textBrandMatch } = await analyzeFrontPhoto({
       photo: input.frontPhoto,
       barcode: input.barcode,
       marketRegion: input.marketRegion,
@@ -103,16 +103,26 @@ async function enrichFront(input: QuickEnrichmentInput) {
     await prisma.aiProductAnalysis.update({ where: { id: analysisId }, data: { productId } });
 
     // Logonavnet er holdt op mod brand-databasen; et match giver databasens
-    // stavemåde, så der ikke oprettes en næsten-dublet.
-    const brandName = (brandMatch?.name ?? result.brand ?? result.logoText ?? "").trim();
+    // stavemåde, så der ikke oprettes en næsten-dublet. Kender databasen ikke
+    // AI'ens brand, men står et kendt brand ordret på forsiden (fx EDEKA ved
+    // vareserien Herzstücke), vinder databasens brand, og AI'ens brand bliver
+    // subbrand (brugerens krav 2026-10-02).
+    const aiBrand = (result.brand ?? result.logoText ?? "").trim();
+    const brandName = (brandMatch?.name ?? textBrandMatch?.name ?? aiBrand).trim();
     const brand = brandName
       ? await prisma.brand.upsert({ where: { name: brandName }, update: {}, create: { name: brandName } })
       : null;
-    // Navnet sammensættes som ved manuel oprettelse (produkttype + variant,
-    // docs/DECISIONS.md 2026-09-23) — ellers endte fx "Uden brus" kun i
-    // variant-feltet, og varen hed bare "Vand".
-    const productName = result.productName?.trim() ?? "";
+    const subbrand =
+      result.subbrand?.trim() ||
+      (textBrandMatch && aiBrand && aiBrand.toLowerCase() !== textBrandMatch.name.toLowerCase() ? aiBrand : null);
+    // Navnet sammensættes som ved manuel oprettelse (produkttype, docs/
+    // DECISIONS.md 2026-09-23). Varianten og pakningsstørrelsen står i hver
+    // sit felt og vises på den grønne linje under titlen — de må aldrig
+    // gentages i selve navnet (brugerens regel 2026-10-02).
     const variant = result.variant?.trim() ?? "";
+    const packageSizeText = result.packageSizeText?.trim() ?? "";
+    const rawName = result.productName?.trim() ?? "";
+    const productName = rawName;
     const name = productName
       ? variant && !productName.toLowerCase().includes(variant.toLowerCase())
         ? composeProductName({ productType: productName, variant })
@@ -123,9 +133,9 @@ async function enrichFront(input: QuickEnrichmentInput) {
       data: {
         name,
         brandId: brand?.id,
-        subbrand: result.subbrand ?? undefined,
-        variant: result.variant ?? undefined,
-        packageSizeText: result.packageSizeText ?? undefined,
+        subbrand: subbrand ?? undefined,
+        variant: variant || undefined,
+        packageSizeText: packageSizeText || undefined,
       },
       select: { id: true, name: true, createdAt: true },
     });
@@ -145,8 +155,10 @@ async function enrichFront(input: QuickEnrichmentInput) {
       data: {
         name,
         brand: brand?.name ?? null,
-        brandMatchedDatabase: Boolean(brandMatch),
-        subbrand: result.subbrand ?? null,
+        brandMatchedDatabase: Boolean(brandMatch || textBrandMatch),
+        brandFromFrontText: textBrandMatch?.name ?? null,
+        aiBrand: aiBrand || null,
+        subbrand: subbrand ?? null,
         variant: result.variant ?? null,
         packageSizeText: result.packageSizeText ?? null,
       },
@@ -211,6 +223,8 @@ async function enrichBarcodeLogo(input: QuickEnrichmentInput) {
       changes.brand = { connect: { id: brand.id } };
     }
 
+    // Varianten står kun i sit eget felt (grøn linje) — aldrig i navnet
+    // (brugerens regel 2026-10-02). Stod den allerede i navnet, fjernes den.
     const variant = result.variant?.trim() ?? "";
     if (!product.variant && variant && result.variantConfidence >= 0.5) {
       changes.variant = variant;
