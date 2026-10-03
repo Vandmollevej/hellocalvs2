@@ -23,6 +23,7 @@ import {
   IconUsers,
   IconHistory,
   IconTrashOff,
+  IconBulb,
 } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
 import { AccordionCard, ChevronRow } from "@/components/hf/AccordionCard";
@@ -30,9 +31,6 @@ import { IconPaymentCard } from "@/components/icons/PaymentCard";
 import { OnboardingWizard } from "@/components/OnboardingWizard";
 import { useTranslation } from "@/i18n/LocaleProvider";
 import { useFamilyStatus } from "@/components/family/FamilyStatusProvider";
-import { Toggle } from "@/components/ui/Toggle";
-import { HelpTip } from "@/components/hf/HelpTip";
-import { saveShowStartupTips, saveShowTooltips, useShowStartupTips, useShowTooltips } from "@/lib/help-prefs";
 
 function resetOnboardingProgress() {
   return fetch("/api/profile", {
@@ -51,8 +49,6 @@ export default function SettingsPage() {
   const { t } = useTranslation();
   const router = useRouter();
   const [showOnboarding, setShowOnboarding] = useState(false);
-  const showTooltips = useShowTooltips();
-  const showStartupTips = useShowStartupTips();
   // "Menstruationscyklus" (Visning) only shows up for sex = FEMALE, per
   // docs/DECISIONS.md 2026-09-19 — fetched once here rather than blocking
   // the rest of the settings page on it.
@@ -117,6 +113,30 @@ export default function SettingsPage() {
         </AccordionCard>
 
         <AccordionCard>
+          {showFamily && (
+            <>
+              <ChevronRow
+                icon={<IconUsers size={20} />}
+                label={t("family.title")}
+                href="/profile/family"
+              />
+              {controlsOthers && (
+                <ChevronRow
+                  icon={<IconTrashOff size={20} />}
+                  label={t("family.deletePermissions.title")}
+                  href="/settings/delete-permissions"
+                />
+              )}
+              {isControlled && (
+                <ChevronRow
+                  icon={<IconHistory size={20} />}
+                  label={t("family.log.title")}
+                  href="/settings/control-log"
+                  badgeCount={familyStatus?.unseenCount}
+                />
+              )}
+            </>
+          )}
           <ChevronRow
             icon={<IconCreditCard size={20} />}
             label={t("profile.row.subscription")}
@@ -130,34 +150,6 @@ export default function SettingsPage() {
           />
         </AccordionCard>
 
-        {showFamily && (
-          <AccordionCard>
-            <ChevronRow
-              icon={<IconUsers size={20} />}
-              label={t("family.title")}
-              href="/profile/family"
-              divider={isControlled || controlsOthers}
-            />
-            {controlsOthers && (
-              <ChevronRow
-                icon={<IconTrashOff size={20} />}
-                label={t("family.deletePermissions.title")}
-                href="/settings/delete-permissions"
-                divider={isControlled}
-              />
-            )}
-            {isControlled && (
-              <ChevronRow
-                icon={<IconHistory size={20} />}
-                label={t("family.log.title")}
-                href="/settings/control-log"
-                badgeCount={familyStatus?.unseenCount}
-                divider={false}
-              />
-            )}
-          </AccordionCard>
-        )}
-
         <AccordionCard>
           <ChevronRow
             icon={<IconAdjustments size={20} />}
@@ -168,12 +160,6 @@ export default function SettingsPage() {
         </AccordionCard>
 
         <AccordionCard>
-          {/* Statisk hjælpeside i public/ — fuld sideindlæsning, ikke en app-route. */}
-          <ChevronRow
-            icon={<IconHelp size={20} />}
-            label={t("settings.helpCenter")}
-            onClick={() => window.location.assign("/hjaelp.html")}
-          />
           <ChevronRow
             icon={<IconRefresh size={20} />}
             label={t("settings.learnTheApp")}
@@ -219,11 +205,6 @@ export default function SettingsPage() {
 
         <AccordionCard>
           <ChevronRow
-            icon={<IconLifebuoy size={20} />}
-            label={t("settings.support.title")}
-            href="/settings/support"
-          />
-          <ChevronRow
             icon={<IconBug size={20} />}
             label={t("profile.row.reportBug")}
             href="/profile/report-bug"
@@ -268,6 +249,12 @@ export default function SettingsPage() {
               icon={<IconMoon size={20} />}
               label={t("settings.sleepQuality")}
               href="/settings/display/sleep-quality"
+              divider
+            />
+            <ChevronRow
+              icon={<IconBulb size={20} />}
+              label={t("settings.tipsTitle")}
+              href="/settings/display/tips"
               divider={isFemale}
             />
             {isFemale && (
@@ -279,22 +266,20 @@ export default function SettingsPage() {
               />
             )}
           </AccordionCard>
-          <HelpTip>{t("settings.displayHelpTip")}</HelpTip>
-          <Toggle
-            label={t("settings.showTooltips")}
-            description={t("settings.showTooltipsDescription")}
-            checked={showTooltips}
-            onChange={saveShowTooltips}
-          />
-          <Toggle
-            label={t("settings.showStartupTips")}
-            description={t("settings.showStartupTipsDescription")}
-            checked={showStartupTips}
-            onChange={saveShowStartupTips}
-          />
         </div>
 
         <AccordionCard>
+          {/* Statisk hjælpeside i public/ — fuld sideindlæsning, ikke en app-route. */}
+          <ChevronRow
+            icon={<IconHelp size={20} />}
+            label={t("settings.helpCenter")}
+            onClick={() => window.location.assign("/hjaelp.html")}
+          />
+          <ChevronRow
+            icon={<IconLifebuoy size={20} />}
+            label={t("settings.contactSupport")}
+            href="/settings/support"
+          />
           <ChevronRow icon={<IconFileText size={20} />} label={t("settings.terms")} href="/betingelser" />
           <ChevronRow icon={<IconFileText size={20} />} label={t("settings.privacyPolicy")} href="/privatlivspolitik" />
           <ChevronRow icon={<IconFileText size={20} />} label={t("settings.dataTracking")} href="/privatlivspolitik#datasporing" divider={false} />

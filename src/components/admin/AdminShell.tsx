@@ -98,6 +98,7 @@ const NAV: NavEntry[] = [
     icon: "users",
     links: [
       { href: "/admin/users", key: "nav_users_all" },
+      { href: "/admin/users/points", key: "nav_grant_points" },
       { href: "/admin/chatbot", key: "nav_chatbot" },
       { href: "/admin/users/personas", key: "nav_personas" },
       { href: "/admin/test-programmes", key: "nav_test_programmes" },

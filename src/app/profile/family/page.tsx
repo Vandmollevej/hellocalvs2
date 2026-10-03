@@ -9,6 +9,7 @@ import { TextField } from "@/components/hf/TextField";
 import { Toggle } from "@/components/ui/Toggle";
 import { ProfileCircle } from "@/components/family/ProfileCircle";
 import { FamilyProfileForm, type FamilyProfileInput } from "@/components/family/FamilyProfileForm";
+import { AccessToggles, type AccessLevel } from "@/components/family/AccessToggles";
 import { InviteFamilyMemberSheet } from "@/components/family/InviteFamilyMemberSheet";
 import { FamilySharingSection } from "@/components/family/FamilySharingSection";
 import { useFamilyStatus, type FamilyMemberInfo } from "@/components/family/FamilyStatusProvider";
@@ -34,39 +35,7 @@ type PendingCode = {
 type AddKind = "member" | "child";
 const emptyForm = { displayName: "", birthDate: "", sex: "", heightCm: "", weightKg: "" };
 
-// "none" | "read" (se profilen) | "write" (se og oprette på deres vegne).
-type AccessLevel = "none" | "read" | "write";
 type NewAccess = Record<string, { personOnNew: AccessLevel; newOnPerson: AccessLevel }>;
-
-// To kontakter for én persons adgang til én profil. At oprette på nogens
-// vegne kræver, at man også kan se profilen, så kontakterne følges ad.
-function AccessToggles({
-  level,
-  onChange,
-  disabled,
-}: {
-  level: AccessLevel;
-  onChange: (level: AccessLevel) => void;
-  disabled?: boolean;
-}) {
-  const { t } = useTranslation();
-  return (
-    <>
-      <Toggle
-        label={t("family.rights.see")}
-        checked={level !== "none"}
-        disabled={disabled}
-        onChange={(value) => onChange(value ? (level === "none" ? "read" : level) : "none")}
-      />
-      <Toggle
-        label={t("family.rights.write")}
-        checked={level === "write"}
-        disabled={disabled}
-        onChange={(value) => onChange(value ? "write" : level === "none" ? "none" : "read")}
-      />
-    </>
-  );
-}
 
 async function send(url: string, method: string, body?: unknown) {
   const res = await fetch(url, {

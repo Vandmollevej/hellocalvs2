@@ -4,14 +4,14 @@ import { useState } from "react";
 import { IconPlus } from "@tabler/icons-react";
 import { BottomSheet, BottomSheetCloseButton } from "@/components/hf/BottomSheet";
 import { TextField } from "@/components/hf/TextField";
-import { Toggle } from "@/components/ui/Toggle";
+import { AccessToggles, type AccessLevel } from "@/components/family/AccessToggles";
 import { FamilyProfileForm, type FamilyProfileInput } from "@/components/family/FamilyProfileForm";
 import { useFamilyStatus } from "@/components/family/FamilyStatusProvider";
 import { useTranslation } from "@/i18n/LocaleProvider";
 
 // "Inviter familiemedlem" (docs/FAMILY.md 2026-10-03): betaleren skriver navn
-// og e-mail og vælger, hvilke af familiens profiler personen skal have
-// indsigt i. "Tilføj barn under 18" opretter en børneprofil her i arket, som
+// og e-mail og vælger for hver af familiens profiler, om personen må se den,
+// og om personen må oprette på dens vegne. "Tilføj barn under 18" opretter en børneprofil her i arket, som
 // derefter er valgt. Personen får en mail med et link og siger selv ja.
 type Step = "invite" | "child" | "sent";
 
@@ -31,7 +31,7 @@ export function InviteFamilyMemberSheet({ onClose }: { onClose: () => void }) {
   const [step, setStep] = useState<Step>("invite");
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
-  const [selected, setSelected] = useState<Set<string>>(new Set());
+  const [levels, setLevels] = useState<Record<string, AccessLevel>>({});
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -44,13 +44,8 @@ export function InviteFamilyMemberSheet({ onClose }: { onClose: () => void }) {
     return t(`family.error.${typeof data.code === "string" ? data.code : "unknown"}`);
   }
 
-  function toggle(id: string, value: boolean) {
-    setSelected((current) => {
-      const next = new Set(current);
-      if (value) next.add(id);
-      else next.delete(id);
-      return next;
-    });
+  function setLevel(id: string, level: AccessLevel) {
+    setLevels((current) => ({ ...current, [id]: level }));
   }
 
   async function addChild(input: FamilyProfileInput) {
@@ -63,7 +58,7 @@ export function InviteFamilyMemberSheet({ onClose }: { onClose: () => void }) {
       return false;
     }
     const profile = result.data.profile as { id?: string } | undefined;
-    if (profile?.id) toggle(profile.id, true);
+    if (profile?.id) setLevel(profile.id, "read");
     await refresh();
     setStep("invite");
     return true;
@@ -72,7 +67,9 @@ export function InviteFamilyMemberSheet({ onClose }: { onClose: () => void }) {
   async function send() {
     setError(null);
     setBusy(true);
-    const result = await postJson("/api/family/invitations", { name, email, subjectIds: [...selected] });
+    const subjectIds = Object.keys(levels).filter((id) => levels[id] !== "none");
+    const writeSubjectIds = subjectIds.filter((id) => levels[id] === "write");
+    const result = await postJson("/api/family/invitations", { name, email, subjectIds, writeSubjectIds });
     setBusy(false);
     if (!result.ok) {
       setError(errorText(result.data));
@@ -144,19 +141,20 @@ export function InviteFamilyMemberSheet({ onClose }: { onClose: () => void }) {
             <p className="hf-type-caption text-text-secondary">{t("family.invite.insightHelp")}</p>
             <div className="hf-stack">
               {members.map((member) => (
-                <Toggle
-                  key={member.userId}
-                  label={
-                    member.userId === me.id
+                <div key={member.userId} className="hf-stack">
+                  <p className="userback-ignore userback-block hf-type-body hf-type-strong">
+                    {member.userId === me.id
                       ? t("family.switcher.meLabel", { name: member.displayName })
                       : member.isChild
                         ? `${member.displayName} · ${t("family.child")}`
-                        : member.displayName
-                  }
-                  checked={selected.has(member.userId)}
-                  disabled={busy}
-                  onChange={(value) => toggle(member.userId, value)}
-                />
+                        : member.displayName}
+                  </p>
+                  <AccessToggles
+                    level={levels[member.userId] ?? "none"}
+                    disabled={busy}
+                    onChange={(level) => setLevel(member.userId, level)}
+                  />
+                </div>
               ))}
             </div>
 

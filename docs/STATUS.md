@@ -8,6 +8,11 @@ Last updated: 2026-10-03
 - Modtagere: alle brugere der ikke er anonymiseret eller har lukket kontoen. Push går kun til brugere med et push-abonnement. Mail og push lægges som hver sin `OutboundMessage` (event `ADMIN_MESSAGE`) og tømmes i baggrunden med det samme (`src/lib/admin-broadcast.ts`). Ingen migration.
 - Kontoer uden adgangskode (kun passkey) kan ikke sende, før de har en adgangskode. Mail kræver SMTP, push kræver VAPID-nøgler på serveren (ellers bliver rækkerne stående i køen).
 - Typecheck og lint grønne. Ikke testet mod rigtig database eller med rigtig afsendelse.
+## 2026-10-03: "Inviter familiemedlem" — vælg se/oprette pr. profil
+
+- Brugerens valg ved fletning af #212 (rettigheder) med #199 (invitationer): invitationsarket har nu "Se profilen" og "Oprette på deres vegne" pr. profil i stedet for én kontakt. Gemmes i `grantWriteSubjectIds`; ved ja får tildelingerne `canWrite` derefter. Se DECISIONS.md samme dato.
+- **Migration `20261003240000_family_invite_write` skal køre ved deploy.**
+- Testet mod midlertidig PostgreSQL 16 (alle migrationer kørt): oprette-listen beskæres til se-listen, ja giver se+oprette / kun se / ingen adgang som valgt, og en invitation uden oprette-liste giver kun se. Lint, typecheck, tests (undtagen kendt `page-tree`) og build grønne. Arket ikke set på telefon.
 
 ## 2026-10-03: Kalenderens flueben er signaturgrønne
 
@@ -18,6 +23,14 @@ Last updated: 2026-10-03
 - Medlemmer af en familie (ikke betaleren) har nu "Familie" som første række på `/profile`. Den fører til `/profile/family`, hvor "Del med andre" står øverst: én udfoldelig række "Delt med {navn}" pr. person, der kan se profilen (betaleren altid, andre via betalerens tildelinger). Tryk viser, hvad der deles (dagbogsområderne), og at personen også kan taste ind. Navnene vises, fordi de er i samme familie.
 - Visningen er kun til at se: betaleren bestemmer stadig adgangen (beslutning 2 i `docs/FAMILY.md`). Regnes ud fra `GET /api/family` (`peopleSharedWith` i `src/lib/family-sharing.ts`, test i `family-sharing.test.mjs`); ingen ny API eller migration.
 - Lint (0 fejl), typecheck, test og build grønne; skærmbilleder med mockede API-svar. Ikke testet med login mod en rigtig database.
+
+
+## 2026-10-03: Admin → Brugere → Tildel points
+
+- Ny side under Brugere: "Tildel points" (`/admin/users/points`). Søg brugeren frem (eller tryk mønt-ikonet på Alle brugere), skriv antal (1–300) og en begrundelse. Højst 300 points (én gratis måned) ad gangen og én gang om måneden pr. bruger; siden viser saldo, seneste tildeling og næste mulige dato, og nederst de seneste 50 tildelinger med begrundelse og admin. Se DECISIONS.md samme dato.
+- Brugeren ser "Tildelt af HELLO CAL" i Points-historikken; begrundelsen er kun synlig for admin.
+- **Migration, der skal køre ved deploy:** `20261003220000_admin_points_grant` (ny points-type `ADMIN_GRANT`, revisionsspor-type `ADMIN_GRANT_POINTS`, kolonnerne `note`/`grantedById` på `points_transactions`).
+- Testet: typecheck, lint (0 fejl), nye regel-tests og build. Tildelingen er kørt mod en lokal Postgres med alle migrationer: 300 points gives, en samtidig anden tildeling afvises, admin-konti/ukendte id'er afvises, og efter en måned kan der gives igen. Admin-siden er ikke set i browser (kræver admin-login).
 
 
 ## 2026-10-03: Forsidens puls forsvinder bagfra (samler #195 og #198)

@@ -2363,6 +2363,9 @@ enum PointsReason {
   SIGNUP_BONUS
   // Første testperson af en integration, godkendt af admin (2026-10-02).
   INTEGRATION_TESTER
+  // Admin → Brugere → Tildel points (docs/DECISIONS.md 2026-10-03), fx som
+  // kompensation: højst 300 points (én gratis måned) og én gang pr. måned.
+  ADMIN_GRANT
 }
 
 model PointsTransaction {
@@ -2377,9 +2380,15 @@ model PointsTransaction {
   bugReportId String?
   forward     Forward?     @relation(fields: [forwardId], references: [id])
   forwardId   String?
+  // Kun ADMIN_GRANT: administratorens begrundelse (vises ikke for brugeren)
+  // og hvem der tildelte. Ingen FK, så tildelingen overlever, hvis
+  // admin-kontoen fjernes.
+  note        String?
+  grantedById String?
   createdAt   DateTime     @default(now())
 
   @@index([userId])
+  @@index([reason, createdAt])
   @@map("points_transactions")
 }
 
@@ -2786,6 +2795,8 @@ enum AdminAuditAction {
   // Brugerens egen "Luk konto" og genåbning ved login (2026-10-03).
   USER_CLOSE_ACCOUNT
   USER_REOPEN_ACCOUNT
+  // Admin → Brugere → Tildel points (2026-10-03).
+  ADMIN_GRANT_POINTS
 }
 
 // Revisionsspor for følsomme admin-handlinger ("log ind som bruger" og
@@ -3403,8 +3414,10 @@ model FamilyLoginCode {
   email     String?
   // "Inviter familiemedlem" (docs/FAMILY.md 2026-10-03): modtagerens navn og
   // de af familiens profiler, personen får indsigt i, når koden bruges.
-  inviteeName     String?
-  grantSubjectIds String[] @default([])
+  // grantWriteSubjectIds: de af dem, personen også må oprette for (canWrite).
+  inviteeName          String?
+  grantSubjectIds      String[] @default([])
+  grantWriteSubjectIds String[] @default([])
   expiresAt DateTime
   usedAt    DateTime?
   createdAt DateTime  @default(now())
