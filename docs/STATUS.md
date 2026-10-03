@@ -182,6 +182,11 @@ Last updated: 2026-10-02
 - Rækken "Points" på `/profile` ligger nu som nr. 2 lige under "Profil" (før lå den mellem Billede-dagbog og Opskrifter). Kun rækkefølgen i `src/app/profile/page.tsx` er ændret.
 - Lint, typecheck og `npm run build` grønne.
 
+## 2026-10-02: Smagsvariant kun i H2 på varesiden
+
+- Varesiden viste fx "Marmelade Pære & havtorn" i H1 og "Pære & havtorn" i H2. Nu fjerner `splitProductHeading` smagen fra H1 (se DECISIONS.md samme dato). Gælder alle eksisterende varer, uden datamigrering.
+- Lint, typecheck og nye tests grønne. Ikke visuelt testet (ingen lokal DB).
+
 ## 2026-09-29: Offentlig forside for udloggede
 
 - Ny hent-appen-forside uden telefonramme, med QR-koder, planer med betalings-ark, Hello Doc-bjælke, nøgletal fra databasen, `/business` (kontaktformular) og `/presse`. Se DECISIONS.md samme dato.

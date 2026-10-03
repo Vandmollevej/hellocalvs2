@@ -170,6 +170,13 @@ månedsgitteret. Regel for dagfelterne i månedsvisningen:
   registreret, tæller som ikke nået.
 - I dag og fremtidige dage: ingen markering.
 Uge- og Liste-visningen beholder "Ingen indtastninger" i gråt på tomme dage.
+## 2026-10-02: Smagsvarianten står kun i H2 på varesiden
+
+- Brugerregel: smagsvarianten (fx "Pære & havtorn") må aldrig gentages i H1. Den står kun i den grønne H2 sammen med mængden.
+- `splitProductHeading` i `src/lib/product-naming.ts` fjerner `variant` og `flavor` fra varenavnet før visning. Matchet er på hele ord, uafhængigt af store/små bogstaver, og "&", "og", "and" og "+" sidestilles. Løse bindeord ("med", "og") og skilletegn i enderne fjernes også.
+- Er navnet kun smagen, bliver produkttypen H1. Mangler produkttypen, står navnet i H1, og smagen udelades af H2, så den aldrig står to gange.
+- Det gemte `Product.name` røres ikke. Navnet sammensættes stadig af Sub brand + Produkttype + Variant (2026-09-23), fordi lister og søgning ikke har nogen H2.
+- Tests: `src/lib/product-naming.test.mjs`.
 
 ## 2026-09-29: Aktivitetsniveau, PAL og kaloriemål
 
