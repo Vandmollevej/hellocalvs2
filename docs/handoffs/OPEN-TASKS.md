@@ -41,6 +41,16 @@ Ejer: cloud-session på branch `claude/handfrugt-sizes-grams-2z4p3i` (2026-10-02
 
 ---
 
+## G-PRODUPD — Opdater varen (points kun for kamerabilleder)
+Filer: `src/lib/product-update.ts`, `src/app/add/[id]/update/page.tsx`, `src/app/api/products/[id]/update/route.ts`.
+Ejer: cloud-session på branch `claude/product-update-points-camera-only` (2026-10-03)
+
+| Id | Opgave | Status | Næste skridt |
+| --- | --- | --- | --- |
+| product-update-camera | Kun tre områder (billede/energi/indhold), `photo_source`-tag, points kun for CAMERA | Venter på bruger | Draft-PR #227, lint/typecheck/build grønne. Brugeren skal teste på telefon, derefter merge; migration `20261003250000_photo_source` skal køre ved deploy |
+
+---
+
 ## G1 — Kalender
 Filer: `src/app/calendar/**`, kalender-komponenter.
 Ukendte ændringer: `src/app/calendar/page.tsx` indeholder G3's ikke-committede "Månedens synder"-knap (G3 ejer den del).
