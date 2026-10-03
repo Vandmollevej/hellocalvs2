@@ -22,6 +22,15 @@ Last updated: 2026-10-02
 - Brand: står et kendt brand ordret på forsiden (fx EDEKA ved serien Herzstücke), vinder databasens brand, og AI'ens brand bliver subbrand (`matchBrandInTexts`). Prompt: hjerter/kvalitetsmærker/segl er ikke logoer.
 - Billedrobot (`cutout.py`): et PRODUCT_FRONT-udklip, der dækker under 12 % af udsnittet eller er under 30 % i bredde/højde, fejler nu i stedet for at blive et tomt billede (mælkekartonen 2026-10-01).
 - Lint, typecheck og `npm test` grønne (page-tree-testen fejler også på master). Ikke live-testet: ingen DB/kamera her. **Ikke gjort:** loggen for de to scanninger (mælk + flødeboller) ligger i produktionsdatabasen (admin → Log) og kan ikke nås fra cloud-sessionen — eksportér flow-rækkerne (JSON) eller skærmbilleder af dem, så analyseres de. Det forkerte hjerte-logo skal fjernes manuelt på brandet i admin → Logoer, og prompt-ændringerne virker først for nye scanninger.
+## 2026-10-02: Garmin, WHOOP, Huawei + eufy/Renpho/Xiaomi/Tuya/Samsung via telefonen
+
+- Nye cloud-integrationer: Garmin (`garmin.ts`, PKCE, ping-webhook `garmin-webhook.ts`), WHOOP (`whoop.ts`) og Huawei Health (`huawei-health.ts`). Kun læsning; afmelding hos appen ved frakobling. Parsere i `*-items.ts` med tests i `src/lib/integration-items.test.mjs` (9 grønne).
+- eufy, Renpho, Xiaomi, Tuya og Samsung Health (ure, ring, vægt) er "via"-kort: data via Health Connect/Apple Health; kortet bliver "Forbundet", når ingest ser deres app som `origin`. Se DECISIONS.md samme dato.
+- Health Connect: Android-modul `native/android/healthconnect/` (læs + skriv, timevis baggrundssync, `origin` på alle poster). Ikke kompileret (ingen Android SDK her); se `native/README.md`.
+- Migration `20261002120000_more_integrations` (enum-værdier + `integrations.externalUserId`) skal køre ved deploy. Nye nøgler i admin → API-nøgler og `compose.production.yaml`: `GARMIN_CLIENT_ID/SECRET`, `GARMIN_WEBHOOK_KEY`, `WHOOP_CLIENT_ID/SECRET`, `HUAWEI_HEALTH_CLIENT_ID/SECRET`, `HUAWEI_HEALTH_API_BASE`. `.env.production.example` er ikke opdateret (adgang nægtet her).
+- Lint, typecheck og build grønne. `page-tree.test.mjs` fejler stadig (også på master). Ikke live-testet: ingen nøgler/DB her; Garmin- og Huawei-feltnavne er ikke prøvet mod live-API.
+- Mangler fra brugeren: Garmin-partnergodkendelse, Huawei Health Kit-godkendelse, WHOOP-app, logoer til de nye mærker, og evt. Tuya-partneraftale.
+
 ## 2026-10-02: Kameraflowet — rigtige stillbilleder + nyt foto af indholdet
 
 - Fejlen: marmelade (5711954020055) fik ingen ingredienser, fordi indholdsfotoet var et sløret 1080p-videobillede, og OpenAI svarede tomt ("for sløret"). Ingen genstart var involveret. Se DECISIONS 2026-10-02.

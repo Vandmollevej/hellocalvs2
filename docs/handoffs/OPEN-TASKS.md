@@ -287,6 +287,13 @@ Ejer: cloud-session `claude/scan-flow-rettelser` (2026-10-02) — arkiveres; næ
 | Id | Opgave | Status | Næste skridt |
 | --- | --- | --- | --- |
 | — | Ingen Tag billede-knap, større ramme, scan-rytme, h1/h2 uden gentagelser, brand fra DB, logo 70 %, 10 %-udklip, næringsdetaljer altid, tomme udklip afvises | Færdig (kode, draft-PR #162, master flettet ind 2026-10-03) | Næste session: flet master ind igen ved konflikt, sæt PR #162 til ready og merge efter brugerens OK. Brugerens test på telefon. Log-analyse af de to scanninger (mælk + flødeboller) kræver eksport fra admin → Log (cloud-sessionen når ikke produktions-DB'en). Fjern hjerte-logoet manuelt i admin → Logoer |
+## G-INT2 — Flere integrationer (Garmin, WHOOP, Huawei, via-mærker, Health Connect-modul)
+Filer: `src/lib/integrations/**`, `src/lib/integrations.ts`, `src/app/settings/integrations/**`, `src/app/api/integrations/**`, `src/lib/api-keys/*`, `native/android/healthconnect/**`.
+Ejer: cloud-session `claude/integrations-more-brands` (2026-10-02)
+
+| Id | Opgave | Status | Næste skridt |
+| --- | --- | --- | --- |
+| — | Garmin, WHOOP, Huawei (OAuth, kun læsning) + eufy/Renpho/Xiaomi/Tuya/Samsung via Health Connect/Apple Health + Android Health Connect-modul | Færdig (flettet i master via PR #157) | Kode i master; migration `20261002120000_more_integrations` kører ved deploy. Brugeren: Garmin-partnerprogram, Huawei Health Kit-godkendelse, WHOOP-app, nøgler i admin, logoer. Android-modulet skal bygges i Android Studio |
 
 ## G-STORE — Butiksimport (Bilka + REMA 1000)
 Filer: `scripts/store-products-import/**`, `docs/PRODUCT_IMPORT_MAPPING.md`, `Product.nutritionMissing`.
