@@ -157,12 +157,18 @@ Last updated: 2026-10-03
 - Kildearkene ligger nu på NAS-sharet `\\192.168.1.90\Hello Cal\Arkiv - historiske kilde- og importfiler\Oprydning 2026-09-29\`. Det nye katalog (`store_products.json`) + de nye varers 1.408 billeder ligger klar i `C:\Users\Peter\Desktop\Butiksimport 2026-10-03\`; de skal kopieres til NAS'ens `data/store-products-import/` (sessionen fik ikke lov at skrive på serveren), og jobbet `store-products-import` køres (admin → Cron-jobs → Kør nu, eller næste deploy). Indtil da kører den nye agent med det gamle katalog, hvilket er ufarligt og retter kJ-fejlen.
 - Testet: agenten mod lokal PostgreSQL med alle migrationer (live-katalog → nyt katalog, 0 fejl); lint, typecheck og `next build --webpack` grønne.
 - Brugeren: kør `bilka_vitamins.py` (vitaminpanelet på bilkatogo.dk, nogle timer); byg og importér derefter igen. Næring fra Frida til de skjulte varer er egen opgave (OPEN-TASKS).
+Last updated: 2026-10-02
 
 ## 2026-10-02: Desktop — alle sider i skallen
 
 - På desktop vises alle sider (også login, betingelser, privatlivspolitik) i WebShell med sidebjælke, topmenu og brødkrummer; kun admin, hello-doc, business og presse er fuld bredde.
 - Lint og typecheck grønne; ikke set i browser — tjek login-siderne på desktop.
-Last updated: 2026-10-02
+
+## 2026-10-02: Fold-ud-boks (accordion) i statistik-layoutet
+
+- `/statistics/unused-cards`: Overskrift, Skillelinje og ny "+ Fold-ud-boks" står samlet øverst under søgefeltet i en mørkere boks (`bg-hf-tan-dark`), så opbygningselementerne skiller sig ud fra grafer og kort.
+- Statistiksiden: fold-ud-boksen er en sektion i gitteret (hoved + kort nedenunder, samme udseende som grupperne på tilføj-siden). Tryk på hovedet folder ud/sammen; i redigering kan den omdøbes (tryk på titlen), flyttes som ét samlet element (også lukket), og kort kan trækkes ind i den — også ved at slippe kortet på hovedet, når den er lukket. "Fjern" lader kortene blive i gitteret.
+- Layout-logikken er flyttet til `src/lib/stat-layout.ts` (ren modul, re-eksporteret fra `stat-cards.ts`) med tests i `stat-layout.test.mjs`. Lint, typecheck og build grønne. Ikke live-testet (ingen lokal DB/login) — test træk-og-slip på telefon.
 
 ## 2026-10-02: Kropsmål som statistikgrafer
 
@@ -317,6 +323,12 @@ Last updated: 2026-10-02
 - Overskrifterne "Grafer" og "Kort" med op/ned-pile vises nu kun, mens en af sektionerne er i redigeringstilstand (langt tryk på graf/kort). I almindelig visning står graferne og kortene uden overskrifter; skillelinjen mellem sektionerne er bevaret.
 - `StatChartsSection` og `StatCardsGrid` har fået `onEditModeChange`, som statistiksiden bruger til at vise/skjule overskrifterne. Pilene virker stadig i redigering (knapper afslutter ikke redigeringen).
 - Lint, typecheck og `npm run build` kørt. Ikke live-testet (ingen lokal DB/login) — tjek på telefon.
+## 2026-10-02: "Tilføj til statistik" viser graferne i fuld bredde
+
+- Graferne på `/statistics/unused-cards` (og `/statistics/unused-charts`) vises nu i fuld bredde og præcis som på statistiksiden, med "+ Tilføj" under hver. Fælles tegner: `src/components/useStatChartRenderer.tsx` (statistiksiden bruger den samme).
+- De fem enkelt-grafer for kalium, calcium, jern, vitamin A og C er erstattet af to grafer, "Mineraler" og "Vitaminer". Alle mineraler/vitaminer fra `src/lib/nutrients.ts` kan krydses til og fra i grafens dropdown. Gemte layouts flyttes automatisk over.
+- Grafernes linjevalg folder sig nu ud inde i kortet og kan rulle, så lange lister ikke klippes.
+- Lint og build grønne. Testet i Chromium i telefonbredde med falske API-svar (ingen lokal DB). `page-tree.test.mjs` fejler stadig, som på master.
 
 ## 2026-10-02: Drikkevarer starter på pakkestørrelsen
 

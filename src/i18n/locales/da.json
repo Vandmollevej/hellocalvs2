@@ -1979,7 +1979,7 @@
   },
   "statUnusedCards": {
     "title": "Tilføj til statistik",
-    "hint": "Tryk på en graf eller et kort for at tilføje det til din statistikside.",
+    "hint": "Graferne vises, som de vil se ud. Tryk på + Tilføj under en graf eller på et kort for at tilføje det til din statistikside.",
     "category": {
       "carbsFibre": "Kulhydrattyper og fibre",
       "minerals": "Mineraler",
@@ -1994,11 +1994,15 @@
     "noSearchResults": "Ingen grafer eller kort matcher din søgning.",
     "add": "+ Tilføj",
     "noCardsYet": "Ingen kort her endnu.",
-    "addHeading": "Overskrift"
+    "addHeading": "+ Overskrift",
+    "addDivider": "+ Skillelinje",
+    "addAccordion": "+ Fold-ud-boks",
+    "layoutTools": "Opbygning",
+    "accordionTitle": "Fold-ud-boks"
   },
   "statUnusedCharts": {
     "title": "Ubrugte grafer",
-    "hint": "Tryk på en graf for at tilføje den øverst på din statistikside.",
+    "hint": "Graferne vises, som de vil se ud. Tryk på + Tilføj under en graf for at tilføje den til din statistikside.",
     "searchPlaceholder": "Søg i alle grafer",
     "noSearchResults": "Ingen grafer matcher din søgning.",
     "noChartsLeft": "Alle grafer her er allerede på din statistikside.",
@@ -2020,6 +2024,10 @@
     "removeHeading": "Fjern overskrift",
     "dragHeading": "Flyt overskrift",
     "removeDivider": "Fjern skillelinje",
+    "removeAccordion": "Fjern fold-ud-boks",
+    "renameAccordion": "Omdøb fold-ud-boks",
+    "openAccordion": "Fold ud",
+    "closeAccordion": "Fold sammen",
     "noData": "Ingen data i perioden"
   },
   "statChart": {
