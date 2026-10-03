@@ -1938,6 +1938,13 @@
   },
   "payment": {
     "title": "Payment",
+    "expires": "Expires {date}",
+    "changeMethod": "Change payment method",
+    "opening": "Opening…",
+    "changeError": "Could not open the card change. Please try again shortly.",
+    "recurringNote": "Charged automatically at each renewal.",
+    "walletCard": "{brand} •••• {last4}",
+
     "status": {
       "inactive": "No active subscription",
       "active": "Active subscription",
@@ -1946,7 +1953,7 @@
       "canceled": "Canceled"
     },
     "freeMonthsRemaining": "{count} free month(s) queued",
-    "paymentMethodsTitle": "Payment methods",
+    "paymentMethodsTitle": "Payment method",
     "noPaymentMethod": "No payment method added yet",
     "nextPayment": "Next payment on {date}",
     "canceledUntil": "Seriøs until {date}",

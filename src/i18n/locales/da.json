@@ -1919,6 +1919,13 @@
   },
   "payment": {
     "title": "Betaling",
+    "expires": "Udløber {date}",
+    "changeMethod": "Skift betalingsmetode",
+    "opening": "Åbner…",
+    "changeError": "Kunne ikke åbne kortskift. Prøv igen om lidt.",
+    "recurringNote": "Trækkes automatisk ved hver fornyelse.",
+    "walletCard": "{brand} •••• {last4}",
+
     "status": {
       "inactive": "Intet aktivt abonnement",
       "active": "Aktivt abonnement",
@@ -1927,7 +1934,7 @@
       "canceled": "Opsagt"
     },
     "freeMonthsRemaining": "{count} gratis måned(er) i kø",
-    "paymentMethodsTitle": "Betalingsmetoder",
+    "paymentMethodsTitle": "Betalingsmetode",
     "noPaymentMethod": "Ingen betalingsmetode tilføjet endnu",
     "nextPayment": "Næste betaling d. {date}",
     "canceledUntil": "Seriøs til og med d. {date}",
