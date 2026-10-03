@@ -201,6 +201,18 @@ Uge- og Liste-visningen beholder "Ingen indtastninger" i gråt på tomme dage.
 - Er navnet kun smagen, bliver produkttypen H1. Mangler produkttypen, står navnet i H1, og smagen udelades af H2, så den aldrig står to gange.
 - Det gemte `Product.name` røres ikke. Navnet sammensættes stadig af Sub brand + Produkttype + Variant (2026-09-23), fordi lister og søgning ikke har nogen H2.
 - Tests: `src/lib/product-naming.test.mjs`.
+## 2026-10-02: Motion lægges oven i dagens mål i kalenderen
+
+- Registreret motion (`Activity.caloriesBurned`, uanset kilde) lægges oven i
+  dagens kaloriebudget, når kalenderen afgør "inden for målet": dagvisning,
+  månedsstatus, prikker i månedsgitteret, uge-/listevisning (over/under og
+  ugebalance), årsvisning og stribe. Brugerens valg 2026-10-02.
+- "Mål: X kcal" viser fortsat budgettet uden motion; motionen står som egen
+  linje (rød flamme + grøn "+ N kcal") over målet, og "Tilbage"/"Overskredet"
+  regnes mod mål + motion. Fælles blok: `GoalStatusSummary` (design.md §6.16).
+- Ikke ændret endnu: forsidens "Tilbage"-kort (`frontpage-stats.ts`) og
+  widgets (`widget-data.ts`) regner stadig mod budgettet alene — skal følge
+  samme regel, når de rettes (andre gruppers filer).
 
 ## 2026-09-29: Aktivitetsniveau, PAL og kaloriemål
 

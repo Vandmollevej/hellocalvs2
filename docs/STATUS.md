@@ -189,6 +189,12 @@ Last updated: 2026-10-02
 - Rettet i `StatCardsGrid.tsx`: trykket lytter også på selve elementet fingeren rammer, og løftet registreres synkront (ref), så scroll blokeres med det samme. Gælder også overskrifter/skillelinjer.
 - Testet i Chromium med touch-emulering: fejlen genskabt på gammel kode; med rettelsen flyttes kortet, og et hurtigt swipe på et kort scroller stadig. Ikke testet på fysisk iPhone.
 
+## 2026-10-02: Fælles målstatus-blok i kalenderen
+
+- Ny fælles komponent `src/components/calendar/GoalStatusSummary.tsx` bruges både nederst i dagvisningen og i månedsstatussen over gitteret. Oppefra: højrestillet rød flamme + grøn "+ N kcal" (kun ved registreret motion) og "Mål: X kcal"; statusbjælke med cirkel + kort tekst ("Inden for målet" / "Målet ikke opnået" / "Intet registreret"); under bjælken højrestillet "Tilbage for i dag: N kcal" (måned: "Tilbage i måneden") eller "Overskredet med N kcal" i rødt.
+- Motion tæller nu med i målet i hele kalenderen (DECISIONS 2026-10-02): `DailyGoalContext` giver `base` (til "Mål") og `effective` (= base + dagens motion) — alle nået/over/balance-afgørelser bruger `effective`. Forside-kort og widgets er ikke rettet (andre gruppers filer).
+- Lint, typecheck og `npm run build` grønne. Ikke visuelt testet (ingen lokal DB/login) — tjek dag- og månedsvisning på telefon.
+
 ## 2026-10-02: Drikkevarer starter på pakkestørrelsen
 
 - Mængdefeltet viser nu 33 cl / 25 cl / 50 cl for dåser og små flasker, også når størrelsen kun står i navnet, og også for øl/vin uden kategorien DRINK. Vin, spiritus og færdigblandede drinks har egne regler (DECISIONS.md 2026-09-28, tilføjelse 2026-10-02).
