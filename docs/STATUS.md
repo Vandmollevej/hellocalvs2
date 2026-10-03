@@ -1,6 +1,14 @@
 # HELLO CAL — project status
 
 
+## 2026-10-03: Butiksimporten — alt fra Bilka- og REMA-arkene med
+
+- 13.039 varer (før 10.524): 2.364 uden kalorietal er skjult (`nutritionMissing`, migration `20261002213000_product_nutrition_missing`), 151 med kun kalorier vises med ~ på makroerne, 107 uden stregkode er med under butikkens vare-id. Se DECISIONS 2026-10-02 "Butiksimporten: alt fra arkene med" og `docs/PRODUCT_IMPORT_MAPPING.md`.
+- Rettet: kJ 1000× for småt på ca. 4.900 varer, 25 forkerte kalorietal, 44 "Sukkerfri" med sukker, 129 navne som "0"/"M appelsin"; Labels-filtre og oprindelsesland.
+- Kildearkene ligger nu på NAS-sharet `\\192.168.1.90\Hello Cal\Arkiv - historiske kilde- og importfiler\Oprydning 2026-09-29\`. Det nye katalog (`store_products.json`) + de nye varers 1.408 billeder ligger klar i `C:\Users\Peter\Desktop\Butiksimport 2026-10-03\`; de skal kopieres til NAS'ens `data/store-products-import/` (sessionen fik ikke lov at skrive på serveren), og jobbet `store-products-import` køres (admin → Cron-jobs → Kør nu, eller næste deploy). Indtil da kører den nye agent med det gamle katalog, hvilket er ufarligt og retter kJ-fejlen.
+- Testet: agenten mod lokal PostgreSQL med alle migrationer (live-katalog → nyt katalog, 0 fejl); lint, typecheck og `next build --webpack` grønne.
+- Brugeren: kør `bilka_vitamins.py` (vitaminpanelet på bilkatogo.dk, nogle timer); byg og importér derefter igen. Næring fra Frida til de skjulte varer er egen opgave (OPEN-TASKS).
+
 ## 2026-10-02: Desktop — alle sider i skallen
 
 - På desktop vises alle sider (også login, betingelser, privatlivspolitik) i WebShell med sidebjælke, topmenu og brødkrummer; kun admin, hello-doc, business og presse er fuld bredde.
@@ -10,7 +18,7 @@ Last updated: 2026-10-02
 ## 2026-10-02: "Scan varen igen" — points-banner + natlig AI på Open Food Facts-billeder
 
 - Bygget efter brugerens krav (se DECISIONS.md samme dato): banner under headeren på `/add/[id]` efter scanning (`src/components/add/RescanBanner.tsx`), kameraflowet har en genscannings-tilstand (`ProductCaptureFlow` med `rescan`), API `POST /api/products/[id]/rescan` og `/rescan/offer`, baggrundsaflæsning i `src/lib/product-rescan.ts`, natligt job `external-image-ai` (`src/lib/external-image-ai.ts`).
-- Migration `20261002160000_product_rescan` skal køre ved deploy.
+- Migration `20261003050000_product_rescan` skal køre ved deploy.
 - Efter brugerens svar: også USDA-varer og også fra søgningen; points straks efter AI. Genscannede Open Food Facts-/USDA-varer overtages som vores egne og bliver søgbare; originalen fjernes.
 - Tests (`src/lib/product-rescan-offer.test.mjs`), lint, typecheck og build grønne. Ikke live-testet (ingen lokal DB/login/kamera) — test på telefon: scan en Open Food Facts-vare, træk banneret ned, tag de tre fotos.
 
