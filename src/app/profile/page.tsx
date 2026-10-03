@@ -117,7 +117,10 @@ export default function ProfilePage() {
               icon={<IconPhotoFrame size={20} />}
               label={t("profile.row.photoDiary")}
               href="/profile/photo-diary"
+              divider={false}
             />
+          </AccordionCard>
+          <AccordionCard>
             <ChevronRow
               icon={<IconPlateCutlery size={20} />}
               label={t("profile.row.recipes")}
