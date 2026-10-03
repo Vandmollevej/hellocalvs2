@@ -2,6 +2,10 @@
 
 Last updated: 2026-10-03
 
+## 2026-10-03: Kalender — profilcirklen er tilbage i dagsvisningen
+
+- Dagsvisningen (`DayDetails` i `src/app/calendar/page.tsx`) tegner sin egen grønne topbjælke som fuldskærmsdialog over siden, og dens højre hjørne var et tomt felt — så profilcirklen forsvandt, så snart en dag blev åbnet. Den viser nu `ProfileAvatarLink` som alle andre sider.
+- Lint (0 fejl), typecheck og build grønne. Ikke set med login (ingen lokal DB) — test på telefon: Kalender → åbn en dag.
 ## 2026-10-03: Betaling viser det aktive kort fra Stripe (PR #132 flettet med master)
 
 - `/settings/payment` viser det kort/den wallet, Stripe trækker på: mærke + sidste 4 + udløb; Apple Pay/Google Pay med kortet bagved (nyt felt `PaymentMethod.wallet`, migration `20261002090000_payment_method_wallet` **skal køre ved deploy**); MobilePay. Kortmærke-logo (Visa/Mastercard) i lille fast ramme; andre mærker får det egne kortikon (`IconPaymentCard`). Siden henter altid frisk fra Stripe (`/api/subscription?refresh=1`). Kortet beholdes efter opsigelse (perioden er betalt).
