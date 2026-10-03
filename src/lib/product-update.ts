@@ -34,10 +34,13 @@ export function productGaps(product: {
   };
 }
 
-// Hvilke fotos der kan udfylde hullerne: forsiden giver billede + logo.
+// Hvilke fotos der kan udfylde hullerne. Kun tre områder tilbydes: produktbillede
+// (forsiden), energi og indhold. Et manglende logo alene udløser hverken banner
+// eller kort — det følger med forsiden, når billedet mangler (brugerens rettelse
+// 2026-10-03).
 export function updateKindsFor(gaps: ProductGaps): ProductUpdateKind[] {
   const kinds: ProductUpdateKind[] = [];
-  if (gaps.image || gaps.logo) kinds.push("FRONT");
+  if (gaps.image) kinds.push("FRONT");
   if (gaps.nutrition) kinds.push("NUTRITION");
   if (gaps.ingredients) kinds.push("INGREDIENTS");
   return kinds;
@@ -49,6 +52,21 @@ export async function hasEarnedUpdatePoints(userId: string, productId: string): 
     select: { id: true },
   });
   return existing !== null;
+}
+
+// Points gives kun for et foto taget nu med kameraet — ikke for et billede, der
+// er hentet på nettet og lagt op fra fotobiblioteket (brugerens regel
+// 2026-10-03). Filens ændringstid bruges som mærke; ældre filer udfylder stadig
+// varen, men giver ingen points.
+export const CAMERA_PHOTO_MAX_AGE_MS = 5 * 60 * 1000;
+
+export function isFreshCameraPhoto(lastModifiedMs: unknown, now = Date.now()): boolean {
+  return (
+    typeof lastModifiedMs === "number" &&
+    Number.isFinite(lastModifiedMs) &&
+    now - lastModifiedMs <= CAMERA_PHOTO_MAX_AGE_MS &&
+    lastModifiedMs <= now + 60_000
+  );
 }
 
 export async function awardUpdatePointsOnce(userId: string, productId: string): Promise<boolean> {

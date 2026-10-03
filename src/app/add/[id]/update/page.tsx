@@ -82,7 +82,7 @@ export default function ProductUpdatePage() {
       const res = await fetch(`/api/products/${encodeURIComponent(id)}/update`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ kind, photo }),
+        body: JSON.stringify({ kind, photo, photoTakenAt: file.lastModified }),
       });
       if (!res.ok) throw new Error();
       const data = (await res.json()) as { accepted: boolean; pointsAwarded?: number };

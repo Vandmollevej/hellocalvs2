@@ -4200,6 +4200,11 @@ Brugerens krav: "Luk konto kan reverses inde. For 3 måneder, med mindre man væ
 - Bruger Web Push (VAPID) via PWA + public/sw.js — ikke en native app. Kræver VAPID_PUBLIC_KEY/VAPID_PRIVATE_KEY på serveren; uden dem, uden abonnement eller hvis ingen enhed kan nås, springes kravet over (ingen låses ude). Social login, Face ID og nulstilling af adgangskode er upåvirket.
 - Native app (APNs/FCM) er fortsat ikke bygget; når den findes, skal den bruge samme endpoints.
 - SMS: login-koder bruger src/lib/teammessage.ts; src/lib/sms.ts (GatewayAPI) fra en anden session er et separat spor til notifikationer.
+## 2026-10-03 Opdater-varen: kun tre områder, kun kamerabilleder giver points
+
+- Banner og kort tilbydes kun for tre områder: produktbillede (forsiden), energi og indhold. Et manglende logo alene udløser dem ikke mere (før kom banneret på en vare med billede, energi og indhold, bare fordi brandets logo manglede). Logoet følger med forsiden, når billedet mangler.
+- Points gives kun for et foto taget nu med kameraet. Klienten sender filens ændringstid (`photoTakenAt`); er den over 5 minutter gammel, udfyldes varen stadig, men der gives ingen points (`isFreshCameraPhoto` i `src/lib/product-update.ts`). Billeder fra nettet giver altså ingen points. Billedet tagges nu i databasen: `ai_product_analyses.photo_source` (`CAMERA` / `UPLOAD`, migration `20261003250000_photo_source`); kun `CAMERA` giver points (brugerens valg).
+
 ## 2026-10-03 Opdater-varen-banner: 20 points
 
 - Mangler en vare indhold, energi (kun butiksvarer med `nutritionMissing`), logo eller produktbillede, vises et hvidt banner øverst på varesiden: "Optjen 20 points ved at opdatere varen". Det kan trækkes ned/skubbes op, så kun den smalle bar med grebet vises (`src/components/hf/UpdatePointsBanner.tsx`).

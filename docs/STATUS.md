@@ -2,6 +2,10 @@
 
 Last updated: 2026-10-03
 
+## 2026-10-03: Opdater-varen — kun tre områder, ingen points for net-billeder
+
+- Banneret/kortene vises kun for manglende produktbillede, energi eller indhold; manglende logo alene udløser dem ikke. Points kræver et friskt kamerabillede; billedet tagges `photo_source` CAMERA/UPLOAD. **Migration `20261003250000_photo_source` skal køre ved deploy.** Lint (0 fejl), typecheck og build grønne; ikke set på telefon. Fritlagt PNG rager allerede 10 % op over cirklen (`isCutoutImage`, kun filer under `/cutouts/`).
+
 ## 2026-10-03: Beskeder på Profil, Resultatvisning under Visning, Opsætning uden Sprog og region
 
 - Beskeder er flyttet fra Indstillinger til Profil som egen række lige under "Profil" øverst. Ulæst-tallet er en grøn cirkel (`--hf-color-brand`) med hvidt tal (`ChevronRow.badgeCount`, også Kontrol-log).
