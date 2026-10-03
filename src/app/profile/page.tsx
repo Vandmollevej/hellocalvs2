@@ -8,6 +8,7 @@ import {
   IconBook,
   IconChartLine,
   IconUsers,
+  IconMail,
 } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
 import { AccordionCard, ChevronRow } from "@/components/hf/AccordionCard";
@@ -44,6 +45,7 @@ export default function ProfilePage() {
   const isFamilyMember = Boolean(familyStatus?.family && !familyStatus.family.isOwner);
   const [user, setUser] = useState<ProfileUser | null>(null);
   const [loading, setLoading] = useState(true);
+  const [unreadMessages, setUnreadMessages] = useState(0);
 
   useEffect(() => {
     let cancelled = false;
@@ -61,6 +63,15 @@ export default function ProfilePage() {
       .finally(() => {
         if (!cancelled) setLoading(false);
       });
+    fetch("/api/messages")
+      .then(async (response) => {
+        if (!response.ok) throw new Error("failed");
+        return (await response.json()) as { unreadCount: number };
+      })
+      .then((data) => {
+        if (!cancelled) setUnreadMessages(data.unreadCount);
+      })
+      .catch(() => {});
 
     return () => {
       cancelled = true;
@@ -107,6 +118,13 @@ export default function ProfilePage() {
               icon={<IconUser size={20} />}
               label={t("profile.section.profile")}
               href="/profile/edit"
+            />
+            {/* Beskeder øverst under "Profil" med grønt ulæst-tal (ejerens valg 2026-10-03). */}
+            <ChevronRow
+              icon={<IconMail size={20} />}
+              label={t("settings.messages")}
+              href="/profile/messages"
+              badgeCount={unreadMessages}
             />
             <ChevronRow
               icon={<IconChartLine size={20} />}

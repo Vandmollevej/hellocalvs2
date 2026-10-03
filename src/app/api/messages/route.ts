@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getSessionUser } from "@/lib/session";
 
-// Bruger-indbakke (Indstillinger → Beskeder): lister de OutboundMessage-rækker
+// Bruger-indbakke (Profil → Beskeder): lister de OutboundMessage-rækker
 // der reelt blev sendt til brugeren (mail/push, se src/lib/messaging.ts), med
 // læst/ulæst-status til det sorte tal-badge i Indstillinger.
 export async function GET() {

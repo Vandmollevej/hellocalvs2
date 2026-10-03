@@ -10,7 +10,7 @@ import {
   IconPlugConnected,
   IconCreditCard,
   IconBell,
-  IconMail,
+  IconEye,
   IconStethoscope,
   IconHome2,
   IconCalendarHeart,
@@ -53,7 +53,6 @@ export default function SettingsPage() {
   // docs/DECISIONS.md 2026-09-19 — fetched once here rather than blocking
   // the rest of the settings page on it.
   const [isFemale, setIsFemale] = useState(false);
-  const [unreadMessages, setUnreadMessages] = useState(0);
   const { status: familyStatus } = useFamilyStatus();
   // Kontrol-loggen vises for den, der er med i en andens familie (barn,
   // partner — den, der kontrolleres), se docs/FAMILY.md.
@@ -85,15 +84,6 @@ export default function SettingsPage() {
       })
       .then((data) => {
         if (!cancelled) setIsFemale(data.user.sex === "FEMALE");
-      })
-      .catch(() => {});
-    fetch("/api/messages")
-      .then(async (response) => {
-        if (!response.ok) throw new Error("failed");
-        return (await response.json()) as { unreadCount: number };
-      })
-      .then((data) => {
-        if (!cancelled) setUnreadMessages(data.unreadCount);
       })
       .catch(() => {});
     return () => {
@@ -180,12 +170,7 @@ export default function SettingsPage() {
         </AccordionCard>
 
         <AccordionCard>
-          <ChevronRow
-            icon={<IconMail size={20} />}
-            label={t("settings.messages")}
-            href="/profile/messages"
-            badgeCount={unreadMessages}
-          />
+          {/* Beskeder ligger på Profil, øverst under "Profil" (ejerens valg 2026-10-03). */}
           <ChevronRow
             icon={<IconBell size={20} />}
             label={t("settings.notifications")}
@@ -221,6 +206,13 @@ export default function SettingsPage() {
               icon={<IconHome2 size={20} />}
               label={t("settings.frontPage")}
               href="/settings/display/front-page"
+              divider
+            />
+            {/* Resultatvisning hører under Visning (ejerens valg 2026-10-03, flyttet fra Opsætning). */}
+            <ChevronRow
+              icon={<IconEye size={20} />}
+              label={t("settings.resultsDisplay")}
+              href="/profile/settings/results"
               divider
             />
             <ChevronRow

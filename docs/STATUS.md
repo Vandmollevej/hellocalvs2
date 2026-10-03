@@ -2,6 +2,12 @@
 
 Last updated: 2026-10-03
 
+## 2026-10-03: Beskeder på Profil, Resultatvisning under Visning, Opsætning uden Sprog og region
+
+- Beskeder er flyttet fra Indstillinger til Profil som egen række lige under "Profil" øverst. Ulæst-tallet er en grøn cirkel (`--hf-color-brand`) med hvidt tal (`ChevronRow.badgeCount`, også Kontrol-log).
+- Resultatvisning ligger under Indstillinger → Visning (efter Forside); "Sprog og region" og "Resultatvisning" er fjernet fra Opsætning, som nu kun viser fremdriften. Sprog og region står fortsat øverst i Indstillinger. Adresserne er uændrede.
+- Lint (0 fejl), typecheck og build grønne. Ikke set med login (ingen lokal DB) — tjek Profil og Indstillinger på telefon.
+
 ## 2026-10-03: "Inviter familiemedlem" — vælg se/oprette pr. profil
 
 - Brugerens valg ved fletning af #212 (rettigheder) med #199 (invitationer): invitationsarket har nu "Se profilen" og "Oprette på deres vegne" pr. profil i stedet for én kontakt. Gemmes i `grantWriteSubjectIds`; ved ja får tildelingerne `canWrite` derefter. Se DECISIONS.md samme dato.

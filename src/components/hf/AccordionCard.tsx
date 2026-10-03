@@ -20,8 +20,8 @@ export function ChevronRow({
   divider?: boolean;
   href?: string;
   onClick?: () => void;
-  // Ulæst-tal (fx Indstillinger → Beskeder). Sidder til venstre for pilen,
-  // yderst til højre i rækken — se design.md §6.11.
+  // Ulæst-tal (fx Profil → Beskeder): grøn cirkel med hvidt tal (ejerens valg
+  // 2026-10-03). Sidder til venstre for pilen, yderst til højre i rækken.
   badgeCount?: number;
 }) {
   const className = `flex h-12 w-full items-center gap-4 px-4 text-left ${
@@ -34,7 +34,7 @@ export function ChevronRow({
       {!!badgeCount && badgeCount > 0 && (
         <span
           className="hf-type-caption flex h-5 min-w-5 items-center justify-center rounded-full px-1"
-          style={{ background: "var(--hf-black)", color: "var(--hf-color-white)" }}
+          style={{ background: "var(--hf-color-brand)", color: "var(--hf-color-white)" }}
           aria-label={`${badgeCount} ulæste`}
         >
           {badgeCount > 99 ? "99+" : badgeCount}

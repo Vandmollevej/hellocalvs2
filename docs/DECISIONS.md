@@ -2,6 +2,14 @@
 
 This file records durable decisions. Add a dated entry when a later decision changes one of them.
 
+## 2026-10-03: Beskeder på Profil, Resultatvisning under Visning
+
+Ejerens krav: "Resultatvisning hører til under punktet visninger. Sprog og region skal slettes fra opsætning da den findes allerede under indstillingerne. Beskeder skal vises på separat linje under profil for oven … og have grøn cirkel med hvid skrift for beskeder som ikke er læst."
+
+- Beskeder er en række på Profil lige under "Profil" (ikke længere i Indstillinger). Notifikationer bliver i Indstillinger.
+- Ulæst-tal i `ChevronRow` er en grøn cirkel (`--hf-color-brand`) med hvidt tal i stedet for sort.
+- Opsætning (`/profile/settings`) har ikke længere rækkerne Sprog og region / Resultatvisning; Resultatvisning ligger under Indstillinger → Visning.
+
 ## 2026-10-03: Invitationer bruger samme rettigheder som oprettede profiler
 
 Brugerens valg ved fletningen af #212 med #199: både "Inviter familiemedlem" (mail til en person med egen konto), "Tilføj familiemedlem" og "Tilføj barn (under 18)" findes, og rettighederne "se" / "oprette på deres vegne" gælder også invitationer.
