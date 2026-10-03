@@ -48,6 +48,10 @@ Last updated: 2026-10-02
 - Migration `20261002090000_sent_message_notice` skal køre ved deploy. Lint og typecheck grønne; ikke live-testet (ingen lokal DB).
 - Bemærk: push kræver VAPID-nøgler og at appen tilmelder enheden (findes ikke endnu); sms kræver `SMS_GATEWAY_TOKEN` og et telefonnummer på brugeren (findes ikke endnu).
 
+## 2026-10-02: Statistik — periodevælgeren åbner under knappen og fylder hele bredden
+
+- `StatPeriodPicker`: panelet var 256 px og højrestillet, så det så ud til at åbne væk fra "Vis:"-knappen. Nu `left-0 right-0` (hele indholdsbredden) og fra/til-datoerne ligger i ét grid (`1fr auto 1fr`) med `white-space: nowrap` på iOS' datotekst, så "30 Sep 2026" ikke ombrydes til to linjer.
+- Lint, typecheck og build grønne. Ikke visuelt testet på telefon (ingen lokal DB/login).
 ## 2026-10-02: Vægt- og længdeenheder
 
 - Nyt src/lib/units.ts (valg, landestandard, omregning, useUnits()), nyt startguide-trin units og to valg under Sprog og region. Brugt i: profil (vægt, højde-hjul), vægtlog, vægt-kalibrering, startvægt-verificering, målsætninger (vægt + kropsmål), energimål-editoren, kropsmål og statistik-grafen.
