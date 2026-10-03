@@ -9,7 +9,7 @@ Last updated: 2026-10-02
 
 ## 2026-10-02: Tale og chat — "Foreslået" med Tilføj-knap pr. forslag
 
-- `/voice` og `/chat`: AI'ens tolkning vises nu under overskriften "Foreslået" (før "Tilføjet"), og hver foreslået vare har sin egen "Tilføj"-knap — intet gemmes uden brugerens tryk. Ved to eller flere forslag er der desuden "Tilføj alle forslag". Gemte varer står for sig under "Tilføjet" (tale) eller markeres "Tilføjet" i chatboblen.
+- `/voice` og `/chat`: AI'ens tolkning vises nu under overskriften "Foreslået" (før "Tilføjet"), og hver foreslået vare har sin egen "Tilføj"-knap — intet gemmes uden brugerens tryk. Ved to eller flere forslag er der desuden "Tilføj alle forslag". Gemte varer står for sig under "Tilføjet" på begge sider (desktop-siden "Indtast" følger nu samme opbygning som talesiden).
 - Tale: forslag fra en tidligere optagelse bliver stående, når en ny optagelse starter (hver optagelse er sin egen "batch"; kun den igangværende optagelses forslag erstattes af live-tolkningen), så flere forslag kan vente samtidig.
 - Knapperne bruger `.hf-btn-primary`/`.hf-btn-secondary` (design.md §6.2); den grønne knap på talesiden er væk. Nye tekster da/en (`voice.suggested`, `voice.addOne`, `web.chatSuggested`, `web.chatAddOne`, `web.chatAddAll`).
 - Lint, typecheck og build grønne. Ikke live-testet (ingen lokal DB/mikrofon) — test på telefon og i desktop-chatten.
