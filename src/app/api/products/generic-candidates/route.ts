@@ -11,6 +11,7 @@ export async function GET() {
       where: {
         imageUrl: { not: null },
         discontinued: false,
+        nutritionMissing: false,
         OR: [
           { category: { name: { contains: "frugt", mode: "insensitive" } } },
           { category: { name: { contains: "grønt", mode: "insensitive" } } },
