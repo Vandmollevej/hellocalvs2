@@ -9,6 +9,7 @@ import {
   IconChartLine,
   IconUsers,
   IconMail,
+  IconTool,
 } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
 import { AccordionCard, ChevronRow } from "@/components/hf/AccordionCard";
@@ -101,6 +102,16 @@ export default function ProfilePage() {
               />
             </AccordionCard>
           )}
+          {/* Kontoopsætning øverst (under Familie for familiemedlemmer), grøn og fed som proceslinjen. */}
+          <AccordionCard>
+            <ChevronRow
+              icon={<IconTool size={20} />}
+              label={t("settings.accountSetup")}
+              href="/profile/settings"
+              divider={false}
+              emphasis
+            />
+          </AccordionCard>
           <ProfileSwitcher />
           {/* Statisk indtil guided profilopsætning beregner det dynamisk. */}
           <HfProgressStepper
