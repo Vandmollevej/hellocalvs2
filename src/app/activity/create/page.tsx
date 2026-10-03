@@ -95,16 +95,16 @@ function ActivityCreateContent() {
           <ActivityPicker onPick={setOption} />
         ) : (
           <div className="flex flex-col gap-4">
-            <button type="button" className="hf-btn-text self-start" onClick={() => setOption(null)}>
+            <button type="button" className="hf-btn-text self-start text-hf-black" onClick={() => setOption(null)}>
               {option.label} · {t("activity.change")}
             </button>
             <label className="flex flex-col gap-1">
               <span className="hf-type-small text-text-secondary">{t("activity.startedAt")}</span>
-              <input className="hf-field" type="datetime-local" value={startedAt} onChange={(e) => setStartedAt(e.target.value)} />
+              <input className={FIELD} type="datetime-local" value={startedAt} onChange={(e) => setStartedAt(e.target.value)} />
             </label>
             <label className="flex flex-col gap-1">
               <span className="hf-type-small text-text-secondary">{t("activity.minutes")}</span>
-              <input className="hf-field" type="number" inputMode="numeric" min={1} value={minutes} onChange={(e) => setMinutes(e.target.value)} />
+              <input className={FIELD} type="number" inputMode="numeric" min={1} value={minutes} onChange={(e) => setMinutes(e.target.value)} />
             </label>
             <div className="flex flex-col gap-2">
               <span className="hf-type-small text-text-secondary">{t("activity.intensity")}</span>
@@ -124,13 +124,13 @@ function ActivityCreateContent() {
             {showsDistance && (
               <label className="flex flex-col gap-1">
                 <span className="hf-type-small text-text-secondary">{t("activity.distanceKm")}</span>
-                <input className="hf-field" type="number" inputMode="decimal" min={0} step={0.1} value={distanceKm} onChange={(e) => setDistanceKm(e.target.value)} />
+                <input className={FIELD} type="number" inputMode="decimal" min={0} step={0.1} value={distanceKm} onChange={(e) => setDistanceKm(e.target.value)} />
               </label>
             )}
             <label className="flex flex-col gap-1">
               <span className="hf-type-small text-text-secondary">{t("activity.kcal")}</span>
               <input
-                className="hf-field"
+                className={FIELD}
                 type="number"
                 inputMode="numeric"
                 min={1}
@@ -147,7 +147,7 @@ function ActivityCreateContent() {
               </span>
             </label>
             {error && <p className="hf-type-small text-hf-red-dark">{error}</p>}
-            <button type="button" className="hf-btn-primary" onClick={() => void save()} disabled={saving}>
+            <button type="button" className="hf-control hf-btn-primary w-full px-4" onClick={() => void save()} disabled={saving}>
               {t("activity.save")}
             </button>
           </div>
@@ -156,6 +156,9 @@ function ActivityCreateContent() {
     </HfScreen>
   );
 }
+
+const FIELD =
+  "hf-type-body hf-field w-full rounded-xl bg-hf-tan px-4 text-hf-black outline-none focus-visible:ring-2 focus-visible:ring-hf-green";
 
 export default function ActivityCreatePage() {
   return (
