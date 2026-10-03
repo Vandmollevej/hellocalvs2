@@ -258,3 +258,11 @@ Ejer: SMS-sessionen (2026-10-02)
 | --- | --- | --- | --- |
 | — | 6-cifret SMS-kode ved tilmelding + glemt adgangskode (TeamMessage) og login-godkendelse med push | Venter på bruger | Branch `claude/teammessage-sms` er klar, men ikke flettet. Se STATUS 2026-10-03 "Roadmap": TeamMessage-env + VAPID-nøgler på serveren, derefter flet + test |
 | — | 6-cifret SMS-kode ved tilmelding + glemt adgangskode (TeamMessage) og login-godkendelse med push | Venter på bruger | Branch `claude/teammessage-sms` er klar, men ikke flettet. Se STATUS 2026-10-03 "Roadmap": TeamMessage-env + VAPID-nøgler på serveren, derefter flet + test |
+
+## G-BODYCHART — Kropsmål som statistikgrafer
+Filer: `src/components/BodyMeasurementChart.tsx`, `src/lib/body-measurement-series.ts` (+ test), `src/lib/stat-charts.ts` (`body:*`), `src/app/statistics/{page,unused-charts/page,unused-cards/page}.tsx`, `src/app/profile/body-measurements/page.tsx`, i18n `bodyMeasurementChart.*`.
+Ejer: ledig (Kropsmål-graf-sessionen er arkiveret 2026-10-03)
+
+| Id | Opgave | Status | Næste skridt |
+| --- | --- | --- | --- |
+| — | Kropsmål-grafer: tegning til venstre, forløb af seneste 10 målinger til højre; følger cm/tommer | Færdig i kode på branch `claude/kropsmaal-statistikgraf` (PR #156, kladde) — ikke flettet | Gennemgå PR #156, flet master ind ved konflikt (typisk kun `docs/STATUS.md`: behold begge sider), kør lint/typecheck/build og flet til master. Tjek på telefon: Statistik → Tilføj → Kropsmål |
