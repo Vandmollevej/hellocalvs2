@@ -66,7 +66,7 @@ test("samme seed giver samme scene, forskellige seeds forskellige", () => {
 test("scenen tegner uden NaN på mobil og desktop, til alle tider", () => {
   for (const seed of [1, 2, 3, 99, 12345]) {
     const scene = createWaveScene(seed);
-    assert.ok(scene.bundles.length >= 4 && scene.bundles.length <= 5);
+    assert.ok(scene.bundles.length >= 3 && scene.bundles.length <= 4);
     for (const [width, height] of [[393, 430], [320, 400], [1400, 430]]) {
       for (const t of [0, 1.5, 300, 5000]) {
         const ctx = fakeContext();
@@ -84,6 +84,21 @@ test("hjerteslaget har én tydelig R-tak op og er fladt langt fra midten", () =>
   assert.ok(heartbeatShape(0) < -0.9);
   assert.ok(Math.abs(heartbeatShape(1)) < 1e-3);
   assert.ok(Math.abs(heartbeatShape(-1)) < 1e-3);
+});
+
+test("puls-linjen starter helt ude ved venstre kant og ligger midt i hero", () => {
+  const scene = createWaveScene(5);
+  assert.ok(scene.pulse.y >= 0.55 && scene.pulse.y <= 0.65);
+  for (const t of [0.5, 1, 2, 3]) {
+    // Find et tidspunkt i fejet og tjek, at sporet begynder uden for venstre kant.
+    const time = scene.pulse.period * 10 - scene.pulse.offset + t;
+    const ctx = fakeContext();
+    const starts = [];
+    ctx.moveTo = (x) => starts.push(x);
+    drawWaveScene(ctx, { ...scene, bundles: [], fog: [] }, palette, { t: time, width: 393, height: 430, scale: 1 });
+    assert.ok(starts.length > 0);
+    assert.equal(starts[0], -WAVE_BLEED);
+  }
 });
 
 test("bølgerne holder sig inden for rimelige grænser og bevæger sig langsomt", () => {
