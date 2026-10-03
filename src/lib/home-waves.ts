@@ -1,6 +1,9 @@
 // Rolig bølge-baggrund til forsiden (bruger 2026-10-01, lavet om 2026-10-03):
 // få, afdæmpede bånd af bølgelinjer i overvejende grønne nuancer med kun et
-// strejf af varm gul øverst. Let 3D: båndene øverst ligger "langt væk" (tynde,
+// strejf af varm gul helt øverst. Skærmen har to felter: det øverste (topbar +
+// hero) har tynde, rolige linjer; det nederste (listen med indtastningerne) har
+// sin egen scene ("frost") med tykke, meget slørede bånd bag sig, som frostet
+// glas — svage, ikke tydelige (bruger 2026-10-03). Let 3D: båndene øverst ligger "langt væk" (tynde,
 // svage, rolige), de nederste "tæt på" (tykke, tydelige), og hver streng er
 // skygget som et rør med lys kant foroven. Lidt tåge kun forneden og en lime
 // puls-linje (pulsmåler), der tegnes helt inde fra venstre kant omkring
@@ -48,7 +51,7 @@ function readToken(host: HTMLElement, name: string): Rgb | null {
 }
 
 /** Farverne kommer udelukkende fra appens tokens (design.md afsnit 3). */
-export function readWavePalette(host: HTMLElement): WavePalette | null {
+export function readWavePalette(host: HTMLElement, variant: WaveVariant = "top"): WavePalette | null {
   const brand = readToken(host, "--hf-color-brand");
   const mint = readToken(host, "--hf-green-light");
   const muted = readToken(host, "--hf-green-muted");
@@ -57,15 +60,24 @@ export function readWavePalette(host: HTMLElement): WavePalette | null {
   const cream = readToken(host, "--hf-cream");
   const tan = readToken(host, "--hf-tan");
   if (!brand || !mint || !muted || !lime || !gold || !cream || !tan) return null;
+  // Bruger 2026-10-03: kun et strejf af gul helt øverst; mere grønt i midten
+  // og bunden af det øverste felt. Det nederste felt er helt grønt.
+  const ramp: WavePalette["ramp"] =
+    variant === "frost"
+      ? [
+          { at: 0, color: mixRgb(mint, muted, 0.35) },
+          { at: 0.5, color: mixRgb(mint, muted, 0.6) },
+          { at: 1, color: mixRgb(muted, brand, 0.3) },
+        ]
+      : [
+          { at: 0, color: mixRgb(mixRgb(gold, tan, 0.4), mint, 0.75) },
+          { at: 0.18, color: mixRgb(lime, mint, 0.8) },
+          { at: 0.4, color: mixRgb(mint, muted, 0.35) },
+          { at: 0.7, color: mixRgb(mint, muted, 0.7) },
+          { at: 1, color: mixRgb(muted, brand, 0.4) },
+        ];
   return {
-    // Bruger 2026-10-03: færre gule streger, mere grønt.
-    ramp: [
-      { at: 0, color: mixRgb(mixRgb(gold, tan, 0.4), mint, 0.55) },
-      { at: 0.25, color: mixRgb(lime, mint, 0.55) },
-      { at: 0.5, color: mint },
-      { at: 0.75, color: mixRgb(mint, muted, 0.6) },
-      { at: 1, color: mixRgb(muted, brand, 0.35) },
-    ],
+    ramp,
     deep: mixRgb(brand, mint, 0.55),
     light: mixRgb(cream, [255, 255, 255], 0.5),
     pulse: lime,
@@ -169,22 +181,26 @@ type Pulse = {
 /** Puls uden tilsluttet ur (bruger 2026-10-03). */
 export const DEFAULT_PULSE_BPM = 60;
 
-export type WaveScene = { bundles: Bundle[]; fog: Fog[]; pulse: Pulse; startTime: number };
+/** "top": øverste felt (topbar + hero). "frost": nederste felt bag listen. */
+export type WaveVariant = "top" | "frost";
 
-export function createWaveScene(seed: number): WaveScene {
+export type WaveScene = { bundles: Bundle[]; fog: Fog[]; pulse: Pulse | null; startTime: number };
+
+export function createWaveScene(seed: number, variant: WaveVariant = "top"): WaveScene {
   const rand = mulberry32(seed);
   const between = (a: number, b: number) => a + (b - a) * rand();
   const sign = () => (rand() < 0.5 ? -1 : 1);
+  const frost = variant === "frost";
 
-  const bundleCount = 3 + Math.floor(rand() * 2);
+  // Bruger 2026-10-03: for mange og for tydelige bølger i toppen — få bånd.
+  const bundleCount = 2 + Math.floor(rand() * 2);
   const bundles: Bundle[] = [];
   for (let i = 0; i < bundleCount; i++) {
-    // Det nederste bånd ligger altid i det frostede felt, så de tykke,
-    // slørede bånd forneden altid ses (bruger 2026-10-03).
-    const y = i === bundleCount - 1 ? between(0.74, 0.86) : 0.12 + (i + rand()) * (0.62 / (bundleCount - 1));
+    const y = frost ? 0.2 + (i + rand()) * (0.65 / bundleCount) : 0.14 + (i + rand()) * (0.66 / bundleCount);
     // Perspektiv: fjerne bånd (øverst) er tyndere, svagere, fladere og
-    // langsommere end de nære (bruger 2026-10-03: "lidt 3D agtigt").
-    const depth = Math.min(1, Math.max(0, (y - 0.1) / 0.75));
+    // langsommere end de nære (bruger 2026-10-03: "lidt 3D agtigt"). I det
+    // nederste felt er alle bånd "tæt på" (tykke) — sløret gør dem svage.
+    const depth = frost ? 1 : Math.min(0.75, Math.max(0, (y - 0.1) / 0.75));
     const near = (far: number, close: number) => far + (close - far) * depth;
     const direction = sign();
     const pace = near(0.5, 1.15);
@@ -204,14 +220,15 @@ export function createWaveScene(seed: number): WaveScene {
     // Strengene ligger med god afstand og egne mindre bølger, så de ikke
     // snoer sig om hinanden som et tov. Fjerne bånd har færre streger
     // (bruger 2026-10-03: for mange streger foroven).
-    const strandCount = depth < 0.4 ? 2 : 2 + Math.floor(rand() * 3);
-    const gap = between(14, 22) * near(0.7, 1.2);
+    const strandCount = frost ? 2 + Math.floor(rand() * 2) : depth < 0.4 ? 1 : 1 + Math.floor(rand() * 2);
+    const gap = between(14, 22) * near(0.7, 1.2) * (frost ? 1.8 : 1);
     const strands: Strand[] = [];
     for (let s = 0; s < strandCount; s++) {
       strands.push({
         offset: (s - (strandCount - 1) / 2) * gap + between(-5, 5),
         width: between(2, 3.4) * near(0.55, 1.6),
-        alpha: between(0.22, 0.4) * near(0.4, 1.05),
+        // Bruger 2026-10-03: toppens linjer var for tydelige.
+        alpha: between(0.16, 0.28) * near(0.45, 0.85),
         tint: between(-0.08, 0.08),
         amplitudeScale: between(0.85, 1.15),
         components: base.map((c, j) => ({
@@ -242,12 +259,14 @@ export function createWaveScene(seed: number): WaveScene {
   }
 
   const fog: Fog[] = [];
-  // Tågen ligger kun forneden, så toppen forbliver skarp (bruger 2026-10-03).
+  // Øverste felt: et blødt grønt skær i midten og bunden (bruger 2026-10-03:
+  // "mere grønt"); linjerne selv forbliver skarpe. Nederste felt: tåge over
+  // hele fladen.
   const fogCount = 3 + Math.floor(rand() * 2);
   for (let i = 0; i < fogCount; i++) {
     fog.push({
       x: between(-0.05, 1.05),
-      y: between(0.78, 1),
+      y: frost ? between(0.1, 1) : between(0.5, 1),
       swayX: between(0.06, 0.16),
       swayY: between(0.02, 0.05),
       rateX: (Math.PI * 2) / between(60, 140),
@@ -257,11 +276,12 @@ export function createWaveScene(seed: number): WaveScene {
       radius: between(0.35, 0.6),
       squash: between(0.35, 0.55),
       tilt: between(-0.25, 0.25),
-      alpha: between(0.05, 0.1),
+      alpha: frost ? between(0.05, 0.09) : between(0.08, 0.14),
     });
   }
 
-  const pulse: Pulse = {
+  // Puls-linjen hører til hero i det øverste felt.
+  const pulse: Pulse | null = frost ? null : {
     y: between(0.58, 0.62),
     amplitude: between(18, 26),
     sweep: between(3, 4),
@@ -408,13 +428,13 @@ export function drawWaveScene(
       tracePath(ctx, ys, count, x0, step);
       ctx.restore();
       ctx.strokeStyle = rgba(palette.light, 1);
-      ctx.globalAlpha = alpha(1.6 * bundle.depth);
+      ctx.globalAlpha = alpha(1.2 * bundle.depth);
       ctx.lineWidth = lineWidth * 0.32;
       ctx.stroke();
     }
   }
 
-  drawPulse(ctx, scene.pulse, palette, t, width, height, bpm, pulseY ?? scene.pulse.y * height);
+  if (scene.pulse) drawPulse(ctx, scene.pulse, palette, t, width, height, bpm, pulseY ?? scene.pulse.y * height);
   ctx.globalAlpha = 1;
 }
 
