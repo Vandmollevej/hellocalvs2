@@ -14,12 +14,8 @@ import { latestTrendWeight, type MealSample, type WeightSample } from "@/lib/wei
 import { computeAge } from "@/lib/age";
 import { ACTIVITY_LEVELS, type ActivityLevel } from "@/lib/activity-level";
 import { useTranslation } from "@/i18n/LocaleProvider";
-<<<<<<< HEAD
-import { cmToIn, formatWeight, inToCm, useUnits, weightUnitLabel } from "@/lib/units";
+import { cmToIn, formatLength, formatWeight, inToCm, useUnits, weightUnitLabel } from "@/lib/units";
 import { formatPhone, validatePhone } from "@/lib/phone";
-=======
-import { formatLength, formatWeight, inToCm, useUnits, weightUnitLabel } from "@/lib/units";
->>>>>>> origin/claude/height-lock-body-composition
 import { FaceIdButton } from "@/components/FaceIdButton";
 import { SkeletonForm, SkeletonScreen } from "@/components/hf/Skeleton";
 import { EnergyBreakdown } from "@/components/EnergyBreakdown";

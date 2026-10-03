@@ -7,11 +7,8 @@ import { getUserSubscriptionTier } from "@/lib/subscription";
 import { isActivityLevel } from "@/lib/activity-level";
 import { applyManualLevel } from "@/lib/activity-profile";
 import { GOAL_MODES, type GoalMode } from "@/lib/energy-budget";
-<<<<<<< HEAD
 import { validatePhone } from "@/lib/phone";
-=======
 import { isValidHeightCm } from "@/lib/height";
->>>>>>> origin/claude/height-lock-body-composition
 
 export async function GET() {
   try {
