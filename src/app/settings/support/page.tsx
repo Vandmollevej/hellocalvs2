@@ -6,11 +6,14 @@ import { HfScreen } from "@/components/HfScreen";
 import { AccordionCard } from "@/components/hf/AccordionCard";
 import { TextField } from "@/components/hf/TextField";
 import { Toggle } from "@/components/ui/Toggle";
+import { useInWebShell } from "@/components/web/WebShell";
 import { useTranslation } from "@/i18n/LocaleProvider";
 import {
+  SUPPORT_PERMISSION_GROUPS,
   SUPPORT_PERMISSION_KEYS,
   emptySupportPermissions,
   readSupportPermissions,
+  supportGroupLabelKey,
   supportPermissionLabelKey,
   type SupportPermissionKey,
   type SupportPermissions,
@@ -38,6 +41,7 @@ type Status = "saved" | "revoked" | null;
 // The period is enforced server-side (src/lib/support-access.ts), not here.
 export default function SupportSettingsPage() {
   const { t } = useTranslation();
+  const inWebShell = useInWebShell();
   const defaults = useMemo(() => defaultPeriod(), []);
   const [validFrom, setValidFrom] = useState(defaults.from);
   const [validUntil, setValidUntil] = useState(defaults.until);
@@ -95,6 +99,15 @@ export default function SupportSettingsPage() {
     setPermissions((current) => {
       const next = { ...current };
       for (const key of visibleKeys) next[key] = value;
+      return next;
+    });
+  }
+
+  function setGroup(keys: readonly SupportPermissionKey[], value: boolean) {
+    setStatus(null);
+    setPermissions((current) => {
+      const next = { ...current };
+      for (const key of keys) if (visibleKeys.includes(key)) next[key] = value;
       return next;
     });
   }
@@ -189,25 +202,75 @@ export default function SupportSettingsPage() {
           <p className="hf-type-small hf-type-strong text-text-secondary hf-heading px-1 uppercase tracking-wide">
             {t("settings.support.dataTitle")}
           </p>
-          <AccordionCard>
-            <PermissionRow
-              label={t("settings.support.selectAll")}
-              checked={allSelected}
-              disabled={loading}
-              onChange={setAll}
-              divider
-            />
-            {visibleKeys.map((key, index) => (
+          {inWebShell ? (
+            <div className="flex flex-col gap-6">
+              <AccordionCard>
+                <PermissionRow
+                  label={t("settings.support.selectAll")}
+                  checked={allSelected}
+                  disabled={loading}
+                  onChange={setAll}
+                  divider={false}
+                />
+              </AccordionCard>
+              <div className="grid grid-cols-2 items-start gap-6 [&>*]:min-w-0">
+                {[SUPPORT_PERMISSION_GROUPS.slice(0, 2), SUPPORT_PERMISSION_GROUPS.slice(2)].map((column, columnIndex) => (
+                  <div key={columnIndex} className="flex flex-col gap-6">
+                    {column.map((group) => {
+                      const keys = group.keys.filter((key) => visibleKeys.includes(key));
+                      return (
+                        <div key={group.id} className="flex flex-col gap-2">
+                          <p className="hf-type-small hf-type-strong text-text-secondary hf-heading px-1 uppercase tracking-wide">
+                            {t(supportGroupLabelKey(group.id))}
+                          </p>
+                          <AccordionCard>
+                            <PermissionRow
+                              label={t("settings.support.selectAll")}
+                              checked={keys.every((key) => permissions[key])}
+                              disabled={loading}
+                              onChange={(value) => setGroup(keys, value)}
+                              divider
+                              strong
+                            />
+                            {keys.map((key, index) => (
+                              <PermissionRow
+                                key={key}
+                                label={t(supportPermissionLabelKey(key))}
+                                checked={permissions[key]}
+                                disabled={loading}
+                                onChange={(value) => setOne(key, value)}
+                                divider={index < keys.length - 1}
+                              />
+                            ))}
+                          </AccordionCard>
+                        </div>
+                      );
+                    })}
+                  </div>
+                ))}
+              </div>
+            </div>
+          ) : (
+            <AccordionCard>
               <PermissionRow
-                key={key}
-                label={t(supportPermissionLabelKey(key))}
-                checked={permissions[key]}
+                label={t("settings.support.selectAll")}
+                checked={allSelected}
                 disabled={loading}
-                onChange={(value) => setOne(key, value)}
-                divider={index < visibleKeys.length - 1}
+                onChange={setAll}
+                divider
               />
-            ))}
-          </AccordionCard>
+              {visibleKeys.map((key, index) => (
+                <PermissionRow
+                  key={key}
+                  label={t(supportPermissionLabelKey(key))}
+                  checked={permissions[key]}
+                  disabled={loading}
+                  onChange={(value) => setOne(key, value)}
+                  divider={index < visibleKeys.length - 1}
+                />
+              ))}
+            </AccordionCard>
+          )}
         </div>
 
         <div className="flex flex-col gap-4">
@@ -253,16 +316,18 @@ function PermissionRow({
   disabled,
   onChange,
   divider,
+  strong = false,
 }: {
   label: string;
   checked: boolean;
   disabled: boolean;
   onChange: (value: boolean) => void;
   divider: boolean;
+  strong?: boolean;
 }) {
   return (
     <div className={`hf-control-row flex items-center gap-4 px-4 ${divider ? "border-b border-hf-tan-dark" : ""}`}>
-      <span className="hf-type-body flex-1 truncate">{label}</span>
+      <span className={`hf-type-body flex-1 truncate ${strong ? "hf-type-strong" : ""}`}>{label}</span>
       <Toggle checked={checked} onChange={onChange} disabled={disabled} ariaLabel={label} />
     </div>
   );

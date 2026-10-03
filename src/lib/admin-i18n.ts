@@ -29,6 +29,7 @@ const DICTIONARY = {
   nav_design_manual: { DA: "Designmanual", EN: "Design manual" },
   nav_page_tree: { DA: "Sidetræ", EN: "Page tree" },
   nav_statistics: { DA: "Statistik", EN: "Statistics" },
+  nav_economy: { DA: "Economy", EN: "Economy" },
   nav_log: { DA: "Log", EN: "Log" },
   nav_hello_doc: { DA: "Hello Doc", EN: "Hello Doc" },
   nav_ingredient_requests: { DA: "Ønskede ingredienser", EN: "Requested ingredients" },

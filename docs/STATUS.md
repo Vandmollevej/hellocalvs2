@@ -1,6 +1,38 @@
 # HELLO CAL — project status
 
+Last updated: 2026-10-03
+
+## 2026-10-03: Butiksimporten — alt fra Bilka- og REMA-arkene med
+
+- 13.039 varer (før 10.524): 2.364 uden kalorietal er skjult (`nutritionMissing`, migration `20261002213000_product_nutrition_missing`), 151 med kun kalorier vises med ~ på makroerne, 107 uden stregkode er med under butikkens vare-id. Se DECISIONS 2026-10-02 "Butiksimporten: alt fra arkene med" og `docs/PRODUCT_IMPORT_MAPPING.md`.
+- Rettet: kJ 1000× for småt på ca. 4.900 varer, 25 forkerte kalorietal, 44 "Sukkerfri" med sukker, 129 navne som "0"/"M appelsin"; Labels-filtre og oprindelsesland.
+- Kildearkene ligger nu på NAS-sharet `\\192.168.1.90\Hello Cal\Arkiv - historiske kilde- og importfiler\Oprydning 2026-09-29\`. Det nye katalog (`store_products.json`) + de nye varers 1.408 billeder ligger klar i `C:\Users\Peter\Desktop\Butiksimport 2026-10-03\`; de skal kopieres til NAS'ens `data/store-products-import/` (sessionen fik ikke lov at skrive på serveren), og jobbet `store-products-import` køres (admin → Cron-jobs → Kør nu, eller næste deploy). Indtil da kører den nye agent med det gamle katalog, hvilket er ufarligt og retter kJ-fejlen.
+- Testet: agenten mod lokal PostgreSQL med alle migrationer (live-katalog → nyt katalog, 0 fejl); lint, typecheck og `next build --webpack` grønne.
+- Brugeren: kør `bilka_vitamins.py` (vitaminpanelet på bilkatogo.dk, nogle timer); byg og importér derefter igen. Næring fra Frida til de skjulte varer er egen opgave (OPEN-TASKS).
+
+## 2026-10-02: Desktop — alle sider i skallen
+
+- På desktop vises alle sider (også login, betingelser, privatlivspolitik) i WebShell med sidebjælke, topmenu og brødkrummer; kun admin, hello-doc, business og presse er fuld bredde.
+- Lint og typecheck grønne; ikke set i browser — tjek login-siderne på desktop.
 Last updated: 2026-10-02
+
+## 2026-10-02: Kameraflowet — rigtige stillbilleder + nyt foto af indholdet
+
+- Fejlen: marmelade (5711954020055) fik ingen ingredienser, fordi indholdsfotoet var et sløret 1080p-videobillede, og OpenAI svarede tomt ("for sløret"). Ingen genstart var involveret. Se DECISIONS 2026-10-02.
+- Nyt: `src/lib/camera-still.ts` (stillbillede via `ImageCapture.takePhoto`, ellers skarpeste af tre 4K-videobilleder; energi/indhold beskæres til søgerens kvadrat), brugt i `ProductCaptureFlow`. Log-trin `photo_captured` viser kilde, opløsning og skarphed.
+- Nyt: varesiden viser "Indholdet kunne ikke læses på billedet" + knap; `IngredientsRetakeFlow` (`/camera?retake=ingredients&product=<id>`) og `POST /api/products/[id]/ingredients-photo`.
+- Lint grøn; typecheck uden fejl i de berørte filer. Build ikke kørt lokalt (delt `node_modules` har forældet Prisma-klient). Ikke testet på telefon: tjek i admin "Log", om `photo_captured` siger "stillbillede" på iPhone — ellers bruges 4K-videobilledet.
+
+## 2026-10-02: Retter — skelettet er nu sidens egne rækker
+
+- `/profile/recipes` (begge faner) og `/profile/recipes/[id]` brugte generiske skeletter (`SkeletonMediaRows`/`SkeletonDetail`) med bjælker i procent af sidebredden — enorme på bred skærm og uden lighed med indholdet. Nu tegner `RecipeRow` og ret-siden sig selv uden data (design.md §6.14): samme billedfelt, titel + undertekst i tekstbredde (`SkeletonTitleLines` i `Skeleton.tsx`), 3 rækker under "Trender netop nu".
+- Lint grøn; typecheck uden fejl i de berørte filer. Build ikke kørt lokalt (delt `node_modules` har forældet Prisma-klient). Ikke visuelt testet (brugerregel).
+
+## 2026-10-02: "Til info sendte vi dig …"-popup + push
+
+- Nyt: `src/lib/sent-notices.ts`, `src/lib/sms.ts`, `/api/messages/sent-notices`, `SentMessageNotice` (bundark i layoutet), `sendPushToUser` i `push.ts`. Se DECISIONS 2026-10-02.
+- Migration `20261002090000_sent_message_notice` skal køre ved deploy. Lint og typecheck grønne; ikke live-testet (ingen lokal DB).
+- Bemærk: push kræver VAPID-nøgler og at appen tilmelder enheden (findes ikke endnu); sms kræver `SMS_GATEWAY_TOKEN` og et telefonnummer på brugeren (findes ikke endnu).
 
 ## 2026-10-02: B2B-brugere (partnerportal), kun admin opretter
 
@@ -33,6 +65,11 @@ Last updated: 2026-10-02
 - Rettelser bør komme fra brugeren: `Bedre-dyrevelfærd-2-stjerner.png` var identisk med 3-stjerner-filen, så 2-hjerte-logoet er afledt (3-stjerner + den tomme 3. hjerte fra 1-stjerne-filen). `Fairtrade logo.webp` har "cleanpng"-vandmærke og `Økologimærket.png` er et beskåret udsnit uden tekst — erstat med originale filer.
 - Lint og typecheck grønne. Ikke visuelt testet (ingen login/DB lokalt).
 
+## 2026-10-02: Kalender dagvisning pa web - cookie, fokus pa nu, dobbeltklik
+
+- Cookie `hc_cal_visit` (dato): forste besog i dag viser morgenen med nattens sovn; senere besog i dag (og kun hvis brugeren har registreret noget for) scroller til nu +-2 timer.
+- Dobbeltklik pa en time i dagvisningen og pa en dag i ugens tidslinje abner tilfoej-menuen pa den halve time.
+- Lint og typecheck groenne; ikke testet i browser.
 ## 2026-09-29: Offentlig forside for udloggede
 
 - Ny hent-appen-forside uden telefonramme, med QR-koder, planer med betalings-ark, Hello Doc-bjælke, nøgletal fra databasen, `/business` (kontaktformular) og `/presse`. Se DECISIONS.md samme dato.
@@ -729,7 +766,8 @@ uændrede. Mangler brugerens visuelle godkendelse.
 - Email Routing: peter@packroff.dk bekræftet; `support@hellocal.io` + catch-all videresendes til peter@packroff.dk.
 - Google OAuth-klienten har allerede hellocal.io-URIer; server `GOOGLE_HEALTH_REDIRECT_URI` sat til hellocal.io (slår igennem ved næste deploy).
 - Facebook: brugeren har tilføjet `https://hellocal.io/api/auth/oauth/facebook/callback` (2026-09-28).
-- Mangler (brugeren tager det en anden dag): Withings (logget ud) → `https://hellocal.io/api/withings/callback`; Strava (logget ud) → callback-domæne `hellocal.io`; Apple (logget ud) → domæne + Return URL. Derefter `INTEGRATIONS_REDIRECT_BASE_URL`/`WITHINGS_REDIRECT_URI` på serveren til hellocal.io.
+- Withings (2026-10-02): brugeren har registreret `https://hellocal.io/api/withings/callback` hos Withings; server `WITHINGS_REDIRECT_URI` sat til samme (backup `.env.production.bak-20261002-withings`). Løste `redirect_uri_mismatch`.
+- Mangler (brugeren tager det en anden dag): Strava (logget ud) → callback-domæne `hellocal.io`; Apple (logget ud) → domæne + Return URL. Derefter `INTEGRATIONS_REDIRECT_BASE_URL` på serveren til hellocal.io (står stadig på `hellocal.packroff.dk`, så Strava ikke brydes).
 
 ## 2026-09-27: Tilføj-kamera med fire knapper + "opret straks"
 
