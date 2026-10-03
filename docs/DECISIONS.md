@@ -262,6 +262,13 @@ Uge- og Liste-visningen beholder "Ingen indtastninger" i gråt på tomme dage.
 - Admin vælger globalt (én række `product_page_tag_settings`): hele felter fra `products.flavor` / `product_filters` og enkelte frie nøgleord fra `products.keywords`. Ikke pr. vare.
 - Rækkefølge = feltkatalogets rækkefølge, derefter frie nøgleord i varens rækkefølge. Dubletter (uden store/små bogstaver) vises én gang. Procent vises som "4,6 % alkohol"/"3,5 % fedt", oprindelsesland som "Fra Danmark".
 - Certificeringslogoerne under energifordelingen er uændrede; et felt kan derfor både stå som ord og som logo.
+## 2026-10-02: Telefonnummer er obligatorisk (tofaktor-godkendelse)
+
+- Alle brugere, der kan logge ind, **skal** have et telefonnummer (`User.phone`), fordi det skal bruges til tofaktor-godkendelse (brugerens krav). Nummeret er obligatorisk ved tilmelding og kan rettes, men aldrig slettes, på profilsiden.
+- Gemmes normaliseret i **E.164** (`src/lib/phone.ts`): nationalt nummer uden landekode får landekoden fra `User.region` (standard +45); ellers kræves `+`/`00` og 8–15 cifre. Ingen opslag hos teleselskab; `phoneVerifiedAt` er reserveret til SMS-bekræftelsen, når tofaktoren bygges, og nulstilles ved nyt nummer.
+- Konti uden nummer (oprettet med Google/Apple/Facebook, eller før kravet) spærres ikke ude, men sendes af `AuthGate` til `/account/phone` ved første side efter login og kan ikke bruge appen, før nummeret er udfyldt. Kolonnen er derfor nullable i databasen.
+- **Børneprofiler er ikke undtaget** (brugerens valg): de skal også oplyse nummer, når de logger ind — de kan fjerne forældrenes adgang, når de fylder 18. Familieprofiler uden eget login kan først udfylde det, når de får login. Admin-konti (`/admin`, eget login med TOTP) kræver ikke nummer.
+- Nummeret er persondata: det slettes sammen med resten ved "glem mig" og vises aldrig til andre brugere.
 
 ## 2026-09-29: Aktivitetsniveau, PAL og kaloriemål
 
