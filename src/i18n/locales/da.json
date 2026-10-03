@@ -1790,7 +1790,20 @@
     "loading": "Henter…",
     "notice": {
       "connected": "{name} blev forbundet.",
-      "failed": "Kunne ikke forbinde {name}. Prøv igen."
+      "failed": "Kunne ikke forbinde {name}. Prøv igen.",
+      "config": "{name} kan ikke forbindes endnu: nøglerne til {name} mangler på serveren (admin → API-nøgler).",
+      "tier": "Integrationer kræver abonnementet Seriøs. {name} blev ikke forbundet.",
+      "denied": "Du afviste adgangen hos {name}, så intet blev forbundet.",
+      "expired": "Forsøget udløb, før {name} svarede. Tryk Tillad igen."
+    },
+    "feedback": {
+      "syncing": "Henter dine data fra {name} …",
+      "synced": "Hentet: {count} nye målinger fra {name}.",
+      "nothingNew": "{name} er forbundet. Ingen nye data siden sidst.",
+      "upToDate": "{name} er forbundet og blev synkroniseret for lidt siden.",
+      "syncFailed": "Kunne ikke hente data fra {name}. Prøv igen om lidt.",
+      "deviceCode": "Indtast enhedskoden herunder i Hello Cal-appen på telefonen, så henter den dine {name}-data.",
+      "companionSaved": "Valget er gemt. Hello Cal-appen på telefonen henter dine {name}-data efter disse valg."
     },
     "intro": "Forbind dine sundhedsapps, så vægt, skridt og træning hentes automatisk.",
     "lastSynced": "Sidst synkroniseret {date}",
@@ -1866,6 +1879,7 @@
       "statusTitle": "Forbindelse",
       "deviceTitle": "Hello Cal-appen på telefonen",
       "allow": "Tillad",
+      "done": "Færdig",
       "deny": "Tillad ikke",
       "write": {
         "nutrition": "Kost og makroer",

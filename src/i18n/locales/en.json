@@ -1790,7 +1790,20 @@
     "loading": "Loading…",
     "notice": {
       "connected": "{name} was connected.",
-      "failed": "Could not connect {name}. Please try again."
+      "failed": "Could not connect {name}. Please try again.",
+      "config": "{name} can't be connected yet: the {name} keys are missing on the server (admin → API keys).",
+      "tier": "Integrations require the Serious plan. {name} was not connected.",
+      "denied": "You declined access in {name}, so nothing was connected.",
+      "expired": "The attempt expired before {name} answered. Tap Allow again."
+    },
+    "feedback": {
+      "syncing": "Fetching your data from {name} …",
+      "synced": "Fetched {count} new measurements from {name}.",
+      "nothingNew": "{name} is connected. No new data since last time.",
+      "upToDate": "{name} is connected and was synced a moment ago.",
+      "syncFailed": "Couldn't fetch data from {name}. Try again shortly.",
+      "deviceCode": "Enter the device code below in the Hello Cal app on your phone, and it will fetch your {name} data.",
+      "companionSaved": "Your choice is saved. The Hello Cal app on your phone fetches your {name} data based on these choices."
     },
     "intro": "Connect your health apps so weight, steps and workouts are fetched automatically.",
     "lastSynced": "Last synced {date}",
@@ -1866,6 +1879,7 @@
       "statusTitle": "Connection",
       "deviceTitle": "The Hello Cal app on your phone",
       "allow": "Allow",
+      "done": "Done",
       "deny": "Don’t Allow",
       "write": {
         "nutrition": "Nutrition and macros",

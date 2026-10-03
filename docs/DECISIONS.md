@@ -2,6 +2,10 @@
 
 This file records durable decisions. Add a dated entry when a later decision changes one of them.
 
+## 2026-10-03: "Tillad" giver altid synlig besked
+
+Afløser "ellers er valget allerede gemt → luk" fra 2026-09-27: "Tillad" på en integrations adgangsark lukker aldrig arket uden at vise, hvad der skete. Forbundet cloud-app → hent data nu og vis resultatet; knappen hedder derefter "Færdig" og lukker først da. Tilkoblingsfejl sendes tilbage med årsag (`config`, `tier`, `denied`, `expired`, `failed`) og vises øverst i arket.
+
 ## 2026-10-03: ALT med fra integrationerne
 
 Brugerens krav: "I Withings og øvrige integrationer skal ALT med. Fedtprocent, muskelmasse og alt!"

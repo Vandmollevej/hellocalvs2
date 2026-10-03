@@ -8,6 +8,13 @@ Last updated: 2026-10-03
 - Dagsvisningen genåbnes efter navigation væk fra `/calendar` (Tilbage eller "Kalender" i menuen) i stedet for at falde tilbage til måneden. Ny `src/lib/calendar-open-day.ts` (URL `?date=` + sessionStorage), koblet ind i `src/app/calendar/page.tsx`. Se DECISIONS.md samme dato.
 - Lint, typecheck og build grønne. Ikke live-testet (ingen lokal DB/login) — test på telefon: åbn en dag → tryk en registrering → Tilbage, og åbn en dag → Statistik → Kalender.
 
+## 2026-10-03: "Tillad" på integrationssiden lukker ikke længere bare arket
+
+- Brugeren: "HVER gang jeg trykker tillad lukker vinduet bare". Årsag: når appen allerede var forbundet (eller telefon-appen havde en enhedskode), lukkede "Tillad" arket uden at gøre noget; fejl ved tilkobling blev kun vist som en lille generisk tekst nederst.
+- Nu: forbundet cloud-app → "Tillad" henter data med det samme og viser resultatet øverst ("Hentet: N nye målinger …"), knappen skifter til "Færdig". Lige efter tilkobling hentes data automatisk. Telefon-apps viser enhedskoden/at valget er gemt.
+- Fejl vises øverst med præcis årsag: nøgler mangler på serveren, kræver Seriøs, afvist hos appen, forsøget udløb (`?error=config|tier|denied|expired|failed` fra `src/lib/integrations/handlers.ts`).
+- Ikke live-testet (ingen nøgler/login her).
+
 ## 2026-10-03: ALT med fra integrationerne (fedtprocent, muskelmasse og alt andet)
 
 - Withings henter nu alle måletyper (≈30: vægt, højde, fedt %, fedtmasse, fedtfri masse, muskel-, knogle- og vandmasse, ekstra-/intracellulært vand, visceralt fedt, BMR, metabolisk alder, blodtryk, puls, SpO2, temperatur, pulsbølgehastighed, karalder, EKG-intervaller, VO2 max, nervesundhed, hudledningsevne) + dagsaktivitet, søvn og træning. Parsere i `src/lib/integrations/withings-items.ts`.

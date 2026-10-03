@@ -27,18 +27,22 @@ export function resolveAdapter(slug: string) {
   return adapterBySlug(slug);
 }
 
+// Hvorfor en tilkobling fejlede (?error=<årsag>), så siden kan sige det
+// præcist i stedet for bare at lukke/vise "prøv igen" (2026-10-03).
+export type ConnectError = "config" | "tier" | "denied" | "expired" | "failed";
+
 // GET — starter OAuth for den indloggede bruger.
-// Fejl sendes tilbage til siden som ?error=<slug>, ikke som rå JSON.
+// Fejl sendes tilbage til siden som ?error=<årsag>, ikke som rå JSON.
 export async function connect(_req: NextRequest, adapter: OAuthProviderAdapter) {
-  const failed = () => NextResponse.redirect(publicUrl(`${doneUrl(adapter)}?error=1`));
+  const failed = (reason: ConnectError) => NextResponse.redirect(publicUrl(`${doneUrl(adapter)}?error=${reason}`));
   if (!isConfigured(adapter)) {
     console.error(`${adapter.label} connect: ${adapter.envPrefix}_CLIENT_ID/_CLIENT_SECRET er ikke sat`);
-    return failed();
+    return failed("config");
   }
   const user = await getSessionUser();
   if (!user) return NextResponse.redirect(publicUrl("/welcome"));
   // Integrationer er kun for Seriøs (docs/DECISIONS.md 2026-09-26).
-  if ((await getUserSubscriptionTier(user.id)) !== "SERIOUS") return failed();
+  if ((await getUserSubscriptionTier(user.id)) !== "SERIOUS") return failed("tier");
 
   // Brugerens til/fra-valg (gemt på integrationens side før tilkobling)
   // afgør, hvilken skriveadgang der bedes om.
@@ -68,10 +72,11 @@ export async function callback(req: NextRequest, adapter: OAuthProviderAdapter) 
     return response;
   }
 
-  if (req.nextUrl.searchParams.get("error") || !code || !state || !expected || state !== expected.state) {
-    return done("error=1");
-  }
-  if (adapter.pkce && !expected.verifier) return done("error=1");
+  // Brugeren trykkede "Afvis" hos appen.
+  if (req.nextUrl.searchParams.get("error")) return done("error=denied");
+  // Forsøget er for gammelt (state-cookien lever 10 min) eller startet i en anden browser.
+  if (!code || !state || !expected || state !== expected.state) return done("error=expired");
+  if (adapter.pkce && !expected.verifier) return done("error=expired");
   try {
     const tokens = await adapter.exchangeCode(code, redirectUri(adapter), expected.verifier);
     const extra = await adapter.afterConnect?.(tokens);
@@ -80,7 +85,7 @@ export async function callback(req: NextRequest, adapter: OAuthProviderAdapter) 
     await saveIntegrationTokens(adapter.provider, { ...tokens, scope }, extra?.externalUserId);
   } catch (error) {
     console.error(`${adapter.label} callback failed`, errorMessage(error));
-    return done("error=1");
+    return done("error=failed");
   }
   return done("connected=1");
 }

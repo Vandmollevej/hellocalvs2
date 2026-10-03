@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense, useEffect, useState } from "react";
+import { Suspense, useEffect, useRef, useState } from "react";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import {
   AccessFooter,
@@ -58,11 +58,25 @@ function IntegrationContent() {
   const [saveError, setSaveError] = useState(false);
   const [tokens, setTokens] = useState<DeviceToken[]>([]);
   const [newToken, setNewToken] = useState<string | null>(null);
+  // Besked øverst i arket efter "Tillad" (2026-10-03: arket må aldrig bare
+  // lukke uden at vise, hvad der skete). done = knappen hedder nu "Færdig".
+  const [feedback, setFeedback] = useState<{ text: string; error?: boolean } | null>(null);
+  const [done, setDone] = useState(false);
+  const autoSynced = useRef(false);
 
   function load() {
     fetch("/api/integrations")
       .then(async (res) => (res.ok ? ((await res.json()) as { integrations: IntegrationCardStatus[] }) : { integrations: [] }))
-      .then((data) => setIntegration(data.integrations.find((i) => i.pageSlug === app) ?? null))
+      .then((data) => {
+        const found = data.integrations.find((i) => i.pageSlug === app) ?? null;
+        setIntegration(found);
+        // Lige efter tilkobling: hent data med det samme, så brugeren ser dem.
+        if (!autoSynced.current && found?.slug && found.status !== "DISCONNECTED" && searchParams.get("connected")) {
+          autoSynced.current = true;
+          setDone(true);
+          void sync(found);
+        }
+      })
       .catch(() => setIntegration(null))
       .finally(() => setLoading(false));
   }
@@ -113,11 +127,24 @@ function IntegrationContent() {
     window.location.assign(`/api/integrations/${integration.slug}/connect`);
   }
 
-  async function sync() {
-    if (!integration?.slug) return;
+  // Henter data nu og fortæller, hvad der kom ind.
+  async function sync(target: IntegrationCardStatus | null = integration) {
+    if (!target?.slug) return;
+    const name = target.label;
     setBusy(true);
+    setFeedback({ text: t("integrations.feedback.syncing", { name }) });
     try {
-      await fetch(`/api/integrations/${integration.slug}/sync`, { method: "POST" });
+      const res = await fetch(`/api/integrations/${target.slug}/sync`, { method: "POST" }).catch(() => null);
+      const data = res ? ((await res.json().catch(() => ({}))) as { delivered?: number; skipped?: string; message?: string }) : {};
+      if (!res?.ok) {
+        setFeedback({ text: data.message ?? t("integrations.feedback.syncFailed", { name }), error: true });
+      } else if (data.skipped === "throttled") {
+        setFeedback({ text: t("integrations.feedback.upToDate", { name }) });
+      } else if (data.delivered) {
+        setFeedback({ text: t("integrations.feedback.synced", { name, count: String(data.delivered) }) });
+      } else {
+        setFeedback({ text: t("integrations.feedback.nothingNew", { name }) });
+      }
       load();
     } finally {
       setBusy(false);
@@ -191,11 +218,22 @@ function IntegrationContent() {
   const cardTokens = tokens.filter(
     (token) => token.label === name || (integration.provider === "APPLE_HEALTH" && token.label === LEGACY_TOKEN_LABEL)
   );
-  const notice = searchParams.get("connected")
-    ? t("integrations.notice.connected", { name })
-    : searchParams.get("error")
-      ? t("integrations.notice.failed", { name })
-      : null;
+  const errorReason = searchParams.get("error");
+  const notice =
+    feedback ??
+    (searchParams.get("connected")
+      ? { text: t("integrations.notice.connected", { name }) }
+      : errorReason
+        ? {
+            text: t(
+              ["config", "tier", "denied", "expired"].includes(errorReason)
+                ? `integrations.notice.${errorReason}`
+                : "integrations.notice.failed",
+              { name }
+            ),
+            error: true,
+          }
+        : null);
 
   const hasTypes = readTypes.length + writeTypes.length > 0;
   const allOn =
@@ -225,12 +263,20 @@ function IntegrationContent() {
     }));
   }
 
-  // "Tillad": forbinder (eller forbinder igen), når adgangen mangler; en
-  // companion-app uden enhedskode får en; ellers er valget allerede gemt.
+  // "Tillad": forbinder (eller forbinder igen), når adgangen mangler; er
+  // appen forbundet, hentes data nu; en companion-app uden enhedskode får en.
+  // Arket lukker først, når brugeren har set resultatet og trykker "Færdig".
   function allow() {
+    if (done) return close();
     if (isVia && hubs[0]) return router.push(hubPage(hubs[0]));
     if (isOAuth && (!connected || integration!.needsReconnect.length > 0)) return connect();
-    if (integration!.issuesDeviceTokens && cardTokens.length === 0 && !newToken) return void createToken();
+    setDone(true);
+    if (isOAuth) return void sync();
+    if (integration!.issuesDeviceTokens && cardTokens.length === 0 && !newToken) {
+      setFeedback({ text: t("integrations.feedback.deviceCode", { name }) });
+      return void createToken();
+    }
+    if (integration!.issuesDeviceTokens) return setFeedback({ text: t("integrations.feedback.companionSaved", { name }) });
     close();
   }
 
@@ -260,15 +306,20 @@ function IntegrationContent() {
       })}
       toggleAllLabel={hasTypes ? t(allOn ? "integrations.access.turnOffAll" : "integrations.access.turnOnAll") : undefined}
       onToggleAll={hasTypes ? toggleAll : undefined}
-      allowLabel={t("integrations.access.allow")}
+      allowLabel={t(done ? "integrations.access.done" : "integrations.access.allow")}
       denyLabel={t("integrations.access.deny")}
-      allowDisabled={busy || (hasTypes && !anyOn) || (isOAuth && !integration.configured)}
+      allowDisabled={busy || (!done && ((hasTypes && !anyOn) || (isOAuth && !integration.configured)))}
       denyDisabled={busy}
       onAllow={allow}
       onDeny={deny}
       onDismiss={close}
       terms={<TermsSheet hint={integrationTerms(integration.provider)} />}
     >
+      {notice && (
+        <div role="status" aria-live="polite">
+          <AccessFooter error={notice.error}>{notice.text}</AccessFooter>
+        </div>
+      )}
       {writeTypes.length > 0 && (
         <AccessToggleGroup title={t("integrations.access.writeTitle")} rows={rows("write", writeTypes)} />
       )}
@@ -318,7 +369,6 @@ function IntegrationContent() {
           title={t("integrations.access.statusTitle")}
           footer={
             <>
-              {notice && <AccessFooter>{notice}</AccessFooter>}
               {isOAuth && !integration.configured && !connected && (
                 <AccessFooter>{t("integrations.notConfigured")}</AccessFooter>
               )}
@@ -331,7 +381,7 @@ function IntegrationContent() {
         >
           <AccessRow>{statusLine}</AccessRow>
           {isOAuth && connected && (
-            <AccessRow tone="action" onClick={sync} disabled={busy}>
+            <AccessRow tone="action" onClick={() => void sync()} disabled={busy}>
               {busy ? t("integrations.syncing") : t("integrations.syncNow")}
             </AccessRow>
           )}
