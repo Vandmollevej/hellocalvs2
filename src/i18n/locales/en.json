@@ -1235,6 +1235,12 @@
     "age": "{age} years old",
     "trendWeight": "Trend weight (AI estimate): {value}",
     "startWeightUpdated": "Updated on {date}",
+    "height": {
+      "lockTitle": "Lock",
+      "lockBody": "Your height is locked so your energy balance and BMI are always calculated from the same number. It updates automatically when a connected integration (e.g. Withings, Apple Health or Health Connect) measures a new height.",
+      "goToIntegrations": "Go to integrations",
+      "openLockedInfo": "Open information about locked height"
+    },
     "startWeight": {
       "title": "Starting weight",
       "lockTitle": "Lock",
@@ -1909,14 +1915,19 @@
     },
     "readTypes": {
       "weight": "Weight",
-      "bodyFat": "Body fat",
+      "bodyFat": "Body fat and fat mass",
+      "muscleMass": "Muscle mass",
+      "fatFreeMass": "Fat-free mass",
+      "bodyWater": "Body water",
+      "boneMass": "Bone mass",
+      "visceralFat": "Visceral fat",
       "activities": "Workouts",
       "steps": "Steps and distance",
       "energy": "Calories burned",
       "heart": "Heart rate and fitness",
       "sleep": "Sleep",
       "water": "Water",
-      "body": "Height and BMI"
+      "body": "Height, BMI and temperature"
     },
     "writeTypes": {
       "nutrition": "Meals (calories, protein, carbs, fat)",
@@ -1946,14 +1957,19 @@
       },
       "read": {
         "weight": "Weight",
-        "bodyFat": "Body Fat Percentage",
+        "bodyFat": "Body fat and fat mass",
+        "muscleMass": "Muscle mass",
+        "fatFreeMass": "Fat-free mass",
+        "bodyWater": "Body water",
+        "boneMass": "Bone mass",
+        "visceralFat": "Visceral fat",
         "activities": "Workouts and sports",
         "steps": "Steps and Distance",
         "energy": "Active Energy",
         "heart": "Heart Rate and Fitness",
         "sleep": "Sleep",
         "water": "Water",
-        "body": "Height and BMI"
+        "body": "Height, BMI and temperature"
       }
     }
   },

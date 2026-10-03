@@ -1045,6 +1045,12 @@ enum HealthMetricType {
   // muskelmasse i kg og kropsvand (væske) som % af kropsvægt.
   MUSCLE_MASS_KG
   BODY_WATER_PERCENT
+  // 2026-10-03: resten af smartvægtens kropssammensætning (Withings m.fl.).
+  // Visceralt fedt er Withings' indeks uden enhed.
+  FAT_MASS_KG
+  FAT_FREE_MASS_KG
+  BONE_MASS_KG
+  VISCERAL_FAT_INDEX
 
   // Micronutrients (Statistik "Mineraler"/"Vitaminer" groups), shown with
   // periodic-table icons (public/icons/minerals) in StatCardsGrid.tsx.

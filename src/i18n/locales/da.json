@@ -1235,6 +1235,12 @@
     "age": "{age} år",
     "trendWeight": "Trendvægt (AI-estimat): {value}",
     "startWeightUpdated": "Opdateret d. {date}",
+    "height": {
+      "lockTitle": "Lås",
+      "lockBody": "Din højde er låst, så dit energiregnskab og BMI altid regnes ud fra samme tal. Den opdateres automatisk, når en tilsluttet integration (fx Withings, Apple Health eller Health Connect) måler en ny højde.",
+      "goToIntegrations": "Gå til integrationer",
+      "openLockedInfo": "Åbn information om låst højde"
+    },
     "startWeight": {
       "title": "Startvægt",
       "lockTitle": "Lås",
@@ -1890,14 +1896,19 @@
     },
     "readTypes": {
       "weight": "Vægt",
-      "bodyFat": "Fedtprocent",
+      "bodyFat": "Fedtprocent og fedtmasse",
+      "muscleMass": "Muskelmasse",
+      "fatFreeMass": "Fedtfri masse",
+      "bodyWater": "Kropsvand",
+      "boneMass": "Knoglemasse",
+      "visceralFat": "Visceralt fedt",
       "activities": "Træning",
       "steps": "Skridt og distance",
       "energy": "Forbrændte kalorier",
       "heart": "Puls og kondition",
       "sleep": "Søvn",
       "water": "Vand",
-      "body": "Højde og BMI"
+      "body": "Højde, BMI og temperatur"
     },
     "writeTypes": {
       "nutrition": "Måltider (kalorier, protein, kulhydrat, fedt)",
@@ -1927,14 +1938,19 @@
       },
       "read": {
         "weight": "Vægt",
-        "bodyFat": "Fedtprocent",
+        "bodyFat": "Fedtprocent og fedtmasse",
+        "muscleMass": "Muskelmasse",
+        "fatFreeMass": "Fedtfri masse",
+        "bodyWater": "Kropsvand",
+        "boneMass": "Knoglemasse",
+        "visceralFat": "Visceralt fedt",
         "activities": "Træning og sport",
         "steps": "Skridt og distance",
         "energy": "Forbrændte kalorier",
         "heart": "Puls og kondition",
         "sleep": "Søvn",
         "water": "Vand",
-        "body": "Højde og BMI"
+        "body": "Højde, BMI og temperatur"
       }
     }
   },

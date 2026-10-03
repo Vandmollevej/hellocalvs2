@@ -150,6 +150,7 @@ export const PAGE_TREE: PageArea[] = [
                 label: "Startvægt",
                 children: [{ path: "/profile/start-weight/verify", label: "Bekræft startvægt" }],
               },
+              { path: "/profile/height", label: "Højde (låst)" },
               { path: "/profile/target-weight", label: "Målvægt" },
             ],
           },

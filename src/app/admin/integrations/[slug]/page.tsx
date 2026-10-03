@@ -32,7 +32,12 @@ const C = {
 
 const READ_LABELS: Record<ReadType, string> = {
   weight: "Vægt",
-  bodyFat: "Fedtprocent og kropssammensætning",
+  bodyFat: "Fedtprocent",
+  muscleMass: "Muskelmasse",
+  fatFreeMass: "Fedtfri masse",
+  bodyWater: "Kropsvand",
+  boneMass: "Knoglemasse",
+  visceralFat: "Visceralt fedt",
   activities: "Træning",
   steps: "Skridt og distance",
   energy: "Energi (aktiv/hvile)",

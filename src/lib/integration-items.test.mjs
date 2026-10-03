@@ -5,6 +5,8 @@ import { garminItems } from "./integrations/garmin-items.ts";
 import { whoopItems, whoopLocalDay } from "./integrations/whoop-items.ts";
 import { huaweiDailyItems, huaweiField, huaweiSleepItems, huaweiTimeMs, huaweiWeightItems } from "./integrations/huawei-items.ts";
 import { brandForOrigin } from "./integrations/origins.ts";
+import { withingsItems } from "./integrations/withings-items.ts";
+import { readTypeOf } from "./integrations/sync-settings.ts";
 
 const byType = (items) => Object.fromEntries(items.filter((i) => i.kind === "metric").map((i) => [i.payload.type, i.payload]));
 
@@ -27,6 +29,11 @@ test("Garmin: kropssammensætning giver vejning i kg og målinger", () => {
   assert.equal(weight.payload.weightKg, 78.4);
   assert.equal(weight.payload.source, "GARMIN");
   assert.equal(byType(items).MUSCLE_MASS_KG.value, 33.1);
+});
+
+test("Garmin: knoglemasse i kg", () => {
+  const items = garminItems("bodyComps", [{ measurementTimeInSeconds: 1_790_000_000, boneMassInGrams: 3200 }]);
+  assert.equal(byType(items).BONE_MASS_KG.value, 3.2);
 });
 
 test("Garmin: træning uden varighed springes over", () => {
@@ -104,4 +111,50 @@ test("Afsender-app genkendes som mærke", () => {
   assert.equal(brandForOrigin("com.tuya.smartlife"), "TUYA");
   assert.equal(brandForOrigin("com.garmin.android.apps.connectmobile"), null);
   assert.equal(brandForOrigin(undefined), null);
+});
+
+test("Withings: hele kropssammensætningen, højde i cm og kropsvand i %", () => {
+  const items = withingsItems([
+    {
+      date: 1_790_000_000,
+      measures: [
+        { type: 1, value: 80000, unit: -3 },
+        { type: 4, value: 182, unit: -2 },
+        { type: 5, value: 6200, unit: -2 },
+        { type: 6, value: 225, unit: -1 },
+        { type: 8, value: 1800, unit: -2 },
+        { type: 11, value: 62, unit: 0 },
+        { type: 76, value: 5880, unit: -2 },
+        { type: 77, value: 4400, unit: -2 },
+        { type: 88, value: 320, unit: -2 },
+        { type: 170, value: 9, unit: 0 },
+        { type: 999, value: 1, unit: 0 },
+      ],
+    },
+  ]);
+  const weight = items.find((i) => i.kind === "weight");
+  assert.equal(weight.payload.weightKg, 80);
+  const m = byType(items);
+  assert.equal(m.HEIGHT_CM.value, 182);
+  assert.equal(m.FAT_FREE_MASS_KG.value, 62);
+  assert.equal(m.BODY_FAT_PERCENT.value, 22.5);
+  assert.equal(m.FAT_MASS_KG.value, 18);
+  assert.equal(m.HEART_RATE_BPM.value, 62);
+  assert.equal(m.MUSCLE_MASS_KG.value, 58.8);
+  assert.equal(m.BODY_WATER_PERCENT.value, 55);
+  assert.equal(m.BONE_MASS_KG.value, 3.2);
+  assert.equal(m.VISCERAL_FAT_INDEX.value, 9);
+  assert.equal(items.length, 10, "ukendte måletyper springes over");
+});
+
+test("Hver kropsmåling har sin egen til/fra-række", () => {
+  const metric = (type) => ({ kind: "metric", payload: { type } });
+  assert.equal(readTypeOf(metric("BODY_FAT_PERCENT")), "bodyFat");
+  assert.equal(readTypeOf(metric("FAT_MASS_KG")), "bodyFat");
+  assert.equal(readTypeOf(metric("MUSCLE_MASS_KG")), "muscleMass");
+  assert.equal(readTypeOf(metric("FAT_FREE_MASS_KG")), "fatFreeMass");
+  assert.equal(readTypeOf(metric("BODY_WATER_PERCENT")), "bodyWater");
+  assert.equal(readTypeOf(metric("BONE_MASS_KG")), "boneMass");
+  assert.equal(readTypeOf(metric("VISCERAL_FAT_INDEX")), "visceralFat");
+  assert.equal(readTypeOf(metric("HEIGHT_CM")), "body");
 });
