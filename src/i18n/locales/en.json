@@ -1279,6 +1279,7 @@
       "photoDiary": "Photo diary",
       "integrations": "Integrations",
       "points": "Points",
+      "status": "Status",
       "inviteFriend": "Invite a friend",
       "notifications": "Communication",
       "reportBug": "Found a mistake?",
@@ -1496,6 +1497,24 @@
     "chooseSexHint": "Choose your sex under Profile → Edit profile to see drawings of where to measure.",
     "deleteAria": "Delete measurement",
     "delete": "Delete"
+  },
+  "profileStatus": {
+    "title": "Status",
+    "currentWeight": "Current weight",
+    "goal": "Goal",
+    "noGoal": "No goal",
+    "setGoal": "Set a goal",
+    "toLose": "{value} to go",
+    "toGain": "{value} to gain",
+    "goalReached": "You have reached your goal",
+    "history": "History",
+    "weightHistory": "Weight",
+    "noWeights": "No weigh-ins yet.",
+    "noMeasurements": "No measurements yet.",
+    "showAll": "Show all ({count})",
+    "showLess": "Show less",
+    "chartAria": "Trend for {name}",
+    "loadError": "Could not load your status."
   },
   "bodyMeasurementChart": {
     "noData": "No measurements yet.",

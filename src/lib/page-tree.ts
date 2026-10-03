@@ -174,6 +174,7 @@ export const PAGE_TREE: PageArea[] = [
           { path: "/profile/sleep", label: "Søvn" },
           { path: "/profile/photo-diary", label: "Fotodagbog" },
           { path: "/profile/points", label: "Point" },
+          { path: "/profile/status", label: "Status" },
           {
             path: "/profile/recipes",
             label: "Opskrifter",

@@ -10,6 +10,11 @@ egen hvide bund under den scrollbare liste i stedet for ovenpå den med
 gennemsigtig toning. Brugeren kunne ikke se, hvad der skete i bunden (rækkerne
 skinnede igennem bjælken). Kun en 32 px toning over kanten viser, at listen
 fortsætter.
+## 2026-10-03: Profil → Status
+
+- **Placering:** rækken "Status" står som nr. 3 i profilmenuen, lige under Points (brugerens ønske: "under Profil, Points"). Points bliver som nr. 2 (beslutning 2026-10-02).
+- **Nuværende vægt** = seneste `WeightEntry`. Uden vejninger vises start-vægten (`User.weightKg`). **Mål** = `User.targetWeightKg`, som følger den nyeste vægt-målsætning (`user-goals.ts`). Felterne linker til vægtloggen og Målsætning; siden redigerer intet selv.
+- **Historik:** én dropdown pr. punkt — Vægt og hvert kropsmål i `BODY_MEASUREMENT_FIELDS` — lukket som standard, med en forløbsgraf øverst (alle målinger, x efter tid) og listen nyeste først under den (10 ad gangen). Vægtgrafen viser målet som stiplet linje. Enheder følger brugerens valg (kg/lb/st, cm/in).
 
 ## 2026-10-02: Hjælpe-chatbot øverst i app og web + admin "Chatbot"
 
