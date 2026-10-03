@@ -65,7 +65,15 @@ export async function GET(
           .then((count) => count > 0)
           .catch(() => false));
       return NextResponse.json({
-        product: { ...product, nutrients, lastAmountGrams: last?.amountGrams ?? null, ingredientsUnreadable },
+        product: {
+          ...product,
+          nutrients,
+          lastAmountGrams: last?.amountGrams ?? null,
+          ingredientsUnreadable,
+          // Butiksvare uden kalorietal (docs/DECISIONS.md 2026-10-02): 0 er en
+          // pladsholder, så UI viser "Næringsindhold ukendt" i stedet for 0 kcal.
+          hasKnownNutrition: !product.nutritionMissing,
+        },
       });
     }
 

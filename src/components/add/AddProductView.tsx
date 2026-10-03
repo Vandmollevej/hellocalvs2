@@ -140,6 +140,8 @@ type Product = {
   // (genericIngredientId i stedet for productId) og skjule favorit-knappen,
   // som ikke understøtter ingredienser endnu.
   isGenericIngredient?: boolean;
+  // false = 0 er en pladsholder (ingrediens uden Frida-match, butiksvare uden
+  // kalorietal) — vis "Næringsindhold ukendt", ikke 0 kcal.
   hasKnownNutrition?: boolean;
   // Usikkerheds-~ (docs/DECISIONS.md 2026-09-24): alle næringsstoffer ud
   // over makroerne pr. 100 g fra /api/products/[id], med estimeret-flag.
@@ -907,7 +909,7 @@ export function AddProductView({
                       <ReadingSkeleton label={t("addProduct.reading")}>
                         <Skeleton type="caption" width={64} height={14} className="my-0.5" />
                       </ReadingSkeleton>
-                    ) : view.isGenericIngredient && view.hasKnownNutrition === false
+                    ) : view.hasKnownNutrition === false
                       ? t("addProduct.nutritionUnknown")
                       : t("addProduct.kcalAmount", { kcal: Math.round((view.kcalPer100g * amount) / 100) })}
                   </p>
@@ -927,7 +929,7 @@ export function AddProductView({
                     <ReadingSkeleton label={t("addProduct.reading")}>
                       <Skeleton type="body" width={150} />
                     </ReadingSkeleton>
-                  ) : view.isGenericIngredient && view.hasKnownNutrition === false
+                  ) : view.hasKnownNutrition === false
                     ? t("addProduct.nutritionUnknown")
                     : servingSizeGrams && hasServingUnit
                     ? t("addProduct.kcalPerServing", {
