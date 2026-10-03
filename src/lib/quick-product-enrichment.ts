@@ -20,6 +20,7 @@ import { syncProductNutritionFeaturesSafely } from "@/lib/product-nutrition-feat
 import type { IngredientsAnalysis, NutritionAnalysis } from "@/lib/product-analysis-types";
 import { debugLog, errorText } from "@/lib/debug-log";
 import { composeProductName, normalizeProductName } from "@/lib/product-naming";
+import { addCertificationFilters } from "@/lib/product-certification-filters";
 
 // "Opret straks" (docs/DECISIONS.md 2026-09-27): kameraflowet opretter varen,
 // så snart den lokale OCR er kørt, og sender brugeren videre til /add/[id].
@@ -59,6 +60,9 @@ export type QuickEnrichmentInput = {
   // dens registreringer kan være dage gamle og skal beholde deres snapshot,
   // og en mislykket næringsaflæsning må ikke nedgradere dens kilder.
   existingProduct?: boolean;
+  // Sat, når en tynd Open Food Facts-vare fyldes op: kun registreringer fra
+  // og med dette tidspunkt regnes om — ældre beholder deres snapshot.
+  snapshotsSince?: Date;
 };
 
 // Atomisk i SQL: aflæsningerne rydder hver sine felter samtidig.
@@ -74,15 +78,19 @@ export async function clearPending(productId: string, fields: PendingField[]) {
 // Registreringer lavet, mens næringen stadig blev aflæst, fik et foreløbigt
 // snapshot. Varen er få minutter gammel, så alle dens registreringer stammer
 // fra den periode og regnes om med de aflæste tal.
-async function refreshRegistrationSnapshots(productId: string, input?: Pick<QuickEnrichmentInput, "existingProduct">) {
+async function refreshRegistrationSnapshots(
+  productId: string,
+  input?: Pick<QuickEnrichmentInput, "existingProduct" | "snapshotsSince">,
+) {
   if (input?.existingProduct) return;
+  const since = input?.snapshotsSince;
   const product = await prisma.product.findUnique({
     where: { id: productId },
     select: { name: true, kcalPer100g: true, proteinPer100g: true, carbsPer100g: true, fatPer100g: true },
   });
   if (!product) return;
   const registrations = await prisma.registration.findMany({
-    where: { productId },
+    where: { productId, ...(since ? { createdAt: { gte: since } } : {}) },
     select: { id: true, amountGrams: true },
   });
   for (const registration of registrations) {
@@ -155,6 +163,11 @@ export async function enrichFront(input: QuickEnrichmentInput): Promise<boolean 
       select: { id: true, name: true, createdAt: true },
     });
     await flagSimultaneousDuplicates(product.id, product.name, product.createdAt);
+    // Mærkningslogoerne (Ø-mærket, Nøglehullet …) vises på varesiden.
+    const certifications = await addCertificationFilters(productId, result.certifications ?? []).catch((error) => {
+      console.error("Could not save certifications", productId, error);
+      return [];
+    });
     await linkCutoutJobsToProduct({
       frontAnalysisId: analysisId,
       productId,
@@ -176,6 +189,8 @@ export async function enrichFront(input: QuickEnrichmentInput): Promise<boolean 
         subbrand: subbrand ?? null,
         variant: result.variant ?? null,
         packageSizeText: result.packageSizeText ?? null,
+        certificationsRead: result.certifications ?? [],
+        certificationsSaved: certifications,
       },
     });
   } catch (error) {

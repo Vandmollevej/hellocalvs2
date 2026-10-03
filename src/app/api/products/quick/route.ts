@@ -2,6 +2,7 @@ import { NextResponse, after } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getSessionUser } from "@/lib/session";
 import { inferGs1OriginCountryCode } from "@/lib/regions";
+import { isIncompleteExternalProduct } from "@/lib/openFoodFacts";
 import { saveDataUrlImage } from "@/lib/qc-image-storage";
 import type { PendingField } from "@/lib/quick-product-enrichment";
 import { createQuickEnrichmentJob, runQuickEnrichment } from "@/lib/quick-enrichment-jobs";
@@ -73,8 +74,19 @@ export async function POST(req: Request) {
   try {
     // Samme stregkode kan være oprettet imens (fx af en anden bruger) — så
     // går brugeren bare til den eksisterende vare.
-    const existing = await prisma.barcode.findUnique({ where: { code: barcode }, select: { productId: true } });
-    if (existing?.productId) {
+    const existing = await prisma.barcode.findUnique({
+      where: { code: barcode },
+      select: {
+        productId: true,
+        product: {
+          select: { name: true, externalSource: true, createdByUserId: true, status: true, imageUrl: true, ingredientsText: true },
+        },
+      },
+    });
+    // En tynd Open Food Facts-vare (uden billede/ingredienser) fyldes op fra
+    // fotoene i stedet (docs/DECISIONS.md 2026-10-02).
+    const refill = existing?.product && isIncompleteExternalProduct(existing.product) ? existing.productId : null;
+    if (existing?.productId && !refill) {
       void debugLog({
         category: "scan",
         event: "product_create",
@@ -109,10 +121,25 @@ export async function POST(req: Request) {
       saveDataUrlImage(nutritionPhoto).catch(() => null),
       ingredientsPhoto ? saveDataUrlImage(ingredientsPhoto).catch(() => null) : Promise.resolve(null),
     ]);
-    const fallbackName = `Vare ${barcode}`;
+    // Ved opfyldning beholdes OFF-navnet, hvis AI'en ikke kan læse forsiden.
+    const fallbackName = refill && existing?.product ? existing.product.name : `Vare ${barcode}`;
+    const snapshotsSince = refill ? new Date() : undefined;
     const pendingFields: PendingField[] = ["name", "brand", "nutrition", "ingredients"];
 
-    const product = await prisma.product.create({
+    const product = refill
+      ? await prisma.product.update({
+          where: { id: refill },
+          // OFF's tal og navn står, til AI'en har læst fotoene.
+          data: {
+            ...(localNutrition ?? {}),
+            ...(localIngredients ? { ingredientsText: localIngredients } : {}),
+            imageUrl,
+            pendingFields,
+            createdByUserId: sessionUser?.id,
+          },
+          select: { id: true },
+        })
+      : await prisma.product.create({
       data: {
         name: fallbackName,
         kcalPer100g: localNutrition?.kcalPer100g ?? 0,
@@ -140,7 +167,7 @@ export async function POST(req: Request) {
     void debugLog({
       category: "scan",
       event: "product_create",
-      message: `Vare oprettet som "${fallbackName}" — AI udfylder navn, brand${localNutrition ? "" : ", næring"} og ingredienser`,
+      message: `${refill ? "Tynd Open Food Facts-vare fyldes op fra fotoene" : `Vare oprettet som "${fallbackName}"`} — AI udfylder navn, brand${localNutrition ? "" : ", næring"} og ingredienser`,
       flowId,
       userId: sessionUser?.id,
       barcode,
@@ -195,6 +222,7 @@ export async function POST(req: Request) {
           frontPhotoUrl: imageUrl ?? null,
           nutritionPhotoUrl,
           ingredientsPhotoUrl,
+          snapshotsSince,
         }),
       ).catch((error) => {
         console.error("Quick product enrichment failed", product.id, error);

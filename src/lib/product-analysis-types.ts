@@ -26,6 +26,9 @@ export type ProductFrontAnalysis = {
   variant: string | null;
   packageSizeText: string | null;
   claims: string[];
+  // Mærkningslogoer (Ø-mærket, Nøglehullet, MSC …), fra front-v4. Mangler
+  // på analyser fra før 2026-10-02.
+  certifications?: string[];
   visibleText: string[];
   language: string | null;
   overallConfidence: number;

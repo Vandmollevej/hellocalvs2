@@ -109,7 +109,8 @@ function kindForOrganic(label: string): CertificationKind {
   if (value.includes("bioland")) return "bioland";
   if (value.includes("landbau")) return "landbau";
   if (value.includes("biologisch") || /\bbio\b/.test(value)) return "bioGermany";
-  if (value.includes("eu") && !value.includes("økolog")) return "euOrganic";
+  // "EU-økologisk" (forside-AI/Open Food Facts) er EU-bladet, ikke Ø-mærket.
+  if (/\beu\b/.test(value) || (value.includes("eu") && !value.includes("økolog"))) return "euOrganic";
   return "organic";
 }
 

@@ -97,6 +97,12 @@ Brugerens krav: flag/sprogvalg i venstre hjørne på tale-siden (mobil) og chat-
 - Points: 10 (`PointsReason.PRODUCT_RESCAN`) gives automatisk, når fotos er læst, medmindre AI'en slet ingen vare kunne se på forsidefotoet. Fejler AI'en teknisk, gives points alligevel. Bekræftet af brugeren 2026-10-02 (frem for admin-godkendelse). Samme bruger får kun points én gang pr. vare.
 - Del B: første visning gemmer `Product.rescanOfferedAt`. Scanner ingen varen igen, sender det natlige app-job `external-image-ai` (standard 03:30, admin "Cron-jobs") Open Food Facts-/USDA-billedet gennem samme OpenAI-forsideaflæsning (`analyzeFrontPhoto`): brand/subbrand/variant/pakningsstørrelse udfyldes kun, hvis de mangler, og der lægges fritlægning (beskåret til vareboksen) + logo-kandidat i kø. Højst 100 varer pr. nat; `externalImageAnalyzedAt` markerer dem som klaret.
 - Migration `20261003050000_product_rescan`.
+## 2026-10-02: Tynde Open Food Facts-varer udløser fotoene + mærkninger fra forsiden
+
+- Stregkodeopslaget gemmer ikke længere en OFF-vare, der mangler billede, ingrediensliste eller salt. Svaret er 404 (`source: "incomplete"`), så kameraflowet fortsætter til forside/energi/indhold, og AI'en udfylder varen fra fotoene. Baggrund: "Fire Forskellige Flødeboller" (Premieur) blev oprettet fra OFF med kun navn, brand og kalorier — uden billede, certifikat, ingredienser og salt — og kameraflowet sprang fotoene over.
+- En tynd OFF-vare, der allerede ligger i databasen (`externalSource = OPEN_FOOD_FACTS`, PENDING, ingen `createdByUserId`, mangler billede eller ingredienser), behandles som ukendt ved næste scanning, og `/api/products/quick` fylder samme vare op i stedet for at oprette en dublet. Kun registreringer fra opfyldningen og frem får nye snapshots; ældre beholder deres.
+- Forside-AI'en (prompt `front-v4-2026-10-02-certifications`) returnerer nu `certifications` (Ø-mærket, EU-blad, Nøglehul, Fuldkorn, Bedre Dyrevelfærd, MSC, ASC, Fairtrade …). De gemmes i `ProductFilters` via `src/lib/label-certifications.ts` + `product-certification-filters.ts`, og OFF's `labels_tags` gør det samme. Eksisterende felter overskrives aldrig.
+- "EU-økologisk" giver EU-bladet (ikke Ø-mærket) i `certification-badges.ts`.
 
 ## 2026-10-02: Butiksimporten: alt fra arkene med (Bilka + REMA 1000)
 

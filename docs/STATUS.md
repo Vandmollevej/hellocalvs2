@@ -248,6 +248,12 @@ Last updated: 2026-10-02
 - Tests (`src/lib/product-rescan-offer.test.mjs`), lint, typecheck og build grønne. Ikke live-testet (ingen lokal DB/login/kamera) — test på telefon: scan en Open Food Facts-vare, træk banneret ned, tag de tre fotos.
 
 
+## 2026-10-02: Scannede varer uden billede, certifikat, ingredienser og salt
+
+- Årsag: stregkoden blev fundet i Open Food Facts med kun navn/brand/kalorier, og kameraflowet gik direkte til varen uden fotos. Nu fortsætter flowet til fotoene, når OFF mangler billede, ingredienser eller salt, og en allerede gemt tynd OFF-vare fyldes op fra fotoene (DECISIONS 2026-10-02).
+- Certifikater: forside-AI'en læser mærkningslogoer (prompt front-v4), OFF's labels_tags oversættes; begge gemmes i ProductFilters og vises som logoer.
+- Test: `src/lib/label-certifications.test.mjs` (ny, grøn). Lint og typecheck grønne. Ikke live-testet (ingen lokal DB/OpenAI). Prøv: scan flødebollerne igen → flowet skal bede om forside, energi og indhold.
+
 ## 2026-10-02: Kameraflowet — rigtige stillbilleder + nyt foto af indholdet
 
 - Fejlen: marmelade (5711954020055) fik ingen ingredienser, fordi indholdsfotoet var et sløret 1080p-videobillede, og OpenAI svarede tomt ("for sløret"). Ingen genstart var involveret. Se DECISIONS 2026-10-02.
