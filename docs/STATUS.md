@@ -3,6 +3,11 @@
 Last updated: 2026-10-02
 Last updated: 2026-10-03
 
+## 2026-10-03: Abonnement — oversigt med de tre planer øverst
+
+- `/profile/subscription` viser nu Gratis, Seriøs og Seriøs Familie i tre kolonner øverst (navn, pris, "Se mere"/"Din plan"); et tryk ruller ned til planens fulde kort længere nede. Ny `PlanOverview` i `src/components/landing/LandingPlans.tsx`; plankortene har ankre `plan-free/serious/family`. Forsiden er uændret.
+- Lint, typecheck og build grønne. Ikke set i browser (kræver login) — tjek på telefon, at de tre kolonner passer i bredden, og at tryk ruller til kortet.
+
 ## 2026-10-02: Kalenderen husker den åbne dag
 
 - Dagsvisningen genåbnes efter navigation væk fra `/calendar` (Tilbage eller "Kalender" i menuen) i stedet for at falde tilbage til måneden. Ny `src/lib/calendar-open-day.ts` (URL `?date=` + sessionStorage), koblet ind i `src/app/calendar/page.tsx`. Se DECISIONS.md samme dato.
