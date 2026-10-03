@@ -37,6 +37,9 @@ Last updated: 2026-10-03
 
 - Brugerens rettelse: kyllingelåret skulle kun bruges, hvor der allerede stod et ikon, og aldrig fjerne "kcal". Rullet tilbage: måneds-/ugelistens afstand til mål, statistikboksenes værdier, widget-forhåndsvisningerne og listerne i chat/tale/kamera viser igen tal + "kcal" uden ikon.
 - Beholdt med "kcal" igen: forsidens tal-hjul (kyllingelår/flamme som rækkeikon + "kcal"), statistikboksen Kalorier (kyllingelår som boksikon) og kalenderens dagvisning (`EnergyChip` viser nu "540 kcal"/"+120 kcal" efter ikonet). Se DECISIONS.md og design.md §6.16.
+## 2026-10-03: Hjælpecenter — spørgsmål uden fed
+
+- Spørgsmålene i Hjælpecenter (`public/hjaelp.html`, `summary`) vises nu i normal vægt (400) i stedet for halvfed (600). Kategorioverskrifterne er uændrede.
 
 ## 2026-10-02: Kalenderen husker den åbne dag
 
