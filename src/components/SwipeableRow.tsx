@@ -1,7 +1,8 @@
 "use client";
 
 import { useRef, useState } from "react";
-import { IconBookmark, IconAlertTriangle, IconCopy } from "@tabler/icons-react";
+import { IconAlertTriangle, IconCopy } from "@tabler/icons-react";
+import { IconFavorite } from "@/components/icons/Favorite";
 import { useTranslation } from "@/i18n/LocaleProvider";
 
 const ACTION_WIDTH = 80;
@@ -79,7 +80,7 @@ export function SwipeableRow({
             aria-label={t("swipeableRow.saveAsFavorite")}
             className="hf-type-small hf-type-strong flex flex-col items-center gap-1 text-hf-white"
           >
-            <IconBookmark size={18} />
+            <IconFavorite size={18} />
             {t("swipeableRow.favorite")}
           </button>
         </div>

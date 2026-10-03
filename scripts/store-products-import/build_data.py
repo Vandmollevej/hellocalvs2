@@ -15,7 +15,19 @@ Rules (docs/DECISIONS.md 2026-09-27 "Butiksvarer i tre tabeller"):
 - Drinks (ml) = Bilka "Drikkevarer", REMA "Drikkevare" or a liquid quantity
   (l/cl/ml), except drinking yoghurt. Everything else is grams.
 
-Usage: py build_data.py [--limit 50] [--all]
+Rules (docs/DECISIONS.md 2026-10-02 "Butiksimporten: alt fra arkene med"):
+- Every row is built, also without nutrition. No kcal = "nutritionMissing"
+  (the agent keeps the product hidden until it has nutrition); kcal but a
+  missing macro = that macro is 0 and listed in "estimatedMacros" (shown as ~).
+- Rows without an EAN are keyed by the shop's own product id ("externalId").
+- Energy is repaired per store: kJ written as 1.105 for 1105, kJ and kcal in
+  each other's column, and a kcal that contradicts both kJ and the macros.
+  Every correction is listed in the checklist CSV.
+- The info sheets' "Labels" fill filters the product sheets left blank.
+- REMA "Sukkerfri" on a product with more than 0.5 g sugars is REMA's label
+  "Ikke tilsat sukker": keyword "Uden tilsat sukker" instead of the filter.
+
+Usage: py build_data.py [--limit 50] [--all] [--out <dir>] [--images-from <store_products.json>]
 """
 
 import argparse
@@ -27,15 +39,32 @@ import shutil
 
 import openpyxl
 
-# HELLO_CAL_ROOT: the main checkout (with the sheets), when run from a worktree.
-ROOT = os.environ.get("HELLO_CAL_ROOT") or os.path.abspath(
-    os.path.join(os.path.dirname(__file__), "..", "..", "..", "Hello Cal")
-)
+# The sheets and images are not in the repository. HELLO_CAL_ROOT is the
+# folder holding "Produkter klar til import" and "Productdatabase": the main
+# checkout or, since the clean-up 2026-09-29, its archive folder (now on the
+# NAS share "Hello Cal").
+ARCHIVE = os.path.join("Arkiv - historiske kilde- og importfiler", "Oprydning 2026-09-29")
+
+
+def find_root():
+    if os.environ.get("HELLO_CAL_ROOT"):
+        return os.environ["HELLO_CAL_ROOT"]
+    main = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "..", "Hello Cal"))
+    for root in (main, os.path.join(main, ARCHIVE), os.path.join(r"\\192.168.1.90\Hello Cal", ARCHIVE)):
+        if os.path.isdir(os.path.join(root, "Produkter klar til import", "Produktark")):
+            return root
+    return main
+
+
+ROOT = find_root()
 SHEETS = os.path.join(ROOT, "Produkter klar til import", "Produktark")
 BILKA_SHEET = os.path.join(SHEETS, "bilka.xlsx")
 REMA_SHEET = os.path.join(SHEETS, "rema1000_version 2.xlsx")
 BILKA_INFO = os.path.join(ROOT, "Productdatabase", "Bilka", "bilka_product_information.xlsx")
 REMA_INFO = os.path.join(ROOT, "Productdatabase", "REMA1000", "rema1000_product_information.xlsx")
+# Written by bilka_vitamins.py (the panel "Info om vitaminer og mineraler");
+# optional — without it no product has label vitamins.
+BILKA_VITAMINS = os.path.join(ROOT, "Productdatabase", "Bilka", "bilka_vitamins.xlsx")
 CUTOUT_DIR = os.path.join(ROOT, "Produkter klar til import", "Færdige produktbilleder")
 ORIGINAL_DIR = os.path.join(ROOT, "Productdatabase", "Product Images")
 
@@ -139,20 +168,112 @@ REMA_NUTRITION = {k: v for k, v in BILKA_NUTRITION.items() if v[0] in {
 }}
 
 
-def nutrition(info, mapping):
+KJ_PER_KCAL = 4.184
+
+
+def energy_consistent(kj, kcal):
+    """kJ and kcal describe the same energy (labels round both, so small
+    values get an absolute slack)."""
+    return abs(kj - kcal * KJ_PER_KCAL) <= max(0.10 * kcal * KJ_PER_KCAL, 12)
+
+
+def fits(value, estimate):
+    return abs(value - estimate) <= max(0.08 * estimate, 4)
+
+
+def repair_energy(kj, kcal, macro_kcal):
+    """Returns (kJ, kcal, note). The Bilka sheet holds kJ as numbers, so 1105
+    kJ arrived as 1.105; a few rows have kJ and kcal in each other's column
+    or a kcal that contradicts the label's own kJ. macro_kcal (4P + 4C + 9F,
+    None for alcohol, where it does not hold) only arbitrates between the two
+    label values — it never replaces them. note is None for the silent
+    thousands fix and when nothing changed."""
+    if kj is None or kcal is None or energy_consistent(kj, kcal):
+        return kj, kcal, None
+    if energy_consistent(kj * 1000, kcal):
+        return round(kj * 1000), kcal, None
+    if kj <= 950 and energy_consistent(kcal * 1000, kj):
+        return round(kcal * 1000), kj, f"kJ og kcal stod i hinandens kolonner ({kj:g} / {kcal:g}) – byttet om"
+    if kj <= 950 and energy_consistent(kcal, kj):
+        return kcal, kj, f"kJ og kcal stod i hinandens kolonner ({kj:g} / {kcal:g}) – byttet om"
+    if kj == 0:
+        return None, kcal, None
+    if macro_kcal is not None:
+        kcal_fits = fits(kcal, macro_kcal)
+        from_kj = [(kj * scale, kj * scale / KJ_PER_KCAL) for scale in (1, 1000)]
+        for real_kj, as_kcal in from_kj:
+            if not kcal_fits and as_kcal <= 950 and fits(as_kcal, macro_kcal):
+                note = f"kcal rettet fra {kcal:g} til {round(as_kcal)}: arkets {round(real_kj)} kJ og makroerne siger {round(macro_kcal)}"
+                return round(real_kj), round(as_kcal), note
+        if kcal_fits and not any(fits(as_kcal, macro_kcal) for _, as_kcal in from_kj):
+            return None, kcal, f"kJ {kj:g} droppet: passer ikke til {kcal:g} kcal, som makroerne bekræfter"
+    if kj < 10 < kcal:
+        kj = round(kj * 1000)  # still the sheet's thousands format
+    return kj, kcal, f"kJ {kj:g} og kcal {kcal:g} passer ikke sammen – ikke rettet"
+
+
+def nutrition(info, mapping, alcoholic=False):
+    """Returns (values, notes for the checklist)."""
     if not info:
-        return {}
+        return {}, []
     out = {}
+    notes = []
     for key, (col, energy) in mapping.items():
         v = number(info.get(col), energy=energy)
         if v is not None and v >= 0:
             out[key] = v
+    macros = [out.get(k) for k in ("protein", "carbs", "fat")]
+    macro_kcal = None if alcoholic or None in macros else 4 * macros[0] + 4 * macros[1] + 9 * macros[2] + 2 * out.get("fiber", 0)
+    kj, kcal, note = repair_energy(out.get("energyKj"), out.get("kcal"), macro_kcal)
+    for key, value in (("energyKj", kj), ("kcal", kcal)):
+        if value is None:
+            out.pop(key, None)
+        else:
+            out[key] = float(value)
+    if note:
+        notes.append(note)
     # Drop values that cannot be right (a part larger than its whole).
     if "sugars" in out and "carbs" in out and out["sugars"] > out["carbs"] + 0.5:
-        out.pop("sugars")
-    for part in ("saturatedFat", "monounsaturatedFat", "polyunsaturatedFat"):
+        notes.append(f"sukkerarter {out.pop('sugars'):g} g droppet: mere end kulhydrat {out['carbs']:g} g")
+    for part, label in (("saturatedFat", "mættet fedt"), ("monounsaturatedFat", "enkeltumættet fedt"), ("polyunsaturatedFat", "flerumættet fedt")):
         if part in out and "fat" in out and out[part] > out["fat"] + 0.5:
-            out.pop(part)
+            notes.append(f"{label} {out.pop(part):g} g droppet: mere end fedt {out['fat']:g} g")
+    return out, notes
+
+
+# Vitamins and minerals for Product.micronutrientsPer100g — keys and units
+# follow src/lib/nutrients.ts. Info-sheet column -> (key, factor to that unit).
+INFO_MICROS = {
+    "Sodium per 100 g": ("sodium", 1000),
+    "Riboflavin B2 mg per 100 g": ("vitaminB2", 1),
+    "Vitamin B12 µg per 100 g": ("vitaminB12", 1),
+    "Calcium mg per 100 g": ("calcium", 1),
+    "Phosphorus mg per 100 g": ("phosphorus", 1),
+}
+# Columns of bilka_vitamins.xlsx (bilka_vitamins.py), already in catalogue units.
+VITAMIN_COLUMNS = {
+    "Vitamin A µg per 100 g": "vitaminA", "Vitamin D µg per 100 g": "vitaminD", "Vitamin E mg per 100 g": "vitaminE",
+    "Vitamin K µg per 100 g": "vitaminK", "Vitamin C mg per 100 g": "vitaminC", "Thiamin B1 mg per 100 g": "vitaminB1",
+    "Riboflavin B2 mg per 100 g": "vitaminB2", "Niacin B3 mg per 100 g": "vitaminB3",
+    "Pantothenic Acid B5 mg per 100 g": "vitaminB5", "Vitamin B6 mg per 100 g": "vitaminB6",
+    "Biotin B7 µg per 100 g": "vitaminB7", "Folate B9 µg per 100 g": "vitaminB9", "Vitamin B12 µg per 100 g": "vitaminB12",
+    "Potassium mg per 100 g": "potassium", "Calcium mg per 100 g": "calcium", "Phosphorus mg per 100 g": "phosphorus",
+    "Magnesium mg per 100 g": "magnesium", "Iron mg per 100 g": "iron", "Zinc mg per 100 g": "zinc",
+    "Copper mg per 100 g": "copper", "Manganese mg per 100 g": "manganese", "Selenium µg per 100 g": "selenium",
+    "Iodine µg per 100 g": "iodine", "Sodium mg per 100 g": "sodium",
+}
+
+
+def micronutrients(info, vitamins):
+    out = {}
+    for col, (key, factor) in INFO_MICROS.items():
+        v = number(info.get(col)) if info else None
+        if v is not None and v >= 0:
+            out[key] = round(v * factor, 4)
+    for col, key in VITAMIN_COLUMNS.items():
+        v = number(vitamins.get(col)) if vitamins else None
+        if v is not None and v >= 0:
+            out[key] = v
     return out
 
 
@@ -165,6 +286,8 @@ def info_extra(info):
         "additives": text(info.get("E-Numbers")),
         "flavor": text(info.get("Flavor")),
         "country": text(info.get("Country of Origin")),
+        "labels": [label.lower() for label in split_list(info.get("Labels"))],
+        "additional": text(info.get("Additional Product Information")),
     }
 
 
@@ -245,7 +368,8 @@ def rema_filters(r, is_drink):
         "meatType": meat(r.get("is_meat")),
         "alcohol": "Alkoholfri" if r.get("is_alcohol_free") else None,
         "alcoholPercent": percent,
-        "fatPercent": number(r.get("fat")),
+        # The column also holds words ("0 Kalorier", "Light"): those are keywords.
+        "fatPercent": number(r.get("fat")) if "%" in (text(r.get("fat")) or "") else None,
         "countryOfOrigin": text(r.get("is_country_of_origin")),
         "wholeGrain": "Fuldkorn" if r.get("is_whole_grain") else None,
         "keyhole": "Nøglehul" if healthy == "Nøglehul" else None,
@@ -268,6 +392,8 @@ def rema_keywords(r, is_drink):
         out.append("Light")
     if text(r.get("%")) and not is_alcoholic(r):
         out.append(text(r.get("%")))
+    if text(r.get("fat")) and "%" not in text(r.get("fat")):
+        out.append(text(r.get("fat")))
     return out
 
 
@@ -283,6 +409,60 @@ def merge_filters(bf, rf):
         else:
             out[k] = first(bf[k], rf[k])
     return out
+
+
+# The info sheets' "Labels" (the shops' own badges) fill what the product
+# sheets left blank; the sheets win where both say something.
+NO_ADDED_SUGAR = {"ikke tilsat sukker", "uden tilsat sukker"}
+LABEL_FILTERS = {
+    "økologisk": ("organic", "Økologisk"), "økologi": ("organic", "Økologisk"),
+    "glutenfri": ("glutenFree", "Glutenfri"), "gluten fri": ("glutenFree", "Glutenfri"),
+    "laktosefri": ("lactoseFree", "Laktosefri"), "laktose fri": ("lactoseFree", "Laktosefri"),
+    "vegansk": ("vegan", "Vegansk"), "vegetarisk": ("vegetarian", "Vegetarisk"),
+    "fuldkorn": ("wholeGrain", "Fuldkorn"), "nøglehul": ("keyhole", "Nøglehul"),
+    "sukkerfri": ("sugarFree", "Sukkerfri"),
+}
+LABEL_LISTS = {
+    "msc": ("certifications", "MSC"), "asc": ("certifications", "ASC"), "fairtrade": ("certifications", "Fairtrade"),
+    "rainforest alliance": ("certifications", "Rainforest Alliance Certificeret"),
+    "rainforest alliance certificeret": ("certifications", "Rainforest Alliance Certificeret"),
+    "svanemærket": ("certifications", "Svanemærket"),
+    "bedre dyrevelfærd 1": ("animalWelfare", "Bedre Dyrevelfærd 1"),
+    "bedre dyrevelfærd 2": ("animalWelfare", "Bedre Dyrevelfærd 2"),
+    "bedre dyrevelfærd 3": ("animalWelfare", "Bedre Dyrevelfærd 3"),
+    "anbefalet af dyrenes beskyttelse": ("animalWelfare", "Anbefalet Af Dyrenes Beskyttelse"),
+}
+ORIGIN_RE = re.compile(r"Oprindelsesland:\s*([A-ZÆØÅ][a-zæøå]+(?: [A-ZÆØÅ][a-zæøå]+)?)\s*(?:$|[.,;<])")
+
+
+def apply_labels(filters, keywords, labels, additional):
+    """Mutates filters and keywords with what the shops' own labels add."""
+    for label in labels:
+        if label in LABEL_FILTERS:
+            key, word = LABEL_FILTERS[label]
+            if not filters.get(key):
+                filters[key] = word
+        elif label in LABEL_LISTS:
+            key, word = LABEL_LISTS[label]
+            if word.lower() not in {x.lower() for x in filters[key]}:
+                filters[key] = filters[key] + [word]
+        elif label in NO_ADDED_SUGAR and "uden tilsat sukker" not in {k.lower() for k in keywords}:
+            keywords.append("Uden tilsat sukker")
+    if not filters.get("countryOfOrigin"):
+        origin = ORIGIN_RE.search(additional or "")
+        if origin:
+            filters["countryOfOrigin"] = origin.group(1)
+        elif "dansk" in labels or all(f"{step} i: Danmark" in (additional or "") for step in ("Født", "Opvokset", "Slagtet")):
+            filters["countryOfOrigin"] = "Danmark"
+
+
+def alcohol_hint(b, r):
+    """Alcohol carries part of the energy, so 4P + 4C + 9F cannot arbitrate."""
+    if b and (text(b.get("_is_alcohol")) == "Indeholder alkohol" or (number(b.get("_is_alcohol#2")) or 0) > 0.5):
+        return True
+    if r and is_alcoholic(r):
+        return True
+    return has(ALCOHOL_TYPE, text(b.get("Original Title")) if b else None, text(b.get("Product Type")) if b else None)
 
 
 # ---------- basics ----------
@@ -328,11 +508,17 @@ def strip_title(title):
 def bilka_name(b):
     """HelloCal_Title is "Name, quantity (Brand)" — the name is the part before.
     The cleanup cut abbreviations ("u. tilsat sukker" → "u"); then the
-    uncut Product Name is used instead."""
+    uncut Product Name is used instead. A product named after its brand alone
+    ("Coca Cola", "Carlsberg 1883", "Breezer m. appelsin") has nothing left
+    but a digit of the quantity or a dangling "m": then the shop's own title
+    is the name."""
     name = strip_title(text(b.get("HelloCal_Title")))
     if not name or re.search(r"\s\w$", name):
         name = strip_title(text(b.get("Product Name"))) or name
-    return name or text(b.get("HelloCal_Title"))
+    if not name or re.fullmatch(r"[\d.,\s]+", name) or re.match(r"m\.? ", name, re.I):
+        name = fix_decimals(text(b.get("Original Title"))) or name
+    name = name or text(b.get("HelloCal_Title")) or ""
+    return name[:1].upper() + name[1:]
 
 
 def rema_name(r, brand):
@@ -573,7 +759,8 @@ def slice_weight(quantity, *rows):
 def index_dir(path):
     by_stem = {}
     by_name = {}
-    for name in os.listdir(path):
+    # A missing image folder (e.g. only the sheets are at hand) = no images.
+    for name in os.listdir(path) if os.path.isdir(path) else []:
         stem, ext = os.path.splitext(name)
         by_stem.setdefault(stem.lower(), []).append(name)
         by_name[name.lower()] = name
@@ -651,14 +838,76 @@ def store_record(p):
     return {"ean": p["ean"], "stores": p["stores"], **{k: p.get(k) for k in SOURCE_FIELDS}}
 
 
+# ---------- sugar claims (docs/DECISIONS.md 2026-10-02) ----------
+# Kun til søgning/filtre — vises ikke som mærker. Påstanden står ofte kun i
+# nøgleordene (eller som ikon på emballagen), så der kigges i nøgleord, navn,
+# variant, smag og produkttype; "lavt sukkerindhold" udledes desuden af sukker
+# pr. 100 g (EU: højst 5 g pr. 100 g, drikkevarer højst 2,5 g pr. 100 ml).
+# Ikon-alene-påstande kan ikke aflæses her og må tilføjes manuelt i admin.
+
+SUGAR_CLAIMS = (
+    ("sugarFree", "Sukkerfri", re.compile(r"sukkerfri|sugar[\s-]?free|zuckerfrei|uden\s+sukker\b", re.I)),
+    # "u. tilsat sukker" (Bilka's titles) and "Ikke tilsat sukker" (REMA's label).
+    ("noAddedSugar", "Uden tilsat sukker",
+     re.compile(r"(uden|ingen|ikke|\bu\.?)\s+tilsat(te)?\s+sukker|no\s+added\s+sugars?|ohne\s+(zuckerzusatz|zusatz\s+von\s+zucker)", re.I)),
+    ("reducedSugar", "Reduceret sukker",
+     re.compile(r"reduceret\s+sukker|sukkerreduceret|mindre\s+sukker|reduced\s+sugar|weniger\s+zucker", re.I)),
+    ("lightSugar", "Light", re.compile(r"\blight\b", re.I)),
+    ("lowSugar", "Lavt sukkerindhold",
+     re.compile(r"lavt\s+sukkerindhold|lav\s+sukker|low\s+(in\s+)?sugar|wenig\s+zucker", re.I)),
+)
+LOW_SUGAR_SOLID_G = 5.0
+LOW_SUGAR_DRINK_G = 2.5
+
+
+def sugar_claims(filters, keywords, name, variant, flavor, product_type, sugars, is_drink):
+    """Fills sugarFree/lowSugar/noAddedSugar/reducedSugar/lightSugar on `filters`.
+    "Sukkerfri"/"uden sukker" in the texts of a product that declares more
+    than 0.5 g sugars (the EU limit) means "Uden tilsat sukker" — the
+    filter Sukkerfri only shows truly sugar-free products (brugerens valg
+    2026-10-02). A shop's own Sukkerfri badge (_is_sugar_free) is kept."""
+    haystack = " | ".join(filter(None, [*keywords, name, variant, flavor, product_type]))
+    for key, label, pattern in SUGAR_CLAIMS:
+        if pattern.search(haystack):
+            if key == "sugarFree" and sugars is not None and sugars > 0.5:
+                key, label = "noAddedSugar", "Uden tilsat sukker"
+            filters[key] = filters.get(key) or label
+        else:
+            filters.setdefault(key, None)
+    limit = LOW_SUGAR_DRINK_G if is_drink else LOW_SUGAR_SOLID_G
+    if not filters.get("lowSugar") and sugars is not None and sugars <= limit:
+        filters["lowSugar"] = "Lavt sukkerindhold"
+    # Sukkerfri er også lavt på sukker (EU: højst 0,5 g).
+    if filters.get("sugarFree") and not filters.get("lowSugar"):
+        filters["lowSugar"] = "Lavt sukkerindhold"
+    return filters
+
+
 # ---------- build ----------
 
 
-def build_product(ean, b, r, b_info, r_info, cutouts, originals):
-    bn = nutrition(b_info, BILKA_NUTRITION)
-    rn = nutrition(r_info, REMA_NUTRITION)
+def url_key(v):
+    return (text(v) or "").lower().rstrip("/")
+
+
+def external_id(ean, b, r):
+    """The EAN or, for a row without one, the shop's own product id from its URL."""
+    if ean:
+        return ean
+    shop_id = re.search(r"/(\d+)$", url_key(b.get("Source URL") if b else r.get("Source url")))
+    return f"{'bilka' if b else 'rema1000'}-{shop_id.group(1)}" if shop_id else None
+
+
+def build_product(ean, b, r, b_info, r_info, cutouts, originals, vitamins=None):
+    alcoholic = alcohol_hint(b, r)
+    bn, b_notes = nutrition(b_info, BILKA_NUTRITION, alcoholic)
+    rn, r_notes = nutrition(r_info, REMA_NUTRITION, alcoholic)
     nut = dict(rn)
     nut.update(bn)  # Bilka wins, REMA fills blanks.
+    # kJ from one store beside kcal from the other may disagree; the app uses kcal.
+    if ("energyKj" in bn) != ("kcal" in bn) and "energyKj" in nut and "kcal" in nut:
+        if not energy_consistent(nut["energyKj"], nut["kcal"]):
+            nut.pop("energyKj")
     bx, rx = info_extra(b_info), info_extra(r_info)
 
     quantity = fix_decimals(first(text(b.get("Quantity")) if b else None, text(r.get("Quantity")) if r else None))
@@ -667,7 +916,14 @@ def build_product(ean, b, r, b_info, r_info, cutouts, originals):
     category = product_category(b, r, quantity, product_type)
     is_drink = category == "DRINK"
 
-    filters = merge_filters(bilka_filters(b) if b else None, rema_filters(r, is_drink) if r else None)
+    rf = rema_filters(r, is_drink) if r else None
+    # "Sukkerfri" in the REMA sheet is REMA's label "Ikke tilsat sukker"; only
+    # at or below the EU limit of 0.5 g sugars is the product sugar free
+    # (brugerens valg 2026-10-02). Above it, sugar_claims makes the title's
+    # "(Sukkerfri)" a "Uden tilsat sukker".
+    if rf and rf["sugarFree"] and NO_ADDED_SUGAR & set(rx.get("labels", [])) and rn.get("sugars", 0) > 0.5:
+        rf["sugarFree"] = None
+    filters = merge_filters(bilka_filters(b) if b else None, rf)
     if not filters.get("countryOfOrigin"):
         filters["countryOfOrigin"] = first(bx.get("country"), rx.get("country"))
 
@@ -678,6 +934,21 @@ def build_product(ean, b, r, b_info, r_info, cutouts, originals):
         keywords += rema_keywords(r, is_drink)
     seen = set()
     keywords = [k for k in keywords if k and not (k.lower() in seen or seen.add(k.lower()))]
+    # The shops' badges first: "Ikke tilsat sukker" becomes a keyword that the
+    # sugar claims below read.
+    apply_labels(filters, keywords, bx.get("labels", []) + rx.get("labels", []), rx.get("additional"))
+    # REMA's "Light" i is_sugar_free-kolonnen ender som nøgleord (se
+    # rema_keywords) og fanges derfor også af sukkerpåstandene her.
+    sugar_claims(
+        filters,
+        keywords,
+        bilka_name(b) if b else rema_name(r, brand),
+        first(text(b.get("Variation")) if b else None, text(r.get("Variant")) if r else None),
+        first(bx.get("flavor"), text(r.get("taste")) if r else None, rx.get("flavor")),
+        product_type,
+        nut.get("sugars"),
+        is_drink,
+    )
 
     images = image_candidates(ean, b, r, cutouts, originals)
     image_path, image_tags = images[0] if images else (None, [])
@@ -685,6 +956,7 @@ def build_product(ean, b, r, b_info, r_info, cutouts, originals):
 
     product = {
         "ean": ean,
+        "externalId": external_id(ean, b, r),
         "stores": stores,
         "externalSource": "BILKA" if b else "REMA1000",
         "name": bilka_name(b) if b else rema_name(r, brand),
@@ -704,10 +976,13 @@ def build_product(ean, b, r, b_info, r_info, cutouts, originals):
         "additives": split_list(bx.get("additives")),
         "sourceUrl": first(text(b.get("Source URL")) if b else None, text(r.get("Source url")) if r else None),
         "nutrition": nut,
+        "micronutrients": micronutrients(b_info, vitamins),
         "filters": filters,
         "image": os.path.basename(image_path) if image_path else None,
         "imageTags": image_tags,
         "_imagePaths": images,
+        # Checklist: the notes of the store whose energy the product uses.
+        "_notes": b_notes if "kcal" in bn else b_notes + r_notes,
     }
     product["category"], product["subcategory"] = classify(product, b, r)
     product["productCategory"] = unit_category(
@@ -715,6 +990,18 @@ def build_product(ean, b, r, b_info, r_info, cutouts, originals):
     )
     product["packaging"] = packaging(product, b, r)
     return product
+
+
+def finish_nutrition(p):
+    """No kcal = no usable nutrition: the product is flagged, and the agent
+    keeps it hidden in the app until it has nutrition. kcal without a macro:
+    the macro is 0 and marked as estimated (~). Brugerens valg 2026-10-02:
+    alle varer skal med; manglende næring hentes fra Frida senere."""
+    n = p["nutrition"]
+    p["nutritionMissing"] = n.get("kcal") is None
+    p["estimatedMacros"] = [] if p["nutritionMissing"] else [k for k in ("protein", "carbs", "fat") if n.get(k) is None]
+    for k in p["estimatedMacros"]:
+        n[k] = 0.0
 
 
 def score(p):
@@ -745,81 +1032,104 @@ def main():
     # The full catalogue is too big for git: build it into a folder that is
     # copied to the NAS (data/store-products-import, see compose).
     ap.add_argument("--out", default=None)
+    # A previous build's store_products.json (the one on the NAS): products
+    # already in it keep their image fields and their files are not copied
+    # again, so <out>/images only gets the images of new products.
+    ap.add_argument("--images-from", default=None)
     args = ap.parse_args()
     out_dir = args.out or OUT_DIR
     out_images = os.path.join(out_dir, "images")
 
     bilka = load(BILKA_SHEET)
     rema = load(REMA_SHEET)
-    bilka_info = {ean_of(x.get("EAN")): x for x in load(BILKA_INFO) if ean_of(x.get("EAN"))}
-    rema_info = {text(x.get("Source URL")).lower(): x for x in load(REMA_INFO) if text(x.get("Source URL"))}
+    bilka_info_rows = load(BILKA_INFO)
+    bilka_info = {ean_of(x.get("EAN")): x for x in bilka_info_rows if ean_of(x.get("EAN"))}
+    # Rows without an EAN are matched on the product page instead.
+    bilka_info_by_url = {url_key(x.get("Source URL")): x for x in bilka_info_rows}
+    rema_info = {url_key(x.get("Source URL")): x for x in load(REMA_INFO)}
+    vitamins = {url_key(x.get("Source URL")): x for x in load(BILKA_VITAMINS)} if os.path.isfile(BILKA_VITAMINS) else {}
 
     cutouts = index_dir(CUTOUT_DIR)
     originals = index_dir(ORIGINAL_DIR)
 
-    by_ean = {}
+    rows = {}
     for b in bilka:
-        e = ean_of(b.get("EAN"))
-        if e:
-            by_ean.setdefault(e, [None, None])[0] = b
+        key = external_id(ean_of(b.get("EAN")), b, None)
+        if key:
+            rows.setdefault(key, [None, None])[0] = b
     for r in rema:
-        e = ean_of(r.get("EAN"))
-        if e:
-            by_ean.setdefault(e, [None, None])[1] = r
+        key = external_id(ean_of(r.get("EAN")), None, r)
+        if key:
+            rows.setdefault(key, [None, None])[1] = r
 
     products = []
-    skipped = {"no_macros": 0}
-    for ean, (b, r) in by_ean.items():
-        r_info = rema_info.get((text(r.get("Source url")) or "").lower()) if r else None
-        p = build_product(ean, b, r, bilka_info.get(ean), r_info, cutouts, originals)
-        n = p["nutrition"]
-        if any(n.get(k) is None for k in ("kcal", "protein", "carbs", "fat")):
-            skipped["no_macros"] += 1
-            continue
+    for key, (b, r) in rows.items():
+        ean = key if EAN_RE.match(key) else None
+        b_info = (bilka_info.get(ean) if ean else bilka_info_by_url.get(url_key(b.get("Source URL")))) if b else None
+        r_info = rema_info.get(url_key(r.get("Source url"))) if r else None
+        p = build_product(ean, b, r, b_info, r_info, cutouts, originals, vitamins.get(url_key(b.get("Source URL"))) if b else None)
+        finish_nutrition(p)
         if b and r:
             # Both chains: keep each store's own fields so admin can compare
             # them side by side under "Dubletter" → Produkter.
             p["sources"] = {
-                "BILKA": store_record(build_product(ean, b, None, bilka_info.get(ean), None, cutouts, originals)),
+                "BILKA": store_record(build_product(ean, b, None, b_info, None, cutouts, originals)),
                 "REMA1000": store_record(build_product(ean, None, r, None, r_info, cutouts, originals)),
             }
         products.append(p)
 
-    suspects = [p for p in products if p.get("_suspect")]
+    suspects = [p for p in products if p.get("_suspect") or p["_notes"]]
     with open(SUSPECT_CSV, "w", encoding="utf-8-sig", newline="") as f:
         w = csv.writer(f, delimiter=";")
         w.writerow(["EAN", "Kæde", "Navn", "Produkttype i arket", "Kødtype i arket", "Problem"])
         for p in suspects:
-            w.writerow([p["ean"], ", ".join(p["stores"]), p["name"], p["productType"], p.get("_sheetMeat") or "", p["_suspect"]])
+            problem = "; ".join(filter(None, [p.get("_suspect"), *p["_notes"]]))
+            w.writerow([p["externalId"], ", ".join(p["stores"]), p["name"], p["productType"], p.get("_sheetMeat") or "", problem])
     print(f"{len(suspects)} suspicious rows -> {SUSPECT_CSV}")
     for p in products:
         p.pop("_suspect", None)
         p.pop("_sheetMeat", None)
+        p.pop("_notes", None)
 
     if not args.all:
-        both = sorted([p for p in products if len(p["stores"]) == 2 and p["image"]], key=score, reverse=True)
-        bilka_only = sorted([p for p in products if p["stores"] == ["Bilka"] and p["image"]], key=score, reverse=True)
-        rema_only = sorted([p for p in products if p["stores"] == ["Rema 1000"] and p["image"]], key=score, reverse=True)
+        usable = [p for p in products if p["image"] and not p["nutritionMissing"]]
+        both = sorted([p for p in usable if len(p["stores"]) == 2], key=score, reverse=True)
+        bilka_only = sorted([p for p in usable if p["stores"] == ["Bilka"]], key=score, reverse=True)
+        rema_only = sorted([p for p in usable if p["stores"] == ["Rema 1000"]], key=score, reverse=True)
         n_both = args.limit * 2 // 5
         n_bilka = args.limit * 2 // 5
         products = spread(both, n_both) + spread(bilka_only, n_bilka) + spread(rema_only, args.limit - n_both - n_bilka)
 
-    if os.path.isdir(out_images):
+    previous = {}
+    if args.images_from:
+        with open(args.images_from, "r", encoding="utf-8") as f:
+            previous = {old.get("externalId") or old["ean"]: old for old in json.load(f)}
+    elif os.path.isdir(out_images):
         shutil.rmtree(out_images)
     os.makedirs(out_images, exist_ok=True)
     for p in products:
+        paths = p.pop("_imagePaths")
+        old = previous.get(p["externalId"])
+        if old:
+            p["images"], p["image"], p["imageTags"] = old.get("images") or [], old.get("image"), old.get("imageTags") or []
+            continue
         # Primary = "<EAN>.<ext>" as before; further variants "<EAN>_2.<ext>" …
         p["images"] = []
-        for i, (src, tags) in enumerate(p.pop("_imagePaths")):
+        for i, (src, tags) in enumerate(paths):
             ext = os.path.splitext(src)[1].lower()
-            name = f"{p['ean']}{ext}" if i == 0 else f"{p['ean']}_{i + 1}{ext}"
-            shutil.copyfile(src, os.path.join(out_images, name))
+            name = f"{p['externalId']}{ext}" if i == 0 else f"{p['externalId']}_{i + 1}{ext}"
+            target = os.path.join(out_images, name)
+            if not (os.path.isfile(target) and os.path.getsize(target) == os.path.getsize(src)):
+                shutil.copyfile(src, target)
             p["images"].append({"file": name, "tags": tags})
         p["image"] = p["images"][0]["file"] if p["images"] else None
 
     with open(os.path.join(out_dir, "store_products.json"), "w", encoding="utf-8") as f:
         json.dump(products, f, ensure_ascii=False, indent=1)
-    print(f"wrote {len(products)} products; skipped {skipped}; "
+    print(f"wrote {len(products)} products; "
+          f"without nutrition={sum(p['nutritionMissing'] for p in products)} "
+          f"estimated macros={sum(bool(p['estimatedMacros']) for p in products)} "
+          f"without EAN={sum(not p['ean'] for p in products)} "
           f"both={sum(len(p['stores']) == 2 for p in products)} "
           f"cutouts={sum('Cutout' in p['imageTags'] for p in products)} "
           f"no_image={sum(not p['image'] for p in products)}")

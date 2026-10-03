@@ -169,11 +169,11 @@
     "expand": "Show side menu",
     "shortcuts": "Shortcuts",
       "settings": "Settings",
-      "searchPlaceholder": "Search the menu…",
+      "searchPlaceholder": "Search",
       "noResults": "No results",
       "mainNav": "Main navigation",
       "sideNav": "Side menu",
-      "chat": "Chat",
+      "chat": "Enter",
       "recipes": "Dishes",
       "ingredients": "Ingredients",
       "water": "Water",
@@ -188,13 +188,15 @@
       "support": "Support",
       "allSettings": "All settings",
       "profileSettings": "Profile settings",
-      "chatTitle": "Chat",
+      "chatTitle": "Enter",
       "chatIntro": "Type what you ate or drank, e.g. “2 eggs and a slice of rye bread”.",
       "chatPlaceholder": "Type a meal…",
       "chatSend": "Send",
       "chatThinking": "Interpreting…",
       "chatSave": "Add to today",
       "chatSaved": "Added",
+      "chatAdd": "Add",
+      "chatAddAll": "Add all",
       "chatNothing": "I couldn't find anything edible in that message.",
       "chatError": "Something went wrong. Try again.",
       "chatSaveError": "Could not save. Try again."
@@ -216,6 +218,19 @@
     "expandAriaLabel": "Show bottom menu",
     "collapseAriaLabel": "Hide bottom menu"
   },
+  "accountSettings": {
+    "title": "Account settings",
+    "closeTitle": "Close account",
+    "closeIntro": "Closes your account and logs you out. Your personal data is removed and you cannot log in again.",
+    "closeButton": "Close account",
+    "forgetTitle": "Right to be forgotten",
+    "forgetIntro": "Have all your personal data erased (GDPR). Anonymised data that cannot be linked to you is kept.",
+    "forgetButton": "Delete my data",
+    "confirmWarning": "This cannot be undone. Type SLET to confirm.",
+    "confirmPlaceholder": "SLET",
+    "confirmButton": "Confirm",
+    "error": "Something went wrong — try again"
+  },
   "settings": {
     "title": "Settings",
     "support": {
@@ -227,6 +242,12 @@
       "until": "To",
       "dataTitle": "Data Support may view",
       "selectAll": "Select all",
+      "groups": {
+        "food": "Food and drink",
+        "activityOverview": "Activity and overview",
+        "body": "Body and health",
+        "account": "Account and settings"
+      },
       "saveAccess": "Save permission",
       "saving": "Saving…",
       "saved": "The permission has been saved",
@@ -321,6 +342,15 @@
     "thirdPartyDisclaimer": "We fetch data from third parties and take no responsibility for missing data.",
     "languageLabel": "Language",
     "languageDescription": "Choose which language the app is shown in.",
+    "unitsWeightLabel": "Weight unit",
+    "unitsWeightDescription": "Set automatically from your country, but you can change it here.",
+    "unitsHeightLabel": "Height and body measurements",
+    "unitsHeightDescription": "Centimetres or inches. Set automatically from your country.",
+    "unitKg": "Kilograms (kg)",
+    "unitLb": "Pounds (lb)",
+    "unitSt": "Stones and pounds (st lb)",
+    "unitCm": "Centimetres (cm)",
+    "unitIn": "Inches (in)",
     "languageDanish": "Dansk",
     "languageEnglish": "English",
     "setupProgress": "Step {done} of {total} complete",
@@ -382,6 +412,13 @@
     "update": "Update",
     "later": "Later",
     "dontAskAgain": "Don't ask again"
+  },
+  "sentNotice": {
+    "title": "For your information",
+    "body": "For your information, on {date} we sent you {type} about \"{subject}\". This was not spam.",
+    "typeEmail": "an email",
+    "typeSms": "a text message",
+    "read": "Read"
   },
   "startupTips": {
     "close": "Close",
@@ -462,7 +499,15 @@
     "distanceKm": "Kilometers moved"
   },
   "addMenu": {
-    "title": "Add"
+    "title": "Add",
+    "food": "Add food",
+    "scan": "Scan product",
+    "platePhoto": "Photo of plate",
+    "dish": "Create dish",
+    "voice": "Record",
+    "weight": "Weight",
+    "drink": "Drinks",
+    "body": "Body measurements"
   },
   "helloDoc": {
     "title": "Hello Doc",
@@ -673,6 +718,9 @@
     "hintFront": "Take a photo of the front",
     "hintNutrition": "Take a photo of the energy/nutrition info",
     "hintIngredients": "Take a photo of the ingredients list",
+    "retakeStillUnreadable": "The ingredients still could not be read. Hold the camera closer and try again.",
+    "retakeFailed": "The photo could not be read right now. Try again.",
+    "retakeBack": "Back to the product",
     "createFailed": "The item couldn't be created. Try again.",
     "retry": "Try again",
     "title": "Add item",
@@ -1011,6 +1059,9 @@
     "searching": "Searching...",
     "noResults": "No products match your search",
     "scan": "Take photo",
+    "scanWeb": "Upload an image or drop them here",
+    "scanWebWorking": "Reading the image …",
+    "scanWebNotFound": "We couldn't recognise the product in the image. Try a photo of the front, or search for it.",
     "manually": "Create manually",
     "createOwnIngredient": "Create your own ingredient",
     "kcalUnknown": "{grams} g · kcal unknown",
@@ -1129,7 +1180,7 @@
       "VERY_HIGH": { "short": "Extreme", "label": "Very high", "description": "Hard physical work all day, e.g. construction, farming or forestry." }
     },
     "age": "{age} years old",
-    "trendWeight": "Trend weight (AI estimate): {value} kg",
+    "trendWeight": "Trend weight (AI estimate): {value}",
     "startWeightUpdated": "Updated on {date}",
     "startWeight": {
       "title": "Starting weight",
@@ -1157,7 +1208,7 @@
     },
     "row": {
       "subscription": "Subscription",
-      "paymentMethods": "Payment methods",
+      "paymentMethods": "Payment",
       "weightCalibration": "Weight calibration",
       "bodyMeasurements": "Body measurements",
       "sleep": "Sleep pattern",
@@ -1233,7 +1284,7 @@
     },
     "activeUntil": "Active until {date}",
     "nextPayment": "Next payment on {date}",
-    "paymentMethods": "Payment methods",
+    "paymentMethods": "Payment",
     "freePlan": {
       "title": "Free",
       "description": "Logging, calendar and your goal. Only the last 3 months of history are shown — older data is kept and comes back if you go Serious."
@@ -1320,7 +1371,7 @@
     "lastCalibrated": "Last calibrated on {date}",
     "neverCalibrated": "Not calibrated yet",
     "intro": "Weigh yourself at different times and under different conditions — this gives you a sense of your fluctuation throughout the day, without having to weigh yourself naked every time.",
-    "weightLabel": "Weight (kg)",
+    "weightLabel": "Weight",
     "weightPlaceholder": "e.g. 78.4",
     "timeGrid": {
       "title": "Weight throughout the day",
@@ -1440,7 +1491,7 @@
   "weightLog": {
     "title": "Weight",
     "intro": "Log your weight. It's saved right away and shows up in the calendar and statistics.",
-    "weightLabel": "Weight (kg)",
+    "weightLabel": "Weight",
     "weightPlaceholder": "e.g. 78.4",
     "save": "Save",
     "saving": "Saving…",
@@ -1549,6 +1600,8 @@
   "addProduct": {
     "reportBug": "Found a mistake?",
     "reading": "Reading…",
+    "ingredientsUnreadable": "The ingredients could not be read from the photo.",
+    "retakeIngredients": "Take a new photo of the ingredients",
     "title": "Add",
     "titleForDish": "Add ingredient",
     "unlockEditing": "Unlock editing",
@@ -1928,6 +1981,8 @@
     }
   },
   "onboarding": {
+    "unitsQuestion": "Which units would you like to use?",
+    "unitsHint": "We picked these based on your country. You can change them anytime under Settings → Language and region.",
     "calendarViewQuestion": "Which view should the calendar open in?",
     "calendarViewHint": "You can change it anytime under Settings → Display → Calendar view.",
     "stepProgress": "Step {current} of {total} completed",
@@ -2054,11 +2109,11 @@
     "mode": "What do you want?",
     "modes": { "MAINTAIN": "Keep my weight", "LOSE": "Lose weight", "GAIN": "Gain weight" },
     "pace": "Pace",
-    "paceValue": "{kg} kg/week",
-    "paceHintLose": "A healthy pace for you: at most {kg} kg per week. Faster can't be chosen.",
+    "paceValue": "{value}/week",
+    "paceHintLose": "A healthy pace for you: at most {value} per week. Faster can't be chosen.",
     "paceHintGain": "Slow weight gain builds the most muscle and the least fat.",
     "targetWeight": "Target weight (kg)",
-    "targetRaised": "We use {kg} kg as the target — lower is below what we consider healthy for your height.",
+    "targetRaised": "We use {value} as the target — lower is below what we consider healthy for your height.",
     "eta": "At that pace it takes about {weeks} weeks — probably between {from} and {to}. The date moves as your weight does.",
     "disclaimer": "The budget is an estimate and is adjusted continuously. If pregnant, breastfeeding, ill or living with an eating disorder: talk to your doctor before following a calorie goal."
   },

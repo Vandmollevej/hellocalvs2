@@ -2,7 +2,6 @@
 
 import { useSyncExternalStore } from "react";
 import { usePathname } from "next/navigation";
-import { isPublicPath } from "@/components/AuthGate";
 import { WebShell } from "@/components/web/WebShell";
 
 // Appen fylder altid hele browserens viewport (bruger 2026-09-29). Bred
@@ -36,18 +35,9 @@ export function AppFrame({ children }: { children: React.ReactNode }) {
   if (isFullViewport) return <>{children}</>;
 
   if (isDesktop) {
-    if (!isPublicPath(pathname)) return <WebShell>{children}</WebShell>;
-    // Log ind, opret og øvrige offentlige sider: som admin-loginsiden.
-    return (
-      <div className="flex h-dvh justify-center bg-page-bg">
-        <div
-          className="flex h-full w-full max-w-4xl flex-col overflow-hidden overscroll-contain bg-hf-cream"
-          style={{ transform: "translateZ(0)" }}
-        >
-          {children}
-        </div>
-      </div>
-    );
+    // Alle sider på desktop vises i skallen (sidebjælke, topmenu, brødkrummer),
+    // også login og betingelser — aldrig alene (bruger 2026-10-02).
+    return <WebShell>{children}</WebShell>;
   }
 
   return (

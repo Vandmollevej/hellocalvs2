@@ -33,7 +33,16 @@ export type ProductTablesMacros = {
   carbsPer100g: number;
   fatPer100g: number;
   saturatedFatPer100g: number | null;
+  // Butiksvare uden kalorietal: 0 er en pladsholder (docs/DECISIONS.md 2026-10-02).
+  nutritionMissing?: boolean;
 };
+
+const MISSING = "Mangler – skjult i appen";
+
+// Uden kalorietal er en makro på 0 kun pladsholderen; et tal fra arket vises.
+function placeholder(macros: ProductTablesMacros, value: number): Value {
+  return macros.nutritionMissing && value === 0 ? MISSING : value;
+}
 
 const CATEGORY_LABELS: Record<string, string> = {
   DRINK: "Drikkevare (ml)",
@@ -108,15 +117,15 @@ export function ProductTablesPanel({
         title={`2 · Næring pr. ${unit}`}
         rows={[
           ["Energi (kJ)", nutrition?.energyKjPer100g],
-          ["Energi (kcal)", macros.kcalPer100g],
-          ["Fedt (g)", macros.fatPer100g],
+          ["Energi (kcal)", macros.nutritionMissing ? MISSING : macros.kcalPer100g],
+          ["Fedt (g)", placeholder(macros, macros.fatPer100g)],
           ["Mættet fedt (g)", macros.saturatedFatPer100g],
           ["Enkeltumættet fedt (g)", nutrition?.monounsaturatedFatPer100g],
           ["Flerumættet fedt (g)", nutrition?.polyunsaturatedFatPer100g],
-          ["Kulhydrat (g)", macros.carbsPer100g],
+          ["Kulhydrat (g)", placeholder(macros, macros.carbsPer100g)],
           ["Sukkerarter (g)", nutrition?.sugarsPer100g],
           ["Kostfibre (g)", nutrition?.fiberPer100g],
-          ["Protein (g)", macros.proteinPer100g],
+          ["Protein (g)", placeholder(macros, macros.proteinPer100g)],
           ["Salt (g)", nutrition?.saltPer100g],
           ["Natrium (g)", nutrition?.sodiumPer100g],
           ["Alkohol (g)", nutrition?.alcoholPer100g],
@@ -133,6 +142,10 @@ export function ProductTablesPanel({
           ["Glutenfri", filters?.glutenFree],
           ["Laktosefri", filters?.lactoseFree],
           ["Sukkerfri", filters?.sugarFree],
+          ["Lavt sukkerindhold", filters?.lowSugar],
+          ["Uden tilsat sukker", filters?.noAddedSugar],
+          ["Reduceret sukker", filters?.reducedSugar],
+          ["Light", filters?.lightSugar],
           ["Sødemidler", filters?.sweeteners],
           ["Vegansk", filters?.vegan],
           ["Vegetarisk", filters?.vegetarian],

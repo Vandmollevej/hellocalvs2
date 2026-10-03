@@ -1,58 +1,30 @@
 "use client";
 
-import { activitySummaryUrl } from "@/lib/daily-budget";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { HfScreen } from "@/components/HfScreen";
-import { EnergyGoalEditor, type EnergyGoalUser } from "@/components/EnergyGoalEditor";
-import { SkeletonForm, SkeletonScreen } from "@/components/hf/Skeleton";
+import { EnergyGoalPanel } from "@/components/EnergyGoalPanel";
+import { useInWebShell } from "@/components/web/WebShell";
 import { useTranslation } from "@/i18n/LocaleProvider";
-import type { EnergySummary } from "@/lib/activity-profile";
 
 // Kaloriemål: energibehov → budget (docs/ACTIVITY-PAL.md F6). Link fra
-// Målsætning og fra startguidens sidste aktivitetsside.
+// Målsætning og fra startguidens sidste aktivitetsside. På desktop er det en
+// dropdown på Målsætning — den gamle adresse sender derhen.
 export default function EnergyGoalPage() {
   const { t } = useTranslation();
-  const [user, setUser] = useState<EnergyGoalUser | null>(null);
-  const [summary, setSummary] = useState<EnergySummary | null>(null);
+  const router = useRouter();
+  const inWebShell = useInWebShell();
 
   useEffect(() => {
-    let cancelled = false;
-    Promise.all([
-      fetch("/api/profile").then((response) => (response.ok ? response.json() : null)),
-      fetch(activitySummaryUrl()).then((response) => (response.ok ? response.json() : null)),
-    ])
-      .then(([profile, activity]: [{ user: EnergyGoalUser } | null, { summary: EnergySummary } | null]) => {
-        if (cancelled) return;
-        if (profile?.user) {
-          const { goalMode, goalPaceKgPerWeek, targetWeightKg, weightKg, heightCm } = profile.user;
-          setUser({ goalMode, goalPaceKgPerWeek, targetWeightKg, weightKg, heightCm });
-        }
-        if (activity) setSummary(activity.summary);
-      })
-      .catch(() => {});
-    return () => {
-      cancelled = true;
-    };
-  }, []);
+    if (inWebShell) router.replace("/profile/goals?open=energy");
+  }, [inWebShell, router]);
+
+  if (inWebShell) return null;
 
   return (
     <HfScreen title={t("energyGoal.title")}>
       <div className="hf-page">
-        <p className="hf-type-body text-text-secondary">{t("energyGoal.intro")}</p>
-        {user ? (
-          <EnergyGoalEditor
-            user={user}
-            summary={summary}
-            onChange={(nextUser, nextSummary) => {
-              setUser(nextUser);
-              if (nextSummary) setSummary(nextSummary);
-            }}
-          />
-        ) : (
-          <SkeletonScreen className="">
-            <SkeletonForm />
-          </SkeletonScreen>
-        )}
+        <EnergyGoalPanel />
       </div>
     </HfScreen>
   );
