@@ -1989,7 +1989,11 @@
     "noSearchResults": "No charts or cards match your search.",
     "add": "+ Add",
     "noCardsYet": "No cards here yet.",
-    "addHeading": "Heading"
+    "addHeading": "+ Heading",
+    "addDivider": "+ Divider",
+    "addAccordion": "+ Fold-out section",
+    "layoutTools": "Layout",
+    "accordionTitle": "Section"
   },
   "statUnusedCharts": {
     "title": "Unused charts",
@@ -2015,6 +2019,10 @@
     "removeHeading": "Remove heading",
     "dragHeading": "Move heading",
     "removeDivider": "Remove divider",
+    "removeAccordion": "Remove section",
+    "renameAccordion": "Rename section",
+    "openAccordion": "Expand",
+    "closeAccordion": "Collapse",
     "noData": "No data for this period"
   },
   "statChart": {

@@ -3879,3 +3879,29 @@ Brugerens krav: "Luk konto kan reverses inde. For 3 måneder, med mindre man væ
 
 - Øverst i Hjælpecenter (`public/hjaelp.html`) står guiden "Lær appen at kende" med knappen "Start guiden" på grøn baggrund (`#067A46`, hvid tekst) — ejerens udtrykkelige ønske og en bevidst undtagelse fra design.md's regel om, at grønne handlingsknapper er udfaset.
 - Den statiske side kan ikke selv åbne guiden, så den linker til `/settings?guide=1`, som starter `OnboardingWizard` forfra (samme handling som "Lær appen at kende" i Indstillinger).
+## 2026-10-02: Fold-ud-boks (accordion) som element i statistik-layoutet
+
+- Statistiksidens kort-gitter har et nyt opbygningselement ud over Overskrift
+  og Skillelinje: en **fold-ud-boks**, der ser ud som grupperne på
+  `/statistics/unused-cards` (`AccordionSection`: hoved med titel, antal og
+  chevron; grønt hoved når den er åben). Kort, overskrifter og skillelinjer
+  kan ligge inde i den.
+- Datamodel: boksen gemmes **fladt** i samme layout-liste som alt andet som
+  to markører — `{ type: "accordion", id, title, open }` og
+  `{ type: "accordionEnd", id }` — og alt imellem dem er indholdet. Ingen
+  indlejring (en ny boks lukker den forrige). `normalizeStatLayout`
+  reparerer manglende/løse markører og fjerner tomme rækker lige før
+  slut-markøren. Åben/lukket gemmes i layoutet (localStorage), så valget
+  huskes.
+- Betjening: tryk på hovedet folder ud/sammen; langt tryk løfter **hele
+  boksen** (også når den er lukket) og den lander kun mellem rækker på
+  øverste niveau. Kort slippes ind i boksen i et frit felt (åben) eller på
+  hovedet (lukket — kortet lægges sidst i boksen). I redigering: tryk på
+  titlen omdøber, slette-cirklen fjerner kun rammen — kortene bliver i
+  gitteret, hvor boksen stod.
+- Tilføj-siden: Overskrift, Skillelinje og Fold-ud-boks står samlet øverst
+  under søgefeltet i en mørkere boks (`bg-hf-tan-dark`), så
+  opbygningselementer tydeligt adskiller sig fra data-kort og grafer.
+- Kode: layout-logikken ligger nu i `src/lib/stat-layout.ts` (uden
+  UI-imports, så den kan testes med `npm test`); `stat-cards.ts`
+  re-eksporterer den, så eksisterende imports virker uændret.
