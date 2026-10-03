@@ -8,6 +8,12 @@ Last updated: 2026-10-03
 - Fejl fra ejeren (skærmbillede 30/9): en gemt vægt kom ikke frem i kalenderen. Kalenderen hentede allerede `/api/weight-entries`, men brugte kun vejningerne til vægtestimatet.
 - Nu: badevægt-ikon på dagen i måneds- (nederste venstre hjørne), uge-, liste- og ugetidslinje-visningen (kun ikon — der er ikke plads til tallet). Dagvisningen viser vægt + klokkeslæt i timerækken, i timens oversigt (tryk på timen) og som linje under dagsstatus. Nye tekster `calendar.weighIn*`/`calendar.dayWeighIn` (da/en).
 - Lint, typecheck og `npm run build` grønne. Ikke live-testet (ingen lokal DB) — tjek på telefon. Bemærk: listen henter højst 200 vejninger (nyeste først), så meget gamle måneder kan mangle ikonet.
+## 2026-10-03: Betaling viser det aktive kort fra Stripe (PR #132 flettet med master)
+
+- `/settings/payment` viser det kort/den wallet, Stripe trækker på: mærke + sidste 4 + udløb; Apple Pay/Google Pay med kortet bagved (nyt felt `PaymentMethod.wallet`, migration `20261002090000_payment_method_wallet` **skal køre ved deploy**); MobilePay. Kortmærke-logo (Visa/Mastercard) i lille fast ramme; andre mærker får det egne kortikon (`IconPaymentCard`). Siden henter altid frisk fra Stripe (`/api/subscription?refresh=1`). Kortet beholdes efter opsigelse (perioden er betalt).
+- "Skift betalingsmetode" åbner Stripes kundeportal i kort-skift-flowet (`POST /api/payments/stripe/portal`); mangler en portal-konfiguration, oprettes én automatisk. Dummy-visning: `/settings/payment?preview=DK|DE|APPLE|GOOGLE`.
+- Ejerens valg 2026-10-03: rækkerne Abonnement og Betalingsmetoder **bliver** på Profil og Indstillinger (med kortikonet) og vises for alle — den tidligere plan om kun under Indstillinger / kun for betalende er droppet. `paying` findes stadig i `/api/subscription`.
+- Test i Stripes testtilstand med testkortet 4242 4242 4242 4242 (vilkårlig fremtidig udløb/CVC).
 
 ## 2026-10-02: Kalenderen husker den åbne dag
 
