@@ -1,6 +1,8 @@
 // Rolig bølge-baggrund til forsiden (bruger 2026-10-01, lavet om 2026-10-03):
-// få, afdæmpede og skarpe bånd af bølgelinjer med overvejende gul-brunlige
-// nuancer øverst og grønne længere nede, lidt tåge kun forneden og en lime
+// få, afdæmpede bånd af bølgelinjer i overvejende grønne nuancer med kun et
+// strejf af varm gul øverst. Let 3D: båndene øverst ligger "langt væk" (tynde,
+// svage, rolige), de nederste "tæt på" (tykke, tydelige), og hver streng er
+// skygget som et rør med lys kant foroven. Lidt tåge kun forneden og en lime
 // puls-linje (pulsmåler), der tegnes helt inde fra venstre kant omkring
 // midten af hero og slår i brugerens målte puls (60 bpm uden ur, bruger
 // 2026-10-03). Alt andet er tilfældigt pr. besøg.
@@ -12,10 +14,12 @@ export type Rgb = [number, number, number];
 export const WAVE_BLEED = 48;
 
 export type WavePalette = {
-  /** Farverampe oppefra (0) og ned (1): gul-brun → gullig creme → lime-creme → grøn. */
+  /** Farverampe oppefra (0) og ned (1): grøn med strejf af gul → lime-grøn → mint → dyb grøn. */
   ramp: Array<{ at: number; color: Rgb }>;
-  /** Dybere grøn til det bløde skær under hvert bånd. */
+  /** Dybere grøn til det bløde skær og skyggen under hvert bånd. */
   deep: Rgb;
+  /** Lys kant ovenpå strengene (3D-rør). */
+  light: Rgb;
   /** Puls-linjens lysende lime og dens lidt mørkere kerne. */
   pulse: Rgb;
   pulseCore: Rgb;
@@ -54,14 +58,16 @@ export function readWavePalette(host: HTMLElement): WavePalette | null {
   const tan = readToken(host, "--hf-tan");
   if (!brand || !mint || !muted || !lime || !gold || !cream || !tan) return null;
   return {
+    // Bruger 2026-10-03: færre gule streger, mere grønt.
     ramp: [
-      { at: 0, color: mixRgb(gold, tan, 0.5) },
-      { at: 0.22, color: mixRgb(gold, cream, 0.55) },
-      { at: 0.46, color: mixRgb(lime, cream, 0.55) },
-      { at: 0.7, color: mint },
-      { at: 1, color: mixRgb(muted, mint, 0.5) },
+      { at: 0, color: mixRgb(mixRgb(gold, tan, 0.4), mint, 0.55) },
+      { at: 0.25, color: mixRgb(lime, mint, 0.55) },
+      { at: 0.5, color: mint },
+      { at: 0.75, color: mixRgb(mint, muted, 0.6) },
+      { at: 1, color: mixRgb(muted, brand, 0.35) },
     ],
     deep: mixRgb(brand, mint, 0.55),
+    light: mixRgb(cream, [255, 255, 255], 0.5),
     pulse: lime,
     pulseCore: mixRgb(lime, brand, 0.18),
   };
@@ -114,6 +120,8 @@ type Strand = {
 type Bundle = {
   /** Midterlinjens højde som andel af højden. */
   y: number;
+  /** 0 = langt væk (øverst), 1 = tæt på (nederst). Styrer bredde, styrke og fart. */
+  depth: number;
   /** Forskydning af farverampen for hele båndet (oftest lille, af og til stor). */
   tint: number;
   /** Hvor meget amplituden må variere hen over skærmen (oftest lidt). */
@@ -171,29 +179,39 @@ export function createWaveScene(seed: number): WaveScene {
   const bundleCount = 3 + Math.floor(rand() * 2);
   const bundles: Bundle[] = [];
   for (let i = 0; i < bundleCount; i++) {
+    // Det nederste bånd ligger altid i det frostede felt, så de tykke,
+    // slørede bånd forneden altid ses (bruger 2026-10-03).
+    const y = i === bundleCount - 1 ? between(0.74, 0.86) : 0.12 + (i + rand()) * (0.62 / (bundleCount - 1));
+    // Perspektiv: fjerne bånd (øverst) er tyndere, svagere, fladere og
+    // langsommere end de nære (bruger 2026-10-03: "lidt 3D agtigt").
+    const depth = Math.min(1, Math.max(0, (y - 0.1) / 0.75));
+    const near = (far: number, close: number) => far + (close - far) * depth;
     const direction = sign();
+    const pace = near(0.5, 1.15);
+    const swell = near(0.6, 1.15);
     // Kortere bølgelængder end skærmbredden, så hele bølger ses og ingen side
     // konsekvent får de største udsving.
     const base: Component[] = [
-      { wavelength: between(0.9, 1.4), phase: between(0, 6.28), speed: direction * between(3, 5.5), amplitude: between(0.025, 0.045) },
-      { wavelength: between(0.55, 0.85), phase: between(0, 6.28), speed: direction * between(4, 7), amplitude: between(0.012, 0.022) },
+      { wavelength: between(0.9, 1.4), phase: between(0, 6.28), speed: direction * between(3, 5.5) * pace, amplitude: between(0.025, 0.045) * swell },
+      { wavelength: between(0.55, 0.85), phase: between(0, 6.28), speed: direction * between(4, 7) * pace, amplitude: between(0.012, 0.022) * swell },
       {
         wavelength: between(0.3, 0.48),
         phase: between(0, 6.28),
-        speed: (rand() < 0.7 ? direction : -direction) * between(5, 9),
-        amplitude: between(0.005, 0.01),
+        speed: (rand() < 0.7 ? direction : -direction) * between(5, 9) * pace,
+        amplitude: between(0.005, 0.01) * swell,
       },
     ];
     // Strengene ligger med god afstand og egne mindre bølger, så de ikke
-    // snoer sig om hinanden som et tov.
-    const strandCount = 2 + Math.floor(rand() * 3);
-    const gap = between(14, 22);
+    // snoer sig om hinanden som et tov. Fjerne bånd har færre streger
+    // (bruger 2026-10-03: for mange streger foroven).
+    const strandCount = depth < 0.4 ? 2 : 2 + Math.floor(rand() * 3);
+    const gap = between(14, 22) * near(0.7, 1.2);
     const strands: Strand[] = [];
     for (let s = 0; s < strandCount; s++) {
       strands.push({
         offset: (s - (strandCount - 1) / 2) * gap + between(-5, 5),
-        width: between(2, 3.4),
-        alpha: between(0.22, 0.4),
+        width: between(2, 3.4) * near(0.55, 1.6),
+        alpha: between(0.22, 0.4) * near(0.4, 1.05),
         tint: between(-0.08, 0.08),
         amplitudeScale: between(0.85, 1.15),
         components: base.map((c, j) => ({
@@ -204,11 +222,12 @@ export function createWaveScene(seed: number): WaveScene {
         })),
       });
     }
-    // Overvejende tendens: farverne følger rampen (gul-brun øverst), men af og
-    // til får et bånd en tydeligt anden nuance.
+    // Overvejende tendens: farverne følger rampen, men af og til får et bånd
+    // en tydeligt anden nuance.
     const tint = rand() < 0.2 ? sign() * between(0.18, 0.32) : between(-0.08, 0.08);
     bundles.push({
-      y: 0.08 + (i + rand()) * (0.8 / bundleCount),
+      y,
+      depth,
       tint,
       envelopeDepth: rand() < 0.2 ? between(0.3, 0.42) : between(0.06, 0.15),
       spread: { wavelength: between(0.8, 1.5), phase: between(0, 6.28), speed: sign() * between(2, 5), amplitude: between(0.2, 0.35) },
@@ -216,8 +235,8 @@ export function createWaveScene(seed: number): WaveScene {
       driftRate: (Math.PI * 2) / between(55, 100),
       driftPhase: between(0, 6.28),
       envelope: { wavelength: between(0.9, 1.6), phase: between(0, 6.28), speed: sign() * between(3, 6), amplitude: 0 },
-      glowWidth: between(30, 46),
-      glowAlpha: between(0.015, 0.03),
+      glowWidth: between(30, 46) * near(0.6, 1.3),
+      glowAlpha: between(0.015, 0.03) * near(0.5, 1.4),
       strands,
     });
   }
@@ -297,6 +316,13 @@ export type WaveFrame = {
   bpm?: number;
   /** Puls-linjens grundlinje i px fra toppen; uden den bruges scenens andel af højden. */
   pulseY?: number;
+  /**
+   * Gange strengenes bredde. Det frostede lag forneden tegner tykke bånd i
+   * stedet for de tynde linjer i toppen (bruger 2026-10-03).
+   */
+  strandWidthScale?: number;
+  /** Gange strengenes styrke; de tykke bånd skal kunne ses gennem sløret. */
+  strandAlphaScale?: number;
 };
 
 const STEP_TARGET = 7;
@@ -307,7 +333,7 @@ export function drawWaveScene(
   palette: WavePalette,
   frame: WaveFrame
 ) {
-  const { t, width, height, scale, bpm = DEFAULT_PULSE_BPM, pulseY } = frame;
+  const { t, width, height, scale, bpm = DEFAULT_PULSE_BPM, pulseY, strandWidthScale = 1, strandAlphaScale = 1 } = frame;
   ctx.setTransform(1, 0, 0, 1, 0, 0);
   ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
   ctx.setTransform(scale, 0, 0, scale, WAVE_BLEED * scale, WAVE_BLEED * scale);
@@ -355,19 +381,36 @@ export function drawWaveScene(
 
     for (const strand of bundle.strands) {
       for (let i = 0; i < count; i++) ys[i] = strandY(bundle, strand, x0 + i * step, t, width, height);
+      const lineWidth = strand.width * strandWidthScale;
+      const alpha = (factor: number) => Math.min(1, strand.alpha * factor * strandAlphaScale);
+      // 3D-rør: en blød skygge lidt under strengen, selve strengen og en lys
+      // kant foroven (bruger 2026-10-03). Sløret forneden kommer fra CSS-laget.
+      ctx.save();
+      ctx.translate(0, lineWidth * 0.45);
+      tracePath(ctx, ys, count, x0, step);
+      ctx.restore();
+      ctx.strokeStyle = rgba(palette.deep, 1);
+      ctx.globalAlpha = alpha(0.5);
+      ctx.lineWidth = lineWidth * 1.25;
+      ctx.stroke();
+
       tracePath(ctx, ys, count, x0, step);
       ctx.strokeStyle = rampGradient(bundle.tint + strand.tint);
-      // Et svagt bredere lag under en skarp kerne: bløde bånd uden at toppen
-      // ser sløret ud (bruger 2026-10-03). Sløret forneden kommer fra CSS-laget.
-      const passes: Array<[number, number]> = [
-        [1.8, 0.3],
-        [1.0, 0.85],
-      ];
-      for (const [widthFactor, alphaFactor] of passes) {
-        ctx.globalAlpha = strand.alpha * alphaFactor;
-        ctx.lineWidth = strand.width * widthFactor;
-        ctx.stroke();
-      }
+      ctx.globalAlpha = alpha(0.3);
+      ctx.lineWidth = lineWidth * 1.8;
+      ctx.stroke();
+      ctx.globalAlpha = alpha(0.85);
+      ctx.lineWidth = lineWidth;
+      ctx.stroke();
+
+      ctx.save();
+      ctx.translate(0, -lineWidth * 0.22);
+      tracePath(ctx, ys, count, x0, step);
+      ctx.restore();
+      ctx.strokeStyle = rgba(palette.light, 1);
+      ctx.globalAlpha = alpha(1.6 * bundle.depth);
+      ctx.lineWidth = lineWidth * 0.32;
+      ctx.stroke();
     }
   }
 
