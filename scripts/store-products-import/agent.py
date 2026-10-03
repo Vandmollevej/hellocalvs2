@@ -86,7 +86,8 @@ CATEGORY_TREE = [
 ]
 
 FILTER_COLUMNS = [
-    "organic", "glutenFree", "lactoseFree", "sugarFree", "sweeteners", "vegan", "vegetarian", "meatType",
+    "organic", "glutenFree", "lactoseFree", "sugarFree", "lowSugar", "noAddedSugar", "reducedSugar", "lightSugar",
+    "sweeteners", "vegan", "vegetarian", "meatType",
     "alcohol", "alcoholPercent", "fatPercent", "countryOfOrigin", "wholeGrain", "keyhole", "animalWelfare",
     "certifications", "storage", "size", "toxins",
 ]

@@ -91,7 +91,13 @@ export type StripeSubscription = {
   customer: string | { id: string };
   cancel_at_period_end: boolean;
   current_period_end?: number;
-  items?: { data: { current_period_end?: number }[] };
+  items?: {
+    data: {
+      current_period_end?: number;
+      quantity?: number;
+      price?: { unit_amount?: number | null; currency?: string; recurring?: { interval?: string; interval_count?: number } | null };
+    }[];
+  };
   default_payment_method?: StripePaymentMethod | string | null;
   metadata?: Record<string, string>;
 };
@@ -131,6 +137,24 @@ export function getStripeSubscription(id: string) {
   return stripeRequest<StripeSubscription>("GET", `/v1/subscriptions/${encodeURIComponent(id)}`, {
     expand: ["default_payment_method"],
   });
+}
+
+// Alle abonnementer (også afsluttede) til admin → Economy: pris og periodelængde
+// ligger kun hos Stripe (checkout bruger price_data), ikke i vores database.
+export async function listStripeSubscriptions(): Promise<StripeSubscription[]> {
+  const all: StripeSubscription[] = [];
+  let startingAfter: string | undefined;
+  for (let page = 0; page < 20; page += 1) {
+    const result = await stripeRequest<{ data: StripeSubscription[]; has_more: boolean }>("GET", "/v1/subscriptions", {
+      status: "all",
+      limit: 100,
+      starting_after: startingAfter,
+    });
+    all.push(...result.data);
+    if (!result.has_more || result.data.length === 0) break;
+    startingAfter = result.data[result.data.length - 1].id;
+  }
+  return all;
 }
 
 export function setCancelAtPeriodEnd(id: string, cancel: boolean) {
