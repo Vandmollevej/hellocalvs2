@@ -1,14 +1,30 @@
 # HELLO CAL — project status
 
+
+## 2026-10-02: Desktop — alle sider i skallen
+
+- På desktop vises alle sider (også login, betingelser, privatlivspolitik) i WebShell med sidebjælke, topmenu og brødkrummer; kun admin, hello-doc, business og presse er fuld bredde.
+- Lint og typecheck grønne; ikke set i browser — tjek login-siderne på desktop.
 Last updated: 2026-10-02
 
 ## 2026-10-02: Kameraflow + vareside efter test af mælk og flødeboller
 
-- Kamera (`ProductCaptureFlow`): "Tag billede"-knappen er væk — billedet tages automatisk (skarpt + stille), ellers efter 2,4 s stille eller senest 8 s; tryk på kamerabilledet tager det straks. Rammen er 92 % af billedet (før 76 %), så man ikke holder telefonen for langt væk. Hvert foto er bedste-af-tre (`src/lib/camera-burst.ts`). Scan-striben kommer hurtigt ind, glider langsomt over midten og hurtigt ud (`.hf-scan-sweep`, 2,2 s).
+- Kamera (`ProductCaptureFlow`): "Tag billede"-knappen er væk — billedet tages automatisk (skarpt + stille), ellers efter 2,4 s stille eller senest 8 s; tryk på kamerabilledet tager det straks. Rammen er 92 % af billedet (før 76 %), så man ikke holder telefonen for langt væk. Fotos tages som stillbilleder (masters `camera-still.ts`, 2026-10-02). Scan-striben kommer hurtigt ind, glider langsomt over midten og hurtigt ud (`.hf-scan-sweep`, 2,2 s).
 - Vareside: h1/h2 gentager aldrig hinanden (`splitProductHeadings`, test `product-naming.test.mjs`); berigelsen fjerner variant og pakningsstørrelse fra navnet; AI-prompt front-v4. Brandlogoet er 70 % højde (66 px). Fritskrabet billede ligger oven på cirklen med 10 % overskud (stående: op over toppen, liggende: ud til højre), råfoto vises `object-contain` i stedet for zoomet. Næringsdetaljer (salt, sukker, fibre, mættet/umættet fedt) vises altid som dropdown under energifordelingen — åben for brugere med udvidet næringsindhold slået til. Umættet fedt udledes som fedt − mættet − trans (~), når deklarationen ikke oplyser det.
 - Brand: står et kendt brand ordret på forsiden (fx EDEKA ved serien Herzstücke), vinder databasens brand, og AI'ens brand bliver subbrand (`matchBrandInTexts`). Prompt: hjerter/kvalitetsmærker/segl er ikke logoer.
 - Billedrobot (`cutout.py`): et PRODUCT_FRONT-udklip, der dækker under 12 % af udsnittet eller er under 30 % i bredde/højde, fejler nu i stedet for at blive et tomt billede (mælkekartonen 2026-10-01).
 - Lint, typecheck og `npm test` grønne (page-tree-testen fejler også på master). Ikke live-testet: ingen DB/kamera her. **Ikke gjort:** loggen for de to scanninger (mælk + flødeboller) ligger i produktionsdatabasen (admin → Log) og kan ikke nås fra cloud-sessionen — eksportér flow-rækkerne (JSON) eller skærmbilleder af dem, så analyseres de. Det forkerte hjerte-logo skal fjernes manuelt på brandet i admin → Logoer, og prompt-ændringerne virker først for nye scanninger.
+## 2026-10-02: Kameraflowet — rigtige stillbilleder + nyt foto af indholdet
+
+- Fejlen: marmelade (5711954020055) fik ingen ingredienser, fordi indholdsfotoet var et sløret 1080p-videobillede, og OpenAI svarede tomt ("for sløret"). Ingen genstart var involveret. Se DECISIONS 2026-10-02.
+- Nyt: `src/lib/camera-still.ts` (stillbillede via `ImageCapture.takePhoto`, ellers skarpeste af tre 4K-videobilleder; energi/indhold beskæres til søgerens kvadrat), brugt i `ProductCaptureFlow`. Log-trin `photo_captured` viser kilde, opløsning og skarphed.
+- Nyt: varesiden viser "Indholdet kunne ikke læses på billedet" + knap; `IngredientsRetakeFlow` (`/camera?retake=ingredients&product=<id>`) og `POST /api/products/[id]/ingredients-photo`.
+- Lint grøn; typecheck uden fejl i de berørte filer. Build ikke kørt lokalt (delt `node_modules` har forældet Prisma-klient). Ikke testet på telefon: tjek i admin "Log", om `photo_captured` siger "stillbillede" på iPhone — ellers bruges 4K-videobilledet.
+
+## 2026-10-02: Retter — skelettet er nu sidens egne rækker
+
+- `/profile/recipes` (begge faner) og `/profile/recipes/[id]` brugte generiske skeletter (`SkeletonMediaRows`/`SkeletonDetail`) med bjælker i procent af sidebredden — enorme på bred skærm og uden lighed med indholdet. Nu tegner `RecipeRow` og ret-siden sig selv uden data (design.md §6.14): samme billedfelt, titel + undertekst i tekstbredde (`SkeletonTitleLines` i `Skeleton.tsx`), 3 rækker under "Trender netop nu".
+- Lint grøn; typecheck uden fejl i de berørte filer. Build ikke kørt lokalt (delt `node_modules` har forældet Prisma-klient). Ikke visuelt testet (brugerregel).
 
 ## 2026-10-02: "Til info sendte vi dig …"-popup + push
 
@@ -39,6 +55,11 @@ Last updated: 2026-10-02
 - Rettelser bør komme fra brugeren: `Bedre-dyrevelfærd-2-stjerner.png` var identisk med 3-stjerner-filen, så 2-hjerte-logoet er afledt (3-stjerner + den tomme 3. hjerte fra 1-stjerne-filen). `Fairtrade logo.webp` har "cleanpng"-vandmærke og `Økologimærket.png` er et beskåret udsnit uden tekst — erstat med originale filer.
 - Lint og typecheck grønne. Ikke visuelt testet (ingen login/DB lokalt).
 
+## 2026-10-02: Kalender dagvisning pa web - cookie, fokus pa nu, dobbeltklik
+
+- Cookie `hc_cal_visit` (dato): forste besog i dag viser morgenen med nattens sovn; senere besog i dag (og kun hvis brugeren har registreret noget for) scroller til nu +-2 timer.
+- Dobbeltklik pa en time i dagvisningen og pa en dag i ugens tidslinje abner tilfoej-menuen pa den halve time.
+- Lint og typecheck groenne; ikke testet i browser.
 ## 2026-09-29: Offentlig forside for udloggede
 
 - Ny hent-appen-forside uden telefonramme, med QR-koder, planer med betalings-ark, Hello Doc-bjælke, nøgletal fra databasen, `/business` (kontaktformular) og `/presse`. Se DECISIONS.md samme dato.

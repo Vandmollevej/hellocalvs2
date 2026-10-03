@@ -1,9 +1,18 @@
 "use client";
 
-import { useCallback, useEffect, useEffectEvent, useMemo, useRef, useState } from "react";
+import {
+  useCallback,
+  useEffect,
+  useEffectEvent,
+  useMemo,
+  useRef,
+  useState,
+  type ComponentType,
+} from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { IconBarcode, IconFlame, IconList, IconPhoto, type Icon } from "@tabler/icons-react";
+import { IconFlame, IconList, IconPhoto } from "@tabler/icons-react";
+import { IconBarcodeCard } from "@/components/icons/BarcodeCard";
 import { BarcodeScanOverlay, type BarcodeDetection } from "@/components/hf/BarcodeScanOverlay";
 import { CaptureCheckOverlay } from "@/components/hf/CaptureCheckOverlay";
 import { PhotoWorkingOverlay } from "@/components/hf/HfLoader";
@@ -36,7 +45,7 @@ import {
   type CaptureStep,
 } from "@/lib/product-capture";
 import { useAutoCapture } from "./useAutoCapture";
-import { captureBestFrame } from "@/lib/camera-burst";
+import { cameraVideoConstraints, captureStill, captureVideoFrame } from "@/lib/camera-still";
 import { newScanFlowId, scanFlowHeaders, scanLog } from "@/lib/scan-debug-log";
 import { useTranslation } from "@/i18n/LocaleProvider";
 
@@ -58,8 +67,8 @@ const DECODE_ANIMATION_REDUCED_MS = 300;
 // En aflæsning uden ny læsning i så lang tid regnes for væk.
 const DETECTION_STALE_MS = 1200;
 
-const STEP_ICONS: Record<CaptureStep, Icon> = {
-  barcode: IconBarcode,
+const STEP_ICONS: Record<CaptureStep, ComponentType<{ size?: number; stroke?: number }>> = {
+  barcode: IconBarcodeCard,
   front: IconPhoto,
   nutrition: IconFlame,
   ingredients: IconList,
@@ -72,18 +81,13 @@ function statusFromCameraError(error: unknown): CameraStatus {
   return "error";
 }
 
-// Hele videobilledet i fuld opløsning — bevidst ingen beskæring
-// (docs/DECISIONS.md 2026-09-17).
+// Fotos tages som rigtige stillbilleder (src/lib/camera-still.ts,
+// docs/DECISIONS.md 2026-10-02). Forsiden beskæres ikke (2026-09-17);
+// energi og indhold beskæres til det kvadrat, brugeren så i søgeren.
 type Frame = { url: string; width: number; height: number };
 
-function captureFrame(video: HTMLVideoElement | null): Frame | null {
-  if (!video || !video.videoWidth || !video.videoHeight) return null;
-  const canvas = document.createElement("canvas");
-  canvas.width = video.videoWidth;
-  canvas.height = video.videoHeight;
-  canvas.getContext("2d")?.drawImage(video, 0, 0, canvas.width, canvas.height);
-  return { url: canvas.toDataURL("image/jpeg", 0.9), width: canvas.width, height: canvas.height };
-}
+// Stregkodefotoet tages midt i scanningen og må ikke forsinke den.
+const BARCODE_PHOTO_MAX_SIDE = 1920;
 
 // Den grønne ramme om næring/ingredienser vises så længe, før flowet går
 // videre (energi-/indholdsfoto) eller forsvinder igen (stregkodefotoet).
@@ -127,9 +131,9 @@ export function ProductCaptureFlow({ returnSuffix }: { returnSuffix: string }) {
   // færdig på et vilkårligt tidspunkt senere i flowet.
   const doneRef = useRef<Partial<Record<CaptureStep, boolean>>>({});
   const workingRef = useRef(false);
+  // Stillbilledet tager op til et par sekunder — aldrig to ad gangen.
+  const capturingRef = useRef(false);
   const [photo, setPhoto] = useState<string | null>(null);
-  // Spærrer dobbelt-udløsning (auto + tryk) mens et foto er under arbejde.
-  const photoRef = useRef(false);
   const [working, setWorking] = useState(false);
   // Flere mulige objekter på forsidefotoet: brugeren trykker på det rigtige.
   const [pickObjects, setPickObjects] = useState<ObjectBox[] | null>(null);
@@ -257,7 +261,7 @@ export function ProductCaptureFlow({ returnSuffix }: { returnSuffix: string }) {
       try {
         const stream = await navigator.mediaDevices.getUserMedia({
           audio: false,
-          video: { facingMode: { ideal: "environment" }, width: { ideal: 1920 }, height: { ideal: 1080 } },
+          video: cameraVideoConstraints(),
         });
         if (cancelled) {
           stream.getTracks().forEach((track) => track.stop());
@@ -296,7 +300,6 @@ export function ProductCaptureFlow({ returnSuffix }: { returnSuffix: string }) {
 
   function goToNextStep(completed: Partial<Record<CaptureStep, boolean>>) {
     const next = CAPTURE_STEPS.find((item) => !completed[item]);
-    photoRef.current = false;
     if (next) {
       setPhoto(null);
       setWorking(false);
@@ -431,7 +434,7 @@ export function ProductCaptureFlow({ returnSuffix }: { returnSuffix: string }) {
         if (response.status !== 404) throw new Error(`Product lookup failed (${response.status})`);
 
         // Ukendt vare: gem stregkoden og gå videre til forsiden.
-        const frame = captureFrame(videoRef.current);
+        const frame = captureVideoFrame(videoRef.current, BARCODE_PHOTO_MAX_SIDE);
         dataRef.current.barcode = code;
         dataRef.current.languageSignals = readLanguageSignals(locale);
         const context = buildBarcodeContext(code, region, dataRef.current.languageSignals);
@@ -587,19 +590,26 @@ export function ProductCaptureFlow({ returnSuffix }: { returnSuffix: string }) {
   }
 
   async function capturePhoto() {
-    if (working || step === "barcode" || photoRef.current) return;
-    // Bedste af tre billeder (src/lib/camera-burst.ts) — ingen knap, så
-    // billedet skal være så godt som muligt i første hug.
-    photoRef.current = true;
-    const frame = await captureBestFrame(videoRef.current);
+    if (working || capturingRef.current || step === "barcode") return;
+    capturingRef.current = true;
+    setWorking(true);
+    const captureStartedAt = Date.now();
+    const frame = await captureStill(videoRef.current, step === "front" ? "none" : "square");
+    capturingRef.current = false;
+    if (leavingRef.current) return;
     if (!frame) {
-      photoRef.current = false;
+      setWorking(false);
       scanLog(flowId, "photo_capture_failed", { level: "warn", message: `Intet kamerabillede på trinnet "${step}"`, barcode: dataRef.current.barcode });
       return;
     }
+    scanLog(flowId, "photo_captured", {
+      message: `Foto taget på trinnet "${step}": ${frame.source === "photo" ? "stillbillede" : "videobillede"} ${frame.width}×${frame.height}, skarphed ${frame.sharpness}`,
+      barcode: dataRef.current.barcode,
+      durationMs: Date.now() - captureStartedAt,
+      data: { step, source: frame.source, width: frame.width, height: frame.height, sharpness: frame.sharpness },
+    });
     showHighlight(frame, { nutrition: null, ingredients: null }, null);
     setPhoto(frame.url);
-    setWorking(true);
     const languages = ocrLanguages();
     const data = dataRef.current;
     const startedAt = Date.now();
@@ -711,7 +721,6 @@ export function ProductCaptureFlow({ returnSuffix }: { returnSuffix: string }) {
     highlightTimerRef.current = null;
     setHighlight(null);
     setPhoto(null);
-    photoRef.current = false;
     setStep(next);
   }
 
