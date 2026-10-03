@@ -25,7 +25,13 @@ export function ActivityPicker({ onPick, busy }: { onPick: (option: ActivityOpti
   const trimmed = query.trim();
   const matches = useMemo(() => {
     const needle = trimmed.toLowerCase();
-    return needle ? options.filter((option) => option.label.toLowerCase().includes(needle)) : options;
+    if (!needle) return options;
+    // Navnet først, derefter synonymer (fx "spinning" → Spinning, "judo" → Kampsport).
+    const byLabel = options.filter((option) => option.label.toLowerCase().includes(needle));
+    const byWord = options.filter(
+      (option) => !byLabel.includes(option) && option.words?.some((word) => word.toLowerCase().includes(needle)),
+    );
+    return [...byLabel, ...byWord];
   }, [options, trimmed]);
   const exact = options.some((option) => option.label.toLowerCase() === trimmed.toLowerCase());
 

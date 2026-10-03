@@ -78,6 +78,8 @@
   --hf-gray-border: var(--hf-color-line);
   --hf-fab: var(--hf-color-action);
   --hf-lime: var(--hf-color-positive);
+  /* Kyllingelår-ikonets kød (kalenderens kalorie-miniature, design.md §6.16). */
+  --hf-meat: #8c5a32;
 
   /* SF Pro (systemfont på Apple), jf. hellofresh_typografi_og_farver.txt.
      SF Pro Display til overskrifter, SF Pro Text til brødtekst/UI — begge
@@ -111,6 +113,7 @@
   --color-hf-gray-border: var(--hf-gray-border);
   --color-hf-fab: var(--hf-fab);
   --color-hf-lime: var(--hf-lime);
+  --color-hf-meat: var(--hf-meat);
   --color-hf-warning: var(--hf-color-warning);
   --color-hf-watch: var(--hf-color-watch);
   --color-hf-warning-fill: var(--hf-color-warning-fill);
@@ -178,6 +181,7 @@ input[type="date"] {
 }
 input[type="date"]::-webkit-date-and-time-value {
   text-align: left;
+  white-space: nowrap;
 }
 
 /* Global lås: ingen skærm må kunne skubbes fra side til side. Alle lodrette
@@ -476,6 +480,34 @@ textarea::selection,
   justify-content: center;
 }
 
+/* Højre ende af appbaren: profilcirklen (44 px slot) og, med
+   .hf-appbar--help, hjælpe-chattens knap til venstre for den
+   (docs/DECISIONS.md 2026-10-02, design.md §6.1). Kolonnerne udvides
+   symmetrisk, så titlen stadig står i midten. */
+.hf-appbar__end {
+  display: flex;
+  height: 44px;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.hf-appbar--help {
+  grid-template-columns: 88px minmax(0, 1fr) 88px;
+}
+
+.hf-appbar--compact.hf-appbar--help {
+  grid-template-columns: 80px minmax(0, 1fr) 80px;
+}
+
+.hf-appbar--compact .hf-appbar__end,
+.hf-appbar--compact .hf-appbar__end .hf-btn-icon {
+  height: 40px;
+}
+
+.hf-appbar--compact .hf-appbar__end .hf-btn-icon {
+  width: 40px;
+}
+
 /* Ring uden for cirklen på lys baggrund (forsiden) — box-shadow i stedet for
    border, så den farvede flade forbliver 32 px som i den grønne header. */
 .hf-avatar--outlined {
@@ -567,6 +599,464 @@ textarea::selection,
 
 }
 
+/* ---- Fælles skal (design.md §6.17, docs/DECISIONS.md 2026-10-03): admin
+   (AdminShell), Hello Cal i webvisning (WebShell) og Hello Doc-lægevisningen
+   bygger på DE SAMME klasser — sidebjælke, topbjælke, menurækker, brødkrummer,
+   dropdown-menu, skuffe og indholdsbredde. Ingen skal må style disse flader
+   med egne Tailwind-kæder; mangler en variation, tilføjes den her.
+   Responsivt: under 1024 px skjules sidebjælken, og menuen åbnes som skuffe
+   (.hf-shell__drawer) bag en menuknap (.hf-shell__mobile-only). ---- */
+:root {
+  --hf-shell-bar: 56px;
+  --hf-shell-sidebar: 256px;
+  --hf-shell-rail: 64px;
+}
+
+@layer components {
+  /* Rod: egen scroll-container (html/body er låst mod scroll). */
+  .hf-shell,
+  .hf-insight {
+    display: flex;
+    height: 100dvh;
+    overflow-y: auto;
+    overflow-x: hidden;
+    background: var(--hf-color-page);
+    color: var(--hf-color-text);
+  }
+
+  /* Webvisningen har højere top (mere luft og større logo, bruger 2026-09-30). */
+  .hf-shell--tall {
+    --hf-shell-bar: 80px;
+  }
+
+  /* Webvisningen scroller i indholdsfladen, ikke i roden. */
+  .hf-shell--fixed {
+    overflow: hidden;
+  }
+
+  .hf-shell__sidebar {
+    position: sticky;
+    top: 0;
+    z-index: 30;
+    display: none;
+    flex-direction: column;
+    flex-shrink: 0;
+    width: var(--hf-shell-sidebar);
+    height: 100dvh;
+    border-right: 1px solid var(--hf-color-nav);
+    background: var(--hf-color-surface);
+  }
+
+  .hf-shell__sidebar.is-collapsed {
+    width: var(--hf-shell-rail);
+  }
+
+  /* Logo-felt øverst i sidebjælken/skuffen — samme højde som topbjælken. */
+  .hf-shell__brand {
+    display: flex;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: space-between;
+    height: var(--hf-shell-bar);
+    padding: 0 var(--hf-gutter);
+    border-bottom: 1px solid var(--hf-color-nav);
+  }
+
+  .is-collapsed .hf-shell__brand {
+    justify-content: center;
+    padding: 0;
+  }
+
+  .hf-shell__search-slot {
+    flex-shrink: 0;
+    padding: 10px 10px 0;
+  }
+
+  .hf-shell__nav {
+    flex: 1;
+    min-height: 0;
+    overflow-x: hidden;
+    overflow-y: auto;
+    padding: 10px;
+  }
+
+  /* Gruppe i sidebjælken med tynd skillelinje (webvisningens Indstillinger). */
+  .hf-shell__section + .hf-shell__section {
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid var(--hf-color-nav);
+  }
+
+  .hf-shell__section-title {
+    margin: 0;
+    padding: 4px 10px;
+    color: var(--hf-color-inactive);
+    font-family: var(--font-hf-body);
+    font-size: 13px;
+    font-weight: 700;
+    line-height: 18px;
+    letter-spacing: 0.025em;
+    text-transform: uppercase;
+  }
+
+  .hf-shell__list {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .hf-shell__list--sub {
+    margin-top: 2px;
+    padding-bottom: 4px;
+  }
+
+  /* Menurække (sidebjælke, topmenu og dropdown): 15 px, grå; aktiv = beige
+     flade, mørkegrøn fed tekst. */
+  .hf-navrow {
+    position: relative;
+    display: flex;
+    width: 100%;
+    min-height: 36px;
+    align-items: center;
+    gap: 12px;
+    padding: 7px 10px;
+    border-radius: var(--hf-radius-card);
+    color: var(--hf-color-text-secondary);
+    font-family: var(--font-hf-body);
+    font-size: 15px;
+    font-weight: 400;
+    line-height: 22px;
+    text-align: left;
+  }
+
+  .hf-navrow:hover {
+    background: var(--hf-color-card);
+    color: var(--hf-color-text);
+  }
+
+  .hf-navrow.is-active,
+  .hf-navrow[aria-current="page"] {
+    background: var(--hf-color-card);
+    color: var(--hf-color-progress-dark);
+    font-weight: 700;
+  }
+
+  /* Åben gruppe med aktiv underside: kun grøn tekst, ingen flade. */
+  .hf-navrow.is-inside {
+    color: var(--hf-color-progress-dark);
+    font-weight: 700;
+  }
+
+  .hf-navrow--rail {
+    justify-content: center;
+  }
+
+  .hf-navrow--sub {
+    gap: 8px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    padding-left: 40px;
+  }
+
+  .hf-navrow__label {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  /* Rød prik (notifikation) på en række/ikon. */
+  .hf-navrow__dot {
+    width: 8px;
+    height: 8px;
+    flex-shrink: 0;
+    border-radius: 9999px;
+    background: var(--hf-color-danger);
+  }
+
+  .hf-navrow--rail .hf-navrow__dot {
+    position: absolute;
+    top: 6px;
+    right: 8px;
+  }
+
+  /* "Gå til…"-felt i sidebjælken (åbner hurtigsøgning). */
+  .hf-shell__search {
+    display: flex;
+    width: 100%;
+    height: 36px;
+    align-items: center;
+    gap: 8px;
+    padding: 0 12px;
+    border: 1px solid var(--hf-color-nav);
+    border-radius: var(--hf-radius-card);
+    background: var(--hf-color-surface);
+    color: var(--hf-color-inactive);
+    font-family: var(--font-hf-body);
+    font-size: 15px;
+    line-height: 22px;
+    text-align: left;
+  }
+
+  .hf-shell__search:hover {
+    border-color: var(--hf-color-brand);
+  }
+
+  .hf-shell__search--rail {
+    justify-content: center;
+    padding: 0;
+    border-color: transparent;
+    background: transparent;
+  }
+
+  /* Sammenfold-håndtag på sidebjælkens kant: samme grå træk-streg som
+     kalenderens og bundarkenes håndtag, blot lodret. */
+  .hf-shell__handle {
+    position: absolute;
+    top: 50%;
+    left: 100%;
+    z-index: 30;
+    display: flex;
+    width: 28px;
+    height: 72px;
+    align-items: center;
+    justify-content: center;
+    transform: translateY(-50%);
+    border: 1px solid var(--hf-color-nav);
+    border-left: 0;
+    border-radius: 0 var(--hf-radius-card) var(--hf-radius-card) 0;
+    background: var(--hf-color-surface);
+  }
+
+  .hf-shell__handle:hover {
+    background: var(--hf-color-card);
+  }
+
+  .hf-shell__handle::before {
+    content: "";
+    display: block;
+    width: 4px;
+    height: 40px;
+    border-radius: 9999px;
+    background: var(--hf-color-inactive);
+  }
+
+  .hf-shell__body {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    min-width: 0;
+  }
+
+  /* Topbjælke: hvid, 1 px bundkant, 16 px gutter (32 px fra 1024 px). */
+  .hf-shell__topbar {
+    position: sticky;
+    top: 0;
+    z-index: 40;
+    display: flex;
+    flex-shrink: 0;
+    align-items: center;
+    gap: var(--hf-space-inline);
+    height: var(--hf-shell-bar);
+    padding: 0 var(--hf-gutter);
+    border-bottom: 1px solid var(--hf-color-nav);
+    background: var(--hf-color-surface);
+  }
+
+  /* Webvisningen: menupunkterne står på bunden af den høje topbjælke. */
+  .hf-shell__topbar--bottom {
+    align-items: flex-end;
+    justify-content: space-between;
+    padding-bottom: 10px;
+  }
+
+  .hf-shell__topbar-end {
+    margin-left: auto;
+  }
+
+  .hf-shell__topnav {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .hf-shell__topnav .hf-navrow,
+  .hf-navrow--inline {
+    width: auto;
+    gap: 8px;
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+
+  .hf-shell__main {
+    flex: 1;
+    min-width: 0;
+  }
+
+  /* Indholdsbredde: maks 80 rem, 16 px gutter (32 px fra 1024 px). */
+  .hf-shell__content,
+  .hf-insight__main {
+    width: 100%;
+    max-width: 80rem;
+    margin: 0 auto;
+    padding: var(--hf-space-block) var(--hf-gutter) var(--hf-space-section);
+  }
+
+  /* Brødkrummer. */
+  .hf-crumbs {
+    display: flex;
+    min-width: 0;
+    align-items: center;
+    gap: 6px;
+    color: var(--hf-color-inactive);
+    font-family: var(--font-hf-body);
+    font-size: 15px;
+    line-height: 22px;
+  }
+
+  .hf-crumbs__item {
+    display: flex;
+    min-width: 0;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .hf-crumbs__item > a,
+  .hf-crumbs__item > span:last-child {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .hf-crumbs a:hover {
+    color: var(--hf-color-text);
+    text-decoration: underline;
+  }
+
+  .hf-crumbs__current {
+    color: var(--hf-color-action);
+  }
+
+  /* Brødkrumme-bjælke øverst i indholdsfladen (webvisning). */
+  .hf-crumbs--bar {
+    flex-shrink: 0;
+    padding: 8px var(--hf-gutter);
+    border-bottom: 1px solid var(--hf-color-nav);
+    background: var(--hf-color-surface);
+  }
+
+  /* Dropdown-menu (brugermenu, profilmenu, Hello Doc-menu). Placering
+     (absolute/right/top) sættes på elementet. */
+  .hf-menu {
+    z-index: 50;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: 4px;
+    border: 1px solid var(--hf-color-nav);
+    border-radius: var(--hf-radius-card);
+    background: var(--hf-color-surface);
+    box-shadow: 0 10px 15px -3px rgb(0 0 0 / 10%), 0 4px 6px -4px rgb(0 0 0 / 10%);
+  }
+
+  .hf-menu__header {
+    padding: 4px 10px 8px;
+    border-bottom: 1px solid var(--hf-color-nav);
+  }
+
+  /* Skuffe (menu under 1024 px). */
+  .hf-shell__drawer {
+    position: fixed;
+    inset: 0;
+    z-index: 50;
+  }
+
+  .hf-shell__drawer-backdrop {
+    position: absolute;
+    inset: 0;
+    background: var(--hf-color-overlay);
+  }
+
+  .hf-shell__drawer-panel {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    display: flex;
+    flex-direction: column;
+    width: 85vw;
+    max-width: 20rem;
+    background: var(--hf-color-surface);
+    box-shadow: 0 20px 25px -5px rgb(0 0 0 / 10%), 0 8px 10px -6px rgb(0 0 0 / 10%);
+  }
+
+  .hf-shell__drawer-foot {
+    padding: 12px var(--hf-gutter);
+    border-top: 1px solid var(--hf-color-nav);
+  }
+
+  /* Hurtigsøgning (Ctrl/Cmd+K). */
+  .hf-shell__palette {
+    position: fixed;
+    inset: 0;
+    z-index: 60;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 12vh var(--hf-gutter) 0;
+    background: var(--hf-color-overlay);
+  }
+
+  .hf-shell__palette-box {
+    width: 100%;
+    max-width: 32rem;
+    overflow: hidden;
+  }
+
+  /* Kun på smal skærm (menuknap, logo i topbjælken). */
+  .hf-shell__mobile-only {
+    display: flex;
+  }
+
+  /* Tekst i topmenuen: skjules under 1280 px, så ikonerne aldrig støder sammen. */
+  .hf-shell__toplabel {
+    display: none;
+  }
+
+  @media (min-width: 640px) {
+    .hf-shell__topbar {
+      gap: 12px;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .hf-shell__sidebar {
+      display: flex;
+    }
+
+    /* Højere specificitet end .hf-btn-icon (inline-flex) på samme element. */
+    .hf-shell .hf-shell__mobile-only,
+    .hf-shell__drawer {
+      display: none;
+    }
+
+    .hf-shell__topbar,
+    .hf-shell__content,
+    .hf-insight__main,
+    .hf-crumbs--bar {
+      padding-left: var(--hf-space-section);
+      padding-right: var(--hf-space-section);
+    }
+  }
+
+  @media (min-width: 1280px) {
+    .hf-shell__toplabel {
+      display: inline;
+    }
+  }
+}
+
 /* ---- Insight/dashboard-primitiver, bygget på adminfladens design
    (docs/DECISIONS.md 2026-09-29, design.md §6.15). Bruges af alle brede,
    skrivebordsvenlige sider uden telefonramme: Hello Doc-lægevisningen
@@ -575,45 +1065,17 @@ textarea::selection,
    #DFD9CC kant, kort #EEE9DF, radius 8, afstande 8/16/32 px.
    Skrift sættes med .hf-type-* og farve med farveklasser — ikke her. ---- */
 @layer components {
-  /* Rod: egen scroll-container (html/body er låst mod scroll). */
+  /* Rod uden sidebjælke (lægevisningen): som .hf-shell, blot lodret. */
   .hf-insight {
-    display: flex;
     flex-direction: column;
-    height: 100dvh;
-    overflow-y: auto;
-    background: var(--hf-color-page);
-    color: var(--hf-color-text);
   }
 
-  /* Topbjælke som admin: 56 px, hvid, 1 px bundkant, logo til venstre. */
-  .hf-insight__topbar {
-    position: sticky;
-    top: 0;
-    z-index: 30;
-    display: flex;
-    flex-shrink: 0;
-    align-items: center;
-    gap: var(--hf-space-block);
-    height: 56px;
-    padding: 0 var(--hf-gutter);
-    border-bottom: 1px solid var(--hf-color-nav);
-    background: var(--hf-color-surface);
-  }
-
-  .hf-insight__topbar-end {
-    margin-left: auto;
-  }
-
-  /* Indhold: samme maksbredde som admins hovedområde. */
+  /* Indhold: .hf-shell__content (samme maksbredde/gutter som admin) + lodret stak. */
   .hf-insight__main {
     display: flex;
     flex: 1;
     flex-direction: column;
     gap: var(--hf-space-block);
-    width: 100%;
-    max-width: 80rem;
-    margin: 0 auto;
-    padding: var(--hf-space-block) var(--hf-gutter) var(--hf-space-section);
   }
 
   .hf-insight__head {
@@ -685,15 +1147,29 @@ textarea::selection,
     text-align: center;
   }
 
-  /* Panel: adminens hvide kort med tynd kant — bruges til grafer og tabeller. */
+  /* Flade: adminens hvide kort med tynd kant, UDEN layout (padding/gap
+     sættes af indholdet). .hf-panel er samme flade med fast indre luft. */
+  .hf-surface,
+  .hf-panel {
+    border: 1px solid var(--hf-color-nav);
+    border-radius: var(--hf-radius-card);
+    background: var(--hf-color-surface);
+  }
+
+  /* Panel: til grafer og tabeller. */
   .hf-panel {
     display: flex;
     flex-direction: column;
     gap: var(--hf-space-inline);
     padding: var(--hf-space-block);
-    border: 1px solid var(--hf-color-nav);
-    border-radius: var(--hf-radius-card);
-    background: var(--hf-color-surface);
+  }
+
+  /* Tabel i en flade/et panel: scroller vandret på smalle skærme i stedet
+     for at blive klippet eller skubbe siden. */
+  .hf-table-scroll {
+    max-width: 100%;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
   }
 
   /* Nøgletal: lille label over stor værdi på kortfarven. */
@@ -725,13 +1201,7 @@ textarea::selection,
   }
 
   @media (min-width: 1024px) {
-    .hf-insight__topbar,
     .hf-insight__footer {
-      padding-left: var(--hf-space-section);
-      padding-right: var(--hf-space-section);
-    }
-
-    .hf-insight__main {
       padding-left: var(--hf-space-section);
       padding-right: var(--hf-space-section);
     }
@@ -900,42 +1370,6 @@ textarea::selection,
   border-radius: 9999px;
   background: rgb(45 45 45 / 78%);
   color: var(--hf-white);
-}
-
-/* "Notched" felt (border-kant med indlejret label), Hello Doc — bevidst
-   afvigelse fra den generelle .hf-field-kontrakt, matcher direkte det
-   HelloFresh-checkout-skærmbillede brugeren gav som reference for
-   Hello Doc-invitationssiden (2026-09-12). Native <fieldset>/<legend> giver
-   "hakket" i kantlinjen uden JS. Ikke en generel afløser for TextField. */
-.hd-notched-field {
-  min-width: 0;
-  margin: 0;
-  padding: 0 16px;
-  border: 1px solid var(--hf-color-field-border);
-  border-radius: 10px;
-}
-
-.hd-notched-field legend {
-  margin-left: 4px;
-  padding: 0 6px;
-  color: var(--hf-color-text-secondary);
-  font-family: var(--font-hf-body);
-  font-size: 13px;
-}
-
-.hd-notched-field input {
-  width: 100%;
-  height: var(--hf-control-height);
-  border: none;
-  background: transparent;
-  outline: none;
-  color: var(--hf-color-text);
-  font-family: var(--font-hf-body);
-  font-size: 17px;
-}
-
-.hd-notched-field input::placeholder {
-  color: var(--hf-color-placeholder);
 }
 
 /* Valg-chip/kort (fx "Hvad er dine mål?") */
@@ -1816,7 +2250,20 @@ textarea::selection,
 }
 
 .home-wave__layer--heavy canvas {
-  filter: blur(17px);
+  filter: blur(24px);
+}
+
+/* Frostet glas nederst (bruger 2026-10-02): et mælket creme-slør oven på
+   det kraftigt slørede lag, så bevægelserne forneden kun anes svagt. */
+.home-wave__frost {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    transparent 38%,
+    color-mix(in srgb, var(--hf-cream) 45%, transparent) 62%,
+    color-mix(in srgb, var(--hf-cream) 68%, transparent) 100%
+  );
 }
 
 /* Webvisning af søgesiden: indholdet fylder halvdelen (2/4) i midten, mens

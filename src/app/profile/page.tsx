@@ -8,11 +8,11 @@ import {
   IconStar,
   IconBook2,
   IconCreditCard,
-  IconWallet,
   IconBulb,
 } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
 import { AccordionCard, ChevronRow } from "@/components/hf/AccordionCard";
+import { IconPaymentCard } from "@/components/icons/PaymentCard";
 import { IconBathScale } from "@/components/hf/IconBathScale";
 import { IconWaistMeasure } from "@/components/icons/WaistMeasure";
 import { HfProgressStepper } from "@/components/hf/HfProgressStepper";
@@ -93,13 +93,14 @@ export default function ProfilePage() {
               label={t("profile.section.profile")}
               href="/profile/edit"
             />
+            <ChevronRow icon={<IconStar size={20} />} label={t("profile.row.points")} href="/profile/points" />
             <ChevronRow
               icon={<IconCreditCard size={20} />}
               label={t("profile.row.subscription")}
               href="/profile/subscription"
             />
             <ChevronRow
-              icon={<IconWallet size={20} />}
+              icon={<IconPaymentCard size={20} />}
               label={t("profile.row.paymentMethods")}
               href="/settings/payment"
             />
@@ -123,7 +124,6 @@ export default function ProfilePage() {
               label={t("profile.row.photoDiary")}
               href="/profile/photo-diary"
             />
-            <ChevronRow icon={<IconStar size={20} />} label={t("profile.row.points")} href="/profile/points" />
             <ChevronRow
               icon={<IconBook2 size={20} />}
               label={t("profile.row.recipes")}

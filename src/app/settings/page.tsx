@@ -18,7 +18,6 @@ import {
   IconAlertTriangle,
   IconLifebuoy,
   IconMoon,
-  IconWallet,
   IconAdjustments,
   IconBug,
   IconUsers,
@@ -28,6 +27,7 @@ import {
 } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
 import { AccordionCard, ChevronRow } from "@/components/hf/AccordionCard";
+import { IconPaymentCard } from "@/components/icons/PaymentCard";
 import { OnboardingWizard } from "@/components/OnboardingWizard";
 import { useTranslation } from "@/i18n/LocaleProvider";
 import { useFamilyStatus } from "@/components/family/FamilyStatusProvider";
@@ -116,7 +116,7 @@ export default function SettingsPage() {
             href="/profile/subscription"
           />
           <ChevronRow
-            icon={<IconWallet size={20} />}
+            icon={<IconPaymentCard size={20} />}
             label={t("settings.payment")}
             href="/settings/payment"
             divider={false}

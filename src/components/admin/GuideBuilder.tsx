@@ -698,7 +698,7 @@ export function GuideBuilder({
                   ))}
                 </select>
               </Field>
-              <p className="text-xs text-text-muted">{tr("gb_terms_note")}</p>
+              <p className="hf-type-small text-text-muted">{tr("gb_terms_note")}</p>
             </Card>
           )}
 

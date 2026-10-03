@@ -31,7 +31,7 @@ export function ActivityTypeTable({ rows, locale }: { rows: ActivityTypeRow[]; l
   }
 
   return (
-    <table className="hf-type-small w-full text-left">
+    <div className="hf-table-scroll"><table className="hf-type-small w-full text-left">
       <thead className="text-text-secondary">
         <tr>
           <th className="py-2">{t(locale, "activities_col_name")}</th>
@@ -74,6 +74,6 @@ export function ActivityTypeTable({ rows, locale }: { rows: ActivityTypeRow[]; l
           );
         })}
       </tbody>
-    </table>
+    </table></div>
   );
 }

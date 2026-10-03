@@ -14,7 +14,7 @@ type EditablePage = FlowPage & { key: string };
 const fieldClass = "hf-field w-full rounded-lg border border-hf-gray-border bg-hf-white px-4 hf-type-input text-hf-black";
 const textareaClass = "w-full rounded-lg border border-hf-gray-border bg-hf-white px-4 py-3 hf-type-small font-mono text-hf-black";
 const labelClass = "flex flex-col gap-1 hf-type-label text-text-secondary";
-const cardClass = "flex flex-col gap-4 rounded-lg border border-hf-tan-dark bg-hf-white p-4";
+const cardClass = "flex flex-col gap-4 hf-surface p-4";
 
 function CloseIcon() {
   return (
@@ -71,7 +71,7 @@ export function NewFlowForm() {
         event.preventDefault();
         if (name.trim()) void create();
       }}
-      className="flex flex-col gap-3 rounded-lg border border-hf-tan-dark bg-hf-white p-4 sm:flex-row sm:items-center"
+      className="flex flex-col gap-3 hf-surface p-4 sm:flex-row sm:items-center"
     >
       <input
         value={name}

@@ -3,6 +3,8 @@ import bcrypt from "bcryptjs";
 import { prisma } from "@/lib/prisma";
 import { completeLogin } from "@/lib/user-login";
 import { sendEmailVerification } from "@/lib/email-verification";
+import { normalizePhone } from "@/lib/phone";
+import { checkVerificationCode } from "@/lib/sms-verification";
 
 // Rigtig e-mail-tilmelding (kalder ikke admin-login-koden). Blød bekræftelse
 // (docs/DECISIONS.md 2026-09-25): brugeren logges ind med det samme, men
@@ -41,6 +43,22 @@ export async function POST(req: Request) {
     );
   }
 
+  // 6-cifret SMS-kode (docs/DECISIONS.md 2026-10-02): nummeret skal være
+  // bekræftet via /api/auth/sms/signup, før kontoen oprettes.
+  const phone = typeof body.phone === "string" ? normalizePhone(body.phone) : null;
+  if (!phone) {
+    return NextResponse.json({ message: "Angiv et gyldigt mobilnummer" }, { status: 400 });
+  }
+  const smsOk = await checkVerificationCode({
+    verificationId: typeof body.verificationId === "string" ? body.verificationId : "",
+    code: typeof body.smsCode === "string" ? body.smsCode : "",
+    purpose: "SIGNUP",
+    phone,
+  });
+  if (!smsOk) {
+    return NextResponse.json({ message: "Forkert eller udløbet SMS-kode" }, { status: 400 });
+  }
+
   const existing = await prisma.user.findUnique({ where: { email } });
   if (existing) {
     return NextResponse.json({ message: "Der findes allerede en konto med den e-mail" }, { status: 409 });
@@ -57,6 +75,8 @@ export async function POST(req: Request) {
       displayName,
       passwordHash,
       healthDataConsentAt: new Date(),
+      phone,
+      phoneVerifiedAt: new Date(),
     },
     select: { id: true, email: true, displayName: true },
   });

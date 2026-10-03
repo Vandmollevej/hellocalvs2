@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useParams, useRouter } from "next/navigation";
+import { useParams } from "next/navigation";
 import { HfScreen } from "@/components/HfScreen";
 import { DoctorShareEditor } from "@/components/hf/DoctorShareEditor";
 import { useTranslation } from "@/i18n/LocaleProvider";
@@ -10,11 +10,13 @@ import {
   sanitizeDoctorShareCategories,
   type DoctorShareCategory,
   type DoctorShareHistoryRange,
+  doctorShareDurationLabel,
 } from "@/lib/doctor-share";
 import { Skeleton, SkeletonForm, SkeletonList, SkeletonScreen } from "@/components/hf/Skeleton";
 
 type DoctorShare = {
   id: string;
+  token: string;
   name: string;
   email: string;
   status: "PENDING" | "ACTIVE" | "EXPIRED" | "REVOKED";
@@ -30,7 +32,6 @@ type DoctorShare = {
 // revoke access entirely.
 export default function EditHelloDocUserPage() {
   const { t } = useTranslation();
-  const router = useRouter();
   const params = useParams<{ id: string }>();
 
   const [share, setShare] = useState<DoctorShare | null>(null);
@@ -40,7 +41,7 @@ export default function EditHelloDocUserPage() {
   const [historyRange, setHistoryRange] = useState<DoctorShareHistoryRange>("ALL");
   const [loadError, setLoadError] = useState(false);
   const [saving, setSaving] = useState(false);
-  const [resending, setResending] = useState(false);
+  const [renewing, setRenewing] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -79,11 +80,11 @@ export default function EditHelloDocUserPage() {
     }
   }
 
-  async function resend() {
-    setResending(true);
+  async function renew() {
+    setRenewing(true);
     setError(null);
     try {
-      const res = await fetch(`/api/doctor-shares/${params.id}/resend`, { method: "POST" });
+      const res = await fetch(`/api/doctor-shares/${params.id}/renew`, { method: "POST" });
       const data = await res.json();
       if (!res.ok) {
         setError(data.message ?? t("helloDoc.errorGeneric"));
@@ -91,15 +92,15 @@ export default function EditHelloDocUserPage() {
       }
       setShare(data.share);
     } finally {
-      setResending(false);
+      setRenewing(false);
     }
   }
 
   async function revoke() {
     if (!share) return;
     if (!window.confirm(t("helloDoc.revokeConfirm", { name: share.name }))) return;
-    await fetch(`/api/doctor-shares/${params.id}/revoke`, { method: "POST" });
-    router.replace("/settings/hello-doc");
+    const res = await fetch(`/api/doctor-shares/${params.id}/revoke`, { method: "POST" });
+    if (res.ok) setShare((await res.json()).share);
   }
 
   if (loadError) {
@@ -122,12 +123,8 @@ export default function EditHelloDocUserPage() {
     );
   }
 
-  const statusLabel =
-    share.status === "PENDING"
-      ? t("helloDoc.statusPending")
-      : share.status === "EXPIRED"
-        ? t("helloDoc.statusExpired")
-        : t("helloDoc.statusActive");
+  const hasAccess =
+    share.status === "ACTIVE" || (share.status === "PENDING" && !!share.expiresAt && new Date(share.expiresAt) > new Date());
 
   return (
     <HfScreen
@@ -139,7 +136,6 @@ export default function EditHelloDocUserPage() {
             onClick={saveChanges}
             disabled={saving || !name.trim() || !email.trim()}
             className="hf-control hf-btn-primary w-full disabled:opacity-40"
-            style={{ borderRadius: 12 }}
           >
             {saving ? t("helloDoc.sending") : t("helloDoc.saveChanges")}
           </button>
@@ -148,19 +144,27 @@ export default function EditHelloDocUserPage() {
       }
     >
       <div className="hf-page hf-page--sections">
-        <div className="flex items-center justify-between">
-          <span className="text-text-secondary hf-type-caption">{statusLabel}</span>
-          {share.status === "PENDING" && (
-            <button
-              type="button"
-              onClick={resend}
-              disabled={resending}
-              className="hf-type-caption text-hf-green disabled:opacity-50"
-            >
-              {resending ? t("helloDoc.resending") : t("helloDoc.resend")}
-            </button>
-          )}
-        </div>
+        <p className="hf-type-section-title">{doctorShareDurationLabel(share, t)}</p>
+
+        {hasAccess ? (
+          <button
+            type="button"
+            onClick={revoke}
+            className="hf-control hf-type-button w-full rounded-[8px] border text-hf-red-dark"
+            style={{ borderColor: "var(--hf-color-danger)" }}
+          >
+            {t("helloDoc.revoke")}
+          </button>
+        ) : (
+          <button
+            type="button"
+            onClick={renew}
+            disabled={renewing}
+            className="hf-control hf-btn-primary w-full disabled:opacity-40"
+          >
+            {renewing ? t("helloDoc.renewing") : t("helloDoc.renew")}
+          </button>
+        )}
 
         <DoctorShareEditor
           name={name}
@@ -171,17 +175,9 @@ export default function EditHelloDocUserPage() {
           onCategoriesChange={setCategories}
           historyRange={historyRange}
           onHistoryRangeChange={setHistoryRange}
-          previewHref="/settings/hello-doc/preview"
+          previewHref={`/hello-doc/${share.token}`}
+          previewExternal
         />
-
-        <button
-          type="button"
-          onClick={revoke}
-          className="hf-control hf-type-button w-full rounded-[8px] border text-hf-red-dark"
-          style={{ borderColor: "var(--hf-color-danger)" }}
-        >
-          {t("helloDoc.revoke")}
-        </button>
       </div>
     </HfScreen>
   );

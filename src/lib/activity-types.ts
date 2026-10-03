@@ -5,7 +5,14 @@ import { SPORT_TYPES } from "@/lib/sport-icons";
 // (SPORT_TYPES) + brugertilføjede aktiviteter. Godkendte er synlige for
 // alle; en ventende kun for den, der tilføjede den.
 
-export type ActivityOption = { key: string; label: string; custom: boolean; pending: boolean };
+export type ActivityOption = {
+  key: string;
+  label: string;
+  custom: boolean;
+  pending: boolean;
+  /** Ekstra søgeord fra kataloget (synonymer, underformer). */
+  words?: string[];
+};
 
 export function normalizeActivityName(name: string) {
   return name.trim().replace(/\s+/g, " ").toLowerCase();
@@ -22,13 +29,18 @@ export async function listActivityOptions(userId: string): Promise<ActivityOptio
     orderBy: { name: "asc" },
     take: 500,
   });
-  const builtIn = SPORT_TYPES.map((sport) => ({ key: sport.key, label: sport.label, custom: false, pending: false }));
+  // Alfabetisk, så den lange liste er til at finde rundt i; "Anden aktivitet" sidst.
+  const builtIn = SPORT_TYPES.filter((sport) => sport.key !== "other")
+    .map((sport) => ({ key: sport.key, label: sport.label, custom: false, pending: false, words: sport.words }))
+    .sort((a, b) => a.label.localeCompare(b.label, "da"));
+  const other = SPORT_TYPES.find((sport) => sport.key === "other");
   const builtInNames = new Set(builtIn.map((option) => normalizeActivityName(option.label)));
   return [
     ...builtIn,
     ...custom
       .filter((row) => !builtInNames.has(row.normalizedName))
       .map((row) => ({ key: row.name, label: row.name, custom: true, pending: row.status === "PENDING" })),
+    ...(other ? [{ key: other.key, label: other.label, custom: false, pending: false }] : []),
   ];
 }
 

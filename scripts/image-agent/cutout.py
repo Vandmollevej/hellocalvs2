@@ -12,6 +12,9 @@ resultatet videre:
 - BRAND_LOGO -> brands.logoUrl, men kun når brandet intet logo har, og både
   AI'ens sikkerhed på logonavnet og matchet mod brandet er høje. Ellers bliver
   jobbet liggende som logo-kandidat for brandet.
+- PRODUCT_LABEL -> product_labels.imageUrl (mærkater fra det natlige job
+  "label-scan", docs/DECISIONS.md 2026-10-02). Behandles som et logo: ingen
+  opretning, ingen løft af mellemtoner.
 """
 
 import io
@@ -294,7 +297,7 @@ def make_cutout(source_path, box, kind="PRODUCT_FRONT"):
     buffer = io.BytesIO()
     cropped.save(buffer, format="PNG")
     cutout = Image.open(io.BytesIO(remove(buffer.getvalue()))).convert("RGBA")
-    if kind == "BRAND_LOGO":
+    if kind in ("BRAND_LOGO", "PRODUCT_LABEL"):
         cutout = drop_edge_fragments(cutout)
     bbox = cutout.getbbox()
     if not bbox:
@@ -359,6 +362,25 @@ def process_job(conn, job_id, source_url, crop_box, kind):
 # trin, der kører hver runde.
 def apply_finished_jobs(conn):
     with conn.cursor() as cur:
+        # Mærkater: resultatet hører til præcis én product_labels-række.
+        cur.execute(
+            """
+            UPDATE product_labels l
+            SET "imageUrl" = j."resultUrl"
+            FROM image_cutout_jobs j
+            WHERE j.kind = 'PRODUCT_LABEL' AND j.status = 'DONE' AND j."appliedAt" IS NULL
+              AND l."cutoutJobId" = j.id
+            """
+        )
+        cur.execute(
+            """
+            UPDATE image_cutout_jobs j
+            SET "appliedAt" = now()
+            FROM product_labels l
+            WHERE j.kind = 'PRODUCT_LABEL' AND j.status = 'DONE' AND j."appliedAt" IS NULL
+              AND l."cutoutJobId" = j.id
+            """
+        )
         cur.execute(
             """
             UPDATE products p

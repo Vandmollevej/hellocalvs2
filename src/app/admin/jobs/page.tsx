@@ -61,7 +61,7 @@ export default async function JobsPage({ searchParams }: { searchParams: Promise
       ) : (
         <ul className="flex flex-col gap-3">
           {jobs.map((job) => (
-            <li key={job.id} className="flex flex-col gap-2 rounded-lg border border-hf-tan-dark bg-hf-white p-4">
+            <li key={job.id} className="flex flex-col gap-2 hf-surface p-4">
               <div className="flex flex-wrap items-start justify-between gap-2">
                 <div className="min-w-0">
                   <p className="hf-type-strong text-hf-black">{job.title}</p>

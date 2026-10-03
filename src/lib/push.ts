@@ -10,6 +10,8 @@ function isConfigured() {
   return Boolean(process.env.VAPID_PUBLIC_KEY && process.env.VAPID_PRIVATE_KEY);
 }
 
+export const isPushConfigured = isConfigured;
+
 function configure() {
   webpush.setVapidDetails(
     process.env.VAPID_CONTACT_EMAIL || "mailto:admin@hellocal.local",
@@ -40,7 +42,7 @@ function htmlToPushText(html: string) {
 
 // Sender én push direkte til alle brugerens enheder (uden om køen). No-op
 // uden VAPID-nøgler eller abonnement.
-export async function sendPushToUser(userId: string, title: string, body: string) {
+export async function sendPushToUser(userId: string, title: string, body: string, url?: string) {
   if (!isConfigured()) return { sent: 0 };
   configure();
   const subscriptions = await prisma.pushSubscription.findMany({ where: { userId } });
@@ -49,7 +51,8 @@ export async function sendPushToUser(userId: string, title: string, body: string
     try {
       await webpush.sendNotification(
         { endpoint: sub.endpoint, keys: { p256dh: sub.p256dh, auth: sub.auth } },
-        JSON.stringify({ title, body })
+        JSON.stringify({ title, body, url }),
+        { TTL: 300, urgency: "high" }
       );
       sent += 1;
     } catch {

@@ -118,6 +118,7 @@ export function HomeWaves() {
           />
         </div>
       ))}
+      <div className="home-wave__frost" />
     </div>
   );
 }

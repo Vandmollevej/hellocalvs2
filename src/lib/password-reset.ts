@@ -21,6 +21,21 @@ export async function createPasswordResetToken(userId: string) {
   return rawToken;
 }
 
+export function hashPasswordResetToken(rawToken: string) {
+  return hashToken(rawToken);
+}
+
+// Slår et gyldigt, ubrugt token op uden at forbruge det (bruges til at kræve
+// SMS-kode, før adgangskoden må skiftes).
+export async function peekPasswordResetToken(rawToken: string) {
+  const record = await prisma.passwordResetToken.findUnique({
+    where: { tokenHash: hashToken(rawToken) },
+    include: { user: true },
+  });
+  if (!record || record.usedAt || record.expiresAt < new Date() || record.user.forgottenAt) return null;
+  return record.user;
+}
+
 export async function consumePasswordResetToken(rawToken: string) {
   const tokenHash = hashToken(rawToken);
   const record = await prisma.passwordResetToken.findUnique({

@@ -88,7 +88,7 @@ export function SupportThreadActions({
     "rounded-md border border-hf-tan-dark px-2.5 py-1 text-text-secondary hover:bg-hf-tan disabled:opacity-50";
 
   return (
-    <div className="hf-type-small flex flex-col gap-3 rounded-lg border border-hf-tan-dark bg-hf-white p-3">
+    <div className="hf-type-small flex flex-col gap-3 hf-surface p-3">
       <div className="flex flex-wrap items-center gap-2">
         <span className="text-text-secondary">Prioritet:</span>
         <div className="flex overflow-hidden rounded-md border border-hf-tan-dark">

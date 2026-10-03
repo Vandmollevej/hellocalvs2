@@ -1,5 +1,7 @@
 # HELLO CAL — project status
 
+Last updated: 2026-10-03
+
 ## 2026-10-03: Partnersider
 
 - Ny side pr. partner under admin → Partnere → Kontakter → (partnerens navn): virksomhedsoplysninger og kontakter i venstre bjælke (uden søgefelt), menu med Sponsoraftale, Performance, Faktureringsdetaljer og Betalingsmetode. Se DECISIONS.md 2026-10-02.
@@ -7,6 +9,85 @@
 - Migration `20261002090000_partner_pages` skal køre ved deploy. Prøvet mod en tom lokal Postgres: alle migrationer kører, siderne er set i Chromium med testdata, API'er, PDF (læst med PyMuPDF), CSV, periodegrænser og trigger-udvælgelse er afprøvet. `npm run lint` (kun gamle advarsler) og `npm run build` er grønne; `page-tree.test.mjs` fejler stadig på andres manglende sider.
 - Banner uploades som billedfil (PNG/JPG/WebP, højst 4 MB) til den eksisterende billedvolumen.
 - Ikke gjort: `AdBanner` er ikke sat ind i appens sider, fordi ejeren ikke har sagt hvor reklamerne skal vises. Kataloget over reklamemuligheder (`ad-inventory.ts`) er et forslag og skal afklares. Mailafsendelsen er ikke prøvet fra udviklingsmiljøet (ingen SMTP-nøgler her), men bruger samme opsætning som øvrige mails.
+
+## 2026-10-02: Kalenderen husker den åbne dag
+
+- Dagsvisningen genåbnes efter navigation væk fra `/calendar` (Tilbage eller "Kalender" i menuen) i stedet for at falde tilbage til måneden. Ny `src/lib/calendar-open-day.ts` (URL `?date=` + sessionStorage), koblet ind i `src/app/calendar/page.tsx`. Se DECISIONS.md samme dato.
+- Lint, typecheck og build grønne. Ikke live-testet (ingen lokal DB/login) — test på telefon: åbn en dag → tryk en registrering → Tilbage, og åbn en dag → Statistik → Kalender.
+
+## 2026-10-03: Business-siden — "Den typiske bruger" (annoncørstatistik)
+
+- `/business` har ny sektion mellem Mulighederne og Kontakt: medianbrugeren (køn + alder, startvægt, vægtændring + andel der har tabt sig, registreringer og dage med registrering pr. uge), de 5 mest registrerede produkttyper (andel af registreringer, 90 dage) og en tabel, der sammenligner den typiske bruger (median) med gennemsnittet af brugere med samme køn og alder (±5 år) — forskel i procentpoint for andele, ellers i procent. Se DECISIONS.md samme dato.
+- Kode: `src/lib/business-audience.ts` (ren beregning, tests i `business-audience.test.mjs`), `src/lib/business-audience-data.ts` (Prisma + rå SQL), `src/components/landing/BusinessAudience.tsx`.
+- Vises først ved mindst 10 aktive brugere (ellers kort forklaring); sammenligningen kræver mindst 5 i gruppen. Ingen migration. Ikke live-testet (ingen lokal DB) — tjek `/business` på desktop og telefon, når der er brugere nok.
+
+## 2026-10-02: Admin — Billeder i kø til frilæggelse
+
+- Varegodkendelse har nyt punkt "Billeder i kø til frilæggelse" (`/admin/images/cutout-queue`), også som fane på Billedforslag. Viser ventende `ImageCutoutJob`s (forside/logo) med det udsnit robotten vil fritlægge, vare/brand og tidspunkt; fejlede jobs i egen sektion nederst. Under listen: "Disse billeder vil blive scannet i nat" + robottens faktiske plan og sidste kørsel (link til Robotter). Logik i `src/lib/cutout-queue.ts`.
+- Bemærk: jobbet `image-cutout` står stadig som "Løbende" (DECISIONS 2026-09-28), så beskeden og planen kan modsige hinanden, indtil ejeren vælger — se spørgsmålet i sessionen. Lint, typecheck og build grønne; ikke live-testet (ingen lokal DB).
+
+## 2026-10-02: B2B-brugere (partnerportal), kun admin opretter
+
+- Ny admin-side Partnere → **B2B-brugere** (`/admin/partners/users`): invitér (partner + navn + e-mail, 72 t-link), send igen, træk tilbage, deaktivér/aktivér, log ud overalt, slet. Kun fuld administrator kan ændre; læseadgang ser listen. Se DECISIONS.md samme dato.
+- Ny partnerportal `/partner` (login `/partner/login`, invitation `/partner/invite/<token>`): egne reklamelokationer med visninger/klik/klikrate, seneste rapporter og rapportmodtagere. Egen session-cookie; ingen offentlig tilmelding. Link fra `/business` under kontaktformularen.
+- Migration `20261002120000_partner_users` skal køre ved deploy. Lint, typecheck og build grønne; ikke live-testet (ingen lokal DB, SMTP skal være sat op for invitationsmails — ellers vises linket til admin).
+- Rettet samtidig: `src/lib/web-nav.ts` importerede det slettede champagne-ikon (fjernet i 0500687), så `tsc`/build fejlede på master; bruger nu konfetti-ikonet som resten af appen.
+- Mangler/afklar med ejeren: skal B2B-brugere have 2-faktor som admin-brugere? Skal portalen vise mere end reklametal (fx produktdata for producenter)? Skal B2B-brugere selv kunne nulstille adgangskode ("glemt adgangskode" findes ikke endnu — admin gensender i stedet en invitation efter sletning)?
+
+## 2026-10-02: Ikon for Betalingsmetoder
+
+- Rækken "Betalingsmetoder" på `/profile` og `/settings` bruger nu et eget kortikon (`src/components/icons/PaymentCard.tsx`): kortomrids med én massiv sort stribe nederst og ingen andre elementer (ejerens regel 2026-10-02). Tabler-ikonet `IconWallet` er ikke længere i brug der.
+- Lint, typecheck og `npm run build` grønne. Ikke set i browser med login (ingen lokal DB); ikonet er kontrolleret som SVG-render.
+Last updated: 2026-10-03
+
+## 2026-10-02: Hjælpe-chatbot øverst i app og web + admin "Chatbot"
+
+- Hjælpe-knap øverst (til venstre for profilcirklen; "Hjælp" i desktop-topbjælken) åbner AI-chatbotten med "Tal med en medarbejder" (bliver en sag i Support-indbakken med hele tråden) og "Kontaktformular". Ingen telefon, region = land, kun indloggede (ejerens valg 2026-10-03). Se DECISIONS.md 2026-10-02.
+- Admin → Brugere → Chatbot: oftest spurgte kategorier, tabel med alle spørgsmål og svar, hele tråde og brugerinfo (alder, køn, region, abonnement).
+- Migration `20261002120000_chatbot` skal køre ved deploy. Lint, typecheck og build grønne. Ikke live-testet (ingen lokal DB/OpenAI-nøgle): test chatten på telefon og desktop efter deploy.
+## 2026-10-03: Admin, webvisning og Hello Doc på samme designklasser
+
+- Ny fælles skal i `globals.css` (design.md §6.17): `.hf-shell*`, `.hf-navrow`, `.hf-crumbs`, `.hf-menu`, `.hf-surface`, `.hf-table-scroll`. `AdminShell`, `WebShell` og Hello Doc (lægevisning + "Sådan ser det ud") bruger dem; 99 håndskrevne hvide bokse i admin er nu `.hf-surface`, statistik/login-sider bruger `.hf-type-*`, `.hf-kpi`, `.hf-panel` og `.hf-choice`.
+- Responsivt: skuffe-menu under 1024 px (admin), topmenuens tekst skjules under 1280 px i webvisningen (kun ikoner), brede tabeller scroller vandret, faste gitre har telefonvariant.
+- Lint, typecheck og `next build --webpack` kørt; ikke set i browser (brugerens regel) — tjek admin på telefon og webvisningen ved 1024–1280 px.
+
+## 2026-10-03: Roadmap — sukkerfiltre skal ind i databasen (importen skal køres)
+
+Bygget og pushet til master, men virker først, når importen er kørt (brugerens valg: gem som to do, tag den, når resten af webændringerne er læst ind).
+
+Skal gøres:
+1. Deploy kører migrationen `20261002100000_sugar_claim_filters` (nye kolonner på `product_filters`).
+2. Kør `scripts/store-products-import/build_data.py` (lokalt) og derefter `store-products-agent` på NAS, så `lowSugar`, `noAddedSugar`, `reducedSugar` og `lightSugar` fyldes. Indtil da er de tomme, og søgning på fx "sukkerfri" finder kun varer, der allerede har sukkerfri-filteret.
+3. Tjek stikprøver i admin (Produktdatabase → filtre): fx "Light" på lightdrikke og "Uden tilsat sukker" på marmelade. Påstande, der kun står som ikon på emballagen, kan ikke aflæses og tilføjes manuelt.
+4. Ikke set i browseren: upload/drop-zonen under Opret egen ret (webversionen) og dobbeltklik på en halv time i kalenderen.
+
+Se DECISIONS.md "2026-10-02: Sukkerpåstande til søgning".
+Last updated: 2026-10-03
+
+## 2026-10-02: Admin → Brugere → Personas (AI-udledte brugergrupper)
+
+- Ny side `/admin/users/personas` (menupunkt "Personas" under Brugere): anonyme gruppetal pr. land, by, sprog, aldersgruppe, køn, abonnement og enhed (logins/90 d, login-dage, aktive, registreringer/30 d, betalende, smartur, vejninger, motion, inaktive, weekend-andel, typisk tidspunkt på døgnet, toptime/-dag, kvindeandel), adfærdssegmenter (storbrugere/faste/lejlighedsvise/kigger/nye/inaktive), logins pr. time og ugedag, abonnement pr. alder, sprog pr. land, og AI-personas fra seneste snapshot. Grupper under 5 brugere samles i "Øvrige". Se DECISIONS.md samme dato.
+- Logik: `src/lib/persona-groups.ts` (rene beregninger, tests i `persona-groups.test.mjs`, 6 grønne), `src/lib/personas.ts` (DB + snapshot), `src/lib/persona-ai.ts` (OpenAI, struktureret JSON, kun aggregater, `store: false`; model `OPENAI_PERSONA_MODEL` → `OPENAI_STATS_MODEL` → produktmodellen).
+- Nyt cronjob "personas" uden fast plan: kører automatisk én gang pr. deploy (ny build-id ved opstart) og ved "Kør nu" under Cronjobs, plus knappen "Beregn personas med AI" (kun fuld administratoradgang; `POST /api/admin/personas`). Ejerens valg 2026-10-03: ingen natlig kørsel for nu. Hver kørsel gemmes som `persona_snapshots` (også ved AI-fejl, med fejltekst); historik vises nederst på siden.
+- `login_events` har nu kolonnen `city` (fra Cloudflares `cf-ipcity`, kræver "Add visitor location headers" — ellers kun land). Migration `20261002090000_personas` skal køre ved deploy.
+- Lint, typecheck og `npm run build` grønne. Ikke live-testet (ingen lokal DB/OpenAI-nøgle). `page-tree.test.mjs` fejler fortsat på master (uvedkommende; den nye side er tilføjet i sidetræet).
+
+## 2026-10-03: Opdater-varen-banner (20 points)
+Last updated: 2026-10-03
+
+## 2026-10-03: Business-siden — "Den typiske bruger" (annoncørstatistik)
+
+- `/business` har ny sektion mellem Mulighederne og Kontakt: medianbrugeren (køn + alder, startvægt, vægtændring + andel der har tabt sig, registreringer og dage med registrering pr. uge), de 5 mest registrerede produkttyper (andel af registreringer, 90 dage) og en tabel, der sammenligner den typiske bruger (median) med gennemsnittet af brugere med samme køn og alder (±5 år) — forskel i procentpoint for andele, ellers i procent. Se DECISIONS.md samme dato.
+- Kode: `src/lib/business-audience.ts` (ren beregning, tests i `business-audience.test.mjs`), `src/lib/business-audience-data.ts` (Prisma + rå SQL), `src/components/landing/BusinessAudience.tsx`.
+- Vises først ved mindst 10 aktive brugere (ellers kort forklaring); sammenligningen kræver mindst 5 i gruppen. Ingen migration. Ikke live-testet (ingen lokal DB) — tjek `/business` på desktop og telefon, når der er brugere nok.
+
+- Hvidt, sammenklappeligt banner øverst på varesiden når indhold, energi, logo eller produktbillede mangler; fører til ny side `/add/[id]/update` med kamera pr. manglende ting. Giver 20 points én gang pr. bruger og vare — også for admin, så det kan testes. Se DECISIONS 2026-10-03.
+- Migration `20261003100000_points_product_updated` skal med deployet. Lint, typecheck og build kørt; ikke set i browser eller prøvet med rigtigt foto/AI-nøgle her — test: åbn en vare uden indhold/logo som admin, tag billede, tjek Profil → Points.
+## 2026-10-02: Admin — Billeder i kø til frilæggelse
+
+- Varegodkendelse har nyt punkt "Billeder i kø til frilæggelse" (`/admin/images/cutout-queue`), også som fane på Billedforslag. Viser ventende `ImageCutoutJob`s (forside/logo) med det udsnit robotten vil fritlægge, vare/brand og tidspunkt; fejlede jobs i egen sektion nederst. Under listen en besked, der følger robottens rigtige plan ("Disse billeder bliver scannet løbende" så længe jobbet står som Løbende; "… i nat kl. X" ved fast tid; advarsel hvis robotten er slået fra) + robottens faktiske plan og sidste kørsel (link til Robotter). Logik i `src/lib/cutout-queue.ts`.
+- Planen for `image-cutout` er bevaret som "Løbende" (DECISIONS 2026-09-28). Lint og build grønne; ikke live-testet (ingen lokal DB).
+
 
 ## 2026-10-03: Butiksimporten — alt fra Bilka- og REMA-arkene med
 
@@ -22,6 +103,52 @@
 - Lint og typecheck grønne; ikke set i browser — tjek login-siderne på desktop.
 Last updated: 2026-10-02
 
+## 2026-10-02: Garmin, WHOOP, Huawei + eufy/Renpho/Xiaomi/Tuya/Samsung via telefonen
+
+- Nye cloud-integrationer: Garmin (`garmin.ts`, PKCE, ping-webhook `garmin-webhook.ts`), WHOOP (`whoop.ts`) og Huawei Health (`huawei-health.ts`). Kun læsning; afmelding hos appen ved frakobling. Parsere i `*-items.ts` med tests i `src/lib/integration-items.test.mjs` (9 grønne).
+- eufy, Renpho, Xiaomi, Tuya og Samsung Health (ure, ring, vægt) er "via"-kort: data via Health Connect/Apple Health; kortet bliver "Forbundet", når ingest ser deres app som `origin`. Se DECISIONS.md samme dato.
+- Health Connect: Android-modul `native/android/healthconnect/` (læs + skriv, timevis baggrundssync, `origin` på alle poster). Ikke kompileret (ingen Android SDK her); se `native/README.md`.
+- Migration `20261002120000_more_integrations` (enum-værdier + `integrations.externalUserId`) skal køre ved deploy. Nye nøgler i admin → API-nøgler og `compose.production.yaml`: `GARMIN_CLIENT_ID/SECRET`, `GARMIN_WEBHOOK_KEY`, `WHOOP_CLIENT_ID/SECRET`, `HUAWEI_HEALTH_CLIENT_ID/SECRET`, `HUAWEI_HEALTH_API_BASE`. `.env.production.example` er ikke opdateret (adgang nægtet her).
+- Lint, typecheck og build grønne. `page-tree.test.mjs` fejler stadig (også på master). Ikke live-testet: ingen nøgler/DB her; Garmin- og Huawei-feltnavne er ikke prøvet mod live-API.
+- Mangler fra brugeren: Garmin-partnergodkendelse, Huawei Health Kit-godkendelse, WHOOP-app, logoer til de nye mærker, og evt. Tuya-partneraftale.
+## 2026-10-02: Tilføj → Aktivitet: stort katalog, søgeord og tid
+
+- Søgefeltet på `/activity/create` finder nu ca. 75 aktiviteter, der får pulsen op, også via søgeord (fx "judo", "tabata", "bouldering"), hver med egne MET-værdier pr. intensitet. Se DECISIONS.md samme dato.
+- Varighed: timer + minutter + "slut kl.", som følger med begge veje.
+- Tests: `activity-met.test.mjs` (katalog) og ny `activity-duration.test.mjs`, grønne. Lint og typecheck grønne. Ikke live-testet (ingen lokal DB).
+- Brugerens 3D-aktivitetsikon er nu sat på aktivitetsknappen under Tilføj (`public/icons/activity-3d.png`, `imageSrc` i `src/lib/add-actions.ts`); hjulet, `/add/menu`, Indstillinger → Visning → Forside og widgets viser det.
+## 2026-10-02: Dyre-ikoner på kød/fisk-felterne i Statistik
+
+- De otte kød/fisk-kort (Oksekød, Grisekød, Fjerkræ, Fisk; g og kcal) bruger nu ejerens egne silhuetter fra `public/icons/animals/` (cow, pig, chicken, fish) via `iconSrc` i `src/lib/stat-cards.ts` — samme mekanisme som mineral- og vitaminikonerne. Tabler-ikonerne står tilbage som fallback.
+- Lint, typecheck og `npm run build` grønne. Ikke visuelt testet (ingen lokal DB/login) — tjek Statistik-siden på telefon.
+- Mappen har også deer, duck, goat, goose, lamb, rabbit, turkey, crab, lobster, mussel, octopus, shrimp; de bruges ikke endnu (kødtyperne i `food-classification.ts` er stadig BEEF/PORK/POULTRY/FISH).
+## 2026-10-02: Kamera — lygte, fokus og lys/fokus-advarsel
+
+- Lygte-knap på kameraet (hvor telefonen/browseren tillader det), hvid tekst ved for mørkt/ude af fokus, og fokus-skift til ~20 cm på stregkodetrinnet. Se DECISIONS.md.
+- Lint, typecheck og `npm run build` grønne. Ikke testet på telefon — tjek i køleskabet på Android (lygte + fokus) og iPhone (forventet: kun advarselsteksten).
+## 2026-10-02: Kalenderens miniature-tal (kyllingelår, flamme, vand i cl)
+
+- `EnergyChip` (kyllingelår + tal for indtag, flamme + tal for forbrændt, glas + cl for vand) bruges nu generelt: kalenderens dag-/time-/uge-/månedsvisninger, forsidens tal-hjul (rækkeikon + tom enhed), statistikbokse, widget-forhåndsvisninger og listerne i chat/tale/kamera. Kalenderen henter nu også `/api/water-entries` og viser glas vand pr. time og i timens oversigt. Se DECISIONS.md og design.md §6.16.
+- Ikke ændret: sætninger ("Tilbage for i dag: … kcal"), indtastningsfelter, "kcal / 100 g", grafakser, opskriftssider og de native widgets (`native/`).
+- Lint, typecheck og build grønne. Ikonet er tjekket som rendering i headless Chromium, men ikke live-testet i appen (ingen lokal DB/login) — tjek timerækken på telefon, især at kyllingelåret (16 px) og glasset står pænt ved siden af hinanden.
+- Næste: hvis kyllingelåret skal bruges flere steder (forside, widgets), så genbrug `IconDrumstick` og tokenet `--hf-meat`.
+
+## 2026-10-02: Kropsmål som statistikgrafer
+
+- Nye grafer `body:<felt>` i statistikmodulet (bryst, talje, hofte, overarm, lår): samme kort som på Kropsmål-siden med tegningen til venstre, men til højre et forløb over de seneste 10 målinger (x efter dato), seneste værdi, min/maks og ændring siden sidst. Komponent `src/components/BodyMeasurementChart.tsx`, logik `src/lib/body-measurement-series.ts` (tests grønne).
+- Tilføjes under "Ubrugte grafer" → blokken Kropsmål, eller med linket "Vis kropsmål som grafer i Statistik" på Kropsmål-siden (lægger alle fem nederst i graferne og åbner Statistik).
+- Hofte har stadig ingen godkendt tegning, så venstre felt er tomt dér. Lint, typecheck og build grønne; ikke visuelt testet (ingen lokal DB/login).
+## 2026-10-02: "Se dine indscanninger"
+
+- Forsiden: understreget link "Se dine indscanninger" øverst under "Dagens tilføjelser", når en vare fotograferet i dag ikke er tilføjet. Ny side `/my-scans` grupperet pr. dato. Søgerækken er flyttet til `src/components/ProductResultRow.tsx` og bruges af begge. Se DECISIONS.
+- Lint (ændrede filer), typecheck og `npm run build` grønne. Ikke live-testet (ingen lokal DB). `page-tree.test.mjs` fejler stadig som før (andre sider mangler); `/my-scans` er tilføjet.
+
+## 2026-10-02: Tale og chat — "Foreslået" med Tilføj-knap pr. forslag
+
+- `/voice` og `/chat`: AI'ens tolkning vises nu under overskriften "Foreslået" (før "Tilføjet"), og hver foreslået vare har sin egen "Tilføj"-knap — intet gemmes uden brugerens tryk. Ved to eller flere forslag er der desuden "Tilføj alle forslag". Gemte varer står for sig under "Tilføjet" på begge sider (desktop-siden "Indtast" følger nu samme opbygning som talesiden).
+- Tale: forslag fra en tidligere optagelse bliver stående, når en ny optagelse starter (hver optagelse er sin egen "batch"; kun den igangværende optagelses forslag erstattes af live-tolkningen), så flere forslag kan vente samtidig.
+- Knapperne bruger `.hf-btn-primary`/`.hf-btn-secondary` (design.md §6.2); den grønne knap på talesiden er væk. Nye tekster da/en (`voice.suggested`, `voice.addOne`, `web.chatSuggested`, `web.chatAddOne`, `web.chatAddAll`).
+- Lint, typecheck og build grønne. Ikke live-testet (ingen lokal DB/mikrofon) — test på telefon og i desktop-chatten.
 ## 2026-10-02: Kameraflowet — rigtige stillbilleder + nyt foto af indholdet
 
 - Fejlen: marmelade (5711954020055) fik ingen ingredienser, fordi indholdsfotoet var et sløret 1080p-videobillede, og OpenAI svarede tomt ("for sløret"). Ingen genstart var involveret. Se DECISIONS 2026-10-02.
@@ -34,12 +161,25 @@ Last updated: 2026-10-02
 - `/profile/recipes` (begge faner) og `/profile/recipes/[id]` brugte generiske skeletter (`SkeletonMediaRows`/`SkeletonDetail`) med bjælker i procent af sidebredden — enorme på bred skærm og uden lighed med indholdet. Nu tegner `RecipeRow` og ret-siden sig selv uden data (design.md §6.14): samme billedfelt, titel + undertekst i tekstbredde (`SkeletonTitleLines` i `Skeleton.tsx`), 3 rækker under "Trender netop nu".
 - Lint grøn; typecheck uden fejl i de berørte filer. Build ikke kørt lokalt (delt `node_modules` har forældet Prisma-klient). Ikke visuelt testet (brugerregel).
 
+## 2026-10-02: Bølge-baggrunden justeret + lime puls-linje
+
+- Tal-hjulets rækker klippes nu ved "Dagens tilføjelser"-stregen (18 px under hero), så de forsvinder ned bag stregen i stedet for at blive skåret af over den (`StatsWheel.tsx`, `DIVIDER_BELOW_HERO`).
+- Farverampen er vendt: gul-brunlige nuancer øverst, grønt længere nede. Hvert bånd får en lille tilfældig farveforskydning, og ca. hvert femte en tydeligt anden nuance (overvejende tendens, ikke statisk).
+- Frostet glas nederst: kraftigere slør (24 px) + mælket creme-lag (`.home-wave__frost`).
+- Jævnere bølger: kortere bølgelængder (hele bølger ses), så ingen side konsekvent får de største udsving; ca. hvert femte bånd må variere mere. Strengene har større, uregelmæssig afstand, egne småbølger og spreder sig/samler sig langsomt — ikke længere "tov".
+- Ny lysende lime puls-linje (pulsmåler) fejer hen over toppen af skærmen og tegner ét hjerteslag omkring midten; tempo, højde og placering er tilfældige pr. besøg og pr. fej (`drawPulse`, `heartbeatShape` i `home-waves.ts`).
+- Lint, typecheck og `node --test` (home-waves) grønne. Ikke visuelt testet (brugerregel) — tjek på telefon.
+
 ## 2026-10-02: "Til info sendte vi dig …"-popup + push
 
 - Nyt: `src/lib/sent-notices.ts`, `src/lib/sms.ts`, `/api/messages/sent-notices`, `SentMessageNotice` (bundark i layoutet), `sendPushToUser` i `push.ts`. Se DECISIONS 2026-10-02.
 - Migration `20261002090000_sent_message_notice` skal køre ved deploy. Lint og typecheck grønne; ikke live-testet (ingen lokal DB).
 - Bemærk: push kræver VAPID-nøgler og at appen tilmelder enheden (findes ikke endnu); sms kræver `SMS_GATEWAY_TOKEN` og et telefonnummer på brugeren (findes ikke endnu).
 
+## 2026-10-02: Statistik — periodevælgeren åbner under knappen og fylder hele bredden
+
+- `StatPeriodPicker`: panelet var 256 px og højrestillet, så det så ud til at åbne væk fra "Vis:"-knappen. Nu `left-0 right-0` (hele indholdsbredden) og fra/til-datoerne ligger i ét grid (`1fr auto 1fr`) med `white-space: nowrap` på iOS' datotekst, så "30 Sep 2026" ikke ombrydes til to linjer.
+- Lint, typecheck og build grønne. Ikke visuelt testet på telefon (ingen lokal DB/login).
 ## 2026-10-02: Vægt- og længdeenheder
 
 - Nyt src/lib/units.ts (valg, landestandard, omregning, useUnits()), nyt startguide-trin units og to valg under Sprog og region. Brugt i: profil (vægt, højde-hjul), vægtlog, vægt-kalibrering, startvægt-verificering, målsætninger (vægt + kropsmål), energimål-editoren, kropsmål og statistik-grafen.
@@ -50,6 +190,18 @@ Last updated: 2026-10-02
 - Ny baggrund bag topbar + hero, der fortsætter ca. 40 px under "Dagens tilføjelser"-stregen: tilfældige, langsomme bånd af bløde bølgelinjer (grønt øverst → gullig creme nedenfor) plus lidt tåge. Tre lag af samme canvas-scene (skarp / mellem-sløret / kraftigt sløret) giver frostet-glas-effekten nederst. Farver kun fra tokens. Står stille ved "reducer bevægelse" og standser når fanen er skjult.
 - Filer: `src/lib/home-waves.ts` (tegnelogik + test `home-waves.test.mjs`), `src/components/HomeWaves.tsx`, `.home-wave*` i `globals.css`, `src/app/page.tsx`. Listen er ikke længere dækkende; tal-hjulets rækker klippes i stedet ved hero-bunden (`StatsWheel.tsx`, `clipPath`).
 - Lint, typecheck og `node --test` (home-waves) grønne. Ikke visuelt testet (brugerregel: ingen skærmbilleder) — tjek udseende, tempo og lag på telefon. Justér tempo/farve/tykkelse i `createWaveScene` (hastigheder i px/s, `alpha`, `width`) og maskerne i `globals.css`.
+## 2026-10-02: Mærkater på forsiden (natligt job)
+
+- Nyt job `label-scan` (Cron-jobs, kl. 04:00) finder alle mærkater på vareforsiden (laktosefri "-L", Haltungsform, QMilch, Øko, Nøglehul, MSC …), gemmer dem i `product_labels`, fritskraber dem via image-agent (`PRODUCT_LABEL`) og udfylder tomme filtre. Varesiden viser dem som badges (fritskrabet mærke for mærker uden egen logofil). Se DECISIONS.md samme dato.
+- Migration `20261002090000_product_labels` skal køre ved deploy; image-agent-containeren skal genbygges (cutout.py). Lint, typecheck, `npm test` (5 nye) og build grønne; ikke live-testet (ingen lokal DB/OpenAI-nøgle).
+- Næste: admin-visning af fundne mærkater på `/admin/products/[id]` (ret/slet) og evt. en kø for usikre mærkater (0,5–0,8) som ved logoer.
+
+## 2026-10-02: Statistik — kort kan igen trækkes på iPhone
+
+- Fejl: i redigering scrollede siden i stedet for at flytte kortet. Når et kort løftes, udskiftes dets indhold med pladsmarkeringen; iOS sender fortsat fingerens touch-hændelser til det fjernede element, så de nåede aldrig dokumentets scroll-blokering eller pointer-lytterne.
+- Rettet i `StatCardsGrid.tsx`: trykket lytter også på selve elementet fingeren rammer, og løftet registreres synkront (ref), så scroll blokeres med det samme. Gælder også overskrifter/skillelinjer.
+- Testet i Chromium med touch-emulering: fejlen genskabt på gammel kode; med rettelsen flyttes kortet, og et hurtigt swipe på et kort scroller stadig. Ikke testet på fysisk iPhone.
+
 ## 2026-10-02: Drikkevarer starter på pakkestørrelsen
 
 - Mængdefeltet viser nu 33 cl / 25 cl / 50 cl for dåser og små flasker, også når størrelsen kun står i navnet, og også for øl/vin uden kategorien DRINK. Vin, spiritus og færdigblandede drinks har egne regler (DECISIONS.md 2026-09-28, tilføjelse 2026-10-02).
@@ -63,11 +215,45 @@ Last updated: 2026-10-02
 - Rettelser bør komme fra brugeren: `Bedre-dyrevelfærd-2-stjerner.png` var identisk med 3-stjerner-filen, så 2-hjerte-logoet er afledt (3-stjerner + den tomme 3. hjerte fra 1-stjerne-filen). `Fairtrade logo.webp` har "cleanpng"-vandmærke og `Økologimærket.png` er et beskåret udsnit uden tekst — erstat med originale filer.
 - Lint og typecheck grønne. Ikke visuelt testet (ingen login/DB lokalt).
 
+## 2026-10-02: Sprogflag på tale- og chat-siden
+
+- Flag i venstre hjørne på `/voice` og `/chat` åbner et bundark med ni sprog. Valget styrer talegenkendelsen og AI-tolkningen (kun det sprog + engelsk som fallback). Se DECISIONS.md samme dato.
+- Lint, typecheck og build kørt. Ikke live-testet på telefon (ingen lokal DB/login): tjek flaget ved siden af tilbagepilen og et sprogskift midt i en optagelse.
+
 ## 2026-10-02: Kalender dagvisning pa web - cookie, fokus pa nu, dobbeltklik
 
 - Cookie `hc_cal_visit` (dato): forste besog i dag viser morgenen med nattens sovn; senere besog i dag (og kun hvis brugeren har registreret noget for) scroller til nu +-2 timer.
 - Dobbeltklik pa en time i dagvisningen og pa en dag i ugens tidslinje abner tilfoej-menuen pa den halve time.
 - Lint og typecheck groenne; ikke testet i browser.
+## 2026-10-02: Håndfrugter og æg i Lille / Normal / Stor
+
+- Ny størrelsesvælger på produktsiden for 18 håndfrugter/snack-grøntsager og æg (`src/lib/hand-sizes.ts`, `src/components/hf/HandSizePicker.tsx`). Liste og tal i `docs/HAND-SIZES.md`; beslutning i DECISIONS samme dato.
+- Tests (`npm test`), lint, typecheck og build grønne. Ikke visuelt testet i browser (ingen lokal DB).
+- Fliserne viser hel vægt og spiselig vægt; spiselig = hel vægt minus USDA's spild-procent (kiwi og bladselleri er skøn).
+- Venter på brugerens godkendelse af listen og tallene, før PR'en merges.
+
+## 2026-10-02: Hello Doc — invitér/bruger-sider
+
+- Oversigten har invitér-række med pil øverst, adskiller "Inviterede brugere" og liste med varighed/udløb. Brugersiden viser tid øverst, "Fjern adgang" eller "Forny adgang" (ny rute `/api/doctor-shares/[id]/renew`) og alle tilladelser. "Sådan ser det ud" åbner for eksisterende brugere det rigtige krypterede link i en ny fane. Felterne bruger nu `TextField` (48 px) i stedet for den egne "notched"-komponent (fjernet). Lint/typecheck grønne; ikke visuelt testet.
+
+## 2026-10-02: Kalender — ÷ tilbage på tomme afsluttede dage i månedsgitteret
+
+- Månedsgitteret (`src/app/calendar/page.tsx`, `MonthView`) viser igen ÷ på
+  dage før i dag uden registreringer; ✓/÷ på dage med registreringer er
+  uændret, og i dag/fremtid er blanke. Se DECISIONS.md samme dato. Uge/Liste
+  rører vi ikke.
+- Lint og build grønne. Ikke set på telefon.
+
+## 2026-10-02: Points flyttet op i profilmenuen
+
+- Rækken "Points" på `/profile` ligger nu som nr. 2 lige under "Profil" (før lå den mellem Billede-dagbog og Opskrifter). Kun rækkefølgen i `src/app/profile/page.tsx` er ændret.
+- Lint, typecheck og `npm run build` grønne.
+
+## 2026-10-02: Smagsvariant kun i H2 på varesiden
+
+- Varesiden viste fx "Marmelade Pære & havtorn" i H1 og "Pære & havtorn" i H2. Nu fjerner `splitProductHeading` smagen fra H1 (se DECISIONS.md samme dato). Gælder alle eksisterende varer, uden datamigrering.
+- Lint, typecheck og nye tests grønne. Ikke visuelt testet (ingen lokal DB).
+
 ## 2026-09-29: Offentlig forside for udloggede
 
 - Ny hent-appen-forside uden telefonramme, med QR-koder, planer med betalings-ark, Hello Doc-bjælke, nøgletal fra databasen, `/business` (kontaktformular) og `/presse`. Se DECISIONS.md samme dato.
@@ -202,10 +388,13 @@ Lint og build grønne.
   (kortsektionen rummer periodevælger, kort og "Største syndere"). Pile ved
   hver overskrift flytter sektionen op/ned; rækkefølgen gemmes i localStorage
   (`src/lib/stat-sections.ts`).
-- Ét samlet "+ Tilføj" øverst (altid synligt) fører til
+- Ét samlet "+ Tilføj" øverst fører til
   `/statistics/unused-cards`, som nu hedder "Tilføj til statistik" og har én
   "Grafer"-dropdown med alle ubrugte grafer før kortkategorierne; søgningen
   dækker både grafer og kort. `/statistics/unused-charts` linkes ikke længere.
+- 2026-10-02: "+ Tilføj" vises igen kun i redigeringstilstand (langt tryk, blokkene
+  vibrerer) i en af sektionerne — eller når en sektion er tom, så indhold altid
+  kan tilføjes igen. Siden lytter på `onShowAddChange` fra begge sektioner.
 
 ## 2026-09-28: Samtykke direkte på tilmeldingssiden (opgave 35)
 
@@ -5183,3 +5372,15 @@ person-ikon). Lint kørt; ikke set visuelt.
 
 - Ny offentlig side `/e-numre` (`src/app/e-numre/page.tsx`) med hele E-nummer-databasen, numerisk sorteret, et hurtignavigations-chipfelt og ét `<section>` pr. E-nummer med eget anchor (`/e-numre#e100`, `#e150a`; se `src/lib/additive-anchor.ts`).
 - Info-vinduet (`AdditiveInfoModal`) linker nu til nummerets anchor ("Se alle E-numre").
+
+## 2026-10-03: Roadmap — SMS-kode (TeamMessage) + login-godkendelse med push
+
+Bygget og pushet på branch `claude/teammessage-sms` (IKKE flettet til master, ikke deployet — brugerens valg: skrevet på roadmap så det huskes). Typecheck + lint er rene; fuld `npm run build` og test med rigtig SMS/push er ikke kørt.
+
+Skal gøres, før branchen flettes:
+1. Læg TeamMessage-oplysninger i serverens `.env`: `TEAMMESSAGE_API_TOKEN`, `TEAMMESSAGE_TEAM_ID`, `TEAMMESSAGE_TEAMLIST_EMAIL`, `TEAMMESSAGE_SENDER_EMAIL` (valgfri: `TEAMMESSAGE_FROM`, `TEAMMESSAGE_TEST_MODE=1`). Uden dem kan ingen oprette konto (tilmelding kræver SMS-kode, fail-closed i produktion).
+2. Generér VAPID-nøgler (`npx web-push generate-vapid-keys`) og sæt `VAPID_PUBLIC_KEY`, `VAPID_PRIVATE_KEY`, `VAPID_CONTACT_EMAIL`. Uden dem er push-godkendelse automatisk slået fra.
+3. Afklar overlap med `src/lib/sms.ts` (GatewayAPI, anden session) — login-koder bruger `src/lib/teammessage.ts`.
+4. Flet til master (kører migrationerne `20261002100000` og `20261003100000`), `npm run build`, test med rigtigt nummer og rigtig telefon (på iPhone kræver Web Push, at appen ligger på hjemmeskærmen).
+5. Senere: native app (APNs/FCM) skal bruge samme endpoints (`/api/push/subscribe`, `/api/auth/login-approval/*`). Push-godkendelse gælder kun adgangskode-login; Google/Apple/Facebook og Face ID er uændrede.
+5. Senere: native app (APNs/FCM) skal bruge samme endpoints (`/api/push/subscribe`, `/api/auth/login-approval/*`). Push-godkendelse gælder kun adgangskode-login; Google/Apple/Facebook og Face ID er uændrede.

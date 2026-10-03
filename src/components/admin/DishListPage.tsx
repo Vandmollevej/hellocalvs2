@@ -106,11 +106,11 @@ export function DishListPage({
       </p>
 
       {data.rows.length === 0 ? (
-        <div className="rounded-lg border border-hf-tan-dark bg-hf-white px-4 py-12 text-center">
+        <div className="hf-surface px-4 py-12 text-center">
           <p className="hf-type-body text-text-secondary">{empty}</p>
         </div>
       ) : (
-        <ul className="divide-y divide-border-strong overflow-hidden rounded-lg border border-hf-tan-dark bg-hf-white">
+        <ul className="divide-y divide-border-strong overflow-hidden hf-surface">
           {data.rows.map((row) => (
             <Row key={row.id} row={row} />
           ))}

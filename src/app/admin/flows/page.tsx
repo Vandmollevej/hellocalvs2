@@ -29,7 +29,7 @@ export default async function AdminFlowsPage() {
           <li key={flow.id}>
             <Link
               href={`/admin/flows/${flow.id}`}
-              className="hf-control-row flex items-center gap-3 rounded-lg border border-hf-tan-dark bg-hf-white px-4 hover:border-hf-black"
+              className="hf-control-row flex items-center gap-3 hf-surface px-4 hover:border-hf-black"
             >
               <div className="min-w-0 flex-1">
                 <p className="truncate hf-type-title text-hf-black">{flow.name}</p>

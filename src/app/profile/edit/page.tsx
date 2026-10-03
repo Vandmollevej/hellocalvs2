@@ -222,13 +222,22 @@ export default function ProfileEditPage() {
       title={t("profile.section.profile")}
       footer={
         user ? (
-          <button
-            type="button"
-            onClick={() => router.push("/profile/change-password")}
-            className="hf-control hf-btn-primary w-full px-4"
-          >
-            {t("profile.changePasswordButton")}
-          </button>
+          <div className="flex flex-col gap-3">
+            <button
+              type="button"
+              onClick={() => router.push("/profile/login-approval")}
+              className="hf-control w-full rounded-full border border-hf-gray-border px-4"
+            >
+              {t("loginApproval.toggle")}
+            </button>
+            <button
+              type="button"
+              onClick={() => router.push("/profile/change-password")}
+              className="hf-control hf-btn-primary w-full px-4"
+            >
+              {t("profile.changePasswordButton")}
+            </button>
+          </div>
         ) : undefined
       }
     >
@@ -248,14 +257,14 @@ export default function ProfileEditPage() {
         <div className="flex min-h-full flex-col gap-4 p-4">
           <Field label={t("profile.field.name")}>
             <input
-              className={inputClass}
+              className={`${inputClass} userback-ignore`}
               value={user.displayName}
               onChange={(event) => update("displayName", event.target.value)}
             />
           </Field>
 
           <Field label={t("profile.field.email")}>
-            <input className={`${inputClass} opacity-60`} value={user.email} disabled />
+            <input className={`${inputClass} opacity-60 userback-ignore`} value={user.email} disabled />
           </Field>
 
           <div className="grid grid-cols-2 gap-4">

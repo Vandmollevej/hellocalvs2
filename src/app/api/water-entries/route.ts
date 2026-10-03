@@ -11,7 +11,7 @@ export async function GET() {
     const entries = await prisma.waterEntry.findMany({
       where: { userId: user.id },
       orderBy: { loggedAt: "desc" },
-      take: 200,
+      take: 2000,
     });
 
     return NextResponse.json({ entries });

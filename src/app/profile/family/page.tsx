@@ -203,7 +203,7 @@ function FamilyPageContent() {
                   <div className="flex items-center gap-4">
                     <ProfileCircle name={member.displayName} tone="card" />
                     <div className="min-w-0 flex-1">
-                      <p className="hf-type-body truncate">
+                      <p className="userback-ignore userback-block hf-type-body truncate">
                         {member.userId === family.ownerId ? t("family.switcher.meLabel", { name: member.displayName }) : member.displayName}
                       </p>
                       <p className="hf-type-caption text-text-secondary">
@@ -299,6 +299,7 @@ function FamilyPageContent() {
                     variant="standard"
                     label={t("family.add.name")}
                     value={form.displayName}
+                    className="userback-ignore"
                     onChange={(event) => setForm({ ...form, displayName: event.target.value })}
                   />
                   <TextField
@@ -362,7 +363,7 @@ function FamilyPageContent() {
               <p className="hf-type-body">{t("family.access.intro")}</p>
               {nonOwners.map((subject) => (
                 <div key={subject.userId} className="hf-card mt-2 hf-stack">
-                  <p className="hf-type-card-title">{t("family.access.who", { name: subject.displayName })}</p>
+                  <p className="userback-ignore userback-block hf-type-card-title">{t("family.access.who", { name: subject.displayName })}</p>
                   {nonOwners
                     .filter((grantee) => grantee.userId !== subject.userId)
                     .map((grantee) => (

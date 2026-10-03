@@ -60,6 +60,16 @@ model User {
   // email once SMTP exists.
   emailVerifiedAt DateTime?
 
+  // Mobilnummer (E.164) bekræftet med 6-cifret SMS-kode via TeamMessage
+  // (docs/DECISIONS.md 2026-10-02). Har kontoen et bekræftet nummer, kræver
+  // "glemt adgangskode" også en SMS-kode. Null = konto uden nummer.
+  phone           String?
+  phoneVerifiedAt DateTime?
+
+  // Godkend login fra ny enhed med push i en anden enhed, hvor man allerede er
+  // logget ind (docs/DECISIONS.md 2026-10-03). Slås til af brugeren selv.
+  loginApprovalEnabled Boolean @default(false)
+
   // Sleep pattern: default bedtime/wake time, with the option of
   // individual times per weekday (SleepSchedule) for users with shifting
   // work hours.
@@ -250,6 +260,8 @@ model User {
   // tilladelser til Support + brugerens henvendelser til Support.
   supportAccessGrants     SupportAccessGrant[]
   supportRequests         SupportRequest[]
+  // Hjælpe-chatbot øverst i appen (docs/DECISIONS.md 2026-10-02).
+  chatbotConversations    ChatbotConversation[]
   productsCreated         Product[]                @relation("ProductsCreatedByUser")
   passwordResetTokens     PasswordResetToken[]
   startWeightChangeTokens StartWeightChangeToken[]
@@ -288,6 +300,7 @@ model User {
   adminLoginEvents    AdminLoginEvent[]
   adminDevices        AdminDevice[]
   adminLoginApprovals AdminLoginApproval[]
+  partnerUsersInvited PartnerUser[]        @relation("PartnerUserInviter")
 
   @@map("users")
 }
@@ -444,6 +457,44 @@ model PasswordResetToken {
   @@map("password_reset_tokens")
 }
 
+// Engangs SMS-koder (6 cifre) ved tilmelding og glemt adgangskode, sendt via
+// TeamMessage (src/lib/sms-verification.ts). Kun hash af koden gemmes.
+// purpose: "SIGNUP" | "PASSWORD_RESET". For PASSWORD_RESET peger resetTokenHash
+// på det e-mail-link, koden hører til.
+model SmsVerification {
+  id             String    @id @default(cuid())
+  purpose        String
+  phone          String
+  userId         String?
+  resetTokenHash String?
+  codeHash       String
+  attempts       Int       @default(0)
+  expiresAt      DateTime
+  usedAt         DateTime?
+  createdAt      DateTime  @default(now())
+
+  @@index([phone, createdAt])
+  @@map("sms_verifications")
+}
+
+// Login-godkendelse: et login med adgangskode fra en ny enhed venter her, til
+// brugeren trykker "Godkend" på en anden, allerede logget ind enhed (push).
+// Den ventende browser kender kun secret'en (hash gemt) og henter først
+// sessionen, når status er APPROVED. status: PENDING | APPROVED | DENIED | CONSUMED.
+model LoginApproval {
+  id         String   @id @default(cuid())
+  userId     String
+  secretHash String
+  device     String
+  country    String?
+  status     String   @default("PENDING")
+  expiresAt  DateTime
+  createdAt  DateTime @default(now())
+
+  @@index([userId, status])
+  @@map("login_approvals")
+}
+
 // Engangslink til ændring af den låste start-vægt (docs/DECISIONS.md
 // 2026-09-22). Kun hash gemmes — samme mønster som PasswordResetToken.
 model StartWeightChangeToken {
@@ -512,6 +563,8 @@ enum WeightSource {
   APPLE_HEALTH
   GOOGLE_HEALTH
   HEALTH_CONNECT
+  GARMIN
+  HUAWEI_HEALTH
 }
 
 // --- Body measurements ---
@@ -700,9 +753,13 @@ model Integration {
   syncSettings Json?
   // Seneste gang Hello Cal-data blev sendt til appen (push).
   lastPushedAt DateTime?
+  // 2026-10-02: appens eget, pseudonyme bruger-ID (Garmin), så push-
+  // notifikationer kan kobles til den rigtige Hello Cal-bruger.
+  externalUserId String?
   createdAt    DateTime            @default(now())
 
   @@unique([userId, provider])
+  @@index([provider, externalUserId])
   @@map("integrations")
 }
 
@@ -718,6 +775,14 @@ enum IntegrationProvider {
   POLAR
   SAMSUNG_HEALTH
   STRAVA
+  // 2026-10-02: Whoop og Huawei Health (cloud, OAuth). Eufy, Renpho, Xiaomi
+  // og Tuya har ingen åben API og deler via Health Connect/Apple Health.
+  WHOOP
+  HUAWEI_HEALTH
+  EUFY
+  RENPHO
+  XIAOMI
+  TUYA
 }
 
 enum IntegrationStatus {
@@ -814,6 +879,8 @@ enum ActivitySource {
   HEALTH_CONNECT
   STRAVA
   POLAR
+  WHOOP
+  HUAWEI_HEALTH
 }
 
 // A personal, long-lived access token a future native companion app
@@ -860,6 +927,8 @@ enum HealthMetricSource {
   WITHINGS
   GARMIN
   HEALTH_CONNECT
+  WHOOP
+  HUAWEI_HEALTH
 }
 
 enum HealthMetricType {
@@ -1193,6 +1262,10 @@ model Product {
   // Filtertabellen (økologisk, glutenfri, kødtype, nøglehul …), højst én
   // række pr. produkt — docs/DECISIONS.md 2026-09-27.
   filters            ProductFilters?
+  // Mærkater fundet på forsiden af det natlige job "label-scan"
+  // (docs/DECISIONS.md 2026-10-02). labelsScannedAt = sidste kørsel.
+  labels             ProductLabel[]
+  labelsScannedAt    DateTime?
   registrations      Registration[]
   favorites          Favorite[]
   dishIngredients    DishIngredient[]
@@ -1381,8 +1454,9 @@ model ImageCutoutJob {
   analysisId     String?
   createdAt      DateTime           @default(now())
   processedAt    DateTime?
-  // Sat når resultatet er skrevet videre (Brand.logoUrl / Product.pendingImageUrl).
+  // Sat når resultatet er skrevet videre (Brand.logoUrl / Product.pendingImageUrl / ProductLabel.imageUrl).
   appliedAt      DateTime?
+  label          ProductLabel?
 
   @@index([status, createdAt])
   @@index([brandId])
@@ -1393,6 +1467,50 @@ model ImageCutoutJob {
 enum ImageCutoutKind {
   BRAND_LOGO
   PRODUCT_FRONT
+  // Mærkat/badge på forsiden (laktosefri, Haltungsform, QMilch …),
+  // docs/DECISIONS.md 2026-10-02.
+  PRODUCT_LABEL
+}
+
+// Mærkater på vareforsiden (docs/DECISIONS.md 2026-10-02): det natlige job
+// "label-scan" lader OpenAI finde alle mærker/badges ud over hovedlogoet
+// (laktosefri "-L", Haltungsform 3, QMilch, Øko, Nøglehul, MSC …), gemmer
+// dem her og fritskraber hvert mærke via ImageCutoutJob (PRODUCT_LABEL).
+// Sikre fund (>= 0,8) udfylder tomme felter i ProductFilters.
+model ProductLabel {
+  id          String               @id @default(cuid())
+  product     Product              @relation(fields: [productId], references: [id], onDelete: Cascade)
+  productId   String
+  // Stabil nøgle, fx "lactose-free", "haltungsform-3", "qmilch", "organic-eu".
+  key         String
+  // Dansk visningsnavn, fx "Laktosefri", "Haltungsform 3 (Frischluftstall)".
+  name        String
+  // Teksten som den står på mærket, fx "-L Laktosefrei".
+  text        String?
+  category    ProductLabelCategory
+  // Rektangel i 0-1 af forsidefotoet ({ x, y, width, height }).
+  box         Json?
+  confidence  Float
+  // Fritskrabet PNG af mærket (fra image-agent), ellers null.
+  imageUrl    String?
+  cutoutJob   ImageCutoutJob?      @relation(fields: [cutoutJobId], references: [id], onDelete: SetNull)
+  cutoutJobId String?              @unique
+  createdAt   DateTime             @default(now())
+
+  @@unique([productId, key])
+  @@index([key])
+  @@map("product_labels")
+}
+
+enum ProductLabelCategory {
+  DIET
+  ORGANIC
+  ANIMAL_WELFARE
+  QUALITY
+  SUSTAINABILITY
+  HEALTH
+  ORIGIN
+  OTHER
 }
 
 enum ImageCutoutStatus {
@@ -2081,6 +2199,9 @@ enum PointsReason {
   // fik godkendt et erstatningsbillede for et lavt-confidence stregkode-/
   // næring-/ingrediensfoto, se ProductPhotoAward.
   QUALITY_CONTROL_PHOTO
+  // Brugeren udfyldte en manglende ting (billede, logo, energi, indhold) paa
+  // en eksisterende vare via banneret paa varesiden. Gaelder ogsaa admin.
+  PRODUCT_UPDATED
 }
 
 model PointsTransaction {
@@ -2594,6 +2715,8 @@ model SupportRequest {
   resolvedAt         DateTime?
 
   messages SupportMessage[]
+  // Chatbot-samtaler, der er sendt videre til en medarbejder.
+  chatbotConversations ChatbotConversation[]
 
   @@index([status, createdAt])
   @@index([status, awaitingReply, lastUserMessageAt])
@@ -2631,6 +2754,93 @@ model SupportAttachment {
 
   @@index([messageId])
   @@map("support_attachments")
+}
+
+// --- Hjælpe-chatbot (docs/DECISIONS.md 2026-10-02) ---
+//
+// AI-chatbotten øverst i appen og på web. Hvert brugerspørgsmål får en
+// kategori (admin → Brugere → Chatbot: "Oftest spurgt"). Samtalen gemmer et
+// øjebliksbillede af brugeren ved start (alder, køn, region, abonnement,
+// sprog), så statistikken ikke ændrer sig, når profilen ændres senere.
+enum ChatbotCategory {
+  GETTING_STARTED
+  FOOD_LOGGING
+  PRODUCTS_SCANNING
+  DISHES
+  GOALS_NUTRITION
+  WEIGHT_STATS
+  ACCOUNT_LOGIN
+  SUBSCRIPTION_PAYMENT
+  PRIVACY_DATA
+  INTEGRATIONS
+  FAMILY
+  BUG
+  OTHER
+}
+
+// SYSTEM = appens egne linjer i tråden (fx "sendt til Support").
+enum ChatbotMessageRole {
+  USER
+  ASSISTANT
+  SYSTEM
+}
+
+enum ChatbotChannel {
+  APP
+  WEB
+}
+
+model ChatbotConversation {
+  id                 String            @id @default(cuid())
+  user               User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId             String
+  channel            ChatbotChannel    @default(APP)
+  // Den hyppigste kategori blandt brugerens spørgsmål i samtalen.
+  category           ChatbotCategory   @default(OTHER)
+  questionCount      Int               @default(0)
+  // Øjebliksbillede af brugeren ved samtalens start.
+  userAgeSnapshot    Int?
+  userSexSnapshot    Sex?
+  userRegionSnapshot String            @default("DK")
+  // "FREE" | "SERIOUS" (src/lib/subscription.ts).
+  userTierSnapshot   String            @default("FREE")
+  userPlanSnapshot   SubscriptionPlan?
+  userLocaleSnapshot String            @default("da")
+  // "Tal med en medarbejder": samtalen er sendt til Support-indbakken.
+  escalatedAt        DateTime?
+  supportRequest     SupportRequest?   @relation(fields: [supportRequestId], references: [id], onDelete: SetNull)
+  supportRequestId   String?
+  lastMessageAt      DateTime          @default(now())
+  createdAt          DateTime          @default(now())
+  updatedAt          DateTime          @default(now()) @updatedAt
+
+  messages ChatbotMessage[]
+
+  @@index([userId, lastMessageAt])
+  @@index([lastMessageAt])
+  @@index([category])
+  @@map("chatbot_conversations")
+}
+
+model ChatbotMessage {
+  id             String              @id @default(cuid())
+  conversation   ChatbotConversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  conversationId String
+  role           ChatbotMessageRole
+  body           String
+  // Kun på brugerens spørgsmål.
+  category       ChatbotCategory?
+  // Kun på svar: AI'en mener, at en medarbejder bør tage over.
+  needsHuman     Boolean             @default(false)
+  // Kun på svar: links fra src/lib/chatbot-knowledge.ts (CHATBOT_LINKS).
+  links          String[]            @default([])
+  model          String?
+  createdAt      DateTime            @default(now())
+
+  @@index([conversationId, createdAt])
+  @@index([role, createdAt])
+  @@index([category, createdAt])
+  @@map("chatbot_messages")
 }
 
 // Admins standardsvar til Support-indbakken. {{navn}} erstattes med
@@ -3460,11 +3670,37 @@ model LoginEvent {
   userId    String
   method    String
   country   String?
+  // By fra Cloudflares "cf-ipcity" (kræver "Add visitor location headers",
+  // docs/DECISIONS.md 2026-10-02 "Personas"). Null på LAN og uden headeren.
+  city      String?
   createdAt DateTime @default(now())
 
   @@index([createdAt])
   @@index([userId, createdAt])
   @@map("login_events")
+}
+
+// Admin → Brugere → Personas (docs/DECISIONS.md 2026-10-02): én række pr.
+// beregning (natligt cronjob "personas" eller "Beregn nu"). aggregates er de
+// anonyme gruppetal, personas er AI-modellens svar (JSON). Der gemmes aldrig
+// bruger-id'er, navne eller e-mails i rækken.
+model PersonaSnapshot {
+  id         String   @id @default(cuid())
+  createdAt  DateTime @default(now())
+  // "job" (cronjob-runneren: deploy eller "Kør nu" under Cronjobs) | "manual" (knappen på siden)
+  source     String
+  // Next.js-buildets id. Én automatisk kørsel pr. deploy (src/lib/personas.ts).
+  buildId    String?
+  userCount  Int
+  model      String?
+  aggregates Json
+  personas   Json?
+  error      String?
+  durationMs Int?
+
+  @@index([createdAt])
+  @@index([buildId])
+  @@map("persona_snapshots")
 }
 
 // Produktsøgninger uden et eneste produkt-hit (GET /api/products), til
@@ -3567,6 +3803,7 @@ model Partner {
   locations AdLocation[]
   schedules PartnerReportSchedule[]
   sends     PartnerReportSend[]
+  users     PartnerUser[]
 
   // Partnersiden (/admin/partners/[id], docs/DECISIONS.md 2026-10-02):
   // virksomhedsoplysninger og kontakter øverst i venstre bjælke.
@@ -3623,6 +3860,34 @@ model SponsorAgreement {
 
   @@index([partnerId])
   @@map("sponsor_agreements")
+}
+
+// B2B-brugere (docs/DECISIONS.md 2026-10-02): login til partnerportalen
+// (/partner) for en partners egne folk. Oprettes KUN af en administrator med
+// fuld adgang via invitation — der findes ingen offentlig tilmelding. Samme
+// række er både invitation og bruger: før accept er passwordHash null og
+// inviteTokenHash sat; ved accept sættes adgangskoden og tokenet nulstilles.
+model PartnerUser {
+  id                String    @id @default(cuid())
+  partnerId         String
+  partner           Partner   @relation(fields: [partnerId], references: [id], onDelete: Cascade)
+  name              String
+  email             String    @unique
+  passwordHash      String?
+  active            Boolean   @default(true)
+  // Kun hashen af invitationstokenet gemmes; linket gælder 72 timer.
+  inviteTokenHash   String?   @unique
+  inviteExpiresAt   DateTime?
+  invitedBy         User      @relation("PartnerUserInviter", fields: [invitedById], references: [id], onDelete: Cascade)
+  invitedById       String
+  acceptedAt        DateTime?
+  lastLoginAt       DateTime?
+  // Sessioner udstedt før dette tidspunkt afvises (deaktivering, "log ud overalt").
+  sessionsValidFrom DateTime?
+  createdAt         DateTime  @default(now())
+
+  @@index([partnerId])
+  @@map("partner_users")
 }
 
 // Modtagere af rapporter. En rapport kan KUN sendes til aktive kontakter på

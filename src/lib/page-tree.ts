@@ -52,6 +52,15 @@ export const PAGE_TREE: PageArea[] = [
       },
       { path: "/business", label: "Business-partnere", note: "Offentlig, fra forsidens footer (udlogget)" },
       { path: "/presse", label: "Presse", note: "Offentlig, fra forsidens footer (udlogget)" },
+      {
+        path: "/partner",
+        label: "Partnerportal (B2B)",
+        note: "Eget login for partneres B2B-brugere; kontoen oprettes kun af en administrator",
+        children: [
+          { path: "/partner/login", label: "Log ind (B2B)" },
+          { path: "/partner/invite", label: "Accepter invitation", note: "Åbnes fra link i mail; vælg adgangskode" },
+        ],
+      },
     ],
   },
   {
@@ -114,6 +123,7 @@ export const PAGE_TREE: PageArea[] = [
             children: [{ path: "/camera/create", label: "Opret fra billede" }],
           },
           { path: "/search", label: "Søg" },
+          { path: "/my-scans", label: "Dine indscanninger" },
           { path: "/voice", label: "Stemme" },
         ],
       },
@@ -300,8 +310,18 @@ export const PAGE_TREE: PageArea[] = [
             label: "Nye varer",
             children: [{ path: "/admin/products/[id]", label: "Vare" }],
           },
-          { path: "/admin/users", label: "Brugere" },
+          {
+            path: "/admin/users",
+            label: "Brugere",
+            children: [{ path: "/admin/users/personas", label: "Personas" }],
+          },
           { path: "/admin/economy", label: "Economy", note: "Betalende abonnementer, sikret indkomst og forventet indtjening" },
+          {
+            path: "/admin/chatbot",
+            label: "Chatbot",
+            note: "Oftest spurgt, alle spørgsmål og svar",
+            children: [{ path: "/admin/chatbot/[id]", label: "Chatbot-samtale" }],
+          },
           {
             path: "/admin/support",
             label: "Support",
@@ -316,7 +336,11 @@ export const PAGE_TREE: PageArea[] = [
             label: "Besked automatisering",
             children: [{ path: "/admin/messaging/[event]", label: "Rediger mail/notifikation" }],
           },
-          { path: "/admin/images", label: "Billedforslag" },
+          {
+            path: "/admin/images",
+            label: "Billedforslag",
+            children: [{ path: "/admin/images/cutout-queue", label: "Billeder i kø til frilæggelse" }],
+          },
           {
             path: "/admin/quality-control",
             label: "Kvalitetskontrol",

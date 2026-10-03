@@ -7,7 +7,6 @@ import {
   IconApple,
   IconAtom2,
   IconBeer,
-  IconBolt,
   IconBone,
   IconBottle,
   IconCandy,
@@ -17,6 +16,7 @@ import {
   IconFeather,
   IconFish,
   IconFlame,
+  IconGlassCocktail,
   IconHeartbeat,
   IconLeaf,
   IconLemon2,
@@ -29,6 +29,7 @@ import {
   IconWalk,
   type Icon,
 } from "@tabler/icons-react";
+import { IconDrumstick } from "@/components/icons/Drumstick";
 import { IconWaterGlass } from "@/components/icons/WaterGlass";
 import { DAILY_KCAL_GOAL } from "@/lib/goals";
 import type { DailyTotal } from "@/lib/daily-totals";
@@ -52,7 +53,8 @@ export type StatCardValue = {
   label: string;
   icon: Icon;
   // Public image path (periodic-table icon for minerals, vitamin icon for
-  // vitamins). When set, StatCardIcon renders this instead of `icon`.
+  // vitamins, animal silhouette for meat/fish). When set, StatCardIcon
+  // renders this instead of `icon`.
   iconSrc?: string;
   value: string;
   // Sand mens værdien hentes: kortet viser et skelet i stedet for tallet
@@ -173,7 +175,7 @@ export const STAT_CARD_DEFS: {
   {
     key: "calories",
     label: "Kalorier",
-    icon: IconFlame,
+    icon: IconDrumstick,
     compute: (data) => `${formatNumber(average(data.days, (d) => d.kcal))} kcal`,
   },
   {
@@ -320,14 +322,14 @@ export const STAT_CARD_DEFS: {
   { key: "allergens", label: "Allergener", icon: IconActivity, compute: () => "—" },
   { key: "additives", label: "E-numre", icon: IconActivity, compute: () => "—" },
   // G3 (docs/DECISIONS.md 2026-09-24): totaler for perioden.
-  { key: "beefGrams", label: "Oksekød", icon: IconMeat, compute: meatCard("BEEF", "grams") },
-  { key: "beefKcal", label: "Oksekød (kcal)", icon: IconMeat, compute: meatCard("BEEF", "kcal") },
-  { key: "porkGrams", label: "Grisekød", icon: IconPig, compute: meatCard("PORK", "grams") },
-  { key: "porkKcal", label: "Grisekød (kcal)", icon: IconPig, compute: meatCard("PORK", "kcal") },
-  { key: "poultryGrams", label: "Fjerkræ", icon: IconFeather, compute: meatCard("POULTRY", "grams") },
-  { key: "poultryKcal", label: "Fjerkræ (kcal)", icon: IconFeather, compute: meatCard("POULTRY", "kcal") },
-  { key: "fishGrams", label: "Fisk", icon: IconFish, compute: meatCard("FISH", "grams") },
-  { key: "fishKcal", label: "Fisk (kcal)", icon: IconFish, compute: meatCard("FISH", "kcal") },
+  { key: "beefGrams", label: "Oksekød", iconSrc: "/icons/animals/cow.png", icon: IconMeat, compute: meatCard("BEEF", "grams") },
+  { key: "beefKcal", label: "Oksekød (kcal)", iconSrc: "/icons/animals/cow.png", icon: IconMeat, compute: meatCard("BEEF", "kcal") },
+  { key: "porkGrams", label: "Grisekød", iconSrc: "/icons/animals/pig.png", icon: IconPig, compute: meatCard("PORK", "grams") },
+  { key: "porkKcal", label: "Grisekød (kcal)", iconSrc: "/icons/animals/pig.png", icon: IconPig, compute: meatCard("PORK", "kcal") },
+  { key: "poultryGrams", label: "Fjerkræ", iconSrc: "/icons/animals/chicken.png", icon: IconFeather, compute: meatCard("POULTRY", "grams") },
+  { key: "poultryKcal", label: "Fjerkræ (kcal)", iconSrc: "/icons/animals/chicken.png", icon: IconFeather, compute: meatCard("POULTRY", "kcal") },
+  { key: "fishGrams", label: "Fisk", iconSrc: "/icons/animals/fish.png", icon: IconFish, compute: meatCard("FISH", "grams") },
+  { key: "fishKcal", label: "Fisk (kcal)", iconSrc: "/icons/animals/fish.png", icon: IconFish, compute: meatCard("FISH", "kcal") },
   {
     key: "sugaryDrinks",
     label: "Sukkerholdige drikke",
@@ -335,7 +337,7 @@ export const STAT_CARD_DEFS: {
     compute: (data) => (data.sources ? `${formatAmount(sugaryDrinkKcal(data.sources))} kcal` : "—"),
   },
   { key: "alcoholKcal", label: "Alkohol", icon: IconBeer, compute: alcoholCard("kcal") },
-  { key: "alcoholUnits", label: "Alkohol (genstande)", icon: IconBeer, compute: alcoholCard("units") },
+  { key: "alcoholUnits", label: "Alkohol (genstande)", icon: IconGlassCocktail, compute: alcoholCard("units") },
   { key: "alcoholVolume", label: "Alkohol (mængde)", icon: IconBeer, compute: alcoholCard("volume") },
   // Toksiner (src/lib/toxins.ts) matches Product.ingredientsText — same
   // missing registration snapshot as E-numre, so same placeholder.
@@ -372,7 +374,7 @@ export const STAT_CARD_DEFS: {
   {
     key: "burned",
     label: "Forbrændt",
-    icon: IconBolt,
+    icon: IconFlame,
     compute: (data) => metricValue(data, "ACTIVE_ENERGY_KCAL", "kcal"),
   },
   {

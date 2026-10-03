@@ -23,7 +23,7 @@ function Stat({ label, value, hint }: { label: string; value: string; hint?: str
 
 function Block({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <section className="flex flex-col gap-3 rounded-lg border border-hf-tan-dark bg-hf-white p-4">
+    <section className="flex flex-col gap-3 hf-surface p-4">
       <h2 className="hf-type-strong text-hf-black">{title}</h2>
       {children}
     </section>

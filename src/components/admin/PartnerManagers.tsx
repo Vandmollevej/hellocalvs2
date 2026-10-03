@@ -61,7 +61,7 @@ export function ContactsManager({ partners }: { partners: PartnerWithContacts[] 
       {partners.map((partner) => {
         const draft = drafts[partner.id] ?? { name: "", email: "" };
         return (
-          <div key={partner.id} className="flex flex-col gap-3 rounded-lg border border-hf-tan-dark bg-hf-white p-4">
+          <div key={partner.id} className="flex flex-col gap-3 hf-surface p-4">
             <div className="flex items-center justify-between gap-3">
               <Link href={`/admin/partners/${partner.id}`} className="hf-type-strong text-hf-black hover:underline">{partner.name}</Link>
               <button

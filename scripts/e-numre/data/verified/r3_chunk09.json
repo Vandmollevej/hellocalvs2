@@ -2040,7 +2040,7 @@
   "origin": "nature_identical",
   "summary": "Glycin er den simpleste aminosyre og har en sødlig smag; den bruges som smagsforstærker og sødlig smagsgiver.",
   "description": "Glycin (NH2CH2COOH) er den simpleste aminosyre og udgør omkring 35 % af aminosyrerne i kollagen; den blev første gang isoleret ved syrehydrolyse af gelatine. Industrielt fremstilles glycin traditionelt ved Strecker-syntese ud fra formaldehyd, hydrogencyanid og ammoniak. E640(i) er glycin og E640(ii) er natriumglycinat. Glycin har en sødlig smag, kan dæmpe salt- og bitter smag og bruges også som pH-buffer og stabilisator.",
-  "uses": "Godkendt tilsætningsstof i EU (E640) som smagsforstærker. De præcise EU-anvendelsesbetingelser (fødevarekategorier og grænser) kunne ikke verificeres i en EU-kilde i denne runde.",
+  "uses": "Godkendt tilsætningsstof i EU (E640) som smagsforstærker. Opført i gruppe I-tilsætningsstofferne med quantum satis (Forordning 1129/2011).",
   "health": "Glycin er en normal aminosyre i kosten. Som kosttilskud i gram-mængder (fx 3 g før sengetid) er glycin generelt veltolereret; ved højere doser er der rapporteret milde mave-tarm-gener som kvalme og diarré.",
   "research": "E640 indgik i EFSA's program for gen-evaluering af tilsætningsstoffer (opfordring til brugsdata 2016); en offentliggjort EFSA-udtalelse om gen-evalueringen blev ikke fundet i denne runde. Et lille klinisk studie (Yamadera m.fl. 2007) fandt, at 3 g glycin før sengetid forbedrede den subjektive søvnkvalitet, men evidensen bygger på få, små studier hos personer uden diagnosticeret søvnlidelse.",
   "keyReferences": [],
@@ -2061,7 +2061,7 @@
   ],
   "efsa": null,
   "verification": {
-   "status": "uncertain",
+   "status": "corrected",
    "sources": [
     "https://en.wikipedia.org/wiki/Glycine",
     "https://pmc.ncbi.nlm.nih.gov/articles/PMC5350494/",
@@ -2070,9 +2070,11 @@
     "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2025.9738",
     "https://www.efsa.europa.eu/sites/default/files/consultation/160524.pdf",
     "https://onlinelibrary.wiley.com/doi/10.1111/j.1479-8425.2007.00262.x",
-    "https://www.sleepfoundation.org/sleep-aids/glycine-for-sleep"
+    "https://www.sleepfoundation.org/sleep-aids/glycine-for-sleep",
+    "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:32011R1129",
+    "https://food.ec.europa.eu/food-safety/food-improvement-agents/additives/re-evaluation_en"
    ],
-   "notes": "Runde 3: Bekræftet: kemi, kollagen/gelatine, Strecker-syntese, E640(i)/(ii), smag/buffer, EU-godkendt (E640 omtalt som godkendt i EFSA-udtalelse om jagua-blå), søvnstudie. Rettet: fremstilling (chloreddikesyre-rute ikke belagt), sundhedsudsagn, research-afsnit om EFSA (ingen udtalelse fundet), kategori. Fjernet: antimikrobiel virkning, 'ingen kendte kontroverser', udsagn om EU-brug som bærestof/kosttilskud og brug i andre lande. Status uncertain: EU's konkrete anvendelsesbetingelser for E640 (bilag II/III) kunne ikke hentes fra eur-lex (netværksadgang blokeret), og EFSA's gen-evalueringsstatus kunne ikke fastslås."
+   "notes": "Runde 3: Bekræftet: kemi, kollagen/gelatine, Strecker-syntese, E640(i)/(ii), smag/buffer, EU-godkendt (E640 omtalt som godkendt i EFSA-udtalelse om jagua-blå), søvnstudie. Rettet: fremstilling (chloreddikesyre-rute ikke belagt), sundhedsudsagn, research-afsnit om EFSA (ingen udtalelse fundet), kategori. Fjernet: antimikrobiel virkning, 'ingen kendte kontroverser', udsagn om EU-brug som bærestof/kosttilskud og brug i andre lande. Chrome-tjek (runde 3b): E640 som gruppe I/quantum satis bekræftet i EUR-Lex (Forordning 1129/2011); fraværet af EFSA-gen-evaluering bekræftet i Kommissionens oversigtstabel. Status ændret fra uncertain til corrected."
   },
   "wikipedia": "",
   "wikidata": "Q18967228",
@@ -2146,6 +2148,16 @@
     "claim": "Kategori 'bærestof' fjernet fra kategori (ikke belagt); smagsforstærker bekræftet",
     "source": "https://www.geosc.com/Assets/Files/Products-Docs/Glycine-Product-Docs/GEO-Glycine-Brochure.pdf",
     "result": "rettet"
+   },
+   {
+    "claim": "E640 Glycin og natriumsalt opført som gruppe I-tilsætningsstof med quantum satis",
+    "source": "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:32011R1129",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Ingen offentliggjort EFSA-gen-evaluering: Kommissionens oversigtstabel (status 10. sep. 2026) viser godkendt før 2009, frist 31.12.2018, ingen udtalelse opført",
+    "source": "https://food.ec.europa.eu/food-safety/food-improvement-agents/additives/re-evaluation_en",
+    "result": "bekræftet"
    }
   ]
  },

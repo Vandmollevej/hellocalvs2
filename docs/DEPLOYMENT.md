@@ -119,6 +119,9 @@ formally migrated or archived.
   (fallback `GOOGLE_API_KEY`). Ingen `:?`-krav, så en manglende nøgle ikke
   stopper stakken. Heller ikke med i deploy-workflowet endnu.
 - Se `.env.production.example` for alle nye variabler.
+- Hjælpe-chatbot (2026-10-02): valgfri `OPENAI_CHATBOT_MODEL` (standard
+  `gpt-4o-mini`). Bruger den eksisterende `OPENAI_API_KEY`. Migration
+  `20261002120000_chatbot` køres af deployet.
 
 ## Umami (analyse, 2026-09-27)
 
@@ -246,7 +249,7 @@ og `SMTP_FROM=Hello Cal <no-reply@hellocal.io>` (kræver at `hellocal.io` er
 verificeret afsenderdomæne i Mailjet: SPF + DKIM-TXT i Cloudflare-zonen).
 Kontaktadresse `support@hellocal.io` videresendes med Cloudflare Email
 Routing. OAuth-redirect-URI'er hos Google, Facebook, Apple, Strava, Withings,
-Polar m.fl. og MobilePay-webhooken skal pege på `hellocal.io`. Passkeys er
+Polar, Garmin, WHOOP, Huawei m.fl. og MobilePay-webhooken skal pege på `hellocal.io`. Garmins ping-adresse er `https://hellocal.io/api/integrations/garmin/webhook?key=<GARMIN_WEBHOOK_KEY>`. Passkeys er
 bundet til hostnavnet og skal oprettes igen på det nye domæne.
 
 ## Search indexing

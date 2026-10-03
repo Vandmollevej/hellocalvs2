@@ -9,6 +9,7 @@
 import type { DailyTotal } from "@/lib/daily-totals";
 import { STAT_CARD_DEFS } from "@/lib/stat-cards";
 import type { SleepInsightKind } from "@/components/SleepInsightChart";
+import { BODY_MEASUREMENT_FIELDS, type BodyMeasurementField } from "@/lib/body-measurements";
 
 // Kun talfelter (ikke dateKey eller næringsstof-maps som nutrients).
 export type DailyChartField = Exclude<
@@ -23,6 +24,9 @@ export type StatChartDef =
   | { key: "sleepQuality"; kind: "sleepQuality" }
   // Søvnstatistikkens grafer (/statistics/sleep), som tilvalg her.
   | { key: `sleep:${SleepInsightKind}`; kind: "sleepInsight"; insight: SleepInsightKind }
+  // Kropsmål (2026-10-02): én graf pr. mål fra Kropsmål-siden, med samme
+  // tegning til venstre som dér og målingernes forløb til højre.
+  | { key: `body:${BodyMeasurementField}`; kind: "bodyMeasurement"; field: BodyMeasurementField }
   | { key: `daily:${DailyChartField}`; kind: "daily"; field: DailyChartField; unit: string };
 
 function daily(field: DailyChartField, unit: string): StatChartDef {
@@ -35,6 +39,9 @@ export const STAT_CHART_DEFS: StatChartDef[] = [
   { key: "sleepQuality", kind: "sleepQuality" },
   ...(["quality", "kcal", "coffee", "sport", "device", "bodyFat"] as const).map(
     (insight): StatChartDef => ({ key: `sleep:${insight}`, kind: "sleepInsight", insight }),
+  ),
+  ...BODY_MEASUREMENT_FIELDS.map(
+    ({ field }): StatChartDef => ({ key: `body:${field}`, kind: "bodyMeasurement", field }),
   ),
   daily("protein", "g"),
   daily("carbs", "g"),
@@ -65,6 +72,14 @@ export function statChartDef(key: string): StatChartDef | undefined {
 export function dailyChartLabel(field: DailyChartField): string {
   return STAT_CARD_DEFS.find((def) => def.key === field)?.label ?? field;
 }
+
+/** Kropsmål-grafens navn = målets navn på Kropsmål-siden (fx "Talje"). */
+export function bodyMeasurementChartLabel(field: BodyMeasurementField, t: (key: string) => string): string {
+  const nameKey = BODY_MEASUREMENT_FIELDS.find((def) => def.field === field)?.nameKey;
+  return nameKey ? t(nameKey) : field;
+}
+
+export const BODY_MEASUREMENT_CHART_KEYS: string[] = BODY_MEASUREMENT_FIELDS.map(({ field }) => `body:${field}`);
 
 export const STAT_CHART_LAYOUT_STORAGE_KEY = "hellocal.statistik.charts";
 

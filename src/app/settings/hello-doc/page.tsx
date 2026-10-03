@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { HfScreen } from "@/components/HfScreen";
 import { useTranslation } from "@/i18n/LocaleProvider";
+import { HfChevron } from "@/components/hf/HfChevron";
+import { doctorShareDurationLabel } from "@/lib/doctor-share";
 import { SkeletonMediaRows, SkeletonScreen } from "@/components/hf/Skeleton";
 
 type DoctorShare = {
@@ -13,17 +15,6 @@ type DoctorShare = {
   status: "PENDING" | "ACTIVE" | "EXPIRED" | "REVOKED";
   expiresAt: string | null;
 };
-
-function expiryLabel(share: DoctorShare, t: (key: string, params?: Record<string, string | number>) => string) {
-  if (share.status === "PENDING") return t("helloDoc.pending");
-  if (share.status === "EXPIRED") return t("helloDoc.expired");
-  if (!share.expiresAt) return t("helloDoc.permanent");
-
-  const msLeft = new Date(share.expiresAt).getTime() - Date.now();
-  if (msLeft <= 0) return t("helloDoc.expired");
-  const daysLeft = Math.ceil(msLeft / (24 * 60 * 60 * 1000));
-  return daysLeft <= 1 ? t("helloDoc.expiresToday") : t("helloDoc.expiresIn", { days: daysLeft });
-}
 
 // Hello Doc (docs/DECISIONS.md 2026-09-12): "Del din fremgang med din læge
 // eller diætist", reached from Indstillinger. Set up now per the user's own
@@ -61,14 +52,17 @@ export default function HelloDocPage() {
         ) : (
           <Link
             href="/settings/hello-doc/invite"
-            className="hf-control hf-btn-primary flex w-full items-center justify-center"
+            className="hf-control hf-type-body flex w-full items-center justify-between rounded-[8px] border bg-hf-white px-4"
+            style={{ borderColor: "var(--hf-color-field-border)" }}
           >
-            {t("helloDoc.inviteButton")}
+            <span>{t("helloDoc.inviteButton")}</span>
+            <HfChevron />
           </Link>
         )}
 
+        <h2 className="hf-type-section-title">{t("helloDoc.invitedUsersTitle")}</h2>
+
         <div>
-          <h2 className="hf-type-section-title">{t("helloDoc.invitedUsersTitle")}</h2>
 
           {error && <p className="hf-type-body text-hf-red-dark">{t("helloDoc.loadError")}</p>}
 
@@ -95,7 +89,7 @@ export default function HelloDocPage() {
                     <p className="hf-type-body truncate">{share.name}</p>
                     <p className="text-text-secondary hf-type-caption truncate">{share.email}</p>
                   </div>
-                  <span className="text-text-secondary hf-type-caption ml-3 shrink-0">{expiryLabel(share, t)}</span>
+                  <span className="text-text-secondary hf-type-caption ml-3 shrink-0">{doctorShareDurationLabel(share, t)}</span>
                 </Link>
               ))}
             </div>

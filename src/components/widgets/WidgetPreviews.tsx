@@ -9,6 +9,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { IconPlus } from "@tabler/icons-react";
 import { addActionByKey } from "@/lib/add-actions";
+import { EnergyChip } from "@/components/calendar/EnergyChip";
 import {
   androidSize,
   IOS_FAMILY_SIZE,
@@ -101,7 +102,13 @@ export function AddRowWidget({
           <div className="flex items-baseline justify-between px-1">
             <span className="hf-type-caption hf-type-strong text-hf-green">Hello Cal</span>
             <span className="hf-type-caption text-text-secondary">
-              {snapshot.today.overGoal ? "Over mål" : `${formatKcal(snapshot.today.leftKcal)} kcal tilbage`}
+              {snapshot.today.overGoal ? (
+                "Over mål"
+              ) : (
+                <>
+                  <EnergyChip kind="intake" text={formatKcal(snapshot.today.leftKcal)} iconSize={12} /> tilbage
+                </>
+              )}
             </span>
           </div>
         )}
@@ -211,7 +218,8 @@ function ChartBody({ chart, width, height }: { chart: WidgetSnapshot["charts"][n
 function latestValue(chart: WidgetSnapshot["charts"][number]) {
   const last = [...chart.points].reverse().find((p) => p.value !== null);
   if (!last || last.value === null) return "—";
-  return chart.key === "kcal" ? `${formatKcal(last.value)} kcal` : `${last.value.toLocaleString("da-DK")} ${chart.unit}`;
+  if (chart.key === "kcal") return <EnergyChip kind="intake" text={formatKcal(last.value)} iconSize={12} />;
+  return `${last.value.toLocaleString("da-DK")} ${chart.unit}`;
 }
 
 export function StatChartCard({
@@ -339,7 +347,9 @@ export function RecentEntriesWidget({
       <div className="flex h-full flex-col px-3 pt-3">
         <Link href={snapshot.paths.calendar} className="flex items-baseline justify-between pb-1">
           <span className="hf-type-caption hf-type-strong">Seneste registreringer</span>
-          <span className="hf-type-caption text-text-secondary">{formatKcal(snapshot.today.eatenKcal)} kcal i dag</span>
+          <span className="hf-type-caption text-text-secondary">
+            <EnergyChip kind="intake" text={formatKcal(snapshot.today.eatenKcal)} iconSize={12} /> i dag
+          </span>
         </Link>
         {entries.length === 0 && <span className="hf-type-caption text-text-secondary">Ingen registreringer endnu.</span>}
         {entries.map((entry) => (
@@ -357,7 +367,9 @@ export function RecentEntriesWidget({
             )}
             <span className="hf-type-caption min-w-0 flex-1 truncate text-hf-black">{entry.title}</span>
             <span className="hf-type-caption shrink-0 text-text-secondary">{TIME.format(new Date(entry.createdAt))}</span>
-            <span className="hf-type-caption hf-type-strong w-16 shrink-0 text-right">{formatKcal(entry.kcal)} kcal</span>
+            <span className="hf-type-caption hf-type-strong flex w-16 shrink-0 justify-end">
+              <EnergyChip kind="intake" text={formatKcal(entry.kcal)} iconSize={12} />
+            </span>
           </Link>
         ))}
       </div>

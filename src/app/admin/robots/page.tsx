@@ -28,7 +28,7 @@ export default async function AdminRobotsPage() {
           Ændringer slår igennem inden for et minut. Tider er dansk tid.
         </p>
       </div>
-      <div className="overflow-x-auto rounded-lg border border-hf-tan-dark bg-hf-white px-4">
+      <div className="overflow-x-auto hf-surface px-4">
         <table className="hf-type-body w-full min-w-[900px] text-left">
           <thead>
             <tr className="hf-type-small border-b border-hf-tan-dark uppercase tracking-wide text-text-muted">

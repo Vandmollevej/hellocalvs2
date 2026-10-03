@@ -19,7 +19,9 @@ function fromInputValue(value: string) {
 
 /** Globalt periodevalg for hele statistiksiden: hurtige presets + en
  * kalender-dropdown til fra-til (default "I dag"). Gælder for alle tal på
- * siden, ikke længere ét valg pr. kort. */
+ * siden, ikke længere ét valg pr. kort. Panelet åbner under "Vis:"-knappen og
+ * fylder hele indholdsbredden, så fra/til-datoerne kan stå på én linje på
+ * en telefon (iOS ombryder ellers "30 Sep 2026" i et smalt felt). */
 export function StatPeriodPicker({
   selection,
   onChange,
@@ -68,7 +70,7 @@ export function StatPeriodPicker({
             className="fixed inset-0 z-40 cursor-default"
             onClick={() => setOpen(false)}
           />
-          <div className="absolute right-0 top-11 z-50 w-64 rounded-2xl border border-hf-tan-dark bg-hf-white p-4 text-hf-black shadow-xl">
+          <div className="absolute left-0 right-0 top-11 z-50 rounded-2xl border border-hf-tan-dark bg-hf-white p-4 text-hf-black shadow-xl">
             <div className="flex flex-col gap-1">
               {STAT_PERIODS.map((period) => {
                 const active = selection.kind === "preset" && selection.key === period.key;
@@ -92,13 +94,13 @@ export function StatPeriodPicker({
 
             <div className="mt-2 border-t border-hf-tan-dark pt-2">
               <p className="hf-type-small hf-type-strong text-text-secondary mb-2 uppercase tracking-wide">{t("statPeriodPicker.selectPeriod")}</p>
-              <div className="flex items-center gap-2">
+              <div className="grid grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-2">
                 <input
                   type="date"
                   aria-label={t("statPeriodPicker.fromDateAria")}
                   value={customFrom}
                   onChange={(event) => setCustomFrom(event.target.value)}
-                  className="hf-type-body hf-field flex-1 rounded-xl border border-hf-tan-dark bg-hf-cream px-2"
+                  className="hf-type-body hf-field min-w-0 whitespace-nowrap rounded-xl border border-hf-tan-dark bg-hf-cream px-2"
                 />
                 <span className="hf-type-small text-text-secondary">{t("statPeriodPicker.to")}</span>
                 <input
@@ -106,7 +108,7 @@ export function StatPeriodPicker({
                   aria-label={t("statPeriodPicker.toDateAria")}
                   value={customTo}
                   onChange={(event) => setCustomTo(event.target.value)}
-                  className="hf-type-body hf-field flex-1 rounded-xl border border-hf-tan-dark bg-hf-cream px-2"
+                  className="hf-type-body hf-field min-w-0 whitespace-nowrap rounded-xl border border-hf-tan-dark bg-hf-cream px-2"
                 />
               </div>
               <button

@@ -156,7 +156,19 @@ const INTEGRATION_INTRO: Record<IntegrationProvider, string> = {
   WITHINGS:
     "Withings forbindes med dit Withings-login. Hello Cal henter vægt og fedtprocent fra din vægt, når du har slået det til. Vi sender ikke data tilbage til Withings.",
   GARMIN:
-    "Garmin forbindes via Garmins egen deling. Hello Cal henter kun de datatyper, du har slået til, og sender ikke data tilbage til Garmin.",
+    "Garmin forbindes med dit Garmin Connect-login. Hello Cal henter kun de datatyper, du har slået til, og sender ingen data om dig til Garmin. Fjerner du forbindelsen, får Garmin besked om at stoppe delingen.",
+  WHOOP:
+    "WHOOP forbindes med dit WHOOP-login. Hello Cal henter træning, søvn og restitution, når du har slået det til, og beder ikke om dit navn eller din e-mail. Vi sender ingen data om dig til WHOOP.",
+  HUAWEI_HEALTH:
+    "Huawei Health forbindes med dit HUAWEI ID. Hello Cal får kun læseadgang til de datatyper, du giver lov til hos Huawei og slår til her. Vi sender ingen data om dig til Huawei.",
+  EUFY:
+    "eufy-vægten deler med Hello Cal gennem Health Connect eller Apple Health på din telefon. Hello Cal har ingen forbindelse til eufy og sender ingen data om dig dertil.",
+  RENPHO:
+    "Renpho-vægten deler med Hello Cal gennem Health Connect eller Apple Health på din telefon. Hello Cal har ingen forbindelse til Renpho og sender ingen data om dig dertil.",
+  XIAOMI:
+    "Xiaomi-udstyr deler med Hello Cal gennem Health Connect eller Apple Health på din telefon (fra Mi Fitness eller Zepp Life). Hello Cal har ingen forbindelse til Xiaomi og sender ingen data om dig dertil.",
+  TUYA:
+    "Tuya-vægte deler med Hello Cal gennem Health Connect eller Apple Health, hvis din vægt-app kan det. Hello Cal har ingen forbindelse til Tuya og sender ingen data om dig dertil.",
   POLAR:
     "Polar forbindes med dit Polar-login. Hello Cal henter dine træninger, når du har slået det til. Vi sender ikke data tilbage til Polar.",
   STRAVA:
