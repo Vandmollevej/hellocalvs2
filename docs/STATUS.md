@@ -2,6 +2,11 @@
 
 Last updated: 2026-10-03
 
+## 2026-10-03: Forsidens puls-linje slår i urets puls (60 bpm uden ur)
+
+- Puls-linjen bag hero slår nu i den målte puls: nyeste puls fra en tilsluttet integration, højst 30 min gammel, ellers 60 bpm. Flere slag pr. fej, ingen pause mellem fejene. Se DECISIONS.md samme dato.
+- Nyt: `src/lib/live-heart-rate.ts`, `GET /api/health-metrics/heart-rate`; `HomeWaves` henter pulsen hvert minut; `home-waves.ts` tegner et slag hvert 60/bpm s. Ingen migration.
+- Lint (0 fejl), typecheck, tests (undtagen den kendte `page-tree`-fejl) og build kørt; tegningen tjekket i Chromium ved 60 og 120 bpm. Ikke live-testet med et rigtigt ur (ingen DB/integration i sessionen) — test på telefon med fx Garmin/Apple Health tilsluttet.
 ## 2026-10-03: Betaling viser det aktive kort fra Stripe (PR #132 flettet med master)
 
 - `/settings/payment` viser det kort/den wallet, Stripe trækker på: mærke + sidste 4 + udløb; Apple Pay/Google Pay med kortet bagved (nyt felt `PaymentMethod.wallet`, migration `20261002090000_payment_method_wallet` **skal køre ved deploy**); MobilePay. Kortmærke-logo (Visa/Mastercard) i lille fast ramme; andre mærker får det egne kortikon (`IconPaymentCard`). Siden henter altid frisk fra Stripe (`/api/subscription?refresh=1`). Kortet beholdes efter opsigelse (perioden er betalt).

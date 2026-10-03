@@ -2,6 +2,13 @@
 
 This file records durable decisions. Add a dated entry when a later decision changes one of them.
 
+## 2026-10-03: Forsidens puls-linje slår i den målte puls
+
+Brugerens krav: "Pulsen skal svare til den rigtige puls som måles, hvis ur tilsluttet. Ellers svarende til 60bpm."
+
+- Puls-linjen slår ét hjerteslag hvert 60/bpm sekund i stedet for ét slag pr. fej. Fejet tager stadig 3–4 s over skærmen, så der ses ca. 3–4 slag ved 60 bpm og dobbelt så mange ved 120. Næste fej starter straks og visker det forrige ud foran spidsen (som en pulsmåler); den tidligere pause mellem fejene er væk.
+- Pulsen = nyeste `HEART_RATE_BPM` fra en integration med status `CONNECTED`, højst 30 minutter gammel (integrationerne synkroniserer hvert 15. minut) og mellem 30 og 220 bpm (`src/lib/live-heart-rate.ts`, `GET /api/health-metrics/heart-rate`). Ellers 60 bpm. Forsiden spørger én gang i minuttet, mens siden er synlig.
+- Pulsen låses pr. fej, så slagene ikke hopper, hvis en ny måling kommer midt i et fej.
 ## 2026-10-03: Adgangsarkets knapper ligger under listen, ikke ovenpå
 
 Ændrer "faste knapper nederst" fra 2026-09-27: knapperne og "Vilkår og

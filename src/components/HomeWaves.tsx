@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { createWaveScene, drawWaveScene, readWavePalette, WAVE_BLEED } from "@/lib/home-waves";
+import { createWaveScene, DEFAULT_PULSE_BPM, drawWaveScene, readWavePalette, WAVE_BLEED } from "@/lib/home-waves";
 
 // To lag af samme scene: skarpt øverst (i skærmens fulde opløsning, ingen
 // blur) og sløret kun forneden (maskerne ligger i globals.css,
@@ -12,11 +12,27 @@ const LAYERS = [
 ] as const;
 
 const FRAME_MS = 1000 / 30;
+/** Integrationerne synkroniserer hvert 15. minut; ét opslag i minuttet er rigeligt. */
+const HEART_RATE_POLL_MS = 60 * 1000;
+
+/** Urets aktuelle puls, eller 60 bpm uden ur/frisk måling (bruger 2026-10-03). */
+async function fetchPulseBpm() {
+  try {
+    const res = await fetch("/api/health-metrics/heart-rate", { cache: "no-store" });
+    if (!res.ok) return DEFAULT_PULSE_BPM;
+    const data = (await res.json()) as { heartRate?: { bpm?: number } | null };
+    const bpm = data.heartRate?.bpm;
+    return typeof bpm === "number" && Number.isFinite(bpm) ? bpm : DEFAULT_PULSE_BPM;
+  } catch {
+    return DEFAULT_PULSE_BPM;
+  }
+}
 
 /**
  * Forsidens rolige bølge-baggrund (bruger 2026-10-01). Ligger bag topbar og
  * hero og fortsætter lidt ind under "Dagens tilføjelser"-stregen. Står stille
- * ved "reducer bevægelse", og standser når siden er skjult.
+ * ved "reducer bevægelse", og standser når siden er skjult. Puls-linjen slår
+ * i urets målte puls (60 bpm uden ur).
  */
 export function HomeWaves() {
   const hostRef = useRef<HTMLDivElement>(null);
@@ -41,6 +57,10 @@ export function HomeWaves() {
     let clock = scene.startTime;
     let last = 0;
     let raf = 0;
+    let bpm = DEFAULT_PULSE_BPM;
+    let pollTimer = 0;
+    let polling = false;
+    let disposed = false;
 
     let scales: number[] = LAYERS.map((layer) => layer.scale());
 
@@ -48,7 +68,7 @@ export function HomeWaves() {
       if (width === 0 || height === 0) return;
       LAYERS.forEach((_, i) => {
         const ctx = contexts[i];
-        if (ctx) drawWaveScene(ctx, scene, palette!, { t: clock, width, height, scale: scales[i] });
+        if (ctx) drawWaveScene(ctx, scene, palette!, { t: clock, width, height, scale: scales[i], bpm });
       });
     }
 
@@ -87,17 +107,40 @@ export function HomeWaves() {
     function sync() {
       stop();
       start();
+      // Tilbage på siden: hent pulsen med det samme.
+      if (document.hidden) return;
+      window.clearTimeout(pollTimer);
+      pollTimer = 0;
+      schedulePoll(0);
+    }
+
+    async function poll() {
+      pollTimer = 0;
+      polling = true;
+      bpm = await fetchPulseBpm();
+      polling = false;
+      if (disposed) return;
+      if (!raf) paint();
+      schedulePoll();
+    }
+
+    function schedulePoll(delay = HEART_RATE_POLL_MS) {
+      if (pollTimer || polling || document.hidden || disposed) return;
+      pollTimer = window.setTimeout(poll, delay);
     }
 
     const observer = new ResizeObserver(resize);
     observer.observe(host);
     resize();
     start();
+    schedulePoll(0);
     document.addEventListener("visibilitychange", sync);
     motion.addEventListener("change", sync);
 
     return () => {
+      disposed = true;
       stop();
+      window.clearTimeout(pollTimer);
       observer.disconnect();
       document.removeEventListener("visibilitychange", sync);
       motion.removeEventListener("change", sync);
