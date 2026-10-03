@@ -17,6 +17,9 @@ Last updated: 2026-10-03
 - `public/hjaelp.html` har et kort "Lær appen at kende" øverst (under introen) med en grøn knap "Start guiden" (`--brand` #067A46, hvid tekst). Kortet skjules, mens der søges. FAQ'en "Kan jeg se introduktionen igen?" linker også direkte til guiden.
 - Knappen går til `/settings?guide=1`; Indstillinger nulstiller onboarding-fremdriften og åbner `OnboardingWizard` (samme som "Lær appen at kende") og fjerner parameteren fra adressen. Se DECISIONS.md samme dato.
 - Lint og typecheck grønne; hjælpesiden tjekket visuelt i 390 px. Ikke live-testet med login (ingen lokal DB).
+## 2026-10-03: Hjælpecenter — spørgsmål uden fed
+
+- Spørgsmålene i Hjælpecenter (`public/hjaelp.html`, `summary`) vises nu i normal vægt (400) i stedet for halvfed (600). Kategorioverskrifterne er uændrede.
 
 ## 2026-10-02: Kalenderen husker den åbne dag
 
