@@ -1,6 +1,12 @@
 # HELLO CAL — project status
 
-Last updated: 2026-09-29
+Last updated: 2026-10-03
+
+## 2026-10-03: Business-siden — "Den typiske bruger" (annoncørstatistik)
+
+- `/business` har ny sektion mellem Mulighederne og Kontakt: medianbrugeren (køn + alder, startvægt, vægtændring + andel der har tabt sig, registreringer og dage med registrering pr. uge), de 5 mest registrerede produkttyper (andel af registreringer, 90 dage) og en tabel, der sammenligner den typiske bruger (median) med gennemsnittet af brugere med samme køn og alder (±5 år) — forskel i procentpoint for andele, ellers i procent. Se DECISIONS.md samme dato.
+- Kode: `src/lib/business-audience.ts` (ren beregning, tests i `business-audience.test.mjs`), `src/lib/business-audience-data.ts` (Prisma + rå SQL), `src/components/landing/BusinessAudience.tsx`.
+- Vises først ved mindst 10 aktive brugere (ellers kort forklaring); sammenligningen kræver mindst 5 i gruppen. Ingen migration. Ikke live-testet (ingen lokal DB) — tjek `/business` på desktop og telefon, når der er brugere nok.
 
 ## 2026-09-29: Offentlig forside for udloggede
 

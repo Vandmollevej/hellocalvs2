@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { IconAd2, IconChartBar, IconChefHat, IconPackage, IconStethoscope } from "@tabler/icons-react";
 import { MarketingShell, SectionHeading } from "@/components/landing/MarketingShell";
 import { BusinessContactForm } from "@/components/landing/BusinessContactForm";
+import { BusinessAudience } from "@/components/landing/BusinessAudience";
+import { loadBusinessAudience } from "@/lib/business-audience-data";
 import { isBusinessTopic } from "@/lib/business-contact-topics";
 
 export const metadata: Metadata = { title: "Business — Hello Cal", robots: { index: false, follow: false } };
@@ -40,6 +42,7 @@ const OPPORTUNITIES = [
 export default async function BusinessPage({ searchParams }: { searchParams: Promise<{ emne?: string }> }) {
   const { emne } = await searchParams;
   const initialTopic = emne && isBusinessTopic(emne) ? emne : undefined;
+  const audience = await loadBusinessAudience();
 
   return (
     <MarketingShell>
@@ -70,6 +73,8 @@ export default async function BusinessPage({ searchParams }: { searchParams: Pro
           ))}
         </div>
       </section>
+
+      <BusinessAudience profile={audience} />
 
       <section id="kontakt" className="scroll-mt-20 bg-hf-tan px-4 py-20 sm:px-6">
         <SectionHeading title="Kontakt" accent="os" text="Fortæl kort om jer og jeres idé, så vender vi tilbage." />
