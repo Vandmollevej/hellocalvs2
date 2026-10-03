@@ -140,6 +140,12 @@ Last updated: 2026-10-02
 - Migration `20261002090000_product_labels` skal køre ved deploy; image-agent-containeren skal genbygges (cutout.py). Lint, typecheck, `npm test` (5 nye) og build grønne; ikke live-testet (ingen lokal DB/OpenAI-nøgle).
 - Næste: admin-visning af fundne mærkater på `/admin/products/[id]` (ret/slet) og evt. en kø for usikre mærkater (0,5–0,8) som ved logoer.
 
+## 2026-10-02: Statistik — kort kan igen trækkes på iPhone
+
+- Fejl: i redigering scrollede siden i stedet for at flytte kortet. Når et kort løftes, udskiftes dets indhold med pladsmarkeringen; iOS sender fortsat fingerens touch-hændelser til det fjernede element, så de nåede aldrig dokumentets scroll-blokering eller pointer-lytterne.
+- Rettet i `StatCardsGrid.tsx`: trykket lytter også på selve elementet fingeren rammer, og løftet registreres synkront (ref), så scroll blokeres med det samme. Gælder også overskrifter/skillelinjer.
+- Testet i Chromium med touch-emulering: fejlen genskabt på gammel kode; med rettelsen flyttes kortet, og et hurtigt swipe på et kort scroller stadig. Ikke testet på fysisk iPhone.
+
 ## 2026-10-02: Drikkevarer starter på pakkestørrelsen
 
 - Mængdefeltet viser nu 33 cl / 25 cl / 50 cl for dåser og små flasker, også når størrelsen kun står i navnet, og også for øl/vin uden kategorien DRINK. Vin, spiritus og færdigblandede drinks har egne regler (DECISIONS.md 2026-09-28, tilføjelse 2026-10-02).

@@ -305,6 +305,13 @@ export function StatCardsGrid({
   const itemRefs = useRef(new Map<string, HTMLElement>());
   const gridRef = useRef<HTMLDivElement>(null);
   const pendingRef = useRef<PendingPress | null>(null);
+  // The lifted item, updated synchronously: touch handlers must know at once
+  // that an item is lifted, not one render later.
+  const dragRef = useRef<DragState | null>(null);
+  // Pointer handlers bound in the effect below, reachable from a press's own
+  // touch listeners (see bindTouchTarget).
+  const handlersRef = useRef<{ move: (x: number, y: number) => void; up: () => void; cancel: () => void } | null>(null);
+  const touchTargetCleanupRef = useRef<(() => void) | null>(null);
   const settleRef = useRef<{ id: string; position: Position } | null>(null);
   const isFirstRender = useRef(true);
 
@@ -366,6 +373,11 @@ export function StatCardsGrid({
     };
   }, [defaultLayout]);
 
+  function setLiveDrag(next: DragState | null) {
+    dragRef.current = next;
+    setDrag(next);
+  }
+
   function enterEditMode() {
     setEditMode(true);
     setLayout((prev) => withTrailingEmptyRow(prev));
@@ -373,6 +385,7 @@ export function StatCardsGrid({
 
   function exitEditMode() {
     setEditMode(false);
+    dragRef.current = null;
     setDrag(null);
     setSlotTarget(null);
     setHeadingBoundary(null);
@@ -403,7 +416,7 @@ export function StatCardsGrid({
     setEditingHeaderId(null);
     setHeadingBoundary(boundary);
     setSlotTarget(isHalfWidthStatItem(press.item) && index >= 0 ? index : null);
-    setDrag({
+    setLiveDrag({
       id: press.id,
       item: press.item,
       x,
@@ -439,6 +452,8 @@ export function StatCardsGrid({
       timer: null,
     };
     pendingRef.current = press;
+    // The finger may land on an SVG icon; the touch listeners behave the same there.
+    if (event.pointerType !== "mouse" && event.target instanceof Element) bindTouchTarget(event.target as HTMLElement);
 
     // A mouse in edit mode picks the item up as soon as it moves (see onMove);
     // touch always needs a short, still press so a swipe stays a scroll.
@@ -452,6 +467,40 @@ export function StatCardsGrid({
       },
       editMode ? DRAG_DELAY_MS : ENTER_EDIT_DELAY_MS,
     );
+  }
+
+  /**
+   * iOS keeps sending a touch's events to the element the finger first landed
+   * on — even after React has taken that element out of the page, which
+   * lifting does (a card's contents give way to its slot marker, a header
+   * leaves the grid). Events on a detached element never reach document or
+   * window, so nothing stopped the page from scrolling and the item stopped
+   * following the finger. The element's own listeners still get them.
+   */
+  function bindTouchTarget(target: HTMLElement) {
+    touchTargetCleanupRef.current?.();
+    function onTouchMove(event: TouchEvent) {
+      if (dragRef.current && event.cancelable) event.preventDefault();
+      if (target.isConnected) return; // Reaches the window listeners as usual.
+      const touch = event.changedTouches[0];
+      if (touch) handlersRef.current?.move(touch.clientX, touch.clientY);
+    }
+    function onTouchEnd(event: TouchEvent) {
+      cleanup();
+      if (target.isConnected) return;
+      if (event.type === "touchcancel") handlersRef.current?.cancel();
+      else handlersRef.current?.up();
+    }
+    function cleanup() {
+      target.removeEventListener("touchmove", onTouchMove);
+      target.removeEventListener("touchend", onTouchEnd);
+      target.removeEventListener("touchcancel", onTouchEnd);
+      if (touchTargetCleanupRef.current === cleanup) touchTargetCleanupRef.current = null;
+    }
+    target.addEventListener("touchmove", onTouchMove, { passive: false });
+    target.addEventListener("touchend", onTouchEnd);
+    target.addEventListener("touchcancel", onTouchEnd);
+    touchTargetCleanupRef.current = cleanup;
   }
 
   function updateTargets(x: number, y: number, current: DragState) {
@@ -536,36 +585,40 @@ export function StatCardsGrid({
       }
     }
 
-    setDrag(null);
+    setLiveDrag(null);
     setSlotTarget(null);
     setHeadingBoundary(null);
   }
 
   useEffect(() => {
     function onMove(event: PointerEvent) {
+      move(event.clientX, event.clientY);
+    }
+
+    function move(x: number, y: number) {
       const press = pendingRef.current;
-      const current = stateRef.current.drag;
+      const current = dragRef.current;
 
       if (press && !current) {
-        const moved = Math.hypot(event.clientX - press.startX, event.clientY - press.startY);
+        const moved = Math.hypot(x - press.startX, y - press.startY);
         if (moved <= MOVE_TOLERANCE_PX) return;
         if (press.timer) window.clearTimeout(press.timer);
         pendingRef.current = null;
         // Mouse in edit mode: moving is the drag. Touch: moving first is a scroll.
         if (stateRef.current.editMode && press.pointerType === "mouse") {
-          startDrag(press, event.clientX, event.clientY);
+          startDrag(press, x, y);
         }
         return;
       }
 
       if (!current) return;
-      setDrag({ ...current, x: event.clientX, y: event.clientY });
-      updateTargets(event.clientX, event.clientY, current);
+      setLiveDrag({ ...current, x, y });
+      updateTargets(x, y, current);
     }
 
     function onUp() {
       const press = pendingRef.current;
-      const current = stateRef.current.drag;
+      const current = dragRef.current;
       if (press?.timer) window.clearTimeout(press.timer);
       pendingRef.current = null;
 
@@ -582,21 +635,24 @@ export function StatCardsGrid({
     function onCancel() {
       if (pendingRef.current?.timer) window.clearTimeout(pendingRef.current.timer);
       pendingRef.current = null;
-      const current = stateRef.current.drag;
+      const current = dragRef.current;
       if (current) drop(current, true);
     }
 
     // Items use `touch-action: pan-y` so a swipe on them scrolls the page. Only
     // once an item has actually been lifted does the page stop scrolling.
     function onTouchMove(event: TouchEvent) {
-      if (stateRef.current.drag && event.cancelable) event.preventDefault();
+      if (dragRef.current && event.cancelable) event.preventDefault();
     }
 
+    handlersRef.current = { move, up: onUp, cancel: onCancel };
     window.addEventListener("pointermove", onMove);
     window.addEventListener("pointerup", onUp);
     window.addEventListener("pointercancel", onCancel);
     document.addEventListener("touchmove", onTouchMove, { passive: false });
     return () => {
+      handlersRef.current = null;
+      touchTargetCleanupRef.current?.();
       window.removeEventListener("pointermove", onMove);
       window.removeEventListener("pointerup", onUp);
       window.removeEventListener("pointercancel", onCancel);
@@ -615,7 +671,7 @@ export function StatCardsGrid({
     if (!scroller) return;
     let frame = 0;
     function tick() {
-      const current = stateRef.current.drag;
+      const current = dragRef.current;
       if (current && scroller) {
         const bounds = scroller.getBoundingClientRect();
         const edge = 72;

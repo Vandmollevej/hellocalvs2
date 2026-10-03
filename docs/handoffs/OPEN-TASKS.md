@@ -75,6 +75,7 @@ Ikke visuelt testet: lokalt sender appen til /welcome uden login. Test på mobil
 | 00cf8440 | Gradient i højre side af tallene (synlighed) skal være helt flydende | Færdig (32995ab) | Opacity går nu lineært til 0 ved kanten |
 | a9819635 | Trinløs størrelse/farve på slider (ingen spring pr. position) | Færdig (32995ab) | Ikonfarve + "/ mål"-linje glider nu trinløst |
 | 65efa293 | Tal-hjulet: én linje uden "/ mål", ikon til HØJRE, jævn luft, 7 rækker (2 opfundne), 2° vifte pr. række, ingen beskæring | Færdig (8009704, pushet til master) | Konflikter med 0d21a46 (lokal master): behold denne version, den har 0d21a46's dæmpning med. Brugeren tester på iPhone |
+| ios-drag-1002 | Kort kan ikke trækkes på iPhone i redigering — siden scroller i stedet | Færdig (gren claude/stat-kort-traek-ios) | Brugeren tester på iPhone efter deploy |
 
 ## G3 — Produktkategorier + statistikbokse + "Månedens synder"
 Filer: Prisma-skema (kategori), kategori-lib, nye statistikbokse, ny liste-side, knap i kalender (koordinér med G1).
