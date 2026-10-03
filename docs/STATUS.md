@@ -34,6 +34,13 @@ Last updated: 2026-10-03
 - Luk konto lukker nu kun kontoen (`User.closedAt`) og logger ud overalt; login inden for 3 måneder genåbner den, derefter anonymiseres den automatisk. "Ret til at blive glemt" sletter stadig med det samme (SLET). Abonnement opsiges ved lukning. Se DECISIONS.md samme dato.
 - "Luk konto" på /settings/account er nu et sort, understreget tekstlink nederst — ingen stor knap. Chatbottens viden er rettet.
 - Migration `20261003120000_account_closed_at` skal køre ved deploy. Lint, typecheck og build grønne. Ikke live-testet (ingen lokal DB) — test: luk en testkonto, log ind igen, og tjek at alt er der.
+## 2026-10-03: Partnersider
+
+- Ny side pr. partner under admin → Partnere → Kontakter → (partnerens navn): virksomhedsoplysninger og kontakter i venstre bjælke (uden søgefelt), menu med Sponsoraftale, Performance, Faktureringsdetaljer og Betalingsmetode. Se DECISIONS.md 2026-10-02.
+- Performance: Overview og Data mining, periodevalg, "kun udløst af kategori/type", overlay med tabel pr. side, download og afsendelse af PDF/CSV til en indtastet modtager.
+- Migration `20261002090000_partner_pages` skal køre ved deploy. Prøvet mod en tom lokal Postgres: alle migrationer kører, siderne er set i Chromium med testdata, API'er, PDF (læst med PyMuPDF), CSV, periodegrænser og trigger-udvælgelse er afprøvet. `npm run lint` (kun gamle advarsler) og `npm run build` er grønne; `page-tree.test.mjs` fejler stadig på andres manglende sider.
+- Banner uploades som billedfil (PNG/JPG/WebP, højst 4 MB) til den eksisterende billedvolumen.
+- Ikke gjort: `AdBanner` er ikke sat ind i appens sider, fordi ejeren ikke har sagt hvor reklamerne skal vises. Kataloget over reklamemuligheder (`ad-inventory.ts`) er et forslag og skal afklares. Mailafsendelsen er ikke prøvet fra udviklingsmiljøet (ingen SMTP-nøgler her), men bruger samme opsætning som øvrige mails.
 
 ## 2026-10-02: Kalenderen husker den åbne dag
 
