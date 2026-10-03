@@ -256,6 +256,13 @@ Last updated: 2026-10-02
 - Nyt src/lib/units.ts (valg, landestandard, omregning, useUnits()), nyt startguide-trin units og to valg under Sprog og region. Brugt i: profil (vægt, højde-hjul), vægtlog, vægt-kalibrering, startvægt-verificering, målsætninger (vægt + kropsmål), energimål-editoren, kropsmål og statistik-grafen.
 - Lint og typecheck grønne for de berørte filer. Ikke visuelt testet (brugerregel). Ikke omregnet endnu: widgets/native, Hello Doc-rapport, kalender-vægtvisning og admin (kg/cm vises der stadig).
 
+## 2026-10-02: Admin → Integrationer
+
+- Nyt menupunkt i admin under Statistik: oversigt over alle integrationer (nøgletal, "Kræver opmærksomhed", tabel med aktive/nye/frakoblet/synk./datapunkter/fejl, grafer over til-/frakoblinger og synkroniseringer) og en side pr. integration med installationer, interaktion, seneste tilmeldinger som graf, frakoblinger, data/valg og fejl. Periode: 7 dage → for evigt (standard 3 måneder). Se DECISIONS.md samme dato.
+- Ny tabel `integration_events` — migration `20261002120000_integration_events` skal køre ved deploy. Filer: `src/lib/admin-integration-stats.ts`, `src/lib/integration-lifecycle.ts` (+ test), `src/lib/integrations/events.ts`, `src/app/admin/integrations/**`, `src/components/admin/integrations/**`.
+- Rettet i samme omgang: `src/lib/web-nav.ts` importerede det slettede champagne-ikon, så build fejlede på master; bruger nu konfetti-ikonet.
+- Lint (ændrede filer), typecheck, `npm run build` og den nye test grønne. `page-tree.test.mjs` fejler stadig på master (ældre admin-sider mangler i træet — uvedkommende). Ikke live-testet (ingen lokal DB); tallene fyldes først op efter deploy.
+
 ## 2026-10-01: Rolig bølge-baggrund på forsiden
 
 - Ny baggrund bag topbar + hero, der fortsætter ca. 40 px under "Dagens tilføjelser"-stregen: tilfældige, langsomme bånd af bløde bølgelinjer (grønt øverst → gullig creme nedenfor) plus lidt tåge. Tre lag af samme canvas-scene (skarp / mellem-sløret / kraftigt sløret) giver frostet-glas-effekten nederst. Farver kun fra tokens. Står stille ved "reducer bevægelse" og standser når fanen er skjult.

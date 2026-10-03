@@ -4,6 +4,7 @@ import { getSessionUser, unauthorized } from "@/lib/session";
 import { metaBySlug } from "@/lib/integrations";
 import { adapterByProvider } from "@/lib/integrations/registry";
 import { missingWriteScopes, resolveSyncSettings, sanitizeSyncSettings } from "@/lib/integrations/sync-settings";
+import { recordIntegrationEvent } from "@/lib/integrations/events";
 
 // PUT /api/integrations/<app>/settings — gemmer brugerens til/fra-valg for,
 // hvad der hentes fra og sendes til appen. Kan gemmes før tilkobling (så
@@ -21,6 +22,7 @@ export async function PUT(req: Request, ctx: { params: Promise<{ provider: strin
       create: { userId: user.id, provider: meta.provider, syncSettings },
       update: { syncSettings },
     });
+    await recordIntegrationEvent(user.id, meta.provider, "SETTINGS_CHANGED");
     const adapter = adapterByProvider(meta.provider);
     const needsReconnect =
       adapter && row.status !== "DISCONNECTED" ? missingWriteScopes(meta.provider, adapter.writeScopes, row.syncSettings, row.scope) : [];

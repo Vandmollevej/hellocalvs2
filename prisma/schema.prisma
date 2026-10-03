@@ -228,6 +228,7 @@ model User {
   sleepQualityEntries     SleepQualityEntry[]
   workShifts              WorkShift[]
   integrations            Integration[]
+  integrationEvents       IntegrationEvent[]
   activities              Activity[]
   customActivityTypes     CustomActivityType[]
   heartRateSpikeReviews   HeartRateSpikeReview[]
@@ -794,6 +795,34 @@ enum IntegrationStatus {
   DISCONNECTED
   CONNECTED
   ERROR
+}
+
+// 2026-10-02: hændelseslog pr. integration til admin → Integrationer
+// (docs/DECISIONS.md 2026-10-02). Én række pr. tilkobling, frakobling,
+// synkronisering, fejl, push og ændring af til/fra-valg. Tallene på
+// dashboardet regnes herfra; Integration-rækken holder kun nuværende status.
+model IntegrationEvent {
+  id        String                @id @default(cuid())
+  user      User                  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String
+  provider  IntegrationProvider
+  type      IntegrationEventType
+  // SYNC: antal nye datapunkter hentet; PUSH: antal sendt til appen.
+  itemCount Int?
+  createdAt DateTime              @default(now())
+
+  @@index([provider, createdAt])
+  @@index([type, createdAt])
+  @@map("integration_events")
+}
+
+enum IntegrationEventType {
+  CONNECTED
+  DISCONNECTED
+  SYNC
+  SYNC_ERROR
+  PUSH
+  SETTINGS_CHANGED
 }
 
 // Sports/activity logs, entered manually or fetched from a connected
