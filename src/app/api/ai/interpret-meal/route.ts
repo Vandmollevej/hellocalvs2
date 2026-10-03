@@ -142,6 +142,7 @@ async function findLocalMatch(name: string) {
         ],
       })),
       discontinued: false,
+      nutritionMissing: false,
       status: "APPROVED",
     },
     include: { brand: true },
