@@ -6,7 +6,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import Image from "next/image";
+import { IntegrationIcon } from "@/components/IntegrationIcon";
 import { IconChevronRight } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
 import { TrendIcon } from "@/components/BottomNav";
@@ -83,7 +83,7 @@ export default function SleepStatisticsPage() {
                   href={`/settings/integrations/${integration.pageSlug}`}
                   className="hf-control-row flex items-center gap-3 border-b border-hf-tan-dark px-4 py-3 text-hf-black last:border-b-0"
                 >
-                  <Image src={integration.icon} alt="" width={32} height={32} className="rounded-lg" />
+                  <IntegrationIcon icon={integration.icon} label={integration.label} size={32} className="rounded-lg" />
                   <span className="min-w-0 flex-1">
                     <span className="hf-type-body hf-type-strong block">{integration.label}</span>
                     <span className="hf-type-small block text-text-secondary">{integration.description}</span>

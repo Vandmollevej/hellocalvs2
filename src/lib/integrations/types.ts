@@ -4,8 +4,8 @@ import type { SyncSettings, WriteType } from "@/lib/integrations/sync-settings";
 import type { PushData } from "@/lib/integrations/push";
 
 // Fælles kontrakt for cloud-integrationer med OAuth (Withings, Google Health,
-// Strava, Polar, Fitbit). Serveren henter data og gemmer dem på brugeren
-// (src/lib/integrations/store-items.ts).
+// Strava, Polar, Fitbit, Garmin, Whoop, Huawei Health). Serveren henter data
+// og gemmer dem på brugeren (src/lib/integrations/store-items.ts).
 
 export type OAuthTokens = {
   access_token: string;
@@ -24,12 +24,19 @@ export type OAuthProviderAdapter = {
   envPrefix: string;
   // Hvor langt tilbage første synkronisering henter.
   initialDays: number;
+  // OAuth med PKCE (Garmin): connect laver en code_verifier, som gemmes i
+  // state-cookien og sendes med ved token-udvekslingen.
+  pkce?: boolean;
   // settings: brugerens til/fra-valg, så der kun bedes om skriveadgang til det valgte.
-  buildAuthorizeUrl(state: string, redirectUri: string, settings: SyncSettings): string;
-  exchangeCode(code: string, redirectUri: string): Promise<OAuthTokens>;
+  // codeChallenge: kun ved pkce.
+  buildAuthorizeUrl(state: string, redirectUri: string, settings: SyncSettings, codeChallenge?: string): string;
+  exchangeCode(code: string, redirectUri: string, codeVerifier?: string): Promise<OAuthTokens>;
   refresh?(refreshToken: string): Promise<OAuthTokens>;
-  // Kører én gang efter tilkobling (Polar kræver brugerregistrering).
-  afterConnect?(tokens: OAuthTokens): Promise<void>;
+  // Kører én gang efter tilkobling (Polar kræver brugerregistrering; Garmin
+  // giver et pseudonymt bruger-ID til push-notifikationer).
+  afterConnect?(tokens: OAuthTokens): Promise<{ externalUserId?: string } | void>;
+  // Kaldes ved frakobling, så appen stopper adgangen og ikke sender mere.
+  revoke?(accessToken: string): Promise<void>;
   fetchItems(accessToken: string, since: Date): Promise<IntegrationItem[]>;
   // Skriveadgang pr. datatype (OAuth-scope). Mangler scopet i det, brugeren
   // gav ved tilkobling, skal der forbindes igen, før data kan sendes.

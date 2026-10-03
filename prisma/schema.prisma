@@ -514,6 +514,8 @@ enum WeightSource {
   APPLE_HEALTH
   GOOGLE_HEALTH
   HEALTH_CONNECT
+  GARMIN
+  HUAWEI_HEALTH
 }
 
 // --- Body measurements ---
@@ -702,9 +704,13 @@ model Integration {
   syncSettings Json?
   // Seneste gang Hello Cal-data blev sendt til appen (push).
   lastPushedAt DateTime?
+  // 2026-10-02: appens eget, pseudonyme bruger-ID (Garmin), så push-
+  // notifikationer kan kobles til den rigtige Hello Cal-bruger.
+  externalUserId String?
   createdAt    DateTime            @default(now())
 
   @@unique([userId, provider])
+  @@index([provider, externalUserId])
   @@map("integrations")
 }
 
@@ -720,6 +726,14 @@ enum IntegrationProvider {
   POLAR
   SAMSUNG_HEALTH
   STRAVA
+  // 2026-10-02: Whoop og Huawei Health (cloud, OAuth). Eufy, Renpho, Xiaomi
+  // og Tuya har ingen åben API og deler via Health Connect/Apple Health.
+  WHOOP
+  HUAWEI_HEALTH
+  EUFY
+  RENPHO
+  XIAOMI
+  TUYA
 }
 
 enum IntegrationStatus {
@@ -816,6 +830,8 @@ enum ActivitySource {
   HEALTH_CONNECT
   STRAVA
   POLAR
+  WHOOP
+  HUAWEI_HEALTH
 }
 
 // A personal, long-lived access token a future native companion app
@@ -862,6 +878,8 @@ enum HealthMetricSource {
   WITHINGS
   GARMIN
   HEALTH_CONNECT
+  WHOOP
+  HUAWEI_HEALTH
 }
 
 enum HealthMetricType {

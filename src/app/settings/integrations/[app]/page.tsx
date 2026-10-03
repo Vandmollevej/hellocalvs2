@@ -13,11 +13,12 @@ import {
   type AccessCategory,
   type AccessToggleRow,
 } from "@/components/hf/HfAccessSheet";
-import type { IntegrationCardStatus } from "@/lib/integrations";
 import type { ReadType, SyncSettings, WriteType } from "@/lib/integrations/sync-settings";
 import { useTranslation } from "@/i18n/LocaleProvider";
 import { TermsSheet } from "@/components/hf/TermsSheet";
 import { integrationTerms } from "@/lib/terms-hints";
+import { IntegrationIcon } from "@/components/IntegrationIcon";
+import type { HubProvider, IntegrationCardStatus } from "@/lib/integrations";
 import { formatDateTime, integrationStatusKey } from "../status-badge";
 
 // Én side pr. integration (docs/DECISIONS.md 2026-09-26), vist som iOS'
@@ -179,7 +180,11 @@ function IntegrationContent() {
 
   const name = integration.label;
   const isOAuth = integration.kind === "oauth" && integration.slug !== null;
-  const isSamsung = integration.provider === "SAMSUNG_HEALTH";
+  // Mærker uden åben API deler via Health Connect/Apple Health (docs/DECISIONS.md 2026-10-02).
+  const isVia = integration.kind === "via";
+  const hubs: HubProvider[] = integration.via ?? [];
+  const hubName = (hub: HubProvider) => t(`integrations.hubs.${hub}`);
+  const hubPage = (hub: HubProvider) => `/settings/integrations/${hub.toLowerCase().replace(/_/g, "-")}`;
   const connected = integration.status !== "DISCONNECTED";
   const { read: readTypes, write: writeTypes } = integration.capabilities;
   const { settings } = integration;
@@ -223,7 +228,7 @@ function IntegrationContent() {
   // "Tillad": forbinder (eller forbinder igen), når adgangen mangler; en
   // companion-app uden enhedskode får en; ellers er valget allerede gemt.
   function allow() {
-    if (isSamsung) return router.push("/settings/integrations/health-connect");
+    if (isVia && hubs[0]) return router.push(hubPage(hubs[0]));
     if (isOAuth && (!connected || integration!.needsReconnect.length > 0)) return connect();
     if (integration!.issuesDeviceTokens && cardTokens.length === 0 && !newToken) return void createToken();
     close();
@@ -248,8 +253,7 @@ function IntegrationContent() {
   return (
     <HfAccessSheet
       title={t("integrations.access.title", { name })}
-      // eslint-disable-next-line @next/next/no-img-element
-      icon={<img src={integration.icon} alt="" />}
+      icon={<IntegrationIcon icon={integration.icon} label={name} size={64} />}
       heading={name}
       message={t(writeTypes.length > 0 ? "integrations.access.messageReadWrite" : "integrations.access.messageRead", {
         name,
@@ -284,18 +288,32 @@ function IntegrationContent() {
       )}
       {saveError && <AccessFooter error>{t("integrations.saveError")}</AccessFooter>}
 
-      {isSamsung && (
+      {isVia && (
         <AccessGroup
           title={t("integrations.access.statusTitle")}
-          footer={<AccessFooter>{t("integrations.samsungViaHealthConnect")}</AccessFooter>}
+          footer={
+            <>
+              <AccessFooter>
+                {t("integrations.viaHowTo", {
+                  name,
+                  app: integration.viaApp ?? name,
+                  hubs: hubs.map(hubName).join(t("integrations.hubsOr")),
+                })}
+              </AccessFooter>
+              {integration.partnerPending && <AccessFooter>{t("integrations.partnerPending", { name })}</AccessFooter>}
+            </>
+          }
         >
-          <AccessRow tone="action" onClick={() => router.push("/settings/integrations/health-connect")}>
-            {t("integrations.openHealthConnect")}
-          </AccessRow>
+          {integration.status === "CONNECTED" && <AccessRow>{statusLine}</AccessRow>}
+          {hubs.map((hub) => (
+            <AccessRow key={hub} tone="action" onClick={() => router.push(hubPage(hub))}>
+              {t("integrations.openHub", { hub: hubName(hub) })}
+            </AccessRow>
+          ))}
         </AccessGroup>
       )}
 
-      {!isSamsung && (
+      {!isVia && (
         <AccessGroup
           title={t("integrations.access.statusTitle")}
           footer={

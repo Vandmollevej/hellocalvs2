@@ -1,16 +1,24 @@
-import { randomUUID } from "crypto";
+import { createHash, randomBytes, randomUUID } from "crypto";
 import type { NextRequest, NextResponse } from "next/server";
 import type { IntegrationProvider } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { getSessionUser } from "@/lib/session";
 import type { OAuthTokens } from "@/lib/integrations/types";
 
-// Fælles OAuth-tilstand for cloud-integrationerne (CSRF-state i en cookie).
+// Fælles OAuth-tilstand for cloud-integrationerne (CSRF-state i en cookie;
+// ved PKCE også code_verifier).
 
-type State = { state: string };
+type State = { state: string; verifier?: string };
 
 export function newOAuthState(): string {
   return randomUUID();
+}
+
+// PKCE (RFC 7636, S256).
+export function newPkcePair() {
+  const verifier = randomBytes(48).toString("base64url");
+  const challenge = createHash("sha256").update(verifier).digest("base64url");
+  return { verifier, challenge };
 }
 
 export function setOAuthCookie(response: NextResponse, cookieName: string, value: State) {
@@ -26,7 +34,8 @@ export function setOAuthCookie(response: NextResponse, cookieName: string, value
 export function readOAuthState(req: NextRequest, cookieName: string): State | null {
   try {
     const parsed = JSON.parse(req.cookies.get(cookieName)?.value ?? "") as Partial<State>;
-    return typeof parsed.state === "string" ? { state: parsed.state } : null;
+    if (typeof parsed.state !== "string") return null;
+    return typeof parsed.verifier === "string" ? { state: parsed.state, verifier: parsed.verifier } : { state: parsed.state };
   } catch {
     return null;
   }
@@ -34,7 +43,8 @@ export function readOAuthState(req: NextRequest, cookieName: string): State | nu
 
 export async function saveIntegrationTokens(
   provider: IntegrationProvider,
-  tokens: OAuthTokens
+  tokens: OAuthTokens,
+  externalUserId?: string
 ) {
   const user = await getSessionUser();
   if (!user) throw new Error("Ikke logget ind");
@@ -47,6 +57,7 @@ export async function saveIntegrationTokens(
     lastSyncedAt: null,
     connectedAt: new Date(),
     lastError: null,
+    ...(externalUserId ? { externalUserId } : {}),
   };
   await prisma.integration.upsert({
     where: { userId_provider: { userId: user.id, provider } },
