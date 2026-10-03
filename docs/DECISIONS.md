@@ -3804,3 +3804,10 @@ Kilder på "Mad på latin" skal altid være officielle (Fødevarestyrelsen, Sund
 - `.hf-insight__topbar` er afløst af `.hf-shell__topbar`; `.hf-insight__main` deler bredde/gutter med `.hf-shell__content` (16 px, 32 px fra 1024 px — afstandsskalaens værdier i stedet for admins tidligere 24 px).
 - Webvisningen beholder sin højere top (80 px, `.hf-shell--tall`). Menuens tekst skjules under 1280 px, så topmenu, plus-cirkel og profil ikke støder sammen ved 1024 px.
 - Admin-statistikken og admin-login-siderne bruger `.hf-type-*`, `.hf-kpi`, `.hf-panel` og `.hf-choice` i stedet for `text-xs`/`text-2xl`/`font-semibold`. Telefon- og e-mail-mockups (Designmanual, beskedredigering) er bevidst undtaget, fordi de tegner en iPhone.
+## 2026-10-02: Statistiksiden flytter sig aldrig under indlæsning
+
+- Brugerens gemte rækkefølge (sektioner, kort, grafer) læses fra localStorage **før første billede males**: kort- og grafgitteret bruger den gemte rækkefølge som startværdi, når de tegnes i browseren (`useIsClientRender()` i `src/lib/use-client-render.ts`), og statistiksiden tegner sine sektioner først efter en layout-effekt har læst sektionsrækkefølgen. Det tidligere mønster "tegn standarden, skift efter mount" må ikke bruges på sider, hvor rækkefølgen er brugerens egen.
+- `useSubscriptionTier()` husker det hentede niveau i modulet, så Seriøs-låste sider vises straks ved fanebytte i stedet for at starte tomme.
+- `PremiumGate` har `renderWhilePending`: mens niveauet hentes, tegnes siden selv som skelet (design.md §6.14), og siden venter med datahentning via `usePremiumPending()`. Bruges kun af `/statistics` (undersiderne venter ikke på niveauet og vises derfor først, når det er kendt), så gratisbrugeres data stadig ikke hentes til låste sider.
+- Kort, der først findes, når data er hentet (fx sportskort), tegnes som skitser i fuld højde i stedet for "ingen data" under hentning.
+

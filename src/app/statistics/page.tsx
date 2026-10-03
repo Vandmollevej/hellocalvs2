@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { IconChevronDown, IconChevronUp, IconPlus } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
@@ -18,6 +18,7 @@ import { IntradayKcalChart } from "@/components/IntradayKcalChart";
 import { TopSinnersCard } from "@/components/TopSinnersCard";
 import { filterRegistrationsInRange, SINNERS_ENABLED } from "@/lib/food-classification";
 import { useSourceRegistrations } from "@/lib/use-source-registrations";
+import { usePremiumPending } from "@/components/PremiumGate";
 import {
   computeStatCards,
   DEFAULT_ACTIVE_STAT_KEYS,
@@ -130,6 +131,9 @@ export default function StatisticsPage() {
   const { weight: weightUnit } = useUnits();
   const chartWeightUnit = weightUnit === "kg" ? "kg" : "lb";
   const toChartWeight = useCallback((kg: number) => (weightUnit === "kg" ? kg : kgToLb(kg)), [weightUnit]);
+  // Mens Seriøs-niveauet hentes, tegnes siden som skelet uden at hente data
+  // (PremiumGate renderWhilePending); hentningen starter, når det er kendt.
+  const premiumPending = usePremiumPending();
   const [registrations, setRegistrations] = useState<RegistrationTotals[]>([]);
   const [weightEntries, setWeightEntries] = useState<WeightEntry[]>([]);
   const [activities, setActivities] = useState<ActivityTotals[]>([]);
@@ -142,6 +146,7 @@ export default function StatisticsPage() {
   // Kaloriemål pr. dato — kun fremadrettet (src/lib/daily-budget.ts).
   const [budgetSnapshots, setBudgetSnapshots] = useState<BudgetSnapshot[]>([]);
   useEffect(() => {
+    if (premiumPending) return;
     let cancelled = false;
     fetch("/api/daily-budgets")
       .then(async (response) => (response.ok ? ((await response.json()) as { snapshots: BudgetSnapshot[] }) : null))
@@ -152,7 +157,7 @@ export default function StatisticsPage() {
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [premiumPending]);
   const kcalGoalDaily = useMemo(() => {
     const lookup = makeBudgetLookup(budgetSnapshots, DAILY_KCAL_GOAL);
     const today = new Date();
@@ -166,9 +171,14 @@ export default function StatisticsPage() {
   const [warnOnRecommendedLimits, setWarnOnRecommendedLimits] = useState(false);
   const [autoExpandUncertainty, setAutoExpandUncertainty] = useState(false);
   const [loading, setLoading] = useState(true);
-  // Brugeren vælger selv, om Grafer eller Kort står øverst. localStorage er
-  // usynlig for serveren: render standarden først og skift efter mount.
+  // Brugeren vælger selv, om Grafer eller Kort står øverst, og har sin egen
+  // rækkefølge af kort og grafer (localStorage, usynlig for serveren).
+  // Sektionerne tegnes derfor først, når den gemte rækkefølge er læst — i en
+  // layout-effekt, dvs. før browseren maler — så intet bytter plads under
+  // indlæsningen. Kort og grafer læser selv deres gemte rækkefølge, når de
+  // monteres.
   const [sectionOrder, setSectionOrder] = useState<StatSectionKey[]>(DEFAULT_STAT_SECTION_ORDER);
+  const [layoutReady, setLayoutReady] = useState(false);
   const [periodSelection, setPeriodSelection] = useState<StatPeriodSelection>(DEFAULT_STAT_SELECTION);
   // "Tilføj" vises kun mens en sektion er i redigeringstilstand (blokkene
   // vibrerer) — eller er tom, så indhold altid kan tilføjes igen.
@@ -176,7 +186,7 @@ export default function StatisticsPage() {
   const [showAddCard, setShowAddCard] = useState(false);
   const showAdd = showAddChart || showAddCard;
   // G3: registreringer med klassifikation til kød/drikke-kortene og "Største syndere".
-  const { registrations: sourceRegistrations, loading: sourcesLoading } = useSourceRegistrations();
+  const { registrations: sourceRegistrations, loading: sourcesLoading } = useSourceRegistrations(!premiumPending);
   // Oplevelse af søvn (docs/DECISIONS.md 2026-09-26): 1–5 per day, plotted
   // next to the calorie intake.
   const [sleepEntries, setSleepEntries] = useState<{ date: string; rating: number }[]>([]);
@@ -202,9 +212,10 @@ export default function StatisticsPage() {
     };
   }, []);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     function syncSectionOrder() {
       setSectionOrder(loadSectionOrder());
+      setLayoutReady(true);
     }
     syncSectionOrder();
   }, []);
@@ -233,6 +244,7 @@ export default function StatisticsPage() {
   }
 
   useEffect(() => {
+    if (premiumPending) return;
     let cancelled = false;
     const today = new Date();
     const from = new Date(today);
@@ -245,9 +257,10 @@ export default function StatisticsPage() {
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [premiumPending]);
 
   useEffect(() => {
+    if (premiumPending) return;
     let cancelled = false;
 
     Promise.all([
@@ -312,7 +325,7 @@ export default function StatisticsPage() {
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [premiumPending]);
 
   const allDays = useMemo(() => groupByDay(registrations), [registrations]);
 
@@ -560,6 +573,7 @@ export default function StatisticsPage() {
           highlightRecommendedLimits={warnOnRecommendedLimits}
           autoExpandUncertainty={autoExpandUncertainty}
           onShowAddChange={setShowAddCard}
+          loading={loading}
         />
         {SINNERS_ENABLED && <TopSinnersCard registrations={periodSources} loading={sourcesLoading} />}
       </>
@@ -583,7 +597,7 @@ export default function StatisticsPage() {
           </div>
         )}
 
-        {sectionOrder.map((key, index) => (
+        {layoutReady && sectionOrder.map((key, index) => (
           <section
             key={key}
             className={`flex flex-col gap-4 ${index > 0 ? "border-t border-hf-tan-dark pt-4" : ""}`}
