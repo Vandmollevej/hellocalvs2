@@ -2964,7 +2964,7 @@ function HourEntriesOverlay({
         ))}
         {groups.map((group) => {
           const isOpen = openKeys.has(group.key);
-          // Kalorier fra mad som kyllingelår, vand som glas + cl — begge kan
+          // Kalorier fra mad som "540 kcal", vand som glas + cl — begge kan
           // stå på samme tidspunkt. Vand-varer tæller ikke som mad.
           const foodItems = group.items.filter(
             (item) => item.kind === "registration" && !isWaterRegistration(item.registration),

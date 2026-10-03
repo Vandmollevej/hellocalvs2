@@ -167,6 +167,9 @@ Erstatter "Varer uden kcal/protein/kulhydrat/fedt springes over" fra 2026-09-27.
 - Admin-gennemgang i Dubletter nulstilles ikke af kJ-rettelsen eller de afledte sukkerpåstande.
 ## 2026-10-02: Kalenderens miniature-tal — kyllingelår, flamme og vand i cl
 
+- **Rettet igen 2026-10-03 (brugeren):** kyllingelåret er fjernet fra
+  kalenderens dagvisning. Indtagne kalorier står som ren tekst "540 kcal"
+  med enheden bagerst. Flamme og glas bliver.
 - **Rettet 2026-10-03 (brugeren):** ikonet er et supplement til "kcal",
   aldrig en erstatning, og kyllingelåret bruges kun, hvor der i forvejen stod
   et ikon. "Overalt"-udrulningen fra 2026-10-02 er rullet tilbage: måneds-/
@@ -176,7 +179,7 @@ Erstatter "Varer uden kcal/protein/kulhydrat/fedt springes over" fra 2026-09-27.
   statistikboksen Kalorier (kyllingelår) beholder ikonskiftet og viser igen
   "kcal".
 - Kalenderens dagvisning (timerækken og timens oversigt) viser indtagne
-  kalorier som kyllingelår + "540 kcal", forbrændte som flamme +
+  kalorier som "540 kcal" (uden ikon, se rettelsen ovenfor), forbrændte som flamme +
   "+120 kcal", og vand som det eksisterende glas-ikon + mængde i cl. Fælles
   komponent `EnergyChip` (design.md §6.16).
 - Vand vises aldrig som "0 kcal". To kilder tælles sammen pr. time:
