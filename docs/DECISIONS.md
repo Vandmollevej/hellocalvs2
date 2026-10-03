@@ -2,6 +2,18 @@
 
 This file records durable decisions. Add a dated entry when a later decision changes one of them.
 
+## 2026-10-02: Flere integrationer — Garmin, WHOOP, Huawei + mærker via telefonen
+
+Brugerens krav: Garmin, Health Connect, eufy, Renpho, Tuya, Xiaomi, Huawei, WHOOP og Samsung (også ure/ringe, ikke kun vægte). "Vi må ikke videregive nogen informationer om brugeren."
+
+- **Cloud (OAuth):** Garmin (Health + Activity API, OAuth 2.0 med PKCE), WHOOP (API v2) og Huawei Health (Health Kit REST). Samme fælles adapter-mønster som Withings/Polar (`src/lib/integrations/registry.ts`).
+- **Kun læsning for alle nye.** Hello Cal sender ingen data om brugeren til Garmin, WHOOP eller Huawei (`write: []` i `sync-settings.ts`). Der bedes ikke om profil-scopes (navn/e-mail). Ved frakobling får appen besked om at stoppe adgangen (`revoke`: Garmin afregistrering, WHOOP `DELETE /user/access`, Huawei token-revoke).
+- **Garmin bruger ping-notifikationer** (`POST /api/integrations/garmin/webhook`). Kun Ping/Pull: Hello Cal henter selv data hos `apis.garmin.com` med brugerens token; data i selve notifikationen (Push) bruges ikke, da Garmin ikke signerer dem. Garmins pseudonyme bruger-ID gemmes i `Integration.externalUserId` for at koble ping til bruger. Valgfri `GARMIN_WEBHOOK_KEY` i adressen.
+- **Mærker uden åben API = kind "via":** Samsung Health (inkl. Galaxy Watch/Ring/Fit), eufy, Renpho, Xiaomi (Mi Fitness/Zepp Life) og Tuya/Smart Life. Deres app deler til Health Connect/Apple Health, og data kommer ind gennem Hello Cal-appen. Kortet viser vejledning + knap til Health Connect/Apple Health og bliver "Forbundet", når ingest ser data med deres afsender-app (`origin`, `src/lib/integrations/origins.ts`). Ingen forbindelse til mærket selv.
+- **Tuya:** direkte forbindelse kræver partneraftale (Tuya IoT-projekt + godkendt app-konto-kobling); vises som "via" med note om det.
+- Health Connect-delen af Hello Cal-appen er skrevet som Android-modul `native/android/healthconnect/` (ikke kompileret endnu).
+- Nye mærker har intet logo endnu (`icon: null` → forbogstav); brugeren lægger logoer i `public/integrations/`.
+
 ## 2026-10-02: Butiksimporten: alt fra arkene med (Bilka + REMA 1000)
 
 Erstatter "Varer uden kcal/protein/kulhydrat/fedt springes over" fra 2026-09-27.
@@ -3530,6 +3542,28 @@ Kilder på "Mad på latin" skal altid være officielle (Fødevarestyrelsen, Sund
 
 - Ny side /admin/economy: årsabonnementer (årlig sikker indkomst, sikret løbetid), månedsabonnementer (+ 3 mdr.) og næste måneds forventede indtjening. Kun betalende (provider sat); pris/periode fra MobilePay-træk og Stripe live (skønnet 1 md. ved mangel).
 - Afmelding: observeret 30-dages rate blandet med prior 7 %/md.; AI-knap lader OpenAI vurdere % pr. type (kun aggregater, store:false), forventningen regnes i koden. Grov model, ikke regnskab.
+
+
+## 2026-10-03 Opdater-varen-banner: 20 points
+
+- Mangler en vare indhold, energi (kun butiksvarer med `nutritionMissing`), logo eller produktbillede, vises et hvidt banner øverst på varesiden: "Optjen 20 points ved at opdatere varen". Det kan trækkes ned/skubbes op, så kun den smalle bar med grebet vises (`src/components/hf/UpdatePointsBanner.tsx`).
+- Banneret fører til `/add/[id]/update`: et kort pr. manglende ting (forside = billede + logo, energi, indhold). Fotoet læses af AI via `POST /api/products/[id]/update`; kun tomme felter udfyldes, eksisterende data overskrives aldrig. Forsiden bruger den eksisterende fritskrabning (logo → Brand.logoUrl, billede → `pendingImageUrl` til admin-godkendelse).
+- Points: ny `PointsReason.PRODUCT_UPDATED` (migration `20261003100000_points_product_updated`), 20 points højst én gang pr. bruger og vare, udbetales når fotoet faktisk udfyldte noget. Gælder også admin (brugerens krav, så det kan testes). Banneret skjules for den bruger, når point er optjent på varen.
+- Logik: `src/lib/product-update.ts`; `GET /api/products/[id]` returnerer `updateOffer` (null når intet mangler eller varen er privat).
+## 2026-10-02: Admin "Billeder i kø til frilæggelse"
+
+- Brugerkrav: under godkendelser skal der være en fane "Billeder i kø til
+  frilæggelse" med besked nedenunder om, at billederne scannes i nat.
+- Bygget som nyt punkt i gruppen Varegodkendelse (`/admin/images/cutout-queue`)
+  og som fane på Billedforslag (`ImagesTabs`). Siden læser kun:
+  `image_cutout_jobs` med status PENDING (listen) og FAILED (egen sektion;
+  de prøves ikke igen af sig selv). Udsnittet tegnes med CSS fra jobbets
+  `cropBox`, så admin ser det område, robotten fritlægger.
+- Beskeden under listen er brugerens tekst. Har jobbet `image-cutout` en fast
+  tid i `scheduled_jobs`, skrives klokkeslættet med; derudover vises
+  robottens faktiske plan (`describeNextRun`) og sidste kørsel, så teksten
+  aldrig lyver om, hvad der sker. Planen selv er ikke ændret (stadig
+  "Løbende", 2026-09-28) — det er ejerens valg.
 
 
 ## 2026-10-02: Robotternes kørselshistorik og "Nattens kørsler"

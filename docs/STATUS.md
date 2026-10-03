@@ -1,5 +1,25 @@
 # HELLO CAL — project status
 
+## 2026-10-03: Roadmap — sukkerfiltre skal ind i databasen (importen skal køres)
+
+Bygget og pushet til master, men virker først, når importen er kørt (brugerens valg: gem som to do, tag den, når resten af webændringerne er læst ind).
+
+Skal gøres:
+1. Deploy kører migrationen `20261002100000_sugar_claim_filters` (nye kolonner på `product_filters`).
+2. Kør `scripts/store-products-import/build_data.py` (lokalt) og derefter `store-products-agent` på NAS, så `lowSugar`, `noAddedSugar`, `reducedSugar` og `lightSugar` fyldes. Indtil da er de tomme, og søgning på fx "sukkerfri" finder kun varer, der allerede har sukkerfri-filteret.
+3. Tjek stikprøver i admin (Produktdatabase → filtre): fx "Light" på lightdrikke og "Uden tilsat sukker" på marmelade. Påstande, der kun står som ikon på emballagen, kan ikke aflæses og tilføjes manuelt.
+4. Ikke set i browseren: upload/drop-zonen under Opret egen ret (webversionen) og dobbeltklik på en halv time i kalenderen.
+
+Se DECISIONS.md "2026-10-02: Sukkerpåstande til søgning".
+## 2026-10-03: Opdater-varen-banner (20 points)
+
+- Hvidt, sammenklappeligt banner øverst på varesiden når indhold, energi, logo eller produktbillede mangler; fører til ny side `/add/[id]/update` med kamera pr. manglende ting. Giver 20 points én gang pr. bruger og vare — også for admin, så det kan testes. Se DECISIONS 2026-10-03.
+- Migration `20261003100000_points_product_updated` skal med deployet. Lint, typecheck og build kørt; ikke set i browser eller prøvet med rigtigt foto/AI-nøgle her — test: åbn en vare uden indhold/logo som admin, tag billede, tjek Profil → Points.
+## 2026-10-02: Admin — Billeder i kø til frilæggelse
+
+- Varegodkendelse har nyt punkt "Billeder i kø til frilæggelse" (`/admin/images/cutout-queue`), også som fane på Billedforslag. Viser ventende `ImageCutoutJob`s (forside/logo) med det udsnit robotten vil fritlægge, vare/brand og tidspunkt; fejlede jobs i egen sektion nederst. Under listen en besked, der følger robottens rigtige plan ("Disse billeder bliver scannet løbende" så længe jobbet står som Løbende; "… i nat kl. X" ved fast tid; advarsel hvis robotten er slået fra) + robottens faktiske plan og sidste kørsel (link til Robotter). Logik i `src/lib/cutout-queue.ts`.
+- Planen for `image-cutout` er bevaret som "Løbende" (DECISIONS 2026-09-28). Lint og build grønne; ikke live-testet (ingen lokal DB).
+
 
 ## 2026-10-03: Butiksimporten — alt fra Bilka- og REMA-arkene med
 
@@ -14,6 +34,15 @@
 - På desktop vises alle sider (også login, betingelser, privatlivspolitik) i WebShell med sidebjælke, topmenu og brødkrummer; kun admin, hello-doc, business og presse er fuld bredde.
 - Lint og typecheck grønne; ikke set i browser — tjek login-siderne på desktop.
 Last updated: 2026-10-02
+
+## 2026-10-02: Garmin, WHOOP, Huawei + eufy/Renpho/Xiaomi/Tuya/Samsung via telefonen
+
+- Nye cloud-integrationer: Garmin (`garmin.ts`, PKCE, ping-webhook `garmin-webhook.ts`), WHOOP (`whoop.ts`) og Huawei Health (`huawei-health.ts`). Kun læsning; afmelding hos appen ved frakobling. Parsere i `*-items.ts` med tests i `src/lib/integration-items.test.mjs` (9 grønne).
+- eufy, Renpho, Xiaomi, Tuya og Samsung Health (ure, ring, vægt) er "via"-kort: data via Health Connect/Apple Health; kortet bliver "Forbundet", når ingest ser deres app som `origin`. Se DECISIONS.md samme dato.
+- Health Connect: Android-modul `native/android/healthconnect/` (læs + skriv, timevis baggrundssync, `origin` på alle poster). Ikke kompileret (ingen Android SDK her); se `native/README.md`.
+- Migration `20261002120000_more_integrations` (enum-værdier + `integrations.externalUserId`) skal køre ved deploy. Nye nøgler i admin → API-nøgler og `compose.production.yaml`: `GARMIN_CLIENT_ID/SECRET`, `GARMIN_WEBHOOK_KEY`, `WHOOP_CLIENT_ID/SECRET`, `HUAWEI_HEALTH_CLIENT_ID/SECRET`, `HUAWEI_HEALTH_API_BASE`. `.env.production.example` er ikke opdateret (adgang nægtet her).
+- Lint, typecheck og build grønne. `page-tree.test.mjs` fejler stadig (også på master). Ikke live-testet: ingen nøgler/DB her; Garmin- og Huawei-feltnavne er ikke prøvet mod live-API.
+- Mangler fra brugeren: Garmin-partnergodkendelse, Huawei Health Kit-godkendelse, WHOOP-app, logoer til de nye mærker, og evt. Tuya-partneraftale.
 
 ## 2026-10-02: Kameraflowet — rigtige stillbilleder + nyt foto af indholdet
 
@@ -5184,3 +5213,14 @@ person-ikon). Lint kørt; ikke set visuelt.
 
 - Ny offentlig side `/e-numre` (`src/app/e-numre/page.tsx`) med hele E-nummer-databasen, numerisk sorteret, et hurtignavigations-chipfelt og ét `<section>` pr. E-nummer med eget anchor (`/e-numre#e100`, `#e150a`; se `src/lib/additive-anchor.ts`).
 - Info-vinduet (`AdditiveInfoModal`) linker nu til nummerets anchor ("Se alle E-numre").
+
+## 2026-10-03: Roadmap — SMS-kode (TeamMessage) + login-godkendelse med push
+
+Bygget og pushet på branch `claude/teammessage-sms` (IKKE flettet til master, ikke deployet — brugerens valg: skrevet på roadmap så det huskes). Typecheck + lint er rene; fuld `npm run build` og test med rigtig SMS/push er ikke kørt.
+
+Skal gøres, før branchen flettes:
+1. Læg TeamMessage-oplysninger i serverens `.env`: `TEAMMESSAGE_API_TOKEN`, `TEAMMESSAGE_TEAM_ID`, `TEAMMESSAGE_TEAMLIST_EMAIL`, `TEAMMESSAGE_SENDER_EMAIL` (valgfri: `TEAMMESSAGE_FROM`, `TEAMMESSAGE_TEST_MODE=1`). Uden dem kan ingen oprette konto (tilmelding kræver SMS-kode, fail-closed i produktion).
+2. Generér VAPID-nøgler (`npx web-push generate-vapid-keys`) og sæt `VAPID_PUBLIC_KEY`, `VAPID_PRIVATE_KEY`, `VAPID_CONTACT_EMAIL`. Uden dem er push-godkendelse automatisk slået fra.
+3. Afklar overlap med `src/lib/sms.ts` (GatewayAPI, anden session) — login-koder bruger `src/lib/teammessage.ts`.
+4. Flet til master (kører migrationerne `20261002100000` og `20261003100000`), `npm run build`, test med rigtigt nummer og rigtig telefon (på iPhone kræver Web Push, at appen ligger på hjemmeskærmen).
+5. Senere: native app (APNs/FCM) skal bruge samme endpoints (`/api/push/subscribe`, `/api/auth/login-approval/*`). Push-godkendelse gælder kun adgangskode-login; Google/Apple/Facebook og Face ID er uændrede.

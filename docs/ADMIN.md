@@ -34,6 +34,7 @@ og domænegodkendelse er stadig ikke bygget.
 
 - Administrator har en brandoversigt til kvalitetskontrol af automatisk fundne/genererede brandlogoer (status: afventer/godkendt/afvist).
 - Produktbillede-agenten søger/genererer automatisk et transparent PNG; usikre eller dårlige billeder sendes til admin-kontrol.
+- Fotos der venter på fritlægning (baggrund fjernes af billedrobotten) ses under Varegodkendelse → "Billeder i kø til frilæggelse" (fane på Billedforslag), med besked om at de scannes i nat og robottens faktiske plan.
 - Brugeroprettede ingrediensbilleder (kun for generiske råvarer) får status "Afventer godkendelse", indtil admin har godkendt dem. Alle godkendte billeder skal følge en fast stilguide (transparent baggrund, ensartet vinkel/lys/skala, ét motiv pr. billede).
 
 ## Community-validering og tillidssystem

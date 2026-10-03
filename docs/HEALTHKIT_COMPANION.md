@@ -188,3 +188,31 @@ Næste skridt, når en Mac/Xcode er tilgængelig: opret et rigtigt Xcode-projekt
 tilføj HealthKit-capability, byg videre på ovenstående for de øvrige typer i
 tabellen, og tilføj baggrunds-levering (`HKObserverQuery` +
 `enableBackgroundDelivery`) så appen ikke kun synkroniserer, når den åbnes.
+
+## Android-modulet og `origin` (2026-10-02)
+
+Android-delen er skrevet som et færdigt (endnu ikke kompileret) bibliotek i
+`native/android/healthconnect/` — se `native/README.md` for, hvordan det
+inkluderes i Android-appen, manifest-kravene og Google Plays Health
+Connect-erklæring. Det følger kontrakten ovenfor: `export` → læs Health
+Connect → `ingest` → skriv til Health Connect → gem `cursor`. Døgnsummer
+(skridt, distance, etager, aktiv/hvile-energi, puls gns./min./maks., vand)
+sendes som én række pr. lokal dato med `recordedAt` = `ÅÅÅÅ-MM-DDT00:00:00.000Z`;
+søvn tælles på datoen, natten slutter. Poster, Hello Cal selv har skrevet til
+Health Connect, sendes aldrig tilbage.
+
+Alle poster i `metrics[]`, `weights[]` og `activities[]` kan have et valgfrit
+`origin`: den app, der oprindeligt skrev dataene.
+
+- Android: `record.metadata.dataOrigin.packageName`, fx
+  `com.sec.android.app.shealth` (Samsung Health). For døgnsummer, som Health
+  Connect lægger sammen fra flere apps, sendes én af de bidragende apps.
+- iOS: `sample.sourceRevision.source.bundleIdentifier`.
+
+```json
+{ "type": "STEPS", "value": 8426, "recordedAt": "2026-08-28T00:00:00.000Z", "origin": "com.sec.android.app.shealth" }
+```
+
+Serveren bruger kun `origin` til at vise, hvilken app (vægt-, ur- eller
+sundhedsmærke) dataene kom fra. Feltet kan udelades; ældre apps uden feltet
+virker uændret.

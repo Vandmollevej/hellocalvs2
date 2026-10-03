@@ -246,7 +246,7 @@ og `SMTP_FROM=Hello Cal <no-reply@hellocal.io>` (kræver at `hellocal.io` er
 verificeret afsenderdomæne i Mailjet: SPF + DKIM-TXT i Cloudflare-zonen).
 Kontaktadresse `support@hellocal.io` videresendes med Cloudflare Email
 Routing. OAuth-redirect-URI'er hos Google, Facebook, Apple, Strava, Withings,
-Polar m.fl. og MobilePay-webhooken skal pege på `hellocal.io`. Passkeys er
+Polar, Garmin, WHOOP, Huawei m.fl. og MobilePay-webhooken skal pege på `hellocal.io`. Garmins ping-adresse er `https://hellocal.io/api/integrations/garmin/webhook?key=<GARMIN_WEBHOOK_KEY>`. Passkeys er
 bundet til hostnavnet og skal oprettes igen på det nye domæne.
 
 ## Search indexing
