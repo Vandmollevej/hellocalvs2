@@ -170,7 +170,7 @@ export default function SupportSettingsPage() {
         </div>
 
         <div className="flex flex-col gap-2">
-          <p className="hf-type-small hf-type-strong text-text-secondary hf-heading px-1 uppercase tracking-wide">
+          <p className="hf-type-section-title">
             {t("settings.support.period")}
           </p>
           <div className="grid grid-cols-2 gap-3 [&>*]:min-w-0">
@@ -201,7 +201,7 @@ export default function SupportSettingsPage() {
         </div>
 
         <div className="flex flex-col gap-2">
-          <p className="hf-type-small hf-type-strong text-text-secondary hf-heading px-1 uppercase tracking-wide">
+          <p className="hf-type-section-title">
             {t("settings.support.dataTitle")}
           </p>
           {inWebShell ? (
@@ -222,7 +222,7 @@ export default function SupportSettingsPage() {
                       const keys = group.keys.filter((key) => visibleKeys.includes(key));
                       return (
                         <div key={group.id} className="flex flex-col gap-2">
-                          <p className="hf-type-small hf-type-strong text-text-secondary hf-heading px-1 uppercase tracking-wide">
+                          <p className="hf-type-section-title">
                             {t(supportGroupLabelKey(group.id))}
                           </p>
                           <AccordionCard>

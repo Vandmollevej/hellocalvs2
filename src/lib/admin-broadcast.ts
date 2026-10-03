@@ -33,6 +33,15 @@ export function escapeBroadcastHtml(value: string) {
     .replace(/\n/g, "<br>");
 }
 
+// Beskeden er ren tekst (emojis er almindelige tegn). Links (http/https) bliver
+// klikbare i mailen; push viser teksten uændret.
+export function broadcastTextToHtml(message: string) {
+  return escapeBroadcastHtml(message).replace(
+    /https?:\/\/[^\s<]+[^\s<.,;:!?)"']/g,
+    (url) => `<a href="${url}">${url}</a>`
+  );
+}
+
 export async function queueBroadcast(subject: string, message: string, channels: BroadcastChannels) {
   const users = await prisma.user.findMany({
     where: channels.push && !channels.email ? { ...ACTIVE_USERS, pushSubscriptions: { some: {} } } : ACTIVE_USERS,
@@ -41,7 +50,7 @@ export async function queueBroadcast(subject: string, message: string, channels:
 
   const rows = [];
   for (const user of users) {
-    const bodyHtml = `<p>Hej ${escapeBroadcastHtml(user.displayName)},</p><p>${escapeBroadcastHtml(message)}</p><p>Hello Cal</p>`;
+    const bodyHtml = `<p>Hej ${escapeBroadcastHtml(user.displayName)},</p><p>${broadcastTextToHtml(message)}</p><p>Hello Cal</p>`;
     if (channels.email) {
       rows.push({ userId: user.id, event: "ADMIN_MESSAGE" as const, channel: "EMAIL" as const, subject, bodyHtml });
     }

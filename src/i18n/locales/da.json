@@ -282,6 +282,8 @@
     "error": "Noget gik galt — prøv igen"
   },
   "settings": {
+    "search": "Søg i indstillinger",
+    "searchNoResults": "Ingen indstillinger fundet",
     "title": "Indstillinger",
     "support": {
       "title": "Support",

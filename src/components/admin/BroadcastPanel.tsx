@@ -65,7 +65,7 @@ export function BroadcastPanel({ emailUsers, pushUsers }: { emailUsers: number; 
             onChange={(e) => setMessage(e.target.value)}
             maxLength={MAX_MESSAGE}
             rows={6}
-            placeholder="Besked"
+            placeholder="Besked (kun tekst — links og emojis virker)"
             className="hf-type-body rounded-lg border border-hf-tan-dark px-3 py-2"
           />
           <label className="hf-type-body flex items-center gap-2">
