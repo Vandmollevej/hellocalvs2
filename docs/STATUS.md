@@ -2,6 +2,13 @@
 
 Last updated: 2026-10-03
 
+## 2026-10-03: Voksne bestemmer selv, hvem i familien der ser deres profil
+
+- Ejerens svar på "Del med andre" (PR #216): det kommer ikke betaleren ved, om andre kan se hinandens konti. Voksne med eget login (og børn fra 15) vælger nu selv under "Del med andre" pr. familiemedlem, om personen må se profilen, og om personen også må oprette på deres vegne. "Delt med {navn}" viser, om personen kun kan se eller også oprette. Betaleren ser også "Del med andre" for sin egen profil og har altid fuld adgang.
+- Betaleren styrer kun profiler uden eget login og børn under 15 (Adgang, invitationens adgangsvalg, rettigheder ved Tilføj familiemedlem/barn). Se `docs/DECISIONS.md`.
+- Regel og test: `sharingDeciderId`/`peopleSharedWith` i `src/lib/family-sharing.ts` (`family-sharing.test.mjs`); `setAccessGrant` i `src/lib/family.ts` håndhæver den. Ingen migration.
+- Lint (0 fejl), typecheck, test (kun den kendte `page-tree`-fejl, som også fejler på master) og build grønne; skærmbillede med mockede API-svar. Ikke testet med login mod en rigtig database.
+
 ## 2026-10-03: Beskeder på Profil, Resultatvisning under Visning, Opsætning uden Sprog og region
 
 - Beskeder er flyttet fra Indstillinger til Profil som egen række lige under "Profil" øverst. Ulæst-tallet er en grøn cirkel (`--hf-color-brand`) med hvidt tal (`ChevronRow.badgeCount`, også Kontrol-log).

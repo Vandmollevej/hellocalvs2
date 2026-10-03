@@ -2711,12 +2711,19 @@
     },
     "sharing": {
       "title": "Share with others",
-      "intro": "See who in the family can view your profile and what they can see. {owner} decides who has access.",
+      "introSelf": "Choose who in the family may see your profile and who may also add entries on your behalf.",
+      "introSelfMember": "Choose who in the family may see your profile and who may also add entries on your behalf. This is your decision. {owner} pays for the family and always has access.",
+      "introOwner": "See who in the family can view your profile and what they can see. {owner} decides who has access.",
       "none": "No one else in the family can see your profile.",
+      "shareWith": "Share with {name}",
+      "allowWrite": "May also add entries for you",
+      "allowWriteFor": "{name} may also add entries for you",
       "sharedWith": "Shared with {name}",
       "ownerNote": "{name} pays for the family and always has access to your profile.",
       "grantNote": "{owner} has given {name} access to your profile.",
+      "selfGrantNote": "You can change or stop sharing with {name} above.",
       "canEdit": "{name} can also add and edit entries on your profile. Everything is in your control log.",
+      "viewOnly": "{name} can only view, not add or edit. Everything is in your control log.",
       "area": {
         "profile": "Profile (name, age, height)",
         "registrations": "Food entries",
@@ -2766,7 +2773,7 @@
     },
     "access": {
       "title": "Access",
-      "intro": "You always have full access to all profiles. Here you decide who may view which profiles and who may add entries on their behalf (e.g. add food).",
+      "intro": "You always have full access to all profiles. Here you decide who may view profiles without their own login and children under 15, and who may add entries on their behalf (e.g. add food). Adults with their own login decide for themselves under Share with others.",
       "who": "Access to {name}'s profile"
     },
     "rights": {
@@ -2849,7 +2856,7 @@
       "name": "Name",
       "email": "Email",
       "insightTitle": "Who should the person have insight into?",
-      "insightHelp": "For each profile, choose whether the person may see it and whether they may log on its behalf (e.g. add food). You can always change this under Access.",
+      "insightHelp": "For each profile, choose whether the person may see it and whether they may log on its behalf (e.g. add food). Adults with their own login choose who they share with themselves.",
       "addChild": "Add child under 18",
       "addChildTitle": "Add child under 18",
       "addChildIntro": "Children under 15 cannot create an account themselves, so you create the profile here. The child is then selected in the invitation.",
