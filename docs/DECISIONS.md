@@ -3531,3 +3531,11 @@ Kilder på "Mad på latin" skal altid være officielle (Fødevarestyrelsen, Sund
 - Ny side /admin/economy: årsabonnementer (årlig sikker indkomst, sikret løbetid), månedsabonnementer (+ 3 mdr.) og næste måneds forventede indtjening. Kun betalende (provider sat); pris/periode fra MobilePay-træk og Stripe live (skønnet 1 md. ved mangel).
 - Afmelding: observeret 30-dages rate blandet med prior 7 %/md.; AI-knap lader OpenAI vurdere % pr. type (kun aggregater, store:false), forventningen regnes i koden. Grov model, ikke regnskab.
 
+
+## 2026-10-02: Robotternes kørselshistorik og "Nattens kørsler"
+
+- Brugerønske: under robotterne i admin skal det stå, hvornår de sidst kørte og hvor meget de udførte; det samme skal stå på oversigten under overskriften "Nattens kørsler".
+- Ny tabel `scheduled_job_runs` (én række pr. kørsel: start, slut, status, besked, `itemCount` = udført, `runCount`, varighed). `scheduled_jobs` beholdes som "seneste status"; historikken er kun til visning og ryddes efter 30 dage.
+- Tomme OK-kørsler (0 udført) lægges sammen med forrige række, hvis den også var tom (`runCount` tæller tjekkene). Ellers ville "Løbende" robotter (tjek hvert 15. sekund) fylde tabellen.
+- Natten er kl. 20–08 dansk tid (`src/lib/jobs/night.ts`). Fra kl. 20 vises natten, der er i gang; ellers den seneste afsluttede.
+- Kontrakt: et job returnerer en besked eller `(besked, antal)` (Python) / `{ message, count }` (app-job). Samme regler i `job_control.py` (alle kopier) og `src/lib/jobs/runs.ts` — hold dem ens. Historikfejl vælter aldrig selve jobbet.

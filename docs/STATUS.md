@@ -61,6 +61,14 @@ Last updated: 2026-10-02
 - Cookie `hc_cal_visit` (dato): forste besog i dag viser morgenen med nattens sovn; senere besog i dag (og kun hvis brugeren har registreret noget for) scroller til nu +-2 timer.
 - Dobbeltklik pa en time i dagvisningen og pa en dag i ugens tidslinje abner tilfoej-menuen pa den halve time.
 - Lint og typecheck groenne; ikke testet i browser.
+## 2026-10-03: Robotternes seneste kørsel + "Nattens kørsler"
+
+- Admin → Robotter har nu kolonnerne "Seneste kørsel" (tid, status, varighed og besked med hvor meget der blev udført) og "I nat" (antal kørsler, udført, fejl). Oversigten har en ny boks "Nattens kørsler" med samme tal for alle robotter og jobs. Natten er kl. 20–08 dansk tid; om morgenen vises den netop afsluttede nat.
+- Ny tabel `scheduled_job_runs` (migration `20261002090000_scheduled_job_runs` skal køre ved deploy). Skrives af `src/lib/jobs/runner.ts` og alle `scripts/*/job_control.py`; kørsler ældre end 30 dage ryddes af vedligeholdsjobbet. Se DECISIONS.md samme dato.
+- Alle robotter returnerer nu `(besked, antal)`. Antallet er først med fra næste kørsel efter deploy; indtil da viser "I nat" "Ingen kørsler i nat".
+- Tests: `src/lib/jobs/night.test.mjs` (grøn). Lint, typecheck og `npm run build` grønne. Ikke live-testet (ingen lokal DB/login) — tjek Robotter og Oversigten efter første nat.
+- Bemærk: `page-tree.test.mjs` fejler stadig (uvedkommende; admin-sider mangler i `page-tree.ts`).
+
 ## 2026-09-29: Offentlig forside for udloggede
 
 - Ny hent-appen-forside uden telefonramme, med QR-koder, planer med betalings-ark, Hello Doc-bjælke, nøgletal fra databasen, `/business` (kontaktformular) og `/presse`. Se DECISIONS.md samme dato.
