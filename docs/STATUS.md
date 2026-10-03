@@ -5176,3 +5176,14 @@ person-ikon). Lint kørt; ikke set visuelt.
 
 - Ny offentlig side `/e-numre` (`src/app/e-numre/page.tsx`) med hele E-nummer-databasen, numerisk sorteret, et hurtignavigations-chipfelt og ét `<section>` pr. E-nummer med eget anchor (`/e-numre#e100`, `#e150a`; se `src/lib/additive-anchor.ts`).
 - Info-vinduet (`AdditiveInfoModal`) linker nu til nummerets anchor ("Se alle E-numre").
+
+## 2026-10-03: Roadmap — SMS-kode (TeamMessage) + login-godkendelse med push
+
+Bygget og pushet på branch `claude/teammessage-sms` (IKKE flettet til master, ikke deployet — brugerens valg: skrevet på roadmap så det huskes). Typecheck + lint er rene; fuld `npm run build` og test med rigtig SMS/push er ikke kørt.
+
+Skal gøres, før branchen flettes:
+1. Læg TeamMessage-oplysninger i serverens `.env`: `TEAMMESSAGE_API_TOKEN`, `TEAMMESSAGE_TEAM_ID`, `TEAMMESSAGE_TEAMLIST_EMAIL`, `TEAMMESSAGE_SENDER_EMAIL` (valgfri: `TEAMMESSAGE_FROM`, `TEAMMESSAGE_TEST_MODE=1`). Uden dem kan ingen oprette konto (tilmelding kræver SMS-kode, fail-closed i produktion).
+2. Generér VAPID-nøgler (`npx web-push generate-vapid-keys`) og sæt `VAPID_PUBLIC_KEY`, `VAPID_PRIVATE_KEY`, `VAPID_CONTACT_EMAIL`. Uden dem er push-godkendelse automatisk slået fra.
+3. Afklar overlap med `src/lib/sms.ts` (GatewayAPI, anden session) — login-koder bruger `src/lib/teammessage.ts`.
+4. Flet til master (kører migrationerne `20261002100000` og `20261003100000`), `npm run build`, test med rigtigt nummer og rigtig telefon (på iPhone kræver Web Push, at appen ligger på hjemmeskærmen).
+5. Senere: native app (APNs/FCM) skal bruge samme endpoints (`/api/push/subscribe`, `/api/auth/login-approval/*`). Push-godkendelse gælder kun adgangskode-login; Google/Apple/Facebook og Face ID er uændrede.
