@@ -4,6 +4,7 @@ import { flushQueuedEmails } from "@/lib/mailer";
 import { flushQueuedPush } from "@/lib/push";
 import { backfillMissingProductNutritionFeatures } from "@/lib/product-nutrition-features";
 import { runDueAppJobs } from "@/lib/jobs/runner";
+import { pruneOldJobRuns } from "@/lib/jobs/runs";
 import { rerunUncertainAnalyses } from "@/lib/uncertainty-rerun";
 import { scanProductLabels } from "@/lib/product-label-scan";
 import { grantEligibleReferralRewards } from "@/lib/referrals";
@@ -113,6 +114,8 @@ export function startScheduler() {
     runDueAppJobs({
       maintenance: async () => {
         await runSchedulerTick();
+        // Kørselshistorikken (scheduled_job_runs) holdes på 30 dage.
+        await pruneOldJobRuns().catch((error) => console.error("[scheduler] oprydning i kørselslog fejlede", error));
         return null;
       },
       "uncertainty-rerun": rerunUncertainAnalyses,

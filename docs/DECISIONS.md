@@ -3766,3 +3766,11 @@ Kilder på "Mad på latin" skal altid være officielle (Fødevarestyrelsen, Sund
 - Brugeren vælger frit begge billeder; der tvinges ikke kronologisk rækkefølge.
 - Alt sker på enheden ud fra billederne i IndexedDB; intet nyt sendes til
   serveren, og visningslåsen gælder også sammenligningen.
+
+## 2026-10-02: Robotternes kørselshistorik og "Nattens kørsler"
+
+- Brugerønske: under robotterne i admin skal det stå, hvornår de sidst kørte og hvor meget de udførte; det samme skal stå på oversigten under overskriften "Nattens kørsler".
+- Ny tabel `scheduled_job_runs` (én række pr. kørsel: start, slut, status, besked, `itemCount` = udført, `runCount`, varighed). `scheduled_jobs` beholdes som "seneste status"; historikken er kun til visning og ryddes efter 30 dage.
+- Tomme OK-kørsler (0 udført) lægges sammen med forrige række, hvis den også var tom (`runCount` tæller tjekkene). Ellers ville "Løbende" robotter (tjek hvert 15. sekund) fylde tabellen.
+- Natten er kl. 20–08 dansk tid (`src/lib/jobs/night.ts`). Fra kl. 20 vises natten, der er i gang; ellers den seneste afsluttede.
+- Kontrakt: et job returnerer en besked eller `(besked, antal)` (Python) / `{ message, count }` (app-job). Samme regler i `job_control.py` (alle kopier) og `src/lib/jobs/runs.ts` — hold dem ens. Historikfejl vælter aldrig selve jobbet.

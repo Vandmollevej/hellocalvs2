@@ -1766,6 +1766,26 @@ model ScheduledJob {
   @@map("scheduled_jobs")
 }
 
+// Kørselshistorik pr. job (admin "Robotter" og oversigtens "Nattens
+// kørsler", docs/DECISIONS.md 2026-10-02). Skrives af src/lib/jobs/runner.ts
+// og scripts/*/job_control.py. itemCount = hvor meget kørslen udførte (varer,
+// billeder, opskrifter …). Tomme OK-kørsler (itemCount 0) lægges sammen i
+// én række pr. stribe: runCount tæller tjekkene, finishedAt rykkes frem.
+model ScheduledJobRun {
+  id         String   @id @default(cuid())
+  jobKey     String
+  startedAt  DateTime
+  finishedAt DateTime
+  status     String
+  message    String?
+  itemCount  Int      @default(0)
+  runCount   Int      @default(1)
+  durationMs Int      @default(0)
+
+  @@index([jobKey, finishedAt])
+  @@map("scheduled_job_runs")
+}
+
 model FridaImportState {
   id                Int      @id @default(autoincrement())
   figshareArticleId Int      @unique

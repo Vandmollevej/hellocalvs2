@@ -5,6 +5,8 @@ import { HIDE_FROM_SEARCH_BELOW } from "@/lib/uncertainty-thresholds";
 import { countDuplicateReviews } from "@/lib/duplicate-review";
 import { QUALITY_CONTROL_PHOTO_TYPES } from "@/lib/quality-control-photo-types";
 import { JOBS } from "@/lib/jobs/registry";
+import { loadNightRuns } from "@/lib/jobs/runs";
+import { describeNightSummary, describeNightWindow } from "@/lib/jobs/night";
 import { ensureSecretsLoaded } from "@/lib/api-keys/store";
 import { allServiceStatuses } from "@/lib/api-keys/status";
 
@@ -13,6 +15,8 @@ import { allServiceStatuses } from "@/lib/api-keys/status";
 // Udvidet 2026-09-28 med scan, mail/push, usikkerheder pr. fane, drift
 // (cron-jobs, manglende API-nøgler) og nøgletal, så alt kan overskues ét sted.
 // Hver kilde fejler for sig, så én langsom/fejlende tabel ikke vælter siden.
+// "Nattens kørsler" (2026-10-02): hvad robotterne/jobbene udførte i nat
+// (scheduled_job_runs), robotterne først.
 
 const WIDGET_ROWS = 6;
 const DAY_MS = 24 * 60 * 60 * 1000;
@@ -80,6 +84,7 @@ export async function loadAdminDashboard(now: Date = new Date()) {
     sentMessages,
     recentFailedMessages,
     jobRows,
+    night,
     missingApiKeys,
     totalUsers,
     newUsersToday,
@@ -170,6 +175,7 @@ export async function loadAdminDashboard(now: Date = new Date()) {
       [],
     ),
     safe(prisma.scheduledJob.findMany(), []),
+    safe(loadNightRuns(now), null),
     safe(missingApiKeyServices(), [] as string[]),
     safe(prisma.user.count({ where: { role: "USER" } }), 0),
     safe(prisma.user.count({ where: { role: "USER", createdAt: { gte: startOfToday } } }), 0),
@@ -177,6 +183,29 @@ export async function loadAdminDashboard(now: Date = new Date()) {
     safe(prisma.product.count({ where: { status: "APPROVED", privateOwnerId: null } }), 0),
     safe(prisma.registration.count({ where: { createdAt: { gte: startOfToday } } }), 0),
   ]);
+
+  const nightRuns = night
+    ? {
+        windowText: describeNightWindow(night.window),
+        inProgress: night.window.inProgress,
+        jobs: [...JOBS]
+          .sort((a, b) => Number(b.runtime === "agent") - Number(a.runtime === "agent"))
+          .map((job) => {
+            const summary = night.byJob.get(job.key);
+            return {
+              key: job.key,
+              name: job.name,
+              robot: job.runtime === "agent",
+              runs: summary?.runs ?? 0,
+              items: summary?.items ?? 0,
+              errors: summary?.errors ?? 0,
+              text: describeNightSummary(summary),
+              message: summary?.lastMessage && summary.lastMessage !== "OK" ? summary.lastMessage : null,
+              error: summary?.lastError ?? null,
+            };
+          }),
+      }
+    : null;
 
   const rowByKey = new Map(jobRows.map((row) => [row.key, row]));
   const jobs = JOBS.map((job) => {
@@ -215,6 +244,7 @@ export async function loadAdminDashboard(now: Date = new Date()) {
       recentFailed: recentFailedMessages,
     },
     jobs,
+    nightRuns,
     missingApiKeys,
     stats: { totalUsers, newUsersToday, newUsersWeek, approvedProducts, registrationsToday },
   };

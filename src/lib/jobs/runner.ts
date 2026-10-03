@@ -2,6 +2,7 @@ import { prisma } from "@/lib/prisma";
 import { JOBS } from "@/lib/jobs/registry";
 import { isJobDue } from "@/lib/jobs/schedule";
 import { debugLog, errorText } from "@/lib/debug-log";
+import { normalizeJobResult, recordJobRun, type JobResult } from "@/lib/jobs/runs";
 
 // Kører app-processens jobs (runtime "app" i src/lib/jobs/registry.ts), når
 // scheduled_jobs-rækken siger det (admin "Cron-jobs", docs/DECISIONS.md
@@ -9,7 +10,10 @@ import { debugLog, errorText } from "@/lib/debug-log";
 // ved at sætte lastStartedAt betinget af den gamle værdi, så to processer
 // aldrig kører samme job samtidig.
 
-export type AppJobRunner = () => Promise<string | null>;
+// Et job returnerer en kort statusbesked og evt. hvor meget det udførte
+// ({ message, count }); begge vises på admin "Robotter"/"Cron-jobs" og i
+// "Nattens kørsler" (docs/DECISIONS.md 2026-10-02).
+export type AppJobRunner = () => Promise<JobResult>;
 
 export async function ensureJobRows() {
   await prisma.scheduledJob.createMany({
@@ -51,25 +55,28 @@ export async function runDueAppJobs(runners: Record<string, AppJobRunner>) {
     // natlige AI-genkørsel) må ikke blokere de øvrige — derfor uden await.
     // Hver kørsel står også i admin "Log" (docs/DECISIONS.md 2026-09-28).
     void runner()
-      .then((message) => {
-        void debugLog({ category: "cron", event: row.key, message: message ?? "OK", durationMs: Date.now() - started });
-        return prisma.scheduledJob.update({
+      .then(async (result) => {
+        const { message, count } = normalizeJobResult(result);
+        const finishedAt = new Date();
+        const durationMs = finishedAt.getTime() - started;
+        void debugLog({ category: "cron", event: row.key, message, durationMs });
+        await prisma.scheduledJob.update({
           where: { key: row.key },
-          data: { lastRunAt: new Date(), lastStatus: "OK", lastMessage: (message ?? "OK").slice(0, 1000), lastDurationMs: Date.now() - started },
+          data: { lastRunAt: finishedAt, lastStatus: "OK", lastMessage: message.slice(0, 1000), lastDurationMs: durationMs },
         });
+        await recordJobRun({ jobKey: row.key, startedAt: now, finishedAt, status: "OK", message, itemCount: count, durationMs });
       })
-      .catch((error: unknown) => {
+      .catch(async (error: unknown) => {
         console.error(`[jobs] ${row.key} fejlede`, error);
-        void debugLog({ category: "cron", event: row.key, level: "error", message: errorText(error), durationMs: Date.now() - started });
-        return prisma.scheduledJob.update({
+        const finishedAt = new Date();
+        const durationMs = finishedAt.getTime() - started;
+        const message = String(error instanceof Error ? error.message : error).slice(0, 1000);
+        void debugLog({ category: "cron", event: row.key, level: "error", message: errorText(error), durationMs });
+        await prisma.scheduledJob.update({
           where: { key: row.key },
-          data: {
-            lastRunAt: new Date(),
-            lastStatus: "ERROR",
-            lastMessage: String(error instanceof Error ? error.message : error).slice(0, 1000),
-            lastDurationMs: Date.now() - started,
-          },
+          data: { lastRunAt: finishedAt, lastStatus: "ERROR", lastMessage: message, lastDurationMs: durationMs },
         });
+        await recordJobRun({ jobKey: row.key, startedAt: now, finishedAt, status: "ERROR", message, itemCount: 0, durationMs });
       })
       .catch((error: unknown) => console.error(`[jobs] ${row.key}: status kunne ikke gemmes`, error))
       .finally(() => running.delete(row.key));
