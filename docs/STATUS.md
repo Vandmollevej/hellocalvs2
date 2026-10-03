@@ -3,6 +3,11 @@
 Last updated: 2026-10-02
 Last updated: 2026-10-03
 
+## 2026-10-02: Kalenderen husker den åbne dag
+
+- Dagsvisningen genåbnes efter navigation væk fra `/calendar` (Tilbage eller "Kalender" i menuen) i stedet for at falde tilbage til måneden. Ny `src/lib/calendar-open-day.ts` (URL `?date=` + sessionStorage), koblet ind i `src/app/calendar/page.tsx`. Se DECISIONS.md samme dato.
+- Lint, typecheck og build grønne. Ikke live-testet (ingen lokal DB/login) — test på telefon: åbn en dag → tryk en registrering → Tilbage, og åbn en dag → Statistik → Kalender.
+
 ## 2026-10-03: Business-siden — "Den typiske bruger" (annoncørstatistik)
 
 - `/business` har ny sektion mellem Mulighederne og Kontakt: medianbrugeren (køn + alder, startvægt, vægtændring + andel der har tabt sig, registreringer og dage med registrering pr. uge), de 5 mest registrerede produkttyper (andel af registreringer, 90 dage) og en tabel, der sammenligner den typiske bruger (median) med gennemsnittet af brugere med samme køn og alder (±5 år) — forskel i procentpoint for andele, ellers i procent. Se DECISIONS.md samme dato.

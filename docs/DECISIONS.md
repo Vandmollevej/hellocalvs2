@@ -123,6 +123,11 @@ Hello Cals partnerportal og ser sin egen partners data.
 - **Sammenligningsgruppe** = brugere med samme køn og alder ±5 år omkring medianalderen (mangler køn/alder, sammenlignes med alle). Forskel vises i **procentpoint** for andele (dage med registrering, vægtændring i % af startvægt, andel der har tabt sig, andel pr. produkttype) og i relativ **procent** for registreringer pr. uge.
 - Perioder: brug 30 dage, produkttyper 90 dage (`Product.productType`; retter = "Retter", råvarer = "Råvarer"), vægtændring = seneste minus første vejning med mindst 14 dages mellemrum.
 - **Aldrig opfundne tal og aldrig enkeltpersoner:** under 10 aktive brugere vises kun en forklaring; sammenligningen kræver mindst 5 i gruppen. Fejler databasen, vises sektionen uden tal. Beregnes ved hver sidevisning (ingen cache) — overvej cache, når brugertallet vokser.
+## 2026-10-02: Kalenderen husker den åbne dag
+
+- Går brugeren ind på en dag (dagsvisningen) og forlader /calendar (åbner en registrering, en anden side i bundmenuen osv.), genåbnes samme dag, når brugeren kommer tilbage — ikke månedsvisningen. Bruger-feedback 2026-10-02 ("det er irriterende").
+- Mekanik (`src/lib/calendar-open-day.ts`): den åbne dag spejles i URL'en som `/calendar?date=YYYY-MM-DD` (replaceState, så Tilbage-knappen lander på dagen) og i sessionStorage (så "Kalender" i bundmenuen, der linker til ren `/calendar`, også genåbner den — højst 6 timer efter, så en gammel dag ikke dukker op dagen efter i app'ens WebView).
+- Lukker brugeren selv dagsvisningen (tilbagepil, Escape, skift til anden visning), glemmes dagen igen, og indstillingen Kalendervisning gælder som før. Rækkefølge ved indlæsning: `?date=` → nylig dag i sessionStorage → `?view=day`/indstillingen Kalendervisning.
 
 ## 2026-09-29: Aktivitetsniveau, PAL og kaloriemål
 
