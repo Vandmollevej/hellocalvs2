@@ -4,13 +4,13 @@ import { useEffect, useState } from "react";
 import {
   IconMoon,
   IconUser,
-  IconCamera,
   IconStar,
   IconBook,
   IconChartLine,
 } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
 import { AccordionCard, ChevronRow } from "@/components/hf/AccordionCard";
+import { IconPhotoFrame } from "@/components/icons/PhotoFrame";
 import { IconPlateCutlery } from "@/components/icons/PlateCutlery";
 import { IconBathScale } from "@/components/hf/IconBathScale";
 import { IconWaistMeasure } from "@/components/icons/WaistMeasure";
@@ -114,7 +114,7 @@ export default function ProfilePage() {
               href="/profile/sleep"
             />
             <ChevronRow
-              icon={<IconCamera size={20} />}
+              icon={<IconPhotoFrame size={20} />}
               label={t("profile.row.photoDiary")}
               href="/profile/photo-diary"
             />

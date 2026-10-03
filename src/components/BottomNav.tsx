@@ -15,10 +15,10 @@ import {
   IconBulb,
   IconBook2,
   IconChartLine,
-  IconPhoto,
   IconUsers,
 } from "@tabler/icons-react";
 import { IconFavorite } from "@/components/icons/Favorite";
+import { IconPhotoFrame } from "@/components/icons/PhotoFrame";
 import { IconWaistMeasure } from "@/components/icons/WaistMeasure";
 import { useFamilyStatus } from "@/components/family/FamilyStatusProvider";
 import { ProfileSwitchList } from "@/components/family/ProfileSwitcher";
@@ -155,7 +155,7 @@ const NAV_ITEMS: NavItem[] = [
     key: "billeddagbog",
     href: BOTTOM_NAV_HREFS.billeddagbog,
     labelKey: "photoDiary",
-    render: (color, size) => <IconPhoto size={size} stroke={1.6} color={color} />,
+    render: (color, size) => <IconPhotoFrame size={size} stroke={1.6} color={color} />,
   },
   {
     key: "kropsmaal",
