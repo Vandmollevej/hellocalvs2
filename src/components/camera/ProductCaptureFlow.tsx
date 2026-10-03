@@ -1,9 +1,18 @@
 "use client";
 
-import { useCallback, useEffect, useEffectEvent, useMemo, useRef, useState } from "react";
+import {
+  useCallback,
+  useEffect,
+  useEffectEvent,
+  useMemo,
+  useRef,
+  useState,
+  type ComponentType,
+} from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { IconBarcode, IconCamera, IconFlame, IconList, IconPhoto, type Icon } from "@tabler/icons-react";
+import { IconCamera, IconFlame, IconList, IconPhoto } from "@tabler/icons-react";
+import { IconBarcodeCard } from "@/components/icons/BarcodeCard";
 import { BarcodeScanOverlay, type BarcodeDetection } from "@/components/hf/BarcodeScanOverlay";
 import { CaptureCheckOverlay } from "@/components/hf/CaptureCheckOverlay";
 import { PhotoWorkingOverlay } from "@/components/hf/HfLoader";
@@ -44,7 +53,8 @@ import {
   type LabelRead,
   type CaptureStep,
 } from "@/lib/product-capture";
-import { captureVideoFrame, useLiveFrames, type LiveFrame } from "./useLiveFrames";
+import { useLiveFrames, type LiveFrame } from "./useLiveFrames";
+import { cameraVideoConstraints, captureStill, captureVideoFrame, type Still, type StillCrop } from "@/lib/camera-still";
 import { newScanFlowId, scanFlowHeaders, scanLog } from "@/lib/scan-debug-log";
 import { useTranslation } from "@/i18n/LocaleProvider";
 
@@ -82,9 +92,14 @@ const FRONT_BURST_MS = 800;
 // Fokus-måleren: forsiden kræver fire stille målinger, etiketterne to.
 const FRONT_MIN_PROGRESS = 1;
 const LABEL_MIN_PROGRESS = 0.5;
+// Den levende scannings videobilleder (lokal OCR): energi/indhold beskæres
+// til søgerens kvadrat, forsiden ikke (docs/DECISIONS.md 2026-09-17).
+const LIVE_FRAME_MAX_SIDE = 1600;
+// Stregkodefotoet tages midt i scanningen og må ikke forsinke den.
+const BARCODE_PHOTO_MAX_SIDE = 1920;
 
-const STEP_ICONS: Record<CaptureStep, Icon> = {
-  barcode: IconBarcode,
+const STEP_ICONS: Record<CaptureStep, ComponentType<{ size?: number; stroke?: number }>> = {
+  barcode: IconBarcodeCard,
   front: IconPhoto,
   nutrition: IconFlame,
   ingredients: IconList,
@@ -97,7 +112,14 @@ function statusFromCameraError(error: unknown): CameraStatus {
   return "error";
 }
 
+// Det gemte foto (serverens AI) er et rigtigt stillbillede
+// (src/lib/camera-still.ts, docs/DECISIONS.md 2026-10-02); den levende
+// scanning afgør kun, hvornår det tages, og hvad telefonen selv læste.
 type Frame = { url: string; width: number; height: number };
+
+function liveCrop(step: CaptureStep): StillCrop {
+  return step === "front" ? "none" : "square";
+}
 
 // Den hvide udfyldning, når et trin er klaret: tekstfeltet (energi/indhold)
 // i det læste billedes pixels, eller varens kontur (forside).
@@ -268,7 +290,7 @@ export function ProductCaptureFlow({ returnSuffix }: { returnSuffix: string }) {
       try {
         const stream = await navigator.mediaDevices.getUserMedia({
           audio: false,
-          video: { facingMode: { ideal: "environment" }, width: { ideal: 1920 }, height: { ideal: 1080 } },
+          video: cameraVideoConstraints(),
         });
         if (cancelled) {
           stream.getTracks().forEach((track) => track.stop());
@@ -338,11 +360,16 @@ export function ProductCaptureFlow({ returnSuffix }: { returnSuffix: string }) {
     return completed;
   }
 
-  // Den hvide udfyldning står et øjeblik, og først derefter går flowet videre.
-  async function flashThenContinue(next: Flash, completed: Partial<Record<CaptureStep, boolean>>) {
+  // Den hvide udfyldning står et øjeblik, og først derefter går flowet videre
+  // — også først når `pending` (stillbilledet til serveren) er i hus.
+  async function flashThenContinue(
+    next: Flash,
+    completed: Partial<Record<CaptureStep, boolean>>,
+    pending: Promise<unknown> = Promise.resolve(),
+  ) {
     setFlash(next);
     flashRef.current = true;
-    await wait(reducedMotion() ? FLASH_REDUCED_MS : FLASH_MS);
+    await Promise.all([wait(reducedMotion() ? FLASH_REDUCED_MS : FLASH_MS), pending.catch(() => {})]);
     if (leavingRef.current) return;
     setFlash(null);
     flashRef.current = false;
@@ -472,7 +499,7 @@ export function ProductCaptureFlow({ returnSuffix }: { returnSuffix: string }) {
         if (response.status !== 404) throw new Error(`Product lookup failed (${response.status})`);
 
         // Ukendt vare: gem stregkoden og gå videre til forsiden.
-        const frame = captureVideoFrame(videoRef.current);
+        const frame = captureVideoFrame(videoRef.current, BARCODE_PHOTO_MAX_SIDE);
         dataRef.current.barcode = code;
         dataRef.current.languageSignals = readLanguageSignals(locale);
         const context = buildBarcodeContext(code, region, dataRef.current.languageSignals);
@@ -615,8 +642,22 @@ export function ProductCaptureFlow({ returnSuffix }: { returnSuffix: string }) {
     return cropToObject(frame, picked);
   }
 
-  // Forsiden: det skarpeste billede fra serien analyseres — objekter,
-  // dublet-tjek — og varens kontur fyldes hvid, når trinnet er klaret.
+  // Fotoet til serveren: kameraets stillbillede (ellers det skarpeste af tre
+  // videobilleder); fejler det, bruges den levende scannings eget billede.
+  async function takeStill(step: CaptureStep, fallback: LiveFrame): Promise<Still> {
+    const startedAt = Date.now();
+    const still = (await captureStill(videoRef.current, liveCrop(step))) ?? fallback;
+    scanLog(flowId, "photo_captured", {
+      message: `Foto til trinnet "${step}": ${still === fallback ? "scanningens videobillede" : still.source === "photo" ? "stillbillede" : "videobillede"} ${still.width}×${still.height}, skarphed ${still.sharpness}`,
+      barcode: dataRef.current.barcode,
+      durationMs: Date.now() - startedAt,
+      data: { step, source: still === fallback ? "live" : still.source, width: still.width, height: still.height, sharpness: still.sharpness },
+    });
+    return still;
+  }
+
+  // Forsiden: når serien er skarp, tages stillbilledet, som analyseres —
+  // objekter, dublet-tjek — og varens kontur fyldes hvid, når trinnet er klaret.
   async function processFront(frame: LiveFrame) {
     if (busyRef.current || leavingRef.current) return;
     busyRef.current = true;
@@ -625,7 +666,9 @@ export function ProductCaptureFlow({ returnSuffix }: { returnSuffix: string }) {
     const languages = ocrLanguages();
     const data = dataRef.current;
     const startedAt = Date.now();
-    const chosen = await chooseObject(frame.url);
+    const still = await takeStill("front", frame);
+    if (leavingRef.current || runId !== runIdRef.current) return;
+    const chosen = await chooseObject(still.url);
     if (leavingRef.current || runId !== runIdRef.current) return;
     data.frontPhoto = chosen;
     const front = await readFrontPhoto(chosen, languages, flowId);
@@ -637,7 +680,7 @@ export function ProductCaptureFlow({ returnSuffix }: { returnSuffix: string }) {
       barcode: data.barcode,
       productId: front.duplicateId,
       durationMs: Date.now() - startedAt,
-      data: { ...front, languages, sharpness: Math.round(frame.sharpness) },
+      data: { ...front, languages, sharpness: still.sharpness },
     });
     if (leavingRef.current || runId !== runIdRef.current) return;
     if (front.duplicateId) {
@@ -711,11 +754,21 @@ export function ProductCaptureFlow({ returnSuffix }: { returnSuffix: string }) {
     finishLabel(need, best, attempts);
   }
 
+  // Trinnet er klaret: telefonens egen aflæsning gemmes nu, og stillbilledet
+  // til serveren tages, mens udfyldningen vises (det erstatter videobilledet).
   function finishLabel(need: LabelNeed, best: LabelAttempt<LiveFrame>, attempts: number) {
     const { frame, read } = best;
     const data = dataRef.current;
     const languages = ocrLanguages();
     const durationMs = Date.now() - labelStartedAtRef.current;
+    const stillReady = takeStill(need, frame).then((still) => {
+      if (need === "nutrition") {
+        data.nutritionPhoto = still.url;
+        if (data.ingredientsOnNutritionPhoto) data.ingredientsPhoto = still.url;
+      } else {
+        data.ingredientsPhoto = still.url;
+      }
+    });
     if (need === "nutrition") {
       // "Ingredienser" på billedet udløser altid indholds-trinnet — kan listen
       // ikke læses lokalt, læser OpenAI den fra samme billede.
@@ -746,9 +799,9 @@ export function ProductCaptureFlow({ returnSuffix }: { returnSuffix: string }) {
       if (ingredientsFound) {
         // Indholdet står ved siden af næringstabellen: begge får flueben.
         data.localIngredientsText = read.ingredientsText ?? undefined;
-        void flashThenContinue(labelFlash(frame, read.regions), markDone("nutrition", "ingredients"));
+        void flashThenContinue(labelFlash(frame, read.regions), markDone("nutrition", "ingredients"), stillReady);
       } else {
-        void flashThenContinue(labelFlash(frame, read.regions, "nutrition"), markDone("nutrition"));
+        void flashThenContinue(labelFlash(frame, read.regions, "nutrition"), markDone("nutrition"), stillReady);
       }
       return;
     }
@@ -774,7 +827,7 @@ export function ProductCaptureFlow({ returnSuffix }: { returnSuffix: string }) {
     data.ingredientsOcrConfidence = read.confidence;
     data.ingredientsOnNutritionPhoto = false;
     if (ingredientsText) data.localIngredientsText = ingredientsText;
-    void flashThenContinue(labelFlash(frame, read.regions, "ingredients"), markDone("ingredients"));
+    void flashThenContinue(labelFlash(frame, read.regions, "ingredients"), markDone("ingredients"), stillReady);
   }
 
   // Et billede fra den levende scanning: forsiden samler en lille serie og
@@ -798,12 +851,11 @@ export function ProductCaptureFlow({ returnSuffix }: { returnSuffix: string }) {
   // et andet allerede er under aflæsning).
   function capturePhoto() {
     if (working || step === "barcode" || flash || pickObjects) return;
-    const frame = captureVideoFrame(videoRef.current);
-    if (!frame) {
+    const live = captureVideoFrame(videoRef.current, LIVE_FRAME_MAX_SIDE, liveCrop(step));
+    if (!live) {
       scanLog(flowId, "photo_capture_failed", { level: "warn", message: `Intet kamerabillede på trinnet "${step}"`, barcode: dataRef.current.barcode });
       return;
     }
-    const live: LiveFrame = { ...frame, sharpness: 0 };
     if (step === "front") {
       if (frontBurstRef.current) clearTimeout(frontBurstRef.current.timer);
       frontBurstRef.current = null;
@@ -845,6 +897,8 @@ export function ProductCaptureFlow({ returnSuffix }: { returnSuffix: string }) {
     videoRef,
     liveActive,
     step === "front" ? FRONT_MIN_PROGRESS : LABEL_MIN_PROGRESS,
+    liveCrop(step),
+    LIVE_FRAME_MAX_SIDE,
     () => !busyRef.current && !flashRef.current,
     onLiveFrame,
   );
