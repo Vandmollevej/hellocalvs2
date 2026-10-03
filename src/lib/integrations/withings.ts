@@ -85,6 +85,8 @@ const ymd = (date: Date) => date.toISOString().slice(0, 10);
 
 export const withings: OAuthProviderAdapter = {
   provider: "WITHINGS",
+  // Flere måletyper end før (2026-10-03): hent hele historikken igen én gang.
+  fetchVersion: 1,
   slug: "withings",
   label: "Withings",
   envPrefix: "WITHINGS",

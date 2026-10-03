@@ -75,6 +75,11 @@ Last updated: 2026-10-03
 - Alle nye almindelige konti starter med 35 points (`PointsReason.SIGNUP_BONUS`, `SIGNUP_BONUS_POINTS` i `src/lib/points-constants.ts`). Gives i `/api/auth/register` og ved første login med Google/Apple/Facebook (`src/lib/oauth.ts`) via `awardSignupBonus()` — højst én gang pr. bruger. Familieprofiler og admin-konti får den ikke. Vises som "Startbonus" under Profil → Points og står i Betingelser §8. Se DECISIONS.md samme dato.
 - Eksisterende brugere får også 35 points (ejerens valg): migration `20261003120100_points_signup_bonus_backfill` giver alle nuværende almindelige brugere bonussen én gang (ikke admin, glemte brugere eller betaler-oprettede familieprofiler).
 - Migrationerne `20261003120000_points_signup_bonus` og `…120100_points_signup_bonus_backfill` skal køre ved deploy. Testet mod en midlertidig PostgreSQL 16: alle migrationer kører, backfill rammer kun de rigtige brugere og giver ikke dobbelt bonus ved gentagelse. Lint, typecheck og build grønne; app-flowet ikke live-testet.
+## 2026-10-03: Smartvægt — låste vejninger, slette-advarsel og alle målinger
+
+- Synkroniserede vejninger kan ikke slettes/rettes (API 403); listen viser "Synkroniseret", som åbner et info-vindue med kilde og alle målinger. Samme vindue advarer før sletning af indtastede vejninger og indtag (dagens liste, stemme, chat). Withings henter nu alle måletyper; Garmin/Huawei/Fitbit flere. Se DECISIONS.md samme dato.
+- Kræver migration `20261003180000_all_scale_metrics` (16 enum-værdier + `integrations.fetchVersion`). Første synkronisering efter deploy henter Withings' historik (365 dage) igen.
+- Lint, typecheck, tests (undtagen den kendte `page-tree`-fejl, som også fejler på master) og build kørt. Ikke live-testet (ingen DB/Withings-konto i sessionen) — test på telefon: Profil → Vægt kalibrering → tryk "Synkroniseret" og "Slet"; swipe-slet et indtag på forsiden.
 
 ## 2026-10-02: Kalenderen husker den åbne dag
 

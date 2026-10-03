@@ -43,6 +43,8 @@ type WeightLog = { date: string; time: string; weight: number; bmi?: number };
 
 export const fitbit: OAuthProviderAdapter = {
   provider: "FITBIT",
+  // Flere måletyper end før (2026-10-03): hent hele historikken igen én gang.
+  fetchVersion: 1,
   slug: "fitbit",
   label: "Fitbit",
   envPrefix: "FITBIT",

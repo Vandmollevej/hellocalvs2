@@ -763,6 +763,10 @@ model Integration {
   // 2026-10-02: appens eget, pseudonyme bruger-ID (Garmin), så push-
   // notifikationer kan kobles til den rigtige Hello Cal-bruger.
   externalUserId String?
+  // 2026-10-03: hvilken version af adapterens datasæt der er hentet. Henter
+  // adapteren flere typer end før (OAuthProviderAdapter.fetchVersion), hentes
+  // hele historikken igen én gang.
+  fetchVersion Int                 @default(0)
   createdAt    DateTime            @default(now())
 
   @@unique([userId, provider])
@@ -1078,6 +1082,7 @@ enum HealthMetricType {
   SKIN_CONDUCTANCE_US
   RECOVERY_SCORE
   STRAIN_SCORE
+
 
   // Micronutrients (Statistik "Mineraler"/"Vitaminer" groups), shown with
   // periodic-table icons (public/icons/minerals) in StatCardsGrid.tsx.
