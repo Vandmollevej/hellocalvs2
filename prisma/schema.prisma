@@ -3374,6 +3374,9 @@ model FamilyAccessGrant {
   granteeId String
   subject   User     @relation("FamilyGrantSubject", fields: [subjectId], references: [id])
   subjectId String
+  // Rækken giver lov til at se profilen; canWrite giver også lov til at
+  // oprette på profilens vegne (registreringer, vand, vægt m.m.).
+  canWrite  Boolean  @default(true)
   createdAt DateTime @default(now())
 
   @@unique([granteeId, subjectId])

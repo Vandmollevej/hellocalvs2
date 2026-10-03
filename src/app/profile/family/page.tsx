@@ -29,6 +29,40 @@ type PendingCode = {
 type AddKind = "member" | "child";
 const emptyForm = { displayName: "", birthDate: "", sex: "", heightCm: "", weightKg: "" };
 
+// "none" | "read" (se profilen) | "write" (se og oprette på deres vegne).
+type AccessLevel = "none" | "read" | "write";
+type NewAccess = Record<string, { personOnNew: AccessLevel; newOnPerson: AccessLevel }>;
+
+// To kontakter for én persons adgang til én profil. At oprette på nogens
+// vegne kræver, at man også kan se profilen, så kontakterne følges ad.
+function AccessToggles({
+  level,
+  onChange,
+  disabled,
+}: {
+  level: AccessLevel;
+  onChange: (level: AccessLevel) => void;
+  disabled?: boolean;
+}) {
+  const { t } = useTranslation();
+  return (
+    <>
+      <Toggle
+        label={t("family.rights.see")}
+        checked={level !== "none"}
+        disabled={disabled}
+        onChange={(value) => onChange(value ? (level === "none" ? "read" : level) : "none")}
+      />
+      <Toggle
+        label={t("family.rights.write")}
+        checked={level === "write"}
+        disabled={disabled}
+        onChange={(value) => onChange(value ? "write" : level === "none" ? "none" : "read")}
+      />
+    </>
+  );
+}
+
 async function send(url: string, method: string, body?: unknown) {
   const res = await fetch(url, {
     method,
@@ -57,6 +91,7 @@ function FamilyPageContent() {
     addParam === "child" ? "child" : addParam === "member" || addParam === "1" ? "member" : null
   );
   const [form, setForm] = useState(emptyForm);
+  const [newAccess, setNewAccess] = useState<NewAccess>({});
   const [busy, setBusy] = useState(false);
 
   useEffect(() => {
@@ -110,9 +145,11 @@ function FamilyPageContent() {
   }
 
   async function addProfile() {
-    const result = await run("/api/family/members", "POST", { ...form, isChild: addKind === "child" });
+    const access = Object.entries(newAccess).map(([personId, levels]) => ({ personId, ...levels }));
+    const result = await run("/api/family/members", "POST", { ...form, isChild: addKind === "child", access });
     if (result.ok) {
       setForm(emptyForm);
+      setNewAccess({});
       setAddKind(null);
     }
   }
@@ -135,8 +172,17 @@ function FamilyPageContent() {
   const family = status.family;
   const members = family?.members ?? [];
   const nonOwners = members.filter((member) => member.userId !== family?.ownerId);
-  const hasGrant = (granteeId: string, subjectId: string) =>
-    Boolean(family?.grants.some((grant) => grant.granteeId === granteeId && grant.subjectId === subjectId));
+  const grantLevel = (granteeId: string, subjectId: string): AccessLevel => {
+    const grant = family?.grants.find((item) => item.granteeId === granteeId && item.subjectId === subjectId);
+    return grant ? (grant.canWrite ? "write" : "read") : "none";
+  };
+  const newName = form.displayName.trim() || t("family.rights.newProfile");
+  const newLevel = (personId: string, key: "personOnNew" | "newOnPerson") => newAccess[personId]?.[key] ?? "none";
+  const setNewLevel = (personId: string, key: "personOnNew" | "newOnPerson", level: AccessLevel) =>
+    setNewAccess((current) => ({
+      ...current,
+      [personId]: { ...(current[personId] ?? { personOnNew: "none", newOnPerson: "none" }), [key]: level },
+    }));
 
   const capacity = family?.capacity ?? status.maxProfiles;
   const memberName = (userId: string) => members.find((member) => member.userId === userId)?.displayName ?? "";
@@ -475,6 +521,30 @@ function FamilyPageContent() {
                     value={form.weightKg}
                     onChange={(event) => setForm({ ...form, weightKg: event.target.value })}
                   />
+                  {nonOwners.length > 0 && (
+                    <div className="hf-stack">
+                      <p className="hf-type-card-title">{t("family.rights.title")}</p>
+                      <p className="hf-type-caption">{t("family.rights.intro")}</p>
+                      {nonOwners.map((person) => (
+                        <div key={person.userId} className="hf-stack">
+                          <p className="userback-ignore userback-block hf-type-body hf-type-strong">
+                            {t("family.rights.personOn", { person: person.displayName, profile: newName })}
+                          </p>
+                          <AccessToggles
+                            level={newLevel(person.userId, "personOnNew")}
+                            onChange={(level) => setNewLevel(person.userId, "personOnNew", level)}
+                          />
+                          <p className="userback-ignore userback-block hf-type-body hf-type-strong">
+                            {t("family.rights.personOn", { person: newName, profile: person.displayName })}
+                          </p>
+                          <AccessToggles
+                            level={newLevel(person.userId, "newOnPerson")}
+                            onChange={(level) => setNewLevel(person.userId, "newOnPerson", level)}
+                          />
+                        </div>
+                      ))}
+                    </div>
+                  )}
                   <button
                     type="button"
                     disabled={busy || !form.displayName.trim()}
@@ -501,19 +571,20 @@ function FamilyPageContent() {
                   {nonOwners
                     .filter((grantee) => grantee.userId !== subject.userId)
                     .map((grantee) => (
-                      <Toggle
-                        key={grantee.userId}
-                        label={grantee.displayName}
-                        checked={hasGrant(grantee.userId, subject.userId)}
-                        disabled={busy}
-                        onChange={(value) =>
-                          run("/api/family/grants", "PUT", {
-                            granteeId: grantee.userId,
-                            subjectId: subject.userId,
-                            allowed: value,
-                          })
-                        }
-                      />
+                      <div key={grantee.userId} className="hf-stack">
+                        <p className="userback-ignore userback-block hf-type-body hf-type-strong">{grantee.displayName}</p>
+                        <AccessToggles
+                          level={grantLevel(grantee.userId, subject.userId)}
+                          disabled={busy}
+                          onChange={(level) =>
+                            run("/api/family/grants", "PUT", {
+                              granteeId: grantee.userId,
+                              subjectId: subject.userId,
+                              level,
+                            })
+                          }
+                        />
+                      </div>
                     ))}
                 </div>
               ))}

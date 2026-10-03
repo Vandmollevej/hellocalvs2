@@ -2608,6 +2608,7 @@
       "title": "Switch profile",
       "you": "Your own profile",
       "managing": "You are entering data for {name}",
+      "viewing": "You can view {name}'s profile",
       "meLabel": "{name} (you)",
       "active": "Selected",
       "manage": "Family and access"
@@ -2628,7 +2629,8 @@
       "whoHasAccess": "Who has access",
       "nobody": "No one else has access to your account.",
       "payer": "Payer",
-      "granted": "Has been given access",
+      "grantedRead": "Can view",
+      "grantedWrite": "Can view and add",
       "manage": "See the family",
       "eventsTitle": "Logins and actions",
       "empty": "No events yet.",
@@ -2709,8 +2711,16 @@
     },
     "access": {
       "title": "Access",
-      "intro": "You always have access to every profile. Here you decide who else may view and log for whom.",
-      "who": "May view and log for {name}"
+      "intro": "You always have full access to all profiles. Here you decide who may view which profiles and who may add entries on their behalf (e.g. add food).",
+      "who": "Access to {name}'s profile"
+    },
+    "rights": {
+      "title": "Permissions",
+      "intro": "You always have full access. For each person, choose whether they may view the profile and whether they may add entries on their behalf (e.g. add food). You can change this later under Access.",
+      "see": "View the profile",
+      "write": "Add on their behalf (e.g. add food)",
+      "personOn": "What {person} may do for {profile}",
+      "newProfile": "the new profile"
     },
     "claim": {
       "title": "Family code",

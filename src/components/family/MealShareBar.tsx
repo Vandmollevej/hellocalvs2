@@ -22,7 +22,10 @@ export function MealShareBar() {
   const { status } = useFamilyStatus();
   const { targets, update } = useMealShare();
   const others = useMemo(
-    () => (status ? status.profiles.filter((profile) => profile.id !== status.activeProfile.id) : []),
+    () =>
+      status
+        ? status.profiles.filter((profile) => profile.id !== status.activeProfile.id && profile.canWrite)
+        : [],
     [status]
   );
 

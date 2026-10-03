@@ -56,7 +56,9 @@ export function ProfileSwitcher() {
           <span className="userback-ignore userback-block hf-type-caption text-text-secondary">
             {status.activeProfile.id === status.me.id
               ? t("family.switcher.you")
-              : t("family.switcher.managing", { name: status.activeProfile.displayName })}
+              : t(status.activeProfile.canWrite ? "family.switcher.managing" : "family.switcher.viewing", {
+                  name: status.activeProfile.displayName,
+                })}
           </span>
         </button>
       </div>

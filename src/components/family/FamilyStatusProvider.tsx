@@ -8,7 +8,8 @@ import { isPublicPath } from "@/components/AuthGate";
 // man kan skifte til, og om en anden person er på den viste profil lige nu
 // (blå ramme + telefonikon). Hentes ved sideskift og hvert halve minut.
 
-export type FamilyProfile = { id: string; displayName: string; isChild: boolean };
+// canWrite: man må oprette på profilens vegne (ellers kun se den).
+export type FamilyProfile = { id: string; displayName: string; isChild: boolean; canWrite: boolean };
 
 export type FamilyMemberInfo = {
   userId: string;
@@ -34,7 +35,7 @@ export type FamilyStatus = {
     maxExtraSeats: number;
     capacity: number;
     members: FamilyMemberInfo[];
-    grants: { granteeId: string; subjectId: string }[];
+    grants: { granteeId: string; subjectId: string; canWrite: boolean }[];
   } | null;
   hasFamilyPlan: boolean;
   maxProfiles: number;

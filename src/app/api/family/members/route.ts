@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { getSessionUser, unauthorized } from "@/lib/session";
-import { createFamilyProfile } from "@/lib/family";
+import { createFamilyProfile, parseAccessLevel, type NewProfileAccess } from "@/lib/family";
 import { familyErrorResponse, readJson } from "@/lib/family-api";
 
 function optionalNumber(value: unknown) {
@@ -8,7 +8,23 @@ function optionalNumber(value: unknown) {
   return Number.isFinite(number) && number > 0 ? number : null;
 }
 
-// Betaleren opretter en ny profil i familien ("Er det et barn?").
+// Rettighederne valgt i formularen: for hvert andet familiemedlem, hvad de må
+// hos den nye profil, og hvad den nye profil må hos dem.
+function parseAccess(value: unknown): NewProfileAccess[] {
+  if (!Array.isArray(value)) return [];
+  return value.slice(0, 20).flatMap((entry) => {
+    if (!entry || typeof entry.personId !== "string") return [];
+    return [
+      {
+        personId: entry.personId,
+        personOnNew: parseAccessLevel(entry.personOnNew) ?? "none",
+        newOnPerson: parseAccessLevel(entry.newOnPerson) ?? "none",
+      },
+    ];
+  });
+}
+
+// Betaleren opretter et familiemedlem eller et barn (isChild) i familien.
 export async function POST(req: Request) {
   const login = await getSessionUser();
   if (!login) return unauthorized();
@@ -22,6 +38,7 @@ export async function POST(req: Request) {
       isChild: body.isChild === true,
       heightCm: optionalNumber(body.heightCm),
       weightKg: optionalNumber(body.weightKg),
+      access: parseAccess(body.access),
     });
     return NextResponse.json({ profile: { id: user.id, displayName: user.displayName } }, { status: 201 });
   } catch (error) {
