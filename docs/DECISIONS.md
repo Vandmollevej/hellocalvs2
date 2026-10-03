@@ -256,6 +256,13 @@ Uge- og Liste-visningen beholder "Ingen indtastninger" i gråt på tomme dage.
 - Grafernes linjevalg vises inde i kortet (ikke svævende), så det ikke klippes af omgivende bokse.
 - Sprogregel fra ejeren: "krydse af", "slå til" o.l. betyder altid til/fra-knapper (`Toggle`), aldrig afkrydsningsfelter.
 
+## 2026-10-02: Nøgleord på produktsiden
+
+- Brugerens krav: øvrige nøgleord (smagsretning, økologisk m.fl.), som admin vælger, listes før "Energifordeling" i HelloFresh' sorte, større brødtekst (`.hf-type-body-lg`, samme som velkomstsidens introtekst).
+- Admin vælger globalt (én række `product_page_tag_settings`): hele felter fra `products.flavor` / `product_filters` og enkelte frie nøgleord fra `products.keywords`. Ikke pr. vare.
+- Rækkefølge = feltkatalogets rækkefølge, derefter frie nøgleord i varens rækkefølge. Dubletter (uden store/små bogstaver) vises én gang. Procent vises som "4,6 % alkohol"/"3,5 % fedt", oprindelsesland som "Fra Danmark".
+- Certificeringslogoerne under energifordelingen er uændrede; et felt kan derfor både stå som ord og som logo.
+
 ## 2026-09-29: Aktivitetsniveau, PAL og kaloriemål
 
 - Erstatter faktorerne i 2026-09-28 "Aktivitetsniveau i 5 trin" (1,2–1,9). Nye niveauer og PAL-intervaller: se `docs/ACTIVITY-PAL.md` (planen; intet bygget). Ingen aktive brugere, så gamle niveauer erstattes uden overgangslogik.

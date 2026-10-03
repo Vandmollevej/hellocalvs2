@@ -258,6 +258,13 @@ Last updated: 2026-10-02
 - Grafernes linjevalg folder sig nu ud inde i kortet og kan rulle, så lange lister ikke klippes.
 - Lint og build grønne. Testet i Chromium i telefonbredde med falske API-svar (ingen lokal DB). `page-tree.test.mjs` fejler stadig, som på master.
 
+## 2026-10-02: Nøgleord på produktsiden
+
+- Produktsiden viser admins valgte nøgleord (smagsretning, økologisk, glutenfri … og valgte frie nøgleord fra produktarkene) som én linje i `.hf-type-body-lg` sort brødtekst lige over "Energifordeling", adskilt med " · ". Vises kun når varen har mindst ét.
+- Valget sker i admin → Varedatabase → Nøgleord (`/admin/product-database/tags`): felter + søgbar liste over alle frie nøgleord med antal varer + eksempel-linje. Standard uden gemt valg: smagsretning og økologisk.
+- Logik: `src/lib/product-page-tags.ts` (tests i `product-page-tags.test.mjs`), lagring `src/lib/product-page-tags-settings.ts`; `/api/products/[id]` returnerer `pageTags`.
+- Migration `20261002090000_product_page_tags` skal køre ved deploy (falder tilbage til standarden indtil da). Ikke live-testet (ingen lokal DB).
+
 ## 2026-10-02: Drikkevarer starter på pakkestørrelsen
 
 - Mængdefeltet viser nu 33 cl / 25 cl / 50 cl for dåser og små flasker, også når størrelsen kun står i navnet, og også for øl/vin uden kategorien DRINK. Vin, spiritus og færdigblandede drinks har egne regler (DECISIONS.md 2026-09-28, tilføjelse 2026-10-02).

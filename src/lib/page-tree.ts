@@ -366,6 +366,7 @@ export const PAGE_TREE: PageArea[] = [
             children: [
               { path: "/admin/product-database/products", label: "Varer" },
               { path: "/admin/product-database/brands", label: "Brands" },
+              { path: "/admin/product-database/tags", label: "Nøgleord" },
             ],
           },
           { path: "/admin/search", label: "Søg", note: "Gammel adresse — sender videre til Varer" },
