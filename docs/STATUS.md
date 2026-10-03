@@ -201,6 +201,12 @@ Last updated: 2026-10-02
 - Motion tæller nu med i målet i hele kalenderen (DECISIONS 2026-10-02): `DailyGoalContext` giver `base` (til "Mål") og `effective` (= base + dagens motion) — alle nået/over/balance-afgørelser bruger `effective`. Forside-kort og widgets er ikke rettet (andre gruppers filer).
 - Lint, typecheck og `npm run build` grønne. Ikke visuelt testet (ingen lokal DB/login) — tjek dag- og månedsvisning på telefon.
 
+## 2026-10-02: Statistiksiden — sektionsoverskrifter kun i redigering
+
+- Overskrifterne "Grafer" og "Kort" med op/ned-pile vises nu kun, mens en af sektionerne er i redigeringstilstand (langt tryk på graf/kort). I almindelig visning står graferne og kortene uden overskrifter; skillelinjen mellem sektionerne er bevaret.
+- `StatChartsSection` og `StatCardsGrid` har fået `onEditModeChange`, som statistiksiden bruger til at vise/skjule overskrifterne. Pilene virker stadig i redigering (knapper afslutter ikke redigeringen).
+- Lint, typecheck og `npm run build` kørt. Ikke live-testet (ingen lokal DB/login) — tjek på telefon.
+
 ## 2026-10-02: Drikkevarer starter på pakkestørrelsen
 
 - Mængdefeltet viser nu 33 cl / 25 cl / 50 cl for dåser og små flasker, også når størrelsen kun står i navnet, og også for øl/vin uden kategorien DRINK. Vin, spiritus og færdigblandede drinks har egne regler (DECISIONS.md 2026-09-28, tilføjelse 2026-10-02).

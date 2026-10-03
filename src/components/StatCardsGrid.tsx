@@ -262,6 +262,7 @@ export function StatCardsGrid({
   highlightRecommendedLimits = false,
   autoExpandUncertainty = false,
   onShowAddChange,
+  onEditModeChange,
 }: {
   cards: StatCardValue[];
   defaultActiveKeys: string[];
@@ -269,6 +270,8 @@ export function StatCardsGrid({
   autoExpandUncertainty?: boolean;
   /** True while editing — or when the grid is empty, so cards can always be added back. */
   onShowAddChange?: (show: boolean) => void;
+  /** True while the grid is in edit mode (long press). */
+  onEditModeChange?: (editing: boolean) => void;
 }) {
   // Kort hvor brugeren har vendt den grå usikkerhedslinje i forhold til
   // udgangspunktet (autoExpandUncertainty).
@@ -348,6 +351,10 @@ export function StatCardsGrid({
   useEffect(() => {
     onShowAddChange?.(editMode || !hasItems);
   }, [editMode, hasItems, onShowAddChange]);
+
+  useEffect(() => {
+    onEditModeChange?.(editMode);
+  }, [editMode, onEditModeChange]);
 
   useEffect(() => {
     if (isFirstRender.current) {
