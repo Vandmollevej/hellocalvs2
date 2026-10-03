@@ -245,9 +245,9 @@
   },
   "accountSettings": {
     "title": "Kontoindstillinger",
-    "closeTitle": "Luk konto",
-    "closeIntro": "Lukker din konto og logger dig ud. Dine personoplysninger fjernes, og du kan ikke logge ind igen.",
-    "closeButton": "Luk konto",
+    "closeLink": "Luk konto",
+    "closeSheetText": "Kontoen lukkes, og du logges ud på alle enheder. Fortryder du, så log ind igen inden for 3 måneder — så er alt, som det var. Efter 3 måneder slettes dine personoplysninger.",
+    "closeConfirmButton": "Luk konto",
     "forgetTitle": "Ret til at blive glemt",
     "forgetIntro": "Få alle dine personoplysninger slettet (GDPR). Anonymiserede data, der ikke kan kobles til dig, bevares.",
     "forgetButton": "Slet mine data",

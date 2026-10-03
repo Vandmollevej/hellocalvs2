@@ -60,6 +60,7 @@ export default async function AdminUsersPage() {
                   wantsAdviceEmails: user.wantsAdviceEmails,
                   wantsPartnerOffersEmails: user.wantsPartnerOffersEmails,
                   forgottenAt: user.forgottenAt?.toISOString() ?? null,
+                  closedAt: user.closedAt?.toISOString() ?? null,
                 }}
               />
             ))}

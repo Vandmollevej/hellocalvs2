@@ -3,6 +3,12 @@
 Last updated: 2026-10-02
 Last updated: 2026-10-03
 
+## 2026-10-03: "Luk konto" kan fortrydes i 3 måneder
+
+- Luk konto lukker nu kun kontoen (`User.closedAt`) og logger ud overalt; login inden for 3 måneder genåbner den, derefter anonymiseres den automatisk. "Ret til at blive glemt" sletter stadig med det samme (SLET). Abonnement opsiges ved lukning. Se DECISIONS.md samme dato.
+- "Luk konto" på /settings/account er nu et sort, understreget tekstlink nederst — ingen stor knap. Chatbottens viden er rettet.
+- Migration `20261003120000_account_closed_at` skal køre ved deploy. Lint, typecheck og build grønne. Ikke live-testet (ingen lokal DB) — test: luk en testkonto, log ind igen, og tjek at alt er der.
+
 ## 2026-10-02: Kalenderen husker den åbne dag
 
 - Dagsvisningen genåbnes efter navigation væk fra `/calendar` (Tilbage eller "Kalender" i menuen) i stedet for at falde tilbage til måneden. Ny `src/lib/calendar-open-day.ts` (URL `?date=` + sessionStorage), koblet ind i `src/app/calendar/page.tsx`. Se DECISIONS.md samme dato.

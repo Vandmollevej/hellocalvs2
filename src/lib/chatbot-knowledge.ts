@@ -85,7 +85,8 @@ export const CHATBOT_KNOWLEDGE = `
 - Face ID: efter et almindeligt login bliver du tilbudt Face ID. Det kan også slås til under Rediger profil (/profile/edit). Face ID gælder kun den enhed, du slår det til på.
 - Sprog: Indstillinger → Sprog og region (/profile/settings/language-region).
 - Notifikationer: Indstillinger → Notifikationer (/profile/notifications).
-- Slet konto: send en henvendelse via Kontakt os (/settings/support/contact), så sletter Support kontoen. Privatlivspolitikken beskriver, hvad der sker med data.
+- Luk konto: Indstillinger → Kontoindstillinger (/settings/account), linket "Luk konto". Du logges ud, og et abonnement opsiges. Fortryder du, så log ind igen inden for 3 måneder — så er kontoen åben igen. Efter 3 måneder slettes dine personoplysninger.
+- Slet dine data med det samme (ret til at blive glemt): Indstillinger → Kontoindstillinger (/settings/account), "Slet mine data". Det kan ikke fortrydes. Privatlivspolitikken beskriver, hvad der sker med data.
 
 ## Abonnement og betaling
 - Gratis: appen kan bruges gratis med ${FREE_TIER_RETENTION_DAYS} dages historik.

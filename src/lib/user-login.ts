@@ -4,6 +4,7 @@ import { prisma } from "@/lib/prisma";
 import { queueMessage } from "@/lib/messaging";
 import { USER_SESSION_COOKIE, USER_SESSION_MAX_AGE, signUserSession } from "@/lib/user-auth";
 import { ACTIVE_PROFILE_COOKIE, logProfileAccess } from "@/lib/family-access";
+import { reopenClosedAccount } from "@/lib/account-closure";
 
 // Fælles afslutning på alle login-metoder (e-mail + adgangskode, Face ID/
 // passkey, Google, Apple, Facebook): sætter session-cookien og genkender
@@ -170,6 +171,9 @@ export async function completeLogin<T extends NextResponse>(
     path: "/",
     maxAge: DEVICE_COOKIE_MAX_AGE,
   });
+
+  // Login inden for 3 måneder genåbner en lukket konto (docs/DECISIONS.md 2026-10-03).
+  await reopenClosedAccount(userId);
 
   // Et nyt login starter altid på brugerens egen profil (docs/FAMILY.md).
   response.cookies.set(ACTIVE_PROFILE_COOKIE, "", { path: "/", maxAge: 0 });

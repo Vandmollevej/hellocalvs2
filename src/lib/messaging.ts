@@ -47,6 +47,17 @@ export async function queueMessage(
     });
   }
 
+  // Lukkede konti (src/lib/account-closure.ts) får hverken mail eller push —
+  // undtagen nulstilling af adgangskode, som er en vej til at genåbne kontoen.
+  if (opts.userId && event !== "PASSWORD_RESET") {
+    const recipient = await prisma.user.findUnique({ where: { id: opts.userId }, select: { closedAt: true } });
+    if (recipient?.closedAt) {
+      return prisma.outboundMessage.create({
+        data: { userId: opts.userId, event, channel: template.channel, status: "SKIPPED" },
+      });
+    }
+  }
+
   if (opts.userId && USER_TOGGLEABLE_EVENTS.includes(event)) {
     const pref = await prisma.notificationPreference.findUnique({
       where: { userId_event: { userId: opts.userId, event } },
