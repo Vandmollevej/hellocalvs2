@@ -2,17 +2,18 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { HfScreen } from "@/components/HfScreen";
 import { BottomSheet } from "@/components/hf/BottomSheet";
 import { useTranslation } from "@/i18n/LocaleProvider";
 
 type Mode = "close" | "forget";
 
-// Kontoindstillinger: "Ret til at blive glemt" anonymiserer med det samme
-// (src/lib/gdpr.ts), og brugeren skal skrive SLET. "Luk konto" er kun et sort,
-// understreget tekstlink (ejerens regel 2026-10-03) og kan fortrydes ved at
-// logge ind inden for 3 måneder (src/lib/account-closure.ts).
-export default function AccountSettingsPage() {
+// Nederst på Profil (/profile/edit) — flyttet fra den tidligere side
+// Kontoindstillinger (ejerens valg 2026-10-03). "Ret til at blive glemt"
+// anonymiserer med det samme (src/lib/gdpr.ts), og brugeren skal skrive SLET.
+// "Luk konto" er kun et sort, understreget tekstlink (ejerens regel
+// 2026-10-03) og kan fortrydes ved at logge ind inden for 3 måneder
+// (src/lib/account-closure.ts).
+export function AccountDeletionSection() {
   const { t } = useTranslation();
   const router = useRouter();
   const [mode, setMode] = useState<Mode | null>(null);
@@ -45,8 +46,8 @@ export default function AccountSettingsPage() {
   }
 
   return (
-    <HfScreen title={t("accountSettings.title")}>
-      <div className="hf-page hf-stack">
+    <>
+      <div className="mt-6 flex flex-col gap-4">
         <section className="flex flex-col gap-3">
           <h2 className="hf-type-body hf-type-strong">{t("accountSettings.forgetTitle")}</h2>
           <p className="hf-type-body text-text-secondary">{t("accountSettings.forgetIntro")}</p>
@@ -105,6 +106,6 @@ export default function AccountSettingsPage() {
           </div>
         </BottomSheet>
       )}
-    </HfScreen>
+    </>
   );
 }

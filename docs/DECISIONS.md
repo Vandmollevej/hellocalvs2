@@ -4256,3 +4256,10 @@ Brugerens ord: pulsen skal begynde at forsvinde bagfra og frem, ligesom den kom 
 - Invitationen genbruger de e-mail-bundne familiekoder (samme dag, ovenfor): `createFamilyInvitation` laver en kode til e-mailen og gemmer `inviteeName` og `grantSubjectIds` på den. `joinFamily` opretter tildelingerne til de valgte profiler, der stadig er med i familien. Kontoen skal stadig have præcis invitationens e-mail.
 - Ejerens egen app-konto får Seriøs Familie (status ACTIVE, intet udløb, ingen udbyder) via migration; har kontoen en rigtig betalingsaftale, sættes kun planen. Administratorers familier dækker nu også medlemmerne.
 
+
+## 2026-10-03: Slet/luk konto ligger nederst på Profil
+
+Ejerens krav: "Mulighed for slet profil skal ned nederst under Profil-siden."
+
+- "Ret til at blive glemt" og "Luk konto" vises nederst på `/profile/edit` (under Face ID), med samme bundark, SLET-bekræftelse og tekstlink-stil som før.
+- Siden `/settings/account` (Indstillinger → Kontoindstillinger) er fjernet, så der kun er ét sted at slette/lukke kontoen. Afløser placeringen i beslutningerne 2026-10-02 og 2026-10-03 ovenfor.
