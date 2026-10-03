@@ -2,6 +2,17 @@
 
 This file records durable decisions. Add a dated entry when a later decision changes one of them.
 
+## 2026-10-03: Familie — "Skift profil" under cirklen, "Tilføj familiemedlem" / "Tilføj barn (under 18)" og rettigheder "se" / "oprette på deres vegne"
+
+Brugerens krav: "i stedet for administrator skal der stå med fed Skift profil i stedet for overskrift for oven man ikke ser. Men det skal hedde tilføj familiemedlem. Og 'tilføj barn (under 18)'. Og når man opretter skal man for alle have mulighed for at vælge … både læse og skriverettigheder", præciseret: "Rettigheder til at oprette på deres vegne og se deres profil". Profilvælgeren øverst på Profil beholdes.
+
+- **Profilvælger:** ingen overskrift over cirklen. Under den står fed "Skift profil" med pil (ikke navnet), og under det "Din egen profil", "Du taster ind for {navn}" eller "Du kan se {navn}s profil".
+- **Tilføj:** "Tilføj profil" er erstattet af "Tilføj familiemedlem" og "Tilføj barn (under 18)" i profilvælgeren og på familiesiden (`?add=member` / `?add=child`, `?add=1` = familiemedlem). Valget afgør `isChild`; toggle'en "Er det et barn?" er fjernet fra formularen.
+- **To rettigheder pr. person pr. profil:** "Se profilen" og "Oprette på deres vegne (fx tilføje mad)". At oprette kræver, at man kan se, så kontakterne følges ad. Gemmes som `FamilyAccessGrant` (rækken = se) med `canWrite` (oprette); eksisterende tildelinger var "se og taste ind" og beholder begge (migration `20261003230000_family_grant_write`). Betaleren har altid begge dele.
+- **Ved oprettelse** vælger betaleren for hvert andet familiemedlem begge veje: hvad personen må hos den nye profil, og hvad den nye profil må hos personen (`access` i `POST /api/family/members`). Alt starter slået fra. Bagefter ændres det under Familie → Adgang (`PUT /api/family/grants` med `level` = `none`/`read`/`write`).
+- **Håndhævelse:** `canActFor(…, "write")` kræves for alle ændringer på en andens profil (`getProfileContext` med CREATED/UPDATED/DELETED, fælles måltid og "Kopier til konto"). Må man kun se, afvises ændringen (401) i stedet for at falde tilbage til ens egen profil. "Til:"-rækken og "Kopier til konto" viser kun profiler, man må oprette for. Kontrol-loggen viser "Må se" eller "Må se og oprette" ud for hver person.
+- **Beslutning ved sammenfletning (2026-10-03, brugerens valg):** dette design erstatter "Skift profil som række med buet pil" fra PR #206; "Inviter familiemedlem" (PR #199) er uændret ved siden af.
+
 ## 2026-10-03: Flere sider kan lægges i bundmenuen
 
 - Brugerens ønske: Favoritter, Viden om, Opskrifter, Status, Billeddagbog og Kropsmål kan vælges som ikoner i bundmenuen. De ligger i puljen (ikke i standardmenuen, som stadig er Tilføj/Madvarer/Kalender/Statistik).

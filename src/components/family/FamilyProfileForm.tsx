@@ -21,12 +21,15 @@ const EMPTY: FamilyProfileInput = { displayName: "", birthDate: "", sex: "", isC
 export function FamilyProfileForm({
   busy,
   childOnly = false,
+  memberOnly = false,
   onSubmit,
   onCancel,
 }: {
   busy: boolean;
   /** Kun børn under 18: "Er det et barn?" er altid slået til og skjult. */
   childOnly?: boolean;
+  /** Kun familiemedlemmer: "Er det et barn?" er altid slået fra og skjult. */
+  memberOnly?: boolean;
   /** Returnerer true, når profilen er oprettet (formularen tømmes). */
   onSubmit: (input: FamilyProfileInput) => Promise<boolean>;
   onCancel: () => void;
@@ -41,7 +44,7 @@ export function FamilyProfileForm({
       setError(t("family.add.childTooOld"));
       return;
     }
-    if (await onSubmit({ ...form, isChild: childOnly ? true : form.isChild })) setForm(EMPTY);
+    if (await onSubmit({ ...form, isChild: childOnly ? true : memberOnly ? false : form.isChild })) setForm(EMPTY);
   }
 
   return (
@@ -86,7 +89,7 @@ export function FamilyProfileForm({
         value={form.weightKg}
         onChange={(event) => setForm({ ...form, weightKg: event.target.value })}
       />
-      {!childOnly && (
+      {!childOnly && !memberOnly && (
         <Toggle
           label={t("family.add.isChild")}
           description={t("family.add.isChildHelp")}
@@ -105,7 +108,7 @@ export function FamilyProfileForm({
         onClick={submit}
         className="hf-control hf-btn-primary w-full px-4"
       >
-        {t(childOnly ? "family.add.submitChild" : "family.add.submit")}
+        {t(childOnly ? "family.add.submitChild" : memberOnly ? "family.add.addMember" : "family.add.submit")}
       </button>
       <button type="button" onClick={onCancel} className="hf-btn-text">
         {t("common.cancel")}

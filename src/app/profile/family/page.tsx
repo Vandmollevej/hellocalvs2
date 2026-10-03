@@ -30,6 +30,43 @@ type PendingCode = {
   qrDataUrl: string;
 };
 
+type AddKind = "member" | "child";
+const emptyForm = { displayName: "", birthDate: "", sex: "", heightCm: "", weightKg: "" };
+
+// "none" | "read" (se profilen) | "write" (se og oprette på deres vegne).
+type AccessLevel = "none" | "read" | "write";
+type NewAccess = Record<string, { personOnNew: AccessLevel; newOnPerson: AccessLevel }>;
+
+// To kontakter for én persons adgang til én profil. At oprette på nogens
+// vegne kræver, at man også kan se profilen, så kontakterne følges ad.
+function AccessToggles({
+  level,
+  onChange,
+  disabled,
+}: {
+  level: AccessLevel;
+  onChange: (level: AccessLevel) => void;
+  disabled?: boolean;
+}) {
+  const { t } = useTranslation();
+  return (
+    <>
+      <Toggle
+        label={t("family.rights.see")}
+        checked={level !== "none"}
+        disabled={disabled}
+        onChange={(value) => onChange(value ? (level === "none" ? "read" : level) : "none")}
+      />
+      <Toggle
+        label={t("family.rights.write")}
+        checked={level === "write"}
+        disabled={disabled}
+        onChange={(value) => onChange(value ? "write" : level === "none" ? "none" : "read")}
+      />
+    </>
+  );
+}
+
 async function send(url: string, method: string, body?: unknown) {
   const res = await fetch(url, {
     method,
@@ -51,8 +88,15 @@ function FamilyPageContent() {
   const [codeEmail, setCodeEmail] = useState("");
   const [joinCode, setJoinCode] = useState("");
   const [joinEmail, setJoinEmail] = useState("");
-  const [showAdd, setShowAdd] = useState(searchParams?.get("add") === "1");
+  // Hvilken oprettelse er åben: "member" (Tilføj familiemedlem) eller
+  // "child" (Tilføj barn (under 18)). Profilvælgeren linker med ?add=…
+  const addParam = searchParams?.get("add");
+  const [addKind, setAddKind] = useState<AddKind | null>(
+    addParam === "child" ? "child" : addParam === "member" || addParam === "1" ? "member" : null
+  );
   const [showInvite, setShowInvite] = useState(searchParams?.get("invite") === "1");
+  const [form, setForm] = useState(emptyForm);
+  const [newAccess, setNewAccess] = useState<NewAccess>({});
   const [busy, setBusy] = useState(false);
 
   useEffect(() => {
@@ -105,9 +149,20 @@ function FamilyPageContent() {
     await loadCodes();
   }
 
-  async function addProfile(input: FamilyProfileInput) {
-    const result = await run("/api/family/members", "POST", input);
-    if (result.ok) setShowAdd(false);
+  async function addProfile() {
+    const access = Object.entries(newAccess).map(([personId, levels]) => ({ personId, ...levels }));
+    const result = await run("/api/family/members", "POST", { ...form, isChild: addKind === "child", access });
+    if (result.ok) {
+      setForm(emptyForm);
+      setNewAccess({});
+      setAddKind(null);
+    }
+  }
+
+  // Uden familie endnu: den delte formular (ingen andre at give rettigheder).
+  async function addProfileFromForm(input: FamilyProfileInput) {
+    const result = await run("/api/family/members", "POST", { ...input, access: [] });
+    if (result.ok) setAddKind(null);
     return result.ok;
   }
 
@@ -129,8 +184,17 @@ function FamilyPageContent() {
   const family = status.family;
   const members = family?.members ?? [];
   const nonOwners = members.filter((member) => member.userId !== family?.ownerId);
-  const hasGrant = (granteeId: string, subjectId: string) =>
-    Boolean(family?.grants.some((grant) => grant.granteeId === granteeId && grant.subjectId === subjectId));
+  const grantLevel = (granteeId: string, subjectId: string): AccessLevel => {
+    const grant = family?.grants.find((item) => item.granteeId === granteeId && item.subjectId === subjectId);
+    return grant ? (grant.canWrite ? "write" : "read") : "none";
+  };
+  const newName = form.displayName.trim() || t("family.rights.newProfile");
+  const newLevel = (personId: string, key: "personOnNew" | "newOnPerson") => newAccess[personId]?.[key] ?? "none";
+  const setNewLevel = (personId: string, key: "personOnNew" | "newOnPerson", level: AccessLevel) =>
+    setNewAccess((current) => ({
+      ...current,
+      [personId]: { ...(current[personId] ?? { personOnNew: "none", newOnPerson: "none" }), [key]: level },
+    }));
 
   const capacity = family?.capacity ?? status.maxProfiles;
   const memberName = (userId: string) => members.find((member) => member.userId === userId)?.displayName ?? "";
@@ -220,8 +284,11 @@ function FamilyPageContent() {
                   <button type="button" onClick={() => setShowInvite(true)} className="hf-control hf-btn-primary w-full px-4">
                     {t("family.invite.title")}
                   </button>
-                  <button type="button" onClick={() => setShowAdd(true)} className="hf-control hf-btn-secondary w-full px-4">
-                    {t("family.add.newProfile")}
+                  <button type="button" onClick={() => setAddKind("member")} className="hf-control hf-btn-secondary w-full px-4">
+                    {t("family.add.addMember")}
+                  </button>
+                  <button type="button" onClick={() => setAddKind("child")} className="hf-control hf-btn-secondary w-full px-4">
+                    {t("family.add.addChild")}
                   </button>
                 </>
               ) : (
@@ -231,11 +298,17 @@ function FamilyPageContent() {
               )}
             </div>
           </section>
-          {status.hasFamilyPlan && showAdd && (
+          {status.hasFamilyPlan && addKind && (
             <section>
               <h2 className="hf-type-section-title">{t("family.add.title")}</h2>
               <div className="hf-card">
-                <FamilyProfileForm busy={busy} onSubmit={addProfile} onCancel={() => setShowAdd(false)} />
+                <FamilyProfileForm
+                  busy={busy}
+                  childOnly={addKind === "child"}
+                  memberOnly={addKind === "member"}
+                  onSubmit={addProfileFromForm}
+                  onCancel={() => setAddKind(null)}
+                />
               </div>
             </section>
           )}
@@ -407,7 +480,7 @@ function FamilyPageContent() {
           {members.length < capacity && (
             <section>
               <h2 className="hf-type-section-title">{t("family.add.title")}</h2>
-              {!showAdd ? (
+              {!addKind ? (
                 <div className="hf-stack">
                   <button
                     type="button"
@@ -418,15 +491,100 @@ function FamilyPageContent() {
                   </button>
                   <button
                     type="button"
-                    onClick={() => setShowAdd(true)}
+                    onClick={() => setAddKind("member")}
                     className="hf-control hf-btn-secondary w-full px-4"
                   >
-                    {t("family.add.newProfile")}
+                    {t("family.add.addMember")}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setAddKind("child")}
+                    className="hf-control hf-btn-secondary w-full px-4"
+                  >
+                    {t("family.add.addChild")}
                   </button>
                 </div>
               ) : (
-                <div className="hf-card">
-                  <FamilyProfileForm busy={busy} onSubmit={addProfile} onCancel={() => setShowAdd(false)} />
+                <div className="hf-card hf-stack">
+                  <p className="hf-type-card-title">
+                    {t(addKind === "child" ? "family.add.addChild" : "family.add.addMember")}
+                  </p>
+                  {addKind === "child" && <p className="hf-type-caption">{t("family.add.isChildHelp")}</p>}
+                  <TextField
+                    variant="standard"
+                    label={t("family.add.name")}
+                    value={form.displayName}
+                    className="userback-ignore"
+                    onChange={(event) => setForm({ ...form, displayName: event.target.value })}
+                  />
+                  <TextField
+                    variant="standard"
+                    type="date"
+                    label={t("family.add.birthDate")}
+                    value={form.birthDate}
+                    onChange={(event) => setForm({ ...form, birthDate: event.target.value })}
+                  />
+                  <label className="hf-type-body flex flex-col gap-2">
+                    {t("family.add.sex")}
+                    <select
+                      value={form.sex}
+                      onChange={(event) => setForm({ ...form, sex: event.target.value })}
+                      className="hf-type-input h-12 rounded-[8px] border border-hf-gray-border bg-hf-cream px-4"
+                    >
+                      <option value="">{t("family.add.sexUnknown")}</option>
+                      <option value="FEMALE">{t("family.add.sexFemale")}</option>
+                      <option value="MALE">{t("family.add.sexMale")}</option>
+                    </select>
+                  </label>
+                  <TextField
+                    variant="standard"
+                    inputMode="decimal"
+                    label={t("family.add.heightCm")}
+                    value={form.heightCm}
+                    onChange={(event) => setForm({ ...form, heightCm: event.target.value })}
+                  />
+                  <TextField
+                    variant="standard"
+                    inputMode="decimal"
+                    label={t("family.add.weightKg")}
+                    value={form.weightKg}
+                    onChange={(event) => setForm({ ...form, weightKg: event.target.value })}
+                  />
+                  {nonOwners.length > 0 && (
+                    <div className="hf-stack">
+                      <p className="hf-type-card-title">{t("family.rights.title")}</p>
+                      <p className="hf-type-caption">{t("family.rights.intro")}</p>
+                      {nonOwners.map((person) => (
+                        <div key={person.userId} className="hf-stack">
+                          <p className="userback-ignore userback-block hf-type-body hf-type-strong">
+                            {t("family.rights.personOn", { person: person.displayName, profile: newName })}
+                          </p>
+                          <AccessToggles
+                            level={newLevel(person.userId, "personOnNew")}
+                            onChange={(level) => setNewLevel(person.userId, "personOnNew", level)}
+                          />
+                          <p className="userback-ignore userback-block hf-type-body hf-type-strong">
+                            {t("family.rights.personOn", { person: newName, profile: person.displayName })}
+                          </p>
+                          <AccessToggles
+                            level={newLevel(person.userId, "newOnPerson")}
+                            onChange={(level) => setNewLevel(person.userId, "newOnPerson", level)}
+                          />
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                  <button
+                    type="button"
+                    disabled={busy || !form.displayName.trim()}
+                    onClick={addProfile}
+                    className="hf-control hf-btn-primary w-full px-4"
+                  >
+                    {t(addKind === "child" ? "family.add.addChild" : "family.add.addMember")}
+                  </button>
+                  <button type="button" onClick={() => setAddKind(null)} className="hf-btn-text">
+                    {t("common.cancel")}
+                  </button>
                 </div>
               )}
             </section>
@@ -442,19 +600,20 @@ function FamilyPageContent() {
                   {nonOwners
                     .filter((grantee) => grantee.userId !== subject.userId)
                     .map((grantee) => (
-                      <Toggle
-                        key={grantee.userId}
-                        label={grantee.displayName}
-                        checked={hasGrant(grantee.userId, subject.userId)}
-                        disabled={busy}
-                        onChange={(value) =>
-                          run("/api/family/grants", "PUT", {
-                            granteeId: grantee.userId,
-                            subjectId: subject.userId,
-                            allowed: value,
-                          })
-                        }
-                      />
+                      <div key={grantee.userId} className="hf-stack">
+                        <p className="userback-ignore userback-block hf-type-body hf-type-strong">{grantee.displayName}</p>
+                        <AccessToggles
+                          level={grantLevel(grantee.userId, subject.userId)}
+                          disabled={busy}
+                          onChange={(level) =>
+                            run("/api/family/grants", "PUT", {
+                              granteeId: grantee.userId,
+                              subjectId: subject.userId,
+                              level,
+                            })
+                          }
+                        />
+                      </div>
                     ))}
                 </div>
               ))}

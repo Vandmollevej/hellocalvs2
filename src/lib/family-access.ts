@@ -37,9 +37,13 @@ export type ProfileArea =
   | "recipeFavorites"
   | "login";
 
-// Må actorId se og taste ind for subjectId? Betaleren har adgang til alle
-// familiens profiler; andre kun via en FamilyAccessGrant fra betaleren.
-export async function canActFor(actorId: string, subjectId: string): Promise<boolean> {
+// "read" = se profilen, "write" = også oprette på profilens vegne.
+export type AccessMode = "read" | "write";
+
+// Må actorId se (eller oprette for) subjectId? Betaleren har fuld adgang til
+// alle familiens profiler; andre kun via en FamilyAccessGrant fra betaleren,
+// hvor canWrite afgør, om de også må oprette på profilens vegne.
+export async function canActFor(actorId: string, subjectId: string, mode: AccessMode = "read"): Promise<boolean> {
   if (actorId === subjectId) return true;
   const membership = await prisma.familyMember.findUnique({
     where: { userId: subjectId },
@@ -49,9 +53,9 @@ export async function canActFor(actorId: string, subjectId: string): Promise<boo
   if (membership.family.ownerId === actorId) return true;
   const grant = await prisma.familyAccessGrant.findUnique({
     where: { granteeId_subjectId: { granteeId: actorId, subjectId } },
-    select: { familyId: true },
+    select: { familyId: true, canWrite: true },
   });
-  return grant?.familyId === membership.familyId;
+  return grant?.familyId === membership.familyId && (mode === "read" || grant.canWrite);
 }
 
 // Profiler, den indloggede bruger kan skifte til (inkl. sig selv først).
@@ -82,11 +86,16 @@ export async function listAccessibleProfiles(loginUserId: string) {
   const allowed = [];
   for (const other of others) {
     if (await canActFor(loginUserId, other.id)) {
-      allowed.push({ id: other.id, displayName: other.displayName, isChild: other.familyMembership?.isChild ?? false });
+      allowed.push({
+        id: other.id,
+        displayName: other.displayName,
+        isChild: other.familyMembership?.isChild ?? false,
+        canWrite: await canActFor(loginUserId, other.id, "write"),
+      });
     }
   }
   return [
-    { id: loginUserId, displayName: me?.displayName ?? "", isChild: false },
+    { id: loginUserId, displayName: me?.displayName ?? "", isChild: false, canWrite: true },
     ...allowed,
   ];
 }
@@ -115,7 +124,8 @@ export async function logProfileAccess(
 
 // Den valgte profil (eller den indloggede selv) plus den indloggede. Når
 // profilen tilhører en anden, logges handlingen, så profilens ejer kan se den
-// i Kontrol-loggen.
+// i Kontrol-loggen. Må man kun se profilen, giver en ændring null (ruten
+// svarer 401) — den må aldrig falde tilbage og ramme ens egen profil.
 export async function getProfileContext(
   area: ProfileArea,
   action: ProfileAccessAction
@@ -127,6 +137,8 @@ export async function getProfileContext(
   const activeId = store.get(ACTIVE_PROFILE_COOKIE)?.value;
   if (!activeId || activeId === login.id) return { login, profile: login };
   if (!(await canActFor(login.id, activeId))) return { login, profile: login };
+  const writes = action !== "VIEWED" && action !== "OPENED";
+  if (writes && !(await canActFor(login.id, activeId, "write"))) return null;
 
   const profile = await prisma.user.findUnique({ where: { id: activeId } });
   if (!profile || profile.forgottenAt || profile.closedAt) return { login, profile: login };
@@ -181,7 +193,7 @@ export async function shareRegistration(
 
   let count = 0;
   for (const target of targets) {
-    if (!(await canActFor(loginId, target.profileId))) continue;
+    if (!(await canActFor(loginId, target.profileId, "write"))) continue;
     await prisma.registration.create({
       data: {
         ...registrationCopyData(source, target.factor),

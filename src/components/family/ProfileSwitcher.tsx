@@ -6,12 +6,13 @@ import { IconCheck, IconMail, IconPlus, IconUsers } from "@tabler/icons-react";
 import { useFamilyStatus } from "@/components/family/FamilyStatusProvider";
 import { ProfileCircle } from "@/components/family/ProfileCircle";
 import { HfChevron } from "@/components/hf/HfChevron";
-import { IconSwitchProfile } from "@/components/icons/SwitchProfile";
 import { useTranslation } from "@/i18n/LocaleProvider";
 
-// "Skift profil" øverst på Profil (docs/FAMILY.md): en række for sig selv med
-// buet op/ned-pil (ejerens valg 2026-10-03). Tryk folder listen ud; et tryk på
-// en profil skifter til den. Den valgte profils cirkel står under rækken.
+// "Skift profil" øverst på Profil (docs/FAMILY.md): profilcirklen med fed
+// "Skift profil" og pil under (i stedet for en række over cirklen og navnet
+// under, brugerens valg 2026-10-03). Tryk folder listen ud; et tryk på en
+// profil skifter til den. Betaleren kan herfra tilføje et familiemedlem eller
+// et barn.
 export function ProfileSwitcher() {
   const { t } = useTranslation();
   const { status } = useFamilyStatus();
@@ -29,28 +30,32 @@ export function ProfileSwitcher() {
 
   return (
     <section className="flex flex-col gap-2">
-      <div className="overflow-hidden rounded-[8px] bg-hf-tan">
+      <div className="flex flex-col items-center gap-2 py-2">
         <button
           type="button"
           onClick={() => setOpen((value) => !value)}
           aria-expanded={open}
-          className="flex h-12 w-full items-center gap-4 px-4 text-left"
+          className="flex flex-col items-center gap-2"
         >
-          <span className="flex h-5 w-5 items-center justify-center text-hf-black">
-            <IconSwitchProfile size={20} />
+          <ProfileCircle name={status.activeProfile.displayName} size={96} tone="brand" />
+          <span className="flex items-center gap-1">
+            <span className="hf-type-body hf-type-strong">{t("family.switcher.title")}</span>
+            <HfChevron direction={open ? "up" : "down"} className="text-hf-black" />
           </span>
-          <span className="hf-type-body flex-1 truncate">{t("family.switcher.title")}</span>
-          <HfChevron direction={open ? "up" : "down"} className="text-hf-black" />
+          <span className="userback-ignore userback-block hf-type-caption text-text-secondary">
+            {status.activeProfile.id === status.me.id
+              ? t("family.switcher.you")
+              : t(status.activeProfile.canWrite ? "family.switcher.managing" : "family.switcher.viewing", {
+                  name: status.activeProfile.displayName,
+                })}
+          </span>
         </button>
-        {open && <ProfileSwitchList onDone={() => setOpen(false)} />}
       </div>
-      <div className="flex flex-col items-center gap-2 py-2">
-        <ProfileCircle name={status.activeProfile.displayName} size={96} tone="brand" />
-        <span className="userback-ignore userback-block hf-type-body truncate">{status.activeProfile.displayName}</span>
-        <span className="hf-type-caption text-text-secondary">
-          {status.activeProfile.id === status.me.id ? t("family.switcher.you") : t("family.switcher.managing")}
-        </span>
-      </div>
+      {open && (
+        <div className="overflow-hidden rounded-[8px] bg-hf-tan">
+          <ProfileSwitchList onDone={() => setOpen(false)} />
+        </div>
+      )}
     </section>
   );
 }
@@ -95,16 +100,19 @@ export function ProfileSwitchList({ onDone }: { onDone?: () => void }) {
           </button>
         </li>
       ))}
-      {canManage && (
-        <li className="border-b border-hf-tan-dark">
-          <Link href="/profile/family?add=1" onClick={onDone} className="flex h-12 w-full items-center gap-4 px-4">
-            <span className="flex h-8 w-8 items-center justify-center rounded-full border border-hf-black">
-              <IconPlus size={16} />
-            </span>
-            <span className="hf-type-body flex-1">{t("family.switcher.addProfile")}</span>
-          </Link>
-        </li>
-      )}
+      {canManage &&
+        (["member", "child"] as const).map((kind) => (
+          <li key={kind} className="border-b border-hf-tan-dark">
+            <Link href={`/profile/family?add=${kind}`} onClick={onDone} className="flex h-12 w-full items-center gap-4 px-4">
+              <span className="flex h-8 w-8 items-center justify-center rounded-full border border-hf-black">
+                <IconPlus size={16} />
+              </span>
+              <span className="hf-type-body flex-1">
+                {t(kind === "child" ? "family.add.addChild" : "family.add.addMember")}
+              </span>
+            </Link>
+          </li>
+        ))}
       {canManage && (
         <li className="border-b border-hf-tan-dark">
           <Link href="/profile/family?invite=1" onClick={onDone} className="flex h-12 w-full items-center gap-4 px-4">

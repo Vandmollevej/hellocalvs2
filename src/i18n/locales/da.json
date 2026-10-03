@@ -2612,10 +2612,10 @@
     "switcher": {
       "title": "Skift profil",
       "you": "Din egen profil",
-      "managing": "Du taster ind for denne profil",
+      "managing": "Du taster ind for {name}",
+      "viewing": "Du kan se {name}s profil",
       "meLabel": "{name} (dig)",
       "active": "Valgt",
-      "addProfile": "Tilføj profil",
       "manage": "Familie og adgang"
     },
     "watch": {
@@ -2634,7 +2634,8 @@
       "whoHasAccess": "Hvem har adgang",
       "nobody": "Ingen andre har adgang til din konto.",
       "payer": "Betaler",
-      "granted": "Har fået adgang",
+      "grantedRead": "Må se",
+      "grantedWrite": "Må se og oprette",
       "manage": "Se familien",
       "eventsTitle": "Log-ins og handlinger",
       "empty": "Ingen hændelser endnu.",
@@ -2699,8 +2700,9 @@
       "deleteProfileConfirm": "Alt på {name}s profil slettes og kan ikke gendannes. Skriv SLET for at bekræfte."
     },
     "add": {
-      "title": "Tilføj profil",
-      "newProfile": "Opret ny profil",
+      "title": "Tilføj familiemedlem",
+      "addMember": "Tilføj familiemedlem",
+      "addChild": "Tilføj barn (under 18)",
       "inviteExisting": "Inviter en med egen konto",
       "name": "Navn",
       "birthDate": "Fødselsdato",
@@ -2718,8 +2720,16 @@
     },
     "access": {
       "title": "Adgang",
-      "intro": "Du har altid adgang til alle profiler. Her bestemmer du, hvem andre der må se og taste ind for hvem.",
-      "who": "Må se og taste ind for {name}"
+      "intro": "Du har altid fuld adgang til alle profiler. Her bestemmer du, hvem der må se hvilke profiler, og hvem der må oprette på deres vegne (fx tilføje mad).",
+      "who": "Adgang til {name}s profil"
+    },
+    "rights": {
+      "title": "Rettigheder",
+      "intro": "Du har altid fuld adgang. Vælg for hver person, om de må se profilen, og om de må oprette på deres vegne (fx tilføje mad). Det kan ændres senere under Adgang.",
+      "see": "Se profilen",
+      "write": "Oprette på deres vegne (fx tilføje mad)",
+      "personOn": "Det må {person} hos {profile}",
+      "newProfile": "den nye profil"
     },
     "claim": {
       "title": "Familiekonto",

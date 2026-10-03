@@ -77,7 +77,7 @@ export async function getFamilyOverview(userId: string) {
           user: { select: { id: true, displayName: true, birthDate: true, passwordHash: true, oauthAccounts: { select: { id: true } } } },
         },
       },
-      grants: { select: { granteeId: true, subjectId: true } },
+      grants: { select: { granteeId: true, subjectId: true, canWrite: true } },
     },
   });
   if (!family) return null;
@@ -113,12 +113,14 @@ export async function listWhoHasAccess(userId: string) {
   if (!membership) return [];
   const grants = await prisma.familyAccessGrant.findMany({
     where: { subjectId: userId },
-    select: { grantee: { select: { id: true, displayName: true } } },
+    select: { canWrite: true, grantee: { select: { id: true, displayName: true } } },
   });
-  const people = [{ id: membership.family.ownerId, displayName: membership.family.owner.displayName, isOwner: true }];
+  const people = [
+    { id: membership.family.ownerId, displayName: membership.family.owner.displayName, isOwner: true, canWrite: true },
+  ];
   for (const grant of grants) {
     if (grant.grantee.id !== membership.family.ownerId) {
-      people.push({ id: grant.grantee.id, displayName: grant.grantee.displayName, isOwner: false });
+      people.push({ id: grant.grantee.id, displayName: grant.grantee.displayName, isOwner: false, canWrite: grant.canWrite });
     }
   }
   return people.filter((person) => person.id !== userId);
@@ -148,13 +150,35 @@ async function requireOwnedFamily(ownerId: string) {
   return family;
 }
 
+// Adgang mellem to familiemedlemmer: "none", "read" (se profilen) eller
+// "write" (se profilen og oprette på deres vegne). Betaleren har altid "write".
+export type AccessLevel = "none" | "read" | "write";
+
+export function parseAccessLevel(value: unknown): AccessLevel | null {
+  return value === "none" || value === "read" || value === "write" ? value : null;
+}
+
+// Rettigheder valgt ved oprettelsen, for hvert andet familiemedlem (ikke
+// betaleren): hvad personen må hos den nye profil, og omvendt.
+export type NewProfileAccess = { personId: string; personOnNew: AccessLevel; newOnPerson: AccessLevel };
+
 export async function createFamilyProfile(
   ownerId: string,
-  input: { displayName: string; birthDate: Date | null; sex: Sex | null; isChild: boolean; heightCm: number | null; weightKg: number | null }
+  input: {
+    displayName: string;
+    birthDate: Date | null;
+    sex: Sex | null;
+    isChild: boolean;
+    heightCm: number | null;
+    weightKg: number | null;
+    access?: NewProfileAccess[];
+  }
 ) {
   const family = await ensureOwnedFamily(ownerId);
   if (family.members.length >= familyCapacity(family.extraSeats)) throw new FamilyError("familyFull", 409);
   if (!input.displayName.trim()) throw new FamilyError("nameRequired");
+  const memberIds = new Set(family.members.map((m) => m.userId));
+  const access = (input.access ?? []).filter((entry) => entry.personId !== ownerId && memberIds.has(entry.personId));
 
   return prisma.$transaction(async (tx) => {
     const user = await tx.user.create({
@@ -184,6 +208,16 @@ export async function createFamilyProfile(
         canDeleteOthersEntries: !input.isChild,
       },
     });
+    const grants = access.flatMap((entry) => [
+      { granteeId: entry.personId, subjectId: user.id, level: entry.personOnNew },
+      { granteeId: user.id, subjectId: entry.personId, level: entry.newOnPerson },
+    ]);
+    for (const grant of grants) {
+      if (grant.level === "none") continue;
+      await tx.familyAccessGrant.create({
+        data: { familyId: family.id, granteeId: grant.granteeId, subjectId: grant.subjectId, canWrite: grant.level === "write" },
+      });
+    }
     return user;
   });
 }
@@ -209,16 +243,17 @@ export async function setMemberDeletePermission(actorId: string, memberUserId: s
   await prisma.familyMember.update({ where: { id: member.id }, data: { canDeleteOthersEntries: allowed } });
 }
 
-export async function setAccessGrant(ownerId: string, granteeId: string, subjectId: string, allowed: boolean) {
+export async function setAccessGrant(ownerId: string, granteeId: string, subjectId: string, level: AccessLevel) {
   const family = await requireOwnedFamily(ownerId);
   const memberIds = new Set(family.members.map((m) => m.userId));
   if (!memberIds.has(granteeId) || !memberIds.has(subjectId)) throw new FamilyError("notMember", 404);
   if (granteeId === subjectId || granteeId === ownerId) throw new FamilyError("notAllowed");
-  if (allowed) {
+  if (level !== "none") {
+    const canWrite = level === "write";
     await prisma.familyAccessGrant.upsert({
       where: { granteeId_subjectId: { granteeId, subjectId } },
-      create: { familyId: family.id, granteeId, subjectId },
-      update: {},
+      create: { familyId: family.id, granteeId, subjectId, canWrite },
+      update: { canWrite },
     });
   } else {
     await prisma.familyAccessGrant.deleteMany({ where: { granteeId, subjectId } });
