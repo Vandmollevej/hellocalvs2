@@ -7,6 +7,7 @@ Last updated: 2026-10-03
 - Brugerens rettelse: nederste del af bølge-baggrunden er frostet glas med **tykke** bånd, ikke tynde linjer som i toppen. Det slørede lag tegner strengene 7× bredere og lidt kraftigere (`strandWidthScale`/`strandAlphaScale` i `drawWaveScene`); toppen og puls-linjen er uændret skarpe.
 - Det nederste bånd ligger altid i det frostede felt (74–86 % af højden), så effekten altid ses.
 - Bølgerne stopper nu ved "Dagens tilføjelser"-stregen og ses ikke længere bag tilføjelserne (før fortsatte de 40 px ind i listen).
+- Anden runde (bruger: for mange og for tydelige gule streger foroven, mere grønt, "lidt 3D agtigt"): farverampen er nu overvejende grøn med kun et strejf af gul øverst. Perspektiv: båndene foroven er tynde, svage, rolige og har kun 2 streger; de nederste er tykke og tydelige. Hver streng tegnes som et rør med skygge under og lys kant foroven (`palette.light`), og sløret forneden er lettere (6 px), så rørene anes som glas.
 - Lint (0 fejl), typecheck, bølge-tests og build grønne; tegningen tjekket i Chromium med tre tilfældige scener. Ikke set på telefon med login — test på forsiden.
 
 ## 2026-10-03: Kalender — profilcirklen er tilbage i dagsvisningen

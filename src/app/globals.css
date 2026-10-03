@@ -2280,7 +2280,7 @@ textarea::selection,
 }
 
 .home-wave__layer--soft canvas {
-  filter: blur(10px);
+  filter: blur(6px);
 }
 
 /* Frostet glas nederst: et let mælket creme-slør over de tykke bånd. Rører
