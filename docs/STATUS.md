@@ -2,6 +2,11 @@
 
 Last updated: 2026-10-03
 
+## 2026-10-03: Kontoopsætning-række øverst på Profil
+
+- Ny række "Kontoopsætning" øverst på Profil (under Familie for familiemedlemmer), fed brand-grøn tekst og ikon (`IconTool`), via ny `ChevronRow.emphasis`. Linker til `/profile/settings` (gæt: ejeren svarede ikke på mål). Dummy-proceslinjen er uændret under rækken.
+- Lint (0 fejl) og build grønne. Ikke set i browser. PR #220 (kladde), ikke flettet.
+
 ## 2026-10-03: Beskeder på Profil, Resultatvisning under Visning, Opsætning uden Sprog og region
 
 - Beskeder er flyttet fra Indstillinger til Profil som egen række lige under "Profil" øverst. Ulæst-tallet er en grøn cirkel (`--hf-color-brand`) med hvidt tal (`ChevronRow.badgeCount`, også Kontrol-log).
