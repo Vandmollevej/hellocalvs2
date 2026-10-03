@@ -47,6 +47,7 @@ export async function POST(req: Request) {
       prisma.product.findMany({
         where: {
           discontinued: false,
+          nutritionMissing: false,
           OR: [
             { name: { contains: query, mode: "insensitive" } },
             { brand: { name: { contains: query, mode: "insensitive" } } },
