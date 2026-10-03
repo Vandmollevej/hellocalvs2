@@ -3,7 +3,8 @@ import { prisma } from "@/lib/prisma";
 import { getSessionUser } from "@/lib/session";
 import { inferGs1OriginCountryCode } from "@/lib/regions";
 import { saveDataUrlImage } from "@/lib/qc-image-storage";
-import { enrichQuickProduct, type PendingField } from "@/lib/quick-product-enrichment";
+import type { PendingField } from "@/lib/quick-product-enrichment";
+import { createQuickEnrichmentJob, runQuickEnrichment } from "@/lib/quick-enrichment-jobs";
 import { debugLog, errorText, flowIdFromRequest, withDebugContext } from "@/lib/debug-log";
 
 // POST /api/products/quick — "opret straks" fra kameraflowet under Tilføj
@@ -88,19 +89,26 @@ export async function POST(req: Request) {
     }
 
     const sessionUser = await getSessionUser();
-    const imageUrl =
-      (await saveDataUrlImage(frontPhoto).catch((error) => {
-        // Før blev fejlen sløret, og varen endte uden billede uden spor i loggen.
-        void debugLog({
-          category: "scan",
-          event: "front_image_save",
-          level: "error",
-          message: `Forsidefotoet kunne ikke gemmes: ${errorText(error)}`,
-          flowId,
-          barcode,
-        });
-        return null;
-      })) ?? undefined;
+    // Alle fotos gemmes nu, så aflæsningen kan genoptages, hvis processen
+    // genstartes undervejs (docs/DECISIONS.md 2026-10-02).
+    const [imageUrl, nutritionPhotoUrl, ingredientsPhotoUrl] = await Promise.all([
+      saveDataUrlImage(frontPhoto)
+        .catch((error) => {
+          // Før blev fejlen sløret, og varen endte uden billede uden spor i loggen.
+          void debugLog({
+            category: "scan",
+            event: "front_image_save",
+            level: "error",
+            message: `Forsidefotoet kunne ikke gemmes: ${errorText(error)}`,
+            flowId,
+            barcode,
+          });
+          return null;
+        })
+        .then((url) => url ?? undefined),
+      saveDataUrlImage(nutritionPhoto).catch(() => null),
+      ingredientsPhoto ? saveDataUrlImage(ingredientsPhoto).catch(() => null) : Promise.resolve(null),
+    ]);
     const fallbackName = `Vare ${barcode}`;
     const pendingFields: PendingField[] = ["name", "brand", "nutrition", "ingredients"];
 
@@ -150,11 +158,27 @@ export async function POST(req: Request) {
       },
     });
 
+    await createQuickEnrichmentJob(product.id, {
+      barcode,
+      marketRegion,
+      signals,
+      frontPhotoUrl: imageUrl ?? null,
+      nutritionPhotoUrl,
+      ingredientsPhotoUrl,
+      nutritionOcrText,
+      nutritionOcrConfidence,
+      ingredientsOcrText,
+      ingredientsOcrConfidence,
+      fallbackName,
+      barcodeAnalysisId,
+      source: "quick",
+    }).catch((error) => console.error("Could not store quick enrichment job", product.id, error));
+
     // Berigelsens trin og OpenAI-kald logges med samme flow/vare i admin "Log".
     const debugContext = { flowId, userId: sessionUser?.id ?? null, barcode, productId: product.id };
     after(() =>
       withDebugContext(debugContext, () =>
-        enrichQuickProduct({
+        runQuickEnrichment({
           productId: product.id,
           barcode,
           marketRegion,
@@ -168,6 +192,9 @@ export async function POST(req: Request) {
           ingredientsOcrConfidence,
           fallbackName,
           barcodeAnalysisId,
+          frontPhotoUrl: imageUrl ?? null,
+          nutritionPhotoUrl,
+          ingredientsPhotoUrl,
         }),
       ).catch((error) => {
         console.error("Quick product enrichment failed", product.id, error);

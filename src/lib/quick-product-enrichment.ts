@@ -41,6 +41,11 @@ export type QuickEnrichmentInput = {
   nutritionPhoto: string;
   // Udeladt, når ingredienslisten stod på næringsfotoet.
   ingredientsPhoto?: string;
+  // Samme fotos, allerede gemt ved oprettelsen (quick_enrichment_jobs), så
+  // analyserne ikke gemmer en kopi mere.
+  frontPhotoUrl?: string | null;
+  nutritionPhotoUrl?: string | null;
+  ingredientsPhotoUrl?: string | null;
   nutritionOcrText?: string;
   nutritionOcrConfidence?: number;
   ingredientsOcrText?: string;
@@ -107,6 +112,7 @@ export async function enrichFront(input: QuickEnrichmentInput): Promise<boolean 
       barcode: input.barcode,
       marketRegion: input.marketRegion,
       signals: input.signals,
+      storedImageUrl: input.frontPhotoUrl,
     });
     await prisma.aiProductAnalysis.update({ where: { id: analysisId }, data: { productId } });
 
@@ -298,6 +304,8 @@ export async function enrichLabel(input: QuickEnrichmentInput): Promise<LabelRea
   const base = { barcode: input.barcode, marketRegion: input.marketRegion, signals: input.signals };
   const nutritionText = input.nutritionOcrText ?? "";
   const ingredientsPhoto = input.ingredientsPhoto ?? input.nutritionPhoto;
+  const nutritionPhotoUrl = input.nutritionPhotoUrl ?? null;
+  const ingredientsPhotoUrl = input.ingredientsPhoto ? (input.ingredientsPhotoUrl ?? null) : nutritionPhotoUrl;
   const ingredientsText = input.ingredientsPhoto ? (input.ingredientsOcrText ?? "") : nutritionText;
   const ingredientsConfidence = input.ingredientsPhoto ? input.ingredientsOcrConfidence : input.nutritionOcrConfidence;
 
@@ -314,7 +322,12 @@ export async function enrichLabel(input: QuickEnrichmentInput): Promise<LabelRea
   try {
     if (!localN && !input.ingredientsPhoto) {
       labelPath = "openai-combined";
-      const both = await analyzeLabelPhoto({ ...base, photo: input.nutritionPhoto, ocrText: nutritionText });
+      const both = await analyzeLabelPhoto({
+        ...base,
+        photo: input.nutritionPhoto,
+        ocrText: nutritionText,
+        storedImageUrl: nutritionPhotoUrl,
+      });
       nutrition = both.nutrition;
       // En sikker lokal ingrediensliste beholdes kun, hvis OpenAI intet fandt.
       if (both.ingredients.result.ingredientsText || !localI) ingredients = both.ingredients;
@@ -325,13 +338,23 @@ export async function enrichLabel(input: QuickEnrichmentInput): Promise<LabelRea
       const [nutritionRead, ingredientsRead] = await Promise.all([
         localN
           ? Promise.resolve(null)
-          : analyzeNutritionPhoto({ ...base, photo: input.nutritionPhoto, ocrText: nutritionText }).catch((error) => {
+          : analyzeNutritionPhoto({
+              ...base,
+              photo: input.nutritionPhoto,
+              ocrText: nutritionText,
+              storedImageUrl: nutritionPhotoUrl,
+            }).catch((error) => {
               console.error("Quick product nutrition enrichment failed", productId, error);
               labelErrors.push(`nutrition: ${errorText(error)}`);
               return null;
             }),
         wantIngredients
-          ? analyzeIngredientsPhoto({ ...base, photo: ingredientsPhoto, ocrText: ingredientsText }).catch((error) => {
+          ? analyzeIngredientsPhoto({
+              ...base,
+              photo: ingredientsPhoto,
+              ocrText: ingredientsText,
+              storedImageUrl: ingredientsPhotoUrl,
+            }).catch((error) => {
               console.error("Quick product ingredients enrichment failed", productId, error);
               labelErrors.push(`ingredients: ${errorText(error)}`);
               return null;
@@ -350,11 +373,23 @@ export async function enrichLabel(input: QuickEnrichmentInput): Promise<LabelRea
 
   try {
     if (!nutrition && localN) {
-      const { analysisId } = await recordLocalAnalysis({ ...base, kind: "NUTRITION", photo: input.nutritionPhoto, prediction: localN });
+      const { analysisId } = await recordLocalAnalysis({
+        ...base,
+        kind: "NUTRITION",
+        photo: input.nutritionPhoto,
+        prediction: localN,
+        storedImageUrl: nutritionPhotoUrl,
+      });
       nutrition = { analysisId, result: localN };
     }
     if (!ingredients && localI) {
-      const { analysisId } = await recordLocalAnalysis({ ...base, kind: "INGREDIENTS", photo: ingredientsPhoto, prediction: localI });
+      const { analysisId } = await recordLocalAnalysis({
+        ...base,
+        kind: "INGREDIENTS",
+        photo: ingredientsPhoto,
+        prediction: localI,
+        storedImageUrl: ingredientsPhotoUrl,
+      });
       ingredients = { analysisId, result: localI };
     }
 
@@ -436,9 +471,19 @@ export async function enrichLabel(input: QuickEnrichmentInput): Promise<LabelRea
   };
 }
 
-export async function enrichQuickProduct(input: QuickEnrichmentInput) {
+// Hvilke dele der køres. En genoptagelse (src/lib/quick-enrichment-jobs.ts)
+// kører kun de dele, hvis felter stadig står i Product.pendingFields.
+export type QuickEnrichmentParts = { front: boolean; label: boolean };
+
+export async function enrichQuickProduct(
+  input: QuickEnrichmentInput,
+  parts: QuickEnrichmentParts = { front: true, label: true },
+) {
   const startedAt = Date.now();
-  await Promise.all([enrichFront(input).then(() => enrichBarcodeLogo(input)), enrichLabel(input)]);
+  await Promise.all([
+    parts.front ? enrichFront(input).then(() => enrichBarcodeLogo(input)) : Promise.resolve(),
+    parts.label ? enrichLabel(input) : Promise.resolve(),
+  ]);
   await syncProductNutritionFeaturesSafely(input.productId);
 
   const product = await prisma.product
@@ -460,4 +505,66 @@ export async function enrichQuickProduct(input: QuickEnrichmentInput) {
     durationMs: Date.now() - startedAt,
     data: product ? { pendingFields: product.pendingFields } : null,
   });
+}
+
+// Ingredienslisten igen på ét bestemt foto (src/lib/quick-enrichment-jobs.ts):
+// bruges, når den første aflæsning ikke fandt nogen liste. Et glas har tit
+// ingredienserne på bagsidens etiket sammen med stregkoden eller næringen,
+// så de andre fotos fra scanningen prøves ét ad gangen. Returnerer true, når
+// en liste blev fundet og gemt.
+export async function retryIngredients(input: {
+  productId: string;
+  barcode: string;
+  marketRegion: string;
+  signals?: unknown;
+  photo: string;
+  photoUrl: string;
+  photoLabel: string;
+  ocrText?: string;
+}): Promise<boolean> {
+  const { productId } = input;
+  const startedAt = Date.now();
+  try {
+    const read = await analyzeIngredientsPhoto({
+      photo: input.photo,
+      barcode: input.barcode,
+      marketRegion: input.marketRegion,
+      signals: input.signals,
+      ocrText: input.ocrText ?? "",
+      storedImageUrl: input.photoUrl,
+    });
+    await prisma.aiProductAnalysis.update({ where: { id: read.analysisId }, data: { productId } });
+    const text = read.result.ingredientsText?.trim() ?? "";
+    if (text) {
+      // Kun hvis feltet stadig er tomt — en admin eller brugeren kan have
+      // udfyldt det imens.
+      await prisma.product.updateMany({
+        where: { id: productId, OR: [{ ingredientsText: null }, { ingredientsText: "" }] },
+        data: { ingredientsText: text },
+      });
+      await syncProductNutritionFeaturesSafely(productId);
+    }
+    await debugLog({
+      category: "scan",
+      event: "enrich_ingredients_retry",
+      level: text ? "info" : "warn",
+      message: text
+        ? `Ingredienser fundet ved nyt forsøg på ${input.photoLabel} (${text.length} tegn)`
+        : `Nyt forsøg på ${input.photoLabel}: ingen ingrediensliste fundet`,
+      productId,
+      durationMs: Date.now() - startedAt,
+      data: { photo: input.photoLabel, ingredientsText: text.slice(0, 500) || null, confidence: read.result.confidence },
+    });
+    return Boolean(text);
+  } catch (error) {
+    await debugLog({
+      category: "scan",
+      event: "enrich_ingredients_retry",
+      level: "error",
+      message: `Nyt forsøg på ingredienserne (${input.photoLabel}) fejlede: ${errorText(error)}`,
+      productId,
+      durationMs: Date.now() - startedAt,
+    });
+    throw error;
+  }
 }

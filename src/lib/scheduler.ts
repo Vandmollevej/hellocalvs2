@@ -8,6 +8,7 @@ import { pruneOldJobRuns } from "@/lib/jobs/runs";
 import { rerunUncertainAnalyses } from "@/lib/uncertainty-rerun";
 import { scanProductLabels } from "@/lib/product-label-scan";
 import { analyzeDeclinedExternalImages } from "@/lib/external-image-ai";
+import { recoverQuickEnrichments } from "@/lib/quick-enrichment-jobs";
 import { grantEligibleReferralRewards } from "@/lib/referrals";
 import { runMobilePayTick } from "@/lib/payments/mobilepay-subscription";
 import { runStripeTick } from "@/lib/payments/stripe-subscription";
@@ -123,6 +124,7 @@ export function startScheduler() {
       "label-scan": scanProductLabels,
       personas: runPersonaJob,
       "external-image-ai": analyzeDeclinedExternalImages,
+      "quick-enrichment-recovery": () => recoverQuickEnrichments(),
     }).catch((error) => {
       console.error("[scheduler] tick fejlede", error);
     });

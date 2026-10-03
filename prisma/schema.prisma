@@ -1264,6 +1264,9 @@ model Product {
   packaging       String?
 
   barcodes           Barcode[]
+  // "Opret straks": baggrundsaflæsningens gemte input, så den kan
+  // genoptages efter en genstart (src/lib/quick-enrichment-jobs.ts).
+  quickEnrichmentJob QuickEnrichmentJob?
   // Butikkernes egne versioner af samme vare (Bilka + REMA 1000 med samme
   // stregkode), så admin kan sammenligne dem under "Dubletter" → Produkter.
   sourceRecords      ProductSourceRecord[]
@@ -4068,4 +4071,29 @@ model AdminLoginApproval {
   createdAt   DateTime  @default(now())
 
   @@map("admin_login_approvals")
+}
+
+// "Opret straks" (docs/DECISIONS.md 2026-10-02): baggrundsaflæsningen af en
+// ny vare kører i app-processen (after()). Dør processen undervejs (fx ved et
+// deploy), genoptager jobbet "quick-enrichment-recovery" aflæsningen ud fra
+// de gemte fotos her. Samme job prøver ingredienslisten igen på de andre
+// fotos, når den første aflæsning ikke fandt nogen.
+model QuickEnrichmentJob {
+  id                 String    @id @default(cuid())
+  productId          String    @unique
+  product            Product   @relation(fields: [productId], references: [id], onDelete: Cascade)
+  // QuickEnrichmentStoredInput: stregkode, region, sprogsignaler, gemte
+  // foto-URL'er (/product-images/qc-uploads/...) og telefonens OCR-tekst.
+  input              Json
+  attempts           Int       @default(0)
+  startedAt          DateTime?
+  finishedAt         DateTime?
+  // Antal ekstra forsøg på ingredienslisten (ét pr. kandidatfoto).
+  ingredientsRetries Int       @default(0)
+  lastError          String?
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @updatedAt
+
+  @@index([finishedAt, startedAt])
+  @@map("quick_enrichment_jobs")
 }

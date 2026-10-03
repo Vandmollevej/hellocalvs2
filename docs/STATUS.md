@@ -348,6 +348,13 @@ Last updated: 2026-09-30
 
 - Kropsmål: tegninger følger profilens køn strengt (ingen kvindelig fallback), titel og felt på samme linje, placeholder "–", væske-link fjernet. Se DECISIONS.md samme dato.
 - Statistik → "Kalorier og vægt" har nu Fedtprocent, Muskelmasse og Kropsvand (væske) som valgbare serier under vægten, kun når en tilsluttet integration har `read.bodyFat` slået til. Ikke live-testet (ingen lokal DB) — tjek på telefon, at en mandlig profil nu får de mandlige tegninger; hvis ikke, svarer `/api/profile` med `sex: null` for brugeren.
+## 2026-10-02: Ny vare fra kameraet — aflæsningen genoptages efter genstart
+
+- Fejl: marmeladeglas uden ingredienser og med navnet stående som "læses" en time efter. Navnet ventede stadig, energien var læst. Forside-aflæsningen blev altså afbrudt, sandsynligvis af et deploy (master får flere push i timen, og hvert push genstarter appen). Intet prøvede igen.
+- Rettet: fotos og OCR gemmes ved oprettelsen, og jobbet "Ny vare: genoptag aflæsning" genoptager, opgiver efter 3 forsøg, og prøver ingredienserne igen på stregkode- og energifotoet. Se DECISIONS.md samme dato.
+- Migration `20261002070000_quick_enrichment_jobs` kører ved deploy. Typecheck, lint og nye tests grønne; ikke live-testet (ingen adgang til produktionens DB/log herfra).
+- Tjek efter deploy: admin "Log" for marmeladens stregkode skal vise `enrichment_recovery` og `enrich_ingredients_retry`, og varen skal få navn og ingredienser inden for få minutter.
+
 ## 2026-09-29: Offentlig forside for udloggede
 
 - Ny hent-appen-forside uden telefonramme, med QR-koder, planer med betalings-ark, Hello Doc-bjælke, nøgletal fra databasen, `/business` (kontaktformular) og `/presse`. Se DECISIONS.md samme dato.
