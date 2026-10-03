@@ -245,9 +245,9 @@
   },
   "accountSettings": {
     "title": "Account settings",
-    "closeTitle": "Close account",
-    "closeIntro": "Closes your account and logs you out. Your personal data is removed and you cannot log in again.",
-    "closeButton": "Close account",
+    "closeLink": "Close account",
+    "closeSheetText": "Your account is closed and you are logged out on all devices. Changed your mind? Log in again within 3 months and everything is as before. After 3 months your personal data is deleted.",
+    "closeConfirmButton": "Close account",
     "forgetTitle": "Right to be forgotten",
     "forgetIntro": "Have all your personal data erased (GDPR). Anonymised data that cannot be linked to you is kept.",
     "forgetButton": "Delete my data",
@@ -278,6 +278,7 @@
       "saved": "The permission has been saved",
       "revoked": "Support access has been revoked",
       "contact": "Contact us",
+      "chat": "Ask the help chat",
       "dateRequired": "Select both a start and end date.",
       "invalidDateRange": "The start date cannot be after the end date.",
       "untilInPast": "The end date cannot be before today.",
@@ -532,7 +533,9 @@
     "voice": "Record",
     "weight": "Weight",
     "drink": "Drinks",
-    "body": "Body measurements"
+    "body": "Body measurements",
+    "activity": "Activity",
+    "period": "Period"
   },
   "helloDoc": {
     "title": "Hello Doc",
@@ -663,7 +666,7 @@
     "goalExceededList": "You exceeded your goal",
     "adjustBedtimeAriaLabel": "Adjust bedtime",
     "adjustWakeTimeAriaLabel": "Adjust wake time",
-    "nightSleepDuration": "Last night's sleep: {hours} hours",
+    "nightSleepDuration": "Sleep: {hours} hours",
     "previousDayAriaLabel": "Previous day",
     "nextDayAriaLabel": "Next day",
     "registrations": "Log entries",
@@ -737,7 +740,7 @@
     "lookingUp": "Looking up {code}...",
     "barcodeNotFound": "The barcode was read, but the product was not found. Try a different code.",
     "barcodeLookupError": "The barcode was read, but the product lookup failed. Try again.",
-    "autoCaptureHint": "The photo is taken automatically when the product is sharp and held still.",
+    "autoCaptureHint": "Scanning runs automatically when the product is sharp and held still. Tap the image to take it now.",
     "autoScanHint": "The camera scans automatically. You can also enter the number below the barcode.",
     "barcodeNumberAriaLabel": "Barcode number",
     "lookUp": "Look up",
@@ -751,9 +754,9 @@
     "saveMeal": "Save meal"
   },
   "cameraCreate": {
-    "hintFront": "Take a photo of the front",
-    "hintNutrition": "Take a photo of the energy/nutrition info",
-    "hintIngredients": "Take a photo of the ingredients list",
+    "hintFront": "Keep the front of the product in view",
+    "hintNutrition": "Keep the energy/nutrition info in view",
+    "hintIngredients": "Keep the ingredients list in view",
     "retakeStillUnreadable": "The ingredients still could not be read. Hold the camera closer and try again.",
     "retakeFailed": "The photo could not be read right now. Try again.",
     "retakeBack": "Back to the product",
@@ -761,7 +764,12 @@
     "retry": "Try again",
     "title": "Add item",
     "analyzingDefault": "Analyzing the photo...",
-    "labelTextFound": "Nutrition facts or ingredients found in the photo",
+    "labelTextFound": "Nutrition facts or ingredients read",
+    "frontCaptured": "Front scanned",
+    "scanBarcode": "Scan barcode",
+    "scanFront": "Scan photo",
+    "scanNutrition": "Scan energy",
+    "scanIngredients": "Scan ingredients list",
     "readingImage": "Reading the photo...",
     "searchingDatabase": "Searching the database...",
     "comparingKnownItems": "Comparing with known items...",
@@ -1866,6 +1874,18 @@
     "partnerPending": "A direct connection to {name} requires a partner agreement that is not in place yet.",
     "companionHowTo": "The Hello Cal phone app reads and writes your data according to the choices above. It signs in with a device code.",
     "saveError": "Couldn't save your choice. Try again.",
+    "tester": {
+      "headline": "Become the first tester of {name} and earn {points} points",
+      "body": "Activate {name} on this page and sign up with the link at the bottom. Once we see the connection works, you get {points} points.",
+      "signUp": "Sign me up as the first tester",
+      "terms": "Read the terms",
+      "signedUp": "You are signed up as the tester of {name}. Activate the app, and you get {points} points once we have approved the connection.",
+      "taken": "Someone else became the first tester of {name}.",
+      "error": "Sign-up failed. Please try again.",
+      "close": "Close",
+      "pending": "You are the first tester. You get {points} points once we have approved the connection.",
+      "approved": "Thanks for testing. You have received {points} points."
+    },
     "readTypes": {
       "weight": "Weight",
       "bodyFat": "Body fat",
@@ -1918,6 +1938,13 @@
   },
   "payment": {
     "title": "Payment",
+    "expires": "Expires {date}",
+    "changeMethod": "Change payment method",
+    "opening": "Opening…",
+    "changeError": "Could not open the card change. Please try again shortly.",
+    "recurringNote": "Charged automatically at each renewal.",
+    "walletCard": "{brand} •••• {last4}",
+
     "status": {
       "inactive": "No active subscription",
       "active": "Active subscription",
@@ -1926,7 +1953,7 @@
       "canceled": "Canceled"
     },
     "freeMonthsRemaining": "{count} free month(s) queued",
-    "paymentMethodsTitle": "Payment methods",
+    "paymentMethodsTitle": "Payment method",
     "noPaymentMethod": "No payment method added yet",
     "nextPayment": "Next payment on {date}",
     "canceledUntil": "Seriøs until {date}",
@@ -1971,7 +1998,7 @@
   },
   "statUnusedCards": {
     "title": "Add to statistics",
-    "hint": "Tap a chart or card to add it to your statistics page.",
+    "hint": "Charts are shown as they will look. Tap + Add below a chart, or tap a card, to add it to your statistics page.",
     "category": {
       "carbsFibre": "Carb types and fibre",
       "minerals": "Minerals",
@@ -1986,11 +2013,15 @@
     "noSearchResults": "No charts or cards match your search.",
     "add": "+ Add",
     "noCardsYet": "No cards here yet.",
-    "addHeading": "Heading"
+    "addHeading": "+ Heading",
+    "addDivider": "+ Divider",
+    "addAccordion": "+ Fold-out section",
+    "layoutTools": "Layout",
+    "accordionTitle": "Section"
   },
   "statUnusedCharts": {
     "title": "Unused charts",
-    "hint": "Tap a chart to add it to the top of your statistics page.",
+    "hint": "Charts are shown as they will look. Tap + Add below a chart to add it to your statistics page.",
     "searchPlaceholder": "Search all charts",
     "noSearchResults": "No charts match your search.",
     "noChartsLeft": "All charts here are already on your statistics page.",
@@ -2012,6 +2043,10 @@
     "removeHeading": "Remove heading",
     "dragHeading": "Move heading",
     "removeDivider": "Remove divider",
+    "removeAccordion": "Remove section",
+    "renameAccordion": "Rename section",
+    "openAccordion": "Expand",
+    "closeAccordion": "Collapse",
     "noData": "No data for this period"
   },
   "statChart": {

@@ -183,6 +183,11 @@ model User {
   // (snapshot-princippet), men PII er ryddet — se src/lib/gdpr.ts.
   forgottenAt DateTime?
 
+  // Brugerens egen "Luk konto" (docs/DECISIONS.md 2026-10-03): kontoen er
+  // lukket, men kan genåbnes ved at logge ind inden for 3 måneder. Derefter
+  // anonymiseres den automatisk (src/lib/account-closure.ts).
+  closedAt DateTime?
+
   // Udtrykkeligt samtykke til behandling af helbredsoplysninger (GDPR art. 9,
   // docs/DECISIONS.md 2026-09-25). Null = ikke givet endnu; ConsentGate sender
   // brugeren til /samtykke, før appen kan bruges.
@@ -223,6 +228,8 @@ model User {
   sleepQualityEntries     SleepQualityEntry[]
   workShifts              WorkShift[]
   integrations            Integration[]
+  integrationEvents       IntegrationEvent[]
+  integrationTesterSlots  IntegrationTester[]
   activities              Activity[]
   customActivityTypes     CustomActivityType[]
   heartRateSpikeReviews   HeartRateSpikeReview[]
@@ -763,6 +770,28 @@ model Integration {
   @@map("integrations")
 }
 
+// Testperson-program pr. integration (docs/DECISIONS.md 2026-10-02): kun
+// den allerførste, der tilmelder sig, får pladsen (unik pr. provider). 300
+// points gives først, når admin godkender under Admin → Brugere →
+// Test-programmes; afvisning sletter rækken, så pladsen bliver ledig igen.
+model IntegrationTester {
+  id         String                  @id @default(cuid())
+  provider   IntegrationProvider     @unique
+  user       User                    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId     String
+  status     IntegrationTesterStatus @default(PENDING)
+  createdAt  DateTime                @default(now())
+  approvedAt DateTime?
+
+  @@index([userId])
+  @@map("integration_testers")
+}
+
+enum IntegrationTesterStatus {
+  PENDING
+  APPROVED
+}
+
 enum IntegrationProvider {
   FITBIT
   WITHINGS
@@ -789,6 +818,34 @@ enum IntegrationStatus {
   DISCONNECTED
   CONNECTED
   ERROR
+}
+
+// 2026-10-02: hændelseslog pr. integration til admin → Integrationer
+// (docs/DECISIONS.md 2026-10-02). Én række pr. tilkobling, frakobling,
+// synkronisering, fejl, push og ændring af til/fra-valg. Tallene på
+// dashboardet regnes herfra; Integration-rækken holder kun nuværende status.
+model IntegrationEvent {
+  id        String                @id @default(cuid())
+  user      User                  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String
+  provider  IntegrationProvider
+  type      IntegrationEventType
+  // SYNC: antal nye datapunkter hentet; PUSH: antal sendt til appen.
+  itemCount Int?
+  createdAt DateTime              @default(now())
+
+  @@index([provider, createdAt])
+  @@index([type, createdAt])
+  @@map("integration_events")
+}
+
+enum IntegrationEventType {
+  CONNECTED
+  DISCONNECTED
+  SYNC
+  SYNC_ERROR
+  PUSH
+  SETTINGS_CHANGED
 }
 
 // Sports/activity logs, entered manually or fetched from a connected
@@ -2225,6 +2282,8 @@ enum PointsReason {
   // Startbonus (teaser) ved oprettelse af en almindelig konto, 2026-10-03
   // (docs/DECISIONS.md): alle nye brugere starter med 35 points.
   SIGNUP_BONUS
+  // Første testperson af en integration, godkendt af admin (2026-10-02).
+  INTEGRATION_TESTER
 }
 
 model PointsTransaction {
@@ -2518,6 +2577,14 @@ enum PaymentMethodBrand {
   GIROCARD
 }
 
+// Wallet, kortet ligger i hos Stripe (card.wallet.type). Kortets mærke og
+// sidste 4 cifre gemmes stadig i brand/last4, så "Apple Pay · Visa •••• 4242"
+// kan vises (docs/DECISIONS.md 2026-10-02).
+enum PaymentWallet {
+  APPLE_PAY
+  GOOGLE_PAY
+}
+
 model Subscription {
   id                     String             @id @default(cuid())
   user                   User               @relation(fields: [userId], references: [id])
@@ -2554,6 +2621,7 @@ model PaymentMethod {
   last4                   String?
   expiryMonth             Int?
   expiryYear              Int?
+  wallet                  PaymentWallet?
   isDefault               Boolean            @default(true)
   providerPaymentMethodId String?
   createdAt               DateTime           @default(now())
@@ -2635,6 +2703,9 @@ model DoctorShare {
 enum AdminAuditAction {
   IMPERSONATE_USER
   GDPR_FORGET_USER
+  // Brugerens egen "Luk konto" og genåbning ved login (2026-10-03).
+  USER_CLOSE_ACCOUNT
+  USER_REOPEN_ACCOUNT
 }
 
 // Revisionsspor for følsomme admin-handlinger ("log ind som bruger" og
@@ -3828,7 +3899,61 @@ model Partner {
   sends     PartnerReportSend[]
   users     PartnerUser[]
 
+  // Partnersiden (/admin/partners/[id], docs/DECISIONS.md 2026-10-02):
+  // virksomhedsoplysninger og kontakter øverst i venstre bjælke.
+  cvr           String @default("")
+  addressStreet String @default("")
+  addressZip    String @default("")
+  addressCity   String @default("")
+  phone         String @default("") // virksomhedens telefon
+  contactName   String @default("")
+  contactEmail  String @default("")
+  contactPhone  String @default("") // kontaktens telefon (ikke lederens)
+  managerName   String @default("")
+  managerTitle  String @default("") // lederens funktion
+  managerEmail  String @default("")
+
+  // Faktureringsdetaljer og betalingsmetode (egne menupunkter på partnersiden).
+  billingName      String               @default("")
+  billingEmail     String               @default("")
+  billingAddress   String               @default("")
+  ean              String               @default("")
+  billingReference String               @default("")
+  paymentTermsDays Int                  @default(14)
+  paymentMethod    PartnerPaymentMethod @default(INVOICE)
+  paymentNote      String               @default("")
+
+  agreements SponsorAgreement[]
+
   @@map("partners")
+}
+
+enum PartnerPaymentMethod {
+  INVOICE
+  BANK_TRANSFER
+  CARD
+  MOBILEPAY
+}
+
+// Sponsoraftale: budget (DKK) og priser, som forbruget beregnes af
+// (visninger/1000 × CPM + klik × CPC) for de spots, der hører til aftalen.
+model SponsorAgreement {
+  id        String       @id @default(cuid())
+  partnerId String
+  partner   Partner      @relation(fields: [partnerId], references: [id], onDelete: Cascade)
+  title     String
+  startsAt  DateTime
+  endsAt    DateTime?
+  active    Boolean      @default(true)
+  budgetDkk Int          @default(0)
+  cpmDkk    Float        @default(0)
+  cpcDkk    Float        @default(0)
+  notes     String       @default("")
+  createdAt DateTime     @default(now())
+  locations AdLocation[]
+
+  @@index([partnerId])
+  @@map("sponsor_agreements")
 }
 
 // B2B-brugere (docs/DECISIONS.md 2026-10-02): login til partnerportalen
@@ -3843,6 +3968,8 @@ model PartnerUser {
   name              String
   email             String    @unique
   passwordHash      String?
+  // 2-faktor (TOTP) er obligatorisk ved hvert login; sættes ved accept af invitationen.
+  totpSecret        String?
   active            Boolean   @default(true)
   // Kun hashen af invitationstokenet gemmes; linket gælder 72 timer.
   inviteTokenHash   String?   @unique
@@ -3884,7 +4011,21 @@ model AdLocation {
   createdAt DateTime  @default(now())
   events    AdEvent[]
 
+  // Reklamespot (docs/DECISIONS.md 2026-10-02): hvilken reklamemulighed fra
+  // kataloget (src/lib/ad-inventory.ts), banner, link, aftalte tal og
+  // triggere (vises kun ved produktkategori/-type), samt sponsoraftale.
+  inventoryKey       String            @default("")
+  bannerUrl          String            @default("")
+  targetUrl          String            @default("")
+  agreedImpressions  Int?
+  agreedClicks       Int?
+  triggerCategory    ProductCategory?
+  triggerProductType String?
+  agreementId        String?
+  agreement          SponsorAgreement? @relation(fields: [agreementId], references: [id], onDelete: SetNull)
+
   @@index([partnerId])
+  @@index([agreementId])
   @@map("ad_locations")
 }
 
@@ -3899,6 +4040,10 @@ model AdEvent {
   location   AdLocation  @relation(fields: [locationId], references: [id], onDelete: Cascade)
   type       AdEventType
   createdAt  DateTime    @default(now())
+  // Siden (sti) reklamen blev vist på, og hvor mange sekunder den var synlig
+  // (sættes af klienten, når visningen slutter).
+  path       String?
+  seconds    Int?
 
   @@index([locationId, type, createdAt])
   @@map("ad_events")

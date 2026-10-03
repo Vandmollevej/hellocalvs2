@@ -1,7 +1,8 @@
-// Rolig bølge-baggrund til forsiden (bruger 2026-10-01, justeret 2026-10-02):
-// bløde, langsomme bånd af bølgelinjer med overvejende gul-brunlige nuancer
-// øverst og grønne længere nede, lidt tåge og en lysende lime puls-linje
-// (pulsmåler) hen over toppen af skærmens midte. Alt er tilfældigt pr. besøg.
+// Rolig bølge-baggrund til forsiden (bruger 2026-10-01, lavet om 2026-10-03):
+// få, afdæmpede og skarpe bånd af bølgelinjer med overvejende gul-brunlige
+// nuancer øverst og grønne længere nede, lidt tåge kun forneden og en lime
+// puls-linje (pulsmåler), der tegnes helt inde fra venstre kant omkring
+// midten af hero. Alt er tilfældigt pr. besøg.
 // Ren tegnelogik uden React — komponenten ligger i components/HomeWaves.tsx.
 
 export type Rgb = [number, number, number];
@@ -142,11 +143,11 @@ type Fog = {
   alpha: number;
 };
 
-/** Lysende puls-linje (pulsmåler), der fejer hen over toppen af skærmen. */
+/** Puls-linje (pulsmåler), der tegnes fra venstre kant hen over hero. */
 type Pulse = {
-  /** Grundlinjens højde som andel af højden. */
+  /** Grundlinjens højde som andel af højden (lige under hero-hjulets midterrække). */
   y: number;
-  /** Hjerteslagets placering som andel af bredden (omkring midten). */
+  /** Hjerteslagets placering som andel af bredden (mellem knappen og tallene). */
   centerX: number;
   /** Udslagets højde i px. */
   amplitude: number;
@@ -154,8 +155,6 @@ type Pulse = {
   period: number;
   /** Sekunder et fej tager hen over skærmen. */
   sweep: number;
-  /** Halens længde som andel af bredden. */
-  trail: number;
   offset: number;
   seed: number;
 };
@@ -167,32 +166,32 @@ export function createWaveScene(seed: number): WaveScene {
   const between = (a: number, b: number) => a + (b - a) * rand();
   const sign = () => (rand() < 0.5 ? -1 : 1);
 
-  const bundleCount = 4 + Math.floor(rand() * 2);
+  const bundleCount = 3 + Math.floor(rand() * 2);
   const bundles: Bundle[] = [];
   for (let i = 0; i < bundleCount; i++) {
     const direction = sign();
     // Kortere bølgelængder end skærmbredden, så hele bølger ses og ingen side
     // konsekvent får de største udsving.
     const base: Component[] = [
-      { wavelength: between(0.9, 1.4), phase: between(0, 6.28), speed: direction * between(4, 7), amplitude: between(0.04, 0.07) },
-      { wavelength: between(0.55, 0.85), phase: between(0, 6.28), speed: direction * between(5, 9), amplitude: between(0.02, 0.035) },
+      { wavelength: between(0.9, 1.4), phase: between(0, 6.28), speed: direction * between(3, 5.5), amplitude: between(0.025, 0.045) },
+      { wavelength: between(0.55, 0.85), phase: between(0, 6.28), speed: direction * between(4, 7), amplitude: between(0.012, 0.022) },
       {
         wavelength: between(0.3, 0.48),
         phase: between(0, 6.28),
-        speed: (rand() < 0.7 ? direction : -direction) * between(6, 11),
-        amplitude: between(0.008, 0.015),
+        speed: (rand() < 0.7 ? direction : -direction) * between(5, 9),
+        amplitude: between(0.005, 0.01),
       },
     ];
     // Strengene ligger med god afstand og egne mindre bølger, så de ikke
     // snoer sig om hinanden som et tov.
-    const strandCount = 3 + Math.floor(rand() * 3);
-    const gap = between(16, 26);
+    const strandCount = 2 + Math.floor(rand() * 3);
+    const gap = between(14, 22);
     const strands: Strand[] = [];
     for (let s = 0; s < strandCount; s++) {
       strands.push({
         offset: (s - (strandCount - 1) / 2) * gap + between(-5, 5),
-        width: between(3.5, 6.5),
-        alpha: between(0.5, 0.82),
+        width: between(2, 3.4),
+        alpha: between(0.22, 0.4),
         tint: between(-0.08, 0.08),
         amplitudeScale: between(0.85, 1.15),
         components: base.map((c, j) => ({
@@ -207,47 +206,47 @@ export function createWaveScene(seed: number): WaveScene {
     // til får et bånd en tydeligt anden nuance.
     const tint = rand() < 0.2 ? sign() * between(0.18, 0.32) : between(-0.08, 0.08);
     bundles.push({
-      y: 0.1 + (i + rand()) * (0.76 / bundleCount),
+      y: 0.08 + (i + rand()) * (0.8 / bundleCount),
       tint,
       envelopeDepth: rand() < 0.2 ? between(0.3, 0.42) : between(0.06, 0.15),
-      spread: { wavelength: between(0.8, 1.5), phase: between(0, 6.28), speed: sign() * between(3, 7), amplitude: between(0.25, 0.45) },
-      driftAmplitude: between(8, 20),
+      spread: { wavelength: between(0.8, 1.5), phase: between(0, 6.28), speed: sign() * between(2, 5), amplitude: between(0.2, 0.35) },
+      driftAmplitude: between(6, 14),
       driftRate: (Math.PI * 2) / between(55, 100),
       driftPhase: between(0, 6.28),
       envelope: { wavelength: between(0.9, 1.6), phase: between(0, 6.28), speed: sign() * between(3, 6), amplitude: 0 },
-      glowWidth: between(40, 64),
-      glowAlpha: between(0.04, 0.07),
+      glowWidth: between(30, 46),
+      glowAlpha: between(0.015, 0.03),
       strands,
     });
   }
 
   const fog: Fog[] = [];
-  const fogCount = 4 + Math.floor(rand() * 2);
+  // Tågen ligger kun forneden, så toppen forbliver skarp (bruger 2026-10-03).
+  const fogCount = 3 + Math.floor(rand() * 2);
   for (let i = 0; i < fogCount; i++) {
     fog.push({
       x: between(-0.05, 1.05),
-      y: between(0.05, 0.8),
+      y: between(0.78, 1),
       swayX: between(0.06, 0.16),
-      swayY: between(0.03, 0.08),
+      swayY: between(0.02, 0.05),
       rateX: (Math.PI * 2) / between(60, 140),
       rateY: (Math.PI * 2) / between(70, 150),
       phaseX: between(0, 6.28),
       phaseY: between(0, 6.28),
-      radius: between(0.45, 0.85),
-      squash: between(0.5, 0.8),
-      tilt: between(-0.5, 0.5),
-      alpha: between(0.1, 0.2),
+      radius: between(0.35, 0.6),
+      squash: between(0.35, 0.55),
+      tilt: between(-0.25, 0.25),
+      alpha: between(0.05, 0.1),
     });
   }
 
-  const sweep = between(2.6, 3.6);
+  const sweep = between(3, 4);
   const pulse: Pulse = {
-    y: between(0.17, 0.24),
-    centerX: between(0.44, 0.56),
-    amplitude: between(24, 34),
-    period: sweep + between(2.5, 4.5),
+    y: between(0.58, 0.62),
+    centerX: between(0.36, 0.44),
+    amplitude: between(18, 26),
+    period: sweep + between(3, 5),
     sweep,
-    trail: between(0.35, 0.5),
     offset: between(0, 20),
     seed: Math.floor(rand() * 4294967296),
   };
@@ -354,11 +353,11 @@ export function drawWaveScene(
       for (let i = 0; i < count; i++) ys[i] = strandY(bundle, strand, x0 + i * step, t, width, height);
       tracePath(ctx, ys, count, x0, step);
       ctx.strokeStyle = rampGradient(bundle.tint + strand.tint);
-      // Tre lag oven på hinanden giver en blød kant uden hårde streger.
+      // Et svagt bredere lag under en skarp kerne: bløde bånd uden at toppen
+      // ser sløret ud (bruger 2026-10-03). Sløret forneden kommer fra CSS-laget.
       const passes: Array<[number, number]> = [
-        [3.4, 0.16],
-        [1.9, 0.34],
-        [1.0, 0.62],
+        [1.8, 0.3],
+        [1.0, 0.85],
       ];
       for (const [widthFactor, alphaFactor] of passes) {
         ctx.globalAlpha = strand.alpha * alphaFactor;
@@ -373,71 +372,66 @@ export function drawWaveScene(
 }
 
 /**
- * Puls-linjen: et lysende lime spor med falmende hale, der fejer fra venstre
- * mod højre og tegner ét hjerteslag, når det passerer midten. Hvert fej får
- * lidt tilfældig højde, og ind imellem står linjen stille.
+ * Puls-linjen: et lime spor, der tegnes fra venstre kant mod højre som på en
+ * pulsmåler og slår ét hjerteslag på vejen. Når sporet når højre kant, står
+ * hele linjen et øjeblik og toner så ud før næste fej. Højde og placering af
+ * slaget varierer lidt pr. fej.
  */
 function drawPulse(ctx: CanvasRenderingContext2D, pulse: Pulse, palette: WavePalette, t: number, width: number, height: number) {
   const time = t + pulse.offset;
   const cycle = Math.floor(time / pulse.period);
   const phase = time - cycle * pulse.period;
-  const trail = pulse.trail * width;
-  const travel = width + WAVE_BLEED * 2 + trail;
-  const head = -WAVE_BLEED + (phase / pulse.sweep) * travel;
-  const tail = head - trail;
-  if (tail > width + WAVE_BLEED) return;
+  const left = -WAVE_BLEED;
+  const right = width + WAVE_BLEED;
+  const progress = Math.min(1, phase / pulse.sweep);
+  const head = left + progress * (right - left);
+  // Efter fejet: hold linjen kort og ton den ud resten af perioden.
+  const rest = pulse.period - pulse.sweep;
+  const after = phase - pulse.sweep;
+  const fadeOut = after <= 0 ? 1 : Math.max(0, 1 - Math.max(0, after - rest * 0.25) / (rest * 0.75));
+  if (fadeOut <= 0 || head <= left) return;
 
   const cycleRand = mulberry32(pulse.seed + cycle);
-  const amplitude = pulse.amplitude * (0.8 + 0.4 * cycleRand());
-  const centerX = (pulse.centerX + (cycleRand() - 0.5) * 0.06) * width;
+  const amplitude = pulse.amplitude * (0.85 + 0.3 * cycleRand());
+  const centerX = (pulse.centerX + (cycleRand() - 0.5) * 0.04) * width;
   const beatWidth = Math.max(90, Math.min(150, width * 0.3));
   const baseY = pulse.y * height;
   const yAt = (x: number) => baseY + amplitude * heartbeatShape((x - centerX) / beatWidth);
 
-  const start = Math.max(tail, -WAVE_BLEED);
-  const end = Math.min(head, width + WAVE_BLEED);
-  if (end <= start) return;
   const step = 1.5;
   ctx.beginPath();
-  ctx.moveTo(start, yAt(start));
-  for (let x = start + step; x < end; x += step) ctx.lineTo(x, yAt(x));
-  ctx.lineTo(end, yAt(end));
+  ctx.moveTo(left, yAt(left));
+  for (let x = left + step; x < head; x += step) ctx.lineTo(x, yAt(x));
+  ctx.lineTo(head, yAt(head));
 
+  // Lidt svagere ude ved kanten end ved spidsen, men synlig hele vejen ind.
   const fade = (color: Rgb) => {
-    const gradient = ctx.createLinearGradient(tail, 0, head, 0);
-    gradient.addColorStop(0, rgba(color, 0));
-    gradient.addColorStop(0.6, rgba(color, 0.55));
+    const gradient = ctx.createLinearGradient(left, 0, Math.max(head, left + 1), 0);
+    gradient.addColorStop(0, rgba(color, 0.55));
     gradient.addColorStop(1, rgba(color, 1));
     return gradient;
   };
-  const glow: Array<[number, number]> = [
-    [14, 0.1],
-    [7, 0.22],
-    [3.5, 0.5],
-  ];
   ctx.strokeStyle = fade(palette.pulse);
-  for (const [lineWidth, alpha] of glow) {
-    ctx.globalAlpha = alpha;
-    ctx.lineWidth = lineWidth;
-    ctx.stroke();
-  }
+  ctx.globalAlpha = 0.25 * fadeOut;
+  ctx.lineWidth = 5;
+  ctx.stroke();
   ctx.strokeStyle = fade(palette.pulseCore);
-  ctx.globalAlpha = 0.95;
-  ctx.lineWidth = 1.8;
+  ctx.globalAlpha = 0.85 * fadeOut;
+  ctx.lineWidth = 1.6;
   ctx.stroke();
 
-  // Lysende punkt ved sporets spids.
-  if (head > -WAVE_BLEED && head < width + WAVE_BLEED) {
+  // Lille lysende punkt ved spidsen, mens sporet bevæger sig.
+  if (progress < 1) {
     ctx.beginPath();
     ctx.moveTo(head, yAt(head));
     ctx.lineTo(head + 0.01, yAt(head));
     ctx.strokeStyle = rgba(palette.pulse, 1);
-    ctx.globalAlpha = 0.35;
-    ctx.lineWidth = 12;
+    ctx.globalAlpha = 0.3;
+    ctx.lineWidth = 9;
     ctx.stroke();
     ctx.strokeStyle = rgba(palette.pulseCore, 1);
     ctx.globalAlpha = 1;
-    ctx.lineWidth = 4;
+    ctx.lineWidth = 3;
     ctx.stroke();
   }
 }

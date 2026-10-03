@@ -10,36 +10,31 @@ export type EnergyChipKind = "intake" | "burned" | "water";
 
 /**
  * Kalenderens miniature-visning af et tal (design.md §6.16): indtagne kalorier
- * som kyllingelår + tal, forbrændte kalorier som flamme + tal, vand som glas +
- * mængde i cl. Ikonet erstatter ordet "kalorier"/"kcal"; den fulde tekst
- * ligger i aria-label. Tekststørrelsen arves fra forælderen.
+ * som kyllingelår + "540 kcal", forbrændte kalorier som flamme + "+120 kcal",
+ * vand som glas + mængde i cl. Ikonet supplerer enheden "kcal" — det erstatter
+ * den aldrig. Tekststørrelsen arves fra forælderen.
  */
 export function EnergyChip({
   kind,
-  value = 0,
-  text: textOverride,
+  value,
   iconSize = 16,
   className = "",
 }: {
   kind: EnergyChipKind;
   /** kcal for intake/burned, ml for water. */
-  value?: number;
-  /** Færdigformateret tal, der erstatter standardteksten (fx "÷120" eller "1.234"). */
-  text?: string;
+  value: number;
   iconSize?: number;
   className?: string;
 }) {
   const { t } = useTranslation();
   const rounded = Math.round(value);
-  const text =
-    textOverride ?? (kind === "water" ? formatCl(value) : kind === "burned" ? `+${rounded}` : String(rounded));
-  const amount = textOverride ?? (kind === "water" ? formatCl(value) : rounded);
+  const text = kind === "water" ? formatCl(value) : kind === "burned" ? `+${rounded} kcal` : `${rounded} kcal`;
   const label =
     kind === "water"
-      ? t("calendar.waterChipAriaLabel", { amount })
+      ? t("calendar.waterChipAriaLabel", { amount: formatCl(value) })
       : kind === "burned"
-        ? t("calendar.burnedChipAriaLabel", { amount })
-        : t("calendar.intakeChipAriaLabel", { amount });
+        ? t("calendar.burnedChipAriaLabel", { amount: rounded })
+        : t("calendar.intakeChipAriaLabel", { amount: rounded });
   const Icon = kind === "water" ? IconWaterGlass : kind === "burned" ? IconFlame : IconDrumstick;
   const iconClass = kind === "burned" ? "text-hf-green" : "text-hf-black";
   return (

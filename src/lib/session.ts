@@ -14,7 +14,8 @@ export async function getSessionUser() {
   if (!session) return null;
 
   const user = await prisma.user.findUnique({ where: { id: session.userId } });
-  if (!user || user.forgottenAt) return null;
+  // En lukket konto (src/lib/account-closure.ts) logges ud på alle enheder.
+  if (!user || user.forgottenAt || user.closedAt) return null;
   return user;
 }
 

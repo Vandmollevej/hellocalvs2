@@ -2,12 +2,14 @@
 
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
+import { IconMessageChatbot } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
 import { AccordionCard } from "@/components/hf/AccordionCard";
 import { TextField } from "@/components/hf/TextField";
 import { Toggle } from "@/components/ui/Toggle";
 import { useInWebShell } from "@/components/web/WebShell";
 import { useTranslation } from "@/i18n/LocaleProvider";
+import { openHelpChat } from "@/lib/help-chat-events";
 import {
   SUPPORT_PERMISSION_GROUPS,
   SUPPORT_PERMISSION_KEYS,
@@ -292,17 +294,24 @@ export default function SupportSettingsPage() {
           >
             {saving ? t("settings.support.saving") : t("settings.support.saveAccess")}
           </button>
-          <Link
-            href="/settings/support/contact"
-            className="hf-control hf-btn-primary flex w-full items-center justify-center"
+          {/* Hjælpe-chatten åbnes kun herfra (docs/DECISIONS.md 2026-10-03). */}
+          <button
+            type="button"
+            onClick={openHelpChat}
+            className="hf-control hf-btn-secondary flex w-full items-center justify-center gap-2"
           >
-            {t("settings.support.contact")}
-          </Link>
+            <IconMessageChatbot size={20} stroke={1.75} />
+            {t("settings.support.chat")}
+          </button>
           <Link
             href="/settings/support/requests"
             className="hf-control hf-btn-secondary flex w-full items-center justify-center"
           >
             {t("settings.support.myRequests")}
+          </Link>
+          {/* Kontakt os står diskret nederst — chatten skal prøves først. */}
+          <Link href="/settings/support/contact" className="hf-btn-text self-center">
+            {t("settings.support.contact")}
           </Link>
         </div>
       </div>
