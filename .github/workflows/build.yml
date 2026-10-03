@@ -55,7 +55,7 @@ jobs:
           set -euo pipefail
           cp compose.production.yaml /deploy/compose.production.yaml
           # Alle agenter, som compose.production.yaml bygger lokalt (build: ./scripts/...).
-          for agent in image-agent frida-import hellofresh-import rema1000-import store-products-import quality-control-agent logo-agent; do
+          for agent in image-agent frida-import hellofresh-import rema1000-import store-products-import quality-control-agent logo-agent amount-suggestion-agent; do
             mkdir -p "/deploy/scripts/$agent"
             cp -R "scripts/$agent/." "/deploy/scripts/$agent/"
           done
@@ -132,6 +132,14 @@ jobs:
           cd /deploy
           docker compose --project-directory /volume1/docker/App/hellocal-v2 -f compose.production.yaml --env-file .env.production up -d --build logo-agent
 
+      # Kører også når et tidligere agent-trin fejler - mængde-robotten
+      # afhænger kun af db + migrate (compose depends_on), ikke af de andre.
+      - name: Build and start amount-suggestion agent
+        if: ${{ !cancelled() }}
+        run: |
+          set -euo pipefail
+          cd /deploy
+          docker compose --project-directory /volume1/docker/App/hellocal-v2 -f compose.production.yaml --env-file .env.production up -d --build amount-suggestion-agent
       # Umami-analyse (admin → Analyse). Sidst, så en Umami-fejl ikke
       # forhindrer app eller agenter i at starte.
       - name: Start Umami analytics

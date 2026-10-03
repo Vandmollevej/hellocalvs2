@@ -11,7 +11,8 @@ private hostnames in the repository.
   tag to `ghcr.io/vandmollevej/hellocalvs2`.
 - After the image build succeeds, the self-hosted deploy job checks out the same
   commit, syncs `compose.production.yaml` plus the locally-built REMA 1000 and
-  quality-control agent contexts into the server deployment directory, and sets
+  quality-control and amount-suggestion agent contexts into the server
+  deployment directory, and sets
   `HELLOCAL_TAG` to that exact commit SHA before running Compose. This keeps the
   server definition, local build contexts, and application image on one release.
   Core database migrations and the web app are started before the locally-built

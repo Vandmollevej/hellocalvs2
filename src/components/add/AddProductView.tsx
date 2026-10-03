@@ -275,7 +275,14 @@ export function AddProductView({
       : { status: "loading" },
   );
   const [profile, setProfile] = useState<ProfileUser | null>(null);
-  const [amount, setAmount] = useState(() => registration?.amountGrams ?? 100);
+  const [amount, setAmountState] = useState(() => registration?.amountGrams ?? 100);
+  // Mængde-robotten (docs/DECISIONS.md 2026-09-25) stiller startmængden, når
+  // dens svar kommer - men aldrig efter at brugeren selv har rørt mængden.
+  const amountTouchedRef = useRef(false);
+  const setAmount: typeof setAmountState = (value) => {
+    amountTouchedRef.current = true;
+    setAmountState(value);
+  };
   // Standard skal altid være gram (Fejlretninger/FEJLLISTE.md #1/#22): "personer"
   // er kun en mulighed, når varen faktisk har en defineret portionsstørrelse,
   // og må ikke være default-valget selv når den findes.

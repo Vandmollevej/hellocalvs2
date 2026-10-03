@@ -6,6 +6,8 @@ import { ensureJobRows } from "@/lib/jobs/runner";
 import { loadNightRuns } from "@/lib/jobs/runs";
 import { describeNightSummary, describeNightWindow } from "@/lib/jobs/night";
 import { RobotRow } from "@/components/admin/RobotRow";
+import { loadAmountSuggestionRobot } from "@/lib/robots";
+import { AmountSuggestionRobotPanel } from "@/components/admin/AmountSuggestionRobotPanel";
 
 // Admin "Robotter" (docs/DECISIONS.md 2026-09-28): robot-containerne
 // (runtime "agent") med on/off, KØR og cron-job-plan. Samme scheduled_jobs-
@@ -23,6 +25,7 @@ export default async function AdminRobotsPage() {
   const rows = await prisma.scheduledJob.findMany({ where: { key: { in: robots.map((job) => job.key) } } });
   const rowByKey = new Map(rows.map((row) => [row.key, row]));
   const night = await loadNightRuns().catch(() => null);
+  const amountRobot = await loadAmountSuggestionRobot();
 
   return (
     <div className="flex flex-col gap-6">
@@ -83,6 +86,14 @@ export default async function AdminRobotsPage() {
             })}
           </tbody>
         </table>
+      </div>
+      <div className="flex flex-col gap-2">
+        <h2 className="hf-type-title text-hf-black">Mængde-robot</h2>
+        <p className="hf-type-body text-text-secondary">
+          Finder den mest sandsynlige mængde pr. vare (fx agurk spist rå eller lagt i en opskrift), så mængde-slideren
+          starter dér i stedet for på 100 g. Bruger typetallet af, hvad folk faktisk vælger, med nyere valg vægtet højest.
+        </p>
+        <AmountSuggestionRobotPanel initial={amountRobot} />
       </div>
     </div>
   );

@@ -4,7 +4,7 @@ import { Suspense, useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { TextField } from "@/components/hf/TextField";
 import { useTranslation } from "@/i18n/LocaleProvider";
-import { normalizePhone } from "@/lib/phone";
+import { validatePhone } from "@/lib/phone";
 
 // Obligatorisk telefonnummer (docs/DECISIONS.md 2026-10-02): AuthGate sender
 // indloggede brugere uden nummer hertil — typisk konti oprettet med
@@ -55,7 +55,7 @@ function PhoneRequiredContent() {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError(null);
-    const parsed = normalizePhone(phone, region);
+    const parsed = validatePhone(phone, region);
     if (!parsed.ok) {
       setError(t(parsed.reason === "empty" ? "phoneRequired.empty" : "phoneRequired.invalid"));
       return;
