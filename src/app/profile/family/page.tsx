@@ -10,6 +10,7 @@ import { Toggle } from "@/components/ui/Toggle";
 import { ProfileCircle } from "@/components/family/ProfileCircle";
 import { FamilyProfileForm, type FamilyProfileInput } from "@/components/family/FamilyProfileForm";
 import { InviteFamilyMemberSheet } from "@/components/family/InviteFamilyMemberSheet";
+import { FamilySharingSection } from "@/components/family/FamilySharingSection";
 import { useFamilyStatus, type FamilyMemberInfo } from "@/components/family/FamilyStatusProvider";
 import { useTranslation } from "@/i18n/LocaleProvider";
 import { SkeletonCards, SkeletonList, SkeletonScreen, SkeletonSectionTitle } from "@/components/hf/Skeleton";
@@ -315,6 +316,8 @@ function FamilyPageContent() {
           {joinForm}
         </>
       )}
+
+      {family && !family.isOwner && <FamilySharingSection family={family} meId={status.me.id} />}
 
       {family && !family.isOwner && (
         <section>

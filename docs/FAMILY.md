@@ -48,6 +48,10 @@ hvornår andre har været inde, hvad de har set, og hvad de har ændret.
 11. **Kontrol-log (2026-09-26).** På den kontrollerede konto (barn, partner)
     ligger "Kontrol-log" under Indstillinger med log-ins (tidspunkter) og
     handlinger udført på kontoen.
+12. **Del med andre (2026-10-03).** Medlemmer (ikke betaleren) har "Familie"
+    øverst på Profil. På Familie-siden står "Del med andre" øverst med en række
+    "Delt med {navn}" pr. person, der kan se profilen; tryk viser, hvad der
+    deles. Kun visning — betaleren bestemmer adgangen.
 
 ### Min fortolkning (bekræft eller ret)
 

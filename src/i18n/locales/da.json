@@ -2686,6 +2686,29 @@
       "leave": "Meld dig ud af familien",
       "leaveConfirm": "Vil du melde dig ud? {owner} og andre i familien mister adgangen til din profil, og du mister familieabonnementet."
     },
+    "sharing": {
+      "title": "Del med andre",
+      "intro": "Her kan du se, hvem i familien der kan se din profil, og hvad de kan se. {owner} bestemmer, hvem der har adgang.",
+      "none": "Ingen andre i familien kan se din profil.",
+      "sharedWith": "Delt med {name}",
+      "ownerNote": "{name} betaler for familien og har altid adgang til din profil.",
+      "grantNote": "{owner} har givet {name} adgang til din profil.",
+      "canEdit": "{name} kan også taste ind og rette på din profil. Alt står i din Kontrol-log.",
+      "area": {
+        "profile": "Profil (navn, alder, højde)",
+        "registrations": "Madregistreringer",
+        "water": "Vand",
+        "weight": "Vægt",
+        "activities": "Aktivitet og motion",
+        "bodyMeasurements": "Kropsmål",
+        "goals": "Mål",
+        "sleep": "Søvn",
+        "healthMetrics": "Sundhedsdata (fx skridt)",
+        "menstrualCycle": "Menstruation",
+        "workShifts": "Arbejdstider",
+        "favorites": "Favoritter og opskrifter"
+      }
+    },
     "members": {
       "title": "Profiler ({count} af {max})",
       "payer": "Betaler",
