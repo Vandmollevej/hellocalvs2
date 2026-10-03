@@ -45,6 +45,12 @@ Last updated: 2026-10-03
 
 - `/profile/subscription` viser nu Gratis, Seriøs og Seriøs Familie i tre kolonner øverst (navn, pris, "Se mere"/"Din plan"); et tryk ruller ned til planens fulde kort længere nede. Ny `PlanOverview` i `src/components/landing/LandingPlans.tsx`; plankortene har ankre `plan-free/serious/family`. Forsiden er uændret.
 - Lint, typecheck og build grønne. Ikke set i browser (kræver login) — tjek på telefon, at de tre kolonner passer i bredden, og at tryk ruller til kortet.
+## 2026-10-03: Betaling viser det aktive kort fra Stripe (PR #132 flettet med master)
+
+- `/settings/payment` viser det kort/den wallet, Stripe trækker på: mærke + sidste 4 + udløb; Apple Pay/Google Pay med kortet bagved (nyt felt `PaymentMethod.wallet`, migration `20261002090000_payment_method_wallet` **skal køre ved deploy**); MobilePay. Kortmærke-logo (Visa/Mastercard) i lille fast ramme; andre mærker får det egne kortikon (`IconPaymentCard`). Siden henter altid frisk fra Stripe (`/api/subscription?refresh=1`). Kortet beholdes efter opsigelse (perioden er betalt).
+- "Skift betalingsmetode" åbner Stripes kundeportal i kort-skift-flowet (`POST /api/payments/stripe/portal`); mangler en portal-konfiguration, oprettes én automatisk. Dummy-visning: `/settings/payment?preview=DK|DE|APPLE|GOOGLE`.
+- Ejerens valg 2026-10-03: rækkerne Abonnement og Betalingsmetoder **bliver** på Profil og Indstillinger (med kortikonet) og vises for alle — den tidligere plan om kun under Indstillinger / kun for betalende er droppet. `paying` findes stadig i `/api/subscription`.
+- Test i Stripes testtilstand med testkortet 4242 4242 4242 4242 (vilkårlig fremtidig udløb/CVC).
 
 ## 2026-10-02: Kalenderen husker den åbne dag
 
