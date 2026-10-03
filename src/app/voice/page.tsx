@@ -12,6 +12,7 @@ import { defaultMealInputLanguage, readStoredMealInputLanguage, speechLangFor, t
 import { MealLanguagePicker } from "@/components/voice/MealLanguagePicker";
 import { useMealInputLanguage } from "@/components/voice/useMealInputLanguage";
 import { useTranslation } from "@/i18n/LocaleProvider";
+import { scaleItemToGrams } from "@/lib/scale-meal-item";
 
 type Item = {
   id: string;

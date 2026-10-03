@@ -437,13 +437,18 @@ def run_once(conn):
         raise RuntimeError(f"GOOGLE_VISION_CREDENTIALS peger på en fil, der ikke findes ({VISION_CREDENTIALS_FILE})")
     cleanup(conn)
     brands = fetch_brands_without_logo(conn, BATCH_SIZE)
+    if not brands:
+        return "Ingen brands uden logo", 0
+    done = 0
     for brand_id, brand_name, product_id, image_url in brands:
         try:
             process_brand(conn, brand_id, brand_name, product_id, image_url)
+            done += 1
         except Exception:  # noqa: BLE001 - ét brand må ikke stoppe kørslen
             conn.rollback()
             log.exception("fejl for brand %s", brand_name)
-    return f"{len(brands)} brands gennemgået"
+    # (besked, antal udført) til admin "Robotter"/"Nattens kørsler".
+    return f"{done} brands gennemgået", done
 
 
 def main():

@@ -154,17 +154,21 @@ def process_analysis(conn, analysis_id, product_id, photo_type, analysis_image_u
 
 
 def run_once(conn):
+    # Returnerer (besked, antal udført) til admin "Robotter"/"Nattens kørsler".
     analyses = fetch_candidate_analyses(conn, BATCH_SIZE)
     if not analyses:
         log.info("no pending photo comparisons")
-        return
+        return "Ingen fotos at sammenligne", 0
 
+    done = 0
     for analysis_id, product_id, kind, analysis_image_url, product_image_url in analyses:
         try:
             process_analysis(conn, analysis_id, product_id, kind, analysis_image_url, product_image_url)
+            done += 1
         except Exception:  # noqa: BLE001 - keep the loop alive across products
             conn.rollback()
             log.exception("failed to process analysis %s (product %s)", analysis_id, product_id)
+    return f"{done} fotos sammenlignet", done
 
 
 def main():
