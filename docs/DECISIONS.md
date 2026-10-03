@@ -459,7 +459,7 @@ om varen var "taget", og det føltes ikke som scanning i realtid.
 Brugerens valg efter skærmbillede: ændringen 2026-09-25, hvor tomme dage i
 månedsgitteret blev blanke, var ikke bestilt og er rullet tilbage for
 månedsgitteret. Regel for dagfelterne i månedsvisningen:
-- Dag med registreringer: ✓ (lime) når indtaget er på eller under målet,
+- Dag med registreringer: ✓ (signaturgrøn `hf-green`, se 2026-10-03) når indtaget er på eller under målet,
   ÷ (rød) når målet er overskredet. Uændret.
 - Afsluttet dag (før i dag) uden registreringer: ÷. En dag, der ikke er
   registreret, tæller som ikke nået.
@@ -4297,3 +4297,11 @@ Ejerens krav: "Hvis man er familiekontoejer skal 'skift profil' stå øverst og 
 - Ikonet er tegnet selv (`IconSwitchProfile`): to buede pile, op i venstre side og ned i højre. Tablers `IconRefresh` blev fravalgt, fordi den betyder "genindlæs" og allerede bruges til "Lær appen at kende".
 - Den valgte profils store cirkel med navn og "Din egen profil"/"Du taster ind for denne profil" står under rækken og er ikke længere selv en knap.
 
+
+## 2026-10-03: Fluebenene i kalenderen er signaturgrønne
+
+- Brugerregel (gentaget): alle flueben for "inden for målet" i kalenderen
+  (månedsgitter, uge-, liste- og dagvisning) bruger signaturgrøn
+  `text-hf-green` (`--hf-color-brand`, #067A46) — aldrig `hf-lime`.
+- `hf-lime` er ikke til flueben på lyse flader; det har for lav kontrast og
+  er ikke projektets signaturfarve.
