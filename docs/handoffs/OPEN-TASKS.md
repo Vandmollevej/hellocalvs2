@@ -59,6 +59,8 @@ Ejer: G1-overtagelse, konto C (2026-09-24)
 | — | Dagvisning: træk søvn-håndtag forbi kanten (scroller med) + "Nattens søvn: X,XX timer" i nattens grå felt | Færdig (flettet i master fra cloud-branch `claude/cloud-session-credits-expired-7504pf`) | Afventer brugerens test på telefon |
 | — | Dagvisning: sengetids-håndtag altid nederst (også ved sengetid 00:00) + manglende tekst "calendar.remainingToday" | Færdig (flettet i master fra `claude/calendar-slider-bedtime-text-1cp8lf`) | Afventer brugerens test på telefon |
 | — | Kalender: dage vi er forbi vises grå og ikke-fede (måned, uge, liste) | Færdig (PR #119, branch `claude/calendar-past-days-muted`) | Afventer brugerens visuelle godkendelse på telefon |
+| — | Kalender: dages dropdown virker igen, natten synlig om morgenen, "Søvn" med halvmåne | Færdig (branch `claude/kalender-soevn-dropdown`) | Afventer brugerens test på telefon |
+| — | Statusblok (dag + måned): flamme + grøn "+ N kcal" og "Mål" øverst, kort statusbjælke, "Tilbage"/"Overskredet" under; motion tæller med i målet i hele kalenderen; fælles komponent `GoalStatusSummary` | Færdig (PR #122, branch `claude/kalender-maalstatus-blok`) | Afventer brugerens test på telefon. Forside-kort/widgets regner stadig uden motion (G2/andre) |
 
 ## G2 — Statistik-siden (redigering, drag/drop)
 Filer: statistik-siden, `src/components/StatsWheel.tsx`, `src/lib/frontpage-layout.ts`, `src/lib/frontpage-stats.ts`.
@@ -145,6 +147,41 @@ Ejer: G8-sessionen, konto C (overtaget 2026-09-24)
 | 69a1b2bd / 2c95590f | Dubletter af 6068f78a og 8d98b548 — læs dem for ekstra svar fra brugeren ("Så byg det, der mangler. Det skal jo bare virke!") | Dublet | Luk sammen med hovedopgaverne |
 | 8d98b548 | Withings + Google Health koblet på, egen data-sync | Venter på bruger | Nøglerne ligger på serveren. 2026-09-26 (session d83284ca, med brugerens OK): 0.0.0.0-redirects i `handlers.ts` rettet. Redirect-URI løst via hellocal.io (2026-09-28); mangler kun testbruger packroff@gmail.com i Google Cloud (se STATUS "Integrationssiden"). HelloFresh-trin-rettelsen i samme transcript hører til G6 |
 | d0442775 | Waldemarsro (DK-only) + scraper | Venter på bruger | Scraper + kalorie-matcher færdige og gemt i scripts/valdemarsro-import (157cff9); brugeren kører scraperen selv (output i Productdatabase/Valdemarsro). IKKE bygget: import til appen + Valdemarsro-kort/toggle på Integrationer (krav i STATUS, ea7843a) — byg når brugeren siger til |
+| 5c45b0d7 | Opskrift-scrapere som Valdemarsro: Arla, Coop, REMA 1000, MENY, Hjerteforeningen, TV2 (+ Børnevenlig og måltidstype) | Færdig (kode) | Scrapere + kalorie-matcher i scripts/recipe-sites-import (README). Testet på de rigtige sider. Brugeren kører dem selv i VS Code; import i appen hører under Valdemarsro-integrationen |
+| 300489b5 | Push til Health/integrationer + egen side pr. app med til/fra (hent/send) ved tilkobling og bagefter | Færdig (ce1bc7f, deployet) | Brugeren: skriveadgang i Google Cloud-klienten (nutrition/health_metrics writeonly) og Strava-appen (activity:write); native app til Apple Health/Health Connect mangler |
+| admin-integrationer | Admin → Integrationer: oversigt (installationer, brug, frakoblinger) + side pr. integration med grafer | Færdig (kode), branch `claude/admin-integrationer` | Ny tabel `integration_events` (migration `20261002120000_integration_events`) skrives fra `handlers.ts`, `integrations-oauth.ts`, `companion.ts` og healthkit-/settings-ruterne. Næste: deploy + brugerens test på admin |
+
+## G9 — Ikoner (forside + vand)
+Filer: forsidens grydeikon, Vand-siden, `public/` assets.
+Ejer: G9-overtagelse, konto B
+
+| Id | Opgave | Status | Næste skridt |
+| --- | --- | --- | --- |
+| b4666faa | Grydeikon: trim `Gryde.png` og erstat på forsiden | Færdig (f5895a3) | Var allerede lavet: `public/icons/gryde.png` (770×759, trimmet), brugt i `src/lib/add-actions.ts` |
+| 8f42a331 | Nyt grydeikon (jævne streger) + champagneikon til Målsætning | Færdig | SVG-ikoner i `src/components/icons/`. Brugeren sletter kildebillederne i sin lokale hovedmappe |
+| 60e492ca | Vand-siden: 4 PNG'er (75/50/33/25 cl) | Færdig (6cf89c5) | Billeder i `public/icons/water/`, registrerer 750/500/330/250 ml. Afventer brugerens godkendelse af udseendet |
+| ea9d1f7c | Dublet af 60e492ca (glas/flaske i række på fire) | Færdig (6cf89c5) | Lukket af G9: spørgsmålet om billede↔størrelse er besvaret af filnavnene i 60e492ca |
+
+## G10 — Bundnavigation + global overskrift-stil
+Filer: `src/components/BottomNav.tsx`, `src/app/globals.css`.
+Ukendte ændringer: ingen (alt G10-arbejde committet).
+Ejer: G10-overtagelse, konto D (2026-09-24)
+
+| Id | Opgave | Status | Næste skridt |
+| --- | --- | --- | --- |
+| 5f2ee781 | Fjern stregen mellem footer og indhold + sektionsoverskrifter mindre, ikke fed, centreret med streg på hver side | Færdig (be3a05d) | Verificeret i preview. Afventer brugerens godkendelse af udseendet |
+| a83d7a5a | Alle overskrifter med streger skal være samme klasse (Tidspunkt, datogrupper, statistik, "+ Skillelinje", Historik) | Færdig (136f502) | Deployet (Actions grøn). Obs: forside-indstillingernes "Knapper i hjulet" har en egen streg-overskrift, der kun findes på den lokale master — den skal over på `.hf-type-section-title`, når den lander på origin |
+| 6a503586 | Footer-redigering: slette-krydserne er skåret af + ikoner skal kunne trækkes til siden for at bytte rækkefølge | Færdig (8d5ba9b) | `overflow-x-clip` så krydserne ikke klippes; ombytning efter pladsen under fingeren (ingen hop) + roligere glide-animation; ikon fra panelet indsættes på den plads, det slippes. Afventer test på telefon (HelloFresh/knap-delen hører til G6) |
+
+## G11 — Næringsdata på produktsiden (E-numre, toksiner, fedt-advarsel)
+Filer: produktsidens næringsvisning, statistik-boks-katalog (koordinér med G2), Opsætning/Visning (koordinér med G7).
+Ejer: G11-overtagelse, konto C (2026-09-24). Arbejder i worktree `gifted-hofstadter-894e70`, fletter ind i master
+
+| Id | Opgave | Status | Næste skridt |
+| --- | --- | --- | --- |
+| 03b329f3 / 5a3cdd2b | E-numre + toksiner som valgfri statistik-bokse og til/fra i Opsætning, vist på produktsiden; "udvidet næringsindhold" åben som standard | Færdig (5cea433) | Kontakter i Opsætning, toksinliste (FVST + EFSA, graviditet/amning/fertilitet først), produktside. Flettes ind i master, når G7 har committet profile/settings |
+| 56f30763 | Advarselstrekant med udråbstegn ved mættet/usundt fedt | Færdig (5cea433) | Trekant på statistik-bokse + produktside. **G2:** forsidens tal-slider (`frontpage-stats.ts`) mangler samme ikon — G11 rører ikke filen |
+| 31 | E-numre klikbare på varen og i ingredienslisten | Færdig (branch `claude/clickable-e-numbers-0g8aih`) | E-numre i ingredienstekst åbner `AdditiveInfoModal` via `splitENumbers` i `src/lib/additives.ts`; E-nummer-listen var allerede klikbar |
 
 ## Widgets (iPhone/Android)
 Filer: `src/lib/widgets.ts`, `src/lib/widget-data.ts`, `src/lib/widget-add-actions.ts`, `src/app/api/widgets/**`, `src/app/widgets/**`, `src/components/widgets/**`, `docs/WIDGETS.md`.
@@ -222,6 +259,7 @@ Ejer: Chatbot-sessionen (cloud), branch `claude/ai-chatbot-support`
 | Id | Opgave | Status | Næste skridt |
 | --- | --- | --- | --- |
 | chatbot | AI-chatbot øverst i app og web med medarbejder og kontaktformular (ingen telefon); admin → Brugere → Chatbot med oftest spurgt, Q&A-tabel, hele tråde og brugerinfo | Færdig (kode, se DECISIONS 2026-10-02) | Merge + deploy (migration `20261002120000_chatbot`). Test på mobil og desktop |
+| chat-support | Chatten kun under Support, kontakt kun nederst (ikke i toppen) | Færdig (kode, branch `claude/help-chat-only-support`, DECISIONS 2026-10-03) | Brugerens visuelle test på telefon efter deploy |
 
 ## G-WAVES — Bølge-baggrund på forsiden
 Filer: `src/lib/home-waves.ts`, `src/components/HomeWaves.tsx`, `.home-wave*` i `globals.css`, `src/app/page.tsx` (lag-opbygning), `StatsWheel.tsx` (kun `clipPath`).
@@ -230,6 +268,7 @@ Ejer: bølge-sessionen (2026-10-01)
 | Id | Opgave | Status | Næste skridt |
 | --- | --- | --- | --- |
 | — | Rolig, tilfældig bølge-animation bag forsiden med frostet-glas-bund og tåge | Færdig (kode) | Afventer brugerens visuelle godkendelse på telefon; justér tempo/farve efter feedback |
+| — | Ommer: afdæmpet, skarp top, kun sløret forneden, puls lavere og fra venstre kant (branch `claude/forside-boelger-ommer`) | Venter på bruger | Brugeren tester på telefon; justér alfa/bredde i `createWaveScene` og maskerne i `globals.css` efter feedback |
 
 ## G-INT2 — Flere integrationer (Garmin, WHOOP, Huawei, via-mærker, Health Connect-modul)
 Filer: `src/lib/integrations/**`, `src/lib/integrations.ts`, `src/app/settings/integrations/**`, `src/app/api/integrations/**`, `src/lib/api-keys/*`, `native/android/healthconnect/**`.
@@ -249,6 +288,16 @@ Ejer: "Indholdsfortegnelse og feltsammenflettning" (89f1295c, 2026-10-03)
 | 89f1295c | Vitaminer fra Bilka (`bilka_vitamins.py`) | Venter på bruger | Brugeren kører `py bilka_vitamins.py` i Bilka-mappen på NAS'en (nogle timer). Derefter: `py build_data.py --all --out <mappe> --images-from <NAS-json>`, kopiér `store_products.json` til NAS'ens `data/store-products-import/` og kør jobbet |
 | — | Næring fra Frida til de 2.364 skjulte varer (`WHERE "nutritionMissing"`) | Ikke startet | Brugerens plan ("så tager vi det fra Frida senere"): match på produkttype/navn, udfyld som ESTIMATED (~), sæt `nutritionMissing = false` og opret stregkode-rækken (EAN = `externalId`) |
 
+## G-PARTNER — Partnersider
+Filer: `src/app/admin/partners/**`, `src/components/admin/partner/**`, `src/lib/partner-performance.ts`, `src/lib/ad-inventory.ts`, `src/lib/ad-serving.ts`, `src/lib/simple-pdf.ts`, `src/components/AdBanner.tsx`, `src/app/api/ads/**`, `src/app/api/admin/partners/**`.
+Ejer: partner-sessionen (2026-10-03)
+
+| Id | Opgave | Status | Næste skridt |
+| --- | --- | --- | --- |
+| — | Partnerside: virksomhed/kontakter i venstre bjælke, Sponsoraftale, Performance (Overview + Data mining), Fakturering, Betaling, PDF/CSV + send | Færdig i kode (branch `claude/partner-pages`) | Banner-upload bygget. Afventer brugerens visuelle godkendelse og besked om hvilke reklamepladser der findes (kataloget i `ad-inventory.ts` er et forslag) |
+| — | Sæt `<AdBanner slot=… category=… productType=…/>` ind på de sider, brugeren vælger | Venter på bruger | Brugeren har ikke angivet hvor reklamerne skal vises. Siderne ejes af andre grupper — aftal med dem |
+
+
 ## G-AUTH — SMS-kode + login-godkendelse
 Filer: `src/lib/teammessage.ts`, `src/lib/sms-verification.ts`, `src/lib/login-approval.ts`, `src/app/api/auth/{sms,login-approval,reset-password}/**`, `src/app/signup`, `src/app/reset-password`, `src/app/approve-login`, `src/app/profile/login-approval`, `public/sw.js`.
 Ejer: SMS-sessionen (2026-10-02)
@@ -257,3 +306,11 @@ Ejer: SMS-sessionen (2026-10-02)
 | --- | --- | --- | --- |
 | — | 6-cifret SMS-kode ved tilmelding + glemt adgangskode (TeamMessage) og login-godkendelse med push | Venter på bruger | Branch `claude/teammessage-sms` er klar, men ikke flettet. Se STATUS 2026-10-03 "Roadmap": TeamMessage-env + VAPID-nøgler på serveren, derefter flet + test |
 | — | 6-cifret SMS-kode ved tilmelding + glemt adgangskode (TeamMessage) og login-godkendelse med push | Venter på bruger | Branch `claude/teammessage-sms` er klar, men ikke flettet. Se STATUS 2026-10-03 "Roadmap": TeamMessage-env + VAPID-nøgler på serveren, derefter flet + test |
+
+## G-BODYCHART — Kropsmål som statistikgrafer
+Filer: `src/components/BodyMeasurementChart.tsx`, `src/lib/body-measurement-series.ts` (+ test), `src/lib/stat-charts.ts` (`body:*`), `src/app/statistics/{page,unused-charts/page,unused-cards/page}.tsx`, `src/app/profile/body-measurements/page.tsx`, i18n `bodyMeasurementChart.*`.
+Ejer: ledig (Kropsmål-graf-sessionen er arkiveret 2026-10-03)
+
+| Id | Opgave | Status | Næste skridt |
+| --- | --- | --- | --- |
+| — | Kropsmål-grafer: tegning til venstre, forløb af seneste 10 målinger til højre; følger cm/tommer | Færdig i kode på branch `claude/kropsmaal-statistikgraf` (PR #156, kladde) — ikke flettet | Gennemgå PR #156, flet master ind ved konflikt (typisk kun `docs/STATUS.md`: behold begge sider), kør lint/typecheck/build og flet til master. Tjek på telefon: Statistik → Tilføj → Kropsmål |

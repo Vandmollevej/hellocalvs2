@@ -3,7 +3,6 @@
 import { mealShareBody } from "@/lib/meal-share";
 import { Suspense, useCallback, useEffect, useRef, useState } from "react";
 import { IconCamera } from "@tabler/icons-react";
-import { EnergyChip } from "@/components/calendar/EnergyChip";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { HfScreen } from "@/components/HfScreen";
@@ -13,6 +12,7 @@ import { IngredientsRetakeFlow } from "@/components/camera/IngredientsRetakeFlow
 import { ObjectPickerOverlay } from "@/components/camera/ObjectPickerOverlay";
 import { cropToObject, detectObjects, type ObjectBox } from "@/lib/object-picker";
 import { useTranslation } from "@/i18n/LocaleProvider";
+import { scaleItemToGrams } from "@/lib/scale-meal-item";
 
 type CameraStatus = "starting" | "active" | "denied" | "unavailable" | "error";
 type CameraMode = "product" | "meal" | "hellofresh";
@@ -428,7 +428,7 @@ function PhotoModeContent({ mode, forDish }: { mode: "meal" | "hellofresh"; forD
                         )}
                       </p>
                       <p className="hf-type-small text-text-secondary">
-                        {item.amountLabel} · <EnergyChip kind="intake" value={item.kcal} />
+                        {item.amountLabel} · {item.kcal} kcal
                       </p>
                     </div>
                     <button

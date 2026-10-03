@@ -2,6 +2,37 @@
 
 This file records durable decisions. Add a dated entry when a later decision changes one of them.
 
+## 2026-10-02: Hjælpe-chatbot øverst i app og web + admin "Chatbot"
+
+- **Placering:** en hjælpe-knap (chatbot-ikon) står øverst på alle app-sider lige til venstre for profilcirklen (`ScreenHeader` og forsidens `TopBar`). På desktop står "Hjælp" i topbjælken ved siden af profilindstillinger. Knappen åbner ét fuldt bundark (`src/components/help/HelpChat.tsx`, monteret én gang i layoutet). Den eksisterende måltids-chat (`/chat`) er uændret og noget andet.
+- **Kontaktveje i toppen af arket:** "Tal med en medarbejder" og "Kontaktformular" (`/settings/support/contact`). **Ingen telefonsupport** (ejerens valg 2026-10-03), så der er ingen "Ring til os"-knap, og chatbotten ved, at der ikke findes en telefon.
+- **"Tal med en medarbejder"** opretter en almindelig sag i Support-indbakken (samme flow, kvitteringsmail og 24-timers-frist som "Kontakt os") med hele chat-tråden som første besked, så brugeren ikke skal forklare sig igen. Kategorien oversættes til Supports kategori. Virker også uden forudgående spørgsmål (så er brugerens tekst beskeden). Efter videresendelse er samtalen lukket; næste spørgsmål starter en ny.
+- **AI:** OpenAI Responses API med `store: false` og kun beskedtekster (ingen ID'er, navn eller e-mail), som de øvrige AI-kald. Model `OPENAI_CHATBOT_MODEL`, standard `gpt-4o-mini`. Chatbotten svarer kun ud fra `src/lib/chatbot-knowledge.ts` (bygget på Hjælpecentret) og må aldrig gætte; ved tvivl, penge tilbage, kontosletning, kontoadgang og utilfredshed foreslår den en medarbejder. Links i svar vælges kun fra en fast liste (enum i svar-skemaet). Fejler AI-kaldet, får brugeren et fast svar med tilbud om en medarbejder.
+- **Data:** `chatbot_conversations` + `chatbot_messages` (migration `20261002120000_chatbot`). Hvert brugerspørgsmål får én kategori (13 faste, `src/lib/chatbot-categories.ts`); samtalens kategori er den hyppigste. Samtalen gemmer et **øjebliksbillede** af brugeren ved start (alder, køn, region, Gratis/Seriøs + plan, app-sprog) — samme snapshot-princip som registreringer. Slettes med brugeren (cascade). En samtale fortsætter, til den har været stille i 12 timer. Højst 30 spørgsmål pr. bruger pr. time.
+- **Admin → Brugere → Chatbot** (`/admin/chatbot`): periode (7/30/90 dage/altid), nøgletal, "Oftest spurgt" pr. kategori (klik filtrerer), tabel med alle spørgsmål og svar (søgning, kategori, kun videresendte) og visningen "Hele tråde" med alle spørgsmål og svar inline. `/admin/chatbot/[id]` viser hele tråden, brugeren nu (alder, køn, region, abonnement + status, sprog, bruger siden, antal samtaler/sager), øjebliksbilledet og link til supportsagen.
+- **Region** er landet fra profilen (`User.region`, fx Danmark) — ejerens valg 2026-10-03. Ingen danske regioner/postnumre.
+- **Kun indloggede** kan bruge chatbotten (ejerens valg 2026-10-03). Udloggede, der åbner den, får en henvisning til Hjælpecentret.
+## 2026-10-02: Før/efter-sammenligning i billede-dagbogen
+
+- Valg sker med en hvid afkrydsningsboks på billedkortet; første afkrydsning åbner straks overlayet med billede 1 som "Før" og en tom "Efter"-plads. Rækkefølgen er brugerens valg (ikke dato), og kan byttes om.
+- Sammenligningen er kun visning: intet nyt billede gemmes, og intet forlader telefonen. Billedfeltet får før-billedets format; efter-billedet beskæres til samme felt (object-cover), så linjen deler samme udsnit.
+- Overlayet følger den eksisterende fuldskærmsvisning (mørk flade) og lukker, når siden låses (adgangskode-låsen).
+## 2026-10-03: Adgangsarkets knapper ligger under listen, ikke ovenpå
+
+Ændrer "faste knapper nederst" fra 2026-09-27: knapperne og "Vilkår og
+betingelser"-bjælken står stadig fast i bunden af `HfAccessSheet`, men i deres
+egen hvide bund under den scrollbare liste i stedet for ovenpå den med
+gennemsigtig toning. Brugeren kunne ikke se, hvad der skete i bunden (rækkerne
+skinnede igennem bjælken). Kun en 32 px toning over kanten viser, at listen
+fortsætter.
+## 2026-10-03: Tilføj-menuen — Aktivitet og Menstruation som ikon-felter
+
+Ejerens krav: "Tilføj aktivitetsikon og menstruationscirkel (sidste kun for kvinder!). Så må man bare scrolle."
+
+- Aktivitet er nu et 3D-felt (`/icons/activity-3d.png`) i gitteret i stedet for en række under kortet.
+- Nyt felt Menstruation (`/icons/add/period.svg`, cyklusring med blodsdråbe) åbner `/period/create`. Vises kun, når `visibleAddActions()` tillader det (køn = kvinde **og** "Vis menstruationscyklus" slået til, jf. 2026-09-19). Erstatter tidligere note om, at menstruation kun findes i kalenderen.
+- Gitteret er 2 kolonner på mobil (5 på brede skærme); bundarket scroller, når felterne ikke kan være der.
+
 ## 2026-10-02: Flere integrationer — Garmin, WHOOP, Huawei + mærker via telefonen
 
 Brugerens krav: Garmin, Health Connect, eufy, Renpho, Tuya, Xiaomi, Huawei, WHOOP og Samsung (også ure/ringe, ikke kun vægte). "Vi må ikke videregive nogen informationer om brugeren."
@@ -19,6 +50,14 @@ Brugerens krav: Garmin, Health Connect, eufy, Renpho, Tuya, Xiaomi, Huawei, WHOO
 - De ti gamle nøgler (running … other) beholdes uændret; nøgler må aldrig omdøbes, da de står på gamle registreringer. Integrationernes aliaser er uændrede, men en rå type, der præcis er en katalognøgle (fx Strava "Rowing", "Golf"), lander nu på den nøgle i stedet for "cardio"/ukendt.
 - Søgningen matcher navnet først og derefter søgeord (fx "judo" → Kampsport, "spinning" → Spinning). Listen er alfabetisk med "Anden aktivitet" sidst.
 - Varighed indtastes som timer + minutter med et sluttidspunkt, der følger med begge veje; slut før start betyder over midnat (`src/lib/activity-duration.ts`). API'et får stadig `durationMinutes`.
+## 2026-10-03: Hjælpe-chatten kun under Support, kontakt kun nederst
+
+Ændrer placeringen fra 2026-10-02 (ejerens ønske: "skjul det mere").
+
+- Ingen hjælpe-knap i toppen længere — hverken i appbaren (`ScreenHeader`), forsidens `TopBar` eller desktop-skallens topbjælke. Chatten åbnes kun fra knappen "Spørg hjælpe-chatten" på Support-siden (`/settings/support`). `.hf-appbar--help` og `HelpChatButton` er fjernet.
+- I chat-arket står "Tal med en medarbejder" og "Kontaktformular" ikke længere som fliser i toppen, men som diskrete tekstlinks nederst i samtalen. Chatbottens eget tilbud om en medarbejder (ved tvivl) er uændret.
+- På Support-siden er "Kontakt os" et tekstlink helt nederst (under "Mine henvendelser") i stedet for en primær knap.
+
 ## 2026-10-02: Hjælpe-chatbot øverst i app og web + admin "Chatbot"
 
 - **Placering:** en hjælpe-knap (chatbot-ikon) står øverst på alle app-sider lige til venstre for profilcirklen (`ScreenHeader` og forsidens `TopBar`). På desktop står "Hjælp" i topbjælken ved siden af profilindstillinger. Knappen åbner ét fuldt bundark (`src/components/help/HelpChat.tsx`, monteret én gang i layoutet). Den eksisterende måltids-chat (`/chat`) er uændret og noget andet.
@@ -64,15 +103,18 @@ Erstatter "Varer uden kcal/protein/kulhydrat/fedt springes over" fra 2026-09-27.
 - Admin-gennemgang i Dubletter nulstilles ikke af kJ-rettelsen eller de afledte sukkerpåstande.
 ## 2026-10-02: Kalenderens miniature-tal — kyllingelår, flamme og vand i cl
 
-- Generelt i appen ("overalt", brugerens svar 2026-10-02) vises indtagne
-  kalorier som et brunt/hvidt kyllingelår + tal, forbrændte kalorier
-  (aktiviteter, aktiv energi) som en flamme + tal, og vand som det
-  eksisterende glas-ikon + mængde i cl. Ordet "kalorier"/"kcal" udgår, hvor
-  tallet står kompakt: kalenderens dag-/time-/uge-/månedsvisninger, forsidens
-  tal-hjul, statistikbokse, widget-forhåndsvisninger og listerne i chat, tale
-  og kamera. Den fulde tekst ligger i aria-label. Fælles komponent
-  `EnergyChip` (design.md §6.16). Sætninger, indtastningsfelter,
-  "kcal / 100 g", grafakser og native widgets beholder teksten.
+- **Rettet 2026-10-03 (brugeren):** ikonet er et supplement til "kcal",
+  aldrig en erstatning, og kyllingelåret bruges kun, hvor der i forvejen stod
+  et ikon. "Overalt"-udrulningen fra 2026-10-02 er rullet tilbage: måneds-/
+  ugelisten, statistikboksenes værdier, widget-forhåndsvisningerne og
+  listerne i chat/tale/kamera viser igen tal + "kcal" uden ikon. Forsidens
+  tal-hjul (Kalorier, Kalorier i plus: kyllingelår; Forbrændt: flamme) og
+  statistikboksen Kalorier (kyllingelår) beholder ikonskiftet og viser igen
+  "kcal".
+- Kalenderens dagvisning (timerækken og timens oversigt) viser indtagne
+  kalorier som kyllingelår + "540 kcal", forbrændte som flamme +
+  "+120 kcal", og vand som det eksisterende glas-ikon + mængde i cl. Fælles
+  komponent `EnergyChip` (design.md §6.16).
 - Vand vises aldrig som "0 kcal". To kilder tælles sammen pr. time:
   `WaterEntry` fra /water/create (ml), som kalenderen nu også henter, og
   almindelige registreringer af en vare, der er vand: 0 kcal og enten et
@@ -125,8 +167,16 @@ Hello Cals partnerportal og ser sin egen partners data.
   `partner-session`, 12 t, `PARTNER_SESSION_SECRET` ellers
   `ADMIN_SESSION_SECRET`). Middleware gater `/partner/*` og `/api/partner/*`
   (undtagen login og invitationslink); `requirePartnerUser()` tjekker i
-  databasen aktiv/accepteret og `sessionsValidFrom`. Ingen 2-faktor i første
-  omgang (kun partnerens egne aggregerede reklametal, ingen persondata).
+  databasen aktiv/accepteret/2-faktor sat og `sessionsValidFrom`.
+- **2-faktor (TOTP) er obligatorisk** (brugerens valg 2026-10-03), som hos
+  admin-brugerne: ved tilmelding vælges adgangskode, derefter scannes en
+  QR-kode og første kode bekræftes — først da oprettes adgangen
+  (`PartnerUser.totpSecret`, migration `20261003090000_partner_user_totp`).
+  Ved hvert login: adgangskode (`/api/partner/login`, sætter kun en 5-minutters
+  `hc_partner_mfa`-cookie) → kode på `/partner/verify` (`/api/partner/verify`),
+  som først udsteder sessionen. Mistet telefon: admin sletter brugeren og
+  inviterer igen. Godkendelse af nyt udstyr og IP-begrænsning (som admin) er
+  ikke indført for B2B.
 - **Admin kan:** gensende/trække invitation tilbage, deaktivere/aktivere,
   "log ud overalt" og slette. Deaktivering og log-ud sætter
   `sessionsValidFrom`, så eksisterende sessioner afvises straks.
@@ -139,10 +189,44 @@ Hello Cals partnerportal og ser sin egen partners data.
   da admin-værten omskriver alle stier til `/admin` og er IP-begrænset.
   `PARTNER_BASE_URL` kan overstyre linkets base (standard `APP_BASE_URL`).
 
+## 2026-10-02: Butiksimporten: alt fra arkene med (Bilka + REMA 1000)
+
+Erstatter "Varer uden kcal/protein/kulhydrat/fedt springes over" fra 2026-09-27.
+
+- **Alle rækker importeres** (brugerens valg: "Det er lige meget om de har protein mv. med. Så tager vi det fra Frida senere"). 13.039 varer i stedet for 10.524.
+- **Uden kalorietal** (2.364 varer: mest vin/øl/spiritus, krydderier, kaffe/te, frisk frugt/grønt og kød): `Product.nutritionMissing = true`, kcal/protein/kulhydrat/fedt = 0 som pladsholder. Varen er skjult i alle opslag, hvor en bruger kan finde og logge den (søgning, tekst-/foto-/måltidsgenkendelse, næringsmatch, generiske kandidater), og får **ingen stregkode-række** — scanning ender derfor stadig i Open Food Facts eller kameraflowet, hvor brugeren kan oprette varen med rigtig næring. Opretter en bruger den, opdateres brugerens vare ved næste import, og den skjulte kopi slettes. Varesiden viser "Næringsindhold ukendt" og admin "Mangler – skjult i appen". Næring hentes senere fra Frida (egen opgave): udfyld, sæt `nutritionMissing = false`, opret stregkoden.
+- **Med kalorietal men uden protein/kulhydrat/fedt** (151, mest spiritus og øl, hvor kun energien er deklareret): synlige; den manglende makro er 0 og markeret `ESTIMATED` i `nutrientSources` (~). En eksisterende vare beholder sine egne makroer.
+- **Energi repareres**: Bilka-arkets kJ er tal, så 1105 kJ stod som 1,105 (ca. 4.900 varer). Desuden byttede kolonner, kJ = 0 ved siden af kcal, og 25 kcal-værdier, hvor arkets egen kJ og makroerne (4P + 4C + 9F + 2 fiber) er enige mod kcal (fx Marineret flanksteak 15 → 152, Chiliolie 37 → 392); aldrig på alkohol. Alle rettelser står i tjeklisten. kJ på admin-gennemgåede varer repareres også (en tusind-fejl er intet valg).
+- **"Sukkerfri" kun op til 0,5 g sukker pr. 100 g** (EU's grænse; brugerens valg). REMA's "Sukkerfri" på 44 varer med mere sukker var REMA's mærke "Ikke tilsat sukker" → filteret "Uden tilsat sukker" (sukkerpåstandene fra samme dag). Det samme gælder "sukkerfri"/"uden sukker" i titlen på en vare med over 0,5 g sukker. Butikkens eget Sukkerfri-mærke i Bilka-arket (`_is_sugar_free`) står ved magt.
+- **Info-arkenes "Labels"** udfylder filtre, arkene lod stå tomme (fuldkorn, vegetarisk, certificeringer, dyrevelfærd, oprindelsesland), og REMA's "Additional Product Information" giver oprindelsesland.
+- **Vitaminer/mineraler**: findes ikke i arkene (kolonnerne var tomme) — bilka.py åbnede aldrig panelet "Info om vitaminer og mineraler". Nyt tillægs-script `bilka_vitamins.py` (brugeren kører det selv) skriver `bilka_vitamins.xlsx`; importen gemmer værdierne i `micronutrientsPer100g` med kilde LABEL, så de afløser Frida-skønnene (~) på varesiden.
+- **Navne**: varer opkaldt efter brandet alene hed "0"/"1"/"M appelsin" (titlen minus brand og mængde); nu butikkens egen titel ("Coca cola", "Breezer m. appelsin"), og første bogstav er stort.
+- Admin-gennemgang i Dubletter nulstilles ikke af kJ-rettelsen eller de afledte sukkerpåstande.
+
+## 2026-10-02: Kameraflowet tager rigtige stillbilleder + "tag nyt billede af indholdet"
+
+- Årsag: en marmelades ingrediensliste (30. sept.) blev aldrig aflæst. Loggen viste, at OpenAI fik fotoet, men svarede "for sløret til sikker aflæsning" (tom liste, sikkerhed 12 %). Fotoet var et 1080p-videobillede; appen sagde intet og prøvede ikke igen. Der var ingen genstart — PR #151 (genoptagelse efter genstart) byggede på et forkert gæt og er droppet.
+- Forside, energi og indhold tages nu som kameraets stillbillede (`ImageCapture.takePhoto`, `src/lib/camera-still.ts`) — stadig automatisk, uden tryk. Har browseren ikke funktionen, bedes videostrømmen om 4K, og det skarpeste af tre videobilleder bruges. Stregkodefotoet er stadig ét videobillede (må ikke forsinke scanningen).
+- Energi- og indholdsfotoet beskæres til det kvadrat, brugeren så i søgeren (ændrer "ingen beskæring" fra 2026-09-17 for de to trin; forsiden er stadig hele fotoet). Længste side højst 2048 px.
+- Hvert foto logges (`photo_captured`: stillbillede/videobillede, opløsning, skarphed).
+- Kunne AI ikke læse ingredienslisten, viser varesiden "Indholdet kunne ikke læses på billedet" med knappen "Tag nyt billede af indholdet" — kun for den, der oprettede varen (`ingredientsUnreadable` i `GET /api/products/[id]`). Knappen åbner `/camera?retake=ingredients&product=<id>` (`IngredientsRetakeFlow`), og `POST /api/products/[id]/ingredients-photo` læser det nye foto med OpenAI. Intet automatisk genforsøg på det samme foto (brugerens valg).
+
+## 2026-10-02: "Til info sendte vi dig …" (mail/sms var ikke spam)
+
+- Hver mail eller sms til en kendt bruger giver (1) en push med det samme: "Vi har netop sendt dig en e-mail om "emne". Dette var ikke spam." og (2) et bundark som det første ved næste besøg (app og web): "Til info sendte vi dig den <dato> en <e-mail/sms> om "<emne>". Dette var ikke spam." med sort knap "Læst".
+- "Læst" kvitterer (`OutboundMessage.noticeAckAt`); et træk ned lukker kun til næste besøg. Beskeder ældre end 30 dage vises ikke. Gælder ikke mails til admin, ikke-brugere (invitationer) eller rene push-beskeder.
+- Bygger på den eksisterende `OutboundMessage`-log — ingen adresse eller telefonnummer gemmes. Sms sendes via `src/lib/sms.ts` (GatewayAPI-format, no-op uden `SMS_GATEWAY_TOKEN`); brugere har endnu intet telefonnummer-felt, så ingen sms sendes i dag.
+
 ## 2026-10-02: Vægt- og længdeenheder (kg/lb/st, cm/in)
 
 - Brugeren vælger vægtenhed (kg, pund eller stone+pund) og højde-/kropsmål-enhed (cm eller tommer) i startguidens første trin og under Indstillinger → Sprog og region. Valget gemmes pr. enhed i localStorage (som kalendervisning); databasen gemmer stadig altid kg og cm.
 - Standard udledes af landet (profilens region, ellers browserens): USA/Canada → pund + tommer, UK/Irland → stone+pund + tommer, resten kg + cm. Stone indtastes som `11 5` (stone pund). Tempo (kg/uge) og statistik-grafen bruger pund i stedet for stone.
+
+## 2026-10-03: Bølge-baggrunden — afdæmpet, skarp top, puls fra kanten
+
+- Erstatter udseendet fra 2026-10-02 (brugeren: "alt for voldsomt", "en ommer"). Baggrunden skal være afdæmpet: få, tynde, svage bånd.
+- Kun bunden må være sløret/frostet; toppen er skarp (ingen blur, ingen tåge).
+- Puls-linjen (hjerteslaget) ligger længere nede — omkring tal-hjulets midte — og går helt ude fra skærmens venstre kant.
 
 ## 2026-10-01: Bølge-baggrund på forsiden
 
@@ -186,6 +270,18 @@ Uge- og Liste-visningen beholder "Ingen indtastninger" i gråt på tomme dage.
 - Er navnet kun smagen, bliver produkttypen H1. Mangler produkttypen, står navnet i H1, og smagen udelades af H2, så den aldrig står to gange.
 - Det gemte `Product.name` røres ikke. Navnet sammensættes stadig af Sub brand + Produkttype + Variant (2026-09-23), fordi lister og søgning ikke har nogen H2.
 - Tests: `src/lib/product-naming.test.mjs`.
+## 2026-10-02: Motion lægges oven i dagens mål i kalenderen
+
+- Registreret motion (`Activity.caloriesBurned`, uanset kilde) lægges oven i
+  dagens kaloriebudget, når kalenderen afgør "inden for målet": dagvisning,
+  månedsstatus, prikker i månedsgitteret, uge-/listevisning (over/under og
+  ugebalance), årsvisning og stribe. Brugerens valg 2026-10-02.
+- "Mål: X kcal" viser fortsat budgettet uden motion; motionen står som egen
+  linje (rød flamme + grøn "+ N kcal") over målet, og "Tilbage"/"Overskredet"
+  regnes mod mål + motion. Fælles blok: `GoalStatusSummary` (design.md §6.16).
+- Ikke ændret endnu: forsidens "Tilbage"-kort (`frontpage-stats.ts`) og
+  widgets (`widget-data.ts`) regner stadig mod budgettet alene — skal følge
+  samme regel, når de rettes (andre gruppers filer).
 
 ## 2026-09-29: Aktivitetsniveau, PAL og kaloriemål
 
@@ -3698,11 +3794,36 @@ Kilder på "Mad på latin" skal altid være officielle (Fødevarestyrelsen, Sund
 - Ny side /settings/account (Indstillinger -> Kontoindstillinger) med to knapper, begge i bundark med bekraeftelse (skriv SLET).
 - Begge kalder POST /api/account/close, som koerer anonymizeUser() (src/lib/gdpr.ts) paa brugeren selv, rydder session-cookies og logger ud. Forskellen er kun ordlyd; GDPR-sletning er fortsat anonymisering (se 2026-09-02).
 - Ikke gjort: aktivt abonnement hos betalingsudbyder opsiges ikke automatisk.
+- Afløst for "Luk konto" af 2026-10-03 nedenfor.
+## 2026-10-03: "Luk konto" kan fortrydes i 3 måneder
+
+Brugerens krav: "Luk konto kan reverses inde. For 3 måneder, med mindre man vælger rtbf. Luk skal være sort understreget tekst kun. Ikke stor knap."
+
+- **Luk konto** sætter `User.closedAt` (migration `20261003120000_account_closed_at`) — intet slettes. Brugeren logges ud på alle enheder (`getSessionUser`, widget-token og familieprofiler afviser lukkede konti), og der sendes ingen mail/push (`queueMessage` gemmer dem som SKIPPED). Stripe opsiges til periodens udløb, en MobilePay-aftale stoppes.
+- **Genåbning:** ethvert login (adgangskode, Face ID, Google/Apple/Facebook, nulstillet adgangskode) inden for 90 dage rydder `closedAt` (`completeLogin` → `reopenClosedAccount`). Data er urørt; et opsagt abonnement skal tegnes igen.
+- **Efter 90 dage** anonymiserer vedligeholdelsesjobbet (hvert 15. min.) kontoen med `anonymizeUser` — samme resultat som "Ret til at blive glemt". Logik i `src/lib/account-closure.ts`.
+- **Ret til at blive glemt** er uændret: anonymiserer med det samme og kræver, at brugeren skriver SLET.
+- **UI:** "Luk konto" er kun et sort, understreget tekstlink nederst på /settings/account (ingen overskrift, ingen stor knap). Bundarket forklarer 3-måneders-fristen og har også kun et tekstlink som bekræftelse (ingen SLET-indtastning, da det kan fortrydes).
+- Admin → Brugere viser "Lukket <dato>" på lukkede konti. Audit: `USER_CLOSE_ACCOUNT` / `USER_REOPEN_ACCOUNT` i `admin_audit_logs`.
 ## 2026-10-02 — Admin: Economy
 
 - Ny side /admin/economy: årsabonnementer (årlig sikker indkomst, sikret løbetid), månedsabonnementer (+ 3 mdr.) og næste måneds forventede indtjening. Kun betalende (provider sat); pris/periode fra MobilePay-træk og Stripe live (skønnet 1 md. ved mangel).
 - Afmelding: observeret 30-dages rate blandet med prior 7 %/md.; AI-knap lader OpenAI vurdere % pr. type (kun aggregater, store:false), forventningen regnes i koden. Grov model, ikke regnskab.
 
+
+## 2026-10-02: Partnersider (virksomhed, sponsoraftale, performance, fakturering)
+
+- **Side pr. partner** på `/admin/partners/[id]` (åbnes fra Partnere → Kontakter). Venstre bjælke øverst: virksomhed (navn, CVR, adresse, virksomhedens telefon), **kontaktperson** (navn, e-mail, telefon) og **leder** (navn, funktion, e-mail; ingen telefon for lederen). Under dem menuen **Sponsoraftale** (standard), **Performance**, **Faktureringsdetaljer** og **Betalingsmetode**. Adminskallen skjuler "Gå til…"-søgningen på disse sider (`isPartnerDetailPath`).
+- Når kontaktpersonens eller lederens e-mail gemmes, oprettes de automatisk som aktive `PartnerContact` på samme partner (hvis adressen ikke findes), fordi rapporter kun sendes til partnerens egne kontakter (sikkerhedsreglen fra 2026-09-29 er uændret).
+- **Sponsoraftale:** øverst aktive aftaler (`SponsorAgreement`: periode, budget, CPM, CPC) med budget og forbrug. Forbrug = visninger/1000 × CPM + klik × CPC siden aftalens start for aftalens spots. Derunder alle reklamemuligheder fra det statiske katalog `src/lib/ad-inventory.ts`; hver mulighed viser partnerens spots og kan få nye. Et spot (`AdLocation`) har banner, link, aftalte visninger/klik, aftale og evt. trigger.
+- **Triggere:** pladser markeret `triggerable` (produktside, sponsoreret søgeresultat, efter scanning) kan begrænses til en `ProductCategory` og/eller en produkttype (`Product.productType`, sammenlignes uden forskel på store/små bogstaver). Et spot med trigger vises aldrig uden passende kontekst (`src/lib/ad-serving.ts`, `GET /api/ads/serve`). Aftaler uden for perioden, inaktive eller med opbrugt budget serveres ikke. Performance kan filtreres til "kun udløst af kategori/type".
+- **Performance** har to faner: **Overview** (standard: visninger, klik, CTR, eksponeringstid, gennemsnit, opfyldelse af aftalte visninger, visninger pr. dag) og **Data mining** (ét kort pr. spot i to kolonner: banner, kliks og visninger "af" aftalt). "Vis mere" åbner et overlay med tabel over alle sider reklamen er vist på (visning, kliks, sekunder eksponeret). Periode: 7/30/90 dage eller fra–til (hele danske kalenderdage, `Europe/Copenhagen`).
+- **Rapport:** hent som PDF eller CSV (`GET /api/admin/partners/[id]/performance?format=pdf|csv`) eller send til en indtastet modtager (navn + e-mail) som vedhæftet PDF og/eller CSV (afsender `report@hellocal.io`, logges i `partner_report_sends` med trigger `MANUAL_ADDRESS`). PDF'en laves uden afhængigheder af `src/lib/simple-pdf.ts`.
+- **Måling:** `POST /api/ads/track` tager nu også `path` (siden reklamen vistes på) og returnerer `eventId`; `{eventId, seconds}` opdaterer eksponeringstiden. Komponenten `AdBanner` (`src/components/AdBanner.tsx`) henter en reklame, tæller visning først når mindst halvdelen er synlig, måler synlig tid og tæller klik. **AdBanner er endnu ikke sat ind på nogen side i appen** (produktsiden, kalenderen m.fl. ejes af andre grupper).
+- **Banner uploades som billedfil** (brugerens valg 2026-10-03): `POST /api/admin/partners/[id]/banner` (PNG/JPG/WebP, højst 4 MB, typen afgøres af filens bytes, metadata fjernes) gemmer i `/product-images/ad-banners/` i den eksisterende volumen og serveres af fallback-ruten. Spottets `bannerUrl` må kun være en sådan gemt sti.
+- **Reklamemulighederne i `src/lib/ad-inventory.ts` er et forslag**, ikke en afklaret liste: ejeren har ikke angivet, hvilke pladser i appen der findes. Ret kataloget, når pladserne er besluttet. Reklamerne vises ikke i appen, før ejeren siger hvor; `AdBanner` er derfor ikke sat ind nogen steder.
+- Spot-boksene i to kolonner vises kun i fanen Data mining (brugerens valg 2026-10-03); Overview viser totaler og KPI'er.
+- Migration `20261002090000_partner_pages` (idempotent): nye felter på `partners` og `ad_locations`, `ad_events.path/seconds`, tabellen `sponsor_agreements`, enum `PartnerPaymentMethod`.
 
 ## 2026-10-03: Login-godkendelse med push (brugerens valg: byg det)
 
@@ -3738,9 +3859,41 @@ Kilder på "Mad på latin" skal altid være officielle (Fødevarestyrelsen, Sund
 - **Definitioner:** Land = seneste login-land (Cloudflare), ellers profilens `region`. By = seneste login-by (`login_events.city`, ny kolonne fra `cf-ipcity`; null uden Cloudflares "visitor location headers"). Sprog = `appLocale`. Alder i grupper (under 18, 18–24 … 65+, ukendt) fra `birthDate`. Abonnement som i Statistik (gratis/seriøs/familie, inkl. familiemedlemmer). Enhed = OS fra seneste kendte enhed. Logins tælles over 90 dage, brug (registreringer, aktive dage, HelloFresh, motion, vejninger) over 30 dage. Adfærdssegmenter: nye (< 14 dage), storbrugere (≥ 20 aktive dage/md.), faste (8–19), lejlighedsvise (1–7), kigger (logger ind uden mad), inaktive (ingen login og ingen registrering i 30 dage). Typisk tidspunkt = den del af døgnet (morgen 05–10, dag 10–16, aften 16–22, nat 22–05) med ≥ 50 % af gruppens logins, ellers "blandet".
 - **Kørsel (ejerens valg 2026-10-03):** Gruppetallene beregnes live ved hvert sidekald (gratis). AI-personas beregnes kun ved deploy og manuelt — ingen natlig plan for nu. Ved opstart af en ny build (`.next/BUILD_ID`) bestilles én kørsel af cronjobbet "personas", hvis der ikke allerede findes et snapshot for den build (genstart af samme build giver ingen ny kørsel; kun i produktion og med OpenAI-nøgle). Derudover "Kør nu" under Cronjobs og knappen "Beregn personas med AI" (kun fuld administratoradgang). En fast plan kan sættes senere under Cronjobs uden kodeændring. Hvert resultat gemmes i `persona_snapshots` med aggregater, AI-svar (struktureret JSON: navn, andel, beskrivelse, demografi, adfærd, mønstre, behov, handlinger + vigtigste fund og forbehold), model og evt. fejl. Model: `OPENAI_PERSONA_MODEL`, ellers `OPENAI_STATS_MODEL`, ellers produktmodellen.
 
+## 2026-10-02: Før/efter-sammenligning i billede-dagbogen
+
+- Billede-dagbogen får en før/efter-slider (`PhotoCompare`) med to tilstande:
+  "Glid" (skillelinje; før til venstre, efter til højre — samme retning som
+  karrusellen, ældst til venstre) og "Ton" (efter tones ind over før).
+- Begge billeder fylder én boks formet efter før-billedet (`object-cover`), så
+  kroppen står samme sted; billeder med andet format beskæres let i stedet for
+  at få sorte kanter, der flytter skillelinjen væk fra billedet.
+- Brugeren vælger frit begge billeder; der tvinges ikke kronologisk rækkefølge.
+- Alt sker på enheden ud fra billederne i IndexedDB; intet nyt sendes til
+  serveren, og visningslåsen gælder også sammenligningen.
+
+## 2026-10-02: Robotternes kørselshistorik og "Nattens kørsler"
+
+- Brugerønske: under robotterne i admin skal det stå, hvornår de sidst kørte og hvor meget de udførte; det samme skal stå på oversigten under overskriften "Nattens kørsler".
+- Ny tabel `scheduled_job_runs` (én række pr. kørsel: start, slut, status, besked, `itemCount` = udført, `runCount`, varighed). `scheduled_jobs` beholdes som "seneste status"; historikken er kun til visning og ryddes efter 30 dage.
+- Tomme OK-kørsler (0 udført) lægges sammen med forrige række, hvis den også var tom (`runCount` tæller tjekkene). Ellers ville "Løbende" robotter (tjek hvert 15. sekund) fylde tabellen.
+- Natten er kl. 20–08 dansk tid (`src/lib/jobs/night.ts`). Fra kl. 20 vises natten, der er i gang; ellers den seneste afsluttede.
+- Kontrakt: et job returnerer en besked eller `(besked, antal)` (Python) / `{ message, count }` (app-job). Samme regler i `job_control.py` (alle kopier) og `src/lib/jobs/runs.ts` — hold dem ens. Historikfejl vælter aldrig selve jobbet.
 ## 2026-10-03: Admin, webvisning og Hello Doc bygger på samme skal-klasser
 
 - Admin (`AdminShell`), Hello Cal i webvisning (`WebShell`) og Hello Doc bruger ét sæt klasser i `globals.css` (design.md §6.17): `.hf-shell*` (sidebjælke, topbjælke, indholdsbredde, skuffe, hurtigsøgning), `.hf-navrow` (alle menurækker), `.hf-crumbs`, `.hf-menu` (dropdowns), `.hf-surface` (hvid flade med tynd kant, uden padding) og `.hf-table-scroll`. Tidligere havde hver skal sin egen kopi af de samme Tailwind-kæder.
 - `.hf-insight__topbar` er afløst af `.hf-shell__topbar`; `.hf-insight__main` deler bredde/gutter med `.hf-shell__content` (16 px, 32 px fra 1024 px — afstandsskalaens værdier i stedet for admins tidligere 24 px).
 - Webvisningen beholder sin højere top (80 px, `.hf-shell--tall`). Menuens tekst skjules under 1280 px, så topmenu, plus-cirkel og profil ikke støder sammen ved 1024 px.
 - Admin-statistikken og admin-login-siderne bruger `.hf-type-*`, `.hf-kpi`, `.hf-panel` og `.hf-choice` i stedet for `text-xs`/`text-2xl`/`font-semibold`. Telefon- og e-mail-mockups (Designmanual, beskedredigering) er bevidst undtaget, fordi de tegner en iPhone.
+
+## 2026-10-03: Hjælpecenterets guide-knap er grøn
+
+- Øverst i Hjælpecenter (`public/hjaelp.html`) står guiden "Lær appen at kende" med knappen "Start guiden" på grøn baggrund (`#067A46`, hvid tekst) — ejerens udtrykkelige ønske og en bevidst undtagelse fra design.md's regel om, at grønne handlingsknapper er udfaset.
+- Den statiske side kan ikke selv åbne guiden, så den linker til `/settings?guide=1`, som starter `OnboardingWizard` forfra (samme handling som "Lær appen at kende" i Indstillinger).
+## 2026-10-02: Admin → Integrationer og hændelseslog
+
+- Nyt menupunkt "Integrationer" i admin (`/admin/integrations`) med dashboard over alle integrationer og en side pr. integration (`/admin/integrations/[slug]`): aktive installationer, installeret/afinstalleret i alt, nye tilkoblinger og frakoblinger (graf op/ned), aktive installationer over tid, synkroniseringer, datapunkter hentet/sendt, fejlrate, til/fra-valg blandt forbundne, data gemt pr. type, seneste tilmeldinger/frakoblinger (med hvor længe brugeren havde den), median tid før frakobling og forbindelser i fejl.
+- `Integration` holder kun nuværende status, så historikken gemmes i en ny tabel `IntegrationEvent` (CONNECTED, DISCONNECTED, SYNC, SYNC_ERROR, PUSH, SETTINGS_CHANGED, evt. antal datapunkter). Den skrives kun fra serverens egne integrationsruter (`src/lib/integrations/events.ts`), og en fejl i loggen vælter aldrig brugerens handling. Slettes med brugeren (cascade).
+- Fornyet adgang på en allerede forbundet integration tæller ikke som ny installation. Telefon-integrationer (Apple Health/Health Connect) tæller som tilkoblet første gang appen melder sig.
+- Migrationen giver nuværende forbindelser en CONNECTED-hændelse på deres tilkoblingsdato; allerede frakoblede får ingen (frakoblingsdato ukendt). "Afinstalleret i alt" tæller derfor rækker med status DISCONNECTED og en tilkoblingsdato.
+- Admin ser brugerens e-mail i tabellerne (som på Brugere-siden); siden er kun for admins.
+

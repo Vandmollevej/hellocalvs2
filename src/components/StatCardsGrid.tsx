@@ -8,7 +8,6 @@ import {
   normalizeStatLayout,
   saveStatLayout,
   type StatCardValue,
-  SPORT_STAT_KEY_PREFIX,
   type StatGridLayoutItem as LayoutItem,
 } from "@/lib/stat-cards";
 import { useTranslation } from "@/i18n/LocaleProvider";
@@ -17,7 +16,6 @@ import { UncertaintyTilde } from "@/components/ui/UncertaintyTilde";
 import { UncertaintyLine } from "@/components/ui/UncertaintyLine";
 import { RemoveCircleButton } from "@/components/ui/RemoveCircleButton";
 import { Skeleton } from "@/components/hf/Skeleton";
-import { EnergyChip } from "@/components/calendar/EnergyChip";
 
 // The grid is two columns of physical slots: a run of half-width items (cards
 // and explicit empty slots) always has an even length, so every item's index
@@ -176,26 +174,6 @@ class GridReflow extends Component<GridReflowProps, unknown, Map<string, Positio
   }
 }
 
-// "1.234 kcal" / "30 min · 250 kcal" → tal med kyllingelår (indtag) eller
-// flamme (forbrændt) i stedet for enheden (design.md §6.16). Kortets eget
-// ikon er allerede kyllingelår/flamme for "Kalorier" og "Forbrændt", så dér
-// bærer kortikonet betydningen, og chippen viser kun tallet.
-const KCAL_VALUE_PATTERN = /^(.*?)(\d[\d.,]*)\s+kcal$/;
-function isBurnedCard(key: string) {
-  return key === "burned" || key.startsWith(SPORT_STAT_KEY_PREFIX);
-}
-function StatCardValueText({ card }: { card: StatCardValue }) {
-  const match = card.value.match(KCAL_VALUE_PATTERN);
-  if (!match) return <>{card.value}</>;
-  if (card.key === "calories" || card.key === "burned") return <>{match[1]}{match[2]}</>;
-  return (
-    <>
-      {match[1]}
-      <EnergyChip kind={isBurnedCard(card.key) ? "burned" : "intake"} text={match[2]} iconSize={18} />
-    </>
-  );
-}
-
 function StatCardFace({ card, noDataText }: { card: StatCardValue | undefined; noDataText: string }) {
   if (!card) {
     // The key is a real, saved part of the layout (e.g. a sport-activity
@@ -210,9 +188,9 @@ function StatCardFace({ card, noDataText }: { card: StatCardValue | undefined; n
         {card.loading ? (
           <Skeleton type="body" width={56} height={20} />
         ) : (
-          <span className="inline-flex items-center gap-1">
+          <span>
             {card.uncertainty?.estimated ? <UncertaintyTilde /> : null}
-            <StatCardValueText card={card} />
+            {card.value}
           </span>
         )}
       </p>
@@ -262,6 +240,7 @@ export function StatCardsGrid({
   highlightRecommendedLimits = false,
   autoExpandUncertainty = false,
   onShowAddChange,
+  onEditModeChange,
 }: {
   cards: StatCardValue[];
   defaultActiveKeys: string[];
@@ -269,6 +248,8 @@ export function StatCardsGrid({
   autoExpandUncertainty?: boolean;
   /** True while editing — or when the grid is empty, so cards can always be added back. */
   onShowAddChange?: (show: boolean) => void;
+  /** True while the grid is in edit mode (long press). */
+  onEditModeChange?: (editing: boolean) => void;
 }) {
   // Kort hvor brugeren har vendt den grå usikkerhedslinje i forhold til
   // udgangspunktet (autoExpandUncertainty).
@@ -348,6 +329,10 @@ export function StatCardsGrid({
   useEffect(() => {
     onShowAddChange?.(editMode || !hasItems);
   }, [editMode, hasItems, onShowAddChange]);
+
+  useEffect(() => {
+    onEditModeChange?.(editMode);
+  }, [editMode, onEditModeChange]);
 
   useEffect(() => {
     if (isFirstRender.current) {

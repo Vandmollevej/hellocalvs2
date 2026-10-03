@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256">
+  <defs>
+    <radialGradient id="ring" cx="42%" cy="36%" r="70%">
+      <stop offset="0" stop-color="#ffffff"/>
+      <stop offset="0.55" stop-color="#f4ebe6"/>
+      <stop offset="1" stop-color="#cdbdb4"/>
+    </radialGradient>
+    <linearGradient id="ringEdge" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ffffff"/>
+      <stop offset="1" stop-color="#b9a79c"/>
+    </linearGradient>
+    <linearGradient id="arc" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#ff6b7d"/>
+      <stop offset="1" stop-color="#b3122f"/>
+    </linearGradient>
+    <radialGradient id="drop" cx="38%" cy="40%" r="75%">
+      <stop offset="0" stop-color="#ff8a96"/>
+      <stop offset="0.45" stop-color="#e0263f"/>
+      <stop offset="1" stop-color="#8e0d22"/>
+    </radialGradient>
+    <radialGradient id="shadow" cx="50%" cy="50%" r="50%">
+      <stop offset="0" stop-color="#000" stop-opacity="0.28"/>
+      <stop offset="1" stop-color="#000" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <ellipse cx="128" cy="232" rx="92" ry="14" fill="url(#shadow)"/>
+
+  <!-- Ring (torus look) -->
+  <circle cx="128" cy="122" r="96" fill="url(#ringEdge)"/>
+  <circle cx="128" cy="122" r="92" fill="url(#ring)"/>
+  <circle cx="128" cy="122" r="58" fill="#e6d9d1"/>
+  <circle cx="128" cy="124" r="55" fill="#fbf7f4"/>
+
+  <!-- Cycle days -->
+  <g fill="#d9c7bd">
+    <circle cx="128" cy="47" r="5"/>
+    <circle cx="165.5" cy="57" r="5"/>
+    <circle cx="193" cy="84.5" r="5"/>
+    <circle cx="203" cy="122" r="5"/>
+    <circle cx="193" cy="159.5" r="5"/>
+    <circle cx="165.5" cy="187" r="5"/>
+    <circle cx="128" cy="197" r="5"/>
+    <circle cx="90.5" cy="187" r="5"/>
+    <circle cx="63" cy="159.5" r="5"/>
+  </g>
+
+  <!-- Period days (red arc, upper left) -->
+  <path d="M53 122 A75 75 0 0 1 128 47" fill="none" stroke="url(#arc)" stroke-width="18" stroke-linecap="round"/>
+  <path d="M58 112 A70 70 0 0 1 118 52" fill="none" stroke="#ffffff" stroke-opacity="0.45" stroke-width="4" stroke-linecap="round"/>
+
+  <!-- Drop -->
+  <path d="M128 88 C128 88 100 120 100 138 A28 28 0 0 0 156 138 C156 120 128 88 128 88 Z" fill="url(#drop)"/>
+  <ellipse cx="117" cy="132" rx="6" ry="10" fill="#ffffff" fill-opacity="0.55" transform="rotate(20 117 132)"/>
+</svg>

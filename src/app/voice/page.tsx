@@ -3,7 +3,6 @@
 import { mealShareBody } from "@/lib/meal-share";
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { EnergyChip } from "@/components/calendar/EnergyChip";
 import { useRouter } from "next/navigation";
 import { IconCheck, IconChevronRight, IconRefresh } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
@@ -12,6 +11,7 @@ import { defaultMealInputLanguage, readStoredMealInputLanguage, speechLangFor, t
 import { MealLanguagePicker } from "@/components/voice/MealLanguagePicker";
 import { useMealInputLanguage } from "@/components/voice/useMealInputLanguage";
 import { useTranslation } from "@/i18n/LocaleProvider";
+import { scaleItemToGrams } from "@/lib/scale-meal-item";
 
 type Item = {
   id: string;
@@ -219,7 +219,7 @@ function VoiceItemRow({
         </span>
         <span className="hf-type-small text-text-secondary mt-1 block">{item.amountLabel}</span>
       </div>
-      <EnergyChip kind="intake" value={item.kcal} className="hf-type-small flex-shrink-0 text-text-secondary" />
+      <span className="hf-type-small text-text-secondary flex-shrink-0">{item.kcal} kcal</span>
       {item.saved && <IconChevronRight size={18} className="flex-shrink-0 text-hf-black opacity-40" />}
       {!item.saved && onAdd && (
         <button

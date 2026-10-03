@@ -1,6 +1,5 @@
 # HELLO CAL — project status
 
-Last updated: 2026-10-02
 Last updated: 2026-10-03
 
 ## 2026-10-03: Betaling viser det aktive kort fra Stripe (PR #132 flettet med master)
@@ -9,6 +8,50 @@ Last updated: 2026-10-03
 - "Skift betalingsmetode" åbner Stripes kundeportal i kort-skift-flowet (`POST /api/payments/stripe/portal`); mangler en portal-konfiguration, oprettes én automatisk. Dummy-visning: `/settings/payment?preview=DK|DE|APPLE|GOOGLE`.
 - Ejerens valg 2026-10-03: rækkerne Abonnement og Betalingsmetoder **bliver** på Profil og Indstillinger (med kortikonet) og vises for alle — den tidligere plan om kun under Indstillinger / kun for betalende er droppet. `paying` findes stadig i `/api/subscription`.
 - Test i Stripes testtilstand med testkortet 4242 4242 4242 4242 (vilkårlig fremtidig udløb/CVC).
+
+## 2026-10-03: Adgangsarket (integrationer) — bunden skjules ikke længere
+
+- På telefonen lå "Vilkår og betingelser" og "Tillad"/"Tillad ikke" ovenpå listen med gennemsigtig baggrund, så kontakterne (fx "Fedtprocent") skinnede igennem og bunden af arket ikke kunne læses. Knapperne har nu deres egen hvide bund under listen (`src/components/hf/HfAccessSheet.module.css`), med en kort toning over kanten; listen scroller helt frem over dem. Se DECISIONS.md samme dato.
+- Den grønne runde chat-knap (smiley) nederst til højre på brugerens skærmbillede findes ikke i koden — den kommer fra browseren/en udvidelse og er ikke rørt.
+- Lint (0 fejl), typecheck og build grønne; tjekket i en 390 × 700 gengivelse af arket. Test på telefon: åbn Indstillinger → Integrationer → Withings og scroll til bunden.
+## 2026-10-03: Tilføj-menuen — Aktivitet og Menstruation som felter
+
+- `src/components/add/AddMenuList.tsx`: Aktivitet er et 3D-felt i gitteret, og nyt felt Menstruation (nyt ikon `public/icons/add/period.svg`) vises kun for kvinder med menstruationscyklus slået til. Arket scroller. Se DECISIONS.md samme dato.
+- Lint, typecheck og build kørt. Ikke set med login (ingen lokal DB) — tjek Tilføj-arket på telefon som kvinde og mand.
+## 2026-10-03: Hjælpecenter — guiden øverst med grøn knap
+
+- `public/hjaelp.html` har et kort "Lær appen at kende" øverst (under introen) med en grøn knap "Start guiden" (`--brand` #067A46, hvid tekst). Kortet skjules, mens der søges. FAQ'en "Kan jeg se introduktionen igen?" linker også direkte til guiden.
+- Knappen går til `/settings?guide=1`; Indstillinger nulstiller onboarding-fremdriften og åbner `OnboardingWizard` (samme som "Lær appen at kende") og fjerner parameteren fra adressen. Se DECISIONS.md samme dato.
+- Lint og typecheck grønne; hjælpesiden tjekket visuelt i 390 px. Ikke live-testet med login (ingen lokal DB).
+## 2026-10-03: Hjælpecenter — spørgsmål uden fed
+
+- Spørgsmålene i Hjælpecenter (`public/hjaelp.html`, `summary`) vises nu i normal vægt (400) i stedet for halvfed (600). Kategorioverskrifterne er uændrede.
+## 2026-10-03: Kalender — dropdown i dagsvisningen, natten om morgenen, "Søvn" med halvmåne
+
+- Dropdown'en (måned/uge/liste) i dagsvisningen virkede ikke: månedsvisningens egen menu (z-100) blev tegnet ovenpå dagsdialogen (z-50) og fangede trykket, så visningen skiftede bagved, men dagen blev liggende. Den skjulte menu tegnes nu ikke, mens en dag er åben.
+- Natten forsvandt om morgenen ved andet besøg samme dag ("nu −2 timer"-reglen fra a5926e3, fx kl. 9.09 → visning fra 7.09). Kan nattens sidste time og nu ses på samme skærm, starter visningen nu en time før stå-op-tiden.
+- "Nattens søvn: X timer" hedder nu "Søvn: X timer" med halvmåne-ikon foran (da + en).
+- Lint, typecheck og build grønne. Afprøvet i Chromium (telefonstørrelse, mockede API-svar): menuvalg lukker dagen, og kl. 9.09 vises natten. Ikke testet på iPhone.
+## 2026-10-03: "kcal" tilbage — kyllingelåret er et supplement, ikke en erstatning
+
+- Brugerens rettelse: kyllingelåret skulle kun bruges, hvor der allerede stod et ikon, og aldrig fjerne "kcal". Rullet tilbage: måneds-/ugelistens afstand til mål, statistikboksenes værdier, widget-forhåndsvisningerne og listerne i chat/tale/kamera viser igen tal + "kcal" uden ikon.
+- Beholdt med "kcal" igen: forsidens tal-hjul (kyllingelår/flamme som rækkeikon + "kcal"), statistikboksen Kalorier (kyllingelår som boksikon) og kalenderens dagvisning (`EnergyChip` viser nu "540 kcal"/"+120 kcal" efter ikonet). Se DECISIONS.md og design.md §6.16.
+## 2026-10-03: "Luk konto" kan fortrydes i 3 måneder
+
+- Luk konto lukker nu kun kontoen (`User.closedAt`) og logger ud overalt; login inden for 3 måneder genåbner den, derefter anonymiseres den automatisk. "Ret til at blive glemt" sletter stadig med det samme (SLET). Abonnement opsiges ved lukning. Se DECISIONS.md samme dato.
+- "Luk konto" på /settings/account er nu et sort, understreget tekstlink nederst — ingen stor knap. Chatbottens viden er rettet.
+- Migration `20261003120000_account_closed_at` skal køre ved deploy. Lint, typecheck og build grønne. Ikke live-testet (ingen lokal DB) — test: luk en testkonto, log ind igen, og tjek at alt er der.
+## 2026-10-03: Partnersider
+
+- Ny side pr. partner under admin → Partnere → Kontakter → (partnerens navn): virksomhedsoplysninger og kontakter i venstre bjælke (uden søgefelt), menu med Sponsoraftale, Performance, Faktureringsdetaljer og Betalingsmetode. Se DECISIONS.md 2026-10-02.
+- Performance: Overview og Data mining, periodevalg, "kun udløst af kategori/type", overlay med tabel pr. side, download og afsendelse af PDF/CSV til en indtastet modtager.
+- Migration `20261002090000_partner_pages` skal køre ved deploy. Prøvet mod en tom lokal Postgres: alle migrationer kører, siderne er set i Chromium med testdata, API'er, PDF (læst med PyMuPDF), CSV, periodegrænser og trigger-udvælgelse er afprøvet. `npm run lint` (kun gamle advarsler) og `npm run build` er grønne; `page-tree.test.mjs` fejler stadig på andres manglende sider.
+- Banner uploades som billedfil (PNG/JPG/WebP, højst 4 MB) til den eksisterende billedvolumen.
+- Ikke gjort: `AdBanner` er ikke sat ind i appens sider, fordi ejeren ikke har sagt hvor reklamerne skal vises. Kataloget over reklamemuligheder (`ad-inventory.ts`) er et forslag og skal afklares. Mailafsendelsen er ikke prøvet fra udviklingsmiljøet (ingen SMTP-nøgler her), men bruger samme opsætning som øvrige mails.
+## 2026-10-03: Abonnement — oversigt med de tre planer øverst
+
+- `/profile/subscription` viser nu Gratis, Seriøs og Seriøs Familie i tre kolonner øverst (navn, pris, "Se mere"/"Din plan"); et tryk ruller ned til planens fulde kort længere nede. Ny `PlanOverview` i `src/components/landing/LandingPlans.tsx`; plankortene har ankre `plan-free/serious/family`. Forsiden er uændret.
+- Lint, typecheck og build grønne. Ikke set i browser (kræver login) — tjek på telefon, at de tre kolonner passer i bredden, og at tryk ruller til kortet.
 
 ## 2026-10-02: Kalenderen husker den åbne dag
 
@@ -39,6 +82,11 @@ Last updated: 2026-10-03
 - Rækken "Betalingsmetoder" på `/profile` og `/settings` bruger nu et eget kortikon (`src/components/icons/PaymentCard.tsx`): kortomrids med én massiv sort stribe nederst og ingen andre elementer (ejerens regel 2026-10-02). Tabler-ikonet `IconWallet` er ikke længere i brug der.
 - Lint, typecheck og `npm run build` grønne. Ikke set i browser med login (ingen lokal DB); ikonet er kontrolleret som SVG-render.
 Last updated: 2026-10-03
+
+## 2026-10-03: Hjælpe-chatten flyttet ind under Support
+
+- Chat-knappen er fjernet fra toppen (app, forside og desktop). Chatten åbnes kun med "Spørg hjælpe-chatten" på `/settings/support`. I chatten står "Tal med en medarbejder" og "Kontaktformular" nu som diskrete links nederst, ikke i toppen; på Support-siden er "Kontakt os" et tekstlink nederst. Se DECISIONS.md 2026-10-03.
+- Lint og build grønne. Ikke set i browser (ingen lokal DB/login): tjek Support-siden og chatten på telefon efter deploy.
 
 ## 2026-10-02: Hjælpe-chatbot øverst i app og web + admin "Chatbot"
 
@@ -72,6 +120,13 @@ Last updated: 2026-10-03
 - `login_events` har nu kolonnen `city` (fra Cloudflares `cf-ipcity`, kræver "Add visitor location headers" — ellers kun land). Migration `20261002090000_personas` skal køre ved deploy.
 - Lint, typecheck og `npm run build` grønne. Ikke live-testet (ingen lokal DB/OpenAI-nøgle). `page-tree.test.mjs` fejler fortsat på master (uvedkommende; den nye side er tilføjet i sidetræet).
 
+## 2026-10-02: Billede-dagbog — før/efter med skyder
+
+- Hvert billede i dagbogens karrusel har en hvid afkrydsningsboks i øverste højre hjørne (kun ved 2+ billeder). Afkrydsning åbner et mørkt fuldskærms-overlay: billede 1 med et 1-tal til venstre, tom plads med "Efter"-knappen i midten til højre. "Efter" viser de andre billeder i et gitter; det valgte bliver billede 2.
+- De to billeder lægges oven på hinanden med en lodret skyder (før til venstre, efter til højre); træk med finger eller mus, eller piletaster på håndtaget. Byt-om-knap øverst til højre og "Vælg et andet efter-billede" nederst.
+- Filer: `src/components/photo-diary/PhotoCompare.tsx`, `PhotoCompareSlider.tsx`, `PhotoSelectBox.tsx`, regler i `src/lib/photo-compare.ts` (+ test). Nye klasser `.hf-photo-check`/`.hf-photo-pill` (design.md §6.8). Tekster da/en.
+- Testet i Chromium (telefon 393 px og desktop 1280 px) med efterlignet login og billeder: hele flowet og træk i skyderen virker. Ikke testet på rigtig iPhone/Android. Lint, den nye testfil og `npm run build` er grønne.
+
 ## 2026-10-03: Opdater-varen-banner (20 points)
 Last updated: 2026-10-03
 
@@ -103,6 +158,12 @@ Last updated: 2026-10-03
 - Lint og typecheck grønne; ikke set i browser — tjek login-siderne på desktop.
 Last updated: 2026-10-02
 
+## 2026-10-02: Kropsmål som statistikgrafer
+
+- Nye grafer `body:<felt>` i statistikmodulet (bryst, talje, hofte, overarm, lår): samme kort som på Kropsmål-siden med tegningen til venstre, men til højre et forløb over de seneste 10 målinger (x efter dato), seneste værdi, min/maks og ændring siden sidst. Komponent `src/components/BodyMeasurementChart.tsx`, logik `src/lib/body-measurement-series.ts` (tests grønne).
+- Tilføjes under "Ubrugte grafer" → blokken Kropsmål, eller med linket "Vis kropsmål som grafer i Statistik" på Kropsmål-siden (lægger alle fem nederst i graferne og åbner Statistik).
+- Hofte har stadig ingen godkendt tegning, så venstre felt er tomt dér. Lint, typecheck og build grønne; ikke visuelt testet (ingen lokal DB/login).
+
 ## 2026-10-02: Garmin, WHOOP, Huawei + eufy/Renpho/Xiaomi/Tuya/Samsung via telefonen
 
 - Nye cloud-integrationer: Garmin (`garmin.ts`, PKCE, ping-webhook `garmin-webhook.ts`), WHOOP (`whoop.ts`) og Huawei Health (`huawei-health.ts`). Kun læsning; afmelding hos appen ved frakobling. Parsere i `*-items.ts` med tests i `src/lib/integration-items.test.mjs` (9 grønne).
@@ -128,7 +189,7 @@ Last updated: 2026-10-02
 - Lint, typecheck og `npm run build` grønne. Ikke testet på telefon — tjek i køleskabet på Android (lygte + fokus) og iPhone (forventet: kun advarselsteksten).
 ## 2026-10-02: Kalenderens miniature-tal (kyllingelår, flamme, vand i cl)
 
-- `EnergyChip` (kyllingelår + tal for indtag, flamme + tal for forbrændt, glas + cl for vand) bruges nu generelt: kalenderens dag-/time-/uge-/månedsvisninger, forsidens tal-hjul (rækkeikon + tom enhed), statistikbokse, widget-forhåndsvisninger og listerne i chat/tale/kamera. Kalenderen henter nu også `/api/water-entries` og viser glas vand pr. time og i timens oversigt. Se DECISIONS.md og design.md §6.16.
+- `EnergyChip` (kyllingelår + tal for indtag, flamme + tal for forbrændt, glas + cl for vand) bruges nu generelt (rullet tilbage 2026-10-03, se øverst): kalenderens dag-/time-/uge-/månedsvisninger, forsidens tal-hjul (rækkeikon + tom enhed), statistikbokse, widget-forhåndsvisninger og listerne i chat/tale/kamera. Kalenderen henter nu også `/api/water-entries` og viser glas vand pr. time og i timens oversigt. Se DECISIONS.md og design.md §6.16.
 - Ikke ændret: sætninger ("Tilbage for i dag: … kcal"), indtastningsfelter, "kcal / 100 g", grafakser, opskriftssider og de native widgets (`native/`).
 - Lint, typecheck og build grønne. Ikonet er tjekket som rendering i headless Chromium, men ikke live-testet i appen (ingen lokal DB/login) — tjek timerækken på telefon, især at kyllingelåret (16 px) og glasset står pænt ved siden af hinanden.
 - Næste: hvis kyllingelåret skal bruges flere steder (forside, widgets), så genbrug `IconDrumstick` og tokenet `--hf-meat`.
@@ -161,6 +222,14 @@ Last updated: 2026-10-02
 - `/profile/recipes` (begge faner) og `/profile/recipes/[id]` brugte generiske skeletter (`SkeletonMediaRows`/`SkeletonDetail`) med bjælker i procent af sidebredden — enorme på bred skærm og uden lighed med indholdet. Nu tegner `RecipeRow` og ret-siden sig selv uden data (design.md §6.14): samme billedfelt, titel + undertekst i tekstbredde (`SkeletonTitleLines` i `Skeleton.tsx`), 3 rækker under "Trender netop nu".
 - Lint grøn; typecheck uden fejl i de berørte filer. Build ikke kørt lokalt (delt `node_modules` har forældet Prisma-klient). Ikke visuelt testet (brugerregel).
 
+## 2026-10-03: Bølge-baggrunden lavet om (roligere, skarp top)
+
+- Brugerens feedback på telefon: "alt for voldsomt", toppen må ikke være sløret — kun bunden — og hjerteslaget skal ligge længere nede og gå helt ude fra siden.
+- Færre og tyndere bånd (3–4 bånd, 2–4 strenge, alfa ca. 0,2–0,4), mindre udsving og langsommere bevægelse. Ingen bred halo-gløde på strengene længere.
+- Toppen er skarp: det øverste lag tegnes i skærmens fulde opløsning uden blur; kun nederste ca. tredjedel er sløret (12 px) og mælket. Tågen ligger kun forneden. To lag i stedet for tre (`HomeWaves.tsx`, `.home-wave*` i `globals.css`).
+- Puls-linjen ligger nu ca. 60 % nede (lige under tal-hjulets midterrække) og tegnes fra venstre kant mod højre som en pulsmåler med hjerteslaget mellem knappen og tallene; når den når højre kant, står den kort og toner ud (`drawPulse` i `home-waves.ts`).
+- Lint, typecheck, `node --test` (home-waves) og build grønne. Ikke visuelt testet (brugerregel) — tjek på telefon.
+
 ## 2026-10-02: Bølge-baggrunden justeret + lime puls-linje
 
 - Tal-hjulets rækker klippes nu ved "Dagens tilføjelser"-stregen (18 px under hero), så de forsvinder ned bag stregen i stedet for at blive skåret af over den (`StatsWheel.tsx`, `DIVIDER_BELOW_HERO`).
@@ -180,10 +249,26 @@ Last updated: 2026-10-02
 
 - `StatPeriodPicker`: panelet var 256 px og højrestillet, så det så ud til at åbne væk fra "Vis:"-knappen. Nu `left-0 right-0` (hele indholdsbredden) og fra/til-datoerne ligger i ét grid (`1fr auto 1fr`) med `white-space: nowrap` på iOS' datotekst, så "30 Sep 2026" ikke ombrydes til to linjer.
 - Lint, typecheck og build grønne. Ikke visuelt testet på telefon (ingen lokal DB/login).
+## 2026-10-02: B2B-brugere (partnerportal), kun admin opretter
+
+- Ny admin-side Partnere → **B2B-brugere** (`/admin/partners/users`): invitér (partner + navn + e-mail, 72 t-link), send igen, træk tilbage, deaktivér/aktivér, log ud overalt, slet. Kun fuld administrator kan ændre; læseadgang ser listen. Se DECISIONS.md samme dato.
+- Ny partnerportal `/partner` (login `/partner/login`, invitation `/partner/invite/<token>`): egne reklamelokationer med visninger/klik/klikrate, seneste rapporter og rapportmodtagere. Egen session-cookie; ingen offentlig tilmelding. Link fra `/business` under kontaktformularen.
+- Migration `20261002120000_partner_users` skal køre ved deploy. Lint, typecheck og build grønne; ikke live-testet (ingen lokal DB, SMTP skal være sat op for invitationsmails — ellers vises linket til admin).
+- Rettet samtidig: `src/lib/web-nav.ts` importerede det slettede champagne-ikon (fjernet i 0500687), så `tsc`/build fejlede på master; bruger nu konfetti-ikonet som resten af appen.
+- **2-faktor (TOTP) obligatorisk** for B2B-brugere (ejerens svar 2026-10-03): QR-kode ved tilmelding, kode ved hvert login (`/partner/verify`). Migration `20261003090000_partner_user_totp` skal også køre ved deploy.
+- Mangler/afklar med ejeren: skal portalen vise mere end reklametal (fx produktdata for producenter)? Skal B2B-brugere selv kunne nulstille adgangskode ("glemt adgangskode" findes ikke endnu — admin gensender i stedet en invitation efter sletning)?
+
 ## 2026-10-02: Vægt- og længdeenheder
 
 - Nyt src/lib/units.ts (valg, landestandard, omregning, useUnits()), nyt startguide-trin units og to valg under Sprog og region. Brugt i: profil (vægt, højde-hjul), vægtlog, vægt-kalibrering, startvægt-verificering, målsætninger (vægt + kropsmål), energimål-editoren, kropsmål og statistik-grafen.
 - Lint og typecheck grønne for de berørte filer. Ikke visuelt testet (brugerregel). Ikke omregnet endnu: widgets/native, Hello Doc-rapport, kalender-vægtvisning og admin (kg/cm vises der stadig).
+
+## 2026-10-02: Admin → Integrationer
+
+- Nyt menupunkt i admin under Statistik: oversigt over alle integrationer (nøgletal, "Kræver opmærksomhed", tabel med aktive/nye/frakoblet/synk./datapunkter/fejl, grafer over til-/frakoblinger og synkroniseringer) og en side pr. integration med installationer, interaktion, seneste tilmeldinger som graf, frakoblinger, data/valg og fejl. Periode: 7 dage → for evigt (standard 3 måneder). Se DECISIONS.md samme dato.
+- Ny tabel `integration_events` — migration `20261002120000_integration_events` skal køre ved deploy. Filer: `src/lib/admin-integration-stats.ts`, `src/lib/integration-lifecycle.ts` (+ test), `src/lib/integrations/events.ts`, `src/app/admin/integrations/**`, `src/components/admin/integrations/**`.
+- Rettet i samme omgang: `src/lib/web-nav.ts` importerede det slettede champagne-ikon, så build fejlede på master; bruger nu konfetti-ikonet.
+- Lint (ændrede filer), typecheck, `npm run build` og den nye test grønne. `page-tree.test.mjs` fejler stadig på master (ældre admin-sider mangler i træet — uvedkommende). Ikke live-testet (ingen lokal DB); tallene fyldes først op efter deploy.
 
 ## 2026-10-01: Rolig bølge-baggrund på forsiden
 
@@ -201,6 +286,18 @@ Last updated: 2026-10-02
 - Fejl: i redigering scrollede siden i stedet for at flytte kortet. Når et kort løftes, udskiftes dets indhold med pladsmarkeringen; iOS sender fortsat fingerens touch-hændelser til det fjernede element, så de nåede aldrig dokumentets scroll-blokering eller pointer-lytterne.
 - Rettet i `StatCardsGrid.tsx`: trykket lytter også på selve elementet fingeren rammer, og løftet registreres synkront (ref), så scroll blokeres med det samme. Gælder også overskrifter/skillelinjer.
 - Testet i Chromium med touch-emulering: fejlen genskabt på gammel kode; med rettelsen flyttes kortet, og et hurtigt swipe på et kort scroller stadig. Ikke testet på fysisk iPhone.
+
+## 2026-10-02: Fælles målstatus-blok i kalenderen
+
+- Ny fælles komponent `src/components/calendar/GoalStatusSummary.tsx` bruges både nederst i dagvisningen og i månedsstatussen over gitteret. Oppefra: højrestillet rød flamme + grøn "+ N kcal" (kun ved registreret motion) og "Mål: X kcal"; statusbjælke med cirkel + kort tekst ("Inden for målet" / "Målet ikke opnået" / "Intet registreret"); under bjælken højrestillet "Tilbage for i dag: N kcal" (måned: "Tilbage i måneden") eller "Overskredet med N kcal" i rødt.
+- Motion tæller nu med i målet i hele kalenderen (DECISIONS 2026-10-02): `DailyGoalContext` giver `base` (til "Mål") og `effective` (= base + dagens motion) — alle nået/over/balance-afgørelser bruger `effective`. Forside-kort og widgets er ikke rettet (andre gruppers filer).
+- Lint, typecheck og `npm run build` grønne. Ikke visuelt testet (ingen lokal DB/login) — tjek dag- og månedsvisning på telefon.
+
+## 2026-10-02: Statistiksiden — sektionsoverskrifter kun i redigering
+
+- Overskrifterne "Grafer" og "Kort" med op/ned-pile vises nu kun, mens en af sektionerne er i redigeringstilstand (langt tryk på graf/kort). I almindelig visning står graferne og kortene uden overskrifter; skillelinjen mellem sektionerne er bevaret.
+- `StatChartsSection` og `StatCardsGrid` har fået `onEditModeChange`, som statistiksiden bruger til at vise/skjule overskrifterne. Pilene virker stadig i redigering (knapper afslutter ikke redigeringen).
+- Lint, typecheck og `npm run build` kørt. Ikke live-testet (ingen lokal DB/login) — tjek på telefon.
 
 ## 2026-10-02: Drikkevarer starter på pakkestørrelsen
 
@@ -253,6 +350,25 @@ Last updated: 2026-10-02
 
 - Varesiden viste fx "Marmelade Pære & havtorn" i H1 og "Pære & havtorn" i H2. Nu fjerner `splitProductHeading` smagen fra H1 (se DECISIONS.md samme dato). Gælder alle eksisterende varer, uden datamigrering.
 - Lint, typecheck og nye tests grønne. Ikke visuelt testet (ingen lokal DB).
+## 2026-10-02: Billede-dagbog — før/efter-slider
+
+- Ny knap "Sammenlign før og efter" under karrusellen (kun med 2+ billeder) åbner `PhotoCompare` (`src/components/photo-diary/PhotoCompare.tsx`): to billeder lagt oven i hinanden i fuld skærm.
+- "Glid": før til venstre, efter til højre for en trækbar skillelinje (træk hvor som helst på billedet; piletaster/Home/End på håndtaget). "Ton": efter-billedet tones ind over før-billedet med en slider under billedet.
+- Standard: ældste billede som før, karrusellens aktive som efter (det nyeste, hvis det ældste står i midten). Vælg "Før"/"Efter" og tryk et miniaturebillede; "Byt om" bytter dem. Datoer og "N dage imellem" vises.
+- Låsen lukker også sammenligningen, når siden går i baggrunden. Logik i `src/lib/photo-diary.ts` med tests (`photo-diary.test.mjs`).
+- Testet i Chromium (393 px) med falske API-svar og tre billeder i IndexedDB: træk, taster, tone, valg og Escape virker. Ikke testet på en rigtig iPhone.
+## 2026-10-03: Robotternes seneste kørsel + "Nattens kørsler"
+
+- Admin → Robotter har nu kolonnerne "Seneste kørsel" (tid, status, varighed og besked med hvor meget der blev udført) og "I nat" (antal kørsler, udført, fejl). Oversigten har en ny boks "Nattens kørsler" med samme tal for alle robotter og jobs. Natten er kl. 20–08 dansk tid; om morgenen vises den netop afsluttede nat.
+- Ny tabel `scheduled_job_runs` (migration `20261002090000_scheduled_job_runs` skal køre ved deploy). Skrives af `src/lib/jobs/runner.ts` og alle `scripts/*/job_control.py`; kørsler ældre end 30 dage ryddes af vedligeholdsjobbet. Se DECISIONS.md samme dato.
+- Alle robotter returnerer nu `(besked, antal)`. Antallet er først med fra næste kørsel efter deploy; indtil da viser "I nat" "Ingen kørsler i nat".
+- Tests: `src/lib/jobs/night.test.mjs` (grøn). Lint, typecheck og `npm run build` grønne. Ikke live-testet (ingen lokal DB/login) — tjek Robotter og Oversigten efter første nat.
+- Bemærk: `page-tree.test.mjs` fejler stadig (uvedkommende; admin-sider mangler i `page-tree.ts`).
+
+## 2026-10-02: Tilføj til statistik — kun én overskrift-knap
+
+- `/statistics/unused-cards`: den stiplede "+ Overskrift"-knap er fjernet. Den linje-knap, der før hed "+ Skillelinje", hedder nu "Overskrift" (uden plus) og tilføjer en redigerbar overskrift med streger (header-element) øverst i layoutet. Rene skillelinjer uden tekst kan ikke længere tilføjes fra siden; eksisterende skillelinjer i gemte layouts vises og kan fjernes som før.
+- Lint og `npm run build` grønne. Ikke visuelt testet (ingen lokal DB/login) — tjek på telefon.
 
 ## 2026-09-29: Offentlig forside for udloggede
 
@@ -1382,6 +1498,20 @@ fra denne container.
 - Genvejsknapperne bruger de nye vektor-ikoner: vægt (0dbb4fb/bc8960b) og
   champagne til Målsætning; gryden i hjulet/`/add/menu` er ny. Flettet ind fra
   `claude/trusting-meitner-eqqmu9` (18ad2e1), som ikke var i master.
+
+## 2026-09-25: Mængdefelter altid direkte redigerbare
+
+- Vand (`src/app/water/create/page.tsx`): mængden ved slideren er nu et
+  tekstfelt man kan trykke i og overskrive med et vilkårligt antal ml; slideren
+  snapper stadig til 25 ml og udvider sit max, hvis der skrives over 1000 ml.
+- Madvarer/ingredienser/retter (`src/app/add/[id]/page.tsx`): portionsvisningen
+  ("personer"/"portioner") kan nu også skrives direkte (fx 1,5); gram/ml-feltet
+  var allerede redigerbart og markerer nu indholdet ved fokus.
+- Makro- og søvnslidere havde allerede tryk-for-at-redigere.
+- Kamera (måltidsbillede) og stemme: mængden på endnu ikke gemte forslag kan
+  trykkes på og overskrives i gram (`InlineGramsInput`); kcal og makroer
+  skaleres med (`src/lib/scale-meal-item.ts`). Gemte registreringer er
+  fortsat snapshots og ændres ikke.
 
 ## 2026-09-25: Profil — start-vægt altid låst + "Lås"-side
 

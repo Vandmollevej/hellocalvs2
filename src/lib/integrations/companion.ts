@@ -1,6 +1,7 @@
 import type { IntegrationProvider } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { hashDeviceToken } from "@/lib/device-tokens";
+import { recordIntegrationEvent } from "@/lib/integrations/events";
 
 // Fælles for Hello Cal-appen på telefonen (Apple Health / Health Connect,
 // docs/HEALTHKIT_COMPANION.md): enhedskode-login og integrationens række med
@@ -26,11 +27,18 @@ export function companionSource(value: unknown): CompanionSource | null {
 }
 
 // Integrationens række; oprettes første gang appen melder sig, så kortet
-// viser "Forbundet" og brugerens valg gælder.
+// viser "Forbundet" og brugerens valg gælder. Rækken kan findes i forvejen
+// uden forbindelse (til/fra-valg gemt før tilkobling); første gang appen så
+// melder sig, tæller det som en tilkobling i admin → Integrationer.
 export async function companionIntegration(userId: string, provider: IntegrationProvider) {
-  return prisma.integration.upsert({
-    where: { userId_provider: { userId, provider } },
+  const where = { userId_provider: { userId, provider } };
+  const existing = await prisma.integration.findUnique({ where });
+  if (existing && existing.status !== "DISCONNECTED") return existing;
+  const row = await prisma.integration.upsert({
+    where,
     create: { userId, provider, status: "CONNECTED", connectedAt: new Date() },
-    update: {},
+    update: { status: "CONNECTED", connectedAt: new Date(), lastError: null },
   });
+  await recordIntegrationEvent(userId, provider, "CONNECTED");
+  return row;
 }
