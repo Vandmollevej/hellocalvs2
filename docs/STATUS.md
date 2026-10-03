@@ -43,6 +43,11 @@ Last updated: 2026-10-03
 - Lint, typecheck og `npm run build` grønne. Ikke set i browser med login (ingen lokal DB); ikonet er kontrolleret som SVG-render.
 Last updated: 2026-10-03
 
+## 2026-10-03: Hjælpe-chatten flyttet ind under Support
+
+- Chat-knappen er fjernet fra toppen (app, forside og desktop). Chatten åbnes kun med "Spørg hjælpe-chatten" på `/settings/support`. I chatten står "Tal med en medarbejder" og "Kontaktformular" nu som diskrete links nederst, ikke i toppen; på Support-siden er "Kontakt os" et tekstlink nederst. Se DECISIONS.md 2026-10-03.
+- Lint og build grønne. Ikke set i browser (ingen lokal DB/login): tjek Support-siden og chatten på telefon efter deploy.
+
 ## 2026-10-02: Hjælpe-chatbot øverst i app og web + admin "Chatbot"
 
 - Hjælpe-knap øverst (til venstre for profilcirklen; "Hjælp" i desktop-topbjælken) åbner AI-chatbotten med "Tal med en medarbejder" (bliver en sag i Support-indbakken med hele tråden) og "Kontaktformular". Ingen telefon, region = land, kun indloggede (ejerens valg 2026-10-03). Se DECISIONS.md 2026-10-02.
