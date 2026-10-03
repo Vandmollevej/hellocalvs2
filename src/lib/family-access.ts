@@ -73,7 +73,7 @@ export async function listAccessibleProfiles(loginUserId: string) {
   ids.delete(loginUserId);
 
   const others = await prisma.user.findMany({
-    where: { id: { in: [...ids] }, forgottenAt: null },
+    where: { id: { in: [...ids] }, forgottenAt: null, closedAt: null },
     select: { id: true, displayName: true, familyMembership: { select: { isChild: true } } },
     orderBy: { createdAt: "asc" },
   });
@@ -129,7 +129,7 @@ export async function getProfileContext(
   if (!(await canActFor(login.id, activeId))) return { login, profile: login };
 
   const profile = await prisma.user.findUnique({ where: { id: activeId } });
-  if (!profile || profile.forgottenAt) return { login, profile: login };
+  if (!profile || profile.forgottenAt || profile.closedAt) return { login, profile: login };
 
   await logProfileAccess(profile.id, login.id, action, area);
   return { login, profile };

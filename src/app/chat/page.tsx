@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { IconChevronRight, IconSend } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
-import { EnergyChip } from "@/components/calendar/EnergyChip";
 import { SwipeableRow } from "@/components/SwipeableRow";
 import { useTranslation } from "@/i18n/LocaleProvider";
 import { EntryDetailsSheet } from "@/components/hf/EntryDetailsSheet";
@@ -88,7 +87,7 @@ function ItemRow({
         </span>
         <span className="hf-type-small text-text-secondary mt-1 block">{item.amountLabel}</span>
       </div>
-      <EnergyChip kind="intake" value={item.kcal} className="hf-type-small flex-shrink-0 text-text-secondary" />
+      <span className="hf-type-small text-text-secondary flex-shrink-0">{item.kcal} kcal</span>
       {item.saved ? (
         <IconChevronRight size={18} className="flex-shrink-0 text-hf-black opacity-40" />
       ) : (

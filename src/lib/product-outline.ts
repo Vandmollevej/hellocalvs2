@@ -159,3 +159,29 @@ export function drawOutline(mask: OutlineMask, target: HTMLCanvasElement, stroke
   ctx.drawImage(ring, 0, 0);
   ctx.restore();
 }
+
+// Fylder masken helt ud i hvidt (varen "står hvid" på kameraet, når et trin
+// er klaret — docs/DECISIONS.md 2026-10-02). Samme bløde kant som stregen.
+export function drawFill(mask: OutlineMask, target: HTMLCanvasElement) {
+  const ctx = target.getContext("2d");
+  if (!ctx) return;
+  const shape = document.createElement("canvas");
+  shape.width = mask.width;
+  shape.height = mask.height;
+  const shapeCtx = shape.getContext("2d");
+  if (!shapeCtx) return;
+  const image = shapeCtx.createImageData(mask.width, mask.height);
+  for (let index = 0; index < mask.values.length; index++) {
+    const alpha = Math.min(1, Math.max(0, (mask.values[index] - 0.35) / 0.3));
+    const offset = index * 4;
+    image.data[offset] = 255;
+    image.data[offset + 1] = 255;
+    image.data[offset + 2] = 255;
+    image.data[offset + 3] = Math.round(alpha * 255);
+  }
+  shapeCtx.putImageData(image, 0, 0);
+  ctx.clearRect(0, 0, target.width, target.height);
+  ctx.imageSmoothingEnabled = true;
+  ctx.imageSmoothingQuality = "high";
+  ctx.drawImage(shape, 0, 0, target.width, target.height);
+}

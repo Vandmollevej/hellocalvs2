@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 
 // Klientdele til admin Partnere → Kontakter/Reklamer (docs/DECISIONS.md 2026-09-29).
@@ -44,6 +45,7 @@ export function ContactsManager({ partners }: { partners: PartnerWithContacts[] 
 
   return (
     <div className="flex flex-col gap-4">
+      <p className="hf-type-body text-text-secondary">Åbn en partner for virksomhedsoplysninger, sponsoraftale, performance og fakturering.</p>
       <form
         className="flex flex-wrap gap-2"
         onSubmit={async (e) => {
@@ -61,7 +63,7 @@ export function ContactsManager({ partners }: { partners: PartnerWithContacts[] 
         return (
           <div key={partner.id} className="flex flex-col gap-3 hf-surface p-4">
             <div className="flex items-center justify-between gap-3">
-              <p className="hf-type-strong text-hf-black">{partner.name}</p>
+              <Link href={`/admin/partners/${partner.id}`} className="hf-type-strong text-hf-black hover:underline">{partner.name}</Link>
               <button
                 className={BTN}
                 disabled={busy}

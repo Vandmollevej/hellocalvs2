@@ -2,13 +2,14 @@
 
 import { Component, useEffect, useLayoutEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import {
+  accordionAt,
+  accordionRange,
   isHalfWidthStatItem,
   loadStatLayout,
   makeEmptyStatSlot,
   normalizeStatLayout,
   saveStatLayout,
   type StatCardValue,
-  SPORT_STAT_KEY_PREFIX,
   type StatGridLayoutItem as LayoutItem,
 } from "@/lib/stat-cards";
 import { useTranslation } from "@/i18n/LocaleProvider";
@@ -17,12 +18,19 @@ import { UncertaintyTilde } from "@/components/ui/UncertaintyTilde";
 import { UncertaintyLine } from "@/components/ui/UncertaintyLine";
 import { RemoveCircleButton } from "@/components/ui/RemoveCircleButton";
 import { Skeleton } from "@/components/hf/Skeleton";
-import { EnergyChip } from "@/components/calendar/EnergyChip";
+import { HfChevron } from "@/components/hf/HfChevron";
 
 // The grid is two columns of physical slots: a run of half-width items (cards
 // and explicit empty slots) always has an even length, so every item's index
 // maps to a fixed left/right position and CSS grid never packs cards to the
 // left. Headers and dividers span a full row between those runs.
+//
+// A fold-out section (accordion) is two markers in the same flat list (see
+// StatAccordionLayoutItem in src/lib/stat-cards.ts); the rows between them
+// are drawn inside its frame, and not at all while it is closed. Lifting its
+// header lifts the whole section, open or closed, and it lands as one block
+// between two top-level rows (never inside another section). A card let go
+// on a closed section's header goes in at its end.
 //
 // Dragging lifts the item itself — frame, remove circle and all — and it
 // follows the finger. The grid meanwhile already shows the result of letting
@@ -47,15 +55,55 @@ function rowStarts(items: LayoutItem[]) {
   return starts;
 }
 
-/** While editing there is always one free row at the bottom, so a card can be moved further down. */
-function withTrailingEmptyRow(layout: LayoutItem[]) {
+function endsWithEmptyRow(layout: LayoutItem[]) {
   const n = layout.length;
-  const hasEmptyRow =
+  return (
     n >= 2 &&
     layout[n - 1].type === "empty" &&
     layout[n - 2].type === "empty" &&
-    rowStarts(layout).includes(n - 2);
-  return hasEmptyRow ? layout : [...layout, makeEmptyStatSlot(), makeEmptyStatSlot()];
+    rowStarts(layout).includes(n - 2)
+  );
+}
+
+/**
+ * While editing there is always one free row at the bottom — of the grid and
+ * of every fold-out section — so a card can be moved further down or into
+ * an empty section.
+ */
+function withTrailingEmptyRow(layout: LayoutItem[]) {
+  const next: LayoutItem[] = [];
+  for (const item of layout) {
+    if (item.type === "accordionEnd" && !endsWithEmptyRow(next)) next.push(makeEmptyStatSlot(), makeEmptyStatSlot());
+    next.push(item);
+  }
+  if (!endsWithEmptyRow(next)) next.push(makeEmptyStatSlot(), makeEmptyStatSlot());
+  return next;
+}
+
+/** The layout without the lifted item — for a section, without its whole block. */
+function withoutItem(layout: LayoutItem[], item: LayoutItem) {
+  if (item.type === "accordion") {
+    const range = accordionRange(layout, item.id);
+    if (range) return [...layout.slice(0, range.start), ...layout.slice(range.end + 1)];
+  }
+  const id = layoutItemId(item);
+  return layout.filter((other) => layoutItemId(other) !== id);
+}
+
+/** What moves when the item is lifted: the item, or a section's whole block. */
+function liftedBlock(layout: LayoutItem[], item: LayoutItem) {
+  if (item.type === "accordion") {
+    const range = accordionRange(layout, item.id);
+    if (range) return layout.slice(range.start, range.end + 1);
+  }
+  return [item];
+}
+
+/** Number of cards inside a section. */
+function accordionCardCount(layout: LayoutItem[], id: string) {
+  const range = accordionRange(layout, id);
+  if (!range) return 0;
+  return layout.slice(range.start + 1, range.end).filter((item) => item.type === "stat").length;
 }
 
 function scrollParent(el: HTMLElement | null): HTMLElement | null {
@@ -176,26 +224,6 @@ class GridReflow extends Component<GridReflowProps, unknown, Map<string, Positio
   }
 }
 
-// "1.234 kcal" / "30 min · 250 kcal" → tal med kyllingelår (indtag) eller
-// flamme (forbrændt) i stedet for enheden (design.md §6.16). Kortets eget
-// ikon er allerede kyllingelår/flamme for "Kalorier" og "Forbrændt", så dér
-// bærer kortikonet betydningen, og chippen viser kun tallet.
-const KCAL_VALUE_PATTERN = /^(.*?)(\d[\d.,]*)\s+kcal$/;
-function isBurnedCard(key: string) {
-  return key === "burned" || key.startsWith(SPORT_STAT_KEY_PREFIX);
-}
-function StatCardValueText({ card }: { card: StatCardValue }) {
-  const match = card.value.match(KCAL_VALUE_PATTERN);
-  if (!match) return <>{card.value}</>;
-  if (card.key === "calories" || card.key === "burned") return <>{match[1]}{match[2]}</>;
-  return (
-    <>
-      {match[1]}
-      <EnergyChip kind={isBurnedCard(card.key) ? "burned" : "intake"} text={match[2]} iconSize={18} />
-    </>
-  );
-}
-
 function StatCardFace({ card, noDataText }: { card: StatCardValue | undefined; noDataText: string }) {
   if (!card) {
     // The key is a real, saved part of the layout (e.g. a sport-activity
@@ -210,9 +238,9 @@ function StatCardFace({ card, noDataText }: { card: StatCardValue | undefined; n
         {card.loading ? (
           <Skeleton type="body" width={56} height={20} />
         ) : (
-          <span className="inline-flex items-center gap-1">
+          <span>
             {card.uncertainty?.estimated ? <UncertaintyTilde /> : null}
-            <StatCardValueText card={card} />
+            {card.value}
           </span>
         )}
       </p>
@@ -298,11 +326,13 @@ export function StatCardsGrid({
   const [editMode, setEditMode] = useState(false);
   const [drag, setDrag] = useState<DragState | null>(null);
   // Card drag: the slot (layout index) the card lands in — null while the
-  // finger is outside the grid, where letting go takes the card off. Header/
-  // divider drag: the row boundary (index into the row starts) where the
-  // dashed placeholder sits.
+  // finger is outside the grid, where letting go takes the card off — or the
+  // closed section it goes into. Header/divider/section drag: the index (in
+  // the layout without the lifted item) where the dashed placeholder sits.
   const [slotTarget, setSlotTarget] = useState<number | null>(null);
-  const [headingBoundary, setHeadingBoundary] = useState<number | null>(null);
+  const [accordionTarget, setAccordionTarget] = useState<string | null>(null);
+  const [insertAt, setInsertAt] = useState<number | null>(null);
+  // Header being renamed, or section whose title is being renamed.
   const [editingHeaderId, setEditingHeaderId] = useState<string | null>(null);
 
   const itemRefs = useRef(new Map<string, HTMLElement>());
@@ -319,9 +349,9 @@ export function StatCardsGrid({
   const isFirstRender = useRef(true);
 
   // Latest values for the window-level pointer listeners, which are bound once.
-  const stateRef = useRef({ layout, editMode, drag, headingBoundary, slotTarget });
+  const stateRef = useRef({ layout, editMode, drag, insertAt, slotTarget, accordionTarget });
   useLayoutEffect(() => {
-    stateRef.current = { layout, editMode, drag, headingBoundary, slotTarget };
+    stateRef.current = { layout, editMode, drag, insertAt, slotTarget, accordionTarget };
   });
 
   const dragId = drag?.id ?? null;
@@ -333,6 +363,7 @@ export function StatCardsGrid({
   const renderItems = useMemo<(LayoutItem | { type: "preview" })[]>(() => {
     if (!dragId || !dragItem) return layout;
     if (isHalfWidthStatItem(dragItem)) {
+      if (accordionTarget !== null) return layout;
       const from = layout.findIndex((item) => layoutItemId(item) === dragId);
       const to = slotTarget ?? from;
       if (from < 0 || to === from || to >= layout.length) return layout;
@@ -340,12 +371,11 @@ export function StatCardsGrid({
       [next[from], next[to]] = [next[to], next[from]];
       return next;
     }
-    const rest = layout.filter((item) => layoutItemId(item) !== dragId);
-    if (headingBoundary === null) return rest;
-    const starts = rowStarts(rest);
-    const insertAt = headingBoundary < starts.length ? starts[headingBoundary] : rest.length;
-    return [...rest.slice(0, insertAt), { type: "preview" as const }, ...rest.slice(insertAt)];
-  }, [layout, dragId, dragItem, headingBoundary, slotTarget]);
+    const rest = withoutItem(layout, dragItem);
+    if (insertAt === null) return rest;
+    const at = Math.min(insertAt, rest.length);
+    return [...rest.slice(0, at), { type: "preview" as const }, ...rest.slice(at)];
+  }, [layout, dragId, dragItem, insertAt, slotTarget, accordionTarget]);
 
   const hasItems = layout.some((item) => item.type !== "empty");
   useEffect(() => {
@@ -395,34 +425,48 @@ export function StatCardsGrid({
     dragRef.current = null;
     setDrag(null);
     setSlotTarget(null);
-    setHeadingBoundary(null);
+    setAccordionTarget(null);
+    setInsertAt(null);
     setEditingHeaderId(null);
     setLayout((prev) => normalizeStatLayout(prev));
   }
 
   function removeItem(id: string) {
-    setLayout((prev) =>
-      prev.flatMap((item) => {
+    setLayout((prev) => {
+      const target = prev.find((item) => layoutItemId(item) === id);
+      if (target?.type === "accordion") {
+        // Removing a section keeps its cards: they move out into the grid
+        // where the section was (without the free row editing gave it).
+        const range = accordionRange(prev, target.id);
+        if (!range) return prev;
+        const contents = prev.slice(range.start + 1, range.end);
+        while (endsWithEmptyRow(contents)) contents.splice(-2, 2);
+        return [...prev.slice(0, range.start), ...contents, ...prev.slice(range.end + 1)];
+      }
+      return prev.flatMap((item) => {
         if (layoutItemId(item) !== id) return [item];
         // A card leaves its slot empty — the rest of the grid must not shift.
         return item.type === "stat" ? [makeEmptyStatSlot()] : [];
-      }),
+      });
+    });
+  }
+
+  function toggleAccordion(id: string) {
+    setLayout((prev) =>
+      prev.map((item) => (item.type === "accordion" && item.id === id ? { ...item, open: !item.open } : item)),
     );
   }
 
   function startDrag(press: PendingPress, x: number, y: number) {
     const current = stateRef.current.layout;
     const index = current.findIndex((item) => layoutItemId(item) === press.id);
-    let boundary: number | null = null;
-    if (!isHalfWidthStatItem(press.item)) {
-      const rest = current.filter((item) => layoutItemId(item) !== press.id);
-      const starts = rowStarts(rest);
-      const at = starts.indexOf(index);
-      boundary = at >= 0 ? at : starts.length;
-    }
+    const isCard = isHalfWidthStatItem(press.item);
     setEditingHeaderId(null);
-    setHeadingBoundary(boundary);
-    setSlotTarget(isHalfWidthStatItem(press.item) && index >= 0 ? index : null);
+    // A full-width item starts out where it is: everything before it is
+    // unchanged in the layout without it, so its index is the insert index.
+    setInsertAt(!isCard && index >= 0 ? index : null);
+    setSlotTarget(isCard && index >= 0 ? index : null);
+    setAccordionTarget(null);
     setLiveDrag({
       id: press.id,
       item: press.item,
@@ -533,28 +577,54 @@ export function StatCardsGrid({
           break;
         }
       }
+      // A closed section's header takes the card in at the section's end.
+      let into: string | null = null;
+      if (hit === null) {
+        for (const el of Array.from(grid.querySelectorAll<HTMLElement>("[data-accordion-drop]"))) {
+          const left = gridRect.left + el.offsetLeft;
+          const top = gridRect.top + el.offsetTop;
+          if (x >= left && x < left + el.offsetWidth && y >= top && y < top + el.offsetHeight) {
+            into = el.dataset.accordionDrop ?? null;
+            break;
+          }
+        }
+      }
+      const own = stateRef.current.layout.findIndex((item) => layoutItemId(item) === current.id);
       // Crossing the gap between two slots (or a header) keeps the last slot,
       // so the grid doesn't flicker; back inside the grid it is at least the
       // card's own slot again.
+      if (into !== null) {
+        setAccordionTarget(into);
+        setSlotTarget(own >= 0 ? own : null);
+        return;
+      }
+      setAccordionTarget(null);
       if (hit !== null) setSlotTarget(hit);
-      else if (stateRef.current.slotTarget === null) {
-        const own = stateRef.current.layout.findIndex((item) => layoutItemId(item) === current.id);
+      else if (stateRef.current.slotTarget === null || stateRef.current.accordionTarget !== null) {
         setSlotTarget(own >= 0 ? own : null);
       }
       return;
     }
 
-    // Header/divider: the boundary is the number of rows whose center lies
-    // above the finger. Rows below the placeholder only ever move further
-    // down, so the choice is stable while it shifts them.
-    const rest = stateRef.current.layout.filter((item) => layoutItemId(item) !== current.id);
+    // Header/divider/section: the placeholder goes before the first drawn
+    // row whose center lies below the finger. Rows inside a closed section
+    // aren't drawn, so they are never candidates; a section only lands
+    // between top-level rows. Rows below the placeholder only ever move
+    // further down, so the choice is stable while it shifts them.
+    const rest = withoutItem(stateRef.current.layout, current.item);
+    const topLevelOnly = current.item.type === "accordion";
+    const candidates: number[] = [];
     let boundary = 0;
     for (const start of rowStarts(rest)) {
-      const el = itemRefs.current.get(layoutItemId(rest[start]));
+      const first = rest[start];
+      if (first.type === "accordionEnd") continue;
+      if (topLevelOnly && accordionAt(rest, start) !== null) continue;
+      const el = itemRefs.current.get(layoutItemId(first));
       if (!el) continue;
+      candidates.push(start);
       if (gridRect.top + el.offsetTop + el.offsetHeight / 2 < y) boundary += 1;
     }
-    setHeadingBoundary(boundary);
+    setInsertAt(boundary < candidates.length ? candidates[boundary] : rest.length);
   }
 
   /**
@@ -563,12 +633,23 @@ export function StatCardsGrid({
    * card let go outside the grid is taken off and simply disappears.
    */
   function drop(current: DragState, cancelled: boolean) {
-    const { layout: currentLayout, headingBoundary: boundary, slotTarget: target } = stateRef.current;
+    const { layout: currentLayout, insertAt: at, slotTarget: target, accordionTarget: into } = stateRef.current;
     const isCard = isHalfWidthStatItem(current.item);
     const from = currentLayout.findIndex((item) => layoutItemId(item) === current.id);
 
-    if (!cancelled && isCard && target === null) {
+    if (!cancelled && isCard && target === null && into === null) {
       removeItem(current.id);
+    } else if (!cancelled && isCard && into !== null && from >= 0) {
+      // Into a closed section: the card leaves its slot empty and goes in at
+      // the section's end — into its free row when editing gave it one.
+      const next = [...currentLayout];
+      next[from] = makeEmptyStatSlot();
+      const range = accordionRange(next, into);
+      if (range) {
+        if (endsWithEmptyRow(next.slice(0, range.end))) next[range.end - 2] = current.item;
+        else next.splice(range.end, 0, current.item);
+        setLayout(withTrailingEmptyRow(normalizeStatLayout(next)));
+      }
     } else {
       const gridRect = gridRef.current?.getBoundingClientRect();
       settleRef.current = {
@@ -584,17 +665,18 @@ export function StatCardsGrid({
         const next = [...currentLayout];
         [next[from], next[target]] = [next[target], next[from]];
         setLayout(next);
-      } else if (!cancelled && !isCard && boundary !== null) {
-        const rest = currentLayout.filter((item) => layoutItemId(item) !== current.id);
-        const starts = rowStarts(rest);
-        const insertAt = boundary < starts.length ? starts[boundary] : rest.length;
-        setLayout([...rest.slice(0, insertAt), current.item, ...rest.slice(insertAt)]);
+      } else if (!cancelled && !isCard && at !== null) {
+        const rest = withoutItem(currentLayout, current.item);
+        const block = liftedBlock(currentLayout, current.item);
+        const index = Math.min(at, rest.length);
+        setLayout([...rest.slice(0, index), ...block, ...rest.slice(index)]);
       }
     }
 
     setLiveDrag(null);
     setSlotTarget(null);
-    setHeadingBoundary(null);
+    setAccordionTarget(null);
+    setInsertAt(null);
   }
 
   useEffect(() => {
@@ -633,9 +715,14 @@ export function StatCardsGrid({
         drop(current, false);
         return;
       }
-      // A short tap on a header's title while editing renames it.
+      // A short tap on a header's title while editing renames it. The same
+      // tap on a section's header renames it while editing and opens or
+      // closes it otherwise.
       if (press && stateRef.current.editMode && press.item.type === "header") {
         setEditingHeaderId(press.item.id);
+      } else if (press && press.item.type === "accordion") {
+        if (stateRef.current.editMode) setEditingHeaderId(press.item.id);
+        else toggleAccordion(press.item.id);
       }
     }
 
@@ -725,7 +812,11 @@ export function StatCardsGrid({
 
   function updateHeaderText(id: string, text: string) {
     setLayout((prev) =>
-      prev.map((item) => (item.type === "header" && item.id === id ? { ...item, text } : item)),
+      prev.map((item) => {
+        if (item.type === "header" && item.id === id) return { ...item, text };
+        if (item.type === "accordion" && item.id === id) return { ...item, title: text };
+        return item;
+      }),
     );
   }
 
@@ -749,6 +840,16 @@ export function StatCardsGrid({
       : `border ${showLimitWarning ? "border-hf-red-dark" : "border-transparent"}`;
   }
 
+  function accordionHeader(item: Extract<LayoutItem, { type: "accordion" }>, count: number) {
+    return (
+      <>
+        <span className="hf-type-body hf-type-strong min-w-0 flex-1 truncate">{item.title}</span>
+        <span className="hf-type-small text-text-secondary">{count}</span>
+        <HfChevron direction={item.open ? "down" : "right"} />
+      </>
+    );
+  }
+
   /** The lifted item under the finger: exactly how it looks in the grid while editing. */
   function renderLifted(item: LayoutItem) {
     if (item.type === "header") {
@@ -764,6 +865,18 @@ export function StatCardsGrid({
         <div className={`relative flex h-full w-full items-center justify-center rounded-2xl ${EDIT_OUTLINE}`}>
           <div className="h-0.5 w-[80%] bg-hf-black" />
           <RemoveCircleButton ariaLabel={t("statCardsGrid.removeDivider")} onRemove={() => undefined} />
+        </div>
+      );
+    }
+    if (item.type === "accordion") {
+      // The whole section travels, but only its header is under the finger.
+      return (
+        <div
+          aria-expanded={item.open}
+          className={`hf-control-row hf-selected-open relative flex h-full w-full items-center gap-2 rounded-2xl bg-hf-tan px-4 ${EDIT_OUTLINE}`}
+        >
+          <RemoveCircleButton ariaLabel={t("statCardsGrid.removeAccordion")} onRemove={() => undefined} />
+          {accordionHeader(item, accordionCardCount(layout, item.id))}
         </div>
       );
     }
@@ -784,6 +897,265 @@ export function StatCardsGrid({
 
   const itemBase = "relative select-none touch-pan-y [-webkit-touch-callout:none]";
 
+  type RenderItem = (typeof renderItems)[number];
+
+  function renderItem(item: RenderItem, index: number): ReactNode {
+    const wobbleDelay = { animationDelay: `${(index % 3) * 60}ms` };
+
+    if (item.type === "preview") {
+      return (
+        <div
+          key="heading-preview"
+          ref={(el) => {
+            registerRef("heading-preview")(el);
+            if (el && !el.dataset.entered) {
+              el.dataset.entered = "1";
+              el.animate(
+                [
+                  { height: "0px", opacity: 0 },
+                  { height: `${drag?.height ?? 48}px`, opacity: 1 },
+                ],
+                { duration: REFLOW_MS, easing: REFLOW_EASING },
+              );
+            }
+          }}
+          aria-hidden="true"
+          className={`hf-type-small col-span-2 flex items-center justify-center overflow-hidden rounded-2xl text-hf-black/50 ${EDIT_OUTLINE}`}
+          style={{ height: drag?.height ?? 48 }}
+        >
+          {drag?.item.type === "header" ? drag.item.text : drag?.item.type === "accordion" ? drag.item.title : null}
+        </div>
+      );
+    }
+
+    const id = layoutItemId(item);
+
+    if (item.type === "empty") {
+      return (
+        <div
+          key={id}
+          ref={registerRef(id)}
+          data-slot-index={index}
+          aria-hidden="true"
+          className={`min-h-[76px] rounded-2xl border-[1.5px] border-dashed ${
+            editMode ? "border-hf-black/40" : "border-transparent"
+          }`}
+        />
+      );
+    }
+
+    if (item.type === "header") {
+      return (
+        <div
+          key={id}
+          ref={registerRef(id)}
+          data-stat-item
+          style={wobbleDelay}
+          onPointerDown={(e) => onItemPointerDown(e, id, item)}
+          className={`${itemBase} col-span-2 rounded-2xl border-[1.5px] px-1 py-2 ${
+            editMode ? `stat-card-editing ${EDIT_OUTLINE} px-3` : "border-transparent"
+          }`}
+        >
+          {editMode && (
+            <RemoveCircleButton ariaLabel={t("statCardsGrid.removeHeading")} onRemove={() => removeItem(id)} />
+          )}
+          {editingHeaderId === item.id ? (
+            <div className={GRID_SECTION_TITLE}>
+              <input
+                autoFocus
+                value={item.text}
+                size={Math.max(item.text.length, 1)}
+                onChange={(e) => updateHeaderText(item.id, e.target.value)}
+                onBlur={() => setEditingHeaderId(null)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") e.currentTarget.blur();
+                }}
+                className="min-w-0 max-w-full select-text bg-transparent text-center outline-none"
+                aria-label={t("statCardsGrid.renameHeading")}
+              />
+            </div>
+          ) : (
+            <HeadingContent text={item.text} />
+          )}
+        </div>
+      );
+    }
+
+    if (item.type === "divider") {
+      return (
+        <div
+          key={id}
+          ref={registerRef(id)}
+          data-stat-item
+          style={wobbleDelay}
+          onPointerDown={(e) => onItemPointerDown(e, id, item)}
+          className={`${itemBase} col-span-2 flex h-5 items-center justify-center rounded-2xl border-[1.5px] ${
+            editMode ? `stat-card-editing ${EDIT_OUTLINE}` : "border-transparent"
+          }`}
+        >
+          <div className="h-0.5 w-[80%] bg-hf-black" />
+          {editMode && (
+            <RemoveCircleButton ariaLabel={t("statCardsGrid.removeDivider")} onRemove={() => removeItem(id)} />
+          )}
+        </div>
+      );
+    }
+
+    // Section markers are drawn by renderAccordion, never on their own.
+    if (item.type === "accordion" || item.type === "accordionEnd") return null;
+
+    const card = cardByKey.get(item.key);
+
+    if (id === dragId) {
+      // The card itself floats under the finger. Its place in the grid
+      // only marks where it lands, keeping the card's size so nothing
+      // shifts when it is let go.
+      return (
+        <div
+          key={id}
+          ref={registerRef(id)}
+          data-slot-index={index}
+          aria-hidden="true"
+          className={`relative rounded-2xl border-[1.5px] border-dashed p-4 ${
+            slotTarget === null || accordionTarget !== null ? "border-hf-black/40" : "border-hf-black bg-hf-black/5"
+          }`}
+        >
+          <div className="invisible">
+            <StatCardFace card={card} noDataText={t("statCardsGrid.noData")} />
+          </div>
+        </div>
+      );
+    }
+
+    return (
+      <div
+        key={id}
+        ref={registerRef(id)}
+        data-stat-item
+        data-slot-index={index}
+        style={wobbleDelay}
+        onPointerDown={(e) => onItemPointerDown(e, id, item)}
+        className={`${itemBase} rounded-2xl p-4 ${card ? "bg-hf-tan" : "bg-hf-tan/50"} ${cardBorder(card)} ${
+          editMode ? "stat-card-editing cursor-grab active:cursor-grabbing" : ""
+        }`}
+      >
+        {editMode && (
+          <RemoveCircleButton
+            ariaLabel={t("nav.removeItemAriaLabel", { item: card?.label ?? item.key })}
+            onRemove={() => removeItem(id)}
+          />
+        )}
+        <StatCardFace card={card} noDataText={t("statCardsGrid.noData")} />
+        {card && !editMode && (
+          <CardUncertainty
+            card={card}
+            expanded={autoExpandUncertainty !== uncertaintyToggled.has(card.key)}
+            onToggle={() => toggleUncertainty(card.key)}
+          />
+        )}
+      </div>
+    );
+  }
+
+  /**
+   * A fold-out section: its header row (the lifted/edited item) and, when
+   * open, its rows in a nested two-column grid. Neither wrapper is
+   * positioned, so every item's offsets stay relative to the outer grid and
+   * the drag maths need no special case for rows inside a section.
+   */
+  function renderAccordion(
+    item: Extract<LayoutItem, { type: "accordion" }>,
+    index: number,
+    inner: ReactNode[],
+    count: number,
+  ): ReactNode {
+    const id = layoutItemId(item);
+    const wobbleDelay = { animationDelay: `${(index % 3) * 60}ms` };
+    const isTarget = accordionTarget === item.id;
+    return (
+      <div
+        key={id}
+        className={`col-span-2 rounded-2xl border-[1.5px] bg-hf-tan ${
+          editMode ? "border-dashed border-hf-black/40" : "border-transparent"
+        }`}
+      >
+        <div
+          ref={registerRef(id)}
+          data-stat-item
+          data-accordion-drop={item.open ? undefined : item.id}
+          role="button"
+          aria-expanded={item.open}
+          style={wobbleDelay}
+          onPointerDown={(e) => onItemPointerDown(e, id, item)}
+          className={`${itemBase} hf-control-row hf-selected-open flex items-center gap-2 px-4 ${
+            item.open ? "rounded-t-2xl" : "rounded-2xl"
+          } ${editMode ? "stat-card-editing" : ""} ${
+            isTarget ? "shadow-[inset_0_0_0_2px_var(--hf-black)]" : ""
+          }`}
+        >
+          {editMode && (
+            <RemoveCircleButton ariaLabel={t("statCardsGrid.removeAccordion")} onRemove={() => removeItem(id)} />
+          )}
+          {editingHeaderId === item.id ? (
+            <input
+              autoFocus
+              value={item.title}
+              onChange={(e) => updateHeaderText(item.id, e.target.value)}
+              onBlur={() => setEditingHeaderId(null)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") e.currentTarget.blur();
+              }}
+              className="hf-type-body hf-type-strong min-w-0 flex-1 select-text bg-transparent outline-none"
+              aria-label={t("statCardsGrid.renameAccordion")}
+            />
+          ) : (
+            <span className="hf-type-body hf-type-strong min-w-0 flex-1 truncate">{item.title}</span>
+          )}
+          <span className="hf-type-small text-text-secondary">{count}</span>
+          <button
+            type="button"
+            data-stat-action
+            aria-label={item.open ? t("statCardsGrid.closeAccordion") : t("statCardsGrid.openAccordion")}
+            onPointerDown={(e) => e.stopPropagation()}
+            onClick={(e) => {
+              e.stopPropagation();
+              toggleAccordion(item.id);
+            }}
+            className="-mr-2 flex shrink-0 p-2"
+          >
+            <HfChevron direction={item.open ? "down" : "right"} />
+          </button>
+        </div>
+        {item.open && (
+          <div className="rounded-b-2xl bg-hf-cream p-3">
+            <div className="grid grid-cols-2 gap-4">{inner}</div>
+          </div>
+        )}
+      </div>
+    );
+  }
+
+  /** Walks the flat list and nests each section's rows under its header. */
+  function renderRange(items: RenderItem[], from: number, to: number): ReactNode[] {
+    const nodes: ReactNode[] = [];
+    let i = from;
+    while (i < to) {
+      const item = items[i];
+      if (item.type === "accordion") {
+        let end = items.findIndex((other, at) => at > i && other.type === "accordionEnd" && other.id === item.id);
+        if (end < 0 || end > to) end = to;
+        let count = 0;
+        for (let k = i + 1; k < end; k += 1) if (items[k].type === "stat") count += 1;
+        nodes.push(renderAccordion(item, i, item.open ? renderRange(items, i + 1, end) : [], count));
+        i = end + 1;
+        continue;
+      }
+      if (item.type !== "accordionEnd") nodes.push(renderItem(item, i));
+      i += 1;
+    }
+    return nodes;
+  }
+
   return (
     <div className="flex flex-col gap-4">
       <GridReflow items={renderItems} elements={itemRefs} settleFrom={settleRef} jumps={jumps}>
@@ -794,160 +1166,7 @@ export function StatCardsGrid({
             if (editMode || pendingRef.current) event.preventDefault();
           }}
         >
-          {renderItems.map((item, index) => {
-            const wobbleDelay = { animationDelay: `${(index % 3) * 60}ms` };
-
-            if (item.type === "preview") {
-              return (
-                <div
-                  key="heading-preview"
-                  ref={(el) => {
-                    registerRef("heading-preview")(el);
-                    if (el && !el.dataset.entered) {
-                      el.dataset.entered = "1";
-                      el.animate(
-                        [
-                          { height: "0px", opacity: 0 },
-                          { height: `${drag?.height ?? 48}px`, opacity: 1 },
-                        ],
-                        { duration: REFLOW_MS, easing: REFLOW_EASING },
-                      );
-                    }
-                  }}
-                  aria-hidden="true"
-                  className={`hf-type-small col-span-2 flex items-center justify-center overflow-hidden rounded-2xl text-hf-black/50 ${EDIT_OUTLINE}`}
-                  style={{ height: drag?.height ?? 48 }}
-                >
-                  {drag?.item.type === "header" ? drag.item.text : null}
-                </div>
-              );
-            }
-
-            const id = layoutItemId(item);
-
-            if (item.type === "empty") {
-              return (
-                <div
-                  key={id}
-                  ref={registerRef(id)}
-                  data-slot-index={index}
-                  aria-hidden="true"
-                  className={`min-h-[76px] rounded-2xl border-[1.5px] border-dashed ${
-                    editMode ? "border-hf-black/40" : "border-transparent"
-                  }`}
-                />
-              );
-            }
-
-            if (item.type === "header") {
-              return (
-                <div
-                  key={id}
-                  ref={registerRef(id)}
-                  data-stat-item
-                  style={wobbleDelay}
-                  onPointerDown={(e) => onItemPointerDown(e, id, item)}
-                  className={`${itemBase} col-span-2 rounded-2xl border-[1.5px] px-1 py-2 ${
-                    editMode ? `stat-card-editing ${EDIT_OUTLINE} px-3` : "border-transparent"
-                  }`}
-                >
-                  {editMode && (
-                    <RemoveCircleButton ariaLabel={t("statCardsGrid.removeHeading")} onRemove={() => removeItem(id)} />
-                  )}
-                  {editingHeaderId === item.id ? (
-                    <div className={GRID_SECTION_TITLE}>
-                      <input
-                        autoFocus
-                        value={item.text}
-                        size={Math.max(item.text.length, 1)}
-                        onChange={(e) => updateHeaderText(item.id, e.target.value)}
-                        onBlur={() => setEditingHeaderId(null)}
-                        onKeyDown={(e) => {
-                          if (e.key === "Enter") e.currentTarget.blur();
-                        }}
-                        className="min-w-0 max-w-full select-text bg-transparent text-center outline-none"
-                        aria-label={t("statCardsGrid.renameHeading")}
-                      />
-                    </div>
-                  ) : (
-                    <HeadingContent text={item.text} />
-                  )}
-                </div>
-              );
-            }
-
-            if (item.type === "divider") {
-              return (
-                <div
-                  key={id}
-                  ref={registerRef(id)}
-                  data-stat-item
-                  style={wobbleDelay}
-                  onPointerDown={(e) => onItemPointerDown(e, id, item)}
-                  className={`${itemBase} col-span-2 flex h-5 items-center justify-center rounded-2xl border-[1.5px] ${
-                    editMode ? `stat-card-editing ${EDIT_OUTLINE}` : "border-transparent"
-                  }`}
-                >
-                  <div className="h-0.5 w-[80%] bg-hf-black" />
-                  {editMode && (
-                    <RemoveCircleButton ariaLabel={t("statCardsGrid.removeDivider")} onRemove={() => removeItem(id)} />
-                  )}
-                </div>
-              );
-            }
-
-            const card = cardByKey.get(item.key);
-
-            if (id === dragId) {
-              // The card itself floats under the finger. Its place in the grid
-              // only marks where it lands, keeping the card's size so nothing
-              // shifts when it is let go.
-              return (
-                <div
-                  key={id}
-                  ref={registerRef(id)}
-                  data-slot-index={index}
-                  aria-hidden="true"
-                  className={`relative rounded-2xl border-[1.5px] border-dashed p-4 ${
-                    slotTarget === null ? "border-hf-black/40" : "border-hf-black bg-hf-black/5"
-                  }`}
-                >
-                  <div className="invisible">
-                    <StatCardFace card={card} noDataText={t("statCardsGrid.noData")} />
-                  </div>
-                </div>
-              );
-            }
-
-            return (
-              <div
-                key={id}
-                ref={registerRef(id)}
-                data-stat-item
-                data-slot-index={index}
-                style={wobbleDelay}
-                onPointerDown={(e) => onItemPointerDown(e, id, item)}
-                className={`${itemBase} rounded-2xl p-4 ${card ? "bg-hf-tan" : "bg-hf-tan/50"} ${cardBorder(card)} ${
-                  editMode ? "stat-card-editing cursor-grab active:cursor-grabbing" : ""
-                }`}
-              >
-                {editMode && (
-                  <RemoveCircleButton
-                    ariaLabel={t("nav.removeItemAriaLabel", { item: card?.label ?? item.key })}
-                    onRemove={() => removeItem(id)}
-                  />
-                )}
-                <StatCardFace card={card} noDataText={t("statCardsGrid.noData")} />
-                {card && !editMode && (
-                  <CardUncertainty
-                    card={card}
-                    expanded={autoExpandUncertainty !== uncertaintyToggled.has(card.key)}
-                    onToggle={() => toggleUncertainty(card.key)}
-                  />
-                )}
-              </div>
-            );
-          })}
+          {renderRange(renderItems, 0, renderItems.length)}
         </div>
       </GridReflow>
 

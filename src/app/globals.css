@@ -480,23 +480,12 @@ textarea::selection,
   justify-content: center;
 }
 
-/* Højre ende af appbaren: profilcirklen (44 px slot) og, med
-   .hf-appbar--help, hjælpe-chattens knap til venstre for den
-   (docs/DECISIONS.md 2026-10-02, design.md §6.1). Kolonnerne udvides
-   symmetrisk, så titlen stadig står i midten. */
+/* Højre ende af appbaren: profilcirklen (44 px slot). */
 .hf-appbar__end {
   display: flex;
   height: 44px;
   align-items: center;
   justify-content: flex-end;
-}
-
-.hf-appbar--help {
-  grid-template-columns: 88px minmax(0, 1fr) 88px;
-}
-
-.hf-appbar--compact.hf-appbar--help {
-  grid-template-columns: 80px minmax(0, 1fr) 80px;
 }
 
 .hf-appbar--compact .hf-appbar__end,
@@ -1634,15 +1623,29 @@ textarea::selection,
    3D-effekt: striben bliver bredere og lysere, når den passerer midten
    (objektet i fokus), og billedet (.hf-scan-lift) løfter/zoomer sig samtidig.
    Begge animationer deler varighed og starter sammen, så de er i takt. */
+/* Rytme (brugerens ønske 2026-10-02): striben kommer hurtigt ind, bremser op
+   og glider langsomt hen over varen i midten, og forsvinder hurtigt igen. */
 @keyframes hf-scan-sweep {
   0% {
     transform: translateX(-100%) scaleX(0.7);
     opacity: 0.8;
+    animation-timing-function: ease-out;
+  }
+  22% {
+    transform: translateX(30%) scaleX(1.2);
+    opacity: 1;
+    animation-timing-function: linear;
   }
   50% {
     /* Stribens midte ligger over billedets midte. */
     transform: translateX(75%) scaleX(1.5);
     opacity: 1;
+    animation-timing-function: linear;
+  }
+  78% {
+    transform: translateX(120%) scaleX(1.2);
+    opacity: 1;
+    animation-timing-function: ease-in;
   }
   100% {
     transform: translateX(250%) scaleX(0.7);
@@ -1652,13 +1655,14 @@ textarea::selection,
 
 @keyframes hf-scan-lift {
   0%,
-  20%,
-  80%,
+  15%,
+  85%,
   100% {
     transform: scale(1);
     filter: brightness(1);
   }
-  50% {
+  30%,
+  70% {
     transform: scale(1.06);
     filter: brightness(1.08);
   }
@@ -1678,11 +1682,11 @@ textarea::selection,
     rgb(255 255 255 / 35%) 60%,
     rgb(255 255 255 / 0%)
   );
-  animation: hf-scan-sweep 1.8s ease-in-out infinite;
+  animation: hf-scan-sweep 2.2s linear infinite;
 }
 
 .hf-scan-lift {
-  animation: hf-scan-lift 1.8s ease-in-out infinite;
+  animation: hf-scan-lift 2.2s ease-in-out infinite;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -1692,6 +1696,47 @@ textarea::selection,
 
   .hf-scan-lift {
     animation: none;
+  }
+}
+
+/* Levende scanning i kameraflowet (design.md §6.11, 2026-10-02): når et
+   trin er klaret, fyldes varens kontur (eller det læste tekstfelt) hvidt —
+   toner hurtigt op, står et øjeblik og fader ud. Varigheden matcher
+   FLASH_MS i ProductCaptureFlow. */
+@keyframes hf-scan-fill {
+  0% {
+    opacity: 0;
+  }
+  20%,
+  70% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+.hf-scan-fill {
+  animation: hf-scan-fill 1.4s ease-in-out forwards;
+}
+
+/* Trin-overskriften øverst i kamerabilledet står i det mørke overlay. */
+.hf-scan-heading {
+  position: absolute;
+  inset-inline: 0;
+  top: 0;
+  padding: 14px 16px 28px;
+  text-align: center;
+  color: var(--hf-color-white, #ffffff);
+  text-shadow: 0 1px 3px rgb(0 0 0 / 0.6);
+  background: linear-gradient(to bottom, rgb(0 0 0 / 0.55), rgb(0 0 0 / 0));
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hf-scan-fill {
+    animation: none;
+    opacity: 1;
   }
 }
 
@@ -2209,8 +2254,8 @@ textarea::selection,
   height: calc(100% + 40px);
   overflow: hidden;
   pointer-events: none;
-  -webkit-mask-image: linear-gradient(to bottom, black 0%, black 56%, transparent 100%);
-  mask-image: linear-gradient(to bottom, black 0%, black 56%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to bottom, black 0%, black 72%, transparent 100%);
+  mask-image: linear-gradient(to bottom, black 0%, black 72%, transparent 100%);
 }
 
 .home-wave__layer {
@@ -2226,43 +2271,31 @@ textarea::selection,
   height: calc(100% + var(--home-wave-bleed) * 2);
 }
 
+/* Bruger 2026-10-03: toppen er skarp (ingen blur), kun bunden er sløret. */
 .home-wave__layer--sharp {
-  -webkit-mask-image: linear-gradient(to bottom, black 0%, black 28%, transparent 56%);
-  mask-image: linear-gradient(to bottom, black 0%, black 28%, transparent 56%);
+  -webkit-mask-image: linear-gradient(to bottom, black 0%, black 66%, transparent 82%);
+  mask-image: linear-gradient(to bottom, black 0%, black 66%, transparent 82%);
 }
 
-.home-wave__layer--sharp canvas {
-  filter: blur(0.8px);
+.home-wave__layer--soft {
+  -webkit-mask-image: linear-gradient(to bottom, transparent 66%, black 82%);
+  mask-image: linear-gradient(to bottom, transparent 66%, black 82%);
 }
 
-.home-wave__layer--mid {
-  -webkit-mask-image: linear-gradient(to bottom, transparent 20%, black 44%, black 52%, transparent 80%);
-  mask-image: linear-gradient(to bottom, transparent 20%, black 44%, black 52%, transparent 80%);
+.home-wave__layer--soft canvas {
+  filter: blur(12px);
 }
 
-.home-wave__layer--mid canvas {
-  filter: blur(7px);
-}
-
-.home-wave__layer--heavy {
-  -webkit-mask-image: linear-gradient(to bottom, transparent 44%, black 74%);
-  mask-image: linear-gradient(to bottom, transparent 44%, black 74%);
-}
-
-.home-wave__layer--heavy canvas {
-  filter: blur(24px);
-}
-
-/* Frostet glas nederst (bruger 2026-10-02): et mælket creme-slør oven på
-   det kraftigt slørede lag, så bevægelserne forneden kun anes svagt. */
+/* Frostet glas nederst: et mælket creme-slør, så bevægelserne forneden kun
+   anes svagt. Rører ikke den skarpe top. */
 .home-wave__frost {
   position: absolute;
   inset: 0;
   background: linear-gradient(
     to bottom,
-    transparent 38%,
-    color-mix(in srgb, var(--hf-cream) 45%, transparent) 62%,
-    color-mix(in srgb, var(--hf-cream) 68%, transparent) 100%
+    transparent 68%,
+    color-mix(in srgb, var(--hf-cream) 40%, transparent) 84%,
+    color-mix(in srgb, var(--hf-cream) 65%, transparent) 100%
   );
 }
 

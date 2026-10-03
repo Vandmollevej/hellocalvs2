@@ -18,7 +18,7 @@ export async function requirePartnerUser() {
     where: { id: session.partnerUserId },
     include: { partner: { select: { id: true, name: true } } },
   });
-  if (!user || !user.active || !user.passwordHash || !user.acceptedAt) return null;
+  if (!user || !user.active || !user.passwordHash || !user.totpSecret || !user.acceptedAt) return null;
   if (user.sessionsValidFrom && session.issuedAt < user.sessionsValidFrom.getTime()) return null;
   return user;
 }

@@ -256,37 +256,32 @@ export function StatChart({
         </button>
       </div>
 
+      {/* Valget af linjer folder sig ud inde i kortet (ikke svævende), så det
+          aldrig klippes af en omgivende boks og kan rumme mange linjer, fx
+          alle vitaminer (2026-10-02). */}
       {menuOpen && (
-        <>
-          <button
-            type="button"
-            aria-label={t("statChart.closeMenuAria")}
-            className="fixed inset-0 z-30 cursor-default"
-            onClick={() => setMenuOpen(false)}
-          />
-          <div className="absolute bottom-11 right-4 z-40 w-52 overflow-hidden rounded-2xl border border-hf-tan-dark bg-hf-white p-1.5 text-hf-black shadow-xl">
-            {series.map((s) => {
-              const checked = enabledKeys.includes(s.key);
-              return (
-                <div
-                  key={s.key}
-                  className="hf-type-body hf-type-strong hf-control-row flex w-full items-center gap-3 rounded-xl px-3 text-left hover:bg-hf-cream"
-                >
-                  <span
-                    aria-hidden="true"
-                    className="inline-block size-2 rounded-full"
-                    style={{ backgroundColor: s.color }}
-                  />
-                  <span className="flex-1">
-                    {s.label}
-                    {s.unit ? ` (${s.unit})` : ""}
-                  </span>
-                  <Toggle checked={checked} onChange={() => toggleSeries(s.key)} />
-                </div>
-              );
-            })}
-          </div>
-        </>
+        <div className="mt-2 max-h-80 overflow-y-auto rounded-2xl border border-hf-tan-dark bg-hf-white p-1.5 text-hf-black">
+          {series.map((s) => {
+            const checked = enabledKeys.includes(s.key);
+            return (
+              <div
+                key={s.key}
+                className="hf-type-body hf-type-strong hf-control-row flex w-full items-center gap-3 rounded-xl px-3 text-left hover:bg-hf-cream"
+              >
+                <span
+                  aria-hidden="true"
+                  className="inline-block size-2 rounded-full"
+                  style={{ backgroundColor: s.color }}
+                />
+                <span className="flex-1">
+                  {s.label}
+                  {s.unit ? ` (${s.unit})` : ""}
+                </span>
+                <Toggle checked={checked} onChange={() => toggleSeries(s.key)} />
+              </div>
+            );
+          })}
+        </div>
       )}
     </div>
   );

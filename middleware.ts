@@ -128,8 +128,8 @@ async function handleScan(req: NextRequest, host: string) {
 // det offentlige domæne under /partner. Login og invitationslink er åbne;
 // alt andet kræver partnersessionen. requirePartnerUser() tjekker desuden i
 // databasen, at brugeren stadig er aktiv.
-const PUBLIC_PARTNER_PATHS = ["/partner/login", "/partner/invite"];
-const PUBLIC_PARTNER_API_PATHS = ["/api/partner/login", "/api/partner/invite"];
+const PUBLIC_PARTNER_PATHS = ["/partner/login", "/partner/verify", "/partner/invite"];
+const PUBLIC_PARTNER_API_PATHS = ["/api/partner/login", "/api/partner/verify", "/api/partner/invite"];
 
 async function handlePartner(req: NextRequest, host: string) {
   // Portalen findes kun på det offentlige domæne; admin-værten omskriver alle stier til /admin.

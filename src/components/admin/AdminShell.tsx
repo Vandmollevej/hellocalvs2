@@ -14,7 +14,7 @@ import { AdminCountryDialog, readAdminCountry } from "@/components/admin/AdminCo
 // brødkrummer og brugermenu. Under lg bliver sidebjælken en skuffe bag en menuknap.
 // Farverne er de eksisterende Hello Cal-tokens.
 
-type IconName = "home" | "chart" | "box" | "database" | "users" | "handshake" | "shield" | "cog" | "palette" | "road" | "flow" | "pot" | "log" | "coin";
+type IconName = "home" | "chart" | "box" | "database" | "users" | "handshake" | "shield" | "cog" | "palette" | "road" | "flow" | "pot" | "log" | "plug" | "coin";
 type NavLink = { href: string; key: AdminI18nKey };
 type NavEntry =
   | { kind: "link"; href: string; key: AdminI18nKey; icon: IconName }
@@ -87,6 +87,7 @@ const NAV: NavEntry[] = [
     ],
   },
   { kind: "link", href: "/admin/statistics", key: "nav_statistics", icon: "chart" },
+  { kind: "link", href: "/admin/integrations", key: "nav_integrations", icon: "plug" },
   { kind: "link", href: "/admin/economy", key: "nav_economy", icon: "coin" },
   { kind: "link", href: "/admin/hello-doc", key: "nav_hello_doc", icon: "users" },
   {
@@ -98,6 +99,7 @@ const NAV: NavEntry[] = [
       { href: "/admin/users", key: "nav_users_all" },
       { href: "/admin/chatbot", key: "nav_chatbot" },
       { href: "/admin/users/personas", key: "nav_personas" },
+      { href: "/admin/test-programmes", key: "nav_test_programmes" },
       { href: "/admin/bug-reports", key: "nav_bug_reports" },
       { href: "/admin/support", key: "nav_support" },
     ],
@@ -233,6 +235,7 @@ function Icon({ name, className = "h-5 w-5" }: { name: IconName | "search" | "ch
       </>
     ),
     road: <path d="M5 21 9 3M19 21 15 3M12 4v2.5M12 10.5v3M12 17.5V20" />,
+    plug: <path d="M9 3v5M15 3v5M6 8h12v3a6 6 0 0 1-12 0zM12 17v4" />,
     coin: (
       <>
         <circle cx="12" cy="12" r="9" />
@@ -601,8 +604,21 @@ function SearchField({ label, collapsed, onOpen }: { label: string; collapsed: b
   );
 }
 
+// Partnersiderne (/admin/partners/<id>, docs/DECISIONS.md 2026-10-02) har
+// egen venstre bjælke med virksomhedsoplysninger og intet søgefelt.
+// Hold i takt med faste mapper under src/app/admin/partners/.
+const PARTNER_SUBPAGES = new Set(["ads", "contacts", "reports", "users"]);
+export function isPartnerDetailPath(pathname: string) {
+  const match = pathname.match(/^\/admin\/partners\/([^/]+)/);
+  return !!match && !PARTNER_SUBPAGES.has(match[1]);
+}
+
 function Breadcrumbs({ locale, pathname }: { locale: Locale; pathname: string }) {
   const crumbs: { label: string; href?: string }[] = [{ label: "Admin", href: "/admin" }];
+  if (isPartnerDetailPath(pathname)) {
+    crumbs.push({ label: t(locale, "nav_partners"), href: "/admin/partners/contacts" });
+    crumbs.push({ label: t(locale, "nav_partner_page") });
+  }
   for (const entry of NAV) {
     if (entry.kind === "link") {
       if (entry.href !== "/admin" && isActive(pathname, entry.href)) crumbs.push({ label: t(locale, entry.key) });
@@ -756,6 +772,7 @@ export function AdminShell({
   const badges: Badges = { support, uncertainties: hasOpenUncertainties };
 
   const searchLabel = t(currentLocale, "nav_quick_search");
+  const hideSearch = isPartnerDetailPath(pathname);
 
   return (
     <div ref={scrollRootRef} className="hf-shell">
@@ -774,9 +791,11 @@ export function AdminShell({
             />
           </Link>
         </div>
-        <div className="hf-shell__search-slot">
-          <SearchField label={searchLabel} collapsed={collapsed} onOpen={() => setSearchOpen(true)} />
-        </div>
+        {!hideSearch && (
+          <div className="hf-shell__search-slot">
+            <SearchField label={searchLabel} collapsed={collapsed} onOpen={() => setSearchOpen(true)} />
+          </div>
+        )}
         <nav className="hf-shell__nav">
           <SidebarNav
             locale={currentLocale}
@@ -812,15 +831,17 @@ export function AdminShell({
             <Image src="/hello-cal-logo.png" alt="Hello Cal" width={90} height={40} priority />
           </Link>
           <Breadcrumbs locale={currentLocale} pathname={pathname} />
-          <button
-            type="button"
-            onClick={() => setSearchOpen(true)}
-            aria-label={searchLabel}
-            className="hf-btn-icon hf-shell__mobile-only ml-auto text-text-secondary hover:bg-hf-tan"
-          >
-            <Icon name="search" />
-          </button>
-          <div className="lg:ml-auto">
+          {!hideSearch && (
+            <button
+              type="button"
+              onClick={() => setSearchOpen(true)}
+              aria-label={searchLabel}
+              className="hf-btn-icon hf-shell__mobile-only ml-auto text-text-secondary hover:bg-hf-tan"
+            >
+              <Icon name="search" />
+            </button>
+          )}
+          <div className="ml-auto">
             <UserMenu
               email={email}
               locale={currentLocale}

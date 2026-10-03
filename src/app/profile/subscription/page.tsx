@@ -7,7 +7,7 @@ import { HfScreen } from "@/components/HfScreen";
 import { TermsSheet } from "@/components/hf/TermsSheet";
 import { SUBSCRIPTION_OVERVIEW_TERMS } from "@/lib/terms-hints";
 import { useTranslation } from "@/i18n/LocaleProvider";
-import { LandingPlans } from "@/components/landing/LandingPlans";
+import { LandingPlans, PlanOverview } from "@/components/landing/LandingPlans";
 import { PLANS } from "@/lib/landing-content";
 import { Skeleton, SkeletonCards, SkeletonScreen } from "@/components/hf/Skeleton";
 
@@ -68,6 +68,8 @@ export default function SubscriptionPage() {
     }
   }
 
+  const currentPlan = !data || data.tier !== "SERIOUS" ? "free" : data.plan === "FAMILY" ? "family" : "serious";
+
   const formattedPeriodEnd =
     data?.currentPeriodEnd ? new Date(data.currentPeriodEnd).toLocaleDateString("da-DK") : null;
 
@@ -87,6 +89,9 @@ export default function SubscriptionPage() {
         )
       ) : (
         <div className="hf-page">
+          {/* De tre abonnementer øverst; et tryk ruller ned til planens kort. */}
+          <PlanOverview plans={PLANS} currentPlan={currentPlan} />
+
           <div className="hf-card">
             <label htmlFor="gift-code" className="text-text-secondary hf-type-body block">
               {t("subscription.giftCode.label")}
@@ -179,7 +184,7 @@ export default function SubscriptionPage() {
           <div className="md:mt-4">
             <LandingPlans
               plans={PLANS}
-              currentPlan={data.tier !== "SERIOUS" ? "free" : data.plan === "FAMILY" ? "family" : "serious"}
+              currentPlan={currentPlan}
             />
           </div>
           {/* Vilkår og betingelser står nederst i sidens indhold, ikke i en

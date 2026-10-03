@@ -438,12 +438,8 @@ disse roller frem for egne styles.
 - Titel, venstre handling og højre handling ligger i tre faste slots, så titlen
   ikke flytter sig, når én side får et ikon.
 - Hello Cal-reglen om profil venstre/luk højre har forrang på appskærme.
-- **Hjælpe-knap (tilføjet 2026-10-02):** `.hf-appbar--help` udvider begge
-  sidekolonner symmetrisk til 88 px (80 px i kompakt liggende), så titlen stadig
-  står i midten. Højre ende (`.hf-appbar__end`) indeholder chatbot-ikonet som
-  `.hf-btn-icon` (44 × 44, ikon 28 px, arver hvid) lige til venstre for
-  profilcirklen. Forsidens lyse topbjælke viser samme knap i mørk. Ikke i
-  desktop-skallens sidehoved; der står "Hjælp" i topbjælken.
+- **Ingen hjælpe-knap i appbaren** (fjernet 2026-10-03, docs/DECISIONS.md):
+  hjælpe-chatten åbnes kun fra Support-siden.
 
 ### 6.2 Knapper — EN fast regel (implementeret 2026-09-26)
 
@@ -704,6 +700,19 @@ bjælke (`bg-black/70`) nederst i viewfinderet mellem to hints ("hold hele
 stregkoden inde i billedet — den må gerne vende lodret" / "prøv større
 afstand, hvis den er sløret").
 
+**Levende scanning i opret-flowet** (`ProductCaptureFlow`, 2026-10-02):
+kameraet fryser aldrig på forside/energi/indhold. Øverst i viewfinderet står
+trin-overskriften i `.hf-scan-heading`: `.hf-type-body` + `.hf-type-strong`,
+hvid med let tekstskygge på en blød sort gradient (55 % → 0) fra toppen —
+"Scan stregkode" / "Scan billede" / "Scan energi" / "Scan indholdsfortegnelse".
+Når et trin er klaret, fyldes varens kontur (forsiden, fra `ProductOutlineOverlay`s
+maske) eller det læste tekstfelt (energi/indhold, `LabelFillOverlay`, radius 2 %
+af billedets korteste side) helt hvidt (`--hf-color-white`) med `.hf-scan-fill`:
+toner op på 0,3 s, står til 1,0 s og fader ud ved 1,4 s; derefter skifter trinnet.
+Ingen kontur/boks → midterrammen (inset 12 %, radius 12) fyldes i stedet. Ved
+`prefers-reduced-motion` vises fladen uden animation. Scanningsstriben
+(`.hf-scan-sweep`) fejer over den levende video på alle fototrin.
+
 ### 6.13 Bundark (screen-overlay/popup) — tilføjet 2026-09-27
 
 Standard for alle screen-overlays og popups (KRAV.md "Bundark"). Klasse
@@ -739,19 +748,24 @@ dimensioner, billedformat, eller om produktet slet ikke har et billede.
   max-w-[180px] shrink-0`), så hverken et flex-parent, et stort/skævt billede
   eller en manglende `img` kan ændre boksens mål.
 - Selve billedet tilpasses inde i dette fastlåste område med
-  `object-contain` og intern padding (`p-8`) — aldrig `object-fit: cover` på
+  `object-contain` og intern padding (`p-3`) — aldrig `object-fit: cover` på
   bekostning af proportionerne, og aldrig `height: auto`,
   billed-aspect-ratio-baseret sizing eller anden dynamisk størrelse afledt af
-  billedfilen.
+  billedfilen. Det gælder råfotoet (før fritskrabningen).
+- Fritskrabet billede (PNG fra billedrobotten, 2026-10-02): lægges oven på
+  den fastlåste cirkel i 110 % (198 px) — stående varer med bunden i cirklens
+  bund, så toppen rager 10 % op over cirklen; liggende varer fra cirklens
+  venstre kant, så de rager 10 % ud over højre. Hele varen er altid synlig
+  (ingen beskæring). Cirklens egne mål ændres ikke af det.
 - Mangler produktet et billede, viser boksen samme faste geometri med et tomt
   indre (ingen `img`-tag), ikke en mindre eller anderledes formet boks.
 - Ingen variation i billedmaterialet må ændre boksens højde, dens afstand til
   omgivende elementer, eller proportionerne for sidens øvrige elementer
   (navn, mærke, kcal, afstandsknapper osv.).
-- Favoritknappen (`.hf-favorite-button`) og det lille frugtmærke
-  (`hello-cal-fruit.png`, `72 × 72 px`, hvid rund baggrund, `-right-5 bottom-0`)
-  er absolut positioneret på selve den fastlåste boks og påvirkes derfor
-  heller ikke af billedets indhold.
+- Favoritknappen (`.hf-favorite-button`) og brandlogoet (`95 × 66 px`,
+  `object-contain object-left-bottom`, bund i cirklens bund, venstre kant 3/4
+  inde — højden sat til 70 % 2026-10-02) er absolut positioneret på selve den
+  fastlåste boks og påvirkes derfor heller ikke af billedets indhold.
 - En fremtidig redesign-agent for produktsiden må implementere hele siden
   efter samme princip — ikke kun billedcirklen — men må ikke ændre selve
   billedboksens mål, radius eller `object-fit`-regel uden at dokumentere det
@@ -822,19 +836,18 @@ appen, samme udseende som admin: side #FAF8F3, hvid topbjælke/panel med 1 px
 
 ### 6.16 Kalenderens miniature-tal: kyllingelår, flamme og glas — tilføjet 2026-10-02
 
-Hello Cal-specifik primitiv uden HelloFresh-reference (jf. §1). Overalt hvor
-et kalorietal står kompakt ved siden af en ting (kalenderens celler og
-timerækker, forsidens tal-hjul, statistikbokse, widget-forhåndsvisninger,
-lister i chat/tale/kamera) erstattes ordene "kalorier"/"kcal" af et ikon; den
-fulde tekst ligger i `aria-label`. Brugerens regel 2026-10-02: "generelt,
-overalt".
+Hello Cal-specifik primitiv uden HelloFresh-reference (jf. §1). I kalenderens
+dagvisning (timerækken og timens oversigt) står et ikon foran tallet. Ikonet
+er et **supplement** til "kcal" — enheden fjernes aldrig (brugerens rettelse
+2026-10-03). Andre steder bruges kyllingelåret kun, hvor der i forvejen stod
+et ikon.
 
 **`EnergyChip`** (`src/components/calendar/EnergyChip.tsx`), tre varianter:
 
 | Variant | Ikon | Tekst | Farve |
 | --- | --- | --- | --- |
-| `intake` (indtagne kalorier) | `IconDrumstick` — brunt kød, hvidt ben | heltal, fx `540` | tekst `text-hf-black`, kød `--hf-meat` |
-| `burned` (forbrændte kalorier) | tabler `IconFlame` | `+120` | `text-hf-green`, både ikon og tal |
+| `intake` (indtagne kalorier) | `IconDrumstick` — brunt kød, hvidt ben | `540 kcal` | tekst `text-hf-black`, kød `--hf-meat` |
+| `burned` (forbrændte kalorier) | tabler `IconFlame` | `+120 kcal` | `text-hf-green`, både ikon og tal |
 | `water` (vand) | `IconWaterGlass` (den eksisterende) | mængde i cl, fx `25 cl` | `text-hf-black` |
 
 - Ikon 16 px i timerækken (`hf-type-small`), 18 px i timens oversigt
@@ -847,19 +860,13 @@ overalt".
   kød i `--hf-meat` (#8C5A32, nyt navngivet token til netop denne rolle) og
   ben i `--hf-white` med kødfarvet kant, så benet også ses på creme og tan.
   `color`/`currentColor` ændrer ikke ikonet.
-- Måneds- og ugelisten viser afstanden til målet som chip med fortegn:
-  `text="+120"` / `text="÷120"` (fortegnet som symbol, jf. G1-beslutningen).
-- Forsidens tal-hjul (`frontpage-stats.ts`): rækkerne Kalorier og Kalorier i
-  plus bruger `IconDrumstick` som rækkeikon og tom enhed; Forbrændt bruger
-  `IconFlame` og tom enhed. Hjulet viser derfor "2.140 🍗" i stedet for
-  "2.140 kcal 🔥".
-- Statistikbokse (`StatCardsGrid`): en værdi, der ender på " kcal", vises som
-  tal + chip (flamme for "Forbrændt" og sportsgrene, ellers kyllingelår).
-  Boksene "Kalorier" og "Forbrændt" har allerede kyllingelår/flamme som
-  boksikon og viser kun tallet.
-- Tekst, der ikke er et kompakt tal, forbliver tekst: sætninger ("Tilbage for
-  i dag: 3282 kcal"), indtastningsfelter, "kcal / 100 g"-tætheder, grafakser
-  og de native widgets (kan ikke bruge React-ikonet).
+- Måneds-/ugegitter, måneds-/ugeliste, statistikbokse, widget-
+  forhåndsvisninger og listerne i chat/tale/kamera viser tal + "kcal" uden
+  chip.
+- Hvor der allerede stod et ikon, er ikonet skiftet, og "kcal" står stadig:
+  forsidens tal-hjul (Kalorier og Kalorier i plus: `IconDrumstick`;
+  Forbrændt: `IconFlame`) og statistikboksen Kalorier (`IconDrumstick` som
+  boksikon).
 
 ### 6.17 Fælles skal: admin, webvisning og Hello Doc — tilføjet 2026-10-03
 

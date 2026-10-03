@@ -25,7 +25,7 @@ export default async function PartnerInvitePage({ params }: { params: Promise<{ 
       <h1 className="hf-type-title mb-1 text-hf-black">Velkommen, {invite.name}</h1>
       <p className="hf-type-body mb-8 text-text-secondary">
         Du er inviteret til Hello Cals partnerportal for <strong>{invite.partner.name}</strong> ({invite.email}). Vælg en
-        adgangskode for at komme i gang.
+        adgangskode, og sæt 2-faktor op med en authenticator-app. 2-faktor er obligatorisk ved hvert login.
       </p>
       <PartnerInviteForm token={token} />
     </div>
