@@ -198,6 +198,11 @@ Hello Cals partnerportal og ser sin egen partners data.
 - Portalen ligger på det offentlige domæne (hellocal.io), ikke admin-værten,
   da admin-værten omskriver alle stier til `/admin` og er IP-begrænset.
   `PARTNER_BASE_URL` kan overstyre linkets base (standard `APP_BASE_URL`).
+## 2026-10-02: Første testperson af en integration (300 points)
+
+- Hver integrations side viser et popup-banner (bundark med det grønne points-kort): "Bliv den første testperson af {app}, og optjen 300 points". Brugeren tilmelder sig via linket nederst i arket; "* Læs betingelser" linker til `/betingelser#pointsystem`.
+- Kun den allerførste, der tilmelder sig, får pladsen: én testperson pr. integration (`IntegrationTester`, unik pr. provider). Banneret vises kun, mens pladsen er ledig, og ikke igen på enheden, når brugeren har lukket det.
+- Points gives først, når admin godkender under Admin → Brugere → **Test-programmes** — samme regel som produkter og fejlrapporter (2026-09-02). Admin ser, om appen er aktiveret, og hvornår den sidst hentede data. Godkendelse giver 300 points (`INTEGRATION_TESTER`) én gang; afvisning sletter tilmeldingen, så pladsen bliver ledig igen.
 
 ## 2026-10-02: Butiksimporten: alt fra arkene med (Bilka + REMA 1000)
 
@@ -267,7 +272,7 @@ om varen var "taget", og det føltes ikke som scanning i realtid.
 
 - Hver mail eller sms til en kendt bruger giver (1) en push med det samme: "Vi har netop sendt dig en e-mail om "emne". Dette var ikke spam." og (2) et bundark som det første ved næste besøg (app og web): "Til info sendte vi dig den <dato> en <e-mail/sms> om "<emne>". Dette var ikke spam." med sort knap "Læst".
 - "Læst" kvitterer (`OutboundMessage.noticeAckAt`); et træk ned lukker kun til næste besøg. Beskeder ældre end 30 dage vises ikke. Gælder ikke mails til admin, ikke-brugere (invitationer) eller rene push-beskeder.
-- Bygger på den eksisterende `OutboundMessage`-log — ingen adresse eller telefonnummer gemmes. Sms sendes via `src/lib/sms.ts` (GatewayAPI-format, no-op uden `SMS_GATEWAY_TOKEN`); brugere har endnu intet telefonnummer-felt, så ingen sms sendes i dag.
+- Bygger på den eksisterende `OutboundMessage`-log — ingen adresse eller telefonnummer gemmes. Sms sendes via `src/lib/sms.ts` (GatewayAPI-format, no-op uden `SMS_GATEWAY_TOKEN`); brugere har endnu intet telefonnummer-felt, så ingen sms sendes i dag. (Opdateret 2026-10-02: TeamMessage er nu primær udbyder, og mobilnummer findes på profilen — se "SMS-gendannelse af adgangskode".)
 
 ## 2026-10-02: Vægt- og længdeenheder (kg/lb/st, cm/in)
 
@@ -334,6 +339,21 @@ Uge- og Liste-visningen beholder "Ingen indtastninger" i gråt på tomme dage.
 - Ikke ændret endnu: forsidens "Tilbage"-kort (`frontpage-stats.ts`) og
   widgets (`widget-data.ts`) regner stadig mod budgettet alene — skal følge
   samme regel, når de rettes (andre gruppers filer).
+## 2026-10-02: Telefonnummer er obligatorisk (tofaktor-godkendelse)
+
+- Alle brugere, der kan logge ind, **skal** have et telefonnummer (`User.phone`), fordi det skal bruges til tofaktor-godkendelse (brugerens krav). Nummeret er obligatorisk ved tilmelding og kan rettes, men aldrig slettes, på profilsiden.
+- Gemmes normaliseret i **E.164** (`src/lib/phone.ts`): nationalt nummer uden landekode får landekoden fra `User.region` (standard +45); ellers kræves `+`/`00` og 8–15 cifre. Ingen opslag hos teleselskab; `phoneVerifiedAt` er reserveret til SMS-bekræftelsen, når tofaktoren bygges, og nulstilles ved nyt nummer.
+- Konti uden nummer (oprettet med Google/Apple/Facebook, eller før kravet) spærres ikke ude, men sendes af `AuthGate` til `/account/phone` ved første side efter login og kan ikke bruge appen, før nummeret er udfyldt. Kolonnen er derfor nullable i databasen.
+- **Børneprofiler er ikke undtaget** (brugerens valg): de skal også oplyse nummer, når de logger ind — de kan fjerne forældrenes adgang, når de fylder 18. Familieprofiler uden eget login kan først udfylde det, når de får login. Admin-konti (`/admin`, eget login med TOTP) kræver ikke nummer.
+- Nummeret er persondata: det slettes sammen med resten ved "glem mig" og vises aldrig til andre brugere.
+
+## 2026-10-02: Grafer på "Tilføj til statistik" og samlede mineral-/vitamingrafer
+
+- Graferne på "Tilføj til statistik" vises i fuld bredde og tegnes af samme kode og data som på statistiksiden, så brugeren ser grafen, som den faktisk vil se ud. Tilføjes med en "+ Tilføj"-knap under grafen, ikke ved tryk på selve grafen.
+- Ingen grafer pr. enkelt mineral eller vitamin. Der findes én "Mineraler"- og én "Vitaminer"-graf; brugeren vælger selv linjerne i grafens dropdown. Standard: calcium, jern, kalium og vitamin A, C, D.
+- Ældre gemte layouts med de gamle enkelt-grafer omskrives til gruppegraferne.
+- Grafernes linjevalg vises inde i kortet (ikke svævende), så det ikke klippes af omgivende bokse.
+- Sprogregel fra ejeren: "krydse af", "slå til" o.l. betyder altid til/fra-knapper (`Toggle`), aldrig afkrydsningsfelter.
 
 ## 2026-09-29: Aktivitetsniveau, PAL og kaloriemål
 
@@ -1128,6 +1148,38 @@ Resultatet rundes op til nærmeste 10 kcal. Kun afsluttede dage med
 indtastninger kan markeres. Dagen i dag markeres ikke, fordi den ikke er
 slut, og tomme dage markeres heller ikke. Det er et vejledende skøn, ikke
 medicinsk rådgivning.
+## 2026-09-25: Mængde-robot — slideren starter på den mest sandsynlige mængde
+
+Brugerens krav: robotten skal regne ud, hvilken mængde folk typisk vælger af
+en vare (fx agurk spist rå eller lagt i en opskrift), så mængde-slideren på
+`/add/[id]` ikke starter på 100 g, og det må ikke være et råt gennemsnit.
+Robotten skal kunne styres fra admins robotpanel.
+
+- Ny container `amount-suggestion-agent` (`scripts/amount-suggestion-agent`,
+  ren Python + SQL, ingen AI, ingen netværk ud). Den skriver
+  `amount_suggestions` og læser/skriver `robot_configs` (key
+  `amount-suggestion`). Den tabel er fælles for fremtidige robotter.
+- To kontekster regnes hver for sig: `EATEN` (registreringer) og `RECIPE`
+  (`dish_ingredients`). `/add/[id]?for=ret` bruger `RECIPE`.
+- Metoden: tidsvægt (halveringstid), loft pr. bruger, trimning af
+  yderpunkter, typetal via vægtet KDE på log-skala (kandidater = faktisk
+  valgte mængder), trukket mod kategoriens median ved få data og en
+  confidence ud fra effektivt antal valg og hvor samlet valgene ligger.
+- App'en (`src/lib/amount-suggestion.ts`) blander robottens tal med
+  brugerens egne seneste valg (vægtet median, log-skala, egen vægt
+  n/(n+personalWeight)), afrunder til pæne tal (1/5/10/50 g) eller hele
+  portioner og bruger kategoriens tal, når varen ikke har sit eget.
+  Uden data starter slideren som før. Robottens svar overskriver aldrig en
+  mængde, brugeren allerede har ændret.
+- Anonymitet: et fælles forslag gemmes kun, når mindst `minUsers` (standard 3)
+  forskellige brugere står bag. Der gemmes kun aggregater, og private
+  ingredienser er udeladt.
+- `/admin/robots` ("Robotter"): til/fra, "Brug forslagene i app'en", alle
+  parametre med grænser (`src/lib/amount-suggestion-config.ts`, samme tal
+  i agentens `LIMITS`), "Kør nu" (virker også når robotten er slået fra),
+  status/heartbeat, test af forslag for vare + bruger og top-40-liste.
+- Deploy-trinnet for robotten kører med `if: !cancelled()`, så det ikke
+  blokeres af de andre agent-trin.
 
 ## 2026-09-25: Sektionsoverskrifter, points-banner og "Invitér en ven"
 
@@ -3785,6 +3837,16 @@ Kilder på "Mad på latin" skal altid være officielle (Fødevarestyrelsen, Sund
 - Analyse er slået sammen med Statistik: `/admin/statistics` har faner (Brugere og indtjening / Trafik / Reklamer). `/admin/analytics` omdirigerer til Trafik-fanen. Indtjening og betalingsmetoder ligger i fanen Brugere og indtjening.
 - Reklamer: fanen læser fra partner-reklamernes tabeller (`ad_locations`, `ad_events`, `partners`, ejet af Partnere-arbejdet) via rå SQL med try/catch, så den er tom, indtil tabellerne findes og der er hændelser.
 
+## 2026-10-02: Abonnement og betalingsmetode hører til under Indstillinger; betalingsmetode kun for betalende
+
+- **Ændret 2026-10-03 (ejerens valg):** de to første punkter herunder gælder ikke længere. Abonnement og Betalingsmetoder bliver på både Profil og Indstillinger og vises for alle (også uden kort, så "Vælg abonnement" kan findes). Resten (aktivt kort fra Stripe, kortskift i kundeportalen) gælder.
+
+- **Abonnement og Betaling ligger kun under Indstillinger** (ejerens krav 2026-10-02; menupunktet hedder "Betaling", jf. e8ad1b3 samme dag). Profilsidens to rækker er fjernet; `/profile/subscription` og `/settings/payment` er uændrede adresser.
+- **Menupunktet "Betaling" (betalingsmetode-siden) vises kun for betalende.** Betalende = en rigtig udbyder-aftale (Stripe eller MobilePay Recurring) med status ACTIVE eller CANCELED med betalt restperiode — samme definition som admin → Statistik. Gavekode-, points-, prøve- og familiemedlems-Seriøs har intet kort og ser ikke rækken. En MobilePay-aftale, der venter på godkendelse, ser den også (så "Afventer godkendelse" kan findes). Felt: `paying` i `GET /api/subscription`.
+- **Siden viser det, der faktisk trækkes på** — det abonnementets `default_payment_method` hos Stripe (ellers kundens `invoice_settings.default_payment_method`): kortmærke, sidste 4 cifre og udløb; Apple Pay/Google Pay vises som wallet med kortet bagved (`PaymentMethod.wallet`, enum `PaymentWallet`, migration `20261002090000_payment_method_wallet`); MobilePay som MobilePay. Siden kalder `GET /api/subscription?refresh=1`, som synker fra Stripe først, så et kortskift ses med det samme. Kortet slettes ikke længere ved opsigelse — først når aftalen er helt afsluttet hos Stripe.
+- **Kortskift sker i Stripes kundeportal** (`POST /api/payments/stripe/portal` → Billing Portal med `flow_data.type = payment_method_update`, retur til `/settings/payment`). Hello Cal ser aldrig kortdata. Portalen kræver en konfiguration pr. Stripe-konto (test/live): findes ingen aktiv, opretter serveren én med kun kortskift + kvitteringshistorik (opsigelse/planskift slået fra — det styres i appen; privatlivs-/betingelseslinks peger på appens sider). MobilePay Recurring (Vipps) har intet kortskift; der kan kun aftalen stoppes.
+- Kortmærket vises med Stripes brand-værdi (`card.brand`) som lille logo i en fast kortramme: Visa og Mastercard (`public/payment/mastercard.svg`, officiel cirkelgeometri) med sidste 4 cifre; EC-kort/Amex/ukendt får et neutralt kort-ikon. Alle betalingsikoner er små (20 px høje) — også logoerne for understøttede metoder, der nu er chips som på købssiden.
+
 ## 2026-09-29: Stripe-betaling — MobilePay i Danmark, kort/EC i Tyskland
 
 - **Startlande: Danmark og Tyskland** (`src/lib/payments/stripe-markets.ts`). Land = brugerens `region`. DK betaler med **MobilePay** (DKK), DE med **kort inkl. EC-kort/girocard** (EUR). Andre lande får ingen Stripe-betaling (faldback: MobilePay Recurring, hvis den er sat op).
@@ -3860,6 +3922,12 @@ Kilder på "Mad på latin" skal altid være officielle (Fødevarestyrelsen, Sund
 - Varesiden: `certificationBadges(filters, labels)` viser fund ≥ 0,8 som badges; mærker uden egen logofil i `public/certifications` vises med det fritskrabede mærke fra emballagen.
 - Migration `20261002090000_product_labels`.
 
+## 2026-10-02: SMS-gendannelse af adgangskode via TeamMessage
+
+- Udbyder: TeamMessage (teammessage.eu), REST `POST /api/v1/sms/send/` med Bearer-token. Uden token er SMS slået fra.
+- Mobilnummer er valgfrit på profilen og gemmes normaliseret (`+45XXXXXXXX`; 8 cifre antages danske). Slettes ved "ret til at blive glemt".
+- Flow: e-mail → 6-cifret kode på SMS (10 min, højst 5 forsøg, kun nyeste kode gælder, HMAC-hash) → almindeligt `PasswordResetToken` → `/reset-password`. Svaret afslører aldrig, om konto eller nummer findes. Højst 5 SMS pr. konto pr. 15 min.
+- Mail-linket er stadig standard; SMS er et tekstlink-alternativ på samme side.
 ## 2026-10-02: Userback feedback-widget
 
 - Scriptet indlæses globalt fra src/components/UserbackWidget.tsx (rodlayoutet) med det offentlige widget-token. Der sendes bevidst ingen Userback.user_data (ingen navn/e-mail), så feedback er anonym i tråd med anonymitetsreglerne.
@@ -3970,6 +4038,32 @@ Brugerens krav: "Luk konto kan reverses inde. For 3 måneder, med mindre man væ
 
 - Øverst i Hjælpecenter (`public/hjaelp.html`) står guiden "Lær appen at kende" med knappen "Start guiden" på grøn baggrund (`#067A46`, hvid tekst) — ejerens udtrykkelige ønske og en bevidst undtagelse fra design.md's regel om, at grønne handlingsknapper er udfaset.
 - Den statiske side kan ikke selv åbne guiden, så den linker til `/settings?guide=1`, som starter `OnboardingWizard` forfra (samme handling som "Lær appen at kende" i Indstillinger).
+## 2026-10-02: Fold-ud-boks (accordion) som element i statistik-layoutet
+
+- Statistiksidens kort-gitter har et nyt opbygningselement ud over Overskrift
+  og Skillelinje: en **fold-ud-boks**, der ser ud som grupperne på
+  `/statistics/unused-cards` (`AccordionSection`: hoved med titel, antal og
+  chevron; grønt hoved når den er åben). Kort, overskrifter og skillelinjer
+  kan ligge inde i den.
+- Datamodel: boksen gemmes **fladt** i samme layout-liste som alt andet som
+  to markører — `{ type: "accordion", id, title, open }` og
+  `{ type: "accordionEnd", id }` — og alt imellem dem er indholdet. Ingen
+  indlejring (en ny boks lukker den forrige). `normalizeStatLayout`
+  reparerer manglende/løse markører og fjerner tomme rækker lige før
+  slut-markøren. Åben/lukket gemmes i layoutet (localStorage), så valget
+  huskes.
+- Betjening: tryk på hovedet folder ud/sammen; langt tryk løfter **hele
+  boksen** (også når den er lukket) og den lander kun mellem rækker på
+  øverste niveau. Kort slippes ind i boksen i et frit felt (åben) eller på
+  hovedet (lukket — kortet lægges sidst i boksen). I redigering: tryk på
+  titlen omdøber, slette-cirklen fjerner kun rammen — kortene bliver i
+  gitteret, hvor boksen stod.
+- Tilføj-siden: Overskrift, Skillelinje og Fold-ud-boks står samlet øverst
+  under søgefeltet i en mørkere boks (`bg-hf-tan-dark`), så
+  opbygningselementer tydeligt adskiller sig fra data-kort og grafer.
+- Kode: layout-logikken ligger nu i `src/lib/stat-layout.ts` (uden
+  UI-imports, så den kan testes med `npm test`); `stat-cards.ts`
+  re-eksporterer den, så eksisterende imports virker uændret.
 ## 2026-10-02: Admin → Integrationer og hændelseslog
 
 - Nyt menupunkt "Integrationer" i admin (`/admin/integrations`) med dashboard over alle integrationer og en side pr. integration (`/admin/integrations/[slug]`): aktive installationer, installeret/afinstalleret i alt, nye tilkoblinger og frakoblinger (graf op/ned), aktive installationer over tid, synkroniseringer, datapunkter hentet/sendt, fejlrate, til/fra-valg blandt forbundne, data gemt pr. type, seneste tilmeldinger/frakoblinger (med hvor længe brugeren havde den), median tid før frakobling og forbindelser i fejl.
@@ -3977,4 +4071,10 @@ Brugerens krav: "Luk konto kan reverses inde. For 3 måneder, med mindre man væ
 - Fornyet adgang på en allerede forbundet integration tæller ikke som ny installation. Telefon-integrationer (Apple Health/Health Connect) tæller som tilkoblet første gang appen melder sig.
 - Migrationen giver nuværende forbindelser en CONNECTED-hændelse på deres tilkoblingsdato; allerede frakoblede får ingen (frakoblingsdato ukendt). "Afinstalleret i alt" tæller derfor rækker med status DISCONNECTED og en tilkoblingsdato.
 - Admin ser brugerens e-mail i tabellerne (som på Brugere-siden); siden er kun for admins.
+## 2026-10-02: Statistiksiden flytter sig aldrig under indlæsning
+
+- Brugerens gemte rækkefølge (sektioner, kort, grafer) læses fra localStorage **før første billede males**: kort- og grafgitteret bruger den gemte rækkefølge som startværdi, når de tegnes i browseren (`useIsClientRender()` i `src/lib/use-client-render.ts`), og statistiksiden tegner sine sektioner først efter en layout-effekt har læst sektionsrækkefølgen. Det tidligere mønster "tegn standarden, skift efter mount" må ikke bruges på sider, hvor rækkefølgen er brugerens egen.
+- `useSubscriptionTier()` husker det hentede niveau i modulet, så Seriøs-låste sider vises straks ved fanebytte i stedet for at starte tomme.
+- `PremiumGate` har `renderWhilePending`: mens niveauet hentes, tegnes siden selv som skelet (design.md §6.14), og siden venter med datahentning via `usePremiumPending()`. Bruges kun af `/statistics` (undersiderne venter ikke på niveauet og vises derfor først, når det er kendt), så gratisbrugeres data stadig ikke hentes til låste sider.
+- Kort, der først findes, når data er hentet (fx sportskort), tegnes som skitser i fuld højde i stedet for "ingen data" under hentning.
 

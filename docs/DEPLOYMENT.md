@@ -11,7 +11,8 @@ private hostnames in the repository.
   tag to `ghcr.io/vandmollevej/hellocalvs2`.
 - After the image build succeeds, the self-hosted deploy job checks out the same
   commit, syncs `compose.production.yaml` plus the locally-built REMA 1000 and
-  quality-control agent contexts into the server deployment directory, and sets
+  quality-control and amount-suggestion agent contexts into the server
+  deployment directory, and sets
   `HELLOCAL_TAG` to that exact commit SHA before running Compose. This keeps the
   server definition, local build contexts, and application image on one release.
   Core database migrations and the web app are started before the locally-built
@@ -305,6 +306,10 @@ sendes videre af `compose.production.yaml`.
   glemt adgangskode og advarsel ved login fra ny enhed/nyt land. Uden SMTP
   bliver mails liggende i køen. Udbyder: Mailjet (`in-v3.mailjet.com`, port
   587, API-nøgle som bruger, secret key som adgangskode). Aktiv fra 2026-09-25.
+- SMS via TeamMessage (`TEAMMESSAGE_API_TOKEN`, valgfrit `TEAMMESSAGE_TEAM_ID`,
+  `TEAMMESSAGE_TEAMLIST_EMAIL`, `TEAMMESSAGE_SENDER`, `TEAMMESSAGE_API_URL`):
+  kode på SMS ved glemt adgangskode. Kan også sættes i admin → API-nøgler → SMS.
+  Uden token sendes ingen SMS. Migration `20261002110000_password_reset_sms`.
 - Face ID/passkeys kræver HTTPS på det rigtige domæne (Cloudflare Tunnel).
   Ingen nøgler nødvendige.
 - Google: Google Cloud Console → APIs & Services → OAuth consent screen

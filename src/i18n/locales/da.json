@@ -57,7 +57,16 @@
     "genericError": "Noget gik galt — prøv igen",
     "networkError": "Kunne ikke sende linket — tjek din forbindelse og prøv igen",
     "sentMessage": "Hvis kontoen findes, har vi sendt en mail med et link til at nulstille adgangskoden.",
-    "backToLogin": "Tilbage til log ind"
+    "backToLogin": "Tilbage til log ind",
+    "useSms": "Send en kode på SMS i stedet",
+    "useEmail": "Send et link på mail i stedet",
+    "smsInstructions": "Angiv din e-mailadresse, så sender vi en kode på SMS til det mobilnummer, der står på din profil.",
+    "smsSubmit": "Send kode på SMS",
+    "smsSentMessage": "Hvis kontoen findes og har et mobilnummer, har vi sendt en kode på SMS. Den virker i 10 minutter.",
+    "codeLabel": "Kode fra SMS",
+    "verifySubmit": "Bekræft kode",
+    "verifying": "Bekræfter…",
+    "resendCode": "Send en ny kode"
   },
   "loginApproval": {
     "title": "Godkend login",
@@ -177,6 +186,9 @@
     "nameLabel": "Navn",
     "namePlaceholder": "Dit navn",
     "emailLabel": "E-mailadresse",
+    "phoneLabel": "Telefonnummer",
+    "phonePlaceholder": "+45 12 34 56 78",
+    "phoneHint": "Obligatorisk — bruges til tofaktor-godkendelse.",
     "passwordLabel": "Adgangskode",
     "passwordPlaceholder": "Mindst 8 tegn",
     "submit": "Opret konto",
@@ -659,6 +671,10 @@
     "todaySuffix": ", i dag",
     "goalMetSuffix": ", mål nået",
     "goalMissedSuffix": ", mål ikke nået",
+    "weighInSuffix": ", vejet {value} kg",
+    "weighInSrLabel": "Vejet {value} kg",
+    "openWeighInAriaLabel": "Vis vejning",
+    "dayWeighIn": "Vejet {value} kg kl. {time}",
     "goalMet": "Mål nået",
     "goalMissed": "Mål ikke nået",
     "weeklyEstimatedWeight": "Estimeret {value}",
@@ -1190,6 +1206,8 @@
     "title": "Mine oplysninger",
     "loading": "Henter…",
     "loadError": "Kunne ikke hente profil.",
+    "phoneHint": "Bruges kun til at sende en kode, hvis du glemmer din adgangskode.",
+    "phoneInvalid": "Angiv et gyldigt mobilnummer (8 cifre eller med landekode).",
     "completion": {
       "label": "Profilens færdiggørelse",
       "aboutYou": "Om dig",
@@ -1203,6 +1221,7 @@
     "field": {
       "name": "Navn",
       "email": "E-mail",
+      "phone": "Telefonnummer",
       "weight": "Start-vægt",
       "height": "Højde",
       "birthDate": "Fødselsdato",
@@ -1214,6 +1233,9 @@
       "female": "Kvinde",
       "male": "Mand"
     },
+    "phoneHint": "Bruges til tofaktor-godkendelse. Kan rettes, men ikke slettes.",
+    "phoneRequired": "Angiv dit telefonnummer.",
+    "phoneInvalid": "Angiv et gyldigt telefonnummer, fx +45 12 34 56 78.",
     "activityLevel": {
       "notSet": "Vælg det trin, der passer bedst på din hverdag.",
       "note": "Træning, du logger, lægges oveni.",
@@ -1867,6 +1889,18 @@
     "partnerPending": "En direkte forbindelse til {name} kræver en partneraftale, som endnu ikke er på plads.",
     "companionHowTo": "Hello Cal-appen på telefonen henter og skriver dine data efter valgene ovenfor. Den bruger en enhedskode til at logge ind.",
     "saveError": "Kunne ikke gemme valget. Prøv igen.",
+    "tester": {
+      "headline": "Bliv den første testperson af {name}, og optjen {points} points",
+      "body": "Aktivér {name} her på siden, og tilmeld dig via linket nederst. Når vi har set, at forbindelsen virker, får du {points} points.",
+      "signUp": "Tilmeld mig som første testperson",
+      "terms": "Læs betingelser",
+      "signedUp": "Du er tilmeldt som testperson af {name}. Aktivér appen, så får du {points} points, når vi har godkendt forbindelsen.",
+      "taken": "En anden nåede at blive første testperson af {name}.",
+      "error": "Tilmeldingen mislykkedes. Prøv igen.",
+      "close": "Luk",
+      "pending": "Du er første testperson. Du får {points} points, når vi har godkendt forbindelsen.",
+      "approved": "Tak for testen. Du har fået {points} points."
+    },
     "readTypes": {
       "weight": "Vægt",
       "bodyFat": "Fedtprocent",
@@ -1919,6 +1953,13 @@
   },
   "payment": {
     "title": "Betaling",
+    "expires": "Udløber {date}",
+    "changeMethod": "Skift betalingsmetode",
+    "opening": "Åbner…",
+    "changeError": "Kunne ikke åbne kortskift. Prøv igen om lidt.",
+    "recurringNote": "Trækkes automatisk ved hver fornyelse.",
+    "walletCard": "{brand} •••• {last4}",
+
     "status": {
       "inactive": "Intet aktivt abonnement",
       "active": "Aktivt abonnement",
@@ -1927,7 +1968,7 @@
       "canceled": "Opsagt"
     },
     "freeMonthsRemaining": "{count} gratis måned(er) i kø",
-    "paymentMethodsTitle": "Betalingsmetoder",
+    "paymentMethodsTitle": "Betalingsmetode",
     "noPaymentMethod": "Ingen betalingsmetode tilføjet endnu",
     "nextPayment": "Næste betaling d. {date}",
     "canceledUntil": "Seriøs til og med d. {date}",
@@ -1972,7 +2013,7 @@
   },
   "statUnusedCards": {
     "title": "Tilføj til statistik",
-    "hint": "Tryk på en graf eller et kort for at tilføje det til din statistikside.",
+    "hint": "Graferne vises, som de vil se ud. Tryk på + Tilføj under en graf eller på et kort for at tilføje det til din statistikside.",
     "category": {
       "carbsFibre": "Kulhydrattyper og fibre",
       "minerals": "Mineraler",
@@ -1987,11 +2028,15 @@
     "noSearchResults": "Ingen grafer eller kort matcher din søgning.",
     "add": "+ Tilføj",
     "noCardsYet": "Ingen kort her endnu.",
-    "addHeading": "Overskrift"
+    "addHeading": "+ Overskrift",
+    "addDivider": "+ Skillelinje",
+    "addAccordion": "+ Fold-ud-boks",
+    "layoutTools": "Opbygning",
+    "accordionTitle": "Fold-ud-boks"
   },
   "statUnusedCharts": {
     "title": "Ubrugte grafer",
-    "hint": "Tryk på en graf for at tilføje den øverst på din statistikside.",
+    "hint": "Graferne vises, som de vil se ud. Tryk på + Tilføj under en graf for at tilføje den til din statistikside.",
     "searchPlaceholder": "Søg i alle grafer",
     "noSearchResults": "Ingen grafer matcher din søgning.",
     "noChartsLeft": "Alle grafer her er allerede på din statistikside.",
@@ -2013,6 +2058,10 @@
     "removeHeading": "Fjern overskrift",
     "dragHeading": "Flyt overskrift",
     "removeDivider": "Fjern skillelinje",
+    "removeAccordion": "Fjern fold-ud-boks",
+    "renameAccordion": "Omdøb fold-ud-boks",
+    "openAccordion": "Fold ud",
+    "closeAccordion": "Fold sammen",
     "noData": "Ingen data i perioden"
   },
   "statChart": {
@@ -2350,6 +2399,17 @@
     "deleteAccount": "Slet konto og alle data",
     "deleteAccountConfirm": "Er du sikker? Dine data slettes permanent og kan ikke gendannes.",
     "lastUsed": "Sidst brugt"
+  },
+  "phoneRequired": {
+    "title": "Telefonnummer",
+    "intro": "Vi mangler dit telefonnummer. Det er obligatorisk, fordi det bruges til tofaktor-godkendelse, så kun du kan logge ind på din konto.",
+    "label": "Telefonnummer",
+    "placeholder": "+45 12 34 56 78",
+    "submit": "Fortsæt",
+    "submitting": "Gemmer…",
+    "empty": "Angiv dit telefonnummer.",
+    "invalid": "Angiv et gyldigt telefonnummer, fx +45 12 34 56 78.",
+    "networkError": "Nummeret kunne ikke gemmes — tjek din forbindelse og prøv igen."
   },
   "faceIdOffer": {
     "title": "Log ind med Face ID",

@@ -40,6 +40,7 @@ export const PAGE_TREE: PageArea[] = [
             children: [
               { path: "/login/country", label: "Vælg land" },
               { path: "/login/face-id", label: "Face ID" },
+              { path: "/account/phone", label: "Telefonnummer", note: "Obligatorisk; vises efter login, hvis kontoen mangler nummer (tofaktor)" },
               { path: "/family-code", label: "Familiekode" },
               {
                 path: "/forgot-password",
@@ -316,6 +317,7 @@ export const PAGE_TREE: PageArea[] = [
             label: "Brugere",
             children: [{ path: "/admin/users/personas", label: "Personas" }],
           },
+          { path: "/admin/test-programmes", label: "Test-programmes" },
           { path: "/admin/economy", label: "Economy", note: "Betalende abonnementer, sikret indkomst og forventet indtjening" },
           {
             path: "/admin/chatbot",

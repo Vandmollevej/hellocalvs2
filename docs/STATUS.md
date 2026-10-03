@@ -45,6 +45,12 @@ Last updated: 2026-10-03
 
 - `/profile/subscription` viser nu Gratis, Seriøs og Seriøs Familie i tre kolonner øverst (navn, pris, "Se mere"/"Din plan"); et tryk ruller ned til planens fulde kort længere nede. Ny `PlanOverview` i `src/components/landing/LandingPlans.tsx`; plankortene har ankre `plan-free/serious/family`. Forsiden er uændret.
 - Lint, typecheck og build grønne. Ikke set i browser (kræver login) — tjek på telefon, at de tre kolonner passer i bredden, og at tryk ruller til kortet.
+## 2026-10-03: Betaling viser det aktive kort fra Stripe (PR #132 flettet med master)
+
+- `/settings/payment` viser det kort/den wallet, Stripe trækker på: mærke + sidste 4 + udløb; Apple Pay/Google Pay med kortet bagved (nyt felt `PaymentMethod.wallet`, migration `20261002090000_payment_method_wallet` **skal køre ved deploy**); MobilePay. Kortmærke-logo (Visa/Mastercard) i lille fast ramme; andre mærker får det egne kortikon (`IconPaymentCard`). Siden henter altid frisk fra Stripe (`/api/subscription?refresh=1`). Kortet beholdes efter opsigelse (perioden er betalt).
+- "Skift betalingsmetode" åbner Stripes kundeportal i kort-skift-flowet (`POST /api/payments/stripe/portal`); mangler en portal-konfiguration, oprettes én automatisk. Dummy-visning: `/settings/payment?preview=DK|DE|APPLE|GOOGLE`.
+- Ejerens valg 2026-10-03: rækkerne Abonnement og Betalingsmetoder **bliver** på Profil og Indstillinger (med kortikonet) og vises for alle — den tidligere plan om kun under Indstillinger / kun for betalende er droppet. `paying` findes stadig i `/api/subscription`.
+- Test i Stripes testtilstand med testkortet 4242 4242 4242 4242 (vilkårlig fremtidig udløb/CVC).
 
 ## 2026-10-02: Kalenderen husker den åbne dag
 
@@ -137,6 +143,13 @@ Last updated: 2026-10-03
 - Planen for `image-cutout` er bevaret som "Løbende" (DECISIONS 2026-09-28). Lint og build grønne; ikke live-testet (ingen lokal DB).
 
 
+## 2026-10-02: Testperson-popup på integrationssiderne
+
+- Popup-banner på hver integrations side: "Bliv den første testperson … og optjen 300 points" med tilmeldingslink nederst (`TesterPromoSheet.tsx`, `/api/integrations/<app>/tester`). Én plads pr. integration; points ved admin-godkendelse. Se DECISIONS.md samme dato.
+- Admin → Brugere → **Test-programmes** (`/admin/test-programmes`): alle integrationer med ledig plads / testperson, forbindelsesstatus, Godkend (+300 points) / Afvis. Betingelsernes pointsafsnit er opdateret.
+- Migration `20261002120000_integration_testers` skal køre ved deploy.
+- Lint, typecheck og build grønne; `page-tree.test.mjs` fejler som før på master (uvedkommende sider). Ikke live-testet (ingen lokal DB/login) — tjek popuppen på telefon.
+
 ## 2026-10-03: Butiksimporten — alt fra Bilka- og REMA-arkene med
 
 - 13.039 varer (før 10.524): 2.364 uden kalorietal er skjult (`nutritionMissing`, migration `20261002213000_product_nutrition_missing`), 151 med kun kalorier vises med ~ på makroerne, 107 uden stregkode er med under butikkens vare-id. Se DECISIONS 2026-10-02 "Butiksimporten: alt fra arkene med" og `docs/PRODUCT_IMPORT_MAPPING.md`.
@@ -144,12 +157,24 @@ Last updated: 2026-10-03
 - Kildearkene ligger nu på NAS-sharet `\\192.168.1.90\Hello Cal\Arkiv - historiske kilde- og importfiler\Oprydning 2026-09-29\`. Det nye katalog (`store_products.json`) + de nye varers 1.408 billeder ligger klar i `C:\Users\Peter\Desktop\Butiksimport 2026-10-03\`; de skal kopieres til NAS'ens `data/store-products-import/` (sessionen fik ikke lov at skrive på serveren), og jobbet `store-products-import` køres (admin → Cron-jobs → Kør nu, eller næste deploy). Indtil da kører den nye agent med det gamle katalog, hvilket er ufarligt og retter kJ-fejlen.
 - Testet: agenten mod lokal PostgreSQL med alle migrationer (live-katalog → nyt katalog, 0 fejl); lint, typecheck og `next build --webpack` grønne.
 - Brugeren: kør `bilka_vitamins.py` (vitaminpanelet på bilkatogo.dk, nogle timer); byg og importér derefter igen. Næring fra Frida til de skjulte varer er egen opgave (OPEN-TASKS).
+## 2026-10-03: Glemt adgangskode via SMS (TeamMessage)
+
+- Branch `claude/sms-gateway-pw-recovery-fkclhp`. Mobilnummer på profilen (`/profile/edit`), "Send en kode på SMS i stedet" på `/forgot-password`, 6-cifret kode → samme `/reset-password` som mail-linket. Klient i `src/lib/sms.ts`, logik i `src/lib/password-reset-sms.ts`, ruter under `/api/auth/forgot-password/sms`.
+- Admin → API-nøgler → SMS → TeamMessage med test, der ikke sender SMS. Variablerne er tilføjet `compose.production.yaml`.
+- Lint, typecheck og build grønne. Ikke testet mod TeamMessage: deres side er blokeret fra cloud-containeren, så feltnavnene (`to_mobile`, `message`, `team_id`, `teamlist_email`) bygger på søgeresultater. Ejeren skal lægge tokenet ind og trykke "Test" og derefter prøve flowet med eget nummer.
+- Mangler: verificering af mobilnummeret ved indtastning (afventer ejerens valg).
+Last updated: 2026-10-02
 
 ## 2026-10-02: Desktop — alle sider i skallen
 
 - På desktop vises alle sider (også login, betingelser, privatlivspolitik) i WebShell med sidebjælke, topmenu og brødkrummer; kun admin, hello-doc, business og presse er fuld bredde.
 - Lint og typecheck grønne; ikke set i browser — tjek login-siderne på desktop.
-Last updated: 2026-10-02
+
+## 2026-10-02: Fold-ud-boks (accordion) i statistik-layoutet
+
+- `/statistics/unused-cards`: Overskrift, Skillelinje og ny "+ Fold-ud-boks" står samlet øverst under søgefeltet i en mørkere boks (`bg-hf-tan-dark`), så opbygningselementerne skiller sig ud fra grafer og kort.
+- Statistiksiden: fold-ud-boksen er en sektion i gitteret (hoved + kort nedenunder, samme udseende som grupperne på tilføj-siden). Tryk på hovedet folder ud/sammen; i redigering kan den omdøbes (tryk på titlen), flyttes som ét samlet element (også lukket), og kort kan trækkes ind i den — også ved at slippe kortet på hovedet, når den er lukket. "Fjern" lader kortene blive i gitteret.
+- Layout-logikken er flyttet til `src/lib/stat-layout.ts` (ren modul, re-eksporteret fra `stat-cards.ts`) med tests i `stat-layout.test.mjs`. Lint, typecheck og build grønne. Ikke live-testet (ingen lokal DB/login) — test træk-og-slip på telefon.
 
 ## 2026-10-02: Kropsmål som statistikgrafer
 
@@ -311,6 +336,17 @@ Last updated: 2026-10-02
 - Overskrifterne "Grafer" og "Kort" med op/ned-pile vises nu kun, mens en af sektionerne er i redigeringstilstand (langt tryk på graf/kort). I almindelig visning står graferne og kortene uden overskrifter; skillelinjen mellem sektionerne er bevaret.
 - `StatChartsSection` og `StatCardsGrid` har fået `onEditModeChange`, som statistiksiden bruger til at vise/skjule overskrifterne. Pilene virker stadig i redigering (knapper afslutter ikke redigeringen).
 - Lint, typecheck og `npm run build` kørt. Ikke live-testet (ingen lokal DB/login) — tjek på telefon.
+## 2026-10-02: "Tilføj til statistik" viser graferne i fuld bredde
+
+- Graferne på `/statistics/unused-cards` (og `/statistics/unused-charts`) vises nu i fuld bredde og præcis som på statistiksiden, med "+ Tilføj" under hver. Fælles tegner: `src/components/useStatChartRenderer.tsx` (statistiksiden bruger den samme).
+- De fem enkelt-grafer for kalium, calcium, jern, vitamin A og C er erstattet af to grafer, "Mineraler" og "Vitaminer". Alle mineraler/vitaminer fra `src/lib/nutrients.ts` kan krydses til og fra i grafens dropdown. Gemte layouts flyttes automatisk over.
+- Grafernes linjevalg folder sig nu ud inde i kortet og kan rulle, så lange lister ikke klippes.
+- Lint og build grønne. Testet i Chromium i telefonbredde med falske API-svar (ingen lokal DB). `page-tree.test.mjs` fejler stadig, som på master.
+## 2026-10-02: Statistiksiden hopper ikke længere ved indlæsning
+
+- Årsag: Seriøs-låsen startede altid med en tom skærm, og bagefter blev sektioner, kort og grafer tegnet i standardrækkefølgen og byttede derefter til brugerens gemte rækkefølge.
+- Rettet: gemt rækkefølge bruges fra første billede; abonnementsniveauet huskes mellem sider; mens niveauet hentes, tegnes statistiksiden som skelet med løbende gradient, og data fyldes ind på pladserne. Se DECISIONS.md 2026-10-02.
+- Lint, typecheck og `npm run build` grønne. Ikke visuelt testet (ingen lokal DB/login) — test på telefon: åbn Statistik både via bundmenuen og ved genindlæsning.
 
 ## 2026-10-02: Drikkevarer starter på pakkestørrelsen
 
@@ -382,6 +418,19 @@ Last updated: 2026-10-02
 
 - `/statistics/unused-cards`: den stiplede "+ Overskrift"-knap er fjernet. Den linje-knap, der før hed "+ Skillelinje", hedder nu "Overskrift" (uden plus) og tilføjer en redigerbar overskrift med streger (header-element) øverst i layoutet. Rene skillelinjer uden tekst kan ikke længere tilføjes fra siden; eksisterende skillelinjer i gemte layouts vises og kan fjernes som før.
 - Lint og `npm run build` grønne. Ikke visuelt testet (ingen lokal DB/login) — tjek på telefon.
+Last updated: 2026-10-02
+
+## 2026-10-02: Telefonnummer obligatorisk (til tofaktor-godkendelse)
+
+- `User.phone` (E.164, fx `+4512345678`) + `phoneVerifiedAt` (reserveret til SMS-bekræftelsen). Migration `20261002090000_user_phone` skal køre ved deploy. Normalisering/validering i `src/lib/phone.ts` (tests i `phone.test.mjs`, grønne).
+- Tilmelding (`/signup`, `/api/auth/register`) kræver nummeret. Profilsiden viser feltet under e-mail: kan rettes, ikke slettes (`PATCH /api/profile` afviser tomt/ugyldigt med 400).
+- Indloggede uden nummer (Google/Apple/Facebook-konti og konti fra før kravet) sendes af `AuthGate` til `/account/phone` (ingen tilbagepil, ingen "spring over"), til det er udfyldt — også børneprofiler i en familie (brugerens valg 2026-10-02). Admin-konti (TOTP) og familieprofiler uden eget login oprettes uden nummer; profilen spærres først, når den logger ind. "Glem mig" sletter nummeret.
+- Selve SMS-tofaktoren er **ikke** bygget — kun feltet. Ikke live-testet (ingen lokal DB); test tilmelding og profilsiden på telefon. Se DECISIONS.md samme dato.
+## 2026-10-02: Vejninger vises i kalenderen
+
+- Fejl fra ejeren (skærmbillede 30/9): en gemt vægt kom ikke frem i kalenderen. Kalenderen hentede allerede `/api/weight-entries`, men brugte kun vejningerne til vægtestimatet.
+- Nu: badevægt-ikon på dagen i måneds- (nederste venstre hjørne), uge-, liste- og ugetidslinje-visningen (kun ikon — der er ikke plads til tallet). Dagvisningen viser vægt + klokkeslæt i timerækken, i timens oversigt (tryk på timen) og som linje under dagsstatus. Nye tekster `calendar.weighIn*`/`calendar.dayWeighIn` (da/en).
+- Lint, typecheck og `npm run build` grønne. Ikke live-testet (ingen lokal DB) — tjek på telefon. Bemærk: listen henter højst 200 vejninger (nyeste først), så meget gamle måneder kan mangle ikonet.
 
 ## 2026-09-29: Offentlig forside for udloggede
 
@@ -1525,6 +1574,21 @@ fra denne container.
   trykkes på og overskrives i gram (`InlineGramsInput`); kcal og makroer
   skaleres med (`src/lib/scale-meal-item.ts`). Gemte registreringer er
   fortsat snapshots og ændres ikke.
+
+## 2026-09-25: Mængde-robot + admin "Robotter"
+
+Se `docs/DECISIONS.md` 2026-09-25 "Mængde-robot". Nyt: container
+`amount-suggestion-agent`, migration `20260925150000_amount_suggestion_robot`
+(`robot_configs`, `amount_suggestions`), `GET /api/amount-suggestion`,
+`/admin/robots` og startmængde på `/add/[id]`. Verificeret: `npm test`,
+`npm run lint`, `npm run build`, agenten mod en lokal Postgres med testdata
+(agurk: gennemsnit ~150 g → forslag 100 g; vare med 2 brugere skjult), API
+og admin-panel mod samme database. Ikke testet på Synology.
+
+Next work:
+1. Efter deploy: tjek i `/admin/robots`, at robotten står som "kører", og
+   tryk "Kør nu" én gang.
+2. Justér evt. `minUsers`/`priorStrength`, når der er rigtige data.
 
 ## 2026-09-25: Profil — start-vægt altid låst + "Lås"-side
 

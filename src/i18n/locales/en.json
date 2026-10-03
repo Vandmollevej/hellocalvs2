@@ -57,7 +57,16 @@
     "genericError": "Something went wrong — try again",
     "networkError": "Could not send the link — check your connection and try again",
     "sentMessage": "If the account exists, we've sent an email with a link to reset the password.",
-    "backToLogin": "Back to log in"
+    "backToLogin": "Back to log in",
+    "useSms": "Send a code by text message instead",
+    "useEmail": "Send a link by email instead",
+    "smsInstructions": "Enter your email address and we'll text a code to the mobile number on your profile.",
+    "smsSubmit": "Send code by text",
+    "smsSentMessage": "If the account exists and has a mobile number, we've sent a code by text message. It works for 10 minutes.",
+    "codeLabel": "Code from text message",
+    "verifySubmit": "Confirm code",
+    "verifying": "Confirming…",
+    "resendCode": "Send a new code"
   },
   "loginApproval": {
     "title": "Approve login",
@@ -177,6 +186,9 @@
     "nameLabel": "Name",
     "namePlaceholder": "Your name",
     "emailLabel": "Email address",
+    "phoneLabel": "Phone number",
+    "phonePlaceholder": "+45 12 34 56 78",
+    "phoneHint": "Required — used for two-factor authentication.",
     "passwordLabel": "Password",
     "passwordPlaceholder": "At least 8 characters",
     "submit": "Create account",
@@ -659,6 +671,10 @@
     "todaySuffix": ", today",
     "goalMetSuffix": ", goal reached",
     "goalMissedSuffix": ", goal not reached",
+    "weighInSuffix": ", weighed {value} kg",
+    "weighInSrLabel": "Weighed {value} kg",
+    "openWeighInAriaLabel": "Show weigh-in",
+    "dayWeighIn": "Weighed {value} kg at {time}",
     "goalMet": "Goal reached",
     "goalMissed": "Goal not reached",
     "weeklyEstimatedWeight": "Estimated {value}",
@@ -1190,6 +1206,8 @@
     "title": "My details",
     "loading": "Loading…",
     "loadError": "Couldn't load profile.",
+    "phoneHint": "Only used to send a code if you forget your password.",
+    "phoneInvalid": "Enter a valid mobile number (8 digits or with country code).",
     "completion": {
       "label": "Profile completion",
       "aboutYou": "About you",
@@ -1203,6 +1221,7 @@
     "field": {
       "name": "Name",
       "email": "Email",
+      "phone": "Phone number",
       "weight": "Starting weight",
       "height": "Height",
       "birthDate": "Date of birth",
@@ -1214,6 +1233,9 @@
       "female": "Female",
       "male": "Male"
     },
+    "phoneHint": "Used for two-factor authentication. Can be changed, but not removed.",
+    "phoneRequired": "Enter your phone number.",
+    "phoneInvalid": "Enter a valid phone number, e.g. +45 12 34 56 78.",
     "activityLevel": {
       "notSet": "Pick the step that best fits your everyday life.",
       "note": "Training you log is added on top.",
@@ -1886,6 +1908,18 @@
     "partnerPending": "A direct connection to {name} requires a partner agreement that is not in place yet.",
     "companionHowTo": "The Hello Cal phone app reads and writes your data according to the choices above. It signs in with a device code.",
     "saveError": "Couldn't save your choice. Try again.",
+    "tester": {
+      "headline": "Become the first tester of {name} and earn {points} points",
+      "body": "Activate {name} on this page and sign up with the link at the bottom. Once we see the connection works, you get {points} points.",
+      "signUp": "Sign me up as the first tester",
+      "terms": "Read the terms",
+      "signedUp": "You are signed up as the tester of {name}. Activate the app, and you get {points} points once we have approved the connection.",
+      "taken": "Someone else became the first tester of {name}.",
+      "error": "Sign-up failed. Please try again.",
+      "close": "Close",
+      "pending": "You are the first tester. You get {points} points once we have approved the connection.",
+      "approved": "Thanks for testing. You have received {points} points."
+    },
     "readTypes": {
       "weight": "Weight",
       "bodyFat": "Body fat",
@@ -1938,6 +1972,13 @@
   },
   "payment": {
     "title": "Payment",
+    "expires": "Expires {date}",
+    "changeMethod": "Change payment method",
+    "opening": "Opening…",
+    "changeError": "Could not open the card change. Please try again shortly.",
+    "recurringNote": "Charged automatically at each renewal.",
+    "walletCard": "{brand} •••• {last4}",
+
     "status": {
       "inactive": "No active subscription",
       "active": "Active subscription",
@@ -1946,7 +1987,7 @@
       "canceled": "Canceled"
     },
     "freeMonthsRemaining": "{count} free month(s) queued",
-    "paymentMethodsTitle": "Payment methods",
+    "paymentMethodsTitle": "Payment method",
     "noPaymentMethod": "No payment method added yet",
     "nextPayment": "Next payment on {date}",
     "canceledUntil": "Seriøs until {date}",
@@ -1991,7 +2032,7 @@
   },
   "statUnusedCards": {
     "title": "Add to statistics",
-    "hint": "Tap a chart or card to add it to your statistics page.",
+    "hint": "Charts are shown as they will look. Tap + Add below a chart, or tap a card, to add it to your statistics page.",
     "category": {
       "carbsFibre": "Carb types and fibre",
       "minerals": "Minerals",
@@ -2006,11 +2047,15 @@
     "noSearchResults": "No charts or cards match your search.",
     "add": "+ Add",
     "noCardsYet": "No cards here yet.",
-    "addHeading": "Heading"
+    "addHeading": "+ Heading",
+    "addDivider": "+ Divider",
+    "addAccordion": "+ Fold-out section",
+    "layoutTools": "Layout",
+    "accordionTitle": "Section"
   },
   "statUnusedCharts": {
     "title": "Unused charts",
-    "hint": "Tap a chart to add it to the top of your statistics page.",
+    "hint": "Charts are shown as they will look. Tap + Add below a chart to add it to your statistics page.",
     "searchPlaceholder": "Search all charts",
     "noSearchResults": "No charts match your search.",
     "noChartsLeft": "All charts here are already on your statistics page.",
@@ -2032,6 +2077,10 @@
     "removeHeading": "Remove heading",
     "dragHeading": "Move heading",
     "removeDivider": "Remove divider",
+    "removeAccordion": "Remove section",
+    "renameAccordion": "Rename section",
+    "openAccordion": "Expand",
+    "closeAccordion": "Collapse",
     "noData": "No data for this period"
   },
   "statChart": {
@@ -2369,6 +2418,17 @@
     "deleteAccount": "Delete account and all data",
     "deleteAccountConfirm": "Are you sure? Your data is deleted permanently and cannot be recovered.",
     "lastUsed": "Last used"
+  },
+  "phoneRequired": {
+    "title": "Phone number",
+    "intro": "We need your phone number. It is required because it is used for two-factor authentication, so only you can log in to your account.",
+    "label": "Phone number",
+    "placeholder": "+45 12 34 56 78",
+    "submit": "Continue",
+    "submitting": "Saving…",
+    "empty": "Enter your phone number.",
+    "invalid": "Enter a valid phone number, e.g. +45 12 34 56 78.",
+    "networkError": "The number could not be saved — check your connection and try again."
   },
   "faceIdOffer": {
     "title": "Log in with Face ID",

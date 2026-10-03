@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import type { SubscriptionTier } from "@/lib/subscription";
+import { useIsClientRender } from "@/lib/use-client-render";
 
 // Klientens syn på abonnementsniveau til Seriøs-låste funktioner
 // (docs/DECISIONS.md 2026-09-26). Hentes én gang pr. sideindlæsning og deles
@@ -9,12 +10,19 @@ import type { SubscriptionTier } from "@/lib/subscription";
 // ellers kunne hentes udenom.
 
 let cached: Promise<SubscriptionTier> | null = null;
+// Det hentede niveau, så sider, der monteres senere (fx ved fanebytte i
+// bundmenuen), kender det i første billede i stedet for at starte tomme.
+let resolved: SubscriptionTier | null = null;
 
 function fetchTier(): Promise<SubscriptionTier> {
   if (!cached) {
     cached = fetch("/api/subscription")
       .then((res) => (res.ok ? res.json() : null))
-      .then((json: { tier?: SubscriptionTier } | null) => json?.tier ?? "FREE")
+      .then((json: { tier?: SubscriptionTier } | null) => {
+        const tier = json?.tier ?? "FREE";
+        resolved = tier;
+        return tier;
+      })
       .catch(() => {
         cached = null;
         return "FREE" as SubscriptionTier;
@@ -25,7 +33,9 @@ function fetchTier(): Promise<SubscriptionTier> {
 
 /** null mens niveauet hentes. */
 export function useSubscriptionTier(): SubscriptionTier | null {
-  const [tier, setTier] = useState<SubscriptionTier | null>(null);
+  // Under hydrering skal første billede matche serverens (null).
+  const clientRender = useIsClientRender();
+  const [tier, setTier] = useState<SubscriptionTier | null>(() => (clientRender ? resolved : null));
   useEffect(() => {
     let active = true;
     fetchTier().then((value) => {
