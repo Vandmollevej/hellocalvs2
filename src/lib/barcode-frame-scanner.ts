@@ -243,7 +243,11 @@ export function startBarcodeFrameScanner(
     );
     const pixels = frameContext?.getImageData(0, 0, side, side).data;
     const barExtent = pixels && points.length >= 2 ? measureBarExtent(pixels, side, points[0], points[1]) : null;
-    const tiltDeg = pixels && barExtent ? measureTilt(pixels, side, points[0], points[1], barExtent) : 0;
+    // A printed barcode's bars stop a little above and below the scan line;
+    // a striped texture (denim, ribbing) keeps going. Those reads are noise
+    // that happened to pass the checksum, never a barcode.
+    if (!barExtent) return null;
+    const tiltDeg = pixels ? measureTilt(pixels, side, points[0], points[1], barExtent) : 0;
     return { text: result.getText(), symbology, points, side, barExtent, tiltDeg };
   }
 

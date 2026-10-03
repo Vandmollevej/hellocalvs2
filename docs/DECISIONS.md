@@ -17,6 +17,13 @@ Brugerens krav: logoerne var "meget små i boksene og burde være den brunlige s
 - Seriøs uden egen aftale (administratorer, der altid er Seriøs Familie) vises som aktivt abonnement på betalingssiden, og med familieplan står der "Aktivt familieabonnement".
 - Administratorer uden et rigtigt kort får Stripes testkort (Visa •••• 4242, 12/34, "Stripe-testkort") som betalingsmetode (`testPaymentMethod` i `GET /api/subscription`). Det er kun til visning: det kan ikke skiftes eller opsiges.
 
+## 2026-10-03: En stregkode skal ses i flere billeder, før den godkendes
+
+Årsag: et par cowboybukser blev godkendt som stregkode i kameraflowet.
+
+- Live-scanningen godkender først en kode, når den er afkodet **3 gange inden for 1,5 s** (`src/lib/barcode-confirm.ts`). Andre koder ind imellem nulstiller ikke tællingen. Decode-animationen og opslaget starter først derefter.
+- En aflæsning tæller kun, hvis stregerne har en målelig højde (`measureBarExtent`). Et mønster, hvis striber fortsætter ud over 1,4 × stregkodens bredde, er ikke en stregkode.
+
 ## 2026-10-03: Forsidens puls-linje slår i den målte puls
 
 Brugerens krav: "Pulsen skal svare til den rigtige puls som måles, hvis ur tilsluttet. Ellers svarende til 60bpm."
