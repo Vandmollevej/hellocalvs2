@@ -240,6 +240,13 @@ Last updated: 2026-10-02
 
 - Varesiden viste fx "Marmelade Pære & havtorn" i H1 og "Pære & havtorn" i H2. Nu fjerner `splitProductHeading` smagen fra H1 (se DECISIONS.md samme dato). Gælder alle eksisterende varer, uden datamigrering.
 - Lint, typecheck og nye tests grønne. Ikke visuelt testet (ingen lokal DB).
+## 2026-10-02: Billede-dagbog — før/efter-slider
+
+- Ny knap "Sammenlign før og efter" under karrusellen (kun med 2+ billeder) åbner `PhotoCompare` (`src/components/photo-diary/PhotoCompare.tsx`): to billeder lagt oven i hinanden i fuld skærm.
+- "Glid": før til venstre, efter til højre for en trækbar skillelinje (træk hvor som helst på billedet; piletaster/Home/End på håndtaget). "Ton": efter-billedet tones ind over før-billedet med en slider under billedet.
+- Standard: ældste billede som før, karrusellens aktive som efter (det nyeste, hvis det ældste står i midten). Vælg "Før"/"Efter" og tryk et miniaturebillede; "Byt om" bytter dem. Datoer og "N dage imellem" vises.
+- Låsen lukker også sammenligningen, når siden går i baggrunden. Logik i `src/lib/photo-diary.ts` med tests (`photo-diary.test.mjs`).
+- Testet i Chromium (393 px) med falske API-svar og tre billeder i IndexedDB: træk, taster, tone, valg og Escape virker. Ikke testet på en rigtig iPhone.
 
 ## 2026-09-29: Offentlig forside for udloggede
 

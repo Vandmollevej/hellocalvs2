@@ -8,7 +8,7 @@ import { PhotoViewer } from "@/components/photo-diary/PhotoViewer";
 import { Toggle } from "@/components/ui/Toggle";
 import { useTranslation } from "@/i18n/LocaleProvider";
 import { confirmOnDevice, isPasskeySupported } from "@/lib/passkey-client";
-import { sortOldestFirst, wrapIndex, type DiaryPhoto } from "@/lib/photo-diary";
+import { defaultComparePair, sortOldestFirst, wrapIndex, type DiaryPhoto } from "@/lib/photo-diary";
 import {
   addDiaryPhoto,
   deleteDiaryPhoto,
