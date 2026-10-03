@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { IconAd2, IconChartBar, IconChefHat, IconPackage, IconStethoscope } from "@tabler/icons-react";
 import { MarketingShell, SectionHeading } from "@/components/landing/MarketingShell";
 import { BusinessContactForm } from "@/components/landing/BusinessContactForm";
@@ -75,6 +76,13 @@ export default async function BusinessPage({ searchParams }: { searchParams: Pro
         <SectionHeading title="Kontakt" accent="os" text="Fortæl kort om jer og jeres idé, så vender vi tilbage." />
         <div className="mx-auto mt-10 max-w-3xl">
           <BusinessContactForm initialTopic={initialTopic} />
+          <p className="mt-6 text-center text-sm text-text-secondary">
+            Har I allerede en aftale med Hello Cal?{" "}
+            <Link href="/partner/login" className="font-semibold text-hf-green-dark underline">
+              Log ind på partnerportalen
+            </Link>
+            . Adgangen oprettes af Hello Cal — der er ingen selvbetjent tilmelding.
+          </p>
         </div>
       </section>
     </MarketingShell>

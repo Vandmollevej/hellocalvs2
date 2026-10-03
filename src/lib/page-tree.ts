@@ -52,6 +52,15 @@ export const PAGE_TREE: PageArea[] = [
       },
       { path: "/business", label: "Business-partnere", note: "Offentlig, fra forsidens footer (udlogget)" },
       { path: "/presse", label: "Presse", note: "Offentlig, fra forsidens footer (udlogget)" },
+      {
+        path: "/partner",
+        label: "Partnerportal (B2B)",
+        note: "Eget login for partneres B2B-brugere; kontoen oprettes kun af en administrator",
+        children: [
+          { path: "/partner/login", label: "Log ind (B2B)" },
+          { path: "/partner/invite", label: "Accepter invitation", note: "Åbnes fra link i mail; vælg adgangskode" },
+        ],
+      },
     ],
   },
   {

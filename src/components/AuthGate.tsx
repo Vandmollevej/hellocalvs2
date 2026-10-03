@@ -23,6 +23,8 @@ const PUBLIC_PREFIXES = [
   // Offentlige sider fra forsidens footer (docs/DECISIONS.md 2026-09-29).
   "/business",
   "/presse",
+  // Partnerportalen har eget B2B-login (docs/DECISIONS.md 2026-10-02).
+  "/partner",
   "/admin",
   // Familiemedlem sætter sit eget login med en kode fra betaleren (docs/FAMILY.md).
   "/family-code",

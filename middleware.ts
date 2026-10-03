@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { ADMIN_SESSION_COOKIE, verifyAdminSessionInfo } from "@/lib/admin-auth";
 import { SCAN_SESSION_COOKIE, verifyScanSession } from "@/lib/scan/auth";
+import { PARTNER_SESSION_COOKIE, verifyPartnerSession } from "@/lib/partner/auth";
 
 // Dedicated admin hostname (docs/DEPLOYMENT.md). One codebase, one
 // deployment — this host just gets every path treated as living under
@@ -123,11 +124,39 @@ async function handleScan(req: NextRequest, host: string) {
   return null;
 }
 
+// Partnerportalen (docs/DECISIONS.md 2026-10-02): B2B-brugere logger ind på
+// det offentlige domæne under /partner. Login og invitationslink er åbne;
+// alt andet kræver partnersessionen. requirePartnerUser() tjekker desuden i
+// databasen, at brugeren stadig er aktiv.
+const PUBLIC_PARTNER_PATHS = ["/partner/login", "/partner/invite"];
+const PUBLIC_PARTNER_API_PATHS = ["/api/partner/login", "/api/partner/invite"];
+
+async function handlePartner(req: NextRequest, host: string) {
+  // Portalen findes kun på det offentlige domæne; admin-værten omskriver alle stier til /admin.
+  if (ADMIN_HOSTS.has(host)) return null;
+  const pathname = req.nextUrl.pathname;
+  const isPage = pathname === "/partner" || pathname.startsWith("/partner/");
+  const isApi = pathname.startsWith("/api/partner/");
+  if (!isPage && !isApi) return null;
+  if (isPublicPath(pathname, isPage ? PUBLIC_PARTNER_PATHS : PUBLIC_PARTNER_API_PATHS)) return null;
+
+  const token = req.cookies.get(PARTNER_SESSION_COOKIE)?.value;
+  const session = token ? await verifyPartnerSession(token) : null;
+  if (session) return null;
+  if (isApi) return NextResponse.json({ error: "unauthorized" }, { status: 401 });
+  const login = req.nextUrl.clone();
+  login.pathname = "/partner/login";
+  login.search = "";
+  return NextResponse.redirect(login);
+}
+
 export async function middleware(req: NextRequest) {
   const host = req.headers.get("host")?.split(":")[0] ?? "";
   const scanResult = await handleScan(req, host);
   if (scanResult) return scanResult;
   if (IS_SCAN_APP) return NextResponse.next();
+  const partnerResult = await handlePartner(req, host);
+  if (partnerResult) return partnerResult;
   const isAdminHost = ADMIN_HOSTS.has(host);
   // Localhost is only exempted from the hostname *gate* below (so /admin/*
   // is reachable during local development); it does not get the root-path

@@ -2,6 +2,14 @@
 
 Last updated: 2026-10-02
 
+## 2026-10-02: B2B-brugere (partnerportal), kun admin opretter
+
+- Ny admin-side Partnere → **B2B-brugere** (`/admin/partners/users`): invitér (partner + navn + e-mail, 72 t-link), send igen, træk tilbage, deaktivér/aktivér, log ud overalt, slet. Kun fuld administrator kan ændre; læseadgang ser listen. Se DECISIONS.md samme dato.
+- Ny partnerportal `/partner` (login `/partner/login`, invitation `/partner/invite/<token>`): egne reklamelokationer med visninger/klik/klikrate, seneste rapporter og rapportmodtagere. Egen session-cookie; ingen offentlig tilmelding. Link fra `/business` under kontaktformularen.
+- Migration `20261002120000_partner_users` skal køre ved deploy. Lint, typecheck og build grønne; ikke live-testet (ingen lokal DB, SMTP skal være sat op for invitationsmails — ellers vises linket til admin).
+- Rettet samtidig: `src/lib/web-nav.ts` importerede det slettede champagne-ikon (fjernet i 0500687), så `tsc`/build fejlede på master; bruger nu konfetti-ikonet som resten af appen.
+- Mangler/afklar med ejeren: skal B2B-brugere have 2-faktor som admin-brugere? Skal portalen vise mere end reklametal (fx produktdata for producenter)? Skal B2B-brugere selv kunne nulstille adgangskode ("glemt adgangskode" findes ikke endnu — admin gensender i stedet en invitation efter sletning)?
+
 ## 2026-10-02: Ikon for Betalingsmetoder
 
 - Rækken "Betalingsmetoder" på `/profile` og `/settings` bruger nu et eget kortikon (`src/components/icons/PaymentCard.tsx`): kortomrids med én massiv sort stribe nederst og ingen andre elementer (ejerens regel 2026-10-02). Tabler-ikonet `IconWallet` er ikke længere i brug der.

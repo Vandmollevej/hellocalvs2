@@ -134,6 +134,7 @@ const NAV: NavEntry[] = [
     links: [
       { href: "/admin/partners/ads", key: "nav_partners_ads" },
       { href: "/admin/partners/contacts", key: "nav_partners_contacts" },
+      { href: "/admin/partners/users", key: "nav_partners_users" },
       { href: "/admin/partners/reports", key: "nav_reports" },
     ],
   },

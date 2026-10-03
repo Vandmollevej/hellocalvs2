@@ -57,6 +57,48 @@ Erstatter "Varer uden kcal/protein/kulhydrat/fedt springes over" fra 2026-09-27.
 - Hver mail eller sms til en kendt bruger giver (1) en push med det samme: "Vi har netop sendt dig en e-mail om "emne". Dette var ikke spam." og (2) et bundark som det første ved næste besøg (app og web): "Til info sendte vi dig den <dato> en <e-mail/sms> om "<emne>". Dette var ikke spam." med sort knap "Læst".
 - "Læst" kvitterer (`OutboundMessage.noticeAckAt`); et træk ned lukker kun til næste besøg. Beskeder ældre end 30 dage vises ikke. Gælder ikke mails til admin, ikke-brugere (invitationer) eller rene push-beskeder.
 - Bygger på den eksisterende `OutboundMessage`-log — ingen adresse eller telefonnummer gemmes. Sms sendes via `src/lib/sms.ts` (GatewayAPI-format, no-op uden `SMS_GATEWAY_TOKEN`); brugere har endnu intet telefonnummer-felt, så ingen sms sendes i dag.
+## 2026-10-02: B2B-brugere — kun admin kan oprette dem
+
+Brugerens krav: "Kun admin kan oprette B2B-brugere." En B2B-bruger er en
+person hos en partner (virksomhed under Admin → Partnere), der logger ind på
+Hello Cals partnerportal og ser sin egen partners data.
+
+- **Ingen offentlig tilmelding.** Den eneste vej til en B2B-konto er en
+  invitation udstedt i Admin → Partnere → **B2B-brugere**
+  (`/admin/partners/users`) af en administrator med **fuld** adgang
+  (`requireFullAdminUser`; middleware afviser desuden skrivninger fra
+  læseadgang). `/partner/login` har ingen "Opret konto", og `/business`
+  skriver eksplicit, at adgangen oprettes af Hello Cal.
+- **Datamodel:** `partner_users` (`PartnerUser`) knyttet til én `Partner`
+  (slettes med partneren) og til den admin, der inviterede. Samme række er
+  invitation og bruger: før accept er `passwordHash` null og kun hashen af
+  invitationstokenet gemt; ved accept sættes adgangskoden, og tokenet
+  nulstilles (engangsbrug). Migration `20261002120000_partner_users`.
+- **Invitation:** navn + e-mail + partner → mail fra `invite@hellocal.io`
+  med link `/partner/invite/<token>`, gyldigt **72 timer**. Modtageren vælger
+  adgangskode (samme krav som admin-adgangskoder, 12 tegn m.m.) og er logget
+  ind. En accepteret bruger kan ikke inviteres igen (så et nyt link ikke kan
+  overtage en eksisterende adgang). Kan mailen ikke sendes, vises linket kun
+  for den, der inviterede, i 5 minutter (httpOnly-cookie).
+- **Login/session:** e-mail + adgangskode på `/partner/login`
+  (`/api/partner/login`, generisk fejl + bcrypt-timing som admin, 5 forsøg
+  pr. 15 min). Egen cookie `hc_partner_session` (JWT, purpose
+  `partner-session`, 12 t, `PARTNER_SESSION_SECRET` ellers
+  `ADMIN_SESSION_SECRET`). Middleware gater `/partner/*` og `/api/partner/*`
+  (undtagen login og invitationslink); `requirePartnerUser()` tjekker i
+  databasen aktiv/accepteret og `sessionsValidFrom`. Ingen 2-faktor i første
+  omgang (kun partnerens egne aggregerede reklametal, ingen persondata).
+- **Admin kan:** gensende/trække invitation tilbage, deaktivere/aktivere,
+  "log ud overalt" og slette. Deaktivering og log-ud sætter
+  `sessionsValidFrom`, så eksisterende sessioner afvises straks.
+- **Portalen (`/partner`):** partnerId kommer altid fra sessionen, aldrig fra
+  klienten. Viser egne lokationer med visninger/klik/klikrate (7/30/90 dage,
+  samme `getPartnerStats` som admin og rapport-mails), seneste sendte
+  rapporter og rapportmodtagere. Fuld browserbredde uden app-skal (AppFrame
+  undtager `/partner`; AuthGate kræver ikke brugerlogin dér).
+- Portalen ligger på det offentlige domæne (hellocal.io), ikke admin-værten,
+  da admin-værten omskriver alle stier til `/admin` og er IP-begrænset.
+  `PARTNER_BASE_URL` kan overstyre linkets base (standard `APP_BASE_URL`).
 
 ## 2026-10-02: Vægt- og længdeenheder (kg/lb/st, cm/in)
 
