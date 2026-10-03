@@ -1,7 +1,7 @@
 "use client";
 
-import type { ReactNode } from "react";
-import { IconApple, IconBed, IconFlame, IconHeart, IconMan } from "@tabler/icons-react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
+import { IconApple, IconBed, IconFlame, IconHeart, IconMan, IconX } from "@tabler/icons-react";
 import styles from "./HfAccessSheet.module.css";
 
 // iOS-adgangsarket, som Apple Health viser ved tilkobling
@@ -153,6 +153,88 @@ export function AccessMono({ children }: { children: ReactNode }) {
   return <span className={styles.mono}>{children}</span>;
 }
 
+// Træk ned for at lukke (design.md §6.13): hurtigt swipe eller > 30 % af
+// arkets højde lukker, ellers glider det tilbage. Indholdet kan kun trækkes,
+// når det er scrollet helt op.
+const START_DRAG_PX = 8;
+const CLOSE_FRACTION = 0.3;
+const CLOSE_VELOCITY_PX_PER_MS = 0.6;
+
+function useSwipeToDismiss(onDismiss: (() => void) | undefined, disabled: boolean) {
+  const sheetRef = useRef<HTMLDivElement>(null);
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const [offset, setOffset] = useState(0);
+  const [dragging, setDragging] = useState(false);
+  const dismissRef = useRef(onDismiss);
+
+  useEffect(() => {
+    dismissRef.current = onDismiss;
+  }, [onDismiss]);
+
+  useEffect(() => {
+    const sheet = sheetRef.current;
+    if (!sheet || disabled) return;
+    let drag: { startY: number; lastY: number; lastT: number; velocity: number; active: boolean; atTop: boolean } | null = null;
+    let current = 0;
+
+    const onStart = (event: TouchEvent) => {
+      const y = event.touches[0].clientY;
+      drag = { startY: y, lastY: y, lastT: performance.now(), velocity: 0, active: false, atTop: (scrollRef.current?.scrollTop ?? 0) <= 0 };
+    };
+    const onMove = (event: TouchEvent) => {
+      if (!drag) return;
+      const y = event.touches[0].clientY;
+      const dy = y - drag.startY;
+      if (!drag.active) {
+        if (dy > START_DRAG_PX && drag.atTop) {
+          drag.active = true;
+          drag.startY = y;
+          setDragging(true);
+        } else if (Math.abs(dy) > START_DRAG_PX) {
+          drag = null;
+          return;
+        } else {
+          return;
+        }
+      }
+      if (event.cancelable) event.preventDefault();
+      const now = performance.now();
+      if (now > drag.lastT) drag.velocity = (y - drag.lastY) / (now - drag.lastT);
+      drag.lastY = y;
+      drag.lastT = now;
+      current = Math.max(0, y - drag.startY);
+      setOffset(current);
+    };
+    const onEnd = () => {
+      const active = drag?.active;
+      const flicked = (drag?.velocity ?? 0) > CLOSE_VELOCITY_PX_PER_MS && current > START_DRAG_PX;
+      drag = null;
+      if (!active) return;
+      setDragging(false);
+      if (flicked || current > sheet.offsetHeight * CLOSE_FRACTION) {
+        setOffset(sheet.offsetHeight);
+        dismissRef.current?.();
+      } else {
+        current = 0;
+        setOffset(0);
+      }
+    };
+
+    sheet.addEventListener("touchstart", onStart, { passive: true });
+    sheet.addEventListener("touchmove", onMove, { passive: false });
+    sheet.addEventListener("touchend", onEnd);
+    sheet.addEventListener("touchcancel", onEnd);
+    return () => {
+      sheet.removeEventListener("touchstart", onStart);
+      sheet.removeEventListener("touchmove", onMove);
+      sheet.removeEventListener("touchend", onEnd);
+      sheet.removeEventListener("touchcancel", onEnd);
+    };
+  }, [disabled]);
+
+  return { sheetRef, scrollRef, offset, dragging };
+}
+
 export function HfAccessSheet({
   title,
   icon,
@@ -169,6 +251,7 @@ export function HfAccessSheet({
   onDeny,
   onDismiss,
   terms,
+  closeLabel = "Luk",
   embedded = false,
 }: {
   title: string;
@@ -187,17 +270,34 @@ export function HfAccessSheet({
   onDismiss?: () => void;
   // "Vilkår og betingelser"-bjælken over knapperne (docs/DECISIONS.md 2026-09-27).
   terms?: ReactNode;
+  // Luk-knappen øverst til højre (design.md: højre side er luk).
+  closeLabel?: string;
   // Vist inde i en ramme (designmanualen) i stedet for over hele skærmen.
   embedded?: boolean;
 }) {
+  const { sheetRef, scrollRef, offset, dragging } = useSwipeToDismiss(onDismiss, embedded || !onDismiss);
+
   return (
     <div className={`${styles.backdrop} ${embedded ? styles.embedded : ""}`}>
       <div className={styles.frame}>
         {onDismiss && <div className={styles.dismissArea} onClick={onDismiss} aria-hidden="true" />}
         <div className={styles.peek} aria-hidden="true" />
-        <div className={`${styles.sheet} ${terms ? styles.withTerms : ""}`} role="dialog" aria-modal={!embedded} aria-label={title}>
+        <div
+          ref={sheetRef}
+          className={`${styles.sheet} ${terms ? styles.withTerms : ""} ${dragging ? styles.dragging : ""}`}
+          style={offset ? { transform: `translateY(${offset}px)` } : undefined}
+          role="dialog"
+          aria-modal={!embedded}
+          aria-label={title}
+        >
+          <div className={styles.grabber} aria-hidden="true" />
           <h1 className={styles.titleBar}>{title}</h1>
-          <div className={styles.scroll}>
+          {onDismiss && (
+            <button type="button" onClick={onDismiss} className={styles.close} aria-label={closeLabel}>
+              <IconX size={20} stroke={2.4} aria-hidden="true" />
+            </button>
+          )}
+          <div ref={scrollRef} className={styles.scroll}>
             {icon && <div className={styles.appIcon}>{icon}</div>}
             {heading && <h2 className={styles.heading}>{heading}</h2>}
             <p className={styles.message}>{message}</p>

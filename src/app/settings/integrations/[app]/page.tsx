@@ -201,6 +201,7 @@ function IntegrationContent() {
         onAllow={close}
         onDeny={close}
         onDismiss={close}
+        closeLabel={t("integrations.close")}
       />
     );
   }
@@ -313,6 +314,7 @@ function IntegrationContent() {
       onAllow={allow}
       onDeny={deny}
       onDismiss={close}
+      closeLabel={t("integrations.close")}
       terms={<TermsSheet hint={integrationTerms(integration.provider)} />}
     >
       {notice && (

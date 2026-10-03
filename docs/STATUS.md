@@ -8,6 +8,13 @@ Last updated: 2026-10-03
 - Dagsvisningen genåbnes efter navigation væk fra `/calendar` (Tilbage eller "Kalender" i menuen) i stedet for at falde tilbage til måneden. Ny `src/lib/calendar-open-day.ts` (URL `?date=` + sessionStorage), koblet ind i `src/app/calendar/page.tsx`. Se DECISIONS.md samme dato.
 - Lint, typecheck og build grønne. Ikke live-testet (ingen lokal DB/login) — test på telefon: åbn en dag → tryk en registrering → Tilbage, og åbn en dag → Statistik → Kalender.
 
+## 2026-10-03: Adgangsarket kan lukkes (X, træk ned) og tekst skinner ikke igennem
+
+- Brugeren: "Jeg kan ikke komme væk fra indstillingerne igen. Der er ingen swipe ned funktion eller tilbageknap" (+ skærmbillede: "Vilkår og betingelser" oven i listen).
+- `HfAccessSheet`: luk-knap (X, 44 × 44) øverst til højre, trækstreg og træk-ned-for-at-lukke (design.md §6.13: hurtigt swipe eller > 30 %). Bunden med vilkår og knapper er nu helt hvid efter en kort fade, så listen ikke skinner igennem.
+- Den grønne smiley-boble nederst til højre på skærmbilledet findes ikke i Hello Cals kode (formentlig browser/udvidelse).
+- Lint, typecheck og build grønne. Ikke testet på telefon.
+
 ## 2026-10-03: "Tillad" på integrationssiden lukker ikke længere bare arket
 
 - Brugeren: "HVER gang jeg trykker tillad lukker vinduet bare". Årsag: når appen allerede var forbundet (eller telefon-appen havde en enhedskode), lukkede "Tillad" arket uden at gøre noget; fejl ved tilkobling blev kun vist som en lille generisk tekst nederst.
