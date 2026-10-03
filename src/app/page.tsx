@@ -19,8 +19,8 @@ export default async function Home() {
   return (
     <div className="flex min-h-full flex-1 flex-col bg-hf-cream">
       {/* Bølge-baggrunden (bruger 2026-10-01) ligger bag topbar og hero og
-          fortsætter 40 px ind i listen. Alt andet her er `relative`, så det
-          males oven på bølgerne. */}
+          stopper ved "Dagens tilføjelser"-stregen (bruger 2026-10-03). Alt
+          andet her er `relative`, så det males oven på bølgerne. */}
       <div className="relative flex-none">
         <HomeWaves />
         <div className="relative">

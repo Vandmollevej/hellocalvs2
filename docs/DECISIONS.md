@@ -377,6 +377,11 @@ om varen var "taget", og det føltes ikke som scanning i realtid.
 - Erstatter udseendet fra 2026-10-02 (brugeren: "alt for voldsomt", "en ommer"). Baggrunden skal være afdæmpet: få, tynde, svage bånd.
 - Kun bunden må være sløret/frostet; toppen er skarp (ingen blur, ingen tåge).
 - Puls-linjen (hjerteslaget) ligger længere nede — omkring tal-hjulets midte — og går helt ude fra skærmens venstre kant.
+## 2026-10-03: Bølge-baggrunden — tykke frostede bånd, stop ved listen
+
+- Forneden er bølgerne tykke, slørede bånd (frostet glas), ikke tynde linjer som i toppen. Toppen er fortsat skarp.
+- Baggrunden stopper ved "Dagens tilføjelser"-stregen og må ikke ses bag tilføjelserne (erstatter "fortsætter ca. 40 px ind i listen" fra 2026-10-01).
+
 ## 2026-10-02: Ingen manuel produktoprettelse — kun scanning
 
 - Nye produkter oprettes udelukkende gennem scanning (stregkode → foto-flowet

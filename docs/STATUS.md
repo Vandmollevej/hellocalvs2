@@ -2,6 +2,13 @@
 
 Last updated: 2026-10-03
 
+## 2026-10-03: Forsidens bølger — tykke, frostede bånd forneden
+
+- Brugerens rettelse: nederste del af bølge-baggrunden er frostet glas med **tykke** bånd, ikke tynde linjer som i toppen. Det slørede lag tegner strengene 7× bredere og lidt kraftigere (`strandWidthScale`/`strandAlphaScale` i `drawWaveScene`); toppen og puls-linjen er uændret skarpe.
+- Det nederste bånd ligger altid i det frostede felt (74–86 % af højden), så effekten altid ses.
+- Bølgerne stopper nu ved "Dagens tilføjelser"-stregen og ses ikke længere bag tilføjelserne (før fortsatte de 40 px ind i listen).
+- Lint (0 fejl), typecheck, bølge-tests og build grønne; tegningen tjekket i Chromium med tre tilfældige scener. Ikke set på telefon med login — test på forsiden.
+
 ## 2026-10-03: Kalender — profilcirklen er tilbage i dagsvisningen
 
 - Dagsvisningen (`DayDetails` i `src/app/calendar/page.tsx`) tegner sin egen grønne topbjælke som fuldskærmsdialog over siden, og dens højre hjørne var et tomt felt — så profilcirklen forsvandt, så snart en dag blev åbnet. Den viser nu `ProfileAvatarLink` som alle andre sider.

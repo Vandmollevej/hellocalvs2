@@ -6,9 +6,10 @@ import { createWaveScene, DEFAULT_PULSE_BPM, drawWaveScene, readWavePalette, WAV
 // To lag af samme scene: skarpt øverst (i skærmens fulde opløsning, ingen
 // blur) og sløret kun forneden (maskerne ligger i globals.css,
 // .home-wave__layer--*) — bruger 2026-10-03: toppen må ikke være sløret.
+// Forneden er linjerne tykke, frostede bånd, ikke tynde streger som i toppen.
 const LAYERS = [
-  { key: "sharp", scale: () => Math.min(2, window.devicePixelRatio || 1) },
-  { key: "soft", scale: () => 0.4 },
+  { key: "sharp", scale: () => Math.min(2, window.devicePixelRatio || 1), strandWidthScale: 1, strandAlphaScale: 1 },
+  { key: "soft", scale: () => 0.4, strandWidthScale: 7, strandAlphaScale: 1.4 },
 ] as const;
 
 const FRAME_MS = 1000 / 30;
@@ -36,7 +37,8 @@ async function fetchPulseBpm() {
 
 /**
  * Forsidens rolige bølge-baggrund (bruger 2026-10-01). Ligger bag topbar og
- * hero og fortsætter lidt ind under "Dagens tilføjelser"-stregen. Står stille
+ * hero og stopper ved "Dagens tilføjelser"-stregen (bruger 2026-10-03: ikke
+ * synlig bag tilføjelserne). Står stille
  * ved "reducer bevægelse", og standser når siden er skjult. Puls-linjen slår
  * i urets målte puls (60 bpm uden ur).
  */
@@ -73,9 +75,20 @@ export function HomeWaves() {
 
     function paint() {
       if (width === 0 || height === 0) return;
-      LAYERS.forEach((_, i) => {
+      LAYERS.forEach((layer, i) => {
         const ctx = contexts[i];
-        if (ctx) drawWaveScene(ctx, scene, palette!, { t: clock, width, height, scale: scales[i], bpm, pulseY });
+        if (ctx) {
+          drawWaveScene(ctx, scene, palette!, {
+            t: clock,
+            width,
+            height,
+            scale: scales[i],
+            bpm,
+            pulseY,
+            strandWidthScale: layer.strandWidthScale,
+            strandAlphaScale: layer.strandAlphaScale,
+          });
+        }
       });
     }
 

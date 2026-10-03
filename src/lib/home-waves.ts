@@ -208,7 +208,9 @@ export function createWaveScene(seed: number): WaveScene {
     // til får et bånd en tydeligt anden nuance.
     const tint = rand() < 0.2 ? sign() * between(0.18, 0.32) : between(-0.08, 0.08);
     bundles.push({
-      y: 0.08 + (i + rand()) * (0.8 / bundleCount),
+      // Det nederste bånd ligger altid i det frostede felt, så de tykke,
+      // slørede bånd forneden altid ses (bruger 2026-10-03).
+      y: i === bundleCount - 1 ? between(0.74, 0.86) : 0.08 + (i + rand()) * (0.8 / bundleCount),
       tint,
       envelopeDepth: rand() < 0.2 ? between(0.3, 0.42) : between(0.06, 0.15),
       spread: { wavelength: between(0.8, 1.5), phase: between(0, 6.28), speed: sign() * between(2, 5), amplitude: between(0.2, 0.35) },
@@ -297,6 +299,13 @@ export type WaveFrame = {
   bpm?: number;
   /** Puls-linjens grundlinje i px fra toppen; uden den bruges scenens andel af højden. */
   pulseY?: number;
+  /**
+   * Gange strengenes bredde. Det frostede lag forneden tegner tykke bånd i
+   * stedet for de tynde linjer i toppen (bruger 2026-10-03).
+   */
+  strandWidthScale?: number;
+  /** Gange strengenes styrke; de tykke bånd skal kunne ses gennem sløret. */
+  strandAlphaScale?: number;
 };
 
 const STEP_TARGET = 7;
@@ -307,7 +316,7 @@ export function drawWaveScene(
   palette: WavePalette,
   frame: WaveFrame
 ) {
-  const { t, width, height, scale, bpm = DEFAULT_PULSE_BPM, pulseY } = frame;
+  const { t, width, height, scale, bpm = DEFAULT_PULSE_BPM, pulseY, strandWidthScale = 1, strandAlphaScale = 1 } = frame;
   ctx.setTransform(1, 0, 0, 1, 0, 0);
   ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
   ctx.setTransform(scale, 0, 0, scale, WAVE_BLEED * scale, WAVE_BLEED * scale);
@@ -364,8 +373,8 @@ export function drawWaveScene(
         [1.0, 0.85],
       ];
       for (const [widthFactor, alphaFactor] of passes) {
-        ctx.globalAlpha = strand.alpha * alphaFactor;
-        ctx.lineWidth = strand.width * widthFactor;
+        ctx.globalAlpha = Math.min(1, strand.alpha * alphaFactor * strandAlphaScale);
+        ctx.lineWidth = strand.width * widthFactor * strandWidthScale;
         ctx.stroke();
       }
     }
