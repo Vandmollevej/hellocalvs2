@@ -2,6 +2,13 @@
 
 Last updated: 2026-10-03
 
+## 2026-10-03: Betaling viser det aktive kort fra Stripe (PR #132 flettet med master)
+
+- `/settings/payment` viser det kort/den wallet, Stripe trækker på: mærke + sidste 4 + udløb; Apple Pay/Google Pay med kortet bagved (nyt felt `PaymentMethod.wallet`, migration `20261002090000_payment_method_wallet` **skal køre ved deploy**); MobilePay. Kortmærke-logo (Visa/Mastercard) i lille fast ramme; andre mærker får det egne kortikon (`IconPaymentCard`). Siden henter altid frisk fra Stripe (`/api/subscription?refresh=1`). Kortet beholdes efter opsigelse (perioden er betalt).
+- "Skift betalingsmetode" åbner Stripes kundeportal i kort-skift-flowet (`POST /api/payments/stripe/portal`); mangler en portal-konfiguration, oprettes én automatisk. Dummy-visning: `/settings/payment?preview=DK|DE|APPLE|GOOGLE`.
+- Ejerens valg 2026-10-03: rækkerne Abonnement og Betalingsmetoder **bliver** på Profil og Indstillinger (med kortikonet) og vises for alle — den tidligere plan om kun under Indstillinger / kun for betalende er droppet. `paying` findes stadig i `/api/subscription`.
+- Test i Stripes testtilstand med testkortet 4242 4242 4242 4242 (vilkårlig fremtidig udløb/CVC).
+
 ## 2026-10-03: Adgangsarket (integrationer) — bunden skjules ikke længere
 
 - På telefonen lå "Vilkår og betingelser" og "Tillad"/"Tillad ikke" ovenpå listen med gennemsigtig baggrund, så kontakterne (fx "Fedtprocent") skinnede igennem og bunden af arket ikke kunne læses. Knapperne har nu deres egen hvide bund under listen (`src/components/hf/HfAccessSheet.module.css`), med en kort toning over kanten; listen scroller helt frem over dem. Se DECISIONS.md samme dato.
