@@ -22,6 +22,7 @@ Last updated: 2026-10-02
 - Brand: står et kendt brand ordret på forsiden (fx EDEKA ved serien Herzstücke), vinder databasens brand, og AI'ens brand bliver subbrand (`matchBrandInTexts`). Prompt: hjerter/kvalitetsmærker/segl er ikke logoer.
 - Billedrobot (`cutout.py`): et PRODUCT_FRONT-udklip, der dækker under 12 % af udsnittet eller er under 30 % i bredde/højde, fejler nu i stedet for at blive et tomt billede (mælkekartonen 2026-10-01).
 - Lint, typecheck og `npm test` grønne (page-tree-testen fejler også på master). Ikke live-testet: ingen DB/kamera her. **Ikke gjort:** loggen for de to scanninger (mælk + flødeboller) ligger i produktionsdatabasen (admin → Log) og kan ikke nås fra cloud-sessionen — eksportér flow-rækkerne (JSON) eller skærmbilleder af dem, så analyseres de. Det forkerte hjerte-logo skal fjernes manuelt på brandet i admin → Logoer, og prompt-ændringerne virker først for nye scanninger.
+
 ## 2026-10-02: Garmin, WHOOP, Huawei + eufy/Renpho/Xiaomi/Tuya/Samsung via telefonen
 
 - Nye cloud-integrationer: Garmin (`garmin.ts`, PKCE, ping-webhook `garmin-webhook.ts`), WHOOP (`whoop.ts`) og Huawei Health (`huawei-health.ts`). Kun læsning; afmelding hos appen ved frakobling. Parsere i `*-items.ts` med tests i `src/lib/integration-items.test.mjs` (9 grønne).
