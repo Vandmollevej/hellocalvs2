@@ -818,19 +818,18 @@ appen, samme udseende som admin: side #FAF8F3, hvid topbjælke/panel med 1 px
 
 ### 6.16 Kalenderens miniature-tal: kyllingelår, flamme og glas — tilføjet 2026-10-02
 
-Hello Cal-specifik primitiv uden HelloFresh-reference (jf. §1). Overalt hvor
-et kalorietal står kompakt ved siden af en ting (kalenderens celler og
-timerækker, forsidens tal-hjul, statistikbokse, widget-forhåndsvisninger,
-lister i chat/tale/kamera) erstattes ordene "kalorier"/"kcal" af et ikon; den
-fulde tekst ligger i `aria-label`. Brugerens regel 2026-10-02: "generelt,
-overalt".
+Hello Cal-specifik primitiv uden HelloFresh-reference (jf. §1). I kalenderens
+dagvisning (timerækken og timens oversigt) står et ikon foran tallet. Ikonet
+er et **supplement** til "kcal" — enheden fjernes aldrig (brugerens rettelse
+2026-10-03). Andre steder bruges kyllingelåret kun, hvor der i forvejen stod
+et ikon.
 
 **`EnergyChip`** (`src/components/calendar/EnergyChip.tsx`), tre varianter:
 
 | Variant | Ikon | Tekst | Farve |
 | --- | --- | --- | --- |
-| `intake` (indtagne kalorier) | `IconDrumstick` — brunt kød, hvidt ben | heltal, fx `540` | tekst `text-hf-black`, kød `--hf-meat` |
-| `burned` (forbrændte kalorier) | tabler `IconFlame` | `+120` | `text-hf-green`, både ikon og tal |
+| `intake` (indtagne kalorier) | `IconDrumstick` — brunt kød, hvidt ben | `540 kcal` | tekst `text-hf-black`, kød `--hf-meat` |
+| `burned` (forbrændte kalorier) | tabler `IconFlame` | `+120 kcal` | `text-hf-green`, både ikon og tal |
 | `water` (vand) | `IconWaterGlass` (den eksisterende) | mængde i cl, fx `25 cl` | `text-hf-black` |
 
 - Ikon 16 px i timerækken (`hf-type-small`), 18 px i timens oversigt
@@ -843,19 +842,13 @@ overalt".
   kød i `--hf-meat` (#8C5A32, nyt navngivet token til netop denne rolle) og
   ben i `--hf-white` med kødfarvet kant, så benet også ses på creme og tan.
   `color`/`currentColor` ændrer ikke ikonet.
-- Måneds- og ugelisten viser afstanden til målet som chip med fortegn:
-  `text="+120"` / `text="÷120"` (fortegnet som symbol, jf. G1-beslutningen).
-- Forsidens tal-hjul (`frontpage-stats.ts`): rækkerne Kalorier og Kalorier i
-  plus bruger `IconDrumstick` som rækkeikon og tom enhed; Forbrændt bruger
-  `IconFlame` og tom enhed. Hjulet viser derfor "2.140 🍗" i stedet for
-  "2.140 kcal 🔥".
-- Statistikbokse (`StatCardsGrid`): en værdi, der ender på " kcal", vises som
-  tal + chip (flamme for "Forbrændt" og sportsgrene, ellers kyllingelår).
-  Boksene "Kalorier" og "Forbrændt" har allerede kyllingelår/flamme som
-  boksikon og viser kun tallet.
-- Tekst, der ikke er et kompakt tal, forbliver tekst: sætninger ("Tilbage for
-  i dag: 3282 kcal"), indtastningsfelter, "kcal / 100 g"-tætheder, grafakser
-  og de native widgets (kan ikke bruge React-ikonet).
+- Måneds-/ugegitter, måneds-/ugeliste, statistikbokse, widget-
+  forhåndsvisninger og listerne i chat/tale/kamera viser tal + "kcal" uden
+  chip.
+- Hvor der allerede stod et ikon, er ikonet skiftet, og "kcal" står stadig:
+  forsidens tal-hjul (Kalorier og Kalorier i plus: `IconDrumstick`;
+  Forbrændt: `IconFlame`) og statistikboksen Kalorier (`IconDrumstick` som
+  boksikon).
 
 ### 6.17 Fælles skal: admin, webvisning og Hello Doc — tilføjet 2026-10-03
 
