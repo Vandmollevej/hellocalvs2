@@ -271,6 +271,7 @@ model User {
   chatbotConversations    ChatbotConversation[]
   productsCreated         Product[]                @relation("ProductsCreatedByUser")
   passwordResetTokens     PasswordResetToken[]
+  passwordResetSmsCodes   PasswordResetSmsCode[]
   startWeightChangeTokens StartWeightChangeToken[]
   genericIngredientsCreated GenericIngredient[]     @relation("GenericIngredientsCreatedByUser")
   searchRankingConfigsCreated SearchRankingConfig[]
@@ -500,6 +501,23 @@ model LoginApproval {
 
   @@index([userId, status])
   @@map("login_approvals")
+}
+
+// Engangskode sendt på SMS ved glemt adgangskode (docs/DECISIONS.md
+// 2026-10-02). Kun hash gemmes; 6 cifre, 10 minutter, højst 5 forsøg. En
+// godkendt kode udløser et almindeligt PasswordResetToken.
+model PasswordResetSmsCode {
+  id        String    @id @default(cuid())
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String
+  codeHash  String
+  attempts  Int       @default(0)
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime  @default(now())
+
+  @@index([userId])
+  @@map("password_reset_sms_codes")
 }
 
 // Engangslink til ændring af den låste start-vægt (docs/DECISIONS.md
@@ -4177,4 +4195,61 @@ model AdminLoginApproval {
   createdAt   DateTime  @default(now())
 
   @@map("admin_login_approvals")
+}
+
+// --- Robotter (docs/DECISIONS.md 2026-09-25 "Mængde-robot") ---
+
+// Fælles konfiguration + status for baggrundsrobotterne (scripts/*-agent).
+// Admin skriver `enabled`/`settings`/`runRequestedAt` fra /admin/robots;
+// robotten læser dem i hver runde og skriver status-felterne tilbage.
+// `key` er robottens faste navn, fx "amount-suggestion".
+model RobotConfig {
+  key               String    @id
+  enabled           Boolean   @default(true)
+  settings          Json      @default("{}")
+  runRequestedAt    DateTime?
+  heartbeatAt       DateTime?
+  lastRunStartedAt  DateTime?
+  lastRunFinishedAt DateTime?
+  lastRunStatus     String?
+  lastRunSummary    Json?
+  lastError         String?
+  updatedAt         DateTime  @updatedAt
+  updatedById       String?
+
+  @@map("robot_configs")
+}
+
+// Hvor en mængde blev valgt: spist direkte (Registration) eller lagt i en
+// opskrift/ret (DishIngredient). Samme vare har ofte meget forskellige
+// typiske mængder i de to situationer (en halv agurk i salaten vs. et par
+// skiver som snack).
+enum AmountContext {
+  EATEN
+  RECIPE
+}
+
+// Mængde-robottens resultat (scripts/amount-suggestion-agent): den mest
+// sandsynlige mængde pr. vare og kontekst. itemType er PRODUCT,
+// GENERIC_INGREDIENT, PRODUCT_CATEGORY (itemId = ProductCategory) eller
+// GENERIC_CATEGORY (itemId = GenericIngredientCategory). Kategorirækkerne er
+// fallback for varer med for få data. Hele tabellen erstattes ved hver
+// kørsel, så ingen FK til produkterne. Kun aggregater af mindst `minUsers`
+// forskellige brugere gemmes — aldrig den enkelte brugers mængder.
+model AmountSuggestion {
+  id             String        @id @default(cuid())
+  itemType       String
+  itemId         String
+  context        AmountContext
+  suggestedGrams Float
+  confidence     Float
+  sampleCount    Int
+  userCount      Int
+  p25Grams       Float?
+  p75Grams       Float?
+  method         String
+  computedAt     DateTime      @default(now())
+
+  @@unique([itemType, itemId, context])
+  @@map("amount_suggestions")
 }

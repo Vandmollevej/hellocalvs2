@@ -320,6 +320,21 @@ services:
     networks:
       - backend
 
+  # Mængde-robot (docs/DECISIONS.md 2026-09-25): regner den mest sandsynlige
+  # startmængde pr. vare. Kun database-adgang — styres fra /admin/robots.
+  amount-suggestion-agent:
+    build: ./scripts/amount-suggestion-agent
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: ${DATABASE_URL:?Set DATABASE_URL in .env.production}
+    depends_on:
+      db:
+        condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
+    networks:
+      - backend
+
   # Umami-analyse (docs/DECISIONS.md 2026-09-27 "Umami-analyse"): selv-hostet,
   # cookiefri besøgsstatistik vist i admin → Analyse. Egen database "umami" i
   # samme PostgreSQL (oprettes af umami-db-init). Kun på det interne netværk:

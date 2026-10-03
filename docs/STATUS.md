@@ -157,6 +157,12 @@ Last updated: 2026-10-03
 - Kildearkene ligger nu på NAS-sharet `\\192.168.1.90\Hello Cal\Arkiv - historiske kilde- og importfiler\Oprydning 2026-09-29\`. Det nye katalog (`store_products.json`) + de nye varers 1.408 billeder ligger klar i `C:\Users\Peter\Desktop\Butiksimport 2026-10-03\`; de skal kopieres til NAS'ens `data/store-products-import/` (sessionen fik ikke lov at skrive på serveren), og jobbet `store-products-import` køres (admin → Cron-jobs → Kør nu, eller næste deploy). Indtil da kører den nye agent med det gamle katalog, hvilket er ufarligt og retter kJ-fejlen.
 - Testet: agenten mod lokal PostgreSQL med alle migrationer (live-katalog → nyt katalog, 0 fejl); lint, typecheck og `next build --webpack` grønne.
 - Brugeren: kør `bilka_vitamins.py` (vitaminpanelet på bilkatogo.dk, nogle timer); byg og importér derefter igen. Næring fra Frida til de skjulte varer er egen opgave (OPEN-TASKS).
+## 2026-10-03: Glemt adgangskode via SMS (TeamMessage)
+
+- Branch `claude/sms-gateway-pw-recovery-fkclhp`. Mobilnummer på profilen (`/profile/edit`), "Send en kode på SMS i stedet" på `/forgot-password`, 6-cifret kode → samme `/reset-password` som mail-linket. Klient i `src/lib/sms.ts`, logik i `src/lib/password-reset-sms.ts`, ruter under `/api/auth/forgot-password/sms`.
+- Admin → API-nøgler → SMS → TeamMessage med test, der ikke sender SMS. Variablerne er tilføjet `compose.production.yaml`.
+- Lint, typecheck og build grønne. Ikke testet mod TeamMessage: deres side er blokeret fra cloud-containeren, så feltnavnene (`to_mobile`, `message`, `team_id`, `teamlist_email`) bygger på søgeresultater. Ejeren skal lægge tokenet ind og trykke "Test" og derefter prøve flowet med eget nummer.
+- Mangler: verificering af mobilnummeret ved indtastning (afventer ejerens valg).
 Last updated: 2026-10-02
 
 ## 2026-10-02: Desktop — alle sider i skallen
@@ -407,6 +413,12 @@ Last updated: 2026-10-02
 - Lint og `npm run build` grønne. Ikke visuelt testet (ingen lokal DB/login) — tjek på telefon.
 Last updated: 2026-10-02
 
+## 2026-10-02: Telefonnummer obligatorisk (til tofaktor-godkendelse)
+
+- `User.phone` (E.164, fx `+4512345678`) + `phoneVerifiedAt` (reserveret til SMS-bekræftelsen). Migration `20261002090000_user_phone` skal køre ved deploy. Normalisering/validering i `src/lib/phone.ts` (tests i `phone.test.mjs`, grønne).
+- Tilmelding (`/signup`, `/api/auth/register`) kræver nummeret. Profilsiden viser feltet under e-mail: kan rettes, ikke slettes (`PATCH /api/profile` afviser tomt/ugyldigt med 400).
+- Indloggede uden nummer (Google/Apple/Facebook-konti og konti fra før kravet) sendes af `AuthGate` til `/account/phone` (ingen tilbagepil, ingen "spring over"), til det er udfyldt — også børneprofiler i en familie (brugerens valg 2026-10-02). Admin-konti (TOTP) og familieprofiler uden eget login oprettes uden nummer; profilen spærres først, når den logger ind. "Glem mig" sletter nummeret.
+- Selve SMS-tofaktoren er **ikke** bygget — kun feltet. Ikke live-testet (ingen lokal DB); test tilmelding og profilsiden på telefon. Se DECISIONS.md samme dato.
 ## 2026-10-02: Vejninger vises i kalenderen
 
 - Fejl fra ejeren (skærmbillede 30/9): en gemt vægt kom ikke frem i kalenderen. Kalenderen hentede allerede `/api/weight-entries`, men brugte kun vejningerne til vægtestimatet.
@@ -1560,6 +1572,21 @@ fra denne container.
   trykkes på og overskrives i gram (`InlineGramsInput`); kcal og makroer
   skaleres med (`src/lib/scale-meal-item.ts`). Gemte registreringer er
   fortsat snapshots og ændres ikke.
+
+## 2026-09-25: Mængde-robot + admin "Robotter"
+
+Se `docs/DECISIONS.md` 2026-09-25 "Mængde-robot". Nyt: container
+`amount-suggestion-agent`, migration `20260925150000_amount_suggestion_robot`
+(`robot_configs`, `amount_suggestions`), `GET /api/amount-suggestion`,
+`/admin/robots` og startmængde på `/add/[id]`. Verificeret: `npm test`,
+`npm run lint`, `npm run build`, agenten mod en lokal Postgres med testdata
+(agurk: gennemsnit ~150 g → forslag 100 g; vare med 2 brugere skjult), API
+og admin-panel mod samme database. Ikke testet på Synology.
+
+Next work:
+1. Efter deploy: tjek i `/admin/robots`, at robotten står som "kører", og
+   tryk "Kør nu" én gang.
+2. Justér evt. `minUsers`/`priorStrength`, når der er rigtige data.
 
 ## 2026-09-25: Profil — start-vægt altid låst + "Lås"-side
 

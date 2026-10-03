@@ -275,7 +275,14 @@ export function AddProductView({
       : { status: "loading" },
   );
   const [profile, setProfile] = useState<ProfileUser | null>(null);
-  const [amount, setAmount] = useState(() => registration?.amountGrams ?? 100);
+  const [amount, setAmountState] = useState(() => registration?.amountGrams ?? 100);
+  // Mængde-robotten (docs/DECISIONS.md 2026-09-25) stiller startmængden, når
+  // dens svar kommer - men aldrig efter at brugeren selv har rørt mængden.
+  const amountTouchedRef = useRef(false);
+  const setAmount: typeof setAmountState = (value) => {
+    amountTouchedRef.current = true;
+    setAmountState(value);
+  };
   // Standard skal altid være gram (Fejlretninger/FEJLLISTE.md #1/#22): "personer"
   // er kun en mulighed, når varen faktisk har en defineret portionsstørrelse,
   // og må ikke være default-valget selv når den findes.
@@ -347,7 +354,16 @@ export function AddProductView({
         setState({ status: "loaded", product: applyRegistrationSnapshot(data.product, registration) });
         // Startmængde: seneste egne mængde, portionsenhed, typisk mængde for
         // kategorien — se src/lib/default-amount.ts.
-        if (!registration && data.product) setAmount(defaultAmountGrams(data.product, mediumHandSizeGrams(data.product.name)));
+        if (!registration && data.product) setAmountState(defaultAmountGrams(data.product, mediumHandSizeGrams(data.product.name)));
+        if (registration) return;
+        const context = forDish ? "RECIPE" : "EATEN";
+        return fetch(`/api/amount-suggestion?itemId=${encodeURIComponent(id)}&context=${context}`)
+          .then((suggestionRes) => suggestionRes.json())
+          .then((suggestionData) => {
+            const grams = suggestionData.suggestion?.grams;
+            if (typeof grams === "number" && grams > 0 && !amountTouchedRef.current) setAmountState(grams);
+          })
+          .catch(() => {});
       })
       .catch(() => setState({ status: "error" }));
 
@@ -363,7 +379,7 @@ export function AddProductView({
       .then((res) => res.json())
       .then((data) => setPhotoAwards(data.awards ?? []))
       .catch(() => setPhotoAwards([]));
-  }, [id, registration]);
+  }, [id, registration, forDish]);
 
   // Tidspunktet siden blev åbnet — ventetiden på fritlægning måles fra det.
   const [openedAt] = useState(() => Date.now());

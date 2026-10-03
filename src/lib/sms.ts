@@ -1,21 +1,40 @@
 import { prisma } from "@/lib/prisma";
 import { pushSentNotice } from "@/lib/sent-notices";
+import { isSmsConfigured as isTeamMessageConfigured, sendSms as sendViaTeamMessageApi } from "@/lib/teammessage";
 import type { MessageEvent as MessageEventType } from "@prisma/client";
 
-// Sms-gateway, forberedt men ikke aktiveret (samme mønster som mailer.ts og
-// push.ts): uden SMS_GATEWAY_TOKEN er sendSms() en no-op. Formatet er
-// GatewayAPI's REST-API (https://gatewayapi.com/docs/apis/rest/); en anden
-// udbyder med samme format kan vælges med SMS_GATEWAY_URL.
-//
-// Telefonnummeret gemmes aldrig — OutboundMessage-rækken logger kun bruger,
-// event og emne, så "Til info sendte vi dig ..."-popuppen kan vises.
+// SMS med logning (OutboundMessage). Udbyder: TeamMessage (src/lib/teammessage.ts)
+// hvis den er sat op, ellers GatewayAPI (SMS_GATEWAY_TOKEN) som reserve.
+// Uden nogen noegler er sendSms() en no-op (samme moenster som mailer/push).
+// Telefonnummeret og sms-teksten gemmes aldrig i loggen.
 
-const DEFAULT_URL = "https://gatewayapi.eu/rest/mtsms";
+const GATEWAYAPI_URL = "https://gatewayapi.eu/rest/mtsms";
+const TIMEOUT_MS = 10_000;
+
+const env = (key: string) => process.env[key]?.trim() || "";
 
 export function isSmsConfigured() {
-  return Boolean(process.env.SMS_GATEWAY_TOKEN);
+  return isTeamMessageConfigured() || Boolean(env("SMS_GATEWAY_TOKEN"));
 }
 
+async function sendViaTeamMessage(to: string, text: string) {
+  const result = await sendViaTeamMessageApi(to, text);
+  return result.ok ? null : `TeamMessage: ${result.error}`;
+}
+
+async function sendViaGatewayApi(msisdn: string, text: string) {
+  const res = await fetch(env("SMS_GATEWAY_URL") || GATEWAYAPI_URL, {
+    method: "POST",
+    headers: { "Content-Type": "application/json", Authorization: `Token ${env("SMS_GATEWAY_TOKEN")}` },
+    body: JSON.stringify({
+      sender: env("SMS_SENDER") || "Hello Cal",
+      message: text,
+      recipients: [{ msisdn: Number(msisdn) }],
+    }),
+    signal: AbortSignal.timeout(TIMEOUT_MS),
+  });
+  return res.ok ? null : `Gateway svarede ${res.status}`;
+}
 export async function sendSms({
   userId,
   to,
@@ -37,20 +56,11 @@ export async function sendSms({
   let error: string | null = msisdn ? null : "Ugyldigt telefonnummer";
   if (!error) {
     try {
-      const res = await fetch(process.env.SMS_GATEWAY_URL || DEFAULT_URL, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Token ${process.env.SMS_GATEWAY_TOKEN}`,
-        },
-        body: JSON.stringify({
-          sender: process.env.SMS_SENDER || "Hello Cal",
-          message: text,
-          recipients: [{ msisdn: Number(msisdn) }],
-        }),
-      });
-      if (!res.ok) error = `Gateway svarede ${res.status}`;
+      error = isTeamMessageConfigured()
+        ? await sendViaTeamMessage(`+${msisdn}`, text)
+        : await sendViaGatewayApi(msisdn, text);
     } catch (err) {
+      console.error("[sms] afsendelse fejlede", err);
       error = err instanceof Error ? err.message : "Ukendt fejl";
     }
   }

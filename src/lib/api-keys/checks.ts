@@ -264,6 +264,25 @@ async function checkStripe(): Promise<CheckResult> {
 }
 
 // requiredKeys: de ikke-valgfrie felter fra kataloget.
+// Sender en tom anmodning (intet nummer, ingen tekst), så der aldrig går en
+// SMS af sted: 401/403 betyder forkert token, alt andet at tokenet godtages.
+async function checkTeamMessage(): Promise<CheckResult> {
+  const absent = missing(["TEAMMESSAGE_API_TOKEN"]);
+  if (absent) return absent;
+  const res = await request((env("TEAMMESSAGE_API_BASE_URL") || "https://www.teammessage.de") + "/api/v1/sms/send/", {
+    method: "POST",
+    headers: { Authorization: `Bearer ${env("TEAMMESSAGE_API_TOKEN")}`, "Content-Type": "application/json", Accept: "application/json" },
+    body: "{}",
+  });
+  if (res.status === 401 || res.status === 403) {
+    return { status: "fail", message: "TeamMessage afviser API-tokenet." };
+  }
+  if (res.status === 404) {
+    return { status: "fail", message: "API-adressen findes ikke hos TeamMessage." };
+  }
+  return { status: "ok", message: "TeamMessage godtager API-tokenet." };
+}
+
 export async function runCheck(serviceId: string, requiredKeys: string[], redirectUris: string[]): Promise<CheckResult> {
   const absent = missing(requiredKeys);
   if (absent) return absent;
@@ -301,6 +320,8 @@ export async function runCheck(serviceId: string, requiredKeys: string[], redire
         return await checkPlaces();
       case "smtp":
         return await checkSmtp();
+      case "teammessage":
+        return await checkTeamMessage();
       case "push":
         return await checkPush();
       case "stripe":

@@ -262,7 +262,7 @@ om varen var "taget", og det føltes ikke som scanning i realtid.
 
 - Hver mail eller sms til en kendt bruger giver (1) en push med det samme: "Vi har netop sendt dig en e-mail om "emne". Dette var ikke spam." og (2) et bundark som det første ved næste besøg (app og web): "Til info sendte vi dig den <dato> en <e-mail/sms> om "<emne>". Dette var ikke spam." med sort knap "Læst".
 - "Læst" kvitterer (`OutboundMessage.noticeAckAt`); et træk ned lukker kun til næste besøg. Beskeder ældre end 30 dage vises ikke. Gælder ikke mails til admin, ikke-brugere (invitationer) eller rene push-beskeder.
-- Bygger på den eksisterende `OutboundMessage`-log — ingen adresse eller telefonnummer gemmes. Sms sendes via `src/lib/sms.ts` (GatewayAPI-format, no-op uden `SMS_GATEWAY_TOKEN`); brugere har endnu intet telefonnummer-felt, så ingen sms sendes i dag.
+- Bygger på den eksisterende `OutboundMessage`-log — ingen adresse eller telefonnummer gemmes. Sms sendes via `src/lib/sms.ts` (GatewayAPI-format, no-op uden `SMS_GATEWAY_TOKEN`); brugere har endnu intet telefonnummer-felt, så ingen sms sendes i dag. (Opdateret 2026-10-02: TeamMessage er nu primær udbyder, og mobilnummer findes på profilen — se "SMS-gendannelse af adgangskode".)
 
 ## 2026-10-02: Vægt- og længdeenheder (kg/lb/st, cm/in)
 
@@ -329,6 +329,13 @@ Uge- og Liste-visningen beholder "Ingen indtastninger" i gråt på tomme dage.
 - Ikke ændret endnu: forsidens "Tilbage"-kort (`frontpage-stats.ts`) og
   widgets (`widget-data.ts`) regner stadig mod budgettet alene — skal følge
   samme regel, når de rettes (andre gruppers filer).
+## 2026-10-02: Telefonnummer er obligatorisk (tofaktor-godkendelse)
+
+- Alle brugere, der kan logge ind, **skal** have et telefonnummer (`User.phone`), fordi det skal bruges til tofaktor-godkendelse (brugerens krav). Nummeret er obligatorisk ved tilmelding og kan rettes, men aldrig slettes, på profilsiden.
+- Gemmes normaliseret i **E.164** (`src/lib/phone.ts`): nationalt nummer uden landekode får landekoden fra `User.region` (standard +45); ellers kræves `+`/`00` og 8–15 cifre. Ingen opslag hos teleselskab; `phoneVerifiedAt` er reserveret til SMS-bekræftelsen, når tofaktoren bygges, og nulstilles ved nyt nummer.
+- Konti uden nummer (oprettet med Google/Apple/Facebook, eller før kravet) spærres ikke ude, men sendes af `AuthGate` til `/account/phone` ved første side efter login og kan ikke bruge appen, før nummeret er udfyldt. Kolonnen er derfor nullable i databasen.
+- **Børneprofiler er ikke undtaget** (brugerens valg): de skal også oplyse nummer, når de logger ind — de kan fjerne forældrenes adgang, når de fylder 18. Familieprofiler uden eget login kan først udfylde det, når de får login. Admin-konti (`/admin`, eget login med TOTP) kræver ikke nummer.
+- Nummeret er persondata: det slettes sammen med resten ved "glem mig" og vises aldrig til andre brugere.
 
 ## 2026-10-02: Grafer på "Tilføj til statistik" og samlede mineral-/vitamingrafer
 
@@ -1145,6 +1152,38 @@ Resultatet rundes op til nærmeste 10 kcal. Kun afsluttede dage med
 indtastninger kan markeres. Dagen i dag markeres ikke, fordi den ikke er
 slut, og tomme dage markeres heller ikke. Det er et vejledende skøn, ikke
 medicinsk rådgivning.
+## 2026-09-25: Mængde-robot — slideren starter på den mest sandsynlige mængde
+
+Brugerens krav: robotten skal regne ud, hvilken mængde folk typisk vælger af
+en vare (fx agurk spist rå eller lagt i en opskrift), så mængde-slideren på
+`/add/[id]` ikke starter på 100 g, og det må ikke være et råt gennemsnit.
+Robotten skal kunne styres fra admins robotpanel.
+
+- Ny container `amount-suggestion-agent` (`scripts/amount-suggestion-agent`,
+  ren Python + SQL, ingen AI, ingen netværk ud). Den skriver
+  `amount_suggestions` og læser/skriver `robot_configs` (key
+  `amount-suggestion`). Den tabel er fælles for fremtidige robotter.
+- To kontekster regnes hver for sig: `EATEN` (registreringer) og `RECIPE`
+  (`dish_ingredients`). `/add/[id]?for=ret` bruger `RECIPE`.
+- Metoden: tidsvægt (halveringstid), loft pr. bruger, trimning af
+  yderpunkter, typetal via vægtet KDE på log-skala (kandidater = faktisk
+  valgte mængder), trukket mod kategoriens median ved få data og en
+  confidence ud fra effektivt antal valg og hvor samlet valgene ligger.
+- App'en (`src/lib/amount-suggestion.ts`) blander robottens tal med
+  brugerens egne seneste valg (vægtet median, log-skala, egen vægt
+  n/(n+personalWeight)), afrunder til pæne tal (1/5/10/50 g) eller hele
+  portioner og bruger kategoriens tal, når varen ikke har sit eget.
+  Uden data starter slideren som før. Robottens svar overskriver aldrig en
+  mængde, brugeren allerede har ændret.
+- Anonymitet: et fælles forslag gemmes kun, når mindst `minUsers` (standard 3)
+  forskellige brugere står bag. Der gemmes kun aggregater, og private
+  ingredienser er udeladt.
+- `/admin/robots` ("Robotter"): til/fra, "Brug forslagene i app'en", alle
+  parametre med grænser (`src/lib/amount-suggestion-config.ts`, samme tal
+  i agentens `LIMITS`), "Kør nu" (virker også når robotten er slået fra),
+  status/heartbeat, test af forslag for vare + bruger og top-40-liste.
+- Deploy-trinnet for robotten kører med `if: !cancelled()`, så det ikke
+  blokeres af de andre agent-trin.
 
 ## 2026-09-25: Sektionsoverskrifter, points-banner og "Invitér en ven"
 
@@ -3887,6 +3926,12 @@ Kilder på "Mad på latin" skal altid være officielle (Fødevarestyrelsen, Sund
 - Varesiden: `certificationBadges(filters, labels)` viser fund ≥ 0,8 som badges; mærker uden egen logofil i `public/certifications` vises med det fritskrabede mærke fra emballagen.
 - Migration `20261002090000_product_labels`.
 
+## 2026-10-02: SMS-gendannelse af adgangskode via TeamMessage
+
+- Udbyder: TeamMessage (teammessage.eu), REST `POST /api/v1/sms/send/` med Bearer-token. Uden token er SMS slået fra.
+- Mobilnummer er valgfrit på profilen og gemmes normaliseret (`+45XXXXXXXX`; 8 cifre antages danske). Slettes ved "ret til at blive glemt".
+- Flow: e-mail → 6-cifret kode på SMS (10 min, højst 5 forsøg, kun nyeste kode gælder, HMAC-hash) → almindeligt `PasswordResetToken` → `/reset-password`. Svaret afslører aldrig, om konto eller nummer findes. Højst 5 SMS pr. konto pr. 15 min.
+- Mail-linket er stadig standard; SMS er et tekstlink-alternativ på samme side.
 ## 2026-10-02: Userback feedback-widget
 
 - Scriptet indlæses globalt fra src/components/UserbackWidget.tsx (rodlayoutet) med det offentlige widget-token. Der sendes bevidst ingen Userback.user_data (ingen navn/e-mail), så feedback er anonym i tråd med anonymitetsreglerne.
