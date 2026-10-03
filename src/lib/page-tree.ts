@@ -201,6 +201,7 @@ export const PAGE_TREE: PageArea[] = [
             label: "Betaling",
             children: [{ path: "/settings/payment/mobilepay", label: "MobilePay" }],
           },
+          { path: "/settings/account", label: "Kontoindstillinger" },
           { path: "/settings/delete-permissions", label: "Sletterettigheder" },
           { path: "/settings/control-log", label: "Kontrollog" },
           {
@@ -300,6 +301,7 @@ export const PAGE_TREE: PageArea[] = [
             children: [{ path: "/admin/products/[id]", label: "Vare" }],
           },
           { path: "/admin/users", label: "Brugere" },
+          { path: "/admin/economy", label: "Economy", note: "Betalende abonnementer, sikret indkomst og forventet indtjening" },
           {
             path: "/admin/support",
             label: "Support",

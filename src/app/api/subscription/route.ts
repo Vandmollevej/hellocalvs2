@@ -39,7 +39,7 @@ export async function GET() {
     freeMonthCost: FREE_MONTH_COST,
     priceDkk: SERIOUS_MONTHLY_PRICE_DKK,
     // Familieabonnement (docs/FAMILY.md).
-    plan: subscription?.plan ?? "INDIVIDUAL",
+    plan: user.role === "ADMIN" ? "FAMILY" : (subscription?.plan ?? "INDIVIDUAL"),
     coveredByFamily,
     familyPriceDkk: SUBSCRIPTION_PRICES_DKK.family[1],
     familyMaxProfiles: MAX_FAMILY_PROFILES,

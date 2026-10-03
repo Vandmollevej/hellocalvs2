@@ -59,3 +59,11 @@ test("normalizeUnit og unitFromPackageSize", () => {
   assert.equal(unitFromPackageSize("6 x 33 cl"), "cl");
   assert.equal(unitFromPackageSize("10 Stk"), null);
 });
+
+test("cl findes også midt i teksten og i navnet", () => {
+  assert.equal(unitFromPackageSize("33 cl dåse"), "cl");
+  assert.equal(unitAndAmount({ productCategory: "DRINK", name: "Tuborg Classic 33 cl" }, 330), "33 cl");
+  assert.equal(unitAndAmount({ productCategory: "DRINK", packageSizeText: "500 ml", name: "Cola 50 cl" }, 500), "500 ml");
+  assert.equal(unitFromPackageSize("250 gram"), "g");
+  assert.equal(unitFromPackageSize("1 liter"), "ml");
+});

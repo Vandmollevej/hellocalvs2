@@ -7,14 +7,14 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import {
   IconChevronDown,
-  IconBookmark,
-  IconBookmarkFilled,
   IconAlertTriangle,
+  IconCamera,
   IconMessage,
   IconLock,
   IconLockOpen,
   IconRefresh,
 } from "@tabler/icons-react";
+import { IconFavorite, IconFavoriteFilled } from "@/components/icons/Favorite";
 import { HfScreen } from "@/components/HfScreen";
 import { BottomSheet } from "@/components/hf/BottomSheet";
 import { MealShareBar } from "@/components/family/MealShareBar";
@@ -110,6 +110,9 @@ type Product = {
   // tagged alternates.
   images?: { url: string; tags: string[] }[];
   ingredientsText?: string | null;
+  // AI kunne ikke læse ingredienslisten på fotoet — den, der oprettede
+  // varen, kan tage et nyt (docs/DECISIONS.md 2026-10-02).
+  ingredientsUnreadable?: boolean;
   allergens?: string[];
   additives?: string[];
   // Mærkninger (økologisk, nøglehul, MSC …) vist som logoer, opgave 29.
@@ -736,7 +739,7 @@ export function AddProductView({
                       aria-label={t(isFavorite ? "search.removeFavorite" : "search.addFavorite")}
                       className="hf-favorite-button"
                     >
-                      {isFavorite ? <IconBookmarkFilled size={24} /> : <IconBookmark size={24} />}
+                      {isFavorite ? <IconFavoriteFilled size={24} /> : <IconFavorite size={24} />}
                     </button>
                   )}
                   {/* Brandet vises kun på cirklen: logoet med bunden i cirklens
@@ -1081,7 +1084,7 @@ export function AddProductView({
                 </div>
               )}
 
-              {(isPending("ingredients") || !!view.ingredientsText) && (
+              {(isPending("ingredients") || !!view.ingredientsText || !!view.ingredientsUnreadable) && (
                 <div>
                   <p className="hf-type-body mb-2 text-hf-black">{t("createDish.ingredients")}</p>
                   {isPending("ingredients") ? (
@@ -1090,6 +1093,16 @@ export function AddProductView({
                       {["94%", "82%", "88%", "46%"].map((width) => (
                         <Skeleton key={width} type="body-sm" width={width} height={16} />
                       ))}
+                    </div>
+                  ) : !view.ingredientsText ? (
+                    <div className="flex flex-col gap-3">
+                      <p className="hf-type-small text-text-secondary">{t("addProduct.ingredientsUnreadable")}</p>
+                      <Link
+                        href={`/camera?mode=product&retake=ingredients&product=${encodeURIComponent(id)}`}
+                        className="hf-control hf-btn-secondary justify-center gap-2"
+                      >
+                        <IconCamera size={19} /> {t("addProduct.retakeIngredients")}
+                      </Link>
                     </div>
                   ) : (
                     <p className="hf-type-small text-text-secondary">

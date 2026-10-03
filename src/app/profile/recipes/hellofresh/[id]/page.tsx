@@ -2,7 +2,8 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { IconBasket, IconBookmark, IconBookmarkFilled, IconClockFilled, IconPrinter } from "@tabler/icons-react";
+import { IconBasket, IconClockFilled, IconPrinter } from "@tabler/icons-react";
+import { IconFavorite as IconBookmark, IconFavoriteFilled as IconBookmarkFilled } from "@/components/icons/Favorite";
 import { useTranslation } from "@/i18n/LocaleProvider";
 import { formatHfAmount, HF_RECIPE_MAX_PHOTOS, proteinRow, type HfRecipeView } from "@/lib/hellofresh-recipe";
 import { RecipeViewScreen } from "@/components/recipe-view/RecipeViewLayout";
