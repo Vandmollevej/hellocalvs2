@@ -3,14 +3,14 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { IconHeadset, IconMail, IconPhone, IconSend } from "@tabler/icons-react";
+import { IconHeadset, IconMail, IconSend } from "@tabler/icons-react";
 import { BottomSheet } from "@/components/hf/BottomSheet";
 import { useTranslation } from "@/i18n/LocaleProvider";
 import { OPEN_HELP_CHAT_EVENT } from "@/lib/help-chat-events";
 import { CHATBOT_LINKS, isChatbotLinkHref } from "@/lib/chatbot-knowledge";
 
 // Hjælpe-chatten (docs/DECISIONS.md 2026-10-02): AI-chatbot med genveje til
-// en medarbejder, telefon og kontaktformularen. Monteret én gang i
+// en medarbejder og kontaktformularen (ingen telefonsupport). Monteret én gang i
 // layoutet og åbnet af HelpChatButton via OPEN_HELP_CHAT_EVENT. Al logik
 // (AI, kategorier, videresendelse) ligger på serveren i src/lib/chatbot.ts.
 
@@ -29,8 +29,6 @@ type ConversationView = {
   caseCode: string | null;
   messages: MessageView[];
 };
-
-type ContactInfo = { phone: string | null; phoneHref: string | null; phoneHours: string | null };
 
 const SUGGESTION_KEYS = ["helpChat.suggestion1", "helpChat.suggestion2", "helpChat.suggestion3", "helpChat.suggestion4"];
 
@@ -65,7 +63,6 @@ function HelpChatSheet({ onClose }: { onClose: () => void }) {
   const { t, locale } = useTranslation();
   const router = useRouter();
   const [conversation, setConversation] = useState<ConversationView | null>(null);
-  const [contact, setContact] = useState<ContactInfo | null>(null);
   const [loading, setLoading] = useState(true);
   const [loggedOut, setLoggedOut] = useState(false);
   const [text, setText] = useState("");
@@ -85,10 +82,9 @@ function HelpChatSheet({ onClose }: { onClose: () => void }) {
           return;
         }
         if (!response.ok) throw new Error("failed");
-        const data = (await response.json()) as { conversation: ConversationView | null; contact: ContactInfo };
+        const data = (await response.json()) as { conversation: ConversationView | null };
         if (cancelled) return;
         setConversation(data.conversation);
-        setContact(data.contact);
       })
       .catch(() => {
         if (!cancelled) setError(t("helpChat.loadError"));
@@ -229,7 +225,6 @@ function HelpChatSheet({ onClose }: { onClose: () => void }) {
     <BottomSheet onClose={onClose} title={t("helpChat.title")} size="full" footer={footer}>
       <div className="flex flex-col gap-4 px-4 pb-4">
         <ContactOptions
-          contact={contact}
           disabled={loggedOut || escalated || busy}
           onTalkToHuman={() => {
             setEscalating(true);
@@ -356,12 +351,10 @@ function Bubble({ role, children }: { role: "USER" | "ASSISTANT"; children: Reac
 }
 
 function ContactOptions({
-  contact,
   disabled,
   onTalkToHuman,
   onContactForm,
 }: {
-  contact: ContactInfo | null;
   disabled: boolean;
   onTalkToHuman: () => void;
   onContactForm: () => void;
@@ -370,29 +363,15 @@ function ContactOptions({
   const tile =
     "hf-type-small hf-type-strong flex min-h-12 flex-1 flex-col items-center justify-center gap-1 rounded-lg bg-hf-tan px-2 py-3 text-center text-hf-black hover:bg-hf-tan-dark disabled:text-text-muted";
   return (
-    <div className="flex flex-col gap-2">
-      <div className="flex gap-2">
-        <button type="button" className={tile} onClick={onTalkToHuman} disabled={disabled}>
-          <IconHeadset size={24} stroke={1.6} />
-          {t("helpChat.talkToHuman")}
-        </button>
-        {contact?.phoneHref && (
-          <a href={contact.phoneHref} className={tile}>
-            <IconPhone size={24} stroke={1.6} />
-            {t("helpChat.call")}
-          </a>
-        )}
-        <button type="button" className={tile} onClick={onContactForm}>
-          <IconMail size={24} stroke={1.6} />
-          {t("helpChat.contactForm")}
-        </button>
-      </div>
-      {contact?.phone && (
-        <p className="hf-type-caption text-center">
-          {t("helpChat.phoneLine", { phone: contact.phone })}
-          {contact.phoneHours ? ` · ${contact.phoneHours}` : ""}
-        </p>
-      )}
+    <div className="flex gap-2">
+      <button type="button" className={tile} onClick={onTalkToHuman} disabled={disabled}>
+        <IconHeadset size={24} stroke={1.6} />
+        {t("helpChat.talkToHuman")}
+      </button>
+      <button type="button" className={tile} onClick={onContactForm}>
+        <IconMail size={24} stroke={1.6} />
+        {t("helpChat.contactForm")}
+      </button>
     </div>
   );
 }

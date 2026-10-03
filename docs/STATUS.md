@@ -4,10 +4,9 @@ Last updated: 2026-10-03
 
 ## 2026-10-02: Hjælpe-chatbot øverst i app og web + admin "Chatbot"
 
-- Hjælpe-knap øverst (til venstre for profilcirklen; "Hjælp" i desktop-topbjælken) åbner AI-chatbotten med "Tal med en medarbejder" (bliver en sag i Support-indbakken med hele tråden), "Ring til os" og "Kontaktformular". Se DECISIONS.md 2026-10-02.
+- Hjælpe-knap øverst (til venstre for profilcirklen; "Hjælp" i desktop-topbjælken) åbner AI-chatbotten med "Tal med en medarbejder" (bliver en sag i Support-indbakken med hele tråden) og "Kontaktformular". Ingen telefon, region = land, kun indloggede (ejerens valg 2026-10-03). Se DECISIONS.md 2026-10-02.
 - Admin → Brugere → Chatbot: oftest spurgte kategorier, tabel med alle spørgsmål og svar, hele tråde og brugerinfo (alder, køn, region, abonnement).
 - Migration `20261002120000_chatbot` skal køre ved deploy. Lint, typecheck og build grønne. Ikke live-testet (ingen lokal DB/OpenAI-nøgle): test chatten på telefon og desktop efter deploy.
-- Mangler fra ejeren: supporttelefonnummer og åbningstider (`SUPPORT_PHONE`, `SUPPORT_PHONE_HOURS` i `/deploy/.env.production`) — indtil da vises telefonknappen ikke. `.env.production.example` er ikke opdateret (agenten må ikke læse den); tilføj de to linjer.
 
 ## 2026-10-03: Butiksimporten — alt fra Bilka- og REMA-arkene med
 

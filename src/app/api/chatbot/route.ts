@@ -7,17 +7,13 @@ import {
   countRecentChatbotQuestions,
   getOpenChatbotConversation,
 } from "@/lib/chatbot";
-import { getSupportContactInfo } from "@/lib/support-contact";
 
 // Hjælpe-chatbot (docs/DECISIONS.md 2026-10-02).
-// GET: igangværende samtale + Supports kontaktoplysninger (telefon).
+// GET: den igangværende samtale.
 export async function GET() {
   const user = await getSessionUser();
   if (!user) return unauthorized();
-  return NextResponse.json({
-    conversation: await getOpenChatbotConversation(user.id),
-    contact: getSupportContactInfo(),
-  });
+  return NextResponse.json({ conversation: await getOpenChatbotConversation(user.id) });
 }
 
 // POST { question, channel: "APP" | "WEB" } → samtalen med chatbottens svar.

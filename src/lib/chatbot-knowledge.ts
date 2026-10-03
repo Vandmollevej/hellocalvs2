@@ -114,5 +114,6 @@ export const CHATBOT_KNOWLEDGE = `
 - Andre fejl i appen: Meld en fejl (/profile/report-bug).
 
 ## Kontakt
-- Fandt brugeren ikke svaret, kan de skrive til Support via Kontakt os (/settings/support/contact), ringe til Support eller trykke "Tal med en medarbejder" i chatten. Support svarer i appen.
+- Hello Cal har ingen telefonsupport.
+- Fandt brugeren ikke svaret, kan de skrive til Support via Kontakt os (/settings/support/contact) eller trykke "Tal med en medarbejder" i chatten. Support svarer i appen.
 `.trim();
