@@ -13,6 +13,8 @@ export async function GET() {
       where: { userId: user.id },
       orderBy: { createdAt: "desc" },
       take: 100,
+      // Ikke note/grantedById: admins begrundelse for en tildeling er intern.
+      select: { id: true, reason: true, amount: true, createdAt: true },
     }),
   ]);
 
