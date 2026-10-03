@@ -2647,10 +2647,12 @@
     },
     "join": {
       "title": "Har du fået en kode?",
-      "intro": "Har en anden i familien sendt dig en kode, kan du koble din konto på deres familie.",
+      "intro": "Har den, der betaler for familien, lavet en kode til dig, kan du koble din konto på. Koden virker kun sammen med den e-mail, du er logget ind med.",
       "codeLabel": "Familiekode",
       "submit": "Kobl mig på familien",
-      "confirm": "Den, der betaler for familien, kan se og ændre alt på din profil, så længe du er med. Vil du fortsætte?"
+      "confirm": "Den, der betaler for familien, kan se og ændre alt på din profil, så længe du er med. Vil du fortsætte?",
+      "emailLabel": "Din e-mail",
+      "scanHint": "Har du fået en QR-kode? Scan den med telefonens kamera."
     },
     "member": {
       "title": "Din familie",
@@ -2671,10 +2673,6 @@
       "removeConfirm": "Fjern {name} fra familien? Profilen bliver en almindelig konto uden familieabonnement.",
       "deleteProfile": "Slet profil og alle data",
       "deleteProfileConfirm": "Alt på {name}s profil slettes og kan ikke gendannes. Skriv SLET for at bekræfte."
-    },
-    "code": {
-      "claimHelp": "Personen åbner Hello Cal, vælger \"Har du fået en familiekode?\" på login-siden og indtaster koden. Gælder til {date}.",
-      "joinHelp": "Personen logger ind på sin egen konto og indtaster koden under Indstillinger → Familie. Gælder til {date}."
     },
     "add": {
       "title": "Tilføj profil",
@@ -2703,7 +2701,8 @@
       "code": "Kode",
       "email": "E-mail",
       "password": "Adgangskode (mindst 8 tegn)",
-      "submit": "Opret mit login"
+      "submit": "Opret mit login",
+      "introQr": "Du er ved at oprette dit eget login med e-mailen {email}. Vælg din adgangskode."
     },
     "copy": {
       "action": "Kopier til konto",
@@ -2719,7 +2718,7 @@
       "nameRequired": "Skriv et navn.",
       "notMember": "Personen er ikke med i familien.",
       "notAllowed": "Det er ikke tilladt.",
-      "invalidCode": "Koden er ugyldig eller udløbet.",
+      "invalidCode": "Koden og e-mailen passer ikke sammen, eller koden er udløbet.",
       "emailTaken": "E-mailen bruges allerede af en anden konto.",
       "ownerCannotLeave": "Den, der betaler, kan ikke melde sig ud.",
       "tooYoungToLeave": "Du kan først melde dig ud af familien, når du er fyldt 15.",
@@ -2731,7 +2730,10 @@
       "notFound": "Ikke fundet.",
       "unknown": "Noget gik galt. Prøv igen.",
       "profileHasLogin": "Profilen har sit eget login. Fjern den fra familien i stedet.",
-      "confirmRequired": "Skriv SLET for at bekræfte."
+      "confirmRequired": "Skriv SLET for at bekræfte.",
+      "emailMismatch": "Koden er lavet til en anden e-mail end den, du er logget ind med.",
+      "alreadyMember": "Personen er allerede med i familien.",
+      "inOtherFamily": "Personen er allerede med i en anden familie."
     },
     "deletePermissions": {
       "title": "Sletning af registreringer",
@@ -2745,6 +2747,41 @@
       "portionHelp": "Portion i forhold til din mængde:",
       "portionFor": "{name}",
       "portionOption": "{factor} portion"
+    },
+    "seats": {
+      "title": "Abonnement",
+      "membersCount": "{count} ud af {max}",
+      "membersLabel": "abonnenter tilmeldt",
+      "extraCount": "{count}/{max}",
+      "extraLabel": "ekstra tilkøb"
+    },
+    "invite": {
+      "emailLabel": "Personens e-mail",
+      "emailHelp": "Koden virker kun sammen med præcis denne e-mail.",
+      "submit": "Lav kode og QR-kode"
+    },
+    "pending": {
+      "title": "Ventende invitationer",
+      "joinTitle": "Invitation til {email}",
+      "claimTitle": "Login til {name} ({email})",
+      "joinHelp": "Lad personen scanne QR-koden med telefonens kamera og logge ind med {email}. Eller indtast koden og e-mailen under Profil → Familie. Gælder til {date}.",
+      "claimHelp": "Lad {name} scanne QR-koden med telefonens kamera og vælge en adgangskode. Eller vælg \"Har du fået en familiekode?\" på login-siden og indtast koden og {email}. Gælder til {date}.",
+      "revoke": "Træk tilbage",
+      "revokeConfirm": "Træk koden til {email} tilbage? Den kan ikke længere bruges.",
+      "qrAlt": "QR-kode til {email}"
+    },
+    "joinPage": {
+      "title": "Tilknyt familie",
+      "intro": "{owner} har inviteret dig med i sit familieabonnement.",
+      "emailInfo": "Invitationen gælder kun kontoen med e-mailen {email}.",
+      "loginFirst": "Log ind med {email} for at tilknytte dig. Har du ingen konto, så opret en med den e-mail.",
+      "login": "Log ind",
+      "signup": "Opret konto",
+      "wrongAccount": "Du er logget ind med {current}. Log ud, og log ind med {email}.",
+      "logout": "Log ud",
+      "done": "Du er nu med i {owner}s familie.",
+      "goToFamily": "Gå til Familie",
+      "missing": "Linket mangler sin kode. Scan QR-koden igen."
     }
   },
   "statSections": {

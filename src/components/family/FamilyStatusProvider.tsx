@@ -30,6 +30,9 @@ export type FamilyStatus = {
     ownerId: string;
     ownerName: string;
     isOwner: boolean;
+    extraSeats: number;
+    maxExtraSeats: number;
+    capacity: number;
     members: FamilyMemberInfo[];
     grants: { granteeId: string; subjectId: string }[];
   } | null;

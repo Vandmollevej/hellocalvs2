@@ -2,6 +2,50 @@
 
 Last updated: 2026-10-03
 
+## 2026-10-03: Puls-linjen forsvinder som en slange
+
+- Brugerens ønske: pulsen på forsiden skal forsvinde som en snake og ikke på én gang.
+- Bygget oven på den kontinuerlige puls (næste fej starter straks): det forrige spor toner ikke længere ud på én gang, men trækker halen efter sig mod højre med blød start og en 60 px blød tilspidsning, til det er helt ude ved ca. 3/4 af det nye fej. Halen holder sig altid foran det nye fejs spids (`previousPulseTail` + `drawPulse` i `home-waves.ts`).
+- Nye tests i `home-waves.test.mjs`. `npm test` grøn bortset fra page-tree-testen, der også fejler på master; lint og build grønne. Kun tjekket som headless-canvas-render, ikke i appen på telefon.
+
+## 2026-10-03: Kalender — profilcirklen er tilbage i dagsvisningen
+
+- Dagsvisningen (`DayDetails` i `src/app/calendar/page.tsx`) tegner sin egen grønne topbjælke som fuldskærmsdialog over siden, og dens højre hjørne var et tomt felt — så profilcirklen forsvandt, så snart en dag blev åbnet. Den viser nu `ProfileAvatarLink` som alle andre sider.
+- Lint (0 fejl), typecheck og build grønne. Ikke set med login (ingen lokal DB) — test på telefon: Kalender → åbn en dag.
+
+## 2026-10-03: Kyllingelåret fjernet fra kalenderens dagvisning
+
+- Brugerens rettelse: indtagne kalorier i timerækken og timens oversigt står nu kun som "540 kcal" — intet kyllingelår foran (`EnergyChip`, kind `intake`). Flamme (forbrændt) og glas (vand) er uændrede. Forsidens tal-hjul og statistikboksen Kalorier har stadig kyllingelåret som rækkeikon.
+- Uge-/listevisningen viser bevidst ingen kcal på fremtidige dage (siden 2026-09-28) — ikke ændret.
+
+
+## 2026-10-03: Forsidens puls-linje slår i urets puls (60 bpm uden ur)
+
+- Puls-linjen bag hero slår nu i den målte puls: nyeste puls fra en tilsluttet integration, højst 30 min gammel, ellers 60 bpm. Flere slag pr. fej, ingen pause mellem fejene. Se DECISIONS.md samme dato.
+- Linjen ligger nu over tal-hjulets midterste tal (26 px over midten, målt i siden), så den ikke går om bag det.
+- Nyt: `src/lib/live-heart-rate.ts`, `GET /api/health-metrics/heart-rate`; `HomeWaves` henter pulsen hvert minut; `home-waves.ts` tegner et slag hvert 60/bpm s. Ingen migration.
+- Lint (0 fejl), typecheck, tests (undtagen den kendte `page-tree`-fejl) og build kørt; tegningen tjekket i Chromium ved 60 og 120 bpm. Ikke live-testet med et rigtigt ur (ingen DB/integration i sessionen) — test på telefon med fx Garmin/Apple Health tilsluttet.
+
+## 2026-10-03: Familie — kode bundet til e-mail, QR-kode og pladstællere
+
+- Familiekoder virker nu kun sammen med den e-mail, betaleren skrev, og (ved
+  tilknytning) kun for kontoen med den e-mail. Betalerens familieside viser
+  "Ventende invitationer" med QR-kode, kode, udløb og "Træk tilbage", plus
+  "x ud af y abonnenter tilmeldt" og "0/5 ekstra tilkøb" øverst. Se
+  DECISIONS.md samme dato og `docs/FAMILY.md`.
+- Ny side `/family-code/join?t=…` (QR-kodens mål); `/family-code?t=…` udfylder
+  kode og e-mail for login-koder. Nye ruter `GET /api/family/codes`,
+  `DELETE /api/family/codes/[id]`, `GET /api/family/invite`. Tilknytning er
+  nu også begrænset mod gentagne forsøg.
+- Migration `20261003200000_family_invite_email_qr` **skal køre ved deploy**.
+  Kræver `ADMIN_SESSION_SECRET` (findes allerede) og `APP_BASE_URL` til QR-linket.
+- Testet mod lokal Postgres: 18 tjek af kode/e-mail-match, engangsbrug,
+  manipuleret link, tilbagetrækning, login-kode via QR og pladstal; skærmbilleder
+  af familieside, tilknytning (rigtig konto, forkert konto, ikke logget ind) og
+  gennemført tilknytning. Ikke testet med rigtig telefonkamera-scanning.
+- Mangler: køb af ekstra pladser (pris/betaling skal afklares).
+
+
 ## 2026-10-03: Betaling viser det aktive kort fra Stripe (PR #132 flettet med master)
 
 - `/settings/payment` viser det kort/den wallet, Stripe trækker på: mærke + sidste 4 + udløb; Apple Pay/Google Pay med kortet bagved (nyt felt `PaymentMethod.wallet`, migration `20261002090000_payment_method_wallet` **skal køre ved deploy**); MobilePay. Kortmærke-logo (Visa/Mastercard) i lille fast ramme; andre mærker får det egne kortikon (`IconPaymentCard`). Siden henter altid frisk fra Stripe (`/api/subscription?refresh=1`). Kortet beholdes efter opsigelse (perioden er betalt).
@@ -331,12 +375,6 @@ Last updated: 2026-10-02
 - `/profile/recipes` (begge faner) og `/profile/recipes/[id]` brugte generiske skeletter (`SkeletonMediaRows`/`SkeletonDetail`) med bjælker i procent af sidebredden — enorme på bred skærm og uden lighed med indholdet. Nu tegner `RecipeRow` og ret-siden sig selv uden data (design.md §6.14): samme billedfelt, titel + undertekst i tekstbredde (`SkeletonTitleLines` i `Skeleton.tsx`), 3 rækker under "Trender netop nu".
 - Lint grøn; typecheck uden fejl i de berørte filer. Build ikke kørt lokalt (delt `node_modules` har forældet Prisma-klient). Ikke visuelt testet (brugerregel).
 
-## 2026-10-03: Puls-linjen forsvinder som en slange
-
-- Brugerens ønske: pulsen på forsiden skal forsvinde som en snake og ikke på én gang.
-- Når spidsen har nået højre kant og linjen har stået et øjeblik (15 % af pausen), trækkes halen efter mod højre med blød start/stop og en 60 px blød tilspidsning, til hele linjen er ude — senest 95 % inde i pausen, så næste fej starter på en tom skærm. Ingen samlet udtoning længere (`pulseSpan` + `drawPulse` i `home-waves.ts`).
-- Ny test i `home-waves.test.mjs`. `npm test` grøn bortset fra page-tree-testen, der også fejler på master; lint og build grønne. Kun tjekket som headless-canvas-render, ikke i appen på telefon.
-
 ## 2026-10-03: Bølge-baggrunden lavet om (roligere, skarp top)
 
 - Brugerens feedback på telefon: "alt for voldsomt", toppen må ikke være sløret — kun bunden — og hjerteslaget skal ligge længere nede og gå helt ude fra siden.
@@ -410,7 +448,7 @@ Last updated: 2026-10-02
 
 ## 2026-10-02: Fælles målstatus-blok i kalenderen
 
-- Ny fælles komponent `src/components/calendar/GoalStatusSummary.tsx` bruges både nederst i dagvisningen og i månedsstatussen over gitteret. Oppefra: højrestillet rød flamme + grøn "+ N kcal" (kun ved registreret motion) og "Mål: X kcal"; statusbjælke med cirkel + kort tekst ("Inden for målet" / "Målet ikke opnået" / "Intet registreret"); under bjælken højrestillet "Tilbage for i dag: N kcal" (måned: "Tilbage i måneden") eller "Overskredet med N kcal" i rødt.
+- Ny fælles komponent `src/components/calendar/GoalStatusSummary.tsx` bruges både nederst i dagvisningen og i månedsstatussen over gitteret. Oppefra: højrestillet rød flamme + grøn "+ N kcal" (kun ved registreret motion); statusbjælke med cirkel + kort tekst ("Inden for målet" / "Målet ikke opnået" / "Intet registreret") på samme linje som "Mål" (rettet 2026-10-03, se DECISIONS.md); under rækken højrestillet "Tilbage for i dag: N kcal" (måned: "Tilbage i måneden") eller "Overskredet med N kcal" i rødt.
 - Motion tæller nu med i målet i hele kalenderen (DECISIONS 2026-10-02): `DailyGoalContext` giver `base` (til "Mål") og `effective` (= base + dagens motion) — alle nået/over/balance-afgørelser bruger `effective`. Forside-kort og widgets er ikke rettet (andre gruppers filer).
 - Lint, typecheck og `npm run build` grønne. Ikke visuelt testet (ingen lokal DB/login) — tjek dag- og månedsvisning på telefon.
 

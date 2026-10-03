@@ -1,7 +1,7 @@
 // Kør: npm test  (node --test, Node 24 fjerner TypeScript-typer selv)
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { createWaveScene, drawWaveScene, heartbeatShape, mulberry32, pulseSpan, WAVE_BLEED } from "./home-waves.ts";
+import { createWaveScene, drawWaveScene, heartbeatShape, mulberry32, previousPulseTail, pulseTrace, WAVE_BLEED } from "./home-waves.ts";
 
 const palette = {
   ramp: [
@@ -91,7 +91,7 @@ test("puls-linjen starter helt ude ved venstre kant og ligger midt i hero", () =
   assert.ok(scene.pulse.y >= 0.55 && scene.pulse.y <= 0.65);
   for (const t of [0.5, 1, 2, 3]) {
     // Find et tidspunkt i fejet og tjek, at sporet begynder uden for venstre kant.
-    const time = scene.pulse.period * 10 - scene.pulse.offset + t;
+    const time = scene.pulse.sweep * 10 - scene.pulse.offset + t;
     const ctx = fakeContext();
     const starts = [];
     ctx.moveTo = (x) => starts.push(x);
@@ -101,27 +101,34 @@ test("puls-linjen starter helt ude ved venstre kant og ligger midt i hero", () =
   }
 });
 
-test("puls-linjen forsvinder som en slange: halen trækkes efter mod højre", () => {
-  for (const seed of [1, 5, 99]) {
-    const { pulse } = createWaveScene(seed);
-    const left = -WAVE_BLEED;
-    const right = 393 + WAVE_BLEED;
-    // Under fejet står halen ved venstre kant.
-    assert.equal(pulseSpan(pulse, pulse.sweep / 2, left, right).tail, left);
-    // Efter fejet kører halen gradvist mod højre — ikke alt væk på én gang.
-    let previous = left;
-    let partial = 0;
-    for (let phase = pulse.sweep; phase < pulse.period; phase += 0.05) {
-      const { head, tail } = pulseSpan(pulse, phase, left, right);
-      assert.equal(head, right);
-      assert.ok(tail >= previous);
-      if (tail > left && tail < right) partial++;
-      previous = tail;
-    }
-    assert.ok(partial > 20, `halen skal bevæge sig synligt (${partial} trin)`);
-    // Og når perioden slutter, er hele linjen væk.
-    assert.equal(pulseSpan(pulse, pulse.period - 1e-6, left, right).tail, right);
+test("det forrige fej forsvinder som en slange: halen trækkes gradvist mod højre", () => {
+  const left = -WAVE_BLEED;
+  const right = 393 + WAVE_BLEED;
+  let previous = -Infinity;
+  let partial = 0;
+  for (let progress = 0; progress <= 1; progress += 0.01) {
+    const head = left + progress * (right - left);
+    const tail = previousPulseTail(progress, head, left, right);
+    assert.ok(tail >= previous, "halen går aldrig baglæns");
+    assert.ok(tail >= head + 28, "halen ligger foran det nye fejs spids");
+    if (tail > head + 28 && tail < right) partial++;
+    previous = tail;
   }
+  assert.ok(partial > 20, `halen skal bevæge sig synligt (${partial} trin)`);
+  // Ved ca. 3/4 af det nye fej er det forrige spor helt væk.
+  assert.ok(previousPulseTail(0.8, left + 0.8 * (right - left), left, right) >= right);
+});
+
+test("det forrige spor tegnes i fuld styrke, ikke tonet ud", () => {
+  const scene = createWaveScene(4);
+  const ctx = fakeContext();
+  const alphas = [];
+  const original = Object.getOwnPropertyDescriptor(ctx, "globalAlpha");
+  Object.defineProperty(ctx, "globalAlpha", { set: (v) => (alphas.push(v), original.set(v)) });
+  const time = scene.pulse.sweep * 10 - scene.pulse.offset + scene.pulse.sweep * 0.4;
+  drawWaveScene(ctx, { ...scene, bundles: [], fog: [] }, palette, { t: time, width: 393, height: 430, scale: 1 });
+  // To spor (nyt + forrige) à to lag: alle med samme styrke.
+  assert.equal(alphas.filter((a) => a === 0.85).length, 2);
 });
 
 test("bølgerne holder sig inden for rimelige grænser og bevæger sig langsomt", () => {
@@ -140,4 +147,59 @@ test("bølgerne holder sig inden for rimelige grænser og bevæger sig langsomt"
   const y1 = firstY(101);
   assert.ok(Math.abs(y1 - y0) < 8, `for hurtig bevægelse: ${Math.abs(y1 - y0)} px/s`);
   assert.ok(y0 > -200 && y0 < 700);
+});
+
+/** Antal R-takker (lokale toppe over 60 % af udslaget) i et fej. */
+function countBeats(scene, bpm, width = 393) {
+  const yAt = pulseTrace(scene.pulse, 3, bpm, width);
+  let beats = 0;
+  let above = false;
+  for (let x = -WAVE_BLEED; x <= width + WAVE_BLEED; x += 0.5) {
+    const isAbove = yAt(x) < -0.6 * scene.pulse.amplitude;
+    if (isAbove && !above) beats++;
+    above = isAbove;
+  }
+  return beats;
+}
+
+test("puls-linjen slår i den givne puls (60 bpm = ét slag i sekundet)", () => {
+  const scene = createWaveScene(11);
+  const at60 = countBeats(scene, 60);
+  assert.ok(Math.abs(at60 - scene.pulse.sweep) <= 1, `${at60} slag på ${scene.pulse.sweep.toFixed(2)} s ved 60 bpm`);
+  const at120 = countBeats(scene, 120);
+  assert.ok(Math.abs(at120 - scene.pulse.sweep * 2) <= 1, `${at120} slag ved 120 bpm`);
+});
+
+test("pulsen låses pr. fej, så slagene ikke flytter sig midt i et fej", () => {
+  const scene = createWaveScene(3);
+  const pathAt = (bpm) => {
+    const ys = [];
+    const ctx = fakeContext();
+    ctx.lineTo = (_x, y) => ys.push(y);
+    const time = scene.pulse.sweep * 20 - scene.pulse.offset + scene.pulse.sweep * 0.8;
+    drawWaveScene(ctx, { ...scene, bundles: [], fog: [] }, palette, { t: time, width: 393, height: 430, scale: 1, bpm });
+    return ys;
+  };
+  assert.deepEqual(pathAt(60), pathAt(140));
+});
+
+test("pulslinjen tegner ingen NaN ved ekstreme pulser", () => {
+  const scene = createWaveScene(9);
+  for (const bpm of [0, 25, 200, 400, Number.NaN]) {
+    const ctx = fakeContext();
+    drawWaveScene(ctx, { ...scene, pulse: { ...scene.pulse, lockedBpm: {} } }, palette, { t: 50, width: 393, height: 430, scale: 1, bpm });
+    assert.equal(ctx.calls.bad, 0, `bpm ${bpm}`);
+  }
+});
+
+test("puls-linjen ligger på den givne grundlinje (over tal-hjulets midte)", () => {
+  const scene = createWaveScene(21);
+  const ctx = fakeContext();
+  const starts = [];
+  ctx.moveTo = (x, y) => starts.push([x, y]);
+  const time = scene.pulse.sweep * 10 - scene.pulse.offset + scene.pulse.sweep * 0.5;
+  drawWaveScene(ctx, { ...scene, bundles: [], fog: [] }, palette, { t: time, width: 393, height: 430, scale: 1, pulseY: 150 });
+  const [x, y] = starts[0];
+  assert.equal(x, -WAVE_BLEED);
+  assert.ok(Math.abs(y - 150) <= scene.pulse.amplitude * 1.2, `starter i y=${y}`);
 });

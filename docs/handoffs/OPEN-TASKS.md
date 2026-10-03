@@ -246,6 +246,7 @@ Ejer: cloud-session `claude/lucid-bell-s5vyhv` (2026-09-25)
 
 | Id | Opgave | Status | Næste skridt |
 | --- | --- | --- | --- |
+| family-qr | Familiekode bundet til e-mail, krypteret QR-kode på betalerens side, "x ud af y abonnenter" + "0/5 ekstra tilkøb" | Venter på bruger | Bygget på branch `claude/family-invite-qr` (draft-PR). Næste: brugerens test på telefon (scan QR med kameraet) og afklaring af pris/betaling for ekstra pladser |
 | — | Familieabonnement: forældre ser/taster for børn, adgangslog til barnet | I gang | Første version bygget og pushet (branch `claude/lucid-bell-s5vyhv`, ikke flettet). Næste: brugerens test og "Mangler" i `docs/FAMILY.md` (oprettelsesflow med alder er næste skridt) |
 
 ## G-FLOWS — Admin "Flows" + telefon-editor
@@ -281,7 +282,7 @@ Ejer: bølge-sessionen (2026-10-01)
 | --- | --- | --- | --- |
 | — | Rolig, tilfældig bølge-animation bag forsiden med frostet-glas-bund og tåge | Færdig (kode) | Afventer brugerens visuelle godkendelse på telefon; justér tempo/farve efter feedback |
 | — | Ommer: afdæmpet, skarp top, kun sløret forneden, puls lavere og fra venstre kant (branch `claude/forside-boelger-ommer`) | Venter på bruger | Brugeren tester på telefon; justér alfa/bredde i `createWaveScene` og maskerne i `globals.css` efter feedback |
-| — | Puls-linjen forsvinder som en slange (halen trækkes efter) i stedet for at tone ud på én gang (branch `claude/puls-snake`) | Venter på bruger | Brugeren tester på telefon; justér ophold/hastighed i `pulseSpan` efter feedback |
+| — | Det forrige puls-spor forsvinder som en slange (halen trækkes efter) i stedet for at tone ud på én gang (branch `claude/puls-snake`, PR #198) | Venter på bruger | Brugeren tester på telefon; justér hastigheden (faktor 1,3) i `previousPulseTail` efter feedback |
 
 ## G-SCAN — Kameraflow og vareside efter test (mælk/flødeboller)
 Filer: `src/components/camera/**`, `src/lib/focus-detection.ts`, `src/lib/product-naming*`, `src/lib/quick-product-enrichment.ts`, `src/lib/product-photo-analysis.ts`, `src/lib/brand-match.ts`, `src/lib/nutrient-resolution.ts`, `src/components/add/AddProductView.tsx` (cirkel/titel/næringspanel), `scripts/image-agent/cutout.py`.

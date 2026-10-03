@@ -20,6 +20,7 @@ import {
 import { HfScreen } from "@/components/HfScreen";
 import { AddMenuSheet } from "@/components/add/AddMenuSheet";
 import { HfChevron } from "@/components/hf/HfChevron";
+import { ProfileAvatarLink } from "@/components/ProfileAvatarLink";
 import { IconBathScale } from "@/components/hf/IconBathScale";
 import { ActionLink } from "@/components/hf/ActionButton";
 import { FoodRow } from "@/components/FoodRow";
@@ -2271,7 +2272,12 @@ function DayDetails({
           <h1 className="hf-type-nav-title hf-appbar__title first-letter:uppercase">{t("nav.calendar")}</h1>
           <span className="h-6 w-6 shrink-0" aria-hidden="true" />
         </div>
-        <div className="hf-appbar__slot" />
+        {/* Dagsvisningen tegner sin egen topbjælke (fuldskærmsdialog over
+            HfScreen), så profilcirklen skal stå her også — ellers forsvinder
+            den, så snart en dag åbnes. */}
+        <div className="hf-appbar__end">
+          <ProfileAvatarLink />
+        </div>
       </div>
       {viewMenuOpen && (
         <button
@@ -2958,7 +2964,7 @@ function HourEntriesOverlay({
         ))}
         {groups.map((group) => {
           const isOpen = openKeys.has(group.key);
-          // Kalorier fra mad som kyllingelår, vand som glas + cl — begge kan
+          // Kalorier fra mad som "540 kcal", vand som glas + cl — begge kan
           // stå på samme tidspunkt. Vand-varer tæller ikke som mad.
           const foodItems = group.items.filter(
             (item) => item.kind === "registration" && !isWaterRegistration(item.registration),
