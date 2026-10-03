@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { Suspense } from "react";
@@ -15,6 +15,16 @@ import { SkeletonCards, SkeletonList, SkeletonScreen, SkeletonSectionTitle } fro
 // Familien (docs/FAMILY.md): betaleren opretter profiler, markerer børn,
 // laver login-koder og bestemmer, hvem der må se og taste ind for hvem.
 // Et almindeligt medlem ser, hvem der bestemmer, og kan melde sig ud.
+// Koder er bundet til en e-mail og vises med QR-kode, indtil de er brugt.
+
+type PendingCode = {
+  id: string;
+  profileId: string | null;
+  email: string;
+  code: string;
+  expiresAt: string;
+  qrDataUrl: string;
+};
 
 async function send(url: string, method: string, body?: unknown) {
   const res = await fetch(url, {
@@ -31,8 +41,12 @@ function FamilyPageContent() {
   const searchParams = useSearchParams();
   const { status, refresh } = useFamilyStatus();
   const [error, setError] = useState<string | null>(null);
-  const [codes, setCodes] = useState<Record<string, { code: string; expiresAt: string }>>({});
+  const [pendingCodes, setPendingCodes] = useState<PendingCode[]>([]);
+  // Hvilken e-mail-formular er åben: "join" (ny med egen konto) eller et profil-id.
+  const [codeFormFor, setCodeFormFor] = useState<string | null>(null);
+  const [codeEmail, setCodeEmail] = useState("");
   const [joinCode, setJoinCode] = useState("");
+  const [joinEmail, setJoinEmail] = useState("");
   const [showAdd, setShowAdd] = useState(searchParams?.get("add") === "1");
   const [form, setForm] = useState({ displayName: "", birthDate: "", sex: "", isChild: true, heightCm: "", weightKg: "" });
   const [busy, setBusy] = useState(false);
@@ -40,6 +54,17 @@ function FamilyPageContent() {
   useEffect(() => {
     void refresh();
   }, [refresh]);
+
+  const isOwner = Boolean(status?.family?.isOwner);
+  const loadCodes = useCallback(async () => {
+    const result = await send("/api/family/codes", "GET");
+    if (result.ok && Array.isArray(result.data.codes)) setPendingCodes(result.data.codes as PendingCode[]);
+  }, []);
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- koderne hentes fra serveren, når man er betaler
+    if (isOwner) void loadCodes();
+  }, [isOwner, loadCodes]);
 
   function showError(data: Record<string, unknown>) {
     setError(t(`family.error.${typeof data.code === "string" ? data.code : "unknown"}`));
@@ -55,14 +80,25 @@ function FamilyPageContent() {
     return result;
   }
 
+  function openCodeForm(key: string) {
+    setError(null);
+    setCodeEmail("");
+    setCodeFormFor((current) => (current === key ? null : key));
+  }
+
   async function createCode(profileId: string | null) {
-    const result = await run("/api/family/codes", "POST", profileId ? { profileId } : {});
+    const result = await run("/api/family/codes", "POST", { email: codeEmail, ...(profileId ? { profileId } : {}) });
     if (result.ok) {
-      setCodes((current) => ({
-        ...current,
-        [profileId ?? "join"]: { code: String(result.data.code), expiresAt: String(result.data.expiresAt) },
-      }));
+      setCodeFormFor(null);
+      setCodeEmail("");
+      await loadCodes();
     }
+  }
+
+  async function revokeCode(pending: PendingCode) {
+    if (!window.confirm(t("family.pending.revokeConfirm", { email: pending.email }))) return;
+    await run(`/api/family/codes/${pending.id}`, "DELETE");
+    await loadCodes();
   }
 
   async function addProfile() {
@@ -94,15 +130,31 @@ function FamilyPageContent() {
   const hasGrant = (granteeId: string, subjectId: string) =>
     Boolean(family?.grants.some((grant) => grant.granteeId === granteeId && grant.subjectId === subjectId));
 
-  const codeBox = (key: string) =>
-    codes[key] && (
-      <div className="mt-2 rounded-[8px] bg-hf-cream p-2">
-        <p className="hf-type-body-lg text-center tracking-widest">{codes[key].code}</p>
-        <p className="hf-type-caption text-center text-text-secondary">
-          {t(key === "join" ? "family.code.joinHelp" : "family.code.claimHelp", {
-            date: new Date(codes[key].expiresAt).toLocaleDateString("da-DK"),
-          })}
-        </p>
+  const capacity = family?.capacity ?? status.maxProfiles;
+  const memberName = (userId: string) => members.find((member) => member.userId === userId)?.displayName ?? "";
+
+  // E-mail-felt + knap, der laver en kode bundet til e-mailen.
+  const codeForm = (key: string, profileId: string | null) =>
+    codeFormFor === key && (
+      <div className="hf-card hf-stack">
+        <TextField
+          variant="standard"
+          type="email"
+          label={t("family.invite.emailLabel")}
+          value={codeEmail}
+          onChange={(event) => setCodeEmail(event.target.value)}
+          autoComplete="off"
+          className="userback-ignore"
+        />
+        <p className="hf-type-caption">{t("family.invite.emailHelp")}</p>
+        <button
+          type="button"
+          disabled={busy || !codeEmail.includes("@")}
+          onClick={() => createCode(profileId)}
+          className="hf-control hf-btn-primary w-full px-4"
+        >
+          {t("family.invite.submit")}
+        </button>
       </div>
     );
 
@@ -111,21 +163,33 @@ function FamilyPageContent() {
       <h2 className="hf-type-section-title">{t("family.join.title")}</h2>
       <div className="hf-card hf-stack">
         <p className="hf-type-body">{t("family.join.intro")}</p>
+        <p className="hf-type-caption">{t("family.join.scanHint")}</p>
         <TextField
           variant="standard"
+          label={t("family.join.codeLabel")}
           value={joinCode}
           onChange={(event) => setJoinCode(event.target.value.toUpperCase())}
           placeholder="XXXX-XXXX"
-          aria-label={t("family.join.codeLabel")}
           autoCapitalize="characters"
+        />
+        <TextField
+          variant="standard"
+          type="email"
+          label={t("family.join.emailLabel")}
+          value={joinEmail}
+          onChange={(event) => setJoinEmail(event.target.value)}
+          autoComplete="email"
         />
         <button
           type="button"
-          disabled={busy || joinCode.trim().length < 8}
+          disabled={busy || joinCode.trim().length < 8 || !joinEmail.includes("@")}
           onClick={async () => {
             if (!window.confirm(t("family.join.confirm"))) return;
-            const result = await run("/api/family/join", "POST", { code: joinCode });
-            if (result.ok) setJoinCode("");
+            const result = await run("/api/family/join", "POST", { code: joinCode, email: joinEmail });
+            if (result.ok) {
+              setJoinCode("");
+              setJoinEmail("");
+            }
           }}
           className="hf-control hf-btn-primary w-full px-4"
         >
@@ -196,7 +260,21 @@ function FamilyPageContent() {
       {family?.isOwner && (
         <>
           <section>
-            <h2 className="hf-type-section-title">{t("family.members.title", { count: members.length, max: status.maxProfiles })}</h2>
+            <h2 className="hf-type-section-title">{t("family.seats.title")}</h2>
+            <div className="hf-card hf-stack">
+              <p className="hf-type-body">
+                <span className="hf-type-strong">{t("family.seats.membersCount", { count: members.length, max: capacity })}</span>{" "}
+                {t("family.seats.membersLabel")}
+              </p>
+              <p className="hf-type-body">
+                <span className="hf-type-strong">{t("family.seats.extraCount", { count: family.extraSeats, max: family.maxExtraSeats })}</span>{" "}
+                {t("family.seats.extraLabel")}
+              </p>
+            </div>
+          </section>
+
+          <section>
+            <h2 className="hf-type-section-title">{t("family.members.title", { count: members.length, max: capacity })}</h2>
             <div className="overflow-hidden rounded-[8px] bg-hf-tan">
               {members.map((member: FamilyMemberInfo) => (
                 <div key={member.userId} className="border-b border-hf-tan-dark px-4 py-2 last:border-b-0">
@@ -228,13 +306,13 @@ function FamilyPageContent() {
                         <button
                           type="button"
                           disabled={busy}
-                          onClick={() => createCode(member.userId)}
+                          onClick={() => openCodeForm(member.userId)}
                           className="hf-control hf-btn-secondary w-full px-4"
                         >
                           {t("family.members.createLoginCode")}
                         </button>
                       )}
-                      {codeBox(member.userId)}
+                      {codeForm(member.userId, member.userId)}
                       {!member.hasLogin && (
                         <button
                           type="button"
@@ -271,7 +349,50 @@ function FamilyPageContent() {
             </div>
           </section>
 
-          {members.length < status.maxProfiles && (
+          {pendingCodes.length > 0 && (
+            <section>
+              <h2 className="hf-type-section-title">{t("family.pending.title")}</h2>
+              <div className="hf-stack">
+                {pendingCodes.map((pending) => {
+                  const date = new Date(pending.expiresAt).toLocaleDateString("da-DK");
+                  return (
+                    <div key={pending.id} className="hf-card hf-stack">
+                      <p className="userback-ignore userback-block hf-type-card-title break-all">
+                        {pending.profileId
+                          ? t("family.pending.claimTitle", { name: memberName(pending.profileId), email: pending.email })
+                          : t("family.pending.joinTitle", { email: pending.email })}
+                      </p>
+                      {/* QR-koden er et link med koden og e-mailen krypteret (src/lib/family-invite-token.ts). */}
+                      {/* eslint-disable-next-line @next/next/no-img-element -- data-URL fra serveren */}
+                      <img
+                        src={pending.qrDataUrl}
+                        alt={t("family.pending.qrAlt", { email: pending.email })}
+                        width={240}
+                        height={240}
+                        className="userback-ignore userback-block mx-auto rounded-[8px] bg-hf-white"
+                      />
+                      <p className="userback-ignore userback-block hf-type-body-lg hf-type-strong text-center tracking-widest">{pending.code}</p>
+                      <p className="hf-type-caption">
+                        {pending.profileId
+                          ? t("family.pending.claimHelp", { name: memberName(pending.profileId), email: pending.email, date })
+                          : t("family.pending.joinHelp", { email: pending.email, date })}
+                      </p>
+                      <button
+                        type="button"
+                        disabled={busy}
+                        onClick={() => revokeCode(pending)}
+                        className="hf-btn-text self-start"
+                      >
+                        {t("family.pending.revoke")}
+                      </button>
+                    </div>
+                  );
+                })}
+              </div>
+            </section>
+          )}
+
+          {members.length < capacity && (
             <section>
               <h2 className="hf-type-section-title">{t("family.add.title")}</h2>
               {!showAdd ? (
@@ -286,12 +407,12 @@ function FamilyPageContent() {
                   <button
                     type="button"
                     disabled={busy}
-                    onClick={() => createCode(null)}
+                    onClick={() => openCodeForm("join")}
                     className="hf-control hf-btn-secondary w-full px-4"
                   >
                     {t("family.add.inviteExisting")}
                   </button>
-                  {codeBox("join")}
+                  {codeForm("join", null)}
                 </div>
               ) : (
                 <div className="hf-card hf-stack">

@@ -145,6 +145,11 @@ Kilder:
 - **Sider:** `/profile` (Skift profil), `/profile/family` (familie, profiler,
   koder, adgang, udmelding), `/settings/control-log`, `/family-code` (barnet
   sætter sit eget login med en kode; link fra login-siden).
+- **Koder og QR-kode (2026-10-03):** hver kode er bundet til en e-mail og
+  virker kun sammen med den. Betalerens familieside viser ventende koder med
+  krypteret QR-kode (`/family-code/join?t=…` til eksisterende konti,
+  `/family-code?t=…` til login-koder), samt "x ud af y abonnenter tilmeldt" og
+  "n/5 ekstra tilkøb" (`Family.extraSeats`; købet er ikke bygget).
 - **Kopier til konto:** `POST /api/family/copy-registration` kopierer en egen
   registrering som nyt snapshot til en profil, man styrer. Findes indtil
   videre kun på forsidens dagsliste (`DailyList`).

@@ -10,6 +10,34 @@ Brugerens krav: "Pulsen skal svare til den rigtige puls som måles, hvis ur tils
 - Pulsen = nyeste `HEART_RATE_BPM` fra en integration med status `CONNECTED`, højst 30 minutter gammel (integrationerne synkroniserer hvert 15. minut) og mellem 30 og 220 bpm (`src/lib/live-heart-rate.ts`, `GET /api/health-metrics/heart-rate`). Ellers 60 bpm. Forsiden spørger én gang i minuttet, mens siden er synlig.
 - Pulsen låses pr. fej, så slagene ikke hopper, hvis en ny måling kommer midt i et fej.
 - Placering (bruger samme dag: "ovenover midten … så den ikke går om bag det tal i hjulet, som står i midten"): grundlinjen ligger 26 px over tal-hjulets midterste række, målt i siden (`data-stats-wheel` på hjulets boks). Det rækker til, at dykket efter R-takken og stregens glød går fri af det midterste tal. Ændrer placeringen fra 2026-10-03 ("omkring tal-hjulets midte").
+
+## 2026-10-03: Familiekoder er bundet til en e-mail og vises som krypteret QR-kode
+
+- **Ejerens krav:** koden skal være helt unik og kan kun bruges sammen med den
+  e-mail, den er lavet til. Betaleren skriver personens e-mail, når koden
+  laves (både "Inviter en med egen konto" og "Lav login-kode" til en profil
+  uden login). Koden (8 tegn, `XXXX-XXXX`) er unik i databasen (`codeHash`
+  `@unique`; ved sammenfald laves en ny).
+- **Tilknytning (eksisterende konto):** koden + e-mailen skal passe sammen,
+  og den indloggede kontos e-mail skal være præcis den e-mail. Forkert
+  kombination giver samme fejl som ukendt kode, så man ikke kan gætte koder.
+- **QR-kode:** betalerens familieside viser hver ventende kode med QR-kode,
+  kode og udløb, indtil den er brugt, udløbet (7 dage) eller trukket tilbage.
+  QR-koden er et link (`/family-code/join?t=…`, login-koder
+  `/family-code?t=…`), hvor kode og e-mail er AES-256-GCM-krypteret med en
+  nøgle afledt af `ADMIN_SESSION_SECRET` (`src/lib/family-invite-token.ts`).
+  Hverken kode eller e-mail står i klartekst i linket, og et ændret link
+  afvises. Scannes den med telefonens kamera, åbnes tilknytningssiden; er man
+  ikke logget ind, sendes man til login og tilbage. Koden gemmes krypteret
+  (`codeCipher`) ud over hashen, så betaleren kan se den igen.
+- **En ny kode til samme e-mail erstatter den gamle.** Koder fra før denne
+  ændring (uden e-mail) virker ikke længere — betaleren laver en ny.
+- **Tællere på betalerens familieside:** "x ud af y abonnenter tilmeldt"
+  (profiler i familien / pladser) og "n/5 ekstra tilkøb". `Family.extraSeats`
+  (højst 5) lægges oven i de 5 pladser. Selve købet af ekstra pladser er
+  **ikke bygget** — pris og betaling skal afklares med ejeren.
+
+
 ## 2026-10-03: Adgangsarkets knapper ligger under listen, ikke ovenpå
 
 Ændrer "faste knapper nederst" fra 2026-09-27: knapperne og "Vilkår og
