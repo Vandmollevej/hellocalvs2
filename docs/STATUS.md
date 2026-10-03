@@ -1,5 +1,10 @@
 # HELLO CAL — project status
 
+
+## 2026-10-02: Desktop — alle sider i skallen
+
+- På desktop vises alle sider (også login, betingelser, privatlivspolitik) i WebShell med sidebjælke, topmenu og brødkrummer; kun admin, hello-doc, business og presse er fuld bredde.
+- Lint og typecheck grønne; ikke set i browser — tjek login-siderne på desktop.
 Last updated: 2026-10-02
 
 ## 2026-10-02: Kropsmål som statistikgrafer
@@ -7,6 +12,13 @@ Last updated: 2026-10-02
 - Nye grafer `body:<felt>` i statistikmodulet (bryst, talje, hofte, overarm, lår): samme kort som på Kropsmål-siden med tegningen til venstre, men til højre et forløb over de seneste 10 målinger (x efter dato), seneste værdi, min/maks og ændring siden sidst. Komponent `src/components/BodyMeasurementChart.tsx`, logik `src/lib/body-measurement-series.ts` (tests grønne).
 - Tilføjes under "Ubrugte grafer" → blokken Kropsmål, eller med linket "Vis kropsmål som grafer i Statistik" på Kropsmål-siden (lægger alle fem nederst i graferne og åbner Statistik).
 - Hofte har stadig ingen godkendt tegning, så venstre felt er tomt dér. Lint, typecheck og build grønne; ikke visuelt testet (ingen lokal DB/login).
+
+## 2026-10-02: Kameraflowet — rigtige stillbilleder + nyt foto af indholdet
+
+- Fejlen: marmelade (5711954020055) fik ingen ingredienser, fordi indholdsfotoet var et sløret 1080p-videobillede, og OpenAI svarede tomt ("for sløret"). Ingen genstart var involveret. Se DECISIONS 2026-10-02.
+- Nyt: `src/lib/camera-still.ts` (stillbillede via `ImageCapture.takePhoto`, ellers skarpeste af tre 4K-videobilleder; energi/indhold beskæres til søgerens kvadrat), brugt i `ProductCaptureFlow`. Log-trin `photo_captured` viser kilde, opløsning og skarphed.
+- Nyt: varesiden viser "Indholdet kunne ikke læses på billedet" + knap; `IngredientsRetakeFlow` (`/camera?retake=ingredients&product=<id>`) og `POST /api/products/[id]/ingredients-photo`.
+- Lint grøn; typecheck uden fejl i de berørte filer. Build ikke kørt lokalt (delt `node_modules` har forældet Prisma-klient). Ikke testet på telefon: tjek i admin "Log", om `photo_captured` siger "stillbillede" på iPhone — ellers bruges 4K-videobilledet.
 
 ## 2026-10-02: Retter — skelettet er nu sidens egne rækker
 
@@ -42,6 +54,11 @@ Last updated: 2026-10-02
 - Rettelser bør komme fra brugeren: `Bedre-dyrevelfærd-2-stjerner.png` var identisk med 3-stjerner-filen, så 2-hjerte-logoet er afledt (3-stjerner + den tomme 3. hjerte fra 1-stjerne-filen). `Fairtrade logo.webp` har "cleanpng"-vandmærke og `Økologimærket.png` er et beskåret udsnit uden tekst — erstat med originale filer.
 - Lint og typecheck grønne. Ikke visuelt testet (ingen login/DB lokalt).
 
+## 2026-10-02: Kalender dagvisning pa web - cookie, fokus pa nu, dobbeltklik
+
+- Cookie `hc_cal_visit` (dato): forste besog i dag viser morgenen med nattens sovn; senere besog i dag (og kun hvis brugeren har registreret noget for) scroller til nu +-2 timer.
+- Dobbeltklik pa en time i dagvisningen og pa en dag i ugens tidslinje abner tilfoej-menuen pa den halve time.
+- Lint og typecheck groenne; ikke testet i browser.
 ## 2026-09-29: Offentlig forside for udloggede
 
 - Ny hent-appen-forside uden telefonramme, med QR-koder, planer med betalings-ark, Hello Doc-bjælke, nøgletal fra databasen, `/business` (kontaktformular) og `/presse`. Se DECISIONS.md samme dato.
