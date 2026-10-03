@@ -284,7 +284,7 @@ export function HfAccessSheet({
         <div className={styles.peek} aria-hidden="true" />
         <div
           ref={sheetRef}
-          className={`${styles.sheet} ${terms ? styles.withTerms : ""} ${dragging ? styles.dragging : ""}`}
+          className={`${styles.sheet} ${dragging ? styles.dragging : ""}`}
           style={offset ? { transform: `translateY(${offset}px)` } : undefined}
           role="dialog"
           aria-modal={!embedded}

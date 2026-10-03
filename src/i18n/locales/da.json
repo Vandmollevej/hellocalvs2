@@ -245,9 +245,9 @@
   },
   "accountSettings": {
     "title": "Kontoindstillinger",
-    "closeTitle": "Luk konto",
-    "closeIntro": "Lukker din konto og logger dig ud. Dine personoplysninger fjernes, og du kan ikke logge ind igen.",
-    "closeButton": "Luk konto",
+    "closeLink": "Luk konto",
+    "closeSheetText": "Kontoen lukkes, og du logges ud på alle enheder. Fortryder du, så log ind igen inden for 3 måneder — så er alt, som det var. Efter 3 måneder slettes dine personoplysninger.",
+    "closeConfirmButton": "Luk konto",
     "forgetTitle": "Ret til at blive glemt",
     "forgetIntro": "Få alle dine personoplysninger slettet (GDPR). Anonymiserede data, der ikke kan kobles til dig, bevares.",
     "forgetButton": "Slet mine data",
@@ -278,6 +278,7 @@
       "saved": "Tilladelsen er gemt",
       "revoked": "Supportadgang er tilbagekaldt",
       "contact": "Kontakt os",
+      "chat": "Spørg hjælpe-chatten",
       "dateRequired": "Vælg både fra- og til-dato.",
       "invalidDateRange": "Fra-datoen kan ikke ligge efter til-datoen.",
       "untilInPast": "Til-datoen kan ikke ligge før i dag.",
@@ -532,7 +533,9 @@
     "voice": "Optag",
     "weight": "Vægt",
     "drink": "Drikkevare",
-    "body": "Kropsmål"
+    "body": "Kropsmål",
+    "activity": "Aktivitet",
+    "period": "Menstruation"
   },
   "helloDoc": {
     "title": "Hello Doc",
@@ -663,7 +666,7 @@
     "goalExceededList": "Du overskred dit mål",
     "adjustBedtimeAriaLabel": "Justér sengetid",
     "adjustWakeTimeAriaLabel": "Justér stå-op-tid",
-    "nightSleepDuration": "Nattens søvn: {hours} timer",
+    "nightSleepDuration": "Søvn: {hours} timer",
     "previousDayAriaLabel": "Forrige dag",
     "nextDayAriaLabel": "Næste dag",
     "registrations": "Registreringer",

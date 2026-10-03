@@ -4,6 +4,7 @@ import type { IntegrationProvider } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { getSessionUser } from "@/lib/session";
 import type { OAuthTokens } from "@/lib/integrations/types";
+import { recordIntegrationEvent } from "@/lib/integrations/events";
 
 // Fælles OAuth-tilstand for cloud-integrationerne (CSRF-state i en cookie;
 // ved PKCE også code_verifier).
@@ -59,9 +60,13 @@ export async function saveIntegrationTokens(
     lastError: null,
     ...(externalUserId ? { externalUserId } : {}),
   };
+  const where = { userId_provider: { userId: user.id, provider } };
+  const previous = await prisma.integration.findUnique({ where, select: { status: true } });
   await prisma.integration.upsert({
-    where: { userId_provider: { userId: user.id, provider } },
+    where,
     create: { userId: user.id, provider, ...data },
     update: data,
   });
+  // Ny tilkobling tæller kun, når den ikke allerede var forbundet (fornyet adgang er ikke en ny installation).
+  if (!previous || previous.status === "DISCONNECTED") await recordIntegrationEvent(user.id, provider, "CONNECTED");
 }

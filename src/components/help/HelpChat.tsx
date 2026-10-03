@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { IconHeadset, IconMail, IconSend } from "@tabler/icons-react";
+import { IconSend } from "@tabler/icons-react";
 import { BottomSheet } from "@/components/hf/BottomSheet";
 import { useTranslation } from "@/i18n/LocaleProvider";
 import { OPEN_HELP_CHAT_EVENT } from "@/lib/help-chat-events";
@@ -11,7 +11,7 @@ import { CHATBOT_LINKS, isChatbotLinkHref } from "@/lib/chatbot-knowledge";
 
 // Hjælpe-chatten (docs/DECISIONS.md 2026-10-02): AI-chatbot med genveje til
 // en medarbejder og kontaktformularen (ingen telefonsupport). Monteret én gang i
-// layoutet og åbnet af HelpChatButton via OPEN_HELP_CHAT_EVENT. Al logik
+// layoutet og åbnet fra Support-siden via OPEN_HELP_CHAT_EVENT. Al logik
 // (AI, kategorier, videresendelse) ligger på serveren i src/lib/chatbot.ts.
 
 type MessageView = {
@@ -224,15 +224,6 @@ function HelpChatSheet({ onClose }: { onClose: () => void }) {
   return (
     <BottomSheet onClose={onClose} title={t("helpChat.title")} size="full" footer={footer}>
       <div className="flex flex-col gap-4 px-4 pb-4">
-        <ContactOptions
-          disabled={loggedOut || escalated || busy}
-          onTalkToHuman={() => {
-            setEscalating(true);
-            setError(null);
-          }}
-          onContactForm={() => go("/settings/support/contact")}
-        />
-
         {loggedOut ? (
           <div className="flex flex-col gap-2 rounded-lg bg-hf-tan p-4">
             <p className="hf-type-body">{t("helpChat.loggedOut")}</p>
@@ -330,6 +321,17 @@ function HelpChatSheet({ onClose }: { onClose: () => void }) {
                 {error}
               </p>
             )}
+            {!escalating && (
+              <ContactOptions
+                showTalkToHuman={!escalated && !offerHuman}
+                disabled={busy}
+                onTalkToHuman={() => {
+                  setEscalating(true);
+                  setError(null);
+                }}
+                onContactForm={() => go("/settings/support/contact")}
+              />
+            )}
             <div ref={endRef} />
           </div>
         )}
@@ -350,26 +352,28 @@ function Bubble({ role, children }: { role: "USER" | "ASSISTANT"; children: Reac
   );
 }
 
+// Kontaktvejene står diskret nederst i samtalen, aldrig i toppen
+// (docs/DECISIONS.md 2026-10-03): chatbotten skal prøves først.
 function ContactOptions({
+  showTalkToHuman,
   disabled,
   onTalkToHuman,
   onContactForm,
 }: {
+  showTalkToHuman: boolean;
   disabled: boolean;
   onTalkToHuman: () => void;
   onContactForm: () => void;
 }) {
   const { t } = useTranslation();
-  const tile =
-    "hf-type-small hf-type-strong flex min-h-12 flex-1 flex-col items-center justify-center gap-1 rounded-lg bg-hf-tan px-2 py-3 text-center text-hf-black hover:bg-hf-tan-dark disabled:text-text-muted";
   return (
-    <div className="flex gap-2">
-      <button type="button" className={tile} onClick={onTalkToHuman} disabled={disabled}>
-        <IconHeadset size={24} stroke={1.6} />
-        {t("helpChat.talkToHuman")}
-      </button>
-      <button type="button" className={tile} onClick={onContactForm}>
-        <IconMail size={24} stroke={1.6} />
+    <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-1 pt-4">
+      {showTalkToHuman && (
+        <button type="button" className="hf-btn-text" onClick={onTalkToHuman} disabled={disabled}>
+          {t("helpChat.talkToHuman")}
+        </button>
+      )}
+      <button type="button" className="hf-btn-text" onClick={onContactForm}>
         {t("helpChat.contactForm")}
       </button>
     </div>

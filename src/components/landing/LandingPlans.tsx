@@ -124,6 +124,47 @@ function CheckoutSheet({ plan, name, onClose }: { plan: SubscriptionPlan; name: 
   );
 }
 
+export function planAnchorId(plan: SubscriptionPlan | null) {
+  return `plan-${plan ?? "free"}`;
+}
+
+// Kompakt oversigt i tre kolonner øverst på abonnementssiden: navn og pris,
+// og et tryk ruller ned til planens fulde kort (LandingPlans nedenfor).
+export function PlanOverview({
+  plans,
+  currentPlan,
+}: {
+  plans: LandingPlan[];
+  currentPlan?: SubscriptionPlan | "free";
+}) {
+  return (
+    <div className="grid grid-cols-3 gap-2">
+      {plans.map((p) => {
+        const isCurrent = currentPlan === (p.plan ?? "free");
+        return (
+          <button
+            key={p.name}
+            type="button"
+            onClick={() =>
+              document.getElementById(planAnchorId(p.plan))?.scrollIntoView({ behavior: "smooth", block: "start" })
+            }
+            className={`flex min-w-0 flex-col items-center gap-1 rounded-lg px-1 py-3 text-center ${
+              p.plan ? "bg-gradient-to-br from-hf-green to-hf-green-dark text-hf-white" : "bg-hf-white text-hf-black"
+            } ${isCurrent ? "ring-4 ring-hf-green-light" : ""}`}
+          >
+            <span className="hf-type-small hf-type-strong">{p.name}</span>
+            <span className="hf-type-title">{p.price}</span>
+            <span className="hf-type-micro opacity-75">{p.note}</span>
+            <span className="hf-type-micro hf-type-strong mt-1 underline underline-offset-2">
+              {isCurrent ? "Din plan" : "Se mere"}
+            </span>
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
 // currentPlan sættes kun inde i appen (abonnementssiden): brugerens egen plan
 // markeres "Din plan", og Gratis har ingen "Kom i gang", da kontoen findes.
 export function LandingPlans({
@@ -145,7 +186,8 @@ export function LandingPlans({
           return (
             <div
               key={p.name}
-              className={`overflow-hidden rounded-3xl bg-hf-white shadow-[0_24px_60px_-28px_rgba(0,0,0,0.35)] ${
+              id={planAnchorId(key)}
+              className={`scroll-mt-4 overflow-hidden rounded-3xl bg-hf-white shadow-[0_24px_60px_-28px_rgba(0,0,0,0.35)] ${
                 p.featured ? "md:-mt-4 ring-4 ring-hf-green-light" : ""
               }`}
             >

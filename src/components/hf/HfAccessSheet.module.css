@@ -131,7 +131,7 @@
   flex: 1;
   overflow-y: auto;
   overscroll-behavior: contain;
-  padding: 92px 22px 200px;
+  padding: 92px 22px 24px;
 }
 
 .appIcon {
@@ -311,17 +311,28 @@
   transform: translateX(22px);
 }
 
+/* Knapperne har deres egen hvide bund under listen, så intet i listen
+   gemmer sig bag dem (før lå de ovenpå med gennemsigtig baggrund, og
+   rækkerne skinnede igennem "Vilkår og betingelser"). Den korte toning
+   over kanten viser, at listen fortsætter. */
 .actions {
-  position: absolute;
-  inset: auto 0 0;
+  position: relative;
   z-index: 2;
   display: flex;
+  flex-shrink: 0;
   flex-direction: column;
   gap: 11px;
-  padding: 28px 37px calc(env(safe-area-inset-bottom) + 12px);
-  /* Kort fade, derefter helt hvid, så listen ikke skinner igennem
-     "Vilkår og betingelser" og knapperne (2026-10-03). */
-  background: linear-gradient(to bottom, rgba(255, 255, 255, 0), #ffffff 28px);
+  padding: 8px 37px calc(env(safe-area-inset-bottom) + 12px);
+  background: #ffffff;
+}
+
+.actions::before {
+  position: absolute;
+  inset: -32px 0 auto;
+  height: 32px;
+  background: linear-gradient(to bottom, rgba(255, 255, 255, 0), #ffffff);
+  content: "";
+  pointer-events: none;
 }
 
 .embedded .actions {
@@ -355,9 +366,4 @@
 
 .deny:disabled {
   opacity: 0.5;
-}
-
-/* Plads til "Vilkår og betingelser"-bjælken over knapperne. */
-.withTerms .scroll {
-  padding-bottom: 260px;
 }

@@ -15,6 +15,8 @@ export type AdminUserRowData = {
   wantsAdviceEmails: boolean;
   wantsPartnerOffersEmails: boolean;
   forgottenAt: string | null;
+  // Brugerens egen "Luk konto" — kan genåbnes ved login i 3 måneder.
+  closedAt: string | null;
 };
 
 const SUBSCRIPTION_LABELS: Record<string, string> = {
@@ -60,6 +62,11 @@ export function AdminUserRow({ user }: { user: AdminUserRowData }) {
       <td className="py-2 pr-3">
         <p className="hf-type-strong text-hf-black">{user.displayName}</p>
         <p className="hf-type-small text-text-muted">{user.email}</p>
+        {user.closedAt && (
+          <p className="hf-type-small text-text-secondary">
+            Lukket {new Date(user.closedAt).toLocaleDateString("da-DK")} — anonymiseres efter 3 måneder
+          </p>
+        )}
       </td>
       <td className="py-2 pr-3">
         <span

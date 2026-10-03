@@ -3,13 +3,12 @@
 import { useEffect, useRef } from "react";
 import { createWaveScene, drawWaveScene, readWavePalette, WAVE_BLEED } from "@/lib/home-waves";
 
-// Tre lag af samme scene: skarp øverst, mellem-sløret i midten og kraftigt
-// sløret nederst (maskerne ligger i globals.css, .home-wave__layer--*) — det
-// giver "frostet glas"-effekten nederst. Lavere opløsning på de sløret lag.
+// To lag af samme scene: skarpt øverst (i skærmens fulde opløsning, ingen
+// blur) og sløret kun forneden (maskerne ligger i globals.css,
+// .home-wave__layer--*) — bruger 2026-10-03: toppen må ikke være sløret.
 const LAYERS = [
-  { key: "sharp", scale: 0.8 },
-  { key: "mid", scale: 0.55 },
-  { key: "heavy", scale: 0.4 },
+  { key: "sharp", scale: () => Math.min(2, window.devicePixelRatio || 1) },
+  { key: "soft", scale: () => 0.4 },
 ] as const;
 
 const FRAME_MS = 1000 / 30;
@@ -43,22 +42,25 @@ export function HomeWaves() {
     let last = 0;
     let raf = 0;
 
+    let scales: number[] = LAYERS.map((layer) => layer.scale());
+
     function paint() {
       if (width === 0 || height === 0) return;
-      LAYERS.forEach((layer, i) => {
+      LAYERS.forEach((_, i) => {
         const ctx = contexts[i];
-        if (ctx) drawWaveScene(ctx, scene, palette!, { t: clock, width, height, scale: layer.scale });
+        if (ctx) drawWaveScene(ctx, scene, palette!, { t: clock, width, height, scale: scales[i] });
       });
     }
 
     function resize() {
       width = host!.clientWidth;
       height = host!.clientHeight;
-      LAYERS.forEach((layer, i) => {
+      scales = LAYERS.map((layer) => layer.scale());
+      LAYERS.forEach((_, i) => {
         const canvas = canvases[i];
         if (!canvas) return;
-        canvas.width = Math.max(1, Math.round((width + WAVE_BLEED * 2) * layer.scale));
-        canvas.height = Math.max(1, Math.round((height + WAVE_BLEED * 2) * layer.scale));
+        canvas.width = Math.max(1, Math.round((width + WAVE_BLEED * 2) * scales[i]));
+        canvas.height = Math.max(1, Math.round((height + WAVE_BLEED * 2) * scales[i]));
       });
       paint();
     }

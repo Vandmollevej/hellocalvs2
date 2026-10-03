@@ -71,7 +71,7 @@ export function renderReportHtml(stats: PartnerStats, from: Date, to: Date, cont
   return `<p>Hej ${esc(contactName)},</p><p>Her er rapporten for <strong>${esc(stats.partnerName)}</strong> for perioden ${dateDa(from)} – ${dateDa(lastDay)}.</p><table role="presentation" cellpadding="0" cellspacing="0" style="width:100%;border-collapse:collapse;font-size:14px"><tr><th style="${head};text-align:left">Lokation</th><th style="${head};text-align:right">Visninger</th><th style="${head};text-align:right">Klik</th><th style="${head};text-align:right">Klikrate</th></tr>${rows || `<tr><td colspan="4" style="padding:8px">Ingen lokationer endnu.</td></tr>`}<tr><td style="padding:6px 8px"><strong>I alt</strong></td><td style="padding:6px 8px;text-align:right"><strong>${stats.impressions}</strong></td><td style="padding:6px 8px;text-align:right"><strong>${stats.clicks}</strong></td><td style="padding:6px 8px;text-align:right"><strong>${pct(stats.impressions > 0 ? stats.clicks / stats.impressions : 0)}</strong></td></tr></table><p>Venlig hilsen<br>Hello Cal</p>`;
 }
 
-function getTransport() {
+export function getReportTransport() {
   const { SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS } = process.env;
   if (!SMTP_HOST || !SMTP_PORT || !SMTP_USER || !SMTP_PASS) return null;
   return nodemailer.createTransport({
@@ -116,7 +116,7 @@ export async function sendPartnerReport(
   });
   if (foreign > 0) return fail("Afbrudt: data tilhører en anden partner");
 
-  const transport = getTransport();
+  const transport = getReportTransport();
   if (!transport) return fail("SMTP er ikke opsat — rapporten blev ikke sendt");
 
   const subject = `Hello Cal – rapport for ${partner.name} (${dateDa(from)} – ${dateDa(new Date(to.getTime() - 1))})`;
