@@ -3787,5 +3787,5 @@ Kilder på "Mad på latin" skal altid være officielle (Fødevarestyrelsen, Sund
 - Ejerens beslutning: hver bruger starter registreringen med 35 points som teaser, så pointsystemet er synligt fra dag ét (300 points = 1 gratis måned).
 - Ny `PointsReason.SIGNUP_BONUS` i ledgeren (ingen cachet saldo, jf. 2026-09-02). Beløbet ligger i `SIGNUP_BONUS_POINTS` (`src/lib/points-constants.ts`).
 - Gives ved oprettelse af en almindelig konto: e-mail-tilmelding (`/api/auth/register`) og ny konto via Google/Apple/Facebook. Ikke til familieprofiler (oprettes af ejeren, kan ikke logge ind selv) eller admin-konti. `awardSignupBonus()` giver højst én bonus pr. bruger.
-- Kun nye konti fra deploy og frem; eksisterende brugere får ikke bonussen med tilbagevirkende kraft, medmindre ejeren beslutter andet.
+- Eksisterende brugere får også bonussen (ejerens valg 2026-10-03): engangs-migrationen `20261003120100_points_signup_bonus_backfill` giver alle nuværende almindelige brugere 35 points — ikke admin-konti, glemte brugere eller familieprofiler oprettet af betaleren. Migrationen springer brugere over, der allerede har en `SIGNUP_BONUS`.
 
