@@ -12,6 +12,11 @@ Last updated: 2026-10-03
 
 - `src/components/add/AddMenuList.tsx`: Aktivitet er et 3D-felt i gitteret, og nyt felt Menstruation (nyt ikon `public/icons/add/period.svg`) vises kun for kvinder med menstruationscyklus slået til. Arket scroller. Se DECISIONS.md samme dato.
 - Lint, typecheck og build kørt. Ikke set med login (ingen lokal DB) — tjek Tilføj-arket på telefon som kvinde og mand.
+## 2026-10-03: Hjælpecenter — guiden øverst med grøn knap
+
+- `public/hjaelp.html` har et kort "Lær appen at kende" øverst (under introen) med en grøn knap "Start guiden" (`--brand` #067A46, hvid tekst). Kortet skjules, mens der søges. FAQ'en "Kan jeg se introduktionen igen?" linker også direkte til guiden.
+- Knappen går til `/settings?guide=1`; Indstillinger nulstiller onboarding-fremdriften og åbner `OnboardingWizard` (samme som "Lær appen at kende") og fjerner parameteren fra adressen. Se DECISIONS.md samme dato.
+- Lint og typecheck grønne; hjælpesiden tjekket visuelt i 390 px. Ikke live-testet med login (ingen lokal DB).
 
 ## 2026-10-02: Kalenderen husker den åbne dag
 

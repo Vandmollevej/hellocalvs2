@@ -73,6 +73,14 @@ export default function SettingsPage() {
     )
   );
 
+  // Hjælpecenterets "Start guiden" (public/hjaelp.html) linker til
+  // /settings?guide=1 og starter "Lær appen at kende" direkte.
+  useEffect(() => {
+    if (new URLSearchParams(window.location.search).get("guide") !== "1") return;
+    router.replace("/settings");
+    resetOnboardingProgress().then(() => setShowOnboarding(true));
+  }, [router]);
+
   useEffect(() => {
     let cancelled = false;
     fetch("/api/profile")
