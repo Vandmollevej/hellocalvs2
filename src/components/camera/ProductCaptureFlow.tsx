@@ -11,7 +11,7 @@ import {
 } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { IconBolt, IconBoltOff, IconCamera, IconFlame, IconList, IconPhoto } from "@tabler/icons-react";
+import { IconBolt, IconBoltOff, IconFlame, IconList, IconPhoto } from "@tabler/icons-react";
 import { IconBarcodeCard } from "@/components/icons/BarcodeCard";
 import { BarcodeScanOverlay, type BarcodeDetection } from "@/components/hf/BarcodeScanOverlay";
 import { CaptureCheckOverlay } from "@/components/hf/CaptureCheckOverlay";
@@ -1010,7 +1010,16 @@ export function ProductCaptureFlow({ returnSuffix }: { returnSuffix: string }) {
 
   return (
     <div className="flex flex-col gap-4">
-      <div className="relative aspect-square w-full overflow-hidden rounded-[12px] bg-hf-black">
+      {/* Ingen "Tag billede"-knap (brugerens krav 2026-10-02): billedet tages
+          automatisk; et tryk på selve kamerabilledet tager det med det samme. */}
+      <div
+        className="relative aspect-square w-full overflow-hidden rounded-[12px] bg-hf-black"
+        onClick={() => {
+          if (step !== "barcode" && cameraStatus === "active" && !working && !pickObjects && !flash) {
+            void capturePhoto();
+          }
+        }}
+      >
         <video
           ref={videoRef}
           className="h-full w-full object-cover"
@@ -1037,7 +1046,7 @@ export function ProductCaptureFlow({ returnSuffix }: { returnSuffix: string }) {
 
         {!scanning && !pickPhoto && !flash && (
           <div
-            className="pointer-events-none absolute inset-[12%] rounded-[12px] border-2 shadow-[0_0_0_999px_rgba(0,0,0,0.2)] transition-colors"
+            className="pointer-events-none absolute inset-[4%] rounded-[12px] border-2 shadow-[0_0_0_999px_rgba(0,0,0,0.2)] transition-colors"
             style={{ borderColor: liveProgress > 0 ? "var(--hf-color-brand)" : "rgba(255,255,255,0.8)" }}
           >
             <div
@@ -1162,18 +1171,6 @@ export function ProductCaptureFlow({ returnSuffix }: { returnSuffix: string }) {
           <p className="hf-type-small text-text-secondary text-center">{stepHints[step]}</p>
           {step !== "barcode" && (
             <p className="hf-type-micro text-text-secondary text-center">{t("camera.autoCaptureHint")}</p>
-          )}
-          {step !== "barcode" && (
-            <div className="flex justify-center">
-              <button
-                type="button"
-                onClick={capturePhoto}
-                disabled={cameraStatus !== "active" || working || !!pickObjects || !!flash}
-                className="hf-control hf-btn-primary gap-2 px-6 disabled:opacity-40"
-              >
-                <IconCamera size={19} /> {t("camera.takePhoto")}
-              </button>
-            </div>
           )}
         </>
       )}

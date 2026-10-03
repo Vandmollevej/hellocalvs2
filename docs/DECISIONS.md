@@ -369,6 +369,45 @@ Vitaminer/mineraler på varesiden er klikbare på samme måde som E-numre: popup
 i koden (ikke i databasen), da det er ~24 faste poster; referenceindtag er
 EU's NRV (forordning 1169/2011 bilag XIII), samme tal som "% RI".
 
+## 2026-10-02: Kamera uden knap, h1/h2 uden gentagelser, 10 %-reglen for udklip
+
+- Tilføj-kameraet har ingen "Tag billede"-knap. Fotoet tages automatisk, når
+  varen er skarp og stille; holdes kameraet stille uden at nå skarpheds-
+  grænsen, tages det efter 2,4 s, og senest 8 s efter trinnet startede. Et
+  tryk på kamerabilledet tager det med det samme. Rammen er 92 % af billedet.
+  Fotoet er kameraets stillbillede, ellers det skarpeste af tre
+  videobilleder (`camera-still.ts`, samme dato) — ægte HDR-bracketing er
+  ikke muligt i browseren (ingen eksponeringsstyring på iPhone);
+  tone-udjævning sker i billedrobotten. Telefonens dybdesensor
+  (LiDAR) er heller ikke tilgængelig for websider; omridset om varen kommer
+  fortsat fra MediaPipe-segmenteringen (2026-09-28).
+- Varesidens h1 (sort) og h2 (grøn: pakningsstørrelse · variant) må aldrig
+  gentage hinanden. Fedtprocent, laktosefri, smag osv. hører til varianten.
+  Reglen håndhæves tre steder: AI-prompten (front-v4), berigelsen
+  (`stripHeadingRepeats` fjerner variant/pakningsstørrelse fra navnet) og
+  varesiden (`splitProductHeadings`), så også ældre varer vises rigtigt.
+  Stregkode-fotoets variant sættes kun i variant-feltet — aldrig ind i navnet
+  (erstatter den del af 2026-09-28 "variant i navnet").
+- Brand fra databasen vinder: kender databasen ikke AI'ens brand, men står
+  et kendt brand ordret i forsidens tekst (mindst 4 tegn, eksakt normaliseret
+  match), bruges det, og AI'ens brand bliver subbrand. Hjerter,
+  kvalitetsmærker, segl og slogans er ikke logoer.
+- Produktcirklen: et fritskrabet billede (PNG under `/product-images/cutouts`)
+  lægges oven på cirklen i 110 % størrelse — stående varer med bunden i
+  cirklens bund (toppen 10 % over), liggende fra venstre kant (10 % ud over
+  højre). Hele varen er altid synlig. Råfotoet (før udklippet) vises
+  `object-contain` i cirklen, aldrig zoomet. Brandlogoet er 66 px højt (70 %
+  af de tidligere 95). Store æsker (cornflakes) er ikke behandlet særskilt.
+- Næringsdetaljerne (salt, sukker, fibre, mættet/umættet fedt m.m.) vises
+  altid som dropdown under energifordelingen, når der findes mindst én værdi;
+  "udvidet næringsindhold" i Opsætning styrer nu kun, om den står åben.
+  Umættet fedt udledes som fedt − mættet − trans (markeret ~), når
+  deklarationen ikke oplyser det.
+- Billedrobotten afviser et produktudklip, der dækker under 12 % af udsnittet
+  eller er under 30 % i bredde/højde (`CUTOUT_PRODUCT_MIN_COVERAGE`/
+  `CUTOUT_PRODUCT_MIN_SIDE`), så råfotoet bliver stående i stedet for et tomt
+  billede.
+
 ## 2026-09-28: Produktcirklen viser kun brandets eget logo
 
 Hello Cal-frugten ligger ikke længere oven på produktcirklen. Har brandet et

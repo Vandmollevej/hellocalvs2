@@ -22,6 +22,7 @@ import {
 
 type ProductForResolution = {
   name: string;
+  fatPer100g?: number | null;
   productType?: string | null;
   brand?: { name: string } | null;
   externalSource?: string | null;
@@ -140,6 +141,17 @@ function ownValues(product: ProductForResolution) {
 
   for (const [key, value] of Object.entries(asNumberRecord(product.micronutrientsPer100g))) {
     if (isNutrientKey(key)) values[key] = value;
+  }
+
+  // Umættet fedt skal altid kunne ses (brugerens krav 2026-10-02). Står det
+  // ikke på deklarationen, udledes det som fedt i alt minus mættet (og
+  // trans-) fedt — markeret som estimat (~), da glycerol m.m. ikke er fedtsyrer.
+  if (values.unsaturatedFat === undefined && typeof product.fatPer100g === "number" && values.saturatedFat !== undefined) {
+    const unsaturated = product.fatPer100g - values.saturatedFat - (values.transFat ?? 0);
+    if (unsaturated >= 0) {
+      values.unsaturatedFat = Math.round(unsaturated * 10) / 10;
+      featureSources.unsaturatedFat = "ESTIMATED";
+    }
   }
 
   return { values, featureSources };
