@@ -22,10 +22,13 @@ type Drag = { key: string; offsetY: number; y: number };
 export function StatChartsSection({
   renderChart,
   onShowAddChange,
+  onEditModeChange,
 }: {
   renderChart: (key: string) => React.ReactNode;
   /** True while editing — or when no charts are left, so they can always be added back. */
   onShowAddChange?: (show: boolean) => void;
+  /** True while the charts are in edit mode (long press). */
+  onEditModeChange?: (editing: boolean) => void;
 }) {
   const { t } = useTranslation();
   // localStorage er usynlig for serveren: render standarden først og skift efter mount.
@@ -46,6 +49,10 @@ export function StatChartsSection({
   useEffect(() => {
     onShowAddChange?.(editMode || order.length === 0);
   }, [editMode, order.length, onShowAddChange]);
+
+  useEffect(() => {
+    onEditModeChange?.(editMode);
+  }, [editMode, onEditModeChange]);
 
   useEffect(() => {
     if (isFirstSave.current) {

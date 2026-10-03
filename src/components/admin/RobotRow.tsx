@@ -6,8 +6,19 @@ import { formatDateTime, formatDuration, useJobControl, type JobState } from "@/
 import { JobScheduleEditor } from "@/components/admin/JobScheduleEditor";
 
 // Én række på admin "Robotter" (docs/DECISIONS.md 2026-09-28): robot,
-// on/off-knap, KØR-knap, cron-job-kolonne og seneste kørsel.
-export function RobotRow({ job, state }: { job: JobDefinition; state: JobState }) {
+// on/off-knap, KØR-knap, cron-job-kolonne, seneste kørsel (med hvor meget
+// der blev udført) og nattens kørsler (docs/DECISIONS.md 2026-10-02).
+export type RobotNightInfo = { text: string; message: string | null; error: string | null };
+
+export function RobotRow({
+  job,
+  state,
+  night,
+}: {
+  job: JobDefinition;
+  state: JobState;
+  night: RobotNightInfo | null;
+}) {
   const control = useJobControl(job.key, state);
   const { busy, running, runPending, toggleEnabled, runNow } = control;
 
@@ -72,7 +83,22 @@ export function RobotRow({ job, state }: { job: JobDefinition; state: JobState }
             {state.lastDurationMs !== null && ` · ${formatDuration(state.lastDurationMs)}`}
           </p>
         )}
-        {state.lastMessage && state.lastMessage !== "OK" && <p className="max-w-xs break-words">{state.lastMessage}</p>}
+        {state.lastMessage && state.lastMessage !== "OK" && (
+          <p className="max-w-xs break-words text-text-secondary">{state.lastMessage}</p>
+        )}
+      </td>
+      <td className="hf-type-small py-3 pr-4 text-text-muted">
+        {night ? (
+          <>
+            <p className="text-hf-black">{night.text}</p>
+            {night.message && night.message !== "OK" && (
+              <p className="max-w-xs break-words text-text-secondary">{night.message}</p>
+            )}
+            {night.error && <p className="max-w-xs break-words text-hf-red-dark">{night.error}</p>}
+          </>
+        ) : (
+          <p>Kørselslog ikke tilgængelig</p>
+        )}
       </td>
     </tr>
   );

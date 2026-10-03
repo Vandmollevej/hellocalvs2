@@ -556,6 +556,16 @@ fuld bredde).
 - Standardplacering: 8 px fra top og højre billedkant.
 - Samme komponent bruges i alle billedkort.
 
+**`.hf-photo-check` / `PhotoSelectBox`** og **`.hf-photo-pill`** (foto-overlay, tilføjet 2026-10-02)
+
+- Hvid afkrydsningsboks i billedets øverste højre hjørne: 44 × 44 trykflade,
+  synlig boks 24 × 24, hvid flade, 2 px hvid kant, radius 4, skygge, så den ses
+  på både lyse og mørke billeder. Valgt viser nummeret (1 = før, 2 = efter)
+  med 14 px fed sort tekst, eller et flueben uden nummer.
+- `.hf-photo-pill`: hvid pille-knap (48 px høj, sort 17 px fed tekst) på mørk
+  fotoflade, fx "Efter" midt i den tomme plads i før/efter-sammenligningen.
+- Bruges i billede-dagbogens karrusel og før/efter-overlay.
+
 ### 6.9 Hero-cirkel
 
 **`.hf-hero-circle` / `WelcomeHeroMedia`**
