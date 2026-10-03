@@ -2,6 +2,10 @@
 
 Last updated: 2026-10-03
 
+## 2026-10-03: Kyllingelåret fjernet fra kalenderens dagvisning
+
+- Brugerens rettelse: indtagne kalorier i timerækken og timens oversigt står nu kun som "540 kcal" — intet kyllingelår foran (`EnergyChip`, kind `intake`). Flamme (forbrændt) og glas (vand) er uændrede. Forsidens tal-hjul og statistikboksen Kalorier har stadig kyllingelåret som rækkeikon.
+- Uge-/listevisningen viser bevidst ingen kcal på fremtidige dage (siden 2026-09-28) — ikke ændret.
 ## 2026-10-03: Betaling viser det aktive kort fra Stripe (PR #132 flettet med master)
 
 - `/settings/payment` viser det kort/den wallet, Stripe trækker på: mærke + sidste 4 + udløb; Apple Pay/Google Pay med kortet bagved (nyt felt `PaymentMethod.wallet`, migration `20261002090000_payment_method_wallet` **skal køre ved deploy**); MobilePay. Kortmærke-logo (Visa/Mastercard) i lille fast ramme; andre mærker får det egne kortikon (`IconPaymentCard`). Siden henter altid frisk fra Stripe (`/api/subscription?refresh=1`). Kortet beholdes efter opsigelse (perioden er betalt).
