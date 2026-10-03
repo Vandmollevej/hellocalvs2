@@ -97,7 +97,14 @@ export default function ProfilePage() {
               label={t("profile.row.status")}
               href="/profile/status"
             />
-            <ChevronRow icon={<IconStar size={20} />} label={t("profile.row.points")} href="/profile/points" />
+            <ChevronRow
+              icon={<IconStar size={20} />}
+              label={t("profile.row.points")}
+              href="/profile/points"
+              divider={false}
+            />
+          </AccordionCard>
+          <AccordionCard>
             <ChevronRow
               icon={<IconBathScale size={20} />}
               label={t("profile.row.weightCalibration")}
