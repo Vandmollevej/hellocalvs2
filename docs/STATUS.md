@@ -63,6 +63,12 @@ Last updated: 2026-10-03
 - **Migrationer, der skal køre ved deploy:** `20261003210000_family_invitation_mail` og `20261003210100_owner_family_plan` (efter `20261003200000_family_invite_email_qr`).
 - Testet: typecheck, lint, build; skærmbilleder med mockede API-svar. Ikke testet mod en rigtig database eller med rigtig mailafsendelse.
 
+## 2026-10-03: Forsidens bølger — frostet glas bag listen, roligere top
+
+- Brugerens rettelse: de slørede bølger skal ligge bag det **nederste felt** (listen med indtastningerne), ikke nederst i toppen. `HomeWaves` har nu `variant="top" | "frost"`; `frost` ligger bag `DailyList` i `page.tsx` (tykke bånd, `blur(14px)`, 60 % opacitet, creme-slør, ingen puls).
+- Toppen: 2–3 bånd med 1–2 streger (før 3–4 bånd med op til 4), svagere linjer, gul kun helt øverst, mere grønt i midten/bunden (grøn tåge i nederste halvdel af toppen). Det slørede lag i toppen er fjernet.
+- Lint, fuld typecheck (privat Prisma-klient) og bølge-tests grønne. Ikke set visuelt (brugerens regel).
+
 ## 2026-10-03: Forsidens bølger — tykke, frostede bånd forneden
 
 - Brugerens rettelse: nederste del af bølge-baggrunden er frostet glas med **tykke** bånd, ikke tynde linjer som i toppen. Det slørede lag tegner strengene 7× bredere og lidt kraftigere (`strandWidthScale`/`strandAlphaScale` i `drawWaveScene`); toppen og puls-linjen er uændret skarpe.

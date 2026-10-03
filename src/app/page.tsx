@@ -18,8 +18,9 @@ export default async function Home() {
 
   return (
     <div className="flex min-h-full flex-1 flex-col bg-hf-cream">
-      {/* Bølge-baggrunden (bruger 2026-10-01) ligger bag topbar og hero og
-          stopper ved "Dagens tilføjelser"-stregen (bruger 2026-10-03). Alt
+      {/* Skærmen har to felter (bruger 2026-10-03): det øverste (topbar +
+          hero) har rolige, skarpe bølgelinjer; det nederste med
+          indtastningerne har slørede bånd bag sig som frostet glas. Alt
           andet her er `relative`, så det males oven på bølgerne. */}
       <div className="relative flex-none">
         <HomeWaves />
@@ -37,6 +38,7 @@ export default async function Home() {
           listen og ikke ned over skillestregen (bruger 2026-09-29).
           Tilføj-knappens vifte (z-30) ligger stadig øverst. */}
       <div className="relative z-10 min-h-0 flex-1 overflow-hidden pt-2">
+        <HomeWaves variant="frost" />
         <DailyList />
       </div>
 
