@@ -257,14 +257,14 @@ export default function ProfileEditPage() {
         <div className="flex min-h-full flex-col gap-4 p-4">
           <Field label={t("profile.field.name")}>
             <input
-              className={inputClass}
+              className={`${inputClass} userback-ignore`}
               value={user.displayName}
               onChange={(event) => update("displayName", event.target.value)}
             />
           </Field>
 
           <Field label={t("profile.field.email")}>
-            <input className={`${inputClass} opacity-60`} value={user.email} disabled />
+            <input className={`${inputClass} opacity-60 userback-ignore`} value={user.email} disabled />
           </Field>
 
           <div className="grid grid-cols-2 gap-4">

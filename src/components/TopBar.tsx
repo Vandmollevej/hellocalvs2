@@ -14,7 +14,9 @@ export function TopBar() {
   return (
     <div data-top-bar className="hf-topbar gap-2">
       {watcher && (
-        <WatchPhoneIcon name={watcher.displayName} title={t("family.watch.onAccount", { name: watcher.displayName })} />
+        <span className="userback-ignore userback-block flex">
+          <WatchPhoneIcon name={watcher.displayName} title={t("family.watch.onAccount", { name: watcher.displayName })} />
+        </span>
       )}
       <ProfileAvatarLink outlined />
     </div>

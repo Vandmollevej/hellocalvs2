@@ -165,6 +165,7 @@ function TilmeldContent() {
           type="text"
           required
           value={displayName}
+          className="userback-ignore"
           onChange={(e) => setDisplayName(e.target.value)}
           placeholder={t("signup.namePlaceholder")}
         />
