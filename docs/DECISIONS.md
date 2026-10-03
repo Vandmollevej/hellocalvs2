@@ -3991,6 +3991,7 @@ Kilder på "Mad på latin" skal altid være officielle (Fødevarestyrelsen, Sund
 
 ## 2026-10-02: Abonnement og betalingsmetode hører til under Indstillinger; betalingsmetode kun for betalende
 
+- **Ændret igen 2026-10-03 (PR #202, nyeste ønske):** Abonnement og Betaling er fjernet fra Profil og findes kun under Indstillinger. Punktet herunder om at de bliver på Profil gælder ikke længere.
 - **Ændret 2026-10-03 (ejerens valg):** de to første punkter herunder gælder ikke længere. Abonnement og Betalingsmetoder bliver på både Profil og Indstillinger og vises for alle (også uden kort, så "Vælg abonnement" kan findes). Resten (aktivt kort fra Stripe, kortskift i kundeportalen) gælder.
 
 - **Abonnement og Betaling ligger kun under Indstillinger** (ejerens krav 2026-10-02; menupunktet hedder "Betaling", jf. e8ad1b3 samme dag). Profilsidens to rækker er fjernet; `/profile/subscription` og `/settings/payment` er uændrede adresser.
