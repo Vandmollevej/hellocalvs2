@@ -20,6 +20,12 @@ Last updated: 2026-10-03
 ## 2026-10-03: Hjælpecenter — spørgsmål uden fed
 
 - Spørgsmålene i Hjælpecenter (`public/hjaelp.html`, `summary`) vises nu i normal vægt (400) i stedet for halvfed (600). Kategorioverskrifterne er uændrede.
+## 2026-10-03: Kalender — dropdown i dagsvisningen, natten om morgenen, "Søvn" med halvmåne
+
+- Dropdown'en (måned/uge/liste) i dagsvisningen virkede ikke: månedsvisningens egen menu (z-100) blev tegnet ovenpå dagsdialogen (z-50) og fangede trykket, så visningen skiftede bagved, men dagen blev liggende. Den skjulte menu tegnes nu ikke, mens en dag er åben.
+- Natten forsvandt om morgenen ved andet besøg samme dag ("nu −2 timer"-reglen fra a5926e3, fx kl. 9.09 → visning fra 7.09). Kan nattens sidste time og nu ses på samme skærm, starter visningen nu en time før stå-op-tiden.
+- "Nattens søvn: X timer" hedder nu "Søvn: X timer" med halvmåne-ikon foran (da + en).
+- Lint, typecheck og build grønne. Afprøvet i Chromium (telefonstørrelse, mockede API-svar): menuvalg lukker dagen, og kl. 9.09 vises natten. Ikke testet på iPhone.
 
 ## 2026-10-02: Kalenderen husker den åbne dag
 
