@@ -4316,3 +4316,8 @@ Ejerens krav: "Hvis man er familiekontoejer skal 'skift profil' stå øverst og 
   `text-hf-green` (`--hf-color-brand`, #067A46) — aldrig `hf-lime`.
 - `hf-lime` er ikke til flueben på lyse flader; det har for lav kontrast og
   er ikke projektets signaturfarve.
+
+## 2026-10-03: Udsendelse til alle brugere kræver adgangskode igen
+
+- Admin → Brugere kan sende mail og/eller push til alle aktive brugere. Ejerens krav: adgangskoden skal tastes ind igen før hver afsendelse.
+- Udsendelsen er kun for fuld admin-adgang, bruger de eksisterende `OutboundMessage`-køer (ingen ny enum/migration) og har separate rækker pr. kanal, fordi en `BOTH`-række markeres SENT af mail-flushet, før push når at gå.

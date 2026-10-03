@@ -2,6 +2,13 @@
 
 Last updated: 2026-10-03
 
+## 2026-10-03: Admin → Brugere: mail og push til alle brugere
+
+- Nyt panel øverst på `/admin/users` ("Send mail og push til alle brugere", kun fuld admin-adgang): emne, besked, valg af mail og/eller push, og administratorens adgangskode skal tastes igen ved hver udsendelse (`POST /api/admin/users/broadcast`, bcrypt-tjek, samme låsning efter 5 fejl som login).
+- Modtagere: alle brugere der ikke er anonymiseret eller har lukket kontoen. Push går kun til brugere med et push-abonnement. Mail og push lægges som hver sin `OutboundMessage` (event `ADMIN_MESSAGE`) og tømmes i baggrunden med det samme (`src/lib/admin-broadcast.ts`). Ingen migration.
+- Kontoer uden adgangskode (kun passkey) kan ikke sende, før de har en adgangskode. Mail kræver SMTP, push kræver VAPID-nøgler på serveren (ellers bliver rækkerne stående i køen).
+- Typecheck og lint grønne. Ikke testet mod rigtig database eller med rigtig afsendelse.
+
 ## 2026-10-03: Kalenderens flueben er signaturgrønne
 
 - Fluebenet for "inden for målet" var lime (`text-hf-lime`) i månedsgitteret, uge-, liste- og dagvisningen. Alle fire bruger nu signaturgrøn `text-hf-green` (`src/app/calendar/page.tsx`). Reglen står i DECISIONS (2026-10-03).
