@@ -29,6 +29,11 @@ Last updated: 2026-10-03
 
 - Brugerens rettelse: kyllingelåret skulle kun bruges, hvor der allerede stod et ikon, og aldrig fjerne "kcal". Rullet tilbage: måneds-/ugelistens afstand til mål, statistikboksenes værdier, widget-forhåndsvisningerne og listerne i chat/tale/kamera viser igen tal + "kcal" uden ikon.
 - Beholdt med "kcal" igen: forsidens tal-hjul (kyllingelår/flamme som rækkeikon + "kcal"), statistikboksen Kalorier (kyllingelår som boksikon) og kalenderens dagvisning (`EnergyChip` viser nu "540 kcal"/"+120 kcal" efter ikonet). Se DECISIONS.md og design.md §6.16.
+## 2026-10-03: "Luk konto" kan fortrydes i 3 måneder
+
+- Luk konto lukker nu kun kontoen (`User.closedAt`) og logger ud overalt; login inden for 3 måneder genåbner den, derefter anonymiseres den automatisk. "Ret til at blive glemt" sletter stadig med det samme (SLET). Abonnement opsiges ved lukning. Se DECISIONS.md samme dato.
+- "Luk konto" på /settings/account er nu et sort, understreget tekstlink nederst — ingen stor knap. Chatbottens viden er rettet.
+- Migration `20261003120000_account_closed_at` skal køre ved deploy. Lint, typecheck og build grønne. Ikke live-testet (ingen lokal DB) — test: luk en testkonto, log ind igen, og tjek at alt er der.
 
 ## 2026-10-02: Kalenderen husker den åbne dag
 

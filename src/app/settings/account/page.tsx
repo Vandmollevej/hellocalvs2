@@ -8,8 +8,10 @@ import { useTranslation } from "@/i18n/LocaleProvider";
 
 type Mode = "close" | "forget";
 
-// Kontoindstillinger: "Luk konto" og "Ret til at blive glemt". Begge
-// anonymiserer kontoen (src/lib/gdpr.ts) og logger ud; brugeren skal skrive SLET.
+// Kontoindstillinger: "Ret til at blive glemt" anonymiserer med det samme
+// (src/lib/gdpr.ts), og brugeren skal skrive SLET. "Luk konto" er kun et sort,
+// understreget tekstlink (ejerens regel 2026-10-03) og kan fortrydes ved at
+// logge ind inden for 3 måneder (src/lib/account-closure.ts).
 export default function AccountSettingsPage() {
   const { t } = useTranslation();
   const router = useRouter();
@@ -46,37 +48,43 @@ export default function AccountSettingsPage() {
     <HfScreen title={t("accountSettings.title")}>
       <div className="hf-page hf-stack">
         <section className="flex flex-col gap-3">
-          <h2 className="hf-type-body hf-type-strong">{t("accountSettings.closeTitle")}</h2>
-          <p className="hf-type-body text-text-secondary">{t("accountSettings.closeIntro")}</p>
-          <button type="button" className="hf-control hf-btn-primary w-full px-4" onClick={() => open("close")}>
-            {t("accountSettings.closeButton")}
-          </button>
-        </section>
-
-        <section className="flex flex-col gap-3">
           <h2 className="hf-type-body hf-type-strong">{t("accountSettings.forgetTitle")}</h2>
           <p className="hf-type-body text-text-secondary">{t("accountSettings.forgetIntro")}</p>
           <button type="button" className="hf-control hf-btn-primary w-full px-4" onClick={() => open("forget")}>
             {t("accountSettings.forgetButton")}
           </button>
         </section>
+
+        <button
+          type="button"
+          className="hf-type-body min-h-11 self-start text-hf-black underline underline-offset-2"
+          onClick={() => open("close")}
+        >
+          {t("accountSettings.closeLink")}
+        </button>
       </div>
 
       {mode && (
         <BottomSheet
-          title={t(mode === "close" ? "accountSettings.closeButton" : "accountSettings.forgetButton")}
+          title={t(mode === "close" ? "accountSettings.closeLink" : "accountSettings.forgetButton")}
           onClose={() => !busy && setMode(null)}
         >
           <div className="flex flex-col gap-3 p-4">
-            <p className="hf-type-body">{t("accountSettings.confirmWarning")}</p>
-            <input
-              className="hf-type-body hf-field rounded-xl bg-hf-tan px-4 text-hf-black outline-none focus-visible:ring-2 focus-visible:ring-hf-green"
-              value={confirm}
-              onChange={(event) => setConfirm(event.target.value)}
-              placeholder={t("accountSettings.confirmPlaceholder")}
-              autoCapitalize="characters"
-              autoComplete="off"
-            />
+            {mode === "close" ? (
+              <p className="hf-type-body">{t("accountSettings.closeSheetText")}</p>
+            ) : (
+              <>
+                <p className="hf-type-body">{t("accountSettings.confirmWarning")}</p>
+                <input
+                  className="hf-type-body hf-field rounded-xl bg-hf-tan px-4 text-hf-black outline-none focus-visible:ring-2 focus-visible:ring-hf-green"
+                  value={confirm}
+                  onChange={(event) => setConfirm(event.target.value)}
+                  placeholder={t("accountSettings.confirmPlaceholder")}
+                  autoCapitalize="characters"
+                  autoComplete="off"
+                />
+              </>
+            )}
             {error && (
               <p role="alert" className="hf-type-body text-hf-red-dark">
                 {error}
@@ -84,11 +92,15 @@ export default function AccountSettingsPage() {
             )}
             <button
               type="button"
-              disabled={busy || confirm.trim() !== "SLET"}
+              disabled={busy || (mode === "forget" && confirm.trim() !== "SLET")}
               onClick={() => void submit()}
-              className="hf-control hf-btn-primary w-full px-4 disabled:opacity-50"
+              className={
+                mode === "close"
+                  ? "hf-type-body min-h-11 self-start text-hf-black underline underline-offset-2 disabled:opacity-50"
+                  : "hf-control hf-btn-primary w-full px-4 disabled:opacity-50"
+              }
             >
-              {t("accountSettings.confirmButton")}
+              {t(mode === "close" ? "accountSettings.closeConfirmButton" : "accountSettings.confirmButton")}
             </button>
           </div>
         </BottomSheet>

@@ -18,9 +18,12 @@ export type ApprovalStart = { approvalId: string; secret: string };
 // Returnerer null, hvis login kan gennemføres direkte.
 export async function startLoginApprovalIfRequired(
   req: Request,
-  user: { id: string; displayName: string; loginApprovalEnabled: boolean }
+  user: { id: string; displayName: string; loginApprovalEnabled: boolean; closedAt?: Date | null }
 ): Promise<ApprovalStart | null> {
   if (!user.loginApprovalEnabled || !isPushConfigured()) return null;
+  // En lukket konto har ingen indloggede enheder, der kan godkende — login
+  // genåbner den i stedet (src/lib/account-closure.ts).
+  if (user.closedAt) return null;
   if (await isKnownDevice(req, user.id)) return null;
   const subscriptions = await prisma.pushSubscription.count({ where: { userId: user.id } });
   if (subscriptions === 0) return null;
