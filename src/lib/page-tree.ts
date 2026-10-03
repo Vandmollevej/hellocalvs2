@@ -399,6 +399,12 @@ export const PAGE_TREE: PageArea[] = [
               { path: "/admin/partners/[id]/payment", label: "Partner: Betalingsmetode" },
             ],
           },
+          {
+            path: "/admin/integrations",
+            label: "Integrationer",
+            note: "Installationer, brug og frakoblinger pr. integration",
+            children: [{ path: "/admin/integrations/[slug]", label: "Integration" }],
+          },
           { path: "/admin/statistics?view=traffic", label: "Statistik: Trafik", note: "Besøgsstatistik fra Umami (tidl. Analyse)" },
           { path: "/admin/jobs", label: "Jobs", note: "Jobs sat op af AI-agenter (åbne/afsluttede)" },
           { path: "/admin/agents", label: "Agenter", note: "AI-agenter med MCP-adgang" },
