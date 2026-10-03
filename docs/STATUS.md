@@ -3,6 +3,13 @@
 Last updated: 2026-10-02
 Last updated: 2026-10-03
 
+## 2026-10-03: Profil → Status (nuværende vægt, mål og historik)
+
+- Ny række "Status" i profilmenuen lige under Points (Profil → Points → Status). Siden `/profile/status` viser øverst to felter: nuværende vægt (seneste vejning, ellers start-vægten) og mål (målvægten fra Målsætning), samt "x kg til målet". Uden mål vises "Sæt et mål" → `/profile/goals`.
+- Under overskriften "Historik": én dropdown til vægt og én pr. kropsmål (Bryst, Talje, Hofte, Overarm, Lår). Hver dropdown har en graf øverst (alle målinger, mål som stiplet linje for vægt) og derunder målingerne nyeste først (10 ad gangen, "Vis alle"). Se DECISIONS.md samme dato.
+- Kode: `src/lib/profile-status.ts` (ren beregning, tests i `profile-status.test.mjs`), `src/components/HistoryLineChart.tsx`, `src/app/profile/status/page.tsx`, i18n `profileStatus.*` + `profile.row.status`. Ingen nye API'er eller migrationer — læser `/api/profile`, `/api/weight-entries` og `/api/body-measurements`.
+- Lint (0 fejl), typecheck og build grønne; nye tests grønne. `page-tree.test.mjs` fejlede allerede før (mange sider mangler i `page-tree.ts`); `/profile/status` er tilføjet. Set i Chromium med falske API-svar (402 px) — ikke prøvet mod rigtig database.
+
 ## 2026-10-02: Kalenderen husker den åbne dag
 
 - Dagsvisningen genåbnes efter navigation væk fra `/calendar` (Tilbage eller "Kalender" i menuen) i stedet for at falde tilbage til måneden. Ny `src/lib/calendar-open-day.ts` (URL `?date=` + sessionStorage), koblet ind i `src/app/calendar/page.tsx`. Se DECISIONS.md samme dato.

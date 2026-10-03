@@ -1251,6 +1251,7 @@
       "photoDiary": "Billeddagbog",
       "integrations": "Integrationer",
       "points": "Points",
+      "status": "Status",
       "inviteFriend": "Invitér en ven",
       "notifications": "Kommunikation",
       "reportBug": "Har du fundet en fejl?",
@@ -1471,6 +1472,24 @@
     "chooseSexHint": "Vælg køn under Profil → Redigér profil for at se tegningerne af, hvor du måler.",
     "deleteAria": "Slet måling",
     "delete": "Slet"
+  },
+  "profileStatus": {
+    "title": "Status",
+    "currentWeight": "Nuværende vægt",
+    "goal": "Mål",
+    "noGoal": "Intet mål",
+    "setGoal": "Sæt et mål",
+    "toLose": "{value} til målet",
+    "toGain": "{value} op til målet",
+    "goalReached": "Du har nået dit mål",
+    "history": "Historik",
+    "weightHistory": "Vægt",
+    "noWeights": "Ingen vejninger endnu.",
+    "noMeasurements": "Ingen målinger endnu.",
+    "showAll": "Vis alle ({count})",
+    "showLess": "Vis færre",
+    "chartAria": "Forløb for {name}",
+    "loadError": "Kunne ikke hente din status."
   },
   "bodyMeasurementChart": {
     "noData": "Ingen målinger endnu.",

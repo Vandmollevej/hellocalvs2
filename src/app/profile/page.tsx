@@ -9,6 +9,7 @@ import {
   IconBook2,
   IconCreditCard,
   IconBulb,
+  IconChartLine,
 } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
 import { AccordionCard, ChevronRow } from "@/components/hf/AccordionCard";
@@ -94,6 +95,11 @@ export default function ProfilePage() {
               href="/profile/edit"
             />
             <ChevronRow icon={<IconStar size={20} />} label={t("profile.row.points")} href="/profile/points" />
+            <ChevronRow
+              icon={<IconChartLine size={20} />}
+              label={t("profile.row.status")}
+              href="/profile/status"
+            />
             <ChevronRow
               icon={<IconCreditCard size={20} />}
               label={t("profile.row.subscription")}
