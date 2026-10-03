@@ -271,6 +271,7 @@ Ejer: cloud-session `claude/open-food-facts-scan-banner-rihp53` (2026-10-02)
 | Id | Opgave | Status | Næste skridt |
 | --- | --- | --- | --- |
 | — | Banner "Optjen 10 points" for Open Food Facts-/USDA-varer og egne varer uden PNG (efter scanning og fra søgning), kamera med felterne, genscannede eksterne varer overtages som egne, natlig OpenAI-aflæsning hvis ingen reagerer | Færdig (kode, PR #138 åben) | Migration 20261003050000 med i deployet. Brugerens test på telefon |
+| chat-support | Chatten kun under Support, kontakt kun nederst (ikke i toppen) | Færdig (kode, branch `claude/help-chat-only-support`, DECISIONS 2026-10-03) | Brugerens visuelle test på telefon efter deploy |
 
 ## G-WAVES — Bølge-baggrund på forsiden
 Filer: `src/lib/home-waves.ts`, `src/components/HomeWaves.tsx`, `.home-wave*` i `globals.css`, `src/app/page.tsx` (lag-opbygning), `StatsWheel.tsx` (kun `clipPath`).

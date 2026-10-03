@@ -281,6 +281,7 @@
       "saved": "The permission has been saved",
       "revoked": "Support access has been revoked",
       "contact": "Contact us",
+      "chat": "Ask the help chat",
       "dateRequired": "Select both a start and end date.",
       "invalidDateRange": "The start date cannot be after the end date.",
       "untilInPast": "The end date cannot be before today.",

@@ -281,6 +281,7 @@
       "saved": "Tilladelsen er gemt",
       "revoked": "Supportadgang er tilbagekaldt",
       "contact": "Kontakt os",
+      "chat": "Spørg hjælpe-chatten",
       "dateRequired": "Vælg både fra- og til-dato.",
       "invalidDateRange": "Fra-datoen kan ikke ligge efter til-datoen.",
       "untilInPast": "Til-datoen kan ikke ligge før i dag.",

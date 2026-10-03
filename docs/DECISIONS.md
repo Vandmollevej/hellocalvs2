@@ -35,6 +35,14 @@ Brugerens krav: Garmin, Health Connect, eufy, Renpho, Tuya, Xiaomi, Huawei, WHOO
 - De ti gamle nøgler (running … other) beholdes uændret; nøgler må aldrig omdøbes, da de står på gamle registreringer. Integrationernes aliaser er uændrede, men en rå type, der præcis er en katalognøgle (fx Strava "Rowing", "Golf"), lander nu på den nøgle i stedet for "cardio"/ukendt.
 - Søgningen matcher navnet først og derefter søgeord (fx "judo" → Kampsport, "spinning" → Spinning). Listen er alfabetisk med "Anden aktivitet" sidst.
 - Varighed indtastes som timer + minutter med et sluttidspunkt, der følger med begge veje; slut før start betyder over midnat (`src/lib/activity-duration.ts`). API'et får stadig `durationMinutes`.
+## 2026-10-03: Hjælpe-chatten kun under Support, kontakt kun nederst
+
+Ændrer placeringen fra 2026-10-02 (ejerens ønske: "skjul det mere").
+
+- Ingen hjælpe-knap i toppen længere — hverken i appbaren (`ScreenHeader`), forsidens `TopBar` eller desktop-skallens topbjælke. Chatten åbnes kun fra knappen "Spørg hjælpe-chatten" på Support-siden (`/settings/support`). `.hf-appbar--help` og `HelpChatButton` er fjernet.
+- I chat-arket står "Tal med en medarbejder" og "Kontaktformular" ikke længere som fliser i toppen, men som diskrete tekstlinks nederst i samtalen. Chatbottens eget tilbud om en medarbejder (ved tvivl) er uændret.
+- På Support-siden er "Kontakt os" et tekstlink helt nederst (under "Mine henvendelser") i stedet for en primær knap.
+
 ## 2026-10-02: Hjælpe-chatbot øverst i app og web + admin "Chatbot"
 
 - **Placering:** en hjælpe-knap (chatbot-ikon) står øverst på alle app-sider lige til venstre for profilcirklen (`ScreenHeader` og forsidens `TopBar`). På desktop står "Hjælp" i topbjælken ved siden af profilindstillinger. Knappen åbner ét fuldt bundark (`src/components/help/HelpChat.tsx`, monteret én gang i layoutet). Den eksisterende måltids-chat (`/chat`) er uændret og noget andet.

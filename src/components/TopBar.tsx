@@ -3,7 +3,6 @@
 import { useFamilyStatus } from "@/components/family/FamilyStatusProvider";
 import { WatchPhoneIcon } from "@/components/family/WatchPhoneIcon";
 import { ProfileAvatarLink } from "@/components/ProfileAvatarLink";
-import { HelpChatButton } from "@/components/help/HelpChatButton";
 import { useTranslation } from "@/i18n/LocaleProvider";
 
 // Samme højde, sidemargin og 44 px-slot som .hf-appbar, så profilcirklen
@@ -19,9 +18,6 @@ export function TopBar() {
           <WatchPhoneIcon name={watcher.displayName} title={t("family.watch.onAccount", { name: watcher.displayName })} />
         </span>
       )}
-      <span className="text-hf-black">
-        <HelpChatButton />
-      </span>
       <ProfileAvatarLink outlined />
     </div>
   );
