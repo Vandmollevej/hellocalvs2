@@ -53,6 +53,11 @@ Last updated: 2026-10-03
 - `public/hjaelp.html` har et kort "Lær appen at kende" øverst (under introen) med en grøn knap "Start guiden" (`--brand` #067A46, hvid tekst). Kortet skjules, mens der søges. FAQ'en "Kan jeg se introduktionen igen?" linker også direkte til guiden.
 - Knappen går til `/settings?guide=1`; Indstillinger nulstiller onboarding-fremdriften og åbner `OnboardingWizard` (samme som "Lær appen at kende") og fjerner parameteren fra adressen. Se DECISIONS.md samme dato.
 - Lint og typecheck grønne; hjælpesiden tjekket visuelt i 390 px. Ikke live-testet med login (ingen lokal DB).
+## 2026-10-03: Adgangsarket (integrationer) — bunden skjules ikke længere
+
+- På telefonen lå "Vilkår og betingelser" og "Tillad"/"Tillad ikke" ovenpå listen med gennemsigtig baggrund, så kontakterne (fx "Fedtprocent") skinnede igennem og bunden af arket ikke kunne læses. Knapperne har nu deres egen hvide bund under listen (`src/components/hf/HfAccessSheet.module.css`), med en kort toning over kanten; listen scroller helt frem over dem. Se DECISIONS.md samme dato.
+- Den grønne runde chat-knap (smiley) nederst til højre på brugerens skærmbillede findes ikke i koden — den kommer fra browseren/en udvidelse og er ikke rørt.
+- Lint (0 fejl), typecheck og build grønne; tjekket i en 390 × 700 gengivelse af arket. Test på telefon: åbn Indstillinger → Integrationer → Withings og scroll til bunden.
 
 ## 2026-10-02: Kalenderen husker den åbne dag
 
