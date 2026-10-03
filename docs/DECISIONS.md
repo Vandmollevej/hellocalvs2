@@ -2,6 +2,12 @@
 
 This file records durable decisions. Add a dated entry when a later decision changes one of them.
 
+## 2026-10-03: "Invitér en ven" — kun afsenderen får 300 points, vennen 1 gratis måned
+
+- Ejerens beslutning (erstatter "300 points til begge parter" fra 2026-09-02): kun den, der inviterer, får 300 points (`FRIEND_REFERRAL`), når vennen har haft en konto i mindst 3 måneder. Ventetiden er uændret.
+- Vennen får ingen points, men 1 gratis måned med Seriøs med det samme, når kontoen oprettes via invite-linket (`grantReferredFriendFreeMonth` i `src/lib/referrals.ts`). Den gives som `FREE_MONTH` med `currentPeriodEnd` = oprettelse + 1 måned (samme spor som gavekoder) og tæller ikke med i loftet på 12 gratis måneder fra points.
+- Gælder kun nye tilmeldinger. Allerede ventende invitationer udbetaler fremover kun til afsenderen; vennen i dem får ikke en gratis måned med tilbagevirkende kraft.
+
 ## 2026-10-03: Flere sider kan lægges i bundmenuen
 
 - Brugerens ønske: Favoritter, Viden om, Opskrifter, Status, Billeddagbog og Kropsmål kan vælges som ikoner i bundmenuen. De ligger i puljen (ikke i standardmenuen, som stadig er Tilføj/Madvarer/Kalender/Statistik).

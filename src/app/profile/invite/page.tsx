@@ -25,10 +25,10 @@ function expiryLabel(expiresAt: string) {
   return daysLeft <= 1 ? "Udløber i dag" : `Udløber om ${daysLeft} dage`;
 }
 
-// "Invitér en ven" (docs/DECISIONS.md 2026-09-02): 300 points til begge
-// parter, når den inviterede har været registreret ≥3 måneder (uændret
-// ventetid-regel). 300 points kan siden indløses til 1 gratis måned under
-// Profil → Points.
+// "Invitér en ven" (docs/DECISIONS.md 2026-10-03): afsenderen får 300 points,
+// når den inviterede har været registreret ≥3 måneder; vennen får 1 gratis
+// måned med Seriøs ved oprettelsen. 300 points kan indløses til 1 gratis
+// måned under Profil → Points.
 export default function InvitePage() {
   const [referralCode, setReferralCode] = useState<string | null>(null);
   const [referrals, setReferrals] = useState<Referral[]>([]);
@@ -170,8 +170,8 @@ export default function InvitePage() {
     >
       <div className="px-4 pt-6 pb-8">
         <PointsPromoBanner
-          headline="I optjener begge 300 points, når din ven har oprettet en konto"
-          subtext="300 points kan indløses til 1 gratis måned under Profil → Points."
+          headline="Du optjener 300 points, når din ven har været med i 3 måneder"
+          subtext="Din ven får 1 gratis måned med Seriøs, når kontoen oprettes via dit link."
           href="/betingelser#pointsystem"
         />
 
