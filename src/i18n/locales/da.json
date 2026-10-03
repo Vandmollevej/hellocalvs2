@@ -2053,11 +2053,13 @@
     "opening": "Åbner…",
     "changeError": "Kunne ikke åbne kortskift. Prøv igen om lidt.",
     "recurringNote": "Trækkes automatisk ved hver fornyelse.",
+    "testCard": "Stripe-testkort",
     "walletCard": "{brand} •••• {last4}",
 
     "status": {
       "inactive": "Intet aktivt abonnement",
       "active": "Aktivt abonnement",
+      "activeFamily": "Aktivt familieabonnement",
       "trialing": "Prøveperiode",
       "freeMonth": "Gratis måned aktiv",
       "canceled": "Opsagt"

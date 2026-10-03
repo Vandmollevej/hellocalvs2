@@ -2,6 +2,14 @@
 
 This file records durable decisions. Add a dated entry when a later decision changes one of them.
 
+## 2026-10-03: Betalingssiden — ens logo-chips, familieabonnement og Stripe-testkort
+
+Brugerens krav: logoerne var "meget små i boksene og burde være den brunlige standardfarve"; ikonerne skal have samme størrelse i bokse af samme størrelse; "Og jeg har aktivt abonnement. Det er familieabonnement" (brugeren er administrator); "Kunne du ikke tilføje dummykort-betalingen fra Stripe integrationen".
+
+- Logo-chips (købssiden, betalingsarket på forsiden og Indstillinger → Betalingsmetode) er `--hf-color-card` uden kant, alle 64 × 40 px, og hvert logo skaleres ind i samme 40 × 24-felt. MobilePay-chippen er bredere, fordi navnet står ved siden af. Logo-SVG'ernes viewBox er beskåret til selve mærket.
+- Seriøs uden egen aftale (administratorer, der altid er Seriøs Familie) vises som aktivt abonnement på betalingssiden, og med familieplan står der "Aktivt familieabonnement".
+- Administratorer uden et rigtigt kort får Stripes testkort (Visa •••• 4242, 12/34, "Stripe-testkort") som betalingsmetode (`testPaymentMethod` i `GET /api/subscription`). Det er kun til visning: det kan ikke skiftes eller opsiges.
+
 ## 2026-10-03: Forsidens puls-linje slår i den målte puls
 
 Brugerens krav: "Pulsen skal svare til den rigtige puls som måles, hvis ur tilsluttet. Ellers svarende til 60bpm."
