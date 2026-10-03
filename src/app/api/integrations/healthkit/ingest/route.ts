@@ -4,6 +4,7 @@ import { storeIntegrationItems, type IntegrationItem } from "@/lib/integrations/
 import { authenticateDeviceToken, companionIntegration, companionSource } from "@/lib/integrations/companion";
 import { filterItemsBySettings } from "@/lib/integrations/sync-settings";
 import { brandForOrigin, type ViaBrand } from "@/lib/integrations/origins";
+import { recordIntegrationEvent } from "@/lib/integrations/events";
 
 type IngestBody = {
   source?: "APPLE_HEALTH" | "HEALTH_CONNECT" | "GOOGLE_HEALTH";
@@ -82,6 +83,7 @@ export async function POST(req: Request) {
         update: { status: "CONNECTED", lastSyncedAt: now, scope: `via:${source}` },
       });
     }
+    await recordIntegrationEvent(token.userId, source, "SYNC", delivered);
     return NextResponse.json({ ok: true, delivered });
   } catch (error) {
     console.error("HealthKit ingest failed", error instanceof Error ? error.message : "ukendt");
