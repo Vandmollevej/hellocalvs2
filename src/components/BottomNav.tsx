@@ -12,7 +12,13 @@ import {
   IconUser,
   IconX,
   IconRefresh,
+  IconBulb,
+  IconBook2,
+  IconChartLine,
+  IconPhoto,
 } from "@tabler/icons-react";
+import { IconFavorite } from "@/components/icons/Favorite";
+import { IconWaistMeasure } from "@/components/icons/WaistMeasure";
 import { useTranslation } from "@/i18n/LocaleProvider";
 import { useIsCompactLandscape } from "@/hooks/useIsCompactLandscape";
 import { useIsSerious } from "@/lib/use-subscription-tier";
@@ -114,6 +120,42 @@ const NAV_ITEMS: NavItem[] = [
     href: BOTTOM_NAV_HREFS.profil,
     labelKey: "profile",
     render: (color, size) => <IconUser size={size} stroke={1.6} color={color} />,
+  },
+  {
+    key: "favoritter",
+    href: BOTTOM_NAV_HREFS.favoritter,
+    labelKey: "favorites",
+    render: (color, size) => <IconFavorite size={size} color={color} />,
+  },
+  {
+    key: "viden",
+    href: BOTTOM_NAV_HREFS.viden,
+    labelKey: "knowledge",
+    render: (color, size) => <IconBulb size={size} stroke={1.6} color={color} />,
+  },
+  {
+    key: "opskrifter",
+    href: BOTTOM_NAV_HREFS.opskrifter,
+    labelKey: "recipes",
+    render: (color, size) => <IconBook2 size={size} stroke={1.6} color={color} />,
+  },
+  {
+    key: "status",
+    href: BOTTOM_NAV_HREFS.status,
+    labelKey: "status",
+    render: (color, size) => <IconChartLine size={size} stroke={1.6} color={color} />,
+  },
+  {
+    key: "billeddagbog",
+    href: BOTTOM_NAV_HREFS.billeddagbog,
+    labelKey: "photoDiary",
+    render: (color, size) => <IconPhoto size={size} stroke={1.6} color={color} />,
+  },
+  {
+    key: "kropsmaal",
+    href: BOTTOM_NAV_HREFS.kropsmaal,
+    labelKey: "bodyMeasurements",
+    render: (color, size) => <IconWaistMeasure size={size} color={color} />,
   },
 ];
 
@@ -684,7 +726,7 @@ export function BottomNav() {
                     else itemRefs.current.delete(key);
                   }}
                   onPointerDown={(e) => beginDrag(key, "inactive", e)}
-                  className={`flex h-[64px] w-16 flex-none flex-col items-center justify-center gap-1 rounded-xl border px-1 py-2 touch-none select-none ${
+                  className={`flex h-[64px] min-w-16 flex-none flex-col items-center justify-center gap-1 rounded-xl border px-1 py-2 touch-none select-none ${
                     isPlaceholder
                       ? "border-dashed border-hf-gray-dark bg-transparent"
                       : isReady
@@ -696,7 +738,7 @@ export function BottomNav() {
                   <span className={`flex flex-col items-center gap-1 ${isPlaceholder ? "invisible" : ""}`}>
                     {item.render("var(--hf-black)", PANEL_ICON_SIZE)}
                     <span
-                      className="hf-type-micro text-center"
+                      className="hf-type-micro whitespace-nowrap text-center"
                       style={{ color: "var(--hf-black)", fontFamily: "var(--font-hf-body)" }}
                     >
                       {t(`nav.${item.labelKey}`)}
@@ -830,7 +872,7 @@ export function BottomNav() {
                       )}
                       <span className={`flex flex-col items-center gap-2 ${isPlaceholder ? "invisible" : ""}`}>
                         {item.render(color, ICON_SIZE)}
-                        <span className="hf-type-tab" style={{ color }}>
+                        <span className="hf-type-tab whitespace-nowrap" style={{ color }}>
                           {t(`nav.${item.labelKey}`)}
                         </span>
                       </span>

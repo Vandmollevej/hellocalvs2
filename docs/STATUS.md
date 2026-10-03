@@ -2,6 +2,13 @@
 
 Last updated: 2026-10-03
 
+## 2026-10-03: Bundmenuen — seks nye ikoner at vælge imellem + Favoritter-side
+
+- Bundmenuens pulje (langt tryk → træk ind) har fået Favoritter, Viden om, Opskrifter, Status, Billeddagbog og Kropsmål (`src/lib/navigation.ts`, `BottomNav.tsx`). Standardmenuen er uændret; nye ikoner lander automatisk i puljen hos brugere med gemt layout.
+- Ny side `/favorites`: favoritmadvarer (med Tilføj og fjern-favorit) og favoritopskrifter fra delte retter. `RecipeRow`/`recipeHref` er flyttet til `src/components/recipes/RecipeRow.tsx`, så Opskrifter og Favoritter deler dem.
+- Puljens knapper vokser nu med etiketten (min. 64 px), og etiketter brydes ikke — "Billeddagbog" var bredere end knappen.
+- Lint (0 fejl), typecheck og build grønne; tests grønne bortset fra den kendte `page-tree`-fejl (`/favorites` er registreret). Ikke set med login (ingen lokal DB) — test på telefon: langt tryk på bundmenuen → træk fx Favoritter ind.
+
 ## 2026-10-03: Kalender — profilcirklen er tilbage i dagsvisningen
 
 - Dagsvisningen (`DayDetails` i `src/app/calendar/page.tsx`) tegner sin egen grønne topbjælke som fuldskærmsdialog over siden, og dens højre hjørne var et tomt felt — så profilcirklen forsvandt, så snart en dag blev åbnet. Den viser nu `ProfileAvatarLink` som alle andre sider.

@@ -247,6 +247,12 @@
     "search": "Search",
     "voice": "Voice",
     "profile": "Profile",
+    "favorites": "Favorites",
+    "knowledge": "Knowledge",
+    "recipes": "Recipes",
+    "status": "Status",
+    "photoDiary": "Photo diary",
+    "bodyMeasurements": "Measurements",
     "addItemAriaLabel": "Add {item}",
     "removeItemAriaLabel": "Remove {item}",
     "allIconsInUse": "All icons are in use.",
@@ -1911,6 +1917,13 @@
     "restore": "Show the banner again",
     "thanks": "Thank you! You'll get {points} points once the photos have been read.",
     "submitFailed": "The photos couldn't be sent. Try again."
+  },
+  "favorites": {
+    "title": "Favorites",
+    "foodsTitle": "Foods",
+    "recipesTitle": "Recipes",
+    "foodsEmpty": "You have no favorite foods yet. Tap the favorite icon on an item to save it here.",
+    "recipesEmpty": "You have no favorite recipes yet."
   },
   "search": {
     "title": "Search",

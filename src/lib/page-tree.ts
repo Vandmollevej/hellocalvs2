@@ -126,6 +126,7 @@ export const PAGE_TREE: PageArea[] = [
           },
           { path: "/search", label: "Søg" },
           { path: "/my-scans", label: "Dine indscanninger" },
+          { path: "/favorites", label: "Favoritter" },
           { path: "/voice", label: "Stemme" },
         ],
       },
