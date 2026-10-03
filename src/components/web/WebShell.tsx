@@ -3,8 +3,14 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter, usePathname } from "next/navigation";
-import { createContext, useContext, useEffect, useState } from "react";
-import { IconPlus } from "@tabler/icons-react";
+import { createContext, useContext, useEffect, useRef, useState } from "react";
+import {
+  IconChevronDown,
+  IconPlus,
+  IconSettings,
+  IconUser,
+  IconWorld,
+} from "@tabler/icons-react";
 import { useAddActionsProfile, visibleAddActions } from "@/lib/add-actions";
 import { useFamilyStatus } from "@/components/family/FamilyStatusProvider";
 import { ProfileCircle } from "@/components/family/ProfileCircle";
@@ -25,6 +31,13 @@ import {
 // højre. Ingen telefonramme. Selve siderne er appens egne.
 const COLLAPSED_KEY = "hc-web-sidebar-collapsed";
 
+// Profil-dropdown yderst til højre i topbjælken.
+const PROFILE_MENU = [
+  { href: "/profile", labelKey: "nav.profile", icon: IconUser },
+  { href: "/profile/settings/language-region", labelKey: "settings.languageAndRegion", icon: IconWorld },
+  { href: "/settings", labelKey: "web.allSettings", icon: IconSettings },
+];
+
 // Sider kan spørge, om de vises i desktop-skallen (ScreenHeader bruger det
 // til at udelade tilbagepilen på topniveau-sider).
 const WebShellContext = createContext(false);
@@ -39,9 +52,11 @@ function isActive(pathname: string, href: string) {
 }
 
 // Kun det længste match er aktivt, så /profile/edit ikke også markerer /profile.
-const ALL_HREFS = [...WEB_SHORTCUTS, ...WEB_SETTINGS].map(
-  (item) => item.href.split("?")[0],
-);
+const ALL_ITEMS: WebNavItem[] = [...WEB_SHORTCUTS, ...WEB_SETTINGS].flatMap((item) => [
+  item,
+  ...(item.children ?? []),
+]);
+const ALL_HREFS = ALL_ITEMS.map((item) => item.href.split("?")[0]);
 function isBestMatch(pathname: string, href: string) {
   if (!isActive(pathname, href)) return false;
   return !ALL_HREFS.some(
@@ -89,15 +104,74 @@ function SideLink({
   );
 }
 
+// Punkt med undermenu (Visning): folder ud, når en af siderne er åben, eller
+// når der trykkes på punktet. Foldet sammen sidebjælke linker direkte videre.
+function SideGroup({
+  item,
+  pathname,
+  label,
+  collapsed,
+  isFemale,
+}: {
+  item: WebNavItem;
+  pathname: string;
+  label: string;
+  collapsed: boolean;
+  isFemale: boolean;
+}) {
+  const { t } = useTranslation();
+  const children = (item.children ?? []).filter((child) => !child.femaleOnly || isFemale);
+  const inside = children.some((child) => isActive(pathname, child.href));
+  const [open, setOpen] = useState(inside);
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    if (inside) setOpen(true);
+  }, [inside]);
+  const Icon = item.icon;
+  if (collapsed) return <SideLink item={item} pathname={pathname} label={label} collapsed />;
+  return (
+    <li>
+      <button
+        type="button"
+        onClick={() => setOpen((value) => !value)}
+        aria-expanded={open}
+        className={`hf-type-body flex w-full items-center gap-3 rounded-md px-2.5 py-2 ${
+          inside ? "hf-type-strong text-hf-green-dark" : "text-text-secondary hover:bg-hf-tan hover:text-text-primary"
+        }`}
+      >
+        <Icon size={20} stroke={1.75} />
+        <span className="flex-1 truncate text-left">{label}</span>
+        <IconChevronDown size={16} className={open ? "rotate-180" : ""} />
+      </button>
+      {open && (
+        <ul className="mt-0.5 flex flex-col gap-0.5 pl-4">
+          {children.map((child) => (
+            <SideLink key={child.key} item={child} pathname={pathname} label={t(child.labelKey)} collapsed={false} />
+          ))}
+        </ul>
+      )}
+    </li>
+  );
+}
+
 // Brødkrummer øverst i indholdsfladen (som i admin) på sider under topniveau.
 const CRUMB_LABELS: Record<string, string> = {
   betingelser: "Betingelser",
   privatlivspolitik: "Privatlivspolitik",
+  login: "Log ind",
+  signup: "Opret konto",
+  "forgot-password": "Glemt adgangskode",
+  "reset-password": "Nulstil adgangskode",
+  "verify-email": "Bekræft e-mail",
+  forward: "Videresend",
+  "family-code": "Familiekode",
+  scan: "Scan",
+  welcome: "Velkommen",
 };
 
 function Crumbs({ pathname }: { pathname: string }) {
   const { t } = useTranslation();
-  const all = [...WEB_SHORTCUTS, ...WEB_SETTINGS];
+  const all = ALL_ITEMS;
   const segs = pathname.split("/").filter(Boolean);
   const crumbs: { label: string; href?: string }[] = [{ label: "Hello Cal", href: WEB_HOME }];
   let acc = "";
@@ -137,6 +211,23 @@ export function WebShell({ children }: { children: React.ReactNode }) {
   const { status } = useFamilyStatus();
   const [collapsed, setCollapsed] = useState(false);
   const [addOpen, setAddOpen] = useState(false);
+  const [profileOpen, setProfileOpen] = useState(false);
+  const profileMenuRef = useRef<HTMLDivElement>(null);
+
+  // Luk profil-dropdown ved klik udenfor og ved sideskift.
+  useEffect(() => {
+    if (!profileOpen) return;
+    const onDown = (e: MouseEvent) => {
+      if (!profileMenuRef.current?.contains(e.target as Node)) setProfileOpen(false);
+    };
+    document.addEventListener("mousedown", onDown);
+    return () => document.removeEventListener("mousedown", onDown);
+  }, [profileOpen]);
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setProfileOpen(false);
+  }, [pathname]);
+  const [isFemale, setIsFemale] = useState(false);
   const addProfile = useAddActionsProfile();
   // Mikrofonen findes ikke på desktop (chat afløser den).
   const addActions = visibleAddActions(addProfile).filter((a) => a.key !== "microphone");
@@ -145,6 +236,19 @@ export function WebShell({ children }: { children: React.ReactNode }) {
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setAddOpen(false);
   }, [pathname]);
+
+  useEffect(() => {
+    let cancelled = false;
+    fetch("/api/profile")
+      .then(async (response) => (response.ok ? ((await response.json()) as { user: { sex: "FEMALE" | "MALE" | null } }) : null))
+      .then((data) => {
+        if (!cancelled && data) setIsFemale(data.user.sex === "FEMALE");
+      })
+      .catch(() => {});
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   useEffect(() => {
     // localStorage findes først efter hydrering.
@@ -225,15 +329,26 @@ export function WebShell({ children }: { children: React.ReactNode }) {
                   </h2>
                 )}
                 <ul className="flex flex-col gap-0.5">
-                  {settings.map((item) => (
-                    <SideLink
-                      key={item.key}
-                      item={item}
-                      pathname={pathname}
-                      label={t(item.labelKey)}
-                      collapsed={collapsed}
-                    />
-                  ))}
+                  {settings.map((item) =>
+                    item.children ? (
+                      <SideGroup
+                        key={item.key}
+                        item={item}
+                        pathname={pathname}
+                        label={t(item.labelKey)}
+                        collapsed={collapsed}
+                        isFemale={isFemale}
+                      />
+                    ) : (
+                      <SideLink
+                        key={item.key}
+                        item={item}
+                        pathname={pathname}
+                        label={t(item.labelKey)}
+                        collapsed={collapsed}
+                      />
+                    ),
+                  )}
                 </ul>
               </section>
             )}
@@ -285,26 +400,54 @@ export function WebShell({ children }: { children: React.ReactNode }) {
               aria-expanded={addOpen}
               aria-label={t("addMenu.title")}
               title={t("addMenu.title")}
-              className="-mb-5 flex h-[52px] w-[52px] shrink-0 items-center justify-center rounded-full bg-hf-green text-hf-white shadow-md transition hover:bg-hf-green-dark"
+              className="absolute bottom-[-10px] left-1/2 z-30 flex h-[52px] w-[52px] -translate-x-1/2 items-center justify-center rounded-full bg-hf-green text-hf-white shadow-md transition hover:bg-hf-green-dark"
             >
               <IconPlus size={28} stroke={2} />
             </button>
-            <Link
-              href="/profile"
-              aria-label={t("web.profileSettings")}
-              className={`hf-type-body flex h-9 items-center gap-2 rounded-md pl-1.5 pr-3 ${
-                profileActive
-                  ? "hf-type-strong bg-hf-tan text-hf-green-dark"
-                  : "text-text-secondary hover:bg-hf-tan hover:text-text-primary"
-              }`}
-            >
-              <ProfileCircle
-                name={status?.activeProfile.displayName ?? ""}
-                size={32}
-                className="hf-avatar--outlined"
-              />
-              {t("web.profileSettings")}
-            </Link>
+            <div ref={profileMenuRef} className="relative">
+              <button
+                type="button"
+                aria-label={t("web.profileSettings")}
+                aria-haspopup="menu"
+                aria-expanded={profileOpen}
+                onClick={() => setProfileOpen((open) => !open)}
+                className={`hf-type-body flex h-9 items-center gap-2 rounded-md pl-1.5 pr-3 ${
+                  profileActive || profileOpen
+                    ? "hf-type-strong bg-hf-tan text-hf-green-dark"
+                    : "text-text-secondary hover:bg-hf-tan hover:text-text-primary"
+                }`}
+              >
+                <ProfileCircle
+                  name={status?.activeProfile.displayName ?? ""}
+                  size={32}
+                  className="hf-avatar--outlined"
+                />
+                {t("web.profileSettings")}
+                <IconChevronDown size={16} stroke={1.75} />
+              </button>
+              {profileOpen && (
+                <ul
+                  role="menu"
+                  className="absolute right-0 top-full z-40 mt-1 w-60 rounded-md border border-hf-tan-dark bg-hf-white p-1 shadow-lg"
+                >
+                  {PROFILE_MENU.map((item) => {
+                    const Icon = item.icon;
+                    return (
+                      <li key={item.href} role="none">
+                        <Link
+                          href={item.href}
+                          role="menuitem"
+                          className="hf-type-body flex h-9 items-center gap-3 rounded-md px-2.5 text-text-secondary hover:bg-hf-tan hover:text-text-primary"
+                        >
+                          <Icon size={18} stroke={1.75} />
+                          {t(item.labelKey)}
+                        </Link>
+                      </li>
+                    );
+                  })}
+                </ul>
+              )}
+            </div>
             </div>
             {addOpen && (
               <div className="absolute left-0 right-0 top-full z-20 border-b border-hf-tan-dark bg-hf-white pt-4 shadow-sm">

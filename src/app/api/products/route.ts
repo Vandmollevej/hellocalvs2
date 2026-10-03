@@ -79,6 +79,14 @@ export async function GET(req: Request) {
                     OR: [
                       { name: { contains: q, mode: "insensitive" } },
                       { brand: { name: { contains: q, mode: "insensitive" } } },
+                      // Sukkerpåstande kan søges ("sukkerfri", "uden tilsat sukker",
+                      // "reduceret", "light", "lavt sukker"), men vises ikke som mærker
+                      // (docs/DECISIONS.md 2026-10-02).
+                      { filters: { is: { sugarFree: { contains: q, mode: "insensitive" } } } },
+                      { filters: { is: { noAddedSugar: { contains: q, mode: "insensitive" } } } },
+                      { filters: { is: { reducedSugar: { contains: q, mode: "insensitive" } } } },
+                      { filters: { is: { lightSugar: { contains: q, mode: "insensitive" } } } },
+                      { filters: { is: { lowSugar: { contains: q, mode: "insensitive" } } } },
                     ],
                   } satisfies Prisma.ProductWhereInput,
                 ]
