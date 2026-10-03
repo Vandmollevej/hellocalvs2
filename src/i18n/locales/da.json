@@ -1967,8 +1967,7 @@
     "noSearchResults": "Ingen grafer eller kort matcher din søgning.",
     "add": "+ Tilføj",
     "noCardsYet": "Ingen kort her endnu.",
-    "addHeading": "+ Overskrift",
-    "addDivider": "+ Skillelinje"
+    "addHeading": "Overskrift"
   },
   "statUnusedCharts": {
     "title": "Ubrugte grafer",

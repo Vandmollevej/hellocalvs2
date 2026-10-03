@@ -267,6 +267,11 @@ Last updated: 2026-10-02
 - Tests: `src/lib/jobs/night.test.mjs` (grøn). Lint, typecheck og `npm run build` grønne. Ikke live-testet (ingen lokal DB/login) — tjek Robotter og Oversigten efter første nat.
 - Bemærk: `page-tree.test.mjs` fejler stadig (uvedkommende; admin-sider mangler i `page-tree.ts`).
 
+## 2026-10-02: Tilføj til statistik — kun én overskrift-knap
+
+- `/statistics/unused-cards`: den stiplede "+ Overskrift"-knap er fjernet. Den linje-knap, der før hed "+ Skillelinje", hedder nu "Overskrift" (uden plus) og tilføjer en redigerbar overskrift med streger (header-element) øverst i layoutet. Rene skillelinjer uden tekst kan ikke længere tilføjes fra siden; eksisterende skillelinjer i gemte layouts vises og kan fjernes som før.
+- Lint og `npm run build` grønne. Ikke visuelt testet (ingen lokal DB/login) — tjek på telefon.
+
 ## 2026-09-29: Offentlig forside for udloggede
 
 - Ny hent-appen-forside uden telefonramme, med QR-koder, planer med betalings-ark, Hello Doc-bjælke, nøgletal fra databasen, `/business` (kontaktformular) og `/presse`. Se DECISIONS.md samme dato.
