@@ -13,6 +13,7 @@ import { IngredientsRetakeFlow } from "@/components/camera/IngredientsRetakeFlow
 import { ObjectPickerOverlay } from "@/components/camera/ObjectPickerOverlay";
 import { cropToObject, detectObjects, type ObjectBox } from "@/lib/object-picker";
 import { useTranslation } from "@/i18n/LocaleProvider";
+import { scaleItemToGrams } from "@/lib/scale-meal-item";
 
 type CameraStatus = "starting" | "active" | "denied" | "unavailable" | "error";
 type CameraMode = "product" | "meal" | "hellofresh";
