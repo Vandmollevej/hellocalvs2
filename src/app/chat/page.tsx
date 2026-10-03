@@ -93,7 +93,8 @@ function ItemRow({
           type="button"
           onClick={onAdd}
           disabled={disabled}
-          className="hf-type-small hf-type-strong h-9 flex-shrink-0 rounded-lg border border-[var(--hf-color-action)] px-3 text-[var(--hf-color-action)] disabled:opacity-60"
+          aria-label={`${addLabel}: ${item.title}`}
+          className="hf-btn-secondary h-10 flex-shrink-0 px-3"
         >
           {addLabel}
         </button>
@@ -229,7 +230,10 @@ export default function ChatPage() {
     }
   }
 
-  const hasPendingItems = items.some((item) => !item.saved);
+  // Forslag og tilføjede varer står hver for sig: intet gemmes, før brugeren
+  // trykker Tilføj på rækken (eller "Tilføj alle forslag" ved flere).
+  const suggestedItems = items.filter((item) => !item.saved);
+  const savedItems = items.filter((item) => item.saved);
 
   return (
     <HfScreen title={t("web.chatTitle")} hideBackButton>
@@ -269,33 +273,50 @@ export default function ChatPage() {
           {errorMessage && <p className="hf-type-small mt-2 text-hf-red-dark">{errorMessage}</p>}
         </div>
 
-        <section className="mt-4">
-          {hasPendingItems && (
-            <button
-              type="button"
-              onClick={() => void addShownItems()}
-              disabled={isAdding}
-              className="hf-type-body hf-type-strong hf-control mb-3 flex w-full items-center justify-center rounded-xl bg-hf-green text-hf-white disabled:opacity-60"
-            >
-              {isAdding ? t("voice.adding") : t("web.chatAddAll")}
-            </button>
-          )}
-          <h2 className="hf-type-body hf-heading mb-1 text-hf-black">{t("voice.added")}</h2>
-          <ul>
-            {items.map((item) => (
-              <li key={item.id} className="border-b border-hf-tan-dark last:border-b-0">
-                <ItemRow
-                  item={item}
-                  estimateLabel={t("voice.aiEstimate")}
-                  addLabel={t("web.chatAdd")}
-                  disabled={isAdding}
-                  onAdd={() => void addShownItems([item.id])}
-                  onDelete={() => deleteItem(item)}
-                />
-              </li>
-            ))}
-          </ul>
-        </section>
+        {suggestedItems.length > 0 && (
+          <section className="mt-4">
+            <h2 className="hf-type-body hf-heading mb-1 text-hf-black">{t("web.chatSuggested")}</h2>
+            <ul>
+              {suggestedItems.map((item) => (
+                <li key={item.id} className="border-b border-hf-tan-dark last:border-b-0">
+                  <ItemRow
+                    item={item}
+                    estimateLabel={t("voice.aiEstimate")}
+                    addLabel={t("web.chatAdd")}
+                    disabled={isAdding}
+                    onAdd={() => void addShownItems([item.id])}
+                    onDelete={() => deleteItem(item)}
+                  />
+                </li>
+              ))}
+            </ul>
+            {suggestedItems.length > 1 && (
+              <button type="button" onClick={() => void addShownItems()} disabled={isAdding} className="hf-btn-primary mt-4 h-12 w-full px-4">
+                {isAdding ? t("voice.adding") : t("web.chatAddAll")}
+              </button>
+            )}
+          </section>
+        )}
+
+        {savedItems.length > 0 && (
+          <section className="mt-4">
+            <h2 className="hf-type-body hf-heading mb-1 text-hf-black">{t("voice.added")}</h2>
+            <ul>
+              {savedItems.map((item) => (
+                <li key={item.id} className="border-b border-hf-tan-dark last:border-b-0">
+                  <ItemRow
+                    item={item}
+                    estimateLabel={t("voice.aiEstimate")}
+                    addLabel={t("web.chatAdd")}
+                    disabled={isAdding}
+                    onAdd={() => void addShownItems([item.id])}
+                    onDelete={() => deleteItem(item)}
+                  />
+                </li>
+              ))}
+            </ul>
+          </section>
+        )}
       </div>
     </HfScreen>
   );

@@ -93,6 +93,12 @@ Last updated: 2026-10-02
 - Forsiden: understreget link "Se dine indscanninger" øverst under "Dagens tilføjelser", når en vare fotograferet i dag ikke er tilføjet. Ny side `/my-scans` grupperet pr. dato. Søgerækken er flyttet til `src/components/ProductResultRow.tsx` og bruges af begge. Se DECISIONS.
 - Lint (ændrede filer), typecheck og `npm run build` grønne. Ikke live-testet (ingen lokal DB). `page-tree.test.mjs` fejler stadig som før (andre sider mangler); `/my-scans` er tilføjet.
 
+## 2026-10-02: Tale og chat — "Foreslået" med Tilføj-knap pr. forslag
+
+- `/voice` og `/chat`: AI'ens tolkning vises nu under overskriften "Foreslået" (før "Tilføjet"), og hver foreslået vare har sin egen "Tilføj"-knap — intet gemmes uden brugerens tryk. Ved to eller flere forslag er der desuden "Tilføj alle forslag". Gemte varer står for sig under "Tilføjet" på begge sider (desktop-siden "Indtast" følger nu samme opbygning som talesiden).
+- Tale: forslag fra en tidligere optagelse bliver stående, når en ny optagelse starter (hver optagelse er sin egen "batch"; kun den igangværende optagelses forslag erstattes af live-tolkningen), så flere forslag kan vente samtidig.
+- Knapperne bruger `.hf-btn-primary`/`.hf-btn-secondary` (design.md §6.2); den grønne knap på talesiden er væk. Nye tekster da/en (`voice.suggested`, `voice.addOne`, `web.chatSuggested`, `web.chatAddOne`, `web.chatAddAll`).
+- Lint, typecheck og build grønne. Ikke live-testet (ingen lokal DB/mikrofon) — test på telefon og i desktop-chatten.
 ## 2026-10-02: Kameraflowet — rigtige stillbilleder + nyt foto af indholdet
 
 - Fejlen: marmelade (5711954020055) fik ingen ingredienser, fordi indholdsfotoet var et sløret 1080p-videobillede, og OpenAI svarede tomt ("for sløret"). Ingen genstart var involveret. Se DECISIONS 2026-10-02.
