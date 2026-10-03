@@ -11,7 +11,10 @@ import androidx.health.connect.client.aggregate.AggregateMetric
 import androidx.health.connect.client.aggregate.AggregationResult
 import androidx.health.connect.client.records.ActiveCaloriesBurnedRecord
 import androidx.health.connect.client.records.BasalMetabolicRateRecord
+import androidx.health.connect.client.records.BloodGlucoseRecord
+import androidx.health.connect.client.records.BloodPressureRecord
 import androidx.health.connect.client.records.BodyFatRecord
+import androidx.health.connect.client.records.BodyTemperatureRecord
 import androidx.health.connect.client.records.BodyWaterMassRecord
 import androidx.health.connect.client.records.BoneMassRecord
 import androidx.health.connect.client.records.DistanceRecord
@@ -68,6 +71,11 @@ class HealthConnectReader(
 
         if (settings.reads("bodyFat")) {
             metrics += safely { samples(BodyFatRecord::class, "BODY_FAT_PERCENT", window, { it.time }) { round1(it.percentage.value) } }
+            metrics += safely {
+                samples(BasalMetabolicRateRecord::class, "BASAL_METABOLIC_RATE_KCAL", window, { it.time }) {
+                    it.basalMetabolicRate.inKilocaloriesPerDay.roundToInt().toDouble()
+                }
+            }
         }
         if (settings.reads("fatFreeMass")) {
             metrics += safely { samples(LeanBodyMassRecord::class, "FAT_FREE_MASS_KG", window, { it.time }) { round2(it.mass.inKilograms) } }
@@ -94,6 +102,10 @@ class HealthConnectReader(
         if (settings.reads("water")) metrics += safely { water(window) }
         if (settings.reads("body")) {
             metrics += safely { samples(HeightRecord::class, "HEIGHT_CM", window, { it.time }) { round1(it.height.inMeters * 100) } }
+            metrics += safely { samples(BodyTemperatureRecord::class, "TEMPERATURE_C", window, { it.time }) { round1(it.temperature.inCelsius) } }
+            metrics += safely {
+                samples(BloodGlucoseRecord::class, "BLOOD_GLUCOSE_MMOL_L", window, { it.time }) { round1(it.level.inMillimolesPerLiter) }
+            }
         }
 
         val weightItems = if (settings.reads("weight")) {
@@ -119,6 +131,12 @@ class HealthConnectReader(
         addAll(safely { samples(OxygenSaturationRecord::class, "OXYGEN_SATURATION_PERCENT", window, { it.time }) { round1(it.percentage.value) } })
         addAll(safely { samples(RespiratoryRateRecord::class, "RESPIRATORY_RATE_BPM", window, { it.time }) { round1(it.rate) } })
         addAll(safely { samples(Vo2MaxRecord::class, "VO2_MAX", window, { it.time }) { round1(it.vo2MillilitersPerMinuteKilogram) } })
+        addAll(safely {
+            samples(BloodPressureRecord::class, "BLOOD_PRESSURE_SYSTOLIC_MMHG", window, { it.time }) { round1(it.systolic.inMillimetersOfMercury) }
+        })
+        addAll(safely {
+            samples(BloodPressureRecord::class, "BLOOD_PRESSURE_DIASTOLIC_MMHG", window, { it.time }) { round1(it.diastolic.inMillimetersOfMercury) }
+        })
     }
 
     /** Body water as % of body weight, only next to a weighing (±2 min) — same rule as the Withings sync. */

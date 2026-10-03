@@ -13,7 +13,9 @@ import { randomUUID } from "crypto";
 import type { IntegrationItem } from "@/lib/integrations/store-items";
 import {
   huaweiActivityItems,
+  HUAWEI_SAMPLE_TYPES,
   huaweiDailyItems,
+  huaweiSampleItems,
   huaweiSleepItems,
   huaweiTimeZone,
   huaweiWeightItems,
@@ -29,7 +31,7 @@ const TOKEN_URL = "https://oauth-login.cloud.huawei.com/oauth2/v3/token";
 const REVOKE_URL = "https://oauth-login.cloud.huawei.com/oauth2/v3/revoke";
 const apiBase = () => (process.env.HUAWEI_HEALTH_API_BASE || "https://health-api.cloud.huawei.com/healthkit/v2").replace(/\/$/, "");
 
-const SCOPES = ["step", "distance", "calories", "heartrate", "bodyweight", "sleep", "activityrecord"]
+const SCOPES = ["step", "distance", "calories", "heartrate", "bodyweight", "sleep", "activityrecord", ...HUAWEI_SAMPLE_TYPES.map((t) => t.scope)]
   .map((name) => `https://www.huawei.com/healthkit/${name}.read`)
   .join(" ");
 
@@ -94,6 +96,11 @@ export const huaweiHealth: OAuthProviderAdapter = {
   refresh(refreshToken) {
     return tokenRequest({ grant_type: "refresh_token", refresh_token: refreshToken });
   },
+  // Blodtryk/SpO2 og temperatur/blodsukker kom til 2026-10-03.
+  readScopes: {
+    heart: "https://www.huawei.com/healthkit/bloodpressure.read",
+    body: "https://www.huawei.com/healthkit/bodytemperature.read",
+  },
   async revoke(accessToken) {
     await postForm<unknown>(REVOKE_URL, { token: accessToken }, "Huawei afmelding").catch(() => {});
   },
@@ -132,6 +139,23 @@ export const huaweiHealth: OAuthProviderAdapter = {
       [] as IntegrationItem[]
     );
 
+    // Blodtryk, SpO2, temperatur og blodsukker (2026-10-03).
+    const samples = await Promise.all(
+      HUAWEI_SAMPLE_TYPES.map((type) =>
+        tolerant(
+          type.dataType,
+          async () => {
+            const data = await call<{ group?: Group[] }>("/sampleSet:polymerize", accessToken, {
+              method: "POST",
+              body: JSON.stringify({ polymerizeWith: [{ dataTypeName: type.dataType }], ...ms }),
+            });
+            return huaweiSampleItems(type.metrics, (data.group ?? []).flatMap((g) => (g.sampleSet ?? []).flatMap((s) => s.samplePoints ?? [])));
+          },
+          [] as IntegrationItem[]
+        )
+      )
+    );
+
     const sleep = await tolerant(
       "søvn",
       async () => {
@@ -152,6 +176,6 @@ export const huaweiHealth: OAuthProviderAdapter = {
       [] as IntegrationItem[]
     );
 
-    return [...daily.flat(), ...weights, ...sleep, ...activities];
+    return [...daily.flat(), ...weights, ...samples.flat(), ...sleep, ...activities];
   },
 };

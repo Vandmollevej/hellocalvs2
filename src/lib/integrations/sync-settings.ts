@@ -60,21 +60,38 @@ export const SYNC_CAPABILITIES: Partial<Record<IntegrationProvider, ProviderSync
     ],
     write: ["nutrition", "water", "weight", "activities"],
   },
-  GOOGLE_HEALTH: { read: ["weight", "bodyFat", "activities", "steps"], write: ["nutrition", "water", "weight"] },
+  GOOGLE_HEALTH: {
+    read: ["weight", "bodyFat", "activities", "steps", "heart", "body"],
+    write: ["nutrition", "water", "weight"],
+  },
   STRAVA: { read: ["activities"], write: ["activities"] },
   WITHINGS: {
-    read: ["weight", "bodyFat", "muscleMass", "fatFreeMass", "bodyWater", "boneMass", "visceralFat", "body", "heart"],
+    read: [
+      "weight",
+      "bodyFat",
+      "muscleMass",
+      "fatFreeMass",
+      "bodyWater",
+      "boneMass",
+      "visceralFat",
+      "activities",
+      "steps",
+      "energy",
+      "heart",
+      "sleep",
+      "body",
+    ],
     write: [],
   },
-  POLAR: { read: ["activities"], write: [] },
-  FITBIT: { read: ["weight", "bodyFat", "activities"], write: [] },
+  POLAR: { read: ["activities", "steps", "energy", "heart", "sleep"], write: [] },
+  FITBIT: { read: ["weight", "bodyFat", "activities", "steps", "energy", "heart", "sleep", "body"], write: [] },
   GARMIN: {
     read: ["weight", "bodyFat", "muscleMass", "bodyWater", "boneMass", "activities", "steps", "energy", "heart", "sleep", "body"],
     write: [],
   },
-  WHOOP: { read: ["activities", "heart", "sleep"], write: [] },
+  WHOOP: { read: ["activities", "heart", "sleep", "body"], write: [] },
   HUAWEI_HEALTH: {
-    read: ["weight", "bodyFat", "muscleMass", "activities", "steps", "energy", "heart", "sleep", "body"],
+    read: ["weight", "bodyFat", "muscleMass", "bodyWater", "boneMass", "visceralFat", "activities", "steps", "energy", "heart", "sleep", "body"],
     write: [],
   },
 };
@@ -117,6 +134,37 @@ export function missingWriteScopes(
     .map(([type]) => type);
 }
 
+// Læsetyper, brugeren har slået til, men hvor appen kræver en OAuth-tilladelse,
+// der ikke blev givet ved tilkobling (fx Withings' user.activity, tilføjet
+// 2026-10-03). Uden kendt scope antages alt givet.
+export function missingReadScopes(
+  provider: IntegrationProvider,
+  readScopes: Partial<Record<ReadType, string>> | undefined,
+  storedSettings: unknown,
+  grantedScope: string | null
+): ReadType[] {
+  if (!grantedScope) return [];
+  const { read } = resolveSyncSettings(provider, storedSettings);
+  return (Object.entries(readScopes ?? {}) as [ReadType, string][])
+    .filter(([type, scope]) => read[type] && !grantedScope.includes(scope))
+    .map(([type]) => type);
+}
+
+// Alt, der kræver at brugeren forbinder igen (skrive- og læseadgang).
+export function typesNeedingReconnect(
+  provider: IntegrationProvider,
+  scopes: { writeScopes?: Partial<Record<WriteType, string>>; readScopes?: Partial<Record<ReadType, string>> },
+  storedSettings: unknown,
+  grantedScope: string | null
+): (ReadType | WriteType)[] {
+  return [
+    ...new Set([
+      ...missingWriteScopes(provider, scopes.writeScopes, storedSettings, grantedScope),
+      ...missingReadScopes(provider, scopes.readScopes, storedSettings, grantedScope),
+    ]),
+  ];
+}
+
 // Hvilken læsetype en HealthMetricType hører under.
 const METRIC_READ_TYPE: Record<string, ReadType> = {
   STEPS: "steps",
@@ -130,14 +178,34 @@ const METRIC_READ_TYPE: Record<string, ReadType> = {
   CARDIO_LOAD: "activities",
   VO2_MAX: "heart",
   SLEEP_MINUTES: "sleep",
+  // Fedt og øvrig kropssammensætning uden egen række hører under "bodyFat".
   BODY_FAT_PERCENT: "bodyFat",
   FAT_MASS_KG: "bodyFat",
+  PROTEIN_PERCENT: "bodyFat",
+  BASAL_METABOLIC_RATE_KCAL: "bodyFat",
+  METABOLIC_AGE_YEARS: "bodyFat",
+  // Hver af vægtens øvrige mål har sin egen til/fra-række (2026-10-03).
   MUSCLE_MASS_KG: "muscleMass",
+  SKELETAL_MUSCLE_MASS_KG: "muscleMass",
   FAT_FREE_MASS_KG: "fatFreeMass",
   BODY_WATER_PERCENT: "bodyWater",
+  EXTRACELLULAR_WATER_KG: "bodyWater",
+  INTRACELLULAR_WATER_KG: "bodyWater",
   BONE_MASS_KG: "boneMass",
   VISCERAL_FAT_INDEX: "visceralFat",
   TEMPERATURE_C: "body",
+  // Blodtryk, karstivhed og EKG under "heart".
+  BLOOD_PRESSURE_SYSTOLIC_MMHG: "heart",
+  BLOOD_PRESSURE_DIASTOLIC_MMHG: "heart",
+  PULSE_WAVE_VELOCITY_M_S: "heart",
+  VASCULAR_AGE_YEARS: "heart",
+  QRS_INTERVAL_MS: "heart",
+  PR_INTERVAL_MS: "heart",
+  QT_INTERVAL_MS: "heart",
+  QTC_INTERVAL_MS: "heart",
+  FITNESS_AGE_YEARS: "heart",
+  RECOVERY_SCORE: "heart",
+  STRAIN_SCORE: "activities",
   HEIGHT_CM: "body",
   BMI: "body",
   WATER_ML: "water",

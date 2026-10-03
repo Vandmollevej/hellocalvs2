@@ -146,6 +146,64 @@ async function dailySteps(accessToken: string, since: Date): Promise<Integration
   }));
 }
 
+// Enkeltmålinger (2026-10-03). Feltnavnet på selve tallet er ikke prøvet mod
+// live-API'et, så værdien findes som første tal i datapunktet uden for
+// tidsfelterne; data-typens navn følger samme mønster som weight/body-fat.
+const SAMPLE_TYPES: { dataType: string; type: string; convert?: (value: number) => number }[] = [
+  // Højde: mm, cm eller m afhængigt af størrelsen → cm.
+  { dataType: "height", type: "HEIGHT_CM", convert: (v) => Math.round((v > 1000 ? v / 10 : v > 3 ? v : v * 100) * 10) / 10 },
+  { dataType: "resting-heart-rate", type: "RESTING_HEART_RATE_BPM" },
+  { dataType: "heart-rate-variability", type: "HEART_RATE_VARIABILITY_MS" },
+  { dataType: "oxygen-saturation", type: "OXYGEN_SATURATION_PERCENT" },
+  { dataType: "respiratory-rate", type: "RESPIRATORY_RATE_BPM" },
+  { dataType: "body-temperature", type: "TEMPERATURE_C" },
+  { dataType: "vo2-max", type: "VO2_MAX" },
+];
+
+const TIME_KEYS = new Set(["sampleTime", "interval", "physicalTime", "startTime", "endTime", "startUtcOffset", "endUtcOffset", "utcOffset", "civilTime"]);
+
+// Første endelige tal i et datapunkt (dybde først), uden om tidsfelterne.
+export function firstNumber(value: unknown): number | null {
+  if (typeof value === "number") return Number.isFinite(value) ? value : null;
+  if (typeof value === "string" && /^-?\d+(\.\d+)?$/.test(value)) return Number(value);
+  if (!value || typeof value !== "object") return null;
+  for (const [key, child] of Object.entries(value)) {
+    if (TIME_KEYS.has(key)) continue;
+    const found = firstNumber(child);
+    if (found !== null) return found;
+  }
+  return null;
+}
+
+type Inner = { sampleTime?: { physicalTime?: string }; interval?: { startTime?: string } };
+
+// Selve målingen ligger under data-typens navn i camelCase (oxygen-saturation
+// → oxygenSaturation), ellers under det første felt med et tidspunkt.
+function innerOf(point: Record<string, unknown>, dataType: string): Inner | null {
+  const camel = dataType.replace(/-([a-z0-9])/g, (_, c: string) => c.toUpperCase());
+  const candidate = point[camel] ?? Object.values(point).find((v) => v && typeof v === "object" && ("sampleTime" in v || "interval" in v));
+  return candidate && typeof candidate === "object" ? (candidate as Inner) : null;
+}
+
+function sampleTimeOf(inner: Inner): string | null {
+  const raw = inner.sampleTime?.physicalTime ?? inner.interval?.startTime;
+  const at = raw ? new Date(raw) : null;
+  return at && !Number.isNaN(at.getTime()) ? at.toISOString() : null;
+}
+
+async function samples(accessToken: string, since: Date, spec: (typeof SAMPLE_TYPES)[number]): Promise<IntegrationItem[]> {
+  const field = spec.dataType.replace(/-/g, "_");
+  const points = await listDataPoints(accessToken, spec.dataType, `${field}.sample_time.physical_time >= "${since.toISOString()}"`, 1000);
+  return points.flatMap((p) => {
+    const inner = innerOf(p as unknown as Record<string, unknown>, spec.dataType);
+    const at = inner ? sampleTimeOf(inner) : null;
+    const raw = inner ? firstNumber(inner) : null;
+    if (!at || raw === null || raw <= 0) return [];
+    const value = spec.convert ? spec.convert(raw) : Math.round(raw * 100) / 100;
+    return [{ kind: "metric", payload: { source: "GOOGLE_HEALTH", type: spec.type, value, recordedAt: at } }];
+  });
+}
+
 export const googleHealth: OAuthProviderAdapter = {
   provider: "GOOGLE_HEALTH",
   slug: "google-health",
@@ -190,6 +248,7 @@ export const googleHealth: OAuthProviderAdapter = {
       bodyFat(accessToken, since),
       exercises(accessToken, since),
       dailySteps(accessToken, since),
+      ...SAMPLE_TYPES.map((spec) => samples(accessToken, since, spec)),
     ]);
     const ok = results.filter((r): r is PromiseFulfilledResult<IntegrationItem[]> => r.status === "fulfilled");
     if (ok.length === 0) throw (results[0] as PromiseRejectedResult).reason;

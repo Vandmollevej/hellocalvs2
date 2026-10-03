@@ -700,6 +700,49 @@
     "burnedChipAriaLabel": "{amount} calories burned",
     "waterChipAriaLabel": "{amount} water",
     "waterTitle": "Water",
+    "measurement": {
+      "weight": "Weight",
+      "title": "Measurement",
+      "source": {
+        "WITHINGS": "Withings",
+        "FITBIT": "Fitbit",
+        "GOOGLE_HEALTH": "Google Health",
+        "APPLE_HEALTH": "Apple Health",
+        "HEALTH_CONNECT": "Health Connect",
+        "GARMIN": "Garmin",
+        "HUAWEI_HEALTH": "Huawei Health",
+        "WHOOP": "WHOOP",
+        "POLAR": "Polar"
+      },
+      "type": {
+        "BODY_FAT_PERCENT": "Body fat",
+        "FAT_MASS_KG": "Fat mass",
+        "FAT_FREE_MASS_KG": "Fat-free mass",
+        "MUSCLE_MASS_KG": "Muscle mass",
+        "SKELETAL_MUSCLE_MASS_KG": "Skeletal muscle mass",
+        "BONE_MASS_KG": "Bone mass",
+        "BODY_WATER_PERCENT": "Body water",
+        "EXTRACELLULAR_WATER_KG": "Extracellular water",
+        "INTRACELLULAR_WATER_KG": "Intracellular water",
+        "VISCERAL_FAT_INDEX": "Visceral fat",
+        "PROTEIN_PERCENT": "Protein",
+        "BASAL_METABOLIC_RATE_KCAL": "Basal metabolic rate (BMR)",
+        "METABOLIC_AGE_YEARS": "Metabolic age",
+        "BMI": "BMI",
+        "HEIGHT_CM": "Height",
+        "BLOOD_PRESSURE_SYSTOLIC_MMHG": "Blood pressure, systolic",
+        "BLOOD_PRESSURE_DIASTOLIC_MMHG": "Blood pressure, diastolic",
+        "HEART_RATE_BPM": "Heart rate",
+        "PULSE_WAVE_VELOCITY_M_S": "Pulse wave velocity",
+        "VASCULAR_AGE_YEARS": "Vascular age",
+        "OXYGEN_SATURATION_PERCENT": "Oxygen saturation (SpO₂)",
+        "TEMPERATURE_C": "Temperature",
+        "SKIN_TEMPERATURE_C": "Skin temperature",
+        "BLOOD_GLUCOSE_MMOL_L": "Blood glucose",
+        "NERVE_HEALTH_SCORE": "Nerve health",
+        "SKIN_CONDUCTANCE_US": "Skin conductance"
+      }
+    },
     "targetDateSuffix": ", goal date",
     "openTargetDate": "Open goal",
     "openTargetDateAriaLabel": "Open the goal for this day",
@@ -1855,7 +1898,20 @@
     "loading": "Loading…",
     "notice": {
       "connected": "{name} was connected.",
-      "failed": "Could not connect {name}. Please try again."
+      "failed": "Could not connect {name}. Please try again.",
+      "config": "{name} can't be connected yet: the {name} keys are missing on the server (admin → API keys).",
+      "tier": "Integrations require the Serious plan. {name} was not connected.",
+      "denied": "You declined access in {name}, so nothing was connected.",
+      "expired": "The attempt expired before {name} answered. Tap Allow again."
+    },
+    "feedback": {
+      "syncing": "Fetching your data from {name} …",
+      "synced": "Fetched {count} new measurements from {name}.",
+      "nothingNew": "{name} is connected. No new data since last time.",
+      "upToDate": "{name} is connected and was synced a moment ago.",
+      "syncFailed": "Couldn't fetch data from {name}. Try again shortly.",
+      "deviceCode": "Enter the device code below in the Hello Cal app on your phone, and it will fetch your {name} data.",
+      "companionSaved": "Your choice is saved. The Hello Cal app on your phone fetches your {name} data based on these choices."
     },
     "intro": "Connect your health apps so weight, steps and workouts are fetched automatically.",
     "lastSynced": "Last synced {date}",
@@ -1915,7 +1971,7 @@
     },
     "readTypes": {
       "weight": "Weight",
-      "bodyFat": "Body fat and fat mass",
+      "bodyFat": "Body fat, fat mass and metabolism",
       "muscleMass": "Muscle mass",
       "fatFreeMass": "Fat-free mass",
       "bodyWater": "Body water",
@@ -1924,10 +1980,10 @@
       "activities": "Workouts",
       "steps": "Steps and distance",
       "energy": "Calories burned",
-      "heart": "Heart rate and fitness",
+      "heart": "Heart rate, blood pressure, ECG and fitness",
       "sleep": "Sleep",
       "water": "Water",
-      "body": "Height, BMI and temperature"
+      "body": "Height, BMI, temperature and other measurements"
     },
     "writeTypes": {
       "nutrition": "Meals (calories, protein, carbs, fat)",
@@ -1948,6 +2004,7 @@
       "statusTitle": "Connection",
       "deviceTitle": "The Hello Cal app on your phone",
       "allow": "Allow",
+      "done": "Done",
       "deny": "Don’t Allow",
       "write": {
         "nutrition": "Nutrition and macros",
@@ -2046,6 +2103,8 @@
       "allergensAdditives": "Allergens, E-numbers and toxins",
       "sportActivity": "Sport and activity",
       "sleep": "Sleep",
+      "body": "Body and body composition",
+      "heartHealth": "Heart, blood pressure and measurements",
       "other": "Other data"
     },
     "searchPlaceholder": "Search all charts and cards",
