@@ -66,19 +66,31 @@ test("samme seed giver samme scene, forskellige seeds forskellige", () => {
 
 test("scenen tegner uden NaN på mobil og desktop, til alle tider", () => {
   for (const seed of [1, 2, 3, 99, 12345]) {
-    const scene = createWaveScene(seed);
-    assert.ok(scene.bundles.length >= 3 && scene.bundles.length <= 4);
-    for (const [width, height] of [[393, 430], [320, 400], [1400, 430]]) {
-      for (const t of [0, 1.5, 300, 5000]) {
-        const ctx = fakeContext();
-        drawWaveScene(ctx, scene, palette, { t, width, height, scale: 0.8 });
-        assert.equal(ctx.calls.bad, 0);
-        assert.ok(ctx.calls.stroke > 0);
-        assert.equal(ctx.calls.fill, scene.fog.length);
+    for (const variant of ["top", "frost"]) {
+      const scene = createWaveScene(seed, variant);
+      assert.ok(scene.bundles.length >= 2 && scene.bundles.length <= 3);
+      for (const [width, height] of [[393, 430], [320, 400], [1400, 430]]) {
+        for (const t of [0, 1.5, 300, 5000]) {
+          const ctx = fakeContext();
+          drawWaveScene(ctx, scene, palette, { t, width, height, scale: 0.8, strandWidthScale: variant === "frost" ? 6 : 1 });
+          assert.equal(ctx.calls.bad, 0);
+          assert.ok(ctx.calls.stroke > 0);
+          assert.equal(ctx.calls.fill, scene.fog.length);
+        }
       }
     }
   }
   assert.ok(WAVE_BLEED > 0);
+});
+
+test("øverste felt er roligt (få streger); nederste felt har ingen puls-linje", () => {
+  for (const seed of [1, 2, 3, 99, 12345]) {
+    const top = createWaveScene(seed, "top");
+    const strands = top.bundles.reduce((sum, b) => sum + b.strands.length, 0);
+    assert.ok(strands <= 6, `for mange streger i toppen: ${strands}`);
+    assert.ok(top.pulse);
+    assert.equal(createWaveScene(seed, "frost").pulse, null);
+  }
 });
 
 test("hjerteslaget har én tydelig R-tak op og er fladt langt fra midten", () => {

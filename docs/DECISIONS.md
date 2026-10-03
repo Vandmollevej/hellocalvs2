@@ -452,6 +452,12 @@ om varen var "taget", og det føltes ikke som scanning i realtid.
 - Brugeren vælger vægtenhed (kg, pund eller stone+pund) og højde-/kropsmål-enhed (cm eller tommer) i startguidens første trin og under Indstillinger → Sprog og region. Valget gemmes pr. enhed i localStorage (som kalendervisning); databasen gemmer stadig altid kg og cm.
 - Standard udledes af landet (profilens region, ellers browserens): USA/Canada → pund + tommer, UK/Irland → stone+pund + tommer, resten kg + cm. Stone indtastes som `11 5` (stone pund). Tempo (kg/uge) og statistik-grafen bruger pund i stedet for stone.
 
+## 2026-10-03: Bølgerne — to felter: rolig top, frostet glas bag listen
+
+- Erstatter "tykke frostede bånd, stop ved listen" nedenfor (brugeren: "du har hele tiden misforstået mig"). Skærmen er to felter: det øverste (topbar + hero) og det nederste med indtastningerne.
+- Det **nederste felt** (listen) har tykke, kraftigt slørede bølger bag sig som frostet glas — svage, ikke tydelige. Ikke nederst i det øverste felt.
+- Det **øverste felt** har få (2–3 bånd, 1–2 streger hver), svage, skarpe linjer; kun et strejf af gul helt øverst og mere grønt i midten og bunden.
+
 ## 2026-10-03: Bølge-baggrunden — afdæmpet, skarp top, puls fra kanten
 
 - Erstatter udseendet fra 2026-10-02 (brugeren: "alt for voldsomt", "en ommer"). Baggrunden skal være afdæmpet: få, tynde, svage bånd.

@@ -1,16 +1,23 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { createWaveScene, DEFAULT_PULSE_BPM, drawWaveScene, readWavePalette, WAVE_BLEED } from "@/lib/home-waves";
+import {
+  createWaveScene,
+  DEFAULT_PULSE_BPM,
+  drawWaveScene,
+  readWavePalette,
+  WAVE_BLEED,
+  type WaveVariant,
+} from "@/lib/home-waves";
 
-// To lag af samme scene: skarpt øverst (i skærmens fulde opløsning, ingen
-// blur) og sløret kun forneden (maskerne ligger i globals.css,
-// .home-wave__layer--*) — bruger 2026-10-03: toppen må ikke være sløret.
-// Forneden er linjerne tykke, frostede bånd, ikke tynde streger som i toppen.
-const LAYERS = [
-  { key: "sharp", scale: () => Math.min(2, window.devicePixelRatio || 1), strandWidthScale: 1, strandAlphaScale: 1 },
-  { key: "soft", scale: () => 0.4, strandWidthScale: 7, strandAlphaScale: 1.4 },
-] as const;
+// Bruger 2026-10-03: skærmen har to felter. Det øverste (topbar + hero) har
+// skarpe, tynde linjer i skærmens fulde opløsning; det nederste (listen med
+// indtastningerne) har tykke, meget slørede bånd bag sig som frostet glas
+// (sløret ligger i globals.css, .home-wave--frost).
+const LAYERS: Record<WaveVariant, { scale: () => number; strandWidthScale: number; strandAlphaScale: number }> = {
+  top: { scale: () => Math.min(2, window.devicePixelRatio || 1), strandWidthScale: 1, strandAlphaScale: 1 },
+  frost: { scale: () => 0.35, strandWidthScale: 6, strandAlphaScale: 1 },
+};
 
 const FRAME_MS = 1000 / 30;
 /** Integrationerne synkroniserer hvert 15. minut; ét opslag i minuttet er rigeligt. */
@@ -36,28 +43,27 @@ async function fetchPulseBpm() {
 }
 
 /**
- * Forsidens rolige bølge-baggrund (bruger 2026-10-01). Ligger bag topbar og
- * hero og stopper ved "Dagens tilføjelser"-stregen (bruger 2026-10-03: ikke
- * synlig bag tilføjelserne). Står stille
- * ved "reducer bevægelse", og standser når siden er skjult. Puls-linjen slår
- * i urets målte puls (60 bpm uden ur).
+ * Forsidens rolige bølge-baggrund (bruger 2026-10-01). `top` ligger bag
+ * topbar og hero; `frost` ligger bag listen med indtastningerne (bruger
+ * 2026-10-03). Står stille ved "reducer bevægelse", og standser når siden er
+ * skjult. Puls-linjen (kun `top`) slår i urets målte puls (60 bpm uden ur).
  */
-export function HomeWaves() {
+export function HomeWaves({ variant = "top" }: { variant?: WaveVariant }) {
   const hostRef = useRef<HTMLDivElement>(null);
-  const canvasRefs = useRef<Array<HTMLCanvasElement | null>>([]);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
     const host = hostRef.current;
-    if (!host) return;
-    const canvases = canvasRefs.current;
-    const contexts = LAYERS.map((_, i) => canvases[i]?.getContext("2d") ?? null);
-    const palette = readWavePalette(host);
-    if (!palette || contexts.some((ctx) => !ctx)) return;
+    const ctx = canvasRef.current?.getContext("2d") ?? null;
+    const layer = LAYERS[variant];
+    if (!host || !ctx) return;
+    const palette = readWavePalette(host, variant);
+    if (!palette) return;
 
     const seedSource = new Uint32Array(1);
     if (typeof crypto !== "undefined" && crypto.getRandomValues) crypto.getRandomValues(seedSource);
     else seedSource[0] = Math.floor(Math.random() * 4294967296);
-    const scene = createWaveScene(seedSource[0]);
+    const scene = createWaveScene(seedSource[0], variant);
 
     const motion = window.matchMedia("(prefers-reduced-motion: reduce)");
     let width = 0;
@@ -71,31 +77,26 @@ export function HomeWaves() {
     let disposed = false;
     let pulseY: number | undefined;
 
-    let scales: number[] = LAYERS.map((layer) => layer.scale());
+    let scale = layer.scale();
 
     function paint() {
       if (width === 0 || height === 0) return;
-      LAYERS.forEach((layer, i) => {
-        const ctx = contexts[i];
-        if (ctx) {
-          drawWaveScene(ctx, scene, palette!, {
-            t: clock,
-            width,
-            height,
-            scale: scales[i],
-            bpm,
-            pulseY,
-            strandWidthScale: layer.strandWidthScale,
-            strandAlphaScale: layer.strandAlphaScale,
-          });
-        }
+      drawWaveScene(ctx!, scene, palette!, {
+        t: clock,
+        width,
+        height,
+        scale,
+        bpm,
+        pulseY,
+        strandWidthScale: layer.strandWidthScale,
+        strandAlphaScale: layer.strandAlphaScale,
       });
     }
 
     function resize() {
       width = host!.clientWidth;
       height = host!.clientHeight;
-      scales = LAYERS.map((layer) => layer.scale());
+      scale = layer.scale();
       // Tal-hjulets boks er centreret om den midterste række.
       const wheel = host!.parentElement?.querySelector<HTMLElement>("[data-stats-wheel]");
       if (wheel) {
@@ -104,12 +105,8 @@ export function HomeWaves() {
       } else {
         pulseY = undefined;
       }
-      LAYERS.forEach((_, i) => {
-        const canvas = canvases[i];
-        if (!canvas) return;
-        canvas.width = Math.max(1, Math.round((width + WAVE_BLEED * 2) * scales[i]));
-        canvas.height = Math.max(1, Math.round((height + WAVE_BLEED * 2) * scales[i]));
-      });
+      ctx!.canvas.width = Math.max(1, Math.round((width + WAVE_BLEED * 2) * scale));
+      ctx!.canvas.height = Math.max(1, Math.round((height + WAVE_BLEED * 2) * scale));
       paint();
     }
 
@@ -153,7 +150,8 @@ export function HomeWaves() {
     }
 
     function schedulePoll(delay = HEART_RATE_POLL_MS) {
-      if (pollTimer || polling || document.hidden || disposed) return;
+      // Kun det øverste felt har puls-linjen.
+      if (!scene.pulse || pollTimer || polling || document.hidden || disposed) return;
       pollTimer = window.setTimeout(poll, delay);
     }
 
@@ -173,25 +171,17 @@ export function HomeWaves() {
       document.removeEventListener("visibilitychange", sync);
       motion.removeEventListener("change", sync);
     };
-  }, []);
+  }, [variant]);
 
   return (
     <div
       ref={hostRef}
       aria-hidden="true"
-      className="home-wave"
+      className={`home-wave home-wave--${variant}`}
       style={{ "--home-wave-bleed": `${WAVE_BLEED}px` } as React.CSSProperties}
     >
-      {LAYERS.map((layer, i) => (
-        <div key={layer.key} className={`home-wave__layer home-wave__layer--${layer.key}`}>
-          <canvas
-            ref={(el) => {
-              canvasRefs.current[i] = el;
-            }}
-          />
-        </div>
-      ))}
-      <div className="home-wave__frost" />
+      <canvas ref={canvasRef} />
+      {variant === "frost" && <div className="home-wave__frost" />}
     </div>
   );
 }

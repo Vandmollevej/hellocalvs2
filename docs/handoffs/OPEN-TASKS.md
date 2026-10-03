@@ -339,3 +339,11 @@ Ejer: ledig (Kropsmål-graf-sessionen er arkiveret 2026-10-03)
 | Id | Opgave | Status | Næste skridt |
 | --- | --- | --- | --- |
 | — | Kropsmål-grafer: tegning til venstre, forløb af seneste 10 målinger til højre; følger cm/tommer | Færdig i kode på branch `claude/kropsmaal-statistikgraf` (PR #156, kladde) — ikke flettet | Gennemgå PR #156, flet master ind ved konflikt (typisk kun `docs/STATUS.md`: behold begge sider), kør lint/typecheck/build og flet til master. Tjek på telefon: Statistik → Tilføj → Kropsmål |
+
+## G-CERT — Certifikat-udklip fra produktbilleder
+Filer: `Certifikater/Udklip fra produktbilleder/` (kun data, ingen kode).
+Ejer: ledig (session "Produktbilleder og certifikater screening")
+
+| Id | Opgave | Status | Næste skridt |
+| --- | --- | --- | --- |
+| cert-mangler | 11.646 udklip færdige fra 18.286 billeder; 33.985 billeder i mappen `Mangler` er ikke behandlet | Venter på bruger | USB-drevet er ikke synligt på PC'en (tjekket 2026-10-03, kun C:, D:, tomt cd-drev E:). Sæt USB i arbejds-PC'en / slå "Drev" til i remote desktop, eller kopiér `Mangler` til NAS (Y:/Z:), og giv stien |
