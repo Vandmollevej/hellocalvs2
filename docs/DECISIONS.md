@@ -17,6 +17,13 @@ This file records durable decisions. Add a dated entry when a later decision cha
 - Valg sker med en hvid afkrydsningsboks på billedkortet; første afkrydsning åbner straks overlayet med billede 1 som "Før" og en tom "Efter"-plads. Rækkefølgen er brugerens valg (ikke dato), og kan byttes om.
 - Sammenligningen er kun visning: intet nyt billede gemmes, og intet forlader telefonen. Billedfeltet får før-billedets format; efter-billedet beskæres til samme felt (object-cover), så linjen deler samme udsnit.
 - Overlayet følger den eksisterende fuldskærmsvisning (mørk flade) og lukker, når siden låses (adgangskode-låsen).
+## 2026-10-03: Tilføj-menuen — Aktivitet og Menstruation som ikon-felter
+
+Ejerens krav: "Tilføj aktivitetsikon og menstruationscirkel (sidste kun for kvinder!). Så må man bare scrolle."
+
+- Aktivitet er nu et 3D-felt (`/icons/activity-3d.png`) i gitteret i stedet for en række under kortet.
+- Nyt felt Menstruation (`/icons/add/period.svg`, cyklusring med blodsdråbe) åbner `/period/create`. Vises kun, når `visibleAddActions()` tillader det (køn = kvinde **og** "Vis menstruationscyklus" slået til, jf. 2026-09-19). Erstatter tidligere note om, at menstruation kun findes i kalenderen.
+- Gitteret er 2 kolonner på mobil (5 på brede skærme); bundarket scroller, når felterne ikke kan være der.
 
 ## 2026-10-02: Flere integrationer — Garmin, WHOOP, Huawei + mærker via telefonen
 

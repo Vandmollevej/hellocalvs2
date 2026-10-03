@@ -536,7 +536,9 @@
     "voice": "Optag",
     "weight": "Vægt",
     "drink": "Drikkevare",
-    "body": "Kropsmål"
+    "body": "Kropsmål",
+    "activity": "Aktivitet",
+    "period": "Menstruation"
   },
   "helloDoc": {
     "title": "Hello Doc",

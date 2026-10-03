@@ -536,7 +536,9 @@
     "voice": "Record",
     "weight": "Weight",
     "drink": "Drinks",
-    "body": "Body measurements"
+    "body": "Body measurements",
+    "activity": "Activity",
+    "period": "Period"
   },
   "helloDoc": {
     "title": "Hello Doc",
