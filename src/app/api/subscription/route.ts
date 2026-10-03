@@ -73,5 +73,13 @@ export async function GET(req: Request) {
     // knække den eksisterende side.
     subscription,
     paymentMethods,
+    // Administratorer er Seriøs Familie uden en rigtig Stripe-aftale. Så
+    // betalingssiden alligevel kan vises med et kort, får de Stripes
+    // testkort (4242 4242 4242 4242) som dummy-betalingsmetode. Kun visning:
+    // det kan ikke skiftes eller opsiges.
+    testPaymentMethod:
+      user.role === "ADMIN" && paymentMethods.length === 0
+        ? { id: "stripe-test-card", brand: "VISA", provider: "STRIPE_TEST", last4: "4242", expiryMonth: 12, expiryYear: 2034 }
+        : null,
   });
 }

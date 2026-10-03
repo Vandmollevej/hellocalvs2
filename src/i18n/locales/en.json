@@ -2092,11 +2092,13 @@
     "opening": "Opening…",
     "changeError": "Could not open the card change. Please try again shortly.",
     "recurringNote": "Charged automatically at each renewal.",
+    "testCard": "Stripe test card",
     "walletCard": "{brand} •••• {last4}",
 
     "status": {
       "inactive": "No active subscription",
       "active": "Active subscription",
+      "activeFamily": "Active family subscription",
       "trialing": "Trial period",
       "freeMonth": "Free month active",
       "canceled": "Canceled"

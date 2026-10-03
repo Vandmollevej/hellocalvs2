@@ -31,8 +31,12 @@ type PaymentMethod = {
   wallet?: "APPLE_PAY" | "GOOGLE_PAY" | null;
 };
 type SubscriptionResponse = {
+  tier?: "FREE" | "SERIOUS";
+  plan?: "INDIVIDUAL" | "FAMILY";
+  coveredByFamily?: boolean;
   subscription: Subscription | null;
   paymentMethods: PaymentMethod[];
+  testPaymentMethod?: PaymentMethod | null;
   mobilePayAvailable: boolean;
   stripeAvailable?: boolean;
   mobilePayPending: boolean;
@@ -132,16 +136,23 @@ export default function PaymentPage() {
   }, []);
 
   const subscription = data?.subscription ?? null;
-  const status = subscription?.status ?? "INACTIVE";
+  // Seriøs uden egen aftale (administratorer er altid Seriøs Familie) vises
+  // som aktivt abonnement i stedet for "Intet aktivt abonnement".
+  const status =
+    data?.tier === "SERIOUS" && !data.coveredByFamily && (subscription?.status ?? "INACTIVE") === "INACTIVE"
+      ? "ACTIVE"
+      : (subscription?.status ?? "INACTIVE");
+  const isFamilyPlan = data?.plan === "FAMILY";
   const periodEnd = subscription?.currentPeriodEnd
     ? new Date(subscription.currentPeriodEnd).toLocaleDateString("da-DK")
     : null;
   // Stripe-betaling (MobilePay i DK, kort/wallet i DE) og MobilePay Recurring kan begge opsiges her.
   const stripeMethod = data?.paymentMethods.find((pm) => pm.provider === "STRIPE") ?? null;
-  const activeMethod =
+  const realMethod =
     stripeMethod ?? data?.paymentMethods.find((pm) => pm.brand === "MOBILEPAY") ?? data?.paymentMethods[0] ?? null;
+  const activeMethod = realMethod ?? data?.testPaymentMethod ?? null;
   const canChangeMethod = Boolean(stripeMethod) && (status === "ACTIVE" || status === "CANCELED");
-  const canStop = Boolean(activeMethod) && status === "ACTIVE";
+  const canStop = Boolean(realMethod) && status === "ACTIVE";
 
   const stopLabel =
     stripeMethod && stripeMethod.brand !== "MOBILEPAY" ? t("payment.stopSubscription") : t("payment.stopAgreement");
@@ -208,6 +219,9 @@ export default function PaymentPage() {
         caption: [card, expires].filter(Boolean).join(" · "),
       };
     }
+    if (method.provider === "STRIPE_TEST") {
+      return { logoKind: method.brand, title: card, caption: [t("payment.testCard"), expires].filter(Boolean).join(" · ") };
+    }
     if (method.brand === "MOBILEPAY") {
       return { logoKind: "MOBILEPAY", title: "MobilePay", caption: t("payment.mobilePayAgreement") };
     }
@@ -223,7 +237,7 @@ export default function PaymentPage() {
       ) : (
         <div className="flex flex-col gap-4 p-4">
           <div className="rounded-[8px] p-4" style={{ background: "var(--hf-black)" }}>
-            <p className="hf-type-body text-hf-white">{t(`payment.status.${statusKey(status)}`)}</p>
+            <p className="hf-type-body text-hf-white">{t(`payment.status.${status === "ACTIVE" && isFamilyPlan ? "activeFamily" : statusKey(status)}`)}</p>
             {statusDetail && <p className="hf-type-small mt-1 text-hf-white">{statusDetail}</p>}
             {subscription && subscription.freeMonthsRemaining > 0 && (
               <p className="hf-type-small mt-1 text-hf-white">
