@@ -41,7 +41,7 @@ import { NUTRIENT_BY_KEY, type ResolvedNutrient } from "@/lib/nutrients";
 import { UncertaintyTilde } from "@/components/ui/UncertaintyTilde";
 import { UncertaintyLine } from "@/components/ui/UncertaintyLine";
 import { extractCertifications } from "@/lib/product-certifications";
-import { splitProductHeading } from "@/lib/product-naming";
+import { splitProductHeading, stripHeadingRepeats } from "@/lib/product-naming";
 import { CertificationLogo } from "@/components/hf/CertificationLogo";
 import { Skeleton } from "@/components/hf/Skeleton";
 import { HandSizePicker } from "@/components/hf/HandSizePicker";
@@ -301,7 +301,17 @@ export function AddProductView({
   const [saveError, setSaveError] = useState<string | null>(null);
   const [openAdditive, setOpenAdditive] = useState<string | null>(null);
   // Åben som standard (G11, 2026-09-24) — brugeren har selv slået panelet til.
-  const [extendedNutritionOpen, setExtendedNutritionOpen] = useState(true);
+  // Næringsdetaljerne (salt, sukker, fibre, mættet/umættet fedt …) vises
+  // altid som dropdown under energifordelingen; har brugeren prioriteret dem
+  // i Opsætning (showExtendedNutrition), står den åben (brugerens krav
+  // 2026-10-02).
+  // null = brugeren har ikke selv foldet; så følger den Opsætningen.
+  const [extendedNutritionToggle, setExtendedNutritionToggle] = useState<boolean | null>(null);
+  // Et fritskrabet billede (PNG fra billedrobotten) lægges oven på cirklen
+  // med 10 % overskud: stående varer rager 10 % op over cirklen, liggende
+  // 10 % ud til højre — hele varen ses altid (brugerens regel 2026-10-02).
+  const [imageLandscape, setImageLandscape] = useState(false);
+  const extendedNutritionOpen = extendedNutritionToggle ?? Boolean(profile?.showExtendedNutrition);
   const [toxinsOpen, setToxinsOpen] = useState(false);
   const [openToxin, setOpenToxin] = useState<ToxinInfo | null>(null);
   const [openMicronutrient, setOpenMicronutrient] = useState<string | null>(null);
@@ -682,12 +692,16 @@ export function AddProductView({
     router.push("/create-dish");
   }
 
-  // Smagsvarianten må kun stå i H2: den fjernes fra navnet, før certificeringer
-  // trækkes ud og titlen vises i H1 (docs/DECISIONS.md 2026-10-02).
+  // Smagsvarianten og pakningsstørrelsen står kun i H2 (den grønne linje): de
+  // fjernes fra navnet, før certificeringer trækkes ud og titlen vises i H1
+  // (docs/DECISIONS.md 2026-10-02, ingen gentagelser i h1/h2).
   const heading =
     state.status === "loaded" ? splitProductHeading(state.product) : { title: "", variants: [] as string[] };
+  const headingTitle =
+    state.status === "loaded" ? stripHeadingRepeats(heading.title, [state.product.packageSizeText]) : "";
   const { title: productTitle, certifications } =
-    state.status === "loaded" ? extractCertifications(heading.title) : { title: "", certifications: [] };
+    state.status === "loaded" ? extractCertifications(headingTitle) : { title: "", certifications: [] };
+  const isCutoutImage = Boolean(displayImageUrl && displayImageUrl.includes("/cutouts/"));
   // Siden tegnes med en tom vare, mens den rigtige hentes.
   const view = state.status === "loaded" ? state.product : isLoading ? LOADING_PRODUCT : null;
   const subtitle = view ? [view.packageSizeText, ...heading.variants].filter(Boolean).join(" · ") : "";
@@ -788,19 +802,41 @@ export function AddProductView({
               <div className="flex flex-col items-start gap-[33px] pt-[46px] text-left">
                 <div className="relative self-center h-[180px] w-[180px] min-h-[180px] min-w-[180px] max-h-[180px] max-w-[180px] shrink-0 overflow-visible">
                   <div className="flex h-[180px] w-[180px] min-h-[180px] min-w-[180px] items-center justify-center overflow-hidden rounded-full bg-hf-tan">
-                    {displayImageUrl ? (
+                    {displayImageUrl && !isCutoutImage ? (
+                      // Det rå forsidefoto (før fritskrabningen): hele varen
+                      // skal kunne ses, så det tilpasses inde i cirklen —
+                      // aldrig zoomet ind (design.md §6.12).
                       // eslint-disable-next-line @next/next/no-img-element
                       <img
                         src={displayImageUrl}
                         alt=""
-                        className="block h-full w-full max-h-full max-w-full object-cover"
+                        className="block h-full w-full max-h-full max-w-full object-contain p-3"
                       />
-                    ) : shouldPoll || isLoading ? (
+                    ) : displayImageUrl ? null : shouldPoll || isLoading ? (
                       <Skeleton type="circle" width="100%" height="100%" />
                     ) : (
                       <div aria-hidden="true" className="h-full w-full" />
                     )}
                   </div>
+                  {displayImageUrl && isCutoutImage && (
+                    // Fritskrabet vare: 110 % af cirklen, stående med bunden i
+                    // cirklens bund (toppen 10 % over), liggende fra venstre
+                    // kant (10 % ud over højre). Hele varen er altid synlig.
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                      key={displayImageUrl}
+                      src={displayImageUrl}
+                      alt=""
+                      onLoad={(event) =>
+                        setImageLandscape(event.currentTarget.naturalWidth > event.currentTarget.naturalHeight)
+                      }
+                      className={
+                        imageLandscape
+                          ? "pointer-events-none absolute left-0 top-1/2 z-[5] w-[198px] max-w-none -translate-y-1/2 object-contain"
+                          : "pointer-events-none absolute bottom-0 left-1/2 z-[5] h-[198px] max-h-none -translate-x-1/2 object-contain"
+                      }
+                    />
+                  )}
                   {!isLoading && !view.isGenericIngredient && (
                     <button
                       type="button"
@@ -820,7 +856,7 @@ export function AddProductView({
                       <img
                         src={view.brand.logoUrl}
                         alt={view.brand.name}
-                        className="pointer-events-none absolute bottom-0 left-3/4 z-10 h-[95px] w-[95px] object-contain object-left-bottom"
+                        className="pointer-events-none absolute bottom-0 left-3/4 z-10 h-[66px] w-[95px] object-contain object-left-bottom"
                       />
                     ) : (
                       <p className="hf-type-title hf-type-strong pointer-events-none absolute bottom-0 left-3/4 z-10 whitespace-nowrap text-hf-green">
@@ -1217,15 +1253,15 @@ export function AddProductView({
                 </div>
               )}
 
-              {/* MyFitnessPal-style extended nutrition panel (2026-09-11): only
-                  shown when the user opted in (profile/settings) AND at least
-                  one value actually exists for this product — never renders
-                  as an empty block. Collapsed by default behind "Vis mere". */}
-              {profile?.showExtendedNutrition && !!extendedNutrition.length && (
+              {/* Næringsdetaljer (2026-09-11, ændret 2026-10-02): vises altid,
+                  når mindst én værdi findes — aldrig som tom blok. Foldet
+                  sammen bag "Vis mere", åben for brugere der har prioriteret
+                  udvidet næringsindhold i Opsætning. */}
+              {!!extendedNutrition.length && (
                 <div>
                   <button
                     type="button"
-                    onClick={() => setExtendedNutritionOpen((open) => !open)}
+                    onClick={() => setExtendedNutritionToggle(!extendedNutritionOpen)}
                     className="flex w-full items-center justify-between"
                   >
                     <p className="hf-type-body hf-heading text-hf-black">{t("addProduct.extendedNutrition")}</p>

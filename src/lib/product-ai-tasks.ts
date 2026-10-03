@@ -28,7 +28,11 @@ function contextLines({ barcode, context }: ContextLines, languageLabel = "Prior
 // rammer, og den natlige genkørsel spurgte uden logo-felter. Nu én prompt.
 // front-v4 (2026-10-02): + certifications (mærkningslogoer på emballagen),
 // gemt i ProductFilters, så varesiden viser logoerne.
-export const FRONT_PROMPT_VERSION = "front-v4-2026-10-02-certifications";
+// front-v5 (2026-10-03, samlet fletning): + varenavnet må aldrig gentage
+// variant eller pakningsstørrelse (brugerens regel: ingen gentagelser i
+// h1/h2), og kvalitetsmærker/hjerter/segl er ikke logoer (hjertet på
+// EDEKA-kartonen blev brand-logo i testen 2026-10-01).
+export const FRONT_PROMPT_VERSION = "front-v5-2026-10-03";
 
 // Logo-/produktboks i ImageBox-format ({ x, y, width, height }, 0-1), som
 // fritskrabningen (src/lib/image-cutout-jobs.ts) bruger.
@@ -107,9 +111,11 @@ export const FRONT_SYSTEM = [
   "brand = hovedmærket/kommercielt logo, fx Arla.",
   "subbrand = vareserie/familie, fx LactoFREE.",
   "productName = hvad varen faktisk er, fx Letmælk. Emballeret drikkevand hedder Flaskevand (ikke bare Vand), medmindre emballagen siger fx Kildevand.",
-  "variant = smag/type/styrke/fedtprocent eller anden variant, når den tydeligt er en variant.",
+  "variant = smag/type/styrke/fedtprocent/laktosefri/uden brus eller anden variant, når den tydeligt er en variant, fx 1,5 % fedt, laktosefri.",
   "packageSizeText = synlig mængde/størrelse, fx 1 L eller 500 g.",
+  "productName må ALDRIG indeholde variant eller packageSizeText — de står i hver sit felt og vises på hver sin linje. Fx forside med 'Fettarme H-Milch 1,5 % Fett laktosefrei 1 L': productName = Fettarme H-Milch, variant = 1,5 % Fett, laktosefrei, packageSizeText = 1 L.",
   "Genkend logo visuelt; stol ikke kun på almindelig OCR. Logoer kan være stiliserede, skrå, håndskrevne eller grafiske.",
+  "Kvalitetsmærker, hjerter, segl, stjerner, slogans (fx 'Markenqualität mit Herz') og certificeringer er IKKE logoer og aldrig brand. Står producentens kendte mærke (fx EDEKA, Arla, REMA 1000) på forsiden, er det brand, og en vareserie (fx Herzstücke, LactoFREE) er subbrand.",
   "logoText = navnet som hovedlogoet viser, stavet som mærket selv staver det (uden ® og ™). null hvis intet logo ses.",
   "logoConfidence = 0-1 hvor sikker du er på logoText.",
   "logoBox = rektangel om hovedlogoet (kun logoet, ikke hele emballagen) i brøkdele 0-1 af billedets bredde/højde: x,y = øverste venstre hjørne. null hvis intet logo ses.",
@@ -157,7 +163,7 @@ export const BARCODE_LOGO_SYSTEM = [
   "Find et brand-logo, hvis et ses nogen steder i fotoet (ofte ved siden af stregkoden).",
   "Genkend logo visuelt; stol ikke kun på almindelig OCR. Logoer kan være stiliserede, skrå, håndskrevne eller grafiske.",
   "logoText = navnet som logoet viser, stavet som mærket selv staver det (uden ® og ™). null hvis intet logo ses.",
-  "Stregkodens cifre, genbrugsmærker, pant-mærker og certificeringsmærker er ikke logoer.",
+  "Stregkodens cifre, genbrugsmærker, pant-mærker, certificeringsmærker, kvalitetsmærker, hjerter, segl og slogans er ikke logoer.",
   "logoConfidence = 0-1 hvor sikker du er på logoText.",
   "logoBox = rektangel om logoet (kun logoet) i brøkdele 0-1 af billedets bredde/højde: x,y = øverste venstre hjørne. null hvis intet logo ses.",
   "variant = tydeligt synlig smag/type/styrke/fedtprocent eller anden variant, fx Uden brus, Let eller Jordbær. null hvis ingen ses.",

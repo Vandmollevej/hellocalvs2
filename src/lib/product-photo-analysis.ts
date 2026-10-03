@@ -27,7 +27,7 @@ import {
 } from "@/lib/product-ai-tasks";
 import { LOCAL_OCR_MODEL, LOCAL_OCR_PROMPT_VERSION } from "@/lib/local-label";
 import { readStoredImageAsDataUrl, saveDataUrlImage } from "@/lib/qc-image-storage";
-import { matchBrand, type BrandMatch } from "@/lib/brand-match";
+import { matchBrand, matchBrandInTexts, type BrandMatch } from "@/lib/brand-match";
 import { createFrontCutoutJobs } from "@/lib/image-cutout-jobs";
 import { deriveFiberPercent } from "@/lib/nutrition-normalize";
 import { parseWholeGrain } from "@/lib/whole-grain";
@@ -78,6 +78,9 @@ export async function analyzeFrontPhoto({ photo, barcode, marketRegion, signals,
   analysisId: string;
   result: ProductFrontAnalysis;
   brandMatch: BrandMatch | null;
+  // Et kendt brand, der står ordret i forsidens øvrige tekst (subbrand,
+  // synlig tekst, claims) — bruges, når AI'ens brand ikke findes i databasen.
+  textBrandMatch: BrandMatch | null;
 }> {
   const context = buildBarcodeContext(barcode, marketRegion, signals);
   const knownBrands = await prisma.brand.findMany({
@@ -104,6 +107,9 @@ export async function analyzeFrontPhoto({ photo, barcode, marketRegion, signals,
   // stavemåde, så produktet kobles til det eksisterende brand i stedet for
   // at oprette en næsten-dublet (docs/DECISIONS.md 2026-09-26).
   const brandMatch = matchBrand(value.logoText ?? value.brand, knownBrands);
+  const textBrandMatch = brandMatch
+    ? null
+    : matchBrandInTexts([value.brand, value.subbrand, value.logoText, ...value.visibleText, ...value.claims], knownBrands);
 
   // Fotoet gemmes, så image-agenten kan fritskrabe logo og produkt.
   // Fejl her må aldrig stoppe selve forsideanalysen.
@@ -132,7 +138,7 @@ export async function analyzeFrontPhoto({ photo, barcode, marketRegion, signals,
     );
   }
 
-  return { analysisId: analysis.id, result: value, brandMatch };
+  return { analysisId: analysis.id, result: value, brandMatch, textBrandMatch };
 }
 
 // Stregkode-fotoet (gemt af POST /api/ai/save-barcode-photo) læses for logo

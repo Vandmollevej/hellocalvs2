@@ -171,3 +171,65 @@ export function splitProductHeading(product: {
   }
   return { title: capitalize(title), variants };
 }
+
+// Ingen gentagelser mellem varesidens titel (h1, sort) og den grønne linje
+// (h2: pakningsstørrelse · variant) — brugerens regel 2026-10-02. Fedtprocent,
+// "laktosefri", smag osv. hører til varianten, så de fjernes fra navnet,
+// når de også står i varianten eller pakningsstørrelsen. Tegn som %, kommaer
+// og mellemrum sammenlignes løst ("1,5 % Fett" = "1,5% fett").
+function looseKey(value: string) {
+  return value
+    .toLowerCase()
+    .replace(/[\s,.;:·/()-]+/g, "")
+    .trim();
+}
+
+function escapeRegExp(value: string) {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+// Fjerner hver sætningsdel fra h2 (og dens enkeltled adskilt af komma/·) fra
+// navnet. Bliver navnet tomt, beholdes det oprindelige, så en vare aldrig
+// står uden titel.
+export function stripHeadingRepeats(name: string, parts: (string | null | undefined)[]): string {
+  let title = name;
+  const pieces = parts
+    // Komma deler led — men ikke decimalkommaet i "1,5 %".
+    .flatMap((part) => (part ?? "").split(/\s*(?:·|(?<!\d),|,(?!\d))\s*/))
+    .map((piece) => piece.trim())
+    .filter((piece) => piece.length >= 2)
+    .sort((a, b) => b.length - a.length);
+  for (const piece of pieces) {
+    // Mellemrum/kommaer i stykket må variere i navnet ("1,5 %" vs "1,5%").
+    const pattern = piece
+      .split(/\s+/)
+      .map(escapeRegExp)
+      .join("\\s*")
+      .replace(/\\%/g, "\\s*%");
+    const regex = new RegExp(`(^|[\\s,(·/-])${pattern}(?=$|[\\s,)·/.-])`, "giu");
+    title = title.replace(regex, "$1");
+  }
+  title = title
+    .replace(/\s{2,}/g, " ")
+    .replace(/\s*[,·]\s*(?=[,·]|$)/g, "")
+    .replace(/^[\s,.·\-–]+|[\s,·\-–]+$/g, "")
+    .trim();
+  if (!title || looseKey(title).length < 2) return name.trim();
+  return title;
+}
+
+// h1/h2 til varesiden: h1 = navnet uden det, h2 allerede siger; h2 =
+// pakningsstørrelse · variant (variant udelades, hvis den blot gentager
+// pakningsstørrelsen).
+export function splitProductHeadings(input: {
+  name: string;
+  packageSizeText?: string | null;
+  variant?: string | null;
+}): { title: string; subtitle: string | null } {
+  const size = input.packageSizeText?.trim() || null;
+  let variant = input.variant?.trim() || null;
+  if (variant && size && looseKey(variant) === looseKey(size)) variant = null;
+  const title = stripHeadingRepeats(input.name, [size, variant]);
+  const subtitle = [size, variant].filter(Boolean).join(" · ") || null;
+  return { title, subtitle };
+}
