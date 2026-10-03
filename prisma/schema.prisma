@@ -2222,6 +2222,9 @@ enum PointsReason {
   // Brugeren udfyldte en manglende ting (billede, logo, energi, indhold) paa
   // en eksisterende vare via banneret paa varesiden. Gaelder ogsaa admin.
   PRODUCT_UPDATED
+  // Startbonus (teaser) ved oprettelse af en almindelig konto, 2026-10-03
+  // (docs/DECISIONS.md): alle nye brugere starter med 35 points.
+  SIGNUP_BONUS
 }
 
 model PointsTransaction {

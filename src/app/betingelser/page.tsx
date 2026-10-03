@@ -141,6 +141,7 @@ export default function BetingelserPage() {
         </Section>
 
         <Section id="pointsystem" title="8. Pointsystem">
+          <p>Alle nye brugere starter med 35 points, når kontoen oprettes.</p>
           <p>Du kan optjene points på følgende måder:</p>
           <ul className="list-disc pl-5">
             <li>10 points, når en ny vare, du har oprettet (titel, producent, næringsindhold og billede), bliver godkendt.</li>

@@ -3,6 +3,11 @@
 Last updated: 2026-10-02
 Last updated: 2026-10-03
 
+## 2026-10-03: Startbonus — 35 teaser-points ved oprettelse
+
+- Alle nye almindelige konti starter med 35 points (`PointsReason.SIGNUP_BONUS`, `SIGNUP_BONUS_POINTS` i `src/lib/points-constants.ts`). Gives i `/api/auth/register` og ved første login med Google/Apple/Facebook (`src/lib/oauth.ts`) via `awardSignupBonus()` — højst én gang pr. bruger. Familieprofiler og admin-konti får den ikke. Vises som "Startbonus" under Profil → Points og står i Betingelser §8. Se DECISIONS.md samme dato.
+- Migration `20261003120000_points_signup_bonus` skal køre ved deploy. Eksisterende brugere har ikke fået bonussen (ingen backfill). Lint, typecheck og build grønne; ikke live-testet (ingen lokal DB).
+
 ## 2026-10-02: Kalenderen husker den åbne dag
 
 - Dagsvisningen genåbnes efter navigation væk fra `/calendar` (Tilbage eller "Kalender" i menuen) i stedet for at falde tilbage til måneden. Ny `src/lib/calendar-open-day.ts` (URL `?date=` + sessionStorage), koblet ind i `src/app/calendar/page.tsx`. Se DECISIONS.md samme dato.

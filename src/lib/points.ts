@@ -1,6 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import type { PointsReason } from "@prisma/client";
-import { FREE_MONTH_COST, MAX_FREE_MONTHS, MAX_FORWARD_POINTS_PER_MONTH } from "@/lib/points-constants";
+import { FREE_MONTH_COST, MAX_FREE_MONTHS, MAX_FORWARD_POINTS_PER_MONTH, SIGNUP_BONUS_POINTS } from "@/lib/points-constants";
 
 // Pointsystem (docs/DECISIONS.md 2026-09-02): ledger frem for et cachet
 // saldofelt. Saldoen er altid SUM(PointsTransaction.amount) for brugeren —
@@ -31,6 +31,18 @@ export async function getPointsBalance(userId: string): Promise<number> {
     _sum: { amount: true },
   });
   return result._sum.amount ?? 0;
+}
+
+// Startbonus (docs/DECISIONS.md 2026-10-03): 35 teaser-points, når en
+// almindelig konto oprettes (e-mail eller Google/Apple/Facebook). Højst én gang
+// pr. bruger. Familieprofiler og admin-konti får den ikke.
+export async function awardSignupBonus(userId: string) {
+  const already = await prisma.pointsTransaction.findFirst({
+    where: { userId, reason: "SIGNUP_BONUS" },
+    select: { id: true },
+  });
+  if (already) return null;
+  return awardPoints(userId, "SIGNUP_BONUS", SIGNUP_BONUS_POINTS);
 }
 
 // Videresend-loft: maks. 50 FRIEND_FORWARD_FULFILLED-points pr. kalendermåned

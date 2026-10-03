@@ -3781,3 +3781,11 @@ Kilder på "Mad på latin" skal altid være officielle (Fødevarestyrelsen, Sund
 - `.hf-insight__topbar` er afløst af `.hf-shell__topbar`; `.hf-insight__main` deler bredde/gutter med `.hf-shell__content` (16 px, 32 px fra 1024 px — afstandsskalaens værdier i stedet for admins tidligere 24 px).
 - Webvisningen beholder sin højere top (80 px, `.hf-shell--tall`). Menuens tekst skjules under 1280 px, så topmenu, plus-cirkel og profil ikke støder sammen ved 1024 px.
 - Admin-statistikken og admin-login-siderne bruger `.hf-type-*`, `.hf-kpi`, `.hf-panel` og `.hf-choice` i stedet for `text-xs`/`text-2xl`/`font-semibold`. Telefon- og e-mail-mockups (Designmanual, beskedredigering) er bevidst undtaget, fordi de tegner en iPhone.
+
+## 2026-10-03: Startbonus på 35 points (teaser)
+
+- Ejerens beslutning: hver bruger starter registreringen med 35 points som teaser, så pointsystemet er synligt fra dag ét (300 points = 1 gratis måned).
+- Ny `PointsReason.SIGNUP_BONUS` i ledgeren (ingen cachet saldo, jf. 2026-09-02). Beløbet ligger i `SIGNUP_BONUS_POINTS` (`src/lib/points-constants.ts`).
+- Gives ved oprettelse af en almindelig konto: e-mail-tilmelding (`/api/auth/register`) og ny konto via Google/Apple/Facebook. Ikke til familieprofiler (oprettes af ejeren, kan ikke logge ind selv) eller admin-konti. `awardSignupBonus()` giver højst én bonus pr. bruger.
+- Kun nye konti fra deploy og frem; eksisterende brugere får ikke bonussen med tilbagevirkende kraft, medmindre ejeren beslutter andet.
+
