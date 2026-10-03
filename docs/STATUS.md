@@ -2,6 +2,12 @@
 
 Last updated: 2026-10-03
 
+## 2026-10-03: Alle points-typer vises nu i oversigterne
+
+- Profil → Points-historikken viste den rå kode "SIGNUP_BONUS" og "INTEGRATION_TESTER" i stedet for en tekst — etiketten "Startbonus" gik tabt ved merge af `claude/signup-teaser-points` (prefer master). Nu "Startbonus" og "Testperson af integration"; listen er typet som `Record<PointsReason, string>`, så en ny points-type ikke bygger uden etiket.
+- Betingelser §8 manglede 20 points (opdatér varen) og 10 points (scan varen igen); begge tilføjet. `docs/POINTS_MESSAGING_CHECKLIST.md` har fået de manglende optjeningsmåder (20, 10, 300 testperson, kvalitetskontrol-billede).
+- Lint (0 fejl), typecheck og build grønne. Ikke set i browser (ingen lokal DB).
+
 ## 2026-10-03: Kalender — profilcirklen er tilbage i dagsvisningen
 
 - Dagsvisningen (`DayDetails` i `src/app/calendar/page.tsx`) tegner sin egen grønne topbjælke som fuldskærmsdialog over siden, og dens højre hjørne var et tomt felt — så profilcirklen forsvandt, så snart en dag blev åbnet. Den viser nu `ProfileAvatarLink` som alle andre sider.

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import type { PointsReason } from "@prisma/client";
 import { HfScreen } from "@/components/HfScreen";
 import { FREE_MONTH_COST } from "@/lib/points-constants";
 
@@ -11,7 +12,9 @@ type Transaction = {
   createdAt: string;
 };
 
-const REASON_LABELS: Record<string, string> = {
+// Record<PointsReason, …>: en ny points-type giver typefejl her, indtil den har
+// en etiket — ellers vises den rå enum-værdi i historikken.
+const REASON_LABELS: Record<PointsReason, string> = {
   PRODUCT_APPROVED: "Vare godkendt",
   PRODUCT_INGREDIENTS_BONUS: "Varedeklaration tilføjet",
   PRODUCT_PHOTOS_BONUS: "Billeder fra flere vinkler",
@@ -22,6 +25,8 @@ const REASON_LABELS: Record<string, string> = {
   PRODUCT_UPDATED: "Vare opdateret",
   QUALITY_CONTROL_PHOTO: "Nyt billede godkendt",
   PRODUCT_RESCAN: "Vare scannet igen",
+  SIGNUP_BONUS: "Startbonus",
+  INTEGRATION_TESTER: "Testperson af integration",
 };
 
 export default function PointsPage() {
@@ -100,7 +105,7 @@ export default function PointsPage() {
                 style={{ borderColor: "var(--hf-color-line)" }}
               >
                 <div>
-                  <p className="hf-type-body">{REASON_LABELS[tx.reason] ?? tx.reason}</p>
+                  <p className="hf-type-body">{REASON_LABELS[tx.reason as PointsReason] ?? tx.reason}</p>
                   <p className="text-text-secondary hf-type-caption">
                     {new Date(tx.createdAt).toLocaleDateString("da-DK")}
                   </p>
