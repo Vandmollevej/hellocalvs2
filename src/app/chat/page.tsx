@@ -8,6 +8,8 @@ import { EnergyChip } from "@/components/calendar/EnergyChip";
 import { SwipeableRow } from "@/components/SwipeableRow";
 import { useTranslation } from "@/i18n/LocaleProvider";
 import { mealShareBody } from "@/lib/meal-share";
+import { MealLanguagePicker } from "@/components/voice/MealLanguagePicker";
+import { useMealInputLanguage } from "@/components/voice/useMealInputLanguage";
 
 // "Indtast" afløser mikrofonen på desktop-versionen: beskrivelsen skrives i
 // stedet for at tales og tolkes af samme endpoint som stemmesiden. Opbygningen
@@ -117,6 +119,8 @@ function ItemRow({
 
 export default function ChatPage() {
   const { t } = useTranslation();
+  // Sprogflaget i venstre hjørne (samme valg som tale-siden på mobil).
+  const { language, region, setLanguage } = useMealInputLanguage();
   const [items, setItems] = useState<Item[]>([]);
   const [text, setText] = useState("");
   const [busy, setBusy] = useState(false);
@@ -155,7 +159,7 @@ export default function ChatPage() {
       const res = await fetch("/api/ai/interpret-meal", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ transcript: value }),
+        body: JSON.stringify({ transcript: value, language }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error();
@@ -236,7 +240,11 @@ export default function ChatPage() {
   const savedItems = items.filter((item) => item.saved);
 
   return (
-    <HfScreen title={t("web.chatTitle")} hideBackButton>
+    <HfScreen
+      title={t("web.chatTitle")}
+      hideBackButton
+      leading={<MealLanguagePicker language={language} region={region} onChange={setLanguage} />}
+    >
       <div className="mx-auto flex w-full flex-col px-4 pb-8 pt-4 lg:w-1/2">
         <form
           onSubmit={(e) => {

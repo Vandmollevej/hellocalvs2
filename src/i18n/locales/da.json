@@ -1981,6 +1981,12 @@
     "usePeriod": "Brug periode"
   },
   "voice": {
+    "language": {
+      "button": "Sprog for tale og tekst: {language}. Tryk for at skifte",
+      "title": "Hvilket sprog taler du?",
+      "hint": "Tale og tekst tolkes kun på det valgte sprog. Engelske varenavne forstås altid også.",
+      "selected": "Valgt"
+    },
     "aiEstimate": "AI-estimat",
     "resetTranscript": "Nulstil tekst",
     "listeningTitle": "Lytter...",

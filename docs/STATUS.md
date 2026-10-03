@@ -165,6 +165,11 @@ Last updated: 2026-10-02
 - Rettelser bør komme fra brugeren: `Bedre-dyrevelfærd-2-stjerner.png` var identisk med 3-stjerner-filen, så 2-hjerte-logoet er afledt (3-stjerner + den tomme 3. hjerte fra 1-stjerne-filen). `Fairtrade logo.webp` har "cleanpng"-vandmærke og `Økologimærket.png` er et beskåret udsnit uden tekst — erstat med originale filer.
 - Lint og typecheck grønne. Ikke visuelt testet (ingen login/DB lokalt).
 
+## 2026-10-02: Sprogflag på tale- og chat-siden
+
+- Flag i venstre hjørne på `/voice` og `/chat` åbner et bundark med ni sprog. Valget styrer talegenkendelsen og AI-tolkningen (kun det sprog + engelsk som fallback). Se DECISIONS.md samme dato.
+- Lint, typecheck og build kørt. Ikke live-testet på telefon (ingen lokal DB/login): tjek flaget ved siden af tilbagepilen og et sprogskift midt i en optagelse.
+
 ## 2026-10-02: Kalender dagvisning pa web - cookie, fokus pa nu, dobbeltklik
 
 - Cookie `hc_cal_visit` (dato): forste besog i dag viser morgenen med nattens sovn; senere besog i dag (og kun hvis brugeren har registreret noget for) scroller til nu +-2 timer.

@@ -32,6 +32,7 @@ export function ScreenHeader({
   titleClassName,
   alwaysShowBackButton = false,
   showAppSettingsButton = false,
+  leading,
 }: {
   title: string;
   icon?: React.ReactNode;
@@ -43,6 +44,10 @@ export function ScreenHeader({
   alwaysShowBackButton?: boolean;
   // Kun profilsiden: tandhjul til app-indstillingerne i stedet for profilcirklen.
   showAppSettingsButton?: boolean;
+  // Ekstra knap i venstre hjørne (fx tale-sidens sprogflag). Står i slottet,
+  // når der ingen tilbagepil er, ellers lige til højre for pilen — samme
+  // mønster som telefonikonet til venstre for profilcirklen.
+  leading?: React.ReactNode;
 }) {
   const { t } = useTranslation();
   const isCompact = useIsCompactLandscape();
@@ -83,7 +88,9 @@ export function ScreenHeader({
         isCompact ? "hf-appbar--compact" : ""
       } ${showHelp ? "hf-appbar--help" : ""}`}
     >
-      <div className="hf-appbar__slot">
+      <div className="hf-appbar__slot relative">
+        {leading && !showBack && leading}
+        {leading && showBack && <span className="absolute left-full ml-1 flex items-center">{leading}</span>}
         {showBack && (
           <button
             type="button"
