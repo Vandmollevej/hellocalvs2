@@ -31,6 +31,12 @@ Last updated: 2026-10-03
 - "Abonnement" og "Betaling" er fjernet fra profilsiden; de findes kun under Indstillinger (rækkerne fandtes der i forvejen).
 - Lint (0 fejl) og build grønne.
 
+## 2026-10-03: Madvarer-siden tegnes i ét trin (ingen skelet-bokse ved hvert besøg)
+
+- Siden viste grå skelet-bokse og derefter varerne, og bogmærkerne og "Mest brugte" kom bagefter. Nu gemmes sidste liste + bogmærker i browseren pr. profil (`src/lib/foods-snapshot.ts`) og tegnes med det samme; den friske liste erstatter den stille. Skelettet ses kun ved allerførste besøg på en enhed, og kun hvis svaret tager over 300 ms.
+- Fejl rettet samtidig: "Mest brugte" blev regnet ud fra kun de 20 nyeste varer i hele databasen (og hentede op til 3000 registreringer). Nyt `GET /api/products/most-used` tæller i databasen og giver profilens 10 mest registrerede varer (udgåede/skjulte sorteres fra, samme historikgrænse som registreringer). Ingen migration.
+- Lint (0 fejl), typecheck og build grønne. Testet mod lokal Postgres + Chromium med 1,2 s forsinket svar: tilbage-navigation viser varerne straks, genindlæsning efter ~250 ms, ingen bokse.
+
 ## 2026-10-03: Kalender — profilcirklen er tilbage i dagsvisningen
 
 - Dagsvisningen (`DayDetails` i `src/app/calendar/page.tsx`) tegner sin egen grønne topbjælke som fuldskærmsdialog over siden, og dens højre hjørne var et tomt felt — så profilcirklen forsvandt, så snart en dag blev åbnet. Den viser nu `ProfileAvatarLink` som alle andre sider.
