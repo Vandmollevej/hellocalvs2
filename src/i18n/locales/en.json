@@ -282,6 +282,8 @@
     "error": "Something went wrong — try again"
   },
   "settings": {
+    "search": "Search settings",
+    "searchNoResults": "No settings found",
     "title": "Settings",
     "support": {
       "title": "Support",

@@ -8,6 +8,22 @@ Last updated: 2026-10-03
 - Resultatvisning ligger under Indstillinger → Visning (efter Forside); "Sprog og region" og "Resultatvisning" er fjernet fra Opsætning, som nu kun viser fremdriften. Sprog og region står fortsat øverst i Indstillinger. Adresserne er uændrede.
 - Lint (0 fejl), typecheck og build grønne. Ikke set med login (ingen lokal DB) — tjek Profil og Indstillinger på telefon.
 
+
+## 2026-10-03: Indstillinger, Profil og Support rettet + udsendelse som ren tekst
+
+- Admin-udsendelsen er ren tekst: linjeskift bevares, `http(s)`-links bliver klikbare i mailen, emojis virker (`broadcastTextToHtml` i `src/lib/admin-broadcast.ts`).
+- Hello Doc ligger nu under Profil (sidste række i kortet med Opskrifter/Viden om) og er fjernet fra Indstillinger. Ruten er uændret (`/settings/hello-doc`).
+- Indstillinger har et søgefelt øverst (`SearchField`); søgning viser en flad liste over alle punkter, der matcher navnet.
+- "Har du fundet en fejl?" er nu nr. 2 i kortet med Hjælpecenter, og det separate kort er fjernet.
+- Support-siden bruger `.hf-type-section-title` (overskrift med streg over hele linjen) i stedet for de små versaler. "Visning"-overskriften på Indstillinger har stadig den gamle stil.
+- Typecheck og lint grønne. Ikke set på telefon.
+
+## 2026-10-03: Admin → Brugere: mail og push til alle brugere
+
+- Nyt panel øverst på `/admin/users` ("Send mail og push til alle brugere", kun fuld admin-adgang): emne, besked, valg af mail og/eller push, og administratorens adgangskode skal tastes igen ved hver udsendelse (`POST /api/admin/users/broadcast`, bcrypt-tjek, samme låsning efter 5 fejl som login).
+- Modtagere: alle brugere der ikke er anonymiseret eller har lukket kontoen. Push går kun til brugere med et push-abonnement. Mail og push lægges som hver sin `OutboundMessage` (event `ADMIN_MESSAGE`) og tømmes i baggrunden med det samme (`src/lib/admin-broadcast.ts`). Ingen migration.
+- Kontoer uden adgangskode (kun passkey) kan ikke sende, før de har en adgangskode. Mail kræver SMTP, push kræver VAPID-nøgler på serveren (ellers bliver rækkerne stående i køen).
+- Typecheck og lint grønne. Ikke testet mod rigtig database eller med rigtig afsendelse.
 ## 2026-10-03: "Inviter familiemedlem" — vælg se/oprette pr. profil
 
 - Brugerens valg ved fletning af #212 (rettigheder) med #199 (invitationer): invitationsarket har nu "Se profilen" og "Oprette på deres vegne" pr. profil i stedet for én kontakt. Gemmes i `grantWriteSubjectIds`; ved ja får tildelingerne `canWrite` derefter. Se DECISIONS.md samme dato.

@@ -3,6 +3,8 @@ import { prisma } from "@/lib/prisma";
 import { requireAdminUser } from "@/lib/require-admin";
 import { AdminUserRow } from "@/components/admin/AdminUserRow";
 import { t } from "@/lib/admin-i18n";
+import { BroadcastPanel } from "@/components/admin/BroadcastPanel";
+import { broadcastAudience } from "@/lib/admin-broadcast";
 
 // Admin "Brugere" (docs/DECISIONS.md 2026-09-02): oversigt over registranter
 // med betalingsstatus, points, nyhedsbrevs-tilmeldinger og "ret til at
@@ -11,6 +13,8 @@ import { t } from "@/lib/admin-i18n";
 export default async function AdminUsersPage() {
   const admin = await requireAdminUser();
   if (!admin) redirect("/admin/login");
+
+  const audience = await broadcastAudience();
 
   const users = await prisma.user.findMany({
     where: { role: "USER" },
@@ -32,6 +36,8 @@ export default async function AdminUsersPage() {
           {users.length} registranter. Mønt-ikonet tildeler points; det røde ikon anonymiserer kontoen.
         </p>
       </div>
+
+      {admin.adminAccessLevel === "FULL" && <BroadcastPanel emailUsers={audience.emailUsers} pushUsers={audience.pushUsers} />}
 
       <div className="overflow-x-auto">
         <table className="hf-type-body w-full text-left">

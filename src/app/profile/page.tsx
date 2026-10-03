@@ -9,6 +9,7 @@ import {
   IconChartLine,
   IconUsers,
   IconMail,
+  IconStethoscope,
 } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
 import { AccordionCard, ChevronRow } from "@/components/hf/AccordionCard";
@@ -171,6 +172,11 @@ export default function ProfilePage() {
               icon={<IconBook size={20} />}
               label={t("profile.row.knowledge")}
               href="/viden-om"
+            />
+            <ChevronRow
+              icon={<IconStethoscope size={20} />}
+              label={t("settings.helloDoc")}
+              href="/settings/hello-doc"
               divider={false}
             />
           </AccordionCard>
