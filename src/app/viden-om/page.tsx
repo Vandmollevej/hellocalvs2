@@ -1,13 +1,13 @@
 "use client";
 
 import { useState } from "react";
-import { IconBulb } from "@tabler/icons-react";
+import { IconBook } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
 import { KnowledgeRows } from "@/components/knowledge/KnowledgeRows";
 import { SearchField } from "@/components/knowledge/SearchField";
 import { KNOWLEDGE_SECTIONS, entryHref, searchEntries } from "@/lib/knowledge-index";
 
-// "Viden om" (åbnes fra profilsiden): blokke for vitaminer, E-numre,
+// "Viden om mad" (åbnes fra profilsiden): blokke for vitaminer, E-numre,
 // sundhedstips og Mad på latin. Søgning dækker alle artikler og ord.
 export default function KnowledgePage() {
   const [query, setQuery] = useState("");
@@ -26,10 +26,10 @@ export default function KnowledgePage() {
     : KNOWLEDGE_SECTIONS.map((section) => ({ key: section.id, label: section.title, href: `/viden-om/${section.id}` }));
 
   return (
-    <HfScreen title="Viden om" icon={<IconBulb size={20} stroke={2} />} alwaysShowBackButton>
+    <HfScreen title="Viden om mad" icon={<IconBook size={20} stroke={2} />} alwaysShowBackButton>
       <div className="hf-page flex flex-col gap-3">
         <SearchField value={query} onChange={setQuery} placeholder="Søg i vitaminer, sundhedstips og ord" />
-        <KnowledgeRows rows={rows} icon={<IconBulb size={20} />} />
+        <KnowledgeRows rows={rows} icon={<IconBook size={20} />} />
       </div>
     </HfScreen>
   );

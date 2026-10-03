@@ -24,6 +24,13 @@ Last updated: 2026-10-03
 - Anden runde (bruger: for mange og for tydelige gule streger foroven, mere grønt, "lidt 3D agtigt"): farverampen er nu overvejende grøn med kun et strejf af gul øverst. Perspektiv: båndene foroven er tynde, svage, rolige og har kun 2 streger; de nederste er tykke og tydelige. Hver streng tegnes som et rør med skygge under og lys kant foroven (`palette.light`), og sløret forneden er lettere (6 px), så rørene anes som glas.
 - Lint (0 fejl), typecheck, bølge-tests og build grønne; tegningen tjekket i Chromium med tre tilfældige scener. Ikke set på telefon med login — test på forsiden.
 
+## 2026-10-03: Profilsiden — "Viden om mad", bog- og tallerken-ikoner, abonnement flyttet
+
+- "Viden om" hedder nu "Viden om mad" (en: "About food") på profilrækken, sidetitlen og annonceplaceringen; ikonet er en bog (`IconBook`) på profilrækken og alle `/viden-om`-sider. URL'en `/viden-om` er uændret.
+- "Opskrifter" har tallerken med kniv og gaffel (`IconPlateCutlery`).
+- "Abonnement" og "Betaling" er fjernet fra profilsiden; de findes kun under Indstillinger (rækkerne fandtes der i forvejen).
+- Lint (0 fejl) og build grønne.
+
 ## 2026-10-03: Kalender — profilcirklen er tilbage i dagsvisningen
 
 - Dagsvisningen (`DayDetails` i `src/app/calendar/page.tsx`) tegner sin egen grønne topbjælke som fuldskærmsdialog over siden, og dens højre hjørne var et tomt felt — så profilcirklen forsvandt, så snart en dag blev åbnet. Den viser nu `ProfileAvatarLink` som alle andre sider.
