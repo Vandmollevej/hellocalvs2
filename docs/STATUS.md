@@ -1,5 +1,11 @@
 # HELLO CAL — project status
 
+Last updated: 2026-10-02
+
+## 2026-10-02: Ikon for Betalingsmetoder
+
+- Rækken "Betalingsmetoder" på `/profile` og `/settings` bruger nu et eget kortikon (`src/components/icons/PaymentCard.tsx`): kortomrids med én massiv sort stribe nederst og ingen andre elementer (ejerens regel 2026-10-02). Tabler-ikonet `IconWallet` er ikke længere i brug der.
+- Lint, typecheck og `npm run build` grønne. Ikke set i browser med login (ingen lokal DB); ikonet er kontrolleret som SVG-render.
 
 ## 2026-10-03: Butiksimporten — alt fra Bilka- og REMA-arkene med
 
