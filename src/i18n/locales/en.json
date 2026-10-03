@@ -1450,9 +1450,6 @@
     "saving": "Saving…",
     "loading": "Loading…",
     "noEntriesYet": "No weigh-ins logged yet.",
-    "deleteAria": "Delete weigh-in",
-    "delete": "Delete",
-    "recentTitle": "Recent weigh-ins",
     "status": {
       "saved": "Your information has been saved.",
       "nothing": "There is no weight to save yet.",
