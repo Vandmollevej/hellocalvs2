@@ -159,6 +159,7 @@ const CRUMB_LABELS: Record<string, string> = {
   "verify-email": "Bekræft e-mail",
   forward: "Videresend",
   "family-code": "Familiekode",
+  "family-invite": "Familieinvitation",
   scan: "Scan",
   welcome: "Velkommen",
 };

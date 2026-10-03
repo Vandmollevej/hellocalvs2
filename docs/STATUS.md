@@ -2,6 +2,14 @@
 
 Last updated: 2026-10-03
 
+## 2026-10-03: "Inviter familiemedlem" + ejerens konto har Seriøs Familie
+
+- Familie-siden (`/profile/family`) og profilvælgeren har "Inviter familiemedlem", der åbner et bundark: navn, e-mail og "Hvem skal personen have indsigt i?" (en toggle pr. familieprofil). Knappen "Tilføj barn under 18" i arket opretter en børneprofil (`FamilyProfileForm`, `childOnly`), som derefter er valgt. Invitationen sendes som mail (`MessageEvent.FAMILY_INVITATION`, fra `invite@hellocal.io`) med link til `/family-invite/<token>` (offentlig side; log ind/opret konto sender tilbage). Når personen siger ja, kobles kontoen på familien og får adgang til de valgte profiler.
+- Afventende invitationer vises på Familie-siden og kan trækkes tilbage. En ny invitation til samme e-mail erstatter den gamle. Familien oprettes automatisk ved første invitation/profil — "Opret familie"-knappen er væk. Den gamle "Inviter en med egen konto"-kode er fjernet fra UI'et (API'en virker stadig).
+- Ejerens egen app-konto (peter@packroff.dk) får Seriøs Familie uden udløb via migration `20261003200100_owner_family_plan`. Familiemedlemmer i en administrators familie er nu også Seriøs (`isCoveredByFamilyPlan`).
+- **Migrationer, der skal køre ved deploy:** `20261003200000_family_invitations` (ny enum-værdi + kolonner på `family_login_codes`) og `20261003200100_owner_family_plan`.
+- Testet: typecheck, lint, build; skærmbilleder af Familie-siden, arket, "Tilføj barn"-trinnet og invitationssiden med mockede API-svar. Ikke testet mod en rigtig database eller med rigtig mailafsendelse.
+
 ## 2026-10-03: Betaling viser det aktive kort fra Stripe (PR #132 flettet med master)
 
 - `/settings/payment` viser det kort/den wallet, Stripe trækker på: mærke + sidste 4 + udløb; Apple Pay/Google Pay med kortet bagved (nyt felt `PaymentMethod.wallet`, migration `20261002090000_payment_method_wallet` **skal køre ved deploy**); MobilePay. Kortmærke-logo (Visa/Mastercard) i lille fast ramme; andre mærker får det egne kortikon (`IconPaymentCard`). Siden henter altid frisk fra Stripe (`/api/subscription?refresh=1`). Kortet beholdes efter opsigelse (perioden er betalt).

@@ -56,8 +56,11 @@ export async function getUserSubscriptionTier(userId: string, now: Date = new Da
 export async function isCoveredByFamilyPlan(userId: string, now: Date = new Date()): Promise<boolean> {
   const membership = await prisma.familyMember.findUnique({
     where: { userId },
-    select: { family: { select: { owner: { select: { subscription: true } } } } },
+    select: { family: { select: { owner: { select: { role: true, subscription: true } } } } },
   });
+  // En administrator har altid familieabonnement (docs/DECISIONS.md
+  // 2026-10-02) — så er hele administratorens familie også Seriøs.
+  if (membership?.family.owner.role === "ADMIN") return true;
   const ownerSubscription = membership?.family.owner.subscription ?? null;
   return Boolean(
     ownerSubscription && ownerSubscription.plan === "FAMILY" && getSubscriptionTier(ownerSubscription, now) === "SERIOUS"

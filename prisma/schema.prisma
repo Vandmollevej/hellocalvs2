@@ -2487,6 +2487,7 @@ enum MessageEvent {
   FRIEND_FORWARD_RECEIVED
   FRIEND_INVITATION
   DOCTOR_SHARE_INVITATION
+  FAMILY_INVITATION
   NEW_DEVICE_LOGIN
   ADMIN_MESSAGE
   // Beskedtjeneste (docs/DECISIONS.md 2026-09-26 "Support-indbakke").
@@ -3388,6 +3389,12 @@ model FamilyLoginCode {
   profile   User?     @relation("FamilyLoginCodeProfile", fields: [profileId], references: [id])
   profileId String?
   codeHash  String    @unique
+  // Invitation pr. mail ("Inviter familiemedlem", docs/FAMILY.md 2026-10-03):
+  // modtagerens navn og e-mail, og hvilke af familiens profiler personen får
+  // indsigt i, når invitationen tages imod. Tomme for almindelige koder.
+  email           String?
+  inviteeName     String?
+  grantSubjectIds String[]  @default([])
   expiresAt DateTime
   usedAt    DateTime?
   createdAt DateTime  @default(now())

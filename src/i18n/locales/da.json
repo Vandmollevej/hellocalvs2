@@ -2690,7 +2690,36 @@
       "weightKg": "Vægt (kg)",
       "isChild": "Er det et barn?",
       "isChildHelp": "Under 15 år kan man ikke selv oprette en konto.",
-      "submit": "Tilføj profil"
+      "submit": "Tilføj profil",
+      "submitChild": "Tilføj barn",
+      "childTooOld": "Et barn skal være under 18 år. Inviter personen i stedet."
+    },
+    "invite": {
+      "title": "Inviter familiemedlem",
+      "intro": "Personen får en mail med et link og siger selv ja. Med i familien får personen Seriøs uden at betale.",
+      "name": "Navn",
+      "email": "E-mail",
+      "insightTitle": "Hvem skal personen have indsigt i?",
+      "insightHelp": "Personen kan se og taste ind på de profiler, du slår til. Du kan altid ændre det under Adgang.",
+      "addChild": "Tilføj barn under 18",
+      "addChildTitle": "Tilføj barn under 18",
+      "addChildIntro": "Børn under 15 år kan ikke selv oprette en konto, så du opretter profilen her. Barnet bliver valgt i invitationen bagefter.",
+      "send": "Send invitation",
+      "sent": "Invitationen er sendt til {name} ({email}). Linket gælder i 7 dage.",
+      "done": "OK",
+      "pendingTitle": "Afventende invitationer",
+      "pendingUntil": "Gælder til {date}",
+      "cancel": "Træk tilbage",
+      "cancelConfirm": "Træk invitationen til {name} tilbage? Linket i mailen holder op med at virke.",
+      "acceptTitle": "Familieinvitation",
+      "acceptIntro": "Hej {name}. {owner} har inviteret dig med i sin familie i Hello Cal.",
+      "acceptInsight": "Du får indsigt i",
+      "acceptNoProfiles": "Ingen profiler endnu. Du kan få adgang senere.",
+      "acceptTerms": "Når du siger ja, får du Seriøs uden at betale, og {owner} kan se og ændre alt på din profil, så længe du er med. Alt, hvad andre gør på din profil, står i din Kontrol-log, og du kan melde dig ud når som helst.",
+      "accept": "Sig ja til invitationen",
+      "acceptLoginFirst": "Log ind eller opret en konto for at sige ja. Invitationen er sendt til {email}.",
+      "acceptLogin": "Log ind",
+      "acceptSignup": "Opret konto"
     },
     "access": {
       "title": "Adgang",
@@ -2731,7 +2760,10 @@
       "notFound": "Ikke fundet.",
       "unknown": "Noget gik galt. Prøv igen.",
       "profileHasLogin": "Profilen har sit eget login. Fjern den fra familien i stedet.",
-      "confirmRequired": "Skriv SLET for at bekræfte."
+      "confirmRequired": "Skriv SLET for at bekræfte.",
+      "invalidInvitation": "Invitationen er ugyldig, udløbet eller allerede brugt.",
+      "alreadyMember": "Personen er allerede med i familien.",
+      "inviteeInOtherFamily": "Personen er allerede med i en anden familie."
     },
     "deletePermissions": {
       "title": "Sletning af registreringer",

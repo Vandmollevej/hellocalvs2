@@ -4179,3 +4179,10 @@ Brugerens krav: "Luk konto kan reverses inde. For 3 måneder, med mindre man væ
 - `PremiumGate` har `renderWhilePending`: mens niveauet hentes, tegnes siden selv som skelet (design.md §6.14), og siden venter med datahentning via `usePremiumPending()`. Bruges kun af `/statistics` (undersiderne venter ikke på niveauet og vises derfor først, når det er kendt), så gratisbrugeres data stadig ikke hentes til låste sider.
 - Kort, der først findes, når data er hentet (fx sportskort), tegnes som skitser i fuld højde i stedet for "ingen data" under hentning.
 
+## 2026-10-03: "Inviter familiemedlem" pr. mail med valg af indsigt
+
+- Ejerens valg: invitationen sendes som **mail med link** (ikke en kode, man selv sender videre). Betaleren vælger i et bundark, **hvilke profiler** personen får indsigt i (samme adgang som `FamilyAccessGrant`: se og taste ind). Ingen opdeling pr. dataområde.
+- "Tilføj barn under 18" ligger som knap i arket og opretter en børneprofil (altid `isChild`), der derefter er valgt i invitationen.
+- Datamodel: invitationer er `FamilyLoginCode`-rækker uden `profileId` med `email`, `inviteeName` og `grantSubjectIds`. Linkets token er 24 tegn (kun SHA-256 gemmes), gyldigt 7 dage, kun én brug. `joinFamily` opretter tildelingerne til de valgte profiler, der stadig er med i familien.
+- Modtageren skal selv sige ja (docs/FAMILY.md punkt 8) og får at vide, at betaleren kan se og ændre alt på profilen. Kontoens e-mail behøver ikke matche invitationens.
+- Ejerens egen app-konto får Seriøs Familie (status ACTIVE, ingen udløb, ingen udbyder) via migration; har kontoen en rigtig betalingsaftale, sættes kun planen. Administratorers familier dækker nu også medlemmerne.

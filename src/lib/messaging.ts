@@ -184,6 +184,12 @@ const DEFAULT_TEMPLATES: Record<MessageEventType, { subject: string; bodyHtml: s
     bodyHtml: "<p>{{ownerName}} har inviteret dig til at se udvalgte data i Hello Cal.</p><p><a href=\"{{viewUrl}}\">Se oversigten</a> — invitationen er gyldig i 14 dage.</p>",
     channel: "EMAIL",
   },
+  FAMILY_INVITATION: {
+    subject: "{{ownerName}} har inviteret dig med i sin familie på Hello Cal",
+    bodyHtml:
+      "<p>Hej {{inviteeName}},</p><p>{{ownerName}} har inviteret dig med i familieabonnementet Seriøs Familie i Hello Cal. Du får Seriøs, så længe du er med, og indsigt i: {{profiles}}.</p><p>Når du siger ja, kan {{ownerName}} også se og taste ind på din profil. Du kan altid se, hvem der har været inde, i din Kontrol-log.</p><p><a href=\"{{inviteUrl}}\">Se invitationen</a> — linket er gyldigt i 7 dage.</p>",
+    channel: "EMAIL",
+  },
   NEW_DEVICE_LOGIN: {
     subject: "Nyt login på din Hello Cal-konto",
     bodyHtml:

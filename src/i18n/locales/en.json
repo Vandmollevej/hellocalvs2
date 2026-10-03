@@ -2709,7 +2709,36 @@
       "weightKg": "Weight (kg)",
       "isChild": "Is this a child?",
       "isChildHelp": "Under 15 you cannot create an account yourself.",
-      "submit": "Add profile"
+      "submit": "Add profile",
+      "submitChild": "Add child",
+      "childTooOld": "A child must be under 18. Invite the person instead."
+    },
+    "invite": {
+      "title": "Invite family member",
+      "intro": "The person gets an email with a link and accepts it themselves. As part of the family they get Serious at no cost.",
+      "name": "Name",
+      "email": "Email",
+      "insightTitle": "Who should the person have insight into?",
+      "insightHelp": "The person can see and log for the profiles you switch on. You can always change this under Access.",
+      "addChild": "Add child under 18",
+      "addChildTitle": "Add child under 18",
+      "addChildIntro": "Children under 15 cannot create an account themselves, so you create the profile here. The child is then selected in the invitation.",
+      "send": "Send invitation",
+      "sent": "The invitation has been sent to {name} ({email}). The link is valid for 7 days.",
+      "done": "OK",
+      "pendingTitle": "Pending invitations",
+      "pendingUntil": "Valid until {date}",
+      "cancel": "Withdraw",
+      "cancelConfirm": "Withdraw the invitation to {name}? The link in the email will stop working.",
+      "acceptTitle": "Family invitation",
+      "acceptIntro": "Hi {name}. {owner} has invited you to join their family in Hello Cal.",
+      "acceptInsight": "You get insight into",
+      "acceptNoProfiles": "No profiles yet. You can be given access later.",
+      "acceptTerms": "When you accept, you get Serious at no cost, and {owner} can see and change everything on your profile while you are a member. Everything others do on your profile is listed in your Control log, and you can leave at any time.",
+      "accept": "Accept the invitation",
+      "acceptLoginFirst": "Log in or create an account to accept. The invitation was sent to {email}.",
+      "acceptLogin": "Log in",
+      "acceptSignup": "Create account"
     },
     "access": {
       "title": "Access",
@@ -2750,7 +2779,10 @@
       "notFound": "Not found.",
       "unknown": "Something went wrong. Try again.",
       "profileHasLogin": "The profile has its own login. Remove it from the family instead.",
-      "confirmRequired": "Type SLET to confirm."
+      "confirmRequired": "Type SLET to confirm.",
+      "invalidInvitation": "The invitation is invalid, expired or already used.",
+      "alreadyMember": "The person is already in the family.",
+      "inviteeInOtherFamily": "The person is already in another family."
     },
     "deletePermissions": {
       "title": "Deleting entries",

@@ -247,6 +247,7 @@ Ejer: cloud-session `claude/lucid-bell-s5vyhv` (2026-09-25)
 | Id | Opgave | Status | Næste skridt |
 | --- | --- | --- | --- |
 | — | Familieabonnement: forældre ser/taster for børn, adgangslog til barnet | I gang | Første version bygget og pushet (branch `claude/lucid-bell-s5vyhv`, ikke flettet). Næste: brugerens test og "Mangler" i `docs/FAMILY.md` (oprettelsesflow med alder er næste skridt) |
+| family-invite | "Inviter familiemedlem" (mail + valg af indsigt + "Tilføj barn under 18") og ejerens konto som Seriøs Familie | Venter på bruger | Bygget på branch `claude/family-invite-popup` (draft-PR). Næste: flet, deploy (2 migrationer), brugerens test på telefon |
 
 ## G-FLOWS — Admin "Flows" + telefon-editor
 Filer: `src/components/admin/PhonePreviewEditor.tsx`, `src/components/admin/FlowEditor.tsx`, `src/app/admin/flows/**`, `src/app/api/admin/flows/**`, `src/lib/flows.ts`.

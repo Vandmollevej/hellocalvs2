@@ -32,6 +32,8 @@ export type FamilyStatus = {
     isOwner: boolean;
     members: FamilyMemberInfo[];
     grants: { granteeId: string; subjectId: string }[];
+    // Afventende mailinvitationer (kun for betaleren).
+    invitations: { id: string; email: string; name: string; expiresAt: string }[];
   } | null;
   hasFamilyPlan: boolean;
   maxProfiles: number;
