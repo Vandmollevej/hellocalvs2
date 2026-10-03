@@ -6,6 +6,7 @@ import { AddProductView } from "@/components/add/AddProductView";
 import { ProductResultRow, type ProductResult } from "@/components/ProductResultRow";
 import { SkeletonMediaRows, SkeletonScreen } from "@/components/hf/Skeleton";
 import { useTranslation } from "@/i18n/LocaleProvider";
+import { intlLocale } from "@/i18n";
 import type { UserScan } from "@/lib/user-scans";
 
 // "Se dine indscanninger" (bruger 2026-10-02): brugerens egne fotograferede
@@ -100,7 +101,7 @@ export default function MyScansPage() {
     yesterday.setDate(today.getDate() - 1);
     if (dayKey(date) === dayKey(today)) return t("myScans.today");
     if (dayKey(date) === dayKey(yesterday)) return t("myScans.yesterday");
-    return new Intl.DateTimeFormat(locale === "en" ? "en-GB" : "da-DK", {
+    return new Intl.DateTimeFormat(intlLocale(locale), {
       weekday: "long",
       day: "numeric",
       month: "long",

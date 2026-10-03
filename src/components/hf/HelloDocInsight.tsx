@@ -2,6 +2,7 @@
 
 import { MiniBarChart, MiniLineChart, type MiniChartPoint } from "@/components/hf/MiniChart";
 import { useTranslation } from "@/i18n/LocaleProvider";
+import { intlLocale, type Locale } from "@/i18n";
 
 // Fælles visning af Hello Doc-indsigten (profilkolonne + grafpaneler), bygget
 // på .hf-insight-/.hf-panel-klasserne i globals.css (adminfladens design).
@@ -27,7 +28,7 @@ export type InsightData = {
 };
 
 export function formatInsightDate(value: string, locale: string) {
-  return new Intl.DateTimeFormat(locale === "en" ? "en-GB" : "da-DK", {
+  return new Intl.DateTimeFormat(intlLocale(locale as Locale), {
     day: "numeric",
     month: "short",
     year: "numeric",

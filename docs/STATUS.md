@@ -2,6 +2,10 @@
 
 Last updated: 2026-10-03
 
+## 2026-10-03: Opdater-varen — kun tre områder, ingen points for net-billeder
+
+- Banneret/kortene vises kun for manglende produktbillede, energi eller indhold; manglende logo alene udløser dem ikke. Points kræver et friskt kamerabillede; billedet tagges `photo_source` CAMERA/UPLOAD. **Migration `20261003250000_photo_source` skal køre ved deploy.** Lint (0 fejl), typecheck og build grønne; ikke set på telefon. Fritlagt PNG rager allerede 10 % op over cirklen (`isCutoutImage`, kun filer under `/cutouts/`).
+
 ## 2026-10-03: Beskeder på Profil, Resultatvisning under Visning, Opsætning uden Sprog og region
 
 - Beskeder er flyttet fra Indstillinger til Profil som egen række lige under "Profil" øverst. Ulæst-tallet er en grøn cirkel (`--hf-color-brand`) med hvidt tal (`ChevronRow.badgeCount`, også Kontrol-log).
@@ -5869,3 +5873,10 @@ Skal gøres, før branchen flettes:
 4. Flet til master (kører migrationerne `20261002100000` og `20261003100000`), `npm run build`, test med rigtigt nummer og rigtig telefon (på iPhone kræver Web Push, at appen ligger på hjemmeskærmen).
 5. Senere: native app (APNs/FCM) skal bruge samme endpoints (`/api/push/subscribe`, `/api/auth/login-approval/*`). Push-godkendelse gælder kun adgangskode-login; Google/Apple/Facebook og Face ID er uændrede.
 5. Senere: native app (APNs/FCM) skal bruge samme endpoints (`/api/push/subscribe`, `/api/auth/login-approval/*`). Push-godkendelse gælder kun adgangskode-login; Google/Apple/Facebook og Face ID er uændrede.
+
+
+## 2026-10-03: Syv sprog (da, en, de, fr, nl, sv, no) + Hjælpecenter på alle
+
+- Se DECISIONS 2026-10-03 "Syv sprog". Ordbøger i `src/i18n/locales/`, hjælpesider i `public/help-*.html`, sprogvalg under Indstillinger → Sprog og region.
+- Typecheck, lint (0 fejl) og build grønne. `npm test`: 1 fejl (`page tree lists every page`) som også fejler på master uden disse ændringer.
+- Mangler: gennemlæsning af oversættelserne af en person, der taler sprogene; datoer/tal flere steder er stadig formateret med `da-DK`.

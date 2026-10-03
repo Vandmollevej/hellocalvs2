@@ -11,6 +11,7 @@ import { syncProductNutritionFeaturesSafely } from "@/lib/product-nutrition-feat
 import {
   PRODUCT_UPDATE_POINTS,
   awardUpdatePointsOnce,
+  isFreshCameraPhoto,
   productGaps,
   updateKindsFor,
   type ProductUpdateKind,
@@ -74,6 +75,7 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
     barcode: product.barcodes[0]?.code ?? previous?.barcode ?? "",
     marketRegion: previous?.marketRegion ?? "DK",
   };
+  const photoSource = isFreshCameraPhoto(body?.photoTakenAt) ? "CAMERA" : "UPLOAD";
   const context = { flowId, userId: user.id, barcode: base.barcode || null, productId: id };
 
   try {
@@ -81,7 +83,7 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
 
     if (kind === "FRONT") {
       const { analysisId, result, brandMatch } = await analyzeFrontPhoto(base);
-      await prisma.aiProductAnalysis.update({ where: { id: analysisId }, data: { productId: id } });
+      await prisma.aiProductAnalysis.update({ where: { id: analysisId }, data: { productId: id, photoSource } });
       accepted = result.overallConfidence >= MIN_FRONT_CONFIDENCE;
       if (accepted && !product.brandId) {
         const brandName = (brandMatch?.name ?? result.brand ?? result.logoText ?? "").trim();
@@ -92,7 +94,7 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
       }
     } else if (kind === "NUTRITION") {
       const { analysisId, result } = await analyzeNutritionPhoto(base);
-      await prisma.aiProductAnalysis.update({ where: { id: analysisId }, data: { productId: id } });
+      await prisma.aiProductAnalysis.update({ where: { id: analysisId }, data: { productId: id, photoSource } });
       const complete =
         result.kcalPer100g != null &&
         result.proteinPer100g != null &&
@@ -115,7 +117,7 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
       }
     } else {
       const { analysisId, result } = await analyzeIngredientsPhoto(base);
-      await prisma.aiProductAnalysis.update({ where: { id: analysisId }, data: { productId: id } });
+      await prisma.aiProductAnalysis.update({ where: { id: analysisId }, data: { productId: id, photoSource } });
       const ingredientsText = result.ingredientsText?.trim() ?? "";
       if (ingredientsText) {
         await prisma.product.update({ where: { id }, data: { ingredientsText } });
@@ -124,7 +126,10 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
       }
     }
 
-    const pointsAwarded = accepted ? await awardUpdatePointsOnce(user.id, id) : false;
+    const pointsAwarded =
+      accepted && photoSource === "CAMERA"
+        ? await awardUpdatePointsOnce(user.id, id)
+        : false;
     void debugLog({
       category: "scan",
       event: "product_update",

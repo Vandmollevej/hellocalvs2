@@ -41,6 +41,16 @@ Ejer: cloud-session på branch `claude/handfrugt-sizes-grams-2z4p3i` (2026-10-02
 
 ---
 
+## G-PRODUPD — Opdater varen (points kun for kamerabilleder)
+Filer: `src/lib/product-update.ts`, `src/app/add/[id]/update/page.tsx`, `src/app/api/products/[id]/update/route.ts`.
+Ejer: cloud-session på branch `claude/product-update-points-camera-only` (2026-10-03)
+
+| Id | Opgave | Status | Næste skridt |
+| --- | --- | --- | --- |
+| product-update-camera | Kun tre områder (billede/energi/indhold), `photo_source`-tag, points kun for CAMERA | Venter på bruger | Draft-PR #227, lint/typecheck/build grønne. Brugeren skal teste på telefon, derefter merge; migration `20261003250000_photo_source` skal køre ved deploy |
+
+---
+
 ## G1 — Kalender
 Filer: `src/app/calendar/**`, kalender-komponenter.
 Ukendte ændringer: `src/app/calendar/page.tsx` indeholder G3's ikke-committede "Månedens synder"-knap (G3 ejer den del).
@@ -246,7 +256,7 @@ Ejer: cloud-session `claude/lucid-bell-s5vyhv` (2026-09-25)
 
 | Id | Opgave | Status | Næste skridt |
 | --- | --- | --- | --- |
-| family-rights | "Skift profil" fed under cirklen, "Tilføj familiemedlem" + "Tilføj barn (under 18)", rettigheder "se" / "oprette på deres vegne" | Venter på bruger | Bygget i draft-PR #212 (branch `claude/familie-tilfoej-rettigheder`), migration `20261003230000_family_grant_write`. Næste: brugerens test mod rigtig database |
+| family-rights | "Skift profil" fed under cirklen, "Tilføj familiemedlem" + "Tilføj barn (under 18)", rettigheder "se" / "oprette på deres vegne" | Venter på bruger | Kode færdig og flettet i master (PR #212; betalingsdelen i PR #207). Mangler kun: migration `20261003230000_family_grant_write` køres ved deploy, og brugeren tester på telefon: Profil → "Skift profil", "Tilføj familiemedlem"/"Tilføj barn (under 18)" med rettigheder, og Familie → Adgang. Derefter: Færdig og flyt til ARCHIVE.md |
 | family-qr | Familiekode bundet til e-mail, krypteret QR-kode på betalerens side, "x ud af y abonnenter" + "0/5 ekstra tilkøb" | Venter på bruger | Flettet i master og deployet 2026-10-03 (PR #196 + #200). Næste: brugerens test på telefon (scan QR med kameraet) og afklaring af pris/betaling for ekstra pladser |
 | — | Familieabonnement: forældre ser/taster for børn, adgangslog til barnet | I gang | Første version bygget og pushet (branch `claude/lucid-bell-s5vyhv`, ikke flettet). Næste: brugerens test og "Mangler" i `docs/FAMILY.md` (oprettelsesflow med alder er næste skridt) |
 | family-invite | "Inviter familiemedlem" (mail + valg af indsigt + "Tilføj barn under 18") og ejerens konto som Seriøs Familie | Venter på bruger | Flettet i master 2026-10-03 (PR #199) og deployet med de 2 migrationer. Næste: brugerens test på telefon |
@@ -339,3 +349,19 @@ Ejer: ledig (Kropsmål-graf-sessionen er arkiveret 2026-10-03)
 | Id | Opgave | Status | Næste skridt |
 | --- | --- | --- | --- |
 | — | Kropsmål-grafer: tegning til venstre, forløb af seneste 10 målinger til højre; følger cm/tommer | Færdig i kode på branch `claude/kropsmaal-statistikgraf` (PR #156, kladde) — ikke flettet | Gennemgå PR #156, flet master ind ved konflikt (typisk kun `docs/STATUS.md`: behold begge sider), kør lint/typecheck/build og flet til master. Tjek på telefon: Statistik → Tilføj → Kropsmål |
+
+## G-LANG — Syv sprog (da, en, de, fr, nl, sv, no) + Hjælpecenter på alle
+Filer: `src/i18n/**` (`index.ts`, `locales/*.json`), `public/hjaelp.html`, `public/help-*.html`, `src/app/profile/settings/language-region/page.tsx`.
+Ejer: cloud-session `claude/seven-languages` (2026-10-03)
+
+| Id | Opgave | Status | Næste skridt |
+| --- | --- | --- | --- |
+| seven-languages | Appen og Hjælpecenteret på samme sprog som HelloFresh-markederne | Venter på bruger | Draft-PR #222 (lint, typecheck og build grønne). Maskinoversat: skal læses igennem af modersmålstalende før merge. Mangler: chatbottens vidensbase (dansk), admin, native widgets (kun tre tekster), hårdkodet `da-DK` i datoer/tal flere steder. `npm test` har 1 fejl (page tree), som også fejler på master |
+
+## G-CERT — Certifikat-udklip fra produktbilleder
+Filer: `Certifikater/Udklip fra produktbilleder/` (kun data, ingen kode).
+Ejer: ledig (session "Produktbilleder og certifikater screening")
+
+| Id | Opgave | Status | Næste skridt |
+| --- | --- | --- | --- |
+| cert-mangler | 11.646 udklip færdige fra 18.286 billeder; 33.985 billeder i mappen `Mangler` er ikke behandlet | Venter på bruger | USB-drevet er ikke synligt på PC'en (tjekket 2026-10-03, kun C:, D:, tomt cd-drev E:). Sæt USB i arbejds-PC'en / slå "Drev" til i remote desktop, eller kopiér `Mangler` til NAS (Y:/Z:), og giv stien |

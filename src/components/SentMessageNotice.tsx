@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { BottomSheet, BottomSheetCloseButton } from "@/components/hf/BottomSheet";
 import { isPublicPath } from "@/components/AuthGate";
 import { useTranslation } from "@/i18n/LocaleProvider";
+import { intlLocale } from "@/i18n";
 import type { SentNotice } from "@/lib/sent-notices";
 
 // "Til info sendte vi dig den … en e-mail om …. Dette var ikke spam."
@@ -43,7 +44,7 @@ export function SentMessageNotice() {
     }).catch(() => undefined);
   }
 
-  const dateFormat = new Intl.DateTimeFormat(locale === "en" ? "en-GB" : "da-DK", { day: "numeric", month: "long", year: "numeric" });
+  const dateFormat = new Intl.DateTimeFormat(intlLocale(locale), { day: "numeric", month: "long", year: "numeric" });
 
   return (
     <BottomSheet

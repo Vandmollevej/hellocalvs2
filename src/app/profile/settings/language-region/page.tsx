@@ -5,15 +5,15 @@ import { HfScreen } from "@/components/HfScreen";
 import { SetupSelectCard } from "@/components/hf/SetupSelectCard";
 import { REGIONS } from "@/lib/regions";
 import { useTranslation } from "@/i18n/LocaleProvider";
-import { DEFAULT_LOCALE, isLocale, type Locale } from "@/i18n";
+import { DEFAULT_LOCALE, LOCALES, LOCALE_NAMES, isLocale, type Locale } from "@/i18n";
 import { SkeletonScreen, SkeletonToggle } from "@/components/hf/Skeleton";
 import { HEIGHT_UNITS, WEIGHT_UNITS, saveUnits, setUnitsRegion, useUnits, type HeightUnit, type WeightUnit } from "@/lib/units";
 
 // Language names are shown in their own language, so they are not translated.
-const LANGUAGE_OPTIONS: Array<{ value: Locale; label: string }> = [
-  { value: "da", label: "Dansk" },
-  { value: "en", label: "English" },
-];
+const LANGUAGE_OPTIONS: Array<{ value: Locale; label: string }> = LOCALES.map((value) => ({
+  value,
+  label: LOCALE_NAMES[value],
+}));
 
 // "Sprog og region" — én side, som både Opsætning og Indstillinger linker til.
 export default function LanguageRegionPage() {

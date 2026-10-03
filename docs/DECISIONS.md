@@ -4200,6 +4200,11 @@ Brugerens krav: "Luk konto kan reverses inde. For 3 måneder, med mindre man væ
 - Bruger Web Push (VAPID) via PWA + public/sw.js — ikke en native app. Kræver VAPID_PUBLIC_KEY/VAPID_PRIVATE_KEY på serveren; uden dem, uden abonnement eller hvis ingen enhed kan nås, springes kravet over (ingen låses ude). Social login, Face ID og nulstilling af adgangskode er upåvirket.
 - Native app (APNs/FCM) er fortsat ikke bygget; når den findes, skal den bruge samme endpoints.
 - SMS: login-koder bruger src/lib/teammessage.ts; src/lib/sms.ts (GatewayAPI) fra en anden session er et separat spor til notifikationer.
+## 2026-10-03 Opdater-varen: kun tre områder, kun kamerabilleder giver points
+
+- Banner og kort tilbydes kun for tre områder: produktbillede (forsiden), energi og indhold. Et manglende logo alene udløser dem ikke mere (før kom banneret på en vare med billede, energi og indhold, bare fordi brandets logo manglede). Logoet følger med forsiden, når billedet mangler.
+- Points gives kun for et foto taget nu med kameraet. Klienten sender filens ændringstid (`photoTakenAt`); er den over 5 minutter gammel, udfyldes varen stadig, men der gives ingen points (`isFreshCameraPhoto` i `src/lib/product-update.ts`). Billeder fra nettet giver altså ingen points. Billedet tagges nu i databasen: `ai_product_analyses.photo_source` (`CAMERA` / `UPLOAD`, migration `20261003250000_photo_source`); kun `CAMERA` giver points (brugerens valg).
+
 ## 2026-10-03 Opdater-varen-banner: 20 points
 
 - Mangler en vare indhold, energi (kun butiksvarer med `nutritionMissing`), logo eller produktbillede, vises et hvidt banner øverst på varesiden: "Optjen 20 points ved at opdatere varen". Det kan trækkes ned/skubbes op, så kun den smalle bar med grebet vises (`src/components/hf/UpdatePointsBanner.tsx`).
@@ -4358,3 +4363,14 @@ Ejerens krav: "Hvis man er familiekontoejer skal 'skift profil' stå øverst og 
 
 - Det grønne "Scan varen igen"-banner (`RescanBanner`, 10 points) vises ikke længere på varesiden (brugerens valg: "Hvorfor skulle der være to?"). Kun det hvide "Optjen 20 points ved at opdatere varen" bruges. `RescanBanner`, `product-rescan-offer.ts` og rescan-API'et ligger uændret, men er ikke koblet på siden.
 - Det hvide banners greb er samme grå streg som det grønne bannerets (ikke en pil), `src/components/hf/UpdatePointsBanner.tsx`.
+
+
+## 2026-10-03: Syv sprog, samme markeder som HelloFresh
+
+Ejerens krav: "Vi skal have samme sprog" som HelloFresh, "på alt" (app, hjælpecenter, support).
+
+- Appen har nu `da` (reference), `en`, `de`, `fr`, `nl`, `sv` og `no` (norsk bokmål). Sproglisten, sprognavnene (skrevet på eget sprog), Intl-koden og hjælpecenter-adressen ligger samlet i `src/i18n/index.ts` (`LOCALES`, `LOCALE_NAMES`, `intlLocale`, `helpPagePath`). Nye sprog tilføjes dér plus en `locales/<kode>.json` med samme nøgler som `da.json`.
+- Hjælpecenteret er én statisk side pr. sprog: `public/hjaelp.html` (dansk) og `public/help-<kode>.html`. Alle har samme `id`-anker og et sprogvalg øverst; Indstillinger og hjælpe-chatten åbner den, der passer til appens sprog.
+- Bekræftelsesordet ved sletning er stadig det danske **SLET** på alle sprog (koden tjekker på det ord); teksterne siger "Skriv SLET".
+- Oversættelserne er maskinoversat og er ikke læst igennem af en person med modersmålet. Ikke oversat: chatbottens vidensbase (`chatbot-knowledge.ts`, dansk; svarer dog på brugerens sprog), admin og native widgets (kun widgetteksterne).
+- Antallet af HelloFresh-sprog kom fra en websøgning, som kun nævnte 18 markeder; de 7 sprog er udledt af markederne (DK, NO, SE, DE/AT/CH, FR/BE/LU, NL, IE/UK).

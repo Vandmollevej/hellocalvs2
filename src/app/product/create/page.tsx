@@ -286,7 +286,7 @@ function OpretProduktContent() {
             value={media}
             onChange={setMedia}
             region={region}
-            uiLang={locale}
+            uiLang={locale === "da" ? "da" : "en"}
             onNutritionExtracted={applyExtractedNutrition}
             onIngredientsExtracted={applyExtractedIngredients}
             initialVerified={initial.verified}
