@@ -2694,7 +2694,9 @@
       "weightKg": "Vægt (kg)",
       "isChild": "Er det et barn?",
       "isChildHelp": "Under 15 år kan man ikke selv oprette en konto.",
-      "submit": "Tilføj profil"
+      "submit": "Tilføj profil",
+      "submitChild": "Tilføj barn",
+      "childTooOld": "Et barn skal være under 18 år. Inviter personen i stedet."
     },
     "access": {
       "title": "Adgang",
@@ -2767,7 +2769,19 @@
     "invite": {
       "emailLabel": "Personens e-mail",
       "emailHelp": "Koden virker kun sammen med præcis denne e-mail.",
-      "submit": "Lav kode og QR-kode"
+      "submit": "Lav kode og QR-kode",
+      "title": "Inviter familiemedlem",
+      "intro": "Personen får en mail med et link og en kode og siger selv ja med sin konto på denne e-mail. Med i familien får personen Seriøs uden at betale.",
+      "name": "Navn",
+      "email": "E-mail",
+      "insightTitle": "Hvem skal personen have indsigt i?",
+      "insightHelp": "Personen kan se og taste ind på de profiler, du slår til. Du kan altid ændre det under Adgang.",
+      "addChild": "Tilføj barn under 18",
+      "addChildTitle": "Tilføj barn under 18",
+      "addChildIntro": "Børn under 15 år kan ikke selv oprette en konto, så du opretter profilen her. Barnet bliver valgt i invitationen bagefter.",
+      "send": "Send invitation",
+      "sent": "Invitationen er sendt til {name} ({email}). Den står under Ventende invitationer med QR-kode og gælder i 7 dage.",
+      "done": "OK"
     },
     "pending": {
       "title": "Ventende invitationer",
@@ -2777,7 +2791,8 @@
       "claimHelp": "Lad {name} scanne QR-koden med telefonens kamera og vælge en adgangskode. Eller vælg \"Har du fået en familiekode?\" på login-siden og indtast koden og {email}. Gælder til {date}.",
       "revoke": "Træk tilbage",
       "revokeConfirm": "Træk koden til {email} tilbage? Den kan ikke længere bruges.",
-      "qrAlt": "QR-kode til {email}"
+      "qrAlt": "QR-kode til {email}",
+      "inviteTitle": "Invitation til {name} ({email})"
     },
     "joinPage": {
       "title": "Tilknyt familie",
@@ -2790,7 +2805,8 @@
       "logout": "Log ud",
       "done": "Du er nu med i {owner}s familie.",
       "goToFamily": "Gå til Familie",
-      "missing": "Linket mangler sin kode. Scan QR-koden igen."
+      "missing": "Linket mangler sin kode. Scan QR-koden igen.",
+      "insight": "Du får indsigt i: {profiles}."
     },
     "scan": {
       "title": "Scan QR-kode",

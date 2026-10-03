@@ -7,6 +7,15 @@ Last updated: 2026-10-03
 - Før tonede hele det forrige pulsspor ud på én gang (`previousFade`), mens det nye fej tegnedes. Nu står det gamle spor uændret foran det nye fejs spids og fjernes gradvist bagfra, i samme tempo som sporet kom frem fra venstre, med en blød kant (`PULSE_TAIL_TAPER`, 60 px). Næste fej starter straks, så sporet når aldrig at være væk, før det nye fejs slag er tegnet. Pulsen slår stadig i urets bpm (#195). PR #198 (ét slag pr. fej, pause før halen trækkes) er erstattet af dette og lukket.
 - Test: `home-waves.test.mjs` ("det forrige pulsspor toner ikke ud på én gang…"). Lint, typecheck og build grønne. Ikke set på telefon — tjek forsiden.
 
+## 2026-10-03: "Inviter familiemedlem" + ejerens konto har Seriøs Familie
+
+- Familie-siden (`/profile/family`) og profilvælgeren har "Inviter familiemedlem", der åbner et bundark: navn, e-mail og "Hvem skal personen have indsigt i?" (en toggle pr. familieprofil). "Tilføj barn under 18" i arket opretter en børneprofil (`FamilyProfileForm`, `childOnly`), som derefter er valgt.
+- Bygget oven på de e-mail-bundne koder fra PR #196: invitationen er en familiekode til personens e-mail, som også gemmer navnet og de valgte profiler (`inviteeName`, `grantSubjectIds`). Personen får en mail (`MessageEvent.FAMILY_INVITATION`, fra `invite@hellocal.io`) med det krypterede tilknytningslink (`/family-code/join?t=…`) og koden. Invitationen står under "Ventende invitationer" med QR-kode. Når personen siger ja, får vedkommende adgang til de valgte profiler. Tilknytningssiden viser, hvem man får indsigt i.
+- "Inviter en med egen konto" er erstattet af "Inviter familiemedlem" (samme kode + mail + valg af indsigt). Familien oprettes automatisk ved første invitation/profil — "Opret familie"-knappen er væk.
+- Ejerens egen app-konto (peter@packroff.dk) får Seriøs Familie uden udløb via migration `20261003210100_owner_family_plan`. Familiemedlemmer i en administrators familie er nu også Seriøs (`isCoveredByFamilyPlan`).
+- **Migrationer, der skal køre ved deploy:** `20261003210000_family_invitation_mail` og `20261003210100_owner_family_plan` (efter `20261003200000_family_invite_email_qr`).
+- Testet: typecheck, lint, build; skærmbilleder med mockede API-svar. Ikke testet mod en rigtig database eller med rigtig mailafsendelse.
+
 ## 2026-10-03: Kalender — profilcirklen er tilbage i dagsvisningen
 
 - Dagsvisningen (`DayDetails` i `src/app/calendar/page.tsx`) tegner sin egen grønne topbjælke som fuldskærmsdialog over siden, og dens højre hjørne var et tomt felt — så profilcirklen forsvandt, så snart en dag blev åbnet. Den viser nu `ProfileAvatarLink` som alle andre sider.

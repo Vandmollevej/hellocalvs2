@@ -9,6 +9,7 @@ import { prisma } from "@/lib/prisma";
 import { createInviteToken, decryptFamilyValue, encryptFamilyValue, inviteUrl, readInviteToken } from "@/lib/family-invite-token";
 import { computeAge } from "@/lib/age";
 import { getSubscriptionTier } from "@/lib/subscription";
+import { queueMessage } from "@/lib/messaging";
 
 export const MAX_FAMILY_PROFILES = 5;
 // Højst så mange ekstra pladser kan tilkøbes ud over de 5 (ejerens valg
@@ -132,6 +133,14 @@ export async function createFamily(ownerId: string) {
   });
 }
 
+// Betalerens familie — oprettes, hvis den ikke findes endnu, så "Inviter
+// familiemedlem" og "Tilføj barn" virker uden et ekstra "Opret familie"-trin.
+async function ensureOwnedFamily(ownerId: string) {
+  const existing = await prisma.family.findUnique({ where: { ownerId }, select: { id: true } });
+  if (!existing) await createFamily(ownerId);
+  return requireOwnedFamily(ownerId);
+}
+
 async function requireOwnedFamily(ownerId: string) {
   const family = await prisma.family.findUnique({ where: { ownerId }, include: { members: true } });
   if (!family) throw new FamilyError("notOwner", 403);
@@ -143,7 +152,7 @@ export async function createFamilyProfile(
   ownerId: string,
   input: { displayName: string; birthDate: Date | null; sex: Sex | null; isChild: boolean; heightCm: number | null; weightKg: number | null }
 ) {
-  const family = await requireOwnedFamily(ownerId);
+  const family = await ensureOwnedFamily(ownerId);
   if (family.members.length >= familyCapacity(family.extraSeats)) throw new FamilyError("familyFull", 409);
   if (!input.displayName.trim()) throw new FamilyError("nameRequired");
 
@@ -277,7 +286,7 @@ export async function listPendingFamilyCodes(ownerId: string) {
   const rows = await prisma.familyLoginCode.findMany({
     where: { familyId: family.id, usedAt: null, expiresAt: { gt: new Date() }, email: { not: null }, codeCipher: { not: null } },
     orderBy: { createdAt: "desc" },
-    select: { id: true, profileId: true, email: true, codeCipher: true, expiresAt: true },
+    select: { id: true, profileId: true, email: true, inviteeName: true, codeCipher: true, expiresAt: true },
   });
   const result = [];
   for (const row of rows) {
@@ -288,6 +297,7 @@ export async function listPendingFamilyCodes(ownerId: string) {
       id: row.id,
       profileId: row.profileId,
       email: row.email!,
+      name: row.inviteeName,
       code,
       expiresAt: row.expiresAt,
       url,
@@ -295,6 +305,47 @@ export async function listPendingFamilyCodes(ownerId: string) {
     });
   }
   return result;
+}
+
+function escapeHtml(value: string) {
+  return value.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+}
+
+// "Inviter familiemedlem" (docs/FAMILY.md 2026-10-03): en kode bundet til
+// personens e-mail, som også husker navnet og de profiler, personen får
+// indsigt i. Personen får en mail med det krypterede tilknytningslink og
+// siger selv ja (joinFamily opretter så adgangen til de valgte profiler).
+export async function createFamilyInvitation(
+  ownerId: string,
+  input: { name: string; email: string; subjectIds: string[] }
+) {
+  const name = input.name.trim().slice(0, 80);
+  if (!name) throw new FamilyError("nameRequired");
+  const family = await ensureOwnedFamily(ownerId);
+  const { code, email, expiresAt } = await createFamilyCode(ownerId, null, input.email);
+
+  const memberIds = new Set(family.members.map((m) => m.userId));
+  const subjectIds = [...new Set(input.subjectIds)].filter((id) => memberIds.has(id));
+  await prisma.familyLoginCode.update({
+    where: { codeHash: hashFamilyCode(code) },
+    data: { inviteeName: name, grantSubjectIds: subjectIds },
+  });
+
+  const [owner, subjects] = await Promise.all([
+    prisma.user.findUnique({ where: { id: ownerId }, select: { displayName: true } }),
+    prisma.user.findMany({ where: { id: { in: subjectIds } }, select: { displayName: true } }),
+  ]);
+  await queueMessage("FAMILY_INVITATION", {
+    toEmail: email,
+    vars: {
+      ownerName: escapeHtml(owner?.displayName || "Et familiemedlem"),
+      inviteeName: escapeHtml(name),
+      profiles: subjects.length > 0 ? escapeHtml(subjects.map((subject) => subject.displayName).join(", ")) : "ingen endnu",
+      code,
+      inviteUrl: inviteUrl(createInviteToken(code, email), "join"),
+    },
+  });
+  return { email, expiresAt };
 }
 
 export async function revokeFamilyCode(ownerId: string, codeId: string) {
@@ -329,15 +380,24 @@ async function findUsableCode(input: FamilyCodeInput) {
 // Til tilknytningssiden: hvem inviterer, og til hvilken e-mail.
 export async function previewFamilyInvite(token: string) {
   const row = await findUsableCode({ token });
-  const family = await prisma.family.findUnique({
-    where: { id: row.familyId },
-    select: { owner: { select: { displayName: true } } },
-  });
+  const [family, subjects] = await Promise.all([
+    prisma.family.findUnique({
+      where: { id: row.familyId },
+      select: { owner: { select: { displayName: true } } },
+    }),
+    prisma.user.findMany({
+      where: { id: { in: row.grantSubjectIds }, forgottenAt: null },
+      select: { displayName: true },
+    }),
+  ]);
   return {
     kind: row.profileId ? ("claim" as const) : ("join" as const),
     ownerName: family?.owner.displayName ?? "",
+    inviteeName: row.inviteeName ?? "",
     email: row.email,
     expiresAt: row.expiresAt,
+    // Profiler, personen får indsigt i ved at sige ja ("Inviter familiemedlem").
+    profiles: subjects.map((subject) => subject.displayName),
   };
 }
 
@@ -377,12 +437,19 @@ export async function joinFamily(userId: string, input: FamilyCodeInput) {
   if (existing) throw new FamilyError("alreadyInFamily", 409);
   const family = await prisma.family.findUnique({
     where: { id: row.familyId },
-    select: { extraSeats: true, _count: { select: { members: true } } },
+    select: { extraSeats: true, members: { select: { userId: true } } },
   });
-  if (!family || family._count.members >= familyCapacity(family.extraSeats)) throw new FamilyError("familyFull", 409);
+  if (!family || family.members.length >= familyCapacity(family.extraSeats)) throw new FamilyError("familyFull", 409);
+  // Invitationer giver indsigt i de profiler, betaleren valgte — kun dem, der
+  // stadig er med i familien.
+  const memberIds = new Set(family.members.map((member) => member.userId));
+  const subjectIds = row.grantSubjectIds.filter((id) => memberIds.has(id) && id !== userId);
   await prisma.$transaction([
     prisma.familyLoginCode.update({ where: { id: row.id }, data: { usedAt: new Date() } }),
     prisma.familyMember.create({ data: { familyId: row.familyId, userId, isChild: false } }),
+    ...subjectIds.map((subjectId) =>
+      prisma.familyAccessGrant.create({ data: { familyId: row.familyId, granteeId: userId, subjectId } })
+    ),
   ]);
 }
 

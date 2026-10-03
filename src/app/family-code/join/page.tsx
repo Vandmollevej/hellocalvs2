@@ -11,7 +11,7 @@ import { useTranslation } from "@/i18n/LocaleProvider";
 // logget ind på kontoen med netop den e-mail. Siden er offentlig, så den selv
 // kan sende til login og tilbage hertil.
 
-type Invite = { kind: "join" | "claim"; ownerName: string; email: string };
+type Invite = { kind: "join" | "claim"; ownerName: string; email: string; profiles?: string[] };
 
 function JoinContent() {
   const { t } = useTranslation();
@@ -77,6 +77,11 @@ function JoinContent() {
         <>
           <p className="hf-type-body-lg userback-ignore userback-block">{t("family.joinPage.intro", { owner: invite.ownerName })}</p>
           <p className="hf-type-body userback-ignore userback-block">{t("family.joinPage.emailInfo", { email: invite.email })}</p>
+          {invite.profiles && invite.profiles.length > 0 && (
+            <p className="hf-type-body userback-ignore userback-block">
+              {t("family.joinPage.insight", { profiles: invite.profiles.join(", ") })}
+            </p>
+          )}
         </>
       )}
 

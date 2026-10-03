@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { IconCheck, IconPlus, IconUsers } from "@tabler/icons-react";
+import { IconCheck, IconMail, IconPlus, IconUsers } from "@tabler/icons-react";
 import { useFamilyStatus } from "@/components/family/FamilyStatusProvider";
 import { ProfileCircle } from "@/components/family/ProfileCircle";
 import { HfChevron } from "@/components/hf/HfChevron";
@@ -86,6 +86,16 @@ export function ProfileSwitcher() {
                     <IconPlus size={16} />
                   </span>
                   <span className="hf-type-body flex-1">{t("family.switcher.addProfile")}</span>
+                </Link>
+              </li>
+            )}
+            {canManage && (
+              <li className="border-b border-hf-tan-dark">
+                <Link href="/profile/family?invite=1" className="flex h-12 w-full items-center gap-4 px-4">
+                  <span className="flex h-8 w-8 items-center justify-center rounded-full border border-hf-black">
+                    <IconMail size={16} />
+                  </span>
+                  <span className="hf-type-body flex-1">{t("family.invite.title")}</span>
                 </Link>
               </li>
             )}

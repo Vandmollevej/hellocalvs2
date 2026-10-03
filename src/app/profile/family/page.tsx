@@ -8,6 +8,8 @@ import { HfScreen } from "@/components/HfScreen";
 import { TextField } from "@/components/hf/TextField";
 import { Toggle } from "@/components/ui/Toggle";
 import { ProfileCircle } from "@/components/family/ProfileCircle";
+import { FamilyProfileForm, type FamilyProfileInput } from "@/components/family/FamilyProfileForm";
+import { InviteFamilyMemberSheet } from "@/components/family/InviteFamilyMemberSheet";
 import { useFamilyStatus, type FamilyMemberInfo } from "@/components/family/FamilyStatusProvider";
 import { useTranslation } from "@/i18n/LocaleProvider";
 import { SkeletonCards, SkeletonList, SkeletonScreen, SkeletonSectionTitle } from "@/components/hf/Skeleton";
@@ -21,6 +23,8 @@ type PendingCode = {
   id: string;
   profileId: string | null;
   email: string;
+  // Navnet fra "Inviter familiemedlem" (null for koder uden invitation).
+  name: string | null;
   code: string;
   expiresAt: string;
   qrDataUrl: string;
@@ -48,7 +52,7 @@ function FamilyPageContent() {
   const [joinCode, setJoinCode] = useState("");
   const [joinEmail, setJoinEmail] = useState("");
   const [showAdd, setShowAdd] = useState(searchParams?.get("add") === "1");
-  const [form, setForm] = useState({ displayName: "", birthDate: "", sex: "", isChild: true, heightCm: "", weightKg: "" });
+  const [showInvite, setShowInvite] = useState(searchParams?.get("invite") === "1");
   const [busy, setBusy] = useState(false);
 
   useEffect(() => {
@@ -101,12 +105,10 @@ function FamilyPageContent() {
     await loadCodes();
   }
 
-  async function addProfile() {
-    const result = await run("/api/family/members", "POST", form);
-    if (result.ok) {
-      setForm({ displayName: "", birthDate: "", sex: "", isChild: true, heightCm: "", weightKg: "" });
-      setShowAdd(false);
-    }
+  async function addProfile(input: FamilyProfileInput) {
+    const result = await run("/api/family/members", "POST", input);
+    if (result.ok) setShowAdd(false);
+    return result.ok;
   }
 
   if (!status) {
@@ -214,14 +216,14 @@ function FamilyPageContent() {
             <div className="hf-card hf-stack">
               <p className="hf-type-body">{t("family.plan.intro", { max: status.maxProfiles })}</p>
               {status.hasFamilyPlan ? (
-                <button
-                  type="button"
-                  disabled={busy}
-                  onClick={() => run("/api/family", "POST")}
-                  className="hf-control hf-btn-primary w-full px-4"
-                >
-                  {t("family.plan.create")}
-                </button>
+                <>
+                  <button type="button" onClick={() => setShowInvite(true)} className="hf-control hf-btn-primary w-full px-4">
+                    {t("family.invite.title")}
+                  </button>
+                  <button type="button" onClick={() => setShowAdd(true)} className="hf-control hf-btn-secondary w-full px-4">
+                    {t("family.add.newProfile")}
+                  </button>
+                </>
               ) : (
                 <Link href="/profile/subscription" className="hf-control hf-btn-primary w-full px-4">
                   {t("family.plan.requiresPlan")}
@@ -229,6 +231,14 @@ function FamilyPageContent() {
               )}
             </div>
           </section>
+          {status.hasFamilyPlan && showAdd && (
+            <section>
+              <h2 className="hf-type-section-title">{t("family.add.title")}</h2>
+              <div className="hf-card">
+                <FamilyProfileForm busy={busy} onSubmit={addProfile} onCancel={() => setShowAdd(false)} />
+              </div>
+            </section>
+          )}
           {joinForm}
         </>
       )}
@@ -360,7 +370,9 @@ function FamilyPageContent() {
                       <p className="userback-ignore userback-block hf-type-card-title break-all">
                         {pending.profileId
                           ? t("family.pending.claimTitle", { name: memberName(pending.profileId), email: pending.email })
-                          : t("family.pending.joinTitle", { email: pending.email })}
+                          : pending.name
+                            ? t("family.pending.inviteTitle", { name: pending.name, email: pending.email })
+                            : t("family.pending.joinTitle", { email: pending.email })}
                       </p>
                       {/* QR-koden er et link med koden og e-mailen krypteret (src/lib/family-invite-token.ts). */}
                       {/* eslint-disable-next-line @next/next/no-img-element -- data-URL fra serveren */}
@@ -399,80 +411,22 @@ function FamilyPageContent() {
                 <div className="hf-stack">
                   <button
                     type="button"
-                    onClick={() => setShowAdd(true)}
+                    onClick={() => setShowInvite(true)}
                     className="hf-control hf-btn-primary w-full px-4"
+                  >
+                    {t("family.invite.title")}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setShowAdd(true)}
+                    className="hf-control hf-btn-secondary w-full px-4"
                   >
                     {t("family.add.newProfile")}
                   </button>
-                  <button
-                    type="button"
-                    disabled={busy}
-                    onClick={() => openCodeForm("join")}
-                    className="hf-control hf-btn-secondary w-full px-4"
-                  >
-                    {t("family.add.inviteExisting")}
-                  </button>
-                  {codeForm("join", null)}
                 </div>
               ) : (
-                <div className="hf-card hf-stack">
-                  <TextField
-                    variant="standard"
-                    label={t("family.add.name")}
-                    value={form.displayName}
-                    className="userback-ignore"
-                    onChange={(event) => setForm({ ...form, displayName: event.target.value })}
-                  />
-                  <TextField
-                    variant="standard"
-                    type="date"
-                    label={t("family.add.birthDate")}
-                    value={form.birthDate}
-                    onChange={(event) => setForm({ ...form, birthDate: event.target.value })}
-                  />
-                  <label className="hf-type-body flex flex-col gap-2">
-                    {t("family.add.sex")}
-                    <select
-                      value={form.sex}
-                      onChange={(event) => setForm({ ...form, sex: event.target.value })}
-                      className="hf-type-input h-12 rounded-[8px] border border-hf-gray-border bg-hf-cream px-4"
-                    >
-                      <option value="">{t("family.add.sexUnknown")}</option>
-                      <option value="FEMALE">{t("family.add.sexFemale")}</option>
-                      <option value="MALE">{t("family.add.sexMale")}</option>
-                    </select>
-                  </label>
-                  <TextField
-                    variant="standard"
-                    inputMode="decimal"
-                    label={t("family.add.heightCm")}
-                    value={form.heightCm}
-                    onChange={(event) => setForm({ ...form, heightCm: event.target.value })}
-                  />
-                  <TextField
-                    variant="standard"
-                    inputMode="decimal"
-                    label={t("family.add.weightKg")}
-                    value={form.weightKg}
-                    onChange={(event) => setForm({ ...form, weightKg: event.target.value })}
-                  />
-                  <Toggle
-                    label={t("family.add.isChild")}
-                    description={t("family.add.isChildHelp")}
-                    checked={form.isChild}
-                    onChange={(value) => setForm({ ...form, isChild: value })}
-                  />
-                  <button
-                    type="button"
-                    disabled={busy || !form.displayName.trim()}
-                    onClick={addProfile}
-                    className="hf-control hf-btn-primary w-full px-4"
-                  >
-                    {t("family.add.submit")}
-                  </button>
-                  <button type="button" onClick={() => setShowAdd(false)} className="hf-btn-text">
-                    {t("common.cancel")}
-                  </button>
+                <div className="hf-card">
+                  <FamilyProfileForm busy={busy} onSubmit={addProfile} onCancel={() => setShowAdd(false)} />
                 </div>
               )}
             </section>
@@ -507,6 +461,15 @@ function FamilyPageContent() {
             </section>
           )}
         </>
+      )}
+
+      {showInvite && (
+        <InviteFamilyMemberSheet
+          onClose={() => {
+            setShowInvite(false);
+            void loadCodes();
+          }}
+        />
       )}
     </div>
   );

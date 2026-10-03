@@ -2713,7 +2713,9 @@
       "weightKg": "Weight (kg)",
       "isChild": "Is this a child?",
       "isChildHelp": "Under 15 you cannot create an account yourself.",
-      "submit": "Add profile"
+      "submit": "Add profile",
+      "submitChild": "Add child",
+      "childTooOld": "A child must be under 18. Invite the person instead."
     },
     "access": {
       "title": "Access",
@@ -2786,7 +2788,19 @@
     "invite": {
       "emailLabel": "The person's email",
       "emailHelp": "The code only works together with exactly this email.",
-      "submit": "Create code and QR code"
+      "submit": "Create code and QR code",
+      "title": "Invite family member",
+      "intro": "The person gets an email with a link and a code and accepts with their account on that email. As part of the family they get Serious at no cost.",
+      "name": "Name",
+      "email": "Email",
+      "insightTitle": "Who should the person have insight into?",
+      "insightHelp": "The person can see and log for the profiles you switch on. You can always change this under Access.",
+      "addChild": "Add child under 18",
+      "addChildTitle": "Add child under 18",
+      "addChildIntro": "Children under 15 cannot create an account themselves, so you create the profile here. The child is then selected in the invitation.",
+      "send": "Send invitation",
+      "sent": "The invitation has been sent to {name} ({email}). It is listed under Pending invitations with a QR code and is valid for 7 days.",
+      "done": "OK"
     },
     "pending": {
       "title": "Pending invitations",
@@ -2796,7 +2810,8 @@
       "claimHelp": "Let {name} scan the QR code with their phone camera and choose a password. Or choose \"Did you get a family code?\" on the login page and enter the code and {email}. Valid until {date}.",
       "revoke": "Revoke",
       "revokeConfirm": "Revoke the code for {email}? It can no longer be used.",
-      "qrAlt": "QR code for {email}"
+      "qrAlt": "QR code for {email}",
+      "inviteTitle": "Invitation to {name} ({email})"
     },
     "joinPage": {
       "title": "Join family",
@@ -2809,7 +2824,8 @@
       "logout": "Log out",
       "done": "You are now part of {owner}'s family.",
       "goToFamily": "Go to Family",
-      "missing": "The link is missing its code. Scan the QR code again."
+      "missing": "The link is missing its code. Scan the QR code again.",
+      "insight": "You get insight into: {profiles}."
     },
     "scan": {
       "title": "Scan QR code",

@@ -2487,6 +2487,7 @@ enum MessageEvent {
   FRIEND_FORWARD_RECEIVED
   FRIEND_INVITATION
   DOCTOR_SHARE_INVITATION
+  FAMILY_INVITATION
   NEW_DEVICE_LOGIN
   ADMIN_MESSAGE
   // Beskedtjeneste (docs/DECISIONS.md 2026-09-26 "Support-indbakke").
@@ -3397,6 +3398,10 @@ model FamilyLoginCode {
   // Krypteret kode og den e-mail, koden er bundet til (små bogstaver).
   codeCipher String?
   email     String?
+  // "Inviter familiemedlem" (docs/FAMILY.md 2026-10-03): modtagerens navn og
+  // de af familiens profiler, personen får indsigt i, når koden bruges.
+  inviteeName     String?
+  grantSubjectIds String[] @default([])
   expiresAt DateTime
   usedAt    DateTime?
   createdAt DateTime  @default(now())

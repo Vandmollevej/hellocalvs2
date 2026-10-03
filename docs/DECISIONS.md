@@ -4235,3 +4235,10 @@ Brugerens krav: "Luk konto kan reverses inde. For 3 måneder, med mindre man væ
 
 Brugerens ord: pulsen skal begynde at forsvinde bagfra og frem, ligesom den kom frem fra venstre, og den må ikke nå at forsvinde helt, før et nyt pulsslag kommer. Det forrige fejs spor toner derfor ikke ud (ingen fælles alpha), men fjernes af det nye fejs spids med en blød bagkant. Pulsen slår fortsat i urets bpm med flere slag pr. fej (`pulseTrace`); et slag pr. fej med pause (PR #198) droppes.
 
+## 2026-10-03: "Inviter familiemedlem" pr. mail med valg af indsigt
+
+- Ejerens valg: invitationen sendes som **mail med link** (og koden). Betaleren vælger i et bundark, **hvilke profiler** personen får indsigt i (samme adgang som `FamilyAccessGrant`: se og taste ind). Ingen opdeling pr. dataområde.
+- "Tilføj barn under 18" ligger som knap i arket og opretter en børneprofil (altid `isChild`), der derefter er valgt i invitationen.
+- Invitationen genbruger de e-mail-bundne familiekoder (samme dag, ovenfor): `createFamilyInvitation` laver en kode til e-mailen og gemmer `inviteeName` og `grantSubjectIds` på den. `joinFamily` opretter tildelingerne til de valgte profiler, der stadig er med i familien. Kontoen skal stadig have præcis invitationens e-mail.
+- Ejerens egen app-konto får Seriøs Familie (status ACTIVE, intet udløb, ingen udbyder) via migration; har kontoen en rigtig betalingsaftale, sættes kun planen. Administratorers familier dækker nu også medlemmerne.
+

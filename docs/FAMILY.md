@@ -160,6 +160,13 @@ Kilder:
   `UPDATE subscriptions SET plan='FAMILY', status='ACTIVE', "currentPeriodEnd"=NULL WHERE "userId"='<id>';`
   (findes rækken ikke, skal den oprettes).
 
+- **Inviter familiemedlem (2026-10-03):** bundark på `/profile/family`
+  (`?invite=1` åbner det, også fra profilvælgeren) med navn, e-mail og
+  hvilke profiler personen får indsigt i, plus "Tilføj barn under 18".
+  Laver en e-mail-bundet kode (med navn og valgte profiler) og sender en mail
+  med tilknytningslinket; modtageren siger selv ja på `/family-code/join`.
+  Rute: `POST /api/family/invitations`.
+
 ## Mangler / kendte begrænsninger
 
 - Tilmelding spørger ikke om fødselsdato, så appen kan endnu ikke afvise, at
