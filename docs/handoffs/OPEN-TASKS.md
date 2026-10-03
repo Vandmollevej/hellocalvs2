@@ -339,11 +339,3 @@ Ejer: ledig (Kropsmål-graf-sessionen er arkiveret 2026-10-03)
 | Id | Opgave | Status | Næste skridt |
 | --- | --- | --- | --- |
 | — | Kropsmål-grafer: tegning til venstre, forløb af seneste 10 målinger til højre; følger cm/tommer | Færdig i kode på branch `claude/kropsmaal-statistikgraf` (PR #156, kladde) — ikke flettet | Gennemgå PR #156, flet master ind ved konflikt (typisk kun `docs/STATUS.md`: behold begge sider), kør lint/typecheck/build og flet til master. Tjek på telefon: Statistik → Tilføj → Kropsmål |
-
-## G-BANNER — Ét banner øverst på varesiden
-Filer: `src/components/hf/UpdatePointsBanner.tsx`, `src/components/add/AddProductView.tsx`.
-Ejer: cloud-session `claude/kun-et-banner-varesiden` (2026-10-03)
-
-| Id | Opgave | Status | Næste skridt |
-| --- | --- | --- | --- |
-| — | Grønt "Scan varen igen"-banner koblet af; hvidt opdater-banner har grønnes grå trækstreg | Venter på bruger | Draft-PR #226, lint/typecheck/build grønne. Brugeren tester på telefon, sætter PR klar og merger. Ikke flettet til master uden brugerens OK |
