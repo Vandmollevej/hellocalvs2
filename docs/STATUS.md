@@ -8,6 +8,10 @@ Last updated: 2026-10-03
 - På telefonen lå "Vilkår og betingelser" og "Tillad"/"Tillad ikke" ovenpå listen med gennemsigtig baggrund, så kontakterne (fx "Fedtprocent") skinnede igennem og bunden af arket ikke kunne læses. Knapperne har nu deres egen hvide bund under listen (`src/components/hf/HfAccessSheet.module.css`), med en kort toning over kanten; listen scroller helt frem over dem. Se DECISIONS.md samme dato.
 - Den grønne runde chat-knap (smiley) nederst til højre på brugerens skærmbillede findes ikke i koden — den kommer fra browseren/en udvidelse og er ikke rørt.
 - Lint (0 fejl), typecheck og build grønne; tjekket i en 390 × 700 gengivelse af arket. Test på telefon: åbn Indstillinger → Integrationer → Withings og scroll til bunden.
+## 2026-10-03: Tilføj-menuen — Aktivitet og Menstruation som felter
+
+- `src/components/add/AddMenuList.tsx`: Aktivitet er et 3D-felt i gitteret, og nyt felt Menstruation (nyt ikon `public/icons/add/period.svg`) vises kun for kvinder med menstruationscyklus slået til. Arket scroller. Se DECISIONS.md samme dato.
+- Lint, typecheck og build kørt. Ikke set med login (ingen lokal DB) — tjek Tilføj-arket på telefon som kvinde og mand.
 
 ## 2026-10-02: Kalenderen husker den åbne dag
 

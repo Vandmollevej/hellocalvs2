@@ -25,6 +25,13 @@ egen hvide bund under den scrollbare liste i stedet for ovenpå den med
 gennemsigtig toning. Brugeren kunne ikke se, hvad der skete i bunden (rækkerne
 skinnede igennem bjælken). Kun en 32 px toning over kanten viser, at listen
 fortsætter.
+## 2026-10-03: Tilføj-menuen — Aktivitet og Menstruation som ikon-felter
+
+Ejerens krav: "Tilføj aktivitetsikon og menstruationscirkel (sidste kun for kvinder!). Så må man bare scrolle."
+
+- Aktivitet er nu et 3D-felt (`/icons/activity-3d.png`) i gitteret i stedet for en række under kortet.
+- Nyt felt Menstruation (`/icons/add/period.svg`, cyklusring med blodsdråbe) åbner `/period/create`. Vises kun, når `visibleAddActions()` tillader det (køn = kvinde **og** "Vis menstruationscyklus" slået til, jf. 2026-09-19). Erstatter tidligere note om, at menstruation kun findes i kalenderen.
+- Gitteret er 2 kolonner på mobil (5 på brede skærme); bundarket scroller, når felterne ikke kan være der.
 
 ## 2026-10-02: Flere integrationer — Garmin, WHOOP, Huawei + mærker via telefonen
 
