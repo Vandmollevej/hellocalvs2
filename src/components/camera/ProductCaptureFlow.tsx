@@ -36,6 +36,7 @@ import {
   type BarcodeOrientation,
 } from "@/lib/barcode-scan";
 import { startBarcodeFrameScanner, type BarcodeRead } from "@/lib/barcode-frame-scanner";
+import { recordBarcodeSighting, type BarcodeSighting } from "@/lib/barcode-confirm";
 import { buildBarcodeContext } from "@/lib/barcode-context";
 import { readLanguageSignals } from "@/lib/language-signals";
 import type { RescanStep } from "@/lib/product-rescan-offer";
@@ -179,6 +180,7 @@ export function ProductCaptureFlow({ returnSuffix, rescan }: { returnSuffix: str
   const activeCodeRef = useRef<string | null>(null);
   const lookupTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const lastBarcodeSeenAtRef = useRef(0);
+  const barcodeSightingsRef = useRef<BarcodeSighting[]>([]);
   const dataRef = useRef<CaptureData>(rescan ? { barcode: rescan.barcode } : {});
   const leavingRef = useRef(false);
   // Admin "Log" (docs/DECISIONS.md 2026-09-28): ét flow-id pr. åbning af
@@ -628,6 +630,12 @@ export function ProductCaptureFlow({ returnSuffix, rescan }: { returnSuffix: str
       if (!pose) return;
       const { text: code, symbology } = read;
       if (lookupInProgressRef.current && code !== activeCodeRef.current) return;
+
+      // Først når samme kode er læst i flere billeder, er det en stregkode
+      // og ikke et stribet mønster (docs/DECISIONS.md 2026-10-03).
+      const sighting = recordBarcodeSighting(barcodeSightingsRef.current, code, Date.now());
+      barcodeSightingsRef.current = sighting.history;
+      if (!sighting.confirmed && code !== activeCodeRef.current) return;
 
       lastBarcodeSeenAtRef.current = Date.now();
       const orientation = orientationFromPose(pose);

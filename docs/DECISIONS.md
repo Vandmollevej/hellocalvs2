@@ -2,6 +2,13 @@
 
 This file records durable decisions. Add a dated entry when a later decision changes one of them.
 
+## 2026-10-03: En stregkode skal ses i flere billeder, før den godkendes
+
+Årsag: et par cowboybukser blev godkendt som stregkode i kameraflowet.
+
+- Live-scanningen godkender først en kode, når den er afkodet **3 gange inden for 1,5 s** (`src/lib/barcode-confirm.ts`). Andre koder ind imellem nulstiller ikke tællingen. Decode-animationen og opslaget starter først derefter.
+- En aflæsning tæller kun, hvis stregerne har en målelig højde (`measureBarExtent`). Et mønster, hvis striber fortsætter ud over 1,4 × stregkodens bredde, er ikke en stregkode.
+
 ## 2026-10-03: Forsidens puls-linje slår i den målte puls
 
 Brugerens krav: "Pulsen skal svare til den rigtige puls som måles, hvis ur tilsluttet. Ellers svarende til 60bpm."
