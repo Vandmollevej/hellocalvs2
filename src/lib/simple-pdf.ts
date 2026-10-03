@@ -8,7 +8,11 @@ const PAGE_H = 841.89;
 const MARGIN = 48;
 
 const escapePdf = (text: string) => text.replace(/\\/g, "\\\\").replace(/\(/g, "\\(").replace(/\)/g, "\\)");
-const toLatin1 = (text: string) => Buffer.from(text, "latin1").toString("latin1");
+const toLatin1 = (text: string) =>
+  Buffer.from(
+    text.replace(/[\u2013\u2014]/g, "-").replace(/\u2026/g, "...").replace(/[\u2018\u2019]/g, "'").replace(/[\u201C\u201D]/g, '"'),
+    "latin1"
+  ).toString("latin1");
 
 // Tilnærmet tekstbredde for Helvetica (gennemsnit 0,5 em) — nok til kolonner.
 const textWidth = (text: string, size: number) => text.length * size * 0.5;

@@ -1,5 +1,11 @@
 # HELLO CAL — project status
 
+## 2026-10-03: Partnersider
+
+- Ny side pr. partner under admin → Partnere → Kontakter → (partnerens navn): virksomhedsoplysninger og kontakter i venstre bjælke (uden søgefelt), menu med Sponsoraftale, Performance, Faktureringsdetaljer og Betalingsmetode. Se DECISIONS.md 2026-10-02.
+- Performance: Overview og Data mining, periodevalg, "kun udløst af kategori/type", overlay med tabel pr. side, download og afsendelse af PDF/CSV til en indtastet modtager.
+- Migration `20261002090000_partner_pages` skal køre ved deploy. Prøvet mod en tom lokal Postgres: alle migrationer kører, siderne er set i Chromium med testdata, API'er, PDF (læst med PyMuPDF), CSV, periodegrænser og trigger-udvælgelse er afprøvet. `npm run lint` (kun gamle advarsler) og `npm run build` er grønne; `page-tree.test.mjs` fejler stadig på andres manglende sider.
+- Ikke gjort: `AdBanner` er ikke sat ind i appens sider endnu; banner uploades ikke (kun billed-URL); mail er ikke prøvet mod rigtig SMTP (afsendelse uden SMTP giver en tydelig fejl).
 
 ## 2026-10-03: Butiksimporten — alt fra Bilka- og REMA-arkene med
 

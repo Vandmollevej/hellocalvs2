@@ -118,6 +118,15 @@ export async function POST(req: Request) {
       }
       const data = Object.fromEntries(PARTNER_TEXT_FIELDS.map((key) => [key, str(body[key])]));
       await prisma.partner.update({ where: { id: str(body.id) }, data: { name, ...data } });
+      // Kontaktperson og leder modtager rapporter: sørg for, at de findes som
+      // aktive kontakter på netop denne partner (rapporter sendes kun dertil).
+      const partnerId = str(body.id);
+      for (const [nameKey, emailKey] of [["contactName", "contactEmail"], ["managerName", "managerEmail"]] as const) {
+        const email = str(body[emailKey]).toLowerCase();
+        if (!email) continue;
+        const existing = await prisma.partnerContact.findFirst({ where: { partnerId, email: { equals: email, mode: "insensitive" } } });
+        if (!existing) await prisma.partnerContact.create({ data: { partnerId, email, name: str(body[nameKey]) || email } });
+      }
       break;
     }
     case "updateBilling": {

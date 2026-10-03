@@ -66,15 +66,40 @@ export const triggerLabel = (spot: { triggerCategory: ProductCategory | null; tr
   return parts.join(" · ");
 };
 
-// Periode fra forespørgsel: datoer uden klokkeslæt er inklusive (til-dato =
-// hele dagen). Standard: seneste 30 dage.
+const TZ = "Europe/Copenhagen";
+const DAY_MS = 24 * 60 * 60 * 1000;
+
+// Kalenderdag (ÅÅÅÅ-MM-DD) i dansk tid.
+export const ymdCph = (date: Date) => new Intl.DateTimeFormat("sv-SE", { timeZone: TZ }).format(date);
+
+function offsetMinutes(at: number) {
+  const part = new Intl.DateTimeFormat("en-US", { timeZone: TZ, timeZoneName: "longOffset" }).formatToParts(new Date(at)).find((p) => p.type === "timeZoneName")?.value ?? "GMT";
+  const m = part.match(/GMT([+-])(\d{2}):(\d{2})/);
+  return m ? (m[1] === "-" ? -1 : 1) * (Number(m[2]) * 60 + Number(m[3])) : 0;
+}
+
+// Tidspunktet hvor en dansk kalenderdag begynder (midnat i dansk tid).
+export function startOfDayCph(ymd: string) {
+  const [y, m, d] = ymd.split("-").map(Number);
+  const guess = Date.UTC(y, m - 1, d);
+  let instant = guess - offsetMinutes(guess) * 60_000;
+  instant = guess - offsetMinutes(instant) * 60_000; // ret ved sommertidsskift
+  return new Date(instant);
+}
+
+const nextDay = (ymd: string) => {
+  const [y, m, d] = ymd.split("-").map(Number);
+  return new Date(Date.UTC(y, m - 1, d + 1)).toISOString().slice(0, 10);
+};
+
+// Periode fra forespørgsel: datoer uden klokkeslæt er hele danske dage, og
+// til-datoen er inklusiv (→ eksklusiv grænse næste midnat). Standard: 30 dage.
 export function parsePeriod(fromRaw: string | null | undefined, toRaw: string | null | undefined) {
-  const DAY = 24 * 60 * 60 * 1000;
+  const isYmd = (v: string | null | undefined): v is string => !!v && /^\d{4}-\d{2}-\d{2}$/.test(v) && !Number.isNaN(new Date(v).getTime());
   const now = new Date();
-  const to = toRaw && !Number.isNaN(new Date(toRaw).getTime()) ? new Date(toRaw) : now;
-  const toExclusive = toRaw && /^\d{4}-\d{2}-\d{2}$/.test(toRaw) ? new Date(to.getTime() + DAY) : to;
-  const from = fromRaw && !Number.isNaN(new Date(fromRaw).getTime()) ? new Date(fromRaw) : new Date(toExclusive.getTime() - 30 * DAY);
-  return from < toExclusive ? { from, to: toExclusive } : { from: new Date(toExclusive.getTime() - DAY), to: toExclusive };
+  const toExclusive = isYmd(toRaw) ? startOfDayCph(nextDay(toRaw)) : now;
+  const from = isYmd(fromRaw) ? startOfDayCph(fromRaw) : new Date(toExclusive.getTime() - 30 * DAY_MS);
+  return from < toExclusive ? { from, to: toExclusive } : { from: new Date(toExclusive.getTime() - DAY_MS), to: toExclusive };
 }
 
 export async function getPartnerPerformance(
@@ -342,7 +367,7 @@ export function performancePdf(p: PartnerPerformance): Buffer {
 
 export function performanceFileBase(p: PartnerPerformance) {
   const slug = p.partnerName.toLowerCase().replace(/[^a-z0-9æøå]+/gi, "-").replace(/^-|-$/g, "") || "partner";
-  return `hello-cal-${slug}-${p.from.slice(0, 10)}-${new Date(new Date(p.to).getTime() - 1).toISOString().slice(0, 10)}`;
+  return `hello-cal-${slug}-${ymdCph(new Date(p.from))}-${ymdCph(new Date(new Date(p.to).getTime() - 1))}`;
 }
 
 // --- Afsendelse til en indtastet modtager ---
