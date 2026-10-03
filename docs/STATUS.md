@@ -181,6 +181,11 @@ Last updated: 2026-10-02
 - Efter brugerens svar: også USDA-varer og også fra søgningen; points straks efter AI. Genscannede Open Food Facts-/USDA-varer overtages som vores egne og bliver søgbare; originalen fjernes.
 - Tests (`src/lib/product-rescan-offer.test.mjs`), lint, typecheck og build grønne. Ikke live-testet (ingen lokal DB/login/kamera) — test på telefon: scan en Open Food Facts-vare, træk banneret ned, tag de tre fotos.
 
+## 2026-10-02: Opret vare — levende scanning, trin-overskrift, hvid udfyldning
+
+- Kameraflowet (`/camera/create`, `ProductCaptureFlow`) fryser ikke længere et foto pr. trin: forside/energi/indhold scannes live fra videoen (`useLiveFrames`), energi/indhold læser op til ti billeder og lægger aflæsningerne sammen (`src/lib/live-scan.ts`, tests grønne). Fed trin-overskrift øverst ("Scan stregkode/billede/energi/indholdsfortegnelse"); når et trin er klaret, fyldes varens kontur eller det læste tekstfelt hvidt (`.hf-scan-fill`). Se DECISIONS.md samme dato.
+- Tesseract-arbejderen genbruges mellem billederne. `useAutoCapture` og `LabelTextHighlight` er fjernet.
+- Ikke live-testet (ingen kamera i cloud-sessionen): test på iPhone, at (1) overskriften står læseligt i det mørke felt, (2) kartonen bliver hvid efter forsiden, (3) energi/indhold afsluttes af sig selv på en mælkekarton, og (4) "Tag billede" afslutter trinnet med det samme. Juster evt. `LABEL_DONE_CONFIDENCE`/`MAX_LABEL_ATTEMPTS` i `live-scan.ts`.
 
 ## 2026-10-02: Kameraflowet — rigtige stillbilleder + nyt foto af indholdet
 

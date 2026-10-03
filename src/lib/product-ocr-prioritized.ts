@@ -55,21 +55,49 @@ function linesFromBlocks(blocks: TesseractBlock[] | null | undefined): OcrLine[]
   return lines;
 }
 
+type TesseractWorker = {
+  setParameters(params: Record<string, unknown>): Promise<unknown>;
+  recognize(image: string, options?: object, output?: object): Promise<{ data: Record<string, unknown> }>;
+  terminate(): Promise<unknown>;
+};
+
+// Én tesseract-arbejder pr. sprogsæt genbruges mellem billederne (den
+// levende scanning i kameraflowet læser op til ti billeder pr. trin, og en
+// ny arbejder pr. billede kostede ~1 s hver gang). Skifter sprogsættet,
+// lukkes den gamle. Kald i kø, så to aflæsninger aldrig deler arbejderen.
+let cachedWorker: { languages: string; worker: Promise<TesseractWorker> } | null = null;
+let queue: Promise<unknown> = Promise.resolve();
+
+async function getWorker(languages: string): Promise<TesseractWorker> {
+  if (cachedWorker && cachedWorker.languages === languages) return cachedWorker.worker;
+  const previous = cachedWorker;
+  cachedWorker = null;
+  if (previous) void previous.worker.then((worker) => worker.terminate()).catch(() => {});
+  const { createWorker } = await import("tesseract.js");
+  const worker = (createWorker(languages) as unknown as Promise<TesseractWorker>).catch((error) => {
+    if (cachedWorker?.worker === worker) cachedWorker = null;
+    throw error;
+  });
+  cachedWorker = { languages, worker };
+  return worker;
+}
+
 export async function extractTextPrioritized(
   imageDataUrl: string,
   primaryLanguages: string[],
   minimumConfidence = 72,
   options: OcrOptions = {},
 ): Promise<OcrResult> {
-  const { createWorker, PSM } = await import("tesseract.js");
-  const languages = [...new Set(primaryLanguages.length ? primaryLanguages : ["dan", "eng"])].join("+");
-  const worker = await createWorker(languages);
-  try {
-    if (options.tableLayout) await worker.setParameters({ tessedit_pageseg_mode: PSM.SINGLE_COLUMN });
+  const run = async () => {
+    const { PSM } = await import("tesseract.js");
+    const languages = [...new Set(primaryLanguages.length ? primaryLanguages : ["dan", "eng"])].join("+");
+    const worker = await getWorker(languages);
+    // Segmenteringen sættes hver gang — arbejderen husker ellers sidste kald.
+    await worker.setParameters({ tessedit_pageseg_mode: options.tableLayout ? PSM.SINGLE_COLUMN : PSM.AUTO });
     const result = options.layout
       ? await worker.recognize(imageDataUrl, {}, { text: true, blocks: true })
       : await worker.recognize(imageDataUrl);
-    const text = result.data.text?.trim() ?? "";
+    const text = (result.data.text as string | undefined)?.trim() ?? "";
     const confidence = Number(result.data.confidence ?? 0);
     const meaningfulChars = text.replace(/[^\p{L}\p{N}]/gu, "").length;
 
@@ -80,9 +108,10 @@ export async function extractTextPrioritized(
       needsVisionFallback: confidence < minimumConfidence || meaningfulChars < 4,
       ...(options.layout ? { lines: linesFromBlocks(result.data.blocks as TesseractBlock[] | null) } : {}),
     };
-  } finally {
-    await worker.terminate();
-  }
+  };
+  const result = queue.then(run, run);
+  queue = result.catch(() => {});
+  return result;
 }
 
 // Lokal OCR-tekst må kun sendes med som "støtte" til AI'en eller bruges som
