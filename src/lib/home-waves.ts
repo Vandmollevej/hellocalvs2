@@ -371,11 +371,35 @@ export function drawWaveScene(
   ctx.globalAlpha = 1;
 }
 
+/** Px hvor halen spidses til, mens den trækkes efter spidsen. */
+const PULSE_TAIL_TAPER = 60;
+
+/**
+ * Hvor puls-sporet går fra (hale) og til (spids) på et givet tidspunkt i
+ * perioden. Under fejet står halen ved venstre kant; efter et kort ophold
+ * kører halen samme vej som spidsen, til hele sporet er ude ved højre kant.
+ */
+export function pulseSpan(pulse: Pick<Pulse, "period" | "sweep">, phase: number, left: number, right: number) {
+  const progress = Math.min(1, Math.max(0, phase / pulse.sweep));
+  const head = left + progress * (right - left);
+  const rest = pulse.period - pulse.sweep;
+  const hold = rest * 0.15;
+  // Halen skal nå helt ud, lidt før næste fej begynder.
+  const retract = Math.min(pulse.sweep, rest * 0.8);
+  const after = phase - pulse.sweep - hold;
+  const tailProgress = after <= 0 ? 0 : Math.min(1, after / retract);
+  // Blød start, så halen sætter i gang som en slange og ikke med et ryk.
+  const eased = tailProgress * tailProgress * (3 - 2 * tailProgress);
+  const tail = left + eased * (right - left);
+  return { head, tail, moving: progress < 1 };
+}
+
 /**
  * Puls-linjen: et lime spor, der tegnes fra venstre kant mod højre som på en
- * pulsmåler og slår ét hjerteslag på vejen. Når sporet når højre kant, står
- * hele linjen et øjeblik og toner så ud før næste fej. Højde og placering af
- * slaget varierer lidt pr. fej.
+ * pulsmåler og slår ét hjerteslag på vejen. Når spidsen når højre kant, står
+ * hele linjen et øjeblik, og så trækkes halen efter mod højre som en slange,
+ * til linjen er væk — den toner ikke ud på én gang (bruger 2026-10-03).
+ * Højde og placering af slaget varierer lidt pr. fej.
  */
 function drawPulse(ctx: CanvasRenderingContext2D, pulse: Pulse, palette: WavePalette, t: number, width: number, height: number) {
   const time = t + pulse.offset;
@@ -383,14 +407,8 @@ function drawPulse(ctx: CanvasRenderingContext2D, pulse: Pulse, palette: WavePal
   const phase = time - cycle * pulse.period;
   const left = -WAVE_BLEED;
   const right = width + WAVE_BLEED;
-  const progress = Math.min(1, phase / pulse.sweep);
-  const head = left + progress * (right - left);
-  // Efter fejet: hold linjen kort og ton den ud resten af perioden.
-  const rest = pulse.period - pulse.sweep;
-  const after = phase - pulse.sweep;
-  const fadeOut = after <= 0 ? 1 : Math.max(0, 1 - Math.max(0, after - rest * 0.25) / (rest * 0.75));
-  if (fadeOut <= 0 || head <= left) return;
-
+  const { head, tail, moving } = pulseSpan(pulse, phase, left, right);
+  if (head <= left || tail >= right) return;
   const cycleRand = mulberry32(pulse.seed + cycle);
   const amplitude = pulse.amplitude * (0.85 + 0.3 * cycleRand());
   const centerX = (pulse.centerX + (cycleRand() - 0.5) * 0.04) * width;
@@ -400,28 +418,36 @@ function drawPulse(ctx: CanvasRenderingContext2D, pulse: Pulse, palette: WavePal
 
   const step = 1.5;
   ctx.beginPath();
-  ctx.moveTo(left, yAt(left));
-  for (let x = left + step; x < head; x += step) ctx.lineTo(x, yAt(x));
+  ctx.moveTo(tail, yAt(tail));
+  for (let x = tail + step; x < head; x += step) ctx.lineTo(x, yAt(x));
   ctx.lineTo(head, yAt(head));
 
   // Lidt svagere ude ved kanten end ved spidsen, men synlig hele vejen ind.
+  // Når halen trækkes efter, spidses den blødt til over de sidste par px.
+  const span = Math.max(head - left, 1);
+  const tailAt = (tail - left) / span;
+  const taperAt = Math.min(1, (tail + PULSE_TAIL_TAPER - left) / span);
   const fade = (color: Rgb) => {
-    const gradient = ctx.createLinearGradient(left, 0, Math.max(head, left + 1), 0);
+    const gradient = ctx.createLinearGradient(left, 0, left + span, 0);
     gradient.addColorStop(0, rgba(color, 0.55));
+    if (tail > left) {
+      gradient.addColorStop(tailAt, rgba(color, 0));
+      gradient.addColorStop(taperAt, rgba(color, 0.55 + 0.45 * taperAt));
+    }
     gradient.addColorStop(1, rgba(color, 1));
     return gradient;
   };
   ctx.strokeStyle = fade(palette.pulse);
-  ctx.globalAlpha = 0.25 * fadeOut;
+  ctx.globalAlpha = 0.25;
   ctx.lineWidth = 5;
   ctx.stroke();
   ctx.strokeStyle = fade(palette.pulseCore);
-  ctx.globalAlpha = 0.85 * fadeOut;
+  ctx.globalAlpha = 0.85;
   ctx.lineWidth = 1.6;
   ctx.stroke();
 
   // Lille lysende punkt ved spidsen, mens sporet bevæger sig.
-  if (progress < 1) {
+  if (moving) {
     ctx.beginPath();
     ctx.moveTo(head, yAt(head));
     ctx.lineTo(head + 0.01, yAt(head));

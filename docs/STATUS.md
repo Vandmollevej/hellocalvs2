@@ -331,6 +331,12 @@ Last updated: 2026-10-02
 - `/profile/recipes` (begge faner) og `/profile/recipes/[id]` brugte generiske skeletter (`SkeletonMediaRows`/`SkeletonDetail`) med bjælker i procent af sidebredden — enorme på bred skærm og uden lighed med indholdet. Nu tegner `RecipeRow` og ret-siden sig selv uden data (design.md §6.14): samme billedfelt, titel + undertekst i tekstbredde (`SkeletonTitleLines` i `Skeleton.tsx`), 3 rækker under "Trender netop nu".
 - Lint grøn; typecheck uden fejl i de berørte filer. Build ikke kørt lokalt (delt `node_modules` har forældet Prisma-klient). Ikke visuelt testet (brugerregel).
 
+## 2026-10-03: Puls-linjen forsvinder som en slange
+
+- Brugerens ønske: pulsen på forsiden skal forsvinde som en snake og ikke på én gang.
+- Når spidsen har nået højre kant og linjen har stået et øjeblik (15 % af pausen), trækkes halen efter mod højre med blød start/stop og en 60 px blød tilspidsning, til hele linjen er ude — senest 95 % inde i pausen, så næste fej starter på en tom skærm. Ingen samlet udtoning længere (`pulseSpan` + `drawPulse` i `home-waves.ts`).
+- Ny test i `home-waves.test.mjs`. `npm test` grøn bortset fra page-tree-testen, der også fejler på master; lint og build grønne. Kun tjekket som headless-canvas-render, ikke i appen på telefon.
+
 ## 2026-10-03: Bølge-baggrunden lavet om (roligere, skarp top)
 
 - Brugerens feedback på telefon: "alt for voldsomt", toppen må ikke være sløret — kun bunden — og hjerteslaget skal ligge længere nede og gå helt ude fra siden.

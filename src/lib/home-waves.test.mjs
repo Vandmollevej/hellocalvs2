@@ -1,7 +1,7 @@
 // Kør: npm test  (node --test, Node 24 fjerner TypeScript-typer selv)
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { createWaveScene, drawWaveScene, heartbeatShape, mulberry32, WAVE_BLEED } from "./home-waves.ts";
+import { createWaveScene, drawWaveScene, heartbeatShape, mulberry32, pulseSpan, WAVE_BLEED } from "./home-waves.ts";
 
 const palette = {
   ramp: [
@@ -98,6 +98,29 @@ test("puls-linjen starter helt ude ved venstre kant og ligger midt i hero", () =
     drawWaveScene(ctx, { ...scene, bundles: [], fog: [] }, palette, { t: time, width: 393, height: 430, scale: 1 });
     assert.ok(starts.length > 0);
     assert.equal(starts[0], -WAVE_BLEED);
+  }
+});
+
+test("puls-linjen forsvinder som en slange: halen trækkes efter mod højre", () => {
+  for (const seed of [1, 5, 99]) {
+    const { pulse } = createWaveScene(seed);
+    const left = -WAVE_BLEED;
+    const right = 393 + WAVE_BLEED;
+    // Under fejet står halen ved venstre kant.
+    assert.equal(pulseSpan(pulse, pulse.sweep / 2, left, right).tail, left);
+    // Efter fejet kører halen gradvist mod højre — ikke alt væk på én gang.
+    let previous = left;
+    let partial = 0;
+    for (let phase = pulse.sweep; phase < pulse.period; phase += 0.05) {
+      const { head, tail } = pulseSpan(pulse, phase, left, right);
+      assert.equal(head, right);
+      assert.ok(tail >= previous);
+      if (tail > left && tail < right) partial++;
+      previous = tail;
+    }
+    assert.ok(partial > 20, `halen skal bevæge sig synligt (${partial} trin)`);
+    // Og når perioden slutter, er hele linjen væk.
+    assert.equal(pulseSpan(pulse, pulse.period - 1e-6, left, right).tail, right);
   }
 });
 
