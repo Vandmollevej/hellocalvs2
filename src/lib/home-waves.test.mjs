@@ -161,3 +161,15 @@ test("pulslinjen tegner ingen NaN ved ekstreme pulser", () => {
     assert.equal(ctx.calls.bad, 0, `bpm ${bpm}`);
   }
 });
+
+test("puls-linjen ligger på den givne grundlinje (over tal-hjulets midte)", () => {
+  const scene = createWaveScene(21);
+  const ctx = fakeContext();
+  const starts = [];
+  ctx.moveTo = (x, y) => starts.push([x, y]);
+  const time = scene.pulse.sweep * 10 - scene.pulse.offset + scene.pulse.sweep * 0.5;
+  drawWaveScene(ctx, { ...scene, bundles: [], fog: [] }, palette, { t: time, width: 393, height: 430, scale: 1, pulseY: 150 });
+  const [x, y] = starts[0];
+  assert.equal(x, -WAVE_BLEED);
+  assert.ok(Math.abs(y - 150) <= scene.pulse.amplitude * 1.2, `starter i y=${y}`);
+});

@@ -295,6 +295,8 @@ export type WaveFrame = {
   scale: number;
   /** Pulsen, linjen slår i (DEFAULT_PULSE_BPM uden ur). */
   bpm?: number;
+  /** Puls-linjens grundlinje i px fra toppen; uden den bruges scenens andel af højden. */
+  pulseY?: number;
 };
 
 const STEP_TARGET = 7;
@@ -305,7 +307,7 @@ export function drawWaveScene(
   palette: WavePalette,
   frame: WaveFrame
 ) {
-  const { t, width, height, scale, bpm = DEFAULT_PULSE_BPM } = frame;
+  const { t, width, height, scale, bpm = DEFAULT_PULSE_BPM, pulseY } = frame;
   ctx.setTransform(1, 0, 0, 1, 0, 0);
   ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
   ctx.setTransform(scale, 0, 0, scale, WAVE_BLEED * scale, WAVE_BLEED * scale);
@@ -369,7 +371,7 @@ export function drawWaveScene(
     }
   }
 
-  drawPulse(ctx, scene.pulse, palette, t, width, height, bpm);
+  drawPulse(ctx, scene.pulse, palette, t, width, height, bpm, pulseY ?? scene.pulse.y * height);
   ctx.globalAlpha = 1;
 }
 
@@ -422,7 +424,8 @@ function drawPulse(
   t: number,
   width: number,
   height: number,
-  bpm: number
+  bpm: number,
+  baseY: number
 ) {
   const time = t + pulse.offset;
   const cycle = Math.floor(time / pulse.sweep);
@@ -430,7 +433,6 @@ function drawPulse(
   const left = -WAVE_BLEED;
   const right = width + WAVE_BLEED;
   const head = left + progress * (right - left);
-  const baseY = pulse.y * height;
   const step = 1.5;
 
   // Lidt svagere ude ved kanten end ved spidsen, men synlig hele vejen ind.

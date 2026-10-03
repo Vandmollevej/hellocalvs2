@@ -344,6 +344,8 @@ export function StatsWheel({ side }: { side: "left" | "right" }) {
       // No overflow clipping: a long number simply extends further left
       // instead of being cut off in the middle of the screen. The box itself
       // stays narrow on the right so it never covers the add-button's fan.
+      // Forsidens puls-linje (HomeWaves) lægger sig over hjulets midte.
+      data-stats-wheel=""
       className="absolute touch-none select-none rounded-3xl text-right transition-[left,right] duration-300 ease-out focus-visible:outline-2 focus-visible:outline-hf-green focus-visible:outline-offset-2"
       style={
         {

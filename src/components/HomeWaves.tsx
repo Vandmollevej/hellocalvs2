@@ -14,6 +14,12 @@ const LAYERS = [
 const FRAME_MS = 1000 / 30;
 /** Integrationerne synkroniserer hvert 15. minut; ét opslag i minuttet er rigeligt. */
 const HEART_RATE_POLL_MS = 60 * 1000;
+/**
+ * Puls-linjens grundlinje over tal-hjulets midte (bruger 2026-10-03: den må
+ * ikke gå om bag det midterste tal). Halvdelen af tallets højde (~10 px) +
+ * dykket efter R-takken (≤ 10 px) + stregens glød; under rækken ovenover.
+ */
+const PULSE_ABOVE_WHEEL_CENTER = 26;
 
 /** Urets aktuelle puls, eller 60 bpm uden ur/frisk måling (bruger 2026-10-03). */
 async function fetchPulseBpm() {
@@ -61,6 +67,7 @@ export function HomeWaves() {
     let pollTimer = 0;
     let polling = false;
     let disposed = false;
+    let pulseY: number | undefined;
 
     let scales: number[] = LAYERS.map((layer) => layer.scale());
 
@@ -68,7 +75,7 @@ export function HomeWaves() {
       if (width === 0 || height === 0) return;
       LAYERS.forEach((_, i) => {
         const ctx = contexts[i];
-        if (ctx) drawWaveScene(ctx, scene, palette!, { t: clock, width, height, scale: scales[i], bpm });
+        if (ctx) drawWaveScene(ctx, scene, palette!, { t: clock, width, height, scale: scales[i], bpm, pulseY });
       });
     }
 
@@ -76,6 +83,14 @@ export function HomeWaves() {
       width = host!.clientWidth;
       height = host!.clientHeight;
       scales = LAYERS.map((layer) => layer.scale());
+      // Tal-hjulets boks er centreret om den midterste række.
+      const wheel = host!.parentElement?.querySelector<HTMLElement>("[data-stats-wheel]");
+      if (wheel) {
+        const box = wheel.getBoundingClientRect();
+        pulseY = box.top + box.height / 2 - host!.getBoundingClientRect().top - PULSE_ABOVE_WHEEL_CENTER;
+      } else {
+        pulseY = undefined;
+      }
       LAYERS.forEach((_, i) => {
         const canvas = canvases[i];
         if (!canvas) return;
