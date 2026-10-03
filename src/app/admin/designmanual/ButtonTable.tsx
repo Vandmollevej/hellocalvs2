@@ -4,7 +4,6 @@ import {
   IconAdjustmentsHorizontal,
   IconArrowLeft,
   IconBook,
-  IconBookmark,
   IconCheck,
   IconChevronDown,
   IconChevronLeft,
@@ -22,6 +21,7 @@ import {
   IconTruck,
   IconUser,
 } from "@tabler/icons-react";
+import { IconFavorite } from "@/components/icons/Favorite";
 import { CopyChip } from "./CopyChip";
 import { referenceBody } from "./reference-fonts";
 
@@ -135,7 +135,7 @@ const CONTROL_GROUPS: ControlGroup[] = [
         demo: (
           <span className="flex items-center gap-4" aria-hidden="true">
             <Box style={{ ...outline, height: 42, padding: "0 16px", gap: 8 }}>
-              <IconBookmark size={18} /> Gem
+              <IconFavorite size={18} /> Gem
             </Box>
             <Box style={{ height: 42, width: 41, borderRadius: 8, border: `1px solid ${INK}`, color: INK }}>
               <IconShoppingCart size={20} />
@@ -511,7 +511,7 @@ const CONTROL_GROUPS: ControlGroup[] = [
       {
         id: "bogmaerke",
         name: "Bogmærke på billede",
-        demo: <PhotoDemo size={32} alpha={0.8} inset={4} icon={<IconBookmark size={14} />} />,
+        demo: <PhotoDemo size={32} alpha={0.8} inset={4} icon={<IconFavorite size={14} />} />,
         demoBackground: PAGE,
         fill: "rgb(35 35 35 / 80%)",
         text: "#FFFFFF",

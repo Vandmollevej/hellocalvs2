@@ -4,6 +4,10 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { IconCheck, IconChevronRight, IconPlus } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
+import { DropdownSection } from "@/components/hf/DropdownSection";
+import { EnergyGoalPanel } from "@/components/EnergyGoalPanel";
+import { UpcomingGoalsList } from "@/components/UpcomingGoalsList";
+import { useInWebShell } from "@/components/web/WebShell";
 import { GoalDateSquare } from "@/components/hf/GoalDateSquare";
 import { useTranslation } from "@/i18n/LocaleProvider";
 import {
@@ -52,6 +56,14 @@ export default function GoalsPage() {
   const [goals, setGoals] = useState<GoalDTO[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
+  const inWebShell = useInWebShell();
+  const [openParam, setOpenParam] = useState<string | null>(null);
+
+  useEffect(() => {
+    // ?open=energy|upcoming åbner den tilsvarende dropdown (desktop).
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setOpenParam(new URLSearchParams(window.location.search).get("open"));
+  }, []);
 
   useEffect(() => {
     let cancelled = false;
@@ -87,24 +99,38 @@ export default function GoalsPage() {
           {t("goals.createSubGoal")}
         </button>
 
-        {/* Kaloriemål (docs/ACTIVITY-PAL.md F6): energibehov → dagligt budget. */}
-        <button
-          type="button"
-          onClick={() => router.push("/profile/energy-goal")}
-          className="hf-control-row flex w-full items-center gap-2 rounded-2xl bg-hf-tan px-4 text-left text-hf-black focus-visible:outline-2 focus-visible:outline-hf-black"
-        >
-          <span className="hf-type-body hf-type-strong flex-1">{t("energyGoal.title")}</span>
-          <IconChevronRight size={19} className="shrink-0" aria-hidden="true" />
-        </button>
+        {inWebShell ? (
+          // Desktop: dropdowns på samme side i stedet for egne undersider.
+          <>
+            <DropdownSection key={`energy-${openParam}`} title={t("energyGoal.title")} defaultOpen={openParam === "energy"}>
+              <EnergyGoalPanel />
+            </DropdownSection>
+            <DropdownSection key={`upcoming-${openParam}`} title={t("goals.upcomingTitle")} defaultOpen={openParam === "upcoming"}>
+              <UpcomingGoalsList />
+            </DropdownSection>
+          </>
+        ) : (
+          <>
+            {/* Kaloriemål (docs/ACTIVITY-PAL.md F6): energibehov → dagligt budget. */}
+            <button
+              type="button"
+              onClick={() => router.push("/profile/energy-goal")}
+              className="hf-control-row flex w-full items-center gap-2 rounded-2xl bg-hf-tan px-4 text-left text-hf-black focus-visible:outline-2 focus-visible:outline-hf-black"
+            >
+              <span className="hf-type-body hf-type-strong flex-1">{t("energyGoal.title")}</span>
+              <IconChevronRight size={19} className="shrink-0" aria-hidden="true" />
+            </button>
 
-        <button
-          type="button"
-          onClick={() => router.push("/profile/goals/upcoming")}
-          className="hf-control-row flex w-full items-center gap-2 rounded-2xl bg-hf-tan px-4 text-left text-hf-black focus-visible:outline-2 focus-visible:outline-hf-black"
-        >
-          <span className="hf-type-body hf-type-strong flex-1">{t("goals.upcomingTitle")}</span>
-          <IconChevronRight size={19} className="shrink-0" aria-hidden="true" />
-        </button>
+            <button
+              type="button"
+              onClick={() => router.push("/profile/goals/upcoming")}
+              className="hf-control-row flex w-full items-center gap-2 rounded-2xl bg-hf-tan px-4 text-left text-hf-black focus-visible:outline-2 focus-visible:outline-hf-black"
+            >
+              <span className="hf-type-body hf-type-strong flex-1">{t("goals.upcomingTitle")}</span>
+              <IconChevronRight size={19} className="shrink-0" aria-hidden="true" />
+            </button>
+          </>
+        )}
         {loading ? (
           <SkeletonScreen className="">
             <SkeletonCards count={4} height={68} radius={16} />

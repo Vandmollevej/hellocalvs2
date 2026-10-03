@@ -109,6 +109,25 @@ export function SkeletonText({
   );
 }
 
+/** De to tekstlinjer i en listerække: titel (.hf-type-body, 22 px) over
+ * undertekst (.hf-type-small, 18 px). Bredderne er faste pixelmål, så
+ * fladerne ligner tekst — også på brede skærme — og højden er præcis de to
+ * tekstlinjers, så rækken ikke flytter sig, når indholdet er hentet. */
+export function SkeletonTitleLines({
+  titleWidth = 176,
+  subWidth = 84,
+}: {
+  titleWidth?: Size;
+  subWidth?: Size;
+}) {
+  return (
+    <span className="flex flex-col" aria-hidden>
+      <Skeleton type="body" width={titleWidth} height={14} className="my-1" />
+      <Skeleton type="caption" width={subWidth} height={12} className="my-[3px]" />
+    </span>
+  );
+}
+
 /** Sektionsoverskrift "──── Tekst ────" med stregerne og den faste afstand
  * fra .hf-type-section-title; kun teksten er en skitse. */
 export function SkeletonSectionTitle({ width = 96 }: { width?: Size }) {

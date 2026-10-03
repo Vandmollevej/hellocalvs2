@@ -7,14 +7,13 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import {
   IconChevronDown,
-  IconBookmark,
-  IconBookmarkFilled,
   IconAlertTriangle,
   IconMessage,
   IconLock,
   IconLockOpen,
   IconRefresh,
 } from "@tabler/icons-react";
+import { IconFavorite, IconFavoriteFilled } from "@/components/icons/Favorite";
 import { HfScreen } from "@/components/HfScreen";
 import { BottomSheet } from "@/components/hf/BottomSheet";
 import { MealShareBar } from "@/components/family/MealShareBar";
@@ -736,7 +735,7 @@ export function AddProductView({
                       aria-label={t(isFavorite ? "search.removeFavorite" : "search.addFavorite")}
                       className="hf-favorite-button"
                     >
-                      {isFavorite ? <IconBookmarkFilled size={24} /> : <IconBookmark size={24} />}
+                      {isFavorite ? <IconFavoriteFilled size={24} /> : <IconFavorite size={24} />}
                     </button>
                   )}
                   {/* Brandet vises kun på cirklen: logoet med bunden i cirklens

@@ -26,6 +26,7 @@ import {
 } from "@/lib/stat-cards";
 import { groupByDay, type RegistrationTotals } from "@/lib/daily-totals";
 import { DAILY_KCAL_GOAL, WEIGHT_GOAL_KG } from "@/lib/goals";
+import { kgToLb, useUnits } from "@/lib/units";
 import { makeBudgetLookup, type BudgetSnapshot } from "@/lib/daily-budget";
 import { DEFAULT_STAT_SELECTION, filterDaysInRange, selectionRange, type StatPeriodSelection } from "@/lib/stat-periods";
 import type { IntegrationCardStatus } from "@/lib/integrations";
@@ -115,6 +116,10 @@ function trendByDay(points: { dateKey: string; trendKg: number }[]) {
 
 export default function StatisticsPage() {
   const { t } = useTranslation();
+  // Grafen vises i kg eller pund (stone er for groft til en akse).
+  const { weight: weightUnit } = useUnits();
+  const chartWeightUnit = weightUnit === "kg" ? "kg" : "lb";
+  const toChartWeight = useCallback((kg: number) => (weightUnit === "kg" ? kg : kgToLb(kg)), [weightUnit]);
   const [registrations, setRegistrations] = useState<RegistrationTotals[]>([]);
   const [weightEntries, setWeightEntries] = useState<WeightEntry[]>([]);
   const [activities, setActivities] = useState<ActivityTotals[]>([]);
@@ -311,9 +316,9 @@ export default function StatisticsPage() {
         key: "weight",
         label: t("statistics.weight"),
         color: "var(--hf-gray)",
-        unit: "kg",
-        values: weightDaily,
-        goal: WEIGHT_GOAL_KG,
+        unit: chartWeightUnit,
+        values: weightDaily.map(toChartWeight),
+        goal: toChartWeight(WEIGHT_GOAL_KG),
         showPointStatus: true,
       },
       ...(weightTrendDaily
@@ -322,14 +327,14 @@ export default function StatisticsPage() {
               key: "weightTrend",
               label: t("statistics.trendWeight"),
               color: "var(--hf-black)",
-              unit: "kg",
-              values: weightTrendDaily,
+              unit: chartWeightUnit,
+              values: weightTrendDaily.map(toChartWeight),
               dashed: true,
             } satisfies ChartSeries,
           ]
         : []),
     ],
-    [kcalDaily, kcalGoalDaily, weightDaily, weightTrendDaily, t],
+    [kcalDaily, kcalGoalDaily, weightDaily, weightTrendDaily, t, chartWeightUnit, toChartWeight],
   );
 
   const sleepChartSeries = useMemo<ChartSeries[]>(() => {

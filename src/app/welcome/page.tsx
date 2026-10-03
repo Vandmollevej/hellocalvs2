@@ -19,17 +19,12 @@ export default function VelkommenPage() {
     return (
       <div className="flex h-full min-h-full flex-col items-center justify-center gap-8 bg-hf-green px-4">
         <Image src="/hello-cal-logo-white.png" alt="Hello Cal" width={280} height={90} priority />
-        <svg className="hf-loader h-9 w-9" viewBox="0 0 50 50">
-          <circle
-            className="hf-loader__path text-hf-lime"
-            cx="25"
-            cy="25"
-            r="20"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="4"
-          />
-        </svg>
+        <div className="hello-loader" role="status" aria-label="Loading">
+          <svg viewBox="0 0 100 100" aria-hidden="true">
+            <circle className="hello-loader-bg" cx="50" cy="50" r="46" />
+            <circle className="hello-loader-snake" cx="50" cy="50" r="25" />
+          </svg>
+        </div>
       </div>
     );
   }

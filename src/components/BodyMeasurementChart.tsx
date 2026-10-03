@@ -10,11 +10,11 @@ import Link from "next/link";
 import { useTranslation } from "@/i18n/LocaleProvider";
 import {
   BODY_MEASUREMENT_FIELDS,
-  BODY_MEASUREMENT_UNIT,
   type BodyMeasurementField,
   type BodyMeasurementSex,
 } from "@/lib/body-measurements";
 import { buildBodyMeasurementSeries, type BodyMeasurementSeriesEntry } from "@/lib/body-measurement-series";
+import { cmToIn, formatLength, lengthUnitLabel, useUnits, type HeightUnit } from "@/lib/units";
 
 const WIDTH = 200;
 const HEIGHT = 84;
@@ -23,12 +23,13 @@ const RIGHT = WIDTH - 6;
 const TOP = 10;
 const BOTTOM = HEIGHT - 10;
 
-function formatNumber(value: number) {
-  return String(Math.round(value * 10) / 10).replace(".", ",");
-}
-
 function formatShortDate(value: string) {
   return new Intl.DateTimeFormat("da-DK", { day: "numeric", month: "short" }).format(new Date(value));
+}
+
+function formatChange(cm: number, unit: HeightUnit) {
+  const value = unit === "in" ? cmToIn(cm) : cm;
+  return `${String(Math.round(value * 10) / 10).replace(".", ",")} ${lengthUnitLabel(unit)}`;
 }
 
 export function BodyMeasurementChart({
@@ -43,6 +44,8 @@ export function BodyMeasurementChart({
   loading?: boolean;
 }) {
   const { t } = useTranslation();
+  // Målingerne gemmes i cm; visningen følger brugerens valg (cm/tommer).
+  const { height: lengthUnit } = useUnits();
   const definition = BODY_MEASUREMENT_FIELDS.find((d) => d.field === field);
   if (!definition) return null;
 
@@ -81,7 +84,7 @@ export function BodyMeasurementChart({
           <p className="hf-type-body hf-type-strong text-hf-black">{label}</p>
           {latest !== null && (
             <p className="hf-type-body hf-type-strong shrink-0 text-hf-black">
-              {formatNumber(latest)} {BODY_MEASUREMENT_UNIT}
+              {formatLength(latest, lengthUnit)}
             </p>
           )}
         </div>
@@ -106,10 +109,10 @@ export function BodyMeasurementChart({
               {points.length > 1 && (
                 <>
                   <text x={LEFT} y={TOP - 3} fontSize="8" fill="var(--hf-gray)">
-                    {formatNumber(maxValue)}
+                    {formatLength(maxValue, lengthUnit)}
                   </text>
                   <text x={LEFT} y={BOTTOM + 9} fontSize="8" fill="var(--hf-gray)">
-                    {formatNumber(minValue)}
+                    {formatLength(minValue, lengthUnit)}
                   </text>
                   <polyline
                     points={coords.map((c) => `${c.x},${c.y}`).join(" ")}
@@ -134,7 +137,7 @@ export function BodyMeasurementChart({
               {change !== null && change !== 0 && (
                 <span className="hf-type-micro hf-type-strong text-hf-black">
                   {t("bodyMeasurementChart.change", {
-                    value: `${change > 0 ? "+" : "−"}${formatNumber(Math.abs(change))} ${BODY_MEASUREMENT_UNIT}`,
+                    value: `${change > 0 ? "+" : "−"}${formatChange(Math.abs(change), lengthUnit)}`,
                   })}
                 </span>
               )}
