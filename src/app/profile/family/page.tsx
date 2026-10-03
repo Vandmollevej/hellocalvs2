@@ -26,6 +26,9 @@ type PendingCode = {
   qrDataUrl: string;
 };
 
+type AddKind = "member" | "child";
+const emptyForm = { displayName: "", birthDate: "", sex: "", heightCm: "", weightKg: "" };
+
 async function send(url: string, method: string, body?: unknown) {
   const res = await fetch(url, {
     method,
@@ -47,8 +50,13 @@ function FamilyPageContent() {
   const [codeEmail, setCodeEmail] = useState("");
   const [joinCode, setJoinCode] = useState("");
   const [joinEmail, setJoinEmail] = useState("");
-  const [showAdd, setShowAdd] = useState(searchParams?.get("add") === "1");
-  const [form, setForm] = useState({ displayName: "", birthDate: "", sex: "", isChild: true, heightCm: "", weightKg: "" });
+  // Hvilken oprettelse er åben: "member" (Tilføj familiemedlem) eller
+  // "child" (Tilføj barn (under 18)). Profilvælgeren linker med ?add=…
+  const addParam = searchParams?.get("add");
+  const [addKind, setAddKind] = useState<AddKind | null>(
+    addParam === "child" ? "child" : addParam === "member" || addParam === "1" ? "member" : null
+  );
+  const [form, setForm] = useState(emptyForm);
   const [busy, setBusy] = useState(false);
 
   useEffect(() => {
@@ -102,10 +110,10 @@ function FamilyPageContent() {
   }
 
   async function addProfile() {
-    const result = await run("/api/family/members", "POST", form);
+    const result = await run("/api/family/members", "POST", { ...form, isChild: addKind === "child" });
     if (result.ok) {
-      setForm({ displayName: "", birthDate: "", sex: "", isChild: true, heightCm: "", weightKg: "" });
-      setShowAdd(false);
+      setForm(emptyForm);
+      setAddKind(null);
     }
   }
 
@@ -395,14 +403,21 @@ function FamilyPageContent() {
           {members.length < capacity && (
             <section>
               <h2 className="hf-type-section-title">{t("family.add.title")}</h2>
-              {!showAdd ? (
+              {!addKind ? (
                 <div className="hf-stack">
                   <button
                     type="button"
-                    onClick={() => setShowAdd(true)}
+                    onClick={() => setAddKind("member")}
                     className="hf-control hf-btn-primary w-full px-4"
                   >
-                    {t("family.add.newProfile")}
+                    {t("family.add.addMember")}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setAddKind("child")}
+                    className="hf-control hf-btn-primary w-full px-4"
+                  >
+                    {t("family.add.addChild")}
                   </button>
                   <button
                     type="button"
@@ -416,6 +431,10 @@ function FamilyPageContent() {
                 </div>
               ) : (
                 <div className="hf-card hf-stack">
+                  <p className="hf-type-card-title">
+                    {t(addKind === "child" ? "family.add.addChild" : "family.add.addMember")}
+                  </p>
+                  {addKind === "child" && <p className="hf-type-caption">{t("family.add.isChildHelp")}</p>}
                   <TextField
                     variant="standard"
                     label={t("family.add.name")}
@@ -456,21 +475,15 @@ function FamilyPageContent() {
                     value={form.weightKg}
                     onChange={(event) => setForm({ ...form, weightKg: event.target.value })}
                   />
-                  <Toggle
-                    label={t("family.add.isChild")}
-                    description={t("family.add.isChildHelp")}
-                    checked={form.isChild}
-                    onChange={(value) => setForm({ ...form, isChild: value })}
-                  />
                   <button
                     type="button"
                     disabled={busy || !form.displayName.trim()}
                     onClick={addProfile}
                     className="hf-control hf-btn-primary w-full px-4"
                   >
-                    {t("family.add.submit")}
+                    {t(addKind === "child" ? "family.add.addChild" : "family.add.addMember")}
                   </button>
-                  <button type="button" onClick={() => setShowAdd(false)} className="hf-btn-text">
+                  <button type="button" onClick={() => setAddKind(null)} className="hf-btn-text">
                     {t("common.cancel")}
                   </button>
                 </div>

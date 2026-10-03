@@ -2588,10 +2588,9 @@
     "switcher": {
       "title": "Skift profil",
       "you": "Din egen profil",
-      "managing": "Du taster ind for denne profil",
+      "managing": "Du taster ind for {name}",
       "meLabel": "{name} (dig)",
       "active": "Valgt",
-      "addProfile": "Tilføj profil",
       "manage": "Familie og adgang"
     },
     "watch": {
@@ -2675,8 +2674,9 @@
       "deleteProfileConfirm": "Alt på {name}s profil slettes og kan ikke gendannes. Skriv SLET for at bekræfte."
     },
     "add": {
-      "title": "Tilføj profil",
-      "newProfile": "Opret ny profil",
+      "title": "Tilføj familiemedlem",
+      "addMember": "Tilføj familiemedlem",
+      "addChild": "Tilføj barn (under 18)",
       "inviteExisting": "Inviter en med egen konto",
       "name": "Navn",
       "birthDate": "Fødselsdato",
@@ -2686,9 +2686,7 @@
       "sexMale": "Mand",
       "heightCm": "Højde (cm)",
       "weightKg": "Vægt (kg)",
-      "isChild": "Er det et barn?",
-      "isChildHelp": "Under 15 år kan man ikke selv oprette en konto.",
-      "submit": "Tilføj profil"
+      "isChildHelp": "Under 15 år kan man ikke selv oprette en konto."
     },
     "access": {
       "title": "Adgang",

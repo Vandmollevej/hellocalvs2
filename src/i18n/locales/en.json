@@ -2607,10 +2607,9 @@
     "switcher": {
       "title": "Switch profile",
       "you": "Your own profile",
-      "managing": "You are entering data for this profile",
+      "managing": "You are entering data for {name}",
       "meLabel": "{name} (you)",
       "active": "Selected",
-      "addProfile": "Add profile",
       "manage": "Family and access"
     },
     "watch": {
@@ -2694,8 +2693,9 @@
       "deleteProfileConfirm": "Everything on {name}'s profile is deleted and cannot be restored. Type SLET to confirm."
     },
     "add": {
-      "title": "Add profile",
-      "newProfile": "Create new profile",
+      "title": "Add family member",
+      "addMember": "Add family member",
+      "addChild": "Add child (under 18)",
       "inviteExisting": "Invite someone with their own account",
       "name": "Name",
       "birthDate": "Date of birth",
@@ -2705,9 +2705,7 @@
       "sexMale": "Male",
       "heightCm": "Height (cm)",
       "weightKg": "Weight (kg)",
-      "isChild": "Is this a child?",
-      "isChildHelp": "Under 15 you cannot create an account yourself.",
-      "submit": "Add profile"
+      "isChildHelp": "Under 15 you cannot create an account yourself."
     },
     "access": {
       "title": "Access",
