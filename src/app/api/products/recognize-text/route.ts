@@ -30,6 +30,7 @@ export async function POST(req: Request) {
     const candidates = await prisma.product.findMany({
       where: {
         discontinued: false,
+        nutritionMissing: false,
         ...(words.length
           ? { OR: words.map((w: string) => ({ name: { contains: w, mode: "insensitive" as const } })) }
           : {}),

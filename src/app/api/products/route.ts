@@ -59,6 +59,9 @@ export async function GET(req: Request) {
       prisma.product.findMany({
         where: {
           discontinued: false,
+          // Butiksvarer uden kalorietal er skjult, til de har fået næring
+          // (docs/DECISIONS.md 2026-10-02) — ingen skal logge 0 kcal.
+          nutritionMissing: false,
           // Egne private ingredienser vises kun for ejeren (via /api/private-ingredients).
           privateOwnerId: null,
           // Ét samlet AND: en objekt-literal må kun have én AND-nøgle, og
