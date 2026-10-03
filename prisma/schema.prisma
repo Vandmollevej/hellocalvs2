@@ -1507,6 +1507,11 @@ model ProductRegionHourStat {
 // ingredients photos are actually persisted (they previously were sent
 // transiently to OpenAI Vision and never saved anywhere) — this is what the
 // local quality-control-agent compares against Product.imageUrl.
+enum PhotoSource {
+  CAMERA
+  UPLOAD
+}
+
 model AiProductAnalysis {
   id            String         @id @default(cuid())
   kind          AiAnalysisKind
@@ -1526,6 +1531,10 @@ model AiProductAnalysis {
   // 2026-09-26 — it is the source for the logo/product cutout jobs
   // (ImageCutoutJob). Null for analyses created before this field existed.
   imageUrl      String?        @map("image_url")
+  // Billedets kilde (docs/DECISIONS.md 2026-10-03): CAMERA = taget nu med
+  // kameraet, UPLOAD = fra fotobiblioteket/nettet. Kun CAMERA giver points
+  // for at opdatere en vare. Null for ældre analyser.
+  photoSource   PhotoSource?   @map("photo_source")
   product       Product?       @relation(fields: [productId], references: [id], onDelete: SetNull)
   productId     String?        @map("product_id")
   createdAt     DateTime       @default(now()) @map("created_at")
