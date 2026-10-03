@@ -238,6 +238,14 @@ Uge- og Liste-visningen beholder "Ingen indtastninger" i gråt på tomme dage.
   "Fedtprocent m.m." (`read.bodyFat`) slået til i sin opsætning. Linket til
   `/statistics/body-water` fra Kropsmål er fjernet; siden findes stadig uden link.
 
+## 2026-10-02: Grafer på "Tilføj til statistik" og samlede mineral-/vitamingrafer
+
+- Graferne på "Tilføj til statistik" vises i fuld bredde og tegnes af samme kode og data som på statistiksiden, så brugeren ser grafen, som den faktisk vil se ud. Tilføjes med en "+ Tilføj"-knap under grafen, ikke ved tryk på selve grafen.
+- Ingen grafer pr. enkelt mineral eller vitamin. Der findes én "Mineraler"- og én "Vitaminer"-graf; brugeren vælger selv linjerne i grafens dropdown. Standard: calcium, jern, kalium og vitamin A, C, D.
+- Ældre gemte layouts med de gamle enkelt-grafer omskrives til gruppegraferne.
+- Grafernes linjevalg vises inde i kortet (ikke svævende), så det ikke klippes af omgivende bokse.
+- Sprogregel fra ejeren: "krydse af", "slå til" o.l. betyder altid til/fra-knapper (`Toggle`), aldrig afkrydsningsfelter.
+
 ## 2026-09-29: Aktivitetsniveau, PAL og kaloriemål
 
 - Erstatter faktorerne i 2026-09-28 "Aktivitetsniveau i 5 trin" (1,2–1,9). Nye niveauer og PAL-intervaller: se `docs/ACTIVITY-PAL.md` (planen; intet bygget). Ingen aktive brugere, så gamle niveauer erstattes uden overgangslogik.

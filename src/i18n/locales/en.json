@@ -1980,7 +1980,7 @@
   },
   "statUnusedCards": {
     "title": "Add to statistics",
-    "hint": "Tap a chart or card to add it to your statistics page.",
+    "hint": "Charts are shown as they will look. Tap + Add below a chart, or tap a card, to add it to your statistics page.",
     "category": {
       "carbsFibre": "Carb types and fibre",
       "minerals": "Minerals",
@@ -1999,7 +1999,7 @@
   },
   "statUnusedCharts": {
     "title": "Unused charts",
-    "hint": "Tap a chart to add it to the top of your statistics page.",
+    "hint": "Charts are shown as they will look. Tap + Add below a chart to add it to your statistics page.",
     "searchPlaceholder": "Search all charts",
     "noSearchResults": "No charts match your search.",
     "noChartsLeft": "All charts here are already on your statistics page.",

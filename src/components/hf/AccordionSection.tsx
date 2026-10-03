@@ -11,6 +11,7 @@ export function AccordionSection({
   icon,
   count,
   defaultOpen = false,
+  bodyClassName = "p-3",
   children,
 }: {
   title: string;
@@ -18,6 +19,8 @@ export function AccordionSection({
   icon?: React.ReactNode;
   count?: number;
   defaultOpen?: boolean;
+  // Indholdets luft; graferne på "Tilføj til statistik" bruger fuld bredde.
+  bodyClassName?: string;
   children: React.ReactNode;
 }) {
   const [open, setOpen] = useState(defaultOpen);
@@ -41,7 +44,7 @@ export function AccordionSection({
           <HfChevron direction={open ? "down" : "right"} />
         </button>
       </div>
-      <div id={panelId} hidden={!open} className="bg-hf-cream p-3">
+      <div id={panelId} hidden={!open} className={`bg-hf-cream ${bodyClassName}`}>
         {children}
       </div>
     </section>
