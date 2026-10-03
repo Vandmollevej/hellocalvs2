@@ -23,14 +23,24 @@ const STEP_ML = 25;
 // presets tap-select an ml amount onto the slider below; the slider stays
 // freely adjustable afterwards for a manual amount. The slider snaps to 25 ml;
 // the amount field can be typed into directly for any other exact amount. Presets are labelled in cl
-// but register the exact ml amount. Images are alpha-trimmed PNGs; bottles get
-// a slightly taller box than glasses so they read naturally taller/slimmer.
+// but register the exact ml amount. Images are alpha-trimmed PNGs, bottom-aligned
+// and scaled by real volume: the largest (750 ml) is 100 % height and the
+// smallest (250 ml) 50 %, the others linearly in between. The largest bottle may
+// extend above the top edge of its tile.
 const CONTAINERS = [
-  { key: "bottleLarge", ml: 750, src: "/icons/water/bottle-large.png", width: 75, boxHeight: 56 },
-  { key: "bottleSmall", ml: 500, src: "/icons/water/bottle-small.png", width: 91, boxHeight: 56 },
-  { key: "glassLarge", ml: 330, src: "/icons/water/glass-large.png", width: 113, boxHeight: 46 },
-  { key: "glassSmall", ml: 250, src: "/icons/water/glass-small.png", width: 129, boxHeight: 46 },
+  { key: "bottleLarge", ml: 750, src: "/icons/water/bottle-large.png", width: 75 },
+  { key: "bottleSmall", ml: 500, src: "/icons/water/bottle-small.png", width: 91 },
+  { key: "glassLarge", ml: 330, src: "/icons/water/glass-large.png", width: 113 },
+  { key: "glassSmall", ml: 250, src: "/icons/water/glass-small.png", width: 129 },
 ] as const;
+const MAX_CONTAINER_ML = 750;
+const MIN_CONTAINER_ML = 250;
+const MAX_CONTAINER_HEIGHT_PX = 72;
+
+function containerHeight(ml: number) {
+  const share = 0.5 + (0.5 * (ml - MIN_CONTAINER_ML)) / (MAX_CONTAINER_ML - MIN_CONTAINER_ML);
+  return Math.round(MAX_CONTAINER_HEIGHT_PX * share);
+}
 
 function formatTime(value: string) {
   return new Intl.DateTimeFormat("da-DK", {
@@ -133,7 +143,7 @@ export default function WaterCreatePage() {
         </div>
 
         <div className="grid grid-cols-4 gap-4">
-          {CONTAINERS.map(({ key, ml, src, width, boxHeight }) => {
+          {CONTAINERS.map(({ key, ml, src, width }) => {
             const isSelected = selectedKey === key;
             return (
               <button
@@ -144,15 +154,15 @@ export default function WaterCreatePage() {
                   isSelected ? "hf-selected" : "bg-hf-tan text-hf-black"
                 }`}
               >
-                <span className="flex h-14 w-full items-center justify-center">
+                <span className="flex h-14 w-full items-end justify-center overflow-visible">
                   <Image
                     src={src}
                     alt=""
                     aria-hidden="true"
                     width={width}
                     height={240}
-                    className="block w-auto max-w-full object-contain"
-                    style={{ height: boxHeight }}
+                    className="block w-auto max-w-full shrink-0 object-contain"
+                    style={{ height: containerHeight(ml) }}
                   />
                 </span>
                 <span
