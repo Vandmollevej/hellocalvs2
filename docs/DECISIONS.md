@@ -2,6 +2,13 @@
 
 This file records durable decisions. Add a dated entry when a later decision changes one of them.
 
+## 2026-10-03: Voksne bestemmer selv, hvem i familien der ser deres profil
+
+- Ejerens svar: "Det kommer ikke ejeren ved, om andre kan se hinandens konti." Ændrer beslutning 2 ("betaleren giver andre adgang") for voksne medlemmer.
+- Den, der bestemmer over en profils deling (`sharingDeciderId` i `src/lib/family-sharing.ts`): personen selv, når vedkommende har eget login og ikke er et barn under 15; ellers betaleren (profiler uden eget login og børn under 15, samme aldersgrænse som udmelding). Betaleren bestemmer også over sin egen profil.
+- Betaleren har stadig altid adgang til alle familiens profiler og kan ikke slås fra.
+- `PUT /api/family/grants` afviser andre end den, der bestemmer. Betalerens "Adgang" og invitationens "Hvem skal personen have indsigt i?" viser kun profiler, betaleren bestemmer over; `joinFamily` giver kun adgang til dem. Tildelinger, betaleren gav før, bliver liggende, men personen kan nu selv slå dem fra.
+
 ## 2026-10-03: Flere sider kan lægges i bundmenuen
 
 - Brugerens ønske: Favoritter, Viden om, Opskrifter, Status, Billeddagbog og Kropsmål kan vælges som ikoner i bundmenuen. De ligger i puljen (ikke i standardmenuen, som stadig er Tilføj/Madvarer/Kalender/Statistik).

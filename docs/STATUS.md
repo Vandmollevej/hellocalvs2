@@ -5,7 +5,8 @@ Last updated: 2026-10-03
 ## 2026-10-03: Familiemedlemmer — "Familie" øverst på Profil og "Del med andre"
 
 - Medlemmer af en familie (ikke betaleren) har nu "Familie" som første række på `/profile`. Den fører til `/profile/family`, hvor "Del med andre" står øverst: én udfoldelig række "Delt med {navn}" pr. person, der kan se profilen (betaleren altid, andre via betalerens tildelinger). Tryk viser, hvad der deles (dagbogsområderne), og at personen også kan taste ind. Navnene vises, fordi de er i samme familie.
-- Visningen er kun til at se: betaleren bestemmer stadig adgangen (beslutning 2 i `docs/FAMILY.md`). Regnes ud fra `GET /api/family` (`peopleSharedWith` i `src/lib/family-sharing.ts`, test i `family-sharing.test.mjs`); ingen ny API eller migration.
+- Ejerens svar: det kommer ikke betaleren ved, om andre kan se hinandens konti. Voksne med eget login slår derfor selv deling til/fra pr. familiemedlem under "Del med andre" (betaleren har altid adgang). Profiler uden eget login og børn under 15 styres stadig af betaleren under "Adgang", og invitationens indsigt-valg viser kun dem. Se `docs/DECISIONS.md` 2026-10-03 "Voksne bestemmer selv…". Betaleren ser også "Del med andre" for sin egen profil.
+- Regel og test: `sharingDeciderId`/`peopleSharedWith` i `src/lib/family-sharing.ts` (`family-sharing.test.mjs`); `setAccessGrant` i `src/lib/family.ts` håndhæver den. Ingen migration.
 - Lint (0 fejl), typecheck, test og build grønne; skærmbilleder med mockede API-svar. Ikke testet med login mod en rigtig database.
 
 ## 2026-10-03: Forsidens puls forsvinder bagfra (samler #195 og #198)

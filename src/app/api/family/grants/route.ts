@@ -3,7 +3,8 @@ import { getSessionUser, unauthorized } from "@/lib/session";
 import { setAccessGrant } from "@/lib/family";
 import { familyErrorResponse, readJson } from "@/lib/family-api";
 
-// Betaleren giver/fjerner en persons adgang til et bestemt familiemedlem.
+// Giver/fjerner en persons adgang til et bestemt familiemedlem. Voksne med
+// eget login bestemmer selv over deres profil; ellers betaleren (setAccessGrant).
 export async function PUT(req: Request) {
   const login = await getSessionUser();
   if (!login) return unauthorized();

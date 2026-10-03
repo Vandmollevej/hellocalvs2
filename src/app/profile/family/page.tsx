@@ -130,6 +130,9 @@ function FamilyPageContent() {
   const family = status.family;
   const members = family?.members ?? [];
   const nonOwners = members.filter((member) => member.userId !== family?.ownerId);
+  // Betaleren styrer kun adgangen til profiler uden eget login og børn under
+  // 15; voksne med eget login bestemmer selv under "Del med andre".
+  const ownerManagedSubjects = nonOwners.filter((member) => member.sharingDeciderId === family?.ownerId);
   const hasGrant = (granteeId: string, subjectId: string) =>
     Boolean(family?.grants.some((grant) => grant.granteeId === granteeId && grant.subjectId === subjectId));
 
@@ -244,7 +247,16 @@ function FamilyPageContent() {
         </>
       )}
 
-      {family && !family.isOwner && <FamilySharingSection family={family} meId={status.me.id} />}
+      {family && (
+        <FamilySharingSection
+          family={family}
+          meId={status.me.id}
+          busy={busy}
+          onShare={(granteeId, allowed) =>
+            void run("/api/family/grants", "PUT", { granteeId, subjectId: status.me.id, allowed })
+          }
+        />
+      )}
 
       {family && !family.isOwner && (
         <section>
@@ -435,11 +447,11 @@ function FamilyPageContent() {
             </section>
           )}
 
-          {nonOwners.length > 1 && (
+          {ownerManagedSubjects.length > 0 && nonOwners.length > 1 && (
             <section>
               <h2 className="hf-type-section-title">{t("family.access.title")}</h2>
               <p className="hf-type-body">{t("family.access.intro")}</p>
-              {nonOwners.map((subject) => (
+              {ownerManagedSubjects.map((subject) => (
                 <div key={subject.userId} className="hf-card mt-2 hf-stack">
                   <p className="userback-ignore userback-block hf-type-card-title">{t("family.access.who", { name: subject.displayName })}</p>
                   {nonOwners

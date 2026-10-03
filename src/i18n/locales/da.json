@@ -2683,11 +2683,15 @@
     },
     "sharing": {
       "title": "Del med andre",
-      "intro": "Her kan du se, hvem i familien der kan se din profil, og hvad de kan se. {owner} bestemmer, hvem der har adgang.",
+      "introSelf": "Vælg, hvem i familien der må se din profil.",
+      "introSelfMember": "Vælg, hvem i familien der må se din profil. Det bestemmer du selv. {owner} betaler for familien og har altid adgang.",
+      "introOwner": "Her kan du se, hvem i familien der kan se din profil, og hvad de kan se. {owner} bestemmer, hvem der har adgang.",
       "none": "Ingen andre i familien kan se din profil.",
+      "shareWith": "Del med {name}",
       "sharedWith": "Delt med {name}",
       "ownerNote": "{name} betaler for familien og har altid adgang til din profil.",
       "grantNote": "{owner} har givet {name} adgang til din profil.",
+      "selfGrantNote": "Du kan stoppe delingen med {name} ovenfor.",
       "canEdit": "{name} kan også taste ind og rette på din profil. Alt står i din Kontrol-log.",
       "area": {
         "profile": "Profil (navn, alder, højde)",
@@ -2737,7 +2741,7 @@
     },
     "access": {
       "title": "Adgang",
-      "intro": "Du har altid adgang til alle profiler. Her bestemmer du, hvem andre der må se og taste ind for hvem.",
+      "intro": "Du har altid adgang til alle profiler. Her bestemmer du, hvem andre der må se og taste ind for profiler uden eget login og børn under 15. Voksne med eget login bestemmer selv under Del med andre.",
       "who": "Må se og taste ind for {name}"
     },
     "claim": {
@@ -2812,7 +2816,7 @@
       "name": "Navn",
       "email": "E-mail",
       "insightTitle": "Hvem skal personen have indsigt i?",
-      "insightHelp": "Personen kan se og taste ind på de profiler, du slår til. Du kan altid ændre det under Adgang.",
+      "insightHelp": "Personen kan se og taste ind på de profiler, du slår til. Voksne med eget login vælger selv, hvem de deler med.",
       "addChild": "Tilføj barn under 18",
       "addChildTitle": "Tilføj barn under 18",
       "addChildIntro": "Børn under 15 år kan ikke selv oprette en konto, så du opretter profilen her. Barnet bliver valgt i invitationen bagefter.",

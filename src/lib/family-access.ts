@@ -38,7 +38,8 @@ export type ProfileArea =
   | "login";
 
 // Må actorId se og taste ind for subjectId? Betaleren har adgang til alle
-// familiens profiler; andre kun via en FamilyAccessGrant fra betaleren.
+// familiens profiler; andre kun via en FamilyAccessGrant (givet af personen
+// selv eller, for profiler uden eget login og børn under 15, af betaleren).
 export async function canActFor(actorId: string, subjectId: string): Promise<boolean> {
   if (actorId === subjectId) return true;
   const membership = await prisma.familyMember.findUnique({

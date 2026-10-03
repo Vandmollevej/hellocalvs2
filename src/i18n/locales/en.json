@@ -2702,11 +2702,15 @@
     },
     "sharing": {
       "title": "Share with others",
-      "intro": "See who in the family can view your profile and what they can see. {owner} decides who has access.",
+      "introSelf": "Choose who in the family may see your profile.",
+      "introSelfMember": "Choose who in the family may see your profile. This is your decision. {owner} pays for the family and always has access.",
+      "introOwner": "See who in the family can view your profile and what they can see. {owner} decides who has access.",
       "none": "No one else in the family can see your profile.",
+      "shareWith": "Share with {name}",
       "sharedWith": "Shared with {name}",
       "ownerNote": "{name} pays for the family and always has access to your profile.",
       "grantNote": "{owner} has given {name} access to your profile.",
+      "selfGrantNote": "You can stop sharing with {name} above.",
       "canEdit": "{name} can also add and edit entries on your profile. Everything is in your control log.",
       "area": {
         "profile": "Profile (name, age, height)",
@@ -2756,7 +2760,7 @@
     },
     "access": {
       "title": "Access",
-      "intro": "You always have access to every profile. Here you decide who else may view and log for whom.",
+      "intro": "You always have access to every profile. Here you decide who else may view and log for profiles without their own login and children under 15. Adults with their own login decide for themselves under Share with others.",
       "who": "May view and log for {name}"
     },
     "claim": {
@@ -2831,7 +2835,7 @@
       "name": "Name",
       "email": "Email",
       "insightTitle": "Who should the person have insight into?",
-      "insightHelp": "The person can see and log for the profiles you switch on. You can always change this under Access.",
+      "insightHelp": "The person can see and log for the profiles you switch on. Adults with their own login choose who they share with themselves.",
       "addChild": "Add child under 18",
       "addChildTitle": "Add child under 18",
       "addChildIntro": "Children under 15 cannot create an account themselves, so you create the profile here. The child is then selected in the invitation.",
