@@ -2240,6 +2240,8 @@ enum MessageChannel {
   EMAIL
   PUSH
   BOTH
+  // Sendt via sms-gatewayen (src/lib/sms.ts).
+  SMS
 }
 
 // Admin-redigerbar skabelon pr. event ("Besked automatisering"-fanen).
@@ -2281,6 +2283,9 @@ model OutboundMessage {
   createdAt DateTime       @default(now())
   sentAt    DateTime?
   readAt    DateTime?
+  // "Til info sendte vi dig ..."-popuppen (src/lib/sent-notices.ts): sat, når
+  // brugeren har trykket "Læst". Kun relevant for sendte mails/sms'er.
+  noticeAckAt DateTime?
 
   @@index([status])
   @@index([userId, readAt])
@@ -2764,6 +2769,13 @@ model ProductFilters {
   glutenFree      String?
   lactoseFree     String?
   sugarFree       String?
+  // Sukkerpåstande (docs/DECISIONS.md 2026-10-02). Kun til søgning og filtre —
+  // vises ikke som mærker i appen. Udledt af nøgleord, navn/variant og
+  // sukker pr. 100 g (se scripts/store-products-import/build_data.py).
+  lowSugar        String?
+  noAddedSugar    String?
+  reducedSugar    String?
+  lightSugar      String?
   sweeteners      String?
   vegan           String?
   vegetarian      String?
@@ -2794,6 +2806,10 @@ model ProductFilters {
   @@index([glutenFree])
   @@index([lactoseFree])
   @@index([sugarFree])
+  @@index([lowSugar])
+  @@index([noAddedSugar])
+  @@index([reducedSugar])
+  @@index([lightSugar])
   @@index([sweeteners])
   @@index([vegan])
   @@index([vegetarian])

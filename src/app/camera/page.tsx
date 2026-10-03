@@ -8,6 +8,7 @@ import Link from "next/link";
 import { HfScreen } from "@/components/HfScreen";
 import { HelloFreshMatchReview } from "@/components/HelloFreshMatchReview";
 import { ProductCaptureFlow } from "@/components/camera/ProductCaptureFlow";
+import { IngredientsRetakeFlow } from "@/components/camera/IngredientsRetakeFlow";
 import { ObjectPickerOverlay } from "@/components/camera/ObjectPickerOverlay";
 import { cropToObject, detectObjects, type ObjectBox } from "@/lib/object-picker";
 import { useTranslation } from "@/i18n/LocaleProvider";
@@ -91,6 +92,17 @@ function KameraContent() {
   // (docs/DECISIONS.md 2026-09-24) — ellers altid stregkode.
   const mode: CameraMode =
     modeParam === "meal" ? "meal" : modeParam === "hellofresh" && forDish ? "hellofresh" : "product";
+
+  // Nyt foto af ingredienslisten på en eksisterende vare
+  // (docs/DECISIONS.md 2026-10-02).
+  const retakeProductId = params.get("retake") === "ingredients" ? params.get("product") : null;
+  if (retakeProductId) {
+    return (
+      <div className="flex h-full min-h-0 flex-col gap-4 overflow-y-auto p-4">
+        <IngredientsRetakeFlow productId={retakeProductId} />
+      </div>
+    );
+  }
 
   // Stregkode → forside → energi → indhold (docs/DECISIONS.md 2026-09-27).
   if (mode === "product") {
