@@ -375,9 +375,10 @@ def run(conn):
             log.exception("failed to import EAN %s", p.get("ean"))
     conn.commit()
     cur.close()
-    message = f"Imported/updated {imported} of {len(products)} store products"
+    message = f"{imported} af {len(products)} butiksvarer importeret/opdateret"
     log.info(message)
-    return message
+    # (besked, antal udført) til admin "Robotter"/"Nattens kørsler".
+    return message, imported
 
 
 if __name__ == "__main__":

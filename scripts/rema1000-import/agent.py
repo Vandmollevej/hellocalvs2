@@ -255,6 +255,11 @@ def run():
 
     cur.close()
     conn.close()
+    # (besked, antal udført) til admin "Robotter"/"Nattens kørsler".
+    message = f"{imported} varer importeret/opdateret"
+    if skipped_no_nutrition or skipped_no_title:
+        message += f", {len(skipped_no_nutrition) + len(skipped_no_title)} sprunget over"
+    return message, imported
 
 
 if __name__ == "__main__":

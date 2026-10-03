@@ -60,7 +60,7 @@ function valuesFromPrediction(kind: string, prediction: Record<string, unknown>)
   return prediction;
 }
 
-export async function rerunUncertainAnalyses(): Promise<string> {
+export async function rerunUncertainAnalyses(): Promise<{ message: string; count: number }> {
   const analyses = await prisma.aiProductAnalysis.findMany({
     where: {
       productId: { not: null },
@@ -185,7 +185,10 @@ export async function rerunUncertainAnalyses(): Promise<string> {
     }
   }
 
-  return `${analyses.length} åbne, ${tried} genkørt, ${improved} forbedret, ${resolved} nu over ${Math.round(
-    UNCERTAINTY_TARGET * 100,
-  )} %, ${failed} fejl`;
+  return {
+    message: `${analyses.length} åbne, ${tried} genkørt, ${improved} forbedret, ${resolved} nu over ${Math.round(
+      UNCERTAINTY_TARGET * 100,
+    )} %, ${failed} fejl`,
+    count: tried,
+  };
 }
