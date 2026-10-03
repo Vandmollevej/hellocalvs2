@@ -1070,6 +1070,9 @@ function MonthView({
                   const logged = totalKcalForDate(dailyTotals, date) > 0;
                   const current = isSameDay(date, today);
                   const isOtherMonth = date.getMonth() !== month;
+                  // Dage vi er forbi vises grå og regulære (ikke fede), så
+                  // i dag og fremtiden står tydeligst frem.
+                  const isPast = stripTime(date).getTime() < stripTime(today).getTime();
                   const hasGoal = goalsForDate(goalsByDate, date).length > 0;
                   return (
                     <button
@@ -1079,12 +1082,16 @@ function MonthView({
                       aria-label={`${date.toLocaleDateString("da-DK", { dateStyle: "long" })}${current ? t("calendar.todaySuffix") : ""}${
                         !logged ? "" : met ? t("calendar.goalMetSuffix") : t("calendar.goalMissedSuffix")
                       }${hasGoal ? t("calendar.targetDateSuffix") : ""}`}
-                      className={`hf-type-body hf-type-strong relative flex aspect-square items-center justify-center rounded-lg border focus-visible:outline-2 focus-visible:outline-hf-black ${
+                      className={`hf-type-body relative flex aspect-square items-center justify-center rounded-lg border focus-visible:outline-2 focus-visible:outline-hf-black ${
+                        isPast ? "" : "hf-type-strong"
+                      } ${
                         current
                           ? "border-transparent hf-selected"
                           : isOtherMonth
                             ? "border-hf-gray-border bg-transparent text-text-muted"
-                            : "border-transparent bg-hf-tan text-hf-black"
+                            : isPast
+                              ? "border-transparent bg-hf-tan text-text-muted"
+                              : "border-transparent bg-hf-tan text-hf-black"
                       }`}
                     >
                       {date.getDate()}
@@ -1167,8 +1174,12 @@ function WeekView({
           >
             <span className="hf-type-small hf-type-strong text-text-secondary w-10 uppercase">{date.toLocaleDateString("da-DK", { weekday: "short" })}</span>
             <span
-              className={`hf-type-body hf-type-strong flex size-9 shrink-0 items-center justify-center rounded-lg border ${
-                current ? "border-transparent hf-selected" : "border-hf-gray bg-hf-white text-hf-black"
+              className={`hf-type-body flex size-9 shrink-0 items-center justify-center rounded-lg border ${
+                current
+                  ? "hf-type-strong border-transparent hf-selected"
+                  : future
+                    ? "hf-type-strong border-hf-gray bg-hf-white text-hf-black"
+                    : "border-hf-gray bg-hf-white text-text-muted"
               }`}
             >
               {date.getDate()}
@@ -1382,8 +1393,12 @@ function ListView({
           >
             <span className="hf-type-small hf-type-strong text-text-secondary w-10 uppercase">{date.toLocaleDateString("da-DK", { weekday: "short" })}</span>
             <span
-              className={`hf-type-body hf-type-strong flex size-9 shrink-0 items-center justify-center rounded-lg border ${
-                current ? "border-transparent hf-selected" : "border-hf-gray bg-hf-white text-hf-black"
+              className={`hf-type-body flex size-9 shrink-0 items-center justify-center rounded-lg border ${
+                current
+                  ? "hf-type-strong border-transparent hf-selected"
+                  : future
+                    ? "hf-type-strong border-hf-gray bg-hf-white text-hf-black"
+                    : "border-hf-gray bg-hf-white text-text-muted"
               }`}
             >
               {date.getDate()}
