@@ -480,23 +480,12 @@ textarea::selection,
   justify-content: center;
 }
 
-/* Højre ende af appbaren: profilcirklen (44 px slot) og, med
-   .hf-appbar--help, hjælpe-chattens knap til venstre for den
-   (docs/DECISIONS.md 2026-10-02, design.md §6.1). Kolonnerne udvides
-   symmetrisk, så titlen stadig står i midten. */
+/* Højre ende af appbaren: profilcirklen (44 px slot). */
 .hf-appbar__end {
   display: flex;
   height: 44px;
   align-items: center;
   justify-content: flex-end;
-}
-
-.hf-appbar--help {
-  grid-template-columns: 88px minmax(0, 1fr) 88px;
-}
-
-.hf-appbar--compact.hf-appbar--help {
-  grid-template-columns: 80px minmax(0, 1fr) 80px;
 }
 
 .hf-appbar--compact .hf-appbar__end,
@@ -2209,8 +2198,8 @@ textarea::selection,
   height: calc(100% + 40px);
   overflow: hidden;
   pointer-events: none;
-  -webkit-mask-image: linear-gradient(to bottom, black 0%, black 56%, transparent 100%);
-  mask-image: linear-gradient(to bottom, black 0%, black 56%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to bottom, black 0%, black 72%, transparent 100%);
+  mask-image: linear-gradient(to bottom, black 0%, black 72%, transparent 100%);
 }
 
 .home-wave__layer {
@@ -2226,43 +2215,31 @@ textarea::selection,
   height: calc(100% + var(--home-wave-bleed) * 2);
 }
 
+/* Bruger 2026-10-03: toppen er skarp (ingen blur), kun bunden er sløret. */
 .home-wave__layer--sharp {
-  -webkit-mask-image: linear-gradient(to bottom, black 0%, black 28%, transparent 56%);
-  mask-image: linear-gradient(to bottom, black 0%, black 28%, transparent 56%);
+  -webkit-mask-image: linear-gradient(to bottom, black 0%, black 66%, transparent 82%);
+  mask-image: linear-gradient(to bottom, black 0%, black 66%, transparent 82%);
 }
 
-.home-wave__layer--sharp canvas {
-  filter: blur(0.8px);
+.home-wave__layer--soft {
+  -webkit-mask-image: linear-gradient(to bottom, transparent 66%, black 82%);
+  mask-image: linear-gradient(to bottom, transparent 66%, black 82%);
 }
 
-.home-wave__layer--mid {
-  -webkit-mask-image: linear-gradient(to bottom, transparent 20%, black 44%, black 52%, transparent 80%);
-  mask-image: linear-gradient(to bottom, transparent 20%, black 44%, black 52%, transparent 80%);
+.home-wave__layer--soft canvas {
+  filter: blur(12px);
 }
 
-.home-wave__layer--mid canvas {
-  filter: blur(7px);
-}
-
-.home-wave__layer--heavy {
-  -webkit-mask-image: linear-gradient(to bottom, transparent 44%, black 74%);
-  mask-image: linear-gradient(to bottom, transparent 44%, black 74%);
-}
-
-.home-wave__layer--heavy canvas {
-  filter: blur(24px);
-}
-
-/* Frostet glas nederst (bruger 2026-10-02): et mælket creme-slør oven på
-   det kraftigt slørede lag, så bevægelserne forneden kun anes svagt. */
+/* Frostet glas nederst: et mælket creme-slør, så bevægelserne forneden kun
+   anes svagt. Rører ikke den skarpe top. */
 .home-wave__frost {
   position: absolute;
   inset: 0;
   background: linear-gradient(
     to bottom,
-    transparent 38%,
-    color-mix(in srgb, var(--hf-cream) 45%, transparent) 62%,
-    color-mix(in srgb, var(--hf-cream) 68%, transparent) 100%
+    transparent 68%,
+    color-mix(in srgb, var(--hf-cream) 40%, transparent) 84%,
+    color-mix(in srgb, var(--hf-cream) 65%, transparent) 100%
   );
 }
 

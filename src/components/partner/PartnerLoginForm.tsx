@@ -27,8 +27,7 @@ export function PartnerLoginForm() {
         setError(data.message ?? "Login mislykkedes");
         return;
       }
-      router.push("/partner");
-      router.refresh();
+      router.push("/partner/verify");
     } finally {
       setLoading(false);
     }
