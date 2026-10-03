@@ -1,6 +1,7 @@
 import { AsyncLocalStorage } from "node:async_hooks";
 import type { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
+import { pruneScanLogImages } from "@/lib/scan-log-images";
 
 // Admin "Log" (docs/DECISIONS.md 2026-09-28): test-log indtil appen går live.
 // Hvert trin i scan-flowet, hvert OpenAI-kald, hver cron-kørsel og fejl.
@@ -96,6 +97,7 @@ async function pruneOldRows() {
   lastPruneAt = Date.now();
   const cutoff = new Date(Date.now() - RETENTION_DAYS * 24 * 60 * 60 * 1000);
   await prisma.debugLog.deleteMany({ where: { createdAt: { lt: cutoff } } });
+  await pruneScanLogImages(cutoff);
 }
 
 export async function debugLog(input: DebugLogInput): Promise<void> {

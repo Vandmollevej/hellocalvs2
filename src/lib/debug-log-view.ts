@@ -34,6 +34,7 @@ const EVENT_LABELS: Record<string, string> = {
   product_create_failed: "Oprettelse fejlede (telefon)",
   flow_done: "Flow færdigt",
   flow_abandoned: "Flow forladt",
+  flow_photo: "Foto gemt til loggen",
   enrich_front: "AI: navn/brand",
   enrich_barcode_logo: "AI: logo fra stregkode-foto",
   enrich_label: "Energi + ingredienser",
@@ -64,6 +65,37 @@ export const OUTCOME_LABELS: Record<FlowOutcome, string> = {
   open: "Ikke afsluttet",
 };
 
+// Trinnenes navne, som de står på knapperne i kameraflowet.
+export const STEP_LABELS: Record<string, string> = {
+  barcode: "Stregkode",
+  front: "Forside",
+  nutrition: "Energi",
+  ingredients: "Indhold",
+};
+
+export type FlowPhoto = { step: string; url: string; at: Date };
+
+// Et flow uden afslutning, der har stået stille så længe, er afbrudt (appen
+// lukket, telefonen låst …), også selvom telefonen ikke nåede at melde det.
+export const OPEN_FLOW_STALE_MS = 15 * 60 * 1000;
+
+// Trin, der kun findes, når stregkoden var ukendt (eller ved en genscanning):
+// så er en oprettelse af en vare gået i gang.
+const CREATION_EVENTS = new Set([
+  "barcode_photo_saved",
+  "barcode_photo_failed",
+  "front_photo",
+  "front_duplicate_check",
+  "photo_captured",
+  "label_attempt",
+  "nutrition_photo",
+  "ingredients_photo",
+  "flow_photo",
+  "product_create",
+  "product_create_failed",
+  "rescan_failed",
+]);
+
 export type FlowSummary = {
   flowId: string;
   rows: DebugLogRow[];
@@ -77,7 +109,22 @@ export type FlowSummary = {
   warnings: number;
   // Kun for oprettede varer: er AI-berigelsen nået til ende?
   enrichmentDone: boolean | null;
+  // Stregkoden var ukendt: brugeren var i gang med at oprette en vare.
+  creationStarted: boolean;
+  // Trinnet, flowet blev forladt på (null hvis ukendt/ikke afbrudt).
+  abandonedStep: string | null;
+  // Telefonen meldte aldrig afbrydelsen — flowet stod bare stille.
+  abandonedSilently: boolean;
+  photos: FlowPhoto[];
 };
+
+export function rowPhoto(row: DebugLogRow): FlowPhoto | null {
+  if (row.event !== "flow_photo" && row.event !== "barcode_photo_saved") return null;
+  const data = row.data as { imageUrl?: unknown; step?: unknown } | null;
+  if (typeof data?.imageUrl !== "string" || !data.imageUrl.startsWith("/product-images/")) return null;
+  const step = row.event === "barcode_photo_saved" ? "barcode" : typeof data.step === "string" ? data.step : "";
+  return { step, url: data.imageUrl, at: row.createdAt };
+}
 
 function outcomeFromRow(row: DebugLogRow): FlowOutcome | null {
   if (row.event === "flow_abandoned") return "abandoned";
@@ -86,7 +133,7 @@ function outcomeFromRow(row: DebugLogRow): FlowOutcome | null {
   return outcome === "existing" || outcome === "created" || outcome === "duplicate" ? outcome : "created";
 }
 
-export function summarizeFlows(rows: DebugLogRow[]): FlowSummary[] {
+export function summarizeFlows(rows: DebugLogRow[], now = Date.now()): FlowSummary[] {
   const byFlow = new Map<string, DebugLogRow[]>();
   for (const row of rows) {
     if (!row.flowId) continue;
@@ -99,13 +146,23 @@ export function summarizeFlows(rows: DebugLogRow[]): FlowSummary[] {
   for (const [flowId, list] of byFlow) {
     list.sort((a, b) => a.createdAt.getTime() - b.createdAt.getTime());
     let outcome: FlowOutcome = "open";
-    for (const row of list) outcome = outcomeFromRow(row) ?? outcome;
+    let abandonedStep: string | null = null;
+    for (const row of list) {
+      const next = outcomeFromRow(row);
+      if (!next) continue;
+      outcome = next;
+      const step = (row.data as { step?: unknown } | null)?.step;
+      abandonedStep = next === "abandoned" && typeof step === "string" ? step : null;
+    }
+    const endedAt = list[list.length - 1].createdAt;
+    const abandonedSilently = outcome === "open" && now - endedAt.getTime() > OPEN_FLOW_STALE_MS;
+    if (abandonedSilently) outcome = "abandoned";
     const created = outcome === "created";
     flows.push({
       flowId,
       rows: list,
       startedAt: list[0].createdAt,
-      endedAt: list[list.length - 1].createdAt,
+      endedAt,
       barcode: list.find((row) => row.barcode)?.barcode ?? null,
       productId: [...list].reverse().find((row) => row.productId)?.productId ?? null,
       userId: list.find((row) => row.userId)?.userId ?? null,
@@ -113,6 +170,10 @@ export function summarizeFlows(rows: DebugLogRow[]): FlowSummary[] {
       errors: list.filter((row) => row.level === "error").length,
       warnings: list.filter((row) => row.level === "warn").length,
       enrichmentDone: created ? list.some((row) => row.event === "enrichment_done") : null,
+      creationStarted: list.some((row) => CREATION_EVENTS.has(row.event)),
+      abandonedStep,
+      abandonedSilently,
+      photos: list.map(rowPhoto).filter((photo): photo is FlowPhoto => photo !== null),
     });
   }
   return flows.sort((a, b) => b.startedAt.getTime() - a.startedAt.getTime());

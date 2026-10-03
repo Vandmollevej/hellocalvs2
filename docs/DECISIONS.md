@@ -2,6 +2,15 @@
 
 This file records durable decisions. Add a dated entry when a later decision changes one of them.
 
+## 2026-10-03: Admin "Log" — afbrudte vareoprettelser med billeder
+
+Brugerens krav: "I admin skal der under log meldes og kunne sorteres på madoprettelser som bliver afbrudt, og man skal kunne se stregkoden / de billeder som er taget og droppet."
+
+- **Afbrudt oprettelse** = et kameraflow, hvor stregkoden var ukendt (eller en genscanning), og som sluttede uden vare. Et flow, der afbrydes allerede på stregkoden, er ikke en oprettelse (vises stadig under "Alle").
+- **Melding**: Scanninger viser et banner med antallet af afbrudte oprettelser de seneste 30 dage og et link til dem. **Filtre** (`?show=`): Alle · Afbrudte oprettelser · Nye varer · Kendte/dubletter · Med fejl, hver med antal. Kortet viser, hvilket trin brugeren forlod ("Afbrudt på Energi").
+- **Fotos gemmes, så snart de er taget**: forside, energi og indhold lå før kun i telefonens hukommelse og forsvandt ved afbrydelse. Telefonen skalerer dem til 1280 px JPEG og sender dem til `POST /api/debug-log/photo` (kun mens loggen er slået til) → `public/product-images/scan-log/`, logget som `flow_photo`. Stregkode-fotoet var allerede gemt (`barcode_photo_saved`). Billederne vises som miniaturer på kortet og i tidslinjen og åbnes i fuld størrelse. De slettes sammen med logrækkerne efter 30 dage. Det betyder én ekstra upload pr. foto i kameraflowet, så længe test-loggen er slået til.
+- **Lukket app**: React afmonterer intet, når appen/fanen lukkes, så `pagehide` melder nu `flow_abandoned` ("Appen lukket"). Et flow uden afslutning, der har stået stille i 15 minutter, vises også som afbrudt ("ingen melding fra telefonen"). Kommer siden tilbage og bliver færdig, vinder den senere afslutning.
+
 ## 2026-10-03: Forsidens puls-linje slår i den målte puls
 
 Brugerens krav: "Pulsen skal svare til den rigtige puls som måles, hvis ur tilsluttet. Ellers svarende til 60bpm."

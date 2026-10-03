@@ -2,6 +2,12 @@
 
 Last updated: 2026-10-03
 
+## 2026-10-03: Admin Log — afbrudte vareoprettelser med billeder
+
+- Admin → Log → Scanninger melder nu afbrudte oprettelser (banner med antal) og har filtre: Alle, Afbrudte oprettelser, Nye varer, Kendte/dubletter, Med fejl. Se DECISIONS.md samme dato.
+- Forside-, energi- og indholdsfotoet sendes til loggen, så snart de er taget (`POST /api/debug-log/photo`, `src/lib/scan-log-images.ts`), og vises som miniaturer sammen med stregkode-fotoet. Slettes efter 30 dage med loggen. Lukket app meldes via `pagehide`; stille flows over 15 min regnes som afbrudt.
+- Lint (0 fejl), typecheck, nye tests (`src/lib/debug-log-view.test.mjs`) og build grønne. Ikke testet med login (ingen lokal DB) — test på telefon: start en ny vare, tag forsidefoto, luk kameraet, og se den under Log → Afbrudte oprettelser.
+
 ## 2026-10-03: Kalender — profilcirklen er tilbage i dagsvisningen
 
 - Dagsvisningen (`DayDetails` i `src/app/calendar/page.tsx`) tegner sin egen grønne topbjælke som fuldskærmsdialog over siden, og dens højre hjørne var et tomt felt — så profilcirklen forsvandt, så snart en dag blev åbnet. Den viser nu `ProfileAvatarLink` som alle andre sider.

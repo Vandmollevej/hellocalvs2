@@ -65,7 +65,7 @@ import {
 } from "@/lib/camera-controls";
 import { useLiveFrames, type LiveFrame } from "./useLiveFrames";
 import { cameraVideoConstraints, captureStill, captureVideoFrame, type Still, type StillCrop } from "@/lib/camera-still";
-import { newScanFlowId, scanFlowHeaders, scanLog } from "@/lib/scan-debug-log";
+import { newScanFlowId, scanFlowHeaders, scanLog, scanLogPhoto } from "@/lib/scan-debug-log";
 import { useTranslation } from "@/i18n/LocaleProvider";
 
 // Kameraflowet under Tilføj (docs/DECISIONS.md 2026-09-27, levende scanning
@@ -243,26 +243,41 @@ export function ProductCaptureFlow({ returnSuffix, rescan }: { returnSuffix: str
 
   // Flowets start og — hvis brugeren går uden at nå en vare — hvor langt
   // hen scanningen kom. Under 0,5 s er React's dobbelte montering i udvikling.
+  // Lukkes appen/fanen, afmonteres intet, så "pagehide" melder det i stedet
+  // (docs/DECISIONS.md 2026-10-03); kommer siden tilbage, kan det meldes igen.
   useEffect(() => {
     const startedAt = Date.now();
     flowStartedAtRef.current = startedAt;
     const leaving = leavingRef;
     const data = dataRef;
     const currentStep = stepRef;
+    let abandonLogged = false;
     scanLog(flowId, "flow_start", {
       message: "Kameraflow åbnet",
       data: { userAgent: navigator.userAgent.slice(0, 200), language: navigator.language },
     });
-    return () => {
+    function logAbandoned(how: "left" | "closed") {
       const durationMs = Date.now() - startedAt;
-      if (leaving.current || durationMs < 500) return;
+      if (abandonLogged || leaving.current || durationMs < 500) return;
+      abandonLogged = true;
       scanLog(flowId, "flow_abandoned", {
         level: "warn",
-        message: `Forladt uden vare på trinnet "${currentStep.current}"`,
+        message: `${how === "closed" ? "Appen lukket" : "Forladt"} uden vare på trinnet "${currentStep.current}"`,
         barcode: data.current.barcode,
         durationMs,
-        data: { step: currentStep.current },
+        data: { step: currentStep.current, how },
       });
+    }
+    const onPageHide = () => logAbandoned("closed");
+    const onPageShow = (event: PageTransitionEvent) => {
+      if (event.persisted) abandonLogged = false;
+    };
+    window.addEventListener("pagehide", onPageHide);
+    window.addEventListener("pageshow", onPageShow);
+    return () => {
+      window.removeEventListener("pagehide", onPageHide);
+      window.removeEventListener("pageshow", onPageShow);
+      logAbandoned("left");
     };
   }, [flowId]);
 
@@ -808,6 +823,7 @@ export function ProductCaptureFlow({ returnSuffix, rescan }: { returnSuffix: str
     const chosen = await chooseObject(still.url);
     if (leavingRef.current || runId !== runIdRef.current) return;
     data.frontPhoto = chosen;
+    scanLogPhoto(flowId, "front", chosen, data.barcode);
     const front = await readFrontPhoto(chosen, languages, flowId);
     scanLog(flowId, "front_photo", {
       level: front.lookupFailed ? "warn" : "info",
@@ -900,6 +916,7 @@ export function ProductCaptureFlow({ returnSuffix, rescan }: { returnSuffix: str
     const languages = ocrLanguages();
     const durationMs = Date.now() - labelStartedAtRef.current;
     const stillReady = takeStill(need, frame).then((still) => {
+      scanLogPhoto(flowId, need, still.url, data.barcode);
       if (need === "nutrition") {
         data.nutritionPhoto = still.url;
         if (data.ingredientsOnNutritionPhoto) data.ingredientsPhoto = still.url;
