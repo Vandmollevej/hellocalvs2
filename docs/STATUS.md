@@ -1,5 +1,17 @@
 # HELLO CAL — project status
 
+## 2026-10-03: Roadmap — sukkerfiltre skal ind i databasen (importen skal køres)
+
+Bygget og pushet til master, men virker først, når importen er kørt (brugerens valg: gem som to do, tag den, når resten af webændringerne er læst ind).
+
+Skal gøres:
+1. Deploy kører migrationen `20261002100000_sugar_claim_filters` (nye kolonner på `product_filters`).
+2. Kør `scripts/store-products-import/build_data.py` (lokalt) og derefter `store-products-agent` på NAS, så `lowSugar`, `noAddedSugar`, `reducedSugar` og `lightSugar` fyldes. Indtil da er de tomme, og søgning på fx "sukkerfri" finder kun varer, der allerede har sukkerfri-filteret.
+3. Tjek stikprøver i admin (Produktdatabase → filtre): fx "Light" på lightdrikke og "Uden tilsat sukker" på marmelade. Påstande, der kun står som ikon på emballagen, kan ikke aflæses og tilføjes manuelt.
+4. Ikke set i browseren: upload/drop-zonen under Opret egen ret (webversionen) og dobbeltklik på en halv time i kalenderen.
+
+Se DECISIONS.md "2026-10-02: Sukkerpåstande til søgning".
+
 ## 2026-10-02: Billede-dagbog — før/efter med skyder
 
 - Hvert billede i dagbogens karrusel har en hvid afkrydsningsboks i øverste højre hjørne (kun ved 2+ billeder). Afkrydsning åbner et mørkt fuldskærms-overlay: billede 1 med et 1-tal til venstre, tom plads med "Efter"-knappen i midten til højre. "Efter" viser de andre billeder i et gitter; det valgte bliver billede 2.
