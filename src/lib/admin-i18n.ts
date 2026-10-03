@@ -52,6 +52,7 @@ const DICTIONARY = {
   nav_users_all: { DA: "Alle brugere", EN: "All users" },
   nav_chatbot: { DA: "Chatbot", EN: "Chatbot" },
   nav_personas: { DA: "Personas", EN: "Personas" },
+  nav_test_programmes: { DA: "Test-programmes", EN: "Test programmes" },
   nav_partners: { DA: "Partnere", EN: "Partners" },
   nav_partners_ads: { DA: "Reklamer", EN: "Ads" },
   nav_partners_contacts: { DA: "Kontakter", EN: "Contacts" },

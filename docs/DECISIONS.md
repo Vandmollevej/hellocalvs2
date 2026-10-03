@@ -74,6 +74,11 @@ Brugerens krav: flag/sprogvalg i venstre hjørne på tale-siden (mobil) og chat-
 - Points: 10 (`PointsReason.PRODUCT_RESCAN`) gives automatisk, når fotos er læst, medmindre AI'en slet ingen vare kunne se på forsidefotoet. Fejler AI'en teknisk, gives points alligevel. Bekræftet af brugeren 2026-10-02 (frem for admin-godkendelse). Samme bruger får kun points én gang pr. vare.
 - Del B: første visning gemmer `Product.rescanOfferedAt`. Scanner ingen varen igen, sender det natlige app-job `external-image-ai` (standard 03:30, admin "Cron-jobs") Open Food Facts-/USDA-billedet gennem samme OpenAI-forsideaflæsning (`analyzeFrontPhoto`): brand/subbrand/variant/pakningsstørrelse udfyldes kun, hvis de mangler, og der lægges fritlægning (beskåret til vareboksen) + logo-kandidat i kø. Højst 100 varer pr. nat; `externalImageAnalyzedAt` markerer dem som klaret.
 - Migration `20261003050000_product_rescan`.
+## 2026-10-02: Første testperson af en integration (300 points)
+
+- Hver integrations side viser et popup-banner (bundark med det grønne points-kort): "Bliv den første testperson af {app}, og optjen 300 points". Brugeren tilmelder sig via linket nederst i arket; "* Læs betingelser" linker til `/betingelser#pointsystem`.
+- Kun den allerførste, der tilmelder sig, får pladsen: én testperson pr. integration (`IntegrationTester`, unik pr. provider). Banneret vises kun, mens pladsen er ledig, og ikke igen på enheden, når brugeren har lukket det.
+- Points gives først, når admin godkender under Admin → Brugere → **Test-programmes** — samme regel som produkter og fejlrapporter (2026-09-02). Admin ser, om appen er aktiveret, og hvornår den sidst hentede data. Godkendelse giver 300 points (`INTEGRATION_TESTER`) én gang; afvisning sletter tilmeldingen, så pladsen bliver ledig igen.
 
 ## 2026-10-02: Butiksimporten: alt fra arkene med (Bilka + REMA 1000)
 

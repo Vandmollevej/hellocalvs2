@@ -1,5 +1,5 @@
 import { prisma } from "@/lib/prisma";
-import type { PointsReason } from "@prisma/client";
+import type { PointsReason, Prisma } from "@prisma/client";
 import { FREE_MONTH_COST, MAX_FREE_MONTHS, MAX_FORWARD_POINTS_PER_MONTH } from "@/lib/points-constants";
 
 // Pointsystem (docs/DECISIONS.md 2026-09-02): ledger frem for et cachet
@@ -11,9 +11,10 @@ export async function awardPoints(
   userId: string,
   reason: PointsReason,
   amount: number,
-  refs?: { productId?: string; bugReportId?: string; forwardId?: string }
+  refs?: { productId?: string; bugReportId?: string; forwardId?: string },
+  db: Prisma.TransactionClient = prisma
 ) {
-  return prisma.pointsTransaction.create({
+  return db.pointsTransaction.create({
     data: {
       userId,
       reason,

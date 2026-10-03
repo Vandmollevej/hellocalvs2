@@ -1873,6 +1873,18 @@
     "partnerPending": "En direkte forbindelse til {name} kræver en partneraftale, som endnu ikke er på plads.",
     "companionHowTo": "Hello Cal-appen på telefonen henter og skriver dine data efter valgene ovenfor. Den bruger en enhedskode til at logge ind.",
     "saveError": "Kunne ikke gemme valget. Prøv igen.",
+    "tester": {
+      "headline": "Bliv den første testperson af {name}, og optjen {points} points",
+      "body": "Aktivér {name} her på siden, og tilmeld dig via linket nederst. Når vi har set, at forbindelsen virker, får du {points} points.",
+      "signUp": "Tilmeld mig som første testperson",
+      "terms": "Læs betingelser",
+      "signedUp": "Du er tilmeldt som testperson af {name}. Aktivér appen, så får du {points} points, når vi har godkendt forbindelsen.",
+      "taken": "En anden nåede at blive første testperson af {name}.",
+      "error": "Tilmeldingen mislykkedes. Prøv igen.",
+      "close": "Luk",
+      "pending": "Du er første testperson. Du får {points} points, når vi har godkendt forbindelsen.",
+      "approved": "Tak for testen. Du har fået {points} points."
+    },
     "readTypes": {
       "weight": "Vægt",
       "bodyFat": "Fedtprocent",
