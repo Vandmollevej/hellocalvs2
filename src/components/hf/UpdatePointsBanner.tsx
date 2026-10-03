@@ -2,7 +2,6 @@
 
 import { useRef, useState } from "react";
 import Link from "next/link";
-import { IconChevronDown, IconChevronUp } from "@tabler/icons-react";
 
 // Hvidt banner øverst på varesiden: "Optjen 20 points ved at opdatere varen".
 // Kan trækkes ned/skubbes op (eller trykkes på grebet), så kun den smalle
@@ -62,10 +61,14 @@ export function UpdatePointsBanner({
         onPointerCancel={() => {
           startY.current = null;
         }}
-        className="flex h-6 w-full items-center justify-center text-text-secondary"
+        className="flex h-6 w-full items-center justify-center"
         style={{ touchAction: "none" }}
       >
-        {collapsed ? <IconChevronDown size={18} /> : <IconChevronUp size={18} />}
+        <span
+          aria-hidden="true"
+          className="block h-1 w-10 rounded-full"
+          style={{ background: "var(--hf-gray)" }}
+        />
       </button>
     </div>
   );

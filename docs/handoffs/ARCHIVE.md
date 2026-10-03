@@ -167,3 +167,10 @@ Filer: `src/lib/home-waves.ts`, `src/components/HomeWaves.tsx`, `.home-wave*` i 
 | Id | Opgave | Status | Næste skridt |
 | --- | --- | --- | --- |
 | — | Rolig, tilfældig bølge-animation bag forsiden med frostet-glas-bund og tåge | Færdig (kode) | Afventer brugerens visuelle godkendelse på telefon; justér tempo/farve efter feedback |
+
+## G-BANNER — Ét banner øverst på varesiden
+Filer: `src/components/hf/UpdatePointsBanner.tsx`, `src/components/add/AddProductView.tsx`.
+
+| Id | Opgave | Status | Næste skridt |
+| --- | --- | --- | --- |
+| — | Grønt "Scan varen igen"-banner koblet af; hvidt opdater-banner har grønnes grå trækstreg | Færdig (PR #226) | Brugeren bad om merge 2026-10-03; ikke testet på telefon |
