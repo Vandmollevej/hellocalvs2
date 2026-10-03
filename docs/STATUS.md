@@ -295,7 +295,12 @@ Last updated: 2026-10-02
 
 - `/statistics/unused-cards`: den stiplede "+ Overskrift"-knap er fjernet. Den linje-knap, der før hed "+ Skillelinje", hedder nu "Overskrift" (uden plus) og tilføjer en redigerbar overskrift med streger (header-element) øverst i layoutet. Rene skillelinjer uden tekst kan ikke længere tilføjes fra siden; eksisterende skillelinjer i gemte layouts vises og kan fjernes som før.
 - Lint og `npm run build` grønne. Ikke visuelt testet (ingen lokal DB/login) — tjek på telefon.
+Last updated: 2026-09-30
 
+## 2026-09-30: Kropsmål-rettelser + kropssammensætning under vægt
+
+- Kropsmål: tegninger følger profilens køn strengt (ingen kvindelig fallback), titel og felt på samme linje, placeholder "–", væske-link fjernet. Se DECISIONS.md samme dato.
+- Statistik → "Kalorier og vægt" har nu Fedtprocent, Muskelmasse og Kropsvand (væske) som valgbare serier under vægten, kun når en tilsluttet integration har `read.bodyFat` slået til. Ikke live-testet (ingen lokal DB) — tjek på telefon, at en mandlig profil nu får de mandlige tegninger; hvis ikke, svarer `/api/profile` med `sex: null` for brugeren.
 ## 2026-09-29: Offentlig forside for udloggede
 
 - Ny hent-appen-forside uden telefonramme, med QR-koder, planer med betalings-ark, Hello Doc-bjælke, nøgletal fra databasen, `/business` (kontaktformular) og `/presse`. Se DECISIONS.md samme dato.
