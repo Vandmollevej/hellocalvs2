@@ -10,6 +10,7 @@ import {
   IconUsers,
   IconMail,
   IconStethoscope,
+  IconRefresh,
 } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
 import { AccordionCard, ChevronRow } from "@/components/hf/AccordionCard";
@@ -18,6 +19,8 @@ import { IconPlateCutlery } from "@/components/icons/PlateCutlery";
 import { IconBathScale } from "@/components/hf/IconBathScale";
 import { IconWaistMeasure } from "@/components/icons/WaistMeasure";
 import { HfProgressStepper } from "@/components/hf/HfProgressStepper";
+import { OnboardingWizard } from "@/components/OnboardingWizard";
+import { accountSetupDone, isAccountSetupComplete, type AccountSetupUser } from "@/lib/account-setup";
 import { useTranslation } from "@/i18n/LocaleProvider";
 import { ProfileSwitcher } from "@/components/family/ProfileSwitcher";
 import { useFamilyStatus } from "@/components/family/FamilyStatusProvider";
@@ -25,7 +28,7 @@ import { SkeletonCards, SkeletonList, SkeletonScreen } from "@/components/hf/Ske
 
 type Sex = "FEMALE" | "MALE";
 
-type ProfileUser = {
+type ProfileUser = AccountSetupUser & {
   displayName: string;
   email: string;
   weightKg: number | null;
@@ -46,6 +49,7 @@ export default function ProfilePage() {
   const isFamilyMember = Boolean(familyStatus?.family && !familyStatus.family.isOwner);
   const [user, setUser] = useState<ProfileUser | null>(null);
   const [loading, setLoading] = useState(true);
+  const [showGuide, setShowGuide] = useState(false);
   const [unreadMessages, setUnreadMessages] = useState(0);
 
   useEffect(() => {
@@ -79,6 +83,9 @@ export default function ProfilePage() {
     };
   }, []);
 
+  const setupDone = user ? accountSetupDone(user) : { aboutYou: false, goals: false, habits: false };
+  const setupComplete = user ? isAccountSetupComplete(user) : false;
+
   return (
     <HfScreen title={t("profile.title")} alwaysShowBackButton showAppSettingsButton>
       {loading || !user ? (
@@ -92,6 +99,18 @@ export default function ProfilePage() {
         )
       ) : (
         <div className="hf-page">
+          {showGuide && <OnboardingWizard forceVisible onClose={() => setShowGuide(false)} />}
+          {/* Kontoopsætning står allerøverst, til alle felter og indstillinger er sat. */}
+          {!setupComplete && (
+            <AccordionCard>
+              <ChevronRow
+                icon={<IconRefresh size={20} />}
+                label={t("settings.learnTheApp")}
+                onClick={() => setShowGuide(true)}
+                divider={false}
+              />
+            </AccordionCard>
+          )}
           {isFamilyMember && (
             <AccordionCard>
               <ChevronRow
@@ -103,17 +122,18 @@ export default function ProfilePage() {
             </AccordionCard>
           )}
           <ProfileSwitcher />
-          {/* Statisk indtil guided profilopsætning beregner det dynamisk. */}
-          <HfProgressStepper
-            steps={[
-              t("profile.completion.aboutYou"),
-              t("profile.completion.goals"),
-              t("profile.completion.habits"),
-            ]}
-            current={0}
-            progress={0.2}
-            label={t("profile.completion.label")}
-          />
+          {!setupComplete && (
+            <HfProgressStepper
+              steps={[
+                t("profile.completion.aboutYou"),
+                t("profile.completion.goals"),
+                t("profile.completion.habits"),
+              ]}
+              current={Math.max(0, Object.values(setupDone).indexOf(false))}
+              progress={0}
+              label={t("profile.completion.label")}
+            />
+          )}
           <AccordionCard>
             <ChevronRow
               icon={<IconUser size={20} />}

@@ -4365,6 +4365,11 @@ Ejerens krav: "Hvis man er familiekontoejer skal 'skift profil' stå øverst og 
 - Det hvide banners greb er samme grå streg som det grønne bannerets (ikke en pil), `src/components/hf/UpdatePointsBanner.tsx`.
 
 
+## 2026-10-03: Kontoopsætning vises øverst på Profil, til alt er sat
+
+- Ejerens krav: kassen "Kontoopsætning" (den, der starter guiden igen) står allerøverst på Profil, indtil alle felter og indstillinger er sat; så forsvinder både kassen og proceslinjen. Felterne må gerne udfyldes uden om guiden.
+- Færdig regnes ud fra data (`src/lib/account-setup.ts`), ikke fra et "afsluttet"-flag: Om dig, Mål og Vaner skal alle være klaret.
+
 ## 2026-10-03: Syv sprog, samme markeder som HelloFresh
 
 Ejerens krav: "Vi skal have samme sprog" som HelloFresh, "på alt" (app, hjælpecenter, support).
