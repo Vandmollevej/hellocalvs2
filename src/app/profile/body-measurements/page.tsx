@@ -1,7 +1,6 @@
 "use client";
 
 import Image from "next/image";
-import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { HfScreen } from "@/components/HfScreen";
@@ -58,8 +57,9 @@ function formatEntrySummary(
     .join(" · ");
 }
 
-// Samme mønster som vægt-kalibrerings hvilende, kantløse talfelt — kun en
-// bundkant ved fokus, så hvileværdien læses som tekst, ikke et udfyldt felt.
+// Samme mønster som vægt-kalibreringens dagliste: titel til venstre, tallet
+// på samme linje til højre med enheden efter — aldrig under overskriften
+// (brugerkrav 2026-09-30). Tomt felt viser blot "–", intet forslag til tal.
 function InlineMeasurementInput({
   value,
   onChange,
@@ -79,7 +79,7 @@ function InlineMeasurementInput({
       onChange={(event) => onChange(event.target.value)}
       onBlur={onCommit}
       placeholder={placeholder}
-      className="hf-type-title w-full border-b border-transparent bg-transparent px-0 py-0.5 text-left text-hf-black outline-none focus:border-hf-black/30"
+      className="hf-type-title w-20 min-w-0 border-b border-transparent bg-transparent px-0 py-0.5 text-right text-hf-black outline-none placeholder:text-hf-black/30 focus:border-hf-black/30"
     />
   );
 }
@@ -98,8 +98,10 @@ export default function BodyMeasurementsPage() {
   // denne ene række i stedet for at oprette en ny måling pr. felt, så
   // billede-dagbogens "Aktuelle mål" kan vise dem samlet.
   const todaysEntryId = useRef<string | null>(null);
-  // Køn læses fra profilen og styrer kun, hvilke tegninger der vises. Uden
-  // valgt køn gættes der ikke — kortene vises da uden tegning.
+  // Køn læses fra profilen og styrer kun, hvilke tegninger der vises: mand →
+  // mandlige tegninger, kvinde → kvindelige. Uden valgt køn (eller før
+  // profilen er hentet) gættes der ikke — kortene vises da uden tegning
+  // (brugerkrav 2026-09-30: en mand må aldrig få vist de kvindelige figurer).
   const [sex, setSex] = useState<BodyMeasurementSex | null>(null);
   const [sexLoaded, setSexLoaded] = useState(false);
 
@@ -197,14 +199,14 @@ export default function BodyMeasurementsPage() {
         )}
 
         {/* Ét kort pr. mål i Statistik-kortenes stil: tegning til venstre i fast
-            bredde (så titlerne flugter), titel + felt til højre. */}
+            bredde (så titlerne flugter), titel og felt på samme linje til højre. */}
         <div className="flex flex-col gap-3">
           {BODY_MEASUREMENT_FIELDS.map(({ field, labelKey, image }) => (
             <label key={field} className="flex items-center gap-4 rounded-2xl bg-hf-tan p-4 text-left">
               <span className="flex h-[108px] w-20 shrink-0 items-center justify-center">
-                {image && (
+                {image && sex && (
                   <Image
-                    src={image[sex ?? "FEMALE"]}
+                    src={image[sex]}
                     alt=""
                     width={80}
                     height={108}
@@ -212,9 +214,9 @@ export default function BodyMeasurementsPage() {
                   />
                 )}
               </span>
-              <span className="flex min-w-0 flex-1 flex-col gap-1">
+              <span className="flex min-w-0 flex-1 items-center justify-between gap-3">
                 <span className="hf-type-body hf-type-strong text-hf-black">{t(labelKey)}</span>
-                <span className="flex items-baseline gap-2">
+                <span className="flex shrink-0 items-baseline gap-2">
                   <InlineMeasurementInput
                     value={values[field]}
                     onChange={(value) => setValues((current) => ({ ...current, [field]: value }))}
@@ -239,9 +241,6 @@ export default function BodyMeasurementsPage() {
         >
           {t("bodyMeasurementChart.showInStats")}
         </button>
-        <Link href="/statistics/body-water" className="hf-type-small hf-type-strong text-hf-black underline text-center">
-          {t("waterStats.link")}
-        </Link>
         {saving && (
           <p className="hf-type-micro text-text-secondary text-center">
             {t("bodyMeasurements.saving")}

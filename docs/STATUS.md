@@ -431,7 +431,12 @@ Last updated: 2026-10-02
 - Fejl fra ejeren (skærmbillede 30/9): en gemt vægt kom ikke frem i kalenderen. Kalenderen hentede allerede `/api/weight-entries`, men brugte kun vejningerne til vægtestimatet.
 - Nu: badevægt-ikon på dagen i måneds- (nederste venstre hjørne), uge-, liste- og ugetidslinje-visningen (kun ikon — der er ikke plads til tallet). Dagvisningen viser vægt + klokkeslæt i timerækken, i timens oversigt (tryk på timen) og som linje under dagsstatus. Nye tekster `calendar.weighIn*`/`calendar.dayWeighIn` (da/en).
 - Lint, typecheck og `npm run build` grønne. Ikke live-testet (ingen lokal DB) — tjek på telefon. Bemærk: listen henter højst 200 vejninger (nyeste først), så meget gamle måneder kan mangle ikonet.
+Last updated: 2026-09-30
 
+## 2026-09-30: Kropsmål-rettelser + kropssammensætning under vægt
+
+- Kropsmål: tegninger følger profilens køn strengt (ingen kvindelig fallback), titel og felt på samme linje, placeholder "–", væske-link fjernet. Se DECISIONS.md samme dato.
+- Statistik → "Kalorier og vægt" har nu Fedtprocent, Muskelmasse og Kropsvand (væske) som valgbare serier under vægten, kun når en tilsluttet integration har `read.bodyFat` slået til. Ikke live-testet (ingen lokal DB) — tjek på telefon, at en mandlig profil nu får de mandlige tegninger; hvis ikke, svarer `/api/profile` med `sex: null` for brugeren.
 ## 2026-09-29: Offentlig forside for udloggede
 
 - Ny hent-appen-forside uden telefonramme, med QR-koder, planer med betalings-ark, Hello Doc-bjælke, nøgletal fra databasen, `/business` (kontaktformular) og `/presse`. Se DECISIONS.md samme dato.

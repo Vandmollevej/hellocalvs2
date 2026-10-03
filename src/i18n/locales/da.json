@@ -1468,9 +1468,6 @@
     "saving": "Gemmer…",
     "loading": "Henter…",
     "noEntriesYet": "Ingen vejninger registreret endnu.",
-    "deleteAria": "Slet vejning",
-    "delete": "Slet",
-    "recentTitle": "Seneste vejninger",
     "status": {
       "saved": "Oplysningerne er gemt.",
       "nothing": "Der er ingen vægt at gemme endnu.",
@@ -1494,7 +1491,7 @@
       "thigh": "Lår",
       "upperArm": "Overarm"
     },
-    "placeholder": "fx 82",
+    "placeholder": "–",
     "saving": "Gemmer…",
     "loading": "Henter…",
     "noEntriesYet": "Ingen kropsmål registreret endnu.",
@@ -2007,6 +2004,9 @@
     "calories": "Kalorier",
     "weight": "Vægt",
     "trendWeight": "Trendvægt (AI-estimat)",
+    "bodyFat": "Fedtprocent",
+    "muscleMass": "Muskelmasse",
+    "bodyWater": "Kropsvand (væske)",
     "caloriesAndWeightChart": "Kalorier og vægt",
     "sleepQuality": "Oplevet søvnkvalitet",
     "sleepQualityChart": "Oplevet søvnkvalitet og kalorier"

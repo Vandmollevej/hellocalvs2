@@ -57,6 +57,10 @@ export default function StatisticsPage() {
   const [activities, setActivities] = useState<ActivityTotals[]>([]);
   const [metrics, setMetrics] = useState<HealthMetricTotals[]>([]);
   const [hasConnectedIntegration, setHasConnectedIntegration] = useState(false);
+  // Kropssammensætning (fedt, muskel, kropsvand) vises kun under vægten, når
+  // en tilsluttet integration har "Fedtprocent m.m." slået til i sin opsætning
+  // (brugerkrav 2026-09-30: væske hører under vægt, ikke på Kropsmål-siden).
+  const [bodyCompositionEnabled, setBodyCompositionEnabled] = useState(false);
   const [warnOnRecommendedLimits, setWarnOnRecommendedLimits] = useState(false);
   const [autoExpandUncertainty, setAutoExpandUncertainty] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -143,6 +147,9 @@ export default function StatisticsPage() {
         setHasConnectedIntegration(
           integrationData.integrations.some((i) => i.connectable && i.status === "CONNECTED"),
         );
+        setBodyCompositionEnabled(
+          integrationData.integrations.some((i) => i.status === "CONNECTED" && i.settings.read.bodyFat === true),
+        );
         setMetrics(metricData.metrics);
         setWarnOnRecommendedLimits(Boolean(profileData.user.warnOnRecommendedLimits));
         setAutoExpandUncertainty(Boolean(profileData.user.autoExpandUncertainty));
@@ -152,6 +159,7 @@ export default function StatisticsPage() {
           setRegistrations([]);
           setActivities([]);
           setHasConnectedIntegration(false);
+          setBodyCompositionEnabled(false);
           setMetrics([]);
           setWarnOnRecommendedLimits(false);
         }

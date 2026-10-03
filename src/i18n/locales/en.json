@@ -1468,9 +1468,6 @@
     "saving": "Saving…",
     "loading": "Loading…",
     "noEntriesYet": "No weigh-ins logged yet.",
-    "deleteAria": "Delete weigh-in",
-    "delete": "Delete",
-    "recentTitle": "Recent weigh-ins",
     "status": {
       "saved": "Your information has been saved.",
       "nothing": "There is no weight to save yet.",
@@ -1494,7 +1491,7 @@
       "thigh": "Thigh",
       "upperArm": "Upper arm"
     },
-    "placeholder": "e.g. 82",
+    "placeholder": "–",
     "saving": "Saving…",
     "loading": "Loading…",
     "noEntriesYet": "No measurements logged yet.",
@@ -2026,6 +2023,9 @@
     "calories": "Calories",
     "weight": "Weight",
     "trendWeight": "Trend weight (AI estimate)",
+    "bodyFat": "Body fat",
+    "muscleMass": "Muscle mass",
+    "bodyWater": "Body water",
     "caloriesAndWeightChart": "Calories and weight",
     "sleepQuality": "Sleep quality",
     "sleepQualityChart": "Sleep quality and calories"

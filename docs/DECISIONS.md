@@ -354,6 +354,20 @@ Uge- og Liste-visningen beholder "Ingen indtastninger" i gråt på tomme dage.
 - Ældre gemte layouts med de gamle enkelt-grafer omskrives til gruppegraferne.
 - Grafernes linjevalg vises inde i kortet (ikke svævende), så det ikke klippes af omgivende bokse.
 - Sprogregel fra ejeren: "krydse af", "slå til" o.l. betyder altid til/fra-knapper (`Toggle`), aldrig afkrydsningsfelter.
+## 2026-09-30: Kropsmål — køn styrer tegningerne strengt; væske hører under vægt
+
+- Kropsmål-siden viser kun tegninger, der matcher profilens køn: mand → mandlige,
+  kvinde → kvindelige. Intet køn (eller profil endnu ikke hentet) → ingen tegning
+  og hint om at vælge køn. Der gættes aldrig på et køn (tidligere faldt siden
+  tilbage på kvindelige tegninger, hvilket en mandlig bruger fik vist).
+- Hvert kort har titlen til venstre og talfeltet på samme linje til højre med
+  "cm" efter — aldrig under overskriften. Tomt felt viser "–", ingen forslag
+  som "fx 82" (brugerkrav 2026-09-30).
+- Væske (kropsvand), fedtprocent og muskelmasse hører under vægten, ikke på
+  Kropsmål-siden: de er valgbare serier i statistikgrafen "Kalorier og vægt"
+  (efter Vægt/Trendvægt) — og kun når en tilsluttet integration har læsetypen
+  "Fedtprocent m.m." (`read.bodyFat`) slået til i sin opsætning. Linket til
+  `/statistics/body-water` fra Kropsmål er fjernet; siden findes stadig uden link.
 
 ## 2026-09-29: Aktivitetsniveau, PAL og kaloriemål
 
