@@ -177,6 +177,11 @@ Last updated: 2026-10-02
   rører vi ikke.
 - Lint og build grønne. Ikke set på telefon.
 
+## 2026-10-02: Points flyttet op i profilmenuen
+
+- Rækken "Points" på `/profile` ligger nu som nr. 2 lige under "Profil" (før lå den mellem Billede-dagbog og Opskrifter). Kun rækkefølgen i `src/app/profile/page.tsx` er ændret.
+- Lint, typecheck og `npm run build` grønne.
+
 ## 2026-09-29: Offentlig forside for udloggede
 
 - Ny hent-appen-forside uden telefonramme, med QR-koder, planer med betalings-ark, Hello Doc-bjælke, nøgletal fra databasen, `/business` (kontaktformular) og `/presse`. Se DECISIONS.md samme dato.
