@@ -66,6 +66,13 @@ Last updated: 2026-10-03
 - Lint, typecheck og `npm run build` grønne. Ikke live-testet (ingen lokal DB/OpenAI-nøgle). `page-tree.test.mjs` fejler fortsat på master (uvedkommende; den nye side er tilføjet i sidetræet).
 
 ## 2026-10-03: Opdater-varen-banner (20 points)
+Last updated: 2026-10-03
+
+## 2026-10-03: Business-siden — "Den typiske bruger" (annoncørstatistik)
+
+- `/business` har ny sektion mellem Mulighederne og Kontakt: medianbrugeren (køn + alder, startvægt, vægtændring + andel der har tabt sig, registreringer og dage med registrering pr. uge), de 5 mest registrerede produkttyper (andel af registreringer, 90 dage) og en tabel, der sammenligner den typiske bruger (median) med gennemsnittet af brugere med samme køn og alder (±5 år) — forskel i procentpoint for andele, ellers i procent. Se DECISIONS.md samme dato.
+- Kode: `src/lib/business-audience.ts` (ren beregning, tests i `business-audience.test.mjs`), `src/lib/business-audience-data.ts` (Prisma + rå SQL), `src/components/landing/BusinessAudience.tsx`.
+- Vises først ved mindst 10 aktive brugere (ellers kort forklaring); sammenligningen kræver mindst 5 i gruppen. Ingen migration. Ikke live-testet (ingen lokal DB) — tjek `/business` på desktop og telefon, når der er brugere nok.
 
 - Hvidt, sammenklappeligt banner øverst på varesiden når indhold, energi, logo eller produktbillede mangler; fører til ny side `/add/[id]/update` med kamera pr. manglende ting. Giver 20 points én gang pr. bruger og vare — også for admin, så det kan testes. Se DECISIONS 2026-10-03.
 - Migration `20261003100000_points_product_updated` skal med deployet. Lint, typecheck og build kørt; ikke set i browser eller prøvet med rigtigt foto/AI-nøgle her — test: åbn en vare uden indhold/logo som admin, tag billede, tjek Profil → Points.
