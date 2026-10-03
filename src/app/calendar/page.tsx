@@ -13,6 +13,7 @@ import {
   IconChevronLeft,
   IconChevronRight,
   IconLayoutList,
+  IconScale,
   IconStarFilled,
 } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
@@ -57,6 +58,13 @@ import { COMPOSITION_GOAL_FIELDS } from "@/lib/goal-composition";
 import type { GoalDTO, GoalTargetDTO } from "@/lib/user-goals";
 import { Skeleton, SkeletonCards, SkeletonScreen } from "@/components/hf/Skeleton";
 import { GoalStatusSummary } from "@/components/calendar/GoalStatusSummary";
+import {
+  formatMeasurementValue,
+  formatWeightKg,
+  measurementsForDay,
+  type CalendarMeasurement,
+  type CalendarWeighIn,
+} from "@/lib/calendar-measurements";
 
 const WEEKDAY_KEYS = [
   "calendar.weekdayMon",
@@ -406,7 +414,8 @@ export default function CalendarPage() {
   const [waterEntries, setWaterEntries] = useState<WaterEntry[]>([]);
   const [sleepDefaults, setSleepDefaults] = useState<SleepDefaults | null>(null);
   const [energyProfile, setEnergyProfile] = useState<EnergyProfile | null>(null);
-  const [weighIns, setWeighIns] = useState<WeighIn[]>([]);
+  // Hele rækken fra /api/weight-entries (id, kilde) — vises også i dagsvisningen.
+  const [weighIns, setWeighIns] = useState<(WeighIn & CalendarWeighIn)[]>([]);
   // Enhedsdata (aktiv energi, skridt) pr. dag — docs/ACTIVITY-PAL.md F4.
   const [healthMetrics, setHealthMetrics] = useState<HealthMetricSample[]>([]);
   const [budgetSnapshots, setBudgetSnapshots] = useState<BudgetSnapshot[]>([]);
@@ -672,7 +681,7 @@ export default function CalendarPage() {
     let cancelled = false;
     fetch("/api/weight-entries")
       .then((response) => (response.ok ? response.json() : { entries: [] }))
-      .then((data: { entries?: WeighIn[] }) => {
+      .then((data: { entries?: (WeighIn & CalendarWeighIn)[] }) => {
         if (!cancelled) setWeighIns(data.entries ?? []);
       })
       .catch(() => {});
@@ -1000,6 +1009,7 @@ export default function CalendarPage() {
           )}
           activities={activities.filter((activity) => isSameDay(new Date(activity.startedAt), selectedDate))}
           waterEntries={waterEntries.filter((entry) => isSameDay(new Date(entry.loggedAt), selectedDate))}
+          measurements={measurementsForDay(weighIns, healthMetrics, (time) => isSameDay(time, selectedDate))}
           goals={goalsForDate(goalsByDate, selectedDate)}
           loading={registrationsLoading}
           error={registrationsError}
@@ -1917,6 +1927,7 @@ function DayDetails({
   registrations,
   activities,
   waterEntries,
+  measurements,
   goals,
   loading,
   error,
@@ -1938,6 +1949,8 @@ function DayDetails({
   registrations: Registration[];
   activities: Activity[];
   waterEntries: WaterEntry[];
+  /** Dagens vejninger og kropsmålinger (Withings m.fl. eller manuelle). */
+  measurements: CalendarMeasurement[];
   goals: GoalDTO[];
   loading: boolean;
   error: boolean;
@@ -2333,6 +2346,7 @@ function DayDetails({
                   const waterMl =
                     hourWaterEntries.reduce((sum, entry) => sum + entry.amountMl, 0) +
                     waterRegistrations.reduce((sum, registration) => sum + waterRegistrationMl(registration), 0);
+                  const hourMeasurements = measurements.filter((item) => item.time.getHours() === hour);
                   return (
                     <HourRow
                       key={hour}
@@ -2342,7 +2356,9 @@ function DayDetails({
                       kcalTotal={kcalTotal}
                       waterMl={waterMl}
                       activities={hourActivities}
-                      hasEntries={hourRegistrations.length > 0 || hourWaterEntries.length > 0}
+                      weightKg={hourMeasurements.findLast((item) => item.weightKg !== null)?.weightKg ?? null}
+                      hasMeasurement={hourMeasurements.length > 0}
+                      hasEntries={hourRegistrations.length > 0 || hourWaterEntries.length > 0 || hourMeasurements.length > 0}
                       hasFood={hourRegistrations.length > waterRegistrations.length}
                       hasGoal={hour === GOAL_HOUR && goals.length > 0}
                       showAddBar={addBarHour === hour}
@@ -2388,6 +2404,7 @@ function DayDetails({
           hour={openHour}
           registrations={registrations.filter((registration) => new Date(registration.createdAt).getHours() === openHour)}
           waterEntries={waterEntries.filter((entry) => new Date(entry.loggedAt).getHours() === openHour)}
+          measurements={measurements.filter((item) => item.time.getHours() === openHour)}
           goals={openHour === GOAL_HOUR ? goals : []}
           onClose={() => setOpenHour(null)}
         />
@@ -2410,6 +2427,8 @@ function HourRow({
   height,
   kcalTotal,
   waterMl,
+  weightKg,
+  hasMeasurement,
   activities,
   hasEntries,
   hasFood,
@@ -2425,6 +2444,10 @@ function HourRow({
   kcalTotal: number;
   /** Timens vand i ml (0 = intet vand). */
   waterMl: number;
+  /** Timens (seneste) vejning — null uden vejning. */
+  weightKg: number | null;
+  /** En måling uden vejning (fx blodtryk) viser kun vægt-ikonet. */
+  hasMeasurement: boolean;
   activities: Activity[];
   hasEntries: boolean;
   /** Mindst én registrering, der ikke er vand — ellers vises kun glasset. */
@@ -2520,6 +2543,12 @@ function HourRow({
         >
           {hasFood && <EnergyChip kind="intake" value={kcalTotal} />}
           {waterMl > 0 && <EnergyChip kind="water" value={waterMl} />}
+          {hasMeasurement && (
+            <span className="flex items-center gap-1">
+              <IconScale size={16} aria-hidden="true" />
+              {weightKg !== null && formatWeightKg(weightKg)}
+            </span>
+          )}
           <IconChevronRight size={16} className="-ml-1 opacity-50" />
         </button>
       )}
@@ -2720,18 +2749,21 @@ function GoalAccordion({ goal }: { goal: GoalDTO }) {
 // glas vand fra /water/create.
 type HourItem =
   | { kind: "registration"; id: string; time: Date; registration: Registration }
-  | { kind: "water"; id: string; time: Date; entry: WaterEntry };
+  | { kind: "water"; id: string; time: Date; entry: WaterEntry }
+  | { kind: "measurement"; id: string; time: Date; measurement: CalendarMeasurement };
 
 function HourEntriesOverlay({
   hour,
   registrations,
   waterEntries,
+  measurements,
   goals,
   onClose,
 }: {
   hour: number;
   registrations: Registration[];
   waterEntries: WaterEntry[];
+  measurements: CalendarMeasurement[];
   goals: GoalDTO[];
   onClose: () => void;
 }) {
@@ -2744,6 +2776,7 @@ function HourEntriesOverlay({
       registration,
     })),
     ...waterEntries.map<HourItem>((entry) => ({ kind: "water", id: entry.id, time: new Date(entry.loggedAt), entry })),
+    ...measurements.map<HourItem>((measurement) => ({ kind: "measurement", id: measurement.id, time: measurement.time, measurement })),
   ].sort((a, b) => a.time.getTime() - b.time.getTime());
   const groups: Array<{ key: string; time: Date; items: HourItem[] }> = [];
   for (const item of sorted) {
@@ -2807,10 +2840,13 @@ function HourEntriesOverlay({
               sum +
               (item.kind === "water"
                 ? item.entry.amountMl
-                : isWaterRegistration(item.registration)
+                : item.kind === "registration" && isWaterRegistration(item.registration)
                   ? waterRegistrationMl(item.registration)
                   : 0),
             0,
+          );
+          const groupWeight = group.items.find(
+            (item): item is Extract<HourItem, { kind: "measurement" }> => item.kind === "measurement" && item.measurement.weightKg !== null,
           );
           return (
             <div key={group.key} className="mb-2 overflow-hidden rounded-2xl bg-hf-tan">
@@ -2826,6 +2862,12 @@ function HourEntriesOverlay({
                 <span className="hf-type-body hf-type-strong flex items-center gap-2 text-hf-black">
                   {foodItems.length > 0 && <EnergyChip kind="intake" value={groupKcal} iconSize={18} />}
                   {groupWaterMl > 0 && <EnergyChip kind="water" value={groupWaterMl} iconSize={18} />}
+                  {groupWeight && (
+                    <span className="flex items-center gap-1">
+                      <IconScale size={18} aria-hidden="true" />
+                      {formatWeightKg(groupWeight.measurement.weightKg as number)}
+                    </span>
+                  )}
                   <HfChevron direction={isOpen ? "down" : "right"} className="-ml-1 text-hf-black" />
                 </span>
               </button>
@@ -2852,6 +2894,9 @@ function HourEntriesOverlay({
                           />
                         </div>
                       );
+                    }
+                    if (item.kind === "measurement") {
+                      return <MeasurementRow key={item.id} measurement={item.measurement} className={rowClass} />;
                     }
                     const { registration } = item;
                     const isWater = isWaterRegistration(registration);
@@ -2883,6 +2928,37 @@ function HourEntriesOverlay({
           );
         })}
       </div>
+    </div>
+  );
+}
+
+// En vejning med vægtens øvrige målinger (fedtprocent, muskelmasse …) eller
+// en måling uden vejning (fx blodtryk) — alt, integrationen har leveret.
+function MeasurementRow({ measurement, className }: { measurement: CalendarMeasurement; className: string }) {
+  const { t } = useTranslation();
+  const source = measurement.source && measurement.source !== "MANUAL" ? t(`calendar.measurement.source.${measurement.source}`) : null;
+  return (
+    <div className={className}>
+      <FoodRow
+        thumbnail={<IconScale size={22} className="text-hf-black" aria-hidden="true" />}
+        title={measurement.weightKg !== null ? t("calendar.measurement.weight") : t("calendar.measurement.title")}
+        subtitle={source ? <p className="hf-type-small text-text-secondary">{source}</p> : undefined}
+        right={
+          measurement.weightKg !== null ? (
+            <span className="hf-type-body hf-type-strong text-hf-black">{formatWeightKg(measurement.weightKg)}</span>
+          ) : undefined
+        }
+      />
+      {measurement.metrics.length > 0 && (
+        <dl className="grid grid-cols-[1fr_auto] gap-x-4 gap-y-1 pb-3 pl-[54px]">
+          {measurement.metrics.map((metric) => (
+            <div key={metric.type} className="contents">
+              <dt className="hf-type-small text-text-secondary">{t(`calendar.measurement.type.${metric.type}`)}</dt>
+              <dd className="hf-type-small hf-type-strong text-right text-hf-black">{formatMeasurementValue(metric)}</dd>
+            </div>
+          ))}
+        </dl>
+      )}
     </div>
   );
 }

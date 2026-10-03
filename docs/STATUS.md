@@ -8,6 +8,13 @@ Last updated: 2026-10-03
 - Dagsvisningen genåbnes efter navigation væk fra `/calendar` (Tilbage eller "Kalender" i menuen) i stedet for at falde tilbage til måneden. Ny `src/lib/calendar-open-day.ts` (URL `?date=` + sessionStorage), koblet ind i `src/app/calendar/page.tsx`. Se DECISIONS.md samme dato.
 - Lint, typecheck og build grønne. Ikke live-testet (ingen lokal DB/login) — test på telefon: åbn en dag → tryk en registrering → Tilbage, og åbn en dag → Statistik → Kalender.
 
+## 2026-10-03: Vejninger og kropsmålinger vises i kalenderen
+
+- Brugeren: "Jeg har synkroniseret Withings, men min vægt mv. står ikke i kalenderen". Årsag: kalenderens dagsvisning viste kun mad og vand — vejninger (manuelle og fra integrationer) blev kun brugt til vægtestimatet.
+- Nu: timens række viser vægt-ikon + seneste vægt; timeoversigten viser vejningen med kilde (fx Withings) og alle målinger taget samtidig (fedtprocent, fedtmasse, muskelmasse, kropsvand, knoglemasse, visceralt fedt, BMR, BMI …). Målinger uden vejning (fx blodtryk) står som "Måling". Dagssummer (skridt, søvn) vises ikke her.
+- Kode: `src/lib/calendar-measurements.ts` (+ test), `src/app/calendar/page.tsx` (`MeasurementRow`, `HourRow`, `HourEntriesOverlay`). `/api/weight-entries` returnerer nu op til 1000 vejninger (før 200).
+- Lint, typecheck, tests og build grønne. Ikke testet på telefon.
+
 ## 2026-10-03: Adgangsarket kan lukkes (X, træk ned) og tekst skinner ikke igennem
 
 - Brugeren: "Jeg kan ikke komme væk fra indstillingerne igen. Der er ingen swipe ned funktion eller tilbageknap" (+ skærmbillede: "Vilkår og betingelser" oven i listen).

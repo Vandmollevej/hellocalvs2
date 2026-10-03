@@ -11,7 +11,9 @@ export async function GET() {
     const entries = await prisma.weightEntry.findMany({
       where: { userId: user.id },
       orderBy: { weighedAt: "desc" },
-      take: 200,
+      // Integrationer (Withings m.fl.) leverer op til et års vejninger; kalenderen
+      // viser dem pr. dag (2026-10-03).
+      take: 1000,
     });
 
     return NextResponse.json({ entries });
