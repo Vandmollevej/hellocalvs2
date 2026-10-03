@@ -3670,11 +3670,37 @@ model LoginEvent {
   userId    String
   method    String
   country   String?
+  // By fra Cloudflares "cf-ipcity" (kræver "Add visitor location headers",
+  // docs/DECISIONS.md 2026-10-02 "Personas"). Null på LAN og uden headeren.
+  city      String?
   createdAt DateTime @default(now())
 
   @@index([createdAt])
   @@index([userId, createdAt])
   @@map("login_events")
+}
+
+// Admin → Brugere → Personas (docs/DECISIONS.md 2026-10-02): én række pr.
+// beregning (natligt cronjob "personas" eller "Beregn nu"). aggregates er de
+// anonyme gruppetal, personas er AI-modellens svar (JSON). Der gemmes aldrig
+// bruger-id'er, navne eller e-mails i rækken.
+model PersonaSnapshot {
+  id         String   @id @default(cuid())
+  createdAt  DateTime @default(now())
+  // "job" (cronjob-runneren: deploy eller "Kør nu" under Cronjobs) | "manual" (knappen på siden)
+  source     String
+  // Next.js-buildets id. Én automatisk kørsel pr. deploy (src/lib/personas.ts).
+  buildId    String?
+  userCount  Int
+  model      String?
+  aggregates Json
+  personas   Json?
+  error      String?
+  durationMs Int?
+
+  @@index([createdAt])
+  @@index([buildId])
+  @@map("persona_snapshots")
 }
 
 // Produktsøgninger uden et eneste produkt-hit (GET /api/products), til
