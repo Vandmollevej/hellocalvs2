@@ -79,6 +79,7 @@ Ikke visuelt testet: lokalt sender appen til /welcome uden login. Test på mobil
 | a9819635 | Trinløs størrelse/farve på slider (ingen spring pr. position) | Færdig (32995ab) | Ikonfarve + "/ mål"-linje glider nu trinløst |
 | 65efa293 | Tal-hjulet: én linje uden "/ mål", ikon til HØJRE, jævn luft, 7 rækker (2 opfundne), 2° vifte pr. række, ingen beskæring | Færdig (8009704, pushet til master) | Konflikter med 0d21a46 (lokal master): behold denne version, den har 0d21a46's dæmpning med. Brugeren tester på iPhone |
 | ios-drag-1002 | Kort kan ikke trækkes på iPhone i redigering — siden scroller i stedet | Færdig (gren claude/stat-kort-traek-ios) | Brugeren tester på iPhone efter deploy |
+| stat-skeleton | Statistiksiden: blokkene må ikke flytte plads ved indlæsning; skelet med gradient som HelloFresh | Færdig (branch `claude/statistik-skelet`) | Brugeren tester på telefon efter deploy |
 
 ## G3 — Produktkategorier + statistikbokse + "Månedens synder"
 Filer: Prisma-skema (kategori), kategori-lib, nye statistikbokse, ny liste-side, knap i kalender (koordinér med G1).

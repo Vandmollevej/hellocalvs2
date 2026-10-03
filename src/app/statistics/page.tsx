@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { IconChevronDown, IconChevronUp, IconPlus } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
@@ -12,6 +12,7 @@ import { StatPeriodPicker } from "@/components/StatPeriodPicker";
 import { TopSinnersCard } from "@/components/TopSinnersCard";
 import { filterRegistrationsInRange, SINNERS_ENABLED } from "@/lib/food-classification";
 import { useSourceRegistrations } from "@/lib/use-source-registrations";
+import { usePremiumPending } from "@/components/PremiumGate";
 import {
   computeStatCards,
   DEFAULT_ACTIVE_STAT_KEYS,
@@ -49,6 +50,9 @@ function filterActivitiesInRangeRegistrations(
 
 export default function StatisticsPage() {
   const { t } = useTranslation();
+  // Mens Seriøs-niveauet hentes, tegnes siden som skelet uden at hente data
+  // (PremiumGate renderWhilePending); hentningen starter, når det er kendt.
+  const premiumPending = usePremiumPending();
   const [registrations, setRegistrations] = useState<RegistrationTotals[]>([]);
   const [activities, setActivities] = useState<ActivityTotals[]>([]);
   const [metrics, setMetrics] = useState<HealthMetricTotals[]>([]);
@@ -56,9 +60,14 @@ export default function StatisticsPage() {
   const [warnOnRecommendedLimits, setWarnOnRecommendedLimits] = useState(false);
   const [autoExpandUncertainty, setAutoExpandUncertainty] = useState(false);
   const [loading, setLoading] = useState(true);
-  // Brugeren vælger selv, om Grafer eller Kort står øverst. localStorage er
-  // usynlig for serveren: render standarden først og skift efter mount.
+  // Brugeren vælger selv, om Grafer eller Kort står øverst, og har sin egen
+  // rækkefølge af kort og grafer (localStorage, usynlig for serveren).
+  // Sektionerne tegnes derfor først, når den gemte rækkefølge er læst — i en
+  // layout-effekt, dvs. før browseren maler — så intet bytter plads under
+  // indlæsningen. Kort og grafer læser selv deres gemte rækkefølge, når de
+  // monteres.
   const [sectionOrder, setSectionOrder] = useState<StatSectionKey[]>(DEFAULT_STAT_SECTION_ORDER);
+  const [layoutReady, setLayoutReady] = useState(false);
   const [periodSelection, setPeriodSelection] = useState<StatPeriodSelection>(DEFAULT_STAT_SELECTION);
   // "Tilføj" vises kun mens en sektion er i redigeringstilstand (blokkene
   // vibrerer) — eller er tom, så indhold altid kan tilføjes igen.
@@ -66,10 +75,12 @@ export default function StatisticsPage() {
   const [showAddCard, setShowAddCard] = useState(false);
   const showAdd = showAddChart || showAddCard;
   // G3: registreringer med klassifikation til kød/drikke-kortene og "Største syndere".
-  const { registrations: sourceRegistrations, loading: sourcesLoading } = useSourceRegistrations();
-  useEffect(() => {
+  const { registrations: sourceRegistrations, loading: sourcesLoading } = useSourceRegistrations(!premiumPending);
+
+  useLayoutEffect(() => {
     function syncSectionOrder() {
       setSectionOrder(loadSectionOrder());
+      setLayoutReady(true);
     }
     syncSectionOrder();
   }, []);
@@ -98,6 +109,7 @@ export default function StatisticsPage() {
   }
 
   useEffect(() => {
+    if (premiumPending) return;
     let cancelled = false;
 
     Promise.all([
@@ -151,7 +163,7 @@ export default function StatisticsPage() {
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [premiumPending]);
 
   const allDays = useMemo(() => groupByDay(registrations), [registrations]);
 
@@ -247,6 +259,7 @@ export default function StatisticsPage() {
           highlightRecommendedLimits={warnOnRecommendedLimits}
           autoExpandUncertainty={autoExpandUncertainty}
           onShowAddChange={setShowAddCard}
+          loading={loading}
         />
         {SINNERS_ENABLED && <TopSinnersCard registrations={periodSources} loading={sourcesLoading} />}
       </>
@@ -270,7 +283,7 @@ export default function StatisticsPage() {
           </div>
         )}
 
-        {sectionOrder.map((key, index) => (
+        {layoutReady && sectionOrder.map((key, index) => (
           <section
             key={key}
             className={`flex flex-col gap-4 ${index > 0 ? "border-t border-hf-tan-dark pt-4" : ""}`}

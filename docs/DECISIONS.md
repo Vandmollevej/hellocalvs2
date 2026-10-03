@@ -4006,4 +4006,10 @@ Brugerens krav: "Luk konto kan reverses inde. For 3 måneder, med mindre man væ
 - Fornyet adgang på en allerede forbundet integration tæller ikke som ny installation. Telefon-integrationer (Apple Health/Health Connect) tæller som tilkoblet første gang appen melder sig.
 - Migrationen giver nuværende forbindelser en CONNECTED-hændelse på deres tilkoblingsdato; allerede frakoblede får ingen (frakoblingsdato ukendt). "Afinstalleret i alt" tæller derfor rækker med status DISCONNECTED og en tilkoblingsdato.
 - Admin ser brugerens e-mail i tabellerne (som på Brugere-siden); siden er kun for admins.
+## 2026-10-02: Statistiksiden flytter sig aldrig under indlæsning
+
+- Brugerens gemte rækkefølge (sektioner, kort, grafer) læses fra localStorage **før første billede males**: kort- og grafgitteret bruger den gemte rækkefølge som startværdi, når de tegnes i browseren (`useIsClientRender()` i `src/lib/use-client-render.ts`), og statistiksiden tegner sine sektioner først efter en layout-effekt har læst sektionsrækkefølgen. Det tidligere mønster "tegn standarden, skift efter mount" må ikke bruges på sider, hvor rækkefølgen er brugerens egen.
+- `useSubscriptionTier()` husker det hentede niveau i modulet, så Seriøs-låste sider vises straks ved fanebytte i stedet for at starte tomme.
+- `PremiumGate` har `renderWhilePending`: mens niveauet hentes, tegnes siden selv som skelet (design.md §6.14), og siden venter med datahentning via `usePremiumPending()`. Bruges kun af `/statistics` (undersiderne venter ikke på niveauet og vises derfor først, når det er kendt), så gratisbrugeres data stadig ikke hentes til låste sider.
+- Kort, der først findes, når data er hentet (fx sportskort), tegnes som skitser i fuld højde i stedet for "ingen data" under hentning.
 

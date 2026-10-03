@@ -323,6 +323,11 @@ Last updated: 2026-10-02
 - De fem enkelt-grafer for kalium, calcium, jern, vitamin A og C er erstattet af to grafer, "Mineraler" og "Vitaminer". Alle mineraler/vitaminer fra `src/lib/nutrients.ts` kan krydses til og fra i grafens dropdown. Gemte layouts flyttes automatisk over.
 - Grafernes linjevalg folder sig nu ud inde i kortet og kan rulle, så lange lister ikke klippes.
 - Lint og build grønne. Testet i Chromium i telefonbredde med falske API-svar (ingen lokal DB). `page-tree.test.mjs` fejler stadig, som på master.
+## 2026-10-02: Statistiksiden hopper ikke længere ved indlæsning
+
+- Årsag: Seriøs-låsen startede altid med en tom skærm, og bagefter blev sektioner, kort og grafer tegnet i standardrækkefølgen og byttede derefter til brugerens gemte rækkefølge.
+- Rettet: gemt rækkefølge bruges fra første billede; abonnementsniveauet huskes mellem sider; mens niveauet hentes, tegnes statistiksiden som skelet med løbende gradient, og data fyldes ind på pladserne. Se DECISIONS.md 2026-10-02.
+- Lint, typecheck og `npm run build` grønne. Ikke visuelt testet (ingen lokal DB/login) — test på telefon: åbn Statistik både via bundmenuen og ved genindlæsning.
 
 ## 2026-10-02: Drikkevarer starter på pakkestørrelsen
 

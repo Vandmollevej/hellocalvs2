@@ -76,7 +76,7 @@ function averageByDay(points: { dateKey: string; value: number }[]) {
   return Array.from(byDay.entries()).map(([dateKey, { sum, count }]) => ({ dateKey, value: sum / count }));
 }
 
-function useChartExtras() {
+function useChartExtras(enabled: boolean) {
   const [weightEntries, setWeightEntries] = useState<WeightEntry[]>([]);
   const [sleepEntries, setSleepEntries] = useState<{ date: string; rating: number }[]>([]);
   const [budgetSnapshots, setBudgetSnapshots] = useState<BudgetSnapshot[]>([]);
@@ -87,6 +87,7 @@ function useChartExtras() {
   const [sex, setSex] = useState<BodyMeasurementSex | null>(null);
 
   useEffect(() => {
+    if (!enabled) return;
     let cancelled = false;
     const today = new Date();
     const from = new Date(today);
@@ -127,7 +128,7 @@ function useChartExtras() {
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [enabled]);
 
   return { weightEntries, sleepEntries, budgetSnapshots, bodyEntries, bodyLoading, sex };
 }
@@ -138,6 +139,7 @@ export function useStatChartRenderer({
   metrics,
   intradayRegistrations,
   intradayWindowDays,
+  enabled = true,
 }: {
   registrations: RegistrationTotals[];
   activities: ActivityTotals[];
@@ -145,9 +147,11 @@ export function useStatChartRenderer({
   /** Registreringerne i den valgte periode (dagsprofilen fÃ¸lger periodevalget). */
   intradayRegistrations: RegistrationTotals[];
   intradayWindowDays: number;
+  /** False mens siden endnu kun er et skelet: så hentes ingen data. */
+  enabled?: boolean;
 }) {
   const { t } = useTranslation();
-  const { weightEntries, sleepEntries, budgetSnapshots, bodyEntries, bodyLoading, sex } = useChartExtras();
+  const { weightEntries, sleepEntries, budgetSnapshots, bodyEntries, bodyLoading, sex } = useChartExtras(enabled);
   // Grafen vises i kg eller pund (stone er for groft til en akse).
   const { weight: weightUnit } = useUnits();
   const chartWeightUnit = weightUnit === "kg" ? "kg" : "lb";
