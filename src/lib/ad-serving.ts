@@ -1,6 +1,6 @@
-import type { ProductCategory } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { inventoryItem } from "@/lib/ad-inventory";
+import { triggerMatches } from "@/lib/ad-trigger";
 
 // Udvælgelse af reklamer til en plads i appen (docs/DECISIONS.md 2026-10-02).
 // Et spot vises kun, hvis:
@@ -13,18 +13,6 @@ import { inventoryItem } from "@/lib/ad-inventory";
 // triggere ved udvælgelsen, men spots med triggere vises aldrig uden kontekst.
 
 export type ServedAd = { id: string; bannerUrl: string; targetUrl: string; name: string };
-
-export function triggerMatches(
-  spot: { triggerCategory: ProductCategory | null; triggerProductType: string | null },
-  context: { category?: string | null; productType?: string | null }
-) {
-  if (spot.triggerCategory && spot.triggerCategory !== context.category) return false;
-  if (spot.triggerProductType) {
-    const wanted = spot.triggerProductType.trim().toLowerCase();
-    if (!context.productType || context.productType.trim().toLowerCase() !== wanted) return false;
-  }
-  return true;
-}
 
 export async function selectAds(
   inventoryKey: string,

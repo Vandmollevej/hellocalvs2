@@ -81,6 +81,21 @@ export function InventoryPanel({
     return true;
   }
 
+  async function upload(file: File) {
+    setBusy(true);
+    setError(null);
+    const form = new FormData();
+    form.append("file", file);
+    const res = await fetch(`/api/admin/partners/${partnerId}/banner`, { method: "POST", body: form });
+    const data = (await res.json().catch(() => ({}))) as { url?: string; message?: string };
+    setBusy(false);
+    if (!res.ok || !data.url) {
+      setError(data.message ?? "Banneret kunne ikke uploades");
+      return;
+    }
+    setDraft((d) => (d ? { ...d, bannerUrl: data.url as string } : d));
+  }
+
   async function save(e: React.FormEvent) {
     e.preventDefault();
     if (!draft) return;
@@ -138,10 +153,29 @@ export function InventoryPanel({
           <h3 className="hf-type-title">{draft.id ? "Redigér reklamespot" : "Nyt reklamespot"} · {item?.name ?? "Andet"}</h3>
           <div className="grid gap-3 sm:grid-cols-2">
             <label className="flex flex-col gap-1 sm:col-span-2"><span className={LABEL}>Navn</span><input className={INPUT} value={draft.name} onChange={set("name")} required /></label>
-            <label className="flex flex-col gap-1 sm:col-span-2">
-              <span className={LABEL}>Banner (billedadresse{item ? `, anbefalet ${item.format} px` : ""})</span>
-              <input className={INPUT} type="url" placeholder="https://…" value={draft.bannerUrl} onChange={set("bannerUrl")} />
-            </label>
+            <div className="flex flex-col gap-2 sm:col-span-2">
+              <span className={LABEL}>Banner{item ? ` (anbefalet ${item.format} px, PNG, JPG eller WebP, højst 4 MB)` : ""}</span>
+              {draft.bannerUrl && (
+                // eslint-disable-next-line @next/next/no-img-element -- admin-forhåndsvisning af uploadet banner
+                <img src={draft.bannerUrl} alt="Forhåndsvisning af banner" className="max-h-40 w-auto self-start rounded-lg border border-hf-tan-dark" />
+              )}
+              <div className="flex flex-wrap items-center gap-2">
+                <input
+                  type="file"
+                  accept="image/png,image/jpeg,image/webp"
+                  disabled={busy}
+                  className="hf-type-small"
+                  onChange={(e) => {
+                    const file = e.target.files?.[0];
+                    e.target.value = "";
+                    if (file) void upload(file);
+                  }}
+                />
+                {draft.bannerUrl && (
+                  <button type="button" className={BTN} onClick={() => setDraft((d) => (d ? { ...d, bannerUrl: "" } : d))}>Fjern banner</button>
+                )}
+              </div>
+            </div>
             <label className="flex flex-col gap-1 sm:col-span-2"><span className={LABEL}>Link ved klik</span><input className={INPUT} type="url" placeholder="https://…" value={draft.targetUrl} onChange={set("targetUrl")} /></label>
             <label className="flex flex-col gap-1"><span className={LABEL}>Aftalte visninger</span><input className={INPUT} inputMode="numeric" value={draft.agreedImpressions} onChange={set("agreedImpressions")} /></label>
             <label className="flex flex-col gap-1"><span className={LABEL}>Aftalte klik</span><input className={INPUT} inputMode="numeric" value={draft.agreedClicks} onChange={set("agreedClicks")} /></label>

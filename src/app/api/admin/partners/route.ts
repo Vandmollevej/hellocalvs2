@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { requireAdminUser } from "@/lib/require-admin";
 import { isValidEmail } from "@/lib/partner-reports";
 import { inventoryItem } from "@/lib/ad-inventory";
+import { isAdBannerPath } from "@/lib/ad-banner-storage";
 import type { PartnerPaymentMethod, ProductCategory } from "@prisma/client";
 
 // Admin "Partnere" (docs/DECISIONS.md 2026-09-29): partnere, kontakter og
@@ -41,10 +42,12 @@ async function locationFields(body: Record<string, unknown>, partnerId: string) 
   const inventoryKey = str(body.inventoryKey);
   if (inventoryKey && !inventoryItem(inventoryKey)) throw new Error("Ukendt reklamemulighed");
   const category = str(body.triggerCategory) as ProductCategory;
+  const bannerUrl = str(body.bannerUrl);
+  if (bannerUrl && !isAdBannerPath(bannerUrl)) throw new Error("Banneret skal uploades som billedfil");
   return {
     inventoryKey,
     placement: str(body.placement) || inventoryItem(inventoryKey)?.placement || "",
-    bannerUrl: str(body.bannerUrl),
+    bannerUrl,
     targetUrl: str(body.targetUrl),
     agreedImpressions: optInt(body.agreedImpressions),
     agreedClicks: optInt(body.agreedClicks),

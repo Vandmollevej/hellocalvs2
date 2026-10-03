@@ -296,6 +296,6 @@ Ejer: partner-sessionen (2026-10-03)
 
 | Id | Opgave | Status | Næste skridt |
 | --- | --- | --- | --- |
-| — | Partnerside: virksomhed/kontakter i venstre bjælke, Sponsoraftale, Performance (Overview + Data mining), Fakturering, Betaling, PDF/CSV + send | Færdig i kode (branch `claude/partner-pages`) | Afventer brugerens visuelle godkendelse og svar på spørgsmål om banner-upload og hvor `AdBanner` skal sættes ind |
-| — | Sæt `<AdBanner slot="product_page" category=… productType=…/>` ind på produktsiden m.fl. | Ikke startet | Filerne ejes af andre grupper (Madvare-flow m.fl.) — aftal med dem |
+| — | Partnerside: virksomhed/kontakter i venstre bjælke, Sponsoraftale, Performance (Overview + Data mining), Fakturering, Betaling, PDF/CSV + send | Færdig i kode (branch `claude/partner-pages`) | Banner-upload bygget. Afventer brugerens visuelle godkendelse og besked om hvilke reklamepladser der findes (kataloget i `ad-inventory.ts` er et forslag) |
+| — | Sæt `<AdBanner slot=… category=… productType=…/>` ind på de sider, brugeren vælger | Venter på bruger | Brugeren har ikke angivet hvor reklamerne skal vises. Siderne ejes af andre grupper — aftal med dem |
 
