@@ -166,6 +166,11 @@ export default function SettingsPage() {
             onClick={() => {
               resetOnboardingProgress().then(() => setShowOnboarding(true));
             }}
+          />
+          <ChevronRow
+            icon={<IconLifebuoy size={20} />}
+            label={t("settings.contactSupport")}
+            href="/settings/support"
             divider={false}
           />
         </AccordionCard>
@@ -204,11 +209,6 @@ export default function SettingsPage() {
         </AccordionCard>
 
         <AccordionCard>
-          <ChevronRow
-            icon={<IconLifebuoy size={20} />}
-            label={t("settings.support.title")}
-            href="/settings/support"
-          />
           <ChevronRow
             icon={<IconBug size={20} />}
             label={t("profile.row.reportBug")}
