@@ -233,9 +233,9 @@ packroff.dk-zonen har redirect-regler (308, sti + query bevares):
 `hellocal.packroff.dk` → `hellocal.io`, `adminhellocal.packroff.dk` →
 `admin.hellocal.io`, `scanhellocal.packroff.dk` → `scan.hellocal.io`.
 `www.hellocal.io` → `hellocal.io` (301). Derfor virker OAuth-callbacks, der
-stadig er registreret på det gamle domæne (`INTEGRATIONS_REDIRECT_BASE_URL`,
-`WITHINGS_REDIRECT_URI`, `GOOGLE_HEALTH_REDIRECT_URI` står bevidst på
-`hellocal.packroff.dk`, indtil udbyderne har fået den nye URI).
+stadig er registreret på det gamle domæne (`INTEGRATIONS_REDIRECT_BASE_URL`
+står bevidst på `hellocal.packroff.dk`, indtil Strava har fået den nye URI;
+`WITHINGS_REDIRECT_URI` og `GOOGLE_HEALTH_REDIRECT_URI` peger på `hellocal.io`).
 `middleware.ts` accepterer begge admin-hostnavne. Email Routing: MX, SPF
 (`include:_spf.mx.cloudflare.net include:spf.mailjet.com`) og DMARC `p=none`
 er sat; `support@` + catch-all → `peter@packroff.dk` (kræver at modtager-
@@ -305,7 +305,7 @@ sendes videre af `compose.production.yaml`.
 - SMS via TeamMessage (`TEAMMESSAGE_API_TOKEN`, valgfrit `TEAMMESSAGE_TEAM_ID`,
   `TEAMMESSAGE_TEAMLIST_EMAIL`, `TEAMMESSAGE_SENDER`, `TEAMMESSAGE_API_URL`):
   kode på SMS ved glemt adgangskode. Kan også sættes i admin → API-nøgler → SMS.
-  Uden token sendes ingen SMS. Migration `20261002090000_password_reset_sms`.
+  Uden token sendes ingen SMS. Migration `20261002110000_password_reset_sms`.
 - Face ID/passkeys kræver HTTPS på det rigtige domæne (Cloudflare Tunnel).
   Ingen nøgler nødvendige.
 - Google: Google Cloud Console → APIs & Services → OAuth consent screen

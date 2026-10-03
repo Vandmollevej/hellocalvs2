@@ -19,13 +19,13 @@ export function ProfileSwitcher() {
 
   if (!status) return null;
   const canManage = Boolean(status.family?.isOwner || (!status.family && status.hasFamilyPlan));
-  if (status.profiles.length < 2 && !canManage) return null;
-
-  // Den viste profil ligger forrest i stakken.
-  const stack = [
-    status.activeProfile,
-    ...status.profiles.filter((profile) => profile.id !== status.activeProfile.id),
-  ].slice(0, 4);
+  if (status.profiles.length < 2 && !canManage) {
+    return (
+      <div className="flex justify-center py-2">
+        <ProfileCircle name={status.activeProfile.displayName} size={96} tone="brand" />
+      </div>
+    );
+  }
 
   async function choose(profileId: string) {
     if (!status || profileId === status.activeProfile.id) {
@@ -41,33 +41,25 @@ export function ProfileSwitcher() {
   return (
     <section>
       <h2 className="hf-type-section-title">{t("family.switcher.title")}</h2>
-      <div className="overflow-hidden rounded-[8px] bg-hf-tan">
+      <div className="flex flex-col items-center gap-2 py-2">
         <button
           type="button"
           onClick={() => setOpen((value) => !value)}
           aria-expanded={open}
-          className="flex w-full items-center gap-4 px-4 py-2 text-left"
+          aria-label={t("family.switcher.title")}
+          className="flex flex-col items-center gap-2"
         >
-          <span className="flex items-center">
-            {stack.map((profile, index) => (
-              <span
-                key={profile.id}
-                className="rounded-full border-2 border-hf-tan"
-                style={{ marginLeft: index === 0 ? 0 : -12, zIndex: stack.length - index }}
-              >
-                <ProfileCircle name={profile.displayName} size={40} tone="card" />
-              </span>
-            ))}
+          <ProfileCircle name={status.activeProfile.displayName} size={96} tone="brand" />
+          <span className="flex items-center gap-1">
+            <span className="userback-ignore userback-block hf-type-body truncate">{status.activeProfile.displayName}</span>
+            <HfChevron direction={open ? "up" : "down"} className="text-hf-black" />
           </span>
-          <span className="min-w-0 flex-1">
-            <span className="hf-type-body block truncate">{status.activeProfile.displayName}</span>
-            <span className="hf-type-caption block text-text-secondary">
-              {status.activeProfile.id === status.me.id ? t("family.switcher.you") : t("family.switcher.managing")}
-            </span>
+          <span className="hf-type-caption text-text-secondary">
+            {status.activeProfile.id === status.me.id ? t("family.switcher.you") : t("family.switcher.managing")}
           </span>
-          <HfChevron direction={open ? "up" : "down"} className="text-hf-black" />
         </button>
-
+      </div>
+      <div className="overflow-hidden rounded-[8px] bg-hf-tan empty:hidden">
         {open && (
           <ul className="border-t border-hf-tan-dark">
             {status.profiles.map((profile) => (
@@ -79,7 +71,7 @@ export function ProfileSwitcher() {
                   className="flex h-14 w-full items-center gap-4 px-4 text-left"
                 >
                   <ProfileCircle name={profile.displayName} tone="card" />
-                  <span className="hf-type-body flex-1 truncate">
+                  <span className="userback-ignore userback-block hf-type-body flex-1 truncate">
                     {profile.id === status.me.id ? t("family.switcher.meLabel", { name: profile.displayName }) : profile.displayName}
                   </span>
                   {profile.isChild && <span className="hf-type-caption text-text-secondary">{t("family.child")}</span>}

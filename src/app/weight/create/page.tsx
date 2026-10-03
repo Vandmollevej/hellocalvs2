@@ -6,6 +6,7 @@ import { HfScreen } from "@/components/HfScreen";
 import { TextField } from "@/components/hf/TextField";
 import { IconBathroomScale } from "@/components/icons/BathroomScale";
 import { useTranslation } from "@/i18n/LocaleProvider";
+import { formatWeight, parseWeightInput, useUnits, weightToInputValue, weightUnitLabel } from "@/lib/units";
 import { Skeleton, SkeletonCards, SkeletonScreen } from "@/components/hf/Skeleton";
 
 type WeightEntry = {
@@ -23,12 +24,9 @@ function formatDateTime(value: string) {
   }).format(new Date(value));
 }
 
-function formatKg(value: number) {
-  return new Intl.NumberFormat("da-DK", { maximumFractionDigits: 1 }).format(value);
-}
-
 export default function WeightCreatePage() {
   const { t } = useTranslation();
+  const { weight: weightUnit } = useUnits();
   const [weightKg, setWeightKg] = useState("");
   const [saving, setSaving] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
@@ -53,8 +51,8 @@ export default function WeightCreatePage() {
 
   async function handleSubmit(event: React.FormEvent) {
     event.preventDefault();
-    const parsed = Number(weightKg.replace(",", "."));
-    if (!parsed || parsed <= 0) return;
+    const parsed = parseWeightInput(weightKg, weightUnit);
+    if (!parsed) return;
 
     setSaving(true);
     setSaveError(null);
@@ -94,10 +92,10 @@ export default function WeightCreatePage() {
             variant="standard"
             value={weightKg}
             onChange={(event) => setWeightKg(event.target.value)}
-            inputMode="decimal"
+            inputMode={weightUnit === "st" ? "text" : "decimal"}
             autoFocus
-            label={t("weightLog.weightLabel")}
-            placeholder={t("weightLog.weightPlaceholder")}
+            label={`${t("weightLog.weightLabel")} (${weightUnitLabel(weightUnit)})`}
+            placeholder={weightToInputValue(78.4, weightUnit)}
             required
           />
 
@@ -131,7 +129,7 @@ export default function WeightCreatePage() {
           {entries.map((entry) => (
             <div key={entry.id} className="hf-control-row flex items-center justify-between rounded-2xl bg-hf-tan px-4">
               <p className="hf-type-body hf-type-strong text-hf-black">
-                {formatKg(entry.weightKg)} kg
+                {formatWeight(entry.weightKg, weightUnit)}
                 <span className="hf-type-small text-text-secondary ml-2">{formatDateTime(entry.weighedAt)}</span>
               </p>
             </div>

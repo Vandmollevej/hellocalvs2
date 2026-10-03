@@ -27,7 +27,13 @@ export async function sendPasswordResetSms(user: { id: string; phone: string }) 
   await prisma.passwordResetSmsCode.create({
     data: { userId: user.id, codeHash: hashCode(user.id, code), expiresAt: new Date(Date.now() + CODE_TTL_MS) },
   });
-  return sendSms(user.phone, `Din Hello Cal-kode er ${code}. Den virker i 10 minutter. Har du ikke bedt om den, kan du se bort fra beskeden.`);
+  return sendSms({
+    userId: user.id,
+    to: user.phone,
+    event: "PASSWORD_RESET",
+    subject: "Kode til nulstilling af adgangskode",
+    text: `Din Hello Cal-kode er ${code}. Den virker i 10 minutter. Har du ikke bedt om den, kan du se bort fra beskeden.`,
+  });
 }
 
 // Returnerer et reset-token ved korrekt kode, ellers null.
