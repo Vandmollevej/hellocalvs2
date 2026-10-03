@@ -6,6 +6,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { IconSend } from "@tabler/icons-react";
 import { BottomSheet } from "@/components/hf/BottomSheet";
 import { useTranslation } from "@/i18n/LocaleProvider";
+import { helpPagePath } from "@/i18n";
 import { OPEN_HELP_CHAT_EVENT } from "@/lib/help-chat-events";
 import { CHATBOT_LINKS, isChatbotLinkHref } from "@/lib/chatbot-knowledge";
 
@@ -179,7 +180,7 @@ function HelpChatSheet({ onClose }: { onClose: () => void }) {
   const lastAssistant = [...messages].reverse().find((m) => m.role === "ASSISTANT");
   const offerHuman = !escalated && !escalating && Boolean(lastAssistant?.needsHuman) && messages.at(-1)?.id === lastAssistant?.id;
   const linkLabel = (href: string) =>
-    isChatbotLinkHref(href) ? CHATBOT_LINKS[href][locale === "en" ? "en" : "da"] : href;
+    isChatbotLinkHref(href) ? CHATBOT_LINKS[href][locale === "da" ? "da" : "en"] : href;
 
   const footer = loggedOut ? null : escalated ? (
     <button type="button" className="hf-btn-primary h-12 w-full" onClick={startNew}>
@@ -227,7 +228,7 @@ function HelpChatSheet({ onClose }: { onClose: () => void }) {
         {loggedOut ? (
           <div className="flex flex-col gap-2 rounded-lg bg-hf-tan p-4">
             <p className="hf-type-body">{t("helpChat.loggedOut")}</p>
-            <a href="/hjaelp.html" className="hf-btn-text self-start">
+            <a href={helpPagePath(locale)} className="hf-btn-text self-start">
               {t("helpChat.helpCentre")}
             </a>
           </div>

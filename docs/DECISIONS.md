@@ -4358,3 +4358,14 @@ Ejerens krav: "Hvis man er familiekontoejer skal 'skift profil' stå øverst og 
 
 - Admin → Brugere kan sende mail og/eller push til alle aktive brugere. Ejerens krav: adgangskoden skal tastes ind igen før hver afsendelse.
 - Udsendelsen er kun for fuld admin-adgang, bruger de eksisterende `OutboundMessage`-køer (ingen ny enum/migration) og har separate rækker pr. kanal, fordi en `BOTH`-række markeres SENT af mail-flushet, før push når at gå.
+
+
+## 2026-10-03: Syv sprog, samme markeder som HelloFresh
+
+Ejerens krav: "Vi skal have samme sprog" som HelloFresh, "på alt" (app, hjælpecenter, support).
+
+- Appen har nu `da` (reference), `en`, `de`, `fr`, `nl`, `sv` og `no` (norsk bokmål). Sproglisten, sprognavnene (skrevet på eget sprog), Intl-koden og hjælpecenter-adressen ligger samlet i `src/i18n/index.ts` (`LOCALES`, `LOCALE_NAMES`, `intlLocale`, `helpPagePath`). Nye sprog tilføjes dér plus en `locales/<kode>.json` med samme nøgler som `da.json`.
+- Hjælpecenteret er én statisk side pr. sprog: `public/hjaelp.html` (dansk) og `public/help-<kode>.html`. Alle har samme `id`-anker og et sprogvalg øverst; Indstillinger og hjælpe-chatten åbner den, der passer til appens sprog.
+- Bekræftelsesordet ved sletning er stadig det danske **SLET** på alle sprog (koden tjekker på det ord); teksterne siger "Skriv SLET".
+- Oversættelserne er maskinoversat og er ikke læst igennem af en person med modersmålet. Ikke oversat: chatbottens vidensbase (`chatbot-knowledge.ts`, dansk; svarer dog på brugerens sprog), admin og native widgets (kun widgetteksterne).
+- Antallet af HelloFresh-sprog kom fra en websøgning, som kun nævnte 18 markeder; de 7 sprog er udledt af markederne (DK, NO, SE, DE/AT/CH, FR/BE/LU, NL, IE/UK).

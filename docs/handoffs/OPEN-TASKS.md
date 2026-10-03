@@ -350,6 +350,14 @@ Ejer: ledig (Kropsmål-graf-sessionen er arkiveret 2026-10-03)
 | --- | --- | --- | --- |
 | — | Kropsmål-grafer: tegning til venstre, forløb af seneste 10 målinger til højre; følger cm/tommer | Færdig i kode på branch `claude/kropsmaal-statistikgraf` (PR #156, kladde) — ikke flettet | Gennemgå PR #156, flet master ind ved konflikt (typisk kun `docs/STATUS.md`: behold begge sider), kør lint/typecheck/build og flet til master. Tjek på telefon: Statistik → Tilføj → Kropsmål |
 
+## G-LANG — Syv sprog (da, en, de, fr, nl, sv, no) + Hjælpecenter på alle
+Filer: `src/i18n/**` (`index.ts`, `locales/*.json`), `public/hjaelp.html`, `public/help-*.html`, `src/app/profile/settings/language-region/page.tsx`.
+Ejer: cloud-session `claude/seven-languages` (2026-10-03)
+
+| Id | Opgave | Status | Næste skridt |
+| --- | --- | --- | --- |
+| seven-languages | Appen og Hjælpecenteret på samme sprog som HelloFresh-markederne | Venter på bruger | Draft-PR #222 (lint, typecheck og build grønne). Maskinoversat: skal læses igennem af modersmålstalende før merge. Mangler: chatbottens vidensbase (dansk), admin, native widgets (kun tre tekster), hårdkodet `da-DK` i datoer/tal flere steder. `npm test` har 1 fejl (page tree), som også fejler på master |
+
 ## G-CERT — Certifikat-udklip fra produktbilleder
 Filer: `Certifikater/Udklip fra produktbilleder/` (kun data, ingen kode).
 Ejer: ledig (session "Produktbilleder og certifikater screening")

@@ -1,17 +1,55 @@
 import da from "./locales/da.json";
 import en from "./locales/en.json";
+import de from "./locales/de.json";
+import fr from "./locales/fr.json";
+import nl from "./locales/nl.json";
+import sv from "./locales/sv.json";
+import no from "./locales/no.json";
 
-export type Locale = "da" | "en";
+// Same language set as HelloFresh's markets: Danish, English, German, French,
+// Dutch, Swedish and Norwegian (Bokmål).
+export type Locale = "da" | "en" | "de" | "fr" | "nl" | "sv" | "no";
 
 export const DEFAULT_LOCALE: Locale = "da";
 
-export const LOCALES: Locale[] = ["da", "en"];
+export const LOCALES: Locale[] = ["da", "en", "de", "fr", "nl", "sv", "no"];
 
-// Keep this in sync with the shape of da.json/en.json — the two files must
-// carry identical keys. da.json is the reference/default dictionary.
+// Language names are shown in their own language, so they are never translated.
+export const LOCALE_NAMES: Record<Locale, string> = {
+  da: "Dansk",
+  en: "English",
+  de: "Deutsch",
+  fr: "Français",
+  nl: "Nederlands",
+  sv: "Svenska",
+  no: "Norsk",
+};
+
+// BCP 47 tag for Intl formatting (dates, numbers).
+const INTL_LOCALES: Record<Locale, string> = {
+  da: "da-DK",
+  en: "en-GB",
+  de: "de-DE",
+  fr: "fr-FR",
+  nl: "nl-NL",
+  sv: "sv-SE",
+  no: "nb-NO",
+};
+
+export function intlLocale(locale: Locale): string {
+  return INTL_LOCALES[locale] ?? INTL_LOCALES[DEFAULT_LOCALE];
+}
+
+// The static help centre (public/) exists once per language.
+export function helpPagePath(locale: Locale): string {
+  return locale === "da" ? "/hjaelp.html" : `/help-${locale}.html`;
+}
+
+// Keep this in sync with the shape of da.json — every locale file must carry
+// identical keys. da.json is the reference/default dictionary.
 export type Dictionary = typeof da;
 
-const DICTIONARIES: Record<Locale, Dictionary> = { da, en };
+const DICTIONARIES: Record<Locale, Dictionary> = { da, en, de, fr, nl, sv, no };
 
 export function isLocale(value: unknown): value is Locale {
   return typeof value === "string" && (LOCALES as string[]).includes(value);

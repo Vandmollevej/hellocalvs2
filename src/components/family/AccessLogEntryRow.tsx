@@ -1,6 +1,7 @@
 "use client";
 
 import { useTranslation } from "@/i18n/LocaleProvider";
+import { intlLocale } from "@/i18n";
 
 export type AccessLogEntry = {
   id: string;
@@ -15,7 +16,7 @@ export type AccessLogEntry = {
 // Én linje i Kontrol-loggen og i panelet: hvem, hvad og hvornår.
 export function AccessLogEntryRow({ entry }: { entry: AccessLogEntry }) {
   const { t, locale } = useTranslation();
-  const when = new Intl.DateTimeFormat(locale === "en" ? "en-GB" : "da-DK", {
+  const when = new Intl.DateTimeFormat(intlLocale(locale), {
     day: "numeric",
     month: "short",
     hour: "2-digit",

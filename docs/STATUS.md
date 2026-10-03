@@ -5873,3 +5873,10 @@ Skal gøres, før branchen flettes:
 4. Flet til master (kører migrationerne `20261002100000` og `20261003100000`), `npm run build`, test med rigtigt nummer og rigtig telefon (på iPhone kræver Web Push, at appen ligger på hjemmeskærmen).
 5. Senere: native app (APNs/FCM) skal bruge samme endpoints (`/api/push/subscribe`, `/api/auth/login-approval/*`). Push-godkendelse gælder kun adgangskode-login; Google/Apple/Facebook og Face ID er uændrede.
 5. Senere: native app (APNs/FCM) skal bruge samme endpoints (`/api/push/subscribe`, `/api/auth/login-approval/*`). Push-godkendelse gælder kun adgangskode-login; Google/Apple/Facebook og Face ID er uændrede.
+
+
+## 2026-10-03: Syv sprog (da, en, de, fr, nl, sv, no) + Hjælpecenter på alle
+
+- Se DECISIONS 2026-10-03 "Syv sprog". Ordbøger i `src/i18n/locales/`, hjælpesider i `public/help-*.html`, sprogvalg under Indstillinger → Sprog og region.
+- Typecheck, lint (0 fejl) og build grønne. `npm test`: 1 fejl (`page tree lists every page`) som også fejler på master uden disse ændringer.
+- Mangler: gennemlæsning af oversættelserne af en person, der taler sprogene; datoer/tal flere steder er stadig formateret med `da-DK`.
