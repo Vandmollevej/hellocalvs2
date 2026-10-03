@@ -8,7 +8,7 @@ import {
   IconStar,
   IconBook2,
   IconCreditCard,
-  IconBulb,
+  IconBook,
   IconChartLine,
 } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
@@ -136,7 +136,7 @@ export default function ProfilePage() {
               href="/profile/recipes"
             />
             <ChevronRow
-              icon={<IconBulb size={20} />}
+              icon={<IconBook size={20} />}
               label={t("profile.row.knowledge")}
               href="/viden-om"
               divider={false}

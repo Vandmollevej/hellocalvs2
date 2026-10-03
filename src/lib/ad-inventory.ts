@@ -73,9 +73,9 @@ export const AD_INVENTORY: AdInventoryItem[] = [
   },
   {
     key: "knowledge",
-    name: "Viden om",
+    name: "Indsigt i maden",
     placement: "Artikler",
-    description: "Banner i bunden af artikler under Viden om (vitaminer, E-numre, sundhedstips).",
+    description: "Banner i bunden af artikler under Indsigt i maden (vitaminer, E-numre, sundhedstips).",
     format: "1200 × 300",
     triggerable: false,
   },

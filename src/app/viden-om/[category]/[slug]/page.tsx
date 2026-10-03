@@ -1,7 +1,7 @@
 "use client";
 
 import { notFound, useParams } from "next/navigation";
-import { IconBulb, IconExternalLink } from "@tabler/icons-react";
+import { IconBook, IconExternalLink } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
 import { getKnowledgeArticle } from "@/lib/knowledge";
 import { FOOD_TERMS, foodTermAnchor } from "@/lib/food-latin";
@@ -38,7 +38,7 @@ export default function KnowledgeEntryPage() {
     const term = FOOD_TERMS.find((item) => foodTermAnchor(item.term) === slug);
     if (!term) notFound();
     return (
-      <HfScreen title={term.term} icon={<IconBulb size={20} stroke={2} />} alwaysShowBackButton>
+      <HfScreen title={term.term} icon={<IconBook size={20} stroke={2} />} alwaysShowBackButton>
         <div className="hf-page flex flex-col gap-3">
           <Section title="På dansk">
             <p className="hf-heading">{term.danish}</p>
@@ -55,7 +55,7 @@ export default function KnowledgeEntryPage() {
   const article = getKnowledgeArticle(slug);
   if (!article || article.category !== category) notFound();
   return (
-    <HfScreen title={article.title} icon={<IconBulb size={20} stroke={2} />} alwaysShowBackButton>
+    <HfScreen title={article.title} icon={<IconBook size={20} stroke={2} />} alwaysShowBackButton>
       <div className="hf-page flex flex-col gap-3">
         <Section title="Kort fortalt">
           <p className="hf-heading">{article.summary}</p>

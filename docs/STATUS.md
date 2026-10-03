@@ -2,6 +2,11 @@
 
 Last updated: 2026-10-03
 
+## 2026-10-03: "Viden om" hedder nu "Indsigt i maden" med bog-ikon
+
+- Profilrækken, sidetitlen og annonceplaceringen hedder "Indsigt i maden" (en: "Food insights"). Pæren (`IconBulb`) er skiftet til en bog (`IconBook`) på profilrækken og alle `/viden-om`-sider. URL'en `/viden-om` er uændret, så eksisterende links virker.
+- Lint (0 fejl) og build grønne.
+
 ## 2026-10-03: Kalender — profilcirklen er tilbage i dagsvisningen
 
 - Dagsvisningen (`DayDetails` i `src/app/calendar/page.tsx`) tegner sin egen grønne topbjælke som fuldskærmsdialog over siden, og dens højre hjørne var et tomt felt — så profilcirklen forsvandt, så snart en dag blev åbnet. Den viser nu `ProfileAvatarLink` som alle andre sider.

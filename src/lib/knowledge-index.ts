@@ -1,4 +1,4 @@
-// Fælles indeks for "Viden om": kategorier og deres opslag (artikler og
+// Fælles indeks for "Indsigt i maden": kategorier og deres opslag (artikler og
 // "Mad på latin"-ord), så hver post har sin egen side /viden-om/<kategori>/<slug>.
 import { KNOWLEDGE_ARTICLES, type KnowledgeArticle } from "@/lib/knowledge";
 import { FOOD_TERMS, foodTermAnchor, matchesFoodTerm } from "@/lib/food-latin";

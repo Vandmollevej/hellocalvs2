@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { notFound, useParams } from "next/navigation";
-import { IconBulb } from "@tabler/icons-react";
+import { IconBook } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
 import { KnowledgeRows } from "@/components/knowledge/KnowledgeRows";
 import { SearchField } from "@/components/knowledge/SearchField";
@@ -19,10 +19,10 @@ export default function KnowledgeSectionPage() {
     href: entryHref(entry.section, entry.slug),
   }));
   return (
-    <HfScreen title={title} icon={<IconBulb size={20} stroke={2} />} alwaysShowBackButton>
+    <HfScreen title={title} icon={<IconBook size={20} stroke={2} />} alwaysShowBackButton>
       <div className="hf-page flex flex-col gap-3">
         <SearchField value={query} onChange={setQuery} placeholder={`Søg i ${title.toLowerCase()}`} />
-        <KnowledgeRows rows={rows} icon={<IconBulb size={20} />} />
+        <KnowledgeRows rows={rows} icon={<IconBook size={20} />} />
       </div>
     </HfScreen>
   );
