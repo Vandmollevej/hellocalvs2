@@ -154,6 +154,14 @@ Last updated: 2026-10-02
 
 - Oversigten har invitér-række med pil øverst, adskiller "Inviterede brugere" og liste med varighed/udløb. Brugersiden viser tid øverst, "Fjern adgang" eller "Forny adgang" (ny rute `/api/doctor-shares/[id]/renew`) og alle tilladelser. "Sådan ser det ud" åbner for eksisterende brugere det rigtige krypterede link i en ny fane. Felterne bruger nu `TextField` (48 px) i stedet for den egne "notched"-komponent (fjernet). Lint/typecheck grønne; ikke visuelt testet.
 
+## 2026-10-02: Kalender — ÷ tilbage på tomme afsluttede dage i månedsgitteret
+
+- Månedsgitteret (`src/app/calendar/page.tsx`, `MonthView`) viser igen ÷ på
+  dage før i dag uden registreringer; ✓/÷ på dage med registreringer er
+  uændret, og i dag/fremtid er blanke. Se DECISIONS.md samme dato. Uge/Liste
+  rører vi ikke.
+- Lint og build grønne. Ikke set på telefon.
+
 ## 2026-09-29: Offentlig forside for udloggede
 
 - Ny hent-appen-forside uden telefonramme, med QR-koder, planer med betalings-ark, Hello Doc-bjælke, nøgletal fra databasen, `/business` (kontaktformular) og `/presse`. Se DECISIONS.md samme dato.

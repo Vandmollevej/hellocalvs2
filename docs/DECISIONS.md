@@ -154,6 +154,17 @@ Hello Cals partnerportal og ser sin egen partners data.
 - Hver størrelse har hel vægt (køkkenvægt) og spiselig vægt = hel vægt minus USDA's spild-procent (skræl, sten, kernehus, skal). Den spiselige vægt registreres, fordi kalorier pr. 100 g gælder den. Mål er hele varen (Ø for runde, længde × Ø for aflange). Liste og tal: `docs/HAND-SIZES.md`, data i `src/lib/hand-sizes.ts`.
 - Kobles på varens navn i kode, ikke en ny databasekolonne, så Frida-varer og butiksvarer ("Økologiske bananer") virker uden migration. Forarbejdede varer udelukkes.
 - Fliserne står som vandsidens beholdere med Stor til højre; Stor-billedet er større end normalt, og de to andre skaleres lineært efter hel vægt. Der bruges varens eget billede.
+## 2026-10-02: Månedsgitteret viser ÷ på afsluttede dage uden registreringer
+
+Brugerens valg efter skærmbillede: ændringen 2026-09-25, hvor tomme dage i
+månedsgitteret blev blanke, var ikke bestilt og er rullet tilbage for
+månedsgitteret. Regel for dagfelterne i månedsvisningen:
+- Dag med registreringer: ✓ (lime) når indtaget er på eller under målet,
+  ÷ (rød) når målet er overskredet. Uændret.
+- Afsluttet dag (før i dag) uden registreringer: ÷. En dag, der ikke er
+  registreret, tæller som ikke nået.
+- I dag og fremtidige dage: ingen markering.
+Uge- og Liste-visningen beholder "Ingen indtastninger" i gråt på tomme dage.
 
 ## 2026-09-29: Aktivitetsniveau, PAL og kaloriemål
 
