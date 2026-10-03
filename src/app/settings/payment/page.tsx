@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { IconPaymentCard } from "@/components/icons/PaymentCard";
 import { HfScreen } from "@/components/HfScreen";
+import { LogoBadge } from "@/components/hf/PaymentMethodBadges";
 import { SkeletonCards, SkeletonScreen } from "@/components/hf/Skeleton";
 import { useTranslation } from "@/i18n/LocaleProvider";
 
@@ -37,7 +38,7 @@ type SubscriptionResponse = {
   mobilePayPending: boolean;
 };
 
-// Små logo-chips nederst (samme størrelse som købssidens PaymentMethodBadges).
+// Logo-chips nederst (samme chip som købssidens PaymentMethodBadges).
 const SUPPORTED_METHODS = [
   { id: "visa", label: "Visa", logo: "/payment/visa.svg" },
   { id: "mastercard", label: "Mastercard", logo: "/payment/mastercard.svg" },
@@ -86,13 +87,10 @@ function previewData(kind: string): SubscriptionResponse {
 function MethodLogo({ kind }: { kind: string }) {
   const logo = METHOD_LOGOS[kind];
   return (
-    <span
-      className="flex h-8 w-12 shrink-0 items-center justify-center rounded-[6px] border bg-hf-white"
-      style={{ borderColor: "var(--hf-color-line)" }}
-    >
+    <span className="flex h-8 w-12 shrink-0 items-center justify-center rounded-[6px] bg-hf-tan">
       {logo ? (
         // eslint-disable-next-line @next/next/no-img-element
-        <img src={logo} alt="" className="h-5 w-auto" />
+        <img src={logo} alt="" className="h-5 w-9 object-contain" />
       ) : (
         <IconPaymentCard size={20} className="text-hf-black" />
       )}
@@ -320,15 +318,7 @@ export default function PaymentPage() {
             <p className="hf-type-section-title">{t("payment.supportedMethodsTitle")}</p>
             <div className="mt-2 flex flex-wrap items-center gap-2">
               {SUPPORTED_METHODS.map((method) => (
-                <span
-                  key={method.id}
-                  className="flex h-10 items-center gap-2 rounded-[8px] border bg-hf-white px-3"
-                  style={{ borderColor: "var(--hf-color-line)" }}
-                >
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={method.logo} alt={method.withName ? "" : method.label} className="h-5 w-auto" />
-                  {method.withName && <span className="hf-type-small hf-type-strong">{method.label}</span>}
-                </span>
+                <LogoBadge key={method.id} src={method.logo} label={method.label} withName={method.withName} />
               ))}
             </div>
           </div>
