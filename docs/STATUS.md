@@ -29,6 +29,12 @@ Last updated: 2026-10-02
 - Migration `20261002120000_more_integrations` (enum-værdier + `integrations.externalUserId`) skal køre ved deploy. Nye nøgler i admin → API-nøgler og `compose.production.yaml`: `GARMIN_CLIENT_ID/SECRET`, `GARMIN_WEBHOOK_KEY`, `WHOOP_CLIENT_ID/SECRET`, `HUAWEI_HEALTH_CLIENT_ID/SECRET`, `HUAWEI_HEALTH_API_BASE`. `.env.production.example` er ikke opdateret (adgang nægtet her).
 - Lint, typecheck og build grønne. `page-tree.test.mjs` fejler stadig (også på master). Ikke live-testet: ingen nøgler/DB her; Garmin- og Huawei-feltnavne er ikke prøvet mod live-API.
 - Mangler fra brugeren: Garmin-partnergodkendelse, Huawei Health Kit-godkendelse, WHOOP-app, logoer til de nye mærker, og evt. Tuya-partneraftale.
+## 2026-10-02: Tilføj → Aktivitet: stort katalog, søgeord og tid
+
+- Søgefeltet på `/activity/create` finder nu ca. 75 aktiviteter, der får pulsen op, også via søgeord (fx "judo", "tabata", "bouldering"), hver med egne MET-værdier pr. intensitet. Se DECISIONS.md samme dato.
+- Varighed: timer + minutter + "slut kl.", som følger med begge veje.
+- Tests: `activity-met.test.mjs` (katalog) og ny `activity-duration.test.mjs`, grønne. Lint og typecheck grønne. Ikke live-testet (ingen lokal DB).
+- Brugerens 3D-aktivitetsikon er nu sat på aktivitetsknappen under Tilføj (`public/icons/activity-3d.png`, `imageSrc` i `src/lib/add-actions.ts`); hjulet, `/add/menu`, Indstillinger → Visning → Forside og widgets viser det.
 
 ## 2026-10-02: Kameraflowet — rigtige stillbilleder + nyt foto af indholdet
 

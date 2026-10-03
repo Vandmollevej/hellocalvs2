@@ -13,6 +13,12 @@ Brugerens krav: Garmin, Health Connect, eufy, Renpho, Tuya, Xiaomi, Huawei, WHOO
 - **Tuya:** direkte forbindelse kræver partneraftale (Tuya IoT-projekt + godkendt app-konto-kobling); vises som "via" med note om det.
 - Health Connect-delen af Hello Cal-appen er skrevet som Android-modul `native/android/healthconnect/` (ikke kompileret endnu).
 - Nye mærker har intet logo endnu (`icon: null` → forbogstav); brugeren lægger logoer i `public/integrations/`.
+## 2026-10-02: Aktivitetskatalog og tid på Tilføj → Aktivitet
+
+- Brugerens ønske: alle aktiviteter, der kan få pulsen op, skal kunne vælges med søgefelt. Kataloget (`ACTIVITY_CATALOG` i `src/lib/activity-met.ts`) er nu den ene kilde til navn, søgeord og MET pr. intensitet (ca. 75 aktiviteter: løb, cykel, vand, bold/ketsjer, holdtræning, dans, kampsport, is/sne, hverdag som havearbejde og snerydning). `SPORT_TYPES` i `sport-icons.ts` bygges af kataloget og tilføjer kun ikoner.
+- De ti gamle nøgler (running … other) beholdes uændret; nøgler må aldrig omdøbes, da de står på gamle registreringer. Integrationernes aliaser er uændrede, men en rå type, der præcis er en katalognøgle (fx Strava "Rowing", "Golf"), lander nu på den nøgle i stedet for "cardio"/ukendt.
+- Søgningen matcher navnet først og derefter søgeord (fx "judo" → Kampsport, "spinning" → Spinning). Listen er alfabetisk med "Anden aktivitet" sidst.
+- Varighed indtastes som timer + minutter med et sluttidspunkt, der følger med begge veje; slut før start betyder over midnat (`src/lib/activity-duration.ts`). API'et får stadig `durationMinutes`.
 
 ## 2026-10-02: Butiksimporten: alt fra arkene med (Bilka + REMA 1000)
 
