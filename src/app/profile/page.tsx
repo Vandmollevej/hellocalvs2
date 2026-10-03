@@ -94,12 +94,12 @@ export default function ProfilePage() {
               label={t("profile.section.profile")}
               href="/profile/edit"
             />
-            <ChevronRow icon={<IconStar size={20} />} label={t("profile.row.points")} href="/profile/points" />
             <ChevronRow
               icon={<IconChartLine size={20} />}
               label={t("profile.row.status")}
               href="/profile/status"
             />
+            <ChevronRow icon={<IconStar size={20} />} label={t("profile.row.points")} href="/profile/points" />
             <ChevronRow
               icon={<IconCreditCard size={20} />}
               label={t("profile.row.subscription")}

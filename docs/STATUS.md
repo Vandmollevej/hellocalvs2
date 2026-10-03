@@ -2,6 +2,14 @@
 
 Last updated: 2026-10-03
 
+## 2026-10-03: Profil → Status: målvægt, kropsmålenes mål og seneste måling
+
+- Status står nu over Points i profilmenuen (også i `page-tree.ts`).
+- Feltet "Mål" hedder nu "Målvægt". Uden målvægt står "Sæt et mål" midt i feltet ved siden af "Nuværende vægt" (linket under felterne er fjernet).
+- Under felterne vises kropsmålenes mål fra Målsætning (nyeste målsætning pr. mål), kun hvis der er nogen. Kropsmålets mål tegnes også som mållinje i dets graf.
+- Fold-ud-rækkerne (Vægt + hvert kropsmål) viser seneste måling i ikke-fed skrift: "d. 3. okt. 82,4 kg" (årstal kun, hvis ikke i år). `DropdownSection` har fået en valgfri `detail`.
+- Ingen nye API'er — siden henter også `/api/goals` (fejler den, vises siden uden kropsmålenes mål). Lint, typecheck, `profile-status`-tests og build grønne. Ikke set med login (ingen lokal DB) — test på telefon: Profil → Status.
+
 ## 2026-10-03: Kalender — profilcirklen er tilbage i dagsvisningen
 
 - Dagsvisningen (`DayDetails` i `src/app/calendar/page.tsx`) tegner sin egen grønne topbjælke som fuldskærmsdialog over siden, og dens højre hjørne var et tomt felt — så profilcirklen forsvandt, så snart en dag blev åbnet. Den viser nu `ProfileAvatarLink` som alle andre sider.

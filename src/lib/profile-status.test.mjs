@@ -4,6 +4,7 @@ import {
   buildMeasurementHistory,
   buildWeightHistory,
   currentWeightKg,
+  latestBodyGoals,
   remainingToGoalKg,
 } from "./profile-status.ts";
 
@@ -36,4 +37,13 @@ test("kg til målet rundes til én decimal", () => {
   assert.equal(remainingToGoalKg(80.44, 75), 5.4);
   assert.equal(remainingToGoalKg(70, 75), -5);
   assert.equal(remainingToGoalKg(70, null), null);
+});
+
+test("kropsmålenes mål tages fra den nyeste målsætning, der har dem", () => {
+  const goals = [
+    { createdAt: "2026-09-01T00:00:00Z", targets: [{ type: "waistCm", value: 90 }, { type: "hipCm", value: 100 }] },
+    { createdAt: "2026-09-20T00:00:00Z", targets: [{ type: "weight", value: 75 }, { type: "waistCm", value: 85 }] },
+  ];
+  assert.deepEqual(latestBodyGoals(goals, ["chestCm", "waistCm", "hipCm"]), { waistCm: 85, hipCm: 100 });
+  assert.deepEqual(latestBodyGoals([], ["waistCm"]), {});
 });

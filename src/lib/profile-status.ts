@@ -57,3 +57,27 @@ export function remainingToGoalKg(currentKg: number | null, targetKg: number | n
   if (currentKg == null || targetKg == null || targetKg <= 0) return null;
   return Math.round((currentKg - targetKg) * 10) / 10;
 }
+
+export type StatusGoal = { createdAt: string; targets: { type: string; value: number }[] };
+
+/**
+ * Kropsmålenes mål fra Målsætning: pr. mål værdien fra den nyeste målsætning,
+ * der har det. Kun de felter, der er sat — ingen mål giver et tomt objekt.
+ */
+export function latestBodyGoals(
+  goals: StatusGoal[],
+  fields: readonly BodyMeasurementField[],
+): Partial<Record<BodyMeasurementField, number>> {
+  const newestFirst = [...goals].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+  const result: Partial<Record<BodyMeasurementField, number>> = {};
+  for (const field of fields) {
+    for (const goal of newestFirst) {
+      const target = goal.targets.find((entry) => entry.type === field);
+      if (target && isPositive(target.value)) {
+        result[field] = target.value;
+        break;
+      }
+    }
+  }
+  return result;
+}
