@@ -1,7 +1,11 @@
 # HELLO CAL — project status
 
-Last updated: 2026-10-02
 Last updated: 2026-10-03
+
+## 2026-10-03: "kcal" tilbage — kyllingelåret er et supplement, ikke en erstatning
+
+- Brugerens rettelse: kyllingelåret skulle kun bruges, hvor der allerede stod et ikon, og aldrig fjerne "kcal". Rullet tilbage: måneds-/ugelistens afstand til mål, statistikboksenes værdier, widget-forhåndsvisningerne og listerne i chat/tale/kamera viser igen tal + "kcal" uden ikon.
+- Beholdt med "kcal" igen: forsidens tal-hjul (kyllingelår/flamme som rækkeikon + "kcal"), statistikboksen Kalorier (kyllingelår som boksikon) og kalenderens dagvisning (`EnergyChip` viser nu "540 kcal"/"+120 kcal" efter ikonet). Se DECISIONS.md og design.md §6.16.
 
 ## 2026-10-02: Kalenderen husker den åbne dag
 
@@ -121,7 +125,7 @@ Last updated: 2026-10-02
 - Lint, typecheck og `npm run build` grønne. Ikke testet på telefon — tjek i køleskabet på Android (lygte + fokus) og iPhone (forventet: kun advarselsteksten).
 ## 2026-10-02: Kalenderens miniature-tal (kyllingelår, flamme, vand i cl)
 
-- `EnergyChip` (kyllingelår + tal for indtag, flamme + tal for forbrændt, glas + cl for vand) bruges nu generelt: kalenderens dag-/time-/uge-/månedsvisninger, forsidens tal-hjul (rækkeikon + tom enhed), statistikbokse, widget-forhåndsvisninger og listerne i chat/tale/kamera. Kalenderen henter nu også `/api/water-entries` og viser glas vand pr. time og i timens oversigt. Se DECISIONS.md og design.md §6.16.
+- `EnergyChip` (kyllingelår + tal for indtag, flamme + tal for forbrændt, glas + cl for vand) bruges nu generelt (rullet tilbage 2026-10-03, se øverst): kalenderens dag-/time-/uge-/månedsvisninger, forsidens tal-hjul (rækkeikon + tom enhed), statistikbokse, widget-forhåndsvisninger og listerne i chat/tale/kamera. Kalenderen henter nu også `/api/water-entries` og viser glas vand pr. time og i timens oversigt. Se DECISIONS.md og design.md §6.16.
 - Ikke ændret: sætninger ("Tilbage for i dag: … kcal"), indtastningsfelter, "kcal / 100 g", grafakser, opskriftssider og de native widgets (`native/`).
 - Lint, typecheck og build grønne. Ikonet er tjekket som rendering i headless Chromium, men ikke live-testet i appen (ingen lokal DB/login) — tjek timerækken på telefon, især at kyllingelåret (16 px) og glasset står pænt ved siden af hinanden.
 - Næste: hvis kyllingelåret skal bruges flere steder (forside, widgets), så genbrug `IconDrumstick` og tokenet `--hf-meat`.

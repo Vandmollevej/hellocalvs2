@@ -64,15 +64,18 @@ Erstatter "Varer uden kcal/protein/kulhydrat/fedt springes over" fra 2026-09-27.
 - Admin-gennemgang i Dubletter nulstilles ikke af kJ-rettelsen eller de afledte sukkerpåstande.
 ## 2026-10-02: Kalenderens miniature-tal — kyllingelår, flamme og vand i cl
 
-- Generelt i appen ("overalt", brugerens svar 2026-10-02) vises indtagne
-  kalorier som et brunt/hvidt kyllingelår + tal, forbrændte kalorier
-  (aktiviteter, aktiv energi) som en flamme + tal, og vand som det
-  eksisterende glas-ikon + mængde i cl. Ordet "kalorier"/"kcal" udgår, hvor
-  tallet står kompakt: kalenderens dag-/time-/uge-/månedsvisninger, forsidens
-  tal-hjul, statistikbokse, widget-forhåndsvisninger og listerne i chat, tale
-  og kamera. Den fulde tekst ligger i aria-label. Fælles komponent
-  `EnergyChip` (design.md §6.16). Sætninger, indtastningsfelter,
-  "kcal / 100 g", grafakser og native widgets beholder teksten.
+- **Rettet 2026-10-03 (brugeren):** ikonet er et supplement til "kcal",
+  aldrig en erstatning, og kyllingelåret bruges kun, hvor der i forvejen stod
+  et ikon. "Overalt"-udrulningen fra 2026-10-02 er rullet tilbage: måneds-/
+  ugelisten, statistikboksenes værdier, widget-forhåndsvisningerne og
+  listerne i chat/tale/kamera viser igen tal + "kcal" uden ikon. Forsidens
+  tal-hjul (Kalorier, Kalorier i plus: kyllingelår; Forbrændt: flamme) og
+  statistikboksen Kalorier (kyllingelår) beholder ikonskiftet og viser igen
+  "kcal".
+- Kalenderens dagvisning (timerækken og timens oversigt) viser indtagne
+  kalorier som kyllingelår + "540 kcal", forbrændte som flamme +
+  "+120 kcal", og vand som det eksisterende glas-ikon + mængde i cl. Fælles
+  komponent `EnergyChip` (design.md §6.16).
 - Vand vises aldrig som "0 kcal". To kilder tælles sammen pr. time:
   `WaterEntry` fra /water/create (ml), som kalenderen nu også henter, og
   almindelige registreringer af en vare, der er vand: 0 kcal og enten et
