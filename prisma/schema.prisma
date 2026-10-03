@@ -163,9 +163,9 @@ model User {
   wantsPartnerOffersEmails Boolean @default(false)
 
   // "Invitér en ven": kort delbar kode brugt i invite-linket
-  // (https://.../tilmeld?ref=<referralCode>). Belønning er 300 points til
-  // både afsender og ny bruger ved gennemført tilmelding (PointsReason
-  // FRIEND_REFERRAL), IKKE en direkte gratis måned — se Referral-modellen.
+  // (https://.../tilmeld?ref=<referralCode>). Belønning (2026-10-03): 300
+  // points til afsenderen efter 3 måneder (PointsReason FRIEND_REFERRAL); den
+  // nye bruger får 1 gratis måned ved oprettelsen — se Referral-modellen.
   referralCode String @unique @default(cuid())
 
   // Lifetime-loft: maks. 12 gratis måneder nogensinde, uanset om de kommer
@@ -315,9 +315,9 @@ model User {
 
 // "Invitér en ven"-bogføring. Attribueres ved tilmelding via
 // User.referralCode i invite-linket (src/app/api/auth/register/route.ts).
-// Belønning (docs/DECISIONS.md 2026-09-02): 300 points til BÅDE referrer og
-// referredUser, tildelt af src/lib/referrals.ts når referredRegisteredAt er
-// ≥3 måneder gammel (uændret ventetid-regel). Points indløses separat til
+// Belønning (docs/DECISIONS.md 2026-10-03): 300 points kun til referrer,
+// tildelt af src/lib/referrals.ts når referredRegisteredAt er ≥3 måneder
+// gammel; referredUser får i stedet 1 gratis måned ved oprettelsen. Points indløses separat til
 // gratis måneder (300 points = 1 måned, kræver gemt betalingsmetode så
 // abonnementet fortsætter automatisk bagefter) — se PointsReason
 // FREE_MONTH_REDEEMED og src/app/profile/points/page.tsx.

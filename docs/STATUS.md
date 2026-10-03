@@ -122,6 +122,12 @@ Last updated: 2026-10-03
 - Fold-ud-rækkerne (Vægt + hvert kropsmål) viser seneste måling i ikke-fed skrift: "d. 3. okt. 82,4 kg" (årstal kun, hvis ikke i år). `DropdownSection` har fået en valgfri `detail`.
 - Ingen nye API'er — siden henter også `/api/goals` (fejler den, vises siden uden kropsmålenes mål). Lint, typecheck, `profile-status`-tests og build grønne. Ikke set med login (ingen lokal DB) — test på telefon: Profil → Status.
 
+## 2026-10-03: "Invitér en ven" — 300 points kun til afsenderen, vennen får 1 gratis måned
+
+- Ejerens beslutning (DECISIONS samme dato): den, der inviterer, får 300 points, når vennen har været med i 3 måneder. Vennen får ingen points, men 1 gratis måned med Seriøs, når kontoen oprettes via linket.
+- Rettet i `src/lib/referrals.ts` (kun afsenderen krediteres + ny `grantReferredFriendFreeMonth`), `/api/auth/register`, invitationssiden, delbar invitationstekst, mails `FRIEND_INVITATION`/`FRIEND_REFERRAL` (uredigerede gamle standardtekster opgraderes automatisk), Betingelser §8, i18n og tjeklisten.
+- Lint, typecheck og build grønne. Ikke testet live — test: opret en konto via et invite-link og tjek Profil → Abonnement (Gratis måned).
+
 ## 2026-10-03: Alle points-typer vises nu i oversigterne
 
 - Profil → Points-historikken viste den rå kode "SIGNUP_BONUS" og "INTEGRATION_TESTER" i stedet for en tekst — etiketten "Startbonus" gik tabt ved merge af `claude/signup-teaser-points` (prefer master). Nu "Startbonus" og "Testperson af integration"; listen er typet som `Record<PointsReason, string>`, så en ny points-type ikke bygger uden etiket.
