@@ -4,14 +4,14 @@
 // Kun læsning, og der bedes ikke om profil-adgang (navn/e-mail): Hello Cal
 // sender ingen data om brugeren til WHOOP.
 
-import { whoopItems, type Recovery, type Sleep, type Workout } from "./whoop-items";
+import { whoopItems, type Cycle, type Recovery, type Sleep, type Workout } from "./whoop-items";
 import { clientCredentials, getJson, postForm, type OAuthProviderAdapter, type OAuthTokens } from "./types";
 
 const AUTHORIZE_URL = "https://api.prod.whoop.com/oauth/oauth2/auth";
 const TOKEN_URL = "https://api.prod.whoop.com/oauth/oauth2/token";
 const API = "https://api.prod.whoop.com/developer/v2";
 // "offline" giver et refresh-token.
-const SCOPES = "offline read:workout read:sleep read:recovery";
+const SCOPES = "offline read:workout read:sleep read:recovery read:cycles";
 const MAX_PAGES = 20;
 
 type Page<T> = { records?: T[]; next_token?: string | null };
@@ -58,16 +58,19 @@ export const whoop: OAuthProviderAdapter = {
   refresh(refreshToken) {
     return tokenRequest({ grant_type: "refresh_token", refresh_token: refreshToken, scope: "offline" });
   },
+  readScopes: { activities: "read:cycles" },
   async revoke(accessToken) {
     const response = await fetch(`${API}/user/access`, { method: "DELETE", headers: { Authorization: `Bearer ${accessToken}` } });
     if (!response.ok && response.status !== 404) throw new Error(`WHOOP afmelding fejlede (${response.status})`);
   },
   async fetchItems(accessToken, since) {
-    const [workouts, sleeps, recoveries] = await Promise.all([
+    const [workouts, sleeps, recoveries, cycles] = await Promise.all([
       fetchAll<Workout>("/activity/workout", accessToken, since),
       fetchAll<Sleep>("/activity/sleep", accessToken, since),
       fetchAll<Recovery>("/recovery", accessToken, since),
+      // read:cycles kom til 2026-10-03; ældre forbindelser mangler det.
+      fetchAll<Cycle>("/cycle", accessToken, since).catch(() => [] as Cycle[]),
     ]);
-    return whoopItems(workouts, sleeps, recoveries);
+    return whoopItems(workouts, sleeps, recoveries, cycles);
   },
 };

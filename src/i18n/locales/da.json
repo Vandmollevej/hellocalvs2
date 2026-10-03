@@ -709,6 +709,49 @@
     "burnedChipAriaLabel": "{amount} kalorier forbrændt",
     "waterChipAriaLabel": "{amount} vand",
     "waterTitle": "Vand",
+    "measurement": {
+      "weight": "Vægt",
+      "title": "Måling",
+      "source": {
+        "WITHINGS": "Withings",
+        "FITBIT": "Fitbit",
+        "GOOGLE_HEALTH": "Google Health",
+        "APPLE_HEALTH": "Apple Health",
+        "HEALTH_CONNECT": "Health Connect",
+        "GARMIN": "Garmin",
+        "HUAWEI_HEALTH": "Huawei Health",
+        "WHOOP": "WHOOP",
+        "POLAR": "Polar"
+      },
+      "type": {
+        "BODY_FAT_PERCENT": "Fedtprocent",
+        "FAT_MASS_KG": "Fedtmasse",
+        "FAT_FREE_MASS_KG": "Fedtfri masse",
+        "MUSCLE_MASS_KG": "Muskelmasse",
+        "SKELETAL_MUSCLE_MASS_KG": "Skeletmuskelmasse",
+        "BONE_MASS_KG": "Knoglemasse",
+        "BODY_WATER_PERCENT": "Kropsvand",
+        "EXTRACELLULAR_WATER_KG": "Ekstracellulært vand",
+        "INTRACELLULAR_WATER_KG": "Intracellulært vand",
+        "VISCERAL_FAT_INDEX": "Visceralt fedt",
+        "PROTEIN_PERCENT": "Proteinandel",
+        "BASAL_METABOLIC_RATE_KCAL": "Hvilestofskifte (BMR)",
+        "METABOLIC_AGE_YEARS": "Metabolisk alder",
+        "BMI": "BMI",
+        "HEIGHT_CM": "Højde",
+        "BLOOD_PRESSURE_SYSTOLIC_MMHG": "Blodtryk, systolisk",
+        "BLOOD_PRESSURE_DIASTOLIC_MMHG": "Blodtryk, diastolisk",
+        "HEART_RATE_BPM": "Puls",
+        "PULSE_WAVE_VELOCITY_M_S": "Pulsbølgehastighed",
+        "VASCULAR_AGE_YEARS": "Karalder",
+        "OXYGEN_SATURATION_PERCENT": "Iltmætning (SpO₂)",
+        "TEMPERATURE_C": "Temperatur",
+        "SKIN_TEMPERATURE_C": "Hudtemperatur",
+        "BLOOD_GLUCOSE_MMOL_L": "Blodsukker",
+        "NERVE_HEALTH_SCORE": "Nervesundhed",
+        "SKIN_CONDUCTANCE_US": "Hudledningsevne"
+      }
+    },
     "targetDateSuffix": ", målsætningsdato",
     "openTargetDate": "Åbn målsætning",
     "openTargetDateAriaLabel": "Åbn målsætningen for denne dag",
@@ -1866,7 +1909,20 @@
     "loading": "Henter…",
     "notice": {
       "connected": "{name} blev forbundet.",
-      "failed": "Kunne ikke forbinde {name}. Prøv igen."
+      "failed": "Kunne ikke forbinde {name}. Prøv igen.",
+      "config": "{name} kan ikke forbindes endnu: nøglerne til {name} mangler på serveren (admin → API-nøgler).",
+      "tier": "Integrationer kræver abonnementet Seriøs. {name} blev ikke forbundet.",
+      "denied": "Du afviste adgangen hos {name}, så intet blev forbundet.",
+      "expired": "Forsøget udløb, før {name} svarede. Tryk Tillad igen."
+    },
+    "feedback": {
+      "syncing": "Henter dine data fra {name} …",
+      "synced": "Hentet: {count} nye målinger fra {name}.",
+      "nothingNew": "{name} er forbundet. Ingen nye data siden sidst.",
+      "upToDate": "{name} er forbundet og blev synkroniseret for lidt siden.",
+      "syncFailed": "Kunne ikke hente data fra {name}. Prøv igen om lidt.",
+      "deviceCode": "Indtast enhedskoden herunder i Hello Cal-appen på telefonen, så henter den dine {name}-data.",
+      "companionSaved": "Valget er gemt. Hello Cal-appen på telefonen henter dine {name}-data efter disse valg."
     },
     "intro": "Forbind dine sundhedsapps, så vægt, skridt og træning hentes automatisk.",
     "lastSynced": "Sidst synkroniseret {date}",
@@ -1935,10 +1991,10 @@
       "activities": "Træning",
       "steps": "Skridt og distance",
       "energy": "Forbrændte kalorier",
-      "heart": "Puls og kondition",
+      "heart": "Puls, blodtryk, EKG og kondition",
       "sleep": "Søvn",
       "water": "Vand",
-      "body": "Højde, BMI og temperatur"
+      "body": "Højde, BMI, temperatur og øvrige målinger"
     },
     "writeTypes": {
       "nutrition": "Måltider (kalorier, protein, kulhydrat, fedt)",
@@ -1959,6 +2015,7 @@
       "statusTitle": "Forbindelse",
       "deviceTitle": "Hello Cal-appen på telefonen",
       "allow": "Tillad",
+      "done": "Færdig",
       "deny": "Tillad ikke",
       "write": {
         "nutrition": "Kost og makroer",
@@ -2056,6 +2113,8 @@
       "vitamins": "Vitaminer",
       "allergensAdditives": "Allergener, E-numre og toksiner",
       "sportActivity": "Sport og aktivitet",
+      "body": "Krop og kropssammensætning",
+      "heartHealth": "Hjerte, blodtryk og målinger",
       "sleep": "Søvn",
       "other": "Øvrige data"
     },

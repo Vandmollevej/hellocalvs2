@@ -59,6 +59,7 @@
 
 .sheet {
   position: relative;
+  transition: transform 0.25s ease;
   display: flex;
   min-height: 0;
   flex: 1;
@@ -71,11 +72,52 @@
   -webkit-font-smoothing: antialiased;
 }
 
+.dragging {
+  transition: none;
+}
+
+/* Trækstreg (design.md §6.13): viser, at arket kan trækkes ned. */
+.grabber {
+  position: absolute;
+  top: 6px;
+  left: 50%;
+  z-index: 3;
+  width: 40px;
+  height: 4px;
+  margin-left: -20px;
+  border-radius: 2px;
+  background: #c7c7cc;
+}
+
+/* Luk øverst til højre, 44 × 44 hit-area med iOS' grå cirkel. */
+.close {
+  position: absolute;
+  top: 14px;
+  right: 10px;
+  z-index: 3;
+  display: flex;
+  width: 44px;
+  height: 44px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  color: #3c3c43;
+}
+
+.close::before {
+  position: absolute;
+  inset: 6px;
+  z-index: -1;
+  border-radius: 50%;
+  background: #e9e9eb;
+  content: "";
+}
+
 .titleBar {
   position: absolute;
   inset: 0 0 auto;
   z-index: 2;
-  padding: 26px 16px 18px;
+  padding: 26px 60px 18px;
   background: linear-gradient(to bottom, #ffffff 60%, rgba(255, 255, 255, 0));
   text-align: center;
   font-size: 17px;

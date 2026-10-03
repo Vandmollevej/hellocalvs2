@@ -24,6 +24,22 @@ Brugerens krav: "Denne [højden] skal også låses ligesom vægten. I integratio
 - Withings henter alt, vægten måler: vægt, højde, fedtprocent, fedtmasse, fedtfri masse, muskelmasse, kropsvand, knoglemasse, visceralt fedt, puls, iltmætning, temperatur og VO2 max. Nye `HealthMetricType`: `FAT_MASS_KG`, `FAT_FREE_MASS_KG`, `BONE_MASS_KG`, `VISCERAL_FAT_INDEX` (migration `20261003150000_full_body_composition`). Garmin henter også knoglemasse; Health Connect-modulet læser også knoglemasse og fedtfri masse (LeanBodyMass).
 - Hver kropsmåling har sin egen til/fra-række på integrationssiden (`ReadType`: `bodyFat` = fedtprocent og fedtmasse, `muscleMass`, `fatFreeMass`, `bodyWater`, `boneMass`, `visceralFat`; `body` = højde, BMI og temperatur). Nye rækker er slået til, indtil brugeren slår dem fra — også hvor "Fedtprocent" før var slået fra og dækkede muskler/kropsvand.
 - Hjul-arkene (`WheelPicker`, `BirthDatePicker`) portales til `<body>`: inde i et `<label>` sendte iOS tryk på "Færdig" videre til åbne-knappen, så arket ikke lukkede.
+## 2026-10-03: "Tillad" giver altid synlig besked
+
+Afløser "ellers er valget allerede gemt → luk" fra 2026-09-27: "Tillad" på en integrations adgangsark lukker aldrig arket uden at vise, hvad der skete. Forbundet cloud-app → hent data nu og vis resultatet; knappen hedder derefter "Færdig" og lukker først da. Tilkoblingsfejl sendes tilbage med årsag (`config`, `tier`, `denied`, `expired`, `failed`) og vises øverst i arket.
+
+## 2026-10-03: ALT med fra integrationerne
+
+Brugerens krav: "I Withings og øvrige integrationer skal ALT med. Fedtprocent, muskelmasse og alt!"
+
+- **Alle tal, en app kan levere, hentes** — ikke kun vægt og fedtprocent. Nye `HealthMetricType`-værdier: fedtmasse, fedtfri masse, skeletmuskelmasse, knoglemasse, ekstra-/intracellulært vand, visceralt fedt, proteinandel, BMR (`BASAL_METABOLIC_RATE_KCAL`, vægtens enkeltmåling — adskilt fra dagssummen `RESTING_ENERGY_KCAL`), metabolisk alder, blodtryk (systolisk/diastolisk), pulsbølgehastighed, karalder, EKG-intervaller (QRS/PR/QT/QTc), fitnessalder, hudtemperatur, blodsukker, nervesundhed, hudledningsevne, restitution og strain.
+- **Withings:** alle numeriske måletyper (vægt, højde, hele kropssammensætningen, blodtryk, puls, SpO2, temperatur, PWV, karalder, EKG, VO2 max, BMR, metabolisk alder …) + dagsaktivitet, søvn og træning (scope `user.activity`). Ikke med: AFib-klassifikationer og segmentmålinger pr. arm/ben (ikke ét tal).
+- **Øvrige:** Garmin (knoglemasse, blodtryk, VO2 max/fitnessalder, HRV, SpO2, vejrtrækning), Huawei (hele vægtens sammensætning, blodtryk, SpO2, temperatur, blodsukker), WHOOP (strain, dagspuls, restitution, hudtemperatur), Polar (søvn, Nightly Recharge, dagsaktivitet, cardio load), Fitbit (dagsserier, hvilepuls, HRV, SpO2, vejrtrækning, VO2 max, søvn, BMI), Google Health (højde, hvilepuls, HRV, SpO2, vejrtrækning, temperatur, VO2 max) og Health Connect (knoglemasse, fedtfri masse, BMR, blodtryk, temperatur, blodsukker). Strava har kun træning.
+- **Hver delforespørgsel er tolerant:** mangler en tilladelse eller en enhed, fejler kun den del; resten gemmes.
+- **"Forbind igen" også for læsning:** adaptere kan angive `readScopes`; mangler et scope, brugeren gav ved tilkobling, vises "Forbind igen" (samme besked som for skriveadgang). En ny tilkobling nulstiller `lastSyncedAt`, så hele historikken hentes.
+- **Grupper under "Hent fra":** al kropssammensætning hører under `bodyFat` ("Fedtprocent, muskelmasse og hele kropssammensætningen"); blodtryk, karstivhed, EKG, fitnessalder og restitution under `heart`; temperatur, blodsukker m.m. under `body`.
+- **Apple Health `leanBodyMass` = fedtfri masse** (`FAT_FREE_MASS_KG`), ikke muskelmasse — retter docs/HEALTHKIT_COMPANION.md fra 2026-09-29. Ingen iOS-app findes endnu, så intet data er gemt forkert.
+- **Statistik:** nye kortgrupper "Krop og kropssammensætning" og "Hjerte, blodtryk og målinger". Kropssammensætning, blodtryk o.l. viser seneste måling i perioden (ikke gennemsnit). `/api/health-metrics` returnerer nu alle målinger fra de seneste 120 dage (højst 10.000) + den nyeste ældre måling pr. type.
 
 ## 2026-10-02: Hjælpe-chatbot øverst i app og web + admin "Chatbot"
 
@@ -35,6 +51,7 @@ Brugerens krav: "Denne [højden] skal også låses ligesom vægten. I integratio
 - **Admin → Brugere → Chatbot** (`/admin/chatbot`): periode (7/30/90 dage/altid), nøgletal, "Oftest spurgt" pr. kategori (klik filtrerer), tabel med alle spørgsmål og svar (søgning, kategori, kun videresendte) og visningen "Hele tråde" med alle spørgsmål og svar inline. `/admin/chatbot/[id]` viser hele tråden, brugeren nu (alder, køn, region, abonnement + status, sprog, bruger siden, antal samtaler/sager), øjebliksbilledet og link til supportsagen.
 - **Region** er landet fra profilen (`User.region`, fx Danmark) — ejerens valg 2026-10-03. Ingen danske regioner/postnumre.
 - **Kun indloggede** kan bruge chatbotten (ejerens valg 2026-10-03). Udloggede, der åbner den, får en henvisning til Hjælpecentret.
+
 ## 2026-10-02: Før/efter-sammenligning i billede-dagbogen
 
 - Valg sker med en hvid afkrydsningsboks på billedkortet; første afkrydsning åbner straks overlayet med billede 1 som "Før" og en tom "Efter"-plads. Rækkefølgen er brugerens valg (ikke dato), og kan byttes om.

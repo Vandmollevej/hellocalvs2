@@ -297,6 +297,8 @@ Ejer: cloud-session `claude/integrations-more-brands` (2026-10-02)
 | Id | Opgave | Status | Næste skridt |
 | --- | --- | --- | --- |
 | — | Garmin, WHOOP, Huawei (OAuth, kun læsning) + eufy/Renpho/Xiaomi/Tuya/Samsung via Health Connect/Apple Health + Android Health Connect-modul | Færdig (flettet i master via PR #157) | Kode i master; migration `20261002120000_more_integrations` kører ved deploy. Brugeren: Garmin-partnerprogram, Huawei Health Kit-godkendelse, WHOOP-app, nøgler i admin, logoer. Android-modulet skal bygges i Android Studio |
+| calendar-weighins | **Bemærk G1:** vejninger og kropsmålinger vises i kalenderens dagsvisning/timeoversigt (`src/app/calendar/page.tsx`: ny `measurements`-prop på `DayDetails`, `HourRow` og `HourEntriesOverlay`, ny `MeasurementRow`) | Færdig på branch `claude/integrations-all-metrics` (PR #186) | Brugerens test på telefon |
+| all-metrics | ALT med fra integrationerne: hele kropssammensætningen (fedt %, fedtmasse, fedtfri masse, muskel-, knogle- og vandmasse, visceralt fedt, BMR, metabolisk alder …), blodtryk, EKG, temperatur, blodsukker, aktivitet og søvn fra Withings, Garmin, Huawei, WHOOP, Polar, Fitbit, Google Health og Health Connect + Statistik-kort | Færdig på branch `claude/integrations-all-metrics` (venter på merge) | Migration `20261003120000_all_health_metrics` ved deploy. Withings/Fitbit/WHOOP/Huawei-brugere skal trykke "Forbind igen" for de nye tilladelser. Feltnavne for Polar-dagsaktivitet/cardio load, Huawei-sammensætning og Google Health-enkeltmålinger er ikke prøvet mod live-API |
 
 ## G-STORE — Butiksimport (Bilka + REMA 1000)
 Filer: `scripts/store-products-import/**`, `docs/PRODUCT_IMPORT_MAPPING.md`, `Product.nutritionMissing`.

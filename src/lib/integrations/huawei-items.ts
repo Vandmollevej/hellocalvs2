@@ -90,11 +90,50 @@ export function huaweiWeightItems(points: SamplePoint[]): IntegrationItem[] {
     const at = new Date(ms).toISOString();
     const weight = huaweiField(point.value, "body_weight");
     if (weight && weight > 0) items.push({ kind: "weight", payload: { source: "HUAWEI_HEALTH", weightKg: weight, weighedAt: at } });
+    const field = (...names: string[]) => huaweiField(point.value, ...names);
+    // Kropsvand: procent direkte, ellers kg omregnet med vægten.
+    const waterKg = field("moisture");
+    const waterPercent = field("moisture_rate") ?? (waterKg && weight && weight > 0 ? Math.round((waterKg / weight) * 1000) / 10 : null);
     items.push(
-      ...metric("BODY_FAT_PERCENT", huaweiField(point.value, "body_fat_rate"), at),
-      ...metric("MUSCLE_MASS_KG", huaweiField(point.value, "muscle_mass"), at),
-      ...metric("BMI", huaweiField(point.value, "bmi"), at)
+      ...metric("BODY_FAT_PERCENT", field("body_fat_rate"), at),
+      ...metric("FAT_MASS_KG", field("body_fat"), at),
+      ...metric("MUSCLE_MASS_KG", field("muscle_mass"), at),
+      ...metric("SKELETAL_MUSCLE_MASS_KG", field("skeletal_muscle_mass"), at),
+      ...metric("BONE_MASS_KG", field("bone_salt", "bone_mass"), at),
+      ...metric("BODY_WATER_PERCENT", waterPercent, at),
+      ...metric("VISCERAL_FAT_INDEX", field("visceral_fat_level"), at),
+      ...metric("PROTEIN_PERCENT", field("protein_rate"), at),
+      ...metric("BASAL_METABOLIC_RATE_KCAL", field("basal_metabolism"), at),
+      ...metric("METABOLIC_AGE_YEARS", field("body_age"), at),
+      ...metric("BMI", field("bmi"), at)
     );
+  }
+  return items;
+}
+
+// Enkeltmålinger (blodtryk, SpO2, temperatur, blodsukker): datatype-felter → måletyper.
+export const HUAWEI_SAMPLE_TYPES: { dataType: string; scope: string; metrics: { type: string; fields: string[] }[] }[] = [
+  {
+    dataType: "com.huawei.instantaneous.blood_pressure",
+    scope: "bloodpressure",
+    metrics: [
+      { type: "BLOOD_PRESSURE_SYSTOLIC_MMHG", fields: ["systolic_pressure"] },
+      { type: "BLOOD_PRESSURE_DIASTOLIC_MMHG", fields: ["diastolic_pressure"] },
+      { type: "HEART_RATE_BPM", fields: ["sphygmus"] },
+    ],
+  },
+  { dataType: "com.huawei.instantaneous.spo2", scope: "oxygensaturation", metrics: [{ type: "OXYGEN_SATURATION_PERCENT", fields: ["saturation"] }] },
+  { dataType: "com.huawei.instantaneous.body.temperature", scope: "bodytemperature", metrics: [{ type: "TEMPERATURE_C", fields: ["temperature"] }] },
+  { dataType: "com.huawei.instantaneous.blood_glucose", scope: "bloodglucose", metrics: [{ type: "BLOOD_GLUCOSE_MMOL_L", fields: ["level"] }] },
+];
+
+export function huaweiSampleItems(metrics: { type: string; fields: string[] }[], points: SamplePoint[]): IntegrationItem[] {
+  const items: IntegrationItem[] = [];
+  for (const point of points) {
+    const ms = huaweiTimeMs(point.endTime ?? point.startTime);
+    if (ms === null) continue;
+    const at = new Date(ms).toISOString();
+    for (const m of metrics) items.push(...metric(m.type, huaweiField(point.value, ...m.fields), at));
   }
   return items;
 }

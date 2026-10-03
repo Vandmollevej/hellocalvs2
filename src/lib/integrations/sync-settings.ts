@@ -60,19 +60,22 @@ export const SYNC_CAPABILITIES: Partial<Record<IntegrationProvider, ProviderSync
     ],
     write: ["nutrition", "water", "weight", "activities"],
   },
-  GOOGLE_HEALTH: { read: ["weight", "bodyFat", "activities", "steps"], write: ["nutrition", "water", "weight"] },
+  GOOGLE_HEALTH: {
+    read: ["weight", "bodyFat", "activities", "steps", "heart", "body"],
+    write: ["nutrition", "water", "weight"],
+  },
   STRAVA: { read: ["activities"], write: ["activities"] },
   WITHINGS: {
-    read: ["weight", "bodyFat", "muscleMass", "fatFreeMass", "bodyWater", "boneMass", "visceralFat", "body", "heart"],
+    read: ["weight", "bodyFat", "muscleMass", "fatFreeMass", "bodyWater", "boneMass", "visceralFat", "activities", "steps", "energy", "heart", "sleep", "body"],
     write: [],
   },
-  POLAR: { read: ["activities"], write: [] },
-  FITBIT: { read: ["weight", "bodyFat", "activities"], write: [] },
+  POLAR: { read: ["activities", "steps", "energy", "heart", "sleep"], write: [] },
+  FITBIT: { read: ["weight", "bodyFat", "activities", "steps", "energy", "heart", "sleep", "body"], write: [] },
   GARMIN: {
     read: ["weight", "bodyFat", "muscleMass", "bodyWater", "boneMass", "activities", "steps", "energy", "heart", "sleep", "body"],
     write: [],
   },
-  WHOOP: { read: ["activities", "heart", "sleep"], write: [] },
+  WHOOP: { read: ["activities", "heart", "sleep", "body"], write: [] },
   HUAWEI_HEALTH: {
     read: ["weight", "bodyFat", "muscleMass", "activities", "steps", "energy", "heart", "sleep", "body"],
     write: [],
@@ -117,6 +120,37 @@ export function missingWriteScopes(
     .map(([type]) => type);
 }
 
+// Læsetyper, brugeren har slået til, men hvor appen kræver en OAuth-tilladelse,
+// der ikke blev givet ved tilkobling (fx Withings' user.activity, tilføjet
+// 2026-10-03). Uden kendt scope antages alt givet.
+export function missingReadScopes(
+  provider: IntegrationProvider,
+  readScopes: Partial<Record<ReadType, string>> | undefined,
+  storedSettings: unknown,
+  grantedScope: string | null
+): ReadType[] {
+  if (!grantedScope) return [];
+  const { read } = resolveSyncSettings(provider, storedSettings);
+  return (Object.entries(readScopes ?? {}) as [ReadType, string][])
+    .filter(([type, scope]) => read[type] && !grantedScope.includes(scope))
+    .map(([type]) => type);
+}
+
+// Alt, der kræver at brugeren forbinder igen (skrive- og læseadgang).
+export function typesNeedingReconnect(
+  provider: IntegrationProvider,
+  scopes: { writeScopes?: Partial<Record<WriteType, string>>; readScopes?: Partial<Record<ReadType, string>> },
+  storedSettings: unknown,
+  grantedScope: string | null
+): (ReadType | WriteType)[] {
+  return [
+    ...new Set([
+      ...missingWriteScopes(provider, scopes.writeScopes, storedSettings, grantedScope),
+      ...missingReadScopes(provider, scopes.readScopes, storedSettings, grantedScope),
+    ]),
+  ];
+}
+
 // Hvilken læsetype en HealthMetricType hører under.
 const METRIC_READ_TYPE: Record<string, ReadType> = {
   STEPS: "steps",
@@ -130,6 +164,7 @@ const METRIC_READ_TYPE: Record<string, ReadType> = {
   CARDIO_LOAD: "activities",
   VO2_MAX: "heart",
   SLEEP_MINUTES: "sleep",
+  // Kropssammensætning fra smartvægte hører alle under "bodyFat".
   BODY_FAT_PERCENT: "bodyFat",
   FAT_MASS_KG: "bodyFat",
   MUSCLE_MASS_KG: "muscleMass",

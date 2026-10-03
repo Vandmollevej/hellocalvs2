@@ -61,9 +61,12 @@ Authorization: Bearer hcal_<64 hex-tegn>
 ```
 
 - `source`: `"APPLE_HEALTH"` eller `"HEALTH_CONNECT"` (det gamle `"GOOGLE_HEALTH"` modtages som `HEALTH_CONNECT`; `GOOGLE_HEALTH` betyder nu Google Health API i skyen).
-- `metrics[].type`: én af `STEPS`, `ACTIVE_ENERGY_KCAL`, `RESTING_ENERGY_KCAL`,
-  `HEART_RATE_BPM`, `SLEEP_MINUTES`, `BODY_FAT_PERCENT`, `HEIGHT_CM`, `BMI`,
-  `WATER_ML` (se `HealthMetricType` i `prisma/schema.prisma`). For kumulative
+- `metrics[].type`: enhver værdi i `HealthMetricType` i `prisma/schema.prisma`
+  — fx `STEPS`, `ACTIVE_ENERGY_KCAL`, `HEART_RATE_BPM`, `SLEEP_MINUTES`, hele
+  kropssammensætningen (`BODY_FAT_PERCENT`, `FAT_MASS_KG`, `FAT_FREE_MASS_KG`,
+  `MUSCLE_MASS_KG`, `BONE_MASS_KG`, `BODY_WATER_PERCENT`, `VISCERAL_FAT_INDEX`,
+  `BASAL_METABOLIC_RATE_KCAL` …), blodtryk, temperatur, blodsukker, `HEIGHT_CM`,
+  `BMI`, `WATER_ML`. Ukendte typer springes over. For kumulative
   døgn-typer (skridt, aktiv energi, vand) sendes typisk **én række pr. dag**
   (`recordedAt` = dagens dato) — samme (source, type, recordedAt) opdaterer
   ikke en eksisterende række (unik-constraint, `skipDuplicates`), så send den
@@ -130,7 +133,20 @@ Appen henter valget og de data, den skal **skrive** til telefonen, her:
 | `HKQuantityType(.heartRate)` | `HEART_RATE_BPM` |
 | `HKCategoryType(.sleepAnalysis)` | `SLEEP_MINUTES` (summér i appen) |
 | `HKQuantityType(.bodyFatPercentage)` | `BODY_FAT_PERCENT` |
-| `HKQuantityType(.leanBodyMass)` | `MUSCLE_MASS_KG` (kg; smartvægte skriver muskelmasse hertil) |
+| `HKQuantityType(.leanBodyMass)` | `FAT_FREE_MASS_KG` (fedtfri masse, kg — ikke muskelmasse; rettet 2026-10-03) |
+| `HKQuantityType(.basalEnergyBurned)` (enkeltmåling fra vægt) | `BASAL_METABOLIC_RATE_KCAL` |
+| `HKQuantityType(.bloodPressureSystolic)` / `(.bloodPressureDiastolic)` | `BLOOD_PRESSURE_SYSTOLIC_MMHG` / `BLOOD_PRESSURE_DIASTOLIC_MMHG` |
+| `HKQuantityType(.restingHeartRate)` | `RESTING_HEART_RATE_BPM` |
+| `HKQuantityType(.heartRateVariabilitySDNN)` | `HEART_RATE_VARIABILITY_MS` |
+| `HKQuantityType(.oxygenSaturation)` | `OXYGEN_SATURATION_PERCENT` (0-1 × 100) |
+| `HKQuantityType(.respiratoryRate)` | `RESPIRATORY_RATE_BPM` |
+| `HKQuantityType(.vo2Max)` | `VO2_MAX` |
+| `HKQuantityType(.bodyTemperature)` | `TEMPERATURE_C` |
+| `HKQuantityType(.appleSleepingWristTemperature)` | `SKIN_TEMPERATURE_C` |
+| `HKQuantityType(.bloodGlucose)` | `BLOOD_GLUCOSE_MMOL_L` (mg/dL ÷ 18) |
+| `HKQuantityType(.distanceWalkingRunning)` | `DISTANCE_KM` (dagssum) |
+| `HKQuantityType(.flightsClimbed)` | `FLOORS_CLIMBED` (dagssum) |
+| `HKQuantityType(.appleExerciseTime)` | `EXERCISE_MINUTES` (dagssum) |
 | Kropsvand (smartvægt, % af kropsvægt) | `BODY_WATER_PERCENT` |
 | `HKQuantityType(.height)` | `HEIGHT_CM` |
 | `HKQuantityType(.bodyMassIndex)` | `BMI` |

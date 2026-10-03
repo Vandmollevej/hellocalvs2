@@ -3,7 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { getSessionUser, unauthorized } from "@/lib/session";
 import { metaBySlug } from "@/lib/integrations";
 import { adapterByProvider } from "@/lib/integrations/registry";
-import { missingWriteScopes, resolveSyncSettings, sanitizeSyncSettings } from "@/lib/integrations/sync-settings";
+import { resolveSyncSettings, sanitizeSyncSettings, typesNeedingReconnect } from "@/lib/integrations/sync-settings";
 import { recordIntegrationEvent } from "@/lib/integrations/events";
 
 // PUT /api/integrations/<app>/settings — gemmer brugerens til/fra-valg for,
@@ -25,7 +25,7 @@ export async function PUT(req: Request, ctx: { params: Promise<{ provider: strin
     await recordIntegrationEvent(user.id, meta.provider, "SETTINGS_CHANGED");
     const adapter = adapterByProvider(meta.provider);
     const needsReconnect =
-      adapter && row.status !== "DISCONNECTED" ? missingWriteScopes(meta.provider, adapter.writeScopes, row.syncSettings, row.scope) : [];
+      adapter && row.status !== "DISCONNECTED" ? typesNeedingReconnect(meta.provider, adapter, row.syncSettings, row.scope) : [];
     return NextResponse.json({ settings: resolveSyncSettings(meta.provider, row.syncSettings), needsReconnect });
   } catch (error) {
     console.error("Integration settings save failed", error instanceof Error ? error.message : "ukendt");

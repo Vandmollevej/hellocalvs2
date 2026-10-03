@@ -38,7 +38,21 @@ export type Recovery = {
   sleep_id?: string;
   created_at: string;
   score_state?: string;
-  score?: { resting_heart_rate?: number; hrv_rmssd_milli?: number; spo2_percentage?: number };
+  score?: {
+    recovery_score?: number;
+    resting_heart_rate?: number;
+    hrv_rmssd_milli?: number;
+    spo2_percentage?: number;
+    skin_temp_celsius?: number;
+  };
+};
+
+// Et døgn ("cycle") med belastning (strain) og puls.
+export type Cycle = {
+  start: string;
+  timezone_offset?: string;
+  score_state?: string;
+  score?: { strain?: number; average_heart_rate?: number; max_heart_rate?: number };
 };
 
 // Lokal dato (YYYY-MM-DD) for et tidspunkt med WHOOP's tidszone, fx "+02:00".
@@ -56,7 +70,7 @@ function metric(type: string, value: number | null | undefined, recordedAt: stri
     : [];
 }
 
-export function whoopItems(workouts: Workout[], sleeps: Sleep[], recoveries: Recovery[]): IntegrationItem[] {
+export function whoopItems(workouts: Workout[], sleeps: Sleep[], recoveries: Recovery[], cycles: Cycle[] = []): IntegrationItem[] {
   const items: IntegrationItem[] = [];
   for (const w of workouts) {
     if (w.score_state && w.score_state !== "SCORED") continue;
@@ -105,7 +119,19 @@ export function whoopItems(workouts: Workout[], sleeps: Sleep[], recoveries: Rec
     items.push(
       ...metric("RESTING_HEART_RATE_BPM", r.score.resting_heart_rate, at),
       ...metric("HEART_RATE_VARIABILITY_MS", r.score.hrv_rmssd_milli, at),
-      ...metric("OXYGEN_SATURATION_PERCENT", r.score.spo2_percentage, at)
+      ...metric("OXYGEN_SATURATION_PERCENT", r.score.spo2_percentage, at),
+      ...metric("RECOVERY_SCORE", r.score.recovery_score, at),
+      ...metric("SKIN_TEMPERATURE_C", r.score.skin_temp_celsius, at)
+    );
+  }
+
+  for (const c of cycles) {
+    if (c.score_state !== "SCORED" || !c.score) continue;
+    const at = `${whoopLocalDay(c.start, c.timezone_offset)}T00:00:00.000Z`;
+    items.push(
+      ...metric("STRAIN_SCORE", c.score.strain, at),
+      ...metric("HEART_RATE_BPM", c.score.average_heart_rate, at),
+      ...metric("HEART_RATE_MAX_BPM", c.score.max_heart_rate, at)
     );
   }
   return items;
