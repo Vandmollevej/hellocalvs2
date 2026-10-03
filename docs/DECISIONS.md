@@ -2,6 +2,22 @@
 
 This file records durable decisions. Add a dated entry when a later decision changes one of them.
 
+## 2026-10-02: Hjælpe-chatbot øverst i app og web + admin "Chatbot"
+
+- **Placering:** en hjælpe-knap (chatbot-ikon) står øverst på alle app-sider lige til venstre for profilcirklen (`ScreenHeader` og forsidens `TopBar`). På desktop står "Hjælp" i topbjælken ved siden af profilindstillinger. Knappen åbner ét fuldt bundark (`src/components/help/HelpChat.tsx`, monteret én gang i layoutet). Den eksisterende måltids-chat (`/chat`) er uændret og noget andet.
+- **Kontaktveje i toppen af arket:** "Tal med en medarbejder" og "Kontaktformular" (`/settings/support/contact`). **Ingen telefonsupport** (ejerens valg 2026-10-03), så der er ingen "Ring til os"-knap, og chatbotten ved, at der ikke findes en telefon.
+- **"Tal med en medarbejder"** opretter en almindelig sag i Support-indbakken (samme flow, kvitteringsmail og 24-timers-frist som "Kontakt os") med hele chat-tråden som første besked, så brugeren ikke skal forklare sig igen. Kategorien oversættes til Supports kategori. Virker også uden forudgående spørgsmål (så er brugerens tekst beskeden). Efter videresendelse er samtalen lukket; næste spørgsmål starter en ny.
+- **AI:** OpenAI Responses API med `store: false` og kun beskedtekster (ingen ID'er, navn eller e-mail), som de øvrige AI-kald. Model `OPENAI_CHATBOT_MODEL`, standard `gpt-4o-mini`. Chatbotten svarer kun ud fra `src/lib/chatbot-knowledge.ts` (bygget på Hjælpecentret) og må aldrig gætte; ved tvivl, penge tilbage, kontosletning, kontoadgang og utilfredshed foreslår den en medarbejder. Links i svar vælges kun fra en fast liste (enum i svar-skemaet). Fejler AI-kaldet, får brugeren et fast svar med tilbud om en medarbejder.
+- **Data:** `chatbot_conversations` + `chatbot_messages` (migration `20261002120000_chatbot`). Hvert brugerspørgsmål får én kategori (13 faste, `src/lib/chatbot-categories.ts`); samtalens kategori er den hyppigste. Samtalen gemmer et **øjebliksbillede** af brugeren ved start (alder, køn, region, Gratis/Seriøs + plan, app-sprog) — samme snapshot-princip som registreringer. Slettes med brugeren (cascade). En samtale fortsætter, til den har været stille i 12 timer. Højst 30 spørgsmål pr. bruger pr. time.
+- **Admin → Brugere → Chatbot** (`/admin/chatbot`): periode (7/30/90 dage/altid), nøgletal, "Oftest spurgt" pr. kategori (klik filtrerer), tabel med alle spørgsmål og svar (søgning, kategori, kun videresendte) og visningen "Hele tråde" med alle spørgsmål og svar inline. `/admin/chatbot/[id]` viser hele tråden, brugeren nu (alder, køn, region, abonnement + status, sprog, bruger siden, antal samtaler/sager), øjebliksbilledet og link til supportsagen.
+- **Region** er landet fra profilen (`User.region`, fx Danmark) — ejerens valg 2026-10-03. Ingen danske regioner/postnumre.
+- **Kun indloggede** kan bruge chatbotten (ejerens valg 2026-10-03). Udloggede, der åbner den, får en henvisning til Hjælpecentret.
+## 2026-10-02: Før/efter-sammenligning i billede-dagbogen
+
+- Valg sker med en hvid afkrydsningsboks på billedkortet; første afkrydsning åbner straks overlayet med billede 1 som "Før" og en tom "Efter"-plads. Rækkefølgen er brugerens valg (ikke dato), og kan byttes om.
+- Sammenligningen er kun visning: intet nyt billede gemmes, og intet forlader telefonen. Billedfeltet får før-billedets format; efter-billedet beskæres til samme felt (object-cover), så linjen deler samme udsnit.
+- Overlayet følger den eksisterende fuldskærmsvisning (mørk flade) og lukker, når siden låses (adgangskode-låsen).
+
 ## 2026-10-02: Flere integrationer — Garmin, WHOOP, Huawei + mærker via telefonen
 
 Brugerens krav: Garmin, Health Connect, eufy, Renpho, Tuya, Xiaomi, Huawei, WHOOP og Samsung (også ure/ringe, ikke kun vægte). "Vi må ikke videregive nogen informationer om brugeren."
@@ -186,6 +202,18 @@ Uge- og Liste-visningen beholder "Ingen indtastninger" i gråt på tomme dage.
 - Er navnet kun smagen, bliver produkttypen H1. Mangler produkttypen, står navnet i H1, og smagen udelades af H2, så den aldrig står to gange.
 - Det gemte `Product.name` røres ikke. Navnet sammensættes stadig af Sub brand + Produkttype + Variant (2026-09-23), fordi lister og søgning ikke har nogen H2.
 - Tests: `src/lib/product-naming.test.mjs`.
+## 2026-10-02: Motion lægges oven i dagens mål i kalenderen
+
+- Registreret motion (`Activity.caloriesBurned`, uanset kilde) lægges oven i
+  dagens kaloriebudget, når kalenderen afgør "inden for målet": dagvisning,
+  månedsstatus, prikker i månedsgitteret, uge-/listevisning (over/under og
+  ugebalance), årsvisning og stribe. Brugerens valg 2026-10-02.
+- "Mål: X kcal" viser fortsat budgettet uden motion; motionen står som egen
+  linje (rød flamme + grøn "+ N kcal") over målet, og "Tilbage"/"Overskredet"
+  regnes mod mål + motion. Fælles blok: `GoalStatusSummary` (design.md §6.16).
+- Ikke ændret endnu: forsidens "Tilbage"-kort (`frontpage-stats.ts`) og
+  widgets (`widget-data.ts`) regner stadig mod budgettet alene — skal følge
+  samme regel, når de rettes (andre gruppers filer).
 
 ## 2026-09-29: Aktivitetsniveau, PAL og kaloriemål
 
@@ -3728,6 +3756,25 @@ Kilder på "Mad på latin" skal altid være officielle (Fødevarestyrelsen, Sund
 - **Definitioner:** Land = seneste login-land (Cloudflare), ellers profilens `region`. By = seneste login-by (`login_events.city`, ny kolonne fra `cf-ipcity`; null uden Cloudflares "visitor location headers"). Sprog = `appLocale`. Alder i grupper (under 18, 18–24 … 65+, ukendt) fra `birthDate`. Abonnement som i Statistik (gratis/seriøs/familie, inkl. familiemedlemmer). Enhed = OS fra seneste kendte enhed. Logins tælles over 90 dage, brug (registreringer, aktive dage, HelloFresh, motion, vejninger) over 30 dage. Adfærdssegmenter: nye (< 14 dage), storbrugere (≥ 20 aktive dage/md.), faste (8–19), lejlighedsvise (1–7), kigger (logger ind uden mad), inaktive (ingen login og ingen registrering i 30 dage). Typisk tidspunkt = den del af døgnet (morgen 05–10, dag 10–16, aften 16–22, nat 22–05) med ≥ 50 % af gruppens logins, ellers "blandet".
 - **Kørsel (ejerens valg 2026-10-03):** Gruppetallene beregnes live ved hvert sidekald (gratis). AI-personas beregnes kun ved deploy og manuelt — ingen natlig plan for nu. Ved opstart af en ny build (`.next/BUILD_ID`) bestilles én kørsel af cronjobbet "personas", hvis der ikke allerede findes et snapshot for den build (genstart af samme build giver ingen ny kørsel; kun i produktion og med OpenAI-nøgle). Derudover "Kør nu" under Cronjobs og knappen "Beregn personas med AI" (kun fuld administratoradgang). En fast plan kan sættes senere under Cronjobs uden kodeændring. Hvert resultat gemmes i `persona_snapshots` med aggregater, AI-svar (struktureret JSON: navn, andel, beskrivelse, demografi, adfærd, mønstre, behov, handlinger + vigtigste fund og forbehold), model og evt. fejl. Model: `OPENAI_PERSONA_MODEL`, ellers `OPENAI_STATS_MODEL`, ellers produktmodellen.
 
+## 2026-10-02: Før/efter-sammenligning i billede-dagbogen
+
+- Billede-dagbogen får en før/efter-slider (`PhotoCompare`) med to tilstande:
+  "Glid" (skillelinje; før til venstre, efter til højre — samme retning som
+  karrusellen, ældst til venstre) og "Ton" (efter tones ind over før).
+- Begge billeder fylder én boks formet efter før-billedet (`object-cover`), så
+  kroppen står samme sted; billeder med andet format beskæres let i stedet for
+  at få sorte kanter, der flytter skillelinjen væk fra billedet.
+- Brugeren vælger frit begge billeder; der tvinges ikke kronologisk rækkefølge.
+- Alt sker på enheden ud fra billederne i IndexedDB; intet nyt sendes til
+  serveren, og visningslåsen gælder også sammenligningen.
+
+## 2026-10-02: Robotternes kørselshistorik og "Nattens kørsler"
+
+- Brugerønske: under robotterne i admin skal det stå, hvornår de sidst kørte og hvor meget de udførte; det samme skal stå på oversigten under overskriften "Nattens kørsler".
+- Ny tabel `scheduled_job_runs` (én række pr. kørsel: start, slut, status, besked, `itemCount` = udført, `runCount`, varighed). `scheduled_jobs` beholdes som "seneste status"; historikken er kun til visning og ryddes efter 30 dage.
+- Tomme OK-kørsler (0 udført) lægges sammen med forrige række, hvis den også var tom (`runCount` tæller tjekkene). Ellers ville "Løbende" robotter (tjek hvert 15. sekund) fylde tabellen.
+- Natten er kl. 20–08 dansk tid (`src/lib/jobs/night.ts`). Fra kl. 20 vises natten, der er i gang; ellers den seneste afsluttede.
+- Kontrakt: et job returnerer en besked eller `(besked, antal)` (Python) / `{ message, count }` (app-job). Samme regler i `job_control.py` (alle kopier) og `src/lib/jobs/runs.ts` — hold dem ens. Historikfejl vælter aldrig selve jobbet.
 ## 2026-10-03: Admin, webvisning og Hello Doc bygger på samme skal-klasser
 
 - Admin (`AdminShell`), Hello Cal i webvisning (`WebShell`) og Hello Doc bruger ét sæt klasser i `globals.css` (design.md §6.17): `.hf-shell*` (sidebjælke, topbjælke, indholdsbredde, skuffe, hurtigsøgning), `.hf-navrow` (alle menurækker), `.hf-crumbs`, `.hf-menu` (dropdowns), `.hf-surface` (hvid flade med tynd kant, uden padding) og `.hf-table-scroll`. Tidligere havde hver skal sin egen kopi af de samme Tailwind-kæder.

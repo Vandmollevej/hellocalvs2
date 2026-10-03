@@ -3,11 +3,12 @@
 import { useEffect, useRef, useState } from "react";
 import { HfScreen } from "@/components/HfScreen";
 import { PhotoCarousel } from "@/components/photo-diary/PhotoCarousel";
+import { PhotoCompare } from "@/components/photo-diary/PhotoCompare";
 import { PhotoViewer } from "@/components/photo-diary/PhotoViewer";
 import { Toggle } from "@/components/ui/Toggle";
 import { useTranslation } from "@/i18n/LocaleProvider";
 import { confirmOnDevice, isPasskeySupported } from "@/lib/passkey-client";
-import { sortOldestFirst, wrapIndex, type DiaryPhoto } from "@/lib/photo-diary";
+import { defaultComparePair, sortOldestFirst, wrapIndex, type DiaryPhoto } from "@/lib/photo-diary";
 import {
   addDiaryPhoto,
   deleteDiaryPhoto,
@@ -57,6 +58,8 @@ export default function BilledeDagbogPage() {
   // Billedet i karrusellens midte (og i fuldskærm). null = det nyeste.
   const [activeId, setActiveId] = useState<string | null>(null);
   const [viewerOpen, setViewerOpen] = useState(false);
+  // Før/efter: billedet, der er krydset af som billede 1. Sat = overlayet er åbent.
+  const [compareFirstId, setCompareFirstId] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const cameraOpenedAt = useRef(0);
   const objectUrls = useRef(new Set<string>());
@@ -123,6 +126,7 @@ export default function BilledeDagbogPage() {
       if (Date.now() - cameraOpenedAt.current < CAMERA_HIDE_GRACE_MS) return;
       setLocked(true);
       setViewerOpen(false);
+      setCompareFirstId(null);
     }
     document.addEventListener("visibilitychange", onVisibilityChange);
     return () => document.removeEventListener("visibilitychange", onVisibilityChange);
@@ -283,6 +287,8 @@ export default function BilledeDagbogPage() {
                     index={activeIndex}
                     onIndexChange={selectIndex}
                     onOpen={openViewer}
+                    selectedId={compareFirstId}
+                    onSelect={(index) => setCompareFirstId(ordered[index]?.id ?? null)}
                   />
                 )}
               </div>
@@ -325,6 +331,14 @@ export default function BilledeDagbogPage() {
           onIndexChange={selectIndex}
           onClose={() => setViewerOpen(false)}
           onDelete={onViewerDelete}
+        />
+      )}
+
+      {compareFirstId && !(locked && user?.photoDiaryRequiresPasscode) && (
+        <PhotoCompare
+          photos={ordered}
+          firstId={compareFirstId}
+          onClose={() => setCompareFirstId(null)}
         />
       )}
     </HfScreen>

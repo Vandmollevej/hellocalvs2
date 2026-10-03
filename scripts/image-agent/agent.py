@@ -131,23 +131,28 @@ def process_product(conn, product_id, name):
             )
         conn.commit()
         log.info("saved candidate image for %s -> %s", product_id, public_path)
-        return
+        return True
 
     log.warning("no usable image found for %s (%s)", name, product_id)
+    return False
 
 
 def run_once(conn):
+    # Returnerer (besked, antal udført) til admin "Robotter"/"Nattens kørsler".
     products = fetch_candidate_products(conn, BATCH_SIZE)
     if not products:
         log.info("no products waiting for an image")
-        return
+        return "Ingen varer venter på billede", 0
 
+    found = 0
     for product_id, name in products:
         try:
-            process_product(conn, product_id, name)
+            if process_product(conn, product_id, name):
+                found += 1
         except Exception:  # noqa: BLE001 - keep the loop alive across products
             conn.rollback()
             log.exception("failed to process %s (%s)", name, product_id)
+    return f"{found} billeder fundet til {len(products)} varer", found
 
 
 def cutout_loop():

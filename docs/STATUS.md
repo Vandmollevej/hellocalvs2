@@ -72,6 +72,13 @@ Last updated: 2026-10-03
 - `login_events` har nu kolonnen `city` (fra Cloudflares `cf-ipcity`, kræver "Add visitor location headers" — ellers kun land). Migration `20261002090000_personas` skal køre ved deploy.
 - Lint, typecheck og `npm run build` grønne. Ikke live-testet (ingen lokal DB/OpenAI-nøgle). `page-tree.test.mjs` fejler fortsat på master (uvedkommende; den nye side er tilføjet i sidetræet).
 
+## 2026-10-02: Billede-dagbog — før/efter med skyder
+
+- Hvert billede i dagbogens karrusel har en hvid afkrydsningsboks i øverste højre hjørne (kun ved 2+ billeder). Afkrydsning åbner et mørkt fuldskærms-overlay: billede 1 med et 1-tal til venstre, tom plads med "Efter"-knappen i midten til højre. "Efter" viser de andre billeder i et gitter; det valgte bliver billede 2.
+- De to billeder lægges oven på hinanden med en lodret skyder (før til venstre, efter til højre); træk med finger eller mus, eller piletaster på håndtaget. Byt-om-knap øverst til højre og "Vælg et andet efter-billede" nederst.
+- Filer: `src/components/photo-diary/PhotoCompare.tsx`, `PhotoCompareSlider.tsx`, `PhotoSelectBox.tsx`, regler i `src/lib/photo-compare.ts` (+ test). Nye klasser `.hf-photo-check`/`.hf-photo-pill` (design.md §6.8). Tekster da/en.
+- Testet i Chromium (telefon 393 px og desktop 1280 px) med efterlignet login og billeder: hele flowet og træk i skyderen virker. Ikke testet på rigtig iPhone/Android. Lint, den nye testfil og `npm run build` er grønne.
+
 ## 2026-10-03: Opdater-varen-banner (20 points)
 Last updated: 2026-10-03
 
@@ -102,6 +109,12 @@ Last updated: 2026-10-03
 - På desktop vises alle sider (også login, betingelser, privatlivspolitik) i WebShell med sidebjælke, topmenu og brødkrummer; kun admin, hello-doc, business og presse er fuld bredde.
 - Lint og typecheck grønne; ikke set i browser — tjek login-siderne på desktop.
 Last updated: 2026-10-02
+
+## 2026-10-02: Kropsmål som statistikgrafer
+
+- Nye grafer `body:<felt>` i statistikmodulet (bryst, talje, hofte, overarm, lår): samme kort som på Kropsmål-siden med tegningen til venstre, men til højre et forløb over de seneste 10 målinger (x efter dato), seneste værdi, min/maks og ændring siden sidst. Komponent `src/components/BodyMeasurementChart.tsx`, logik `src/lib/body-measurement-series.ts` (tests grønne).
+- Tilføjes under "Ubrugte grafer" → blokken Kropsmål, eller med linket "Vis kropsmål som grafer i Statistik" på Kropsmål-siden (lægger alle fem nederst i graferne og åbner Statistik).
+- Hofte har stadig ingen godkendt tegning, så venstre felt er tomt dér. Lint, typecheck og build grønne; ikke visuelt testet (ingen lokal DB/login).
 
 ## 2026-10-02: Garmin, WHOOP, Huawei + eufy/Renpho/Xiaomi/Tuya/Samsung via telefonen
 
@@ -202,6 +215,18 @@ Last updated: 2026-10-02
 - Rettet i `StatCardsGrid.tsx`: trykket lytter også på selve elementet fingeren rammer, og løftet registreres synkront (ref), så scroll blokeres med det samme. Gælder også overskrifter/skillelinjer.
 - Testet i Chromium med touch-emulering: fejlen genskabt på gammel kode; med rettelsen flyttes kortet, og et hurtigt swipe på et kort scroller stadig. Ikke testet på fysisk iPhone.
 
+## 2026-10-02: Fælles målstatus-blok i kalenderen
+
+- Ny fælles komponent `src/components/calendar/GoalStatusSummary.tsx` bruges både nederst i dagvisningen og i månedsstatussen over gitteret. Oppefra: højrestillet rød flamme + grøn "+ N kcal" (kun ved registreret motion) og "Mål: X kcal"; statusbjælke med cirkel + kort tekst ("Inden for målet" / "Målet ikke opnået" / "Intet registreret"); under bjælken højrestillet "Tilbage for i dag: N kcal" (måned: "Tilbage i måneden") eller "Overskredet med N kcal" i rødt.
+- Motion tæller nu med i målet i hele kalenderen (DECISIONS 2026-10-02): `DailyGoalContext` giver `base` (til "Mål") og `effective` (= base + dagens motion) — alle nået/over/balance-afgørelser bruger `effective`. Forside-kort og widgets er ikke rettet (andre gruppers filer).
+- Lint, typecheck og `npm run build` grønne. Ikke visuelt testet (ingen lokal DB/login) — tjek dag- og månedsvisning på telefon.
+
+## 2026-10-02: Statistiksiden — sektionsoverskrifter kun i redigering
+
+- Overskrifterne "Grafer" og "Kort" med op/ned-pile vises nu kun, mens en af sektionerne er i redigeringstilstand (langt tryk på graf/kort). I almindelig visning står graferne og kortene uden overskrifter; skillelinjen mellem sektionerne er bevaret.
+- `StatChartsSection` og `StatCardsGrid` har fået `onEditModeChange`, som statistiksiden bruger til at vise/skjule overskrifterne. Pilene virker stadig i redigering (knapper afslutter ikke redigeringen).
+- Lint, typecheck og `npm run build` kørt. Ikke live-testet (ingen lokal DB/login) — tjek på telefon.
+
 ## 2026-10-02: Drikkevarer starter på pakkestørrelsen
 
 - Mængdefeltet viser nu 33 cl / 25 cl / 50 cl for dåser og små flasker, også når størrelsen kun står i navnet, og også for øl/vin uden kategorien DRINK. Vin, spiritus og færdigblandede drinks har egne regler (DECISIONS.md 2026-09-28, tilføjelse 2026-10-02).
@@ -253,6 +278,25 @@ Last updated: 2026-10-02
 
 - Varesiden viste fx "Marmelade Pære & havtorn" i H1 og "Pære & havtorn" i H2. Nu fjerner `splitProductHeading` smagen fra H1 (se DECISIONS.md samme dato). Gælder alle eksisterende varer, uden datamigrering.
 - Lint, typecheck og nye tests grønne. Ikke visuelt testet (ingen lokal DB).
+## 2026-10-02: Billede-dagbog — før/efter-slider
+
+- Ny knap "Sammenlign før og efter" under karrusellen (kun med 2+ billeder) åbner `PhotoCompare` (`src/components/photo-diary/PhotoCompare.tsx`): to billeder lagt oven i hinanden i fuld skærm.
+- "Glid": før til venstre, efter til højre for en trækbar skillelinje (træk hvor som helst på billedet; piletaster/Home/End på håndtaget). "Ton": efter-billedet tones ind over før-billedet med en slider under billedet.
+- Standard: ældste billede som før, karrusellens aktive som efter (det nyeste, hvis det ældste står i midten). Vælg "Før"/"Efter" og tryk et miniaturebillede; "Byt om" bytter dem. Datoer og "N dage imellem" vises.
+- Låsen lukker også sammenligningen, når siden går i baggrunden. Logik i `src/lib/photo-diary.ts` med tests (`photo-diary.test.mjs`).
+- Testet i Chromium (393 px) med falske API-svar og tre billeder i IndexedDB: træk, taster, tone, valg og Escape virker. Ikke testet på en rigtig iPhone.
+## 2026-10-03: Robotternes seneste kørsel + "Nattens kørsler"
+
+- Admin → Robotter har nu kolonnerne "Seneste kørsel" (tid, status, varighed og besked med hvor meget der blev udført) og "I nat" (antal kørsler, udført, fejl). Oversigten har en ny boks "Nattens kørsler" med samme tal for alle robotter og jobs. Natten er kl. 20–08 dansk tid; om morgenen vises den netop afsluttede nat.
+- Ny tabel `scheduled_job_runs` (migration `20261002090000_scheduled_job_runs` skal køre ved deploy). Skrives af `src/lib/jobs/runner.ts` og alle `scripts/*/job_control.py`; kørsler ældre end 30 dage ryddes af vedligeholdsjobbet. Se DECISIONS.md samme dato.
+- Alle robotter returnerer nu `(besked, antal)`. Antallet er først med fra næste kørsel efter deploy; indtil da viser "I nat" "Ingen kørsler i nat".
+- Tests: `src/lib/jobs/night.test.mjs` (grøn). Lint, typecheck og `npm run build` grønne. Ikke live-testet (ingen lokal DB/login) — tjek Robotter og Oversigten efter første nat.
+- Bemærk: `page-tree.test.mjs` fejler stadig (uvedkommende; admin-sider mangler i `page-tree.ts`).
+
+## 2026-10-02: Tilføj til statistik — kun én overskrift-knap
+
+- `/statistics/unused-cards`: den stiplede "+ Overskrift"-knap er fjernet. Den linje-knap, der før hed "+ Skillelinje", hedder nu "Overskrift" (uden plus) og tilføjer en redigerbar overskrift med streger (header-element) øverst i layoutet. Rene skillelinjer uden tekst kan ikke længere tilføjes fra siden; eksisterende skillelinjer i gemte layouts vises og kan fjernes som før.
+- Lint og `npm run build` grønne. Ikke visuelt testet (ingen lokal DB/login) — tjek på telefon.
 
 ## 2026-09-29: Offentlig forside for udloggede
 
@@ -1382,6 +1426,20 @@ fra denne container.
 - Genvejsknapperne bruger de nye vektor-ikoner: vægt (0dbb4fb/bc8960b) og
   champagne til Målsætning; gryden i hjulet/`/add/menu` er ny. Flettet ind fra
   `claude/trusting-meitner-eqqmu9` (18ad2e1), som ikke var i master.
+
+## 2026-09-25: Mængdefelter altid direkte redigerbare
+
+- Vand (`src/app/water/create/page.tsx`): mængden ved slideren er nu et
+  tekstfelt man kan trykke i og overskrive med et vilkårligt antal ml; slideren
+  snapper stadig til 25 ml og udvider sit max, hvis der skrives over 1000 ml.
+- Madvarer/ingredienser/retter (`src/app/add/[id]/page.tsx`): portionsvisningen
+  ("personer"/"portioner") kan nu også skrives direkte (fx 1,5); gram/ml-feltet
+  var allerede redigerbart og markerer nu indholdet ved fokus.
+- Makro- og søvnslidere havde allerede tryk-for-at-redigere.
+- Kamera (måltidsbillede) og stemme: mængden på endnu ikke gemte forslag kan
+  trykkes på og overskrives i gram (`InlineGramsInput`); kcal og makroer
+  skaleres med (`src/lib/scale-meal-item.ts`). Gemte registreringer er
+  fortsat snapshots og ændres ikke.
 
 ## 2026-09-25: Profil — start-vægt altid låst + "Lås"-side
 

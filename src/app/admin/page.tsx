@@ -9,7 +9,8 @@ import { formatAdminTime, formatWaiting, SUPPORT_PRIORITY_LABELS } from "@/lib/s
 // docs/DECISIONS.md 2026-09-27): fire tællerkasser øverst med de vigtigste
 // ventende opgaver, derunder større bokse med de seneste beskeder,
 // produkter og fejlrapporter samt øvrige opgaver. Alt linker til siden,
-// hvor opgaven løses.
+// hvor opgaven løses. "Nattens kørsler" (docs/DECISIONS.md 2026-10-02): hvad
+// robotterne og jobbene udførte i nat, samme tal som admin "Robotter".
 
 function StatCard({
   href,
@@ -76,7 +77,7 @@ export default async function AdminDashboardPage() {
   if (!admin) redirect("/admin/login");
 
   const now = new Date();
-  const { counts, latestSupport, latestProducts, latestBugReports, messages, jobs, missingApiKeys, stats } =
+  const { counts, latestSupport, latestProducts, latestBugReports, messages, jobs, nightRuns, missingApiKeys, stats } =
     await loadAdminDashboard(now);
   const failingJobs = jobs.filter((job) => job.lastStatus === "ERROR").length;
 
@@ -300,6 +301,44 @@ export default async function AdminDashboardPage() {
             <p className="hf-type-small border-t border-border-strong px-4 py-3 text-text-muted">
               Mangler nøgle: {missingApiKeys.join(", ")}
             </p>
+          )}
+        </Widget>
+
+        <Widget title="Nattens kørsler" href="/admin/robots" className="lg:col-span-2">
+          {nightRuns ? (
+            <>
+              <p className="hf-type-small border-b border-border-strong px-4 py-2 text-text-muted">
+                {nightRuns.windowText} · natten regnes fra kl. 20 til kl. 8
+              </p>
+              <ul className="divide-y divide-border-strong">
+                {nightRuns.jobs.map((job) => (
+                  <li key={job.key}>
+                    <Link
+                      href={job.robot ? "/admin/robots" : "/admin/cron-jobs"}
+                      className="flex items-center justify-between gap-3 px-4 py-3 hover:bg-hf-tan"
+                    >
+                      <div className="min-w-0">
+                        <p className="hf-type-body truncate text-hf-black">{job.name}</p>
+                        {job.error ? (
+                          <p className="hf-type-small mt-0.5 truncate text-hf-red-dark">{job.error}</p>
+                        ) : job.message ? (
+                          <p className="hf-type-small mt-0.5 truncate text-text-muted">{job.message}</p>
+                        ) : null}
+                      </div>
+                      <span
+                        className={`hf-type-small shrink-0 text-right ${
+                          job.errors > 0 ? "text-hf-red-dark" : job.runs > 0 ? "text-hf-black" : "text-text-muted"
+                        }`}
+                      >
+                        {job.text}
+                      </span>
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </>
+          ) : (
+            <Empty text="Kørselsloggen kunne ikke læses." />
           )}
         </Widget>
 
