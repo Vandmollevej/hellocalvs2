@@ -7,6 +7,7 @@ import {
   IconCalendarWeek,
   IconMoon,
   IconCalendarHeart,
+  IconBulb,
 } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
 import { AccordionCard, ChevronRow } from "@/components/hf/AccordionCard";
@@ -70,6 +71,12 @@ export default function DisplaySettingsIndexPage() {
             icon={<IconMoon size={20} />}
             label={t("settings.sleepQuality")}
             href="/settings/display/sleep-quality"
+            divider
+          />
+          <ChevronRow
+            icon={<IconBulb size={20} />}
+            label={t("settings.tipsTitle")}
+            href="/settings/display/tips"
             divider={isFemale}
           />
           {isFemale && (
