@@ -1194,14 +1194,14 @@ function MonthView({
                         marked &&
                         (met ? (
                           <IconCheck
-                            size={12}
+                            size={15}
                             stroke={3}
                             className="absolute right-0.5 top-0.5 text-hf-lime"
                             aria-hidden="true"
                           />
                         ) : (
                           <span
-                            className="hf-type-micro hf-type-strong absolute right-1 top-0.5 leading-none text-hf-red-muted"
+                            className="hf-type-strong absolute right-1 top-0.5 text-[15px] leading-none text-hf-red-muted"
                             aria-hidden="true"
                           >
                             ÷
