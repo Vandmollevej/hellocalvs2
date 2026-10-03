@@ -19,6 +19,12 @@ export const BOTTOM_NAV_HREFS: Record<string, string> = {
   soeg: "/search",
   stemme: "/voice",
   profil: "/profile",
+  favoritter: "/favorites",
+  viden: "/viden-om",
+  opskrifter: "/profile/recipes",
+  status: "/profile/status",
+  billeddagbog: "/profile/photo-diary",
+  kropsmaal: "/profile/body-measurements",
 };
 
 export const DEFAULT_BOTTOM_NAV_ACTIVE = ["tilfoej", "madvarer", "kalender", "statistik"];

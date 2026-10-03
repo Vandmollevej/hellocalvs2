@@ -3,7 +3,7 @@
 import { Suspense, useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { IconAdjustmentsHorizontal, IconChevronRight, IconSearch, IconSoup } from "@tabler/icons-react";
+import { IconAdjustmentsHorizontal, IconSearch } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
 import { useTranslation } from "@/i18n/LocaleProvider";
 import { PremiumBadge } from "@/components/PremiumGate";
@@ -14,7 +14,8 @@ import {
   loadRecipeFilters,
   type RecipeFilters,
 } from "@/lib/recipe-filters";
-import { Skeleton, SkeletonScreen, SkeletonTitleLines } from "@/components/hf/Skeleton";
+import { SkeletonScreen } from "@/components/hf/Skeleton";
+import { RecipeRow, recipeHref, type RecipeRowData as Row } from "@/components/recipes/RecipeRow";
 
 // Indstillinger → Opskrifter (docs/DECISIONS.md 2026-09-24): to faner,
 // "Mine retter" (egne retter og favoritter fra delte retter, fra boksen) og
@@ -46,80 +47,12 @@ type SearchResult = {
   warnings: { ingredient: string; allergen: string }[];
 };
 
-type Row = {
-  key: string;
-  href: string;
-  name: string;
-  imageUrl: string | null;
-  subtitle: string;
-  label?: { text: string; tone: "green" | "muted" };
-  // Rød advarsel under titlen (spor af allergener, docs/DECISIONS.md 2026-09-25).
-  warnings?: string[];
-  extra?: string;
-};
-
-// HelloFresh-opskrifter (Product-id "hf_…") har deres egen side i
-// HelloFresh-stil (docs/DECISIONS.md 2026-09-27); det gælder også, når de
-// er gemt som favorit.
-function recipeHref(id: string) {
-  return id.startsWith("hf_")
-    ? `/profile/recipes/hellofresh/${encodeURIComponent(id)}`
-    : `/profile/recipes/${encodeURIComponent(id)}?kind=shared`;
-}
-
 function dishKcal(dish: OwnDish) {
   return Math.round(dish.ingredients.reduce((sum, i) => sum + (i.product.kcalPer100g * i.grams) / 100, 0));
 }
 
-const ROW_CLASS = "flex items-center gap-3 border-b border-hf-tan-dark py-2.5 last:border-b-0";
 // Titelbredder (px) til rækker under hentning, så de ligner rigtige retnavne.
 const LOADING_TITLE_WIDTHS = [176, 132, 208, 152, 188];
-
-// Uden data (row = null) tegner rækken sig selv som skelet: samme billedfelt,
-// to tekstlinjer og plads til pilen (design.md §6.14 "skelettet er siden selv").
-function RecipeRow({ row, loadingTitleWidth }: { row: Row | null; loadingTitleWidth?: number }) {
-  if (!row) {
-    return (
-      <div className={ROW_CLASS} aria-hidden>
-        <Skeleton type="tile" width={44} height={44} />
-        <div className="min-w-0 flex-1">
-          <SkeletonTitleLines titleWidth={loadingTitleWidth} />
-        </div>
-        <IconChevronRight size={18} className="invisible shrink-0" />
-      </div>
-    );
-  }
-  return (
-    <Link href={row.href} className={ROW_CLASS}>
-      <div className="flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-[8px] bg-hf-tan text-hf-black">
-        {row.imageUrl ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img src={row.imageUrl} alt="" className="h-full w-full object-cover" />
-        ) : (
-          <IconSoup size={20} className="opacity-50" />
-        )}
-      </div>
-      <div className="min-w-0 flex-1">
-        <p className="hf-type-body hf-type-strong truncate text-hf-black">{row.name}</p>
-        {row.warnings?.map((warning) => (
-          <p key={warning} className="hf-type-small text-hf-red-dark">
-            {warning}
-          </p>
-        ))}
-        <p className="hf-type-small text-text-secondary">
-          {row.subtitle}
-          {row.label && (
-            <span className={`hf-type-strong ml-2 ${row.label.tone === "green" ? "text-hf-green" : "text-hf-black"}`}>
-              {row.label.text}
-            </span>
-          )}
-        </p>
-        {row.extra && <p className="hf-type-small text-text-secondary">{row.extra}</p>}
-      </div>
-      <IconChevronRight size={18} className="shrink-0 text-hf-black" />
-    </Link>
-  );
-}
 
 function LoadingRows({ count }: { count: number }) {
   return (

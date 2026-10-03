@@ -253,6 +253,13 @@
     "search": "Søg",
     "voice": "Stemme",
     "profile": "Profil",
+    "favorites": "Favoritter",
+    "knowledge": "Viden om",
+    "recipes": "Opskrifter",
+    "status": "Status",
+    "photoDiary": "Billeddagbog",
+    "bodyMeasurements": "Kropsmål",
+    "switchProfile": "Skift konto",
     "addItemAriaLabel": "Tilføj {item}",
     "removeItemAriaLabel": "Fjern {item}",
     "allIconsInUse": "Alle ikoner er i brug.",
@@ -1898,6 +1905,13 @@
     "restore": "Vis banneret igen",
     "thanks": "Tak! Du får {points} points, når billederne er læst.",
     "submitFailed": "Billederne kunne ikke sendes. Prøv igen."
+  },
+  "favorites": {
+    "title": "Favoritter",
+    "foodsTitle": "Madvarer",
+    "recipesTitle": "Opskrifter",
+    "foodsEmpty": "Du har endnu ingen favoritmadvarer. Tryk på favoritikonet ved en vare for at gemme den her.",
+    "recipesEmpty": "Du har endnu ingen favoritopskrifter."
   },
   "search": {
     "title": "Søg",

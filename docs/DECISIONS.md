@@ -2,6 +2,13 @@
 
 This file records durable decisions. Add a dated entry when a later decision changes one of them.
 
+## 2026-10-03: Flere sider kan lægges i bundmenuen
+
+- Brugerens ønske: Favoritter, Viden om, Opskrifter, Status, Billeddagbog og Kropsmål kan vælges som ikoner i bundmenuen. De ligger i puljen (ikke i standardmenuen, som stadig er Tilføj/Madvarer/Kalender/Statistik).
+- Ikoner som i Profil-listen, undtagen Billeddagbog, der får et billed-ikon (`IconPhoto`), så det ikke forveksles med Kamera.
+- "Skift konto" er et bundmenu-ikon uden egen side: det åbner et ark med profilskift. Kun synligt med familieabonnement eller familiemedlemskab (`hasFamilyPlan || family`); uden det skjules det i puljen og flyttes ud af menuen.
+- Favoritter havde ingen egen side; `/favorites` samler favoritmadvarer og favoritopskrifter (begge findes allerede via `/api/favorites` og `/api/recipe-favorites`).
+
 ## 2026-10-03: Forsidens puls-linje slår i den målte puls
 
 Brugerens krav: "Pulsen skal svare til den rigtige puls som måles, hvis ur tilsluttet. Ellers svarende til 60bpm."
