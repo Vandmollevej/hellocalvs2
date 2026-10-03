@@ -8,11 +8,11 @@ import {
   IconStar,
   IconBook2,
   IconCreditCard,
-  IconWallet,
   IconBulb,
 } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
 import { AccordionCard, ChevronRow } from "@/components/hf/AccordionCard";
+import { IconPaymentCard } from "@/components/icons/PaymentCard";
 import { IconBathScale } from "@/components/hf/IconBathScale";
 import { IconWaistMeasure } from "@/components/icons/WaistMeasure";
 import { HfProgressStepper } from "@/components/hf/HfProgressStepper";
@@ -99,7 +99,7 @@ export default function ProfilePage() {
               href="/profile/subscription"
             />
             <ChevronRow
-              icon={<IconWallet size={20} />}
+              icon={<IconPaymentCard size={20} />}
               label={t("profile.row.paymentMethods")}
               href="/settings/payment"
             />
