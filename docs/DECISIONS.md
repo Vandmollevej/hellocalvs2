@@ -4178,4 +4178,11 @@ Brugerens krav: "Luk konto kan reverses inde. For 3 måneder, med mindre man væ
 - `useSubscriptionTier()` husker det hentede niveau i modulet, så Seriøs-låste sider vises straks ved fanebytte i stedet for at starte tomme.
 - `PremiumGate` har `renderWhilePending`: mens niveauet hentes, tegnes siden selv som skelet (design.md §6.14), og siden venter med datahentning via `usePremiumPending()`. Bruges kun af `/statistics` (undersiderne venter ikke på niveauet og vises derfor først, når det er kendt), så gratisbrugeres data stadig ikke hentes til låste sider.
 - Kort, der først findes, når data er hentet (fx sportskort), tegnes som skitser i fuld højde i stedet for "ingen data" under hentning.
+## 2026-10-03: Status og "Mål" står altid på samme linje i kalenderen
 
+- Brugerkrav (gentaget, fordi det gik i stykker igen): statusbjælken
+  ("Inden for målet" / "Målet ikke opnået" / "Intet registreret") står på
+  samme linje som "Mål: X kcal" — status til venstre, mål til højre.
+- `GoalStatusSummary` lægger derfor de to i én fælles flex-række. De må
+  aldrig deles i separate blokke under hinanden; flammen ("+ N kcal") står
+  over rækken og "Tilbage"/"Overskredet" under den, begge højrestillet.
