@@ -14,6 +14,7 @@ const DICTIONARY = {
   nav_bug_reports: { DA: "Fejlrapporter", EN: "Bug reports" },
   nav_messaging: { DA: "Besked automatisering", EN: "Message automation" },
   nav_images: { DA: "Billedforslag", EN: "Image suggestions" },
+  nav_cutout_queue: { DA: "Billeder i kø til frilæggelse", EN: "Images queued for cut-out" },
   nav_uncertainties: { DA: "Usikkerheder", EN: "Uncertainties" },
   nav_cron_jobs: { DA: "Cronjobs", EN: "Cron jobs" },
   nav_duplicate_products: { DA: "Dubletter", EN: "Duplicates" },

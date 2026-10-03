@@ -331,7 +331,11 @@ export const PAGE_TREE: PageArea[] = [
             label: "Besked automatisering",
             children: [{ path: "/admin/messaging/[event]", label: "Rediger mail/notifikation" }],
           },
-          { path: "/admin/images", label: "Billedforslag" },
+          {
+            path: "/admin/images",
+            label: "Billedforslag",
+            children: [{ path: "/admin/images/cutout-queue", label: "Billeder i kø til frilæggelse" }],
+          },
           {
             path: "/admin/quality-control",
             label: "Kvalitetskontrol",
