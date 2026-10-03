@@ -123,6 +123,7 @@ export const PAGE_TREE: PageArea[] = [
             children: [{ path: "/camera/create", label: "Opret fra billede" }],
           },
           { path: "/search", label: "Søg" },
+          { path: "/my-scans", label: "Dine indscanninger" },
           { path: "/voice", label: "Stemme" },
         ],
       },

@@ -35,6 +35,11 @@ Brugerens krav: Garmin, Health Connect, eufy, Renpho, Tuya, Xiaomi, Huawei, WHOO
 - Fokus: altid kontinuerlig autofokus. På stregkodetrinnet, hvis billedet bliver ved at være uskarpt og kameraet tillader manuel `focusDistance`, skiftes der hvert 2,5 s mellem fast fokus på 0,2 m og autofokus, til koden læses. Fast fokus hele tiden er fravalgt: holdes telefonen 30 cm væk, ville koden aldrig blive skarp. Produktfotos bruger autofokus (dækker 20–30 cm).
 - Lys/fokus-advarsel (`src/lib/frame-quality.ts`): gennemsnitslys under 60/255 = "for mørkt" (med henvisning til lygten, når den findes); Laplace-varians under 40 i et billede med kontrast = "ude af fokus". Vises som hvid tekst nederst på kameraet efter 1,5 s, og logges i admin-loggen.
 - Dybdesensor/LiDAR kan ikke bruges fra en web-app; det kræver en native app.
+## 2026-10-02: "Se dine indscanninger"
+
+- En indscanning er en vare, brugeren selv har oprettet med en stregkode (`Product.createdByUserId` + mindst én `Barcode`) — altså fotograferet i kameraflowet. Kendte stregkoder, der blot slås op, gemmes ikke og er ikke indscanninger.
+- Forsiden viser øverst under "Dagens tilføjelser" linket "Se dine indscanninger" (almindelig tekst, understreget), kun når en vare fotograferet i dag (telefonens tidszone) ikke er registreret på den, der scannede, eller den aktive familieprofil.
+- Siden `/my-scans` viser de seneste 90 dages indscanninger (højst 200), grupperet under en overskrift med skillelinje pr. dato taget, som almindelige søgerækker (favorit + Tilføj i bundarket). API: `GET /api/my-scans` (`src/lib/user-scans.ts`).
 
 ## 2026-10-02: Butiksimporten: alt fra arkene med (Bilka + REMA 1000)
 

@@ -88,6 +88,10 @@ Last updated: 2026-10-02
 - Nye grafer `body:<felt>` i statistikmodulet (bryst, talje, hofte, overarm, lår): samme kort som på Kropsmål-siden med tegningen til venstre, men til højre et forløb over de seneste 10 målinger (x efter dato), seneste værdi, min/maks og ændring siden sidst. Komponent `src/components/BodyMeasurementChart.tsx`, logik `src/lib/body-measurement-series.ts` (tests grønne).
 - Tilføjes under "Ubrugte grafer" → blokken Kropsmål, eller med linket "Vis kropsmål som grafer i Statistik" på Kropsmål-siden (lægger alle fem nederst i graferne og åbner Statistik).
 - Hofte har stadig ingen godkendt tegning, så venstre felt er tomt dér. Lint, typecheck og build grønne; ikke visuelt testet (ingen lokal DB/login).
+## 2026-10-02: "Se dine indscanninger"
+
+- Forsiden: understreget link "Se dine indscanninger" øverst under "Dagens tilføjelser", når en vare fotograferet i dag ikke er tilføjet. Ny side `/my-scans` grupperet pr. dato. Søgerækken er flyttet til `src/components/ProductResultRow.tsx` og bruges af begge. Se DECISIONS.
+- Lint (ændrede filer), typecheck og `npm run build` grønne. Ikke live-testet (ingen lokal DB). `page-tree.test.mjs` fejler stadig som før (andre sider mangler); `/my-scans` er tilføjet.
 
 ## 2026-10-02: Kameraflowet — rigtige stillbilleder + nyt foto af indholdet
 
