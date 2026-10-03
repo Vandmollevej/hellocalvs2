@@ -7,6 +7,33 @@ This file records durable decisions. Add a dated entry when a later decision cha
 - Valg sker med en hvid afkrydsningsboks på billedkortet; første afkrydsning åbner straks overlayet med billede 1 som "Før" og en tom "Efter"-plads. Rækkefølgen er brugerens valg (ikke dato), og kan byttes om.
 - Sammenligningen er kun visning: intet nyt billede gemmes, og intet forlader telefonen. Billedfeltet får før-billedets format; efter-billedet beskæres til samme felt (object-cover), så linjen deler samme udsnit.
 - Overlayet følger den eksisterende fuldskærmsvisning (mørk flade) og lukker, når siden låses (adgangskode-låsen).
+
+## 2026-10-02: Flere integrationer — Garmin, WHOOP, Huawei + mærker via telefonen
+
+Brugerens krav: Garmin, Health Connect, eufy, Renpho, Tuya, Xiaomi, Huawei, WHOOP og Samsung (også ure/ringe, ikke kun vægte). "Vi må ikke videregive nogen informationer om brugeren."
+
+- **Cloud (OAuth):** Garmin (Health + Activity API, OAuth 2.0 med PKCE), WHOOP (API v2) og Huawei Health (Health Kit REST). Samme fælles adapter-mønster som Withings/Polar (`src/lib/integrations/registry.ts`).
+- **Kun læsning for alle nye.** Hello Cal sender ingen data om brugeren til Garmin, WHOOP eller Huawei (`write: []` i `sync-settings.ts`). Der bedes ikke om profil-scopes (navn/e-mail). Ved frakobling får appen besked om at stoppe adgangen (`revoke`: Garmin afregistrering, WHOOP `DELETE /user/access`, Huawei token-revoke).
+- **Garmin bruger ping-notifikationer** (`POST /api/integrations/garmin/webhook`). Kun Ping/Pull: Hello Cal henter selv data hos `apis.garmin.com` med brugerens token; data i selve notifikationen (Push) bruges ikke, da Garmin ikke signerer dem. Garmins pseudonyme bruger-ID gemmes i `Integration.externalUserId` for at koble ping til bruger. Valgfri `GARMIN_WEBHOOK_KEY` i adressen.
+- **Mærker uden åben API = kind "via":** Samsung Health (inkl. Galaxy Watch/Ring/Fit), eufy, Renpho, Xiaomi (Mi Fitness/Zepp Life) og Tuya/Smart Life. Deres app deler til Health Connect/Apple Health, og data kommer ind gennem Hello Cal-appen. Kortet viser vejledning + knap til Health Connect/Apple Health og bliver "Forbundet", når ingest ser data med deres afsender-app (`origin`, `src/lib/integrations/origins.ts`). Ingen forbindelse til mærket selv.
+- **Tuya:** direkte forbindelse kræver partneraftale (Tuya IoT-projekt + godkendt app-konto-kobling); vises som "via" med note om det.
+- Health Connect-delen af Hello Cal-appen er skrevet som Android-modul `native/android/healthconnect/` (ikke kompileret endnu).
+- Nye mærker har intet logo endnu (`icon: null` → forbogstav); brugeren lægger logoer i `public/integrations/`.
+
+## 2026-10-02: Butiksimporten: alt fra arkene med (Bilka + REMA 1000)
+
+Erstatter "Varer uden kcal/protein/kulhydrat/fedt springes over" fra 2026-09-27.
+
+- **Alle rækker importeres** (brugerens valg: "Det er lige meget om de har protein mv. med. Så tager vi det fra Frida senere"). 13.039 varer i stedet for 10.524.
+- **Uden kalorietal** (2.364 varer: mest vin/øl/spiritus, krydderier, kaffe/te, frisk frugt/grønt og kød): `Product.nutritionMissing = true`, kcal/protein/kulhydrat/fedt = 0 som pladsholder. Varen er skjult i alle opslag, hvor en bruger kan finde og logge den (søgning, tekst-/foto-/måltidsgenkendelse, næringsmatch, generiske kandidater), og får **ingen stregkode-række** — scanning ender derfor stadig i Open Food Facts eller kameraflowet, hvor brugeren kan oprette varen med rigtig næring. Opretter en bruger den, opdateres brugerens vare ved næste import, og den skjulte kopi slettes. Varesiden viser "Næringsindhold ukendt" og admin "Mangler – skjult i appen". Næring hentes senere fra Frida (egen opgave): udfyld, sæt `nutritionMissing = false`, opret stregkoden.
+- **Med kalorietal men uden protein/kulhydrat/fedt** (151, mest spiritus og øl, hvor kun energien er deklareret): synlige; den manglende makro er 0 og markeret `ESTIMATED` i `nutrientSources` (~). En eksisterende vare beholder sine egne makroer.
+- **Energi repareres**: Bilka-arkets kJ er tal, så 1105 kJ stod som 1,105 (ca. 4.900 varer). Desuden byttede kolonner, kJ = 0 ved siden af kcal, og 25 kcal-værdier, hvor arkets egen kJ og makroerne (4P + 4C + 9F + 2 fiber) er enige mod kcal (fx Marineret flanksteak 15 → 152, Chiliolie 37 → 392); aldrig på alkohol. Alle rettelser står i tjeklisten. kJ på admin-gennemgåede varer repareres også (en tusind-fejl er intet valg).
+- **"Sukkerfri" kun op til 0,5 g sukker pr. 100 g** (EU's grænse; brugerens valg). REMA's "Sukkerfri" på 44 varer med mere sukker var REMA's mærke "Ikke tilsat sukker" → filteret "Uden tilsat sukker" (sukkerpåstandene fra samme dag). Det samme gælder "sukkerfri"/"uden sukker" i titlen på en vare med over 0,5 g sukker. Butikkens eget Sukkerfri-mærke i Bilka-arket (`_is_sugar_free`) står ved magt.
+- **Info-arkenes "Labels"** udfylder filtre, arkene lod stå tomme (fuldkorn, vegetarisk, certificeringer, dyrevelfærd, oprindelsesland), og REMA's "Additional Product Information" giver oprindelsesland.
+- **Vitaminer/mineraler**: findes ikke i arkene (kolonnerne var tomme) — bilka.py åbnede aldrig panelet "Info om vitaminer og mineraler". Nyt tillægs-script `bilka_vitamins.py` (brugeren kører det selv) skriver `bilka_vitamins.xlsx`; importen gemmer værdierne i `micronutrientsPer100g` med kilde LABEL, så de afløser Frida-skønnene (~) på varesiden.
+- **Navne**: varer opkaldt efter brandet alene hed "0"/"1"/"M appelsin" (titlen minus brand og mængde); nu butikkens egen titel ("Coca cola", "Breezer m. appelsin"), og første bogstav er stort.
+- Admin-gennemgang i Dubletter nulstilles ikke af kJ-rettelsen eller de afledte sukkerpåstande.
+
 ## 2026-10-02: Kameraflowet tager rigtige stillbilleder + "tag nyt billede af indholdet"
 
 - Årsag: en marmelades ingrediensliste (30. sept.) blev aldrig aflæst. Loggen viste, at OpenAI fik fotoet, men svarede "for sløret til sikker aflæsning" (tom liste, sikkerhed 12 %). Fotoet var et 1080p-videobillede; appen sagde intet og prøvede ikke igen. Der var ingen genstart — PR #151 (genoptagelse efter genstart) byggede på et forkert gæt og er droppet.
@@ -3522,3 +3549,24 @@ Kilder på "Mad på latin" skal altid være officielle (Fødevarestyrelsen, Sund
 - Ny side /admin/economy: årsabonnementer (årlig sikker indkomst, sikret løbetid), månedsabonnementer (+ 3 mdr.) og næste måneds forventede indtjening. Kun betalende (provider sat); pris/periode fra MobilePay-træk og Stripe live (skønnet 1 md. ved mangel).
 - Afmelding: observeret 30-dages rate blandet med prior 7 %/md.; AI-knap lader OpenAI vurdere % pr. type (kun aggregater, store:false), forventningen regnes i koden. Grov model, ikke regnskab.
 
+
+## 2026-10-03 Opdater-varen-banner: 20 points
+
+- Mangler en vare indhold, energi (kun butiksvarer med `nutritionMissing`), logo eller produktbillede, vises et hvidt banner øverst på varesiden: "Optjen 20 points ved at opdatere varen". Det kan trækkes ned/skubbes op, så kun den smalle bar med grebet vises (`src/components/hf/UpdatePointsBanner.tsx`).
+- Banneret fører til `/add/[id]/update`: et kort pr. manglende ting (forside = billede + logo, energi, indhold). Fotoet læses af AI via `POST /api/products/[id]/update`; kun tomme felter udfyldes, eksisterende data overskrives aldrig. Forsiden bruger den eksisterende fritskrabning (logo → Brand.logoUrl, billede → `pendingImageUrl` til admin-godkendelse).
+- Points: ny `PointsReason.PRODUCT_UPDATED` (migration `20261003100000_points_product_updated`), 20 points højst én gang pr. bruger og vare, udbetales når fotoet faktisk udfyldte noget. Gælder også admin (brugerens krav, så det kan testes). Banneret skjules for den bruger, når point er optjent på varen.
+- Logik: `src/lib/product-update.ts`; `GET /api/products/[id]` returnerer `updateOffer` (null når intet mangler eller varen er privat).
+## 2026-10-02: Admin "Billeder i kø til frilæggelse"
+
+- Brugerkrav: under godkendelser skal der være en fane "Billeder i kø til
+  frilæggelse" med besked nedenunder om, at billederne scannes i nat.
+- Bygget som nyt punkt i gruppen Varegodkendelse (`/admin/images/cutout-queue`)
+  og som fane på Billedforslag (`ImagesTabs`). Siden læser kun:
+  `image_cutout_jobs` med status PENDING (listen) og FAILED (egen sektion;
+  de prøves ikke igen af sig selv). Udsnittet tegnes med CSS fra jobbets
+  `cropBox`, så admin ser det område, robotten fritlægger.
+- Beskeden under listen er brugerens tekst. Har jobbet `image-cutout` en fast
+  tid i `scheduled_jobs`, skrives klokkeslættet med; derudover vises
+  robottens faktiske plan (`describeNextRun`) og sidste kørsel, så teksten
+  aldrig lyver om, hvad der sker. Planen selv er ikke ændret (stadig
+  "Løbende", 2026-09-28) — det er ejerens valg.

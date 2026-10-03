@@ -19,6 +19,7 @@ const REASON_LABELS: Record<string, string> = {
   FRIEND_FORWARD_FULFILLED: "Videresendelse brugt af en ven",
   FRIEND_REFERRAL: "Invitér en ven",
   FREE_MONTH_REDEEMED: "Indløst til gratis måned",
+  PRODUCT_UPDATED: "Vare opdateret",
 };
 
 export default function PointsPage() {

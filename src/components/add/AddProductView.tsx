@@ -42,6 +42,7 @@ import { UncertaintyLine } from "@/components/ui/UncertaintyLine";
 import { extractCertifications } from "@/lib/product-certifications";
 import { CertificationLogo } from "@/components/hf/CertificationLogo";
 import { Skeleton } from "@/components/hf/Skeleton";
+import { UpdatePointsBanner } from "@/components/hf/UpdatePointsBanner";
 
 // "Opret straks" (docs/DECISIONS.md 2026-09-27): mens OpenAI stadig læser
 // felter (Product.pendingFields), eller den fritlagte forside endnu ikke er
@@ -113,6 +114,9 @@ type Product = {
   // AI kunne ikke læse ingredienslisten på fotoet — den, der oprettede
   // varen, kan tage et nyt (docs/DECISIONS.md 2026-10-02).
   ingredientsUnreadable?: boolean;
+  // Mangler varen indhold, energi, logo eller billede, tilbydes points for at
+  // opdatere den (src/lib/product-update.ts); null når intet mangler.
+  updateOffer?: { kinds: ("FRONT" | "NUTRITION" | "INGREDIENTS")[]; points: number } | null;
   allergens?: string[];
   additives?: string[];
   // Mærkninger (økologisk, nøglehul, MSC …) vist som logoer, opgave 29.
@@ -139,6 +143,8 @@ type Product = {
   // (genericIngredientId i stedet for productId) og skjule favorit-knappen,
   // som ikke understøtter ingredienser endnu.
   isGenericIngredient?: boolean;
+  // false = 0 er en pladsholder (ingrediens uden Frida-match, butiksvare uden
+  // kalorietal) — vis "Næringsindhold ukendt", ikke 0 kcal.
   hasKnownNutrition?: boolean;
   // Usikkerheds-~ (docs/DECISIONS.md 2026-09-24): alle næringsstoffer ud
   // over makroerne pr. 100 g fra /api/products/[id], med estimeret-flag.
@@ -689,6 +695,13 @@ export function AddProductView({
 
         {view && (
           <>
+            {!isLoading && !forDish && !isEditing && !!id && state.status === "loaded" && state.product.updateOffer && (
+              <UpdatePointsBanner
+                href={`/add/${encodeURIComponent(id)}/update`}
+                text={t("productUpdate.banner", { points: state.product.updateOffer.points })}
+                toggleLabel={t("productUpdate.toggle")}
+              />
+            )}
             {!isLoading && !forDish && !!id && photoAwards.length > 0 && (
               <Link
                 href={`/add/${id}/photo-award`}
@@ -865,7 +878,7 @@ export function AddProductView({
                       <ReadingSkeleton label={t("addProduct.reading")}>
                         <Skeleton type="caption" width={64} height={14} className="my-0.5" />
                       </ReadingSkeleton>
-                    ) : view.isGenericIngredient && view.hasKnownNutrition === false
+                    ) : view.hasKnownNutrition === false
                       ? t("addProduct.nutritionUnknown")
                       : t("addProduct.kcalAmount", { kcal: Math.round((view.kcalPer100g * amount) / 100) })}
                   </p>
@@ -885,7 +898,7 @@ export function AddProductView({
                     <ReadingSkeleton label={t("addProduct.reading")}>
                       <Skeleton type="body" width={150} />
                     </ReadingSkeleton>
-                  ) : view.isGenericIngredient && view.hasKnownNutrition === false
+                  ) : view.hasKnownNutrition === false
                     ? t("addProduct.nutritionUnknown")
                     : servingSizeGrams && hasServingUnit
                     ? t("addProduct.kcalPerServing", {
