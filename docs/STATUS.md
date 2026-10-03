@@ -25,6 +25,10 @@ Last updated: 2026-10-03
 - Natten forsvandt om morgenen ved andet besøg samme dag ("nu −2 timer"-reglen fra a5926e3, fx kl. 9.09 → visning fra 7.09). Kan nattens sidste time og nu ses på samme skærm, starter visningen nu en time før stå-op-tiden.
 - "Nattens søvn: X timer" hedder nu "Søvn: X timer" med halvmåne-ikon foran (da + en).
 - Lint, typecheck og build grønne. Afprøvet i Chromium (telefonstørrelse, mockede API-svar): menuvalg lukker dagen, og kl. 9.09 vises natten. Ikke testet på iPhone.
+## 2026-10-03: Dagvisningen kan gå frem i fremtiden
+
+- Pilen "næste dag" og swipe til venstre var blokeret efter i dag. Blokeringen er fjernet (`src/app/calendar/page.tsx`, `DayDetails`), så man kan åbne en fremtidig dag og sætte en målsætning dér. Uge- og listevisningen tillod det allerede.
+
 ## 2026-10-03: "kcal" tilbage — kyllingelåret er et supplement, ikke en erstatning
 
 - Brugerens rettelse: kyllingelåret skulle kun bruges, hvor der allerede stod et ikon, og aldrig fjerne "kcal". Rullet tilbage: måneds-/ugelistens afstand til mål, statistikboksenes værdier, widget-forhåndsvisningerne og listerne i chat/tale/kamera viser igen tal + "kcal" uden ikon.

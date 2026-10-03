@@ -1033,7 +1033,6 @@ export default function CalendarPage() {
         <DayDetails
           key={isoDate(selectedDate)}
           date={selectedDate}
-          today={today}
           registrations={registrations.filter((registration) =>
             isSameDay(new Date(registration.createdAt), selectedDate),
           )}
@@ -2013,7 +2012,6 @@ function SleepDurationLabel({
 
 function DayDetails({
   date,
-  today,
   registrations,
   activities,
   waterEntries,
@@ -2035,7 +2033,6 @@ function DayDetails({
   onSelectView,
 }: {
   date: Date;
-  today: Date;
   registrations: Registration[];
   activities: Activity[];
   waterEntries: WaterEntry[];
@@ -2060,7 +2057,6 @@ function DayDetails({
 }) {
   const router = useRouter();
   const { t } = useTranslation();
-  const canGoForward = stripTime(date) < stripTime(today);
   const pointerStart = useRef<number | null>(null);
   const [addBarHour, setAddBarHour] = useState<number | null>(null);
   const [openHour, setOpenHour] = useState<number | null>(null);
@@ -2292,10 +2288,9 @@ function DayDetails({
         </h2>
         <button
           type="button"
-          onClick={() => canGoForward && onNavigate(1)}
-          disabled={!canGoForward}
+          onClick={() => onNavigate(1)}
           aria-label={t("calendar.nextDayAriaLabel")}
-          className="hf-btn-icon text-hf-black hover:bg-hf-tan focus-visible:outline-2 focus-visible:outline-hf-black disabled:opacity-30"
+          className="hf-btn-icon text-hf-black hover:bg-hf-tan focus-visible:outline-2 focus-visible:outline-hf-black"
         >
           <IconChevronRight size={22} />
         </button>
@@ -2320,12 +2315,7 @@ function DayDetails({
         }}
         onPointerUp={(event) => {
           if (pointerStart.current !== null && Math.abs(event.clientX - pointerStart.current) > 48) {
-            const direction: -1 | 1 = event.clientX < pointerStart.current ? 1 : -1;
-            if (direction === 1 && !canGoForward) {
-              pointerStart.current = null;
-              return;
-            }
-            onNavigate(direction);
+            onNavigate(event.clientX < pointerStart.current ? 1 : -1);
           }
           pointerStart.current = null;
         }}
