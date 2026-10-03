@@ -7,6 +7,7 @@ import { runDueAppJobs } from "@/lib/jobs/runner";
 import { pruneOldJobRuns } from "@/lib/jobs/runs";
 import { rerunUncertainAnalyses } from "@/lib/uncertainty-rerun";
 import { scanProductLabels } from "@/lib/product-label-scan";
+import { analyzeDeclinedExternalImages } from "@/lib/external-image-ai";
 import { grantEligibleReferralRewards } from "@/lib/referrals";
 import { runMobilePayTick } from "@/lib/payments/mobilepay-subscription";
 import { runStripeTick } from "@/lib/payments/stripe-subscription";
@@ -124,6 +125,7 @@ export function startScheduler() {
       "uncertainty-rerun": rerunUncertainAnalyses,
       "label-scan": scanProductLabels,
       personas: runPersonaJob,
+      "external-image-ai": analyzeDeclinedExternalImages,
     }).catch((error) => {
       console.error("[scheduler] tick fejlede", error);
     });

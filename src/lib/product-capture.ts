@@ -175,3 +175,24 @@ export async function createQuickProduct(data: CaptureData, marketRegion: string
   const body = (await response.json()) as { product: { id: string } };
   return body.product.id;
 }
+
+// "Scan varen igen" (docs/DECISIONS.md 2026-10-02): samme fotos som "opret
+// straks", men til en eksisterende vare (POST /api/products/[id]/rescan).
+export async function submitProductRescan(productId: string, data: CaptureData, marketRegion: string): Promise<void> {
+  const response = await fetch(`/api/products/${encodeURIComponent(productId)}/rescan`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json", ...scanFlowHeaders(data.flowId) },
+    body: JSON.stringify({
+      marketRegion,
+      signals: data.languageSignals,
+      frontPhoto: data.frontPhoto,
+      nutritionPhoto: data.nutritionPhoto,
+      nutritionOcrText: data.nutritionOcrText,
+      nutritionOcrConfidence: data.nutritionOcrConfidence,
+      ingredientsPhoto: data.ingredientsOnNutritionPhoto ? undefined : data.ingredientsPhoto,
+      ingredientsOcrText: data.ingredientsOcrText,
+      ingredientsOcrConfidence: data.ingredientsOcrConfidence,
+    }),
+  });
+  if (!response.ok) throw new Error(`Rescan failed (${response.status})`);
+}
