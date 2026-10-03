@@ -2,6 +2,11 @@
 
 Last updated: 2026-10-03
 
+## 2026-10-03: Puls-linjen ligger mellem hjulets nederste tal og "Dagens tilføjelser"
+
+- Pulsen er flyttet ned fra hjulets midte til midt mellem det nederste tal i hjulet og overskriften "Dagens tilføjelser" (`HomeWaves.tsx`; hjulet udstiller `data-stats-wheel-last-row`). Det øverste bølgelag rager 18 px under hero-bunden (`--home-wave-below`), og strengenes udtoning forneden er flyttet fra CSS-maske til lærredet (`fadeFrom`/`fadeTo`), så pulsen ikke tones væk. Strengene ser ud som før.
+- Typecheck og lint (0 fejl) grønne. Ikke set på telefon — tjek højden og at udtoningen er uændret.
+
 ## 2026-10-03: Kontoopsætning øverst på Profil
 
 - "Lær appen at kende" hedder nu "Kontoopsætning" (Indstillinger, hjælpecenter, chatbot-tekst).

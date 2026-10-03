@@ -346,6 +346,7 @@ export function StatsWheel({ side }: { side: "left" | "right" }) {
       // stays narrow on the right so it never covers the add-button's fan.
       // Forsidens puls-linje (HomeWaves) lægger sig over hjulets midte.
       data-stats-wheel=""
+      data-stats-wheel-last-row={rowOffset(SIDE_ROWS)}
       className="absolute touch-none select-none rounded-3xl text-right transition-[left,right] duration-300 ease-out focus-visible:outline-2 focus-visible:outline-hf-green focus-visible:outline-offset-2"
       style={
         {

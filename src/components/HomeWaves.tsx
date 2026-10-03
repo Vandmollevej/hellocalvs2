@@ -10,24 +10,29 @@ import {
   type WaveVariant,
 } from "@/lib/home-waves";
 
+/**
+ * Hero-bunden til "Dagens tilføjelser"-linjens midte: listens `pt-2` + halv
+ * titellinje (samme 18 px som DIVIDER_BELOW_HERO i StatsWheel). Det øverste
+ * lag rager så langt ned, så puls-linjen kan ligge mellem hjulets nederste tal
+ * og overskriften (bruger 2026-10-03).
+ */
+const PULSE_BELOW_HERO = 18;
+
 // Bruger 2026-10-03: skærmen har to felter. Det øverste (topbar + hero) har
 // skarpe, tynde linjer i skærmens fulde opløsning; det nederste (listen med
 // indtastningerne) har tykke, meget slørede bånd bag sig som frostet glas
 // (sløret ligger i globals.css, .home-wave--frost).
-const LAYERS: Record<WaveVariant, { scale: () => number; strandWidthScale: number; strandAlphaScale: number }> = {
-  top: { scale: () => Math.min(2, window.devicePixelRatio || 1), strandWidthScale: 1, strandAlphaScale: 1 },
-  frost: { scale: () => 0.35, strandWidthScale: 6, strandAlphaScale: 1 },
+const LAYERS: Record<
+  WaveVariant,
+  { scale: () => number; strandWidthScale: number; strandAlphaScale: number; below: number }
+> = {
+  top: { scale: () => Math.min(2, window.devicePixelRatio || 1), strandWidthScale: 1, strandAlphaScale: 1, below: PULSE_BELOW_HERO },
+  frost: { scale: () => 0.35, strandWidthScale: 6, strandAlphaScale: 1, below: 0 },
 };
 
 const FRAME_MS = 1000 / 30;
 /** Integrationerne synkroniserer hvert 15. minut; ét opslag i minuttet er rigeligt. */
 const HEART_RATE_POLL_MS = 60 * 1000;
-/**
- * Puls-linjens grundlinje over tal-hjulets midte (bruger 2026-10-03: den må
- * ikke gå om bag det midterste tal). Halvdelen af tallets højde (~10 px) +
- * dykket efter R-takken (≤ 10 px) + stregens glød; under rækken ovenover.
- */
-const PULSE_ABOVE_WHEEL_CENTER = 26;
 
 /** Urets aktuelle puls, eller 60 bpm uden ur/frisk måling (bruger 2026-10-03). */
 async function fetchPulseBpm() {
@@ -90,23 +95,29 @@ export function HomeWaves({ variant = "top" }: { variant?: WaveVariant }) {
         pulseY,
         strandWidthScale: layer.strandWidthScale,
         strandAlphaScale: layer.strandAlphaScale,
+        // Som før: strengene toner ud over de nederste 12 % af hero.
+        ...(layer.below > 0 ? { fadeFrom: height * 0.88, fadeTo: height } : {}),
       });
     }
 
     function resize() {
       width = host!.clientWidth;
-      height = host!.clientHeight;
+      height = host!.clientHeight - layer.below;
       scale = layer.scale();
-      // Tal-hjulets boks er centreret om den midterste række.
+      // Midt mellem hjulets nederste tal og overskriften "Dagens tilføjelser"
+      // (bruger 2026-10-03). Hjulets boks er centreret om den midterste række;
+      // overskriftens midte ligger `below` px under hero-bunden.
       const wheel = host!.parentElement?.querySelector<HTMLElement>("[data-stats-wheel]");
-      if (wheel) {
+      const lastRow = Number(wheel?.dataset.statsWheelLastRow);
+      if (wheel && Number.isFinite(lastRow)) {
         const box = wheel.getBoundingClientRect();
-        pulseY = box.top + box.height / 2 - host!.getBoundingClientRect().top - PULSE_ABOVE_WHEEL_CENTER;
+        const lastRowY = box.top + box.height / 2 - host!.getBoundingClientRect().top + lastRow;
+        pulseY = (lastRowY + height + layer.below) / 2;
       } else {
         pulseY = undefined;
       }
       ctx!.canvas.width = Math.max(1, Math.round((width + WAVE_BLEED * 2) * scale));
-      ctx!.canvas.height = Math.max(1, Math.round((height + WAVE_BLEED * 2) * scale));
+      ctx!.canvas.height = Math.max(1, Math.round((height + layer.below + WAVE_BLEED * 2) * scale));
       paint();
     }
 
@@ -178,7 +189,7 @@ export function HomeWaves({ variant = "top" }: { variant?: WaveVariant }) {
       ref={hostRef}
       aria-hidden="true"
       className={`home-wave home-wave--${variant}`}
-      style={{ "--home-wave-bleed": `${WAVE_BLEED}px` } as React.CSSProperties}
+      style={{ "--home-wave-bleed": `${WAVE_BLEED}px`, "--home-wave-below": `${LAYERS[variant].below}px` } as React.CSSProperties}
     >
       <canvas ref={canvasRef} />
       {variant === "frost" && <div className="home-wave__frost" />}
