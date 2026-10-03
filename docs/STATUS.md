@@ -1,5 +1,10 @@
 # HELLO CAL — project status
 
+## 2026-10-03: Opdater-varen-banner (20 points)
+
+- Hvidt, sammenklappeligt banner øverst på varesiden når indhold, energi, logo eller produktbillede mangler; fører til ny side `/add/[id]/update` med kamera pr. manglende ting. Giver 20 points én gang pr. bruger og vare — også for admin, så det kan testes. Se DECISIONS 2026-10-03.
+- Migration `20261003100000_points_product_updated` skal med deployet. Lint, typecheck og build kørt; ikke set i browser eller prøvet med rigtigt foto/AI-nøgle her — test: åbn en vare uden indhold/logo som admin, tag billede, tjek Profil → Points.
+
 
 ## 2026-10-03: Butiksimporten — alt fra Bilka- og REMA-arkene med
 

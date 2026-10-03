@@ -2099,6 +2099,9 @@ enum PointsReason {
   // fik godkendt et erstatningsbillede for et lavt-confidence stregkode-/
   // næring-/ingrediensfoto, se ProductPhotoAward.
   QUALITY_CONTROL_PHOTO
+  // Brugeren udfyldte en manglende ting (billede, logo, energi, indhold) paa
+  // en eksisterende vare via banneret paa varesiden. Gaelder ogsaa admin.
+  PRODUCT_UPDATED
 }
 
 model PointsTransaction {

@@ -3543,3 +3543,10 @@ Kilder på "Mad på latin" skal altid være officielle (Fødevarestyrelsen, Sund
 - Ny side /admin/economy: årsabonnementer (årlig sikker indkomst, sikret løbetid), månedsabonnementer (+ 3 mdr.) og næste måneds forventede indtjening. Kun betalende (provider sat); pris/periode fra MobilePay-træk og Stripe live (skønnet 1 md. ved mangel).
 - Afmelding: observeret 30-dages rate blandet med prior 7 %/md.; AI-knap lader OpenAI vurdere % pr. type (kun aggregater, store:false), forventningen regnes i koden. Grov model, ikke regnskab.
 
+
+## 2026-10-03 Opdater-varen-banner: 20 points
+
+- Mangler en vare indhold, energi (kun butiksvarer med `nutritionMissing`), logo eller produktbillede, vises et hvidt banner øverst på varesiden: "Optjen 20 points ved at opdatere varen". Det kan trækkes ned/skubbes op, så kun den smalle bar med grebet vises (`src/components/hf/UpdatePointsBanner.tsx`).
+- Banneret fører til `/add/[id]/update`: et kort pr. manglende ting (forside = billede + logo, energi, indhold). Fotoet læses af AI via `POST /api/products/[id]/update`; kun tomme felter udfyldes, eksisterende data overskrives aldrig. Forsiden bruger den eksisterende fritskrabning (logo → Brand.logoUrl, billede → `pendingImageUrl` til admin-godkendelse).
+- Points: ny `PointsReason.PRODUCT_UPDATED` (migration `20261003100000_points_product_updated`), 20 points højst én gang pr. bruger og vare, udbetales når fotoet faktisk udfyldte noget. Gælder også admin (brugerens krav, så det kan testes). Banneret skjules for den bruger, når point er optjent på varen.
+- Logik: `src/lib/product-update.ts`; `GET /api/products/[id]` returnerer `updateOffer` (null når intet mangler eller varen er privat).
