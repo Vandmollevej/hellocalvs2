@@ -84,6 +84,7 @@ Kode: `scripts/store-products-import/` (`build_data.py` lokalt → JSON,
 | glutenFree | _is_glutenfree | is_gluten_free |
 | lactoseFree | _is_lactose_free | is_lactose_free |
 | sugarFree | _is_sugar_free | is_sugar_free ("Sukkerfri") |
+| lowSugar / noAddedSugar / reducedSugar / lightSugar | udledes (nøgleord, navn, variant, sukker pr. 100 g) | udledes; REMA "Light" i is_sugar_free |
 | sweeteners | _is_sweeteners | – |
 | vegan | _is_vegan | is_vegan ("Ja") |
 | vegetarian | – | is_vegan ("Vegetarisk") |

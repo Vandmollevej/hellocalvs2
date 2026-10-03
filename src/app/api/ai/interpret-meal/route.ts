@@ -100,19 +100,48 @@ async function callOpenAi(transcript: string): Promise<AiItem[]> {
   return parsed.items;
 }
 
-async function findLocalMatch(name: string) {
-  const firstWord = name.trim().split(/\s+/)[0];
-  if (!firstWord) return null;
+function nameWords(value: string) {
+  return value.toLowerCase().split(/[^\p{L}\p{N}]+/u).filter(Boolean);
+}
 
-  return prisma.product.findFirst({
+// Kun et sikkert match tæller: hvert ord fra AI-navnet skal stå som et helt ord
+// i produktnavnet ("pålæg" må ikke ramme "smørepålæg"). Hellere intet match
+// (AI-estimatet bruges) end et produkt, der ikke giver mening.
+async function findLocalMatch(name: string) {
+  const words = nameWords(name);
+  if (words.length === 0) return null;
+
+  const candidates = await prisma.product.findMany({
     where: {
-      name: { contains: firstWord, mode: "insensitive" },
+      AND: words.map((word) => ({
+        OR: [
+          { name: { equals: word, mode: "insensitive" as const } },
+          { name: { startsWith: `${word} `, mode: "insensitive" as const } },
+          { name: { endsWith: ` ${word}`, mode: "insensitive" as const } },
+          { name: { contains: ` ${word} `, mode: "insensitive" as const } },
+        ],
+      })),
       discontinued: false,
       status: "APPROVED",
     },
     include: { brand: true },
     orderBy: { createdAt: "desc" },
+    take: 50,
   });
+
+  // Færrest ekstra ord = tættest på det, brugeren skrev.
+  let best: (typeof candidates)[number] | null = null;
+  let bestExtra = Infinity;
+  for (const candidate of candidates) {
+    const candidateWords = nameWords(candidate.name);
+    if (!words.every((word) => candidateWords.includes(word))) continue;
+    const extra = candidateWords.length - words.length;
+    if (extra < bestExtra) {
+      best = candidate;
+      bestExtra = extra;
+    }
+  }
+  return best;
 }
 
 export async function POST(req: Request) {
