@@ -781,6 +781,10 @@ model Integration {
   // 2026-10-02: appens eget, pseudonyme bruger-ID (Garmin), så push-
   // notifikationer kan kobles til den rigtige Hello Cal-bruger.
   externalUserId String?
+  // 2026-10-03: hvilken version af adapterens datasæt der er hentet. Henter
+  // adapteren flere typer end før (OAuthProviderAdapter.fetchVersion), hentes
+  // hele historikken igen én gang.
+  fetchVersion Int                 @default(0)
   createdAt    DateTime            @default(now())
 
   @@unique([userId, provider])
@@ -1072,13 +1076,9 @@ enum HealthMetricType {
 
   // 2026-10-03: alt, vægte, ure og blodtryksmålere kan levere (brugerens krav:
   // "ALT skal med"). Kropssammensætning:
-  FAT_MASS_KG
-  FAT_FREE_MASS_KG
   SKELETAL_MUSCLE_MASS_KG
-  BONE_MASS_KG
   EXTRACELLULAR_WATER_KG
   INTRACELLULAR_WATER_KG
-  VISCERAL_FAT_INDEX
   PROTEIN_PERCENT
   BASAL_METABOLIC_RATE_KCAL
   METABOLIC_AGE_YEARS
@@ -1099,6 +1099,14 @@ enum HealthMetricType {
   SKIN_CONDUCTANCE_US
   RECOVERY_SCORE
   STRAIN_SCORE
+
+  // Alt det øvrige, en smartvægt/et blodtryksapparat måler (2026-10-03,
+  // brugerkrav: "ALT skal med"). Withings-måletyperne er dækket 1:1
+  // (src/lib/integrations/withings.ts); Garmin/Huawei/Fitbit sender det, de har.
+  BODY_WATER_KG
+  METABOLIC_AGE
+  VASCULAR_AGE
+  ELECTROCHEMICAL_SKIN_CONDUCTANCE
 
   // Micronutrients (Statistik "Mineraler"/"Vitaminer" groups), shown with
   // periodic-table icons (public/icons/minerals) in StatCardsGrid.tsx.

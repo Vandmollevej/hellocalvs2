@@ -20,6 +20,11 @@ Last updated: 2026-10-03
 - Withings henter nu alt: højde, fedtprocent, fedtmasse, fedtfri masse, muskelmasse, kropsvand, knoglemasse, visceralt fedt, puls, iltmætning, temperatur, VO2 max. Hver kropsmåling har egen række på integrationssiden. Se DECISIONS.md samme dato.
 - Migration `20261003150000_full_body_composition` skal køre ved deploy. Withings skal synkronisere igen for at hente de nye målinger (sker automatisk). Ingen statistikkort for de nye typer endnu (fedtmasse, fedtfri masse, knoglemasse, visceralt fedt) — data gemmes.
 - Lint, typecheck, tests og build: se commit. Ikke live-testet (ingen lokal DB/login) — test på telefon: Profil → Højde.
+## 2026-10-03: Smartvægt — låste vejninger, slette-advarsel og alle målinger
+
+- Synkroniserede vejninger kan ikke slettes/rettes (API 403); listen viser "Synkroniseret", som åbner et info-vindue med kilde og alle målinger. Samme vindue advarer før sletning af indtastede vejninger og indtag (dagens liste, stemme, chat). Withings henter nu alle måletyper; Garmin/Huawei/Fitbit flere. Se DECISIONS.md samme dato.
+- Kræver migration `20261003180000_all_scale_metrics` (16 enum-værdier + `integrations.fetchVersion`). Første synkronisering efter deploy henter Withings' historik (365 dage) igen.
+- Lint, typecheck, tests (undtagen den kendte `page-tree`-fejl, som også fejler på master) og build kørt. Ikke live-testet (ingen DB/Withings-konto i sessionen) — test på telefon: Profil → Vægt kalibrering → tryk "Synkroniseret" og "Slet"; swipe-slet et indtag på forsiden.
 
 ## 2026-10-03: Adgangsarket (integrationer) — bunden skjules ikke længere
 

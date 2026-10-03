@@ -47,6 +47,8 @@ export const fitbit: OAuthProviderAdapter = {
   label: "Fitbit",
   envPrefix: "FITBIT",
   initialDays: 30,
+  // 1 (2026-10-03): flere af vægtens målinger (BMI, knoglemasse, visceralt fedt …).
+  fetchVersion: 1,
   buildAuthorizeUrl(state, redirectUri) {
     const url = new URL(AUTHORIZE_URL);
     url.searchParams.set("client_id", clientCredentials("FITBIT").clientId);
