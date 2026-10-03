@@ -353,6 +353,12 @@ Last updated: 2026-10-02
 - Årsag: Seriøs-låsen startede altid med en tom skærm, og bagefter blev sektioner, kort og grafer tegnet i standardrækkefølgen og byttede derefter til brugerens gemte rækkefølge.
 - Rettet: gemt rækkefølge bruges fra første billede; abonnementsniveauet huskes mellem sider; mens niveauet hentes, tegnes statistiksiden som skelet med løbende gradient, og data fyldes ind på pladserne. Se DECISIONS.md 2026-10-02.
 - Lint, typecheck og `npm run build` grønne. Ikke visuelt testet (ingen lokal DB/login) — test på telefon: åbn Statistik både via bundmenuen og ved genindlæsning.
+## 2026-10-02: Nøgleord på produktsiden
+
+- Produktsiden viser admins valgte nøgleord (smagsretning, økologisk, glutenfri … og valgte frie nøgleord fra produktarkene) som én linje i `.hf-type-body-lg` sort brødtekst lige over "Energifordeling", adskilt med " · ". Vises kun når varen har mindst ét.
+- Valget sker i admin → Varedatabase → Nøgleord (`/admin/product-database/tags`): felter + søgbar liste over alle frie nøgleord med antal varer + eksempel-linje. Standard uden gemt valg: smagsretning og økologisk.
+- Logik: `src/lib/product-page-tags.ts` (tests i `product-page-tags.test.mjs`), lagring `src/lib/product-page-tags-settings.ts`; `/api/products/[id]` returnerer `pageTags`.
+- Migration `20261002090000_product_page_tags` skal køre ved deploy (falder tilbage til standarden indtil da). Ikke live-testet (ingen lokal DB).
 
 ## 2026-10-02: Drikkevarer starter på pakkestørrelsen
 

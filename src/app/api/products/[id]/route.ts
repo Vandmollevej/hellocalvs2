@@ -8,6 +8,8 @@ import {
   productGaps,
   updateKindsFor,
 } from "@/lib/product-update";
+import { productPageTags } from "@/lib/product-page-tags";
+import { getProductPageTagSettings } from "@/lib/product-page-tags-settings";
 
 export async function GET(
   _req: Request,
@@ -23,7 +25,27 @@ export async function GET(
         barcodes: true,
         images: { orderBy: { order: "asc" } },
         filters: {
-          select: { organic: true, keyhole: true, wholeGrain: true, animalWelfare: true, certifications: true },
+          select: {
+            organic: true,
+            keyhole: true,
+            wholeGrain: true,
+            animalWelfare: true,
+            certifications: true,
+            // Nøgleord på produktsiden (src/lib/product-page-tags.ts).
+            glutenFree: true,
+            lactoseFree: true,
+            sugarFree: true,
+            sweeteners: true,
+            vegan: true,
+            vegetarian: true,
+            meatType: true,
+            alcohol: true,
+            alcoholPercent: true,
+            fatPercent: true,
+            countryOfOrigin: true,
+            storage: true,
+            size: true,
+          },
         },
         // Mærkater fra det natlige mærkat-job (docs/DECISIONS.md 2026-10-02).
         labels: {
@@ -81,10 +103,13 @@ export async function GET(
         user && !product.privateOwnerId && !(await hasEarnedUpdatePoints(user.id, product.id).catch(() => true))
           ? updateKindsFor(productGaps(product))
           : [];
+      // Admins valgte nøgleord (smag, økologisk …) vist over "Energifordeling".
+      const pageTags = productPageTags(product, await getProductPageTagSettings());
       return NextResponse.json({
         product: {
           ...product,
           nutrients,
+          pageTags,
           updateOffer: updateKinds.length ? { kinds: updateKinds, points: PRODUCT_UPDATE_POINTS } : null,
           lastAmountGrams: last?.amountGrams ?? null,
           ingredientsUnreadable,
