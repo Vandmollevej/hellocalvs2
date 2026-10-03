@@ -313,6 +313,12 @@ Last updated: 2026-10-02
 - Ny tabel `integration_events` — migration `20261002120000_integration_events` skal køre ved deploy. Filer: `src/lib/admin-integration-stats.ts`, `src/lib/integration-lifecycle.ts` (+ test), `src/lib/integrations/events.ts`, `src/app/admin/integrations/**`, `src/components/admin/integrations/**`.
 - Rettet i samme omgang: `src/lib/web-nav.ts` importerede det slettede champagne-ikon, så build fejlede på master; bruger nu konfetti-ikonet.
 - Lint (ændrede filer), typecheck, `npm run build` og den nye test grønne. `page-tree.test.mjs` fejler stadig på master (ældre admin-sider mangler i træet — uvedkommende). Ikke live-testet (ingen lokal DB); tallene fyldes først op efter deploy.
+Last updated: 2026-10-02
+
+## 2026-10-02: Manuel produktoprettelse fjernet — kun scanning
+
+- Brugerens krav: der må slet ikke findes en manuel produktoprettelse; nye varer oprettes kun via scanning. Fjernet: "Opret nyt produkt manuelt" på `/foods` (erstattet af "Scan nyt produkt" → `/camera?mode=product`), "Opret manuelt"-feltet i Opret ret, og "Tilføj manuelt"-linkene i kamera-flowet. `/foods/new` er nu kun en omdirigering til stregkode-flowet (`?for=ret` bevares). Private ingredienser (`/ingredients/new`) er urørt — de er ikke produkter.
+- Lint, typecheck og build grønne. `page-tree.test.mjs` fejler fortsat som på master (uvedkommende). Ikke testet i browser.
 
 ## 2026-10-01: Rolig bølge-baggrund på forsiden
 

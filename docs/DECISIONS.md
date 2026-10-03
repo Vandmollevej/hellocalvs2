@@ -290,6 +290,15 @@ om varen var "taget", og det føltes ikke som scanning i realtid.
 - Erstatter udseendet fra 2026-10-02 (brugeren: "alt for voldsomt", "en ommer"). Baggrunden skal være afdæmpet: få, tynde, svage bånd.
 - Kun bunden må være sløret/frostet; toppen er skarp (ingen blur, ingen tåge).
 - Puls-linjen (hjerteslaget) ligger længere nede — omkring tal-hjulets midte — og går helt ude fra skærmens venstre kant.
+## 2026-10-02: Ingen manuel produktoprettelse — kun scanning
+
+- Nye produkter oprettes udelukkende gennem scanning (stregkode → foto-flowet
+  i `/camera?mode=product` og agent-appens `/scan/opret`). Den manuelle
+  formular på `/foods/new` er nedlagt; ruten omdirigerer til scanneren, så
+  gamle links og bogmærker ikke giver 404. Beslutningerne 2026-09-19 og
+  2026-09-23 om den manuelle formular er dermed ophævet.
+- `POST /api/products` beholdes (bruges af foto-flowet). Private
+  ingredienser (`/ingredients/new`) er ikke produkter og berøres ikke.
 
 ## 2026-10-01: Bølge-baggrund på forsiden
 
