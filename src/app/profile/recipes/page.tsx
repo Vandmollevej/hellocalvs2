@@ -14,7 +14,7 @@ import {
   loadRecipeFilters,
   type RecipeFilters,
 } from "@/lib/recipe-filters";
-import { SkeletonMediaRows, SkeletonScreen } from "@/components/hf/Skeleton";
+import { Skeleton, SkeletonScreen, SkeletonTitleLines } from "@/components/hf/Skeleton";
 
 // Indstillinger → Opskrifter (docs/DECISIONS.md 2026-09-24): to faner,
 // "Mine retter" (egne retter og favoritter fra delte retter, fra boksen) og
@@ -71,9 +71,26 @@ function dishKcal(dish: OwnDish) {
   return Math.round(dish.ingredients.reduce((sum, i) => sum + (i.product.kcalPer100g * i.grams) / 100, 0));
 }
 
-function RecipeRow({ row }: { row: Row }) {
+const ROW_CLASS = "flex items-center gap-3 border-b border-hf-tan-dark py-2.5 last:border-b-0";
+// Titelbredder (px) til rækker under hentning, så de ligner rigtige retnavne.
+const LOADING_TITLE_WIDTHS = [176, 132, 208, 152, 188];
+
+// Uden data (row = null) tegner rækken sig selv som skelet: samme billedfelt,
+// to tekstlinjer og plads til pilen (design.md §6.14 "skelettet er siden selv").
+function RecipeRow({ row, loadingTitleWidth }: { row: Row | null; loadingTitleWidth?: number }) {
+  if (!row) {
+    return (
+      <div className={ROW_CLASS} aria-hidden>
+        <Skeleton type="tile" width={44} height={44} />
+        <div className="min-w-0 flex-1">
+          <SkeletonTitleLines titleWidth={loadingTitleWidth} />
+        </div>
+        <IconChevronRight size={18} className="invisible shrink-0" />
+      </div>
+    );
+  }
   return (
-    <Link href={row.href} className="flex items-center gap-3 border-b border-hf-tan-dark py-2.5 last:border-b-0">
+    <Link href={row.href} className={ROW_CLASS}>
       <div className="flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-[8px] bg-hf-tan text-hf-black">
         {row.imageUrl ? (
           // eslint-disable-next-line @next/next/no-img-element
@@ -101,6 +118,20 @@ function RecipeRow({ row }: { row: Row }) {
       </div>
       <IconChevronRight size={18} className="shrink-0 text-hf-black" />
     </Link>
+  );
+}
+
+function LoadingRows({ count }: { count: number }) {
+  return (
+    <SkeletonScreen className="">
+      {Array.from({ length: count }, (_, index) => (
+        <RecipeRow
+          key={index}
+          row={null}
+          loadingTitleWidth={LOADING_TITLE_WIDTHS[index % LOADING_TITLE_WIDTHS.length]}
+        />
+      ))}
+    </SkeletonScreen>
   );
 }
 
@@ -143,11 +174,7 @@ function MineTab({ t }: { t: Translate }) {
 
   return (
     <div className="hf-page">
-      {state === "loading" && (
-        <SkeletonScreen className="">
-          <SkeletonMediaRows rows={5} />
-        </SkeletonScreen>
-      )}
+      {state === "loading" && <LoadingRows count={4} />}
       {state === "error" && (
         <p className="hf-type-body text-text-secondary py-8 text-center">{t("recipes.loadError")}</p>
       )}
@@ -267,11 +294,6 @@ function SharedTab({ t }: { t: Translate }) {
   }
 
   const status = (text: string) => <p className="hf-type-body text-text-secondary text-center">{text}</p>;
-  const loadingRows = (
-    <SkeletonScreen className="">
-      <SkeletonMediaRows rows={4} />
-    </SkeletonScreen>
-  );
   const trending = results.slice(0, TRENDING_COUNT);
 
   return (
@@ -312,7 +334,7 @@ function SharedTab({ t }: { t: Translate }) {
 
       {searching ? (
         <>
-          {state === "loading" && loadingRows}
+          {state === "loading" && <LoadingRows count={5} />}
           {state === "error" && status(t("recipes.loadError"))}
           {state === "ready" && results.length === 0 && status(t("recipes.noResults"))}
           {state === "ready" && results.length > 0 && (
@@ -326,7 +348,7 @@ function SharedTab({ t }: { t: Translate }) {
       ) : (
         <>
           <h2 className="hf-type-section-title">{t("recipes.trendingTitle")}</h2>
-          {state === "loading" && loadingRows}
+          {state === "loading" && <LoadingRows count={TRENDING_COUNT} />}
           {state === "error" && status(t("recipes.loadError"))}
           {state === "ready" && trending.length === 0 && status(t("recipes.trendingEmpty"))}
           {state === "ready" && trending.length > 0 && (
@@ -338,7 +360,7 @@ function SharedTab({ t }: { t: Translate }) {
           )}
 
           <h2 className="hf-type-section-title">{t("recipes.favoritesTitle")}</h2>
-          {favorites === null && loadingRows}
+          {favorites === null && <LoadingRows count={3} />}
           {favorites?.length === 0 && status(t("recipes.favoritesEmpty"))}
           {favorites && favorites.length > 0 && (
             <div>

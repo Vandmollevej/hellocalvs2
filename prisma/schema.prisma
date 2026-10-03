@@ -2758,6 +2758,13 @@ model ProductFilters {
   glutenFree      String?
   lactoseFree     String?
   sugarFree       String?
+  // Sukkerpåstande (docs/DECISIONS.md 2026-10-02). Kun til søgning og filtre —
+  // vises ikke som mærker i appen. Udledt af nøgleord, navn/variant og
+  // sukker pr. 100 g (se scripts/store-products-import/build_data.py).
+  lowSugar        String?
+  noAddedSugar    String?
+  reducedSugar    String?
+  lightSugar      String?
   sweeteners      String?
   vegan           String?
   vegetarian      String?
@@ -2788,6 +2795,10 @@ model ProductFilters {
   @@index([glutenFree])
   @@index([lactoseFree])
   @@index([sugarFree])
+  @@index([lowSugar])
+  @@index([noAddedSugar])
+  @@index([reducedSugar])
+  @@index([lightSugar])
   @@index([sweeteners])
   @@index([vegan])
   @@index([vegetarian])
