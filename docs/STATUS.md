@@ -44,6 +44,10 @@ Last updated: 2026-10-03
 
 - `src/components/add/AddMenuList.tsx`: Aktivitet er et 3D-felt i gitteret, og nyt felt Menstruation (nyt ikon `public/icons/add/period.svg`) vises kun for kvinder med menstruationscyklus slået til. Arket scroller. Se DECISIONS.md samme dato.
 - Lint, typecheck og build kørt. Ikke set med login (ingen lokal DB) — tjek Tilføj-arket på telefon som kvinde og mand.
+## 2026-10-03: Abonnement — oversigt med de tre planer øverst
+
+- `/profile/subscription` viser nu Gratis, Seriøs og Seriøs Familie i tre kolonner øverst (navn, pris, "Se mere"/"Din plan"); et tryk ruller ned til planens fulde kort længere nede. Ny `PlanOverview` i `src/components/landing/LandingPlans.tsx`; plankortene har ankre `plan-free/serious/family`. Forsiden er uændret.
+- Lint, typecheck og build grønne. Ikke set i browser (kræver login) — tjek på telefon, at de tre kolonner passer i bredden, og at tryk ruller til kortet.
 
 ## 2026-10-02: Kalenderen husker den åbne dag
 
