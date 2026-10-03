@@ -2,9 +2,11 @@
 
 Last updated: 2026-10-03
 
-## 2026-10-03: "Viden om" hedder nu "Indsigt i maden" med bog-ikon
+## 2026-10-03: Profilsiden — "Viden om mad", bog- og tallerken-ikoner, abonnement flyttet
 
-- Profilrækken, sidetitlen og annonceplaceringen hedder "Indsigt i maden" (en: "Food insights"). Pæren (`IconBulb`) er skiftet til en bog (`IconBook`) på profilrækken og alle `/viden-om`-sider. URL'en `/viden-om` er uændret, så eksisterende links virker.
+- "Viden om" hedder nu "Viden om mad" (en: "About food") på profilrækken, sidetitlen og annonceplaceringen; ikonet er en bog (`IconBook`) på profilrækken og alle `/viden-om`-sider. URL'en `/viden-om` er uændret.
+- "Opskrifter" har tallerken med kniv og gaffel (`IconPlateCutlery`).
+- "Abonnement" og "Betaling" er fjernet fra profilsiden; de findes kun under Indstillinger (rækkerne fandtes der i forvejen).
 - Lint (0 fejl) og build grønne.
 
 ## 2026-10-03: Kalender — profilcirklen er tilbage i dagsvisningen

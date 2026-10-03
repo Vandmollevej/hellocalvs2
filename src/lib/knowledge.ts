@@ -1,4 +1,4 @@
-// "Indsigt i maden": artikler om vitaminer og sundhedstips. Hver artikel har en fast
+// "Viden om mad": artikler om vitaminer og sundhedstips. Hver artikel har en fast
 // slug, så popups og andre sider kan linke til /viden-om/<slug>.
 // Kilder skal være officielle (Fødevarestyrelsen m.fl.), se DECISIONS 2026-09-29.
 

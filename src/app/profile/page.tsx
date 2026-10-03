@@ -6,14 +6,12 @@ import {
   IconUser,
   IconCamera,
   IconStar,
-  IconBook2,
-  IconCreditCard,
   IconBook,
   IconChartLine,
 } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
 import { AccordionCard, ChevronRow } from "@/components/hf/AccordionCard";
-import { IconPaymentCard } from "@/components/icons/PaymentCard";
+import { IconPlateCutlery } from "@/components/icons/PlateCutlery";
 import { IconBathScale } from "@/components/hf/IconBathScale";
 import { IconWaistMeasure } from "@/components/icons/WaistMeasure";
 import { HfProgressStepper } from "@/components/hf/HfProgressStepper";
@@ -101,16 +99,6 @@ export default function ProfilePage() {
               href="/profile/status"
             />
             <ChevronRow
-              icon={<IconCreditCard size={20} />}
-              label={t("profile.row.subscription")}
-              href="/profile/subscription"
-            />
-            <ChevronRow
-              icon={<IconPaymentCard size={20} />}
-              label={t("profile.row.paymentMethods")}
-              href="/settings/payment"
-            />
-            <ChevronRow
               icon={<IconBathScale size={20} />}
               label={t("profile.row.weightCalibration")}
               href="/profile/weight-calibration"
@@ -131,7 +119,7 @@ export default function ProfilePage() {
               href="/profile/photo-diary"
             />
             <ChevronRow
-              icon={<IconBook2 size={20} />}
+              icon={<IconPlateCutlery size={20} />}
               label={t("profile.row.recipes")}
               href="/profile/recipes"
             />
