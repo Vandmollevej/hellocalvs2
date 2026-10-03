@@ -196,6 +196,14 @@ Ejer: Widget-sessionen (2026-09-26)
 | --- | --- | --- | --- |
 | c4b41bf9 | Forbered widgets: plus-knap, hurtig-tilføj, statistik-graf (Smart Stack/swipe), 2×2 boks, seneste registreringer | Venter på bruger | Brugeren godkender designet på `/widgets`; derefter native (Swift/Kotlin) når Mac er lejet |
 
+## G-KONTO — Kontoopsætning øverst på Profil
+Filer: `src/lib/account-setup.ts`, `src/app/profile/page.tsx` (kasse + proceslinje øverst), omdøbning `settings.learnTheApp` i `da.json`/`en.json`.
+Ejer: cloud-session `claude/kontoopsaetning` (2026-10-03)
+
+| Id | Opgave | Status | Næste skridt |
+| --- | --- | --- | --- |
+| kontoopsaetning | "Lær appen at kende" → "Kontoopsætning"; kasse (starter guiden) + proceslinje allerøverst på Profil, til Om dig / Mål / Vaner er klaret fra felterne | Venter på bruger | Draft-PR #221, lint (0 fejl) og build grønne. Brugeren gennemgår og fletter selv. Test på telefon. Evt. "åbnet"-mærke til indstillinger med standardværdi (kræver migration) hvis enheder/kalendervisning skal tælle med |
+
 ## Venter på dig (ingen gruppe)
 | Id | Opgave | Status | Næste skridt |
 | --- | --- | --- | --- |
