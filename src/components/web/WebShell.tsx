@@ -92,14 +92,10 @@ function SideLink({
         href={item.href}
         title={collapsed ? label : undefined}
         aria-current={active ? "page" : undefined}
-        className={`hf-type-body flex w-full items-center gap-3 rounded-md px-2.5 py-2 ${collapsed ? "justify-center" : ""} ${
-          active
-            ? "hf-type-strong bg-hf-tan text-hf-green-dark"
-            : "text-text-secondary hover:bg-hf-tan hover:text-text-primary"
-        }`}
+        className={`hf-navrow ${collapsed ? "hf-navrow--rail" : ""}`}
       >
         <Icon size={20} stroke={1.75} />
-        {!collapsed && <span className="truncate">{label}</span>}
+        {!collapsed && <span className="hf-navrow__label">{label}</span>}
       </Link>
     </li>
   );
@@ -136,16 +132,14 @@ function SideGroup({
         type="button"
         onClick={() => setOpen((value) => !value)}
         aria-expanded={open}
-        className={`hf-type-body flex w-full items-center gap-3 rounded-md px-2.5 py-2 ${
-          inside ? "hf-type-strong text-hf-green-dark" : "text-text-secondary hover:bg-hf-tan hover:text-text-primary"
-        }`}
+        className={`hf-navrow ${inside ? "is-inside" : ""}`}
       >
         <Icon size={20} stroke={1.75} />
-        <span className="flex-1 truncate text-left">{label}</span>
+        <span className="hf-navrow__label">{label}</span>
         <IconChevronDown size={16} className={open ? "rotate-180" : ""} />
       </button>
       {open && (
-        <ul className="mt-0.5 flex flex-col gap-0.5 pl-4">
+        <ul className="hf-shell__list hf-shell__list--sub pl-4">
           {children.map((child) => (
             <SideLink key={child.key} item={child} pathname={pathname} label={t(child.labelKey)} collapsed={false} />
           ))}
@@ -185,20 +179,11 @@ function Crumbs({ pathname }: { pathname: string }) {
   });
   if (crumbs.length < 2) return null;
   return (
-    <nav
-      aria-label="Breadcrumb"
-      className="hf-type-body flex shrink-0 items-center gap-1.5 border-b border-hf-tan-dark bg-hf-white px-6 py-2 text-text-muted"
-    >
+    <nav aria-label="Breadcrumb" className="hf-crumbs hf-crumbs--bar">
       {crumbs.map((c, i) => (
-        <span key={`${c.label}-${i}`} className="flex items-center gap-1.5">
+        <span key={`${c.label}-${i}`} className="hf-crumbs__item">
           {i > 0 && <span aria-hidden="true">/</span>}
-          {c.href ? (
-            <Link href={c.href} className="hover:text-text-primary hover:underline">
-              {c.label}
-            </Link>
-          ) : (
-            <span className="text-hf-black">{c.label}</span>
-          )}
+          {c.href ? <Link href={c.href}>{c.label}</Link> : <span className="hf-crumbs__current">{c.label}</span>}
         </span>
       ))}
     </nav>
@@ -282,14 +267,10 @@ export function WebShell({ children }: { children: React.ReactNode }) {
 
   return (
     <WebShellContext.Provider value={true}>
-      <div className="web-shell flex h-dvh bg-page-bg text-hf-black">
-        <aside
-          aria-label={t("web.sideNav")}
-          className={`relative z-30 flex h-dvh shrink-0 flex-col border-r border-hf-tan-dark bg-hf-white ${collapsed ? "w-16" : "w-64"}`}
-        >
-          <div
-            className={`flex h-20 shrink-0 items-center border-b border-hf-tan-dark ${collapsed ? "justify-center" : "px-4"}`}
-          >
+      {/* Fælles skal-klasser med admin (globals.css, design.md §6.17). */}
+      <div className="web-shell hf-shell hf-shell--tall hf-shell--fixed">
+        <aside aria-label={t("web.sideNav")} className={`hf-shell__sidebar ${collapsed ? "is-collapsed" : ""}`}>
+          <div className="hf-shell__brand">
             <Link href={WEB_HOME} className="flex items-center">
               <Image
                 src="/hello-cal-logo.png"
@@ -301,15 +282,11 @@ export function WebShell({ children }: { children: React.ReactNode }) {
             </Link>
           </div>
 
-          <nav className="min-h-0 flex-1 overflow-y-auto p-2.5">
+          <nav className="hf-shell__nav">
             {shortcuts.length > 0 && (
-              <section>
-                {!collapsed && (
-                  <h2 className="hf-type-small px-2.5 pb-1 pt-1 font-semibold uppercase tracking-wide text-text-muted">
-                    {t("web.shortcuts")}
-                  </h2>
-                )}
-                <ul className="flex flex-col gap-0.5">
+              <section className="hf-shell__section">
+                {!collapsed && <h2 className="hf-shell__section-title">{t("web.shortcuts")}</h2>}
+                <ul className="hf-shell__list">
                   {shortcuts.map((item) => (
                     <SideLink
                       key={item.key}
@@ -323,13 +300,9 @@ export function WebShell({ children }: { children: React.ReactNode }) {
               </section>
             )}
             {settings.length > 0 && (
-              <section className="mt-3 border-t border-hf-tan-dark pt-3">
-                {!collapsed && (
-                  <h2 className="hf-type-small px-2.5 pb-1 font-semibold uppercase tracking-wide text-text-muted">
-                    {t("web.settings")}
-                  </h2>
-                )}
-                <ul className="flex flex-col gap-0.5">
+              <section className="hf-shell__section">
+                {!collapsed && <h2 className="hf-shell__section-title">{t("web.settings")}</h2>}
+                <ul className="hf-shell__list">
                   {settings.map((item) =>
                     item.children ? (
                       <SideGroup
@@ -360,17 +333,14 @@ export function WebShell({ children }: { children: React.ReactNode }) {
             onClick={toggleCollapsed}
             title={t(collapsed ? "web.expand" : "web.collapse")}
             aria-label={t(collapsed ? "web.expand" : "web.collapse")}
-            className="absolute left-full top-1/2 z-30 flex h-[72px] w-7 -translate-y-1/2 items-center justify-center rounded-r-md border border-l-0 border-hf-tan-dark bg-hf-white hover:bg-hf-tan"
-          >
-            {/* Præcis som i admin: samme grå træk-streg som kalenderens og bundarkenes håndtag, blot lodret. */}
-            <span className="block h-10 w-1 rounded-full bg-hf-gray" />
-          </button>
+            className="hf-shell__handle"
+          />
         </aside>
 
-        <div className="flex min-w-0 flex-1 flex-col">
-          <header className="relative z-20 flex h-20 shrink-0 items-end justify-between gap-3 border-b border-hf-tan-dark bg-hf-white px-6 pb-2.5">
+        <div className="hf-shell__body">
+          <header className="hf-shell__topbar hf-shell__topbar--bottom">
             <nav aria-label={t("web.mainNav")}>
-              <ul className="flex items-center gap-1">
+              <ul className="hf-shell__topnav">
                 {WEB_TOP_NAV.map((item) => {
                   const active = isActive(pathname, item.href);
                   const Icon = item.icon;
@@ -379,14 +349,11 @@ export function WebShell({ children }: { children: React.ReactNode }) {
                       <Link
                         href={item.href}
                         aria-current={active ? "page" : undefined}
-                        className={`hf-type-body flex h-9 items-center gap-2 rounded-md px-3 ${
-                          active
-                            ? "hf-type-strong bg-hf-tan text-hf-green-dark"
-                            : "text-text-secondary hover:bg-hf-tan hover:text-text-primary"
-                        }`}
+                        title={t(item.labelKey)}
+                        className="hf-navrow"
                       >
                         <Icon size={20} stroke={1.75} />
-                        {t(item.labelKey)}
+                        <span className="hf-shell__toplabel">{t(item.labelKey)}</span>
                       </Link>
                     </li>
                   );
@@ -413,34 +380,23 @@ export function WebShell({ children }: { children: React.ReactNode }) {
                 aria-haspopup="menu"
                 aria-expanded={profileOpen}
                 onClick={() => setProfileOpen((open) => !open)}
-                className={`hf-type-body flex h-9 items-center gap-2 rounded-md pl-1.5 pr-3 ${
-                  profileActive || profileOpen
-                    ? "hf-type-strong bg-hf-tan text-hf-green-dark"
-                    : "text-text-secondary hover:bg-hf-tan hover:text-text-primary"
-                }`}
+                className={`hf-navrow hf-navrow--inline py-0.5 pl-1.5 pr-3 ${profileActive || profileOpen ? "is-active" : ""}`}
               >
                 <ProfileCircle
                   name={status?.activeProfile.displayName ?? ""}
                   size={32}
                   className="hf-avatar--outlined"
                 />
-                {t("web.profileSettings")}
+                <span className="hf-shell__toplabel">{t("web.profileSettings")}</span>
                 <IconChevronDown size={16} stroke={1.75} />
               </button>
               {profileOpen && (
-                <ul
-                  role="menu"
-                  className="absolute right-0 top-full z-40 mt-1 w-60 rounded-md border border-hf-tan-dark bg-hf-white p-1 shadow-lg"
-                >
+                <ul role="menu" className="hf-menu absolute right-0 top-full mt-1 w-60">
                   {PROFILE_MENU.map((item) => {
                     const Icon = item.icon;
                     return (
                       <li key={item.href} role="none">
-                        <Link
-                          href={item.href}
-                          role="menuitem"
-                          className="hf-type-body flex h-9 items-center gap-3 rounded-md px-2.5 text-text-secondary hover:bg-hf-tan hover:text-text-primary"
-                        >
+                        <Link href={item.href} role="menuitem" className="hf-navrow">
                           <Icon size={18} stroke={1.75} />
                           {t(item.labelKey)}
                         </Link>
@@ -453,7 +409,7 @@ export function WebShell({ children }: { children: React.ReactNode }) {
             </div>
             {addOpen && (
               <div className="absolute left-0 right-0 top-full z-20 border-b border-hf-tan-dark bg-hf-white pt-4 shadow-sm">
-                <ul className="flex items-start justify-center gap-2 overflow-x-auto px-6 py-3">
+                <ul className="flex items-start justify-center gap-2 overflow-x-auto px-4 py-3 lg:px-8">
                   {addActions.map((action) => {
                     const Icon = action.icon;
                     return (
@@ -473,7 +429,7 @@ export function WebShell({ children }: { children: React.ReactNode }) {
             )}
           </header>
 
-          <main className="min-h-0 min-w-0 flex-1 overflow-y-auto">
+          <main className="hf-shell__main min-h-0 overflow-y-auto">
             {/* transform holder appens position: fixed-ark og -menuer inde i indholdsfladen. */}
             <div
               className="web-shell-content mx-auto flex h-full w-full max-w-7xl flex-col overflow-hidden bg-hf-cream"

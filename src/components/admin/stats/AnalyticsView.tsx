@@ -33,7 +33,7 @@ function StatCard({
 }) {
   const good = change !== null && (invert ? change < 0 : change > 0);
   return (
-    <div className="flex flex-col rounded-lg border border-hf-tan-dark bg-hf-white p-4">
+    <div className="flex flex-col hf-surface p-4">
       <p className="hf-type-body text-text-secondary">{label}</p>
       <p className="hf-type-hero mt-1 text-hf-black">{value}</p>
       <p
@@ -116,7 +116,7 @@ function TrafficChart({ overview }: { overview: AnalyticsOverview }) {
   const labelEvery = Math.max(1, Math.ceil(buckets.length / 12));
 
   return (
-    <section className="rounded-lg border border-hf-tan-dark bg-hf-white p-4">
+    <section className="hf-surface p-4">
       <header className="mb-3 flex flex-wrap items-center justify-between gap-2">
         <h2 className="hf-type-body hf-type-strong text-hf-black">Trafik</h2>
         <div className="hf-type-small flex gap-4 text-text-secondary">
@@ -185,7 +185,7 @@ function MetricList({
 }) {
   const max = Math.max(1, ...rows.map((r) => Number(r.y)));
   return (
-    <section className={`flex flex-col rounded-lg border border-hf-tan-dark bg-hf-white ${className}`}>
+    <section className={`flex flex-col hf-surface ${className}`}>
       <header className="flex items-center justify-between border-b border-hf-tan-dark px-4 py-3">
         <h2 className="hf-type-body hf-type-strong text-hf-black">{title}</h2>
         <span className="hf-type-small text-text-muted">{unitLabel}</span>
@@ -222,7 +222,7 @@ function Unavailable({ error }: { error: unknown }) {
         ? "Appen kan ikke logge ind i Umami. Har du skiftet Umamis admin-kode, skal den nye kode sættes som UMAMI_PASSWORD i .env.production."
         : "Umami svarede med en fejl. Prøv igen om lidt.";
   return (
-    <div className="hf-type-body rounded-lg border border-hf-tan-dark bg-hf-white p-4 text-text-secondary">
+    <div className="hf-type-body hf-surface p-4 text-text-secondary">
       <p className="hf-type-strong text-hf-black">Analysen er ikke tilgængelig lige nu</p>
       <p className="mt-1">{text}</p>
       {error instanceof Error && <p className="hf-type-small mt-2 text-text-muted">{error.message}</p>}
@@ -260,7 +260,7 @@ export async function AnalyticsView({ range }: { range: AnalyticsRange }) {
             Cookiefri besøgsstatistik for hellocal.io (Umami, kører på egen server).
           </p>
         </div>
-        <nav className="hf-type-body flex rounded-lg border border-hf-tan-dark bg-hf-white p-0.5" aria-label="Periode">
+        <nav className="hf-type-body flex hf-surface p-0.5" aria-label="Periode">
           {ANALYTICS_RANGES.map((r) => (
             <Link
               key={r.id}

@@ -82,11 +82,11 @@ export default function HelloDocPreviewPage() {
 
   return (
     <div className="flex h-full min-h-0 flex-1 flex-col overflow-hidden bg-hf-white">
-      <div className="flex h-14 flex-shrink-0 items-center justify-between border-b px-2" style={{ borderColor: "var(--hf-color-line)" }}>
+      <div className="hf-shell__topbar static h-14 justify-between px-2 lg:px-2">
         <button type="button" onClick={() => router.back()} aria-label={t("common.back")} className="hf-btn-icon text-hf-black">
           <IconChevronLeft size={22} stroke={2.5} />
         </button>
-        <span className="hf-type-category-title">Hello Doc</span>
+        <span className="hf-type-title">Hello Doc</span>
         <div className="relative">
           <button
             type="button"
@@ -101,17 +101,17 @@ export default function HelloDocPreviewPage() {
           {menuOpen && (
             <>
               <button type="button" aria-hidden="true" tabIndex={-1} className="fixed inset-0 z-40 cursor-default" onClick={() => setMenuOpen(false)} />
-              <div className="absolute right-0 top-12 z-50 w-52 rounded-xl border bg-hf-white p-1 shadow-xl" style={{ borderColor: "var(--hf-color-line)" }}>
-                <button type="button" className="hf-control-row hf-type-body w-full rounded-lg px-3 text-left hover:bg-hf-cream">
+              <div className="hf-menu absolute right-0 top-12 w-52">
+                <button type="button" className="hf-navrow hf-control-row">
                   {t("helloDoc.preview.menuHelp")}
                 </button>
-                <button type="button" className="hf-control-row hf-type-body w-full rounded-lg px-3 text-left hover:bg-hf-cream">
+                <button type="button" className="hf-navrow hf-control-row">
                   {t("helloDoc.preview.menuView")}
                 </button>
-                <Link href="/profile/edit" className="hf-control-row hf-type-body flex w-full items-center rounded-lg px-3 text-left hover:bg-hf-cream">
+                <Link href="/profile/edit" className="hf-navrow hf-control-row">
                   {t("helloDoc.preview.menuMyDetails")}
                 </Link>
-                <button type="button" onClick={logOut} className="hf-control-row hf-type-body w-full rounded-lg px-3 text-left text-hf-red-dark hover:bg-hf-cream">
+                <button type="button" onClick={logOut} className="hf-navrow hf-control-row text-hf-red-dark">
                   {t("helloDoc.preview.menuLogout")}
                 </button>
               </div>
@@ -132,15 +132,13 @@ export default function HelloDocPreviewPage() {
       </div>
 
       <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain">
-        <p className="text-text-secondary hf-type-caption mx-4 mt-4 rounded-lg p-4" style={{ background: "var(--hf-color-card)" }}>
-          {t("helloDoc.preview.disclaimer")}
-        </p>
+        <p className="hf-card hf-type-caption mx-4 mt-4">{t("helloDoc.preview.disclaimer")}</p>
 
         {error && <p className="hf-type-body p-4 text-hf-red-dark">{t("helloDoc.loadError")}</p>}
 
         {!error && !data && (
           <SkeletonScreen className="hf-page hf-page--sections">
-            <div className="flex flex-col items-center gap-2 rounded-xl bg-hf-tan p-4">
+            <div className="hf-card items-center">
               <Skeleton type="circle" height={96} />
               <Skeleton type="card-title" width="50%" />
               <Skeleton type="caption" width="40%" />

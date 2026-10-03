@@ -31,7 +31,7 @@ const STATUS_LABELS: Record<string, string> = {
 
 function Tile({ label, value }: { label: string; value: string }) {
   return (
-    <div className="rounded-lg border border-hf-tan-dark bg-hf-white p-4">
+    <div className="hf-surface p-4">
       <p className="hf-type-body text-text-secondary">{label}</p>
       <p className="hf-type-hero mt-1 text-hf-black">{value}</p>
     </div>
@@ -41,7 +41,7 @@ function Tile({ label, value }: { label: string; value: string }) {
 function BarList({ title, unitLabel, rows }: { title: string; unitLabel: string; rows: { label: string; count: number }[] }) {
   const max = Math.max(1, ...rows.map((r) => r.count));
   return (
-    <section className="flex flex-col rounded-lg border border-hf-tan-dark bg-hf-white">
+    <section className="flex flex-col hf-surface">
       <header className="flex items-center justify-between border-b border-hf-tan-dark px-4 py-3">
         <h2 className="hf-type-body hf-type-strong text-hf-black">{title}</h2>
         <span className="hf-type-small text-text-muted">{unitLabel}</span>
@@ -79,7 +79,7 @@ export async function HelloDocView({ range }: { range: AdStatsRange }) {
         <p className="hf-type-body text-text-secondary">
           Brug af Hello Doc (deling med læge/behandler) fra databasen. Åbninger af lægelinket logges ikke.
         </p>
-        <nav className="hf-type-body flex rounded-lg border border-hf-tan-dark bg-hf-white p-0.5" aria-label="Periode">
+        <nav className="hf-type-body flex hf-surface p-0.5" aria-label="Periode">
           {AD_STATS_RANGES.map((r) => (
             <Link
               key={r.id}
@@ -100,7 +100,7 @@ export async function HelloDocView({ range }: { range: AdStatsRange }) {
         <Tile label="Brugere der deler" value={number.format(data.totals.sharers)} />
         <Tile label="Aktive delinger nu" value={number.format(data.totals.activeNow)} />
       </div>
-      <div className="rounded-lg border border-hf-tan-dark bg-hf-white p-4">
+      <div className="hf-surface p-4">
         <h2 className="hf-type-body hf-type-strong mb-3 text-hf-black">Invitationer pr. dag</h2>
         <StatsBarChart
           points={data.series.map((b) => ({ key: b.key, label: b.label, values: { created: b.created, accepted: b.accepted } }))}

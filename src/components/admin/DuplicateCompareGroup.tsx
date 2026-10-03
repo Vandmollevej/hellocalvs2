@@ -143,7 +143,7 @@ export function DuplicateCompareGroup({ group }: { group: CompareGroup }) {
   const hasLongText = rows.some((r) => r.type === "field" && r.field.kind === "longtext");
 
   return (
-    <section className="flex flex-col gap-3 rounded-lg border border-hf-tan-dark bg-hf-white p-4">
+    <section className="flex flex-col gap-3 hf-surface p-4">
       <div className="flex flex-wrap items-baseline justify-between gap-2">
         <p className="hf-type-small text-text-secondary">
           {group.reason}

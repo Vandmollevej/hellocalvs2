@@ -88,7 +88,7 @@ export function PasskeyManager() {
           {passkeys.map((p) => (
             <div
               key={p.id}
-              className="flex items-center justify-between rounded-lg border border-hf-tan-dark bg-hf-white px-4 py-3"
+              className="flex items-center justify-between hf-surface px-4 py-3"
             >
               <div>
                 <p className="hf-type-strong text-hf-black">{p.name || "Passkey"}</p>

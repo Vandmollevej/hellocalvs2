@@ -178,7 +178,7 @@ export default async function DesignManualPage() {
                 <h3 className="hf-type-body hf-type-strong text-hf-black">{group.title}</h3>
                 <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
                   {group.swatches.map((swatch) => (
-                    <div key={swatch.token} className="overflow-hidden rounded-lg border border-hf-tan-dark bg-hf-white">
+                    <div key={swatch.token} className="overflow-hidden hf-surface">
                       <div className="h-16 border-b border-hf-tan-dark" style={{ background: `var(${swatch.token})` }} />
                       <div className="flex flex-col gap-0.5 p-3">
                         <p className="hf-type-body hf-type-strong text-hf-black">{swatch.name}</p>
@@ -209,7 +209,7 @@ export default async function DesignManualPage() {
               <InfoBox tone="warning" title="Advarsel" text="Brugeren bør være opmærksom, men kan fortsætte." />
               <InfoBox tone="danger" title="Fejl" text="Handlingen fejlede eller værdien er ugyldig." />
             </div>
-            <div className="flex flex-col gap-2 rounded-lg border border-hf-tan-dark bg-hf-white p-4">
+            <div className="flex flex-col gap-2 hf-surface p-4">
               <p className="hf-type-body hf-type-strong text-hf-black">Hjælpetekst (HelpTip)</p>
               <p className="hf-type-caption">
                 Lille hjælpetekst under en indstilling. Vises kun, når &quot;Vis tooltips&quot; er slået til under
@@ -528,7 +528,7 @@ function Rules({ items }: { items: string[] }) {
 
 function Tile({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <div className="flex flex-col gap-3 rounded-lg border border-hf-tan-dark bg-hf-white p-4">
+    <div className="flex flex-col gap-3 hf-surface p-4">
       <p className="hf-type-body hf-type-strong text-hf-black">{title}</p>
       {children}
     </div>
@@ -546,7 +546,7 @@ function Mock({ label, children }: { label: string; children: React.ReactNode })
 
 function SpecTable({ head, rows }: { head: string[]; rows: string[][] }) {
   return (
-    <div className="overflow-x-auto rounded-lg border border-hf-tan-dark bg-hf-white">
+    <div className="overflow-x-auto hf-surface">
       <table className="hf-type-body w-full text-left">
         <thead className="hf-type-small bg-hf-tan uppercase tracking-[0.06em] text-text-secondary">
           <tr>

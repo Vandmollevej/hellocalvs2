@@ -54,7 +54,7 @@ function Row({ row }: { row: CutoutQueueRow }) {
 export function CutoutQueueList({ rows, emptyText }: { rows: CutoutQueueRow[]; emptyText: string }) {
   if (!rows.length) return <p className="hf-type-body text-text-secondary">{emptyText}</p>;
   return (
-    <ul className="flex flex-col divide-y divide-border-strong/50 rounded-lg border border-hf-tan-dark bg-hf-white">
+    <ul className="flex flex-col divide-y divide-border-strong/50 hf-surface">
       {rows.map((row) => (
         <Row key={row.id} row={row} />
       ))}

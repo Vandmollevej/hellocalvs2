@@ -33,18 +33,14 @@ export function StatsFilters({ filter, fromDay, toDay }: { filter: StatsFilterIn
   }
 
   return (
-    <div className="flex flex-col gap-3 rounded-lg border border-border-strong bg-surface-2 p-3 text-sm">
+    <div className="hf-panel hf-type-small">
       <div className="flex flex-wrap gap-1.5">
         {STATS_PRESETS.filter((p) => p.value !== "custom").map((preset) => (
           <button
             key={preset.value}
             type="button"
             onClick={() => apply({ preset: preset.value })}
-            className={`rounded-full border px-3 py-1 ${
-              filter.preset === preset.value
-                ? "border-hf-green-dark bg-hf-green-dark text-hf-white"
-                : "border-border-strong text-text-secondary hover:bg-hf-tan"
-            }`}
+            className={`hf-choice ${filter.preset === preset.value ? "is-selected" : ""}`}
           >
             {preset.label}
           </button>
@@ -74,9 +70,7 @@ export function StatsFilters({ filter, fromDay, toDay }: { filter: StatsFilterIn
         <button
           type="button"
           onClick={() => apply({ preset: "custom", from, to })}
-          className={`rounded-md px-3 py-1.5 ${
-            filter.preset === "custom" ? "bg-hf-green-dark text-hf-white" : "bg-hf-fab text-hf-white hover:opacity-90"
-          }`}
+          className="hf-btn-primary h-10 px-4"
         >
           Vis periode
         </button>
@@ -106,15 +100,13 @@ export function StatsFilters({ filter, fromDay, toDay }: { filter: StatsFilterIn
         </label>
         <div className="flex flex-col gap-1 text-text-secondary">
           Abonnement
-          <div className="flex overflow-hidden rounded-md border border-border-strong">
+          <div className="flex flex-wrap gap-1.5">
             {STATS_TIERS.map((tier) => (
               <button
                 key={tier.value}
                 type="button"
                 onClick={() => apply({ tier: tier.value })}
-                className={`px-2.5 py-1 ${
-                  filter.tier === tier.value ? "bg-hf-green-dark text-hf-white" : "text-text-secondary hover:bg-hf-tan"
-                }`}
+                className={`hf-choice ${filter.tier === tier.value ? "is-selected" : ""}`}
               >
                 {tier.label}
               </button>

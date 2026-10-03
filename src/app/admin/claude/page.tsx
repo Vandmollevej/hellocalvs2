@@ -33,7 +33,7 @@ export default async function ClaudeIntegrationPage() {
       </div>
 
       <ol className="hf-type-body flex flex-col gap-4">
-        <li className="rounded-lg border border-hf-tan-dark bg-hf-white p-4">
+        <li className="hf-surface p-4">
           <p className="hf-type-strong text-hf-black">1. Opret en agent</p>
           <p className="mt-1 text-text-secondary">
             Gå til{" "}
@@ -45,14 +45,14 @@ export default async function ClaudeIntegrationPage() {
           </p>
           <code className="hf-type-small mt-2 block break-all rounded bg-page-bg px-3 py-2">{example}</code>
         </li>
-        <li className="rounded-lg border border-hf-tan-dark bg-hf-white p-4">
+        <li className="hf-surface p-4">
           <p className="hf-type-strong text-hf-black">2a. Claude.ai (web, app og mobil)</p>
           <p className="mt-1 text-text-secondary">
             Indstillinger → Connectors → Tilføj custom connector. Giv den navnet &quot;Hello Cal&quot; og indsæt
             MCP-adressen. Slå connectoren til i en samtale via værktøjsmenuen.
           </p>
         </li>
-        <li className="rounded-lg border border-hf-tan-dark bg-hf-white p-4">
+        <li className="hf-surface p-4">
           <p className="hf-type-strong text-hf-black">2b. Claude Code</p>
           <p className="mt-1 text-text-secondary">Kør i en terminal:</p>
           <code className="hf-type-small mt-2 block break-all rounded bg-page-bg px-3 py-2">
@@ -61,7 +61,7 @@ export default async function ClaudeIntegrationPage() {
         </li>
       </ol>
 
-      <div className="hf-type-body rounded-lg border border-hf-tan-dark bg-hf-white p-4">
+      <div className="hf-type-body hf-surface p-4">
         <p className="hf-type-strong text-hf-black">Hvad Claude kan</p>
         <ul className="mt-2 flex flex-col gap-1 text-text-secondary">
           {TOOLS.map(([name, description]) => (

@@ -24,24 +24,24 @@ export function StatsAiSummary({ query }: { query: string }) {
   }
 
   return (
-    <div className="flex flex-col gap-2 rounded-lg bg-hf-tan p-4">
+    <div className="hf-card">
       <div className="flex flex-wrap items-center justify-between gap-2">
-        <p className="text-sm font-semibold text-text-primary">AI-opsummering af brugsadfærd</p>
+        <p className="hf-type-body hf-type-strong text-text-primary">AI-opsummering af brugsadfærd</p>
         <button
           type="button"
           onClick={run}
           disabled={state.loading}
-          className="rounded-md bg-hf-fab px-3 py-1.5 text-sm text-hf-white disabled:opacity-60"
+          className="hf-btn-primary h-10 px-4 disabled:opacity-60"
         >
           {state.loading ? "Analyserer …" : state.text ? "Analysér igen" : "Analysér med AI"}
         </button>
       </div>
-      <p className="text-xs text-text-secondary">
+      <p className="hf-type-caption">
         Sender kun aggregerede tal for det valgte filter til OpenAI (ingen navne, e-mails eller bruger-id&apos;er). Koster
         et lille beløb pr. klik.
       </p>
-      {state.error && <p className="text-sm text-hf-red-dark">{state.error}</p>}
-      {state.text && <div className="whitespace-pre-line text-sm text-text-primary">{state.text}</div>}
+      {state.error && <p className="hf-type-body text-hf-red-dark">{state.error}</p>}
+      {state.text && <div className="hf-type-body whitespace-pre-line text-text-primary">{state.text}</div>}
     </div>
   );
 }

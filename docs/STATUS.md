@@ -38,6 +38,12 @@ Last updated: 2026-10-03
 - Hjælpe-knap øverst (til venstre for profilcirklen; "Hjælp" i desktop-topbjælken) åbner AI-chatbotten med "Tal med en medarbejder" (bliver en sag i Support-indbakken med hele tråden) og "Kontaktformular". Ingen telefon, region = land, kun indloggede (ejerens valg 2026-10-03). Se DECISIONS.md 2026-10-02.
 - Admin → Brugere → Chatbot: oftest spurgte kategorier, tabel med alle spørgsmål og svar, hele tråde og brugerinfo (alder, køn, region, abonnement).
 - Migration `20261002120000_chatbot` skal køre ved deploy. Lint, typecheck og build grønne. Ikke live-testet (ingen lokal DB/OpenAI-nøgle): test chatten på telefon og desktop efter deploy.
+## 2026-10-03: Admin, webvisning og Hello Doc på samme designklasser
+
+- Ny fælles skal i `globals.css` (design.md §6.17): `.hf-shell*`, `.hf-navrow`, `.hf-crumbs`, `.hf-menu`, `.hf-surface`, `.hf-table-scroll`. `AdminShell`, `WebShell` og Hello Doc (lægevisning + "Sådan ser det ud") bruger dem; 99 håndskrevne hvide bokse i admin er nu `.hf-surface`, statistik/login-sider bruger `.hf-type-*`, `.hf-kpi`, `.hf-panel` og `.hf-choice`.
+- Responsivt: skuffe-menu under 1024 px (admin), topmenuens tekst skjules under 1280 px i webvisningen (kun ikoner), brede tabeller scroller vandret, faste gitre har telefonvariant.
+- Lint, typecheck og `next build --webpack` kørt; ikke set i browser (brugerens regel) — tjek admin på telefon og webvisningen ved 1024–1280 px.
+
 ## 2026-10-03: Roadmap — sukkerfiltre skal ind i databasen (importen skal køres)
 
 Bygget og pushet til master, men virker først, når importen er kørt (brugerens valg: gem som to do, tag den, når resten af webændringerne er læst ind).

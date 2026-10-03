@@ -133,7 +133,7 @@ export function QualityControlTable({ rows, locale }: { rows: Row[]; locale: Loc
         ))}
       </div>
 
-      <div className="overflow-hidden rounded-lg border border-hf-tan-dark">
+      <div className="hf-table-scroll rounded-lg border border-hf-tan-dark">
         <table className="hf-type-body w-full text-left">
           <thead className="hf-type-small bg-hf-white text-text-secondary">
             <tr>

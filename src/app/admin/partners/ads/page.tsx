@@ -44,7 +44,7 @@ export default async function AdsPage({ searchParams }: { searchParams: Promise<
       <LocationForm partners={partners} />
       {stats.length === 0 && <p className="hf-type-body text-text-secondary">Opret først en partner under Kontakter.</p>}
       {stats.map((partner) => (
-        <div key={partner.partnerId} className="overflow-x-auto rounded-lg border border-hf-tan-dark bg-hf-white p-4">
+        <div key={partner.partnerId} className="overflow-x-auto hf-surface p-4">
           <p className="hf-type-strong mb-2 text-hf-black">{partner.partnerName}</p>
           <table className="hf-type-body w-full text-left">
             <thead>
