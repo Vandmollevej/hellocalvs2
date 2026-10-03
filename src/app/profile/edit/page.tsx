@@ -17,6 +17,7 @@ import { useTranslation } from "@/i18n/LocaleProvider";
 import { cmToIn, formatLength, formatWeight, inToCm, useUnits, weightUnitLabel } from "@/lib/units";
 import { formatPhone, validatePhone } from "@/lib/phone";
 import { FaceIdButton } from "@/components/FaceIdButton";
+import { AccountDeletionSection } from "@/components/profile/AccountDeletionSection";
 import { SkeletonForm, SkeletonScreen } from "@/components/hf/Skeleton";
 import { EnergyBreakdown } from "@/components/EnergyBreakdown";
 import type { EnergySummary } from "@/lib/activity-profile";
@@ -435,6 +436,8 @@ export default function ProfileEditPage() {
           <div className="mt-4">
             <FaceIdButton />
           </div>
+
+          <AccountDeletionSection />
         </div>
       )}
     </HfScreen>

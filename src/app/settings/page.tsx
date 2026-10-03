@@ -23,7 +23,6 @@ import {
   IconUsers,
   IconHistory,
   IconTrashOff,
-  IconUserCog,
 } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
 import { AccordionCard, ChevronRow } from "@/components/hf/AccordionCard";
@@ -160,11 +159,6 @@ export default function SettingsPage() {
         )}
 
         <AccordionCard>
-          <ChevronRow
-            icon={<IconUserCog size={20} />}
-            label={t("accountSettings.title")}
-            href="/settings/account"
-          />
           <ChevronRow
             icon={<IconAdjustments size={20} />}
             label={t("settings.setupTitle")}

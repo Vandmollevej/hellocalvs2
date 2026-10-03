@@ -4225,3 +4225,10 @@ Brugerens krav: "Luk konto kan reverses inde. For 3 måneder, med mindre man væ
 - `GoalStatusSummary` lægger derfor de to i én fælles flex-række. De må
   aldrig deles i separate blokke under hinanden; flammen ("+ N kcal") står
   over rækken og "Tilbage"/"Overskredet" under den, begge højrestillet.
+
+## 2026-10-03: Slet/luk konto ligger nederst på Profil
+
+Ejerens krav: "Mulighed for slet profil skal ned nederst under Profil-siden."
+
+- "Ret til at blive glemt" og "Luk konto" vises nederst på `/profile/edit` (under Face ID), med samme bundark, SLET-bekræftelse og tekstlink-stil som før.
+- Siden `/settings/account` (Indstillinger → Kontoindstillinger) er fjernet, så der kun er ét sted at slette/lukke kontoen. Afløser placeringen i beslutningerne 2026-10-02 og 2026-10-03 ovenfor.

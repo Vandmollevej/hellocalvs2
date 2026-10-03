@@ -2,6 +2,11 @@
 
 Last updated: 2026-10-03
 
+## 2026-10-03: "Slet mine data" og "Luk konto" ligger nu nederst på Profil
+
+- Ejerens ønske: muligheden for at slette profilen skal ligge nederst på Profil-siden (`/profile/edit`). "Ret til at blive glemt" (knappen "Slet mine data", skriv SLET) og tekstlinket "Luk konto" er flyttet dertil som `AccountDeletionSection` (`src/components/profile/`). Siden `/settings/account` og rækken "Kontoindstillinger" under Indstillinger er fjernet; chatbottens viden og sidetræet er rettet. Samme API (`/api/account/close`), ingen migration.
+- Lint (0 fejl), typecheck og build grønne. Ikke set med login (ingen lokal DB) — test på telefon: Profil → Profil → rul helt ned.
+
 ## 2026-10-03: Kalender — profilcirklen er tilbage i dagsvisningen
 
 - Dagsvisningen (`DayDetails` i `src/app/calendar/page.tsx`) tegner sin egen grønne topbjælke som fuldskærmsdialog over siden, og dens højre hjørne var et tomt felt — så profilcirklen forsvandt, så snart en dag blev åbnet. Den viser nu `ProfileAvatarLink` som alle andre sider.
