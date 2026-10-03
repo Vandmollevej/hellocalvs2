@@ -389,7 +389,19 @@ export const PAGE_TREE: PageArea[] = [
             label: "Flows",
             children: [{ path: "/admin/flows/[id]", label: "Flow" }],
           },
-          { path: "/admin/partners", label: "Partnere" },
+          {
+            path: "/admin/partners",
+            label: "Partnere",
+            children: [
+              { path: "/admin/partners/contacts", label: "Kontakter", note: "Partnerliste og kontaktpersoner" },
+              { path: "/admin/partners/ads", label: "Reklamer", note: "Lokationer med visninger og klik" },
+              { path: "/admin/partners/reports", label: "Rapporter", note: "Send rapporter til partneres kontakter" },
+              { path: "/admin/partners/[id]", label: "Partner: Sponsoraftale", note: "Venstre bjælke med virksomhed og kontakter, uden søgefelt" },
+              { path: "/admin/partners/[id]/performance", label: "Partner: Performance", note: "Faner Overview og Data mining, PDF/CSV, send rapport" },
+              { path: "/admin/partners/[id]/billing", label: "Partner: Faktureringsdetaljer" },
+              { path: "/admin/partners/[id]/payment", label: "Partner: Betalingsmetode" },
+            ],
+          },
           {
             path: "/admin/integrations",
             label: "Integrationer",

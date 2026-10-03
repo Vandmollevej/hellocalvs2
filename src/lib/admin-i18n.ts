@@ -59,6 +59,7 @@ const DICTIONARY = {
   nav_partners_contacts: { DA: "Kontakter", EN: "Contacts" },
   nav_partners_users: { DA: "B2B-brugere", EN: "B2B users" },
   nav_reports: { DA: "Rapporter", EN: "Reports" },
+  nav_partner_page: { DA: "Partnerside", EN: "Partner page" },
   nav_group_administration: { DA: "Administration", EN: "Administration" },
   nav_jobs: { DA: "Jobs", EN: "Jobs" },
   nav_agents: { DA: "Agenter", EN: "Agents" },
