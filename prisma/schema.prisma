@@ -989,6 +989,36 @@ enum HealthMetricType {
   MUSCLE_MASS_KG
   BODY_WATER_PERCENT
 
+  // 2026-10-03: alt, vægte, ure og blodtryksmålere kan levere (brugerens krav:
+  // "ALT skal med"). Kropssammensætning:
+  FAT_MASS_KG
+  FAT_FREE_MASS_KG
+  SKELETAL_MUSCLE_MASS_KG
+  BONE_MASS_KG
+  EXTRACELLULAR_WATER_KG
+  INTRACELLULAR_WATER_KG
+  VISCERAL_FAT_INDEX
+  PROTEIN_PERCENT
+  BASAL_METABOLIC_RATE_KCAL
+  METABOLIC_AGE_YEARS
+  // Hjerte og kar:
+  BLOOD_PRESSURE_SYSTOLIC_MMHG
+  BLOOD_PRESSURE_DIASTOLIC_MMHG
+  PULSE_WAVE_VELOCITY_M_S
+  VASCULAR_AGE_YEARS
+  QRS_INTERVAL_MS
+  PR_INTERVAL_MS
+  QT_INTERVAL_MS
+  QTC_INTERVAL_MS
+  FITNESS_AGE_YEARS
+  // Øvrige:
+  SKIN_TEMPERATURE_C
+  BLOOD_GLUCOSE_MMOL_L
+  NERVE_HEALTH_SCORE
+  SKIN_CONDUCTANCE_US
+  RECOVERY_SCORE
+  STRAIN_SCORE
+
   // Micronutrients (Statistik "Mineraler"/"Vitaminer" groups), shown with
   // periodic-table icons (public/icons/minerals) in StatCardsGrid.tsx.
   SODIUM_MG

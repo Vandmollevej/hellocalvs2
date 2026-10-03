@@ -1838,14 +1838,14 @@
     "saveError": "Couldn't save your choice. Try again.",
     "readTypes": {
       "weight": "Weight",
-      "bodyFat": "Body fat",
+      "bodyFat": "Body fat, muscle mass and full body composition",
       "activities": "Workouts",
       "steps": "Steps and distance",
       "energy": "Calories burned",
-      "heart": "Heart rate and fitness",
+      "heart": "Heart rate, blood pressure, ECG and fitness",
       "sleep": "Sleep",
       "water": "Water",
-      "body": "Height and BMI"
+      "body": "Height, BMI, temperature and other measurements"
     },
     "writeTypes": {
       "nutrition": "Meals (calories, protein, carbs, fat)",
@@ -1949,6 +1949,8 @@
       "allergensAdditives": "Allergens, E-numbers and toxins",
       "sportActivity": "Sport and activity",
       "sleep": "Sleep",
+      "body": "Body and body composition",
+      "heartHealth": "Heart, blood pressure and measurements",
       "other": "Other data"
     },
     "searchPlaceholder": "Search all charts and cards",

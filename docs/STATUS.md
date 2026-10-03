@@ -8,6 +8,16 @@ Last updated: 2026-10-03
 - Dagsvisningen genåbnes efter navigation væk fra `/calendar` (Tilbage eller "Kalender" i menuen) i stedet for at falde tilbage til måneden. Ny `src/lib/calendar-open-day.ts` (URL `?date=` + sessionStorage), koblet ind i `src/app/calendar/page.tsx`. Se DECISIONS.md samme dato.
 - Lint, typecheck og build grønne. Ikke live-testet (ingen lokal DB/login) — test på telefon: åbn en dag → tryk en registrering → Tilbage, og åbn en dag → Statistik → Kalender.
 
+## 2026-10-03: ALT med fra integrationerne (fedtprocent, muskelmasse og alt andet)
+
+- Withings henter nu alle måletyper (≈30: vægt, højde, fedt %, fedtmasse, fedtfri masse, muskel-, knogle- og vandmasse, ekstra-/intracellulært vand, visceralt fedt, BMR, metabolisk alder, blodtryk, puls, SpO2, temperatur, pulsbølgehastighed, karalder, EKG-intervaller, VO2 max, nervesundhed, hudledningsevne) + dagsaktivitet, søvn og træning. Parsere i `src/lib/integrations/withings-items.ts`.
+- Garmin, Huawei, WHOOP, Polar (`polar-items.ts`), Fitbit (`fitbit-items.ts`), Google Health og Health Connect-modulet henter også alt, de kan. Se DECISIONS.md samme dato.
+- Statistik → "Tilføj kort": nye grupper "Krop og kropssammensætning" (15 kort) og "Hjerte, blodtryk og målinger" (14 kort).
+- "Forbind igen" vises nu også, når en læsetilladelse mangler (`readScopes`). Withings-, Fitbit-, WHOOP- og Huawei-brugere skal forbinde igen for at få aktivitet/søvn/blodtryk m.m. med.
+- Migration `20261003120000_all_health_metrics` (nye enum-værdier) skal køre ved deploy.
+- Tests: 8 nye i `src/lib/integration-items.test.mjs` (grønne). Typecheck, lint og build grønne. `page-tree.test.mjs` fejler stadig (også på master).
+- Ikke live-testet (ingen nøgler/DB her). Feltnavne ikke prøvet mod live-API: Polar dagsaktivitet/cardio load, Huawei-sammensætningsfelter ud over fedt/muskel/BMI, Google Health-enkeltmålinger (tolerant læser), Garmin bloodPressures/userMetrics/hrv/pulseox/respiration (de nye opsummeringstyper skal også slås til i Garmins udviklerportal). Health Connect-modulet er ikke kompileret (ingen Android SDK).
+
 ## 2026-10-03: Business-siden — "Den typiske bruger" (annoncørstatistik)
 
 - `/business` har ny sektion mellem Mulighederne og Kontakt: medianbrugeren (køn + alder, startvægt, vægtændring + andel der har tabt sig, registreringer og dage med registrering pr. uge), de 5 mest registrerede produkttyper (andel af registreringer, 90 dage) og en tabel, der sammenligner den typiske bruger (median) med gennemsnittet af brugere med samme køn og alder (±5 år) — forskel i procentpoint for andele, ellers i procent. Se DECISIONS.md samme dato.

@@ -1,7 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import type { Integration, IntegrationProvider } from "@prisma/client";
 import { adapterByProvider, isConfigured } from "@/lib/integrations/registry";
-import { capabilitiesFor, missingWriteScopes, resolveSyncSettings, type ProviderSyncCapabilities, type SyncSettings, type WriteType } from "@/lib/integrations/sync-settings";
+import { capabilitiesFor, resolveSyncSettings, typesNeedingReconnect, type ProviderSyncCapabilities, type ReadType, type SyncSettings, type WriteType } from "@/lib/integrations/sync-settings";
 
 // Katalog over integrationerne på siden Integrationer (docs/DECISIONS.md
 // 2026-09-24). Alle data forsegles til brugerens boks (docs/PRIVACY.md).
@@ -201,8 +201,8 @@ export type IntegrationCardStatus = IntegrationMeta & {
   pageSlug: string;
   capabilities: ProviderSyncCapabilities;
   settings: SyncSettings;
-  // Skrivetyper, der er slået til, men kræver at brugeren forbinder igen.
-  needsReconnect: WriteType[];
+  // Datatyper, der er slået til, men kræver at brugeren forbinder igen.
+  needsReconnect: (ReadType | WriteType)[];
   lastPushedAt: string | null;
   // Om serverens nøgler til integrationen er sat (kun "oauth").
   configured: boolean;
@@ -227,7 +227,7 @@ export async function listIntegrationStatuses(userId: string): Promise<Integrati
         capabilities: capabilitiesFor(meta.provider),
         settings: resolveSyncSettings(meta.provider, row?.syncSettings),
         needsReconnect:
-          adapter && row?.status && row.status !== "DISCONNECTED" ? missingWriteScopes(meta.provider, adapter.writeScopes, row.syncSettings, row.scope) : [],
+          adapter && row?.status && row.status !== "DISCONNECTED" ? typesNeedingReconnect(meta.provider, adapter, row.syncSettings, row.scope) : [],
         lastPushedAt: row?.lastPushedAt?.toISOString() ?? null,
         configured: adapter ? isConfigured(adapter) : false,
         status: row?.status ?? "DISCONNECTED",

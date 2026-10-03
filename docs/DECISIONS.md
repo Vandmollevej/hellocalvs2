@@ -2,6 +2,19 @@
 
 This file records durable decisions. Add a dated entry when a later decision changes one of them.
 
+## 2026-10-03: ALT med fra integrationerne
+
+Brugerens krav: "I Withings og øvrige integrationer skal ALT med. Fedtprocent, muskelmasse og alt!"
+
+- **Alle tal, en app kan levere, hentes** — ikke kun vægt og fedtprocent. Nye `HealthMetricType`-værdier: fedtmasse, fedtfri masse, skeletmuskelmasse, knoglemasse, ekstra-/intracellulært vand, visceralt fedt, proteinandel, BMR (`BASAL_METABOLIC_RATE_KCAL`, vægtens enkeltmåling — adskilt fra dagssummen `RESTING_ENERGY_KCAL`), metabolisk alder, blodtryk (systolisk/diastolisk), pulsbølgehastighed, karalder, EKG-intervaller (QRS/PR/QT/QTc), fitnessalder, hudtemperatur, blodsukker, nervesundhed, hudledningsevne, restitution og strain.
+- **Withings:** alle numeriske måletyper (vægt, højde, hele kropssammensætningen, blodtryk, puls, SpO2, temperatur, PWV, karalder, EKG, VO2 max, BMR, metabolisk alder …) + dagsaktivitet, søvn og træning (scope `user.activity`). Ikke med: AFib-klassifikationer og segmentmålinger pr. arm/ben (ikke ét tal).
+- **Øvrige:** Garmin (knoglemasse, blodtryk, VO2 max/fitnessalder, HRV, SpO2, vejrtrækning), Huawei (hele vægtens sammensætning, blodtryk, SpO2, temperatur, blodsukker), WHOOP (strain, dagspuls, restitution, hudtemperatur), Polar (søvn, Nightly Recharge, dagsaktivitet, cardio load), Fitbit (dagsserier, hvilepuls, HRV, SpO2, vejrtrækning, VO2 max, søvn, BMI), Google Health (højde, hvilepuls, HRV, SpO2, vejrtrækning, temperatur, VO2 max) og Health Connect (knoglemasse, fedtfri masse, BMR, blodtryk, temperatur, blodsukker). Strava har kun træning.
+- **Hver delforespørgsel er tolerant:** mangler en tilladelse eller en enhed, fejler kun den del; resten gemmes.
+- **"Forbind igen" også for læsning:** adaptere kan angive `readScopes`; mangler et scope, brugeren gav ved tilkobling, vises "Forbind igen" (samme besked som for skriveadgang). En ny tilkobling nulstiller `lastSyncedAt`, så hele historikken hentes.
+- **Grupper under "Hent fra":** al kropssammensætning hører under `bodyFat` ("Fedtprocent, muskelmasse og hele kropssammensætningen"); blodtryk, karstivhed, EKG, fitnessalder og restitution under `heart`; temperatur, blodsukker m.m. under `body`.
+- **Apple Health `leanBodyMass` = fedtfri masse** (`FAT_FREE_MASS_KG`), ikke muskelmasse — retter docs/HEALTHKIT_COMPANION.md fra 2026-09-29. Ingen iOS-app findes endnu, så intet data er gemt forkert.
+- **Statistik:** nye kortgrupper "Krop og kropssammensætning" og "Hjerte, blodtryk og målinger". Kropssammensætning, blodtryk o.l. viser seneste måling i perioden (ikke gennemsnit). `/api/health-metrics` returnerer nu alle målinger fra de seneste 120 dage (højst 10.000) + den nyeste ældre måling pr. type.
+
 ## 2026-10-02: Flere integrationer — Garmin, WHOOP, Huawei + mærker via telefonen
 
 Brugerens krav: Garmin, Health Connect, eufy, Renpho, Tuya, Xiaomi, Huawei, WHOOP og Samsung (også ure/ringe, ikke kun vægte). "Vi må ikke videregive nogen informationer om brugeren."

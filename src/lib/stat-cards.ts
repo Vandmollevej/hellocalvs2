@@ -128,6 +128,30 @@ function metricValue(data: StatCardData, type: string, unit = "", maximumFractio
   return unit ? `${formatted} ${unit}` : formatted;
 }
 
+/** Seneste måling af en HealthMetricType (kropssammensætning, blodtryk …),
+ * hvor et gennemsnit over perioden giver mindre mening end det nyeste tal. */
+function latestMetric(metrics: HealthMetricTotals[] | undefined, type: string): number | null {
+  let latest: HealthMetricTotals | null = null;
+  for (const m of metrics ?? []) {
+    if (m.type === type && (!latest || m.recordedAt > latest.recordedAt)) latest = m;
+  }
+  return latest ? latest.value : null;
+}
+
+function latestValue(data: StatCardData, type: string, unit = "", maximumFractionDigits = 1): string {
+  const value = latestMetric(data.metrics, type);
+  if (value === null) return "—";
+  const formatted = formatNumber(value, maximumFractionDigits);
+  return unit ? `${formatted} ${unit}` : formatted;
+}
+
+function bloodPressure(data: StatCardData): string {
+  const systolic = latestMetric(data.metrics, "BLOOD_PRESSURE_SYSTOLIC_MMHG");
+  const diastolic = latestMetric(data.metrics, "BLOOD_PRESSURE_DIASTOLIC_MMHG");
+  if (systolic === null || diastolic === null) return "—";
+  return `${formatNumber(systolic)}/${formatNumber(diastolic)} mmHg`;
+}
+
 function meatCard(type: MeatType, field: "grams" | "kcal") {
   return (data: StatCardData) => {
     if (!data.sources) return "—";
@@ -413,6 +437,47 @@ export const STAT_CARD_DEFS: {
   { key: "sleepScore", label: "Søvnkvalitet", icon: IconActivity, compute: (data) => metricValue(data, "SLEEP_SCORE") },
   { key: "sleepEfficiency", label: "Søvneffektivitet", icon: IconActivity, compute: (data) => metricValue(data, "SLEEP_EFFICIENCY_PERCENT", "%", 1) },
   { key: "sleepAwakenings", label: "Opvågninger", icon: IconActivity, compute: (data) => metricValue(data, "SLEEP_AWAKENINGS") },
+  // Krop og kropssammensætning (smartvægte, 2026-10-03): seneste måling.
+  { key: "bodyFatPercent", label: "Fedtprocent", icon: IconDroplet, compute: (data) => latestValue(data, "BODY_FAT_PERCENT", "%") },
+  { key: "fatMass", label: "Fedtmasse", icon: IconDroplet, compute: (data) => latestValue(data, "FAT_MASS_KG", "kg") },
+  { key: "fatFreeMass", label: "Fedtfri masse", icon: IconActivity, compute: (data) => latestValue(data, "FAT_FREE_MASS_KG", "kg") },
+  { key: "muscleMass", label: "Muskelmasse", icon: IconActivity, compute: (data) => latestValue(data, "MUSCLE_MASS_KG", "kg") },
+  { key: "skeletalMuscleMass", label: "Skeletmuskelmasse", icon: IconActivity, compute: (data) => latestValue(data, "SKELETAL_MUSCLE_MASS_KG", "kg") },
+  { key: "boneMass", label: "Knoglemasse", icon: IconBone, compute: (data) => latestValue(data, "BONE_MASS_KG", "kg") },
+  { key: "bodyWater", label: "Kropsvand", icon: IconWaterGlass, compute: (data) => latestValue(data, "BODY_WATER_PERCENT", "%") },
+  { key: "extracellularWater", label: "Ekstracellulært vand", icon: IconWaterGlass, compute: (data) => latestValue(data, "EXTRACELLULAR_WATER_KG", "kg") },
+  { key: "intracellularWater", label: "Intracellulært vand", icon: IconWaterGlass, compute: (data) => latestValue(data, "INTRACELLULAR_WATER_KG", "kg") },
+  { key: "visceralFat", label: "Visceralt fedt", icon: IconDroplet, compute: (data) => latestValue(data, "VISCERAL_FAT_INDEX") },
+  { key: "proteinPercent", label: "Proteinandel", icon: IconEgg, compute: (data) => latestValue(data, "PROTEIN_PERCENT", "%") },
+  { key: "bmr", label: "Hvilestofskifte (BMR)", icon: IconFlame, compute: (data) => latestValue(data, "BASAL_METABOLIC_RATE_KCAL", "kcal", 0) },
+  { key: "metabolicAge", label: "Metabolisk alder", icon: IconActivity, compute: (data) => latestValue(data, "METABOLIC_AGE_YEARS", "år", 0) },
+  { key: "bmi", label: "BMI", icon: IconActivity, compute: (data) => latestValue(data, "BMI") },
+  { key: "height", label: "Højde", icon: IconActivity, compute: (data) => latestValue(data, "HEIGHT_CM", "cm", 0) },
+  // Hjerte, kredsløb og øvrige målinger.
+  { key: "bloodPressure", label: "Blodtryk", icon: IconHeartbeat, compute: bloodPressure },
+  { key: "pulseWaveVelocity", label: "Pulsbølgehastighed", icon: IconHeartbeat, compute: (data) => latestValue(data, "PULSE_WAVE_VELOCITY_M_S", "m/s") },
+  { key: "vascularAge", label: "Karalder", icon: IconHeartbeat, compute: (data) => latestValue(data, "VASCULAR_AGE_YEARS", "år", 0) },
+  { key: "fitnessAge", label: "Fitnessalder", icon: IconHeartbeat, compute: (data) => latestValue(data, "FITNESS_AGE_YEARS", "år", 0) },
+  { key: "ecgQrs", label: "EKG: QRS", icon: IconHeartbeat, compute: (data) => latestValue(data, "QRS_INTERVAL_MS", "ms", 0) },
+  { key: "ecgPr", label: "EKG: PR", icon: IconHeartbeat, compute: (data) => latestValue(data, "PR_INTERVAL_MS", "ms", 0) },
+  { key: "ecgQt", label: "EKG: QT", icon: IconHeartbeat, compute: (data) => latestValue(data, "QT_INTERVAL_MS", "ms", 0) },
+  { key: "ecgQtc", label: "EKG: QTc", icon: IconHeartbeat, compute: (data) => latestValue(data, "QTC_INTERVAL_MS", "ms", 0) },
+  { key: "recoveryScore", label: "Restitution", icon: IconHeartbeat, compute: (data) => metricValue(data, "RECOVERY_SCORE", "%") },
+  { key: "strain", label: "Belastning (strain)", icon: IconActivity, compute: (data) => metricValue(data, "STRAIN_SCORE", "", 1) },
+  { key: "skinTemperature", label: "Hudtemperatur", icon: IconActivity, compute: (data) => metricValue(data, "SKIN_TEMPERATURE_C", "°C", 1) },
+  { key: "bloodGlucose", label: "Blodsukker", icon: IconActivity, compute: (data) => metricValue(data, "BLOOD_GLUCOSE_MMOL_L", "mmol/l", 1) },
+  { key: "nerveHealth", label: "Nervesundhed", icon: IconActivity, compute: (data) => latestValue(data, "NERVE_HEALTH_SCORE", "", 0) },
+  { key: "skinConductance", label: "Hudledningsevne", icon: IconActivity, compute: (data) => latestValue(data, "SKIN_CONDUCTANCE_US", "µS") },
+];
+
+// Kortene under "Krop" og "Hjerte og målinger" i "Tilføj kort".
+export const BODY_STAT_KEYS: string[] = [
+  "bodyFatPercent", "fatMass", "fatFreeMass", "muscleMass", "skeletalMuscleMass", "boneMass", "bodyWater",
+  "extracellularWater", "intracellularWater", "visceralFat", "proteinPercent", "bmr", "metabolicAge", "bmi", "height",
+];
+export const HEART_HEALTH_STAT_KEYS: string[] = [
+  "bloodPressure", "pulseWaveVelocity", "vascularAge", "fitnessAge", "ecgQrs", "ecgPr", "ecgQt", "ecgQtc",
+  "recoveryScore", "strain", "skinTemperature", "bloodGlucose", "nerveHealth", "skinConductance",
 ];
 
 // The cards a fresh Statistik dashboard shows out of the box. Deliberately not

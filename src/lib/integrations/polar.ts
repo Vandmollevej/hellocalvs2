@@ -1,10 +1,23 @@
-// Polar AccessLink API v3 (OAuth2, polar.com/accesslink-api). Træningspas.
+// Polar AccessLink API v3 (OAuth2, polar.com/accesslink-api). Træningspas,
+// søvn, Nightly Recharge (hvilepuls, HRV, vejrtrækning), dagsaktivitet og
+// cardio load (2026-10-03).
 // Adgangstokenet udløber ikke, og der findes intet refresh-token.
 // Env: POLAR_CLIENT_ID/POLAR_CLIENT_SECRET.
 
 import { randomUUID } from "crypto";
 import type { IntegrationItem } from "@/lib/integrations/store-items";
-import { basicAuth, clientCredentials, getJson, postForm, type OAuthProviderAdapter, type OAuthTokens } from "./types";
+import {
+  isoDurationMinutes,
+  polarCardioLoadItems,
+  polarDailyActivityItems,
+  polarRechargeItems,
+  polarSleepItems,
+  type PolarCardioLoad,
+  type PolarDailyActivity,
+  type PolarNight,
+  type PolarRecharge,
+} from "./polar-items";
+import { DAY_MS, basicAuth, clientCredentials, getJson, postForm, type OAuthProviderAdapter, type OAuthTokens } from "./types";
 
 const AUTHORIZE_URL = "https://flow.polar.com/oauth2/authorization";
 const TOKEN_URL = "https://polarremote.com/v2/oauth2/token";
@@ -18,12 +31,6 @@ type Exercise = {
   sport?: string;
   detailed_sport_info?: string;
 };
-
-function isoDurationMinutes(value: string | undefined) {
-  const m = value?.match(/^PT(?:(\d+(?:\.\d+)?)H)?(?:(\d+(?:\.\d+)?)M)?(?:(\d+(?:\.\d+)?)S)?$/);
-  if (!m) return 0;
-  return Math.round(Number(m[1] ?? 0) * 60 + Number(m[2] ?? 0) + Number(m[3] ?? 0) / 60);
-}
 
 export const polar: OAuthProviderAdapter = {
   provider: "POLAR",
@@ -63,6 +70,7 @@ export const polar: OAuthProviderAdapter = {
   // /v3/exercises returnerer de seneste 30 dages træningspas.
   async fetchItems(accessToken, since) {
     const exercises = await getJson<Exercise[]>(`${API}/exercises`, accessToken, "Polar trænings-opslag");
+    const extra = await polarExtras(accessToken, since);
     const items: IntegrationItem[] = [];
     for (const e of exercises) {
       const local = Date.parse(`${e.start_time.replace(/Z$/, "")}Z`);
@@ -80,6 +88,43 @@ export const polar: OAuthProviderAdapter = {
         },
       });
     }
-    return items;
+    return [...items, ...extra];
   },
 };
+
+// Søvn, Nightly Recharge, dagsaktivitet og cardio load hentes hver for sig;
+// en fejl i ét af dem vælter ikke træningspassene.
+async function polarExtras(accessToken: string, since: Date): Promise<IntegrationItem[]> {
+  const from = new Date(Math.max(since.getTime(), Date.now() - 28 * DAY_MS)).toISOString().slice(0, 10);
+  const to = new Date().toISOString().slice(0, 10);
+  const tolerant = async <T>(what: string, run: () => Promise<T[]>): Promise<T[]> => {
+    try {
+      return await run();
+    } catch (error) {
+      console.error(`Polar ${what} fejlede`, error instanceof Error ? error.message : "ukendt");
+      return [];
+    }
+  };
+  const [nights, recharges, days, loads] = await Promise.all([
+    tolerant("søvn", async () => (await getJson<{ nights?: PolarNight[] }>(`${API}/users/sleep`, accessToken, "Polar søvn")).nights ?? []),
+    tolerant("Nightly Recharge", async () =>
+      (await getJson<{ recharges?: PolarRecharge[] }>(`${API}/users/nightly-recharge`, accessToken, "Polar Nightly Recharge")).recharges ?? []
+    ),
+    tolerant("dagsaktivitet", async () => {
+      const data = await getJson<PolarDailyActivity[] | { activities?: PolarDailyActivity[] }>(
+        `${API}/users/activities?from=${from}&to=${to}`,
+        accessToken,
+        "Polar dagsaktivitet"
+      );
+      return Array.isArray(data) ? data : (data.activities ?? []);
+    }),
+    tolerant("cardio load", async () => {
+      const data = await getJson<PolarCardioLoad[]>(`${API}/users/cardio-load/date?from=${from}&to=${to}`, accessToken, "Polar cardio load");
+      return Array.isArray(data) ? data : [];
+    }),
+  ]);
+  const fromKey = `${from}T00:00:00.000Z`;
+  return [...polarSleepItems(nights), ...polarRechargeItems(recharges), ...polarDailyActivityItems(days), ...polarCardioLoadItems(loads)].filter(
+    (item) => String((item.payload as { recordedAt?: string }).recordedAt) >= fromKey
+  );
+}

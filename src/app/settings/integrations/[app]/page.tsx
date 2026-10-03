@@ -99,7 +99,7 @@ function IntegrationContent() {
       setSaveError(true);
       return;
     }
-    const data = (await res.json()) as { settings: SyncSettings; needsReconnect: WriteType[] };
+    const data = (await res.json()) as { settings: SyncSettings; needsReconnect: (ReadType | WriteType)[] };
     setIntegration((current) => (current ? { ...current, settings: data.settings, needsReconnect: data.needsReconnect } : current));
   }
 

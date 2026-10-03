@@ -1,6 +1,6 @@
 import type { IntegrationProvider } from "@prisma/client";
 import type { IntegrationItem } from "@/lib/integrations/store-items";
-import type { SyncSettings, WriteType } from "@/lib/integrations/sync-settings";
+import type { ReadType, SyncSettings, WriteType } from "@/lib/integrations/sync-settings";
 import type { PushData } from "@/lib/integrations/push";
 
 // Fælles kontrakt for cloud-integrationer med OAuth (Withings, Google Health,
@@ -41,6 +41,9 @@ export type OAuthProviderAdapter = {
   // Skriveadgang pr. datatype (OAuth-scope). Mangler scopet i det, brugeren
   // gav ved tilkobling, skal der forbindes igen, før data kan sendes.
   writeScopes?: Partial<Record<WriteType, string>>;
+  // Læseadgang, der kræver et særskilt OAuth-scope. Mangler det, vises
+  // "Forbind igen" på integrationens side.
+  readScopes?: Partial<Record<ReadType, string>>;
   // Sender Hello Cal-data til appen (push). Returnerer antal sendte poster.
   push?(accessToken: string, data: PushData): Promise<number>;
 };

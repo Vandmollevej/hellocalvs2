@@ -13,7 +13,9 @@ import {
   addHeaderToLayout,
   addStatCardToLayout,
   DEFAULT_ACTIVE_STAT_KEYS,
+  BODY_STAT_KEYS,
   FOOD_SOURCE_STAT_KEYS,
+  HEART_HEALTH_STAT_KEYS,
   SPORT_STAT_KEY_PREFIX,
   STAT_WINDOW_DAYS,
   type ActivityTotals,
@@ -119,6 +121,8 @@ function categoryDefs(t: (key: string) => string, region: string): CategoryDef[]
       ],
       includeSportCards: true,
     },
+    { title: t("statUnusedCards.category.body"), keys: BODY_STAT_KEYS },
+    { title: t("statUnusedCards.category.heartHealth"), keys: HEART_HEALTH_STAT_KEYS },
     {
       title: t("statUnusedCards.category.sleep"),
       keys: [
