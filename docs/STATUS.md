@@ -1,10 +1,5 @@
 # HELLO CAL — project status
 
-## 2026-10-02: Desktop — alle sider i skallen
-
-- På desktop vises alle sider (også login, betingelser, privatlivspolitik) i WebShell med sidebjælke, topmenu og brødkrummer; kun admin, hello-doc, business og presse er fuld bredde.
-- Lint og typecheck grønne; ikke set i browser — tjek login-siderne på desktop.
-Last updated: 2026-10-02
 
 ## 2026-10-02: Testperson-popup på integrationssiderne
 
@@ -12,6 +7,20 @@ Last updated: 2026-10-02
 - Admin → Brugere → **Test-programmes** (`/admin/test-programmes`): alle integrationer med ledig plads / testperson, forbindelsesstatus, Godkend (+300 points) / Afvis. Betingelsernes pointsafsnit er opdateret.
 - Migration `20261002120000_integration_testers` skal køre ved deploy.
 - Lint, typecheck og build grønne; `page-tree.test.mjs` fejler som før på master (uvedkommende sider). Ikke live-testet (ingen lokal DB/login) — tjek popuppen på telefon.
+
+## 2026-10-03: Butiksimporten — alt fra Bilka- og REMA-arkene med
+
+- 13.039 varer (før 10.524): 2.364 uden kalorietal er skjult (`nutritionMissing`, migration `20261002213000_product_nutrition_missing`), 151 med kun kalorier vises med ~ på makroerne, 107 uden stregkode er med under butikkens vare-id. Se DECISIONS 2026-10-02 "Butiksimporten: alt fra arkene med" og `docs/PRODUCT_IMPORT_MAPPING.md`.
+- Rettet: kJ 1000× for småt på ca. 4.900 varer, 25 forkerte kalorietal, 44 "Sukkerfri" med sukker, 129 navne som "0"/"M appelsin"; Labels-filtre og oprindelsesland.
+- Kildearkene ligger nu på NAS-sharet `\\192.168.1.90\Hello Cal\Arkiv - historiske kilde- og importfiler\Oprydning 2026-09-29\`. Det nye katalog (`store_products.json`) + de nye varers 1.408 billeder ligger klar i `C:\Users\Peter\Desktop\Butiksimport 2026-10-03\`; de skal kopieres til NAS'ens `data/store-products-import/` (sessionen fik ikke lov at skrive på serveren), og jobbet `store-products-import` køres (admin → Cron-jobs → Kør nu, eller næste deploy). Indtil da kører den nye agent med det gamle katalog, hvilket er ufarligt og retter kJ-fejlen.
+- Testet: agenten mod lokal PostgreSQL med alle migrationer (live-katalog → nyt katalog, 0 fejl); lint, typecheck og `next build --webpack` grønne.
+- Brugeren: kør `bilka_vitamins.py` (vitaminpanelet på bilkatogo.dk, nogle timer); byg og importér derefter igen. Næring fra Frida til de skjulte varer er egen opgave (OPEN-TASKS).
+
+## 2026-10-02: Desktop — alle sider i skallen
+
+- På desktop vises alle sider (også login, betingelser, privatlivspolitik) i WebShell med sidebjælke, topmenu og brødkrummer; kun admin, hello-doc, business og presse er fuld bredde.
+- Lint og typecheck grønne; ikke set i browser — tjek login-siderne på desktop.
+Last updated: 2026-10-02
 
 ## 2026-10-02: Kameraflowet — rigtige stillbilleder + nyt foto af indholdet
 
@@ -111,6 +120,7 @@ EU-referenceindtag, for lidt/for meget, eksterne kilder). Rækker med
 usikkerheds-~ er nu `div role=button`, så navnet kan være sin egen knap.
 Lint og build grønne.
 
+
 ## 2026-09-29: Oprettelses-appen — Face ID-login og egne nøgler
 
 - Face ID/passkey som alternativ til adgangskode + TOTP: tabel
@@ -124,6 +134,8 @@ Lint og build grønne.
   `/deploy/.env.production`, hvis de mangler (røres aldrig igen; backup i `.env.production.bak-scan-secrets`). Tag
   selv en kopi af `SCAN_PII_KEY` — den må aldrig skiftes.
 - Mangler stadig: test af hyldebillede med rigtig hylde.
+
+
 
 ## 2026-09-29: Pulsudsving → "Hvad foretog du dig?" + aktiviteter overalt
 
@@ -220,6 +232,7 @@ sat fra 7 dage til 1 time (`src/lib/email-verification.ts`), så teksten er sand
 - "Slå fra" er understreget tekst, der åbner Indstillinger → Visning → Oplevelse af søvn med grøn ring om kontakten.
 - Grå infotekst under spørgsmålet følger "Vis tooltips". Store tal; valgt = grøn fyldt cirkel, hvidt tal, ingen Luk.
 - Efter 0,5 s glider popup'en ned som bundark med håndtag og forsvinder. Afventer test på telefon.
+
 
 ## 2026-09-28: Indberet fejl — sammenfoldelig "Note"
 
@@ -841,6 +854,7 @@ Next work:
    fejler pt., se G5 i OPEN-TASKS).
 2. Test på telefon med en rigtig vare (fx næring + ingredienser på samme side).
 
+
 ## 2026-09-26: Seriøs-låse + egne abonnementssider
 
 Gratis: 3 måneders historik, én målsætning (målvægt), ingen delmål. Låst til
@@ -855,6 +869,7 @@ mdr.-bokse. Lint + typecheck grønne for de ændrede filer; fuld build ikke kør
 Next work:
 1. Invitation/kobling af op til 5 familiemedlemmer til Seriøs Familie.
 2. Købsknappen åbner, når MobilePay-sessionens aftale-API er deployet.
+
 
 ## 2026-09-26: Oplevelse af søvn
 
@@ -1299,6 +1314,8 @@ kort, tekst og tomme flader må ikke markere noget).
 - Nu en ren SVG-streg-tegning af samme artwork (ramme, skive, to fyldte
   fodspor) i tabler-stil med `currentColor`, så den står skarpt i alle
   størrelser. ViewBox og PNG er trimmet til kanten (ingen luft omkring).
+
+
 
 ## 2026-09-25: Stregkode-scanner omlagt (lodret/skæv aflæsning, AR-afkodning)
 

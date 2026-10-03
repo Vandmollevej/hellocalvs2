@@ -1146,6 +1146,12 @@ model Product {
   // indtil src/lib/quick-product-enrichment.ts fjerner dem igen.
   pendingFields    String[]               @default([])
   discontinued     Boolean                @default(false)
+  // Butiksvare uden kalorietal i produktarkene (docs/DECISIONS.md 2026-10-02):
+  // kcal/protein/kulhydrat/fedt er 0 som pladsholder, ikke målte værdier.
+  // Varen er skjult i søgning og genkendelse og har ingen stregkode-række,
+  // før den har fået næring (planlagt: fra Frida). Sættes og fjernes af
+  // scripts/store-products-import/agent.py.
+  nutritionMissing Boolean                @default(false)
   createdAt        DateTime               @default(now())
 
   // Login-frit admin-godkendelseslink (points-system 2026-09-02, se

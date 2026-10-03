@@ -8,6 +8,20 @@ This file records durable decisions. Add a dated entry when a later decision cha
 - Kun den allerførste, der tilmelder sig, får pladsen: én testperson pr. integration (`IntegrationTester`, unik pr. provider). Banneret vises kun, mens pladsen er ledig, og ikke igen på enheden, når brugeren har lukket det.
 - Points gives først, når admin godkender under Admin → Brugere → **Test-programmes** — samme regel som produkter og fejlrapporter (2026-09-02). Admin ser, om appen er aktiveret, og hvornår den sidst hentede data. Godkendelse giver 300 points (`INTEGRATION_TESTER`) én gang; afvisning sletter tilmeldingen, så pladsen bliver ledig igen.
 
+## 2026-10-02: Butiksimporten: alt fra arkene med (Bilka + REMA 1000)
+
+Erstatter "Varer uden kcal/protein/kulhydrat/fedt springes over" fra 2026-09-27.
+
+- **Alle rækker importeres** (brugerens valg: "Det er lige meget om de har protein mv. med. Så tager vi det fra Frida senere"). 13.039 varer i stedet for 10.524.
+- **Uden kalorietal** (2.364 varer: mest vin/øl/spiritus, krydderier, kaffe/te, frisk frugt/grønt og kød): `Product.nutritionMissing = true`, kcal/protein/kulhydrat/fedt = 0 som pladsholder. Varen er skjult i alle opslag, hvor en bruger kan finde og logge den (søgning, tekst-/foto-/måltidsgenkendelse, næringsmatch, generiske kandidater), og får **ingen stregkode-række** — scanning ender derfor stadig i Open Food Facts eller kameraflowet, hvor brugeren kan oprette varen med rigtig næring. Opretter en bruger den, opdateres brugerens vare ved næste import, og den skjulte kopi slettes. Varesiden viser "Næringsindhold ukendt" og admin "Mangler – skjult i appen". Næring hentes senere fra Frida (egen opgave): udfyld, sæt `nutritionMissing = false`, opret stregkoden.
+- **Med kalorietal men uden protein/kulhydrat/fedt** (151, mest spiritus og øl, hvor kun energien er deklareret): synlige; den manglende makro er 0 og markeret `ESTIMATED` i `nutrientSources` (~). En eksisterende vare beholder sine egne makroer.
+- **Energi repareres**: Bilka-arkets kJ er tal, så 1105 kJ stod som 1,105 (ca. 4.900 varer). Desuden byttede kolonner, kJ = 0 ved siden af kcal, og 25 kcal-værdier, hvor arkets egen kJ og makroerne (4P + 4C + 9F + 2 fiber) er enige mod kcal (fx Marineret flanksteak 15 → 152, Chiliolie 37 → 392); aldrig på alkohol. Alle rettelser står i tjeklisten. kJ på admin-gennemgåede varer repareres også (en tusind-fejl er intet valg).
+- **"Sukkerfri" kun op til 0,5 g sukker pr. 100 g** (EU's grænse; brugerens valg). REMA's "Sukkerfri" på 44 varer med mere sukker var REMA's mærke "Ikke tilsat sukker" → filteret "Uden tilsat sukker" (sukkerpåstandene fra samme dag). Det samme gælder "sukkerfri"/"uden sukker" i titlen på en vare med over 0,5 g sukker. Butikkens eget Sukkerfri-mærke i Bilka-arket (`_is_sugar_free`) står ved magt.
+- **Info-arkenes "Labels"** udfylder filtre, arkene lod stå tomme (fuldkorn, vegetarisk, certificeringer, dyrevelfærd, oprindelsesland), og REMA's "Additional Product Information" giver oprindelsesland.
+- **Vitaminer/mineraler**: findes ikke i arkene (kolonnerne var tomme) — bilka.py åbnede aldrig panelet "Info om vitaminer og mineraler". Nyt tillægs-script `bilka_vitamins.py` (brugeren kører det selv) skriver `bilka_vitamins.xlsx`; importen gemmer værdierne i `micronutrientsPer100g` med kilde LABEL, så de afløser Frida-skønnene (~) på varesiden.
+- **Navne**: varer opkaldt efter brandet alene hed "0"/"1"/"M appelsin" (titlen minus brand og mængde); nu butikkens egen titel ("Coca cola", "Breezer m. appelsin"), og første bogstav er stort.
+- Admin-gennemgang i Dubletter nulstilles ikke af kJ-rettelsen eller de afledte sukkerpåstande.
+
 ## 2026-10-02: Kameraflowet tager rigtige stillbilleder + "tag nyt billede af indholdet"
 
 - Årsag: en marmelades ingrediensliste (30. sept.) blev aldrig aflæst. Loggen viste, at OpenAI fik fotoet, men svarede "for sløret til sikker aflæsning" (tom liste, sikkerhed 12 %). Fotoet var et 1080p-videobillede; appen sagde intet og prøvede ikke igen. Der var ingen genstart — PR #151 (genoptagelse efter genstart) byggede på et forkert gæt og er droppet.
@@ -642,6 +656,7 @@ bekræftet, kobles kontoen på, men dens adgangskode og passkeys fjernes
 først (beskytter mod konti oprettet med en fremmed e-mail). Mails sendes
 nu straks fra `queueMessage()` i stedet for kun ved scheduler-tick (15 min).
 
+
 ## 2026-09-25: Global lodret rytme (8/16/32) og sorte primærknapper
 
 Brugerens krav: "stringent opsætning på tværs af hele sitet med rene linjer og
@@ -815,6 +830,7 @@ Google/Apple/Facebook på en e-mail, hvor en eksisterende konto aldrig er
 bekræftet, kobles kontoen på, men dens adgangskode og passkeys fjernes
 først (beskytter mod konti oprettet med en fremmed e-mail). Mails sendes
 nu straks fra `queueMessage()` i stedet for kun ved scheduler-tick (15 min).
+
 
 ## 2026-09-24: Normalt login — privacy-by-architecture ophævet
 
@@ -3087,6 +3103,7 @@ Apple Health-adgangsarket (som HelloFresh viser), med alle Hello Cals punkter.
   filter-/periodeknapper og textarea. Hello Docs notched felt følger nu også
   48 px (før 60 px).
 
+
 ## 2026-09-27: HelloFresh-opskrifter vises som i HelloFresh-appen
 
 - Brugerens krav: når man åbner en HelloFresh-opskrift for inspiration, skal den se præcis ud som i HelloFresh-appen (skærmbilleder i chatten 2026-09-27), bygget med fælles klasser. Det gælder KUN HelloFresh-opskrifter — brugerens egne og delte retter beholder deres eget design (`/profile/recipes/[id]`).
@@ -3100,6 +3117,7 @@ Apple Health-adgangsarket (som HelloFresh viser), med alle Hello Cals punkter.
 - Indhold der vises på telefonen (mails, notifikationer, svarskabeloner, flow-sider) redigeres i ét fælles vindue: `src/components/admin/PhonePreviewEditor.tsx`. Venstre halvdel: sort iPhone 17 i præcis 402 × 874 CSS-px (1206 × 2622 @3x), placeret i højre side af halvdelen; højre halvdel: redigering. HTML vises i en sandboxed iframe (ingen scripts), og `{{variabler}}` får eksempelværdier.
 - Notifikationer vises som en låseskærm-notifikation med emnet som titel og teksten uden HTML.
 - "Flows" er et hovedmenupunkt (gruppe) i admin. "Flow-sider" (`/admin/flows`) gemmer flows i `flows`/`flow_pages`; et flow gemmes altid samlet (`PUT /api/admin/flows/[id]`). Tooltip-popups (Guide-builderen, `/admin/guide-builder`) ligger i samme gruppe.
+
 
 ## 2026-09-27: "Vilkår og betingelser"-bjælke på startguide, abonnementer og integrationer
 
@@ -3199,6 +3217,7 @@ eller ældre konti uden samtykke, bliver ikke længere stoppet af en gate.
 
 "Hvordan oplever du, at din nat har været?": ingen slider ved "Slå fra" — kun understreget tekst, der åbner Indstillinger → Visning → Oplevelse af søvn (`?focus=toggle`, grøn ring + fokus på kontakten). Grå infotekst under spørgsmålet følger "Vis tooltips". Store, ikke-understregede tal; valgt tal får grøn fyldt cirkel og hvidt tal, og Luk skjules. Efter 0,5 s glider popup'en ned til et lille bundark med håndtag (kan trækkes/trykkes op igen) og forsvinder kort efter.
 
+
 ## 2026-09-28 — Automatisk fotografering (punkt 15)
 
 Foto-trinnene i kamera-flowet (forside, næring, ingredienser) udløser automatisk, når varen er i fokus: skarphed (Laplace-varians) i midterrammen skal være over et minimum og tæt på den bedste målte, og billedet skal være stillestående i 4 målinger i træk (200 ms interval, 1,2 s opstart pr. trin). Beregnes lokalt på et 160×160-udsnit (`src/lib/focus-detection.ts`, `useAutoCapture`). "Tag billede"-knappen bevares som manuel reserve. Stregkodetrinnet er uændret.
@@ -3235,6 +3254,7 @@ Mens et foto arbejder i kameraflowet under Tilføj, vises en bred hvid/lys gradi
   ingen kontrolsag til admin ved redigering.
 - Egne retter uden vare vises med en vare bygget af snapshottet.
 
+
 ## 2026-09-28: Billedrobotten kører løbende + admin "Robotter"
 
 - Brugerregel: robotten der fritlægger og retter billeder til skal ikke kun
@@ -3252,12 +3272,15 @@ Mens et foto arbejder i kameraflowet under Tilføj, vises en bred hvid/lys gradi
   Cron-job (Løbende / dagligt kl. / interval / kun manuelt) og Sidst kørt.
   Samme rækker og API som "Cron-jobs".
 
+
 ## 2026-09-28 — Fælles selected state (punkt 46)
 
 Valgte bokse, åbne accordions og andre selection-komponenter bruger HelloFresh-stilen:
 lysegrøn baggrund, grøn stroke og mørkegrøn tekst via `.hf-selected` og tokens
 `--hf-color-selected-*` i `globals.css`. Kraftigt grønne/sorte valgte flader er udfaset.
 Admin-flader er ikke omfattet.
+
+
 
 ## 2026-09-28: Flere objekter i kameraet — brugeren vælger
 
@@ -3309,6 +3332,7 @@ Når scanningsstriben passerer midten af fotoet (objektet i fokus), bliver strib
 ## 2026-09-28 — Terminologi: "vare" i stedet for "produkt"
 
 Synlige tekster i app og admin kalder madvarer "vare/varer", og "Produktdatabase" hedder "Varedatabase". Kode-identifikatorer, URL'er, databasefelter og AI-prompts under `src/app/api/ai/` er uændrede.
+
 
 ## 2026-09-28: Ingen "Branded"-mærkat
 
@@ -3496,6 +3520,7 @@ Kilder på "Mad på latin" skal altid være officielle (Fødevarestyrelsen, Sund
 ## 2026-10-02: Userback feedback-widget
 
 - Scriptet indlæses globalt fra src/components/UserbackWidget.tsx (rodlayoutet) med det offentlige widget-token. Der sendes bevidst ingen Userback.user_data (ingen navn/e-mail), så feedback er anonym i tråd med anonymitetsreglerne.
+
 
 ## 2026-10-02 – Rigtige certifikat-logoer (public/certifications)
 
