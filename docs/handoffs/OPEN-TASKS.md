@@ -304,8 +304,8 @@ Ejer: "Indholdsfortegnelse og feltsammenflettning" (89f1295c, 2026-10-03)
 
 | Id | Opgave | Status | Næste skridt |
 | --- | --- | --- | --- |
-| 89f1295c | Alt fra arkene flettet ind: ingredienser, `_is_`-felter, energi (kJ-fejl + forkerte kcal rettet), Labels, alle 13.039 varer (2.364 skjulte uden næring) | Færdig i kode (se git log "Store import") — data venter på bruger | Kopiér `C:\Users\Peter\Desktop\Butiksimport 2026-10-03\` (store_products.json + images) til NAS'ens `data/store-products-import/` og kør jobbet `store-products-import` (admin → Cron-jobs). Forventet: "Imported/updated 13039 of 13039 … (2364 hidden …)" |
-| 89f1295c | Vitaminer fra Bilka (`bilka_vitamins.py`) | Venter på bruger | Brugeren kører `py bilka_vitamins.py` i Bilka-mappen på NAS'en (nogle timer). Derefter: `py build_data.py --all --out <mappe> --images-from <NAS-json>`, kopiér `store_products.json` til NAS'ens `data/store-products-import/` og kør jobbet |
+| 89f1295c | Alt fra arkene flettet ind: ingredienser, `_is_`-felter, energi (kJ-fejl + forkerte kcal rettet), Labels, alle 13.039 varer (2.364 skjulte uden næring) | Færdig (9dffca2a; importeret i drift 2026-10-03, set på hellocal.io) | — |
+| 89f1295c | Vitaminer fra Bilka (`bilka_vitamins.py`) | Venter på bruger | Scriptet kørt 2026-10-03: 273 varer med vitaminer/mineraler. Kataloget med vitaminerne ligger i NAS'ens `data/store-products-import/`. Brugeren trykker "Kør nu" ved `store-products-import` (admin → Cron-jobs); forventet besked: "13039 af 13039 butiksvarer importeret/opdateret (2364 skjult: ingen næring endnu)" |
 | — | Næring fra Frida til de 2.364 skjulte varer (`WHERE "nutritionMissing"`) | Ikke startet | Brugerens plan ("så tager vi det fra Frida senere"): match på produkttype/navn, udfyld som ESTIMATED (~), sæt `nutritionMissing = false` og opret stregkode-rækken (EAN = `externalId`) |
 
 ## G-PARTNER — Partnersider
