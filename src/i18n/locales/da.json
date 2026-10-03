@@ -1608,7 +1608,21 @@
     "saving": "Gemmer billede…",
     "saveError": "Billedet kunne ikke gemmes på telefonen. Prøv igen.",
     "deleteError": "Billedet kunne ikke slettes. Prøv igen.",
-    "storageLoadError": "Billederne kunne ikke hentes fra telefonen."
+    "storageLoadError": "Billederne kunne ikke hentes fra telefonen.",
+    "compare": {
+      "selectAria": "Vælg billede til før/efter",
+      "title": "Før og efter",
+      "before": "Før",
+      "after": "Efter",
+      "unselectBefore": "Fravælg billede 1",
+      "firstSelectedHint": "Billede 1 er valgt. Tryk på Efter for at vælge billede 2.",
+      "pickAfterTitle": "Vælg efter-billede",
+      "pickAfterHint": "Tryk på det billede, du vil sammenligne med.",
+      "chooseAsAfter": "Vælg som billede 2",
+      "sliderAria": "Før/efter-skyder",
+      "swap": "Byt om på før og efter",
+      "changeAfter": "Vælg et andet efter-billede"
+    }
   },
   "registration": {
     "title": "Registrering",

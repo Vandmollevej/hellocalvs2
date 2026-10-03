@@ -59,6 +59,13 @@ Last updated: 2026-10-03
 - `login_events` har nu kolonnen `city` (fra Cloudflares `cf-ipcity`, kræver "Add visitor location headers" — ellers kun land). Migration `20261002090000_personas` skal køre ved deploy.
 - Lint, typecheck og `npm run build` grønne. Ikke live-testet (ingen lokal DB/OpenAI-nøgle). `page-tree.test.mjs` fejler fortsat på master (uvedkommende; den nye side er tilføjet i sidetræet).
 
+## 2026-10-02: Billede-dagbog — før/efter med skyder
+
+- Hvert billede i dagbogens karrusel har en hvid afkrydsningsboks i øverste højre hjørne (kun ved 2+ billeder). Afkrydsning åbner et mørkt fuldskærms-overlay: billede 1 med et 1-tal til venstre, tom plads med "Efter"-knappen i midten til højre. "Efter" viser de andre billeder i et gitter; det valgte bliver billede 2.
+- De to billeder lægges oven på hinanden med en lodret skyder (før til venstre, efter til højre); træk med finger eller mus, eller piletaster på håndtaget. Byt-om-knap øverst til højre og "Vælg et andet efter-billede" nederst.
+- Filer: `src/components/photo-diary/PhotoCompare.tsx`, `PhotoCompareSlider.tsx`, `PhotoSelectBox.tsx`, regler i `src/lib/photo-compare.ts` (+ test). Nye klasser `.hf-photo-check`/`.hf-photo-pill` (design.md §6.8). Tekster da/en.
+- Testet i Chromium (telefon 393 px og desktop 1280 px) med efterlignet login og billeder: hele flowet og træk i skyderen virker. Ikke testet på rigtig iPhone/Android. Lint, den nye testfil og `npm run build` er grønne.
+
 ## 2026-10-03: Opdater-varen-banner (20 points)
 
 - Hvidt, sammenklappeligt banner øverst på varesiden når indhold, energi, logo eller produktbillede mangler; fører til ny side `/add/[id]/update` med kamera pr. manglende ting. Giver 20 points én gang pr. bruger og vare — også for admin, så det kan testes. Se DECISIONS 2026-10-03.
