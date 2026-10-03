@@ -4094,6 +4094,13 @@ Brugerens krav: "Luk konto kan reverses inde. For 3 måneder, med mindre man væ
 - Webvisningen beholder sin højere top (80 px, `.hf-shell--tall`). Menuens tekst skjules under 1280 px, så topmenu, plus-cirkel og profil ikke støder sammen ved 1024 px.
 - Admin-statistikken og admin-login-siderne bruger `.hf-type-*`, `.hf-kpi`, `.hf-panel` og `.hf-choice` i stedet for `text-xs`/`text-2xl`/`font-semibold`. Telefon- og e-mail-mockups (Designmanual, beskedredigering) er bevidst undtaget, fordi de tegner en iPhone.
 
+## 2026-10-03: Startbonus på 35 points (teaser)
+
+- Ejerens beslutning: hver bruger starter registreringen med 35 points som teaser, så pointsystemet er synligt fra dag ét (300 points = 1 gratis måned).
+- Ny `PointsReason.SIGNUP_BONUS` i ledgeren (ingen cachet saldo, jf. 2026-09-02). Beløbet ligger i `SIGNUP_BONUS_POINTS` (`src/lib/points-constants.ts`).
+- Gives ved oprettelse af en almindelig konto: e-mail-tilmelding (`/api/auth/register`) og ny konto via Google/Apple/Facebook. Ikke til familieprofiler (oprettes af ejeren, kan ikke logge ind selv) eller admin-konti. `awardSignupBonus()` giver højst én bonus pr. bruger.
+- Eksisterende brugere får også bonussen (ejerens valg 2026-10-03): engangs-migrationen `20261003120100_points_signup_bonus_backfill` giver alle nuværende almindelige brugere 35 points — ikke admin-konti, glemte brugere eller familieprofiler oprettet af betaleren. Migrationen springer brugere over, der allerede har en `SIGNUP_BONUS`.
+
 ## 2026-10-03: Hjælpecenterets guide-knap er grøn
 
 - Øverst i Hjælpecenter (`public/hjaelp.html`) står guiden "Lær appen at kende" med knappen "Start guiden" på grøn baggrund (`#067A46`, hvid tekst) — ejerens udtrykkelige ønske og en bevidst undtagelse fra design.md's regel om, at grønne handlingsknapper er udfaset.

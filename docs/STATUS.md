@@ -8,6 +8,11 @@ Last updated: 2026-10-03
 - "Skift betalingsmetode" åbner Stripes kundeportal i kort-skift-flowet (`POST /api/payments/stripe/portal`); mangler en portal-konfiguration, oprettes én automatisk. Dummy-visning: `/settings/payment?preview=DK|DE|APPLE|GOOGLE`.
 - Ejerens valg 2026-10-03: rækkerne Abonnement og Betalingsmetoder **bliver** på Profil og Indstillinger (med kortikonet) og vises for alle — den tidligere plan om kun under Indstillinger / kun for betalende er droppet. `paying` findes stadig i `/api/subscription`.
 - Test i Stripes testtilstand med testkortet 4242 4242 4242 4242 (vilkårlig fremtidig udløb/CVC).
+## 2026-10-03: Startbonus — 35 teaser-points ved oprettelse
+
+- Alle nye almindelige konti starter med 35 points (`PointsReason.SIGNUP_BONUS`, `SIGNUP_BONUS_POINTS` i `src/lib/points-constants.ts`). Gives i `/api/auth/register` og ved første login med Google/Apple/Facebook (`src/lib/oauth.ts`) via `awardSignupBonus()` — højst én gang pr. bruger. Familieprofiler og admin-konti får den ikke. Vises som "Startbonus" under Profil → Points og står i Betingelser §8. Se DECISIONS.md samme dato.
+- Eksisterende brugere får også 35 points (ejerens valg): migration `20261003120100_points_signup_bonus_backfill` giver alle nuværende almindelige brugere bonussen én gang (ikke admin, glemte brugere eller betaler-oprettede familieprofiler).
+- Migrationerne `20261003120000_points_signup_bonus` og `…120100_points_signup_bonus_backfill` skal køre ved deploy. Testet mod en midlertidig PostgreSQL 16: alle migrationer kører, backfill rammer kun de rigtige brugere og giver ikke dobbelt bonus ved gentagelse. Lint, typecheck og build grønne; app-flowet ikke live-testet.
 
 ## 2026-10-03: Adgangsarket (integrationer) — bunden skjules ikke længere
 

@@ -2314,6 +2314,9 @@ enum PointsReason {
   // "Scan varen igen" (docs/DECISIONS.md 2026-10-02): 10 points for den
   // første genscanning af en Open Food Facts-vare / egen vare uden PNG.
   PRODUCT_RESCAN
+  // Startbonus (teaser) ved oprettelse af en almindelig konto, 2026-10-03
+  // (docs/DECISIONS.md): alle nye brugere starter med 35 points.
+  SIGNUP_BONUS
   // Første testperson af en integration, godkendt af admin (2026-10-02).
   INTEGRATION_TESTER
 }

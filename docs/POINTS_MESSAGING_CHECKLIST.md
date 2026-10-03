@@ -15,6 +15,8 @@ deploy, jf. `AGENTS.md`/`design.md` §12.
 
 ## Points — optjening
 
+- [x] 35 points i startbonus (teaser) ved oprettelse af en almindelig konto
+      (e-mail eller Google/Apple/Facebook), højst én gang pr. bruger
 - [x] 10 points ved godkendt bruger-oprettet produkt (titel, producent,
       næringsindhold, billede)
 - [x] +5 points ekstra hvis varedeklaration/indholdsfortegnelse er udfyldt

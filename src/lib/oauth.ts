@@ -2,6 +2,7 @@ import { randomBytes } from "node:crypto";
 import { SignJWT, createRemoteJWKSet, importPKCS8, jwtVerify } from "jose";
 import type { OAuthProvider } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
+import { awardSignupBonus } from "@/lib/points";
 
 // Log ind med Google, Apple eller Facebook (docs/DECISIONS.md 2026-09-24
 // "Normalt login"). Almindelig OAuth 2 / OpenID Connect uden ekstra pakker:
@@ -299,5 +300,6 @@ export async function findOrCreateUser(provider: ProviderSlug, profile: Provider
       lastUsedAt: now,
     },
   });
+  if (!existing) await awardSignupBonus(user.id);
   return { user, created: !existing };
 }
