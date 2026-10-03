@@ -16,9 +16,13 @@ import {
   IconBook2,
   IconChartLine,
   IconPhoto,
+  IconUsers,
 } from "@tabler/icons-react";
 import { IconFavorite } from "@/components/icons/Favorite";
 import { IconWaistMeasure } from "@/components/icons/WaistMeasure";
+import { useFamilyStatus } from "@/components/family/FamilyStatusProvider";
+import { ProfileSwitchList } from "@/components/family/ProfileSwitcher";
+import { BottomSheet } from "@/components/hf/BottomSheet";
 import { useTranslation } from "@/i18n/LocaleProvider";
 import { useIsCompactLandscape } from "@/hooks/useIsCompactLandscape";
 import { useIsSerious } from "@/lib/use-subscription-tier";
@@ -64,7 +68,9 @@ export function TrendIcon({ color, size }: { color: string; size: number }) {
 
 type NavItem = {
   key: string;
-  href: string;
+  // Uden href åbner ikonet et ark i stedet for en side (se `action`).
+  href?: string;
+  action?: "switchProfile";
   // Translation key under the "nav" namespace (src/i18n/locales/*.json).
   // The `key` field above stays the stable internal identity used for
   // localStorage layout persistence and must not be translated.
@@ -157,7 +163,16 @@ const NAV_ITEMS: NavItem[] = [
     labelKey: "bodyMeasurements",
     render: (color, size) => <IconWaistMeasure size={size} color={color} />,
   },
+  {
+    // Kun med familieabonnement (se SWITCH_PROFILE_KEY nedenfor).
+    key: "skiftkonto",
+    action: "switchProfile",
+    labelKey: "switchProfile",
+    render: (color, size) => <IconUsers size={size} stroke={1.6} color={color} />,
+  },
 ];
+
+const SWITCH_PROFILE_KEY = "skiftkonto";
 
 const ITEMS_BY_KEY = new Map(NAV_ITEMS.map((item) => [item.key, item]));
 const DEFAULT_ACTIVE = DEFAULT_BOTTOM_NAV_ACTIVE;
@@ -246,6 +261,13 @@ export function BottomNav() {
   const [editMode, setEditMode] = useState(false);
   // Omarrangering af ikonerne er kun for Seriøs (docs/DECISIONS.md 2026-09-26).
   const isSerious = useIsSerious();
+  // "Skift konto" findes kun med familieabonnement eller i en familie (samme
+  // regel som Familie-rækken i Indstillinger). null = endnu ikke hentet.
+  const { status: familyStatus } = useFamilyStatus();
+  const canSwitchProfile = familyStatus
+    ? Boolean(familyStatus.hasFamilyPlan || familyStatus.family)
+    : null;
+  const [switchSheetOpen, setSwitchSheetOpen] = useState(false);
   const [drag, setDrag] = useState<DragState | null>(null);
   const [hydrated, setHydrated] = useState(false);
   const [sheetOffset, setSheetOffset] = useState(0);
@@ -301,6 +323,20 @@ export function BottomNav() {
   useEffect(() => {
     activeKeysRef.current = activeKeys;
   }, [activeKeys]);
+
+  // Mister man familieabonnementet, flyttes "Skift konto" ud af menuen igen
+  // (tilbage i puljen, hvor det er skjult). Venter på familiestatus, så
+  // ikonet ikke ryger ud, mens siden indlæses.
+  useEffect(() => {
+    if (!hydrated || canSwitchProfile !== false || !activeKeys.includes(SWITCH_PROFILE_KEY)) return;
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- følger serverens familiestatus
+    setActiveKeys((prev) => prev.filter((k) => k !== SWITCH_PROFILE_KEY));
+    setInactiveKeys((prev) => (prev.includes(SWITCH_PROFILE_KEY) ? prev : [...prev, SWITCH_PROFILE_KEY]));
+  }, [hydrated, canSwitchProfile, activeKeys]);
+
+  const visibleInactiveKeys = canSwitchProfile
+    ? inactiveKeys
+    : inactiveKeys.filter((k) => k !== SWITCH_PROFILE_KEY);
 
   useEffect(() => {
     scrollPagesRef.current = clampedScrollPages;
@@ -588,13 +624,14 @@ export function BottomNav() {
     }
   }
 
-  function handleActivePointerUp(key: string, href: string) {
+  function handleActivePointerUp(item: NavItem) {
     const hadTimer = longPressTimer.current !== null;
     clearLongPress();
     if (editMode) return;
     if (hadTimer && pressStart.current) {
       pressStart.current = null;
-      router.push(href);
+      if (item.action === "switchProfile") setSwitchSheetOpen(true);
+      else if (item.href) router.push(item.href);
     }
   }
 
@@ -711,7 +748,7 @@ export function BottomNav() {
             </button>
           </div>
           <div className="flex flex-wrap gap-3">
-            {inactiveKeys.map((key) => {
+            {visibleInactiveKeys.map((key) => {
               const item = ITEMS_BY_KEY.get(key);
               if (!item) return null;
               const isPlaceholder = draggedKey === key && drag?.source === "inactive";
@@ -747,7 +784,7 @@ export function BottomNav() {
                 </button>
               );
             })}
-            {inactiveKeys.length === 0 && (
+            {visibleInactiveKeys.length === 0 && (
               <span
                 className="hf-type-small"
                 style={{ color: "var(--hf-gray-dark)", fontFamily: "var(--font-hf-body)" }}
@@ -845,7 +882,7 @@ export function BottomNav() {
                       aria-current={active ? "page" : undefined}
                       onPointerDown={(e) => handleActivePointerDown(key, e)}
                       onPointerMove={handleActivePointerMove}
-                      onPointerUp={() => handleActivePointerUp(key, item.href)}
+                      onPointerUp={() => handleActivePointerUp(item)}
                       className={`relative flex h-14 w-16 flex-none flex-col items-center justify-center gap-1 rounded-xl py-1.5 touch-none select-none ${
                         editMode ? "border" : "border-transparent"
                       } ${
@@ -894,6 +931,12 @@ export function BottomNav() {
         >
           {ITEMS_BY_KEY.get(drag.key)?.render("var(--hf-black)", ICON_SIZE)}
         </div>
+      )}
+
+      {switchSheetOpen && (
+        <BottomSheet title={t("nav.switchProfile")} onClose={() => setSwitchSheetOpen(false)}>
+          <ProfileSwitchList onDone={() => setSwitchSheetOpen(false)} />
+        </BottomSheet>
       )}
     </div>
   );

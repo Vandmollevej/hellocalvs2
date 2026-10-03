@@ -253,6 +253,7 @@
     "status": "Status",
     "photoDiary": "Billeddagbog",
     "bodyMeasurements": "Kropsmål",
+    "switchProfile": "Skift konto",
     "addItemAriaLabel": "Tilføj {item}",
     "removeItemAriaLabel": "Fjern {item}",
     "allIconsInUse": "Alle ikoner er i brug.",

@@ -253,6 +253,7 @@
     "status": "Status",
     "photoDiary": "Photo diary",
     "bodyMeasurements": "Measurements",
+    "switchProfile": "Switch account",
     "addItemAriaLabel": "Add {item}",
     "removeItemAriaLabel": "Remove {item}",
     "allIconsInUse": "All icons are in use.",

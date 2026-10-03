@@ -6,6 +6,7 @@ Last updated: 2026-10-03
 
 - Bundmenuens pulje (langt tryk → træk ind) har fået Favoritter, Viden om, Opskrifter, Status, Billeddagbog og Kropsmål (`src/lib/navigation.ts`, `BottomNav.tsx`). Standardmenuen er uændret; nye ikoner lander automatisk i puljen hos brugere med gemt layout.
 - Ny side `/favorites`: favoritmadvarer (med Tilføj og fjern-favorit) og favoritopskrifter fra delte retter. `RecipeRow`/`recipeHref` er flyttet til `src/components/recipes/RecipeRow.tsx`, så Opskrifter og Favoritter deler dem.
+- "Skift konto" (ikon med to personer) kan også lægges i bundmenuen, men vises kun med familieabonnement eller i en familie (samme regel som Familie i Indstillinger). Tryk åbner et ark med profilerne + "Tilføj profil"/"Familie og adgang" — samme liste som "Skift profil" på Profil (`ProfileSwitchList` i `ProfileSwitcher.tsx`). Mister man familieabonnementet, flyttes ikonet ud af menuen igen.
 - Puljens knapper vokser nu med etiketten (min. 64 px), og etiketter brydes ikke — "Billeddagbog" var bredere end knappen.
 - Lint (0 fejl), typecheck og build grønne; tests grønne bortset fra den kendte `page-tree`-fejl (`/favorites` er registreret). Ikke set med login (ingen lokal DB) — test på telefon: langt tryk på bundmenuen → træk fx Favoritter ind.
 
