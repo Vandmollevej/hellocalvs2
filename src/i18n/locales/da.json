@@ -2003,7 +2003,10 @@
     "noSearchResults": "Ingen grafer eller kort matcher din søgning.",
     "add": "+ Tilføj",
     "noCardsYet": "Ingen kort her endnu.",
-    "addHeading": "Overskrift"
+    "addHeading": "Overskrift",
+    "addAccordion": "+ Fold-ud-boks",
+    "layoutTools": "Opbygning",
+    "accordionTitle": "Fold-ud-boks"
   },
   "statUnusedCharts": {
     "title": "Ubrugte grafer",
@@ -2029,6 +2032,10 @@
     "removeHeading": "Fjern overskrift",
     "dragHeading": "Flyt overskrift",
     "removeDivider": "Fjern skillelinje",
+    "removeAccordion": "Fjern fold-ud-boks",
+    "renameAccordion": "Omdøb fold-ud-boks",
+    "openAccordion": "Fold ud",
+    "closeAccordion": "Fold sammen",
     "noData": "Ingen data i perioden"
   },
   "statChart": {

@@ -120,7 +120,12 @@ Last updated: 2026-10-03
 
 - På desktop vises alle sider (også login, betingelser, privatlivspolitik) i WebShell med sidebjælke, topmenu og brødkrummer; kun admin, hello-doc, business og presse er fuld bredde.
 - Lint og typecheck grønne; ikke set i browser — tjek login-siderne på desktop.
-Last updated: 2026-10-02
+
+## 2026-10-02: Fold-ud-boks (accordion) i statistik-layoutet
+
+- `/statistics/unused-cards`: Overskrift, Skillelinje og ny "+ Fold-ud-boks" står samlet øverst under søgefeltet i en mørkere boks (`bg-hf-tan-dark`), så opbygningselementerne skiller sig ud fra grafer og kort.
+- Statistiksiden: fold-ud-boksen er en sektion i gitteret (hoved + kort nedenunder, samme udseende som grupperne på tilføj-siden). Tryk på hovedet folder ud/sammen; i redigering kan den omdøbes (tryk på titlen), flyttes som ét samlet element (også lukket), og kort kan trækkes ind i den — også ved at slippe kortet på hovedet, når den er lukket. "Fjern" lader kortene blive i gitteret.
+- Layout-logikken er flyttet til `src/lib/stat-layout.ts` (ren modul, re-eksporteret fra `stat-cards.ts`) med tests i `stat-layout.test.mjs`. Lint, typecheck og build grønne. Ikke live-testet (ingen lokal DB/login) — test træk-og-slip på telefon.
 
 ## 2026-10-02: Kropsmål som statistikgrafer
 

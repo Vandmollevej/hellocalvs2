@@ -3905,3 +3905,29 @@ Kilder på "Mad på latin" skal altid være officielle (Fødevarestyrelsen, Sund
 - `PremiumGate` har `renderWhilePending`: mens niveauet hentes, tegnes siden selv som skelet (design.md §6.14), og siden venter med datahentning via `usePremiumPending()`. Bruges kun af `/statistics` (undersiderne venter ikke på niveauet og vises derfor først, når det er kendt), så gratisbrugeres data stadig ikke hentes til låste sider.
 - Kort, der først findes, når data er hentet (fx sportskort), tegnes som skitser i fuld højde i stedet for "ingen data" under hentning.
 
+## 2026-10-02: Fold-ud-boks (accordion) som element i statistik-layoutet
+
+- Statistiksidens kort-gitter har et nyt opbygningselement ud over Overskrift
+  og Skillelinje: en **fold-ud-boks**, der ser ud som grupperne på
+  `/statistics/unused-cards` (`AccordionSection`: hoved med titel, antal og
+  chevron; grønt hoved når den er åben). Kort, overskrifter og skillelinjer
+  kan ligge inde i den.
+- Datamodel: boksen gemmes **fladt** i samme layout-liste som alt andet som
+  to markører — `{ type: "accordion", id, title, open }` og
+  `{ type: "accordionEnd", id }` — og alt imellem dem er indholdet. Ingen
+  indlejring (en ny boks lukker den forrige). `normalizeStatLayout`
+  reparerer manglende/løse markører og fjerner tomme rækker lige før
+  slut-markøren. Åben/lukket gemmes i layoutet (localStorage), så valget
+  huskes.
+- Betjening: tryk på hovedet folder ud/sammen; langt tryk løfter **hele
+  boksen** (også når den er lukket) og den lander kun mellem rækker på
+  øverste niveau. Kort slippes ind i boksen i et frit felt (åben) eller på
+  hovedet (lukket — kortet lægges sidst i boksen). I redigering: tryk på
+  titlen omdøber, slette-cirklen fjerner kun rammen — kortene bliver i
+  gitteret, hvor boksen stod.
+- Tilføj-siden: Overskrift, Skillelinje og Fold-ud-boks står samlet øverst
+  under søgefeltet i en mørkere boks (`bg-hf-tan-dark`), så
+  opbygningselementer tydeligt adskiller sig fra data-kort og grafer.
+- Kode: layout-logikken ligger nu i `src/lib/stat-layout.ts` (uden
+  UI-imports, så den kan testes med `npm test`); `stat-cards.ts`
+  re-eksporterer den, så eksisterende imports virker uændret.

@@ -5,10 +5,12 @@ import { useRouter } from "next/navigation";
 import { IconSearch } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
 import { AccordionSection } from "@/components/hf/AccordionSection";
+import { HfChevron } from "@/components/hf/HfChevron";
 import { StatCardIcon } from "@/components/StatCardIcon";
 import {
   activeStatKeys,
   computeStatCards,
+  addAccordionToLayout,
   addHeaderToLayout,
   addStatCardToLayout,
   DEFAULT_ACTIVE_STAT_KEYS,
@@ -326,6 +328,11 @@ export default function UnusedStatCardsPage() {
     router.back();
   }
 
+  function addAccordion() {
+    addAccordionToLayout(DEFAULT_LAYOUT, t("statUnusedCards.accordionTitle"));
+    router.back();
+  }
+
   return (
     <HfScreen
       title={t("statUnusedCards.title")}
@@ -365,6 +372,33 @@ export default function UnusedStatCardsPage() {
           </section>
         )}
 
+        {/* Opbygningselementer (overskrift, fold-ud-boks) står
+            samlet øverst i en mørkere boks, så de skiller sig ud fra de
+            grafer og kort, der kan tilføjes nedenunder. */}
+        <section
+          aria-label={t("statUnusedCards.layoutTools")}
+          className="flex flex-col gap-3 rounded-2xl bg-hf-tan-dark p-3"
+        >
+          {/* Én knap, der ser ud som den overskrift med streger, den tilføjer (.hf-type-section-title). */}
+          <button
+            type="button"
+            onClick={addHeader}
+            className="hf-type-section-title min-h-11 w-full [--hf-section-title-space-above:0px] [--hf-section-title-space-below:0px] active:opacity-60"
+          >
+            {t("statUnusedCards.addHeading")}
+          </button>
+
+          {/* Ligner en lukket fold-ud-boks, som den ser ud på statistiksiden. */}
+          <button
+            type="button"
+            onClick={addAccordion}
+            className="hf-control-row flex w-full items-center gap-2 rounded-2xl border border-dashed border-hf-black/30 bg-hf-tan px-4 text-left active:opacity-80"
+          >
+            <span className="hf-type-body hf-type-strong flex-1 text-text-secondary">{t("statUnusedCards.addAccordion")}</span>
+            <HfChevron direction="right" />
+          </button>
+        </section>
+
         <AccordionSection
           title={t("statSections.chartsHeading")}
           count={chartOptions.length}
@@ -378,15 +412,6 @@ export default function UnusedStatCardsPage() {
             renderChartGrid(chartOptions)
           )}
         </AccordionSection>
-
-        {/* Én knap, der ser ud som den overskrift med streger, den tilføjer (.hf-type-section-title). */}
-        <button
-          type="button"
-          onClick={addHeader}
-          className="hf-type-section-title min-h-11 w-full active:opacity-60"
-        >
-          {t("statUnusedCards.addHeading")}
-        </button>
 
         {categories.map((category, index) => (
           // Only the first group (Næringsindhold) starts open.
