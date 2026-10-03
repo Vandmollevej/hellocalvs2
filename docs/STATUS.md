@@ -130,6 +130,12 @@ Last updated: 2026-10-02
 - Ny baggrund bag topbar + hero, der fortsætter ca. 40 px under "Dagens tilføjelser"-stregen: tilfældige, langsomme bånd af bløde bølgelinjer (grønt øverst → gullig creme nedenfor) plus lidt tåge. Tre lag af samme canvas-scene (skarp / mellem-sløret / kraftigt sløret) giver frostet-glas-effekten nederst. Farver kun fra tokens. Står stille ved "reducer bevægelse" og standser når fanen er skjult.
 - Filer: `src/lib/home-waves.ts` (tegnelogik + test `home-waves.test.mjs`), `src/components/HomeWaves.tsx`, `.home-wave*` i `globals.css`, `src/app/page.tsx`. Listen er ikke længere dækkende; tal-hjulets rækker klippes i stedet ved hero-bunden (`StatsWheel.tsx`, `clipPath`).
 - Lint, typecheck og `node --test` (home-waves) grønne. Ikke visuelt testet (brugerregel: ingen skærmbilleder) — tjek udseende, tempo og lag på telefon. Justér tempo/farve/tykkelse i `createWaveScene` (hastigheder i px/s, `alpha`, `width`) og maskerne i `globals.css`.
+## 2026-10-02: Mærkater på forsiden (natligt job)
+
+- Nyt job `label-scan` (Cron-jobs, kl. 04:00) finder alle mærkater på vareforsiden (laktosefri "-L", Haltungsform, QMilch, Øko, Nøglehul, MSC …), gemmer dem i `product_labels`, fritskraber dem via image-agent (`PRODUCT_LABEL`) og udfylder tomme filtre. Varesiden viser dem som badges (fritskrabet mærke for mærker uden egen logofil). Se DECISIONS.md samme dato.
+- Migration `20261002090000_product_labels` skal køre ved deploy; image-agent-containeren skal genbygges (cutout.py). Lint, typecheck, `npm test` (5 nye) og build grønne; ikke live-testet (ingen lokal DB/OpenAI-nøgle).
+- Næste: admin-visning af fundne mærkater på `/admin/products/[id]` (ret/slet) og evt. en kø for usikre mærkater (0,5–0,8) som ved logoer.
+
 ## 2026-10-02: Drikkevarer starter på pakkestørrelsen
 
 - Mængdefeltet viser nu 33 cl / 25 cl / 50 cl for dåser og små flasker, også når størrelsen kun står i navnet, og også for øl/vin uden kategorien DRINK. Vin, spiritus og færdigblandede drinks har egne regler (DECISIONS.md 2026-09-28, tilføjelse 2026-10-02).

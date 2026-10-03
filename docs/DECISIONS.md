@@ -3642,6 +3642,15 @@ Kilder på "Mad på latin" skal altid være officielle (Fødevarestyrelsen, Sund
 - Glemt adgangskode: har kontoen et bekraeftet nummer, kraeves baade e-mail-linket og en SMS-kode (/api/auth/reset-password/sms). Konti uden nummer (fx Google/Apple/Facebook, gamle konti) nulstilles kun med e-mail-link.
 - Koder gemmes som HMAC-hash i sms_verifications; klient: src/lib/teammessage.ts (env TEAMMESSAGE_*). Uden opsaetning i produktion afvises tilmelding (fail-closed).
 - Ikke bygget: godkendelse af online-login i den installerede app (kraver push/native app).
+## 2026-10-02: Mærkater på vareforsiden (laktosefri, Haltungsform, QMilch …) — natligt job
+
+- Brugerens krav: alle mærkater/badges på forsiden (fx "-L Laktosefrei", QMilch, Haltungsform 3) skal analyseres og findes ligesom logoet — men med lavere prioritet: om natten/i baggrunden, aldrig i selve scan-flowet.
+- Nyt app-job `label-scan` (admin → Cron-jobs, standard dagligt kl. 04:00, `src/lib/product-label-scan.ts`): varer uden `labelsScannedAt` læses af OpenAI med egen prompt (`src/lib/product-label-ai.ts`, `labels-v1-2026-10-02`): nøgle, dansk navn, tekst på mærket, kategori (DIET/ORGANIC/ANIMAL_WELFARE/QUALITY/SUSTAINABILITY/HEALTH/ORIGIN/OTHER), boks og sikkerhed. Kilde: originalfotoet fra kamera-flowet (FRONT-analysens `imageUrl`), ellers varens billede. Højst 150 varer pr. kørsel. Varer uden læsbart foto markeres som scannet, så de ikke blokerer køen.
+- Faste nøgler for kendte mærker (`KNOWN_LABEL_KEYS`: lactose-free, haltungsform-1…5, qmilch, organic-eu/-dk/-de, keyhole, msc …), så samme mærke hedder det samme på alle varer; ukendte mærker får en nøgle AI'en danner.
+- Lagring i ny tabel `product_labels` (én række pr. vare + nøgle, fund ≥ 0,5). Hvert mærke med boks får et `ImageCutoutJob` af ny slags `PRODUCT_LABEL`; image-agent fritskraber det som et logo (ingen opretning) og skriver PNG'en til `ProductLabel.imageUrl`.
+- Filtre: fund ≥ 0,8 udfylder **kun tomme** felter i `product_filters` (`src/lib/product-label-filters.ts`): laktose-/gluten-/sukkerfri, vegansk, vegetarisk, nøglehul, fuldkorn, økologisk, oprindelsesland; dyrevelfærd og certificeringer (QMilch, QS, MSC, Fairtrade …) tilføjes til listerne. Butiksimport/admin-rettelser overskrives aldrig.
+- Varesiden: `certificationBadges(filters, labels)` viser fund ≥ 0,8 som badges; mærker uden egen logofil i `public/certifications` vises med det fritskrabede mærke fra emballagen.
+- Migration `20261002090000_product_labels`.
 
 ## 2026-10-02: Userback feedback-widget
 
