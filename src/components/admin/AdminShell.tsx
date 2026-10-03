@@ -603,7 +603,8 @@ function SearchField({ label, collapsed, onOpen }: { label: string; collapsed: b
 
 // Partnersiderne (/admin/partners/<id>, docs/DECISIONS.md 2026-10-02) har
 // egen venstre bjælke med virksomhedsoplysninger og intet søgefelt.
-const PARTNER_SUBPAGES = new Set(["ads", "contacts", "reports"]);
+// Hold i takt med faste mapper under src/app/admin/partners/.
+const PARTNER_SUBPAGES = new Set(["ads", "contacts", "reports", "users"]);
 export function isPartnerDetailPath(pathname: string) {
   const match = pathname.match(/^\/admin\/partners\/([^/]+)/);
   return !!match && !PARTNER_SUBPAGES.has(match[1]);
