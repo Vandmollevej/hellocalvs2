@@ -32,7 +32,7 @@ export function PendingImageCard({ product }: { product: Product }) {
   if (done) return null;
 
   return (
-    <div className="flex flex-col gap-4 rounded-lg border border-hf-tan-dark bg-hf-white p-4">
+    <div className="flex flex-col gap-4 hf-surface p-4">
       <div>
         <p className="hf-type-strong text-hf-black">{product.name}</p>
         {product.brand?.name && <p className="hf-type-small text-text-secondary">{product.brand.name}</p>}

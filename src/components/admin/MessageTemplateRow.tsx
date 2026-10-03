@@ -27,7 +27,7 @@ export function MessageTemplateRow({ template }: { template: MessageTemplateData
   }
 
   return (
-    <div className="rounded-lg border border-hf-tan-dark bg-hf-white">
+    <div className="hf-surface">
       <div className="flex items-center justify-between gap-3 p-4">
         <div className="min-w-0">
           <p className="hf-type-strong text-hf-black">{EVENT_LABELS[template.event] ?? template.event}</p>

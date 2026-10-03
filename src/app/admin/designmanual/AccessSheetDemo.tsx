@@ -35,7 +35,7 @@ export function AccessSheetDemo() {
     }));
 
   return (
-    <div className="mx-auto h-[700px] w-[340px] shrink-0 overflow-hidden rounded-[36px] border-[6px] border-hf-black">
+    <div className="mx-auto h-[700px] w-[340px] max-w-full shrink-0 overflow-hidden rounded-[36px] border-[6px] border-hf-black">
       <HfAccessSheet
         embedded
         title="Adgang til Apple Health"

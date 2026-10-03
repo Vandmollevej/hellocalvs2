@@ -28,7 +28,7 @@ function StatCard({
   return (
     <Link
       href={href}
-      className="group flex flex-col rounded-lg border border-hf-tan-dark bg-hf-white p-4 hover:border-hf-green"
+      className="group flex flex-col hf-surface p-4 hover:border-hf-green"
     >
       <p className="hf-type-body text-text-secondary">{label}</p>
       <p className={`hf-type-hero mt-1 ${value > 0 ? "text-hf-green-dark" : "text-text-muted"}`}>{value}</p>
@@ -53,7 +53,7 @@ function Widget({
   children: React.ReactNode;
 }) {
   return (
-    <section className={`flex flex-col rounded-lg border border-hf-tan-dark bg-hf-white ${className}`}>
+    <section className={`flex flex-col hf-surface ${className}`}>
       <header className="flex items-center justify-between gap-3 border-b border-hf-tan-dark px-4 py-3">
         <h2 className="hf-type-body hf-type-strong text-hf-black">
           {title}

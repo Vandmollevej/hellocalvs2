@@ -110,7 +110,7 @@ export default async function AdminSupportThreadPage({ params }: { params: Promi
         })}
       </ol>
 
-      <div className="hf-type-small rounded-lg border border-hf-tan-dark bg-hf-white p-3 text-text-secondary">
+      <div className="hf-type-small hf-surface p-3 text-text-secondary">
         <span className="hf-type-strong text-hf-black">Dataadgang: </span>
         {!grant && "Ingen dataadgang givet."}
         {grant && (

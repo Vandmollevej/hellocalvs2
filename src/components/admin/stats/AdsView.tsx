@@ -5,7 +5,7 @@ const number = new Intl.NumberFormat("da-DK");
 
 function Tile({ label, value }: { label: string; value: string }) {
   return (
-    <div className="rounded-lg border border-hf-tan-dark bg-hf-white p-4">
+    <div className="hf-surface p-4">
       <p className="hf-type-body text-text-secondary">{label}</p>
       <p className="hf-type-hero mt-1 text-hf-black">{value}</p>
     </div>
@@ -14,12 +14,12 @@ function Tile({ label, value }: { label: string; value: string }) {
 
 function AdTable({ title, firstColumn, rows }: { title: string; firstColumn: string; rows: AdStatsRow[] }) {
   return (
-    <div className="rounded-lg border border-hf-tan-dark bg-hf-white p-4">
+    <div className="hf-surface p-4">
       <h2 className="hf-type-body hf-type-strong text-hf-black">{title}</h2>
       {rows.length === 0 ? (
         <p className="hf-type-body mt-2 text-text-muted">Ingen data i perioden.</p>
       ) : (
-        <table className="hf-type-body mt-2 w-full">
+        <div className="hf-table-scroll mt-2"><table className="hf-type-body w-full">
           <thead>
             <tr className="text-left text-text-secondary">
               <th className="py-1 font-normal">{firstColumn}</th>
@@ -38,7 +38,7 @@ function AdTable({ title, firstColumn, rows }: { title: string; firstColumn: str
               </tr>
             ))}
           </tbody>
-        </table>
+        </table></div>
       )}
     </div>
   );
@@ -52,21 +52,19 @@ export async function AdsView({ range }: { range: AdStatsRange }) {
         <p className="hf-type-body text-text-secondary">
           Anonyme visninger og klik pr. reklame og placering. CTR = klik ÷ visninger.
         </p>
-        <nav className="hf-type-body flex rounded-lg border border-hf-tan-dark bg-hf-white p-0.5" aria-label="Periode">
+        <nav className="hf-insight__toolbar" aria-label="Periode">
           {AD_STATS_RANGES.map((r) => (
             <Link
               key={r.id}
               href={`/admin/statistics?view=ads&range=${r.id}`}
-              className={`rounded-md px-3 py-1.5 ${
-                r.id === range ? "hf-type-strong bg-hf-tan text-hf-green-dark" : "text-text-secondary hover:text-text-primary"
-              }`}
+              className={`hf-choice ${r.id === range ? "is-selected" : ""}`}
             >
               {r.label}
             </Link>
           ))}
         </nav>
       </div>
-      <div className="grid grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
         <Tile label="Visninger" value={number.format(stats.impressions)} />
         <Tile label="Klik" value={number.format(stats.clicks)} />
         <Tile label="CTR" value={`${stats.ctr.toLocaleString("da-DK")} %`} />

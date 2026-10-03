@@ -57,7 +57,7 @@ export async function LegacyWarnings() {
           duplicateGroups.map((group) => {
             const conflict = group.some((p, i) => i > 0 && macrosDiffer(group[0], p));
             return (
-              <div key={group[0].name} className="rounded-lg border border-hf-tan-dark bg-hf-white p-4">
+              <div key={group[0].name} className="hf-surface p-4">
                 <p className="hf-type-strong mb-2 flex items-center gap-2 text-hf-black">
                   {group[0].name}
                   {conflict && (
@@ -118,7 +118,7 @@ export async function LegacyWarnings() {
             {forwardAbuseUsers.map((user) => (
               <div
                 key={user.id}
-                className="flex items-center justify-between rounded-lg border border-hf-tan-dark bg-hf-white p-4"
+                className="flex items-center justify-between hf-surface p-4"
               >
                 <div>
                   <p className="hf-type-body hf-type-strong text-hf-black">{user.displayName}</p>

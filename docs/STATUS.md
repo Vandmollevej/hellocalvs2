@@ -38,6 +38,12 @@ Last updated: 2026-10-03
 - Hjælpe-knap øverst (til venstre for profilcirklen; "Hjælp" i desktop-topbjælken) åbner AI-chatbotten med "Tal med en medarbejder" (bliver en sag i Support-indbakken med hele tråden) og "Kontaktformular". Ingen telefon, region = land, kun indloggede (ejerens valg 2026-10-03). Se DECISIONS.md 2026-10-02.
 - Admin → Brugere → Chatbot: oftest spurgte kategorier, tabel med alle spørgsmål og svar, hele tråde og brugerinfo (alder, køn, region, abonnement).
 - Migration `20261002120000_chatbot` skal køre ved deploy. Lint, typecheck og build grønne. Ikke live-testet (ingen lokal DB/OpenAI-nøgle): test chatten på telefon og desktop efter deploy.
+## 2026-10-03: Admin, webvisning og Hello Doc på samme designklasser
+
+- Ny fælles skal i `globals.css` (design.md §6.17): `.hf-shell*`, `.hf-navrow`, `.hf-crumbs`, `.hf-menu`, `.hf-surface`, `.hf-table-scroll`. `AdminShell`, `WebShell` og Hello Doc (lægevisning + "Sådan ser det ud") bruger dem; 99 håndskrevne hvide bokse i admin er nu `.hf-surface`, statistik/login-sider bruger `.hf-type-*`, `.hf-kpi`, `.hf-panel` og `.hf-choice`.
+- Responsivt: skuffe-menu under 1024 px (admin), topmenuens tekst skjules under 1280 px i webvisningen (kun ikoner), brede tabeller scroller vandret, faste gitre har telefonvariant.
+- Lint, typecheck og `next build --webpack` kørt; ikke set i browser (brugerens regel) — tjek admin på telefon og webvisningen ved 1024–1280 px.
+
 ## 2026-10-03: Roadmap — sukkerfiltre skal ind i databasen (importen skal køres)
 
 Bygget og pushet til master, men virker først, når importen er kørt (brugerens valg: gem som to do, tag den, når resten af webændringerne er læst ind).
@@ -67,6 +73,13 @@ Last updated: 2026-10-03
 - Testet i Chromium (telefon 393 px og desktop 1280 px) med efterlignet login og billeder: hele flowet og træk i skyderen virker. Ikke testet på rigtig iPhone/Android. Lint, den nye testfil og `npm run build` er grønne.
 
 ## 2026-10-03: Opdater-varen-banner (20 points)
+Last updated: 2026-10-03
+
+## 2026-10-03: Business-siden — "Den typiske bruger" (annoncørstatistik)
+
+- `/business` har ny sektion mellem Mulighederne og Kontakt: medianbrugeren (køn + alder, startvægt, vægtændring + andel der har tabt sig, registreringer og dage med registrering pr. uge), de 5 mest registrerede produkttyper (andel af registreringer, 90 dage) og en tabel, der sammenligner den typiske bruger (median) med gennemsnittet af brugere med samme køn og alder (±5 år) — forskel i procentpoint for andele, ellers i procent. Se DECISIONS.md samme dato.
+- Kode: `src/lib/business-audience.ts` (ren beregning, tests i `business-audience.test.mjs`), `src/lib/business-audience-data.ts` (Prisma + rå SQL), `src/components/landing/BusinessAudience.tsx`.
+- Vises først ved mindst 10 aktive brugere (ellers kort forklaring); sammenligningen kræver mindst 5 i gruppen. Ingen migration. Ikke live-testet (ingen lokal DB) — tjek `/business` på desktop og telefon, når der er brugere nok.
 
 - Hvidt, sammenklappeligt banner øverst på varesiden når indhold, energi, logo eller produktbillede mangler; fører til ny side `/add/[id]/update` med kamera pr. manglende ting. Giver 20 points én gang pr. bruger og vare — også for admin, så det kan testes. Se DECISIONS 2026-10-03.
 - Migration `20261003100000_points_product_updated` skal med deployet. Lint, typecheck og build kørt; ikke set i browser eller prøvet med rigtigt foto/AI-nøgle her — test: åbn en vare uden indhold/logo som admin, tag billede, tjek Profil → Points.

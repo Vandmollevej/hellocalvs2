@@ -129,7 +129,7 @@ export function ProductImageGallery({
   }
 
   return (
-    <div className="rounded-lg border border-hf-tan-dark bg-hf-white p-4">
+    <div className="hf-surface p-4">
       <p className="hf-type-small hf-type-strong mb-4 uppercase tracking-wide text-text-muted">
         Billeder — ét hovedbillede + op til {MAX_SECONDARY} øvrige (fx en æskes andre sider)
       </p>

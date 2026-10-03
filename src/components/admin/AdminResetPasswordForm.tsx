@@ -83,16 +83,16 @@ export function AdminResetPasswordForm({ token }: { token: string }) {
 
   return (
     <div className="mx-auto flex min-h-[70vh] max-w-sm flex-col justify-center px-4">
-      <h1 className="mb-1 text-xl font-semibold text-text-primary">Nulstil admin-adgang</h1>
+      <h1 className="hf-type-page-title mb-1 text-text-primary">Nulstil admin-adgang</h1>
       {qrCodeDataUrl ? (
         <>
-          <p className="mb-4 text-sm text-text-secondary">
+          <p className="hf-type-body mb-4 text-text-secondary">
             Scan QR-koden med din authenticator-app og indtast koden. Den gamle kode virker ikke længere.
           </p>
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src={qrCodeDataUrl} alt="QR-kode til authenticator" className="mx-auto mb-3 h-48 w-48" />
           {secret && (
-            <p className="mb-4 text-center text-xs text-text-muted">
+            <p className="hf-type-small mb-4 text-center text-text-muted">
               Kan ikke scanne? Indtast manuelt: <span className="font-mono">{secret}</span>
             </p>
           )}

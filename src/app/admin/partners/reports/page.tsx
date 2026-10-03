@@ -37,7 +37,7 @@ export default async function ReportsPage() {
     <div className="flex flex-col gap-4">
       <h1 className="hf-type-title text-hf-black">Rapporter</h1>
       <ReportsManager partners={withRecipients} />
-      <div className="rounded-lg border border-hf-tan-dark bg-hf-white p-4">
+      <div className="hf-surface p-4">
         <p className="hf-type-strong mb-2 text-hf-black">Seneste afsendelser</p>
         {sends.length === 0 && <p className="hf-type-small text-text-muted">Ingen endnu.</p>}
         <ul className="hf-type-small flex flex-col gap-1 text-text-secondary">

@@ -80,13 +80,13 @@ function Delta({ k, invert = false }: { k: Kpi; invert?: boolean }) {
 
 function Tile({ label, k, unit, invert }: { label: string; k: Kpi; unit?: string; invert?: boolean }) {
   return (
-    <div className="flex flex-col gap-1 rounded-lg bg-hf-tan p-4">
-      <p className="text-xs text-text-secondary">{label}</p>
-      <p className="text-2xl font-semibold text-text-primary">
+    <div className="hf-kpi">
+      <p className="hf-type-caption">{label}</p>
+      <p className="hf-type-page-title text-text-primary">
         {num.format(k.current)}
-        {unit && <span className="ml-1 text-base font-normal text-text-secondary">{unit}</span>}
+        {unit && <span className="hf-type-body ml-1 text-text-secondary">{unit}</span>}
       </p>
-      <p className="text-xs">
+      <p className="hf-type-small">
         <Delta k={k} invert={invert} />
       </p>
     </div>
@@ -95,22 +95,22 @@ function Tile({ label, k, unit, invert }: { label: string; k: Kpi; unit?: string
 
 function Plain({ label, value, hint }: { label: string; value: string | number; hint?: string }) {
   return (
-    <div className="flex flex-col gap-1 rounded-lg bg-hf-tan p-4">
-      <p className="text-xs text-text-secondary">{label}</p>
-      <p className="text-2xl font-semibold text-text-primary">{typeof value === "number" ? num.format(value) : value}</p>
-      {hint && <p className="text-xs text-text-muted">{hint}</p>}
+    <div className="hf-kpi">
+      <p className="hf-type-caption">{label}</p>
+      <p className="hf-type-page-title text-text-primary">{typeof value === "number" ? num.format(value) : value}</p>
+      {hint && <p className="hf-type-small text-text-muted">{hint}</p>}
     </div>
   );
 }
 
 function Table({ head, rows, empty = "Ingen data i perioden" }: { head: string[]; rows: Row[]; empty?: string }) {
   return (
-    <div className="overflow-x-auto rounded-lg border border-border-strong bg-surface-1">
-      <table className="w-full text-sm">
+    <div className="hf-surface hf-table-scroll">
+      <table className="hf-type-body w-full">
         <thead>
-          <tr className="border-b border-border-strong bg-surface-2 text-left text-xs text-text-secondary">
+          <tr className="border-b border-border-strong text-left">
             {head.map((h, i) => (
-              <th key={h} className={`px-3 py-2 font-medium ${i > 0 ? "text-right" : ""}`}>
+              <th key={h} className={`hf-type-caption px-3 py-2 ${i > 0 ? "text-right" : ""}`}>
                 {h}
               </th>
             ))}
@@ -143,8 +143,8 @@ function Table({ head, rows, empty = "Ingen data i perioden" }: { head: string[]
 function Section({ id, title, intro, children }: { id: string; title: string; intro?: string; children: React.ReactNode }) {
   return (
     <section id={id} className="flex scroll-mt-4 flex-col gap-3">
-      <h2 className="border-b border-border-strong pb-1 text-base font-semibold text-hf-green-dark">{title}</h2>
-      {intro && <p className="text-sm text-text-secondary">{intro}</p>}
+      <h2 className="hf-type-title border-b border-border-strong pb-1 text-hf-green-dark">{title}</h2>
+      {intro && <p className="hf-type-body text-text-secondary">{intro}</p>}
       {children}
     </section>
   );
@@ -152,8 +152,8 @@ function Section({ id, title, intro, children }: { id: string; title: string; in
 
 function Card({ title, children }: { title?: string; children: React.ReactNode }) {
   return (
-    <div className="flex flex-col gap-2 rounded-lg border border-border-strong bg-surface-2 p-4">
-      {title && <p className="text-sm font-semibold text-text-primary">{title}</p>}
+    <div className="hf-panel">
+      {title && <p className="hf-type-body hf-type-strong text-text-primary">{title}</p>}
       {children}
     </div>
   );
@@ -161,7 +161,7 @@ function Card({ title, children }: { title?: string; children: React.ReactNode }
 
 function TrendList({ items }: { items: TrendItem[] }) {
   return (
-    <ul className="flex flex-col divide-y divide-border-strong rounded-lg border border-border-strong bg-surface-1">
+    <ul className="hf-surface flex flex-col divide-y divide-border-strong">
       {items.map((item) => {
         const up = item.current > item.previous;
         const same = item.current === item.previous;
@@ -172,13 +172,13 @@ function TrendList({ items }: { items: TrendItem[] }) {
             } (${num.format(item.previous)} → ${num.format(item.current)}${item.unit ? ` ${item.unit}` : ""}).`;
         const notable = item.pct === null || Math.abs(item.pct) >= 10;
         return (
-          <li key={item.metric} className="flex items-start gap-2 px-3 py-2 text-sm">
+          <li key={item.metric} className="hf-type-body flex items-start gap-2 px-3 py-2">
             <span aria-hidden className={same ? "text-text-muted" : up ? "text-hf-green-dark" : "text-hf-red-dark"}>
               {same ? "■" : up ? "▲" : "▼"}
             </span>
             <span className={notable ? "text-text-primary" : "text-text-secondary"}>{text}</span>
             {notable && !same && (
-              <span className="ml-auto shrink-0 rounded-full bg-hf-tan px-2 py-0.5 text-xs text-text-secondary">
+              <span className="ml-auto shrink-0 hf-type-small rounded-full bg-hf-tan px-2 py-0.5 text-text-secondary">
                 Markant
               </span>
             )}
@@ -228,14 +228,14 @@ export default async function AdminStatisticsPage({
       <StatsTabs active="users" />
       <div className="flex flex-col gap-3">
         <div>
-          <h1 className="text-lg font-semibold text-text-primary">Statistik</h1>
-          <p className="text-sm text-text-secondary">
+          <h1 className="hf-type-page-title text-text-primary">Statistik</h1>
+          <p className="hf-type-body text-text-secondary">
             {s.range.label}: {s.range.fromDay} – {s.range.toDay} · {num.format(s.scopeUserCount)} brugere i filteret · alle
             procenter sammenlignes med en lige så lang periode lige før.
           </p>
         </div>
         <StatsFilters filter={filter} fromDay={s.range.fromDay} toDay={s.range.toDay} />
-        <nav className="flex flex-wrap gap-x-4 gap-y-1 text-sm">
+        <nav className="hf-type-body flex flex-wrap gap-x-4 gap-y-1">
           {SECTIONS.map((section) => (
             <a key={section.id} href={`#${section.id}`} className="text-text-secondary underline hover:text-text-primary">
               {section.label}
@@ -328,7 +328,7 @@ export default async function AdminStatisticsPage({
           <Table head={["Ret", "Gange logget", "Brugere"]} rows={s.hellofresh.topLogged} />
         </Card>
         <Card title="Mest søgte HelloFresh-retter">
-          <p className="text-xs text-text-muted">Retter søgt frem i perioden; søgninger og klik er brugernes samlede antal.</p>
+          <p className="hf-type-small text-text-muted">Retter søgt frem i perioden; søgninger og klik er brugernes samlede antal.</p>
           <Table head={["Ret", "Søgninger", "Klik", "Brugere"]} rows={s.hellofresh.topSearched} />
         </Card>
       </Section>
@@ -381,11 +381,11 @@ export default async function AdminStatisticsPage({
           <Table head={["Vare/ret", "Gange logget", "Brugere"]} rows={s.top.logged} />
         </Card>
         <Card title="Mest søgte">
-          <p className="text-xs text-text-muted">Varer søgt frem i perioden; søgninger og klik er brugernes samlede antal.</p>
+          <p className="hf-type-small text-text-muted">Varer søgt frem i perioden; søgninger og klik er brugernes samlede antal.</p>
           <Table head={["Vare", "Søgninger", "Klik", "Brugere"]} rows={s.top.searched} />
         </Card>
         <Card title={`Søgninger uden resultat (${num.format(s.top.missTotal)} i alt)`}>
-          <p className="text-xs text-text-muted">
+          <p className="hf-type-small text-text-muted">
             Varesøgninger på mindst 3 tegn uden et eneste vare-hit. Registreres fra 27. september 2026; filtreres kun
             på land.
           </p>

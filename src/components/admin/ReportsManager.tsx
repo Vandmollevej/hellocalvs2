@@ -65,7 +65,7 @@ export function ReportsManager({ partners }: { partners: ReportPartner[] }) {
 
   return (
     <div className="flex flex-col gap-4">
-      <div className="flex flex-col gap-2 rounded-lg border border-hf-tan-dark bg-hf-white p-4">
+      <div className="flex flex-col gap-2 hf-surface p-4">
         <p className="hf-type-strong text-hf-black">Vælg partnere</p>
         {partners.length === 0 && <p className="hf-type-body text-text-secondary">Ingen partnere endnu — opret dem under Partnere → Kontakter.</p>}
         {partners.map((p) => (
@@ -124,7 +124,7 @@ export function ReportsManager({ partners }: { partners: ReportPartner[] }) {
       )}
 
       {results.length > 0 && (
-        <ul className="hf-type-body rounded-lg border border-hf-tan-dark bg-hf-white p-4">
+        <ul className="hf-type-body hf-surface p-4">
           {results.map((line) => (
             <li key={line}>{line}</li>
           ))}

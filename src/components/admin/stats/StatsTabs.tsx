@@ -15,7 +15,7 @@ export function parseStatsView(value: string | string[] | undefined): StatsView 
 
 export function StatsTabs({ active }: { active: StatsView }) {
   return (
-    <nav className="hf-type-body flex flex-wrap rounded-lg border border-hf-tan-dark bg-hf-white p-0.5 self-start" aria-label="Statistik">
+    <nav className="hf-type-body flex flex-wrap hf-surface p-0.5 self-start" aria-label="Statistik">
       {TABS.map((tab) => (
         <Link
           key={tab.id}

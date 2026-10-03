@@ -89,8 +89,9 @@ export default function HelloDocTokenPage() {
   }
 
   return (
+    // Samme skal-klasser som admin og webvisningen (design.md §6.17).
     <div className="hf-insight">
-      <header className="hf-insight__topbar">
+      <header className="hf-shell__topbar">
         <Image src="/hello-cal-logo.png" alt="Hello Cal" width={90} height={40} priority />
         <span className="hf-type-title">Hello Doc</span>
       </header>

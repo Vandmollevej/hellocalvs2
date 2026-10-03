@@ -36,7 +36,7 @@ export default async function RoadmapPage({ searchParams }: { searchParams: Prom
         </p>
       </div>
 
-      <form action={addRoadmapItem} className="flex flex-col gap-3 rounded-lg border border-hf-tan-dark bg-hf-white p-4">
+      <form action={addRoadmapItem} className="flex flex-col gap-3 hf-surface p-4">
         <div className="flex flex-col gap-3 sm:flex-row">
           <label className="hf-type-body flex flex-1 flex-col gap-1">
             Titel

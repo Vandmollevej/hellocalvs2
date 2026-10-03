@@ -37,7 +37,7 @@ export function LogoReviewList({ searches }: { searches: Search[] }) {
 
   return (
     <>
-      <ul className="flex flex-col divide-y divide-border-strong/50 rounded-lg border border-hf-tan-dark bg-hf-white">
+      <ul className="flex flex-col divide-y divide-border-strong/50 hf-surface">
         {searches.map((search) => {
           const best = search.candidates[0];
           return (

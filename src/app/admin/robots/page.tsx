@@ -38,8 +38,8 @@ export default async function AdminRobotsPage() {
           </p>
         )}
       </div>
-      <div className="overflow-x-auto rounded-lg border border-hf-tan-dark bg-hf-white px-4">
-        <table className="hf-type-body w-full min-w-[1100px] text-left">
+      <div className="overflow-x-auto hf-surface px-4">
+        <table className="hf-type-body w-full min-w-[900px] text-left">
           <thead>
             <tr className="hf-type-small border-b border-hf-tan-dark uppercase tracking-wide text-text-muted">
               <th className="py-2 pr-4">Robot</th>

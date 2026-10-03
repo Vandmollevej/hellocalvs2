@@ -801,9 +801,9 @@ appen, samme udseende som admin: side #FAF8F3, hvid topbjælke/panel med 1 px
 
 | Klasse | Rolle |
 | --- | --- |
-| `.hf-insight` | Rod og egen scroll-container (`h-dvh`, html/body er låst) |
-| `.hf-insight__topbar` | 56 px hvid topbjælke, 1 px bundkant, logo + titel |
-| `.hf-insight__main` | Indhold, maks 80 rem, 16 px gutter (32 px fra 1024 px) |
+| `.hf-insight` | Rod og egen scroll-container (`h-dvh`, html/body er låst) — som `.hf-shell`, blot lodret |
+| `.hf-shell__topbar` | Fælles topbjælke (§6.17): 56 px hvid, 1 px bundkant, logo + titel |
+| `.hf-insight__main` | Indhold = `.hf-shell__content` (maks 80 rem, 16 px gutter, 32 px fra 1024 px) + lodret stak |
 | `.hf-insight__head` / `__toolbar` | Titel + tekst / filterrække (brug `.hf-choice` til valg) |
 | `.hf-insight__kpis` + `.hf-kpi` | Nøgletal: 2 kolonner, 4 fra 640 px |
 | `.hf-insight__grid` + `.hf-panel` | Grafpaneler: 1 kolonne, 2 fra 1024 px; panel = hvid flade, tynd kant |
@@ -860,6 +860,37 @@ overalt".
 - Tekst, der ikke er et kompakt tal, forbliver tekst: sætninger ("Tilbage for
   i dag: 3282 kcal"), indtastningsfelter, "kcal / 100 g"-tætheder, grafakser
   og de native widgets (kan ikke bruge React-ikonet).
+
+### 6.17 Fælles skal: admin, webvisning og Hello Doc — tilføjet 2026-10-03
+
+Admin (`AdminShell`), Hello Cal i webvisning (`WebShell`, ≥ 1024 px) og Hello
+Doc (lægevisningen, admins Hello Doc, "Sådan ser det ud") bygger på ÉT sæt
+skal-klasser i `globals.css`. Ingen skal må style sidebjælke, topbjælke,
+menurækker, brødkrummer, dropdowns eller hvide flader med egne Tailwind-kæder.
+
+| Klasse | Rolle |
+| --- | --- |
+| `.hf-shell` | Rod: `h-dvh`, egen scroll, side #FAF8F3. `--tall` = 80 px top (webvisning), `--fixed` = scroll i indholdet |
+| `.hf-shell__sidebar` (+ `.is-collapsed`) | Hvid sidebjælke 256 px / 64 px ikon-skinne; skjult under 1024 px |
+| `.hf-shell__brand` | Logo-felt i samme højde som topbjælken |
+| `.hf-shell__search-slot` / `.hf-shell__search` (`--rail`) | "Gå til…"-felt |
+| `.hf-shell__nav` / `__section` / `__section-title` / `__list` (`--sub`) | Menuområde, grupper og overskrifter |
+| `.hf-navrow` (+ `--rail`, `--sub`, `--inline`, `.is-active`, `.is-inside`, `__label`, `__dot`) | Én menurække til sidebjælke, topmenu og dropdown: 15 px grå, aktiv = beige flade + mørkegrøn fed |
+| `.hf-shell__handle` | Sammenfold-håndtag på sidebjælkens kant |
+| `.hf-shell__body` / `__topbar` (`--bottom`) / `__topnav` / `__main` / `__content` | Topbjælke og indholdsbredde (maks 80 rem, 16 → 32 px gutter) |
+| `.hf-shell__toplabel` | Topmenuens tekst; skjult under 1280 px (kun ikon + tooltip) |
+| `.hf-crumbs` (+ `--bar`, `__item`, `__current`) | Brødkrummer |
+| `.hf-menu` / `.hf-menu__header` | Dropdown-flade (brugermenu, profilmenu, Hello Doc-menu, hurtigsøgning) |
+| `.hf-shell__drawer` / `-backdrop` / `-panel` / `-foot`, `.hf-shell__mobile-only` | Menu som skuffe under 1024 px |
+| `.hf-shell__palette` / `-box` | Hurtigsøgning (Ctrl/Cmd + K) |
+| `.hf-surface` | Hvid flade, 1 px #DFD9CC kant, radius 8 — UDEN padding (`.hf-panel` = samme + 16 px luft) |
+| `.hf-table-scroll` | Tabeller scroller vandret på smal skærm i stedet for at blive klippet |
+
+Responsivt: under 1024 px skjules sidebjælken, og menuen åbnes som skuffe;
+nøgletal står 2 → 4 kolonner, paneler 1 → 2 kolonner; brede tabeller ligger i
+`.hf-table-scroll`, og faste gitre har en telefonvariant (`grid-cols-1/2` →
+`sm:`). Bevidste undtagelser: telefon-/e-mail-mockups i Designmanual og
+beskedredigering tegner en iPhone og bruger derfor faste mål og iOS-skrift.
 
 ### Velkomst/start
 

@@ -62,7 +62,7 @@ function show(value: Value) {
 
 function Table({ title, rows }: { title: string; rows: [string, Value][] }) {
   return (
-    <section className="rounded-lg border border-hf-tan-dark bg-hf-white">
+    <section className="hf-surface">
       <h2 className="hf-type-body hf-type-strong border-b border-hf-tan-dark px-4 py-2 text-hf-black">{title}</h2>
       <dl className="divide-y divide-border-strong">
         {rows.map(([label, value]) => (

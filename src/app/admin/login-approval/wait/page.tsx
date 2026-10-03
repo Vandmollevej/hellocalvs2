@@ -52,7 +52,7 @@ export default function AdminLoginApprovalWaitPage() {
       ) : (
         <p className="hf-type-body text-text-muted">Venter på godkendelse…</p>
       )}
-      <Link href="/admin/login" className="mt-4 text-center text-sm text-hf-green-dark underline">
+      <Link href="/admin/login" className="hf-type-body mt-4 text-center text-hf-green-dark underline">
         Tilbage til login
       </Link>
     </div>

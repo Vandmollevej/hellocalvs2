@@ -403,7 +403,7 @@ export function TypographyTable() {
     <div className={`${referenceBody.variable} ${referenceDisplay.variable} flex flex-col gap-6`}>
       <FontFamilies />
       <TypeRamp />
-      <div className="@container overflow-hidden rounded-lg border border-border-strong bg-surface-2">
+      <div className="@container overflow-hidden hf-surface">
         <table className="block w-full border-collapse text-left @xl:table">
           <caption className="sr-only">HelloFresh-typografi: font, størrelse, farvekode og anvendelse</caption>
           <thead className="hidden bg-hf-tan @xl:table-header-group">
@@ -562,7 +562,7 @@ function ContrastBadge({ level }: { level: ContrastLevel }) {
 function FontFamilies() {
   return (
     <div className="grid gap-4 sm:grid-cols-3">
-      <div className="flex flex-col gap-2 rounded-lg border border-hf-tan-dark bg-hf-white p-4">
+      <div className="flex flex-col gap-2 hf-surface p-4">
         <p className="hf-type-small hf-type-strong uppercase tracking-[0.08em] text-text-muted">Overskrifter · display</p>
         <p className="hf-type-hero text-hf-black" style={{ fontFamily: "var(--font-ref-display)", fontWeight: 800 }}>
           Aa Bb Æø Å
@@ -571,7 +571,7 @@ function FontFamilies() {
           Tæt, fed grotesk med lige stregender og stor x-højde. Sandsynligvis Agrandir. Kun fed. Ikke afrundet.
         </p>
       </div>
-      <div className="flex flex-col gap-2 rounded-lg border border-hf-tan-dark bg-hf-white p-4">
+      <div className="flex flex-col gap-2 hf-surface p-4">
         <p className="hf-type-small hf-type-strong uppercase tracking-[0.08em] text-text-muted">Alt andet · Roboto</p>
         <p className="hf-type-hero text-hf-black" style={{ fontFamily: "var(--font-ref-body)" }}>
           Aa Bb Æø Å
@@ -595,7 +595,7 @@ function FontFamilies() {
 function TypeRamp() {
   const sizes = [...new Set(ALL_ROLES.map((role) => role.size))].sort((a, b) => b - a);
   return (
-    <div className="flex flex-col gap-3 rounded-lg border border-hf-tan-dark bg-hf-white p-4">
+    <div className="flex flex-col gap-3 hf-surface p-4">
       <p className="hf-type-small hf-type-strong uppercase tracking-[0.08em] text-text-muted">Typeskala · {sizes.length} størrelser</p>
       <div className="flex flex-wrap items-end gap-x-5 gap-y-3">
         {sizes.map((size) => {

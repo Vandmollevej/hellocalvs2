@@ -184,7 +184,7 @@ export function BoxOverview() {
 
         <ol className="grid min-w-0 flex-1 gap-3 sm:grid-cols-2 xl:grid-cols-1 2xl:grid-cols-2">
           {BOXES.map((box, index) => (
-            <li key={box.name} className="flex flex-col gap-2 rounded-lg border border-hf-tan-dark bg-hf-white p-4">
+            <li key={box.name} className="flex flex-col gap-2 hf-surface p-4">
               <div className="flex items-center gap-2">
                 <PinDot n={index + 1} />
                 <p className="hf-type-body hf-type-strong text-hf-black">{box.name}</p>
@@ -349,7 +349,7 @@ function PhoneFrame({ showGuides }: { showGuides: boolean }) {
               <span data-zone className="hf-type-body block text-hf-black">Lorem ipsum</span>
               <span data-zone className="hf-type-small text-text-secondary block">Dolor sit amet</span>
             </span>
-            <span data-zone className="hf-type-body flex items-center gap-1 rounded-xl border border-hf-tan-dark bg-hf-white py-2 pl-3 pr-2 text-hf-black">
+            <span data-zone className="hf-type-body flex items-center gap-1 hf-surface py-2 pl-3 pr-2 text-hf-black">
               Ipsum
               <HfChevron direction="down" compact />
             </span>

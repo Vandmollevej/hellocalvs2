@@ -43,7 +43,7 @@ export function SupportInboxFilters({ filter }: { filter: SupportInboxFilter }) 
   }
 
   return (
-    <div className="hf-type-small flex flex-col gap-3 rounded-lg border border-hf-tan-dark bg-hf-white p-3">
+    <div className="hf-type-small flex flex-col gap-3 hf-surface p-3">
       <div className="flex flex-wrap items-center gap-2">
         <div className="flex overflow-hidden rounded-md border border-hf-tan-dark">
           {STATUSES.map((status) => (
