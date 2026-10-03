@@ -53,7 +53,20 @@ export async function GET(
             select: { amountGrams: true },
           })
         : null;
-      return NextResponse.json({ product: { ...product, nutrients, lastAmountGrams: last?.amountGrams ?? null } });
+      // AI kunne ikke læse ingredienslisten på fotoet (docs/DECISIONS.md
+      // 2026-10-02): den, der oprettede varen, tilbydes at tage et nyt foto.
+      const ingredientsUnreadable =
+        !product.ingredientsText?.trim() &&
+        !product.pendingFields.includes("ingredients") &&
+        !!user &&
+        product.createdByUserId === user.id &&
+        (await prisma.aiProductAnalysis
+          .count({ where: { productId: product.id, kind: "INGREDIENTS" } })
+          .then((count) => count > 0)
+          .catch(() => false));
+      return NextResponse.json({
+        product: { ...product, nutrients, lastAmountGrams: last?.amountGrams ?? null, ingredientsUnreadable },
+      });
     }
 
     // Not a Product — try the separate GenericIngredient table (loose
