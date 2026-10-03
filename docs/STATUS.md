@@ -191,6 +191,11 @@ Last updated: 2026-10-02
 - Nyt src/lib/units.ts (valg, landestandard, omregning, useUnits()), nyt startguide-trin units og to valg under Sprog og region. Brugt i: profil (vægt, højde-hjul), vægtlog, vægt-kalibrering, startvægt-verificering, målsætninger (vægt + kropsmål), energimål-editoren, kropsmål og statistik-grafen.
 - Lint og typecheck grønne for de berørte filer. Ikke visuelt testet (brugerregel). Ikke omregnet endnu: widgets/native, Hello Doc-rapport, kalender-vægtvisning og admin (kg/cm vises der stadig).
 
+## 2026-10-02: Manuel produktoprettelse fjernet — kun scanning
+
+- Brugerens krav: der må slet ikke findes en manuel produktoprettelse; nye varer oprettes kun via scanning. Fjernet: "Opret nyt produkt manuelt" på `/foods` (erstattet af "Scan nyt produkt" → `/camera?mode=product`), "Opret manuelt"-feltet i Opret ret, og "Tilføj manuelt"-linkene i kamera-flowet. `/foods/new` er nu kun en omdirigering til stregkode-flowet (`?for=ret` bevares). Private ingredienser (`/ingredients/new`) er urørt — de er ikke produkter.
+- Lint, typecheck og build grønne. `page-tree.test.mjs` fejler fortsat som på master (uvedkommende). Ikke testet i browser.
+
 ## 2026-10-01: Rolig bølge-baggrund på forsiden
 
 - Ny baggrund bag topbar + hero, der fortsætter ca. 40 px under "Dagens tilføjelser"-stregen: tilfældige, langsomme bånd af bløde bølgelinjer (grønt øverst → gullig creme nedenfor) plus lidt tåge. Tre lag af samme canvas-scene (skarp / mellem-sløret / kraftigt sløret) giver frostet-glas-effekten nederst. Farver kun fra tokens. Står stille ved "reducer bevægelse" og standser når fanen er skjult.

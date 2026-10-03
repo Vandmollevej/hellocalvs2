@@ -335,8 +335,8 @@ function MadvarerContent() {
           )}
         </div>
 
-        <ActionLink href="/foods/new" variant="secondary" className="hf-type-small px-4 py-2">
-          {t("foods.createManually")}
+        <ActionLink href="/camera?mode=product" variant="secondary" className="hf-type-small px-4 py-2">
+          {t("foods.scanNewProduct")}
         </ActionLink>
       </div>
     </HfScreen>

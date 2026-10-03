@@ -8,7 +8,7 @@ import { matchFridaProduct } from "@/lib/generic-ingredient-match";
 
 // GET /api/generic-ingredients?q=æble — search generic (non-scanned)
 // ingredients, e.g. for the "Ingrediens" branch of manual food creation
-// (src/app/foods/new/page.tsx) and later reuse across the search screens.
+// (src/app/ingredients/new/page.tsx) and later reuse across the search screens.
 // Ranked with the same text/region-popularity model as ordinary products
 // (src/lib/product-search-ranking.ts, docs/DECISIONS.md 2026-09-19) — the
 // generic-ingredient row has no brand/barcodes, so those fields are just

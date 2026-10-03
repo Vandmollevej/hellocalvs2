@@ -159,6 +159,15 @@ Hello Cals partnerportal og ser sin egen partners data.
 
 - Brugeren vælger vægtenhed (kg, pund eller stone+pund) og højde-/kropsmål-enhed (cm eller tommer) i startguidens første trin og under Indstillinger → Sprog og region. Valget gemmes pr. enhed i localStorage (som kalendervisning); databasen gemmer stadig altid kg og cm.
 - Standard udledes af landet (profilens region, ellers browserens): USA/Canada → pund + tommer, UK/Irland → stone+pund + tommer, resten kg + cm. Stone indtastes som `11 5` (stone pund). Tempo (kg/uge) og statistik-grafen bruger pund i stedet for stone.
+## 2026-10-02: Ingen manuel produktoprettelse — kun scanning
+
+- Nye produkter oprettes udelukkende gennem scanning (stregkode → foto-flowet
+  i `/camera?mode=product` og agent-appens `/scan/opret`). Den manuelle
+  formular på `/foods/new` er nedlagt; ruten omdirigerer til scanneren, så
+  gamle links og bogmærker ikke giver 404. Beslutningerne 2026-09-19 og
+  2026-09-23 om den manuelle formular er dermed ophævet.
+- `POST /api/products` beholdes (bruges af foto-flowet). Private
+  ingredienser (`/ingredients/new`) er ikke produkter og berøres ikke.
 
 ## 2026-10-01: Bølge-baggrund på forsiden
 

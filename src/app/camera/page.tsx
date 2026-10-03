@@ -5,7 +5,6 @@ import { Suspense, useCallback, useEffect, useRef, useState } from "react";
 import { IconCamera } from "@tabler/icons-react";
 import { EnergyChip } from "@/components/calendar/EnergyChip";
 import { useRouter, useSearchParams } from "next/navigation";
-import Link from "next/link";
 import { HfScreen } from "@/components/HfScreen";
 import { HelloFreshMatchReview } from "@/components/HelloFreshMatchReview";
 import { ProductCaptureFlow } from "@/components/camera/ProductCaptureFlow";
@@ -121,7 +120,6 @@ function KameraContent() {
 function PhotoModeContent({ mode, forDish }: { mode: "meal" | "hellofresh"; forDish: boolean }) {
   const { t } = useTranslation();
   const router = useRouter();
-  const returnSuffix = forDish ? "?for=ret" : "";
   const videoRef = useRef<HTMLVideoElement>(null);
   const streamRef = useRef<MediaStream | null>(null);
   const [cameraStatus, setCameraStatus] = useState<CameraStatus>("starting");
@@ -455,11 +453,6 @@ function PhotoModeContent({ mode, forDish }: { mode: "meal" | "hellofresh"; forD
         </div>
       )}
 
-      {mode === "hellofresh" && (
-        <Link href={`/foods/new${returnSuffix}`} className="hf-control hf-btn-secondary justify-center">
-          {t("camera.addManually")}
-        </Link>
-      )}
     </div>
   );
 }
