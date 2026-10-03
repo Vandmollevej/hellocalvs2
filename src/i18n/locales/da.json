@@ -1568,8 +1568,10 @@
   "profileStatus": {
     "title": "Status",
     "currentWeight": "Nuværende vægt",
-    "goal": "Mål",
-    "noGoal": "Intet mål",
+    "goal": "Målvægt",
+    "bodyGoals": "Kropsmål",
+    "measurementGoal": "Mål",
+    "latest": "d. {date} {value}",
     "setGoal": "Sæt et mål",
     "toLose": "{value} til målet",
     "toGain": "{value} op til målet",

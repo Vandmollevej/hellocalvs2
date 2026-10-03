@@ -61,6 +61,14 @@ Last updated: 2026-10-03
 - Rettet to steder: scanneren (`src/lib/barcode-frame-scanner.ts`) afviser en aflæsning, hvor stregerne ikke slutter over og under læselinjen (stof, riller), og flowet (`ProductCaptureFlow`) går først videre, når samme kode er læst i 3 billeder inden for 1,5 s (`src/lib/barcode-confirm.ts`, tests grønne). Det koster ca. 0,2 s ved en ægte stregkode.
 - Lint (0 fejl), typecheck, build og nye tests er grønne. Den eksisterende `page-tree`-test fejler også uden denne ændring. Ikke testet på telefon: der skal en ægte stregkode (vandret, lodret og skæv) og bukserne igen til.
 
+## 2026-10-03: Profil → Status: målvægt, kropsmålenes mål og seneste måling
+
+- Status står nu over Points i profilmenuen (også i `page-tree.ts`).
+- Feltet "Mål" hedder nu "Målvægt". Uden målvægt står "Sæt et mål" midt i feltet ved siden af "Nuværende vægt" (linket under felterne er fjernet).
+- Under felterne vises kropsmålenes mål fra Målsætning (nyeste målsætning pr. mål), kun hvis der er nogen. Kropsmålets mål tegnes også som mållinje i dets graf.
+- Fold-ud-rækkerne (Vægt + hvert kropsmål) viser seneste måling i ikke-fed skrift: "d. 3. okt. 82,4 kg" (årstal kun, hvis ikke i år). `DropdownSection` har fået en valgfri `detail`.
+- Ingen nye API'er — siden henter også `/api/goals` (fejler den, vises siden uden kropsmålenes mål). Lint, typecheck, `profile-status`-tests og build grønne. Ikke set med login (ingen lokal DB) — test på telefon: Profil → Status.
+
 ## 2026-10-03: Kalender — profilcirklen er tilbage i dagsvisningen
 
 - Dagsvisningen (`DayDetails` i `src/app/calendar/page.tsx`) tegner sin egen grønne topbjælke som fuldskærmsdialog over siden, og dens højre hjørne var et tomt felt — så profilcirklen forsvandt, så snart en dag blev åbnet. Den viser nu `ProfileAvatarLink` som alle andre sider.

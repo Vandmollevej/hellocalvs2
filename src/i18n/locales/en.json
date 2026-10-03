@@ -1568,8 +1568,10 @@
   "profileStatus": {
     "title": "Status",
     "currentWeight": "Current weight",
-    "goal": "Goal",
-    "noGoal": "No goal",
+    "goal": "Target weight",
+    "bodyGoals": "Body measurements",
+    "measurementGoal": "Goal",
+    "latest": "{date} {value}",
     "setGoal": "Set a goal",
     "toLose": "{value} to go",
     "toGain": "{value} to gain",
