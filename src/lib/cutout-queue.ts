@@ -11,7 +11,7 @@ export type CutoutCropBox = { x: number; y: number; width: number; height: numbe
 
 export type CutoutQueueRow = {
   id: string;
-  kind: "BRAND_LOGO" | "PRODUCT_FRONT";
+  kind: "BRAND_LOGO" | "PRODUCT_FRONT" | "PRODUCT_LABEL";
   status: "PENDING" | "FAILED";
   sourceUrl: string;
   cropBox: CutoutCropBox | null;
