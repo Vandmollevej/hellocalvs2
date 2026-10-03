@@ -50,6 +50,11 @@ Last updated: 2026-10-03
 - Ejerens ønske: muligheden for at slette profilen skal ligge nederst på Profil-siden (`/profile/edit`). "Ret til at blive glemt" (knappen "Slet mine data", skriv SLET) og tekstlinket "Luk konto" er flyttet dertil som `AccountDeletionSection` (`src/components/profile/`). Siden `/settings/account` og rækken "Kontoindstillinger" under Indstillinger er fjernet; chatbottens viden og sidetræet er rettet. Samme API (`/api/account/close`), ingen migration.
 - Lint (0 fejl), typecheck og build grønne. Ikke set med login (ingen lokal DB) — test på telefon: Profil → Profil → rul helt ned.
 
+## 2026-10-03: "Skift profil" som egen række øverst på Profil
+
+- Familieejere (og andre med flere profiler) ser nu "Skift profil" som en række for sig selv øverst på `/profile`, med nyt ikon: buet pil op til venstre og ned til højre (`src/components/icons/SwitchProfile.tsx`). Tryk folder profillisten ud som før; den valgte profils store cirkel med navn står under rækken. Konti uden familie er uændrede.
+- Lint (0 fejl), typecheck og build grønne. Ikke set med login (ingen lokal DB) — test på telefon som familieejer: Profil.
+
 ## 2026-10-03: Kalender — profilcirklen er tilbage i dagsvisningen
 
 - Dagsvisningen (`DayDetails` i `src/app/calendar/page.tsx`) tegner sin egen grønne topbjælke som fuldskærmsdialog over siden, og dens højre hjørne var et tomt felt — så profilcirklen forsvandt, så snart en dag blev åbnet. Den viser nu `ProfileAvatarLink` som alle andre sider.

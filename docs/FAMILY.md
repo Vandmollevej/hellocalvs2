@@ -35,6 +35,9 @@ hvornår andre har været inde, hvad de har set, og hvad de har ændret.
    overlappende cirkler med egne initialer og initialerne på de profiler, man
    styrer. Med familieabonnement kan man skifte til de profiler, man har
    oprettet. Om en inviteret person siger ja, er op til personen selv.
+   Siden 2026-10-03 er "Skift profil" en række for sig selv øverst på Profil
+   med en buet op/ned-pil (`IconSwitchProfile`); tryk folder profillisten ud.
+   Den valgte profils store cirkel står under rækken.
 9. **Kopier til konto (2026-09-26).** Swipe fra venstre mod højre på en af
    ens egne indtastninger giver normalt kun Favorit. Styrer man en anden
    profil, kommer "Kopier til konto" også frem.

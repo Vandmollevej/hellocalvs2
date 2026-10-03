@@ -4263,3 +4263,12 @@ Ejerens krav: "Mulighed for slet profil skal ned nederst under Profil-siden."
 
 - "Ret til at blive glemt" og "Luk konto" vises nederst på `/profile/edit` (under Face ID), med samme bundark, SLET-bekræftelse og tekstlink-stil som før.
 - Siden `/settings/account` (Indstillinger → Kontoindstillinger) er fjernet, så der kun er ét sted at slette/lukke kontoen. Afløser placeringen i beslutningerne 2026-10-02 og 2026-10-03 ovenfor.
+
+## 2026-10-03: "Skift profil" er en række med buet op/ned-pil
+
+Ejerens krav: "Hvis man er familiekontoejer skal 'skift profil' stå øverst og med punkt for sig selv under Profil. Og så en frem og tilbagepil som ikon — buet pil op/ned hvis muligt."
+
+- `ProfileSwitcher` viser "Skift profil" som en række (samme mål som `ChevronRow`, chevron ned/op) i sit eget kort øverst på `/profile`; listen folder ud i samme kort.
+- Ikonet er tegnet selv (`IconSwitchProfile`): to buede pile, op i venstre side og ned i højre. Tablers `IconRefresh` blev fravalgt, fordi den betyder "genindlæs" og allerede bruges til "Lær appen at kende".
+- Den valgte profils store cirkel med navn og "Din egen profil"/"Du taster ind for denne profil" står under rækken og er ikke længere selv en knap.
+
