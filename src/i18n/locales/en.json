@@ -197,7 +197,13 @@
     "networkError": "Could not create the account — check your connection and try again",
     "healthConsent": "I explicitly consent to Hello Cal processing my health data (such as food, weight and body measurements) to provide the app, and I accept the",
     "healthConsentTermsLink": "Terms and Conditions",
-    "consentRequired": "Turn on your consent before signing up."
+    "consentRequired": "Turn on your consent before signing up.",
+    "family": {
+      "title": "Family",
+      "intro": "Sign up as a member of a family account. Enter the invitation code or scan the QR code.",
+      "enterCode": "Enter invitation code",
+      "scan": "Scan QR code"
+    }
   },
   "web": {
     "createDish": "Create dish",
@@ -2715,13 +2721,16 @@
       "who": "May view and log for {name}"
     },
     "claim": {
-      "title": "Family code",
-      "intro": "Did you get a code from your parent or someone else in the family? Enter it here and choose your own email and password.",
-      "code": "Code",
+      "title": "Family account",
+      "intro": "Sign up as a member of a family account. Enter the invitation code and the email it was created for — or scan the QR code.",
+      "code": "Invitation code",
       "email": "Email",
       "password": "Password (at least 8 characters)",
       "submit": "Create my login",
-      "introQr": "You are creating your own login with the email {email}. Choose your password."
+      "introQr": "You are creating your own login with the email {email}. Choose your password.",
+      "continue": "Continue",
+      "scan": "Scan QR code",
+      "tryAgain": "Try again"
     },
     "copy": {
       "action": "Copy to account",
@@ -2801,6 +2810,13 @@
       "done": "You are now part of {owner}'s family.",
       "goToFamily": "Go to Family",
       "missing": "The link is missing its code. Scan the QR code again."
+    },
+    "scan": {
+      "title": "Scan QR code",
+      "intro": "Hold your phone over the QR code that the person paying for the family shows under Profile → Family.",
+      "notFamilyCode": "This is not a QR code from a Hello Cal family.",
+      "noCamera": "The camera could not be opened. Allow camera access, or enter the code instead.",
+      "typeInstead": "Enter the code instead"
     }
   },
   "statSections": {

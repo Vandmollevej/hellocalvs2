@@ -341,6 +341,13 @@ export async function previewFamilyInvite(token: string) {
   };
 }
 
+// Indtastet kode + e-mail fra tilmeldings-/familiekodesiden: giver samme
+// krypterede token som QR-koden, så begge veje fortsætter i samme flow.
+export async function resolveFamilyCode(code: string, email: string) {
+  const row = await findUsableCode({ code, email });
+  return { kind: row.profileId ? ("claim" as const) : ("join" as const), token: createInviteToken(code, row.email) };
+}
+
 // Et familiemedlem uden login sætter e-mail og adgangskode på sin profil. Den
 // e-mail, der skrives, skal være den, betaleren lavede koden til.
 export async function claimFamilyProfile(input: FamilyCodeInput, passwordHash: string) {

@@ -231,6 +231,20 @@ function TilmeldContent() {
           {t("signup.haveAccount")}{" "}
           <Link href={next === "/" ? "/login" : `/login?next=${encodeURIComponent(next)}`} className="underline">{t("signup.logIn")}</Link>
         </p>
+
+        {/* Medlem af en familiekonto: invitationskode + e-mail eller QR-kode (docs/DECISIONS.md 2026-10-03). */}
+        {!verificationId && (
+          <section className="mb-6 flex flex-col gap-4">
+            <h2 className="hf-type-section-title">{t("signup.family.title")}</h2>
+            <p className="hf-type-body">{t("signup.family.intro")}</p>
+            <Link href="/family-code" className="hf-control hf-btn-secondary w-full">
+              {t("signup.family.enterCode")}
+            </Link>
+            <Link href="/family-code/scan" className="hf-control hf-btn-secondary w-full">
+              {t("signup.family.scan")}
+            </Link>
+          </section>
+        )}
       </form>
     </div>
   );

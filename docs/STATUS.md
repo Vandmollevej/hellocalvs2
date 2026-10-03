@@ -37,6 +37,16 @@ Last updated: 2026-10-03
   manipuleret link, tilbagetrækning, login-kode via QR og pladstal; skærmbilleder
   af familieside, tilknytning (rigtig konto, forkert konto, ikke logget ind) og
   gennemført tilknytning. Ikke testet med rigtig telefonkamera-scanning.
+- **Tilmelding → "Familie":** under "Tilmeld dig" står nu sektionen "Familie" med
+  teksten "Opret dig som medlem af en familiekonto. Indtast invitationskoden
+  eller scan QR-koden." og knapperne "Indtast invitationskode" (`/family-code`)
+  og "Scan QR-kode" (`/family-code/scan`, kameraet læser QR-koden i appen).
+  `/family-code` er nu i to trin: invitationskode + e-mail → er koden til en
+  profil, betaleren har oprettet, vælger man adgangskode; er den til en
+  eksisterende konto, fortsætter man på tilknytningssiden. Ny `POST
+  /api/family/invite` (kode + e-mail → samme krypterede token som QR-koden).
+  Testet i browser med falsk kamera, der viste en rigtig QR-kode: scanning →
+  adgangskode → login oprettet; forkert e-mail giver fejl.
 - Mangler: køb af ekstra pladser (pris/betaling skal afklares).
 
 
