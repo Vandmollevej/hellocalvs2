@@ -1,7 +1,8 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { authenticateDeviceToken, companionIntegration, companionSource } from "@/lib/integrations/companion";
-import { collectPushData } from "@/lib/integrations/push";
+import { collectPushData, pushCount } from "@/lib/integrations/push";
+import { recordIntegrationEvent } from "@/lib/integrations/events";
 import { resolveSyncSettings } from "@/lib/integrations/sync-settings";
 
 // GET /api/integrations/healthkit/export?source=APPLE_HEALTH&since=<cursor>
@@ -33,6 +34,8 @@ export async function GET(req: Request) {
       where: { id: integration.id },
       data: { status: "CONNECTED", lastPushedAt: sinceDate ?? integration.lastPushedAt },
     });
+    const count = pushCount(data);
+    if (count > 0) await recordIntegrationEvent(token.userId, source, "PUSH", count);
     return NextResponse.json({
       settings: resolveSyncSettings(source, integration.syncSettings),
       cursor: nextMark.toISOString(),
