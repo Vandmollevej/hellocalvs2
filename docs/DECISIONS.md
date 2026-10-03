@@ -8,6 +8,14 @@ This file records durable decisions. Add a dated entry when a later decision cha
 - Kun den allerførste, der tilmelder sig, får pladsen: én testperson pr. integration (`IntegrationTester`, unik pr. provider). Banneret vises kun, mens pladsen er ledig, og ikke igen på enheden, når brugeren har lukket det.
 - Points gives først, når admin godkender under Admin → Brugere → **Test-programmes** — samme regel som produkter og fejlrapporter (2026-09-02). Admin ser, om appen er aktiveret, og hvornår den sidst hentede data. Godkendelse giver 300 points (`INTEGRATION_TESTER`) én gang; afvisning sletter tilmeldingen, så pladsen bliver ledig igen.
 
+## 2026-10-02: Kameraflowet tager rigtige stillbilleder + "tag nyt billede af indholdet"
+
+- Årsag: en marmelades ingrediensliste (30. sept.) blev aldrig aflæst. Loggen viste, at OpenAI fik fotoet, men svarede "for sløret til sikker aflæsning" (tom liste, sikkerhed 12 %). Fotoet var et 1080p-videobillede; appen sagde intet og prøvede ikke igen. Der var ingen genstart — PR #151 (genoptagelse efter genstart) byggede på et forkert gæt og er droppet.
+- Forside, energi og indhold tages nu som kameraets stillbillede (`ImageCapture.takePhoto`, `src/lib/camera-still.ts`) — stadig automatisk, uden tryk. Har browseren ikke funktionen, bedes videostrømmen om 4K, og det skarpeste af tre videobilleder bruges. Stregkodefotoet er stadig ét videobillede (må ikke forsinke scanningen).
+- Energi- og indholdsfotoet beskæres til det kvadrat, brugeren så i søgeren (ændrer "ingen beskæring" fra 2026-09-17 for de to trin; forsiden er stadig hele fotoet). Længste side højst 2048 px.
+- Hvert foto logges (`photo_captured`: stillbillede/videobillede, opløsning, skarphed).
+- Kunne AI ikke læse ingredienslisten, viser varesiden "Indholdet kunne ikke læses på billedet" med knappen "Tag nyt billede af indholdet" — kun for den, der oprettede varen (`ingredientsUnreadable` i `GET /api/products/[id]`). Knappen åbner `/camera?retake=ingredients&product=<id>` (`IngredientsRetakeFlow`), og `POST /api/products/[id]/ingredients-photo` læser det nye foto med OpenAI. Intet automatisk genforsøg på det samme foto (brugerens valg).
+
 ## 2026-10-02: "Til info sendte vi dig …" (mail/sms var ikke spam)
 
 - Hver mail eller sms til en kendt bruger giver (1) en push med det samme: "Vi har netop sendt dig en e-mail om "emne". Dette var ikke spam." og (2) et bundark som det første ved næste besøg (app og web): "Til info sendte vi dig den <dato> en <e-mail/sms> om "<emne>". Dette var ikke spam." med sort knap "Læst".
@@ -41,6 +49,14 @@ This file records durable decisions. Add a dated entry when a later decision cha
 - Planer: "Vælg" på Seriøs/Seriøs Familie åbner et bundark med periode og betaling. Uden konto → `/signup?next=/profile/subscription/<plan>?months=<n>`, som lander på købssiden med samme valg.
 - Footer: kun Business-partnere (`/business`: muligheder + den eneste kontaktformular, mailes til `BUSINESS_CONTACT_EMAIL` eller support@) og Presse (`/presse`: fakta, logoer, kontakt via business-formularen). Ingen andre kontaktformularer og ingen sociale medier.
 - Butikslinks står i `APP_STORE_URL`/`PLAY_STORE_URL` (`src/lib/landing-content.ts`); QR-koderne følger dem automatisk.
+
+## 2026-10-02: Sukkerpåstande til søgning (ikke mærker)
+
+- Nye filterkolonner på `ProductFilters`: `lowSugar` ("Lavt sukkerindhold"), `noAddedSugar` ("Uden tilsat sukker"), `reducedSugar` ("Reduceret sukker") og `lightSugar` ("Light"), ved siden af den eksisterende `sugarFree`. Samme mønster som øvrige filtre: tom = nej/ukendt, udfyldt = ja. Migration `20261002100000_sugar_claim_filters`.
+- **De vises ikke som mærker i appen** (brugerens krav) — de findes kun, så man kan søge på dem: `GET /api/products?q=` matcher nu også de fem sukkerkolonner (fx "sukkerfri", "light", "uden tilsat").
+- Udledes i `scripts/store-products-import/build_data.py` (`sugar_claims`): først og fremmest af nøgleord, derefter navn, variant, smag og produkttype (påstanden står ofte kun i nøgleordene). `lowSugar` udledes også af sukker pr. 100 g: højst 5 g (drikkevarer 2,5 g), og sukkerfri tæller som lavt.
+- Kendt begrænsning: en påstand, der kun står som ikon på emballagen, kan ikke aflæses; den må tilføjes manuelt i admin (Dubletter/Butiksdata). Produkter uden sukkertal får ikke `lowSugar` af næringen.
+- Nye kolonner fyldes først ved næste kørsel af `build_data.py` + `store-products-agent`.
 
 ## 2026-09-29: Admin-brugere (adgang til admin-panelet)
 
@@ -626,7 +642,6 @@ bekræftet, kobles kontoen på, men dens adgangskode og passkeys fjernes
 først (beskytter mod konti oprettet med en fremmed e-mail). Mails sendes
 nu straks fra `queueMessage()` i stedet for kun ved scheduler-tick (15 min).
 
-
 ## 2026-09-25: Global lodret rytme (8/16/32) og sorte primærknapper
 
 Brugerens krav: "stringent opsætning på tværs af hele sitet med rene linjer og
@@ -800,7 +815,6 @@ Google/Apple/Facebook på en e-mail, hvor en eksisterende konto aldrig er
 bekræftet, kobles kontoen på, men dens adgangskode og passkeys fjernes
 først (beskytter mod konti oprettet med en fremmed e-mail). Mails sendes
 nu straks fra `queueMessage()` i stedet for kun ved scheduler-tick (15 min).
-
 
 ## 2026-09-24: Normalt login — privacy-by-architecture ophævet
 
@@ -3073,7 +3087,6 @@ Apple Health-adgangsarket (som HelloFresh viser), med alle Hello Cals punkter.
   filter-/periodeknapper og textarea. Hello Docs notched felt følger nu også
   48 px (før 60 px).
 
-
 ## 2026-09-27: HelloFresh-opskrifter vises som i HelloFresh-appen
 
 - Brugerens krav: når man åbner en HelloFresh-opskrift for inspiration, skal den se præcis ud som i HelloFresh-appen (skærmbilleder i chatten 2026-09-27), bygget med fælles klasser. Det gælder KUN HelloFresh-opskrifter — brugerens egne og delte retter beholder deres eget design (`/profile/recipes/[id]`).
@@ -3087,7 +3100,6 @@ Apple Health-adgangsarket (som HelloFresh viser), med alle Hello Cals punkter.
 - Indhold der vises på telefonen (mails, notifikationer, svarskabeloner, flow-sider) redigeres i ét fælles vindue: `src/components/admin/PhonePreviewEditor.tsx`. Venstre halvdel: sort iPhone 17 i præcis 402 × 874 CSS-px (1206 × 2622 @3x), placeret i højre side af halvdelen; højre halvdel: redigering. HTML vises i en sandboxed iframe (ingen scripts), og `{{variabler}}` får eksempelværdier.
 - Notifikationer vises som en låseskærm-notifikation med emnet som titel og teksten uden HTML.
 - "Flows" er et hovedmenupunkt (gruppe) i admin. "Flow-sider" (`/admin/flows`) gemmer flows i `flows`/`flow_pages`; et flow gemmes altid samlet (`PUT /api/admin/flows/[id]`). Tooltip-popups (Guide-builderen, `/admin/guide-builder`) ligger i samme gruppe.
-
 
 ## 2026-09-27: "Vilkår og betingelser"-bjælke på startguide, abonnementer og integrationer
 
@@ -3187,7 +3199,6 @@ eller ældre konti uden samtykke, bliver ikke længere stoppet af en gate.
 
 "Hvordan oplever du, at din nat har været?": ingen slider ved "Slå fra" — kun understreget tekst, der åbner Indstillinger → Visning → Oplevelse af søvn (`?focus=toggle`, grøn ring + fokus på kontakten). Grå infotekst under spørgsmålet følger "Vis tooltips". Store, ikke-understregede tal; valgt tal får grøn fyldt cirkel og hvidt tal, og Luk skjules. Efter 0,5 s glider popup'en ned til et lille bundark med håndtag (kan trækkes/trykkes op igen) og forsvinder kort efter.
 
-
 ## 2026-09-28 — Automatisk fotografering (punkt 15)
 
 Foto-trinnene i kamera-flowet (forside, næring, ingredienser) udløser automatisk, når varen er i fokus: skarphed (Laplace-varians) i midterrammen skal være over et minimum og tæt på den bedste målte, og billedet skal være stillestående i 4 målinger i træk (200 ms interval, 1,2 s opstart pr. trin). Beregnes lokalt på et 160×160-udsnit (`src/lib/focus-detection.ts`, `useAutoCapture`). "Tag billede"-knappen bevares som manuel reserve. Stregkodetrinnet er uændret.
@@ -3224,7 +3235,6 @@ Mens et foto arbejder i kameraflowet under Tilføj, vises en bred hvid/lys gradi
   ingen kontrolsag til admin ved redigering.
 - Egne retter uden vare vises med en vare bygget af snapshottet.
 
-
 ## 2026-09-28: Billedrobotten kører løbende + admin "Robotter"
 
 - Brugerregel: robotten der fritlægger og retter billeder til skal ikke kun
@@ -3242,15 +3252,12 @@ Mens et foto arbejder i kameraflowet under Tilføj, vises en bred hvid/lys gradi
   Cron-job (Løbende / dagligt kl. / interval / kun manuelt) og Sidst kørt.
   Samme rækker og API som "Cron-jobs".
 
-
 ## 2026-09-28 — Fælles selected state (punkt 46)
 
 Valgte bokse, åbne accordions og andre selection-komponenter bruger HelloFresh-stilen:
 lysegrøn baggrund, grøn stroke og mørkegrøn tekst via `.hf-selected` og tokens
 `--hf-color-selected-*` i `globals.css`. Kraftigt grønne/sorte valgte flader er udfaset.
 Admin-flader er ikke omfattet.
-
-
 
 ## 2026-09-28: Flere objekter i kameraet — brugeren vælger
 
@@ -3302,7 +3309,6 @@ Når scanningsstriben passerer midten af fotoet (objektet i fokus), bliver strib
 ## 2026-09-28 — Terminologi: "vare" i stedet for "produkt"
 
 Synlige tekster i app og admin kalder madvarer "vare/varer", og "Produktdatabase" hedder "Varedatabase". Kode-identifikatorer, URL'er, databasefelter og AI-prompts under `src/app/api/ai/` er uændrede.
-
 
 ## 2026-09-28: Ingen "Branded"-mærkat
 
@@ -3491,7 +3497,6 @@ Kilder på "Mad på latin" skal altid være officielle (Fødevarestyrelsen, Sund
 
 - Scriptet indlæses globalt fra src/components/UserbackWidget.tsx (rodlayoutet) med det offentlige widget-token. Der sendes bevidst ingen Userback.user_data (ingen navn/e-mail), så feedback er anonym i tråd med anonymitetsreglerne.
 
-
 ## 2026-10-02 – Rigtige certifikat-logoer (public/certifications)
 
 - Mærker på varesiden vises med brugerens rigtige logofiler (`public/certifications/*.png`, kind → fil i `CERTIFICATION_LOGO_FILES` i `src/lib/certification-badges.ts`), ikke tegnede SVG-erstatninger. Originalerne ligger i mappen `Certifikater/` (ikke i git).
@@ -3502,4 +3507,8 @@ Kilder på "Mad på latin" skal altid være officielle (Fødevarestyrelsen, Sund
 - Ny side /settings/account (Indstillinger -> Kontoindstillinger) med to knapper, begge i bundark med bekraeftelse (skriv SLET).
 - Begge kalder POST /api/account/close, som koerer anonymizeUser() (src/lib/gdpr.ts) paa brugeren selv, rydder session-cookies og logger ud. Forskellen er kun ordlyd; GDPR-sletning er fortsat anonymisering (se 2026-09-02).
 - Ikke gjort: aktivt abonnement hos betalingsudbyder opsiges ikke automatisk.
+## 2026-10-02 — Admin: Economy
+
+- Ny side /admin/economy: årsabonnementer (årlig sikker indkomst, sikret løbetid), månedsabonnementer (+ 3 mdr.) og næste måneds forventede indtjening. Kun betalende (provider sat); pris/periode fra MobilePay-træk og Stripe live (skønnet 1 md. ved mangel).
+- Afmelding: observeret 30-dages rate blandet med prior 7 %/md.; AI-knap lader OpenAI vurdere % pr. type (kun aggregater, store:false), forventningen regnes i koden. Grov model, ikke regnskab.
 

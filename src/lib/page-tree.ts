@@ -302,6 +302,7 @@ export const PAGE_TREE: PageArea[] = [
           },
           { path: "/admin/users", label: "Brugere" },
           { path: "/admin/test-programmes", label: "Test-programmes" },
+          { path: "/admin/economy", label: "Economy", note: "Betalende abonnementer, sikret indkomst og forventet indtjening" },
           {
             path: "/admin/support",
             label: "Support",

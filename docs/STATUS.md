@@ -1,5 +1,9 @@
 # HELLO CAL — project status
 
+## 2026-10-02: Desktop — alle sider i skallen
+
+- På desktop vises alle sider (også login, betingelser, privatlivspolitik) i WebShell med sidebjælke, topmenu og brødkrummer; kun admin, hello-doc, business og presse er fuld bredde.
+- Lint og typecheck grønne; ikke set i browser — tjek login-siderne på desktop.
 Last updated: 2026-10-02
 
 ## 2026-10-02: Testperson-popup på integrationssiderne
@@ -8,6 +12,18 @@ Last updated: 2026-10-02
 - Admin → Brugere → **Test-programmes** (`/admin/test-programmes`): alle integrationer med ledig plads / testperson, forbindelsesstatus, Godkend (+300 points) / Afvis. Betingelsernes pointsafsnit er opdateret.
 - Migration `20261002120000_integration_testers` skal køre ved deploy.
 - Lint, typecheck og build grønne; `page-tree.test.mjs` fejler som før på master (uvedkommende sider). Ikke live-testet (ingen lokal DB/login) — tjek popuppen på telefon.
+
+## 2026-10-02: Kameraflowet — rigtige stillbilleder + nyt foto af indholdet
+
+- Fejlen: marmelade (5711954020055) fik ingen ingredienser, fordi indholdsfotoet var et sløret 1080p-videobillede, og OpenAI svarede tomt ("for sløret"). Ingen genstart var involveret. Se DECISIONS 2026-10-02.
+- Nyt: `src/lib/camera-still.ts` (stillbillede via `ImageCapture.takePhoto`, ellers skarpeste af tre 4K-videobilleder; energi/indhold beskæres til søgerens kvadrat), brugt i `ProductCaptureFlow`. Log-trin `photo_captured` viser kilde, opløsning og skarphed.
+- Nyt: varesiden viser "Indholdet kunne ikke læses på billedet" + knap; `IngredientsRetakeFlow` (`/camera?retake=ingredients&product=<id>`) og `POST /api/products/[id]/ingredients-photo`.
+- Lint grøn; typecheck uden fejl i de berørte filer. Build ikke kørt lokalt (delt `node_modules` har forældet Prisma-klient). Ikke testet på telefon: tjek i admin "Log", om `photo_captured` siger "stillbillede" på iPhone — ellers bruges 4K-videobilledet.
+
+## 2026-10-02: Retter — skelettet er nu sidens egne rækker
+
+- `/profile/recipes` (begge faner) og `/profile/recipes/[id]` brugte generiske skeletter (`SkeletonMediaRows`/`SkeletonDetail`) med bjælker i procent af sidebredden — enorme på bred skærm og uden lighed med indholdet. Nu tegner `RecipeRow` og ret-siden sig selv uden data (design.md §6.14): samme billedfelt, titel + undertekst i tekstbredde (`SkeletonTitleLines` i `Skeleton.tsx`), 3 rækker under "Trender netop nu".
+- Lint grøn; typecheck uden fejl i de berørte filer. Build ikke kørt lokalt (delt `node_modules` har forældet Prisma-klient). Ikke visuelt testet (brugerregel).
 
 ## 2026-10-02: "Til info sendte vi dig …"-popup + push
 
@@ -38,6 +54,11 @@ Last updated: 2026-10-02
 - Rettelser bør komme fra brugeren: `Bedre-dyrevelfærd-2-stjerner.png` var identisk med 3-stjerner-filen, så 2-hjerte-logoet er afledt (3-stjerner + den tomme 3. hjerte fra 1-stjerne-filen). `Fairtrade logo.webp` har "cleanpng"-vandmærke og `Økologimærket.png` er et beskåret udsnit uden tekst — erstat med originale filer.
 - Lint og typecheck grønne. Ikke visuelt testet (ingen login/DB lokalt).
 
+## 2026-10-02: Kalender dagvisning pa web - cookie, fokus pa nu, dobbeltklik
+
+- Cookie `hc_cal_visit` (dato): forste besog i dag viser morgenen med nattens sovn; senere besog i dag (og kun hvis brugeren har registreret noget for) scroller til nu +-2 timer.
+- Dobbeltklik pa en time i dagvisningen og pa en dag i ugens tidslinje abner tilfoej-menuen pa den halve time.
+- Lint og typecheck groenne; ikke testet i browser.
 ## 2026-09-29: Offentlig forside for udloggede
 
 - Ny hent-appen-forside uden telefonramme, med QR-koder, planer med betalings-ark, Hello Doc-bjælke, nøgletal fra databasen, `/business` (kontaktformular) og `/presse`. Se DECISIONS.md samme dato.
@@ -90,7 +111,6 @@ EU-referenceindtag, for lidt/for meget, eksterne kilder). Rækker med
 usikkerheds-~ er nu `div role=button`, så navnet kan være sin egen knap.
 Lint og build grønne.
 
-
 ## 2026-09-29: Oprettelses-appen — Face ID-login og egne nøgler
 
 - Face ID/passkey som alternativ til adgangskode + TOTP: tabel
@@ -104,8 +124,6 @@ Lint og build grønne.
   `/deploy/.env.production`, hvis de mangler (røres aldrig igen; backup i `.env.production.bak-scan-secrets`). Tag
   selv en kopi af `SCAN_PII_KEY` — den må aldrig skiftes.
 - Mangler stadig: test af hyldebillede med rigtig hylde.
-
-
 
 ## 2026-09-29: Pulsudsving → "Hvad foretog du dig?" + aktiviteter overalt
 
@@ -202,7 +220,6 @@ sat fra 7 dage til 1 time (`src/lib/email-verification.ts`), så teksten er sand
 - "Slå fra" er understreget tekst, der åbner Indstillinger → Visning → Oplevelse af søvn med grøn ring om kontakten.
 - Grå infotekst under spørgsmålet følger "Vis tooltips". Store tal; valgt = grøn fyldt cirkel, hvidt tal, ingen Luk.
 - Efter 0,5 s glider popup'en ned som bundark med håndtag og forsvinder. Afventer test på telefon.
-
 
 ## 2026-09-28: Indberet fejl — sammenfoldelig "Note"
 
@@ -824,7 +841,6 @@ Next work:
    fejler pt., se G5 i OPEN-TASKS).
 2. Test på telefon med en rigtig vare (fx næring + ingredienser på samme side).
 
-
 ## 2026-09-26: Seriøs-låse + egne abonnementssider
 
 Gratis: 3 måneders historik, én målsætning (målvægt), ingen delmål. Låst til
@@ -839,7 +855,6 @@ mdr.-bokse. Lint + typecheck grønne for de ændrede filer; fuld build ikke kør
 Next work:
 1. Invitation/kobling af op til 5 familiemedlemmer til Seriøs Familie.
 2. Købsknappen åbner, når MobilePay-sessionens aftale-API er deployet.
-
 
 ## 2026-09-26: Oplevelse af søvn
 
@@ -1284,8 +1299,6 @@ kort, tekst og tomme flader må ikke markere noget).
 - Nu en ren SVG-streg-tegning af samme artwork (ramme, skive, to fyldte
   fodspor) i tabler-stil med `currentColor`, så den står skarpt i alle
   størrelser. ViewBox og PNG er trimmet til kanten (ingen luft omkring).
-
-
 
 ## 2026-09-25: Stregkode-scanner omlagt (lodret/skæv aflæsning, AR-afkodning)
 
