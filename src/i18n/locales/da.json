@@ -197,7 +197,13 @@
     "networkError": "Kunne ikke oprette kontoen — tjek din forbindelse og prøv igen",
     "healthConsent": "Jeg giver udtrykkeligt samtykke til, at Hello Cal behandler mine helbredsoplysninger (fx kost, vægt og kropsmål) for at levere appen, og jeg accepterer",
     "healthConsentTermsLink": "betingelserne",
-    "consentRequired": "Slå samtykket til, før du tilmelder dig."
+    "consentRequired": "Slå samtykket til, før du tilmelder dig.",
+    "family": {
+      "title": "Familie",
+      "intro": "Opret dig som medlem af en familiekonto. Indtast invitationskoden eller scan QR-koden.",
+      "enterCode": "Indtast invitationskode",
+      "scan": "Scan QR-kode"
+    }
   },
   "web": {
     "createDish": "Opret ret",
@@ -2696,13 +2702,16 @@
       "who": "Må se og taste ind for {name}"
     },
     "claim": {
-      "title": "Familiekode",
-      "intro": "Har du fået en kode fra din forælder eller en anden i familien? Indtast den her, og vælg din egen e-mail og adgangskode.",
-      "code": "Kode",
+      "title": "Familiekonto",
+      "intro": "Opret dig som medlem af en familiekonto. Indtast invitationskoden og den e-mail, den er lavet til — eller scan QR-koden.",
+      "code": "Invitationskode",
       "email": "E-mail",
       "password": "Adgangskode (mindst 8 tegn)",
       "submit": "Opret mit login",
-      "introQr": "Du er ved at oprette dit eget login med e-mailen {email}. Vælg din adgangskode."
+      "introQr": "Du er ved at oprette dit eget login med e-mailen {email}. Vælg din adgangskode.",
+      "continue": "Fortsæt",
+      "scan": "Scan QR-kode",
+      "tryAgain": "Prøv igen"
     },
     "copy": {
       "action": "Kopier til konto",
@@ -2782,6 +2791,13 @@
       "done": "Du er nu med i {owner}s familie.",
       "goToFamily": "Gå til Familie",
       "missing": "Linket mangler sin kode. Scan QR-koden igen."
+    },
+    "scan": {
+      "title": "Scan QR-kode",
+      "intro": "Hold telefonen over QR-koden, som den, der betaler for familien, viser under Profil → Familie.",
+      "notFamilyCode": "Det er ikke en QR-kode fra en Hello Cal-familie.",
+      "noCamera": "Kameraet kunne ikke åbnes. Giv adgang til kameraet, eller indtast koden i stedet.",
+      "typeInstead": "Indtast koden i stedet"
     }
   },
   "statSections": {

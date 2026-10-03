@@ -32,6 +32,11 @@ Brugerens krav: "Pulsen skal svare til den rigtige puls som måles, hvis ur tils
   (`codeCipher`) ud over hashen, så betaleren kan se den igen.
 - **En ny kode til samme e-mail erstatter den gamle.** Koder fra før denne
   ændring (uden e-mail) virker ikke længere — betaleren laver en ny.
+- **Tilmeldingssiden** har sektionen "Familie": "Opret dig som medlem af en
+  familiekonto. Indtast invitationskoden eller scan QR-koden." (ejerens tekst).
+  QR-koden kan scannes både med telefonens kamera-app og i appen
+  (`/family-code/scan`); kun links til `/family-code` og `/family-code/join`
+  med token accepteres.
 - **Tællere på betalerens familieside:** "x ud af y abonnenter tilmeldt"
   (profiler i familien / pladser) og "n/5 ekstra tilkøb". `Family.extraSeats`
   (højst 5) lægges oven i de 5 pladser. Selve købet af ekstra pladser er
