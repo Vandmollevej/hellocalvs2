@@ -563,6 +563,16 @@ grøn tekst. Brandet står ikke længere under produktnavnet, og certificeringer
 - Liste- eller galleri-visning, 48 pr. side. Alle valg ligger i URL'en, så visninger kan deles og tilbage-knappen virker. Et klik åbner produktets admin-side `/admin/products/[id]`.
 - Filtrene er dropdowns (`src/components/admin/FilterDropdown.tsx`, ingen knap-segmenter eller fritekst-felter). Mærke, sub brand, kategori, varetype og kilde er flervalg med afkrydsning og søgefelt; et produkt matcher, hvis det rammer mindst én valgt værdi. Kæde, status, billede, stregkode og sortering er enkeltvalg. Flervalg ligger som gentagne URL-parametre (`?brand=Arla&brand=Lurpak`).
 - `/admin/search` sender videre (med søgeord); den gamle hurtig-redigering er fjernet — redigering sker på produktsiden. Logik: `src/lib/admin-product-database.ts` (server) og `src/lib/admin-product-database-query.ts` (URL-kontrakt, klient-sikker).
+## 2026-10-02: "Opret straks" kan genoptages efter genstart
+
+- Årsag (marmeladeglas 2026-10-02): baggrundsaflæsningen kører i app-processen (`after()`), og hvert push til master deployer og genstarter appen. Blev processen stoppet midt i aflæsningen, stod navnet som "læses" for evigt, og ingen prøvede ingredienserne igen. Energi- og indholdsfotoene blev kun gemt, hvis OpenAI nåede at svare.
+- Nu gemmes alle fotos (forside, energi, indhold) og telefonens OCR-tekst ved oprettelsen i `quick_enrichment_jobs` (migration `20261002070000_quick_enrichment_jobs`).
+- Nyt app-job "Ny vare: genoptag aflæsning" (`quick-enrichment-recovery`, hvert 2. minut, `src/lib/quick-enrichment-jobs.ts`):
+  - genoptager kun de dele, der stadig står i `pendingFields`, når aflæsningen har stået stille i 10 min,
+  - opgiver efter 3 forsøg og rydder de ventende felter, så siden ikke venter for evigt (fejl i admin "Log"),
+  - prøver ingredienslisten igen, når den ikke blev fundet: ét foto pr. kørsel, stregkodefotoet først (på glas sidder stregkoden tit ved listen), så energifotoet, så samme foto igen. Højst 3 ekstra OpenAI-kald pr. vare. Overskriver aldrig en liste, som nogen har udfyldt imens,
+  - adopterer varer fra de sidste 14 dage uden job ud fra de fotos, AI-analyserne gemte (så varer fra før ændringen også bliver rettet).
+
 ## 2026-09-27: Tilføj → kamera med fire knapper og "opret straks"
 
 - Tilføj → Kamera (`/camera?mode=product`, `src/components/camera/ProductCaptureFlow.tsx`) har fire knapper under kameraet: Stregkode, Forside, Energi, Indhold. Kameraet starter altid på stregkoden (live-overlayet). Kendt stregkode → `/add/[id]`. Ukendt → forside → energi → indhold. `/camera/create` omdirigerer hertil.

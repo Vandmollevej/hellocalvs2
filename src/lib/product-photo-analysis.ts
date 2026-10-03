@@ -54,6 +54,9 @@ export type PhotoAnalysisInput = {
   // Telefonens land/sprog og appens sprog (src/lib/language-signals.ts),
   // valideres i buildBarcodeContext.
   signals?: unknown;
+  // Fotoet er allerede gemt (fx ved "opret straks", så en afbrudt aflæsning
+  // kan genoptages) — genbruges i stedet for at gemme en kopi.
+  storedImageUrl?: string | null;
 };
 
 function clamp01(value: number) {
@@ -71,7 +74,7 @@ function cleanBox(box: ProductFrontAnalysis["logoBox"]) {
   return width > 0.01 && height > 0.01 ? { x, y, width, height } : null;
 }
 
-export async function analyzeFrontPhoto({ photo, barcode, marketRegion, signals }: PhotoAnalysisInput): Promise<{
+export async function analyzeFrontPhoto({ photo, barcode, marketRegion, signals, storedImageUrl }: PhotoAnalysisInput): Promise<{
   analysisId: string;
   result: ProductFrontAnalysis;
   brandMatch: BrandMatch | null;
@@ -110,7 +113,7 @@ export async function analyzeFrontPhoto({ photo, barcode, marketRegion, signals 
 
   // Fotoet gemmes, så image-agenten kan fritskrabe logo og produkt.
   // Fejl her må aldrig stoppe selve forsideanalysen.
-  const imageUrl = await saveDataUrlImage(photo).catch(() => null);
+  const imageUrl = storedImageUrl ?? (await saveDataUrlImage(photo).catch(() => null));
 
   const analysis = await prisma.aiProductAnalysis.create({
     data: {
@@ -186,7 +189,7 @@ export async function analyzeBarcodePhotoLogo({
   return { imageUrl: row.imageUrl, result, brandMatch };
 }
 
-export async function analyzeNutritionPhoto({ photo, barcode, marketRegion, ocrText = "", signals }: PhotoAnalysisInput): Promise<{
+export async function analyzeNutritionPhoto({ photo, barcode, marketRegion, ocrText = "", signals, storedImageUrl }: PhotoAnalysisInput): Promise<{
   analysisId: string;
   result: NutritionAnalysis;
 }> {
@@ -208,7 +211,7 @@ export async function analyzeNutritionPhoto({ photo, barcode, marketRegion, ocrT
   // Kvalitetskontrol/billed-match (docs/DECISIONS.md 2026-09-19): gemmer
   // selve fotoet, så den lokale billedanalyse-agent kan sammenligne det mod
   // produktets forsidefoto. Fejl her må aldrig stoppe selve næringsaflæsningen.
-  const imageUrl = await saveDataUrlImage(photo).catch(() => null);
+  const imageUrl = storedImageUrl ?? (await saveDataUrlImage(photo).catch(() => null));
 
   const analysis = await prisma.aiProductAnalysis.create({
     data: {
@@ -230,7 +233,7 @@ export async function analyzeNutritionPhoto({ photo, barcode, marketRegion, ocrT
   return { analysisId: analysis.id, result: value };
 }
 
-export async function analyzeIngredientsPhoto({ photo, barcode, marketRegion, ocrText = "", signals }: PhotoAnalysisInput): Promise<{
+export async function analyzeIngredientsPhoto({ photo, barcode, marketRegion, ocrText = "", signals, storedImageUrl }: PhotoAnalysisInput): Promise<{
   analysisId: string;
   result: IngredientsAnalysis;
 }> {
@@ -256,7 +259,7 @@ export async function analyzeIngredientsPhoto({ photo, barcode, marketRegion, oc
   // Kvalitetskontrol/billed-match (docs/DECISIONS.md 2026-09-19): gemmer
   // selve fotoet, så den lokale billedanalyse-agent kan sammenligne det mod
   // produktets forsidefoto. Fejl her må aldrig stoppe selve ingrediens-aflæsningen.
-  const imageUrl = await saveDataUrlImage(photo).catch(() => null);
+  const imageUrl = storedImageUrl ?? (await saveDataUrlImage(photo).catch(() => null));
 
   const analysis = await prisma.aiProductAnalysis.create({
     data: {
@@ -282,7 +285,7 @@ export async function analyzeIngredientsPhoto({ photo, barcode, marketRegion, oc
 // først + ét samlet kald"). Bruges, når telefonens OCR ikke kunne læse
 // næringen, og ingredienslisten står på samme foto. Giver to rækker
 // (NUTRITION + INGREDIENTS), så prediction/correction virker som før.
-export async function analyzeLabelPhoto({ photo, barcode, marketRegion, ocrText = "", signals }: PhotoAnalysisInput): Promise<{
+export async function analyzeLabelPhoto({ photo, barcode, marketRegion, ocrText = "", signals, storedImageUrl }: PhotoAnalysisInput): Promise<{
   nutrition: { analysisId: string; result: NutritionAnalysis };
   ingredients: { analysisId: string; result: IngredientsAnalysis };
 }> {
@@ -312,7 +315,7 @@ export async function analyzeLabelPhoto({ photo, barcode, marketRegion, ocrText 
     wholeGrainEvidence: wholeGrain.evidence,
   };
   const regions = readRegions(aiValue) as unknown as Prisma.InputJsonValue;
-  const imageUrl = await saveDataUrlImage(photo).catch(() => null);
+  const imageUrl = storedImageUrl ?? (await saveDataUrlImage(photo).catch(() => null));
   const common = {
     barcode,
     marketRegion: context.marketRegion,
@@ -349,6 +352,7 @@ export async function recordLocalAnalysis({
   marketRegion,
   signals,
   prediction,
+  storedImageUrl,
 }: {
   kind: "NUTRITION" | "INGREDIENTS";
   photo: string;
@@ -356,9 +360,10 @@ export async function recordLocalAnalysis({
   marketRegion: string;
   signals?: unknown;
   prediction: NutritionAnalysis | IngredientsAnalysis;
+  storedImageUrl?: string | null;
 }): Promise<{ analysisId: string }> {
   const context = buildBarcodeContext(barcode, marketRegion, signals);
-  const imageUrl = await saveDataUrlImage(photo).catch(() => null);
+  const imageUrl = storedImageUrl ?? (await saveDataUrlImage(photo).catch(() => null));
   const row = await prisma.aiProductAnalysis.create({
     data: {
       kind,
