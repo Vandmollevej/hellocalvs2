@@ -56,6 +56,7 @@ import { BODY_MEASUREMENT_FIELDS } from "@/lib/body-measurements";
 import { COMPOSITION_GOAL_FIELDS } from "@/lib/goal-composition";
 import type { GoalDTO, GoalTargetDTO } from "@/lib/user-goals";
 import { Skeleton, SkeletonCards, SkeletonScreen } from "@/components/hf/Skeleton";
+import { GoalStatusSummary } from "@/components/calendar/GoalStatusSummary";
 
 const WEEKDAY_KEYS = [
   "calendar.weekdayMon",
@@ -206,10 +207,23 @@ function totalKcalForDate(dailyTotals: Map<string, number>, date: Date) {
 // budget gælder kun fra den dag, det blev sat; ældre dage beholder det gamle
 // faste mål. Deles med alle visninger via context, så props ikke skal
 // trækkes gennem hver visning.
-const DailyGoalContext = createContext<(date: Date) => number>(() => DAILY_KCAL_GOAL);
+// `effective` = budget + dagens registrerede motion (Activity.caloriesBurned):
+// det er den grænse, alle "inden for målet"-afgørelser i kalenderen bruger
+// (DECISIONS 2026-10-02). `base` er budgettet alene og vises som "Mål: X kcal".
+type DailyGoalLookup = { base: (date: Date) => number; effective: (date: Date) => number };
+const DailyGoalContext = createContext<DailyGoalLookup>({
+  base: () => DAILY_KCAL_GOAL,
+  effective: () => DAILY_KCAL_GOAL,
+});
 
+/** Mål inkl. motion — bruges til nået/ikke nået, "over" og balancer. */
 function useDailyGoal() {
-  return useContext(DailyGoalContext);
+  return useContext(DailyGoalContext).effective;
+}
+
+/** Mål uden motion — kun til visning af "Mål: X kcal". */
+function useBaseDailyGoal() {
+  return useContext(DailyGoalContext).base;
 }
 
 function dailyGoalMet(dailyTotals: Map<string, number>, date: Date, goalKcal: number) {
@@ -396,7 +410,24 @@ export default function CalendarPage() {
   // Enhedsdata (aktiv energi, skridt) pr. dag — docs/ACTIVITY-PAL.md F4.
   const [healthMetrics, setHealthMetrics] = useState<HealthMetricSample[]>([]);
   const [budgetSnapshots, setBudgetSnapshots] = useState<BudgetSnapshot[]>([]);
-  const goalForDate = useMemo(() => makeBudgetLookup(budgetSnapshots, DAILY_KCAL_GOAL), [budgetSnapshots]);
+  const baseGoalForDate = useMemo(() => makeBudgetLookup(budgetSnapshots, DAILY_KCAL_GOAL), [budgetSnapshots]);
+  // Registreret motion pr. dag lægges oven i dagens mål (DECISIONS 2026-10-02).
+  const activityBonusByDay = useMemo(() => {
+    const map = new Map<string, number>();
+    for (const activity of activities) {
+      const key = dayKey(new Date(activity.startedAt));
+      map.set(key, (map.get(key) ?? 0) + activity.caloriesBurned);
+    }
+    return map;
+  }, [activities]);
+  const goalForDate = useMemo(
+    () => (date: Date) => baseGoalForDate(date) + (activityBonusByDay.get(dayKey(date)) ?? 0),
+    [baseGoalForDate, activityBonusByDay],
+  );
+  const dailyGoalLookup = useMemo<DailyGoalLookup>(
+    () => ({ base: baseGoalForDate, effective: goalForDate }),
+    [baseGoalForDate, goalForDate],
+  );
   const [weekdaySchedules, setWeekdaySchedules] = useState<Record<number, SleepScheduleEntry>>({});
   const [workShifts, setWorkShifts] = useState<Record<string, WorkShiftEntry>>({});
   const [goals, setGoals] = useState<GoalDTO[]>([]);
@@ -496,15 +527,17 @@ export default function CalendarPage() {
     let consumed = 0;
     let metCount = 0;
     let goalSum = 0;
+    let bonusKcal = 0;
     for (let day = 1; day <= consideredDays; day += 1) {
       const date = new Date(year, month, day);
       const total = totalKcalForDate(dailyTotals, date);
-      const goal = goalForDate(date);
       consumed += total;
-      goalSum += goal;
-      if (total > 0 && total <= goal) metCount += 1;
+      // "Mål" vises uden motion; motionen står som egen linje og tæller med i nået/tilbage.
+      goalSum += baseGoalForDate(date);
+      bonusKcal += activityBonusByDay.get(dayKey(date)) ?? 0;
+      if (total > 0 && total <= goalForDate(date)) metCount += 1;
     }
-    const remaining = goalSum - consumed;
+    const remaining = goalSum + bonusKcal - consumed;
 
     let sevenDayConsumed = 0;
     for (let offset = 0; offset < 7; offset += 1) {
@@ -517,8 +550,8 @@ export default function CalendarPage() {
     let streak = 0;
     while (dailyGoalMet(dailyTotals, addDays(today, -streak), goalForDate(addDays(today, -streak)))) streak += 1;
 
-    return { isCurrentMonth, consideredDays, metCount, remaining, sevenDayRemaining, streak };
-  }, [dailyTotals, year, month, today, goalForDate]);
+    return { isCurrentMonth, consideredDays, metCount, remaining, sevenDayRemaining, streak, goalSum, consumed, bonusKcal };
+  }, [dailyTotals, activityBonusByDay, year, month, today, goalForDate, baseGoalForDate]);
 
   useEffect(() => {
     function handleEscape(event: KeyboardEvent) {
@@ -748,7 +781,7 @@ export default function CalendarPage() {
   const periodLabel = effectiveView === "week" || effectiveView === "list" ? weekLabel : monthLabel;
 
   return (
-    <DailyGoalContext.Provider value={goalForDate}>
+    <DailyGoalContext.Provider value={dailyGoalLookup}>
     <HfScreen
       title={isLandscape ? periodLabel : t("nav.calendar")}
       titleClassName={isLandscape ? "hf-appbar__title--tight capitalize" : undefined}
@@ -2057,14 +2090,14 @@ function DayDetails({
   }, [loading, dateKey]);
 
   const dayKcal = registrations.reduce((sum, registration) => sum + registration.kcalSnapshot, 0);
-  const dayGoalKcal = useDailyGoal()(date);
-  const remaining = dayGoalKcal - dayKcal;
+  const dayBonusKcal = activities.reduce((sum, activity) => sum + activity.caloriesBurned, 0);
+  // Mål uden motion til visning; nået/ikke nået regnes mod mål + motion.
+  const dayGoalKcal = useBaseDailyGoal()(date);
   const hasEntries = registrations.length > 0;
-  const met = hasEntries && dayKcal <= dayGoalKcal;
-  // Dagsstatus: fremtidige dage viser ingen status, historiske dage i datid.
+  const met = hasEntries && dayKcal <= dayGoalKcal + dayBonusKcal;
+  // Dagsstatus: fremtidige dage viser ingen status.
   const todayKey = dayKey(new Date());
   const isFutureDay = dateKey > todayKey;
-  const isPastDay = dateKey < todayKey;
 
   function goToAddFlow(hour: number) {
     // Opens the same "everything you can add" menu as the front page's
@@ -2337,42 +2370,13 @@ function DayDetails({
           </>
         )}
 
-        <div className="mt-4 space-y-1 pr-1">
-          {!isFutureDay && (
-          <div className="flex items-start gap-2">
-            <span
-              className={`mt-0.5 flex size-5 shrink-0 items-center justify-center rounded-full ${
-                met ? "bg-hf-green" : hasEntries ? "bg-hf-red-dark" : "bg-hf-gray"
-              }`}
-            >
-              {met ? (
-                <IconCheck size={13} stroke={3} className="text-hf-white" aria-hidden="true" />
-              ) : (
-                <span className="size-2 rounded-full bg-hf-white" aria-hidden="true" />
-              )}
-            </span>
-            <p className="hf-type-body hf-type-strong min-w-0 text-hf-black">
-              {hasEntries
-                ? met
-                  ? t(isPastDay ? "calendar.dailyGoalReachedPast" : "calendar.dailyGoalReached")
-                  : t(isPastDay ? "calendar.dailyGoalExceededPast" : "calendar.dailyGoalExceeded")
-                : t(isPastDay ? "calendar.dailyGoalNonePast" : "calendar.dailyGoalNone")}
-            </p>
-          </div>
-          )}
-          <p className="hf-type-body whitespace-nowrap text-right text-text-muted">
-            {t("calendar.goalLabel", { goal: dayGoalKcal })}
-          </p>
-          {remaining >= 0 ? (
-            <p className="hf-type-body whitespace-nowrap text-right text-hf-black">
-              {t("calendar.remainingToday", { amount: Math.round(remaining) })}
-            </p>
-          ) : (
-            <p className="hf-type-body hf-type-strong whitespace-nowrap text-right text-hf-red-dark">
-              {t("calendar.exceededCalories", { amount: Math.round(Math.abs(remaining)) })}
-            </p>
-          )}
-        </div>
+        <GoalStatusSummary
+          className="mt-4 pr-1"
+          status={isFutureDay ? null : hasEntries ? (met ? "met" : "missed") : "none"}
+          goalKcal={dayGoalKcal}
+          intakeKcal={dayKcal}
+          bonusKcal={dayBonusKcal}
+        />
       </div>
 
       {!goalPopupDismissed && goals.length > 0 && (
@@ -2890,6 +2894,9 @@ type MonthlyStatusData = {
   remaining: number;
   sevenDayRemaining: number;
   streak: number;
+  goalSum: number;
+  consumed: number;
+  bonusKcal: number;
 };
 
 function MonthlyStatus({ status }: { status: MonthlyStatusData }) {
@@ -2909,24 +2916,14 @@ function MonthlyStatus({ status }: { status: MonthlyStatusData }) {
         </div>
       )}
 
-      <div className="flex items-start justify-start gap-2 text-left">
-        <span
-          className={`mt-1 flex size-5 shrink-0 items-center justify-center rounded-full ${
-            withinGoal ? "bg-hf-green" : "bg-hf-red-muted"
-          }`}
-        >
-          {withinGoal ? (
-            <IconCheck size={13} stroke={3} className="text-hf-white" aria-hidden="true" />
-          ) : (
-            <span className="hf-type-micro hf-type-strong leading-none text-hf-white" aria-hidden="true">
-              ÷
-            </span>
-          )}
-        </span>
-        <p className="hf-type-body hf-type-strong text-hf-black">
-          {withinGoal ? t("calendar.withinGoal") : t("calendar.notWithinGoal")}
-        </p>
-      </div>
+      <GoalStatusSummary
+        className="text-left"
+        period="month"
+        status={withinGoal ? "met" : "missed"}
+        goalKcal={status.goalSum}
+        intakeKcal={status.consumed}
+        bonusKcal={status.bonusKcal}
+      />
     </div>
   );
 }

@@ -403,15 +403,17 @@ def upsert_recipe_ingredients(conn, product_id, recipe):
 
 
 def run_once(conn):
+    # Returnerer (besked, antal udført) til admin "Robotter"/"Nattens kørsler".
     retter_category_id = get_category_id(conn, "Retter")
     if not retter_category_id:
         log.error('category "Retter" not found — has migration 20260829010000_hellofresh_catalog run?')
-        return
+        raise RuntimeError('Kategorien "Retter" findes ikke — er migration 20260829010000_hellofresh_catalog kørt?')
 
     entries = fetch_sitemap_entries()
     log.info("sitemap has %d recipe urls", len(entries))
 
     processed = 0
+    failed = 0
     for url, lastmod in entries:
         if processed >= BATCH_SIZE:
             break
@@ -434,9 +436,16 @@ def run_once(conn):
                 log.info("imported %s (%s)", recipe.get("name"), recipe_id)
         except Exception:  # noqa: BLE001 - one bad recipe must not stop the batch
             conn.rollback()
+            failed += 1
             log.exception("failed to import recipe at %s", url)
 
     log.info("cycle complete — processed %d recipes this pass", processed)
+    if processed == 0 and failed == 0:
+        return "Ingen nye eller ændrede opskrifter", 0
+    message = f"{processed} opskrifter importeret"
+    if failed:
+        message += f", {failed} fejlede"
+    return message, processed
 
 
 def main():

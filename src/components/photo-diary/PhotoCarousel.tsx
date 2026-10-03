@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "@/i18n/LocaleProvider";
 import { formatPhotoDay, formatPhotoTime, wrapIndex, type DiaryPhoto } from "@/lib/photo-diary";
+import { PhotoSelectBox } from "@/components/photo-diary/PhotoSelectBox";
 
 // Mål fra HelloFresh-appens "Kogebog"-karrusel (brugerens skærmbillede
 // 2026-09-25): det høje kort er 160 × 333 pt i en 361 pt bred karrusel
@@ -41,6 +42,8 @@ export function PhotoCarousel({
   index,
   onIndexChange,
   onOpen,
+  selectedId,
+  onSelect,
 }: {
   // Ældste først.
   photos: DiaryPhoto[];
@@ -48,6 +51,10 @@ export function PhotoCarousel({
   index: number;
   onIndexChange: (index: number) => void;
   onOpen: (index: number) => void;
+  // Før/efter: billedet, der er krydset af som billede 1.
+  selectedId?: string | null;
+  // Uden onSelect (eller med under to billeder) vises ingen afkrydsningsboks.
+  onSelect?: (index: number) => void;
 }) {
   const { t } = useTranslation();
   const count = photos.length;
@@ -277,24 +284,36 @@ export function PhotoCarousel({
           const photoIndex = wrapIndex(v, count);
           const photo = photos[photoIndex];
           const isCenter = v === pos;
+          const selected = photo.id === selectedId;
           return (
             <div key={v} className="flex min-w-0 flex-col gap-2" style={style} aria-hidden={!isCenter}>
-              <button
-                type="button"
-                tabIndex={isCenter ? 0 : -1}
-                onClick={() => onOpen(photoIndex)}
-                aria-label={`${t("photoDiary.photoAlt")}, ${formatPhotoDay(photo.takenAt)}`}
-                className="block w-full overflow-hidden rounded-2xl bg-hf-tan"
-                style={{ aspectRatio: CARD_ASPECT }}
-              >
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={photo.url}
-                  alt=""
-                  draggable={false}
-                  className="pointer-events-none h-full w-full object-cover"
-                />
-              </button>
+              <div className="relative">
+                <button
+                  type="button"
+                  tabIndex={isCenter ? 0 : -1}
+                  onClick={() => onOpen(photoIndex)}
+                  aria-label={`${t("photoDiary.photoAlt")}, ${formatPhotoDay(photo.takenAt)}`}
+                  className="block w-full overflow-hidden rounded-2xl bg-hf-tan"
+                  style={{ aspectRatio: CARD_ASPECT }}
+                >
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={photo.url}
+                    alt=""
+                    draggable={false}
+                    className="pointer-events-none h-full w-full object-cover"
+                  />
+                </button>
+                {onSelect && count >= 2 && (
+                  <PhotoSelectBox
+                    checked={selected}
+                    number={selected ? 1 : undefined}
+                    label={`${t("photoDiary.compare.selectAria")}, ${formatPhotoDay(photo.takenAt)}`}
+                    tabIndex={isCenter ? 0 : -1}
+                    onToggle={() => onSelect(photoIndex)}
+                  />
+                )}
+              </div>
               <div>
                 <p className="hf-type-card-title truncate">{formatPhotoDay(photo.takenAt)}</p>
                 <p className="hf-type-caption">

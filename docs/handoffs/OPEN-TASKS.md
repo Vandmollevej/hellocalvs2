@@ -59,6 +59,7 @@ Ejer: G1-overtagelse, konto C (2026-09-24)
 | — | Dagvisning: træk søvn-håndtag forbi kanten (scroller med) + "Nattens søvn: X,XX timer" i nattens grå felt | Færdig (flettet i master fra cloud-branch `claude/cloud-session-credits-expired-7504pf`) | Afventer brugerens test på telefon |
 | — | Dagvisning: sengetids-håndtag altid nederst (også ved sengetid 00:00) + manglende tekst "calendar.remainingToday" | Færdig (flettet i master fra `claude/calendar-slider-bedtime-text-1cp8lf`) | Afventer brugerens test på telefon |
 | — | Kalender: dage vi er forbi vises grå og ikke-fede (måned, uge, liste) | Færdig (PR #119, branch `claude/calendar-past-days-muted`) | Afventer brugerens visuelle godkendelse på telefon |
+| — | Statusblok (dag + måned): flamme + grøn "+ N kcal" og "Mål" øverst, kort statusbjælke, "Tilbage"/"Overskredet" under; motion tæller med i målet i hele kalenderen; fælles komponent `GoalStatusSummary` | Færdig (PR #122, branch `claude/kalender-maalstatus-blok`) | Afventer brugerens test på telefon. Forside-kort/widgets regner stadig uden motion (G2/andre) |
 
 ## G2 — Statistik-siden (redigering, drag/drop)
 Filer: statistik-siden, `src/components/StatsWheel.tsx`, `src/lib/frontpage-layout.ts`, `src/lib/frontpage-stats.ts`.
@@ -258,3 +259,11 @@ Ejer: SMS-sessionen (2026-10-02)
 | --- | --- | --- | --- |
 | — | 6-cifret SMS-kode ved tilmelding + glemt adgangskode (TeamMessage) og login-godkendelse med push | Venter på bruger | Branch `claude/teammessage-sms` er klar, men ikke flettet. Se STATUS 2026-10-03 "Roadmap": TeamMessage-env + VAPID-nøgler på serveren, derefter flet + test |
 | — | 6-cifret SMS-kode ved tilmelding + glemt adgangskode (TeamMessage) og login-godkendelse med push | Venter på bruger | Branch `claude/teammessage-sms` er klar, men ikke flettet. Se STATUS 2026-10-03 "Roadmap": TeamMessage-env + VAPID-nøgler på serveren, derefter flet + test |
+
+## G-BODYCHART — Kropsmål som statistikgrafer
+Filer: `src/components/BodyMeasurementChart.tsx`, `src/lib/body-measurement-series.ts` (+ test), `src/lib/stat-charts.ts` (`body:*`), `src/app/statistics/{page,unused-charts/page,unused-cards/page}.tsx`, `src/app/profile/body-measurements/page.tsx`, i18n `bodyMeasurementChart.*`.
+Ejer: ledig (Kropsmål-graf-sessionen er arkiveret 2026-10-03)
+
+| Id | Opgave | Status | Næste skridt |
+| --- | --- | --- | --- |
+| — | Kropsmål-grafer: tegning til venstre, forløb af seneste 10 målinger til højre; følger cm/tommer | Færdig i kode på branch `claude/kropsmaal-statistikgraf` (PR #156, kladde) — ikke flettet | Gennemgå PR #156, flet master ind ved konflikt (typisk kun `docs/STATUS.md`: behold begge sider), kør lint/typecheck/build og flet til master. Tjek på telefon: Statistik → Tilføj → Kropsmål |

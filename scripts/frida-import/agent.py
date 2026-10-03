@@ -255,21 +255,22 @@ def mark_imported(conn, article_id, title):
 
 
 def run_once(conn):
+    # Returnerer (besked, antal udført) til admin "Robotter"/"Nattens kørsler".
     article = find_latest_article()
     if not article:
         log.warning("no Frida dataset found via Figshare search")
-        return
+        return "Ingen Frida-udgivelse fundet på Figshare", 0
 
     article_id, title = article["id"], article["title"]
     if already_imported(conn, article_id):
         log.info("already imported: %s (%s)", title, article_id)
-        return
+        return f"Ingen ny Frida-udgivelse ({title} er allerede importeret)", 0
 
     log.info("new Frida release found: %s (%s)", title, article_id)
     download_url = find_dataset_download_url(article_id)
     if not download_url:
         log.error("no .xlsx file found on article %s", article_id)
-        return
+        raise RuntimeError(f"Ingen .xlsx-fil fundet på Figshare-artikel {article_id}")
 
     workbook = download_workbook(download_url)
     foods = parse_foods(workbook)
@@ -284,6 +285,10 @@ def run_once(conn):
         inserted,
         updated,
         backfilled,
+    )
+    return (
+        f"{title}: {inserted} nye og {updated} opdaterede fødevarer, {backfilled} ingredienser udfyldt",
+        inserted + updated,
     )
 
 
