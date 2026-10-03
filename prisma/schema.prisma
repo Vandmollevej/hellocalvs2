@@ -66,6 +66,10 @@ model User {
   phone           String?
   phoneVerifiedAt DateTime?
 
+  // Godkend login fra ny enhed med push i en anden enhed, hvor man allerede er
+  // logget ind (docs/DECISIONS.md 2026-10-03). Slås til af brugeren selv.
+  loginApprovalEnabled Boolean @default(false)
+
   // Sleep pattern: default bedtime/wake time, with the option of
   // individual times per weekday (SleepSchedule) for users with shifting
   // work hours.
@@ -468,6 +472,24 @@ model SmsVerification {
 
   @@index([phone, createdAt])
   @@map("sms_verifications")
+}
+
+// Login-godkendelse: et login med adgangskode fra en ny enhed venter her, til
+// brugeren trykker "Godkend" på en anden, allerede logget ind enhed (push).
+// Den ventende browser kender kun secret'en (hash gemt) og henter først
+// sessionen, når status er APPROVED. status: PENDING | APPROVED | DENIED | CONSUMED.
+model LoginApproval {
+  id         String   @id @default(cuid())
+  userId     String
+  secretHash String
+  device     String
+  country    String?
+  status     String   @default("PENDING")
+  expiresAt  DateTime
+  createdAt  DateTime @default(now())
+
+  @@index([userId, status])
+  @@map("login_approvals")
 }
 
 // Engangslink til ændring af den låste start-vægt (docs/DECISIONS.md

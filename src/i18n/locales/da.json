@@ -59,6 +59,30 @@
     "sentMessage": "Hvis kontoen findes, har vi sendt en mail med et link til at nulstille adgangskoden.",
     "backToLogin": "Tilbage til log ind"
   },
+  "loginApproval": {
+    "title": "Godkend login",
+    "description": "Når det er slået til, skal et login med adgangskode fra en ny enhed godkendes med en notifikation på en enhed, hvor du allerede er logget ind.",
+    "toggle": "Godkend nye logins med notifikation",
+    "on": "Til",
+    "off": "Fra",
+    "hint": "Tillad notifikationer på denne enhed, når du bliver spurgt. På iPhone skal appen først lægges på hjemmeskærmen.",
+    "approveTitle": "Godkend login",
+    "nonePending": "Der er ingen logins, der venter på godkendelse.",
+    "question": "Er det dig, der logger ind fra {device}?",
+    "approve": "Godkend",
+    "deny": "Afvis",
+    "waitingTitle": "Godkend på din anden enhed",
+    "waitingBody": "Vi har sendt en notifikation til en enhed, hvor du er logget ind. Tryk Godkend dér for at fortsætte.",
+    "waitingCancel": "Annuller",
+    "denied": "Login blev afvist.",
+    "expired": "Godkendelsen udløb. Prøv at logge ind igen.",
+    "error": {
+      "unsupported": "Denne browser understøtter ikke notifikationer.",
+      "denied": "Notifikationer er blokeret. Tillad dem i browserens indstillinger.",
+      "not-configured": "Notifikationer er ikke slået til på serveren endnu.",
+      "failed": "Noget gik galt — prøv igen"
+    }
+  },
   "sms": {
     "phoneLabel": "Mobilnummer",
     "phonePlaceholder": "12 34 56 78",
