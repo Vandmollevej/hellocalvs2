@@ -1798,6 +1798,18 @@
     "nothingMissing": "Nothing is missing on this product.",
     "back": "Back to the product"
   },
+  "rescan": {
+    "peek": "Earn {points} points",
+    "headline": "Earn {points} points by scanning the item again, to help keep the data accurate.",
+    "hintFull": "Take photos of the front, the energy and the contents – just like when you create an item.",
+    "hintFront": "Take a photo of the front so we can make a proper product image.",
+    "handle": "Drag down to read more",
+    "expand": "Show more about earning points",
+    "collapse": "Hide",
+    "restore": "Show the banner again",
+    "thanks": "Thank you! You'll get {points} points once the photos have been read.",
+    "submitFailed": "The photos couldn't be sent. Try again."
+  },
   "search": {
     "title": "Search",
     "add": "Add",

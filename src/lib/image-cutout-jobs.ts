@@ -127,3 +127,21 @@ export async function linkCutoutJobsToProduct({
     });
   }
 }
+
+// Billedrobotten skriver kun et fritlagt resultat, når varen ikke allerede har
+// et ventende (`pendingImageUrl IS NULL`, scripts/image-agent/cutout.py). Et
+// bedre forsidebillede ("Scan varen igen" / den natlige AI-aflæsning,
+// docs/DECISIONS.md 2026-10-02) skal derfor fjerne det ikke-godkendte forslag
+// og — med `sourceUrl` — de fritlægningsjob, der stadig venter på det gamle
+// billede, så de ikke når frem bagefter.
+export async function discardPendingFrontImage(productId: string, sourceUrl?: string | null) {
+  if (sourceUrl) {
+    await prisma.imageCutoutJob.deleteMany({
+      where: { productId, kind: "PRODUCT_FRONT", sourceUrl, appliedAt: null },
+    });
+  }
+  await prisma.product.updateMany({
+    where: { id: productId, imageStatus: "PENDING" },
+    data: { pendingImageUrl: null, imageStatus: "NONE" },
+  });
+}

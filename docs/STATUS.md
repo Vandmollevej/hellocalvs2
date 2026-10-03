@@ -167,6 +167,14 @@ Last updated: 2026-10-02
 - Tale: forslag fra en tidligere optagelse bliver stående, når en ny optagelse starter (hver optagelse er sin egen "batch"; kun den igangværende optagelses forslag erstattes af live-tolkningen), så flere forslag kan vente samtidig.
 - Knapperne bruger `.hf-btn-primary`/`.hf-btn-secondary` (design.md §6.2); den grønne knap på talesiden er væk. Nye tekster da/en (`voice.suggested`, `voice.addOne`, `web.chatSuggested`, `web.chatAddOne`, `web.chatAddAll`).
 - Lint, typecheck og build grønne. Ikke live-testet (ingen lokal DB/mikrofon) — test på telefon og i desktop-chatten.
+## 2026-10-02: "Scan varen igen" — points-banner + natlig AI på Open Food Facts-billeder
+
+- Bygget efter brugerens krav (se DECISIONS.md samme dato): banner under headeren på `/add/[id]` efter scanning (`src/components/add/RescanBanner.tsx`), kameraflowet har en genscannings-tilstand (`ProductCaptureFlow` med `rescan`), API `POST /api/products/[id]/rescan` og `/rescan/offer`, baggrundsaflæsning i `src/lib/product-rescan.ts`, natligt job `external-image-ai` (`src/lib/external-image-ai.ts`).
+- Migration `20261003050000_product_rescan` skal køre ved deploy.
+- Efter brugerens svar: også USDA-varer og også fra søgningen; points straks efter AI. Genscannede Open Food Facts-/USDA-varer overtages som vores egne og bliver søgbare; originalen fjernes.
+- Tests (`src/lib/product-rescan-offer.test.mjs`), lint, typecheck og build grønne. Ikke live-testet (ingen lokal DB/login/kamera) — test på telefon: scan en Open Food Facts-vare, træk banneret ned, tag de tre fotos.
+
+
 ## 2026-10-02: Kameraflowet — rigtige stillbilleder + nyt foto af indholdet
 
 - Fejlen: marmelade (5711954020055) fik ingen ingredienser, fordi indholdsfotoet var et sløret 1080p-videobillede, og OpenAI svarede tomt ("for sløret"). Ingen genstart var involveret. Se DECISIONS 2026-10-02.

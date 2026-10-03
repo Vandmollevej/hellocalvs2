@@ -1191,6 +1191,17 @@ model Product {
   // "nutrition", "ingredients"). /add/[id] viser en grøn load-cirkel i dem,
   // indtil src/lib/quick-product-enrichment.ts fjerner dem igen.
   pendingFields    String[]               @default([])
+  // "Scan varen igen" (docs/DECISIONS.md 2026-10-02): banneret "Optjen 10
+  // points" på /add/[id] efter en scanning af en Open Food Facts-vare eller
+  // en af vores egne online-varer uden fritlagt PNG. rescanOfferedAt = første
+  // gang banneret blev vist; rescannedAt/-ByUserId = den første (og eneste)
+  // genscanning, som giver points. externalImageAnalyzedAt = den natlige
+  // OpenAI-aflæsning af Open Food Facts-billedet (job "external-image-ai"),
+  // når banneret blev vist, men ingen scannede varen igen.
+  rescanOfferedAt         DateTime?
+  rescannedAt             DateTime?
+  rescannedByUserId       String?
+  externalImageAnalyzedAt DateTime?
   discontinued     Boolean                @default(false)
   // Butiksvare uden kalorietal i produktarkene (docs/DECISIONS.md 2026-10-02):
   // kcal/protein/kulhydrat/fedt er 0 som pladsholder, ikke målte værdier.
@@ -2222,6 +2233,9 @@ enum PointsReason {
   // Brugeren udfyldte en manglende ting (billede, logo, energi, indhold) paa
   // en eksisterende vare via banneret paa varesiden. Gaelder ogsaa admin.
   PRODUCT_UPDATED
+  // "Scan varen igen" (docs/DECISIONS.md 2026-10-02): 10 points for den
+  // første genscanning af en Open Food Facts-vare / egen vare uden PNG.
+  PRODUCT_RESCAN
 }
 
 model PointsTransaction {

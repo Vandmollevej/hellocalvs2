@@ -1779,6 +1779,18 @@
     "nothingMissing": "Der mangler ikke noget på denne vare.",
     "back": "Tilbage til varen"
   },
+  "rescan": {
+    "peek": "Optjen {points} points",
+    "headline": "Optjen {points} points ved at scanne varen på ny, for at sikre kvaliteten.",
+    "hintFull": "Tag billeder af forsiden, energien og indholdet – præcis som når du opretter en vare.",
+    "hintFront": "Tag et billede af forsiden, så vi kan lave et pænt produktbillede.",
+    "handle": "Træk ned for at læse mere",
+    "expand": "Vis mere om at optjene points",
+    "collapse": "Skjul",
+    "restore": "Vis banneret igen",
+    "thanks": "Tak! Du får {points} points, når billederne er læst.",
+    "submitFailed": "Billederne kunne ikke sendes. Prøv igen."
+  },
   "search": {
     "title": "Søg",
     "add": "Tilføj",

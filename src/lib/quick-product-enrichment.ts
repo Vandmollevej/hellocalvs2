@@ -50,10 +50,14 @@ export type QuickEnrichmentInput = {
   // Stregkode-fotoets AiProductAnalysis (kind=BARCODE), hvis det nåede at
   // blive gemt — læses for logo og variant.
   barcodeAnalysisId?: string | null;
+  // "Scan varen igen" (docs/DECISIONS.md 2026-10-02): varen er ikke ny, så
+  // dens registreringer kan være dage gamle og skal beholde deres snapshot,
+  // og en mislykket næringsaflæsning må ikke nedgradere dens kilder.
+  existingProduct?: boolean;
 };
 
 // Atomisk i SQL: aflæsningerne rydder hver sine felter samtidig.
-async function clearPending(productId: string, fields: PendingField[]) {
+export async function clearPending(productId: string, fields: PendingField[]) {
   await prisma.$executeRaw`
     UPDATE "products"
     SET "pendingFields" = ARRAY(
@@ -65,7 +69,8 @@ async function clearPending(productId: string, fields: PendingField[]) {
 // Registreringer lavet, mens næringen stadig blev aflæst, fik et foreløbigt
 // snapshot. Varen er få minutter gammel, så alle dens registreringer stammer
 // fra den periode og regnes om med de aflæste tal.
-async function refreshRegistrationSnapshots(productId: string) {
+async function refreshRegistrationSnapshots(productId: string, input?: Pick<QuickEnrichmentInput, "existingProduct">) {
+  if (input?.existingProduct) return;
   const product = await prisma.product.findUnique({
     where: { id: productId },
     select: { name: true, kcalPer100g: true, proteinPer100g: true, carbsPer100g: true, fatPer100g: true },
@@ -90,9 +95,12 @@ async function refreshRegistrationSnapshots(productId: string) {
   }
 }
 
-async function enrichFront(input: QuickEnrichmentInput) {
+// Returnerer, om forsidefotoet blev genkendt som en vare (navn, logo eller
+// vareboks) — null, hvis aflæsningen fejlede teknisk.
+export async function enrichFront(input: QuickEnrichmentInput): Promise<boolean | null> {
   const { productId } = input;
   const startedAt = Date.now();
+  let recognized: boolean | null = null;
   try {
     const { analysisId, result, brandMatch } = await analyzeFrontPhoto({
       photo: input.frontPhoto,
@@ -112,6 +120,7 @@ async function enrichFront(input: QuickEnrichmentInput) {
     // docs/DECISIONS.md 2026-09-23) — ellers endte fx "Uden brus" kun i
     // variant-feltet, og varen hed bare "Vand".
     const productName = result.productName?.trim() ?? "";
+    recognized = Boolean(productName || result.logoText?.trim() || result.productBox);
     const variant = result.variant?.trim() ?? "";
     const name = productName
       ? variant && !productName.toLowerCase().includes(variant.toLowerCase())
@@ -164,8 +173,9 @@ async function enrichFront(input: QuickEnrichmentInput) {
   } finally {
     await clearPending(productId, ["name", "brand"]);
     // Navnet indgår i registreringernes titleSnapshot.
-    await refreshRegistrationSnapshots(productId).catch(() => {});
+    await refreshRegistrationSnapshots(productId, input).catch(() => {});
   }
+  return recognized;
 }
 
 // Stregkode-fotoet (docs/DECISIONS.md 2026-09-28): logoet står ikke altid på
@@ -220,7 +230,7 @@ async function enrichBarcodeLogo(input: QuickEnrichmentInput) {
     }
     if (Object.keys(changes).length) {
       await prisma.product.update({ where: { id: productId }, data: changes });
-      if (changes.name) await refreshRegistrationSnapshots(productId).catch(() => {});
+      if (changes.name) await refreshRegistrationSnapshots(productId, input).catch(() => {});
     }
 
     // Logo-jobbet kobles til varens brand, når logoet er det brand;
@@ -279,7 +289,11 @@ type Read<T> = { analysisId: string; result: T } | null;
 //   OCR-sikkerhed >= 85 % (src/lib/local-label.ts).
 // - Mangler næringen, og står indholdet på samme foto: ét kald til begge.
 // - Ellers kun det kald, der mangler (to separate fotos kræver to kald).
-async function enrichLabel(input: QuickEnrichmentInput) {
+// Hvad der blev læst fra brugerens fotos — "Scan varen igen" bruger det til
+// at afgøre, om varen kan overtages som vores egen (src/lib/product-rescan.ts).
+export type LabelReadOutcome = { nutritionComplete: boolean; ingredientsRead: boolean; saturatedFatRead: boolean };
+
+export async function enrichLabel(input: QuickEnrichmentInput): Promise<LabelReadOutcome> {
   const { productId } = input;
   const base = { barcode: input.barcode, marketRegion: input.marketRegion, signals: input.signals };
   const nutritionText = input.nutritionOcrText ?? "";
@@ -386,9 +400,9 @@ async function enrichLabel(input: QuickEnrichmentInput) {
     console.error("Quick product label could not be saved", productId, error);
     labelErrors.push(`save: ${errorText(error)}`);
   } finally {
-    await recordNutrientSources(productId, nutrition?.analysisId ?? null);
+    if (nutrition || !input.existingProduct) await recordNutrientSources(productId, nutrition?.analysisId ?? null);
     await clearPending(productId, ["nutrition", "ingredients"]);
-    await refreshRegistrationSnapshots(productId).catch(() => {});
+    await refreshRegistrationSnapshots(productId, input).catch(() => {});
   }
 
   const read = nutrition?.result;
@@ -412,6 +426,14 @@ async function enrichLabel(input: QuickEnrichmentInput) {
       errors: labelErrors,
     },
   });
+  return {
+    nutritionComplete,
+    ingredientsRead: Boolean(ingredients?.result.ingredientsText),
+    saturatedFatRead:
+      (read?.basis === "100g" || read?.basis === "100ml") &&
+      typeof read?.saturatedFatPer100g === "number" &&
+      read.saturatedFatPer100g >= 0,
+  };
 }
 
 export async function enrichQuickProduct(input: QuickEnrichmentInput) {

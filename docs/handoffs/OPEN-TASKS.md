@@ -226,6 +226,13 @@ Ejer: Chatbot-sessionen (cloud), branch `claude/ai-chatbot-support`
 | Id | Opgave | Status | Næste skridt |
 | --- | --- | --- | --- |
 | chatbot | AI-chatbot øverst i app og web med medarbejder og kontaktformular (ingen telefon); admin → Brugere → Chatbot med oftest spurgt, Q&A-tabel, hele tråde og brugerinfo | Færdig (kode, se DECISIONS 2026-10-02) | Merge + deploy (migration `20261002120000_chatbot`). Test på mobil og desktop |
+## G-RESCAN — "Scan varen igen" (10 points) + natlig AI på Open Food Facts-billeder
+Filer: `src/components/add/RescanBanner.tsx`, `src/lib/product-rescan*.ts`, `src/lib/external-image-ai.ts`, `src/app/api/products/[id]/rescan/**`. Rører også `ProductCaptureFlow.tsx` (ny `rescan`-prop), `AddProductView.tsx` (banneret), `quick-product-enrichment.ts` (eksporterede funktioner, snapshot-værn), `image-cutout-jobs.ts` (`discardPendingFrontImage`), jobregistret og scheduleren.
+Ejer: cloud-session `claude/open-food-facts-scan-banner-rihp53` (2026-10-02)
+
+| Id | Opgave | Status | Næste skridt |
+| --- | --- | --- | --- |
+| — | Banner "Optjen 10 points" for Open Food Facts-/USDA-varer og egne varer uden PNG (efter scanning og fra søgning), kamera med felterne, genscannede eksterne varer overtages som egne, natlig OpenAI-aflæsning hvis ingen reagerer | Færdig (kode, PR #138 åben) | Migration 20261003050000 med i deployet. Brugerens test på telefon |
 
 ## G-WAVES — Bølge-baggrund på forsiden
 Filer: `src/lib/home-waves.ts`, `src/components/HomeWaves.tsx`, `.home-wave*` i `globals.css`, `src/app/page.tsx` (lag-opbygning), `StatsWheel.tsx` (kun `clipPath`).
