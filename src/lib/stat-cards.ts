@@ -17,6 +17,7 @@ import {
   IconFeather,
   IconFish,
   IconFlame,
+  IconGlassCocktail,
   IconHeartbeat,
   IconLeaf,
   IconLemon2,
@@ -335,7 +336,7 @@ export const STAT_CARD_DEFS: {
     compute: (data) => (data.sources ? `${formatAmount(sugaryDrinkKcal(data.sources))} kcal` : "—"),
   },
   { key: "alcoholKcal", label: "Alkohol", icon: IconBeer, compute: alcoholCard("kcal") },
-  { key: "alcoholUnits", label: "Alkohol (genstande)", icon: IconBeer, compute: alcoholCard("units") },
+  { key: "alcoholUnits", label: "Alkohol (genstande)", icon: IconGlassCocktail, compute: alcoholCard("units") },
   { key: "alcoholVolume", label: "Alkohol (mængde)", icon: IconBeer, compute: alcoholCard("volume") },
   // Toksiner (src/lib/toxins.ts) matches Product.ingredientsText — same
   // missing registration snapshot as E-numre, so same placeholder.
