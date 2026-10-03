@@ -177,6 +177,14 @@ Last updated: 2026-10-02
 - `/profile/recipes` (begge faner) og `/profile/recipes/[id]` brugte generiske skeletter (`SkeletonMediaRows`/`SkeletonDetail`) med bjælker i procent af sidebredden — enorme på bred skærm og uden lighed med indholdet. Nu tegner `RecipeRow` og ret-siden sig selv uden data (design.md §6.14): samme billedfelt, titel + undertekst i tekstbredde (`SkeletonTitleLines` i `Skeleton.tsx`), 3 rækker under "Trender netop nu".
 - Lint grøn; typecheck uden fejl i de berørte filer. Build ikke kørt lokalt (delt `node_modules` har forældet Prisma-klient). Ikke visuelt testet (brugerregel).
 
+## 2026-10-03: Bølge-baggrunden lavet om (roligere, skarp top)
+
+- Brugerens feedback på telefon: "alt for voldsomt", toppen må ikke være sløret — kun bunden — og hjerteslaget skal ligge længere nede og gå helt ude fra siden.
+- Færre og tyndere bånd (3–4 bånd, 2–4 strenge, alfa ca. 0,2–0,4), mindre udsving og langsommere bevægelse. Ingen bred halo-gløde på strengene længere.
+- Toppen er skarp: det øverste lag tegnes i skærmens fulde opløsning uden blur; kun nederste ca. tredjedel er sløret (12 px) og mælket. Tågen ligger kun forneden. To lag i stedet for tre (`HomeWaves.tsx`, `.home-wave*` i `globals.css`).
+- Puls-linjen ligger nu ca. 60 % nede (lige under tal-hjulets midterrække) og tegnes fra venstre kant mod højre som en pulsmåler med hjerteslaget mellem knappen og tallene; når den når højre kant, står den kort og toner ud (`drawPulse` i `home-waves.ts`).
+- Lint, typecheck, `node --test` (home-waves) og build grønne. Ikke visuelt testet (brugerregel) — tjek på telefon.
+
 ## 2026-10-02: Bølge-baggrunden justeret + lime puls-linje
 
 - Tal-hjulets rækker klippes nu ved "Dagens tilføjelser"-stregen (18 px under hero), så de forsvinder ned bag stregen i stedet for at blive skåret af over den (`StatsWheel.tsx`, `DIVIDER_BELOW_HERO`).
