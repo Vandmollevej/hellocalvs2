@@ -269,6 +269,7 @@ model User {
   chatbotConversations    ChatbotConversation[]
   productsCreated         Product[]                @relation("ProductsCreatedByUser")
   passwordResetTokens     PasswordResetToken[]
+  passwordResetSmsCodes   PasswordResetSmsCode[]
   startWeightChangeTokens StartWeightChangeToken[]
   genericIngredientsCreated GenericIngredient[]     @relation("GenericIngredientsCreatedByUser")
   searchRankingConfigsCreated SearchRankingConfig[]
@@ -498,6 +499,23 @@ model LoginApproval {
 
   @@index([userId, status])
   @@map("login_approvals")
+}
+
+// Engangskode sendt på SMS ved glemt adgangskode (docs/DECISIONS.md
+// 2026-10-02). Kun hash gemmes; 6 cifre, 10 minutter, højst 5 forsøg. En
+// godkendt kode udløser et almindeligt PasswordResetToken.
+model PasswordResetSmsCode {
+  id        String    @id @default(cuid())
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String
+  codeHash  String
+  attempts  Int       @default(0)
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime  @default(now())
+
+  @@index([userId])
+  @@map("password_reset_sms_codes")
 }
 
 // Engangslink til ændring af den låste start-vægt (docs/DECISIONS.md

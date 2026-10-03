@@ -17,7 +17,7 @@ export type KeyField = {
   hint?: string;
 };
 
-export type KeyGroupId = "login" | "integrations" | "ai" | "payment" | "mail" | "push" | "system";
+export type KeyGroupId = "login" | "integrations" | "ai" | "payment" | "mail" | "sms" | "push" | "system";
 
 export type KeyService = {
   id: string;
@@ -38,6 +38,7 @@ export const KEY_GROUPS: { id: KeyGroupId; title: string }[] = [
   { id: "ai", title: "AI og fødevaredata" },
   { id: "payment", title: "Betaling" },
   { id: "mail", title: "E-mail" },
+  { id: "sms", title: "SMS" },
   { id: "push", title: "Push-notifikationer" },
   { id: "system", title: "System (kun .env.production)" },
 ];
@@ -341,6 +342,39 @@ export const KEY_SERVICES: KeyService[] = [
     ],
     setupUrl: "https://app.mailjet.com/account/apikeys",
     testable: true,
+  },
+  {
+    id: "teammessage",
+    name: "TeamMessage (SMS)",
+    group: "sms",
+    purpose: "SMS-koder ved tilmelding og glemt adgangskode.",
+    fields: [
+      { key: "TEAMMESSAGE_API_TOKEN", label: "API-token (Bearer)", kind: "secret" },
+      { key: "TEAMMESSAGE_TEAM_ID", label: "Team ID", kind: "id" },
+      { key: "TEAMMESSAGE_TEAMLIST_EMAIL", label: "Teamliste-mail", kind: "text" },
+      {
+        key: "TEAMMESSAGE_SENDER_EMAIL",
+        label: "Afsender-mail (valgfri)",
+        kind: "text",
+        optional: true,
+      },
+      {
+        key: "TEAMMESSAGE_FROM",
+        label: "Afsendernavn (valgfri)",
+        kind: "text",
+        optional: true,
+        hint: "Fx HelloCal. Hoejst 11 tegn uden mellemrum.",
+      },
+      {
+        key: "TEAMMESSAGE_API_BASE_URL",
+        label: "API-adresse (valgfri)",
+        kind: "text",
+        optional: true,
+        hint: "Tom = https://www.teammessage.de",
+      },    ],
+    setupUrl: "https://www.teammessage.eu/en/dokumentation/api/",
+    testable: true,
+    note: "API-tokenet laves under kontoindstillinger hos TeamMessage. Testen sender ingen SMS.",
   },
   {
     id: "push",

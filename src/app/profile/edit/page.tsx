@@ -25,6 +25,7 @@ type Sex = "FEMALE" | "MALE";
 type ProfileUser = {
   displayName: string;
   email: string;
+  phone: string | null;
   weightKg: number | null;
   startWeightUpdatedAt: string | null;
   createdAt: string;
@@ -126,6 +127,8 @@ export default function ProfileEditPage() {
   const [trendWeightKg, setTrendWeightKg] = useState<number | null>(null);
   const [energySummary, setEnergySummary] = useState<EnergySummary | null>(null);
   const saveTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const [phoneDraft, setPhoneDraft] = useState<string | null>(null);
+  const [phoneError, setPhoneError] = useState(false);
 
   // Regnestykket (docs/ACTIVITY-PAL.md) hentes igen, hver gang profilen
   // gemmes, så det følger vægt, højde, alder, køn og niveau.
@@ -217,6 +220,25 @@ export default function ProfileEditPage() {
     }).catch(() => {});
   }
 
+  // Mobilnummeret gemmes, når feltet forlades, fordi serveren validerer og
+  // normaliserer det (src/lib/sms.ts).
+  async function savePhone() {
+    if (phoneDraft === null || !user || phoneDraft === (user.phone ?? "")) return;
+    const response = await fetch("/api/profile", {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ phone: phoneDraft }),
+    }).catch(() => null);
+    if (!response?.ok) {
+      setPhoneError(true);
+      return;
+    }
+    const data = (await response.json()) as { user: ProfileUser };
+    setPhoneError(false);
+    setPhoneDraft(null);
+    setUser((current) => (current ? { ...current, phone: data.user.phone } : current));
+  }
+
   return (
     <HfScreen
       title={t("profile.section.profile")}
@@ -265,6 +287,21 @@ export default function ProfileEditPage() {
 
           <Field label={t("profile.field.email")}>
             <input className={`${inputClass} opacity-60 userback-ignore`} value={user.email} disabled />
+          </Field>
+
+          <Field label={t("profile.field.phone")}>
+            <input
+              className={inputClass}
+              type="tel"
+              inputMode="tel"
+              autoComplete="tel"
+              value={phoneDraft ?? user.phone ?? ""}
+              onChange={(event) => setPhoneDraft(event.target.value)}
+              onBlur={savePhone}
+            />
+            <span className={`hf-type-micro ${phoneError ? "text-hf-red-dark" : "text-text-secondary"}`}>
+              {phoneError ? t("profile.phoneInvalid") : t("profile.phoneHint")}
+            </span>
           </Field>
 
           <div className="grid grid-cols-2 gap-4">

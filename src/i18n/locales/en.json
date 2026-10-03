@@ -57,7 +57,16 @@
     "genericError": "Something went wrong — try again",
     "networkError": "Could not send the link — check your connection and try again",
     "sentMessage": "If the account exists, we've sent an email with a link to reset the password.",
-    "backToLogin": "Back to log in"
+    "backToLogin": "Back to log in",
+    "useSms": "Send a code by text message instead",
+    "useEmail": "Send a link by email instead",
+    "smsInstructions": "Enter your email address and we'll text a code to the mobile number on your profile.",
+    "smsSubmit": "Send code by text",
+    "smsSentMessage": "If the account exists and has a mobile number, we've sent a code by text message. It works for 10 minutes.",
+    "codeLabel": "Code from text message",
+    "verifySubmit": "Confirm code",
+    "verifying": "Confirming…",
+    "resendCode": "Send a new code"
   },
   "loginApproval": {
     "title": "Approve login",
@@ -1185,6 +1194,8 @@
     "title": "My details",
     "loading": "Loading…",
     "loadError": "Couldn't load profile.",
+    "phoneHint": "Only used to send a code if you forget your password.",
+    "phoneInvalid": "Enter a valid mobile number (8 digits or with country code).",
     "completion": {
       "label": "Profile completion",
       "aboutYou": "About you",
@@ -1198,6 +1209,7 @@
     "field": {
       "name": "Name",
       "email": "Email",
+      "phone": "Mobile number",
       "weight": "Starting weight",
       "height": "Height",
       "birthDate": "Date of birth",

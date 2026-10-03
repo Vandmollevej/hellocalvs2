@@ -144,12 +144,17 @@ Last updated: 2026-10-03
 - Kildearkene ligger nu på NAS-sharet `\\192.168.1.90\Hello Cal\Arkiv - historiske kilde- og importfiler\Oprydning 2026-09-29\`. Det nye katalog (`store_products.json`) + de nye varers 1.408 billeder ligger klar i `C:\Users\Peter\Desktop\Butiksimport 2026-10-03\`; de skal kopieres til NAS'ens `data/store-products-import/` (sessionen fik ikke lov at skrive på serveren), og jobbet `store-products-import` køres (admin → Cron-jobs → Kør nu, eller næste deploy). Indtil da kører den nye agent med det gamle katalog, hvilket er ufarligt og retter kJ-fejlen.
 - Testet: agenten mod lokal PostgreSQL med alle migrationer (live-katalog → nyt katalog, 0 fejl); lint, typecheck og `next build --webpack` grønne.
 - Brugeren: kør `bilka_vitamins.py` (vitaminpanelet på bilkatogo.dk, nogle timer); byg og importér derefter igen. Næring fra Frida til de skjulte varer er egen opgave (OPEN-TASKS).
+## 2026-10-03: Glemt adgangskode via SMS (TeamMessage)
+
+- Branch `claude/sms-gateway-pw-recovery-fkclhp`. Mobilnummer på profilen (`/profile/edit`), "Send en kode på SMS i stedet" på `/forgot-password`, 6-cifret kode → samme `/reset-password` som mail-linket. Klient i `src/lib/sms.ts`, logik i `src/lib/password-reset-sms.ts`, ruter under `/api/auth/forgot-password/sms`.
+- Admin → API-nøgler → SMS → TeamMessage med test, der ikke sender SMS. Variablerne er tilføjet `compose.production.yaml`.
+- Lint, typecheck og build grønne. Ikke testet mod TeamMessage: deres side er blokeret fra cloud-containeren, så feltnavnene (`to_mobile`, `message`, `team_id`, `teamlist_email`) bygger på søgeresultater. Ejeren skal lægge tokenet ind og trykke "Test" og derefter prøve flowet med eget nummer.
+- Mangler: verificering af mobilnummeret ved indtastning (afventer ejerens valg).
 
 ## 2026-10-02: Desktop — alle sider i skallen
 
 - På desktop vises alle sider (også login, betingelser, privatlivspolitik) i WebShell med sidebjælke, topmenu og brødkrummer; kun admin, hello-doc, business og presse er fuld bredde.
 - Lint og typecheck grønne; ikke set i browser — tjek login-siderne på desktop.
-Last updated: 2026-10-02
 
 ## 2026-10-02: Kropsmål som statistikgrafer
 
