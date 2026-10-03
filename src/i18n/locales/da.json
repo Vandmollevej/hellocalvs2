@@ -2826,7 +2826,7 @@
       "name": "Navn",
       "email": "E-mail",
       "insightTitle": "Hvem skal personen have indsigt i?",
-      "insightHelp": "Personen kan se og taste ind på de profiler, du slår til. Du kan altid ændre det under Adgang.",
+      "insightHelp": "Vælg for hver profil, om personen må se den, og om personen må oprette på dens vegne (fx tilføje mad). Du kan altid ændre det under Adgang.",
       "addChild": "Tilføj barn under 18",
       "addChildTitle": "Tilføj barn under 18",
       "addChildIntro": "Børn under 15 år kan ikke selv oprette en konto, så du opretter profilen her. Barnet bliver valgt i invitationen bagefter.",

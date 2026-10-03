@@ -2845,7 +2845,7 @@
       "name": "Name",
       "email": "Email",
       "insightTitle": "Who should the person have insight into?",
-      "insightHelp": "The person can see and log for the profiles you switch on. You can always change this under Access.",
+      "insightHelp": "For each profile, choose whether the person may see it and whether they may log on its behalf (e.g. add food). You can always change this under Access.",
       "addChild": "Add child under 18",
       "addChildTitle": "Add child under 18",
       "addChildIntro": "Children under 15 cannot create an account themselves, so you create the profile here. The child is then selected in the invitation.",

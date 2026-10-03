@@ -352,7 +352,7 @@ function escapeHtml(value: string) {
 // siger selv ja (joinFamily opretter så adgangen til de valgte profiler).
 export async function createFamilyInvitation(
   ownerId: string,
-  input: { name: string; email: string; subjectIds: string[] }
+  input: { name: string; email: string; subjectIds: string[]; writeSubjectIds?: string[] }
 ) {
   const name = input.name.trim().slice(0, 80);
   if (!name) throw new FamilyError("nameRequired");
@@ -361,9 +361,11 @@ export async function createFamilyInvitation(
 
   const memberIds = new Set(family.members.map((m) => m.userId));
   const subjectIds = [...new Set(input.subjectIds)].filter((id) => memberIds.has(id));
+  // At oprette på nogens vegne kræver, at man også kan se profilen.
+  const writeSubjectIds = [...new Set(input.writeSubjectIds ?? [])].filter((id) => subjectIds.includes(id));
   await prisma.familyLoginCode.update({
     where: { codeHash: hashFamilyCode(code) },
-    data: { inviteeName: name, grantSubjectIds: subjectIds },
+    data: { inviteeName: name, grantSubjectIds: subjectIds, grantWriteSubjectIds: writeSubjectIds },
   });
 
   const [owner, subjects] = await Promise.all([
@@ -475,15 +477,23 @@ export async function joinFamily(userId: string, input: FamilyCodeInput) {
     select: { extraSeats: true, members: { select: { userId: true } } },
   });
   if (!family || family.members.length >= familyCapacity(family.extraSeats)) throw new FamilyError("familyFull", 409);
-  // Invitationer giver indsigt i de profiler, betaleren valgte — kun dem, der
-  // stadig er med i familien.
+  // Invitationer giver adgang til de profiler, betaleren valgte — kun dem, der
+  // stadig er med i familien: "se" for alle, "oprette" kun for dem i
+  // grantWriteSubjectIds.
   const memberIds = new Set(family.members.map((member) => member.userId));
   const subjectIds = row.grantSubjectIds.filter((id) => memberIds.has(id) && id !== userId);
   await prisma.$transaction([
     prisma.familyLoginCode.update({ where: { id: row.id }, data: { usedAt: new Date() } }),
     prisma.familyMember.create({ data: { familyId: row.familyId, userId, isChild: false } }),
     ...subjectIds.map((subjectId) =>
-      prisma.familyAccessGrant.create({ data: { familyId: row.familyId, granteeId: userId, subjectId } })
+      prisma.familyAccessGrant.create({
+        data: {
+          familyId: row.familyId,
+          granteeId: userId,
+          subjectId,
+          canWrite: row.grantWriteSubjectIds.includes(subjectId),
+        },
+      })
     ),
   ]);
 }

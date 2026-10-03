@@ -2,6 +2,12 @@
 
 Last updated: 2026-10-03
 
+## 2026-10-03: "Inviter familiemedlem" — vælg se/oprette pr. profil
+
+- Brugerens valg ved fletning af #212 (rettigheder) med #199 (invitationer): invitationsarket har nu "Se profilen" og "Oprette på deres vegne" pr. profil i stedet for én kontakt. Gemmes i `grantWriteSubjectIds`; ved ja får tildelingerne `canWrite` derefter. Se DECISIONS.md samme dato.
+- **Migration `20261003240000_family_invite_write` skal køre ved deploy.**
+- Testet mod midlertidig PostgreSQL 16 (alle migrationer kørt): oprette-listen beskæres til se-listen, ja giver se+oprette / kun se / ingen adgang som valgt, og en invitation uden oprette-liste giver kun se. Lint, typecheck, tests (undtagen kendt `page-tree`) og build grønne. Arket ikke set på telefon.
+
 ## 2026-10-03: Kalenderens flueben er signaturgrønne
 
 - Fluebenet for "inden for målet" var lime (`text-hf-lime`) i månedsgitteret, uge-, liste- og dagvisningen. Alle fire bruger nu signaturgrøn `text-hf-green` (`src/app/calendar/page.tsx`). Reglen står i DECISIONS (2026-10-03).

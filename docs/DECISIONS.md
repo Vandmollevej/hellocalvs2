@@ -2,6 +2,13 @@
 
 This file records durable decisions. Add a dated entry when a later decision changes one of them.
 
+## 2026-10-03: Invitationer bruger samme rettigheder som oprettede profiler
+
+Brugerens valg ved fletningen af #212 med #199: både "Inviter familiemedlem" (mail til en person med egen konto), "Tilføj familiemedlem" og "Tilføj barn (under 18)" findes, og rettighederne "se" / "oprette på deres vegne" gælder også invitationer.
+
+- Invitationsarket har pr. profil kontakterne "Se profilen" og "Oprette på deres vegne" (`AccessToggles`, fælles med familiesiden). Et barn, der oprettes fra arket, starter med "se".
+- `FamilyLoginCode.grantWriteSubjectIds` (migration `20261003240000_family_invite_write`) er de af `grantSubjectIds`, personen også må oprette for. Når personen siger ja, får hver tildeling `canWrite` derefter. Før gav en invitation altid "se og oprette" (kolonnens standard); invitationer sendt før denne ændring giver nu kun "se" — betaleren kan slå "oprette" til under Adgang.
+
 ## 2026-10-03: Familie — "Skift profil" under cirklen, "Tilføj familiemedlem" / "Tilføj barn (under 18)" og rettigheder "se" / "oprette på deres vegne"
 
 Brugerens krav: "i stedet for administrator skal der stå med fed Skift profil i stedet for overskrift for oven man ikke ser. Men det skal hedde tilføj familiemedlem. Og 'tilføj barn (under 18)'. Og når man opretter skal man for alle have mulighed for at vælge … både læse og skriverettigheder", præciseret: "Rettigheder til at oprette på deres vegne og se deres profil". Profilvælgeren øverst på Profil beholdes.

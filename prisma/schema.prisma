@@ -3403,8 +3403,10 @@ model FamilyLoginCode {
   email     String?
   // "Inviter familiemedlem" (docs/FAMILY.md 2026-10-03): modtagerens navn og
   // de af familiens profiler, personen får indsigt i, når koden bruges.
-  inviteeName     String?
-  grantSubjectIds String[] @default([])
+  // grantWriteSubjectIds: de af dem, personen også må oprette for (canWrite).
+  inviteeName          String?
+  grantSubjectIds      String[] @default([])
+  grantWriteSubjectIds String[] @default([])
   expiresAt DateTime
   usedAt    DateTime?
   createdAt DateTime  @default(now())

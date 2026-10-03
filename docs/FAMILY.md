@@ -169,8 +169,10 @@ Kilder:
 
 - **Inviter familiemedlem (2026-10-03):** bundark på `/profile/family`
   (`?invite=1` åbner det, også fra profilvælgeren) med navn, e-mail og
-  hvilke profiler personen får indsigt i, plus "Tilføj barn under 18".
-  Laver en e-mail-bundet kode (med navn og valgte profiler) og sender en mail
+  for hver profil "Se profilen" og "Oprette på deres vegne" (samme kontakter
+  som under Adgang), plus "Tilføj barn under 18".
+  Laver en e-mail-bundet kode (med navn, `grantSubjectIds` = se og
+  `grantWriteSubjectIds` = også oprette) og sender en mail
   med tilknytningslinket; modtageren siger selv ja på `/family-code/join`.
   Rute: `POST /api/family/invitations`.
 
