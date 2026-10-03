@@ -3,6 +3,12 @@
 Last updated: 2026-10-02
 Last updated: 2026-10-03
 
+## 2026-10-03: Hjælpecenter — guiden øverst med grøn knap
+
+- `public/hjaelp.html` har et kort "Lær appen at kende" øverst (under introen) med en grøn knap "Start guiden" (`--brand` #067A46, hvid tekst). Kortet skjules, mens der søges. FAQ'en "Kan jeg se introduktionen igen?" linker også direkte til guiden.
+- Knappen går til `/settings?guide=1`; Indstillinger nulstiller onboarding-fremdriften og åbner `OnboardingWizard` (samme som "Lær appen at kende") og fjerner parameteren fra adressen. Se DECISIONS.md samme dato.
+- Lint og typecheck grønne; hjælpesiden tjekket visuelt i 390 px. Ikke live-testet med login (ingen lokal DB).
+
 ## 2026-10-02: Kalenderen husker den åbne dag
 
 - Dagsvisningen genåbnes efter navigation væk fra `/calendar` (Tilbage eller "Kalender" i menuen) i stedet for at falde tilbage til måneden. Ny `src/lib/calendar-open-day.ts` (URL `?date=` + sessionStorage), koblet ind i `src/app/calendar/page.tsx`. Se DECISIONS.md samme dato.

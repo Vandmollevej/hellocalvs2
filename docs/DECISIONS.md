@@ -3734,3 +3734,8 @@ Kilder på "Mad på latin" skal altid være officielle (Fødevarestyrelsen, Sund
 - `.hf-insight__topbar` er afløst af `.hf-shell__topbar`; `.hf-insight__main` deler bredde/gutter med `.hf-shell__content` (16 px, 32 px fra 1024 px — afstandsskalaens værdier i stedet for admins tidligere 24 px).
 - Webvisningen beholder sin højere top (80 px, `.hf-shell--tall`). Menuens tekst skjules under 1280 px, så topmenu, plus-cirkel og profil ikke støder sammen ved 1024 px.
 - Admin-statistikken og admin-login-siderne bruger `.hf-type-*`, `.hf-kpi`, `.hf-panel` og `.hf-choice` i stedet for `text-xs`/`text-2xl`/`font-semibold`. Telefon- og e-mail-mockups (Designmanual, beskedredigering) er bevidst undtaget, fordi de tegner en iPhone.
+
+## 2026-10-03: Hjælpecenterets guide-knap er grøn
+
+- Øverst i Hjælpecenter (`public/hjaelp.html`) står guiden "Lær appen at kende" med knappen "Start guiden" på grøn baggrund (`#067A46`, hvid tekst) — ejerens udtrykkelige ønske og en bevidst undtagelse fra design.md's regel om, at grønne handlingsknapper er udfaset.
+- Den statiske side kan ikke selv åbne guiden, så den linker til `/settings?guide=1`, som starter `OnboardingWizard` forfra (samme handling som "Lær appen at kende" i Indstillinger).
