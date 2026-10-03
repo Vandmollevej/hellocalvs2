@@ -222,6 +222,7 @@ Ejer: Chatbot-sessionen (cloud), branch `claude/ai-chatbot-support`
 | Id | Opgave | Status | Næste skridt |
 | --- | --- | --- | --- |
 | chatbot | AI-chatbot øverst i app og web med medarbejder og kontaktformular (ingen telefon); admin → Brugere → Chatbot med oftest spurgt, Q&A-tabel, hele tråde og brugerinfo | Færdig (kode, se DECISIONS 2026-10-02) | Merge + deploy (migration `20261002120000_chatbot`). Test på mobil og desktop |
+| chat-support | Chatten kun under Support, kontakt kun nederst (ikke i toppen) | Færdig (kode, branch `claude/help-chat-only-support`, DECISIONS 2026-10-03) | Brugerens visuelle test på telefon efter deploy |
 
 ## G-WAVES — Bølge-baggrund på forsiden
 Filer: `src/lib/home-waves.ts`, `src/components/HomeWaves.tsx`, `.home-wave*` i `globals.css`, `src/app/page.tsx` (lag-opbygning), `StatsWheel.tsx` (kun `clipPath`).
