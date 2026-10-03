@@ -3439,3 +3439,10 @@ Kilder på "Mad på latin" skal altid være officielle (Fødevarestyrelsen, Sund
   det), og et bart "Vand" normaliseres til "Flaskevand" (`normalizeProductType`
   i `src/lib/product-naming.ts`), så søgning på "vand" viser en præcis betegnelse.
 - Eksisterende produkter, der allerede hedder "Vand", omdøbes ikke automatisk.
+
+## 2026-10-02: SMS-gendannelse af adgangskode via TeamMessage
+
+- Udbyder: TeamMessage (teammessage.eu), REST `POST /api/v1/sms/send/` med Bearer-token. Uden token er SMS slået fra.
+- Mobilnummer er valgfrit på profilen og gemmes normaliseret (`+45XXXXXXXX`; 8 cifre antages danske). Slettes ved "ret til at blive glemt".
+- Flow: e-mail → 6-cifret kode på SMS (10 min, højst 5 forsøg, kun nyeste kode gælder, HMAC-hash) → almindeligt `PasswordResetToken` → `/reset-password`. Svaret afslører aldrig, om konto eller nummer findes. Højst 5 SMS pr. konto pr. 15 min.
+- Mail-linket er stadig standard; SMS er et tekstlink-alternativ på samme side.

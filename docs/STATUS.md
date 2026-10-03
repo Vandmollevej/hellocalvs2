@@ -1,6 +1,13 @@
 # HELLO CAL — project status
 
-Last updated: 2026-09-29
+Last updated: 2026-10-03
+
+## 2026-10-03: Glemt adgangskode via SMS (TeamMessage)
+
+- Branch `claude/sms-gateway-pw-recovery-fkclhp`. Mobilnummer på profilen (`/profile/edit`), "Send en kode på SMS i stedet" på `/forgot-password`, 6-cifret kode → samme `/reset-password` som mail-linket. Klient i `src/lib/sms.ts`, logik i `src/lib/password-reset-sms.ts`, ruter under `/api/auth/forgot-password/sms`.
+- Admin → API-nøgler → SMS → TeamMessage med test, der ikke sender SMS. Variablerne er tilføjet `compose.production.yaml`.
+- Lint, typecheck og build grønne. Ikke testet mod TeamMessage: deres side er blokeret fra cloud-containeren, så feltnavnene (`to_mobile`, `message`, `team_id`, `teamlist_email`) bygger på søgeresultater. Ejeren skal lægge tokenet ind og trykke "Test" og derefter prøve flowet med eget nummer.
+- Mangler: verificering af mobilnummeret ved indtastning (afventer ejerens valg).
 
 ## 2026-09-29: Offentlig forside for udloggede
 

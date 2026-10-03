@@ -17,7 +17,7 @@ export type KeyField = {
   hint?: string;
 };
 
-export type KeyGroupId = "login" | "integrations" | "ai" | "payment" | "mail" | "push" | "system";
+export type KeyGroupId = "login" | "integrations" | "ai" | "payment" | "mail" | "sms" | "push" | "system";
 
 export type KeyService = {
   id: string;
@@ -38,6 +38,7 @@ export const KEY_GROUPS: { id: KeyGroupId; title: string }[] = [
   { id: "ai", title: "AI og fødevaredata" },
   { id: "payment", title: "Betaling" },
   { id: "mail", title: "E-mail" },
+  { id: "sms", title: "SMS" },
   { id: "push", title: "Push-notifikationer" },
   { id: "system", title: "System (kun .env.production)" },
 ];
@@ -290,6 +291,46 @@ export const KEY_SERVICES: KeyService[] = [
     ],
     setupUrl: "https://app.mailjet.com/account/apikeys",
     testable: true,
+  },
+  {
+    id: "teammessage",
+    name: "TeamMessage (SMS)",
+    group: "sms",
+    purpose: "SMS-kode ved glemt adgangskode, når brugeren har et mobilnummer på profilen.",
+    fields: [
+      { key: "TEAMMESSAGE_API_TOKEN", label: "API-token (Bearer)", kind: "secret" },
+      {
+        key: "TEAMMESSAGE_TEAM_ID",
+        label: "Team ID",
+        kind: "id",
+        optional: true,
+        hint: "Kun hvis TeamMessage-kontoen kræver det ved afsendelse.",
+      },
+      {
+        key: "TEAMMESSAGE_TEAMLIST_EMAIL",
+        label: "Teamliste-mail",
+        kind: "text",
+        optional: true,
+        hint: "Kun hvis TeamMessage-kontoen kræver det ved afsendelse.",
+      },
+      {
+        key: "TEAMMESSAGE_SENDER",
+        label: "Afsendernavn (valgfri)",
+        kind: "text",
+        optional: true,
+        hint: "Fx HelloCal. Højst 11 tegn uden mellemrum.",
+      },
+      {
+        key: "TEAMMESSAGE_API_URL",
+        label: "API-adresse (valgfri)",
+        kind: "text",
+        optional: true,
+        hint: "Tom = https://www.teammessage.eu/api/v1/sms/send/",
+      },
+    ],
+    setupUrl: "https://www.teammessage.eu/en/dokumentation/api/",
+    testable: true,
+    note: "API-tokenet laves under kontoindstillinger hos TeamMessage. Testen sender ingen SMS.",
   },
   {
     id: "push",

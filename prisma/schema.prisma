@@ -60,6 +60,10 @@ model User {
   // email once SMTP exists.
   emailVerifiedAt DateTime?
 
+  // Mobilnummer (E.164, fx +4512345678) til gendannelse af adgangskode via
+  // SMS (src/lib/sms.ts, docs/DECISIONS.md 2026-10-02). Valgfrit.
+  phone String?
+
   // Sleep pattern: default bedtime/wake time, with the option of
   // individual times per weekday (SleepSchedule) for users with shifting
   // work hours.
@@ -252,6 +256,7 @@ model User {
   supportRequests         SupportRequest[]
   productsCreated         Product[]                @relation("ProductsCreatedByUser")
   passwordResetTokens     PasswordResetToken[]
+  passwordResetSmsCodes   PasswordResetSmsCode[]
   startWeightChangeTokens StartWeightChangeToken[]
   genericIngredientsCreated GenericIngredient[]     @relation("GenericIngredientsCreatedByUser")
   searchRankingConfigsCreated SearchRankingConfig[]
@@ -442,6 +447,23 @@ model PasswordResetToken {
 
   @@index([userId])
   @@map("password_reset_tokens")
+}
+
+// Engangskode sendt på SMS ved glemt adgangskode (docs/DECISIONS.md
+// 2026-10-02). Kun hash gemmes; 6 cifre, 10 minutter, højst 5 forsøg. En
+// godkendt kode udløser et almindeligt PasswordResetToken.
+model PasswordResetSmsCode {
+  id        String    @id @default(cuid())
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String
+  codeHash  String
+  attempts  Int       @default(0)
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime  @default(now())
+
+  @@index([userId])
+  @@map("password_reset_sms_codes")
 }
 
 // Engangslink til ændring af den låste start-vægt (docs/DECISIONS.md

@@ -22,6 +22,7 @@ export async function anonymizeUser(targetUserId: string, adminId: string) {
       data: {
         email: `slettet-${targetUserId}@hellocal.invalid`,
         displayName: "Slettet bruger",
+        phone: null,
         passwordHash: null,
         totpSecret: null,
         weightKg: null,
