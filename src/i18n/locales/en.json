@@ -2700,6 +2700,29 @@
       "leave": "Leave the family",
       "leaveConfirm": "Leave the family? {owner} and others in the family lose access to your profile, and you lose the family subscription."
     },
+    "sharing": {
+      "title": "Share with others",
+      "intro": "See who in the family can view your profile and what they can see. {owner} decides who has access.",
+      "none": "No one else in the family can see your profile.",
+      "sharedWith": "Shared with {name}",
+      "ownerNote": "{name} pays for the family and always has access to your profile.",
+      "grantNote": "{owner} has given {name} access to your profile.",
+      "canEdit": "{name} can also add and edit entries on your profile. Everything is in your control log.",
+      "area": {
+        "profile": "Profile (name, age, height)",
+        "registrations": "Food entries",
+        "water": "Water",
+        "weight": "Weight",
+        "activities": "Activity and exercise",
+        "bodyMeasurements": "Body measurements",
+        "goals": "Goals",
+        "sleep": "Sleep",
+        "healthMetrics": "Health data (e.g. steps)",
+        "menstrualCycle": "Menstruation",
+        "workShifts": "Work shifts",
+        "favorites": "Favorites and recipes"
+      }
+    },
     "members": {
       "title": "Profiles ({count} of {max})",
       "payer": "Payer",

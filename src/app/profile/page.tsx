@@ -8,6 +8,7 @@ import {
   IconStar,
   IconBook,
   IconChartLine,
+  IconUsers,
 } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
 import { AccordionCard, ChevronRow } from "@/components/hf/AccordionCard";
@@ -17,6 +18,7 @@ import { IconWaistMeasure } from "@/components/icons/WaistMeasure";
 import { HfProgressStepper } from "@/components/hf/HfProgressStepper";
 import { useTranslation } from "@/i18n/LocaleProvider";
 import { ProfileSwitcher } from "@/components/family/ProfileSwitcher";
+import { useFamilyStatus } from "@/components/family/FamilyStatusProvider";
 import { SkeletonCards, SkeletonList, SkeletonScreen } from "@/components/hf/Skeleton";
 
 type Sex = "FEMALE" | "MALE";
@@ -36,6 +38,10 @@ type ProfileUser = {
 
 export default function ProfilePage() {
   const { t } = useTranslation();
+  const { status: familyStatus } = useFamilyStatus();
+  // Medlemmer af en familie (ikke betaleren) har "Familie" øverst: hvem de
+  // deler deres profil med (ejerens ønske 2026-10-03).
+  const isFamilyMember = Boolean(familyStatus?.family && !familyStatus.family.isOwner);
   const [user, setUser] = useState<ProfileUser | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -74,6 +80,16 @@ export default function ProfilePage() {
         )
       ) : (
         <div className="hf-page">
+          {isFamilyMember && (
+            <AccordionCard>
+              <ChevronRow
+                icon={<IconUsers size={20} />}
+                label={t("family.title")}
+                href="/profile/family"
+                divider={false}
+              />
+            </AccordionCard>
+          )}
           <ProfileSwitcher />
           {/* Statisk indtil guided profilopsætning beregner det dynamisk. */}
           <HfProgressStepper

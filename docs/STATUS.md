@@ -2,6 +2,12 @@
 
 Last updated: 2026-10-03
 
+## 2026-10-03: Familiemedlemmer — "Familie" øverst på Profil og "Del med andre"
+
+- Medlemmer af en familie (ikke betaleren) har nu "Familie" som første række på `/profile`. Den fører til `/profile/family`, hvor "Del med andre" står øverst: én udfoldelig række "Delt med {navn}" pr. person, der kan se profilen (betaleren altid, andre via betalerens tildelinger). Tryk viser, hvad der deles (dagbogsområderne), og at personen også kan taste ind. Navnene vises, fordi de er i samme familie.
+- Visningen er kun til at se: betaleren bestemmer stadig adgangen (beslutning 2 i `docs/FAMILY.md`). Regnes ud fra `GET /api/family` (`peopleSharedWith` i `src/lib/family-sharing.ts`, test i `family-sharing.test.mjs`); ingen ny API eller migration.
+- Lint (0 fejl), typecheck, test og build grønne; skærmbilleder med mockede API-svar. Ikke testet med login mod en rigtig database.
+
 ## 2026-10-03: Forsidens puls forsvinder bagfra (samler #195 og #198)
 
 - Før tonede hele det forrige pulsspor ud på én gang (`previousFade`), mens det nye fej tegnedes. Nu står det gamle spor uændret foran det nye fejs spids og fjernes gradvist bagfra, i samme tempo som sporet kom frem fra venstre, med en blød kant (`PULSE_TAIL_TAPER`, 60 px). Næste fej starter straks, så sporet når aldrig at være væk, før det nye fejs slag er tegnet. Pulsen slår stadig i urets bpm (#195). PR #198 (ét slag pr. fej, pause før halen trækkes) er erstattet af dette og lukket.
