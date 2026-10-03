@@ -127,6 +127,13 @@ Last updated: 2026-10-02
 - Cookie `hc_cal_visit` (dato): forste besog i dag viser morgenen med nattens sovn; senere besog i dag (og kun hvis brugeren har registreret noget for) scroller til nu +-2 timer.
 - Dobbeltklik pa en time i dagvisningen og pa en dag i ugens tidslinje abner tilfoej-menuen pa den halve time.
 - Lint og typecheck groenne; ikke testet i browser.
+## 2026-10-02: Håndfrugter og æg i Lille / Normal / Stor
+
+- Ny størrelsesvælger på produktsiden for 18 håndfrugter/snack-grøntsager og æg (`src/lib/hand-sizes.ts`, `src/components/hf/HandSizePicker.tsx`). Liste og tal i `docs/HAND-SIZES.md`; beslutning i DECISIONS samme dato.
+- Tests (`npm test`), lint, typecheck og build grønne. Ikke visuelt testet i browser (ingen lokal DB).
+- Fliserne viser hel vægt og spiselig vægt; spiselig = hel vægt minus USDA's spild-procent (kiwi og bladselleri er skøn).
+- Venter på brugerens godkendelse af listen og tallene, før PR'en merges.
+
 ## 2026-09-29: Offentlig forside for udloggede
 
 - Ny hent-appen-forside uden telefonramme, med QR-koder, planer med betalings-ark, Hello Doc-bjælke, nøgletal fra databasen, `/business` (kontaktformular) og `/presse`. Se DECISIONS.md samme dato.

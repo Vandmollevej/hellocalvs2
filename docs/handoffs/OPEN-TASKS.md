@@ -31,6 +31,16 @@ Status opdateret: 2026-10-03 (færdige opgaver flyttet til `ARCHIVE.md`)
 
 ---
 
+## G-HAND — Håndfrugter og æg (Lille / Normal / Stor)
+Filer: `src/lib/hand-sizes.ts`, `src/components/hf/HandSizePicker.tsx`, `docs/HAND-SIZES.md`. Små indgreb i `src/components/add/AddProductView.tsx` (vælgeren over mængdeboksen) og `src/lib/default-amount.ts` (Normal som startmængde).
+Ejer: cloud-session på branch `claude/handfrugt-sizes-grams-2z4p3i` (2026-10-02)
+
+| Id | Opgave | Status | Næste skridt |
+| --- | --- | --- | --- |
+| hand-sizes | Håndfrugter + æg i S/M/L med mål, gram og skalerede billeder | Venter på bruger | Bygget i draft-PR #128. Brugeren skal godkende listen og tallene i `docs/HAND-SIZES.md` og teste fliserne på telefon |
+
+---
+
 ## G1 — Kalender
 Filer: `src/app/calendar/**`, kalender-komponenter.
 Ukendte ændringer: `src/app/calendar/page.tsx` indeholder G3's ikke-committede "Månedens synder"-knap (G3 ejer den del).

@@ -4,11 +4,14 @@
 // 1. Brugerens egen seneste mængde for varen.
 // 2. En rigtig portionsenhed (servingSizeGrams + enhedsnavne, fx HelloFresh
 //    "portion") — tælles i hele portioner.
-// 3. Drikkevarer og alkohol: pakkens størrelse, når den er én servering
+// 3. Håndfrugt/æg: ét stk. i størrelsen "Normal". Kalderen sender den med
+//    (mediumHandSizeGrams i src/lib/hand-sizes.ts), så modulet her ikke
+//    importerer noget og kan testes direkte med node --test.
+// 4. Drikkevarer og alkohol: pakkens størrelse, når den er én servering
 //    (33 cl dåse, 25 cl flaske, 50 cl øl) — fra pakningsstørrelsen eller navnet.
-// 4. Typisk mængde for varens kategori (tabellen nedenfor).
-// 5. Producentens portion (fx Open Food Facts' serving_quantity).
-// 6. 100 g/ml som sidste udvej.
+// 5. Typisk mængde for varens kategori (tabellen nedenfor).
+// 6. Producentens portion (fx Open Food Facts' serving_quantity).
+// 7. 100 g/ml som sidste udvej.
 //
 // Producentens portion bruges bevidst ikke før kategorien: den er ofte
 // urealistisk lille (musli 30 g, sodavand 10 cl).
@@ -167,10 +170,11 @@ export function typicalAmountGrams(product: DefaultAmountProduct): number | null
   return (product.productCategory && CATEGORY_AMOUNTS[product.productCategory]) || null;
 }
 
-export function defaultAmountGrams(product: DefaultAmountProduct): number {
+export function defaultAmountGrams(product: DefaultAmountProduct, handSizeGrams?: number | null): number {
   if (product.lastAmountGrams && product.lastAmountGrams > 0) return product.lastAmountGrams;
   const serving = product.servingSizeGrams && product.servingSizeGrams > 0 ? product.servingSizeGrams : null;
   if (serving && product.servingSizeUnitSingular && product.servingSizeUnitPlural) return serving;
   if (serving && isSlicedProduct(product)) return serving;
+  if (handSizeGrams && handSizeGrams > 0) return handSizeGrams;
   return drinkAmountMl(product) ?? typicalAmountGrams(product) ?? serving ?? 100;
 }

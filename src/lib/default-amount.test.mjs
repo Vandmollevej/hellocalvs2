@@ -61,6 +61,12 @@ test("flere varer får en typisk mængde frem for 100 g", () => {
   assert.equal(defaultAmountGrams({ name: "Pizza Margherita" }), 350);
 });
 
+test("håndfrugt/æg starter på Normal, når kalderen sender størrelsen med", () => {
+  assert.equal(defaultAmountGrams({ name: "Banan" }, 118), 118);
+  assert.equal(defaultAmountGrams({ name: "Banan", lastAmountGrams: 200 }, 118), 200);
+  assert.equal(defaultAmountGrams({ name: "Banan" }, null), 120);
+});
+
 test("packageVolumeMl", () => {
   assert.equal(packageVolumeMl("33 cl"), 330);
   assert.equal(packageVolumeMl("1,5 l"), 1500);
