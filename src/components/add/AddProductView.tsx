@@ -38,7 +38,7 @@ import { fromDisplayAmount, getProductDisplayUnit, toDisplayAmount } from "@/lib
 import { NUTRIENT_BY_KEY, type ResolvedNutrient } from "@/lib/nutrients";
 import { UncertaintyTilde } from "@/components/ui/UncertaintyTilde";
 import { UncertaintyLine } from "@/components/ui/UncertaintyLine";
-import { extractCertifications } from "@/lib/product-certifications";
+import { extractCertifications, stripFatWord } from "@/lib/product-certifications";
 import { CertificationLogo } from "@/components/hf/CertificationLogo";
 import { Skeleton } from "@/components/hf/Skeleton";
 
@@ -770,12 +770,12 @@ export function AddProductView({
                     <Skeleton type="hero" width={200} />
                   </ReadingSkeleton>
                 ) : (
-                  <h1 className="hf-type-hero text-hf-black">{productTitle}</h1>
+                  <h1 className="hf-type-hero text-hf-black">{stripFatWord(productTitle)}</h1>
                 )}
                 {/* Uden grøn linje står luften tilbage, så resten ikke rykker op. */}
                 {view.packageSizeText || view.variant ? (
                   <h2 className="hf-type-hero text-hf-green">
-                    {[view.packageSizeText, view.variant].filter(Boolean).join(" · ")}
+                    {stripFatWord([view.packageSizeText, view.variant].filter(Boolean).join(" · "))}
                   </h2>
                 ) : (
                   <div aria-hidden="true" className="hf-type-hero">&nbsp;</div>
