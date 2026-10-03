@@ -3951,6 +3951,17 @@ Kilder på "Mad på latin" skal altid være officielle (Fødevarestyrelsen, Sund
 - Ny side /settings/account (Indstillinger -> Kontoindstillinger) med to knapper, begge i bundark med bekraeftelse (skriv SLET).
 - Begge kalder POST /api/account/close, som koerer anonymizeUser() (src/lib/gdpr.ts) paa brugeren selv, rydder session-cookies og logger ud. Forskellen er kun ordlyd; GDPR-sletning er fortsat anonymisering (se 2026-09-02).
 - Ikke gjort: aktivt abonnement hos betalingsudbyder opsiges ikke automatisk.
+- Afløst for "Luk konto" af 2026-10-03 nedenfor.
+## 2026-10-03: "Luk konto" kan fortrydes i 3 måneder
+
+Brugerens krav: "Luk konto kan reverses inde. For 3 måneder, med mindre man vælger rtbf. Luk skal være sort understreget tekst kun. Ikke stor knap."
+
+- **Luk konto** sætter `User.closedAt` (migration `20261003120000_account_closed_at`) — intet slettes. Brugeren logges ud på alle enheder (`getSessionUser`, widget-token og familieprofiler afviser lukkede konti), og der sendes ingen mail/push (`queueMessage` gemmer dem som SKIPPED). Stripe opsiges til periodens udløb, en MobilePay-aftale stoppes.
+- **Genåbning:** ethvert login (adgangskode, Face ID, Google/Apple/Facebook, nulstillet adgangskode) inden for 90 dage rydder `closedAt` (`completeLogin` → `reopenClosedAccount`). Data er urørt; et opsagt abonnement skal tegnes igen.
+- **Efter 90 dage** anonymiserer vedligeholdelsesjobbet (hvert 15. min.) kontoen med `anonymizeUser` — samme resultat som "Ret til at blive glemt". Logik i `src/lib/account-closure.ts`.
+- **Ret til at blive glemt** er uændret: anonymiserer med det samme og kræver, at brugeren skriver SLET.
+- **UI:** "Luk konto" er kun et sort, understreget tekstlink nederst på /settings/account (ingen overskrift, ingen stor knap). Bundarket forklarer 3-måneders-fristen og har også kun et tekstlink som bekræftelse (ingen SLET-indtastning, da det kan fortrydes).
+- Admin → Brugere viser "Lukket <dato>" på lukkede konti. Audit: `USER_CLOSE_ACCOUNT` / `USER_REOPEN_ACCOUNT` i `admin_audit_logs`.
 ## 2026-10-02 — Admin: Economy
 
 - Ny side /admin/economy: årsabonnementer (årlig sikker indkomst, sikret løbetid), månedsabonnementer (+ 3 mdr.) og næste måneds forventede indtjening. Kun betalende (provider sat); pris/periode fra MobilePay-træk og Stripe live (skønnet 1 md. ved mangel).

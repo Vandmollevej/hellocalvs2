@@ -58,6 +58,11 @@ Last updated: 2026-10-03
 - På telefonen lå "Vilkår og betingelser" og "Tillad"/"Tillad ikke" ovenpå listen med gennemsigtig baggrund, så kontakterne (fx "Fedtprocent") skinnede igennem og bunden af arket ikke kunne læses. Knapperne har nu deres egen hvide bund under listen (`src/components/hf/HfAccessSheet.module.css`), med en kort toning over kanten; listen scroller helt frem over dem. Se DECISIONS.md samme dato.
 - Den grønne runde chat-knap (smiley) nederst til højre på brugerens skærmbillede findes ikke i koden — den kommer fra browseren/en udvidelse og er ikke rørt.
 - Lint (0 fejl), typecheck og build grønne; tjekket i en 390 × 700 gengivelse af arket. Test på telefon: åbn Indstillinger → Integrationer → Withings og scroll til bunden.
+## 2026-10-03: "Luk konto" kan fortrydes i 3 måneder
+
+- Luk konto lukker nu kun kontoen (`User.closedAt`) og logger ud overalt; login inden for 3 måneder genåbner den, derefter anonymiseres den automatisk. "Ret til at blive glemt" sletter stadig med det samme (SLET). Abonnement opsiges ved lukning. Se DECISIONS.md samme dato.
+- "Luk konto" på /settings/account er nu et sort, understreget tekstlink nederst — ingen stor knap. Chatbottens viden er rettet.
+- Migration `20261003120000_account_closed_at` skal køre ved deploy. Lint, typecheck og build grønne. Ikke live-testet (ingen lokal DB) — test: luk en testkonto, log ind igen, og tjek at alt er der.
 
 ## 2026-10-02: Kalenderen husker den åbne dag
 

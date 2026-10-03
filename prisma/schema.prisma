@@ -183,6 +183,11 @@ model User {
   // (snapshot-princippet), men PII er ryddet — se src/lib/gdpr.ts.
   forgottenAt DateTime?
 
+  // Brugerens egen "Luk konto" (docs/DECISIONS.md 2026-10-03): kontoen er
+  // lukket, men kan genåbnes ved at logge ind inden for 3 måneder. Derefter
+  // anonymiseres den automatisk (src/lib/account-closure.ts).
+  closedAt DateTime?
+
   // Udtrykkeligt samtykke til behandling af helbredsoplysninger (GDPR art. 9,
   // docs/DECISIONS.md 2026-09-25). Null = ikke givet endnu; ConsentGate sender
   // brugeren til /samtykke, før appen kan bruges.
@@ -2712,6 +2717,9 @@ model DoctorShare {
 enum AdminAuditAction {
   IMPERSONATE_USER
   GDPR_FORGET_USER
+  // Brugerens egen "Luk konto" og genåbning ved login (2026-10-03).
+  USER_CLOSE_ACCOUNT
+  USER_REOPEN_ACCOUNT
 }
 
 // Revisionsspor for følsomme admin-handlinger ("log ind som bruger" og
