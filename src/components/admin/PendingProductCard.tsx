@@ -180,7 +180,7 @@ export function PendingProductCard({ product }: { product: PendingProduct }) {
   const nutrientRows = [...extendedRows, ...microRows];
 
   return (
-    <div className="rounded-lg border border-hf-tan-dark bg-hf-white">
+    <div className="hf-surface">
       <div className="flex flex-col gap-4 p-4 sm:flex-row sm:items-center">
         <a
           href={`/admin/products/${product.id}`}
@@ -286,7 +286,7 @@ export function PendingProductCard({ product }: { product: PendingProduct }) {
             }
           >
             <div className="flex gap-4">
-              <div className="flex h-20 w-28 flex-shrink-0 items-center justify-center overflow-hidden rounded-lg border border-hf-tan-dark bg-hf-white p-2">
+              <div className="flex h-20 w-28 flex-shrink-0 items-center justify-center overflow-hidden hf-surface p-2">
                 {product.brand?.logoUrl ? (
                   // eslint-disable-next-line @next/next/no-img-element
                   <img src={product.brand.logoUrl} alt={product.brand.name} className="max-h-full max-w-full object-contain" />

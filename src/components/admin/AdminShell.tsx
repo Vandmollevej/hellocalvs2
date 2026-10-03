@@ -14,7 +14,7 @@ import { AdminCountryDialog, readAdminCountry } from "@/components/admin/AdminCo
 // brødkrummer og brugermenu. Under lg bliver sidebjælken en skuffe bag en menuknap.
 // Farverne er de eksisterende Hello Cal-tokens.
 
-type IconName = "home" | "chart" | "box" | "database" | "users" | "handshake" | "shield" | "cog" | "palette" | "road" | "flow" | "pot" | "log";
+type IconName = "home" | "chart" | "box" | "database" | "users" | "handshake" | "shield" | "cog" | "palette" | "road" | "flow" | "pot" | "log" | "coin";
 type NavLink = { href: string; key: AdminI18nKey };
 type NavEntry =
   | { kind: "link"; href: string; key: AdminI18nKey; icon: IconName }
@@ -36,6 +36,7 @@ const NAV: NavEntry[] = [
       { href: "/admin/duplicate-products", key: "nav_duplicate_products" },
       { href: "/admin/ingredient-requests", key: "nav_ingredient_requests" },
       { href: "/admin/images", key: "nav_images" },
+      { href: "/admin/images/cutout-queue", key: "nav_cutout_queue" },
       { href: "/admin/products", key: "nav_products" },
       { href: "/admin/logos", key: "nav_logos" },
     ],
@@ -86,6 +87,7 @@ const NAV: NavEntry[] = [
     ],
   },
   { kind: "link", href: "/admin/statistics", key: "nav_statistics", icon: "chart" },
+  { kind: "link", href: "/admin/economy", key: "nav_economy", icon: "coin" },
   { kind: "link", href: "/admin/hello-doc", key: "nav_hello_doc", icon: "users" },
   {
     kind: "group",
@@ -94,6 +96,8 @@ const NAV: NavEntry[] = [
     icon: "users",
     links: [
       { href: "/admin/users", key: "nav_users_all" },
+      { href: "/admin/chatbot", key: "nav_chatbot" },
+      { href: "/admin/users/personas", key: "nav_personas" },
       { href: "/admin/bug-reports", key: "nav_bug_reports" },
       { href: "/admin/support", key: "nav_support" },
     ],
@@ -132,6 +136,7 @@ const NAV: NavEntry[] = [
     links: [
       { href: "/admin/partners/ads", key: "nav_partners_ads" },
       { href: "/admin/partners/contacts", key: "nav_partners_contacts" },
+      { href: "/admin/partners/users", key: "nav_partners_users" },
       { href: "/admin/partners/reports", key: "nav_reports" },
     ],
   },
@@ -228,6 +233,12 @@ function Icon({ name, className = "h-5 w-5" }: { name: IconName | "search" | "ch
       </>
     ),
     road: <path d="M5 21 9 3M19 21 15 3M12 4v2.5M12 10.5v3M12 17.5V20" />,
+    coin: (
+      <>
+        <circle cx="12" cy="12" r="9" />
+        <path d="M14.5 9.5c-.5-1-1.5-1.5-2.5-1.5-1.4 0-2.5.8-2.5 2s1 1.7 2.5 2 2.5.8 2.5 2-1.1 2-2.5 2c-1 0-2-.5-2.5-1.5M12 6.5V8M12 16v1.5" />
+      </>
+    ),
     log: (
       <>
         <rect x="4" y="3" width="16" height="18" rx="2" />
@@ -278,12 +289,12 @@ type Badges = { support: { unanswered: number; overdue: number } | null; uncerta
 
 function LinkBadge({ href, badges }: { href: string; badges: Badges }) {
   if (href === "/admin/uncertainties" && badges.uncertainties) {
-    return <span aria-label="Usikre varer" className="ml-auto h-2 w-2 shrink-0 rounded-full bg-hf-red-dark" />;
+    return <span aria-label="Usikre varer" className="hf-navrow__dot" />;
   }
   if (href === "/admin/support" && badges.support && badges.support.unanswered > 0) {
     return (
       <span
-        className={`hf-type-small hf-type-strong ml-auto shrink-0 rounded-full px-1.5 ${
+        className={`hf-type-small hf-type-strong shrink-0 rounded-full px-1.5 ${
           badges.support.overdue > 0 ? "bg-hf-red-dark text-hf-white" : "bg-hf-tan text-hf-black"
         }`}
       >
@@ -317,12 +328,8 @@ function SidebarNav({
   openGroups: Set<string>;
   toggleGroup: (id: string) => void;
 }) {
-  const rowBase = "hf-type-body flex w-full items-center gap-3 rounded-md px-2.5 py-2";
-  const rowIdle = "text-text-secondary hover:bg-hf-tan hover:text-text-primary";
-  const rowActive = "hf-type-strong bg-hf-tan text-hf-green-dark";
-
   return (
-    <ul className="flex flex-col gap-0.5">
+    <ul className="hf-shell__list">
       {NAV.map((entry) => {
         if (entry.kind === "link") {
           const active = isActive(pathname, entry.href);
@@ -332,10 +339,10 @@ function SidebarNav({
                 href={entry.href}
                 title={collapsed ? t(locale, entry.key) : undefined}
                 aria-current={active ? "page" : undefined}
-                className={`${rowBase} ${active ? rowActive : rowIdle} ${collapsed ? "justify-center" : ""}`}
+                className={`hf-navrow ${collapsed ? "hf-navrow--rail" : ""}`}
               >
                 <Icon name={entry.icon} />
-                {!collapsed && <span className="truncate">{t(locale, entry.key)}</span>}
+                {!collapsed && <span className="hf-navrow__label">{t(locale, entry.key)}</span>}
               </Link>
             </li>
           );
@@ -352,10 +359,10 @@ function SidebarNav({
               <Link
                 href={entry.links[0].href}
                 title={t(locale, entry.key)}
-                className={`${rowBase} relative justify-center ${groupActive ? rowActive : rowIdle}`}
+                className={`hf-navrow hf-navrow--rail ${groupActive ? "is-active" : ""}`}
               >
                 <Icon name={entry.icon} />
-                {badge && <span className="absolute right-2 top-1.5 h-2 w-2 rounded-full bg-hf-red-dark" />}
+                {badge && <span className="hf-navrow__dot" />}
               </Link>
             </li>
           );
@@ -368,18 +375,18 @@ function SidebarNav({
               type="button"
               onClick={() => toggleGroup(entry.id)}
               aria-expanded={open}
-              className={`${rowBase} ${groupActive && !open ? rowActive : rowIdle}`}
+              className={`hf-navrow ${groupActive && !open ? "is-active" : ""}`}
             >
               <Icon name={entry.icon} />
-              <span className="truncate">{t(locale, entry.key)}</span>
-              {badge && !open && <span className="h-2 w-2 shrink-0 rounded-full bg-hf-red-dark" />}
+              <span className="hf-navrow__label">{t(locale, entry.key)}</span>
+              {badge && !open && <span className="hf-navrow__dot" />}
               <Icon
                 name="chevron"
-                className={`ml-auto h-4 w-4 shrink-0 transition-transform ${open ? "rotate-180" : ""}`}
+                className={`h-4 w-4 shrink-0 transition-transform ${open ? "rotate-180" : ""}`}
               />
             </button>
             {open && (
-              <ul className="mt-0.5 flex flex-col gap-0.5 pb-1">
+              <ul className="hf-shell__list hf-shell__list--sub">
                 {entry.links.map((link) => {
                   const active = isActive(pathname, link.href);
                   return (
@@ -387,11 +394,9 @@ function SidebarNav({
                       <Link
                         href={link.href}
                         aria-current={active ? "page" : undefined}
-                        className={`hf-type-body flex items-center gap-2 rounded-md py-1.5 pl-10 pr-2.5 ${
-                          active ? rowActive : rowIdle
-                        }`}
+                        className="hf-navrow hf-navrow--sub"
                       >
-                        <span className="truncate">{t(locale, link.key)}</span>
+                        <span className="hf-navrow__label">{t(locale, link.key)}</span>
                         <LinkBadge href={link.href} badges={badges} />
                       </Link>
                     </li>
@@ -428,11 +433,11 @@ function QuickSearch({ locale, onClose }: { locale: Locale; onClose: () => void 
   }
 
   return (
-    <div className="fixed inset-0 z-[60] flex items-start justify-center bg-hf-black/40 px-4 pt-[12vh]" onClick={onClose}>
+    <div className="hf-shell__palette" onClick={onClose}>
       <div
         role="dialog"
         aria-modal="true"
-        className="w-full max-w-lg overflow-hidden rounded-lg border border-hf-tan-dark bg-hf-white shadow-xl"
+        className="hf-menu hf-shell__palette-box"
         onClick={(event) => event.stopPropagation()}
       >
         <div className="flex items-center gap-2 border-b border-hf-tan-dark px-3">
@@ -468,11 +473,9 @@ function QuickSearch({ locale, onClose }: { locale: Locale; onClose: () => void 
                 type="button"
                 onMouseEnter={() => setIndex(i)}
                 onClick={() => go(item.href)}
-                className={`hf-type-body flex w-full items-center justify-between gap-3 rounded-md px-3 py-2 text-left ${
-                  i === index ? "bg-hf-tan text-hf-black" : "text-text-secondary"
-                }`}
+                className={`hf-navrow ${i === index ? "bg-hf-tan text-hf-black" : ""}`}
               >
-                <span>{item.label}</span>
+                <span className="hf-navrow__label">{item.label}</span>
                 {item.section && <span className="hf-type-small text-text-muted">{item.section}</span>}
               </button>
             </li>
@@ -530,18 +533,14 @@ function UserMenu({
         )}
       </button>
       {open && (
-        <div className="absolute right-0 top-10 z-50 w-64 rounded-lg border border-hf-tan-dark bg-hf-white p-1.5 shadow-lg">
-          <div className="border-b border-hf-tan-dark px-2.5 pb-2 pt-1">
+        <div className="hf-menu absolute right-0 top-10 w-64">
+          <div className="hf-menu__header">
             <p className="hf-type-small text-text-muted">{t(locale, "nav_signed_in_as")}</p>
             <p className="hf-type-body truncate text-hf-black">{email}</p>
           </div>
           {canManageAdmins && (
-            <Link
-              href="/admin/admin-users"
-              onClick={() => setOpen(false)}
-              className="hf-type-body flex w-full items-center gap-2 rounded-md px-2.5 py-2 text-left text-text-secondary hover:bg-hf-tan hover:text-text-primary"
-            >
-              <span className="flex-1">{t(locale, "nav_admin_users")}</span>
+            <Link href="/admin/admin-users" onClick={() => setOpen(false)} className="hf-navrow">
+              <span className="hf-navrow__label">{t(locale, "nav_admin_users")}</span>
               {newAdminSignups > 0 && (
                 <span className="hf-type-small rounded-full bg-hf-red-dark px-1.5 text-hf-white">{newAdminSignups}</span>
               )}
@@ -553,17 +552,13 @@ function UserMenu({
               setOpen(false);
               setCountryOpen(true);
             }}
-            className="flex w-full items-center gap-2 rounded-md px-2.5 py-2 text-left hover:bg-hf-tan"
+            className="hf-navrow"
           >
-            <span className="hf-type-body flex-1 text-text-secondary">{t(locale, "nav_language_name")}</span>
+            <span className="hf-navrow__label">{t(locale, "nav_language_name")}</span>
             <Image src={`/flags/${country}.png`} alt="" width={24} height={18} className="rounded-[2px]" />
-            <Icon name="chevron" className="h-4 w-4 text-text-secondary" />
+            <Icon name="chevron" className="h-4 w-4" />
           </button>
-          <button
-            type="button"
-            onClick={onLogout}
-            className="hf-type-body w-full rounded-md px-2.5 py-2 text-left text-text-secondary hover:bg-hf-tan hover:text-text-primary"
-          >
+          <button type="button" onClick={onLogout} className="hf-navrow">
             {t(locale, "nav_logout")}
           </button>
         </div>
@@ -592,18 +587,14 @@ function SearchField({ label, collapsed, onOpen }: { label: string; collapsed: b
         onClick={onOpen}
         title={label}
         aria-label={label}
-        className="flex h-9 w-full items-center justify-center rounded-md text-text-secondary hover:bg-hf-tan"
+        className="hf-shell__search hf-shell__search--rail"
       >
         <Icon name="search" className="h-4 w-4" />
       </button>
     );
   }
   return (
-    <button
-      type="button"
-      onClick={onOpen}
-      className="hf-type-body flex h-9 w-full items-center gap-2 rounded-md border border-hf-tan-dark bg-hf-white px-3 text-text-muted hover:border-hf-green"
-    >
+    <button type="button" onClick={onOpen} className="hf-shell__search">
       <Icon name="search" className="h-4 w-4" />
       <span className="flex-1 text-left">{label}</span>
     </button>
@@ -628,16 +619,14 @@ function Breadcrumbs({ locale, pathname }: { locale: Locale; pathname: string })
   if (matches(pathname, "/admin/admin-users")) crumbs.push({ label: t(locale, "nav_admin_users") });
 
   return (
-    <nav aria-label="Breadcrumb" className="hf-type-body hidden min-w-0 items-center gap-1.5 text-text-muted sm:flex">
+    <nav aria-label="Breadcrumb" className="hf-crumbs max-sm:hidden">
       {crumbs.map((crumb, i) => (
-        <span key={`${crumb.label}-${i}`} className="flex min-w-0 items-center gap-1.5">
+        <span key={`${crumb.label}-${i}`} className="hf-crumbs__item">
           {i > 0 && <span aria-hidden="true">/</span>}
           {crumb.href ? (
-            <Link href={crumb.href} className="truncate hover:text-text-primary hover:underline">
-              {crumb.label}
-            </Link>
+            <Link href={crumb.href}>{crumb.label}</Link>
           ) : (
-            <span className={`truncate ${i === crumbs.length - 1 ? "text-hf-black" : ""}`}>{crumb.label}</span>
+            <span className={i === crumbs.length - 1 ? "hf-crumbs__current" : ""}>{crumb.label}</span>
           )}
         </span>
       ))}
@@ -769,15 +758,12 @@ export function AdminShell({
   const searchLabel = t(currentLocale, "nav_quick_search");
 
   return (
-    <div ref={scrollRootRef} className="flex h-dvh overflow-y-auto bg-page-bg text-hf-black">
+    <div ref={scrollRootRef} className="hf-shell">
       {/* Sidebjælken går i ét stykke fra top til bund (som Cloudflare): logo
-          og "Gå til…"-søgning ligger øverst i kolonnen, ikke i topbaren. */}
-      <aside
-        className={`sticky top-0 z-30 hidden h-dvh shrink-0 flex-col border-r border-hf-tan-dark bg-hf-white lg:flex ${
-          collapsed ? "w-16" : "w-64"
-        }`}
-      >
-        <div className={`flex h-14 shrink-0 items-center border-b border-hf-tan-dark ${collapsed ? "justify-center" : "px-4"}`}>
+          og "Gå til…"-søgning ligger øverst i kolonnen, ikke i topbaren.
+          Fælles skal-klasser med webvisningen (globals.css, design.md §6.17). */}
+      <aside className={`hf-shell__sidebar ${collapsed ? "is-collapsed" : ""}`}>
+        <div className="hf-shell__brand">
           <Link href="/admin" className="flex items-center" title={collapsed ? "Hello Cal Admin" : undefined}>
             <Image
               src="/hello-cal-logo.png"
@@ -788,10 +774,10 @@ export function AdminShell({
             />
           </Link>
         </div>
-        <div className="shrink-0 px-2.5 pt-2.5">
+        <div className="hf-shell__search-slot">
           <SearchField label={searchLabel} collapsed={collapsed} onOpen={() => setSearchOpen(true)} />
         </div>
-        <nav className="flex-1 overflow-y-auto p-2.5">
+        <nav className="hf-shell__nav">
           <SidebarNav
             locale={currentLocale}
             pathname={pathname}
@@ -808,24 +794,21 @@ export function AdminShell({
           onClick={toggleCollapsed}
           title={t(currentLocale, collapsed ? "nav_expand" : "nav_collapse")}
           aria-label={t(currentLocale, collapsed ? "nav_expand" : "nav_collapse")}
-          className="absolute left-full top-1/2 z-30 flex h-[72px] w-7 -translate-y-1/2 items-center justify-center rounded-r-md border border-l-0 border-hf-tan-dark bg-hf-white hover:bg-hf-tan"
-        >
-          {/* Samme grå slider-streg som kalenderens/bottom sheetets håndtag, blot lodret. */}
-          <span className="block h-10 w-1 rounded-full bg-hf-gray" />
-        </button>
+          className="hf-shell__handle"
+        />
       </aside>
 
-      <div className="flex min-w-0 flex-1 flex-col">
-        <header className="sticky top-0 z-40 flex h-14 items-center gap-2 border-b border-hf-tan-dark bg-hf-white px-3 sm:gap-3 sm:px-4 lg:px-6">
+      <div className="hf-shell__body">
+        <header className="hf-shell__topbar">
           <button
             type="button"
             onClick={() => setDrawerOpen(true)}
             aria-label={t(currentLocale, "nav_open_menu")}
-            className="hf-btn-icon rounded-md text-text-secondary hover:bg-hf-tan lg:hidden"
+            className="hf-btn-icon hf-shell__mobile-only text-text-secondary hover:bg-hf-tan"
           >
             <Icon name="menu" />
           </button>
-          <Link href="/admin" className="flex shrink-0 items-center lg:hidden">
+          <Link href="/admin" className="hf-shell__mobile-only shrink-0 items-center">
             <Image src="/hello-cal-logo.png" alt="Hello Cal" width={90} height={40} priority />
           </Link>
           <Breadcrumbs locale={currentLocale} pathname={pathname} />
@@ -833,7 +816,7 @@ export function AdminShell({
             type="button"
             onClick={() => setSearchOpen(true)}
             aria-label={searchLabel}
-            className="hf-btn-icon ml-auto rounded-md text-text-secondary hover:bg-hf-tan lg:hidden"
+            className="hf-btn-icon hf-shell__mobile-only ml-auto text-text-secondary hover:bg-hf-tan"
           >
             <Icon name="search" />
           </button>
@@ -849,27 +832,27 @@ export function AdminShell({
           </div>
         </header>
 
-        <main className="min-w-0 flex-1">
-          <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">{children}</div>
+        <main className="hf-shell__main">
+          <div className="hf-shell__content">{children}</div>
         </main>
       </div>
 
       {drawerOpen && (
-        <div className="fixed inset-0 z-50 lg:hidden">
-          <div className="absolute inset-0 bg-hf-black/40" onClick={() => setDrawerOpen(false)} />
-          <aside className="absolute inset-y-0 left-0 flex w-[85vw] max-w-xs flex-col bg-hf-white shadow-xl">
-            <div className="flex h-14 items-center justify-between border-b border-hf-tan-dark px-3">
+        <div className="hf-shell__drawer">
+          <div className="hf-shell__drawer-backdrop" onClick={() => setDrawerOpen(false)} />
+          <aside className="hf-shell__drawer-panel">
+            <div className="hf-shell__brand">
               <Image src="/hello-cal-logo.png" alt="Hello Cal" width={90} height={40} />
               <button
                 type="button"
                 onClick={() => setDrawerOpen(false)}
                 aria-label={t(currentLocale, "nav_close_menu")}
-                className="hf-btn-icon rounded-md text-text-secondary hover:bg-hf-tan"
+                className="hf-btn-icon text-text-secondary hover:bg-hf-tan"
               >
                 <Icon name="close" />
               </button>
             </div>
-            <div className="px-2.5 pt-2.5">
+            <div className="hf-shell__search-slot">
               <SearchField
                 label={searchLabel}
                 collapsed={false}
@@ -879,7 +862,7 @@ export function AdminShell({
                 }}
               />
             </div>
-            <nav className="flex-1 overflow-y-auto p-2.5">
+            <nav className="hf-shell__nav">
               <SidebarNav
                 locale={currentLocale}
                 pathname={pathname}
@@ -889,7 +872,7 @@ export function AdminShell({
                 toggleGroup={toggleGroup}
               />
             </nav>
-            <p className="hf-type-small truncate border-t border-hf-tan-dark px-4 py-3 text-text-muted">{email}</p>
+            <p className="hf-shell__drawer-foot hf-type-small truncate text-text-muted">{email}</p>
           </aside>
         </div>
       )}

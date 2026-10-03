@@ -3,16 +3,25 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter, usePathname } from "next/navigation";
-import { createContext, useContext, useEffect, useState } from "react";
-import { IconChevronLeft, IconSearch } from "@tabler/icons-react";
+import { createContext, useContext, useEffect, useRef, useState } from "react";
+import {
+  IconChevronDown,
+  IconPlus,
+  IconSettings,
+  IconUser,
+  IconWorld,
+} from "@tabler/icons-react";
+import { useAddActionsProfile, visibleAddActions } from "@/lib/add-actions";
 import { useFamilyStatus } from "@/components/family/FamilyStatusProvider";
 import { ProfileCircle } from "@/components/family/ProfileCircle";
 import { useTranslation } from "@/i18n/LocaleProvider";
+import { HelpChatButton } from "@/components/help/HelpChatButton";
 import {
   WEB_HOME,
   WEB_SETTINGS,
   WEB_SHORTCUTS,
   WEB_TOP_NAV,
+  isWebRootPath,
   type WebNavItem,
 } from "@/lib/web-nav";
 
@@ -22,6 +31,13 @@ import {
 // bundmenu (uden kamera og stemme, med chat) og profilindstillinger yderst til
 // højre. Ingen telefonramme. Selve siderne er appens egne.
 const COLLAPSED_KEY = "hc-web-sidebar-collapsed";
+
+// Profil-dropdown yderst til højre i topbjælken.
+const PROFILE_MENU = [
+  { href: "/profile", labelKey: "nav.profile", icon: IconUser },
+  { href: "/profile/settings/language-region", labelKey: "settings.languageAndRegion", icon: IconWorld },
+  { href: "/settings", labelKey: "web.allSettings", icon: IconSettings },
+];
 
 // Sider kan spørge, om de vises i desktop-skallen (ScreenHeader bruger det
 // til at udelade tilbagepilen på topniveau-sider).
@@ -37,9 +53,11 @@ function isActive(pathname: string, href: string) {
 }
 
 // Kun det længste match er aktivt, så /profile/edit ikke også markerer /profile.
-const ALL_HREFS = [...WEB_SHORTCUTS, ...WEB_SETTINGS].map(
-  (item) => item.href.split("?")[0],
-);
+const ALL_ITEMS: WebNavItem[] = [...WEB_SHORTCUTS, ...WEB_SETTINGS].flatMap((item) => [
+  item,
+  ...(item.children ?? []),
+]);
+const ALL_HREFS = ALL_ITEMS.map((item) => item.href.split("?")[0]);
 function isBestMatch(pathname: string, href: string) {
   if (!isActive(pathname, href)) return false;
   return !ALL_HREFS.some(
@@ -74,16 +92,101 @@ function SideLink({
         href={item.href}
         title={collapsed ? label : undefined}
         aria-current={active ? "page" : undefined}
-        className={`hf-type-body flex w-full items-center gap-3 rounded-md px-2.5 py-2 ${collapsed ? "justify-center" : ""} ${
-          active
-            ? "hf-type-strong bg-hf-tan text-hf-green-dark"
-            : "text-text-secondary hover:bg-hf-tan hover:text-text-primary"
-        }`}
+        className={`hf-navrow ${collapsed ? "hf-navrow--rail" : ""}`}
       >
         <Icon size={20} stroke={1.75} />
-        {!collapsed && <span className="truncate">{label}</span>}
+        {!collapsed && <span className="hf-navrow__label">{label}</span>}
       </Link>
     </li>
+  );
+}
+
+// Punkt med undermenu (Visning): folder ud, når en af siderne er åben, eller
+// når der trykkes på punktet. Foldet sammen sidebjælke linker direkte videre.
+function SideGroup({
+  item,
+  pathname,
+  label,
+  collapsed,
+  isFemale,
+}: {
+  item: WebNavItem;
+  pathname: string;
+  label: string;
+  collapsed: boolean;
+  isFemale: boolean;
+}) {
+  const { t } = useTranslation();
+  const children = (item.children ?? []).filter((child) => !child.femaleOnly || isFemale);
+  const inside = children.some((child) => isActive(pathname, child.href));
+  const [open, setOpen] = useState(inside);
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    if (inside) setOpen(true);
+  }, [inside]);
+  const Icon = item.icon;
+  if (collapsed) return <SideLink item={item} pathname={pathname} label={label} collapsed />;
+  return (
+    <li>
+      <button
+        type="button"
+        onClick={() => setOpen((value) => !value)}
+        aria-expanded={open}
+        className={`hf-navrow ${inside ? "is-inside" : ""}`}
+      >
+        <Icon size={20} stroke={1.75} />
+        <span className="hf-navrow__label">{label}</span>
+        <IconChevronDown size={16} className={open ? "rotate-180" : ""} />
+      </button>
+      {open && (
+        <ul className="hf-shell__list hf-shell__list--sub pl-4">
+          {children.map((child) => (
+            <SideLink key={child.key} item={child} pathname={pathname} label={t(child.labelKey)} collapsed={false} />
+          ))}
+        </ul>
+      )}
+    </li>
+  );
+}
+
+// Brødkrummer øverst i indholdsfladen (som i admin) på sider under topniveau.
+const CRUMB_LABELS: Record<string, string> = {
+  betingelser: "Betingelser",
+  privatlivspolitik: "Privatlivspolitik",
+  login: "Log ind",
+  signup: "Opret konto",
+  "forgot-password": "Glemt adgangskode",
+  "reset-password": "Nulstil adgangskode",
+  "verify-email": "Bekræft e-mail",
+  forward: "Videresend",
+  "family-code": "Familiekode",
+  scan: "Scan",
+  welcome: "Velkommen",
+};
+
+function Crumbs({ pathname }: { pathname: string }) {
+  const { t } = useTranslation();
+  const all = ALL_ITEMS;
+  const segs = pathname.split("/").filter(Boolean);
+  const crumbs: { label: string; href?: string }[] = [{ label: "Hello Cal", href: WEB_HOME }];
+  let acc = "";
+  segs.forEach((seg, i) => {
+    acc += `/${seg}`;
+    const item = all.find((n) => n.href.split("?")[0] === acc);
+    const last = i === segs.length - 1;
+    const label = item ? t(item.labelKey) : last ? CRUMB_LABELS[seg] : undefined;
+    if (label) crumbs.push({ label, href: last ? undefined : acc });
+  });
+  if (crumbs.length < 2) return null;
+  return (
+    <nav aria-label="Breadcrumb" className="hf-crumbs hf-crumbs--bar">
+      {crumbs.map((c, i) => (
+        <span key={`${c.label}-${i}`} className="hf-crumbs__item">
+          {i > 0 && <span aria-hidden="true">/</span>}
+          {c.href ? <Link href={c.href}>{c.label}</Link> : <span className="hf-crumbs__current">{c.label}</span>}
+        </span>
+      ))}
+    </nav>
   );
 }
 
@@ -92,8 +195,46 @@ export function WebShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname() ?? "/";
   const router = useRouter();
   const { status } = useFamilyStatus();
-  const [query, setQuery] = useState("");
   const [collapsed, setCollapsed] = useState(false);
+  const [addOpen, setAddOpen] = useState(false);
+  const [profileOpen, setProfileOpen] = useState(false);
+  const profileMenuRef = useRef<HTMLDivElement>(null);
+
+  // Luk profil-dropdown ved klik udenfor og ved sideskift.
+  useEffect(() => {
+    if (!profileOpen) return;
+    const onDown = (e: MouseEvent) => {
+      if (!profileMenuRef.current?.contains(e.target as Node)) setProfileOpen(false);
+    };
+    document.addEventListener("mousedown", onDown);
+    return () => document.removeEventListener("mousedown", onDown);
+  }, [profileOpen]);
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setProfileOpen(false);
+  }, [pathname]);
+  const [isFemale, setIsFemale] = useState(false);
+  const addProfile = useAddActionsProfile();
+  // Mikrofonen findes ikke på desktop (chat afløser den).
+  const addActions = visibleAddActions(addProfile).filter((a) => a.key !== "microphone");
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setAddOpen(false);
+  }, [pathname]);
+
+  useEffect(() => {
+    let cancelled = false;
+    fetch("/api/profile")
+      .then(async (response) => (response.ok ? ((await response.json()) as { user: { sex: "FEMALE" | "MALE" | null } }) : null))
+      .then((data) => {
+        if (!cancelled && data) setIsFemale(data.user.sex === "FEMALE");
+      })
+      .catch(() => {});
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   useEffect(() => {
     // localStorage findes først efter hydrering.
@@ -118,33 +259,18 @@ export function WebShell({ children }: { children: React.ReactNode }) {
     });
   }
 
-  const q = query.trim().toLowerCase();
-  const match = (item: WebNavItem) =>
-    !q || t(item.labelKey).toLowerCase().includes(q);
-  const shortcuts = WEB_SHORTCUTS.filter(match);
-  const settings = WEB_SETTINGS.filter(match);
-  const noResults = shortcuts.length === 0 && settings.length === 0;
-
-  function onSearchSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    const first = shortcuts[0] ?? settings[0];
-    if (first) router.push(first.href);
-    setQuery("");
-  }
+  const shortcuts = WEB_SHORTCUTS;
+  const settings = WEB_SETTINGS;
 
   const profileActive =
     isActive(pathname, "/profile") || isActive(pathname, "/settings");
 
   return (
     <WebShellContext.Provider value={true}>
-      <div className="web-shell flex h-dvh bg-page-bg text-hf-black">
-        <aside
-          aria-label={t("web.sideNav")}
-          className={`relative z-30 flex h-dvh shrink-0 flex-col border-r border-hf-tan-dark bg-hf-white ${collapsed ? "w-16" : "w-64"}`}
-        >
-          <div
-            className={`flex h-20 shrink-0 items-center border-b border-hf-tan-dark ${collapsed ? "justify-center" : "px-4"}`}
-          >
+      {/* Fælles skal-klasser med admin (globals.css, design.md §6.17). */}
+      <div className="web-shell hf-shell hf-shell--tall hf-shell--fixed">
+        <aside aria-label={t("web.sideNav")} className={`hf-shell__sidebar ${collapsed ? "is-collapsed" : ""}`}>
+          <div className="hf-shell__brand">
             <Link href={WEB_HOME} className="flex items-center">
               <Image
                 src="/hello-cal-logo.png"
@@ -156,47 +282,11 @@ export function WebShell({ children }: { children: React.ReactNode }) {
             </Link>
           </div>
 
-          <div className="shrink-0 px-2.5 pt-2.5">
-            {collapsed ? (
-              <button
-                type="button"
-                onClick={toggleCollapsed}
-                title={t("web.searchPlaceholder")}
-                aria-label={t("web.searchPlaceholder")}
-                className="flex h-9 w-full items-center justify-center rounded-md text-text-secondary hover:bg-hf-tan"
-              >
-                <IconSearch size={16} stroke={1.75} />
-              </button>
-            ) : (
-              <form onSubmit={onSearchSubmit} role="search">
-                <label className="hf-type-body flex h-9 w-full items-center gap-2 rounded-md border border-hf-tan-dark bg-hf-white px-3 focus-within:border-hf-green">
-                  <IconSearch
-                    size={16}
-                    stroke={1.75}
-                    className="shrink-0 text-text-muted"
-                  />
-                  <input
-                    type="search"
-                    value={query}
-                    onChange={(e) => setQuery(e.target.value)}
-                    placeholder={t("web.searchPlaceholder")}
-                    aria-label={t("web.searchPlaceholder")}
-                    className="min-w-0 flex-1 bg-transparent text-hf-black outline-none placeholder:text-text-muted"
-                  />
-                </label>
-              </form>
-            )}
-          </div>
-
-          <nav className="min-h-0 flex-1 overflow-y-auto p-2.5">
+          <nav className="hf-shell__nav">
             {shortcuts.length > 0 && (
-              <section>
-                {!collapsed && (
-                  <h2 className="hf-type-small px-2.5 pb-1 pt-1 font-semibold uppercase tracking-wide text-text-muted">
-                    {t("web.shortcuts")}
-                  </h2>
-                )}
-                <ul className="flex flex-col gap-0.5">
+              <section className="hf-shell__section">
+                {!collapsed && <h2 className="hf-shell__section-title">{t("web.shortcuts")}</h2>}
+                <ul className="hf-shell__list">
                   {shortcuts.map((item) => (
                     <SideLink
                       key={item.key}
@@ -210,29 +300,31 @@ export function WebShell({ children }: { children: React.ReactNode }) {
               </section>
             )}
             {settings.length > 0 && (
-              <section className="mt-3 border-t border-hf-tan-dark pt-3">
-                {!collapsed && (
-                  <h2 className="hf-type-small px-2.5 pb-1 font-semibold uppercase tracking-wide text-text-muted">
-                    {t("web.settings")}
-                  </h2>
-                )}
-                <ul className="flex flex-col gap-0.5">
-                  {settings.map((item) => (
-                    <SideLink
-                      key={item.key}
-                      item={item}
-                      pathname={pathname}
-                      label={t(item.labelKey)}
-                      collapsed={collapsed}
-                    />
-                  ))}
+              <section className="hf-shell__section">
+                {!collapsed && <h2 className="hf-shell__section-title">{t("web.settings")}</h2>}
+                <ul className="hf-shell__list">
+                  {settings.map((item) =>
+                    item.children ? (
+                      <SideGroup
+                        key={item.key}
+                        item={item}
+                        pathname={pathname}
+                        label={t(item.labelKey)}
+                        collapsed={collapsed}
+                        isFemale={isFemale}
+                      />
+                    ) : (
+                      <SideLink
+                        key={item.key}
+                        item={item}
+                        pathname={pathname}
+                        label={t(item.labelKey)}
+                        collapsed={collapsed}
+                      />
+                    ),
+                  )}
                 </ul>
               </section>
-            )}
-            {noResults && (
-              <p className="hf-type-body px-2.5 py-4 text-text-muted">
-                {t("web.noResults")}
-              </p>
             )}
           </nav>
 
@@ -241,20 +333,14 @@ export function WebShell({ children }: { children: React.ReactNode }) {
             onClick={toggleCollapsed}
             title={t(collapsed ? "web.expand" : "web.collapse")}
             aria-label={t(collapsed ? "web.expand" : "web.collapse")}
-            className="absolute left-full top-1/2 z-30 -translate-y-1/2 flex h-9 w-7 items-center justify-center rounded-r-md border border-l-0 border-hf-tan-dark bg-hf-white text-text-secondary hover:bg-hf-tan"
-          >
-            <IconChevronLeft
-              size={16}
-              stroke={1.75}
-              className={`transition-transform ${collapsed ? "rotate-180" : ""}`}
-            />
-          </button>
+            className="hf-shell__handle"
+          />
         </aside>
 
-        <div className="flex min-w-0 flex-1 flex-col">
-          <header className="flex h-20 shrink-0 items-end justify-between gap-3 border-b border-hf-tan-dark bg-hf-white px-6 pb-2.5">
+        <div className="hf-shell__body">
+          <header className="hf-shell__topbar hf-shell__topbar--bottom">
             <nav aria-label={t("web.mainNav")}>
-              <ul className="flex items-center gap-1">
+              <ul className="hf-shell__topnav">
                 {WEB_TOP_NAV.map((item) => {
                   const active = isActive(pathname, item.href);
                   const Icon = item.icon;
@@ -263,45 +349,94 @@ export function WebShell({ children }: { children: React.ReactNode }) {
                       <Link
                         href={item.href}
                         aria-current={active ? "page" : undefined}
-                        className={`hf-type-body flex h-9 items-center gap-2 rounded-md px-3 ${
-                          active
-                            ? "hf-type-strong bg-hf-tan text-hf-green-dark"
-                            : "text-text-secondary hover:bg-hf-tan hover:text-text-primary"
-                        }`}
+                        title={t(item.labelKey)}
+                        className="hf-navrow"
                       >
                         <Icon size={20} stroke={1.75} />
-                        {t(item.labelKey)}
+                        <span className="hf-shell__toplabel">{t(item.labelKey)}</span>
                       </Link>
                     </li>
                   );
                 })}
               </ul>
             </nav>
-            <Link
-              href="/profile"
-              aria-label={t("web.profileSettings")}
-              className={`hf-type-body flex h-9 items-center gap-2 rounded-md pl-1.5 pr-3 ${
-                profileActive
-                  ? "hf-type-strong bg-hf-tan text-hf-green-dark"
-                  : "text-text-secondary hover:bg-hf-tan hover:text-text-primary"
-              }`}
+            <div className="flex items-end gap-4">
+            {/* Grøn cirkel med hvidt plus; 20 % af den hænger ned over headerens streg. */}
+            <button
+              type="button"
+              onClick={() => setAddOpen((value) => !value)}
+              aria-expanded={addOpen}
+              aria-label={t("addMenu.title")}
+              title={t("addMenu.title")}
+              className="absolute bottom-[-10px] left-1/2 z-30 flex h-[52px] w-[52px] -translate-x-1/2 items-center justify-center rounded-full bg-hf-green text-hf-white shadow-md transition hover:bg-hf-green-dark"
             >
-              <ProfileCircle
-                name={status?.activeProfile.displayName ?? ""}
-                size={32}
-                className="hf-avatar--outlined"
-              />
-              {t("web.profileSettings")}
-            </Link>
+              <IconPlus size={28} stroke={2} />
+            </button>
+            <HelpChatButton labelled />
+            <div ref={profileMenuRef} className="relative">
+              <button
+                type="button"
+                aria-label={t("web.profileSettings")}
+                aria-haspopup="menu"
+                aria-expanded={profileOpen}
+                onClick={() => setProfileOpen((open) => !open)}
+                className={`hf-navrow hf-navrow--inline py-0.5 pl-1.5 pr-3 ${profileActive || profileOpen ? "is-active" : ""}`}
+              >
+                <ProfileCircle
+                  name={status?.activeProfile.displayName ?? ""}
+                  size={32}
+                  className="hf-avatar--outlined"
+                />
+                <span className="hf-shell__toplabel">{t("web.profileSettings")}</span>
+                <IconChevronDown size={16} stroke={1.75} />
+              </button>
+              {profileOpen && (
+                <ul role="menu" className="hf-menu absolute right-0 top-full mt-1 w-60">
+                  {PROFILE_MENU.map((item) => {
+                    const Icon = item.icon;
+                    return (
+                      <li key={item.href} role="none">
+                        <Link href={item.href} role="menuitem" className="hf-navrow">
+                          <Icon size={18} stroke={1.75} />
+                          {t(item.labelKey)}
+                        </Link>
+                      </li>
+                    );
+                  })}
+                </ul>
+              )}
+            </div>
+            </div>
+            {addOpen && (
+              <div className="absolute left-0 right-0 top-full z-20 border-b border-hf-tan-dark bg-hf-white pt-4 shadow-sm">
+                <ul className="flex items-start justify-center gap-2 overflow-x-auto px-4 py-3 lg:px-8">
+                  {addActions.map((action) => {
+                    const Icon = action.icon;
+                    return (
+                      <li key={action.key}>
+                        <Link
+                          href={action.href}
+                          className="hf-type-small flex w-24 flex-col items-center gap-1.5 rounded-md px-2 py-2 text-center text-text-secondary hover:bg-hf-tan hover:text-text-primary"
+                        >
+                          {Icon && <Icon size={28} stroke={1.75} />}
+                          <span>{t(action.labelKey)}</span>
+                        </Link>
+                      </li>
+                    );
+                  })}
+                </ul>
+              </div>
+            )}
           </header>
 
-          <main className="min-h-0 min-w-0 flex-1 overflow-y-auto">
+          <main className="hf-shell__main min-h-0 overflow-y-auto">
             {/* transform holder appens position: fixed-ark og -menuer inde i indholdsfladen. */}
             <div
               className="web-shell-content mx-auto flex h-full w-full max-w-7xl flex-col overflow-hidden bg-hf-cream"
               style={{ transform: "translateZ(0)" }}
             >
-              {children}
+              {!isWebRootPath(pathname) && <Crumbs pathname={pathname} />}
+              <div className="flex min-h-0 flex-1 flex-col">{children}</div>
             </div>
           </main>
         </div>

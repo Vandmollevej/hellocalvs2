@@ -18,6 +18,12 @@ All image variants and, for products in both chains, each store's own
 fields (product_source_records) are stored for admin "Dubletter"; what admin
 has reviewed there is not overwritten (docs/DECISIONS.md 2026-09-28).
 
+Products the sheets have no kcal for are imported too (docs/DECISIONS.md
+2026-10-02): hidden ("nutritionMissing", 0 as placeholder, no barcode row)
+until they get nutrition, so nobody logs 0 kcal and scanning the barcode
+still lets a user create the product. A product that already has nutrition
+from elsewhere keeps it. Rows without an EAN are keyed by "externalId".
+
 rema1000-agent rewrites its rows on every container start, so this agent
 waits START_DELAY_SECONDS first and runs after it.
 """
@@ -86,7 +92,8 @@ CATEGORY_TREE = [
 ]
 
 FILTER_COLUMNS = [
-    "organic", "glutenFree", "lactoseFree", "sugarFree", "sweeteners", "vegan", "vegetarian", "meatType",
+    "organic", "glutenFree", "lactoseFree", "sugarFree", "lowSugar", "noAddedSugar", "reducedSugar", "lightSugar",
+    "sweeteners", "vegan", "vegetarian", "meatType",
     "alcohol", "alcoholPercent", "fatPercent", "countryOfOrigin", "wholeGrain", "keyhole", "animalWelfare",
     "certifications", "storage", "size", "toxins",
 ]
@@ -135,17 +142,53 @@ def copy_image(filename):
     return f"{PUBLIC_PATH_PREFIX}/{IMAGE_SUBDIR}/{filename}"
 
 
+MACRO_COLUMNS = {"kcal": "kcalPer100g", "protein": "proteinPer100g", "carbs": "carbsPer100g", "fat": "fatPer100g"}
+# Paths in product_source_records.data whose change does not send a reviewed
+# product back to admin (upsert_sources).
+IGNORED_IN_REVIEW = (
+    "nutrition,energyKj", "filters,lowSugar", "filters,noAddedSugar", "filters,reducedSugar", "filters,lightSugar",
+)
+
+
+def external_id(p):
+    # The sample baked into the image predates "externalId" (= the EAN).
+    return p.get("externalId") or p["ean"]
+
+
 def find_product(cur, p):
-    cur.execute('SELECT "productId" FROM "barcodes" WHERE code = %s', (p["ean"],))
-    row = cur.fetchone()
+    """By barcode first — the product may have been created by a user, Open
+    Food Facts or rema1000-agent — then by the store's own key."""
+    row = None
+    if p.get("ean"):
+        cur.execute('SELECT "productId" FROM "barcodes" WHERE code = %s', (p["ean"],))
+        row = cur.fetchone()
+        if row:
+            drop_hidden_twin(cur, p, row[0])
     if row is None:
         cur.execute(
             """SELECT id FROM "products" WHERE "externalSource" = %s::"ExternalProductSource"
-               AND "externalId" = %s""",
-            (p["externalSource"], p["ean"]),
+               AND "externalId" = %s ORDER BY "nutritionMissing", "createdAt" LIMIT 1""",
+            (p["externalSource"], external_id(p)),
         )
         row = cur.fetchone()
     return row[0] if row else None
+
+
+def drop_hidden_twin(cur, p, product_id):
+    """A product hidden for lack of nutrition has no barcode row, so the same
+    barcode may have been created since (a user's scan, Open Food Facts). That
+    product is the one updated from now on; the hidden copy goes."""
+    cur.execute("SAVEPOINT twin")
+    try:
+        cur.execute(
+            """DELETE FROM "products" WHERE "nutritionMissing" AND id <> %s
+               AND "externalSource" = %s::"ExternalProductSource" AND "externalId" = %s""",
+            (product_id, p["externalSource"], external_id(p)),
+        )
+        cur.execute("RELEASE SAVEPOINT twin")
+    except psycopg2.Error:
+        cur.execute("ROLLBACK TO SAVEPOINT twin")
+        log.exception("could not remove the hidden copy of %s", external_id(p))
 
 
 def review_state(cur, product_id):
@@ -173,6 +216,11 @@ def upsert_product(cur, p, store_ids, category_ids):
     images_reviewed, fields_reviewed = review_state(cur, existing_id)
 
     n = p["nutrition"]
+    # No kcal in the sheets: nothing here may be read as the product's
+    # nutrition. Macros the sheets lack beside a kcal are 0 and estimated (~).
+    missing = bool(p.get("nutritionMissing"))
+    estimated = p.get("estimatedMacros") or []
+    micros = p.get("micronutrients") or {}
     brand_id = get_or_create_id(cur, "brands", p["brand"]) if p.get("brand") else None
     category_id = category_ids.get(p.get("subcategory") or "") or category_ids.get(p.get("category") or "")
     images = []
@@ -187,11 +235,17 @@ def upsert_product(cur, p, store_ids, category_ids):
         "name": p["name"],
         "brandId": brand_id,
         "categoryId": category_id,
-        "kcal": n["kcal"],
-        "protein": n["protein"],
-        "carbs": n["carbs"],
-        "fat": n["fat"],
+        "kcal": n.get("kcal") or 0,
+        "protein": n.get("protein") or 0,
+        "carbs": n.get("carbs") or 0,
+        "fat": n.get("fat") or 0,
         "satFat": n.get("saturatedFat"),
+        "nutritionMissing": missing,
+        # Product.micronutrientsPer100g / nutrientSources (src/lib/nutrients.ts):
+        # label vitamins are producer data, a macro the sheets lack is a guess.
+        "micros": psycopg2.extras.Json(micros),
+        "microSources": psycopg2.extras.Json({k: "LABEL" for k in micros}),
+        "estimatedSources": psycopg2.extras.Json({k: "ESTIMATED" for k in estimated}),
         "ingredients": p.get("ingredients"),
         "allergens": p.get("allergens") or [],
         "additives": p.get("additives") or [],
@@ -206,7 +260,7 @@ def upsert_product(cur, p, store_ids, category_ids):
         "productCategory": p.get("productCategory"),
         "imageUrl": image_url,
         "externalSource": p["externalSource"],
-        "externalId": p["ean"],
+        "externalId": external_id(p),
     }
 
     if existing_id and fields_reviewed:
@@ -219,12 +273,22 @@ def upsert_product(cur, p, store_ids, category_ids):
     elif existing_id:
         product_id = existing_id
         params["id"] = product_id
+        # The product keeps the nutrition it has where the sheets know nothing:
+        # all of it without a kcal, else the macros that would only be guessed.
+        # What the sheets do know is producer data (no "estimated" mark).
+        nutrition_sql = ""
+        if not missing:
+            params["known"] = [k for k in MACRO_COLUMNS if k not in estimated]
+            nutrition_sql = "".join(f'"{MACRO_COLUMNS[k]}" = %({k})s, ' for k in params["known"]) + """
+                "saturatedFatPer100g" = %(satFat)s, "nutritionMissing" = false,
+                "nutrientSources" = NULLIF((COALESCE("nutrientSources", '{}'::jsonb) - %(known)s::text[]) || %(microSources)s::jsonb, '{}'::jsonb),
+                "micronutrientsPer100g" = NULLIF(COALESCE("micronutrientsPer100g", '{}'::jsonb) || %(micros)s::jsonb, '{}'::jsonb),
+                """
         cur.execute(
-            """
+            f"""
             UPDATE "products" SET
                 name = %(name)s, "brandId" = %(brandId)s, "categoryId" = %(categoryId)s,
-                "kcalPer100g" = %(kcal)s, "proteinPer100g" = %(protein)s, "carbsPer100g" = %(carbs)s,
-                "fatPer100g" = %(fat)s, "saturatedFatPer100g" = %(satFat)s,
+                {nutrition_sql}
                 "ingredientsText" = %(ingredients)s, allergens = %(allergens)s, additives = %(additives)s,
                 subbrand = %(subbrand)s, variant = %(variant)s, flavor = %(flavor)s,
                 "packCount" = %(packCount)s, packaging = %(packaging)s, keywords = %(keywords)s, "packageSizeText" = %(packageSize)s,
@@ -244,13 +308,16 @@ def upsert_product(cur, p, store_ids, category_ids):
             """
             INSERT INTO "products" (
                 id, name, "brandId", "categoryId", "kcalPer100g", "proteinPer100g", "carbsPer100g",
-                "fatPer100g", "saturatedFatPer100g", "ingredientsText", allergens, additives,
+                "fatPer100g", "saturatedFatPer100g", "nutritionMissing", "nutrientSources",
+                "micronutrientsPer100g", "ingredientsText", allergens, additives,
                 "externalSource", "externalId", "sourceCheckedAt", status, subbrand, variant, flavor,
                 "packCount", packaging, keywords, "packageSizeText", "productType", "productCategory",
                 "imageUrl", "imageStatus", "createdAt"
             ) VALUES (
                 %(id)s, %(name)s, %(brandId)s, %(categoryId)s, %(kcal)s, %(protein)s, %(carbs)s,
-                %(fat)s, %(satFat)s, %(ingredients)s, %(allergens)s, %(additives)s,
+                %(fat)s, %(satFat)s, %(nutritionMissing)s,
+                NULLIF(%(estimatedSources)s::jsonb || %(microSources)s::jsonb, '{}'::jsonb),
+                NULLIF(%(micros)s::jsonb, '{}'::jsonb), %(ingredients)s, %(allergens)s, %(additives)s,
                 %(externalSource)s::"ExternalProductSource", %(externalId)s, now(), 'APPROVED',
                 %(subbrand)s, %(variant)s, %(flavor)s, %(packCount)s, %(packaging)s, %(keywords)s, %(packageSize)s,
                 %(productType)s, %(productCategory)s::"ProductCategory", %(imageUrl)s,
@@ -271,10 +338,15 @@ def upsert_product(cur, p, store_ids, category_ids):
                WHERE id = %s AND "servingSizeGrams" IS NULL""",
             (p["sliceWeightGrams"], product_id),
         )
-    cur.execute(
-        'INSERT INTO "barcodes" (code, "productId") VALUES (%s, %s) ON CONFLICT (code) DO NOTHING',
-        (p["ean"], product_id),
-    )
+    # A hidden product gets no barcode row: scanning must still end in Open
+    # Food Facts or the camera flow, where a user can create the product.
+    if p.get("ean"):
+        cur.execute(
+            """INSERT INTO "barcodes" (code, "productId")
+               SELECT %s, id FROM "products" WHERE id = %s AND NOT "nutritionMissing"
+               ON CONFLICT (code) DO NOTHING""",
+            (p["ean"], product_id),
+        )
     for store in p["stores"]:
         cur.execute(
             """INSERT INTO "product_stores" ("productId", "storeId") VALUES (%s, %s)
@@ -305,14 +377,18 @@ def upsert_product(cur, p, store_ids, category_ids):
 
 def upsert_sources(cur, product_id, sources):
     """Each store's own version (Bilka + REMA 1000 with the same EAN). Changed
-    store data is shown to admin again; unchanged keeps its review."""
+    store data is shown to admin again; unchanged keeps its review. Not a
+    change: kJ (the 1.105 → 1105 repair), the sugar claims derived from the
+    other fields, and keys without a value."""
+    ignored = "".join(f" #- '{{{path}}}'" for path in IGNORED_IN_REVIEW)
+    old, new = (f"jsonb_strip_nulls({side}.data{ignored})" for side in ('"product_source_records"', "EXCLUDED"))
     for source, data in sources.items():
         cur.execute(
-            """
+            f"""
             INSERT INTO "product_source_records" (id, "productId", source, data, "createdAt", "updatedAt")
             VALUES (%s, %s, %s::"ExternalProductSource", %s, now(), now())
             ON CONFLICT ("productId", source) DO UPDATE SET
-                "reviewedAt" = CASE WHEN "product_source_records".data = EXCLUDED.data
+                "reviewedAt" = CASE WHEN {old} = {new}
                                     THEN "product_source_records"."reviewedAt" ELSE NULL END,
                 data = EXCLUDED.data,
                 "updatedAt" = now()
@@ -327,8 +403,12 @@ def upsert_nutrition(cur, product_id, category, n):
     basis = "100ml" if category == "DRINK" else "100g"
     cols = list(values) + list(sources)
     data = {**values, **sources}
-    # Missing values keep what is already there (e.g. derived by the app).
-    set_sql = ", ".join(f'"{c}" = COALESCE(EXCLUDED."{c}", "product_nutrition_features"."{c}")' for c in cols)
+    # Missing values keep what is already there (e.g. derived by the app) —
+    # except kJ, which only this import writes: a dropped kJ must go.
+    set_sql = ", ".join(
+        f'"{c}" = EXCLUDED."{c}"' if c == "energyKjPer100g" else f'"{c}" = COALESCE(EXCLUDED."{c}", "product_nutrition_features"."{c}")'
+        for c in cols
+    )
     insert_vals = ", ".join(f'%({c})s::"ProductFeatureSource"' if c in sources else f"%({c})s" for c in cols)
     cur.execute(
         f"""
@@ -372,10 +452,21 @@ def run(conn):
             imported += 1
         except Exception:  # noqa: BLE001 - one bad row must not stop the batch
             cur.execute("ROLLBACK TO SAVEPOINT product")
-            log.exception("failed to import EAN %s", p.get("ean"))
+            log.exception("failed to import %s", p.get("externalId") or p.get("ean"))
+    # Products admin has reviewed keep their values, but a kJ that is still
+    # the sheet's thousands format (1.105 beside 264 kcal) is no choice.
+    cur.execute(
+        """UPDATE "product_nutrition_features" f SET "energyKjPer100g" = round((f."energyKjPer100g" * 1000)::numeric)
+           FROM "products" p WHERE p.id = f."productId" AND f."energyKjPer100g" < 10 AND p."kcalPer100g" > 10"""
+    )
+    cur.execute(
+        """SELECT count(*) FROM "products" WHERE "nutritionMissing"
+           AND "externalSource" IN ('BILKA'::"ExternalProductSource", 'REMA1000'::"ExternalProductSource")"""
+    )
+    hidden = cur.fetchone()[0]
     conn.commit()
     cur.close()
-    message = f"Imported/updated {imported} of {len(products)} store products"
+    message = f"Imported/updated {imported} of {len(products)} store products ({hidden} hidden: no nutrition yet)"
     log.info(message)
     return message
 

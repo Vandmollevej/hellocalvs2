@@ -1,6 +1,5 @@
 import { useEffect, useState, useSyncExternalStore } from "react";
 import {
-  IconActivity,
   IconCalendarHeart,
   IconCamera,
   IconMicrophone,
@@ -85,7 +84,7 @@ export const ADD_ACTIONS: AddAction[] = [
   {
     key: "activity",
     href: "/activity/create",
-    icon: IconActivity,
+    imageSrc: "/icons/activity-3d.png",
     labelKey: "addButton.activity",
   },
   {

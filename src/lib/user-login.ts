@@ -47,6 +47,19 @@ function requestCountry(req: Request): string | null {
   return /^[A-Z]{2}$/.test(code) && code !== "XX" && code !== "T1" ? code : null;
 }
 
+// By fra Cloudflare ("Add visitor location headers"), URL-kodet i headeren.
+// Bruges kun til de anonyme gruppetal under admin → Brugere → Personas.
+function requestCity(req: Request): string | null {
+  const raw = req.headers.get("cf-ipcity");
+  if (!raw) return null;
+  try {
+    const city = decodeURIComponent(raw).trim();
+    return city && city.length <= 80 ? city : null;
+  } catch {
+    return null;
+  }
+}
+
 // Kort, læsbar enhedsbeskrivelse til mailen, fx "iPhone · Safari".
 export function describeDevice(userAgent: string | null): string {
   const ua = userAgent ?? "";
@@ -167,11 +180,30 @@ export async function completeLogin<T extends NextResponse>(
   );
   // Admin-statistikken tæller log-ins over tid (/admin/statistics).
   await prisma.loginEvent
-    .create({ data: { userId, method, country: requestCountry(req) } })
+    .create({ data: { userId, method, country: requestCountry(req), city: requestCity(req) } })
     .catch((error) => console.error("Login event logging failed", error));
   // Familiemedlemmer ser deres egne login-tidspunkter i Kontrol-loggen.
   await logOwnLoginForFamilyMember(userId).catch((error) => console.error("Family login log failed", error));
   return response;
+}
+
+// Er denne browser/app-installation allerede kendt for brugeren (har logget
+// ind før)? Bruges til at kræve login-godkendelse kun på nye enheder.
+export async function isKnownDevice(req: Request, userId: string): Promise<boolean> {
+  const deviceId = readCookie(req, DEVICE_COOKIE);
+  if (!deviceId || deviceId.length < 16 || deviceId.length > 128) return false;
+  const known = await prisma.userKnownDevice.findUnique({
+    where: { userId_deviceHash: { userId, deviceHash: hash(deviceId) } },
+    select: { userId: true },
+  });
+  return known !== null;
+}
+
+export function requestLoginInfo(req: Request) {
+  return {
+    device: describeDevice(req.headers.get("user-agent")),
+    country: requestCountry(req),
+  };
 }
 
 async function logOwnLoginForFamilyMember(userId: string) {

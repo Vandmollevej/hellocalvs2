@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { IconCreditCard } from "@tabler/icons-react";
+import { IconPaymentCard } from "@/components/icons/PaymentCard";
 import { HfScreen } from "@/components/HfScreen";
 import { SkeletonCards, SkeletonScreen } from "@/components/hf/Skeleton";
 import { useTranslation } from "@/i18n/LocaleProvider";
@@ -94,7 +94,7 @@ function MethodLogo({ kind }: { kind: string }) {
         // eslint-disable-next-line @next/next/no-img-element
         <img src={logo} alt="" className="h-5 w-auto" />
       ) : (
-        <IconCreditCard size={20} className="text-hf-black" aria-hidden="true" />
+        <IconPaymentCard size={20} className="text-hf-black" />
       )}
     </span>
   );

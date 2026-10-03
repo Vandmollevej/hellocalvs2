@@ -48,7 +48,7 @@ export function StatsBarChart({
   return (
     <div className="flex flex-col gap-2">
       {series.length > 1 && (
-        <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-text-secondary">
+        <div className="hf-type-small flex flex-wrap gap-x-4 gap-y-1 text-text-secondary">
           {series.map((s) => (
             <span key={s.key} className="flex items-center gap-1.5">
               <span className="inline-block h-2.5 w-2.5 rounded-sm" style={{ background: s.color }} />
@@ -115,17 +115,17 @@ export function StatsBarChart({
           })}
         </svg>
         {grandTotal === 0 && (
-          <p className="absolute inset-0 flex items-center justify-center text-sm text-text-muted">{emptyText}</p>
+          <p className="absolute inset-0 flex items-center justify-center hf-type-body text-text-muted">{emptyText}</p>
         )}
         {hover !== null && points[hover] && (
           <div
-            className="pointer-events-none absolute top-0 z-10 min-w-36 rounded-md border border-border-strong bg-surface-1 px-2.5 py-1.5 text-xs shadow"
+            className="pointer-events-none absolute top-0 z-10 min-w-36 hf-surface hf-type-small px-2.5 py-1.5 shadow"
             style={{
               left: `${((PAD.left + slot * hover + slot / 2) / WIDTH) * 100}%`,
               transform: hover > points.length / 2 ? "translateX(-105%)" : "translateX(5%)",
             }}
           >
-            <p className="font-semibold text-text-primary">{points[hover].label}</p>
+            <p className="hf-type-strong text-text-primary">{points[hover].label}</p>
             {series.map((s) => (
               <p key={s.key} className="flex items-center justify-between gap-3 text-text-secondary">
                 <span className="flex items-center gap-1.5">

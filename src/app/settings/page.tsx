@@ -18,15 +18,16 @@ import {
   IconAlertTriangle,
   IconLifebuoy,
   IconMoon,
-  IconWallet,
   IconAdjustments,
   IconBug,
   IconUsers,
   IconHistory,
   IconTrashOff,
+  IconUserCog,
 } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
 import { AccordionCard, ChevronRow } from "@/components/hf/AccordionCard";
+import { IconPaymentCard } from "@/components/icons/PaymentCard";
 import { OnboardingWizard } from "@/components/OnboardingWizard";
 import { useTranslation } from "@/i18n/LocaleProvider";
 import { useFamilyStatus } from "@/components/family/FamilyStatusProvider";
@@ -58,14 +59,13 @@ export default function SettingsPage() {
   // the rest of the settings page on it.
   const [isFemale, setIsFemale] = useState(false);
   const [unreadMessages, setUnreadMessages] = useState(0);
-  // "Betalingsmetode" vises kun for betalende (rigtig Stripe-/MobilePay-aftale,
-  // eller en MobilePay-aftale, der venter på godkendelse) — gavekode, points og
-  // familiemedlemmer har intet kort at vise (docs/DECISIONS.md 2026-10-02).
-  const [showPaymentMethod, setShowPaymentMethod] = useState(false);
   const { status: familyStatus } = useFamilyStatus();
   // Kontrol-loggen vises for den, der er med i en andens familie (barn,
   // partner — den, der kontrolleres), se docs/FAMILY.md.
   const isControlled = Boolean(familyStatus?.family && !familyStatus.family.isOwner);
+  // Familie vises kun for dem, der har familieabonnement eller er med i en
+  // familie (docs/DECISIONS.md 2026-10-02). Administratorer har det altid.
+  const showFamily = Boolean(familyStatus?.hasFamilyPlan || familyStatus?.family);
   // Sletteret vises for den, der har oprettet (eller styrer) andre profiler.
   const controlsOthers = Boolean(
     familyStatus?.family?.members.some(
@@ -93,15 +93,6 @@ export default function SettingsPage() {
         if (!cancelled) setUnreadMessages(data.unreadCount);
       })
       .catch(() => {});
-    fetch("/api/subscription")
-      .then(async (response) => {
-        if (!response.ok) throw new Error("failed");
-        return (await response.json()) as { paying?: boolean; mobilePayPending?: boolean };
-      })
-      .then((data) => {
-        if (!cancelled) setShowPaymentMethod(Boolean(data.paying || data.mobilePayPending));
-      })
-      .catch(() => {});
     return () => {
       cancelled = true;
     };
@@ -123,45 +114,49 @@ export default function SettingsPage() {
             icon={<IconCreditCard size={20} />}
             label={t("profile.row.subscription")}
             href="/profile/subscription"
-            divider={showPaymentMethod}
           />
-          {showPaymentMethod && (
-            <ChevronRow
-              icon={<IconWallet size={20} />}
-              label={t("settings.payment")}
-              href="/settings/payment"
-              divider={false}
-            />
-          )}
+          <ChevronRow
+            icon={<IconPaymentCard size={20} />}
+            label={t("settings.payment")}
+            href="/settings/payment"
+            divider={false}
+          />
         </AccordionCard>
+
+        {showFamily && (
+          <AccordionCard>
+            <ChevronRow
+              icon={<IconUsers size={20} />}
+              label={t("family.title")}
+              href="/profile/family"
+              divider={isControlled || controlsOthers}
+            />
+            {controlsOthers && (
+              <ChevronRow
+                icon={<IconTrashOff size={20} />}
+                label={t("family.deletePermissions.title")}
+                href="/settings/delete-permissions"
+                divider={isControlled}
+              />
+            )}
+            {isControlled && (
+              <ChevronRow
+                icon={<IconHistory size={20} />}
+                label={t("family.log.title")}
+                href="/settings/control-log"
+                badgeCount={familyStatus?.unseenCount}
+                divider={false}
+              />
+            )}
+          </AccordionCard>
+        )}
 
         <AccordionCard>
           <ChevronRow
-            icon={<IconUsers size={20} />}
-            label={t("family.title")}
-            href="/profile/family"
-            divider={isControlled || controlsOthers}
+            icon={<IconUserCog size={20} />}
+            label={t("accountSettings.title")}
+            href="/settings/account"
           />
-          {controlsOthers && (
-            <ChevronRow
-              icon={<IconTrashOff size={20} />}
-              label={t("family.deletePermissions.title")}
-              href="/settings/delete-permissions"
-              divider={isControlled}
-            />
-          )}
-          {isControlled && (
-            <ChevronRow
-              icon={<IconHistory size={20} />}
-              label={t("family.log.title")}
-              href="/settings/control-log"
-              badgeCount={familyStatus?.unseenCount}
-              divider={false}
-            />
-          )}
-        </AccordionCard>
-
-        <AccordionCard>
           <ChevronRow
             icon={<IconAdjustments size={20} />}
             label={t("settings.setupTitle")}

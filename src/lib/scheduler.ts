@@ -5,12 +5,14 @@ import { flushQueuedPush } from "@/lib/push";
 import { backfillMissingProductNutritionFeatures } from "@/lib/product-nutrition-features";
 import { runDueAppJobs } from "@/lib/jobs/runner";
 import { rerunUncertainAnalyses } from "@/lib/uncertainty-rerun";
+import { scanProductLabels } from "@/lib/product-label-scan";
 import { grantEligibleReferralRewards } from "@/lib/referrals";
 import { runMobilePayTick } from "@/lib/payments/mobilepay-subscription";
 import { runStripeTick } from "@/lib/payments/stripe-subscription";
 import { alertOverdueSupportRequests } from "@/lib/support-inbox";
 import { syncAllIntegrations } from "@/lib/integrations/handlers";
 import { sendDueReports } from "@/lib/partner-reports";
+import { requestPersonaRunOnDeploy, runPersonaJob } from "@/lib/personas";
 
 // In-process baggrundsjob (docs/DECISIONS.md 2026-09-02): DB-drevet, kører i
 // selve Next.js-serverprocessen uanset hvor den hostes (Synology i dag,
@@ -114,10 +116,15 @@ export function startScheduler() {
         return null;
       },
       "uncertainty-rerun": rerunUncertainAnalyses,
+      "label-scan": scanProductLabels,
+      personas: runPersonaJob,
     }).catch((error) => {
       console.error("[scheduler] tick fejlede", error);
     });
   };
+
+  // Personas: én kørsel pr. ny build (deploy), docs/DECISIONS.md 2026-10-03.
+  void requestPersonaRunOnDeploy().catch((error) => console.error("[scheduler] Personas-deploykørsel fejlede", error));
 
   // Første tjek kort efter opstart, derefter hvert minut.
   setTimeout(tick, 30_000);

@@ -42,7 +42,7 @@ export default async function DesignManualSketchesPage({
         </p>
       </header>
 
-      <details className="rounded-lg border border-hf-tan-dark bg-hf-white">
+      <details className="hf-surface">
         <summary className="hf-type-body hf-type-strong cursor-pointer px-4 py-3 text-hf-black">
           Alle skitser ({SKETCHES.length})
         </summary>
@@ -109,7 +109,7 @@ export default async function DesignManualSketchesPage({
           </figure>
         </div>
 
-        <details className="rounded-lg border border-hf-tan-dark bg-hf-white">
+        <details className="hf-surface">
           <summary className="hf-type-body hf-type-strong cursor-pointer px-4 py-3 text-hf-black">
             Målliste ({boxes.length} kasser)
           </summary>

@@ -983,7 +983,7 @@
   "summary": "Syntetisk orange carotenoid.",
   "description": "Beta-apo-8'-carotenal er et carotenoid, der findes naturligt i fx spinat og citrusfrugter, men som tilsætningsstof fremstilles det ved kemisk syntese. Det giver en orange til rødlig farve og har provitamin A-aktivitet (omtrent halvt så meget som beta-caroten). Det er fedtopløseligt og findes bl.a. som olieopløsning til fødevarer og drikke.",
   "uses": "Fedtbaserede fødevarer (margarine, saucer og dressinger), drikke, mejeriprodukter og slik.",
-  "health": "EFSA fastsatte i 2012 en ADI på 0,05 mg/kg legemsvægt/dag og hævede den efter en revurdering i 2014 til 0,3 mg/kg. EFSA's tier 3-beregninger viste, at ADI kunne overskrides af børn (både i gennemsnit og ved højt forbrug), men i 2014 konkluderede EFSA ud fra de af industrien rapporterede anvendelser og brugsniveauer, at brugen ikke giver sikkerhedsbekymring.",
+  "health": "EFSA fastsatte i 2012 en ADI på 0,05 mg/kg legemsvægt/dag og hævede den efter en revurdering i 2014 til 0,3 mg/kg. I EFSA's forfinede beregning fra 2014 (baseret på de fødevarekategorier, hvor industrien har rapporteret brugsniveauer) lå eksponeringen under ADI ved gennemsnitligt indtag for alle aldersgrupper; ved højt indtag blev ADI overskredet for småbørn og børn, og for unge lå eksponeringen omkring ADI. EFSA vurderede, at dette høje-indtags-estimat stadig var konservativt og at overskridelserne er usandsynlige, og konkluderede, at de rapporterede anvendelser og brugsniveauer ikke giver sikkerhedsbekymring.",
   "research": "EFSA's ADI fra 2012 byggede på LOAEL 10 mg/kg legemsvægt/dag i et 13-ugers rottestudie og en usikkerhedsfaktor på 200. I revurderingen 2014 blev de oprindelige nyresnit fra samme studie genvurderet, hvilket gav en NOAEL på 30 mg/kg legemsvægt/dag; med usikkerhedsfaktor 100 blev ADI fastsat til 0,3 mg/kg legemsvægt/dag.",
   "keyReferences": [],
   "pubmedTerm": "beta-apo-8'-carotenal",
@@ -1002,14 +1002,16 @@
    "overexposureRisk": ""
   },
   "verification": {
-   "status": "uncertain",
+   "status": "corrected",
    "sources": [
     "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2012.2499",
     "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2014.3492",
     "https://en.wikipedia.org/wiki/Apocarotenal",
-    "https://natcol.org/beta-apo-8-carotenal-e-160-e-ins-160-e/"
+    "https://natcol.org/beta-apo-8-carotenal-e-160-e-ins-160-e/",
+    "https://efsa.onlinelibrary.wiley.com/doi/pdfdirect/10.2903/j.efsa.2014.3492",
+    "https://food.ec.europa.eu/food-safety/food-improvement-agents/additives/re-evaluation_en"
    ],
-   "notes": "Runde 3 (udsagn-for-udsagn, WebSearch). Bekræftet: naturlig forekomst i spinat og citrus, syntetisk fremstilling som tilsætningsstof, orange-rød farve, provitamin A-aktivitet (ca. 50 % af beta-caroten), fedtbaserede anvendelser, ADI 0,05 (2012) og 0,3 (2014), 13-ugers rottestudie, UF 100 og NOAEL 30, 2014-konklusion (ingen sikkerhedsbekymring ved rapporteret brug). Rettet: 2012-ADI'ens grundlag tilføjet (LOAEL 10, UF 200); formulering 'emulsioner eller pulvere' ændret til olieopløsning (kildebelagt). Usikkert: udsagnet om, at børn med højt forbrug kan overskride ADI — søgeresultaterne tilskriver tier 3-overskridelsen hos børn både 2012- og 2014-udtalelsen, så det er ikke entydigt, om det gælder den nuværende ADI på 0,3 mg/kg; flaget children_caution er bevaret, men bør efterprøves mod EFSA Journal 2014;12(1):3492. Fjernet: 'is, ost, kager' som specifikke anvendelser (erstattet af kildens kategorier).",
+   "notes": "Runde 3 (udsagn-for-udsagn, WebSearch). Bekræftet: naturlig forekomst i spinat og citrus, syntetisk fremstilling som tilsætningsstof, orange-rød farve, provitamin A-aktivitet (ca. 50 % af beta-caroten), fedtbaserede anvendelser, ADI 0,05 (2012) og 0,3 (2014), 13-ugers rottestudie, UF 100 og NOAEL 30, 2014-konklusion (ingen sikkerhedsbekymring ved rapporteret brug). Rettet: 2012-ADI'ens grundlag tilføjet (LOAEL 10, UF 200); formulering 'emulsioner eller pulvere' ændret til olieopløsning (kildebelagt). Usikkert: udsagnet om, at børn med højt forbrug kan overskride ADI — søgeresultaterne tilskriver tier 3-overskridelsen hos børn både 2012- og 2014-udtalelsen, så det er ikke entydigt, om det gælder den nuværende ADI på 0,3 mg/kg; flaget children_caution er bevaret, men bør efterprøves mod EFSA Journal 2014;12(1):3492. Fjernet: 'is, ost, kager' som specifikke anvendelser (erstattet af kildens kategorier). Chrome-tjek (runde 3b): fuldteksten af EFSA Journal 2014;12(1):3492 er læst; børneudsagnet er nu præciseret efter kilden (ADI 0,3 overskrides ved højt indtag for småbørn og børn, unge omkring ADI, vurderet konservativt og usandsynligt). Status ændret fra uncertain til corrected.",
    "previousStatus": "uncertain"
   },
   "wikipedia": "",
@@ -1046,13 +1048,18 @@
     "result": "bekræftet"
    },
    {
-    "claim": "Børn med højt forbrug kunne overskride ADI 0,3",
-    "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2014.3492",
+    "claim": "2014-udtalelsen: ved højt indtag overskrides ADI 0,3 for småbørn og børn (unge omkring ADI); estimatet anses for konservativt, overskridelser usandsynlige",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/pdfdirect/10.2903/j.efsa.2014.3492",
     "result": "rettet"
    },
    {
     "claim": "2014: ny information om 13-ugers rottestudie, UF 100",
     "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2014.3492",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "EU-gen-evalueringen af E160e blev afsluttet med EFSA-udtalelsen fra 2012 (vedtaget dec. 2011, offentliggjort 2012)",
+    "source": "https://food.ec.europa.eu/food-safety/food-improvement-agents/additives/re-evaluation_en",
     "result": "bekræftet"
    }
   ]

@@ -283,6 +283,12 @@ export async function runCheck(serviceId: string, requiredKeys: string[], redire
         return await checkSimpleOAuth("Strava", "STRAVA", "https://www.strava.com/oauth/token", redirectUris, false);
       case "polar":
         return await checkSimpleOAuth("Polar", "POLAR", "https://polarremote.com/v2/oauth2/token", redirectUris, true);
+      case "garmin":
+        return await checkSimpleOAuth("Garmin", "GARMIN", "https://diauth.garmin.com/di-oauth2-service/oauth/token", redirectUris, false);
+      case "whoop":
+        return await checkSimpleOAuth("WHOOP", "WHOOP", "https://api.prod.whoop.com/oauth/oauth2/token", redirectUris, false);
+      case "huawei-health":
+        return await checkSimpleOAuth("Huawei", "HUAWEI_HEALTH", "https://oauth-login.cloud.huawei.com/oauth2/v3/token", redirectUris, false);
       case "fitbit":
         return await checkSimpleOAuth("Fitbit", "FITBIT", "https://api.fitbit.com/oauth2/token", redirectUris, true);
       case "openai":

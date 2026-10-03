@@ -1,11 +1,11 @@
 // Kør: npm test  (node --test, Node 24 fjerner TypeScript-typer selv)
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { estimateActivityKcal, metFor, metForSpeed } from "./activity-met.ts";
+import { ACTIVITY_CATALOG, estimateActivityKcal, metFor, metForSpeed } from "./activity-met.ts";
 
 test("MET stiger med intensitet og ukendt sport bruger 'other'", () => {
   assert.ok(metFor("running", "LIGHT") < metFor("running", "VIGOROUS"));
-  assert.equal(metFor("badminton", "MODERATE"), metFor("other", "MODERATE"));
+  assert.equal(metFor("Kroket i haven", "MODERATE"), metFor("other", "MODERATE"));
 });
 
 test("hastighed: gang 5 km/t ≈ 3,7 MET, løb 10 km/t ≈ 10 MET", () => {
@@ -26,4 +26,20 @@ test("kcal er netto og afrundet; distance vinder over intensitet for gang/løb",
   // Distance ignoreres for andre sportsgrene
   assert.equal(estimateActivityKcal({ sportType: "cycling", minutes: 60, weightKg: 80, distanceKm: 20 }).method, "INTENSITY");
   assert.equal(estimateActivityKcal({ sportType: "running", minutes: 60, weightKg: null }).kcal, null);
+});
+
+test("kataloget: unikke nøgler og navne, MET stiger med intensitet", () => {
+  const keys = new Set(ACTIVITY_CATALOG.map((entry) => entry.key));
+  const labels = new Set(ACTIVITY_CATALOG.map((entry) => entry.label.toLowerCase()));
+  assert.equal(keys.size, ACTIVITY_CATALOG.length);
+  assert.equal(labels.size, ACTIVITY_CATALOG.length);
+  for (const key of ["running", "cycling", "walking", "swimming", "cardio", "ski", "strength", "yoga", "football", "other"]) {
+    assert.ok(keys.has(key), `${key} mangler (gamle registreringer bruger nøglen)`);
+  }
+  for (const entry of ACTIVITY_CATALOG) {
+    assert.match(entry.key, /^[a-z_]+$/, entry.key);
+    const [light, moderate, vigorous, veryVigorous] = entry.met;
+    assert.ok(light > 1 && light <= moderate && moderate <= vigorous && vigorous <= veryVigorous, entry.key);
+  }
+  assert.equal(metFor("badminton", "VIGOROUS"), 7.0);
 });

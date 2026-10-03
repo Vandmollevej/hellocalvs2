@@ -88,7 +88,19 @@ export async function POST(req: Request) {
     }
 
     const sessionUser = await getSessionUser();
-    const imageUrl = (await saveDataUrlImage(frontPhoto).catch(() => null)) ?? undefined;
+    const imageUrl =
+      (await saveDataUrlImage(frontPhoto).catch((error) => {
+        // Før blev fejlen sløret, og varen endte uden billede uden spor i loggen.
+        void debugLog({
+          category: "scan",
+          event: "front_image_save",
+          level: "error",
+          message: `Forsidefotoet kunne ikke gemmes: ${errorText(error)}`,
+          flowId,
+          barcode,
+        });
+        return null;
+      })) ?? undefined;
     const fallbackName = `Vare ${barcode}`;
     const pendingFields: PendingField[] = ["name", "brand", "nutrition", "ingredients"];
 

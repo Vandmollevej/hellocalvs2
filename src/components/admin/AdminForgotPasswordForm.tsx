@@ -32,8 +32,8 @@ export function AdminForgotPasswordForm() {
 
   return (
     <div className="mx-auto flex min-h-[70vh] max-w-sm flex-col justify-center px-4">
-      <h1 className="mb-1 text-xl font-semibold text-text-primary">Glemt adgangskode</h1>
-      <p className="mb-6 text-sm text-text-secondary">
+      <h1 className="hf-type-page-title mb-1 text-text-primary">Glemt adgangskode</h1>
+      <p className="hf-type-body mb-6 text-text-secondary">
         Vi sender et link til admin-mailen. Via linket vælger du ny adgangskode og ny authenticator-kode.
       </p>
       {message ? (

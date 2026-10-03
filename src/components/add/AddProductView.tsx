@@ -8,6 +8,7 @@ import Link from "next/link";
 import {
   IconChevronDown,
   IconAlertTriangle,
+  IconCamera,
   IconMessage,
   IconLock,
   IconLockOpen,
@@ -22,7 +23,7 @@ import { appendDishDraftIngredient } from "@/lib/dish-draft";
 import { selectRawContextImageUrl } from "@/lib/image-tags";
 import { MacroSliderBar } from "@/components/hf/MacroSliderBar";
 import { CertificationLogos } from "@/components/hf/CertificationLogos";
-import { certificationBadges, type CertificationFilters } from "@/lib/certification-badges";
+import { certificationBadges, type CertificationFilters, type ProductLabelView } from "@/lib/certification-badges";
 import { AdditiveInfoModal } from "@/components/hf/AdditiveInfoModal";
 import { getAdditiveInfo, splitENumbers } from "@/lib/additives";
 import { IngredientsText } from "@/components/hf/IngredientsText";
@@ -39,8 +40,12 @@ import { NUTRIENT_BY_KEY, type ResolvedNutrient } from "@/lib/nutrients";
 import { UncertaintyTilde } from "@/components/ui/UncertaintyTilde";
 import { UncertaintyLine } from "@/components/ui/UncertaintyLine";
 import { extractCertifications } from "@/lib/product-certifications";
+import { splitProductHeading } from "@/lib/product-naming";
 import { CertificationLogo } from "@/components/hf/CertificationLogo";
 import { Skeleton } from "@/components/hf/Skeleton";
+import { HandSizePicker } from "@/components/hf/HandSizePicker";
+import { findHandSizeItem, mediumHandSizeGrams } from "@/lib/hand-sizes";
+import { UpdatePointsBanner } from "@/components/hf/UpdatePointsBanner";
 
 // "Opret straks" (docs/DECISIONS.md 2026-09-27): mens OpenAI stadig læser
 // felter (Product.pendingFields), eller den fritlagte forside endnu ikke er
@@ -97,6 +102,10 @@ type Product = {
   productCategory?: string | null;
   packageSizeText?: string | null;
   variant?: string | null;
+  // Smag (adskilt fra variant) og produkttype — bruges af splitProductHeading,
+  // så smagen kun står i H2 (docs/DECISIONS.md 2026-10-02).
+  flavor?: string | null;
+  productType?: string | null;
   imageUrl?: string | null;
   // Fritlagt forside, der venter på admin-godkendelse — vises kun for den,
   // der selv oprettede varen (docs/DECISIONS.md 2026-09-27).
@@ -109,10 +118,18 @@ type Product = {
   // tagged alternates.
   images?: { url: string; tags: string[] }[];
   ingredientsText?: string | null;
+  // AI kunne ikke læse ingredienslisten på fotoet — den, der oprettede
+  // varen, kan tage et nyt (docs/DECISIONS.md 2026-10-02).
+  ingredientsUnreadable?: boolean;
+  // Mangler varen indhold, energi, logo eller billede, tilbydes points for at
+  // opdatere den (src/lib/product-update.ts); null når intet mangler.
+  updateOffer?: { kinds: ("FRONT" | "NUTRITION" | "INGREDIENTS")[]; points: number } | null;
   allergens?: string[];
   additives?: string[];
   // Mærkninger (økologisk, nøglehul, MSC …) vist som logoer, opgave 29.
   filters?: CertificationFilters | null;
+  // Mærkater fundet på forsiden af det natlige job (docs/DECISIONS.md 2026-10-02).
+  labels?: ProductLabelView[] | null;
   barcodes?: { code: string }[];
   createdByUserId?: string | null;
   // HelloFresh-recipe extra nutrition, per Product.servingSizeGrams — see
@@ -135,6 +152,8 @@ type Product = {
   // (genericIngredientId i stedet for productId) og skjule favorit-knappen,
   // som ikke understøtter ingredienser endnu.
   isGenericIngredient?: boolean;
+  // false = 0 er en pladsholder (ingrediens uden Frida-match, butiksvare uden
+  // kalorietal) — vis "Næringsindhold ukendt", ikke 0 kcal.
   hasKnownNutrition?: boolean;
   // Usikkerheds-~ (docs/DECISIONS.md 2026-09-24): alle næringsstoffer ud
   // over makroerne pr. 100 g fra /api/products/[id], med estimeret-flag.
@@ -318,7 +337,7 @@ export function AddProductView({
         setState({ status: "loaded", product: applyRegistrationSnapshot(data.product, registration) });
         // Startmængde: seneste egne mængde, portionsenhed, typisk mængde for
         // kategorien — se src/lib/default-amount.ts.
-        if (!registration && data.product) setAmount(defaultAmountGrams(data.product));
+        if (!registration && data.product) setAmount(defaultAmountGrams(data.product, mediumHandSizeGrams(data.product.name)));
       })
       .catch(() => setState({ status: "error" }));
 
@@ -403,6 +422,8 @@ export function AddProductView({
           : (product.imageUrl ?? null))
     : null;
   const factor = amount / 100;
+  // Håndfrugt/æg: Lille / Normal / Stor (src/lib/hand-sizes.ts).
+  const handSizeItem = useMemo(() => findHandSizeItem(product?.name), [product?.name]);
   const servingSizeGrams = product?.servingSizeGrams ?? null;
   // Enheden ("portion"/"portioner", "person"/"personer" osv.) vises kun når
   // varen faktisk har den i databasen — UI må ikke gætte en generisk enhed
@@ -630,10 +651,15 @@ export function AddProductView({
     router.push("/create-dish");
   }
 
+  // Smagsvarianten må kun stå i H2: den fjernes fra navnet, før certificeringer
+  // trækkes ud og titlen vises i H1 (docs/DECISIONS.md 2026-10-02).
+  const heading =
+    state.status === "loaded" ? splitProductHeading(state.product) : { title: "", variants: [] as string[] };
   const { title: productTitle, certifications } =
-    state.status === "loaded" ? extractCertifications(state.product.name) : { title: "", certifications: [] };
+    state.status === "loaded" ? extractCertifications(heading.title) : { title: "", certifications: [] };
   // Siden tegnes med en tom vare, mens den rigtige hentes.
   const view = state.status === "loaded" ? state.product : isLoading ? LOADING_PRODUCT : null;
+  const subtitle = view ? [view.packageSizeText, ...heading.variants].filter(Boolean).join(" · ") : "";
 
   const title = forDish ? t("addProduct.titleForDish") : t("addProduct.title");
   const Frame = inSheet ? SheetFrame : ScreenFrame;
@@ -685,6 +711,13 @@ export function AddProductView({
 
         {view && (
           <>
+            {!isLoading && !forDish && !isEditing && !!id && state.status === "loaded" && state.product.updateOffer && (
+              <UpdatePointsBanner
+                href={`/add/${encodeURIComponent(id)}/update`}
+                text={t("productUpdate.banner", { points: state.product.updateOffer.points })}
+                toggleLabel={t("productUpdate.toggle")}
+              />
+            )}
             {!isLoading && !forDish && !!id && photoAwards.length > 0 && (
               <Link
                 href={`/add/${id}/photo-award`}
@@ -773,10 +806,8 @@ export function AddProductView({
                   <h1 className="hf-type-hero text-hf-black">{productTitle}</h1>
                 )}
                 {/* Uden grøn linje står luften tilbage, så resten ikke rykker op. */}
-                {view.packageSizeText || view.variant ? (
-                  <h2 className="hf-type-hero text-hf-green">
-                    {[view.packageSizeText, view.variant].filter(Boolean).join(" · ")}
-                  </h2>
+                {subtitle ? (
+                  <h2 className="hf-type-hero text-hf-green">{subtitle}</h2>
                 ) : (
                   <div aria-hidden="true" className="hf-type-hero">&nbsp;</div>
                 )}
@@ -817,6 +848,15 @@ export function AddProductView({
                     {baseUnitLabel}
                   </button>
                 </div>
+              )}
+
+              {handSizeItem && amountUnit === "gram" && (
+                <HandSizePicker
+                  item={handSizeItem}
+                  imageUrl={displayImageUrl}
+                  amount={amount}
+                  onSelect={setAmount}
+                />
               )}
 
               <div className="mx-auto mb-2 flex w-full max-w-[320px] items-center gap-2">
@@ -861,7 +901,7 @@ export function AddProductView({
                       <ReadingSkeleton label={t("addProduct.reading")}>
                         <Skeleton type="caption" width={64} height={14} className="my-0.5" />
                       </ReadingSkeleton>
-                    ) : view.isGenericIngredient && view.hasKnownNutrition === false
+                    ) : view.hasKnownNutrition === false
                       ? t("addProduct.nutritionUnknown")
                       : t("addProduct.kcalAmount", { kcal: Math.round((view.kcalPer100g * amount) / 100) })}
                   </p>
@@ -881,7 +921,7 @@ export function AddProductView({
                     <ReadingSkeleton label={t("addProduct.reading")}>
                       <Skeleton type="body" width={150} />
                     </ReadingSkeleton>
-                  ) : view.isGenericIngredient && view.hasKnownNutrition === false
+                  ) : view.hasKnownNutrition === false
                     ? t("addProduct.nutritionUnknown")
                     : servingSizeGrams && hasServingUnit
                     ? t("addProduct.kcalPerServing", {
@@ -1014,7 +1054,7 @@ export function AddProductView({
                   />
                 </div>
                 )}
-                <CertificationLogos badges={certificationBadges(view.filters)} className="mt-4" />
+                <CertificationLogos badges={certificationBadges(view.filters, view.labels)} className="mt-4" />
               </div>
 
               {/* Toksiner (G11): kendte stoffer ud fra navn + indholdsfortegnelse,
@@ -1080,7 +1120,7 @@ export function AddProductView({
                 </div>
               )}
 
-              {(isPending("ingredients") || !!view.ingredientsText) && (
+              {(isPending("ingredients") || !!view.ingredientsText || !!view.ingredientsUnreadable) && (
                 <div>
                   <p className="hf-type-body mb-2 text-hf-black">{t("createDish.ingredients")}</p>
                   {isPending("ingredients") ? (
@@ -1089,6 +1129,16 @@ export function AddProductView({
                       {["94%", "82%", "88%", "46%"].map((width) => (
                         <Skeleton key={width} type="body-sm" width={width} height={16} />
                       ))}
+                    </div>
+                  ) : !view.ingredientsText ? (
+                    <div className="flex flex-col gap-3">
+                      <p className="hf-type-small text-text-secondary">{t("addProduct.ingredientsUnreadable")}</p>
+                      <Link
+                        href={`/camera?mode=product&retake=ingredients&product=${encodeURIComponent(id)}`}
+                        className="hf-control hf-btn-secondary justify-center gap-2"
+                      >
+                        <IconCamera size={19} /> {t("addProduct.retakeIngredients")}
+                      </Link>
                     </div>
                   ) : (
                     <p className="hf-type-small text-text-secondary">

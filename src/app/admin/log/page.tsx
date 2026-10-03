@@ -66,7 +66,7 @@ function ProductLink({ productId }: { productId: string | null }) {
 }
 
 function Empty({ text }: { text: string }) {
-  return <p className="hf-type-body rounded-lg border border-hf-tan-dark bg-hf-white p-4 text-text-secondary">{text}</p>;
+  return <p className="hf-type-body hf-surface p-4 text-text-secondary">{text}</p>;
 }
 
 function FlowCard({ flow, email }: { flow: FlowSummary; email: string | null }) {
@@ -74,7 +74,7 @@ function FlowCard({ flow, email }: { flow: FlowSummary; email: string | null }) 
   const tone =
     flow.errors > 0 ? "text-hf-red-dark" : flow.outcome === "abandoned" || flow.outcome === "open" ? "text-text-secondary" : "text-hf-green-dark";
   return (
-    <details className="rounded-lg border border-hf-tan-dark bg-hf-white">
+    <details className="hf-surface">
       <summary className="flex cursor-pointer flex-wrap items-center gap-x-3 gap-y-1 p-3">
         <span className="hf-type-small text-text-muted">{formatTime(flow.startedAt)}</span>
         <span className={`hf-type-body hf-type-strong ${tone}`}>{OUTCOME_LABELS[flow.outcome]}</span>
@@ -116,7 +116,7 @@ function FlowCard({ flow, email }: { flow: FlowSummary; email: string | null }) 
 function LogTable({ rows, emails }: { rows: DebugLogRow[]; emails: Map<string, string> }) {
   if (rows.length === 0) return <Empty text="Ingen rækker endnu." />;
   return (
-    <ul className="flex flex-col rounded-lg border border-hf-tan-dark bg-hf-white">
+    <ul className="flex flex-col hf-surface">
       {rows.map((row) => (
         <li key={row.id} className="flex gap-3 border-b border-hf-tan px-3 py-2 last:border-b-0">
           <span aria-hidden="true" className={`mt-1.5 h-2 w-2 shrink-0 rounded-full ${levelDot(row.level)}`} />
@@ -152,7 +152,7 @@ type SimpleRow = { id: string; time: Date; title: string; detail?: string | null
 function SimpleList({ rows, empty }: { rows: SimpleRow[]; empty: string }) {
   if (rows.length === 0) return <Empty text={empty} />;
   return (
-    <ul className="flex flex-col rounded-lg border border-hf-tan-dark bg-hf-white">
+    <ul className="flex flex-col hf-surface">
       {rows.map((row) => (
         <li key={row.id} className="flex gap-3 border-b border-hf-tan px-3 py-2 last:border-b-0">
           <span aria-hidden="true" className={`mt-1.5 h-2 w-2 shrink-0 rounded-full ${levelDot(row.tone ?? "info")}`} />

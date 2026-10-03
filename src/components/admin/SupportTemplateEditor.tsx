@@ -91,7 +91,7 @@ function TemplateForm({ initial, onPreview }: { initial: Template; onPreview: (b
   return (
     <div
       onFocus={() => onPreview(body)}
-      className="hf-type-small flex flex-col gap-2 rounded-lg border border-hf-tan-dark bg-hf-white p-3"
+      className="hf-type-small flex flex-col gap-2 hf-surface p-3"
     >
       {isNew && <p className="hf-type-strong text-hf-black">Ny skabelon</p>}
       <div className="flex gap-2">

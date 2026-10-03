@@ -10,6 +10,8 @@ import { nutritionSectionLabel } from "@/lib/nutrition-terminology";
 import { useTranslation } from "@/i18n/LocaleProvider";
 import {
   addChartsToLayout,
+  BODY_MEASUREMENT_CHART_KEYS,
+  bodyMeasurementChartLabel,
   dailyChartLabel,
   DEFAULT_ACTIVE_CHART_KEYS,
   loadChartLayout,
@@ -27,6 +29,7 @@ type CategoryDef = { title: string; keys: string[] };
 function categoryDefs(t: (key: string) => string, region: string): CategoryDef[] {
   return [
     { title: t("statUnusedCharts.category.energyWeight"), keys: ["caloriesAndWeight", "intradayKcal", "sleepQuality"] },
+    { title: t("bodyMeasurements.title"), keys: BODY_MEASUREMENT_CHART_KEYS },
     {
       title: nutritionSectionLabel(region),
       keys: [
@@ -52,6 +55,9 @@ function chartOption(def: StatChartDef, t: (key: string) => string): ChartOption
   }
   if (def.kind === "sleepInsight") {
     return { key: def.key, label: t(`sleepStats.chart.${def.insight}`), subtitle: t("statChart.last7Days") };
+  }
+  if (def.kind === "bodyMeasurement") {
+    return { key: def.key, label: bodyMeasurementChartLabel(def.field, t), subtitle: t("bodyMeasurementChart.subtitle") };
   }
   return { key: def.key, label: dailyChartLabel(def.field), subtitle: t("statChart.last7Days") };
 }

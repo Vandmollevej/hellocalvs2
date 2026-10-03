@@ -106,7 +106,7 @@ export function ApiKeysManager({
 
   return (
     <div className="flex flex-col gap-6" data-allow-clipboard>
-      <div className="flex flex-col gap-3 rounded-lg border border-hf-tan-dark bg-hf-white p-4">
+      <div className="flex flex-col gap-3 hf-surface p-4">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <p className="hf-type-body hf-type-strong text-hf-black">Status</p>
           <div className="flex flex-wrap gap-2">
@@ -219,7 +219,7 @@ export function ApiKeysManager({
             </div>
             {apis.length === 0 && <p className="hf-type-body text-text-secondary">Ingen API’er i gruppen endnu.</p>}
             {apis.map((api) => (
-              <div key={api.id} className="flex flex-col gap-2 rounded-lg border border-hf-tan-dark bg-hf-white p-4">
+              <div key={api.id} className="flex flex-col gap-2 hf-surface p-4">
                 <div className="flex items-start justify-between gap-3">
                   <p className="hf-type-strong text-hf-black">{api.name}</p>
                   <button
@@ -378,7 +378,7 @@ function ServiceCard({
   onChanged: (service: ServiceStatus) => void;
 }) {
   return (
-    <div className="flex flex-col gap-3 rounded-lg border border-hf-tan-dark bg-hf-white p-4">
+    <div className="flex flex-col gap-3 hf-surface p-4">
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div className="min-w-0 flex-1">
           <p className="hf-type-strong text-hf-black">{service.name}</p>

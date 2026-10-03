@@ -438,6 +438,12 @@ disse roller frem for egne styles.
 - Titel, venstre handling og højre handling ligger i tre faste slots, så titlen
   ikke flytter sig, når én side får et ikon.
 - Hello Cal-reglen om profil venstre/luk højre har forrang på appskærme.
+- **Hjælpe-knap (tilføjet 2026-10-02):** `.hf-appbar--help` udvider begge
+  sidekolonner symmetrisk til 88 px (80 px i kompakt liggende), så titlen stadig
+  står i midten. Højre ende (`.hf-appbar__end`) indeholder chatbot-ikonet som
+  `.hf-btn-icon` (44 × 44, ikon 28 px, arver hvid) lige til venstre for
+  profilcirklen. Forsidens lyse topbjælke viser samme knap i mørk. Ikke i
+  desktop-skallens sidehoved; der står "Hjælp" i topbjælken.
 
 ### 6.2 Knapper — EN fast regel (implementeret 2026-09-26)
 
@@ -605,9 +611,13 @@ selve billedet. Kcal/person udregnes lokalt
 opskriften ikke har en registreret portionsstørrelse) og erstatter den
 tidligere kcal-tekstlinje under billedet i stedet for at duplikere den.
 
-**`HfBarcodeIcon`** — SVG-stregkode (bjælker af varierende bredde) med et
-mock-cifferlag under, brugt som placeholder-ikon og som prompt-illustration i
-stregkode-trinnet. Farve arves via `currentColor`.
+**`IconBarcodeCard`** (`src/components/icons/BarcodeCard.tsx`) — brugerens
+stregkode-PNG med tal på hvid, afrundet baggrund (`public/icons/barcode/barcode-card.png`),
+vist på de brunlige `--hf-color-card`-bokse: trin-knappen "Stregkode" under
+kamerabilledet og boks 1 i opret-griddet. Billede, ikke maske (den hvide
+baggrund er en del af ikonet). Varianter til helt små ikoner:
+`barcode-bars.png` (uden tal og baggrund) og `barcode-digits.png` (tal, uden
+baggrund). Hi-res originaler: `Original images - Hi-res/Ikoner/`.
 
 **`ScanningOverlay`** — gråtonet (`bg-black/55`) fuld-overlay med en 3 px
 lodret hvid/gennemsigtig linje (`.hf-scan-line`, `globals.css`) der animerer
@@ -781,9 +791,9 @@ appen, samme udseende som admin: side #FAF8F3, hvid topbjælke/panel med 1 px
 
 | Klasse | Rolle |
 | --- | --- |
-| `.hf-insight` | Rod og egen scroll-container (`h-dvh`, html/body er låst) |
-| `.hf-insight__topbar` | 56 px hvid topbjælke, 1 px bundkant, logo + titel |
-| `.hf-insight__main` | Indhold, maks 80 rem, 16 px gutter (32 px fra 1024 px) |
+| `.hf-insight` | Rod og egen scroll-container (`h-dvh`, html/body er låst) — som `.hf-shell`, blot lodret |
+| `.hf-shell__topbar` | Fælles topbjælke (§6.17): 56 px hvid, 1 px bundkant, logo + titel |
+| `.hf-insight__main` | Indhold = `.hf-shell__content` (maks 80 rem, 16 px gutter, 32 px fra 1024 px) + lodret stak |
 | `.hf-insight__head` / `__toolbar` | Titel + tekst / filterrække (brug `.hf-choice` til valg) |
 | `.hf-insight__kpis` + `.hf-kpi` | Nøgletal: 2 kolonner, 4 fra 640 px |
 | `.hf-insight__grid` + `.hf-panel` | Grafpaneler: 1 kolonne, 2 fra 1024 px; panel = hvid flade, tynd kant |
@@ -799,6 +809,78 @@ appen, samme udseende som admin: side #FAF8F3, hvid topbjælke/panel med 1 px
   (`HelloDocInsight`, `InsightGrid`, `InsightKpi`, `InsightPanel`). Ændres et
   panel eller en klasse, følger alle sider med.
 - Mangler en variation, udvides klasserne her og i `globals.css` én gang.
+
+### 6.16 Kalenderens miniature-tal: kyllingelår, flamme og glas — tilføjet 2026-10-02
+
+Hello Cal-specifik primitiv uden HelloFresh-reference (jf. §1). Overalt hvor
+et kalorietal står kompakt ved siden af en ting (kalenderens celler og
+timerækker, forsidens tal-hjul, statistikbokse, widget-forhåndsvisninger,
+lister i chat/tale/kamera) erstattes ordene "kalorier"/"kcal" af et ikon; den
+fulde tekst ligger i `aria-label`. Brugerens regel 2026-10-02: "generelt,
+overalt".
+
+**`EnergyChip`** (`src/components/calendar/EnergyChip.tsx`), tre varianter:
+
+| Variant | Ikon | Tekst | Farve |
+| --- | --- | --- | --- |
+| `intake` (indtagne kalorier) | `IconDrumstick` — brunt kød, hvidt ben | heltal, fx `540` | tekst `text-hf-black`, kød `--hf-meat` |
+| `burned` (forbrændte kalorier) | tabler `IconFlame` | `+120` | `text-hf-green`, både ikon og tal |
+| `water` (vand) | `IconWaterGlass` (den eksisterende) | mængde i cl, fx `25 cl` | `text-hf-black` |
+
+- Ikon 16 px i timerækken (`hf-type-small`), 18 px i timens oversigt
+  (`hf-type-body`). 4 px mellem ikon og tal; 8 px mellem to chips i samme række.
+- Tekststørrelse og vægt arves fra forælderen; chippen sætter aldrig selv
+  typografi.
+- Vand vises aldrig som "0 kcal"/"0 kalorier". Står mad og vand på samme
+  tidspunkt, vises begge chips: kyllingelår først, glas sidst.
+- `IconDrumstick` (`src/components/icons/Drumstick.tsx`) er altid tofarvet:
+  kød i `--hf-meat` (#8C5A32, nyt navngivet token til netop denne rolle) og
+  ben i `--hf-white` med kødfarvet kant, så benet også ses på creme og tan.
+  `color`/`currentColor` ændrer ikke ikonet.
+- Måneds- og ugelisten viser afstanden til målet som chip med fortegn:
+  `text="+120"` / `text="÷120"` (fortegnet som symbol, jf. G1-beslutningen).
+- Forsidens tal-hjul (`frontpage-stats.ts`): rækkerne Kalorier og Kalorier i
+  plus bruger `IconDrumstick` som rækkeikon og tom enhed; Forbrændt bruger
+  `IconFlame` og tom enhed. Hjulet viser derfor "2.140 🍗" i stedet for
+  "2.140 kcal 🔥".
+- Statistikbokse (`StatCardsGrid`): en værdi, der ender på " kcal", vises som
+  tal + chip (flamme for "Forbrændt" og sportsgrene, ellers kyllingelår).
+  Boksene "Kalorier" og "Forbrændt" har allerede kyllingelår/flamme som
+  boksikon og viser kun tallet.
+- Tekst, der ikke er et kompakt tal, forbliver tekst: sætninger ("Tilbage for
+  i dag: 3282 kcal"), indtastningsfelter, "kcal / 100 g"-tætheder, grafakser
+  og de native widgets (kan ikke bruge React-ikonet).
+
+### 6.17 Fælles skal: admin, webvisning og Hello Doc — tilføjet 2026-10-03
+
+Admin (`AdminShell`), Hello Cal i webvisning (`WebShell`, ≥ 1024 px) og Hello
+Doc (lægevisningen, admins Hello Doc, "Sådan ser det ud") bygger på ÉT sæt
+skal-klasser i `globals.css`. Ingen skal må style sidebjælke, topbjælke,
+menurækker, brødkrummer, dropdowns eller hvide flader med egne Tailwind-kæder.
+
+| Klasse | Rolle |
+| --- | --- |
+| `.hf-shell` | Rod: `h-dvh`, egen scroll, side #FAF8F3. `--tall` = 80 px top (webvisning), `--fixed` = scroll i indholdet |
+| `.hf-shell__sidebar` (+ `.is-collapsed`) | Hvid sidebjælke 256 px / 64 px ikon-skinne; skjult under 1024 px |
+| `.hf-shell__brand` | Logo-felt i samme højde som topbjælken |
+| `.hf-shell__search-slot` / `.hf-shell__search` (`--rail`) | "Gå til…"-felt |
+| `.hf-shell__nav` / `__section` / `__section-title` / `__list` (`--sub`) | Menuområde, grupper og overskrifter |
+| `.hf-navrow` (+ `--rail`, `--sub`, `--inline`, `.is-active`, `.is-inside`, `__label`, `__dot`) | Én menurække til sidebjælke, topmenu og dropdown: 15 px grå, aktiv = beige flade + mørkegrøn fed |
+| `.hf-shell__handle` | Sammenfold-håndtag på sidebjælkens kant |
+| `.hf-shell__body` / `__topbar` (`--bottom`) / `__topnav` / `__main` / `__content` | Topbjælke og indholdsbredde (maks 80 rem, 16 → 32 px gutter) |
+| `.hf-shell__toplabel` | Topmenuens tekst; skjult under 1280 px (kun ikon + tooltip) |
+| `.hf-crumbs` (+ `--bar`, `__item`, `__current`) | Brødkrummer |
+| `.hf-menu` / `.hf-menu__header` | Dropdown-flade (brugermenu, profilmenu, Hello Doc-menu, hurtigsøgning) |
+| `.hf-shell__drawer` / `-backdrop` / `-panel` / `-foot`, `.hf-shell__mobile-only` | Menu som skuffe under 1024 px |
+| `.hf-shell__palette` / `-box` | Hurtigsøgning (Ctrl/Cmd + K) |
+| `.hf-surface` | Hvid flade, 1 px #DFD9CC kant, radius 8 — UDEN padding (`.hf-panel` = samme + 16 px luft) |
+| `.hf-table-scroll` | Tabeller scroller vandret på smal skærm i stedet for at blive klippet |
+
+Responsivt: under 1024 px skjules sidebjælken, og menuen åbnes som skuffe;
+nøgletal står 2 → 4 kolonner, paneler 1 → 2 kolonner; brede tabeller ligger i
+`.hf-table-scroll`, og faste gitre har en telefonvariant (`grid-cols-1/2` →
+`sm:`). Bevidste undtagelser: telefon-/e-mail-mockups i Designmanual og
+beskedredigering tegner en iPhone og bruger derfor faste mål og iOS-skrift.
 
 ### Velkomst/start
 

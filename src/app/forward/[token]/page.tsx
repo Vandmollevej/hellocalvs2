@@ -4,6 +4,7 @@ import { getSessionUser } from "@/lib/session";
 import { claimForward, ForwardAbuseError } from "@/lib/forwards";
 import { AddForwardedItemButton } from "@/components/AddForwardedItemButton";
 import { defaultAmountGrams } from "@/lib/default-amount";
+import { mediumHandSizeGrams } from "@/lib/hand-sizes";
 
 // "Videresend ret/produkt til en ven" — modtager-siden. Kræver login (så vi
 // kender modtagerens identitet, jf. docs/DECISIONS.md 2026-09-02); claimer
@@ -53,7 +54,7 @@ export default async function ForwardPage({ params }: { params: Promise<{ token:
         : null;
   const sender = await prisma.user.findUnique({ where: { id: forward.senderId } });
   // Samme startmængde som mængdevælgeren (fx en hel 33 cl dåse), ikke 100 g.
-  const amountGrams = forward.kind === "PRODUCT" && item && "kcalPer100g" in item ? defaultAmountGrams(item) : 100;
+  const amountGrams = forward.kind === "PRODUCT" && item && "kcalPer100g" in item ? defaultAmountGrams(item, mediumHandSizeGrams(item.name)) : 100;
 
   if (!item) {
     return (

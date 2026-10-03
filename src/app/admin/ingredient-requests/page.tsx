@@ -29,7 +29,7 @@ export default async function AdminIngredientRequestsPage() {
       ) : (
         <ul className="flex flex-col gap-4">
           {requests.map((request) => (
-            <li key={request.id} className="rounded-lg border border-hf-tan-dark bg-hf-white p-4">
+            <li key={request.id} className="hf-surface p-4">
               <p className="hf-type-small text-text-secondary">{request.createdAt.toLocaleString("da-DK")}</p>
               <IngredientRequestActions id={request.id} name={request.name} />
             </li>

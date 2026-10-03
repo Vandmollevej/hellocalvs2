@@ -688,7 +688,7 @@ function frequencyLabel(count: number) {
 
 export function ButtonTable() {
   return (
-    <div className={`${referenceBody.variable} @container overflow-hidden rounded-lg border border-border-strong bg-surface-2`}>
+    <div className={`${referenceBody.variable} @container overflow-hidden hf-surface`}>
       <table className="block w-full border-collapse text-left @xl:table">
         <caption className="sr-only">HelloFresh-knapper og valgkontroller: fyld, kant, mål og anvendelse</caption>
         <thead className="hidden bg-hf-tan @xl:table-header-group">

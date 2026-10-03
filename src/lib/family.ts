@@ -37,7 +37,12 @@ function newCode() {
 }
 
 export async function hasActiveFamilyPlan(userId: string) {
-  const subscription = await prisma.subscription.findUnique({ where: { userId } });
+  const [subscription, user] = await Promise.all([
+    prisma.subscription.findUnique({ where: { userId } }),
+    prisma.user.findUnique({ where: { id: userId }, select: { role: true } }),
+  ]);
+  // Administratorer har altid familieabonnement, så alle felter kan testes (docs/DECISIONS.md 2026-10-02).
+  if (user?.role === "ADMIN") return true;
   return Boolean(subscription && subscription.plan === "FAMILY" && getSubscriptionTier(subscription) === "SERIOUS");
 }
 

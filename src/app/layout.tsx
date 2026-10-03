@@ -11,8 +11,10 @@ import { FamilyWatchFrame } from "@/components/family/FamilyWatchFrame";
 import { AccessLogPanel } from "@/components/family/AccessLogPanel";
 import { StartupTipsGate } from "@/components/StartupTipsGate";
 import { KcalGoalPrompt } from "@/components/KcalGoalPrompt";
+import { SentMessageNotice } from "@/components/SentMessageNotice";
 import { SleepQualityGate } from "@/components/SleepQualityGate";
 import { UmamiTracker } from "@/components/UmamiTracker";
+import { HelpChat } from "@/components/help/HelpChat";
 import { UserbackWidget } from "@/components/UserbackWidget";
 
 const geistSans = Geist({
@@ -64,6 +66,7 @@ export default function RootLayout({
           <AuthGate />
           <StartupTipsGate />
           <KcalGoalPrompt />
+          <SentMessageNotice />
           <SleepQualityGate />
           <OfflineQueueBanner />
           <FamilyStatusProvider>
@@ -72,6 +75,7 @@ export default function RootLayout({
               <FamilyWatchFrame />
               <AccessLogPanel />
             </AppFrame>
+            <HelpChat />
           </FamilyStatusProvider>
         </LocaleProvider>
       </body>

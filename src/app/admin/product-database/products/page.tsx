@@ -21,7 +21,7 @@ const numberFormat = new Intl.NumberFormat("da-DK");
 
 function StatCard({ href, label, value, note }: { href: string; label: string; value: string; note: string }) {
   return (
-    <Link href={href} className="flex flex-col rounded-lg border border-hf-tan-dark bg-hf-white p-4 hover:border-hf-green">
+    <Link href={href} className="flex flex-col hf-surface p-4 hover:border-hf-green">
       <p className="hf-type-body text-text-secondary">{label}</p>
       <p className="hf-type-hero mt-1 text-hf-green-dark">{value}</p>
       <p className="hf-type-small mt-auto pt-2 text-text-muted">{note}</p>
@@ -89,7 +89,7 @@ function StoreTags({ stores }: { stores: string[] }) {
 
 function ListView({ rows }: { rows: ProductDatabaseRow[] }) {
   return (
-    <div className="overflow-hidden rounded-lg border border-hf-tan-dark bg-hf-white">
+    <div className="overflow-hidden hf-surface">
       <div className="hf-type-small hidden grid-cols-[48px_minmax(0,2.4fr)_minmax(0,1.2fr)_minmax(0,1fr)_88px_96px] gap-4 border-b border-hf-tan-dark px-4 py-2 text-text-secondary lg:grid">
         <span />
         <span>Vare</span>
@@ -125,7 +125,9 @@ function ListView({ rows }: { rows: ProductDatabaseRow[] }) {
                 <p className="hf-type-small truncate text-hf-black">{row.categoryLabel ?? "Uden kategori"}</p>
                 <p className="hf-type-small truncate text-text-muted">{row.sourceLabel}</p>
               </div>
-              <p className="hf-type-small hidden text-right text-text-secondary lg:block">{Math.round(row.kcalPer100g)}</p>
+              <p className="hf-type-small hidden text-right text-text-secondary lg:block">
+                {row.nutritionMissing ? "Mangler næring" : Math.round(row.kcalPer100g)}
+              </p>
               <div className="flex justify-end">
                 <StatusBadge status={row.status} />
               </div>
@@ -144,7 +146,7 @@ function GridView({ rows }: { rows: ProductDatabaseRow[] }) {
         <li key={row.id}>
           <Link
             href={`/admin/products/${row.id}`}
-            className="flex h-full flex-col gap-2 rounded-lg border border-hf-tan-dark bg-hf-white p-2 hover:border-hf-green"
+            className="flex h-full flex-col gap-2 hf-surface p-2 hover:border-hf-green"
           >
             <div className="relative">
               <Thumbnail row={row} size="card" />
@@ -158,7 +160,9 @@ function GridView({ rows }: { rows: ProductDatabaseRow[] }) {
               {subtitle(row) && <p className="hf-type-small truncate text-text-muted">{subtitle(row)}</p>}
               <div className="mt-auto flex items-end justify-between gap-2 pt-2">
                 <StoreTags stores={row.stores} />
-                <span className="hf-type-micro shrink-0 text-text-muted">{Math.round(row.kcalPer100g)} kcal</span>
+                <span className="hf-type-micro shrink-0 text-text-muted">
+                  {row.nutritionMissing ? "Mangler næring" : `${Math.round(row.kcalPer100g)} kcal`}
+                </span>
               </div>
             </div>
           </Link>
@@ -268,7 +272,7 @@ export default async function AdminProductDatabasePage({
         </p>
 
         {data.rows.length === 0 ? (
-          <div className="rounded-lg border border-hf-tan-dark bg-hf-white px-4 py-12 text-center">
+          <div className="hf-surface px-4 py-12 text-center">
             <p className="hf-type-body text-text-secondary">Prøv en anden søgning eller fjern et filter.</p>
             <Link href={productDatabaseHref(clean, { view: filters.view })} className="hf-btn-text mt-2 text-hf-green-dark">
               Nulstil alle filtre

@@ -19,7 +19,7 @@ const numberFormat = new Intl.NumberFormat("da-DK");
 
 function StatCard({ href, label, value, note }: { href: string; label: string; value: string; note: string }) {
   return (
-    <Link href={href} className="flex flex-col rounded-lg border border-hf-tan-dark bg-hf-white p-4 hover:border-hf-green">
+    <Link href={href} className="flex flex-col hf-surface p-4 hover:border-hf-green">
       <p className="hf-type-body text-text-secondary">{label}</p>
       <p className="hf-type-hero mt-1 text-hf-green-dark">{value}</p>
       <p className="hf-type-small mt-auto pt-2 text-text-muted">{note}</p>
@@ -159,7 +159,7 @@ export default async function AdminBrandsPage({ searchParams }: { searchParams: 
               <li key={brand.id}>
                 <Link
                   href={productDatabaseHref(productFilters, { brand: [brand.name] })}
-                  className="flex h-full flex-col gap-2 rounded-lg border border-hf-tan-dark bg-hf-white p-2 hover:border-hf-green"
+                  className="flex h-full flex-col gap-2 hf-surface p-2 hover:border-hf-green"
                 >
                   <BrandLogo brand={brand} />
                   <div className="flex min-w-0 flex-col gap-0.5 px-1 pb-1">

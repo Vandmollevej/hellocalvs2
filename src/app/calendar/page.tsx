@@ -20,6 +20,9 @@ import { AddMenuSheet } from "@/components/add/AddMenuSheet";
 import { HfChevron } from "@/components/hf/HfChevron";
 import { ActionLink } from "@/components/hf/ActionButton";
 import { FoodRow } from "@/components/FoodRow";
+import { EnergyChip } from "@/components/calendar/EnergyChip";
+import { IconWaterGlass } from "@/components/icons/WaterGlass";
+import { formatCl, isWaterRegistration, waterRegistrationMl } from "@/lib/water-display";
 import { DAILY_KCAL_GOAL } from "@/lib/goals";
 import { makeBudgetLookup, type BudgetSnapshot, activitySummaryUrl } from "@/lib/daily-budget";
 import { isIntakeTooLow, minimumHealthyKcal } from "@/lib/healthy-intake";
@@ -44,7 +47,9 @@ import {
 import { computeAge } from "@/lib/age";
 import { getSportMeta } from "@/lib/sport-icons";
 import { useDefaultCalendarView } from "@/lib/calendar-view-pref";
+import { readOpenDay, syncOpenDay } from "@/lib/calendar-open-day";
 import { useTranslation } from "@/i18n/LocaleProvider";
+import { useInWebShell } from "@/components/web/WebShell";
 import { fetchSleepQuality, localDateKey } from "@/lib/sleep-quality";
 import { IconPartyPopper, PartyPopperImage } from "@/components/icons/PartyPopper";
 import { BODY_MEASUREMENT_FIELDS } from "@/lib/body-measurements";
@@ -72,9 +77,11 @@ type Registration = {
   titleSnapshot: string;
   kcalSnapshot: number;
   proteinSnapshot: number;
+  amountGrams: number;
   createdAt: string;
   productId?: string | null;
   product?: { imageUrl: string | null } | null;
+  classification?: { isDrink: boolean } | null;
 };
 
 type Activity = {
@@ -83,6 +90,14 @@ type Activity = {
   startedAt: string;
   durationMinutes: number;
   caloriesBurned: number;
+};
+
+// Vand fra /water/create (egen tabel, ingen kalorier). Vises i dagvisningen som
+// glas + cl ved siden af timens kalorier (docs/DECISIONS.md 2026-10-02).
+type WaterEntry = {
+  id: string;
+  amountMl: number;
+  loggedAt: string;
 };
 
 type SleepDefaults = {
@@ -232,14 +247,23 @@ const MOVE_ENTRY_HOLD_MS = 500;
 const MOVE_ENTRY_MOVE_TOLERANCE = 10;
 const MIN_HOUR_HEIGHT = HOUR_HEIGHT;
 const MAX_HOUR_HEIGHT = HOUR_HEIGHT * 4;
+const VISIT_COOKIE = "hc_cal_visit";
 const ZOOM_SENSITIVITY = 220; // px to fingers must move for a full 1x scale step
 const HOUR_HEIGHT_STORAGE_KEY = "hellocal.kalender.hourHeight";
 
-function loadStoredHourHeight(): number {
-  if (typeof window === "undefined") return HOUR_HEIGHT;
-  const raw = window.localStorage.getItem(HOUR_HEIGHT_STORAGE_KEY);
+// Desktop-skallen (WebShell) viser dagen højere: ca. 8 timer ad gangen med en
+// linje hver halve time, så indtastninger kan sættes i 30-minutters trin. Natten
+// står uden for billedet — kun den første/sidste time vises, og resten scrolles
+// til, som på mobilen. Egen nøgle, så zoom på webben ikke ændrer mobilen.
+const WEB_HOUR_HEIGHT = 96;
+const WEB_HOUR_HEIGHT_STORAGE_KEY = "hellocal.kalender.hourHeight.web";
+
+function loadStoredHourHeight(web = false): number {
+  const fallback = web ? WEB_HOUR_HEIGHT : HOUR_HEIGHT;
+  if (typeof window === "undefined") return fallback;
+  const raw = window.localStorage.getItem(web ? WEB_HOUR_HEIGHT_STORAGE_KEY : HOUR_HEIGHT_STORAGE_KEY);
   const parsed = raw ? Number(raw) : NaN;
-  if (Number.isNaN(parsed)) return HOUR_HEIGHT;
+  if (Number.isNaN(parsed)) return fallback;
   return Math.min(MAX_HOUR_HEIGHT, Math.max(MIN_HOUR_HEIGHT, parsed));
 }
 
@@ -331,13 +355,32 @@ export default function CalendarPage() {
   useEffect(() => {
     if (appliedDefaultView.current) return;
     appliedDefaultView.current = true;
+    // En dag, brugeren havde åben, da siden sidst blev forladt (?date= i
+    // URL'en ved Tilbage, ellers sessionStorage ved tryk på "Kalender"),
+    // genåbnes — ellers viste kalenderen måneden igen (src/lib/calendar-open-day.ts).
+    const reopenedDay = readOpenDay();
     // "Dag" opens today's full-screen day view (DayDetails) over the month view.
     // ?view=day does the same: desktop-skallen starter dér (src/lib/web-nav.ts).
     const forcedDay = new URLSearchParams(window.location.search).get("view") === "day";
-    // eslint-disable-next-line react-hooks/set-state-in-effect -- localStorage-præferencen findes først efter hydrering
-    if (defaultView === "day" || forcedDay) setSelectedDate(new Date(today));
-    else setView(defaultView);
+    if (reopenedDay) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- URL/sessionStorage findes først efter hydrering
+      setVisibleDate(new Date(reopenedDay));
+      setSelectedDate(reopenedDay);
+    } else if (defaultView === "day" || forcedDay) {
+      setSelectedDate(new Date(today));
+    } else {
+      setView(defaultView);
+    }
   }, [defaultView, today]);
+  // Spejl den åbne dag i URL + sessionStorage, så den overlever navigation
+  // væk fra siden. Første kørsel (ingen dag åben endnu) springes over, så
+  // den ikke sletter det, effekten ovenfor er ved at gendanne.
+  const hadOpenDay = useRef(false);
+  useEffect(() => {
+    if (!selectedDate && !hadOpenDay.current) return;
+    hadOpenDay.current = selectedDate !== null;
+    syncOpenDay(selectedDate);
+  }, [selectedDate]);
   const [monthMenuOpen, setMonthMenuOpen] = useState(false);
   const [viewMenuOpen, setViewMenuOpen] = useState(false);
   const [slideDirection, setSlideDirection] = useState<"next" | "previous">("next");
@@ -346,6 +389,7 @@ export default function CalendarPage() {
   const [registrationsLoading, setRegistrationsLoading] = useState(true);
   const [registrationsError, setRegistrationsError] = useState(false);
   const [activities, setActivities] = useState<Activity[]>([]);
+  const [waterEntries, setWaterEntries] = useState<WaterEntry[]>([]);
   const [sleepDefaults, setSleepDefaults] = useState<SleepDefaults | null>(null);
   const [energyProfile, setEnergyProfile] = useState<EnergyProfile | null>(null);
   const [weighIns, setWeighIns] = useState<WeighIn[]>([]);
@@ -551,6 +595,19 @@ export default function CalendarPage() {
       .catch(() => {
         if (!cancelled) setActivities([]);
       });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  useEffect(() => {
+    let cancelled = false;
+    fetch("/api/water-entries")
+      .then(async (response) => (response.ok ? ((await response.json()) as { entries: WaterEntry[] }) : null))
+      .then((data) => {
+        if (!cancelled && data) setWaterEntries(data.entries ?? []);
+      })
+      .catch(() => {});
     return () => {
       cancelled = true;
     };
@@ -909,11 +966,13 @@ export default function CalendarPage() {
             isSameDay(new Date(registration.createdAt), selectedDate),
           )}
           activities={activities.filter((activity) => isSameDay(new Date(activity.startedAt), selectedDate))}
+          waterEntries={waterEntries.filter((entry) => isSameDay(new Date(entry.loggedAt), selectedDate))}
           goals={goalsForDate(goalsByDate, selectedDate)}
           loading={registrationsLoading}
           error={registrationsError}
           sleepWindow={resolveSleepWindow(selectedDate)}
           previousSleepWindow={resolveSleepWindow(addDays(selectedDate, -1))}
+          hasHistory={registrations.length > 0}
           onEntryMoved={handleEntryMoved}
           onSleepAdjust={(type, minutes) => requestSleepAdjust(selectedDate, type, minutes)}
           onClose={() => setSelectedDate(null)}
@@ -1032,6 +1091,7 @@ function MonthView({
     for (let index = 0; index < cells.length; index += 7) rows.push(cells.slice(index, index + 7));
     return rows;
   }, [cells]);
+  const todayStart = new Date(today.getFullYear(), today.getMonth(), today.getDate()).getTime();
   return (
     <>
       <div className="mb-2 flex items-center gap-1.5">
@@ -1058,7 +1118,15 @@ function MonthView({
                   const met = dailyGoalMet(dailyTotals, date, goalForDate(date));
                   const logged = totalKcalForDate(dailyTotals, date) > 0;
                   const current = isSameDay(date, today);
+                  // Afsluttede dage (før i dag) uden registreringer tæller som
+                  // "mål ikke nået" og får ÷ (brugerens valg 2026-10-02, se
+                  // docs/DECISIONS.md). Dagen i dag og fremtidige dage er blanke.
+                  const pastEmpty = !current && !logged && date.getTime() < todayStart;
+                  const marked = logged || pastEmpty;
                   const isOtherMonth = date.getMonth() !== month;
+                  // Dage vi er forbi vises grå og regulære (ikke fede), så
+                  // i dag og fremtiden står tydeligst frem.
+                  const isPast = stripTime(date).getTime() < stripTime(today).getTime();
                   const hasGoal = goalsForDate(goalsByDate, date).length > 0;
                   return (
                     <button
@@ -1066,14 +1134,18 @@ function MonthView({
                       type="button"
                       onClick={() => onOpenDate(date)}
                       aria-label={`${date.toLocaleDateString("da-DK", { dateStyle: "long" })}${current ? t("calendar.todaySuffix") : ""}${
-                        !logged ? "" : met ? t("calendar.goalMetSuffix") : t("calendar.goalMissedSuffix")
+                        !marked ? "" : met ? t("calendar.goalMetSuffix") : t("calendar.goalMissedSuffix")
                       }${hasGoal ? t("calendar.targetDateSuffix") : ""}`}
-                      className={`hf-type-body hf-type-strong relative flex aspect-square items-center justify-center rounded-lg border focus-visible:outline-2 focus-visible:outline-hf-black ${
+                      className={`hf-type-body relative flex aspect-square items-center justify-center rounded-lg border focus-visible:outline-2 focus-visible:outline-hf-black ${
+                        isPast ? "" : "hf-type-strong"
+                      } ${
                         current
                           ? "border-transparent hf-selected"
                           : isOtherMonth
                             ? "border-hf-gray-border bg-transparent text-text-muted"
-                            : "border-transparent bg-hf-tan text-hf-black"
+                            : isPast
+                              ? "border-transparent bg-hf-tan text-text-muted"
+                              : "border-transparent bg-hf-tan text-hf-black"
                       }`}
                     >
                       {date.getDate()}
@@ -1086,7 +1158,7 @@ function MonthView({
                         />
                       )}
                       {!current &&
-                        logged &&
+                        marked &&
                         (met ? (
                           <IconCheck
                             size={12}
@@ -1156,8 +1228,12 @@ function WeekView({
           >
             <span className="hf-type-small hf-type-strong text-text-secondary w-10 uppercase">{date.toLocaleDateString("da-DK", { weekday: "short" })}</span>
             <span
-              className={`hf-type-body hf-type-strong flex size-9 shrink-0 items-center justify-center rounded-lg border ${
-                current ? "border-transparent hf-selected" : "border-hf-gray bg-hf-white text-hf-black"
+              className={`hf-type-body flex size-9 shrink-0 items-center justify-center rounded-lg border ${
+                current
+                  ? "hf-type-strong border-transparent hf-selected"
+                  : future
+                    ? "hf-type-strong border-hf-gray bg-hf-white text-hf-black"
+                    : "border-hf-gray bg-hf-white text-text-muted"
               }`}
             >
               {date.getDate()}
@@ -1190,8 +1266,7 @@ function WeekView({
                       !logged ? "text-text-muted" : tooLow ? "text-hf-warning" : over ? "text-hf-red-dark" : "text-hf-green"
                     }`}
                   >
-                    {over ? "÷" : "+"}
-                    {diff} kcal
+                    <EnergyChip kind="intake" value={diff} text={`${over ? "÷" : "+"}${diff}`} iconSize={18} />
                   </span>
                   <IconChevronRight size={19} className="shrink-0" />
                 </span>
@@ -1371,8 +1446,12 @@ function ListView({
           >
             <span className="hf-type-small hf-type-strong text-text-secondary w-10 uppercase">{date.toLocaleDateString("da-DK", { weekday: "short" })}</span>
             <span
-              className={`hf-type-body hf-type-strong flex size-9 shrink-0 items-center justify-center rounded-lg border ${
-                current ? "border-transparent hf-selected" : "border-hf-gray bg-hf-white text-hf-black"
+              className={`hf-type-body flex size-9 shrink-0 items-center justify-center rounded-lg border ${
+                current
+                  ? "hf-type-strong border-transparent hf-selected"
+                  : future
+                    ? "hf-type-strong border-hf-gray bg-hf-white text-hf-black"
+                    : "border-hf-gray bg-hf-white text-text-muted"
               }`}
             >
               {date.getDate()}
@@ -1405,8 +1484,7 @@ function ListView({
                       !logged ? "text-text-muted" : tooLow ? "text-hf-warning" : over ? "text-hf-red-dark" : "text-hf-green"
                     }`}
                   >
-                    {over ? "÷" : "+"}
-                    {diff} kcal
+                    <EnergyChip kind="intake" value={diff} text={`${over ? "÷" : "+"}${diff}`} iconSize={18} />
                   </span>
                   <IconChevronRight size={19} className="shrink-0" />
                 </span>
@@ -1443,6 +1521,7 @@ function WeekTimelineView({
   const headerDrag = useRef<{ x: number; scrollLeft: number } | null>(null);
   const gridDrag = useRef<{ x: number; y: number; scrollLeft: number; scrollTop: number } | null>(null);
   const gridScrollRef = useRef<HTMLDivElement | null>(null);
+  const [addTarget, setAddTarget] = useState<{ date: string; time: string } | null>(null);
   const getSleepWindowRef = useRef(getSleepWindow);
   useEffect(() => {
     getSleepWindowRef.current = getSleepWindow;
@@ -1487,6 +1566,7 @@ function WeekTimelineView({
   }
 
   return (
+    <>
     <div className="overflow-hidden rounded-2xl border border-hf-tan bg-hf-white">
       <div
         onPointerDown={handleHeaderPointerDown}
@@ -1548,6 +1628,14 @@ function WeekTimelineView({
             return (
               <div key={date.toISOString()} className="relative min-w-[92px] flex-1 border-r border-hf-tan last:border-r-0">
                 <SleepBands window={sleepWindow} />
+                <div
+                  className="absolute inset-0"
+                  onDoubleClick={(event) => {
+                    const rect = event.currentTarget.getBoundingClientRect();
+                    const minutes = Math.floor(((event.clientY - rect.top) / HOUR_HEIGHT) * 2) * 30;
+                    setAddTarget({ date: isoDate(date), time: minutesToTime(Math.min(minutes, 23 * 60 + 30)) });
+                  }}
+                />
                 {HOUR_MARKS.map((hour) => (
                   <div
                     key={hour}
@@ -1576,9 +1664,15 @@ function WeekTimelineView({
                       key={registration.id}
                       className="hf-type-micro hf-type-strong absolute left-0.5 right-0.5 truncate rounded-md bg-hf-green px-1 text-hf-white"
                       style={{ top: (minutesFromMidnight(time) / 60) * HOUR_HEIGHT, minHeight: 18 }}
-                      title={`${registration.titleSnapshot} · ${Math.round(registration.kcalSnapshot)} kcal`}
+                      title={`${registration.titleSnapshot} · ${
+                        isWaterRegistration(registration)
+                          ? formatCl(waterRegistrationMl(registration))
+                          : `${Math.round(registration.kcalSnapshot)} kcal`
+                      }`}
                     >
-                      {Math.round(registration.kcalSnapshot)} kcal
+                      {isWaterRegistration(registration)
+                        ? formatCl(waterRegistrationMl(registration))
+                        : `${Math.round(registration.kcalSnapshot)} kcal`}
                     </div>
                   );
                 })}
@@ -1588,6 +1682,8 @@ function WeekTimelineView({
         </div>
       </div>
     </div>
+    {addTarget && <AddMenuSheet date={addTarget.date} time={addTarget.time} onClose={() => setAddTarget(null)} />}
+    </>
   );
 }
 
@@ -1787,11 +1883,13 @@ function DayDetails({
   today,
   registrations,
   activities,
+  waterEntries,
   goals,
   loading,
   error,
   sleepWindow,
   previousSleepWindow,
+  hasHistory,
   onSleepAdjust,
   onEntryMoved,
   onClose,
@@ -1806,12 +1904,15 @@ function DayDetails({
   today: Date;
   registrations: Registration[];
   activities: Activity[];
+  waterEntries: WaterEntry[];
   goals: GoalDTO[];
   loading: boolean;
   error: boolean;
   sleepWindow: SleepWindow;
   /** The day before's window — its bedtime starts the night that ends this morning. */
   previousSleepWindow: SleepWindow;
+  /** Har brugeren registreret noget før? Ellers vises altid morgenen. */
+  hasHistory: boolean;
   onSleepAdjust: (type: SleepAdjustType, minutes: number) => void;
   onEntryMoved: (registrationId: string, newCreatedAt: Date) => void;
   onClose: () => void;
@@ -1834,11 +1935,13 @@ function DayDetails({
   // (DayDetails er keyed på datoen); et tryk udenfor lukker den, og derefter
   // står kun det lille ikon ud for kl. GOAL_HOUR.
   const [goalPopupDismissed, setGoalPopupDismissed] = useState(false);
-  const [hourHeight, setHourHeight] = useState(() => loadStoredHourHeight());
+  const inWebShell = useInWebShell();
+  const [hourHeight, setHourHeight] = useState(() => loadStoredHourHeight(inWebShell));
   const activeZoomPointers = useRef(new Map<number, number>());
   const zoomStart = useRef<{ avgY: number; hourHeight: number } | null>(null);
   const mouseDrag = useRef<{ y: number; scrollTop: number } | null>(null);
   const timelineScrollRef = useRef<HTMLDivElement | null>(null);
+  const visitedTodayRef = useRef<boolean | null>(null);
   const [sleepDrag, setSleepDrag] = useState<{ type: SleepAdjustType; minutes: number } | null>(null);
   // Oplevelse af søvn (docs/DECISIONS.md 2026-09-26): the day's 1–5 rating,
   // shown as a black bar at the top. DayDetails is keyed by date, so this
@@ -1906,7 +2009,10 @@ function DayDetails({
     mouseDrag.current = null;
     if (activeZoomPointers.current.size === 0) {
       try {
-        window.localStorage.setItem(HOUR_HEIGHT_STORAGE_KEY, String(hourHeight));
+        window.localStorage.setItem(
+          inWebShell ? WEB_HOUR_HEIGHT_STORAGE_KEY : HOUR_HEIGHT_STORAGE_KEY,
+          String(hourHeight),
+        );
       } catch {
         // localStorage unavailable — ignore.
       }
@@ -1915,7 +2021,7 @@ function DayDetails({
 
   const timelineHeight = hourHeight * 24;
   const showMinuteLines = hourHeight >= HOUR_HEIGHT * 2;
-  const minuteStep = hourHeight >= HOUR_HEIGHT * 3 ? 5 : 15;
+  const minuteStep = hourHeight >= HOUR_HEIGHT * 3 ? 5 : inWebShell ? 30 : 15;
 
   // Tidslinjen løber altid fra 00:00 (top) til 24:00 (bund) — ikke roteret om
   // stå-op-tiden. Ved åbning af en dag scroller vi ned, så den sidste hele
@@ -1927,7 +2033,26 @@ function DayDetails({
     const node = timelineScrollRef.current;
     if (!node) return;
     const wakeHour = sleepWindow.wakeTime / 60;
-    node.scrollTop = Math.max(0, (wakeHour - 1) * hourHeight);
+    // Første besøg i dag (cookie): morgenen med nattens søvn. Derefter, for
+    // i dag: nu ±2 timer i fokus.
+    const todayStr = localDateKey(new Date());
+    // Cookien læses kun første gang pr. visning (effekten kører igen ved indlæsning).
+    if (visitedTodayRef.current === null) {
+      try {
+        visitedTodayRef.current = document.cookie.split("; ").some((c) => c === `${VISIT_COOKIE}=${todayStr}`);
+        document.cookie = `${VISIT_COOKIE}=${todayStr}; path=/; max-age=172800; SameSite=Lax`;
+      } catch {
+        visitedTodayRef.current = false;
+      }
+    }
+    const visitedToday = visitedTodayRef.current;
+    if (visitedToday && hasHistory && localDateKey(date) === todayStr) {
+      const now = new Date();
+      const nowHour = now.getHours() + now.getMinutes() / 60;
+      node.scrollTop = Math.max(0, (nowHour - 2) * hourHeight);
+    } else {
+      node.scrollTop = Math.max(0, (wakeHour - 1) * hourHeight);
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loading, dateKey]);
 
@@ -2041,7 +2166,7 @@ function DayDetails({
           <div className="relative rounded-lg bg-hf-black px-4 py-2 text-center text-hf-white">
             <Link
               href="/statistics/sleep"
-              className="hf-type-small absolute inset-y-0 left-4 flex items-center text-hf-white no-underline"
+              className="hf-type-small absolute inset-y-0 right-4 flex items-center text-hf-white no-underline"
             >
               {t("sleepStats.calendarLink")}
             </Link>
@@ -2168,6 +2293,13 @@ function DayDetails({
                   const hourActivities = activities.filter(
                     (activity) => new Date(activity.startedAt).getHours() === hour,
                   );
+                  // Vand (egen tabel + vand-registreringer) vises som glas + cl,
+                  // aldrig som "0 kalorier".
+                  const hourWaterEntries = waterEntries.filter((entry) => new Date(entry.loggedAt).getHours() === hour);
+                  const waterRegistrations = hourRegistrations.filter(isWaterRegistration);
+                  const waterMl =
+                    hourWaterEntries.reduce((sum, entry) => sum + entry.amountMl, 0) +
+                    waterRegistrations.reduce((sum, registration) => sum + waterRegistrationMl(registration), 0);
                   return (
                     <HourRow
                       key={hour}
@@ -2175,8 +2307,10 @@ function DayDetails({
                       top={hour * hourHeight}
                       height={hourHeight}
                       kcalTotal={kcalTotal}
+                      waterMl={waterMl}
                       activities={hourActivities}
-                      hasEntries={hourRegistrations.length > 0}
+                      hasEntries={hourRegistrations.length > 0 || hourWaterEntries.length > 0}
+                      hasFood={hourRegistrations.length > waterRegistrations.length}
                       hasGoal={hour === GOAL_HOUR && goals.length > 0}
                       showAddBar={addBarHour === hour}
                       onOpenDetails={setOpenHour}
@@ -2249,6 +2383,7 @@ function DayDetails({
         <HourEntriesOverlay
           hour={openHour}
           registrations={registrations.filter((registration) => new Date(registration.createdAt).getHours() === openHour)}
+          waterEntries={waterEntries.filter((entry) => new Date(entry.loggedAt).getHours() === openHour)}
           goals={openHour === GOAL_HOUR ? goals : []}
           onClose={() => setOpenHour(null)}
         />
@@ -2257,7 +2392,7 @@ function DayDetails({
       {addSheetHour !== null && (
         <AddMenuSheet
           date={isoDate(date)}
-          time={`${String(addSheetHour).padStart(2, "0")}:00`}
+          time={`${String(Math.floor(addSheetHour)).padStart(2, "0")}:${addSheetHour % 1 ? "30" : "00"}`}
           onClose={() => setAddSheetHour(null)}
         />
       )}
@@ -2270,8 +2405,10 @@ function HourRow({
   top,
   height,
   kcalTotal,
+  waterMl,
   activities,
   hasEntries,
+  hasFood,
   hasGoal,
   showAddBar,
   onOpenDetails,
@@ -2282,8 +2419,12 @@ function HourRow({
   top: number;
   height: number;
   kcalTotal: number;
+  /** Timens vand i ml (0 = intet vand). */
+  waterMl: number;
   activities: Activity[];
   hasEntries: boolean;
+  /** Mindst én registrering, der ikke er vand — ellers vises kun glasset. */
+  hasFood: boolean;
   hasGoal: boolean;
   showAddBar: boolean;
   onOpenDetails: (hour: number) => void;
@@ -2333,6 +2474,14 @@ function HourRow({
       onPointerMove={handlePointerMove}
       onPointerUp={clearTimer}
       onPointerCancel={clearTimer}
+      // Dobbeltklik (mus) / dobbelttryk åbner tilføj-menuen direkte på timen —
+      // det lange tryk med "Tilføj"-baren er ikke til at gætte med en mus.
+      onDoubleClick={(event) => {
+        if ((event.target as HTMLElement).closest("button")) return;
+        clearTimer();
+        const rect = event.currentTarget.getBoundingClientRect();
+        onTapAddBar(hour + (event.clientY - rect.top >= rect.height / 2 ? 0.5 : 0));
+      }}
     >
       {/* Timen med en målsætning kan trykkes på i hele sin bredde og åbner
           timens oversigt med målsætningen øverst (men ikke lige efter et
@@ -2355,7 +2504,7 @@ function HourRow({
             return <SportIcon key={activity.id} size={16} className="text-hf-black opacity-70" aria-label={label} />;
           })}
           {activities.length > 0 && (
-            <span className="hf-type-small hf-type-strong text-hf-green">+{Math.round(bonusKcal)} kcal</span>
+            <EnergyChip kind="burned" value={bonusKcal} className="hf-type-small hf-type-strong text-hf-green" />
           )}
         </div>
       )}
@@ -2363,10 +2512,11 @@ function HourRow({
         <button
           type="button"
           onClick={() => onOpenDetails(hour)}
-          className="hf-type-small hf-type-strong absolute inset-y-0 right-1 z-[5] flex items-center gap-1 pl-2 text-hf-black focus-visible:outline-2 focus-visible:outline-hf-black"
+          className="hf-type-small hf-type-strong absolute inset-y-0 right-1 z-[5] flex items-center gap-2 pl-2 text-hf-black focus-visible:outline-2 focus-visible:outline-hf-black"
         >
-          <span>{Math.round(kcalTotal)} kalorier</span>
-          <IconChevronRight size={16} className="opacity-50" />
+          {hasFood && <EnergyChip kind="intake" value={kcalTotal} />}
+          {waterMl > 0 && <EnergyChip kind="water" value={waterMl} />}
+          <IconChevronRight size={16} className="-ml-1 opacity-50" />
         </button>
       )}
       {showAddBar && (
@@ -2562,28 +2712,41 @@ function GoalAccordion({ goal }: { goal: GoalDTO }) {
   );
 }
 
+// Én linje i timens oversigt: en registrering (mad eller vand-vare) eller et
+// glas vand fra /water/create.
+type HourItem =
+  | { kind: "registration"; id: string; time: Date; registration: Registration }
+  | { kind: "water"; id: string; time: Date; entry: WaterEntry };
+
 function HourEntriesOverlay({
   hour,
   registrations,
+  waterEntries,
   goals,
   onClose,
 }: {
   hour: number;
   registrations: Registration[];
+  waterEntries: WaterEntry[];
   goals: GoalDTO[];
   onClose: () => void;
 }) {
   const { t } = useTranslation();
-  const sorted = [...registrations].sort(
-    (a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime(),
-  );
-  const groups: Array<{ key: string; time: Date; items: Registration[] }> = [];
-  for (const registration of sorted) {
-    const time = new Date(registration.createdAt);
-    const key = `${time.getHours()}:${time.getMinutes()}`;
+  const sorted: HourItem[] = [
+    ...registrations.map<HourItem>((registration) => ({
+      kind: "registration",
+      id: registration.id,
+      time: new Date(registration.createdAt),
+      registration,
+    })),
+    ...waterEntries.map<HourItem>((entry) => ({ kind: "water", id: entry.id, time: new Date(entry.loggedAt), entry })),
+  ].sort((a, b) => a.time.getTime() - b.time.getTime());
+  const groups: Array<{ key: string; time: Date; items: HourItem[] }> = [];
+  for (const item of sorted) {
+    const key = `${item.time.getHours()}:${item.time.getMinutes()}`;
     const lastGroup = groups[groups.length - 1];
-    if (lastGroup && lastGroup.key === key) lastGroup.items.push(registration);
-    else groups.push({ key, time, items: [registration] });
+    if (lastGroup && lastGroup.key === key) lastGroup.items.push(item);
+    else groups.push({ key, time: item.time, items: [item] });
   }
   // Hvert præcist tidspunkt er en foldbar accordion (lukket som standard) —
   // brugerens eksplicitte rettelse: tidligere var alle indtastninger altid
@@ -2626,7 +2789,25 @@ function HourEntriesOverlay({
         ))}
         {groups.map((group) => {
           const isOpen = openKeys.has(group.key);
-          const groupKcal = group.items.reduce((sum, registration) => sum + registration.kcalSnapshot, 0);
+          // Kalorier fra mad som kyllingelår, vand som glas + cl — begge kan
+          // stå på samme tidspunkt. Vand-varer tæller ikke som mad.
+          const foodItems = group.items.filter(
+            (item) => item.kind === "registration" && !isWaterRegistration(item.registration),
+          );
+          const groupKcal = foodItems.reduce(
+            (sum, item) => sum + (item.kind === "registration" ? item.registration.kcalSnapshot : 0),
+            0,
+          );
+          const groupWaterMl = group.items.reduce(
+            (sum, item) =>
+              sum +
+              (item.kind === "water"
+                ? item.entry.amountMl
+                : isWaterRegistration(item.registration)
+                  ? waterRegistrationMl(item.registration)
+                  : 0),
+            0,
+          );
           return (
             <div key={group.key} className="mb-2 overflow-hidden rounded-2xl bg-hf-tan">
               <button
@@ -2638,32 +2819,60 @@ function HourEntriesOverlay({
                 <span className="hf-type-body hf-type-strong text-hf-black">
                   {new Intl.DateTimeFormat("da-DK", { hour: "2-digit", minute: "2-digit" }).format(group.time)}
                 </span>
-                <span className="hf-type-body hf-type-strong flex items-center gap-1 text-hf-black">
-                  {Math.round(groupKcal)} kalorier
-                  <HfChevron direction={isOpen ? "down" : "right"} className="text-hf-black" />
+                <span className="hf-type-body hf-type-strong flex items-center gap-2 text-hf-black">
+                  {foodItems.length > 0 && <EnergyChip kind="intake" value={groupKcal} iconSize={18} />}
+                  {groupWaterMl > 0 && <EnergyChip kind="water" value={groupWaterMl} iconSize={18} />}
+                  <HfChevron direction={isOpen ? "down" : "right"} className="-ml-1 text-hf-black" />
                 </span>
               </button>
               {isOpen && (
                 <div className="bg-hf-cream px-4">
-                  {group.items.map((registration, i) => (
-                    <Link
-                      key={registration.id}
-                      href={`/registration/${registration.id}`}
-                      className={`block focus-visible:outline-2 focus-visible:outline-hf-black ${
-                        i < group.items.length - 1 ? "border-b border-hf-tan-dark" : ""
-                      }`}
-                    >
-                      <FoodRow
-                        image={registration.product?.imageUrl}
-                        title={registration.titleSnapshot}
-                        right={
-                          <span className="hf-type-body hf-type-strong text-hf-black">
-                            {Math.round(registration.kcalSnapshot)} kcal
-                          </span>
-                        }
-                      />
-                    </Link>
-                  ))}
+                  {group.items.map((item, i) => {
+                    const rowClass = `block focus-visible:outline-2 focus-visible:outline-hf-black ${
+                      i < group.items.length - 1 ? "border-b border-hf-tan-dark" : ""
+                    }`;
+                    if (item.kind === "water") {
+                      return (
+                        <div key={item.id} className={rowClass}>
+                          <FoodRow
+                            thumbnail={<IconWaterGlass size={22} className="text-hf-black" />}
+                            title={t("calendar.waterTitle")}
+                            right={
+                              <EnergyChip
+                                kind="water"
+                                value={item.entry.amountMl}
+                                iconSize={18}
+                                className="hf-type-body hf-type-strong text-hf-black"
+                              />
+                            }
+                          />
+                        </div>
+                      );
+                    }
+                    const { registration } = item;
+                    const isWater = isWaterRegistration(registration);
+                    return (
+                      <Link key={item.id} href={`/registration/${registration.id}`} className={rowClass}>
+                        <FoodRow
+                          image={isWater ? undefined : registration.product?.imageUrl}
+                          thumbnail={
+                            isWater && !registration.product?.imageUrl ? (
+                              <IconWaterGlass size={22} className="text-hf-black" />
+                            ) : undefined
+                          }
+                          title={registration.titleSnapshot}
+                          right={
+                            <EnergyChip
+                              kind={isWater ? "water" : "intake"}
+                              value={isWater ? waterRegistrationMl(registration) : registration.kcalSnapshot}
+                              iconSize={18}
+                              className="hf-type-body hf-type-strong text-hf-black"
+                            />
+                          }
+                        />
+                      </Link>
+                    );
+                  })}
                 </div>
               )}
             </div>

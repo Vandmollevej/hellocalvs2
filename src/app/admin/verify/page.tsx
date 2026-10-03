@@ -66,7 +66,7 @@ export default function AdminVerifyPage() {
           {loading ? "Bekræfter…" : "Log ind"}
         </button>
       </form>
-      <Link href="/admin/login" className="mt-4 text-center text-sm text-hf-green-dark underline">
+      <Link href="/admin/login" className="hf-type-body mt-4 text-center text-hf-green-dark underline">
         Ingen adgang til authenticator? Log ind med Face ID / passkey
       </Link>
     </div>

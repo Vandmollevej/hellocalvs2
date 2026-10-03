@@ -1,7 +1,13 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { getMealInputLanguage, isMealInputLanguageCode, type MealInputLanguage } from "@/lib/meal-input-language";
 
-// POST /api/ai/interpret-meal — { transcript: string }
+// POST /api/ai/interpret-meal — { transcript: string, language?: "da" | "sv" | … }
+//
+// `language` er sproget brugeren har valgt med flaget på tale-/chat-siden
+// (brugerens krav 2026-10-02): teksten tolkes KUN som det sprog, med engelsk
+// som eneste fallback (mange varer hedder noget på engelsk). Mangler den,
+// bruges dansk som før.
 //
 // Converts Danish speech input into food items and amounts, per docs/AI.md
 // ("Danish speech input for meal logging ... AI converts to amounts that
@@ -33,7 +39,7 @@ const RESPONSE_SCHEMA = {
         items: {
           type: "object",
           properties: {
-            name: { type: "string", description: "Madvarens navn på dansk, uden mængde" },
+            name: { type: "string", description: "Madvarens navn på det valgte sprog (eller engelsk, hvis varen hedder sådan), uden mængde" },
             amountGrams: { type: "number", description: "Bedste estimat af mængden i gram" },
             amountLabel: { type: "string", description: "Kort, menneskelæsbar mængde, fx '2 skiver' eller '8 g'" },
             estimatedKcalPer100g: { type: "number" },
@@ -60,7 +66,25 @@ const RESPONSE_SCHEMA = {
   strict: true,
 };
 
-async function callOpenAi(transcript: string): Promise<AiItem[]> {
+function systemPrompt(language: MealInputLanguage): string {
+  const name = language.englishName;
+  const englishFallback =
+    language.code === "en"
+      ? `The input is in English only. Do not interpret words as any other language.`
+      : `The input is in ${name}. Interpret it ONLY as ${name}, with English as the single fallback: ` +
+        `many foods and products are called something in English (e.g. "cornflakes", "peanut butter", "smoothie"), ` +
+        `so English words are accepted. Never interpret words as any other language, and never translate from one.`;
+  return (
+    `You turn a ${name} description of a meal into a list of foods with amounts in grams. ` +
+    englishFallback +
+    ` Write each food name in ${name}, unless the food is normally called by its English name, then keep the English name. ` +
+    "Split composite dishes into individual ingredients. Use typical portion sizes for vague amounts " +
+    "(e.g. 'a little butter' ≈ 8 g, 'a thick layer of roast beef' ≈ 40 g). Write amountLabel in " +
+    `${name}. Also estimate realistic nutrition values per 100 g for each ingredient, as a fallback guess.`
+  );
+}
+
+async function callOpenAi(transcript: string, language: MealInputLanguage): Promise<AiItem[]> {
   const apiKey = process.env.OPENAI_API_KEY;
   if (!apiKey) throw new Error("OPENAI_API_KEY er ikke sat");
 
@@ -75,11 +99,7 @@ async function callOpenAi(transcript: string): Promise<AiItem[]> {
       messages: [
         {
           role: "system",
-          content:
-            "Du hjælper med at omsætte dansk taleinput om et måltid til en liste af madvarer med mængder i gram. " +
-            "Del sammensatte retter op i enkelte ingredienser. Brug typiske portionsstørrelser for vage mængder " +
-            "(fx 'lidt smør' ≈ 8 g, 'et tykt lag roastbeef' ≈ 40 g). Estimér også realistiske næringsværdier " +
-            "pr. 100 g for hver ingrediens, som et fallback-gæt.",
+          content: systemPrompt(language),
         },
         { role: "user", content: transcript },
       ],
@@ -100,31 +120,62 @@ async function callOpenAi(transcript: string): Promise<AiItem[]> {
   return parsed.items;
 }
 
-async function findLocalMatch(name: string) {
-  const firstWord = name.trim().split(/\s+/)[0];
-  if (!firstWord) return null;
+function nameWords(value: string) {
+  return value.toLowerCase().split(/[^\p{L}\p{N}]+/u).filter(Boolean);
+}
 
-  return prisma.product.findFirst({
+// Kun et sikkert match tæller: hvert ord fra AI-navnet skal stå som et helt ord
+// i produktnavnet ("pålæg" må ikke ramme "smørepålæg"). Hellere intet match
+// (AI-estimatet bruges) end et produkt, der ikke giver mening.
+async function findLocalMatch(name: string) {
+  const words = nameWords(name);
+  if (words.length === 0) return null;
+
+  const candidates = await prisma.product.findMany({
     where: {
-      name: { contains: firstWord, mode: "insensitive" },
+      AND: words.map((word) => ({
+        OR: [
+          { name: { equals: word, mode: "insensitive" as const } },
+          { name: { startsWith: `${word} `, mode: "insensitive" as const } },
+          { name: { endsWith: ` ${word}`, mode: "insensitive" as const } },
+          { name: { contains: ` ${word} `, mode: "insensitive" as const } },
+        ],
+      })),
       discontinued: false,
+      nutritionMissing: false,
       status: "APPROVED",
     },
     include: { brand: true },
     orderBy: { createdAt: "desc" },
+    take: 50,
   });
+
+  // Færrest ekstra ord = tættest på det, brugeren skrev.
+  let best: (typeof candidates)[number] | null = null;
+  let bestExtra = Infinity;
+  for (const candidate of candidates) {
+    const candidateWords = nameWords(candidate.name);
+    if (!words.every((word) => candidateWords.includes(word))) continue;
+    const extra = candidateWords.length - words.length;
+    if (extra < bestExtra) {
+      best = candidate;
+      bestExtra = extra;
+    }
+  }
+  return best;
 }
 
 export async function POST(req: Request) {
   const body = await req.json().catch(() => null);
   const transcript = typeof body?.transcript === "string" ? body.transcript.trim() : "";
+  const language = getMealInputLanguage(isMealInputLanguageCode(body?.language) ? body.language : "da");
 
   if (!transcript) {
     return NextResponse.json({ message: "transcript er påkrævet" }, { status: 400 });
   }
 
   try {
-    const aiItems = await callOpenAi(transcript);
+    const aiItems = await callOpenAi(transcript, language);
 
     const items = await Promise.all(
       aiItems.map(async (aiItem) => {

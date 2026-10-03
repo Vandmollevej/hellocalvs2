@@ -152,7 +152,7 @@ export function ProductDatabaseFilters({
   return (
     <section
       aria-busy={pending}
-      className="flex flex-col gap-4 rounded-lg border border-hf-tan-dark bg-hf-white p-4"
+      className="flex flex-col gap-4 hf-surface p-4"
     >
       <div className="flex flex-col gap-3 md:flex-row md:items-end">
         <label className="flex min-w-0 flex-1 flex-col gap-1">

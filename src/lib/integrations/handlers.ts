@@ -4,7 +4,7 @@ import { prisma } from "@/lib/prisma";
 import { getSessionUser } from "@/lib/session";
 import { getUserSubscriptionTier } from "@/lib/subscription";
 import { shouldSync } from "@/lib/integrations";
-import { newOAuthState, readOAuthState, saveIntegrationTokens, setOAuthCookie } from "@/lib/integrations-oauth";
+import { newOAuthState, newPkcePair, readOAuthState, saveIntegrationTokens, setOAuthCookie } from "@/lib/integrations-oauth";
 import { storeIntegrationItems } from "@/lib/integrations/store-items";
 import { filterItemsBySettings, missingWriteScopes, resolveSyncSettings } from "@/lib/integrations/sync-settings";
 import { collectPushData, pushCount } from "@/lib/integrations/push";
@@ -49,8 +49,9 @@ export async function connect(_req: NextRequest, adapter: OAuthProviderAdapter) 
   const settings = resolveSyncSettings(adapter.provider, row?.syncSettings);
 
   const state = newOAuthState();
-  const response = NextResponse.redirect(adapter.buildAuthorizeUrl(state, redirectUri(adapter), settings));
-  setOAuthCookie(response, stateCookie(adapter), { state });
+  const pkce = adapter.pkce ? newPkcePair() : null;
+  const response = NextResponse.redirect(adapter.buildAuthorizeUrl(state, redirectUri(adapter), settings, pkce?.challenge));
+  setOAuthCookie(response, stateCookie(adapter), pkce ? { state, verifier: pkce.verifier } : { state });
   return response;
 }
 
@@ -70,12 +71,13 @@ export async function callback(req: NextRequest, adapter: OAuthProviderAdapter) 
   if (req.nextUrl.searchParams.get("error") || !code || !state || !expected || state !== expected.state) {
     return done("error=1");
   }
+  if (adapter.pkce && !expected.verifier) return done("error=1");
   try {
-    const tokens = await adapter.exchangeCode(code, redirectUri(adapter));
-    await adapter.afterConnect?.(tokens);
+    const tokens = await adapter.exchangeCode(code, redirectUri(adapter), expected.verifier);
+    const extra = await adapter.afterConnect?.(tokens);
     // Strava sender de givne scopes i adressen i stedet for i token-svaret.
     const scope = tokens.scope ?? req.nextUrl.searchParams.get("scope") ?? undefined;
-    await saveIntegrationTokens(adapter.provider, { ...tokens, scope });
+    await saveIntegrationTokens(adapter.provider, { ...tokens, scope }, extra?.externalUserId);
   } catch (error) {
     console.error(`${adapter.label} callback failed`, errorMessage(error));
     return done("error=1");
@@ -83,7 +85,7 @@ export async function callback(req: NextRequest, adapter: OAuthProviderAdapter) 
   return done("connected=1");
 }
 
-async function freshAccessToken(adapter: OAuthProviderAdapter, integration: Integration) {
+export async function freshAccessToken(adapter: OAuthProviderAdapter, integration: Integration) {
   const expiresSoon = integration.expiresAt && integration.expiresAt.getTime() < Date.now() + 60_000;
   if (!expiresSoon || !integration.refreshToken || !adapter.refresh) return integration.accessToken as string;
   const refreshed = await adapter.refresh(integration.refreshToken);
@@ -182,9 +184,27 @@ export async function disconnect(adapter: OAuthProviderAdapter) {
   try {
     const user = await getSessionUser();
     if (!user) return NextResponse.json({ message: "Log ind først" }, { status: 401 });
+    // Appen får besked om at stoppe adgangen (Garmin, Whoop). En fejl her
+    // forhindrer ikke frakoblingen hos os.
+    const integration = await prisma.integration.findUnique({
+      where: { userId_provider: { userId: user.id, provider: adapter.provider } },
+    });
+    if (adapter.revoke && integration?.accessToken) {
+      await freshAccessToken(adapter, integration)
+        .then((token) => adapter.revoke!(token))
+        .catch((error) => console.error(`${adapter.label} revoke failed`, errorMessage(error)));
+    }
     await prisma.integration.updateMany({
       where: { userId: user.id, provider: adapter.provider },
-      data: { status: "DISCONNECTED", accessToken: null, refreshToken: null, expiresAt: null, lastError: null, lastPushedAt: null },
+      data: {
+        status: "DISCONNECTED",
+        accessToken: null,
+        refreshToken: null,
+        expiresAt: null,
+        lastError: null,
+        lastPushedAt: null,
+        externalUserId: null,
+      },
     });
     return NextResponse.json({ ok: true });
   } catch (error) {

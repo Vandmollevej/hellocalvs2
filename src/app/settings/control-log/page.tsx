@@ -67,7 +67,7 @@ export default function ControlLogPage() {
                   {log.whoHasAccess.map((person) => (
                     <div key={person.id} className="flex h-14 items-center gap-4 border-b border-hf-tan-dark px-4 last:border-b-0">
                       <ProfileCircle name={person.displayName} tone="card" />
-                      <span className="hf-type-body flex-1 truncate">{person.displayName}</span>
+                      <span className="userback-ignore userback-block hf-type-body flex-1 truncate">{person.displayName}</span>
                       <span className="hf-type-caption text-text-secondary">
                         {person.isOwner ? t("family.log.payer") : t("family.log.granted")}
                       </span>

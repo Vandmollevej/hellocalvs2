@@ -112,7 +112,7 @@ export default async function ScanWorkerPage({
           ["Godkendt, ikke udbetalt", formatKroner(due)],
           ["Udbetalt", formatKroner(totals.paidOre)],
         ].map(([label, value]) => (
-          <div key={label} className="rounded-lg border border-hf-tan-dark bg-hf-white p-3">
+          <div key={label} className="hf-surface p-3">
             <p className="hf-type-title text-hf-green-dark">{value}</p>
             <p className="hf-type-small text-text-secondary">{label}</p>
           </div>
@@ -125,7 +125,7 @@ export default async function ScanWorkerPage({
         {weeks.map((group, index) => {
           const weekTotals = summarize(group.rows);
           return (
-            <details key={group.week.key} open={index === 0} className="rounded-lg border border-hf-tan-dark bg-hf-white">
+            <details key={group.week.key} open={index === 0} className="hf-surface">
               <summary className="hf-type-body hf-type-strong cursor-pointer px-4 py-3">
                 Uge {group.week.week} · {formatWeekPeriod(group.week)} — {group.rows.length} varer ·{" "}
                 {group.rows.filter((row) => row.reviewStatus === "PENDING").length} afventer
@@ -205,7 +205,7 @@ export default async function ScanWorkerPage({
         })}
       </section>
 
-      <section className="flex flex-col gap-2 rounded-lg border border-hf-tan-dark bg-hf-white p-4">
+      <section className="flex flex-col gap-2 hf-surface p-4">
         <h2 className="hf-type-body hf-type-strong">Udbetalinger</h2>
         <form action={registerPayout} className="flex flex-wrap items-end gap-2">
           <input type="hidden" name="workerId" value={worker.id} />
@@ -225,7 +225,7 @@ export default async function ScanWorkerPage({
         </ul>
       </section>
 
-      <section className="flex flex-col gap-3 rounded-lg border border-hf-tan-dark bg-hf-white p-4">
+      <section className="flex flex-col gap-3 hf-surface p-4">
         <h2 className="hf-type-body hf-type-strong">Profil og bank (kun admin redigerer)</h2>
         <form action={updateWorkerProfile} className="grid gap-3 sm:grid-cols-2">
           <input type="hidden" name="workerId" value={worker.id} />
@@ -285,7 +285,7 @@ export default async function ScanWorkerPage({
         </details>
       </section>
 
-      <section className="flex flex-col gap-2 rounded-lg border border-hf-tan-dark bg-hf-white p-4">
+      <section className="flex flex-col gap-2 hf-surface p-4">
         <h2 className="hf-type-body hf-type-strong">Beskeder</h2>
         <ul className="flex flex-col gap-2">
           {worker.messages.map((message) => (

@@ -2,11 +2,12 @@ import { certificationLogoSrc, type CertificationBadge } from "@/lib/certificati
 
 // De rigtige mærke-logoer (public/certifications) vist i ens højde, højrestillet
 // under energifordelingen på produktsiden (opgave 29). Mærker uden logofil
-// ("generic") vises som en lille tekst-pille.
+// bruger det fritskrabede mærke fra emballagen (natligt mærkat-job,
+// docs/DECISIONS.md 2026-10-02), og ellers en lille tekst-pille.
 const LOGO_HEIGHT = 44;
 
 function Logo({ badge }: { badge: CertificationBadge }) {
-  const src = certificationLogoSrc(badge.kind);
+  const src = certificationLogoSrc(badge.kind) ?? badge.imageUrl;
   if (!src) {
     return (
       <span

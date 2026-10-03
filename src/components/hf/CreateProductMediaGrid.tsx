@@ -5,7 +5,7 @@ import { IconClipboardText, IconList, IconPhoto } from "@tabler/icons-react";
 import { BrowserMultiFormatReader } from "@zxing/browser";
 import { NumberedBadge } from "@/components/hf/NumberedBadge";
 import { CaptureCheckOverlay } from "@/components/hf/CaptureCheckOverlay";
-import { HfBarcodeIcon } from "@/components/hf/HfBarcodeIcon";
+import { IconBarcodeCard } from "@/components/icons/BarcodeCard";
 import {
   extractText,
   findIngredientsSection,
@@ -298,7 +298,7 @@ export function CreateProductMediaGrid({
         number={1}
         label={t("productCreate.mediaBarcode")}
         image={value.barcodeImage}
-        icon={<HfBarcodeIcon />}
+        icon={<IconBarcodeCard size={44} />}
         status={barcodeStatus}
         workingLabel={t("productCreate.mediaScanningBarcode")}
         failedLabel={t("productCreate.mediaScanFailedBarcode")}

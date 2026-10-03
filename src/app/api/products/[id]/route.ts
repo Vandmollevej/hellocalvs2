@@ -2,6 +2,12 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { resolveGenericIngredientNutrients, resolveProductNutrients } from "@/lib/nutrient-resolution";
 import { getSessionUser } from "@/lib/session";
+import {
+  PRODUCT_UPDATE_POINTS,
+  hasEarnedUpdatePoints,
+  productGaps,
+  updateKindsFor,
+} from "@/lib/product-update";
 
 export async function GET(
   _req: Request,
@@ -18,6 +24,11 @@ export async function GET(
         images: { orderBy: { order: "asc" } },
         filters: {
           select: { organic: true, keyhole: true, wholeGrain: true, animalWelfare: true, certifications: true },
+        },
+        // Mærkater fra det natlige mærkat-job (docs/DECISIONS.md 2026-10-02).
+        labels: {
+          select: { key: true, name: true, category: true, imageUrl: true, confidence: true },
+          orderBy: { confidence: "desc" },
         },
         nutritionFeatures: {
           select: {
@@ -53,7 +64,35 @@ export async function GET(
             select: { amountGrams: true },
           })
         : null;
-      return NextResponse.json({ product: { ...product, nutrients, lastAmountGrams: last?.amountGrams ?? null } });
+      // AI kunne ikke læse ingredienslisten på fotoet (docs/DECISIONS.md
+      // 2026-10-02): den, der oprettede varen, tilbydes at tage et nyt foto.
+      const ingredientsUnreadable =
+        !product.ingredientsText?.trim() &&
+        !product.pendingFields.includes("ingredients") &&
+        !!user &&
+        product.createdByUserId === user.id &&
+        (await prisma.aiProductAnalysis
+          .count({ where: { productId: product.id, kind: "INGREDIENTS" } })
+          .then((count) => count > 0)
+          .catch(() => false));
+      // Opdater-varen-banneret (brugerbeslutning 2026-10-03): mangler indhold,
+      // energi, logo eller produktbillede, tilbydes 20 points — også admin.
+      const updateKinds =
+        user && !product.privateOwnerId && !(await hasEarnedUpdatePoints(user.id, product.id).catch(() => true))
+          ? updateKindsFor(productGaps(product))
+          : [];
+      return NextResponse.json({
+        product: {
+          ...product,
+          nutrients,
+          updateOffer: updateKinds.length ? { kinds: updateKinds, points: PRODUCT_UPDATE_POINTS } : null,
+          lastAmountGrams: last?.amountGrams ?? null,
+          ingredientsUnreadable,
+          // Butiksvare uden kalorietal (docs/DECISIONS.md 2026-10-02): 0 er en
+          // pladsholder, så UI viser "Næringsindhold ukendt" i stedet for 0 kcal.
+          hasKnownNutrition: !product.nutritionMissing,
+        },
+      });
     }
 
     // Not a Product — try the separate GenericIngredient table (loose

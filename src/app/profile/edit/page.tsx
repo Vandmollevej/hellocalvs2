@@ -14,6 +14,7 @@ import { latestTrendWeight, type MealSample, type WeightSample } from "@/lib/wei
 import { computeAge } from "@/lib/age";
 import { ACTIVITY_LEVELS, type ActivityLevel } from "@/lib/activity-level";
 import { useTranslation } from "@/i18n/LocaleProvider";
+import { cmToIn, formatWeight, inToCm, useUnits, weightUnitLabel } from "@/lib/units";
 import { FaceIdButton } from "@/components/FaceIdButton";
 import { SkeletonForm, SkeletonScreen } from "@/components/hf/Skeleton";
 import { EnergyBreakdown } from "@/components/EnergyBreakdown";
@@ -38,9 +39,6 @@ type ProfileUser = {
   wantsPartnerOffersEmails: boolean;
 };
 
-function formatKg(value: number) {
-  return new Intl.NumberFormat("da-DK", { maximumFractionDigits: 1 }).format(value);
-}
 
 function formatUpdatedDate(value: string) {
   return new Intl.DateTimeFormat("da-DK", { day: "numeric", month: "short", year: "numeric" }).format(
@@ -122,6 +120,7 @@ const inputClass =
 export default function ProfileEditPage() {
   const { t } = useTranslation();
   const router = useRouter();
+  const units = useUnits();
   const [user, setUser] = useState<ProfileUser | null>(null);
   const [loading, setLoading] = useState(true);
   const [trendWeightKg, setTrendWeightKg] = useState<number | null>(null);
@@ -223,13 +222,22 @@ export default function ProfileEditPage() {
       title={t("profile.section.profile")}
       footer={
         user ? (
-          <button
-            type="button"
-            onClick={() => router.push("/profile/change-password")}
-            className="hf-control hf-btn-primary w-full px-4"
-          >
-            {t("profile.changePasswordButton")}
-          </button>
+          <div className="flex flex-col gap-3">
+            <button
+              type="button"
+              onClick={() => router.push("/profile/login-approval")}
+              className="hf-control w-full rounded-full border border-hf-gray-border px-4"
+            >
+              {t("loginApproval.toggle")}
+            </button>
+            <button
+              type="button"
+              onClick={() => router.push("/profile/change-password")}
+              className="hf-control hf-btn-primary w-full px-4"
+            >
+              {t("profile.changePasswordButton")}
+            </button>
+          </div>
         ) : undefined
       }
     >
@@ -249,14 +257,14 @@ export default function ProfileEditPage() {
         <div className="flex min-h-full flex-col gap-4 p-4">
           <Field label={t("profile.field.name")}>
             <input
-              className={inputClass}
+              className={`${inputClass} userback-ignore`}
               value={user.displayName}
               onChange={(event) => update("displayName", event.target.value)}
             />
           </Field>
 
           <Field label={t("profile.field.email")}>
-            <input className={`${inputClass} opacity-60`} value={user.email} disabled />
+            <input className={`${inputClass} opacity-60 userback-ignore`} value={user.email} disabled />
           </Field>
 
           <div className="grid grid-cols-2 gap-4">
@@ -275,12 +283,14 @@ export default function ProfileEditPage() {
               >
                 <IconLock size={18} className="shrink-0" />
                 <span className="truncate">
-                  {user.weightKg !== null ? `${formatKg(user.weightKg)} KG` : "KG"}
+                  {user.weightKg !== null
+                    ? formatWeight(user.weightKg, units.weight).toUpperCase()
+                    : weightUnitLabel(units.weight).toUpperCase()}
                 </span>
               </button>
               {trendWeightKg !== null && (
                 <span className="hf-type-micro text-text-secondary">
-                  {t("profile.trendWeight", { value: trendWeightKg.toFixed(1) })}
+                  {t("profile.trendWeight", { value: formatWeight(trendWeightKg, units.weight) })}
                 </span>
               )}
               {user.weightKg !== null && (
@@ -295,12 +305,16 @@ export default function ProfileEditPage() {
             <Field label={t("profile.field.height")}>
               <WheelPicker
                 label={t("profile.field.height")}
-                value={user.heightCm !== null ? Math.round(user.heightCm) : null}
-                min={100}
-                max={230}
-                unit="CM"
-                initialScrollValue={175}
-                onChange={(value) => updateNow("heightCm", value)}
+                value={
+                  user.heightCm !== null
+                    ? Math.round(units.height === "in" ? cmToIn(user.heightCm) : user.heightCm)
+                    : null
+                }
+                min={units.height === "in" ? 39 : 100}
+                max={units.height === "in" ? 91 : 230}
+                unit={units.height.toUpperCase()}
+                initialScrollValue={units.height === "in" ? 69 : 175}
+                onChange={(value) => updateNow("heightCm", units.height === "in" ? Math.round(inToCm(value)) : value)}
               />
             </Field>
 
