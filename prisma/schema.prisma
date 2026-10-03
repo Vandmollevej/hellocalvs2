@@ -3902,6 +3902,8 @@ model PartnerUser {
   name              String
   email             String    @unique
   passwordHash      String?
+  // 2-faktor (TOTP) er obligatorisk ved hvert login; sættes ved accept af invitationen.
+  totpSecret        String?
   active            Boolean   @default(true)
   // Kun hashen af invitationstokenet gemmes; linket gælder 72 timer.
   inviteTokenHash   String?   @unique

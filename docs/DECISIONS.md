@@ -167,8 +167,16 @@ Hello Cals partnerportal og ser sin egen partners data.
   `partner-session`, 12 t, `PARTNER_SESSION_SECRET` ellers
   `ADMIN_SESSION_SECRET`). Middleware gater `/partner/*` og `/api/partner/*`
   (undtagen login og invitationslink); `requirePartnerUser()` tjekker i
-  databasen aktiv/accepteret og `sessionsValidFrom`. Ingen 2-faktor i første
-  omgang (kun partnerens egne aggregerede reklametal, ingen persondata).
+  databasen aktiv/accepteret/2-faktor sat og `sessionsValidFrom`.
+- **2-faktor (TOTP) er obligatorisk** (brugerens valg 2026-10-03), som hos
+  admin-brugerne: ved tilmelding vælges adgangskode, derefter scannes en
+  QR-kode og første kode bekræftes — først da oprettes adgangen
+  (`PartnerUser.totpSecret`, migration `20261003090000_partner_user_totp`).
+  Ved hvert login: adgangskode (`/api/partner/login`, sætter kun en 5-minutters
+  `hc_partner_mfa`-cookie) → kode på `/partner/verify` (`/api/partner/verify`),
+  som først udsteder sessionen. Mistet telefon: admin sletter brugeren og
+  inviterer igen. Godkendelse af nyt udstyr og IP-begrænsning (som admin) er
+  ikke indført for B2B.
 - **Admin kan:** gensende/trække invitation tilbage, deaktivere/aktivere,
   "log ud overalt" og slette. Deaktivering og log-ud sætter
   `sessionsValidFrom`, så eksisterende sessioner afvises straks.
@@ -180,6 +188,34 @@ Hello Cals partnerportal og ser sin egen partners data.
 - Portalen ligger på det offentlige domæne (hellocal.io), ikke admin-værten,
   da admin-værten omskriver alle stier til `/admin` og er IP-begrænset.
   `PARTNER_BASE_URL` kan overstyre linkets base (standard `APP_BASE_URL`).
+
+## 2026-10-02: Butiksimporten: alt fra arkene med (Bilka + REMA 1000)
+
+Erstatter "Varer uden kcal/protein/kulhydrat/fedt springes over" fra 2026-09-27.
+
+- **Alle rækker importeres** (brugerens valg: "Det er lige meget om de har protein mv. med. Så tager vi det fra Frida senere"). 13.039 varer i stedet for 10.524.
+- **Uden kalorietal** (2.364 varer: mest vin/øl/spiritus, krydderier, kaffe/te, frisk frugt/grønt og kød): `Product.nutritionMissing = true`, kcal/protein/kulhydrat/fedt = 0 som pladsholder. Varen er skjult i alle opslag, hvor en bruger kan finde og logge den (søgning, tekst-/foto-/måltidsgenkendelse, næringsmatch, generiske kandidater), og får **ingen stregkode-række** — scanning ender derfor stadig i Open Food Facts eller kameraflowet, hvor brugeren kan oprette varen med rigtig næring. Opretter en bruger den, opdateres brugerens vare ved næste import, og den skjulte kopi slettes. Varesiden viser "Næringsindhold ukendt" og admin "Mangler – skjult i appen". Næring hentes senere fra Frida (egen opgave): udfyld, sæt `nutritionMissing = false`, opret stregkoden.
+- **Med kalorietal men uden protein/kulhydrat/fedt** (151, mest spiritus og øl, hvor kun energien er deklareret): synlige; den manglende makro er 0 og markeret `ESTIMATED` i `nutrientSources` (~). En eksisterende vare beholder sine egne makroer.
+- **Energi repareres**: Bilka-arkets kJ er tal, så 1105 kJ stod som 1,105 (ca. 4.900 varer). Desuden byttede kolonner, kJ = 0 ved siden af kcal, og 25 kcal-værdier, hvor arkets egen kJ og makroerne (4P + 4C + 9F + 2 fiber) er enige mod kcal (fx Marineret flanksteak 15 → 152, Chiliolie 37 → 392); aldrig på alkohol. Alle rettelser står i tjeklisten. kJ på admin-gennemgåede varer repareres også (en tusind-fejl er intet valg).
+- **"Sukkerfri" kun op til 0,5 g sukker pr. 100 g** (EU's grænse; brugerens valg). REMA's "Sukkerfri" på 44 varer med mere sukker var REMA's mærke "Ikke tilsat sukker" → filteret "Uden tilsat sukker" (sukkerpåstandene fra samme dag). Det samme gælder "sukkerfri"/"uden sukker" i titlen på en vare med over 0,5 g sukker. Butikkens eget Sukkerfri-mærke i Bilka-arket (`_is_sugar_free`) står ved magt.
+- **Info-arkenes "Labels"** udfylder filtre, arkene lod stå tomme (fuldkorn, vegetarisk, certificeringer, dyrevelfærd, oprindelsesland), og REMA's "Additional Product Information" giver oprindelsesland.
+- **Vitaminer/mineraler**: findes ikke i arkene (kolonnerne var tomme) — bilka.py åbnede aldrig panelet "Info om vitaminer og mineraler". Nyt tillægs-script `bilka_vitamins.py` (brugeren kører det selv) skriver `bilka_vitamins.xlsx`; importen gemmer værdierne i `micronutrientsPer100g` med kilde LABEL, så de afløser Frida-skønnene (~) på varesiden.
+- **Navne**: varer opkaldt efter brandet alene hed "0"/"1"/"M appelsin" (titlen minus brand og mængde); nu butikkens egen titel ("Coca cola", "Breezer m. appelsin"), og første bogstav er stort.
+- Admin-gennemgang i Dubletter nulstilles ikke af kJ-rettelsen eller de afledte sukkerpåstande.
+
+## 2026-10-02: Kameraflowet tager rigtige stillbilleder + "tag nyt billede af indholdet"
+
+- Årsag: en marmelades ingrediensliste (30. sept.) blev aldrig aflæst. Loggen viste, at OpenAI fik fotoet, men svarede "for sløret til sikker aflæsning" (tom liste, sikkerhed 12 %). Fotoet var et 1080p-videobillede; appen sagde intet og prøvede ikke igen. Der var ingen genstart — PR #151 (genoptagelse efter genstart) byggede på et forkert gæt og er droppet.
+- Forside, energi og indhold tages nu som kameraets stillbillede (`ImageCapture.takePhoto`, `src/lib/camera-still.ts`) — stadig automatisk, uden tryk. Har browseren ikke funktionen, bedes videostrømmen om 4K, og det skarpeste af tre videobilleder bruges. Stregkodefotoet er stadig ét videobillede (må ikke forsinke scanningen).
+- Energi- og indholdsfotoet beskæres til det kvadrat, brugeren så i søgeren (ændrer "ingen beskæring" fra 2026-09-17 for de to trin; forsiden er stadig hele fotoet). Længste side højst 2048 px.
+- Hvert foto logges (`photo_captured`: stillbillede/videobillede, opløsning, skarphed).
+- Kunne AI ikke læse ingredienslisten, viser varesiden "Indholdet kunne ikke læses på billedet" med knappen "Tag nyt billede af indholdet" — kun for den, der oprettede varen (`ingredientsUnreadable` i `GET /api/products/[id]`). Knappen åbner `/camera?retake=ingredients&product=<id>` (`IngredientsRetakeFlow`), og `POST /api/products/[id]/ingredients-photo` læser det nye foto med OpenAI. Intet automatisk genforsøg på det samme foto (brugerens valg).
+
+## 2026-10-02: "Til info sendte vi dig …" (mail/sms var ikke spam)
+
+- Hver mail eller sms til en kendt bruger giver (1) en push med det samme: "Vi har netop sendt dig en e-mail om "emne". Dette var ikke spam." og (2) et bundark som det første ved næste besøg (app og web): "Til info sendte vi dig den <dato> en <e-mail/sms> om "<emne>". Dette var ikke spam." med sort knap "Læst".
+- "Læst" kvitterer (`OutboundMessage.noticeAckAt`); et træk ned lukker kun til næste besøg. Beskeder ældre end 30 dage vises ikke. Gælder ikke mails til admin, ikke-brugere (invitationer) eller rene push-beskeder.
+- Bygger på den eksisterende `OutboundMessage`-log — ingen adresse eller telefonnummer gemmes. Sms sendes via `src/lib/sms.ts` (GatewayAPI-format, no-op uden `SMS_GATEWAY_TOKEN`); brugere har endnu intet telefonnummer-felt, så ingen sms sendes i dag.
 
 ## 2026-10-02: Vægt- og længdeenheder (kg/lb/st, cm/in)
 

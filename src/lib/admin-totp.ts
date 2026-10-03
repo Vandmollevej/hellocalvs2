@@ -7,8 +7,8 @@ export function createTotpSecret() {
   return generateSecret();
 }
 
-export async function createTotpQrCode(email: string, secret: string) {
-  const uri = generateURI({ issuer: ISSUER, label: email, secret });
+export async function createTotpQrCode(email: string, secret: string, issuer: string = ISSUER) {
+  const uri = generateURI({ issuer, label: email, secret });
   return QRCode.toDataURL(uri);
 }
 
