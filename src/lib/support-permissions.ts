@@ -40,6 +40,39 @@ export const SUPPORT_PERMISSION_KEYS = [
 
 export type SupportPermissionKey = (typeof SUPPORT_PERMISSION_KEYS)[number];
 
+// Desktop-visningen (WebShell) viser kategorierne i emnegrupper med "Vælg alle"
+// pr. emne. Hver kategori står i præcis én gruppe; rækkefølgen er kolonnerne:
+// gruppe 1+2 i venstre kolonne, 3+4 i højre.
+export const SUPPORT_PERMISSION_GROUPS = [
+  {
+    id: "food",
+    keys: [
+      "foodIntake",
+      "calories",
+      "energyDistribution",
+      "nutrients",
+      "water",
+      "favorites",
+      "recipes",
+      "productSubmissions",
+      "searchHistory",
+    ],
+  },
+  { id: "activityOverview", keys: ["activity", "steps", "calendar", "statistics", "helloDoc"] },
+  {
+    id: "body",
+    keys: ["weight", "bodyMeasurements", "heartAndHealthMetrics", "sleep", "stress", "menstrualCycle"],
+  },
+  { id: "account", keys: ["profile", "goals", "subscription", "messages", "integrations"] },
+] as const satisfies readonly { id: string; keys: readonly SupportPermissionKey[] }[];
+
+export type SupportPermissionGroupId = (typeof SUPPORT_PERMISSION_GROUPS)[number]["id"];
+
+// i18n key per group — "settings.support.groups.<id>".
+export function supportGroupLabelKey(id: SupportPermissionGroupId) {
+  return `settings.support.groups.${id}`;
+}
+
 export type SupportPermissions = Record<SupportPermissionKey, boolean>;
 
 // i18n key per category — "settings.support.permissions.<key>".

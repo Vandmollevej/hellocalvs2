@@ -57,6 +57,10 @@ export const DUPLICATE_FIELDS: DuplicateField[] = [
   { key: "glutenFree", label: "Glutenfri", kind: "text", section: "Filtre" },
   { key: "lactoseFree", label: "Laktosefri", kind: "text", section: "Filtre" },
   { key: "sugarFree", label: "Sukkerfri", kind: "text", section: "Filtre" },
+  { key: "lowSugar", label: "Lavt sukkerindhold", kind: "text", section: "Filtre" },
+  { key: "noAddedSugar", label: "Uden tilsat sukker", kind: "text", section: "Filtre" },
+  { key: "reducedSugar", label: "Reduceret sukker", kind: "text", section: "Filtre" },
+  { key: "lightSugar", label: "Light", kind: "text", section: "Filtre" },
   { key: "sweeteners", label: "Sødemidler", kind: "text", section: "Filtre" },
   { key: "vegan", label: "Vegansk", kind: "text", section: "Filtre" },
   { key: "vegetarian", label: "Vegetarisk", kind: "text", section: "Filtre" },
@@ -75,7 +79,8 @@ export const DUPLICATE_FIELDS: DuplicateField[] = [
 ];
 
 export const FILTER_TEXT_KEYS = [
-  "organic", "glutenFree", "lactoseFree", "sugarFree", "sweeteners", "vegan", "vegetarian", "meatType",
+  "organic", "glutenFree", "lactoseFree", "sugarFree", "lowSugar", "noAddedSugar", "reducedSugar", "lightSugar",
+  "sweeteners", "vegan", "vegetarian", "meatType",
   "alcohol", "countryOfOrigin", "wholeGrain", "keyhole", "storage", "size",
 ] as const;
 export const FILTER_NUMBER_KEYS = ["alcoholPercent", "fatPercent"] as const;
