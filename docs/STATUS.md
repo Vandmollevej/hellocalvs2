@@ -1,5 +1,10 @@
 # HELLO CAL — project status
 
+
+## 2026-10-02: Desktop — alle sider i skallen
+
+- På desktop vises alle sider (også login, betingelser, privatlivspolitik) i WebShell med sidebjælke, topmenu og brødkrummer; kun admin, hello-doc, business og presse er fuld bredde.
+- Lint og typecheck grønne; ikke set i browser — tjek login-siderne på desktop.
 Last updated: 2026-10-02
 
 ## 2026-10-02: Scannede varer uden billede, certifikat, ingredienser og salt
@@ -7,6 +12,18 @@ Last updated: 2026-10-02
 - Årsag: stregkoden blev fundet i Open Food Facts med kun navn/brand/kalorier, og kameraflowet gik direkte til varen uden fotos. Nu fortsætter flowet til fotoene, når OFF mangler billede, ingredienser eller salt, og en allerede gemt tynd OFF-vare fyldes op fra fotoene (DECISIONS 2026-10-02).
 - Certifikater: forside-AI'en læser mærkningslogoer (prompt front-v4), OFF's labels_tags oversættes; begge gemmes i ProductFilters og vises som logoer.
 - Test: `src/lib/label-certifications.test.mjs` (ny, grøn). Lint og typecheck grønne. Ikke live-testet (ingen lokal DB/OpenAI). Prøv: scan flødebollerne igen → flowet skal bede om forside, energi og indhold.
+
+## 2026-10-02: Kameraflowet — rigtige stillbilleder + nyt foto af indholdet
+
+- Fejlen: marmelade (5711954020055) fik ingen ingredienser, fordi indholdsfotoet var et sløret 1080p-videobillede, og OpenAI svarede tomt ("for sløret"). Ingen genstart var involveret. Se DECISIONS 2026-10-02.
+- Nyt: `src/lib/camera-still.ts` (stillbillede via `ImageCapture.takePhoto`, ellers skarpeste af tre 4K-videobilleder; energi/indhold beskæres til søgerens kvadrat), brugt i `ProductCaptureFlow`. Log-trin `photo_captured` viser kilde, opløsning og skarphed.
+- Nyt: varesiden viser "Indholdet kunne ikke læses på billedet" + knap; `IngredientsRetakeFlow` (`/camera?retake=ingredients&product=<id>`) og `POST /api/products/[id]/ingredients-photo`.
+- Lint grøn; typecheck uden fejl i de berørte filer. Build ikke kørt lokalt (delt `node_modules` har forældet Prisma-klient). Ikke testet på telefon: tjek i admin "Log", om `photo_captured` siger "stillbillede" på iPhone — ellers bruges 4K-videobilledet.
+
+## 2026-10-02: Retter — skelettet er nu sidens egne rækker
+
+- `/profile/recipes` (begge faner) og `/profile/recipes/[id]` brugte generiske skeletter (`SkeletonMediaRows`/`SkeletonDetail`) med bjælker i procent af sidebredden — enorme på bred skærm og uden lighed med indholdet. Nu tegner `RecipeRow` og ret-siden sig selv uden data (design.md §6.14): samme billedfelt, titel + undertekst i tekstbredde (`SkeletonTitleLines` i `Skeleton.tsx`), 3 rækker under "Trender netop nu".
+- Lint grøn; typecheck uden fejl i de berørte filer. Build ikke kørt lokalt (delt `node_modules` har forældet Prisma-klient). Ikke visuelt testet (brugerregel).
 
 ## 2026-10-02: "Til info sendte vi dig …"-popup + push
 
@@ -37,6 +54,11 @@ Last updated: 2026-10-02
 - Rettelser bør komme fra brugeren: `Bedre-dyrevelfærd-2-stjerner.png` var identisk med 3-stjerner-filen, så 2-hjerte-logoet er afledt (3-stjerner + den tomme 3. hjerte fra 1-stjerne-filen). `Fairtrade logo.webp` har "cleanpng"-vandmærke og `Økologimærket.png` er et beskåret udsnit uden tekst — erstat med originale filer.
 - Lint og typecheck grønne. Ikke visuelt testet (ingen login/DB lokalt).
 
+## 2026-10-02: Kalender dagvisning pa web - cookie, fokus pa nu, dobbeltklik
+
+- Cookie `hc_cal_visit` (dato): forste besog i dag viser morgenen med nattens sovn; senere besog i dag (og kun hvis brugeren har registreret noget for) scroller til nu +-2 timer.
+- Dobbeltklik pa en time i dagvisningen og pa en dag i ugens tidslinje abner tilfoej-menuen pa den halve time.
+- Lint og typecheck groenne; ikke testet i browser.
 ## 2026-09-29: Offentlig forside for udloggede
 
 - Ny hent-appen-forside uden telefonramme, med QR-koder, planer med betalings-ark, Hello Doc-bjælke, nøgletal fra databasen, `/business` (kontaktformular) og `/presse`. Se DECISIONS.md samme dato.
@@ -733,7 +755,8 @@ uændrede. Mangler brugerens visuelle godkendelse.
 - Email Routing: peter@packroff.dk bekræftet; `support@hellocal.io` + catch-all videresendes til peter@packroff.dk.
 - Google OAuth-klienten har allerede hellocal.io-URIer; server `GOOGLE_HEALTH_REDIRECT_URI` sat til hellocal.io (slår igennem ved næste deploy).
 - Facebook: brugeren har tilføjet `https://hellocal.io/api/auth/oauth/facebook/callback` (2026-09-28).
-- Mangler (brugeren tager det en anden dag): Withings (logget ud) → `https://hellocal.io/api/withings/callback`; Strava (logget ud) → callback-domæne `hellocal.io`; Apple (logget ud) → domæne + Return URL. Derefter `INTEGRATIONS_REDIRECT_BASE_URL`/`WITHINGS_REDIRECT_URI` på serveren til hellocal.io.
+- Withings (2026-10-02): brugeren har registreret `https://hellocal.io/api/withings/callback` hos Withings; server `WITHINGS_REDIRECT_URI` sat til samme (backup `.env.production.bak-20261002-withings`). Løste `redirect_uri_mismatch`.
+- Mangler (brugeren tager det en anden dag): Strava (logget ud) → callback-domæne `hellocal.io`; Apple (logget ud) → domæne + Return URL. Derefter `INTEGRATIONS_REDIRECT_BASE_URL` på serveren til hellocal.io (står stadig på `hellocal.packroff.dk`, så Strava ikke brydes).
 
 ## 2026-09-27: Tilføj-kamera med fire knapper + "opret straks"
 

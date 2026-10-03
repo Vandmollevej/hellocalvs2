@@ -29,6 +29,20 @@ export type CertificationKind =
   | "fairtrade"
   | "rainforest"
   | "utz"
+  | "krav"
+  | "naturland"
+  | "vLabel"
+  | "vegan"
+  | "vegansk"
+  | "tierwohl"
+  | "haltungsform"
+  | "heimischerAnbau"
+  | "dlg"
+  | "glutenFree"
+  | "noChickCull"
+  | "danskMaelk"
+  | "pgi"
+  | "granaPadano"
   | "generic";
 
 export type CertificationBadge = { kind: CertificationKind; label: string };
@@ -52,6 +66,20 @@ export const CERTIFICATION_LOGO_FILES: Record<Exclude<CertificationKind, "generi
   fairtrade: "fairtrade.png",
   rainforest: "rainforest-alliance.png",
   utz: "utz.png",
+  krav: "krav.png",
+  naturland: "naturland.png",
+  vLabel: "v-label.png",
+  vegan: "vegan.png",
+  vegansk: "vegansk.png",
+  tierwohl: "tierwohl.png",
+  haltungsform: "haltungsform.png",
+  heimischerAnbau: "heimischer-anbau.png",
+  dlg: "dlg.png",
+  glutenFree: "glutenfri.png",
+  noChickCull: "eier-ohne-kuekentoeten.png",
+  danskMaelk: "dansk-maelk.png",
+  pgi: "pgi.png",
+  granaPadano: "grana-padano.png",
 };
 
 export function certificationLogoSrc(kind: CertificationKind): string | null {
@@ -72,6 +100,8 @@ function kindForOrganic(label: string): CertificationKind {
 function kindForAnimalWelfare(label: string): CertificationKind {
   const value = label.toLowerCase();
   if (value.includes("dyrenes beskyttelse")) return "animalProtection";
+  if (value.includes("tierwohl")) return "tierwohl";
+  if (value.includes("haltungsform")) return "haltungsform";
   if (value.includes("dyrevelfærd")) {
     const level = value.match(/[123]/)?.[0];
     if (level === "1") return "welfare1";
@@ -88,6 +118,20 @@ function kindForCertification(label: string): CertificationKind {
   if (value.includes("fairtrade") || value.includes("fair trade")) return "fairtrade";
   if (value.includes("rainforest")) return "rainforest";
   if (/\butz\b/.test(value)) return "utz";
+  if (/\bkrav\b/.test(value)) return "krav";
+  if (value.includes("naturland")) return "naturland";
+  if (value.includes("v-label") || value.includes("vlabel")) return "vLabel";
+  if (value.includes("vegansk")) return "vegansk";
+  if (value.includes("vegan")) return "vegan";
+  if (value.includes("tierwohl")) return "tierwohl";
+  if (value.includes("haltungsform")) return "haltungsform";
+  if (value.includes("heimischer anbau")) return "heimischerAnbau";
+  if (/\bdlg\b/.test(value)) return "dlg";
+  if (value.includes("glutenfri") || value.includes("gluten free") || value.includes("gluten-free")) return "glutenFree";
+  if (value.includes("kükentöten") || value.includes("kuekentoeten")) return "noChickCull";
+  if (value.includes("dansk mælk") || value.includes("dansk maelk")) return "danskMaelk";
+  if (/\b(?:pgi|pdo)\b/.test(value) || value.includes("beskyttet geografisk")) return "pgi";
+  if (value.includes("grana padano")) return "granaPadano";
   if (value.includes("bioland")) return "bioland";
   if (value.includes("naturskånsom") || value.includes("natur skånsom") || value.includes("naturskaansom")) return "naturSkaansom";
   if (value.includes("dyrenes beskyttelse") || value.includes("dyrevelfærd")) return kindForAnimalWelfare(label);

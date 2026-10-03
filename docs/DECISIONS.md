@@ -9,6 +9,14 @@ This file records durable decisions. Add a dated entry when a later decision cha
 - Forside-AI'en (prompt `front-v4-2026-10-02-certifications`) returnerer nu `certifications` (Ø-mærket, EU-blad, Nøglehul, Fuldkorn, Bedre Dyrevelfærd, MSC, ASC, Fairtrade …). De gemmes i `ProductFilters` via `src/lib/label-certifications.ts` + `product-certification-filters.ts`, og OFF's `labels_tags` gør det samme. Eksisterende felter overskrives aldrig.
 - "EU-økologisk" giver EU-bladet (ikke Ø-mærket) i `certification-badges.ts`.
 
+## 2026-10-02: Kameraflowet tager rigtige stillbilleder + "tag nyt billede af indholdet"
+
+- Årsag: en marmelades ingrediensliste (30. sept.) blev aldrig aflæst. Loggen viste, at OpenAI fik fotoet, men svarede "for sløret til sikker aflæsning" (tom liste, sikkerhed 12 %). Fotoet var et 1080p-videobillede; appen sagde intet og prøvede ikke igen. Der var ingen genstart — PR #151 (genoptagelse efter genstart) byggede på et forkert gæt og er droppet.
+- Forside, energi og indhold tages nu som kameraets stillbillede (`ImageCapture.takePhoto`, `src/lib/camera-still.ts`) — stadig automatisk, uden tryk. Har browseren ikke funktionen, bedes videostrømmen om 4K, og det skarpeste af tre videobilleder bruges. Stregkodefotoet er stadig ét videobillede (må ikke forsinke scanningen).
+- Energi- og indholdsfotoet beskæres til det kvadrat, brugeren så i søgeren (ændrer "ingen beskæring" fra 2026-09-17 for de to trin; forsiden er stadig hele fotoet). Længste side højst 2048 px.
+- Hvert foto logges (`photo_captured`: stillbillede/videobillede, opløsning, skarphed).
+- Kunne AI ikke læse ingredienslisten, viser varesiden "Indholdet kunne ikke læses på billedet" med knappen "Tag nyt billede af indholdet" — kun for den, der oprettede varen (`ingredientsUnreadable` i `GET /api/products/[id]`). Knappen åbner `/camera?retake=ingredients&product=<id>` (`IngredientsRetakeFlow`), og `POST /api/products/[id]/ingredients-photo` læser det nye foto med OpenAI. Intet automatisk genforsøg på det samme foto (brugerens valg).
+
 ## 2026-10-02: "Til info sendte vi dig …" (mail/sms var ikke spam)
 
 - Hver mail eller sms til en kendt bruger giver (1) en push med det samme: "Vi har netop sendt dig en e-mail om "emne". Dette var ikke spam." og (2) et bundark som det første ved næste besøg (app og web): "Til info sendte vi dig den <dato> en <e-mail/sms> om "<emne>". Dette var ikke spam." med sort knap "Læst".
@@ -42,6 +50,14 @@ This file records durable decisions. Add a dated entry when a later decision cha
 - Planer: "Vælg" på Seriøs/Seriøs Familie åbner et bundark med periode og betaling. Uden konto → `/signup?next=/profile/subscription/<plan>?months=<n>`, som lander på købssiden med samme valg.
 - Footer: kun Business-partnere (`/business`: muligheder + den eneste kontaktformular, mailes til `BUSINESS_CONTACT_EMAIL` eller support@) og Presse (`/presse`: fakta, logoer, kontakt via business-formularen). Ingen andre kontaktformularer og ingen sociale medier.
 - Butikslinks står i `APP_STORE_URL`/`PLAY_STORE_URL` (`src/lib/landing-content.ts`); QR-koderne følger dem automatisk.
+
+## 2026-10-02: Sukkerpåstande til søgning (ikke mærker)
+
+- Nye filterkolonner på `ProductFilters`: `lowSugar` ("Lavt sukkerindhold"), `noAddedSugar` ("Uden tilsat sukker"), `reducedSugar` ("Reduceret sukker") og `lightSugar` ("Light"), ved siden af den eksisterende `sugarFree`. Samme mønster som øvrige filtre: tom = nej/ukendt, udfyldt = ja. Migration `20261002100000_sugar_claim_filters`.
+- **De vises ikke som mærker i appen** (brugerens krav) — de findes kun, så man kan søge på dem: `GET /api/products?q=` matcher nu også de fem sukkerkolonner (fx "sukkerfri", "light", "uden tilsat").
+- Udledes i `scripts/store-products-import/build_data.py` (`sugar_claims`): først og fremmest af nøgleord, derefter navn, variant, smag og produkttype (påstanden står ofte kun i nøgleordene). `lowSugar` udledes også af sukker pr. 100 g: højst 5 g (drikkevarer 2,5 g), og sukkerfri tæller som lavt.
+- Kendt begrænsning: en påstand, der kun står som ikon på emballagen, kan ikke aflæses; den må tilføjes manuelt i admin (Dubletter/Butiksdata). Produkter uden sukkertal får ikke `lowSugar` af næringen.
+- Nye kolonner fyldes først ved næste kørsel af `build_data.py` + `store-products-agent`.
 
 ## 2026-09-29: Admin-brugere (adgang til admin-panelet)
 
@@ -3170,6 +3186,11 @@ Apple Health-adgangsarket (som HelloFresh viser), med alle Hello Cals punkter.
 
 Brugere med `role = ADMIN` behandles som Seriøs i `getUserSubscriptionTier` og `/api/subscription`, uden en Subscription-række, så alle Seriøs-funktioner kan testes. Ingen databaseændring.
 
+## 2026-10-02 — Familie kun synlig for familieabonnenter; admin har familieabonnement
+
+- `hasActiveFamilyPlan` (src/lib/family.ts) og `/api/subscription` (`plan`) giver `role = ADMIN` altid familieabonnement, uden Subscription-række, så alle familiefelter kan testes. Ingen databaseændring. Familien oprettes stadig med knappen "Opret familie".
+- Indstillinger viser kun "Familie"-kortet, når brugeren har familieabonnement eller er med i en familie. Uden familieabonnement ligger indgangen til at indtaste en familiekode på Abonnement-siden ("Har du fået en kode?"). Købstilbuddet på Familieabonnement står uændret på Abonnement-siden.
+
 ## 2026-09-28: Samtykke på tilmeldingssiden i stedet for separat side
 
 Brugerens opgave 35: det separate samtykke-step (`/samtykke`) fjernes. Samtykket
@@ -3498,4 +3519,8 @@ Kilder på "Mad på latin" skal altid være officielle (Fødevarestyrelsen, Sund
 - Ny side /settings/account (Indstillinger -> Kontoindstillinger) med to knapper, begge i bundark med bekraeftelse (skriv SLET).
 - Begge kalder POST /api/account/close, som koerer anonymizeUser() (src/lib/gdpr.ts) paa brugeren selv, rydder session-cookies og logger ud. Forskellen er kun ordlyd; GDPR-sletning er fortsat anonymisering (se 2026-09-02).
 - Ikke gjort: aktivt abonnement hos betalingsudbyder opsiges ikke automatisk.
+## 2026-10-02 — Admin: Economy
+
+- Ny side /admin/economy: årsabonnementer (årlig sikker indkomst, sikret løbetid), månedsabonnementer (+ 3 mdr.) og næste måneds forventede indtjening. Kun betalende (provider sat); pris/periode fra MobilePay-træk og Stripe live (skønnet 1 md. ved mangel).
+- Afmelding: observeret 30-dages rate blandet med prior 7 %/md.; AI-knap lader OpenAI vurdere % pr. type (kun aggregater, store:false), forventningen regnes i koden. Grov model, ikke regnskab.
 
