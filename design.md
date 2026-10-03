@@ -550,7 +550,7 @@ fuld bredde).
 
 **`.hf-favorite-button` / `FavoriteButton`**
 
-- Bookmark, ikke stjerne.
+- Bookmark, ikke stjerne. Ikonet er brugerens eget artwork (`public/icons/favorite.png`, udfyldt `favorite-filled.png`, cirkel-reference `favorite-circle.png`) via `src/components/icons/Favorite.tsx` — aldrig tabler-bookmark. Cirkel: `rgb(45 45 45 / 78%)`.
 - 44 × 44 px rund mørk/translucent overlay-knap på billeder.
 - 24 × 24 hvid outline-bookmark, ens stroke på alle kort.
 - Standardplacering: 8 px fra top og højre billedkant.
@@ -611,9 +611,13 @@ selve billedet. Kcal/person udregnes lokalt
 opskriften ikke har en registreret portionsstørrelse) og erstatter den
 tidligere kcal-tekstlinje under billedet i stedet for at duplikere den.
 
-**`HfBarcodeIcon`** — SVG-stregkode (bjælker af varierende bredde) med et
-mock-cifferlag under, brugt som placeholder-ikon og som prompt-illustration i
-stregkode-trinnet. Farve arves via `currentColor`.
+**`IconBarcodeCard`** (`src/components/icons/BarcodeCard.tsx`) — brugerens
+stregkode-PNG med tal på hvid, afrundet baggrund (`public/icons/barcode/barcode-card.png`),
+vist på de brunlige `--hf-color-card`-bokse: trin-knappen "Stregkode" under
+kamerabilledet og boks 1 i opret-griddet. Billede, ikke maske (den hvide
+baggrund er en del af ikonet). Varianter til helt små ikoner:
+`barcode-bars.png` (uden tal og baggrund) og `barcode-digits.png` (tal, uden
+baggrund). Hi-res originaler: `Original images - Hi-res/Ikoner/`.
 
 **`ScanningOverlay`** — gråtonet (`bg-black/55`) fuld-overlay med en 3 px
 lodret hvid/gennemsigtig linje (`.hf-scan-line`, `globals.css`) der animerer

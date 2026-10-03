@@ -11,9 +11,11 @@ import { FamilyWatchFrame } from "@/components/family/FamilyWatchFrame";
 import { AccessLogPanel } from "@/components/family/AccessLogPanel";
 import { StartupTipsGate } from "@/components/StartupTipsGate";
 import { KcalGoalPrompt } from "@/components/KcalGoalPrompt";
+import { SentMessageNotice } from "@/components/SentMessageNotice";
 import { SleepQualityGate } from "@/components/SleepQualityGate";
 import { UmamiTracker } from "@/components/UmamiTracker";
 import { HelpChat } from "@/components/help/HelpChat";
+import { UserbackWidget } from "@/components/UserbackWidget";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -59,10 +61,12 @@ export default function RootLayout({
       <body className="min-h-full text-hf-black font-sans">
         <GlobalClipboardGuard />
         <UmamiTracker />
+        <UserbackWidget />
         <LocaleProvider>
           <AuthGate />
           <StartupTipsGate />
           <KcalGoalPrompt />
+          <SentMessageNotice />
           <SleepQualityGate />
           <OfflineQueueBanner />
           <FamilyStatusProvider>

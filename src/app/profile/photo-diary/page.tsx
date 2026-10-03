@@ -271,6 +271,21 @@ export default function BilledeDagbogPage() {
             </>
           ) : (
             <>
+              {/* Billederne (eller "ingen billeder endnu") står altid over knappen med god luft. */}
+              <div className="mb-8 mt-4">
+                {!photosLoaded ? null : ordered.length === 0 ? (
+                  <p className="hf-type-small text-text-secondary text-center py-8">
+                    {t("photoDiary.noPhotosYet")}
+                  </p>
+                ) : (
+                  <PhotoCarousel
+                    photos={ordered}
+                    index={activeIndex}
+                    onIndexChange={selectIndex}
+                    onOpen={openViewer}
+                  />
+                )}
+              </div>
               <input
                 ref={fileInputRef}
                 type="file"
@@ -297,19 +312,6 @@ export default function BilledeDagbogPage() {
                         : "photoDiary.deleteError"
                   )}
                 </p>
-              )}
-
-              {!photosLoaded ? null : ordered.length === 0 ? (
-                <p className="hf-type-small text-text-secondary text-center">
-                  {t("photoDiary.noPhotosYet")}
-                </p>
-              ) : (
-                <PhotoCarousel
-                  photos={ordered}
-                  index={activeIndex}
-                  onIndexChange={selectIndex}
-                  onOpen={openViewer}
-                />
               )}
             </>
           )}

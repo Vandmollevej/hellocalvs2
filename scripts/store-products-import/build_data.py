@@ -651,6 +651,44 @@ def store_record(p):
     return {"ean": p["ean"], "stores": p["stores"], **{k: p.get(k) for k in SOURCE_FIELDS}}
 
 
+# ---------- sugar claims (docs/DECISIONS.md 2026-10-02) ----------
+# Kun til søgning/filtre — vises ikke som mærker. Påstanden står ofte kun i
+# nøgleordene (eller som ikon på emballagen), så der kigges i nøgleord, navn,
+# variant, smag og produkttype; "lavt sukkerindhold" udledes desuden af sukker
+# pr. 100 g (EU: højst 5 g pr. 100 g, drikkevarer højst 2,5 g pr. 100 ml).
+# Ikon-alene-påstande kan ikke aflæses her og må tilføjes manuelt i admin.
+
+SUGAR_CLAIMS = (
+    ("sugarFree", "Sukkerfri", re.compile(r"sukkerfri|sugar[\s-]?free|zuckerfrei|uden\s+sukker\b", re.I)),
+    ("noAddedSugar", "Uden tilsat sukker",
+     re.compile(r"(uden|ingen)\s+tilsat(te)?\s+sukker|no\s+added\s+sugars?|ohne\s+(zuckerzusatz|zusatz\s+von\s+zucker)", re.I)),
+    ("reducedSugar", "Reduceret sukker",
+     re.compile(r"reduceret\s+sukker|sukkerreduceret|mindre\s+sukker|reduced\s+sugar|weniger\s+zucker", re.I)),
+    ("lightSugar", "Light", re.compile(r"\blight\b", re.I)),
+    ("lowSugar", "Lavt sukkerindhold",
+     re.compile(r"lavt\s+sukkerindhold|lav\s+sukker|low\s+(in\s+)?sugar|wenig\s+zucker", re.I)),
+)
+LOW_SUGAR_SOLID_G = 5.0
+LOW_SUGAR_DRINK_G = 2.5
+
+
+def sugar_claims(filters, keywords, name, variant, flavor, product_type, sugars, is_drink):
+    """Fills sugarFree/lowSugar/noAddedSugar/reducedSugar/lightSugar on `filters`."""
+    haystack = " | ".join(filter(None, [*keywords, name, variant, flavor, product_type]))
+    for key, label, pattern in SUGAR_CLAIMS:
+        if pattern.search(haystack):
+            filters[key] = filters.get(key) or label
+        else:
+            filters.setdefault(key, None)
+    limit = LOW_SUGAR_DRINK_G if is_drink else LOW_SUGAR_SOLID_G
+    if not filters.get("lowSugar") and sugars is not None and sugars <= limit:
+        filters["lowSugar"] = "Lavt sukkerindhold"
+    # Sukkerfri er også lavt på sukker (EU: højst 0,5 g).
+    if filters.get("sugarFree") and not filters.get("lowSugar"):
+        filters["lowSugar"] = "Lavt sukkerindhold"
+    return filters
+
+
 # ---------- build ----------
 
 
@@ -678,6 +716,18 @@ def build_product(ean, b, r, b_info, r_info, cutouts, originals):
         keywords += rema_keywords(r, is_drink)
     seen = set()
     keywords = [k for k in keywords if k and not (k.lower() in seen or seen.add(k.lower()))]
+    # REMA's "Light" i is_sugar_free-kolonnen ender som nøgleord (se
+    # rema_keywords) og fanges derfor også af sukkerpåstandene her.
+    sugar_claims(
+        filters,
+        keywords,
+        bilka_name(b) if b else rema_name(r, brand),
+        first(text(b.get("Variation")) if b else None, text(r.get("Variant")) if r else None),
+        first(bx.get("flavor"), text(r.get("taste")) if r else None, rx.get("flavor")),
+        product_type,
+        nut.get("sugars"),
+        is_drink,
+    )
 
     images = image_candidates(ean, b, r, cutouts, originals)
     image_path, image_tags = images[0] if images else (None, [])

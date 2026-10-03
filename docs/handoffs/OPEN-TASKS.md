@@ -279,3 +279,11 @@ Ejer: Chatbot-sessionen (cloud), branch `claude/ai-chatbot-support`
 | Id | Opgave | Status | Næste skridt |
 | --- | --- | --- | --- |
 | chatbot | AI-chatbot øverst i app og web med medarbejder, telefon og kontaktformular; admin → Brugere → Chatbot med oftest spurgt, Q&A-tabel, hele tråde og brugerinfo | Færdig (kode, se DECISIONS 2026-10-02) | Merge + deploy (migration `20261002120000_chatbot`). Ejeren: sæt `SUPPORT_PHONE`/`SUPPORT_PHONE_HOURS`. Test på telefon og desktop |
+
+## G-WAVES — Bølge-baggrund på forsiden
+Filer: `src/lib/home-waves.ts`, `src/components/HomeWaves.tsx`, `.home-wave*` i `globals.css`, `src/app/page.tsx` (lag-opbygning), `StatsWheel.tsx` (kun `clipPath`).
+Ejer: bølge-sessionen (2026-10-01)
+
+| Id | Opgave | Status | Næste skridt |
+| --- | --- | --- | --- |
+| — | Rolig, tilfældig bølge-animation bag forsiden med frostet-glas-bund og tåge | Færdig (kode) | Afventer brugerens visuelle godkendelse på telefon; justér tempo/farve efter feedback |
