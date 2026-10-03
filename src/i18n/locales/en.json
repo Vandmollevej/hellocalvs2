@@ -1473,7 +1473,7 @@
       "thigh": "Thigh",
       "upperArm": "Upper arm"
     },
-    "placeholder": "e.g. 82",
+    "placeholder": "–",
     "saving": "Saving…",
     "loading": "Loading…",
     "noEntriesYet": "No measurements logged yet.",
@@ -1993,6 +1993,9 @@
     "calories": "Calories",
     "weight": "Weight",
     "trendWeight": "Trend weight (AI estimate)",
+    "bodyFat": "Body fat",
+    "muscleMass": "Muscle mass",
+    "bodyWater": "Body water",
     "caloriesAndWeightChart": "Calories and weight",
     "sleepQuality": "Sleep quality",
     "sleepQualityChart": "Sleep quality and calories"

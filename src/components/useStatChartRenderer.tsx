@@ -31,6 +31,16 @@ import { useTranslation } from "@/i18n/LocaleProvider";
 
 const DAY_COUNT = 7;
 
+// Serier under vægten i "Kalorier og vægt" (kun når integrationens opsætning
+// har fedtprocent m.m. slået til). Samme HealthMetricType-navne som
+// integrationerne skriver (src/lib/goal-composition.ts). Farver: grafernes
+// tilladte undtagelser i design.md §3 + familie-blå til væske.
+const BODY_COMPOSITION_SERIES = [
+  { type: "BODY_FAT_PERCENT", labelKey: "statistics.bodyFat", unit: "%", color: "var(--hf-red-muted)" },
+  { type: "MUSCLE_MASS_KG", labelKey: "statistics.muscleMass", unit: "kg", color: "var(--hf-green-muted)" },
+  { type: "BODY_WATER_PERCENT", labelKey: "statistics.bodyWater", unit: "%", color: "var(--hf-color-watch)" },
+] as const;
+
 type WeightEntry = {
   weightKg: number;
   weighedAt: string;
@@ -140,6 +150,7 @@ export function useStatChartRenderer({
   intradayRegistrations,
   intradayWindowDays,
   enabled = true,
+  bodyCompositionEnabled = false,
 }: {
   registrations: RegistrationTotals[];
   activities: ActivityTotals[];
@@ -149,6 +160,8 @@ export function useStatChartRenderer({
   intradayWindowDays: number;
   /** False mens siden endnu kun er et skelet: så hentes ingen data. */
   enabled?: boolean;
+  /** Fedt, muskel og kropsvand som valgbare serier under vægten. */
+  bodyCompositionEnabled?: boolean;
 }) {
   const { t } = useTranslation();
   const { weightEntries, sleepEntries, budgetSnapshots, bodyEntries, bodyLoading, sex } = useChartExtras(enabled);
@@ -197,6 +210,19 @@ export function useStatChartRenderer({
       : null;
   }, [weightEntries, registrations]);
 
+  // Dagsgennemsnit pr. kropssammensætnings-mål fra smartvægt/sundhedsapp.
+  const bodyCompositionSeries = useMemo<ChartSeries[]>(() => {
+    if (!bodyCompositionEnabled) return [];
+    return BODY_COMPOSITION_SERIES.flatMap(({ type, labelKey, unit, color }) => {
+      const points = metrics
+        .filter((metric) => metric.type === type)
+        .map((metric) => ({ dateKey: dateKeyFromDate(new Date(metric.recordedAt)), value: metric.value }));
+      if (points.length === 0) return [];
+      const values = dailySeries(averageByDay(points), DAY_COUNT);
+      return [{ key: type, label: t(labelKey), color, unit, values, showPointStatus: true }];
+    });
+  }, [bodyCompositionEnabled, metrics, t]);
+
   const chartSeries = useMemo<ChartSeries[]>(
     () => [
       {
@@ -230,8 +256,9 @@ export function useStatChartRenderer({
             } satisfies ChartSeries,
           ]
         : []),
+      ...bodyCompositionSeries,
     ],
-    [kcalDaily, kcalGoalDaily, weightDaily, weightTrendDaily, t, chartWeightUnit, toChartWeight],
+    [kcalDaily, kcalGoalDaily, weightDaily, weightTrendDaily, bodyCompositionSeries, t, chartWeightUnit, toChartWeight],
   );
 
   const sleepChartSeries = useMemo<ChartSeries[]>(() => {
