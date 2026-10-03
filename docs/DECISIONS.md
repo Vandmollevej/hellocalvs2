@@ -202,6 +202,48 @@ Erstatter "Varer uden kcal/protein/kulhydrat/fedt springes over" fra 2026-09-27.
 - **Vitaminer/mineraler**: findes ikke i arkene (kolonnerne var tomme) — bilka.py åbnede aldrig panelet "Info om vitaminer og mineraler". Nyt tillægs-script `bilka_vitamins.py` (brugeren kører det selv) skriver `bilka_vitamins.xlsx`; importen gemmer værdierne i `micronutrientsPer100g` med kilde LABEL, så de afløser Frida-skønnene (~) på varesiden.
 - **Navne**: varer opkaldt efter brandet alene hed "0"/"1"/"M appelsin" (titlen minus brand og mængde); nu butikkens egen titel ("Coca cola", "Breezer m. appelsin"), og første bogstav er stort.
 - Admin-gennemgang i Dubletter nulstilles ikke af kJ-rettelsen eller de afledte sukkerpåstande.
+## 2026-10-02: Opret vare — levende scanning på alle trin, trin-overskrift og hvid udfyldning
+
+Brugerens test: efter stregkoden frøs flowet et foto pr. trin, lagde
+scanningsstriben over stillbilledet og læste det ene foto — man kunne ikke se,
+om varen var "taget", og det føltes ikke som scanning i realtid.
+
+- **Kameraet fryser aldrig.** Forside, energi og indhold tager ikke længere ét
+  foto. `useLiveFrames` (afløser `useAutoCapture`) måler skarphed/stilstand
+  som før og afleverer løbende billeder af den kørende video, hver gang varen
+  er i fokus og forrige analyse er færdig. Forsiden bruger det skarpeste af en
+  lille serie (3 billeder/0,8 s; fire stille målinger). Energi og indhold
+  læses billede for billede med lokal OCR (to stille målinger pr. billede), og
+  aflæsningerne lægges sammen i `src/lib/live-scan.ts`: den bedste vinder
+  (sikkerhed + tillæg for fundne felter) og låner næringstal/ingrediensliste/
+  tekstfeltets placering fra de andre. Trinnet er klaret, når feltet er læst
+  lokalt med ≥ 70 % sikkerhed, når ti billeder med tekst er brugt (bedste
+  bruges; serverens AI læser resten som før), eller når brugeren trykker "Tag
+  billede" (afslutter med den bedste aflæsning). Tesseract-arbejderen
+  genbruges nu mellem billederne (`product-ocr-prioritized.ts`); før kostede
+  en ny arbejder ~1 s pr. foto.
+- **Samspil med stillbilleder (samme dag):** den levende scanning styrer kun, *hvornår* der tages foto, og hvad telefonen selv læser (videobilleder ≤ 1600 px, energi/indhold beskåret til søgerens kvadrat). Når et trin er klaret, tages fotoet til serverens AI stadig som kameraets stillbillede (`captureStill`, `src/lib/camera-still.ts`), mens den hvide udfyldning vises. `IngredientsRetakeFlow` bruger fortsat `useAutoCapture`.
+- **Trin-overskrift** øverst i kamerabilledet i det mørke overlay, fed hvid
+  (`.hf-scan-heading`): "Scan stregkode", "Scan billede", "Scan energi",
+  "Scan indholdsfortegnelse".
+- **Hvid udfyldning, når et trin er klaret** (`.hf-scan-fill`, 1,4 s): på
+  forsiden fyldes varens kontur fra det levende omrids (MediaPipe-masken,
+  `drawFill`) helt hvid, så fx mælkekartonen står hvid på kameraet; findes
+  ingen kontur, fyldes midterrammen. På energi/indhold fyldes det læste
+  tekstfelt (OCR-boksene) hvidt oven på videoen (`LabelFillOverlay`, afløser
+  `LabelTextHighlight`s grønne ramme på et frosset foto); findes ingen boks,
+  bruges konturen. Først derefter går flowet videre. Ved reduceret bevægelse
+  vises fladen uden animation (0,6 s).
+- **Scanningsstriben** (`.hf-scan-sweep`) fejer nu over den levende video på
+  alle fototrin og under oprettelsen; `.hf-scan-lift` bruges ikke længere i
+  flowet. Stregkodetrinnet (AR-afkodning) er uændret.
+- Beholdt: fluebenene på trin-knapperne, "indhold står på energibilledet",
+  stregkodefotoets baggrunds-OCR (viser nu tekstfeltet hvidt, hvis brugeren
+  står på det trin), og vælgeren ved flere objekter — den fryser stadig
+  billedet, mens brugeren trykker, fordi målene skal stå stille.
+- Admin "Log" får en `label_attempt`-linje pr. læst billede (sikkerhed,
+  skarphed, fundne felter) og antal billeder i `nutrition_photo`/
+  `ingredients_photo`.
 
 ## 2026-10-02: Kameraflowet tager rigtige stillbilleder + "tag nyt billede af indholdet"
 

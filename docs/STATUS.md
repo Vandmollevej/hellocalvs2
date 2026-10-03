@@ -203,6 +203,12 @@ Last updated: 2026-10-02
 - Tale: forslag fra en tidligere optagelse bliver stående, når en ny optagelse starter (hver optagelse er sin egen "batch"; kun den igangværende optagelses forslag erstattes af live-tolkningen), så flere forslag kan vente samtidig.
 - Knapperne bruger `.hf-btn-primary`/`.hf-btn-secondary` (design.md §6.2); den grønne knap på talesiden er væk. Nye tekster da/en (`voice.suggested`, `voice.addOne`, `web.chatSuggested`, `web.chatAddOne`, `web.chatAddAll`).
 - Lint, typecheck og build grønne. Ikke live-testet (ingen lokal DB/mikrofon) — test på telefon og i desktop-chatten.
+## 2026-10-02: Opret vare — levende scanning, trin-overskrift, hvid udfyldning
+
+- Kameraflowet (`/camera/create`, `ProductCaptureFlow`) fryser ikke længere et foto pr. trin: forside/energi/indhold scannes live fra videoen (`useLiveFrames`), energi/indhold læser op til ti billeder og lægger aflæsningerne sammen (`src/lib/live-scan.ts`, tests grønne). Fed trin-overskrift øverst ("Scan stregkode/billede/energi/indholdsfortegnelse"); når et trin er klaret, fyldes varens kontur eller det læste tekstfelt hvidt (`.hf-scan-fill`). Se DECISIONS.md samme dato.
+- Tesseract-arbejderen genbruges mellem billederne. `useAutoCapture` og `LabelTextHighlight` er fjernet.
+- Ikke live-testet (ingen kamera i cloud-sessionen): test på iPhone, at (1) overskriften står læseligt i det mørke felt, (2) kartonen bliver hvid efter forsiden, (3) energi/indhold afsluttes af sig selv på en mælkekarton, og (4) "Tag billede" afslutter trinnet med det samme. Juster evt. `LABEL_DONE_CONFIDENCE`/`MAX_LABEL_ATTEMPTS` i `live-scan.ts`.
+
 ## 2026-10-02: Kameraflowet — rigtige stillbilleder + nyt foto af indholdet
 
 - Fejlen: marmelade (5711954020055) fik ingen ingredienser, fordi indholdsfotoet var et sløret 1080p-videobillede, og OpenAI svarede tomt ("for sløret"). Ingen genstart var involveret. Se DECISIONS 2026-10-02.
