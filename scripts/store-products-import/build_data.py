@@ -860,14 +860,16 @@ LOW_SUGAR_SOLID_G = 5.0
 LOW_SUGAR_DRINK_G = 2.5
 
 
-def sugar_claims(filters, keywords, name, variant, flavor, product_type, sugars, is_drink, sugar_free_is_no_added=False):
+def sugar_claims(filters, keywords, name, variant, flavor, product_type, sugars, is_drink):
     """Fills sugarFree/lowSugar/noAddedSugar/reducedSugar/lightSugar on `filters`.
-    sugar_free_is_no_added: a "sukkerfri" in the texts is really "Uden tilsat
-    sukker" (REMA's label on a product with more than 0.5 g sugars)."""
+    "Sukkerfri"/"uden sukker" in the texts of a product that declares more
+    than 0.5 g sugars (the EU limit) means "Uden tilsat sukker" — the
+    filter Sukkerfri only shows truly sugar-free products (brugerens valg
+    2026-10-02). A shop's own Sukkerfri badge (_is_sugar_free) is kept."""
     haystack = " | ".join(filter(None, [*keywords, name, variant, flavor, product_type]))
     for key, label, pattern in SUGAR_CLAIMS:
         if pattern.search(haystack):
-            if key == "sugarFree" and sugar_free_is_no_added:
+            if key == "sugarFree" and sugars is not None and sugars > 0.5:
                 key, label = "noAddedSugar", "Uden tilsat sukker"
             filters[key] = filters.get(key) or label
         else:
@@ -915,12 +917,11 @@ def build_product(ean, b, r, b_info, r_info, cutouts, originals, vitamins=None):
     is_drink = category == "DRINK"
 
     rf = rema_filters(r, is_drink) if r else None
-    # "Sukkerfri" in the REMA sheet (and "(Sukkerfri)" in its titles) is REMA's
-    # label "Ikke tilsat sukker"; only at or below the EU limit of 0.5 g sugars
-    # is the product sugar free (brugerens valg 2026-10-02). Above it, the
-    # claim is "Uden tilsat sukker" (sugar_claims).
-    rema_no_added_sugar = bool(r and NO_ADDED_SUGAR & set(rx.get("labels", [])) and rn.get("sugars", 0) > 0.5)
-    if rema_no_added_sugar:
+    # "Sukkerfri" in the REMA sheet is REMA's label "Ikke tilsat sukker"; only
+    # at or below the EU limit of 0.5 g sugars is the product sugar free
+    # (brugerens valg 2026-10-02). Above it, sugar_claims makes the title's
+    # "(Sukkerfri)" a "Uden tilsat sukker".
+    if rf and rf["sugarFree"] and NO_ADDED_SUGAR & set(rx.get("labels", [])) and rn.get("sugars", 0) > 0.5:
         rf["sugarFree"] = None
     filters = merge_filters(bilka_filters(b) if b else None, rf)
     if not filters.get("countryOfOrigin"):
@@ -947,7 +948,6 @@ def build_product(ean, b, r, b_info, r_info, cutouts, originals, vitamins=None):
         product_type,
         nut.get("sugars"),
         is_drink,
-        sugar_free_is_no_added=rema_no_added_sugar,
     )
 
     images = image_candidates(ean, b, r, cutouts, originals)

@@ -143,6 +143,11 @@ def copy_image(filename):
 
 
 MACRO_COLUMNS = {"kcal": "kcalPer100g", "protein": "proteinPer100g", "carbs": "carbsPer100g", "fat": "fatPer100g"}
+# Paths in product_source_records.data whose change does not send a reviewed
+# product back to admin (upsert_sources).
+IGNORED_IN_REVIEW = (
+    "nutrition,energyKj", "filters,lowSugar", "filters,noAddedSugar", "filters,reducedSugar", "filters,lightSugar",
+)
 
 
 def external_id(p):
@@ -372,11 +377,11 @@ def upsert_product(cur, p, store_ids, category_ids):
 
 def upsert_sources(cur, product_id, sources):
     """Each store's own version (Bilka + REMA 1000 with the same EAN). Changed
-    store data is shown to admin again; unchanged keeps its review. kJ (the
-    1.105 → 1105 repair) and keys without a value are not a change."""
-    old, new = (
-        f"jsonb_strip_nulls({side}.data #- '{{nutrition,energyKj}}')" for side in ('"product_source_records"', "EXCLUDED")
-    )
+    store data is shown to admin again; unchanged keeps its review. Not a
+    change: kJ (the 1.105 → 1105 repair), the sugar claims derived from the
+    other fields, and keys without a value."""
+    ignored = "".join(f" #- '{{{path}}}'" for path in IGNORED_IN_REVIEW)
+    old, new = (f"jsonb_strip_nulls({side}.data{ignored})" for side in ('"product_source_records"', "EXCLUDED"))
     for source, data in sources.items():
         cur.execute(
             f"""
@@ -448,6 +453,12 @@ def run(conn):
         except Exception:  # noqa: BLE001 - one bad row must not stop the batch
             cur.execute("ROLLBACK TO SAVEPOINT product")
             log.exception("failed to import %s", p.get("externalId") or p.get("ean"))
+    # Products admin has reviewed keep their values, but a kJ that is still
+    # the sheet's thousands format (1.105 beside 264 kcal) is no choice.
+    cur.execute(
+        """UPDATE "product_nutrition_features" f SET "energyKjPer100g" = round((f."energyKjPer100g" * 1000)::numeric)
+           FROM "products" p WHERE p.id = f."productId" AND f."energyKjPer100g" < 10 AND p."kcalPer100g" > 10"""
+    )
     cur.execute(
         """SELECT count(*) FROM "products" WHERE "nutritionMissing"
            AND "externalSource" IN ('BILKA'::"ExternalProductSource", 'REMA1000'::"ExternalProductSource")"""
