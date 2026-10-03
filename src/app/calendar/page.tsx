@@ -2074,6 +2074,10 @@ function DayDetails({
   const pointerStart = useRef<number | null>(null);
   const [addBarHour, setAddBarHour] = useState<number | null>(null);
   const [openHour, setOpenHour] = useState<number | null>(null);
+  const latestWeighIn = weighIns.reduce<WeightEntry | null>(
+    (latest, entry) => (!latest || new Date(entry.weighedAt) > new Date(latest.weighedAt) ? entry : latest),
+    null,
+  );
   // Timen, hvis "Tilføj" har åbnet tilføj-menuen i bundarket (KRAV.md "Bundark").
   const [addSheetHour, setAddSheetHour] = useState<number | null>(null);
   // Målsætningscirklen vises hver gang en dag med en målsætning åbnes
@@ -2448,8 +2452,14 @@ function DayDetails({
                   const waterMl =
                     hourWaterEntries.reduce((sum, entry) => sum + entry.amountMl, 0) +
                     waterRegistrations.reduce((sum, registration) => sum + waterRegistrationMl(registration), 0);
-                  const hourWeighIns = weighIns.filter((entry) => new Date(entry.weighedAt).getHours() === hour);
-                  const hourMeasurements = measurements.filter((item) => item.time.getHours() === hour);
+                  // Kun dagens seneste vejning vises i timeoversigten; alle står i timens detaljer.
+                  const hourWeighIns = latestWeighIn && new Date(latestWeighIn.weighedAt).getHours() === hour ? [latestWeighIn] : [];
+                  // Ældre vejninger på dagen vises kun i timens detaljer.
+                  const hourMeasurements = measurements.filter(
+                    (item) =>
+                      item.time.getHours() === hour &&
+                      (item.weightKg === null || (latestWeighIn !== null && item.id === `weight-${latestWeighIn.id}`)),
+                  );
                   return (
                     <HourRow
                       key={hour}
@@ -2491,9 +2501,9 @@ function DayDetails({
         )}
 
         {/* Dagens vejning(er) med klokkeslæt — her er der plads til tallet. */}
-        {weighIns.length > 0 && (
+        {latestWeighIn && (
           <div className="mt-4 space-y-1 pr-1">
-            {weighIns.map((entry) => (
+            {[latestWeighIn].map((entry) => (
               <p
                 key={entry.id}
                 className="hf-type-body flex items-center justify-end gap-1.5 whitespace-nowrap text-right text-hf-black"
