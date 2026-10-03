@@ -2692,12 +2692,19 @@
     },
     "sharing": {
       "title": "Del med andre",
-      "intro": "Her kan du se, hvem i familien der kan se din profil, og hvad de kan se. {owner} bestemmer, hvem der har adgang.",
+      "introSelf": "Vælg, hvem i familien der må se din profil, og hvem der også må oprette på dine vegne.",
+      "introSelfMember": "Vælg, hvem i familien der må se din profil, og hvem der også må oprette på dine vegne. Det bestemmer du selv. {owner} betaler for familien og har altid adgang.",
+      "introOwner": "Her kan du se, hvem i familien der kan se din profil, og hvad de kan se. {owner} bestemmer, hvem der har adgang.",
       "none": "Ingen andre i familien kan se din profil.",
+      "shareWith": "Del med {name}",
+      "allowWrite": "Må også oprette på dine vegne",
+      "allowWriteFor": "{name} må også oprette på dine vegne",
       "sharedWith": "Delt med {name}",
       "ownerNote": "{name} betaler for familien og har altid adgang til din profil.",
       "grantNote": "{owner} har givet {name} adgang til din profil.",
+      "selfGrantNote": "Du kan ændre eller stoppe delingen med {name} ovenfor.",
       "canEdit": "{name} kan også taste ind og rette på din profil. Alt står i din Kontrol-log.",
+      "viewOnly": "{name} kan kun se, ikke oprette eller rette. Alt står i din Kontrol-log.",
       "area": {
         "profile": "Profil (navn, alder, højde)",
         "registrations": "Madregistreringer",
@@ -2747,7 +2754,7 @@
     },
     "access": {
       "title": "Adgang",
-      "intro": "Du har altid fuld adgang til alle profiler. Her bestemmer du, hvem der må se hvilke profiler, og hvem der må oprette på deres vegne (fx tilføje mad).",
+      "intro": "Du har altid fuld adgang til alle profiler. Her bestemmer du, hvem der må se profiler uden eget login og børn under 15, og hvem der må oprette på deres vegne (fx tilføje mad). Voksne med eget login bestemmer selv under Del med andre.",
       "who": "Adgang til {name}s profil"
     },
     "rights": {
@@ -2830,7 +2837,7 @@
       "name": "Navn",
       "email": "E-mail",
       "insightTitle": "Hvem skal personen have indsigt i?",
-      "insightHelp": "Vælg for hver profil, om personen må se den, og om personen må oprette på dens vegne (fx tilføje mad). Du kan altid ændre det under Adgang.",
+      "insightHelp": "Vælg for hver profil, om personen må se den, og om personen må oprette på dens vegne (fx tilføje mad). Voksne med eget login vælger selv, hvem de deler med.",
       "addChild": "Tilføj barn under 18",
       "addChildTitle": "Tilføj barn under 18",
       "addChildIntro": "Børn under 15 år kan ikke selv oprette en konto, så du opretter profilen her. Barnet bliver valgt i invitationen bagefter.",
