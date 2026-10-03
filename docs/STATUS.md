@@ -41,6 +41,10 @@ Last updated: 2026-10-03
 - Migration `20261002090000_partner_pages` skal køre ved deploy. Prøvet mod en tom lokal Postgres: alle migrationer kører, siderne er set i Chromium med testdata, API'er, PDF (læst med PyMuPDF), CSV, periodegrænser og trigger-udvælgelse er afprøvet. `npm run lint` (kun gamle advarsler) og `npm run build` er grønne; `page-tree.test.mjs` fejler stadig på andres manglende sider.
 - Banner uploades som billedfil (PNG/JPG/WebP, højst 4 MB) til den eksisterende billedvolumen.
 - Ikke gjort: `AdBanner` er ikke sat ind i appens sider, fordi ejeren ikke har sagt hvor reklamerne skal vises. Kataloget over reklamemuligheder (`ad-inventory.ts`) er et forslag og skal afklares. Mailafsendelsen er ikke prøvet fra udviklingsmiljøet (ingen SMTP-nøgler her), men bruger samme opsætning som øvrige mails.
+## 2026-10-03: Abonnement — oversigt med de tre planer øverst
+
+- `/profile/subscription` viser nu Gratis, Seriøs og Seriøs Familie i tre kolonner øverst (navn, pris, "Se mere"/"Din plan"); et tryk ruller ned til planens fulde kort længere nede. Ny `PlanOverview` i `src/components/landing/LandingPlans.tsx`; plankortene har ankre `plan-free/serious/family`. Forsiden er uændret.
+- Lint, typecheck og build grønne. Ikke set i browser (kræver login) — tjek på telefon, at de tre kolonner passer i bredden, og at tryk ruller til kortet.
 
 ## 2026-10-02: Kalenderen husker den åbne dag
 
