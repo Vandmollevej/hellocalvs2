@@ -1,4 +1,5 @@
 import { mapOffAllergenTags } from "./allergens";
+import { offLabelNames } from "./label-certifications";
 
 export type OffProduct = {
   barcode: string;
@@ -33,7 +34,21 @@ export type OffProduct = {
   nutritionExtraPer100: { sugarPer100g?: number; fiberPer100g?: number; saltPer100g?: number } | null;
   // OFF "quantity", e.g. "500 g" / "1 l" — tells whether values are per 100 ml.
   packageSizeText: string | null;
+  // Mærkninger fra labels_tags ("Økologisk", "Fairtrade" …), se
+  // src/lib/label-certifications.ts.
+  certificationLabels: string[];
 };
+
+// OFF-poster er ofte tynde (kun navn, brand og kalorier). En vare uden
+// billede, ingrediensliste eller salt oprettes ikke ud fra OFF alene —
+// kameraflowet fortsætter i stedet til fotoene (docs/DECISIONS.md 2026-10-02).
+export function missingOffFields(product: OffProduct): ("image" | "ingredients" | "salt")[] {
+  const missing: ("image" | "ingredients" | "salt")[] = [];
+  if (!product.imageUrl) missing.push("image");
+  if (!product.ingredientsText?.trim()) missing.push("ingredients");
+  if (product.nutritionExtraPer100?.saltPer100g === undefined) missing.push("salt");
+  return missing;
+}
 
 // OFF reports most nutriments in the nutrient's own canonical unit (g, mg or
 // µg), with a companion "<nutrient>_unit" field naming which one was used —
@@ -122,6 +137,7 @@ function mapOffProduct(p: Record<string, unknown>): OffProduct | null {
     vitaminCPer100g: offNutrientAs(n, "vitamin-c", "mg"),
     nutritionExtraPer100: offPer100Extra(n),
     packageSizeText: typeof p.quantity === "string" && p.quantity.trim() ? p.quantity.trim() : null,
+    certificationLabels: offLabelNames(p.labels_tags),
   };
 }
 
@@ -155,4 +171,24 @@ export async function lookupOpenFoodFacts(
   if (data.status !== 1 || !data.product) return null;
 
   return mapOffProduct({ ...data.product, code: barcode });
+}
+
+// En vare, som et tidligere stregkodeopslag oprettede ud fra en tynd OFF-post
+// (uden billede eller ingredienser), og som hverken en bruger har
+// fotograferet eller admin har godkendt. Kameraflowet behandler den som
+// ukendt, og /api/products/quick fylder den op fra fotoene i stedet for at
+// oprette en dublet (docs/DECISIONS.md 2026-10-02).
+export function isIncompleteExternalProduct(product: {
+  externalSource: string | null;
+  createdByUserId: string | null;
+  status: string;
+  imageUrl: string | null;
+  ingredientsText: string | null;
+}) {
+  return (
+    product.externalSource === "OPEN_FOOD_FACTS" &&
+    !product.createdByUserId &&
+    product.status === "PENDING" &&
+    (!product.imageUrl || !product.ingredientsText?.trim())
+  );
 }

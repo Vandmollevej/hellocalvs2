@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { lookupOpenFoodFacts } from "@/lib/openFoodFacts";
+import { isIncompleteExternalProduct, lookupOpenFoodFacts, missingOffFields } from "@/lib/openFoodFacts";
+import { addCertificationFilters } from "@/lib/product-certification-filters";
 import { lookupFoodDataCentral } from "@/lib/foodDataCentral";
 import { inferGs1OriginCountryCode } from "@/lib/regions";
 import { createExternalImageCutoutJob } from "@/lib/image-cutout-jobs";
@@ -13,6 +14,10 @@ import { debugLog, errorText, flowIdFromRequest } from "@/lib/debug-log";
 // 2. Falls back to Open Food Facts if the product is unknown.
 // 3. Saves the found product locally (as "PENDING" — requires admin approval,
 //    per docs/ADMIN.md), so it doesn't need to be looked up again next time.
+//    A thin OFF record (no image, ingredients or salt) is NOT saved: the
+//    answer is 404 so the camera flow goes on to the photos, and the photos
+//    fill the product (docs/DECISIONS.md 2026-10-02). The same goes for a thin
+//    OFF product saved before that rule — /api/products/quick fills it up.
 // Every lookup is written to admin "Log" (docs/DECISIONS.md 2026-09-28).
 export async function GET(
   req: Request,
@@ -37,6 +42,15 @@ export async function GET(
       include: { product: { include: { brand: true } } },
     });
 
+    if (existing && isIncompleteExternalProduct(existing.product)) {
+      log("barcode_lookup", `Kendt fra Open Food Facts, men uden billede/ingredienser: ${existing.product.name} — kameraflowet fortsætter til fotoene`, {
+        level: "warn",
+        productId: existing.product.id,
+        data: { source: "local-incomplete", hasImage: Boolean(existing.product.imageUrl), hasIngredients: Boolean(existing.product.ingredientsText) },
+      });
+      return NextResponse.json({ source: "incomplete", product: null, productId: existing.product.id }, { status: 404 });
+    }
+
     if (existing) {
       log("barcode_lookup", `Fundet i egen database: ${existing.product.name}`, {
         productId: existing.product.id,
@@ -58,6 +72,15 @@ export async function GET(
         data: { source: "none" },
       });
       return NextResponse.json({ source: "none", product: null }, { status: 404 });
+    }
+
+    const offMissing = offProduct ? missingOffFields(offProduct) : [];
+    if (offMissing.length) {
+      log("barcode_lookup", `Open Food Facts mangler ${offMissing.join(", ")} for "${offProduct!.name}" — gemmes ikke, kameraflowet fortsætter til fotoene`, {
+        level: "warn",
+        data: { source: "openfoodfacts-incomplete", missing: offMissing },
+      });
+      return NextResponse.json({ source: "incomplete", product: null }, { status: 404 });
     }
 
     const brand = externalProduct.brand
@@ -102,6 +125,11 @@ export async function GET(
       include: { brand: true },
     });
     await syncProductNutritionFeaturesSafely(product.id);
+    if (offProduct?.certificationLabels.length) {
+      await addCertificationFilters(product.id, offProduct.certificationLabels).catch((error) =>
+        console.error("Could not save OFF certifications", error),
+      );
+    }
     await createExternalImageCutoutJob(product.id, product.imageUrl).catch((error) =>
       console.error("Could not queue cutout for external image", error),
     );

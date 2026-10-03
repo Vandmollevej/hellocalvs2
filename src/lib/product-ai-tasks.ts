@@ -26,7 +26,9 @@ function contextLines({ barcode, context }: ContextLines, languageLabel = "Prior
 // front-v3 (2026-09-27): logo-felterne fra front-v2-2026-09-26 lå kun i
 // forside-rutens egen kopi af prompten, så forsiden fik ingen usikkerheds-
 // rammer, og den natlige genkørsel spurgte uden logo-felter. Nu én prompt.
-export const FRONT_PROMPT_VERSION = "front-v3-2026-09-27";
+// front-v4 (2026-10-02): + certifications (mærkningslogoer på emballagen),
+// gemt i ProductFilters, så varesiden viser logoerne.
+export const FRONT_PROMPT_VERSION = "front-v4-2026-10-02-certifications";
 
 // Logo-/produktboks i ImageBox-format ({ x, y, width, height }, 0-1), som
 // fritskrabningen (src/lib/image-cutout-jobs.ts) bruger.
@@ -60,6 +62,7 @@ export const FRONT_SCHEMA = {
     variant: { type: ["string", "null"] },
     packageSizeText: { type: ["string", "null"] },
     claims: { type: "array", items: { type: "string" } },
+    certifications: { type: "array", items: { type: "string" } },
     visibleText: { type: "array", items: { type: "string" } },
     language: { type: ["string", "null"] },
     overallConfidence: { type: "number" },
@@ -88,6 +91,7 @@ export const FRONT_SCHEMA = {
     "variant",
     "packageSizeText",
     "claims",
+    "certifications",
     "visibleText",
     "language",
     "overallConfidence",
@@ -110,6 +114,7 @@ export const FRONT_SYSTEM = [
   "logoConfidence = 0-1 hvor sikker du er på logoText.",
   "logoBox = rektangel om hovedlogoet (kun logoet, ikke hele emballagen) i brøkdele 0-1 af billedets bredde/højde: x,y = øverste venstre hjørne. null hvis intet logo ses.",
   "productBox = rektangel om hele den fysiske vare/emballage i billedet, samme format. null hvis varen ikke kan afgrænses.",
+  "certifications = de officielle mærkningslogoer, der ses på emballagen, med disse navne: Ø-mærket, EU-økologisk (EU-bladet), Biologisch, Bioland, Nøglehullet, Fuldkornslogoet, Bedre Dyrevelfærd 1/2/3 (antal hjerter), Anbefalet af Dyrenes Beskyttelse, NaturSkånsom, MSC, ASC, Fairtrade, Rainforest Alliance, UTZ. Kun mærker du faktisk ser. Tom liste hvis ingen.",
   "Brug ikke producentens juridiske firmanavn fra småt bagsidetekst som brand, medmindre det også tydeligt er mærket på forsiden.",
   "Prioritér de oplyste sprog, men de er IKKE en whitelist. Genkend andre sprog hvis emballagen kræver det.",
   "Hvis et felt ikke kan afgøres, returnér null og lav confidence lavere. Gæt ikke.",

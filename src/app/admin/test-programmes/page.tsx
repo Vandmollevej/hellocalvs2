@@ -48,8 +48,12 @@ export default async function AdminTestProgrammesPage() {
             <div key={meta.provider} className="rounded-lg border border-hf-tan-dark bg-hf-white p-4">
               <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
                 <div className="flex min-w-0 flex-1 items-start gap-3">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={meta.icon} alt="" className="h-10 w-10 shrink-0 rounded-md" />
+                  {meta.icon ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img src={meta.icon} alt="" className="h-10 w-10 shrink-0 rounded-md" />
+                  ) : (
+                    <span aria-hidden="true" className="h-10 w-10 shrink-0 rounded-md bg-hf-tan" />
+                  )}
                   <div className="min-w-0">
                     <p className="hf-type-body hf-type-strong text-hf-black">{meta.label}</p>
                     {!tester ? (

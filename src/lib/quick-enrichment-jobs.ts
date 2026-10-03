@@ -47,6 +47,9 @@ export type QuickEnrichmentStoredInput = {
   ingredientsOcrConfidence?: number;
   fallbackName: string;
   barcodeAnalysisId?: string | null;
+  // Opfyldning af en tynd Open Food Facts-vare: kun registreringer fra og med
+  // dette tidspunkt (ISO) regnes om — ældre beholder deres snapshot.
+  snapshotsSince?: string;
   // "quick" = gemt ved oprettelsen; "history" = genskabt af AI-analyserne.
   source: "quick" | "history";
 };
@@ -206,6 +209,7 @@ function toEnrichmentInput(
     ingredientsOcrConfidence: stored.ingredientsOcrConfidence,
     fallbackName: stored.fallbackName,
     barcodeAnalysisId: stored.barcodeAnalysisId ?? null,
+    snapshotsSince: stored.snapshotsSince ? new Date(stored.snapshotsSince) : undefined,
   };
 }
 
