@@ -60,6 +60,7 @@ Ejer: G1-overtagelse, konto C (2026-09-24)
 | — | Dagvisning: sengetids-håndtag altid nederst (også ved sengetid 00:00) + manglende tekst "calendar.remainingToday" | Færdig (flettet i master fra `claude/calendar-slider-bedtime-text-1cp8lf`) | Afventer brugerens test på telefon |
 | — | Kalender: dage vi er forbi vises grå og ikke-fede (måned, uge, liste) | Færdig (PR #119, branch `claude/calendar-past-days-muted`) | Afventer brugerens visuelle godkendelse på telefon |
 | — | Statusblok (dag + måned): flamme + grøn "+ N kcal" og "Mål" øverst, kort statusbjælke, "Tilbage"/"Overskredet" under; motion tæller med i målet i hele kalenderen; fælles komponent `GoalStatusSummary` | Færdig (PR #122, branch `claude/kalender-maalstatus-blok`) | Afventer brugerens test på telefon. Forside-kort/widgets regner stadig uden motion (G2/andre) |
+| — | Kalender: dages dropdown virker igen, natten synlig om morgenen, "Søvn" med halvmåne | Færdig (branch `claude/kalender-soevn-dropdown`) | Afventer brugerens test på telefon |
 
 ## G2 — Statistik-siden (redigering, drag/drop)
 Filer: statistik-siden, `src/components/StatsWheel.tsx`, `src/lib/frontpage-layout.ts`, `src/lib/frontpage-stats.ts`.

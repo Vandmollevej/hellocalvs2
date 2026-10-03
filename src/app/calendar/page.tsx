@@ -13,6 +13,7 @@ import {
   IconChevronLeft,
   IconChevronRight,
   IconLayoutList,
+  IconMoon,
   IconStarFilled,
 } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
@@ -838,7 +839,10 @@ export default function CalendarPage() {
               className={`absolute -bottom-2.5 left-1/2 -translate-x-1/2 ${viewMenuOpen ? "rotate-180" : ""}`}
             />
           </button>
-          {viewMenuOpen && (
+          {/* Med dagsvisningen åben har den sin egen menu; denne (z-[100]) ville
+              ellers ligge ovenpå dialogen (z-50) og fange trykket uden at
+              lukke dagen. */}
+          {viewMenuOpen && !selectedDate && (
             <div className="absolute left-0 top-full z-[100] mt-2 w-44 overflow-hidden rounded-2xl border border-hf-tan-dark bg-hf-white p-1.5 text-hf-black shadow-xl">
               {VIEW_OPTIONS.map((option) => {
                 const OptionIcon = option.icon;
@@ -1975,7 +1979,7 @@ function SleepBoundaryHandle({
   );
 }
 
-// "Nattens søvn: 7,50 timer" nederst i det grå felt, der slutter ved
+// Halvmåne + "Søvn: 7,50 timer" nederst i det grå felt, der slutter ved
 // stå-op-tiden, så man ved første blik kan se, om natten ser rigtig ud.
 // Mens stå-op-håndtaget trækkes, står teksten lige under stregen i stedet, så
 // timetallet stadig kan ses, når håndtaget er trukket helt op til kanten.
@@ -1996,9 +2000,10 @@ function SleepDurationLabel({
   );
   return (
     <p
-      className="hf-type-caption pointer-events-none absolute left-2 whitespace-nowrap"
+      className="hf-type-caption pointer-events-none absolute left-2 flex items-center gap-1 whitespace-nowrap"
       style={{ top: (wakeTime / 60) * hourHeight + (belowLine ? 12 : -22) }}
     >
+      <IconMoon size={14} stroke={1.8} aria-hidden="true" />
       {t("calendar.nightSleepDuration", { hours })}
     </p>
   );
@@ -2177,7 +2182,11 @@ function DayDetails({
     if (visitedToday && hasHistory && localDateKey(date) === todayStr) {
       const now = new Date();
       const nowHour = now.getHours() + now.getMinutes() / 60;
-      node.scrollTop = Math.max(0, (nowHour - 2) * hourHeight);
+      // Kan nattens sidste time og "nu" ses på samme skærm (fx kl. 9 med
+      // stå-op kl. 7), vises natten stadig — ellers forsvandt den om morgenen.
+      const visibleHours = node.clientHeight / hourHeight;
+      const startHour = nowHour + 1 - (wakeHour - 1) <= visibleHours ? wakeHour - 1 : nowHour - 2;
+      node.scrollTop = Math.max(0, startHour * hourHeight);
     } else {
       node.scrollTop = Math.max(0, (wakeHour - 1) * hourHeight);
     }

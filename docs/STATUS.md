@@ -27,6 +27,12 @@ Last updated: 2026-10-03
 - Migration `20261002090000_partner_pages` skal køre ved deploy. Prøvet mod en tom lokal Postgres: alle migrationer kører, siderne er set i Chromium med testdata, API'er, PDF (læst med PyMuPDF), CSV, periodegrænser og trigger-udvælgelse er afprøvet. `npm run lint` (kun gamle advarsler) og `npm run build` er grønne; `page-tree.test.mjs` fejler stadig på andres manglende sider.
 - Banner uploades som billedfil (PNG/JPG/WebP, højst 4 MB) til den eksisterende billedvolumen.
 - Ikke gjort: `AdBanner` er ikke sat ind i appens sider, fordi ejeren ikke har sagt hvor reklamerne skal vises. Kataloget over reklamemuligheder (`ad-inventory.ts`) er et forslag og skal afklares. Mailafsendelsen er ikke prøvet fra udviklingsmiljøet (ingen SMTP-nøgler her), men bruger samme opsætning som øvrige mails.
+## 2026-10-03: Kalender — dropdown i dagsvisningen, natten om morgenen, "Søvn" med halvmåne
+
+- Dropdown'en (måned/uge/liste) i dagsvisningen virkede ikke: månedsvisningens egen menu (z-100) blev tegnet ovenpå dagsdialogen (z-50) og fangede trykket, så visningen skiftede bagved, men dagen blev liggende. Den skjulte menu tegnes nu ikke, mens en dag er åben.
+- Natten forsvandt om morgenen ved andet besøg samme dag ("nu −2 timer"-reglen fra a5926e3, fx kl. 9.09 → visning fra 7.09). Kan nattens sidste time og nu ses på samme skærm, starter visningen nu en time før stå-op-tiden.
+- "Nattens søvn: X timer" hedder nu "Søvn: X timer" med halvmåne-ikon foran (da + en).
+- Lint, typecheck og build grønne. Afprøvet i Chromium (telefonstørrelse, mockede API-svar): menuvalg lukker dagen, og kl. 9.09 vises natten. Ikke testet på iPhone.
 
 ## 2026-10-02: Kalenderen husker den åbne dag
 
