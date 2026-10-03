@@ -31,8 +31,16 @@ Hello Cals partnerportal og ser sin egen partners data.
   `partner-session`, 12 t, `PARTNER_SESSION_SECRET` ellers
   `ADMIN_SESSION_SECRET`). Middleware gater `/partner/*` og `/api/partner/*`
   (undtagen login og invitationslink); `requirePartnerUser()` tjekker i
-  databasen aktiv/accepteret og `sessionsValidFrom`. Ingen 2-faktor i første
-  omgang (kun partnerens egne aggregerede reklametal, ingen persondata).
+  databasen aktiv/accepteret/2-faktor sat og `sessionsValidFrom`.
+- **2-faktor (TOTP) er obligatorisk** (brugerens valg 2026-10-03), som hos
+  admin-brugerne: ved tilmelding vælges adgangskode, derefter scannes en
+  QR-kode og første kode bekræftes — først da oprettes adgangen
+  (`PartnerUser.totpSecret`, migration `20261003090000_partner_user_totp`).
+  Ved hvert login: adgangskode (`/api/partner/login`, sætter kun en 5-minutters
+  `hc_partner_mfa`-cookie) → kode på `/partner/verify` (`/api/partner/verify`),
+  som først udsteder sessionen. Mistet telefon: admin sletter brugeren og
+  inviterer igen. Godkendelse af nyt udstyr og IP-begrænsning (som admin) er
+  ikke indført for B2B.
 - **Admin kan:** gensende/trække invitation tilbage, deaktivere/aktivere,
   "log ud overalt" og slette. Deaktivering og log-ud sætter
   `sessionsValidFrom`, så eksisterende sessioner afvises straks.

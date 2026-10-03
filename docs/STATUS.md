@@ -40,7 +40,8 @@ Last updated: 2026-10-02
 - Ny partnerportal `/partner` (login `/partner/login`, invitation `/partner/invite/<token>`): egne reklamelokationer med visninger/klik/klikrate, seneste rapporter og rapportmodtagere. Egen session-cookie; ingen offentlig tilmelding. Link fra `/business` under kontaktformularen.
 - Migration `20261002120000_partner_users` skal køre ved deploy. Lint, typecheck og build grønne; ikke live-testet (ingen lokal DB, SMTP skal være sat op for invitationsmails — ellers vises linket til admin).
 - Rettet samtidig: `src/lib/web-nav.ts` importerede det slettede champagne-ikon (fjernet i 0500687), så `tsc`/build fejlede på master; bruger nu konfetti-ikonet som resten af appen.
-- Mangler/afklar med ejeren: skal B2B-brugere have 2-faktor som admin-brugere? Skal portalen vise mere end reklametal (fx produktdata for producenter)? Skal B2B-brugere selv kunne nulstille adgangskode ("glemt adgangskode" findes ikke endnu — admin gensender i stedet en invitation efter sletning)?
+- **2-faktor (TOTP) obligatorisk** for B2B-brugere (ejerens svar 2026-10-03): QR-kode ved tilmelding, kode ved hvert login (`/partner/verify`). Migration `20261003090000_partner_user_totp` skal også køre ved deploy.
+- Mangler/afklar med ejeren: skal portalen vise mere end reklametal (fx produktdata for producenter)? Skal B2B-brugere selv kunne nulstille adgangskode ("glemt adgangskode" findes ikke endnu — admin gensender i stedet en invitation efter sletning)?
 
 ## 2026-10-02: Vægt- og længdeenheder
 
