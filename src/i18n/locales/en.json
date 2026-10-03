@@ -2666,10 +2666,12 @@
     },
     "join": {
       "title": "Did you get a code?",
-      "intro": "If someone in your family sent you a code, you can link your account to their family.",
+      "intro": "If the person paying for the family created a code for you, you can link your account. The code only works together with the email you are logged in with.",
       "codeLabel": "Family code",
       "submit": "Link me to the family",
-      "confirm": "The person paying for the family can see and change everything on your profile while you are a member. Continue?"
+      "confirm": "The person paying for the family can see and change everything on your profile while you are a member. Continue?",
+      "emailLabel": "Your email",
+      "scanHint": "Got a QR code? Scan it with your phone camera."
     },
     "member": {
       "title": "Your family",
@@ -2690,10 +2692,6 @@
       "removeConfirm": "Remove {name} from the family? The profile becomes a regular account without the family subscription.",
       "deleteProfile": "Delete profile and all data",
       "deleteProfileConfirm": "Everything on {name}'s profile is deleted and cannot be restored. Type SLET to confirm."
-    },
-    "code": {
-      "claimHelp": "The person opens Hello Cal, chooses \"Got a family code?\" on the login page and enters the code. Valid until {date}.",
-      "joinHelp": "The person logs in to their own account and enters the code under Settings → Family. Valid until {date}."
     },
     "add": {
       "title": "Add profile",
@@ -2722,7 +2720,8 @@
       "code": "Code",
       "email": "Email",
       "password": "Password (at least 8 characters)",
-      "submit": "Create my login"
+      "submit": "Create my login",
+      "introQr": "You are creating your own login with the email {email}. Choose your password."
     },
     "copy": {
       "action": "Copy to account",
@@ -2738,7 +2737,7 @@
       "nameRequired": "Enter a name.",
       "notMember": "The person is not in the family.",
       "notAllowed": "Not allowed.",
-      "invalidCode": "The code is invalid or has expired.",
+      "invalidCode": "The code and email don't match, or the code has expired.",
       "emailTaken": "The email is already used by another account.",
       "ownerCannotLeave": "The payer cannot leave the family.",
       "tooYoungToLeave": "You can leave the family once you are 15.",
@@ -2750,7 +2749,10 @@
       "notFound": "Not found.",
       "unknown": "Something went wrong. Try again.",
       "profileHasLogin": "The profile has its own login. Remove it from the family instead.",
-      "confirmRequired": "Type SLET to confirm."
+      "confirmRequired": "Type SLET to confirm.",
+      "emailMismatch": "The code was created for a different email than the one you are logged in with.",
+      "alreadyMember": "The person is already in the family.",
+      "inOtherFamily": "The person is already in another family."
     },
     "deletePermissions": {
       "title": "Deleting entries",
@@ -2764,6 +2766,41 @@
       "portionHelp": "Portion compared with your amount:",
       "portionFor": "{name}",
       "portionOption": "{factor} portion"
+    },
+    "seats": {
+      "title": "Subscription",
+      "membersCount": "{count} of {max}",
+      "membersLabel": "subscribers joined",
+      "extraCount": "{count}/{max}",
+      "extraLabel": "extra add-ons"
+    },
+    "invite": {
+      "emailLabel": "The person's email",
+      "emailHelp": "The code only works together with exactly this email.",
+      "submit": "Create code and QR code"
+    },
+    "pending": {
+      "title": "Pending invitations",
+      "joinTitle": "Invitation for {email}",
+      "claimTitle": "Login for {name} ({email})",
+      "joinHelp": "Let the person scan the QR code with their phone camera and log in with {email}. Or enter the code and email under Profile → Family. Valid until {date}.",
+      "claimHelp": "Let {name} scan the QR code with their phone camera and choose a password. Or choose \"Did you get a family code?\" on the login page and enter the code and {email}. Valid until {date}.",
+      "revoke": "Revoke",
+      "revokeConfirm": "Revoke the code for {email}? It can no longer be used.",
+      "qrAlt": "QR code for {email}"
+    },
+    "joinPage": {
+      "title": "Join family",
+      "intro": "{owner} has invited you to their family subscription.",
+      "emailInfo": "The invitation only applies to the account with the email {email}.",
+      "loginFirst": "Log in with {email} to join. If you don't have an account, create one with that email.",
+      "login": "Log in",
+      "signup": "Create account",
+      "wrongAccount": "You are logged in as {current}. Log out and log in with {email}.",
+      "logout": "Log out",
+      "done": "You are now part of {owner}'s family.",
+      "goToFamily": "Go to Family",
+      "missing": "The link is missing its code. Scan the QR code again."
     }
   },
   "statSections": {

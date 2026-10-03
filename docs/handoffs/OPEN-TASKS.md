@@ -246,6 +246,7 @@ Ejer: cloud-session `claude/lucid-bell-s5vyhv` (2026-09-25)
 
 | Id | Opgave | Status | Næste skridt |
 | --- | --- | --- | --- |
+| family-qr | Familiekode bundet til e-mail, krypteret QR-kode på betalerens side, "x ud af y abonnenter" + "0/5 ekstra tilkøb" | Venter på bruger | Bygget på branch `claude/family-invite-qr` (draft-PR). Næste: brugerens test på telefon (scan QR med kameraet) og afklaring af pris/betaling for ekstra pladser |
 | — | Familieabonnement: forældre ser/taster for børn, adgangslog til barnet | I gang | Første version bygget og pushet (branch `claude/lucid-bell-s5vyhv`, ikke flettet). Næste: brugerens test og "Mangler" i `docs/FAMILY.md` (oprettelsesflow med alder er næste skridt) |
 
 ## G-FLOWS — Admin "Flows" + telefon-editor

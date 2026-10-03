@@ -2,6 +2,25 @@
 
 Last updated: 2026-10-03
 
+## 2026-10-03: Familie — kode bundet til e-mail, QR-kode og pladstællere
+
+- Familiekoder virker nu kun sammen med den e-mail, betaleren skrev, og (ved
+  tilknytning) kun for kontoen med den e-mail. Betalerens familieside viser
+  "Ventende invitationer" med QR-kode, kode, udløb og "Træk tilbage", plus
+  "x ud af y abonnenter tilmeldt" og "0/5 ekstra tilkøb" øverst. Se
+  DECISIONS.md samme dato og `docs/FAMILY.md`.
+- Ny side `/family-code/join?t=…` (QR-kodens mål); `/family-code?t=…` udfylder
+  kode og e-mail for login-koder. Nye ruter `GET /api/family/codes`,
+  `DELETE /api/family/codes/[id]`, `GET /api/family/invite`. Tilknytning er
+  nu også begrænset mod gentagne forsøg.
+- Migration `20261003200000_family_invite_email_qr` **skal køre ved deploy**.
+  Kræver `ADMIN_SESSION_SECRET` (findes allerede) og `APP_BASE_URL` til QR-linket.
+- Testet mod lokal Postgres: 18 tjek af kode/e-mail-match, engangsbrug,
+  manipuleret link, tilbagetrækning, login-kode via QR og pladstal; skærmbilleder
+  af familieside, tilknytning (rigtig konto, forkert konto, ikke logget ind) og
+  gennemført tilknytning. Ikke testet med rigtig telefonkamera-scanning.
+- Mangler: køb af ekstra pladser (pris/betaling skal afklares).
+
 ## 2026-10-03: Betaling viser det aktive kort fra Stripe (PR #132 flettet med master)
 
 - `/settings/payment` viser det kort/den wallet, Stripe trækker på: mærke + sidste 4 + udløb; Apple Pay/Google Pay med kortet bagved (nyt felt `PaymentMethod.wallet`, migration `20261002090000_payment_method_wallet` **skal køre ved deploy**); MobilePay. Kortmærke-logo (Visa/Mastercard) i lille fast ramme; andre mærker får det egne kortikon (`IconPaymentCard`). Siden henter altid frisk fra Stripe (`/api/subscription?refresh=1`). Kortet beholdes efter opsigelse (perioden er betalt).

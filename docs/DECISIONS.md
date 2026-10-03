@@ -2,6 +2,32 @@
 
 This file records durable decisions. Add a dated entry when a later decision changes one of them.
 
+## 2026-10-03: Familiekoder er bundet til en e-mail og vises som krypteret QR-kode
+
+- **Ejerens krav:** koden skal være helt unik og kan kun bruges sammen med den
+  e-mail, den er lavet til. Betaleren skriver personens e-mail, når koden
+  laves (både "Inviter en med egen konto" og "Lav login-kode" til en profil
+  uden login). Koden (8 tegn, `XXXX-XXXX`) er unik i databasen (`codeHash`
+  `@unique`; ved sammenfald laves en ny).
+- **Tilknytning (eksisterende konto):** koden + e-mailen skal passe sammen,
+  og den indloggede kontos e-mail skal være præcis den e-mail. Forkert
+  kombination giver samme fejl som ukendt kode, så man ikke kan gætte koder.
+- **QR-kode:** betalerens familieside viser hver ventende kode med QR-kode,
+  kode og udløb, indtil den er brugt, udløbet (7 dage) eller trukket tilbage.
+  QR-koden er et link (`/family-code/join?t=…`, login-koder
+  `/family-code?t=…`), hvor kode og e-mail er AES-256-GCM-krypteret med en
+  nøgle afledt af `ADMIN_SESSION_SECRET` (`src/lib/family-invite-token.ts`).
+  Hverken kode eller e-mail står i klartekst i linket, og et ændret link
+  afvises. Scannes den med telefonens kamera, åbnes tilknytningssiden; er man
+  ikke logget ind, sendes man til login og tilbage. Koden gemmes krypteret
+  (`codeCipher`) ud over hashen, så betaleren kan se den igen.
+- **En ny kode til samme e-mail erstatter den gamle.** Koder fra før denne
+  ændring (uden e-mail) virker ikke længere — betaleren laver en ny.
+- **Tællere på betalerens familieside:** "x ud af y abonnenter tilmeldt"
+  (profiler i familien / pladser) og "n/5 ekstra tilkøb". `Family.extraSeats`
+  (højst 5) lægges oven i de 5 pladser. Selve købet af ekstra pladser er
+  **ikke bygget** — pris og betaling skal afklares med ejeren.
+
 ## 2026-10-03: Adgangsarkets knapper ligger under listen, ikke ovenpå
 
 Ændrer "faste knapper nederst" fra 2026-09-27: knapperne og "Vilkår og
