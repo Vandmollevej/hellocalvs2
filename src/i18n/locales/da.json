@@ -1474,6 +1474,14 @@
     "deleteAria": "Slet måling",
     "delete": "Slet"
   },
+  "bodyMeasurementChart": {
+    "noData": "Ingen målinger endnu.",
+    "register": "Registrér kropsmål",
+    "aria": "Forløb for {name}",
+    "change": "{value} siden sidst",
+    "subtitle": "Seneste målinger",
+    "showInStats": "Vis kropsmål som grafer i Statistik"
+  },
   "goals": {
     "title": "Målsætning",
     "loading": "Henter…",

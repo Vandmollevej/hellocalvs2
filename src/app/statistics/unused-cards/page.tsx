@@ -34,6 +34,7 @@ import {
   DEFAULT_ACTIVE_CHART_KEYS,
   loadChartLayout,
   STAT_CHART_DEFS,
+  bodyMeasurementChartLabel,
   type StatChartDef,
 } from "@/lib/stat-charts";
 
@@ -44,6 +45,7 @@ function chartLabel(def: StatChartDef, t: (key: string) => string): string {
   if (def.kind === "sleepQuality") return t("statistics.sleepQualityChart");
   if (def.kind === "intradayKcal") return t("statUnusedCharts.intradayKcal");
   if (def.kind === "sleepInsight") return t(`sleepStats.chart.${def.insight}`);
+  if (def.kind === "bodyMeasurement") return bodyMeasurementChartLabel(def.field, t);
   return dailyChartLabel(def.field);
 }
 

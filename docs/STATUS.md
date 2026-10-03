@@ -83,6 +83,11 @@ Last updated: 2026-10-02
 - Lint, typecheck og build grønne. Ikonet er tjekket som rendering i headless Chromium, men ikke live-testet i appen (ingen lokal DB/login) — tjek timerækken på telefon, især at kyllingelåret (16 px) og glasset står pænt ved siden af hinanden.
 - Næste: hvis kyllingelåret skal bruges flere steder (forside, widgets), så genbrug `IconDrumstick` og tokenet `--hf-meat`.
 
+## 2026-10-02: Kropsmål som statistikgrafer
+
+- Nye grafer `body:<felt>` i statistikmodulet (bryst, talje, hofte, overarm, lår): samme kort som på Kropsmål-siden med tegningen til venstre, men til højre et forløb over de seneste 10 målinger (x efter dato), seneste værdi, min/maks og ændring siden sidst. Komponent `src/components/BodyMeasurementChart.tsx`, logik `src/lib/body-measurement-series.ts` (tests grønne).
+- Tilføjes under "Ubrugte grafer" → blokken Kropsmål, eller med linket "Vis kropsmål som grafer i Statistik" på Kropsmål-siden (lægger alle fem nederst i graferne og åbner Statistik).
+- Hofte har stadig ingen godkendt tegning, så venstre felt er tomt dér. Lint, typecheck og build grønne; ikke visuelt testet (ingen lokal DB/login).
 
 ## 2026-10-02: Kameraflowet — rigtige stillbilleder + nyt foto af indholdet
 

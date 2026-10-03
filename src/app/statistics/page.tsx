@@ -10,6 +10,9 @@ import { StatCardsGrid } from "@/components/StatCardsGrid";
 import { StatChartsSection } from "@/components/StatChartsSection";
 import { StatPeriodPicker } from "@/components/StatPeriodPicker";
 import { SleepInsightChart } from "@/components/SleepInsightChart";
+import { BodyMeasurementChart } from "@/components/BodyMeasurementChart";
+import type { BodyMeasurementSex } from "@/lib/body-measurements";
+import type { BodyMeasurementSeriesEntry } from "@/lib/body-measurement-series";
 import { buildSleepStatDays, sleepPeriodDays } from "@/lib/sleep-stats";
 import { IntradayKcalChart } from "@/components/IntradayKcalChart";
 import { TopSinnersCard } from "@/components/TopSinnersCard";
@@ -163,6 +166,27 @@ export default function StatisticsPage() {
   // Oplevelse af søvn (docs/DECISIONS.md 2026-09-26): 1–5 per day, plotted
   // next to the calorie intake.
   const [sleepEntries, setSleepEntries] = useState<{ date: string; rating: number }[]>([]);
+  // Kropsmål-graferne (body:*): hentes for sig, så en fejl her ikke tømmer
+  // resten af statistikken. Køn styrer kun, hvilke tegninger der vises.
+  const [bodyEntries, setBodyEntries] = useState<BodyMeasurementSeriesEntry[]>([]);
+  const [bodyLoading, setBodyLoading] = useState(true);
+  const [sex, setSex] = useState<BodyMeasurementSex | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    fetch("/api/body-measurements")
+      .then(async (response) => (response.ok ? ((await response.json()) as { entries: BodyMeasurementSeriesEntry[] }) : null))
+      .then((data) => {
+        if (!cancelled && data) setBodyEntries(data.entries ?? []);
+      })
+      .catch(() => undefined)
+      .finally(() => {
+        if (!cancelled) setBodyLoading(false);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   useEffect(() => {
     function syncSectionOrder() {
@@ -220,7 +244,9 @@ export default function StatisticsPage() {
       }),
       fetch("/api/profile").then(async (response) => {
         if (!response.ok) throw new Error("Kunne ikke hente profil");
-        return (await response.json()) as { user: { warnOnRecommendedLimits?: boolean; autoExpandUncertainty?: boolean } };
+        return (await response.json()) as {
+          user: { warnOnRecommendedLimits?: boolean; autoExpandUncertainty?: boolean; sex?: BodyMeasurementSex | null };
+        };
       }),
     ])
       .then(([registrationData, weightData, activityData, integrationData, metricData, profileData]) => {
@@ -234,6 +260,7 @@ export default function StatisticsPage() {
         setMetrics(metricData.metrics);
         setWarnOnRecommendedLimits(Boolean(profileData.user.warnOnRecommendedLimits));
         setAutoExpandUncertainty(Boolean(profileData.user.autoExpandUncertainty));
+        setSex(profileData.user.sex ?? null);
       })
       .catch(() => {
         if (!cancelled) {
@@ -406,6 +433,9 @@ export default function StatisticsPage() {
       if (def.kind === "intradayKcal") {
         return <IntradayKcalChart registrations={recentRegistrations} windowDays={activePeriodDays} />;
       }
+      if (def.kind === "bodyMeasurement") {
+        return <BodyMeasurementChart field={def.field} entries={bodyEntries} sex={sex} loading={bodyLoading} />;
+      }
       const label = dailyChartLabel(def.field);
       const values = dailySeries(
         allDays.map((d) => ({ dateKey: d.dateKey, value: d[def.field] })),
@@ -420,7 +450,7 @@ export default function StatisticsPage() {
         />
       );
     },
-    [t, chartSeries, sleepChartSeries, sleepStatDays, recentRegistrations, activePeriodDays, allDays],
+    [t, chartSeries, sleepChartSeries, sleepStatDays, recentRegistrations, activePeriodDays, allDays, bodyEntries, sex, bodyLoading],
   );
 
   function renderSectionHeader(key: StatSectionKey, title: string) {
