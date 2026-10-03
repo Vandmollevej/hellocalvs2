@@ -16,8 +16,11 @@ export type ProviderSyncCapabilities = { read: ReadType[]; write: WriteType[] };
 
 // Hvad hver app teknisk kan levere og modtage. Apple Health og Health
 // Connect skrives af Hello Cal-appen på telefonen; Google Health og Strava
-// skrives af serveren. Withings, Polar og Garmin tager ikke imod data fra
-// andre apps.
+// skrives af serveren. Withings, Polar, Garmin, WHOOP og Huawei Health er
+// kun til læsning — Hello Cal sender ingen data om brugeren til dem
+// (docs/DECISIONS.md 2026-10-02). Eufy, Renpho, Xiaomi, Tuya og Samsung
+// Health har ingen egne valg: deres data kommer via Health Connect/Apple
+// Health og følger valgene dér.
 export const SYNC_CAPABILITIES: Partial<Record<IntegrationProvider, ProviderSyncCapabilities>> = {
   APPLE_HEALTH: {
     read: ["weight", "bodyFat", "activities", "steps", "energy", "heart", "sleep", "water", "body"],
@@ -32,6 +35,9 @@ export const SYNC_CAPABILITIES: Partial<Record<IntegrationProvider, ProviderSync
   WITHINGS: { read: ["weight", "bodyFat"], write: [] },
   POLAR: { read: ["activities"], write: [] },
   FITBIT: { read: ["weight", "bodyFat", "activities"], write: [] },
+  GARMIN: { read: ["weight", "bodyFat", "activities", "steps", "energy", "heart", "sleep", "body"], write: [] },
+  WHOOP: { read: ["activities", "heart", "sleep"], write: [] },
+  HUAWEI_HEALTH: { read: ["weight", "bodyFat", "activities", "steps", "energy", "heart", "sleep", "body"], write: [] },
 };
 
 export function capabilitiesFor(provider: IntegrationProvider): ProviderSyncCapabilities {
@@ -97,7 +103,9 @@ export function readTypeOf(item: IntegrationItem): ReadType {
   if (item.kind === "weight") return "weight";
   if (item.kind === "activity") return "activities";
   const type = String((item.payload as { type?: unknown } | null)?.type ?? "");
-  return METRIC_READ_TYPE[type] ?? (type.includes("HEART") || type.includes("RESPIRATORY") || type.includes("OXYGEN") ? "heart" : "body");
+  if (METRIC_READ_TYPE[type]) return METRIC_READ_TYPE[type];
+  if (type.startsWith("SLEEP_")) return "sleep";
+  return type.includes("HEART") || type.includes("RESPIRATORY") || type.includes("OXYGEN") || type === "STRESS_SCORE" ? "heart" : "body";
 }
 
 // Fjerner data, brugeren har slået fra, før de gemmes.

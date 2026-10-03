@@ -83,7 +83,7 @@ export async function POST(req: Request) {
 
   try {
     const candidates = await prisma.product.findMany({
-      where: { discontinued: false, status: "APPROVED" },
+      where: { discontinued: false, nutritionMissing: false, status: "APPROVED" },
       select: { id: true, name: true },
       take: 300,
       orderBy: { createdAt: "desc" },

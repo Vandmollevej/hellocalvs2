@@ -8,15 +8,21 @@ import { capabilitiesFor, missingWriteScopes, resolveSyncSettings, type Provider
 // - kind "oauth": cloud-API, som serveren forbinder til med OAuth
 //   (Withings, Google Health, Strava, Polar, Fitbit).
 // - kind "companion": data ligger kun på telefonen (Apple Health, Health
-//   Connect, Samsung Health) og kræver Hello Cal-appen, der sender dem ind
-//   med en enhedskode (docs/HEALTHKIT_COMPANION.md).
-// - kind "unavailable": kræver en partneraftale (Garmin).
-export type IntegrationKind = "oauth" | "companion" | "unavailable";
+//   Connect) og kræver Hello Cal-appen, der sender dem ind med en enhedskode
+//   (docs/HEALTHKIT_COMPANION.md).
+// - kind "via": mærker uden åben API (Samsung Health, Eufy, Renpho, Xiaomi,
+//   Tuya). Deres app deler til Health Connect/Apple Health, og data kommer
+//   ind derigennem (docs/DECISIONS.md 2026-10-02).
+// - kind "unavailable": kræver en partneraftale, før den kan bruges.
+export type IntegrationKind = "oauth" | "companion" | "via" | "unavailable";
+
+export type HubProvider = "HEALTH_CONNECT" | "APPLE_HEALTH";
 
 export type IntegrationMeta = {
   provider: IntegrationProvider;
   label: string;
-  icon: string;
+  // null: intet logo endnu (kortet viser forbogstavet).
+  icon: string | null;
   kind: IntegrationKind;
   description: string;
   // Bevares af hensyn til statistik (sport vises kun ved en forbundet cloud-integration).
@@ -26,6 +32,11 @@ export type IntegrationMeta = {
   issuesDeviceTokens?: boolean;
   // Vises kun, hvis brugeren allerede har den forbundet (Fitbit afløses af Google Health).
   legacy?: boolean;
+  // Kun "via": hvilke telefon-hubs mærkets app deler til, og appens navn.
+  via?: HubProvider[];
+  viaApp?: string;
+  // Direkte forbindelse kræver en partneraftale, som endnu ikke er på plads.
+  partnerPending?: boolean;
 };
 
 const icon = (slug: string) => `/integrations/${slug}.png`;
@@ -89,19 +100,82 @@ export const INTEGRATION_CATALOG: IntegrationMeta[] = [
     provider: "GARMIN",
     label: "Garmin",
     icon: icon("garmin"),
-    kind: "unavailable",
-    description: "Træning og skridt fra Garmin Connect.",
-    connectable: false,
+    kind: "oauth",
+    description: "Træning, skridt, søvn, puls og vægt fra Garmin Connect.",
+    connectable: true,
   },
   {
     provider: "SAMSUNG_HEALTH",
     label: "Samsung Health",
     icon: icon("samsung-health"),
-    kind: "companion",
-    description: "Vægt, skridt og træning fra Samsung Health.",
+    kind: "via",
+    description: "Galaxy Watch, Galaxy Ring, Galaxy Fit og vægt via Samsung Health.",
     connectable: false,
     ingestOnly: true,
-      },
+    via: ["HEALTH_CONNECT"],
+    viaApp: "Samsung Health",
+  },
+  {
+    provider: "WHOOP",
+    label: "WHOOP",
+    icon: null,
+    kind: "oauth",
+    description: "Træning, søvn, hvilepuls og HRV fra WHOOP.",
+    connectable: true,
+  },
+  {
+    provider: "HUAWEI_HEALTH",
+    label: "Huawei Health",
+    icon: null,
+    kind: "oauth",
+    description: "Skridt, træning, søvn og vægt fra Huawei-ure, -bånd og -vægte.",
+    connectable: true,
+  },
+  {
+    provider: "XIAOMI",
+    label: "Xiaomi",
+    icon: null,
+    kind: "via",
+    description: "Vægt, skridt, søvn og træning fra Xiaomi-vægte, Mi Band og ure.",
+    connectable: false,
+    ingestOnly: true,
+    via: ["HEALTH_CONNECT", "APPLE_HEALTH"],
+    viaApp: "Mi Fitness eller Zepp Life",
+  },
+  {
+    provider: "RENPHO",
+    label: "Renpho",
+    icon: null,
+    kind: "via",
+    description: "Vægt og kropssammensætning fra din Renpho-vægt.",
+    connectable: false,
+    ingestOnly: true,
+    via: ["HEALTH_CONNECT", "APPLE_HEALTH"],
+    viaApp: "Renpho Health",
+  },
+  {
+    provider: "EUFY",
+    label: "eufy",
+    icon: null,
+    kind: "via",
+    description: "Vægt og kropssammensætning fra din eufy-vægt.",
+    connectable: false,
+    ingestOnly: true,
+    via: ["HEALTH_CONNECT", "APPLE_HEALTH"],
+    viaApp: "EufyLife",
+  },
+  {
+    provider: "TUYA",
+    label: "Tuya / Smart Life",
+    icon: null,
+    kind: "via",
+    description: "Smart-vægte, der bruger Tuya Smart eller Smart Life.",
+    connectable: false,
+    ingestOnly: true,
+    via: ["HEALTH_CONNECT", "APPLE_HEALTH"],
+    viaApp: "Smart Life eller Tuya Smart",
+    partnerPending: true,
+  },
   {
     provider: "POLAR",
     label: "Polar Flow",

@@ -1,5 +1,22 @@
 # HELLO CAL — project status
 
+## 2026-10-03: Opdater-varen-banner (20 points)
+
+- Hvidt, sammenklappeligt banner øverst på varesiden når indhold, energi, logo eller produktbillede mangler; fører til ny side `/add/[id]/update` med kamera pr. manglende ting. Giver 20 points én gang pr. bruger og vare — også for admin, så det kan testes. Se DECISIONS 2026-10-03.
+- Migration `20261003100000_points_product_updated` skal med deployet. Lint, typecheck og build kørt; ikke set i browser eller prøvet med rigtigt foto/AI-nøgle her — test: åbn en vare uden indhold/logo som admin, tag billede, tjek Profil → Points.
+## 2026-10-02: Admin — Billeder i kø til frilæggelse
+
+- Varegodkendelse har nyt punkt "Billeder i kø til frilæggelse" (`/admin/images/cutout-queue`), også som fane på Billedforslag. Viser ventende `ImageCutoutJob`s (forside/logo) med det udsnit robotten vil fritlægge, vare/brand og tidspunkt; fejlede jobs i egen sektion nederst. Under listen en besked, der følger robottens rigtige plan ("Disse billeder bliver scannet løbende" så længe jobbet står som Løbende; "… i nat kl. X" ved fast tid; advarsel hvis robotten er slået fra) + robottens faktiske plan og sidste kørsel (link til Robotter). Logik i `src/lib/cutout-queue.ts`.
+- Planen for `image-cutout` er bevaret som "Løbende" (DECISIONS 2026-09-28). Lint og build grønne; ikke live-testet (ingen lokal DB).
+
+
+## 2026-10-03: Butiksimporten — alt fra Bilka- og REMA-arkene med
+
+- 13.039 varer (før 10.524): 2.364 uden kalorietal er skjult (`nutritionMissing`, migration `20261002213000_product_nutrition_missing`), 151 med kun kalorier vises med ~ på makroerne, 107 uden stregkode er med under butikkens vare-id. Se DECISIONS 2026-10-02 "Butiksimporten: alt fra arkene med" og `docs/PRODUCT_IMPORT_MAPPING.md`.
+- Rettet: kJ 1000× for småt på ca. 4.900 varer, 25 forkerte kalorietal, 44 "Sukkerfri" med sukker, 129 navne som "0"/"M appelsin"; Labels-filtre og oprindelsesland.
+- Kildearkene ligger nu på NAS-sharet `\\192.168.1.90\Hello Cal\Arkiv - historiske kilde- og importfiler\Oprydning 2026-09-29\`. Det nye katalog (`store_products.json`) + de nye varers 1.408 billeder ligger klar i `C:\Users\Peter\Desktop\Butiksimport 2026-10-03\`; de skal kopieres til NAS'ens `data/store-products-import/` (sessionen fik ikke lov at skrive på serveren), og jobbet `store-products-import` køres (admin → Cron-jobs → Kør nu, eller næste deploy). Indtil da kører den nye agent med det gamle katalog, hvilket er ufarligt og retter kJ-fejlen.
+- Testet: agenten mod lokal PostgreSQL med alle migrationer (live-katalog → nyt katalog, 0 fejl); lint, typecheck og `next build --webpack` grønne.
+- Brugeren: kør `bilka_vitamins.py` (vitaminpanelet på bilkatogo.dk, nogle timer); byg og importér derefter igen. Næring fra Frida til de skjulte varer er egen opgave (OPEN-TASKS).
 
 ## 2026-10-02: Desktop — alle sider i skallen
 
@@ -12,6 +29,15 @@ Last updated: 2026-10-02
 - Nye grafer `body:<felt>` i statistikmodulet (bryst, talje, hofte, overarm, lår): samme kort som på Kropsmål-siden med tegningen til venstre, men til højre et forløb over de seneste 10 målinger (x efter dato), seneste værdi, min/maks og ændring siden sidst. Komponent `src/components/BodyMeasurementChart.tsx`, logik `src/lib/body-measurement-series.ts` (tests grønne).
 - Tilføjes under "Ubrugte grafer" → blokken Kropsmål, eller med linket "Vis kropsmål som grafer i Statistik" på Kropsmål-siden (lægger alle fem nederst i graferne og åbner Statistik).
 - Hofte har stadig ingen godkendt tegning, så venstre felt er tomt dér. Lint, typecheck og build grønne; ikke visuelt testet (ingen lokal DB/login).
+
+## 2026-10-02: Garmin, WHOOP, Huawei + eufy/Renpho/Xiaomi/Tuya/Samsung via telefonen
+
+- Nye cloud-integrationer: Garmin (`garmin.ts`, PKCE, ping-webhook `garmin-webhook.ts`), WHOOP (`whoop.ts`) og Huawei Health (`huawei-health.ts`). Kun læsning; afmelding hos appen ved frakobling. Parsere i `*-items.ts` med tests i `src/lib/integration-items.test.mjs` (9 grønne).
+- eufy, Renpho, Xiaomi, Tuya og Samsung Health (ure, ring, vægt) er "via"-kort: data via Health Connect/Apple Health; kortet bliver "Forbundet", når ingest ser deres app som `origin`. Se DECISIONS.md samme dato.
+- Health Connect: Android-modul `native/android/healthconnect/` (læs + skriv, timevis baggrundssync, `origin` på alle poster). Ikke kompileret (ingen Android SDK her); se `native/README.md`.
+- Migration `20261002120000_more_integrations` (enum-værdier + `integrations.externalUserId`) skal køre ved deploy. Nye nøgler i admin → API-nøgler og `compose.production.yaml`: `GARMIN_CLIENT_ID/SECRET`, `GARMIN_WEBHOOK_KEY`, `WHOOP_CLIENT_ID/SECRET`, `HUAWEI_HEALTH_CLIENT_ID/SECRET`, `HUAWEI_HEALTH_API_BASE`. `.env.production.example` er ikke opdateret (adgang nægtet her).
+- Lint, typecheck og build grønne. `page-tree.test.mjs` fejler stadig (også på master). Ikke live-testet: ingen nøgler/DB her; Garmin- og Huawei-feltnavne er ikke prøvet mod live-API.
+- Mangler fra brugeren: Garmin-partnergodkendelse, Huawei Health Kit-godkendelse, WHOOP-app, logoer til de nye mærker, og evt. Tuya-partneraftale.
 
 ## 2026-10-02: Kameraflowet — rigtige stillbilleder + nyt foto af indholdet
 
@@ -5174,3 +5200,14 @@ person-ikon). Lint kørt; ikke set visuelt.
 
 - Ny offentlig side `/e-numre` (`src/app/e-numre/page.tsx`) med hele E-nummer-databasen, numerisk sorteret, et hurtignavigations-chipfelt og ét `<section>` pr. E-nummer med eget anchor (`/e-numre#e100`, `#e150a`; se `src/lib/additive-anchor.ts`).
 - Info-vinduet (`AdditiveInfoModal`) linker nu til nummerets anchor ("Se alle E-numre").
+
+## 2026-10-03: Roadmap — SMS-kode (TeamMessage) + login-godkendelse med push
+
+Bygget og pushet på branch `claude/teammessage-sms` (IKKE flettet til master, ikke deployet — brugerens valg: skrevet på roadmap så det huskes). Typecheck + lint er rene; fuld `npm run build` og test med rigtig SMS/push er ikke kørt.
+
+Skal gøres, før branchen flettes:
+1. Læg TeamMessage-oplysninger i serverens `.env`: `TEAMMESSAGE_API_TOKEN`, `TEAMMESSAGE_TEAM_ID`, `TEAMMESSAGE_TEAMLIST_EMAIL`, `TEAMMESSAGE_SENDER_EMAIL` (valgfri: `TEAMMESSAGE_FROM`, `TEAMMESSAGE_TEST_MODE=1`). Uden dem kan ingen oprette konto (tilmelding kræver SMS-kode, fail-closed i produktion).
+2. Generér VAPID-nøgler (`npx web-push generate-vapid-keys`) og sæt `VAPID_PUBLIC_KEY`, `VAPID_PRIVATE_KEY`, `VAPID_CONTACT_EMAIL`. Uden dem er push-godkendelse automatisk slået fra.
+3. Afklar overlap med `src/lib/sms.ts` (GatewayAPI, anden session) — login-koder bruger `src/lib/teammessage.ts`.
+4. Flet til master (kører migrationerne `20261002100000` og `20261003100000`), `npm run build`, test med rigtigt nummer og rigtig telefon (på iPhone kræver Web Push, at appen ligger på hjemmeskærmen).
+5. Senere: native app (APNs/FCM) skal bruge samme endpoints (`/api/push/subscribe`, `/api/auth/login-approval/*`). Push-godkendelse gælder kun adgangskode-login; Google/Apple/Facebook og Face ID er uændrede.
