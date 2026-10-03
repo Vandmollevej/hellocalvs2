@@ -110,6 +110,8 @@ export type ProductDatabaseRow = {
   packageSizeText: string | null;
   imageUrl: string | null;
   kcalPer100g: number;
+  // Butiksvare uden kalorietal, skjult i appen (docs/DECISIONS.md 2026-10-02).
+  nutritionMissing: boolean;
   status: ProductStatus;
   sourceLabel: string;
   categoryLabel: string | null;
@@ -141,6 +143,7 @@ export async function loadProductDatabase(filters: ProductDatabaseFilters) {
         packageSizeText: true,
         imageUrl: true,
         kcalPer100g: true,
+        nutritionMissing: true,
         status: true,
         externalSource: true,
         productCategory: true,
@@ -167,6 +170,7 @@ export async function loadProductDatabase(filters: ProductDatabaseFilters) {
     packageSizeText: p.packageSizeText,
     imageUrl: p.imageUrl,
     kcalPer100g: p.kcalPer100g,
+    nutritionMissing: p.nutritionMissing,
     status: p.status,
     // Nye kilder i skemaet (fx en kommende kæde-import) vises med deres rå navn.
     sourceLabel: (PRODUCT_SOURCE_LABELS as Record<string, string>)[p.externalSource ?? "USER"] ?? String(p.externalSource),
