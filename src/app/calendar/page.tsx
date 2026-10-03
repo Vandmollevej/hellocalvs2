@@ -20,6 +20,9 @@ import { AddMenuSheet } from "@/components/add/AddMenuSheet";
 import { HfChevron } from "@/components/hf/HfChevron";
 import { ActionLink } from "@/components/hf/ActionButton";
 import { FoodRow } from "@/components/FoodRow";
+import { EnergyChip } from "@/components/calendar/EnergyChip";
+import { IconWaterGlass } from "@/components/icons/WaterGlass";
+import { formatCl, isWaterRegistration, waterRegistrationMl } from "@/lib/water-display";
 import { DAILY_KCAL_GOAL } from "@/lib/goals";
 import { makeBudgetLookup, type BudgetSnapshot, activitySummaryUrl } from "@/lib/daily-budget";
 import { isIntakeTooLow, minimumHealthyKcal } from "@/lib/healthy-intake";
@@ -74,9 +77,11 @@ type Registration = {
   titleSnapshot: string;
   kcalSnapshot: number;
   proteinSnapshot: number;
+  amountGrams: number;
   createdAt: string;
   productId?: string | null;
   product?: { imageUrl: string | null } | null;
+  classification?: { isDrink: boolean } | null;
 };
 
 type Activity = {
@@ -85,6 +90,14 @@ type Activity = {
   startedAt: string;
   durationMinutes: number;
   caloriesBurned: number;
+};
+
+// Vand fra /water/create (egen tabel, ingen kalorier). Vises i dagvisningen som
+// glas + cl ved siden af timens kalorier (docs/DECISIONS.md 2026-10-02).
+type WaterEntry = {
+  id: string;
+  amountMl: number;
+  loggedAt: string;
 };
 
 type SleepDefaults = {
@@ -376,6 +389,7 @@ export default function CalendarPage() {
   const [registrationsLoading, setRegistrationsLoading] = useState(true);
   const [registrationsError, setRegistrationsError] = useState(false);
   const [activities, setActivities] = useState<Activity[]>([]);
+  const [waterEntries, setWaterEntries] = useState<WaterEntry[]>([]);
   const [sleepDefaults, setSleepDefaults] = useState<SleepDefaults | null>(null);
   const [energyProfile, setEnergyProfile] = useState<EnergyProfile | null>(null);
   const [weighIns, setWeighIns] = useState<WeighIn[]>([]);
@@ -581,6 +595,19 @@ export default function CalendarPage() {
       .catch(() => {
         if (!cancelled) setActivities([]);
       });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  useEffect(() => {
+    let cancelled = false;
+    fetch("/api/water-entries")
+      .then(async (response) => (response.ok ? ((await response.json()) as { entries: WaterEntry[] }) : null))
+      .then((data) => {
+        if (!cancelled && data) setWaterEntries(data.entries ?? []);
+      })
+      .catch(() => {});
     return () => {
       cancelled = true;
     };
@@ -939,6 +966,7 @@ export default function CalendarPage() {
             isSameDay(new Date(registration.createdAt), selectedDate),
           )}
           activities={activities.filter((activity) => isSameDay(new Date(activity.startedAt), selectedDate))}
+          waterEntries={waterEntries.filter((entry) => isSameDay(new Date(entry.loggedAt), selectedDate))}
           goals={goalsForDate(goalsByDate, selectedDate)}
           loading={registrationsLoading}
           error={registrationsError}
@@ -1232,8 +1260,7 @@ function WeekView({
                       !logged ? "text-text-muted" : tooLow ? "text-hf-warning" : over ? "text-hf-red-dark" : "text-hf-green"
                     }`}
                   >
-                    {over ? "÷" : "+"}
-                    {diff} kcal
+                    <EnergyChip kind="intake" value={diff} text={`${over ? "÷" : "+"}${diff}`} iconSize={18} />
                   </span>
                   <IconChevronRight size={19} className="shrink-0" />
                 </span>
@@ -1451,8 +1478,7 @@ function ListView({
                       !logged ? "text-text-muted" : tooLow ? "text-hf-warning" : over ? "text-hf-red-dark" : "text-hf-green"
                     }`}
                   >
-                    {over ? "÷" : "+"}
-                    {diff} kcal
+                    <EnergyChip kind="intake" value={diff} text={`${over ? "÷" : "+"}${diff}`} iconSize={18} />
                   </span>
                   <IconChevronRight size={19} className="shrink-0" />
                 </span>
@@ -1632,9 +1658,15 @@ function WeekTimelineView({
                       key={registration.id}
                       className="hf-type-micro hf-type-strong absolute left-0.5 right-0.5 truncate rounded-md bg-hf-green px-1 text-hf-white"
                       style={{ top: (minutesFromMidnight(time) / 60) * HOUR_HEIGHT, minHeight: 18 }}
-                      title={`${registration.titleSnapshot} · ${Math.round(registration.kcalSnapshot)} kcal`}
+                      title={`${registration.titleSnapshot} · ${
+                        isWaterRegistration(registration)
+                          ? formatCl(waterRegistrationMl(registration))
+                          : `${Math.round(registration.kcalSnapshot)} kcal`
+                      }`}
                     >
-                      {Math.round(registration.kcalSnapshot)} kcal
+                      {isWaterRegistration(registration)
+                        ? formatCl(waterRegistrationMl(registration))
+                        : `${Math.round(registration.kcalSnapshot)} kcal`}
                     </div>
                   );
                 })}
@@ -1845,6 +1877,7 @@ function DayDetails({
   today,
   registrations,
   activities,
+  waterEntries,
   goals,
   loading,
   error,
@@ -1865,6 +1898,7 @@ function DayDetails({
   today: Date;
   registrations: Registration[];
   activities: Activity[];
+  waterEntries: WaterEntry[];
   goals: GoalDTO[];
   loading: boolean;
   error: boolean;
@@ -2253,6 +2287,13 @@ function DayDetails({
                   const hourActivities = activities.filter(
                     (activity) => new Date(activity.startedAt).getHours() === hour,
                   );
+                  // Vand (egen tabel + vand-registreringer) vises som glas + cl,
+                  // aldrig som "0 kalorier".
+                  const hourWaterEntries = waterEntries.filter((entry) => new Date(entry.loggedAt).getHours() === hour);
+                  const waterRegistrations = hourRegistrations.filter(isWaterRegistration);
+                  const waterMl =
+                    hourWaterEntries.reduce((sum, entry) => sum + entry.amountMl, 0) +
+                    waterRegistrations.reduce((sum, registration) => sum + waterRegistrationMl(registration), 0);
                   return (
                     <HourRow
                       key={hour}
@@ -2260,8 +2301,10 @@ function DayDetails({
                       top={hour * hourHeight}
                       height={hourHeight}
                       kcalTotal={kcalTotal}
+                      waterMl={waterMl}
                       activities={hourActivities}
-                      hasEntries={hourRegistrations.length > 0}
+                      hasEntries={hourRegistrations.length > 0 || hourWaterEntries.length > 0}
+                      hasFood={hourRegistrations.length > waterRegistrations.length}
                       hasGoal={hour === GOAL_HOUR && goals.length > 0}
                       showAddBar={addBarHour === hour}
                       onOpenDetails={setOpenHour}
@@ -2334,6 +2377,7 @@ function DayDetails({
         <HourEntriesOverlay
           hour={openHour}
           registrations={registrations.filter((registration) => new Date(registration.createdAt).getHours() === openHour)}
+          waterEntries={waterEntries.filter((entry) => new Date(entry.loggedAt).getHours() === openHour)}
           goals={openHour === GOAL_HOUR ? goals : []}
           onClose={() => setOpenHour(null)}
         />
@@ -2355,8 +2399,10 @@ function HourRow({
   top,
   height,
   kcalTotal,
+  waterMl,
   activities,
   hasEntries,
+  hasFood,
   hasGoal,
   showAddBar,
   onOpenDetails,
@@ -2367,8 +2413,12 @@ function HourRow({
   top: number;
   height: number;
   kcalTotal: number;
+  /** Timens vand i ml (0 = intet vand). */
+  waterMl: number;
   activities: Activity[];
   hasEntries: boolean;
+  /** Mindst én registrering, der ikke er vand — ellers vises kun glasset. */
+  hasFood: boolean;
   hasGoal: boolean;
   showAddBar: boolean;
   onOpenDetails: (hour: number) => void;
@@ -2448,7 +2498,7 @@ function HourRow({
             return <SportIcon key={activity.id} size={16} className="text-hf-black opacity-70" aria-label={label} />;
           })}
           {activities.length > 0 && (
-            <span className="hf-type-small hf-type-strong text-hf-green">+{Math.round(bonusKcal)} kcal</span>
+            <EnergyChip kind="burned" value={bonusKcal} className="hf-type-small hf-type-strong text-hf-green" />
           )}
         </div>
       )}
@@ -2456,10 +2506,11 @@ function HourRow({
         <button
           type="button"
           onClick={() => onOpenDetails(hour)}
-          className="hf-type-small hf-type-strong absolute inset-y-0 right-1 z-[5] flex items-center gap-1 pl-2 text-hf-black focus-visible:outline-2 focus-visible:outline-hf-black"
+          className="hf-type-small hf-type-strong absolute inset-y-0 right-1 z-[5] flex items-center gap-2 pl-2 text-hf-black focus-visible:outline-2 focus-visible:outline-hf-black"
         >
-          <span>{Math.round(kcalTotal)} kalorier</span>
-          <IconChevronRight size={16} className="opacity-50" />
+          {hasFood && <EnergyChip kind="intake" value={kcalTotal} />}
+          {waterMl > 0 && <EnergyChip kind="water" value={waterMl} />}
+          <IconChevronRight size={16} className="-ml-1 opacity-50" />
         </button>
       )}
       {showAddBar && (
@@ -2655,28 +2706,41 @@ function GoalAccordion({ goal }: { goal: GoalDTO }) {
   );
 }
 
+// Én linje i timens oversigt: en registrering (mad eller vand-vare) eller et
+// glas vand fra /water/create.
+type HourItem =
+  | { kind: "registration"; id: string; time: Date; registration: Registration }
+  | { kind: "water"; id: string; time: Date; entry: WaterEntry };
+
 function HourEntriesOverlay({
   hour,
   registrations,
+  waterEntries,
   goals,
   onClose,
 }: {
   hour: number;
   registrations: Registration[];
+  waterEntries: WaterEntry[];
   goals: GoalDTO[];
   onClose: () => void;
 }) {
   const { t } = useTranslation();
-  const sorted = [...registrations].sort(
-    (a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime(),
-  );
-  const groups: Array<{ key: string; time: Date; items: Registration[] }> = [];
-  for (const registration of sorted) {
-    const time = new Date(registration.createdAt);
-    const key = `${time.getHours()}:${time.getMinutes()}`;
+  const sorted: HourItem[] = [
+    ...registrations.map<HourItem>((registration) => ({
+      kind: "registration",
+      id: registration.id,
+      time: new Date(registration.createdAt),
+      registration,
+    })),
+    ...waterEntries.map<HourItem>((entry) => ({ kind: "water", id: entry.id, time: new Date(entry.loggedAt), entry })),
+  ].sort((a, b) => a.time.getTime() - b.time.getTime());
+  const groups: Array<{ key: string; time: Date; items: HourItem[] }> = [];
+  for (const item of sorted) {
+    const key = `${item.time.getHours()}:${item.time.getMinutes()}`;
     const lastGroup = groups[groups.length - 1];
-    if (lastGroup && lastGroup.key === key) lastGroup.items.push(registration);
-    else groups.push({ key, time, items: [registration] });
+    if (lastGroup && lastGroup.key === key) lastGroup.items.push(item);
+    else groups.push({ key, time: item.time, items: [item] });
   }
   // Hvert præcist tidspunkt er en foldbar accordion (lukket som standard) —
   // brugerens eksplicitte rettelse: tidligere var alle indtastninger altid
@@ -2719,7 +2783,25 @@ function HourEntriesOverlay({
         ))}
         {groups.map((group) => {
           const isOpen = openKeys.has(group.key);
-          const groupKcal = group.items.reduce((sum, registration) => sum + registration.kcalSnapshot, 0);
+          // Kalorier fra mad som kyllingelår, vand som glas + cl — begge kan
+          // stå på samme tidspunkt. Vand-varer tæller ikke som mad.
+          const foodItems = group.items.filter(
+            (item) => item.kind === "registration" && !isWaterRegistration(item.registration),
+          );
+          const groupKcal = foodItems.reduce(
+            (sum, item) => sum + (item.kind === "registration" ? item.registration.kcalSnapshot : 0),
+            0,
+          );
+          const groupWaterMl = group.items.reduce(
+            (sum, item) =>
+              sum +
+              (item.kind === "water"
+                ? item.entry.amountMl
+                : isWaterRegistration(item.registration)
+                  ? waterRegistrationMl(item.registration)
+                  : 0),
+            0,
+          );
           return (
             <div key={group.key} className="mb-2 overflow-hidden rounded-2xl bg-hf-tan">
               <button
@@ -2731,32 +2813,60 @@ function HourEntriesOverlay({
                 <span className="hf-type-body hf-type-strong text-hf-black">
                   {new Intl.DateTimeFormat("da-DK", { hour: "2-digit", minute: "2-digit" }).format(group.time)}
                 </span>
-                <span className="hf-type-body hf-type-strong flex items-center gap-1 text-hf-black">
-                  {Math.round(groupKcal)} kalorier
-                  <HfChevron direction={isOpen ? "down" : "right"} className="text-hf-black" />
+                <span className="hf-type-body hf-type-strong flex items-center gap-2 text-hf-black">
+                  {foodItems.length > 0 && <EnergyChip kind="intake" value={groupKcal} iconSize={18} />}
+                  {groupWaterMl > 0 && <EnergyChip kind="water" value={groupWaterMl} iconSize={18} />}
+                  <HfChevron direction={isOpen ? "down" : "right"} className="-ml-1 text-hf-black" />
                 </span>
               </button>
               {isOpen && (
                 <div className="bg-hf-cream px-4">
-                  {group.items.map((registration, i) => (
-                    <Link
-                      key={registration.id}
-                      href={`/registration/${registration.id}`}
-                      className={`block focus-visible:outline-2 focus-visible:outline-hf-black ${
-                        i < group.items.length - 1 ? "border-b border-hf-tan-dark" : ""
-                      }`}
-                    >
-                      <FoodRow
-                        image={registration.product?.imageUrl}
-                        title={registration.titleSnapshot}
-                        right={
-                          <span className="hf-type-body hf-type-strong text-hf-black">
-                            {Math.round(registration.kcalSnapshot)} kcal
-                          </span>
-                        }
-                      />
-                    </Link>
-                  ))}
+                  {group.items.map((item, i) => {
+                    const rowClass = `block focus-visible:outline-2 focus-visible:outline-hf-black ${
+                      i < group.items.length - 1 ? "border-b border-hf-tan-dark" : ""
+                    }`;
+                    if (item.kind === "water") {
+                      return (
+                        <div key={item.id} className={rowClass}>
+                          <FoodRow
+                            thumbnail={<IconWaterGlass size={22} className="text-hf-black" />}
+                            title={t("calendar.waterTitle")}
+                            right={
+                              <EnergyChip
+                                kind="water"
+                                value={item.entry.amountMl}
+                                iconSize={18}
+                                className="hf-type-body hf-type-strong text-hf-black"
+                              />
+                            }
+                          />
+                        </div>
+                      );
+                    }
+                    const { registration } = item;
+                    const isWater = isWaterRegistration(registration);
+                    return (
+                      <Link key={item.id} href={`/registration/${registration.id}`} className={rowClass}>
+                        <FoodRow
+                          image={isWater ? undefined : registration.product?.imageUrl}
+                          thumbnail={
+                            isWater && !registration.product?.imageUrl ? (
+                              <IconWaterGlass size={22} className="text-hf-black" />
+                            ) : undefined
+                          }
+                          title={registration.titleSnapshot}
+                          right={
+                            <EnergyChip
+                              kind={isWater ? "water" : "intake"}
+                              value={isWater ? waterRegistrationMl(registration) : registration.kcalSnapshot}
+                              iconSize={18}
+                              className="hf-type-body hf-type-strong text-hf-black"
+                            />
+                          }
+                        />
+                      </Link>
+                    );
+                  })}
                 </div>
               )}
             </div>

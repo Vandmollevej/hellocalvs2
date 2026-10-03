@@ -78,6 +78,8 @@
   --hf-gray-border: var(--hf-color-line);
   --hf-fab: var(--hf-color-action);
   --hf-lime: var(--hf-color-positive);
+  /* Kyllingelår-ikonets kød (kalenderens kalorie-miniature, design.md §6.16). */
+  --hf-meat: #8c5a32;
 
   /* SF Pro (systemfont på Apple), jf. hellofresh_typografi_og_farver.txt.
      SF Pro Display til overskrifter, SF Pro Text til brødtekst/UI — begge
@@ -111,6 +113,7 @@
   --color-hf-gray-border: var(--hf-gray-border);
   --color-hf-fab: var(--hf-fab);
   --color-hf-lime: var(--hf-lime);
+  --color-hf-meat: var(--hf-meat);
   --color-hf-warning: var(--hf-color-warning);
   --color-hf-watch: var(--hf-color-watch);
   --color-hf-warning-fill: var(--hf-color-warning-fill);

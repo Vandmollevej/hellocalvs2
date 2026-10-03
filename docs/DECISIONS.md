@@ -49,6 +49,26 @@ Erstatter "Varer uden kcal/protein/kulhydrat/fedt springes over" fra 2026-09-27.
 - **Vitaminer/mineraler**: findes ikke i arkene (kolonnerne var tomme) — bilka.py åbnede aldrig panelet "Info om vitaminer og mineraler". Nyt tillægs-script `bilka_vitamins.py` (brugeren kører det selv) skriver `bilka_vitamins.xlsx`; importen gemmer værdierne i `micronutrientsPer100g` med kilde LABEL, så de afløser Frida-skønnene (~) på varesiden.
 - **Navne**: varer opkaldt efter brandet alene hed "0"/"1"/"M appelsin" (titlen minus brand og mængde); nu butikkens egen titel ("Coca cola", "Breezer m. appelsin"), og første bogstav er stort.
 - Admin-gennemgang i Dubletter nulstilles ikke af kJ-rettelsen eller de afledte sukkerpåstande.
+## 2026-10-02: Kalenderens miniature-tal — kyllingelår, flamme og vand i cl
+
+- Generelt i appen ("overalt", brugerens svar 2026-10-02) vises indtagne
+  kalorier som et brunt/hvidt kyllingelår + tal, forbrændte kalorier
+  (aktiviteter, aktiv energi) som en flamme + tal, og vand som det
+  eksisterende glas-ikon + mængde i cl. Ordet "kalorier"/"kcal" udgår, hvor
+  tallet står kompakt: kalenderens dag-/time-/uge-/månedsvisninger, forsidens
+  tal-hjul, statistikbokse, widget-forhåndsvisninger og listerne i chat, tale
+  og kamera. Den fulde tekst ligger i aria-label. Fælles komponent
+  `EnergyChip` (design.md §6.16). Sætninger, indtastningsfelter,
+  "kcal / 100 g", grafakser og native widgets beholder teksten.
+- Vand vises aldrig som "0 kcal". To kilder tælles sammen pr. time:
+  `WaterEntry` fra /water/create (ml), som kalenderen nu også henter, og
+  almindelige registreringer af en vare, der er vand: 0 kcal og enten et
+  vand-navn ("Vand", "Flaskevand", "Kildevand", "Danskvand", "Water" …)
+  eller en drikkevare (`classification.isDrink`); mængden er `amountGrams`
+  som ml (1 g ≈ 1 ml). Logik i `src/lib/water-display.ts`.
+- `/api/water-entries` returnerer nu de seneste 2.000 poster (før 200), så
+  kalenderens historik dækker mere end få uger.
+- Nyt farvetoken `--hf-meat` (#8C5A32) kun til kyllingelårets kød.
 
 ## 2026-10-02: Kameraflowet tager rigtige stillbilleder + "tag nyt billede af indholdet"
 

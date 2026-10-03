@@ -8,14 +8,12 @@ import { useSyncExternalStore } from "react";
 import {
   IconApple,
   IconAtom2,
-  IconBolt,
   IconBone,
   IconCandy,
   IconDroplet,
   IconEgg,
   IconFlame,
   IconFootsteps,
-  IconGauge,
   IconHeartbeat,
   IconLeaf,
   IconLemon2,
@@ -24,6 +22,7 @@ import {
   IconToolsKitchen2,
   type Icon,
 } from "@tabler/icons-react";
+import { IconDrumstick } from "@/components/icons/Drumstick";
 import { IconWaterGlass } from "@/components/icons/WaterGlass";
 import { DAILY_PROTEIN_GOAL } from "@/lib/goals";
 
@@ -101,16 +100,17 @@ export const FRONTPAGE_STAT_DEFS: {
   {
     key: "calories",
     labelKey: "frontPageStats.calories",
-    icon: IconFlame,
-    compute: (data) => ({ value: formatNumber(data.totals.kcal), unit: "kcal", goal: data.goalKcal }),
+    // Kyllingelår = indtagne kalorier; ikonet erstatter enheden (design.md §6.16).
+    icon: IconDrumstick,
+    compute: (data) => ({ value: formatNumber(data.totals.kcal), unit: "", goal: data.goalKcal }),
   },
   {
     key: "kcalRemaining",
     // "Kalorier i plus" = hvor mange kcal brugeren stadig har til gode i dag
     // (mål minus indtag, aldrig negativ) — ikke det samme som en overskridelse.
     labelKey: "frontPageStats.kcalRemaining",
-    icon: IconGauge,
-    compute: (data) => ({ value: formatNumber(Math.max(0, data.goalKcal - data.totals.kcal)), unit: "kcal" }),
+    icon: IconDrumstick,
+    compute: (data) => ({ value: formatNumber(Math.max(0, data.goalKcal - data.totals.kcal)), unit: "" }),
   },
   {
     key: "protein",
@@ -216,10 +216,11 @@ export const FRONTPAGE_STAT_DEFS: {
   {
     key: "burned",
     labelKey: "frontPageStats.burned",
-    icon: IconBolt,
+    // Flamme = forbrændte kalorier (design.md §6.16).
+    icon: IconFlame,
     compute: (data) => ({
       value: data.metrics.burnedKcal !== null ? formatNumber(data.metrics.burnedKcal) : "642",
-      unit: "kcal",
+      unit: "",
     }),
   },
   {

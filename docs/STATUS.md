@@ -76,6 +76,13 @@ Last updated: 2026-10-02
 
 - Lygte-knap på kameraet (hvor telefonen/browseren tillader det), hvid tekst ved for mørkt/ude af fokus, og fokus-skift til ~20 cm på stregkodetrinnet. Se DECISIONS.md.
 - Lint, typecheck og `npm run build` grønne. Ikke testet på telefon — tjek i køleskabet på Android (lygte + fokus) og iPhone (forventet: kun advarselsteksten).
+## 2026-10-02: Kalenderens miniature-tal (kyllingelår, flamme, vand i cl)
+
+- `EnergyChip` (kyllingelår + tal for indtag, flamme + tal for forbrændt, glas + cl for vand) bruges nu generelt: kalenderens dag-/time-/uge-/månedsvisninger, forsidens tal-hjul (rækkeikon + tom enhed), statistikbokse, widget-forhåndsvisninger og listerne i chat/tale/kamera. Kalenderen henter nu også `/api/water-entries` og viser glas vand pr. time og i timens oversigt. Se DECISIONS.md og design.md §6.16.
+- Ikke ændret: sætninger ("Tilbage for i dag: … kcal"), indtastningsfelter, "kcal / 100 g", grafakser, opskriftssider og de native widgets (`native/`).
+- Lint, typecheck og build grønne. Ikonet er tjekket som rendering i headless Chromium, men ikke live-testet i appen (ingen lokal DB/login) — tjek timerækken på telefon, især at kyllingelåret (16 px) og glasset står pænt ved siden af hinanden.
+- Næste: hvis kyllingelåret skal bruges flere steder (forside, widgets), så genbrug `IconDrumstick` og tokenet `--hf-meat`.
+
 
 ## 2026-10-02: Kameraflowet — rigtige stillbilleder + nyt foto af indholdet
 
