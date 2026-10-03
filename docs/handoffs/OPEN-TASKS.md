@@ -339,3 +339,13 @@ Ejer: ledig (Kropsmål-graf-sessionen er arkiveret 2026-10-03)
 | Id | Opgave | Status | Næste skridt |
 | --- | --- | --- | --- |
 | — | Kropsmål-grafer: tegning til venstre, forløb af seneste 10 målinger til højre; følger cm/tommer | Færdig i kode på branch `claude/kropsmaal-statistikgraf` (PR #156, kladde) — ikke flettet | Gennemgå PR #156, flet master ind ved konflikt (typisk kun `docs/STATUS.md`: behold begge sider), kør lint/typecheck/build og flet til master. Tjek på telefon: Statistik → Tilføj → Kropsmål |
+
+---
+
+## Genscan-panel ("Optjen 10 points")
+Filer: `src/components/add/RescanBanner.tsx`, `src/lib/product-capture.ts`.
+Ejer: cloud-session `claude/rescan-panel-fix` (2026-10-03)
+
+| Id | Opgave | Status | Næste skridt |
+| --- | --- | --- | --- |
+| rescan-panel | Panel over hele skærmen, X-knap, 60 sek. tidsgrænse på afsendelse | Venter på bruger | Draft-PR #225. Brugeren skal teste på telefon (kan panelet lukkes; bliver kameraet sort efter sidste billede?) og godkende flet til master |

@@ -6,7 +6,7 @@ Last updated: 2026-10-03
 
 - Det åbne panel var kun placeret i sidens indholdsområde, så "Tilføj"-knappen og menuen stod uden for det som et eget vindue, og et sort kamera uden svar kunne ikke lukkes. Nu er panel og mørk baggrund `fixed` over hele skærmen (også over "Tilføj" og menuen), og der er en X-knap øverst i panelet ud over trækstregen (`RescanBanner.tsx`).
 - Afsendelsen af genscanningen har en tidsgrænse på 60 sek. (`submitProductRescan`), så et hængende kald giver "Prøv igen" i stedet for et evigt sort kamera.
-- Lint/typecheck/build kunne ikke køres i cloud-sessionen (ingen `node_modules`). Ikke set på telefon — tjek, at panelet kan lukkes, og at kameraet ikke bliver sort efter sidste billede.
+- Lint (0 fejl), typecheck og build er grønne. Ikke set på telefon — tjek, at panelet kan lukkes, og at kameraet ikke bliver sort efter sidste billede.
 
 ## 2026-10-03: Beskeder på Profil, Resultatvisning under Visning, Opsætning uden Sprog og region
 
