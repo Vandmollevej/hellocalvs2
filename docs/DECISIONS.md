@@ -4225,3 +4225,12 @@ Brugerens krav: "Luk konto kan reverses inde. For 3 måneder, med mindre man væ
 - `GoalStatusSummary` lægger derfor de to i én fælles flex-række. De må
   aldrig deles i separate blokke under hinanden; flammen ("+ N kcal") står
   over rækken og "Tilbage"/"Overskredet" under den, begge højrestillet.
+
+## 2026-10-03: "Skift profil" er en række med buet op/ned-pil
+
+Ejerens krav: "Hvis man er familiekontoejer skal 'skift profil' stå øverst og med punkt for sig selv under Profil. Og så en frem og tilbagepil som ikon — buet pil op/ned hvis muligt."
+
+- `ProfileSwitcher` viser "Skift profil" som en række (samme mål som `ChevronRow`, chevron ned/op) i sit eget kort øverst på `/profile`; listen folder ud i samme kort.
+- Ikonet er tegnet selv (`IconSwitchProfile`): to buede pile, op i venstre side og ned i højre. Tablers `IconRefresh` blev fravalgt, fordi den betyder "genindlæs" og allerede bruges til "Lær appen at kende".
+- Den valgte profils store cirkel med navn og "Din egen profil"/"Du taster ind for denne profil" står under rækken og er ikke længere selv en knap.
+
