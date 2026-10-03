@@ -11,7 +11,7 @@ export type CutoutCropBox = { x: number; y: number; width: number; height: numbe
 
 export type CutoutQueueRow = {
   id: string;
-  kind: "BRAND_LOGO" | "PRODUCT_FRONT" | "PRODUCT_LABEL";
+  kind: "BRAND_LOGO" | "PRODUCT_FRONT";
   status: "PENDING" | "FAILED";
   sourceUrl: string;
   cropBox: CutoutCropBox | null;
@@ -30,6 +30,7 @@ export type CutoutQueue = {
     plan: string;
     enabled: boolean;
     runAtTime: string | null;
+    notice: string;
     lastRunAt: Date | null;
     lastStatus: string | null;
   };
@@ -92,10 +93,19 @@ export async function loadCutoutQueue(): Promise<CutoutQueue> {
       plan: describeNextRun(state),
       enabled: state.enabled,
       runAtTime: state.runAtTime,
+      notice: describeScanNotice(state),
       lastRunAt: schedule?.lastRunAt ?? null,
       lastStatus: schedule?.lastStatus ?? null,
     },
   };
+}
+
+// Beskeden under køen følger robottens rigtige plan, så den aldrig lyver
+// (ejerens valg 2026-10-03: planen forbliver "Løbende").
+function describeScanNotice(state: { enabled: boolean; runAtTime: string | null; intervalMinutes: number | null }): string {
+  if (!state.enabled) return "Robotten er slået fra — billederne scannes ikke, før den slås til igen.";
+  if (state.runAtTime) return `Disse billeder vil blive scannet i nat kl. ${state.runAtTime}.`;
+  return "Disse billeder bliver scannet løbende.";
 }
 
 export function formatCopenhagenDateTime(date: Date): string {

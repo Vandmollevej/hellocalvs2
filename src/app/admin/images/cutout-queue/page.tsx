@@ -6,8 +6,8 @@ import { ImagesTabs } from "@/components/admin/ImagesTabs";
 import { CutoutQueueList } from "@/components/admin/CutoutQueueList";
 
 // Admin → Varegodkendelse → "Billeder i kø til frilæggelse" (docs/DECISIONS.md
-// 2026-10-02): fotos der venter på at få fjernet baggrunden, med besked om at
-// de scannes i nat. Robottens faktiske plan vises nedenunder.
+// 2026-10-02): fotos der venter på at få fjernet baggrunden, med en besked der
+// følger robottens rigtige plan. Planen og sidste kørsel vises nedenunder.
 export const dynamic = "force-dynamic";
 
 export default async function AdminCutoutQueuePage() {
@@ -27,7 +27,7 @@ export default async function AdminCutoutQueuePage() {
       <CutoutQueueList rows={queue.pending} emptyText="Køen er tom." />
       <div className="rounded-lg border border-hf-tan-dark bg-hf-tan px-4 py-3">
         <p className="hf-type-strong text-hf-black">
-          {queue.robot.runAtTime ? `Disse billeder vil blive scannet i nat kl. ${queue.robot.runAtTime}.` : "Disse billeder vil blive scannet i nat."}
+          {queue.robot.notice}
         </p>
         <p className="hf-type-small text-text-secondary">
           {queue.robot.name}: {queue.robot.plan}

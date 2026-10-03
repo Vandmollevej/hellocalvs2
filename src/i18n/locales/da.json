@@ -1750,6 +1750,25 @@
     "submitError": "Kunne ikke sende billedet",
     "submitted": "Tak! Dit billede afventer nu gennemgang."
   },
+  "productUpdate": {
+    "banner": "Optjen {points} points ved at opdatere varen",
+    "toggle": "Vis eller skjul banner",
+    "title": "Opdater varen",
+    "kindFront": "Forsiden af varen ({points} points)",
+    "hintFront": "Tag et billede af forsiden, så varen får billede og logo.",
+    "kindNutrition": "Energi / næringsindhold ({points} points)",
+    "hintNutrition": "Tag et billede af næringsdeklarationen.",
+    "kindIngredients": "Indhold ({points} points)",
+    "hintIngredients": "Tag et billede af ingredienslisten.",
+    "takePhoto": "Tag billede",
+    "reading": "Læser billedet...",
+    "done": "Tak! Varen er opdateret.",
+    "unreadable": "Billedet kunne ikke læses. Prøv igen med et skarpere billede.",
+    "error": "Kunne ikke sende billedet. Prøv igen.",
+    "earned": "Du har optjent {points} points!",
+    "nothingMissing": "Der mangler ikke noget på denne vare.",
+    "back": "Tilbage til varen"
+  },
   "search": {
     "title": "Søg",
     "add": "Tilføj",

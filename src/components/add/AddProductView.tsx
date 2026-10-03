@@ -45,6 +45,7 @@ import { CertificationLogo } from "@/components/hf/CertificationLogo";
 import { Skeleton } from "@/components/hf/Skeleton";
 import { HandSizePicker } from "@/components/hf/HandSizePicker";
 import { findHandSizeItem, mediumHandSizeGrams } from "@/lib/hand-sizes";
+import { UpdatePointsBanner } from "@/components/hf/UpdatePointsBanner";
 
 // "Opret straks" (docs/DECISIONS.md 2026-09-27): mens OpenAI stadig læser
 // felter (Product.pendingFields), eller den fritlagte forside endnu ikke er
@@ -120,6 +121,9 @@ type Product = {
   // AI kunne ikke læse ingredienslisten på fotoet — den, der oprettede
   // varen, kan tage et nyt (docs/DECISIONS.md 2026-10-02).
   ingredientsUnreadable?: boolean;
+  // Mangler varen indhold, energi, logo eller billede, tilbydes points for at
+  // opdatere den (src/lib/product-update.ts); null når intet mangler.
+  updateOffer?: { kinds: ("FRONT" | "NUTRITION" | "INGREDIENTS")[]; points: number } | null;
   allergens?: string[];
   additives?: string[];
   // Mærkninger (økologisk, nøglehul, MSC …) vist som logoer, opgave 29.
@@ -707,6 +711,13 @@ export function AddProductView({
 
         {view && (
           <>
+            {!isLoading && !forDish && !isEditing && !!id && state.status === "loaded" && state.product.updateOffer && (
+              <UpdatePointsBanner
+                href={`/add/${encodeURIComponent(id)}/update`}
+                text={t("productUpdate.banner", { points: state.product.updateOffer.points })}
+                toggleLabel={t("productUpdate.toggle")}
+              />
+            )}
             {!isLoading && !forDish && !!id && photoAwards.length > 0 && (
               <Link
                 href={`/add/${id}/photo-award`}

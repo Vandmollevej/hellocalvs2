@@ -8,7 +8,6 @@ import { formatCopenhagenDateTime } from "@/lib/cutout-queue";
 const KIND_LABEL: Record<CutoutQueueRow["kind"], string> = {
   PRODUCT_FRONT: "Forside",
   BRAND_LOGO: "Logo",
-  PRODUCT_LABEL: "Mærke",
 };
 
 function CropThumb({ src, cropBox }: { src: string; cropBox: CutoutCropBox | null }) {

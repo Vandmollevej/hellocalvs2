@@ -1750,6 +1750,25 @@
     "submitError": "Could not submit the photo",
     "submitted": "Thanks! Your photo is now awaiting review."
   },
+  "productUpdate": {
+    "banner": "Earn {points} points by updating this product",
+    "toggle": "Show or hide banner",
+    "title": "Update product",
+    "kindFront": "Front of the product ({points} points)",
+    "hintFront": "Take a photo of the front so the product gets an image and logo.",
+    "kindNutrition": "Energy / nutrition ({points} points)",
+    "hintNutrition": "Take a photo of the nutrition table.",
+    "kindIngredients": "Ingredients ({points} points)",
+    "hintIngredients": "Take a photo of the ingredients list.",
+    "takePhoto": "Take photo",
+    "reading": "Reading the photo...",
+    "done": "Thanks! The product is updated.",
+    "unreadable": "The photo could not be read. Try again with a sharper photo.",
+    "error": "Could not send the photo. Try again.",
+    "earned": "You earned {points} points!",
+    "nothingMissing": "Nothing is missing on this product.",
+    "back": "Back to the product"
+  },
   "search": {
     "title": "Search",
     "add": "Add",
