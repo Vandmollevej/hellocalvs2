@@ -8,6 +8,9 @@ Last updated: 2026-10-03
 - Så længe opsætningen ikke er færdig, står en kasse "Kontoopsætning" allerøverst på Profil; den starter guiden (`OnboardingWizard`) igen. Proceslinjen (Om dig / Mål / Vaner) følger med og viser nu rigtig fremdrift.
 - Færdig = alle tre trin klaret, regnet fra felterne (`src/lib/account-setup.ts`): Om dig (køn, fødselsdato, højde, vægt), Mål (målsætning valgt), Vaner (aktivitetsniveau + sengetid + opvågning). Det tæller, uanset om felterne er udfyldt i guiden eller ved selv at åbne dem. Når alt er klaret, forsvinder både kassen og proceslinjen.
 - Typecheck og lint grønne. Ikke set på telefon.
+## 2026-10-03: Opdater-varen — kun tre områder, ingen points for net-billeder
+
+- Banneret/kortene vises kun for manglende produktbillede, energi eller indhold; manglende logo alene udløser dem ikke. Points kræver et friskt kamerabillede; billedet tagges `photo_source` CAMERA/UPLOAD. **Migration `20261003250000_photo_source` skal køre ved deploy.** Lint (0 fejl), typecheck og build grønne; ikke set på telefon. Fritlagt PNG rager allerede 10 % op over cirklen (`isCutoutImage`, kun filer under `/cutouts/`).
 
 ## 2026-10-03: Beskeder på Profil, Resultatvisning under Visning, Opsætning uden Sprog og region
 
@@ -69,6 +72,12 @@ Last updated: 2026-10-03
 - Ejerens egen app-konto (peter@packroff.dk) får Seriøs Familie uden udløb via migration `20261003210100_owner_family_plan`. Familiemedlemmer i en administrators familie er nu også Seriøs (`isCoveredByFamilyPlan`).
 - **Migrationer, der skal køre ved deploy:** `20261003210000_family_invitation_mail` og `20261003210100_owner_family_plan` (efter `20261003200000_family_invite_email_qr`).
 - Testet: typecheck, lint, build; skærmbilleder med mockede API-svar. Ikke testet mod en rigtig database eller med rigtig mailafsendelse.
+
+## 2026-10-03: Forsidens bølger — frostet glas bag listen, roligere top
+
+- Brugerens rettelse: de slørede bølger skal ligge bag det **nederste felt** (listen med indtastningerne), ikke nederst i toppen. `HomeWaves` har nu `variant="top" | "frost"`; `frost` ligger bag `DailyList` i `page.tsx` (tykke bånd, `blur(14px)`, 60 % opacitet, creme-slør, ingen puls).
+- Toppen: 2–3 bånd med 1–2 streger (før 3–4 bånd med op til 4), svagere linjer, gul kun helt øverst, mere grønt i midten/bunden (grøn tåge i nederste halvdel af toppen). Det slørede lag i toppen er fjernet.
+- Lint, fuld typecheck (privat Prisma-klient) og bølge-tests grønne. Ikke set visuelt (brugerens regel).
 
 ## 2026-10-03: Forsidens bølger — tykke, frostede bånd forneden
 
@@ -5870,3 +5879,10 @@ Skal gøres, før branchen flettes:
 4. Flet til master (kører migrationerne `20261002100000` og `20261003100000`), `npm run build`, test med rigtigt nummer og rigtig telefon (på iPhone kræver Web Push, at appen ligger på hjemmeskærmen).
 5. Senere: native app (APNs/FCM) skal bruge samme endpoints (`/api/push/subscribe`, `/api/auth/login-approval/*`). Push-godkendelse gælder kun adgangskode-login; Google/Apple/Facebook og Face ID er uændrede.
 5. Senere: native app (APNs/FCM) skal bruge samme endpoints (`/api/push/subscribe`, `/api/auth/login-approval/*`). Push-godkendelse gælder kun adgangskode-login; Google/Apple/Facebook og Face ID er uændrede.
+
+
+## 2026-10-03: Syv sprog (da, en, de, fr, nl, sv, no) + Hjælpecenter på alle
+
+- Se DECISIONS 2026-10-03 "Syv sprog". Ordbøger i `src/i18n/locales/`, hjælpesider i `public/help-*.html`, sprogvalg under Indstillinger → Sprog og region.
+- Typecheck, lint (0 fejl) og build grønne. `npm test`: 1 fejl (`page tree lists every page`) som også fejler på master uden disse ændringer.
+- Mangler: gennemlæsning af oversættelserne af en person, der taler sprogene; datoer/tal flere steder er stadig formateret med `da-DK`.

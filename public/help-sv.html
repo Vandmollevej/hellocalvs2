@@ -1,20 +1,20 @@
 <!doctype html>
 <!--
-  Hello Cal hjælpeside (statisk, kun til mobilvisning). Serveres på /hjaelp.html.
-  Ikke indekserbar: meta robots her + global X-Robots-Tag i next.config.ts.
+  Hello Cals hjälpsida (statisk, endast mobilvy). Visas på /help-sv.html.
+  Ej indexerbar: meta robots här + global X-Robots-Tag i next.config.ts.
 
-  Link direkte til et emne fra appen med et anchor, fx /hjaelp.html#scan-stregkode.
-  Emnet foldes automatisk ud og scrolles frem. Hvert emnes anchor er dets id="...".
-  Et sektions-anchor (fx #konto) scroller til sektionen uden at folde noget ud.
+  Länka direkt till ett ämne från appen med ett ankare, t.ex. /help-sv.html#scan-stregkode.
+  Ämnet expanderas automatiskt och scrollas fram. Varje ämnes ankare är dess id="...".
+  Ett avsnittsankare (t.ex. #konto) scrollar till avsnittet utan att expandera något.
 -->
-<html lang="da">
+<html lang="sv">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="robots" content="noindex, nofollow, noarchive, nosnippet" />
   <meta name="googlebot" content="noindex, nofollow" />
   <meta name="theme-color" content="#faf8f3" />
-  <title>Hjælp – Hello Cal</title>
+  <title>Hjälp – Hello Cal</title>
   <style>
     :root {
       --page: #faf8f3;
@@ -46,7 +46,7 @@
       padding: 0 16px calc(32px + env(safe-area-inset-bottom));
     }
 
-    /* Søgefelt — samme udtryk som .hf-search (retter) */
+    /* Sökfält — samma utseende som .hf-search (rätter) */
     .search-bar {
       position: sticky;
       top: 0;
@@ -113,7 +113,7 @@
       margin: 0 0 8px;
     }
 
-    /* Accordion-kort — samme udtryk som .hf-accordion */
+    /* Dragspelskort — samma utseende som .hf-accordion */
     .accordion { border-radius: 1.1rem; background: var(--card); overflow: hidden; }
     details + details { border-top: 1px solid var(--card-line); }
     details[hidden] { display: none; }
@@ -188,7 +188,7 @@
     }
     .go::after { content: "\203A"; font-size: 20px; line-height: 1; }
 
-    /* Guide-kort øverst: starter "Lær appen at kende" (OnboardingWizard) via /settings?guide=1 */
+    /* Guidekort högst upp: startar "Lär dig appen" (OnboardingWizard) via /settings?guide=1 */
     .guide {
       margin-top: 16px;
       border-radius: 1.1rem;
@@ -217,313 +217,313 @@
     <div class="search-bar">
       <button class="back" id="back" type="button">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6l6 6"/></svg>
-        Tilbage
+        Tillbaka
       </button>
       <label class="hf-search">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 10m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0"/><path d="M21 21l-6 -6"/></svg>
-        <input id="q" type="search" placeholder="Søg i hjælp" autocomplete="off" enterkeyhint="search" aria-label="Søg i hjælp" />
-        <button class="clear" id="clear" type="button" aria-label="Ryd søgning">
+        <input id="q" type="search" placeholder="Sök i hjälpen" autocomplete="off" enterkeyhint="search" aria-label="Sök i hjälpen" />
+        <button class="clear" id="clear" type="button" aria-label="Rensa sökningen">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6l-12 12"/><path d="M6 6l12 12"/></svg>
         </button>
       </label>
     </div>
 
-    <h1>Hjælpecenter</h1>
-    <p class="intro">Find svar på de mest almindelige spørgsmål om Hello Cal.</p>
-    <p class="lang" style="margin:0 0 8px;font-size:15px;line-height:20px">Dansk · <a href="/help-en.html" hreflang="en">English</a> · <a href="/help-de.html" hreflang="de">Deutsch</a> · <a href="/help-fr.html" hreflang="fr">Français</a> · <a href="/help-nl.html" hreflang="nl">Nederlands</a> · <a href="/help-sv.html" hreflang="sv">Svenska</a> · <a href="/help-no.html" hreflang="nb">Norsk</a></p>
+    <h1>Hjälpcenter</h1>
+    <p class="intro">Hitta svar på de vanligaste frågorna om Hello Cal.</p>
+    <p class="lang" style="margin:0 0 8px;font-size:15px;line-height:20px"><a href="/hjaelp.html" hreflang="da">Dansk</a> · <a href="/help-en.html" hreflang="en">English</a> · <a href="/help-de.html" hreflang="de">Deutsch</a> · <a href="/help-fr.html" hreflang="fr">Français</a> · <a href="/help-nl.html" hreflang="nl">Nederlands</a> · Svenska · <a href="/help-no.html" hreflang="nb">Norsk</a></p>
 
     <div class="guide" id="guide">
-      <p><strong>Kontoopsætning</strong>Få en kort gennemgang af Hello Cal, og indstil appen, så den passer til dig.</p>
-      <a class="btn" href="/settings?guide=1">Start guiden</a>
+      <p><strong>Lär dig appen</strong>Få en kort introduktion till Hello Cal och anpassa appen efter dig.</p>
+      <a class="btn" href="/settings?guide=1">Starta guiden</a>
     </div>
 
-    <p class="empty" id="empty">Ingen svar matcher din søgning.</p>
+    <p class="empty" id="empty">Inga svar matchar din sökning.</p>
 
     <section id="kom-i-gang">
-      <h2>Kom i gang</h2>
+      <h2>Kom igång</h2>
       <div class="accordion">
         <details id="hvad-er-hello-cal">
-          <summary><span>Hvad er Hello Cal?</span></summary>
+          <summary><span>Vad är Hello Cal?</span></summary>
           <div class="answer">
-            <p>Hello Cal hjælper dig med at holde styr på det, du spiser og drikker, så du kan følge kalorier og næringsstoffer dag for dag – sammen med fx vægt, vand, søvn og kropsmål.</p>
+            <p>Hello Cal hjälper dig att hålla koll på vad du äter och dricker, så att du kan följa kalorier och näringsämnen dag för dag – tillsammans med saker som vikt, vatten, sömn och kroppsmått.</p>
           </div>
         </details>
         <details id="maal">
-          <summary><span>Hvordan ændrer jeg mine mål?</span></summary>
+          <summary><span>Hur ändrar jag mina mål?</span></summary>
           <div class="answer">
-            <p>Under Mål kan du se dine mål, oprette et nyt og se kommende mål.</p>
-            <a class="go" href="/profile/goals">Gå til Mål</a>
+            <p>Under Mål kan du se dina mål, skapa ett nytt och se kommande mål.</p>
+            <a class="go" href="/profile/goals">Gå till Mål</a>
           </div>
         </details>
         <details id="laer-appen">
-          <summary><span>Kan jeg se introduktionen igen?</span></summary>
+          <summary><span>Kan jag se introduktionen igen?</span></summary>
           <div class="answer">
-            <p>Ja. Tryk på <strong>Start guiden</strong> øverst i Hjælpecenter, eller gå til Indstillinger og tryk på <strong>Kontoopsætning</strong>.</p>
-            <a class="go" href="/settings?guide=1">Start guiden</a>
+            <p>Ja. Tryck på <strong>Starta guiden</strong> högst upp i Hjälpcentret, eller gå till Inställningar och tryck på <strong>Lär dig appen</strong>.</p>
+            <a class="go" href="/settings?guide=1">Starta guiden</a>
           </div>
         </details>
       </div>
     </section>
 
     <section id="registrering">
-      <h2>Registrering af mad</h2>
+      <h2>Logga mat</h2>
       <div class="accordion">
         <details id="tilfoej-mad">
-          <summary><span>Hvordan tilføjer jeg mad?</span></summary>
+          <summary><span>Hur lägger jag till mat?</span></summary>
           <div class="answer">
-            <p>Tryk på plus-knappen på forsiden. Her kan du søge efter en madvare, scanne med kameraet, indtale med mikrofonen eller vælge en af dine egne retter.</p>
-            <a class="go" href="/search">Søg efter en madvare</a>
+            <p>Tryck på plusknappen på startsidan. Här kan du söka efter en matvara, skanna med kameran, tala med mikrofonen eller välja en av dina egna rätter.</p>
+            <a class="go" href="/search">Sök efter en matvara</a>
           </div>
         </details>
         <details id="scan-stregkode">
-          <summary><span>Hvordan scanner jeg en stregkode?</span></summary>
+          <summary><span>Hur skannar jag en streckkod?</span></summary>
           <div class="answer">
             <ol>
-              <li>Tryk på plus-knappen og vælg kameraet.</li>
-              <li>Hold stregkoden inden for rammen, indtil den er læst.</li>
-              <li>Kontrollér mængden og gem.</li>
+              <li>Tryck på plusknappen och välj kameran.</li>
+              <li>Håll streckkoden inom ramen tills den har lästs av.</li>
+              <li>Kontrollera mängden och spara.</li>
             </ol>
-            <p>Driller scanningen, så sørg for godt lys og hold telefonen roligt.</p>
-            <a class="go" href="/camera?mode=product">Åbn kameraet</a>
+            <p>Om skanningen krånglar, se till att det är bra ljus och håll telefonen stilla.</p>
+            <a class="go" href="/camera?mode=product">Öppna kameran</a>
           </div>
         </details>
         <details id="stemme">
-          <summary><span>Hvordan registrerer jeg med stemmen?</span></summary>
+          <summary><span>Hur loggar jag med rösten?</span></summary>
           <div class="answer">
-            <p>Tryk på plus-knappen og vælg mikrofonen. Sig, hvad du har spist, så finder appen madvarerne.</p>
-            <a class="go" href="/voice">Åbn mikrofonen</a>
+            <p>Tryck på plusknappen och välj mikrofonen. Säg vad du har ätit, så hittar appen matvarorna.</p>
+            <a class="go" href="/voice">Öppna mikrofonen</a>
           </div>
         </details>
         <details id="produkt-findes-ikke">
-          <summary><span>Varen findes ikke – hvad gør jeg?</span></summary>
+          <summary><span>Varan finns inte – vad gör jag?</span></summary>
           <div class="answer">
-            <p>Du kan selv oprette varen ved at tage billeder af emballagen og næringsdeklarationen.</p>
-            <a class="go" href="/camera/create">Opret en vare</a>
+            <p>Du kan skapa varan själv genom att fotografera förpackningen och näringsdeklarationen.</p>
+            <a class="go" href="/camera/create">Skapa en vara</a>
           </div>
         </details>
         <details id="slet-registrering">
-          <summary><span>Hvordan sletter jeg en registrering?</span></summary>
+          <summary><span>Hur tar jag bort en registrering?</span></summary>
           <div class="answer">
-            <p>Swipe på registreringen i dagens liste. Her kan du slette den, gemme varen som favorit eller melde en fejl i varens data.</p>
+            <p>Svep på registreringen i dagens lista. Här kan du ta bort den, spara varan som favorit eller rapportera ett fel i varans uppgifter.</p>
           </div>
         </details>
         <details id="flyt-registrering">
-          <summary><span>Kan jeg flytte en registrering til et andet tidspunkt?</span></summary>
+          <summary><span>Kan jag flytta en registrering till en annan tid?</span></summary>
           <div class="answer">
-            <p>Ja. I Kalenderen kan du trække registreringen hen til det rigtige tidspunkt.</p>
-            <a class="go" href="/calendar">Gå til Kalender</a>
+            <p>Ja. I Kalendern kan du dra registreringen till rätt tid.</p>
+            <a class="go" href="/calendar">Gå till Kalender</a>
           </div>
         </details>
         <details id="offline">
-          <summary><span>Virker appen uden internet?</span></summary>
+          <summary><span>Fungerar appen utan internet?</span></summary>
           <div class="answer">
-            <p>Opretter du en vare uden forbindelse, gemmer appen den og sender den automatisk, så snart du er online igen.</p>
+            <p>Om du skapar en vara utan uppkoppling sparar appen den och skickar den automatiskt så fort du är online igen.</p>
           </div>
         </details>
       </div>
     </section>
 
     <section id="retter">
-      <h2>Retter</h2>
+      <h2>Rätter</h2>
       <div class="accordion">
         <details id="opret-ret">
-          <summary><span>Hvordan opretter jeg en ret?</span></summary>
+          <summary><span>Hur skapar jag en rätt?</span></summary>
           <div class="answer">
-            <p>Tilføj ingredienserne og antal portioner, så beregner appen næringsindholdet.</p>
-            <a class="go" href="/create-dish">Opret en ret</a>
+            <p>Lägg till ingredienser och antal portioner, så räknar appen ut näringsinnehållet.</p>
+            <a class="go" href="/create-dish">Skapa en rätt</a>
           </div>
         </details>
         <details id="del-ret">
-          <summary><span>Kan jeg dele mine retter med andre?</span></summary>
+          <summary><span>Kan jag dela mina rätter med andra?</span></summary>
           <div class="answer">
-            <p>Ja. Når du opretter retten, kan du vælge at dele den med andre brugere. Ingen personlige oplysninger deles. Indeholder retten dine egne ingredienser, kan den deles, når ingredienserne er godkendt.</p>
-            <a class="go" href="/create-dish">Opret en ret</a>
+            <p>Ja. När du skapar rätten kan du välja att dela den med andra användare. Inga personuppgifter delas. Om rätten innehåller dina egna ingredienser kan den delas när ingredienserna har godkänts.</p>
+            <a class="go" href="/create-dish">Skapa en rätt</a>
           </div>
         </details>
         <details id="find-retter">
-          <summary><span>Hvor finder jeg mine og andres retter?</span></summary>
+          <summary><span>Var hittar jag mina egna och andras rätter?</span></summary>
           <div class="answer">
-            <p>Under Retter finder du både delte retter og dine egne.</p>
-            <a class="go" href="/profile/recipes">Gå til Retter</a>
+            <p>Under Rätter hittar du både delade rätter och dina egna.</p>
+            <a class="go" href="/profile/recipes">Gå till Rätter</a>
           </div>
         </details>
       </div>
     </section>
 
     <section id="maaling">
-      <h2>Vægt, vand og statistik</h2>
+      <h2>Vikt, vatten och statistik</h2>
       <div class="accordion">
         <details id="vaegt">
-          <summary><span>Hvordan registrerer jeg min vægt?</span></summary>
+          <summary><span>Hur loggar jag min vikt?</span></summary>
           <div class="answer">
-            <p>Tryk på plus-knappen og vælg vægt.</p>
-            <a class="go" href="/weight/create">Registrér vægt</a>
+            <p>Tryck på plusknappen och välj vikt.</p>
+            <a class="go" href="/weight/create">Logga vikt</a>
           </div>
         </details>
         <details id="vand">
-          <summary><span>Hvordan registrerer jeg vand?</span></summary>
+          <summary><span>Hur loggar jag vatten?</span></summary>
           <div class="answer">
-            <p>Tryk på plus-knappen og vælg vand.</p>
-            <a class="go" href="/water/create">Registrér vand</a>
+            <p>Tryck på plusknappen och välj vatten.</p>
+            <a class="go" href="/water/create">Logga vatten</a>
           </div>
         </details>
         <details id="kropsmaal">
-          <summary><span>Hvordan registrerer jeg kropsmål?</span></summary>
+          <summary><span>Hur loggar jag kroppsmått?</span></summary>
           <div class="answer">
-            <p>Kropsmål finder du under Profil.</p>
-            <a class="go" href="/profile/body-measurements">Gå til Kropsmål</a>
+            <p>Du hittar kroppsmått under Profil.</p>
+            <a class="go" href="/profile/body-measurements">Gå till Kroppsmått</a>
           </div>
         </details>
         <details id="statistik">
-          <summary><span>Hvor ser jeg min udvikling?</span></summary>
+          <summary><span>Var ser jag mina framsteg?</span></summary>
           <div class="answer">
-            <p>Under Statistik ser du din udvikling over tid. I Kalenderen ser du dine dage.</p>
-            <a class="go" href="/statistics">Gå til Statistik</a>
+            <p>Under Statistik ser du dina framsteg över tid. I Kalendern ser du dina dagar.</p>
+            <a class="go" href="/statistics">Gå till Statistik</a>
           </div>
         </details>
         <details id="forside-genveje">
-          <summary><span>Kan jeg ændre, hvad der vises på forsiden?</span></summary>
+          <summary><span>Kan jag ändra vad som visas på startsidan?</span></summary>
           <div class="answer">
-            <p>Ja, under Indstillinger → Forside.</p>
-            <a class="go" href="/settings/display/front-page">Tilpas forsiden</a>
+            <p>Ja, under Inställningar → Startsida.</p>
+            <a class="go" href="/settings/display/front-page">Anpassa startsidan</a>
           </div>
         </details>
       </div>
     </section>
 
     <section id="konto">
-      <h2>Konto og login</h2>
+      <h2>Konto och inloggning</h2>
       <div class="accordion">
         <details id="glemt-adgangskode">
-          <summary><span>Jeg har glemt min adgangskode</span></summary>
+          <summary><span>Jag har glömt mitt lösenord</span></summary>
           <div class="answer">
-            <p>Du får en e-mail med et link til at vælge en ny adgangskode.</p>
-            <a class="go" href="/forgot-password">Nulstil adgangskode</a>
+            <p>Du får ett mejl med en länk för att välja ett nytt lösenord.</p>
+            <a class="go" href="/forgot-password">Återställ lösenord</a>
           </div>
         </details>
         <details id="skift-adgangskode">
-          <summary><span>Hvordan skifter jeg adgangskode?</span></summary>
+          <summary><span>Hur byter jag lösenord?</span></summary>
           <div class="answer">
-            <p>Er du logget ind, kan du skifte den under Profil.</p>
-            <a class="go" href="/profile/change-password">Skift adgangskode</a>
+            <p>Om du är inloggad kan du byta det under Profil.</p>
+            <a class="go" href="/profile/change-password">Byt lösenord</a>
           </div>
         </details>
         <details id="bekraeft-email">
-          <summary><span>Jeg har ikke fået bekræftelsesmailen</span></summary>
+          <summary><span>Jag har inte fått bekräftelsemejlet</span></summary>
           <div class="answer">
-            <p>Tjek din spam-mappe. Du kan få mailen sendt igen via <strong>Send igen</strong> i banneret øverst i appen.</p>
+            <p>Kolla din skräppost. Du kan få mejlet skickat igen via <strong>Skicka igen</strong> i bannern högst upp i appen.</p>
           </div>
         </details>
         <details id="face-id">
-          <summary><span>Hvordan slår jeg Face ID til?</span></summary>
+          <summary><span>Hur slår jag på Face ID?</span></summary>
           <div class="answer">
-            <p>Efter et almindeligt login bliver du tilbudt Face ID. Du kan også slå det til under Rediger profil. Face ID gælder kun den enhed, du slår det til på.</p>
-            <a class="go" href="/profile/edit">Gå til Rediger profil</a>
+            <p>Efter en vanlig inloggning erbjuds du Face ID. Du kan också slå på det under Redigera profil. Face ID gäller bara den enhet du slår på det för.</p>
+            <a class="go" href="/profile/edit">Gå till Redigera profil</a>
           </div>
         </details>
         <details id="sprog">
-          <summary><span>Hvordan skifter jeg sprog?</span></summary>
+          <summary><span>Hur byter jag språk?</span></summary>
           <div class="answer">
-            <p>Under Indstillinger → Sprog og region.</p>
-            <a class="go" href="/profile/settings/language-region">Gå til Sprog og region</a>
+            <p>Under Inställningar → Språk och region.</p>
+            <a class="go" href="/profile/settings/language-region">Gå till Språk och region</a>
           </div>
         </details>
         <details id="notifikationer">
-          <summary><span>Hvordan styrer jeg notifikationer?</span></summary>
+          <summary><span>Hur hanterar jag aviseringar?</span></summary>
           <div class="answer">
-            <p>Under Indstillinger → Notifikationer.</p>
-            <a class="go" href="/profile/notifications">Gå til Notifikationer</a>
+            <p>Under Inställningar → Kommunikation.</p>
+            <a class="go" href="/profile/notifications">Gå till Kommunikation</a>
           </div>
         </details>
         <details id="slet-konto">
-          <summary><span>Hvordan sletter jeg min konto?</span></summary>
+          <summary><span>Hur raderar jag mitt konto?</span></summary>
           <div class="answer">
-            <p>Det gør du selv: gå til Profil → Profil og find "Luk konto" nederst på siden. Du logges ud, og et abonnement opsiges. Fortryder du, så log ind igen inden for 3 måneder — så er kontoen åben igen. Efter 3 måneder slettes dine personoplysninger.</p>
-            <p>Vil du have dine data slettet med det samme, bruger du knappen "Slet mine data" samme sted. Det kan ikke fortrydes. I privatlivspolitikken kan du læse, hvad der sker med dine data.</p>
-            <a class="go" href="/profile/edit">Gå til Profil</a>
+            <p>Du gör det själv: gå till Profil → Profil och hitta "Stäng kontot" längst ned på sidan. Du loggas ut och eventuell prenumeration avslutas. Om du ångrar dig kan du logga in igen inom 3 månader — då är kontot öppet igen. Efter 3 månader raderas dina personuppgifter.</p>
+            <p>Om du vill att dina uppgifter raderas direkt använder du knappen "Radera mina uppgifter" på samma ställe. Detta kan inte ångras. I integritetspolicyn kan du läsa vad som händer med dina uppgifter.</p>
+            <a class="go" href="/profile/edit">Gå till Profil</a>
           </div>
         </details>
       </div>
     </section>
 
     <section id="abonnement">
-      <h2>Abonnement og betaling</h2>
+      <h2>Prenumeration och betalning</h2>
       <div class="accordion">
         <details id="se-abonnement">
-          <summary><span>Hvor kan jeg se mit abonnement?</span></summary>
+          <summary><span>Var ser jag min prenumeration?</span></summary>
           <div class="answer">
-            <p>Her ser du dit abonnement og, for løbende abonnementer, datoen for næste betaling.</p>
-            <a class="go" href="/profile/subscription">Gå til Abonnement</a>
+            <p>Här ser du din prenumeration och, för återkommande prenumerationer, datumet för nästa betalning.</p>
+            <a class="go" href="/profile/subscription">Gå till Prenumeration</a>
           </div>
         </details>
         <details id="betalingsmetode">
-          <summary><span>Hvordan ændrer jeg betalingsmetode?</span></summary>
+          <summary><span>Hur byter jag betalningssätt?</span></summary>
           <div class="answer">
-            <p>Under Betalingsmetoder kan du se og ændre, hvordan du betaler.</p>
-            <a class="go" href="/settings/payment">Gå til Betalingsmetoder</a>
+            <p>Under Betalning kan du se och ändra hur du betalar.</p>
+            <a class="go" href="/settings/payment">Gå till Betalning</a>
           </div>
         </details>
         <details id="opsig-abonnement">
-          <summary><span>Hvordan stopper jeg mit abonnement?</span></summary>
+          <summary><span>Hur avslutar jag min prenumeration?</span></summary>
           <div class="answer">
-            <p>Betaler du med MobilePay, kan du stoppe aftalen under Betalingsmetoder. Ellers send os en henvendelse via Kontakt os.</p>
-            <a class="go" href="/settings/payment">Gå til Betalingsmetoder</a><br />
-            <a class="go" href="/settings/support/contact">Kontakt os</a>
+            <p>Om du betalar med MobilePay kan du avsluta avtalet under Betalning. Annars skickar du en förfrågan till oss via Kontakta oss.</p>
+            <a class="go" href="/settings/payment">Gå till Betalning</a><br />
+            <a class="go" href="/settings/support/contact">Kontakta oss</a>
           </div>
         </details>
       </div>
     </section>
 
     <section id="data">
-      <h2>Data og privatliv</h2>
+      <h2>Data och integritet</h2>
       <div class="accordion">
         <details id="helbredsdata">
-          <summary><span>Hvordan bruges mine helbredsdata?</span></summary>
+          <summary><span>Hur används mina hälsouppgifter?</span></summary>
           <div class="answer">
-            <p>Det står i privatlivspolitikken, herunder hvordan du trækker dit samtykke tilbage.</p>
-            <a class="go" href="/privatlivspolitik">Læs privatlivspolitikken</a>
+            <p>Det beskrivs i integritetspolicyn, bland annat hur du återkallar ditt samtycke.</p>
+            <a class="go" href="/privatlivspolitik">Läs integritetspolicyn</a>
           </div>
         </details>
         <details id="del-med-laege">
-          <summary><span>Kan jeg dele mine data med min læge?</span></summary>
+          <summary><span>Kan jag dela mina uppgifter med min läkare?</span></summary>
           <div class="answer">
-            <p>Ja. Med Hello Doc kan du invitere din læge eller diætist til at se dine data.</p>
-            <a class="go" href="/settings/hello-doc">Gå til Hello Doc</a>
+            <p>Ja. Med Hello Doc kan du bjuda in din läkare eller dietist att se dina uppgifter.</p>
+            <a class="go" href="/settings/hello-doc">Gå till Hello Doc</a>
           </div>
         </details>
         <details id="support-adgang">
-          <summary><span>Hvad kan Support se?</span></summary>
+          <summary><span>Vad kan Support se?</span></summary>
           <div class="answer">
-            <p>Intet, medmindre du selv giver lov. Du vælger, hvilke data Support må se, og i hvilken periode.</p>
-            <a class="go" href="/settings/support">Gå til Support</a>
+            <p>Ingenting, om du inte själv ger tillstånd. Du väljer vilka uppgifter Support får se och under vilken period.</p>
+            <a class="go" href="/settings/support">Gå till Support</a>
           </div>
         </details>
         <details id="integrationer">
-          <summary><span>Kan jeg forbinde andre apps?</span></summary>
+          <summary><span>Kan jag koppla ihop andra appar?</span></summary>
           <div class="answer">
-            <p>Under Integrationer ser du, hvilke apps og enheder du kan forbinde.</p>
-            <a class="go" href="/settings/integrations">Gå til Integrationer</a>
+            <p>Under Integrationer ser du vilka appar och enheter du kan koppla ihop.</p>
+            <a class="go" href="/settings/integrations">Gå till Integrationer</a>
           </div>
         </details>
       </div>
     </section>
 
     <section id="fejl">
-      <h2>Fejl i appen</h2>
+      <h2>Fel i appen</h2>
       <div class="accordion">
         <details id="meld-fejl">
-          <summary><span>Hvordan melder jeg en fejl?</span></summary>
+          <summary><span>Hur rapporterar jag ett fel?</span></summary>
           <div class="answer">
-            <p>Fejl i en vares data: swipe på registreringen og vælg at melde fejl. Andre fejl i appen kan du melde her.</p>
-            <a class="go" href="/profile/report-bug">Meld en fejl</a>
+            <p>Fel i en varas uppgifter: svep på registreringen och välj att rapportera ett fel. Andra fel i appen kan du rapportera här.</p>
+            <a class="go" href="/profile/report-bug">Rapportera ett fel</a>
           </div>
         </details>
       </div>
     </section>
 
     <div class="contact" id="kontakt">
-      <p><strong>Fandt du ikke svaret?</strong>Skriv til os, så vender vi tilbage hurtigst muligt.</p>
-      <a class="btn" href="/settings/support/contact">Kontakt os</a>
+      <p><strong>Hittade du inte svaret?</strong>Skriv till oss så återkommer vi så snart som möjligt.</p>
+      <a class="btn" href="/settings/support/contact">Kontakta oss</a>
     </div>
   </div>
 
@@ -542,7 +542,7 @@
         s.insertAdjacentHTML("beforeend", chevron);
         d._title = s.querySelector("span").textContent;
         d._text = norm(d.textContent);
-        // Opdatér adresselinjen, så et åbnet emne kan deles/linkes.
+        // Uppdatera adressfältet så att ett öppnat ämne kan delas/länkas.
         d.addEventListener("toggle", function () {
           if (d.open && !input.value) history.replaceState(null, "", "#" + d.id);
         });
@@ -592,7 +592,7 @@
         requestAnimationFrame(function () { el.scrollIntoView({ block: "start" }); });
       }
 
-      // Tilbage til appen: forrige side, eller Indstillinger hvis siden blev åbnet direkte.
+      // Tillbaka till appen: föregående sida, eller Inställningar om sidan öppnades direkt.
       document.getElementById("back").addEventListener("click", function () {
         if (document.referrer && new URL(document.referrer).origin === location.origin && history.length > 1) history.back();
         else location.href = "/settings";

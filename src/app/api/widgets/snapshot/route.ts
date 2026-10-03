@@ -11,7 +11,7 @@ import { DEFAULT_LOCALE, isLocale } from "@/i18n";
 // uses the normal login cookie.
 //
 // Query: tzOffsetMinutes (minutes east of UTC, e.g. 120 for Danish summer
-// time) so "today" and the 7-day charts follow the phone's clock; locale=da|en.
+// time) so "today" and the 7-day charts follow the phone's clock; locale=da|en|de|fr|nl|sv|no.
 async function resolveUserId(req: Request) {
   const auth = req.headers.get("authorization");
   if (auth?.startsWith("Bearer ")) {

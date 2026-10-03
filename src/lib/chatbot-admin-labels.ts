@@ -25,7 +25,16 @@ export function ageLabel(age: number | null | undefined) {
 }
 
 export function localeLabel(locale: string | null | undefined) {
-  return locale === "en" ? "Engelsk" : "Dansk";
+  const names: Record<string, string> = {
+    da: "Dansk",
+    en: "Engelsk",
+    de: "Tysk",
+    fr: "Fransk",
+    nl: "Hollandsk",
+    sv: "Svensk",
+    no: "Norsk",
+  };
+  return names[locale ?? "da"] ?? "Dansk";
 }
 
 export function channelLabel(channel: string | null | undefined) {

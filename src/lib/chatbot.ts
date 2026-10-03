@@ -165,12 +165,22 @@ const REPLY_SCHEMA = {
   additionalProperties: false,
 };
 
+const CHATBOT_LANGUAGE_NAMES: Record<string, string> = {
+  da: "dansk",
+  en: "engelsk",
+  de: "tysk",
+  fr: "fransk",
+  nl: "hollandsk",
+  sv: "svensk",
+  no: "norsk",
+};
+
 function systemPrompt(locale: string, tier: string) {
   const categories = CHATBOT_CATEGORIES.map((key) => `- ${key}: ${CHATBOT_CATEGORY_HINTS[key]}`).join("\n");
   return [
     "Du er Hello Cals hjælpe-chatbot i appen. Du hjælper brugere med at bruge appen.",
     "Svar kort og venligt (højst 4-5 sætninger), i samme sprog som brugeren skriver.",
-    `Brugerens app-sprog er ${locale === "en" ? "engelsk" : "dansk"}. Brugerens abonnement: ${tier === "SERIOUS" ? "Seriøs" : "Gratis"}.`,
+    `Brugerens app-sprog er ${CHATBOT_LANGUAGE_NAMES[locale] ?? "dansk"}. Brugerens abonnement: ${tier === "SERIOUS" ? "Seriøs" : "Gratis"}.`,
     "Svar KUN ud fra VIDEN nedenfor. Gæt aldrig og opfind aldrig funktioner, priser, menupunkter eller adresser.",
     "Kan spørgsmålet ikke besvares ud fra VIDEN, så sig det ærligt og sæt needsHuman = true.",
     "Sæt også needsHuman = true, hvis brugeren beder om et menneske, er utilfreds, eller spørgsmålet handler om penge der skal tilbage, kontosletning, dobbelt betaling, adgang til en konto, eller en fejl der kræver at Support kigger på kontoen.",
@@ -310,7 +320,7 @@ export async function askChatbot(input: {
       message: `OpenAI chatbot fejlede: ${errorText(error).slice(0, 500)}`,
     });
     reply = {
-      answer: user.appLocale === "en" ? FALLBACK_ANSWER.en : FALLBACK_ANSWER.da,
+      answer: user.appLocale === "da" ? FALLBACK_ANSWER.da : FALLBACK_ANSWER.en,
       category: "OTHER",
       needsHuman: true,
       links: [],

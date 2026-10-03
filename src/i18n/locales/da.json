@@ -1886,7 +1886,7 @@
     "toggle": "Vis eller skjul banner",
     "title": "Opdater varen",
     "kindFront": "Forsiden af varen ({points} points)",
-    "hintFront": "Tag et billede af forsiden, så varen får billede og logo.",
+    "hintFront": "Tag et billede af forsiden, så varen får et produktbillede.",
     "kindNutrition": "Energi / næringsindhold ({points} points)",
     "hintNutrition": "Tag et billede af næringsdeklarationen.",
     "kindIngredients": "Indhold ({points} points)",
