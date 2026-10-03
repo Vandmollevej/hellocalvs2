@@ -22,6 +22,7 @@ const REASON_LABELS: Record<string, string> = {
   PRODUCT_UPDATED: "Vare opdateret",
   QUALITY_CONTROL_PHOTO: "Nyt billede godkendt",
   PRODUCT_RESCAN: "Vare scannet igen",
+  SIGNUP_BONUS: "Startbonus",
 };
 
 export default function PointsPage() {

@@ -70,6 +70,11 @@ Last updated: 2026-10-03
 - Withings henter nu alt: højde, fedtprocent, fedtmasse, fedtfri masse, muskelmasse, kropsvand, knoglemasse, visceralt fedt, puls, iltmætning, temperatur, VO2 max. Hver kropsmåling har egen række på integrationssiden. Se DECISIONS.md samme dato.
 - Migration `20261003150000_full_body_composition` skal køre ved deploy. Withings skal synkronisere igen for at hente de nye målinger (sker automatisk). Ingen statistikkort for de nye typer endnu (fedtmasse, fedtfri masse, knoglemasse, visceralt fedt) — data gemmes.
 - Lint, typecheck, tests og build: se commit. Ikke live-testet (ingen lokal DB/login) — test på telefon: Profil → Højde.
+## 2026-10-03: Startbonus — 35 teaser-points ved oprettelse
+
+- Alle nye almindelige konti starter med 35 points (`PointsReason.SIGNUP_BONUS`, `SIGNUP_BONUS_POINTS` i `src/lib/points-constants.ts`). Gives i `/api/auth/register` og ved første login med Google/Apple/Facebook (`src/lib/oauth.ts`) via `awardSignupBonus()` — højst én gang pr. bruger. Familieprofiler og admin-konti får den ikke. Vises som "Startbonus" under Profil → Points og står i Betingelser §8. Se DECISIONS.md samme dato.
+- Eksisterende brugere får også 35 points (ejerens valg): migration `20261003120100_points_signup_bonus_backfill` giver alle nuværende almindelige brugere bonussen én gang (ikke admin, glemte brugere eller betaler-oprettede familieprofiler).
+- Migrationerne `20261003120000_points_signup_bonus` og `…120100_points_signup_bonus_backfill` skal køre ved deploy. Testet mod en midlertidig PostgreSQL 16: alle migrationer kører, backfill rammer kun de rigtige brugere og giver ikke dobbelt bonus ved gentagelse. Lint, typecheck og build grønne; app-flowet ikke live-testet.
 
 ## 2026-10-02: Kalenderen husker den åbne dag
 

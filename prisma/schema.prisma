@@ -1053,14 +1053,11 @@ enum HealthMetricType {
   VISCERAL_FAT_INDEX
 
   // 2026-10-03: alt, vægte, ure og blodtryksmålere kan levere (brugerens krav:
-  // "ALT skal med"). Kropssammensætning:
-  FAT_MASS_KG
-  FAT_FREE_MASS_KG
+  // "ALT skal med"). Kropssammensætning (fedtmasse, fedtfri masse, knoglemasse
+  // og visceralt fedt står ovenfor):
   SKELETAL_MUSCLE_MASS_KG
-  BONE_MASS_KG
   EXTRACELLULAR_WATER_KG
   INTRACELLULAR_WATER_KG
-  VISCERAL_FAT_INDEX
   PROTEIN_PERCENT
   BASAL_METABOLIC_RATE_KCAL
   METABOLIC_AGE_YEARS
@@ -2334,6 +2331,9 @@ enum PointsReason {
   PRODUCT_RESCAN
   // Første testperson af en integration, godkendt af admin (2026-10-02).
   INTEGRATION_TESTER
+  // Startbonus (teaser) ved oprettelse af en almindelig konto, 2026-10-03
+  // (docs/DECISIONS.md): alle nye brugere starter med 35 points.
+  SIGNUP_BONUS
 }
 
 model PointsTransaction {

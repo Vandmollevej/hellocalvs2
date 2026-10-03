@@ -4114,3 +4114,11 @@ Brugerens krav: "Luk konto kan reverses inde. For 3 måneder, med mindre man væ
 
 - Øverst i Hjælpecenter (`public/hjaelp.html`) står guiden "Lær appen at kende" med knappen "Start guiden" på grøn baggrund (`#067A46`, hvid tekst) — ejerens udtrykkelige ønske og en bevidst undtagelse fra design.md's regel om, at grønne handlingsknapper er udfaset.
 - Den statiske side kan ikke selv åbne guiden, så den linker til `/settings?guide=1`, som starter `OnboardingWizard` forfra (samme handling som "Lær appen at kende" i Indstillinger).
+
+## 2026-10-03: Startbonus på 35 points (teaser)
+
+- Ejerens beslutning: hver bruger starter registreringen med 35 points som teaser, så pointsystemet er synligt fra dag ét (300 points = 1 gratis måned).
+- Ny `PointsReason.SIGNUP_BONUS` i ledgeren (ingen cachet saldo, jf. 2026-09-02). Beløbet ligger i `SIGNUP_BONUS_POINTS` (`src/lib/points-constants.ts`).
+- Gives ved oprettelse af en almindelig konto: e-mail-tilmelding (`/api/auth/register`) og ny konto via Google/Apple/Facebook. Ikke til familieprofiler (oprettes af ejeren, kan ikke logge ind selv) eller admin-konti. `awardSignupBonus()` giver højst én bonus pr. bruger.
+- Eksisterende brugere får også bonussen (ejerens valg 2026-10-03): engangs-migrationen `20261003120100_points_signup_bonus_backfill` giver alle nuværende almindelige brugere 35 points — ikke admin-konti, glemte brugere eller familieprofiler oprettet af betaleren. Migrationen springer brugere over, der allerede har en `SIGNUP_BONUS`.
+

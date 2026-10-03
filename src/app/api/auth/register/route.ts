@@ -5,6 +5,7 @@ import { completeLogin } from "@/lib/user-login";
 import { sendEmailVerification } from "@/lib/email-verification";
 import { normalizePhone } from "@/lib/phone";
 import { checkVerificationCode } from "@/lib/sms-verification";
+import { awardSignupBonus } from "@/lib/points";
 
 // Rigtig e-mail-tilmelding (kalder ikke admin-login-koden). Blød bekræftelse
 // (docs/DECISIONS.md 2026-09-25): brugeren logges ind med det samme, men
@@ -90,6 +91,7 @@ export async function POST(req: Request) {
     });
   }
 
+  await awardSignupBonus(user.id);
   await sendEmailVerification(user);
 
   const response = NextResponse.json({ user }, { status: 201 });
