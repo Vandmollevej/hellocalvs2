@@ -59,7 +59,8 @@ export const PAGE_TREE: PageArea[] = [
         note: "Eget login for partneres B2B-brugere; kontoen oprettes kun af en administrator",
         children: [
           { path: "/partner/login", label: "Log ind (B2B)" },
-          { path: "/partner/invite", label: "Accepter invitation", note: "Åbnes fra link i mail; vælg adgangskode" },
+          { path: "/partner/verify", label: "2-faktor-kode", note: "Efter adgangskode" },
+          { path: "/partner/invite", label: "Accepter invitation", note: "Åbnes fra link i mail; adgangskode + 2-faktor (QR-kode)" },
         ],
       },
     ],
