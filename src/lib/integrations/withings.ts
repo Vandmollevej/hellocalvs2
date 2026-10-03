@@ -1,20 +1,14 @@
-// Withings Health API (OAuth2, developer.withings.com). Vægt og fedtprocent
-// fra en tilknyttet smart-vægt. Env: WITHINGS_CLIENT_ID/WITHINGS_CLIENT_SECRET.
+// Withings Health API (OAuth2, developer.withings.com). Vægt og alle øvrige
+// målinger (kropssammensætning, blodtryk, puls, temperatur …) fra brugerens
+// Withings-enheder. Env: WITHINGS_CLIENT_ID/WITHINGS_CLIENT_SECRET.
 
-import type { IntegrationItem } from "@/lib/integrations/store-items";
+import { MEASTYPES, withingsItems, type MeasureGroup } from "./withings-items";
 import { clientCredentials, postForm, type OAuthProviderAdapter, type OAuthTokens } from "./types";
 
 const AUTHORIZE_URL = "https://account.withings.com/oauth2_user/authorize2";
 const TOKEN_URL = "https://wbsapi.withings.net/v2/oauth2";
 const MEASURE_URL = "https://wbsapi.withings.net/measure";
 const SCOPES = "user.info,user.metrics";
-
-// Withings-måletyper: 1 = vægt (kg), 6 = fedtprocent. Værdi = value * 10^unit.
-const WEIGHT = 1;
-const FAT_RATIO = 6;
-// 76 = muskelmasse (kg), 77 = kropsvand (kg; gemmes som % af vægten i samme måling).
-const MUSCLE_MASS = 76;
-const HYDRATION = 77;
 
 type WithingsEnvelope<T> = { status: number; body: T; error?: string };
 
@@ -29,7 +23,6 @@ async function callOAuth(params: Record<string, string>): Promise<OAuthTokens> {
   return data.body;
 }
 
-type MeasureGroup = { date: number; measures: { value: number; type: number; unit: number }[] };
 type MeasureBody = { measuregrps?: MeasureGroup[]; more?: number; offset?: number };
 
 async function fetchMeasureGroups(accessToken: string, sinceUnixSeconds: number) {
@@ -38,7 +31,7 @@ async function fetchMeasureGroups(accessToken: string, sinceUnixSeconds: number)
   for (let page = 0; page < 20; page++) {
     const params: Record<string, string> = {
       action: "getmeas",
-      meastypes: `${WEIGHT},${FAT_RATIO},${MUSCLE_MASS},${HYDRATION}`,
+      meastypes: MEASTYPES,
       category: "1",
       lastupdate: String(sinceUnixSeconds),
     };
@@ -60,6 +53,8 @@ export const withings: OAuthProviderAdapter = {
   label: "Withings",
   envPrefix: "WITHINGS",
   initialDays: 365,
+  // 1 (2026-10-03): alle måletyper, ikke kun vægt, fedt, muskler og vand.
+  fetchVersion: 1,
   buildAuthorizeUrl(state, redirectUri) {
     const url = new URL(AUTHORIZE_URL);
     url.searchParams.set("response_type", "code");
@@ -77,31 +72,6 @@ export const withings: OAuthProviderAdapter = {
     return callOAuth({ grant_type: "refresh_token", refresh_token: refreshToken });
   },
   async fetchItems(accessToken, since) {
-    const groups = await fetchMeasureGroups(accessToken, Math.floor(since.getTime() / 1000));
-    const items: IntegrationItem[] = [];
-    for (const group of groups) {
-      const at = new Date(group.date * 1000).toISOString();
-      const valueOf = (type: number) => {
-        const found = group.measures.find((measure) => measure.type === type);
-        return found ? found.value * Math.pow(10, found.unit) : null;
-      };
-      for (const m of group.measures) {
-        const value = m.value * Math.pow(10, m.unit);
-        if (m.type === WEIGHT) {
-          items.push({ kind: "weight", payload: { source: "WITHINGS", weightKg: value, weighedAt: at } });
-        } else if (m.type === FAT_RATIO) {
-          items.push({ kind: "metric", payload: { source: "WITHINGS", type: "BODY_FAT_PERCENT", value, recordedAt: at } });
-        } else if (m.type === MUSCLE_MASS) {
-          items.push({ kind: "metric", payload: { source: "WITHINGS", type: "MUSCLE_MASS_KG", value, recordedAt: at } });
-        } else if (m.type === HYDRATION) {
-          const weight = valueOf(WEIGHT);
-          if (weight && weight > 0) {
-            const percent = Math.round((value / weight) * 1000) / 10;
-            items.push({ kind: "metric", payload: { source: "WITHINGS", type: "BODY_WATER_PERCENT", value: percent, recordedAt: at } });
-          }
-        }
-      }
-    }
-    return items;
+    return withingsItems(await fetchMeasureGroups(accessToken, Math.floor(since.getTime() / 1000)));
   },
 };

@@ -93,7 +93,15 @@ export function huaweiWeightItems(points: SamplePoint[]): IntegrationItem[] {
     items.push(
       ...metric("BODY_FAT_PERCENT", huaweiField(point.value, "body_fat_rate"), at),
       ...metric("MUSCLE_MASS_KG", huaweiField(point.value, "muscle_mass"), at),
-      ...metric("BMI", huaweiField(point.value, "bmi"), at)
+      ...metric("BMI", huaweiField(point.value, "bmi"), at),
+      // Resten af vægtens målinger (brugerkrav 2026-10-03: "ALT skal med").
+      ...metric("FAT_MASS_KG", huaweiField(point.value, "body_fat"), at),
+      ...metric("BONE_MASS_KG", huaweiField(point.value, "bone_salt"), at),
+      ...metric("BODY_WATER_PERCENT", huaweiField(point.value, "moisture_rate"), at),
+      ...metric("BODY_WATER_KG", huaweiField(point.value, "moisture"), at),
+      ...metric("VISCERAL_FAT_INDEX", huaweiField(point.value, "visceral_fat_level"), at),
+      ...metric("BASAL_METABOLIC_RATE_KCAL", huaweiField(point.value, "basal_metabolism"), at),
+      ...metric("METABOLIC_AGE", huaweiField(point.value, "body_age"), at)
     );
   }
   return items;

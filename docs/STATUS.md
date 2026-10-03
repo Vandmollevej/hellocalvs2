@@ -3,6 +3,12 @@
 Last updated: 2026-10-02
 Last updated: 2026-10-03
 
+## 2026-10-03: Smartvægt — låste vejninger, slette-advarsel og alle målinger
+
+- Synkroniserede vejninger kan ikke slettes/rettes (API 403); listen viser "Synkroniseret", som åbner et info-vindue med kilde og alle målinger. Samme vindue advarer før sletning af indtastede vejninger og indtag (dagens liste, stemme, chat). Withings henter nu alle måletyper; Garmin/Huawei/Fitbit flere. Se DECISIONS.md samme dato.
+- Kræver migration `20261003180000_all_scale_metrics` (16 enum-værdier + `integrations.fetchVersion`). Første synkronisering efter deploy henter Withings' historik (365 dage) igen.
+- Lint, typecheck, tests (undtagen den kendte `page-tree`-fejl, som også fejler på master) og build kørt. Ikke live-testet (ingen DB/Withings-konto i sessionen) — test på telefon: Profil → Vægt kalibrering → tryk "Synkroniseret" og "Slet"; swipe-slet et indtag på forsiden.
+
 ## 2026-10-02: Kalenderen husker den åbne dag
 
 - Dagsvisningen genåbnes efter navigation væk fra `/calendar` (Tilbage eller "Kalender" i menuen) i stedet for at falde tilbage til måneden. Ny `src/lib/calendar-open-day.ts` (URL `?date=` + sessionStorage), koblet ind i `src/app/calendar/page.tsx`. Se DECISIONS.md samme dato.

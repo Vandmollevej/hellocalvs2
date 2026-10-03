@@ -24,6 +24,10 @@ export type OAuthProviderAdapter = {
   envPrefix: string;
   // Hvor langt tilbage første synkronisering henter.
   initialDays: number;
+  // Hæves, når adapteren begynder at hente flere datatyper: integrationer med
+  // en lavere Integration.fetchVersion henter hele perioden (initialDays) igen
+  // én gang, så historikken også får de nye typer.
+  fetchVersion?: number;
   // OAuth med PKCE (Garmin): connect laver en code_verifier, som gemmes i
   // state-cookien og sendes med ved token-udvekslingen.
   pkce?: boolean;

@@ -12,6 +12,7 @@ import { defaultMealInputLanguage, readStoredMealInputLanguage, speechLangFor, t
 import { MealLanguagePicker } from "@/components/voice/MealLanguagePicker";
 import { useMealInputLanguage } from "@/components/voice/useMealInputLanguage";
 import { useTranslation } from "@/i18n/LocaleProvider";
+import { EntryDetailsSheet } from "@/components/hf/EntryDetailsSheet";
 import { scaleItemToGrams } from "@/lib/scale-meal-item";
 
 type Item = {
@@ -259,6 +260,7 @@ export default function VoicePage() {
   const [phase, setPhase] = useState<VoicePhase>(() => (loadPersistedItems().length > 0 ? "added" : "idle"));
   const [transcript, setTranscript] = useState("");
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [confirmDelete, setConfirmDelete] = useState<Item | null>(null);
   const [isAdding, setIsAdding] = useState(false);
   const recognitionRef = useRef<SpeechRecognitionLike | null>(null);
   const finalTranscriptRef = useRef("");
@@ -614,11 +616,19 @@ export default function VoicePage() {
     return addItems(items.filter((item) => !item.saved));
   }
 
+  // Et gemt indtag slettes først efter bekræftelse i info-vinduet
+  // (brugerkrav 2026-10-03); et forslag, der ikke er gemt, fjernes bare.
   function deleteItem(item: Item) {
-    setItems((current) => current.filter((existing) => existing.id !== item.id));
     if (item.saved) {
-      fetch(`/api/registrations/${item.id}`, { method: "DELETE" }).catch(() => {});
+      setConfirmDelete(item);
+      return;
     }
+    setItems((current) => current.filter((existing) => existing.id !== item.id));
+  }
+
+  function deleteSavedItem(item: Item) {
+    setItems((current) => current.filter((existing) => existing.id !== item.id));
+    fetch(`/api/registrations/${item.id}`, { method: "DELETE" }).catch(() => {});
   }
 
   async function favoriteItem(productId: string) {
@@ -760,6 +770,17 @@ export default function VoicePage() {
           </section>
         )}
       </div>
+      {confirmDelete && (
+        <EntryDetailsSheet
+          title={confirmDelete.title}
+          rows={[
+            { label: t("entrySheet.amount"), value: confirmDelete.amountLabel || `${Math.round(confirmDelete.amountGrams)} g` },
+            { label: t("entrySheet.energy"), value: `${Math.round(confirmDelete.kcal)} kcal` },
+          ]}
+          onDelete={() => deleteSavedItem(confirmDelete)}
+          onClose={() => setConfirmDelete(null)}
+        />
+      )}
     </HfScreen>
   );
 }

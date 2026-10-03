@@ -117,9 +117,12 @@ export async function runIntegrationSync(userId: string, adapter: OAuthProviderA
   try {
     const accessToken = await freshAccessToken(adapter, integration);
 
-    const since = integration.lastSyncedAt
-      ? new Date(integration.lastSyncedAt.getTime() - OVERLAP_MS)
-      : new Date(Date.now() - adapter.initialDays * DAY_MS);
+    const fetchVersion = adapter.fetchVersion ?? 0;
+    const refetchHistory = integration.fetchVersion < fetchVersion;
+    const since =
+      integration.lastSyncedAt && !refetchHistory
+        ? new Date(integration.lastSyncedAt.getTime() - OVERLAP_MS)
+        : new Date(Date.now() - adapter.initialDays * DAY_MS);
     const items = filterItemsBySettings(adapter.provider, integration.syncSettings, await adapter.fetchItems(accessToken, since));
     const delivered = await storeIntegrationItems(userId, items);
 
@@ -140,7 +143,7 @@ export async function runIntegrationSync(userId: string, adapter: OAuthProviderA
 
     await prisma.integration.update({
       where: { id: integration.id },
-      data: { status: "CONNECTED", lastSyncedAt: new Date(), lastPushedAt, lastError: null },
+      data: { status: "CONNECTED", lastSyncedAt: new Date(), lastPushedAt, lastError: null, fetchVersion },
     });
     return { delivered, pushed };
   } catch (error) {

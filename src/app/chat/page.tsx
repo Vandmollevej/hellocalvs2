@@ -7,6 +7,7 @@ import { HfScreen } from "@/components/HfScreen";
 import { EnergyChip } from "@/components/calendar/EnergyChip";
 import { SwipeableRow } from "@/components/SwipeableRow";
 import { useTranslation } from "@/i18n/LocaleProvider";
+import { EntryDetailsSheet } from "@/components/hf/EntryDetailsSheet";
 import { mealShareBody } from "@/lib/meal-share";
 import { MealLanguagePicker } from "@/components/voice/MealLanguagePicker";
 import { useMealInputLanguage } from "@/components/voice/useMealInputLanguage";
@@ -126,6 +127,7 @@ export default function ChatPage() {
   const [busy, setBusy] = useState(false);
   const [isAdding, setIsAdding] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [confirmDelete, setConfirmDelete] = useState<Item | null>(null);
   const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
@@ -227,11 +229,19 @@ export default function ChatPage() {
     if (savedByPendingId.size < pending.length) setErrorMessage(t("web.chatSaveError"));
   }
 
+  // Et gemt indtag slettes først efter bekræftelse i info-vinduet
+  // (brugerkrav 2026-10-03); et forslag, der ikke er gemt, fjernes bare.
   function deleteItem(item: Item) {
-    setItems((current) => current.filter((existing) => existing.id !== item.id));
     if (item.saved) {
-      fetch(`/api/registrations/${item.id}`, { method: "DELETE" }).catch(() => {});
+      setConfirmDelete(item);
+      return;
     }
+    setItems((current) => current.filter((existing) => existing.id !== item.id));
+  }
+
+  function deleteSavedItem(item: Item) {
+    setItems((current) => current.filter((existing) => existing.id !== item.id));
+    fetch(`/api/registrations/${item.id}`, { method: "DELETE" }).catch(() => {});
   }
 
   // Forslag og tilføjede varer står hver for sig: intet gemmes, før brugeren
@@ -326,6 +336,17 @@ export default function ChatPage() {
           </section>
         )}
       </div>
+      {confirmDelete && (
+        <EntryDetailsSheet
+          title={confirmDelete.title}
+          rows={[
+            { label: t("entrySheet.amount"), value: confirmDelete.amountLabel || `${Math.round(confirmDelete.amountGrams)} g` },
+            { label: t("entrySheet.energy"), value: `${Math.round(confirmDelete.kcal)} kcal` },
+          ]}
+          onDelete={() => deleteSavedItem(confirmDelete)}
+          onClose={() => setConfirmDelete(null)}
+        />
+      )}
     </HfScreen>
   );
 }

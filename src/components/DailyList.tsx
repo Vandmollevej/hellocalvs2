@@ -10,11 +10,14 @@ import { useTranslation } from "@/i18n/LocaleProvider";
 import { useFamilyStatus, type FamilyProfile } from "@/components/family/FamilyStatusProvider";
 import { CopyToAccountSheet } from "@/components/family/CopyToAccountSheet";
 import { SkeletonMediaRows } from "@/components/hf/Skeleton";
+import { EntryDetailsSheet } from "@/components/hf/EntryDetailsSheet";
 
 type Entry = {
   id: string;
   title: string;
   kcalPer100g: number;
+  kcal: number;
+  amountGrams: number;
   createdAt: string;
   image?: string;
   productId: string | null;
@@ -57,6 +60,8 @@ export function DailyList() {
   const [error, setError] = useState<string | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
   const [copyingId, setCopyingId] = useState<string | null>(null);
+  // Sletning af indtag kræver bekræftelse i info-vinduet (brugerkrav 2026-10-03).
+  const [confirmDelete, setConfirmDelete] = useState<Entry | null>(null);
   // "Se dine indscanninger" vises kun, når en vare fotograferet i dag endnu
   // ikke er tilføjet (bruger 2026-10-02, src/lib/user-scans.ts).
   const [hasUnaddedScans, setHasUnaddedScans] = useState(false);
@@ -83,6 +88,8 @@ export function DailyList() {
                 registration.amountGrams > 0
                   ? (registration.kcalSnapshot / registration.amountGrams) * 100
                   : registration.kcalSnapshot,
+              kcal: registration.kcalSnapshot,
+              amountGrams: registration.amountGrams,
               createdAt: registration.createdAt,
               image: registration.product?.imageUrl ?? undefined,
               productId: registration.productId,
@@ -174,7 +181,7 @@ export function DailyList() {
               onFavorite={entry.productId ? () => void favoriteEntry(entry.productId) : undefined}
               onCopyToAccount={copyTargets.length > 0 ? () => startCopy(entry.id) : undefined}
               onReportError={() => router.push(`/registration/${entry.id}/report-error`)}
-              onDelete={() => void deleteEntry(entry.id)}
+              onDelete={() => setConfirmDelete(entry)}
             >
               <Link href={`/registration/${entry.id}`} className="block">
                 <FoodRow
@@ -213,6 +220,18 @@ export function DailyList() {
         <p role="status" className="hf-type-body absolute inset-x-4 bottom-10 rounded-[8px] bg-hf-black px-4 py-2 text-center text-hf-white">
           {notice}
         </p>
+      )}
+      {confirmDelete && (
+        <EntryDetailsSheet
+          title={confirmDelete.title}
+          subtitle={t("dailyList.atTime", { time: formatTime(confirmDelete.createdAt) })}
+          rows={[
+            { label: t("entrySheet.amount"), value: `${Math.round(confirmDelete.amountGrams)} g` },
+            { label: t("entrySheet.energy"), value: `${Math.round(confirmDelete.kcal)} kcal` },
+          ]}
+          onDelete={() => void deleteEntry(confirmDelete.id)}
+          onClose={() => setConfirmDelete(null)}
+        />
       )}
       {copyingId && (
         <CopyToAccountSheet

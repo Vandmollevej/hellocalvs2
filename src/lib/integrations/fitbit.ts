@@ -18,7 +18,7 @@ type ActivityLog = {
   duration: number; // ms
   calories: number;
 };
-type WeightLog = { date: string; time: string; weight: number };
+type WeightLog = { date: string; time: string; weight: number; bmi?: number };
 
 export const fitbit: OAuthProviderAdapter = {
   provider: "FITBIT",
@@ -26,6 +26,8 @@ export const fitbit: OAuthProviderAdapter = {
   label: "Fitbit",
   envPrefix: "FITBIT",
   initialDays: 30,
+  // 1 (2026-10-03): flere af vægtens målinger (BMI, knoglemasse, visceralt fedt …).
+  fetchVersion: 1,
   buildAuthorizeUrl(state, redirectUri) {
     const url = new URL(AUTHORIZE_URL);
     url.searchParams.set("client_id", clientCredentials("FITBIT").clientId);
@@ -85,6 +87,12 @@ export const fitbit: OAuthProviderAdapter = {
         kind: "weight",
         payload: { source: "FITBIT", weightKg: log.weight, weighedAt: new Date(`${log.date}T${log.time}`).toISOString() },
       })),
+      ...(weights.weight ?? [])
+        .filter((log) => typeof log.bmi === "number" && log.bmi > 0)
+        .map((log) => ({
+          kind: "metric",
+          payload: { source: "FITBIT", type: "BMI", value: log.bmi, recordedAt: new Date(`${log.date}T${log.time}`).toISOString() },
+        })),
       ...(fats.fat ?? []).map((log) => ({
         kind: "metric",
         payload: {

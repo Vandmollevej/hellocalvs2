@@ -5,6 +5,8 @@ import { garminItems } from "./integrations/garmin-items.ts";
 import { whoopItems, whoopLocalDay } from "./integrations/whoop-items.ts";
 import { huaweiDailyItems, huaweiField, huaweiSleepItems, huaweiTimeMs, huaweiWeightItems } from "./integrations/huawei-items.ts";
 import { brandForOrigin } from "./integrations/origins.ts";
+import { withingsItems } from "./integrations/withings-items.ts";
+import { filterItemsBySettings } from "./integrations/sync-settings.ts";
 
 const byType = (items) => Object.fromEntries(items.filter((i) => i.kind === "metric").map((i) => [i.payload.type, i.payload]));
 
@@ -104,4 +106,69 @@ test("Afsender-app genkendes som mærke", () => {
   assert.equal(brandForOrigin("com.tuya.smartlife"), "TUYA");
   assert.equal(brandForOrigin("com.garmin.android.apps.connectmobile"), null);
   assert.equal(brandForOrigin(undefined), null);
+});
+
+test("Withings: alle vægtens målinger kommer med, ikke kun vægt og fedt", () => {
+  const items = withingsItems([
+    {
+      date: 1_790_000_000,
+      measures: [
+        { type: 1, value: 78400, unit: -3 },
+        { type: 6, value: 215, unit: -1 },
+        { type: 8, value: 16856, unit: -3 },
+        { type: 5, value: 61544, unit: -3 },
+        { type: 76, value: 331, unit: -1 },
+        { type: 77, value: 4312, unit: -2 },
+        { type: 88, value: 31, unit: -1 },
+        { type: 170, value: 9, unit: 0 },
+        { type: 226, value: 1712, unit: 0 },
+        { type: 10, value: 128, unit: 0 },
+        { type: 9, value: 82, unit: 0 },
+        { type: 11, value: 64, unit: 0 },
+        { type: 4, value: 182, unit: -2 },
+        { type: 999, value: 1, unit: 0 },
+      ],
+    },
+  ]);
+  const weight = items.find((i) => i.kind === "weight");
+  assert.equal(weight.payload.weightKg, 78.4);
+  const m = byType(items);
+  assert.equal(m.BODY_FAT_PERCENT.value, 21.5);
+  assert.equal(m.FAT_MASS_KG.value, 16.86);
+  assert.equal(m.FAT_FREE_MASS_KG.value, 61.54);
+  assert.equal(m.MUSCLE_MASS_KG.value, 33.1);
+  assert.equal(m.BODY_WATER_KG.value, 43.12);
+  assert.equal(m.BODY_WATER_PERCENT.value, 55);
+  assert.equal(m.BONE_MASS_KG.value, 3.1);
+  assert.equal(m.VISCERAL_FAT_INDEX.value, 9);
+  assert.equal(m.BASAL_METABOLIC_RATE_KCAL.value, 1712);
+  assert.equal(m.BLOOD_PRESSURE_SYSTOLIC_MMHG.value, 128);
+  assert.equal(m.BLOOD_PRESSURE_DIASTOLIC_MMHG.value, 82);
+  assert.equal(m.HEART_RATE_BPM.value, 64);
+  assert.equal(m.HEIGHT_CM.value, 182);
+  assert.equal(Object.keys(m).length, 13, "ukendte måletyper springes over");
+
+  // Standardvalgene for Withings lader alle målingerne komme igennem.
+  assert.equal(filterItemsBySettings("WITHINGS", null, items).length, items.length);
+});
+
+test("Garmin og Huawei: knoglemasse og øvrige vægtmålinger", () => {
+  const garmin = byType(garminItems("bodyComps", [{ measurementTimeInSeconds: 1_790_000_000, weightInGrams: 78400, boneMassInGrams: 3100 }]));
+  assert.equal(garmin.BONE_MASS_KG.value, 3.1);
+  const huawei = byType(
+    huaweiWeightItems([
+      {
+        startTime: 1_790_000_000_000,
+        value: [
+          { fieldName: "body_weight", floatValue: 78.4 },
+          { fieldName: "bone_salt", floatValue: 3.1 },
+          { fieldName: "visceral_fat_level", floatValue: 9 },
+          { fieldName: "basal_metabolism", floatValue: 1712 },
+        ],
+      },
+    ])
+  );
+  assert.equal(huawei.BONE_MASS_KG.value, 3.1);
+  assert.equal(huawei.VISCERAL_FAT_INDEX.value, 9);
+  assert.equal(huawei.BASAL_METABOLIC_RATE_KCAL.value, 1712);
 });

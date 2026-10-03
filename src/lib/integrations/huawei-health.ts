@@ -78,6 +78,8 @@ export const huaweiHealth: OAuthProviderAdapter = {
   label: "Huawei Health",
   envPrefix: "HUAWEI_HEALTH",
   initialDays: 30,
+  // 1 (2026-10-03): flere af vægtens målinger (BMI, knoglemasse, visceralt fedt …).
+  fetchVersion: 1,
   buildAuthorizeUrl(state, redirectUri) {
     const url = new URL(AUTHORIZE_URL);
     url.searchParams.set("response_type", "code");

@@ -15,6 +15,8 @@ import {
 import { useTranslation } from "@/i18n/LocaleProvider";
 import { formatWeight, parseWeightInput, useUnits, weightToInputValue, weightUnitLabel, type WeightUnit } from "@/lib/units";
 import { SkeletonCards, SkeletonScreen } from "@/components/hf/Skeleton";
+import { EntryDetailsSheet, type EntrySource } from "@/components/hf/EntryDetailsSheet";
+import { formatBodyMetric, orderBodyMetrics } from "@/lib/body-metrics";
 
 type RelativeTime = "BEFORE" | "AFTER" | "UNKNOWN";
 type TimeOfDay = "MORNING" | "EVENING" | "UNKNOWN";
@@ -28,9 +30,19 @@ type WeightEntry = {
   toilet: RelativeTime;
   meal: RelativeTime;
   timeOfDay: TimeOfDay;
+  // MANUAL = indtastet; alt andet er synkroniseret fra en integration og kan
+  // ikke slettes (brugerkrav 2026-10-03).
+  source: string;
   note: string | null;
   weighedAt: string;
 };
+
+type EntryDetails = {
+  source: { label: string; icon: string | null } | null;
+  metrics: { type: string; value: number }[];
+};
+
+const isSynced = (entry: WeightEntry) => entry.source !== "MANUAL";
 
 type T = (key: string) => string;
 
@@ -54,7 +66,8 @@ function todayAtHour(hour: number) {
 }
 
 // Today's whole-hour entries (created by the day list), keyed by hour, so
-// editing a slot updates that row instead of creating a duplicate.
+// editing a slot updates that row instead of creating a duplicate. Synced
+// weigh-ins are never edited here.
 function todaysSlotEntries(entries: WeightEntry[]) {
   const map: Record<number, WeightEntry> = {};
   const now = new Date();
@@ -64,7 +77,7 @@ function todaysSlotEntries(entries: WeightEntry[]) {
       weighedAt.getFullYear() === now.getFullYear() &&
       weighedAt.getMonth() === now.getMonth() &&
       weighedAt.getDate() === now.getDate();
-    if (isToday && weighedAt.getMinutes() === 0 && weighedAt.getSeconds() === 0) {
+    if (isToday && !isSynced(entry) && weighedAt.getMinutes() === 0 && weighedAt.getSeconds() === 0) {
       map[weighedAt.getHours()] ??= entry;
     }
   }
@@ -164,6 +177,9 @@ export default function WeightCalibrationPage() {
   const [gridValues, setGridValues] = useState<Record<number, string>>({});
   const [saving, setSaving] = useState(false);
   const [status, setStatus] = useState<"idle" | "saved" | "nothing" | "error">("idle");
+  // Info-vinduet: synkroniseret vejning (kun info) eller indtastet (slette-advarsel).
+  const [openEntry, setOpenEntry] = useState<WeightEntry | null>(null);
+  const [details, setDetails] = useState<EntryDetails | null>(null);
 
   const slotEntries = useMemo(() => todaysSlotEntries(entries), [entries]);
   const pairs = conditionPairs(t);
@@ -250,10 +266,45 @@ export default function WeightCalibrationPage() {
     }
   }
 
-  async function remove(id: string) {
-    setEntries((current) => current.filter((entry) => entry.id !== id));
-    await fetch(`/api/weight-entries/${id}`, { method: "DELETE" }).catch(() => {});
+  function openDetails(entry: WeightEntry) {
+    setOpenEntry(entry);
+    setDetails(null);
+    if (!isSynced(entry)) return;
+    fetch(`/api/weight-entries/${entry.id}`)
+      .then(async (response) => (response.ok ? ((await response.json()) as EntryDetails) : null))
+      .then((data) => setDetails(data ?? { source: null, metrics: [] }))
+      .catch(() => setDetails({ source: null, metrics: [] }));
   }
+
+  async function remove(id: string) {
+    const previous = entries;
+    setEntries((current) => current.filter((entry) => entry.id !== id));
+    const response = await fetch(`/api/weight-entries/${id}`, { method: "DELETE" }).catch(() => null);
+    if (!response?.ok) {
+      setEntries(previous);
+      setStatus("error");
+    }
+  }
+
+  function sheetRows(entry: WeightEntry) {
+    const rows: { label: string; value: string }[] = [];
+    if (!isSynced(entry)) {
+      const described = describeEntry(entry, t);
+      if (described) rows.push({ label: t("entrySheet.conditions"), value: described });
+      return rows;
+    }
+    for (const metric of orderBodyMetrics(details?.metrics ?? [])) {
+      const unit = metric.display.unit === "years" ? t("entrySheet.years") : metric.display.unit;
+      rows.push({ label: t(`entrySheet.metrics.${metric.type}`), value: formatBodyMetric(metric.value, metric.display, unit) });
+    }
+    return rows;
+  }
+
+  const openSource: EntrySource | undefined = openEntry
+    ? isSynced(openEntry)
+      ? { kind: "synced", label: details?.source?.label ?? t(`entrySheet.sources.${openEntry.source}`), icon: details?.source?.icon ?? null }
+      : { kind: "manual" }
+    : undefined;
 
   const recentEntries = entries.slice(0, RECENT_ENTRY_LIMIT);
 
@@ -338,14 +389,25 @@ export default function WeightCalibrationPage() {
                   </p>
                   <p className="hf-type-small text-text-secondary">{describeEntry(entry, t)}</p>
                 </div>
-                <button
-                  type="button"
-                  onClick={() => remove(entry.id)}
-                  aria-label={t("weightCalibration.deleteAria")}
-                  className="hf-type-small hf-type-strong text-text-secondary px-2"
-                >
-                  {t("weightCalibration.delete")}
-                </button>
+                {isSynced(entry) ? (
+                  <button
+                    type="button"
+                    onClick={() => openDetails(entry)}
+                    aria-label={t("weightCalibration.syncedAria")}
+                    className="hf-type-small hf-type-strong text-text-secondary px-2"
+                  >
+                    {t("weightCalibration.synced")}
+                  </button>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={() => openDetails(entry)}
+                    aria-label={t("weightCalibration.deleteAria")}
+                    className="hf-type-small hf-type-strong text-text-secondary px-2"
+                  >
+                    {t("weightCalibration.delete")}
+                  </button>
+                )}
               </div>
             ))}
           </section>
@@ -367,6 +429,17 @@ export default function WeightCalibrationPage() {
           </ActionButton>
         </div>
       </div>
+      {openEntry && (
+        <EntryDetailsSheet
+          title={formatWeight(openEntry.weightKg, weightUnit)}
+          subtitle={formatDateTime(openEntry.weighedAt)}
+          source={openSource}
+          rows={sheetRows(openEntry)}
+          loading={isSynced(openEntry) && details === null}
+          onDelete={isSynced(openEntry) ? undefined : () => void remove(openEntry.id)}
+          onClose={() => setOpenEntry(null)}
+        />
+      )}
     </HfScreen>
   );
 }

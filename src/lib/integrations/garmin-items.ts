@@ -45,6 +45,7 @@ type BodyComp = {
   bodyFatInPercent?: number;
   muscleMassInGrams?: number;
   bodyWaterInPercent?: number;
+  boneMassInGrams?: number;
   bodyMassIndex?: number;
 };
 
@@ -118,6 +119,7 @@ export function garminItems(kind: GarminSummaryKind, records: unknown[]): Integr
         ...metric("BODY_FAT_PERCENT", positive(b.bodyFatInPercent) ? b.bodyFatInPercent : null, at),
         ...metric("MUSCLE_MASS_KG", positive(b.muscleMassInGrams) ? b.muscleMassInGrams / 1000 : null, at),
         ...metric("BODY_WATER_PERCENT", positive(b.bodyWaterInPercent) ? b.bodyWaterInPercent : null, at),
+        ...metric("BONE_MASS_KG", positive(b.boneMassInGrams) ? b.boneMassInGrams / 1000 : null, at),
         ...metric("BMI", positive(b.bodyMassIndex) ? b.bodyMassIndex : null, at)
       );
     }
