@@ -207,6 +207,48 @@ Erstatter "Varer uden kcal/protein/kulhydrat/fedt springes over" fra 2026-09-27.
 - **Vitaminer/mineraler**: findes ikke i arkene (kolonnerne var tomme) — bilka.py åbnede aldrig panelet "Info om vitaminer og mineraler". Nyt tillægs-script `bilka_vitamins.py` (brugeren kører det selv) skriver `bilka_vitamins.xlsx`; importen gemmer værdierne i `micronutrientsPer100g` med kilde LABEL, så de afløser Frida-skønnene (~) på varesiden.
 - **Navne**: varer opkaldt efter brandet alene hed "0"/"1"/"M appelsin" (titlen minus brand og mængde); nu butikkens egen titel ("Coca cola", "Breezer m. appelsin"), og første bogstav er stort.
 - Admin-gennemgang i Dubletter nulstilles ikke af kJ-rettelsen eller de afledte sukkerpåstande.
+## 2026-10-02: Opret vare — levende scanning på alle trin, trin-overskrift og hvid udfyldning
+
+Brugerens test: efter stregkoden frøs flowet et foto pr. trin, lagde
+scanningsstriben over stillbilledet og læste det ene foto — man kunne ikke se,
+om varen var "taget", og det føltes ikke som scanning i realtid.
+
+- **Kameraet fryser aldrig.** Forside, energi og indhold tager ikke længere ét
+  foto. `useLiveFrames` (afløser `useAutoCapture`) måler skarphed/stilstand
+  som før og afleverer løbende billeder af den kørende video, hver gang varen
+  er i fokus og forrige analyse er færdig. Forsiden bruger det skarpeste af en
+  lille serie (3 billeder/0,8 s; fire stille målinger). Energi og indhold
+  læses billede for billede med lokal OCR (to stille målinger pr. billede), og
+  aflæsningerne lægges sammen i `src/lib/live-scan.ts`: den bedste vinder
+  (sikkerhed + tillæg for fundne felter) og låner næringstal/ingrediensliste/
+  tekstfeltets placering fra de andre. Trinnet er klaret, når feltet er læst
+  lokalt med ≥ 70 % sikkerhed, når ti billeder med tekst er brugt (bedste
+  bruges; serverens AI læser resten som før), eller når brugeren trykker "Tag
+  billede" (afslutter med den bedste aflæsning). Tesseract-arbejderen
+  genbruges nu mellem billederne (`product-ocr-prioritized.ts`); før kostede
+  en ny arbejder ~1 s pr. foto.
+- **Samspil med stillbilleder (samme dag):** den levende scanning styrer kun, *hvornår* der tages foto, og hvad telefonen selv læser (videobilleder ≤ 1600 px, energi/indhold beskåret til søgerens kvadrat). Når et trin er klaret, tages fotoet til serverens AI stadig som kameraets stillbillede (`captureStill`, `src/lib/camera-still.ts`), mens den hvide udfyldning vises. `IngredientsRetakeFlow` bruger fortsat `useAutoCapture`.
+- **Trin-overskrift** øverst i kamerabilledet i det mørke overlay, fed hvid
+  (`.hf-scan-heading`): "Scan stregkode", "Scan billede", "Scan energi",
+  "Scan indholdsfortegnelse".
+- **Hvid udfyldning, når et trin er klaret** (`.hf-scan-fill`, 1,4 s): på
+  forsiden fyldes varens kontur fra det levende omrids (MediaPipe-masken,
+  `drawFill`) helt hvid, så fx mælkekartonen står hvid på kameraet; findes
+  ingen kontur, fyldes midterrammen. På energi/indhold fyldes det læste
+  tekstfelt (OCR-boksene) hvidt oven på videoen (`LabelFillOverlay`, afløser
+  `LabelTextHighlight`s grønne ramme på et frosset foto); findes ingen boks,
+  bruges konturen. Først derefter går flowet videre. Ved reduceret bevægelse
+  vises fladen uden animation (0,6 s).
+- **Scanningsstriben** (`.hf-scan-sweep`) fejer nu over den levende video på
+  alle fototrin og under oprettelsen; `.hf-scan-lift` bruges ikke længere i
+  flowet. Stregkodetrinnet (AR-afkodning) er uændret.
+- Beholdt: fluebenene på trin-knapperne, "indhold står på energibilledet",
+  stregkodefotoets baggrunds-OCR (viser nu tekstfeltet hvidt, hvis brugeren
+  står på det trin), og vælgeren ved flere objekter — den fryser stadig
+  billedet, mens brugeren trykker, fordi målene skal stå stille.
+- Admin "Log" får en `label_attempt`-linje pr. læst billede (sikkerhed,
+  skarphed, fundne felter) og antal billeder i `nutrition_photo`/
+  `ingredients_photo`.
 
 ## 2026-10-02: Kameraflowet tager rigtige stillbilleder + "tag nyt billede af indholdet"
 
@@ -331,6 +373,45 @@ Vitaminer/mineraler på varesiden er klikbare på samme måde som E-numre: popup
 → `/vitaminer` med ét ankret afsnit pr. næringsstof. Indholdet ligger statisk
 i koden (ikke i databasen), da det er ~24 faste poster; referenceindtag er
 EU's NRV (forordning 1169/2011 bilag XIII), samme tal som "% RI".
+
+## 2026-10-02: Kamera uden knap, h1/h2 uden gentagelser, 10 %-reglen for udklip
+
+- Tilføj-kameraet har ingen "Tag billede"-knap. Fotoet tages automatisk, når
+  varen er skarp og stille; holdes kameraet stille uden at nå skarpheds-
+  grænsen, tages det efter 2,4 s, og senest 8 s efter trinnet startede. Et
+  tryk på kamerabilledet tager det med det samme. Rammen er 92 % af billedet.
+  Fotoet er kameraets stillbillede, ellers det skarpeste af tre
+  videobilleder (`camera-still.ts`, samme dato) — ægte HDR-bracketing er
+  ikke muligt i browseren (ingen eksponeringsstyring på iPhone);
+  tone-udjævning sker i billedrobotten. Telefonens dybdesensor
+  (LiDAR) er heller ikke tilgængelig for websider; omridset om varen kommer
+  fortsat fra MediaPipe-segmenteringen (2026-09-28).
+- Varesidens h1 (sort) og h2 (grøn: pakningsstørrelse · variant) må aldrig
+  gentage hinanden. Fedtprocent, laktosefri, smag osv. hører til varianten.
+  Reglen håndhæves tre steder: AI-prompten (front-v4), berigelsen
+  (`stripHeadingRepeats` fjerner variant/pakningsstørrelse fra navnet) og
+  varesiden (`splitProductHeadings`), så også ældre varer vises rigtigt.
+  Stregkode-fotoets variant sættes kun i variant-feltet — aldrig ind i navnet
+  (erstatter den del af 2026-09-28 "variant i navnet").
+- Brand fra databasen vinder: kender databasen ikke AI'ens brand, men står
+  et kendt brand ordret i forsidens tekst (mindst 4 tegn, eksakt normaliseret
+  match), bruges det, og AI'ens brand bliver subbrand. Hjerter,
+  kvalitetsmærker, segl og slogans er ikke logoer.
+- Produktcirklen: et fritskrabet billede (PNG under `/product-images/cutouts`)
+  lægges oven på cirklen i 110 % størrelse — stående varer med bunden i
+  cirklens bund (toppen 10 % over), liggende fra venstre kant (10 % ud over
+  højre). Hele varen er altid synlig. Råfotoet (før udklippet) vises
+  `object-contain` i cirklen, aldrig zoomet. Brandlogoet er 66 px højt (70 %
+  af de tidligere 95). Store æsker (cornflakes) er ikke behandlet særskilt.
+- Næringsdetaljerne (salt, sukker, fibre, mættet/umættet fedt m.m.) vises
+  altid som dropdown under energifordelingen, når der findes mindst én værdi;
+  "udvidet næringsindhold" i Opsætning styrer nu kun, om den står åben.
+  Umættet fedt udledes som fedt − mættet − trans (markeret ~), når
+  deklarationen ikke oplyser det.
+- Billedrobotten afviser et produktudklip, der dækker under 12 % af udsnittet
+  eller er under 30 % i bredde/højde (`CUTOUT_PRODUCT_MIN_COVERAGE`/
+  `CUTOUT_PRODUCT_MIN_SIDE`), så råfotoet bliver stående i stedet for et tomt
+  billede.
 
 ## 2026-09-28: Produktcirklen viser kun brandets eget logo
 

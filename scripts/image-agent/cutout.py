@@ -285,6 +285,28 @@ def straighten(cutout):
     return result.crop(bbox) if bbox else cutout
 
 
+# Et fritskrabet produkt skal fylde en rimelig del af udsnittet. Beholder rembg
+# kun en stump (test 2026-10-01: en lys mælkekarton mod lys baggrund blev til
+# et næsten tomt PNG, og varesiden stod uden billede), fejler jobbet, så det
+# rå forsidefoto bliver stående i stedet for et tomt udklip.
+PRODUCT_MIN_COVERAGE = float(os.environ.get("CUTOUT_PRODUCT_MIN_COVERAGE", "0.12"))
+PRODUCT_MIN_SIDE = float(os.environ.get("CUTOUT_PRODUCT_MIN_SIDE", "0.3"))
+
+
+def check_product_cutout(cutout, cropped_size):
+    """Kaster, hvis udklippet er for lille til at være selve varen."""
+    crop_w, crop_h = cropped_size
+    alpha = np.array(cutout.getchannel("A"))
+    visible = float((alpha > 128).sum())
+    coverage = visible / float(max(1, crop_w * crop_h))
+    width, height = cutout.size
+    side = max(width / float(max(1, crop_w)), height / float(max(1, crop_h)))
+    if coverage < PRODUCT_MIN_COVERAGE or side < PRODUCT_MIN_SIDE:
+        raise ValueError(
+            f"background removal kept too little of the product (coverage {coverage:.2f}, side {side:.2f})"
+        )
+
+
 def make_cutout(source_path, box, kind="PRODUCT_FRONT"):
     """Beskær -> fjern baggrund -> ryd op -> ret ud (produkt) -> lys op.
 
@@ -304,6 +326,7 @@ def make_cutout(source_path, box, kind="PRODUCT_FRONT"):
         raise ValueError("background removal left nothing")
     cutout = cutout.crop(bbox)
     if kind == "PRODUCT_FRONT":
+        check_product_cutout(cutout, cropped.size)
         # Ret op -> lys op -> udjævn skygger (i den rækkefølge: udjævning
         # først ville svække den samlede lysning, test 2026-09-27).
         return level_lighting(auto_exposure(straighten(cutout), lift_midtones=True))
