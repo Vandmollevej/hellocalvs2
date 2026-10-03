@@ -3,6 +3,11 @@
 Last updated: 2026-10-02
 Last updated: 2026-10-03
 
+## 2026-10-03: Tilføj-menuen — Aktivitet og Menstruation som felter
+
+- `src/components/add/AddMenuList.tsx`: Aktivitet er et 3D-felt i gitteret, og nyt felt Menstruation (nyt ikon `public/icons/add/period.svg`) vises kun for kvinder med menstruationscyklus slået til. Arket scroller. Se DECISIONS.md samme dato.
+- Lint, typecheck og build kørt. Ikke set med login (ingen lokal DB) — tjek Tilføj-arket på telefon som kvinde og mand.
+
 ## 2026-10-02: Kalenderen husker den åbne dag
 
 - Dagsvisningen genåbnes efter navigation væk fra `/calendar` (Tilbage eller "Kalender" i menuen) i stedet for at falde tilbage til måneden. Ny `src/lib/calendar-open-day.ts` (URL `?date=` + sessionStorage), koblet ind i `src/app/calendar/page.tsx`. Se DECISIONS.md samme dato.
