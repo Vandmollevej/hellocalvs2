@@ -246,6 +246,7 @@ Ejer: cloud-session `claude/lucid-bell-s5vyhv` (2026-09-25)
 
 | Id | Opgave | Status | Næste skridt |
 | --- | --- | --- | --- |
+| family-rights | "Skift profil" fed under cirklen, "Tilføj familiemedlem" + "Tilføj barn (under 18)", rettigheder "se" / "oprette på deres vegne" | Venter på bruger | Bygget i draft-PR #212 (branch `claude/familie-tilfoej-rettigheder`), migration `20261003230000_family_grant_write`. Næste: brugerens test mod rigtig database |
 | family-qr | Familiekode bundet til e-mail, krypteret QR-kode på betalerens side, "x ud af y abonnenter" + "0/5 ekstra tilkøb" | Venter på bruger | Flettet i master og deployet 2026-10-03 (PR #196 + #200). Næste: brugerens test på telefon (scan QR med kameraet) og afklaring af pris/betaling for ekstra pladser |
 | — | Familieabonnement: forældre ser/taster for børn, adgangslog til barnet | I gang | Første version bygget og pushet (branch `claude/lucid-bell-s5vyhv`, ikke flettet). Næste: brugerens test og "Mangler" i `docs/FAMILY.md` (oprettelsesflow med alder er næste skridt) |
 | family-invite | "Inviter familiemedlem" (mail + valg af indsigt + "Tilføj barn under 18") og ejerens konto som Seriøs Familie | Venter på bruger | Flettet i master 2026-10-03 (PR #199) og deployet med de 2 migrationer. Næste: brugerens test på telefon |

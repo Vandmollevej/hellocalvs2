@@ -2,6 +2,53 @@
 
 Last updated: 2026-10-03
 
+## 2026-10-03: Beskeder på Profil, Resultatvisning under Visning, Opsætning uden Sprog og region
+
+- Beskeder er flyttet fra Indstillinger til Profil som egen række lige under "Profil" øverst. Ulæst-tallet er en grøn cirkel (`--hf-color-brand`) med hvidt tal (`ChevronRow.badgeCount`, også Kontrol-log).
+- Resultatvisning ligger under Indstillinger → Visning (efter Forside); "Sprog og region" og "Resultatvisning" er fjernet fra Opsætning, som nu kun viser fremdriften. Sprog og region står fortsat øverst i Indstillinger. Adresserne er uændrede.
+- Lint (0 fejl), typecheck og build grønne. Ikke set med login (ingen lokal DB) — tjek Profil og Indstillinger på telefon.
+
+
+## 2026-10-03: Indstillinger, Profil og Support rettet + udsendelse som ren tekst
+
+- Admin-udsendelsen er ren tekst: linjeskift bevares, `http(s)`-links bliver klikbare i mailen, emojis virker (`broadcastTextToHtml` i `src/lib/admin-broadcast.ts`).
+- Hello Doc ligger nu under Profil (sidste række i kortet med Opskrifter/Viden om) og er fjernet fra Indstillinger. Ruten er uændret (`/settings/hello-doc`).
+- Indstillinger har et søgefelt øverst (`SearchField`); søgning viser en flad liste over alle punkter, der matcher navnet.
+- "Har du fundet en fejl?" er nu nr. 2 i kortet med Hjælpecenter, og det separate kort er fjernet.
+- Support-siden bruger `.hf-type-section-title` (overskrift med streg over hele linjen) i stedet for de små versaler. "Visning"-overskriften på Indstillinger har stadig den gamle stil.
+- Typecheck og lint grønne. Ikke set på telefon.
+
+## 2026-10-03: Admin → Brugere: mail og push til alle brugere
+
+- Nyt panel øverst på `/admin/users` ("Send mail og push til alle brugere", kun fuld admin-adgang): emne, besked, valg af mail og/eller push, og administratorens adgangskode skal tastes igen ved hver udsendelse (`POST /api/admin/users/broadcast`, bcrypt-tjek, samme låsning efter 5 fejl som login).
+- Modtagere: alle brugere der ikke er anonymiseret eller har lukket kontoen. Push går kun til brugere med et push-abonnement. Mail og push lægges som hver sin `OutboundMessage` (event `ADMIN_MESSAGE`) og tømmes i baggrunden med det samme (`src/lib/admin-broadcast.ts`). Ingen migration.
+- Kontoer uden adgangskode (kun passkey) kan ikke sende, før de har en adgangskode. Mail kræver SMTP, push kræver VAPID-nøgler på serveren (ellers bliver rækkerne stående i køen).
+- Typecheck og lint grønne. Ikke testet mod rigtig database eller med rigtig afsendelse.
+## 2026-10-03: "Inviter familiemedlem" — vælg se/oprette pr. profil
+
+- Brugerens valg ved fletning af #212 (rettigheder) med #199 (invitationer): invitationsarket har nu "Se profilen" og "Oprette på deres vegne" pr. profil i stedet for én kontakt. Gemmes i `grantWriteSubjectIds`; ved ja får tildelingerne `canWrite` derefter. Se DECISIONS.md samme dato.
+- **Migration `20261003240000_family_invite_write` skal køre ved deploy.**
+- Testet mod midlertidig PostgreSQL 16 (alle migrationer kørt): oprette-listen beskæres til se-listen, ja giver se+oprette / kun se / ingen adgang som valgt, og en invitation uden oprette-liste giver kun se. Lint, typecheck, tests (undtagen kendt `page-tree`) og build grønne. Arket ikke set på telefon.
+
+## 2026-10-03: Kalenderens flueben er signaturgrønne
+
+- Fluebenet for "inden for målet" var lime (`text-hf-lime`) i månedsgitteret, uge-, liste- og dagvisningen. Alle fire bruger nu signaturgrøn `text-hf-green` (`src/app/calendar/page.tsx`). Reglen står i DECISIONS (2026-10-03).
+
+## 2026-10-03: Familiemedlemmer — "Familie" øverst på Profil og "Del med andre"
+
+- Medlemmer af en familie (ikke betaleren) har nu "Familie" som første række på `/profile`. Den fører til `/profile/family`, hvor "Del med andre" står øverst: én udfoldelig række "Delt med {navn}" pr. person, der kan se profilen (betaleren altid, andre via betalerens tildelinger). Tryk viser, hvad der deles (dagbogsområderne), og at personen også kan taste ind. Navnene vises, fordi de er i samme familie.
+- Visningen er kun til at se: betaleren bestemmer stadig adgangen (beslutning 2 i `docs/FAMILY.md`). Regnes ud fra `GET /api/family` (`peopleSharedWith` i `src/lib/family-sharing.ts`, test i `family-sharing.test.mjs`); ingen ny API eller migration.
+- Lint (0 fejl), typecheck, test og build grønne; skærmbilleder med mockede API-svar. Ikke testet med login mod en rigtig database.
+
+
+## 2026-10-03: Admin → Brugere → Tildel points
+
+- Ny side under Brugere: "Tildel points" (`/admin/users/points`). Søg brugeren frem (eller tryk mønt-ikonet på Alle brugere), skriv antal (1–300) og en begrundelse. Højst 300 points (én gratis måned) ad gangen og én gang om måneden pr. bruger; siden viser saldo, seneste tildeling og næste mulige dato, og nederst de seneste 50 tildelinger med begrundelse og admin. Se DECISIONS.md samme dato.
+- Brugeren ser "Tildelt af HELLO CAL" i Points-historikken; begrundelsen er kun synlig for admin.
+- **Migration, der skal køre ved deploy:** `20261003220000_admin_points_grant` (ny points-type `ADMIN_GRANT`, revisionsspor-type `ADMIN_GRANT_POINTS`, kolonnerne `note`/`grantedById` på `points_transactions`).
+- Testet: typecheck, lint (0 fejl), nye regel-tests og build. Tildelingen er kørt mod en lokal Postgres med alle migrationer: 300 points gives, en samtidig anden tildeling afvises, admin-konti/ukendte id'er afvises, og efter en måned kan der gives igen. Admin-siden er ikke set i browser (kræver admin-login).
+
+
 ## 2026-10-03: Forsidens puls forsvinder bagfra (samler #195 og #198)
 
 - Før tonede hele det forrige pulsspor ud på én gang (`previousFade`), mens det nye fej tegnedes. Nu står det gamle spor uændret foran det nye fejs spids og fjernes gradvist bagfra, i samme tempo som sporet kom frem fra venstre, med en blød kant (`PULSE_TAIL_TAPER`, 60 px). Næste fej starter straks, så sporet når aldrig at være væk, før det nye fejs slag er tegnet. Pulsen slår stadig i urets bpm (#195). PR #198 (ét slag pr. fej, pause før halen trækkes) er erstattet af dette og lukket.

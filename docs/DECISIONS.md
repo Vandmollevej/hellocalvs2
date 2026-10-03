@@ -8,6 +8,43 @@ This file records durable decisions. Add a dated entry when a later decision cha
 - Vennen får ingen points, men 1 gratis måned med Seriøs med det samme, når kontoen oprettes via invite-linket (`grantReferredFriendFreeMonth` i `src/lib/referrals.ts`). Den gives som `FREE_MONTH` med `currentPeriodEnd` = oprettelse + 1 måned (samme spor som gavekoder) og tæller ikke med i loftet på 12 gratis måneder fra points.
 - Gælder kun nye tilmeldinger. Allerede ventende invitationer udbetaler fremover kun til afsenderen; vennen i dem får ikke en gratis måned med tilbagevirkende kraft.
 
+## 2026-10-03: Beskeder på Profil, Resultatvisning under Visning
+
+Ejerens krav: "Resultatvisning hører til under punktet visninger. Sprog og region skal slettes fra opsætning da den findes allerede under indstillingerne. Beskeder skal vises på separat linje under profil for oven … og have grøn cirkel med hvid skrift for beskeder som ikke er læst."
+
+- Beskeder er en række på Profil lige under "Profil" (ikke længere i Indstillinger). Notifikationer bliver i Indstillinger.
+- Ulæst-tal i `ChevronRow` er en grøn cirkel (`--hf-color-brand`) med hvidt tal i stedet for sort.
+- Opsætning (`/profile/settings`) har ikke længere rækkerne Sprog og region / Resultatvisning; Resultatvisning ligger under Indstillinger → Visning.
+
+## 2026-10-03: Invitationer bruger samme rettigheder som oprettede profiler
+
+Brugerens valg ved fletningen af #212 med #199: både "Inviter familiemedlem" (mail til en person med egen konto), "Tilføj familiemedlem" og "Tilføj barn (under 18)" findes, og rettighederne "se" / "oprette på deres vegne" gælder også invitationer.
+
+- Invitationsarket har pr. profil kontakterne "Se profilen" og "Oprette på deres vegne" (`AccessToggles`, fælles med familiesiden). Et barn, der oprettes fra arket, starter med "se".
+- `FamilyLoginCode.grantWriteSubjectIds` (migration `20261003240000_family_invite_write`) er de af `grantSubjectIds`, personen også må oprette for. Når personen siger ja, får hver tildeling `canWrite` derefter. Før gav en invitation altid "se og oprette" (kolonnens standard); invitationer sendt før denne ændring giver nu kun "se" — betaleren kan slå "oprette" til under Adgang.
+
+## 2026-10-03: Familie — "Skift profil" under cirklen, "Tilføj familiemedlem" / "Tilføj barn (under 18)" og rettigheder "se" / "oprette på deres vegne"
+
+Brugerens krav: "i stedet for administrator skal der stå med fed Skift profil i stedet for overskrift for oven man ikke ser. Men det skal hedde tilføj familiemedlem. Og 'tilføj barn (under 18)'. Og når man opretter skal man for alle have mulighed for at vælge … både læse og skriverettigheder", præciseret: "Rettigheder til at oprette på deres vegne og se deres profil". Profilvælgeren øverst på Profil beholdes.
+
+- **Profilvælger:** ingen overskrift over cirklen. Under den står fed "Skift profil" med pil (ikke navnet), og under det "Din egen profil", "Du taster ind for {navn}" eller "Du kan se {navn}s profil".
+- **Tilføj:** "Tilføj profil" er erstattet af "Tilføj familiemedlem" og "Tilføj barn (under 18)" i profilvælgeren og på familiesiden (`?add=member` / `?add=child`, `?add=1` = familiemedlem). Valget afgør `isChild`; toggle'en "Er det et barn?" er fjernet fra formularen.
+- **To rettigheder pr. person pr. profil:** "Se profilen" og "Oprette på deres vegne (fx tilføje mad)". At oprette kræver, at man kan se, så kontakterne følges ad. Gemmes som `FamilyAccessGrant` (rækken = se) med `canWrite` (oprette); eksisterende tildelinger var "se og taste ind" og beholder begge (migration `20261003230000_family_grant_write`). Betaleren har altid begge dele.
+- **Ved oprettelse** vælger betaleren for hvert andet familiemedlem begge veje: hvad personen må hos den nye profil, og hvad den nye profil må hos personen (`access` i `POST /api/family/members`). Alt starter slået fra. Bagefter ændres det under Familie → Adgang (`PUT /api/family/grants` med `level` = `none`/`read`/`write`).
+- **Håndhævelse:** `canActFor(…, "write")` kræves for alle ændringer på en andens profil (`getProfileContext` med CREATED/UPDATED/DELETED, fælles måltid og "Kopier til konto"). Må man kun se, afvises ændringen (401) i stedet for at falde tilbage til ens egen profil. "Til:"-rækken og "Kopier til konto" viser kun profiler, man må oprette for. Kontrol-loggen viser "Må se" eller "Må se og oprette" ud for hver person.
+- **Beslutning ved sammenfletning (2026-10-03, brugerens valg):** dette design erstatter "Skift profil som række med buet pil" fra PR #206; "Inviter familiemedlem" (PR #199) er uændret ved siden af.
+
+## 2026-10-03: Admin → Brugere → Tildel points
+
+- Brugerens krav: en administrator kan tildele et medlem points, fx som kompensation. Højst svarende til én gratis måned ad gangen og højst én gang om måneden. Ligger under Brugere som "Tildel points" (`/admin/users/points`); mønt-ikonet på Alle brugere åbner siden med brugeren valgt.
+- **Loft pr. tildeling:** 300 points = `FREE_MONTH_COST` (`ADMIN_GRANT_MAX_POINTS`, en test holder dem ens).
+- **"Én gang om måneden"** tolkes løbende pr. bruger: næste tildeling tidligst samme dato måneden efter den seneste (31. jan → 28./29. feb). Ikke kalendermåned, så man ikke kan give 300 d. 31. og 300 igen d. 1. Grænsen gælder pr. bruger, uanset hvilken admin der tildelte.
+- Kun fuld administratoradgang kan tildele; læseadgang ser siden. Kun almindelige konti (`role USER`), ikke lukkede eller anonymiserede.
+- Ny `PointsReason.ADMIN_GRANT` i ledgeren (ingen saldo-cache, jf. 2026-09-02). Rækken gemmer admins begrundelse (`note`, påkrævet) og hvem der tildelte (`grantedById`). Begrundelsen er intern: `/api/points` returnerer den ikke, og brugeren ser "Tildelt af HELLO CAL" i sin historik. Hver tildeling skrives også i revisionssporet (`AdminAuditAction.ADMIN_GRANT_POINTS`, vises under Admin → Log).
+- Tildelte points tæller som alle andre points (kan indløses til gratis måned under de eksisterende regler, inkl. loftet på 12 gratis måneder). Brugeren får ingen besked/mail ved tildelingen — kan tilføjes senere.
+- Månedsgrænsen håndhæves i en transaktion med rækkelås på brugeren, så to samtidige tildelinger ikke begge går igennem.
+
+
 ## 2026-10-03: Flere sider kan lægges i bundmenuen
 
 - Brugerens ønske: Favoritter, Viden om, Opskrifter, Status, Billeddagbog og Kropsmål kan vælges som ikoner i bundmenuen. De ligger i puljen (ikke i standardmenuen, som stadig er Tilføj/Madvarer/Kalender/Statistik).
@@ -465,7 +502,7 @@ om varen var "taget", og det føltes ikke som scanning i realtid.
 Brugerens valg efter skærmbillede: ændringen 2026-09-25, hvor tomme dage i
 månedsgitteret blev blanke, var ikke bestilt og er rullet tilbage for
 månedsgitteret. Regel for dagfelterne i månedsvisningen:
-- Dag med registreringer: ✓ (lime) når indtaget er på eller under målet,
+- Dag med registreringer: ✓ (signaturgrøn `hf-green`, se 2026-10-03) når indtaget er på eller under målet,
   ÷ (rød) når målet er overskredet. Uændret.
 - Afsluttet dag (før i dag) uden registreringer: ÷. En dag, der ikke er
   registreret, tæller som ikke nået.
@@ -4303,3 +4340,16 @@ Ejerens krav: "Hvis man er familiekontoejer skal 'skift profil' stå øverst og 
 - Ikonet er tegnet selv (`IconSwitchProfile`): to buede pile, op i venstre side og ned i højre. Tablers `IconRefresh` blev fravalgt, fordi den betyder "genindlæs" og allerede bruges til "Lær appen at kende".
 - Den valgte profils store cirkel med navn og "Din egen profil"/"Du taster ind for denne profil" står under rækken og er ikke længere selv en knap.
 
+
+## 2026-10-03: Fluebenene i kalenderen er signaturgrønne
+
+- Brugerregel (gentaget): alle flueben for "inden for målet" i kalenderen
+  (månedsgitter, uge-, liste- og dagvisning) bruger signaturgrøn
+  `text-hf-green` (`--hf-color-brand`, #067A46) — aldrig `hf-lime`.
+- `hf-lime` er ikke til flueben på lyse flader; det har for lav kontrast og
+  er ikke projektets signaturfarve.
+
+## 2026-10-03: Udsendelse til alle brugere kræver adgangskode igen
+
+- Admin → Brugere kan sende mail og/eller push til alle aktive brugere. Ejerens krav: adgangskoden skal tastes ind igen før hver afsendelse.
+- Udsendelsen er kun for fuld admin-adgang, bruger de eksisterende `OutboundMessage`-køer (ingen ny enum/migration) og har separate rækker pr. kanal, fordi en `BOTH`-række markeres SENT af mail-flushet, før push når at gå.

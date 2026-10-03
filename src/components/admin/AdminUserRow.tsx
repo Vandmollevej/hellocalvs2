@@ -1,8 +1,9 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { IconUserOff } from "@tabler/icons-react";
+import { IconCoins, IconUserOff } from "@tabler/icons-react";
 
 export type AdminUserRowData = {
   id: string;
@@ -92,6 +93,15 @@ export function AdminUserRow({ user }: { user: AdminUserRowData }) {
       </td>
       <td className="py-2">
         <div className="flex gap-2">
+          {!user.closedAt && (
+            <Link
+              href={`/admin/users/points?user=${user.id}`}
+              title="Tildel points"
+              className="flex h-8 w-8 items-center justify-center rounded-full text-hf-green-dark hover:bg-hf-tan"
+            >
+              <IconCoins size={16} />
+            </Link>
+          )}
           <button
             type="button"
             onClick={forget}

@@ -71,7 +71,7 @@ export function DailyList() {
   // andre profiler (docs/FAMILY.md).
   const copyTargets =
     status && status.activeProfile.id === status.me.id
-      ? status.profiles.filter((profile) => profile.id !== status.me.id)
+      ? status.profiles.filter((profile) => profile.id !== status.me.id && profile.canWrite)
       : [];
 
   useEffect(() => {

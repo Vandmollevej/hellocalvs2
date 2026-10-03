@@ -3,8 +3,9 @@
 import { activitySummaryUrl } from "@/lib/daily-budget";
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { IconCamera, IconLock } from "@tabler/icons-react";
+import { IconLock } from "@tabler/icons-react";
 import { IconPartyPopper } from "@/components/icons/PartyPopper";
+import { IconPhotoFrame } from "@/components/icons/PhotoFrame";
 import { IconWaistMeasure } from "@/components/icons/WaistMeasure";
 import { HfScreen } from "@/components/HfScreen";
 import { IconBathScale } from "@/components/hf/IconBathScale";
@@ -416,7 +417,7 @@ export default function ProfileEditPage() {
           {/* Fire ens, kvadratiske genveje (1:1) — teksten må ikke gøre en kasse større. */}
           <div className="mt-2 grid grid-cols-4 gap-2.5">
             <button type="button" onClick={() => router.push("/profile/photo-diary")} className={tileClass}>
-              <IconCamera size={34} stroke={1.6} />
+              <IconPhotoFrame size={34} stroke={1.6} />
               {t("profile.actions.photoDiary")}
             </button>
             <button type="button" onClick={() => router.push("/profile/weight-calibration")} className={tileClass}>

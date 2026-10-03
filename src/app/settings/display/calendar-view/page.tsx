@@ -27,32 +27,22 @@ export default function CalendarViewDisplaySettingsPage() {
           {t("calendarViewSettings.intro")}
         </p>
 
-        <div className="flex flex-col gap-1 overflow-hidden rounded-2xl bg-hf-tan">
-          {OPTIONS.map((option, index) => {
-            const isSelected = (selectedView ?? DEFAULT_CALENDAR_VIEW) === option.value;
-            return (
-              <button
-                key={option.value}
-                type="button"
-                role="radio"
-                aria-checked={isSelected}
-                onClick={() => saveDefaultCalendarView(option.value)}
-                className={`hf-type-body hf-type-strong hf-control-row flex items-center px-4 text-left ${
-                  index < OPTIONS.length - 1 ? "border-b border-hf-tan-dark" : ""
-                } ${isSelected ? "text-hf-green" : "text-hf-black"}`}
-              >
-                <span className="flex-1">{t(option.labelKey)}</span>
-                <span
-                  className={`flex size-5 shrink-0 items-center justify-center rounded-full border-2 ${
-                    isSelected ? "border-hf-green" : "border-hf-gray"
-                  }`}
-                  aria-hidden="true"
-                >
-                  {isSelected && <span className="size-2.5 rounded-full bg-hf-green" />}
-                </span>
-              </button>
-            );
-          })}
+        {/* Én af flere værdier kan ikke være til/fra — derfor en dropdown. */}
+        <div className="overflow-hidden rounded-2xl bg-hf-tan">
+          <label className="hf-control-row flex items-center gap-4 px-4">
+            <span className="hf-type-body flex-1">{t("calendarViewSettings.title")}</span>
+            <select
+              value={selectedView ?? DEFAULT_CALENDAR_VIEW}
+              onChange={(event) => saveDefaultCalendarView(event.target.value as CalendarDefaultView)}
+              className="hf-type-body hf-type-strong cursor-pointer bg-transparent text-hf-green outline-none"
+            >
+              {OPTIONS.map((option) => (
+                <option key={option.value} value={option.value}>
+                  {t(option.labelKey)}
+                </option>
+              ))}
+            </select>
+          </label>
         </div>
       </div>
     </HfScreen>

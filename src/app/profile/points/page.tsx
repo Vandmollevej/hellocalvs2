@@ -27,6 +27,7 @@ const REASON_LABELS: Record<PointsReason, string> = {
   PRODUCT_RESCAN: "Vare scannet igen",
   SIGNUP_BONUS: "Startbonus",
   INTEGRATION_TESTER: "Testperson af integration",
+  ADMIN_GRANT: "Tildelt af HELLO CAL",
 };
 
 export default function PointsPage() {

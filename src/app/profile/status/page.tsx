@@ -106,7 +106,7 @@ function HistoryPanel({
   return (
     <div className="flex flex-col gap-4">
       <HistoryLineChart points={points} format={format} target={target} targetLabel={targetLabel} ariaLabel={ariaLabel} />
-      <div className="flex flex-col divide-y divide-hf-tan-dark">
+      <div className="flex flex-col divide-y divide-hf-tan-dark border-t border-hf-tan-dark">
         {visible.map((point, index) => (
           <div key={point.id ?? `${point.at}-${index}`} className="hf-control-row flex items-center justify-between gap-3">
             <span className="hf-type-small text-text-secondary">{formatDateTime(point.at)}</span>

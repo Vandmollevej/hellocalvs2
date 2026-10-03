@@ -35,9 +35,9 @@ hvornår andre har været inde, hvad de har set, og hvad de har ændret.
    overlappende cirkler med egne initialer og initialerne på de profiler, man
    styrer. Med familieabonnement kan man skifte til de profiler, man har
    oprettet. Om en inviteret person siger ja, er op til personen selv.
-   Siden 2026-10-03 er "Skift profil" en række for sig selv øverst på Profil
-   med en buet op/ned-pil (`IconSwitchProfile`); tryk folder profillisten ud.
-   Den valgte profils store cirkel står under rækken.
+   Ændret 2026-10-03: ingen overskrift over cirklen; fed "Skift profil"
+   under den (ikke navnet). Listen har "Tilføj familiemedlem" og "Tilføj
+   barn (under 18)" i stedet for "Tilføj profil".
 9. **Kopier til konto (2026-09-26).** Swipe fra venstre mod højre på en af
    ens egne indtastninger giver normalt kun Favorit. Styrer man en anden
    profil, kommer "Kopier til konto" også frem.
@@ -48,6 +48,10 @@ hvornår andre har været inde, hvad de har set, og hvad de har ændret.
 11. **Kontrol-log (2026-09-26).** På den kontrollerede konto (barn, partner)
     ligger "Kontrol-log" under Indstillinger med log-ins (tidspunkter) og
     handlinger udført på kontoen.
+12. **Del med andre (2026-10-03).** Medlemmer (ikke betaleren) har "Familie"
+    øverst på Profil. På Familie-siden står "Del med andre" øverst med en række
+    "Delt med {navn}" pr. person, der kan se profilen; tryk viser, hvad der
+    deles. Kun visning — betaleren bestemmer adgangen.
 
 ### Min fortolkning (bekræft eller ret)
 
@@ -165,10 +169,18 @@ Kilder:
 
 - **Inviter familiemedlem (2026-10-03):** bundark på `/profile/family`
   (`?invite=1` åbner det, også fra profilvælgeren) med navn, e-mail og
-  hvilke profiler personen får indsigt i, plus "Tilføj barn under 18".
-  Laver en e-mail-bundet kode (med navn og valgte profiler) og sender en mail
+  for hver profil "Se profilen" og "Oprette på deres vegne" (samme kontakter
+  som under Adgang), plus "Tilføj barn under 18".
+  Laver en e-mail-bundet kode (med navn, `grantSubjectIds` = se og
+  `grantWriteSubjectIds` = også oprette) og sender en mail
   med tilknytningslinket; modtageren siger selv ja på `/family-code/join`.
   Rute: `POST /api/family/invitations`.
+
+- **Rettigheder (2026-10-03):** hver person har pr. profil "Se profilen"
+  og/eller "Oprette på deres vegne" (`FamilyAccessGrant.canWrite`). Vælges
+  begge veje for alle andre familiemedlemmer, når en profil oprettes, og
+  ændres under Familie → Adgang. Betaleren har altid begge dele. Se
+  `docs/DECISIONS.md` 2026-10-03.
 
 ## Mangler / kendte begrænsninger
 

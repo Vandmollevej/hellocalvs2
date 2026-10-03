@@ -10,7 +10,7 @@ import { SkeletonList, SkeletonScreen, SkeletonSectionTitle } from "@/components
 
 type ControlLog = {
   meId: string;
-  whoHasAccess: { id: string; displayName: string; isOwner: boolean }[];
+  whoHasAccess: { id: string; displayName: string; isOwner: boolean; canWrite: boolean }[];
   entries: AccessLogEntry[];
 };
 
@@ -69,7 +69,9 @@ export default function ControlLogPage() {
                       <ProfileCircle name={person.displayName} tone="card" />
                       <span className="userback-ignore userback-block hf-type-body flex-1 truncate">{person.displayName}</span>
                       <span className="hf-type-caption text-text-secondary">
-                        {person.isOwner ? t("family.log.payer") : t("family.log.granted")}
+                        {person.isOwner
+                          ? t("family.log.payer")
+                          : t(person.canWrite ? "family.log.grantedWrite" : "family.log.grantedRead")}
                       </span>
                     </div>
                   ))}

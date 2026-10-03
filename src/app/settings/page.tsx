@@ -10,8 +10,7 @@ import {
   IconPlugConnected,
   IconCreditCard,
   IconBell,
-  IconMail,
-  IconStethoscope,
+  IconEye,
   IconHome2,
   IconCalendarHeart,
   IconCalendarWeek,
@@ -23,16 +22,15 @@ import {
   IconUsers,
   IconHistory,
   IconTrashOff,
+  IconBulb,
 } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
 import { AccordionCard, ChevronRow } from "@/components/hf/AccordionCard";
 import { IconPaymentCard } from "@/components/icons/PaymentCard";
 import { OnboardingWizard } from "@/components/OnboardingWizard";
 import { useTranslation } from "@/i18n/LocaleProvider";
+import { SearchField } from "@/components/knowledge/SearchField";
 import { useFamilyStatus } from "@/components/family/FamilyStatusProvider";
-import { Toggle } from "@/components/ui/Toggle";
-import { HelpTip } from "@/components/hf/HelpTip";
-import { saveShowStartupTips, saveShowTooltips, useShowStartupTips, useShowTooltips } from "@/lib/help-prefs";
 
 function resetOnboardingProgress() {
   return fetch("/api/profile", {
@@ -51,13 +49,10 @@ export default function SettingsPage() {
   const { t } = useTranslation();
   const router = useRouter();
   const [showOnboarding, setShowOnboarding] = useState(false);
-  const showTooltips = useShowTooltips();
-  const showStartupTips = useShowStartupTips();
   // "Menstruationscyklus" (Visning) only shows up for sex = FEMALE, per
   // docs/DECISIONS.md 2026-09-19 — fetched once here rather than blocking
   // the rest of the settings page on it.
   const [isFemale, setIsFemale] = useState(false);
-  const [unreadMessages, setUnreadMessages] = useState(0);
   const { status: familyStatus } = useFamilyStatus();
   // Kontrol-loggen vises for den, der er med i en andens familie (barn,
   // partner — den, der kontrolleres), se docs/FAMILY.md.
@@ -91,19 +86,48 @@ export default function SettingsPage() {
         if (!cancelled) setIsFemale(data.user.sex === "FEMALE");
       })
       .catch(() => {});
-    fetch("/api/messages")
-      .then(async (response) => {
-        if (!response.ok) throw new Error("failed");
-        return (await response.json()) as { unreadCount: number };
-      })
-      .then((data) => {
-        if (!cancelled) setUnreadMessages(data.unreadCount);
-      })
-      .catch(() => {});
     return () => {
       cancelled = true;
     };
   }, []);
+
+  const [query, setQuery] = useState("");
+  // Søgefeltet viser en flad liste over alle punkter her (tekst-match på rækkens navn).
+  type SearchItem = { icon: React.ReactNode; label: string; href?: string; onClick?: () => void };
+  const searchItems: SearchItem[] = [
+    { icon: <IconWorld size={20} />, label: t("settings.languageAndRegion"), href: "/profile/settings/language-region" },
+    ...(showFamily ? [{ icon: <IconUsers size={20} />, label: t("family.title"), href: "/profile/family" }] : []),
+    { icon: <IconCreditCard size={20} />, label: t("profile.row.subscription"), href: "/profile/subscription" },
+    { icon: <IconPaymentCard size={20} />, label: t("settings.payment"), href: "/settings/payment" },
+    { icon: <IconAdjustments size={20} />, label: t("settings.setupTitle"), href: "/profile/settings" },
+    {
+      icon: <IconRefresh size={20} />,
+      label: t("settings.learnTheApp"),
+      onClick: () => {
+        resetOnboardingProgress().then(() => setShowOnboarding(true));
+      },
+    },
+    { icon: <IconPlugConnected size={20} />, label: t("settings.integrations"), href: "/settings/integrations" },
+    { icon: <IconBell size={20} />, label: t("settings.notifications"), href: "/profile/notifications" },
+    { icon: <IconHome2 size={20} />, label: t("settings.frontPage"), href: "/settings/display/front-page" },
+    { icon: <IconEye size={20} />, label: t("settings.resultsDisplay"), href: "/profile/settings/results" },
+    { icon: <IconAlertTriangle size={20} />, label: t("settings.recommendedLimits"), href: "/settings/display/limits" },
+    { icon: <IconAdjustments size={20} />, label: t("displaySettings.uncertainty"), href: "/settings/display/uncertainty" },
+    { icon: <IconCalendarWeek size={20} />, label: t("settings.calendarView"), href: "/settings/display/calendar-view" },
+    { icon: <IconMoon size={20} />, label: t("settings.sleepQuality"), href: "/settings/display/sleep-quality" },
+    { icon: <IconBulb size={20} />, label: t("settings.tipsTitle"), href: "/settings/display/tips" },
+    ...(isFemale
+      ? [{ icon: <IconCalendarHeart size={20} />, label: t("settings.menstrualCycle"), href: "/settings/display/menstrual-cycle" }]
+      : []),
+    { icon: <IconHelp size={20} />, label: t("settings.helpCenter"), onClick: () => window.location.assign("/hjaelp.html") },
+    { icon: <IconBug size={20} />, label: t("profile.row.reportBug"), href: "/profile/report-bug" },
+    { icon: <IconLifebuoy size={20} />, label: t("settings.contactSupport"), href: "/settings/support" },
+    { icon: <IconFileText size={20} />, label: t("settings.terms"), href: "/betingelser" },
+    { icon: <IconFileText size={20} />, label: t("settings.privacyPolicy"), href: "/privatlivspolitik" },
+    { icon: <IconFileText size={20} />, label: t("settings.dataTracking"), href: "/privatlivspolitik#datasporing" },
+  ];
+  const normalizedQuery = query.trim().toLowerCase();
+  const results = normalizedQuery ? searchItems.filter((item) => item.label.toLowerCase().includes(normalizedQuery)) : null;
 
   return (
     <HfScreen title={t("settings.title")}>
@@ -112,11 +136,55 @@ export default function SettingsPage() {
       )}
 
       <div className="hf-page hf-page--sections">
+        <SearchField value={query} onChange={setQuery} placeholder={t("settings.search")} />
+        {results ? (
+          results.length > 0 ? (
+            <AccordionCard>
+              {results.map((item, index) => (
+                <ChevronRow
+                  key={item.label}
+                  icon={item.icon}
+                  label={item.label}
+                  href={item.href}
+                  onClick={item.onClick}
+                  divider={index < results.length - 1}
+                />
+              ))}
+            </AccordionCard>
+          ) : (
+            <p className="hf-type-body text-text-secondary px-1">{t("settings.searchNoResults")}</p>
+          )
+        ) : (
+          <>
         <AccordionCard>
           <ChevronRow icon={<IconWorld size={20} />} label={t("settings.languageAndRegion")} href="/profile/settings/language-region" divider={false} />
         </AccordionCard>
 
         <AccordionCard>
+          {showFamily && (
+            <>
+              <ChevronRow
+                icon={<IconUsers size={20} />}
+                label={t("family.title")}
+                href="/profile/family"
+              />
+              {controlsOthers && (
+                <ChevronRow
+                  icon={<IconTrashOff size={20} />}
+                  label={t("family.deletePermissions.title")}
+                  href="/settings/delete-permissions"
+                />
+              )}
+              {isControlled && (
+                <ChevronRow
+                  icon={<IconHistory size={20} />}
+                  label={t("family.log.title")}
+                  href="/settings/control-log"
+                  badgeCount={familyStatus?.unseenCount}
+                />
+              )}
+            </>
+          )}
           <ChevronRow
             icon={<IconCreditCard size={20} />}
             label={t("profile.row.subscription")}
@@ -130,34 +198,6 @@ export default function SettingsPage() {
           />
         </AccordionCard>
 
-        {showFamily && (
-          <AccordionCard>
-            <ChevronRow
-              icon={<IconUsers size={20} />}
-              label={t("family.title")}
-              href="/profile/family"
-              divider={isControlled || controlsOthers}
-            />
-            {controlsOthers && (
-              <ChevronRow
-                icon={<IconTrashOff size={20} />}
-                label={t("family.deletePermissions.title")}
-                href="/settings/delete-permissions"
-                divider={isControlled}
-              />
-            )}
-            {isControlled && (
-              <ChevronRow
-                icon={<IconHistory size={20} />}
-                label={t("family.log.title")}
-                href="/settings/control-log"
-                badgeCount={familyStatus?.unseenCount}
-                divider={false}
-              />
-            )}
-          </AccordionCard>
-        )}
-
         <AccordionCard>
           <ChevronRow
             icon={<IconAdjustments size={20} />}
@@ -168,12 +208,6 @@ export default function SettingsPage() {
         </AccordionCard>
 
         <AccordionCard>
-          {/* Statisk hjælpeside i public/ — fuld sideindlæsning, ikke en app-route. */}
-          <ChevronRow
-            icon={<IconHelp size={20} />}
-            label={t("settings.helpCenter")}
-            onClick={() => window.location.assign("/hjaelp.html")}
-          />
           <ChevronRow
             icon={<IconRefresh size={20} />}
             label={t("settings.learnTheApp")}
@@ -194,39 +228,11 @@ export default function SettingsPage() {
         </AccordionCard>
 
         <AccordionCard>
-          <ChevronRow
-            icon={<IconMail size={20} />}
-            label={t("settings.messages")}
-            href="/profile/messages"
-            badgeCount={unreadMessages}
-          />
+          {/* Beskeder ligger på Profil, øverst under "Profil" (ejerens valg 2026-10-03). */}
           <ChevronRow
             icon={<IconBell size={20} />}
             label={t("settings.notifications")}
             href="/profile/notifications"
-            divider={false}
-          />
-        </AccordionCard>
-
-        <AccordionCard>
-          <ChevronRow
-            icon={<IconStethoscope size={20} />}
-            label={t("settings.helloDoc")}
-            href="/settings/hello-doc"
-            divider={false}
-          />
-        </AccordionCard>
-
-        <AccordionCard>
-          <ChevronRow
-            icon={<IconLifebuoy size={20} />}
-            label={t("settings.support.title")}
-            href="/settings/support"
-          />
-          <ChevronRow
-            icon={<IconBug size={20} />}
-            label={t("profile.row.reportBug")}
-            href="/profile/report-bug"
             divider={false}
           />
         </AccordionCard>
@@ -240,6 +246,13 @@ export default function SettingsPage() {
               icon={<IconHome2 size={20} />}
               label={t("settings.frontPage")}
               href="/settings/display/front-page"
+              divider
+            />
+            {/* Resultatvisning hører under Visning (ejerens valg 2026-10-03, flyttet fra Opsætning). */}
+            <ChevronRow
+              icon={<IconEye size={20} />}
+              label={t("settings.resultsDisplay")}
+              href="/profile/settings/results"
               divider
             />
             <ChevronRow
@@ -268,6 +281,12 @@ export default function SettingsPage() {
               icon={<IconMoon size={20} />}
               label={t("settings.sleepQuality")}
               href="/settings/display/sleep-quality"
+              divider
+            />
+            <ChevronRow
+              icon={<IconBulb size={20} />}
+              label={t("settings.tipsTitle")}
+              href="/settings/display/tips"
               divider={isFemale}
             />
             {isFemale && (
@@ -279,26 +298,27 @@ export default function SettingsPage() {
               />
             )}
           </AccordionCard>
-          <HelpTip>{t("settings.displayHelpTip")}</HelpTip>
-          <Toggle
-            label={t("settings.showTooltips")}
-            description={t("settings.showTooltipsDescription")}
-            checked={showTooltips}
-            onChange={saveShowTooltips}
-          />
-          <Toggle
-            label={t("settings.showStartupTips")}
-            description={t("settings.showStartupTipsDescription")}
-            checked={showStartupTips}
-            onChange={saveShowStartupTips}
-          />
         </div>
 
         <AccordionCard>
+          {/* Statisk hjælpeside i public/ — fuld sideindlæsning, ikke en app-route. */}
+          <ChevronRow
+            icon={<IconHelp size={20} />}
+            label={t("settings.helpCenter")}
+            onClick={() => window.location.assign("/hjaelp.html")}
+          />
+          <ChevronRow icon={<IconBug size={20} />} label={t("profile.row.reportBug")} href="/profile/report-bug" />
+          <ChevronRow
+            icon={<IconLifebuoy size={20} />}
+            label={t("settings.contactSupport")}
+            href="/settings/support"
+          />
           <ChevronRow icon={<IconFileText size={20} />} label={t("settings.terms")} href="/betingelser" />
           <ChevronRow icon={<IconFileText size={20} />} label={t("settings.privacyPolicy")} href="/privatlivspolitik" />
           <ChevronRow icon={<IconFileText size={20} />} label={t("settings.dataTracking")} href="/privatlivspolitik#datasporing" divider={false} />
         </AccordionCard>
+          </>
+        )}
 
         <button
           type="button"

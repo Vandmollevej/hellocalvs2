@@ -4,19 +4,23 @@ import { useEffect, useState } from "react";
 import {
   IconMoon,
   IconUser,
-  IconCamera,
   IconStar,
   IconBook,
   IconChartLine,
+  IconUsers,
+  IconMail,
+  IconStethoscope,
 } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
 import { AccordionCard, ChevronRow } from "@/components/hf/AccordionCard";
+import { IconPhotoFrame } from "@/components/icons/PhotoFrame";
 import { IconPlateCutlery } from "@/components/icons/PlateCutlery";
 import { IconBathScale } from "@/components/hf/IconBathScale";
 import { IconWaistMeasure } from "@/components/icons/WaistMeasure";
 import { HfProgressStepper } from "@/components/hf/HfProgressStepper";
 import { useTranslation } from "@/i18n/LocaleProvider";
 import { ProfileSwitcher } from "@/components/family/ProfileSwitcher";
+import { useFamilyStatus } from "@/components/family/FamilyStatusProvider";
 import { SkeletonCards, SkeletonList, SkeletonScreen } from "@/components/hf/Skeleton";
 
 type Sex = "FEMALE" | "MALE";
@@ -36,8 +40,13 @@ type ProfileUser = {
 
 export default function ProfilePage() {
   const { t } = useTranslation();
+  const { status: familyStatus } = useFamilyStatus();
+  // Medlemmer af en familie (ikke betaleren) har "Familie" øverst: hvem de
+  // deler deres profil med (ejerens ønske 2026-10-03).
+  const isFamilyMember = Boolean(familyStatus?.family && !familyStatus.family.isOwner);
   const [user, setUser] = useState<ProfileUser | null>(null);
   const [loading, setLoading] = useState(true);
+  const [unreadMessages, setUnreadMessages] = useState(0);
 
   useEffect(() => {
     let cancelled = false;
@@ -55,6 +64,15 @@ export default function ProfilePage() {
       .finally(() => {
         if (!cancelled) setLoading(false);
       });
+    fetch("/api/messages")
+      .then(async (response) => {
+        if (!response.ok) throw new Error("failed");
+        return (await response.json()) as { unreadCount: number };
+      })
+      .then((data) => {
+        if (!cancelled) setUnreadMessages(data.unreadCount);
+      })
+      .catch(() => {});
 
     return () => {
       cancelled = true;
@@ -74,6 +92,16 @@ export default function ProfilePage() {
         )
       ) : (
         <div className="hf-page">
+          {isFamilyMember && (
+            <AccordionCard>
+              <ChevronRow
+                icon={<IconUsers size={20} />}
+                label={t("family.title")}
+                href="/profile/family"
+                divider={false}
+              />
+            </AccordionCard>
+          )}
           <ProfileSwitcher />
           {/* Statisk indtil guided profilopsætning beregner det dynamisk. */}
           <HfProgressStepper
@@ -92,12 +120,26 @@ export default function ProfilePage() {
               label={t("profile.section.profile")}
               href="/profile/edit"
             />
+            {/* Beskeder øverst under "Profil" med grønt ulæst-tal (ejerens valg 2026-10-03). */}
+            <ChevronRow
+              icon={<IconMail size={20} />}
+              label={t("settings.messages")}
+              href="/profile/messages"
+              badgeCount={unreadMessages}
+            />
             <ChevronRow
               icon={<IconChartLine size={20} />}
               label={t("profile.row.status")}
               href="/profile/status"
             />
-            <ChevronRow icon={<IconStar size={20} />} label={t("profile.row.points")} href="/profile/points" />
+            <ChevronRow
+              icon={<IconStar size={20} />}
+              label={t("profile.row.points")}
+              href="/profile/points"
+              divider={false}
+            />
+          </AccordionCard>
+          <AccordionCard>
             <ChevronRow
               icon={<IconBathScale size={20} />}
               label={t("profile.row.weightCalibration")}
@@ -114,10 +156,13 @@ export default function ProfilePage() {
               href="/profile/sleep"
             />
             <ChevronRow
-              icon={<IconCamera size={20} />}
+              icon={<IconPhotoFrame size={20} />}
               label={t("profile.row.photoDiary")}
               href="/profile/photo-diary"
+              divider={false}
             />
+          </AccordionCard>
+          <AccordionCard>
             <ChevronRow
               icon={<IconPlateCutlery size={20} />}
               label={t("profile.row.recipes")}
@@ -127,6 +172,11 @@ export default function ProfilePage() {
               icon={<IconBook size={20} />}
               label={t("profile.row.knowledge")}
               href="/viden-om"
+            />
+            <ChevronRow
+              icon={<IconStethoscope size={20} />}
+              label={t("settings.helloDoc")}
+              href="/settings/hello-doc"
               divider={false}
             />
           </AccordionCard>

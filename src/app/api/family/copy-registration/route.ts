@@ -16,7 +16,7 @@ export async function POST(req: Request) {
   if (!registrationId || !targetProfileId || targetProfileId === login.id) {
     return NextResponse.json({ code: "invalidRequest" }, { status: 400 });
   }
-  if (!(await canActFor(login.id, targetProfileId))) {
+  if (!(await canActFor(login.id, targetProfileId, "write"))) {
     return NextResponse.json({ code: "notAllowed" }, { status: 403 });
   }
 

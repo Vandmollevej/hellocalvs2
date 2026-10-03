@@ -1,10 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { IconWorld, IconEye } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
 import { HfProgressStepper } from "@/components/hf/HfProgressStepper";
-import { AccordionCard, ChevronRow } from "@/components/hf/AccordionCard";
 import { useTranslation } from "@/i18n/LocaleProvider";
 
 type SetupProgressUser = {
@@ -40,8 +38,8 @@ function SetupProgressBar({ weightSet }: { weightSet: boolean }) {
   );
 }
 
-// Opsætning er en oversigt: "Sprog og region" og "Resultatvisning" har hver
-// deres egen side (Sprog og region linkes også fra Indstillinger).
+// Opsætning viser fremdriften. "Sprog og region" findes under Indstillinger og
+// "Resultatvisning" under Indstillinger → Visning (ejerens valg 2026-10-03).
 export default function ProfileSettingsPage() {
   const { t } = useTranslation();
   const [weightSet, setWeightSet] = useState(false);
@@ -67,20 +65,6 @@ export default function ProfileSettingsPage() {
     <HfScreen title={t("settings.setupTitle")}>
       <div className="flex flex-col gap-4 p-4">
         {!loading && <SetupProgressBar weightSet={weightSet} />}
-
-        <AccordionCard>
-          <ChevronRow
-            icon={<IconWorld size={20} />}
-            label={t("settings.languageAndRegion")}
-            href="/profile/settings/language-region"
-          />
-          <ChevronRow
-            icon={<IconEye size={20} />}
-            label={t("settings.resultsDisplay")}
-            href="/profile/settings/results"
-            divider={false}
-          />
-        </AccordionCard>
       </div>
     </HfScreen>
   );
