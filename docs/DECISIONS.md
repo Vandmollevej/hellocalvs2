@@ -188,6 +188,11 @@ Hello Cals partnerportal og ser sin egen partners data.
 - Portalen ligger på det offentlige domæne (hellocal.io), ikke admin-værten,
   da admin-værten omskriver alle stier til `/admin` og er IP-begrænset.
   `PARTNER_BASE_URL` kan overstyre linkets base (standard `APP_BASE_URL`).
+## 2026-10-02: Første testperson af en integration (300 points)
+
+- Hver integrations side viser et popup-banner (bundark med det grønne points-kort): "Bliv den første testperson af {app}, og optjen 300 points". Brugeren tilmelder sig via linket nederst i arket; "* Læs betingelser" linker til `/betingelser#pointsystem`.
+- Kun den allerførste, der tilmelder sig, får pladsen: én testperson pr. integration (`IntegrationTester`, unik pr. provider). Banneret vises kun, mens pladsen er ledig, og ikke igen på enheden, når brugeren har lukket det.
+- Points gives først, når admin godkender under Admin → Brugere → **Test-programmes** — samme regel som produkter og fejlrapporter (2026-09-02). Admin ser, om appen er aktiveret, og hvornår den sidst hentede data. Godkendelse giver 300 points (`INTEGRATION_TESTER`) én gang; afvisning sletter tilmeldingen, så pladsen bliver ledig igen.
 
 ## 2026-10-02: Butiksimporten: alt fra arkene med (Bilka + REMA 1000)
 
@@ -202,6 +207,48 @@ Erstatter "Varer uden kcal/protein/kulhydrat/fedt springes over" fra 2026-09-27.
 - **Vitaminer/mineraler**: findes ikke i arkene (kolonnerne var tomme) — bilka.py åbnede aldrig panelet "Info om vitaminer og mineraler". Nyt tillægs-script `bilka_vitamins.py` (brugeren kører det selv) skriver `bilka_vitamins.xlsx`; importen gemmer værdierne i `micronutrientsPer100g` med kilde LABEL, så de afløser Frida-skønnene (~) på varesiden.
 - **Navne**: varer opkaldt efter brandet alene hed "0"/"1"/"M appelsin" (titlen minus brand og mængde); nu butikkens egen titel ("Coca cola", "Breezer m. appelsin"), og første bogstav er stort.
 - Admin-gennemgang i Dubletter nulstilles ikke af kJ-rettelsen eller de afledte sukkerpåstande.
+## 2026-10-02: Opret vare — levende scanning på alle trin, trin-overskrift og hvid udfyldning
+
+Brugerens test: efter stregkoden frøs flowet et foto pr. trin, lagde
+scanningsstriben over stillbilledet og læste det ene foto — man kunne ikke se,
+om varen var "taget", og det føltes ikke som scanning i realtid.
+
+- **Kameraet fryser aldrig.** Forside, energi og indhold tager ikke længere ét
+  foto. `useLiveFrames` (afløser `useAutoCapture`) måler skarphed/stilstand
+  som før og afleverer løbende billeder af den kørende video, hver gang varen
+  er i fokus og forrige analyse er færdig. Forsiden bruger det skarpeste af en
+  lille serie (3 billeder/0,8 s; fire stille målinger). Energi og indhold
+  læses billede for billede med lokal OCR (to stille målinger pr. billede), og
+  aflæsningerne lægges sammen i `src/lib/live-scan.ts`: den bedste vinder
+  (sikkerhed + tillæg for fundne felter) og låner næringstal/ingrediensliste/
+  tekstfeltets placering fra de andre. Trinnet er klaret, når feltet er læst
+  lokalt med ≥ 70 % sikkerhed, når ti billeder med tekst er brugt (bedste
+  bruges; serverens AI læser resten som før), eller når brugeren trykker "Tag
+  billede" (afslutter med den bedste aflæsning). Tesseract-arbejderen
+  genbruges nu mellem billederne (`product-ocr-prioritized.ts`); før kostede
+  en ny arbejder ~1 s pr. foto.
+- **Samspil med stillbilleder (samme dag):** den levende scanning styrer kun, *hvornår* der tages foto, og hvad telefonen selv læser (videobilleder ≤ 1600 px, energi/indhold beskåret til søgerens kvadrat). Når et trin er klaret, tages fotoet til serverens AI stadig som kameraets stillbillede (`captureStill`, `src/lib/camera-still.ts`), mens den hvide udfyldning vises. `IngredientsRetakeFlow` bruger fortsat `useAutoCapture`.
+- **Trin-overskrift** øverst i kamerabilledet i det mørke overlay, fed hvid
+  (`.hf-scan-heading`): "Scan stregkode", "Scan billede", "Scan energi",
+  "Scan indholdsfortegnelse".
+- **Hvid udfyldning, når et trin er klaret** (`.hf-scan-fill`, 1,4 s): på
+  forsiden fyldes varens kontur fra det levende omrids (MediaPipe-masken,
+  `drawFill`) helt hvid, så fx mælkekartonen står hvid på kameraet; findes
+  ingen kontur, fyldes midterrammen. På energi/indhold fyldes det læste
+  tekstfelt (OCR-boksene) hvidt oven på videoen (`LabelFillOverlay`, afløser
+  `LabelTextHighlight`s grønne ramme på et frosset foto); findes ingen boks,
+  bruges konturen. Først derefter går flowet videre. Ved reduceret bevægelse
+  vises fladen uden animation (0,6 s).
+- **Scanningsstriben** (`.hf-scan-sweep`) fejer nu over den levende video på
+  alle fototrin og under oprettelsen; `.hf-scan-lift` bruges ikke længere i
+  flowet. Stregkodetrinnet (AR-afkodning) er uændret.
+- Beholdt: fluebenene på trin-knapperne, "indhold står på energibilledet",
+  stregkodefotoets baggrunds-OCR (viser nu tekstfeltet hvidt, hvis brugeren
+  står på det trin), og vælgeren ved flere objekter — den fryser stadig
+  billedet, mens brugeren trykker, fordi målene skal stå stille.
+- Admin "Log" får en `label_attempt`-linje pr. læst billede (sikkerhed,
+  skarphed, fundne felter) og antal billeder i `nutrition_photo`/
+  `ingredients_photo`.
 
 ## 2026-10-02: Kameraflowet tager rigtige stillbilleder + "tag nyt billede af indholdet"
 
@@ -290,6 +337,14 @@ Uge- og Liste-visningen beholder "Ingen indtastninger" i gråt på tomme dage.
 - **Børneprofiler er ikke undtaget** (brugerens valg): de skal også oplyse nummer, når de logger ind — de kan fjerne forældrenes adgang, når de fylder 18. Familieprofiler uden eget login kan først udfylde det, når de får login. Admin-konti (`/admin`, eget login med TOTP) kræver ikke nummer.
 - Nummeret er persondata: det slettes sammen med resten ved "glem mig" og vises aldrig til andre brugere.
 
+## 2026-10-02: Grafer på "Tilføj til statistik" og samlede mineral-/vitamingrafer
+
+- Graferne på "Tilføj til statistik" vises i fuld bredde og tegnes af samme kode og data som på statistiksiden, så brugeren ser grafen, som den faktisk vil se ud. Tilføjes med en "+ Tilføj"-knap under grafen, ikke ved tryk på selve grafen.
+- Ingen grafer pr. enkelt mineral eller vitamin. Der findes én "Mineraler"- og én "Vitaminer"-graf; brugeren vælger selv linjerne i grafens dropdown. Standard: calcium, jern, kalium og vitamin A, C, D.
+- Ældre gemte layouts med de gamle enkelt-grafer omskrives til gruppegraferne.
+- Grafernes linjevalg vises inde i kortet (ikke svævende), så det ikke klippes af omgivende bokse.
+- Sprogregel fra ejeren: "krydse af", "slå til" o.l. betyder altid til/fra-knapper (`Toggle`), aldrig afkrydsningsfelter.
+
 ## 2026-09-29: Aktivitetsniveau, PAL og kaloriemål
 
 - Erstatter faktorerne i 2026-09-28 "Aktivitetsniveau i 5 trin" (1,2–1,9). Nye niveauer og PAL-intervaller: se `docs/ACTIVITY-PAL.md` (planen; intet bygget). Ingen aktive brugere, så gamle niveauer erstattes uden overgangslogik.
@@ -333,6 +388,45 @@ Vitaminer/mineraler på varesiden er klikbare på samme måde som E-numre: popup
 → `/vitaminer` med ét ankret afsnit pr. næringsstof. Indholdet ligger statisk
 i koden (ikke i databasen), da det er ~24 faste poster; referenceindtag er
 EU's NRV (forordning 1169/2011 bilag XIII), samme tal som "% RI".
+
+## 2026-10-02: Kamera uden knap, h1/h2 uden gentagelser, 10 %-reglen for udklip
+
+- Tilføj-kameraet har ingen "Tag billede"-knap. Fotoet tages automatisk, når
+  varen er skarp og stille; holdes kameraet stille uden at nå skarpheds-
+  grænsen, tages det efter 2,4 s, og senest 8 s efter trinnet startede. Et
+  tryk på kamerabilledet tager det med det samme. Rammen er 92 % af billedet.
+  Fotoet er kameraets stillbillede, ellers det skarpeste af tre
+  videobilleder (`camera-still.ts`, samme dato) — ægte HDR-bracketing er
+  ikke muligt i browseren (ingen eksponeringsstyring på iPhone);
+  tone-udjævning sker i billedrobotten. Telefonens dybdesensor
+  (LiDAR) er heller ikke tilgængelig for websider; omridset om varen kommer
+  fortsat fra MediaPipe-segmenteringen (2026-09-28).
+- Varesidens h1 (sort) og h2 (grøn: pakningsstørrelse · variant) må aldrig
+  gentage hinanden. Fedtprocent, laktosefri, smag osv. hører til varianten.
+  Reglen håndhæves tre steder: AI-prompten (front-v4), berigelsen
+  (`stripHeadingRepeats` fjerner variant/pakningsstørrelse fra navnet) og
+  varesiden (`splitProductHeadings`), så også ældre varer vises rigtigt.
+  Stregkode-fotoets variant sættes kun i variant-feltet — aldrig ind i navnet
+  (erstatter den del af 2026-09-28 "variant i navnet").
+- Brand fra databasen vinder: kender databasen ikke AI'ens brand, men står
+  et kendt brand ordret i forsidens tekst (mindst 4 tegn, eksakt normaliseret
+  match), bruges det, og AI'ens brand bliver subbrand. Hjerter,
+  kvalitetsmærker, segl og slogans er ikke logoer.
+- Produktcirklen: et fritskrabet billede (PNG under `/product-images/cutouts`)
+  lægges oven på cirklen i 110 % størrelse — stående varer med bunden i
+  cirklens bund (toppen 10 % over), liggende fra venstre kant (10 % ud over
+  højre). Hele varen er altid synlig. Råfotoet (før udklippet) vises
+  `object-contain` i cirklen, aldrig zoomet. Brandlogoet er 66 px højt (70 %
+  af de tidligere 95). Store æsker (cornflakes) er ikke behandlet særskilt.
+- Næringsdetaljerne (salt, sukker, fibre, mættet/umættet fedt m.m.) vises
+  altid som dropdown under energifordelingen, når der findes mindst én værdi;
+  "udvidet næringsindhold" i Opsætning styrer nu kun, om den står åben.
+  Umættet fedt udledes som fedt − mættet − trans (markeret ~), når
+  deklarationen ikke oplyser det.
+- Billedrobotten afviser et produktudklip, der dækker under 12 % af udsnittet
+  eller er under 30 % i bredde/højde (`CUTOUT_PRODUCT_MIN_COVERAGE`/
+  `CUTOUT_PRODUCT_MIN_SIDE`), så råfotoet bliver stående i stedet for et tomt
+  billede.
 
 ## 2026-09-28: Produktcirklen viser kun brandets eget logo
 
@@ -3733,6 +3827,16 @@ Kilder på "Mad på latin" skal altid være officielle (Fødevarestyrelsen, Sund
 - Analyse er slået sammen med Statistik: `/admin/statistics` har faner (Brugere og indtjening / Trafik / Reklamer). `/admin/analytics` omdirigerer til Trafik-fanen. Indtjening og betalingsmetoder ligger i fanen Brugere og indtjening.
 - Reklamer: fanen læser fra partner-reklamernes tabeller (`ad_locations`, `ad_events`, `partners`, ejet af Partnere-arbejdet) via rå SQL med try/catch, så den er tom, indtil tabellerne findes og der er hændelser.
 
+## 2026-10-02: Abonnement og betalingsmetode hører til under Indstillinger; betalingsmetode kun for betalende
+
+- **Ændret 2026-10-03 (ejerens valg):** de to første punkter herunder gælder ikke længere. Abonnement og Betalingsmetoder bliver på både Profil og Indstillinger og vises for alle (også uden kort, så "Vælg abonnement" kan findes). Resten (aktivt kort fra Stripe, kortskift i kundeportalen) gælder.
+
+- **Abonnement og Betaling ligger kun under Indstillinger** (ejerens krav 2026-10-02; menupunktet hedder "Betaling", jf. e8ad1b3 samme dag). Profilsidens to rækker er fjernet; `/profile/subscription` og `/settings/payment` er uændrede adresser.
+- **Menupunktet "Betaling" (betalingsmetode-siden) vises kun for betalende.** Betalende = en rigtig udbyder-aftale (Stripe eller MobilePay Recurring) med status ACTIVE eller CANCELED med betalt restperiode — samme definition som admin → Statistik. Gavekode-, points-, prøve- og familiemedlems-Seriøs har intet kort og ser ikke rækken. En MobilePay-aftale, der venter på godkendelse, ser den også (så "Afventer godkendelse" kan findes). Felt: `paying` i `GET /api/subscription`.
+- **Siden viser det, der faktisk trækkes på** — det abonnementets `default_payment_method` hos Stripe (ellers kundens `invoice_settings.default_payment_method`): kortmærke, sidste 4 cifre og udløb; Apple Pay/Google Pay vises som wallet med kortet bagved (`PaymentMethod.wallet`, enum `PaymentWallet`, migration `20261002090000_payment_method_wallet`); MobilePay som MobilePay. Siden kalder `GET /api/subscription?refresh=1`, som synker fra Stripe først, så et kortskift ses med det samme. Kortet slettes ikke længere ved opsigelse — først når aftalen er helt afsluttet hos Stripe.
+- **Kortskift sker i Stripes kundeportal** (`POST /api/payments/stripe/portal` → Billing Portal med `flow_data.type = payment_method_update`, retur til `/settings/payment`). Hello Cal ser aldrig kortdata. Portalen kræver en konfiguration pr. Stripe-konto (test/live): findes ingen aktiv, opretter serveren én med kun kortskift + kvitteringshistorik (opsigelse/planskift slået fra — det styres i appen; privatlivs-/betingelseslinks peger på appens sider). MobilePay Recurring (Vipps) har intet kortskift; der kan kun aftalen stoppes.
+- Kortmærket vises med Stripes brand-værdi (`card.brand`) som lille logo i en fast kortramme: Visa og Mastercard (`public/payment/mastercard.svg`, officiel cirkelgeometri) med sidste 4 cifre; EC-kort/Amex/ukendt får et neutralt kort-ikon. Alle betalingsikoner er små (20 px høje) — også logoerne for understøttede metoder, der nu er chips som på købssiden.
+
 ## 2026-09-29: Stripe-betaling — MobilePay i Danmark, kort/EC i Tyskland
 
 - **Startlande: Danmark og Tyskland** (`src/lib/payments/stripe-markets.ts`). Land = brugerens `region`. DK betaler med **MobilePay** (DKK), DE med **kort inkl. EC-kort/girocard** (EUR). Andre lande får ingen Stripe-betaling (faldback: MobilePay Recurring, hvis den er sat op).
@@ -3924,3 +4028,43 @@ Brugerens krav: "Luk konto kan reverses inde. For 3 måneder, med mindre man væ
 
 - Øverst i Hjælpecenter (`public/hjaelp.html`) står guiden "Lær appen at kende" med knappen "Start guiden" på grøn baggrund (`#067A46`, hvid tekst) — ejerens udtrykkelige ønske og en bevidst undtagelse fra design.md's regel om, at grønne handlingsknapper er udfaset.
 - Den statiske side kan ikke selv åbne guiden, så den linker til `/settings?guide=1`, som starter `OnboardingWizard` forfra (samme handling som "Lær appen at kende" i Indstillinger).
+## 2026-10-02: Fold-ud-boks (accordion) som element i statistik-layoutet
+
+- Statistiksidens kort-gitter har et nyt opbygningselement ud over Overskrift
+  og Skillelinje: en **fold-ud-boks**, der ser ud som grupperne på
+  `/statistics/unused-cards` (`AccordionSection`: hoved med titel, antal og
+  chevron; grønt hoved når den er åben). Kort, overskrifter og skillelinjer
+  kan ligge inde i den.
+- Datamodel: boksen gemmes **fladt** i samme layout-liste som alt andet som
+  to markører — `{ type: "accordion", id, title, open }` og
+  `{ type: "accordionEnd", id }` — og alt imellem dem er indholdet. Ingen
+  indlejring (en ny boks lukker den forrige). `normalizeStatLayout`
+  reparerer manglende/løse markører og fjerner tomme rækker lige før
+  slut-markøren. Åben/lukket gemmes i layoutet (localStorage), så valget
+  huskes.
+- Betjening: tryk på hovedet folder ud/sammen; langt tryk løfter **hele
+  boksen** (også når den er lukket) og den lander kun mellem rækker på
+  øverste niveau. Kort slippes ind i boksen i et frit felt (åben) eller på
+  hovedet (lukket — kortet lægges sidst i boksen). I redigering: tryk på
+  titlen omdøber, slette-cirklen fjerner kun rammen — kortene bliver i
+  gitteret, hvor boksen stod.
+- Tilføj-siden: Overskrift, Skillelinje og Fold-ud-boks står samlet øverst
+  under søgefeltet i en mørkere boks (`bg-hf-tan-dark`), så
+  opbygningselementer tydeligt adskiller sig fra data-kort og grafer.
+- Kode: layout-logikken ligger nu i `src/lib/stat-layout.ts` (uden
+  UI-imports, så den kan testes med `npm test`); `stat-cards.ts`
+  re-eksporterer den, så eksisterende imports virker uændret.
+## 2026-10-02: Admin → Integrationer og hændelseslog
+
+- Nyt menupunkt "Integrationer" i admin (`/admin/integrations`) med dashboard over alle integrationer og en side pr. integration (`/admin/integrations/[slug]`): aktive installationer, installeret/afinstalleret i alt, nye tilkoblinger og frakoblinger (graf op/ned), aktive installationer over tid, synkroniseringer, datapunkter hentet/sendt, fejlrate, til/fra-valg blandt forbundne, data gemt pr. type, seneste tilmeldinger/frakoblinger (med hvor længe brugeren havde den), median tid før frakobling og forbindelser i fejl.
+- `Integration` holder kun nuværende status, så historikken gemmes i en ny tabel `IntegrationEvent` (CONNECTED, DISCONNECTED, SYNC, SYNC_ERROR, PUSH, SETTINGS_CHANGED, evt. antal datapunkter). Den skrives kun fra serverens egne integrationsruter (`src/lib/integrations/events.ts`), og en fejl i loggen vælter aldrig brugerens handling. Slettes med brugeren (cascade).
+- Fornyet adgang på en allerede forbundet integration tæller ikke som ny installation. Telefon-integrationer (Apple Health/Health Connect) tæller som tilkoblet første gang appen melder sig.
+- Migrationen giver nuværende forbindelser en CONNECTED-hændelse på deres tilkoblingsdato; allerede frakoblede får ingen (frakoblingsdato ukendt). "Afinstalleret i alt" tæller derfor rækker med status DISCONNECTED og en tilkoblingsdato.
+- Admin ser brugerens e-mail i tabellerne (som på Brugere-siden); siden er kun for admins.
+## 2026-10-02: Statistiksiden flytter sig aldrig under indlæsning
+
+- Brugerens gemte rækkefølge (sektioner, kort, grafer) læses fra localStorage **før første billede males**: kort- og grafgitteret bruger den gemte rækkefølge som startværdi, når de tegnes i browseren (`useIsClientRender()` i `src/lib/use-client-render.ts`), og statistiksiden tegner sine sektioner først efter en layout-effekt har læst sektionsrækkefølgen. Det tidligere mønster "tegn standarden, skift efter mount" må ikke bruges på sider, hvor rækkefølgen er brugerens egen.
+- `useSubscriptionTier()` husker det hentede niveau i modulet, så Seriøs-låste sider vises straks ved fanebytte i stedet for at starte tomme.
+- `PremiumGate` har `renderWhilePending`: mens niveauet hentes, tegnes siden selv som skelet (design.md §6.14), og siden venter med datahentning via `usePremiumPending()`. Bruges kun af `/statistics` (undersiderne venter ikke på niveauet og vises derfor først, når det er kendt), så gratisbrugeres data stadig ikke hentes til låste sider.
+- Kort, der først findes, når data er hentet (fx sportskort), tegnes som skitser i fuld højde i stedet for "ingen data" under hentning.
+

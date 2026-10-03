@@ -54,3 +54,36 @@ export function matchBrand(text: string | null | undefined, brands: BrandCandida
   }
   return best && best.score >= BRAND_MATCH_MIN_SCORE ? best : null;
 }
+
+// Brandet i databasen vinder (brugerens krav 2026-10-02: EDEKA-kartonen fik
+// "Herzstücke"/hjertet som brand, selv om EDEKA lå i databasen med logo).
+// Finder et kendt brand, der står ordret (normaliseret) i en af AI'ens
+// tekster på forsiden — subbrand, logotekst, synlig tekst eller claims.
+// Kun eksakt match (score 1), og kun navne på mindst 4 tegn, så et kort/
+// generisk ord aldrig matcher ved et tilfælde. Længste navn vinder.
+export function matchBrandInTexts(
+  texts: (string | null | undefined)[],
+  brands: BrandCandidate[],
+): BrandMatch | null {
+  const haystack = new Set<string>();
+  for (const text of texts) {
+    if (!text) continue;
+    haystack.add(normalizeBrandName(text));
+    // Også de enkelte ord og ordpar ("EDEKA Herzstücke" → EDEKA, Herzstücke,
+    // EDEKAHerzstücke), så et mærke inde i en sætning også findes.
+    const words = text.split(/\s+/).filter(Boolean);
+    for (let index = 0; index < words.length; index++) {
+      haystack.add(normalizeBrandName(words[index]));
+      if (index + 1 < words.length) haystack.add(normalizeBrandName(`${words[index]} ${words[index + 1]}`));
+    }
+  }
+  haystack.delete("");
+  if (!haystack.size) return null;
+  let best: BrandMatch | null = null;
+  for (const brand of brands) {
+    const normalized = normalizeBrandName(brand.name);
+    if (normalized.length < 4 || !haystack.has(normalized)) continue;
+    if (!best || normalized.length > normalizeBrandName(best.name).length) best = { id: brand.id, name: brand.name, score: 1 };
+  }
+  return best;
+}

@@ -228,6 +228,8 @@ model User {
   sleepQualityEntries     SleepQualityEntry[]
   workShifts              WorkShift[]
   integrations            Integration[]
+  integrationEvents       IntegrationEvent[]
+  integrationTesterSlots  IntegrationTester[]
   activities              Activity[]
   customActivityTypes     CustomActivityType[]
   heartRateSpikeReviews   HeartRateSpikeReview[]
@@ -786,6 +788,28 @@ model Integration {
   @@map("integrations")
 }
 
+// Testperson-program pr. integration (docs/DECISIONS.md 2026-10-02): kun
+// den allerførste, der tilmelder sig, får pladsen (unik pr. provider). 300
+// points gives først, når admin godkender under Admin → Brugere →
+// Test-programmes; afvisning sletter rækken, så pladsen bliver ledig igen.
+model IntegrationTester {
+  id         String                  @id @default(cuid())
+  provider   IntegrationProvider     @unique
+  user       User                    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId     String
+  status     IntegrationTesterStatus @default(PENDING)
+  createdAt  DateTime                @default(now())
+  approvedAt DateTime?
+
+  @@index([userId])
+  @@map("integration_testers")
+}
+
+enum IntegrationTesterStatus {
+  PENDING
+  APPROVED
+}
+
 enum IntegrationProvider {
   FITBIT
   WITHINGS
@@ -812,6 +836,34 @@ enum IntegrationStatus {
   DISCONNECTED
   CONNECTED
   ERROR
+}
+
+// 2026-10-02: hændelseslog pr. integration til admin → Integrationer
+// (docs/DECISIONS.md 2026-10-02). Én række pr. tilkobling, frakobling,
+// synkronisering, fejl, push og ændring af til/fra-valg. Tallene på
+// dashboardet regnes herfra; Integration-rækken holder kun nuværende status.
+model IntegrationEvent {
+  id        String                @id @default(cuid())
+  user      User                  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String
+  provider  IntegrationProvider
+  type      IntegrationEventType
+  // SYNC: antal nye datapunkter hentet; PUSH: antal sendt til appen.
+  itemCount Int?
+  createdAt DateTime              @default(now())
+
+  @@index([provider, createdAt])
+  @@index([type, createdAt])
+  @@map("integration_events")
+}
+
+enum IntegrationEventType {
+  CONNECTED
+  DISCONNECTED
+  SYNC
+  SYNC_ERROR
+  PUSH
+  SETTINGS_CHANGED
 }
 
 // Sports/activity logs, entered manually or fetched from a connected
@@ -2245,6 +2297,8 @@ enum PointsReason {
   // Brugeren udfyldte en manglende ting (billede, logo, energi, indhold) paa
   // en eksisterende vare via banneret paa varesiden. Gaelder ogsaa admin.
   PRODUCT_UPDATED
+  // Første testperson af en integration, godkendt af admin (2026-10-02).
+  INTEGRATION_TESTER
 }
 
 model PointsTransaction {
@@ -2538,6 +2592,14 @@ enum PaymentMethodBrand {
   GIROCARD
 }
 
+// Wallet, kortet ligger i hos Stripe (card.wallet.type). Kortets mærke og
+// sidste 4 cifre gemmes stadig i brand/last4, så "Apple Pay · Visa •••• 4242"
+// kan vises (docs/DECISIONS.md 2026-10-02).
+enum PaymentWallet {
+  APPLE_PAY
+  GOOGLE_PAY
+}
+
 model Subscription {
   id                     String             @id @default(cuid())
   user                   User               @relation(fields: [userId], references: [id])
@@ -2574,6 +2636,7 @@ model PaymentMethod {
   last4                   String?
   expiryMonth             Int?
   expiryYear              Int?
+  wallet                  PaymentWallet?
   isDefault               Boolean            @default(true)
   providerPaymentMethodId String?
   createdAt               DateTime           @default(now())

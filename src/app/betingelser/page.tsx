@@ -23,7 +23,7 @@ export default function BetingelserPage() {
       <ScreenHeader title="Betingelser" />
 
       <div className="flex-1 overflow-y-auto px-4 pb-10 pt-4">
-        <p className="text-text-secondary hf-type-caption">Senest opdateret: 2026-09-27</p>
+        <p className="text-text-secondary hf-type-caption">Senest opdateret: 2026-10-02</p>
 
         <LegalSummary
           title="Kort fortalt"
@@ -149,6 +149,7 @@ export default function BetingelserPage() {
             <li>10 points, når en fejlindberetning, du har sendt, bliver godkendt og rettet.</li>
             <li>5 points, hver gang en ven rent faktisk tilføjer en vare eller en ret, du har videresendt, dog højst 50 points pr. kalendermåned.</li>
             <li>300 points til både dig og din ven, når en ven, du har inviteret, har haft en konto i mindst 3 måneder.</li>
+            <li>300 points, hvis du er den første, der tilmelder sig som testperson af en integration, og vi har godkendt, at forbindelsen virker. Der er én testperson pr. integration.</li>
           </ul>
           <p>
             300 points kan indløses til én gratis måned af det betalte abonnement, dog højst 12

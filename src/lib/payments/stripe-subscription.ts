@@ -1,17 +1,22 @@
 import { randomUUID } from "node:crypto";
-import type { PaymentMethodBrand, Subscription } from "@prisma/client";
+import type { PaymentMethodBrand, PaymentWallet, Subscription } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { decryptAppSecret, encryptAppSecret } from "@/lib/api-keys/store";
 import { getSubscriptionTier } from "@/lib/subscription";
 import type { SubscriptionPeriodMonths, SubscriptionPlan } from "@/lib/subscription-plans";
 import { appBaseUrl } from "@/lib/payments/mobilepay-client";
 import {
+  createBillingPortalConfiguration,
+  createBillingPortalSession,
   createCheckoutSession,
   createWebhookEndpoint,
   getCheckoutSession,
+  getStripeCustomer,
+  getStripePaymentMethod,
   getStripeSubscription,
   getWebhookEndpoint,
   idOf,
+  listBillingPortalConfigurations,
   isStripeConfigured,
   setCancelAtPeriodEnd,
   StripeError,
@@ -117,6 +122,15 @@ function brandFor(method: StripePaymentMethod): PaymentMethodBrand {
   return "CARD";
 }
 
+// Apple Pay/Google Pay er hos Stripe et kort med card.wallet.type sat; selve
+// kortet (mærke, sidste 4) ligger stadig i card, så begge dele gemmes.
+function walletFor(method: StripePaymentMethod): PaymentWallet | null {
+  const wallet = method.card?.wallet?.type;
+  if (wallet === "apple_pay") return "APPLE_PAY";
+  if (wallet === "google_pay") return "GOOGLE_PAY";
+  return null;
+}
+
 async function replacePaymentMethod(userId: string, method: StripePaymentMethod | null) {
   await prisma.paymentMethod.deleteMany({ where: { userId, provider: "STRIPE" } });
   if (!method) return;
@@ -128,10 +142,25 @@ async function replacePaymentMethod(userId: string, method: StripePaymentMethod 
       last4: method.card?.last4 ?? null,
       expiryMonth: method.card?.exp_month ?? null,
       expiryYear: method.card?.exp_year ?? null,
+      wallet: walletFor(method),
       isDefault: true,
       providerPaymentMethodId: method.id,
     },
   });
+}
+
+// Abonnementets default_payment_method kan være tomt, selv om kunden har et
+// kort (Checkout sætter det på kunden som invoice_settings.default_payment_method).
+async function resolvePaymentMethod(remote: StripeSubscription): Promise<StripePaymentMethod | null> {
+  const direct = remote.default_payment_method;
+  if (direct && typeof direct !== "string") return direct;
+  if (typeof direct === "string") return getStripePaymentMethod(direct).catch(() => null);
+  const customerId = idOf(remote.customer);
+  if (!customerId) return null;
+  const customer = await getStripeCustomer(customerId).catch(() => null);
+  const fallback = customer?.invoice_settings?.default_payment_method;
+  if (!fallback) return null;
+  return typeof fallback === "string" ? getStripePaymentMethod(fallback).catch(() => null) : fallback;
 }
 
 // Kobler et gennemført Checkout til brugerens Subscription. Kun hvis sessionen
@@ -166,8 +195,9 @@ async function applyRemote(subscription: Subscription, remote: StripeSubscriptio
       where: { userId },
       data: { status: canceled ? "CANCELED" : "ACTIVE", currentPeriodEnd: keepLonger },
     });
-    const method = remote.default_payment_method;
-    await replacePaymentMethod(userId, canceled || !method || typeof method === "string" ? null : method);
+    // Kortet vises også efter opsigelse: aftalen er stoppet, men perioden er
+    // betalt, og brugeren skal kunne se, hvad der blev trukket på.
+    await replacePaymentMethod(userId, await resolvePaymentMethod(remote));
   } else if (["canceled", "unpaid", "incomplete_expired", "paused"].includes(remote.status)) {
     // Afsluttet hos Stripe: Seriøs løber den betalte periode ud.
     const stillPaid = keepLonger && keepLonger > new Date();
@@ -206,6 +236,38 @@ export async function cancelStripe(userId: string) {
   }
   const remote = await setCancelAtPeriodEnd(subscription.providerSubscriptionId, true);
   await applyRemote(subscription, await getStripeSubscription(remote.id));
+}
+
+// ---- Skift betalingsmetode (kundeportal) ---------------------------------
+
+// Stripe kræver en portal-konfiguration pr. konto (test/live). Findes ingen
+// aktiv, oprettes én med kun "skift betalingsmetode" + kvitteringer slået til.
+async function portalConfigurationId(): Promise<string | undefined> {
+  const existing = await listBillingPortalConfigurations().catch(() => null);
+  const preferred = existing?.data.find((config) => config.is_default) ?? existing?.data[0];
+  if (preferred) return preferred.id;
+  const created = await createBillingPortalConfiguration({
+    privacyPolicyUrl: `${appBaseUrl()}/privatlivspolitik`,
+    termsOfServiceUrl: `${appBaseUrl()}/betingelser`,
+  });
+  return created.id;
+}
+
+// Åbner Stripes kundeportal direkte i "skift kort"-flowet og sender brugeren
+// tilbage til betalingssiden, som henter det nye kort fra Stripe.
+export async function startStripePaymentMethodUpdate(user: { id: string; region: string | null }) {
+  if (!isStripeConfigured()) throw new StripeUnavailableError("Betaling er ikke sat op");
+  const subscription = await prisma.subscription.findUnique({ where: { userId: user.id } });
+  if (subscription?.provider !== "STRIPE" || !subscription.providerCustomerId) {
+    throw new StripeUnavailableError("Ingen aktiv Stripe-betaling");
+  }
+  const session = await createBillingPortalSession({
+    customer: subscription.providerCustomerId,
+    return_url: `${appBaseUrl()}/settings/payment`,
+    configuration: await portalConfigurationId(),
+    locale: stripeMarketFor(user.region)?.locale,
+  });
+  return { url: session.url };
 }
 
 // ---- Webhook -------------------------------------------------------------

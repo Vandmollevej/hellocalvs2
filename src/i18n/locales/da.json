@@ -671,6 +671,10 @@
     "todaySuffix": ", i dag",
     "goalMetSuffix": ", mål nået",
     "goalMissedSuffix": ", mål ikke nået",
+    "weighInSuffix": ", vejet {value} kg",
+    "weighInSrLabel": "Vejet {value} kg",
+    "openWeighInAriaLabel": "Vis vejning",
+    "dayWeighIn": "Vejet {value} kg kl. {time}",
     "goalMet": "Mål nået",
     "goalMissed": "Mål ikke nået",
     "weeklyEstimatedWeight": "Estimeret {value}",
@@ -752,7 +756,7 @@
     "lookingUp": "Slår {code} op...",
     "barcodeNotFound": "Stregkoden blev læst, men produktet blev ikke fundet. Prøv en anden kode.",
     "barcodeLookupError": "Stregkoden blev læst, men produktopslaget fejlede. Prøv igen.",
-    "autoCaptureHint": "Billedet tages automatisk, når varen er skarp og holdes stille.",
+    "autoCaptureHint": "Scanningen kører automatisk, når varen er skarp og holdes stille. Tryk på billedet for at tage det nu.",
     "autoScanHint": "Kameraet scanner automatisk. Du kan også indtaste nummeret under stregkoden.",
     "barcodeNumberAriaLabel": "Stregkodenummer",
     "lookUp": "Slå op",
@@ -766,9 +770,9 @@
     "saveMeal": "Gem måltid"
   },
   "cameraCreate": {
-    "hintFront": "Tag et billede af forsiden",
-    "hintNutrition": "Tag et billede af energi/næringsindholdet",
-    "hintIngredients": "Tag et billede af indholdsfortegnelsen",
+    "hintFront": "Hold forsiden af varen i billedet",
+    "hintNutrition": "Hold energi/næringsindholdet i billedet",
+    "hintIngredients": "Hold indholdsfortegnelsen i billedet",
     "retakeStillUnreadable": "Indholdet kunne stadig ikke læses. Hold tættere på, og prøv igen.",
     "retakeFailed": "Billedet kunne ikke læses lige nu. Prøv igen.",
     "retakeBack": "Tilbage til varen",
@@ -776,7 +780,12 @@
     "retry": "Prøv igen",
     "title": "Tilføj vare",
     "analyzingDefault": "Analyserer billedet...",
-    "labelTextFound": "Næringsindhold eller ingredienser fundet på billedet",
+    "labelTextFound": "Næringsindhold eller ingredienser læst",
+    "frontCaptured": "Forsiden er scannet",
+    "scanBarcode": "Scan stregkode",
+    "scanFront": "Scan billede",
+    "scanNutrition": "Scan energi",
+    "scanIngredients": "Scan indholdsfortegnelse",
     "readingImage": "Læser billedet...",
     "searchingDatabase": "Søger i databasen...",
     "comparingKnownItems": "Sammenligner med kendte varer...",
@@ -1868,6 +1877,18 @@
     "partnerPending": "En direkte forbindelse til {name} kræver en partneraftale, som endnu ikke er på plads.",
     "companionHowTo": "Hello Cal-appen på telefonen henter og skriver dine data efter valgene ovenfor. Den bruger en enhedskode til at logge ind.",
     "saveError": "Kunne ikke gemme valget. Prøv igen.",
+    "tester": {
+      "headline": "Bliv den første testperson af {name}, og optjen {points} points",
+      "body": "Aktivér {name} her på siden, og tilmeld dig via linket nederst. Når vi har set, at forbindelsen virker, får du {points} points.",
+      "signUp": "Tilmeld mig som første testperson",
+      "terms": "Læs betingelser",
+      "signedUp": "Du er tilmeldt som testperson af {name}. Aktivér appen, så får du {points} points, når vi har godkendt forbindelsen.",
+      "taken": "En anden nåede at blive første testperson af {name}.",
+      "error": "Tilmeldingen mislykkedes. Prøv igen.",
+      "close": "Luk",
+      "pending": "Du er første testperson. Du får {points} points, når vi har godkendt forbindelsen.",
+      "approved": "Tak for testen. Du har fået {points} points."
+    },
     "readTypes": {
       "weight": "Vægt",
       "bodyFat": "Fedtprocent",
@@ -1920,6 +1941,13 @@
   },
   "payment": {
     "title": "Betaling",
+    "expires": "Udløber {date}",
+    "changeMethod": "Skift betalingsmetode",
+    "opening": "Åbner…",
+    "changeError": "Kunne ikke åbne kortskift. Prøv igen om lidt.",
+    "recurringNote": "Trækkes automatisk ved hver fornyelse.",
+    "walletCard": "{brand} •••• {last4}",
+
     "status": {
       "inactive": "Intet aktivt abonnement",
       "active": "Aktivt abonnement",
@@ -1928,7 +1956,7 @@
       "canceled": "Opsagt"
     },
     "freeMonthsRemaining": "{count} gratis måned(er) i kø",
-    "paymentMethodsTitle": "Betalingsmetoder",
+    "paymentMethodsTitle": "Betalingsmetode",
     "noPaymentMethod": "Ingen betalingsmetode tilføjet endnu",
     "nextPayment": "Næste betaling d. {date}",
     "canceledUntil": "Seriøs til og med d. {date}",
@@ -1973,7 +2001,7 @@
   },
   "statUnusedCards": {
     "title": "Tilføj til statistik",
-    "hint": "Tryk på en graf eller et kort for at tilføje det til din statistikside.",
+    "hint": "Graferne vises, som de vil se ud. Tryk på + Tilføj under en graf eller på et kort for at tilføje det til din statistikside.",
     "category": {
       "carbsFibre": "Kulhydrattyper og fibre",
       "minerals": "Mineraler",
@@ -1988,11 +2016,15 @@
     "noSearchResults": "Ingen grafer eller kort matcher din søgning.",
     "add": "+ Tilføj",
     "noCardsYet": "Ingen kort her endnu.",
-    "addHeading": "Overskrift"
+    "addHeading": "+ Overskrift",
+    "addDivider": "+ Skillelinje",
+    "addAccordion": "+ Fold-ud-boks",
+    "layoutTools": "Opbygning",
+    "accordionTitle": "Fold-ud-boks"
   },
   "statUnusedCharts": {
     "title": "Ubrugte grafer",
-    "hint": "Tryk på en graf for at tilføje den øverst på din statistikside.",
+    "hint": "Graferne vises, som de vil se ud. Tryk på + Tilføj under en graf for at tilføje den til din statistikside.",
     "searchPlaceholder": "Søg i alle grafer",
     "noSearchResults": "Ingen grafer matcher din søgning.",
     "noChartsLeft": "Alle grafer her er allerede på din statistikside.",
@@ -2014,6 +2046,10 @@
     "removeHeading": "Fjern overskrift",
     "dragHeading": "Flyt overskrift",
     "removeDivider": "Fjern skillelinje",
+    "removeAccordion": "Fjern fold-ud-boks",
+    "renameAccordion": "Omdøb fold-ud-boks",
+    "openAccordion": "Fold ud",
+    "closeAccordion": "Fold sammen",
     "noData": "Ingen data i perioden"
   },
   "statChart": {

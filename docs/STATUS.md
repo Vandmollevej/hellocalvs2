@@ -45,6 +45,12 @@ Last updated: 2026-10-03
 
 - `/profile/subscription` viser nu Gratis, Seriøs og Seriøs Familie i tre kolonner øverst (navn, pris, "Se mere"/"Din plan"); et tryk ruller ned til planens fulde kort længere nede. Ny `PlanOverview` i `src/components/landing/LandingPlans.tsx`; plankortene har ankre `plan-free/serious/family`. Forsiden er uændret.
 - Lint, typecheck og build grønne. Ikke set i browser (kræver login) — tjek på telefon, at de tre kolonner passer i bredden, og at tryk ruller til kortet.
+## 2026-10-03: Betaling viser det aktive kort fra Stripe (PR #132 flettet med master)
+
+- `/settings/payment` viser det kort/den wallet, Stripe trækker på: mærke + sidste 4 + udløb; Apple Pay/Google Pay med kortet bagved (nyt felt `PaymentMethod.wallet`, migration `20261002090000_payment_method_wallet` **skal køre ved deploy**); MobilePay. Kortmærke-logo (Visa/Mastercard) i lille fast ramme; andre mærker får det egne kortikon (`IconPaymentCard`). Siden henter altid frisk fra Stripe (`/api/subscription?refresh=1`). Kortet beholdes efter opsigelse (perioden er betalt).
+- "Skift betalingsmetode" åbner Stripes kundeportal i kort-skift-flowet (`POST /api/payments/stripe/portal`); mangler en portal-konfiguration, oprettes én automatisk. Dummy-visning: `/settings/payment?preview=DK|DE|APPLE|GOOGLE`.
+- Ejerens valg 2026-10-03: rækkerne Abonnement og Betalingsmetoder **bliver** på Profil og Indstillinger (med kortikonet) og vises for alle — den tidligere plan om kun under Indstillinger / kun for betalende er droppet. `paying` findes stadig i `/api/subscription`.
+- Test i Stripes testtilstand med testkortet 4242 4242 4242 4242 (vilkårlig fremtidig udløb/CVC).
 
 ## 2026-10-02: Kalenderen husker den åbne dag
 
@@ -137,6 +143,13 @@ Last updated: 2026-10-03
 - Planen for `image-cutout` er bevaret som "Løbende" (DECISIONS 2026-09-28). Lint og build grønne; ikke live-testet (ingen lokal DB).
 
 
+## 2026-10-02: Testperson-popup på integrationssiderne
+
+- Popup-banner på hver integrations side: "Bliv den første testperson … og optjen 300 points" med tilmeldingslink nederst (`TesterPromoSheet.tsx`, `/api/integrations/<app>/tester`). Én plads pr. integration; points ved admin-godkendelse. Se DECISIONS.md samme dato.
+- Admin → Brugere → **Test-programmes** (`/admin/test-programmes`): alle integrationer med ledig plads / testperson, forbindelsesstatus, Godkend (+300 points) / Afvis. Betingelsernes pointsafsnit er opdateret.
+- Migration `20261002120000_integration_testers` skal køre ved deploy.
+- Lint, typecheck og build grønne; `page-tree.test.mjs` fejler som før på master (uvedkommende sider). Ikke live-testet (ingen lokal DB/login) — tjek popuppen på telefon.
+
 ## 2026-10-03: Butiksimporten — alt fra Bilka- og REMA-arkene med
 
 - 13.039 varer (før 10.524): 2.364 uden kalorietal er skjult (`nutritionMissing`, migration `20261002213000_product_nutrition_missing`), 151 med kun kalorier vises med ~ på makroerne, 107 uden stregkode er med under butikkens vare-id. Se DECISIONS 2026-10-02 "Butiksimporten: alt fra arkene med" og `docs/PRODUCT_IMPORT_MAPPING.md`.
@@ -150,17 +163,31 @@ Last updated: 2026-10-03
 - Admin → API-nøgler → SMS → TeamMessage med test, der ikke sender SMS. Variablerne er tilføjet `compose.production.yaml`.
 - Lint, typecheck og build grønne. Ikke testet mod TeamMessage: deres side er blokeret fra cloud-containeren, så feltnavnene (`to_mobile`, `message`, `team_id`, `teamlist_email`) bygger på søgeresultater. Ejeren skal lægge tokenet ind og trykke "Test" og derefter prøve flowet med eget nummer.
 - Mangler: verificering af mobilnummeret ved indtastning (afventer ejerens valg).
+Last updated: 2026-10-02
 
 ## 2026-10-02: Desktop — alle sider i skallen
 
 - På desktop vises alle sider (også login, betingelser, privatlivspolitik) i WebShell med sidebjælke, topmenu og brødkrummer; kun admin, hello-doc, business og presse er fuld bredde.
 - Lint og typecheck grønne; ikke set i browser — tjek login-siderne på desktop.
 
+## 2026-10-02: Fold-ud-boks (accordion) i statistik-layoutet
+
+- `/statistics/unused-cards`: Overskrift, Skillelinje og ny "+ Fold-ud-boks" står samlet øverst under søgefeltet i en mørkere boks (`bg-hf-tan-dark`), så opbygningselementerne skiller sig ud fra grafer og kort.
+- Statistiksiden: fold-ud-boksen er en sektion i gitteret (hoved + kort nedenunder, samme udseende som grupperne på tilføj-siden). Tryk på hovedet folder ud/sammen; i redigering kan den omdøbes (tryk på titlen), flyttes som ét samlet element (også lukket), og kort kan trækkes ind i den — også ved at slippe kortet på hovedet, når den er lukket. "Fjern" lader kortene blive i gitteret.
+- Layout-logikken er flyttet til `src/lib/stat-layout.ts` (ren modul, re-eksporteret fra `stat-cards.ts`) med tests i `stat-layout.test.mjs`. Lint, typecheck og build grønne. Ikke live-testet (ingen lokal DB/login) — test træk-og-slip på telefon.
+
 ## 2026-10-02: Kropsmål som statistikgrafer
 
 - Nye grafer `body:<felt>` i statistikmodulet (bryst, talje, hofte, overarm, lår): samme kort som på Kropsmål-siden med tegningen til venstre, men til højre et forløb over de seneste 10 målinger (x efter dato), seneste værdi, min/maks og ændring siden sidst. Komponent `src/components/BodyMeasurementChart.tsx`, logik `src/lib/body-measurement-series.ts` (tests grønne).
 - Tilføjes under "Ubrugte grafer" → blokken Kropsmål, eller med linket "Vis kropsmål som grafer i Statistik" på Kropsmål-siden (lægger alle fem nederst i graferne og åbner Statistik).
 - Hofte har stadig ingen godkendt tegning, så venstre felt er tomt dér. Lint, typecheck og build grønne; ikke visuelt testet (ingen lokal DB/login).
+## 2026-10-02: Kameraflow + vareside efter test af mælk og flødeboller
+
+- Kamera (`ProductCaptureFlow`): "Tag billede"-knappen er væk — billedet tages automatisk (skarpt + stille), ellers efter 2,4 s stille eller senest 8 s; tryk på kamerabilledet tager det straks. Rammen er 92 % af billedet (før 76 %), så man ikke holder telefonen for langt væk. Fotos tages som stillbilleder (masters `camera-still.ts`, 2026-10-02). Scan-striben kommer hurtigt ind, glider langsomt over midten og hurtigt ud (`.hf-scan-sweep`, 2,2 s).
+- Vareside: h1/h2 gentager aldrig hinanden (`splitProductHeadings`, test `product-naming.test.mjs`); berigelsen fjerner variant og pakningsstørrelse fra navnet; AI-prompt front-v4. Brandlogoet er 70 % højde (66 px). Fritskrabet billede ligger oven på cirklen med 10 % overskud (stående: op over toppen, liggende: ud til højre), råfoto vises `object-contain` i stedet for zoomet. Næringsdetaljer (salt, sukker, fibre, mættet/umættet fedt) vises altid som dropdown under energifordelingen — åben for brugere med udvidet næringsindhold slået til. Umættet fedt udledes som fedt − mættet − trans (~), når deklarationen ikke oplyser det.
+- Brand: står et kendt brand ordret på forsiden (fx EDEKA ved serien Herzstücke), vinder databasens brand, og AI'ens brand bliver subbrand (`matchBrandInTexts`). Prompt: hjerter/kvalitetsmærker/segl er ikke logoer.
+- Billedrobot (`cutout.py`): et PRODUCT_FRONT-udklip, der dækker under 12 % af udsnittet eller er under 30 % i bredde/højde, fejler nu i stedet for at blive et tomt billede (mælkekartonen 2026-10-01).
+- Lint, typecheck og `npm test` grønne (page-tree-testen fejler også på master). Ikke live-testet: ingen DB/kamera her. **Ikke gjort:** loggen for de to scanninger (mælk + flødeboller) ligger i produktionsdatabasen (admin → Log) og kan ikke nås fra cloud-sessionen — eksportér flow-rækkerne (JSON) eller skærmbilleder af dem, så analyseres de. Det forkerte hjerte-logo skal fjernes manuelt på brandet i admin → Logoer, og prompt-ændringerne virker først for nye scanninger.
 
 ## 2026-10-02: Garmin, WHOOP, Huawei + eufy/Renpho/Xiaomi/Tuya/Samsung via telefonen
 
@@ -208,6 +235,12 @@ Last updated: 2026-10-03
 - Tale: forslag fra en tidligere optagelse bliver stående, når en ny optagelse starter (hver optagelse er sin egen "batch"; kun den igangværende optagelses forslag erstattes af live-tolkningen), så flere forslag kan vente samtidig.
 - Knapperne bruger `.hf-btn-primary`/`.hf-btn-secondary` (design.md §6.2); den grønne knap på talesiden er væk. Nye tekster da/en (`voice.suggested`, `voice.addOne`, `web.chatSuggested`, `web.chatAddOne`, `web.chatAddAll`).
 - Lint, typecheck og build grønne. Ikke live-testet (ingen lokal DB/mikrofon) — test på telefon og i desktop-chatten.
+## 2026-10-02: Opret vare — levende scanning, trin-overskrift, hvid udfyldning
+
+- Kameraflowet (`/camera/create`, `ProductCaptureFlow`) fryser ikke længere et foto pr. trin: forside/energi/indhold scannes live fra videoen (`useLiveFrames`), energi/indhold læser op til ti billeder og lægger aflæsningerne sammen (`src/lib/live-scan.ts`, tests grønne). Fed trin-overskrift øverst ("Scan stregkode/billede/energi/indholdsfortegnelse"); når et trin er klaret, fyldes varens kontur eller det læste tekstfelt hvidt (`.hf-scan-fill`). Se DECISIONS.md samme dato.
+- Tesseract-arbejderen genbruges mellem billederne. `useAutoCapture` og `LabelTextHighlight` er fjernet.
+- Ikke live-testet (ingen kamera i cloud-sessionen): test på iPhone, at (1) overskriften står læseligt i det mørke felt, (2) kartonen bliver hvid efter forsiden, (3) energi/indhold afsluttes af sig selv på en mælkekarton, og (4) "Tag billede" afslutter trinnet med det samme. Juster evt. `LABEL_DONE_CONFIDENCE`/`MAX_LABEL_ATTEMPTS` i `live-scan.ts`.
+
 ## 2026-10-02: Kameraflowet — rigtige stillbilleder + nyt foto af indholdet
 
 - Fejlen: marmelade (5711954020055) fik ingen ingredienser, fordi indholdsfotoet var et sløret 1080p-videobillede, og OpenAI svarede tomt ("for sløret"). Ingen genstart var involveret. Se DECISIONS 2026-10-02.
@@ -261,6 +294,13 @@ Last updated: 2026-10-03
 - Nyt src/lib/units.ts (valg, landestandard, omregning, useUnits()), nyt startguide-trin units og to valg under Sprog og region. Brugt i: profil (vægt, højde-hjul), vægtlog, vægt-kalibrering, startvægt-verificering, målsætninger (vægt + kropsmål), energimål-editoren, kropsmål og statistik-grafen.
 - Lint og typecheck grønne for de berørte filer. Ikke visuelt testet (brugerregel). Ikke omregnet endnu: widgets/native, Hello Doc-rapport, kalender-vægtvisning og admin (kg/cm vises der stadig).
 
+## 2026-10-02: Admin → Integrationer
+
+- Nyt menupunkt i admin under Statistik: oversigt over alle integrationer (nøgletal, "Kræver opmærksomhed", tabel med aktive/nye/frakoblet/synk./datapunkter/fejl, grafer over til-/frakoblinger og synkroniseringer) og en side pr. integration med installationer, interaktion, seneste tilmeldinger som graf, frakoblinger, data/valg og fejl. Periode: 7 dage → for evigt (standard 3 måneder). Se DECISIONS.md samme dato.
+- Ny tabel `integration_events` — migration `20261002120000_integration_events` skal køre ved deploy. Filer: `src/lib/admin-integration-stats.ts`, `src/lib/integration-lifecycle.ts` (+ test), `src/lib/integrations/events.ts`, `src/app/admin/integrations/**`, `src/components/admin/integrations/**`.
+- Rettet i samme omgang: `src/lib/web-nav.ts` importerede det slettede champagne-ikon, så build fejlede på master; bruger nu konfetti-ikonet.
+- Lint (ændrede filer), typecheck, `npm run build` og den nye test grønne. `page-tree.test.mjs` fejler stadig på master (ældre admin-sider mangler i træet — uvedkommende). Ikke live-testet (ingen lokal DB); tallene fyldes først op efter deploy.
+
 ## 2026-10-01: Rolig bølge-baggrund på forsiden
 
 - Ny baggrund bag topbar + hero, der fortsætter ca. 40 px under "Dagens tilføjelser"-stregen: tilfældige, langsomme bånd af bløde bølgelinjer (grønt øverst → gullig creme nedenfor) plus lidt tåge. Tre lag af samme canvas-scene (skarp / mellem-sløret / kraftigt sløret) giver frostet-glas-effekten nederst. Farver kun fra tokens. Står stille ved "reducer bevægelse" og standser når fanen er skjult.
@@ -289,6 +329,17 @@ Last updated: 2026-10-03
 - Overskrifterne "Grafer" og "Kort" med op/ned-pile vises nu kun, mens en af sektionerne er i redigeringstilstand (langt tryk på graf/kort). I almindelig visning står graferne og kortene uden overskrifter; skillelinjen mellem sektionerne er bevaret.
 - `StatChartsSection` og `StatCardsGrid` har fået `onEditModeChange`, som statistiksiden bruger til at vise/skjule overskrifterne. Pilene virker stadig i redigering (knapper afslutter ikke redigeringen).
 - Lint, typecheck og `npm run build` kørt. Ikke live-testet (ingen lokal DB/login) — tjek på telefon.
+## 2026-10-02: "Tilføj til statistik" viser graferne i fuld bredde
+
+- Graferne på `/statistics/unused-cards` (og `/statistics/unused-charts`) vises nu i fuld bredde og præcis som på statistiksiden, med "+ Tilføj" under hver. Fælles tegner: `src/components/useStatChartRenderer.tsx` (statistiksiden bruger den samme).
+- De fem enkelt-grafer for kalium, calcium, jern, vitamin A og C er erstattet af to grafer, "Mineraler" og "Vitaminer". Alle mineraler/vitaminer fra `src/lib/nutrients.ts` kan krydses til og fra i grafens dropdown. Gemte layouts flyttes automatisk over.
+- Grafernes linjevalg folder sig nu ud inde i kortet og kan rulle, så lange lister ikke klippes.
+- Lint og build grønne. Testet i Chromium i telefonbredde med falske API-svar (ingen lokal DB). `page-tree.test.mjs` fejler stadig, som på master.
+## 2026-10-02: Statistiksiden hopper ikke længere ved indlæsning
+
+- Årsag: Seriøs-låsen startede altid med en tom skærm, og bagefter blev sektioner, kort og grafer tegnet i standardrækkefølgen og byttede derefter til brugerens gemte rækkefølge.
+- Rettet: gemt rækkefølge bruges fra første billede; abonnementsniveauet huskes mellem sider; mens niveauet hentes, tegnes statistiksiden som skelet med løbende gradient, og data fyldes ind på pladserne. Se DECISIONS.md 2026-10-02.
+- Lint, typecheck og `npm run build` grønne. Ikke visuelt testet (ingen lokal DB/login) — test på telefon: åbn Statistik både via bundmenuen og ved genindlæsning.
 
 ## 2026-10-02: Drikkevarer starter på pakkestørrelsen
 
@@ -368,6 +419,11 @@ Last updated: 2026-10-02
 - Tilmelding (`/signup`, `/api/auth/register`) kræver nummeret. Profilsiden viser feltet under e-mail: kan rettes, ikke slettes (`PATCH /api/profile` afviser tomt/ugyldigt med 400).
 - Indloggede uden nummer (Google/Apple/Facebook-konti og konti fra før kravet) sendes af `AuthGate` til `/account/phone` (ingen tilbagepil, ingen "spring over"), til det er udfyldt — også børneprofiler i en familie (brugerens valg 2026-10-02). Admin-konti (TOTP) og familieprofiler uden eget login oprettes uden nummer; profilen spærres først, når den logger ind. "Glem mig" sletter nummeret.
 - Selve SMS-tofaktoren er **ikke** bygget — kun feltet. Ikke live-testet (ingen lokal DB); test tilmelding og profilsiden på telefon. Se DECISIONS.md samme dato.
+## 2026-10-02: Vejninger vises i kalenderen
+
+- Fejl fra ejeren (skærmbillede 30/9): en gemt vægt kom ikke frem i kalenderen. Kalenderen hentede allerede `/api/weight-entries`, men brugte kun vejningerne til vægtestimatet.
+- Nu: badevægt-ikon på dagen i måneds- (nederste venstre hjørne), uge-, liste- og ugetidslinje-visningen (kun ikon — der er ikke plads til tallet). Dagvisningen viser vægt + klokkeslæt i timerækken, i timens oversigt (tryk på timen) og som linje under dagsstatus. Nye tekster `calendar.weighIn*`/`calendar.dayWeighIn` (da/en).
+- Lint, typecheck og `npm run build` grønne. Ikke live-testet (ingen lokal DB) — tjek på telefon. Bemærk: listen henter højst 200 vejninger (nyeste først), så meget gamle måneder kan mangle ikonet.
 
 ## 2026-09-29: Offentlig forside for udloggede
 

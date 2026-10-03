@@ -3,8 +3,10 @@
 // billedet er skarpt og stillestående i nogle målinger i træk, er varen i fokus.
 
 const SAMPLE_SIZE = 160;
-// Andel af billedets bredde/højde der måles på (varen ligger i rammen i midten).
-const CENTER_FRACTION = 0.76;
+// Andel af billedets bredde/højde der måles på (varen ligger i rammen i
+// midten). Rammen er 92 % af billedet (brugerens krav 2026-10-02: den gamle
+// 76 %-ramme fik brugeren til at holde telefonen for langt fra varen).
+const CENTER_FRACTION = 0.92;
 const MIN_SHARPNESS = 60;
 // Skarpheden skal være tæt på den bedste set, så vi ikke tager billedet midt i fokuseringen.
 const RELATIVE_SHARPNESS = 0.8;
@@ -46,22 +48,35 @@ export function meanAbsDifference(a: Float32Array, b: Float32Array): number {
   return total / a.length;
 }
 
+// Reserve: holdes kameraet stille så mange målinger i træk uden at nå
+// skarphedsgrænsen (matte/ensfarvede varer giver lav Laplace-varians), tages
+// billedet alligevel — der er ingen knap at trykke på (brugerens krav
+// 2026-10-02). 12 målinger à 200 ms = 2,4 s stille.
+const STILL_FALLBACK_SAMPLES = 12;
+
 // Holder styr på målingerne og afgør, hvornår billedet skal tages.
 export class FocusTracker {
   private bestSharpness = 0;
   private stableCount = 0;
+  private stillCount = 0;
 
   reset() {
     this.bestSharpness = 0;
     this.stableCount = 0;
+    this.stillCount = 0;
   }
 
   // Returnerer fremskridt 0–1; 1 betyder "i fokus — tag billedet nu".
   push({ sharpness, motion }: FocusSample): number {
     this.bestSharpness = Math.max(this.bestSharpness * 0.98, sharpness);
+    const still = motion <= MAX_MOTION;
     const sharp = sharpness >= MIN_SHARPNESS && sharpness >= this.bestSharpness * RELATIVE_SHARPNESS;
-    this.stableCount = sharp && motion <= MAX_MOTION ? this.stableCount + 1 : 0;
-    return Math.min(1, this.stableCount / REQUIRED_STABLE_SAMPLES);
+    this.stableCount = sharp && still ? this.stableCount + 1 : 0;
+    this.stillCount = still ? this.stillCount + 1 : 0;
+    return Math.max(
+      Math.min(1, this.stableCount / REQUIRED_STABLE_SAMPLES),
+      Math.min(1, this.stillCount / STILL_FALLBACK_SAMPLES),
+    );
   }
 }
 

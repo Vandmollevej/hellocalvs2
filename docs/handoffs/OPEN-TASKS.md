@@ -73,11 +73,13 @@ Ikke visuelt testet: lokalt sender appen til /welcome uden login. Test på mobil
 | 7fd0a9a3 | Rettelser til kort-redigering: fjern 6 prikker, skillelinje, vibration stop, scroll, slette-cirkel, ét slider-design | Færdig (32995ab) | Slider-delen var allerede lavet (23163ec) |
 | fb445e0d / 1ac06755 | Drag/drop til frie felter, stiplede rammer, dropzone til overskrift (1ac06755 er samme opgave) | Færdig (32995ab) | — |
 | 2fb90f13 | Dublet af 7fd0a9a3 (samme 6 punkter) | Færdig (32995ab) | — |
+| — | Fold-ud-boks (accordion) som layout-element: kort kan trækkes ind, hele boksen flyttes også lukket; opbygningsknapper samlet øverst med egen baggrund på tilføj-siden | Færdig (branch `claude/statistik-accordion-blok`) | Afventer brugerens test af træk-og-slip på telefon |
 | 961d7953 | Tal-slider på forsiden: midterste tal 25px indrykket, aftager til 0 som transparensen | Færdig (eba3638) | — |
 | 00cf8440 | Gradient i højre side af tallene (synlighed) skal være helt flydende | Færdig (32995ab) | Opacity går nu lineært til 0 ved kanten |
 | a9819635 | Trinløs størrelse/farve på slider (ingen spring pr. position) | Færdig (32995ab) | Ikonfarve + "/ mål"-linje glider nu trinløst |
 | 65efa293 | Tal-hjulet: én linje uden "/ mål", ikon til HØJRE, jævn luft, 7 rækker (2 opfundne), 2° vifte pr. række, ingen beskæring | Færdig (8009704, pushet til master) | Konflikter med 0d21a46 (lokal master): behold denne version, den har 0d21a46's dæmpning med. Brugeren tester på iPhone |
 | ios-drag-1002 | Kort kan ikke trækkes på iPhone i redigering — siden scroller i stedet | Færdig (gren claude/stat-kort-traek-ios) | Brugeren tester på iPhone efter deploy |
+| stat-skeleton | Statistiksiden: blokkene må ikke flytte plads ved indlæsning; skelet med gradient som HelloFresh | Færdig (branch `claude/statistik-skelet`) | Brugeren tester på telefon efter deploy |
 
 ## G3 — Produktkategorier + statistikbokse + "Månedens synder"
 Filer: Prisma-skema (kategori), kategori-lib, nye statistikbokse, ny liste-side, knap i kalender (koordinér med G1).
@@ -147,6 +149,42 @@ Ejer: G8-sessionen, konto C (overtaget 2026-09-24)
 | 69a1b2bd / 2c95590f | Dubletter af 6068f78a og 8d98b548 — læs dem for ekstra svar fra brugeren ("Så byg det, der mangler. Det skal jo bare virke!") | Dublet | Luk sammen med hovedopgaverne |
 | 8d98b548 | Withings + Google Health koblet på, egen data-sync | Venter på bruger | Nøglerne ligger på serveren. 2026-09-26 (session d83284ca, med brugerens OK): 0.0.0.0-redirects i `handlers.ts` rettet. Redirect-URI løst via hellocal.io (2026-09-28); mangler kun testbruger packroff@gmail.com i Google Cloud (se STATUS "Integrationssiden"). HelloFresh-trin-rettelsen i samme transcript hører til G6 |
 | d0442775 | Waldemarsro (DK-only) + scraper | Venter på bruger | Scraper + kalorie-matcher færdige og gemt i scripts/valdemarsro-import (157cff9); brugeren kører scraperen selv (output i Productdatabase/Valdemarsro). IKKE bygget: import til appen + Valdemarsro-kort/toggle på Integrationer (krav i STATUS, ea7843a) — byg når brugeren siger til |
+| 5c45b0d7 | Opskrift-scrapere som Valdemarsro: Arla, Coop, REMA 1000, MENY, Hjerteforeningen, TV2 (+ Børnevenlig og måltidstype) | Færdig (kode) | Scrapere + kalorie-matcher i scripts/recipe-sites-import (README). Testet på de rigtige sider. Brugeren kører dem selv i VS Code; import i appen hører under Valdemarsro-integrationen |
+| 300489b5 | Push til Health/integrationer + egen side pr. app med til/fra (hent/send) ved tilkobling og bagefter | Færdig (ce1bc7f, deployet) | Brugeren: skriveadgang i Google Cloud-klienten (nutrition/health_metrics writeonly) og Strava-appen (activity:write); native app til Apple Health/Health Connect mangler |
+| admin-integrationer | Admin → Integrationer: oversigt (installationer, brug, frakoblinger) + side pr. integration med grafer | Færdig (kode), branch `claude/admin-integrationer` | Ny tabel `integration_events` (migration `20261002120000_integration_events`) skrives fra `handlers.ts`, `integrations-oauth.ts`, `companion.ts` og healthkit-/settings-ruterne. Næste: deploy + brugerens test på admin |
+| tester-popup | Popup "første testperson, 300 points" på hver integrations side + Admin → Brugere → Test-programmes | Færdig (kode, branch `claude/integration-tester-popup`) | Migration `20261002120000_integration_testers` ved deploy; brugerens test på telefon |
+
+## G9 — Ikoner (forside + vand)
+Filer: forsidens grydeikon, Vand-siden, `public/` assets.
+Ejer: G9-overtagelse, konto B
+
+| Id | Opgave | Status | Næste skridt |
+| --- | --- | --- | --- |
+| b4666faa | Grydeikon: trim `Gryde.png` og erstat på forsiden | Færdig (f5895a3) | Var allerede lavet: `public/icons/gryde.png` (770×759, trimmet), brugt i `src/lib/add-actions.ts` |
+| 8f42a331 | Nyt grydeikon (jævne streger) + champagneikon til Målsætning | Færdig | SVG-ikoner i `src/components/icons/`. Brugeren sletter kildebillederne i sin lokale hovedmappe |
+| 60e492ca | Vand-siden: 4 PNG'er (75/50/33/25 cl) | Færdig (6cf89c5) | Billeder i `public/icons/water/`, registrerer 750/500/330/250 ml. Afventer brugerens godkendelse af udseendet |
+| ea9d1f7c | Dublet af 60e492ca (glas/flaske i række på fire) | Færdig (6cf89c5) | Lukket af G9: spørgsmålet om billede↔størrelse er besvaret af filnavnene i 60e492ca |
+
+## G10 — Bundnavigation + global overskrift-stil
+Filer: `src/components/BottomNav.tsx`, `src/app/globals.css`.
+Ukendte ændringer: ingen (alt G10-arbejde committet).
+Ejer: G10-overtagelse, konto D (2026-09-24)
+
+| Id | Opgave | Status | Næste skridt |
+| --- | --- | --- | --- |
+| 5f2ee781 | Fjern stregen mellem footer og indhold + sektionsoverskrifter mindre, ikke fed, centreret med streg på hver side | Færdig (be3a05d) | Verificeret i preview. Afventer brugerens godkendelse af udseendet |
+| a83d7a5a | Alle overskrifter med streger skal være samme klasse (Tidspunkt, datogrupper, statistik, "+ Skillelinje", Historik) | Færdig (136f502) | Deployet (Actions grøn). Obs: forside-indstillingernes "Knapper i hjulet" har en egen streg-overskrift, der kun findes på den lokale master — den skal over på `.hf-type-section-title`, når den lander på origin |
+| 6a503586 | Footer-redigering: slette-krydserne er skåret af + ikoner skal kunne trækkes til siden for at bytte rækkefølge | Færdig (8d5ba9b) | `overflow-x-clip` så krydserne ikke klippes; ombytning efter pladsen under fingeren (ingen hop) + roligere glide-animation; ikon fra panelet indsættes på den plads, det slippes. Afventer test på telefon (HelloFresh/knap-delen hører til G6) |
+
+## G11 — Næringsdata på produktsiden (E-numre, toksiner, fedt-advarsel)
+Filer: produktsidens næringsvisning, statistik-boks-katalog (koordinér med G2), Opsætning/Visning (koordinér med G7).
+Ejer: G11-overtagelse, konto C (2026-09-24). Arbejder i worktree `gifted-hofstadter-894e70`, fletter ind i master
+
+| Id | Opgave | Status | Næste skridt |
+| --- | --- | --- | --- |
+| 03b329f3 / 5a3cdd2b | E-numre + toksiner som valgfri statistik-bokse og til/fra i Opsætning, vist på produktsiden; "udvidet næringsindhold" åben som standard | Færdig (5cea433) | Kontakter i Opsætning, toksinliste (FVST + EFSA, graviditet/amning/fertilitet først), produktside. Flettes ind i master, når G7 har committet profile/settings |
+| 56f30763 | Advarselstrekant med udråbstegn ved mættet/usundt fedt | Færdig (5cea433) | Trekant på statistik-bokse + produktside. **G2:** forsidens tal-slider (`frontpage-stats.ts`) mangler samme ikon — G11 rører ikke filen |
+| 31 | E-numre klikbare på varen og i ingredienslisten | Færdig (branch `claude/clickable-e-numbers-0g8aih`) | E-numre i ingredienstekst åbner `AdditiveInfoModal` via `splitENumbers` i `src/lib/additives.ts`; E-nummer-listen var allerede klikbar |
 
 ## Widgets (iPhone/Android)
 Filer: `src/lib/widgets.ts`, `src/lib/widget-data.ts`, `src/lib/widget-add-actions.ts`, `src/app/api/widgets/**`, `src/app/widgets/**`, `src/components/widgets/**`, `docs/WIDGETS.md`.
@@ -234,6 +272,14 @@ Ejer: bølge-sessionen (2026-10-01)
 | --- | --- | --- | --- |
 | — | Rolig, tilfældig bølge-animation bag forsiden med frostet-glas-bund og tåge | Færdig (kode) | Afventer brugerens visuelle godkendelse på telefon; justér tempo/farve efter feedback |
 | — | Ommer: afdæmpet, skarp top, kun sløret forneden, puls lavere og fra venstre kant (branch `claude/forside-boelger-ommer`) | Venter på bruger | Brugeren tester på telefon; justér alfa/bredde i `createWaveScene` og maskerne i `globals.css` efter feedback |
+
+## G-SCAN — Kameraflow og vareside efter test (mælk/flødeboller)
+Filer: `src/components/camera/**`, `src/lib/focus-detection.ts`, `src/lib/product-naming*`, `src/lib/quick-product-enrichment.ts`, `src/lib/product-photo-analysis.ts`, `src/lib/brand-match.ts`, `src/lib/nutrient-resolution.ts`, `src/components/add/AddProductView.tsx` (cirkel/titel/næringspanel), `scripts/image-agent/cutout.py`.
+Ejer: cloud-session `claude/scan-flow-rettelser` (2026-10-02) — arkiveres; næste session overtager via PR #162
+
+| Id | Opgave | Status | Næste skridt |
+| --- | --- | --- | --- |
+| — | Ingen Tag billede-knap, større ramme, scan-rytme, h1/h2 uden gentagelser, brand fra DB, logo 70 %, 10 %-udklip, næringsdetaljer altid, tomme udklip afvises | Færdig (kode, draft-PR #162, master flettet ind 2026-10-03) | Næste session: flet master ind igen ved konflikt, sæt PR #162 til ready og merge efter brugerens OK. Brugerens test på telefon. Log-analyse af de to scanninger (mælk + flødeboller) kræver eksport fra admin → Log (cloud-sessionen når ikke produktions-DB'en). Fjern hjerte-logoet manuelt i admin → Logoer |
 
 ## G-INT2 — Flere integrationer (Garmin, WHOOP, Huawei, via-mærker, Health Connect-modul)
 Filer: `src/lib/integrations/**`, `src/lib/integrations.ts`, `src/app/settings/integrations/**`, `src/app/api/integrations/**`, `src/lib/api-keys/*`, `native/android/healthconnect/**`.

@@ -317,6 +317,7 @@ export const PAGE_TREE: PageArea[] = [
             label: "Brugere",
             children: [{ path: "/admin/users/personas", label: "Personas" }],
           },
+          { path: "/admin/test-programmes", label: "Test-programmes" },
           { path: "/admin/economy", label: "Economy", note: "Betalende abonnementer, sikret indkomst og forventet indtjening" },
           {
             path: "/admin/chatbot",
@@ -399,6 +400,12 @@ export const PAGE_TREE: PageArea[] = [
               { path: "/admin/partners/[id]/billing", label: "Partner: Faktureringsdetaljer" },
               { path: "/admin/partners/[id]/payment", label: "Partner: Betalingsmetode" },
             ],
+          },
+          {
+            path: "/admin/integrations",
+            label: "Integrationer",
+            note: "Installationer, brug og frakoblinger pr. integration",
+            children: [{ path: "/admin/integrations/[slug]", label: "Integration" }],
           },
           { path: "/admin/statistics?view=traffic", label: "Statistik: Trafik", note: "Besøgsstatistik fra Umami (tidl. Analyse)" },
           { path: "/admin/jobs", label: "Jobs", note: "Jobs sat op af AI-agenter (åbne/afsluttede)" },
