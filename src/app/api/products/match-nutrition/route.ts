@@ -25,6 +25,7 @@ export async function POST(req: Request) {
     const product = await prisma.product.findFirst({
       where: {
         discontinued: false,
+        nutritionMissing: false,
         kcalPer100g: { gte: kcalPer100g - TOLERANCE, lte: kcalPer100g + TOLERANCE },
         proteinPer100g: { gte: proteinPer100g - TOLERANCE, lte: proteinPer100g + TOLERANCE },
         carbsPer100g: { gte: carbsPer100g - TOLERANCE, lte: carbsPer100g + TOLERANCE },

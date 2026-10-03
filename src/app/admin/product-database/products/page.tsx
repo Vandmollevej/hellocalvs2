@@ -125,7 +125,9 @@ function ListView({ rows }: { rows: ProductDatabaseRow[] }) {
                 <p className="hf-type-small truncate text-hf-black">{row.categoryLabel ?? "Uden kategori"}</p>
                 <p className="hf-type-small truncate text-text-muted">{row.sourceLabel}</p>
               </div>
-              <p className="hf-type-small hidden text-right text-text-secondary lg:block">{Math.round(row.kcalPer100g)}</p>
+              <p className="hf-type-small hidden text-right text-text-secondary lg:block">
+                {row.nutritionMissing ? "Mangler næring" : Math.round(row.kcalPer100g)}
+              </p>
               <div className="flex justify-end">
                 <StatusBadge status={row.status} />
               </div>
@@ -158,7 +160,9 @@ function GridView({ rows }: { rows: ProductDatabaseRow[] }) {
               {subtitle(row) && <p className="hf-type-small truncate text-text-muted">{subtitle(row)}</p>}
               <div className="mt-auto flex items-end justify-between gap-2 pt-2">
                 <StoreTags stores={row.stores} />
-                <span className="hf-type-micro shrink-0 text-text-muted">{Math.round(row.kcalPer100g)} kcal</span>
+                <span className="hf-type-micro shrink-0 text-text-muted">
+                  {row.nutritionMissing ? "Mangler næring" : `${Math.round(row.kcalPer100g)} kcal`}
+                </span>
               </div>
             </div>
           </Link>
