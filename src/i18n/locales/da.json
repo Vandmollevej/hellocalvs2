@@ -1436,9 +1436,6 @@
     "saving": "Gemmer…",
     "loading": "Henter…",
     "noEntriesYet": "Ingen vejninger registreret endnu.",
-    "deleteAria": "Slet vejning",
-    "delete": "Slet",
-    "recentTitle": "Seneste vejninger",
     "status": {
       "saved": "Oplysningerne er gemt.",
       "nothing": "Der er ingen vægt at gemme endnu.",
