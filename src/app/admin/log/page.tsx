@@ -6,11 +6,14 @@ import { requireAdminUser } from "@/lib/require-admin";
 import { isDebugLogEnabled } from "@/lib/debug-log";
 import {
   OUTCOME_LABELS,
+  STEP_LABELS,
   eventLabel,
   formatDuration,
   formatTime,
+  rowPhoto,
   summarizeFlows,
   type DebugLogRow,
+  type FlowPhoto,
   type FlowSummary,
 } from "@/lib/debug-log-view";
 import { DebugLogControls } from "@/components/admin/DebugLogControls";
@@ -33,6 +36,25 @@ const TABS = [
   { key: "search", label: "Søgninger uden resultat" },
 ] as const;
 type TabKey = (typeof TABS)[number]["key"];
+
+// Filtre på Scanninger (docs/DECISIONS.md 2026-10-03). "Afbrudte
+// oprettelser" = ukendt stregkode (eller genscanning), men ingen vare.
+const SCAN_FILTERS = [
+  { key: "all", label: "Alle", match: () => true },
+  {
+    key: "abandoned",
+    label: "Afbrudte oprettelser",
+    match: (flow: FlowSummary) => flow.outcome === "abandoned" && flow.creationStarted,
+  },
+  { key: "created", label: "Nye varer", match: (flow: FlowSummary) => flow.outcome === "created" },
+  {
+    key: "existing",
+    label: "Kendte/dubletter",
+    match: (flow: FlowSummary) => flow.outcome === "existing" || flow.outcome === "duplicate",
+  },
+  { key: "errors", label: "Med fejl", match: (flow: FlowSummary) => flow.errors > 0 },
+] as const;
+type ScanFilter = (typeof SCAN_FILTERS)[number]["key"];
 
 const LIST_LIMIT = 300;
 const FLOW_ROW_LIMIT = 4000;
@@ -65,6 +87,29 @@ function ProductLink({ productId }: { productId: string | null }) {
   );
 }
 
+function PhotoThumb({ photo, size }: { photo: FlowPhoto; size: "small" | "large" }) {
+  const label = STEP_LABELS[photo.step] ?? photo.step;
+  return (
+    <a href={photo.url} target="_blank" rel="noreferrer" className="flex flex-col items-center gap-1" title={`${label} — åbn i fuld størrelse`}>
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src={photo.url}
+        alt={label}
+        loading="lazy"
+        className={`rounded-md border border-hf-tan-dark bg-hf-cream object-contain ${size === "small" ? "h-16 w-16" : "max-h-64 max-w-full"}`}
+      />
+      {size === "small" && <span className="hf-type-small text-text-muted">{label}</span>}
+    </a>
+  );
+}
+
+function outcomeText(flow: FlowSummary) {
+  if (flow.outcome !== "abandoned") return OUTCOME_LABELS[flow.outcome];
+  if (flow.abandonedSilently) return "Afbrudt (ingen melding fra telefonen)";
+  const step = flow.abandonedStep ? (STEP_LABELS[flow.abandonedStep] ?? flow.abandonedStep) : null;
+  return step ? `Afbrudt på ${step}` : OUTCOME_LABELS.abandoned;
+}
+
 function Empty({ text }: { text: string }) {
   return <p className="hf-type-body hf-surface p-4 text-text-secondary">{text}</p>;
 }
@@ -72,12 +117,18 @@ function Empty({ text }: { text: string }) {
 function FlowCard({ flow, email }: { flow: FlowSummary; email: string | null }) {
   const start = flow.startedAt.getTime();
   const tone =
-    flow.errors > 0 ? "text-hf-red-dark" : flow.outcome === "abandoned" || flow.outcome === "open" ? "text-text-secondary" : "text-hf-green-dark";
+    flow.errors > 0
+      ? "text-hf-red-dark"
+      : flow.outcome === "abandoned" && flow.creationStarted
+        ? "text-hf-warning"
+        : flow.outcome === "abandoned" || flow.outcome === "open"
+          ? "text-text-secondary"
+          : "text-hf-green-dark";
   return (
     <details className="hf-surface">
       <summary className="flex cursor-pointer flex-wrap items-center gap-x-3 gap-y-1 p-3">
         <span className="hf-type-small text-text-muted">{formatTime(flow.startedAt)}</span>
-        <span className={`hf-type-body hf-type-strong ${tone}`}>{OUTCOME_LABELS[flow.outcome]}</span>
+        <span className={`hf-type-body hf-type-strong ${tone}`}>{outcomeText(flow)}</span>
         {flow.barcode && <span className="hf-type-body text-hf-black">{flow.barcode}</span>}
         {flow.enrichmentDone === false && <span className="hf-type-small text-hf-warning">AI ikke færdig</span>}
         {flow.errors > 0 && <span className="hf-type-small text-hf-red-dark">{flow.errors} fejl</span>}
@@ -89,25 +140,40 @@ function FlowCard({ flow, email }: { flow: FlowSummary; email: string | null }) 
         <span className="ml-auto">
           <ProductLink productId={flow.productId} />
         </span>
+        {flow.photos.length > 0 && (
+          <span className="flex w-full flex-wrap gap-2">
+            {flow.photos.map((photo) => (
+              <PhotoThumb key={photo.url} photo={photo} size="small" />
+            ))}
+          </span>
+        )}
       </summary>
       <ol className="flex flex-col border-t border-hf-tan-dark">
-        {flow.rows.map((row) => (
-          <li key={row.id} className="flex gap-3 border-b border-hf-tan px-3 py-2 last:border-b-0">
-            <span className="hf-type-small w-16 shrink-0 text-right text-text-muted">
-              +{formatDuration(row.createdAt.getTime() - start) || "0 ms"}
-            </span>
-            <span aria-hidden="true" className={`mt-1.5 h-2 w-2 shrink-0 rounded-full ${levelDot(row.level)}`} />
-            <div className="min-w-0 flex-1">
-              <p className="hf-type-body text-hf-black">
-                <span className="hf-type-strong">{eventLabel(row)}</span>
-                {row.durationMs != null && <span className="hf-type-small text-text-muted"> · {formatDuration(row.durationMs)}</span>}
-                <span className="hf-type-small text-text-muted"> · {row.category === "scan" ? "" : `${row.category} · `}{row.event}</span>
-              </p>
-              <p className="hf-type-small break-words text-text-secondary">{row.message}</p>
-              <JsonDetails data={row.data} />
-            </div>
-          </li>
-        ))}
+        {flow.rows.map((row) => {
+          const photo = rowPhoto(row);
+          return (
+            <li key={row.id} className="flex gap-3 border-b border-hf-tan px-3 py-2 last:border-b-0">
+              <span className="hf-type-small w-16 shrink-0 text-right text-text-muted">
+                +{formatDuration(row.createdAt.getTime() - start) || "0 ms"}
+              </span>
+              <span aria-hidden="true" className={`mt-1.5 h-2 w-2 shrink-0 rounded-full ${levelDot(row.level)}`} />
+              <div className="min-w-0 flex-1">
+                <p className="hf-type-body text-hf-black">
+                  <span className="hf-type-strong">{eventLabel(row)}</span>
+                  {row.durationMs != null && <span className="hf-type-small text-text-muted"> · {formatDuration(row.durationMs)}</span>}
+                  <span className="hf-type-small text-text-muted"> · {row.category === "scan" ? "" : `${row.category} · `}{row.event}</span>
+                </p>
+                <p className="hf-type-small break-words text-text-secondary">{row.message}</p>
+                {photo && (
+                  <div className="mt-1">
+                    <PhotoThumb photo={photo} size="large" />
+                  </div>
+                )}
+                <JsonDetails data={row.data} />
+              </div>
+            </li>
+          );
+        })}
       </ol>
     </details>
   );
@@ -181,7 +247,7 @@ function retentionStart() {
   return new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
 }
 
-async function ScanTab({ q, flow }: { q: string; flow: string }) {
+async function ScanTab({ q, flow, show }: { q: string; flow: string; show: ScanFilter }) {
   const since = retentionStart();
   const rows = (await prisma.debugLog.findMany({
     where: flow
@@ -191,7 +257,11 @@ async function ScanTab({ q, flow }: { q: string; flow: string }) {
     take: FLOW_ROW_LIMIT,
   })) as DebugLogRow[];
 
-  let flows = summarizeFlows(rows);
+  // Tallene på filtrene gælder alle scanninger i perioden (før søgning).
+  const all = summarizeFlows(rows);
+  const counts = new Map(SCAN_FILTERS.map((item) => [item.key, all.filter(item.match).length]));
+  const filter = SCAN_FILTERS.find((item) => item.key === show) ?? SCAN_FILTERS[0];
+  let flows = flow ? all : all.filter(filter.match);
   if (q) {
     const needle = q.toLowerCase();
     flows = flows.filter((item) =>
@@ -215,17 +285,19 @@ async function ScanTab({ q, flow }: { q: string; flow: string }) {
       })) as DebugLogRow[]);
 
   const emails = await emailsFor([...flows.map((item) => item.userId), ...loose.map((row) => row.userId)]);
-  const counts = {
-    total: flows.length,
-    created: flows.filter((item) => item.outcome === "created").length,
-    existing: flows.filter((item) => item.outcome === "existing" || item.outcome === "duplicate").length,
-    failed: flows.filter((item) => item.errors > 0).length,
+  const abandonedCount = counts.get("abandoned") ?? 0;
+  const filterHref = (key: ScanFilter) => {
+    const params = new URLSearchParams({ tab: "scan" });
+    if (key !== "all") params.set("show", key);
+    if (q) params.set("q", q);
+    return `/admin/log?${params}`;
   };
 
   return (
     <div className="flex flex-col gap-4">
       <form className="flex flex-wrap gap-2" action="/admin/log">
         <input type="hidden" name="tab" value="scan" />
+        {filter.key !== "all" && <input type="hidden" name="show" value={filter.key} />}
         <input
           name="q"
           defaultValue={q}
@@ -241,12 +313,38 @@ async function ScanTab({ q, flow }: { q: string; flow: string }) {
           </Link>
         )}
       </form>
+      {!flow && (
+        <div className="flex flex-wrap gap-2">
+          {SCAN_FILTERS.map((item) => (
+            <Link key={item.key} href={filterHref(item.key)} className="hf-choice" aria-pressed={item.key === filter.key}>
+              {item.label} ({counts.get(item.key) ?? 0})
+            </Link>
+          ))}
+        </div>
+      )}
+      {abandonedCount > 0 && filter.key !== "abandoned" && !flow && (
+        <p className="hf-type-body hf-surface p-3 text-text-primary">
+          <span className="hf-type-strong text-hf-warning">
+            {abandonedCount} {abandonedCount === 1 ? "oprettelse" : "oprettelser"} af en ny vare blev afbrudt
+          </span>{" "}
+          de seneste 30 dage.{" "}
+          <Link href={filterHref("abandoned")} className="hf-btn-text">
+            Se dem med billeder
+          </Link>
+        </p>
+      )}
       <p className="hf-type-small text-text-secondary">
-        {counts.total} scanninger vist · {counts.created} nye varer · {counts.existing} kendte/dubletter · {counts.failed} med fejl. Tryk
-        på en scanning for at se hvert trin med tid.
+        {flows.length} scanninger vist. Tryk på en scanning for at se hvert trin med tid; tryk på et billede for at se det i fuld
+        størrelse. Billeder fra forside, energi og indhold gemmes, så snart de er taget.
       </p>
       {flows.length === 0 ? (
-        <Empty text="Ingen scanninger logget endnu. Åbn kameraet under Tilføj i appen og scan en vare." />
+        <Empty
+          text={
+            filter.key === "abandoned"
+              ? "Ingen afbrudte oprettelser de seneste 30 dage."
+              : "Ingen scanninger logget endnu. Åbn kameraet under Tilføj i appen og scan en vare."
+          }
+        />
       ) : (
         <div className="flex flex-col gap-2">
           {flows.map((item) => (
@@ -362,7 +460,7 @@ async function SearchTab() {
 export default async function AdminLogPage({
   searchParams,
 }: {
-  searchParams: Promise<{ tab?: string; q?: string; flow?: string }>;
+  searchParams: Promise<{ tab?: string; q?: string; flow?: string; show?: string }>;
 }) {
   const admin = await requireAdminUser();
   if (!admin) redirect("/admin/login");
@@ -371,6 +469,7 @@ export default async function AdminLogPage({
   const tab: TabKey = TABS.some((item) => item.key === params.tab) ? (params.tab as TabKey) : "scan";
   const q = (params.q ?? "").trim().slice(0, 100);
   const flow = /^[A-Za-z0-9-]{8,64}$/.test(params.flow ?? "") ? (params.flow as string) : "";
+  const show: ScanFilter = SCAN_FILTERS.find((item) => item.key === params.show)?.key ?? "all";
 
   const [enabled, total] = await Promise.all([isDebugLogEnabled(), prisma.debugLog.count()]);
 
@@ -402,7 +501,7 @@ export default async function AdminLogPage({
         ))}
       </div>
 
-      {tab === "scan" && <ScanTab q={q} flow={flow} />}
+      {tab === "scan" && <ScanTab q={q} flow={flow} show={show} />}
       {tab === "ai" && <DebugListTab where={{ category: "ai" }} />}
       {tab === "cron" && <DebugListTab where={{ category: "cron" }} />}
       {tab === "errors" && <DebugListTab where={{ level: "error" }} />}
