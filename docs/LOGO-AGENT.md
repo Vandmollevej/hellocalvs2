@@ -56,6 +56,32 @@ det, robotten skal. Besluttet af brugeren 2026-09-24.
 (0.90), `LOGO_AGENT_MIN_CONFIDENCE` (0.50), `LOGO_AGENT_RETENTION_DAYS` (7),
 `LOGO_AGENT_RUN_ON_START` (false — sæt `true` for en testkørsel ved start).
 
+## Manuel import af egne logoer (`import_logos.py`)
+
+Til logoer, brugeren selv har samlet (fx mappen `Logos/`): læg filerne
+(`<brandnavn>.png/.webp/.jpg`) i `data/product-images/brand-logos/_import` på
+serveren og kør i logo-agent-containeren:
+
+```
+docker exec hellocal-v2-logo-agent-1 python /app/import_logos.py --dry-run   # kun matchning
+docker exec hellocal-v2-logo-agent-1 python /app/import_logos.py
+```
+
+- Filnavnet matches mod `brands.name` uden hensyn til store/små bogstaver,
+  tegnsætning og æ/ø/å (`Naturmaelk` = `Naturmælk`). Er der flere brands med
+  samme normaliserede navn, får de alle logoet.
+- Eksisterende logoer erstattes (brugerens egne filer vinder) og får
+  `?v=<tid>` på `logoUrl`, så telefoner ikke viser det gamle.
+- `Navn_2.png`, `Navn_3.png` … er alternative udgaver af samme brand og
+  bruges ikke; den uden suffiks er valgt.
+- Billedet skaleres til højst 640 px og beskæres; uigennemsigtig ensfarvet eller
+  bagt-ind skakbræt-baggrund fyldes ud fra kanten, så hvide flader inde i logoet
+  beholdes.
+- Filer uden match ændres ikke; scriptet skriver de nærmeste brandnavne. Omdøb
+  filen og kør igen (idempotent). Behandlede filer flyttes til `_import/done`.
+- `ALIASES` i scriptet bruges til filer, der ikke hedder som brandet
+  (fx Meica).
+
 ## Ikke med i denne opgave
 
 - **Logo-match i selve scanningen** (trin 1 i den oprindelige brief: når

@@ -3,6 +3,12 @@
 Last updated: 2026-10-03
 Last updated: 2026-10-04
 
+## 2026-10-04: Håndlavede brand-logoer (116 filer) lagt på serveren — kobling til brands mangler
+
+- De 116 logofiler fra `Logos/` (lokal mappe) ligger på serveren i `data/product-images/brand-logos/_import` (uploadet gennem logo-agent-containeren, danske tegn kontrolleret).
+- Nyt script `scripts/logo-agent/import_logos.py` (med i logo-agent-imaget fra næste deploy) matcher filnavn → `brands.name`, beskærer/skalerer (maks. 640 px, gennemsigtig baggrund — også for Meica og Red Bull, hvis hvide/skakbræt-baggrund er bagt ind), gemmer `brand-logos/<brandId>.png`, sætter `Brand.logoUrl` og flytter filen til `_import/done`. `_2`/`_3`-filer er alternative udgaver og bruges ikke. Beskrivelse i `docs/LOGO-AGENT.md`.
+- **Mangler:** selve kørslen mod produktionsdatabasen blev afvist af auto-mode-klassifikatoren (fjern-skriv). Kør efter deploy: `docker exec hellocal-v2-logo-agent-1 python /app/import_logos.py --dry-run` og derefter uden `--dry-run`. Filer uden brand-match logges med nærmeste brandnavne.
+
 ## 2026-10-04: Puls-robot, ugevisning og sportsforslag
 
 - Spørgsmålet "Vi kan se, at din puls var højere end sædvanlig …" (`HeartRateSpikePrompt`) findes fra 2026-09-29 (bygget, ikke live-testet med rigtige pulsdata). Nyt: bundark på web og mobil, dato i overskriften (i går / dato), **ugen vandret med datoer med sport krydset af + klokkeslæt** (`PulseWeekStrip`, `src/lib/pulse-week.ts`), sportsforslag (`PulseSuggestionCard`) og op til tre spørgsmål pr. besøg.

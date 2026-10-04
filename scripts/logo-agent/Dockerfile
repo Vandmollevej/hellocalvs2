@@ -9,6 +9,6 @@ WORKDIR /app
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-COPY agent.py job_control.py ./
+COPY agent.py job_control.py import_logos.py ./
 
 CMD ["python", "agent.py"]
