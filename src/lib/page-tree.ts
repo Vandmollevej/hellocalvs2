@@ -67,6 +67,7 @@ export const PAGE_TREE: PageArea[] = [
             children: [
               { path: "/weight/create", label: "Registrér vægt" },
               { path: "/water/create", label: "Registrér vand" },
+              { path: "/drinks", label: "Drinks", children: [{ path: "/drinks/[id]", label: "Tilføj drink" }] },
               { path: "/activity/create", label: "Tilføj aktivitet" },
               { path: "/period/create", label: "Registrér menstruation" },
               {
@@ -338,6 +339,7 @@ export const PAGE_TREE: PageArea[] = [
             children: [
               { path: "/admin/product-database/products", label: "Varer" },
               { path: "/admin/product-database/brands", label: "Brands" },
+              { path: "/admin/product-database/labels", label: "Labels" },
             ],
           },
           { path: "/admin/search", label: "Søg", note: "Gammel adresse — sender videre til Varer" },
