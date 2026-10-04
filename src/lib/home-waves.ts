@@ -343,6 +343,13 @@ export type WaveFrame = {
   strandWidthScale?: number;
   /** Gange strengenes styrke; de tykke bånd skal kunne ses gennem sløret. */
   strandAlphaScale?: number;
+  /**
+   * Strengene toner ud fra denne y til `fadeTo` og er væk under den; puls-linjen
+   * tegnes bagefter og rammes ikke (bruger 2026-10-03: pulsen ligger under
+   * hero-bunden, hvor strengene for længst er tonet ud).
+   */
+  fadeFrom?: number;
+  fadeTo?: number;
 };
 
 const STEP_TARGET = 7;
@@ -353,7 +360,7 @@ export function drawWaveScene(
   palette: WavePalette,
   frame: WaveFrame
 ) {
-  const { t, width, height, scale, bpm = DEFAULT_PULSE_BPM, pulseY, strandWidthScale = 1, strandAlphaScale = 1 } = frame;
+  const { t, width, height, scale, bpm = DEFAULT_PULSE_BPM, pulseY, strandWidthScale = 1, strandAlphaScale = 1, fadeFrom, fadeTo } = frame;
   ctx.setTransform(1, 0, 0, 1, 0, 0);
   ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
   ctx.setTransform(scale, 0, 0, scale, WAVE_BLEED * scale, WAVE_BLEED * scale);
@@ -432,6 +439,18 @@ export function drawWaveScene(
       ctx.lineWidth = lineWidth * 0.32;
       ctx.stroke();
     }
+  }
+
+  if (fadeFrom !== undefined && fadeTo !== undefined) {
+    ctx.save();
+    ctx.globalAlpha = 1;
+    ctx.globalCompositeOperation = "destination-out";
+    const gradient = ctx.createLinearGradient(0, fadeFrom, 0, fadeTo);
+    gradient.addColorStop(0, "rgba(0,0,0,0)");
+    gradient.addColorStop(1, "rgba(0,0,0,1)");
+    ctx.fillStyle = gradient;
+    ctx.fillRect(-WAVE_BLEED, fadeFrom, width + WAVE_BLEED * 2, height + WAVE_BLEED * 2);
+    ctx.restore();
   }
 
   if (scene.pulse) drawPulse(ctx, scene.pulse, palette, t, width, height, bpm, pulseY ?? scene.pulse.y * height);

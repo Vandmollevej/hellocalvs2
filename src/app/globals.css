@@ -2284,6 +2284,9 @@ textarea::selection,
 .home-wave {
   position: absolute;
   inset: 0;
+  /* Rager --home-wave-below under feltet (kun det øverste lag), så puls-linjen
+     kan ligge mellem hjulets nederste tal og "Dagens tilføjelser". */
+  bottom: calc(var(--home-wave-below, 0px) * -1);
   overflow: hidden;
   pointer-events: none;
 }
@@ -2296,10 +2299,8 @@ textarea::selection,
   height: calc(100% + var(--home-wave-bleed) * 2);
 }
 
-.home-wave--top {
-  -webkit-mask-image: linear-gradient(to bottom, black 0%, black 88%, transparent 100%);
-  mask-image: linear-gradient(to bottom, black 0%, black 88%, transparent 100%);
-}
+/* Det øverste lags udtoning forneden tegnes i lærredet (fadeFrom/fadeTo), så
+   puls-linjen under hero-bunden ikke tones væk. */
 
 /* Nederste felt: toner blødt ind fra skillestregen, så de to felter ikke
    får en hård kant mellem sig. */
