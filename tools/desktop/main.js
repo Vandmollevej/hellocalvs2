@@ -31,6 +31,7 @@ const ALLOWED_PERMISSIONS = new Set(VARIANTS[variantKey].permissions);
 // Kun disse værter vises i selve programmet; alle andre links åbnes i standardbrowseren.
 const INTERNAL_HOSTS = new Set(["admin.hellocal.io", "hellocal.io"]);
 const RETRY_MS = 10_000;
+const SERVER_RETRY_MS = 5_000;
 
 // Egen profilmappe pr. program (skal sættes, før noget bruger userData).
 app.setPath("userData", path.join(app.getPath("appData"), APP_TITLE));
@@ -87,9 +88,15 @@ function saveWindowState(win) {
   }
 }
 
-function offlineHtml(url, reason) {
+// Vises i stedet for en tom side eller en rå "Bad Gateway", når internettet er væk (serverError = false)
+// eller serveren genstarter efter en udrulning (serverError = true). Prøver selv igen.
+function offlineHtml(url, reason, serverError) {
   const target = JSON.stringify(url).replace(/</g, "\\u003c");
   const detail = String(reason).replace(/[^\w ]/g, "");
+  const heading = serverError ? "Serveren genstarter" : `Kan ikke nå ${APP_TITLE}`;
+  const message = serverError
+    ? "Siden opdateres lige nu. Programmet prøver igen automatisk."
+    : "Tjek internetforbindelsen. Programmet prøver igen automatisk.";
   return `<!doctype html><meta charset="utf-8"><title>${APP_TITLE}</title>
 <style>
   body { margin: 0; height: 100vh; display: grid; place-items: center; font: 16px system-ui, sans-serif; background: #f6f7f4; color: #243b2f; }
@@ -97,16 +104,20 @@ function offlineHtml(url, reason) {
   button { font: inherit; padding: .6rem 1.4rem; border: 0; border-radius: 999px; background: #2f6b4f; color: #fff; cursor: pointer; }
 </style>
 <main>
-  <h1>Kan ikke nå ${APP_TITLE}</h1>
-  <p>Tjek internetforbindelsen. Programmet prøver igen automatisk.</p>
+  <h1>${heading}</h1>
+  <p>${message}</p>
   <p><small>${detail}</small></p>
   <button onclick="retry()">Prøv igen</button>
 </main>
 <script>
   const target = ${target};
   function retry() { location.replace(target); }
-  setTimeout(retry, ${RETRY_MS});
+  setTimeout(retry, ${serverError ? SERVER_RETRY_MS : RETRY_MS});
 </script>`;
+}
+
+function showRetryPage(win, url, reason, serverError) {
+  win.loadURL(`data:text/html;charset=utf-8,${encodeURIComponent(offlineHtml(url, reason, serverError))}`);
 }
 
 function goHome() {
@@ -217,8 +228,13 @@ function createWindow() {
 
   win.webContents.on("did-fail-load", (_event, errorCode, errorDescription, validatedURL, isMainFrame) => {
     if (!isMainFrame || errorCode === -3) return; // -3 = navigation afbrudt af en ny navigation
-    const html = offlineHtml(isInternalUrl(validatedURL) ? validatedURL : START_URL, errorDescription);
-    win.loadURL(`data:text/html;charset=utf-8,${encodeURIComponent(html)}`);
+    showRetryPage(win, isInternalUrl(validatedURL) ? validatedURL : START_URL, errorDescription, false);
+  });
+  // 502/503/504 = serveren genstarter (udrulning); i stedet for en rå fejlside eller blank side
+  // vises en venteside, der selv prøver igen.
+  win.webContents.on("did-frame-navigate", (_event, url, httpResponseCode, _statusText, isMainFrame) => {
+    if (!isMainFrame || ![502, 503, 504].includes(httpResponseCode) || !isInternalUrl(url)) return;
+    showRetryPage(win, url, `HTTP ${httpResponseCode}`, true);
   });
   win.webContents.on("render-process-gone", () => win.reload());
 

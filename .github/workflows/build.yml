@@ -8,6 +8,8 @@ on:
     paths-ignore:
       - "docs/**"
       - "**/*.md"
+      # Windows-programmerne (tools/desktop) er ikke en del af app-imaget.
+      - "tools/**"
 
 jobs:
   build:
