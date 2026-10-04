@@ -98,6 +98,7 @@ Brugerens krav: "Pulsen skal svare til den rigtige puls som måles, hvis ur tils
 - Pulsen = nyeste `HEART_RATE_BPM` fra en integration med status `CONNECTED`, højst 30 minutter gammel (integrationerne synkroniserer hvert 15. minut) og mellem 30 og 220 bpm (`src/lib/live-heart-rate.ts`, `GET /api/health-metrics/heart-rate`). Ellers 60 bpm. Forsiden spørger én gang i minuttet, mens siden er synlig.
 - Pulsen låses pr. fej, så slagene ikke hopper, hvis en ny måling kommer midt i et fej.
 - Placering (bruger samme dag: "ovenover midten … så den ikke går om bag det tal i hjulet, som står i midten"): grundlinjen ligger 26 px over tal-hjulets midterste række, målt i siden (`data-stats-wheel` på hjulets boks). Det rækker til, at dykket efter R-takken og stregens glød går fri af det midterste tal. Ændrer placeringen fra 2026-10-03 ("omkring tal-hjulets midte").
+- Placering igen (bruger 2026-10-03 aften, flettet ind 2026-10-04 efter "Du har da ikke flyttet min puls ned på forsiden???"): grundlinjen ligger midt mellem hjulets nederste tal og overskriften "Dagens tilføjelser". Det øverste bølgelag rager 18 px under hero (`--home-wave-below`), og strengenes udtoning forneden tegnes i lærredet, så pulsen ikke tones væk. Erstatter "26 px over midterste række".
 
 ## 2026-10-03: Familiekoder er bundet til en e-mail og vises som krypteret QR-kode
 
