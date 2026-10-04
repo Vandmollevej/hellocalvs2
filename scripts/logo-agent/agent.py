@@ -430,6 +430,11 @@ def cleanup(conn):
 
 def run_once(conn):
     trim_existing_logos()
+    # Logoer uden brand-match ved start venter i _import, til brandet findes.
+    try:
+        import_logos.main(dry_run=False)
+    except Exception:  # noqa: BLE001 - importen må ikke stoppe natkørslen
+        log.exception("import af egne logoer fejlede")
     # Fejlen skal kunne ses på admin "Robotter", så den kastes i stedet for
     # kun at blive logget.
     if not VISION_CREDENTIALS_FILE and not VISION_API_KEY:

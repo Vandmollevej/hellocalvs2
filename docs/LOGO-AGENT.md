@@ -80,8 +80,13 @@ docker exec hellocal-v2-logo-agent-1 python /app/import_logos.py
 - Billedet skaleres til højst 640 px og beskæres; uigennemsigtig ensfarvet eller
   bagt-ind skakbræt-baggrund fyldes ud fra kanten, så hvide flader inde i logoet
   beholdes.
-- Filer uden match ændres ikke; scriptet skriver de nærmeste brandnavne. Omdøb
-  filen og kør igen (idempotent). Behandlede filer flyttes til `_import/done`.
+- Filer uden match ændres ikke; scriptet skriver de nærmeste brandnavne. De
+  ligger i `_import`, til et brand med præcis det navn opstår (fx når en vare
+  med brandet oprettes) — robotten prøver igen ved hver start og hver nat. Eller
+  omdøb filen/tilføj en `ALIASES`-linje. Behandlede filer flyttes til
+  `_import/done`.
+- 2026-10-04 første kørsel: 62 logoer sat, 4 alternativer sprunget over, 56 uden
+  brand i databasen endnu (de venter i `_import`).
 - `ALIASES` i scriptet bruges til filer, der ikke hedder som brandet
   (fx Meica).
 

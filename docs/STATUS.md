@@ -20,7 +20,8 @@ Last updated: 2026-10-04
 
 - De 116 logofiler fra `Logos/` (lokal mappe) ligger på serveren i `data/product-images/brand-logos/_import` (uploadet gennem logo-agent-containeren, danske tegn kontrolleret).
 - Nyt script `scripts/logo-agent/import_logos.py` (med i logo-agent-imaget fra næste deploy) matcher filnavn → `brands.name`, beskærer/skalerer (maks. 640 px, gennemsigtig baggrund — også for Meica og Red Bull, hvis hvide/skakbræt-baggrund er bagt ind), gemmer `brand-logos/<brandId>.png`, sætter `Brand.logoUrl` og flytter filen til `_import/done`. `_2`/`_3`-filer er alternative udgaver og bruges ikke. Beskrivelse i `docs/LOGO-AGENT.md`.
-- Kørslen mod produktionsdatabasen blev afvist, da jeg forsøgte den via SSH (auto-mode-klassifikatoren). Brugeren valgte derfor 2026-10-04, at **logo-robotten kører importen selv ved start** (`import_logos.main` kaldes fra `agent.py`), dvs. efter næste deploy. Tjek `docker logs hellocal-v2-logo-agent-1`: filer uden brand-match logges med nærmeste brandnavne (omdøb dem i `_import` og genstart robotten).
+- Kørslen mod produktionsdatabasen blev afvist, da jeg forsøgte den via SSH (auto-mode-klassifikatoren). Brugeren valgte derfor 2026-10-04, at **logo-robotten kører importen selv** (`import_logos.main` kaldes fra `agent.py` ved start og i natkørslen).
+- **Resultat (første kørsel efter deploy):** 62 logoer sat på deres brands, 4 alternative udgaver (`_2`/`_3`) sprunget over, **56 filer uden brand i databasen** — de ligger i `_import` og sættes automatisk, når et brand med præcis det navn findes (varenavne som "Heinz Yellow Mustard" og "Sprite Zero Sugar Lemon Lime" er ikke brandnavne). Se `docker logs hellocal-v2-logo-agent-1` for nærmeste brandnavne.
 
 ## 2026-10-04: Puls-robot, ugevisning og sportsforslag
 

@@ -46,6 +46,9 @@ EXTENSIONS = {".png", ".webp", ".jpg", ".jpeg"}
 # Filnavne, der ikke er brandnavnet (hentet fra billedsøgning).
 ALIASES = {
     "png-transparent-meica-edewecht-bockwurst-sausage-german-cuisine-sausage-love-food-text": "Meica",
+    # Samme brand, men databasen staver det anderledes.
+    "m&m": "M&M's",
+    "Jozo salt": "Jozo",
 }
 
 
