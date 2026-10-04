@@ -1693,6 +1693,15 @@
     "noEntriesYet": "Noch keine Wiegungen erfasst.",
     "recentTitle": "Letzte Wiegungen"
   },
+  "drinks": {
+    "title": "Drinks",
+    "noDrinksYet": "Es gibt noch keine Drinks.",
+    "notFound": "Drink nicht gefunden.",
+    "add": "Hinzufügen",
+    "saving": "Speichern…",
+    "saveError": "Der Drink konnte nicht gespeichert werden.",
+    "kcalTotal": "Insgesamt ca. {kcal} kcal"
+  },
   "waterLog": {
     "title": "Wasser",
     "intro": "Erfasse deine Wasseraufnahme. Wähle eine Flasche oder ein Glas oder stelle die Menge manuell am Schieberegler ein.",
@@ -2320,6 +2329,7 @@
     "camera": "Mit Kamera scannen",
     "list": "Alle ansehen",
     "menstrualCycle": "Menstruation",
+    "drinks": "Drinks",
     "hint": {
       "list": "Alle ansehen"
     }

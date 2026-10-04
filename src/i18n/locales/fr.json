@@ -1693,6 +1693,15 @@
     "noEntriesYet": "Aucune pesée enregistrée pour l'instant.",
     "recentTitle": "Dernières pesées"
   },
+  "drinks": {
+    "title": "Drinks",
+    "noDrinksYet": "Il n'y a pas encore de drinks.",
+    "notFound": "Drink introuvable.",
+    "add": "Ajouter",
+    "saving": "Enregistrement…",
+    "saveError": "Impossible d'enregistrer le drink.",
+    "kcalTotal": "Environ {kcal} kcal au total"
+  },
   "waterLog": {
     "title": "Eau",
     "intro": "Enregistre ta consommation d'eau. Choisis une gourde ou un verre, ou règle la quantité manuellement avec le curseur.",
@@ -2320,6 +2329,7 @@
     "camera": "Scanner avec la caméra",
     "list": "Tout voir",
     "menstrualCycle": "Règles",
+    "drinks": "Drinks",
     "hint": {
       "list": "Tout voir"
     }

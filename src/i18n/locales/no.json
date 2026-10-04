@@ -1693,6 +1693,15 @@
     "noEntriesYet": "Ingen veiinger registrert ennå.",
     "recentTitle": "Siste veiinger"
   },
+  "drinks": {
+    "title": "Drinks",
+    "noDrinksYet": "Det finnes ingen drinker ennå.",
+    "notFound": "Drinken ble ikke funnet.",
+    "add": "Legg til",
+    "saving": "Lagrer…",
+    "saveError": "Drinken kunne ikke lagres.",
+    "kcalTotal": "Ca. {kcal} kcal totalt"
+  },
   "waterLog": {
     "title": "Vann",
     "intro": "Registrer vanninntaket ditt. Velg en flaske eller et glass, eller still inn mengden manuelt på glidebryteren.",
@@ -2320,6 +2329,7 @@
     "camera": "Skann med kamera",
     "list": "Se alle",
     "menstrualCycle": "Menstruasjon",
+    "drinks": "Drinks",
     "hint": {
       "list": "Se alle"
     }

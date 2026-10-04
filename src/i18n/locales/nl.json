@@ -1693,6 +1693,15 @@
     "noEntriesYet": "Nog geen wegingen geregistreerd.",
     "recentTitle": "Laatste wegingen"
   },
+  "drinks": {
+    "title": "Drinks",
+    "noDrinksYet": "Er zijn nog geen drinks.",
+    "notFound": "Drink niet gevonden.",
+    "add": "Toevoegen",
+    "saving": "Opslaan…",
+    "saveError": "De drink kon niet worden opgeslagen.",
+    "kcalTotal": "Ongeveer {kcal} kcal in totaal"
+  },
   "waterLog": {
     "title": "Water",
     "intro": "Registreer je waterinname. Kies een fles of een glas, of stel de hoeveelheid handmatig in met de schuifregelaar.",
@@ -2320,6 +2329,7 @@
     "camera": "Scannen met camera",
     "list": "Alles bekijken",
     "menstrualCycle": "Menstruatie",
+    "drinks": "Drinks",
     "hint": {
       "list": "Alles bekijken"
     }

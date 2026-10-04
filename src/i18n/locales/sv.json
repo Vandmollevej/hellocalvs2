@@ -1693,6 +1693,15 @@
     "noEntriesYet": "Inga vägningar registrerade ännu.",
     "recentTitle": "Senaste vägningar"
   },
+  "drinks": {
+    "title": "Drinks",
+    "noDrinksYet": "Det finns inga drinkar ännu.",
+    "notFound": "Drinken hittades inte.",
+    "add": "Lägg till",
+    "saving": "Sparar…",
+    "saveError": "Drinken kunde inte sparas.",
+    "kcalTotal": "Cirka {kcal} kcal totalt"
+  },
   "waterLog": {
     "title": "Vatten",
     "intro": "Registrera ditt vattenintag. Välj en flaska eller ett glas, eller ställ in mängden manuellt med reglaget.",
@@ -2320,6 +2329,7 @@
     "camera": "Skanna med kamera",
     "list": "Visa alla",
     "menstrualCycle": "Mens",
+    "drinks": "Drinks",
     "hint": {
       "list": "Visa alla"
     }
