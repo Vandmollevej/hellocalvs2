@@ -426,3 +426,16 @@ explicitly approved.
 2. Læg `STRIPE_SECRET_KEY` (sk_live_… / sk_test_…) i admin → API-nøgler → Betaling → Stripe og tryk "Test".
 3. Deploy med migrationen `20260929150000_stripe_payments`. Serveren registrerer selv webhooken `https://<APP_BASE_URL>/api/payments/stripe/webhook` inden for 15 min. (eller sæt `STRIPE_WEBHOOK_SECRET` fra dashboardet).
 4. `APP_BASE_URL` skal være den offentlige https-adresse (bruges til retur- og webhook-adresser).
+
+## Udrulning uden nedetid (2026-10-04)
+
+Før: hver udrulning genskabte `app`-containeren, og sitet gav "Bad Gateway" i ca. 40 sekunder (målt 2026-10-04: 9 udrulninger på ca. 50 minutter fra flere sessioner).
+
+Nu:
+
+- `edge-proxy` (nginx, `scripts/edge-proxy/nginx.conf`) ejer serverens port `3100` (`HELLOCAL_HTTP_PORT`); Cloudflare Tunnel peger stadig på `http://192.168.1.90:3100`. `app` udgiver ikke længere en port og kan derfor køre i flere kopier. Proxyen sætter ingen `X-Forwarded-*`-headere: appen læser klient-IP (admin-IP-begrænsningen) fra `cf-connecting-ip`, og tunnelens headere skal videregives uændret.
+- Deploy-trinnet kalder `scripts/deploy/rollout-app.sh`: (1) `nginx -t` på konfigurationen, (2) ny app-container startes ved siden af den gamle (`up -d --scale app=2 --no-recreate app`; migrationer køres først via `depends_on`), (3) venter til den er sund (healthcheck hvert 5. sekund, op til 3 minutter), (4) stopper og fjerner den gamle. Bliver den nye ikke sund, fjernes den, den gamle bliver stående, og udrulningen fejler — sitet er uberørt.
+- Første udrulning efter denne ændring har én kort afbrydelse (den gamle app ejer endnu port 3100 og genskabes uden port, derefter starter proxyen). Scriptet vælger selv den vej.
+- `scan-app` (scan.hellocal.io) og agenterne er uændrede og genstartes som før.
+- Ændringer, der kun rører `docs/**`, `**/*.md` eller `tools/**`, starter intet build/deploy.
+- Ved problemer: `docker compose ... logs edge-proxy`; hurtig tilbagerulning er at gendanne `ports` på `app` i compose-filen og køre `docker compose ... up -d app` (proxyen fjernes med `rm -sf edge-proxy`).

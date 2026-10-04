@@ -4433,3 +4433,11 @@ Ejerens krav: det samme som logo-upload til produktbilleder; findes billedet i f
 - **Findes der et billede på pladsen** gemmes det nye som `CONFLICT` og lægges **ikke** op. På siden står det under «Findes allerede» med Ignorer (behold det gamle, slet den nye fil), Erstat (læg det nye op; det gamle husker rækken, så sletning af partiet gendanner det) og Vis forskel. Der er også Ignorer alle / Erstat alle (Erstat alle kræver en bekræftelse).
 - **Behandling:** i browseren læses filen, gennemsigtighed tjekkes (fritlagt), og billedet nedskaleres kun, hvis det er over 2000 px eller 5 MB; ellers sendes PNG/JPEG/WebP uændret. Serveren læser filtype og mål fra bytes, fjerner metadata og gemmer som `/product-images/product-uploads/<uuid>.<ext>`.
 - Tabeller `product_image_upload_batches` / `product_image_uploads` (migration `20261004180000_product_image_upload`); kun fuld admin-adgang kan uploade, vælge og slette.
+## 2026-10-04: Udrulning uden nedetid (edge-proxy)
+
+Ejerens krav: ingen "Bad Gateway" ved udrulning. Målt: hele sitet (begge værter) var nede ca. 40 sekunder pr. udrulning, og der kom 9 udrulninger på ca. 50 minutter fra parallelle sessioner. Ejeren godkendte 2026-10-04 at ændre udrulningen (deploy-arkitektur).
+
+- En nginx-`edge-proxy` ejer port 3100; `app` udgiver ingen port. Udrulningen starter den nye app-container ved siden af den gamle, venter til den er sund og stopper så den gamle (`scripts/deploy/rollout-app.sh`). Fejler den nye, bliver den gamle stående. Detaljer: `docs/DEPLOYMENT.md`, "Udrulning uden nedetid".
+- Proxyen videregiver headere uændret (ingen `X-Forwarded-*`), fordi admin-IP-begrænsningen bruger `cf-connecting-ip`.
+- Ændringer i `tools/**` (Windows-programmerne) og `docs/**` udløser ikke deploy.
+- Risiko: kunne ikke afprøves på serveren før første udrulning. Første udrulning har én kort afbrydelse; tilbagerulning står i `docs/DEPLOYMENT.md`.

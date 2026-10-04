@@ -57,7 +57,8 @@ jobs:
           set -euo pipefail
           cp compose.production.yaml /deploy/compose.production.yaml
           # Alle agenter, som compose.production.yaml bygger lokalt (build: ./scripts/...).
-          for agent in image-agent frida-import hellofresh-import rema1000-import store-products-import quality-control-agent logo-agent amount-suggestion-agent; do
+          # (edge-proxy er nginx-konfigurationen foran app, ingen agent.)
+          for agent in image-agent frida-import hellofresh-import rema1000-import store-products-import quality-control-agent logo-agent amount-suggestion-agent edge-proxy; do
             mkdir -p "/deploy/scripts/$agent"
             cp -R "scripts/$agent/." "/deploy/scripts/$agent/"
           done
@@ -110,11 +111,10 @@ jobs:
           fi
           docker compose --project-directory /volume1/docker/App/hellocal-v2 -f compose.production.yaml --env-file .env.production pull
 
+      # Udrulning uden nedetid: ny app-container startes ved siden af den gamle og skiftes ind, når den er sund
+      # (scripts/deploy/rollout-app.sh, docs/DEPLOYMENT.md "Udrulning uden nedetid").
       - name: Deploy database migrations and app
-        run: |
-          set -euo pipefail
-          cd /deploy
-          docker compose --project-directory /volume1/docker/App/hellocal-v2 -f compose.production.yaml --env-file .env.production up -d db migrate app scan-app
+        run: bash scripts/deploy/rollout-app.sh
 
       - name: Build and start catalog agents
         run: |

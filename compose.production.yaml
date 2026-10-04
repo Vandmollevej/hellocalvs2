@@ -120,8 +120,8 @@ services:
       UMAMI_PASSWORD: ${UMAMI_PASSWORD:-}
       NODE_ENV: production
       PORT: 3000
-    ports:
-      - "${HELLOCAL_BIND_ADDRESS:-0.0.0.0}:${HELLOCAL_HTTP_PORT:-3100}:3000"
+    # Ingen udgivet port: edge-proxy ejer port ${HELLOCAL_HTTP_PORT:-3100} og sender til alle app-containere,
+    # så en ny udgave kan startes ved siden af den gamle (docs/DEPLOYMENT.md, "Udrulning uden nedetid").
     volumes:
       - ./data/product-images:/app/public/product-images
       - ./data/hellofresh-images:/app/public/hellofresh-images
@@ -138,12 +138,34 @@ services:
           "-e",
           "fetch('http://127.0.0.1:3000/api/health').then(r=>{if(!r.ok)process.exit(1)}).catch(()=>process.exit(1))",
         ]
-      interval: 30s
+      interval: 5s
       timeout: 5s
-      retries: 5
-      start_period: 30s
+      retries: 12
+      start_period: 20s
     networks:
       - backend
+      - edge
+
+  # Forside foran app (nginx). Cloudflare Tunnel rammer stadig serverens port 3100; porten ejes nu af
+  # proxyen, som sender til alle kørende app-containere. Ligger på edge-netværket, fordi en port ikke
+  # kan udgives fra det interne backend-netværk. Ingen X-Forwarded-*-headere sættes (se nginx.conf).
+  edge-proxy:
+    image: nginx:1.27-alpine
+    restart: unless-stopped
+    ports:
+      - "${HELLOCAL_BIND_ADDRESS:-0.0.0.0}:${HELLOCAL_HTTP_PORT:-3100}:80"
+    volumes:
+      - ./scripts/edge-proxy/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+    depends_on:
+      app:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q -O /dev/null http://127.0.0.1/api/health || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 6
+      start_period: 5s
+    networks:
       - edge
 
   # Oprettelses-appen (docs/OPRETTELSES-APP.md): invite-only medarbejderapp.

@@ -22,6 +22,11 @@ Last updated: 2026-10-04
 - Ny side admin → Indstillinger → Genveje (`/admin/shortcuts`): tastaturgenvej til alle menupunkter (Alt/Alt+Shift + bogstav, Alt+1…6, Ctrl+P = Varer, Ctrl+K, Ctrl+B) med AutoHotkey-tekst. Genvejene vises ved hover i menuen og i "Gå til…".
 - Menuer har faste `id`/`data-automation`/`aria-keyshortcuts`; resten af admin mærkes automatisk. Beskrevet i `docs/AUTOMATION.md`.
 - Tjek: lint, `npm test` (genvejs-testen) og type-tjek. Ikke set i browser; prøv genvejene på desktop. Mærkerne i UIA (AutomationId) er ikke prøvet med et rigtigt AutoHotkey-script.
+## 2026-10-04: Udrulning uden nedetid (ikke afprøvet på serveren)
+
+- `edge-proxy` (nginx) foran `app` + `scripts/deploy/rollout-app.sh` i deploy-jobbet: ny app-container startes ved siden af den gamle og skiftes ind, når den er sund. Første udrulning efter ændringen har én kort afbrydelse. Se `docs/DEPLOYMENT.md`.
+- Tjek efter første udrulning: `docker ps` viser `edge-proxy`, og `curl http://127.0.0.1:3100/api/health` svarer; GitHub Actions-jobbet "Deploy database migrations and app" viser `[rollout]`-linjer.
+
 ## 2026-10-04: To Windows-programmer (HelloCal og HelloCal Admin) + 24 timers adminsession
 
 - `tools/desktop/` bygger to små Electron-programmer, der kun viser en adresse og gemmer login lokalt: **HelloCal Admin** (`https://admin.hellocal.io/admin`, profil `%APPDATA%\HelloCal Admin`) og **HelloCal** (`https://hellocal.io/`, profil `%APPDATA%\HelloCal`). Byg og installér uden administrator: `powershell -ExecutionPolicy Bypass -File tools\desktop\build.ps1` → `%LOCALAPPDATA%\HelloCalDesktop\{admin,app}`. Første start opretter genvejen i Startmenuen. Windows 11 lader ikke et program fastgøre sig selv til proceslinjen — højreklik på ikonet → Fastgør.
