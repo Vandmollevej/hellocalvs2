@@ -17,7 +17,12 @@ export async function POST(req: Request) {
     case "createPartner": {
       const name = str(body.name);
       if (!name) return NextResponse.json({ message: "Angiv et navn" }, { status: 400 });
-      await prisma.partner.create({ data: { name } });
+      const contactName = str(body.contactName);
+      const contactEmail = str(body.contactEmail).toLowerCase();
+      if (!contactName || !isValidEmail(contactEmail)) {
+        return NextResponse.json({ message: "Angiv kontaktnavn og gyldig e-mail" }, { status: 400 });
+      }
+      await prisma.partner.create({ data: { name, contacts: { create: { name: contactName, email: contactEmail } } } });
       break;
     }
     case "deletePartner": {
