@@ -52,11 +52,18 @@ export async function loadAdminBrands(filters: AdminBrandsFilters) {
   if (filters.q) and.push({ name: { contains: filters.q, mode: "insensitive" } });
   if (filters.logo === "with") and.push({ logoUrl: { not: null } });
   if (filters.logo === "without") and.push({ logoUrl: null });
-  const where: Prisma.BrandWhereInput = and.length > 0 ? { AND: and } : {};
+  // Brands uden mindst to bogstaver/tal i navnet (fx «'s» og «/») er rester fra
+  // import og vises ikke.
+  const junk = await prisma.$queryRaw<{ id: string }[]>`
+    SELECT id FROM brands WHERE length(regexp_replace(name, '[^[:alnum:]]', '', 'g')) < 2
+  `;
+  const notJunk: Prisma.BrandWhereInput = junk.length > 0 ? { id: { notIn: junk.map((row) => row.id) } } : {};
+  and.push(notJunk);
+  const where: Prisma.BrandWhereInput = { AND: and };
 
   const [total, withLogo, matching] = await Promise.all([
-    prisma.brand.count(),
-    prisma.brand.count({ where: { logoUrl: { not: null } } }),
+    prisma.brand.count({ where: notJunk }),
+    prisma.brand.count({ where: { logoUrl: { not: null }, ...notJunk } }),
     prisma.brand.count({ where }),
   ]);
   const pageCount = Math.max(1, Math.ceil(matching / ADMIN_BRANDS_PAGE_SIZE));

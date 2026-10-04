@@ -1,12 +1,12 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { requireAdminUser } from "@/lib/require-admin";
+import { BrandGrid } from "@/components/admin/BrandGrid";
+import { requireAdminUser, requireFullAdminUser } from "@/lib/require-admin";
 import {
   ADMIN_BRANDS_PAGE_SIZE,
   adminBrandsHref,
   loadAdminBrands,
   parseAdminBrandsFilters,
-  type AdminBrandRow,
   type AdminBrandsFilters,
   type AdminBrandsSearchParams,
 } from "@/lib/admin-brands";
@@ -24,25 +24,6 @@ function StatCard({ href, label, value, note }: { href: string; label: string; v
       <p className="hf-type-hero mt-1 text-hf-green-dark">{value}</p>
       <p className="hf-type-small mt-auto pt-2 text-text-muted">{note}</p>
     </Link>
-  );
-}
-
-function BrandLogo({ brand }: { brand: AdminBrandRow }) {
-  if (!brand.logoUrl) {
-    return (
-      <div
-        className="hf-type-title flex aspect-[3/2] w-full items-center justify-center rounded-md bg-hf-tan uppercase text-text-muted"
-        title="Intet logo"
-      >
-        {brand.name.charAt(0)}
-      </div>
-    );
-  }
-  return (
-    <div className="flex aspect-[3/2] w-full items-center justify-center overflow-hidden rounded-md bg-hf-white">
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img src={brand.logoUrl} alt={brand.name} loading="lazy" className="h-full w-full object-contain p-3" />
-    </div>
   );
 }
 
@@ -81,6 +62,8 @@ export default async function AdminBrandsPage({ searchParams }: { searchParams: 
   const data = await loadAdminBrands(filters);
   const clean = parseAdminBrandsFilters({});
   const productFilters = parseProductDatabaseFilters({});
+  const canEdit = (await requireFullAdminUser()) !== null;
+  const productHrefs = Object.fromEntries(data.rows.map((brand) => [brand.id, productDatabaseHref(productFilters, { brand: [brand.name] })]));
   const withoutLogo = data.total - data.withLogo;
   const logoPercent = data.total > 0 ? Math.round((data.withLogo / data.total) * 100) : 0;
   const firstIndex = data.matching === 0 ? 0 : (data.page - 1) * ADMIN_BRANDS_PAGE_SIZE + 1;
@@ -101,12 +84,6 @@ export default async function AdminBrandsPage({ searchParams }: { searchParams: 
             Alle brands i Hello Cal med logo. Klik på et brand for at se dets varer.
           </p>
         </div>
-        <Link
-          href="/admin/product-database/logo-upload"
-          className="hf-type-body hf-control inline-flex items-center rounded-md bg-hf-green-dark px-4 text-hf-white"
-        >
-          Upload logoer
-        </Link>
       </div>
 
       <div className="grid grid-cols-2 gap-4 lg:grid-cols-3">
@@ -161,26 +138,7 @@ export default async function AdminBrandsPage({ searchParams }: { searchParams: 
           )}
         </p>
 
-        {data.rows.length > 0 && (
-          <ul className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6">
-            {data.rows.map((brand) => (
-              <li key={brand.id}>
-                <Link
-                  href={productDatabaseHref(productFilters, { brand: [brand.name] })}
-                  className="flex h-full flex-col gap-2 hf-surface p-2 hover:border-hf-green"
-                >
-                  <BrandLogo brand={brand} />
-                  <div className="flex min-w-0 flex-col gap-0.5 px-1 pb-1">
-                    <p className="hf-type-body hf-type-strong truncate text-hf-black">{brand.name}</p>
-                    <p className="hf-type-small text-text-muted">
-                      {numberFormat.format(brand.productCount)} vare{brand.productCount === 1 ? "" : "er"}
-                    </p>
-                  </div>
-                </Link>
-              </li>
-            ))}
-          </ul>
-        )}
+        <BrandGrid rows={data.rows} productHrefs={productHrefs} canEdit={canEdit} />
 
         <Pagination filters={filters} page={data.page} pageCount={data.pageCount} />
       </div>
