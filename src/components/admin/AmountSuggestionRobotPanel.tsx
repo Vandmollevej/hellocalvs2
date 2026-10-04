@@ -12,7 +12,7 @@ const API = "/api/admin/robots/amount-suggestion";
 
 function formatTime(iso: string | null) {
   if (!iso) return "–";
-  return new Date(iso).toLocaleString("da-DK", { dateStyle: "short", timeStyle: "short" });
+  return new Date(iso).toLocaleString("da-DK", { timeZone: "Europe/Copenhagen", dateStyle: "short", timeStyle: "short" });
 }
 
 const CONTEXT_LABEL = { EATEN: "Spist", RECIPE: "Opskrift" } as const;
