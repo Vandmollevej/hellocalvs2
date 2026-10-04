@@ -208,7 +208,7 @@ export default function ProfileStatusPage() {
             <StatusTile
               label={t("profileStatus.currentWeight")}
               value={current != null ? showWeight(current) : "—"}
-              href="/weight"
+              href="/weight/create"
             />
             {target != null ? (
               <StatusTile label={t("profileStatus.goal")} value={showWeight(target)} href="/profile/goals" />
