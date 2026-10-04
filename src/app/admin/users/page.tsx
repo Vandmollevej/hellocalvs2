@@ -1,4 +1,4 @@
-import { redirect } from "next/navigation";
+﻿import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { requireAdminUser } from "@/lib/require-admin";
 import { AdminUserRow } from "@/components/admin/AdminUserRow";
@@ -33,7 +33,7 @@ export default async function AdminUsersPage() {
       <div>
         <h1 className="hf-type-title text-hf-black">{t(admin.locale, "users_title")}</h1>
         <p className="hf-type-body text-text-secondary">
-          {users.length} registranter. Mønt-ikonet tildeler points; det røde ikon anonymiserer kontoen.
+          {users.length} registranter. MÃ¸nt-ikonet tildeler points; det rÃ¸de ikon anonymiserer kontoen.
         </p>
       </div>
 
@@ -57,8 +57,9 @@ export default async function AdminUsersPage() {
                 key={user.id}
                 user={{
                   id: user.id,
-                  displayName: user.displayName,
-                  email: user.email,
+                  // Navn og e-mail sendes aldrig til admin-siden (brugerdata er fortrolige).
+                  displayName: `Bruger ${user.id.slice(-6)}`,
+                  email: "",
                   createdAt: user.createdAt.toISOString(),
                   pointsBalance: balanceByUser.get(user.id) ?? 0,
                   subscriptionStatus: user.subscription?.status ?? "INACTIVE",

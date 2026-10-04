@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState } from "react";
 import Link from "next/link";
@@ -16,15 +16,15 @@ export type AdminUserRowData = {
   wantsAdviceEmails: boolean;
   wantsPartnerOffersEmails: boolean;
   forgottenAt: string | null;
-  // Brugerens egen "Luk konto" — kan genåbnes ved login i 3 måneder.
+  // Brugerens egen "Luk konto" â€” kan genÃ¥bnes ved login i 3 mÃ¥neder.
   closedAt: string | null;
 };
 
 const SUBSCRIPTION_LABELS: Record<string, string> = {
   INACTIVE: "Ikke aktiv",
   ACTIVE: "Aktiv",
-  TRIALING: "Prøveperiode",
-  FREE_MONTH: "Gratis måned",
+  TRIALING: "PrÃ¸veperiode",
+  FREE_MONTH: "Gratis mÃ¥ned",
   CANCELED: "Opsagt",
 };
 
@@ -35,7 +35,7 @@ export function AdminUserRow({ user }: { user: AdminUserRowData }) {
   const [busy, setBusy] = useState<"forget" | null>(null);
 
   async function forget() {
-    if (!confirm(`Anonymisér ${user.displayName} (${user.email})? Dette kan ikke fortrydes.`)) return;
+    if (!confirm(`AnonymisÃ©r ${user.displayName} (${user.email})? Dette kan ikke fortrydes.`)) return;
     setBusy("forget");
     try {
       const res = await fetch(`/api/admin/users/${user.id}/forget`, { method: "POST" });
@@ -62,10 +62,10 @@ export function AdminUserRow({ user }: { user: AdminUserRowData }) {
     <tr className="border-b border-hf-tan-dark">
       <td className="py-2 pr-3">
         <p className="hf-type-strong text-hf-black">{user.displayName}</p>
-        <p className="hf-type-small text-text-muted">{user.email}</p>
+        {user.email && <p className="hf-type-small text-text-muted">{user.email}</p>}
         {user.closedAt && (
           <p className="hf-type-small text-text-secondary">
-            Lukket {new Date(user.closedAt).toLocaleDateString("da-DK")} — anonymiseres efter 3 måneder
+            Lukket {new Date(user.closedAt).toLocaleDateString("da-DK")} â€” anonymiseres efter 3 mÃ¥neder
           </p>
         )}
       </td>
@@ -82,7 +82,7 @@ export function AdminUserRow({ user }: { user: AdminUserRowData }) {
       <td className="hf-type-small py-2 pr-3 text-text-secondary">
         {[
           user.wantsUpdateNewsEmails && "Nyheder",
-          user.wantsAdviceEmails && "Gode råd",
+          user.wantsAdviceEmails && "Gode rÃ¥d",
           user.wantsPartnerOffersEmails && "Partnertilbud",
         ]
           .filter(Boolean)

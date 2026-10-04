@@ -136,6 +136,7 @@ export const NAV: NavEntry[] = [
       { href: "/admin/jobs", key: "nav_jobs" },
       { href: "/admin/agents", key: "nav_agents" },
       { href: "/admin/robots", key: "nav_robots" },
+      { href: "/admin/admin-users", key: "nav_admin_users" },
     ],
   },
   {
