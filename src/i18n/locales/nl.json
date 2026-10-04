@@ -468,7 +468,9 @@
   },
   "sentNotice": {
     "title": "Ter info",
-    "body": "Ter info: we hebben je op {date} een {type} gestuurd over \"{subject}\". Dit was geen spam.",
+    "body": "We hebben je op {date} een {type} gestuurd over \"{subject}\". Dit was geen spam.",
+    "bodyMany": "We hebben je deze berichten gestuurd. Ze waren geen spam:",
+    "item": "{Type} over \"{subject}\", {date}",
     "typeEmail": "e-mail",
     "typeSms": "sms",
     "read": "Gelezen"

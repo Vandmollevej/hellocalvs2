@@ -468,7 +468,9 @@
   },
   "sentNotice": {
     "title": "Zur Info",
-    "body": "Zur Info: Wir haben dir am {date} eine {type} zu \"{subject}\" geschickt. Das war kein Spam.",
+    "body": "Wir haben dir am {date} eine {type} zu \"{subject}\" geschickt. Das war kein Spam.",
+    "bodyMany": "Wir haben dir diese Nachrichten geschickt. Sie waren kein Spam:",
+    "item": "{Type} zu \"{subject}\", {date}",
     "typeEmail": "E-Mail",
     "typeSms": "SMS",
     "read": "Gelesen"

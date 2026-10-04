@@ -459,6 +459,7 @@ om varen var "taget", og det føltes ikke som scanning i realtid.
 
 - Hver mail eller sms til en kendt bruger giver (1) en push med det samme: "Vi har netop sendt dig en e-mail om "emne". Dette var ikke spam." og (2) et bundark som det første ved næste besøg (app og web): "Til info sendte vi dig den <dato> en <e-mail/sms> om "<emne>". Dette var ikke spam." med sort knap "Læst".
 - "Læst" kvitterer (`OutboundMessage.noticeAckAt`); et træk ned lukker kun til næste besøg. Beskeder ældre end 30 dage vises ikke. Gælder ikke mails til admin, ikke-brugere (invitationer) eller rene push-beskeder.
+- Tekst uden gentagelse (bruger 2026-10-04, "tekst dobbelt"): "Til info" står kun som overskrift. Én besked: "Vi sendte dig den <dato> en <e-mail/sms> om "<emne>". Det var ikke spam." Flere: "Vi har sendt dig disse beskeder. De var ikke spam:" + en punktliste "E-mail om "<emne>", <dato>".
 - Bygger på den eksisterende `OutboundMessage`-log — ingen adresse eller telefonnummer gemmes. Sms sendes via `src/lib/sms.ts` (GatewayAPI-format, no-op uden `SMS_GATEWAY_TOKEN`); brugere har endnu intet telefonnummer-felt, så ingen sms sendes i dag. (Opdateret 2026-10-02: TeamMessage er nu primær udbyder, og mobilnummer findes på profilen — se "SMS-gendannelse af adgangskode".)
 
 ## 2026-10-02: Vægt- og længdeenheder (kg/lb/st, cm/in)
