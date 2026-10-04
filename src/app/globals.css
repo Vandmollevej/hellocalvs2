@@ -2335,3 +2335,10 @@ textarea::selection,
   width: 80px;
   height: 80px;
 }
+
+/* Admin: sidetitler dobbelt så store som app-standarden (17 px → 34 px). */
+.admin-main h1.hf-type-title,
+.admin-main h1.hf-type-page-title {
+  font-size: 34px;
+  line-height: 42px;
+}

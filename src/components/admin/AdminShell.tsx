@@ -972,7 +972,7 @@ export function AdminShell({
           </div>
         </header>
 
-        <main className="hf-shell__main" {...automationProps("hc-main")}>
+        <main className="hf-shell__main admin-main" {...automationProps("hc-main")}>
           <div className="hf-shell__content">{children}</div>
         </main>
       </div>
