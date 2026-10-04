@@ -26,7 +26,7 @@ const RESULT_LABEL: Record<CheckResult["status"], string> = {
 };
 
 function formatDate(iso: string) {
-  return new Date(iso).toLocaleString("da-DK", { dateStyle: "short", timeStyle: "short" });
+  return new Date(iso).toLocaleString("da-DK", { timeZone: "Europe/Copenhagen", dateStyle: "short", timeStyle: "short" });
 }
 
 function missingFields(service: ServiceStatus) {
