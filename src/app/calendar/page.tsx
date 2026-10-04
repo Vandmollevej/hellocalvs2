@@ -1015,6 +1015,14 @@ function MonthView({
                       }`}
                     >
                       {date.getDate()}
+                      {/* Målsætningsdato: konfettikanonen i øverste venstre
+                          hjørne, modsat ✓/÷ i højre. */}
+                      {hasGoal && (
+                        <IconPartyPopper
+                          size={12}
+                          className={`absolute left-0.5 top-0.5 ${current ? "text-hf-white" : "text-hf-black"}`}
+                        />
+                      )}
                       {!current &&
                         logged &&
                         (met ? (
@@ -1093,7 +1101,7 @@ function WeekView({
             </span>
             {future ? (
               <span className="flex flex-1 items-center">
-                {hasGoal && <GoalMarker goals={goalsForDate(goalsByDate, date)} />}
+                {hasGoal && <IconPartyPopper size={18} className="shrink-0 text-hf-black" />}
               </span>
             ) : (
               <>
@@ -1111,7 +1119,7 @@ function WeekView({
                         ? t("calendar.goalMet")
                         : t("calendar.goalMissed")}
                   {/* Målsætningsdato: konfettikanonen efter teksten. */}
-                  {hasGoal && <GoalMarker goals={goalsForDate(goalsByDate, date)} />}
+                  {hasGoal && <IconPartyPopper size={18} className="shrink-0 text-hf-black" />}
                 </span>
                 <span className="ml-auto flex shrink-0 items-center gap-1">
                   <span
@@ -1307,7 +1315,7 @@ function ListView({
             </span>
             {future ? (
               <span className="flex flex-1 items-center">
-                {hasGoal && <GoalMarker goals={goalsForDate(goalsByDate, date)} />}
+                {hasGoal && <IconPartyPopper size={18} className="shrink-0 text-hf-black" />}
               </span>
             ) : (
               <>
@@ -1325,7 +1333,7 @@ function ListView({
                         ? t("calendar.goalMet")
                         : t("calendar.goalMissed")}
                   {/* Målsætningsdato: konfettikanonen efter teksten. */}
-                  {hasGoal && <GoalMarker goals={goalsForDate(goalsByDate, date)} />}
+                  {hasGoal && <IconPartyPopper size={18} className="shrink-0 text-hf-black" />}
                 </span>
                 <span className="ml-auto flex shrink-0 items-center gap-1">
                   <span
@@ -1442,7 +1450,7 @@ function WeekTimelineView({
               <span className="hf-type-body hf-heading flex items-center gap-2">
                 {date.getDate()}
                 {met && <IconCheck size={15} stroke={3.5} className="text-hf-lime" aria-hidden="true" />}
-                {goalsForDate(goalsByDate, date).length > 0 && <GoalMarker goals={goalsForDate(goalsByDate, date)} size={15} />}
+                {goalsForDate(goalsByDate, date).length > 0 && <IconPartyPopper size={15} />}
               </span>
             </button>
           );
@@ -2106,7 +2114,6 @@ function DayDetails({
                       activities={hourActivities}
                       hasEntries={hourRegistrations.length > 0}
                       hasGoal={hour === GOAL_HOUR && goals.length > 0}
-                      goals={goals}
                       showAddBar={addBarHour === hour}
                       onOpenDetails={setOpenHour}
                       onLongPress={setAddBarHour}
@@ -2202,7 +2209,6 @@ function HourRow({
   activities,
   hasEntries,
   hasGoal,
-  goals,
   showAddBar,
   onOpenDetails,
   onLongPress,
@@ -2215,7 +2221,6 @@ function HourRow({
   activities: Activity[];
   hasEntries: boolean;
   hasGoal: boolean;
-  goals: GoalDTO[];
   showAddBar: boolean;
   onOpenDetails: (hour: number) => void;
   onLongPress: (hour: number) => void;
@@ -2280,7 +2285,7 @@ function HourRow({
       )}
       {(activities.length > 0 || hasGoal) && (
         <div className="pointer-events-none absolute inset-y-0 left-1 z-[5] flex items-center gap-1">
-          {hasGoal && <GoalMarker goals={goals} size={16} />}
+          {hasGoal && <IconPartyPopper size={16} className="text-hf-black" />}
           {activities.map((activity) => {
             const { icon: SportIcon, label } = getSportMeta(activity.sportType);
             return <SportIcon key={activity.id} size={16} className="text-hf-black opacity-70" aria-label={label} />;
@@ -2437,18 +2442,6 @@ function GoalPopup({ goal, onOpen, onClose }: { goal: GoalDTO; onOpen: () => voi
         {target && <GoalTargetValue target={target} className="hf-type-body-lg hf-heading" />}
       </button>
     </div>
-  );
-}
-
-// Konfettikanonen efterfulgt af målvægten (hvis målsætningen har en). Bruges i
-// uge-, liste- og dagvisning — aldrig i månedsvisningen.
-function GoalMarker({ goals, size = 18, className = "text-hf-black" }: { goals: GoalDTO[]; size?: number; className?: string }) {
-  const weight = goals.map((goal) => goal.targets.find((target) => target.type === "weight")).find(Boolean) ?? null;
-  return (
-    <span className="flex shrink-0 items-center gap-1">
-      <IconPartyPopper size={size} className={className} />
-      {weight && <GoalTargetValue target={weight} className="hf-type-small" />}
-    </span>
   );
 }
 
