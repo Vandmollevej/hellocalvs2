@@ -1240,6 +1240,7 @@ model Brand {
   regionSearchStats BrandRegionSearchStat[]
   cutoutJobs ImageCutoutJob[]
   logoSearches      BrandLogoSearch[]
+  logoUploads       BrandLogoUpload[]
 
   @@map("brands")
 }
@@ -3846,6 +3847,58 @@ model BrandLogoCandidate {
 
   @@index([searchId, confidence])
   @@map("brand_logo_candidates")
+}
+
+// Admin → Varedatabase → Logo-upload (docs/DECISIONS.md 2026-10-04): logoer
+// trækkes ind med drag and drop. Hvert slip er et parti (batch) med
+// tidsstempel, så et helt parti kan slettes igen, hvis noget gik galt; hver fil
+// gemmer sin proces (steps) og målene før/efter behandling.
+enum BrandLogoUploadStatus {
+  DONE
+  UNMATCHED
+  FAILED
+}
+
+model BrandLogoUploadBatch {
+  id          String            @id @default(cuid())
+  createdAt   DateTime          @default(now())
+  createdById String?
+  items       BrandLogoUpload[]
+
+  @@index([createdAt])
+  @@map("brand_logo_upload_batches")
+}
+
+model BrandLogoUpload {
+  id              String                @id @default(cuid())
+  batch           BrandLogoUploadBatch  @relation(fields: [batchId], references: [id], onDelete: Cascade)
+  batchId         String
+  fileName        String
+  status          BrandLogoUploadStatus
+  brand           Brand?                @relation(fields: [brandId], references: [id], onDelete: SetNull)
+  brandId         String?
+  // Den behandlede PNG (/product-images/brand-logos/uploads/<uuid>.png).
+  imageUrl        String?
+  // Brandets logo, før denne fil blev sat på det — gendannes ved sletning.
+  previousLogoUrl String?
+  // Om filen blev sat som brandets logo ved upload (ekstra udgaver og filer
+  // uden brand sættes ikke).
+  applied         Boolean               @default(false)
+  originalWidth   Int?
+  originalHeight  Int?
+  originalBytes   Int?
+  originalType    String?
+  width           Int?
+  height          Int?
+  bytes           Int?
+  // [{ key, label, status, ms?, detail? }] — processen trin for trin.
+  steps           Json
+  message         String?
+  createdAt       DateTime              @default(now())
+
+  @@index([batchId])
+  @@index([brandId])
+  @@map("brand_logo_uploads")
 }
 
 // API-nøgler rettet fra admin → API-nøgler (docs/DECISIONS.md 2026-09-25

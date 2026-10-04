@@ -94,11 +94,19 @@ export default async function AdminBrandsPage({ searchParams }: { searchParams: 
 
   return (
     <div className="flex flex-col gap-6">
-      <div className="flex flex-col gap-1">
-        <h1 className="hf-type-title text-hf-black">Brands</h1>
-        <p className="hf-type-body text-text-secondary">
-          Alle brands i Hello Cal med logo. Klik på et brand for at se dets varer.
-        </p>
+      <div className="flex flex-wrap items-start justify-between gap-3">
+        <div className="flex flex-col gap-1">
+          <h1 className="hf-type-title text-hf-black">Brands</h1>
+          <p className="hf-type-body text-text-secondary">
+            Alle brands i Hello Cal med logo. Klik på et brand for at se dets varer.
+          </p>
+        </div>
+        <Link
+          href="/admin/product-database/logo-upload"
+          className="hf-type-body hf-control inline-flex items-center rounded-md bg-hf-green-dark px-4 text-hf-white"
+        >
+          Upload logoer
+        </Link>
       </div>
 
       <div className="grid grid-cols-2 gap-4 lg:grid-cols-3">
