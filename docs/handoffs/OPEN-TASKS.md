@@ -301,7 +301,7 @@ Ejer: bølge-sessionen (2026-10-01)
 | Id | Opgave | Status | Næste skridt |
 | --- | --- | --- | --- |
 | — | Rolig, tilfældig bølge-animation bag forsiden med frostet-glas-bund og tåge | Færdig (kode) | Afventer brugerens visuelle godkendelse på telefon; justér tempo/farve efter feedback |
-| — | Puls flyttet ned mellem hjulets nederste tal og "Dagens tilføjelser" (branch `claude/pulse-adjustment-wheel-5pupmw`) | Venter på bruger | Brugeren tester på telefon; justér `PULSE_BELOW_HERO`/midtpunktet i `HomeWaves.tsx` efter feedback |
+| — | Puls flyttet ned mellem hjulets nederste tal og "Dagens tilføjelser" (branch `claude/pulse-adjustment-wheel-5pupmw`, flettet ind i master 2026-10-04 — lå glemt på grenen) | Venter på bruger | Brugeren tester på telefon; justér `PULSE_BELOW_HERO`/midtpunktet i `HomeWaves.tsx` efter feedback |
 | — | Ommer: afdæmpet, skarp top, kun sløret forneden, puls lavere og fra venstre kant (branch `claude/forside-boelger-ommer`) | Venter på bruger | Brugeren tester på telefon; justér alfa/bredde i `createWaveScene` og maskerne i `globals.css` efter feedback |
 
 ## G-SCAN — Kameraflow og vareside efter test (mælk/flødeboller)
