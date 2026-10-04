@@ -373,3 +373,11 @@ Ejer: ledig (session "Produktbilleder og certifikater screening")
 | Id | Opgave | Status | Næste skridt |
 | --- | --- | --- | --- |
 | cert-mangler | 11.646 udklip færdige fra 18.286 billeder; 33.985 billeder i mappen `Mangler` er ikke behandlet | Venter på bruger | USB-drevet er ikke synligt på PC'en (tjekket 2026-10-03, kun C:, D:, tomt cd-drev E:). Sæt USB i arbejds-PC'en / slå "Drev" til i remote desktop, eller kopiér `Mangler` til NAS (Y:/Z:), og giv stien |
+
+## G-PULS — Puls-robot, ugevisning og sportsforslag
+Filer: `src/lib/pulse-*.ts`, `src/lib/heart-rate-spikes.ts`, `src/components/activity/*Pulse*`, `HeartRateSpikePrompt.tsx`, `src/app/api/activities/spike/**`, `src/components/admin/PulseRobotPanel.tsx`.
+Ejer: session "Puls-robot" (2026-10-04)
+
+| Id | Opgave | Status | Næste skridt |
+| --- | --- | --- | --- |
+| puls-robot | Natlig robot: pulsudsving uden sport + mønstergenkendelse + forslag; uge med datoer i spørgsmålet (web + mobil) | Færdig (kode, se git log "Puls-robot") | Migration 20261004120000 skal med deployet. Brugeren tester bundarket på telefon/desktop med tilsluttet ur |

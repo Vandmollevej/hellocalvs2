@@ -233,6 +233,7 @@ model User {
   activities              Activity[]
   customActivityTypes     CustomActivityType[]
   heartRateSpikeReviews   HeartRateSpikeReview[]
+  pulseActivityCandidates PulseActivityCandidate[]
   activityProfileSnapshots ActivityProfileSnapshot[]
   dailyBudgetSnapshots     DailyBudgetSnapshot[]
   deviceTokens            DeviceToken[]
@@ -995,6 +996,49 @@ model HeartRateSpikeReview {
 
   @@unique([userId, startedAt])
   @@map("heart_rate_spike_reviews")
+}
+
+// 2026-10-04: nattens puls-robot (src/lib/pulse-candidates.ts, docs/DECISIONS.md
+// 2026-10-04). Et pulsudsving uden registreret sport, med nøgletal om kurvens
+// form og robottens gæt på sporten. PENDING spørges brugeren om ved næste
+// åbning; ANSWERED/SKIPPED er besvaret; COVERED blev senere dækket af en
+// aktivitet; EXPIRED blev aldrig besvaret inden for 14 dage. suggestionReady =
+// der var data nok til, at gættet må vises.
+model PulseActivityCandidate {
+  id              String               @id @default(cuid())
+  user            User                 @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId          String
+  startedAt       DateTime
+  endedAt         DateTime
+  durationMinutes Int
+  extraKcal       Float
+  peakBpm         Int
+  restingBpm      Int
+  features        Json?
+  suggestedSport  String?
+  confidence      Float?
+  basis           String?
+  alternatives    Json?
+  suggestionReady Boolean              @default(false)
+  status          PulseCandidateStatus @default(PENDING)
+  answeredSport   String?
+  answeredAt      DateTime?
+  detectedBy      String               @default("night")
+  createdAt       DateTime             @default(now())
+  updatedAt       DateTime             @updatedAt
+
+  @@unique([userId, startedAt])
+  @@index([userId, status, startedAt])
+  @@index([status, answeredAt])
+  @@map("pulse_activity_candidates")
+}
+
+enum PulseCandidateStatus {
+  PENDING
+  ANSWERED
+  SKIPPED
+  COVERED
+  EXPIRED
 }
 
 enum ActivitySource {

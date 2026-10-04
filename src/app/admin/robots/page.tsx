@@ -1,13 +1,15 @@
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { requireAdminUser } from "@/lib/require-admin";
-import { JOBS } from "@/lib/jobs/registry";
+import { JOBS, isRobot } from "@/lib/jobs/registry";
 import { ensureJobRows } from "@/lib/jobs/runner";
 import { loadNightRuns } from "@/lib/jobs/runs";
 import { describeNightSummary, describeNightWindow } from "@/lib/jobs/night";
 import { RobotRow } from "@/components/admin/RobotRow";
 import { loadAmountSuggestionRobot } from "@/lib/robots";
 import { AmountSuggestionRobotPanel } from "@/components/admin/AmountSuggestionRobotPanel";
+import { PulseRobotPanel } from "@/components/admin/PulseRobotPanel";
+import { pulseRobotStats } from "@/lib/pulse-candidates";
 
 // Admin "Robotter" (docs/DECISIONS.md 2026-09-28): robot-containerne
 // (runtime "agent") med on/off, KØR og cron-job-plan. Samme scheduled_jobs-
@@ -21,11 +23,12 @@ export default async function AdminRobotsPage() {
   if (!admin) redirect("/admin/login");
 
   await ensureJobRows();
-  const robots = JOBS.filter((job) => job.runtime === "agent");
+  const robots = JOBS.filter(isRobot);
   const rows = await prisma.scheduledJob.findMany({ where: { key: { in: robots.map((job) => job.key) } } });
   const rowByKey = new Map(rows.map((row) => [row.key, row]));
   const night = await loadNightRuns().catch(() => null);
   const amountRobot = await loadAmountSuggestionRobot();
+  const pulseStats = await pulseRobotStats().catch(() => null);
 
   return (
     <div className="flex flex-col gap-6">
@@ -87,6 +90,7 @@ export default async function AdminRobotsPage() {
           </tbody>
         </table>
       </div>
+      <PulseRobotPanel stats={pulseStats} />
       <div className="flex flex-col gap-2">
         <h2 className="hf-type-title text-hf-black">Mængde-robot</h2>
         <p className="hf-type-body text-text-secondary">

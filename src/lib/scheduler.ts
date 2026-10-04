@@ -17,6 +17,7 @@ import { syncAllIntegrations } from "@/lib/integrations/handlers";
 import { sendDueReports } from "@/lib/partner-reports";
 import { requestPersonaRunOnDeploy, runPersonaJob } from "@/lib/personas";
 import { anonymizeExpiredClosedAccounts } from "@/lib/account-closure";
+import { runPulseNightJob } from "@/lib/pulse-candidates";
 
 // In-process baggrundsjob (docs/DECISIONS.md 2026-09-02): DB-drevet, kører i
 // selve Next.js-serverprocessen uanset hvor den hostes (Synology i dag,
@@ -125,6 +126,7 @@ export function startScheduler() {
       },
       "uncertainty-rerun": rerunUncertainAnalyses,
       "label-scan": scanProductLabels,
+      "pulse-activity": runPulseNightJob,
       personas: runPersonaJob,
       "external-image-ai": analyzeDeclinedExternalImages,
       "quick-enrichment-recovery": () => recoverQuickEnrichments(),

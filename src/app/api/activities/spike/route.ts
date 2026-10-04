@@ -1,23 +1,26 @@
 import { NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
 import { unauthorized } from "@/lib/session";
 import { getProfileUser } from "@/lib/family-access";
-import { findPendingSpike } from "@/lib/heart-rate-spikes";
+import { getPulsePrompt, recordPulseAnswer } from "@/lib/pulse-candidates";
 
-// GET: det nyeste mærkbare pulsudsving, brugeren ikke er spurgt om (eller null).
+// GET: næste "Vi kan se, at din puls var højere end sædvanlig …"-spørgsmål
+// (nattens puls-robot + friske udsving), eller { spike: null }.
+// `remaining` er antal ubesvarede, der venter efter dette.
 export async function GET() {
   const user = await getProfileUser("activities", "VIEWED");
   if (!user) return unauthorized();
   try {
-    return NextResponse.json({ spike: await findPendingSpike(user.id) });
+    const { prompt, remaining } = await getPulsePrompt(user.id);
+    return NextResponse.json({ spike: prompt, remaining });
   } catch (error) {
     console.error("Heart rate spike lookup failed", error);
-    return NextResponse.json({ spike: null });
+    return NextResponse.json({ spike: null, remaining: 0 });
   }
 }
 
 // POST { startedAt, endedAt, extraKcal, activityId? }: udsvinget er besvaret
-// (med en aktivitet) eller sprunget over (uden). Spørges ikke igen.
+// (med en aktivitet) eller sprunget over (uden). Spørges ikke igen. Svaret
+// gemmes også på robottens fund, så den lærer af det.
 export async function POST(req: Request) {
   const user = await getProfileUser("activities", "CREATED");
   if (!user) return unauthorized();
@@ -32,16 +35,11 @@ export async function POST(req: Request) {
   if (Number.isNaN(startedAt.getTime()) || Number.isNaN(endedAt.getTime())) {
     return NextResponse.json({ message: "Ugyldigt tidsrum" }, { status: 400 });
   }
-  const data = {
+  await recordPulseAnswer(user.id, {
+    startedAt,
     endedAt,
     extraKcal: Number(body.extraKcal) || 0,
     activityId: body.activityId ?? null,
-    dismissed: !body.activityId,
-  };
-  await prisma.heartRateSpikeReview.upsert({
-    where: { userId_startedAt: { userId: user.id, startedAt } },
-    create: { userId: user.id, startedAt, ...data },
-    update: data,
   });
   return NextResponse.json({ ok: true });
 }

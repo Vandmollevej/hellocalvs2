@@ -27,7 +27,9 @@ export function RobotRow({
       <td className="py-3 pr-4">
         <p className="hf-type-strong text-hf-black">{job.name}</p>
         <p className="hf-type-small max-w-md text-text-secondary">{job.description}</p>
-        <p className="hf-type-small text-text-muted">Container: {job.container}</p>
+        <p className="hf-type-small text-text-muted">
+          {job.runtime === "app" ? "Kører i appen (nattekørsel)" : `Container: ${job.container}`}
+        </p>
       </td>
       <td className="py-3 pr-4">
         <button

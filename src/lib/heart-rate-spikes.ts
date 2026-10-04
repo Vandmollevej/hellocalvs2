@@ -1,6 +1,7 @@
 import type { Sex } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { computeAge } from "@/lib/age";
+import { extractPulseFeatures, type PulseFeatures } from "@/lib/pulse-pattern";
 
 // Pulsudsving → "Hvad foretog du dig?" (docs/DECISIONS.md 2026-09-29).
 //
@@ -10,6 +11,11 @@ import { computeAge } from "@/lib/age";
 // mindst NOTICEABLE_EXTRA_KCAL. Ekstra forbrug tages fra uret
 // (ACTIVE_ENERGY_KCAL), når det findes; ellers estimeres det med Keytel-
 // formlen (puls, vægt, alder, køn) minus samme formel ved hvilepuls.
+//
+// 2026-10-04: findPendingSpikes finder alle uregistrerede udsving (ikke kun
+// det nyeste) over et valgfrit antal timer og regner nøgletal til
+// mønstergenkendelsen (src/lib/pulse-pattern.ts). Nattens puls-robot
+// (src/lib/pulse-candidates.ts) bruger den med 7 dages opslag.
 
 export const SPIKE_ABOVE_REST_BPM = 35;
 export const SPIKE_MIN_BPM = 100;
@@ -17,9 +23,10 @@ export const SPIKE_MIN_MINUTES = 10;
 export const NOTICEABLE_EXTRA_KCAL = 150;
 /** Huller i målingerne op til dette tæller stadig som samme udsving. */
 const MAX_GAP_MINUTES = 10;
-const LOOKBACK_HOURS = 48;
+export const LIVE_LOOKBACK_HOURS = 48;
 const CHART_WINDOW_HOURS = 4;
 const DEFAULT_RESTING_BPM = 65;
+const BASELINE_DAYS = 7;
 
 const MINUTE = 60_000;
 
@@ -35,6 +42,16 @@ export type HeartRateSpike = {
   windowStart: string;
   windowEnd: string;
   samples: HeartRateSample[];
+};
+
+/** Et fundet udsving med nøgletal til mønstergenkendelsen. */
+export type DetectedSpike = HeartRateSpike & { features: PulseFeatures | null };
+
+export type SpikeContext = {
+  restingBpm: number;
+  age: number;
+  /** Antal forskellige dage med pulsmålinger i opslagsperioden + en uge før. */
+  baselineDays: number;
 };
 
 type Sample = { at: Date; bpm: number };
@@ -73,12 +90,16 @@ export function findSpikeRanges(samples: Sample[], restingBpm: number) {
 }
 
 /**
- * Det nyeste mærkbare udsving inden for de sidste 48 timer, som brugeren
- * ikke er spurgt om, og som ikke allerede dækkes af en registreret aktivitet.
+ * Alle mærkbare udsving inden for de seneste `lookbackHours` timer (nyeste
+ * først), som brugeren ikke er spurgt om, og som ikke allerede dækkes af en
+ * registreret aktivitet.
  */
-export async function findPendingSpike(userId: string, now = new Date()): Promise<HeartRateSpike | null> {
-  const since = new Date(now.getTime() - LOOKBACK_HOURS * 3600_000);
-  const baselineSince = new Date(now.getTime() - 7 * 24 * 3600_000);
+export async function findPendingSpikes(
+  userId: string,
+  { now = new Date(), lookbackHours = LIVE_LOOKBACK_HOURS }: { now?: Date; lookbackHours?: number } = {},
+): Promise<{ spikes: DetectedSpike[]; context: SpikeContext | null }> {
+  const since = new Date(now.getTime() - lookbackHours * 3600_000);
+  const baselineSince = new Date(since.getTime() - BASELINE_DAYS * 24 * 3600_000);
 
   const [samplesRaw, resting, activeEnergy, user, latestWeight, activities, reviews] = await Promise.all([
     prisma.healthMetric.findMany({
@@ -106,18 +127,20 @@ export async function findPendingSpike(userId: string, now = new Date()): Promis
 
   const all: Sample[] = samplesRaw.map((row) => ({ at: row.recordedAt, bpm: row.value }));
   const recent = all.filter((sample) => sample.at >= since);
-  if (recent.length === 0) return null;
+  if (recent.length === 0) return { spikes: [], context: null };
 
   const restingBpm = Math.round(resting?.value ?? percentile(all.map((s) => s.bpm), 0.1) ?? DEFAULT_RESTING_BPM);
   const weightKg = latestWeight?.weightKg ?? user?.weightKg ?? 75;
   const age = computeAge(user?.birthDate) ?? 40;
+  const baselineDays = new Set(all.map((s) => s.at.toISOString().slice(0, 10))).size;
+  const pulse = all.map((s) => ({ t: s.at.getTime(), bpm: s.bpm }));
 
   const overlaps = (start: number, end: number, otherStart: number, otherEnd: number) => start <= otherEnd && otherStart <= end;
   const activityRanges = activities.map((a) => [a.startedAt.getTime(), a.startedAt.getTime() + a.durationMinutes * MINUTE]);
   const reviewRanges = reviews.map((r) => [r.startedAt.getTime(), r.endedAt.getTime()]);
 
-  const ranges = findSpikeRanges(recent, restingBpm).reverse();
-  for (const range of ranges) {
+  const spikes: DetectedSpike[] = [];
+  for (const range of findSpikeRanges(recent, restingBpm).reverse()) {
     if (activityRanges.some(([s, e]) => overlaps(range.start, range.end, s, e))) continue;
     if (reviewRanges.some(([s, e]) => overlaps(range.start, range.end, s, e))) continue;
 
@@ -145,7 +168,7 @@ export async function findPendingSpike(userId: string, now = new Date()): Promis
       .filter((s) => s.at.getTime() >= windowStart && s.at.getTime() <= windowEnd)
       .map((s) => ({ at: s.at.toISOString(), bpm: Math.round(s.bpm) }));
 
-    return {
+    spikes.push({
       startedAt: new Date(range.start).toISOString(),
       endedAt: new Date(range.end).toISOString(),
       durationMinutes: Math.max(1, Math.round((range.end - range.start) / MINUTE)),
@@ -155,7 +178,17 @@ export async function findPendingSpike(userId: string, now = new Date()): Promis
       windowStart: new Date(windowStart).toISOString(),
       windowEnd: new Date(windowEnd).toISOString(),
       samples,
-    };
+      features: extractPulseFeatures(pulse, range, { restingBpm, age }),
+    });
   }
-  return null;
+  return { spikes, context: { restingBpm, age, baselineDays } };
+}
+
+/**
+ * Det nyeste mærkbare udsving inden for de sidste 48 timer, som brugeren
+ * ikke er spurgt om, og som ikke allerede dækkes af en registreret aktivitet.
+ */
+export async function findPendingSpike(userId: string, now = new Date()): Promise<HeartRateSpike | null> {
+  const { spikes } = await findPendingSpikes(userId, { now });
+  return spikes[0] ?? null;
 }

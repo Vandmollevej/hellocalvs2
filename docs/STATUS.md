@@ -3,6 +3,13 @@
 Last updated: 2026-10-03
 Last updated: 2026-10-04
 
+## 2026-10-04: Puls-robot, ugevisning og sportsforslag
+
+- Spørgsmålet "Vi kan se, at din puls var højere end sædvanlig …" (`HeartRateSpikePrompt`) findes fra 2026-09-29 (bygget, ikke live-testet med rigtige pulsdata). Nyt: bundark på web og mobil, dato i overskriften (i går / dato), **ugen vandret med datoer med sport krydset af + klokkeslæt** (`PulseWeekStrip`, `src/lib/pulse-week.ts`), sportsforslag (`PulseSuggestionCard`) og op til tre spørgsmål pr. besøg.
+- Ny robot **Puls-robot** (job `pulse-activity`, kl. 02:00, under admin → Robotter): finder 7 dages udsving uden registreret sport og gætter sporten ud fra kurvens form (`src/lib/pulse-pattern.ts`, `src/lib/pulse-candidates.ts`). Forslag vises først ved nok data (≥ 3 kendte sessioner, ≥ 3 dages puls, ≥ 60 % sikkerhed) — se DECISIONS.
+- Migration `20261004120000_pulse_activity_candidates` skal køre ved deploy. Lint og 19 enhedstests grønne (`npm test`), typecheck uden fejl i de ændrede filer. Ikke testet med rigtige data/login (ingen lokal DB) — tjek bundarket på telefon og desktop, når en bruger har tilsluttet ur.
+- Mangler/bemærk: robotten gætter først rigtigt efter nogle besvarede spørgsmål; træfsikkerheden står på admin → Robotter. Skridttal pr. minut findes ikke i integrationerne, så løb og cykling adskilles kun af belastning/varighed/egne eksempler.
+
 ## 2026-10-04: Drinks (forberedt)
 
 - Ny kategori "Drinks" nederst i tilføj-menuen, `/drinks` og `/drinks/[id]` (cirkelbillede + én skyder pr. ingrediens), API `/api/drinks` + `/api/drinks/log`, migration `20261004100000_drinks` skal køre ved deploy.

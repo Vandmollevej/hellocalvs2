@@ -11,9 +11,16 @@ export type JobDefinition = {
   description: string;
   runtime: "app" | "agent";
   container?: string;
+  /** Vises også under admin → Robotter, selv om jobbet kører i app-processen (runtime "app"). */
+  robot?: boolean;
   defaultIntervalMinutes: number | null;
   defaultRunAtTime: string | null;
 };
+
+/** Robot = egen container (runtime "agent") eller et app-job, der er markeret som robot. */
+export function isRobot(job: JobDefinition) {
+  return job.runtime === "agent" || job.robot === true;
+}
 
 export const JOBS: JobDefinition[] = [
   {
@@ -53,6 +60,18 @@ export const JOBS: JobDefinition[] = [
     runtime: "app",
     defaultIntervalMinutes: null,
     defaultRunAtTime: "04:00",
+  },
+  {
+    // Puls-robotten (docs/DECISIONS.md 2026-10-04): om natten finder den
+    // pulsudsving uden registreret sport og gætter sporten ud fra kurvens form.
+    key: "pulse-activity",
+    name: "Puls-robot: find uregistreret sport",
+    description:
+      "Gennemgår de seneste 7 dages pulsdata for brugere med tilsluttet ur/udstyr og finder de steder, hvor pulsen var højere end sædvanlig, men udstyret ikke har sendt en sportskategori. Genkender kurvens mønster (gåtur: jævn og lav; løb: rolig opvarmning, højt plateau, nedkøling; intervaller: op og ned) og lærer af brugerens egne svar. Brugeren spørges ved næste åbning; sportsforslag vises først, når der er data nok.",
+    runtime: "app",
+    robot: true,
+    defaultIntervalMinutes: null,
+    defaultRunAtTime: "02:00",
   },
   {
     // Personas (docs/DECISIONS.md 2026-10-02/03): anonyme gruppetal + AI-personas

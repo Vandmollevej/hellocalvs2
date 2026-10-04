@@ -4,7 +4,7 @@ import { UNCERTAINTY_TABS, listUncertainties, type UncertaintyRow } from "@/lib/
 import { HIDE_FROM_SEARCH_BELOW } from "@/lib/uncertainty-thresholds";
 import { countDuplicateReviews } from "@/lib/duplicate-review";
 import { QUALITY_CONTROL_PHOTO_TYPES } from "@/lib/quality-control-photo-types";
-import { JOBS } from "@/lib/jobs/registry";
+import { JOBS, isRobot } from "@/lib/jobs/registry";
 import { loadNightRuns } from "@/lib/jobs/runs";
 import { describeNightSummary, describeNightWindow } from "@/lib/jobs/night";
 import { ensureSecretsLoaded } from "@/lib/api-keys/store";
@@ -189,13 +189,13 @@ export async function loadAdminDashboard(now: Date = new Date()) {
         windowText: describeNightWindow(night.window),
         inProgress: night.window.inProgress,
         jobs: [...JOBS]
-          .sort((a, b) => Number(b.runtime === "agent") - Number(a.runtime === "agent"))
+          .sort((a, b) => Number(isRobot(b)) - Number(isRobot(a)))
           .map((job) => {
             const summary = night.byJob.get(job.key);
             return {
               key: job.key,
               name: job.name,
-              robot: job.runtime === "agent",
+              robot: isRobot(job),
               runs: summary?.runs ?? 0,
               items: summary?.items ?? 0,
               errors: summary?.errors ?? 0,
