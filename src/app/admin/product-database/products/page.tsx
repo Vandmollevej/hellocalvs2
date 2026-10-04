@@ -283,7 +283,7 @@ export default async function AdminProductDatabasePage({
           </p>
         </div>
         <Link
-          href="/admin/product-database/image-upload"
+          href="/admin/product-database/images"
           className="hf-type-body hf-control inline-flex items-center rounded-md bg-hf-green-dark px-4 text-hf-white"
         >
           Upload billeder

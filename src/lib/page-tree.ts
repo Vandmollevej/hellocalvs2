@@ -376,8 +376,7 @@ export const PAGE_TREE: PageArea[] = [
             children: [
               { path: "/admin/product-database/products", label: "Varer" },
               { path: "/admin/product-database/brands", label: "Brands" },
-              { path: "/admin/product-database/logo-upload", label: "Logo-upload", note: "Træk logoer ind (filnavn = brand), parti med tidsstempel" },
-              { path: "/admin/product-database/image-upload", label: "Billed-upload", note: "Træk produktbilleder ind (filnavn = EAN eller produkttype, _raw/_pl), Ignorer/Erstat/Vis forskel" },
+              { path: "/admin/product-database/images", label: "Billeder", note: "Træk produktbilleder (EAN/produkttype) og brand-logoer (filnavn = brand) ind, to kolonner" },
               { path: "/admin/product-database/tags", label: "Nøgleord" },
             ],
           },
