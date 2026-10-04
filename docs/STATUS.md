@@ -3,6 +3,13 @@
 Last updated: 2026-10-03
 Last updated: 2026-10-04
 
+## 2026-10-04: Billed-upload for produktbilleder (admin → Varedatabase → Billed-upload)
+
+- Ny side `/admin/product-database/image-upload` (også knappen "Upload billeder" på Varer). Samme mønster som Logo-upload: træk filer eller en hel mappe ind, hvert slip er et parti med tidsstempel, oversigt med størrelse / original-dimensioner / filstørrelse / proces, og "Slet valgte" / "Slet hele partiet" gendanner de tidligere billeder.
+- **Kun disse filnavne lægges op:** et EAN (8/12/13/14 cifre) eller en produkttype, evt. efterfulgt af `_raw` (utilberedt, tag "Raw") eller `_pl` (flere stk., tag "Multiple") — fx `5701234567890.png`, `Banan.png`, `Banan_raw.png`, `Banan_pl.png`. Alt andet (også `_2`) afvises med forklaring og står i oversigten. Reglen for `_raw`/`_pl` er fra 2026-09-17.
+- **Findes der allerede et billede, lægges det nye ikke op.** Det står under «Findes allerede» med **Ignorer / Erstat / Vis forskel** (og Ignorer alle / Erstat alle). Vis forskel viser det nuværende og det nye billede side om side, så store som muligt, med grå tern bag fritlagte billeder, og de samme knapper nedenunder.
+- EAN → varen med den stregkode (hovedbilledet = `Product.imageUrl`). Produkttype → generiske ingredienser med det navn + varer uden brand med den `productType` (varer med brand bruger EAN). `_raw`/`_pl` bliver billed-rækker med tag på varen/ingrediensen.
+- Billederne sendes uændret (PNG/JPEG/WebP op til 2000 px og 5 MB); større nedskaleres i browseren. Migration `20261004180000_product_image_upload` skal køre ved deploy. Typecheck (isoleret Prisma-klient) og lint er rene; `npm run build` er ikke kørt lokalt (delt Prisma-klient), og siden er ikke prøvet i browser/mod rigtig database — test med få billeder først.
 ## 2026-10-04: Logo-upload med drag and drop (admin → Varedatabase → Logo-upload)
 
 - Ny side `/admin/product-database/logo-upload` (også knappen "Upload logoer" på Brands). Træk filer eller en hel mappe ind; filnavnet er brandets navn (`Arla.png`). Hver fil behandles i browseren (fjern ensfarvet baggrund → fjern tom kant → højst 640 px → PNG, samme regler som `import_logos.py`), serveren finder brandet og sætter logoet.

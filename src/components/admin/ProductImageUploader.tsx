@@ -2,41 +2,44 @@
 
 import { useEffect, useRef, useState, type ChangeEvent, type DragEvent } from "react";
 import { useRouter } from "next/navigation";
-import { LogoProcessError, isImageFile, processLogoFile } from "@/lib/brand-logo-image";
+import { formatBytes, formatDimensions, formatTimestamp } from "@/lib/brand-logo-upload-types";
 import { readDroppedFiles } from "@/lib/dropped-files";
+import { isImageFile } from "@/lib/brand-logo-image";
+import { ProductImageProcessError, processProductImage } from "@/lib/product-image-client";
 import {
-  formatBytes,
-  formatDimensions,
-  formatTimestamp,
-  type LogoClientMeta,
-  type LogoStep,
-  type LogoUploadItem,
-} from "@/lib/brand-logo-upload-types";
+  NAME_RULE_TEXT,
+  ROLE_LABEL,
+  parseProductImageName,
+  targetsLabel,
+  type ImageStep,
+  type ProductImageClientMeta,
+  type ProductImageUploadItem,
+} from "@/lib/product-image-upload-types";
 import { Spinner, StepChips, StepList } from "@/components/admin/BrandLogoSteps";
 
-// Drag and drop-felt til logoer (admin → Varedatabase → Logo-upload,
-// docs/DECISIONS.md 2026-10-04). Filer eller en hel mappe trækkes ind; hver fil
-// behandles i browseren (læs → åbn → fjern tom kant → nedskalér → PNG) og
-// sendes derefter til serveren, som finder brandet ud fra filnavnet. Hele
-// processen vises live pr. fil og gemmes, så den kan ses i oversigten bagefter.
+// Drag and drop-felt til produktbilleder (admin → Varedatabase → Billed-upload,
+// docs/DECISIONS.md 2026-10-04). Filer eller en hel mappe trækkes ind. Kun
+// filnavne efter reglen (EAN eller produkttype, evt. _raw / _pl) accepteres; hver
+// fil gøres klar i browseren og sendes derefter til serveren, som finder varen og
+// tjekker, om den allerede har et billede. Findes det, lægges det nye IKKE op:
+// det står under «Findes allerede» med Ignorer / Erstat / Vis forskel.
 
 const CONCURRENCY = 3;
 
-type JobPhase = "queued" | "processing" | "uploading" | "saved" | "error";
+type JobPhase = "queued" | "processing" | "uploading" | "done" | "error";
 
 type Job = {
   id: number;
   file: File;
   name: string;
   phase: JobPhase;
-  steps: LogoStep[];
+  steps: ImageStep[];
   running: string | null;
-  item: LogoUploadItem | null;
+  item: ProductImageUploadItem | null;
   error: string | null;
 };
 
 type Run = {
-  batchId: string | null;
   startedAt: string | null;
   jobs: Job[];
   skipped: number;
@@ -44,9 +47,7 @@ type Run = {
   error: string | null;
 };
 
-// --- komponent -----------------------------------------------------------
-
-export function BrandLogoUploader({ canEdit }: { canEdit: boolean }) {
+export function ProductImageUploader({ canEdit }: { canEdit: boolean }) {
   const router = useRouter();
   const [run, setRun] = useState<Run | null>(null);
   const [dragOver, setDragOver] = useState(false);
@@ -69,46 +70,62 @@ export function BrandLogoUploader({ canEdit }: { canEdit: boolean }) {
 
   async function runJob(batchId: string, job: Job) {
     patchJob(job.id, { phase: "processing" });
-    let meta: LogoClientMeta;
+    let meta: ProductImageClientMeta;
     let blob: Blob | null = null;
-    try {
-      const processed = await processLogoFile(job.file, (steps, running) => patchJob(job.id, { steps, running }));
-      blob = processed.blob;
+    if (!parseProductImageName(job.name).ok) {
+      // Navnet følger ikke reglen: billedet behandles ikke, men afvisningen gemmes i oversigten.
       meta = {
         fileName: job.name,
-        originalWidth: processed.originalWidth,
-        originalHeight: processed.originalHeight,
-        originalBytes: processed.originalBytes,
-        originalType: processed.originalType,
-        steps: processed.steps,
-      };
-    } catch (error) {
-      const failure = error instanceof LogoProcessError ? error : null;
-      meta = {
-        fileName: job.name,
-        originalWidth: failure?.originalWidth ?? null,
-        originalHeight: failure?.originalHeight ?? null,
+        originalWidth: null,
+        originalHeight: null,
         originalBytes: job.file.size,
-        originalType: job.file.type || "ukendt",
-        steps: failure?.steps ?? [],
-        failed: error instanceof Error ? error.message : "Filen kunne ikke behandles",
+        originalType: job.file.type || "",
+        hasAlpha: false,
+        steps: [],
       };
+    } else {
+      try {
+        const processed = await processProductImage(job.file, (steps, running) => patchJob(job.id, { steps, running }));
+        blob = processed.blob;
+        meta = {
+          fileName: job.name,
+          originalWidth: processed.originalWidth,
+          originalHeight: processed.originalHeight,
+          originalBytes: processed.originalBytes,
+          originalType: processed.originalType,
+          hasAlpha: processed.hasAlpha,
+          steps: processed.steps,
+        };
+      } catch (error) {
+        const failure = error instanceof ProductImageProcessError ? error : null;
+        meta = {
+          fileName: job.name,
+          originalWidth: failure?.originalWidth ?? null,
+          originalHeight: failure?.originalHeight ?? null,
+          originalBytes: job.file.size,
+          originalType: job.file.type || "",
+          hasAlpha: false,
+          steps: failure?.steps ?? [],
+          failed: error instanceof Error ? error.message : "Filen kunne ikke behandles",
+        };
+      }
     }
 
     patchJob(job.id, { phase: "uploading", running: "Sender til serveren" });
     try {
       const form = new FormData();
       form.set("meta", JSON.stringify(meta));
-      if (blob) form.set("file", blob, "logo.png");
-      const response = await fetch(`/api/admin/brand-logos/batches/${batchId}/items`, { method: "POST", body: form });
-      const data = (await response.json().catch(() => null)) as { item?: LogoUploadItem; message?: string } | null;
+      if (blob) form.set("file", blob, "image");
+      const response = await fetch(`/api/admin/product-images/batches/${batchId}/items`, { method: "POST", body: form });
+      const data = (await response.json().catch(() => null)) as { item?: ProductImageUploadItem; message?: string } | null;
       if (!response.ok || !data?.item) throw new Error(data?.message ?? "Serveren afviste filen");
+      const failed = data.item.status === "REJECTED" || data.item.status === "FAILED";
       patchJob(job.id, {
-        phase: data.item.status === "FAILED" ? "error" : "saved",
+        phase: failed ? "error" : "done",
         steps: data.item.steps,
         running: null,
         item: data.item,
-        error: data.item.status === "FAILED" ? data.item.message : null,
+        error: failed ? data.item.message : null,
       });
     } catch (error) {
       patchJob(job.id, {
@@ -125,7 +142,7 @@ export function BrandLogoUploader({ canEdit }: { canEdit: boolean }) {
     const files = allFiles.filter(isImageFile);
     const skipped = allFiles.length - files.length;
     if (files.length === 0) {
-      setRun({ batchId: null, startedAt: null, jobs: [], skipped, finished: true, error: "Ingen billedfiler i det, du trak ind" });
+      setRun({ startedAt: null, jobs: [], skipped, finished: true, error: "Ingen billedfiler i det, du trak ind" });
       return;
     }
     const jobs: Job[] = files.map((file, index) => ({
@@ -139,15 +156,15 @@ export function BrandLogoUploader({ canEdit }: { canEdit: boolean }) {
       error: null,
     }));
     setOpenJob(null);
-    setRun({ batchId: null, startedAt: null, jobs, skipped, finished: false, error: null });
+    setRun({ startedAt: null, jobs, skipped, finished: false, error: null });
 
     let batchId: string;
     try {
-      const response = await fetch("/api/admin/brand-logos/batches", { method: "POST" });
+      const response = await fetch("/api/admin/product-images/batches", { method: "POST" });
       const data = (await response.json().catch(() => null)) as { batch?: { id: string; createdAt: string }; message?: string } | null;
       if (!response.ok || !data?.batch) throw new Error(data?.message ?? "Kunne ikke oprette partiet");
       batchId = data.batch.id;
-      setRun((current) => (current ? { ...current, batchId: data.batch!.id, startedAt: data.batch!.createdAt } : current));
+      setRun((current) => (current ? { ...current, startedAt: data.batch!.createdAt } : current));
     } catch (error) {
       setRun((current) =>
         current ? { ...current, finished: true, error: error instanceof Error ? error.message : "Kunne ikke starte uploaden" } : current,
@@ -180,12 +197,13 @@ export function BrandLogoUploader({ canEdit }: { canEdit: boolean }) {
   }
 
   const jobs = run?.jobs ?? [];
-  const done = jobs.filter((job) => job.phase === "saved" || job.phase === "error").length;
-  const saved = jobs.filter((job) => job.phase === "saved");
-  const matched = saved.filter((job) => job.item?.status === "DONE").length;
-  const unmatched = saved.filter((job) => job.item?.status === "UNMATCHED").length;
-  const failed = jobs.filter((job) => job.phase === "error").length;
-  const percent = jobs.length > 0 ? Math.round((done / jobs.length) * 100) : 0;
+  const finishedJobs = jobs.filter((job) => job.phase === "done" || job.phase === "error");
+  const items = jobs.flatMap((job) => (job.item ? [job.item] : []));
+  const applied = items.filter((item) => item.status === "APPLIED").length;
+  const conflicts = items.filter((item) => item.status === "CONFLICT").length;
+  const rejected = jobs.filter((job) => job.item?.status === "REJECTED").length;
+  const failed = jobs.filter((job) => job.phase === "error" && job.item?.status !== "REJECTED").length;
+  const percent = jobs.length > 0 ? Math.round((finishedJobs.length / jobs.length) * 100) : 0;
 
   return (
     <div className="flex flex-col gap-4">
@@ -205,11 +223,12 @@ export function BrandLogoUploader({ canEdit }: { canEdit: boolean }) {
         }
       >
         <p className="hf-type-title text-hf-black">
-          {busy ? "Upload i gang…" : canEdit ? "Træk logoer eller en hel mappe hertil" : "Kun fuld admin-adgang kan uploade logoer"}
+          {busy ? "Upload i gang…" : canEdit ? "Træk produktbilleder eller en hel mappe hertil" : "Kun fuld admin-adgang kan uploade billeder"}
         </p>
-        <p className="hf-type-body max-w-xl text-text-secondary">
-          Filnavnet er brandets navn, fx <span className="hf-type-strong">Arla.png</span>. Ekstra udgaver af samme brand hedder{" "}
-          <span className="hf-type-strong">Arla_2.png</span> og sættes ikke i brug, før du vælger dem. PNG, JPG, WebP, GIF og SVG.
+        <p className="hf-type-body max-w-2xl text-text-secondary">{NAME_RULE_TEXT}</p>
+        <p className="hf-type-small max-w-2xl text-text-muted">
+          Findes varen allerede med et billede, lægges det nye <span className="hf-type-strong">ikke</span> op. Det står i stedet under «Findes allerede»,
+          hvor du vælger Ignorer, Erstat eller Vis forskel.
         </p>
         <div className="flex flex-wrap justify-center gap-2">
           <button
@@ -229,9 +248,6 @@ export function BrandLogoUploader({ canEdit }: { canEdit: boolean }) {
             Vælg mappe
           </button>
         </div>
-        <p className="hf-type-small text-text-muted">
-          Hvert slip får et tidsstempel som ét parti — et helt parti kan slettes igen under «Uploads» nedenfor, og brandenes tidligere logoer kommer tilbage.
-        </p>
         <input ref={filesInput} type="file" accept="image/*" multiple className="hidden" onChange={onPick} />
         <input
           ref={folderInput}
@@ -246,12 +262,14 @@ export function BrandLogoUploader({ canEdit }: { canEdit: boolean }) {
       {run && (
         <section className="hf-surface flex flex-col gap-3 p-4" aria-live="polite">
           <div className="flex flex-wrap items-baseline justify-between gap-2">
-            <h2 className="hf-type-card-title text-hf-black">
-              {run.startedAt ? `Upload ${formatTimestamp(run.startedAt)}` : "Upload"}
-            </h2>
+            <h2 className="hf-type-card-title text-hf-black">{run.startedAt ? `Upload ${formatTimestamp(run.startedAt)}` : "Upload"}</h2>
             <p className="hf-type-body text-text-secondary">
-              {jobs.length > 0 ? `${done} af ${jobs.length} filer` : ""}
-              {busy && <span className="ml-2 inline-flex items-center gap-1"><Spinner /> Behandler…</span>}
+              {jobs.length > 0 ? `${finishedJobs.length} af ${jobs.length} filer` : ""}
+              {busy && (
+                <span className="ml-2 inline-flex items-center gap-1">
+                  <Spinner /> Behandler…
+                </span>
+              )}
             </p>
           </div>
 
@@ -268,18 +286,27 @@ export function BrandLogoUploader({ canEdit }: { canEdit: boolean }) {
           )}
 
           <p className="hf-type-body text-text-secondary">
-            <span className="text-hf-green-dark">{matched} sat som logo</span>
+            <span className="text-hf-green-dark">{applied} lagt op</span>
             {" · "}
-            <span className={unmatched > 0 ? "text-hf-warning" : ""}>{unmatched} mangler brand</span>
+            <span className={conflicts > 0 ? "hf-type-strong text-hf-warning" : ""}>{conflicts} findes allerede</span>
+            {" · "}
+            <span className={rejected > 0 ? "text-hf-red-dark" : ""}>{rejected} afvist (forkert navn/ukendt vare)</span>
             {" · "}
             <span className={failed > 0 ? "text-hf-red-dark" : ""}>{failed} fejlede</span>
             {run.skipped > 0 && <span> · {run.skipped} ikke-billedfiler sprunget over</span>}
           </p>
           {run.error && <p className="hf-type-body text-hf-red-dark">{run.error}</p>}
-          {run.finished && jobs.length > 0 && (
-            <p className="hf-type-body text-hf-black">
-              Færdig. Resultatet står i oversigten nedenfor — der kan du vælge brand til filer uden match og slette hele partiet, hvis noget er gået galt.
+          {run.finished && conflicts > 0 && (
+            <p className="hf-type-body rounded-md border border-hf-warning bg-hf-warning-bg p-3 text-hf-warning" role="alert">
+              ⚠ {conflicts} {conflicts === 1 ? "billede" : "billeder"} findes allerede og er <span className="hf-type-strong">ikke</span> erstattet.{" "}
+              <a href="#findes-allerede" className="underline">
+                Gå til «Findes allerede» og vælg Ignorer, Erstat eller Vis forskel
+              </a>
+              .
             </p>
+          )}
+          {run.finished && jobs.length > 0 && (
+            <p className="hf-type-body text-hf-black">Færdig. Hele resultatet står i oversigten nedenfor, hvor et helt parti også kan slettes igen.</p>
           )}
 
           {jobs.length > 0 && (
@@ -314,17 +341,15 @@ function JobRow({ job, open, onToggle }: { job: Job; open: boolean; onToggle: ()
   if (job.phase === "queued") outcome = "Venter";
   else if (job.phase === "processing") outcome = "Behandler";
   else if (job.phase === "uploading") outcome = "Sender";
-  else if (job.phase === "error") {
-    outcome = job.error ?? "Fejlede";
-    outcomeClass = "text-hf-red-dark";
-  } else if (item?.status === "UNMATCHED") {
-    outcome = "Mangler brand";
-    outcomeClass = "text-hf-warning";
-  } else if (item?.applied) {
-    outcome = `Logo for ${item.brandName}`;
+  else if (item?.status === "CONFLICT") {
+    outcome = "Findes allerede — ikke erstattet, afgør nedenfor";
+    outcomeClass = "hf-type-strong text-hf-warning";
+  } else if (item?.status === "APPLIED") {
+    outcome = `${item.role ? ROLE_LABEL[item.role] : "Billede"} sat på ${targetsLabel(item.targets) ?? "varen"}`;
     outcomeClass = "text-hf-green-dark";
   } else {
-    outcome = `Ekstra udgave for ${item?.brandName ?? "brand"} — ikke i brug`;
+    outcome = job.error ?? "Fejlede";
+    outcomeClass = "text-hf-red-dark";
   }
 
   return (
@@ -337,7 +362,8 @@ function JobRow({ job, open, onToggle }: { job: Job; open: boolean; onToggle: ()
         {(job.steps.length > 0 || job.running) && <StepChips steps={job.steps} running={job.running} />}
         {item && item.width && (
           <span className="hf-type-small text-text-muted">
-            {formatDimensions(item.width, item.height)} (original {formatDimensions(item.originalWidth, item.originalHeight)}) · {formatBytes(item.bytes)} (original {formatBytes(item.originalBytes)})
+            {formatDimensions(item.width, item.height)} (original {formatDimensions(item.originalWidth, item.originalHeight)}) · {formatBytes(item.bytes)} (original{" "}
+            {formatBytes(item.originalBytes)})
           </span>
         )}
       </button>

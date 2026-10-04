@@ -1,4 +1,4 @@
-# Åbne opgaver — fælles overlevering mellem konti
+| image-upload | Drag and drop af produktbilleder (EAN / produkttype, _raw / _pl) med advarsel ved eksisterende billeder: Ignorer / Erstat / Vis forskel | Færdig (kode) | Migration 20261004180000 skal med deployet. Ikke prøvet i browser/mod rigtig database — test med få billeder først |# Åbne opgaver — fælles overlevering mellem konti
 
 Opgaverne her blev startet på én Claude-konto og kan fortsættes på en anden.
 Samme maskine, samme repo. Denne fil er den eneste fælles sandhed om, hvem der
@@ -383,7 +383,7 @@ Ejer: session "Puls-robot" (2026-10-04)
 | puls-robot | Natlig robot: pulsudsving uden sport + mønstergenkendelse + forslag; uge med datoer i spørgsmålet (web + mobil) | Færdig (kode, se git log "Puls-robot") | Migration 20261004120000 skal med deployet. Brugeren tester bundarket på telefon/desktop med tilsluttet ur |
 
 ## G-LOGOUPLOAD — Logo-upload i admin (drag and drop)
-Filer: `src/app/admin/product-database/logo-upload/**`, `src/app/api/admin/brand-logos/**`, `src/components/admin/BrandLogo*.tsx`, `src/lib/brand-logo-*.ts`, tabellerne `brand_logo_upload*`.
+Filer: `src/app/admin/product-database/{logo-upload,image-upload}/**`, `src/app/api/admin/{brand-logos,product-images}/**`, `src/components/admin/{BrandLogo*,ProductImage*,ImageCompare}.tsx`, `src/lib/{brand-logo-*,product-image-*,dropped-files}.ts`, tabellerne `brand_logo_upload*` og `product_image_upload*`.
 Ejer: logo-upload-sessionen (2026-10-04)
 
 | Id | Opgave | Status | Næste skridt |

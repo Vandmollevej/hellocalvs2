@@ -3901,6 +3901,64 @@ model BrandLogoUpload {
   @@map("brand_logo_uploads")
 }
 
+// Admin → Varedatabase → Billed-upload (docs/DECISIONS.md 2026-10-04):
+// produktbilleder trækkes ind med drag and drop. Filnavnet er et EAN eller en
+// produkttype, evt. med _raw / _pl til sidst. Findes der allerede et billede på
+// pladsen, ligger det nye i status CONFLICT, til admin vælger Ignorer / Erstat.
+// Hvert slip er et parti (batch) med tidsstempel, som kan slettes samlet.
+enum ProductImageUploadStatus {
+  APPLIED
+  CONFLICT
+  IGNORED
+  REJECTED
+  FAILED
+}
+
+model ProductImageUploadBatch {
+  id          String               @id @default(cuid())
+  createdAt   DateTime             @default(now())
+  createdById String?
+  items       ProductImageUpload[]
+
+  @@index([createdAt])
+  @@map("product_image_upload_batches")
+}
+
+model ProductImageUpload {
+  id             String                   @id @default(cuid())
+  batch          ProductImageUploadBatch  @relation(fields: [batchId], references: [id], onDelete: Cascade)
+  batchId        String
+  fileName       String
+  status         ProductImageUploadStatus
+  // Læst ud af filnavnet: nøgle (EAN eller produkttype), art ("EAN"/"TYPE") og
+  // rolle ("MAIN" = hovedbillede, "RAW" = _raw, "PLURAL" = _pl).
+  key            String?
+  keyKind        String?
+  role           String?
+  // Den gemte fil (/product-images/product-uploads/<uuid>.<ext>).
+  imageUrl       String?
+  hasAlpha       Boolean                  @default(false)
+  originalWidth  Int?
+  originalHeight Int?
+  originalBytes  Int?
+  originalType   String?
+  width          Int?
+  height         Int?
+  bytes          Int?
+  // [{ kind, id, name, existingUrl, applied?, previous?, createdRowId? }] —
+  // de varer billedet gælder for, og hvad der skal til for at fortryde.
+  targets        Json
+  // [{ key, label, status, ms?, detail? }] — processen trin for trin.
+  steps          Json
+  message        String?
+  resolvedAt     DateTime?
+  createdAt      DateTime                 @default(now())
+
+  @@index([batchId])
+  @@index([status, createdAt])
+  @@map("product_image_uploads")
+}
+
 // API-nøgler rettet fra admin → API-nøgler (docs/DECISIONS.md 2026-09-25
 // "API-nøgler i admin"). Værdien er AES-256-GCM-krypteret med en nøgle
 // afledt af ADMIN_SESSION_SECRET, så en databasekopi alene ikke afslører

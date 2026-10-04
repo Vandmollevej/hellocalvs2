@@ -46,6 +46,7 @@ const DICTIONARY = {
   nav_product_database_products: { DA: "Varer", EN: "Products" },
   nav_product_database_brands: { DA: "Brands", EN: "Brands" },
   nav_product_database_logo_upload: { DA: "Logo-upload", EN: "Logo upload" },
+  nav_product_database_image_upload: { DA: "Billed-upload", EN: "Image upload" },
   nav_product_database_tags: { DA: "Nøgleord", EN: "Keywords" },
   nav_group_dishes: { DA: "Retter", EN: "Dishes" },
   nav_dishes_user: { DA: "Brugeroprettede", EN: "User-created" },
