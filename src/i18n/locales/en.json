@@ -470,7 +470,9 @@
   },
   "sentNotice": {
     "title": "For your information",
-    "body": "For your information, on {date} we sent you {type} about \"{subject}\". This was not spam.",
+    "body": "On {date} we sent you {type} about \"{subject}\". This was not spam.",
+    "bodyMany": "We sent you these messages. They were not spam:",
+    "item": "{Type} about \"{subject}\", {date}",
     "typeEmail": "an email",
     "typeSms": "a text message",
     "read": "Read"

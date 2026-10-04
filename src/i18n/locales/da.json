@@ -470,7 +470,9 @@
   },
   "sentNotice": {
     "title": "Til info",
-    "body": "Til info sendte vi dig den {date} en {type} om \"{subject}\". Dette var ikke spam.",
+    "body": "Vi sendte dig den {date} en {type} om \"{subject}\". Det var ikke spam.",
+    "bodyMany": "Vi har sendt dig disse beskeder. De var ikke spam:",
+    "item": "{Type} om \"{subject}\", {date}",
     "typeEmail": "e-mail",
     "typeSms": "sms",
     "read": "Læst"

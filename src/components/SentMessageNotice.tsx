@@ -8,7 +8,7 @@ import { useTranslation } from "@/i18n/LocaleProvider";
 import { intlLocale } from "@/i18n";
 import type { SentNotice } from "@/lib/sent-notices";
 
-// "Til info sendte vi dig den … en e-mail om …. Dette var ikke spam."
+// "Til info" + "Vi sendte dig den … en e-mail om …. Det var ikke spam."
 // (docs/DECISIONS.md 2026-10-02). Vises som det første efter login, så længe
 // der er sendte mails/sms'er, brugeren ikke har kvitteret for. "Læst"
 // kvitterer; et træk ned lukker kun til næste besøg.
@@ -46,6 +46,16 @@ export function SentMessageNotice() {
 
   const dateFormat = new Intl.DateTimeFormat(intlLocale(locale), { day: "numeric", month: "long", year: "numeric" });
 
+  function noticeParams(notice: SentNotice) {
+    const type = t(notice.kind === "SMS" ? "sentNotice.typeSms" : "sentNotice.typeEmail");
+    return {
+      date: dateFormat.format(new Date(notice.sentAt)),
+      type,
+      Type: type.charAt(0).toLocaleUpperCase(intlLocale(locale)) + type.slice(1),
+      subject: notice.subject,
+    };
+  }
+
   return (
     <BottomSheet
       title={t("sentNotice.title")}
@@ -56,16 +66,21 @@ export function SentMessageNotice() {
         </BottomSheetCloseButton>
       }
     >
+      {/* Overskriften siger allerede "Til info"; flere beskeder samles under
+          én indledning i stedet for at gentage hele sætningen (bruger 2026-10-04). */}
       <div className="flex flex-col gap-4 px-4">
-        {notices.map((notice) => (
-          <p key={notice.id} className="hf-type-body-lg">
-            {t("sentNotice.body", {
-              date: dateFormat.format(new Date(notice.sentAt)),
-              type: t(notice.kind === "SMS" ? "sentNotice.typeSms" : "sentNotice.typeEmail"),
-              subject: notice.subject,
-            })}
-          </p>
-        ))}
+        {notices.length === 1 ? (
+          <p className="hf-type-body-lg">{t("sentNotice.body", noticeParams(notices[0]))}</p>
+        ) : (
+          <>
+            <p className="hf-type-body-lg">{t("sentNotice.bodyMany")}</p>
+            <ul className="hf-type-body-lg flex list-disc flex-col gap-2 pl-6">
+              {notices.map((notice) => (
+                <li key={notice.id}>{t("sentNotice.item", noticeParams(notice))}</li>
+              ))}
+            </ul>
+          </>
+        )}
       </div>
     </BottomSheet>
   );

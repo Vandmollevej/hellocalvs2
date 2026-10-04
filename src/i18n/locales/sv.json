@@ -468,7 +468,9 @@
   },
   "sentNotice": {
     "title": "För din information",
-    "body": "För din information skickade vi dig den {date} ett {type} om \"{subject}\". Detta var inte skräppost.",
+    "body": "Vi skickade dig den {date} ett {type} om \"{subject}\". Det var inte skräppost.",
+    "bodyMany": "Vi har skickat dig de här meddelandena. De var inte skräppost:",
+    "item": "{Type} om \"{subject}\", {date}",
     "typeEmail": "mejl",
     "typeSms": "sms",
     "read": "Läst"

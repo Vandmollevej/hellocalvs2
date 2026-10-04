@@ -468,7 +468,9 @@
   },
   "sentNotice": {
     "title": "Pour info",
-    "body": "Pour info, nous t'avons envoyé le {date} un(e) {type} concernant \"{subject}\". Ce n'était pas du spam.",
+    "body": "Nous t'avons envoyé le {date} un(e) {type} concernant \"{subject}\". Ce n'était pas du spam.",
+    "bodyMany": "Nous t'avons envoyé ces messages. Ce n'était pas du spam :",
+    "item": "{Type} concernant \"{subject}\", {date}",
     "typeEmail": "e-mail",
     "typeSms": "SMS",
     "read": "Lu"

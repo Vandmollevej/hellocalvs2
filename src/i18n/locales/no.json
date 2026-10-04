@@ -468,7 +468,9 @@
   },
   "sentNotice": {
     "title": "Til info",
-    "body": "Til info sendte vi deg den {date} en {type} om \"{subject}\". Dette var ikke spam.",
+    "body": "Vi sendte deg den {date} en {type} om \"{subject}\". Det var ikke spam.",
+    "bodyMany": "Vi har sendt deg disse meldingene. De var ikke spam:",
+    "item": "{Type} om \"{subject}\", {date}",
     "typeEmail": "e-post",
     "typeSms": "SMS",
     "read": "Lest"
