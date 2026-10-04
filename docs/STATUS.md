@@ -3,6 +3,14 @@
 Last updated: 2026-10-03
 Last updated: 2026-10-04
 
+## 2026-10-04: Logo-upload med drag and drop (admin → Varedatabase → Logo-upload)
+
+- Ny side `/admin/product-database/logo-upload` (også knappen "Upload logoer" på Brands). Træk filer eller en hel mappe ind; filnavnet er brandets navn (`Arla.png`). Hver fil behandles i browseren (fjern ensfarvet baggrund → fjern tom kant → højst 640 px → PNG, samme regler som `import_logos.py`), serveren finder brandet og sætter logoet.
+- **Tidsstempel:** hvert slip er et parti (`BrandLogoUploadBatch`). "Slet valgte" / "Slet hele partiet" fjerner filerne og giver brandene deres tidligere logo tilbage — til når en upload er gået galt.
+- **Oversigten** viser pr. fil størrelse (efter behandling), original-dimensioner, filstørrelse (+ original), status og hele processen trin for trin ("Vis proces"); under selve uploaden vises processen live pr. fil. Filer uden brand-match får en brandvælger (søg eller opret brand); `_2`-udgaver sættes først i brug med "Brug som logo".
+- Migration `20261004140000_brand_logo_upload` skal køre ved deploy. Typecheck (isoleret Prisma-klient) og lint er rene for de nye filer; `npm run build` er ikke kørt lokalt (delt Prisma-klient i worktree'et), og siden er ikke prøvet i en browser/mod rigtig database — test med en lille mappe først.
+- Findes ved siden af robot-importen (`_import`-mappen, se nedenfor); de to veje deler ikke tabeller. Kun fuld admin-adgang kan uploade/slette. Er der flere brands med samme normaliserede navn, får kun det første logoet (robot-importen giver dem alle).
+
 ## 2026-10-04: Håndlavede brand-logoer (116 filer) lagt på serveren — kobling til brands mangler
 
 - De 116 logofiler fra `Logos/` (lokal mappe) ligger på serveren i `data/product-images/brand-logos/_import` (uploadet gennem logo-agent-containeren, danske tegn kontrolleret).

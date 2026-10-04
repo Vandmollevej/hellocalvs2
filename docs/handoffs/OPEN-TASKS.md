@@ -381,3 +381,11 @@ Ejer: session "Puls-robot" (2026-10-04)
 | Id | Opgave | Status | Næste skridt |
 | --- | --- | --- | --- |
 | puls-robot | Natlig robot: pulsudsving uden sport + mønstergenkendelse + forslag; uge med datoer i spørgsmålet (web + mobil) | Færdig (kode, se git log "Puls-robot") | Migration 20261004120000 skal med deployet. Brugeren tester bundarket på telefon/desktop med tilsluttet ur |
+
+## G-LOGOUPLOAD — Logo-upload i admin (drag and drop)
+Filer: `src/app/admin/product-database/logo-upload/**`, `src/app/api/admin/brand-logos/**`, `src/components/admin/BrandLogo*.tsx`, `src/lib/brand-logo-*.ts`, tabellerne `brand_logo_upload*`.
+Ejer: logo-upload-sessionen (2026-10-04)
+
+| Id | Opgave | Status | Næste skridt |
+| --- | --- | --- | --- |
+| logo-upload | Drag and drop af logoer under Varedatabase med partier/tidsstempel, masse-sletning, størrelse/original/filstørrelse og procesvisning | Færdig (kode) | Migration 20261004140000 skal med deployet. Ikke prøvet i browser/mod rigtig database — test med en lille mappe først |

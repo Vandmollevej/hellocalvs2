@@ -4395,3 +4395,14 @@ Ejerens krav: "Vi skal have samme sprog" som HelloFresh, "på alt" (app, hjælpe
 ## 2026-10-04: Drinks som tilføjelseskategori
 
 Drinks er en ny kategori nederst i tilføj-menuen. Hver drink har ingredienser; hver ingrediens får sin egen skyder med standardmængde fra et regneark (importeres senere). Et log gemmes som én Registration med summeret næring (snapshot-princippet). Se `docs/DRINKS.md`.
+
+## 2026-10-04: Logo-upload med drag and drop under Varedatabase
+
+Ejerens krav: drag and drop til logoer under produkter i admin, med tidsstempel, så en fejl kan masse-slettes, og en oversigt med størrelse, original-dimensioner og filstørrelse, hvor man kan se processen for de uploadede billeder.
+
+- Ny side `/admin/product-database/logo-upload` (menu Varedatabase → Logo-upload; knappen "Upload logoer" på Brands). Filer eller en hel mappe trækkes ind. Filnavnet er brandets navn (`Arla.png`); `Arla_2.png` / `Arla (2).png` er ekstra udgaver, som ikke sættes i brug, før man trykker "Brug som logo".
+- Behandlingen sker i browseren (canvas) og følger logo-robottens `import_logos.py`: fjern ensfarvet/bagt-ind baggrund (kun hvis billedet ikke allerede er gennemsigtigt) → fjern tom kant → højst 640 px (aldrig forstør) → PNG. Serveren kontrollerer PNG'en, finder brandet (præcis match på normaliseret navn; ellers vælger admin brand eller opretter det), gemmer filen som `/product-images/brand-logos/uploads/<uuid>.png` (nyt filnavn pr. upload, så ingen gammel cache rammer) og sætter `Brand.logoUrl`.
+- Tidsstempel/parti: hvert slip er ét `BrandLogoUploadBatch`. Hver fil (`BrandLogoUpload`) husker brandets tidligere logo (`previousLogoUrl`). Sletning af valgte filer eller et helt parti fjerner fil og række og gendanner det tidligere logo, hvis det slettede billede stadig er brandets logo; kæder af udskiftninger rulles tilbage nyeste først. Tomme partier fjernes.
+- Hver fil gemmer sin proces (`steps`: trin, status, tid, forklaring) og målene før/efter. Oversigten viser størrelse, original-dimensioner, filstørrelse (+ original), status og processen; under upload vises processen live.
+- Kun fuld admin-adgang kan uploade og slette (`requireFullAdminUser`). Migration `20261004140000_brand_logo_upload`.
+- Ikke med: flere brands med samme normaliserede navn får ikke alle logoet (robot-importen giver dem alle); kun det første bruges.
