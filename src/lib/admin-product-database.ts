@@ -115,6 +115,9 @@ export type ProductDatabaseRow = {
   categoryLabel: string | null;
   stores: string[];
   barcodeCount: number;
+  // Hvor mange gange varen er tilføjet på brugernes konti i alt. Kun for
+  // godkendte varer (null ellers) — status afgøres under Godkendelse.
+  additions: number | null;
 };
 
 export type ProductDatabaseOverview = {
@@ -122,6 +125,9 @@ export type ProductDatabaseOverview = {
   withImage: number;
   approved: number;
   pending: number;
+  // Opdeling Total / EAN (med stregkode) / Generisk (uden stregkode):
+  // antal varer og tilføjelser (kun godkendte varer).
+  segments: Record<"total" | "ean" | "generic", { products: number; additions: number }>;
 };
 
 export async function loadProductDatabase(filters: ProductDatabaseFilters) {
@@ -158,6 +164,17 @@ export async function loadProductDatabase(filters: ProductDatabaseFilters) {
     loadOverview(),
   ]);
 
+  const approvedIds = rows.filter((p) => p.status === "APPROVED").map((p) => p.id);
+  const additionRows =
+    approvedIds.length === 0
+      ? []
+      : await prisma.registration.groupBy({
+          by: ["productId"],
+          where: { productId: { in: approvedIds } },
+          _count: { _all: true },
+        });
+  const additionsById = new Map(additionRows.map((r) => [r.productId, r._count._all]));
+
   const result: ProductDatabaseRow[] = rows.map((p) => ({
     id: p.id,
     name: p.name,
@@ -173,6 +190,7 @@ export async function loadProductDatabase(filters: ProductDatabaseFilters) {
     categoryLabel: (p.category ? [p.category.parent?.name, p.category.name].filter(Boolean).join(" › ") : null) ?? (p.productCategory ? PRODUCT_CATEGORY_LABELS[p.productCategory] : null),
     stores: p.stores.map((s) => s.store.name),
     barcodeCount: p._count.barcodes,
+    additions: p.status === "APPROVED" ? (additionsById.get(p.id) ?? 0) : null,
   }));
 
   return {
@@ -187,13 +205,30 @@ export async function loadProductDatabase(filters: ProductDatabaseFilters) {
 
 async function loadOverview(): Promise<ProductDatabaseOverview> {
   const base: Prisma.ProductWhereInput = PRODUCTS_ONLY;
-  const [total, withImage, approved, pending] = await Promise.all([
+  const withBarcode: Prisma.ProductWhereInput = { barcodes: { some: {} } };
+  const withoutBarcode: Prisma.ProductWhereInput = { barcodes: { none: {} } };
+  const approvedBase: Prisma.ProductWhereInput = { ...base, status: "APPROVED" };
+  const [total, withImage, approved, pending, ean, addTotal, addEan, addGeneric] = await Promise.all([
     prisma.product.count({ where: base }),
     prisma.product.count({ where: { ...base, imageUrl: { not: null } } }),
     prisma.product.count({ where: { ...base, status: "APPROVED" } }),
     prisma.product.count({ where: { ...base, status: "PENDING" } }),
+    prisma.product.count({ where: { AND: [base, withBarcode] } }),
+    prisma.registration.count({ where: { product: approvedBase } }),
+    prisma.registration.count({ where: { product: { AND: [approvedBase, withBarcode] } } }),
+    prisma.registration.count({ where: { product: { AND: [approvedBase, withoutBarcode] } } }),
   ]);
-  return { total, withImage, approved, pending };
+  return {
+    total,
+    withImage,
+    approved,
+    pending,
+    segments: {
+      total: { products: total, additions: addTotal },
+      ean: { products: ean, additions: addEan },
+      generic: { products: total - ean, additions: addGeneric },
+    },
+  };
 }
 
 // Valgmuligheder til mærke-/sub brand-dropdowns. Sub brands indsnævres til
