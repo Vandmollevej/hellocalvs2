@@ -1663,6 +1663,15 @@
     "noEntriesYet": "No weigh-ins logged yet.",
     "recentTitle": "Recent weigh-ins"
   },
+  "drinks": {
+    "title": "Drinks",
+    "noDrinksYet": "There are no drinks yet.",
+    "notFound": "Drink not found.",
+    "add": "Add",
+    "saving": "Saving…",
+    "saveError": "The drink could not be saved.",
+    "kcalTotal": "About {kcal} kcal in total"
+  },
   "waterLog": {
     "title": "Water",
     "intro": "Log your water intake. Pick a bottle or glass, or set the amount manually on the slider.",
@@ -2299,6 +2308,7 @@
     "camera": "Scan with camera",
     "list": "See all",
     "menstrualCycle": "Period",
+    "drinks": "Drinks",
     "hint": {
       "list": "See all"
     }

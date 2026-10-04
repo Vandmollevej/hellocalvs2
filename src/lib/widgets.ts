@@ -117,6 +117,7 @@ export const WIDGET_ADD_ACTIONS: Record<AddActionKey, { path: string; labelKey: 
   targetWeight: { path: "/profile/goals", labelKey: "profile.actions.target" },
   bodyMeasurements: { path: "/profile/body-measurements", labelKey: "profile.row.bodyMeasurements" },
   menstrualCycle: { path: "/period/create", labelKey: "addButton.menstrualCycle" },
+  drinks: { path: "/drinks", labelKey: "addButton.drinks" },
 };
 
 export const DEFAULT_ADD_ROW_KEYS: AddActionKey[] = ["search", "camera", "water", "weight"];

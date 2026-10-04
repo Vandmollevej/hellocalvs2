@@ -1663,6 +1663,15 @@
     "noEntriesYet": "Ingen vejninger registreret endnu.",
     "recentTitle": "Seneste vejninger"
   },
+  "drinks": {
+    "title": "Drinks",
+    "noDrinksYet": "Der er endnu ingen drinks.",
+    "notFound": "Drinken blev ikke fundet.",
+    "add": "Tilføj",
+    "saving": "Gemmer…",
+    "saveError": "Drinken kunne ikke gemmes.",
+    "kcalTotal": "Ca. {kcal} kcal i alt"
+  },
   "waterLog": {
     "title": "Vand",
     "intro": "Registrér dit vandindtag. Vælg en dunk eller et glas, eller indstil mængden manuelt på skyderen.",
@@ -2280,6 +2289,7 @@
     "camera": "Scan med kamera",
     "list": "Se alle",
     "menstrualCycle": "Menstruation",
+    "drinks": "Drinks",
     "hint": {
       "list": "Se alle"
     }

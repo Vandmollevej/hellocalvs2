@@ -4379,3 +4379,7 @@ Ejerens krav: "Vi skal have samme sprog" som HelloFresh, "på alt" (app, hjælpe
 - Bekræftelsesordet ved sletning er stadig det danske **SLET** på alle sprog (koden tjekker på det ord); teksterne siger "Skriv SLET".
 - Oversættelserne er maskinoversat og er ikke læst igennem af en person med modersmålet. Ikke oversat: chatbottens vidensbase (`chatbot-knowledge.ts`, dansk; svarer dog på brugerens sprog), admin og native widgets (kun widgetteksterne).
 - Antallet af HelloFresh-sprog kom fra en websøgning, som kun nævnte 18 markeder; de 7 sprog er udledt af markederne (DK, NO, SE, DE/AT/CH, FR/BE/LU, NL, IE/UK).
+
+## 2026-10-04: Drinks som tilføjelseskategori
+
+Drinks er en ny kategori nederst i tilføj-menuen. Hver drink har ingredienser; hver ingrediens får sin egen skyder med standardmængde fra et regneark (importeres senere). Et log gemmes som én Registration med summeret næring (snapshot-princippet). Se `docs/DRINKS.md`.

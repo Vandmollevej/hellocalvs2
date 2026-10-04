@@ -80,6 +80,7 @@ export const PAGE_TREE: PageArea[] = [
             children: [
               { path: "/weight/create", label: "Registrér vægt" },
               { path: "/water/create", label: "Registrér vand" },
+              { path: "/drinks", label: "Drinks", children: [{ path: "/drinks/[id]", label: "Tilføj drink" }] },
               { path: "/activity/create", label: "Tilføj aktivitet" },
               { path: "/period/create", label: "Registrér menstruation" },
               {

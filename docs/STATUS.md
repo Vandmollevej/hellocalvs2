@@ -1,6 +1,12 @@
 # HELLO CAL — project status
 
 Last updated: 2026-10-03
+Last updated: 2026-10-04
+
+## 2026-10-04: Drinks (forberedt)
+
+- Ny kategori "Drinks" nederst i tilføj-menuen, `/drinks` og `/drinks/[id]` (cirkelbillede + én skyder pr. ingrediens), API `/api/drinks` + `/api/drinks/log`, migration `20261004100000_drinks` skal køre ved deploy.
+- Mangler: regneark-import (format i `docs/DRINKS.md`) — databasen er tom indtil da.
 
 ## 2026-10-03: Kontoopsætning øverst på Profil
 

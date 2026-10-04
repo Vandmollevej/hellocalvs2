@@ -2,6 +2,7 @@ import { useEffect, useState, useSyncExternalStore } from "react";
 import {
   IconCalendarHeart,
   IconCamera,
+  IconGlassCocktail,
   IconMicrophone,
   IconSearch,
   type Icon,
@@ -26,7 +27,8 @@ export type AddActionKey =
   | "camera"
   | "targetWeight"
   | "bodyMeasurements"
-  | "menstrualCycle";
+  | "menstrualCycle"
+  | "drinks";
 
 export type AddAction = {
   key: AddActionKey;
@@ -111,6 +113,13 @@ export const ADD_ACTIONS: AddAction[] = [
     icon: IconCalendarHeart,
     labelKey: "addButton.menstrualCycle",
     requiresCycleTracking: true,
+  },
+  // Altid nederst på tilføjelsessiden (docs/DRINKS.md).
+  {
+    key: "drinks",
+    href: "/drinks",
+    icon: IconGlassCocktail,
+    labelKey: "addButton.drinks",
   },
 ];
 
