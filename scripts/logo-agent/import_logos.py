@@ -133,6 +133,8 @@ def main(dry_run):
         log.info("ingen importmappe (%s) — intet at gøre", IMPORT_DIR)
         return 0
     files = sorted(f for f in os.listdir(IMPORT_DIR) if os.path.splitext(f)[1].lower() in EXTENSIONS)
+    if not files:
+        return 0
     conn = psycopg2.connect(os.environ["DATABASE_URL"].split("?")[0])
     with conn.cursor() as cur:
         cur.execute('SELECT id, name, "logoUrl" FROM brands')
@@ -182,6 +184,7 @@ def main(dry_run):
         log.info("alternativ (ikke brugt): %s", filename)
     for filename, near in unmatched:
         log.warning("INGEN MATCH: %s — nærmeste brands: %s", filename, ", ".join(near) or "ingen")
+    conn.close()
     return 0
 
 

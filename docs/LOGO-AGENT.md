@@ -60,7 +60,10 @@ det, robotten skal. Besluttet af brugeren 2026-09-24.
 
 Til logoer, brugeren selv har samlet (fx mappen `Logos/`): læg filerne
 (`<brandnavn>.png/.webp/.jpg`) i `data/product-images/brand-logos/_import` på
-serveren og kør i logo-agent-containeren:
+serveren. **Logo-robotten kører importen automatisk ved hver start** (efter
+deploy), så filerne bliver sat på deres brands uden en kommando (brugerens valg
+2026-10-04; uden filer i mappen er det et no-op). Resultatet står i
+containerens log (`docker logs hellocal-v2-logo-agent-1`). Manuelt:
 
 ```
 docker exec hellocal-v2-logo-agent-1 python /app/import_logos.py --dry-run   # kun matchning

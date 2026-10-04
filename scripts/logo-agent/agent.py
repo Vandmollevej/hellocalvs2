@@ -38,6 +38,7 @@ import psycopg2
 import requests
 from PIL import Image
 
+import import_logos
 from job_control import run_forever
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
@@ -453,6 +454,12 @@ def run_once(conn):
 
 def main():
     os.makedirs(LOGO_DIR, exist_ok=True)
+    # Egne logoer lagt i brand-logos/_import sættes på deres brands ved hver
+    # start (import_logos.py, docs/LOGO-AGENT.md). Uden filer er det et no-op.
+    try:
+        import_logos.main(dry_run=False)
+    except Exception:  # noqa: BLE001 - importen må ikke stoppe robotten
+        log.exception("import af egne logoer fejlede")
     # Planen styres fra admin "Robotter"/"Cron-jobs" (job_control.py);
     # LOGO_AGENT_RUN_HOUR er kun standard-tidspunktet, når rækken oprettes.
     log.info("logo-robot startet; standard hver nat kl. %02d:00 (%s)", RUN_HOUR, TIMEZONE)
