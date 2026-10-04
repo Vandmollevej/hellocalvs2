@@ -70,6 +70,10 @@ function Thumbnail({ row, size }: { row: ProductDatabaseRow; size: "row" | "card
   );
 }
 
+function additionsText(row: ProductDatabaseRow) {
+  return row.additions === null ? "—" : numberFormat.format(row.additions);
+}
+
 function subtitle(row: ProductDatabaseRow) {
   return [row.subbrand, row.variant, row.packageSizeText].filter(Boolean).join(" · ");
 }
@@ -90,12 +94,13 @@ function StoreTags({ stores }: { stores: string[] }) {
 function ListView({ rows }: { rows: ProductDatabaseRow[] }) {
   return (
     <div className="overflow-hidden hf-surface">
-      <div className="hf-type-small hidden grid-cols-[48px_minmax(0,2.4fr)_minmax(0,1.2fr)_minmax(0,1fr)_88px_96px] gap-4 border-b border-hf-tan-dark px-4 py-2 text-text-secondary lg:grid">
+      <div className="hf-type-small hidden grid-cols-[48px_minmax(0,2.4fr)_minmax(0,1.2fr)_minmax(0,1fr)_88px_96px_96px] gap-4 border-b border-hf-tan-dark px-4 py-2 text-text-secondary lg:grid">
         <span />
         <span>Vare</span>
         <span>Kæder</span>
         <span>Kategori · kilde</span>
         <span className="text-right">Kcal/100</span>
+        <span className="text-right">Tilføjelser</span>
         <span className="text-right">Status</span>
       </div>
       <ul className="divide-y divide-border-strong">
@@ -103,7 +108,7 @@ function ListView({ rows }: { rows: ProductDatabaseRow[] }) {
           <li key={row.id}>
             <Link
               href={`/admin/products/${row.id}`}
-              className="grid grid-cols-[48px_minmax(0,1fr)_auto] items-center gap-4 px-4 py-3 hover:bg-hf-tan lg:grid-cols-[48px_minmax(0,2.4fr)_minmax(0,1.2fr)_minmax(0,1fr)_88px_96px]"
+              className="grid grid-cols-[48px_minmax(0,1fr)_auto] items-center gap-4 px-4 py-3 hover:bg-hf-tan lg:grid-cols-[48px_minmax(0,2.4fr)_minmax(0,1.2fr)_minmax(0,1fr)_88px_96px_96px]"
             >
               <Thumbnail row={row} size="row" />
               <div className="min-w-0">
@@ -128,7 +133,56 @@ function ListView({ rows }: { rows: ProductDatabaseRow[] }) {
               <p className="hf-type-small hidden text-right text-text-secondary lg:block">
                 {row.nutritionMissing ? "Mangler næring" : Math.round(row.kcalPer100g)}
               </p>
+              <p className="hf-type-small hidden text-right text-text-secondary lg:block">{additionsText(row)}</p>
               <div className="flex justify-end">
+                <StatusBadge status={row.status} />
+              </div>
+            </Link>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+// Detaljer: kun tekst, uden billeder — flere felter pr. vare end i listen.
+function DetailsView({ rows }: { rows: ProductDatabaseRow[] }) {
+  const cols = "lg:grid-cols-[minmax(0,2.4fr)_minmax(0,1.2fr)_minmax(0,1fr)_minmax(0,1fr)_72px_72px_96px_96px]";
+  return (
+    <div className="overflow-hidden rounded-lg border border-hf-tan-dark bg-hf-white">
+      <div className={`hf-type-small hidden gap-4 border-b border-hf-tan-dark px-4 py-2 text-text-secondary lg:grid ${cols}`}>
+        <span>Vare</span>
+        <span>Kæder</span>
+        <span>Kategori</span>
+        <span>Kilde</span>
+        <span className="text-right">Kcal/100</span>
+        <span className="text-right">Stregkoder</span>
+        <span className="text-right">Tilføjelser</span>
+        <span className="text-right">Status</span>
+      </div>
+      <ul className="divide-y divide-border-strong">
+        {rows.map((row) => (
+          <li key={row.id}>
+            <Link href={`/admin/products/${row.id}`} className={`grid grid-cols-[minmax(0,1fr)_auto] items-center gap-x-4 gap-y-1 px-4 py-2 hover:bg-hf-tan ${cols}`}>
+              <div className="min-w-0">
+                <p className="hf-type-body truncate text-hf-black">
+                  {row.brandName && <span className="hf-type-strong">{row.brandName} </span>}
+                  {row.name}
+                </p>
+                {subtitle(row) && <p className="hf-type-small truncate text-text-muted">{subtitle(row)}</p>}
+              </div>
+              <div className="flex justify-end lg:hidden">
+                <StatusBadge status={row.status} />
+              </div>
+              <div className="col-span-2 flex flex-wrap items-center gap-x-3 gap-y-1 lg:col-span-1 lg:block">
+                <StoreTags stores={row.stores} />
+              </div>
+              <p className="hf-type-small truncate text-hf-black">{row.categoryLabel ?? "Uden kategori"}</p>
+              <p className="hf-type-small truncate text-text-muted">{row.sourceLabel}</p>
+              <p className="hf-type-small text-right text-text-secondary">{Math.round(row.kcalPer100g)} kcal</p>
+              <p className="hf-type-small text-right text-text-secondary">{row.barcodeCount}</p>
+              <p className="hf-type-small text-right text-text-secondary">{additionsText(row)}</p>
+              <div className="hidden justify-end lg:flex">
                 <StatusBadge status={row.status} />
               </div>
             </Link>
@@ -161,6 +215,7 @@ function GridView({ rows }: { rows: ProductDatabaseRow[] }) {
               <div className="mt-auto flex items-end justify-between gap-2 pt-2">
                 <StoreTags stores={row.stores} />
                 <span className="hf-type-micro shrink-0 text-text-muted">
+                  {row.additions !== null && `${additionsText(row)} tilføjelser · `}
                   {row.nutritionMissing ? "Mangler næring" : `${Math.round(row.kcalPer100g)} kcal`}
                 </span>
               </div>
@@ -214,8 +269,6 @@ export default async function AdminProductDatabasePage({
     loadProductDatabaseSuggestions(filters.brand),
   ]);
   const { overview } = data;
-  const withoutImage = overview.total - overview.withImage;
-  const imagePercent = overview.total > 0 ? Math.round((overview.withImage / overview.total) * 100) : 0;
   const firstIndex = data.matching === 0 ? 0 : (filters.page - 1) * PRODUCT_DATABASE_PAGE_SIZE + 1;
   const lastIndex = Math.min(filters.page * PRODUCT_DATABASE_PAGE_SIZE, data.matching);
   const clean: Filters = parseProductDatabaseFilters({});
@@ -237,25 +290,24 @@ export default async function AdminProductDatabasePage({
         </Link>
       </div>
 
-      <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
-        <StatCard href={productDatabaseHref(clean)} label="Varer i alt" value={numberFormat.format(overview.total)} note="Vis alle" />
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
         <StatCard
-          href={productDatabaseHref(clean, { image: "with" })}
-          label="Med billede"
-          value={numberFormat.format(overview.withImage)}
-          note={`${imagePercent} % af databasen`}
+          href={productDatabaseHref(clean)}
+          label="Total"
+          value={numberFormat.format(overview.segments.total.products)}
+          note={`${numberFormat.format(overview.segments.total.additions)} tilføjelser`}
         />
         <StatCard
-          href={productDatabaseHref(clean, { image: "without" })}
-          label="Uden billede"
-          value={numberFormat.format(withoutImage)}
-          note="Vis dem uden billede →"
+          href={productDatabaseHref(clean, { barcode: "with" })}
+          label="EAN"
+          value={numberFormat.format(overview.segments.ean.products)}
+          note={`${numberFormat.format(overview.segments.ean.additions)} tilføjelser`}
         />
         <StatCard
-          href={productDatabaseHref(clean, { status: "PENDING" })}
-          label="Afventer godkendelse"
-          value={numberFormat.format(overview.pending)}
-          note={`${numberFormat.format(overview.approved)} godkendt`}
+          href={productDatabaseHref(clean, { barcode: "without" })}
+          label="Generisk"
+          value={numberFormat.format(overview.segments.generic.products)}
+          note={`${numberFormat.format(overview.segments.generic.additions)} tilføjelser`}
         />
       </div>
 
@@ -288,6 +340,8 @@ export default async function AdminProductDatabasePage({
           </div>
         ) : filters.view === "grid" ? (
           <GridView rows={data.rows} />
+        ) : filters.view === "details" ? (
+          <DetailsView rows={data.rows} />
         ) : (
           <ListView rows={data.rows} />
         )}
