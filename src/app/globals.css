@@ -770,6 +770,41 @@ textarea::selection,
     right: 8px;
   }
 
+  /* Tastaturmærke (genvej): "Alt + O". Genveje-siden, hurtigsøgning og
+     menurækker. 13 px, hvid flade, 1 px kant, samme radius som kort. */
+  .hf-kbd {
+    display: inline-flex;
+    flex-shrink: 0;
+    align-items: center;
+    padding: 0 6px;
+    border: 1px solid var(--hf-color-nav);
+    border-radius: var(--hf-radius-card);
+    background: var(--hf-color-surface);
+    color: var(--hf-color-text-secondary);
+    font-family: var(--font-hf-body);
+    font-size: 13px;
+    font-weight: 400;
+    line-height: 18px;
+    white-space: nowrap;
+  }
+
+  /* I sidebjælken svæver mærket over rækkens højre kant, når man peger på
+     rækken eller tabber til den — rækkens tekst flytter sig ikke. */
+  .hf-navrow__kbd {
+    position: absolute;
+    top: 50%;
+    right: 8px;
+    transform: translateY(-50%);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 120ms;
+  }
+
+  .hf-navrow:hover .hf-navrow__kbd,
+  .hf-navrow:focus-visible .hf-navrow__kbd {
+    opacity: 1;
+  }
+
   /* "Gå til…"-felt i sidebjælken (åbner hurtigsøgning). */
   .hf-shell__search {
     display: flex;

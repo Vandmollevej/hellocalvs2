@@ -68,6 +68,7 @@ const DICTIONARY = {
   nav_robots: { DA: "Robotter", EN: "Robots" },
   nav_group_settings: { DA: "Indstillinger", EN: "Settings" },
   nav_standard_mails: { DA: "Standard-mails", EN: "Standard emails" },
+  nav_shortcuts: { DA: "Genveje", EN: "Shortcuts" },
   nav_group_design: { DA: "Design og opbygning", EN: "Design and structure" },
   nav_group_flows: { DA: "Flows", EN: "Flows" },
   nav_flow_pages: { DA: "Flow-sider", EN: "Flow pages" },

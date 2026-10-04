@@ -10,6 +10,11 @@ Last updated: 2026-10-04
 - **Oversigten** viser pr. fil størrelse (efter behandling), original-dimensioner, filstørrelse (+ original), status og hele processen trin for trin ("Vis proces"); under selve uploaden vises processen live pr. fil. Filer uden brand-match får en brandvælger (søg eller opret brand); `_2`-udgaver sættes først i brug med "Brug som logo".
 - Migration `20261004140000_brand_logo_upload` skal køre ved deploy. Typecheck (isoleret Prisma-klient) og lint er rene for de nye filer; `npm run build` er ikke kørt lokalt (delt Prisma-klient i worktree'et), og siden er ikke prøvet i en browser/mod rigtig database — test med en lille mappe først.
 - Findes ved siden af robot-importen (`_import`-mappen, se nedenfor); de to veje deler ikke tabeller. Kun fuld admin-adgang kan uploade/slette. Er der flere brands med samme normaliserede navn, får kun det første logoet (robot-importen giver dem alle).
+## 2026-10-04: Admin Genveje + mærker til AutoHotkey
+
+- Ny side admin → Indstillinger → Genveje (`/admin/shortcuts`): tastaturgenvej til alle menupunkter (Alt/Alt+Shift + bogstav, Alt+1…6, Ctrl+P = Varer, Ctrl+K, Ctrl+B) med AutoHotkey-tekst. Genvejene vises ved hover i menuen og i "Gå til…".
+- Menuer har faste `id`/`data-automation`/`aria-keyshortcuts`; resten af admin mærkes automatisk. Beskrevet i `docs/AUTOMATION.md`.
+- Tjek: lint, `npm test` (genvejs-testen) og type-tjek. Ikke set i browser; prøv genvejene på desktop. Mærkerne i UIA (AutomationId) er ikke prøvet med et rigtigt AutoHotkey-script.
 
 ## 2026-10-04: Håndlavede brand-logoer (116 filer) lagt på serveren — kobling til brands mangler
 

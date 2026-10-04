@@ -7,6 +7,10 @@ import { usePathname, useRouter } from "next/navigation";
 import type { Locale } from "@prisma/client";
 import { t, type AdminI18nKey } from "@/lib/admin-i18n";
 import { AdminCountryDialog, readAdminCountry } from "@/components/admin/AdminCountryDialog";
+import { AutomationMarkers } from "@/components/admin/AutomationMarkers";
+import { useAdminShortcuts } from "@/components/admin/useAdminShortcuts";
+import { ariaKeyShortcuts, formatCombo, shortcutsForHref } from "@/lib/admin-shortcuts";
+import { automationProps, navSlug } from "@/lib/automation-markers";
 
 // Admin-skal efter Cloudflare-dashboardets struktur (docs/DECISIONS.md
 // 2026-09-27): venstre sidebjælke i fuld højde med logo, "Gå til…"-søgning
@@ -15,15 +19,17 @@ import { AdminCountryDialog, readAdminCountry } from "@/components/admin/AdminCo
 // Farverne er de eksisterende Hello Cal-tokens.
 
 type IconName = "home" | "chart" | "box" | "database" | "users" | "handshake" | "shield" | "cog" | "palette" | "road" | "flow" | "pot" | "log" | "plug" | "coin";
-type NavLink = { href: string; key: AdminI18nKey };
-type NavEntry =
+export type NavLink = { href: string; key: AdminI18nKey };
+export type NavEntry =
   | { kind: "link"; href: string; key: AdminI18nKey; icon: IconName }
   | { kind: "group"; id: string; key: AdminI18nKey; icon: IconName; links: NavLink[] };
 
 // Menustrukturen er brugerens (docs/DECISIONS.md 2026-09-27, "Admin-menuens
 // grupper"). Sider brugeren ikke nævnte (Nye produkter, Logoer,
-// Søgealgoritmer) er lagt i den gruppe de hører til.
-const NAV: NavEntry[] = [
+// Søgealgoritmer) er lagt i den gruppe de hører til. Hver side skal have en
+// genvej i src/lib/admin-shortcuts.ts (kontrolleres af `npm test`); Genveje-
+// siden læser denne liste.
+export const NAV: NavEntry[] = [
   { kind: "link", href: "/admin", key: "nav_overview", icon: "home" },
   {
     kind: "group",
@@ -119,6 +125,7 @@ const NAV: NavEntry[] = [
       { href: "/admin/support/templates", key: "nav_standard_mails" },
       { href: "/admin/messaging", key: "nav_messaging" },
       { href: "/admin/search-ranking", key: "nav_search_ranking" },
+      { href: "/admin/shortcuts", key: "nav_shortcuts" },
     ],
   },
   {
@@ -311,6 +318,13 @@ function LinkBadge({ href, badges }: { href: string; badges: Badges }) {
   return null;
 }
 
+function linkHasBadge(href: string, badges: Badges) {
+  return (
+    (href === "/admin/uncertainties" && badges.uncertainties) ||
+    (href === "/admin/support" && (badges.support?.unanswered ?? 0) > 0)
+  );
+}
+
 function groupHasBadge(links: NavLink[], badges: Badges) {
   return links.some(
     (link) =>
@@ -319,6 +333,20 @@ function groupHasBadge(links: NavLink[], badges: Badges) {
   );
 }
 
+// Genvejen vises som tastaturmærke, når man peger på rækken, og som
+// aria-keyshortcuts (UIA "AcceleratorKey") altid.
+function shortcutHint(href: string) {
+  const combo = shortcutsForHref(href)[0];
+  return combo ? formatCombo(combo) : undefined;
+}
+
+function withShortcut(label: string, href: string) {
+  const hint = shortcutHint(href);
+  return hint ? `${label} (${hint})` : label;
+}
+
+// Faste id'er til automatisering (docs/AUTOMATION.md): prefix er "hc-nav" i
+// sidebjælken og "hc-drawer-nav" i skuffen, så de to ikke deler id.
 function SidebarNav({
   locale,
   pathname,
@@ -326,6 +354,7 @@ function SidebarNav({
   collapsed,
   openGroups,
   toggleGroup,
+  idPrefix,
 }: {
   locale: Locale;
   pathname: string;
@@ -333,6 +362,7 @@ function SidebarNav({
   collapsed: boolean;
   openGroups: Set<string>;
   toggleGroup: (id: string) => void;
+  idPrefix: string;
 }) {
   return (
     <ul className="hf-shell__list">
@@ -343,12 +373,15 @@ function SidebarNav({
             <li key={entry.href}>
               <Link
                 href={entry.href}
-                title={collapsed ? t(locale, entry.key) : undefined}
+                title={collapsed ? withShortcut(t(locale, entry.key), entry.href) : undefined}
                 aria-current={active ? "page" : undefined}
+                aria-keyshortcuts={ariaKeyShortcuts(shortcutsForHref(entry.href))}
+                {...automationProps(`${idPrefix}-${navSlug(entry.key)}`)}
                 className={`hf-navrow ${collapsed ? "hf-navrow--rail" : ""}`}
               >
                 <Icon name={entry.icon} />
                 {!collapsed && <span className="hf-navrow__label">{t(locale, entry.key)}</span>}
+                {!collapsed && <ShortcutKbd href={entry.href} />}
               </Link>
             </li>
           );
@@ -365,6 +398,7 @@ function SidebarNav({
               <Link
                 href={entry.links[0].href}
                 title={t(locale, entry.key)}
+                {...automationProps(`${idPrefix}-group-${entry.id}`)}
                 className={`hf-navrow hf-navrow--rail ${groupActive ? "is-active" : ""}`}
               >
                 <Icon name={entry.icon} />
@@ -381,6 +415,7 @@ function SidebarNav({
               type="button"
               onClick={() => toggleGroup(entry.id)}
               aria-expanded={open}
+              {...automationProps(`${idPrefix}-group-${entry.id}`)}
               className={`hf-navrow ${groupActive && !open ? "is-active" : ""}`}
             >
               <Icon name={entry.icon} />
@@ -400,10 +435,13 @@ function SidebarNav({
                       <Link
                         href={link.href}
                         aria-current={active ? "page" : undefined}
+                        aria-keyshortcuts={ariaKeyShortcuts(shortcutsForHref(link.href))}
+                        {...automationProps(`${idPrefix}-${navSlug(link.key)}`)}
                         className="hf-navrow hf-navrow--sub"
                       >
                         <span className="hf-navrow__label">{t(locale, link.key)}</span>
                         <LinkBadge href={link.href} badges={badges} />
+                        {!linkHasBadge(link.href, badges) && <ShortcutKbd href={link.href} />}
                       </Link>
                     </li>
                   );
@@ -417,16 +455,31 @@ function SidebarNav({
   );
 }
 
+function ShortcutKbd({ href }: { href: string }) {
+  const hint = shortcutHint(href);
+  if (!hint) return null;
+  return (
+    <kbd aria-hidden="true" className="hf-kbd hf-navrow__kbd">
+      {hint}
+    </kbd>
+  );
+}
+
 function QuickSearch({ locale, onClose }: { locale: Locale; onClose: () => void }) {
   const router = useRouter();
   const [query, setQuery] = useState("");
   const [index, setIndex] = useState(0);
 
   const items = useMemo(() => {
-    const all: { href: string; label: string; section: string | null }[] = [];
+    const all: { href: string; slug: string; label: string; section: string | null }[] = [];
     for (const entry of NAV) {
-      if (entry.kind === "link") all.push({ href: entry.href, label: t(locale, entry.key), section: null });
-      else for (const link of entry.links) all.push({ href: link.href, label: t(locale, link.key), section: t(locale, entry.key) });
+      if (entry.kind === "link") {
+        all.push({ href: entry.href, slug: navSlug(entry.key), label: t(locale, entry.key), section: null });
+      } else {
+        for (const link of entry.links) {
+          all.push({ href: link.href, slug: navSlug(link.key), label: t(locale, link.key), section: t(locale, entry.key) });
+        }
+      }
     }
     const q = query.trim().toLowerCase();
     if (!q) return all;
@@ -443,6 +496,8 @@ function QuickSearch({ locale, onClose }: { locale: Locale; onClose: () => void 
       <div
         role="dialog"
         aria-modal="true"
+        aria-label={t(locale, "nav_quick_search")}
+        {...automationProps("hc-quick-search")}
         className="hf-menu hf-shell__palette-box"
         onClick={(event) => event.stopPropagation()}
       >
@@ -450,6 +505,7 @@ function QuickSearch({ locale, onClose }: { locale: Locale; onClose: () => void 
           <Icon name="search" className="h-4 w-4 text-text-muted" />
           <input
             autoFocus
+            {...automationProps("hc-quick-search-input")}
             value={query}
             onChange={(event) => {
               setQuery(event.target.value);
@@ -479,10 +535,13 @@ function QuickSearch({ locale, onClose }: { locale: Locale; onClose: () => void 
                 type="button"
                 onMouseEnter={() => setIndex(i)}
                 onClick={() => go(item.href)}
+                aria-keyshortcuts={ariaKeyShortcuts(shortcutsForHref(item.href))}
+                {...automationProps(`hc-quick-search-${item.slug}`)}
                 className={`hf-navrow ${i === index ? "bg-hf-tan text-hf-black" : ""}`}
               >
                 <span className="hf-navrow__label">{item.label}</span>
                 {item.section && <span className="hf-type-small text-text-muted">{item.section}</span>}
+                {shortcutHint(item.href) && <kbd className="hf-kbd">{shortcutHint(item.href)}</kbd>}
               </button>
             </li>
           ))}
@@ -531,6 +590,7 @@ function UserMenu({
         }}
         aria-expanded={open}
         aria-label={email}
+        {...automationProps("hc-user-menu")}
         className="hf-type-body hf-type-strong relative flex h-8 w-8 items-center justify-center rounded-full bg-hf-green-dark uppercase text-hf-white"
       >
         {email.charAt(0)}
@@ -545,8 +605,15 @@ function UserMenu({
             <p className="hf-type-body truncate text-hf-black">{email}</p>
           </div>
           {canManageAdmins && (
-            <Link href="/admin/admin-users" onClick={() => setOpen(false)} className="hf-navrow">
+            <Link
+              href="/admin/admin-users"
+              onClick={() => setOpen(false)}
+              aria-keyshortcuts={ariaKeyShortcuts(shortcutsForHref("/admin/admin-users"))}
+              {...automationProps("hc-user-menu-admin-users")}
+              className="hf-navrow"
+            >
               <span className="hf-navrow__label">{t(locale, "nav_admin_users")}</span>
+              <ShortcutKbd href="/admin/admin-users" />
               {newAdminSignups > 0 && (
                 <span className="hf-type-small rounded-full bg-hf-red-dark px-1.5 text-hf-white">{newAdminSignups}</span>
               )}
@@ -558,13 +625,14 @@ function UserMenu({
               setOpen(false);
               setCountryOpen(true);
             }}
+            {...automationProps("hc-user-menu-language")}
             className="hf-navrow"
           >
             <span className="hf-navrow__label">{t(locale, "nav_language_name")}</span>
             <Image src={`/flags/${country}.png`} alt="" width={24} height={18} className="rounded-[2px]" />
             <Icon name="chevron" className="h-4 w-4" />
           </button>
-          <button type="button" onClick={onLogout} className="hf-navrow">
+          <button type="button" onClick={onLogout} {...automationProps("hc-user-menu-logout")} className="hf-navrow">
             {t(locale, "nav_logout")}
           </button>
         </div>
@@ -585,7 +653,17 @@ function UserMenu({
   );
 }
 
-function SearchField({ label, collapsed, onOpen }: { label: string; collapsed: boolean; onOpen: () => void }) {
+function SearchField({
+  label,
+  collapsed,
+  onOpen,
+  id,
+}: {
+  label: string;
+  collapsed: boolean;
+  onOpen: () => void;
+  id: string;
+}) {
   if (collapsed) {
     return (
       <button
@@ -593,6 +671,8 @@ function SearchField({ label, collapsed, onOpen }: { label: string; collapsed: b
         onClick={onOpen}
         title={label}
         aria-label={label}
+        aria-keyshortcuts="Control+K"
+        {...automationProps(id)}
         className="hf-shell__search hf-shell__search--rail"
       >
         <Icon name="search" className="h-4 w-4" />
@@ -600,7 +680,13 @@ function SearchField({ label, collapsed, onOpen }: { label: string; collapsed: b
     );
   }
   return (
-    <button type="button" onClick={onOpen} className="hf-shell__search">
+    <button
+      type="button"
+      onClick={onOpen}
+      aria-keyshortcuts="Control+K"
+      {...automationProps(id)}
+      className="hf-shell__search"
+    >
       <Icon name="search" className="h-4 w-4" />
       <span className="flex-1 text-left">{label}</span>
     </button>
@@ -638,7 +724,7 @@ function Breadcrumbs({ locale, pathname }: { locale: Locale; pathname: string })
   if (matches(pathname, "/admin/admin-users")) crumbs.push({ label: t(locale, "nav_admin_users") });
 
   return (
-    <nav aria-label="Breadcrumb" className="hf-crumbs max-sm:hidden">
+    <nav aria-label="Breadcrumb" {...automationProps("hc-breadcrumbs")} className="hf-crumbs max-sm:hidden">
       {crumbs.map((crumb, i) => (
         <span key={`${crumb.label}-${i}`} className="hf-crumbs__item">
           {i > 0 && <span aria-hidden="true">/</span>}
@@ -714,16 +800,27 @@ export function AdminShell({
 
   useEffect(() => {
     function onKey(event: KeyboardEvent) {
-      if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "k") {
-        event.preventDefault();
-        setSearchOpen((value) => !value);
-      } else if (event.key === "Escape") {
-        setDrawerOpen(false);
-      }
+      if (event.key === "Escape") setDrawerOpen(false);
     }
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
   }, []);
+
+  // Tastaturgenveje (Ctrl+K, Ctrl+B og sider, se src/lib/admin-shortcuts.ts).
+  useAdminShortcuts({
+    canManageAdmins,
+    onQuickSearch: () => setSearchOpen((value) => !value),
+    onToggleSidebar: () => {
+      // Under 1024 px findes sidebjælken kun som skuffe.
+      if (window.matchMedia("(max-width: 1023px)").matches) setDrawerOpen((value) => !value);
+      else toggleCollapsed();
+    },
+    onNavigate: (href) => {
+      setSearchOpen(false);
+      setDrawerOpen(false);
+      if (href !== pathname) router.push(href);
+    },
+  });
 
   // html/body er låst mod scroll globalt (globals.css), så admin scroller i
   // sin egen rod-container. Skuffen låser derfor den container, ikke body.
@@ -784,7 +881,12 @@ export function AdminShell({
           Fælles skal-klasser med webvisningen (globals.css, design.md §6.17). */}
       <aside className={`hf-shell__sidebar ${collapsed ? "is-collapsed" : ""}`}>
         <div className="hf-shell__brand">
-          <Link href="/admin" className="flex items-center" title={collapsed ? "Hello Cal Admin" : undefined}>
+          <Link
+            href="/admin"
+            className="flex items-center"
+            title={collapsed ? "Hello Cal Admin" : undefined}
+            {...automationProps("hc-sidebar-logo")}
+          >
             <Image
               src="/hello-cal-logo.png"
               alt="Hello Cal"
@@ -796,11 +898,17 @@ export function AdminShell({
         </div>
         {!hideSearch && (
           <div className="hf-shell__search-slot">
-            <SearchField label={searchLabel} collapsed={collapsed} onOpen={() => setSearchOpen(true)} />
+            <SearchField
+              id="hc-sidebar-search"
+              label={searchLabel}
+              collapsed={collapsed}
+              onOpen={() => setSearchOpen(true)}
+            />
           </div>
         )}
-        <nav className="hf-shell__nav">
+        <nav className="hf-shell__nav" aria-label="Admin" {...automationProps("hc-sidebar-nav")}>
           <SidebarNav
+            idPrefix="hc-nav"
             locale={currentLocale}
             pathname={pathname}
             badges={badges}
@@ -816,6 +924,8 @@ export function AdminShell({
           onClick={toggleCollapsed}
           title={t(currentLocale, collapsed ? "nav_expand" : "nav_collapse")}
           aria-label={t(currentLocale, collapsed ? "nav_expand" : "nav_collapse")}
+          aria-keyshortcuts="Control+B"
+          {...automationProps("hc-sidebar-toggle")}
           className="hf-shell__handle"
         />
       </aside>
@@ -826,11 +936,12 @@ export function AdminShell({
             type="button"
             onClick={() => setDrawerOpen(true)}
             aria-label={t(currentLocale, "nav_open_menu")}
+            {...automationProps("hc-topbar-menu")}
             className="hf-btn-icon hf-shell__mobile-only text-text-secondary hover:bg-hf-tan"
           >
             <Icon name="menu" />
           </button>
-          <Link href="/admin" className="hf-shell__mobile-only shrink-0 items-center">
+          <Link href="/admin" className="hf-shell__mobile-only shrink-0 items-center" {...automationProps("hc-topbar-logo")}>
             <Image src="/hello-cal-logo.png" alt="Hello Cal" width={90} height={40} priority />
           </Link>
           <Breadcrumbs locale={currentLocale} pathname={pathname} />
@@ -839,6 +950,7 @@ export function AdminShell({
               type="button"
               onClick={() => setSearchOpen(true)}
               aria-label={searchLabel}
+              {...automationProps("hc-topbar-search")}
               className="hf-btn-icon hf-shell__mobile-only ml-auto text-text-secondary hover:bg-hf-tan"
             >
               <Icon name="search" />
@@ -856,7 +968,7 @@ export function AdminShell({
           </div>
         </header>
 
-        <main className="hf-shell__main">
+        <main className="hf-shell__main" {...automationProps("hc-main")}>
           <div className="hf-shell__content">{children}</div>
         </main>
       </div>
@@ -871,6 +983,7 @@ export function AdminShell({
                 type="button"
                 onClick={() => setDrawerOpen(false)}
                 aria-label={t(currentLocale, "nav_close_menu")}
+                {...automationProps("hc-drawer-close")}
                 className="hf-btn-icon text-text-secondary hover:bg-hf-tan"
               >
                 <Icon name="close" />
@@ -878,6 +991,7 @@ export function AdminShell({
             </div>
             <div className="hf-shell__search-slot">
               <SearchField
+                id="hc-drawer-search"
                 label={searchLabel}
                 collapsed={false}
                 onOpen={() => {
@@ -886,8 +1000,9 @@ export function AdminShell({
                 }}
               />
             </div>
-            <nav className="hf-shell__nav">
+            <nav className="hf-shell__nav" aria-label="Admin" {...automationProps("hc-drawer-nav")}>
               <SidebarNav
+                idPrefix="hc-drawer-nav"
                 locale={currentLocale}
                 pathname={pathname}
                 badges={badges}
@@ -902,6 +1017,7 @@ export function AdminShell({
       )}
 
       {searchOpen && <QuickSearch locale={currentLocale} onClose={() => setSearchOpen(false)} />}
+      <AutomationMarkers />
     </div>
   );
 }

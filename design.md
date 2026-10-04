@@ -895,6 +895,8 @@ menurækker, brødkrummer, dropdowns eller hvide flader med egne Tailwind-kæder
 | `.hf-menu` / `.hf-menu__header` | Dropdown-flade (brugermenu, profilmenu, Hello Doc-menu, hurtigsøgning) |
 | `.hf-shell__drawer` / `-backdrop` / `-panel` / `-foot`, `.hf-shell__mobile-only` | Menu som skuffe under 1024 px |
 | `.hf-shell__palette` / `-box` | Hurtigsøgning (Ctrl/Cmd + K) |
+| `.hf-kbd` | Tastaturmærke for en genvej ("Alt + O"): 13/18, hvid flade, 1 px #DFD9CC kant, radius 8, 6 px side-luft. Bruges i hurtigsøgning og på Genveje-siden |
+| `.hf-navrow__kbd` | `.hf-kbd` i en menurække: svæver over rækkens højre kant (8 px) og vises kun ved hover/fokus, så rækkens tekst ikke flytter sig |
 | `.hf-surface` | Hvid flade, 1 px #DFD9CC kant, radius 8 — UDEN padding (`.hf-panel` = samme + 16 px luft) |
 | `.hf-table-scroll` | Tabeller scroller vandret på smal skærm i stedet for at blive klippet |
 

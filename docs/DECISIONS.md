@@ -2,6 +2,14 @@
 
 This file records durable decisions. Add a dated entry when a later decision changes one of them.
 
+## 2026-10-04: Admin → Indstillinger → Genveje, og faste mærker til AutoHotkey
+
+Ejerens krav: menupunktet "Genveje" under Indstillinger med en genvej til hvert menupunkt (fx Ctrl P for produkter), og om menuer og felter er mærket til senere automatisering med AutoHotkey (UIA / felt-klasser). Intet var mærket før (ingen `id`/`data-*`).
+
+- **Genveje:** `/admin/shortcuts` (sidst i gruppen Indstillinger) lister hvert menupunkt med genvej og AutoHotkey-tekst. Alt + bogstav = hyppigste sider, Alt + Shift + bogstav = øvrige, Alt + 1…6 = Partnere/Roadmap, Ctrl + P = Varer, Ctrl + K = Gå til…, Ctrl + B = sidebjælken. Ctrl bruges ellers aldrig, så Ctrl+A/C/V/X/Z og faneskift er urørt; AltGr ignoreres. Kilde: `src/lib/admin-shortcuts.ts`; `npm test` kræver en genvej til hver menuside.
+- **Mærker:** skallens menuer har faste, sprog-uafhængige `id` (`hc-nav-…`, `hc-user-menu-…`) + `data-automation` + `aria-keyshortcuts`; alle øvrige knapper/felter i admin mærkes automatisk ud fra navn/label (`AutomationMarkers`). Se `docs/AUTOMATION.md`.
+- Nyt tastaturmærke `.hf-kbd` (design.md §6.17). Menuen (`NAV`) eksporteres fra `AdminShell.tsx` og forbliver der, så Genveje-siden læser den uden at andre sessioners menu-ændringer flytter rundt.
+
 ## 2026-10-04: Puls-robot — nattens leder efter uregistreret sport, genkender mønstret og foreslår sporten
 
 Ejerens krav: "Om natten kan en kørsel køre (tilføj den til robotterne i admin) som udregner brugernes puls de steder, hvor der ikke er registreret kategori gennem integrationen af smarturet eller enheden." Spørgsmålet "Vi kan se at din puls var højere end sædvanlig i går (eller sidst man loggede ind, med dato)" får ugen vist vandret med datoer, hvor sport er krydset af med tidspunkt — på web og mobil. "Ny AI-funktion skal forsøge at genkende mønsteret på sporten (en gåtur er højere over tid, en løbetur starter med langsom opvarmning og køles ned) og på et tidspunkt, når der er data nok, foreslå sporten."
