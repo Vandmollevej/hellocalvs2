@@ -962,7 +962,6 @@ export default function CalendarPage() {
                 today={today}
                 dailyTotals={dailyTotals}
                 goalsByDate={goalsByDate}
-                weighInsByDate={weighInsByDate}
                 onOpenDate={openDate}
                 weekdays={WEEKDAYS}
               />
@@ -1153,7 +1152,6 @@ function MonthView({
   today,
   dailyTotals,
   goalsByDate,
-  weighInsByDate,
   onOpenDate,
   weekdays,
 }: {
@@ -1162,7 +1160,6 @@ function MonthView({
   today: Date;
   dailyTotals: Map<string, number>;
   goalsByDate: GoalsByDate;
-  weighInsByDate: WeighInsByDate;
   onOpenDate: (date: Date) => void;
   weekdays: string[];
 }) {
@@ -1213,8 +1210,6 @@ function MonthView({
                   // i dag og fremtiden står tydeligst frem.
                   const isPast = stripTime(date).getTime() < stripTime(today).getTime();
                   const hasGoal = goalsForDate(goalsByDate, date).length > 0;
-                  const dayWeighIns = weighInsForDate(weighInsByDate, date);
-                  const lastWeighIn = dayWeighIns[dayWeighIns.length - 1];
                   return (
                     <button
                       key={date.toISOString()}
@@ -1222,9 +1217,7 @@ function MonthView({
                       onClick={() => onOpenDate(date)}
                       aria-label={`${date.toLocaleDateString("da-DK", { dateStyle: "long" })}${current ? t("calendar.todaySuffix") : ""}${
                         !marked ? "" : met ? t("calendar.goalMetSuffix") : t("calendar.goalMissedSuffix")
-                      }${hasGoal ? t("calendar.targetDateSuffix") : ""}${
-                        lastWeighIn ? t("calendar.weighInSuffix", { value: formatKg(lastWeighIn.weightKg) }) : ""
-                      }`}
+                      }${hasGoal ? t("calendar.targetDateSuffix") : ""}`}
                       className={`hf-type-body relative flex aspect-square items-center justify-center rounded-lg border focus-visible:outline-2 focus-visible:outline-hf-black ${
                         isPast ? "" : "hf-type-strong"
                       } ${
@@ -1244,14 +1237,6 @@ function MonthView({
                         <IconPartyPopper
                           size={12}
                           className={`absolute left-0.5 top-0.5 ${current ? "text-hf-white" : "text-hf-black"}`}
-                        />
-                      )}
-                      {/* Vejning: badevægten i nederste venstre hjørne — kun
-                          ikonet, cellen har ikke plads til tallet. */}
-                      {lastWeighIn && (
-                        <IconBathScale
-                          size={11}
-                          className={`absolute bottom-0.5 left-0.5 ${current ? "text-hf-white" : "text-hf-black"}`}
                         />
                       )}
                       {!current &&
