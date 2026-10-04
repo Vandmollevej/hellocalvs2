@@ -86,7 +86,9 @@ function ResetPasswordContent() {
       }
       // En admin skal videre til admin-login (2FA), ikke til appens forside.
       if (data.isAdmin) {
-        window.location.assign("/admin/login");
+        // Admin findes kun på admin-værten; på hellocal.io er /admin/login "Not found".
+        const onAdminHost = window.location.hostname.startsWith("admin") || window.location.hostname === "localhost";
+        window.location.assign(onAdminHost ? "/admin/login" : "https://admin.hellocal.io/admin/login");
       } else {
         router.push("/");
       }

@@ -21,6 +21,7 @@ Last updated: 2026-10-04
 - Admin-programmet skal starte på `/admin`, ikke `/`: på bare `/` sender brugerappens WebShell (`WebShell.tsx`, `router.replace(WEB_HOME)`) klienten videre til `/calendar`, som på admin-værten giver 404.
 - Adminsessionen (`SESSION_TTL_SECONDS` i `src/lib/admin-auth.ts`) er hævet fra 12 til 24 timer, så adgangskoden kun skal skrives én gang i døgnet. Går i drift ved næste deploy.
 - Beskrivelse: `tools/desktop/README.md`.
+- Rettet: efter nulstilling af adgangskode sendte `/reset-password` en administrator til `/admin/login` på hellocal.io, hvor admin ikke findes ("Not found"). Nu sendes de til `https://admin.hellocal.io/admin/login`.
 
 ## 2026-10-04: Håndlavede brand-logoer (116 filer) lagt på serveren — kobling til brands mangler
 
