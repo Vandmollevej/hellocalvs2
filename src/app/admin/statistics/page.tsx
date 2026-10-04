@@ -228,7 +228,7 @@ export default async function AdminStatisticsPage({
       <StatsTabs active="users" />
       <div className="flex flex-col gap-3">
         <div>
-          <h1 className="text-lg font-semibold text-text-primary">Statistik</h1>
+          <h1 className="admin-h1 text-lg font-semibold text-text-primary">Statistik</h1>
           <p className="text-sm text-text-secondary">
             {s.range.label}: {s.range.fromDay} – {s.range.toDay} · {num.format(s.scopeUserCount)} brugere i filteret · alle
             procenter sammenlignes med en lige så lang periode lige før.
