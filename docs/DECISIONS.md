@@ -4449,3 +4449,11 @@ Ejerens krav: ingen "Bad Gateway" ved udrulning. Målt: hele sitet (begge værte
 - Billedforslag og Logoer bruger fælles `ImageReviewBoard`: størrelsesvælger 2/4/8 firkanter (1/2/4 varer pr. side, paginering) og lightbox med Afvis/Godkend, pile og tal i bunden.
 - Nye varer (`/admin/products`) har Detaljer/Liste/Galleri-visning; Liste og Galleri åbner det fulde kort i et overlay.
 - Produkt-databasens filtre er lukkede som standard.
+
+## 2026-10-04 — Brugerdata krypteret i databasen (godkendt af brugeren)
+
+- `User.email` og `User.displayName` gemmes krypteret (AES-256-GCM, tilfældig IV, præfiks `enc:v1:`, nøgle `USER_DATA_KEY`). Opslag via `User.emailHash` = HMAC-SHA256 af trimmet, lowercased e-mail med separat nøgle `USER_EMAIL_HASH_KEY`.
+- Gjort i én Prisma-klientudvidelse (`src/lib/prisma.ts`) i stedet for at ændre ~56 filer: `where.email` → `emailHash` (+ klartekst-fallback), data krypteres ved create/update/upsert (også nested), alle resultater dekrypteres (også nested select/include via `Prisma.dmmf`). Filtre der ikke kan oversættes (`contains` på e-mail, enhver filtrering på displayName) kaster fejl.
+- Afvigelse fra oplægget: `User.email` beholder `@unique` (tilfældig IV gør indekset ufarligt, typerne og klartekst-opslag på ikke-backfillede rækker virker). Den egentlige entydighed er `emailHash @unique`.
+- Uden nøgler i miljøet skrives/slås der op i klartekst som før (sikker deploy-rækkefølge); backfill-scriptet `scripts/encrypt-user-data/backfill.cjs` krypterer bagefter. Mistes `USER_DATA_KEY`, kan navn/e-mail ikke gendannes — gem nøglerne i en adgangskodemanager.
+- Admin → Brugere viser kun pseudonym; Admin → Admin-brugere viser navn + e-mail (dekrypteres server-side). Mail/push-udsendelse læser e-mail via samme klient og er uændret.

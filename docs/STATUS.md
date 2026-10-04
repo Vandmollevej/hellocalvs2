@@ -3,6 +3,13 @@
 Last updated: 2026-10-03
 Last updated: 2026-10-04
 
+## 2026-10-04: Brugerdata krypteret i databasen (User.email + User.displayName)
+
+- Feltkryptering (AES-256-GCM, `enc:v1:`-præfiks) af `User.email` og `User.displayName`, omskrevet transparent af en Prisma-klientudvidelse i `src/lib/prisma.ts` (logik i `src/lib/user-data-transform.ts`, krypto i `src/lib/user-crypto.ts`). Opslag på e-mail går via ny kolonne `User.emailHash` (HMAC-SHA256). Klartekst uden præfiks læses stadig, og uden env-nøgler kører appen som før — så deploy-rækkefølgen er sikker.
+- **Mangler på serveren (brugeren):** sæt `USER_DATA_KEY` + `USER_EMAIL_HASH_KEY` i `.env.production`, deploy (migration `20261004190000_user_email_hash`), og kør backfill — se `docs/DEPLOYMENT.md` "Feltkryptering".
+- Admin → Brugere → Point: søgning er nu kun præcis e-mail eller bruger-id (navn/e-mail kan ikke delvist søges i krypterede felter).
+- Tjek: `npm test` (krypto + transform), lint og type-tjek af de nye filer er rene. `npm run build -- --webpack` kompilerer, men stopper på en eksisterende typefejl i `src/app/admin/product-database/products/page.tsx:343` (`"details"` vs. `"list"`), som ikke stammer fra denne ændring. Ikke prøvet mod en rigtig database.
+
 ## 2026-10-04: Billed-upload for produktbilleder (admin → Varedatabase → Billed-upload)
 
 - Ny side `/admin/product-database/image-upload` (også knappen "Upload billeder" på Varer). Samme mønster som Logo-upload: træk filer eller en hel mappe ind, hvert slip er et parti med tidsstempel, oversigt med størrelse / original-dimensioner / filstørrelse / proces, og "Slet valgte" / "Slet hele partiet" gendanner de tidligere billeder.

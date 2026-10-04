@@ -10,7 +10,13 @@ datasource db {
 
 model User {
   id          String   @id @default(cuid())
+  // email + displayName er krypteret i databasen (AES-256-GCM, "enc:v1:"-
+  // praefiks, src/lib/user-crypto.ts, docs/DECISIONS.md 2026-10-04) og
+  // omskrives transparent af src/lib/prisma.ts. Opslag sker via emailHash
+  // (HMAC-SHA256 af lowercased e-mail). @unique paa email beholdes bevidst
+  // (tilfaeldig IV => indekset afsloerer intet), saa typer/legacy-opslag virker.
   email       String   @unique
+  emailHash   String?  @unique
   displayName String
   role        Role     @default(USER)
   weightKg    Float?

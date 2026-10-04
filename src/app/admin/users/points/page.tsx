@@ -35,8 +35,10 @@ export default async function AdminGrantPointsPage({
           where: {
             ...eligible,
             OR: [
-              { email: { contains: q, mode: "insensitive" } },
-              { displayName: { contains: q, mode: "insensitive" } },
+              // Navn og e-mail er krypteret i databasen (docs/DECISIONS.md
+              // 2026-10-04): soeg paa praecis e-mail eller bruger-id.
+              { email: q.toLowerCase() },
+              { id: q },
             ],
           },
           orderBy: { createdAt: "desc" },
@@ -90,7 +92,7 @@ export default async function AdminGrantPointsPage({
           type="search"
           name="q"
           defaultValue={q}
-          placeholder="Søg på navn eller e-mail"
+          placeholder="Søg på præcis e-mail eller bruger-id"
           className="hf-type-body hf-field min-w-0 flex-1 rounded-md border border-hf-tan-dark bg-hf-white px-3"
         />
         <button type="submit" className="hf-type-body rounded-md border border-hf-tan-dark px-4 py-2">

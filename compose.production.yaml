@@ -64,6 +64,10 @@ services:
       ADMIN_SESSION_SECRET: ${ADMIN_SESSION_SECRET:?Set ADMIN_SESSION_SECRET in .env.production}
       ADMIN_ALLOWED_IPS: ${ADMIN_ALLOWED_IPS:-213.80.120.167}
       USER_SESSION_SECRET: ${USER_SESSION_SECRET:-}
+      # Feltkryptering af User.email/displayName (docs/DEPLOYMENT.md). Uden dem
+      # koerer appen som foer (klartekst) indtil noeglerne er sat.
+      USER_DATA_KEY: ${USER_DATA_KEY:-}
+      USER_EMAIL_HASH_KEY: ${USER_EMAIL_HASH_KEY:-}
       APP_BASE_URL: ${APP_BASE_URL:-}
       INTEGRATIONS_REDIRECT_BASE_URL: ${INTEGRATIONS_REDIRECT_BASE_URL:-}
       FITBIT_CLIENT_ID: ${FITBIT_CLIENT_ID:-}
@@ -181,6 +185,8 @@ services:
       ADMIN_SESSION_SECRET: ${ADMIN_SESSION_SECRET:?Set ADMIN_SESSION_SECRET in .env.production}
       SCAN_SESSION_SECRET: ${SCAN_SESSION_SECRET:-}
       SCAN_PII_KEY: ${SCAN_PII_KEY:-}
+      USER_DATA_KEY: ${USER_DATA_KEY:-}
+      USER_EMAIL_HASH_KEY: ${USER_EMAIL_HASH_KEY:-}
       GOOGLE_PLACES_API_KEY: ${GOOGLE_PLACES_API_KEY:-}
       NODE_ENV: production
       PORT: 3000

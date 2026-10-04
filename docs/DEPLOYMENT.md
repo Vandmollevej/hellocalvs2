@@ -439,3 +439,23 @@ Nu:
 - `scan-app` (scan.hellocal.io) og agenterne er uændrede og genstartes som før.
 - Ændringer, der kun rører `docs/**`, `**/*.md` eller `tools/**`, starter intet build/deploy.
 - Ved problemer: `docker compose ... logs edge-proxy`; hurtig tilbagerulning er at gendanne `ports` på `app` i compose-filen og køre `docker compose ... up -d app` (proxyen fjernes med `rm -sf edge-proxy`).
+
+## Feltkryptering af brugerdata (2026-10-04)
+
+`User.email` og `User.displayName` er krypteret i databasen (AES-256-GCM). Nøgler (aldrig i git, aldrig i logs):
+
+- `USER_DATA_KEY` — 32 bytes base64: `openssl rand -base64 32`
+- `USER_EMAIL_HASH_KEY` — separat nøgle til opslags-hash: `openssl rand -base64 32`
+
+Begge er sat på `app` og `scan-app` i `compose.production.yaml` og vises i `.env.production.example`. **Gem dem i en adgangskodemanager og tag backup af dem adskilt fra databasebackuppen** — uden `USER_DATA_KEY` kan navn/e-mail ikke læses, og nøglerne må ikke ændres efter backfill.
+
+Rækkefølge på Synology (sudo kræver brugerens adgangskode):
+
+1. Tag en database-backup (se "Backup").
+2. Tilføj begge nøgler til `.env.production`.
+3. Deploy som normalt (migrationen `20261004190000_user_email_hash` er additiv: kolonnen `emailHash` + unikt indeks).
+4. Tør-kørsel (ændrer intet): `sudo docker compose --env-file .env.production -f compose.production.yaml exec -T app node - < scripts/encrypt-user-data/backfill.cjs`
+5. Kør for alvor (idempotent, kan gentages): samme kommando med `node - --apply`. Scriptet skriver kun antal og id'er, aldrig værdier. Slutter med "Tilbage ukrypteret: 0".
+6. Tjek login, `/admin/admin-users` (navn + e-mail) og en mail-udsendelse.
+
+Uden nøgler kører appen som før (klartekst); nye rækker, der oprettes før nøglerne er sat, krypteres af backfill. Er `emailHash`-kollision (to e-mails der kun adskiller sig på store/små bogstaver) rapporterer backfill id'et, og rækken rettes manuelt.
