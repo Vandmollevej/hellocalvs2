@@ -15,6 +15,12 @@ Last updated: 2026-10-04
 - Ny side admin → Indstillinger → Genveje (`/admin/shortcuts`): tastaturgenvej til alle menupunkter (Alt/Alt+Shift + bogstav, Alt+1…6, Ctrl+P = Varer, Ctrl+K, Ctrl+B) med AutoHotkey-tekst. Genvejene vises ved hover i menuen og i "Gå til…".
 - Menuer har faste `id`/`data-automation`/`aria-keyshortcuts`; resten af admin mærkes automatisk. Beskrevet i `docs/AUTOMATION.md`.
 - Tjek: lint, `npm test` (genvejs-testen) og type-tjek. Ikke set i browser; prøv genvejene på desktop. Mærkerne i UIA (AutomationId) er ikke prøvet med et rigtigt AutoHotkey-script.
+## 2026-10-04: To Windows-programmer (HelloCal og HelloCal Admin) + 24 timers adminsession
+
+- `tools/desktop/` bygger to små Electron-programmer, der kun viser en adresse og gemmer login lokalt: **HelloCal Admin** (`https://admin.hellocal.io/admin`, profil `%APPDATA%\HelloCal Admin`) og **HelloCal** (`https://hellocal.io/`, profil `%APPDATA%\HelloCal`). Byg og installér uden administrator: `powershell -ExecutionPolicy Bypass -File tools\desktop\build.ps1` → `%LOCALAPPDATA%\HelloCalDesktop\{admin,app}`. Første start opretter genvejen i Startmenuen. Windows 11 lader ikke et program fastgøre sig selv til proceslinjen — højreklik på ikonet → Fastgør.
+- Admin-programmet skal starte på `/admin`, ikke `/`: på bare `/` sender brugerappens WebShell (`WebShell.tsx`, `router.replace(WEB_HOME)`) klienten videre til `/calendar`, som på admin-værten giver 404.
+- Adminsessionen (`SESSION_TTL_SECONDS` i `src/lib/admin-auth.ts`) er hævet fra 12 til 24 timer, så adgangskoden kun skal skrives én gang i døgnet. Går i drift ved næste deploy.
+- Beskrivelse: `tools/desktop/README.md`.
 
 ## 2026-10-04: Håndlavede brand-logoer (116 filer) lagt på serveren — kobling til brands mangler
 

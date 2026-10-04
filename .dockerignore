@@ -9,3 +9,5 @@ docs
 *.md
 .github
 .claude
+# Windows-programmet til admin (tools/admin-desktop) er ikke en del af app-imaget.
+tools

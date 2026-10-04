@@ -4414,3 +4414,11 @@ Ejerens krav: drag and drop til logoer under produkter i admin, med tidsstempel,
 - Hver fil gemmer sin proces (`steps`: trin, status, tid, forklaring) og målene før/efter. Oversigten viser størrelse, original-dimensioner, filstørrelse (+ original), status og processen; under upload vises processen live.
 - Kun fuld admin-adgang kan uploade og slette (`requireFullAdminUser`). Migration `20261004140000_brand_logo_upload`.
 - Ikke med: flere brands med samme normaliserede navn får ikke alle logoet (robot-importen giver dem alle); kun det første bruges.
+## 2026-10-04: Windows-programmer til admin og app (Electron) og 24 timers adminsession
+
+Ejerens krav: "dumme" Windows-programmer uden Edge — ét til admin-panelet og ét til selve Hello Cal — med gemt login, i Startmenuen og på proceslinjen, og adgangskode højst én gang om dagen. Begge programmer skal blive stående side om side.
+
+- Valgt: Electron (indbygget Chromium), fordi Edge er fravalgt, og det kan bygges uden administrator (`tools/desktop/`). Programmerne har ingen forretningslogik — de loader den levende side, så al funktionalitet og sikkerhed ligger uændret på serveren. Kun `admin.hellocal.io` og `hellocal.io` vises i programmerne; andre links åbnes i standardbrowseren. Kamera og mikrofon er kun tilladt i HelloCal (scanning, foto, tale), aldrig i admin.
+- Samme kode, to exe-filer: hvilket program der kører, afgøres af exe-navnet; hver har egen profil, egen genvej og eget AppUserModelID, så de kan fastgøres hver for sig.
+- Adminsessionens levetid er hævet fra 12 til 24 timer (JWT + cookie, `src/lib/admin-auth.ts`). Enhedscookien (365 dage) og godkendelse af ny enhed er uændrede; programmets profil tæller som én enhed og skal godkendes første gang.
+- Proceslinjen: Windows 11 kan ikke fastgøres programmatisk; brugeren fastgør med højreklik på ikonet.

@@ -6,7 +6,7 @@ export const ADMIN_SETUP_COOKIE = "hc_admin_setup";
 export const ADMIN_WEBAUTHN_REG_CHALLENGE_COOKIE = "hc_admin_webauthn_reg";
 export const ADMIN_WEBAUTHN_AUTH_CHALLENGE_COOKIE = "hc_admin_webauthn_auth";
 
-const SESSION_TTL_SECONDS = 12 * 60 * 60; // 12 hours
+const SESSION_TTL_SECONDS = 24 * 60 * 60; // 24 hours — én adgangskode om dagen (docs/DECISIONS.md 2026-10-04)
 const MFA_TTL_SECONDS = 5 * 60; // 5 minutes to enter the TOTP code
 const SETUP_TTL_SECONDS = 10 * 60; // 10 minutes to scan the QR code and confirm
 const WEBAUTHN_CHALLENGE_TTL_SECONDS = 2 * 60; // 2 minutes to complete the Face ID/passkey ceremony

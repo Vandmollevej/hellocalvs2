@@ -1,0 +1,14 @@
+{
+  "name": "hellocal-desktop",
+  "productName": "HelloCal",
+  "version": "1.0.0",
+  "description": "Windows-programmer der viser HelloCal-appen og admin-panelet og husker login",
+  "main": "main.js",
+  "type": "module",
+  "private": true,
+  "license": "UNLICENSED",
+  "devDependencies": {
+    "@electron/packager": "^20.3.0",
+    "electron": "^44.5.1"
+  }
+}
