@@ -1,6 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
+import { ImageReviewBoard } from "@/components/admin/ImageReviewBoard";
 import { chooseLogo, rejectAllLogos } from "@/app/admin/logos/actions";
 
 type Candidate = {
@@ -32,26 +34,56 @@ export function LogoReviewList({ searches }: { searches: Search[] }) {
   const [openId, setOpenId] = useState<string | null>(null);
   const [lightbox, setLightbox] = useState<string | null>(null);
   const open = searches.find((search) => search.id === openId) ?? null;
+  const router = useRouter();
 
-  if (!searches.length) return <p className="hf-type-body text-text-secondary">Ingen logoer venter på gennemsyn.</p>;
+  const items = useMemo(
+    () =>
+      searches.map((search) => ({
+        id: search.id,
+        title: search.brandName,
+        subtitle: search.candidates[0] ? `Bedste fund: ${pct(search.candidates[0].confidence)}` : "Ingen fund",
+        slides: [
+          { src: search.originalUrl, label: "Original fra varefoto" },
+          { src: search.candidates[0]?.imageUrl ?? null, label: "Bedste fund" },
+        ],
+      })),
+    [searches],
+  );
+
+  async function approve(id: string) {
+    const best = searches.find((search) => search.id === id)?.candidates[0];
+    if (!best) return false;
+    const form = new FormData();
+    form.set("candidateId", best.id);
+    await chooseLogo(form);
+    router.refresh();
+    return true;
+  }
+
+  async function reject(id: string) {
+    const form = new FormData();
+    form.set("searchId", id);
+    await rejectAllLogos(form);
+    router.refresh();
+    return true;
+  }
 
   return (
     <>
-      <ul className="flex flex-col divide-y divide-border-strong/50 hf-surface">
-        {searches.map((search) => {
-          const best = search.candidates[0];
-          return (
-            <li key={search.id}>
-              <button type="button" onClick={() => setOpenId(search.id)} className="flex w-full items-center gap-4 px-4 py-3 text-left">
-                <span className="hf-type-strong flex-1">{search.brandName}</span>
-                <Thumb src={search.originalUrl} alt={`Original ${search.brandName}`} />
-                {best && <Thumb src={best.imageUrl} alt={`Fundet ${search.brandName}`} />}
-                <span className="hf-type-body w-14 text-right">{best ? pct(best.confidence) : "—"}</span>
-              </button>
-            </li>
-          );
-        })}
-      </ul>
+      <ImageReviewBoard
+        items={items}
+        approveLabel="Vælg bedste"
+        rejectLabel="Ingen passer"
+        onApprove={approve}
+        onReject={reject}
+        emptyText="Ingen logoer venter på gennemsyn."
+        storageKey="hc-admin-logo-board-size"
+        extra={(item) => (
+          <button type="button" onClick={() => setOpenId(item.id)} className="hf-btn-text self-center">
+            Se alternativer
+          </button>
+        )}
+      />
 
       {open && (
         <div className="fixed inset-0 z-40 flex items-center justify-center bg-hf-black/60 p-4" onClick={() => setOpenId(null)}>

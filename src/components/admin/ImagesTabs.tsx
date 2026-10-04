@@ -1,13 +1,12 @@
 import Link from "next/link";
-import type { Locale } from "@prisma/client";
-import { t } from "@/lib/admin-i18n";
 
-// Faner under Varegodkendelse → billeder: billedforslag til godkendelse og
-// billeder i kø til frilæggelse (docs/DECISIONS.md 2026-10-02).
-export function ImagesTabs({ active, locale }: { active: "suggestions" | "cutoutQueue"; locale: Locale }) {
+// Faner under Billedbehandling: billedforslag til godkendelse, billeder i kø
+// til frilæggelse og logoer (docs/DECISIONS.md 2026-10-02 og 2026-10-04).
+export function ImagesTabs({ active }: { active: "suggestions" | "cutoutQueue" | "logos" }) {
   const tabs = [
-    { key: "suggestions", href: "/admin/images", label: t(locale, "nav_images") },
-    { key: "cutoutQueue", href: "/admin/images/cutout-queue", label: t(locale, "nav_cutout_queue") },
+    { key: "suggestions", href: "/admin/images", label: "Billedforslag" },
+    { key: "cutoutQueue", href: "/admin/images/cutout-queue", label: "Billeder i kø til frilæggelse" },
+    { key: "logos", href: "/admin/logos", label: "Logoer" },
   ] as const;
   return (
     <div className="hf-type-body flex flex-wrap gap-4 border-b border-hf-tan-dark">

@@ -13,7 +13,7 @@ const DICTIONARY = {
   nav_users: { DA: "Brugere", EN: "Users" },
   nav_bug_reports: { DA: "Fejlrapporter", EN: "Bug reports" },
   nav_messaging: { DA: "Besked automatisering", EN: "Message automation" },
-  nav_images: { DA: "Billedforslag", EN: "Image suggestions" },
+  nav_images: { DA: "Billedbehandling", EN: "Image management" },
   nav_cutout_queue: { DA: "Billeder i kø til frilæggelse", EN: "Images queued for cut-out" },
   nav_uncertainties: { DA: "Usikkerheder", EN: "Uncertainties" },
   nav_cron_jobs: { DA: "Cronjobs", EN: "Cron jobs" },

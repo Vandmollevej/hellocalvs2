@@ -19,7 +19,7 @@ import { automationProps, navSlug } from "@/lib/automation-markers";
 // Farverne er de eksisterende Hello Cal-tokens.
 
 type IconName = "home" | "chart" | "box" | "database" | "users" | "handshake" | "shield" | "cog" | "palette" | "road" | "flow" | "pot" | "log" | "plug" | "coin";
-export type NavLink = { href: string; key: AdminI18nKey };
+export type NavLink = { href: string; key: AdminI18nKey; alsoActive?: string[] };
 export type NavEntry =
   | { kind: "link"; href: string; key: AdminI18nKey; icon: IconName }
   | { kind: "group"; id: string; key: AdminI18nKey; icon: IconName; links: NavLink[] };
@@ -41,10 +41,8 @@ export const NAV: NavEntry[] = [
       { href: "/admin/uncertainties", key: "nav_uncertainties" },
       { href: "/admin/duplicate-products", key: "nav_duplicate_products" },
       { href: "/admin/ingredient-requests", key: "nav_ingredient_requests" },
-      { href: "/admin/images", key: "nav_images" },
-      { href: "/admin/images/cutout-queue", key: "nav_cutout_queue" },
+      { href: "/admin/images", key: "nav_images", alsoActive: ["/admin/logos"] },
       { href: "/admin/products", key: "nav_products" },
-      { href: "/admin/logos", key: "nav_logos" },
     ],
   },
   {
@@ -179,7 +177,12 @@ function matches(pathname: string, href: string) {
 
 // Kun det længste match er aktivt, så /admin/support/templates markerer
 // "Standard-mails" og ikke også "Beskeder".
+const ALSO_ACTIVE: Record<string, string[]> = Object.fromEntries(
+  NAV.flatMap((entry) => (entry.kind === "group" ? entry.links : [])).flatMap((link) => (link.alsoActive ? [[link.href, link.alsoActive]] : [])),
+);
+
 function isActive(pathname: string, href: string) {
+  if (ALSO_ACTIVE[href]?.some((extra) => matches(pathname, extra))) return true;
   if (!matches(pathname, href)) return false;
   return !ALL_HREFS.some((other) => other.length > href.length && matches(pathname, other));
 }

@@ -348,7 +348,7 @@ export const PAGE_TREE: PageArea[] = [
           },
           {
             path: "/admin/images",
-            label: "Billedforslag",
+            label: "Billedbehandling",
             children: [{ path: "/admin/images/cutout-queue", label: "Billeder i kø til frilæggelse" }],
           },
           {

@@ -4443,3 +4443,9 @@ Ejerens krav: ingen "Bad Gateway" ved udrulning. Målt: hele sitet (begge værte
 - Proxyen videregiver headere uændret (ingen `X-Forwarded-*`), fordi admin-IP-begrænsningen bruger `cf-connecting-ip`.
 - Ændringer i `tools/**` (Windows-programmerne) og `docs/**` udløser ikke deploy.
 - Risiko: kunne ikke afprøves på serveren før første udrulning. Første udrulning har én kort afbrydelse; tilbagerulning står i `docs/DEPLOYMENT.md`.
+
+## 2026-10-04 — Admin: Billedbehandling
+- Menupunktet "Billedforslag" hedder nu "Billedbehandling" og samler faner: Billedforslag, Billeder i kø til frilæggelse og Logoer (Logoer er fjernet som eget menupunkt).
+- Billedforslag og Logoer bruger fælles `ImageReviewBoard`: størrelsesvælger 2/4/8 firkanter (1/2/4 varer pr. side, paginering) og lightbox med Afvis/Godkend, pile og tal i bunden.
+- Nye varer (`/admin/products`) har Detaljer/Liste/Galleri-visning; Liste og Galleri åbner det fulde kort i et overlay.
+- Produkt-databasens filtre er lukkede som standard.
