@@ -538,6 +538,54 @@ model WaterEntry {
   @@map("water_entries")
 }
 
+// Drinks (docs/DECISIONS.md 2026-10-04): katalog over drinks med ingredienser,
+// udfyldt via regneark-import (docs/DRINKS.md). Brugeren vælger en drink i
+// Tilføj-menuen og justerer hver ingrediens' mængde på sin egen skyder;
+// defaultAmount kommer fra regnearket. Et log gemmes som én Registration
+// (snapshot) med drinkens navn og summerede næring.
+model Drink {
+  id          String   @id @default(cuid())
+  name        String
+  imageUrl    String?
+  description String?
+  isActive    Boolean  @default(true)
+  sortOrder   Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  ingredients DrinkIngredient[]
+
+  @@map("drinks")
+}
+
+model DrinkIngredient {
+  id        String @id @default(cuid())
+  drink     Drink  @relation(fields: [drinkId], references: [id], onDelete: Cascade)
+  drinkId   String
+  name      String
+  sortOrder Int    @default(0)
+
+  // Mængder i `unit` (standard cl). Skyderen kører min..max i step og starter
+  // på defaultAmount.
+  unit          String @default("cl")
+  defaultAmount Float
+  minAmount     Float  @default(0)
+  maxAmount     Float
+  step          Float  @default(0.5)
+
+  // Næring pr. 100 ml af ingrediensen (1 ml regnes som 1 g).
+  kcalPer100ml    Float  @default(0)
+  proteinPer100ml Float  @default(0)
+  carbsPer100ml   Float  @default(0)
+  fatPer100ml     Float  @default(0)
+  sugarPer100ml   Float?
+  // Alkoholprocent (vol.) — gemmes til senere alkoholstatistik.
+  alcoholPercent  Float?
+
+  @@index([drinkId, sortOrder])
+  @@map("drink_ingredients")
+}
+
 // Menstruationscyklus (docs/DECISIONS.md 2026-09-19): logges via /period/create
 // (kun tilgængelig for kvinder, se User.cycleTrackingEnabled/sex ovenfor).
 // En række pr. registreret periode; endDate er valgfri (kan tilføjes/rettes
@@ -966,6 +1014,10 @@ model Product {
   servingSizeUnitSingular String?
   servingSizeUnitPlural   String?
   ingredientsText  String?
+  // Butikkens originale varetekst (Spar/Nemlig/…), gemt uændret så den senere
+  // kan screenes (fx "hakket oksekød" mod Okse/Gris-mærket). Aldrig vist til
+  // brugere; opdateres altid fra kilden.
+  storeDescription String?
   allergens        String[]               @default([])
   additives        String[]               @default([])
   externalSource   ExternalProductSource?

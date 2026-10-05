@@ -165,6 +165,7 @@ def info_extra(info):
         "additives": text(info.get("E-Numbers")),
         "flavor": text(info.get("Flavor")),
         "country": text(info.get("Country of Origin")),
+        "description": text(info.get("Additional Product Information")),
     }
 
 
@@ -642,7 +643,7 @@ def image_candidates(ean, b, r, cutouts, originals):
 
 SOURCE_FIELDS = (
     "name", "brand", "subbrand", "productType", "variant", "flavor", "quantity", "packCount", "sliceWeightGrams",
-    "productCategory", "keywords", "ingredients", "allergens", "additives", "sourceUrl", "nutrition", "filters",
+    "productCategory", "keywords", "ingredients", "storeDescription", "allergens", "additives", "sourceUrl", "nutrition", "filters",
 )
 
 
@@ -700,6 +701,7 @@ def build_product(ean, b, r, b_info, r_info, cutouts, originals):
         "storeDepartment": text(b.get("Category")) if b else None,
         "keywords": keywords,
         "ingredients": first(bx.get("ingredients"), rx.get("ingredients")),
+        "storeDescription": first(bx.get("description"), rx.get("description")),
         "allergens": split_list(first(bx.get("allergens"), rx.get("allergens"))),
         "additives": split_list(bx.get("additives")),
         "sourceUrl": first(text(b.get("Source URL")) if b else None, text(r.get("Source url")) if r else None),

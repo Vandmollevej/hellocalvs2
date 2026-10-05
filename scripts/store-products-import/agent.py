@@ -193,6 +193,7 @@ def upsert_product(cur, p, store_ids, category_ids):
         "fat": n["fat"],
         "satFat": n.get("saturatedFat"),
         "ingredients": p.get("ingredients"),
+        "storeDescription": p.get("storeDescription"),
         "allergens": p.get("allergens") or [],
         "additives": p.get("additives") or [],
         "subbrand": p.get("subbrand"),
@@ -216,6 +217,10 @@ def upsert_product(cur, p, store_ids, category_ids):
             'UPDATE "products" SET "imageUrl" = %s WHERE id = %s AND "imageUrl" IS NULL',
             (image_url, product_id),
         )
+        cur.execute(
+            'UPDATE "products" SET "storeDescription" = %s WHERE id = %s',
+            (params["storeDescription"], product_id),
+        )
     elif existing_id:
         product_id = existing_id
         params["id"] = product_id
@@ -225,7 +230,8 @@ def upsert_product(cur, p, store_ids, category_ids):
                 name = %(name)s, "brandId" = %(brandId)s, "categoryId" = %(categoryId)s,
                 "kcalPer100g" = %(kcal)s, "proteinPer100g" = %(protein)s, "carbsPer100g" = %(carbs)s,
                 "fatPer100g" = %(fat)s, "saturatedFatPer100g" = %(satFat)s,
-                "ingredientsText" = %(ingredients)s, allergens = %(allergens)s, additives = %(additives)s,
+                "ingredientsText" = %(ingredients)s, "storeDescription" = %(storeDescription)s,
+                allergens = %(allergens)s, additives = %(additives)s,
                 subbrand = %(subbrand)s, variant = %(variant)s, flavor = %(flavor)s,
                 "packCount" = %(packCount)s, packaging = %(packaging)s, keywords = %(keywords)s, "packageSizeText" = %(packageSize)s,
                 "productType" = %(productType)s,
@@ -244,13 +250,13 @@ def upsert_product(cur, p, store_ids, category_ids):
             """
             INSERT INTO "products" (
                 id, name, "brandId", "categoryId", "kcalPer100g", "proteinPer100g", "carbsPer100g",
-                "fatPer100g", "saturatedFatPer100g", "ingredientsText", allergens, additives,
+                "fatPer100g", "saturatedFatPer100g", "ingredientsText", "storeDescription", allergens, additives,
                 "externalSource", "externalId", "sourceCheckedAt", status, subbrand, variant, flavor,
                 "packCount", packaging, keywords, "packageSizeText", "productType", "productCategory",
                 "imageUrl", "imageStatus", "createdAt"
             ) VALUES (
                 %(id)s, %(name)s, %(brandId)s, %(categoryId)s, %(kcal)s, %(protein)s, %(carbs)s,
-                %(fat)s, %(satFat)s, %(ingredients)s, %(allergens)s, %(additives)s,
+                %(fat)s, %(satFat)s, %(ingredients)s, %(storeDescription)s, %(allergens)s, %(additives)s,
                 %(externalSource)s::"ExternalProductSource", %(externalId)s, now(), 'APPROVED',
                 %(subbrand)s, %(variant)s, %(flavor)s, %(packCount)s, %(packaging)s, %(keywords)s, %(packageSize)s,
                 %(productType)s, %(productCategory)s::"ProductCategory", %(imageUrl)s,
