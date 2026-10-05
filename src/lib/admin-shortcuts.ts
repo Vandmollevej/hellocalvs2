@@ -41,7 +41,7 @@ export const ADMIN_PAGE_SHORTCUTS: Record<string, readonly string[]> = {
   "/admin/product-database/products": ["Alt+P", "Ctrl+P"],
   "/admin/product-database/brands": ["Alt+Shift+R"],
   "/admin/product-database/tags": ["Alt+Shift+K"],
-  "/admin/product-database/logo-upload": ["Alt+Shift+X"],
+  "/admin/product-database/images": ["Alt+Shift+X"],
 
   // Retter
   "/admin/dishes/user": ["Alt+Shift+U"],

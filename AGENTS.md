@@ -31,6 +31,8 @@ This version has breaking changes — APIs, conventions, and file structure may 
 - Ask the user questions only in the big question box (the AskUserQuestion
   tool), never as plain text at the end of a reply — the user does not see
   them otherwise (user rule 2026-09-26).
+- Stop ikke midtvejs: færdiggør opgaven helt, med mindre det kan konflikte med andet arbejde (user rule 2026-10-05). Hvis der er noget at vente på (CI, review), så tjek PR'en med få minutters mellemrum og flet den ind, så snart det er muligt.
+- Afslut hver færdig opgave med teksten "arkiver mig" og ingen anden tekst (user rule 2026-10-05).
 - Update `docs/STATUS.md` after material work and add durable architectural or product decisions to `docs/DECISIONS.md`.
 
 ## Verification

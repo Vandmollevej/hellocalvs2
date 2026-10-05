@@ -2,7 +2,8 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { requireAdminUser } from "@/lib/require-admin";
-import { PendingProductCard, type PendingProduct } from "@/components/admin/PendingProductCard";
+import type { PendingProduct } from "@/components/admin/PendingProductCard";
+import { PendingProductViews } from "@/components/admin/PendingProductViews";
 import { productConfidencePercent } from "@/lib/pending-product-confidence";
 import { asNumberRecord } from "@/lib/nutrients";
 import { t } from "@/lib/admin-i18n";
@@ -152,11 +153,7 @@ export default async function AdminProductsPage({
       {products.length === 0 ? (
         <p className="hf-type-body text-text-secondary">Ingen varer afventer godkendelse i denne fane.</p>
       ) : (
-        <div className="flex flex-col gap-4">
-          {products.map((product) => (
-            <PendingProductCard key={product.id} product={product} />
-          ))}
-        </div>
+        <PendingProductViews products={products} />
       )}
     </div>
   );

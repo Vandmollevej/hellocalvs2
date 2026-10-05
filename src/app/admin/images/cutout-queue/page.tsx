@@ -11,16 +11,15 @@ import { CutoutQueueList } from "@/components/admin/CutoutQueueList";
 export const dynamic = "force-dynamic";
 
 export default async function AdminCutoutQueuePage() {
-  const admin = await requireAdminUser();
-  if (!admin) redirect("/admin/login");
+  if (!(await requireAdminUser())) redirect("/admin/login");
 
   const queue = await loadCutoutQueue();
   const count = queue.pending.length;
 
   return (
     <div className="flex flex-col gap-4">
-      <h1 className="hf-type-title text-hf-black">Billeder i kø til frilæggelse</h1>
-      <ImagesTabs active="cutoutQueue" locale={admin.locale} />
+      <h1 className="hf-type-title text-hf-black">Billedbehandling</h1>
+      <ImagesTabs active="cutoutQueue" />
       <p className="hf-type-body text-text-secondary">
         {count === 0 ? "Ingen billeder venter på frilæggelse." : count === 1 ? "1 billede venter på at få fjernet baggrunden." : `${count} billeder venter på at få fjernet baggrunden.`}
       </p>

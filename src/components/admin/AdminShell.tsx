@@ -19,7 +19,7 @@ import { automationProps, navSlug } from "@/lib/automation-markers";
 // Farverne er de eksisterende Hello Cal-tokens.
 
 type IconName = "home" | "chart" | "box" | "database" | "users" | "handshake" | "shield" | "cog" | "palette" | "road" | "flow" | "pot" | "log" | "plug" | "coin";
-export type NavLink = { href: string; key: AdminI18nKey };
+export type NavLink = { href: string; key: AdminI18nKey; alsoActive?: string[] };
 export type NavEntry =
   | { kind: "link"; href: string; key: AdminI18nKey; icon: IconName }
   | { kind: "group"; id: string; key: AdminI18nKey; icon: IconName; links: NavLink[] };
@@ -41,10 +41,8 @@ export const NAV: NavEntry[] = [
       { href: "/admin/uncertainties", key: "nav_uncertainties" },
       { href: "/admin/duplicate-products", key: "nav_duplicate_products" },
       { href: "/admin/ingredient-requests", key: "nav_ingredient_requests" },
-      { href: "/admin/images", key: "nav_images" },
-      { href: "/admin/images/cutout-queue", key: "nav_cutout_queue" },
+      { href: "/admin/images", key: "nav_images", alsoActive: ["/admin/logos"] },
       { href: "/admin/products", key: "nav_products" },
-      { href: "/admin/logos", key: "nav_logos" },
     ],
   },
   {
@@ -55,8 +53,7 @@ export const NAV: NavEntry[] = [
     links: [
       { href: "/admin/product-database/products", key: "nav_product_database_products" },
       { href: "/admin/product-database/brands", key: "nav_product_database_brands" },
-      { href: "/admin/product-database/logo-upload", key: "nav_product_database_logo_upload" },
-      { href: "/admin/product-database/image-upload", key: "nav_product_database_image_upload" },
+      { href: "/admin/product-database/images", key: "nav_product_database_images" },
       { href: "/admin/product-database/tags", key: "nav_product_database_tags" },
     ],
   },
@@ -139,6 +136,7 @@ export const NAV: NavEntry[] = [
       { href: "/admin/jobs", key: "nav_jobs" },
       { href: "/admin/agents", key: "nav_agents" },
       { href: "/admin/robots", key: "nav_robots" },
+      { href: "/admin/admin-users", key: "nav_admin_users" },
     ],
   },
   {
@@ -179,7 +177,12 @@ function matches(pathname: string, href: string) {
 
 // Kun det længste match er aktivt, så /admin/support/templates markerer
 // "Standard-mails" og ikke også "Beskeder".
+const ALSO_ACTIVE: Record<string, string[]> = Object.fromEntries(
+  NAV.flatMap((entry) => (entry.kind === "group" ? entry.links : [])).flatMap((link) => (link.alsoActive ? [[link.href, link.alsoActive]] : [])),
+);
+
 function isActive(pathname: string, href: string) {
+  if (ALSO_ACTIVE[href]?.some((extra) => matches(pathname, extra))) return true;
   if (!matches(pathname, href)) return false;
   return !ALL_HREFS.some((other) => other.length > href.length && matches(pathname, other));
 }
@@ -969,7 +972,7 @@ export function AdminShell({
           </div>
         </header>
 
-        <main className="hf-shell__main" {...automationProps("hc-main")}>
+        <main className="hf-shell__main admin-main" {...automationProps("hc-main")}>
           <div className="hf-shell__content">{children}</div>
         </main>
       </div>

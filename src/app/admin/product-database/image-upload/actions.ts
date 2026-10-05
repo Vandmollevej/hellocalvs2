@@ -14,7 +14,7 @@ import {
 
 type Result = { ok: true; message?: string } | { ok: false; message: string };
 
-const PATH = "/admin/product-database/image-upload";
+const PATH = "/admin/product-database/images";
 const NO_ACCESS = "Kun fuld admin-adgang kan ændre produktbilleder";
 
 export async function resolveImageConflict(itemId: string, decision: "ignore" | "replace"): Promise<Result> {

@@ -23,7 +23,7 @@ function useAction() {
     if (confirmText && !window.confirm(confirmText)) return false;
     setBusy(true);
     setError(null);
-    const res = await postJson("/api/admin/partners", body);
+    const res = await postJson("/api/admin/partners", body).catch(() => ({ ok: false, status: 0, data: { message: "Kunne ikke kontakte serveren" } }));
     setBusy(false);
     if (!res.ok) {
       setError(res.data.message ?? "Noget gik galt");
@@ -41,6 +41,8 @@ type PartnerWithContacts = { id: string; name: string; contacts: Contact[] };
 export function ContactsManager({ partners }: { partners: PartnerWithContacts[] }) {
   const { busy, error, run } = useAction();
   const [partnerName, setPartnerName] = useState("");
+  const [contactName, setContactName] = useState("");
+  const [contactEmail, setContactEmail] = useState("");
   const [drafts, setDrafts] = useState<Record<string, { name: string; email: string }>>({});
 
   return (
@@ -50,11 +52,17 @@ export function ContactsManager({ partners }: { partners: PartnerWithContacts[] 
         className="flex flex-wrap gap-2"
         onSubmit={async (e) => {
           e.preventDefault();
-          if (await run({ action: "createPartner", name: partnerName })) setPartnerName("");
+          if (await run({ action: "createPartner", name: partnerName, contactName, contactEmail })) {
+            setPartnerName("");
+            setContactName("");
+            setContactEmail("");
+          }
         }}
       >
         <input className={INPUT} placeholder="Ny partner" value={partnerName} onChange={(e) => setPartnerName(e.target.value)} />
-        <button className={PRIMARY} disabled={busy || !partnerName.trim()}>Opret partner</button>
+        <input className={INPUT} placeholder="Navn" value={contactName} onChange={(e) => setContactName(e.target.value)} />
+        <input className={INPUT} type="email" placeholder="E-mail" value={contactEmail} onChange={(e) => setContactEmail(e.target.value)} />
+        <button type="submit" className={PRIMARY} disabled={busy || !partnerName.trim() || !contactName.trim() || !contactEmail.trim()}>Opret partner</button>
       </form>
       {error && <p className="hf-type-small text-red-700">{error}</p>}
       {partners.length === 0 && <p className="hf-type-body text-text-secondary">Ingen partnere endnu.</p>}

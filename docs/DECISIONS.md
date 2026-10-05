@@ -2,6 +2,17 @@
 
 This file records durable decisions. Add a dated entry when a later decision changes one of them.
 
+## 2026-10-05: Bølge-baggrunden på forsiden fjernes
+
+Brugerens ord: "fjern bølgerne i baggrunden. Jeg har aldrig kunnet lide dem." Strenge, skær og tåge tegnes ikke længere (`HomeWaves.tsx` tømmer `bundles`/`fog`), og det frostede nederste lag er fjernet fra `page.tsx`. Puls-linjen er uændret. Tegnekoden i `home-waves.ts` ligger uberørt, så bølgerne kan genindsættes.
+
+## 2026-10-05: Pulslinjen uden ur slår hvert 4. sekund og ligger lige over hjulets nederste tal
+
+Brugerens ord: intervallet var for voldsomt; uden tilsluttet måler skal pulsen kun slå med nogle sekunders mellemrum (4 sek.), og dens bund skal røre ved det nederste tal i hjulet (3299), lige oven over tallet.
+
+- `DEFAULT_PULSE_BPM` er 15 (ét slag hvert 4. sekund) i stedet for 60; linjens nedre tempogrænse er 10 bpm. Målt puls (30–220 bpm) er uændret.
+- Grundlinjen ligger `PULSE_ABOVE_LAST_ROW` (25 px) over midten af hjulets nederste række (`HomeWaves.tsx`), så slagets laveste punkt står lige over tallet. Erstatter "midt mellem nederste tal og Dagens tilføjelser" (2026-10-03).
+
 ## 2026-10-04: Generiske varer først ved bred søgning
 
 Ejerens krav: søger brugeren ikke specifikt på et brand, skal generiske varer have højere prioritet — "letmælk" skal vise letmælk (uden brand) før Arla Letmælk.
@@ -342,7 +353,7 @@ Erstatter "Varer uden kcal/protein/kulhydrat/fedt springes over" fra 2026-09-27.
 ## 2026-10-02: "Til info sendte vi dig …" (mail/sms var ikke spam)
 
 - Hver mail eller sms til en kendt bruger giver (1) en push med det samme: "Vi har netop sendt dig en e-mail om "emne". Dette var ikke spam." og (2) et bundark som det første ved næste besøg (app og web): "Til info sendte vi dig den <dato> en <e-mail/sms> om "<emne>". Dette var ikke spam." med sort knap "Læst".
-- "Læst" kvitterer (`OutboundMessage.noticeAckAt`); et træk ned lukker kun til næste besøg. Beskeder ældre end 30 dage vises ikke. Gælder ikke mails til admin, ikke-brugere (invitationer) eller rene push-beskeder.
+- Al lukning kvitterer (`OutboundMessage.noticeAckAt`): "Læst", swipe ned og tryk udenfor — beskeden vises kun én gang (bruger 2026-10-05). Beskeder ældre end 30 dage vises ikke. Gælder ikke mails til admin, ikke-brugere (invitationer) eller rene push-beskeder.
 - Bygger på den eksisterende `OutboundMessage`-log — ingen adresse eller telefonnummer gemmes. Sms sendes via `src/lib/sms.ts` (GatewayAPI-format, no-op uden `SMS_GATEWAY_TOKEN`); brugere har endnu intet telefonnummer-felt, så ingen sms sendes i dag.
 ## 2026-10-02: B2B-brugere — kun admin kan oprette dem
 
@@ -467,7 +478,7 @@ om varen var "taget", og det føltes ikke som scanning i realtid.
 ## 2026-10-02: "Til info sendte vi dig …" (mail/sms var ikke spam)
 
 - Hver mail eller sms til en kendt bruger giver (1) en push med det samme: "Vi har netop sendt dig en e-mail om "emne". Dette var ikke spam." og (2) et bundark som det første ved næste besøg (app og web): "Til info sendte vi dig den <dato> en <e-mail/sms> om "<emne>". Dette var ikke spam." med sort knap "Læst".
-- "Læst" kvitterer (`OutboundMessage.noticeAckAt`); et træk ned lukker kun til næste besøg. Beskeder ældre end 30 dage vises ikke. Gælder ikke mails til admin, ikke-brugere (invitationer) eller rene push-beskeder.
+- Al lukning kvitterer (`OutboundMessage.noticeAckAt`): "Læst", swipe ned og tryk udenfor — beskeden vises kun én gang (bruger 2026-10-05). Beskeder ældre end 30 dage vises ikke. Gælder ikke mails til admin, ikke-brugere (invitationer) eller rene push-beskeder.
 - Tekst uden gentagelse (bruger 2026-10-04, "tekst dobbelt"): "Til info" står kun som overskrift. Én besked: "Vi sendte dig den <dato> en <e-mail/sms> om "<emne>". Det var ikke spam." Flere: "Vi har sendt dig disse beskeder. De var ikke spam:" + en punktliste "E-mail om "<emne>", <dato>".
 - Bygger på den eksisterende `OutboundMessage`-log — ingen adresse eller telefonnummer gemmes. Sms sendes via `src/lib/sms.ts` (GatewayAPI-format, no-op uden `SMS_GATEWAY_TOKEN`); brugere har endnu intet telefonnummer-felt, så ingen sms sendes i dag. (Opdateret 2026-10-02: TeamMessage er nu primær udbyder, og mobilnummer findes på profilen — se "SMS-gendannelse af adgangskode".)
 
@@ -4452,3 +4463,17 @@ Ejerens krav: ingen "Bad Gateway" ved udrulning. Målt: hele sitet (begge værte
 - Proxyen videregiver headere uændret (ingen `X-Forwarded-*`), fordi admin-IP-begrænsningen bruger `cf-connecting-ip`.
 - Ændringer i `tools/**` (Windows-programmerne) og `docs/**` udløser ikke deploy.
 - Risiko: kunne ikke afprøves på serveren før første udrulning. Første udrulning har én kort afbrydelse; tilbagerulning står i `docs/DEPLOYMENT.md`.
+
+## 2026-10-04 — Admin: Billedbehandling
+- Menupunktet "Billedforslag" hedder nu "Billedbehandling" og samler faner: Billedforslag, Billeder i kø til frilæggelse og Logoer (Logoer er fjernet som eget menupunkt).
+- Billedforslag og Logoer bruger fælles `ImageReviewBoard`: størrelsesvælger 2/4/8 firkanter (1/2/4 varer pr. side, paginering) og lightbox med Afvis/Godkend, pile og tal i bunden.
+- Nye varer (`/admin/products`) har Detaljer/Liste/Galleri-visning; Liste og Galleri åbner det fulde kort i et overlay.
+- Produkt-databasens filtre er lukkede som standard.
+
+## 2026-10-04 — Brugerdata krypteret i databasen (godkendt af brugeren)
+
+- `User.email` og `User.displayName` gemmes krypteret (AES-256-GCM, tilfældig IV, præfiks `enc:v1:`, nøgle `USER_DATA_KEY`). Opslag via `User.emailHash` = HMAC-SHA256 af trimmet, lowercased e-mail med separat nøgle `USER_EMAIL_HASH_KEY`.
+- Gjort i én Prisma-klientudvidelse (`src/lib/prisma.ts`) i stedet for at ændre ~56 filer: `where.email` → `emailHash` (+ klartekst-fallback), data krypteres ved create/update/upsert (også nested), alle resultater dekrypteres (også nested select/include via `Prisma.dmmf`). Filtre der ikke kan oversættes (`contains` på e-mail, enhver filtrering på displayName) kaster fejl.
+- Afvigelse fra oplægget: `User.email` beholder `@unique` (tilfældig IV gør indekset ufarligt, typerne og klartekst-opslag på ikke-backfillede rækker virker). Den egentlige entydighed er `emailHash @unique`.
+- Uden nøgler i miljøet skrives/slås der op i klartekst som før (sikker deploy-rækkefølge); backfill-scriptet `scripts/encrypt-user-data/backfill.cjs` krypterer bagefter. Mistes `USER_DATA_KEY`, kan navn/e-mail ikke gendannes — gem nøglerne i en adgangskodemanager.
+- Admin → Brugere viser kun pseudonym; Admin → Admin-brugere viser navn + e-mail (dekrypteres server-side). Mail/push-udsendelse læser e-mail via samme klient og er uændret.

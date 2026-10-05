@@ -100,7 +100,19 @@ export default function ProfilePage() {
       ) : (
         <div className="hf-page">
           {showGuide && <OnboardingWizard forceVisible onClose={() => setShowGuide(false)} />}
-          {/* Kontoopsætning står allerøverst, til alle felter og indstillinger er sat. */}
+          {/* Proceslinjen og kassen står allerøverst, før alt andet, til alle felter og indstillinger er sat. */}
+          {!setupComplete && (
+            <HfProgressStepper
+              steps={[
+                t("profile.completion.aboutYou"),
+                t("profile.completion.goals"),
+                t("profile.completion.habits"),
+              ]}
+              current={Math.max(0, Object.values(setupDone).indexOf(false))}
+              progress={0}
+              label={t("profile.completion.label")}
+            />
+          )}
           {!setupComplete && (
             <AccordionCard>
               <ChevronRow
@@ -122,18 +134,6 @@ export default function ProfilePage() {
             </AccordionCard>
           )}
           <ProfileSwitcher />
-          {!setupComplete && (
-            <HfProgressStepper
-              steps={[
-                t("profile.completion.aboutYou"),
-                t("profile.completion.goals"),
-                t("profile.completion.habits"),
-              ]}
-              current={Math.max(0, Object.values(setupDone).indexOf(false))}
-              progress={0}
-              label={t("profile.completion.label")}
-            />
-          )}
           <AccordionCard>
             <ChevronRow
               icon={<IconUser size={20} />}

@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { requireAdminUser } from "@/lib/require-admin";
 import { LogoReviewList } from "@/components/admin/LogoReviewList";
+import { ImagesTabs } from "@/components/admin/ImagesTabs";
 
 // Admin "Logoer" (docs/LOGO-AGENT.md): logo-robottens fund under 90 %
 // (eller uden brandnavn på siden) venter her på et manuelt valg. Hver række:
@@ -22,7 +23,10 @@ export default async function AdminLogosPage() {
   return (
     <div className="flex flex-col gap-4">
       <div>
-        <h1 className="hf-type-title text-hf-black">Logoer</h1>
+        <h1 className="hf-type-title text-hf-black">Billedbehandling</h1>
+      </div>
+      <ImagesTabs active="logos" />
+      <div>
         <p className="hf-type-body text-text-secondary">
           {searches.length} brands venter. Robotten gemmer selv logoer over 90 %, når brandnavnet også står på siden. Klik en række for at
           sammenligne og vælge. Hentede billeder slettes 7 dage efter valget.

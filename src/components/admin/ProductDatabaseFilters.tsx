@@ -80,7 +80,7 @@ export function ProductDatabaseFilters({
   const router = useRouter();
   const [pending, startTransition] = useTransition();
   const [query, setQuery] = useState(filters.q);
-  const [showFilters, setShowFilters] = useState(true);
+  const [showFilters, setShowFilters] = useState(false);
   const lastPushedQuery = useRef(filters.q);
 
   function go(changes: Partial<Filters>) {

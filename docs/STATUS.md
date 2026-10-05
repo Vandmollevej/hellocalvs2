@@ -3,6 +3,17 @@
 Last updated: 2026-10-03
 Last updated: 2026-10-04
 
+## 2026-10-05: Pulslinjen — roligere uden ur, flyttet op over nederste tal
+
+- Uden tilsluttet ur slår pulslinjen kun hvert 4. sekund (`DEFAULT_PULSE_BPM` = 15), og grundlinjen er flyttet op, så bunden står lige over hjulets nederste tal (`PULSE_ABOVE_LAST_ROW` i `HomeWaves.tsx`). Lint/build ikke kørt (ingen `node_modules` i cloud-sessionen). Brugeren tester på telefon; justér konstanten på 25 px efter billedet.
+
+## 2026-10-04: Brugerdata krypteret i databasen (User.email + User.displayName)
+
+- Feltkryptering (AES-256-GCM, `enc:v1:`-præfiks) af `User.email` og `User.displayName`, omskrevet transparent af en Prisma-klientudvidelse i `src/lib/prisma.ts` (logik i `src/lib/user-data-transform.ts`, krypto i `src/lib/user-crypto.ts`). Opslag på e-mail går via ny kolonne `User.emailHash` (HMAC-SHA256). Klartekst uden præfiks læses stadig, og uden env-nøgler kører appen som før — så deploy-rækkefølgen er sikker.
+- **Mangler på serveren (brugeren):** sæt `USER_DATA_KEY` + `USER_EMAIL_HASH_KEY` i `.env.production`, deploy (migration `20261004190000_user_email_hash`), og kør backfill — se `docs/DEPLOYMENT.md` "Feltkryptering".
+- Admin → Brugere → Point: søgning er nu kun præcis e-mail eller bruger-id (navn/e-mail kan ikke delvist søges i krypterede felter).
+- Tjek: `npm test` (krypto + transform), lint og type-tjek af de nye filer er rene. `npm run build -- --webpack` kompilerer, men stopper på en eksisterende typefejl i `src/app/admin/product-database/products/page.tsx:343` (`"details"` vs. `"list"`), som ikke stammer fra denne ændring. Ikke prøvet mod en rigtig database.
+
 ## 2026-10-04: Generiske varer først ved bred søgning
 
 - "letmælk" viser nu varer uden brand før brand-varer; søges der på et brand ("arla", "arla letmælk"), gælder det ikke. Nyt skydeknap-signal "Generiske varer ved bred søgning" på admin → Søgealgoritmer (standard 45). Se DECISIONS.
@@ -68,7 +79,7 @@ Last updated: 2026-10-04
 ## 2026-10-03: Kontoopsætning øverst på Profil
 
 - "Lær appen at kende" hedder nu "Kontoopsætning" (Indstillinger, hjælpecenter, chatbot-tekst).
-- Så længe opsætningen ikke er færdig, står en kasse "Kontoopsætning" allerøverst på Profil; den starter guiden (`OnboardingWizard`) igen. Proceslinjen (Om dig / Mål / Vaner) følger med og viser nu rigtig fremdrift.
+- Så længe opsætningen ikke er færdig, står en kasse "Kontoopsætning" på Profil; den starter guiden (`OnboardingWizard`) igen. Proceslinjen (Om dig / Mål / Vaner) viser rigtig fremdrift og står øverst, over alt andet inkl. kassen (ejerens præcisering 2026-10-05).
 - Færdig = alle tre trin klaret, regnet fra felterne (`src/lib/account-setup.ts`): Om dig (køn, fødselsdato, højde, vægt), Mål (målsætning valgt), Vaner (aktivitetsniveau + sengetid + opvågning). Det tæller, uanset om felterne er udfyldt i guiden eller ved selv at åbne dem. Når alt er klaret, forsvinder både kassen og proceslinjen.
 - Typecheck og lint grønne. Ikke set på telefon.
 ## 2026-10-03: Opdater-varen — kun tre områder, ingen points for net-billeder
