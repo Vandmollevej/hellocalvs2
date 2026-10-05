@@ -1339,6 +1339,10 @@ model Product {
   servingSizeUnitSingular String?
   servingSizeUnitPlural   String?
   ingredientsText  String?
+  // Butikkens originale varetekst (Spar/Nemlig/…), gemt uændret så den senere
+  // kan screenes (fx "hakket oksekød" mod Okse/Gris-mærket). Aldrig vist til
+  // brugere; opdateres altid fra kilden.
+  storeDescription String?
   allergens        String[]               @default([])
   additives        String[]               @default([])
   externalSource   ExternalProductSource?

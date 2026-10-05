@@ -247,6 +247,7 @@ def upsert_product(cur, p, store_ids, category_ids):
         "microSources": psycopg2.extras.Json({k: "LABEL" for k in micros}),
         "estimatedSources": psycopg2.extras.Json({k: "ESTIMATED" for k in estimated}),
         "ingredients": p.get("ingredients"),
+        "storeDescription": p.get("storeDescription"),
         "allergens": p.get("allergens") or [],
         "additives": p.get("additives") or [],
         "subbrand": p.get("subbrand"),
@@ -270,6 +271,10 @@ def upsert_product(cur, p, store_ids, category_ids):
             'UPDATE "products" SET "imageUrl" = %s WHERE id = %s AND "imageUrl" IS NULL',
             (image_url, product_id),
         )
+        cur.execute(
+            'UPDATE "products" SET "storeDescription" = %s WHERE id = %s',
+            (params["storeDescription"], product_id),
+        )
     elif existing_id:
         product_id = existing_id
         params["id"] = product_id
@@ -289,7 +294,8 @@ def upsert_product(cur, p, store_ids, category_ids):
             UPDATE "products" SET
                 name = %(name)s, "brandId" = %(brandId)s, "categoryId" = %(categoryId)s,
                 {nutrition_sql}
-                "ingredientsText" = %(ingredients)s, allergens = %(allergens)s, additives = %(additives)s,
+                "ingredientsText" = %(ingredients)s, "storeDescription" = %(storeDescription)s,
+                allergens = %(allergens)s, additives = %(additives)s,
                 subbrand = %(subbrand)s, variant = %(variant)s, flavor = %(flavor)s,
                 "packCount" = %(packCount)s, packaging = %(packaging)s, keywords = %(keywords)s, "packageSizeText" = %(packageSize)s,
                 "productType" = %(productType)s,
@@ -309,7 +315,7 @@ def upsert_product(cur, p, store_ids, category_ids):
             INSERT INTO "products" (
                 id, name, "brandId", "categoryId", "kcalPer100g", "proteinPer100g", "carbsPer100g",
                 "fatPer100g", "saturatedFatPer100g", "nutritionMissing", "nutrientSources",
-                "micronutrientsPer100g", "ingredientsText", allergens, additives,
+                "micronutrientsPer100g", "ingredientsText", "storeDescription", allergens, additives,
                 "externalSource", "externalId", "sourceCheckedAt", status, subbrand, variant, flavor,
                 "packCount", packaging, keywords, "packageSizeText", "productType", "productCategory",
                 "imageUrl", "imageStatus", "createdAt"
@@ -317,7 +323,7 @@ def upsert_product(cur, p, store_ids, category_ids):
                 %(id)s, %(name)s, %(brandId)s, %(categoryId)s, %(kcal)s, %(protein)s, %(carbs)s,
                 %(fat)s, %(satFat)s, %(nutritionMissing)s,
                 NULLIF(%(estimatedSources)s::jsonb || %(microSources)s::jsonb, '{}'::jsonb),
-                NULLIF(%(micros)s::jsonb, '{}'::jsonb), %(ingredients)s, %(allergens)s, %(additives)s,
+                NULLIF(%(micros)s::jsonb, '{}'::jsonb), %(ingredients)s, %(storeDescription)s, %(allergens)s, %(additives)s,
                 %(externalSource)s::"ExternalProductSource", %(externalId)s, now(), 'APPROVED',
                 %(subbrand)s, %(variant)s, %(flavor)s, %(packCount)s, %(packaging)s, %(keywords)s, %(packageSize)s,
                 %(productType)s, %(productCategory)s::"ProductCategory", %(imageUrl)s,
