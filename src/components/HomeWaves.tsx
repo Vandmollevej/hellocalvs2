@@ -17,6 +17,12 @@ import {
  * og overskriften (bruger 2026-10-03).
  */
 const PULSE_BELOW_HERO = 18;
+/**
+ * Px fra pulsens grundlinje op til midten af hjulets nederste række. Slagets
+ * laveste punkt ligger ca. 9 px under grundlinjen, og tallets top ca. 13 px
+ * over rækkens midte, så bunden netop står oven over tallet.
+ */
+const PULSE_ABOVE_LAST_ROW = 25;
 
 // Bruger 2026-10-03: skærmen har to felter. Det øverste (topbar + hero) har
 // skarpe, tynde linjer i skærmens fulde opløsning; det nederste (listen med
@@ -68,7 +74,8 @@ export function HomeWaves({ variant = "top" }: { variant?: WaveVariant }) {
     const seedSource = new Uint32Array(1);
     if (typeof crypto !== "undefined" && crypto.getRandomValues) crypto.getRandomValues(seedSource);
     else seedSource[0] = Math.floor(Math.random() * 4294967296);
-    const scene = createWaveScene(seedSource[0], variant);
+    // Bølgerne i baggrunden er fjernet (bruger 2026-10-05); kun puls-linjen tegnes.
+    const scene = { ...createWaveScene(seedSource[0], variant), bundles: [], fog: [] };
 
     const motion = window.matchMedia("(prefers-reduced-motion: reduce)");
     let width = 0;
@@ -104,15 +111,14 @@ export function HomeWaves({ variant = "top" }: { variant?: WaveVariant }) {
       width = host!.clientWidth;
       height = host!.clientHeight - layer.below;
       scale = layer.scale();
-      // Midt mellem hjulets nederste tal og overskriften "Dagens tilføjelser"
-      // (bruger 2026-10-03). Hjulets boks er centreret om den midterste række;
-      // overskriftens midte ligger `below` px under hero-bunden.
+      // Pulsens bund ligger lige over hjulets nederste tal (bruger 2026-10-05).
+      // Hjulets boks er centreret om den midterste række.
       const wheel = host!.parentElement?.querySelector<HTMLElement>("[data-stats-wheel]");
       const lastRow = Number(wheel?.dataset.statsWheelLastRow);
       if (wheel && Number.isFinite(lastRow)) {
         const box = wheel.getBoundingClientRect();
         const lastRowY = box.top + box.height / 2 - host!.getBoundingClientRect().top + lastRow;
-        pulseY = (lastRowY + height + layer.below) / 2;
+        pulseY = lastRowY - PULSE_ABOVE_LAST_ROW;
       } else {
         pulseY = undefined;
       }

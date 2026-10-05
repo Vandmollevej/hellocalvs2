@@ -2,6 +2,17 @@
 
 This file records durable decisions. Add a dated entry when a later decision changes one of them.
 
+## 2026-10-05: Bølge-baggrunden på forsiden fjernes
+
+Brugerens ord: "fjern bølgerne i baggrunden. Jeg har aldrig kunnet lide dem." Strenge, skær og tåge tegnes ikke længere (`HomeWaves.tsx` tømmer `bundles`/`fog`), og det frostede nederste lag er fjernet fra `page.tsx`. Puls-linjen er uændret. Tegnekoden i `home-waves.ts` ligger uberørt, så bølgerne kan genindsættes.
+
+## 2026-10-05: Pulslinjen uden ur slår hvert 4. sekund og ligger lige over hjulets nederste tal
+
+Brugerens ord: intervallet var for voldsomt; uden tilsluttet måler skal pulsen kun slå med nogle sekunders mellemrum (4 sek.), og dens bund skal røre ved det nederste tal i hjulet (3299), lige oven over tallet.
+
+- `DEFAULT_PULSE_BPM` er 15 (ét slag hvert 4. sekund) i stedet for 60; linjens nedre tempogrænse er 10 bpm. Målt puls (30–220 bpm) er uændret.
+- Grundlinjen ligger `PULSE_ABOVE_LAST_ROW` (25 px) over midten af hjulets nederste række (`HomeWaves.tsx`), så slagets laveste punkt står lige over tallet. Erstatter "midt mellem nederste tal og Dagens tilføjelser" (2026-10-03).
+
 ## 2026-10-04: Admin → Indstillinger → Genveje, og faste mærker til AutoHotkey
 
 Ejerens krav: menupunktet "Genveje" under Indstillinger med en genvej til hvert menupunkt (fx Ctrl P for produkter), og om menuer og felter er mærket til senere automatisering med AutoHotkey (UIA / felt-klasser). Intet var mærket før (ingen `id`/`data-*`).
