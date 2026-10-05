@@ -185,6 +185,7 @@ export function ProductDatabaseFilters({
             options={[
               { value: "list", label: "Liste" },
               { value: "grid", label: "Galleri" },
+              { value: "details", label: "Detaljer" },
             ]}
             onChange={(view) => go({ view, page: filters.page })}
           />

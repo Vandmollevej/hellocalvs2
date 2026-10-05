@@ -8,10 +8,12 @@ Last updated: 2026-10-04
 "Vis billeder" åbner browserens passkey-dialog. Uden begrænsning tilbød den en
 QR-kode til en anden enhed (kan ikke skærmbilledes). Registrering kræver nu
 `authenticatorAttachment: "platform"`, og login/reauth sender
-`hints: ["client-device"]`. Ikke afprøvet på en rigtig enhed; `npm run lint` og
-`npm run build` er ikke kørt (node_modules ikke installeret i denne session).
+`hints: ["client-device"]`. Ikke afprøvet på en rigtig enhed; `npm run lint` (0 fejl) og
+`npm run build` er kørt og grønne.
 Allerede oprettede passkeys ændres ikke; hvis QR-koden stadig kommer, skal
 Face ID slås fra og til igen.
+Builden var rød af en ældre fejl: Varedatabase-visningen "Detaljer" fandtes i
+siden, men ikke i filtertypen/parseren/vælgeren. Nu tilføjet, så buildet går igennem.
 
 ## 2026-10-04: Billed-upload for produktbilleder (admin → Varedatabase → Billed-upload)
 

@@ -58,7 +58,7 @@ export type ProductDatabaseFilters = {
   image: "with" | "without" | "";
   barcode: "with" | "without" | "";
   sort: ProductDatabaseSort;
-  view: "list" | "grid";
+  view: "list" | "grid" | "details";
   page: number;
 };
 
@@ -114,7 +114,7 @@ export function parseProductDatabaseFilters(params: ProductDatabaseSearchParams)
         one(params.sort),
         PRODUCT_DATABASE_SORTS.map((s) => s.key),
       ) || "name",
-    view: one(params.view) === "grid" ? "grid" : "list",
+    view: pick(one(params.view), ["list", "grid", "details"]) || "list",
     page: Number.isFinite(page) && page > 1 ? page : 1,
   };
 }
