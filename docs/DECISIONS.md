@@ -2,6 +2,10 @@
 
 This file records durable decisions. Add a dated entry when a later decision changes one of them.
 
+## 2026-10-05: Bølge-baggrunden på forsiden fjernes
+
+Brugerens ord: "fjern bølgerne i baggrunden. Jeg har aldrig kunnet lide dem." Strenge, skær og tåge tegnes ikke længere (`HomeWaves.tsx` tømmer `bundles`/`fog`), og det frostede nederste lag er fjernet fra `page.tsx`. Puls-linjen er uændret. Tegnekoden i `home-waves.ts` ligger uberørt, så bølgerne kan genindsættes.
+
 ## 2026-10-05: Pulslinjen uden ur slår hvert 4. sekund og ligger lige over hjulets nederste tal
 
 Brugerens ord: intervallet var for voldsomt; uden tilsluttet måler skal pulsen kun slå med nogle sekunders mellemrum (4 sek.), og dens bund skal røre ved det nederste tal i hjulet (3299), lige oven over tallet.

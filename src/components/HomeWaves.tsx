@@ -74,7 +74,8 @@ export function HomeWaves({ variant = "top" }: { variant?: WaveVariant }) {
     const seedSource = new Uint32Array(1);
     if (typeof crypto !== "undefined" && crypto.getRandomValues) crypto.getRandomValues(seedSource);
     else seedSource[0] = Math.floor(Math.random() * 4294967296);
-    const scene = createWaveScene(seedSource[0], variant);
+    // Bølgerne i baggrunden er fjernet (bruger 2026-10-05); kun puls-linjen tegnes.
+    const scene = { ...createWaveScene(seedSource[0], variant), bundles: [], fog: [] };
 
     const motion = window.matchMedia("(prefers-reduced-motion: reduce)");
     let width = 0;
