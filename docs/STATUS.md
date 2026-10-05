@@ -3,6 +3,10 @@
 Last updated: 2026-10-03
 Last updated: 2026-10-04
 
+## 2026-10-05: Pulslinjen — roligere uden ur, flyttet op over nederste tal
+
+- Uden tilsluttet ur slår pulslinjen kun hvert 4. sekund (`DEFAULT_PULSE_BPM` = 15), og grundlinjen er flyttet op, så bunden står lige over hjulets nederste tal (`PULSE_ABOVE_LAST_ROW` i `HomeWaves.tsx`). Lint/build ikke kørt (ingen `node_modules` i cloud-sessionen). Brugeren tester på telefon; justér konstanten på 25 px efter billedet.
+
 ## 2026-10-04: Brugerdata krypteret i databasen (User.email + User.displayName)
 
 - Feltkryptering (AES-256-GCM, `enc:v1:`-præfiks) af `User.email` og `User.displayName`, omskrevet transparent af en Prisma-klientudvidelse i `src/lib/prisma.ts` (logik i `src/lib/user-data-transform.ts`, krypto i `src/lib/user-crypto.ts`). Opslag på e-mail går via ny kolonne `User.emailHash` (HMAC-SHA256). Klartekst uden præfiks læses stadig, og uden env-nøgler kører appen som før — så deploy-rækkefølgen er sikker.

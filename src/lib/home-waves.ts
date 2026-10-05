@@ -178,8 +178,10 @@ type Pulse = {
   lockedBpm: Record<number, number>;
 };
 
-/** Puls uden tilsluttet ur (bruger 2026-10-03). */
-export const DEFAULT_PULSE_BPM = 60;
+/** Puls uden tilsluttet ur: ét slag hvert 4. sekund (bruger 2026-10-05). */
+export const DEFAULT_PULSE_BPM = 15;
+/** Nedre grænse for linjens tempo; målt puls ligger altid over 30. */
+const MIN_PULSE_BPM = 10;
 
 /** "top": øverste felt (topbar + hero). "frost": nederste felt bag listen. */
 export type WaveVariant = "top" | "frost";
@@ -479,7 +481,7 @@ export function pulseTrace(pulse: Pulse, cycle: number, bpm: number, width: numb
   const speed = span / pulse.sweep;
   // Slagets bredde i px som før; omregnet til sekunder ligger P→T på ca. 0,8 s.
   const beatSeconds = Math.max(90, Math.min(150, width * 0.3)) / speed;
-  const interval = 60 / Math.min(220, Math.max(30, Number.isFinite(bpm) ? bpm : DEFAULT_PULSE_BPM));
+  const interval = 60 / Math.min(220, Math.max(MIN_PULSE_BPM, Number.isFinite(bpm) ? bpm : DEFAULT_PULSE_BPM));
   const cycleRand = mulberry32(pulse.seed + cycle);
   const firstBeat = cycleRand() * interval;
   const beats: Array<{ at: number; amplitude: number }> = [];
