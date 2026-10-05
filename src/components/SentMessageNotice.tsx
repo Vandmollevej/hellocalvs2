@@ -10,8 +10,9 @@ import type { SentNotice } from "@/lib/sent-notices";
 
 // "Til info" + "Vi sendte dig den … en e-mail om …. Det var ikke spam."
 // (docs/DECISIONS.md 2026-10-02). Vises som det første efter login, så længe
-// der er sendte mails/sms'er, brugeren ikke har kvitteret for. "Læst"
-// kvitterer; et træk ned lukker kun til næste besøg.
+// der er sendte mails/sms'er, brugeren ikke har kvitteret for. Al lukning
+// (Læst, swipe ned, tryk udenfor) kvitterer, så beskeden kun vises én gang
+// (bruger 2026-10-05).
 let checkedThisVisit = false;
 
 export function SentMessageNotice() {
@@ -59,9 +60,12 @@ export function SentMessageNotice() {
   return (
     <BottomSheet
       title={t("sentNotice.title")}
-      onClose={() => setNotices([])}
+      onClose={() => {
+        markRead();
+        setNotices([]);
+      }}
       footer={
-        <BottomSheetCloseButton onClick={markRead} className="hf-control hf-btn-primary w-full">
+        <BottomSheetCloseButton className="hf-control hf-btn-primary w-full">
           {t("sentNotice.read")}
         </BottomSheetCloseButton>
       }
