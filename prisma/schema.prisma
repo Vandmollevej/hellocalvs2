@@ -249,7 +249,10 @@ model User {
   oauthAccounts           UserOAuthAccount[]
   knownDevices            UserKnownDevice[]
   loginEvents             LoginEvent[]
-  sharedRecipeFavorites   SharedRecipeFavorite[]
+  flowViews               FlowView[]
+  sectionVisits           UserSectionVisit[]
+  migrationImports        MigrationImport[]
+  sharedRecipeFavorites  SharedRecipeFavorite[]
   recipeCookbookPhotos    RecipeCookbookPhoto[]
   nutritionReportsFiled   ProductNutritionReport[] @relation("NutritionReportReporter")
   referralsMade           Referral[]               @relation("ReferralsMade")
@@ -4209,9 +4212,20 @@ model Flow {
   name        String
   description String?
   enabled     Boolean    @default(false)
+  // Guide-flows med betingelser (docs/DECISIONS.md 2026-10-06): "popup" =
+  // bundark med siderne, "banner" = kort hint-banner (første side).
+  kind        String     @default("popup")
+  // Hvornår flowet vises — src/lib/flow-conditions.ts (FlowConditions).
+  // Null = til alle, på alle sider.
+  conditions  Json?
+  // Højeste vises først, når flere flows passer samtidig.
+  priority    Int        @default(0)
+  // Hvor mange gange samme bruger højst får flowet vist (0 = uden grænse).
+  maxShows    Int        @default(1)
   createdAt   DateTime   @default(now())
   updatedAt   DateTime   @default(now()) @updatedAt
   pages       FlowPage[]
+  views       FlowView[]
 
   @@map("flows")
 }
@@ -4224,11 +4238,92 @@ model FlowPage {
   title       String   @default("")
   bodyHtml    String   @default("")
   buttonLabel String   @default("Næste")
+  // Valgfri ekstra knap, fx "Integrér dit ur" → /settings/integrations.
+  // Brugeren kommer tilbage til samme side i guiden med tilbage-pilen.
+  actionLabel String?
+  actionHref  String?
   createdAt   DateTime @default(now())
   updatedAt   DateTime @default(now()) @updatedAt
 
   @@index([flowId, sortOrder])
   @@map("flow_pages")
+}
+
+// Hvor mange gange en bruger har set et flow, og om det er gennemført/lukket.
+model FlowView {
+  id          String    @id @default(cuid())
+  flowId      String
+  flow        Flow      @relation(fields: [flowId], references: [id], onDelete: Cascade)
+  userId      String
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  shownCount  Int       @default(0)
+  lastShownAt DateTime?
+  completedAt DateTime?
+  dismissedAt DateTime?
+  createdAt   DateTime  @default(now())
+
+  @@unique([flowId, userId])
+  @@map("flow_views")
+}
+
+// Hvilke dele af appen brugeren har besøgt (første sti-led, fx "/camera"),
+// til flow-betingelser som "har ikke brugt mad-scanningen".
+model UserSectionVisit {
+  id           String   @id @default(cuid())
+  userId       String
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  section      String
+  visitCount   Int      @default(1)
+  firstVisitAt DateTime @default(now())
+  lastVisitAt  DateTime @default(now())
+
+  @@unique([userId, section])
+  @@map("user_section_visits")
+}
+
+// --- Migrering fra MyFitnessPal / Lifesum (docs/DECISIONS.md 2026-10-06) ---
+
+// Én import = én skærmoptagelse/serie skærmbilleder fra en anden app.
+// Billederne gemmes ikke; kun de aflæste rækker.
+model MigrationImport {
+  id         String                 @id @default(cuid())
+  userId     String
+  user       User                   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  source     String
+  status     String                 @default("ANALYZING")
+  frameCount Int                    @default(0)
+  createdAt  DateTime               @default(now())
+  updatedAt  DateTime               @default(now()) @updatedAt
+  rows       MigrationImportRow[]
+
+  @@index([userId, createdAt])
+  @@map("migration_imports")
+}
+
+model MigrationImportRow {
+  id             String          @id @default(cuid())
+  importId       String
+  import         MigrationImport @relation(fields: [importId], references: [id], onDelete: Cascade)
+  // Dato i brugerens kalender (YYYY-MM-DD) og måltid (breakfast/lunch/dinner/snack).
+  date           String
+  meal           String
+  name           String
+  amountText     String?
+  amountGrams    Float?
+  kcal           Float
+  protein        Float?
+  carbs          Float?
+  fat            Float?
+  // Aflæsningens sikkerhed 0–1 fra AI'en.
+  confidence     Float           @default(0)
+  // PENDING → IMPORTED (registrering oprettet) eller SKIPPED.
+  status         String          @default("PENDING")
+  registrationId String?
+  createdAt      DateTime        @default(now())
+
+  @@unique([importId, date, meal, name, kcal])
+  @@index([importId, status])
+  @@map("migration_import_rows")
 }
 
 // --- Partnere: kontakter, reklamer og rapporter (docs/DECISIONS.md 2026-09-29) ---

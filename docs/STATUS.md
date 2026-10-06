@@ -1,7 +1,16 @@
 # HELLO CAL — project status
 
-Last updated: 2026-10-03
-Last updated: 2026-10-04
+Last updated: 2026-10-06
+
+## 2026-10-06: Guide-flows med betingelser, opsætningsguide (slået fra) og MyFitnessPal/Lifesum-import
+
+- Overtaget fra den anden kontos sessioner (ugekvote brugt op). Se `docs/DECISIONS.md` 2026-10-06.
+- Flows fra admin vises nu for brugerne (popup/banner) efter betingelser; ny "Visning og betingelser"-boks i flow-editoren og ekstra knap pr. side.
+- Flowet "Opsætningsguide" (7 sider) ligger som Kladde. Slå det til i admin → Flows, når det skal bruges.
+- Søvnsiden: intro-tekst og standard 22.00–07.00.
+- `/settings/import`: skærmoptagelse af MyFitnessPal/Lifesum → AI-aflæsning → gennemsyn → import som registreringer.
+- Migration `20261006200000_flow_conditions_migration_import` skal køre ved deploy. Tjek: `npm test`, lint og build (se commit). Ikke prøvet mod rigtig database eller med en rigtig optagelse — test importen med en kort optagelse først.
+- Fra samme overtagelse: `storeDescription` (butikkens originale varetekst, Cowboytoasten-sagen) er pushet til master (migration `20261005100000_product_store_description`), og SPAR-arket `spar.xlsx` er gemt med kode-forklaringerne.
 
 ## 2026-10-05: Pulslinjen — roligere uden ur, flyttet op over nederste tal
 

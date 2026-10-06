@@ -440,7 +440,7 @@
     "showTooltips": "Show tooltips",
     "showTooltipsDescription": "Shows a small help text under the various settings and windows.",
     "showStartupTips": "Show start-up tips",
-    "showStartupTipsDescription": "Shows a short full-screen tip when you open the app, about features you have not used yet."
+    "showStartupTipsDescription": "Shows short tips, guides and hint banners about features you have not used yet."
   },
   "guide": {
     "back": "Back",
@@ -1476,6 +1476,7 @@
     }
   },
   "profileSleep": {
+    "intro": "Sleep can have a big impact on weight and well-being. See your life in a bigger perspective once you have collected enough data. Default sleep is set to 22:00 - 07:00.",
     "title": "Sleep pattern",
     "loading": "Loading…",
     "loadError": "Couldn't load sleep pattern.",
@@ -1964,6 +1965,8 @@
     "noResults": "No results"
   },
   "integrations": {
+    "moveFromTitle": "MyFitnessPal or Lifesum",
+    "moveFromDescription": "Move your diary over with a screen recording.",
     "helloFreshTitle": "HelloFresh recipes",
     "helloFreshDescription": "Show HelloFresh recipes together with shared dishes under Recipes",
     "title": "Integrations",
@@ -1993,6 +1996,7 @@
     "enable": "Turn on",
     "unavailable": "Not available yet",
     "sections": {
+      "moveFrom": "Move from another app",
       "active": "Active integrations",
       "popular": "Most used",
       "recipes": "Recipes",
@@ -3017,5 +3021,31 @@
     "sendError": "The message wasn't sent. Try again.",
     "escalateError": "Sending to Support failed. Try again or use the contact form.",
     "rateLimited": "You've asked a lot of questions in a short time. Wait a bit, or talk to a person."
+  },
+  "migrationImport": {
+    "title": "Move from MyFitnessPal or Lifesum",
+    "intro": "Record your screen while you scroll through your diary in the other app. Hello Cal reads the foods, amounts and calories and adds them to your calendar.",
+    "fromApp": "From the app",
+    "step1": "Start a screen recording on your phone (or take screenshots).",
+    "step2": "Open the diary in the other app and scroll calmly back, day by day.",
+    "step3": "Stop the recording and choose the video here.",
+    "choose": "Choose screen recording or screenshots",
+    "privacy": "The images are not saved. They are read once, and only the rows (date, meal, food, amount and nutrition) are kept until you choose what to import.",
+    "preparing": "Preparing the recording…",
+    "reading": "Reading image {done} of {total}…",
+    "readError": "The recording could not be read. Try again, or use screenshots.",
+    "reviewHint": "Review the rows. Uncertain rows are not preselected.",
+    "nothingFound": "We found no foods in the recording. Try scrolling more slowly so each day stays still for a moment.",
+    "unsure": "uncertain",
+    "importSelected": "Import {count} rows",
+    "commitError": "The import failed. Please try again.",
+    "done": "{count} entries have been added to your calendar.",
+    "openCalendar": "Open the calendar",
+    "meal": {
+      "breakfast": "Breakfast",
+      "lunch": "Lunch",
+      "dinner": "Dinner",
+      "snack": "Snack"
+    }
   }
 }

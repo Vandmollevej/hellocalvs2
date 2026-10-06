@@ -440,7 +440,7 @@
     "showTooltips": "Vis tooltips",
     "showTooltipsDescription": "Viser en lille hjælpetekst under de forskellige indstillinger og vinduer.",
     "showStartupTips": "Vis start-up tips",
-    "showStartupTipsDescription": "Viser et kort tip på hele skærmen, når du åbner appen, om funktioner, du endnu ikke har brugt."
+    "showStartupTipsDescription": "Viser korte tips, guider og hint-bannere om funktioner, du endnu ikke har brugt."
   },
   "guide": {
     "back": "Tilbage",
@@ -1476,6 +1476,7 @@
     }
   },
   "profileSleep": {
+    "intro": "Søvnen kan have stor indflydelse på vægt og trivsel. Se dit liv i et større perspektiv, når du har indsamlet nok data. Standard søvn sættes til 22.00 - 07.00.",
     "title": "Søvnmønster",
     "loading": "Henter…",
     "loadError": "Kunne ikke hente søvnmønster.",
@@ -1945,6 +1946,8 @@
     "noResults": "Ingen resultater"
   },
   "integrations": {
+    "moveFromTitle": "MyFitnessPal eller Lifesum",
+    "moveFromDescription": "Flyt din dagbog over med en skærmoptagelse.",
     "helloFreshTitle": "HelloFresh-opskrifter",
     "helloFreshDescription": "Vis HelloFresh-opskrifter sammen med de delte retter under Opskrifter",
     "title": "Integrationer",
@@ -1974,6 +1977,7 @@
     "enable": "Slå til",
     "unavailable": "Ikke tilgængelig endnu",
     "sections": {
+      "moveFrom": "Flyt fra en anden app",
       "active": "Aktive integrationer",
       "popular": "Oftest anvendt",
       "recipes": "Opskrifter",
@@ -2998,5 +3002,31 @@
     "sendError": "Beskeden blev ikke sendt. Prøv igen.",
     "escalateError": "Det lykkedes ikke at sende til Support. Prøv igen, eller brug kontaktformularen.",
     "rateLimited": "Du har stillet mange spørgsmål på kort tid. Vent lidt, eller tal med en medarbejder."
+  },
+  "migrationImport": {
+    "title": "Flyt fra MyFitnessPal eller Lifesum",
+    "intro": "Optag skærmen, mens du bladrer i din dagbog i den anden app. Hello Cal aflæser varer, mængder og kalorier og lægger dem ind i din kalender.",
+    "fromApp": "Fra appen",
+    "step1": "Start skærmoptagelse på telefonen (eller tag skærmbilleder).",
+    "step2": "Åbn dagbogen i den anden app, og bladr roligt dag for dag tilbage i tiden.",
+    "step3": "Stop optagelsen, og vælg videoen her.",
+    "choose": "Vælg skærmoptagelse eller skærmbilleder",
+    "privacy": "Billederne gemmes ikke. De aflæses én gang, og kun rækkerne (dato, måltid, vare, mængde og næring) gemmes, til du har valgt, hvad der skal importeres.",
+    "preparing": "Gør optagelsen klar…",
+    "reading": "Aflæser billede {done} af {total}…",
+    "readError": "Optagelsen kunne ikke aflæses. Prøv igen, eller brug skærmbilleder.",
+    "reviewHint": "Se rækkerne igennem. Usikre rækker er ikke valgt på forhånd.",
+    "nothingFound": "Vi fandt ingen varer i optagelsen. Prøv at bladre langsommere, så hver dag står stille et øjeblik.",
+    "unsure": "usikker",
+    "importSelected": "Importér {count} rækker",
+    "commitError": "Importen fejlede. Prøv igen.",
+    "done": "{count} registreringer er lagt ind i din kalender.",
+    "openCalendar": "Åbn kalenderen",
+    "meal": {
+      "breakfast": "Morgenmad",
+      "lunch": "Frokost",
+      "dinner": "Aftensmad",
+      "snack": "Snack"
+    }
   }
 }

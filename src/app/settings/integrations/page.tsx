@@ -2,7 +2,7 @@
 
 import { Suspense, useEffect, useRef, useState, type ReactNode } from "react";
 import Link from "next/link";
-import { IconChefHat, IconChevronRight } from "@tabler/icons-react";
+import { IconChefHat, IconChevronRight, IconFileImport } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
 import { IntegrationIcon } from "@/components/IntegrationIcon";
 import type { IntegrationCardStatus } from "@/lib/integrations";
@@ -223,6 +223,21 @@ function IntegrationerContent() {
             {section(t("integrations.sections.popular"), popular.map(integrationCard))}
             {section(t("integrations.sections.recipes"), helloFresh === false ? [helloFreshCard] : [])}
             {section(t("integrations.sections.apps"), apps.map(integrationCard))}
+            {section(t("integrations.sections.moveFrom"), [
+              <Link key="migration-import" href="/settings/import" className="block">
+                <Card
+                  active={false}
+                  chevron
+                  title={t("integrations.moveFromTitle")}
+                  description={t("integrations.moveFromDescription")}
+                  icon={
+                    <span className="mt-1 flex h-9 w-9 shrink-0 items-center justify-center text-hf-black">
+                      <IconFileImport size={24} />
+                    </span>
+                  }
+                />
+              </Link>,
+            ])}
           </>
         )}
       </div>

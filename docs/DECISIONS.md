@@ -2,6 +2,15 @@
 
 This file records durable decisions. Add a dated entry when a later decision changes one of them.
 
+## 2026-10-06: Guide-flows med betingelser, opsætningsguiden som flow og migrering fra MyFitnessPal/Lifesum
+
+- **Flows vises nu for brugerne.** Et aktivt flow fra admin → Flows vises som *popup* (bundarket, alle sider, tilbage-pil mellem siderne, "Vis ikke igen") eller *banner* (kort hint over bundmenuen med første side). `FlowGate` (i `src/app/layout.tsx`) spørger `/api/flows/active` ved hvert sideskift; højst ét nyt flow pr. app-indlæsning, højeste prioritet først. Slås fra sammen med start-up tips (Indstillinger → Visning → Tips; teksten nævner nu guider og hint-bannere).
+- **Betingelser** (alle udfyldte skal passe, `src/lib/flow-conditions.ts`): fra/til dato, kun på bestemte sider, min/maks log-ins (`LoginEvent`), min/maks dage siden oprettelse, mindst N dage med indtastninger, har besøgt / har IKKE besøgt faner (fx `/camera` = har ikke brugt mad-scanningen), højst N visninger pr. bruger og dage mellem visninger. Fanebesøg gemmes pr. første sti-led i `UserSectionVisit`; visninger/gennemført/lukket i `FlowView`.
+- **Ekstra knap pr. side** (fx "Integrér dit ur" → `/settings/integrations`). Flowet huskes i sessionStorage; når brugeren går tilbage fra den side, åbner guiden igen på samme side — den lukker ikke.
+- **Opsætningsguiden** er oprettet som flowet "Opsætningsguide" (id `flow_opsaetning_v1`) med de 7 sider fra brugerens beskrivelse (ur, smart-vægt, vægt/højde/fødselsdato, søvn, mål, allergier, Hello Fresh) og står som **Kladde** (slået fra). Siderne linker til de eksisterende indstillingssider; selve indtastningen sker dér. Den gamle `OnboardingWizard` er uændret.
+- **Søvn:** standard 22.00–07.00 (før 23.00–07.00 som udgangspunkt i dag-for-dag-skyderne), og søvnsiden viser samme tekst som guiden ("Søvnen kan have stor indflydelse på vægt og trivsel …").
+- **Migrering fra MyFitnessPal/Lifesum** (grundsten): Integrationer → "Flyt fra en anden app" → `/settings/import`. Brugeren vælger en skærmoptagelse (eller skærmbilleder) af dagbogen; browseren tager et billede ca. hvert 1,2 sek. og springer næsten ens billeder over; hvert billede aflæses af OpenAI (`src/lib/migration-import-ai.ts`, uden metadata, `store: false`) til rækker (dato, måltid, vare, mængde, kcal/protein/kulhydrat/fedt). Billederne gemmes ikke. Brugeren ser rækkerne igennem (usikre er fravalgt) og importerer dem som registreringer uden vare (snapshot = den anden apps tal, tidspunkt = måltidets time i dansk tid). Feltopsætningen tilpasses, når brugeren har adgang til apps/servere og har set rigtige optagelser.
+
 ## 2026-10-05: Bølge-baggrunden på forsiden fjernes
 
 Brugerens ord: "fjern bølgerne i baggrunden. Jeg har aldrig kunnet lide dem." Strenge, skær og tåge tegnes ikke længere (`HomeWaves.tsx` tømmer `bundles`/`fog`), og det frostede nederste lag er fjernet fra `page.tsx`. Puls-linjen er uændret. Tegnekoden i `home-waves.ts` ligger uberørt, så bølgerne kan genindsættes.

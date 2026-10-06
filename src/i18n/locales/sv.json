@@ -1500,6 +1500,7 @@
     }
   },
   "profileSleep": {
+    "intro": "Sömnen kan ha stor påverkan på vikt och välmående. Se ditt liv i ett större perspektiv när du har samlat in tillräckligt med data. Standardsömn är satt till 22.00 - 07.00.",
     "title": "Sömnmönster",
     "loading": "Hämtar…",
     "loadError": "Kunde inte hämta sömnmönster.",
@@ -1975,6 +1976,8 @@
     "noResults": "Inga resultat"
   },
   "integrations": {
+    "moveFromTitle": "MyFitnessPal or Lifesum",
+    "moveFromDescription": "Move your diary over with a screen recording.",
     "helloFreshTitle": "HelloFresh-recept",
     "helloFreshDescription": "Visa HelloFresh-recept tillsammans med de delade rätterna under Recept",
     "title": "Integrationer",
@@ -2004,6 +2007,7 @@
     "enable": "Aktivera",
     "unavailable": "Inte tillgänglig ännu",
     "sections": {
+      "moveFrom": "Move from another app",
       "active": "Aktiva integrationer",
       "popular": "Mest använda",
       "recipes": "Recept",
@@ -3042,5 +3046,31 @@
     "sendError": "Meddelandet skickades inte. Försök igen.",
     "escalateError": "Det gick inte att skicka till Support. Försök igen eller använd kontaktformuläret.",
     "rateLimited": "Du har ställt många frågor på kort tid. Vänta en stund eller prata med en medarbetare."
+  },
+  "migrationImport": {
+    "title": "Move from MyFitnessPal or Lifesum",
+    "intro": "Record your screen while you scroll through your diary in the other app. Hello Cal reads the foods, amounts and calories and adds them to your calendar.",
+    "fromApp": "From the app",
+    "step1": "Start a screen recording on your phone (or take screenshots).",
+    "step2": "Open the diary in the other app and scroll calmly back, day by day.",
+    "step3": "Stop the recording and choose the video here.",
+    "choose": "Choose screen recording or screenshots",
+    "privacy": "The images are not saved. They are read once, and only the rows (date, meal, food, amount and nutrition) are kept until you choose what to import.",
+    "preparing": "Preparing the recording…",
+    "reading": "Reading image {done} of {total}…",
+    "readError": "The recording could not be read. Try again, or use screenshots.",
+    "reviewHint": "Review the rows. Uncertain rows are not preselected.",
+    "nothingFound": "We found no foods in the recording. Try scrolling more slowly so each day stays still for a moment.",
+    "unsure": "uncertain",
+    "importSelected": "Import {count} rows",
+    "commitError": "The import failed. Please try again.",
+    "done": "{count} entries have been added to your calendar.",
+    "openCalendar": "Open the calendar",
+    "meal": {
+      "breakfast": "Breakfast",
+      "lunch": "Lunch",
+      "dinner": "Dinner",
+      "snack": "Snack"
+    }
   }
 }
