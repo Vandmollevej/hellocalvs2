@@ -26,7 +26,7 @@ laver hvad.
 
 Status-værdier: `Ikke startet` · `Venter på bruger` · `I gang` · `Blokeret` · `Færdig`
 
-Status opdateret: 2026-09-24 (overtaget fra konto A kl. 17:29)
+Status opdateret: 2026-10-06 — alle udestående opgaver slettet (klaret af en anden konto)
 
 ---
 
@@ -90,8 +90,6 @@ Ejer: G5-overtagelse, konto B (2026-09-24)
 
 | Id | Opgave | Status | Næste skridt |
 | --- | --- | --- | --- |
-| 548ca51e | Ny invite-only agent-app (hyldebillede, opret vare, 2FA, admin-oversigt, aflønnings-backend) | Deployet (2026-09-26) | Merget til master (29b7f28); `scan-app` (port 3101) startes i deploy-workflowet. Mangler: brugeren opretter Cloudflare *Published application route* `scanhellocal.packroff.dk` → `http://192.168.1.90:3101`. `SCAN_PII_KEY`/`SCAN_APP_BASE_URL` valgfri (fallback: ADMIN_SESSION_SECRET / scanhellocal-adressen). Face ID-login bygget 2026-09-29 (branch `claude/scan-passkey-keys`). Nøgler genereres af deployet. Mangler: merge af PR #104 og test med rigtig hylde |
-| 850e575e / 0669f736 | Logo-robot: isolér logo ved scanning, match mod DB, natlig Google-søgning, admin-kø under 90 % | Deployet (2026-09-26) | `logo-agent` i deploy-workflowet; bruger eksisterende `GOOGLE_API_KEY` (Cloud Vision API skal være slået til på nøglens Google-projekt). Logo-match i selve scanningen hører til kamera-flowet (ikke G5) |
 
 ## G6 — Madvare-flow (Tilføj madvare, Madvarer-siden)
 Filer: `src/app/add/**`, `src/components/ForwardButton.tsx`, Madvarer-siden, fælles knap-komponent.
@@ -132,8 +130,6 @@ Ejer: G8-sessionen, konto C (overtaget 2026-09-24)
 | --- | --- | --- | --- |
 | 69a1b2bd / 2c95590f | Dubletter af 6068f78a og 8d98b548 — læs dem for ekstra svar fra brugeren ("Så byg det, der mangler. Det skal jo bare virke!") | Dublet | Luk sammen med hovedopgaverne |
 | 6068f78a | 8 sundhedsintegrationer + nye ikoner | Færdig (22184fe) | Brugeren valgte "Byg alle 8" inden for boks-arkitekturen. Mangler kun nøgler på serveren + deploy |
-| 8d98b548 | Withings + Google Health koblet på, egen data-sync | Venter på bruger | Nøglerne ligger på serveren. 2026-09-26 (session d83284ca, med brugerens OK): 0.0.0.0-redirects i `handlers.ts` rettet. Redirect-URI løst via hellocal.io (2026-09-28); mangler kun testbruger packroff@gmail.com i Google Cloud (se STATUS "Integrationssiden"). HelloFresh-trin-rettelsen i samme transcript hører til G6 |
-| d0442775 | Waldemarsro (DK-only) + scraper | Venter på bruger | Scraper + kalorie-matcher færdige og gemt i scripts/valdemarsro-import (157cff9); brugeren kører scraperen selv (output i Productdatabase/Valdemarsro). IKKE bygget: import til appen + Valdemarsro-kort/toggle på Integrationer (krav i STATUS, ea7843a) — byg når brugeren siger til |
 | 5c45b0d7 | Opskrift-scrapere som Valdemarsro: Arla, Coop, REMA 1000, MENY, Hjerteforeningen, TV2 (+ Børnevenlig og måltidstype) | Færdig (kode) | Scrapere + kalorie-matcher i scripts/recipe-sites-import (README). Testet på de rigtige sider. Brugeren kører dem selv i VS Code; import i appen hører under Valdemarsro-integrationen |
 | 300489b5 | Push til Health/integrationer + egen side pr. app med til/fra (hent/send) ved tilkobling og bagefter | Færdig (ce1bc7f, deployet) | Brugeren: skriveadgang i Google Cloud-klienten (nutrition/health_metrics writeonly) og Strava-appen (activity:write); native app til Apple Health/Health Connect mangler |
 
@@ -176,12 +172,10 @@ Ejer: Widget-sessionen (2026-09-26)
 | Id | Opgave | Status | Næste skridt |
 | --- | --- | --- | --- |
 | c4b41bf9 | Forbered widgets: plus-knap, hurtig-tilføj, statistik-graf (Smart Stack/swipe), 2×2 boks, seneste registreringer | Færdig (kode) — venter på Mac | Web-preview `/widgets` + native kildekode i `native/` (Swift + Kotlin, ukompileret). Næste: kompilér på Mac/Android Studio efter `native/README.md` |
-| c4b41bf9 | Forbered widgets: plus-knap, hurtig-tilføj, statistik-graf (Smart Stack/swipe), 2×2 boks, seneste registreringer | Venter på bruger | Brugeren godkender designet på `/widgets`; derefter native (Swift/Kotlin) når Mac er lejet |
 
 ## Venter på dig (ingen gruppe)
 | Id | Opgave | Status | Næste skridt |
 | --- | --- | --- | --- |
-| d595e6bc | REMA-appelsin har "Zimbabwe" som produkttype → skal være land | Venter på bruger | Kør SQL via SSH/sudo med tabellen `products` (se transcript for kommandoen), så rettes rækken |
 
 ---
 
@@ -217,7 +211,6 @@ Ejer: ed3c2525 (2026-09-27)
 | Id | Opgave | Status | Næste skridt |
 | --- | --- | --- | --- |
 | ed3c2525 | HelloFresh-opskrifter vises præcis som i HelloFresh-appen, fælles `.rv-*`-klasser (ikke egne retter) | Færdig (se git log "HelloFresh recipe view") | Deploy: migration 20260927100000 + genstart hellofresh-agent (genhenter alle opskrifter én gang). Afventer brugerens visuelle godkendelse |
-| — | Sidste 5 filer: `calendar/page.tsx`, `settings/page.tsx`, `settings/support/page.tsx`, `settings/display/front-page/page.tsx`, `admin/ApiKeysManager.tsx` | Blokeret | Andre sessioner har ikke-committede ændringer i dem. Når de er committet: kalender-rækker (min-h-11/py-3 → `hf-control-row`), support-rækker (h-12 → `hf-control-row`), knapper (h-12 → `hf-control`), front-page-rækker (py-3 → `hf-control-row`), ApiKeysManager `inputClass` (py-2 → `hf-field`) |
 
 ## G12 — Ens 48 px-højde på felter, dropdowns, knapper og rækker
 Filer: `.hf-field` / `.hf-control` / `.hf-control-row` + `--hf-control-height` i `src/app/globals.css`.
@@ -240,7 +233,6 @@ Filer: `src/components/OnboardingWizard.tsx`. Krav i `docs/DESIGN_V2.md` §8.
 
 | Id | Opgave | Status | Næste skridt |
 | --- | --- | --- | --- |
-| onboarding-integration | Vægt + Aktivitetsniveau: tekstlink nederst "Tilføj gennem integration i stedet"; Aktivitetsniveau som HelloFresh-slidersider (ét spørgsmål pr. side) | Ikke startet | Spørgsmål afklaret (5 sider, se DESIGN_V2 §8) — klar til bygning |
 
 ## Ikke fordelt
 Ændret og ikke committet uden kendt ejer: `docs/AI.md`, `src/components/AddButton.tsx`,
@@ -253,7 +245,6 @@ Ejer: cloud-session `claude/lucid-bell-s5vyhv` (2026-09-25)
 
 | Id | Opgave | Status | Næste skridt |
 | --- | --- | --- | --- |
-| — | Familieabonnement: forældre ser/taster for børn, adgangslog til barnet | I gang | Første version bygget og pushet (branch `claude/lucid-bell-s5vyhv`, ikke flettet). Næste: brugerens test og "Mangler" i `docs/FAMILY.md` (oprettelsesflow med alder er næste skridt) |
 
 ## G-FLOWS — Admin "Flows" + telefon-editor
 Filer: `src/components/admin/PhonePreviewEditor.tsx`, `src/components/admin/FlowEditor.tsx`, `src/app/admin/flows/**`, `src/app/api/admin/flows/**`, `src/lib/flows.ts`.
