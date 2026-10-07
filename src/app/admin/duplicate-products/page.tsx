@@ -2,7 +2,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { requireAdminUser } from "@/lib/require-admin";
 import { DuplicateCompareGroup } from "@/components/admin/DuplicateCompareGroup";
-import { DuplicateImageGroup } from "@/components/admin/DuplicateImageGroup";
+import { DuplicateImageList } from "@/components/admin/DuplicateImageList";
 import {
   countDuplicateReviews,
   GROUPS_PER_PAGE,
@@ -73,11 +73,7 @@ export default async function AdminDuplicateProductsPage({
         (images.groups.length === 0 ? (
           <p className="hf-type-body text-text-secondary">Ingen billed-dubletter afventer gennemgang.</p>
         ) : (
-          <div className="flex flex-col gap-4">
-            {images.groups.map((group) => (
-              <DuplicateImageGroup key={group.productId} group={group} />
-            ))}
-          </div>
+          <DuplicateImageList groups={images.groups} />
         ))}
 
       {products &&

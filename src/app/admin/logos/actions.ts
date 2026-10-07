@@ -13,33 +13,47 @@ import { requireAdminUser } from "@/lib/require-admin";
 
 const PUBLIC_DIR = path.join(process.cwd(), "public");
 
-export async function chooseLogo(form: FormData) {
+export type LogoActionResult = { ok: boolean };
+
+export async function chooseLogo(form: FormData): Promise<LogoActionResult> {
   if (!(await requireAdminUser())) redirect("/admin/login");
   const candidateId = String(form.get("candidateId") ?? "");
-  const candidate = await prisma.brandLogoCandidate.findUnique({ where: { id: candidateId }, include: { search: true } });
-  if (!candidate || !candidate.imageUrl.startsWith("/product-images/brand-logos/")) return;
+  try {
+    const candidate = await prisma.brandLogoCandidate.findUnique({ where: { id: candidateId }, include: { search: true } });
+    if (!candidate || !candidate.imageUrl.startsWith("/product-images/brand-logos/")) return { ok: false };
 
-  const brandId = candidate.search.brandId;
-  const logoUrl = `/product-images/brand-logos/${brandId}.png`;
-  await mkdir(path.join(PUBLIC_DIR, "product-images", "brand-logos"), { recursive: true });
-  await copyFile(path.join(PUBLIC_DIR, candidate.imageUrl), path.join(PUBLIC_DIR, logoUrl));
+    const brandId = candidate.search.brandId;
+    const logoUrl = `/product-images/brand-logos/${brandId}.png`;
+    await mkdir(path.join(PUBLIC_DIR, "product-images", "brand-logos"), { recursive: true });
+    await copyFile(path.join(PUBLIC_DIR, candidate.imageUrl), path.join(PUBLIC_DIR, logoUrl));
 
-  await prisma.$transaction([
-    prisma.brand.update({ where: { id: brandId }, data: { logoUrl } }),
-    prisma.brandLogoSearch.update({
-      where: { id: candidate.searchId },
-      data: { status: "ACCEPTED", chosenCandidateId: candidate.id, resolvedAt: new Date() },
-    }),
-  ]);
+    await prisma.$transaction([
+      prisma.brand.update({ where: { id: brandId }, data: { logoUrl } }),
+      prisma.brandLogoSearch.update({
+        where: { id: candidate.searchId },
+        data: { status: "ACCEPTED", chosenCandidateId: candidate.id, resolvedAt: new Date() },
+      }),
+    ]);
+  } catch (error) {
+    console.error("chooseLogo fejlede", error);
+    return { ok: false };
+  }
   revalidatePath("/admin/logos");
+  return { ok: true };
 }
 
-export async function rejectAllLogos(form: FormData) {
+export async function rejectAllLogos(form: FormData): Promise<LogoActionResult> {
   if (!(await requireAdminUser())) redirect("/admin/login");
   const searchId = String(form.get("searchId") ?? "");
-  await prisma.brandLogoSearch.update({
-    where: { id: searchId },
-    data: { status: "NO_CANDIDATES", resolvedAt: new Date() },
-  });
+  try {
+    await prisma.brandLogoSearch.update({
+      where: { id: searchId },
+      data: { status: "NO_CANDIDATES", resolvedAt: new Date() },
+    });
+  } catch (error) {
+    console.error("rejectAllLogos fejlede", error);
+    return { ok: false };
+  }
   revalidatePath("/admin/logos");
+  return { ok: true };
 }
