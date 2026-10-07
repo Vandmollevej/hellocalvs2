@@ -1,6 +1,12 @@
 # HELLO CAL — project status
 
-Last updated: 2026-10-06
+Last updated: 2026-10-07
+
+## 2026-10-07: Dyrefoder-spærring
+
+- Scrapet dyrefoder fra Bilka, Nemlig, SPAR, Maxi Zoo og Zooplus (mappen Produklter/Blacklistede produkter, ikke i git) og bygget spærring: stregkodeliste (~13.600) + Fable-ordmønstre + mærker, håndhævet ved oprettelse, hurtig-oprettelse, stregkodeopslag og efter AI-udfyldning. Se docs/DECISIONS.md 2026-10-07.
+- Lint grøn på de ændrede filer. Ikke visuelt/live testet (ingen lokal DB/login) — test ved at scanne en kendt dyrefoder-stregkode (fx Pedigree/Whiskas): kameraflowet skal vise spærrebeskeden.
+- Mangler: billedbaseret spærring (kun beskrevet i able-moenstre.md); evt. oprydning af ca. 150 dyrefodervarer i de eksisterende Nemlig-ark.
 
 ## 2026-10-06: Guide-flows med betingelser, opsætningsguide (slået fra) og MyFitnessPal/Lifesum-import
 

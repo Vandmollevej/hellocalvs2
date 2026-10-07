@@ -210,6 +210,8 @@ export function ProductCaptureFlow({ returnSuffix, rescan }: { returnSuffix: str
   const barcodeLabelJobRef = useRef<{ frame: Frame; startedAt: number; result: Promise<LabelRead> } | null>(null);
   const [createFailed, setCreateFailed] = useState(false);
   const [lookupError, setLookupError] = useState(false);
+  // Dyrefoder-spærring: serverens besked, når stregkoden er på spærrelisten.
+  const [lookupBlockedMessage, setLookupBlockedMessage] = useState<string | null>(null);
   const [region, setRegion] = useState("DK");
   const [barcodeDetection, setBarcodeDetection] = useState<BarcodeDetection | null>(null);
   const [barcodeOrientation, setBarcodeOrientation] = useState<BarcodeOrientation>("horizontal");
@@ -575,6 +577,7 @@ export function ProductCaptureFlow({ returnSuffix, rescan }: { returnSuffix: str
       if (lookupInProgressRef.current) return;
       lookupInProgressRef.current = true;
       setLookupError(false);
+      setLookupBlockedMessage(null);
       const startedAt = Date.now();
       try {
         const response = await fetch(`/api/products/lookup/${encodeURIComponent(code)}`, {
@@ -591,6 +594,17 @@ export function ProductCaptureFlow({ returnSuffix, rescan }: { returnSuffix: str
           });
           leaveTo(`/add/${data.product.id}${returnSuffix}`);
           return;
+        }
+        if (response.status === 422) {
+          const blocked = (await response.json().catch(() => null)) as { code?: string; message?: string } | null;
+          if (blocked?.code === "PET_FOOD_BLOCKED") {
+            scanLog(flowId, "barcode_blocked", { level: "warn", message: "Stregkoden er spærret (dyrefoder)", barcode: code });
+            setLookupBlockedMessage(blocked.message ?? "Dyrefoder kan ikke oprettes i Hello Cal.");
+            setBarcodeDetection(null);
+            activeCodeRef.current = null;
+            lookupInProgressRef.current = false;
+            return;
+          }
         }
         if (response.status !== 404) throw new Error(`Product lookup failed (${response.status})`);
 
@@ -1068,7 +1082,7 @@ export function ProductCaptureFlow({ returnSuffix, rescan }: { returnSuffix: str
   );
 
   const stepHints: Record<CaptureStep, string> = {
-    barcode: lookupError ? t("camera.barcodeLookupError") : t("camera.holdCameraStill"),
+    barcode: lookupBlockedMessage ?? (lookupError ? t("camera.barcodeLookupError") : t("camera.holdCameraStill")),
     front: t("cameraCreate.hintFront"),
     nutrition: t("cameraCreate.hintNutrition"),
     ingredients: t("cameraCreate.hintIngredients"),

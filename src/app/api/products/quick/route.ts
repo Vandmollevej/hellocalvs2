@@ -7,6 +7,7 @@ import { saveDataUrlImage } from "@/lib/qc-image-storage";
 import type { PendingField } from "@/lib/quick-product-enrichment";
 import { createQuickEnrichmentJob, runQuickEnrichment } from "@/lib/quick-enrichment-jobs";
 import { debugLog, errorText, flowIdFromRequest, withDebugContext } from "@/lib/debug-log";
+import { PET_FOOD_BLOCKED_MESSAGE, petFoodBlockReason } from "@/lib/pet-food-blacklist";
 
 // POST /api/products/quick — "opret straks" fra kameraflowet under Tilføj
 // (docs/DECISIONS.md 2026-09-27). Varen oprettes, så snart den lokale OCR er
@@ -69,6 +70,21 @@ export async function POST(req: Request) {
       data: { hasBarcode: Boolean(barcode), hasFront: isPhoto(frontPhoto), hasNutrition: isPhoto(nutritionPhoto) },
     });
     return NextResponse.json({ message: "Stregkode, forside og energi er påkrævet" }, { status: 400 });
+  }
+
+  // Dyrefoder-spærring (stregkode, src/lib/pet-food-blacklist.ts). Ordmønstrene
+  // køres bagefter på det AI læser (quick-product-enrichment.ts).
+  const petFoodBlock = petFoodBlockReason({ barcode, texts: [localIngredients, ingredientsOcrText, nutritionOcrText] });
+  if (petFoodBlock) {
+    void debugLog({
+      category: "scan",
+      event: "product_create",
+      level: "warn",
+      message: `Afvist: dyrefoder (${petFoodBlock.reason}: ${petFoodBlock.match})`,
+      flowId,
+      barcode,
+    });
+    return NextResponse.json({ message: PET_FOOD_BLOCKED_MESSAGE, code: "PET_FOOD_BLOCKED" }, { status: 422 });
   }
 
   try {

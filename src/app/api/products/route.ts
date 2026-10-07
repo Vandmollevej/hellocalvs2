@@ -14,6 +14,7 @@ import { isProductCategory } from "@/lib/product-display-unit";
 import { linkCutoutJobsToProduct } from "@/lib/image-cutout-jobs";
 import { recordNutrientSources } from "@/lib/product-nutrient-sources";
 import { HIDE_FROM_SEARCH_BELOW } from "@/lib/uncertainty-thresholds";
+import { PET_FOOD_BLOCKED_MESSAGE, petFoodBlockReason } from "@/lib/pet-food-blacklist";
 
 // GET /api/products?q=rugbrød — search in our own product database only. Results are ranked by src/lib/product-search-ranking.ts: text match
 // is always dominant, and hidden regional search/click/hour-of-day statistics
@@ -345,6 +346,20 @@ export async function POST(req: Request) {
     return NextResponse.json(
       { message: "Navn, kalorier, protein, kulhydrat og fedt skal udfyldes med gyldige tal" },
       { status: 400 }
+    );
+  }
+
+  // Dyrefoder-spærring: stregkode på spærrelisten eller dyrefoder-ordmønstre
+  // i navn/brand/ingredienser (src/lib/pet-food-blacklist.ts).
+  const petFoodBlock = petFoodBlockReason({
+    barcode,
+    texts: [name, brandName, subbrand, variant, productType, ingredientsText],
+  });
+  if (petFoodBlock) {
+    console.warn(`Pet food blocked (${petFoodBlock.reason}): ${petFoodBlock.match}`);
+    return NextResponse.json(
+      { message: PET_FOOD_BLOCKED_MESSAGE, code: "PET_FOOD_BLOCKED" },
+      { status: 422 }
     );
   }
 
