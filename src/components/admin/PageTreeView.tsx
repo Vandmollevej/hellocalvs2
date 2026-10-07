@@ -181,7 +181,7 @@ export function PageTreeView({ areas }: { areas: PageArea[] }) {
             >
               <span className="flex-1">
                 <span className="hf-type-strong block">{area.title}</span>
-                <span className="hf-type-small text-text-secondary block">{area.description}</span>
+                <span className="hf-type-small text-hf-white/85 block">{area.description}</span>
               </span>
               <span className="hf-type-small rounded-full bg-hf-white/20 px-2 py-0.5">{countNodes(area.pages)}</span>
               <IconChevronDown size={18} className={`transition-transform ${isCollapsed ? "-rotate-90" : ""}`} />

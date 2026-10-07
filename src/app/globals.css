@@ -2362,6 +2362,8 @@ textarea::selection,
   .hf-pick-card.is-selected {
     background: var(--hf-color-selected-bg);
     border-color: var(--hf-color-selected-border);
+    /* 1.5px kant + 0.5px ring = samme 2px valgt-kant som .hf-choice/.hf-selected. */
+    box-shadow: inset 0 0 0 0.5px var(--hf-color-selected-border);
   }
 
   .hf-pick-frame {
@@ -2462,7 +2464,7 @@ textarea::selection,
 
   .hf-pick-thumb.is-selected {
     border-color: var(--hf-color-selected-border);
-    box-shadow: inset 0 0 0 1.5px var(--hf-color-selected-border);
+    box-shadow: inset 0 0 0 0.5px var(--hf-color-selected-border);
   }
 
   /* Visningsvælger (2/4/8 firkanter) — samme på alle billedsider. */
