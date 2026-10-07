@@ -4620,3 +4620,10 @@ klip-klister mellem sider, og telefon/webvisning må ikke have hver sine klasser
 - Vælgerværktøj: codemoden kørte via TypeScript-AST, så kun `className`/`style`
   blev ændret. Små bevidste visuelle normaliseringer: 12 px-radier → 8 px og
   12 px-mellemrum i paneler → 8 px (design.md §5), to Face ID-blå → én.
+
+## 2026-10-08: Antal personer, afvist ret og tommel-popularitet
+
+- `Dish.servings` (migration 20261008140000): antal personer gemmes på retten (fra Indsæt tekst/Scan eller indtastet) og vises på egen ret.
+- Afvist som kopi: Mine retter viser "Ikke delt" (ikke "delt"), og retten viser info med admins begrundelse.
+- Tommel op/ned påvirker populariteten (tommel ned -3, op +1, højst +3 i alt) for at undgå selvforstærkende ekkokammer.
+- "Python på serveren" er TypeScript (brugerens ok 2026-10-08). de/fr/nl oversættes senere.
