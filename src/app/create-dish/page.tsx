@@ -55,6 +55,7 @@ export default function CreateDishPage() {
   const [sharePrompt, setSharePrompt] = useState(false);
   const [sharing, setSharing] = useState(false);
   // Indsæt tekst / Scan: arket, der er åbent, og hvad robotten ikke kunne placere.
+  const [servings, setServings] = useState<number | null>(null);
   const [sheet, setSheet] = useState<"none" | "paste" | "scan">("none");
   const [importNote, setImportNote] = useState<{ missing: string[]; nutrition: string | null } | null>(null);
   const [ingredients, setIngredients] = useState<DishDraftIngredient[]>(readDishDraft);
@@ -165,6 +166,7 @@ export default function CreateDishPage() {
       }
     }
     setIngredients(readDishDraft());
+    if (result.servings) setServings(result.servings);
     // Første billede øverst som titlen; flere billeder hører til trinene.
     const pageImages = result.pageImages ?? [];
     const nextImages = result.image ? [result.image, ...images] : images;
@@ -214,6 +216,7 @@ export default function CreateDishPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           name: name.trim(),
+          servings,
           ingredients: ingredients.map((i) => ({ productId: i.productId, grams: i.grams })),
           images,
           steps: steps.filter((step) => !isEmptyStep(step)),
@@ -314,6 +317,22 @@ export default function CreateDishPage() {
             )}
           </div>
         )}
+
+        <label className="flex items-center gap-3 rounded-2xl bg-hf-tan px-4 py-2">
+          <span className="hf-type-body flex-1 text-hf-black">{t("createDish.servings")}</span>
+          <input
+            type="number"
+            inputMode="numeric"
+            min={1}
+            max={100}
+            value={servings ?? ""}
+            onChange={(event) => {
+              const value = Number.parseInt(event.target.value, 10);
+              setServings(Number.isFinite(value) && value > 0 ? Math.min(value, 100) : null);
+            }}
+            className="hf-type-body w-16 rounded-full bg-hf-white px-3 py-2 text-center text-hf-black outline-none"
+          />
+        </label>
 
         <div>
           <p className="hf-type-small hf-type-strong mb-2 text-hf-black">{t("createDish.ingredients")}</p>

@@ -952,6 +952,8 @@
     "noResults": "Inga recept matchar din sökning",
     "tabMine": "Mina rätter",
     "tabShared": "Delade rätter",
+    "statusNotShared": "Not shared",
+
     "sharedSearchPlaceholder": "Sök i titel, ingredienser …",
 
     "createNew": "Skapa ny rätt",
@@ -1127,6 +1129,15 @@
   },
   "recipeDetail": {
 
+    "shareRejected": "Your dish is not shared with others because it was rejected. You keep it yourself.",
+
+
+    "shareRejectedReason": "Reason: {reason}",
+
+
+    "servingsLabel": "{count} people",
+
+
     "thumbUp": "Tummen upp",
 
     "thumbDown": "Tummen ner",
@@ -1195,6 +1206,8 @@
     }
   },
   "createDish": {
+    "servings": "Number of people",
+
     "shareLabel": "Vill du dela rätten med andra användare?",
 
     "modeManual": "Manuellt",

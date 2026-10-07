@@ -952,6 +952,8 @@
     "noResults": "Ingen oppskrifter samsvarer med søket ditt",
     "tabMine": "Mine retter",
     "tabShared": "Delte retter",
+    "statusNotShared": "Not shared",
+
     "sharedSearchPlaceholder": "Søk i tittel, ingredienser …",
 
     "createNew": "Opprett ny rett",
@@ -1127,6 +1129,15 @@
   },
   "recipeDetail": {
 
+    "shareRejected": "Your dish is not shared with others because it was rejected. You keep it yourself.",
+
+
+    "shareRejectedReason": "Reason: {reason}",
+
+
+    "servingsLabel": "{count} people",
+
+
     "thumbUp": "Tommel opp",
 
     "thumbDown": "Tommel ned",
@@ -1195,6 +1206,8 @@
     }
   },
   "createDish": {
+    "servings": "Number of people",
+
     "shareLabel": "Ønsker du å dele retten med andre brukere?",
 
     "modeManual": "Manuelt",

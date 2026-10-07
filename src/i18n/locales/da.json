@@ -954,6 +954,8 @@
     "noResults": "Ingen opskrifter matcher din søgning",
     "tabMine": "Mine retter",
     "tabShared": "Delte retter",
+    "statusNotShared": "Ikke delt",
+
     "sharedSearchPlaceholder": "Søg i titel, ingredienser …",
     "createNew": "Opret ny ret",
     "sourceAll": "Opskrifter",
@@ -1120,6 +1122,15 @@
   },
   "recipeDetail": {
 
+    "shareRejected": "Din ret er ikke delt med andre, fordi den blev afvist. Du beholder den selv.",
+
+
+    "shareRejectedReason": "Begrundelse: {reason}",
+
+
+    "servingsLabel": "{count} personer",
+
+
     "thumbUp": "Tommel op",
 
     "thumbDown": "Tommel ned",
@@ -1188,6 +1199,8 @@
     }
   },
   "createDish": {
+    "servings": "Antal personer",
+
     "shareLabel": "Ønsker du at dele retten med andre brugere?",
 
     "modeManual": "Manuelt",

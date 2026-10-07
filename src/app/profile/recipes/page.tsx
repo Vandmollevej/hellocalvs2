@@ -34,6 +34,7 @@ type OwnDish = {
   name: string;
   createdAt: string;
   sharedRecipeId?: string | null;
+  shareRejected?: boolean;
   images?: string[];
   ingredients: { grams: number; product: { kcalPer100g: number } }[];
 };
@@ -94,7 +95,9 @@ function MineTab({ t }: { t: Translate }) {
             subtitle: t("recipes.kcalTotal", { kcal: dishKcal(dish) }),
             label: dish.sharedRecipeId
               ? { text: t("recipes.statusShared"), tone: "green" as const }
-              : { text: t("recipes.statusPrivate"), tone: "muted" as const },
+              : dish.shareRejected
+                ? { text: t("recipes.statusNotShared"), tone: "muted" as const }
+                : { text: t("recipes.statusPrivate"), tone: "muted" as const },
           })),
           ...favorites.map((recipe) => ({
             key: `fav-${recipe.id}`,

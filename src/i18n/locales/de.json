@@ -952,6 +952,8 @@
     "noResults": "Keine Rezepte passen zu deiner Suche",
     "tabMine": "Meine Gerichte",
     "tabShared": "Geteilte Gerichte",
+    "statusNotShared": "Not shared",
+
     "sharedSearchPlaceholder": "In Titel, Zutaten suchen …",
 
     "createNew": "Neues Gericht anlegen",
@@ -1127,6 +1129,15 @@
   },
   "recipeDetail": {
 
+    "shareRejected": "Your dish is not shared with others because it was rejected. You keep it yourself.",
+
+
+    "shareRejectedReason": "Reason: {reason}",
+
+
+    "servingsLabel": "{count} people",
+
+
     "thumbUp": "Daumen hoch",
 
     "thumbDown": "Daumen runter",
@@ -1195,6 +1206,8 @@
     }
   },
   "createDish": {
+    "servings": "Number of people",
+
     "shareLabel": "Möchtest du das Gericht mit anderen Nutzern teilen?",
 
     "modeManual": "Manual",

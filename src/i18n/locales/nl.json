@@ -952,6 +952,8 @@
     "noResults": "Geen recepten gevonden voor je zoekopdracht",
     "tabMine": "Mijn gerechten",
     "tabShared": "Gedeelde gerechten",
+    "statusNotShared": "Not shared",
+
     "sharedSearchPlaceholder": "Zoek op titel, ingrediënten …",
 
     "createNew": "Nieuw gerecht maken",
@@ -1127,6 +1129,15 @@
   },
   "recipeDetail": {
 
+    "shareRejected": "Your dish is not shared with others because it was rejected. You keep it yourself.",
+
+
+    "shareRejectedReason": "Reason: {reason}",
+
+
+    "servingsLabel": "{count} people",
+
+
     "thumbUp": "Duim omhoog",
 
     "thumbDown": "Duim omlaag",
@@ -1195,6 +1206,8 @@
     }
   },
   "createDish": {
+    "servings": "Number of people",
+
     "shareLabel": "Wil je het gerecht met andere gebruikers delen?",
 
     "modeManual": "Manual",

@@ -954,6 +954,8 @@
     "noResults": "No recipes match your search",
     "tabMine": "My dishes",
     "tabShared": "Shared dishes",
+    "statusNotShared": "Not shared",
+
     "sharedSearchPlaceholder": "Search title, ingredients …",
     "createNew": "Create new dish",
     "sourceAll": "Recipes",
@@ -1120,6 +1122,15 @@
   },
   "recipeDetail": {
 
+    "shareRejected": "Your dish is not shared with others because it was rejected. You keep it yourself.",
+
+
+    "shareRejectedReason": "Reason: {reason}",
+
+
+    "servingsLabel": "{count} people",
+
+
     "thumbUp": "Thumbs up",
 
     "thumbDown": "Thumbs down",
@@ -1188,6 +1199,8 @@
     }
   },
   "createDish": {
+    "servings": "Number of people",
+
     "shareLabel": "Do you want to share this dish with other users?",
 
     "modeManual": "Manual",

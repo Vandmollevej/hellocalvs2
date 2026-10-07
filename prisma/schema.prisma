@@ -2369,6 +2369,8 @@ model Dish {
   externalSource String?
   // Offentligt ID på den delte udgave (SharedRecipe), når retten er delt.
   sharedRecipeId String?
+  // Antal personer retten er til (fra Indsæt tekst/Scan eller manuelt).
+  servings       Int?
   // Op til 3 billeder af den færdige ret (offentlige stier under
   // /product-images/recipe-images). Det første er forsidebillede.
   images         String[]  @default([])
