@@ -3,19 +3,24 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { ADMIN_GRANT_MAX_POINTS, ADMIN_GRANT_NOTE_MAX } from "@/lib/admin-points-grant-rules";
+import { useConfirmSheet } from "@/lib/use-confirm-sheet";
 
 // Formular til Admin → Brugere → Tildel points (docs/DECISIONS.md 2026-10-03).
 // Serveren håndhæver grænserne; feltet her viser dem bare.
 export function AdminGrantPointsForm({ userId, displayName }: { userId: string; displayName: string }) {
   const router = useRouter();
+  const { ask, sheet } = useConfirmSheet();
   const [amount, setAmount] = useState("");
   const [note, setNote] = useState("");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  async function submit(event: React.FormEvent) {
+  function submit(event: React.FormEvent) {
     event.preventDefault();
-    if (!confirm(`Tildel ${amount} points til ${displayName}? Brugeren kan først få points igen om en måned.`)) return;
+    ask(`Tildel ${amount} points til ${displayName}? Brugeren kan først få points igen om en måned.`, () => void grant());
+  }
+
+  async function grant() {
     setBusy(true);
     setError(null);
     try {
@@ -39,6 +44,7 @@ export function AdminGrantPointsForm({ userId, displayName }: { userId: string; 
 
   return (
     <form onSubmit={submit} className="flex flex-col gap-3">
+      {sheet}
       <label className="hf-type-body flex flex-col gap-1">
         Antal points (højst {ADMIN_GRANT_MAX_POINTS} = én gratis måned)
         <input

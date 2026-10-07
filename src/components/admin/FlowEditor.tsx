@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { FlowPagePreview, PhonePreviewEditor } from "@/components/admin/PhonePreviewEditor";
 import { HfChevron } from "@/components/hf/HfChevron";
+import { useConfirmSheet } from "@/lib/use-confirm-sheet";
 
 type FlowPage = { id?: string; title: string; bodyHtml: string; buttonLabel: string; actionLabel: string; actionHref: string };
 type Conditions = {
@@ -151,6 +152,7 @@ export function NewFlowForm() {
 // redigeres flowet og dets sider. Alt gemmes samlet med "Gem".
 export function FlowEditor({ flow }: { flow: Flow }) {
   const router = useRouter();
+  const { ask, sheet } = useConfirmSheet();
   const [name, setName] = useState(flow.name);
   const [description, setDescription] = useState(flow.description);
   const [enabled, setEnabled] = useState(flow.enabled);
@@ -190,10 +192,11 @@ export function FlowEditor({ flow }: { flow: Flow }) {
   }
 
   function removePage(index: number) {
-    if (!window.confirm(`Slet side ${index + 1}?`)) return;
-    setPages((list) => list.filter((_, i) => i !== index));
-    setSelected((value) => Math.max(0, value > index ? value - 1 : Math.min(value, pages.length - 2)));
-    touch();
+    ask(`Slet side ${index + 1}?`, () => {
+      setPages((list) => list.filter((_, i) => i !== index));
+      setSelected((value) => Math.max(0, value > index ? value - 1 : Math.min(value, pages.length - 2)));
+      touch();
+    });
   }
 
   function movePage(index: number, delta: -1 | 1) {
@@ -250,18 +253,21 @@ export function FlowEditor({ flow }: { flow: Flow }) {
     }
   }
 
-  async function remove() {
-    if (!window.confirm(`Slet flowet "${flow.name}" og alle dets sider?`)) return;
-    setBusy(true);
-    try {
-      const res = await fetch(`/api/admin/flows/${flow.id}`, { method: "DELETE" });
-      if (res.ok) {
-        router.push("/admin/flows");
-        router.refresh();
-      }
-    } finally {
-      setBusy(false);
-    }
+  function remove() {
+    ask(`Slet flowet "${flow.name}" og alle dets sider?`, () => {
+      void (async () => {
+        setBusy(true);
+        try {
+          const res = await fetch(`/api/admin/flows/${flow.id}`, { method: "DELETE" });
+          if (res.ok) {
+            router.push("/admin/flows");
+            router.refresh();
+          }
+        } finally {
+          setBusy(false);
+        }
+      })();
+    });
   }
 
   return (
@@ -280,6 +286,7 @@ export function FlowEditor({ flow }: { flow: Flow }) {
         )
       }
     >
+      {sheet}
       <div className={cardClass}>
         <label className={labelClass}>
           Navn

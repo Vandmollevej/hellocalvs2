@@ -3,6 +3,8 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { postJson } from "@/components/admin/PartnerManagers";
+import { BottomSheet } from "@/components/hf/BottomSheet";
+import { useConfirmSheet } from "@/lib/use-confirm-sheet";
 
 // Admin "Rapporter" (docs/DECISIONS.md 2026-09-29). Vælg partnere → "Opret
 // rapport" → bekræftelse, der viser præcis hvilken partners data der går til
@@ -21,6 +23,7 @@ const fmt = (iso: string) => new Date(iso).toLocaleDateString("da-DK", { day: "n
 
 export function ReportsManager({ partners }: { partners: ReportPartner[] }) {
   const router = useRouter();
+  const { ask, sheet } = useConfirmSheet();
   const [selected, setSelected] = useState<string[]>([]);
   const [mode, setMode] = useState<"push" | "schedule">("push");
   const [days, setDays] = useState(30);
@@ -86,7 +89,7 @@ export function ReportsManager({ partners }: { partners: ReportPartner[] }) {
                 <button className={BTN} onClick={() => scheduleAction({ action: "toggleSchedule", id: s.id, enabled: !s.enabled })}>
                   {s.enabled ? "Pause" : "Genoptag"}
                 </button>
-                <button className={BTN} onClick={() => window.confirm("Fjern intervalrapporten?") && scheduleAction({ action: "deleteSchedule", id: s.id })}>
+                <button className={BTN} onClick={() => ask("Fjern intervalrapporten?", () => void scheduleAction({ action: "deleteSchedule", id: s.id }))}>
                   Fjern
                 </button>
               </div>
@@ -132,8 +135,11 @@ export function ReportsManager({ partners }: { partners: ReportPartner[] }) {
       )}
 
       {confirming && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
-          <div className="flex max-h-[90vh] w-full max-w-lg flex-col gap-3 overflow-y-auto rounded-lg bg-hf-white p-5">
+        <BottomSheet
+          ariaLabel={mode === "push" ? "Bekræft afsendelse fra report@hellocal.io" : `Bekræft ${FREQ_LABEL[frequency].toLowerCase()} rapport`}
+          onClose={() => !busy && setConfirming(false)}
+        >
+          <div className="flex flex-col gap-3 p-4">
             <p className="hf-type-strong text-hf-black">
               {mode === "push" ? "Bekræft afsendelse fra report@hellocal.io" : `Bekræft ${FREQ_LABEL[frequency].toLowerCase()} rapport`}
             </p>
@@ -150,15 +156,13 @@ export function ReportsManager({ partners }: { partners: ReportPartner[] }) {
                 </ul>
               </div>
             ))}
-            <div className="flex justify-end gap-2">
-              <button className={BTN} disabled={busy} onClick={() => setConfirming(false)}>Annullér</button>
-              <button className={PRIMARY} disabled={busy} onClick={execute}>
-                {busy ? "Sender…" : mode === "push" ? "Send rapport" : "Sæt op"}
-              </button>
-            </div>
+            <button className="hf-control hf-btn-primary w-full px-4" disabled={busy} onClick={execute}>
+              {busy ? "Sender…" : mode === "push" ? "Send rapport" : "Sæt op"}
+            </button>
           </div>
-        </div>
+        </BottomSheet>
       )}
+      {sheet}
     </div>
   );
 }

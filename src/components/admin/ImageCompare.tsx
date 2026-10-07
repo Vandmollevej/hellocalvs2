@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState, type CSSProperties } from "react";
+import { BottomSheet, BottomSheetCloseButton } from "@/components/hf/BottomSheet";
 import { formatBytes, formatDimensions } from "@/lib/brand-logo-upload-types";
 import { ROLE_LABEL, targetsLabel, type ProductImageUploadItem } from "@/lib/product-image-upload-types";
 
@@ -92,14 +93,6 @@ export function DiffDialog({
   const [existingSize, setExistingSize] = useState<{ width: number; height: number } | null>(null);
   const [existingBytes, setExistingBytes] = useState<number | null>(null);
 
-  useEffect(() => {
-    const onKey = (event: KeyboardEvent) => {
-      if (event.key === "Escape") onClose();
-    };
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-  }, [onClose]);
-
   // Filstørrelsen på det nuværende billede kan kun læses fra vores egen server.
   useEffect(() => {
     if (!existingUrl || !existingUrl.startsWith("/")) return;
@@ -114,15 +107,10 @@ export function DiffDialog({
   }, [existingUrl]);
 
   const buttonClass = "hf-type-body hf-control rounded-md px-6 disabled:opacity-60";
+  // Bundark (KRAV.md "Bundark"): swipe ned, scrim og Escape lukker.
   return (
-    <div
-      role="dialog"
-      aria-modal="true"
-      aria-label={`Forskel for ${item.fileName}`}
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-2 sm:p-4"
-      onClick={onClose}
-    >
-      <div className="flex h-full w-full max-w-[1900px] flex-col gap-3 rounded-lg bg-page-bg p-3 sm:p-4" onClick={(event) => event.stopPropagation()}>
+    <BottomSheet size="full" ariaLabel={`Forskel for ${item.fileName}`} onClose={onClose}>
+      <div className="flex h-full min-h-0 flex-col gap-3 p-3 sm:p-4">
         <div className="flex flex-wrap items-baseline justify-between gap-2">
           <h2 className="hf-type-card-title text-hf-black">
             {item.fileName}
@@ -180,11 +168,11 @@ export function DiffDialog({
               </button>
             </>
           )}
-          <button type="button" onClick={onClose} className={`${buttonClass} border border-hf-tan-dark bg-hf-white text-hf-black`}>
+          <BottomSheetCloseButton className={`${buttonClass} border border-hf-tan-dark bg-hf-white text-hf-black`}>
             Luk
-          </button>
+          </BottomSheetCloseButton>
         </div>
       </div>
-    </div>
+    </BottomSheet>
   );
 }

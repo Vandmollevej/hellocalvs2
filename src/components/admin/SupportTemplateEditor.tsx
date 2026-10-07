@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { PhonePreviewEditor, fillSampleVars } from "@/components/admin/PhonePreviewEditor";
+import { useConfirmSheet } from "@/lib/use-confirm-sheet";
 
 type Template = { id?: string; title: string; body: string; sortOrder: number };
 
@@ -47,6 +48,7 @@ function SupportThreadPreview({ body }: { body: string }) {
 
 function TemplateForm({ initial, onPreview }: { initial: Template; onPreview: (body: string) => void }) {
   const router = useRouter();
+  const { ask, sheet } = useConfirmSheet();
   const [title, setTitle] = useState(initial.title);
   const [body, setBody] = useState(initial.body);
   const [busy, setBusy] = useState(false);
@@ -74,15 +76,18 @@ function TemplateForm({ initial, onPreview }: { initial: Template; onPreview: (b
     }
   }
 
-  async function remove() {
-    if (!initial.id || !window.confirm(`Slet skabelonen "${initial.title}"?`)) return;
-    setBusy(true);
-    try {
-      await fetch(`/api/admin/support/templates?id=${encodeURIComponent(initial.id)}`, { method: "DELETE" });
-      router.refresh();
-    } finally {
-      setBusy(false);
-    }
+  function remove() {
+    const id = initial.id;
+    if (!id) return;
+    ask(`Slet skabelonen "${initial.title}"?`, async () => {
+      setBusy(true);
+      try {
+        await fetch(`/api/admin/support/templates?id=${encodeURIComponent(id)}`, { method: "DELETE" });
+        router.refresh();
+      } finally {
+        setBusy(false);
+      }
+    });
   }
 
   const fieldClass = "rounded-md border border-hf-tan-dark bg-hf-cream px-2 py-1 text-hf-black";
@@ -92,6 +97,7 @@ function TemplateForm({ initial, onPreview }: { initial: Template; onPreview: (b
       onFocus={() => onPreview(body)}
       className="hf-type-small flex flex-col gap-2 hf-surface p-3"
     >
+      {sheet}
       {isNew && <p className="hf-type-strong text-hf-black">Ny skabelon</p>}
       <input
         value={title}

@@ -15,7 +15,7 @@ import { FamilySharingSection } from "@/components/family/FamilySharingSection";
 import { useFamilyStatus, type FamilyMemberInfo } from "@/components/family/FamilyStatusProvider";
 import { useTranslation } from "@/i18n/LocaleProvider";
 import { SkeletonCards, SkeletonList, SkeletonScreen, SkeletonSectionTitle } from "@/components/hf/Skeleton";
-import { useConfirmSheet } from "@/lib/use-confirm-sheet";
+import { useConfirmSheet, useTypedConfirmSheet } from "@/lib/use-confirm-sheet";
 
 // Familien (docs/FAMILY.md): betaleren opretter profiler, markerer børn,
 // laver login-koder og bestemmer, hvem der må se og taste ind for hvem.
@@ -50,6 +50,7 @@ async function send(url: string, method: string, body?: unknown) {
 
 function FamilyPageContent() {
   const { ask, sheet: confirmSheet } = useConfirmSheet();
+  const { ask: askTyped, sheet: typedConfirmSheet } = useTypedConfirmSheet();
   const { t } = useTranslation();
   const searchParams = useSearchParams();
   const { status, refresh } = useFamilyStatus();
@@ -246,6 +247,7 @@ function FamilyPageContent() {
   return (
     <div className="hf-page hf-page--sections">
       {confirmSheet}
+      {typedConfirmSheet}
       {error && (
         <p role="alert" className="hf-type-body text-hf-red-dark">
           {error}
@@ -382,10 +384,9 @@ function FamilyPageContent() {
                           type="button"
                           disabled={busy}
                           onClick={() => {
-                            const typed = window.prompt(t("family.members.deleteProfileConfirm", { name: member.displayName }));
-                            if (typed?.trim().toUpperCase() === "SLET") {
+                            askTyped(t("family.members.deleteProfileConfirm", { name: member.displayName }), "SLET", () => {
                               void run(`/api/family/members/${member.userId}?deleteProfile=1`, "DELETE", { confirm: "SLET" });
-                            }
+                            });
                           }}
                           className="hf-btn-text self-start text-hf-red-dark"
                         >

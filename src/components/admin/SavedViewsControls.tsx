@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { productDatabaseHref, type ProductDatabaseFilters } from "@/lib/admin-product-database-query";
+import { useConfirmSheet } from "@/lib/use-confirm-sheet";
 
 // "Gem visning" + "Visninger" over produktlisten (docs/DECISIONS.md
 // 2026-10-07): gemmer og henter hele opsætningen (søgning, filtre, sortering,
@@ -18,6 +19,7 @@ function queryOf(filters: ProductDatabaseFilters) {
 
 export function SavedViewsControls({ filters }: { filters: ProductDatabaseFilters }) {
   const router = useRouter();
+  const { ask, sheet } = useConfirmSheet();
   const rootRef = useRef<HTMLDivElement>(null);
   const [views, setViews] = useState<SavedView[]>([]);
   const [menu, setMenu] = useState<"views" | "save" | null>(null);
@@ -81,10 +83,13 @@ export function SavedViewsControls({ filters }: { filters: ProductDatabaseFilter
     }
   }
 
-  async function remove(view: SavedView) {
-    if (!window.confirm(`Slet visningen "${view.name}"?`)) return;
-    const response = await fetch(`/api/admin/saved-views?id=${encodeURIComponent(view.id)}`, { method: "DELETE" });
-    if (response.ok) setViews((list) => list.filter((v) => v.id !== view.id));
+  function remove(view: SavedView) {
+    ask(`Slet visningen "${view.name}"?`, () => {
+      void (async () => {
+        const response = await fetch(`/api/admin/saved-views?id=${encodeURIComponent(view.id)}`, { method: "DELETE" });
+        if (response.ok) setViews((list) => list.filter((v) => v.id !== view.id));
+      })();
+    });
   }
 
   function apply(view: SavedView) {
@@ -94,6 +99,7 @@ export function SavedViewsControls({ filters }: { filters: ProductDatabaseFilter
 
   return (
     <div ref={rootRef} className="relative flex items-center gap-2">
+      {sheet}
       <button
         type="button"
         aria-expanded={menu === "save"}
@@ -172,7 +178,7 @@ export function SavedViewsControls({ filters }: { filters: ProductDatabaseFilter
                   </button>
                   <button
                     type="button"
-                    onClick={() => void remove(view)}
+                    onClick={() => remove(view)}
                     aria-label={`Slet ${view.name}`}
                     title="Slet visning"
                     className="shrink-0 px-3 py-2.5 text-text-muted hover:text-hf-red-dark"

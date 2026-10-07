@@ -1,14 +1,13 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect } from "react";
 import type { Locale } from "@prisma/client";
+import { BottomSheet } from "@/components/hf/BottomSheet";
 import { t } from "@/lib/admin-i18n";
 import { LOGIN_COUNTRIES, localeForCountry } from "@/lib/login-country";
 
-// Land-/sprogvælger i admin (HelloFresh-stil): fuldskærm på mobil, centreret
-// dialog på desktop hvor header og side stadig ses bag den. Danmark → DA,
-// alle andre lande → EN (de eneste admin-sprog).
+// Land-/sprogvælger i admin som bundark. Danmark → DA, alle andre lande → EN
+// (de eneste admin-sprog).
 
 const COUNTRY_NAMES: Record<string, { DA: string; EN: string }> = {
   australia: { DA: "Australien", EN: "Australia" },
@@ -55,14 +54,6 @@ export function AdminCountryDialog({
   onSelect: (flag: string, next: Locale) => void;
   onClose: () => void;
 }) {
-  useEffect(() => {
-    function onKey(event: KeyboardEvent) {
-      if (event.key === "Escape") onClose();
-    }
-    document.addEventListener("keydown", onKey);
-    return () => document.removeEventListener("keydown", onKey);
-  }, [onClose]);
-
   function choose(flag: string) {
     try {
       window.localStorage.setItem(STORAGE_KEY, flag);
@@ -72,46 +63,32 @@ export function AdminCountryDialog({
     onSelect(flag, localeForCountry(flag) === "da" ? "DA" : "EN");
   }
 
+  // Bundark (KRAV.md "Bundark", ejerens regel 2026-10-07): swipe ned, scrim og
+  // Escape lukker. Ingen synlig overskrift; titlen er kun til skærmlæsere.
   return (
-    <div className="fixed inset-0 z-[60] flex items-stretch justify-center sm:items-center sm:p-6" role="dialog" aria-modal="true" aria-label={t(locale, "nav_country_title")}>
-      <div className="absolute inset-0 hidden bg-hf-black/40 sm:block" onClick={onClose} />
-      <div className="relative flex w-full flex-col bg-hf-white sm:max-h-[80vh] sm:max-w-md sm:overflow-hidden sm:rounded-lg sm:shadow-xl">
-        <div className="flex h-14 shrink-0 items-center justify-between border-b border-hf-tan-dark px-4">
-          <h2 className="hf-type-body hf-type-strong">{t(locale, "nav_country_title")}</h2>
-          <button
-            type="button"
-            onClick={onClose}
-            aria-label={t(locale, "nav_country_close")}
-            className="hf-btn-icon rounded-md text-text-secondary hover:bg-hf-tan"
-          >
-            <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth={2} aria-hidden="true">
-              <path d="M6 6l12 12M18 6L6 18" strokeLinecap="round" />
-            </svg>
-          </button>
-        </div>
-        <div className="flex-1 overflow-y-auto">
-          {LOGIN_COUNTRIES.map((country) => {
-            const isSelected = country.flag === selected;
-            return (
-              <button
-                type="button"
-                key={country.flag}
-                onClick={() => choose(country.flag)}
-                aria-pressed={isSelected}
-                className="hf-control-row flex w-full items-center gap-3 border-b border-hf-tan-dark px-4 text-left hover:bg-hf-tan"
-              >
-                <Image src={`/flags/${country.flag}.png`} alt="" width={36} height={27} className="rounded-[2px]" />
-                <span className="hf-type-body flex-1">{COUNTRY_NAMES[country.flag]?.[locale] ?? country.flag}</span>
-                {isSelected && (
-                  <svg viewBox="0 0 24 24" className="h-5 w-5 text-hf-green" fill="none" stroke="currentColor" strokeWidth={2.5} aria-hidden="true">
-                    <path d="M5 12l5 5L20 7" strokeLinecap="round" strokeLinejoin="round" />
-                  </svg>
-                )}
-              </button>
-            );
-          })}
-        </div>
+    <BottomSheet ariaLabel={t(locale, "nav_country_title")} onClose={onClose}>
+      <div>
+        {LOGIN_COUNTRIES.map((country) => {
+          const isSelected = country.flag === selected;
+          return (
+            <button
+              type="button"
+              key={country.flag}
+              onClick={() => choose(country.flag)}
+              aria-pressed={isSelected}
+              className="hf-control-row flex w-full items-center gap-3 border-b border-hf-tan-dark px-4 text-left hover:bg-hf-tan"
+            >
+              <Image src={`/flags/${country.flag}.png`} alt="" width={36} height={27} className="rounded-[2px]" />
+              <span className="hf-type-body flex-1">{COUNTRY_NAMES[country.flag]?.[locale] ?? country.flag}</span>
+              {isSelected && (
+                <svg viewBox="0 0 24 24" className="h-5 w-5 text-hf-green" fill="none" stroke="currentColor" strokeWidth={2.5} aria-hidden="true">
+                  <path d="M5 12l5 5L20 7" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              )}
+            </button>
+          );
+        })}
       </div>
-    </div>
+    </BottomSheet>
   );
 }

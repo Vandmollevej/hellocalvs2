@@ -1,7 +1,9 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { startRegistration } from "@simplewebauthn/browser";
+import { useEffect, useRef, useState } from "react";
+import { startRegistration, type RegistrationResponseJSON } from "@simplewebauthn/browser";
+import { BottomSheet, useBottomSheetClose } from "@/components/hf/BottomSheet";
+import { useConfirmSheet } from "@/lib/use-confirm-sheet";
 
 type Passkey = {
   id: string;
@@ -12,7 +14,48 @@ type Passkey = {
   lastUsedAt: string | null;
 };
 
+// Navngivning af en nyregistreret enhed. Swipe ned/scrim gemmer uden navn
+// (enheden er allerede registreret hos browseren).
+function PasskeyNameSheet({ onDone }: { onDone: (name?: string) => void }) {
+  const nameRef = useRef<string | undefined>(undefined);
+  return (
+    <BottomSheet ariaLabel="Navngiv denne enhed" onClose={() => onDone(nameRef.current)}>
+      <PasskeyNameForm onSave={(name) => (nameRef.current = name)} />
+    </BottomSheet>
+  );
+}
+
+function PasskeyNameForm({ onSave }: { onSave: (name?: string) => void }) {
+  const [name, setName] = useState("iPhone");
+  const close = useBottomSheetClose();
+  return (
+    <div className="flex flex-col gap-3 p-4">
+      <label className="flex flex-col gap-1">
+        <span className="hf-type-body text-hf-black">Navngiv denne enhed (fx &quot;Peters iPhone&quot;)</span>
+        <input
+          value={name}
+          onChange={(event) => setName(event.target.value)}
+          maxLength={60}
+          className="hf-field hf-type-body rounded-md border border-hf-tan-dark bg-page-bg px-3 text-hf-black outline-none focus:border-hf-green"
+        />
+      </label>
+      <button
+        type="button"
+        onClick={() => {
+          onSave(name.trim() || undefined);
+          close();
+        }}
+        className="hf-control hf-btn-primary w-full px-4"
+      >
+        Gem
+      </button>
+    </div>
+  );
+}
+
 export function PasskeyManager() {
+  const { ask, sheet } = useConfirmSheet();
+  const [naming, setNaming] = useState<RegistrationResponseJSON | null>(null);
   const [passkeys, setPasskeys] = useState<Passkey[] | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
@@ -40,9 +83,17 @@ export function PasskeyManager() {
       if (!optionsRes.ok) throw new Error((await optionsRes.json()).message ?? "Kunne ikke starte registrering");
       const optionsJSON = await optionsRes.json();
 
-      const registrationResponse = await startRegistration({ optionsJSON });
+      // Enheden er registreret; navngivningen sker i et bundark (ingen window.prompt).
+      setNaming(await startRegistration({ optionsJSON }));
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Kunne ikke oprette passkey");
+      setBusy(false);
+    }
+  }
 
-      const name = window.prompt("Navngiv denne enhed (fx \"Peters iPhone\")", "iPhone") ?? undefined;
+  async function finishRegistration(registrationResponse: RegistrationResponseJSON, name?: string) {
+    setNaming(null);
+    try {
       const verifyRes = await fetch("/api/admin/passkey/register/verify", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -58,14 +109,19 @@ export function PasskeyManager() {
     }
   }
 
-  async function removePasskey(id: string) {
-    if (!window.confirm("Fjern denne passkey?")) return;
-    await fetch(`/api/admin/passkey/${id}`, { method: "DELETE" });
-    await load();
+  function removePasskey(id: string) {
+    ask("Fjern denne passkey?", () => {
+      void (async () => {
+        await fetch(`/api/admin/passkey/${id}`, { method: "DELETE" });
+        await load();
+      })();
+    });
   }
 
   return (
     <div className="flex flex-col gap-4">
+      {sheet}
+      {naming && <PasskeyNameSheet onDone={(name) => void finishRegistration(naming, name)} />}
       <div className="flex items-center justify-between gap-3">
         <p className="hf-type-body text-text-secondary">
           Log ind med Face ID/Touch ID i stedet for password + kode — fx på din iPhone via iCloud-nøglering.

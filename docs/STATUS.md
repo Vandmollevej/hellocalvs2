@@ -2,6 +2,13 @@
 
 Last updated: 2026-10-07
 
+## 2026-10-07: Alle popups som bundark + brand-logoets luft
+
+- Hjulvælgere (højde/fødselsår/fødselsdato), opstartstips, adgangslog-panelet, Hello Doc-tilbagetrækning, slet familieprofil og alle admin-bekræftelser/-detaljevinduer er nu bundark (swipe ned/scrim = annullér); ingen `window.confirm`/`prompt` tilbage. Se DECISIONS 2026-10-07 for undtagelser (fuldskærms-visere, Face ID, kommandopalet).
+- Varesidens brand-logo/navn står nu med 8 px luft til cirklen (`src/lib/brand-logo-layout.ts`).
+- Verificeret på master (0a7d3593): "Sådan regner vi" væk, "/stk." efter gram pr. skive, ingen tom luft over Tilføj-knappen, Tilføj-knap væk fra rækker, menutekst tættere på ikonerne, beskeder swipe-slet midt for rækken.
+- Lint grøn på de ændrede filer; `tsc` har kun to fejl i `api/dishes/route.ts` fra en forældet Prisma-klient i worktree'et. Ikke visuelt testet (brugerens regel).
+
 ## 2026-10-07: Prod-nedbrud — fejlet emailHash-migrering
 
 - Migrationen `20261004190000_user_email_hash` fejlede ved deploy 2026-10-06 22:42 UTC. Live-koden læste `User.emailHash` → P2022 (side-fejl digest 3069122648), og `migrate deploy` afviste siden alle nye migreringer (P3009), så ingen deploys gik igennem.

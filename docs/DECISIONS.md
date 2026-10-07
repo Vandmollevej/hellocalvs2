@@ -2,6 +2,14 @@
 
 This file records durable decisions. Add a dated entry when a later decision changes one of them.
 
+## 2026-10-07: Alle popups er bundark — også vælgere, tips, adgangslog og admin-bekræftelser
+
+- Ejerens regel ("Popups vises aldrig som overlay men som bundark nedefra. Swipe ned = annuller") gælder nu alle brugerrettede og admin-popups. `BottomSheet` er den eneste godkendte overlay-type (KRAV.md "Bundark"); fuldskærms-overlay og centreret dialog er afskaffet som popup-typer (designmanualen viser kun bundarket).
+- Konverteret: hjulvælgere (`WheelPicker`, `BirthDatePicker`: "Færdig" gemmer, swipe/scrim annullerer), opstartstips (`StartupTipOverlay`), adgangslog-panelet (`AccessLogPanel`: OK/"Se hele Kontrol-loggen" markerer som set, swipe ned skjuler kun til næste opstart), Hello Doc "Træk adgang tilbage", sletning af familieprofil (skriv SLET i et bundark i stedet for `window.prompt`), og i admin alle `window.confirm`/`confirm`/`window.prompt` (15 steder) samt detaljevinduerne (Uncertainties, nye varer, Billed-forskel, reklamespot-sider, landevælger, rapport-bekræftelse, passkey-navngivning).
+- Nye hooks i `src/lib/use-confirm-sheet.tsx`: `useConfirmSheet().ask(tekst, handling)` (Fortsæt-knap) og `useTypedConfirmSheet().ask(tekst, ord, handling)` (kontrolordet skal skrives). `BottomSheet` ignorerer træk, der starter i et element med `data-sheet-no-drag` (hjulene), så de kan scrolles.
+- Bevidste undtagelser (ikke popups): Face ID-animationen på login, fuldskærms-visere (billede-dagbog, kalenderens dagvisning, admin-billedvisning), spotlight-guiden "Guide mig", admin-kommandopaletten (Ctrl/Cmd+K) og dropdown-menuer.
+- Varesidens brand-logo (`src/lib/brand-logo-layout.ts`): logoets/navnets venstre kant beregnes af dets højde, så der altid er 8 px luft til produktcirklens kant.
+
 ## 2026-10-07: "Nøgleord på produktsiden" fjernet; "Adgangsark" hedder Integrationer
 
 - Brugeren har aldrig bedt om punktet "Nøgleord på produktsiden" (DECISIONS 2026-10-02 og 2026-10-07 er afløst): admin-siden `/admin/product-database/tags`, API'et `/api/admin/product-page-tags`, editoren, `product-page-tags*.ts`, `product-keyword-groups.ts`, menu-/genvejs-/sidetræ-punkterne og nøgleordslinjen på produktsiden (`pageTags`) er slettet. Produktsiden viser ikke længere en nøgleordslinje over "Energifordeling".

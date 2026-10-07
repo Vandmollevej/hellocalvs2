@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { IconCoins, IconLockOpen, IconUserOff } from "@tabler/icons-react";
+import { useConfirmSheet } from "@/lib/use-confirm-sheet";
 
 export type AdminUserRowData = {
   id: string;
@@ -33,30 +34,37 @@ const SUBSCRIPTION_LABELS: Record<string, string> = {
 
 export function AdminUserRow({ user }: { user: AdminUserRowData }) {
   const router = useRouter();
+  const { ask, sheet } = useConfirmSheet();
   // "Log ind som bruger" er fjernet (docs/PRIVACY.md, docs/DECISIONS.md
   // 2026-09-23): Support ser kun det, brugeren selv giver adgang til.
   const [busy, setBusy] = useState<"forget" | "unblock" | null>(null);
 
-  async function unblock() {
-    if (!confirm(`Ophæv spærringen af ${user.displayName}? Brugeren kan logge ind igen og har én advarsel tilbage.`)) return;
-    setBusy("unblock");
-    try {
-      const res = await fetch(`/api/admin/users/${user.id}/unblock`, { method: "POST" });
-      if (res.ok) router.refresh();
-    } finally {
-      setBusy(null);
-    }
+  function unblock() {
+    ask(`Ophæv spærringen af ${user.displayName}? Brugeren kan logge ind igen og har én advarsel tilbage.`, () => {
+      void (async () => {
+        setBusy("unblock");
+        try {
+          const res = await fetch(`/api/admin/users/${user.id}/unblock`, { method: "POST" });
+          if (res.ok) router.refresh();
+        } finally {
+          setBusy(null);
+        }
+      })();
+    });
   }
 
-  async function forget() {
-    if (!confirm(`Anonymisér ${user.displayName}? Dette kan ikke fortrydes.`)) return;
-    setBusy("forget");
-    try {
-      const res = await fetch(`/api/admin/users/${user.id}/forget`, { method: "POST" });
-      if (res.ok) router.refresh();
-    } finally {
-      setBusy(null);
-    }
+  function forget() {
+    ask(`Anonymisér ${user.displayName}? Dette kan ikke fortrydes.`, () => {
+      void (async () => {
+        setBusy("forget");
+        try {
+          const res = await fetch(`/api/admin/users/${user.id}/forget`, { method: "POST" });
+          if (res.ok) router.refresh();
+        } finally {
+          setBusy(null);
+        }
+      })();
+    });
   }
 
   const isActive = user.subscriptionStatus === "ACTIVE" || user.subscriptionStatus === "FREE_MONTH";
@@ -75,6 +83,7 @@ export function AdminUserRow({ user }: { user: AdminUserRowData }) {
   return (
     <tr className="border-b border-hf-tan-dark">
       <td className="py-2 pr-3">
+        {sheet}
         <p className="hf-type-strong text-hf-black">{user.displayName}</p>
         {user.blockedAt && (
           <p className="hf-type-small mt-1">

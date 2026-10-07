@@ -745,6 +745,9 @@ Standard for alle screen-overlays og popups (KRAV.md "Bundark"). Klasse
   padding: prikker 8 px (aktiv brand-grøn), primær knap i fuld bredde og
   tekstknap `.hf-bottom-sheet__skip` (48 px, fed).
 - Træk ned flytter arket; hurtigt swipe eller > 30 % lukker, ellers tilbage.
+- Ingen synlig titel (kun `aria-label`); aldrig fuldskærms-overlay, centreret
+  dialog eller `window.confirm` (ejerens regel 2026-10-07). Hjulvælgere
+  (`data-sheet-no-drag`) scroller uden at trække arket.
 
 ### 6.12 Produktsidens billedområde — fast geometri, uafhængig af billedet
 

@@ -5,6 +5,7 @@ import type { KeyGroupId } from "@/lib/api-keys/catalog";
 import type { CheckResult } from "@/lib/api-keys/checks";
 import type { FieldStatus, ServiceStatus } from "@/lib/api-keys/status";
 import type { CustomApiView } from "@/lib/api-keys/custom";
+import { useConfirmSheet } from "@/lib/use-confirm-sheet";
 
 // Admin → API-nøgler. Status, redigering og live-test pr. tjeneste
 // (docs/DECISIONS.md 2026-09-25 "API-nøgler i admin").
@@ -66,6 +67,7 @@ export function ApiKeysManager({
   initialServices: ServiceStatus[];
   initialCustom: CustomState;
 }) {
+  const { ask, sheet } = useConfirmSheet();
   const [services, setServices] = useState(initialServices);
   const [tests, setTests] = useState<Record<string, TestState>>({});
   const [custom, setCustom] = useState(initialCustom);
@@ -106,6 +108,7 @@ export function ApiKeysManager({
 
   return (
     <div className="flex flex-col gap-6" data-allow-clipboard>
+      {sheet}
       <div className="hf-panel">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <p className="hf-type-body hf-type-strong text-hf-black">Status</p>
@@ -224,9 +227,11 @@ export function ApiKeysManager({
                   <p className="hf-type-strong text-hf-black">{api.name}</p>
                   <button
                     type="button"
-                    onClick={async () => {
-                      if (confirm(`Slet ${api.name}?`)) setCustom(await sendCustom("DELETE", { type: "api", id: api.id }));
-                    }}
+                    onClick={() =>
+                      ask(`Slet ${api.name}?`, () => {
+                        void (async () => setCustom(await sendCustom("DELETE", { type: "api", id: api.id })))();
+                      })
+                    }
                     className="hf-btn-text text-hf-red-dark"
                   >
                     Slet

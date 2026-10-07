@@ -5,6 +5,7 @@ import { useParams } from "next/navigation";
 import { HfScreen } from "@/components/HfScreen";
 import { DoctorShareEditor } from "@/components/hf/DoctorShareEditor";
 import { useTranslation } from "@/i18n/LocaleProvider";
+import { useConfirmSheet } from "@/lib/use-confirm-sheet";
 import {
   DEFAULT_DOCTOR_SHARE_CATEGORIES,
   sanitizeDoctorShareCategories,
@@ -32,6 +33,7 @@ type DoctorShare = {
 // revoke access entirely.
 export default function EditHelloDocUserPage() {
   const { t } = useTranslation();
+  const { ask, sheet } = useConfirmSheet();
   const params = useParams<{ id: string }>();
 
   const [share, setShare] = useState<DoctorShare | null>(null);
@@ -96,11 +98,12 @@ export default function EditHelloDocUserPage() {
     }
   }
 
-  async function revoke() {
+  function revoke() {
     if (!share) return;
-    if (!window.confirm(t("helloDoc.revokeConfirm", { name: share.name }))) return;
-    const res = await fetch(`/api/doctor-shares/${params.id}/revoke`, { method: "POST" });
-    if (res.ok) setShare((await res.json()).share);
+    ask(t("helloDoc.revokeConfirm", { name: share.name }), async () => {
+      const res = await fetch(`/api/doctor-shares/${params.id}/revoke`, { method: "POST" });
+      if (res.ok) setShare((await res.json()).share);
+    });
   }
 
   if (loadError) {
@@ -178,6 +181,7 @@ export default function EditHelloDocUserPage() {
           previewExternal
         />
       </div>
+      {sheet}
     </HfScreen>
   );
 }

@@ -9,7 +9,6 @@ import {
   IconSearch,
   IconSettings,
   IconUser,
-  IconX,
 } from "@tabler/icons-react";
 import { IconFavorite } from "@/components/icons/Favorite";
 import { requireAdminUser } from "@/lib/require-admin";
@@ -225,7 +224,7 @@ export default async function DesignManualPage() {
           </Section>
 
           {/* 3. Overlay */}
-          <Section id="overlay" number={3} title="Overlay" intro="Tre godkendte typer. Bundarket er standard for alle screen-overlays og popups (KRAV.md, afsnit Bundark); fuldskærms-overlay (opstartstips, søvnoplevelse) og centreret dialog på mørk scrim bruges kun hvor de allerede står. Prøv dem live:">
+          <Section id="overlay" number={3} title="Overlay" intro="Kun én godkendt type: bundarket. Alle popups, bekræftelser og vælgere vises som bundark nedefra (KRAV.md, afsnit Bundark) — aldrig som fuldskærms-overlay, centreret dialog eller window.confirm. Prøv det live:">
             <OverlayDemo />
             <div className="grid gap-4 sm:grid-cols-3">
               <Mock label="Bundark (.hf-bottom-sheet)">
@@ -245,31 +244,6 @@ export default async function DesignManualPage() {
                   </div>
                 </div>
               </Mock>
-              <Mock label="Fuldskærms-overlay">
-                <div className="flex h-full flex-col bg-hf-cream p-3">
-                  <p className="hf-type-micro hf-type-strong self-end text-hf-black">Luk</p>
-                  <div className="flex flex-1 flex-col items-center justify-center gap-2 text-center">
-                    <span className="flex size-10 items-center justify-center rounded-full bg-hf-tan text-hf-green">
-                      <IconInfoCircle size={20} />
-                    </span>
-                    <p className="hf-type-small hf-type-strong text-hf-black">Titel</p>
-                    <p className="hf-type-micro text-hf-black">Tekst i midten</p>
-                  </div>
-                  <p className="hf-type-micro self-end text-hf-black">Slå fra ●</p>
-                </div>
-              </Mock>
-              <Mock label="Dialog på scrim">
-                <div className="flex h-full items-center justify-center p-3" style={{ background: "var(--hf-color-overlay)" }}>
-                  <div className="w-full rounded-lg bg-hf-white p-2">
-                    <div className="flex items-center justify-between border-b border-hf-tan-dark pb-1">
-                      <p className="hf-type-micro hf-type-strong text-hf-black">Titel</p>
-                      <IconX size={12} />
-                    </div>
-                    <p className="hf-type-micro py-2 text-hf-black">Indhold</p>
-                    <div className="h-4 rounded bg-hf-black" />
-                  </div>
-                </div>
-              </Mock>
             </div>
             <Rules
               items={[
@@ -277,11 +251,10 @@ export default async function DesignManualPage() {
                 "Trækstregen øverst (.hf-bottom-sheet__handle) er samme streg som kalenderens nat/dag-håndtag: 40 × 4 px, grå, rund.",
                 "Arket kan trækkes ned. Et hurtigt swipe ned eller et træk forbi 30 % af højden lukker det; ellers glider det tilbage. Klik på scrim og Escape lukker også.",
                 "Fast bund: prikker (aktiv = brand-grøn) og pil ved flere sider, primær knap i fuld bredde og tekstknappen \"Spring over\" (.hf-bottom-sheet__skip), som lukker med samme animation.",
-                "Bruges ved velkomst efter kontooprettelse, guiden, e-mailbekræftelse, \"Tilføj\" ud for en vare, kalenderens \"Tilføj\" og \"Se alle\" i tilføj-hjulet.",
-                "Fuldskærm: baggrund #FAF8F3, \"Luk\" øverst til højre, ikon + titel + tekst centreret, \"Slå fra\" nederst til højre.",
-                "Slår man \"Slå fra\" fra, tæller \"Luk\" ned 3–1 før overlayet lukker og slås fra.",
-                "Dialog: scrim --hf-color-overlay, hvid flade, 12 px radius, 16 px padding. Klik udenfor lukker.",
-                "Overlays bruger role=\"dialog\" og aria-modal=\"true\".",
+                "Bruges ved velkomst efter kontooprettelse, guiden, e-mailbekræftelse, kalenderens \"Tilføj\" og \"Se alle\" i tilføj-hjulet, opstartstips, adgangslog, hjul-/datovælgere og alle bekræftelser (useConfirmSheet i stedet for window.confirm, useTypedConfirmSheet i stedet for window.prompt).",
+                "Arket har ingen synlig overskrift (kun aria-label); hjulvælgere markeres med data-sheet-no-drag, så de scroller uden at trække arket.",
+                "Opstartstips: ikon + titel + tekst, \"Luk\" nederst til venstre og \"Slå fra\" nederst til højre; slår man \"Slå fra\" fra, tæller \"Luk\" ned 3–1, før arket lukker og tips slås fra.",
+                "Arket bruger role=\"dialog\" og aria-modal=\"true\".",
               ]}
             />
           </Section>

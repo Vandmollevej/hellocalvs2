@@ -2,6 +2,7 @@
 
 import { defaultAmountGrams } from "@/lib/default-amount";
 import { mealShareBody } from "@/lib/meal-share";
+import { BRAND_NAME_HEIGHT_PX, brandLogoLeftPx, brandLogoRenderedHeight } from "@/lib/brand-logo-layout";
 import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
@@ -315,6 +316,9 @@ export function AddProductView({
   // med 10 % overskud: stående varer rager 10 % op over cirklen, liggende
   // 10 % ud til højre — hele varen ses altid (brugerens regel 2026-10-02).
   const [imageLandscape, setImageLandscape] = useState(false);
+  // Brand-logoets bredde/højde — bestemmer hvor langt ud det står, så der er
+  // luft mellem logoet og cirklen (src/lib/brand-logo-layout.ts).
+  const [brandLogoRatio, setBrandLogoRatio] = useState<number | null>(null);
   const extendedNutritionOpen = extendedNutritionToggle ?? Boolean(profile?.showExtendedNutrition);
   const [toxinsOpen, setToxinsOpen] = useState(false);
   const [openToxin, setOpenToxin] = useState<ToxinInfo | null>(null);
@@ -842,10 +846,17 @@ export function AddProductView({
                       <img
                         src={view.brand.logoUrl}
                         alt={view.brand.name}
-                        className="pointer-events-none absolute bottom-0 left-[calc(75%+12px)] z-10 h-[66px] w-[95px] object-contain object-left-bottom"
+                        onLoad={(event) =>
+                          setBrandLogoRatio(event.currentTarget.naturalWidth / (event.currentTarget.naturalHeight || 1))
+                        }
+                        style={{ left: brandLogoLeftPx(brandLogoRenderedHeight(brandLogoRatio)) }}
+                        className="pointer-events-none absolute bottom-0 z-10 h-[66px] w-[95px] object-contain object-left-bottom"
                       />
                     ) : (
-                      <p className="hf-type-title hf-type-strong pointer-events-none absolute bottom-0 left-[calc(75%+12px)] z-10 whitespace-nowrap text-hf-green">
+                      <p
+                        style={{ left: brandLogoLeftPx(BRAND_NAME_HEIGHT_PX) }}
+                        className="hf-type-title hf-type-strong pointer-events-none absolute bottom-0 z-10 whitespace-nowrap text-hf-green"
+                      >
                         {view.brand.name}
                       </p>
                     ))}

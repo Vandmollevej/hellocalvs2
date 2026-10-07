@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useConfirmSheet } from "@/lib/use-confirm-sheet";
 
 // Klientdele til admin Partnere → Kontakter/Reklamer (docs/DECISIONS.md 2026-09-29).
 export async function postJson(url: string, body: Record<string, unknown>) {
@@ -17,10 +18,10 @@ const PRIMARY = "hf-type-small rounded-md bg-hf-black px-3 py-1.5 text-hf-white 
 
 function useAction() {
   const router = useRouter();
+  const { ask, sheet } = useConfirmSheet();
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  async function run(body: Record<string, unknown>, confirmText?: string) {
-    if (confirmText && !window.confirm(confirmText)) return false;
+  async function execute(body: Record<string, unknown>) {
     setBusy(true);
     setError(null);
     const res = await postJson("/api/admin/partners", body).catch(() => ({ ok: false, status: 0, data: { message: "Kunne ikke kontakte serveren" } }));
@@ -32,14 +33,22 @@ function useAction() {
     router.refresh();
     return true;
   }
-  return { busy, error, run };
+  // Med confirmText vises en bekræftelse som bundark (ikke window.confirm); handlingen kører efter "Fortsæt".
+  async function run(body: Record<string, unknown>, confirmText?: string) {
+    if (confirmText) {
+      ask(confirmText, () => void execute(body));
+      return false;
+    }
+    return execute(body);
+  }
+  return { busy, error, run, sheet };
 }
 
 type Contact = { id: string; name: string; email: string; active: boolean };
 type PartnerWithContacts = { id: string; name: string; contacts: Contact[] };
 
 export function ContactsManager({ partners }: { partners: PartnerWithContacts[] }) {
-  const { busy, error, run } = useAction();
+  const { busy, error, run, sheet } = useAction();
   const [partnerName, setPartnerName] = useState("");
   const [contactName, setContactName] = useState("");
   const [contactEmail, setContactEmail] = useState("");
@@ -47,6 +56,7 @@ export function ContactsManager({ partners }: { partners: PartnerWithContacts[] 
 
   return (
     <div className="flex flex-col gap-4">
+      {sheet}
       <p className="hf-type-body text-text-secondary">Åbn en partner for virksomhedsoplysninger, sponsoraftale, performance og fakturering.</p>
       <form
         className="flex flex-wrap gap-2"

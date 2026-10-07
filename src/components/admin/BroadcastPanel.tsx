@@ -1,11 +1,13 @@
 "use client";
 
 import { useState } from "react";
+import { useConfirmSheet } from "@/lib/use-confirm-sheet";
 
 const MAX_SUBJECT = 120;
 const MAX_MESSAGE = 2000;
 
 export function BroadcastPanel({ emailUsers, pushUsers }: { emailUsers: number; pushUsers: number }) {
+  const { ask, sheet } = useConfirmSheet();
   const [open, setOpen] = useState(false);
   const [subject, setSubject] = useState("");
   const [message, setMessage] = useState("");
@@ -18,11 +20,14 @@ export function BroadcastPanel({ emailUsers, pushUsers }: { emailUsers: number; 
 
   const canSend = subject.trim() && message.trim() && (email || push) && password && !busy;
 
-  async function send(event: React.FormEvent) {
+  function send(event: React.FormEvent) {
     event.preventDefault();
     if (!canSend) return;
     const targets = [email ? `${emailUsers} mails` : null, push ? `op til ${pushUsers} push` : null].filter(Boolean);
-    if (!confirm(`Send "${subject.trim()}" til alle brugere (${targets.join(" og ")})? Det kan ikke fortrydes.`)) return;
+    ask(`Send "${subject.trim()}" til alle brugere (${targets.join(" og ")})? Det kan ikke fortrydes.`, () => void deliver());
+  }
+
+  async function deliver() {
     setBusy(true);
     setError(null);
     setDone(null);
@@ -48,6 +53,7 @@ export function BroadcastPanel({ emailUsers, pushUsers }: { emailUsers: number; 
 
   return (
     <div className="rounded-xl border border-hf-tan-dark p-4">
+      {sheet}
       <button type="button" onClick={() => setOpen(!open)} className="hf-type-body text-hf-black hf-type-strong">
         {open ? "Luk" : "Send mail og push til alle brugere"}
       </button>
