@@ -111,6 +111,10 @@ jobs:
           fi
           docker compose --project-directory /volume1/docker/App/hellocal-v2 -f compose.production.yaml --env-file .env.production pull
 
+      # Migreringerne prøves først på en kopi af produktionens skema (scripts/deploy/test-migrations.sh).
+      - name: Test database migrations on a schema copy
+        run: bash scripts/deploy/test-migrations.sh
+
       # Udrulning uden nedetid: ny app-container startes ved siden af den gamle og skiftes ind, når den er sund
       # (scripts/deploy/rollout-app.sh, docs/DEPLOYMENT.md "Udrulning uden nedetid").
       - name: Deploy database migrations and app

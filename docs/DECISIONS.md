@@ -9,6 +9,11 @@ This file records durable decisions. Add a dated entry when a later decision cha
 - Nye hooks i `src/lib/use-confirm-sheet.tsx`: `useConfirmSheet().ask(tekst, handling)` (Fortsæt-knap) og `useTypedConfirmSheet().ask(tekst, ord, handling)` (kontrolordet skal skrives). `BottomSheet` ignorerer træk, der starter i et element med `data-sheet-no-drag` (hjulene), så de kan scrolles.
 - Bevidste undtagelser (ikke popups): Face ID-animationen på login, fuldskærms-visere (billede-dagbog, kalenderens dagvisning, admin-billedvisning), spotlight-guiden "Guide mig", admin-kommandopaletten (Ctrl/Cmd+K) og dropdown-menuer.
 - Varesidens brand-logo (`src/lib/brand-logo-layout.ts`): logoets/navnets venstre kant beregnes af dets højde, så der altid er 8 px luft til produktcirklens kant.
+## 2026-10-07: Sikring mod fejlede migreringer + ekstern overvågning
+
+- Hvert deploy prøvekører migreringerne på en kopi af produktionens skema, før produktionen røres; fejler de, stopper deployet (`scripts/deploy/test-migrations.sh`).
+- Migreringer køres eksplicit før ny app-kode startes; `/api/health` tjekker brugertabellens kolonner, så ny kode mod gammel database aldrig går i drift.
+- Ekstern overvågning hvert 5. minut fra GitHub (`.github/workflows/uptime.yml`) med mail/push ved fejl; admin-forsiden viser fejlede migreringer. Brugerens valg efter nedbruddet 2026-10-07 (docs/DEPLOYMENT.md "Prøvekørsel af migreringer og overvågning").
 
 ## 2026-10-07: "Nøgleord på produktsiden" fjernet; "Adgangsark" hedder Integrationer
 

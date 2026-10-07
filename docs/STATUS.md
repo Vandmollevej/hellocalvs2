@@ -13,7 +13,9 @@ Last updated: 2026-10-07
 
 - Migrationen `20261004190000_user_email_hash` fejlede ved deploy 2026-10-06 22:42 UTC. Live-koden læste `User.emailHash` → P2022 (side-fejl digest 3069122648), og `migrate deploy` afviste siden alle nye migreringer (P3009), så ingen deploys gik igennem.
 - Årsag: migrationen brugte tabelnavnet `"User"`, men tabellen hedder `"users"` (`@@map`) → `relation "User" does not exist`.
-- Rettelse: migrationen bruger nu `"users"` og er idempotent (`IF NOT EXISTS`), og `migrate`-servicen i `compose.production.yaml` kører `prisma migrate resolve --rolled-back 20261004190000_user_email_hash || true` før `migrate deploy`. Linjen kan fjernes, når migrationen står som anvendt i produktion.
+- Rettelse: migrationen bruger nu `"users"` og er idempotent; midlertidig `migrate resolve --rolled-back` i `migrate`-servicen (fjernet igen). Anvendt i produktion 2026-10-07 17:28 UTC (release ed757bea), sitet svarer igen.
+- Sikringer (DEPLOYMENT "Prøvekørsel af migreringer og overvågning"): prøvekørsel af migreringer på skemakopi før hvert deploy, eksplicit migrering før ny app-container, `/api/health` tjekker brugertabellen (`?deep=1` også fejlede migreringer), uptime-workflow hvert 5. min med GitHub-mail, rød "Deploy blokeret"-boks på admin-forsiden. `backfill.cjs` brugte også `"User"` — rettet.
+- Lint og tsc grønne; deploy-scripts syntakstjekket (`bash -n`).
 ## 2026-10-07: Nøgleord-punktet fjernet, "Integrationer" omdøbt, stavescan
 
 - "Nøgleord på produktsiden" er fjernet helt (admin-side, API, lib, produktsidens linje); tabellen `product_page_tag_settings` ligger urørt og ubrugt. Se DECISIONS 2026-10-07.

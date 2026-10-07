@@ -24,14 +24,7 @@ services:
     restart: "no"
     environment:
       DATABASE_URL: ${DATABASE_URL:?Set DATABASE_URL in .env.production}
-    # 20261004190000_user_email_hash fejlede 2026-10-06 (P3009 blokerede alle
-    # senere deploys). Migrationen er nu idempotent; resolve --rolled-back
-    # markerer den fejlede kørsel som rullet tilbage, så deploy kører den igen.
-    # Fejler harmløst (|| true), når migrationen allerede er anvendt.
-    command:
-      - sh
-      - -c
-      - npx prisma migrate resolve --rolled-back 20261004190000_user_email_hash || true; npx prisma migrate deploy
+    command: ["npx", "prisma", "migrate", "deploy"]
     depends_on:
       db:
         condition: service_healthy

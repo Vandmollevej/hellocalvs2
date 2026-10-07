@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { requireAdminUser } from "@/lib/require-admin";
 import { loadAdminDashboard } from "@/lib/admin-dashboard";
 import { loadPetFoodStrikeSummary } from "@/lib/pet-food-strikes";
+import { loadFailedMigrations } from "@/lib/deploy-health";
 import { PetFoodIncidentActions } from "@/components/admin/PetFoodIncidentActions";
 import { isSupportOverdue } from "@/lib/support-inbox";
 import { formatAdminTime, formatWaiting, SUPPORT_PRIORITY_LABELS } from "@/lib/support-labels";
@@ -91,6 +92,8 @@ export default async function AdminDashboardPage() {
   // Dyrefoder-spærringen (docs/DECISIONS.md 2026-10-07): spærrede brugere skriver sandsynligvis
   // til support, så antallet vises som advarsel øverst.
   const petFood = await loadPetFoodStrikeSummary(now).catch(() => null);
+  // En fejlet migrering blokerer alle senere deploys (docs/DECISIONS.md 2026-10-07).
+  const failedMigrations = await loadFailedMigrations().catch(() => []);
 
   const otherTasks = [
     { href: "/admin/images", label: "Billedforslag", value: counts.pendingImages },
@@ -123,6 +126,20 @@ export default async function AdminDashboardPage() {
   return (
     <div className="flex flex-col gap-6">
       <h1 className="hf-type-title text-hf-black">Oversigt</h1>
+
+      {failedMigrations.length > 0 && (
+        <section className="flex flex-col hf-surface border-hf-red-dark">
+          <header className="border-b border-hf-tan-dark px-4 py-3">
+            <h2 className="hf-type-body hf-type-strong text-hf-red-dark">
+              Deploy blokeret: database-ændring fejlede
+            </h2>
+          </header>
+          <p className="hf-type-small px-4 py-3 text-text-secondary">
+            {failedMigrations.join(", ")} kunne ikke køres. Indtil den er rettet, når ingen nye versioner ud
+            til brugerne.
+          </p>
+        </section>
+      )}
 
       {petFood && petFood.unreviewed > 0 && (
         <section className="flex flex-col hf-surface border-hf-red-dark">
