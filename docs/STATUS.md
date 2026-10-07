@@ -15,6 +15,11 @@ Last updated: 2026-10-07
 - **Halvcirkel (prøve):** `FooterArc` på forsiden (over `BottomNav`): 20 px cirkelstykke med plus; skub op → 70 % af venstre-cirklen, 5 knapper ("alle" i midten); træk vandret i hvile flytter den (gemmes); tryk åbner; hold stille 550 ms → sort redigeringsvindue (`FooterArcEditor`, træk ned = fjern, tryk/træk op = tilføj, byt plads). Deler knapvalg med venstre-cirklen (`useWheelActionKeys`). Venstre-cirklen er urørt. Se bekræftelsesspørgsmål i slutrapporten.
 - **Tilføj-menu (D):** hold et felt inde (Seriøs, 550 ms) → omrokér/slet felter, "Færdig" og "Tilføj" øverst; gemt pr. enhed (`hellocal.addMenu.layout`).
 - Lint og tsc grønne; ikke visuelt testet (ingen browser, efter brugerens regel).
+## 2026-10-07: Søg/popups/beskeder — ti rettelser
+
+- "Senest anvendte" hedder nu "Senest tilføjet". Bundark har ingen synlig overskrift (kun til skærmlæsere). Tilføj-knappen er fjernet fra vareraderne (Søg, Favoritter, Mine scanninger); tryk på varen åbner varesiden /add/[id] uden popup.
+- Fjernet "Sådan regner vi" på Profil; Luk konto kræver nu et kontrolord ligesom Slet mine data, og kontrolordet følger sproget (SLET/DELETE/LÖSCHEN …; serveren får stadig "SLET"). Tilføj-menuen: tekst tættere på ikonerne. Varesiden: "/stk." efter gram pr. servering/skive, brand-logo flyttet 12 px ud, ingen tom luft over Tilføj-knappen.
+- Beskeder: "Slettet" øverst til venstre, swipe viser "Slet" midt for beskeden, "Ryd alt" under Slettet (bekræftelse i bundark). Migration `20261007140000_outbound_message_user_delete` skal køre ved deploy; "Ryd alt" skjuler for brugeren, rækken bevares til admin-loggen. Ikke visuelt testet (brugerregel).
 
 ## 2026-10-07: Nøgleord på produktsiden — typer og grupper
 

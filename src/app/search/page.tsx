@@ -1,10 +1,9 @@
 "use client";
 
 import { Suspense, useEffect, useMemo, useState } from "react";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { IconSearch } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
-import { AddProductView } from "@/components/add/AddProductView";
 import { ProductResultRow as ResultRow, type ProductResult as Result } from "@/components/ProductResultRow";
 import { useTranslation } from "@/i18n/LocaleProvider";
 import { hasEstimatedMacros } from "@/lib/nutrients";
@@ -32,7 +31,9 @@ function SoegContent() {
   const [resultsState, setResultsState] = useState<LoadState>("loading");
   const [recentlyAdded, setRecentlyAdded] = useState<Result[]>([]);
   const [favorites, setFavorites] = useState<Result[]>([]);
-  const [addId, setAddId] = useState<string | null>(null);
+  const router = useRouter();
+  // Tryk på en vare åbner varesiden direkte — ingen popup og ingen Tilføj-knap.
+  const openProduct = (productId: string) => router.push(`/add/${productId}${forDish ? "?for=ret" : ""}`);
   const favoriteIds = useMemo(() => new Set(favorites.map((f) => f.id)), [favorites]);
 
   function toggleFavorite(productId: string, next: boolean) {
@@ -181,7 +182,7 @@ function SoegContent() {
                   id={r.id}
                   title={r.title}
                   image={r.image}
-                  onAdd={setAddId}
+                  onAdd={openProduct}
                   isFavorite={favoriteIds.has(r.id)}
                   onToggleFavorite={toggleFavorite}
                 />
@@ -200,7 +201,7 @@ function SoegContent() {
                   id={r.id}
                   title={r.title}
                   image={r.image}
-                  onAdd={setAddId}
+                  onAdd={openProduct}
                   isFavorite={favoriteIds.has(r.id)}
                   onToggleFavorite={toggleFavorite}
                 />
@@ -236,7 +237,7 @@ function SoegContent() {
                   brand={r.brand}
                   kcal={r.kcal}
                   macrosEstimated={r.macrosEstimated}
-                  onAdd={setAddId}
+                  onAdd={openProduct}
                   isFavorite={favoriteIds.has(r.id)}
                   onToggleFavorite={toggleFavorite}
                 />
@@ -250,10 +251,6 @@ function SoegContent() {
           </>
         )}
       </div>
-
-      {addId && (
-        <AddProductView key={addId} id={addId} forDish={forDish} inSheet onClose={() => setAddId(null)} />
-      )}
     </HfScreen>
   );
 }

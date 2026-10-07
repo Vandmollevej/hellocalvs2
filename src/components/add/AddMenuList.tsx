@@ -278,7 +278,7 @@ export function AddMenuList({ date, time }: { date?: string | null; time?: strin
                     unoptimized={tile.icon.endsWith(".svg")}
                     draggable={false}
                   />
-                  <span className="hf-type-body">{label}</span>
+                  <span className="hf-type-body -mt-4">{label}</span>
                 </span>
               </Link>
             );
@@ -328,7 +328,7 @@ export function AddMenuList({ date, time }: { date?: string | null; time?: strin
                         className="h-24 w-24 object-contain"
                         unoptimized={tile.icon.endsWith(".svg")}
                       />
-                      <span className="hf-type-body">{label}</span>
+                      <span className="hf-type-body -mt-4">{label}</span>
                     </button>
                   );
                 })}

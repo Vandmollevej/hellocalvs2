@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
 import { HfScreen } from "@/components/HfScreen";
-import { AddProductView } from "@/components/add/AddProductView";
 import { ProductResultRow, type ProductResult } from "@/components/ProductResultRow";
 import { SkeletonMediaRows, SkeletonScreen } from "@/components/hf/Skeleton";
 import { useTranslation } from "@/i18n/LocaleProvider";
@@ -47,7 +47,9 @@ export default function MyScansPage() {
   const [scans, setScans] = useState<UserScan[]>([]);
   const [state, setState] = useState<LoadState>("loading");
   const [favoriteIds, setFavoriteIds] = useState<Set<string>>(new Set());
-  const [addId, setAddId] = useState<string | null>(null);
+  const router = useRouter();
+  // Tryk på en vare åbner varesiden direkte — ingen popup og ingen Tilføj-knap.
+  const openProduct = (productId: string) => router.push(`/add/${productId}`);
   const groups = useMemo(() => groupByDay(scans), [scans]);
 
   useEffect(() => {
@@ -133,7 +135,7 @@ export default function MyScansPage() {
                 <ProductResultRow
                   key={scan.id}
                   {...scan}
-                  onAdd={setAddId}
+                  onAdd={openProduct}
                   isFavorite={favoriteIds.has(scan.id)}
                   onToggleFavorite={toggleFavorite}
                 />
@@ -142,8 +144,6 @@ export default function MyScansPage() {
           </section>
         ))}
       </div>
-
-      {addId && <AddProductView key={addId} id={addId} forDish={false} inSheet onClose={() => setAddId(null)} />}
     </HfScreen>
   );
 }

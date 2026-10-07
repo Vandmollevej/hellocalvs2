@@ -705,7 +705,7 @@ export function AddProductView({
         state.status === "loaded" ? (
           <>
             {!forDish && !isEditing && (
-              <div className="mb-4">
+              <div className="mb-4 empty:hidden">
                 <MealShareBar />
               </div>
             )}
@@ -835,10 +835,10 @@ export function AddProductView({
                       <img
                         src={view.brand.logoUrl}
                         alt={view.brand.name}
-                        className="pointer-events-none absolute bottom-0 left-3/4 z-10 h-[66px] w-[95px] object-contain object-left-bottom"
+                        className="pointer-events-none absolute bottom-0 left-[calc(75%+12px)] z-10 h-[66px] w-[95px] object-contain object-left-bottom"
                       />
                     ) : (
-                      <p className="hf-type-title hf-type-strong pointer-events-none absolute bottom-0 left-3/4 z-10 whitespace-nowrap text-hf-green">
+                      <p className="hf-type-title hf-type-strong pointer-events-none absolute bottom-0 left-[calc(75%+12px)] z-10 whitespace-nowrap text-hf-green">
                         {view.brand.name}
                       </p>
                     ))}
@@ -948,7 +948,7 @@ export function AddProductView({
                         style={{ width: `${Math.max(1, String(displayAmount).length) + 0.5}ch` }}
                         className="bg-transparent text-right outline-none"
                       />
-                      <span>&nbsp;{displayUnit}</span>
+                      <span>&nbsp;{displayUnit}{!hasServingUnit && displayUnit === "g" && servingSizeGrams === amount ? t("addProduct.perPiece") : ""}</span>
                     </label>
                   )}
                   <p className="hf-type-body text-text-secondary flex justify-center">

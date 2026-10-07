@@ -2687,6 +2687,10 @@ model OutboundMessage {
   // "Til info sendte vi dig ..."-popuppen (src/lib/sent-notices.ts): sat, når
   // brugeren har trykket "Læst". Kun relevant for sendte mails/sms'er.
   noticeAckAt DateTime?
+  // Brugerens indbakke (Profil → Beskeder): "Slet" lægger beskeden under Slettet,
+  // "Ryd alt" skjuler den for altid for brugeren. Rækken bevares til admin-loggen.
+  userDeletedAt DateTime?
+  userPurgedAt  DateTime?
 
   @@index([status])
   @@index([userId, readAt])
