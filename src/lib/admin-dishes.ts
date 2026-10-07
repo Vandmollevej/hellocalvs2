@@ -34,9 +34,14 @@ function words(q: string) {
   return q.split(/\s+/).filter(Boolean).slice(0, 8);
 }
 
-export async function loadHelloFreshDishes(q: string, page: number): Promise<DishPage> {
+// Integrationernes retter (Product-rækker med kilde HELLOFRESH eller VALDEMARSRO).
+export async function loadHelloFreshDishes(
+  q: string,
+  page: number,
+  source: "HELLOFRESH" | "VALDEMARSRO" = "HELLOFRESH",
+): Promise<DishPage> {
   const where: Prisma.ProductWhereInput = {
-    externalSource: "HELLOFRESH",
+    externalSource: source,
     AND: words(q).map((word) => ({ name: { contains: word, mode: "insensitive" as const } })),
   };
   const [total, products] = await Promise.all([
@@ -68,7 +73,8 @@ export async function loadHelloFreshDishes(q: string, page: number): Promise<Dis
       kcal: p.kcalPer100g,
       kcalLabel: "kcal/100 g",
       status: p.status,
-      href: `/admin/dishes/hellofresh/${p.id}`,
+      // Valdemarsro-retter åbnes som produktsiden (tilføj, "Gå til opskrift").
+      href: source === "VALDEMARSRO" ? `/add/${p.id}` : `/admin/dishes/hellofresh/${p.id}`,
       note: p._count.ingredients > 0 ? `${p._count.ingredients} ingredienser` : null,
       disabled: p.discontinued,
     })),

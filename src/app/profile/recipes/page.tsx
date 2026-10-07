@@ -226,7 +226,9 @@ function SharedTab({ t }: { t: Translate }) {
     return result.kind !== "shared"
       ? {
           key: result.id,
-          href: recipeHref(result.id),
+          // Valdemarsro-retter åbnes som produktsiden (tilføj + gram, "Gå til
+          // opskrift", ingredienser og næring); HelloFresh har sin egen visning.
+          href: result.kind === "valdemarsro" ? `/add/${encodeURIComponent(result.id)}` : recipeHref(result.id),
           name: result.name,
           imageUrl: result.imageUrl,
           subtitle: subtitleFor(result),

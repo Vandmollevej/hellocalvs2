@@ -4590,3 +4590,10 @@ Det eneste, admin kan ændre på importerede retter, er "Deaktivér"/"Aktivér" 
 - `/weigh-reminders`: dagen som tidslinje med én kontakt pr. 2. time (06–22). Scheduleren sender en push 5 min før valgte timer (`src/lib/weigh-reminders.ts`, kaldt hvert minut). Kræver VAPID-nøgler + push-abonnement (ellers no-op).
 - Tips til dagens mål: til/fra under Indstillinger → Visning → Tips (localStorage, som de øvrige tips). `/api/tips/goal` bruger gennemsnit af seneste 14 dage (mindst 4 dage, i dag udeladt) mod dagens mål; regelbaseret, ikke LLM. Gå-km = overskud / (0,55 × kg).
 - "Udregn" på statistik-siden: kun Seriøs (POST `/api/insights/meal-timing` giver 403 ellers). Bundark med sider: spisetider vs. anbefalet, spisevindue/sidste måltid før sengetid, fordeling over dagen, hverdag vs. weekend. Anbefalinger står i `src/lib/meal-timing.ts`.
+## 2026-10-08: Valdemarsro-integration (natligt job, Retter-filter, "Gå til opskrift")
+
+- Valdemarsro-retter ligger som Product-rækker (`externalSource = VALDEMARSRO`, kategori "Retter"), skrevet af `scripts/valdemarsro-agent/agent.py` (container `valdemarsro-agent`, job `valdemarsro-import`, dagligt kl. 03:30 dansk tid, styres under admin Cron-jobs). Siderne læses som almindelig HTML (ingen Playwright). `recipeDetails.websiteUrl` er kildelinket.
+- Jobbet finder nye/ændrede indlæg via sitemap (150 pr. nat; blogindlæg huskes i `recipe_source_urls`), og tjekker hver nat 300 gemte opskrifters links: 404/410 sætter `discontinued = true` (retten forsvinder fra søgningen), lever linket igen, åbnes den igen. Midlertidige fejl (5xx) ændrer intet.
+- Næring står kun i Valdemarsros Premium og beregnes derfor af os: ingredienser med vægt matches mod godkendte varer; kun hvis ≥ 70 % af linjerne kan regnes med, bruges tallene, ellers `nutritionMissing = true`.
+- Retter-søgningen: knappen "Valdemarsro" viser kun Valdemarsro-retter; rækken åbner produktsiden `/add/<id>` (tilføj + gram som på produkter), derunder grøn knap "Gå til opskrift" (ny side), derunder ingredienser og næring som sædvanlig. Admin → Retter → Valdemarsro viser nu rigtige data.
+

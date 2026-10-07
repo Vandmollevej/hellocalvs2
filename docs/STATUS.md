@@ -6031,3 +6031,7 @@ Ikke bygget: Valdemarsro-import til app-databasen, Valdemarsro-detaljevisning ("
 - PII-anbefaling i `docs/SECURITY-PII-OPTIONS.md` (intet bygget).
 - Tallerken-scan kører midlertidigt på OpenAI (`MEAL_PHOTO_PROVIDER=passio` ruller tilbage); dispensation i DECISIONS.
 - Stregkodescanner: native BarcodeDetector først, ZXing TRY_HARDER (256 rækker), skiftende hybrid/global binarizer, kontinuerlig eksponering, ikke-målbare aflæsninger kræver 2 ens frames. Ikke testet på telefon.
+## 2026-10-08: Valdemarsro-import bygget (kode)
+
+Ny `valdemarsro-agent` (scripts/valdemarsro-agent, compose.production.yaml, build.yml, jobs-registret), model `RecipeSourceUrl` (migration 20261008130000_recipe_source_urls), "Gå til opskrift"-knap i AddProductView, admin Retter → Valdemarsro viser data. Parsingen er testet mod en rigtig Valdemarsro-side; agenten er IKKE kørt mod databasen eller i Docker endnu — første nat henter 150 retter, resten over de følgende nætter (sæt VALDEMARSRO_AGENT_BATCH_SIZE højere for hurtigere start). Kræver deploy, så containeren bygges og migrationen kører.
+

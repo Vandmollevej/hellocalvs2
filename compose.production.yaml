@@ -314,6 +314,24 @@ services:
       - backend
       - edge
 
+  valdemarsro-agent:
+    build: ./scripts/valdemarsro-agent
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: ${DATABASE_URL:?Set DATABASE_URL in .env.production}
+      VALDEMARSRO_RUN_AT_TIME: ${VALDEMARSRO_AGENT_RUN_AT_TIME:-03:30}
+      VALDEMARSRO_BATCH_SIZE: ${VALDEMARSRO_AGENT_BATCH_SIZE:-150}
+    volumes:
+      - ./data/hellofresh-images:/images
+    depends_on:
+      db:
+        condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
+    networks:
+      - backend
+      - edge
+
   rema1000-agent:
     build: ./scripts/rema1000-import
     restart: "no"

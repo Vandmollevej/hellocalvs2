@@ -128,6 +128,15 @@ export const JOBS: JobDefinition[] = [
     defaultRunAtTime: null,
   },
   {
+    key: "valdemarsro-import",
+    name: "Valdemarsro-import",
+    description: "Finder nye opskrifter på Valdemarsro hver nat og sikrer, at alle gemte opskrifters links stadig lever (døde links spærres).",
+    runtime: "agent",
+    container: "valdemarsro-agent",
+    defaultIntervalMinutes: null,
+    defaultRunAtTime: "03:30",
+  },
+  {
     key: "hellofresh-import",
     name: "HelloFresh-import",
     description: "Henter nye/ændrede HelloFresh-opskrifter i små portioner og matcher ingredienserne mod varer.",

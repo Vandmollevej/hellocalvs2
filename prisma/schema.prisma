@@ -3442,6 +3442,21 @@ model RecipeRating {
   @@map("recipe_ratings")
 }
 
+// Sider, det natlige integrations-job (scripts/valdemarsro-agent) har set:
+// opskrift eller ej, seneste sitemap-dato og svarstatus, så blogindlæg ikke
+// hentes igen og døde links kan ses.
+model RecipeSourceUrl {
+  url        String   @id
+  source     String
+  isRecipe   Boolean  @default(false)
+  lastmod    String?
+  httpStatus Int      @default(200)
+  checkedAt  DateTime @default(now())
+
+  @@index([source, isRecipe])
+  @@map("recipe_source_urls")
+}
+
 model SharedRecipeFavorite {
   id        String   @id @default(cuid())
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)

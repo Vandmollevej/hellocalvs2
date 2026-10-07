@@ -135,6 +135,9 @@ type Product = {
   // Kilde + genscanning — styrer banneret "Optjen 10 points"
   // (src/lib/product-rescan-offer.ts, docs/DECISIONS.md 2026-10-02).
   externalSource?: string | null;
+  // Opskrifter fra integrationer (HelloFresh/Valdemarsro): websiteUrl er
+  // kildesidens link, som Valdemarsro-retter åbner med "Gå til opskrift".
+  recipeDetails?: { websiteUrl?: string | null } | null;
   rescannedAt?: string | null;
   privateOwnerId?: string | null;
   // HelloFresh-recipe extra nutrition, per Product.servingSizeGrams — see
@@ -1157,6 +1160,19 @@ export function AddProductView({
                     </div>
                   )}
                 </div>
+              )}
+
+              {/* Valdemarsro-retter: grøn knap til kildesiden, åbnes på en ny side
+                  (brugerens krav 2026-10-07); ingredienser og næring står herunder. */}
+              {!isLoading && view.externalSource === "VALDEMARSRO" && !!view.recipeDetails?.websiteUrl && (
+                <a
+                  href={view.recipeDetails.websiteUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hf-control hf-btn-primary flex w-full items-center justify-center"
+                >
+                  {t("recipes.goToRecipe")}
+                </a>
               )}
 
               {!!visibleAllergens.length && (
