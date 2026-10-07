@@ -4533,3 +4533,5 @@ af ID>". Admins egne e-mails, partnerbrugere, scan-medarbejdere og
 partnerkontakter er ikke omfattet. Points-søgning må stadig slå op på præcis
 e-mail (via emailHash), men viser den aldrig. Support-søgningens "contains" på
 e-mail er fjernet (virker ikke på det krypterede felt).
+## 2026-10-07: Deaktivér-knap på linjen (admin → Retter → HelloFresh/Valdemarsro)
+Det eneste, admin kan ændre på importerede retter, er "Deaktivér"/"Aktivér" på linjen i listen (brugerens krav). Knappen sætter `Product.discontinued`, som al søgning og AI-genkendelse allerede filtrerer på; HelloFresh-importen overskriver ikke feltet ved genimport. Deaktiverede retter vises gennemstreget med teksten "Deaktiveret — vises ikke for brugerne". Valdemarsro-listen bruger samme knap, men er tom, indtil importen er bygget (den skal så bruge `discontinued` på samme måde og udvide `setDishDisabled` til sin kilde).

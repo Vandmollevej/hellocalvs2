@@ -93,9 +93,9 @@ function buildOrderBy(sort: ProductDatabaseSort): Prisma.ProductOrderByWithRelat
     case "image_last":
       return [{ imageUrl: { sort: "asc", nulls: "first" } }, byName, stable];
     case "brand":
-      return [{ brand: { name: { sort: "asc", nulls: "last" } } }, byName, stable];
+      return [{ brand: { name: "asc" } }, byName, stable];
     case "brand_desc":
-      return [{ brand: { name: { sort: "desc", nulls: "last" } } }, byName, stable];
+      return [{ brand: { name: "desc" } }, byName, stable];
     // "Mest populære" = flest tilføjelser nogensinde; "Trending" afgøres i
     // loadProductDatabase (tilføjelser de seneste 7 dage), her kun fallback.
     case "popular":

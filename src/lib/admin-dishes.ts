@@ -17,6 +17,8 @@ export type DishRow = {
   status: "PENDING" | "APPROVED" | "REJECTED";
   href: string | null;
   note: string | null;
+  // Deaktiveret i admin (Product.discontinued) — vises ikke for brugerne.
+  disabled: boolean;
 };
 
 export type DishPage = { rows: DishRow[]; total: number; pageCount: number; page: number };
@@ -50,6 +52,7 @@ export async function loadHelloFreshDishes(q: string, page: number): Promise<Dis
         imageUrl: true,
         kcalPer100g: true,
         status: true,
+        discontinued: true,
         _count: { select: { ingredients: true } },
       },
     }),
@@ -67,6 +70,7 @@ export async function loadHelloFreshDishes(q: string, page: number): Promise<Dis
       status: p.status,
       href: `/admin/dishes/hellofresh/${p.id}`,
       note: p._count.ingredients > 0 ? `${p._count.ingredients} ingredienser` : null,
+      disabled: p.discontinued,
     })),
   };
 }
@@ -98,6 +102,7 @@ export async function loadUserDishes(q: string, page: number): Promise<DishPage>
       status: r.status,
       href: r.status === "PENDING" ? "/admin/quality-control/shared-recipes" : null,
       note: r.totalGrams > 0 ? `${Math.round(r.totalGrams)} g` : null,
+      disabled: false,
     })),
   };
 }

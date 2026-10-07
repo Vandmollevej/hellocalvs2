@@ -6,6 +6,9 @@ Last updated: 2026-10-07
 
 - Admin → Varedatabase → Nøgleord: valget af enkelte frie nøgleord er erstattet af nøgleordsgrupper (Smag, Farve, Emballage, Frost og opbevaring …) fundet ved analyse af alle nøgleord i produktarkene, med eksempler og antal pr. gruppe (brugerens krav). Faste typer vises nu på brugerens sprog (7 sprog); smagsretning m.fl. vises som i produktarket. Se DECISIONS.md 2026-10-07.
 - Ingen migration. Tests `product-page-tags.test.mjs` opdateret.
+## 2026-10-07: Deaktivér-knap på retter
+
+Retter → HelloFresh og Valdemarsro har "Deaktivér"/"Aktivér" på hver linje (sætter `discontinued`, skjuler retten for brugerne). Valdemarsro-listen er tom, indtil importen er bygget (DECISIONS 2026-10-07).
 
 ## 2026-10-07: HelloFresh-retter kun visning
 
