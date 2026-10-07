@@ -2,6 +2,10 @@
 
 Last updated: 2026-10-07
 
+## 2026-10-07: HelloFresh-retter kun visning
+
+Retter → HelloFresh åbner nu en skrivebeskyttet side under Retter (ikke Nye varer); indhold og varesidens tre tabeller ligger i en lukket dropdown "Indhold" (DECISIONS 2026-10-07).
+
 ## 2026-10-07: Dyrefoder-spærring
 
 - Scrapet dyrefoder fra Bilka, Nemlig, SPAR, Maxi Zoo og Zooplus (mappen `Produklter/Blacklistede produkter`, ikke i git) og bygget spærring: stregkodeliste (~13.600) + Fable-ordmønstre + mærker, håndhævet ved oprettelse, hurtig-oprettelse, stregkodeopslag og efter AI-udfyldning. Se `docs/DECISIONS.md` 2026-10-07.
