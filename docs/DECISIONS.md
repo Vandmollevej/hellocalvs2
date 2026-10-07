@@ -4549,6 +4549,13 @@ e-mail er fjernet (virker ikke på det krypterede felt).
 ## 2026-10-07: Deaktivér-knap på linjen (admin → Retter → HelloFresh/Valdemarsro)
 Det eneste, admin kan ændre på importerede retter, er "Deaktivér"/"Aktivér" på linjen i listen (brugerens krav). Knappen sætter `Product.discontinued`, som al søgning og AI-genkendelse allerede filtrerer på; HelloFresh-importen overskriver ikke feltet ved genimport. Deaktiverede retter vises gennemstreget med teksten "Deaktiveret — vises ikke for brugerne". Valdemarsro-listen bruger samme knap, men er tom, indtil importen er bygget (den skal så bruge `discontinued` på samme måde og udvide `setDishDisabled` til sin kilde).
 
+## 2026-10-07: Tøj ved vejning og synk-popups
+
+- `WeightEntry.attire` (NAKED/UNDERWEAR/CLOTHED/CLOTHED_PHONE, null = ubekræftet) kan bekræftes også på låste, synkroniserede vejninger; selve vægten forbliver låst.
+- Gæt: de seneste N bekræftede vejninger inden for ±vindue timer af klokkeslættet, mest brugte valg vinder; ellers før kl. 08 undertøj, ellers tøj + mobil. Parametre i singleton `WeightAttireSettings` (admin → Vejning: tøj).
+- Popup-spørgsmål kun op til 7 dage tilbage. Synk-popup når der er gået mere end `syncStaleHours` (standard 48).
+- Kalibrering regnes først som gjort, når brugeren har gemt på kalibreringssiden (`User.weightCalibratedAt`).
+
 ## 2026-10-07: Gemte visninger i admin Varer
 
 - Filterbjælken på admin → Varer er delt i to kort: "Visning" (sortering, Liste/Galleri/Detaljer, valg af synlige felter) og "Filtre" (søgning + filtre).

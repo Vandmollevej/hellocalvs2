@@ -384,6 +384,7 @@ export const PAGE_TREE: PageArea[] = [
           },
           { path: "/admin/search", label: "Søg", note: "Gammel adresse — sender videre til Varer" },
           { path: "/admin/search-ranking", label: "Søgealgoritmer" },
+          { path: "/admin/weight-attire", label: "Vejning: tøj-algoritme" },
           { path: "/admin/passkeys", label: "Passkeys" },
           { path: "/admin/shortcuts", label: "Genveje", note: "Tastaturgenvej til hvert menupunkt + AutoHotkey-tekst" },
           {

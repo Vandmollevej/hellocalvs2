@@ -1741,6 +1741,79 @@
       "fatG": "fx 70"
     }
   },
+  "weighIn": {
+    "attireTitle": "Hvad havde du på?",
+    "attire": {
+      "NAKED": "Nøgen",
+      "UNDERWEAR": "Med undertøj",
+      "CLOTHED": "Med tøj",
+      "CLOTHED_PHONE": "Med tøj og mobil i lommen"
+    },
+    "save": "Gem",
+    "saving": "Gemmer…",
+    "saveError": "Kunne ikke gemme. Prøv igen.",
+    "later": "Senere",
+    "continue": "Fortsæt",
+    "ago": {
+      "justNow": "lige nu",
+      "minutes": "for {n} min. siden",
+      "hours": "for {n} timer siden",
+      "days": "for {n} dage siden"
+    },
+    "sync": {
+      "now": "Synk nu",
+      "syncing": "Synkroniserer…",
+      "done": "Synkroniseret",
+      "failed": "Synkroniseringen mislykkedes",
+      "error": "Fejl — forbind igen",
+      "last": "Synkroniseret {ago}",
+      "never": "Ikke synkroniseret endnu",
+      "open": "Åbn {name}",
+      "openShort": "Åbn",
+      "noneConnected": "Ingen smartvægt er forbundet",
+      "connect": "Forbind"
+    },
+    "stale": {
+      "title": "Det er længe siden, der er synkroniseret",
+      "body": "{name} blev sidst synkroniseret {ago}. Synkronisér, så dine nyeste vejninger kommer med.",
+      "bodyNever": "{name} er ikke synkroniseret endnu. Synkronisér, så dine vejninger kommer med."
+    },
+    "prompt": {
+      "aria": "Hvad havde du på ved vejningen?",
+      "todayMorning": "Du har vejet dig i morges.",
+      "past": "Du vejede dig {when}",
+      "andWeighed": "og vejede",
+      "question": "Men var det:",
+      "older": "Ældre vejning",
+      "newer": "Nyere vejning"
+    },
+    "when": {
+      "today": {
+        "morning": "i morges",
+        "afternoon": "i eftermiddags",
+        "evening": "i aftes",
+        "night": "i nat"
+      },
+      "yesterday": {
+        "morning": "i går morges",
+        "afternoon": "i går eftermiddags",
+        "evening": "i går aftes",
+        "night": "i nat"
+      },
+      "part": {
+        "morning": "morgen",
+        "afternoon": "eftermiddag",
+        "evening": "aften",
+        "night": "nat"
+      },
+      "weekday": "{weekday} {part}",
+      "lastWeek": "sidste uge {weekday}"
+    },
+    "details": {
+      "title": "Vejning",
+      "failed": "Vejningen kunne ikke hentes."
+    }
+  },
   "weightLog": {
     "title": "Vægt",
     "intro": "Registrér din vægt. Den gemmes med det samme og indgår i kalenderen og statistikken.",
@@ -1750,7 +1823,7 @@
     "saving": "Gemmer…",
     "saveError": "Vægten kunne ikke gemmes.",
     "saved": "Vægt gemt.",
-    "moreDetailsLink": "Registrér med flere detaljer (tøj, sko, tidspunkt)",
+    "moreDetailsLink": "Du mangler at kalibrere din vægt",
     "loading": "Henter…",
     "noEntriesYet": "Ingen vejninger registreret endnu.",
     "recentTitle": "Seneste vejninger"

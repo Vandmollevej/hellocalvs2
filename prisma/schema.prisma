@@ -51,6 +51,8 @@ model User {
   // Tidspunkt for seneste e-mailverificerede ændring af start-vægten
   // (/profile/start-weight). Null = aldrig ændret; så gælder createdAt.
   startWeightUpdatedAt DateTime?
+  // 2026-10-07: sat, når brugeren har gennemført vægt-kalibreringen (skjuler 'Du mangler at kalibrere din vægt').
+  weightCalibratedAt DateTime?
   createdAt   DateTime @default(now())
 
   // Admin login (docs/ADMIN.md): only set for the single administrator
@@ -578,9 +580,18 @@ model WeightEntry {
   // UNKNOWN/true (default) for rows written by an integration.
   source    WeightSource @default(MANUAL)
   note      String?
+  // 2026-10-07: hvad brugeren havde på ved vejningen (null = ikke bekræftet endnu).
+  attire    WeighAttire?
   weighedAt DateTime     @default(now())
 
   @@map("weight_entries")
+}
+
+enum WeighAttire {
+  NAKED
+  UNDERWEAR
+  CLOTHED
+  CLOTHED_PHONE
 }
 
 enum RelativeTime {
@@ -4819,4 +4830,17 @@ model PetFoodIncident {
   @@index([createdAt])
   @@index([reviewedAt, createdAt])
   @@map("pet_food_incidents")
+}
+// Singleton (id = 1): admin-styret algoritme, der gætter tøj-valget ved en vejning
+// ud fra de seneste vejninger (docs/DECISIONS.md 2026-10-07).
+model WeightAttireSettings {
+  id             Int      @id @default(1)
+  enabled        Boolean  @default(true)
+  lookbackCount  Int      @default(10)
+  windowHours    Float    @default(1.5)
+  underwearBefore Int     @default(8)
+  syncStaleHours Int      @default(48)
+  updatedAt      DateTime @default(now()) @updatedAt
+
+  @@map("weight_attire_settings")
 }

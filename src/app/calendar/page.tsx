@@ -3,6 +3,7 @@
 import { SINNERS_ENABLED } from "@/lib/food-classification";
 import { useEffect, useMemo, useRef, useState, createContext, useContext } from "react";
 import Link from "next/link";
+import { WeightEntryDetailsSheet } from "@/components/weight/WeightEntryDetailsSheet";
 import { useRouter } from "next/navigation";
 import {
   IconCalendar,
@@ -3069,9 +3070,23 @@ function HourEntriesOverlay({
 // en måling uden vejning (fx blodtryk) — alt, integrationen har leveret.
 function MeasurementRow({ measurement, className }: { measurement: CalendarMeasurement; className: string }) {
   const { t } = useTranslation();
+  const [open, setOpen] = useState(false);
+  const weighInId = measurement.id.startsWith("weight-") ? measurement.id.slice("weight-".length) : null;
   const source = measurement.source && measurement.source !== "MANUAL" ? t(`calendar.measurement.source.${measurement.source}`) : null;
   return (
-    <div className={className}>
+    <div
+      className={`${className} ${weighInId ? "cursor-pointer" : ""}`}
+      {...(weighInId
+        ? {
+            role: "button",
+            tabIndex: 0,
+            onClick: () => setOpen(true),
+            onKeyDown: (event: React.KeyboardEvent) => {
+              if (event.key === "Enter" || event.key === " ") setOpen(true);
+            },
+          }
+        : {})}
+    >
       <FoodRow
         thumbnail={<IconScale size={22} className="text-hf-black" aria-hidden="true" />}
         title={measurement.weightKg !== null ? t("calendar.measurement.weight") : t("calendar.measurement.title")}
@@ -3091,6 +3106,11 @@ function MeasurementRow({ measurement, className }: { measurement: CalendarMeasu
             </div>
           ))}
         </dl>
+      )}
+      {open && weighInId && (
+        <span onClick={(event) => event.stopPropagation()} onKeyDown={(event) => event.stopPropagation()}>
+          <WeightEntryDetailsSheet id={weighInId} onClose={() => setOpen(false)} />
+        </span>
       )}
     </div>
   );

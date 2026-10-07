@@ -20,6 +20,7 @@ const DICTIONARY = {
   nav_duplicate_products: { DA: "Dubletter", EN: "Duplicates" },
   nav_search: { DA: "Søg", EN: "Search" },
   nav_search_ranking: { DA: "Søgealgoritmer", EN: "Search ranking" },
+  nav_weight_attire: { DA: "Vejning: tøj", EN: "Weigh-in clothing" },
   nav_quality_control: { DA: "Kvalitetskontrol", EN: "Quality control" },
   nav_activities: { DA: "Aktiviteter", EN: "Activities" },
   nav_passkeys: { DA: "Passkeys", EN: "Passkeys" },

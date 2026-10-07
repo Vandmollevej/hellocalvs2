@@ -20,6 +20,13 @@ Last updated: 2026-10-07
 - "Senest anvendte" hedder nu "Senest tilføjet". Bundark har ingen synlig overskrift (kun til skærmlæsere). Tilføj-knappen er fjernet fra vareraderne (Søg, Favoritter, Mine scanninger); tryk på varen åbner varesiden /add/[id] uden popup.
 - Fjernet "Sådan regner vi" på Profil; Luk konto kræver nu et kontrolord ligesom Slet mine data, og kontrolordet følger sproget (SLET/DELETE/LÖSCHEN …; serveren får stadig "SLET"). Tilføj-menuen: tekst tættere på ikonerne. Varesiden: "/stk." efter gram pr. servering/skive, brand-logo flyttet 12 px ud, ingen tom luft over Tilføj-knappen.
 - Beskeder: "Slettet" øverst til venstre, swipe viser "Slet" midt for beskeden, "Ryd alt" under Slettet (bekræftelse i bundark). Migration `20261007140000_outbound_message_user_delete` skal køre ved deploy; "Ryd alt" skjuler for brugeren, rækken bevares til admin-loggen. Ikke visuelt testet (brugerregel).
+## 2026-10-07: Vægt — synk-status, tøj ved vejning, kalibrer
+
+- Vægtsiden viser synk-status pr. forbundet integration (sidst synkroniseret + Synk nu). Gammel synk (admin, standard 48 t) giver et bundark med Synk nu / link til integrationen (`WeighInPrompts` på forsiden).
+- Smartvægt-vejninger uden bekræftet tøj (op til 7 dage) giver bundarket "Du har vejet dig i morges. Men var det: …" med pil frem/tilbage, klokkeslæt, vægt og 1/3. Tøj: Nøgen / Med undertøj / Med tøj / Med tøj og mobil i lommen (`WeightEntry.attire`).
+- Vejning har on/off-tøjblok med algoritmen (admin → Vejning: tøj) som gæt; vejninger kan altid åbnes fra Seneste vejninger og kalenderen (fedtprocent m.m. under tøjet).
+- "Registrér …" er nu "Du mangler at kalibrere din vægt" (info-cirkel, ingen understregning), kun til `User.weightCalibratedAt` er sat. Tilføj-menuens tekster rykket tættere på ikonerne.
+- Migration `20261007150000_weight_attire`. de/fr/nl/sv/no har engelsk tekst for de nye `weighIn.*`-nøgler.
 
 ## 2026-10-07: Nøgleord på produktsiden — typer og grupper
 

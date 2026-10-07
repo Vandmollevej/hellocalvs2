@@ -8,6 +8,7 @@ import { FooterArc } from "@/components/FooterArc";
 import { LandingPage } from "@/components/landing/LandingPage";
 import { getSessionUser } from "@/lib/session";
 import { HeartRateSpikePrompt } from "@/components/activity/HeartRateSpikePrompt";
+import { WeighInPrompts } from "@/components/weight/WeighInPrompts";
 
 // Forsiden må ikke indekseres af søgemaskiner.
 export const metadata: Metadata = { robots: { index: false, follow: false } };
@@ -47,6 +48,7 @@ export default async function Home() {
       <BottomNav />
 
       <HeartRateSpikePrompt />
+      <WeighInPrompts />
     </div>
   );
 }

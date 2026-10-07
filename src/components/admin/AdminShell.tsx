@@ -122,6 +122,7 @@ export const NAV: NavEntry[] = [
       { href: "/admin/support/templates", key: "nav_standard_mails" },
       { href: "/admin/messaging", key: "nav_messaging" },
       { href: "/admin/search-ranking", key: "nav_search_ranking" },
+      { href: "/admin/weight-attire", key: "nav_weight_attire" },
       { href: "/admin/shortcuts", key: "nav_shortcuts" },
     ],
   },

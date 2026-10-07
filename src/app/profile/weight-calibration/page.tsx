@@ -210,6 +210,8 @@ export default function WeightCalibrationPage() {
       if (responses.every((response) => response.ok)) {
         setConditionValues({});
         setStatus("saved");
+        // Skjuler "Du mangler at kalibrere din vægt" på vægtsiden.
+        void fetch("/api/weight-calibration", { method: "POST" }).catch(() => {});
       } else {
         setStatus("error");
       }

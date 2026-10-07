@@ -389,3 +389,10 @@ Ejer: offline/PII/scan-sessionen (2026-10-07), branch `claude/offline-pii-scan`
 | 2 | PII-adskillelse: anbefaling | Færdig (docs/SECURITY-PII-OPTIONS.md) | Afventer brugerens valg før noget bygges |
 | 3 | Tallerken-scan midlertidigt på OpenAI | Færdig (flag MEAL_PHOTO_PROVIDER) | Skal rulles tilbage, se DECISIONS 2026-10-07 |
 | 4 | Stregkodescanner robusthed (skygge) | Færdig (kode) | Afventer brugerens test på telefon med mælk i skygge |
+## G-VAEGT — Vægt: synk-status, tøj ved vejning, kalibrer
+Filer: `src/components/weight/**`, `src/app/weight/**`, `src/app/api/weight-*`, `src/lib/weigh-*`, `src/app/admin/weight-attire/**`.
+Ejer: vægt-sessionen (2026-10-07)
+
+| Id | Opgave | Status | Næste skridt |
+| --- | --- | --- | --- |
+| vaegt-synk | Synk-status, synk-popup, tøj-popup, tøj-blok + admin-algoritme, kalibrer-link, klik ind på vejning, Tilføj-tekst tættere | Færdig (se git log "Vægt:") | Afventer brugerens test på telefon; de/fr/nl/sv/no mangler oversættelse af `weighIn.*` |
