@@ -11,6 +11,7 @@ import { TextField } from "@/components/hf/TextField";
 import { FaceIdAnimation, type FaceIdPhase } from "@/components/FaceIdAnimation";
 import { useTranslation } from "@/i18n/LocaleProvider";
 import { hasPasskeyOnDevice, loginWithPasskey } from "@/lib/passkey-client";
+import { BottomSheet } from "@/components/hf/BottomSheet";
 import { afterLoginPath, oauthErrorKey, startOAuth } from "@/lib/login-flow";
 import { findLoginCountry, readLoginCountry, type LoginCountry } from "@/lib/login-country";
 
@@ -206,9 +207,14 @@ function LogIndContent() {
       </div>
 
       {approval && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-hf-black/40 p-4">
-          <div className="flex w-full max-w-sm flex-col gap-4 rounded-[28px] bg-hf-cream p-6 shadow-xl">
-            <h2 className="hf-type-body-lg font-semibold">{t("loginApproval.waitingTitle")}</h2>
+        <BottomSheet
+          ariaLabel={t("loginApproval.waitingTitle")}
+          onClose={() => {
+            setApproval(null);
+            setSubmitting(false);
+          }}
+        >
+          <div className="flex flex-col gap-4 p-4">
             <p className="hf-type-body">{t("loginApproval.waitingBody")}</p>
             <button
               type="button"
@@ -221,7 +227,7 @@ function LogIndContent() {
               {t("loginApproval.waitingCancel")}
             </button>
           </div>
-        </div>
+        </BottomSheet>
       )}
 
       {faceIdPhase && (

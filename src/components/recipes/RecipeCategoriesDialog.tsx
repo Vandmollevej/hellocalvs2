@@ -5,6 +5,7 @@ import { AccordionSection } from "@/components/hf/AccordionSection";
 import { Toggle } from "@/components/ui/Toggle";
 import { useTranslation } from "@/i18n/LocaleProvider";
 import { RECIPE_CATEGORY_GROUPS, type RecipeCategoryGroup } from "@/lib/recipe-categories";
+import { BottomSheet } from "@/components/hf/BottomSheet";
 
 // Vindue efter Gem i Opret ret (docs/DECISIONS.md 2026-09-25). Retten er
 // allerede gemt; LUK gemmer kategorierne en gang til, hvis nogen er valgt.
@@ -42,18 +43,10 @@ export function RecipeCategoriesDialog({
   const groups = Object.entries(RECIPE_CATEGORY_GROUPS) as [RecipeCategoryGroup, readonly string[]][];
 
   return (
-    <div className="fixed inset-0 z-50 flex items-end justify-center bg-hf-black/40 sm:items-center">
-      <div
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="recipe-categories-title"
-        className="flex max-h-[85vh] w-full max-w-md flex-col rounded-t-2xl bg-hf-cream sm:rounded-2xl"
-      >
+    <BottomSheet ariaLabel={t("recipeCategories.title")} onClose={() => void close()}>
+      <div className="flex flex-col">
         <div className="p-4 pb-2">
-          <p id="recipe-categories-title" className="hf-type-title text-hf-black">
-            {t("recipeCategories.title")}
-          </p>
-          <p className="hf-type-small text-text-secondary mt-1">{t("recipeCategories.intro")}</p>
+          <p className="hf-type-small text-text-secondary">{t("recipeCategories.intro")}</p>
         </div>
         <div className="flex min-h-0 flex-1 flex-col gap-4 overflow-y-auto px-4 pb-2">
           {groups.map(([group, values]) => {
@@ -99,6 +92,6 @@ export function RecipeCategoriesDialog({
           </button>
         </div>
       </div>
-    </div>
+    </BottomSheet>
   );
 }

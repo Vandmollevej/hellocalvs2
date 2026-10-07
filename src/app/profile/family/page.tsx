@@ -15,6 +15,7 @@ import { FamilySharingSection } from "@/components/family/FamilySharingSection";
 import { useFamilyStatus, type FamilyMemberInfo } from "@/components/family/FamilyStatusProvider";
 import { useTranslation } from "@/i18n/LocaleProvider";
 import { SkeletonCards, SkeletonList, SkeletonScreen, SkeletonSectionTitle } from "@/components/hf/Skeleton";
+import { useConfirmSheet } from "@/lib/use-confirm-sheet";
 
 // Familien (docs/FAMILY.md): betaleren opretter profiler, markerer børn,
 // laver login-koder og bestemmer, hvem der må se og taste ind for hvem.
@@ -48,6 +49,7 @@ async function send(url: string, method: string, body?: unknown) {
 }
 
 function FamilyPageContent() {
+  const { ask, sheet: confirmSheet } = useConfirmSheet();
   const { t } = useTranslation();
   const searchParams = useSearchParams();
   const { status, refresh } = useFamilyStatus();
@@ -114,9 +116,12 @@ function FamilyPageContent() {
   }
 
   async function revokeCode(pending: PendingCode) {
-    if (!window.confirm(t("family.pending.revokeConfirm", { email: pending.email }))) return;
-    await run(`/api/family/codes/${pending.id}`, "DELETE");
-    await loadCodes();
+    ask(t("family.pending.revokeConfirm", { email: pending.email }), () => {
+      void (async () => {
+        await run(`/api/family/codes/${pending.id}`, "DELETE");
+        await loadCodes();
+      })();
+    });
   }
 
   async function addProfile() {
@@ -219,14 +224,17 @@ function FamilyPageContent() {
         <button
           type="button"
           disabled={busy || joinCode.trim().length < 8 || !joinEmail.includes("@")}
-          onClick={async () => {
-            if (!window.confirm(t("family.join.confirm"))) return;
-            const result = await run("/api/family/join", "POST", { code: joinCode, email: joinEmail });
-            if (result.ok) {
-              setJoinCode("");
-              setJoinEmail("");
-            }
-          }}
+          onClick={() =>
+            ask(t("family.join.confirm"), () => {
+              void (async () => {
+                const result = await run("/api/family/join", "POST", { code: joinCode, email: joinEmail });
+                if (result.ok) {
+                  setJoinCode("");
+                  setJoinEmail("");
+                }
+              })();
+            })
+          }
           className="hf-control hf-btn-primary w-full px-4"
         >
           {t("family.join.submit")}
@@ -237,6 +245,7 @@ function FamilyPageContent() {
 
   return (
     <div className="hf-page hf-page--sections">
+      {confirmSheet}
       {error && (
         <p role="alert" className="hf-type-body text-hf-red-dark">
           {error}
@@ -300,9 +309,9 @@ function FamilyPageContent() {
               type="button"
               disabled={busy}
               onClick={() => {
-                if (window.confirm(t("family.member.leaveConfirm", { owner: family.ownerName }))) {
+                ask(t("family.member.leaveConfirm", { owner: family.ownerName }), () => {
                   void run("/api/family/leave", "POST");
-                }
+                });
               }}
               className="hf-control hf-btn-secondary w-full px-4"
             >
@@ -388,9 +397,9 @@ function FamilyPageContent() {
                           type="button"
                           disabled={busy}
                           onClick={() => {
-                            if (window.confirm(t("family.members.removeConfirm", { name: member.displayName }))) {
+                            ask(t("family.members.removeConfirm", { name: member.displayName }), () => {
                               void run(`/api/family/members/${member.userId}`, "DELETE");
-                            }
+                            });
                           }}
                           className="hf-btn-text self-start"
                         >

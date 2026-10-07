@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { IconArrowLeft } from "@tabler/icons-react";
+import { BottomSheet } from "@/components/hf/BottomSheet";
 import { getAdditiveInfo, type AdditiveInfo } from "@/lib/additives";
 
 export function AdditiveInfoModal({
@@ -25,29 +25,9 @@ export function AdditiveInfoModal({
   }, [code]);
 
   return (
-    <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-hf-black/40 p-4"
-      onClick={onClose}
-    >
-      <div
-        className="flex max-h-[80vh] w-full max-w-sm flex-col overflow-hidden rounded-2xl border border-hf-black/10 bg-hf-white"
-        onClick={(event) => event.stopPropagation()}
-      >
-        <div className="flex items-center justify-between border-b border-hf-tan-dark px-4 py-3">
-          <p className="hf-type-body hf-heading text-hf-black">
-            {code.toUpperCase()}
-            {info?.internationalName ? ` · ${info.internationalName}` : ""}
-          </p>
-          <button
-            type="button"
-            onClick={onClose}
-            aria-label="Tilbage"
-            className="flex h-7 w-7 items-center justify-center rounded-full text-hf-black"
-          >
-            <IconArrowLeft size={18} />
-          </button>
-        </div>
-        <div className="overflow-y-auto p-4">
+    <BottomSheet ariaLabel={`${code.toUpperCase()}${info?.internationalName ? ` · ${info.internationalName}` : ""}`} onClose={onClose}>
+        <div className="p-4">
+          <p className="hf-type-body hf-heading mb-3 text-hf-black">{`${code.toUpperCase()}${info?.internationalName ? ` · ${info.internationalName}` : ""}`}</p>
           {!info ? (
             <p className="hf-type-body text-text-secondary">Henter...</p>
           ) : (
@@ -97,7 +77,6 @@ export function AdditiveInfoModal({
             kostrådgivning.
           </p>
         </div>
-      </div>
-    </div>
+    </BottomSheet>
   );
 }
