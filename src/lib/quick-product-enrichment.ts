@@ -546,6 +546,7 @@ export async function enrichQuickProduct(
       kind: "AUTO_REJECTED",
       productId: input.productId,
       productName: product.name,
+      imageUrls: input.frontPhotoUrl ? [input.frontPhotoUrl] : undefined,
       matchedBy: `${petFoodBlock.reason}: ${petFoodBlock.match}`,
     });
     await debugLog({

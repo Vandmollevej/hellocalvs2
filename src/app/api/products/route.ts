@@ -16,6 +16,7 @@ import { recordNutrientSources } from "@/lib/product-nutrient-sources";
 import { HIDE_FROM_SEARCH_BELOW } from "@/lib/uncertainty-thresholds";
 import { petFoodBlockReason } from "@/lib/pet-food-blacklist";
 import { recordPetFoodAttempt } from "@/lib/pet-food-strikes";
+import { saveDataUrlImage } from "@/lib/qc-image-storage";
 
 // GET /api/products?q=rugbrød — search in our own product database only. Results are ranked by src/lib/product-search-ranking.ts: text match
 // is always dominant, and hidden regional search/click/hour-of-day statistics
@@ -358,10 +359,19 @@ export async function POST(req: Request) {
   });
   if (petFoodBlock) {
     console.warn(`Pet food blocked (${petFoodBlock.reason}): ${petFoodBlock.match}`);
+    // Billederne, brugeren forsøgte at oprette, gemmes på hændelsen, så admin kan se dem.
+    const savedImages = (
+      await Promise.all(
+        [imageUrl, ...extraImages.slice(0, 3)].map(async (image) =>
+          !image ? null : image.startsWith("data:image/") ? await saveDataUrlImage(image).catch(() => null) : image.startsWith("/") ? image : null
+        )
+      )
+    ).filter((url): url is string => Boolean(url));
     const outcome = await recordPetFoodAttempt({
       userId: (await getSessionUser())?.id,
       source: "CREATE",
       barcode,
+      imageUrls: savedImages,
       productName: name,
       matchedBy: `${petFoodBlock.reason}: ${petFoodBlock.match}`,
     });

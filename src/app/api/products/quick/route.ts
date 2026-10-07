@@ -85,10 +85,19 @@ export async function POST(req: Request) {
       flowId,
       barcode,
     });
+    // Billederne, brugeren forsøgte at oprette, gemmes på hændelsen, så admin kan se dem.
+    const savedPhotos = (
+      await Promise.all(
+        [frontPhoto, nutritionPhoto, ingredientsPhoto].map((photo) =>
+          isPhoto(photo) ? saveDataUrlImage(photo).catch(() => null) : Promise.resolve(null)
+        )
+      )
+    ).filter((url): url is string => Boolean(url));
     const outcome = await recordPetFoodAttempt({
       userId: (await getSessionUser())?.id,
       source: "QUICK",
       barcode,
+      imageUrls: savedPhotos,
       matchedBy: `${petFoodBlock.reason}: ${petFoodBlock.match}`,
     });
     return NextResponse.json(

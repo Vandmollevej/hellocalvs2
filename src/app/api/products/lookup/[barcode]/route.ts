@@ -65,6 +65,7 @@ export async function GET(
           message: outcome.message,
           strikes: outcome.strikes,
           accountBlocked: outcome.blocked,
+          incidentId: outcome.incidentId,
         },
         { status: 422 }
       );

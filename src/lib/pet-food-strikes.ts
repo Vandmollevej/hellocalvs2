@@ -4,13 +4,14 @@ import {
   PET_FOOD_BLOCKED_MESSAGE,
   PET_FOOD_WARNING_MESSAGE,
 } from "@/lib/pet-food-messages";
+import { saveDataUrlImage } from "@/lib/qc-image-storage";
 
 // Dyrefoder-spærringens hændelser og "to chancer" (docs/DECISIONS.md 2026-10-07).
 //
-// Hver afvisning gemmes som en PetFoodIncident og vises i admin-oversigten, til en admin
-// har gennemgået den: en afvisning kan ramme en kunde, der scannede en legitim vare, og
-// kunden risikerer at forlade appen. Admin kan frikende en fejl (varen sættes tilbage, og
-// en spærring ophæves, hvis den kun skyldtes den hændelse).
+// Hver afvisning gemmes som en PetFoodIncident — med de billeder, brugeren forsøgte at oprette —
+// og vises i admin-oversigten, til en admin har gennemgået den: en afvisning kan ramme en kunde,
+// der scannede en legitim vare, og kunden risikerer at forlade appen. Admin kan frikende en fejl
+// (varen sættes tilbage, og en spærring ophæves, hvis den kun skyldtes den hændelse).
 //
 // En bruger, der bliver taget i at ville oprette dyrefoder, får første gang en advarsel på
 // skærmen. Næste gang spærres kontoen: den logges ud overalt (src/lib/session.ts) og kan
@@ -26,15 +27,22 @@ export const STRIKES_BEFORE_BLOCK = 2;
 // gentagelser af samme stregkode/vare inden for få minutter er den samme hændelse, og
 // flere forskellige hændelser inden for få minutter tæller som ét forsøg mod kontoen.
 const SAME_ATTEMPT_WINDOW_MS = 10 * 60 * 1000;
+// Et foto kan kun hænges på en hændelse kort efter, at den opstod (kameraflowet sender det bagefter).
+const PHOTO_ATTACH_WINDOW_MS = 5 * 60 * 1000;
+const MAX_INCIDENT_IMAGES = 4;
 
 export type PetFoodAttemptOutcome = {
   /** 0 = ikke talt (anonym/administrator), 1 = advarsel, 2 = spærret. */
   strikes: number;
   blocked: boolean;
   message: string;
+  /** Hændelsen i admin-oversigten (klienten kan sende kameraets billede til den). */
+  incidentId: string | null;
 };
 
-const NOT_COUNTED: PetFoodAttemptOutcome = { strikes: 0, blocked: false, message: PET_FOOD_BLOCKED_MESSAGE };
+function notCounted(incidentId: string | null): PetFoodAttemptOutcome {
+  return { strikes: 0, blocked: false, message: PET_FOOD_BLOCKED_MESSAGE, incidentId };
+}
 
 export async function recordPetFoodAttempt(input: {
   userId?: string | null;
@@ -44,6 +52,8 @@ export async function recordPetFoodAttempt(input: {
   productId?: string | null;
   productName?: string | null;
   matchedBy?: string | null;
+  /** De billeder, brugeren forsøgte at oprette (gemte URL'er), så admin kan se dem. */
+  imageUrls?: string[];
   /** false = kun markering til admin (fx fund i en eksisterende vare); aldrig et forsøg mod en bruger. */
   countAsStrike?: boolean;
 }): Promise<PetFoodAttemptOutcome> {
@@ -62,11 +72,12 @@ export async function recordPetFoodAttempt(input: {
     // Samme stregkode/vare igen inden for få minutter = samme hændelse.
     const key = input.barcode ? { barcode: input.barcode } : input.productId ? { productId: input.productId } : null;
     const duplicate =
-      key !== null &&
-      (await prisma.petFoodIncident.findFirst({
-        where: { userId: user?.id ?? null, createdAt: { gt: windowStart }, ...key },
-        select: { id: true },
-      }));
+      key !== null
+        ? await prisma.petFoodIncident.findFirst({
+            where: { userId: user?.id ?? null, createdAt: { gt: windowStart }, ...key },
+            select: { id: true },
+          })
+        : null;
 
     // Tæller hændelsens bruger allerede et forsøg inden for vinduet, tæller denne ikke igen.
     const since = user?.petFoodStrikesResetAt ?? new Date(0);
@@ -80,8 +91,9 @@ export async function recordPetFoodAttempt(input: {
     const recentStrike = counted[0] && now - counted[0].createdAt.getTime() < SAME_ATTEMPT_WINDOW_MS;
     const countsNow = eligible && !recentStrike;
 
+    let incidentId: string | null = duplicate?.id ?? null;
     if (!duplicate) {
-      await prisma.petFoodIncident.create({
+      const created = await prisma.petFoodIncident.create({
         data: {
           userId: user?.id ?? null,
           source: input.source,
@@ -90,13 +102,16 @@ export async function recordPetFoodAttempt(input: {
           productId: input.productId ?? null,
           productName: input.productName?.slice(0, 200) ?? null,
           matchedBy: input.matchedBy?.slice(0, 200) ?? null,
+          imageUrls: (input.imageUrls ?? []).slice(0, MAX_INCIDENT_IMAGES),
           countedAsStrike: countsNow,
         },
+        select: { id: true },
       });
+      incidentId = created.id;
     }
 
-    if (!user || !eligible) return NOT_COUNTED;
-    if (user.blockedAt) return { strikes: STRIKES_BEFORE_BLOCK, blocked: true, message: ACCOUNT_BLOCKED_MESSAGE };
+    if (!user || !eligible) return notCounted(incidentId);
+    if (user.blockedAt) return { strikes: STRIKES_BEFORE_BLOCK, blocked: true, message: ACCOUNT_BLOCKED_MESSAGE, incidentId };
 
     const strikes = counted.length + (countsNow && !duplicate ? 1 : 0);
     if (strikes >= STRIKES_BEFORE_BLOCK) {
@@ -104,14 +119,36 @@ export async function recordPetFoodAttempt(input: {
         where: { id: user.id },
         data: { blockedAt: new Date(), blockedReason: "Dyrefoder: gentaget forsøg på at oprette dyrefoder" },
       });
-      return { strikes, blocked: true, message: ACCOUNT_BLOCKED_MESSAGE };
+      return { strikes, blocked: true, message: ACCOUNT_BLOCKED_MESSAGE, incidentId };
     }
-    return { strikes: Math.max(strikes, 1), blocked: false, message: PET_FOOD_WARNING_MESSAGE };
+    return { strikes: Math.max(strikes, 1), blocked: false, message: PET_FOOD_WARNING_MESSAGE, incidentId };
   } catch (error) {
     // Spærringen af selve varen må aldrig vælte, fordi registreringen fejlede.
     console.error("Pet food incident recording failed", error);
-    return NOT_COUNTED;
+    return notCounted(null);
   }
+}
+
+// Kameraflowet sender billedet, brugeren forsøgte at scanne, kort efter at stregkoden blev spærret
+// (opslaget har kun stregkoden). Billedet hænges på hændelsen, så admin kan se det.
+// Kun den bruger, der ejer hændelsen (eller en anonym hændelse), og kun kort efter den opstod.
+export async function attachPetFoodIncidentPhoto(
+  incidentId: string,
+  sessionUserId: string | null,
+  photo: string
+): Promise<boolean> {
+  const incident = await prisma.petFoodIncident.findUnique({
+    where: { id: incidentId },
+    select: { userId: true, imageUrls: true, createdAt: true },
+  });
+  if (!incident) return false;
+  if (incident.userId && incident.userId !== sessionUserId) return false;
+  if (incident.imageUrls.length >= MAX_INCIDENT_IMAGES) return false;
+  if (Date.now() - incident.createdAt.getTime() > PHOTO_ATTACH_WINDOW_MS) return false;
+  const url = await saveDataUrlImage(photo).catch(() => null);
+  if (!url) return false;
+  await prisma.petFoodIncident.update({ where: { id: incidentId }, data: { imageUrls: { push: url } } });
+  return true;
 }
 
 // Admin → Brugere: ophæv spærringen (brugeren skriver typisk til support).
@@ -190,6 +227,7 @@ export async function loadPetFoodStrikeSummary(now: Date = new Date()) {
         productId: true,
         productName: true,
         matchedBy: true,
+        imageUrls: true,
         createdAt: true,
         userId: true,
         user: { select: { blockedAt: true } },
@@ -208,6 +246,7 @@ export async function loadPetFoodStrikeSummary(now: Date = new Date()) {
       productId: row.productId,
       productName: row.productName,
       matchedBy: row.matchedBy,
+      imageUrls: row.imageUrls,
       createdAt: row.createdAt,
       // Navn og e-mail vises aldrig for admin (brugerdata er fortrolige): kun et pseudonym.
       userLabel: row.userId ? `Bruger ${row.userId.slice(-6)}` : "Ikke logget ind",

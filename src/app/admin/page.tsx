@@ -142,7 +142,17 @@ export default async function AdminDashboardPage() {
           <ul className="divide-y divide-border-strong">
             {petFood.recent.map((incident) => (
               <li key={incident.id} className="flex flex-wrap items-center justify-between gap-3 px-4 py-3">
-                <div className="min-w-0">
+                {incident.imageUrls.length > 0 && (
+                  <div className="flex shrink-0 gap-2">
+                    {incident.imageUrls.slice(0, 3).map((url) => (
+                      <a key={url} href={url} target="_blank" rel="noreferrer" title="Åbn billedet i fuld størrelse">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img src={url} alt="Forsøgt oprettet" className="h-16 w-16 rounded-lg border border-hf-tan-dark object-cover" />
+                      </a>
+                    ))}
+                  </div>
+                )}
+                <div className="min-w-0 flex-1">
                   <p className="hf-type-body truncate text-hf-black">
                     <span className="hf-type-strong">{incident.productName ?? "Ukendt vare"}</span>
                     {incident.barcode ? ` · ${incident.barcode}` : ""}

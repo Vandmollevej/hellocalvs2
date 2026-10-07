@@ -4760,6 +4760,8 @@ model PetFoodIncident {
   productId       String?
   productName     String?
   matchedBy       String?
+  // De billeder, brugeren forsøgte at oprette (gemte URL'er), så admin kan se dem i oversigten.
+  imageUrls       String[]  @default([])
   // Tæller som et forsøg mod brugerens konto (advarsel/spærring).
   countedAsStrike Boolean   @default(true)
   // Admin har gennemgået hændelsen; falsePositive = fejlagtig afvisning (frikendt).

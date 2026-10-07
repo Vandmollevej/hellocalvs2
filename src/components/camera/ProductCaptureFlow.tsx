@@ -596,9 +596,22 @@ export function ProductCaptureFlow({ returnSuffix, rescan }: { returnSuffix: str
           return;
         }
         if (response.status === 422) {
-          const blocked = (await response.json().catch(() => null)) as { code?: string; message?: string } | null;
+          const blocked = (await response.json().catch(() => null)) as {
+            code?: string;
+            message?: string;
+            incidentId?: string | null;
+          } | null;
           if (blocked?.code === "PET_FOOD_BLOCKED") {
             scanLog(flowId, "barcode_blocked", { level: "warn", message: "Stregkoden er spærret (dyrefoder)", barcode: code });
+            // Billedet af den spærrede scanning gemmes på hændelsen, så admin kan se, hvad brugeren forsøgte.
+            const blockedFrame = blocked.incidentId ? captureVideoFrame(videoRef.current, BARCODE_PHOTO_MAX_SIDE) : null;
+            if (blocked.incidentId && blockedFrame) {
+              void fetch("/api/products/blocked-photo", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ incidentId: blocked.incidentId, photo: blockedFrame.url }),
+              }).catch(() => {});
+            }
             setLookupBlockedMessage(blocked.message ?? "Dyrefoder kan ikke oprettes i Hello Cal.");
             setBarcodeDetection(null);
             activeCodeRef.current = null;
