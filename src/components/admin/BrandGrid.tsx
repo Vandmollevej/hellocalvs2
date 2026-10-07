@@ -153,7 +153,7 @@ export function BrandGrid({ rows, productHrefs, canEdit }: { rows: AdminBrandRow
                   <div className="flex min-w-0 flex-col gap-0.5 px-1 pb-1">
                     <p className="hf-type-body hf-type-strong truncate text-hf-black">{brand.name}</p>
                     <p className="hf-type-small text-text-muted">
-                      {brand.productCount.toLocaleString("da-DK")} vare{brand.productCount === 1 ? "" : "er"}
+                      {brand.productCount.toLocaleString("da-DK")} vare{brand.productCount === 1 ? "" : "r"}
                     </p>
                     {state && (
                       <p className={`hf-type-small ${state.phase === "error" ? "text-hf-red-dark" : state.phase === "ok" ? "text-hf-green-dark" : "text-text-muted"}`}>
