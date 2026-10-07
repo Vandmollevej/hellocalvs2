@@ -1518,6 +1518,8 @@ model Product {
   labelsScannedAt    DateTime?
   // Dyrefoder-billedtjek (natligt job "pet-food-scan", docs/DECISIONS.md 2026-10-07). petFoodCheckedAt = sidste kørsel.
   petFoodCheckedAt   DateTime?
+  // Natlig gennemgang af eksisterende varer med stregkode- og ordspærringen (flag-only, ingen AI).
+  petFoodTextCheckedAt DateTime?
   registrations      Registration[]
   favorites          Favorite[]
   dishIngredients    DishIngredient[]
@@ -4746,16 +4748,27 @@ model ProductEnergySplitFlag {
 // source: LOOKUP (stregkode scannet), CREATE / QUICK (oprettelse), ENRICHMENT (AI læste
 // dyrefoder på forsiden), NIGHT (natrobotten så dyrefoder på billedet).
 model PetFoodIncident {
-  id        String   @id @default(cuid())
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId    String
-  source    String
-  barcode   String?
-  productId String?
-  matchedBy String?
-  createdAt DateTime @default(now())
+  id              String    @id @default(cuid())
+  // Null = anonym (ikke logget ind) — hændelsen vises stadig i admin-oversigten.
+  user            User?     @relation(fields: [userId], references: [id], onDelete: SetNull)
+  userId          String?
+  source          String
+  // BLOCKED = spærret ved scanning/oprettelse (ingen vare oprettet), AUTO_REJECTED = vare oprettet og
+  // afvist (AI/natrobot), FLAGGED_EXISTING = fundet i en eksisterende vare (kun markeret).
+  kind            String    @default("BLOCKED")
+  barcode         String?
+  productId       String?
+  productName     String?
+  matchedBy       String?
+  // Tæller som et forsøg mod brugerens konto (advarsel/spærring).
+  countedAsStrike Boolean   @default(true)
+  // Admin har gennemgået hændelsen; falsePositive = fejlagtig afvisning (frikendt).
+  reviewedAt      DateTime?
+  falsePositive   Boolean   @default(false)
+  createdAt       DateTime  @default(now())
 
   @@index([userId, createdAt])
   @@index([createdAt])
+  @@index([reviewedAt, createdAt])
   @@map("pet_food_incidents")
 }

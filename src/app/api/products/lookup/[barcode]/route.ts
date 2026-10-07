@@ -44,12 +44,13 @@ export async function GET(
     // afvises før opslag, og dyrefoder fra Open Food Facts/USDA gemmes aldrig.
     // En indlogget bruger får en advarsel første gang og spærres anden gang
     // (src/lib/pet-food-strikes.ts).
-    const blockedResponse = async (reason: string, match: string) => {
+    const blockedResponse = async (reason: string, match: string, productName?: string) => {
       const sessionUser = await getSessionUser();
       const outcome = await recordPetFoodAttempt({
         userId: sessionUser?.id,
         source: "LOOKUP",
         barcode,
+        productName,
         matchedBy: `${reason}: ${match}`,
       });
       log("barcode_lookup", `Afvist: dyrefoder (${reason}: ${match})`, {
@@ -120,7 +121,7 @@ export async function GET(
     const externalBlock = petFoodBlockReason({
       texts: [externalProduct.name, externalProduct.brand, offProduct?.ingredientsText],
     });
-    if (externalBlock) return blockedResponse(externalBlock.reason, externalBlock.match);
+    if (externalBlock) return blockedResponse(externalBlock.reason, externalBlock.match, externalProduct.name);
 
     const brand = externalProduct.brand
       ? await prisma.brand.upsert({

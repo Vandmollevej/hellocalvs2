@@ -362,6 +362,7 @@ export async function POST(req: Request) {
       userId: (await getSessionUser())?.id,
       source: "CREATE",
       barcode,
+      productName: name,
       matchedBy: `${petFoodBlock.reason}: ${petFoodBlock.match}`,
     });
     return NextResponse.json(

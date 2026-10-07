@@ -8,6 +8,7 @@ Last updated: 2026-10-07
 - Lint grøn på de ændrede filer. Ikke visuelt/live testet (ingen lokal DB/login) — test ved at scanne en kendt dyrefoder-stregkode (fx Pedigree/Whiskas): kameraflowet skal vise spærrebeskeden.
 - Billedspærring bygget som natrobot `pet-food-scan` (kl. 03:45, kun om natten, aldrig i scan-flowet): AI'en ser forsidefotoet af brugeroprettede/ventende varer og afviser dyrefoder; migration `20261007100000_product_pet_food_checked` skal køre ved deploy. Mangler: evt. oprydning af ca. 150 dyrefodervarer i de eksisterende Nemlig-ark.
 - Advarsel/spærring af brugere: første dyrefoder-forsøg giver en advarsel på skærmen, andet spærrer kontoen (admin → Brugere → Spærrede, "Ophæv spærring", rød advarsel i Oversigten). Migration `20261007110000_pet_food_strikes` skal køre ved deploy. Ikke live-testet (ingen lokal DB/login).
+- Alle afvisninger vises i Oversigten til gennemsyn med "Fejl – frikend"; natjobbet gennemgår også eksisterende varer. Migration `20261007120000_pet_food_incident_review` skal køre ved deploy. Tyske kilder (EDEKA24, Fressnapf, Zooplus.de) scrapes og lægges på spærrelisten bagefter.
 
 ## 2026-10-06: Guide-flows med betingelser, opsætningsguide (slået fra) og MyFitnessPal/Lifesum-import
 

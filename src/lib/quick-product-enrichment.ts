@@ -539,11 +539,13 @@ export async function enrichQuickProduct(
     : null;
   if (product && petFoodBlock) {
     await rejectProduct(input.productId).catch(() => null);
-    // Tæller som forsøg på dyrefoder for den, der oprettede varen (advarsel/spærring).
+    // Vises i admin-oversigten til gennemsyn og tæller som forsøg for den, der oprettede varen.
     await recordPetFoodAttempt({
       userId: product.createdByUserId,
       source: "ENRICHMENT",
+      kind: "AUTO_REJECTED",
       productId: input.productId,
+      productName: product.name,
       matchedBy: `${petFoodBlock.reason}: ${petFoodBlock.match}`,
     });
     await debugLog({

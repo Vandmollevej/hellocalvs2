@@ -4,6 +4,7 @@ import { prisma } from "@/lib/prisma";
 import { callStructuredVision } from "@/lib/product-ai";
 import { rejectProduct } from "@/lib/product-approval";
 import { recordPetFoodAttempt } from "@/lib/pet-food-strikes";
+import { isBlacklistedPetFoodBarcode, petFoodBlockReason } from "@/lib/pet-food-blacklist";
 import { debugLog, errorText } from "@/lib/debug-log";
 
 // Natligt job "pet-food-scan" (docs/DECISIONS.md 2026-10-07): dyrefoder-
@@ -23,6 +24,8 @@ const MIN_REJECT_CONFIDENCE = 0.75;
 // Kun et meget sikkert billedsvar tæller som forsøg mod brugeren (advarsel/spærring);
 // et mere usikkert svar afviser kun varen.
 const MIN_STRIKE_CONFIDENCE = 0.9;
+// Eksisterende varer gennemgås med stregkode- og ordspærringen (ingen AI, flag-only).
+const MAX_TEXT_SCREEN_PER_RUN = 3000;
 const MIME_BY_EXT: Record<string, string> = { ".png": "image/png", ".jpg": "image/jpeg", ".jpeg": "image/jpeg", ".webp": "image/webp" };
 
 const PET_FOOD_SCHEMA = {
@@ -57,7 +60,54 @@ async function loadPhoto(url: string | null): Promise<string | null> {
   return buffer ? `data:${mime};base64,${buffer.toString("base64")}` : null;
 }
 
+// Fase 1: gennemgå eksisterende varer (også dem fra før spærringen) med stregkode- og ordspærringen.
+// Fund ændrer ikke varen — de vises i admin-oversigten, hvor admin afviser varen eller frikender den.
+async function screenExistingProducts(): Promise<{ screened: number; flagged: number }> {
+  const products = await prisma.product.findMany({
+    where: { petFoodTextCheckedAt: null, status: { not: "REJECTED" }, privateOwnerId: null },
+    orderBy: { createdAt: "desc" },
+    take: MAX_TEXT_SCREEN_PER_RUN,
+    select: {
+      id: true,
+      name: true,
+      subbrand: true,
+      variant: true,
+      ingredientsText: true,
+      brand: { select: { name: true } },
+      barcodes: { select: { code: true } },
+    },
+  });
+  let flagged = 0;
+  for (const product of products) {
+    const barcodeHit = product.barcodes.map((b) => b.code).find((code) => isBlacklistedPetFoodBarcode(code));
+    const verdict = barcodeHit
+      ? { reason: "barcode", match: barcodeHit }
+      : petFoodBlockReason({
+          texts: [product.name, product.brand?.name, product.subbrand, product.variant, product.ingredientsText],
+        });
+    if (!verdict) continue;
+    flagged += 1;
+    await recordPetFoodAttempt({
+      source: "SCREEN",
+      kind: "FLAGGED_EXISTING",
+      productId: product.id,
+      productName: product.name,
+      barcode: barcodeHit ?? product.barcodes[0]?.code,
+      matchedBy: `${verdict.reason}: ${verdict.match}`,
+      countAsStrike: false,
+    });
+  }
+  if (products.length) {
+    await prisma.product.updateMany({
+      where: { id: { in: products.map((p) => p.id) } },
+      data: { petFoodTextCheckedAt: new Date() },
+    });
+  }
+  return { screened: products.length, flagged };
+}
+
 export async function scanProductsForPetFood(): Promise<string> {
+  const screen = await screenExistingProducts();
   const products = await prisma.product.findMany({
     where: {
       petFoodCheckedAt: null,
@@ -114,15 +164,17 @@ export async function scanProductsForPetFood(): Promise<string> {
       if (value.isPetFood && value.confidence >= MIN_REJECT_CONFIDENCE) {
         await rejectProduct(product.id);
         rejected += 1;
-        if (value.confidence >= MIN_STRIKE_CONFIDENCE) {
-          await recordPetFoodAttempt({
-            userId: product.createdByUserId,
-            source: "NIGHT",
-            productId: product.id,
-            barcode: product.barcodes[0]?.code,
-            matchedBy: value.reason ?? "dyrefoder på billedet",
-          });
-        }
+        // Hver afvisning vises i admin-oversigten; kun et meget sikkert svar tæller som forsøg mod brugeren.
+        await recordPetFoodAttempt({
+          userId: product.createdByUserId,
+          source: "NIGHT",
+          kind: "AUTO_REJECTED",
+          productId: product.id,
+          productName: product.name,
+          barcode: product.barcodes[0]?.code,
+          matchedBy: value.reason ?? "dyrefoder på billedet",
+          countAsStrike: value.confidence >= MIN_STRIKE_CONFIDENCE,
+        });
         await debugLog({
           category: "scan",
           event: "pet_food_rejected",
@@ -148,5 +200,5 @@ export async function scanProductsForPetFood(): Promise<string> {
       });
     }
   }
-  return `${products.length} varer i kø, ${checked} tjekket, ${rejected} afvist som dyrefoder, ${skipped} uden foto, ${failed} fejl`;
+  return `Eksisterende varer: ${screen.screened} gennemgået, ${screen.flagged} markeret · billedtjek: ${products.length} varer i kø, ${checked} tjekket, ${rejected} afvist som dyrefoder, ${skipped} uden foto, ${failed} fejl`;
 }

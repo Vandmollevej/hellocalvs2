@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { requireAdminUser } from "@/lib/require-admin";
 import { loadAdminDashboard } from "@/lib/admin-dashboard";
 import { loadPetFoodStrikeSummary } from "@/lib/pet-food-strikes";
+import { PetFoodIncidentActions } from "@/components/admin/PetFoodIncidentActions";
 import { isSupportOverdue } from "@/lib/support-inbox";
 import { formatAdminTime, formatWaiting, SUPPORT_PRIORITY_LABELS } from "@/lib/support-labels";
 
@@ -73,6 +74,12 @@ function Empty({ text }: { text: string }) {
   return <p className="hf-type-body px-4 py-8 text-center text-text-muted">{text}</p>;
 }
 
+const PET_FOOD_KIND_LABELS: Record<string, string> = {
+  BLOCKED: "Spærret ved scanning/oprettelse",
+  AUTO_REJECTED: "Vare afvist automatisk",
+  FLAGGED_EXISTING: "Fund i eksisterende vare",
+};
+
 export default async function AdminDashboardPage() {
   const admin = await requireAdminUser();
   if (!admin) redirect("/admin/login");
@@ -93,6 +100,7 @@ export default async function AdminDashboardPage() {
     { href: "/admin/ingredient-requests", label: "Ønskede ingredienser", value: counts.ingredientRequests },
     { href: "/admin/scan-invites", label: "Scan-indsendelser", value: counts.scanSubmissions },
     { href: "/admin/scan-invites", label: "Ulæste scan-beskeder", value: counts.scanMessages },
+    { href: "/admin", label: "Dyrefoder til gennemsyn", value: petFood?.unreviewed ?? 0, alert: true },
     { href: "/admin/users?show=blocked", label: "Spærrede konti (dyrefoder)", value: petFood?.blocked ?? 0, alert: true },
   ];
 
@@ -116,19 +124,45 @@ export default async function AdminDashboardPage() {
     <div className="flex flex-col gap-6">
       <h1 className="hf-type-title text-hf-black">Oversigt</h1>
 
-      {petFood && (petFood.blocked > 0 || petFood.incidents7d > 0) && (
-        <Link
-          href="/admin/users?show=blocked"
-          className="flex flex-col gap-1 hf-surface border-hf-red-dark p-4 hover:border-hf-green"
-        >
-          <p className="hf-type-body hf-type-strong text-hf-red-dark">
-            Dyrefoder-spærring: {petFood.blocked} spærrede konti
-          </p>
-          <p className="hf-type-small text-text-secondary">
-            {petFood.incidents7d} forsøg på at oprette dyrefoder de seneste 7 dage. Spærrede brugere skriver
-            sandsynligvis til support — se Brugere → Spærrede, hvor spærringen kan ophæves. →
-          </p>
-        </Link>
+      {petFood && petFood.unreviewed > 0 && (
+        <section className="flex flex-col hf-surface border-hf-red-dark">
+          <header className="border-b border-hf-tan-dark px-4 py-3">
+            <h2 className="hf-type-body hf-type-strong text-hf-red-dark">
+              Afvist som dyrefoder: {petFood.unreviewed} til gennemsyn
+            </h2>
+            <p className="hf-type-small mt-0.5 text-text-secondary">
+              Hver afvisning kan være en kunde, der scannede en legitim vare, og som forlader appen. Gennemgå dem, og
+              frikend fejl — frikendelsen ophæver også en spærring, der kun skyldtes den. {petFood.blocked} spærrede konti ·{" "}
+              {petFood.last7d} hændelser de seneste 7 dage ·{" "}
+              <Link href="/admin/users?show=blocked" className="text-hf-green-dark hover:underline">
+                Spærrede brugere →
+              </Link>
+            </p>
+          </header>
+          <ul className="divide-y divide-border-strong">
+            {petFood.recent.map((incident) => (
+              <li key={incident.id} className="flex flex-wrap items-center justify-between gap-3 px-4 py-3">
+                <div className="min-w-0">
+                  <p className="hf-type-body truncate text-hf-black">
+                    <span className="hf-type-strong">{incident.productName ?? "Ukendt vare"}</span>
+                    {incident.barcode ? ` · ${incident.barcode}` : ""}
+                  </p>
+                  <p className="hf-type-small mt-0.5 truncate text-text-muted">
+                    {PET_FOOD_KIND_LABELS[incident.kind] ?? incident.kind} · {incident.matchedBy ?? "ukendt årsag"} ·{" "}
+                    {incident.userLabel}
+                    {incident.userBlocked ? " (spærret)" : ""} · {formatAdminTime(incident.createdAt)}
+                  </p>
+                </div>
+                <PetFoodIncidentActions id={incident.id} canRejectProduct={incident.kind === "FLAGGED_EXISTING" && Boolean(incident.productId)} />
+              </li>
+            ))}
+          </ul>
+          {petFood.unreviewed > petFood.recent.length && (
+            <p className="hf-type-small border-t border-hf-tan-dark px-4 py-3 text-text-muted">
+              + {petFood.unreviewed - petFood.recent.length} flere — de næste vises, når disse er gennemgået.
+            </p>
+          )}
+        </section>
       )}
 
       <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
