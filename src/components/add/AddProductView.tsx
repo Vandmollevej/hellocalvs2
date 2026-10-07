@@ -700,10 +700,20 @@ export function AddProductView({
 
   const title = forDish ? t("addProduct.titleForDish") : t("addProduct.title");
   const Frame = inSheet ? SheetFrame : ScreenFrame;
+  // Opdater-banneret sidder fast direkte under topbaren, uden for scroll-området.
+  const updateBanner =
+    !isLoading && !forDish && !isEditing && !!id && state.status === "loaded" && state.product.updateOffer ? (
+            <UpdatePointsBanner
+              href={`/add/${encodeURIComponent(id)}/update`}
+              text={t("productUpdate.banner", { points: state.product.updateOffer.points })}
+              toggleLabel={t("productUpdate.toggle")}
+            />
+    ) : null;
 
   return (
     <Frame
       title={title}
+      banner={updateBanner}
       onClose={onClose}
       footer={
         state.status === "loaded" ? (
@@ -748,13 +758,6 @@ export function AddProductView({
 
         {view && (
           <>
-            {!isLoading && !forDish && !isEditing && !!id && state.status === "loaded" && state.product.updateOffer && (
-              <UpdatePointsBanner
-                href={`/add/${encodeURIComponent(id)}/update`}
-                text={t("productUpdate.banner", { points: state.product.updateOffer.points })}
-                toggleLabel={t("productUpdate.toggle")}
-              />
-            )}
             {!isLoading && !forDish && !!id && photoAwards.length > 0 && (
               <Link
                 href={`/add/${id}/photo-award`}
@@ -1370,23 +1373,25 @@ export function AddProductView({
 
 type FrameProps = {
   title: string;
+  banner?: React.ReactNode;
   footer?: React.ReactNode;
   onClose?: () => void;
   children: React.ReactNode;
 };
 
-function ScreenFrame({ title, footer, children }: FrameProps) {
+function ScreenFrame({ title, footer, banner, children }: FrameProps) {
   return (
-    <HfScreen title={title} footer={footer}>
+    <HfScreen title={title} footer={footer} topBanner={banner}>
       {children}
     </HfScreen>
   );
 }
 
 // Bundark-rammen med samme props som HfScreen (titel, indhold, fast bund).
-function SheetFrame({ title, footer, onClose, children }: FrameProps) {
+function SheetFrame({ title, footer, banner, onClose, children }: FrameProps) {
   return (
     <BottomSheet title={title} footer={footer} size="full" onClose={() => onClose?.()}>
+      {banner}
       {children}
     </BottomSheet>
   );
