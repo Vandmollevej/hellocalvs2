@@ -14,6 +14,9 @@ export const PRODUCT_DATABASE_SORTS = [
   { key: "image_first", label: "Med billede først" },
   { key: "image_last", label: "Uden billede først" },
   { key: "brand", label: "Mærke A–Å" },
+  { key: "brand_desc", label: "Mærke Å–A" },
+  { key: "popular", label: "Mest populære" },
+  { key: "trending", label: "Trending (seneste 7 dage)" },
   { key: "kcal_desc", label: "Flest kcal" },
   { key: "kcal_asc", label: "Færrest kcal" },
 ] as const;
