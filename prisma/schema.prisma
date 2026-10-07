@@ -194,6 +194,15 @@ model User {
   // anonymiseres den automatisk (src/lib/account-closure.ts).
   closedAt DateTime?
 
+  // Dyrefoder-spærring (docs/DECISIONS.md 2026-10-07): første forsøg på at oprette
+  // dyrefoder giver en advarsel, andet forsøg spærrer kontoen (src/lib/pet-food-
+  // strikes.ts). En spærret konto logges ud overalt og kan ikke logge ind, før en
+  // admin ophæver spærringen under Brugere. petFoodStrikesResetAt nulstiller tællingen.
+  blockedAt             DateTime?
+  blockedReason         String?
+  petFoodStrikesResetAt DateTime?
+  petFoodIncidents      PetFoodIncident[]
+
   // Udtrykkeligt samtykke til behandling af helbredsoplysninger (GDPR art. 9,
   // docs/DECISIONS.md 2026-09-25). Null = ikke givet endnu; ConsentGate sender
   // brugeren til /samtykke, før appen kan bruges.
@@ -1507,6 +1516,8 @@ model Product {
   // (docs/DECISIONS.md 2026-10-02). labelsScannedAt = sidste kørsel.
   labels             ProductLabel[]
   labelsScannedAt    DateTime?
+  // Dyrefoder-billedtjek (natligt job "pet-food-scan", docs/DECISIONS.md 2026-10-07). petFoodCheckedAt = sidste kørsel.
+  petFoodCheckedAt   DateTime?
   registrations      Registration[]
   favorites          Favorite[]
   dishIngredients    DishIngredient[]
@@ -4726,4 +4737,23 @@ model ProductEnergySplitFlag {
 
   @@index([reviewedAt])
   @@map("product_energy_split_flags")
+}
+
+// Dyrefoder-forsøg pr. bruger (docs/DECISIONS.md 2026-10-07). Gentagelser inden for
+// få minutter (kameraet læser samme stregkode flere gange) tæller som ét forsøg.
+// source: LOOKUP (stregkode scannet), CREATE / QUICK (oprettelse), ENRICHMENT (AI læste
+// dyrefoder på forsiden), NIGHT (natrobotten så dyrefoder på billedet).
+model PetFoodIncident {
+  id        String   @id @default(cuid())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String
+  source    String
+  barcode   String?
+  productId String?
+  matchedBy String?
+  createdAt DateTime @default(now())
+
+  @@index([userId, createdAt])
+  @@index([createdAt])
+  @@map("pet_food_incidents")
 }

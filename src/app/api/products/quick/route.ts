@@ -7,7 +7,8 @@ import { saveDataUrlImage } from "@/lib/qc-image-storage";
 import type { PendingField } from "@/lib/quick-product-enrichment";
 import { createQuickEnrichmentJob, runQuickEnrichment } from "@/lib/quick-enrichment-jobs";
 import { debugLog, errorText, flowIdFromRequest, withDebugContext } from "@/lib/debug-log";
-import { PET_FOOD_BLOCKED_MESSAGE, petFoodBlockReason } from "@/lib/pet-food-blacklist";
+import { petFoodBlockReason } from "@/lib/pet-food-blacklist";
+import { recordPetFoodAttempt } from "@/lib/pet-food-strikes";
 
 // POST /api/products/quick — "opret straks" fra kameraflowet under Tilføj
 // (docs/DECISIONS.md 2026-09-27). Varen oprettes, så snart den lokale OCR er
@@ -84,7 +85,16 @@ export async function POST(req: Request) {
       flowId,
       barcode,
     });
-    return NextResponse.json({ message: PET_FOOD_BLOCKED_MESSAGE, code: "PET_FOOD_BLOCKED" }, { status: 422 });
+    const outcome = await recordPetFoodAttempt({
+      userId: (await getSessionUser())?.id,
+      source: "QUICK",
+      barcode,
+      matchedBy: `${petFoodBlock.reason}: ${petFoodBlock.match}`,
+    });
+    return NextResponse.json(
+      { message: outcome.message, code: "PET_FOOD_BLOCKED", strikes: outcome.strikes, accountBlocked: outcome.blocked },
+      { status: 422 }
+    );
   }
 
   try {

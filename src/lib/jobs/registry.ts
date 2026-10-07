@@ -62,6 +62,18 @@ export const JOBS: JobDefinition[] = [
     defaultRunAtTime: "04:00",
   },
   {
+    // Dyrefoder-spærringens billedtjek (docs/DECISIONS.md 2026-10-07): kun om
+    // natten som robot, aldrig i scan-flowet (brugerregel).
+    key: "pet-food-scan",
+    name: "Dyrefoder: billedtjek",
+    description:
+      "Lader AI'en se forsidefotoet af brugeroprettede og ventende varer, der ikke er tjekket endnu. Er emballagen tydeligt dyrefoder (hundemad, kattemad, dyregodbidder m.m.), afvises varen automatisk, og ejeren får besked. Stregkode- og ordspærringen kører stadig live ved oprettelsen.",
+    runtime: "app",
+    robot: true,
+    defaultIntervalMinutes: null,
+    defaultRunAtTime: "03:45",
+  },
+  {
     // Puls-robotten (docs/DECISIONS.md 2026-10-04): om natten finder den
     // pulsudsving uden registreret sport og gætter sporten ud fra kurvens form.
     key: "pulse-activity",

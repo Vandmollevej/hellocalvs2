@@ -21,6 +21,7 @@ import type { IngredientsAnalysis, NutritionAnalysis } from "@/lib/product-analy
 import { debugLog, errorText } from "@/lib/debug-log";
 import { composeProductName, normalizeProductName } from "@/lib/product-naming";
 import { petFoodBlockReason } from "@/lib/pet-food-blacklist";
+import { recordPetFoodAttempt } from "@/lib/pet-food-strikes";
 import { rejectProduct } from "@/lib/product-approval";
 import { addCertificationFilters } from "@/lib/product-certification-filters";
 
@@ -525,6 +526,7 @@ export async function enrichQuickProduct(
         pendingFields: true,
         kcalPer100g: true,
         ingredientsText: true,
+        createdByUserId: true,
         brand: { select: { name: true } },
       },
     })
@@ -537,6 +539,13 @@ export async function enrichQuickProduct(
     : null;
   if (product && petFoodBlock) {
     await rejectProduct(input.productId).catch(() => null);
+    // Tæller som forsøg på dyrefoder for den, der oprettede varen (advarsel/spærring).
+    await recordPetFoodAttempt({
+      userId: product.createdByUserId,
+      source: "ENRICHMENT",
+      productId: input.productId,
+      matchedBy: `${petFoodBlock.reason}: ${petFoodBlock.match}`,
+    });
     await debugLog({
       category: "scan",
       event: "pet_food_rejected",

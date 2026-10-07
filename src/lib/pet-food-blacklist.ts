@@ -8,8 +8,8 @@ import patternData from "@/data/pet-food-patterns.json";
 //  2. Ordmønstre fra Fable-analysen af de scrapede produkttekster — fanger
 //     nye dyrefoderprodukter, der ikke er på stregkodelisten.
 
-export const PET_FOOD_BLOCKED_MESSAGE =
-  "Dyrefoder kan ikke oprettes i Hello Cal. Hello Cal er kun til mad og drikke til mennesker.";
+// Beskederne ligger i pet-food-messages.ts (også brugt af klientkomponenter).
+export { PET_FOOD_BLOCKED_MESSAGE } from "@/lib/pet-food-messages";
 
 // Stregkoder sammenlignes uden foranstillede nuller, så EAN-13, UPC-A og
 // GTIN-14 af samme vare matcher hinanden.

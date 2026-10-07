@@ -7,6 +7,7 @@ import { runDueAppJobs } from "@/lib/jobs/runner";
 import { pruneOldJobRuns } from "@/lib/jobs/runs";
 import { rerunUncertainAnalyses } from "@/lib/uncertainty-rerun";
 import { scanProductLabels } from "@/lib/product-label-scan";
+import { scanProductsForPetFood } from "@/lib/pet-food-scan";
 import { analyzeDeclinedExternalImages } from "@/lib/external-image-ai";
 import { recoverQuickEnrichments } from "@/lib/quick-enrichment-jobs";
 import { checkEnergySplits } from "@/lib/energy-split-check";
@@ -127,6 +128,7 @@ export function startScheduler() {
       },
       "uncertainty-rerun": rerunUncertainAnalyses,
       "label-scan": scanProductLabels,
+      "pet-food-scan": scanProductsForPetFood,
       "pulse-activity": runPulseNightJob,
       personas: runPersonaJob,
       "external-image-ai": analyzeDeclinedExternalImages,

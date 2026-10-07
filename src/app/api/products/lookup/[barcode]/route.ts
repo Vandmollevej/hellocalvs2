@@ -7,7 +7,9 @@ import { inferGs1OriginCountryCode } from "@/lib/regions";
 import { createExternalImageCutoutJob } from "@/lib/image-cutout-jobs";
 import { syncProductNutritionFeaturesSafely } from "@/lib/product-nutrition-features";
 import { debugLog, errorText, flowIdFromRequest } from "@/lib/debug-log";
-import { PET_FOOD_BLOCKED_MESSAGE, petFoodBlockReason } from "@/lib/pet-food-blacklist";
+import { petFoodBlockReason } from "@/lib/pet-food-blacklist";
+import { recordPetFoodAttempt } from "@/lib/pet-food-strikes";
+import { getSessionUser } from "@/lib/session";
 
 // GET /api/products/lookup/:barcode
 //
@@ -40,10 +42,29 @@ export async function GET(
   try {
     // Dyrefoder-spærring (src/lib/pet-food-blacklist.ts): spærret stregkode
     // afvises før opslag, og dyrefoder fra Open Food Facts/USDA gemmes aldrig.
-    const blockedResponse = (reason: string, match: string) => {
-      log("barcode_lookup", `Afvist: dyrefoder (${reason}: ${match})`, { level: "warn", data: { source: "blocked" } });
+    // En indlogget bruger får en advarsel første gang og spærres anden gang
+    // (src/lib/pet-food-strikes.ts).
+    const blockedResponse = async (reason: string, match: string) => {
+      const sessionUser = await getSessionUser();
+      const outcome = await recordPetFoodAttempt({
+        userId: sessionUser?.id,
+        source: "LOOKUP",
+        barcode,
+        matchedBy: `${reason}: ${match}`,
+      });
+      log("barcode_lookup", `Afvist: dyrefoder (${reason}: ${match})`, {
+        level: "warn",
+        data: { source: "blocked", strikes: outcome.strikes, accountBlocked: outcome.blocked },
+      });
       return NextResponse.json(
-        { source: "blocked", product: null, code: "PET_FOOD_BLOCKED", message: PET_FOOD_BLOCKED_MESSAGE },
+        {
+          source: "blocked",
+          product: null,
+          code: "PET_FOOD_BLOCKED",
+          message: outcome.message,
+          strikes: outcome.strikes,
+          accountBlocked: outcome.blocked,
+        },
         { status: 422 }
       );
     };

@@ -1,4 +1,5 @@
-﻿import { redirect } from "next/navigation";
+﻿import Link from "next/link";
+import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { requireAdminUser } from "@/lib/require-admin";
 import { AdminUserRow } from "@/components/admin/AdminUserRow";
@@ -10,17 +11,24 @@ import { broadcastAudience } from "@/lib/admin-broadcast";
 // med betalingsstatus, points, nyhedsbrevs-tilmeldinger og "ret til at
 // blive glemt" (GDPR-anonymisering, src/lib/gdpr.ts). "Log ind som bruger"
 // er fjernet 2026-09-23 (docs/PRIVACY.md).
-export default async function AdminUsersPage() {
+export default async function AdminUsersPage({ searchParams }: { searchParams: Promise<{ show?: string }> }) {
   const admin = await requireAdminUser();
   if (!admin) redirect("/admin/login");
+  // ?show=blocked viser kun spærrede konti (dyrefoder-spærringen, docs/DECISIONS.md 2026-10-07).
+  const { show } = await searchParams;
+  const showBlocked = show === "blocked";
 
   const audience = await broadcastAudience();
 
   const users = await prisma.user.findMany({
-    where: { role: "USER" },
-    orderBy: { createdAt: "desc" },
+    where: { role: "USER", ...(showBlocked ? { blockedAt: { not: null } } : {}) },
+    orderBy: showBlocked ? { blockedAt: "desc" } : { createdAt: "desc" },
     include: { subscription: true },
   });
+  const [totalUsers, blockedUsers] = await Promise.all([
+    prisma.user.count({ where: { role: "USER" } }),
+    prisma.user.count({ where: { role: "USER", blockedAt: { not: null }, forgottenAt: null } }),
+  ]);
 
   const balances = await prisma.pointsTransaction.groupBy({
     by: ["userId"],
@@ -33,11 +41,32 @@ export default async function AdminUsersPage() {
       <div>
         <h1 className="hf-type-title text-hf-black">{t(admin.locale, "users_title")}</h1>
         <p className="hf-type-body text-text-secondary">
-          {users.length} registranter. MÃ¸nt-ikonet tildeler points; det rÃ¸de ikon anonymiserer kontoen.
+          {users.length} registranter. Mønt-ikonet tildeler points; det røde ikon anonymiserer kontoen.
         </p>
       </div>
 
-      {admin.adminAccessLevel === "FULL" && <BroadcastPanel emailUsers={audience.emailUsers} pushUsers={audience.pushUsers} />}
+      <div className="flex flex-wrap gap-2">
+        <Link
+          href="/admin/users"
+          className={`hf-type-small rounded-full px-3 py-1 ${!showBlocked ? "bg-hf-green-dark text-hf-white" : "bg-hf-tan text-text-secondary"}`}
+        >
+          Alle ({totalUsers})
+        </Link>
+        <Link
+          href="/admin/users?show=blocked"
+          className={`hf-type-small rounded-full px-3 py-1 ${
+            showBlocked
+              ? "bg-hf-red-dark text-hf-white"
+              : blockedUsers > 0
+                ? "bg-hf-warning text-hf-warning-text"
+                : "bg-hf-tan text-text-secondary"
+          }`}
+        >
+          Spærrede ({blockedUsers})
+        </Link>
+      </div>
+
+      {admin.adminAccessLevel === "FULL" && !showBlocked && <BroadcastPanel emailUsers={audience.emailUsers} pushUsers={audience.pushUsers} />}
 
       <div className="overflow-x-auto">
         <table className="hf-type-body w-full text-left">
@@ -68,12 +97,18 @@ export default async function AdminUsersPage() {
                   wantsPartnerOffersEmails: user.wantsPartnerOffersEmails,
                   forgottenAt: user.forgottenAt?.toISOString() ?? null,
                   closedAt: user.closedAt?.toISOString() ?? null,
+                  blockedAt: user.blockedAt?.toISOString() ?? null,
+                  blockedReason: user.blockedReason,
                 }}
               />
             ))}
           </tbody>
         </table>
-        {users.length === 0 && <p className="hf-type-body py-4 text-text-secondary">Ingen brugere endnu.</p>}
+        {users.length === 0 && (
+          <p className="hf-type-body py-4 text-text-secondary">
+            {showBlocked ? "Ingen spærrede konti." : "Ingen brugere endnu."}
+          </p>
+        )}
       </div>
     </div>
   );

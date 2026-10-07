@@ -14,7 +14,8 @@ import { isProductCategory } from "@/lib/product-display-unit";
 import { linkCutoutJobsToProduct } from "@/lib/image-cutout-jobs";
 import { recordNutrientSources } from "@/lib/product-nutrient-sources";
 import { HIDE_FROM_SEARCH_BELOW } from "@/lib/uncertainty-thresholds";
-import { PET_FOOD_BLOCKED_MESSAGE, petFoodBlockReason } from "@/lib/pet-food-blacklist";
+import { petFoodBlockReason } from "@/lib/pet-food-blacklist";
+import { recordPetFoodAttempt } from "@/lib/pet-food-strikes";
 
 // GET /api/products?q=rugbrød — search in our own product database only. Results are ranked by src/lib/product-search-ranking.ts: text match
 // is always dominant, and hidden regional search/click/hour-of-day statistics
@@ -357,8 +358,14 @@ export async function POST(req: Request) {
   });
   if (petFoodBlock) {
     console.warn(`Pet food blocked (${petFoodBlock.reason}): ${petFoodBlock.match}`);
+    const outcome = await recordPetFoodAttempt({
+      userId: (await getSessionUser())?.id,
+      source: "CREATE",
+      barcode,
+      matchedBy: `${petFoodBlock.reason}: ${petFoodBlock.match}`,
+    });
     return NextResponse.json(
-      { message: PET_FOOD_BLOCKED_MESSAGE, code: "PET_FOOD_BLOCKED" },
+      { message: outcome.message, code: "PET_FOOD_BLOCKED", strikes: outcome.strikes, accountBlocked: outcome.blocked },
       { status: 422 }
     );
   }

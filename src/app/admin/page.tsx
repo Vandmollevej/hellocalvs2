@@ -2,6 +2,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { requireAdminUser } from "@/lib/require-admin";
 import { loadAdminDashboard } from "@/lib/admin-dashboard";
+import { loadPetFoodStrikeSummary } from "@/lib/pet-food-strikes";
 import { isSupportOverdue } from "@/lib/support-inbox";
 import { formatAdminTime, formatWaiting, SUPPORT_PRIORITY_LABELS } from "@/lib/support-labels";
 
@@ -80,6 +81,9 @@ export default async function AdminDashboardPage() {
   const { counts, latestSupport, latestProducts, latestBugReports, messages, jobs, nightRuns, missingApiKeys, stats } =
     await loadAdminDashboard(now);
   const failingJobs = jobs.filter((job) => job.lastStatus === "ERROR").length;
+  // Dyrefoder-spærringen (docs/DECISIONS.md 2026-10-07): spærrede brugere skriver sandsynligvis
+  // til support, så antallet vises som advarsel øverst.
+  const petFood = await loadPetFoodStrikeSummary(now).catch(() => null);
 
   const otherTasks = [
     { href: "/admin/images", label: "Billedforslag", value: counts.pendingImages },
@@ -89,6 +93,7 @@ export default async function AdminDashboardPage() {
     { href: "/admin/ingredient-requests", label: "Ønskede ingredienser", value: counts.ingredientRequests },
     { href: "/admin/scan-invites", label: "Scan-indsendelser", value: counts.scanSubmissions },
     { href: "/admin/scan-invites", label: "Ulæste scan-beskeder", value: counts.scanMessages },
+    { href: "/admin/users?show=blocked", label: "Spærrede konti (dyrefoder)", value: petFood?.blocked ?? 0, alert: true },
   ];
 
   const deliveryTasks = [
@@ -110,6 +115,21 @@ export default async function AdminDashboardPage() {
   return (
     <div className="flex flex-col gap-6">
       <h1 className="hf-type-title text-hf-black">Oversigt</h1>
+
+      {petFood && (petFood.blocked > 0 || petFood.incidents7d > 0) && (
+        <Link
+          href="/admin/users?show=blocked"
+          className="flex flex-col gap-1 hf-surface border-hf-red-dark p-4 hover:border-hf-green"
+        >
+          <p className="hf-type-body hf-type-strong text-hf-red-dark">
+            Dyrefoder-spærring: {petFood.blocked} spærrede konti
+          </p>
+          <p className="hf-type-small text-text-secondary">
+            {petFood.incidents7d} forsøg på at oprette dyrefoder de seneste 7 dage. Spærrede brugere skriver
+            sandsynligvis til support — se Brugere → Spærrede, hvor spærringen kan ophæves. →
+          </p>
+        </Link>
+      )}
 
       <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
         <StatCard

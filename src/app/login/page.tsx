@@ -1,6 +1,7 @@
-"use client";
+﻿"use client";
 
 import Image from "next/image";
+import { ACCOUNT_BLOCKED_MESSAGE } from "@/lib/pet-food-messages";
 import Link from "next/link";
 import { Suspense, useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -22,9 +23,11 @@ function LogIndContent() {
   const [password, setPassword] = useState("");
   // En afbrudt Apple/Google/Facebook-dialog er brugerens eget valg og vises ikke som fejl.
   const oauthCode = searchParams.get("error");
-  const oauthError = oauthCode === "oauth-cancelled" ? null : oauthErrorKey(oauthCode);
+  // Spærret konto (dyrefoder-spærringen, docs/DECISIONS.md 2026-10-07).
+  const accountBlocked = oauthCode === "account-blocked";
+  const oauthError = oauthCode === "oauth-cancelled" || accountBlocked ? null : oauthErrorKey(oauthCode);
   const [error, setError] = useState<string | null>(
-    oauthError ? t(oauthError.key, oauthError.vars) : null
+    accountBlocked ? ACCOUNT_BLOCKED_MESSAGE : oauthError ? t(oauthError.key, oauthError.vars) : null
   );
   const [submitting, setSubmitting] = useState(false);
   const [approval, setApproval] = useState<{ approvalId: string; secret: string } | null>(null);
