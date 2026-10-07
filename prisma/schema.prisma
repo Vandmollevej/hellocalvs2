@@ -4843,4 +4843,17 @@ model WeightAttireSettings {
   updatedAt      DateTime @default(now()) @updatedAt
 
   @@map("weight_attire_settings")
+
+// Vejepaaminelser (docs/DECISIONS.md 2026-10-07): brugeren vaelger, hvilke
+// lige timer (fx 8, 10, 12 ...) der skal sende en push 5 minutter foer.
+// lastSlot = "YYYY-MM-DD-HH" for den seneste afsendte paaminelse.
+model WeighReminderPref {
+  id        String   @id @default(cuid())
+  userId    String   @unique
+  enabled   Boolean  @default(false)
+  hours     Int[]
+  lastSlot  String?
+  updatedAt DateTime @default(now()) @updatedAt
+
+  @@map("weigh_reminder_prefs")
 }

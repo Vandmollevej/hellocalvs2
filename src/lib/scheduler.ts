@@ -19,6 +19,7 @@ import { syncAllIntegrations } from "@/lib/integrations/handlers";
 import { sendDueReports } from "@/lib/partner-reports";
 import { requestPersonaRunOnDeploy, runPersonaJob } from "@/lib/personas";
 import { anonymizeExpiredClosedAccounts } from "@/lib/account-closure";
+import { sendDueWeighReminders } from "@/lib/weigh-reminders";
 import { runPulseNightJob } from "@/lib/pulse-candidates";
 
 // In-process baggrundsjob (docs/DECISIONS.md 2026-09-02): DB-drevet, kører i
@@ -119,6 +120,8 @@ export function startScheduler() {
   globalForScheduler.hellocalSchedulerStarted = true;
 
   const tick = () => {
+    // Vejepåmindelser: præcis 5 min før valgte lige timer (docs/DECISIONS.md 2026-10-07).
+    sendDueWeighReminders().catch((error) => console.error("[scheduler] Vejepåmindelser fejlede", error));
     runDueAppJobs({
       maintenance: async () => {
         await runSchedulerTick();

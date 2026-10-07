@@ -18,6 +18,9 @@ type Conditions = {
   visited?: string[];
   notVisited?: string[];
   minDaysBetweenShows?: number;
+  weekdays?: number[];
+  fromHour?: number;
+  toHour?: number;
 };
 type Flow = {
   id: string;
@@ -41,13 +44,24 @@ const NUMBER_CONDITIONS: { key: keyof Conditions; label: string }[] = [
   { key: "maxDaysSinceSignup", label: "Højst dage siden oprettelse" },
   { key: "minActiveDays", label: "Mindst dage med indtastninger" },
   { key: "minDaysBetweenShows", label: "Dage mellem visninger" },
+  { key: "fromHour", label: "Vis fra klokken (0-23)" },
+  { key: "toHour", label: "Vis til klokken (0-24)" },
 ];
 const LIST_CONDITIONS: { key: "pages" | "visited" | "notVisited"; label: string; hint: string }[] = [
   { key: "pages", label: "Kun på disse sider", hint: "Fx /calendar, /statistics. Tomt = alle sider." },
   { key: "visited", label: "Har besøgt fanerne", hint: "Fx /statistics. Alle skal være besøgt." },
   { key: "notVisited", label: "Har IKKE besøgt fanerne", hint: "Fx /camera = har ikke brugt mad-scanningen." },
 ];
-type EditablePage = FlowPage & { key: string };
+const WEEKDAYS = [
+  { value: 1, label: "Man" },
+  { value: 2, label: "Tir" },
+  { value: 3, label: "Ons" },
+  { value: 4, label: "Tor" },
+  { value: 5, label: "Fre" },
+  { value: 6, label: "Lør" },
+  { value: 0, label: "Søn" },
+];
+type EditablePage =FlowPage & { key: string };
 
 // Felter og kort følger design.md §6.4/§6.6: 48 px høje felter, radius 8,
 // 1 px kant, 17 px inputtekst og 13 px label over feltet.
@@ -406,6 +420,30 @@ export function FlowEditor({ flow }: { flow: Flow }) {
               className={fieldClass}
             />
           </label>
+        </div>
+        <div className="flex flex-col gap-1">
+          <span className="hf-type-label text-text-secondary">Kun disse ugedage (ingen valgt = alle dage)</span>
+          <div className="flex flex-wrap gap-2" role="group" aria-label="Ugedage">
+            {WEEKDAYS.map((day) => {
+              const on = conditions.weekdays?.includes(day.value) ?? false;
+              return (
+                <button
+                  key={day.value}
+                  type="button"
+                  role="checkbox"
+                  aria-checked={on}
+                  onClick={() => {
+                    const current = conditions.weekdays ?? [];
+                    const next = on ? current.filter((d) => d !== day.value) : [...current, day.value].sort();
+                    setCondition({ weekdays: next.length ? next : undefined });
+                  }}
+                  className={`hf-choice px-4 ${on ? "border-[1.5px] border-hf-black bg-hf-tan" : ""}`}
+                >
+                  {day.label}
+                </button>
+              );
+            })}
+          </div>
         </div>
         {LIST_CONDITIONS.map(({ key, label, hint }) => (
           <label key={key} className={labelClass}>

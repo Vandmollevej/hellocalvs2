@@ -4583,3 +4583,10 @@ Det eneste, admin kan ændre på importerede retter, er "Deaktivér"/"Aktivér" 
 - Kopi-tjek (`recipe-copy-check.ts`): når en ret deles, sammenlignes titel+ingredienser+trin på ordniveau (4-ords vinduer) med andre delte retter og HelloFresh. ≥ 80 % sammenfald sætter `SharedRecipe.copyFlagged`, skjuler retten for andre til admin godkender, og viser i Kvalitetskontrol kilde + side-om-side-visning med markerede stykker. Afvis kræver begrundelse (`rejectionReason`). Ejeren beholder retten privat.
 - Tommel op/ned (`RecipeRating`, `/api/recipe-ratings`) på HelloFresh-, delte og egne retter.
 
+## 2026-10-07: Fredags-flow, vejepåmindelser, måltips og "Udregn"
+
+- Flow-betingelser har nu `weekdays` (0 = søndag … 6 = lørdag, dansk tid) og `fromHour`/`toHour`; sættes i admin → Flows → Visning og betingelser (ugedagsknapper).
+- Migration `20261007140000_weigh_reminders` opretter `weigh_reminder_prefs` og et **deaktiveret kladde-flow** "Kalibrér vægten i weekenden" (banner, kun fredag, link til `/weigh-reminders`). Admin aktiverer det under Flows.
+- `/weigh-reminders`: dagen som tidslinje med én kontakt pr. 2. time (06–22). Scheduleren sender en push 5 min før valgte timer (`src/lib/weigh-reminders.ts`, kaldt hvert minut). Kræver VAPID-nøgler + push-abonnement (ellers no-op).
+- Tips til dagens mål: til/fra under Indstillinger → Visning → Tips (localStorage, som de øvrige tips). `/api/tips/goal` bruger gennemsnit af seneste 14 dage (mindst 4 dage, i dag udeladt) mod dagens mål; regelbaseret, ikke LLM. Gå-km = overskud / (0,55 × kg).
+- "Udregn" på statistik-siden: kun Seriøs (POST `/api/insights/meal-timing` giver 403 ellers). Bundark med sider: spisetider vs. anbefalet, spisevindue/sidste måltid før sengetid, fordeling over dagen, hverdag vs. weekend. Anbefalinger står i `src/lib/meal-timing.ts`.

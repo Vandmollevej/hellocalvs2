@@ -11,6 +11,7 @@ import { FamilyWatchFrame } from "@/components/family/FamilyWatchFrame";
 import { AccessLogPanel } from "@/components/family/AccessLogPanel";
 import { StartupTipsGate } from "@/components/StartupTipsGate";
 import { FlowGate } from "@/components/FlowGate";
+import { GoalTipCard } from "@/components/GoalTipCard";
 import { KcalGoalPrompt } from "@/components/KcalGoalPrompt";
 import { SentMessageNotice } from "@/components/SentMessageNotice";
 import { SleepQualityGate } from "@/components/SleepQualityGate";
@@ -69,6 +70,7 @@ export default function RootLayout({
           <StartupTipsGate />
           <FlowGate />
           <KcalGoalPrompt />
+          <GoalTipCard />
           <SentMessageNotice />
           <SleepQualityGate />
           <OfflineQueueBanner />

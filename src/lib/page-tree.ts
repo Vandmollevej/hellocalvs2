@@ -79,6 +79,7 @@ export const PAGE_TREE: PageArea[] = [
             label: "Tilføj-menu (+)",
             children: [
               { path: "/weight/create", label: "Registrér vægt" },
+              { path: "/weigh-reminders", label: "Vejepåmindelser", note: "Åbnes fra fredags-flowet" },
               { path: "/water/create", label: "Registrér vand" },
               { path: "/drinks", label: "Drinks", children: [{ path: "/drinks/[id]", label: "Tilføj drink" }] },
               { path: "/activity/create", label: "Tilføj aktivitet" },

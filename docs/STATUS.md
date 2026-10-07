@@ -27,6 +27,10 @@ Last updated: 2026-10-07
 - Vejning har on/off-tøjblok med algoritmen (admin → Vejning: tøj) som gæt; vejninger kan altid åbnes fra Seneste vejninger og kalenderen (fedtprocent m.m. under tøjet).
 - "Registrér …" er nu "Du mangler at kalibrere din vægt" (info-cirkel, ingen understregning), kun til `User.weightCalibratedAt` er sat. Tilføj-menuens tekster rykket tættere på ikonerne.
 - Migration `20261007150000_weight_attire`. de/fr/nl/sv/no har engelsk tekst for de nye `weighIn.*`-nøgler.
+## 2026-10-07: Fredags-flow, vejepåmindelser, måltips, Udregn
+
+- Se DECISIONS 2026-10-07. Migration `20261007140000_weigh_reminders` skal med deployet; fredags-flowet er en deaktiveret kladde (aktiveres i admin → Flows).
+- Lint/typecheck grønne; ikke visuelt testet. Mangler: VAPID-nøgler for at push virker.
 
 ## 2026-10-07: Nøgleord på produktsiden — typer og grupper
 
