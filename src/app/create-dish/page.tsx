@@ -29,6 +29,7 @@ import { ProductPhotoDropZone } from "@/components/recipes/ProductPhotoDropZone"
 import { RecipeStepsEditor, isEmptyStep } from "@/components/recipes/RecipeStepsEditor";
 import { RecipeCategoriesDialog } from "@/components/recipes/RecipeCategoriesDialog";
 import { useTranslation } from "@/i18n/LocaleProvider";
+import { useConnectionMessage } from "@/lib/use-online-status";
 import { useInWebShell } from "@/components/web/WebShell";
 import { isPrivateIngredientId } from "@/lib/private-ingredient-ids";
 import { SkeletonMediaRows, SkeletonScreen } from "@/components/hf/Skeleton";
@@ -40,6 +41,7 @@ function round(value: number, decimals = 0) {
 
 export default function CreateDishPage() {
   const { t, locale } = useTranslation();
+  const connectionMessage = useConnectionMessage();
   const inWebShell = useInWebShell();
   const router = useRouter();
   // Navn, billeder og fremgangsmåde gemmes i kladden, så de overlever
@@ -400,7 +402,7 @@ export default function CreateDishPage() {
               )}
               {searchState === "error" && (
                 <p className="hf-type-body text-text-secondary px-4 py-4 text-center">
-                  {t("createDish.noResults")}
+                  {connectionMessage(t("createDish.noResults"))}
                 </p>
               )}
               {searchState === "ready" && results.length === 0 && (

@@ -379,3 +379,13 @@ Ejer: halvcirkel-sessionen (2026-10-07)
 | footer-arc | Lille halvcirkel midt over footeren (skub op, træk til siden, tryk, hold = redigér) | Færdig (kode, første prøve) | Afventer brugerens svar på bekræftelsesspørgsmål + test på telefon |
 | add-menu-edit | Tilføj-menuen: hold inde → omrokér/slet, "Tilføj" øverst til højre | Færdig (kode) | Afventer test på telefon |
 | retter-tekst-scan | Retter: auto-fokus søg, "Opret ny ret", integrationsknapper + filter-bundark; opret ret med Manuelt/Indsæt tekst/Scan + kopi-tjek (claude/retter-tekst-scan) | Delvis færdig (kode) | Alt bygget undtagen Valdemarsro-import/-detaljevisning/natligt link-script (afventer beslutning). Migrationer 20261008100000/110000/120000 skal med deployet |
+## G-OFFLINE — Offline-besked, PII-anbefaling, tallerken-scan på OpenAI, stregkode-robusthed
+Filer: `src/lib/use-online-status.ts`, `src/components/OfflineQueueBanner.tsx`, `src/lib/barcode-frame-scanner.ts`, `src/lib/meal-photo-recognition.ts`, `docs/OFFLINE-AUDIT.md`, `docs/SECURITY-PII-OPTIONS.md`.
+Ejer: offline/PII/scan-sessionen (2026-10-07), branch `claude/offline-pii-scan`
+
+| Id | Opgave | Status | Næste skridt |
+| --- | --- | --- | --- |
+| 1 | Offline-audit + fælles offline-besked | Færdig (se git log "Offline") | Registreringer køes ikke offline (se OFFLINE-AUDIT) |
+| 2 | PII-adskillelse: anbefaling | Færdig (docs/SECURITY-PII-OPTIONS.md) | Afventer brugerens valg før noget bygges |
+| 3 | Tallerken-scan midlertidigt på OpenAI | Færdig (flag MEAL_PHOTO_PROVIDER) | Skal rulles tilbage, se DECISIONS 2026-10-07 |
+| 4 | Stregkodescanner robusthed (skygge) | Færdig (kode) | Afventer brugerens test på telefon med mælk i skygge |

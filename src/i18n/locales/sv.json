@@ -1347,6 +1347,11 @@
     "pendingBannerOne": "1 skapad väntar på uppladdning",
     "pendingBannerMany": "{count} skapade väntar på uppladdning"
   },
+  "offline": {
+    "message": "Ingen anslutning — det här kräver internet. Försök igen när du är online.",
+    "banner": "Du är offline — vissa funktioner fungerar inte",
+    "barcodeLookup": "Streckkoden lästes, men du har ingen anslutning. Försök igen när du är online."
+  },
   "profile": {
     "title": "Mina uppgifter",
     "loading": "Hämtar…",

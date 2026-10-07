@@ -1347,6 +1347,11 @@
     "pendingBannerOne": "1 Eintrag wartet auf Upload",
     "pendingBannerMany": "{count} Einträge warten auf Upload"
   },
+  "offline": {
+    "message": "Keine Verbindung — dafür wird Internet benötigt. Versuche es erneut, sobald du online bist.",
+    "banner": "Du bist offline — einige Funktionen sind nicht verfügbar",
+    "barcodeLookup": "Der Barcode wurde gelesen, aber du hast keine Verbindung. Versuche es erneut, sobald du online bist."
+  },
   "profile": {
     "title": "Meine Angaben",
     "loading": "Lädt…",

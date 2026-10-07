@@ -1347,6 +1347,11 @@
     "pendingBannerOne": "1 aanmaak wacht op upload",
     "pendingBannerMany": "{count} aanmaakacties wachten op upload"
   },
+  "offline": {
+    "message": "Geen verbinding — hiervoor is internet nodig. Probeer het opnieuw als je online bent.",
+    "banner": "Je bent offline — sommige functies werken niet",
+    "barcodeLookup": "De barcode is gelezen, maar je hebt geen verbinding. Probeer het opnieuw als je online bent."
+  },
   "profile": {
     "title": "Mijn gegevens",
     "loading": "Laden…",

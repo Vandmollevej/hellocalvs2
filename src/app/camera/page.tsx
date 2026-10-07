@@ -11,6 +11,7 @@ import { IngredientsRetakeFlow } from "@/components/camera/IngredientsRetakeFlow
 import { ObjectPickerOverlay } from "@/components/camera/ObjectPickerOverlay";
 import { cropToObject, detectObjects, type ObjectBox } from "@/lib/object-picker";
 import { useTranslation } from "@/i18n/LocaleProvider";
+import { useConnectionMessage } from "@/lib/use-online-status";
 import { scaleItemToGrams } from "@/lib/scale-meal-item";
 
 type CameraStatus = "starting" | "active" | "denied" | "unavailable" | "error";
@@ -117,6 +118,7 @@ function KameraContent() {
 }
 
 function PhotoModeContent({ mode, forDish }: { mode: "meal" | "hellofresh"; forDish: boolean }) {
+  const connectionMessage = useConnectionMessage();
   const { t } = useTranslation();
   const router = useRouter();
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -404,7 +406,7 @@ function PhotoModeContent({ mode, forDish }: { mode: "meal" | "hellofresh"; forD
             <p className="hf-type-small hf-type-strong text-text-secondary text-center">{t("camera.analyzingMeal")}</p>
           )}
           {photo && mealAnalyzeStatus === "error" && (
-            <p className="hf-type-small hf-type-strong text-center text-hf-red-dark">{t("camera.mealAnalyzeError")}</p>
+            <p className="hf-type-small hf-type-strong text-center text-hf-red-dark">{connectionMessage(t("camera.mealAnalyzeError"))}</p>
           )}
           {photo && mealAnalyzeStatus === "done" && mealItems.length === 0 && (
             <p className="hf-type-small hf-type-strong text-text-secondary text-center">

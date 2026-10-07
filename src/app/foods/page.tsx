@@ -9,6 +9,7 @@ import { HfScreen } from "@/components/HfScreen";
 import { FoodRow } from "@/components/FoodRow";
 import { ActionLink } from "@/components/hf/ActionButton";
 import { useTranslation } from "@/i18n/LocaleProvider";
+import { useConnectionMessage } from "@/lib/use-online-status";
 import { SkeletonMediaRows, SkeletonScreen } from "@/components/hf/Skeleton";
 import { useFamilyStatus } from "@/components/family/FamilyStatusProvider";
 import { useIsClientRender } from "@/lib/use-client-render";
@@ -111,6 +112,7 @@ function MadvarerContent() {
   );
   const [loadedSnapshot, setLoadedSnapshot] = useState<FoodsSnapshot | null>(null);
   const [loadFailed, setLoadFailed] = useState(false);
+  const connectionMessage = useConnectionMessage();
   const snapshot =
     loadedSnapshot && (!activeProfileId || loadedSnapshot.profileId === activeProfileId)
       ? loadedSnapshot
@@ -291,7 +293,7 @@ function MadvarerContent() {
           )}
           {!ready && loadFailed && (
             <p className="hf-type-body text-text-secondary px-4 py-8 text-center">
-              {t("foods.loadError")}
+              {connectionMessage(t("foods.loadError"))}
             </p>
           )}
           {ready &&

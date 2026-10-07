@@ -1347,6 +1347,11 @@
     "pendingBannerOne": "1 oppretting venter på opplasting",
     "pendingBannerMany": "{count} opprettinger venter på opplasting"
   },
+  "offline": {
+    "message": "Ingen tilkobling — dette krever internett. Prøv igjen når du er online.",
+    "banner": "Du er offline — noen funksjoner virker ikke",
+    "barcodeLookup": "Strekkoden ble lest, men du har ingen tilkobling. Prøv igjen når du er online."
+  },
   "profile": {
     "title": "Mine opplysninger",
     "loading": "Henter…",

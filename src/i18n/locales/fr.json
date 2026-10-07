@@ -1347,6 +1347,11 @@
     "pendingBannerOne": "1 création en attente d'envoi",
     "pendingBannerMany": "{count} créations en attente d'envoi"
   },
+  "offline": {
+    "message": "Pas de connexion — cela nécessite internet. Réessaie une fois en ligne.",
+    "banner": "Tu es hors ligne — certaines fonctions ne marchent pas",
+    "barcodeLookup": "Le code-barres a été lu, mais tu n’as pas de connexion. Réessaie une fois en ligne."
+  },
   "profile": {
     "title": "Mes informations",
     "loading": "Chargement…",

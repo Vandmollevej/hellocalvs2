@@ -56,6 +56,7 @@ import {
   type CaptureStep,
 } from "@/lib/product-capture";
 import { useFrameQuality } from "./useFrameQuality";
+import { useOnlineStatus } from "@/lib/use-online-status";
 import {
   BARCODE_FOCUS_DISTANCE_M,
   lockFocusDistance,
@@ -211,6 +212,7 @@ export function ProductCaptureFlow({ returnSuffix, rescan }: { returnSuffix: str
   const barcodeLabelJobRef = useRef<{ frame: Frame; startedAt: number; result: Promise<LabelRead> } | null>(null);
   const [createFailed, setCreateFailed] = useState(false);
   const [lookupError, setLookupError] = useState(false);
+  const online = useOnlineStatus();
   // Dyrefoder-spærring: serverens besked, når stregkoden er på spærrelisten.
   const [lookupBlockedMessage, setLookupBlockedMessage] = useState<string | null>(null);
   const [region, setRegion] = useState("DK");
@@ -1099,7 +1101,7 @@ export function ProductCaptureFlow({ returnSuffix, rescan }: { returnSuffix: str
   );
 
   const stepHints: Record<CaptureStep, string> = {
-    barcode: lookupBlockedMessage ?? (lookupError ? t("camera.barcodeLookupError") : t("camera.holdCameraStill")),
+    barcode: lookupBlockedMessage ?? (lookupError ? (online ? t("camera.barcodeLookupError") : t("offline.barcodeLookup")) : t("camera.holdCameraStill")),
     front: t("cameraCreate.hintFront"),
     nutrition: t("cameraCreate.hintNutrition"),
     ingredients: t("cameraCreate.hintIngredients"),

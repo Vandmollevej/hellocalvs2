@@ -7,6 +7,7 @@ import { IconChevronRight } from "@tabler/icons-react";
 import { SwipeableRow } from "@/components/SwipeableRow";
 import { FoodRow } from "@/components/FoodRow";
 import { useTranslation } from "@/i18n/LocaleProvider";
+import { useConnectionMessage } from "@/lib/use-online-status";
 import { useFamilyStatus, type FamilyProfile } from "@/components/family/FamilyStatusProvider";
 import { CopyToAccountSheet } from "@/components/family/CopyToAccountSheet";
 import { SkeletonMediaRows } from "@/components/hf/Skeleton";
@@ -54,6 +55,7 @@ function formatTime(dateString: string) {
 
 export function DailyList() {
   const { t } = useTranslation();
+  const connectionMessage = useConnectionMessage();
   const router = useRouter();
   const [entries, setEntries] = useState<Entry[]>([]);
   const [loading, setLoading] = useState(true);
@@ -209,7 +211,7 @@ export function DailyList() {
             {t("dailyList.noEntriesToday")}
           </li>
         )}
-        {error && <li className="hf-type-small pb-4 text-center text-hf-red-dark">{error}</li>}
+        {error && <li className="hf-type-small pb-4 text-center text-hf-red-dark">{connectionMessage(error)}</li>}
       </ul>
       {hasScans && !loading && (
         <div className={entries.length > 0 ? "mt-3" : "-mt-5 text-center"}>

@@ -659,7 +659,8 @@ export function AddProductView({
       }
       router.push("/");
     } catch {
-      setSaveError(t("addProduct.saveError"));
+      // Ingen forbindelse: tydelig besked i stedet for en generisk fejl.
+      setSaveError(navigator.onLine === false ? t("offline.message") : t("addProduct.saveError"));
     } finally {
       setSaving(false);
     }

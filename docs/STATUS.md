@@ -6014,3 +6014,9 @@ Skal gøres, før branchen flettes:
 Færdig (kode, typecheck/lint rene bortset fra forældet Prisma-klient lokalt): Retter-sidens auto-fokus, "Opret ny ret", integrationsknapper, filter-BottomSheet, tre-knaps opret-ret, tekst-robot, håndskrift-OCR, delespørgsmål, kopi-tjek med admin-visning og begrundelse, tommel op/ned. Migrationer: 20261008100000_valdemarsro_source, 20261008110000_shared_recipe_copy_check, 20261008120000_recipe_ratings (skal med deployet; kør `prisma generate`).
 Ikke bygget: Valdemarsro-import til app-databasen, Valdemarsro-detaljevisning ("Gå til opskrift"), natligt script der finder nye retter og tjekker links, antal personer gemt på retten, visning af "afvist/ikke delt" på Mine retter. Ikke prøvet i browser eller mod rigtig database.
 
+## 2026-10-07: Offline-besked, tallerken-scan på OpenAI, robustere stregkodescanner
+
+- Offline: fælles `useOnlineStatus`/`useConnectionMessage` + globalt "Du er offline"-bånd; produktsøgning, madvarer, stregkodeopslag, gem registrering, tallerken-scan m.fl. siger nu "ingen forbindelse". Se `docs/OFFLINE-AUDIT.md`.
+- PII-anbefaling i `docs/SECURITY-PII-OPTIONS.md` (intet bygget).
+- Tallerken-scan kører midlertidigt på OpenAI (`MEAL_PHOTO_PROVIDER=passio` ruller tilbage); dispensation i DECISIONS.
+- Stregkodescanner: native BarcodeDetector først, ZXing TRY_HARDER (256 rækker), skiftende hybrid/global binarizer, kontinuerlig eksponering, ikke-målbare aflæsninger kræver 2 ens frames. Ikke testet på telefon.

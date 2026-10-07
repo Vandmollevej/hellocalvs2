@@ -6,6 +6,7 @@ import { IconSearch } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
 import { ProductResultRow as ResultRow, type ProductResult as Result } from "@/components/ProductResultRow";
 import { useTranslation } from "@/i18n/LocaleProvider";
+import { useConnectionMessage } from "@/lib/use-online-status";
 import { hasEstimatedMacros } from "@/lib/nutrients";
 import { SkeletonMediaRows, SkeletonScreen } from "@/components/hf/Skeleton";
 
@@ -24,6 +25,7 @@ type LoadState = "loading" | "ready" | "error";
 
 function SoegContent() {
   const { t } = useTranslation();
+  const connectionMessage = useConnectionMessage();
   const searchParams = useSearchParams();
   const forDish = searchParams.get("for") === "ret";
   const [query, setQuery] = useState("");
@@ -225,7 +227,7 @@ function SoegContent() {
               )}
               {resultsState === "error" && (
                 <p className="hf-type-body text-text-secondary px-4 py-8 text-center">
-                  {t("foods.loadError")}
+                  {connectionMessage(t("foods.loadError"))}
                 </p>
               )}
               {resultsState === "ready" && results.slice(0, 6).map((r) => (

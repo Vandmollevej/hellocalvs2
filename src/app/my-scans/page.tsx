@@ -6,6 +6,7 @@ import { HfScreen } from "@/components/HfScreen";
 import { ProductResultRow, type ProductResult } from "@/components/ProductResultRow";
 import { SkeletonMediaRows, SkeletonScreen } from "@/components/hf/Skeleton";
 import { useTranslation } from "@/i18n/LocaleProvider";
+import { useConnectionMessage } from "@/lib/use-online-status";
 import { intlLocale } from "@/i18n";
 import type { UserScan } from "@/lib/user-scans";
 
@@ -44,6 +45,7 @@ function groupByDay(scans: UserScan[]): DayGroup[] {
 
 export default function MyScansPage() {
   const { t, locale } = useTranslation();
+  const connectionMessage = useConnectionMessage();
   const [scans, setScans] = useState<UserScan[]>([]);
   const [state, setState] = useState<LoadState>("loading");
   const [favoriteIds, setFavoriteIds] = useState<Set<string>>(new Set());
@@ -120,7 +122,7 @@ export default function MyScansPage() {
           </SkeletonScreen>
         )}
         {state === "error" && (
-          <p className="hf-type-body text-text-secondary px-1 text-center">{t("myScans.loadError")}</p>
+          <p className="hf-type-body text-text-secondary px-1 text-center">{connectionMessage(t("myScans.loadError"))}</p>
         )}
         {state === "ready" && groups.length === 0 && (
           <p className="hf-type-body text-text-secondary px-1 text-center">{t("myScans.empty")}</p>

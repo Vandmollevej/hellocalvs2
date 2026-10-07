@@ -6,6 +6,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { IconAdjustmentsHorizontal, IconSearch } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
 import { useTranslation } from "@/i18n/LocaleProvider";
+import { useConnectionMessage } from "@/lib/use-online-status";
 import { PremiumBadge } from "@/components/PremiumGate";
 import { useIsSerious } from "@/lib/use-subscription-tier";
 import {
@@ -72,6 +73,7 @@ function LoadingRows({ count }: { count: number }) {
 }
 
 function MineTab({ t }: { t: Translate }) {
+  const connectionMessage = useConnectionMessage();
   const [rows, setRows] = useState<Row[]>([]);
   const [state, setState] = useState<LoadState>("loading");
 
@@ -112,7 +114,7 @@ function MineTab({ t }: { t: Translate }) {
     <div className="hf-page">
       {state === "loading" && <LoadingRows count={4} />}
       {state === "error" && (
-        <p className="hf-type-body text-text-secondary py-8 text-center">{t("recipes.loadError")}</p>
+        <p className="hf-type-body text-text-secondary py-8 text-center">{connectionMessage(t("recipes.loadError"))}</p>
       )}
       {state === "ready" && rows.length === 0 && (
         <p className="hf-type-body text-text-secondary py-8 text-center">{t("recipes.mineEmpty")}</p>
@@ -137,6 +139,7 @@ const TRENDING_COUNT = 3;
 type FavoriteSnapshot = { id: string; name: string; kcal: number; images?: string[] };
 
 function SharedTab({ t }: { t: Translate }) {
+  const connectionMessage = useConnectionMessage();
   const [query, setQuery] = useState("");
   const [filters, setFilters] = useState<RecipeFilters>(loadRecipeFilters);
   const [filterSheetOpen, setFilterSheetOpen] = useState(false);
@@ -313,7 +316,7 @@ function SharedTab({ t }: { t: Translate }) {
       {searching ? (
         <>
           {state === "loading" && <LoadingRows count={5} />}
-          {state === "error" && status(t("recipes.loadError"))}
+          {state === "error" && status(connectionMessage(t("recipes.loadError")))}
           {state === "ready" && results.length === 0 && status(t("recipes.noResults"))}
           {state === "ready" && results.length > 0 && (
             <div>
@@ -327,7 +330,7 @@ function SharedTab({ t }: { t: Translate }) {
         <>
           <h2 className="hf-type-section-title">{t("recipes.trendingTitle")}</h2>
           {state === "loading" && <LoadingRows count={TRENDING_COUNT} />}
-          {state === "error" && status(t("recipes.loadError"))}
+          {state === "error" && status(connectionMessage(t("recipes.loadError")))}
           {state === "ready" && trending.length === 0 && status(t("recipes.trendingEmpty"))}
           {state === "ready" && trending.length > 0 && (
             <div>
