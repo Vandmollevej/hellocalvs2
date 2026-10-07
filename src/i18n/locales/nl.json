@@ -950,6 +950,24 @@
     "tabMine": "Mijn gerechten",
     "tabShared": "Gedeelde gerechten",
     "sharedSearchPlaceholder": "Zoek op titel, ingrediënten …",
+
+    "createNew": "Nieuw gerecht maken",
+
+    "sourceAll": "Recepten",
+
+    "sourceShared": "Gedeelde gerechten",
+
+    "sourceHelloFresh": "Hello Fresh",
+
+    "sourceValdemarsro": "Valdemarsro",
+
+    "sourceFilterAria": "Kies receptbron",
+
+    "filtersSheetTitle": "Filters",
+
+    "goToRecipe": "Naar recept",
+
+    "valdemarsroSource": "Valdemarsro",
     "sortRelevance": "Relevantie",
     "sortPopular": "Populariteit",
     "sortDate": "Datum",

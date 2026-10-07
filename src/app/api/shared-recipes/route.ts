@@ -34,7 +34,7 @@ import { isRecipeImagePath } from "@/lib/recipe-image-storage";
 // portion (src/lib/recipe-portions.ts), energifordeling og allergiadvarsler.
 
 type Item = {
-  kind: "shared" | "hellofresh";
+  kind: "shared" | "hellofresh" | "valdemarsro";
   id: string;
   name: string;
   imageUrl: string | null;
@@ -114,14 +114,22 @@ export async function GET(req: Request) {
   const params = new URL(req.url).searchParams;
   const q = (params.get("q") ?? "").trim().toLowerCase().slice(0, 100);
   const filters = filtersFromParams(params);
-  const includeHelloFresh = params.get("hellofresh") === "1";
+  // source = integration-knapperne under søgefeltet: "all" (standard),
+  // "shared" (kun brugernes delte retter), "hellofresh" eller "valdemarsro".
+  const sourceParam = params.get("source") ?? "all";
+  const source = ["shared", "hellofresh", "valdemarsro"].includes(sourceParam) ? sourceParam : "all";
+  const includeHelloFresh = source === "hellofresh" || (source === "all" && params.get("hellofresh") === "1");
+  const includeValdemarsro = source === "valdemarsro" || (source === "all" && params.get("valdemarsro") === "1");
+  const includeShared = source === "all" || source === "shared";
   const withIngredientData = needsIngredientData(filters);
 
   try {
     const user = await getSessionUser();
     const portionKcal = portionKcalFor(user);
     const blocked = await prisma.sharedRecipePublisherBlock.findMany({ select: { publisherHash: true } });
-    const recipes = await prisma.sharedRecipe.findMany({
+    const recipes = !includeShared
+      ? []
+      : await prisma.sharedRecipe.findMany({
       where: {
         status: { not: "REJECTED" },
         publisherHash: { notIn: blocked.map((b) => b.publisherHash) },
@@ -185,10 +193,13 @@ export async function GET(req: Request) {
       });
     }
 
-    if (includeHelloFresh) {
+    if (includeHelloFresh || includeValdemarsro) {
+      const externalSources: ("HELLOFRESH" | "VALDEMARSRO")[] = [];
+      if (includeHelloFresh) externalSources.push("HELLOFRESH");
+      if (includeValdemarsro) externalSources.push("VALDEMARSRO");
       const hfProducts = await prisma.product.findMany({
         where: {
-          externalSource: "HELLOFRESH",
+          externalSource: { in: externalSources },
           discontinued: false,
           ...(q
             ? {
@@ -204,6 +215,7 @@ export async function GET(req: Request) {
         select: {
           ...PRODUCT_FACTS_SELECT,
           imageUrl: true,
+          externalSource: true,
           kcalPer100g: true,
           proteinPer100g: true,
           carbsPer100g: true,
@@ -242,7 +254,7 @@ export async function GET(req: Request) {
         const result = evaluateRecipe(facts, filters);
         if (!result.pass) continue;
         items.push({
-          kind: "hellofresh",
+          kind: p.externalSource === "VALDEMARSRO" ? "valdemarsro" : "hellofresh",
           id: p.id,
           name: p.name,
           imageUrl: p.imageUrl,

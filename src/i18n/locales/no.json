@@ -950,6 +950,24 @@
     "tabMine": "Mine retter",
     "tabShared": "Delte retter",
     "sharedSearchPlaceholder": "Søk i tittel, ingredienser …",
+
+    "createNew": "Opprett ny rett",
+
+    "sourceAll": "Oppskrifter",
+
+    "sourceShared": "Delte retter",
+
+    "sourceHelloFresh": "Hello Fresh",
+
+    "sourceValdemarsro": "Valdemarsro",
+
+    "sourceFilterAria": "Velg oppskriftskilde",
+
+    "filtersSheetTitle": "Filtre",
+
+    "goToRecipe": "Gå til oppskrift",
+
+    "valdemarsroSource": "Valdemarsro",
     "sortRelevance": "Relevans",
     "sortPopular": "Popularitet",
     "sortDate": "Dato",

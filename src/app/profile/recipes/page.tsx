@@ -15,6 +15,8 @@ import {
   type RecipeFilters,
 } from "@/lib/recipe-filters";
 import { SkeletonScreen } from "@/components/hf/Skeleton";
+import { BottomSheet } from "@/components/hf/BottomSheet";
+import { RecipeFiltersBody } from "@/components/recipes/RecipeFiltersBody";
 import { RecipeRow, recipeHref, type RecipeRowData as Row } from "@/components/recipes/RecipeRow";
 
 // Indstillinger → Opskrifter (docs/DECISIONS.md 2026-09-24): to faner,
@@ -35,8 +37,9 @@ type OwnDish = {
   ingredients: { grams: number; product: { kcalPer100g: number } }[];
 };
 type FavoriteRecipe = { id: string; name: string; kcal: number };
+type Source = "all" | "shared" | "hellofresh" | "valdemarsro";
 type SearchResult = {
-  kind: "shared" | "hellofresh";
+  kind: "shared" | "hellofresh" | "valdemarsro";
   id: string;
   name: string;
   imageUrl: string | null;
@@ -135,7 +138,9 @@ type FavoriteSnapshot = { id: string; name: string; kcal: number; images?: strin
 
 function SharedTab({ t }: { t: Translate }) {
   const [query, setQuery] = useState("");
-  const [filters] = useState<RecipeFilters>(loadRecipeFilters);
+  const [filters, setFilters] = useState<RecipeFilters>(loadRecipeFilters);
+  const [filterSheetOpen, setFilterSheetOpen] = useState(false);
+  const [source, setSource] = useState<Source>("all");
   const [helloFresh, setHelloFresh] = useState<boolean | null>(null);
   // Filtre/sortering og HelloFresh (en integration) er kun for Seriøs
   // (docs/DECISIONS.md 2026-09-26); Gratis sorteres altid efter relevans.
@@ -168,6 +173,9 @@ function SharedTab({ t }: { t: Translate }) {
         if (query.trim()) params.set("q", query.trim());
         else params.set("sort", "popular");
         if (helloFresh && isSerious) params.set("hellofresh", "1");
+        // Integrationsknapperne under søgefeltet: "Opskrifter" viser alle,
+        // en enkelt integration viser kun dens retter.
+        if (source !== "all") params.set("source", source);
         const res = await fetch(`/api/shared-recipes?${params.toString()}`, { signal: controller.signal });
         if (!res.ok) throw new Error("offline");
         setResults(((await res.json()) as { recipes: SearchResult[] }).recipes);
@@ -180,8 +188,14 @@ function SharedTab({ t }: { t: Translate }) {
       controller.abort();
       clearTimeout(timeout);
     };
-  }, [query, filters, helloFresh, isSerious]);
+  }, [query, filters, helloFresh, isSerious, source]);
 
+  const sourceOptions: { value: Source; label: string }[] = [
+    { value: "all", label: t("recipes.sourceAll") },
+    { value: "shared", label: t("recipes.sourceShared") },
+    ...(helloFresh ? [{ value: "hellofresh" as const, label: t("recipes.sourceHelloFresh") }] : []),
+    { value: "valdemarsro", label: t("recipes.sourceValdemarsro") },
+  ];
   const view = filters;
   const activeCount = activeFilterCount(view);
 
@@ -206,14 +220,17 @@ function SharedTab({ t }: { t: Translate }) {
   }
 
   function rowFor(result: SearchResult): Row {
-    return result.kind === "hellofresh"
+    return result.kind !== "shared"
       ? {
           key: result.id,
           href: recipeHref(result.id),
           name: result.name,
           imageUrl: result.imageUrl,
           subtitle: subtitleFor(result),
-          label: { text: t("recipes.helloFresh"), tone: "green" },
+          label: {
+            text: result.kind === "valdemarsro" ? t("recipes.valdemarsroSource") : t("recipes.helloFresh"),
+            tone: "green",
+          },
           ...extrasFor(result),
         }
       : {
@@ -239,6 +256,8 @@ function SharedTab({ t }: { t: Translate }) {
             onChange={(event) => setQuery(event.target.value)}
             placeholder={t("recipes.sharedSearchPlaceholder")}
             className="min-w-0"
+            // Markøren står i søgefeltet, så snart man åbner Retter.
+            autoFocus
           />
         </div>
         {/* Filterikon til højre for søgefeltet, uden ramme (brugerens valg
@@ -252,8 +271,9 @@ function SharedTab({ t }: { t: Translate }) {
             <PremiumBadge />
           </Link>
         ) : (
-          <Link
-            href="/profile/recipes/filters"
+          <button
+            type="button"
+            onClick={() => setFilterSheetOpen(true)}
             aria-label={t("recipeFilters.openFilters")}
             className="relative flex h-12 w-10 shrink-0 items-center justify-center text-hf-black"
           >
@@ -261,9 +281,34 @@ function SharedTab({ t }: { t: Translate }) {
             {activeCount > 0 && (
               <span className="absolute right-0.5 top-2.5 h-2 w-2 rounded-full bg-hf-green" aria-hidden="true" />
             )}
-          </Link>
+          </button>
         )}
       </div>
+
+      {/* Integrationer under søgefeltet: Opskrifter viser alle, de andre
+          viser kun den integrations retter. */}
+      <div role="group" aria-label={t("recipes.sourceFilterAria")} className="-mx-1 flex gap-2 overflow-x-auto px-1">
+        {sourceOptions.map((option) => (
+          <button
+            key={option.value}
+            type="button"
+            aria-pressed={source === option.value}
+            onClick={() => setSource(option.value)}
+            className={`hf-type-small hf-type-strong shrink-0 rounded-full border px-4 py-2 ${
+              source === option.value
+                ? "border-hf-black bg-hf-black text-hf-white"
+                : "border-hf-black bg-hf-white text-hf-black"
+            }`}
+          >
+            {option.label}
+          </button>
+        ))}
+      </div>
+      {filterSheetOpen && (
+        <BottomSheet size="full" title={t("recipes.filtersSheetTitle")} onClose={() => setFilterSheetOpen(false)}>
+          <RecipeFiltersBody onChange={setFilters} />
+        </BottomSheet>
+      )}
 
       {searching ? (
         <>
@@ -329,6 +374,11 @@ function RecipesContent() {
 
   return (
     <HfScreen title={t("recipes.title")}>
+      <div className="flex justify-end px-4 pt-3">
+        <Link href="/create-dish" className="hf-type-small hf-type-strong rounded-full bg-hf-green px-4 py-2 text-hf-white">
+          {t("recipes.createNew")}
+        </Link>
+      </div>
       <div role="tablist" className="flex border-b border-hf-tan-dark">
         {(["mine", "shared"] as const).map((value) => (
           <button

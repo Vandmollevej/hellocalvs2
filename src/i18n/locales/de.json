@@ -950,6 +950,24 @@
     "tabMine": "Meine Gerichte",
     "tabShared": "Geteilte Gerichte",
     "sharedSearchPlaceholder": "In Titel, Zutaten suchen …",
+
+    "createNew": "Neues Gericht anlegen",
+
+    "sourceAll": "Rezepte",
+
+    "sourceShared": "Geteilte Gerichte",
+
+    "sourceHelloFresh": "Hello Fresh",
+
+    "sourceValdemarsro": "Valdemarsro",
+
+    "sourceFilterAria": "Rezeptquelle wählen",
+
+    "filtersSheetTitle": "Filter",
+
+    "goToRecipe": "Zum Rezept",
+
+    "valdemarsroSource": "Valdemarsro",
     "sortRelevance": "Relevanz",
     "sortPopular": "Beliebtheit",
     "sortDate": "Datum",

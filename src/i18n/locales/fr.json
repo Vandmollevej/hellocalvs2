@@ -950,6 +950,24 @@
     "tabMine": "Mes plats",
     "tabShared": "Plats partagés",
     "sharedSearchPlaceholder": "Rechercher par titre, ingrédients …",
+
+    "createNew": "Créer un plat",
+
+    "sourceAll": "Recettes",
+
+    "sourceShared": "Plats partagés",
+
+    "sourceHelloFresh": "Hello Fresh",
+
+    "sourceValdemarsro": "Valdemarsro",
+
+    "sourceFilterAria": "Choisir la source",
+
+    "filtersSheetTitle": "Filtres",
+
+    "goToRecipe": "Aller à la recette",
+
+    "valdemarsroSource": "Valdemarsro",
     "sortRelevance": "Pertinence",
     "sortPopular": "Popularité",
     "sortDate": "Date",

@@ -378,3 +378,4 @@ Ejer: halvcirkel-sessionen (2026-10-07)
 | beskeder-prik | Sorte cirkler på Beskeder → grå tekst "Ny" | Færdig | — |
 | footer-arc | Lille halvcirkel midt over footeren (skub op, træk til siden, tryk, hold = redigér) | Færdig (kode, første prøve) | Afventer brugerens svar på bekræftelsesspørgsmål + test på telefon |
 | add-menu-edit | Tilføj-menuen: hold inde → omrokér/slet, "Tilføj" øverst til højre | Færdig (kode) | Afventer test på telefon |
+| retter-tekst-scan | Retter: auto-fokus søg, "Opret ny ret", integrationsknapper + filter-bundark; opret ret med Manuelt/Indsæt tekst/Scan + kopi-tjek (claude/retter-tekst-scan) | I gang | Retter-side færdig (kode). Migration 20261008100000 (VALDEMARSRO-kilde). Næste: indsæt-tekst-robot, kopi-tjek, scan, deling-popup, thumbs |

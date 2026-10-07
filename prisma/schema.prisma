@@ -1987,6 +1987,7 @@ enum ExternalProductSource {
   HELLOFRESH
   REMA1000
   BILKA
+  VALDEMARSRO
 }
 
 // Reference database of EU-approved E-number additives (E100-E1521),
