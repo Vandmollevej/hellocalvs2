@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState, useTransition } from "react";
+import { useEffect, useRef, useState, useTransition, type ReactNode } from "react";
 import { useRouter } from "next/navigation";
 import { FilterDropdown } from "@/components/admin/FilterDropdown";
 import {
@@ -20,37 +20,22 @@ import {
 // Alle filtre er dropdowns; mærke, sub brand, kategori, varetype og kilde er
 // flervalg.
 
-function Segment<T extends string>({
-  label,
-  value,
-  options,
-  onChange,
-}: {
-  label: string;
-  value: T;
-  options: { value: T; label: string }[];
-  onChange: (value: T) => void;
-}) {
-  return (
-    <div className="flex min-w-0 flex-col gap-1">
-      <span className="hf-type-label text-text-secondary">{label}</span>
-      <div className="flex gap-1 rounded-md border border-hf-tan-dark bg-hf-white p-1">
-        {options.map((option) => (
-          <button
-            key={option.value}
-            type="button"
-            aria-pressed={value === option.value}
-            onClick={() => onChange(option.value)}
-            className="hf-choice flex-1"
-          >
-            {option.label}
-          </button>
-        ))}
-      </div>
-    </div>
-  );
-}
-
+const VIEW_OPTIONS: { value: Filters["view"]; label: string; icon: ReactNode }[] = [
+  { value: "list", label: "Liste", icon: <path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01" /> },
+  {
+    value: "grid",
+    label: "Galleri",
+    icon: (
+      <>
+        <rect x="3" y="3" width="7" height="7" rx="1" />
+        <rect x="14" y="3" width="7" height="7" rx="1" />
+        <rect x="3" y="14" width="7" height="7" rx="1" />
+        <rect x="14" y="14" width="7" height="7" rx="1" />
+      </>
+    ),
+  },
+  { value: "details", label: "Detaljer", icon: <path d="M4 6h16M4 10h16M4 14h10M4 18h10" /> },
+];
 const PRODUCT_CATEGORY_OPTIONS = PRODUCT_CATEGORIES.map((key) => ({ value: key, label: PRODUCT_CATEGORY_LABELS[key] }));
 const SOURCE_OPTIONS = PRODUCT_SOURCES.map((key) => ({ value: key, label: PRODUCT_SOURCE_LABELS[key] }));
 const STATUS_OPTIONS = PRODUCT_STATUSES.map((key) => ({ value: key, label: PRODUCT_STATUS_LABELS[key] }));
@@ -179,15 +164,26 @@ export function ProductDatabaseFilters({
             onChange={(sort) => go({ sort: sort as Filters["sort"] })}
             className="md:w-52"
           />
-          <Segment
-            label="Visning"
-            value={filters.view}
-            options={[
-              { value: "list", label: "Liste" },
-              { value: "grid", label: "Galleri" },
-            ]}
-            onChange={(view) => go({ view, page: filters.page })}
-          />
+          <div className="flex min-w-0 flex-col gap-1">
+            <span className="hf-type-label text-text-secondary">Visning</span>
+            <div className="flex gap-1 rounded-md border border-hf-tan-dark bg-hf-white p-1">
+              {VIEW_OPTIONS.map((option) => (
+                <button
+                  key={option.value}
+                  type="button"
+                  aria-pressed={filters.view === option.value}
+                  aria-label={option.label}
+                  title={option.label}
+                  onClick={() => go({ view: option.value, page: filters.page })}
+                  className="hf-choice flex flex-1 items-center justify-center"
+                >
+                  <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                    {option.icon}
+                  </svg>
+                </button>
+              ))}
+            </div>
+          </div>
         </div>
       </div>
 
