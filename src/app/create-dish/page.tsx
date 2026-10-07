@@ -5,7 +5,6 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import {
   IconCamera,
-  IconInfoCircle,
   IconListNumbers,
   IconPhoto,
   IconSearch,
@@ -13,12 +12,14 @@ import {
   IconSoup,
 } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
-import { Toggle } from "@/components/ui/Toggle";
+import { BottomSheet, BottomSheetCloseButton } from "@/components/hf/BottomSheet";
+import { PasteTextSheet, ScanSheet, type ImportResult } from "@/components/recipes/RecipeImportSheets";
 import {
   readDishDraft,
   removeDishDraftIngredient,
   clearDishDraft,
   readDishDraftDetails,
+  appendDishDraftIngredient,
   writeDishDraftDetails,
   type DishDraftDetails,
   type DishDraftIngredient,
@@ -47,9 +48,13 @@ export default function CreateDishPage() {
   const { name, images, steps, showImages, showSteps } = details;
   // Vindue med kategorier efter Gem.
   const [savedDish, setSavedDish] = useState<{ id: string; tags: string[] } | null>(null);
-  // Deling starter slået til (docs/DECISIONS.md 2026-09-24).
-  const [shared, setShared] = useState(true);
-  const [showShareInfo, setShowShareInfo] = useState(false);
+  // Deling spørges om i et vindue efter oprettelsen (brugerens krav 2026-10-07);
+  // den kan stadig slås til senere under retten.
+  const [sharePrompt, setSharePrompt] = useState(false);
+  const [sharing, setSharing] = useState(false);
+  // Indsæt tekst / Scan: arket, der er åbent, og hvad robotten ikke kunne placere.
+  const [sheet, setSheet] = useState<"none" | "paste" | "scan">("none");
+  const [importNote, setImportNote] = useState<{ missing: string[]; nutrition: string | null } | null>(null);
   const [ingredients, setIngredients] = useState<DishDraftIngredient[]>(readDishDraft);
   const [saving, setSaving] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
@@ -123,6 +128,68 @@ export default function CreateDishPage() {
     router.push("/profile/recipes?tab=mine");
   }
 
+  async function answerShare(share: boolean) {
+    if (share && savedDish) {
+      setSharing(true);
+      const shareRes = await fetch(`/api/dishes/${encodeURIComponent(savedDish.id)}/share`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ shared: true, language: locale === "en" ? "en" : "da" }),
+      }).catch(() => null);
+      setSharing(false);
+      // Retten er gemt privat; delingen kan slås til senere under retten.
+      if (!shareRes?.ok) setSaveError(t("createDish.shareError"));
+    }
+    setSharePrompt(false);
+  }
+
+  // Robotten har fundet titel, ingredienser, trin og næring: sæt dem ind.
+  function applyImport(result: ImportResult) {
+    const missing: string[] = [];
+    for (const ingredient of result.ingredients) {
+      if (ingredient.product && ingredient.grams) {
+        appendDishDraftIngredient({
+          productId: ingredient.product.id,
+          name: ingredient.product.name,
+          imageUrl: ingredient.product.imageUrl,
+          kcalPer100g: ingredient.product.kcalPer100g,
+          proteinPer100g: ingredient.product.proteinPer100g,
+          carbsPer100g: ingredient.product.carbsPer100g,
+          fatPer100g: ingredient.product.fatPer100g,
+          grams: ingredient.grams,
+        });
+      } else {
+        missing.push(ingredient.raw);
+      }
+    }
+    setIngredients(readDishDraft());
+    // Første billede øverst som titlen; flere billeder hører til trinene.
+    const pageImages = result.pageImages ?? [];
+    const nextImages = result.image ? [result.image, ...images] : images;
+    const nextSteps = result.steps.map((text, index) => ({ title: "", text, image: pageImages[index] ?? null }));
+    updateDetails({
+      name: result.title || name,
+      images: nextImages,
+      showImages: nextImages.length > 0 || showImages,
+      steps: nextSteps.length > 0 ? nextSteps : steps,
+      showSteps: nextSteps.length > 0 || showSteps,
+    });
+    const n = result.nutrition;
+    setImportNote({
+      missing,
+      nutrition: n
+        ? [
+            n.kcal !== null && `${n.kcal} kcal`,
+            n.protein !== null && `${n.protein} g protein`,
+            n.carbs !== null && `${n.carbs} g kulhydrat`,
+            n.fat !== null && `${n.fat} g fedt`,
+          ]
+            .filter(Boolean)
+            .join(" · ")
+        : null,
+    });
+  }
+
   function handleRemove(index: number) {
     removeDishDraftIngredient(index);
     setIngredients(readDishDraft());
@@ -156,20 +223,10 @@ export default function CreateDishPage() {
         return;
       }
       clearDishDraft();
-      if (shared && !hasPrivateIngredient && data.dish?.id) {
-        const shareRes = await fetch(`/api/dishes/${encodeURIComponent(data.dish.id)}/share`, {
-          method: "PATCH",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ shared: true, language: locale === "en" ? "en" : "da" }),
-        }).catch(() => null);
-        if (!shareRes?.ok) {
-          // Retten er gemt privat; delingen kan slås til senere under Mine retter.
-          setSaveError(t("createDish.shareError"));
-        }
-      }
-      // Retten er gemt; vinduet giver mulighed for at vælge kategorier.
+      // Retten er gemt; først spørges der om deling, derefter om kategorier.
       if (data.dish?.id) {
         setSavedDish({ id: data.dish.id, tags: Array.isArray(data.suggestedTags) ? data.suggestedTags : [] });
+        setSharePrompt(!hasPrivateIngredient);
       } else {
         finish();
       }
@@ -209,30 +266,52 @@ export default function CreateDishPage() {
           className="hf-type-body hf-field min-w-0 rounded-full bg-hf-tan px-4 text-hf-black outline-none"
         />
 
-        <div>
-          <div className="hf-control-row flex items-center gap-3 rounded-2xl bg-hf-tan px-4 lg:w-fit">
-            <span className="hf-type-body hf-type-strong flex-1 text-hf-black">{t("createDish.shareLabel")}</span>
-            <Toggle checked={shared && !hasPrivateIngredient} onChange={setShared} disabled={hasPrivateIngredient} />
-            {/* Infotegnet står til højre for skyderen. */}
-            <button
-              type="button"
-              onClick={() => setShowShareInfo((open) => !open)}
-              aria-label={t("createDish.shareInfoAria")}
-              aria-expanded={showShareInfo}
-              className="-my-2 flex h-11 w-8 shrink-0 items-center justify-center text-hf-black"
-            >
-              <IconInfoCircle size={20} />
-            </button>
-          </div>
-          {hasPrivateIngredient && (
-            <p className="hf-type-small text-text-secondary mt-2 px-1">{t("createDish.shareBlockedPrivate")}</p>
-          )}
-          {showShareInfo && (
-            <p className="hf-type-small mt-2 rounded-[8px] border border-hf-tan-dark bg-hf-white px-3 py-2 text-hf-black">
-              {t("createDish.shareInfo")}
-            </p>
-          )}
+        {/* Tre veje ind: Manuelt (som før), Indsæt tekst og Scan. */}
+        <div role="group" className="grid grid-cols-3 gap-2">
+          <button
+            type="button"
+            aria-pressed={sheet === "none"}
+            onClick={() => setSheet("none")}
+            className="hf-type-small hf-type-strong rounded-full border border-hf-black bg-hf-black px-2 py-3 text-hf-white"
+          >
+            {t("createDish.modeManual")}
+          </button>
+          <button
+            type="button"
+            onClick={() => setSheet("paste")}
+            className="hf-type-small hf-type-strong rounded-full border border-hf-black bg-hf-white px-2 py-3 text-hf-black"
+          >
+            {t("createDish.modeText")}
+          </button>
+          <button
+            type="button"
+            onClick={() => setSheet("scan")}
+            className="hf-type-small hf-type-strong rounded-full border border-hf-black bg-hf-white px-2 py-3 text-hf-black"
+          >
+            {t("createDish.modeScan")}
+          </button>
         </div>
+
+        {importNote && (
+          <div className="hf-card">
+            <p className="hf-type-small hf-type-strong text-hf-black">{t("createDish.importDone")}</p>
+            {importNote.nutrition && (
+              <p className="hf-type-small text-text-secondary">
+                {t("createDish.importNutrition")}: {importNote.nutrition}
+              </p>
+            )}
+            {importNote.missing.length > 0 && (
+              <>
+                <p className="hf-type-small hf-type-strong mt-2 text-hf-black">{t("createDish.importMissing")}</p>
+                <ul className="hf-type-small text-text-secondary list-disc pl-5">
+                  {importNote.missing.map((line, index) => (
+                    <li key={index}>{line}</li>
+                  ))}
+                </ul>
+              </>
+            )}
+          </div>
+        )}
 
         <div>
           <p className="hf-type-small hf-type-strong mb-2 text-hf-black">{t("createDish.ingredients")}</p>
@@ -423,7 +502,27 @@ export default function CreateDishPage() {
           </div>
         )}
       </div>
-      {savedDish && (
+      {sheet === "paste" && <PasteTextSheet onClose={() => setSheet("none")} onResult={applyImport} />}
+      {sheet === "scan" && <ScanSheet onClose={() => setSheet("none")} onResult={applyImport} />}
+      {savedDish && sharePrompt && (
+        <BottomSheet title={t("createDish.shareQuestionTitle")} onClose={() => void answerShare(false)}>
+          <div className="hf-page">
+            <p className="hf-type-body text-hf-black">{t("createDish.shareQuestionBody")}</p>
+            <button
+              type="button"
+              disabled={sharing}
+              onClick={() => void answerShare(true)}
+              className="hf-control hf-btn-primary w-full disabled:opacity-60"
+            >
+              {t("createDish.shareYes")}
+            </button>
+            <BottomSheetCloseButton className="hf-control hf-btn-secondary w-full">
+              {t("createDish.shareNo")}
+            </BottomSheetCloseButton>
+          </div>
+        </BottomSheet>
+      )}
+      {savedDish && !sharePrompt && (
         <RecipeCategoriesDialog dishId={savedDish.id} initialTags={savedDish.tags} onClose={finish} />
       )}
     </HfScreen>

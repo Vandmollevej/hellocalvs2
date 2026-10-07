@@ -1189,6 +1189,52 @@
   },
   "createDish": {
     "shareLabel": "Wil je het gerecht met andere gebruikers delen?",
+
+    "modeManual": "Manual",
+
+    "modeText": "Paste text",
+
+    "modeScan": "Scan",
+
+    "shareQuestionTitle": "Share this dish?",
+
+    "shareQuestionBody": "Other users can find and use your dish. No personal details are shared. You can also share it later from the dish.",
+
+    "shareYes": "Share",
+
+    "shareNo": "Not now",
+
+    "pasteTitle": "Paste recipe text",
+
+    "pastePlaceholder": "Paste the complete recipe text here",
+
+    "pasteSourcePlaceholder": "Source link (optional)",
+
+    "pasteInsert": "Insert",
+
+    "pasteWorking": "Reading the recipe …",
+
+    "pasteError": "Could not read the recipe",
+
+    "scanTitle": "Scan recipe",
+
+    "scanTake": "Take photo",
+
+    "scanGallery": "From library",
+
+    "scanFinish": "Done",
+
+    "scanWorking": "Reading the pages …",
+
+    "scanError": "Could not read the pages",
+
+    "scanHint": "Add the pages in order. The first photo becomes the dish image.",
+
+    "importMissing": "Missing a match or an amount — add these yourself:",
+
+    "importDone": "The recipe was inserted",
+
+    "importNutrition": "Nutrition in the text (per serving)",
     "shareInfo": "Er worden geen persoonlijke gegevens gedeeld wanneer je een gerecht deelt",
     "shareInfoAria": "Over delen",
     "shareError": "Het gerecht is opgeslagen, maar kon nu niet worden gedeeld",

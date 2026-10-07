@@ -1189,6 +1189,52 @@
   },
   "createDish": {
     "shareLabel": "Ønsker du å dele retten med andre brukere?",
+
+    "modeManual": "Manuelt",
+
+    "modeText": "Lim inn tekst",
+
+    "modeScan": "Skann",
+
+    "shareQuestionTitle": "Vil du dele retten?",
+
+    "shareQuestionBody": "Andre brukere kan finne og bruke retten din. Ingen personlige detaljer deles. Du kan også dele den senere.",
+
+    "shareYes": "Del",
+
+    "shareNo": "Ikke nå",
+
+    "pasteTitle": "Lim inn oppskrift",
+
+    "pastePlaceholder": "Lim inn hele oppskriften her",
+
+    "pasteSourcePlaceholder": "Lenke til kilden (valgfritt)",
+
+    "pasteInsert": "Lim inn",
+
+    "pasteWorking": "Leser oppskriften …",
+
+    "pasteError": "Kunne ikke lese oppskriften",
+
+    "scanTitle": "Skann oppskrift",
+
+    "scanTake": "Ta bilde",
+
+    "scanGallery": "Fra bibliotek",
+
+    "scanFinish": "Ferdig",
+
+    "scanWorking": "Leser sidene …",
+
+    "scanError": "Kunne ikke lese sidene",
+
+    "scanHint": "Legg til sidene i rekkefølge. Første bilde blir rettens bilde.",
+
+    "importMissing": "Mangler treff eller mengde — legg til selv:",
+
+    "importDone": "Oppskriften er limt inn",
+
+    "importNutrition": "Næring i teksten (per porsjon)",
     "shareInfo": "Ingen personlige detaljer deles når du deler en rett",
     "shareInfoAria": "Om deling",
     "shareError": "Retten er lagret, men kunne ikke deles akkurat nå",

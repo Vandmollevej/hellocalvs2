@@ -1182,6 +1182,52 @@
   },
   "createDish": {
     "shareLabel": "Ønsker du at dele retten med andre brugere?",
+
+    "modeManual": "Manuelt",
+
+    "modeText": "Indsæt tekst",
+
+    "modeScan": "Scan",
+
+    "shareQuestionTitle": "Vil du dele retten?",
+
+    "shareQuestionBody": "Andre brugere kan finde og bruge din ret. Ingen personlige detaljer deles. Du kan også dele den senere under retten.",
+
+    "shareYes": "Del",
+
+    "shareNo": "Ikke nu",
+
+    "pasteTitle": "Indsæt opskriftstekst",
+
+    "pastePlaceholder": "Indsæt hele opskriftsteksten her",
+
+    "pasteSourcePlaceholder": "Link til kilden (valgfrit)",
+
+    "pasteInsert": "Indsæt",
+
+    "pasteWorking": "Læser opskriften …",
+
+    "pasteError": "Kunne ikke læse opskriften",
+
+    "scanTitle": "Scan opskrift",
+
+    "scanTake": "Tag billede",
+
+    "scanGallery": "Fra arkiv",
+
+    "scanFinish": "Afslut",
+
+    "scanWorking": "Læser siderne …",
+
+    "scanError": "Kunne ikke læse siderne",
+
+    "scanHint": "Tilføj siderne i rækkefølge. Første billede bliver rettens billede.",
+
+    "importMissing": "Mangler match eller mængde — tilføj selv:",
+
+    "importDone": "Opskriften er indsat",
+
+    "importNutrition": "Næring i teksten (pr. portion)",
     "shareInfo": "Ingen personlige detaljer deles, når du deler en ret",
     "shareInfoAria": "Om deling",
     "shareError": "Retten er gemt, men kunne ikke deles lige nu",

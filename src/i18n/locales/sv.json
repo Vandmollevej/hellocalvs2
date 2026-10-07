@@ -1189,6 +1189,52 @@
   },
   "createDish": {
     "shareLabel": "Vill du dela rätten med andra användare?",
+
+    "modeManual": "Manuellt",
+
+    "modeText": "Klistra in text",
+
+    "modeScan": "Skanna",
+
+    "shareQuestionTitle": "Vill du dela rätten?",
+
+    "shareQuestionBody": "Andra användare kan hitta och använda din rätt. Inga personuppgifter delas. Du kan också dela den senare.",
+
+    "shareYes": "Dela",
+
+    "shareNo": "Inte nu",
+
+    "pasteTitle": "Klistra in receptet",
+
+    "pastePlaceholder": "Klistra in hela receptet här",
+
+    "pasteSourcePlaceholder": "Länk till källan (valfritt)",
+
+    "pasteInsert": "Klistra in",
+
+    "pasteWorking": "Läser receptet …",
+
+    "pasteError": "Kunde inte läsa receptet",
+
+    "scanTitle": "Skanna recept",
+
+    "scanTake": "Ta bild",
+
+    "scanGallery": "Från bibliotek",
+
+    "scanFinish": "Klar",
+
+    "scanWorking": "Läser sidorna …",
+
+    "scanError": "Kunde inte läsa sidorna",
+
+    "scanHint": "Lägg till sidorna i ordning. Första bilden blir rättens bild.",
+
+    "importMissing": "Saknar match eller mängd — lägg till själv:",
+
+    "importDone": "Receptet har lagts in",
+
+    "importNutrition": "Näring i texten (per portion)",
     "shareInfo": "Inga personuppgifter delas när du delar en rätt",
     "shareInfoAria": "Om delning",
     "shareError": "Rätten är sparad, men kunde inte delas just nu",
