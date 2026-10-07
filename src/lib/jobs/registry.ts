@@ -35,6 +35,15 @@ export const JOBS: JobDefinition[] = [
     defaultRunAtTime: "03:00",
   },
   {
+    key: "energy-split-check",
+    name: "Energifordeling: afvigelser",
+    description:
+      "Sammenligner energifordelingen (protein/kulhydrat/fedt i % af kcal) for varer med samme brand, produkttype, serie og variant, der kun adskiller sig på mængde. Afviger en vare, får den et flag under Usikkerheder → Energi-afvigelser. Varen deaktiveres ikke.",
+    runtime: "app",
+    defaultIntervalMinutes: null,
+    defaultRunAtTime: "03:30",
+  },
+  {
     key: "frida-import",
     name: "Frida-import",
     description:
