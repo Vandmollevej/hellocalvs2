@@ -10,6 +10,10 @@ import {
   type StatsFilterInput,
 } from "@/lib/admin-stats-range";
 
+// Hvide knapper med sort kant (brugerønske 2026-10-07).
+const PILL = "rounded-full border border-black bg-white px-3 py-1 text-black hover:bg-hf-tan";
+const PILL_ACTIVE = "font-semibold ring-1 ring-black";
+
 // Filterlinje øverst på /admin/statistics: periode, land/region og
 // abonnementstype. Filteret ligger i URL'en (kan genindlæses/bogmærkes).
 export function StatsFilters({ filter, fromDay, toDay }: { filter: StatsFilterInput; fromDay: string; toDay: string }) {
@@ -17,6 +21,9 @@ export function StatsFilters({ filter, fromDay, toDay }: { filter: StatsFilterIn
   const pathname = usePathname();
   const [from, setFrom] = useState(filter.from ?? fromDay);
   const [to, setTo] = useState(filter.to ?? toDay);
+  const regionOptions = [{ value: "all", label: "Alle" }, ...REGION_GROUPS, ...COUNTRY_OPTIONS];
+  const regionLabel = (value: string) => regionOptions.find((o) => o.value === value)?.label ?? "Alle";
+  const [regionText, setRegionText] = useState(regionLabel(filter.region));
 
   function apply(next: Partial<StatsFilterInput>) {
     const merged = { ...filter, ...next };
@@ -40,11 +47,7 @@ export function StatsFilters({ filter, fromDay, toDay }: { filter: StatsFilterIn
             key={preset.value}
             type="button"
             onClick={() => apply({ preset: preset.value })}
-            className={`rounded-full border px-3 py-1 ${
-              filter.preset === preset.value
-                ? "border-hf-green-dark bg-hf-green-dark text-hf-white"
-                : "border-border-strong text-text-secondary hover:bg-hf-tan"
-            }`}
+            className={`${PILL} ${filter.preset === preset.value ? PILL_ACTIVE : ""}`}
           >
             {preset.label}
           </button>
@@ -58,7 +61,7 @@ export function StatsFilters({ filter, fromDay, toDay }: { filter: StatsFilterIn
             value={from}
             max={to}
             onChange={(event) => setFrom(event.target.value)}
-            className="rounded-md border border-border-strong bg-surface-1 px-2 py-1 text-text-primary"
+            className="hf-field rounded-md border border-border-strong bg-surface-1 px-2 text-text-primary"
           />
         </label>
         <label className="flex flex-col gap-1 text-text-secondary">
@@ -68,53 +71,48 @@ export function StatsFilters({ filter, fromDay, toDay }: { filter: StatsFilterIn
             value={to}
             min={from}
             onChange={(event) => setTo(event.target.value)}
-            className="rounded-md border border-border-strong bg-surface-1 px-2 py-1 text-text-primary"
+            className="hf-field rounded-md border border-border-strong bg-surface-1 px-2 text-text-primary"
           />
         </label>
         <button
           type="button"
           onClick={() => apply({ preset: "custom", from, to })}
-          className={`rounded-md px-3 py-1.5 ${
-            filter.preset === "custom" ? "bg-hf-green-dark text-hf-white" : "bg-hf-fab text-hf-white hover:opacity-90"
-          }`}
+          className={`${PILL} ${filter.preset === "custom" ? PILL_ACTIVE : ""}`}
         >
           Vis periode
         </button>
         <label className="flex flex-col gap-1 text-text-secondary">
           Land / region
-          <select
-            value={filter.region}
-            onChange={(event) => apply({ region: event.target.value })}
-            className="rounded-md border border-border-strong bg-surface-1 px-2 py-1 text-text-primary"
-          >
-            <option value="all">Alle</option>
-            <optgroup label="Regioner">
-              {REGION_GROUPS.map((group) => (
-                <option key={group.value} value={group.value}>
-                  {group.label}
-                </option>
-              ))}
-            </optgroup>
-            <optgroup label="Lande">
-              {COUNTRY_OPTIONS.map((country) => (
-                <option key={country.value} value={country.value}>
-                  {country.label}
-                </option>
-              ))}
-            </optgroup>
-          </select>
+          <input
+            type="text"
+            list="stats-region-options"
+            value={regionText}
+            placeholder="Skriv for at søge"
+            onFocus={(event) => event.currentTarget.select()}
+            onChange={(event) => {
+              const text = event.target.value;
+              setRegionText(text);
+              const match = regionOptions.find((o) => o.label.toLowerCase() === text.trim().toLowerCase());
+              if (match) apply({ region: match.value });
+            }}
+            onBlur={() => setRegionText(regionLabel(filter.region))}
+            className="hf-field rounded-md border border-border-strong bg-surface-1 px-2 text-text-primary"
+          />
+          <datalist id="stats-region-options">
+            {regionOptions.map((o) => (
+              <option key={o.value} value={o.label} />
+            ))}
+          </datalist>
         </label>
         <div className="flex flex-col gap-1 text-text-secondary">
           Abonnement
-          <div className="flex overflow-hidden rounded-md border border-border-strong">
+          <div className="flex gap-1.5">
             {STATS_TIERS.map((tier) => (
               <button
                 key={tier.value}
                 type="button"
                 onClick={() => apply({ tier: tier.value })}
-                className={`px-2.5 py-1 ${
-                  filter.tier === tier.value ? "bg-hf-green-dark text-hf-white" : "text-text-secondary hover:bg-hf-tan"
-                }`}
+                className={`${PILL} ${filter.tier === tier.value ? PILL_ACTIVE : ""}`}
               >
                 {tier.label}
               </button>
