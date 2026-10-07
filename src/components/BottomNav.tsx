@@ -879,6 +879,7 @@ export function BottomNav() {
                         else itemRefs.current.delete(key);
                       }}
                       aria-label={t(`nav.${item.labelKey}`)}
+                      data-guide={`nav-${key}`}
                       aria-current={active ? "page" : undefined}
                       onPointerDown={(e) => handleActivePointerDown(key, e)}
                       onPointerMove={handleActivePointerMove}

@@ -7,7 +7,8 @@ import { IconSend } from "@tabler/icons-react";
 import { BottomSheet } from "@/components/hf/BottomSheet";
 import { useTranslation } from "@/i18n/LocaleProvider";
 import { helpPagePath } from "@/i18n";
-import { OPEN_HELP_CHAT_EVENT } from "@/lib/help-chat-events";
+import { OPEN_HELP_CHAT_EVENT, startHelpGuide } from "@/lib/help-chat-events";
+import { helpGuideIdFromLink } from "@/lib/help-guides";
 import { CHATBOT_LINKS, isChatbotLinkHref } from "@/lib/chatbot-knowledge";
 
 // Hjælpe-chatten (docs/DECISIONS.md 2026-10-02): AI-chatbot med genveje til
@@ -176,6 +177,11 @@ function HelpChatSheet({ onClose }: { onClose: () => void }) {
     router.push(href);
   }
 
+  function guideMe(id: string) {
+    onClose();
+    startHelpGuide(id);
+  }
+
   const messages = conversation?.messages ?? [];
   const lastAssistant = [...messages].reverse().find((m) => m.role === "ASSISTANT");
   const offerHuman = !escalated && !escalating && Boolean(lastAssistant?.needsHuman) && messages.at(-1)?.id === lastAssistant?.id;
@@ -261,16 +267,14 @@ function HelpChatSheet({ onClose }: { onClose: () => void }) {
                 </div>
               ) : (
                 <Bubble key={message.id} role={message.role}>
+                  <MessageShortcuts
+                    links={message.links}
+                    linkLabel={linkLabel}
+                    onGo={go}
+                    onGuide={guideMe}
+                    guideLabel={t("helpChat.guideMe")}
+                  />
                   {message.body}
-                  {message.links.length > 0 && (
-                    <span className="mt-2 flex flex-wrap gap-x-4 gap-y-1">
-                      {message.links.map((href) => (
-                        <button key={href} type="button" className="hf-btn-text" onClick={() => go(href)}>
-                          {linkLabel(href)}
-                        </button>
-                      ))}
-                    </span>
-                  )}
                 </Bubble>
               ),
             )}
@@ -378,5 +382,43 @@ function ContactOptions({
         {t("helpChat.contactForm")}
       </button>
     </div>
+  );
+}
+
+// Genvejen står øverst i svaret som et almindeligt understreget link, og
+// "Guide mig" som knap lige under, før selve forklaringen (DECISIONS 2026-10-07).
+function MessageShortcuts({
+  links,
+  linkLabel,
+  onGo,
+  onGuide,
+  guideLabel,
+}: {
+  links: string[];
+  linkLabel: (href: string) => string;
+  onGo: (href: string) => void;
+  onGuide: (id: string) => void;
+  guideLabel: string;
+}) {
+  const guideId = links.map(helpGuideIdFromLink).find((id): id is string => id !== null) ?? null;
+  const pages = links.filter((href) => helpGuideIdFromLink(href) === null);
+  if (pages.length === 0 && !guideId) return null;
+  return (
+    <span className="mb-2 flex flex-col items-start gap-2">
+      {pages.length > 0 && (
+        <span className="flex flex-wrap gap-x-4 gap-y-1">
+          {pages.map((href) => (
+            <button key={href} type="button" className="hf-btn-text" onClick={() => onGo(href)}>
+              {linkLabel(href)}
+            </button>
+          ))}
+        </span>
+      )}
+      {guideId && (
+        <button type="button" className="hf-btn-primary h-12 px-5" onClick={() => onGuide(guideId)}>
+          {guideLabel}
+        </button>
+      )}
+    </span>
   );
 }

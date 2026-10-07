@@ -15,17 +15,21 @@ function Section({ title, children }: { title: string; children: React.ReactNode
   );
 }
 
-function Source({ label, href }: { label: string; href: string }) {
+function Source({ label, href, more = [] }: { label: string; href: string; more?: { label: string; href: string }[] }) {
+  const sources = [{ label, href }, ...more];
   return (
-    <Section title="Kilde">
-      <a
-        href={href}
-        target="_blank"
-        rel="noreferrer"
-        className="inline-flex items-center gap-1 text-hf-green underline underline-offset-2"
-      >
-        {label} <IconExternalLink size={14} />
-      </a>
+    <Section title={sources.length > 1 ? "Kilder" : "Kilde"}>
+      {sources.map((source) => (
+        <a
+          key={source.href}
+          href={source.href}
+          target="_blank"
+          rel="noreferrer"
+          className="inline-flex items-center gap-1 text-hf-green underline underline-offset-2"
+        >
+          {source.label} <IconExternalLink size={14} />
+        </a>
+      ))}
     </Section>
   );
 }
@@ -70,7 +74,7 @@ export default function KnowledgeEntryPage() {
             <p>{article.funFact}</p>
           </Section>
         )}
-        <Source {...article.source} />
+        <Source {...article.source} more={article.moreSources} />
       </div>
     </HfScreen>
   );

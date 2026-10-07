@@ -3153,7 +3153,13 @@
     "devicesHeading": "Track sleep with a smart device",
     "devicesIntro": "Connect a watch or an app to compare perceived sleep with actual sleep."
   },
+  "helpGuide": {
+    "title": "Guide",
+    "end": "End guide",
+    "missing": "I can't find the button right now. Open the page manually using the shortcut in the chat."
+  },
   "helpChat": {
+    "guideMe": "Guide me",
     "open": "Help",
     "title": "Help",
     "welcome": "Hi! I'm Hello Cal's help chatbot. Ask me about the app and I'll help you along. If you'd rather talk to a person, tap \"Talk to a person\".",

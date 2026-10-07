@@ -3187,7 +3187,13 @@
     "devicesHeading": "Spåra sömn med smart utrustning",
     "devicesIntro": "Anslut en klocka eller en app, så kan du jämföra upplevd sömn med faktisk sömn."
   },
+  "helpGuide": {
+    "title": "Guide",
+    "end": "Avsluta guiden",
+    "missing": "Jag hittar inte knappen just nu. Öppna sidan manuellt via genvägen i chatten."
+  },
   "helpChat": {
+    "guideMe": "Guida mig",
     "open": "Hjälp",
     "title": "Hjälp",
     "welcome": "Hej! Jag är Hello Cals hjälpchatbot. Fråga mig om appen, så hjälper jag dig vidare. Vill du hellre prata med en människa, tryck på \"Prata med en medarbetare\".",

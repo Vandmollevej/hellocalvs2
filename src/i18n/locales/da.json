@@ -3134,7 +3134,13 @@
     "devicesHeading": "Track søvn med smartudstyr",
     "devicesIntro": "Forbind et ur eller en app, så kan du sammenligne oplevet søvn med faktisk søvn."
   },
+  "helpGuide": {
+    "title": "Guide",
+    "end": "Afslut guide",
+    "missing": "Jeg kan ikke finde knappen lige nu. Åbn siden manuelt via genvejen i chatten."
+  },
   "helpChat": {
+    "guideMe": "Guide mig",
     "open": "Hjælp",
     "title": "Hjælp",
     "welcome": "Hej! Jeg er Hello Cals hjælpe-chatbot. Spørg mig om appen, så hjælper jeg dig videre. Vil du hellere tale med et menneske, så tryk på \"Tal med en medarbejder\".",

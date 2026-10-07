@@ -3187,7 +3187,13 @@
     "devicesHeading": "Schlaf mit Smart-Geräten tracken",
     "devicesIntro": "Verbinde eine Uhr oder eine App, um empfundenen Schlaf mit tatsächlichem Schlaf zu vergleichen."
   },
+  "helpGuide": {
+    "title": "Anleitung",
+    "end": "Anleitung beenden",
+    "missing": "Ich finde die Schaltfläche gerade nicht. Öffne die Seite manuell über die Verknüpfung im Chat."
+  },
   "helpChat": {
+    "guideMe": "Führe mich",
     "open": "Hilfe",
     "title": "Hilfe",
     "welcome": "Hallo! Ich bin der Hilfe-Chatbot von Hello Cal. Frag mich zur App, dann helfe ich dir weiter. Wenn du lieber mit einem Menschen sprechen möchtest, tippe auf „Mit einem Mitarbeiter sprechen“.",

@@ -3187,7 +3187,13 @@
     "devicesHeading": "Suis ton sommeil avec tes appareils",
     "devicesIntro": "Connecte une montre ou une appli pour comparer ton sommeil ressenti au sommeil réel."
   },
+  "helpGuide": {
+    "title": "Guide",
+    "end": "Terminer le guide",
+    "missing": "Je ne trouve pas le bouton pour le moment. Ouvrez la page manuellement avec le raccourci dans le chat."
+  },
   "helpChat": {
+    "guideMe": "Guide-moi",
     "open": "Aide",
     "title": "Aide",
     "welcome": "Salut ! Je suis le chatbot d'aide de Hello Cal. Pose-moi tes questions sur l'appli et je t'aiderai. Tu préfères parler à une personne ? Appuie sur « Parler à un conseiller ».",

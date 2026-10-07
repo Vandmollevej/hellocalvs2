@@ -3187,7 +3187,13 @@
     "devicesHeading": "Slaap bijhouden met slimme apparatuur",
     "devicesIntro": "Koppel een horloge of app, dan kun je ervaren slaap vergelijken met werkelijke slaap."
   },
+  "helpGuide": {
+    "title": "Gids",
+    "end": "Gids beëindigen",
+    "missing": "Ik kan de knop nu niet vinden. Open de pagina handmatig via de snelkoppeling in de chat."
+  },
   "helpChat": {
+    "guideMe": "Begeleid mij",
     "open": "Hulp",
     "title": "Hulp",
     "welcome": "Hoi! Ik ben de hulpchatbot van Hello Cal. Vraag me iets over de app, dan help ik je verder. Wil je liever met een mens praten, tik dan op \"Praat met een medewerker\".",

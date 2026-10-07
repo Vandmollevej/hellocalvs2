@@ -16,6 +16,7 @@ import { SentMessageNotice } from "@/components/SentMessageNotice";
 import { SleepQualityGate } from "@/components/SleepQualityGate";
 import { UmamiTracker } from "@/components/UmamiTracker";
 import { HelpChat } from "@/components/help/HelpChat";
+import { HelpGuideSpotlight } from "@/components/help/HelpGuideSpotlight";
 import { UserbackWidget } from "@/components/UserbackWidget";
 
 const geistSans = Geist({
@@ -78,6 +79,7 @@ export default function RootLayout({
               <AccessLogPanel />
             </AppFrame>
             <HelpChat />
+            <HelpGuideSpotlight />
           </FamilyStatusProvider>
         </LocaleProvider>
       </body>
