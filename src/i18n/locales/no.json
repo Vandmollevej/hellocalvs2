@@ -553,7 +553,23 @@
     "steps": "Skritt",
     "distanceKm": "Kilometer beveget"
   },
+  "footerArc": {
+    "open": "Åpne legg til-knapper",
+    "close": "Lukk legg til-knapper",
+    "editHint": "Dra en knapp ned for å fjerne den",
+    "done": "Ferdig",
+    "removeItem": "Fjern {item}",
+    "addItem": "Legg til {item}",
+    "allInUse": "Alle knappene er i bruk"
+  },
   "addMenu": {
+    "editEditHint": "Hold en rute inne for å flytte eller slette den",
+    "editDone": "Ferdig",
+    "editAdd": "Legg til",
+    "editRemoveTile": "Fjern {item}",
+    "editAddTile": "Legg til {item}",
+    "editNoneHidden": "Alle rutene er i bruk",
+    "editAddTitle": "Legg til rute",
     "title": "Legg til",
     "food": "Legg til mat",
     "scan": "Skann vare",
@@ -1392,7 +1408,8 @@
     "messages": {
       "title": "Meldinger",
       "empty": "Du har ingen meldinger ennå.",
-      "markAllRead": "Merk alle som lest"
+      "markAllRead": "Merk alle som lest",
+      "unread": "Ny"
     },
     "communication": {
       "intro": "Velg hvilke meldinger du vil ha som e-post og/eller push. Viktige kontomeldinger (f.eks. verifisering og tilbakestilling av passord) sendes alltid.",

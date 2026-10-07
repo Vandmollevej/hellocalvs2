@@ -367,3 +367,14 @@ Ejer: logo-upload-sessionen (2026-10-04)
 | Id | Opgave | Status | Næste skridt |
 | --- | --- | --- | --- |
 | logo-upload | Drag and drop af logoer under Varedatabase med partier/tidsstempel, masse-sletning, størrelse/original/filstørrelse og procesvisning | Færdig (kode) | Migration 20261004140000 skal med deployet. Ikke prøvet i browser/mod rigtig database — test med en lille mappe først |
+
+## G-FOOTERARC — Halvcirkel over footeren + Tilføj-menu-redigering + Edeka-logo
+Filer: `src/components/FooterArc*.tsx`, `src/lib/footer-arc.ts`, `src/lib/add-menu-layout.ts`, `src/components/add/AddMenuList.tsx`, `scripts/image-agent/cutout.py` (logo), `src/app/profile/messages/page.tsx`.
+Ejer: halvcirkel-sessionen (2026-10-07)
+
+| Id | Opgave | Status | Næste skridt |
+| --- | --- | --- | --- |
+| edeka-logo | Logo viser kun hjertet (blå felt væk) | Færdig (kode) | Årsag + fix i cutout.py; allerede gemt Edeka-logo skal genkøres/uploades igen. Ikke prøvet mod det rigtige foto |
+| beskeder-prik | Sorte cirkler på Beskeder → grå tekst "Ny" | Færdig | — |
+| footer-arc | Lille halvcirkel midt over footeren (skub op, træk til siden, tryk, hold = redigér) | Færdig (kode, første prøve) | Afventer brugerens svar på bekræftelsesspørgsmål + test på telefon |
+| add-menu-edit | Tilføj-menuen: hold inde → omrokér/slet, "Tilføj" øverst til højre | Færdig (kode) | Afventer test på telefon |

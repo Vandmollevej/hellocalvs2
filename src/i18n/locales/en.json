@@ -555,7 +555,23 @@
     "steps": "Steps",
     "distanceKm": "Kilometers moved"
   },
+  "footerArc": {
+    "open": "Open add buttons",
+    "close": "Close add buttons",
+    "editHint": "Drag a button down to remove it",
+    "done": "Done",
+    "removeItem": "Remove {item}",
+    "addItem": "Add {item}",
+    "allInUse": "All buttons are in use"
+  },
   "addMenu": {
+    "editEditHint": "Hold a tile to move or delete it",
+    "editDone": "Done",
+    "editAdd": "Add",
+    "editRemoveTile": "Remove {item}",
+    "editAddTile": "Add {item}",
+    "editNoneHidden": "All tiles are in use",
+    "editAddTitle": "Add tile",
     "title": "Add",
     "food": "Add food",
     "scan": "Scan product",
@@ -1376,7 +1392,8 @@
     "messages": {
       "title": "Messages",
       "empty": "You have no messages yet.",
-      "markAllRead": "Mark all as read"
+      "markAllRead": "Mark all as read",
+      "unread": "New"
     },
     "communication": {
       "intro": "Choose which messages you get as email and/or push. Important account messages (e.g. verification and password reset) are always sent.",

@@ -4550,3 +4550,9 @@ Det eneste, admin kan ændre på importerede retter, er "Deaktivér"/"Aktivér" 
 - Over produktlisten til højre: grøn knap "Gem visning" (navn → gemmer) og dropdown "Visninger" (vælg for at hente, × for at slette). Samme navn overskrives.
 - En visning er hele sidens URL-søgestreng (søgning, filtre, sortering, visning, `cols`), normaliseret server-side af sidens parser, i tabellen `admin_saved_views` (`userId`+`scope`+`name` unik; hver admin ser kun sine egne). Migration `20261007130000_admin_saved_views` skal køre ved deploy. Nye sider tilføjer en `scope` i `src/lib/admin-saved-views.ts`.
 - Synlige felter er URL-parameteret `cols` (Kæder, Kategori · kilde, Kcal/100, Tilføjelser, Status; mindst ét; udeladt = alle) og gælder Liste og Galleri.
+
+## 2026-10-07 — Halvcirkel over footeren (prøve) og redigerbar Tilføj-menu
+
+- Ejerens ønske: inden forsiden ændres, prøves en lille fast halvcirkel midt over footeren (`FooterArc`) ved siden af den eksisterende venstre-cirkel. Den deler knapvalg med venstre-cirklen (samme lagring) i stedet for en ny indstilling; den viser højst 4 egne knapper + "alle" i midten.
+- Tilføj-menuens felter kan omrokeres/slettes/tilføjes pr. enhed med samme hold-tid og Seriøs-regel som footeren.
+- Logo-udklip (`cutout.py`): farvefelt-logoer må ikke skæres over af baggrundsfjernelsen — se STATUS 2026-10-07.

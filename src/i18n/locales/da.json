@@ -555,7 +555,23 @@
     "steps": "Skridt",
     "distanceKm": "Kilometer bevæget"
   },
+  "footerArc": {
+    "open": "Åbn tilføj-knapper",
+    "close": "Luk tilføj-knapper",
+    "editHint": "Træk en knap ned for at fjerne den",
+    "done": "Færdig",
+    "removeItem": "Fjern {item}",
+    "addItem": "Tilføj {item}",
+    "allInUse": "Alle knapper er i brug"
+  },
   "addMenu": {
+    "editEditHint": "Hold en flise inde for at flytte eller slette den",
+    "editDone": "Færdig",
+    "editAdd": "Tilføj",
+    "editRemoveTile": "Fjern {item}",
+    "editAddTile": "Tilføj {item}",
+    "editNoneHidden": "Alle felter er i brug",
+    "editAddTitle": "Tilføj felt",
     "title": "Tilføj",
     "food": "Tilføj mad",
     "scan": "Scan vare",
@@ -1376,7 +1392,8 @@
     "messages": {
       "title": "Beskeder",
       "empty": "Du har ingen beskeder endnu.",
-      "markAllRead": "Markér alle som læst"
+      "markAllRead": "Markér alle som læst",
+      "unread": "Ny"
     },
     "communication": {
       "intro": "Vælg hvilke beskeder du vil have som e-mail og/eller push. Vigtige kontobeskeder (fx verifikation og nulstil kodeord) sendes altid.",

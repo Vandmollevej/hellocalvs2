@@ -553,7 +553,23 @@
     "steps": "Stappen",
     "distanceKm": "Kilometers bewogen"
   },
+  "footerArc": {
+    "open": "Toevoegknoppen openen",
+    "close": "Toevoegknoppen sluiten",
+    "editHint": "Sleep een knop omlaag om hem te verwijderen",
+    "done": "Klaar",
+    "removeItem": "{item} verwijderen",
+    "addItem": "{item} toevoegen",
+    "allInUse": "Alle knoppen zijn in gebruik"
+  },
   "addMenu": {
+    "editEditHint": "Houd een tegel ingedrukt om hem te verplaatsen of te verwijderen",
+    "editDone": "Klaar",
+    "editAdd": "Toevoegen",
+    "editRemoveTile": "{item} verwijderen",
+    "editAddTile": "{item} toevoegen",
+    "editNoneHidden": "Alle tegels zijn in gebruik",
+    "editAddTitle": "Tegel toevoegen",
     "title": "Toevoegen",
     "food": "Eten toevoegen",
     "scan": "Product scannen",
@@ -1392,7 +1408,8 @@
     "messages": {
       "title": "Berichten",
       "empty": "Je hebt nog geen berichten.",
-      "markAllRead": "Alles als gelezen markeren"
+      "markAllRead": "Alles als gelezen markeren",
+      "unread": "Nieuw"
     },
     "communication": {
       "intro": "Kies welke berichten je per e-mail en/of push wilt ontvangen. Belangrijke accountberichten (bijv. verificatie en wachtwoord resetten) worden altijd verstuurd.",

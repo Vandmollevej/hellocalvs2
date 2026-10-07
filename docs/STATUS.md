@@ -8,6 +8,13 @@ Last updated: 2026-10-07
 - "Adgangsark (integrationer)" hedder nu "Integrationer" overalt i docs og kommentarer (designmanualens afsnit hed allerede "Integrationer").
 - Admin → Retter → HelloFresh/Valdemarsro har kun "Deaktivér"-knap pr. linje (24b50742) — ingen andre redigerbare felter.
 - Stavescan af hele repoet: ingen "vareer"/"varerr"/"vaare" fundet; bøjningerne ental/flertal af "vare" er korrekte i UI og kode.
+## 2026-10-07: Halvcirkel over footeren, Tilføj-menu-redigering, Edeka-logo, Beskeder
+
+- **Edeka-logo (kun hjertet):** `scripts/image-agent/cutout.py` brugte rembg på logo-udsnit. rembg regner et stort mørkt/mættet logofelt (EDEKA: blåt felt, RGB ~8,1,8 på fotoet) for baggrund, og `drop_edge_fragments` fjernede desuden alle dele, der rørte beskæringskanten — kun det gule hjerte blev tilbage. Nu: kantrørende dele på mindst 10 % af den største beholdes, og `is_solid_block_logo` bruger hele udsnittet, når kanten er ét ikke-lyst farvefelt og rembg beholdt under 75 %. Eksisterende Edeka-logo skal genkøres. Ikke prøvet mod det rigtige foto.
+- **Beskeder:** de sorte ulæst-cirkler er erstattet af grå tekst "Ny" (`profile.messages.unread`, 7 sprog).
+- **Halvcirkel (prøve):** `FooterArc` på forsiden (over `BottomNav`): 20 px cirkelstykke med plus; skub op → 70 % af venstre-cirklen, 5 knapper ("alle" i midten); træk vandret i hvile flytter den (gemmes); tryk åbner; hold stille 550 ms → sort redigeringsvindue (`FooterArcEditor`, træk ned = fjern, tryk/træk op = tilføj, byt plads). Deler knapvalg med venstre-cirklen (`useWheelActionKeys`). Venstre-cirklen er urørt. Se bekræftelsesspørgsmål i slutrapporten.
+- **Tilføj-menu (D):** hold et felt inde (Seriøs, 550 ms) → omrokér/slet felter, "Færdig" og "Tilføj" øverst; gemt pr. enhed (`hellocal.addMenu.layout`).
+- Lint og tsc grønne; ikke visuelt testet (ingen browser, efter brugerens regel).
 
 ## 2026-10-07: Nøgleord på produktsiden — typer og grupper
 

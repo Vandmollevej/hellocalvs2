@@ -553,7 +553,23 @@
     "steps": "Schritte",
     "distanceKm": "Zurückgelegte Kilometer"
   },
+  "footerArc": {
+    "open": "Hinzufügen-Tasten öffnen",
+    "close": "Hinzufügen-Tasten schließen",
+    "editHint": "Ziehe eine Taste nach unten, um sie zu entfernen",
+    "done": "Fertig",
+    "removeItem": "{item} entfernen",
+    "addItem": "{item} hinzufügen",
+    "allInUse": "Alle Tasten sind in Gebrauch"
+  },
   "addMenu": {
+    "editEditHint": "Halte eine Kachel gedrückt, um sie zu verschieben oder zu löschen",
+    "editDone": "Fertig",
+    "editAdd": "Hinzufügen",
+    "editRemoveTile": "{item} entfernen",
+    "editAddTile": "{item} hinzufügen",
+    "editNoneHidden": "Alle Kacheln sind in Gebrauch",
+    "editAddTitle": "Kachel hinzufügen",
     "title": "Hinzufügen",
     "food": "Essen hinzufügen",
     "scan": "Artikel scannen",
@@ -1392,7 +1408,8 @@
     "messages": {
       "title": "Nachrichten",
       "empty": "Du hast noch keine Nachrichten.",
-      "markAllRead": "Alle als gelesen markieren"
+      "markAllRead": "Alle als gelesen markieren",
+      "unread": "Neu"
     },
     "communication": {
       "intro": "Wähle, welche Nachrichten du per E-Mail und/oder Push erhalten möchtest. Wichtige Kontonachrichten (z. B. Verifizierung und Passwort zurücksetzen) werden immer gesendet.",

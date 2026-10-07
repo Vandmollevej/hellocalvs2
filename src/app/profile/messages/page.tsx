@@ -78,11 +78,9 @@ export default function MessagesPage() {
               <div className="flex items-start justify-between gap-2">
                 <p className="hf-type-body">{message.subject}</p>
                 {!message.readAt && (
-                  <span
-                    className="mt-1 h-2.5 w-2.5 flex-none rounded-full"
-                    style={{ background: "var(--hf-black)" }}
-                    aria-hidden="true"
-                  />
+                  <span className="text-text-secondary hf-type-caption flex-none">
+                    {t("profile.messages.unread")}
+                  </span>
                 )}
               </div>
               {message.bodyHtml && (

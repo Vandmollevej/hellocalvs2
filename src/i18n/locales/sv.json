@@ -553,7 +553,23 @@
     "steps": "Steg",
     "distanceKm": "Kilometer rört"
   },
+  "footerArc": {
+    "open": "Öppna lägg till-knappar",
+    "close": "Stäng lägg till-knappar",
+    "editHint": "Dra en knapp nedåt för att ta bort den",
+    "done": "Klar",
+    "removeItem": "Ta bort {item}",
+    "addItem": "Lägg till {item}",
+    "allInUse": "Alla knappar används"
+  },
   "addMenu": {
+    "editEditHint": "Håll en ruta intryckt för att flytta eller ta bort den",
+    "editDone": "Klar",
+    "editAdd": "Lägg till",
+    "editRemoveTile": "Ta bort {item}",
+    "editAddTile": "Lägg till {item}",
+    "editNoneHidden": "Alla rutor används",
+    "editAddTitle": "Lägg till ruta",
     "title": "Lägg till",
     "food": "Lägg till mat",
     "scan": "Skanna vara",
@@ -1392,7 +1408,8 @@
     "messages": {
       "title": "Meddelanden",
       "empty": "Du har inga meddelanden ännu.",
-      "markAllRead": "Markera alla som lästa"
+      "markAllRead": "Markera alla som lästa",
+      "unread": "Ny"
     },
     "communication": {
       "intro": "Välj vilka meddelanden du vill ha som e-post och/eller push. Viktiga kontomeddelanden (t.ex. verifiering och återställning av lösenord) skickas alltid.",

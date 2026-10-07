@@ -553,7 +553,23 @@
     "steps": "Pas",
     "distanceKm": "Kilomètres parcourus"
   },
+  "footerArc": {
+    "open": "Ouvrir les boutons d'ajout",
+    "close": "Fermer les boutons d'ajout",
+    "editHint": "Faites glisser un bouton vers le bas pour le retirer",
+    "done": "Terminé",
+    "removeItem": "Retirer {item}",
+    "addItem": "Ajouter {item}",
+    "allInUse": "Tous les boutons sont utilisés"
+  },
   "addMenu": {
+    "editEditHint": "Maintenez une tuile pour la déplacer ou la supprimer",
+    "editDone": "Terminé",
+    "editAdd": "Ajouter",
+    "editRemoveTile": "Retirer {item}",
+    "editAddTile": "Ajouter {item}",
+    "editNoneHidden": "Toutes les tuiles sont utilisées",
+    "editAddTitle": "Ajouter une tuile",
     "title": "Ajouter",
     "food": "Ajouter un aliment",
     "scan": "Scanner un produit",
@@ -1392,7 +1408,8 @@
     "messages": {
       "title": "Messages",
       "empty": "Tu n'as pas encore de messages.",
-      "markAllRead": "Tout marquer comme lu"
+      "markAllRead": "Tout marquer comme lu",
+      "unread": "Nouveau"
     },
     "communication": {
       "intro": "Choisis les messages que tu veux recevoir par e-mail et/ou en push. Les messages importants du compte (p. ex. vérification et réinitialisation du mot de passe) sont toujours envoyés.",
