@@ -9,6 +9,11 @@ This file records durable decisions. Add a dated entry when a later decision cha
 - Det, der før blev kaldt "Adgangsark (integrationer)", hedder bare **Integrationer** (designmanualens afsnit 9 og al tekst i docs/kommentarer). Nævn ikke "adgangsark" som navn igen.
 - Admin → Retter → HelloFresh/Valdemarsro: det eneste admin kan ændre er "Deaktivér"/"Aktivér" på linjen (allerede bygget 2026-10-07, 24b50742); detaljesiden er kun visning.
 - Stavning: ental "vare", flertal "varer". En gennemgang af hele repoet fandt ingen fejlstavningen "vareer".
+## 2026-10-07: MIDLERTIDIG DISPENSATION — tallerken-scanning kører på OpenAI i stedet for Passio
+
+- Brugerens ønske: sæt tallerken-scanning ("Måltid"-kameraet) til OpenAI, indtil den endelige løsning er klar. `/api/ai/analyze-meal-photo` kalder nu `src/lib/meal-photo-recognition.ts`, som som standard bruger OpenAI (`gpt-4o`, billede uden metadata, struktureret svar: ingredienser + estimeret gram + kcal/makroer). Resten af flowet er uændret: hver ingrediens slås først op i vores egen produktdatabase, kun uden match bruges AI'ens estimat (markeret `estimated`).
+- Feature-flag: `MEAL_PHOTO_PROVIDER` (`openai` = standard, `passio` = den oprindelige Passio-klient i `src/lib/passio.ts`, som er urørt). Kræver `OPENAI_API_KEY` (findes allerede til de øvrige AI-ruter).
+- **SKAL RULLES TILBAGE:** når den endelige løsning (Passio eller en anden) er klar, sæt `MEAL_PHOTO_PROVIDER` til den, eller fjern `meal-photo-recognition.ts` og lad ruten kalde udbyderen direkte. Slet derefter denne dispensation.
 
 ## 2026-10-06: Guide-flows med betingelser, opsætningsguiden som flow og migrering fra MyFitnessPal/Lifesum
 

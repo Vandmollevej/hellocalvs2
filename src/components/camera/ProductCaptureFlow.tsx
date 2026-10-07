@@ -61,6 +61,7 @@ import {
   lockFocusDistance,
   readCameraControls,
   setContinuousFocus,
+  setScanExposure,
   setTorch,
   type CameraControls,
 } from "@/lib/camera-controls";
@@ -349,7 +350,10 @@ export function ProductCaptureFlow({ returnSuffix, rescan }: { returnSuffix: str
         if (!cancelled) {
           const track = stream.getVideoTracks()[0];
           const controls = readCameraControls(track);
-          if (track) void setContinuousFocus(track, controls);
+          if (track) {
+            void setContinuousFocus(track, controls);
+            void setScanExposure(track);
+          }
           setCameraControls(controls);
           setTorchOn(false);
           setCameraStatus("active");
