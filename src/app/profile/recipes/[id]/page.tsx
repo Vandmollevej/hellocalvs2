@@ -10,6 +10,7 @@ import { Toggle } from "@/components/ui/Toggle";
 import { useTranslation } from "@/i18n/LocaleProvider";
 import { loadRecipeFilters, saveRecipeFilters } from "@/lib/recipe-filters";
 import { MAX_RECIPE_PERSONS, portionKcalFor, scaleFactorFor, type PortionProfile } from "@/lib/recipe-portions";
+import { RecipeThumbs } from "@/components/recipes/RecipeThumbs";
 import { Skeleton, SkeletonTitleLines } from "@/components/hf/Skeleton";
 
 // En ret fra Indstillinger → Opskrifter (docs/DECISIONS.md 2026-09-24).
@@ -289,6 +290,10 @@ function RecipeDetailContent() {
                 )}
               </div>
             )}
+
+            <div className={hideWhileLoading}>
+              <RecipeThumbs recipeKey={`${kind}:${id}`} />
+            </div>
 
             {kind === "shared" && (
               <div className={`flex items-center justify-between ${hideWhileLoading}`}>

@@ -1123,6 +1123,10 @@
     }
   },
   "recipeDetail": {
+
+    "thumbUp": "Pouce levé",
+
+    "thumbDown": "Pouce baissé",
     "loading": "Chargement du plat …",
     "notFound": "Ce plat n'existe plus",
     "ingredients": "Ingrédients",

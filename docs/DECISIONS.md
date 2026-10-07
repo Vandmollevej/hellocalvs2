@@ -4556,3 +4556,13 @@ Det eneste, admin kan ændre på importerede retter, er "Deaktivér"/"Aktivér" 
 - Ejerens ønske: inden forsiden ændres, prøves en lille fast halvcirkel midt over footeren (`FooterArc`) ved siden af den eksisterende venstre-cirkel. Den deler knapvalg med venstre-cirklen (samme lagring) i stedet for en ny indstilling; den viser højst 4 egne knapper + "alle" i midten.
 - Tilføj-menuens felter kan omrokeres/slettes/tilføjes pr. enhed med samme hold-tid og Seriøs-regel som footeren.
 - Logo-udklip (`cutout.py`): farvefelt-logoer må ikke skæres over af baggrundsfjernelsen — se STATUS 2026-10-07.
+
+## 2026-10-07: Retter — Manuelt / Indsæt tekst / Scan, kopi-tjek, integrationsknapper
+
+- Retter-siden: søgefeltet får fokus ved åbning, grøn "Opret ny ret" øverst til højre, filterikonet åbner et BottomSheet (`RecipeFiltersBody`), og knapper under søgefeltet (Opskrifter / Delte retter / Hello Fresh / Valdemarsro) sætter `source` i `/api/shared-recipes`. `ExternalProductSource` har fået `VALDEMARSRO`; selve Valdemarsro-importen til appen er IKKE bygget.
+- Opret ret har tre knapper: Manuelt (som før), Indsæt tekst og Scan. Robot 1 (`recipe-text-parser.ts` + `/api/dishes/parse-text`) finder titel, antal personer, ingredienser (omregnet til gram), trin og næringstabel straks og matcher ingredienser mod produkter; det der ikke kan matches, listes, så brugeren tilføjer det selv. Kilde-link giver rettens billede (og:image, SSRF-sikret).
+- Scan: telefonens OCR (tesseract.js) først; lav sikkerhed tolkes som håndskrift og sendes direkte til OpenAI (`/api/dishes/ocr-handwriting`). Første billede = rettens billede, øvrige sættes ved trinene. Der findes ingen Python på serveren i Next-appen, så "Python efter telefonens OCR" er implementeret som serverens TypeScript-parser.
+- Deling er ikke længere en kontakt øverst, men et spørgsmål i et BottomSheet efter gem; den kan stadig slås til senere under retten.
+- Kopi-tjek (`recipe-copy-check.ts`): når en ret deles, sammenlignes titel+ingredienser+trin på ordniveau (4-ords vinduer) med andre delte retter og HelloFresh. ≥ 80 % sammenfald sætter `SharedRecipe.copyFlagged`, skjuler retten for andre til admin godkender, og viser i Kvalitetskontrol kilde + side-om-side-visning med markerede stykker. Afvis kræver begrundelse (`rejectionReason`). Ejeren beholder retten privat.
+- Tommel op/ned (`RecipeRating`, `/api/recipe-ratings`) på HelloFresh-, delte og egne retter.
+

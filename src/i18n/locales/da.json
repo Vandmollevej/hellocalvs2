@@ -1116,6 +1116,10 @@
     }
   },
   "recipeDetail": {
+
+    "thumbUp": "Tommel op",
+
+    "thumbDown": "Tommel ned",
     "loading": "Henter retten …",
     "notFound": "Retten findes ikke længere",
     "ingredients": "Ingredienser",

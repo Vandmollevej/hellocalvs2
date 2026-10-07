@@ -1116,6 +1116,10 @@
     }
   },
   "recipeDetail": {
+
+    "thumbUp": "Thumbs up",
+
+    "thumbDown": "Thumbs down",
     "loading": "Loading dish …",
     "notFound": "This dish no longer exists",
     "ingredients": "Ingredients",

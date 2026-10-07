@@ -1123,6 +1123,10 @@
     }
   },
   "recipeDetail": {
+
+    "thumbUp": "Tummen upp",
+
+    "thumbDown": "Tummen ner",
     "loading": "Hämtar rätten …",
     "notFound": "Rätten finns inte längre",
     "ingredients": "Ingredienser",

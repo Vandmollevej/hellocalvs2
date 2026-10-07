@@ -1123,6 +1123,10 @@
     }
   },
   "recipeDetail": {
+
+    "thumbUp": "Daumen hoch",
+
+    "thumbDown": "Daumen runter",
     "loading": "Gericht wird geladen …",
     "notFound": "Das Gericht existiert nicht mehr",
     "ingredients": "Zutaten",

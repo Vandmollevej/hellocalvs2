@@ -6003,3 +6003,9 @@ Skal gøres, før branchen flettes:
 - Se DECISIONS 2026-10-03 "Syv sprog". Ordbøger i `src/i18n/locales/`, hjælpesider i `public/help-*.html`, sprogvalg under Indstillinger → Sprog og region.
 - Typecheck, lint (0 fejl) og build grønne. `npm test`: 1 fejl (`page tree lists every page`) som også fejler på master uden disse ændringer.
 - Mangler: gennemlæsning af oversættelserne af en person, der taler sprogene; datoer/tal flere steder er stadig formateret med `da-DK`.
+
+## 2026-10-07: Retter — tekst/scan, kopi-tjek, integrationsknapper (claude/retter-tekst-scan)
+
+Færdig (kode, typecheck/lint rene bortset fra forældet Prisma-klient lokalt): Retter-sidens auto-fokus, "Opret ny ret", integrationsknapper, filter-BottomSheet, tre-knaps opret-ret, tekst-robot, håndskrift-OCR, delespørgsmål, kopi-tjek med admin-visning og begrundelse, tommel op/ned. Migrationer: 20261008100000_valdemarsro_source, 20261008110000_shared_recipe_copy_check, 20261008120000_recipe_ratings (skal med deployet; kør `prisma generate`).
+Ikke bygget: Valdemarsro-import til app-databasen, Valdemarsro-detaljevisning ("Gå til opskrift"), natligt script der finder nye retter og tjekker links, antal personer gemt på retten, visning af "afvist/ikke delt" på Mine retter. Ikke prøvet i browser eller mod rigtig database.
+

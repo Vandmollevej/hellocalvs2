@@ -1123,6 +1123,10 @@
     }
   },
   "recipeDetail": {
+
+    "thumbUp": "Duim omhoog",
+
+    "thumbDown": "Duim omlaag",
     "loading": "Gerecht laden …",
     "notFound": "Het gerecht bestaat niet meer",
     "ingredients": "Ingrediënten",
