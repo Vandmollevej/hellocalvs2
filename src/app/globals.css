@@ -16,19 +16,29 @@
   --hf-color-surface: #ffffff;
   --hf-color-card: #eee9df;
   --hf-color-nav: #dfd9cc;
-  --hf-color-nav-legacy: #e0d9cb;
   --hf-color-white: #ffffff;
+  /* Grønne (design.md §3, oprydning 2026-10-07): præcis TRE grønne.
+     - brand: den eneste grønne flade (appbar, loader-baggrund, brandkort,
+       fremdrift) og grøn tekst/ikon.
+     - brand-dark: kun hover/tryk på grønne flader og mørk grøn tekst.
+     - accent: HelloFreshs lysegrønne lime — valgt-markering, load-cirkel,
+       positive markeringer og FAB. Målt på valgt-kortet i onboardingen
+       (IMG_2292/2298/2299). */
   --hf-color-brand: #067a46;
-  --hf-color-appbar: #35784a;
-  --hf-color-progress-dark: #035624;
-  --hf-color-progress: #007838;
-  /* Selected state (HelloFresh, punkt 46): lysegrøn flade, grøn stroke,
-     mørkegrøn tekst. Bruges af valgte bokse, åbne accordions og alle
-     andre selection-komponenter via .hf-selected. */
-  --hf-color-selected-bg: #e6f4ec;
-  --hf-color-selected-border: var(--hf-color-brand);
-  --hf-color-selected-text: var(--hf-color-progress-dark);
-  --hf-color-text: #242424;
+  --hf-color-brand-dark: #035624;
+  --hf-color-accent: #bbf06a;
+  /* Udfasede navne — peger på de tre ovenfor, må ikke bruges i ny kode. */
+  --hf-color-appbar: var(--hf-color-brand);
+  --hf-color-progress: var(--hf-color-brand);
+  --hf-color-progress-dark: var(--hf-color-brand-dark);
+  /* Selected state (HelloFresh): lime flade, 2 px sort stroke, sort tekst —
+     som HelloFreshs valgte kort. Bruges af valgte bokse, åbne accordions og
+     alle andre selection-komponenter via .hf-selected. */
+  --hf-color-selected-bg: var(--hf-color-accent);
+  --hf-color-selected-border: var(--hf-color-action);
+  --hf-color-selected-text: var(--hf-color-action);
+  /* Én tekstfarve: #242424 og #232323 var to navne for samme sorte. */
+  --hf-color-text: var(--hf-color-action);
   --hf-color-action: #232323;
   --hf-color-action-hover: #353535;
   --hf-color-action-active: #4b4b4b;
@@ -46,7 +56,7 @@
   --hf-color-facebook: #00178c;
 
   /* Bevidste Hello Cal-undtagelser (ikke fra HelloFresh-referencen) */
-  --hf-color-positive: #a3e635;
+  --hf-color-positive: var(--hf-color-accent);
   --hf-color-danger: #a3271f;
   /* For lavt indtag: mørk okker til tekst (læsbar på kortfarven), gul til firkanten. */
   --hf-color-warning: #8a5a00;
@@ -62,8 +72,8 @@
   /* Legacy-navne — pegede tidligere på ikke-målte farver, peger nu på de
      korrekte tokens ovenfor, så eksisterende kode ikke skal migreres på én gang. */
   --hf-green: var(--hf-color-brand);
-  --hf-green-dark: var(--hf-color-progress-dark);
-  --hf-green-light: #8fd6ac;
+  --hf-green-dark: var(--hf-color-brand-dark);
+  --hf-green-light: var(--hf-color-accent);
   --hf-cream: var(--hf-color-page);
   --hf-tan: var(--hf-color-card);
   --hf-tan-dark: var(--hf-color-nav);
@@ -73,6 +83,7 @@
   --hf-gray: var(--hf-color-inactive);
   --hf-gray-dark: var(--hf-color-text-secondary);
   --hf-red-dark: var(--hf-color-danger);
+  /* Kun graf-serier (design.md §3), aldrig UI-flader eller tekst. */
   --hf-green-muted: #6fa584;
   --hf-red-muted: #b98077;
   --hf-gray-border: var(--hf-color-line);
@@ -113,6 +124,7 @@
   --color-hf-gray-border: var(--hf-gray-border);
   --color-hf-fab: var(--hf-fab);
   --color-hf-lime: var(--hf-lime);
+  --color-hf-accent: var(--hf-color-accent);
   --color-hf-meat: var(--hf-meat);
   --color-hf-warning: var(--hf-color-warning);
   --color-hf-watch: var(--hf-color-watch);
@@ -1356,7 +1368,7 @@ textarea::selection,
   .hf-choice[aria-selected="true"],
   .hf-choice.is-selected {
     background: var(--hf-color-selected-bg);
-    box-shadow: inset 0 0 0 1.5px var(--hf-color-selected-border);
+    box-shadow: inset 0 0 0 2px var(--hf-color-selected-border);
     color: var(--hf-color-selected-text);
   }
 }
@@ -1393,7 +1405,7 @@ textarea::selection,
 .hf-chip[aria-pressed="true"],
 .hf-chip.is-selected {
   background: var(--hf-color-selected-bg);
-  box-shadow: inset 0 0 0 1.5px var(--hf-color-selected-border);
+  box-shadow: inset 0 0 0 2px var(--hf-color-selected-border);
   color: var(--hf-color-selected-text);
 }
 
@@ -1403,7 +1415,7 @@ textarea::selection,
 .hf-selected,
 .hf-selected-open[aria-expanded="true"] {
   background: var(--hf-color-selected-bg) !important;
-  box-shadow: inset 0 0 0 1.5px var(--hf-color-selected-border);
+  box-shadow: inset 0 0 0 2px var(--hf-color-selected-border);
   color: var(--hf-color-selected-text) !important;
 }
 
@@ -1884,12 +1896,12 @@ textarea::selection,
 }
 
 .hello-loader-bg {
-  fill: #dfff78;
+  fill: var(--hf-color-accent);
 }
 
 .hello-loader-snake {
   fill: none;
-  stroke: #087a4b;
+  stroke: var(--hf-color-brand);
   stroke-width: 14;
   stroke-linecap: round;
   transform-origin: 50px 50px;

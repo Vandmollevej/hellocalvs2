@@ -4506,3 +4506,6 @@ HelloFresh-retter åbnes på `/admin/dishes/hellofresh/[id]`, ikke på varesiden
 
 Et logo, hvis filnavn ikke præcist matcher et eksisterende brand, afvises og gemmes ikke (ingen fil, kun en afvisningslinje i oversigten). Produktbilleder afviste allerede ukendte varer før lagring.
 
+## 2026-10-07: Farvepalette — tre grønne og HelloFreshs lime som accent
+
+Brugeren: "Bruger Hello Fresh alle disse farver? Og 4 forskellige grønne? Hvad med den lysegrønne som anvendes både når en knap vælges + i load-cirklen!?" Paletten har nu præcis tre grønne (design.md §3): `--hf-color-brand` #067A46 (al grøn flade og grøn tekst), `--hf-color-brand-dark` #035624 (kun hover/tryk og mørk grøn tekst) og ny `--hf-color-accent` #BBF06A (HelloFreshs lime fra det valgte onboarding-kort og load-cirklen). Appbar-grøn #35784A og progress #007838 er lagt sammen med brand; vores egen lime #A3E635, `--hf-green-light` #8FD6AC og selected-fladen #E6F4EC er lagt sammen med accent. Valgt-markering (`.hf-selected`, `.hf-choice`, `.hf-chip`) = accent + 2 px #232323 kant + #232323 tekst, som i HelloFresh. Primær tekst #242424 er lagt sammen med #232323. Ændringen ligger i tokens (gamle navne er aliasser), så ingen sider skulle migreres. Guide-builderens baggrund "Appbar-grøn" er erstattet af "Accent (lime)"; gemte guides med appbar vises med brand-grøn.

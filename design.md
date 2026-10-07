@@ -116,7 +116,7 @@ ikke blandes inden i samme komponentvariant.
 | --- | --- | --- |
 | Displayfont | Agrandir Tight | SF Pro/systemfont i den målte iOS-app. |
 | Brødtekst og knapper | Roboto | SF Pro Text/systemfont i appen. |
-| Marketing-hero-grøn | `#056835` | Ikke en generel appgrøn; appens brand er `#067A46`, nyere appbar `#35784A`. |
+| Marketing-hero-grøn | `#056835` | Ikke en generel appgrøn; appens eneste grønne flade er `#067A46` (§3). |
 | Webknap hover | `#353535` | Kun web/hover-state; må ikke erstatte appens hvilende `#232323`. |
 | Webknap active | `#4B4B4B` | Kun web/pressed-state, hvis en web-hover/active-variant senere besluttes. |
 | Webknap disabled | `#ADADAD` | Appens målte disabled-token forbliver `#A6A29F`. |
@@ -133,21 +133,38 @@ Agrandir/Roboto med henvisning til webkontrollen.
 
 ## 3. Fast farvepalette
 
-Referencerne bruger to dokumenterede grønne kontekster. De må ikke blandes til
-en tredje, vilkårlig mellemfarve.
+**Grønne — oprydning 2026-10-07 (brugerens krav: "4 forskellige grønne?").**
+Appen har præcis TRE grønne. Ingen side eller komponent må indføre en fjerde.
 
-| Foreslået token | Eksakt værdi | Brug |
+| Token | Værdi | Eneste brug |
+| --- | --- | --- |
+| `--hf-color-brand` | `#067A46` | Al grøn flade (appbar, login, onboarding, loader-baggrund, brandkort), fremdrift og grøn tekst/ikon |
+| `--hf-color-brand-dark` | `#035624` | Kun hover/tryk på grøn flade og mørk grøn tekst |
+| `--hf-color-accent` | `#BBF06A` | HelloFreshs lysegrønne lime: valgt-markering, load-cirklens skive, positive markeringer, FAB |
+
+- Accent er målt på HelloFreshs valgte onboarding-kort (IMG_2292/2298/2299,
+  `#BBF06A` + sort kant). Samme lime bruges i HelloFreshs load-cirkel
+  (Loaderbillede.png; skiven måles lysere, `#D2F895`, pga. glød — den er
+  ikke en egen farve).
+- Udfaset og lagt sammen: `--hf-color-appbar` (#35784A) og
+  `--hf-color-progress` (#007838) → brand; `--hf-color-progress-dark` →
+  brand-dark; `--hf-color-positive`/`--hf-lime` (#A3E635),
+  `--hf-green-light` (#8FD6AC) og selected-fladen #E6F4EC → accent. De gamle
+  navne findes kun som aliasser i `globals.css` og må ikke bruges i ny kode.
+- Tekst på brand-grøn er altid hvid, aldrig grå. Tekst på accent er altid
+  `#232323` (brand-grøn på lime har for lav kontrast).
+- `--hf-green-muted` (#6FA584) er udelukkende en graf-serie, aldrig UI.
+
+| Token | Eksakt værdi | Brug |
 | --- | --- | --- |
 | `--hf-color-page` | `#FAF8F3` | Standard sidebaggrund |
 | `--hf-color-surface` | `#FFFFFF` | Felter, modaler og lyse overflader |
 | `--hf-color-card` | `#EEE9DF` | Kort, kategori-fliser og indstillingsgrupper i de nyere appskærme |
 | `--hf-color-nav` | `#DFD9CC` | Bundnavigation og nyere fast action-bar |
-| `--hf-color-nav-legacy` | `#E0D9CB` | Kun de ældre referenceflows, hvor denne farve måles direkte |
-| `--hf-color-brand` | `#067A46` | Login, onboarding, loader og brand-header |
-| `--hf-color-appbar` | `#35784A` | Nyere HelloFresh-appbar: Kogebog, Opdag og Indstillinger |
-| `--hf-color-progress-dark` | `#035624` | Aktiv progress-tekst |
-| `--hf-color-progress` | `#007838` | Aktiv progress-linje, når referenceflowet kræver den |
-| `--hf-color-text` | `#242424` | Primær tekst |
+| `--hf-color-brand` | `#067A46` | Se grøn-tabellen ovenfor |
+| `--hf-color-brand-dark` | `#035624` | Se grøn-tabellen ovenfor |
+| `--hf-color-accent` | `#BBF06A` | Se grøn-tabellen ovenfor |
+| `--hf-color-text` | `#232323` | Primær tekst (alias for `--hf-color-action`; #242424 er lagt sammen med #232323) |
 | `--hf-color-action` | `#232323` | Primær knap, aktive nav-elementer og mørke ikoner |
 | `--hf-color-action-hover` | `#353535` | Officiel web-hover for mørk CTA; kun enheder med hover |
 | `--hf-color-action-active` | `#4B4B4B` | Officiel web-pressed-state for mørk CTA |
@@ -165,9 +182,9 @@ en tredje, vilkårlig mellemfarve.
 | `--hf-color-google` | `#4285F4` | Google social login |
 | `--hf-color-facebook` | `#00178C` | Facebook social login |
 
-Projektets allerede besluttede `--hf-lime: #A3E635` til positive
-Hello Cal-markeringer og de eksisterende røde statusbetydninger bevares som
-Hello Cal-undtagelser. De skal fortsat have navngivne semantiske tokens. Der må
+Positive Hello Cal-markeringer bruger nu `--hf-color-accent` (#BBF06A; den
+tidligere egne lime #A3E635 er udfaset 2026-10-07). De eksisterende røde
+statusbetydninger bevares som Hello Cal-undtagelser. De skal fortsat have navngivne semantiske tokens. Der må
 ikke bruges Tailwind-standarder som `red-500`, `red-600` og `red-700` direkte.
 
 ### Farveregler
@@ -180,8 +197,8 @@ ikke bruges Tailwind-standarder som `red-500`, `red-600` og `red-700` direkte.
   HelloFresh-grøn.
 - `#F3EFE2`, `#EAE3D1` og `#1A1A17` er ikke 1:1 med de målte side-, kort- og
   actionfarver.
-- Brand-header og nyere appbar er to navngivne varianter; Claude må aldrig
-  "harmonisere" dem til en ny tredje grøn.
+- Brand-header og appbar bruger begge `--hf-color-brand` (besluttet
+  2026-10-07; den målte nyere appbar-grøn #35784A er lagt sammen med brand).
 - `#056835` er målt på websitets marketing-hero, men er ikke en generel
   HelloFresh-appfarve. Den må kun indføres som en særskilt marketingvariant,
   hvis Hello Cal faktisk får en tilsvarende flade.
@@ -199,6 +216,7 @@ Kun disse klasser bruges til farve i sider/komponenter:
 | Dæmpet tekst | `text-text-muted` | #828282 |
 | Tekst på mørk/grøn flade | `text-hf-white` | #FFFFFF |
 | Brandgrøn / mørk grøn tekst | `text-hf-green` / `text-hf-green-dark` | #067A46 / #035624 |
+| Accent-lime (flade) | `bg-hf-accent` | #BBF06A |
 | Fejl/fare | `text-hf-red-dark` | #A3271F |
 | Advarsel (tekst / flade) | `text-hf-warning` / `bg-hf-warning-bg` | #8A5A00 / #FDF3D3 |
 | Side | `bg-hf-cream` | #FAF8F3 |
@@ -214,8 +232,8 @@ Kun disse klasser bruges til farve i sider/komponenter:
   `text-text-secondary` (eller `text-text-muted` for 25–45 %).
 - Tailwind-standardfarver (`text-white`, `bg-black/40`, `text-red-700`,
   `bg-amber-100` …) og hex i klasser/inline-styles er forbudt.
-- Undtagelser: grafer (`--hf-green-light`, `--hf-green-muted`,
-  `--hf-red-muted`, `--hf-lime`), social login-brandfarver og
+- Undtagelser: grafer (`--hf-color-accent`, `--hf-green-muted`,
+  `--hf-red-muted`, `--hf-color-watch`), social login-brandfarver og
   foto-overlays (`bg-hf-black/40` o.l.).
 
 ## 4. Typografisk system
@@ -430,8 +448,8 @@ disse roller frem for egne styles.
 
 **`.hf-appbar` / `ScreenHeader`**
 
-- Variant `brand`: `#067A46`.
-- Variant `main`: `#35784A`.
+- Baggrund: `--hf-color-brand` `#067A46` (variant `main` #35784A er lagt
+  sammen med brand 2026-10-07).
 - Titel: `.hf-type-nav-title`, 20/24, hvid.
 - Den synlige appbar-række er 52 px plus reel `env(safe-area-inset-top)`; der
   må ikke hardcodes `pt-9` som simuleret statusbar på alle platforme.
@@ -455,12 +473,12 @@ fuld bredde).
 | `.hf-btn-danger` | Transparent, 1,5 px rød kant, rød tekst | 17/22 700 | Slet, tilbagekald, log ud af alt |
 | `.hf-btn-text` | Ingen flade, understreget, arver farve | 15/22 700 | Link-lignende handling ("Spring over", "Omdøb") |
 | `.hf-btn-icon` | 44 × 44 rund, gennemsigtig, arver farve | — | Pile, luk, menu, favorit |
-| `.hf-choice` | Beige flade; valgt = `.hf-selected` (lysegrøn flade, grøn stroke, mørkegrøn tekst) | 13/18 700 | Segment-/filter-/periodevalg. Valgt via `aria-pressed`, `aria-selected`, `aria-checked` eller `.is-selected` |
+| `.hf-choice` | Beige flade; valgt = `.hf-selected` (accent-lime #BBF06A, 2 px sort stroke, sort tekst) | 13/18 700 | Segment-/filter-/periodevalg. Valgt via `aria-pressed`, `aria-selected`, `aria-checked` eller `.is-selected` |
 
 - Selected state (punkt 46): alle valgte bokse, åbne accordion-overskrifter
   (`.hf-selected-open` + `aria-expanded`) og øvrige valg bruger `.hf-selected`
-  = `--hf-color-selected-bg` #E6F4EC, 1,5 px inset stroke #067A46 og tekst
-  #035624. Aldrig kraftig grøn/sort flade med hvid tekst som valgt-markering.
+  = `--hf-color-selected-bg` = accent #BBF06A, 2 px inset stroke #232323 og tekst
+  #232323 — som HelloFreshs valgte kort (ændret 2026-10-07). Aldrig grå tekst på grøn.
 - Grønne handlingsknapper er udfaset; brand-grøn bruges kun til flader
   (appbar, brandkort), ikke til knapper.
 - `ActionButton`/`ActionLink` (`src/components/hf/ActionButton.tsx`) tager
@@ -998,12 +1016,10 @@ komponentstyling. Derfor er den foreslåede opdeling:
   --hf-color-surface: #ffffff;
   --hf-color-card: #eee9df;
   --hf-color-nav: #dfd9cc;
-  --hf-color-nav-legacy: #e0d9cb;
   --hf-color-brand: #067a46;
-  --hf-color-appbar: #35784a;
-  --hf-color-progress-dark: #035624;
-  --hf-color-progress: #007838;
-  --hf-color-text: #242424;
+  --hf-color-brand-dark: #035624;
+  --hf-color-accent: #bbf06a;
+  --hf-color-text: #232323;
   --hf-color-action: #232323;
   --hf-color-action-hover: #353535;
   --hf-color-action-active: #4b4b4b;
@@ -1022,7 +1038,6 @@ komponentstyling. Derfor er den foreslåede opdeling:
   --hf-color-facebook: #00178c;
 
   /* Bevidste Hello Cal-undtagelser */
-  --hf-color-positive: #a3e635;
   --hf-color-danger: #a3271f;
   --hf-color-overlay: rgb(35 35 35 / 40%);
 
@@ -1063,13 +1078,13 @@ komponentstyling. Derfor er den foreslåede opdeling:
   --color-hf-card: var(--hf-color-card);
   --color-hf-nav: var(--hf-color-nav);
   --color-hf-brand: var(--hf-color-brand);
-  --color-hf-appbar: var(--hf-color-appbar);
+  --color-hf-accent: var(--hf-color-accent);
   --color-hf-text: var(--hf-color-text);
   --color-hf-action: var(--hf-color-action);
   --color-hf-secondary: var(--hf-color-text-secondary);
   --color-hf-inactive: var(--hf-color-inactive);
   --color-hf-line: var(--hf-color-line);
-  --color-hf-positive: var(--hf-color-positive);
+  --color-hf-brand-dark: var(--hf-color-brand-dark);
   --color-hf-danger: var(--hf-color-danger);
   --font-hf-display: var(--hf-font-display);
   --font-hf-text: var(--hf-font-text);
@@ -1189,7 +1204,7 @@ blanding af separator, footer og hoverfarve; de roller skal skilles ad.
 
   .hf-type-progress-active {
     margin: 0;
-    color: var(--hf-color-progress-dark);
+    color: var(--hf-color-brand-dark);
     font-family: var(--hf-font-text);
     font-size: 13px;
     font-weight: 600;
@@ -1270,7 +1285,7 @@ designsystemet.
   }
 
   .hf-appbar--main {
-    background: var(--hf-color-appbar);
+    background: var(--hf-color-brand);
   }
 
   .hf-appbar__slot {
@@ -1426,7 +1441,7 @@ spacerbredder direkte i siden.
     height: 56px;
     padding: 0;
     border-radius: var(--hf-radius-fab);
-    background: var(--hf-color-positive);
+    background: var(--hf-color-accent);
     color: var(--hf-color-action);
   }
 

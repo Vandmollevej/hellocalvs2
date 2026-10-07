@@ -54,16 +54,15 @@ const COLOR_GROUPS: { title: string; swatches: Swatch[] }[] = [
   {
     title: "Grønne",
     swatches: [
-      { token: "--hf-color-brand", hex: "#067A46", name: "Brand", use: "Login, onboarding, brand-header" },
-      { token: "--hf-color-appbar", hex: "#35784A", name: "Appbar", use: "Nyere appbar (Kogebog, Indstillinger)" },
-      { token: "--hf-color-progress-dark", hex: "#035624", name: "Progress mørk", use: "Aktiv progress-tekst" },
-      { token: "--hf-color-progress", hex: "#007838", name: "Progress", use: "Aktiv progress-linje" },
+      { token: "--hf-color-brand", hex: "#067A46", name: "Brand", use: "Eneste grønne flade: appbar, loader-baggrund, brandkort, fremdrift" },
+      { token: "--hf-color-brand-dark", hex: "#035624", name: "Brand mørk", use: "Kun hover/tryk på grøn flade og mørk grøn tekst" },
+      { token: "--hf-color-accent", hex: "#BBF06A", name: "Accent (lime)", use: "Valgt-markering, load-cirkel, positive markeringer, FAB" },
     ],
   },
   {
     title: "Tekst",
     swatches: [
-      { token: "--hf-color-text", hex: "#242424", name: "Primær tekst", use: "Al almindelig tekst" },
+      { token: "--hf-color-text", hex: "#232323", name: "Primær tekst", use: "Al almindelig tekst (samme sort som handling)" },
       { token: "--hf-color-text-secondary", hex: "#656565", name: "Sekundær tekst", use: "Hjælpetekst, inaktive labels" },
       { token: "--hf-color-inactive", hex: "#828282", name: "Inaktiv", use: "Inaktiv progress, nedtonet" },
       { token: "--hf-color-placeholder", hex: "#C1C0BE", name: "Placeholder", use: "Placeholder i felter" },
@@ -92,7 +91,6 @@ const COLOR_GROUPS: { title: string; swatches: Swatch[] }[] = [
   {
     title: "Hello Cal-signaler",
     swatches: [
-      { token: "--hf-color-positive", hex: "#A3E635", name: "Positiv (lime)", use: "Positive markeringer, FAB" },
       { token: "--hf-color-danger", hex: "#A3271F", name: "Fare", use: "Fejl, slet, over mål" },
       { token: "--hf-color-overlay", hex: "rgb(35 35 35 / 40%)", name: "Scrim", use: "Mørk baggrund bag dialoger" },
     ],
@@ -193,7 +191,8 @@ export default async function DesignManualPage() {
             ))}
             <Rules
               items={[
-                "Brand-grøn (#067A46) og appbar-grøn (#35784A) er to separate varianter — bland dem aldrig til en tredje grøn.",
+                "Præcis tre grønne: brand #067A46 (al grøn flade), brand mørk #035624 (kun hover/tryk og mørk grøn tekst) og accent-lime #BBF06A (valgt, load-cirkel, positive markeringer). Ingen andre grønne.",
+                "Tekst på grøn flade er altid hvid — aldrig grå. Tekst på lime er altid sort #232323.",
                 "Brug ikke opacity til at lave en ny tekstfarve; vælg den rigtige tekst-token.",
                 "Hover/tryk-farver må kun bruges til netop den tilstand.",
                 "Ingen Tailwind-standarder som red-500 eller green-600 direkte i sider.",
@@ -220,7 +219,7 @@ export default async function DesignManualPage() {
               items={[
                 "Infobokse fylder hele indholdsbredden og ligger i sidens normale flow — aldrig flydende.",
                 "Titel er valgfri; teksten skal kunne stå alene i én til to linjer.",
-                "Fejl bruger danger-token (#A3271F); positive beskeder må bruge lime (#A3E635) som markering, ikke som tekstfarve.",
+                "Fejl bruger danger-token (#A3271F); positive beskeder må bruge accent-lime (#BBF06A) som markering, ikke som tekstfarve.",
               ]}
             />
           </Section>
@@ -300,16 +299,16 @@ export default async function DesignManualPage() {
               </div>
               <div className="flex flex-col gap-3 rounded-lg border border-hf-tan-dark bg-hf-cream p-4">
                 <p className="hf-type-body hf-type-strong text-hf-black">Kun i Hello Cal · lime FAB</p>
-                <button type="button" aria-label="Tilføj" className="flex size-14 items-center justify-center rounded-[14px] bg-hf-lime text-hf-black">
+                <button type="button" aria-label="Tilføj" className="flex size-14 items-center justify-center rounded-[14px] bg-hf-accent text-hf-black">
                   <IconPlus size={28} stroke={2.25} />
                 </button>
-                <p className="hf-type-small text-text-secondary">56 × 56 · radius 14 · #A3E635. Forlæggets FAB er mørk #242424 med radius 12.</p>
+                <p className="hf-type-small text-text-secondary">56 × 56 · radius 14 · accent #BBF06A. Forlæggets FAB er mørk #242424 med radius 12.</p>
               </div>
             </div>
             <Rules
               items={[
                 "Næsten-sort #232323 betyder handling eller valgt. Grøn bruges kun til topbjælke og fremdrift, aldrig som knapfyld.",
-                "Beige #EFE9DE er neutral flade til valg. Lime #BBF06A + 3 px sort kant markerer det valgte kort.",
+                "Beige #EFE9DE er neutral flade til valg. Accent-lime #BBF06A + 2 px sort kant og sort tekst markerer alt valgt (.hf-selected, .hf-choice, .hf-chip).",
                 "Alle konturer er 1 px. Ingen gradienter eller skygger på knapper.",
                 "Formen følger beslutningen: få svar → valgkort, antal → plus/minus, lille talsæt → segmenter, lang liste → rækker med flueben, filtre → piller.",
                 "I flows ligger handlingen fast i den beige bundbjælke. På log ind står den midt på siden under felterne.",
@@ -424,7 +423,7 @@ export default async function DesignManualPage() {
                 <SpecTable
                   head={["Zone", "Mål", "Regel"]}
                   rows={[
-                    ["Appbar", "52 px + safe area", "Brand #067A46 eller main #35784A. Tre faste slots: venstre 44 · titel · højre 44."],
+                    ["Appbar", "52 px + safe area", "Brand #067A46. Tre faste slots: venstre 44 · titel · højre 44."],
                     ["Indhold", "16 px gutter", "Kun .hf-screen__scroll scroller. Børn tilføjer ikke ekstra sidepadding."],
                     ["Blokke", "16 px", "Afstand mellem almindelige blokke."],
                     ["Sektioner", "32 px", "Afstand mellem selvstændige sektioner/kortgrupper."],

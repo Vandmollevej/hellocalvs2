@@ -5,6 +5,9 @@ Last updated: 2026-10-07
 ## 2026-10-07: HelloFresh-retter kun visning
 
 Retter → HelloFresh åbner nu en skrivebeskyttet side under Retter (ikke Nye varer); indhold og varesidens tre tabeller ligger i en lukket dropdown "Indhold" (DECISIONS 2026-10-07).
+## 2026-10-07: Farvepalette ryddet op
+
+- Tre grønne (brand, brand-dark, ny accent-lime #BBF06A); valgt-markering = lime + sort kant + sort tekst; loaderen bruger lime + brand. Se `docs/DECISIONS.md` 2026-10-07 og design.md §3. Ikke visuelt testet (brugerregel).
 
 ## 2026-10-07: Dyrefoder-spærring
 
