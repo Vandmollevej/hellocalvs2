@@ -2,6 +2,11 @@
 
 Last updated: 2026-10-07
 
+## 2026-10-07: Prod-nedbrud — fejlet emailHash-migrering
+
+- Migrationen `20261004190000_user_email_hash` fejlede ved deploy 2026-10-06 22:42 UTC. Live-koden læste `User.emailHash` → P2022 (side-fejl digest 3069122648), og `migrate deploy` afviste siden alle nye migreringer (P3009), så ingen deploys gik igennem.
+- Årsag: migrationen brugte tabelnavnet `"User"`, men tabellen hedder `"users"` (`@@map`) → `relation "User" does not exist`.
+- Rettelse: migrationen bruger nu `"users"` og er idempotent (`IF NOT EXISTS`), og `migrate`-servicen i `compose.production.yaml` kører `prisma migrate resolve --rolled-back 20261004190000_user_email_hash || true` før `migrate deploy`. Linjen kan fjernes, når migrationen står som anvendt i produktion.
 ## 2026-10-07: Nøgleord-punktet fjernet, "Integrationer" omdøbt, stavescan
 
 - "Nøgleord på produktsiden" er fjernet helt (admin-side, API, lib, produktsidens linje); tabellen `product_page_tag_settings` ligger urørt og ubrugt. Se DECISIONS 2026-10-07.
