@@ -563,7 +563,7 @@ export async function listChatbotQuestions(filter: ChatbotAdminFilter) {
             userAgeSnapshot: true,
             userRegionSnapshot: true,
             userTierSnapshot: true,
-            user: { select: { id: true, displayName: true, email: true } },
+            user: { select: { id: true, displayName: true } },
           },
         },
       },
@@ -609,7 +609,7 @@ export async function listChatbotConversations(filter: ChatbotAdminFilter) {
       take: CHATBOT_ADMIN_THREADS_PAGE_SIZE,
       include: {
         messages: { orderBy: { createdAt: "asc" } },
-        user: { select: { id: true, displayName: true, email: true } },
+        user: { select: { id: true, displayName: true } },
       },
     }),
   ]);
@@ -626,7 +626,6 @@ export async function getChatbotThreadForAdmin(conversationId: string) {
         select: {
           id: true,
           displayName: true,
-          email: true,
           birthDate: true,
           sex: true,
           region: true,

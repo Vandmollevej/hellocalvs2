@@ -123,7 +123,7 @@ export async function LegacyWarnings() {
                 <div>
                   <p className="hf-type-body hf-type-strong text-hf-black">{user.displayName}</p>
                   <p className="hf-type-small text-text-muted">
-                    {user.email} · flagget {user.forwardAbuseFlaggedAt?.toLocaleString("da-DK")}
+                    Flagget {user.forwardAbuseFlaggedAt?.toLocaleString("da-DK")}
                   </p>
                 </div>
                 <ClearForwardFlagButton userId={user.id} />

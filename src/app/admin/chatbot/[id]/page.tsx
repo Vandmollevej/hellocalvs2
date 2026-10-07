@@ -52,7 +52,6 @@ export default async function AdminChatbotThreadPage({ params }: { params: Promi
             <Facts
               rows={[
                 ["Navn", user.displayName],
-                ["E-mail", user.email],
                 ["Alder", ageLabel(currentAge)],
                 ["Køn", sexLabel(user.sex)],
                 ["Region", regionLabel(user.region)],

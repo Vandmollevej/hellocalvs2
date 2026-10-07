@@ -4487,6 +4487,10 @@ Ejerens krav: ingen "Bad Gateway" ved udrulning. Målt: hele sitet (begge værte
 - Ikke bygget: billedmønstre er beskrevet i `fable-moenstre.md`, men der er ingen billedbaseret spærring i appen endnu. Genkør scraper + `build_app_blacklist.py` for at opdatere listerne.
 - Fund: de eksisterende Nemlig-ark indeholder ca. 150 dyrefodervarer (Best Friend, Chrisco, Whiskas, Pedigree m.fl.), som er kommet med i madvaredatabasen ved import — bør ryddes, hvis de er importeret.
 
+## 2026-10-04: Drinks som tilføjelseskategori
+
+Drinks er en ny kategori nederst i tilføj-menuen. Hver drink har ingredienser; hver ingrediens får sin egen skyder med standardmængde fra et regneark (importeres senere). Et log gemmes som én Registration med summeret næring (snapshot-princippet). Se `docs/DRINKS.md`.
+
 ## 2026-10-07: Natlig robot "Energifordeling: afvigelser"
 
 Varer med samme brand, produkttype, serie, variant og smag, der kun adskiller sig på mængde, skal have næsten samme energifordeling (% af kcal fra protein 4/kulhydrat 4/fedt 9 kcal pr. g). Jobbet `energy-split-check` (kl. 04:30, app-runtime, admin → Cron-jobs) sammenligner hver vare med medianen af de andre i gruppen; over 8 procentpoint på en af de tre → række i `product_energy_split_flags` og sektionen "Energi-afvigelser" på admin → Usikkerheder (+ rød prik). Varen deaktiveres/skjules ikke; admin undersøger og trykker "Undersøgt". En gennemgået vare flagges først igen, hvis dens tal ændres; flag ryddes, når afvigelsen forsvinder. Kun godkendte, ikke-private, aktive varer med produkttype. Migration 20261007100000 skal med deployet.
@@ -4509,3 +4513,18 @@ Et logo, hvis filnavn ikke præcist matcher et eksisterende brand, afvises og ge
 ## 2026-10-07: Farvepalette — tre grønne og HelloFreshs lime som accent
 
 Brugeren: "Bruger Hello Fresh alle disse farver? Og 4 forskellige grønne? Hvad med den lysegrønne som anvendes både når en knap vælges + i load-cirklen!?" Paletten har nu præcis tre grønne (design.md §3): `--hf-color-brand` #067A46 (al grøn flade og grøn tekst), `--hf-color-brand-dark` #035624 (kun hover/tryk og mørk grøn tekst) og ny `--hf-color-accent` #BBF06A (HelloFreshs lime fra det valgte onboarding-kort og load-cirklen). Appbar-grøn #35784A og progress #007838 er lagt sammen med brand; vores egen lime #A3E635, `--hf-green-light` #8FD6AC og selected-fladen #E6F4EC er lagt sammen med accent. Valgt-markering (`.hf-selected`, `.hf-choice`, `.hf-chip`) = accent + 2 px #232323 kant + #232323 tekst, som i HelloFresh. Primær tekst #242424 er lagt sammen med #232323. Ændringen ligger i tokens (gamle navne er aliasser), så ingen sider skulle migreres. Guide-builderens baggrund "Appbar-grøn" er erstattet af "Accent (lime)"; gemte guides med appbar vises med brand-grøn.
+Varer med samme brand, produkttype, serie, variant og smag, der kun adskiller sig på mængde, skal have næsten samme energifordeling (% af kcal fra protein 4/kulhydrat 4/fedt 9 kcal pr. g). Jobbet `energy-split-check` (kl. 03:30, app-runtime, admin → Cron-jobs) sammenligner hver vare med medianen af de andre i gruppen; over 8 procentpoint på en af de tre → række i `product_energy_split_flags` og sektionen "Energi-afvigelser" på admin → Usikkerheder (+ rød prik). Varen deaktiveres/skjules ikke; admin undersøger og trykker "Undersøgt". En gennemgået vare flagges først igen, hvis dens tal ændres; flag ryddes, når afvigelsen forsvinder. Kun godkendte, ikke-private, aktive varer med produkttype. Migration 20261007100000 skal med deployet.
+
+## 2026-10-07: Brugerens e-mail vises aldrig i admin
+
+Brugerens krav. En app-brugers e-mail (login-navn) må ikke kunne ses af en
+administrator: ikke i brugerlisten, support, fejlrapporter, log (logins,
+beskeder, audit), beskedoversigt, produkter, søgerangering, admin-forsiden,
+chatbot-samtaler, points-tildeling, integrationsstatistik, testprogrammer,
+videresend-misbrug-advarslen eller i mailen om forfaldne supportsager.
+Admin-forespørgsler vælger ikke `email` på `User`; navne vises via
+`userLabel()` (`src/lib/user-label.ts`): visningsnavn, ellers "Bruger <6 tegn
+af ID>". Admins egne e-mails, partnerbrugere, scan-medarbejdere og
+partnerkontakter er ikke omfattet. Points-søgning må stadig slå op på præcis
+e-mail (via emailHash), men viser den aldrig. Support-søgningens "contains" på
+e-mail er fjernet (virker ikke på det krypterede felt).

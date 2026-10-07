@@ -43,17 +43,17 @@ export default async function AdminGrantPointsPage({
           },
           orderBy: { createdAt: "desc" },
           take: SEARCH_LIMIT,
-          select: { id: true, displayName: true, email: true },
+          select: { id: true, displayName: true },
         })
       : Promise.resolve([]),
     params.user
-      ? prisma.user.findFirst({ where: { ...eligible, id: params.user }, select: { id: true, displayName: true, email: true } })
+      ? prisma.user.findFirst({ where: { ...eligible, id: params.user }, select: { id: true, displayName: true } })
       : Promise.resolve(null),
     prisma.pointsTransaction.findMany({
       where: { reason: "ADMIN_GRANT" },
       orderBy: { createdAt: "desc" },
       take: HISTORY_LIMIT,
-      select: { id: true, amount: true, note: true, grantedById: true, createdAt: true, user: { select: { displayName: true, email: true } } },
+      select: { id: true, amount: true, note: true, grantedById: true, createdAt: true, user: { select: { displayName: true } } },
     }),
   ]);
 
@@ -110,7 +110,6 @@ export default async function AdminGrantPointsPage({
               className={`flex flex-col p-3 hover:bg-hf-tan ${selected?.id === user.id ? "bg-hf-tan" : ""}`}
             >
               <span className="hf-type-body hf-type-strong text-hf-black">{user.displayName}</span>
-              <span className="hf-type-small text-text-muted">{user.email}</span>
             </Link>
           ))}
         </div>
@@ -124,7 +123,6 @@ export default async function AdminGrantPointsPage({
         <div className="flex flex-col gap-3 rounded-lg border border-hf-tan-dark bg-hf-white p-4">
           <div>
             <p className="hf-type-body hf-type-strong text-hf-black">{selected.displayName}</p>
-            <p className="hf-type-small text-text-muted">{selected.email}</p>
             <p className="hf-type-small text-text-secondary">
               Saldo: {balance?._sum.amount ?? 0} points ·{" "}
               {lastGrant ? `senest tildelt ${lastGrant.amount} points ${date(lastGrant.createdAt)}` : "aldrig tildelt points af admin"}
@@ -162,7 +160,6 @@ export default async function AdminGrantPointsPage({
                   <td className="hf-type-small py-2 pr-3 text-text-muted">{date(row.createdAt)}</td>
                   <td className="py-2 pr-3">
                     <p className="hf-type-strong text-hf-black">{row.user.displayName}</p>
-                    <p className="hf-type-small text-text-muted">{row.user.email}</p>
                   </td>
                   <td className="py-2 pr-3 text-text-secondary">+{row.amount}</td>
                   <td className="hf-type-small py-2 pr-3 text-text-secondary">{row.note ?? "—"}</td>

@@ -83,8 +83,8 @@ function PeopleTable({ rows, detailHead, empty }: { rows: PersonRow[]; detailHea
             </tr>
           )}
           {rows.map((row, i) => (
-            <tr key={`${row.email}-${row.at}-${i}`} className="border-b border-border-strong last:border-0">
-              <td className="px-3 py-2 text-text-primary">{row.email}</td>
+            <tr key={`${row.user}-${row.at}-${i}`} className="border-b border-border-strong last:border-0">
+              <td className="px-3 py-2 text-text-primary">{row.user}</td>
               <td className="whitespace-nowrap px-3 py-2 text-text-secondary">{formatDateTime(row.at || null)}</td>
               {detailHead && <td className="px-3 py-2 text-text-secondary">{row.detail ?? "–"}</td>}
             </tr>

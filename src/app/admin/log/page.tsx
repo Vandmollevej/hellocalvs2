@@ -17,6 +17,7 @@ import {
   type FlowSummary,
 } from "@/lib/debug-log-view";
 import { DebugLogControls } from "@/components/admin/DebugLogControls";
+import { userLabel } from "@/lib/user-label";
 
 // Admin "Log" (docs/DECISIONS.md 2026-09-28): test-log indtil appen går live.
 // Scanninger viser hvert kameraflow som én tidslinje (telefonens og
@@ -238,8 +239,8 @@ function SimpleList({ rows, empty }: { rows: SimpleRow[]; empty: string }) {
 async function emailsFor(userIds: (string | null)[]) {
   const ids = [...new Set(userIds.filter((id): id is string => Boolean(id)))];
   if (ids.length === 0) return new Map<string, string>();
-  const users = await prisma.user.findMany({ where: { id: { in: ids } }, select: { id: true, email: true } });
-  return new Map(users.map((user) => [user.id, user.email]));
+  const users = await prisma.user.findMany({ where: { id: { in: ids } }, select: { id: true, displayName: true } });
+  return new Map(users.map((user) => [user.id, userLabel(user)]));
 }
 
 // Samme 30 dage som loggens automatiske oprydning (src/lib/debug-log.ts).
@@ -373,7 +374,7 @@ async function LoginsTab() {
   const rows = await prisma.loginEvent.findMany({
     orderBy: { createdAt: "desc" },
     take: LIST_LIMIT,
-    select: { id: true, createdAt: true, method: true, country: true, user: { select: { email: true } } },
+    select: { id: true, createdAt: true, method: true, country: true, user: { select: { id: true, displayName: true } } },
   });
   return (
     <SimpleList
@@ -381,7 +382,7 @@ async function LoginsTab() {
       rows={rows.map((row) => ({
         id: row.id,
         time: row.createdAt,
-        title: `${row.user.email} · ${row.method}`,
+        title: `${userLabel(row.user)} · ${row.method}`,
         detail: row.country ? `Land: ${row.country}` : null,
       }))}
     />
@@ -400,9 +401,8 @@ async function MessagesTab() {
       event: true,
       status: true,
       subject: true,
-      toEmail: true,
       error: true,
-      user: { select: { email: true } },
+      user: { select: { id: true, displayName: true } },
     },
   });
   return (
@@ -411,7 +411,7 @@ async function MessagesTab() {
       rows={rows.map((row) => ({
         id: row.id,
         time: row.createdAt,
-        title: `${row.channel} · ${row.event} · ${row.status} · ${row.toEmail ?? row.user?.email ?? "ukendt modtager"}`,
+        title: `${row.channel} · ${row.event} · ${row.status} · ${row.user ? userLabel(row.user) : "ukendt modtager"}`,
         detail: [row.subject, row.sentAt ? `Sendt ${formatTime(row.sentAt)}` : null, row.error ? `Fejl: ${row.error}` : null]
           .filter(Boolean)
           .join(" · "),
@@ -429,8 +429,8 @@ async function AuditTab() {
       id: true,
       createdAt: true,
       action: true,
-      admin: { select: { email: true } },
-      targetUser: { select: { email: true } },
+      admin: { select: { email: true } }, // admin-konto, ikke app-bruger
+      targetUser: { select: { id: true, displayName: true } },
     },
   });
   return (
@@ -440,7 +440,7 @@ async function AuditTab() {
         id: row.id,
         time: row.createdAt,
         title: `${row.admin.email} · ${row.action}`,
-        detail: row.targetUser ? `Bruger: ${row.targetUser.email}` : null,
+        detail: row.targetUser ? `Bruger: ${userLabel(row.targetUser)}` : null,
         tone: "warn",
       }))}
     />

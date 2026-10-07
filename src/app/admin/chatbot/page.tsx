@@ -203,7 +203,7 @@ function UserCell({
   tier,
   plan,
 }: {
-  user: { displayName: string; email: string };
+  user: { displayName: string };
   age: number | null;
   sex?: string | null;
   region: string;
@@ -213,7 +213,6 @@ function UserCell({
   return (
     <div className="flex flex-col">
       <span className="text-hf-black">{user.displayName}</span>
-      <span className="hf-type-small text-text-muted">{user.email}</span>
       <span className="hf-type-small text-text-secondary">
         {[ageLabel(age), sex !== undefined ? sexLabel(sex) : null, regionLabel(region), tierLabel(tier, plan)]
           .filter(Boolean)

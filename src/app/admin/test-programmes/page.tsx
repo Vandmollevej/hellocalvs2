@@ -23,7 +23,6 @@ export default async function AdminTestProgrammesPage() {
       user: {
         select: {
           displayName: true,
-          email: true,
           integrations: { select: { provider: true, status: true, connectedAt: true, lastSyncedAt: true } },
         },
       },
@@ -57,7 +56,7 @@ export default async function AdminTestProgrammesPage() {
                     ) : (
                       <>
                         <p className="hf-type-small text-text-muted">
-                          {tester.user.displayName} · {tester.user.email} · tilmeldt {date(tester.createdAt)}
+                          {tester.user.displayName} · tilmeldt {date(tester.createdAt)}
                         </p>
                         <p className="hf-type-small text-text-muted">
                           Forbindelse:{" "}

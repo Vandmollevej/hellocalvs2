@@ -8,7 +8,6 @@ import { IconCoins, IconLockOpen, IconUserOff } from "@tabler/icons-react";
 export type AdminUserRowData = {
   id: string;
   displayName: string;
-  email: string;
   createdAt: string;
   pointsBalance: number;
   subscriptionStatus: string;
@@ -50,7 +49,7 @@ export function AdminUserRow({ user }: { user: AdminUserRowData }) {
   }
 
   async function forget() {
-    if (!confirm(`AnonymisÃ©r ${user.displayName} (${user.email})? Dette kan ikke fortrydes.`)) return;
+    if (!confirm(`Anonymisér ${user.displayName}? Dette kan ikke fortrydes.`)) return;
     setBusy("forget");
     try {
       const res = await fetch(`/api/admin/users/${user.id}/forget`, { method: "POST" });
@@ -77,7 +76,6 @@ export function AdminUserRow({ user }: { user: AdminUserRowData }) {
     <tr className="border-b border-hf-tan-dark">
       <td className="py-2 pr-3">
         <p className="hf-type-strong text-hf-black">{user.displayName}</p>
-        {user.email && <p className="hf-type-small text-text-muted">{user.email}</p>}
         {user.blockedAt && (
           <p className="hf-type-small mt-1">
             <span className="rounded-full bg-hf-red-dark px-2 py-0.5 text-hf-white">Spærret</span>{" "}

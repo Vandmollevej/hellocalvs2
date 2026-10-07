@@ -4,6 +4,7 @@ import { INTEGRATION_CATALOG, integrationSlug, type IntegrationMeta } from "@/li
 import { adapterByProvider, isConfigured } from "@/lib/integrations/registry";
 import { activeOverTime, keptForLabel, median, uninstallDurations } from "@/lib/integration-lifecycle";
 import { capabilitiesFor, resolveSyncSettings, type ReadType, type WriteType } from "@/lib/integrations/sync-settings";
+import { userLabel } from "@/lib/user-label";
 import {
   STATS_TZ,
   listBuckets,
@@ -232,7 +233,7 @@ export async function getIntegrationsOverview(filter: StatsFilterInput, now = ne
 
 // --- Én integration ---------------------------------------------------------
 
-export type PersonRow = { email: string; at: string; detail?: string };
+export type PersonRow = { user: string; at: string; detail?: string };
 
 export type IntegrationDetail = {
   meta: IntegrationMeta;
@@ -323,19 +324,19 @@ export async function getIntegrationDetail(slug: string, filter: StatsFilterInpu
     storedData(provider),
     prisma.integration.findMany({
       where: { provider, connectedAt: { not: null } },
-      select: { status: true, syncSettings: true, lastError: true, lastSyncedAt: true, user: { select: { email: true } } },
+      select: { status: true, syncSettings: true, lastError: true, lastSyncedAt: true, user: { select: { id: true, displayName: true } } },
     }),
     prisma.integrationEvent.findMany({
       where: { provider, type: "CONNECTED" },
       orderBy: { createdAt: "desc" },
       take: 15,
-      select: { createdAt: true, user: { select: { email: true } } },
+      select: { createdAt: true, user: { select: { id: true, displayName: true } } },
     }),
     prisma.integrationEvent.findMany({
       where: { provider, type: "DISCONNECTED" },
       orderBy: { createdAt: "desc" },
       take: 15,
-      select: { createdAt: true, userId: true, user: { select: { email: true } } },
+      select: { createdAt: true, userId: true, user: { select: { id: true, displayName: true } } },
     }),
   ]);
 
@@ -392,15 +393,15 @@ export async function getIntegrationDetail(slug: string, filter: StatsFilterInpu
     dataStored: data,
     readSettings: caps.read.map((type) => ({ type, on: settings.filter((x) => x.read[type]).length, of: settings.length })),
     writeSettings: caps.write.map((type) => ({ type, on: settings.filter((x) => x.write[type]).length, of: settings.length })),
-    recentInstalls: recentInstalls.map((e) => ({ email: e.user.email, at: e.createdAt.toISOString() })),
+    recentInstalls: recentInstalls.map((e) => ({ user: userLabel(e.user), at: e.createdAt.toISOString() })),
     recentUninstalls: recentUninstalls.map((e) => ({
-      email: e.user.email,
+      user: userLabel(e.user),
       at: e.createdAt.toISOString(),
       detail: keptForLabel(lifecycle, e.userId, e.createdAt),
     })),
     errors: rows
       .filter((r) => r.status === "ERROR")
-      .map((r) => ({ email: r.user.email, at: r.lastSyncedAt?.toISOString() ?? "", detail: r.lastError ?? undefined }))
+      .map((r) => ({ user: userLabel(r.user), at: r.lastSyncedAt?.toISOString() ?? "", detail: r.lastError ?? undefined }))
       .slice(0, 25),
   };
 }
