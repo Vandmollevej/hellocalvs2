@@ -14,6 +14,7 @@ import {
   type AddActionKey,
 } from "@/lib/add-actions";
 import {
+  ARC_BULGE_MAX,
   ARC_FAN_HALF_WIDTH,
   ARC_ICON_CIRCLE,
   ARC_ICON_RADIUS,
@@ -91,6 +92,8 @@ export function FooterArc() {
   const [highlightedKey, setHighlightedKey] = useState<string | null>(null);
   const highlightedRef = useRef<string | null>(null);
   const [gesturing, setGesturing] = useState(false);
+  // Fingerens placering i forhold til cirklens midte (px opad/til siden) — får kanten til at pose ud og plusset til at følge med.
+  const [finger, setFinger] = useState<{ dx: number; dy: number } | null>(null);
   const [editing, setEditing] = useState(false);
   const [menuSheetOpen, setMenuSheetOpen] = useState(false);
   const gestureRef = useRef<Gesture | null>(null);
@@ -187,6 +190,7 @@ export function FooterArc() {
     const px = event.clientX - rect.left;
     const py = rect.top - event.clientY; // px opad fra footerkanten
     const center = centerAt(p);
+    setFinger({ dx: px - center, dy: py });
     if (Math.hypot(px - center, py) < DEAD_ZONE) {
       setHighlight(null);
       return;
@@ -246,6 +250,7 @@ export function FooterArc() {
         if (gestureRef.current !== gesture || gesture.moved) return;
         gesture.consumed = true;
         setHighlight(null);
+        setFinger(null);
         setGesturing(false);
         setEditing(true);
       }, LONG_PRESS_MS);
@@ -275,7 +280,10 @@ export function FooterArc() {
       const p = clamp((gesture.startY - event.clientY) / ARC_PULL_DISTANCE, 0, 1);
       setP(p);
       if (p > 0.3) updateHighlight(event, p);
-      else setHighlight(null);
+      else {
+        setHighlight(null);
+        setFinger(null);
+      }
     } else if (gesture.mode === "select") {
       updateHighlight(event, 1);
     }
@@ -293,6 +301,7 @@ export function FooterArc() {
       // Ignorér.
     }
     setGesturing(false);
+    setFinger(null);
     if (gesture.consumed) return;
 
     const key = highlightedRef.current;
@@ -324,6 +333,15 @@ export function FooterArc() {
 
   const showFan = progress > 0.02;
   const hitHeight = Math.max(44, visibleHeight);
+  const bulgeActive = Boolean(finger) && progress > 0.3;
+  const fingerDistance = finger ? Math.hypot(finger.dx, finger.dy) : 0;
+  const bulgeDeg = finger ? (Math.atan2(finger.dx, Math.max(1, finger.dy)) * 180) / Math.PI : null;
+  const bulgeAmount = bulgeActive ? ARC_BULGE_MAX * Math.min(1, fingerDistance / (ARC_RADIUS * 1.5)) : 0;
+  // Plusset følger fingeren lidt (højere op, jo længere op fingeren er).
+  const plusFollows = Boolean(finger) && progress > 0.1;
+  const plusLeft = plusFollows && finger ? cx + clamp(finger.dx * 0.4, -ARC_RADIUS * 0.5, ARC_RADIUS * 0.5) : cx;
+  const plusBottom =
+    plusFollows && finger ? Math.max(visibleHeight / 2, Math.min(finger.dy * 0.5, visibleHeight * 0.8)) : visibleHeight / 2;
 
   return (
     <div ref={wrapRef} className="pointer-events-none relative z-30 h-0 w-full select-none [-webkit-touch-callout:none]">
@@ -339,19 +357,19 @@ export function FooterArc() {
       <svg
         aria-hidden="true"
         className="pointer-events-none absolute"
-        style={{ left: cx - ARC_RADIUS, bottom: 0, width: ARC_RADIUS * 2, height: ARC_RADIUS }}
-        viewBox={`0 0 ${ARC_RADIUS * 2} ${ARC_RADIUS}`}
+        style={{ left: cx - ARC_RADIUS, bottom: 0, width: ARC_RADIUS * 2, height: ARC_RADIUS + ARC_BULGE_MAX }}
+        viewBox={`0 0 ${ARC_RADIUS * 2} ${ARC_RADIUS + ARC_BULGE_MAX}`}
       >
-        <path d={segmentPath(visibleHeight)} fill="var(--hf-green)" />
+        <path d={segmentPath(visibleHeight, bulgeDeg, bulgeAmount)} fill="var(--hf-green)" />
       </svg>
 
       <span
         aria-hidden="true"
         className="pointer-events-none absolute flex items-center justify-center text-hf-white"
         style={{
-          left: cx,
-          bottom: visibleHeight / 2,
-          transform: `translate(-50%, 50%) rotate(${progress * 45}deg)`,
+          left: plusLeft,
+          bottom: plusBottom,
+          transform: `translate(-50%, 50%) rotate(${plusFollows ? 0 : progress * 45}deg)`,
         }}
       >
         <IconPlus size={11 + progress * 9} stroke={2.4} />

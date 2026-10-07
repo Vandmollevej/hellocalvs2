@@ -34,12 +34,36 @@ export function listSlotIndex(userCount: number) {
   return Math.floor((userCount + 1) / 2);
 }
 
-/** SVG-sti for cirkelstykket med synlig højde `h` (0..ARC_RADIUS), fladt i bunden. */
-export function segmentPath(height: number) {
+/** Hvor langt cirkelkanten højst "poser ud" mod fingeren (som venstre-cirklen). */
+export const ARC_BULGE_MAX = 18;
+const BULGE_SPREAD_DEG = 50;
+const BULGE_SAMPLES = 40;
+
+/**
+ * SVG-sti for cirkelstykket med synlig højde `height` (0..ARC_RADIUS), fladt i
+ * bunden. SVG'en er ARC_RADIUS + ARC_BULGE_MAX høj (plads til poset); den
+ * flade kant ligger nederst. `targetDeg` (fra lodret) + `amount` får kanten til
+ * at "pose ud" mod fingeren; enderne ved footerkanten holdes fast.
+ */
+export function segmentPath(height: number, targetDeg: number | null = null, amount = 0) {
   const r = ARC_RADIUS;
   const h = Math.min(r, Math.max(0.5, height));
-  const half = Math.sqrt(r * r - (r - h) * (r - h));
-  return `M${(r - half).toFixed(2)},${r} A${r},${r} 0 0 1 ${(r + half).toFixed(2)},${r} Z`;
+  const phi = Math.acos((r - h) / r);
+  const lineY = ARC_BULGE_MAX + r;
+  const centerY = lineY + (r - h);
+  const points: string[] = [];
+  for (let i = 0; i <= BULGE_SAMPLES; i += 1) {
+    const t = -phi + (2 * phi * i) / BULGE_SAMPLES;
+    let radius = r;
+    if (targetDeg !== null && amount > 0) {
+      const diff = Math.abs((t * 180) / Math.PI - targetDeg);
+      const falloff = Math.max(0, Math.cos((diff / BULGE_SPREAD_DEG) * (Math.PI / 2)));
+      const pin = Math.max(0, 1 - Math.abs(t) / phi) ** 0.6;
+      radius += amount * falloff ** 2 * pin;
+    }
+    points.push(`${i === 0 ? "M" : "L"}${(r + radius * Math.sin(t)).toFixed(2)},${(centerY - radius * Math.cos(t)).toFixed(2)}`);
+  }
+  return `${points.join(" ")} L${(r + r * Math.sin(phi)).toFixed(2)},${lineY} L${(r - r * Math.sin(phi)).toFixed(2)},${lineY} Z`;
 }
 
 // Vandret placering (px fra skærmens midte) gemmes pr. enhed ligesom
