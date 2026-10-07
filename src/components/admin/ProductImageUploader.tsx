@@ -7,7 +7,6 @@ import { readDroppedFiles } from "@/lib/dropped-files";
 import { isImageFile } from "@/lib/brand-logo-image";
 import { ProductImageProcessError, processProductImage } from "@/lib/product-image-client";
 import {
-  NAME_RULE_TEXT,
   ROLE_LABEL,
   parseProductImageName,
   targetsLabel,

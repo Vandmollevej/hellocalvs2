@@ -322,13 +322,6 @@ function LinkBadge({ href, badges }: { href: string; badges: Badges }) {
   return null;
 }
 
-function linkHasBadge(href: string, badges: Badges) {
-  return (
-    (href === "/admin/uncertainties" && badges.uncertainties) ||
-    (href === "/admin/support" && (badges.support?.unanswered ?? 0) > 0)
-  );
-}
-
 function groupHasBadge(links: NavLink[], badges: Badges) {
   return links.some(
     (link) =>
