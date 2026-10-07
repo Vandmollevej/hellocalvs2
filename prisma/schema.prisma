@@ -1498,6 +1498,8 @@ model Product {
   // Normaliserede søge-/ernæringsparametre (fiber-%, sukker-%, fuldkorn …),
   // docs/DECISIONS.md 2026-09-23. Højst én række pr. produkt.
   nutritionFeatures  ProductNutritionFeatures?
+  // Natlig robot "energy-split-check": afvigende energifordeling (docs/DECISIONS.md 2026-10-07).
+  energySplitFlag    ProductEnergySplitFlag?
   // Filtertabellen (økologisk, glutenfri, kødtype, nøglehul …), højst én
   // række pr. produkt — docs/DECISIONS.md 2026-09-27.
   filters            ProductFilters?
@@ -4701,4 +4703,27 @@ model QuickEnrichmentJob {
 
   @@index([finishedAt, startedAt])
   @@map("quick_enrichment_jobs")
+// Natlig robot "energy-split-check" (docs/DECISIONS.md 2026-10-07): en vare,
+// hvis energifordeling (% af kcal fra protein/kulhydrat/fedt) afviger fra
+// andre varer med samme brand/produkttype/serie/variant/smag, der kun
+// adskiller sig på mængde. Varen deaktiveres ikke — admin undersøger den.
+// Højst én række pr. vare; rækken slettes igen, når afvigelsen forsvinder.
+model ProductEnergySplitFlag {
+  id              String    @id @default(cuid())
+  product         Product   @relation(fields: [productId], references: [id], onDelete: Cascade)
+  productId       String    @unique
+  // Største afvigelse i procentpoint fra gruppens median-fordeling.
+  deviationPoints Float
+  // Varens egen og gruppens (median) fordeling: { protein, carbs, fat } i % af kcal.
+  split           Json
+  referenceSplit  Json
+  groupSize       Int
+  // Varens tal ved sidste vurdering, så en gennemgået vare først flagges
+  // igen, hvis dens tal ændres.
+  fingerprint     String
+  flaggedAt       DateTime  @default(now())
+  reviewedAt      DateTime?
+
+  @@index([reviewedAt])
+  @@map("product_energy_split_flags")
 }

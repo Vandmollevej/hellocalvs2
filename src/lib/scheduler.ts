@@ -9,6 +9,7 @@ import { rerunUncertainAnalyses } from "@/lib/uncertainty-rerun";
 import { scanProductLabels } from "@/lib/product-label-scan";
 import { analyzeDeclinedExternalImages } from "@/lib/external-image-ai";
 import { recoverQuickEnrichments } from "@/lib/quick-enrichment-jobs";
+import { checkEnergySplits } from "@/lib/energy-split-check";
 import { grantEligibleReferralRewards } from "@/lib/referrals";
 import { runMobilePayTick } from "@/lib/payments/mobilepay-subscription";
 import { runStripeTick } from "@/lib/payments/stripe-subscription";
@@ -130,6 +131,7 @@ export function startScheduler() {
       personas: runPersonaJob,
       "external-image-ai": analyzeDeclinedExternalImages,
       "quick-enrichment-recovery": () => recoverQuickEnrichments(),
+      "energy-split-check": checkEnergySplits,
     }).catch((error) => {
       console.error("[scheduler] tick fejlede", error);
     });
