@@ -5,7 +5,7 @@ import { copenhagenWeekdayHour } from "@/lib/flow-conditions";
 // Vejepåmindelser (docs/DECISIONS.md 2026-10-07): en push 5 minutter før hver
 // valgt lige time. Kaldes hvert minut fra scheduleren.
 
-export const REMINDER_HOURS = [6, 8, 10, 12, 14, 16, 18, 20, 22];
+import { REMINDER_HOURS } from "@/lib/weigh-reminder-hours";
 const LEAD_MINUTES = 5;
 
 export function sanitizeReminderHours(value: unknown): number[] {

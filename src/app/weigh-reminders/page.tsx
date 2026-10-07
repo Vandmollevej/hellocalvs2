@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { HfScreen } from "@/components/HfScreen";
 import { Toggle } from "@/components/ui/Toggle";
-import { REMINDER_HOURS } from "@/lib/weigh-reminders";
+import { REMINDER_HOURS } from "@/lib/weigh-reminder-hours";
 
 // Vejepåmindelser (docs/DECISIONS.md 2026-10-07): dagen vist som en tidslinje
 // med én kontakt pr. 2. time; en push 5 minutter før de valgte tidspunkter.
