@@ -91,12 +91,23 @@ function StoreTags({ stores }: { stores: string[] }) {
   );
 }
 
-function ListView({ rows }: { rows: ProductDatabaseRow[] }) {
+function BrandHeader({ filters }: { filters: Filters }) {
+  const next = filters.sort === "brand" ? "brand_desc" : "brand";
+  const arrow = filters.sort === "brand" ? " ↑" : filters.sort === "brand_desc" ? " ↓" : "";
+  return (
+    <Link href={productDatabaseHref(filters, { sort: next })} className="hover:text-hf-green-dark" title="Sortér efter mærke">
+      Mærke{arrow}
+    </Link>
+  );
+}
+
+function ListView({ rows, filters }: { rows: ProductDatabaseRow[]; filters: Filters }) {
   return (
     <div className="overflow-hidden rounded-lg border border-hf-tan-dark bg-hf-white">
-      <div className="hf-type-small hidden grid-cols-[48px_minmax(0,2.4fr)_minmax(0,1.2fr)_minmax(0,1fr)_88px_96px_96px] gap-4 border-b border-hf-tan-dark px-4 py-2 text-text-secondary lg:grid">
+      <div className="hf-type-small hidden grid-cols-[48px_minmax(0,2.2fr)_minmax(0,1fr)_minmax(0,1.1fr)_minmax(0,1fr)_88px_96px_96px] gap-4 border-b border-hf-tan-dark px-4 py-2 text-text-secondary lg:grid">
         <span />
         <span>Vare</span>
+        <BrandHeader filters={filters} />
         <span>Kæder</span>
         <span>Kategori · kilde</span>
         <span className="text-right">Kcal/100</span>
@@ -108,21 +119,20 @@ function ListView({ rows }: { rows: ProductDatabaseRow[] }) {
           <li key={row.id}>
             <Link
               href={`/admin/products/${row.id}`}
-              className="grid grid-cols-[48px_minmax(0,1fr)_auto] items-center gap-4 px-4 py-3 hover:bg-hf-tan lg:grid-cols-[48px_minmax(0,2.4fr)_minmax(0,1.2fr)_minmax(0,1fr)_88px_96px_96px]"
+              className="grid grid-cols-[48px_minmax(0,1fr)_auto] items-center gap-4 px-4 py-3 hover:bg-hf-tan lg:grid-cols-[48px_minmax(0,2.2fr)_minmax(0,1fr)_minmax(0,1.1fr)_minmax(0,1fr)_88px_96px_96px]"
             >
               <Thumbnail row={row} size="row" />
               <div className="min-w-0">
-                <p className="hf-type-body truncate text-hf-black">
-                  {row.brandName && <span className="hf-type-strong">{row.brandName} </span>}
-                  {row.name}
-                </p>
+                <p className="hf-type-body truncate text-hf-black">{row.name}</p>
                 <p className="hf-type-small truncate text-text-muted">
+                  {row.brandName && <span className="lg:hidden">{row.brandName} · </span>}
                   {subtitle(row) || (row.barcodeCount > 0 ? `${row.barcodeCount} stregkode${row.barcodeCount > 1 ? "r" : ""}` : "Ingen stregkode")}
                 </p>
                 <div className="mt-1 lg:hidden">
                   <StoreTags stores={row.stores} />
                 </div>
               </div>
+              <p className="hf-type-small hidden truncate text-hf-black lg:block">{row.brandName ?? "—"}</p>
               <div className="hidden min-w-0 lg:block">
                 <StoreTags stores={row.stores} />
               </div>
@@ -144,12 +154,13 @@ function ListView({ rows }: { rows: ProductDatabaseRow[] }) {
 }
 
 // Detaljer: kun tekst, uden billeder — flere felter pr. vare end i listen.
-function DetailsView({ rows }: { rows: ProductDatabaseRow[] }) {
-  const cols = "lg:grid-cols-[minmax(0,2.4fr)_minmax(0,1.2fr)_minmax(0,1fr)_minmax(0,1fr)_72px_72px_96px_96px]";
+function DetailsView({ rows, filters }: { rows: ProductDatabaseRow[]; filters: Filters }) {
+  const cols = "lg:grid-cols-[minmax(0,2.2fr)_minmax(0,1fr)_minmax(0,1.2fr)_minmax(0,1fr)_minmax(0,1fr)_72px_72px_96px_96px]";
   return (
     <div className="overflow-hidden rounded-lg border border-hf-tan-dark bg-hf-white">
       <div className={`hf-type-small hidden gap-4 border-b border-hf-tan-dark px-4 py-2 text-text-secondary lg:grid ${cols}`}>
         <span>Vare</span>
+        <BrandHeader filters={filters} />
         <span>Kæder</span>
         <span>Kategori</span>
         <span>Kilde</span>
@@ -163,15 +174,18 @@ function DetailsView({ rows }: { rows: ProductDatabaseRow[] }) {
           <li key={row.id}>
             <Link href={`/admin/products/${row.id}`} className={`grid grid-cols-[minmax(0,1fr)_auto] items-center gap-x-4 gap-y-1 px-4 py-2 hover:bg-hf-tan ${cols}`}>
               <div className="min-w-0">
-                <p className="hf-type-body truncate text-hf-black">
-                  {row.brandName && <span className="hf-type-strong">{row.brandName} </span>}
-                  {row.name}
-                </p>
-                {subtitle(row) && <p className="hf-type-small truncate text-text-muted">{subtitle(row)}</p>}
+                <p className="hf-type-body truncate text-hf-black">{row.name}</p>
+                {(row.brandName || subtitle(row)) && (
+                  <p className="hf-type-small truncate text-text-muted">
+                    {row.brandName && <span className="lg:hidden">{row.brandName}{subtitle(row) && " · "}</span>}
+                    {subtitle(row)}
+                  </p>
+                )}
               </div>
               <div className="flex justify-end lg:hidden">
                 <StatusBadge status={row.status} />
               </div>
+              <p className="hf-type-small hidden truncate text-hf-black lg:block">{row.brandName ?? "—"}</p>
               <div className="col-span-2 flex flex-wrap items-center gap-x-3 gap-y-1 lg:col-span-1 lg:block">
                 <StoreTags stores={row.stores} />
               </div>
@@ -331,9 +345,9 @@ export default async function AdminProductDatabasePage({
         ) : filters.view === "grid" ? (
           <GridView rows={data.rows} />
         ) : filters.view === "details" ? (
-          <DetailsView rows={data.rows} />
+          <DetailsView rows={data.rows} filters={filters} />
         ) : (
-          <ListView rows={data.rows} />
+          <ListView rows={data.rows} filters={filters} />
         )}
 
         <Pagination filters={filters} pageCount={data.pageCount} />

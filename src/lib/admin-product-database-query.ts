@@ -14,6 +14,9 @@ export const PRODUCT_DATABASE_SORTS = [
   { key: "image_first", label: "Med billede først" },
   { key: "image_last", label: "Uden billede først" },
   { key: "brand", label: "Mærke A–Å" },
+  { key: "brand_desc", label: "Mærke Å–A" },
+  { key: "popular", label: "Mest populære" },
+  { key: "trending", label: "Trending (seneste 7 dage)" },
   { key: "kcal_desc", label: "Flest kcal" },
   { key: "kcal_asc", label: "Færrest kcal" },
 ] as const;
@@ -58,7 +61,7 @@ export type ProductDatabaseFilters = {
   image: "with" | "without" | "";
   barcode: "with" | "without" | "";
   sort: ProductDatabaseSort;
-  view: "list" | "grid";
+  view: "list" | "grid" | "details";
   page: number;
 };
 
@@ -114,7 +117,7 @@ export function parseProductDatabaseFilters(params: ProductDatabaseSearchParams)
         one(params.sort),
         PRODUCT_DATABASE_SORTS.map((s) => s.key),
       ) || "name",
-    view: one(params.view) === "grid" ? "grid" : "list",
+    view: pick(one(params.view), ["grid", "details"] as const) || "list",
     page: Number.isFinite(page) && page > 1 ? page : 1,
   };
 }
