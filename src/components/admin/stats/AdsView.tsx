@@ -5,7 +5,7 @@ const number = new Intl.NumberFormat("da-DK");
 
 function Tile({ label, value }: { label: string; value: string }) {
   return (
-    <div className="hf-surface p-4">
+    <div className="hf-panel">
       <p className="hf-type-body text-text-secondary">{label}</p>
       <p className="hf-type-hero mt-1 text-hf-black">{value}</p>
     </div>
@@ -14,7 +14,7 @@ function Tile({ label, value }: { label: string; value: string }) {
 
 function AdTable({ title, firstColumn, rows }: { title: string; firstColumn: string; rows: AdStatsRow[] }) {
   return (
-    <div className="hf-surface p-4">
+    <div className="hf-panel">
       <h2 className="hf-type-body hf-type-strong text-hf-black">{title}</h2>
       {rows.length === 0 ? (
         <p className="hf-type-body mt-2 text-text-muted">Ingen data i perioden.</p>
@@ -22,10 +22,10 @@ function AdTable({ title, firstColumn, rows }: { title: string; firstColumn: str
         <div className="hf-table-scroll mt-2"><table className="hf-type-body w-full">
           <thead>
             <tr className="text-left text-text-secondary">
-              <th className="py-1 font-normal">{firstColumn}</th>
-              <th className="py-1 text-right font-normal">Visninger</th>
-              <th className="py-1 text-right font-normal">Klik</th>
-              <th className="py-1 text-right font-normal">CTR</th>
+              <th className="py-1">{firstColumn}</th>
+              <th className="py-1 text-right">Visninger</th>
+              <th className="py-1 text-right">Klik</th>
+              <th className="py-1 text-right">CTR</th>
             </tr>
           </thead>
           <tbody>

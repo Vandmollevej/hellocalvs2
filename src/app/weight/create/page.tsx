@@ -100,7 +100,7 @@ export default function WeightCreatePage() {
       icon={<IconBathroomScale size={20} stroke={2} />}
     >
       <div className="hf-page">
-        <div className="rounded-2xl bg-hf-green px-4 py-4 text-hf-white">
+        <div className="hf-card hf-card--brand">
           <p className="hf-type-small">{t("weightLog.intro")}</p>
         </div>
 
@@ -123,7 +123,7 @@ export default function WeightCreatePage() {
             <p className="hf-type-small hf-type-strong text-center text-hf-green">{t("weightLog.saved")}</p>
           )}
 
-          <button type="submit" disabled={saving} className="hf-control hf-btn-primary disabled:opacity-40">
+          <button type="submit" disabled={saving} className="hf-control hf-btn-primary">
             <span className="hf-type-button">{saving ? t("weightLog.saving") : t("weightLog.save")}</span>
           </button>
         </form>

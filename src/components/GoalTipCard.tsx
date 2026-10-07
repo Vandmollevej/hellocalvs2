@@ -54,7 +54,7 @@ export function GoalTipCard() {
   return (
     <div
       role="status"
-      className="fixed inset-x-4 bottom-24 z-[44] mx-auto flex max-w-md items-start gap-3 rounded-lg border border-hf-tan-dark bg-hf-white p-4 shadow-lg"
+      className="fixed inset-x-4 bottom-24 z-[44] mx-auto flex max-w-md items-start gap-3 p-4 shadow-lg hf-surface"
     >
       <div className="flex min-w-0 flex-1 flex-col gap-1">
         <p className="hf-type-body hf-type-strong text-hf-black">Tip til dagens mål</p>

@@ -117,7 +117,7 @@ export default function MyScansPage() {
     <HfScreen title={t("myScans.title")}>
       <div className="hf-page web-search-page">
         {state === "loading" && (
-          <SkeletonScreen className="overflow-hidden rounded-[8px] bg-hf-tan px-4">
+          <SkeletonScreen className="overflow-hidden bg-hf-tan px-4 rounded-card">
             <SkeletonMediaRows rows={4} />
           </SkeletonScreen>
         )}
@@ -132,7 +132,7 @@ export default function MyScansPage() {
             <h2 className="hf-type-small hf-type-strong border-b border-hf-tan-dark pb-1 text-hf-black first-letter:uppercase">
               {dayHeading(group.date)}
             </h2>
-            <div className="overflow-hidden rounded-[8px] bg-hf-tan">
+            <div className="overflow-hidden bg-hf-tan rounded-card">
               {group.scans.map((scan) => (
                 <ProductResultRow
                   key={scan.id}

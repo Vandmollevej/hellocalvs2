@@ -79,7 +79,7 @@ export default function PrivateIngredientsPage() {
                       onChange={(event) => setDraftName(event.target.value)}
                       maxLength={80}
                       aria-label={t("privateIngredients.nameLabel")}
-                      className="hf-type-body hf-field min-w-0 flex-1 rounded-[8px] bg-hf-white px-3 text-hf-black outline-none"
+                      className="hf-type-body hf-field min-w-0 flex-1 bg-hf-white px-3 text-hf-black outline-none rounded-card"
                     />
                     <button
                       type="button"

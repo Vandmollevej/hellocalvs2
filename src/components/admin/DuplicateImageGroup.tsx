@@ -51,7 +51,7 @@ export function DuplicateImageGroup({ group }: { group: ImageGroup }) {
   if (done) return null;
 
   return (
-    <section className="flex flex-col gap-3 hf-surface p-4">
+    <section className="hf-panel">
       <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
         <a
           href={`/admin/products/${group.productId}`}

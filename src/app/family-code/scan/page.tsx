@@ -47,7 +47,7 @@ export default function FamilyQrScanPage() {
     <HfScreen title={t("family.scan.title")}>
       <div className="hf-page hf-stack">
         <p className="hf-type-body">{t("family.scan.intro")}</p>
-        <div className="relative mx-auto aspect-square w-full max-w-[360px] overflow-hidden rounded-[8px] bg-hf-black">
+        <div className="relative mx-auto aspect-square w-full max-w-[360px] overflow-hidden bg-hf-black rounded-card">
           <video ref={videoRef} muted playsInline className="h-full w-full object-cover" />
         </div>
         {error && (

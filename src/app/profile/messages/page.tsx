@@ -34,7 +34,7 @@ function SwipeToDelete({
   const startOffset = useRef(0);
 
   return (
-    <div className="relative overflow-hidden rounded-[8px]">
+    <div className="relative overflow-hidden rounded-card">
       <div className="absolute inset-y-0 right-0 flex items-center justify-center" style={{ width: DELETE_WIDTH }}>
         <button
           type="button"
@@ -168,7 +168,7 @@ export default function MessagesPage() {
               <button
                 type="button"
                 onClick={() => markRead(message.id)}
-                className="w-full rounded-[8px] bg-hf-tan p-4 text-left"
+                className="w-full bg-hf-tan p-4 text-left rounded-card"
               >
                 <div className="flex items-start justify-between gap-2">
                   <p className="hf-type-body">{message.subject}</p>

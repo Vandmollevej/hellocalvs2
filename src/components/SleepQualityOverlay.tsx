@@ -100,7 +100,7 @@ function SleepQualityBody({ onRate }: { onRate: (rating: number) => void }) {
               rating: String(rating),
             })}
             aria-pressed={selected === rating}
-            className={`flex size-16 items-center justify-center rounded-full text-4xl font-semibold no-underline transition-colors duration-200 ${
+            className={`hf-type-hero hf-type-strong flex size-16 items-center justify-center rounded-full no-underline transition-colors duration-200 ${
               selected === rating ? "bg-hf-green text-white" : "text-hf-black"
             }`}
           >

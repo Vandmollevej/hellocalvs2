@@ -25,7 +25,7 @@ const numberFormat = new Intl.NumberFormat("da-DK");
 
 function StatCard({ href, label, value, note }: { href: string; label: string; value: string; note: string }) {
   return (
-    <Link href={href} className="flex flex-col hf-surface p-4 hover:border-hf-green">
+    <Link href={href} className="hover:border-hf-green hf-panel">
       <p className="hf-type-body text-text-secondary">{label}</p>
       <p className="hf-type-hero mt-1 text-hf-green-dark">{value}</p>
       <p className="hf-type-small mt-auto pt-2 text-text-muted">{note}</p>
@@ -206,7 +206,7 @@ function ListView({ rows, columns, filters }: { rows: ProductDatabaseRow[]; colu
 function DetailsView({ rows, filters }: { rows: ProductDatabaseRow[]; filters: Filters }) {
   const cols = "lg:grid-cols-[minmax(0,2.2fr)_minmax(0,1fr)_minmax(0,1.2fr)_minmax(0,1fr)_minmax(0,1fr)_72px_72px_96px_96px]";
   return (
-    <div className="overflow-hidden rounded-lg border border-hf-tan-dark bg-hf-white">
+    <div className="overflow-hidden hf-surface">
       <div className={`hf-type-small hidden gap-4 border-b border-hf-tan-dark px-4 py-2 text-text-secondary lg:grid ${cols}`}>
         <span>Vare</span>
         <BrandHeader filters={filters} />

@@ -84,16 +84,16 @@ export function AdminNav({
       <div className="mx-auto flex max-w-4xl flex-wrap items-center gap-x-6 gap-y-2 px-4 py-3 sm:px-6">
         <span className="flex items-center gap-2">
           <Image src="/hello-cal-logo.png" alt="Hello Cal" width={110} height={49} priority />
-          <span className="text-sm font-semibold text-hf-green-dark">Admin</span>
+          <span className="text-hf-green-dark hf-type-body hf-type-strong">Admin</span>
         </span>
-        <nav className="flex flex-1 flex-wrap gap-4 text-sm">
+        <nav className="flex flex-1 flex-wrap gap-4 hf-type-body">
           {LINK_DEFS.map((link) => (
             <Link
               key={link.href}
               href={link.href}
               className={
                 pathname === link.href
-                  ? "font-medium text-hf-green-dark"
+                  ? "hf-type-strong text-hf-green-dark"
                   : "text-text-secondary hover:text-text-primary"
               }
             >
@@ -110,7 +110,7 @@ export function AdminNav({
             </Link>
           ))}
         </nav>
-        <div className="flex items-center gap-3 text-xs text-text-muted">
+        <div className="flex items-center gap-3 text-text-muted hf-type-small">
           <div className="flex overflow-hidden rounded-md border border-border-strong">
             {(["DA", "EN"] as const).map((option) => (
               <button

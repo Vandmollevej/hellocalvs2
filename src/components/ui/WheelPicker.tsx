@@ -105,9 +105,9 @@ export function WheelPicker({
               <div
                 ref={scrollRef}
                 className="relative z-10 h-[200px] snap-y snap-mandatory overflow-y-auto overscroll-contain"
-                style={{ scrollPaddingTop: 80, scrollPaddingBottom: 80 }}
+                style={{ scrollPaddingTop: ITEM_HEIGHT * 2, scrollPaddingBottom: ITEM_HEIGHT * 2 }}
               >
-                <div style={{ height: 80 }} />
+                <div style={{ height: ITEM_HEIGHT * 2 }} />
                 {options.map((option) => (
                   <div
                     key={option}
@@ -119,7 +119,7 @@ export function WheelPicker({
                     {unit ? ` ${unit}` : ""}
                   </div>
                 ))}
-                <div style={{ height: 80 }} />
+                <div style={{ height: ITEM_HEIGHT * 2 }} />
               </div>
             </div>
           </div>

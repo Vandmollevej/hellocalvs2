@@ -237,7 +237,7 @@ export function BrandLogoUploader({ canEdit }: { canEdit: boolean }) {
       </div>
 
       {run && (
-        <section className="hf-surface flex flex-col gap-3 p-4" aria-live="polite">
+        <section className="hf-panel" aria-live="polite">
           <div className="flex flex-wrap items-baseline justify-between gap-2">
             <h2 className="hf-type-card-title text-hf-black">
               {run.startedAt ? `Upload ${formatTimestamp(run.startedAt)}` : "Upload"}

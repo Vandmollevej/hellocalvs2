@@ -31,6 +31,11 @@ Last updated: 2026-10-07
 
 - Se DECISIONS 2026-10-07. Migration `20261007140000_weigh_reminders` skal med deployet; fredags-flowet er en deaktiveret kladde (aktiveres i admin → Flows).
 - Lint/typecheck grønne; ikke visuelt testet. Mangler: VAPID-nøgler for at push virker.
+## 2026-10-07: CSS-arkitektur samlet — tokens, fælles klasser, lint
+
+- Gennemgang af al styling: ét tokensæt i `globals.css` med 1:1 Tailwind-utilities (`bg-hf-card`, `border-hf-line` …), alle `:root`-blokke samlet, klonede flader/knapper erstattet af `.hf-panel`/`.hf-card*`/`.hf-btn-brand`, statiske inline-styles og rå `text-sm`/`font-semibold` fjernet i app og admin, hex-farver → tokens. Webvisning og telefon deler alle klasser (kun `.web-shell`-overstyringer i CSS). Se design.md §13 og DECISIONS 2026-10-07.
+- Ny ESLint-regel "design-tokens" fejler på hex, statiske token-styles og rå tekststørrelser (undtagelser: Designmanual, PhonePreviewEditor, HfAccessSheet; marketing-sitet må bruge Tailwinds typeskala).
+- Ikke visuelt testet i browser (brugerens regel). Bevidste små normaliseringer: 12 px-radier → 8 px, panel-gap 12 → 8 px, én Face ID-blå.
 
 ## 2026-10-07: Nøgleord på produktsiden — typer og grupper
 

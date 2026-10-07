@@ -135,7 +135,7 @@ export default function EditHelloDocUserPage() {
             type="button"
             onClick={saveChanges}
             disabled={saving || !name.trim() || !email.trim()}
-            className="hf-control hf-btn-primary w-full disabled:opacity-40"
+            className="hf-control hf-btn-primary w-full"
           >
             {saving ? t("helloDoc.sending") : t("helloDoc.saveChanges")}
           </button>
@@ -150,8 +150,7 @@ export default function EditHelloDocUserPage() {
           <button
             type="button"
             onClick={revoke}
-            className="hf-control hf-type-button w-full rounded-[8px] border text-hf-red-dark"
-            style={{ borderColor: "var(--hf-color-danger)" }}
+            className="hf-control hf-type-button w-full border text-hf-red-dark border-hf-danger rounded-card"
           >
             {t("helloDoc.revoke")}
           </button>
@@ -160,7 +159,7 @@ export default function EditHelloDocUserPage() {
             type="button"
             onClick={renew}
             disabled={renewing}
-            className="hf-control hf-btn-primary w-full disabled:opacity-40"
+            className="hf-control hf-btn-primary w-full"
           >
             {renewing ? t("helloDoc.renewing") : t("helloDoc.renew")}
           </button>

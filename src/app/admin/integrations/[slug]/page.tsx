@@ -65,13 +65,13 @@ const SECTIONS = [
 
 function PeopleTable({ rows, detailHead, empty }: { rows: PersonRow[]; detailHead?: string; empty: string }) {
   return (
-    <div className="overflow-x-auto rounded-lg border border-border-strong bg-surface-1">
-      <table className="w-full text-sm">
+    <div className="overflow-x-auto hf-surface">
+      <table className="w-full hf-type-body">
         <thead>
-          <tr className="border-b border-border-strong bg-surface-2 text-left text-xs text-text-secondary">
-            <th className="px-3 py-2 font-medium">Bruger</th>
-            <th className="px-3 py-2 font-medium">Tidspunkt</th>
-            {detailHead && <th className="px-3 py-2 font-medium">{detailHead}</th>}
+          <tr className="border-b border-border-strong bg-surface-2 text-left text-text-secondary hf-type-small">
+            <th className="px-3 py-2 hf-type-strong">Bruger</th>
+            <th className="px-3 py-2 hf-type-strong">Tidspunkt</th>
+            {detailHead && <th className="px-3 py-2 hf-type-strong">{detailHead}</th>}
           </tr>
         </thead>
         <tbody>
@@ -100,12 +100,12 @@ function ShareBars({ rows, countOnly = false }: { rows: { label: string; on: num
   return (
     <ul className="flex flex-col gap-2">
       {rows.map((row) => (
-        <li key={row.label} className="flex items-center gap-3 text-sm">
+        <li key={row.label} className="flex items-center gap-3 hf-type-body">
           <span className="w-56 shrink-0 text-text-primary">{row.label}</span>
           <span className="h-2 flex-1 overflow-hidden rounded-full bg-surface-1" aria-hidden>
             <span className="block h-full rounded-full" style={{ width: `${row.of ? (row.on / row.of) * 100 : 0}%`, background: C.green }} />
           </span>
-          <span className="w-28 shrink-0 text-right text-xs tabular-nums text-text-secondary">
+          <span className="w-28 shrink-0 text-right tabular-nums text-text-secondary hf-type-small">
             {countOnly ? num.format(row.on) : `${num.format(row.on)} af ${num.format(row.of)} (${pct(row.on, row.of)})`}
           </span>
         </li>
@@ -140,24 +140,24 @@ export default async function AdminIntegrationDetailPage({
   return (
     <div className="flex flex-col gap-8">
       <div className="flex flex-col gap-3">
-        <Link href={`/admin/integrations?preset=${filter.preset}`} className="text-sm text-text-secondary underline hover:text-text-primary">
+        <Link href={`/admin/integrations?preset=${filter.preset}`} className="text-text-secondary underline hover:text-text-primary hf-type-body">
           ← Alle integrationer
         </Link>
         <div className="flex flex-wrap items-center gap-3">
           <IntegrationIcon src={d.meta.icon} size={44} />
           <div className="flex flex-col gap-1">
             <div className="flex flex-wrap items-center gap-2">
-              <h1 className="text-lg font-semibold text-text-primary">{d.meta.label}</h1>
+              <h1 className="text-text-primary hf-type-title hf-type-strong">{d.meta.label}</h1>
               <KindBadge kind={d.meta.kind} configured={d.configured} />
             </div>
-            <p className="text-sm text-text-secondary">{d.meta.description}</p>
+            <p className="text-text-secondary hf-type-body">{d.meta.description}</p>
           </div>
         </div>
-        <p className="text-sm text-text-secondary">
+        <p className="text-text-secondary hf-type-body">
           {d.range.label}: {d.range.fromDay} – {d.range.toDay} · procenter sammenlignes med en lige så lang periode lige før.
         </p>
         <PeriodPicker basePath={`/admin/integrations/${slug}`} active={filter.preset} />
-        <nav className="flex flex-wrap gap-x-4 gap-y-1 text-sm">
+        <nav className="flex flex-wrap gap-x-4 gap-y-1 hf-type-body">
           {SECTIONS.map((section) => (
             <a key={section.id} href={`#${section.id}`} className="text-text-secondary underline hover:text-text-primary">
               {section.label}
@@ -271,7 +271,7 @@ export default async function AdminIntegrationDetailPage({
       <Section id="data" title="Data og valg">
         <Card title="Data gemt fra integrationen (alle tider)">
           {d.dataStored.length === 0 ? (
-            <p className="text-sm text-text-muted">Ingen data gemt endnu.</p>
+            <p className="text-text-muted hf-type-body">Ingen data gemt endnu.</p>
           ) : (
             <ShareBars
               rows={d.dataStored.map((row) => ({ label: row.label, on: row.count, of: d.dataStored[0].count }))}

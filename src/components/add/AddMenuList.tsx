@@ -249,7 +249,7 @@ export function AddMenuList({ date, time }: { date?: string | null; time?: strin
                 onPointerCancel={clearPress}
                 onContextMenu={(event) => event.preventDefault()}
                 onClick={handleClick}
-                className={`relative flex flex-col items-center gap-1 rounded-[8px] border p-2 text-center ${
+                className={`rounded-card relative flex flex-col items-center gap-1 border p-2 text-center ${
                   editMode ? (placeholder ? "border-dashed border-hf-gray-dark" : "border-hf-tan-dark") : "border-transparent"
                 } ${editMode && !placeholder ? "hf-nav-jiggle" : ""} ${editMode ? "touch-none" : ""}`}
               >
@@ -318,7 +318,7 @@ export function AddMenuList({ date, time }: { date?: string | null; time?: strin
                       type="button"
                       onClick={() => restoreTile(key)}
                       aria-label={t("addMenu.editAddTile", { item: label })}
-                      className="flex flex-col items-center gap-1 rounded-[8px] p-2 text-center"
+                      className="flex flex-col items-center gap-1 p-2 text-center rounded-card"
                     >
                       <Image
                         src={tile.icon}

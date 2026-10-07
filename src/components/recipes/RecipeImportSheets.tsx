@@ -78,7 +78,7 @@ export function PasteTextSheet({ onClose, onResult }: { onClose: () => void; onR
           type="button"
           onClick={insert}
           disabled={working || !text.trim()}
-          className="hf-control hf-btn-primary w-full disabled:opacity-60"
+          className="hf-control hf-btn-primary w-full"
         >
           {working ? t("createDish.pasteWorking") : t("createDish.pasteInsert")}
         </button>
@@ -97,7 +97,7 @@ export function PasteTextSheet({ onClose, onResult }: { onClose: () => void; onR
               placeholder={t("createDish.pastePlaceholder")}
               rows={12}
               autoFocus
-              className="hf-type-body w-full rounded-2xl bg-hf-tan p-4 text-hf-black outline-none"
+              className="hf-type-body w-full text-hf-black outline-none hf-card"
             />
             <input
               value={sourceUrl}
@@ -177,7 +177,7 @@ export function ScanSheet({ onClose, onResult }: { onClose: () => void; onResult
           type="button"
           onClick={finish}
           disabled={working || pages.length === 0}
-          className="hf-control hf-btn-primary w-full disabled:opacity-60"
+          className="hf-control hf-btn-primary w-full"
         >
           {working ? t("createDish.scanWorking") : t("createDish.scanFinish")}
         </button>

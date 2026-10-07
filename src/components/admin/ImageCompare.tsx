@@ -12,8 +12,9 @@ import { ROLE_LABEL, targetsLabel, type ProductImageUploadItem } from "@/lib/pro
 // Grå tern som baggrund på selve billedet (ikke på rammen), så ternene kun ses
 // bag billedet og ikke i den tomme plads omkring det.
 export const CHECKER_STYLE: CSSProperties = {
-  backgroundColor: "#ffffff",
-  backgroundImage: "conic-gradient(#d4d4d4 25%, #ffffff 0 50%, #d4d4d4 0 75%, #ffffff 0)",
+  backgroundColor: "var(--hf-color-white)",
+  backgroundImage:
+    "conic-gradient(var(--hf-color-nav) 25%, var(--hf-color-white) 0 50%, var(--hf-color-nav) 0 75%, var(--hf-color-white) 0)",
   backgroundSize: "20px 20px",
 };
 

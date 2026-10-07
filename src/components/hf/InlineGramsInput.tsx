@@ -40,9 +40,9 @@ export function InlineGramsInput({
           onKeyDown={(event) => {
             if (event.key === "Enter") event.currentTarget.blur();
           }}
-          className="w-12 bg-transparent text-right font-semibold text-hf-black outline-none"
+          className="w-12 bg-transparent text-right text-hf-black outline-none hf-type-strong"
         />
-        <span className="font-semibold text-hf-black">g</span>
+        <span className="text-hf-black hf-type-strong">g</span>
       </span>
     );
   }

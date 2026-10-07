@@ -76,7 +76,7 @@ export default function FavoritesPage() {
         ) : products.length === 0 ? (
           <p className="hf-type-body text-text-secondary px-1 text-center">{t("favorites.foodsEmpty")}</p>
         ) : (
-          <div className="overflow-hidden rounded-[8px] bg-hf-tan">
+          <div className="overflow-hidden bg-hf-tan rounded-card">
             {products.map((product) => (
               <ProductResultRow
                 key={product.id}

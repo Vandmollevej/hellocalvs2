@@ -339,7 +339,7 @@ function FamilyPageContent() {
 
           <section>
             <h2 className="hf-type-section-title">{t("family.members.title", { count: members.length, max: capacity })}</h2>
-            <div className="overflow-hidden rounded-[8px] bg-hf-tan">
+            <div className="overflow-hidden bg-hf-tan rounded-card">
               {members.map((member: FamilyMemberInfo) => (
                 <div key={member.userId} className="border-b border-hf-tan-dark px-4 py-2 last:border-b-0">
                   <div className="flex items-center gap-4">
@@ -435,7 +435,7 @@ function FamilyPageContent() {
                         alt={t("family.pending.qrAlt", { email: pending.email })}
                         width={240}
                         height={240}
-                        className="userback-ignore userback-block mx-auto rounded-[8px] bg-hf-white"
+                        className="userback-ignore userback-block mx-auto bg-hf-white rounded-card"
                       />
                       <p className="userback-ignore userback-block hf-type-body-lg hf-type-strong text-center tracking-widest">{pending.code}</p>
                       <p className="hf-type-caption">
@@ -510,7 +510,7 @@ function FamilyPageContent() {
                     <select
                       value={form.sex}
                       onChange={(event) => setForm({ ...form, sex: event.target.value })}
-                      className="hf-type-input h-12 rounded-[8px] border border-hf-gray-border bg-hf-cream px-4"
+                      className="hf-type-input h-12 border border-hf-gray-border bg-hf-cream px-4 rounded-card"
                     >
                       <option value="">{t("family.add.sexUnknown")}</option>
                       <option value="FEMALE">{t("family.add.sexFemale")}</option>

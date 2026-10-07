@@ -34,8 +34,9 @@ import {
 } from "@/lib/navigation";
 
 const ICON_SIZE = 24;
-const NAV_ACTIVE_COLOR = "#232323";
-const NAV_INACTIVE_COLOR = "#656565";
+// Aktiv/inaktiv fane: tekstfarven og den sekundære grå (tokens i globals.css).
+const NAV_ACTIVE_COLOR = "var(--hf-color-action)";
+const NAV_INACTIVE_COLOR = "var(--hf-color-text-secondary)";
 const PANEL_ICON_SIZE = 24;
 const STORAGE_KEY = BOTTOM_NAV_STORAGE_KEY;
 const LONG_PRESS_MS = 550;
@@ -733,16 +734,14 @@ export function BottomNav() {
 
           <div className="mb-2 flex items-center justify-between">
             <span
-              className="hf-type-small hf-type-strong"
-              style={{ color: "var(--hf-black)", fontFamily: "var(--font-hf-body)" }}
+              className="hf-type-small hf-type-strong text-hf-action font-hf-body"
             >
               Træk et ikon ned i menuen
             </span>
             <button
               type="button"
               onClick={closePanel}
-              className="hf-type-small hf-type-strong"
-              style={{ color: "var(--hf-green)", fontFamily: "var(--font-hf-body)" }}
+              className="hf-type-small hf-type-strong text-hf-brand font-hf-body"
             >
               Færdig
             </button>
@@ -775,8 +774,7 @@ export function BottomNav() {
                   <span className={`flex flex-col items-center gap-1 ${isPlaceholder ? "invisible" : ""}`}>
                     {item.render("var(--hf-black)", PANEL_ICON_SIZE)}
                     <span
-                      className="hf-type-micro whitespace-nowrap text-center"
-                      style={{ color: "var(--hf-black)", fontFamily: "var(--font-hf-body)" }}
+                      className="hf-type-micro whitespace-nowrap text-center text-hf-action font-hf-body"
                     >
                       {t(`nav.${item.labelKey}`)}
                     </span>
@@ -786,8 +784,7 @@ export function BottomNav() {
             })}
             {visibleInactiveKeys.length === 0 && (
               <span
-                className="hf-type-small"
-                style={{ color: "var(--hf-gray-dark)", fontFamily: "var(--font-hf-body)" }}
+                className="hf-type-small text-hf-text-secondary font-hf-body"
               >
                 {t("nav.allIconsInUse")}
               </span>

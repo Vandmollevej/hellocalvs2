@@ -99,8 +99,8 @@ export function WeightEntryDetailsSheet({ id, onClose, onChanged }: { id: string
           </p>
         )}
         {detail?.source && (
-          <div className="flex items-center gap-3 rounded-[8px] bg-hf-tan px-4 py-3">
-            <IntegrationIcon icon={detail.source.icon} label={detail.source.label} size={32} className="rounded-[8px]" />
+          <div className="flex items-center gap-3 bg-hf-tan px-4 py-3 rounded-card">
+            <IntegrationIcon icon={detail.source.icon} label={detail.source.label} size={32} className="rounded-card" />
             <p className="hf-type-body hf-type-strong text-hf-black">{t("entrySheet.syncedFrom", { name: detail.source.label })}</p>
           </div>
         )}
@@ -116,7 +116,7 @@ export function WeightEntryDetailsSheet({ id, onClose, onChanged }: { id: string
         )}
 
         {metrics.length > 0 && (
-          <dl className="overflow-hidden rounded-[8px] bg-hf-tan">
+          <dl className="overflow-hidden bg-hf-tan rounded-card">
             {metrics.map((metric, index) => (
               <div
                 key={metric.type}

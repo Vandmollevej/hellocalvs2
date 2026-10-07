@@ -214,8 +214,7 @@ function HelpChatSheet({ onClose }: { onClose: () => void }) {
         placeholder={t("helpChat.placeholder")}
         aria-label={t("helpChat.placeholder")}
         disabled={loading}
-        className="hf-type-input max-h-32 min-h-12 flex-1 resize-none rounded-[8px] border bg-hf-white px-3 py-3 outline-none"
-        style={{ borderColor: "var(--hf-color-field-border)" }}
+        className="hf-type-input max-h-32 min-h-12 flex-1 resize-none border bg-hf-white px-3 py-3 outline-none border-hf-field-border rounded-card"
       />
       <button
         type="submit"
@@ -283,7 +282,7 @@ function HelpChatSheet({ onClose }: { onClose: () => void }) {
             {pending && <p className="hf-type-caption">{t("helpChat.thinking")}</p>}
 
             {offerHuman && (
-              <div className="flex flex-col gap-2 rounded-lg border border-hf-tan-dark bg-hf-white p-4">
+              <div className="hf-panel">
                 <p className="hf-type-body">{t("helpChat.offerHuman")}</p>
                 <button type="button" className="hf-btn-secondary h-12 w-full" onClick={() => setEscalating(true)}>
                   {t("helpChat.talkToHuman")}
@@ -292,7 +291,7 @@ function HelpChatSheet({ onClose }: { onClose: () => void }) {
             )}
 
             {escalating && !escalated && (
-              <div className="flex flex-col gap-3 rounded-lg border border-hf-tan-dark bg-hf-white p-4">
+              <div className="hf-panel">
                 <p className="hf-type-title">{t("helpChat.escalateTitle")}</p>
                 <p className="hf-type-body text-text-secondary">
                   {messages.length > 0 ? t("helpChat.escalateIntro") : t("helpChat.escalateIntroEmpty")}
@@ -304,8 +303,7 @@ function HelpChatSheet({ onClose }: { onClose: () => void }) {
                   maxLength={5000}
                   placeholder={t("helpChat.notePlaceholder")}
                   aria-label={t("helpChat.notePlaceholder")}
-                  className="hf-type-input resize-none rounded-[8px] border bg-hf-cream px-3 py-3 outline-none"
-                  style={{ borderColor: "var(--hf-color-field-border)" }}
+                  className="hf-type-input resize-none border bg-hf-cream px-3 py-3 outline-none border-hf-field-border rounded-card"
                 />
                 <button
                   type="button"

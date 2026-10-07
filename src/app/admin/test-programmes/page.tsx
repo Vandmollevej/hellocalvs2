@@ -44,7 +44,7 @@ export default async function AdminTestProgrammesPage() {
           const tester = byProvider.get(meta.provider);
           const connection = tester?.user.integrations.find((row) => row.provider === meta.provider);
           return (
-            <div key={meta.provider} className="rounded-lg border border-hf-tan-dark bg-hf-white p-4">
+            <div key={meta.provider} className="hf-panel">
               <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
                 <div className="flex min-w-0 flex-1 items-start gap-3">
                   {/* eslint-disable-next-line @next/next/no-img-element */}

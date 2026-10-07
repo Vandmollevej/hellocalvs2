@@ -1117,7 +1117,7 @@ function MonthPicker({
 }) {
   const { t } = useTranslation();
   return (
-    <div className="absolute left-1/2 top-12 z-40 w-[310px] max-w-[calc(100vw-2rem)] -translate-x-1/2 rounded-lg border border-hf-tan-dark bg-hf-white p-4 shadow-xl">
+    <div className="absolute left-1/2 top-12 z-40 w-[310px] max-w-[calc(100vw-2rem)] -translate-x-1/2 shadow-xl hf-panel">
       <div className="mb-2 flex items-center justify-between">
         <button type="button" aria-label={t("calendar.previousYearAriaLabel")} onClick={() => onYearChange(new Date(year - 1, month, 1))} className="hf-btn-icon hover:bg-hf-cream">
           <IconChevronLeft size={20} />
@@ -1251,7 +1251,7 @@ function MonthView({
                           />
                         ) : (
                           <span
-                            className="hf-type-strong absolute right-1 top-0.5 text-[15px] leading-none text-hf-red-muted"
+                            className="hf-type-strong absolute right-1 top-0.5 leading-none text-hf-red-muted hf-type-body"
                             aria-hidden="true"
                           >
                             ÷
@@ -1335,7 +1335,7 @@ function WeekView({
                   <IconCheck size={16} stroke={3} className="shrink-0 text-hf-green" aria-hidden="true" />
                 )}
                 <span
-                  className={`hf-type-body flex items-center gap-1.5 ${tooLow ? "hf-type-strong text-hf-warning" : logged ? "font-normal" : "font-normal text-text-muted"}`}
+                  className={`hf-type-body flex items-center gap-1.5 ${tooLow ? "hf-type-strong text-hf-warning" : logged ? "" : "text-text-muted"}`}
                 >
                   {!logged
                     ? t("calendar.noEntries")
@@ -1574,7 +1574,7 @@ function ListView({
                   <IconCheck size={16} stroke={3} className="shrink-0 text-hf-green" aria-hidden="true" />
                 )}
                 <span
-                  className={`hf-type-body flex items-center gap-1.5 ${tooLow ? "hf-type-strong text-hf-warning" : logged ? "font-normal" : "font-normal text-text-muted"}`}
+                  className={`hf-type-body flex items-center gap-1.5 ${tooLow ? "hf-type-strong text-hf-warning" : logged ? "" : "text-text-muted"}`}
                 >
                   {!logged
                     ? t("calendar.noEntries")
@@ -2927,8 +2927,7 @@ function HourEntriesOverlay({
   return (
     <div className="absolute inset-0 z-[60] flex flex-col bg-hf-cream" role="dialog" aria-modal="true">
       <div
-        className="relative flex items-center justify-center bg-hf-green px-4 pb-4 text-hf-white"
-        style={{ paddingTop: "max(16px, env(safe-area-inset-top, 0px))" }}
+        className="relative flex items-center justify-center bg-hf-green px-4 pb-4 text-hf-white hf-safe-top"
       >
         <button
           type="button"

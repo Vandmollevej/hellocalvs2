@@ -102,7 +102,7 @@ export function SavedViewsControls({ filters }: { filters: ProductDatabaseFilter
           setName(active?.name ?? "");
           setMenu(menu === "save" ? null : "save");
         }}
-        className="hf-type-body hf-type-strong rounded-md bg-hf-green-dark px-4 py-2.5 text-hf-white"
+        className="hf-btn-brand hf-btn--compact"
       >
         Gem visning
       </button>
@@ -127,7 +127,7 @@ export function SavedViewsControls({ filters }: { filters: ProductDatabaseFilter
             event.preventDefault();
             void save();
           }}
-          className="absolute right-0 top-full z-20 mt-2 flex w-80 max-w-[calc(100vw-2rem)] flex-col gap-3 rounded-lg border border-hf-tan-dark bg-hf-white p-4 shadow-lg"
+          className="absolute right-0 top-full z-20 mt-2 w-80 max-w-[calc(100vw-2rem)] shadow-lg hf-panel"
         >
           <label className="flex flex-col gap-1">
             <span className="hf-type-label text-text-secondary">Navn på visning</span>
@@ -147,7 +147,7 @@ export function SavedViewsControls({ filters }: { filters: ProductDatabaseFilter
           <button
             type="submit"
             disabled={!name.trim() || busy}
-            className="hf-type-body hf-type-strong rounded-md bg-hf-green-dark px-4 py-2.5 text-hf-white disabled:opacity-60"
+            className="hf-btn-brand hf-btn--compact"
           >
             {busy ? "Gemmer…" : "Gem"}
           </button>
@@ -155,7 +155,7 @@ export function SavedViewsControls({ filters }: { filters: ProductDatabaseFilter
       )}
 
       {menu === "views" && (
-        <div className="absolute right-0 top-full z-20 mt-2 w-72 max-w-[calc(100vw-2rem)] overflow-hidden rounded-lg border border-hf-tan-dark bg-hf-white shadow-lg">
+        <div className="absolute right-0 top-full z-20 mt-2 w-72 max-w-[calc(100vw-2rem)] overflow-hidden shadow-lg hf-surface">
           {views.length === 0 ? (
             <p className="hf-type-small px-4 py-3 text-text-muted">Ingen gemte visninger endnu.</p>
           ) : (

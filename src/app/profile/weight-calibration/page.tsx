@@ -226,7 +226,7 @@ export default function WeightCalibrationPage() {
   return (
     <HfScreen title={t("weightCalibration.title")}>
       <div className="hf-page hf-page--sections">
-        <div className="rounded-2xl bg-hf-tan px-4 py-4">
+        <div className="hf-card">
           <p className="hf-type-body text-hf-black">{t("weightCalibration.intro")}</p>
         </div>
 

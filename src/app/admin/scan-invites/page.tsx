@@ -37,7 +37,7 @@ export default async function ScanInvitesPage({ searchParams }: { searchParams: 
         </p>
       </div>
 
-      <form action={inviteWorker} className="flex flex-col gap-3 hf-surface p-4 sm:flex-row sm:items-end">
+      <form action={inviteWorker} className="sm:flex-row sm:items-end hf-panel">
         <label className="hf-type-body flex flex-1 flex-col gap-1">
           Navn
           <input name="name" required className="rounded border border-hf-tan-dark bg-page-bg px-3 py-2" />
@@ -87,7 +87,7 @@ export default async function ScanInvitesPage({ searchParams }: { searchParams: 
       </div>
 
       <section className="grid gap-4 sm:grid-cols-2">
-        <form action={updatePayRate} className="flex flex-col gap-2 hf-surface p-4">
+        <form action={updatePayRate} className="hf-panel">
           <h2 className="hf-type-body hf-type-strong">Sats pr. godkendt vare (alle medarbejdere)</h2>
           <p className="hf-type-small text-text-secondary">
             Nu: {formatKroner(rate)}. Ændringer gælder kun nye indsendelser — tidligere beløb er fastfrosset.
@@ -105,7 +105,7 @@ export default async function ScanInvitesPage({ searchParams }: { searchParams: 
           </div>
         </form>
 
-        <div className="flex flex-col gap-2 hf-surface p-4">
+        <div className="hf-panel">
           <h2 className="hf-type-body hf-type-strong">Afvisningsårsager</h2>
           {reasons.map((reason) => (
             <RejectionReasonRow key={reason.id} id={reason.id} label={reason.label} active={reason.active} />

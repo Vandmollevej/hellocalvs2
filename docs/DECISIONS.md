@@ -4597,3 +4597,26 @@ Det eneste, admin kan ændre på importerede retter, er "Deaktivér"/"Aktivér" 
 - Næring står kun i Valdemarsros Premium og beregnes derfor af os: ingredienser med vægt matches mod godkendte varer; kun hvis ≥ 70 % af linjerne kan regnes med, bruges tallene, ellers `nutritionMissing = true`.
 - Retter-søgningen: knappen "Valdemarsro" viser kun Valdemarsro-retter; rækken åbner produktsiden `/add/<id>` (tilføj + gram som på produkter), derunder grøn knap "Gå til opskrift" (ny side), derunder ingredienser og næring som sædvanlig. Admin → Retter → Valdemarsro viser nu rigtige data.
 
+## 2026-10-07: Én CSS-arkitektur — tokens, fælles klasser og lint-håndhævelse
+
+Brugerens krav: alt design skal kunne rettes ét sted, ingen hardcoding, ingen
+klip-klister mellem sider, og telefon/webvisning må ikke have hver sine klasser.
+
+- Alle `--hf-color-*`-tokens har nu en Tailwind-utility med samme navn
+  (`bg-hf-card`, `border-hf-line`, `text-hf-text-secondary` …) via
+  `@theme inline`; `rounded-card`/`rounded-sheet` er de to radier. Alle
+  `:root`-blokke er samlet i én øverst i `globals.css`.
+- 108 statiske `style={{ … var(--hf-color-…) }}` er blevet utilities; 63 døde
+  `disabled:opacity-*` på `.hf-btn-primary` fjernet; ~120 klonede fladestrenge
+  er `.hf-panel`/`.hf-surface`/`.hf-card(--brand/--form/--row)`; admins grønne
+  knap er `.hf-btn-brand`; ~160 rå `text-*`/`font-*` i app og admin er
+  `.hf-type-*`-roller; hex-farver uden for undtagelserne er tokens.
+- Webvisningens appbar-overstyring bruger navngivne klasser
+  (`.hf-appbar__center`, `.hf-appbar__profile`, `__slot-button`) i stedet for
+  `:nth-child`, `[href]` og Tailwind-klassenavne.
+- Marketing-sitet er en egen zone: Tailwinds typeskala, men appens farver og
+  fælles `.mk-*`-klasser (hero-gradient, CTA-pille, eyebrow).
+- ESLint ("design-tokens") håndhæver reglerne fremover. Se design.md §13.
+- Vælgerværktøj: codemoden kørte via TypeScript-AST, så kun `className`/`style`
+  blev ændret. Små bevidste visuelle normaliseringer: 12 px-radier → 8 px og
+  12 px-mellemrum i paneler → 8 px (design.md §5), to Face ID-blå → én.

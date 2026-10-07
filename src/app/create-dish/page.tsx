@@ -251,7 +251,7 @@ export default function CreateDishPage() {
           <button
             onClick={handleSave}
             disabled={saving || savedDish !== null}
-            className="hf-control hf-btn-primary w-full disabled:opacity-60"
+            className="hf-control hf-btn-primary w-full"
           >
             {saving ? t("createDish.saving") : t("createDish.saveDish")}
           </button>
@@ -394,7 +394,7 @@ export default function CreateDishPage() {
           </div>
 
           {query.trim() && (
-            <div className="mt-2 overflow-hidden rounded-[8px] bg-hf-tan">
+            <div className="mt-2 overflow-hidden bg-hf-tan rounded-card">
               {searchState === "loading" && (
                 <SkeletonScreen className="px-4">
                   <SkeletonMediaRows rows={4} />
@@ -514,7 +514,7 @@ export default function CreateDishPage() {
               type="button"
               disabled={sharing}
               onClick={() => void answerShare(true)}
-              className="hf-control hf-btn-primary w-full disabled:opacity-60"
+              className="hf-control hf-btn-primary w-full"
             >
               {t("createDish.shareYes")}
             </button>

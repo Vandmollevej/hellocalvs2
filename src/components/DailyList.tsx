@@ -185,7 +185,7 @@ export function DailyList() {
                 <FoodRow
                   image={entry.image}
                   overline={
-                    <p className="hf-type-small font-bold text-hf-black">
+                    <p className="hf-type-small text-hf-black hf-type-strong">
                       {t("dailyList.atTime", { time: formatTime(entry.createdAt) })}
                     </p>
                   }
@@ -222,7 +222,7 @@ export function DailyList() {
       )}
       </div>
       {notice && (
-        <p role="status" className="hf-type-body absolute inset-x-4 bottom-10 rounded-[8px] bg-hf-black px-4 py-2 text-center text-hf-white">
+        <p role="status" className="hf-type-body absolute inset-x-4 bottom-10 bg-hf-black px-4 py-2 text-center text-hf-white rounded-card">
           {notice}
         </p>
       )}
@@ -246,8 +246,7 @@ export function DailyList() {
         />
       )}
       <div
-        className="pointer-events-none absolute inset-x-0 bottom-0 h-9"
-        style={{ background: "linear-gradient(to bottom, transparent, var(--hf-cream))" }}
+        className="pointer-events-none absolute inset-x-0 bottom-0 h-9 hf-fade-bottom"
       />
     </div>
   );

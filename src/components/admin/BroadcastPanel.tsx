@@ -48,7 +48,7 @@ export function BroadcastPanel({ emailUsers, pushUsers }: { emailUsers: number; 
 
   return (
     <div className="rounded-xl border border-hf-tan-dark p-4">
-      <button type="button" onClick={() => setOpen(!open)} className="hf-type-body font-bold text-hf-black">
+      <button type="button" onClick={() => setOpen(!open)} className="hf-type-body text-hf-black hf-type-strong">
         {open ? "Luk" : "Send mail og push til alle brugere"}
       </button>
       {open && (
@@ -89,7 +89,7 @@ export function BroadcastPanel({ emailUsers, pushUsers }: { emailUsers: number; 
           <button
             type="submit"
             disabled={!canSend}
-            className="hf-type-body rounded-lg bg-hf-black px-4 py-2 font-bold text-white disabled:opacity-40"
+            className="hf-type-body rounded-lg bg-hf-black px-4 py-2 disabled:opacity-40 text-hf-white hf-type-strong"
           >
             {busy ? "Sender…" : "Send til alle"}
           </button>

@@ -30,7 +30,7 @@ function StatCard({
   return (
     <Link
       href={href}
-      className="group flex flex-col hf-surface p-4 hover:border-hf-green"
+      className="group hover:border-hf-green hf-panel"
     >
       <p className="hf-type-body text-text-secondary">{label}</p>
       <p className={`hf-type-hero mt-1 ${value > 0 ? "text-hf-green-dark" : "text-text-muted"}`}>{value}</p>
@@ -59,7 +59,7 @@ function Widget({
       <header className="flex items-center justify-between gap-3 border-b border-hf-tan-dark px-4 py-3">
         <h2 className="hf-type-body hf-type-strong text-hf-black">
           {title}
-          {count !== undefined && <span className="ml-1.5 font-normal text-text-muted">({count})</span>}
+          {count !== undefined && <span className="ml-1.5 text-text-muted">({count})</span>}
         </h2>
         <Link href={href} className="hf-type-small shrink-0 text-hf-green-dark hover:underline">
           Se alle →
@@ -364,7 +364,7 @@ export default async function AdminDashboardPage() {
           {missingApiKeys.length > 0 && (
             <p className="hf-type-small border-t border-border-strong px-4 py-3 text-text-muted">
               Mangler nøgle: {missingApiKeys.join(", ")}.{" "}
-              <Link href="/admin/api-keys" className="font-semibold text-hf-black underline">
+              <Link href="/admin/api-keys" className="text-hf-black underline hf-type-strong">
                 Indsæt nøglen under API-nøgler
               </Link>
             </p>

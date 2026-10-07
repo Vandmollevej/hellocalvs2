@@ -128,7 +128,7 @@ export default function WaterCreatePage() {
   return (
     <HfScreen title={t("waterLog.title")} icon={<IconWaterGlass size={20} stroke={2} />}>
       <div className="hf-page">
-        <div className="rounded-2xl bg-hf-green px-4 py-4 text-hf-white">
+        <div className="hf-card hf-card--brand">
           <p className="hf-type-small">{t("waterLog.intro")}</p>
         </div>
 
@@ -165,7 +165,7 @@ export default function WaterCreatePage() {
           })}
         </div>
 
-        <div className="flex flex-col gap-4 rounded-2xl bg-hf-tan p-4 lg:gap-5 lg:p-6">
+        <div className="lg:gap-5 lg:p-6 hf-card--form hf-card">
           <div className="flex items-baseline justify-between">
             <span className="hf-type-small hf-type-strong hf-water-amount__label text-hf-black">
               {t("waterLog.amountLabel")}
@@ -195,7 +195,7 @@ export default function WaterCreatePage() {
             type="button"
             onClick={handleSubmit}
             disabled={saving || amountMl <= 0}
-            className="hf-control hf-btn-primary disabled:opacity-40"
+            className="hf-control hf-btn-primary"
           >
             <span className="hf-type-button">{saving ? t("waterLog.saving") : t("waterLog.add")}</span>
           </button>

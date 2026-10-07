@@ -2087,3 +2087,67 @@ Efter en ændring:
 
 En ændring er ikke visuelt verificeret, hvis agenten kun har læst JSX/CSS,
 set en separat mock eller kigget på en ikke-genindlæst side.
+
+## 13. CSS-arkitektur og status (2026-10-07)
+
+Resultat af gennemgangen af al styling (1.300 TSX-filer, `globals.css` og de to
+undtagelsesfiler). Dette afsnit er den bindende beskrivelse af, hvordan CSS er
+sat op, og hvad der håndhæves automatisk.
+
+### 13.1 Tre zoner, ét tokensæt
+
+| Zone | Skal | Typeskala | Farver |
+| --- | --- | --- | --- |
+| Appen (telefon) | `AppFrame` → sider med `.hf-appbar`/`.hf-page`/bundnav | `.hf-type-*` (6 størrelser, 2 vægte) | tokens |
+| Webvisning (≥ 1024 px) | `AppFrame` → `WebShell` (`.hf-shell*`, delt med admin) | samme som appen; kun `.web-shell .hf-appbar*` justerer appbaren | tokens |
+| Admin + Hello Doc | `AdminShell`/`.hf-insight` (`.hf-shell*`, `.hf-panel`, `.hf-kpi`) | `.hf-type-*`; sidetitler 34 px (`.admin-main h1`) | tokens |
+| Marketing (`/`, `/business`, `/presse`, `/om-os`) | `MarketingShell` | Tailwinds typeskala (desktop-marketing) | tokens + `.mk-*` |
+
+Webvisning og telefon deler ALLE klasser. Den eneste forskel ligger i
+`globals.css` under `.web-shell …` (appbaren bliver lys sideoverskrift,
+bundnav skjules, søgesiden centreres) og i `useInWebShell()` (6 sider vælger
+anden navigation). Der findes ingen "mobil-klasse" og "web-klasse" for samme
+element.
+
+### 13.2 Tokens → utilities (1:1)
+
+Alle `--hf-color-*` i `:root` har en Tailwind-utility med samme navn via
+`@theme inline`: `bg-hf-card`, `border-hf-line`, `text-hf-text-secondary`,
+`bg-hf-brand`, `border-hf-field-border`, `bg-hf-overlay`, `text-hf-faceid` …
+Radius: `rounded-card` (8 px) og `rounded-sheet` (16 px) er de eneste to.
+Legacy-navnene (`hf-tan`, `hf-cream`, `hf-green` …) er aliaser for de samme
+tokens og må gerne stå i eksisterende kode, men ny kode bruger de kanoniske.
+
+### 13.3 Fælles klasser (må ikke genopfindes i TSX)
+
+- Flader: `.hf-card` (+ `--form`, `--brand`, `--outline`, `--row`), `.hf-surface`,
+  `.hf-panel` (+ `--form`), `.hf-kpi`, `.hf-chip`, `.hf-accordion*`.
+- Knapper: `.hf-btn-primary/-secondary/-danger/-brand/-text/-icon`, `.hf-choice`,
+  modifier `.hf-btn--compact`. Primærknappen er altid uigennemsigtig —
+  `disabled:opacity-*` på den er fjernet overalt (var død kode).
+- Felter: `.hf-field` (48 px) + `border-hf-field-border rounded-card`.
+- Skal: `.hf-appbar` (`__slot`, `__slot-button`, `__center`, `__title`, `__end`,
+  `__profile`), `.hf-shell*`, `.hf-navrow`, `.hf-crumbs`, `.hf-menu`.
+- Hjælpere: `.hf-safe-top`, `.hf-fade-bottom`, `.hf-glyph-lg/-md`,
+  `.hf-typing-dot`, `.hf-skeleton`, `.hf-bottom-sheet*`.
+- Marketing: `.mk-hero-bg` (+ `--vertical`), `.mk-btn` (+ `--brand/--dark/--light/--upper`),
+  `.mk-eyebrow`.
+
+### 13.4 Håndhævelse
+
+`eslint.config.mjs` ("design-tokens") fejler på: hex i `className`/`style`,
+statisk `style={{ …: "var(--hf-…)" }}`, og `text-sm`/`text-[Npx]`/`font-semibold`
+o.l. uden for marketing-zonen. Undtaget: admin → Designmanual (viser værdier),
+`PhonePreviewEditor` (iOS Mail-mock), `HfAccessSheet` (iOS-systemark).
+`recipe-view.css` og `HfAccessSheet.module.css` er de eneste CSS-filer ud over
+`globals.css` og er bevidste kopier af eksterne mål (DECISIONS 2026-09-27).
+
+### 13.5 Kendte, bevidste rester
+
+- Dynamiske inline-styles (bredder i %, transforms, animations-forsinkelser
+  pr. element, farver fra data i guide-builderen) er korrekte som inline.
+- `FaceIdAnimation` blander to farver numerisk pr. frame og har derfor hex
+  (samme værdier som `--hf-color-faceid*`). QR-koder (`StoreDownload`) kræver hex.
+- Kalenderens to `maxHeight: calc(100vh − N px)` er layoutmatematik.
+- Afsnit 9 ovenfor var det oprindelige forslag; det er nu implementeret i den
+  form, der står i `globals.css` (klassenavnene afviger på enkelte punkter).

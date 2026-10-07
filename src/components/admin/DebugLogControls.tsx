@@ -37,7 +37,7 @@ export function DebugLogControls({ enabled, total }: { enabled: boolean; total: 
   }
 
   return (
-    <div className="flex flex-col gap-2 hf-surface p-4 sm:flex-row sm:items-center sm:justify-between">
+    <div className="sm:flex-row sm:items-center sm:justify-between hf-panel">
       <div className="flex items-center gap-2">
         <span
           aria-hidden="true"

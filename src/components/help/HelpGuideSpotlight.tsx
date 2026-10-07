@@ -120,7 +120,7 @@ function GuideRun({ guide, onDone }: { guide: HelpGuide; onDone: () => void }) {
     <div className="pointer-events-none fixed inset-0 z-[2000]" role="dialog" aria-label={t("helpGuide.title")}>
       {shade && (
         <svg width={w} height={h} className="pointer-events-none absolute inset-0" aria-hidden="true">
-          <path d={shade} fill={SHADE} fillRule="evenodd" style={{ pointerEvents: "auto" }} />
+          <path className="pointer-events-auto" d={shade} fill={SHADE} fillRule="evenodd" />
         </svg>
       )}
       <div
@@ -129,7 +129,7 @@ function GuideRun({ guide, onDone }: { guide: HelpGuide; onDone: () => void }) {
       >
         <ol className="hf-type-body flex flex-wrap gap-x-4 gap-y-1">
           {guide.steps.map((s, i) => (
-            <li key={s.target} className={i === index ? "font-bold" : "text-text-secondary"}>
+            <li key={s.target} className={i === index ? "hf-type-strong" : "text-text-secondary"}>
               {i + 1}. {stepText(s)}
             </li>
           ))}

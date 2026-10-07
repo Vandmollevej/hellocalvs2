@@ -384,7 +384,7 @@ export function GuideBuilder({
   const previewTop = (
     <div
       className="flex shrink-0 justify-end px-4 pt-6"
-      style={backgroundById(screen.background ?? themeById(config.theme).background).dark ? ({ "--hf-black": "#FFFFFF" } as CSSProperties) : undefined}
+      style={backgroundById(screen.background ?? themeById(config.theme).background).dark ? ({ "--hf-black": "var(--hf-color-white)" } as CSSProperties) : undefined}
     >
       <OverlayCloseControl label={translate(lang, "guide.close")} counting={false} secondsLeft={0} onClose={() => undefined} />
     </div>
@@ -533,7 +533,7 @@ export function GuideBuilder({
                   onClick={() => insertElement({ type: "text", role: role.id }, "end")}
                   className={`${tileBase} cursor-grab justify-between disabled:cursor-not-allowed disabled:opacity-40`}
                 >
-                  <span className={`${role.className} truncate`} style={{ textAlign: "left" }}>
+                  <span className={`text-left ${role.className} truncate`}>
                     {role.label[uiLang]}
                   </span>
                   <span className="shrink-0 text-text-muted">{role.sample}</span>

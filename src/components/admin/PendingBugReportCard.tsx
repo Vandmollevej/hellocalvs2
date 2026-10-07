@@ -40,7 +40,7 @@ export function PendingBugReportCard({ report }: { report: BugReport }) {
   if (done) return null;
 
   return (
-    <div className="hf-surface p-4">
+    <div className="hf-panel">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <div className="min-w-0 flex-1">
           <p className="hf-type-small text-text-muted">
@@ -100,7 +100,7 @@ export function PendingBugReportCard({ report }: { report: BugReport }) {
             type="button"
             onClick={() => act("approve")}
             disabled={loading !== null}
-            className="hf-btn-primary px-3 py-1.5 disabled:opacity-60"
+            className="hf-btn-primary px-3 py-1.5"
           >
             {loading === "approve" ? "…" : report.source === "AI" ? "Godkend" : "Godkend (+10 points)"}
           </button>

@@ -54,7 +54,7 @@ export default function RegistrationPage() {
       {status === "loading" ? (
         <SkeletonScreen className="flex flex-col gap-4">
           <div className="flex justify-center p-4 pt-6">
-            <Skeleton type="image" width={190} height={190} style={{ borderRadius: "9999px" }} />
+            <Skeleton className="rounded-full" type="image" width={190} height={190} />
           </div>
           <div className="flex flex-col gap-4 px-4">
             <Skeleton type="page-title" width="70%" />

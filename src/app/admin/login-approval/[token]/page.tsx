@@ -19,7 +19,7 @@ export default async function LoginApprovalPage({ params }: { params: Promise<{ 
     <div className="mx-auto max-w-md p-6">
       <h1 className="hf-type-title text-hf-black">Godkend login</h1>
       <p className="hf-type-body mt-2 text-text-secondary">Der er forsøgt at logge ind på Hello Cal Admin fra:</p>
-      <dl className="hf-type-body mt-4 flex flex-col gap-1 hf-surface p-4">
+      <dl className="hf-type-body mt-4 gap-1 hf-panel">
         <div>
           <dt className="hf-type-small text-text-muted">Udstyr</dt>
           <dd>{approval.deviceLabel}</dd>

@@ -53,7 +53,7 @@ export function WeightSyncStatus({ onSynced }: { onSynced?: () => void }) {
     <div className="flex flex-col gap-2">
       {items.map((item) => (
         <div key={item.provider} className="hf-card flex items-center gap-3 px-4 py-3">
-          <IntegrationIcon icon={item.icon} label={item.label} size={32} className="rounded-[8px]" />
+          <IntegrationIcon icon={item.icon} label={item.label} size={32} className="rounded-card" />
           <div className="min-w-0 flex-1">
             <p className="hf-type-body hf-type-strong text-hf-black">{item.label}</p>
             <p className={`hf-type-small ${item.stale ? "text-hf-red-dark" : "text-text-secondary"}`}>

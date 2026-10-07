@@ -52,7 +52,7 @@ export default function WeighRemindersPage() {
           {REMINDER_HOURS.map((hour) => {
             const on = hours.includes(hour);
             return (
-              <li key={hour} className="hf-control-row flex items-center justify-between rounded-lg border border-hf-tan-dark bg-hf-white pl-4 pr-3">
+              <li key={hour} className="hf-control-row flex items-center justify-between pl-4 pr-3 hf-surface">
                 <span className="hf-type-body text-hf-black">
                   {String(hour).padStart(2, "0")}:00
                   <span className="ml-2 hf-type-small text-text-muted">påmindelse {String(hour - 1).padStart(2, "0")}:55</span>

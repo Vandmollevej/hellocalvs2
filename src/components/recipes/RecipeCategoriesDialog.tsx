@@ -86,7 +86,7 @@ export function RecipeCategoriesDialog({
             type="button"
             onClick={close}
             disabled={busy}
-            className="hf-control hf-btn-primary w-full disabled:opacity-60"
+            className="hf-control hf-btn-primary w-full"
           >
             {t("recipeCategories.close")}
           </button>

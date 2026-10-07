@@ -112,7 +112,7 @@ export function BusinessContactForm({ initialTopic }: { initialTopic?: BusinessT
       <button
         type="submit"
         disabled={state === "sending"}
-        className="self-start rounded-full bg-hf-green px-8 py-3 text-sm font-semibold text-hf-white transition hover:bg-hf-green-dark disabled:opacity-50"
+        className="self-start disabled:opacity-50 mk-btn mk-btn--brand"
       >
         {state === "sending" ? "Sender …" : "Send henvendelse"}
       </button>

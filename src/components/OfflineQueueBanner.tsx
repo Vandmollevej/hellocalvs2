@@ -39,12 +39,8 @@ export function OfflineQueueBanner() {
 
   return (
     <div
-      className="hf-type-caption pointer-events-none fixed inset-x-0 top-0 z-50 flex justify-center px-4 py-1 text-center"
-      style={{
-        paddingTop: "max(4px, env(safe-area-inset-top))",
-        background: "var(--hf-color-brand)",
-        color: "var(--hf-color-white)",
-      }}
+      className="hf-type-caption pointer-events-none fixed inset-x-0 top-0 z-50 flex justify-center bg-hf-brand px-4 py-1 text-center text-hf-white"
+      style={{ paddingTop: "max(4px, env(safe-area-inset-top))" }}
     >
       {online ? queueText : queueText ? `${t("offline.banner")} · ${queueText}` : t("offline.banner")}
     </div>

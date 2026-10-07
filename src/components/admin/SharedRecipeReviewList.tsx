@@ -140,7 +140,7 @@ export function SharedRecipeReviewList({ rows, locale }: { rows: SharedRecipeRev
                 value={reason}
                 onChange={(event) => setReason(event.target.value)}
                 rows={3}
-                className="hf-type-body mt-1 w-full rounded-lg border border-hf-tan-dark bg-hf-white p-2 text-hf-black"
+                className="hf-type-body mt-1 w-full p-2 text-hf-black hf-surface"
               />
               <div className="hf-type-small hf-type-strong mt-2 flex gap-4">
                 <button

@@ -166,7 +166,7 @@ function StaleSyncSheet({
               type="button"
               disabled={busy}
               onClick={() => void syncNow()}
-              className="hf-btn-primary h-12 w-full px-4 disabled:opacity-40"
+              className="hf-btn-primary h-12 w-full px-4"
             >
               {busy ? t("weighIn.sync.syncing") : t("weighIn.sync.now")}
             </button>
@@ -178,8 +178,8 @@ function StaleSyncSheet({
       }
     >
       <div className="flex flex-col gap-4 px-4">
-        <div className="flex items-center gap-3 rounded-[8px] bg-hf-tan px-4 py-3">
-          <IntegrationIcon icon={first.icon} label={first.label} size={32} className="rounded-[8px]" />
+        <div className="flex items-center gap-3 bg-hf-tan px-4 py-3 rounded-card">
+          <IntegrationIcon icon={first.icon} label={first.label} size={32} className="rounded-card" />
           <p className="hf-type-body text-hf-black">
             {when
               ? t("weighIn.stale.body", { name: first.label, ago: when })
@@ -272,7 +272,7 @@ function PendingWeighInSheet({
             type="button"
             disabled={saving || !choices[entry.id]}
             onClick={() => void save()}
-            className="hf-btn-primary h-12 w-full px-4 disabled:opacity-40"
+            className="hf-btn-primary h-12 w-full px-4"
           >
             {saving ? t("weighIn.saving") : t("weighIn.save")}
           </button>

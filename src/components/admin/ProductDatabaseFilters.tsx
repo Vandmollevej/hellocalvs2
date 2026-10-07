@@ -139,7 +139,7 @@ export function ProductDatabaseFilters({
 
   return (
     <div aria-busy={pending} className="flex flex-col gap-4">
-      <section className="flex flex-col gap-3 hf-surface p-4">
+      <section className="hf-panel">
         <h2 className="hf-type-body hf-type-strong text-hf-black">Visning</h2>
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
           <FilterDropdown
@@ -182,7 +182,7 @@ export function ProductDatabaseFilters({
         </div>
       </section>
 
-      <section className="flex flex-col gap-4 hf-surface p-4">
+      <section className="hf-panel hf-panel--form">
       <div className="flex flex-col gap-3 md:flex-row md:items-end">
         <label className="flex min-w-0 flex-1 flex-col gap-1">
           <span className="hf-type-label text-text-secondary">Søg</span>

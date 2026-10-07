@@ -125,7 +125,7 @@ export function NewFlowForm() {
         event.preventDefault();
         if (name.trim()) void create();
       }}
-      className="flex flex-col gap-3 hf-surface p-4 sm:flex-row sm:items-center"
+      className="sm:flex-row sm:items-center hf-panel"
     >
       <input
         value={name}

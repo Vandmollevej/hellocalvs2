@@ -47,7 +47,7 @@ export default async function ENumberDetailPage({ params }: Props) {
 
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <section className="rounded-2xl bg-hf-tan p-4">
+    <section className="hf-card">
       <h2 className="hf-type-small text-text-secondary hf-heading uppercase">{title}</h2>
       <div className="hf-type-body mt-1 text-hf-black">{children}</div>
     </section>

@@ -719,7 +719,7 @@ export function AddProductView({
             <button
               onClick={forDish ? handleAddToDish : handleAdd}
               disabled={saving}
-              className="hf-control hf-btn-primary w-full disabled:opacity-60"
+              className="hf-control hf-btn-primary w-full"
             >
               {forDish
                 ? t("addProduct.addToDish")
@@ -737,7 +737,7 @@ export function AddProductView({
     >
       <div className="flex h-full flex-col overflow-y-auto">
         {(state.status === "not_found" || state.status === "error") && (
-          <div className="m-4 rounded-2xl bg-hf-tan p-4 text-center">
+          <div className="m-4 text-center hf-card">
             <p className="hf-type-body text-text-secondary">
               {state.status === "not_found"
                 ? t("addProduct.notFound")
@@ -876,7 +876,7 @@ export function AddProductView({
               <button
                 type="button"
                 onClick={scrollToDetails}
-                className="hf-btn-text mt-[14px] mb-4 flex items-center gap-1 self-center font-normal text-hf-black"
+                className="hf-btn-text mt-[14px] mb-4 flex items-center gap-1 self-center text-hf-black"
               >
                 {t("addProduct.details")}
                 <IconChevronDown size={15} />
@@ -922,7 +922,7 @@ export function AddProductView({
                 <button
                   type="button"
                   onClick={() => setAmount((a) => Math.max(step, a - step))}
-                  className="h-11 w-11 text-[34px] font-bold leading-none text-hf-black"
+                  className="h-11 w-11 text-hf-black hf-glyph-lg"
                 >
                   −
                 </button>
@@ -968,7 +968,7 @@ export function AddProductView({
                 <button
                   type="button"
                   onClick={() => setAmount((a) => a + step)}
-                  className="h-11 w-11 text-[34px] font-bold leading-none text-hf-black"
+                  className="h-11 w-11 text-hf-black hf-glyph-lg"
                 >
                   +
                 </button>
@@ -1008,12 +1008,12 @@ export function AddProductView({
               {profile?.showAdditives && !!view.additives?.length && (
                 <section
                   aria-labelledby="product-additives-heading"
-                  className="rounded-2xl border-2 border-hf-green bg-hf-tan p-4"
+                  className="border-2 border-hf-green hf-card"
                 >
                   <div className="mb-3 flex items-center gap-3">
                     <span
                       aria-hidden
-                      className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-hf-green text-[30px] font-bold leading-none text-hf-white"
+                      className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-hf-green text-hf-white hf-glyph-md"
                     >
                       E
                     </span>
@@ -1084,7 +1084,7 @@ export function AddProductView({
                           <Skeleton type="body-sm" width={width} height={18} />
                           <Skeleton type="body" width={44} height={20} />
                         </div>
-                        <Skeleton type="row" height={8} className="my-1.5" style={{ borderRadius: 4 }} />
+                        <Skeleton type="row" height={8} className="my-1.5 rounded-sm" />
                       </div>
                     ))}
                   </div>

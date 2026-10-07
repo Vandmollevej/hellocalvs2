@@ -24,7 +24,7 @@ export default async function AdminWeightAttirePage() {
           standardreglen: undertøj før det valgte klokkeslæt, ellers tøj med mobil i lommen.
         </p>
       </div>
-      <form action={saveWeightAttireSettings} className="hf-surface flex max-w-xl flex-col gap-4 p-4">
+      <form action={saveWeightAttireSettings} className="max-w-xl hf-panel hf-panel--form">
         <label className="flex items-center gap-3">
           <input type="checkbox" name="enabled" defaultChecked={s.enabled} className="size-5" />
           <span className="hf-type-body">Algoritmen er slået til (ellers bruges kun standardreglen)</span>

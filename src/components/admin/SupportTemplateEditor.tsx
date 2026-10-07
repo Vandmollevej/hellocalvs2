@@ -27,16 +27,16 @@ export function SupportTemplateEditor({ templates }: { templates: Template[] }) 
 function SupportThreadPreview({ body }: { body: string }) {
   return (
     <div className="flex min-h-0 flex-1 flex-col bg-hf-cream text-hf-black">
-      <div className="-mt-[54px] flex h-[108px] shrink-0 items-end justify-center pb-3" style={{ background: "var(--hf-color-appbar)" }}>
-        <p className="text-[20px] font-bold leading-6 text-hf-white">Appen lukker ned</p>
+      <div className="-mt-[54px] flex h-[108px] shrink-0 items-end justify-center pb-3 bg-hf-brand">
+        <p className="leading-6 text-hf-white hf-type-page-title hf-type-strong">Appen lukker ned</p>
       </div>
       <div className="flex min-h-0 flex-1 flex-col gap-3 overflow-y-auto p-4">
         <p className="hf-type-caption opacity-60">Sag HC-4821</p>
-        <div className="ml-8 rounded-[8px] bg-hf-tan p-3">
+        <div className="ml-8 bg-hf-tan p-3 rounded-card">
           <p className="hf-type-caption opacity-60">Dig · 27.9.2026 09.12</p>
           <p className="hf-type-body mt-1">Appen lukker ned, når jeg scanner en stregkode.</p>
         </div>
-        <div className="mr-8 rounded-[8px] bg-hf-green-light p-3">
+        <div className="mr-8 bg-hf-green-light p-3 rounded-card">
           <p className="hf-type-caption opacity-60">Support · 27.9.2026 09.41</p>
           <p className="hf-type-body mt-1 whitespace-pre-wrap">{fillSampleVars(body) || "…"}</p>
         </div>

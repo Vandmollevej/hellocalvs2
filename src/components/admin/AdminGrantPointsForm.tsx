@@ -69,7 +69,7 @@ export function AdminGrantPointsForm({ userId, displayName }: { userId: string; 
       <button
         type="submit"
         disabled={busy}
-        className="hf-type-body hf-type-strong self-start rounded-md bg-hf-green-dark px-4 py-2.5 text-hf-white disabled:opacity-60"
+        className="self-start hf-btn-brand hf-btn--compact"
       >
         {busy ? "…" : "Tildel points"}
       </button>

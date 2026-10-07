@@ -285,7 +285,7 @@ function MadvarerContent() {
           </p>
         )}
 
-        <div className="max-h-[60vh] overflow-y-auto overflow-x-hidden rounded-[8px] bg-hf-tan">
+        <div className="max-h-[60vh] overflow-y-auto overflow-x-hidden bg-hf-tan rounded-card">
           {waiting && skeletonDue && (
             <SkeletonScreen className="px-4">
               <SkeletonMediaRows rows={SKELETON_ROWS} />

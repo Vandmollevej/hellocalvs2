@@ -57,7 +57,7 @@ export async function LegacyWarnings() {
           duplicateGroups.map((group) => {
             const conflict = group.some((p, i) => i > 0 && macrosDiffer(group[0], p));
             return (
-              <div key={group[0].name} className="hf-surface p-4">
+              <div key={group[0].name} className="hf-panel">
                 <p className="hf-type-strong mb-2 flex items-center gap-2 text-hf-black">
                   {group[0].name}
                   {conflict && (

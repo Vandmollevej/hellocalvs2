@@ -124,13 +124,12 @@ export default function SubscriptionPage() {
 
           <Link
             href="/profile/subscription/redeem-points"
-            className="hf-card"
-            style={{ background: "var(--hf-color-disabled)" }}
+            className="hf-card bg-hf-disabled"
           >
-            <span className="hf-type-card-title" style={{ color: "var(--hf-color-white)" }}>
+            <span className="hf-type-card-title text-hf-white">
               {t("subscription.redeemPoints")}
             </span>
-            <span className="hf-type-body" style={{ color: "var(--hf-color-white)" }}>
+            <span className="hf-type-body text-hf-white">
               {t("subscription.pointsEarned", { balance: data.pointsBalance })}
             </span>
           </Link>

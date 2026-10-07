@@ -229,7 +229,7 @@ function RecipeDetailContent() {
             type="button"
             onClick={saveCopy}
             disabled={busy || loading}
-            className="hf-control hf-btn-primary w-full disabled:opacity-60"
+            className="hf-control hf-btn-primary w-full"
           >
             {t("recipeDetail.saveCopy")}
           </button>
@@ -248,7 +248,7 @@ function RecipeDetailContent() {
 
         {(loading || (state === "ready" && view)) && (
           <>
-            {notice && <p className="hf-type-small rounded-[8px] bg-hf-tan px-4 py-3 text-hf-black">{notice}</p>}
+            {notice && <p className="hf-type-small bg-hf-tan px-4 py-3 text-hf-black rounded-card">{notice}</p>}
 
             {view && view.images.length > 0 && (
               <div className="no-scrollbar -mx-4 flex snap-x gap-2 overflow-x-auto px-4">
@@ -284,7 +284,7 @@ function RecipeDetailContent() {
                   </span>
                 </div>
                 {showShareInfo && (
-                  <p className="hf-type-small mt-2 rounded-[8px] border border-hf-tan-dark bg-hf-white px-3 py-2 text-hf-black">
+                  <p className="hf-type-small mt-2 border border-hf-tan-dark bg-hf-white px-3 py-2 text-hf-black rounded-card">
                     {t("createDish.shareInfo")}
                   </p>
                 )}
@@ -410,7 +410,7 @@ function RecipeDetailContent() {
                       </div>
                       {step.image && (
                         // eslint-disable-next-line @next/next/no-img-element
-                        <img src={step.image} alt="" className="h-16 w-16 shrink-0 rounded-[8px] object-cover" />
+                        <img src={step.image} alt="" className="h-16 w-16 shrink-0 object-cover rounded-card" />
                       )}
                     </div>
                   ))}

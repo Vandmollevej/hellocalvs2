@@ -112,7 +112,7 @@ function outcomeText(flow: FlowSummary) {
 }
 
 function Empty({ text }: { text: string }) {
-  return <p className="hf-type-body hf-surface p-4 text-text-secondary">{text}</p>;
+  return <p className="hf-type-body text-text-secondary hf-panel">{text}</p>;
 }
 
 function FlowCard({ flow, email }: { flow: FlowSummary; email: string | null }) {

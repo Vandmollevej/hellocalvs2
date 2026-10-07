@@ -102,7 +102,7 @@ export default async function AdminGrantPointsPage({
       </form>
 
       {q && (
-        <div className="flex flex-col divide-y divide-hf-tan-dark rounded-lg border border-hf-tan-dark bg-hf-white">
+        <div className="flex flex-col divide-y divide-hf-tan-dark hf-surface">
           {matches.length === 0 && <p className="hf-type-body p-3 text-text-secondary">Ingen brugere matcher &quot;{q}&quot;.</p>}
           {matches.map((user) => (
             <Link
@@ -121,7 +121,7 @@ export default async function AdminGrantPointsPage({
       )}
 
       {selected && (
-        <div className="flex flex-col gap-3 rounded-lg border border-hf-tan-dark bg-hf-white p-4">
+        <div className="hf-panel">
           <div>
             <p className="hf-type-body hf-type-strong text-hf-black">{selected.displayName}</p>
             <p className="hf-type-small text-text-secondary">

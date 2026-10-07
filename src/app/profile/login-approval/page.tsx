@@ -57,7 +57,7 @@ export default function LoginApprovalSettingsPage() {
           className="hf-control-row flex w-full items-center justify-between rounded-xl bg-hf-white px-4 disabled:opacity-50"
         >
           <span className="hf-type-body">{t("loginApproval.toggle")}</span>
-          <span className="hf-type-body font-semibold">
+          <span className="hf-type-body hf-type-strong">
             {enabled ? t("loginApproval.on") : t("loginApproval.off")}
           </span>
         </button>

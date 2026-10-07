@@ -169,7 +169,7 @@ export function ImageReviewBoard({ items: initialItems, approveLabel, rejectLabe
           const lightboxIndex = (slide: ReviewSlide) =>
             flat.findIndex((entry) => entry.item.id === item.id && entry.slide.src === slide.src);
           return (
-            <div key={item.id} className="flex flex-col gap-4 hf-surface p-4">
+            <div key={item.id} className="hf-panel hf-panel--form">
               <div>
                 <p className="hf-type-strong text-hf-black">{item.title}</p>
                 {item.subtitle && <p className="hf-type-small text-text-secondary">{item.subtitle}</p>}
@@ -260,14 +260,14 @@ export function ImageReviewBoard({ items: initialItems, approveLabel, rejectLabe
 
           <div className="relative flex min-h-0 flex-1 items-center justify-center px-14">
             {flat.length > 1 && (
-              <button type="button" onClick={() => step(-1)} aria-label="Forrige billede" className="hf-pick-arrow hf-btn-icon is-prev" style={{ opacity: 1 }}>
+              <button type="button" onClick={() => step(-1)} aria-label="Forrige billede" className="hf-pick-arrow hf-btn-icon is-prev opacity-100">
                 ‹
               </button>
             )}
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src={current.slide.src ?? ""} alt={current.slide.label} className="max-h-full max-w-full rounded-lg bg-hf-white object-contain" />
             {flat.length > 1 && (
-              <button type="button" onClick={() => step(1)} aria-label="Næste billede" className="hf-pick-arrow hf-btn-icon is-next" style={{ opacity: 1 }}>
+              <button type="button" onClick={() => step(1)} aria-label="Næste billede" className="hf-pick-arrow hf-btn-icon is-next opacity-100">
                 ›
               </button>
             )}

@@ -177,7 +177,7 @@ function SoegContent() {
         {showFavorites && (
           <>
             <p className="hf-type-small hf-type-strong text-hf-black">{t("search.favorites")}</p>
-            <div className="overflow-hidden rounded-[8px] bg-hf-tan">
+            <div className="overflow-hidden bg-hf-tan rounded-card">
               {favorites.map((r) => (
                 <ResultRow
                   key={r.id}
@@ -196,7 +196,7 @@ function SoegContent() {
         {showRecentlyAdded && (
           <>
             <p className="hf-type-small hf-type-strong text-hf-black">{t("search.recentlyAdded")}</p>
-            <div className="overflow-hidden rounded-[8px] bg-hf-tan">
+            <div className="overflow-hidden bg-hf-tan rounded-card">
               {recentlyAdded.map((r) => (
                 <ResultRow
                   key={r.id}
@@ -219,7 +219,7 @@ function SoegContent() {
         {query.trim() && (
           <>
             <p className="hf-type-small hf-type-strong text-hf-black">{t("search.searchResults")}</p>
-            <div className="overflow-hidden rounded-[8px] bg-hf-tan">
+            <div className="overflow-hidden bg-hf-tan rounded-card">
               {resultsState === "loading" && (
                 <SkeletonScreen className="px-4">
                   <SkeletonMediaRows rows={6} />

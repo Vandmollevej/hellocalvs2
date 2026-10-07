@@ -3,7 +3,7 @@ import { HfChevron } from "@/components/hf/HfChevron";
 
 export function AccordionCard({ children }: { children: React.ReactNode }) {
   return (
-    <div className="overflow-hidden rounded-[8px] bg-hf-tan">{children}</div>
+    <div className="overflow-hidden bg-hf-tan rounded-card">{children}</div>
   );
 }
 
@@ -33,8 +33,7 @@ export function ChevronRow({
       <span className="hf-type-body flex-1 truncate">{label}</span>
       {!!badgeCount && badgeCount > 0 && (
         <span
-          className="hf-type-caption flex h-5 min-w-5 items-center justify-center rounded-full px-1"
-          style={{ background: "var(--hf-color-brand)", color: "var(--hf-color-white)" }}
+          className="hf-type-caption flex h-5 min-w-5 items-center justify-center rounded-full px-1 bg-hf-brand text-hf-white"
           aria-label={`${badgeCount} ulæste`}
         >
           {badgeCount > 99 ? "99+" : badgeCount}

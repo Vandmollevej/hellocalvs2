@@ -122,7 +122,7 @@ export function PageTreeView({ areas }: { areas: PageArea[] }) {
 
   return (
     <div className="flex flex-col gap-5">
-      <div className="flex flex-col gap-3 hf-surface p-4">
+      <div className="hf-panel">
         <div className="hf-type-body flex flex-wrap items-center gap-x-6 gap-y-2">
           <span className="hf-type-strong text-hf-black">{total} sider</span>
           <span className="text-text-secondary">

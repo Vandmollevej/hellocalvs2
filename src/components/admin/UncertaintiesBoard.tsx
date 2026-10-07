@@ -344,7 +344,7 @@ function EditLightbox({ row, fields, onSaved }: { row: UncertaintyRow; fields: F
           type="button"
           disabled={saving}
           onClick={save}
-          className="hf-btn-primary px-4 py-2 disabled:opacity-50"
+          className="hf-btn-primary px-4 py-2"
         >
           {saving ? "Gemmer…" : "Gem rettelse"}
         </button>
@@ -428,7 +428,7 @@ function ImageLightbox({ row, onSaved }: { row: UncertaintyRow; onSaved: () => v
           type="button"
           disabled={saving}
           onClick={() => decide("CORRECT")}
-          className="hf-btn-primary px-3 py-2 disabled:opacity-50"
+          className="hf-btn-primary px-3 py-2"
         >
           Samme vare
         </button>

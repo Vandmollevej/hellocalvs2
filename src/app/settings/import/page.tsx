@@ -211,7 +211,7 @@ export default function MigrationImportPage() {
                 <ul className="flex flex-col gap-2">
                   {group.rows.map((row) => (
                     <li key={row.id}>
-                      <label className="hf-control-row flex items-center gap-3 rounded-lg border border-hf-tan-dark bg-hf-white px-4">
+                      <label className="hf-control-row flex items-center gap-3 px-4 hf-surface">
                         <input
                           type="checkbox"
                           checked={selected.has(row.id)}

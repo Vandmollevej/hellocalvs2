@@ -38,7 +38,7 @@ function Card({
   children?: ReactNode;
 }) {
   return (
-    <div className={`flex flex-col gap-4 rounded-[8px] bg-hf-tan p-4 ${dimmed ? "opacity-60" : ""}`}>
+    <div className={`rounded-card flex flex-col gap-4 bg-hf-tan p-4 ${dimmed ? "opacity-60" : ""}`}>
       <div className="flex items-start gap-3">
         {icon}
         <div className="min-w-0 flex-1">
@@ -122,7 +122,7 @@ function IntegrationerContent() {
         chevron={!unavailable}
         title={integration.label}
         description={description}
-        icon={<IntegrationIcon icon={integration.icon} label={integration.label} size={36} className="h-9 w-9 rounded-[8px]" />}
+        icon={<IntegrationIcon icon={integration.icon} label={integration.label} size={36} className="h-9 w-9 rounded-card" />}
       >
         {unavailable ? (
           <p className="hf-type-small text-text-secondary">{t("integrations.unavailable")}</p>

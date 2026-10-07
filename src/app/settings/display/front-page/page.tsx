@@ -62,7 +62,7 @@ export default function FrontPageDisplaySettingsPage() {
   return (
     <HfScreen title={t("settings.frontPage")}>
       <div className="hf-page">
-        <div className="rounded-2xl bg-hf-green px-4 py-4 text-hf-white">
+        <div className="hf-card hf-card--brand">
           <p className="hf-type-small">{t("frontPageSettings.intro")}</p>
         </div>
 

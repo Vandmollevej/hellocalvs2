@@ -254,20 +254,18 @@ export function FooterArcEditor({
 
       <div
         ref={panelRef}
-        className={`hf-nav-panel-in absolute bottom-0 left-0 right-0 rounded-t-2xl border border-b-0 px-4 pb-6 pt-4 ${
+        className={`bg-hf-card hf-nav-panel-in absolute bottom-0 left-0 right-0 rounded-t-2xl border border-b-0 px-4 pb-6 pt-4 ${
           overPanelNow ? "border-dashed border-hf-gray-dark" : "border-hf-tan-dark"
         }`}
-        style={{ backgroundColor: "var(--hf-tan)" }}
       >
         <div className="mb-3 flex items-center justify-between">
-          <span className="hf-type-small hf-type-strong" style={{ color: "var(--hf-black)", fontFamily: "var(--font-hf-body)" }}>
+          <span className="hf-type-small hf-type-strong text-hf-action font-hf-body">
             {t("footerArc.editHint")}
           </span>
           <button
             type="button"
             onClick={onClose}
-            className="hf-type-small hf-type-strong"
-            style={{ color: "var(--hf-green)", fontFamily: "var(--font-hf-body)" }}
+            className="hf-type-small hf-type-strong text-hf-brand font-hf-body"
           >
             {t("footerArc.done")}
           </button>
@@ -290,7 +288,7 @@ export function FooterArcEditor({
               >
                 <span className={`flex flex-col items-center gap-1 ${placeholder ? "invisible" : ""}`}>
                   <Glyph icon={action.icon} imageSrc={action.imageSrc} color="var(--hf-black)" />
-                  <span className="hf-type-micro whitespace-nowrap text-center" style={{ color: "var(--hf-black)", fontFamily: "var(--font-hf-body)" }}>
+                  <span className="hf-type-micro whitespace-nowrap text-center text-hf-action font-hf-body">
                     {label}
                   </span>
                 </span>
@@ -298,7 +296,7 @@ export function FooterArcEditor({
             );
           })}
           {poolKeys.length === 0 && (
-            <span className="hf-type-small" style={{ color: "var(--hf-gray-dark)", fontFamily: "var(--font-hf-body)" }}>
+            <span className="hf-type-small text-hf-text-secondary font-hf-body">
               {t("footerArc.allInUse")}
             </span>
           )}

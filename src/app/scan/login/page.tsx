@@ -63,7 +63,7 @@ export default function ScanLoginPage() {
             <span className="hf-type-button">Log ind med Face ID</span>
           </ActionButton>
         )}
-        <p className="hf-type-caption text-center" style={{ color: "var(--hf-color-text-secondary)" }}>
+        <p className="hf-type-caption text-center text-hf-text-secondary">
           Kun for inviterede medarbejdere.
         </p>
       </form>
