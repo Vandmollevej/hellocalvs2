@@ -271,8 +271,8 @@ Ejer: session ddf69bff, konto A (2026-10-07)
 | Id | Opgave | Status | Næste skridt |
 | --- | --- | --- | --- |
 | 3/4/6/7/9 | Tilføj-knap væk, "Sådan regner vi" væk, menutekst tættere, "/stk.", luft over Tilføj | Færdig (0a7d3593 på master) | Kun verificeret mod koden her |
-| 8 | Brand-logo: luft mellem logoet/Ø'et og cirklen | Færdig (se git log "Popups som bundark") | Logoets venstre kant beregnes af dets højde (`src/lib/brand-logo-layout.ts`), 8 px luft til cirklen. Afventer brugerens test på telefon |
-| 10 | Alle popups/modaler som bundark (swipe ned = annullér), ingen `window.confirm`/centrerede overlays | Færdig (se git log "Popups som bundark") | Hjulvælgere, fødselsdato, startup-tip, adgangslog, familie-sletning, 15 admin-bekræftelser og admin-detaljevinduer. Undtagelser: DECISIONS 2026-10-07. Afventer brugerens test |
+| 8 | Brand-logo: luft mellem logoet/Ø'et og cirklen | Færdig (44b2a341) | Logoets venstre kant beregnes af dets højde (`src/lib/brand-logo-layout.ts`), 8 px luft til cirklen. Afventer brugerens test på telefon |
+| 10 | Alle popups/modaler som bundark (swipe ned = annullér), ingen `window.confirm`/centrerede overlays | Færdig (44b2a341) | Hjulvælgere, fødselsdato, startup-tip, adgangslog, familie-sletning, 15 admin-bekræftelser og admin-detaljevinduer. Undtagelser: DECISIONS 2026-10-07. Afventer brugerens test |
 | fredag-vejning | Fredags-flow + vejepåmindelser, måltips til/fra, Udregn (Seriøs) | Færdig (kode, se git log 2026-10-07) | Migration 20261007140000 + aktivér flowet i admin |
 
 ## G-CHAT — Hjælpe-chatbot (app + web) og admin "Chatbot"
