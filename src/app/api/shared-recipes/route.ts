@@ -132,6 +132,8 @@ export async function GET(req: Request) {
       : await prisma.sharedRecipe.findMany({
       where: {
         status: { not: "REJECTED" },
+        // Retter flagget som kopi skjules, til admin har godkendt dem.
+        OR: [{ copyFlagged: false }, { status: "APPROVED" }],
         publisherHash: { notIn: blocked.map((b) => b.publisherHash) },
         ...(q ? { searchText: { contains: q } } : {}),
       },

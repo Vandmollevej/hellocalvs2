@@ -3370,6 +3370,13 @@ model SharedRecipe {
   // Anonym brug (favorit, kopi): popularitet i søgningen.
   popularity    Int                @default(0)
   reviewedAt    DateTime?
+  // Kopi-tjek (src/lib/recipe-copy-check.ts): over 80 % sammenfald med en
+  // anden ret flagges og skjules for andre, til admin godkender eller afviser.
+  // copyCheck = kilde, sammenfald og markerede tekststykker. Afvisningen
+  // gemmer admins begrundelse; ejeren beholder retten privat.
+  copyFlagged     Boolean          @default(false)
+  copyCheck       Json?
+  rejectionReason String?
   createdAt     DateTime           @default(now())
   updatedAt     DateTime           @updatedAt
 
