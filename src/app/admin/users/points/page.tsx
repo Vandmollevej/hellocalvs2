@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import { IconSearch } from "@tabler/icons-react";
 import type { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { requireAdminUser } from "@/lib/require-admin";
@@ -87,17 +88,17 @@ export default async function AdminGrantPointsPage({
         </p>
       </div>
 
-      <form action="/admin/users/points" className="flex flex-wrap gap-2">
+      {/* Fælles søgefelt (.hf-search, design.md §6.5); Enter sender søgningen. */}
+      <form action="/admin/users/points" role="search" className="hf-search">
+        <IconSearch size={16} color="var(--hf-black)" aria-hidden />
         <input
           type="search"
           name="q"
           defaultValue={q}
           placeholder="Søg på præcis e-mail eller bruger-id"
-          className="hf-type-body hf-field min-w-0 flex-1 rounded-md border border-hf-tan-dark bg-hf-white px-3"
+          aria-label="Søg på præcis e-mail eller bruger-id"
+          className="min-w-0"
         />
-        <button type="submit" className="hf-type-body rounded-md border border-hf-tan-dark px-4 py-2">
-          Søg
-        </button>
       </form>
 
       {q && (

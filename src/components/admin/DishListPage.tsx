@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { IconSearch } from "@tabler/icons-react";
 import type { DishPage, DishRow } from "@/lib/admin-dishes";
 
 // Fælles liste for admin → Retter (docs/DECISIONS.md 2026-09-28): søgning,
@@ -122,17 +123,10 @@ export function DishListPage({
         <p className="hf-type-body text-text-secondary">{intro}</p>
       </div>
 
-      <form action={basePath} className="flex gap-2">
-        <input
-          type="search"
-          name="q"
-          defaultValue={q}
-          placeholder="Søg efter ret"
-          className="hf-type-body h-12 min-w-0 flex-1 rounded-md border border-hf-tan-dark bg-hf-white px-4 text-hf-black"
-        />
-        <button type="submit" className="hf-btn-text h-12 rounded-md bg-hf-green-dark px-5 text-hf-white">
-          Søg
-        </button>
+      {/* Fælles søgefelt (.hf-search, design.md §6.5); Enter sender søgningen. */}
+      <form action={basePath} role="search" className="hf-search">
+        <IconSearch size={16} color="var(--hf-black)" aria-hidden />
+        <input type="search" name="q" defaultValue={q} placeholder="Søg efter ret" aria-label="Søg efter ret" className="min-w-0" />
       </form>
 
       <p className="hf-type-body text-text-secondary">
