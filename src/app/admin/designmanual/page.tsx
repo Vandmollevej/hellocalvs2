@@ -36,7 +36,7 @@ const SECTIONS = [
   { id: "grafiske-elementer", label: "Grafiske elementer" },
   { id: "sidestruktur", label: "Sidestruktur" },
   { id: "bokse", label: "Bokse" },
-  { id: "adgangsark", label: "Adgangsark (integrationer)" },
+  { id: "integrationer", label: "Integrationer" },
 ] as const;
 
 type Swatch = { token: string; hex: string; name: string; use: string };
@@ -449,8 +449,8 @@ export default async function DesignManualPage() {
             <BoxOverview />
           </Section>
 
-          {/* 9. Adgangsark (integrationer) */}
-          <Section id="adgangsark" number={9} title="Adgangsark (integrationer)" intro="Hver integration (/settings/integrations/<app>) vises som en tro kopi af iOS' Apple Health-adgangsark. Komponent: HfAccessSheet. Prøv kontakterne:">
+          {/* 9. Integrationer */}
+          <Section id="integrationer" number={9} title="Integrationer" intro="Hver integration (/settings/integrations/<app>) vises som en tro kopi af iOS' Apple Health-adgangsark. Komponent: HfAccessSheet. Prøv kontakterne:">
             <div className="flex flex-col gap-6 sm:flex-row sm:items-start">
               <AccessSheetDemo />
               <div className="flex min-w-0 flex-1 flex-col gap-4">
