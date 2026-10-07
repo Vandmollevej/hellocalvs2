@@ -168,7 +168,7 @@ export default async function AdminDashboardPage() {
                         )}
                       </div>
                       <p className="hf-type-small mt-0.5 truncate text-text-muted">
-                        {request.user.displayName} · {request.user.email} ·{" "}
+                        {request.user.displayName} ·{" "}
                         {SUPPORT_PRIORITY_LABELS[request.priority]} prioritet ·{" "}
                         {formatAdminTime(request.lastUserMessageAt)}
                       </p>
@@ -298,7 +298,10 @@ export default async function AdminDashboardPage() {
           <TaskList tasks={deliveryTasks} />
           {missingApiKeys.length > 0 && (
             <p className="hf-type-small border-t border-border-strong px-4 py-3 text-text-muted">
-              Mangler nøgle: {missingApiKeys.join(", ")}
+              Mangler nøgle: {missingApiKeys.join(", ")}.{" "}
+              <Link href="/admin/api-keys" className="font-semibold text-hf-black underline">
+                Indsæt nøglen under API-nøgler
+              </Link>
             </p>
           )}
         </Widget>
