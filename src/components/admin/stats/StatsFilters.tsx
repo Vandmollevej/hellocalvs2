@@ -12,11 +12,17 @@ import {
 
 // Filterlinje øverst på /admin/statistics: periode, land/region og
 // abonnementstype. Filteret ligger i URL'en (kan genindlæses/bogmærkes).
+// Knapper: hvide med sort kant (hf-btn-secondary), valgt = sort (hf-btn-primary).
+const btn = (active: boolean) => `${active ? "hf-btn-primary" : "hf-btn-secondary"} h-10 px-3 !text-sm`;
+
 export function StatsFilters({ filter, fromDay, toDay }: { filter: StatsFilterInput; fromDay: string; toDay: string }) {
   const router = useRouter();
   const pathname = usePathname();
   const [from, setFrom] = useState(filter.from ?? fromDay);
   const [to, setTo] = useState(filter.to ?? toDay);
+  const regionOptions = [{ value: "all", label: "Alle" }, ...REGION_GROUPS, ...COUNTRY_OPTIONS];
+  const regionLabel = (value: string) => regionOptions.find((o) => o.value === value)?.label ?? "Alle";
+  const [regionText, setRegionText] = useState(regionLabel(filter.region));
 
   function apply(next: Partial<StatsFilterInput>) {
     const merged = { ...filter, ...next };
@@ -40,7 +46,7 @@ export function StatsFilters({ filter, fromDay, toDay }: { filter: StatsFilterIn
             key={preset.value}
             type="button"
             onClick={() => apply({ preset: preset.value })}
-            className={`hf-choice ${filter.preset === preset.value ? "is-selected" : ""}`}
+            className={btn(filter.preset === preset.value)}
           >
             {preset.label}
           </button>
@@ -54,7 +60,7 @@ export function StatsFilters({ filter, fromDay, toDay }: { filter: StatsFilterIn
             value={from}
             max={to}
             onChange={(event) => setFrom(event.target.value)}
-            className="rounded-md border border-border-strong bg-surface-1 px-2 py-1 text-text-primary"
+            className="hf-field rounded-md border border-border-strong bg-surface-1 px-2 text-text-primary"
           />
         </label>
         <label className="flex flex-col gap-1 text-text-secondary">
@@ -64,39 +70,34 @@ export function StatsFilters({ filter, fromDay, toDay }: { filter: StatsFilterIn
             value={to}
             min={from}
             onChange={(event) => setTo(event.target.value)}
-            className="rounded-md border border-border-strong bg-surface-1 px-2 py-1 text-text-primary"
+            className="hf-field rounded-md border border-border-strong bg-surface-1 px-2 text-text-primary"
           />
         </label>
-        <button
-          type="button"
-          onClick={() => apply({ preset: "custom", from, to })}
-          className="hf-btn-primary h-10 px-4"
-        >
+        <button type="button" onClick={() => apply({ preset: "custom", from, to })} className={btn(filter.preset === "custom")}>
           Vis periode
         </button>
         <label className="flex flex-col gap-1 text-text-secondary">
           Land / region
-          <select
-            value={filter.region}
-            onChange={(event) => apply({ region: event.target.value })}
-            className="rounded-md border border-border-strong bg-surface-1 px-2 py-1 text-text-primary"
-          >
-            <option value="all">Alle</option>
-            <optgroup label="Regioner">
-              {REGION_GROUPS.map((group) => (
-                <option key={group.value} value={group.value}>
-                  {group.label}
-                </option>
-              ))}
-            </optgroup>
-            <optgroup label="Lande">
-              {COUNTRY_OPTIONS.map((country) => (
-                <option key={country.value} value={country.value}>
-                  {country.label}
-                </option>
-              ))}
-            </optgroup>
-          </select>
+          <input
+            type="text"
+            list="stats-region-options"
+            value={regionText}
+            placeholder="Skriv for at søge"
+            onFocus={(event) => event.currentTarget.select()}
+            onChange={(event) => {
+              const text = event.target.value;
+              setRegionText(text);
+              const match = regionOptions.find((o) => o.label.toLowerCase() === text.trim().toLowerCase());
+              if (match) apply({ region: match.value });
+            }}
+            onBlur={() => setRegionText(regionLabel(filter.region))}
+            className="hf-field rounded-md border border-border-strong bg-surface-1 px-2 text-text-primary"
+          />
+          <datalist id="stats-region-options">
+            {regionOptions.map((o) => (
+              <option key={o.value} value={o.label} />
+            ))}
+          </datalist>
         </label>
         <div className="flex flex-col gap-1 text-text-secondary">
           Abonnement
@@ -106,7 +107,7 @@ export function StatsFilters({ filter, fromDay, toDay }: { filter: StatsFilterIn
                 key={tier.value}
                 type="button"
                 onClick={() => apply({ tier: tier.value })}
-                className={`hf-choice ${filter.tier === tier.value ? "is-selected" : ""}`}
+                className={btn(filter.tier === tier.value)}
               >
                 {tier.label}
               </button>
