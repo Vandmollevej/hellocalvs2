@@ -788,23 +788,6 @@ textarea::selection,
     white-space: nowrap;
   }
 
-  /* I sidebjælken svæver mærket over rækkens højre kant, når man peger på
-     rækken eller tabber til den — rækkens tekst flytter sig ikke. */
-  .hf-navrow__kbd {
-    position: absolute;
-    top: 50%;
-    right: 8px;
-    transform: translateY(-50%);
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 120ms;
-  }
-
-  .hf-navrow:hover .hf-navrow__kbd,
-  .hf-navrow:focus-visible .hf-navrow__kbd {
-    opacity: 1;
-  }
-
   /* "Gå til…"-felt i sidebjælken (åbner hurtigsøgning). */
   .hf-shell__search {
     display: flex;

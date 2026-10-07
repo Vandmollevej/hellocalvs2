@@ -337,16 +337,11 @@ function groupHasBadge(links: NavLink[], badges: Badges) {
   );
 }
 
-// Genvejen vises som tastaturmærke, når man peger på rækken, og som
-// aria-keyshortcuts (UIA "AcceleratorKey") altid.
+// Genvejen vises kun i hurtigsøgningen og som aria-keyshortcuts (UIA
+// "AcceleratorKey"), ikke ved mouse over i sidebjælken.
 function shortcutHint(href: string) {
   const combo = shortcutsForHref(href)[0];
   return combo ? formatCombo(combo) : undefined;
-}
-
-function withShortcut(label: string, href: string) {
-  const hint = shortcutHint(href);
-  return hint ? `${label} (${hint})` : label;
 }
 
 // Faste id'er til automatisering (docs/AUTOMATION.md): prefix er "hc-nav" i
@@ -377,7 +372,7 @@ function SidebarNav({
             <li key={entry.href}>
               <Link
                 href={entry.href}
-                title={collapsed ? withShortcut(t(locale, entry.key), entry.href) : undefined}
+                title={collapsed ? t(locale, entry.key) : undefined}
                 aria-current={active ? "page" : undefined}
                 aria-keyshortcuts={ariaKeyShortcuts(shortcutsForHref(entry.href))}
                 {...automationProps(`${idPrefix}-${navSlug(entry.key)}`)}
@@ -385,7 +380,6 @@ function SidebarNav({
               >
                 <Icon name={entry.icon} />
                 {!collapsed && <span className="hf-navrow__label">{t(locale, entry.key)}</span>}
-                {!collapsed && <ShortcutKbd href={entry.href} />}
               </Link>
             </li>
           );
@@ -445,7 +439,6 @@ function SidebarNav({
                       >
                         <span className="hf-navrow__label">{t(locale, link.key)}</span>
                         <LinkBadge href={link.href} badges={badges} />
-                        {!linkHasBadge(link.href, badges) && <ShortcutKbd href={link.href} />}
                       </Link>
                     </li>
                   );
@@ -456,16 +449,6 @@ function SidebarNav({
         );
       })}
     </ul>
-  );
-}
-
-function ShortcutKbd({ href }: { href: string }) {
-  const hint = shortcutHint(href);
-  if (!hint) return null;
-  return (
-    <kbd aria-hidden="true" className="hf-kbd hf-navrow__kbd">
-      {hint}
-    </kbd>
   );
 }
 
@@ -617,7 +600,6 @@ function UserMenu({
               className="hf-navrow"
             >
               <span className="hf-navrow__label">{t(locale, "nav_admin_users")}</span>
-              <ShortcutKbd href="/admin/admin-users" />
               {newAdminSignups > 0 && (
                 <span className="hf-type-small rounded-full bg-hf-red-dark px-1.5 text-hf-white">{newAdminSignups}</span>
               )}

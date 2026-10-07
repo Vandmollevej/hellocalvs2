@@ -207,10 +207,7 @@ export function BrandLogoUploader({ canEdit }: { canEdit: boolean }) {
         <p className="hf-type-title text-hf-black">
           {busy ? "Upload i gang…" : canEdit ? "Træk logoer eller en hel mappe hertil" : "Kun fuld admin-adgang kan uploade logoer"}
         </p>
-        <p className="hf-type-body max-w-xl text-text-secondary">
-          Filnavnet er brandets navn, fx <span className="hf-type-strong">Arla.png</span>. Ekstra udgaver af samme brand hedder{" "}
-          <span className="hf-type-strong">Arla_2.png</span> og sættes ikke i brug, før du vælger dem. PNG, JPG, WebP, GIF og SVG.
-        </p>
+        <p className="hf-type-body text-text-secondary">Filnavnet skal være brandets navn</p>
         <div className="flex flex-wrap justify-center gap-2">
           <button
             type="button"
@@ -229,9 +226,6 @@ export function BrandLogoUploader({ canEdit }: { canEdit: boolean }) {
             Vælg mappe
           </button>
         </div>
-        <p className="hf-type-small text-text-muted">
-          Hvert slip får et tidsstempel som ét parti — et helt parti kan slettes igen under «Uploads» nedenfor, og brandenes tidligere logoer kommer tilbage.
-        </p>
         <input ref={filesInput} type="file" accept="image/*" multiple className="hidden" onChange={onPick} />
         <input
           ref={folderInput}
