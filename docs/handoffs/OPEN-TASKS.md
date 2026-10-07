@@ -263,6 +263,16 @@ Ejer: Flows-sessionen (2026-09-27)
 | --- | --- | --- | --- |
 | 745f1ab5 | Telefon-editor (iPhone 17) til mails/notifikationer/svarskabeloner + hovedmenu "Flows" med flow-sider | Færdig (se git log "Admin: phone editor") | Guide-builderen (tooltips) er flyttet ind i `flows`-gruppen i `AdminShell.tsx` efter brugerens ønske |
 | 41 | Design-screening af admin-flowsider mod HelloFresh-retningen | Færdig (branch `claude/admin-flowsider-design-4tzgb4`) | Afventer brugerens visuelle test på desktop + telefon |
+
+## G-POPUP — Søg/vare/beskeder-efterrettelser + bundark-gennemgang
+Filer: `src/components/ui/WheelPicker.tsx`, `src/components/ui/BirthDatePicker.tsx`, `src/components/StartupTipOverlay.tsx`, `src/components/family/AccessLogPanel.tsx`, `src/components/hf/BottomSheet.tsx` (kun no-drag-markering), `src/lib/use-confirm-sheet.tsx`, `window.confirm`-kald i admin-/indstillingskomponenter, `src/components/add/AddProductView.tsx` (kun brand-logoets luft til cirklen).
+Ejer: session ddf69bff, konto A (2026-10-07)
+
+| Id | Opgave | Status | Næste skridt |
+| --- | --- | --- | --- |
+| 3/4/6/7/9 | Tilføj-knap væk, "Sådan regner vi" væk, menutekst tættere, "/stk.", luft over Tilføj | Færdig (0a7d3593 på master) | Kun verificeret mod koden her |
+| 8 | Brand-logo: luft mellem logoet/Ø'et og cirklen | I gang | Logoets venstre kant beregnes af dets højde, så der altid er luft til cirklen |
+| 10 | Alle popups/modaler som bundark (swipe ned = annullér), ingen `window.confirm`/centrerede overlays | I gang | Hjulvælgere, fødselsdato, startup-tip, adgangslog-panel, bekræftelser i admin |
 | fredag-vejning | Fredags-flow + vejepåmindelser, måltips til/fra, Udregn (Seriøs) | Færdig (kode, se git log 2026-10-07) | Migration 20261007140000 + aktivér flowet i admin |
 
 ## G-CHAT — Hjælpe-chatbot (app + web) og admin "Chatbot"
