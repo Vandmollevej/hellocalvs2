@@ -1870,18 +1870,6 @@
     "extendedNutrition": "Voedingswaarde",
     "extendedNutritionDisclaimer": "Wordt alleen getoond als er gegevens voor dit product zijn.",
     "toxins": "Toxines",
-    "tagCountryOfOrigin": "Uit {country}",
-    "tagAlcoholPercent": "{percent} % alcohol",
-    "tagFatPercent": "{percent} % vet",
-    "tagFlag": {
-      "organic": "Biologisch",
-      "glutenFree": "Glutenvrij",
-      "lactoseFree": "Lactosevrij",
-      "vegan": "Veganistisch",
-      "vegetarian": "Vegetarisch",
-      "wholeGrain": "Volkoren",
-      "keyhole": "Keyhole-keurmerk"
-    },
     "toxinPregnancyBadge": "Zwanger/borstvoeding",
     "toxinsDisclaimer": "Gebaseerd op de ingrediëntenlijst — geen meting van dit specifieke product. Bronnen: de Deense voedselautoriteit (Fødevarestyrelsen) en EFSA.",
     "unhealthyFat": "Ongezond vet",

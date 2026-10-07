@@ -1870,18 +1870,6 @@
     "extendedNutrition": "Nährwerte",
     "extendedNutritionDisclaimer": "Wird nur angezeigt, wenn für dieses Produkt Daten vorhanden sind.",
     "toxins": "Giftstoffe",
-    "tagCountryOfOrigin": "Aus {country}",
-    "tagAlcoholPercent": "{percent} % Alkohol",
-    "tagFatPercent": "{percent} % Fett",
-    "tagFlag": {
-      "organic": "Bio",
-      "glutenFree": "Glutenfrei",
-      "lactoseFree": "Laktosefrei",
-      "vegan": "Vegan",
-      "vegetarian": "Vegetarisch",
-      "wholeGrain": "Vollkorn",
-      "keyhole": "Keyhole-Siegel"
-    },
     "toxinPregnancyBadge": "Schwanger/stillend",
     "toxinsDisclaimer": "Basierend auf der Zutatenliste — keine Messung dieses konkreten Produkts. Quellen: dänische Lebensmittelbehörde und EFSA.",
     "unhealthyFat": "Ungesundes Fett",

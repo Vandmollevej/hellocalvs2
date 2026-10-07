@@ -380,7 +380,6 @@ export const PAGE_TREE: PageArea[] = [
               { path: "/admin/product-database/products", label: "Varer" },
               { path: "/admin/product-database/brands", label: "Brands" },
               { path: "/admin/product-database/images", label: "Billeder", note: "Træk produktbilleder (EAN/produkttype) og brand-logoer (filnavn = brand) ind, to kolonner" },
-              { path: "/admin/product-database/tags", label: "Nøgleord" },
             ],
           },
           { path: "/admin/search", label: "Søg", note: "Gammel adresse — sender videre til Varer" },

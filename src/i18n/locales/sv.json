@@ -1870,18 +1870,6 @@
     "extendedNutrition": "Näringsinnehåll",
     "extendedNutritionDisclaimer": "Visas bara när det finns data för den här produkten.",
     "toxins": "Gifter",
-    "tagCountryOfOrigin": "Från {country}",
-    "tagAlcoholPercent": "{percent} % alkohol",
-    "tagFatPercent": "{percent} % fett",
-    "tagFlag": {
-      "organic": "Ekologisk",
-      "glutenFree": "Glutenfri",
-      "lactoseFree": "Laktosfri",
-      "vegan": "Vegansk",
-      "vegetarian": "Vegetarisk",
-      "wholeGrain": "Fullkorn",
-      "keyhole": "Nyckelhålsmärkt"
-    },
     "toxinPregnancyBadge": "Gravid/ammande",
     "toxinsDisclaimer": "Utifrån ingredienslistan — inte en mätning av just den här produkten. Källor: Livsmedelsstyrelsen i Danmark och EFSA.",
     "unhealthyFat": "Onyttigt fett",

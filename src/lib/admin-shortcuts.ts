@@ -40,7 +40,6 @@ export const ADMIN_PAGE_SHORTCUTS: Record<string, readonly string[]> = {
   // Varedatabase
   "/admin/product-database/products": ["Alt+P", "Ctrl+P"],
   "/admin/product-database/brands": ["Alt+Shift+R"],
-  "/admin/product-database/tags": ["Alt+Shift+K"],
   "/admin/product-database/images": ["Alt+Shift+X"],
 
   // Retter

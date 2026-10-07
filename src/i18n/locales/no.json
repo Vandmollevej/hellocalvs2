@@ -1870,18 +1870,6 @@
     "extendedNutrition": "Næringsinnhold",
     "extendedNutritionDisclaimer": "Vises bare når det finnes data for dette produktet.",
     "toxins": "Giftstoffer",
-    "tagCountryOfOrigin": "Fra {country}",
-    "tagAlcoholPercent": "{percent} % alkohol",
-    "tagFatPercent": "{percent} % fett",
-    "tagFlag": {
-      "organic": "Økologisk",
-      "glutenFree": "Glutenfri",
-      "lactoseFree": "Laktosefri",
-      "vegan": "Vegansk",
-      "vegetarian": "Vegetarisk",
-      "wholeGrain": "Fullkorn",
-      "keyhole": "Nøkkelhullsmerket"
-    },
     "toxinPregnancyBadge": "Gravid/ammende",
     "toxinsDisclaimer": "Basert på innholdsfortegnelsen — ikke en måling av akkurat dette produktet. Kilder: Mattilsynet og EFSA.",
     "unhealthyFat": "Usunt fett",

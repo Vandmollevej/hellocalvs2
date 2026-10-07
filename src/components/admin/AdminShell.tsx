@@ -54,7 +54,6 @@ export const NAV: NavEntry[] = [
       { href: "/admin/product-database/products", key: "nav_product_database_products" },
       { href: "/admin/product-database/brands", key: "nav_product_database_brands" },
       { href: "/admin/product-database/images", key: "nav_product_database_images" },
-      { href: "/admin/product-database/tags", key: "nav_product_database_tags" },
     ],
   },
   // Retter (docs/DECISIONS.md 2026-09-28): opskrifter er ikke produkter og

@@ -2,6 +2,14 @@
 
 This file records durable decisions. Add a dated entry when a later decision changes one of them.
 
+## 2026-10-07: "Nøgleord på produktsiden" fjernet; "Adgangsark" hedder Integrationer
+
+- Brugeren har aldrig bedt om punktet "Nøgleord på produktsiden" (DECISIONS 2026-10-02 og 2026-10-07 er afløst): admin-siden `/admin/product-database/tags`, API'et `/api/admin/product-page-tags`, editoren, `product-page-tags*.ts`, `product-keyword-groups.ts`, menu-/genvejs-/sidetræ-punkterne og nøgleordslinjen på produktsiden (`pageTags`) er slettet. Produktsiden viser ikke længere en nøgleordslinje over "Energifordeling".
+- Tabellen `product_page_tag_settings` (Prisma-modellen `ProductPageTagSettings`) er bevidst IKKE droppet og ingen data er rørt; den er nu ubrugt og kan fjernes med en migration, hvis brugeren siger til.
+- Det, der før blev kaldt "Adgangsark (integrationer)", hedder bare **Integrationer** (designmanualens afsnit 9 og al tekst i docs/kommentarer). Nævn ikke "adgangsark" som navn igen.
+- Admin → Retter → HelloFresh/Valdemarsro: det eneste admin kan ændre er "Deaktivér"/"Aktivér" på linjen (allerede bygget 2026-10-07, 24b50742); detaljesiden er kun visning.
+- Stavning: ental "vare", flertal "varer". En gennemgang af hele repoet fandt ingen fejlstavningen "vareer".
+
 ## 2026-10-06: Guide-flows med betingelser, opsætningsguiden som flow og migrering fra MyFitnessPal/Lifesum
 
 - **Flows vises nu for brugerne.** Et aktivt flow fra admin → Flows vises som *popup* (bundarket, alle sider, tilbage-pil mellem siderne, "Vis ikke igen") eller *banner* (kort hint over bundmenuen med første side). `FlowGate` (i `src/app/layout.tsx`) spørger `/api/flows/active` ved hvert sideskift; højst ét nyt flow pr. app-indlæsning, højeste prioritet først. Slås fra sammen med start-up tips (Indstillinger → Visning → Tips; teksten nævner nu guider og hint-bannere).
@@ -152,7 +160,7 @@ Brugerens krav: "Pulsen skal svare til den rigtige puls som måles, hvis ur tils
   **ikke bygget** — pris og betaling skal afklares med ejeren.
 
 
-## 2026-10-03: Adgangsarkets knapper ligger under listen, ikke ovenpå
+## 2026-10-03: Integrationssidens knapper ligger under listen, ikke ovenpå
 
 Ændrer "faste knapper nederst" fra 2026-09-27: knapperne og "Vilkår og
 betingelser"-bjælken står stadig fast i bunden af `HfAccessSheet`, men i deres
@@ -176,7 +184,7 @@ Brugerens krav: "Denne [højden] skal også låses ligesom vægten. I integratio
 - Hjul-arkene (`WheelPicker`, `BirthDatePicker`) portales til `<body>`: inde i et `<label>` sendte iOS tryk på "Færdig" videre til åbne-knappen, så arket ikke lukkede.
 ## 2026-10-03: "Tillad" giver altid synlig besked
 
-Afløser "ellers er valget allerede gemt → luk" fra 2026-09-27: "Tillad" på en integrations adgangsark lukker aldrig arket uden at vise, hvad der skete. Forbundet cloud-app → hent data nu og vis resultatet; knappen hedder derefter "Færdig" og lukker først da. Tilkoblingsfejl sendes tilbage med årsag (`config`, `tier`, `denied`, `expired`, `failed`) og vises øverst i arket.
+Afløser "ellers er valget allerede gemt → luk" fra 2026-09-27: "Tillad" på en integrations integrationsside lukker aldrig arket uden at vise, hvad der skete. Forbundet cloud-app → hent data nu og vis resultatet; knappen hedder derefter "Færdig" og lukker først da. Tilkoblingsfejl sendes tilbage med årsag (`config`, `tier`, `denied`, `expired`, `failed`) og vises øverst i arket.
 
 ## 2026-10-03: ALT med fra integrationerne
 
@@ -215,7 +223,7 @@ Brugerens krav: "I Withings og øvrige integrationer skal ALT med. Fedtprocent, 
 - Valg sker med en hvid afkrydsningsboks på billedkortet; første afkrydsning åbner straks overlayet med billede 1 som "Før" og en tom "Efter"-plads. Rækkefølgen er brugerens valg (ikke dato), og kan byttes om.
 - Sammenligningen er kun visning: intet nyt billede gemmes, og intet forlader telefonen. Billedfeltet får før-billedets format; efter-billedet beskæres til samme felt (object-cover), så linjen deler samme udsnit.
 - Overlayet følger den eksisterende fuldskærmsvisning (mørk flade) og lukker, når siden låses (adgangskode-låsen).
-## 2026-10-03: Adgangsarkets knapper ligger under listen, ikke ovenpå
+## 2026-10-03: Integrationssidens knapper ligger under listen, ikke ovenpå
 
 Ændrer "faste knapper nederst" fra 2026-09-27: knapperne og "Vilkår og
 betingelser"-bjælken står stadig fast i bunden af `HfAccessSheet`, men i deres
@@ -3715,10 +3723,10 @@ Se `docs/WIDGETS.md`.
 - Gamle `*.packroff.dk`-hostnavne virker under overgangen (tunnel-ruter bevares, `middleware.ts` kender begge admin-hostnavne).
 - Afsender: `no-reply@hellocal.io` (Mailjet). Kontakt i betingelser/privatlivspolitik: `support@hellocal.io`. Admin-notifikationer går fortsat til `ADMIN_NOTIFICATION_EMAIL`.
 
-## 2026-09-27: Integrationssiden er iOS' Apple Health-adgangsark
+## 2026-09-27: Integrationssiden er iOS' Apple Health-integrationsside
 
 Brugerens krav: hver integrations egen side skal være 100 % identisk med
-Apple Health-adgangsarket (som HelloFresh viser), med alle Hello Cals punkter.
+Apple Health-integrationssiden (som HelloFresh viser), med alle Hello Cals punkter.
 - `/settings/integrations/<app>` vises nu som `HfAccessSheet`
   (`src/components/hf/HfAccessSheet.tsx` + CSS Module): mørk baggrund, hvidt
   ark, titlen "Adgang til <app>", app-ikon, "“Hello Cal” vil gerne have adgang
@@ -3734,7 +3742,7 @@ Apple Health-adgangsarket (som HelloFresh viser), med alle Hello Cals punkter.
   arket. Tryk på den mørke kant øverst lukker.
 - Status, "Synkroniser nu", "Frakobl" og enhedskoder ligger som ekstra grupper
   i samme stil. Valgene gemmes stadig med det samme; datatyperne er uændrede.
-- Designmanualen har afsnit 9 "Adgangsark (integrationer)" med live eksempel.
+- Designmanualen har afsnit 9 "Integrationer" med live eksempel.
 ## 2026-09-26: Fælles 48 px-højde på felter, dropdowns, knapper og rækker
 
 - Brugerens beslutning: alle enkeltlinje-felter, dropdowns, madindtastninger,
@@ -3770,7 +3778,7 @@ Apple Health-adgangsarket (som HelloFresh viser), med alle Hello Cals punkter.
 - Tryk åbner bundarket (KRAV.md "Bundark", ny størrelse `size="half"` = 50 % af skærmen) med scrollbar tekst og et fedt, sort, højrestillet link "Gå til vilkår og betingelser" nederst, som går til det relevante afsnit i `/betingelser#<anker>`.
 - Samme komponent overalt: `src/components/hf/TermsSheet.tsx`. Teksterne ligger ét sted, `src/lib/terms-hints.ts`: unik tekst pr. startguide-trin, abonnementsoversigt, hvert abonnement (Seriøs, Seriøs Familie), points-indløsning og hver integration.
 - Guide-builderen (`/admin/guide-builder`): hvert startup-trin har sin egen vilkårstekst (da/en) og sit eget afsnit i betingelserne (`GuideScreen.terms`), redigeres i kortet "Vilkår og betingelser" og vises som bjælke over Tilbage/Næste. Ældre opsætninger får en standardtekst. Tooltips har ingen bjælke.
-- Integrationssiderne (iOS-adgangsarket) viser bjælken over "Tillad"/"Tillad ikke" via `HfAccessSheet`s `terms`-slot.
+- Integrationssiderne (iOS-integrationssiden) viser bjælken over "Tillad"/"Tillad ikke" via `HfAccessSheet`s `terms`-slot.
 - Ligger bundark oven på hinanden (vilkårsarket over startguiden), lukker Escape kun det øverste.
 - Betingelserne har fået ankre på alle afsnit og et nyt afsnit 7 "Forbindelser til andre apps og enheder" (`#integrationer`); de følgende afsnit er rykket ét nummer.
 

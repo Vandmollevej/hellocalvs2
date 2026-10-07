@@ -31,6 +31,18 @@ Status opdateret: 2026-10-06 — alle udestående opgaver slettet (klaret af en 
 
 ---
 
+## G-NAVNE — Stavning, Nøgleord-punkt, Integrationer-navn (2026-10-07)
+Filer: se commit. Ejer: session "Varer/Integrationer-navne", 2026-10-07.
+
+| Id | Opgave | Status | Næste skridt |
+| --- | --- | --- | --- |
+| stavning | Scan efter "vareer" (ental vare / flertal varer) | Færdig — intet fundet at rette | — |
+| nøgleord | Fjern "Nøgleord på produktsiden" (UI + dødt backend) | Færdig | Tabellen product_page_tag_settings kan droppes via migration, hvis brugeren ønsker det |
+| hf-valdemarsro | Kun Deaktivér-knap pr. linje | Færdig (24b50742, c7bd58e3) | — |
+| integrationer | "Adgangsark (integrationer)" → "Integrationer" | Færdig | — |
+
+---
+
 ## G-HAND — Håndfrugter og æg (Lille / Normal / Stor)
 Filer: `src/lib/hand-sizes.ts`, `src/components/hf/HandSizePicker.tsx`, `docs/HAND-SIZES.md`. Små indgreb i `src/components/add/AddProductView.tsx` (vælgeren over mængdeboksen) og `src/lib/default-amount.ts` (Normal som startmængde).
 Ejer: cloud-session på branch `claude/handfrugt-sizes-grams-2z4p3i` (2026-10-02)

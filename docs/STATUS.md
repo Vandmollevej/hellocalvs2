@@ -2,6 +2,13 @@
 
 Last updated: 2026-10-07
 
+## 2026-10-07: Nøgleord-punktet fjernet, "Integrationer" omdøbt, stavescan
+
+- "Nøgleord på produktsiden" er fjernet helt (admin-side, API, lib, produktsidens linje); tabellen `product_page_tag_settings` ligger urørt og ubrugt. Se DECISIONS 2026-10-07.
+- "Adgangsark (integrationer)" hedder nu "Integrationer" overalt i docs og kommentarer (designmanualens afsnit hed allerede "Integrationer").
+- Admin → Retter → HelloFresh/Valdemarsro har kun "Deaktivér"-knap pr. linje (24b50742) — ingen andre redigerbare felter.
+- Stavescan af hele repoet: ingen "vareer"/"varerr"/"vaare" fundet; bøjningerne ental/flertal af "vare" er korrekte i UI og kode.
+
 ## 2026-10-07: Nøgleord på produktsiden — typer og grupper
 
 - Admin → Varedatabase → Nøgleord: valget af enkelte frie nøgleord er erstattet af nøgleordsgrupper (Smag, Farve, Emballage, Frost og opbevaring …) fundet ved analyse af alle nøgleord i produktarkene, med eksempler og antal pr. gruppe (brugerens krav). Faste typer vises nu på brugerens sprog (7 sprog); smagsretning m.fl. vises som i produktarket. Se DECISIONS.md 2026-10-07.
@@ -319,7 +326,7 @@ Retter → HelloFresh åbner nu en skrivebeskyttet side under Retter (ikke Nye v
 - Kræver migration `20261003180000_all_scale_metrics` (16 enum-værdier + `integrations.fetchVersion`). Første synkronisering efter deploy henter Withings' historik (365 dage) igen.
 - Lint, typecheck, tests (undtagen den kendte `page-tree`-fejl, som også fejler på master) og build kørt. Ikke live-testet (ingen DB/Withings-konto i sessionen) — test på telefon: Profil → Vægt kalibrering → tryk "Synkroniseret" og "Slet"; swipe-slet et indtag på forsiden.
 
-## 2026-10-03: Adgangsarket (integrationer) — bunden skjules ikke længere
+## 2026-10-03: Integrationer — bunden skjules ikke længere
 
 - På telefonen lå "Vilkår og betingelser" og "Tillad"/"Tillad ikke" ovenpå listen med gennemsigtig baggrund, så kontakterne (fx "Fedtprocent") skinnede igennem og bunden af arket ikke kunne læses. Knapperne har nu deres egen hvide bund under listen (`src/components/hf/HfAccessSheet.module.css`), med en kort toning over kanten; listen scroller helt frem over dem. Se DECISIONS.md samme dato.
 - Den grønne runde chat-knap (smiley) nederst til højre på brugerens skærmbillede findes ikke i koden — den kommer fra browseren/en udvidelse og er ikke rørt.
@@ -391,7 +398,7 @@ Retter → HelloFresh åbner nu en skrivebeskyttet side under Retter (ikke Nye v
 - Kode: `src/lib/calendar-measurements.ts` (+ test), `src/app/calendar/page.tsx` (`MeasurementRow`, `HourRow`, `HourEntriesOverlay`). `/api/weight-entries` returnerer nu op til 1000 vejninger (før 200).
 - Lint, typecheck, tests og build grønne. Ikke testet på telefon.
 
-## 2026-10-03: Adgangsarket kan lukkes (X, træk ned) og tekst skinner ikke igennem
+## 2026-10-03: Integrationssiden kan lukkes (X, træk ned) og tekst skinner ikke igennem
 
 - Brugeren: "Jeg kan ikke komme væk fra indstillingerne igen. Der er ingen swipe ned funktion eller tilbageknap" (+ skærmbillede: "Vilkår og betingelser" oven i listen).
 - `HfAccessSheet`: luk-knap (X, 44 × 44) øverst til højre, trækstreg og træk-ned-for-at-lukke (design.md §6.13: hurtigt swipe eller > 30 %). Bunden (vilkår + knapper) ligger nu under listen (masters rettelse `claude/access-sheet-bottom-overlap`, beholdt ved merge).
@@ -1436,9 +1443,9 @@ tysk mælkekarton. Testscripts ligger kun i sessionens scratchpad.
 - "Henter…"-tekster erstattet med skitser på ~40 steder: profil, indstillinger,
   Hello Doc, integrationer, support, opskrifter, madvarer, søgning, vægt/vand/
   menstruation, kalenderens dagvisning, statistikkort, registrering og produkt.
-## 2026-09-27: Integrationer som Apple Health-adgangsark
+## 2026-09-27: Integrationer som Apple Health-integrationsside
 
-- Hver integrations side er nu en kopi af iOS' Health-adgangsark (Tillad/Tillad ikke, Slå alle til, skrive-/læse-grupper med kategoriikoner). Designmanualen har nyt afsnit 9 med live eksempel. Mangler brugerens visuelle godkendelse.
+- Hver integrations side er nu en kopi af iOS' Health-integrationsside (Tillad/Tillad ikke, Slå alle til, skrive-/læse-grupper med kategoriikoner). Designmanualen har nyt afsnit 9 med live eksempel. Mangler brugerens visuelle godkendelse.
 
 ## 2026-09-27: Admin "Nye produkter" — fuldt produktkort
 

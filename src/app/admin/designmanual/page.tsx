@@ -450,7 +450,7 @@ export default async function DesignManualPage() {
           </Section>
 
           {/* 9. Integrationer */}
-          <Section id="integrationer" number={9} title="Integrationer" intro="Hver integration (/settings/integrations/<app>) vises som en tro kopi af iOS' Apple Health-adgangsark. Komponent: HfAccessSheet. Prøv kontakterne:">
+          <Section id="integrationer" number={9} title="Integrationer" intro="Hver integration (/settings/integrations/<app>) vises som en tro kopi af iOS' Apple Health-integrationsside. Komponent: HfAccessSheet. Prøv kontakterne:">
             <div className="flex flex-col gap-6 sm:flex-row sm:items-start">
               <AccessSheetDemo />
               <div className="flex min-w-0 flex-1 flex-col gap-4">
