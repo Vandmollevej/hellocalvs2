@@ -4714,6 +4714,8 @@ model QuickEnrichmentJob {
 
   @@index([finishedAt, startedAt])
   @@map("quick_enrichment_jobs")
+}
+
 // Natlig robot "energy-split-check" (docs/DECISIONS.md 2026-10-07): en vare,
 // hvis energifordeling (% af kcal fra protein/kulhydrat/fedt) afviger fra
 // andre varer med samme brand/produkttype/serie/variant/smag, der kun
