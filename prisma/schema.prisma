@@ -4193,6 +4193,24 @@ model DebugLogSettings {
   @@map("debug_log_settings")
 }
 
+// Gemte visninger i admin (docs/DECISIONS.md 2026-10-07): en admins navngivne
+// kombination af søgning, filtre, sortering, visning og synlige felter.
+// `query` er URL'ens søgestreng, normaliseret af den enkelte sides parser;
+// `scope` er siden (fx "product-database"). Ét navn pr. admin pr. side.
+model AdminSavedView {
+  id        String   @id @default(cuid())
+  userId    String
+  scope     String
+  name      String
+  query     String   @default("")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+
+  @@unique([userId, scope, name])
+  @@index([userId, scope])
+  @@map("admin_saved_views")
+}
+
 // Nøgleord på produktsiden (docs/DECISIONS.md 2026-10-02): én række
 // ("default") med de felter (src/lib/product-page-tags.ts) og frie nøgleord
 // fra Product.keywords, som admin har valgt at vise over "Energifordeling".

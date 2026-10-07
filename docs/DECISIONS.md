@@ -4535,3 +4535,10 @@ e-mail (via emailHash), men viser den aldrig. Support-søgningens "contains" på
 e-mail er fjernet (virker ikke på det krypterede felt).
 ## 2026-10-07: Deaktivér-knap på linjen (admin → Retter → HelloFresh/Valdemarsro)
 Det eneste, admin kan ændre på importerede retter, er "Deaktivér"/"Aktivér" på linjen i listen (brugerens krav). Knappen sætter `Product.discontinued`, som al søgning og AI-genkendelse allerede filtrerer på; HelloFresh-importen overskriver ikke feltet ved genimport. Deaktiverede retter vises gennemstreget med teksten "Deaktiveret — vises ikke for brugerne". Valdemarsro-listen bruger samme knap, men er tom, indtil importen er bygget (den skal så bruge `discontinued` på samme måde og udvide `setDishDisabled` til sin kilde).
+
+## 2026-10-07: Gemte visninger i admin Varer
+
+- Filterbjælken på admin → Varer er delt i to kort: "Visning" (sortering, Liste/Galleri/Detaljer, valg af synlige felter) og "Filtre" (søgning + filtre).
+- Over produktlisten til højre: grøn knap "Gem visning" (navn → gemmer) og dropdown "Visninger" (vælg for at hente, × for at slette). Samme navn overskrives.
+- En visning er hele sidens URL-søgestreng (søgning, filtre, sortering, visning, `cols`), normaliseret server-side af sidens parser, i tabellen `admin_saved_views` (`userId`+`scope`+`name` unik; hver admin ser kun sine egne). Migration `20261007130000_admin_saved_views` skal køre ved deploy. Nye sider tilføjer en `scope` i `src/lib/admin-saved-views.ts`.
+- Synlige felter er URL-parameteret `cols` (Kæder, Kategori · kilde, Kcal/100, Tilføjelser, Status; mindst ét; udeladt = alle) og gælder Liste og Galleri.

@@ -5,6 +5,8 @@ import { useRouter } from "next/navigation";
 import { FilterDropdown } from "@/components/admin/FilterDropdown";
 import {
   PRODUCT_CATEGORIES,
+  PRODUCT_COLUMNS,
+  PRODUCT_COLUMN_LABELS,
   PRODUCT_CATEGORY_LABELS,
   PRODUCT_DATABASE_SORTS,
   PRODUCT_SOURCES,
@@ -39,6 +41,7 @@ const VIEW_OPTIONS: { value: Filters["view"]; label: string; icon: ReactNode }[]
 const PRODUCT_CATEGORY_OPTIONS = PRODUCT_CATEGORIES.map((key) => ({ value: key, label: PRODUCT_CATEGORY_LABELS[key] }));
 const SOURCE_OPTIONS = PRODUCT_SOURCES.map((key) => ({ value: key, label: PRODUCT_SOURCE_LABELS[key] }));
 const STATUS_OPTIONS = PRODUCT_STATUSES.map((key) => ({ value: key, label: PRODUCT_STATUS_LABELS[key] }));
+const COLUMN_OPTIONS = PRODUCT_COLUMNS.map((key) => ({ value: key, label: PRODUCT_COLUMN_LABELS[key] }));
 const SORT_OPTIONS = PRODUCT_DATABASE_SORTS.map((s) => ({ value: s.key, label: s.label }));
 const IMAGE_OPTIONS = [
   { value: "with", label: "Med billede" },
@@ -135,34 +138,15 @@ export function ProductDatabaseFilters({
   if (filters.barcode) chips.push({ key: "barcode", label: filters.barcode === "with" ? "Med stregkode" : "Uden stregkode", clear: { barcode: "" } });
 
   return (
-    <section
-      aria-busy={pending}
-      className="flex flex-col gap-4 hf-surface p-4"
-    >
-      <div className="flex flex-col gap-3 md:flex-row md:items-end">
-        <label className="flex min-w-0 flex-1 flex-col gap-1">
-          <span className="hf-type-label text-text-secondary">Søg</span>
-          <span className="hf-field flex items-center gap-2 rounded-md border border-hf-tan-dark bg-page-bg px-3 focus-within:border-hf-green">
-            <svg viewBox="0 0 24 24" className="h-5 w-5 shrink-0 text-text-muted" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" aria-hidden="true">
-              <circle cx="11" cy="11" r="7" />
-              <path d="m20 20-4-4" />
-            </svg>
-            <input
-              type="search"
-              value={query}
-              onChange={(event) => setQuery(event.target.value)}
-              placeholder="Navn, mærke, sub brand, variant eller stregkode…"
-              className="hf-type-body h-full w-full min-w-0 bg-transparent text-hf-black outline-none placeholder:text-text-muted"
-            />
-          </span>
-        </label>
-        <div className="grid grid-cols-2 gap-3 md:flex md:w-auto">
+    <div aria-busy={pending} className="flex flex-col gap-4">
+      <section className="flex flex-col gap-3 hf-surface p-4">
+        <h2 className="hf-type-body hf-type-strong text-hf-black">Visning</h2>
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
           <FilterDropdown
             label="Sortér efter"
             value={filters.sort}
             options={SORT_OPTIONS}
             onChange={(sort) => go({ sort: sort as Filters["sort"] })}
-            className="md:w-52"
           />
           <div className="flex min-w-0 flex-col gap-1">
             <span className="hf-type-label text-text-secondary">Visning</span>
@@ -184,7 +168,38 @@ export function ProductDatabaseFilters({
               ))}
             </div>
           </div>
+          <FilterDropdown
+            multiple
+            label="Felter"
+            placeholder="Alle felter"
+            values={filters.cols}
+            options={COLUMN_OPTIONS}
+            onChange={(cols) => {
+              if (cols.length > 0) go({ cols: cols as Filters["cols"], page: filters.page });
+            }}
+            alignRight
+          />
         </div>
+      </section>
+
+      <section className="flex flex-col gap-4 hf-surface p-4">
+      <div className="flex flex-col gap-3 md:flex-row md:items-end">
+        <label className="flex min-w-0 flex-1 flex-col gap-1">
+          <span className="hf-type-label text-text-secondary">Søg</span>
+          <span className="hf-field flex items-center gap-2 rounded-md border border-hf-tan-dark bg-page-bg px-3 focus-within:border-hf-green">
+            <svg viewBox="0 0 24 24" className="h-5 w-5 shrink-0 text-text-muted" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" aria-hidden="true">
+              <circle cx="11" cy="11" r="7" />
+              <path d="m20 20-4-4" />
+            </svg>
+            <input
+              type="search"
+              value={query}
+              onChange={(event) => setQuery(event.target.value)}
+              placeholder="Navn, mærke, sub brand, variant eller stregkode…"
+              className="hf-type-body h-full w-full min-w-0 bg-transparent text-hf-black outline-none placeholder:text-text-muted"
+            />
+          </span>
+        </label>
       </div>
 
       <div className="flex items-center justify-between gap-3 border-t border-hf-tan-dark pt-3">
@@ -335,6 +350,7 @@ export function ProductDatabaseFilters({
           ))}
         </ul>
       )}
-    </section>
+      </section>
+    </div>
   );
 }

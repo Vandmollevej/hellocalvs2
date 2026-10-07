@@ -16,6 +16,9 @@ Retter → HelloFresh åbner nu en skrivebeskyttet side under Retter (ikke Nye v
 ## 2026-10-07: Farvepalette ryddet op
 
 - Tre grønne (brand, brand-dark, ny accent-lime #BBF06A); valgt-markering = lime + sort kant + sort tekst; loaderen bruger lime + brand. Se `docs/DECISIONS.md` 2026-10-07 og design.md §3. Ikke visuelt testet (brugerregel).
+## 2026-10-07: Gemte visninger i admin Varer
+
+- Bygget: Visning/Filtre delt i to kort, grøn "Gem visning" + dropdown "Visninger" (pr. admin, tabel `admin_saved_views`), valg af synlige felter (`cols`). Migration `20261007130000_admin_saved_views` skal køre ved deploy. Se DECISIONS 2026-10-07.
 
 ## 2026-10-07: Dyrefoder-spærring
 
