@@ -5,6 +5,7 @@ import { requireAdminUser } from "@/lib/require-admin";
 import { formatKroner } from "@/lib/scan/weeks";
 import { SCAN_APP_BASE_URL } from "@/lib/scan/invites";
 import { inviteWorker, saveRejectionReason, updatePayRate } from "./actions";
+import { RejectionReasonRow } from "./RejectionReasonRow";
 
 // Admin "scan-invites" (docs/OPRETTELSES-APP.md): invitér medarbejdere til
 // Oprettelses-appen, se oversigt over alle medarbejdere, global sats og
@@ -107,16 +108,7 @@ export default async function ScanInvitesPage({ searchParams }: { searchParams: 
         <div className="flex flex-col gap-2 rounded-lg border border-hf-tan-dark bg-hf-white p-4">
           <h2 className="hf-type-body hf-type-strong">Afvisningsårsager</h2>
           {reasons.map((reason) => (
-            <form key={reason.id} action={saveRejectionReason} className="flex items-center gap-2">
-              <input type="hidden" name="id" value={reason.id} />
-              <input name="label" defaultValue={reason.label} className="hf-type-body flex-1 rounded border border-hf-tan-dark bg-page-bg px-2 py-1" />
-              <label className="hf-type-small flex items-center gap-1">
-                <input type="checkbox" name="active" defaultChecked={reason.active} /> aktiv
-              </label>
-              <button type="submit" className="hf-type-small rounded border border-hf-tan-dark px-2 py-1">
-                Gem
-              </button>
-            </form>
+            <RejectionReasonRow key={reason.id} id={reason.id} label={reason.label} active={reason.active} />
           ))}
           <form action={saveRejectionReason} className="flex gap-2">
             <input name="label" placeholder="Ny årsag" className="hf-type-body flex-1 rounded border border-hf-tan-dark bg-page-bg px-2 py-1" />

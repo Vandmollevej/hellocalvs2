@@ -413,13 +413,15 @@ export async function listSupportReplyTemplates() {
   return prisma.supportReplyTemplate.findMany({ orderBy: [{ sortOrder: "asc" }, { title: "asc" }] });
 }
 
-export async function saveSupportReplyTemplate(input: { id?: string; title: string; body: string; sortOrder: number }) {
-  const data = { title: input.title, body: input.body, sortOrder: input.sortOrder };
+// Admin styrer ikke rækkefølgen: nye skabeloner lægges nederst, ret bevarer pladsen.
+export async function saveSupportReplyTemplate(input: { id?: string; title: string; body: string }) {
+  const data = { title: input.title, body: input.body };
   if (input.id) {
     const updated = await prisma.supportReplyTemplate.updateMany({ where: { id: input.id }, data });
     return updated.count > 0;
   }
-  await prisma.supportReplyTemplate.create({ data });
+  const last = await prisma.supportReplyTemplate.aggregate({ _max: { sortOrder: true } });
+  await prisma.supportReplyTemplate.create({ data: { ...data, sortOrder: (last._max.sortOrder ?? 0) + 1 } });
   return true;
 }
 

@@ -49,11 +49,10 @@ function TemplateForm({ initial, onPreview }: { initial: Template; onPreview: (b
   const router = useRouter();
   const [title, setTitle] = useState(initial.title);
   const [body, setBody] = useState(initial.body);
-  const [sortOrder, setSortOrder] = useState(initial.sortOrder);
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
   const isNew = !initial.id;
-  const dirty = title !== initial.title || body !== initial.body || sortOrder !== initial.sortOrder;
+  const dirty = title !== initial.title || body !== initial.body;
 
   async function save() {
     setBusy(true);
@@ -62,7 +61,7 @@ function TemplateForm({ initial, onPreview }: { initial: Template; onPreview: (b
       const res = await fetch("/api/admin/support/templates", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ id: initial.id, title, body, sortOrder }),
+        body: JSON.stringify({ id: initial.id, title, body }),
       });
       if (!res.ok) {
         setMessage("Udfyld titel og tekst.");
@@ -94,24 +93,13 @@ function TemplateForm({ initial, onPreview }: { initial: Template; onPreview: (b
       className="hf-type-small flex flex-col gap-2 rounded-lg border border-hf-tan-dark bg-hf-white p-3"
     >
       {isNew && <p className="hf-type-strong text-hf-black">Ny skabelon</p>}
-      <div className="flex gap-2">
-        <input
-          value={title}
-          maxLength={100}
-          onChange={(event) => setTitle(event.target.value)}
-          placeholder="Titel, fx 'Tak for fejlrapporten'"
-          className={`min-w-0 flex-1 ${fieldClass}`}
-        />
-        <label className="flex items-center gap-1 text-text-secondary">
-          Rækkefølge
-          <input
-            type="number"
-            value={sortOrder}
-            onChange={(event) => setSortOrder(Number(event.target.value) || 0)}
-            className={`w-16 ${fieldClass}`}
-          />
-        </label>
-      </div>
+      <input
+        value={title}
+        maxLength={100}
+        onChange={(event) => setTitle(event.target.value)}
+        placeholder="Titel, fx 'Tak for fejlrapporten'"
+        className={`w-full ${fieldClass}`}
+      />
       <textarea
         rows={4}
         maxLength={5000}
