@@ -1,9 +1,16 @@
 // Nøgleord på produktsiden (docs/DECISIONS.md 2026-10-02): admin vælger i
-// Varedatabase → Nøgleord, hvilke felter (smag, økologisk, glutenfri …) og
-// hvilke frie nøgleord fra produktarkene der vises som en linje brødtekst
-// lige over "Energifordeling". Modulet er rent (ingen DB) og kan bruges både
-// på serveren og i klienten.
+// Varedatabase → Nøgleord, hvilke nøgleordstyper (smag, økologisk, glutenfri …)
+// der vises som en linje brødtekst lige over "Energifordeling". Der vælges
+// typer, ikke enkelte nøgleord (brugerens krav 2026-10-07). Modulet er rent
+// (ingen DB) og kan bruges både på serveren og i klienten.
 
+import {
+  PRODUCT_KEYWORD_GROUPS,
+  displayProductKeyword,
+  isProductKeywordGroup,
+  productKeywordGroup,
+  type ProductKeywordGroup,
+} from "./product-keyword-groups.ts";
 export type ProductPageTagField =
   | "flavor"
   | "organic"
@@ -49,19 +56,19 @@ export const PRODUCT_PAGE_TAG_FIELDS: { field: ProductPageTagField; label: strin
 ];
 
 const FIELD_SET = new Set<string>(PRODUCT_PAGE_TAG_FIELDS.map((entry) => entry.field));
+const FIELD_EXAMPLES = new Map<string, string>(PRODUCT_PAGE_TAG_FIELDS.map((entry) => [entry.field, entry.example]));
 
 export type ProductPageTagSettings = {
-  // Felter der vises, når de er udfyldt på varen.
+  // Nøgleordstyper (faste felter) der vises, når de er udfyldt på varen.
   fields: ProductPageTagField[];
-  // Frie nøgleord (Product.keywords) der vises, sammenlignet uden store/små
-  // bogstaver. Gemmes med den stavemåde admin valgte.
-  keywords: string[];
+  // Grupper af frie nøgleord (src/lib/product-keyword-groups.ts).
+  groups: ProductKeywordGroup[];
 };
 
 // Uden gemt opsætning vises smagsretning og økologisk (brugerens eksempel).
 export const DEFAULT_PRODUCT_PAGE_TAG_SETTINGS: ProductPageTagSettings = {
   fields: ["flavor", "organic"],
-  keywords: [],
+  groups: [],
 };
 
 export function sanitizeProductPageTagSettings(value: unknown): ProductPageTagSettings {
@@ -69,26 +76,30 @@ export function sanitizeProductPageTagSettings(value: unknown): ProductPageTagSe
   const fields = Array.isArray(input.fields)
     ? (input.fields.filter((field) => typeof field === "string" && FIELD_SET.has(field)) as ProductPageTagField[])
     : [];
-  const seen = new Set<string>();
-  const keywords: string[] = [];
-  if (Array.isArray(input.keywords)) {
-    for (const raw of input.keywords) {
-      if (typeof raw !== "string") continue;
-      const keyword = raw.trim().slice(0, 120);
-      const key = keyword.toLowerCase();
-      if (!keyword || seen.has(key)) continue;
-      seen.add(key);
-      keywords.push(keyword);
-      if (keywords.length >= 500) break;
-    }
-  }
-  return { fields: [...new Set(fields)], keywords };
+  // Gamle gemte enkelt-nøgleord (før 2026-10-07) er ikke gruppenavne og falder fra.
+  const groups = Array.isArray(input.groups) ? input.groups.filter(isProductKeywordGroup) : [];
+  return { fields: [...new Set(fields)], groups: [...new Set(groups)] };
 }
 
-// Et vist nøgleord. Tal og oprindelsesland formateres i klienten (i18n);
-// alt andet er teksten fra produktarket, som den står.
+// Typer med én fast betydning vises som oversat ord på brugerens sprog
+// (addProduct.tagFlag.<felt>) i stedet for produktarkets danske tekst.
+export const PRODUCT_PAGE_FLAG_FIELDS = [
+  "organic",
+  "glutenFree",
+  "lactoseFree",
+  "vegan",
+  "vegetarian",
+  "wholeGrain",
+  "keyhole",
+] as const;
+export type ProductPageFlagField = (typeof PRODUCT_PAGE_FLAG_FIELDS)[number];
+const FLAG_SET = new Set<string>(PRODUCT_PAGE_FLAG_FIELDS);
+
+// Et vist nøgleord. Faste typer, tal og oprindelsesland formateres i klienten
+// (i18n); alt andet er teksten fra produktarket, som den står.
 export type ProductPageTag =
   | { kind: "text"; text: string }
+  | { kind: "flag"; field: ProductPageFlagField }
   | { kind: "alcoholPercent" | "fatPercent"; value: number }
   | { kind: "countryOfOrigin"; text: string };
 
@@ -119,6 +130,16 @@ export function productPageTags(product: ProductPageTagSource, settings: Product
     }
     const value = product.filters?.[field];
     if (value === null || value === undefined) continue;
+    if (FLAG_SET.has(field)) {
+      const filled = Array.isArray(value) ? value.some((item) => item?.trim()) : String(value).trim() !== "";
+      if (filled && !seen.has(`flag:${field}`)) {
+        seen.add(`flag:${field}`);
+        // Samme ord som frit nøgleord (fx "Økologisk") vises ikke igen.
+        seen.add((FIELD_EXAMPLES.get(field) ?? "").toLowerCase());
+        tags.push({ kind: "flag", field: field as ProductPageFlagField });
+      }
+      continue;
+    }
     if (field === "alcoholPercent" || field === "fatPercent") {
       if (typeof value === "number" && Number.isFinite(value)) tags.push({ kind: field, value });
       continue;
@@ -135,10 +156,15 @@ export function productPageTags(product: ProductPageTagSource, settings: Product
     else if (typeof value === "string") pushText(value);
   }
 
-  if (settings.keywords.length && product.keywords?.length) {
-    const chosen = new Set(settings.keywords.map((keyword) => keyword.toLowerCase()));
+  if (settings.groups.length && product.keywords?.length) {
+    const byGroup = new Map<ProductKeywordGroup, string[]>();
     for (const keyword of product.keywords) {
-      if (chosen.has(keyword.trim().toLowerCase())) pushText(keyword);
+      const group = productKeywordGroup(keyword);
+      if (group) byGroup.set(group, [...(byGroup.get(group) ?? []), keyword]);
+    }
+    const enabledGroups = new Set(settings.groups);
+    for (const { group } of PRODUCT_KEYWORD_GROUPS) {
+      if (enabledGroups.has(group)) byGroup.get(group)?.forEach((keyword) => pushText(displayProductKeyword(keyword)));
     }
   }
   return tags;

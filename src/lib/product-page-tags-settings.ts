@@ -5,13 +5,14 @@ import {
   type ProductPageTagSettings,
 } from "@/lib/product-page-tags";
 
-// Én række ("default") med admins valg af nøgleord til produktsiden
+// Én række ("default") med admins valg af nøgleordstyper til produktsiden
 // (docs/DECISIONS.md 2026-10-02). Mangler rækken, gælder standarden.
 export async function getProductPageTagSettings(): Promise<ProductPageTagSettings> {
   try {
     const row = await prisma.productPageTagSettings.findUnique({ where: { id: "default" } });
     if (!row) return DEFAULT_PRODUCT_PAGE_TAG_SETTINGS;
-    return sanitizeProductPageTagSettings({ fields: row.fields, keywords: row.keywords });
+    // Kolonnen keywords rummer gruppenavnene (product-keyword-groups.ts).
+    return sanitizeProductPageTagSettings({ fields: row.fields, groups: row.keywords });
   } catch (error) {
     // Fx før migrationen er kørt — produktsiden må aldrig fejle på grund af dette.
     console.error("Failed to read product page tag settings", error);
@@ -26,13 +27,15 @@ export async function saveProductPageTagSettings(
   const settings = sanitizeProductPageTagSettings(value);
   await prisma.productPageTagSettings.upsert({
     where: { id: "default" },
-    create: { id: "default", fields: settings.fields, keywords: settings.keywords, updatedById },
-    update: { fields: settings.fields, keywords: settings.keywords, updatedById },
+    // Kolonnen keywords rummer gruppenavnene, ikke enkelte nøgleord.
+    create: { id: "default", fields: settings.fields, keywords: settings.groups, updatedById },
+    update: { fields: settings.fields, keywords: settings.groups, updatedById },
   });
   return settings;
 }
 
-// Alle frie nøgleord fra produktarkene med antal varer, til admins valgliste.
+// Alle frie nøgleord på katalogvarer med antal varer, til admins oversigt
+// over hvad hver gruppe indeholder.
 export async function listProductKeywordCounts(): Promise<{ keyword: string; count: number }[]> {
   const rows = await prisma.$queryRaw<{ keyword: string; count: bigint }[]>`
     SELECT keyword, COUNT(*)::bigint AS count
@@ -40,7 +43,7 @@ export async function listProductKeywordCounts(): Promise<{ keyword: string; cou
     WHERE keyword <> ''
     GROUP BY keyword
     ORDER BY count DESC, keyword ASC
-    LIMIT 1000
+    LIMIT 5000
   `;
   return rows.map((row) => ({ keyword: row.keyword, count: Number(row.count) }));
 }

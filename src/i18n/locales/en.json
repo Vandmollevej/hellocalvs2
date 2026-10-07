@@ -1862,6 +1862,15 @@
     "tagCountryOfOrigin": "From {country}",
     "tagAlcoholPercent": "{percent}% alcohol",
     "tagFatPercent": "{percent}% fat",
+    "tagFlag": {
+      "organic": "Organic",
+      "glutenFree": "Gluten-free",
+      "lactoseFree": "Lactose-free",
+      "vegan": "Vegan",
+      "vegetarian": "Vegetarian",
+      "wholeGrain": "Wholegrain",
+      "keyhole": "Keyhole label"
+    },
     "toxinPregnancyBadge": "Pregnant/breastfeeding",
     "toxinsDisclaimer": "Based on the ingredient list — not a measurement of this specific product. Sources: Danish Veterinary and Food Administration and EFSA.",
     "unhealthyFat": "Unhealthy fat",

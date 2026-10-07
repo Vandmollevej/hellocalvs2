@@ -599,6 +599,11 @@ Uge- og Liste-visningen beholder "Ingen indtastninger" i gråt på tomme dage.
   "Fedtprocent m.m." (`read.bodyFat`) slået til i sin opsætning. Linket til
   `/statistics/body-water` fra Kropsmål er fjernet; siden findes stadig uden link.
 
+## 2026-10-07: Nøgleord på produktsiden — typer og grupper, oversat
+
+- Brugerens krav: admin vælger nøgleordsTYPER og -GRUPPER, ikke enkelte nøgleord. De frie nøgleord fra produktarkene (Bilka/REMA/SPAR, 4.517 forskellige) er analyseret og inddelt i grupper efter mønstre i `src/lib/product-keyword-groups.ts`: Smag, Farve, Tilberedning, Udskæring og form, Frost og opbevaring, Emballage, Størrelse, Indhold og tilsætning, Druesort og vintype, Kød og fisk, Kvalitet, Mærkning, Oprindelse, Varetype, Advarsler og oplysninger. ~44 % af forekomsterne får en gruppe; resten (mest mærkenavne og afkortede brudstykker) vises ikke. Forkortelser (Glf, Lkf, Bib …) vises som hele ord. Kolonnen `product_page_tag_settings.keywords` rummer nu gruppenavnene (ingen migration); gamle enkelt-nøgleord falder fra.
+- Sprog: faste typer (økologisk, glutenfri, laktosefri, vegansk, vegetarisk, fuldkorn, nøglehul) vises via `addProduct.tagFlag.*` på brugerens sprog. Smagsretning, kødtype, certificeringer m.fl. er fri tekst fra produktarket og vises uoversat (dansk).
+
 ## 2026-10-02: Nøgleord på produktsiden
 
 - Brugerens krav: øvrige nøgleord (smagsretning, økologisk m.fl.), som admin vælger, listes før "Energifordeling" i HelloFresh' sorte, større brødtekst (`.hf-type-body-lg`, samme som velkomstsidens introtekst).

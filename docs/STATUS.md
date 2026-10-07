@@ -2,6 +2,11 @@
 
 Last updated: 2026-10-07
 
+## 2026-10-07: Nøgleord på produktsiden — typer og grupper
+
+- Admin → Varedatabase → Nøgleord: valget af enkelte frie nøgleord er erstattet af nøgleordsgrupper (Smag, Farve, Emballage, Frost og opbevaring …) fundet ved analyse af alle nøgleord i produktarkene, med eksempler og antal pr. gruppe (brugerens krav). Faste typer vises nu på brugerens sprog (7 sprog); smagsretning m.fl. vises som i produktarket. Se DECISIONS.md 2026-10-07.
+- Ingen migration. Tests `product-page-tags.test.mjs` opdateret.
+
 ## 2026-10-07: HelloFresh-retter kun visning
 
 Retter → HelloFresh åbner nu en skrivebeskyttet side under Retter (ikke Nye varer); indhold og varesidens tre tabeller ligger i en lukket dropdown "Indhold" (DECISIONS 2026-10-07).

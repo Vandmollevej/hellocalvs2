@@ -7,12 +7,20 @@ import {
   type ProductPageTagField,
   type ProductPageTagSettings,
 } from "@/lib/product-page-tags";
+import {
+  PRODUCT_KEYWORD_GROUPS,
+  displayProductKeyword,
+  productKeywordGroup,
+  type ProductKeywordGroup,
+} from "@/lib/product-keyword-groups";
 
-// Valg af nøgleord til produktsiden (docs/DECISIONS.md 2026-10-02).
+// Valg af nøgleordstyper og -grupper til produktsiden
+// (docs/DECISIONS.md 2026-10-02 + 2026-10-07).
 
 type KeywordCount = { keyword: string; count: number };
 
 const numberFormat = new Intl.NumberFormat("da-DK");
+const FIELD_EXAMPLES = new Map(PRODUCT_PAGE_TAG_FIELDS.map((entry) => [entry.field, entry.example]));
 
 export function ProductPageTagsEditor({
   initialSettings,
@@ -22,24 +30,24 @@ export function ProductPageTagsEditor({
   keywords: KeywordCount[];
 }) {
   const [fields, setFields] = useState<Set<ProductPageTagField>>(() => new Set(initialSettings.fields));
-  const [chosenKeywords, setChosenKeywords] = useState<Map<string, string>>(
-    () => new Map(initialSettings.keywords.map((keyword) => [keyword.toLowerCase(), keyword])),
-  );
-  const [query, setQuery] = useState("");
+  const [groups, setGroups] = useState<Set<ProductKeywordGroup>>(() => new Set(initialSettings.groups));
   const [status, setStatus] = useState<"idle" | "saving" | "saved" | "error">("idle");
 
-  const visibleKeywords = useMemo(() => {
-    const needle = query.trim().toLowerCase();
-    const list = needle ? keywords.filter((row) => row.keyword.toLowerCase().includes(needle)) : keywords;
-    // Valgte nøgleord, der ikke længere findes på nogen vare, vises stadig, så de kan fravælges.
-    const known = new Set(keywords.map((row) => row.keyword.toLowerCase()));
-    const orphans = [...chosenKeywords.entries()]
-      .filter(([key, keyword]) => !known.has(key) && (!needle || key.includes(needle)) && keyword)
-      .map(([, keyword]) => ({ keyword, count: 0 }));
-    return [...orphans, ...list];
-  }, [keywords, chosenKeywords, query]);
+  // Nøgleordene i databasen fordelt på grupper (mest brugte først).
+  const byGroup = useMemo(() => {
+    const map = new Map<ProductKeywordGroup, { keywords: KeywordCount[]; products: number }>();
+    for (const row of keywords) {
+      const group = productKeywordGroup(row.keyword);
+      if (!group) continue;
+      const entry = map.get(group) ?? { keywords: [], products: 0 };
+      entry.keywords.push(row);
+      entry.products += row.count;
+      map.set(group, entry);
+    }
+    return map;
+  }, [keywords]);
 
-  // Eksempel med feltets eksempeltekster, så admin ser rækkefølgen.
+  // Eksempel med eksempeltekster (på dansk), så admin ser rækkefølgen.
   const preview = useMemo(() => {
     const filters: Record<string, string | number | string[]> = {};
     let flavor: string | null = null;
@@ -50,35 +58,28 @@ export function ProductPageTagsEditor({
       else if (field === "countryOfOrigin") filters[field] = "Danmark";
       else filters[field] = example;
     }
-    const settings = { fields: [...fields], keywords: [...chosenKeywords.values()] };
-    return productPageTags({ flavor, filters, keywords: settings.keywords.slice(0, 3) }, settings)
+    const sampleKeywords = PRODUCT_KEYWORD_GROUPS.map(
+      ({ group, example }) => byGroup.get(group)?.keywords[0]?.keyword ?? example.split(",")[0],
+    );
+    return productPageTags({ flavor, filters, keywords: sampleKeywords }, { fields: [...fields], groups: [...groups] })
       .map((tag) =>
         tag.kind === "text"
           ? tag.text
+          : tag.kind === "flag"
+          ? FIELD_EXAMPLES.get(tag.field) ?? tag.field
           : tag.kind === "countryOfOrigin"
           ? `Fra ${tag.text}`
           : `${numberFormat.format(tag.value)} % ${tag.kind === "alcoholPercent" ? "alkohol" : "fedt"}`,
       )
       .join(" · ");
-  }, [fields, chosenKeywords]);
+  }, [fields, groups, byGroup]);
 
-  function toggleField(field: ProductPageTagField) {
+  function toggle<T>(setter: (update: (current: Set<T>) => Set<T>) => void, value: T) {
     setStatus("idle");
-    setFields((current) => {
+    setter((current) => {
       const next = new Set(current);
-      if (next.has(field)) next.delete(field);
-      else next.add(field);
-      return next;
-    });
-  }
-
-  function toggleKeyword(keyword: string) {
-    setStatus("idle");
-    setChosenKeywords((current) => {
-      const next = new Map(current);
-      const key = keyword.toLowerCase();
-      if (next.has(key)) next.delete(key);
-      else next.set(key, keyword);
+      if (next.has(value)) next.delete(value);
+      else next.add(value);
       return next;
     });
   }
@@ -89,10 +90,10 @@ export function ProductPageTagsEditor({
       const res = await fetch("/api/admin/product-page-tags", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
+        // Gem i katalogets rækkefølge.
         body: JSON.stringify({
-          // Gem i katalogets rækkefølge.
           fields: PRODUCT_PAGE_TAG_FIELDS.map((entry) => entry.field).filter((field) => fields.has(field)),
-          keywords: [...chosenKeywords.values()],
+          groups: PRODUCT_KEYWORD_GROUPS.map((entry) => entry.group).filter((group) => groups.has(group)),
         }),
       });
       setStatus(res.ok ? "saved" : "error");
@@ -109,11 +110,11 @@ export function ProductPageTagsEditor({
       </section>
 
       <section className="rounded-lg border border-hf-tan-dark bg-hf-white p-4">
-        <h2 className="hf-type-title text-hf-black">Felter</h2>
+        <h2 className="hf-type-title text-hf-black">Faste typer</h2>
         <div className="mt-2 grid grid-cols-1 gap-x-6 sm:grid-cols-2">
           {PRODUCT_PAGE_TAG_FIELDS.map(({ field, label, example }) => (
             <label key={field} className="hf-type-body flex min-h-11 items-center gap-2 text-hf-black">
-              <input type="checkbox" checked={fields.has(field)} onChange={() => toggleField(field)} />
+              <input type="checkbox" checked={fields.has(field)} onChange={() => toggle(setFields, field)} />
               <span>{label}</span>
               <span className="hf-type-small text-text-secondary">fx &quot;{example}&quot;</span>
             </label>
@@ -122,40 +123,41 @@ export function ProductPageTagsEditor({
       </section>
 
       <section className="rounded-lg border border-hf-tan-dark bg-hf-white p-4">
-        <div className="flex flex-wrap items-baseline justify-between gap-2">
-          <h2 className="hf-type-title text-hf-black">Frie nøgleord</h2>
-          <p className="hf-type-small text-text-secondary">
-            {numberFormat.format(chosenKeywords.size)} valgt af {numberFormat.format(keywords.length)}
-          </p>
-        </div>
-        <input
-          type="search"
-          value={query}
-          onChange={(event) => setQuery(event.target.value)}
-          placeholder="Søg i nøgleord"
-          className="hf-type-input mt-2 w-full rounded-md border border-hf-tan-dark bg-hf-white px-3 py-2 text-hf-black"
-        />
-        {visibleKeywords.length === 0 ? (
-          <p className="hf-type-body mt-3 text-text-secondary">
-            {keywords.length === 0 ? "Ingen varer har nøgleord endnu." : "Ingen nøgleord matcher søgningen."}
-          </p>
-        ) : (
-          <div className="mt-2 grid max-h-[480px] grid-cols-1 gap-x-6 overflow-y-auto sm:grid-cols-2">
-            {visibleKeywords.map(({ keyword, count }) => (
-              <label key={keyword.toLowerCase()} className="hf-type-body flex min-h-11 items-center gap-2 text-hf-black">
+        <h2 className="hf-type-title text-hf-black">Nøgleordsgrupper fra produktarkene</h2>
+        <p className="hf-type-small mt-1 text-text-secondary">
+          Nøgleord uden gruppe (fx mærkenavne og afkortede ord) vises ikke.
+        </p>
+        <div className="mt-2 flex flex-col">
+          {PRODUCT_KEYWORD_GROUPS.map(({ group, label, example }) => {
+            const entry = byGroup.get(group);
+            const samples = entry?.keywords.slice(0, 12).map((row) => displayProductKeyword(row.keyword));
+            return (
+              <label key={group} className="hf-type-body flex min-h-11 items-start gap-2 py-1 text-hf-black">
                 <input
                   type="checkbox"
-                  checked={chosenKeywords.has(keyword.toLowerCase())}
-                  onChange={() => toggleKeyword(keyword)}
+                  className="mt-1"
+                  checked={groups.has(group)}
+                  onChange={() => toggle(setGroups, group)}
                 />
-                <span>{keyword}</span>
-                <span className="hf-type-small text-text-secondary">
-                  {count ? `${numberFormat.format(count)} varer` : "ikke på nogen vare"}
+                <span className="flex flex-col">
+                  <span>
+                    {label}
+                    {entry && (
+                      <span className="hf-type-small text-text-secondary">
+                        {" "}
+                        · {numberFormat.format(entry.keywords.length)} forskellige,{" "}
+                        {numberFormat.format(entry.products)} gange i alt
+                      </span>
+                    )}
+                  </span>
+                  <span className="hf-type-small text-text-secondary">
+                    {samples?.length ? samples.join(", ") : `fx ${example}`}
+                  </span>
                 </span>
               </label>
-            ))}
-          </div>
-        )}
+            );
+          })}
+        </div>
       </section>
 
       <div className="flex items-center gap-3">

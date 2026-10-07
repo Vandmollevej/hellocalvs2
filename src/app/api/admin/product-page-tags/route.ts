@@ -1,22 +1,16 @@
 import { NextResponse } from "next/server";
 import { requireAdminUser } from "@/lib/require-admin";
-import {
-  getProductPageTagSettings,
-  listProductKeywordCounts,
-  saveProductPageTagSettings,
-} from "@/lib/product-page-tags-settings";
+import { getProductPageTagSettings, saveProductPageTagSettings } from "@/lib/product-page-tags-settings";
 
-// GET /api/admin/product-page-tags — admins valg af nøgleord til
-// produktsiden + alle frie nøgleord med antal varer (docs/DECISIONS.md
-// 2026-10-02).
+// GET /api/admin/product-page-tags — admins valg af nøgleordstyper og -grupper til
+// produktsiden (docs/DECISIONS.md 2026-10-02 + 2026-10-07).
 export async function GET() {
   const admin = await requireAdminUser();
   if (!admin) return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
-  const [settings, keywords] = await Promise.all([getProductPageTagSettings(), listProductKeywordCounts()]);
-  return NextResponse.json({ settings, keywords });
+  return NextResponse.json({ settings: await getProductPageTagSettings() });
 }
 
-// PUT /api/admin/product-page-tags — gem valget. Body: { fields, keywords }.
+// PUT /api/admin/product-page-tags — gem valget. Body: { fields, groups }.
 export async function PUT(req: Request) {
   const admin = await requireAdminUser();
   if (!admin) return NextResponse.json({ message: "Unauthorized" }, { status: 401 });

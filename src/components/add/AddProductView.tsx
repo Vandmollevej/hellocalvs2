@@ -1056,6 +1056,8 @@ export function AddProductView({
                     .map((tag) =>
                       tag.kind === "text"
                         ? tag.text
+                        : tag.kind === "flag"
+                        ? t(`addProduct.tagFlag.${tag.field}`)
                         : tag.kind === "countryOfOrigin"
                         ? t("addProduct.tagCountryOfOrigin", { country: tag.text })
                         : t(tag.kind === "alcoholPercent" ? "addProduct.tagAlcoholPercent" : "addProduct.tagFatPercent", {

@@ -1873,6 +1873,15 @@
     "tagCountryOfOrigin": "De {country}",
     "tagAlcoholPercent": "{percent} % d'alcool",
     "tagFatPercent": "{percent} % de lipides",
+    "tagFlag": {
+      "organic": "Bio",
+      "glutenFree": "Sans gluten",
+      "lactoseFree": "Sans lactose",
+      "vegan": "Végan",
+      "vegetarian": "Végétarien",
+      "wholeGrain": "Céréales complètes",
+      "keyhole": "Label Keyhole"
+    },
     "toxinPregnancyBadge": "Grossesse/allaitement",
     "toxinsDisclaimer": "D'après la liste des ingrédients — il ne s'agit pas d'une mesure de ce produit précis. Sources : Fødevarestyrelsen et EFSA.",
     "unhealthyFat": "Mauvaises graisses",

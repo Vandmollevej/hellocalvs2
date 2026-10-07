@@ -3,8 +3,9 @@ import { requireAdminUser } from "@/lib/require-admin";
 import { getProductPageTagSettings, listProductKeywordCounts } from "@/lib/product-page-tags-settings";
 import { ProductPageTagsEditor } from "@/components/admin/ProductPageTagsEditor";
 
-// Admin "Varedatabase → Nøgleord" (docs/DECISIONS.md 2026-10-02): vælg hvilke
-// felter og frie nøgleord der vises på produktsiden over "Energifordeling".
+// Admin "Varedatabase → Nøgleord" (docs/DECISIONS.md 2026-10-02 + 2026-10-07):
+// vælg hvilke nøgleordstyper og -grupper der vises på produktsiden over
+// "Energifordeling".
 export default async function AdminProductPageTagsPage() {
   const admin = await requireAdminUser();
   if (!admin) redirect("/admin/login");
@@ -22,8 +23,9 @@ export default async function AdminProductPageTagsPage() {
       <div>
         <h1 className="hf-type-title text-hf-black">Nøgleord på produktsiden</h1>
         <p className="hf-type-body text-text-secondary">
-          Vælg hvad der vises som en linje brødtekst lige over &quot;Energifordeling&quot; på produktsiden. Et felt
-          vises kun, når det er udfyldt på varen. Frie nøgleord kommer fra butikkernes produktark.
+          Vælg hvilke typer og grupper af nøgleord der vises som en linje brødtekst lige over &quot;Energifordeling&quot;
+          på produktsiden. Der vises kun det, varen faktisk har. Faste typer (fx Økologisk, Glutenfri) vises på
+          brugerens sprog; nøgleord fra produktarkene vises som i arket (dansk).
         </p>
       </div>
       <ProductPageTagsEditor initialSettings={settings} keywords={keywords} />
