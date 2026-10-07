@@ -271,6 +271,27 @@ export async function GET(req: Request) {
       }
     }
 
+    // Tommel op/ned påvirker populariteten (brugerens krav 2026-10-08), men
+    // primært nedad: en tommel ned tæller 3, en tommel op 1 og højst +3 i alt,
+    // så de mest populære retter ikke selvforstærker (ekkokammer).
+    if (items.length > 0) {
+      const keyOf = (item: Item) => `${item.kind === "shared" ? "shared" : "hf"}:${item.id}`;
+      const ratings = await prisma.recipeRating
+        .groupBy({
+          by: ["recipeKey", "value"],
+          where: { recipeKey: { in: items.map(keyOf) } },
+          _count: { _all: true },
+        })
+        .catch(() => []);
+      const ups = new Map<string, number>();
+      const downs = new Map<string, number>();
+      for (const row of ratings) (row.value > 0 ? ups : downs).set(row.recipeKey, row._count._all);
+      for (const item of items) {
+        const key = keyOf(item);
+        item.popularity += Math.min(ups.get(key) ?? 0, 3) - 3 * (downs.get(key) ?? 0);
+      }
+    }
+
     const sort = filters.sort;
     items.sort((a, b) => {
       if (sort === "popular") return b.popularity - a.popularity || b.createdAt.localeCompare(a.createdAt);
