@@ -4501,3 +4501,8 @@ Varer med samme brand, produkttype, serie, variant og smag, der kun adskiller si
 - Stil ligger samlet i `globals.css` (`.hf-pick-grid/-card/-frame/-badge/-arrow/-strip/-thumb/-size`); sider må ikke style disse selv.
 ## 2026-10-07: HelloFresh-retter kun til visning (admin → Retter → HelloFresh)
 HelloFresh-retter åbnes på `/admin/dishes/hellofresh/[id]`, ikke på varesiden under Varegodkendelse/Nye varer, og kan ikke redigeres (`/admin/products/[id]` sender HelloFresh-rækker videre). Siden viser billede, titel, undertitel, tid/sværhedsgrad og beskrivelse; ingredienser, næring pr. portion og fremgangsmåde ligger i en lukket dropdown "Indhold". Varesidens tre tabeller (basisinfo, næring, filtre) ligger ligeledes i en lukket dropdown "Indhold" i stedet for tre store kolonner (brugerens krav).
+
+## 2026-10-07 Logo-upload afviser filer uden brand-match
+
+Et logo, hvis filnavn ikke præcist matcher et eksisterende brand, afvises og gemmes ikke (ingen fil, kun en afvisningslinje i oversigten). Produktbilleder afviste allerede ukendte varer før lagring.
+

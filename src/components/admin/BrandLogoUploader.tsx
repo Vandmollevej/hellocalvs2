@@ -183,7 +183,6 @@ export function BrandLogoUploader({ canEdit }: { canEdit: boolean }) {
   const done = jobs.filter((job) => job.phase === "saved" || job.phase === "error").length;
   const saved = jobs.filter((job) => job.phase === "saved");
   const matched = saved.filter((job) => job.item?.status === "DONE").length;
-  const unmatched = saved.filter((job) => job.item?.status === "UNMATCHED").length;
   const failed = jobs.filter((job) => job.phase === "error").length;
   const percent = jobs.length > 0 ? Math.round((done / jobs.length) * 100) : 0;
 
@@ -264,15 +263,13 @@ export function BrandLogoUploader({ canEdit }: { canEdit: boolean }) {
           <p className="hf-type-body text-text-secondary">
             <span className="text-hf-green-dark">{matched} sat som logo</span>
             {" · "}
-            <span className={unmatched > 0 ? "text-hf-warning" : ""}>{unmatched} mangler brand</span>
-            {" · "}
-            <span className={failed > 0 ? "text-hf-red-dark" : ""}>{failed} fejlede</span>
+            <span className={failed > 0 ? "text-hf-red-dark" : ""}>{failed} afvist/fejlede</span>
             {run.skipped > 0 && <span> · {run.skipped} ikke-billedfiler sprunget over</span>}
           </p>
           {run.error && <p className="hf-type-body text-hf-red-dark">{run.error}</p>}
           {run.finished && jobs.length > 0 && (
             <p className="hf-type-body text-hf-black">
-              Færdig. Resultatet står i oversigten nedenfor — der kan du vælge brand til filer uden match og slette hele partiet, hvis noget er gået galt.
+              Færdig. Filer uden præcist brand-match er afvist og ikke gemt. Resultatet står i oversigten nedenfor.
             </p>
           )}
 
