@@ -1,8 +1,54 @@
-# Hello Cal — native widgets og Health Connect
+# Hello Cal — native apps (Android + iPhone)
 
-Færdig kildekode til hjemmeskærm-widgets (se `docs/WIDGETS.md`). Koden er
-skrevet på Windows og er **ikke kompileret endnu** — den bygges første gang,
-når der er en Mac (iPhone) / Android Studio (Android). Designet svarer til
+Hello Cal er en **helt native** app (docs/DECISIONS.md 2026-10-07). Alle skærme
+er skrevet én gang i Kotlin med Compose Multiplatform (`shared/`) og kompileres
+til både Android og iPhone. Der er altså to steder at rette en skærm: webappen
+(`src/`) og `native/shared/`.
+
+| Mappe | Indhold |
+| --- | --- |
+| `shared/` | Alle skærme, tema, tekster, API-klient (Android + iPhone) |
+| `androidApp/` | Android-appen (MainActivity, deep links, widgets, Health Connect) |
+| `iosApp/` | iPhone-appen (`project.yml` → `xcodegen generate`) |
+| `android/widgets`, `android/healthconnect` | Android-widgets og Health Connect-synk |
+| `ios/HelloCalWidgets` | iPhone-widgets (WidgetKit) |
+| `parity/` | Hvilken native skærm der svarer til hvilken web-side |
+
+Byg: GitHub Actions (`.github/workflows/native.yml`) bygger Android-APK'en og
+iPhone-appen (simulator) ved hvert push, der rører `native/`. APK'en ligger som
+artefakt på kørslen. Lokalt: `gradle -p native :androidApp:assembleDebug`
+(kræver JDK 17 + Android SDK).
+
+## Hold web og native i takt
+
+Der er tre mekanismer, så en rettelse ikke kun lander ét sted:
+
+1. **Genereret fra web — rettes aldrig i hånden.** `node scripts/native/sync.mjs`
+   læser `src/app/globals.css` (farver, mål, `.hf-type-*`), `src/i18n/locales/*.json`
+   (alle tekster), de Tabler-ikoner web bruger og app-ikonet, og skriver
+   `HcTokens.kt`, `HcTokens.swift`, `hc_tokens.xml`, `TablerData.kt` og
+   `composeResources/files/locales/*.json`. Ændrer du et token, en tekst eller et
+   ikon på web, så kør scriptet og commit resultatet.
+2. **Paritets-manifest.** `parity/screens.json` har én række pr. web-side:
+   `ported` (native skærm findes), `pending` (mangler) eller `web-only`
+   (admin/partner/butiks-scanner). For hver porteret skærm gemmer
+   `parity/accepted.json` et fingeraftryk af web-filerne, skærmen er bygget af:
+   siden plus alle komponenter, den importerer, rekursivt.
+   - `node scripts/native/parity.mjs` viser, hvilke native skærme der er bagud.
+   - `--port <rute> <fil.kt>`: ny skærm porteret.
+   - `--accept <rute>`: ændringen er overført.
+   - `--register`: nye web-sider tilføjes som `pending`.
+3. **Automatisk håndhævelse.**
+   - Claude Code-hooken i `.claude/settings.json` stopper en session, der har
+     ændret web-UI uden at overføre ændringen til native.
+   - CI-jobbet "Web ↔ native in step" fejler på GitHub, hvis noget er ude af takt.
+
+Kun UI tæller (`src/app/**` undtagen `api/`, og `src/components/**`).
+Forretningslogik i `src/lib` når native via de samme `/api`-ruter som web.
+
+## Widgets og Health Connect
+
+Widget-kildekoden er beskrevet i `docs/WIDGETS.md`. Designet svarer til
 forhåndsvisningen på `/widgets` i web-appen.
 
 Begge platforme henter alt fra `GET /api/widgets/snapshot` med brugerens

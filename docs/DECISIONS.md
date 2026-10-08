@@ -4650,3 +4650,11 @@ klip-klister mellem sider, og telefon/webvisning må ikke have hver sine klasser
 - Brugerens regel: når en butiksrække slettes, fordi stregkoden allerede findes (Bilka/databasen vinder), skal den tabende butiks kæde altid udfyldes på vinderen (Kæder/`product_stores`) — ellers mister vi viden om, hvor varen sælges.
 - Kilden er `scripts/store-products-import/data/store_links.json` (EAN → kæder), bagt ind i store-products-agent, der kobler ved hver kørsel; EAN uden vare i databasen endnu kobles, når varen importeres. Kæder oprettes efter navn ("Rewe", "DM").
 - 2026-10-07-sletningen (127 Rewe + 137 DM rækker) er genskabt fra backup-arkene: 259 EAN.
+## 2026-10-07: Helt native app — Compose Multiplatform, web og native holdes i takt automatisk
+
+Brugeren valgte "helt native" frem for en web-app i en skal (bekræfter 2026-09-26). Kravet: rettelser skal slå igennem overalt, uden at brugeren selv holder styr på det.
+- **Én native kodebase til begge telefoner.** Skærmene skrives i Kotlin med Compose Multiplatform (`native/shared`), som kompileres til Android og iPhone. Der rettes altså to steder (web + native) og ikke tre. Widgets er fortsat platformens egne (Glance / WidgetKit), fordi de skal være det.
+- **Samme backend, samme stier.** Native kalder de samme `/api`-ruter som web, med samme login-cookie. Skærme adresseres med web-stierne, og deep links er `hellocal://<web-sti>`.
+- **Genereret, ikke kopieret.** Farver, mål, typografi (`globals.css`), tekster (`src/i18n/locales`), ikoner og app-ikon genereres af `scripts/native/sync.mjs`. Håndskrevne hex-værdier i widgets er fjernet.
+- **Paritet håndhæves.** `native/parity/screens.json` binder hver web-side til sin native skærm. Fingeraftryk af sidens web-filer (siden + importerede komponenter) afslører, når web er ændret uden native. Det håndhæves af AGENTS.md-reglen, en Stop-hook i `.claude/settings.json` og CI.
+- Admin, partner-, erhvervs- og butiks-scanner-sider forbliver web (`web-only`).

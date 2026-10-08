@@ -24,6 +24,14 @@ Last updated: 2026-10-08
 - Verificeret på master (0a7d3593): "Sådan regner vi" væk, "/stk." efter gram pr. skive, ingen tom luft over Tilføj-knappen, Tilføj-knap væk fra rækker, menutekst tættere på ikonerne, beskeder swipe-slet midt for rækken.
 - Lint grøn på de ændrede filer; `tsc` har kun to fejl i `api/dishes/route.ts` fra en forældet Prisma-klient i worktree'et. Ikke visuelt testet (brugerens regel).
 
+## 2026-10-07: Native apps (Android + iPhone) — fundament
+
+- Brugerens valg: Hello Cal bliver **helt native** og ikke en web-app i en skal. Alle skærme skrives én gang i Kotlin/Compose Multiplatform (`native/shared`) og kompileres til både Android og iPhone. Se DECISIONS 2026-10-07.
+- Fundamentet er klar: Gradle-build (`native/`), Android-app (`androidApp`) med deep links, widgets og Health Connect, og iPhone-app (`iosApp/project.yml`, XcodeGen) med Keychain og widgets.
+- Tema, alle tekster (7 sprog), 176 Tabler-ikoner og app-ikonet genereres fra web med `scripts/native/sync.mjs`.
+- Login (cookie som i browseren, krypteret lager), navigation med web-stier og bundmenu.
+- Paritets-vagten: `native/parity/screens.json` (121 forbruger-sider, 100 kun web), `scripts/native/parity.mjs`, Stop-hook i `.claude/settings.json` og CI-jobbet `.github/workflows/native.yml`. Det bygger også APK og iPhone-simulator-build.
+- Porteret: `/login`. De øvrige sider står som `pending` og vises i appen som "endnu ikke bygget" med et link til browseren.
 ## 2026-10-07: Prod-nedbrud — fejlet emailHash-migrering
 
 - Migrationen `20261004190000_user_email_hash` fejlede ved deploy 2026-10-06 22:42 UTC. Live-koden læste `User.emailHash` → P2022 (side-fejl digest 3069122648), og `migrate deploy` afviste siden alle nye migreringer (P3009), så ingen deploys gik igennem.
