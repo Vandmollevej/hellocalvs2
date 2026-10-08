@@ -38,7 +38,7 @@ Ejer: session "Native app" (e4e4d388), 2026-10-08. Fortsæt fra `native/README.m
 | Id | Opgave | Status | Næste skridt |
 | --- | --- | --- | --- |
 | fundament | Gradle/KMP-build, Android- og iPhone-app, tema/tekster/ikoner fra web, login, navigation, paritets-vagt, CI | Færdig | — |
-| skaerme | Portér alle forbruger-sider | Færdig (121/121, CI grøn) | Små forskelle web↔app lukkes (titel-ikoner, forsidens pulslinje/halvcirkel-redigering, enheder, statistik-træk-animation) |
+| skaerme | Portér alle forbruger-sider + finpudsning | Færdig (121/121, CI grøn, 80110278) | Ikke porteret: "Guide mig"-markering i hjælpechatten, FLIP-animation i bundmenu-panelet, reduceret bevægelse |
 | oauth | Apple/Google/Facebook-login og integrationer tilbage til appen | Færdig (PKCE + engangskoder) | — |
 | konti | Push (Firebase/APNs) og Face ID/passkey-login i appen | Venter på bruger | Kræver Firebase-projekt, Apple Developer-konto (Team ID, APNs-nøgle, Associated Domains) |
 
