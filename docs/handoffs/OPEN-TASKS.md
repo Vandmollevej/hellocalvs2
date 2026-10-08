@@ -31,6 +31,18 @@ Status opdateret: 2026-10-06 — alle udestående opgaver slettet (klaret af en 
 
 ---
 
+## G-NATIVE — Native Android + iPhone-app (helt native, Compose Multiplatform)
+Filer: `native/**`, `scripts/native/**`, `.github/workflows/native.yml`. Branch `claude/native-apps` (merges til master, når CI er grøn).
+Ejer: session "Native app" (e4e4d388), 2026-10-08. Fortsæt fra `native/README.md` + `native/PORTING.md`; status pr. skærm står i `native/parity/screens.json` (`node scripts/native/parity.mjs`).
+
+| Id | Opgave | Status | Næste skridt |
+| --- | --- | --- | --- |
+| fundament | Gradle/KMP-build, Android- og iPhone-app, tema/tekster/ikoner fra web, login, navigation, paritets-vagt, CI | I gang | CI grøn (Android + iPhone) |
+| skaerme | Portér de 120 resterende forbruger-sider (`pending` i screens.json) | I gang | Område for område: mad/registrering, kalender, statistik, profil, indstillinger, login/onboarding, kamera/stemme/oprettelser |
+| oauth | Apple/Google/Facebook-login tilbage til appen (app-link callback) | Ikke startet | Kræver callback-rute, der sætter cookie i appen |
+
+---
+
 ## G-NAVNE — Stavning, Nøgleord-punkt, Integrationer-navn (2026-10-07)
 Filer: se commit. Ejer: session "Varer/Integrationer-navne", 2026-10-07.
 
