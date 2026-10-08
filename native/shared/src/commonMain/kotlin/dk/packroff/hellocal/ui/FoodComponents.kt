@@ -1,5 +1,6 @@
 package dk.packroff.hellocal.ui
 
+import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
@@ -411,7 +412,7 @@ fun FoodSlider(
                     detectTapGestures { offset -> onChange(clamp(min + (offset.x / widthPx).coerceIn(0f, 1f) * (max - min))) }
                 }
                 .pointerInput(min, max, step) {
-                    androidx.compose.foundation.gestures.detectDragGestures { change: androidx.compose.ui.input.pointer.PointerInputChange, _: androidx.compose.ui.geometry.Offset ->
+                    detectDragGestures { change, _ ->
                         change.consume()
                         onChange(clamp(min + (change.position.x / widthPx).coerceIn(0f, 1f) * (max - min)))
                     }
