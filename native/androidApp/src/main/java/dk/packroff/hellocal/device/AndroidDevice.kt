@@ -130,7 +130,7 @@ object AndroidDevice : DevicePlatform {
             } catch (e: Exception) {
                 null to (e.message ?: "failed")
             }
-            onResult(value, error)
+            onResult(outcome.first, outcome.second)
         }
     }
 
