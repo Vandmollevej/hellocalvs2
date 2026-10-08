@@ -4620,3 +4620,12 @@ klip-klister mellem sider, og telefon/webvisning må ikke have hver sine klasser
 - Vælgerværktøj: codemoden kørte via TypeScript-AST, så kun `className`/`style`
   blev ændret. Små bevidste visuelle normaliseringer: 12 px-radier → 8 px og
   12 px-mellemrum i paneler → 8 px (design.md §5), to Face ID-blå → én.
+
+## 2026-10-07: Helt native app — Compose Multiplatform, web og native holdes i takt automatisk
+
+Brugeren valgte "helt native" frem for en web-app i en skal (bekræfter 2026-09-26). Kravet: rettelser skal slå igennem overalt, uden at brugeren selv holder styr på det.
+- **Én native kodebase til begge telefoner.** Skærmene skrives i Kotlin med Compose Multiplatform (`native/shared`), som kompileres til Android og iPhone. Der rettes altså to steder (web + native) og ikke tre. Widgets er fortsat platformens egne (Glance / WidgetKit), fordi de skal være det.
+- **Samme backend, samme stier.** Native kalder de samme `/api`-ruter som web, med samme login-cookie. Skærme adresseres med web-stierne, og deep links er `hellocal://<web-sti>`.
+- **Genereret, ikke kopieret.** Farver, mål, typografi (`globals.css`), tekster (`src/i18n/locales`), ikoner og app-ikon genereres af `scripts/native/sync.mjs`. Håndskrevne hex-værdier i widgets er fjernet.
+- **Paritet håndhæves.** `native/parity/screens.json` binder hver web-side til sin native skærm. Fingeraftryk af sidens web-filer (siden + importerede komponenter) afslører, når web er ændret uden native. Det håndhæves af AGENTS.md-reglen, en Stop-hook i `.claude/settings.json` og CI.
+- Admin, partner-, erhvervs- og butiks-scanner-sider forbliver web (`web-only`).
