@@ -4640,3 +4640,9 @@ klip-klister mellem sider, og telefon/webvisning må ikke have hver sine klasser
 - Afvist som kopi: Mine retter viser "Ikke delt" (ikke "delt"), og retten viser info med admins begrundelse.
 - Tommel op/ned påvirker populariteten (tommel ned -3, op +1, højst +3 i alt) for at undgå selvforstærkende ekkokammer.
 - "Python på serveren" er TypeScript (brugerens ok 2026-10-08). de/fr/nl oversættes senere.
+
+## 2026-10-08: Slettede gengangere beholder kæden
+
+- Brugerens regel: når en butiksrække slettes, fordi stregkoden allerede findes (Bilka/databasen vinder), skal den tabende butiks kæde altid udfyldes på vinderen (Kæder/`product_stores`) — ellers mister vi viden om, hvor varen sælges.
+- Kilden er `scripts/store-products-import/data/store_links.json` (EAN → kæder), bagt ind i store-products-agent, der kobler ved hver kørsel; EAN uden vare i databasen endnu kobles, når varen importeres. Kæder oprettes efter navn ("Rewe", "DM").
+- 2026-10-07-sletningen (127 Rewe + 137 DM rækker) er genskabt fra backup-arkene: 259 EAN.
