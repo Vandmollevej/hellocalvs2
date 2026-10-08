@@ -365,7 +365,7 @@ fun splitProductHeading(product: ProductDto): ProductHeading {
     if (title.isEmpty()) {
         val productType = product.productType?.trim()
         if (!productType.isNullOrEmpty() && variants.none { samePhrase(it, productType) }) {
-            var typeTitle = productType
+            var typeTitle: String = productType
             for (variant in variants) typeTitle = removeVariantPhrase(typeTitle, variant)
             typeTitle = tidyTitle(typeTitle)
             if (typeTitle.isNotEmpty()) return ProductHeading(capitalizeFirst(normalizeProductType(typeTitle)), variants)
