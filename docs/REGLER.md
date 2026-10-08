@@ -20,8 +20,14 @@ ikke her, er den ikke registreret og skal tilføjes.
   - Har varen EAN → `<EAN>.<ext>`. Dublet (samme EAN fra anden kilde) →
     `<EAN>_2`, `_3` … Første rang: BILKA (DK) / EDEKA (DE).
   - Har varen IKKE EAN → filnavn = Key: `Navn, mængde (Brand)`.
-  - Generisk vare uden brand og uden EAN → `Navn, mængde` (ingen parentes),
-    fx `Apfel Jonagold ca., 250g.png`, `Bio Ingwer ca., 100g.png`.
+  - **Generisk vare uden brand og uden EAN (besluttet af brugeren 2026-10-08)**:
+    filnavn = `<produkttype> <variant>` adskilt med mellemrum (ingen mængde,
+    ingen parentes). Overlap (samme navn) → `_2`, `_3` osv.
+    **Undtagelse:** er der angivet energifordeling/næringsindhold på varen, er
+    den et unikt produkt og får butiksnavnet hægtet på efter varianten:
+    `<produkttype> <variant> <butik>` (ikke `_2`). Eksport-udseende afgøres
+    senere. Gælder også allerede eksisterende billeder/rækker (omdøb overalt).
+  - (Gammelt udkast, afløst af reglen ovenfor: `Navn, mængde`.)
   - Ikke afklaret: 601 filer i `Færdige produktbilleder` hedder kun et kort
     tal (`100.png`, `1068.png`) — kilde ukendt.
   - Skal gælde alle steder: originale, til gennemgang, færdige. Filer i
