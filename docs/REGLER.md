@@ -14,8 +14,18 @@ ikke her, er den ikke registreret og skal tilføjes.
   altid `INGREDIENT`, enhed g) og scannes ikke. Kilde: session
   "HelloCal OpenAI produktgenkendelse", 2026-09-18; se også DECISIONS.md
   (Frida-match, mikrodata kopieres fra Frida).
-- **Navngivning af billeder til generiske varer**: ⚠️ ENDNU IKKE REGISTRERET —
-  skal udfyldes (se OPEN-TASKS).
+- **Billedfilnavne** (udledt af `Productdatabase/Bilka/bilka.py`, `build_key`/
+  `download_image`, og `Produkter klar til import/_rename_log.csv`; mønster
+  afledt 2026-10-08, afventer brugerens bekræftelse):
+  - Har varen EAN → `<EAN>.<ext>`. Dublet (samme EAN fra anden kilde) →
+    `<EAN>_2`, `_3` … Første rang: BILKA (DK) / EDEKA (DE).
+  - Har varen IKKE EAN → filnavn = Key: `Navn, mængde (Brand)`.
+  - Generisk vare uden brand og uden EAN → `Navn, mængde` (ingen parentes),
+    fx `Apfel Jonagold ca., 250g.png`, `Bio Ingwer ca., 100g.png`.
+  - Ikke afklaret: 601 filer i `Færdige produktbilleder` hedder kun et kort
+    tal (`100.png`, `1068.png`) — kilde ukendt.
+  - Skal gælde alle steder: originale, til gennemgang, færdige. Filer i
+    Færdig-mapper må også ligge i Original, men aldrig i Fejlet/Til gennemgang.
 - **Boolske felter**: aldrig "Ja"; brug beskrivende ord (Sukkerfri, Laktosefri,
   Vegansk).
 - **Dyrefoder**: spærres (blacklist) — se docs/DECISIONS.md "Pet-food blacklist".
