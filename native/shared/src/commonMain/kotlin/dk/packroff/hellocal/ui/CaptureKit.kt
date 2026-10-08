@@ -96,6 +96,7 @@ fun CaptureSlider(value: Int, min: Int, max: Int, step: Int = 1, onChange: (Int)
     }
     BoxWithConstraints(modifier.fillMaxWidth().height(28.dp)) {
         val widthPx = constraints.maxWidth.toFloat().coerceAtLeast(1f)
+        val trackWidth = maxWidth
         fun update(x: Float) {
             val ratio = (x / widthPx).coerceIn(0f, 1f)
             val next = clamp(min + ratio * (max - min))
@@ -112,7 +113,7 @@ fun CaptureSlider(value: Int, min: Int, max: Int, step: Int = 1, onChange: (Int)
             Box(Modifier.fillMaxWidth().height(4.dp).clip(RoundedCornerShape(2.dp)).background(HcColors.TanDark))
             Box(Modifier.fillMaxWidth(pct).height(4.dp).clip(RoundedCornerShape(2.dp)).background(HcColors.Green))
             Box(
-                Modifier.offset(x = maxWidth * pct - 9.dp).size(18.dp).clip(CircleShape).background(HcColors.White)
+                Modifier.offset(x = trackWidth * pct - 9.dp).size(18.dp).clip(CircleShape).background(HcColors.White)
                     .border(2.dp, HcColors.Green, CircleShape),
             )
         }
