@@ -36,6 +36,18 @@ ikke her, er den ikke registreret og skal tilføjes.
   Vegansk).
 - **Dyrefoder**: spærres (blacklist) — se docs/DECISIONS.md "Pet-food blacklist".
 
+- **Produkttype: ental og flertal (kun generiske varer, besluttet 2026-10-08)**:
+  generiske varer får to kolonner/felter ved siden af produkttype: `Product type
+  singular` og `Product type plural`, begge udfyldt. Søgning efter "et æble"
+  må ikke give "æbler" (og omvendt). Hvor ental = flertal (fx æg) eller det ikke
+  kan afgøres, står samme tekst i begge. Gælder ark og database
+  (`GenericIngredient`); almindelige varer med brand/EAN berøres ikke.
+  Status: ikke implementeret endnu.
+- **Små ord i navne**: med, i, af, uden skrives altid med småt i
+  produktnavne/produkttype/variant (aftalt 2026-10-08, ikke gennemført endnu).
+- **Generisk vare** = ingen Brand og ingen Subbrand i arket (EAN ses bort fra).
+  I databasen ligger de i `GenericIngredient`, ikke `Product`.
+
 ## Logoer og billeder
 
 - Kun mad-/drikkevaremærker får logo (ikke husholdning/rengøring/køkkenudstyr);
