@@ -30,6 +30,7 @@ import dk.packroff.hellocal.i18n.LocalTranslator
 import dk.packroff.hellocal.i18n.Translator
 import dk.packroff.hellocal.nav.LocalNavigator
 import dk.packroff.hellocal.nav.RouteArgs
+import dk.packroff.hellocal.platform.Device
 import dk.packroff.hellocal.platform.NativeHooks
 import dk.packroff.hellocal.theme.HcColors
 import dk.packroff.hellocal.theme.HcDimens
@@ -80,21 +81,33 @@ data class SettingsImportRowDto(
 class SettingsImportPickedFile(val mime: String, val bytes: ByteArray)
 
 /**
- * TODO(parity): platform hooks for this screen. The web uses a browser file
- * input plus canvas/video decoding (src/lib/video-frames.ts); commonMain has
- * no file picker or video decoder yet. The Android and iPhone apps must set:
+ * Phone features for this screen (web: a file input plus canvas/video decoding
+ * in src/lib/video-frames.ts), forwarded to the shared device layer
+ * (platform/Device.kt):
  *  - [pickFiles]: system picker for videos and images (multiple). Null result = cancelled.
  *  - [framesFromVideo]: a JPEG data URL ("data:image/jpeg;base64,...") every ~1.2 s,
  *    max 900 px wide, quality 0.75, near-identical frames skipped (16x16 grey
  *    fingerprint, mean difference above 6).
  *  - [frameFromImage]: the picture down-scaled to max 900 px wide as a JPEG data URL (quality 0.8).
- * Until [frameFromImage] is set, pictures are sent unscaled as a data URL.
- * The lead should move these into platform/NativeHooks.
+ * Without a platform the hooks are null (no picker; pictures sent unscaled).
  */
 object SettingsImportMedia {
-    var pickFiles: (suspend () -> List<SettingsImportPickedFile>?)? = null
-    var framesFromVideo: (suspend (bytes: ByteArray) -> List<String>)? = null
-    var frameFromImage: (suspend (bytes: ByteArray, mime: String) -> String)? = null
+    private val pickFilesCall: suspend () -> List<SettingsImportPickedFile>? = {
+        Device.pickFiles()?.map { SettingsImportPickedFile(it.mime, it.bytes) }
+    }
+    private val framesFromVideoCall: suspend (ByteArray) -> List<String> = { bytes ->
+        Device.framesFromVideo(bytes).map { Device.jpegDataUrl(it) }
+    }
+    private val frameFromImageCall: suspend (ByteArray, String) -> String = { bytes, mime ->
+        Device.frameFromImage(bytes)?.let { Device.jpegDataUrl(it) } ?: settingsImportDataUrl(bytes, mime)
+    }
+
+    val pickFiles: (suspend () -> List<SettingsImportPickedFile>?)?
+        get() = if (Device.available) pickFilesCall else null
+    val framesFromVideo: (suspend (bytes: ByteArray) -> List<String>)?
+        get() = if (Device.available) framesFromVideoCall else null
+    val frameFromImage: (suspend (bytes: ByteArray, mime: String) -> String)?
+        get() = if (Device.available) frameFromImageCall else null
 }
 
 private enum class SettingsImportPhase { Pick, Reading, Review, Done }

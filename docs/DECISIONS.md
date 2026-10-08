@@ -4685,3 +4685,10 @@ admin har sin egen login + IP-spærre):
   strengere (en URL kan deles). Vandmærke/bruger-ID i billeder er afvist (privatliv).
 - Grænse: et billede en bruger kan se, kan altid screenshottes. Murens formål er
   at stoppe automatisk indsamling, ikke manuel kopiering.
+## 2026-10-08: Native login-overdragelse (system-browser → app)
+
+Google/Apple/Facebook-login og integrationstilkobling kører i system-browseren, som ikke har appens session-cookie (`hc_user_session` ligger i appens egen krypterede cookie-krukke).
+- **Login:** appen åbner `/api/auth/oauth/<udbyder>?native=1&challenge=<S256>`. Callbacken sætter ingen cookie i browseren, men udsteder en engangskode og sender til `hellocal://auth/complete?code=…` (fejl: `?error=…`). Appen veksler via `POST /api/auth/native/exchange {code, verifier}` → almindelig `completeLogin` (enhedsgenkendelse, spærrede konti afvises).
+- **Integrationer:** den indloggede app henter `POST /api/auth/native/connect-code` og åbner `/api/integrations/<slug>/connect?native=<kode>`. Brugeren bindes til OAuth-state med et signeret token i state-cookien; callbacken sender til `hellocal://settings/integrations/<slug>?connected=1` / `?error=…`.
+- **Koder** (`NativeAuthCode`, migration `20261008160000_native_auth_codes`): 32 tilfældige bytes, kun sha256-hash gemmes, 2 minutter, én gang (atomisk). Login-koder kræver appens PKCE-verifier, så en anden app, der opsnapper `hellocal://`-linket, ikke kan bruge koden. Exchange/connect-code kræver headeren `X-HelloCal-Client: native` (mod login-CSRF).
+- Kendt rest-risiko: et connect-link er bundet til den bruger, der hentede koden; det kan kun bruges i 2 minutter og én gang.

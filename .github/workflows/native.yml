@@ -28,10 +28,11 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: 22
+          # sync.mjs strips TypeScript with node:module stripTypeScriptTypes (Node >= 22.13).
+          node-version: "24"
       - name: Icon package (same version as the web app)
         run: npm install --no-save --ignore-scripts --no-package-lock "@tabler/icons-react@$(node -p "require('./package.json').dependencies['@tabler/icons-react']")"
-      - name: Colours, typography, texts and icons generated from web
+      - name: Colours, typography, texts, icons and static knowledge data generated from web
         run: node scripts/native/sync.mjs --check
       - name: Every web page registered, ported screens up to date
         run: node scripts/native/parity.mjs

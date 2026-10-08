@@ -1,9 +1,8 @@
 package dk.packroff.hellocal.screens.profile
 
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.setValue
+import dk.packroff.hellocal.platform.Device
 import dk.packroff.hellocal.platform.NativeHooks
+import kotlinx.coroutines.CancellationException
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.builtins.ListSerializer
 import kotlinx.serialization.json.Json
@@ -11,51 +10,61 @@ import kotlin.io.encoding.Base64
 import kotlin.io.encoding.ExperimentalEncodingApi
 
 /**
- * Browser-only features the profile screens use (PORTING.md rule 7), as
- * hooks the Android and iPhone apps fill in at start-up — like NativeHooks.
- * TODO(platform): move these into platform/NativeHooks.kt (expect/actual)
- * and wire them in HelloCalApplication / iosApp. Until then each falls back
- * to the web's behaviour when the feature is missing in the browser.
+ * Browser-only features the profile screens use (PORTING.md rule 7). Each
+ * forwards to the shared device layer (platform/Device.kt) that the Android
+ * and iPhone apps fill in at start-up; without it each falls back to the
+ * web's behaviour when the feature is missing in the browser.
  */
 object ProfileNativeBridge {
-    /** FaceIdButton: does the device have Face ID/Touch ID/fingerprint? Hidden when false (as on the web). */
-    var biometricAvailable: () -> Boolean = { false }
+    private val confirmOnDeviceCall: suspend () -> Boolean = { Device.confirmOnDevice() }
+
+    /**
+     * FaceIdButton: can biometric login (a passkey) be set up here? Hidden when
+     * false (as on the web). False until native passkeys are set up (Device.passkeySupported).
+     */
+    fun biometricAvailable(): Boolean = Device.passkeySupported()
 
     /** Is biometric login already set up on this device (web: hasPasskeyOnDevice)? */
-    var biometricEnabledOnDevice: () -> Boolean = { false }
+    fun biometricEnabledOnDevice(): Boolean = Device.hasPasskeyOnDevice()
 
-    /** Registers biometric login (web: registerPasskey via /api/auth/passkey/register/*). Throws/false on failure. */
-    var enableBiometricLogin: suspend () -> Boolean = { false }
+    /** Registers biometric login (web: registerPasskey via /api/auth/passkey/register/...). False on failure. */
+    suspend fun enableBiometricLogin(): Boolean = try {
+        Device.registerPasskey()
+        true
+    } catch (e: CancellationException) {
+        throw e
+    } catch (e: Exception) {
+        false
+    }
 
     /**
      * Photo diary lock: confirm the owner with Face ID/Touch ID/device code
      * (web: confirmOnDevice). null = not supported → the lock is just an extra tap, as on the web.
      */
-    var confirmOnDevice: (suspend () -> Boolean)? = null
+    val confirmOnDevice: (suspend () -> Boolean)?
+        get() = if (Device.canConfirmOwner()) confirmOnDeviceCall else null
 
     /**
      * Login approval by notification (web: enablePush in src/lib/push-client.ts):
      * ask for notification permission and register this device for push.
      * Returns "ok" | "unsupported" | "denied" | "not-configured" | "failed".
      */
-    var enablePush: suspend () -> String = { "unsupported" }
+    suspend fun enablePush(): String = Device.enablePush()
 
     /** The phone's share sheet (web: navigator.share). Returns false when unavailable — the text is then copied. */
-    var share: (text: String) -> Boolean = { false }
+    fun share(text: String): Boolean = Device.share("", text)
 
     /** "Tag billede" in the photo diary: the camera, returning a JPEG (max 1600 px, like prepareDiaryPhoto) or null. */
-    var takePhoto: suspend () -> ByteArray? = { null }
+    suspend fun takePhoto(): ByteArray? = if (Device.available) Device.takePhoto() else null
 
     /** Where diary photos live — on the device only, never on the server (photo-diary-store.ts). */
     var photoStore: DiaryPhotoStore = SecureStorageDiaryPhotoStore
 
     /** Bumped by the platform when the app goes to the background (web: visibilitychange → hidden). */
-    var backgroundCount by mutableIntStateOf(0)
-        private set
+    val backgroundCount: Int
+        get() = Device.appBackgroundCount
 
-    fun onAppBackground() {
-        backgroundCount += 1
-    }
+    fun onAppBackground() = Device.notifyAppBackground()
 }
 
 data class StoredDiaryPhoto(val id: String, val takenAt: String, val bytes: ByteArray)

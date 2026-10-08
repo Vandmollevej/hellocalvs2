@@ -34,6 +34,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import dk.packroff.hellocal.api.Api
 import dk.packroff.hellocal.i18n.LocalTranslator
+import dk.packroff.hellocal.platform.Device
 import dk.packroff.hellocal.theme.HcColors
 import dk.packroff.hellocal.theme.HcDimens
 import dk.packroff.hellocal.theme.HcTypeRoles
@@ -56,21 +57,34 @@ import kotlinx.datetime.toLocalDateTime
 // textarea, protected attachment images and the case code / date formats.
 
 /**
- * Platform callbacks the Support screens need but which do not exist in
- * NativeHooks yet. Left null, the matching button is hidden.
- *
- * TODO(parity): move both into platform/NativeHooks.kt and set them from the
- * Android and iPhone apps:
+ * Phone features the Support screens need, forwarded to the shared device
+ * layer (platform/Device.kt). Left null, the matching button is hidden.
  * - openHelpChat: opens the help chat (web: openHelpChat() in
- *   src/lib/help-chat-events.ts, HelpChat mounted in the layout).
+ *   src/lib/help-chat-events.ts, HelpChat mounted in the layout). Natively the
+ *   web Support page opens in the browser (Device.openHelpChat).
  * - pickScreenshots: opens the system photo picker (up to maxCount images),
  *   scales each to max 1600 px on the longest edge, re-encodes as JPEG 0.8
  *   (strips EXIF/GPS, docs/PRIVACY.md) and returns "data:image/jpeg;base64,…"
  *   strings; failed = true when one of the images could not be used.
  */
 object SettingsSupportHooks {
-    var openHelpChat: (() -> Unit)? = null
-    var pickScreenshots: ((maxCount: Int, onResult: (images: List<String>, failed: Boolean) -> Unit) -> Unit)? = null
+    private val openHelpChatCall: () -> Unit = { Device.openHelpChat() }
+    private val pickScreenshotsCall: (Int, (List<String>, Boolean) -> Unit) -> Unit = { maxCount, onResult ->
+        val platform = Device.platform
+        if (platform == null) {
+            onResult(emptyList(), true)
+        } else {
+            platform.pickPhotos(maxCount.coerceAtLeast(1), Device.PHOTO_MAX_EDGE, 0.8) { photos, error ->
+                val failed = error != null
+                onResult(photos.take(maxCount).map { Device.jpegDataUrl(it) }, failed)
+            }
+        }
+    }
+
+    val openHelpChat: (() -> Unit)?
+        get() = openHelpChatCall
+    val pickScreenshots: ((maxCount: Int, onResult: (images: List<String>, failed: Boolean) -> Unit) -> Unit)?
+        get() = if (Device.available) pickScreenshotsCall else null
 }
 
 /** Last 8 characters of the request id, upper-cased (web: id.slice(-8).toUpperCase()). */

@@ -33,10 +33,11 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import dk.packroff.hellocal.api.Api
-import dk.packroff.hellocal.api.HelloCalConfig
 import dk.packroff.hellocal.api.LoginResult
+import dk.packroff.hellocal.api.NativeAuth
 import dk.packroff.hellocal.api.Session
 import dk.packroff.hellocal.i18n.LocalTranslator
+import dk.packroff.hellocal.i18n.Translator
 import dk.packroff.hellocal.nav.LocalNavigator
 import dk.packroff.hellocal.nav.RouteArgs
 import dk.packroff.hellocal.platform.NativeHooks
@@ -67,7 +68,7 @@ fun LoginScreen(args: RouteArgs) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var submitting by remember { mutableStateOf(false) }
-    var error by remember { mutableStateOf<String?>(if (args.opt("error") == "account-blocked") t.t("login.accountBlocked") else null) }
+    var error by remember(args.opt("error")) { mutableStateOf(oauthErrorMessage(args.opt("error"), t)) }
     var approval by remember { mutableStateOf<Pair<String, String>?>(null) }
 
     fun submit() {
@@ -138,9 +139,10 @@ fun LoginScreen(args: RouteArgs) {
 
             VSpace(32.dp)
             Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
-                SocialLoginButton("google", t.t("login.continueWithGoogle"), HcColors.Google)
-                SocialLoginButton("apple", t.t("login.continueWithApple"), HcColors.Action)
-                SocialLoginButton("facebook", t.t("login.continueWithFacebook"), HcColors.Facebook)
+                val oauthNext = args.opt("next") ?: "/"
+                SocialLoginButton("google", t.t("login.continueWithGoogle"), HcColors.Google, oauthNext)
+                SocialLoginButton("apple", t.t("login.continueWithApple"), HcColors.Action, oauthNext)
+                SocialLoginButton("facebook", t.t("login.continueWithFacebook"), HcColors.Facebook, oauthNext)
             }
             VSpace(16.dp)
             HcText(t.t("common.or"), HcTypeRoles.Body, Modifier.fillMaxWidth(), color = HcColors.TextSecondary, align = TextAlign.Center)
@@ -179,16 +181,37 @@ fun LoginScreen(args: RouteArgs) {
     }
 }
 
+private const val ACCOUNT_BLOCKED_MESSAGE =
+    "Din konto er spærret, fordi der igen blev forsøgt oprettet dyrefoder. Du har ikke længere adgang. Kontakt support, hvis du mener, det er en fejl."
+
+/** web oauthErrorKey() (src/lib/login-flow.ts): ?error=… from the OAuth hand-off → message. */
+private fun oauthErrorMessage(code: String?, t: Translator): String? {
+    if (code == null || code == "oauth-cancelled") return null
+    // src/lib/pet-food-messages.ts ACCOUNT_BLOCKED_MESSAGE (not an i18n key on the web either).
+    if (code == "account-blocked") return ACCOUNT_BLOCKED_MESSAGE
+    val notConfigured = Regex("^(google|apple|facebook)-not-configured$").find(code)
+    if (notConfigured != null) {
+        val provider = when (notConfigured.groupValues[1]) {
+            "google" -> "Google"
+            "apple" -> "Apple"
+            else -> "Facebook"
+        }
+        return t.t("login.errorNotConfigured", "provider" to provider)
+    }
+    if (code == "oauth-expired") return t.t("login.errorOauthExpired")
+    return t.t("login.errorOauth")
+}
+
 /**
  * src/components/hf/SocialLoginButton.tsx. Apple/Google/Facebook login runs in
- * the system browser (Google blocks embedded web views).
- * TODO(parity): return to the app after OAuth (needs an app-link callback).
+ * the system browser (Google blocks embedded web views) and returns to the app
+ * via hellocal://auth/complete?code=… (api/NativeAuth.kt, app/HelloCalApp.kt).
  */
 @Composable
-private fun SocialLoginButton(provider: String, label: String, background: Color) {
+private fun SocialLoginButton(provider: String, label: String, background: Color, next: String) {
     Row(
         Modifier.fillMaxWidth().height(HcDimens.ControlHeight).clip(RoundedCornerShape(HcDimens.RadiusCard)).background(background)
-            .clickable { NativeHooks.openExternalUrl("${HelloCalConfig.BASE_URL}/api/auth/oauth/$provider") },
+            .clickable { NativeHooks.openExternalUrl(NativeAuth.oauthStartUrl(provider, next)) },
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Box(Modifier.width(47.dp), contentAlignment = Alignment.Center) { HcRemoteImage("/icon-$provider.png", Modifier.size(20.dp)) }

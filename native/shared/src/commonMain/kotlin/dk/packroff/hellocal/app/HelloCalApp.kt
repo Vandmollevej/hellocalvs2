@@ -19,6 +19,8 @@ import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import dk.packroff.hellocal.api.LoginResult
+import dk.packroff.hellocal.api.NativeAuth
 import dk.packroff.hellocal.api.Session
 import dk.packroff.hellocal.i18n.LocalTranslator
 import dk.packroff.hellocal.i18n.Locale
@@ -49,10 +51,16 @@ fun HelloCalApp() {
         LaunchedEffect(Unit) { Session.restore() }
         // The user's own app language (profile setting) once logged in.
         LaunchedEffect(Session.user?.appLocale) { locale = Locale.from(Session.user?.appLocale) }
-        // Widgets/notifications: hellocal://<path>.
+        // Widgets/notifications/OAuth hand-off: hellocal://<path>.
         LaunchedEffect(Unit) {
             snapshotFlow { DeepLinks.pending }.collect { url ->
-                if (url != null && Session.state == Session.State.LoggedIn) navigator.push(DeepLinks.consume()!!)
+                if (url == null) return@collect
+                if (Location.parse(url).path == NativeAuth.COMPLETE_PATH) {
+                    // Google/Apple/Facebook login finished in the system browser.
+                    completeOAuth(Location.parse(DeepLinks.consume()!!), navigator)
+                } else if (Session.state == Session.State.LoggedIn) {
+                    openDeepLink(DeepLinks.consume()!!, navigator)
+                }
             }
         }
         LaunchedEffect(Session.state) {
@@ -60,7 +68,7 @@ fun HelloCalApp() {
                 Session.State.LoggedOut -> if (Routes.resolve(navigator.current.path)?.first?.public != true) navigator.resetTo("/login")
                 Session.State.LoggedIn -> {
                     if (navigator.current.path == "/login") navigator.resetTo("/")
-                    DeepLinks.consume()?.let(navigator::push)
+                    DeepLinks.consume()?.let { openDeepLink(it, navigator) }
                 }
                 Session.State.Unknown -> Unit
             }
@@ -79,6 +87,35 @@ fun HelloCalApp() {
     }
 }
 
+/**
+ * A deep link to the screen that is already open (e.g. the integration page
+ * after hellocal://settings/integrations/<app>?connected=1) replaces it, so the
+ * stack does not hold the same page twice.
+ */
+private fun openDeepLink(url: String, navigator: Navigator) {
+    if (Location.parse(url).path == navigator.current.path) navigator.replace(url) else navigator.push(url)
+}
+
+/**
+ * hellocal://auth/complete?code=… (or ?error=…) from the OAuth callback
+ * (docs/DECISIONS.md 2026-10-08 "Native login-overdragelse"): trade the
+ * one-time code for the session cookie, then continue to `next`.
+ */
+private suspend fun completeOAuth(location: Location, navigator: Navigator) {
+    val code = location.query["code"]
+    if (code == null) {
+        if (Session.state != Session.State.LoggedIn) {
+            navigator.resetTo("/login?error=" + Location.encode(location.query["error"] ?: "oauth"))
+        }
+        return
+    }
+    when (val result = NativeAuth.exchange(code)) {
+        LoginResult.Success -> navigator.resetTo(location.query["next"]?.takeIf { it.startsWith("/") && !it.startsWith("//") } ?: "/")
+        is LoginResult.Failed -> navigator.resetTo("/login?error=" + Location.encode(result.message))
+        is LoginResult.ApprovalRequired -> Unit
+    }
+}
+
 @Composable
 private fun AppFrame(navigator: Navigator) {
     val location = navigator.current
@@ -89,7 +126,7 @@ private fun AppFrame(navigator: Navigator) {
                 NotNativeYet(location)
             } else {
                 val (route, params) = resolved
-                route.content(RouteArgs(params, location.query))
+                route.content(RouteArgs(params, location.query, location.fragment))
             }
         }
         if (resolved?.first?.fullScreen != true && Session.state == Session.State.LoggedIn) {

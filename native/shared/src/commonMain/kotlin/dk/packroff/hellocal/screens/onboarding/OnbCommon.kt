@@ -1,9 +1,10 @@
 package dk.packroff.hellocal.screens.onboarding
 
 import dk.packroff.hellocal.api.ApiException
-import dk.packroff.hellocal.api.HelloCalConfig
+import dk.packroff.hellocal.api.NativeAuth
 import dk.packroff.hellocal.nav.Location
 import dk.packroff.hellocal.nav.Navigator
+import dk.packroff.hellocal.platform.Device
 import dk.packroff.hellocal.platform.NativeHooks
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.JsonPrimitive
@@ -13,22 +14,26 @@ import kotlinx.serialization.json.contentOrNull
 // src/lib/login-country.ts, src/lib/phone.ts, src/lib/family-qr-path.ts).
 
 /**
- * Platform hooks this area needs that are not in platform/NativeHooks yet.
- * The Android/iPhone apps fill these in at start-up (see the final report).
- * TODO(parity): move into platform/ as expect/actual once the shared owner adds them.
+ * Phone features this area needs; they forward to the shared device layer
+ * (platform/Device.kt) that the Android and iPhone apps fill in at start-up.
  */
 object OnboardingHooks {
-    /** Device supports passkeys/Face ID (web: isPasskeySupported). */
-    var isPasskeySupported: () -> Boolean = { false }
+    private val registerPasskeyCall: suspend () -> Unit = { Device.registerPasskey() }
+    private val scanQrCodeCall: suspend () -> String? = { Device.scanQrCode() }
+
+    /** Device supports passkeys/Face ID (web: isPasskeySupported). False until native passkeys are set up. */
+    fun isPasskeySupported(): Boolean = Device.passkeySupported()
 
     /** This device already has a passkey for the account (web: hasPasskeyOnDevice). */
-    var hasPasskeyOnDevice: () -> Boolean = { false }
+    fun hasPasskeyOnDevice(): Boolean = Device.hasPasskeyOnDevice()
 
     /** Registers a passkey via /api/auth/passkey (web: registerPasskey); throws on failure/cancel. */
-    var registerPasskey: (suspend () -> Unit)? = null
+    val registerPasskey: (suspend () -> Unit)?
+        get() = if (Device.passkeySupported()) registerPasskeyCall else null
 
     /** Opens the camera and returns the text of the first QR code read, or null if cancelled. Throws if no camera. */
-    var scanQrCode: (suspend () -> String?)? = null
+    val scanQrCode: (suspend () -> String?)?
+        get() = if (Device.available) scanQrCodeCall else null
 
     /** Changes the app language before login (web: setLocale from the country picker). */
     var setLocale: (String) -> Unit = {}
@@ -54,13 +59,11 @@ internal fun afterLoginPath(next: String): String {
 }
 
 /**
- * web startOAuth(): Google/Apple/Facebook login runs in the system browser.
- * TODO(parity): return to the app after OAuth (needs an app-link callback, same as LoginScreen).
+ * web startOAuth(): Google/Apple/Facebook login runs in the system browser and
+ * returns to the app via hellocal://auth/complete?code=… (api/NativeAuth.kt).
  */
-internal fun startOAuth(provider: String, next: String) {
-    NativeHooks.openExternalUrl(
-        "${HelloCalConfig.BASE_URL}/api/auth/oauth/$provider?next=" + Location.encode(afterLoginPath(next)),
-    )
+internal fun startOAuth(provider: String, next: String, consent: Boolean = false) {
+    NativeHooks.openExternalUrl(NativeAuth.oauthStartUrl(provider, afterLoginPath(next), consent))
 }
 
 /** The server's own `message` (web: data.message ?? fallback). */

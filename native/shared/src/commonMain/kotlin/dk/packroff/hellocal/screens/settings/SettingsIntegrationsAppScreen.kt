@@ -24,7 +24,7 @@ import androidx.compose.ui.unit.dp
 import dk.packroff.hellocal.api.Api
 import dk.packroff.hellocal.api.ApiException
 import dk.packroff.hellocal.api.ApiJson
-import dk.packroff.hellocal.api.HelloCalConfig
+import dk.packroff.hellocal.api.NativeAuth
 import dk.packroff.hellocal.i18n.LocalTranslator
 import dk.packroff.hellocal.nav.LocalNavigator
 import dk.packroff.hellocal.nav.RouteArgs
@@ -197,7 +197,9 @@ private fun SettingsIntegrationsAppContent(args: RouteArgs) {
         }
     }
 
-    LaunchedEffect(app) {
+    // Also reloads when the app returns from the browser on the same page
+    // (hellocal://settings/integrations/<app>?connected=1 replaces this screen).
+    LaunchedEffect(app, connectedParam, errorReason) {
         launch { load() }
         launch { loadTokens() }
         launch { loadTesterOffer() }
@@ -229,12 +231,22 @@ private fun SettingsIntegrationsAppContent(args: RouteArgs) {
 
     fun connect() {
         val slug = integration?.slug ?: return
-        // TODO(parity): the OAuth start route needs the session cookie, which the
-        // system browser does not have, and the provider's callback lands on the
-        // web page (?connected=1 / ?error=…) instead of returning to the app. Needs a
-        // shared in-app auth session (ASWebAuthenticationSession / Custom Tabs) that
-        // carries the session and deep-links back to hellocal://settings/integrations/<app>.
-        NativeHooks.openExternalUrl("${HelloCalConfig.BASE_URL}/api/integrations/$slug/connect")
+        // The system browser has no app session: fetch a one-time code bound to
+        // this user first (POST /api/auth/native/connect-code). The provider's
+        // callback returns to hellocal://settings/integrations/<app>?connected=1
+        // (or ?error=…), docs/DECISIONS.md 2026-10-08 "Native login-overdragelse".
+        busy = true
+        scope.launch {
+            try {
+                NativeHooks.openExternalUrl(NativeAuth.integrationConnectUrl(slug))
+            } catch (e: CancellationException) {
+                throw e
+            } catch (e: Exception) {
+                feedback = SettingsIntegrationsNotice(t.t("integrations.notice.failed", "name" to (integration?.label ?: slug)), error = true)
+            } finally {
+                busy = false
+            }
+        }
     }
 
     fun disconnect() {
