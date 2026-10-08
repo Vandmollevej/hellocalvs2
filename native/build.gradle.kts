@@ -1,7 +1,7 @@
 // Plugin versions for the whole native build — change them here only.
 plugins {
-    id("com.android.application") version "8.7.3" apply false
-    id("com.android.library") version "8.7.3" apply false
+    id("com.android.application") version "8.10.1" apply false
+    id("com.android.library") version "8.10.1" apply false
     id("org.jetbrains.kotlin.android") version "2.1.21" apply false
     id("org.jetbrains.kotlin.multiplatform") version "2.1.21" apply false
     id("org.jetbrains.kotlin.plugin.compose") version "2.1.21" apply false

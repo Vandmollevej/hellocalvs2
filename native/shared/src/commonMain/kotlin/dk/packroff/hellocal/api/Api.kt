@@ -36,7 +36,7 @@ import kotlinx.serialization.json.jsonPrimitive
 
 /**
  * The native app talks to exactly the same backend routes as the web app
- * (src/app/api/**). Login works like the browser: the session cookie set by
+ * (src/app/api). Login works like the browser: the session cookie set by
  * /api/auth/login is kept (encrypted) and sent on every request.
  */
 object HelloCalConfig {

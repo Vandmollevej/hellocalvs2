@@ -7,7 +7,7 @@ plugins {
 
 android {
     namespace = "dk.packroff.hellocal"
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "dk.packroff.hellocal"
