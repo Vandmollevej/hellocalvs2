@@ -9,8 +9,10 @@
     {
       "route": "/account/phone",
       "web": "src/app/account/phone/page.tsx",
-      "status": "pending",
-      "native": []
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/onboarding/PhoneRequiredScreen.kt"
+      ]
     },
     {
       "route": "/activity/create",
@@ -626,14 +628,18 @@
     {
       "route": "/approve-login",
       "web": "src/app/approve-login/page.tsx",
-      "status": "pending",
-      "native": []
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/onboarding/ApproveLoginScreen.kt"
+      ]
     },
     {
       "route": "/betingelser",
       "web": "src/app/betingelser/page.tsx",
-      "status": "pending",
-      "native": []
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/onboarding/TermsScreen.kt"
+      ]
     },
     {
       "route": "/business",
@@ -645,8 +651,10 @@
     {
       "route": "/calendar",
       "web": "src/app/calendar/page.tsx",
-      "status": "pending",
-      "native": []
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/calendar/CalendarScreen.kt"
+      ]
     },
     {
       "route": "/camera",
@@ -687,32 +695,42 @@
     {
       "route": "/e-numre",
       "web": "src/app/e-numre/page.tsx",
-      "status": "pending",
-      "native": []
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/onboarding/ENumberScreens.kt"
+      ]
     },
     {
       "route": "/e-numre/[code]",
       "web": "src/app/e-numre/[code]/page.tsx",
-      "status": "pending",
-      "native": []
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/onboarding/ENumberScreens.kt"
+      ]
     },
     {
       "route": "/family-code",
       "web": "src/app/family-code/page.tsx",
-      "status": "pending",
-      "native": []
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/onboarding/FamilyCodeScreen.kt"
+      ]
     },
     {
       "route": "/family-code/join",
       "web": "src/app/family-code/join/page.tsx",
-      "status": "pending",
-      "native": []
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/onboarding/FamilyJoinScreen.kt"
+      ]
     },
     {
       "route": "/family-code/scan",
       "web": "src/app/family-code/scan/page.tsx",
-      "status": "pending",
-      "native": []
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/onboarding/FamilyScanScreen.kt"
+      ]
     },
     {
       "route": "/favorites",
@@ -735,20 +753,26 @@
     {
       "route": "/forgot-password",
       "web": "src/app/forgot-password/page.tsx",
-      "status": "pending",
-      "native": []
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/onboarding/ForgotPasswordScreen.kt"
+      ]
     },
     {
       "route": "/forward/[token]",
       "web": "src/app/forward/[token]/page.tsx",
-      "status": "pending",
-      "native": []
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/onboarding/ForwardScreen.kt"
+      ]
     },
     {
       "route": "/hello-doc/[token]",
       "web": "src/app/hello-doc/[token]/page.tsx",
-      "status": "pending",
-      "native": []
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/onboarding/HelloDocTokenScreen.kt"
+      ]
     },
     {
       "route": "/ingredients",
@@ -773,20 +797,26 @@
     {
       "route": "/login/country",
       "web": "src/app/login/country/page.tsx",
-      "status": "pending",
-      "native": []
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/onboarding/LoginCountryScreen.kt"
+      ]
     },
     {
       "route": "/login/face-id",
       "web": "src/app/login/face-id/page.tsx",
-      "status": "pending",
-      "native": []
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/onboarding/FaceIdOfferScreen.kt"
+      ]
     },
     {
       "route": "/mad-paa-latin",
       "web": "src/app/mad-paa-latin/page.tsx",
-      "status": "pending",
-      "native": []
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/onboarding/FoodLatinScreen.kt"
+      ]
     },
     {
       "route": "/my-scans",
@@ -797,8 +827,10 @@
     {
       "route": "/om-os",
       "web": "src/app/om-os/page.tsx",
-      "status": "pending",
-      "native": []
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/onboarding/AboutScreen.kt"
+      ]
     },
     {
       "route": "/partner",
@@ -837,14 +869,18 @@
     {
       "route": "/presse",
       "web": "src/app/presse/page.tsx",
-      "status": "pending",
-      "native": []
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/onboarding/PressScreen.kt"
+      ]
     },
     {
       "route": "/privatlivspolitik",
       "web": "src/app/privatlivspolitik/page.tsx",
-      "status": "pending",
-      "native": []
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/onboarding/PrivacyScreen.kt"
+      ]
     },
     {
       "route": "/product/create",
@@ -1083,8 +1119,10 @@
     {
       "route": "/reset-password",
       "web": "src/app/reset-password/page.tsx",
-      "status": "pending",
-      "native": []
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/onboarding/ResetPasswordScreen.kt"
+      ]
     },
     {
       "route": "/scan",
@@ -1372,8 +1410,10 @@
     {
       "route": "/signup",
       "web": "src/app/signup/page.tsx",
-      "status": "pending",
-      "native": []
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/onboarding/SignupScreen.kt"
+      ]
     },
     {
       "route": "/statistics",
@@ -1414,38 +1454,50 @@
     {
       "route": "/verify-email",
       "web": "src/app/verify-email/page.tsx",
-      "status": "pending",
-      "native": []
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/onboarding/VerifyEmailScreen.kt"
+      ]
     },
     {
       "route": "/viden-om",
       "web": "src/app/viden-om/page.tsx",
-      "status": "pending",
-      "native": []
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/onboarding/KnowledgeScreens.kt"
+      ]
     },
     {
       "route": "/viden-om/[category]",
       "web": "src/app/viden-om/[category]/page.tsx",
-      "status": "pending",
-      "native": []
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/onboarding/KnowledgeScreens.kt"
+      ]
     },
     {
       "route": "/viden-om/[category]/[slug]",
       "web": "src/app/viden-om/[category]/[slug]/page.tsx",
-      "status": "pending",
-      "native": []
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/onboarding/KnowledgeScreens.kt"
+      ]
     },
     {
       "route": "/viden-om/e-numre",
       "web": "src/app/viden-om/e-numre/page.tsx",
-      "status": "pending",
-      "native": []
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/onboarding/KnowledgeScreens.kt"
+      ]
     },
     {
       "route": "/vitaminer",
       "web": "src/app/vitaminer/page.tsx",
-      "status": "pending",
-      "native": []
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/onboarding/MicronutrientScreen.kt"
+      ]
     },
     {
       "route": "/voice",
@@ -1474,8 +1526,10 @@
     {
       "route": "/welcome",
       "web": "src/app/welcome/page.tsx",
-      "status": "pending",
-      "native": []
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/onboarding/WelcomeScreen.kt"
+      ]
     },
     {
       "route": "/widgets",
