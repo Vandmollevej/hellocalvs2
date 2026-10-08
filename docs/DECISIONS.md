@@ -2,6 +2,10 @@
 
 This file records durable decisions. Add a dated entry when a later decision changes one of them.
 
+## 2026-10-08: Vagt-robot på NAS'en (hver time, mail)
+
+- Ud over GitHub-tjekket (hvert 5. min) kører `uptime-agent` på NAS'en og tjekker hver time site, app, containere og diskplads; mail til peter@packroff.dk ved fejl og ved løst. Brugerens valg: hver time "for nu", kun mail. Cloudflare-alarmer sættes op af brugeren i dashboardet (docs/DEPLOYMENT.md "Overvågning").
+
 ## 2026-10-07: Alle popups er bundark — også vælgere, tips, adgangslog og admin-bekræftelser
 
 - Ejerens regel ("Popups vises aldrig som overlay men som bundark nedefra. Swipe ned = annuller") gælder nu alle brugerrettede og admin-popups. `BottomSheet` er den eneste godkendte overlay-type (KRAV.md "Bundark"); fuldskærms-overlay og centreret dialog er afskaffet som popup-typer (designmanualen viser kun bundarket).

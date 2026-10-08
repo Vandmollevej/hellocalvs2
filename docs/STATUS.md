@@ -6,6 +6,10 @@ Last updated: 2026-10-08
 
 - De 264 Rewe/DM-rækker, der blev slettet 2026-10-07 som stregkode-gængere, er genskabt fra backup-arkene og gemt som kædekoblinger (259 EAN) i `scripts/store-products-import/data/store_links.json`; store-products-agent sætter Kæder (`product_stores`) ved hver kørsel. 87 EAN findes allerede i databasen (Bilka/REMA) og får Rewe/DM ved næste deploy; 48 SPAR- og 124 Rewe-ark-varer kobles, når de importeres.
 - Overblik på NAS'en: `Productdatabase\Kaeder for slettede EAN-gengangere.xlsx`. Regel: DECISIONS 2026-10-08.
+## 2026-10-08: Vagt-robot på NAS'en
+
+- Ny service `uptime-agent` (`scripts/uptime-agent`): hver time site udefra/indefra, containere, diskplads; mail til peter@packroff.dk ved fejl, påmindelse hver 6. t og ved løst, samt en "startet"-mail ved opstart. Se DEPLOYMENT "Overvågning".
+- Logik og dekryptering af admin-gemte SMTP-nøgler testet lokalt (Python); første kørsel på NAS'en verificeres via containerlog.
 
 ## 2026-10-07: Alle popups som bundark + brand-logoets luft
 
