@@ -2,6 +2,7 @@ package dk.packroff.hellocal.nav
 
 import dk.packroff.hellocal.screens.auth.AuthRoutes
 import dk.packroff.hellocal.screens.calendar.CalendarRoutes
+import dk.packroff.hellocal.screens.capture.CaptureRoutes
 import dk.packroff.hellocal.screens.onboarding.OnboardingRoutes
 import dk.packroff.hellocal.screens.settings.SettingsRoutes
 
@@ -12,5 +13,6 @@ object RouteRegistry {
         SettingsRoutes.routes,
         OnboardingRoutes.routes,
         CalendarRoutes.routes,
+        CaptureRoutes.routes,
     )
 }
