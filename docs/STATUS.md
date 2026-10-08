@@ -2,6 +2,12 @@
 
 Last updated: 2026-10-08
 
+## 2026-10-08: Native app — login-overdragelse, manglende API'er, genererede videnstekster
+
+- Google/Apple/Facebook-login og integrationstilkobling fra appen vender nu tilbage til appen (`hellocal://auth/complete?code=…`, `hellocal://settings/integrations/<app>?connected=1`) via engangskoder + PKCE. Nye ruter `POST /api/auth/native/exchange` og `POST /api/auth/native/connect-code`; ny migration `20261008160000_native_auth_codes` (DECISIONS 2026-10-08 "Native login-overdragelse"). Native: `api/NativeAuth.kt`, login-/opstartsknapper, integrationssiden og deep-link-håndtering i `HelloCalApp.kt`; `Location` har nu `fragment` (#anker), også i `RouteArgs`.
+- Nye API'er til native skærme: `GET /api/forwards/[token]` (samme claim-logik som `/forward/[token]`, nu i `src/lib/forward-view.ts`) og `GET /api/additives/[code]`; `GET /api/additives` har fået `category`, `euStatus`, `variantOf`. Native `ForwardScreen` og E-nummer-skærmene (EU-status-filter, "Forbudt i EU", chips, alle afsnit) er færdige.
+- `OnbKnowledgeData.kt` og `FoodReferenceData.kt` genereres nu af `scripts/native/sync.mjs` fra `src/lib/{food-latin,knowledge,knowledge-research,micronutrient-info,toxins}.ts` (Nodes indbyggede type-stripping, ingen pakker; CI kører Node 24). `--check` fejler ved drift.
+- Lint, `sync.mjs --check` og `parity.mjs` grønne. `tsc` kun fejl om `prisma.nativeAuthCode` (Prisma-klienten i worktree'et er ikke regenereret). Kotlin ikke kompileret lokalt (ingen Gradle) — CI-jobbet bygger APK/iPhone.
 ## 2026-10-08: Kæder for slettede EAN-gengangere (Rewe/DM)
 
 - De 264 Rewe/DM-rækker, der blev slettet 2026-10-07 som stregkode-gængere, er genskabt fra backup-arkene og gemt som kædekoblinger (259 EAN) i `scripts/store-products-import/data/store_links.json`; store-products-agent sætter Kæder (`product_stores`) ved hver kørsel. 87 EAN findes allerede i databasen (Bilka/REMA) og får Rewe/DM ved næste deploy; 48 SPAR- og 124 Rewe-ark-varer kobles, når de importeres.

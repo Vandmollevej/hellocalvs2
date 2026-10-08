@@ -9,12 +9,18 @@
 //     → native/ios/HelloCalWidgets/HcTokens.swift     (iPhone widgets)
 //   src/i18n/locales/*.json
 //     → native/shared/src/commonMain/composeResources/files/locales/*.json
+//   src/lib/{food-latin,knowledge,knowledge-research,micronutrient-info,toxins}.ts
+//     → native/shared/.../screens/onboarding/OnbKnowledgeData.kt
+//     → native/shared/.../screens/food/FoodReferenceData.kt
 //
 //   node scripts/native/sync.mjs          write the generated files
 //   node scripts/native/sync.mjs --check  exit 1 if any generated file is stale
-import { existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
+//
+// Needs Node >= 22.13 (node:module stripTypeScriptTypes) — no npm packages.
+import { existsSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, rmSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
 import { dirname, join, resolve } from "node:path";
-import { fileURLToPath } from "node:url";
+import { fileURLToPath, pathToFileURL } from "node:url";
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..", "..");
 const CHECK = process.argv.includes("--check");
@@ -273,6 +279,203 @@ if (existsSync(TABLER[0])) {
   outputs.set("native/shared/src/commonMain/kotlin/dk/packroff/hellocal/ui/icons/TablerData.kt", kt);
 }
 
+// ---- static reference data: src/lib/*.ts → Kotlin -------------------------
+/** Imports src/lib/<name>.ts (plus the @/lib modules it imports) with no npm
+ * package: Node's own stripTypeScriptTypes removes the types, the result is
+ * written as .mjs to a temp dir and imported. */
+async function importLib(names) {
+  const { stripTypeScriptTypes } = await import("node:module");
+  if (typeof stripTypeScriptTypes !== "function") {
+    throw new Error(`node:module stripTypeScriptTypes mangler — scripts/native/sync.mjs kræver Node >= 22.13 (kører ${process.version}).`);
+  }
+  const emit = process.emitWarning;
+  process.emitWarning = (warning, ...rest) => {
+    const type = typeof rest[0] === "string" ? rest[0] : rest[0]?.type;
+    if (type === "ExperimentalWarning" || warning?.name === "ExperimentalWarning") return;
+    emit.call(process, warning, ...rest);
+  };
+  const dir = mkdtempSync(join(tmpdir(), "hellocal-sync-"));
+  try {
+    const queue = [...names];
+    const done = new Set();
+    while (queue.length) {
+      const name = queue.shift();
+      if (done.has(name)) continue;
+      done.add(name);
+      const js = stripTypeScriptTypes(readFileSync(join(ROOT, "src/lib", `${name}.ts`), "utf8")).replace(
+        /(from\s*["'])@\/lib\/([\w-]+)(["'])/g,
+        (_, before, dep, after) => {
+          queue.push(dep);
+          return `${before}./${dep}.mjs${after}`;
+        },
+      );
+      writeFileSync(join(dir, `${name}.mjs`), js);
+    }
+    const modules = {};
+    for (const name of names) modules[name] = await import(pathToFileURL(join(dir, `${name}.mjs`)).href);
+    return modules;
+  } finally {
+    process.emitWarning = emit;
+    rmSync(dir, { recursive: true, force: true });
+  }
+}
+
+/** Kotlin string literal (handles quotes, backslashes, $, newlines). */
+function kstr(value) {
+  if (typeof value !== "string") throw new Error(`Forventede tekst, fik ${JSON.stringify(value)}`);
+  const esc = { "\\": "\\\\", '"': '\\"', $: "\\$", "\n": "\\n", "\r": "\\r", "\t": "\\t" };
+  return `"${[...value].map((c) => esc[c] ?? (c.codePointAt(0) < 0x20 ? `\\u${c.codePointAt(0).toString(16).padStart(4, "0")}` : c)).join("")}"`;
+}
+const kopt = (value) => (value == null ? "null" : kstr(value));
+const klist = (items, render = kstr) => (items?.length ? `listOf(${items.map(render).join(", ")})` : "emptyList()");
+
+/** Fails loudly when the web adds a field the native data classes don't carry yet. */
+function checkKeys(obj, allowed, where) {
+  const extra = Object.keys(obj).filter((k) => !allowed.includes(k));
+  if (extra.length) throw new Error(`${where}: nye felter ${extra.join(", ")} — tilføj dem i scripts/native/sync.mjs og Kotlin-klassen.`);
+}
+
+/** `internal object <name> { val all … }` split into part functions of 8, so no
+ * single JVM method gets near the 64 KB limit. */
+function chunkedObject(name, type, items, render) {
+  const parts = [];
+  for (let i = 0; i < items.length; i += 8) parts.push(items.slice(i, i + 8));
+  return [
+    `internal object ${name} {`,
+    `    val all: List<${type}> by lazy { ${parts.map((_, i) => `part${i}()`).join(" + ") || "emptyList()"} }`,
+    ...parts.flatMap((part, i) => ["", `    private fun part${i}(): List<${type}> = listOf(`, ...part.map((x) => `        ${render(x)},`), "    )"]),
+    "}",
+  ];
+}
+
+const lib = await importLib(["food-latin", "knowledge", "micronutrient-info", "toxins"]);
+const FOOD_TERMS = lib["food-latin"].FOOD_TERMS;
+const KNOWLEDGE_ARTICLES = lib.knowledge.KNOWLEDGE_ARTICLES;
+const MICRONUTRIENT_INFO = lib["micronutrient-info"].MICRONUTRIENT_INFO;
+const TOXINS = lib.toxins.TOXINS;
+
+const MICRO_KEYS = ["key", "group", "name", "alsoKnownAs", "function", "sources", "referenceIntake", "tooLittleOrMuch", "searchTerm"];
+for (const m of MICRONUTRIENT_INFO) checkKeys(m, MICRO_KEYS, `MICRONUTRIENT_INFO ${m.key}`);
+
+const onbLink = (s) => {
+  checkKeys(s, ["label", "href"], `kilde ${s.label}`);
+  return `OnbSourceLink(${kstr(s.label)}, ${kstr(s.href)})`;
+};
+
+const onbKt = [
+  `// ${HEADER}`,
+  "// Source: src/lib/food-latin.ts, src/lib/knowledge.ts, src/lib/knowledge-research.ts,",
+  "// src/lib/micronutrient-info.ts (static web data, no API).",
+  "package dk.packroff.hellocal.screens.onboarding",
+  "",
+  "internal data class OnbSourceLink(val label: String, val href: String)",
+  "",
+  "internal data class FoodTerm(",
+  "    val term: String,",
+  "    val aliases: List<String>,",
+  "    val danish: String,",
+  "    val explanation: String,",
+  "    val source: OnbSourceLink,",
+  ")",
+  "",
+  "internal data class KnowledgeArticle(",
+  "    val slug: String,",
+  "    val category: String,",
+  "    val title: String,",
+  "    val summary: String,",
+  "    val body: List<String>,",
+  "    val funFact: String?,",
+  "    val source: OnbSourceLink,",
+  "    val moreSources: List<OnbSourceLink>,",
+  ")",
+  "",
+  "internal data class MicronutrientInfo(",
+  ...MICRO_KEYS.map((k) => `    val ${k}: String,`),
+  ")",
+  "",
+  ...chunkedObject("FoodTerms", "FoodTerm", FOOD_TERMS, (t) => {
+    checkKeys(t, ["term", "aliases", "danish", "explanation", "source"], `FOOD_TERMS ${t.term}`);
+    return `FoodTerm(${kstr(t.term)}, ${klist(t.aliases)}, ${kstr(t.danish)}, ${kstr(t.explanation)}, ${onbLink(t.source)})`;
+  }),
+  "",
+  ...chunkedObject("KnowledgeArticles", "KnowledgeArticle", KNOWLEDGE_ARTICLES, (a) => {
+    checkKeys(a, ["slug", "category", "title", "summary", "body", "funFact", "source", "moreSources"], `KNOWLEDGE_ARTICLES ${a.slug}`);
+    return `KnowledgeArticle(${kstr(a.slug)}, ${kstr(a.category)}, ${kstr(a.title)}, ${kstr(a.summary)}, ${klist(a.body)}, ${kopt(a.funFact)}, ${onbLink(a.source)}, ${klist(a.moreSources, onbLink)})`;
+  }),
+  "",
+  ...chunkedObject("Micronutrients", "MicronutrientInfo", MICRONUTRIENT_INFO, (m) => `MicronutrientInfo(${MICRO_KEYS.map((k) => kstr(m[k])).join(", ")})`),
+  "",
+].join("\n");
+outputs.set("native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/onboarding/OnbKnowledgeData.kt", onbKt);
+
+// Lowercase name or alias → term, built exactly like LOOKUP in src/lib/food-latin.ts.
+const foodTermLookup = new Map();
+for (const t of FOOD_TERMS) for (const n of [t.term, ...(t.aliases ?? [])]) foodTermLookup.set(n.toLowerCase(), t.term);
+
+const foodKt = [
+  `// ${HEADER}`,
+  "// Source: src/lib/toxins.ts, src/lib/micronutrient-info.ts and src/lib/food-latin.ts — same Danish texts as the web.",
+  "package dk.packroff.hellocal.screens.food",
+  "",
+  "data class ToxinLink(val label: String, val url: String)",
+  "",
+  "data class ToxinInfo(",
+  "    val key: String,",
+  "    val name: String,",
+  "    val foods: String,",
+  "    val description: String,",
+  "    val advice: String,",
+  "    val pregnancy: String?,",
+  "    val fertility: String?,",
+  "    val links: List<ToxinLink>,",
+  "    val terms: List<String>,",
+  "    val excludeIf: List<String> = emptyList(),",
+  ")",
+  "",
+  "data class MicronutrientInfo(",
+  ...MICRO_KEYS.map((k) => `    val ${k}: String,`),
+  ")",
+  "",
+  "object FoodReferenceData {",
+  "    val toxins: List<ToxinInfo> = listOf(",
+  ...TOXINS.flatMap((t) => {
+    checkKeys(t, ["key", "name", "foods", "description", "advice", "pregnancy", "fertility", "links", "terms", "excludeIf"], `TOXINS ${t.key}`);
+    const link = (l) => {
+      checkKeys(l, ["label", "url"], `TOXINS ${t.key} link`);
+      return `ToxinLink(${kstr(l.label)}, ${kstr(l.url)})`;
+    };
+    return [
+      "        ToxinInfo(",
+      `            key = ${kstr(t.key)},`,
+      `            name = ${kstr(t.name)},`,
+      `            foods = ${kstr(t.foods)},`,
+      `            description = ${kstr(t.description)},`,
+      `            advice = ${kstr(t.advice)},`,
+      `            pregnancy = ${kopt(t.pregnancy)},`,
+      `            fertility = ${kopt(t.fertility)},`,
+      `            links = ${klist(t.links, link)},`,
+      `            terms = ${klist(t.terms)},`,
+      `            excludeIf = ${klist(t.excludeIf)},`,
+      "        ),",
+    ];
+  }),
+  "    )",
+  "",
+  "    val micronutrients: List<MicronutrientInfo> = listOf(",
+  ...MICRONUTRIENT_INFO.flatMap((m) => ["        MicronutrientInfo(", ...MICRO_KEYS.map((k) => `            ${k} = ${kstr(m[k])},`), "        ),"]),
+  "    )",
+  "",
+  "    /** src/lib/food-latin.ts FOOD_TERMS: lowercase name or alias -> term (linked in ingredient lists). */",
+  "    val foodTermLookup: Map<String, String> = mapOf(",
+  ...[...foodTermLookup].map(([name, term]) => `        ${kstr(name)} to ${kstr(term)},`),
+  "    )",
+  "",
+  "    val micronutrientByKey: Map<String, MicronutrientInfo> = micronutrients.associateBy { it.key }",
+  "}",
+  "",
+].join("\n");
+outputs.set("native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/food/FoodReferenceData.kt", foodKt);
+
 // ---- binary assets copied 1:1 (app icon) ---------------------------------
 const binaries = new Map([["native/androidApp/src/main/res/mipmap-xxxhdpi/ic_launcher.png", "src/app/icon.png"]]);
 
@@ -303,8 +506,8 @@ if (CHECK) {
     console.error(`Native-filer er ikke i takt med web — kør: node scripts/native/sync.mjs\n${stale.map((s) => `  ${s}`).join("\n")}`);
     process.exit(1);
   }
-  console.log("Native farver/typografi/tekster er i takt med web.");
+  console.log("Native farver/typografi/tekster/ikoner/videnstekster er i takt med web.");
 } else {
   console.log(stale.length ? `Opdaterede ${stale.length} filer:\n${stale.map((s) => `  ${s}`).join("\n")}` : "Alt var allerede i takt.");
-  console.log(`${colorList.length} farver, ${dimList.length} mål, ${typeList.length} tekstroller, ${[...outputs.keys()].filter((k) => k.includes("/locales/")).length} sprog, ${iconEntries.length} ikoner.`);
+  console.log(`${colorList.length} farver, ${dimList.length} mål, ${typeList.length} tekstroller, ${[...outputs.keys()].filter((k) => k.includes("/locales/")).length} sprog, ${iconEntries.length} ikoner, ${FOOD_TERMS.length} latinske madord, ${KNOWLEDGE_ARTICLES.length} artikler, ${MICRONUTRIENT_INFO.length} vitaminer/mineraler, ${TOXINS.length} toksiner.`);
 }

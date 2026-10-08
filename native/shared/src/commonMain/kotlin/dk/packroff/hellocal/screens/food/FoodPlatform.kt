@@ -1,5 +1,6 @@
 package dk.packroff.hellocal.screens.food
 
+import dk.packroff.hellocal.platform.Device
 import kotlin.io.encoding.Base64
 import kotlin.io.encoding.ExperimentalEncodingApi
 
@@ -12,29 +13,43 @@ class FoodPhoto(val bytes: ByteArray, val mime: String = "image/jpeg", val taken
 
 /**
  * Device features the food screens need where the web uses <input type="file"
- * capture>, tesseract.js, ZXing and navigator.share.
- *
- * TODO(parity): wire these in the Android app (HelloCalApplication) and the
- * iPhone app (iosApp) like NativeHooks — or move them into platform/ as
- * expect/actual. Until then the screens show their normal "failed"/fallback
- * states (no crash): photo buttons do nothing, barcode/text reading falls back
- * to typing or the server's AI.
+ * capture>, tesseract.js, ZXing and navigator.share. Every hook forwards to
+ * the shared device layer (platform/Device.kt). Without a platform the hooks
+ * are null and the screens show their normal "failed"/fallback states (no
+ * crash): photo buttons do nothing, barcode/text reading falls back to typing
+ * or the server's AI.
  */
 object FoodPlatform {
-    /** Opens the camera (fromGallery = false) or the photo library; null when cancelled. */
-    var takePhoto: (suspend (fromGallery: Boolean) -> FoodPhoto?)? = null
+    private val takePhotoCall: suspend (Boolean) -> FoodPhoto? = { fromGallery ->
+        val bytes = if (fromGallery) Device.pickPhotos(1).firstOrNull() else Device.takePhoto()
+        bytes?.let { FoodPhoto(it) }
+    }
+    private val pickPhotosCall: suspend (Int) -> List<FoodPhoto> = { max -> Device.pickPhotos(max).map { FoodPhoto(it) } }
+    private val recognizeTextCall: suspend (FoodPhoto, String) -> Pair<String, Double>? = { photo, languages ->
+        Device.recognizeText(photo.bytes, languages)?.let { it.text to it.confidence }
+    }
+    private val decodeBarcodeCall: suspend (FoodPhoto) -> String? = { photo -> Device.decodeBarcode(photo.bytes) }
+    private val shareCall: (String, String, String) -> Boolean = { title, text, url -> Device.share(title, text, url) }
 
-    /** Picks up to [max] photos from the library (RecipeImagesPicker, ScanSheet "Galleri"). */
-    var pickPhotos: (suspend (max: Int) -> List<FoodPhoto>)? = null
+    /** Opens the camera (fromGallery = false) or the photo library; null when cancelled. */
+    val takePhoto: (suspend (fromGallery: Boolean) -> FoodPhoto?)?
+        get() = if (Device.available) takePhotoCall else null
+
+    /** Picks up to max photos from the library (RecipeImagesPicker, ScanSheet "Galleri"). */
+    val pickPhotos: (suspend (max: Int) -> List<FoodPhoto>)?
+        get() = if (Device.available) pickPhotosCall else null
 
     /** Local OCR (web: tesseract.js) — returns the recognised text and its confidence 0..100. */
-    var recognizeText: (suspend (photo: FoodPhoto, languages: String) -> Pair<String, Double>?)? = null
+    val recognizeText: (suspend (photo: FoodPhoto, languages: String) -> Pair<String, Double>?)?
+        get() = if (Device.available) recognizeTextCall else null
 
     /** Decodes a barcode in a photo (web: ZXing BrowserMultiFormatReader). */
-    var decodeBarcode: (suspend (photo: FoodPhoto) -> String?)? = null
+    val decodeBarcode: (suspend (photo: FoodPhoto) -> String?)?
+        get() = if (Device.available) decodeBarcodeCall else null
 
     /** System share sheet (web: navigator.share); false when unavailable. */
-    var share: ((title: String, text: String, url: String) -> Boolean)? = null
+    val share: ((title: String, text: String, url: String) -> Boolean)?
+        get() = if (Device.available) shareCall else null
 
     suspend fun photo(fromGallery: Boolean): FoodPhoto? = runCatching { takePhoto?.invoke(fromGallery) }.getOrNull()
 

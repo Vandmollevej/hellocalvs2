@@ -11,19 +11,30 @@ import androidx.compose.runtime.setValue
  * "/camera?mode=product"), so links, deep links (hellocal://<path>) and the
  * parity manifest (native/parity/screens.json) all line up 1:1 with the web.
  */
-data class Location(val path: String, val query: Map<String, String> = emptyMap()) {
-    val full: String get() = if (query.isEmpty()) path else "$path?" + query.entries.joinToString("&") { "${it.key}=${it.value}" }
+data class Location(
+    val path: String,
+    val query: Map<String, String> = emptyMap(),
+    /** The "#anchor" part (web: location.hash without "#"), e.g. /viden/vitaminer#vitamin-c. */
+    val fragment: String? = null,
+) {
+    val full: String
+        get() = buildString {
+            append(path)
+            if (query.isNotEmpty()) append("?").append(query.entries.joinToString("&") { "${it.key}=${it.value}" })
+            if (!fragment.isNullOrEmpty()) append("#").append(fragment)
+        }
 
     companion object {
         fun parse(href: String): Location {
-            val clean = href
+            val withoutScheme = href
                 .removePrefix("hellocal://").let { if (it.startsWith("/")) it else "/$it" }
-                .substringBefore('#')
+            val clean = withoutScheme.substringBefore('#')
+            val fragment = withoutScheme.substringAfter('#', "").ifEmpty { null }?.let { decode(it) }
             val path = clean.substringBefore('?').trimEnd('/').ifEmpty { "/" }
             val query = clean.substringAfter('?', "").split('&').filter { it.contains('=') }.associate {
                 decode(it.substringBefore('=')) to decode(it.substringAfter('='))
             }
-            return Location(path, query)
+            return Location(path, query, fragment)
         }
 
         /** URL-decodes a query component (UTF-8 percent escapes, '+' = space). */

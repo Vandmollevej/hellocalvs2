@@ -36,7 +36,8 @@ same API calls, same validation and empty/error states.
    `router.back()` → `nav.back()`, `<Link href>` → `nav.push(href)` or `HcLink`.
    Path params/query: `args["id"]`, `args.opt("mode")`.
 7. **Browser-only features** have native equivalents:
-   - camera/barcode → `platform/` expect/actual
+   - camera/photos/barcode/OCR/speech/share/biometrics → `Device.*` in
+     `platform/Device.kt` (one interface, implemented by both apps)
    - localStorage → `NativeHooks.secureStorage`
    - `window.open`/mailto/tel → `NativeHooks.openExternalUrl`.
    If one isn't there yet, add the expect/actual in `platform/` with a TODO

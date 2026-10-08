@@ -168,7 +168,7 @@
     "src/components/hf/TextField.tsx": "f44c94024c219168"
   },
   "/forward/[token]": {
-    "src/app/forward/[token]/page.tsx": "6f5fbc164dc52496",
+    "src/app/forward/[token]/page.tsx": "754b9f5e94114d6b",
     "src/app/layout.tsx": "9a180a8c9b7bdec8",
     "src/components/AddForwardedItemButton.tsx": "d95f5ca4e4d48a74"
   },
