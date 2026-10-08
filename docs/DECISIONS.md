@@ -3396,3 +3396,30 @@ Kilder på "Mad på latin" skal altid være officielle (Fødevarestyrelsen, Sund
 ## 2026-10-07: Natlig robot "Energifordeling: afvigelser"
 
 Varer med samme brand, produkttype, serie, variant og smag, der kun adskiller sig på mængde, skal have næsten samme energifordeling (% af kcal fra protein 4/kulhydrat 4/fedt 9 kcal pr. g). Jobbet `energy-split-check` (kl. 03:30, app-runtime, admin → Cron-jobs) sammenligner hver vare med medianen af de andre i gruppen; over 8 procentpoint på en af de tre → række i `product_energy_split_flags` og sektionen "Energi-afvigelser" på admin → Usikkerheder (+ rød prik). Varen deaktiveres/skjules ikke; admin undersøger og trykker "Undersøgt". En gennemgået vare flagges først igen, hvis dens tal ændres; flag ryddes, når afvigelsen forsvinder. Kun godkendte, ikke-private, aktive varer med produkttype. Migration 20261007100000 skal med deployet.
+
+## 2026-10-08: Adgangsmur mod crawlere og scrapere
+
+Brugerens krav: strengt — crawlere/robotter får kun adgang til forsiden, heller
+ikke når de er logget ind; ingen vandmærkning/bruger-ID i billeder (afvist).
+Implementeret i `src/lib/access-wall.ts` + `middleware.ts` (forbrugerdomænet;
+admin har sin egen login + IP-spærre):
+
+- Kendte crawlere, AI-scrapere, SEO-værktøjer og script-/headless-klienter
+  (User-Agent) får 403 overalt, også på forsiden. Tom/kort UA afvises. Undtaget:
+  `/api/health` og token-API'er (widgets, MCP, HealthKit), plus localhost.
+- Anonyme ser kun forsiden, login/tilmelding/glemt kode, juridiske sider,
+  token-delingslinks (`/forward`, `/hello-doc`), `/family-code`, `/umami` og
+  logo/ikon-filer. Alt andet kræver gyldig `hc_user_session`: sider → redirect
+  til `/login`, API → 401, beskyttede billeder → 404. Lukker bl.a. de AI-ruter
+  (`/api/ai/*`), der ikke selv tjekker login.
+- Beskyttede billeder (`/product-images`, `/hellofresh-images`, `/brand-logos`,
+  `/dummy`, `/body-measurements`, `/measurements`, `/icons/animals`): kræver
+  session, afviser cross-site/hotlink og direkte åbning (`Sec-Fetch-*`, ellers
+  Referer), `Cache-Control: private`, `Cross-Origin-Resource-Policy: same-origin`.
+  `/_next/image` er med i middleware og vurderes på den ægte kilde-sti.
+- Rate limit pr. IP (anonym 60/min) og pr. bruger (sider 600, API 300, billeder
+  900 pr. minut), i processen. `public/robots.txt` er stadig `Disallow: /`.
+- Bevidst valgt frem for signerede kortlivede billed-URL'er: session-cookien er
+  strengere (en URL kan deles). Vandmærke/bruger-ID i billeder er afvist (privatliv).
+- Grænse: et billede en bruger kan se, kan altid screenshottes. Murens formål er
+  at stoppe automatisk indsamling, ikke manuel kopiering.

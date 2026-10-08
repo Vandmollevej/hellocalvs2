@@ -249,14 +249,22 @@ Routing. OAuth-redirect-URI'er hos Google, Facebook, Apple, Strava, Withings,
 Polar m.fl. og MobilePay-webhooken skal pege på `hellocal.io`. Passkeys er
 bundet til hostnavnet og skal oprettes igen på det nye domæne.
 
-## Search indexing
+## Search indexing and crawler protection
 
-The application adds `X-Robots-Tag: noindex, nofollow, noarchive, nosnippet,
-noimageindex` to every response. This lets search engines crawl the public app
-only to see that it must not be indexed. Do not use `robots.txt` to block the
-app while relying on `noindex`, because a blocked crawler cannot read that
-instruction. If the application must be private rather than merely hidden from
-search, protect it with an access-control layer such as Cloudflare Access.
+Every response carries `X-Robots-Tag: noindex, nofollow, noarchive, nosnippet,
+noimageindex`, and `public/robots.txt` is `Disallow: /`. This is only a request
+to well-behaved bots. The real protection is the access wall in
+`middleware.ts` / `src/lib/access-wall.ts` (docs/DECISIONS.md 2026-10-08):
+known crawlers and script clients get 403, anonymous visitors only reach the
+front page, login and legal pages, and everything else (pages, APIs, product
+images) needs a valid user session.
+
+Recommended Cloudflare settings for hellocal.io (dashboard, not code):
+Security → Bots → Bot Fight Mode on; "Block AI bots" / AI Scrapers and Crawlers
+on; a rate-limiting rule on `/api/auth/*` (e.g. 10 requests/min per IP).
+New public routes (webhooks, OAuth callbacks) must be added to
+`PUBLIC_API_PREFIXES` in `src/lib/access-wall.ts`, otherwise anonymous calls
+get 401.
 
 ## Backup
 

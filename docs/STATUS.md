@@ -1,6 +1,17 @@
 # HELLO CAL — project status
 
-Last updated: 2026-09-29
+Last updated: 2026-10-08
+
+## 2026-10-08: Adgangsmur mod crawlere
+
+- `middleware.ts` + `src/lib/access-wall.ts`: bot-blokering (UA), login-krav på alt undtagen forside/login/juridiske sider, beskyttede billeder (session + hotlink-tjek), rate limit. Se DECISIONS 2026-10-08 og DEPLOYMENT "Search indexing".
+- Logik testet med 30 enhedstjek; lint på ændrede filer grøn. Ikke testet live (ingen lokal DB/login) — efter deploy: tjek forside, login, Face ID, Google/Apple-login, betaling-webhook, widgets og produktbilleder i appen.
+- Mangler hos dig: Cloudflare Bot Fight Mode / AI-bot-blokering + rate limit på login (se DEPLOYMENT).
+
+## 2026-10-04: Drinks (forberedt)
+
+- Ny kategori "Drinks" nederst i tilføj-menuen, `/drinks` og `/drinks/[id]` (cirkelbillede + én skyder pr. ingrediens), API `/api/drinks` + `/api/drinks/log`, migration `20261004100000_drinks` skal køre ved deploy.
+- Mangler: regneark-import (format i `docs/DRINKS.md`) — databasen er tom indtil da.
 
 ## 2026-09-29: Hello Doc-insight på admins design + fælles designklasser
 

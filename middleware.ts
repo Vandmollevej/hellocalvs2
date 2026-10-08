@@ -1,6 +1,16 @@
 import { NextRequest, NextResponse } from "next/server";
 import { ADMIN_SESSION_COOKIE, verifyAdminSessionInfo } from "@/lib/admin-auth";
 import { SCAN_SESSION_COOKIE, verifyScanSession } from "@/lib/scan/auth";
+import { USER_SESSION_COOKIE, verifyUserSession } from "@/lib/user-auth";
+import {
+  isAnonymousAllowed,
+  isBlockedUserAgent,
+  isImageRequestAllowed,
+  isProtectedImagePath,
+  isPublicHealthPath,
+  isTokenApiPath,
+  throttle,
+} from "@/lib/access-wall";
 
 // Dedicated admin hostname (docs/DEPLOYMENT.md). One codebase, one
 // deployment — this host just gets every path treated as living under
@@ -123,6 +133,78 @@ async function handleScan(req: NextRequest, host: string) {
   return null;
 }
 
+const NOINDEX = { "X-Robots-Tag": "noindex, nofollow, noarchive, nosnippet, noimageindex" };
+
+function deny(status: number, body: string, extra: Record<string, string> = {}) {
+  return new NextResponse(body, { status, headers: { ...NOINDEX, "Cache-Control": "no-store", ...extra } });
+}
+
+// Adgangsmur (docs/DECISIONS.md 2026-10-08): kun forsiden + login/juridiske sider
+// er åbne for anonyme. Alt andet — sider, API'er og beskyttede billeder —
+// kræver en gyldig brugersession. Kendte crawlere/scrapere afvises helt.
+async function handleAccessWall(req: NextRequest, host: string): Promise<NextResponse | null> {
+  const url = req.nextUrl;
+  let pathname = url.pathname;
+  if (isPublicHealthPath(pathname)) return null;
+
+  // Next's billed-optimerer: afgør ud fra den ægte kilde, ikke /_next/image.
+  const isOptimizer = pathname === "/_next/image";
+  if (isOptimizer) {
+    const src = url.searchParams.get("url") ?? "";
+    pathname = src.startsWith("/") && !src.startsWith("//") ? src.split("?")[0] : "/_next/image-invalid";
+    if (pathname === "/_next/image-invalid") return deny(400, "Bad request");
+  }
+
+  const isLocal = host === "localhost" || host === "127.0.0.1";
+  const ua = req.headers.get("user-agent");
+  const ip = clientIp(req) || "unknown";
+
+  // Crawlere, AI-scrapere og script-klienter afvises overalt — også på forsiden.
+  // robots.txt serveres altid, så pæne bots kan læse "Disallow: /". Enheds-/agent-
+  // API'er med eget token er ikke browsere og undtages.
+  if (pathname !== "/robots.txt" && !isLocal && !isTokenApiPath(pathname) && isBlockedUserAgent(ua)) {
+    return deny(403, "Forbidden");
+  }
+  if (pathname === "/robots.txt") return null;
+
+  const token = req.cookies.get(USER_SESSION_COOKIE)?.value;
+  const session = token ? await verifyUserSession(token) : null;
+  const isApi = pathname.startsWith("/api/");
+  const isImage = isProtectedImagePath(pathname);
+
+  if (!session) {
+    // Token-API'er (widgets, MCP, HealthKit) validerer selv deres Bearer/URL-token.
+    if (!isAnonymousAllowed(pathname)) {
+      if (isApi) return deny(401, JSON.stringify({ error: "unauthorized" }), { "Content-Type": "application/json" });
+      if (isImage) return deny(404, "Not found");
+      const login = req.nextUrl.clone();
+      login.pathname = "/login";
+      login.search = "";
+      return NextResponse.redirect(login);
+    }
+    // Anonyme har en lav hastighedsgrænse (forside/login).
+    const wait = throttle(ip, isApi ? "api" : "anon");
+    if (wait) return deny(429, "Too many requests", { "Retry-After": String(wait) });
+    return null;
+  }
+
+  if (isImage) {
+    if (!isImageRequestAllowed(req.headers, req.headers.get("host") ?? host)) return deny(403, "Forbidden");
+    const wait = throttle(session.userId, "image");
+    if (wait) return deny(429, "Too many requests", { "Retry-After": String(wait) });
+    const res = NextResponse.next();
+    res.headers.set("Cache-Control", "private, max-age=3600");
+    res.headers.set("Vary", "Cookie");
+    res.headers.set("X-Content-Type-Options", "nosniff");
+    res.headers.set("Cross-Origin-Resource-Policy", "same-origin");
+    return res;
+  }
+
+  const wait = throttle(session.userId, isApi ? "api" : "auth");
+  if (wait) return deny(429, "Too many requests", { "Retry-After": String(wait) });
+  return null;
+}
+
 export async function middleware(req: NextRequest) {
   const host = req.headers.get("host")?.split(":")[0] ?? "";
   const scanResult = await handleScan(req, host);
@@ -136,6 +218,13 @@ export async function middleware(req: NextRequest) {
 
   const url = req.nextUrl.clone();
   let pathname = url.pathname;
+
+  // Adgangsmuren gælder forbrugerdomænet; admin-værten og /admin-ruterne har
+  // deres egen (strengere) login- og IP-spærre længere nede.
+  if (!isAdminHost && !pathname.startsWith("/admin") && !pathname.startsWith("/api/admin")) {
+    const wall = await handleAccessWall(req, host);
+    if (wall) return wall;
+  }
 
   // Metadata files (icon.png, apple-icon.png, manifest.webmanifest, /icons/*)
   // live at the root; prefixing them with /admin would 404 and leave the
@@ -194,5 +283,5 @@ export async function middleware(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/((?!_next/static|_next/image|favicon.ico).*)"],
+  matcher: ["/((?!_next/static|favicon.ico).*)"],
 };
