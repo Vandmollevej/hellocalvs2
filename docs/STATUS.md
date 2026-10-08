@@ -41,6 +41,15 @@ Last updated: 2026-10-08
 - Verificeret på master (0a7d3593): "Sådan regner vi" væk, "/stk." efter gram pr. skive, ingen tom luft over Tilføj-knappen, Tilføj-knap væk fra rækker, menutekst tættere på ikonerne, beskeder swipe-slet midt for rækken.
 - Lint grøn på de ændrede filer; `tsc` har kun to fejl i `api/dishes/route.ts` fra en forældet Prisma-klient i worktree'et. Ikke visuelt testet (brugerens regel).
 
+## 2026-10-08: Native apps — alle 121 forbruger-skærme porteret, Android + iPhone bygger
+
+- Alle forbruger-sider i `native/parity/screens.json` er nu `ported` (121), og 100 er `web-only` (admin/partner/erhverv/butiks-scanner). CI ("Native apps") bygger Android-APK og iPhone-app (simulator) grønt.
+- Telefon-funktioner (`platform/Device.kt`, `AndroidDevice.kt`, `IosDevice.swift`): kamera, foto-/filvalg, video→billeder, OCR, stregkode/QR, tale, deling, biometri.
+- Login med Google/Apple/Facebook og integration-forbindelser vender tilbage til appen (PKCE + engangskoder, migration `20261008160000_native_auth_codes`).
+- Nye API'er: `GET /api/forwards/[token]`, `GET /api/additives/[code]`; `/api/additives` har category/euStatus/variantOf.
+- Web-fix: `/statistics/body-water` viste aldrig kcal/salt/sugar (forkert dagsnøgle i `src/lib/water-stats.ts`).
+- Mangler eksterne konti: push til login-godkendelse (Firebase/APNs) og Face ID/passkey-login i appen (Apple Associated Domains + assetlinks).
+
 ## 2026-10-07: Native apps (Android + iPhone) — fundament
 
 - Brugerens valg: Hello Cal bliver **helt native** og ikke en web-app i en skal. Alle skærme skrives én gang i Kotlin/Compose Multiplatform (`native/shared`) og kompileres til både Android og iPhone. Se DECISIONS 2026-10-07.

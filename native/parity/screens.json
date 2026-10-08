@@ -3,8 +3,10 @@
     {
       "route": "/",
       "web": "src/app/page.tsx",
-      "status": "pending",
-      "native": []
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/food/HomeScreen.kt"
+      ]
     },
     {
       "route": "/account/phone",
@@ -17,32 +19,42 @@
     {
       "route": "/activity/create",
       "web": "src/app/activity/create/page.tsx",
-      "status": "pending",
-      "native": []
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/capture/ActivityCreateScreen.kt"
+      ]
     },
     {
       "route": "/add/[id]",
       "web": "src/app/add/[id]/page.tsx",
-      "status": "pending",
-      "native": []
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/food/AddProductScreen.kt"
+      ]
     },
     {
       "route": "/add/[id]/photo-award",
       "web": "src/app/add/[id]/photo-award/page.tsx",
-      "status": "pending",
-      "native": []
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/food/RegistrationScreens.kt"
+      ]
     },
     {
       "route": "/add/[id]/update",
       "web": "src/app/add/[id]/update/page.tsx",
-      "status": "pending",
-      "native": []
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/food/RegistrationScreens.kt"
+      ]
     },
     {
       "route": "/add/menu",
       "web": "src/app/add/menu/page.tsx",
-      "status": "pending",
-      "native": []
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/food/AddMenu.kt"
+      ]
     },
     {
       "route": "/admin",
@@ -659,38 +671,50 @@
     {
       "route": "/camera",
       "web": "src/app/camera/page.tsx",
-      "status": "pending",
-      "native": []
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/capture/CameraScreen.kt"
+      ]
     },
     {
       "route": "/camera/create",
       "web": "src/app/camera/create/page.tsx",
-      "status": "pending",
-      "native": []
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/capture/CameraScreen.kt"
+      ]
     },
     {
       "route": "/chat",
       "web": "src/app/chat/page.tsx",
-      "status": "pending",
-      "native": []
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/capture/ChatScreen.kt"
+      ]
     },
     {
       "route": "/create-dish",
       "web": "src/app/create-dish/page.tsx",
-      "status": "pending",
-      "native": []
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/food/CreateDishScreen.kt"
+      ]
     },
     {
       "route": "/drinks",
       "web": "src/app/drinks/page.tsx",
-      "status": "pending",
-      "native": []
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/food/FoodsScreens.kt"
+      ]
     },
     {
       "route": "/drinks/[id]",
       "web": "src/app/drinks/[id]/page.tsx",
-      "status": "pending",
-      "native": []
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/food/FoodsScreens.kt"
+      ]
     },
     {
       "route": "/e-numre",
@@ -735,20 +759,26 @@
     {
       "route": "/favorites",
       "web": "src/app/favorites/page.tsx",
-      "status": "pending",
-      "native": []
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/food/ProductListScreens.kt"
+      ]
     },
     {
       "route": "/foods",
       "web": "src/app/foods/page.tsx",
-      "status": "pending",
-      "native": []
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/food/FoodsScreens.kt"
+      ]
     },
     {
       "route": "/foods/new",
       "web": "src/app/foods/new/page.tsx",
-      "status": "pending",
-      "native": []
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/food/FoodsScreens.kt"
+      ]
     },
     {
       "route": "/forgot-password",
@@ -777,14 +807,18 @@
     {
       "route": "/ingredients",
       "web": "src/app/ingredients/page.tsx",
-      "status": "pending",
-      "native": []
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/food/FoodsScreens.kt"
+      ]
     },
     {
       "route": "/ingredients/new",
       "web": "src/app/ingredients/new/page.tsx",
-      "status": "pending",
-      "native": []
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/food/FoodsScreens.kt"
+      ]
     },
     {
       "route": "/login",
@@ -821,8 +855,10 @@
     {
       "route": "/my-scans",
       "web": "src/app/my-scans/page.tsx",
-      "status": "pending",
-      "native": []
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/food/ProductListScreens.kt"
+      ]
     },
     {
       "route": "/om-os",
@@ -863,8 +899,10 @@
     {
       "route": "/period/create",
       "web": "src/app/period/create/page.tsx",
-      "status": "pending",
-      "native": []
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/capture/PeriodCreateScreen.kt"
+      ]
     },
     {
       "route": "/presse",
@@ -885,146 +923,194 @@
     {
       "route": "/product/create",
       "web": "src/app/product/create/page.tsx",
-      "status": "pending",
-      "native": []
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/food/ProductCreateScreen.kt"
+      ]
     },
     {
       "route": "/profile",
       "web": "src/app/profile/page.tsx",
-      "status": "pending",
-      "native": []
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/profile/ProfileScreen.kt"
+      ]
     },
     {
       "route": "/profile/body-measurements",
       "web": "src/app/profile/body-measurements/page.tsx",
-      "status": "pending",
-      "native": []
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/profile/BodyMeasurementsScreen.kt"
+      ]
     },
     {
       "route": "/profile/change-password",
       "web": "src/app/profile/change-password/page.tsx",
-      "status": "pending",
-      "native": []
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/profile/ProfileAccountScreens.kt"
+      ]
     },
     {
       "route": "/profile/edit",
       "web": "src/app/profile/edit/page.tsx",
-      "status": "pending",
-      "native": []
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/profile/ProfileEditScreen.kt"
+      ]
     },
     {
       "route": "/profile/energy-goal",
       "web": "src/app/profile/energy-goal/page.tsx",
-      "status": "pending",
-      "native": []
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/profile/EnergyGoalScreen.kt"
+      ]
     },
     {
       "route": "/profile/family",
       "web": "src/app/profile/family/page.tsx",
-      "status": "pending",
-      "native": []
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/capture/FamilyScreen.kt"
+      ]
     },
     {
       "route": "/profile/goals",
       "web": "src/app/profile/goals/page.tsx",
-      "status": "pending",
-      "native": []
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/profile/GoalsScreens.kt"
+      ]
     },
     {
       "route": "/profile/goals/[id]",
       "web": "src/app/profile/goals/[id]/page.tsx",
-      "status": "pending",
-      "native": []
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/profile/GoalsScreens.kt"
+      ]
     },
     {
       "route": "/profile/goals/[id]/edit",
       "web": "src/app/profile/goals/[id]/edit/page.tsx",
-      "status": "pending",
-      "native": []
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/profile/GoalFormScreens.kt"
+      ]
     },
     {
       "route": "/profile/goals/new",
       "web": "src/app/profile/goals/new/page.tsx",
-      "status": "pending",
-      "native": []
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/profile/GoalFormScreens.kt"
+      ]
     },
     {
       "route": "/profile/goals/upcoming",
       "web": "src/app/profile/goals/upcoming/page.tsx",
-      "status": "pending",
-      "native": []
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/profile/GoalsScreens.kt"
+      ]
     },
     {
       "route": "/profile/height",
       "web": "src/app/profile/height/page.tsx",
-      "status": "pending",
-      "native": []
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/profile/ProfileAccountScreens.kt"
+      ]
     },
     {
       "route": "/profile/invite",
       "web": "src/app/profile/invite/page.tsx",
-      "status": "pending",
-      "native": []
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/profile/InviteScreen.kt"
+      ]
     },
     {
       "route": "/profile/login-approval",
       "web": "src/app/profile/login-approval/page.tsx",
-      "status": "pending",
-      "native": []
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/profile/LoginApprovalScreen.kt"
+      ]
     },
     {
       "route": "/profile/messages",
       "web": "src/app/profile/messages/page.tsx",
-      "status": "pending",
-      "native": []
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/profile/MessagesScreen.kt"
+      ]
     },
     {
       "route": "/profile/notifications",
       "web": "src/app/profile/notifications/page.tsx",
-      "status": "pending",
-      "native": []
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/profile/NotificationsScreen.kt"
+      ]
     },
     {
       "route": "/profile/photo-diary",
       "web": "src/app/profile/photo-diary/page.tsx",
-      "status": "pending",
-      "native": []
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/profile/PhotoDiaryScreen.kt"
+      ]
     },
     {
       "route": "/profile/points",
       "web": "src/app/profile/points/page.tsx",
-      "status": "pending",
-      "native": []
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/profile/PointsScreen.kt"
+      ]
     },
     {
       "route": "/profile/recipes",
       "web": "src/app/profile/recipes/page.tsx",
-      "status": "pending",
-      "native": []
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/capture/RecipesScreen.kt"
+      ]
     },
     {
       "route": "/profile/recipes/[id]",
       "web": "src/app/profile/recipes/[id]/page.tsx",
-      "status": "pending",
-      "native": []
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/capture/RecipeDetailScreen.kt"
+      ]
     },
     {
       "route": "/profile/recipes/filters",
       "web": "src/app/profile/recipes/filters/page.tsx",
-      "status": "pending",
-      "native": []
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/capture/RecipeFilters.kt"
+      ]
     },
     {
       "route": "/profile/recipes/hellofresh/[id]",
       "web": "src/app/profile/recipes/hellofresh/[id]/page.tsx",
-      "status": "pending",
-      "native": []
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/capture/HelloFreshRecipeScreen.kt"
+      ]
     },
     {
       "route": "/profile/report-bug",
       "web": "src/app/profile/report-bug/page.tsx",
-      "status": "pending",
-      "native": []
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/profile/ReportBugScreen.kt"
+      ]
     },
     {
       "route": "/profile/settings",
@@ -1053,68 +1139,90 @@
     {
       "route": "/profile/sleep",
       "web": "src/app/profile/sleep/page.tsx",
-      "status": "pending",
-      "native": []
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/profile/SleepScreen.kt"
+      ]
     },
     {
       "route": "/profile/start-weight",
       "web": "src/app/profile/start-weight/page.tsx",
-      "status": "pending",
-      "native": []
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/profile/ProfileAccountScreens.kt"
+      ]
     },
     {
       "route": "/profile/start-weight/verify",
       "web": "src/app/profile/start-weight/verify/page.tsx",
-      "status": "pending",
-      "native": []
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/profile/ProfileAccountScreens.kt"
+      ]
     },
     {
       "route": "/profile/status",
       "web": "src/app/profile/status/page.tsx",
-      "status": "pending",
-      "native": []
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/statistics/ProfileStatusScreen.kt"
+      ]
     },
     {
       "route": "/profile/subscription",
       "web": "src/app/profile/subscription/page.tsx",
-      "status": "pending",
-      "native": []
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/profile/SubscriptionScreens.kt"
+      ]
     },
     {
       "route": "/profile/subscription/[plan]",
       "web": "src/app/profile/subscription/[plan]/page.tsx",
-      "status": "pending",
-      "native": []
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/profile/SubscriptionScreens.kt"
+      ]
     },
     {
       "route": "/profile/subscription/redeem-points",
       "web": "src/app/profile/subscription/redeem-points/page.tsx",
-      "status": "pending",
-      "native": []
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/profile/SubscriptionScreens.kt"
+      ]
     },
     {
       "route": "/profile/target-weight",
       "web": "src/app/profile/target-weight/page.tsx",
-      "status": "pending",
-      "native": []
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/profile/ProfileAccountScreens.kt"
+      ]
     },
     {
       "route": "/profile/weight-calibration",
       "web": "src/app/profile/weight-calibration/page.tsx",
-      "status": "pending",
-      "native": []
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/profile/WeightCalibrationScreen.kt"
+      ]
     },
     {
       "route": "/registration/[id]",
       "web": "src/app/registration/[id]/page.tsx",
-      "status": "pending",
-      "native": []
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/food/RegistrationScreens.kt"
+      ]
     },
     {
       "route": "/registration/[id]/report-error",
       "web": "src/app/registration/[id]/report-error/page.tsx",
-      "status": "pending",
-      "native": []
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/food/RegistrationScreens.kt"
+      ]
     },
     {
       "route": "/reset-password",
@@ -1204,8 +1312,10 @@
     {
       "route": "/search",
       "web": "src/app/search/page.tsx",
-      "status": "pending",
-      "native": []
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/food/ProductListScreens.kt"
+      ]
     },
     {
       "route": "/settings",
@@ -1418,38 +1528,50 @@
     {
       "route": "/statistics",
       "web": "src/app/statistics/page.tsx",
-      "status": "pending",
-      "native": []
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/statistics/StatisticsScreen.kt"
+      ]
     },
     {
       "route": "/statistics/body-water",
       "web": "src/app/statistics/body-water/page.tsx",
-      "status": "pending",
-      "native": []
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/statistics/BodyWaterStatisticsScreen.kt"
+      ]
     },
     {
       "route": "/statistics/month-sinners",
       "web": "src/app/statistics/month-sinners/page.tsx",
-      "status": "pending",
-      "native": []
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/statistics/MonthSinnersScreen.kt"
+      ]
     },
     {
       "route": "/statistics/sleep",
       "web": "src/app/statistics/sleep/page.tsx",
-      "status": "pending",
-      "native": []
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/statistics/SleepStatisticsScreen.kt"
+      ]
     },
     {
       "route": "/statistics/unused-cards",
       "web": "src/app/statistics/unused-cards/page.tsx",
-      "status": "pending",
-      "native": []
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/statistics/UnusedStatCardsScreen.kt"
+      ]
     },
     {
       "route": "/statistics/unused-charts",
       "web": "src/app/statistics/unused-charts/page.tsx",
-      "status": "pending",
-      "native": []
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/statistics/UnusedStatChartsScreen.kt"
+      ]
     },
     {
       "route": "/verify-email",
@@ -1502,26 +1624,34 @@
     {
       "route": "/voice",
       "web": "src/app/voice/page.tsx",
-      "status": "pending",
-      "native": []
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/capture/VoiceScreen.kt"
+      ]
     },
     {
       "route": "/water/create",
       "web": "src/app/water/create/page.tsx",
-      "status": "pending",
-      "native": []
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/capture/WaterCreateScreen.kt"
+      ]
     },
     {
       "route": "/weigh-reminders",
       "web": "src/app/weigh-reminders/page.tsx",
-      "status": "pending",
-      "native": []
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/capture/WeighRemindersScreen.kt"
+      ]
     },
     {
       "route": "/weight/create",
       "web": "src/app/weight/create/page.tsx",
-      "status": "pending",
-      "native": []
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/capture/WeightCreateScreen.kt"
+      ]
     },
     {
       "route": "/welcome",
