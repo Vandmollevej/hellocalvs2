@@ -10,6 +10,9 @@ on:
       - "**/*.md"
       # Windows-programmerne (tools/desktop) er ikke en del af app-imaget.
       - "tools/**"
+      # De native apps (Android/iPhone) bygges af native.yml, ikke her.
+      - "native/**"
+      - "scripts/native/**"
 
 jobs:
   build:

@@ -1,0 +1,125 @@
+name: Native apps
+
+# Builds the Android and iPhone apps and checks that they are in step with the
+# web app (colours, texts and every ported screen). Never deploys anything.
+on:
+  push:
+    paths:
+      - "native/**"
+      - "scripts/native/**"
+      - "src/**"
+      - ".github/workflows/native.yml"
+  pull_request:
+    paths:
+      - "native/**"
+      - "scripts/native/**"
+      - "src/**"
+  workflow_dispatch:
+
+concurrency:
+  group: native-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  parity:
+    name: Web ↔ native in step
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Icon package (same version as the web app)
+        run: npm install --no-save --ignore-scripts --no-package-lock "@tabler/icons-react@$(node -p "require('./package.json').dependencies['@tabler/icons-react']")"
+      - name: Colours, typography, texts and icons generated from web
+        run: node scripts/native/sync.mjs --check
+      - name: Every web page registered, ported screens up to date
+        run: node scripts/native/parity.mjs
+
+  changes:
+    name: Native code changed?
+    runs-on: ubuntu-latest
+    outputs:
+      native: ${{ steps.diff.outputs.native }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - id: diff
+        run: |
+          base="${{ github.event.before || github.event.pull_request.base.sha }}"
+          if ! git cat-file -e "${base}^{commit}" 2>/dev/null; then base=""; fi
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ] || [ -z "$base" ] || git diff --name-only "$base" HEAD | grep -qE '^(native/|\.github/workflows/native\.yml)'; then
+            echo "native=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "native=false" >> "$GITHUB_OUTPUT"
+          fi
+
+  android:
+    name: Android app
+    needs: changes
+    if: needs.changes.outputs.native == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: "8.11.1"
+      - name: Build debug APK
+        working-directory: native
+        run: gradle --no-daemon --stacktrace :androidApp:assembleDebug 2>&1 | tee build.log; exit ${PIPESTATUS[0]}
+      - name: Show compile errors as annotations
+        if: failure()
+        working-directory: native
+        run: |
+          errors=$(grep -E '^(e: |ERROR:|FAILURE:|> |.*error:)' build.log | head -120 || true)
+          [ -z "$errors" ] && errors=$(tail -80 build.log)
+          printf '%s' "$errors" | sed -e 's/%/%25/g' | awk 'BEGIN{ORS="%0A"}{print}' > enc.txt
+          echo "::error title=Android build::$(cat enc.txt)"
+      - uses: actions/upload-artifact@v4
+        if: success()
+        with:
+          name: hellocal-android-debug
+          path: native/androidApp/build/outputs/apk/debug/*.apk
+
+  ios:
+    name: iPhone app
+    needs: changes
+    if: needs.changes.outputs.native == 'true'
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: "8.11.1"
+      - name: Build shared Kotlin framework for the simulator
+        working-directory: native
+        run: gradle --no-daemon :shared:linkDebugFrameworkIosSimulatorArm64 2>&1 | tee build.log; exit ${PIPESTATUS[0]}
+      - name: Generate Xcode project
+        working-directory: native/iosApp
+        run: |
+          brew install xcodegen
+          xcodegen generate
+      - name: Build app + widgets (simulator, unsigned)
+        working-directory: native/iosApp
+        run: |
+          set -o pipefail
+          xcodebuild -project HelloCal.xcodeproj -scheme HelloCal \
+            -sdk iphonesimulator -destination 'generic/platform=iOS Simulator' \
+            -configuration Debug ARCHS=arm64 CODE_SIGNING_ALLOWED=NO build 2>&1 | tee ../build.log
+      - name: Show compile errors as annotations
+        if: failure()
+        working-directory: native
+        run: |
+          errors=$(grep -E '^(e: |.*error:|FAILURE:|> )' build.log | head -120 || true)
+          [ -z "$errors" ] && errors=$(tail -80 build.log)
+          printf '%s' "$errors" | sed -e 's/%/%25/g' | awk 'BEGIN{ORS="%0A"}{print}' > enc.txt
+          echo "::error title=iPhone build::$(cat enc.txt)"
