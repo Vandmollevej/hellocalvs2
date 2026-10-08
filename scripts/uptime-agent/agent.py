@@ -46,8 +46,6 @@ COMPOSE_PROJECT = os.environ.get("COMPOSE_PROJECT", "hellocal-v2")
 DISK_PATH = os.environ.get("DISK_PATH", "/volume")
 DISK_MIN_FREE_PERCENT = float(os.environ.get("DISK_MIN_FREE_PERCENT", "10"))
 DOCKER_SOCKET = "/var/run/docker.sock"
-# Engangs-services, der normalt står som afsluttede.
-ONE_SHOT_SERVICES = {"migrate", "rema1000-agent", "umami-db-init"}
 SMTP_KEYS = ("SMTP_HOST", "SMTP_PORT", "SMTP_USER", "SMTP_PASS", "SMTP_FROM")
 
 
@@ -75,30 +73,41 @@ class DockerConnection(http.client.HTTPConnection):
         self.sock.connect(DOCKER_SOCKET)
 
 
+def docker_get(path):
+    conn = DockerConnection()
+    try:
+        conn.request("GET", path)
+        return json.loads(conn.getresponse().read())
+    finally:
+        conn.close()
+
+
 def check_containers():
     """Containere i projektet med restart-politik, der ikke kører eller er unhealthy."""
     if not os.path.exists(DOCKER_SOCKET):
         return "Docker-socket ikke monteret"
-    conn = DockerConnection()
     try:
         label = json.dumps({"label": [f"com.docker.compose.project={COMPOSE_PROJECT}"]})
-        conn.request("GET", "/containers/json?all=1&filters=" + urllib.parse.quote(label))
-        containers = json.loads(conn.getresponse().read())
+        containers = docker_get("/containers/json?all=1&filters=" + urllib.parse.quote(label))
     except Exception as err:  # noqa: BLE001
         return f"Docker svarer ikke: {err}"
-    finally:
-        conn.close()
 
     problems = []
     for c in containers:
         name = (c.get("Names") or ["?"])[0].lstrip("/")
-        service = c.get("Labels", {}).get("com.docker.compose.service", "")
         state = c.get("State", "")
         status = c.get("Status", "")
-        # Engangs-services (migrate, rema1000-agent, umami-db-init) og "Created"-
-        # kopier fra en afbrudt udrulning skal ikke køre.
-        if state == "created" or (state == "exited" and service in ONE_SHOT_SERVICES):
+        # "Created"-kopier fra en afbrudt udrulning skal ikke køre.
+        if state == "created":
             continue
+        # Engangs-containere (restart: "no", fx migrate og *-init) står normalt som afsluttede.
+        if state == "exited":
+            try:
+                policy = docker_get(f"/containers/{c['Id']}/json")["HostConfig"]["RestartPolicy"]["Name"]
+            except Exception:  # noqa: BLE001
+                policy = ""
+            if policy in ("", "no"):
+                continue
         if state != "running":
             problems.append(f"{name}: {status or state}")
         elif "unhealthy" in status:
