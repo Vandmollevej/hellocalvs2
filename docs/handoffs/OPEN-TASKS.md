@@ -40,7 +40,7 @@ Ejer: session "Native app" (e4e4d388), 2026-10-08. Fortsæt fra `native/README.m
 | fundament | Gradle/KMP-build, Android- og iPhone-app, tema/tekster/ikoner fra web, login, navigation, paritets-vagt, CI | Færdig | — |
 | skaerme | Portér alle forbruger-sider + finpudsning | Færdig (121/121, CI grøn, 80110278) | Ikke porteret: "Guide mig"-markering i hjælpechatten, FLIP-animation i bundmenu-panelet, reduceret bevægelse |
 | oauth | Apple/Google/Facebook-login og integrationer tilbage til appen | Færdig (PKCE + engangskoder) | — |
-| konti | Push (Firebase/APNs) og Face ID/passkey-login i appen | Venter på bruger | Kræver Firebase-projekt, Apple Developer-konto (Team ID, APNs-nøgle, Associated Domains) |
+| konti | Push (Firebase/APNs), Face ID/passkey-login og butiks-udgivelse | Roadmap (brugerens valg 2026-10-08) | Admin → Roadmap (migration 20261008200000_roadmap_native_accounts); kræver brugerens konti |
 
 ---
 
