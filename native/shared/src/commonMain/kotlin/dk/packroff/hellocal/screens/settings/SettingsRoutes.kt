@@ -19,7 +19,8 @@ object SettingsRoutes {
         ScreenRoute("/settings/control-log") { SettingsControlLogScreen(it) },
         ScreenRoute("/settings/delete-permissions") { SettingsDeletePermissionsScreen(it) },
         ScreenRoute("/settings/import") { SettingsImportScreen(it) },
-        // TODO: /settings/integrations and /settings/integrations/[app] (worker still writing them).
+        ScreenRoute("/settings/integrations") { SettingsIntegrationsScreen(it) },
+        ScreenRoute("/settings/integrations/[app]", fullScreen = true) { SettingsIntegrationsAppScreen(it) },
         ScreenRoute("/settings/payment") { SettingsPaymentScreen(it) },
         ScreenRoute("/settings/payment/mobilepay") { SettingsPaymentMobilePayScreen(it) },
         ScreenRoute("/settings/payment/stripe") { SettingsPaymentStripeScreen(it) },
