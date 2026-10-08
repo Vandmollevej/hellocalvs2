@@ -159,10 +159,10 @@ final class IosDevice: NSObject, DevicePlatform {
 
     // MARK: - OCR and barcodes
 
-    func recognizeText(image: KotlinByteArray, languages: [String], onResult: @escaping (RecognizedText?) -> Void) {
+    func recognizeText(image: KotlinByteArray, languages: [String], onResult: @escaping (Shared.RecognizedText?) -> Void) {
         let data = DataBridge.shared.toData(bytes: image)
         work.async {
-            var result: RecognizedText?
+            var result: Shared.RecognizedText?
             if let ui = UIImage(data: data), let cgImage = ImageTools.scaled(ui, maxWidth: 2400, maxHeight: 2400).cgImage {
                 let request = VNRecognizeTextRequest()
                 request.recognitionLevel = .accurate
@@ -180,7 +180,7 @@ final class IosDevice: NSObject, DevicePlatform {
                     let candidates = (request.results ?? []).compactMap { $0.topCandidates(1).first }
                     let text = candidates.map { $0.string }.joined(separator: "\n")
                     let confidence = candidates.isEmpty ? 0 : candidates.map { Double($0.confidence) }.reduce(0, +) / Double(candidates.count) * 100
-                    result = RecognizedText(text: text, confidence: confidence)
+                    result = Shared.RecognizedText(text: text, confidence: confidence)
                 } catch {
                     result = nil
                 }

@@ -130,7 +130,7 @@ object AndroidDevice : DevicePlatform {
             } catch (e: Exception) {
                 null to (e.message ?: "failed")
             }
-            onResult(outcome.first, outcome.second)
+            onResult(value, error)
         }
     }
 
@@ -339,7 +339,7 @@ object AndroidDevice : DevicePlatform {
             if (done) return
             done = true
             expectingExternal = false
-            onResult(outcome.first, outcome.second)
+            onResult(value, error)
         }
         val options = GmsBarcodeScannerOptions.Builder().setBarcodeFormats(format, *more).build()
         expectingExternal = true
