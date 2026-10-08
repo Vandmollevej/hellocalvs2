@@ -76,7 +76,7 @@ jobs:
         if: failure()
         working-directory: native
         run: |
-          errors=$( (grep -E -A14 'What went wrong' build.log; grep -E '^e: |error:|Dependency .* requires' build.log) | grep -v '^> Task' | head -150 || true)
+          errors=$( (grep -E '^e: ' build.log | sed -E 's#file://[^ ]*/hellocal/##' | sort -u | head -400; grep -E 'error:|Dependency .* requires' build.log | sort -u | head -100; grep -E -A14 'What went wrong' build.log | head -30) || true)
           [ -z "$errors" ] && errors=$(tail -80 build.log)
           printf '%s' "$errors" | sed -e 's/%/%25/g' | awk 'BEGIN{ORS="%0A"}{print}' > enc.txt
           echo "::error title=Android build::$(cat enc.txt)"
@@ -119,7 +119,7 @@ jobs:
         if: failure()
         working-directory: native
         run: |
-          errors=$( (grep -E -A14 'What went wrong' build.log; grep -E '^e: |error:|Dependency .* requires' build.log) | grep -v '^> Task' | head -150 || true)
+          errors=$( (grep -E '^e: ' build.log | sed -E 's#file://[^ ]*/hellocal/##' | sort -u | head -400; grep -E 'error:|Dependency .* requires' build.log | sort -u | head -100; grep -E -A14 'What went wrong' build.log | head -30) || true)
           [ -z "$errors" ] && errors=$(tail -80 build.log)
           printf '%s' "$errors" | sed -e 's/%/%25/g' | awk 'BEGIN{ORS="%0A"}{print}' > enc.txt
           echo "::error title=iPhone build::$(cat enc.txt)"
