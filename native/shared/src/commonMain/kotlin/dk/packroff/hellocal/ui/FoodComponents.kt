@@ -404,13 +404,14 @@ fun FoodSlider(
     val fraction = if (max > min) ((value - min) / (max - min)).coerceIn(0.0, 1.0).toFloat() else 0f
     BoxWithConstraints(modifier.fillMaxWidth().height(20.dp)) {
         val widthPx = constraints.maxWidth.toFloat().coerceAtLeast(1f)
+        val trackWidth = maxWidth
         val track = Modifier.fillMaxWidth().height(20.dp).let { base ->
             if (!enabled) base else base
                 .pointerInput(min, max, step) {
                     detectTapGestures { offset -> onChange(clamp(min + (offset.x / widthPx).coerceIn(0f, 1f) * (max - min))) }
                 }
                 .pointerInput(min, max, step) {
-                    androidx.compose.foundation.gestures.detectHorizontalDragGestures { change, _ ->
+                    androidx.compose.foundation.gestures.detectDragGestures { change: androidx.compose.ui.input.pointer.PointerInputChange, _: androidx.compose.ui.geometry.Offset ->
                         change.consume()
                         onChange(clamp(min + (change.position.x / widthPx).coerceIn(0f, 1f) * (max - min)))
                     }
@@ -420,7 +421,7 @@ fun FoodSlider(
             Box(Modifier.fillMaxWidth().height(4.dp).clip(RoundedCornerShape(2.dp)).background(HcColors.TanDark))
             Box(Modifier.fillMaxWidth(fraction).height(4.dp).clip(RoundedCornerShape(2.dp)).background(HcColors.Green))
             Box(
-                Modifier.offset(x = maxWidth * fraction - 9.dp).size(18.dp).clip(CircleShape).background(HcColors.White).border(2.dp, HcColors.Green, CircleShape),
+                Modifier.offset(x = trackWidth * fraction - 9.dp).size(18.dp).clip(CircleShape).background(HcColors.White).border(2.dp, HcColors.Green, CircleShape),
             )
         }
     }
