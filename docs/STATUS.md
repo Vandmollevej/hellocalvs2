@@ -11,6 +11,12 @@ Last updated: 2026-10-08
 - Ny service `uptime-agent` (`scripts/uptime-agent`): hver time site udefra/indefra, containere, diskplads; mail til peter@packroff.dk ved fejl, påmindelse hver 6. t og ved løst, samt en "startet"-mail ved opstart. Se DEPLOYMENT "Overvågning".
 - Logik og dekryptering af admin-gemte SMTP-nøgler testet lokalt (Python); første kørsel på NAS'en verificeres via containerlog.
 
+## 2026-10-08: Admin Brands — "Erstat logo" og "Genkør logo"
+
+- Hvert brand-kort (fuld admin) har nu "Erstat logo" (PNG-upload, samme pipeline som drag n drop/Logo-upload, PNG bruges som den er) og "Genkør logo" (`rerunBrandLogo` i `brands/actions.ts` sætter brandets BRAND_LOGO-job til PENDING; `cutout.py` skriver det nye resultat til brandet med `?v=`).
+- Genkør virker kun, når logoet stammer fra et fritlægningsjob (ikke uploadet). Billedrobotten skal genstartes/deployes med ny `cutout.py` (fix e745004e + denne).
+- Lint/typecheck/build kørt; ikke visuelt testet.
+
 ## 2026-10-07: Alle popups som bundark + brand-logoets luft
 
 - Hjulvælgere (højde/fødselsår/fødselsdato), opstartstips, adgangslog-panelet, Hello Doc-tilbagetrækning, slet familieprofil og alle admin-bekræftelser/-detaljevinduer er nu bundark (swipe ned/scrim = annullér); ingen `window.confirm`/`prompt` tilbage. Se DECISIONS 2026-10-07 for undtagelser (fuldskærms-visere, Face ID, kommandopalet).
