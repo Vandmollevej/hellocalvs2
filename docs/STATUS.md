@@ -99,6 +99,7 @@ Retter → HelloFresh åbner nu en skrivebeskyttet side under Retter (ikke Nye v
 - Billedspærring bygget som natrobot `pet-food-scan` (kl. 03:45, kun om natten, aldrig i scan-flowet): AI'en ser forsidefotoet af brugeroprettede/ventende varer og afviser dyrefoder; migration `20261007100000_product_pet_food_checked` skal køre ved deploy. Mangler: evt. oprydning af ca. 150 dyrefodervarer i de eksisterende Nemlig-ark.
 - Advarsel/spærring af brugere: første dyrefoder-forsøg giver en advarsel på skærmen, andet spærrer kontoen (admin → Brugere → Spærrede, "Ophæv spærring", rød advarsel i Oversigten). Migration `20261007110000_pet_food_strikes` skal køre ved deploy. Ikke live-testet (ingen lokal DB/login).
 - Alle afvisninger vises i Oversigten til gennemsyn med "Fejl – frikend"; natjobbet gennemgår også eksisterende varer. Migration `20261007120000_pet_food_incident_review` skal køre ved deploy. Tyske kilder (EDEKA24, Fressnapf, Zooplus.de) scrapes og lægges på spærrelisten bagefter.
+- Dyrefoder-filter kan ses og redigeres i admin (Indstillinger → Dyrefoder-filter) med afprøvning; tyske kilder (EDEKA24, Fressnapf, Futterhaus, Zooplus.de, dm) er scrapet og lagt på spærrelisten (ca. 28.800 stregkoder). Migration `20261008160000_pet_food_filter_edits` skal køre ved deploy. Fuld rapport: `docs/PET-FOOD-FILTER.md`. Ikke live-testet.
 
 ## 2026-10-06: Guide-flows med betingelser, opsætningsguide (slået fra) og MyFitnessPal/Lifesum-import
 

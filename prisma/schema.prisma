@@ -4850,6 +4850,23 @@ model PetFoodIncident {
   @@index([reviewedAt, createdAt])
   @@map("pet_food_incidents")
 }
+
+// Admin-rettelser til dyrefoder-filteret (docs/PET-FOOD-FILTER.md): lægges oven på standardlisterne i
+// src/data/pet-food-*.json. list = strong | weak | brand | barcode | setting. action = ADD (tilføjet af
+// admin) eller REMOVE (standardudtryk slået fra). setting-rækker har value "minWeakHits=N".
+model PetFoodFilterEdit {
+  id        String   @id @default(cuid())
+  list      String
+  value     String
+  action    String
+  note      String?
+  adminId   String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([list, value])
+  @@map("pet_food_filter_edits")
+}
 // Singleton (id = 1): admin-styret algoritme, der gætter tøj-valget ved en vejning
 // ud fra de seneste vejninger (docs/DECISIONS.md 2026-10-07).
 model WeightAttireSettings {
