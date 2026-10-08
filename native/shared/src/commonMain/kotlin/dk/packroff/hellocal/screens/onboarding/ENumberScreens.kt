@@ -418,7 +418,7 @@ fun ENumberDetailScreen(args: RouteArgs) {
 
     val data = detail
     val title = data?.title?.ifEmpty { null } ?: base
-    HcScreen(title = title, contentPadding = PaddingValues(start = HcDimens.Gutter, end = HcDimens.Gutter, top = HcDimens.SpaceBlock, bottom = HcDimens.SpaceSection)) {
+    HcScreen(title = title, icon = { HcIcon("Flask", size = 20.dp, stroke = 2f, color = HcColors.White) }, contentPadding = PaddingValues(start = HcDimens.Gutter, end = HcDimens.Gutter, top = HcDimens.SpaceBlock, bottom = HcDimens.SpaceSection)) {
         Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
             val entry = data?.entry
             val fallback = data?.fallback

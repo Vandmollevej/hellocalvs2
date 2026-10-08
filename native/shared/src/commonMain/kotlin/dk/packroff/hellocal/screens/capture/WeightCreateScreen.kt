@@ -1,5 +1,8 @@
 package dk.packroff.hellocal.screens.capture
 
+import dk.packroff.hellocal.ui.CalendarBathScaleIcon
+import dk.packroff.hellocal.ui.Units
+import dk.packroff.hellocal.ui.WeightUnit
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -59,7 +62,7 @@ fun WeightCreateScreen(@Suppress("UNUSED_PARAMETER") args: RouteArgs) {
     val t = LocalTranslator.current
     val nav = LocalNavigator.current
     val scope = rememberCoroutineScope()
-    val unit = remember { WeightUnits.current() }
+    val unit = remember { Units.current().weight }
     var weight by remember { mutableStateOf("") }
     var saving by remember { mutableStateOf(false) }
     var saveError by remember { mutableStateOf<String?>(null) }
@@ -91,7 +94,7 @@ fun WeightCreateScreen(@Suppress("UNUSED_PARAMETER") args: RouteArgs) {
     }
 
     fun submit() {
-        val parsed = WeightUnits.parse(weight, unit) ?: return
+        val parsed = Units.parseWeightInput(weight, unit) ?: return
         saving = true
         saveError = null
         saved = false
@@ -114,7 +117,7 @@ fun WeightCreateScreen(@Suppress("UNUSED_PARAMETER") args: RouteArgs) {
         }
     }
 
-    HcScreen(title = t.t("weightLog.title"), contentPadding = PaddingValues(start = HcDimens.Gutter, end = HcDimens.Gutter, top = HcDimens.SpaceBlock, bottom = HcDimens.SpaceSection)) {
+    HcScreen(title = t.t("weightLog.title"), icon = { CalendarBathScaleIcon(20.dp, HcColors.White) }, contentPadding = PaddingValues(start = HcDimens.Gutter, end = HcDimens.Gutter, top = HcDimens.SpaceBlock, bottom = HcDimens.SpaceSection)) {
         Column(verticalArrangement = Arrangement.spacedBy(HcDimens.SpaceBlock)) {
             CaptureBrandCard(t.t("weightLog.intro"))
 
@@ -122,8 +125,8 @@ fun WeightCreateScreen(@Suppress("UNUSED_PARAMETER") args: RouteArgs) {
                 HcTextField(
                     value = weight,
                     onValueChange = { weight = it },
-                    label = "${t.t("weightLog.weightLabel")} (${WeightUnits.label(unit)})",
-                    placeholder = WeightUnits.toInput(78.4, unit),
+                    label = "${t.t("weightLog.weightLabel")} (${Units.weightUnitLabel(unit)})",
+                    placeholder = Units.weightToInputValue(78.4, unit),
                     keyboardType = if (unit == WeightUnit.St) KeyboardType.Text else KeyboardType.Decimal,
                     standard = true,
                 )
@@ -154,7 +157,7 @@ fun WeightCreateScreen(@Suppress("UNUSED_PARAMETER") args: RouteArgs) {
                 }
                 entries.forEach { entry ->
                     CaptureTanRow(onClick = { openId = entry.id }) {
-                        HcText(WeightUnits.format(entry.weightKg, unit, t.locale), HcTypeRoles.Body, bold = true, color = HcColors.Black)
+                        HcText(Units.formatWeight(entry.weightKg, unit, t.locale), HcTypeRoles.Body, bold = true, color = HcColors.Black)
                         CaptureDates.local(entry.weighedAt)?.let {
                             HcText(CaptureDates.dayMonthShortTime(it, t.locale), HcTypeRoles.Small, Modifier.padding(start = 8.dp), color = HcColors.TextSecondary)
                         }

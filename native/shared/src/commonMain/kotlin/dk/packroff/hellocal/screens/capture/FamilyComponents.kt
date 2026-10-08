@@ -1,5 +1,7 @@
 package dk.packroff.hellocal.screens.capture
 
+import dk.packroff.hellocal.ui.ProfileCircleTone
+import dk.packroff.hellocal.ui.ProfileCircle
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -14,6 +16,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -33,11 +36,11 @@ import dk.packroff.hellocal.i18n.Translator
 import dk.packroff.hellocal.theme.HcColors
 import dk.packroff.hellocal.theme.HcTypeRoles
 import dk.packroff.hellocal.theme.style
-import dk.packroff.hellocal.ui.CaptureChoice
+import dk.packroff.hellocal.ui.HcChoiceChip
 import dk.packroff.hellocal.ui.CaptureDatePickerSheet
 import dk.packroff.hellocal.ui.CaptureDates
 import dk.packroff.hellocal.ui.CaptureFilledField
-import dk.packroff.hellocal.ui.CaptureLine
+import dk.packroff.hellocal.ui.HcLine
 import dk.packroff.hellocal.ui.CaptureValueField
 import dk.packroff.hellocal.ui.ChevronDirection
 import dk.packroff.hellocal.ui.HcBottomSheet
@@ -46,7 +49,10 @@ import dk.packroff.hellocal.ui.HcButtonKind
 import dk.packroff.hellocal.ui.HcChevron
 import dk.packroff.hellocal.ui.HcError
 import dk.packroff.hellocal.ui.HcSectionTitle
+import dk.packroff.hellocal.ui.HcSheetSize
+import dk.packroff.hellocal.ui.HcSheetSkipButton
 import dk.packroff.hellocal.ui.HcText
+import dk.packroff.hellocal.ui.LocalHcSheetClose
 import dk.packroff.hellocal.ui.HcTextField
 import dk.packroff.hellocal.ui.HcToggle
 import dk.packroff.hellocal.ui.icons.HcIcon
@@ -113,28 +119,7 @@ internal suspend fun familySend(path: String, method: HttpMethod, body: Any? = n
 internal fun familyErrorText(data: JsonObject, t: Translator): String =
     t.t("family.error.${data["code"]?.jsonPrimitive?.contentOrNull ?: "unknown"}")
 
-/** src/lib/initials.ts — "Peter Thomsen" → "PT". */
-internal fun initialsOf(name: String?): String {
-    val parts = (name ?: "").trim().split(Regex("\\s+")).filter { it.isNotEmpty() }
-    if (parts.isEmpty()) return "?"
-    val first = parts.first().take(1)
-    val last = if (parts.size > 1) parts.last().take(1) else ""
-    return (first + last).uppercase()
-}
-
-/** ProfileCircle (tone "card"): cream circle with a thin border and the initials. */
-@Composable
-internal fun ProfileCircle(name: String, size: Dp = 32.dp) {
-    androidx.compose.foundation.layout.Box(
-        Modifier.size(size).clip(CircleShape).background(HcColors.Cream).border(1.dp, HcColors.GrayBorder, CircleShape),
-        contentAlignment = Alignment.Center,
-    ) {
-        androidx.compose.material3.Text(
-            initialsOf(name),
-            style = HcTypeRoles.Body.style(HcColors.Black).copy(fontSize = (size.value * 0.375f).sp, fontWeight = androidx.compose.ui.text.font.FontWeight.Bold),
-        )
-    }
-}
+// Initials and the profile circle are the shared ui ones (initialsOf, ProfileCircle tone Card).
 
 /** AccessToggles — "see" and "write" switches that follow each other. */
 @Composable
@@ -187,7 +172,7 @@ internal fun FamilyProfileFields(form: FamilyProfileInput, onChange: (FamilyProf
         HcText(t.t("family.add.sex"), HcTypeRoles.Body)
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             listOf("" to "family.add.sexUnknown", "FEMALE" to "family.add.sexFemale", "MALE" to "family.add.sexMale").forEach { (value, key) ->
-                CaptureChoice(t.t(key), selected = form.sex == value, onClick = { onChange(form.copy(sex = value)) }, modifier = Modifier.weight(1f))
+                HcChoiceChip(t.t(key), selected = form.sex == value, onClick = { onChange(form.copy(sex = value)) }, modifier = Modifier.weight(1f))
             }
         }
         HcTextField(form.heightCm, { onChange(form.copy(heightCm = it)) }, label = t.t("family.add.heightCm"), keyboardType = KeyboardType.Decimal, standard = true)
@@ -285,7 +270,7 @@ internal fun FamilySharingSection(family: FamilyInfo, meId: String) {
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.spacedBy(16.dp),
                     ) {
-                        ProfileCircle(name)
+                        ProfileCircle(name, tone = ProfileCircleTone.Card)
                         HcText(t.t("family.sharing.sharedWith", "name" to name), HcTypeRoles.Body, Modifier.weight(1f), maxLines = 1)
                         HcChevron(if (open) ChevronDirection.Up else ChevronDirection.Down, color = HcColors.Black)
                     }
@@ -301,7 +286,7 @@ internal fun FamilySharingSection(family: FamilyInfo, meId: String) {
                             HcText(t.t("family.sharing.canEdit", "name" to name), HcTypeRoles.Caption)
                         }
                     }
-                    if (index < people.lastIndex) CaptureLine()
+                    if (index < people.lastIndex) HcLine()
                 }
             }
         }
@@ -384,12 +369,28 @@ internal fun InviteFamilyMemberSheet(status: FamilyStatus, onRefresh: suspend ()
         }
     }
 
-    HcBottomSheet(onDismiss = onClose, title = t.t(if (step == "child") "family.invite.addChildTitle" else "family.invite.title")) {
-        Column(Modifier.verticalScroll(rememberScrollState()), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+    val inviteFooter: @Composable ColumnScope.() -> Unit = {
+        HcButton(t.t("family.invite.send"), onClick = ::send, enabled = !busy && name.isNotBlank() && email.isNotBlank())
+        HcSheetSkipButton(t.t("common.cancel"))
+    }
+    val sentFooter: @Composable ColumnScope.() -> Unit = {
+        val close = LocalHcSheetClose.current
+        HcButton(t.t("family.invite.done"), onClick = close)
+    }
+    HcBottomSheet(
+        onDismiss = onClose,
+        title = t.t(if (step == "child") "family.invite.addChildTitle" else "family.invite.title"),
+        size = HcSheetSize.Full,
+        footer = when (step) {
+            "invite" -> inviteFooter
+            "sent" -> sentFooter
+            else -> null
+        },
+    ) {
+        Column(Modifier.verticalScroll(rememberScrollState()).padding(bottom = 16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
             when (step) {
                 "sent" -> {
                     HcText(t.t("family.invite.sent", "name" to name.trim(), "email" to email.trim()), HcTypeRoles.BodyLg)
-                    HcButton(t.t("family.invite.done"), onClick = onClose)
                 }
                 "child" -> {
                     HcText(t.t("family.invite.addChildIntro"), HcTypeRoles.Body)
@@ -425,12 +426,9 @@ internal fun InviteFamilyMemberSheet(status: FamilyStatus, onRefresh: suspend ()
                             leading = { HcIcon("Plus", size = 18.dp) },
                         )
                     }
-                    HcError(error)
-                    HcButton(t.t("family.invite.send"), onClick = ::send, enabled = !busy && name.isNotBlank() && email.isNotBlank())
-                    HcButton(t.t("common.cancel"), onClick = onClose, kind = HcButtonKind.Text)
                 }
             }
-            if (step != "invite") HcError(error)
+            HcError(error)
         }
     }
 }

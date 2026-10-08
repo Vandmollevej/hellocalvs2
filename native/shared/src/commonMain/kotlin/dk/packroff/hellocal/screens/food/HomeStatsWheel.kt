@@ -142,6 +142,13 @@ private fun scaleAt(absDistance: Float) = max(MIN_SCALE, 1 - absDistance * SCALE
 
 private val WHEEL_HEIGHT = 2 * (offsetAt(SIDE_ROWS.toFloat()) + ROW_HEIGHT)
 
+/**
+ * Middle of the wheel's last row in dp from the hero's top — the web's
+ * data-stats-wheel-last-row (rowOffset(SIDE_ROWS)) added to the wheel box's
+ * centre (hero centre + VERTICAL_SHIFT). HomeWaves puts the pulse just above it.
+ */
+internal fun statsWheelLastRowY(): Float = HERO_HEIGHT / 2 + VERTICAL_SHIFT + offsetAt(SIDE_ROWS.toFloat())
+
 /** Today's registrations, health metrics and calorie budget for the wheel. */
 private suspend fun loadWheelData(): Triple<List<RegistrationDto>, List<HealthMetricDto>, Double?> = coroutineScope {
     val regs = async {

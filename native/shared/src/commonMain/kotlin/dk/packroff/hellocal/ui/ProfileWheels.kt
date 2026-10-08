@@ -6,6 +6,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.snapping.rememberSnapFlingBehavior
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -36,8 +37,8 @@ import dk.packroff.hellocal.theme.HcColors
 import dk.packroff.hellocal.theme.HcTypeRoles
 
 // iOS-style scroll wheels (src/components/ui/WheelPicker.tsx,
-// BirthDatePicker.tsx): a bottom sheet with the field name on the left and
-// "Færdig" on the right; the value is only committed on "Færdig".
+// BirthDatePicker.tsx): a bottom sheet with the wheels and a full-width
+// "Færdig" button; the value is only committed on "Færdig".
 
 private val WheelItemHeight = 40.dp
 
@@ -111,21 +112,28 @@ fun <T> ProfileWheelColumn(
     }
 }
 
-/** The sheet around one or more wheel columns: label left, "Færdig" right, tan band behind the centre row. */
+/**
+ * The sheet around one or more wheel columns (WheelPicker / BirthDatePicker):
+ * tan band behind the centre row, then the full-width "Færdig" button
+ * (BottomSheetCloseButton: [onDone] runs, then the sheet slides out and
+ * [onDismiss] is called). Swipe down/scrim = cancel. [label] is only the
+ * accessible name of the sheet, as on the web.
+ */
 @Composable
 fun ProfileWheelSheet(label: String, onDismiss: () -> Unit, onDone: () -> Unit, columns: @Composable () -> Unit) {
-    HcBottomSheet(onDismiss = onDismiss) {
-        Row(Modifier.fillMaxWidth().padding(vertical = 12.dp), verticalAlignment = Alignment.CenterVertically) {
-            HcText(label, HcTypeRoles.Body, Modifier.weight(1f), bold = true, color = HcColors.Black)
-            Box(Modifier.heightIn(min = 44.dp).clickable(onClick = onDone), contentAlignment = Alignment.Center) {
-                HcText("Færdig", HcTypeRoles.Body, bold = true, color = HcColors.Green)
+    HcBottomSheet(onDismiss = onDismiss, title = label) {
+        val closeSheet = LocalHcSheetClose.current
+        Column(Modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+            Box(Modifier.fillMaxWidth()) {
+                Box(
+                    Modifier.align(Alignment.Center).fillMaxWidth().height(WheelItemHeight).clip(RoundedCornerShape(8.dp)).background(HcColors.Tan),
+                )
+                columns()
             }
-        }
-        Box(Modifier.fillMaxWidth()) {
-            Box(
-                Modifier.align(Alignment.Center).fillMaxWidth().height(WheelItemHeight).clip(RoundedCornerShape(8.dp)).background(HcColors.Tan),
-            )
-            columns()
+            HcButton("Færdig", onClick = {
+                onDone()
+                closeSheet()
+            })
         }
     }
 }
@@ -152,10 +160,7 @@ fun ProfileWheelPicker(
         },
     )
     if (open) {
-        ProfileWheelSheet(label, onDismiss = { open = false }, onDone = {
-            onChange(pending)
-            open = false
-        }) {
+        ProfileWheelSheet(label, onDismiss = { open = false }, onDone = { onChange(pending) }) {
             ProfileWheelColumn(options, pending, { "$it${if (unit != null) " $unit" else ""}" }, { pending = it }, Modifier.fillMaxWidth())
         }
     }

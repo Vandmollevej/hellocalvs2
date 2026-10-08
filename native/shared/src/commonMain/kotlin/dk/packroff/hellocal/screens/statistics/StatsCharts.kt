@@ -1,5 +1,7 @@
 package dk.packroff.hellocal.screens.statistics
 
+import dk.packroff.hellocal.ui.Units
+import dk.packroff.hellocal.ui.HeightUnit
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -45,6 +47,7 @@ import dk.packroff.hellocal.ui.StatsSkeleton
 import dk.packroff.hellocal.ui.icons.HcIcon
 import kotlinx.datetime.LocalDate
 import kotlin.math.abs
+import kotlin.math.floor
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.round
@@ -288,15 +291,15 @@ private fun buildBodyMeasurementSeries(entries: List<BodyEntry>, field: String, 
     return BodySeries(points, latest, change)
 }
 
-private fun formatChange(cm: Double, unit: LengthUnit): String {
-    val value = if (unit == LengthUnit.In) cmToIn(cm) else cm
-    return "${jsNumber(round(value * 10) / 10).replace(".", ",")} ${lengthUnitLabel(unit)}"
+private fun formatChange(cm: Double, unit: HeightUnit): String {
+    val value = if (unit == HeightUnit.In) Units.cmToIn(cm) else cm
+    return "${jsNumber(round(value * 10) / 10).replace(".", ",")} ${Units.lengthUnitLabel(unit)}"
 }
 
 @Composable
 internal fun BodyMeasurementChart(def: BodyMeasurementDef, entries: List<BodyEntry>, sex: String?, loading: Boolean) {
     val t = LocalTranslator.current
-    val lengthUnit = remember { currentUnits().height }
+    val lengthUnit = remember { Units.current().height }
     val series = remember(entries, def.field) { buildBodyMeasurementSeries(entries, def.field) }
     val label = t.t(def.nameKey)
 
@@ -312,7 +315,7 @@ internal fun BodyMeasurementChart(def: BodyMeasurementDef, entries: List<BodyEnt
             Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 HcText(label, HcTypeRoles.Body, Modifier.weight(1f).alignByBaseline(), bold = true, color = HcColors.Black)
                 series.latest?.let {
-                    HcText(formatLength(it, lengthUnit), HcTypeRoles.Body, Modifier.alignByBaseline(), bold = true, color = HcColors.Black)
+                    HcText(Units.formatLength(it, lengthUnit), HcTypeRoles.Body, Modifier.alignByBaseline(), bold = true, color = HcColors.Black)
                 }
             }
             when {
@@ -336,8 +339,8 @@ internal fun BodyMeasurementChart(def: BodyMeasurementDef, entries: List<BodyEnt
                     val coords = points.map { Offset(x(it.first), y(it.second)) }
                     ViewBoxCanvas(200f, 84f) {
                         if (points.size > 1) {
-                            text(formatLength(maxValue, lengthUnit), left, top - 3, 8f, HcColors.Gray)
-                            text(formatLength(minValue, lengthUnit), left, bottom + 9, 8f, HcColors.Gray)
+                            text(Units.formatLength(maxValue, lengthUnit), left, top - 3, 8f, HcColors.Gray)
+                            text(Units.formatLength(minValue, lengthUnit), left, bottom + 9, 8f, HcColors.Gray)
                             polyline(coords, HcColors.Green, 2.4f)
                         }
                         coords.forEach { circle(it.x, it.y, 3f, HcColors.Green) }
@@ -435,6 +438,9 @@ private const val FULL_NIGHT_HOURS = 8.0
 
 private class Overlay(val key: String, val label: String, val color: Color, val values: List<Double?>, val format: (Double) -> String, val time: Boolean = false)
 
+/** One bar of a sleep chart in viewBox units, with its SVG <title>. */
+private class SleepBar(val x: Float, val y: Float, val h: Float, val color: Color, val title: String)
+
 private fun overlaysFor(kind: SleepInsightKind, days: List<SleepStatDay>, t: (String) -> String): List<Overlay> {
     val kcal: (Double) -> String = { "${round(it).toLong()} kcal" }
     val time: (Double) -> String = { formatMinutesOfDay(it) }
@@ -489,24 +495,36 @@ private fun SleepBarChart(kind: SleepInsightKind, days: List<SleepStatDay>) {
     val dot = dotRadius(n)
     val hasRatings = days.any { it.rating != null }
 
+    // The bars with their <title> ("5. okt.: 21:30").
+    val bars = buildList {
+        visible.forEachIndexed { overlayIndex, overlay ->
+            val (lo, hi) = domain(overlay)
+            overlay.values.forEachIndexed { i, value ->
+                if (value != null && i < days.size) {
+                    val h = max(((min(value, hi) - lo) / (hi - lo) * S_HEIGHT).toFloat(), 1f)
+                    val x = xCenter(i) - (barWidth * visible.size) / 2 + barWidth * overlayIndex
+                    add(SleepBar(x, S_BOTTOM - h, h, overlay.color, "${daShortDate(days[i].date)}: ${overlay.format(value)}"))
+                }
+            }
+        }
+    }
+    // SVG <title> on every bar and every rating dot (dots are drawn on top).
+    val tips = bars.map { ChartTip.rect(it.x, it.y, barWidth, it.h, it.title) } +
+        days.mapIndexedNotNull { i, day ->
+            day.rating?.let { rating ->
+                ChartTip.circle(xCenter(i), ratingY(rating), dot, "${daShortDate(day.date)}: ${t.t("sleepQuality.calendarBar", "rating" to rating)}")
+            }
+        }
+
     ChartCard {
         HcText(t.t("sleepStats.chart.${kind.key}"), HcTypeRoles.Body, bold = true, color = HcColors.Black)
         HcText(t.t("sleepStats.chartInfo.${kind.key}"), HcTypeRoles.Small, Modifier.padding(top = 4.dp), color = HcColors.TextSecondary)
-        ViewBoxCanvas(320f, 146f, Modifier.padding(top = 12.dp)) {
+        ViewBoxCanvas(320f, 146f, Modifier.padding(top = 12.dp), tips = tips) {
             for (rating in 1..5) {
                 line(S_LEFT, ratingY(rating), S_RIGHT, ratingY(rating), HcColors.TanDark, 0.6f)
                 text(rating.toString(), S_LEFT - 6, ratingY(rating) + 3, 8f, HcColors.Black, anchor = TextAnchor.End)
             }
-            visible.forEachIndexed { overlayIndex, overlay ->
-                val (lo, hi) = domain(overlay)
-                overlay.values.forEachIndexed { i, value ->
-                    if (value != null) {
-                        val h = max(((min(value, hi) - lo) / (hi - lo) * S_HEIGHT).toFloat(), 1f)
-                        val x = xCenter(i) - (barWidth * visible.size) / 2 + barWidth * overlayIndex
-                        rect(x, S_BOTTOM - h, barWidth, h, overlay.color, 0.55f, min(barWidth / 3, 1.5f))
-                    }
-                }
-            }
+            bars.forEach { bar -> rect(bar.x, bar.y, barWidth, bar.h, bar.color, 0.55f, min(barWidth / 3, 1.5f)) }
             visible.firstOrNull()?.let { axis ->
                 val (lo, hi) = domain(axis)
                 text(axis.format(hi), S_RIGHT + 4, S_TOP + 3, 7f, HcColors.Black)
@@ -571,11 +589,18 @@ private fun BodyFatSleepChart(days: List<SleepStatDay>) {
     fun xCenter(i: Int) = S_LEFT + slot * (i + 0.5f)
     fun y(value: Double) = (S_BOTTOM - (value / 100) * S_HEIGHT).toFloat()
     val dot = dotRadius(n)
+    // SVG <title> on every dot: "5. okt.: 64" (Math.round of the plotted value).
+    val tips = lines.filter { it.first.first in enabled }.flatMap { (_, values) ->
+        values.mapIndexedNotNull { i, v ->
+            if (v == null || i >= days.size) null
+            else ChartTip.circle(xCenter(i), y(v), dot, "${daShortDate(days[i].date)}: ${floor(v + 0.5).toLong()}")
+        }
+    }
 
     ChartCard {
         HcText(t.t("sleepStats.chart.bodyFat"), HcTypeRoles.Body, bold = true, color = HcColors.Black)
         HcText(t.t("sleepStats.chartInfo.bodyFat"), HcTypeRoles.Small, Modifier.padding(top = 4.dp), color = HcColors.TextSecondary)
-        ViewBoxCanvas(320f, 146f, Modifier.padding(top = 12.dp)) {
+        ViewBoxCanvas(320f, 146f, Modifier.padding(top = 12.dp), tips = tips) {
             for (value in listOf(0, 20, 40, 60, 80, 100)) {
                 line(S_LEFT, y(value.toDouble()), S_RIGHT, y(value.toDouble()), HcColors.TanDark, 0.6f)
                 text(value.toString(), S_LEFT - 6, y(value.toDouble()) + 3, 8f, HcColors.Black, anchor = TextAnchor.End)

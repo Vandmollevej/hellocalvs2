@@ -29,9 +29,11 @@ import dk.packroff.hellocal.theme.HcDimens
 import dk.packroff.hellocal.theme.HcTypeRoles
 import dk.packroff.hellocal.ui.HcBottomSheet
 import dk.packroff.hellocal.ui.HcButton
+import dk.packroff.hellocal.ui.HcHtmlText
 import dk.packroff.hellocal.ui.HcLoader
 import dk.packroff.hellocal.ui.HcScreen
 import dk.packroff.hellocal.ui.HcText
+import dk.packroff.hellocal.ui.LocalHcSheetClose
 import dk.packroff.hellocal.ui.ProfilePage
 import dk.packroff.hellocal.ui.ProfilePagePadding
 import dk.packroff.hellocal.ui.ProfileSwipeToDelete
@@ -51,23 +53,6 @@ private data class InboxMessage(
     val createdAt: String,
     val readAt: String? = null,
 )
-
-/** The mail body as plain text (the web renders the HTML; the app shows its text). */
-private fun htmlToText(html: String): String {
-    val withBreaks = html
-        .replace(Regex("(?i)<br\\s*/?>"), "\n")
-        .replace(Regex("(?i)</(p|div|li|h[1-6]|tr)>"), "\n")
-    val stripped = withBreaks.replace(Regex("<[^>]*>"), "")
-    return stripped
-        .replace("&nbsp;", " ")
-        .replace("&lt;", "<")
-        .replace("&gt;", ">")
-        .replace("&quot;", "\"")
-        .replace("&#39;", "'")
-        .replace("&amp;", "&")
-        .replace(Regex("\n{3,}"), "\n\n")
-        .trim()
-}
 
 /** Native port of src/app/profile/messages/page.tsx — the user's inbox with read/unread, delete and "Slettet". */
 @Composable
@@ -140,7 +125,16 @@ fun MessagesScreen(args: RouteArgs) {
                                     if (message.readAt == null) HcText(t.t("profile.messages.unread"), HcTypeRoles.Caption, color = HcColors.TextSecondary)
                                 }
                                 if (!message.bodyHtml.isNullOrEmpty()) {
-                                    HcText(htmlToText(message.bodyHtml), HcTypeRoles.Caption, Modifier.padding(top = 8.dp), color = HcColors.TextSecondary)
+                                    // dangerouslySetInnerHTML in "text-text-secondary hf-type-caption": Tailwind preflight
+                                    // look — links inherit the colour without underline, lists without bullets.
+                                    HcHtmlText(
+                                        message.bodyHtml,
+                                        HcTypeRoles.Caption,
+                                        Modifier.padding(top = 8.dp),
+                                        color = HcColors.TextSecondary,
+                                        linkUnderline = false,
+                                        listMarkers = false,
+                                    )
                                 }
                                 HcText(ProfileDates.dateTime(message.createdAt), HcTypeRoles.Caption, Modifier.padding(top = 8.dp), color = HcColors.TextSecondary)
                             }
@@ -153,12 +147,14 @@ fun MessagesScreen(args: RouteArgs) {
     }
 
     if (confirmClear) {
-        HcBottomSheet(onDismiss = { confirmClear = false }) {
-            Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+        HcBottomSheet(onDismiss = { confirmClear = false }, title = t.t("profile.messages.clearAll")) {
+            val closeSheet = LocalHcSheetClose.current
+            Column(Modifier.padding(vertical = 16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
                 HcText(t.t("profile.messages.clearAllWarning"), HcTypeRoles.Body)
+                // BottomSheetCloseButton: runs clearAll, then closes the sheet with its animation.
                 HcButton(t.t("profile.messages.clearAll"), onClick = {
                     clearAll()
-                    confirmClear = false
+                    closeSheet()
                 })
             }
         }

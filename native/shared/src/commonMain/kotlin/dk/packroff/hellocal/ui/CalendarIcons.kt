@@ -18,15 +18,8 @@ import dk.packroff.hellocal.theme.HcColors
 
 /** A public/icons PNG drawn in one colour, like the web's CSS-mask icons. */
 @Composable
-fun CalendarMaskIcon(src: String, size: Dp, color: Color = HcColors.Black, modifier: Modifier = Modifier) {
-    AsyncImage(
-        model = Api.absoluteUrl(src),
-        contentDescription = null,
-        modifier = modifier.size(size),
-        contentScale = ContentScale.Fit,
-        colorFilter = ColorFilter.tint(color),
-    )
-}
+fun CalendarMaskIcon(src: String, size: Dp, color: Color = HcColors.Black, modifier: Modifier = Modifier) =
+    HcMaskIcon(src, size, color, modifier)
 
 /** src/components/hf/IconBathScale.tsx — the one weight icon (bathroom scale). */
 @Composable

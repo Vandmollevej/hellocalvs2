@@ -42,9 +42,10 @@ import dk.packroff.hellocal.nav.RouteArgs
 import dk.packroff.hellocal.theme.HcColors
 import dk.packroff.hellocal.theme.HcDimens
 import dk.packroff.hellocal.theme.HcTypeRoles
-import dk.packroff.hellocal.ui.CaptureLine
-import dk.packroff.hellocal.ui.CaptureSearchField
+import dk.packroff.hellocal.ui.HcLine
+import dk.packroff.hellocal.ui.HcSearchField
 import dk.packroff.hellocal.ui.HcBottomSheet
+import dk.packroff.hellocal.ui.HcSheetSize
 import dk.packroff.hellocal.ui.HcButton
 import dk.packroff.hellocal.ui.HcButtonKind
 import dk.packroff.hellocal.ui.HcLoader
@@ -106,7 +107,7 @@ internal fun RecipeRow(row: RecipeRowData, divider: Boolean = true) {
             }
             HcIcon("ChevronRight", size = 18.dp, color = HcColors.Black)
         }
-        if (divider) CaptureLine()
+        if (divider) HcLine()
     }
 }
 
@@ -355,7 +356,7 @@ private fun SharedTab(t: Translator) {
 
     Column(verticalArrangement = Arrangement.spacedBy(HcDimens.SpaceBlock)) {
         Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            CaptureSearchField(query, { query = it }, t.t("recipes.sharedSearchPlaceholder"), Modifier.weight(1f))
+            HcSearchField(query, { query = it }, t.t("recipes.sharedSearchPlaceholder"), Modifier.weight(1f))
             if (isSerious == false) {
                 Box(Modifier.height(48.dp).clickable { nav.push("/profile/subscription/serious") }, contentAlignment = Alignment.Center) {
                     PremiumBadge(t)
@@ -420,7 +421,7 @@ private fun SharedTab(t: Translator) {
     }
 
     if (filterSheetOpen) {
-        HcBottomSheet(onDismiss = { filterSheetOpen = false }, title = t.t("recipes.filtersSheetTitle")) {
+        HcBottomSheet(onDismiss = { filterSheetOpen = false }, title = t.t("recipes.filtersSheetTitle"), size = HcSheetSize.Full) {
             Column(Modifier.fillMaxWidth().verticalScroll(rememberScrollState()).padding(bottom = 16.dp)) {
                 RecipeFiltersBody(onChange = { filters = it })
             }

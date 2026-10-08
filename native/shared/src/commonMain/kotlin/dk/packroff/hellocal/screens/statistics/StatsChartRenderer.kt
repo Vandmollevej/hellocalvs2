@@ -1,5 +1,7 @@
 package dk.packroff.hellocal.screens.statistics
 
+import dk.packroff.hellocal.ui.Units
+import dk.packroff.hellocal.ui.WeightUnit
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -97,9 +99,9 @@ internal fun rememberStatChartData(
     }
 
     // Kg or pounds (stone is too coarse for an axis).
-    val weightUnit = remember { currentUnits().weight }
+    val weightUnit = remember { Units.current().weight }
     val chartWeightUnit = if (weightUnit == WeightUnit.Kg) "kg" else "lb"
-    val toChartWeight: (Double) -> Double = { kg -> if (weightUnit == WeightUnit.Kg) kg else kgToLb(kg) }
+    val toChartWeight: (Double) -> Double = { kg -> if (weightUnit == WeightUnit.Kg) kg else Units.kgToLb(kg) }
 
     val allDays = remember(registrations) { groupByDay(registrations) }
 

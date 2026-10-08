@@ -83,6 +83,14 @@ class Navigator(start: Location) {
     /** Footer roots show no back arrow (docs/DECISIONS.md 2026-09-22). */
     val showBack: Boolean get() = stack.size > 1 && current.path !in TAB_ROOTS
 
+    /** The current page is one of the icons in the bottom bar (web isMainFooterRoute). */
+    val isTabRoot: Boolean get() = current.path in TAB_ROOTS
+
+    /** ScreenHeader.handleBack: back, or the front page when the page was opened directly. */
+    fun backOrHome() {
+        if (!back()) replace("/")
+    }
+
     /** Replaces the current screen (web: router.replace). */
     fun replace(href: String) {
         val location = Location.parse(href)
@@ -105,8 +113,8 @@ class Navigator(start: Location) {
     fun resetTo(href: String) = switchTab(Location.parse(href))
 
     companion object {
-        /** Footer roots (src/lib/navigation.ts BOTTOM_NAV_HREFS): no back arrow, reset the stack. */
-        val TAB_ROOTS: Set<String> get() = dk.packroff.hellocal.app.NavItems.all.map { it.href }.toSet()
+        /** Footer roots (useFooterRootHrefs): the hrefs of the icons the user has in the bottom bar. */
+        val TAB_ROOTS: Set<String> get() = dk.packroff.hellocal.app.BottomNavLayout.activeHrefs
     }
 }
 

@@ -1,5 +1,7 @@
 package dk.packroff.hellocal.screens.profile
 
+import dk.packroff.hellocal.ui.Units
+import dk.packroff.hellocal.ui.WeightUnit
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -89,7 +91,7 @@ private fun todayAtHourIso(hour: Int): String =
 fun WeightCalibrationScreen(args: RouteArgs) {
     val t = LocalTranslator.current
     val scope = rememberCoroutineScope()
-    val weightUnit = remember { ProfileUnits.current().weight }
+    val weightUnit = remember { Units.current().weight }
     var entries by remember { mutableStateOf<List<WeightEntry>>(emptyList()) }
     val conditionValues = remember { mutableStateMapOf<String, String>() }
     val gridValues = remember { mutableStateMapOf<Int, String>() }
@@ -106,7 +108,7 @@ fun WeightCalibrationScreen(args: RouteArgs) {
             entries = loaded
             val slots = todaysSlotEntries(loaded)
             gridValues.clear()
-            for (hour in TIME_GRID_HOURS) slots[hour]?.let { gridValues[hour] = ProfileUnits.weightToInputValue(it.weightKg, weightUnit) }
+            for (hour in TIME_GRID_HOURS) slots[hour]?.let { gridValues[hour] = Units.weightToInputValue(it.weightKg, weightUnit) }
         } catch (e: Exception) {
             entries = emptyList()
         }
@@ -118,12 +120,12 @@ fun WeightCalibrationScreen(args: RouteArgs) {
     fun save() {
         val requests = mutableListOf<suspend () -> Unit>()
         for (condition in pairs.flatMap { listOf(it.first, it.second) }) {
-            val weightKg = ProfileUnits.parseWeightInput(conditionValues[condition.key] ?: "", weightUnit) ?: continue
+            val weightKg = Units.parseWeightInput(conditionValues[condition.key] ?: "", weightUnit) ?: continue
             val body = mapOf<String, Any>("weightKg" to weightKg) + condition.fields
             requests.add { Api.post("/api/weight-entries", body) }
         }
         for (hour in TIME_GRID_HOURS) {
-            val weightKg = ProfileUnits.parseWeightInput(gridValues[hour] ?: "", weightUnit) ?: continue
+            val weightKg = Units.parseWeightInput(gridValues[hour] ?: "", weightUnit) ?: continue
             val existing = slotEntries[hour]
             if (existing != null && abs(existing.weightKg - weightKg) < 0.05) continue
             if (existing != null) {
@@ -175,7 +177,7 @@ fun WeightCalibrationScreen(args: RouteArgs) {
                                     Modifier.fillMaxWidth(),
                                     placeholder = if (weightUnit == WeightUnit.St) "11 5" else t.t("weightCalibration.weightPlaceholder"),
                                     keyboardType = inputKeyboard,
-                                    suffix = ProfileUnits.weightUnitLabel(weightUnit),
+                                    suffix = Units.weightUnitLabel(weightUnit),
                                     role = HcTypeRoles.Title,
                                     background = HcColors.White,
                                     borderColor = HcColors.GrayBorder,
@@ -205,7 +207,7 @@ fun WeightCalibrationScreen(args: RouteArgs) {
                                 minHeight = 40.dp,
                             )
                         }
-                        HcText(ProfileUnits.weightUnitLabel(weightUnit), HcTypeRoles.Body, bold = true, color = HcColors.Black.copy(alpha = 0.6f))
+                        HcText(Units.weightUnitLabel(weightUnit), HcTypeRoles.Body, bold = true, color = HcColors.Black.copy(alpha = 0.6f))
                     }
                     ProfileLine(HcColors.TanDark)
                 }

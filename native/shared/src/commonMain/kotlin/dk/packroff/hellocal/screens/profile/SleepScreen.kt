@@ -208,7 +208,6 @@ fun SleepScreen(args: RouteArgs) {
                 timeToMinutes(current.defaultWakeTime) ?: DEFAULT_WAKE_MINUTES,
                 onDismiss = { picking = null },
                 onDone = { minutes ->
-                    picking = null
                     val wakeTime = profileFormatClock(minutes)
                     // 7.5 hours of sleep are filled in when no bedtime is set yet.
                     val bedtime = if (current.defaultBedtime.isNullOrEmpty()) addMinutes(wakeTime, -450) else current.defaultBedtime
@@ -222,7 +221,6 @@ fun SleepScreen(args: RouteArgs) {
                 timeToMinutes(current.defaultBedtime) ?: DEFAULT_BEDTIME_MINUTES,
                 onDismiss = { picking = null },
                 onDone = { minutes ->
-                    picking = null
                     val bedtime = profileFormatClock(minutes)
                     val wakeTime = if (current.defaultWakeTime.isNullOrEmpty()) addMinutes(bedtime, 450) else current.defaultWakeTime
                     updateDefaults(bedtime, wakeTime)

@@ -1,5 +1,8 @@
 package dk.packroff.hellocal.screens.profile
 
+import dk.packroff.hellocal.ui.Units
+import dk.packroff.hellocal.ui.WeightUnit
+import dk.packroff.hellocal.ui.HeightUnit
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -38,7 +41,11 @@ import dk.packroff.hellocal.theme.HcTypeRoles
 import dk.packroff.hellocal.ui.HcBottomSheet
 import dk.packroff.hellocal.ui.HcButton
 import dk.packroff.hellocal.ui.HcButtonKind
+import dk.packroff.hellocal.ui.HcSheetDots
+import dk.packroff.hellocal.ui.HcSheetSize
+import dk.packroff.hellocal.ui.HcSheetSkipButton
 import dk.packroff.hellocal.ui.HcText
+import dk.packroff.hellocal.ui.LocalHcSheetClose
 import dk.packroff.hellocal.ui.ProfileChoiceChip
 import dk.packroff.hellocal.ui.ProfileTermsHint
 import dk.packroff.hellocal.ui.ProfileTermsSheet
@@ -68,8 +75,6 @@ private val SESSIONS = listOf(0, 1, 2, 3, 4, 5, 6, 7)
 private val MINUTES = listOf(15, 30, 45, 60, 90)
 private val CALENDAR_DEFAULT_VIEWS = listOf("list", "month", "week", "day")
 
-private const val UNITS_KEY = "hellocal.units"
-private const val UNITS_REGION_KEY = "hellocal.units.region"
 private const val CALENDAR_VIEW_KEY = "hellocal.kalender.defaultView"
 
 /** src/lib/terms-hints.ts ONBOARDING_TERMS */
@@ -174,18 +179,6 @@ private fun visibleSteps(hasRegularSleep: Boolean?, shiftWork: Boolean?): List<S
 /** The activity step's own pages; intensity is skipped without exercise. */
 private fun visibleActivityPages(answers: ActivityAnswers): List<String> = ACTIVITY_PAGES.filter { it != "intensity" || answers.training != null }
 
-private fun readStoredUnits(): JsonObject = runCatching {
-    NativeHooks.secureStorage.get(UNITS_KEY)?.let { Json.parseToJsonElement(it) as? JsonObject }
-}.getOrNull() ?: JsonObject(emptyMap())
-
-/** saveUnits (src/lib/units.ts): merges the explicit choice into the stored preference. */
-private fun saveUnits(weight: String? = null, height: String? = null) {
-    val merged = readStoredUnits().toMutableMap()
-    if (weight != null) merged["weight"] = JsonPrimitive(weight)
-    if (height != null) merged["height"] = JsonPrimitive(height)
-    runCatching { NativeHooks.secureStorage.set(UNITS_KEY, JsonObject(merged).toString()) }
-}
-
 /** OnboardingWizard: shown when not completed/dismissed, or always with [forceVisible]. */
 @Composable
 fun ProfileOnboardingWizard(forceVisible: Boolean = false, onClose: (() -> Unit)? = null) {
@@ -198,20 +191,21 @@ fun ProfileOnboardingWizard(forceVisible: Boolean = false, onClose: (() -> Unit)
     var dailyLogPreference by remember { mutableStateOf<String?>(null) }
     var stepIndex by remember { mutableStateOf(0) }
     var canDismissPermanently by remember { mutableStateOf(false) }
-    var units by remember { mutableStateOf(ProfileUnits.current()) }
+    var units by remember { mutableStateOf(Units.current()) }
     var calendarView by remember { mutableStateOf(runCatching { NativeHooks.secureStorage.get(CALENDAR_VIEW_KEY) }.getOrNull()?.takeIf { it in CALENDAR_DEFAULT_VIEWS } ?: "month") }
     var activityPageIndex by remember { mutableStateOf(0) }
     var activityAnswers by remember { mutableStateOf(ActivityAnswers()) }
     var activitySummary by remember { mutableStateOf<EnergySummary?>(null) }
     var suggestedLevel by remember { mutableStateOf<String?>(null) }
     var goalUser by remember { mutableStateOf<EnergyGoalUser?>(null) }
+    var exitReason by remember { mutableStateOf("remind") }
 
     LaunchedEffect(forceVisible) {
         val obj = runCatching { (Api.get("/api/profile") as JsonObject)["user"] as? JsonObject }.getOrNull() ?: return@LaunchedEffect
         val user = runCatching { ApiJson.decodeFromJsonElement(ProfileUser.serializer(), obj) }.getOrNull() ?: return@LaunchedEffect
         // setUnitsRegion: the profile's country decides the automatic unit default.
-        user.region?.let { region -> runCatching { NativeHooks.secureStorage.set(UNITS_REGION_KEY, region) } }
-        units = ProfileUnits.current()
+        Units.setRegion(user.region)
+        units = Units.current()
         goalUser = EnergyGoalUser.from(user)
         shiftWork = if (user.shiftWorkEnabled) true else null
         dailyLogPreference = obj["dailyLogPreference"]?.jsonPrimitive?.contentOrNull
@@ -282,8 +276,41 @@ fun ProfileOnboardingWizard(forceVisible: Boolean = false, onClose: (() -> Unit)
 
     val isLastStep = stepIndex + 1 >= totalSteps
 
-    HcBottomSheet(onDismiss = { close("remind") }) {
-        Column(Modifier.fillMaxWidth().fillMaxHeight(0.9f)) {
+    // Footer buttons close with the slide-out animation; how the sheet was closed
+    // decides what is saved (dragging/scrim = "Påmind mig senere").
+    HcBottomSheet(
+        onDismiss = { close(exitReason) },
+        title = t.t("onboarding.stepProgress", "current" to stepIndex + 1, "total" to totalSteps),
+        size = HcSheetSize.Full,
+        footer = {
+            val sheetClose = LocalHcSheetClose.current
+            if (currentStep != null) key(currentStep) { ONBOARDING_TERMS[currentStep]?.let { ProfileTermsSheet(it) } }
+            Box(Modifier.fillMaxWidth().padding(bottom = 16.dp), contentAlignment = Alignment.Center) {
+                HcSheetDots(totalSteps, stepIndex)
+            }
+            HcButton(t.t("onboarding.next"), onClick = {
+                if (isLastStep) {
+                    exitReason = "complete"
+                    sheetClose()
+                } else {
+                    goNext()
+                }
+            })
+            HcSheetSkipButton(t.t("onboarding.remindLater")) { exitReason = "remind" }
+            if (canDismissPermanently) {
+                Box(
+                    Modifier.fillMaxWidth().height(40.dp).clickable {
+                        exitReason = "dismiss"
+                        sheetClose()
+                    },
+                    contentAlignment = Alignment.Center,
+                ) {
+                    HcText(t.t("onboarding.doNotShowAgain"), HcTypeRoles.Small, bold = true, color = HcColors.TextSecondary)
+                }
+            }
+        },
+    ) {
+        Column(Modifier.fillMaxWidth().fillMaxHeight()) {
             Column(
                 Modifier.weight(1f).fillMaxWidth().verticalScroll(rememberScrollState()).padding(vertical = 8.dp),
                 verticalArrangement = Arrangement.spacedBy(32.dp, Alignment.CenterVertically),
@@ -294,17 +321,17 @@ fun ProfileOnboardingWizard(forceVisible: Boolean = false, onClose: (() -> Unit)
                         HcText(t.t("onboarding.unitsHint"), HcTypeRoles.Body, color = HcColors.TextSecondary)
                         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                             WeightUnit.entries.forEach { unit ->
-                                WideChoice(ProfileUnits.weightUnitLabel(unit), units.weight == unit, Modifier.weight(1f)) {
-                                    saveUnits(weight = unit.code)
-                                    units = ProfileUnits.current()
+                                WideChoice(Units.weightUnitLabel(unit), units.weight == unit, Modifier.weight(1f)) {
+                                    Units.save(weight = unit)
+                                    units = Units.current()
                                 }
                             }
                         }
                         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                             HeightUnit.entries.forEach { unit ->
                                 WideChoice(unit.code, units.height == unit, Modifier.weight(1f)) {
-                                    saveUnits(height = unit.code)
-                                    units = ProfileUnits.current()
+                                    Units.save(height = unit)
+                                    units = Units.current()
                                 }
                             }
                         }
@@ -364,25 +391,6 @@ fun ProfileOnboardingWizard(forceVisible: Boolean = false, onClose: (() -> Unit)
                             save(mapOf("healthImportRequested" to true))
                             if (isLastStep) close("complete") else goNext()
                         }, kind = HcButtonKind.Secondary)
-                    }
-                }
-            }
-
-            Column(Modifier.fillMaxWidth().padding(top = 8.dp)) {
-                if (currentStep != null) key(currentStep) { ONBOARDING_TERMS[currentStep]?.let { ProfileTermsSheet(it) } }
-                // Step dots (BottomSheetDots).
-                Row(Modifier.fillMaxWidth().padding(bottom = 16.dp), horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterHorizontally)) {
-                    repeat(totalSteps) { index ->
-                        Box(Modifier.size(8.dp).clip(CircleShape).background(if (index == stepIndex) HcColors.Brand else HcColors.Gray))
-                    }
-                }
-                HcButton(t.t("onboarding.next"), onClick = { if (isLastStep) close("complete") else goNext() })
-                Box(Modifier.fillMaxWidth().height(48.dp).clickable { close("remind") }, contentAlignment = Alignment.Center) {
-                    HcText(t.t("onboarding.remindLater"), HcTypeRoles.Button, color = HcColors.Text)
-                }
-                if (canDismissPermanently) {
-                    Box(Modifier.fillMaxWidth().height(40.dp).clickable { close("dismiss") }, contentAlignment = Alignment.Center) {
-                        HcText(t.t("onboarding.doNotShowAgain"), HcTypeRoles.Small, bold = true, color = HcColors.TextSecondary)
                     }
                 }
             }

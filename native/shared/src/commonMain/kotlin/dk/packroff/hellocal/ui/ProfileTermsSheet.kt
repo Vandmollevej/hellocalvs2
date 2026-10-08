@@ -10,7 +10,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -39,22 +41,33 @@ fun ProfileTermsSheet(hint: ProfileTermsHint, title: String = "Vilkår og beting
     var open by remember { mutableStateOf(false) }
     ProfileTermsBar(open = false, title = title, onToggle = { open = true })
     if (open) {
-        HcBottomSheet(onDismiss = { open = false }) {
-            ProfileTermsBar(open = true, title = title, onToggle = { open = false })
-            Column(Modifier.fillMaxWidth().padding(horizontal = 8.dp).padding(bottom = 8.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+        // size="half": the bar stays on top, the terms text scrolls, the link sits in the footer.
+        HcBottomSheet(
+            onDismiss = { open = false },
+            title = title,
+            size = HcSheetSize.Half,
+            footer = {
+                HcText(
+                    goTo,
+                    HcTypeRoles.Small,
+                    Modifier.fillMaxWidth().clickable {
+                        open = false
+                        nav.push("/betingelser#${hint.anchor}")
+                    },
+                    bold = true,
+                    color = HcColors.Black,
+                    align = TextAlign.End,
+                )
+            },
+        ) {
+            // The bar at the top closes the sheet with its slide-out animation.
+            ProfileTermsBar(open = true, title = title, onToggle = LocalHcSheetClose.current)
+            Column(
+                Modifier.weight(1f).fillMaxWidth().verticalScroll(rememberScrollState()).padding(horizontal = 8.dp).padding(bottom = 8.dp),
+                verticalArrangement = Arrangement.spacedBy(12.dp),
+            ) {
                 hint.paragraphs.forEach { HcText(it, HcTypeRoles.Small) }
             }
-            HcText(
-                goTo,
-                HcTypeRoles.Small,
-                Modifier.fillMaxWidth().padding(top = 8.dp).clickable {
-                    open = false
-                    nav.push("/betingelser#${hint.anchor}")
-                },
-                bold = true,
-                color = HcColors.Black,
-                align = TextAlign.End,
-            )
         }
     }
 }

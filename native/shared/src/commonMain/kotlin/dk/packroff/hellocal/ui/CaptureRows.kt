@@ -48,42 +48,6 @@ import kotlin.math.min
 import kotlin.math.roundToInt
 
 /**
- * HcAppBar with the web ScreenHeader's extra slots: an icon left of the title
- * and a `leading` element next to the back arrow (e.g. the meal-language flag).
- */
-@Composable
-fun CaptureAppBar(
-    title: String,
-    back: Boolean = true,
-    icon: (@Composable () -> Unit)? = null,
-    leading: (@Composable () -> Unit)? = null,
-    trailing: (@Composable RowScope.() -> Unit)? = null,
-) {
-    val nav = LocalNavigator.current
-    Row(
-        Modifier.fillMaxWidth().background(HcColors.Brand).statusBarsPadding().height(52.dp).padding(horizontal = 16.dp),
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        Row(Modifier.width(88.dp), verticalAlignment = Alignment.CenterVertically) {
-            if (back) {
-                Box(Modifier.size(44.dp).clickable { nav.back() }, contentAlignment = Alignment.CenterStart) {
-                    HcIcon("ChevronLeft", color = HcColors.White, size = 28.dp)
-                }
-            }
-            leading?.invoke()
-        }
-        Row(Modifier.weight(1f), horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterHorizontally), verticalAlignment = Alignment.CenterVertically) {
-            icon?.invoke()
-            HcText(title, HcTypeRoles.NavTitle, align = TextAlign.Center, maxLines = 1)
-            if (icon != null) Spacer(Modifier.size(24.dp))
-        }
-        Row(Modifier.width(88.dp), horizontalArrangement = Arrangement.End, verticalAlignment = Alignment.CenterVertically) {
-            trailing?.invoke(this)
-        }
-    }
-}
-
-/**
  * src/components/SwipeableRow.tsx — swipe right for Favorit (+ copy), swipe
  * left for (Fejl +) Slet. One gesture opens one side; release snaps open/closed.
  */
@@ -119,7 +83,7 @@ fun CaptureSwipeableRow(
     Box(Modifier.fillMaxWidth().clip(RoundedCornerShape(0.dp))) {
         // Actions under the row.
         Row(Modifier.matchParentSize()) {
-            if (onFavorite != null) SwipeAction(HcColors.Green, t.t("swipeableRow.favorite"), { CaptureMaskIcon("/icons/favorite.png", 18.dp, HcColors.White) }) { onFavorite(); close() }
+            if (onFavorite != null) SwipeAction(HcColors.Green, t.t("swipeableRow.favorite"), { HcMaskIcon("/icons/favorite.png", 18.dp, HcColors.White) }) { onFavorite(); close() }
             if (onCopyToAccount != null) SwipeAction(HcColors.Watch, t.t("family.copy.action"), { HcIcon("Copy", size = 18.dp, color = HcColors.White) }) { onCopyToAccount(); close() }
             Spacer(Modifier.weight(1f))
             if (onReportError != null) SwipeAction(HcColors.GrayDark, t.t("swipeableRow.reportError"), { HcIcon("AlertTriangle", size = 18.dp, color = HcColors.White) }) { onReportError(); close() }
@@ -179,7 +143,23 @@ fun CaptureEntryDetailsSheet(
     onDelete: (() -> Unit)? = null,
 ) {
     val t = LocalTranslator.current
-    HcBottomSheet(onDismiss = onClose, title = title) {
+    HcBottomSheet(
+        onDismiss = onClose,
+        title = title,
+        scrollable = true,
+        footer = {
+            val close = LocalHcSheetClose.current
+            if (onDelete != null) {
+                HcButton(t.t("entrySheet.delete"), onClick = {
+                    onDelete()
+                    close()
+                }, kind = HcButtonKind.Danger)
+                HcSheetSkipButton(t.t("common.cancel"))
+            } else {
+                HcButton(t.t("common.close"), onClick = close)
+            }
+        },
+    ) {
         Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
             if (subtitle != null) HcText(subtitle, HcTypeRoles.Body, Modifier.fillMaxWidth(), color = HcColors.TextSecondary, align = TextAlign.Center)
             if (syncedFrom != null) {
@@ -210,19 +190,12 @@ fun CaptureEntryDetailsSheet(
                             HcText(row.label, HcTypeRoles.Body, Modifier.weight(1f), color = HcColors.Black)
                             HcText(row.value, HcTypeRoles.Body, bold = true, color = HcColors.Black, align = TextAlign.End)
                         }
-                        if (index < rows.lastIndex) CaptureLine()
+                        if (index < rows.lastIndex) HcLine()
                     }
                 }
             }
             if (onDelete != null) {
                 HcText(t.t("entrySheet.deleteWarning"), HcTypeRoles.Body, Modifier.fillMaxWidth(), color = HcColors.RedDark, align = TextAlign.Center)
-                HcButton(t.t("entrySheet.delete"), onClick = {
-                    onDelete()
-                    onClose()
-                }, kind = HcButtonKind.Danger)
-                HcButton(t.t("common.cancel"), onClick = onClose, kind = HcButtonKind.Text)
-            } else {
-                HcButton(t.t("common.close"), onClick = onClose)
             }
         }
     }

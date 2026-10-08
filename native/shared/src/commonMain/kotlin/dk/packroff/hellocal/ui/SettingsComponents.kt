@@ -56,10 +56,8 @@ fun SettingsPage(gap: Dp = HcDimens.SpaceBlock, modifier: Modifier = Modifier, c
 
 /** src/components/hf/AccordionCard.tsx — tan card holding ChevronRows. */
 @Composable
-fun SettingsAccordionCard(modifier: Modifier = Modifier, content: @Composable ColumnScope.() -> Unit) {
-    val shape = RoundedCornerShape(HcDimens.RadiusCard)
-    Column(modifier.fillMaxWidth().clip(shape).background(HcColors.Tan, shape), content = content)
-}
+fun SettingsAccordionCard(modifier: Modifier = Modifier, content: @Composable ColumnScope.() -> Unit) =
+    HcAccordionCard(modifier, content)
 
 /**
  * ChevronRow from AccordionCard.tsx — 48 px row: 20 px icon, label, optional
@@ -73,33 +71,7 @@ fun SettingsChevronRow(
     divider: Boolean = true,
     badgeCount: Int? = null,
     iconContent: (@Composable () -> Unit)? = null,
-) {
-    Column(Modifier.fillMaxWidth()) {
-        Row(
-            Modifier.fillMaxWidth().height(48.dp).clickable(onClick = onClick).padding(horizontal = 16.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(16.dp),
-        ) {
-            Box(Modifier.size(20.dp), contentAlignment = Alignment.Center) {
-                when {
-                    iconContent != null -> iconContent()
-                    icon != null -> HcIcon(icon, size = 20.dp, color = HcColors.Black)
-                }
-            }
-            HcText(label, HcTypeRoles.Body, Modifier.weight(1f), maxLines = 1)
-            if (badgeCount != null && badgeCount > 0) {
-                Box(
-                    Modifier.heightIn(min = 20.dp).widthIn(min = 20.dp).clip(CircleShape).background(HcColors.Brand).padding(horizontal = 4.dp),
-                    contentAlignment = Alignment.Center,
-                ) {
-                    HcText(if (badgeCount > 99) "99+" else badgeCount.toString(), HcTypeRoles.Caption, color = HcColors.White, align = TextAlign.Center)
-                }
-            }
-            HcChevron(color = HcColors.Black)
-        }
-        if (divider) HorizontalDivider(thickness = 1.dp, color = HcColors.TanDark)
-    }
-}
+) = HcChevronRow(label, onClick, icon = icon, divider = divider, badgeCount = badgeCount ?: 0, iconContent = iconContent)
 
 /** "hf-type-small hf-type-strong text-text-secondary uppercase" group label above a card. */
 @Composable
@@ -109,30 +81,8 @@ fun SettingsGroupLabel(text: String, modifier: Modifier = Modifier) {
 
 /** src/components/knowledge/SearchField.tsx — rounded tan search pill. */
 @Composable
-fun SettingsSearchField(value: String, onChange: (String) -> Unit, placeholder: String, modifier: Modifier = Modifier) {
-    Row(
-        modifier.fillMaxWidth().clip(RoundedCornerShape(50)).background(HcColors.Tan).padding(horizontal = 16.dp, vertical = 8.dp),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
-    ) {
-        HcIcon("Search", size = 18.dp, color = HcColors.TextSecondary)
-        BasicTextField(
-            value = value,
-            onValueChange = onChange,
-            singleLine = true,
-            textStyle = HcTypeRoles.Body.style(),
-            cursorBrush = SolidColor(HcColors.Action),
-            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
-            modifier = Modifier.weight(1f),
-            decorationBox = { inner ->
-                Box(contentAlignment = Alignment.CenterStart) {
-                    if (value.isEmpty()) HcText(placeholder, HcTypeRoles.Body, color = HcColors.Placeholder)
-                    inner()
-                }
-            },
-        )
-    }
-}
+fun SettingsSearchField(value: String, onChange: (String) -> Unit, placeholder: String, modifier: Modifier = Modifier) =
+    HcPillSearchField(value, onChange, placeholder, modifier)
 
 /**
  * src/components/icons/PaymentCard.tsx — card outline with one solid stripe at

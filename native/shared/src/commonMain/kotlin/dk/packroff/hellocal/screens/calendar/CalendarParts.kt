@@ -53,65 +53,11 @@ import dk.packroff.hellocal.ui.icons.HcIcon
 // Small building blocks shared by the calendar's views (month/week/list, day
 // view and hour overlay).
 
-/**
- * The calendar's green app bar (.hf-appbar--brand via HfScreen/ScreenHeader):
- * back chevron left (only when [onBack] is set), the view-switch icon + title
- * in the middle, the profile circle right.
- */
-@Composable
-internal fun CalendarAppBar(
-    title: String,
-    onBack: (() -> Unit)?,
-    icon: (@Composable () -> Unit)? = null,
-) {
-    val t = LocalTranslator.current
-    Row(
-        Modifier.fillMaxWidth().background(HcColors.Brand).statusBarsPadding().height(52.dp).padding(horizontal = 16.dp),
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        Box(Modifier.width(44.dp), contentAlignment = Alignment.CenterStart) {
-            if (onBack != null) {
-                Box(Modifier.size(44.dp).clickable(onClick = onBack), contentAlignment = Alignment.CenterStart) {
-                    HcChevron(ChevronDirection.Left, color = HcColors.White)
-                }
-            }
-        }
-        Row(
-            Modifier.weight(1f),
-            horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterHorizontally),
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            if (icon != null) Box(Modifier.size(24.dp), contentAlignment = Alignment.Center) { icon() }
-            HcText(title, HcTypeRoles.NavTitle, maxLines = 1)
-            if (icon != null) Spacer(Modifier.size(24.dp))
-        }
-        Box(Modifier.width(44.dp), contentAlignment = Alignment.CenterEnd) { ProfileAvatarLink(t.t("settings.openProfile")) }
-    }
-}
-
-/** src/components/ProfileAvatarLink.tsx + ProfileCircle (32 px, initials, tan). */
-@Composable
-internal fun ProfileAvatarLink(description: String) {
-    val nav = LocalNavigator.current
-    Box(Modifier.size(44.dp).clickable { nav.push("/profile") }, contentAlignment = Alignment.CenterEnd) {
-        Box(Modifier.size(32.dp).clip(CircleShape).background(HcColors.Tan), contentAlignment = Alignment.Center) {
-            HcText(initialsOf(Session.user?.displayName), HcTypeRoles.Small, bold = true, color = HcColors.Black)
-        }
-    }
-}
+// The calendar's app bar is the shared HcAppBar (icon = view-switch button).
 
 /** Full-screen overlays (day view, hour list) must not let taps through to the calendar below. */
 internal fun Modifier.blockTouchesBelow(): Modifier = pointerInput(Unit) {
     awaitEachGesture { awaitFirstDown(requireUnconsumed = false) }
-}
-
-/** src/lib/initials.ts */
-internal fun initialsOf(name: String?): String {
-    val parts = (name ?: "").trim().split(Regex("\\s+")).filter { it.isNotEmpty() }
-    if (parts.isEmpty()) return "?"
-    val first = parts.first().take(1)
-    val last = if (parts.size > 1) parts.last().take(1) else ""
-    return (first + last).uppercase()
 }
 
 /** The calendar icon with a small chevron that opens the view menu (Måned/Uge/Liste). */

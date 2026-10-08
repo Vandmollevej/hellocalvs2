@@ -46,6 +46,7 @@ import dk.packroff.hellocal.ui.FoodIcon
 import dk.packroff.hellocal.ui.FoodIconSpec
 import dk.packroff.hellocal.ui.FoodMaskIcon
 import dk.packroff.hellocal.ui.icons.HcIcon
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.math.PI
 import kotlin.math.abs
@@ -60,33 +61,36 @@ import kotlin.math.sin
 
 // src/components/FooterArc.tsx + src/lib/footer-arc.ts — the small half circle
 // over the bottom navigation: tap or push up to fan out the add actions
-// ("alle" always in the middle), slide sideways to move it.
-// TODO(parity): long-press editing (FooterArcEditor.tsx, Seriøs only) is not
-// ported yet; the order is still editable under Indstillinger → Visning → Forside.
+// ("alle" always in the middle), slide sideways to move it. Holding the finger
+// still for LONG_PRESS_MS (Seriøs only, like the footer's rearranging) opens
+// the editor (FooterArcEditor.tsx → HomeFooterArcEditor).
 
-private const val ARC_RADIUS = 58f
+/** Same hold time as the footer (FooterArc.tsx LONG_PRESS_MS). */
+private const val ARC_LONG_PRESS_MS = 550L
+
+internal const val ARC_RADIUS = 58f
 private const val ARC_REST_HEIGHT = 20f
 private const val ARC_PULL_DISTANCE = 70f
-private const val ARC_ICON_CIRCLE = 46f
-private const val ARC_ICON_RADIUS = ARC_RADIUS + 38 + ARC_ICON_CIRCLE / 2
+internal const val ARC_ICON_CIRCLE = 46f
+internal const val ARC_ICON_RADIUS = ARC_RADIUS + 38 + ARC_ICON_CIRCLE / 2
 private const val ARC_ANGLE_STEP_DEG = 32.0
-private const val ARC_MAX_USER_ACTIONS = 4
+internal const val ARC_MAX_USER_ACTIONS = 4
 private const val ARC_BULGE_MAX = 18f
 private const val ARC_BULGE_SPREAD_DEG = 50.0
 private const val ARC_BULGE_SAMPLES = 40
 private const val ARC_MOVE_PX = 8f
 private const val ARC_DEAD_ZONE = 34f
 private const val ARC_HIGHLIGHT_SCALE = 1.35f
-private const val ARC_ICON_SIZE = 26f
+internal const val ARC_ICON_SIZE = 26f
 private const val ARC_OFFSET_X_KEY = "hellocal.frontpage.arcOffsetX"
 private val ARC_FAN_HALF_WIDTH = (ARC_ICON_RADIUS * sin(ARC_ANGLE_STEP_DEG * 2 * PI / 180) + ARC_ICON_CIRCLE / 2 + 8).toFloat()
 
-private fun fanAngles(userCount: Int): List<Double> {
+internal fun fanAngles(userCount: Int): List<Double> {
     val total = userCount + 1
     return List(total) { (it - (total - 1) / 2.0) * ARC_ANGLE_STEP_DEG }
 }
 
-private fun listSlotIndex(userCount: Int) = (userCount + 1) / 2
+internal fun listSlotIndex(userCount: Int) = (userCount + 1) / 2
 
 /** Points of the circle segment of visible height [height] (flat bottom at y = R + BULGE). */
 private fun segmentPoints(height: Float, targetDeg: Double?, amount: Float): List<Pair<Float, Float>> {
@@ -112,7 +116,7 @@ private fun segmentPoints(height: Float, targetDeg: Double?, amount: Float): Lis
     return points
 }
 
-private data class ArcSlot(val key: String, val href: String, val label: String, val icon: FoodIconSpec)
+internal data class ArcSlot(val key: String, val href: String, val label: String, val icon: FoodIconSpec)
 
 private enum class ArcMode { Undecided, Slide, Pull, Select }
 
@@ -139,6 +143,9 @@ fun HomeFooterArc(modifier: Modifier = Modifier, onOpenMenuSheet: () -> Unit) {
     var dragX by remember { mutableStateOf<Float?>(null) }
     var highlightedKey by remember { mutableStateOf<String?>(null) }
     var finger by remember { mutableStateOf<Pair<Float, Float>?>(null) }
+    var editing by remember { mutableStateOf(false) }
+    val isSerious = FoodSubscription.isSerious == true
+    val liveSerious = rememberUpdatedState(isSerious)
 
     fun setOpenState(next: Boolean) {
         open = next
@@ -243,7 +250,25 @@ fun HomeFooterArc(modifier: Modifier = Modifier, onOpenMenuSheet: () -> Unit) {
                         val boxTop = height - liveHit.value
                         var mode = ArcMode.Undecided
                         var moved = false
+                        // Set when the long press opened the editor: the rest of the gesture is ignored.
+                        var consumed = false
                         val wasOpen = open
+                        if (progress.isRunning) scope.launch { progress.stop() }
+                        // Holding the finger still as long as in the footer opens the editor (Seriøs only).
+                        val longPress = if (liveSerious.value) {
+                            scope.launch {
+                                delay(ARC_LONG_PRESS_MS)
+                                if (!moved) {
+                                    consumed = true
+                                    highlightedKey = null
+                                    finger = null
+                                    gesturing = false
+                                    editing = true
+                                }
+                            }
+                        } else {
+                            null
+                        }
                         gesturing = true
                         while (true) {
                             val event = awaitPointerEvent()
@@ -252,7 +277,12 @@ fun HomeFooterArc(modifier: Modifier = Modifier, onOpenMenuSheet: () -> Unit) {
                             val dy = (change.position.y - startY) / density
                             val px = boxLeft + change.position.x / density
                             val upY = height - (boxTop + change.position.y / density)
+                            if (consumed) {
+                                if (!change.pressed) break
+                                continue
+                            }
                             if (!change.pressed) {
+                                longPress?.cancel()
                                 gesturing = false
                                 finger = null
                                 val key = highlightedKey
@@ -281,6 +311,7 @@ fun HomeFooterArc(modifier: Modifier = Modifier, onOpenMenuSheet: () -> Unit) {
                             if (!moved) {
                                 if (hypot(dx, dy) <= ARC_MOVE_PX) continue
                                 moved = true
+                                longPress?.cancel()
                                 mode = if (wasOpen) ArcMode.Select else if (abs(dx) > abs(dy) && dy > -ARC_MOVE_PX * 2) ArcMode.Slide else ArcMode.Pull
                             }
                             change.consume()
@@ -298,7 +329,9 @@ fun HomeFooterArc(modifier: Modifier = Modifier, onOpenMenuSheet: () -> Unit) {
                                 ArcMode.Undecided -> Unit
                             }
                         }
+                        longPress?.cancel()
                         gesturing = false
+                        finger = null
                     }
                 },
         )
@@ -347,6 +380,25 @@ fun HomeFooterArc(modifier: Modifier = Modifier, onOpenMenuSheet: () -> Unit) {
                 }
             }
         }
+    }
+
+    if (editing) {
+        val keys = FoodPrefs.wheelActionKeys
+        HomeFooterArcEditor(
+            userSlots = userSlots,
+            listSlot = listSlot,
+            poolKeys = AddActions.visible(user).map { it.key }.filter { it !in keys },
+            sex = user?.sex,
+            onChange = { nextUserKeys ->
+                val current = FoodPrefs.wheelActionKeys
+                val tail = current.drop(ARC_MAX_USER_ACTIONS).filter { it !in nextUserKeys }
+                FoodPrefs.saveWheelActionKeys((nextUserKeys + tail).take(FoodPrefs.MAX_WHEEL_ACTIONS))
+            },
+            onClose = {
+                editing = false
+                setOpenState(false)
+            },
+        )
     }
 
     LaunchedEffect(Unit) { progress.snapTo(0f) }

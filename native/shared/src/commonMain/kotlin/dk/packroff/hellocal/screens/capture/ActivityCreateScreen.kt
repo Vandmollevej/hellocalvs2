@@ -1,5 +1,6 @@
 package dk.packroff.hellocal.screens.capture
 
+import dk.packroff.hellocal.ui.icons.HcIcon
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -26,13 +27,13 @@ import dk.packroff.hellocal.platform.NativeHooks
 import dk.packroff.hellocal.theme.HcColors
 import dk.packroff.hellocal.theme.HcDimens
 import dk.packroff.hellocal.theme.HcTypeRoles
-import dk.packroff.hellocal.ui.CaptureAccordionCard
-import dk.packroff.hellocal.ui.CaptureChevronRow
-import dk.packroff.hellocal.ui.CaptureChoice
+import dk.packroff.hellocal.ui.HcAccordionCard
+import dk.packroff.hellocal.ui.HcChevronRow
+import dk.packroff.hellocal.ui.HcChoiceChip
 import dk.packroff.hellocal.ui.CaptureDatePickerSheet
 import dk.packroff.hellocal.ui.CaptureDates
 import dk.packroff.hellocal.ui.CaptureFilledField
-import dk.packroff.hellocal.ui.CaptureSearchField
+import dk.packroff.hellocal.ui.HcSearchField
 import dk.packroff.hellocal.ui.CaptureTimePickerSheet
 import dk.packroff.hellocal.ui.CaptureValueField
 import dk.packroff.hellocal.ui.HcButton
@@ -132,12 +133,12 @@ internal fun ActivityPicker(onPick: (ActivityOption) -> Unit, busy: Boolean = fa
 
     val disabled = busy || adding
     Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
-        CaptureSearchField(query, { query = it }, t.t("activity.searchPlaceholder"))
+        HcSearchField(query, { query = it }, t.t("activity.searchPlaceholder"))
         val showAdd = trimmed.length >= 2 && !exact
         if (matches.isNotEmpty() || showAdd) {
-            CaptureAccordionCard {
+            HcAccordionCard {
                 matches.forEachIndexed { index, option ->
-                    CaptureChevronRow(
+                    HcChevronRow(
                         label = if (option.pending) "${option.label} (${t.t("activity.pending")})" else option.label,
                         onClick = if (disabled) null else ({ onPick(option) }),
                         icon = sportIcon(option.key),
@@ -145,7 +146,7 @@ internal fun ActivityPicker(onPick: (ActivityOption) -> Unit, busy: Boolean = fa
                     )
                 }
                 if (showAdd) {
-                    CaptureChevronRow(
+                    HcChevronRow(
                         label = t.t("activity.addManual", "name" to trimmed),
                         onClick = if (disabled) null else ({ addManual() }),
                         icon = "Plus",
@@ -261,7 +262,7 @@ fun ActivityCreateScreen(args: RouteArgs) {
         }
     }
 
-    HcScreen(title = t.t("activity.title"), contentPadding = PaddingValues(start = HcDimens.Gutter, end = HcDimens.Gutter, top = HcDimens.SpaceBlock, bottom = HcDimens.SpaceSection)) {
+    HcScreen(title = t.t("activity.title"), icon = { HcIcon("Activity", size = 20.dp, stroke = 2f, color = HcColors.White) }, contentPadding = PaddingValues(start = HcDimens.Gutter, end = HcDimens.Gutter, top = HcDimens.SpaceBlock, bottom = HcDimens.SpaceSection)) {
         if (current == null) {
             ActivityPicker(onPick = { option = it })
         } else {
@@ -302,7 +303,7 @@ fun ActivityCreateScreen(args: RouteArgs) {
                     HcText(t.t("activity.intensity"), HcTypeRoles.Small, color = HcColors.TextSecondary)
                     HcText(t.t("activity.intensityHint"), HcTypeRoles.Small, color = HcColors.TextSecondary)
                     TRAINING_INTENSITIES.forEach { key ->
-                        CaptureChoice(
+                        HcChoiceChip(
                             t.t("onboarding.activity.intensity.$key"),
                             selected = intensity == key,
                             onClick = { intensity = key },

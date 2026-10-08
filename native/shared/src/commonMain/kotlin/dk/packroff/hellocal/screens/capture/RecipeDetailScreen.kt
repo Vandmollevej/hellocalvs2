@@ -40,8 +40,8 @@ import dk.packroff.hellocal.nav.RouteArgs
 import dk.packroff.hellocal.theme.HcColors
 import dk.packroff.hellocal.theme.HcDimens
 import dk.packroff.hellocal.theme.HcTypeRoles
-import dk.packroff.hellocal.ui.CaptureLine
-import dk.packroff.hellocal.ui.CaptureMaskIcon
+import dk.packroff.hellocal.ui.HcLine
+import dk.packroff.hellocal.ui.HcMaskIcon
 import dk.packroff.hellocal.ui.HcButton
 import dk.packroff.hellocal.ui.HcCard
 import dk.packroff.hellocal.ui.HcLoader
@@ -255,6 +255,7 @@ fun RecipeDetailScreen(args: RouteArgs) {
 
     HcScreen(
         title = current?.name ?: t.t("recipes.title"),
+        icon = { HcIcon("Soup", size = 20.dp, stroke = 2f, color = HcColors.White) },
         contentPadding = PaddingValues(start = HcDimens.Gutter, end = HcDimens.Gutter, top = HcDimens.SpaceBlock, bottom = HcDimens.SpaceSection),
         bottom = if (state != "missing" && kind == "shared") ({
             HcButton(t.t("recipeDetail.saveCopy"), onClick = ::saveCopy, enabled = !busy && !loading)
@@ -322,7 +323,7 @@ fun RecipeDetailScreen(args: RouteArgs) {
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.spacedBy(8.dp),
                         ) {
-                            CaptureMaskIcon(if (isFavorite) "/icons/favorite-filled.png" else "/icons/favorite.png", 20.dp, HcColors.Black)
+                            HcMaskIcon(if (isFavorite) "/icons/favorite-filled.png" else "/icons/favorite.png", 20.dp, HcColors.Black)
                             HcText(t.t(if (isFavorite) "recipeDetail.removeFavorite" else "recipeDetail.addFavorite"), HcTypeRoles.Body, bold = true, color = HcColors.Black)
                         }
                         Box(Modifier.weight(1f))
@@ -366,7 +367,7 @@ fun RecipeDetailScreen(args: RouteArgs) {
                                     )
                                 }
                             }
-                            if (index < ingredients.lastIndex) CaptureLine()
+                            if (index < ingredients.lastIndex) HcLine()
                         }
                     }
                 }
@@ -402,7 +403,7 @@ fun RecipeDetailScreen(args: RouteArgs) {
                                         HcRemoteImage(step.image, Modifier.size(64.dp).clip(RoundedCornerShape(HcDimens.RadiusCard)), contentScale = ContentScale.Crop)
                                     }
                                 }
-                                if (index < current.steps.lastIndex) CaptureLine()
+                                if (index < current.steps.lastIndex) HcLine()
                             }
                         }
                     }

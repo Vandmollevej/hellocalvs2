@@ -60,15 +60,18 @@ import kotlinx.datetime.toLocalDateTime
  * Phone features the Support screens need, forwarded to the shared device
  * layer (platform/Device.kt). Left null, the matching button is hidden.
  * - openHelpChat: opens the help chat (web: openHelpChat() in
- *   src/lib/help-chat-events.ts, HelpChat mounted in the layout). Natively the
- *   web Support page opens in the browser (Device.openHelpChat).
+ *   src/lib/help-chat-events.ts, HelpChat mounted in the layout). Natively it
+ *   sets [helpChatOpen]; the Support page shows SettingsHelpChatSheet while it is true.
  * - pickScreenshots: opens the system photo picker (up to maxCount images),
  *   scales each to max 1600 px on the longest edge, re-encodes as JPEG 0.8
  *   (strips EXIF/GPS, docs/PRIVACY.md) and returns "data:image/jpeg;base64,…"
  *   strings; failed = true when one of the images could not be used.
  */
 object SettingsSupportHooks {
-    private val openHelpChatCall: () -> Unit = { Device.openHelpChat() }
+    /** The native help chat sheet is open (web: HelpChat open state). Compose state. */
+    var helpChatOpen by mutableStateOf(false)
+
+    private val openHelpChatCall: () -> Unit = { helpChatOpen = true }
     private val pickScreenshotsCall: (Int, (List<String>, Boolean) -> Unit) -> Unit = { maxCount, onResult ->
         val platform = Device.platform
         if (platform == null) {
@@ -183,7 +186,7 @@ internal fun SettingsSupportScreenshotPicker(images: List<String>, onChange: (Li
                     }
                 }
             }
-            // TODO(parity): hidden until the platform photo picker exists (SettingsSupportHooks.pickScreenshots).
+            // The system photo picker (Device.pickPhotos); only missing without a platform (previews).
             if (images.size < SETTINGS_SUPPORT_MAX_IMAGES && pick != null) {
                 Box(
                     Modifier

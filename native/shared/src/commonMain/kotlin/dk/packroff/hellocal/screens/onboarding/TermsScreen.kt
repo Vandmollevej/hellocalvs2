@@ -9,7 +9,16 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.layout.positionInRoot
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import dk.packroff.hellocal.nav.LocalNavigator
 import dk.packroff.hellocal.nav.RouteArgs
@@ -17,22 +26,59 @@ import dk.packroff.hellocal.theme.HcColors
 import dk.packroff.hellocal.theme.HcTypeRoles
 import dk.packroff.hellocal.ui.HcAppBar
 import dk.packroff.hellocal.ui.HcText
+import dk.packroff.hellocal.ui.LocalOnbLegalAnchor
+import dk.packroff.hellocal.ui.OnbLegalAnchor
 import dk.packroff.hellocal.ui.OnbBulletList
 import dk.packroff.hellocal.ui.OnbLegalPromise
 import dk.packroff.hellocal.ui.OnbLegalSection
 import dk.packroff.hellocal.ui.OnbLegalSummary
 import dk.packroff.hellocal.ui.OnbRichText
+import kotlin.math.roundToInt
 
-/** Shared frame of the legal pages: ScreenHeader + scrolling body (px-4 pt-4 pb-10). */
+/**
+ * Shared frame of the legal pages: ScreenHeader + scrolling body (px-4 pt-4 pb-10).
+ * [fragment] (web: location.hash): the page opens scrolled to the section with that id.
+ */
 @Composable
-internal fun LegalPage(title: String, content: @Composable ColumnScope.() -> Unit) {
+internal fun LegalPage(title: String, fragment: String? = null, content: @Composable ColumnScope.() -> Unit) {
     val nav = LocalNavigator.current
+    val scroll = rememberScrollState()
+    val density = LocalDensity.current
+    var viewportTop by remember { mutableStateOf<Float?>(null) }
+    var targetY by remember(fragment) { mutableStateOf<Float?>(null) }
+    var targetScroll by remember(fragment) { mutableStateOf(0) }
+    var scrolled by remember(fragment) { mutableStateOf(false) }
+    val anchor = remember(fragment) {
+        OnbLegalAnchor(fragment) { y ->
+            if (targetY == null) {
+                targetScroll = scroll.value
+                targetY = y
+            }
+        }
+    }
+    LaunchedEffect(viewportTop, targetY) {
+        val top = viewportTop
+        val y = targetY
+        if (!scrolled && top != null && y != null) {
+            scrolled = true
+            // The section title lands just under the top of the page (web: scroll-mt), like the page padding.
+            val offset = with(density) { 16.dp.toPx() }
+            scroll.scrollTo((targetScroll + y - top - offset).roundToInt().coerceAtLeast(0))
+        }
+    }
     Column(Modifier.fillMaxSize().background(HcColors.Cream)) {
         HcAppBar(title, onBack = { nav.backOrHome() })
-        Column(
-            Modifier.weight(1f).fillMaxWidth().verticalScroll(rememberScrollState()).padding(start = 16.dp, end = 16.dp, top = 16.dp, bottom = 40.dp),
-            content = content,
-        )
+        CompositionLocalProvider(LocalOnbLegalAnchor provides anchor) {
+            Column(
+                Modifier
+                    .weight(1f)
+                    .fillMaxWidth()
+                    .onGloballyPositioned { coords -> viewportTop = coords.positionInRoot().y }
+                    .verticalScroll(scroll)
+                    .padding(start = 16.dp, end = 16.dp, top = 16.dp, bottom = 40.dp),
+                content = content,
+            )
+        }
     }
 }
 
@@ -41,13 +87,11 @@ internal fun LegalP(markup: String) = OnbRichText(markup, HcTypeRoles.Body)
 
 /**
  * Native port of src/app/betingelser/page.tsx (DECISIONS 2026-09-02 and 2026-09-25).
- * Same hard-coded Danish text as the web.
- * TODO(parity): the web scrolls to #pointsystem etc.; Location.parse drops the
- * fragment, so links with an anchor open at the top.
+ * Same hard-coded Danish text as the web; /betingelser#pointsystem etc. opens at that section.
  */
 @Composable
-fun TermsScreen(@Suppress("UNUSED_PARAMETER") args: RouteArgs) {
-    LegalPage("Betingelser") {
+fun TermsScreen(args: RouteArgs) {
+    LegalPage("Betingelser", fragment = args.fragment) {
         HcText("Senest opdateret: 2026-10-02", HcTypeRoles.Caption, color = HcColors.TextSecondary)
 
         OnbLegalSummary(
@@ -60,7 +104,7 @@ fun TermsScreen(@Suppress("UNUSED_PARAMETER") args: RouteArgs) {
             ),
         )
 
-        OnbLegalSection("1. Parterne og aftalen") {
+        OnbLegalSection("1. Parterne og aftalen", id = "parterne") {
             LegalP(
                 "Disse betingelser (\"Betingelserne\") udgør aftalen mellem dig (\"Brugeren\") og [[Firmanavn]], CVR-nr. [[CVR-nr.]], " +
                     "[[Adresse]] (\"Hello Cal\", \"vi\"), om brug af appen og hjemmesiden Hello Cal (\"Tjenesten\").",
@@ -72,7 +116,7 @@ fun TermsScreen(@Suppress("UNUSED_PARAMETER") args: RouteArgs) {
             )
         }
 
-        OnbLegalSection("2. Hvad Hello Cal er og ikke er") {
+        OnbLegalSection("2. Hvad Hello Cal er og ikke er", id = "hvad-er-hello-cal") {
             LegalP("Tjenesten hjælper dig med at registrere kost, væske, aktivitet, vægt og kropsmål og med at følge din udvikling over tid.")
             LegalP(
                 "Hello Cal er ikke en sundhedsfaglig ydelse og stiller hverken diagnoser eller giver behandling. Tal, beregninger, " +
@@ -86,14 +130,14 @@ fun TermsScreen(@Suppress("UNUSED_PARAMETER") args: RouteArgs) {
             )
         }
 
-        OnbLegalSection("3. Alder") {
+        OnbLegalSection("3. Alder", id = "alder") {
             LegalP(
                 "Du skal være mindst 13 år for at oprette en konto. Er du under 18 år, anbefaler vi, at du bruger Tjenesten sammen med " +
                     "en forælder eller værge.",
             )
         }
 
-        OnbLegalSection("4. Din konto") {
+        OnbLegalSection("4. Din konto", id = "konto") {
             LegalP(
                 "Kontoen er personlig og må ikke overdrages. Du logger ind med e-mail og adgangskode, Face ID/passkey eller via Google, " +
                     "Apple eller Facebook. Du skal holde dine loginoplysninger fortrolige og give korrekte oplysninger om dig selv.",
@@ -104,7 +148,7 @@ fun TermsScreen(@Suppress("UNUSED_PARAMETER") args: RouteArgs) {
             )
         }
 
-        OnbLegalSection("5. God opførsel") {
+        OnbLegalSection("5. God opførsel", id = "opfoersel") {
             LegalP("Når du bruger Tjenesten, må du ikke:")
             OnbBulletList(
                 listOf(
@@ -121,7 +165,7 @@ fun TermsScreen(@Suppress("UNUSED_PARAMETER") args: RouteArgs) {
             )
         }
 
-        OnbLegalSection("6. Indhold du bidrager med") {
+        OnbLegalSection("6. Indhold du bidrager med", id = "indhold") {
             LegalP(
                 "Når du opretter en vare, indberetter en fejl, uploader billeder eller deler en opskrift, indestår du for, at " +
                     "oplysningerne efter bedste evne er korrekte, og at du har ret til billederne.",
@@ -137,7 +181,7 @@ fun TermsScreen(@Suppress("UNUSED_PARAMETER") args: RouteArgs) {
             )
         }
 
-        OnbLegalSection("7. Forbindelser til andre apps og enheder") {
+        OnbLegalSection("7. Forbindelser til andre apps og enheder", id = "integrationer") {
             LegalP(
                 "Du kan forbinde Hello Cal med andre apps og enheder, fx Apple Sundhed, Health Connect, Google Health, Fitbit, Garmin, " +
                     "Withings, Polar og Strava. Du vælger selv pr. datatype, hvad der hentes til Hello Cal, og hvad der sendes fra " +
@@ -150,7 +194,7 @@ fun TermsScreen(@Suppress("UNUSED_PARAMETER") args: RouteArgs) {
             )
         }
 
-        OnbLegalSection("8. Pointsystem") {
+        OnbLegalSection("8. Pointsystem", id = "pointsystem") {
             LegalP("Alle nye brugere starter med 35 points, når kontoen oprettes.")
             LegalP("Du kan optjene points på følgende måder:")
             OnbBulletList(
@@ -176,7 +220,7 @@ fun TermsScreen(@Suppress("UNUSED_PARAMETER") args: RouteArgs) {
             )
         }
 
-        OnbLegalSection("9. Abonnement og betaling") {
+        OnbLegalSection("9. Abonnement og betaling", id = "abonnement") {
             LegalP(
                 "Tjenesten findes i en gratis udgave og et betalt abonnement. Pris, indhold og betalingsmåde står tydeligt, før du " +
                     "køber. Abonnementet betales forud og fornyes automatisk, indtil du opsiger det. Det gælder også efter en gratis " +
@@ -192,7 +236,7 @@ fun TermsScreen(@Suppress("UNUSED_PARAMETER") args: RouteArgs) {
             )
         }
 
-        OnbLegalSection("10. Fortrydelsesret") {
+        OnbLegalSection("10. Fortrydelsesret", id = "fortrydelsesret") {
             LegalP(
                 "Efter forbrugeraftaleloven har du 14 dages fortrydelsesret fra købet. Tager du det betalte abonnement i brug inden " +
                     "for fristen, beder vi dig udtrykkeligt bekræfte det ved købet. Fortryder du alligevel, refunderer vi beløbet med " +
@@ -201,7 +245,7 @@ fun TermsScreen(@Suppress("UNUSED_PARAMETER") args: RouteArgs) {
             LegalP("Køb via App Store eller Google Play refunderes efter deres regler og kun af dem.")
         }
 
-        OnbLegalSection("11. Ansvar") {
+        OnbLegalSection("11. Ansvar", id = "ansvar") {
             LegalP(
                 "Vi gør vores bedste for, at Tjenesten virker og at data er korrekte, men vi kan ikke love fejlfri drift eller fejlfri " +
                     "næringsdata. Mange varedata kommer fra brugere, producenter og offentlige databaser.",
@@ -213,7 +257,7 @@ fun TermsScreen(@Suppress("UNUSED_PARAMETER") args: RouteArgs) {
             )
         }
 
-        OnbLegalSection("12. Ophør") {
+        OnbLegalSection("12. Ophør", id = "ophoer") {
             LegalP("Du kan til enhver tid lukke din konto via Hjælpecenter. Hvad der sker med dine data, står i Privatlivspolitikken.")
             LegalP(
                 "Vi kan lukke en konto ved væsentlig misligholdelse af Betingelserne. Det sker med en skriftlig begrundelse og, hvor " +
@@ -221,14 +265,14 @@ fun TermsScreen(@Suppress("UNUSED_PARAMETER") args: RouteArgs) {
             )
         }
 
-        OnbLegalSection("13. Ændringer") {
+        OnbLegalSection("13. Ændringer", id = "aendringer") {
             LegalP(
                 "Vi kan ændre Betingelserne. Væsentlige ændringer til ugunst for dig varsler vi mindst 30 dage i forvejen i appen eller " +
                     "pr. e-mail. Har du et betalt abonnement, kan du opsige det inden ændringen træder i kraft.",
             )
         }
 
-        OnbLegalSection("14. Lovvalg og tvister") {
+        OnbLegalSection("14. Lovvalg og tvister", id = "lovvalg") {
             LegalP(
                 "Betingelserne er underlagt dansk ret. Kan vi ikke blive enige, kan du klage til Nævnenes Hus (Forbrugerklagenævnet) " +
                     "eller via EU's klageportal for onlinekøb. Sager ved domstolene anlægges ved din hjemtingret.",
@@ -236,7 +280,7 @@ fun TermsScreen(@Suppress("UNUSED_PARAMETER") args: RouteArgs) {
             OnbLegalPromise("Vi har ikke gemt nogen voldgiftsklausuler eller udenlandske domstole i det med småt.")
         }
 
-        OnbLegalSection("15. Kontakt") {
+        OnbLegalSection("15. Kontakt", id = "kontakt") {
             LegalP(
                 "[[Firmanavn]], [[Adresse]], e-mail: {support@hellocal.io|mailto:support@hellocal.io}. Du kan også skrive via appens " +
                     "Hjælpecenter.",

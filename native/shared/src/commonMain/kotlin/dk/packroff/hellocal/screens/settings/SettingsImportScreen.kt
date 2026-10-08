@@ -197,7 +197,7 @@ fun SettingsImportScreen(args: RouteArgs) {
     }
 
     fun choose() {
-        // TODO(parity): no file picker until the platform sets SettingsImportMedia.pickFiles.
+        // web <input type="file" accept="video/*,image/*" multiple> → the system picker (Device.pickFiles).
         val picker = SettingsImportMedia.pickFiles ?: return
         scope.launch {
             val files = runCatching { picker() }.getOrNull() ?: return@launch

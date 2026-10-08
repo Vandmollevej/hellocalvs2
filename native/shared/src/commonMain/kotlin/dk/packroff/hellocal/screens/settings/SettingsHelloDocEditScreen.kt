@@ -23,16 +23,15 @@ import dk.packroff.hellocal.platform.NativeHooks
 import dk.packroff.hellocal.theme.HcColors
 import dk.packroff.hellocal.theme.HcDimens
 import dk.packroff.hellocal.theme.HcTypeRoles
-import dk.packroff.hellocal.ui.HcBottomSheet
 import dk.packroff.hellocal.ui.HcButton
 import dk.packroff.hellocal.ui.HcButtonKind
+import dk.packroff.hellocal.ui.HcConfirmSheet
 import dk.packroff.hellocal.ui.HcLoader
 import dk.packroff.hellocal.ui.HcScreen
 import dk.packroff.hellocal.ui.HcSectionTitle
 import dk.packroff.hellocal.ui.HcText
 import dk.packroff.hellocal.ui.SettingsPage
 import dk.packroff.hellocal.ui.SettingsPagePadding
-import dk.packroff.hellocal.ui.VSpace
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.launch
 import kotlinx.serialization.json.JsonElement
@@ -187,20 +186,12 @@ private fun HelloDocEditContent(id: String) {
         }
     }
 
-    // web: window.confirm(t("helloDoc.revokeConfirm", { name }))
+    // web: useConfirmSheet().ask(t("helloDoc.revokeConfirm", { name }), revoke)
     if (confirmRevoke) {
-        HcBottomSheet(onDismiss = { confirmRevoke = false }) {
-            HcText(t.t("helloDoc.revokeConfirm", "name" to current.name), HcTypeRoles.Body, Modifier.padding(bottom = HcDimens.SpaceBlock))
-            HcButton(
-                label = t.t("helloDoc.revoke"),
-                onClick = {
-                    confirmRevoke = false
-                    revoke()
-                },
-                kind = HcButtonKind.Danger,
-            )
-            VSpace(HcDimens.SpaceInline)
-            HcButton(label = t.t("common.cancel"), onClick = { confirmRevoke = false }, kind = HcButtonKind.Secondary)
-        }
+        HcConfirmSheet(
+            message = t.t("helloDoc.revokeConfirm", "name" to current.name),
+            onDismiss = { confirmRevoke = false },
+            onConfirm = { revoke() },
+        )
     }
 }

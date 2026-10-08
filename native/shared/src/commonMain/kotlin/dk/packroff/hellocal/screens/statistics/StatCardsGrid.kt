@@ -1,5 +1,7 @@
 package dk.packroff.hellocal.screens.statistics
 
+import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -25,16 +27,19 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.withFrameNanos
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
@@ -44,8 +49,11 @@ import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.layout.LayoutCoordinates
 import androidx.compose.ui.layout.boundsInRoot
+import androidx.compose.ui.layout.layout
 import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.layout.onPlaced
 import androidx.compose.ui.layout.positionInRoot
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.input.ImeAction
@@ -72,6 +80,8 @@ import dk.packroff.hellocal.ui.StatsWaterGlassIcon
 import dk.packroff.hellocal.ui.icons.HcIcon
 import dk.packroff.hellocal.ui.statsOutline
 import dk.packroff.hellocal.ui.statsSelected
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
 // src/components/StatCardsGrid.tsx — the user's own grid of stat cards. Two
@@ -82,8 +92,39 @@ import kotlin.math.roundToInt
 // follows the finger and lands where it is let go: a card swaps with the
 // slot under the finger (or goes into a closed section, or is removed when
 // let go outside the grid); a header, divider or section moves between rows.
+//
+// While something is lifted the grid already shows the result of letting go:
+// the card it would swap with has moved to the card's old slot, and a
+// header's landing row is a dashed placeholder. Every item that changes place
+// slides there (FLIP, StatsReflow), and on release the item glides from
+// under the finger into its spot.
 
 private val SHAPE = RoundedCornerShape(HcDimens.RadiusCard)
+
+/** The dashed placeholder where a lifted header/divider/section lands. */
+private const val PREVIEW_ID = "heading-preview"
+
+/** Ids of the items that are drawn: everything except the rows inside a closed section. */
+private fun renderedIds(items: List<LayoutItem>): Set<String> {
+    val ids = HashSet<String>()
+    var closed: String? = null
+    for (item in items) {
+        val inside = closed
+        if (inside != null) {
+            if (item is AccordionEndLayoutItem && item.id == inside) closed = null
+            continue
+        }
+        when (item) {
+            is AccordionLayoutItem -> {
+                ids += item.itemId
+                if (!item.open) closed = item.id
+            }
+            is AccordionEndLayoutItem -> Unit
+            else -> ids += item.itemId
+        }
+    }
+    return ids
+}
 
 // ---------- Layout helpers (StatCardsGrid.tsx) ----------
 
@@ -145,7 +186,12 @@ private fun accordionCardCount(layout: List<LayoutItem>, id: String): Int {
 
 private class GridDrag(val id: String, val item: LayoutItem, val pointer: Offset, val grab: Offset, val size: IntSize)
 
-private class GridState(initial: List<LayoutItem>, val edit: StatsEditController) {
+private class GridState(
+    initial: List<LayoutItem>,
+    val edit: StatsEditController,
+    val reflow: StatsReflow,
+    private val scope: CoroutineScope,
+) {
     var layout by mutableStateOf(initial)
     var editMode by mutableStateOf(false)
     var drag by mutableStateOf<GridDrag?>(null)
@@ -159,8 +205,43 @@ private class GridState(initial: List<LayoutItem>, val edit: StatsEditController
     var uncertaintyToggled by mutableStateOf(setOf<String>())
     var gridBounds: Rect = Rect.Zero
     var gridOrigin by mutableStateOf(Offset.Zero)
+    var gridCoords: LayoutCoordinates? = null
+    /** The placeholder's entry: its height grows from 0 (REFLOW_MS). */
+    val previewGrow = Animatable(0f)
+
+    /**
+     * Every drawn half-width slot by its index in [renderItems] (the web's
+     * data-slot-index), with the id drawn there when it was measured.
+     */
+    val slotBounds = HashMap<Int, Pair<String, Rect>>()
 
     fun bounds(id: String): Rect? = edit.itemBounds["grid:$id"]
+
+    /** What is drawn while something is lifted: the grid as it will be once it is let go. */
+    val renderItems: List<LayoutItem>
+        get() {
+            val d = drag ?: return layout
+            if (d.item.isHalfWidth()) {
+                if (accordionTarget != null) return layout
+                val from = layout.indexOfFirst { it.itemId == d.id }
+                val to = slotTarget ?: from
+                if (from < 0 || to < 0 || to == from || to >= layout.size) return layout
+                val next = layout.toMutableList()
+                next[from] = layout[to]
+                next[to] = layout[from]
+                return next
+            }
+            return withoutItem(layout, d.item)
+        }
+
+    /** Header/divider/section drag: where in [renderItems] the dashed placeholder sits. */
+    val previewAt: Int?
+        get() {
+            val d = drag ?: return null
+            if (d.item.isHalfWidth()) return null
+            val at = insertAt ?: return null
+            return minOf(at, withoutItem(layout, d.item).size)
+        }
 
     fun enterEditMode() {
         editMode = true
@@ -215,6 +296,11 @@ private class GridState(initial: List<LayoutItem>, val edit: StatsEditController
         }
     }
 
+    /**
+     * The long press on [pressedId] lifts it. [downPosition] is the finger in
+     * the item's layout box; the box itself (not where a slide draws it) is
+     * where the floating copy starts, like the web's offsetLeft/offsetTop.
+     */
     fun startDrag(pressedId: String, downPosition: Offset): Boolean {
         val item = layout.firstOrNull { it.itemId == pressedId } ?: return false
         val origin = bounds(item.itemId) ?: return false
@@ -222,17 +308,25 @@ private class GridState(initial: List<LayoutItem>, val edit: StatsEditController
         val index = layout.indexOfFirst { it.itemId == item.itemId }
         val isCard = item.isHalfWidth()
         editingHeaderId = null
+        // A full-width item starts out where it is: everything before it is
+        // unchanged in the layout without it, so its index is the insert index.
         insertAt = if (!isCard && index >= 0) index else null
         slotTarget = if (isCard && index >= 0) index else null
         accordionTarget = null
+        if (!isCard) {
+            reflow.forget(PREVIEW_ID, force = true)
+            scope.launch {
+                previewGrow.snapTo(0f)
+                previewGrow.animateTo(1f, tween(REFLOW_MS, easing = REFLOW_EASING))
+            }
+        }
         drag = GridDrag(item.itemId, item, origin.topLeft + downPosition, downPosition, IntSize(origin.width.roundToInt(), origin.height.roundToInt()))
         return true
     }
 
-    fun moveDrag(localPosition: Offset) {
+    /** The finger moved to [pointer] (root coordinates). */
+    fun moveDrag(pointer: Offset) {
         val current = drag ?: return
-        val origin = bounds(current.id) ?: return
-        val pointer = origin.topLeft + localPosition
         drag = GridDrag(current.id, current.item, pointer, current.grab, current.size)
         updateTargets(pointer)
     }
@@ -244,9 +338,14 @@ private class GridState(initial: List<LayoutItem>, val edit: StatsEditController
                 slotTarget = null
                 return
             }
+            // The slot under the finger, measured from the slots' layout boxes
+            // (never from where a sliding card is drawn). A slot whose drawn
+            // item no longer matches the list is a frame old and is skipped.
+            val drawn = renderItems
             var hit: Int? = null
-            for ((index, item) in layout.withIndex()) {
-                if (item.isHalfWidth() && bounds(item.itemId)?.contains(pointer) == true) {
+            for ((index, entry) in slotBounds) {
+                val (drawnId, rect) = entry
+                if (index < drawn.size && drawn[index].itemId == drawnId && drawn[index].isHalfWidth() && rect.contains(pointer)) {
                     hit = index
                     break
                 }
@@ -305,18 +404,25 @@ private class GridState(initial: List<LayoutItem>, val edit: StatsEditController
                 else next.add(range.end, current.item)
                 layout = withTrailingEmptyRow(normalizeStatLayout(next))
             }
-        } else if (!cancelled && isCard && target != null && from >= 0 && target != from) {
-            // Card onto a card or an empty slot: the two swap places.
-            val next = currentLayout.toMutableList()
-            next[from] = currentLayout[target]
-            next[target] = currentLayout[from]
-            layout = next
-        } else if (!cancelled && !isCard && at != null) {
-            val rest = withoutItem(currentLayout, current.item)
-            val block = liftedBlock(currentLayout, current.item)
-            val index = minOf(at, rest.size)
-            layout = rest.subList(0, index) + block + rest.subList(index, rest.size)
+        } else {
+            // It lands where the grid already shows it and glides there from
+            // under the finger; a cancelled drag glides back home.
+            val origin = gridCoords?.takeIf { it.isAttached }?.positionInRoot() ?: gridOrigin
+            reflow.settleFrom(current.id, current.pointer - current.grab - origin)
+            if (!cancelled && isCard && target != null && from >= 0 && target != from && target < currentLayout.size) {
+                // Card onto a card or an empty slot: the two swap places.
+                val next = currentLayout.toMutableList()
+                next[from] = currentLayout[target]
+                next[target] = currentLayout[from]
+                layout = next
+            } else if (!cancelled && !isCard && at != null) {
+                val rest = withoutItem(currentLayout, current.item)
+                val block = liftedBlock(currentLayout, current.item)
+                val index = minOf(at, rest.size)
+                layout = rest.subList(0, index) + block + rest.subList(index, rest.size)
+            }
         }
+        if (!isCard) scope.launch { previewGrow.snapTo(0f) }
         drag = null
         slotTarget = null
         accordionTarget = null
@@ -334,6 +440,7 @@ private class GridState(initial: List<LayoutItem>, val edit: StatsEditController
 
 // ---------- Grid ----------
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 internal fun StatCardsGrid(
     cards: List<StatCardValue>,
@@ -344,7 +451,8 @@ internal fun StatCardsGrid(
     onShowAddChange: (Boolean) -> Unit,
     onEditModeChange: (Boolean) -> Unit,
 ) {
-    val state = remember { GridState(loadStatLayout(), edit) }
+    val coroutineScope = rememberCoroutineScope()
+    val state = remember { GridState(loadStatLayout(), edit, StatsReflow(coroutineScope), coroutineScope) }
     val cardByKey = remember(cards) { cards.associateBy { it.key } }
     val density = LocalDensity.current
     var firstSave by remember { mutableStateOf(true) }
@@ -372,18 +480,40 @@ internal fun StatCardsGrid(
         }
     }
 
-    val scope = GridScope(state, cardByKey, highlightRecommendedLimits, autoExpandUncertainty, loading)
+    val items = state.renderItems
+    val previewAt = state.previewAt
+    state.reflow.liveIds = renderedIds(items)
+    // A new rendered list starts the FLIP slides (GridReflow's getSnapshotBeforeUpdate).
+    SideEffect { state.reflow.observe(items) }
+
+    val scope = GridScope(state, cardByKey, highlightRecommendedLimits, autoExpandUncertainty, loading, previewAt)
     Box(
-        Modifier.fillMaxWidth().onGloballyPositioned {
-            state.gridBounds = it.boundsInRoot()
-            state.gridOrigin = it.positionInRoot()
-        },
+        Modifier
+            .fillMaxWidth()
+            .onPlaced {
+                state.reflow.container = it
+                state.gridCoords = it
+            }
+            .onGloballyPositioned {
+                state.gridBounds = it.boundsInRoot()
+                state.gridOrigin = it.positionInRoot()
+            }
+            // Carries a lifted item: its own node may leave the grid while it
+            // is dragged (a header leaves the list, a card changes row).
+            .pointerInput(state) {
+                trackLiftedDrag(
+                    isLifted = { state.drag != null },
+                    onMove = { position ->
+                        val coords = state.gridCoords
+                        if (coords != null && coords.isAttached) state.moveDrag(coords.localToRoot(position))
+                    },
+                    onEnd = { cancelled -> state.drop(cancelled) },
+                )
+            },
     ) {
         Column(Modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(16.dp)) {
-            scope.Range(state.layout, 0, state.layout.size)
-            if (state.drag != null && !state.drag!!.item.isHalfWidth() && state.insertAt == withoutItem(state.layout, state.drag!!.item).size) {
-                DropLine()
-            }
+            scope.Range(items, 0, items.size)
+            if (previewAt != null && previewAt >= items.size) key(PREVIEW_ID) { scope.Preview() }
         }
         // The lifted item under the finger, exactly as it looks in the grid while editing.
         state.drag?.let { d ->
@@ -392,11 +522,19 @@ internal fun StatCardsGrid(
             Box(
                 Modifier
                     .zIndex(10f)
-                    .offset {
-                        IntOffset(
-                            (d.pointer.x - d.grab.x - state.gridOrigin.x).roundToInt(),
-                            (d.pointer.y - d.grab.y - state.gridOrigin.y).roundToInt(),
-                        )
+                    .layout { measurable, constraints ->
+                        val placeable = measurable.measure(constraints)
+                        layout(placeable.width, placeable.height) {
+                            // Measured from where the grid is right now, so it stays
+                            // under the finger while the page auto-scrolls.
+                            val origin = coordinates?.positionInRoot() ?: state.gridOrigin
+                            placeable.place(
+                                IntOffset(
+                                    (d.pointer.x - d.grab.x - origin.x).roundToInt(),
+                                    (d.pointer.y - d.grab.y - origin.y).roundToInt(),
+                                ),
+                            )
+                        }
                     }
                     .size(width, height)
                     .shadow(12.dp, SHAPE)
@@ -408,53 +546,108 @@ internal fun StatCardsGrid(
     }
 }
 
-/** A 2 px line in the gap above a row: where a lifted header/divider/section lands. */
-@Composable
-private fun DropLine() {
-    Box(Modifier.fillMaxWidth().height(2.dp).background(HcColors.Black, SHAPE))
-}
-
-private fun Modifier.dropLineAbove(show: Boolean): Modifier = if (!show) this else drawWithContent {
-    drawContent()
-    val y = -8.dp.toPx()
-    drawLine(HcColors.Black, Offset(0f, y), Offset(size.width, y), strokeWidth = 2.dp.toPx())
-}
-
 private class GridScope(
     val state: GridState,
     val cardByKey: Map<String, StatCardValue>,
     val highlightRecommendedLimits: Boolean,
     val autoExpandUncertainty: Boolean,
     val loading: Boolean,
+    /** Where in the drawn list the header placeholder goes (null: none). */
+    val previewAt: Int?,
 ) {
-    private val insertBeforeId: String?
-        get() {
-            val d = state.drag ?: return null
-            if (d.item.isHalfWidth()) return null
-            val at = state.insertAt ?: return null
-            return withoutItem(state.layout, d.item).getOrNull(at)?.itemId
-        }
+    private val reflow get() = state.reflow
 
-    /** Registers an item's bounds and its press/drag gesture. */
+    /** During a card drag the lifted card's slot marker and the empty slots just appear; only cards slide. */
+    private fun jumps(item: LayoutItem): Boolean {
+        val d = state.drag ?: return false
+        return d.item.isHalfWidth() && (item.itemId == d.id || item is EmptyLayoutItem)
+    }
+
+    /** The dashed placeholder where a lifted header, divider or section lands. */
     @Composable
-    fun Modifier.editable(item: LayoutItem): Modifier {
+    fun Preview() {
+        val d = state.drag ?: return
+        val grow = state.previewGrow.value
+        val height = with(LocalDensity.current) { d.size.height.toDp() }
+        val label = when (val item = d.item) {
+            is HeaderLayoutItem -> item.text
+            is AccordionLayoutItem -> item.title
+            else -> ""
+        }
+        Box(
+            Modifier
+                .fillMaxWidth()
+                .statsReflow(reflow, PREVIEW_ID)
+                .height(height * grow)
+                .alpha(grow)
+                .clip(SHAPE)
+                .statsOutline(HcColors.Black.copy(alpha = 0.4f)),
+            contentAlignment = Alignment.Center,
+        ) {
+            HcText(label, HcTypeRoles.Small, color = HcColors.Black.copy(alpha = 0.5f), maxLines = 1)
+        }
+    }
+
+    /**
+     * Registers an item's layout box, its press gesture and its slide. The
+     * box and the press are measured before the slide is applied, so they
+     * always describe where the item belongs, not where it is drawn. The
+     * press only lifts the item; the grid carries the drag ([trackLiftedDrag]).
+     */
+    @Composable
+    fun Modifier.editable(item: LayoutItem, slotIndex: Int? = null, slide: Boolean = true): Modifier {
         val id = item.itemId
         val grid = state
-        DisposableEffect(id) { onDispose { grid.edit.itemBounds.remove("grid:$id") } }
-        // The gesture captures only the (stable) grid state and the id, so it
-        // keeps running while the item recomposes during a drag.
+        DisposableEffect(id) {
+            onDispose {
+                grid.edit.itemBounds.remove("grid:$id")
+                grid.reflow.forget(id)
+            }
+        }
         return this
+            .slotBounds(id, slotIndex)
             .onGloballyPositioned { grid.edit.itemBounds["grid:$id"] = it.boundsInRoot() }
             .pointerInput(grid, id) {
                 awaitItemPress(
                     delayMs = { if (grid.editMode) DRAG_DELAY_MS else ENTER_EDIT_DELAY_MS },
                     onLongPress = { position -> grid.startDrag(id, position) },
                     onTap = { grid.layout.firstOrNull { it.itemId == id }?.let { grid.tap(it) } },
-                    onDragMove = { grid.moveDrag(it) },
-                    onDragEnd = { cancelled -> grid.drop(cancelled) },
                 )
             }
+            .let { if (slide) it.statsReflow(reflow, id, jump = jumps(item)) else it }
     }
+
+    /** Empty slots are drop targets but no press targets. */
+    @Composable
+    private fun Modifier.editableBounds(item: LayoutItem, slotIndex: Int): Modifier {
+        val id = item.itemId
+        val grid = state
+        DisposableEffect(id) {
+            onDispose {
+                grid.edit.itemBounds.remove("grid:$id")
+                grid.reflow.forget(id)
+            }
+        }
+        return this
+            .slotBounds(id, slotIndex)
+            .onGloballyPositioned { grid.edit.itemBounds["grid:$id"] = it.boundsInRoot() }
+            .statsReflow(reflow, id, jump = jumps(item))
+    }
+
+    /** The web's data-slot-index: a half-width slot's layout box by its index in the drawn list. */
+    @Composable
+    private fun Modifier.slotBounds(id: String, slotIndex: Int?): Modifier {
+        if (slotIndex == null) return this
+        val grid = state
+        DisposableEffect(id, slotIndex) {
+            onDispose { if (grid.slotBounds[slotIndex]?.first == id) grid.slotBounds.remove(slotIndex) }
+        }
+        return onGloballyPositioned { grid.slotBounds[slotIndex] = id to it.boundsInRoot() }
+    }
+
+    /** Draw order: the landing item on top, then sliding items (web z-index 20 / 10). */
+    private fun zOf(vararg items: LayoutItem?): Float =
+        items.maxOfOrNull { item -> if (item == null) 0f else reflow.zIndex(item.itemId) } ?: 0f
 
     /** Walks the flat list and nests each section's rows under its header. */
     @Composable
@@ -462,6 +655,7 @@ private class GridScope(
         var i = from
         while (i < to) {
             val item = items[i]
+            if (i == previewAt) key(PREVIEW_ID) { Preview() }
             when {
                 item is AccordionLayoutItem -> {
                     var end = -1
@@ -475,7 +669,7 @@ private class GridScope(
                     if (end < 0 || end > to) end = to
                     val count = (i + 1 until end).count { items[it] is StatLayoutItem }
                     val start = i
-                    androidx.compose.runtime.key(item.itemId) { Accordion(item, start, items, end, count) }
+                    key(item.itemId) { Accordion(item, start, items, end, count) }
                     i = end + 1
                 }
                 item is AccordionEndLayoutItem -> i += 1
@@ -483,13 +677,13 @@ private class GridScope(
                     val left = item
                     val right = items.getOrNull(i + 1)?.takeIf { i + 1 < to && it.isHalfWidth() }
                     val index = i
-                    androidx.compose.runtime.key(left.itemId) {
+                    key(left.itemId) {
                         Row(
-                            Modifier.fillMaxWidth().height(IntrinsicSize.Min).dropLineAbove(insertBeforeId == left.itemId),
+                            Modifier.fillMaxWidth().zIndex(zOf(left, right)).height(IntrinsicSize.Min),
                             horizontalArrangement = Arrangement.spacedBy(16.dp),
                         ) {
-                            Slot(left, index, Modifier.weight(1f).fillMaxHeight())
-                            if (right != null) Slot(right, index + 1, Modifier.weight(1f).fillMaxHeight())
+                            Slot(left, index, Modifier.weight(1f).fillMaxHeight().zIndex(zOf(left)))
+                            if (right != null) Slot(right, index + 1, Modifier.weight(1f).fillMaxHeight().zIndex(zOf(right)))
                             else Box(Modifier.weight(1f))
                         }
                     }
@@ -497,8 +691,8 @@ private class GridScope(
                 }
                 else -> {
                     val index = i
-                    androidx.compose.runtime.key(item.itemId) {
-                        Box(Modifier.fillMaxWidth().dropLineAbove(insertBeforeId == item.itemId)) { FullWidth(item, index) }
+                    key(item.itemId) {
+                        Box(Modifier.fillMaxWidth().zIndex(zOf(item))) { FullWidth(item, index) }
                     }
                     i += 1
                 }
@@ -526,42 +720,42 @@ private class GridScope(
     @Composable
     private fun Slot(item: LayoutItem, index: Int, modifier: Modifier) {
         val drag = state.drag
-        val isCardDrag = drag != null && drag.item.isHalfWidth()
-        val isTarget = isCardDrag && state.accordionTarget == null && state.slotTarget == index
         if (item is EmptyLayoutItem) {
             Box(
                 modifier
                     .heightIn(min = 76.dp)
-                    .editableBounds(item)
-                    .let { if (isTarget) it.background(HcColors.Black.copy(alpha = 0.05f), SHAPE).statsOutline(HcColors.Black) else it }
-                    .let { if (state.editMode && !isTarget) it.statsOutline(HcColors.Black.copy(alpha = 0.4f)) else it },
+                    .editableBounds(item, index)
+                    .let { if (state.editMode) it.statsOutline(HcColors.Black.copy(alpha = 0.4f)) else it },
             )
             return
         }
         val key = (item as StatLayoutItem).key
         val card = cardByKey[key]
-        // The lifted card itself floats under the finger; its place keeps the
-        // card's size and only marks where it lands. Same node structure in
-        // both states, so the running drag gesture is never interrupted.
+        // The lifted card itself floats under the finger. Its place in the
+        // grid (already the slot it lands in) keeps the card's size and only
+        // marks where it lands, so nothing shifts when it is let go.
         val isDragged = drag?.id == item.itemId
+        val landsHere = isDragged && state.slotTarget != null && state.accordionTarget == null
         val background = when {
+            landsHere -> HcColors.Black.copy(alpha = 0.05f)
             isDragged -> HcColors.Black.copy(alpha = 0f)
             card != null || loading -> HcColors.Tan
             else -> HcColors.Tan.copy(alpha = 0.5f)
         }
-        Box(modifier.statsWobble(state.editMode && !isDragged, index)) {
+        Box(
+            modifier
+                .editable(item, index)
+                .statsLanding(reflow.landingId == item.itemId, SHAPE)
+                .statsWobble(state.editMode && !isDragged, index),
+        ) {
             Column(
                 Modifier
                     .fillMaxSize()
-                    .editable(item)
                     .clip(SHAPE)
                     .background(background, SHAPE)
-                    .let { if (isTarget) it.background(HcColors.Black.copy(alpha = 0.05f), SHAPE) else it }
                     .let {
-                        when {
-                            isDragged || isTarget -> it.statsOutline(if (isTarget) HcColors.Black else HcColors.Black.copy(alpha = 0.4f))
-                            else -> cardOutline(it, card)
-                        }
+                        if (isDragged) it.statsOutline(if (landsHere) HcColors.Black else HcColors.Black.copy(alpha = 0.4f))
+                        else cardOutline(it, card)
                     }
                     .padding(16.dp),
             ) {
@@ -574,14 +768,6 @@ private class GridScope(
             }
             if (state.editMode && !isDragged) RemoveCircle { state.removeItem(item.itemId) }
         }
-    }
-
-    /** Empty slots are drop targets but no press targets. */
-    @Composable
-    private fun Modifier.editableBounds(item: LayoutItem): Modifier {
-        val id = item.itemId
-        DisposableEffect(id) { onDispose { state.edit.itemBounds.remove("grid:$id") } }
-        return onGloballyPositioned { state.edit.itemBounds["grid:$id"] = it.boundsInRoot() }
     }
 
     @Composable
@@ -666,12 +852,18 @@ private class GridScope(
     private fun FullWidth(item: LayoutItem, index: Int) {
         val isDragged = state.drag?.id == item.itemId
         val outline = HcColors.Black.copy(alpha = 0.4f)
+        val landing = reflow.landingId == item.itemId
         when (item) {
-            is HeaderLayoutItem -> Box(Modifier.fillMaxWidth().statsWobble(state.editMode && !isDragged, index)) {
+            is HeaderLayoutItem -> Box(
+                Modifier
+                    .fillMaxWidth()
+                    .editable(item)
+                    .statsLanding(landing, SHAPE)
+                    .statsWobble(state.editMode && !isDragged, index),
+            ) {
                 Box(
                     Modifier
                         .fillMaxWidth()
-                        .editable(item)
                         .let { if (state.editMode || isDragged) it.statsOutline(outline) else it }
                         .padding(horizontal = if (state.editMode) 12.dp else 4.dp, vertical = 8.dp)
                         .alpha(if (isDragged) 0f else 1f),
@@ -684,12 +876,17 @@ private class GridScope(
                 }
                 if (state.editMode && !isDragged) RemoveCircle { state.removeItem(item.itemId) }
             }
-            is DividerLayoutItem -> Box(Modifier.fillMaxWidth().statsWobble(state.editMode && !isDragged, index)) {
+            is DividerLayoutItem -> Box(
+                Modifier
+                    .fillMaxWidth()
+                    .editable(item)
+                    .statsLanding(landing, SHAPE)
+                    .statsWobble(state.editMode && !isDragged, index),
+            ) {
                 Box(
                     Modifier
                         .fillMaxWidth()
                         .height(20.dp)
-                        .editable(item)
                         .let { if (state.editMode || isDragged) it.statsOutline(outline) else it },
                     contentAlignment = Alignment.Center,
                 ) {
@@ -706,7 +903,15 @@ private class GridScope(
         val isDragged = state.drag?.id == item.itemId
         val isTarget = state.accordionTarget == item.id
         val outline = HcColors.Black.copy(alpha = 0.4f)
-        Box(Modifier.fillMaxWidth().dropLineAbove(insertBeforeId == item.itemId)) {
+        // The section slides as one block (frame, header and rows); rows that
+        // move inside it slide on top of that.
+        Box(
+            Modifier
+                .fillMaxWidth()
+                .zIndex(zOf(item))
+                .statsReflow(reflow, item.itemId)
+                .statsLanding(reflow.landingId == item.itemId, SHAPE),
+        ) {
         Column(
             Modifier
                 .fillMaxWidth()
@@ -720,7 +925,7 @@ private class GridScope(
                     Modifier
                         .fillMaxWidth()
                         .heightIn(min = HcDimens.ControlHeight)
-                        .editable(item)
+                        .editable(item, slide = false)
                         .statsSelected(item.open)
                         .let { if (isTarget) it.statsOutline(HcColors.Black, width = 2.dp, dashed = false) else it }
                         .padding(start = 16.dp, end = 8.dp, top = 4.dp, bottom = 4.dp),
@@ -750,6 +955,8 @@ private class GridScope(
                     verticalArrangement = Arrangement.spacedBy(16.dp),
                 ) {
                     Range(items, index + 1, end)
+                    // Landing as the section's last row (just before its end marker).
+                    if (previewAt == end && end < items.size) key(PREVIEW_ID) { Preview() }
                 }
             }
         }

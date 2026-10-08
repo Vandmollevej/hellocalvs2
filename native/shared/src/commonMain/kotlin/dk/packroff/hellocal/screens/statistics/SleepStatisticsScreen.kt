@@ -25,6 +25,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
+import dk.packroff.hellocal.app.TrendIcon
 import dk.packroff.hellocal.i18n.LocalTranslator
 import dk.packroff.hellocal.nav.LocalNavigator
 import dk.packroff.hellocal.nav.RouteArgs
@@ -120,7 +121,7 @@ private fun SleepStatisticsContent() {
     val connected = inputs.integrations.filter { it.status == "CONNECTED" }
     val available = inputs.integrations.filter { it.kind != "unavailable" && !it.legacy && it.status != "CONNECTED" }
 
-    HcScreen(t.t("sleepStats.title"), back = nav.showBack) {
+    HcScreen(t.t("sleepStats.title"), back = nav.showBack, icon = { TrendIcon(HcColors.White, size = 20) }) {
         Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
             SleepPeriodChips(period) { period = it }
 

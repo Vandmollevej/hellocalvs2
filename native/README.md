@@ -68,7 +68,7 @@ direkte) og sætter `Device.platform` ved opstart.
 | Del | `ACTION_SEND`-vælger | `UIActivityViewController` |
 | Bekræft ejer (billeddagbog) | `BiometricPrompt` (fingeraftryk/ansigt/kode) | `LAContext` (Face ID/Touch ID/kode) |
 | App i baggrunden | `MainActivity.onStop` | `didEnterBackgroundNotification` |
-| Hjælpe-chat | Åbner web-siden `/settings/support` i browseren | samme |
+| App tilbage i forgrunden (fx efter Stripe-portalen) | `MainActivity.onStart` | `willEnterForegroundNotification` |
 
 Ikke slået til endnu (kræver eksterne konti/opsætning, svarer `"unsupported"`):
 

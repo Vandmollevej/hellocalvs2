@@ -1,5 +1,7 @@
 package dk.packroff.hellocal.screens.profile
 
+import dk.packroff.hellocal.ui.Units
+import dk.packroff.hellocal.ui.HeightUnit
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -65,7 +67,7 @@ fun ProfileEditScreen(args: RouteArgs) {
     val t = LocalTranslator.current
     val nav = LocalNavigator.current
     val scope = rememberCoroutineScope()
-    val units = remember { ProfileUnits.current() }
+    val units = remember { Units.current() }
     val debouncer = remember { ProfileDebouncer(scope) }
     var user by remember { mutableStateOf<ProfileUser?>(null) }
     var loading by remember { mutableStateOf(true) }
@@ -164,13 +166,13 @@ fun ProfileEditScreen(args: RouteArgs) {
                     Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(8.dp)) {
                         ProfileFieldLabel(t.t("profile.field.weight"))
                         ProfileValueButton(
-                            text = (current.weightKg?.let { ProfileUnits.formatWeight(it, units.weight) } ?: ProfileUnits.weightUnitLabel(units.weight)).uppercase(),
+                            text = (current.weightKg?.let { Units.formatWeight(it, units.weight) } ?: Units.weightUnitLabel(units.weight)).uppercase(),
                             onClick = { nav.push("/profile/start-weight") },
                             dimmed = true,
                             leading = { HcIcon("Lock", size = 18.dp, color = HcColors.Black) },
                         )
                         trendWeightKg?.let {
-                            HcText(t.t("profile.trendWeight", "value" to ProfileUnits.formatWeight(it, units.weight)), HcTypeRoles.Micro, color = HcColors.TextSecondary)
+                            HcText(t.t("profile.trendWeight", "value" to Units.formatWeight(it, units.weight)), HcTypeRoles.Micro, color = HcColors.TextSecondary)
                         }
                         if (current.weightKg != null) {
                             HcText(
@@ -186,7 +188,7 @@ fun ProfileEditScreen(args: RouteArgs) {
                         val heightCm = current.heightCm
                         if (heightCm != null) {
                             ProfileValueButton(
-                                text = ProfileUnits.formatLength(heightCm, units.height).uppercase(),
+                                text = Units.formatLength(heightCm, units.height).uppercase(),
                                 onClick = { nav.push("/profile/height") },
                                 dimmed = true,
                                 leading = { HcIcon("Lock", size = 18.dp, color = HcColors.Black) },
@@ -201,7 +203,7 @@ fun ProfileEditScreen(args: RouteArgs) {
                                 unit = units.height.code.uppercase(),
                                 initialScrollValue = if (inches) 69 else 175,
                                 onChange = { value ->
-                                    val cm = if (inches) ProfileUnits.inToCm(value.toDouble()).roundToInt().toDouble() else value.toDouble()
+                                    val cm = if (inches) Units.inToCm(value.toDouble()).roundToInt().toDouble() else value.toDouble()
                                     updateNow("heightCm", cm) { it.copy(heightCm = cm) }
                                 },
                             )
@@ -344,7 +346,6 @@ fun ProfileBirthDatePicker(label: String, value: String?, onChange: (String) -> 
             maxDate = latest,
             onDismiss = { open = false },
             onDone = { picked ->
-                open = false
                 onChange("${picked.first}-${picked.second.toString().padStart(2, '0')}-${picked.third.toString().padStart(2, '0')}")
             },
         )

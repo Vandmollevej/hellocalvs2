@@ -10,19 +10,21 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.withFrameNanos
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.boundsInRoot
 import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.layout.onPlaced
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import dk.packroff.hellocal.theme.HcColors
@@ -33,11 +35,13 @@ import dk.packroff.hellocal.ui.statsOutline
 // src/components/StatChartsSection.tsx — the charts at the top of the
 // statistics page with the same editing as the card grid: a long press makes
 // them wobble, a short tap on the background ends it, the remove circle
-// takes a chart off and a lifted chart is dragged up/down in the list.
+// takes a chart off and a lifted chart is dragged up/down in the list. The
+// lifted chart follows the finger; the others slide (FLIP) into their new
+// places as the order changes under it, and on release it glides into its slot.
 
 private class ChartDrag(val key: String, val grabY: Float, val pointerY: Float)
 
-private class ChartsState(initial: List<String>, val edit: StatsEditController) {
+private class ChartsState(initial: List<String>, val edit: StatsEditController, val reflow: StatsReflow) {
     var order by mutableStateOf(initial)
     var editMode by mutableStateOf(false)
     var drag by mutableStateOf<ChartDrag?>(null)
@@ -59,6 +63,7 @@ private class ChartsState(initial: List<String>, val edit: StatsEditController) 
         reorder(pointerY)
     }
 
+    /** The lifted chart goes before the first chart whose centre lies below its own centre. */
     fun reorder(pointerY: Float) {
         val current = drag ?: return
         val dragged = bounds(current.key) ?: return
@@ -73,7 +78,10 @@ private class ChartsState(initial: List<String>, val edit: StatsEditController) 
         if (next != order) order = next
     }
 
+    /** endDrag: the chart glides (180 ms) from under the finger into its slot. */
     fun end() {
+        val current = drag ?: return
+        reflow.settleFromLastDrawn(current.key)
         drag = null
     }
 }
@@ -85,7 +93,9 @@ internal fun StatChartsSection(
     onEditModeChange: (Boolean) -> Unit,
     renderChart: @Composable (String) -> Unit,
 ) {
-    val state = remember { ChartsState(loadChartLayout(), edit) }
+    val scope = rememberCoroutineScope()
+    val state = remember { ChartsState(loadChartLayout(), edit, StatsReflow(scope)) }
+    val reflow = state.reflow
     var firstSave by remember { mutableStateOf(true) }
 
     LaunchedEffect(state.editMode, state.order.size) { onShowAddChange(state.editMode || state.order.isEmpty()) }
@@ -110,17 +120,30 @@ internal fun StatChartsSection(
     }
 
     val visible = state.order.filter { statChartDef(it) != null }
+    reflow.liveIds = visible.toSet()
+    // A new order starts the FLIP slides (the web's layout effect on [order, drag]).
+    SideEffect { reflow.observe(visible) }
     if (visible.isEmpty()) return
 
-    Column(Modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(16.dp)) {
+    Column(
+        Modifier.fillMaxWidth().onPlaced { reflow.container = it },
+        verticalArrangement = Arrangement.spacedBy(16.dp),
+    ) {
         visible.forEachIndexed { index, chartKey ->
             key(chartKey) {
                 val isDragged = state.drag?.key == chartKey
-                DisposableEffect(chartKey) { onDispose { edit.itemBounds.remove("chart:$chartKey") } }
+                DisposableEffect(chartKey) {
+                    onDispose {
+                        edit.itemBounds.remove("chart:$chartKey")
+                        reflow.forget(chartKey)
+                    }
+                }
                 Box(
                     Modifier
                         .fillMaxWidth()
-                        .zIndex(if (isDragged) 1f else 0f)
+                        .zIndex(if (isDragged) 3f else reflow.zIndex(chartKey))
+                        // Bounds and the press gesture use the chart's layout box,
+                        // never where it is drawn (the web measures offsetTop).
                         .onGloballyPositioned { edit.itemBounds["chart:$chartKey"] = it.boundsInRoot() }
                         .pointerInput(state, chartKey) {
                             awaitItemPress(
@@ -130,30 +153,25 @@ internal fun StatChartsSection(
                                 onDragMove = { state.move(it.y) },
                                 onDragEnd = { state.end() },
                             )
-                        },
-                ) {
-                    // The lifted chart follows the finger; the others move into place under it.
-                    Box(
-                        Modifier
-                            .fillMaxWidth()
-                            .graphicsLayer {
-                                val d = state.drag
-                                val top = state.bounds(chartKey)?.top
-                                translationY = if (d != null && d.key == chartKey && top != null) d.pointerY - d.grabY - top else 0f
-                            }
-                            .let { if (isDragged) it.shadow(12.dp, RoundedCornerShape(HcDimens.RadiusCard)) else it }
-                            .statsWobble(state.editMode && !isDragged, index),
-                    ) {
-                        Box(Modifier.fillMaxWidth().let { if (state.editMode) it.statsOutline(HcColors.Black.copy(alpha = 0.4f)) else it }) {
-                            renderChart(chartKey)
                         }
-                        if (state.editMode) {
-                            Box(Modifier.matchParentSize(), contentAlignment = Alignment.TopEnd) {
-                                StatsRemoveCircle(
-                                    { state.order = state.order.filter { it != chartKey } },
-                                    Modifier.offset(11.dp, (-11).dp),
-                                )
-                            }
+                        // The lifted chart follows the finger; the others slide into place.
+                        .statsReflow(
+                            reflow,
+                            chartKey,
+                            followRootY = { state.drag?.takeIf { it.key == chartKey }?.let { it.pointerY - it.grabY } },
+                        )
+                        .let { if (isDragged) it.shadow(12.dp, RoundedCornerShape(HcDimens.RadiusCard)) else it }
+                        .statsWobble(state.editMode && !isDragged, index),
+                ) {
+                    Box(Modifier.fillMaxWidth().let { if (state.editMode) it.statsOutline(HcColors.Black.copy(alpha = 0.4f)) else it }) {
+                        renderChart(chartKey)
+                    }
+                    if (state.editMode) {
+                        Box(Modifier.matchParentSize(), contentAlignment = Alignment.TopEnd) {
+                            StatsRemoveCircle(
+                                { state.order = state.order.filter { it != chartKey } },
+                                Modifier.offset(11.dp, (-11).dp),
+                            )
                         }
                     }
                 }

@@ -10,7 +10,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -42,22 +44,34 @@ fun SettingsIntegrationsTermsSheet(
 
     SettingsIntegrationsTermsBar(open = false, title = title) { open = true }
     if (open) {
-        HcBottomSheet(onDismiss = { open = false }) {
-            SettingsIntegrationsTermsBar(open = true, title = title) { open = false }
-            Column(Modifier.fillMaxWidth().padding(horizontal = 8.dp).padding(bottom = 8.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+        // size="half": the bar stays on top, the terms text scrolls, the link sits in the footer.
+        HcBottomSheet(
+            onDismiss = { open = false },
+            title = title,
+            size = HcSheetSize.Half,
+            footer = {
+                HcText(
+                    goTo,
+                    HcTypeRoles.Body,
+                    Modifier.fillMaxWidth().clickable {
+                        open = false
+                        nav.push(href)
+                    },
+                    color = HcColors.Black,
+                    bold = true,
+                    align = TextAlign.End,
+                )
+            },
+        ) {
+            // The bar at the top closes the sheet with its slide-out animation.
+            val closeSheet = LocalHcSheetClose.current
+            SettingsIntegrationsTermsBar(open = true, title = title) { closeSheet() }
+            Column(
+                Modifier.weight(1f).fillMaxWidth().verticalScroll(rememberScrollState()).padding(horizontal = 8.dp).padding(bottom = 8.dp),
+                verticalArrangement = Arrangement.spacedBy(12.dp),
+            ) {
                 paragraphs.forEach { paragraph -> HcText(paragraph, HcTypeRoles.Body) }
             }
-            HcText(
-                goTo,
-                HcTypeRoles.Body,
-                Modifier.fillMaxWidth().padding(top = 8.dp).clickable {
-                    open = false
-                    nav.push(href)
-                },
-                color = HcColors.Black,
-                bold = true,
-                align = TextAlign.End,
-            )
         }
     }
 }

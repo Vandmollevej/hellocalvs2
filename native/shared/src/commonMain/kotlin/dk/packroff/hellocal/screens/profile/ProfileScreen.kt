@@ -74,11 +74,8 @@ fun ProfileScreen(args: RouteArgs) {
     HcScreen(
         title = t.t("profile.title"),
         contentPadding = ProfilePagePadding,
-        trailing = {
-            Box(Modifier.size(44.dp).clickable { nav.push("/settings") }, contentAlignment = Alignment.Center) {
-                HcIcon("Settings", size = 39.dp, stroke = 1.54f, color = HcColors.White, contentDescription = t.t("settings.openAppSettings"))
-            }
-        },
+        // web: HfScreen showAppSettingsButton — the gear to /settings instead of the profile circle.
+        settingsButton = true,
     ) {
         val current = user
         when {

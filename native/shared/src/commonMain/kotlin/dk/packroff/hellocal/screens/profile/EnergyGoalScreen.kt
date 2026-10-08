@@ -1,5 +1,7 @@
 package dk.packroff.hellocal.screens.profile
 
+import dk.packroff.hellocal.ui.Units
+import dk.packroff.hellocal.ui.WeightUnit
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -66,15 +68,15 @@ private fun maxLossPace(weightKg: Double?, heightCm: Double?): Double {
 
 /** The weekly pace in kg or pounds (stones are too coarse for a pace). */
 private fun formatPace(kg: Double, unit: WeightUnit): String =
-    if (unit == WeightUnit.Kg) "${formatNumber(kg, 2, minDecimals = 0)} kg" else "${formatNumber(ProfileUnits.kgToLb(kg), 1, minDecimals = 0)} lb"
+    if (unit == WeightUnit.Kg) "${formatNumber(kg, 2, minDecimals = 0)} kg" else "${formatNumber(Units.kgToLb(kg), 1, minDecimals = 0)} lb"
 
 /** src/components/EnergyGoalEditor.tsx */
 @Composable
 fun ProfileEnergyGoalEditor(user: EnergyGoalUser, summary: EnergySummary?, onChange: (EnergyGoalUser, EnergySummary?) -> Unit) {
     val t = LocalTranslator.current
     val scope = rememberCoroutineScope()
-    val units = remember { ProfileUnits.current() }
-    var targetInput by remember { mutableStateOf(user.targetWeightKg?.let { ProfileUnits.weightToInputValue(it, units.weight) } ?: "") }
+    val units = remember { Units.current() }
+    var targetInput by remember { mutableStateOf(user.targetWeightKg?.let { Units.weightToInputValue(it, units.weight) } ?: "") }
     val mode = user.goalMode ?: "MAINTAIN"
     val paceCap = maxLossPace(user.weightKg, user.heightCm)
 
@@ -132,16 +134,16 @@ fun ProfileEnergyGoalEditor(user: EnergyGoalUser, summary: EnergySummary?, onCha
                     targetInput,
                     { targetInput = it },
                     Modifier.fillMaxWidth(),
-                    placeholder = ProfileUnits.weightUnitLabel(units.weight),
+                    placeholder = Units.weightUnitLabel(units.weight),
                     keyboardType = if (units.weight == WeightUnit.St) KeyboardType.Text else KeyboardType.Decimal,
                     onCommit = {
-                        val kg = ProfileUnits.parseWeightInput(targetInput, units.weight)?.let { round1(it) }
+                        val kg = Units.parseWeightInput(targetInput, units.weight)?.let { round1(it) }
                         save(mapOf("targetWeightKg" to kg), user.copy(targetWeightKg = kg))
                     },
                 )
                 val raised = summary?.budget?.targetWeightKg
                 if (raised != null && user.targetWeightKg != null && raised != user.targetWeightKg) {
-                    HcText(t.t("energyGoal.targetRaised", "value" to ProfileUnits.formatWeight(raised, units.weight)), HcTypeRoles.Small, color = HcColors.Warning)
+                    HcText(t.t("energyGoal.targetRaised", "value" to Units.formatWeight(raised, units.weight)), HcTypeRoles.Small, color = HcColors.Warning)
                 }
             }
 

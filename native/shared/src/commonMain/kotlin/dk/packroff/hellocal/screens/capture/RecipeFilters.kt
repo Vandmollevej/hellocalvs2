@@ -31,7 +31,7 @@ import dk.packroff.hellocal.theme.HcColors
 import dk.packroff.hellocal.theme.HcDimens
 import dk.packroff.hellocal.theme.HcTypeRoles
 import dk.packroff.hellocal.ui.CaptureFilledField
-import dk.packroff.hellocal.ui.CaptureLine
+import dk.packroff.hellocal.ui.HcLine
 import dk.packroff.hellocal.ui.CaptureSlider
 import dk.packroff.hellocal.ui.ChevronDirection
 import dk.packroff.hellocal.ui.HcButton
@@ -239,7 +239,7 @@ private fun FilterRow(label: String, checked: Boolean, onChange: (Boolean) -> Un
             HcText(label, HcTypeRoles.Body, Modifier.weight(1f), color = HcColors.Black)
             HcToggle(checked = checked, onChange = onChange)
         }
-        if (divider) CaptureLine()
+        if (divider) HcLine()
     }
 }
 

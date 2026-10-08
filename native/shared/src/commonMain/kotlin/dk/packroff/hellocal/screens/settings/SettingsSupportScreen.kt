@@ -286,7 +286,6 @@ fun SettingsSupportScreen(args: RouteArgs) {
                     enabled = !saving && !loading,
                 )
                 // The help chat is only opened from here (docs/DECISIONS.md 2026-10-03).
-                // TODO(parity): hidden until the native help chat exists (SettingsSupportHooks.openHelpChat).
                 SettingsSupportHooks.openHelpChat?.let { openChat ->
                     HcButton(
                         t.t("settings.support.chat"),
@@ -312,6 +311,10 @@ fun SettingsSupportScreen(args: RouteArgs) {
                 }
             }
         }
+    }
+
+    if (SettingsSupportHooks.helpChatOpen) {
+        SettingsHelpChatSheet(onClose = { SettingsSupportHooks.helpChatOpen = false })
     }
 
     when (pickingDate) {

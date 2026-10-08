@@ -1,5 +1,6 @@
 package dk.packroff.hellocal.screens.capture
 
+import dk.packroff.hellocal.ui.Units
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -37,13 +38,15 @@ import dk.packroff.hellocal.theme.HcDimens
 import dk.packroff.hellocal.theme.HcTypeRoles
 import dk.packroff.hellocal.ui.CaptureDates
 import dk.packroff.hellocal.ui.CaptureIntegrationIcon
-import dk.packroff.hellocal.ui.CaptureLine
+import dk.packroff.hellocal.ui.HcLine
 import dk.packroff.hellocal.ui.CapturePillButton
 import dk.packroff.hellocal.ui.HcBottomSheet
 import dk.packroff.hellocal.ui.HcButton
 import dk.packroff.hellocal.ui.HcButtonKind
 import dk.packroff.hellocal.ui.HcCard
+import dk.packroff.hellocal.ui.HcSheetSkipButton
 import dk.packroff.hellocal.ui.HcText
+import dk.packroff.hellocal.ui.LocalHcSheetClose
 import dk.packroff.hellocal.ui.VSpace
 import dk.packroff.hellocal.ui.formatNumber
 import kotlinx.coroutines.launch
@@ -217,9 +220,9 @@ private val BODY_METRIC_DISPLAY = listOf(
 
 /** src/components/weight/WeightEntryDetailsSheet.tsx — source, attire (editable) and smart-scale metrics. */
 @Composable
-internal fun WeightEntryDetailsSheet(id: String, onClose: () -> Unit, onChanged: () -> Unit) {
+internal fun WeightEntryDetailsSheet(id: String, onClose: () -> Unit, onChanged: () -> Unit = {}) {
     val t = LocalTranslator.current
-    val unit = remember { WeightUnits.current() }
+    val unit = remember { Units.current().weight }
     val scope = rememberCoroutineScope()
     var detail by remember { mutableStateOf<WeightDetail?>(null) }
     var failed by remember { mutableStateOf(false) }
@@ -240,7 +243,34 @@ internal fun WeightEntryDetailsSheet(id: String, onClose: () -> Unit, onChanged:
     val changed = d != null && attire != d.entry.attire && attire != null
     val metrics = if (d == null) emptyList() else BODY_METRIC_DISPLAY.mapNotNull { display -> d.metrics.firstOrNull { it.type == display.first }?.let { it to display } }
 
-    HcBottomSheet(onDismiss = onClose, title = if (d != null) WeightUnits.format(d.entry.weightKg, unit, t.locale) else t.t("weighIn.details.title")) {
+    HcBottomSheet(
+        onDismiss = onClose,
+        title = if (d != null) Units.formatWeight(d.entry.weightKg, unit, t.locale) else t.t("weighIn.details.title"),
+        scrollable = true,
+        footer = {
+            val close = LocalHcSheetClose.current
+            if (changed) {
+                HcButton(if (saving) t.t("weighIn.saving") else t.t("weighIn.save"), onClick = {
+                    val chosen = attire ?: return@HcButton
+                    saving = true
+                    scope.launch {
+                        try {
+                            Api.patch("/api/weight-entries/$id", mapOf("attire" to chosen))
+                            NativeHooks.onRegistrationChanged()
+                            onChanged()
+                        } catch (e: Exception) {
+                        } finally {
+                            saving = false
+                        }
+                    }
+                    close()
+                })
+                HcSheetSkipButton(t.t("common.close"))
+            } else {
+                HcButton(t.t("common.close"), onClick = close)
+            }
+        },
+    ) {
         Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
             CaptureDates.local(d?.entry?.weighedAt)?.let {
                 HcText(CaptureDates.dayMonthLongTime(it, t.locale), HcTypeRoles.Body, Modifier.fillMaxWidth(), color = HcColors.TextSecondary, align = TextAlign.Center)
@@ -279,30 +309,9 @@ internal fun WeightEntryDetailsSheet(id: String, onClose: () -> Unit, onChanged:
                             val number = formatNumber(metric.value, display.third, t.locale)
                             HcText(if (unitLabel.isNotEmpty()) "$number $unitLabel" else number, HcTypeRoles.Body, bold = true, color = HcColors.Black, align = TextAlign.End)
                         }
-                        if (index < metrics.lastIndex) CaptureLine()
+                        if (index < metrics.lastIndex) HcLine()
                     }
                 }
-            }
-            VSpace(4.dp)
-            if (changed) {
-                HcButton(if (saving) t.t("weighIn.saving") else t.t("weighIn.save"), onClick = {
-                    val chosen = attire ?: return@HcButton
-                    saving = true
-                    scope.launch {
-                        try {
-                            Api.patch("/api/weight-entries/$id", mapOf("attire" to chosen))
-                            NativeHooks.onRegistrationChanged()
-                            onChanged()
-                        } catch (e: Exception) {
-                        } finally {
-                            saving = false
-                            onClose()
-                        }
-                    }
-                })
-                HcButton(t.t("common.close"), onClick = onClose, kind = HcButtonKind.Text)
-            } else {
-                HcButton(t.t("common.close"), onClick = onClose)
             }
         }
     }

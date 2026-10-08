@@ -321,8 +321,26 @@ private fun CheckoutSheet(plan: String, name: String, onClose: () -> Unit) {
         }
     }
 
-    HcBottomSheet(onDismiss = onClose, title = name) {
-        Column(Modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(16.dp)) {
+    HcBottomSheet(
+        onDismiss = onClose,
+        title = name,
+        footer = {
+            Column(Modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                HcToggle(ack, { ack = it }, label = t.t("subscription.seriousPlan.withdrawalConsent"))
+                PaymentMethodBadges("DK")
+                HcButton("Fortsæt til betaling — ${kr(prices.getValue(months))}", onClick = ::pay, enabled = ack && !busy)
+                error?.let { HcText(it, HcTypeRoles.Caption, Modifier.fillMaxWidth(), color = HcColors.RedDark, align = TextAlign.Center) }
+                HcText(
+                    "Har du ikke en konto, opretter du den først — derefter kommer du direkte til betalingen.",
+                    HcTypeRoles.Caption,
+                    Modifier.fillMaxWidth(),
+                    color = HcColors.TextSecondary,
+                    align = TextAlign.Center,
+                )
+            }
+        },
+    ) {
+        Column(Modifier.fillMaxWidth().padding(bottom = 8.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
             Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 SUBSCRIPTION_PERIODS.forEach { period ->
                     val total = prices.getValue(period)
@@ -343,17 +361,6 @@ private fun CheckoutSheet(plan: String, name: String, onClose: () -> Unit) {
                 "Du betaler ${kr(prices.getValue(months))} for ${PERIOD_LABEL.getValue(months)}. Abonnementet fornyes automatisk og kan opsiges når som helst inden næste periode.",
                 HcTypeRoles.Body,
                 Modifier.fillMaxWidth().clip(shape).background(HcColors.Tan, shape).padding(16.dp),
-            )
-            HcToggle(ack, { ack = it }, label = t.t("subscription.seriousPlan.withdrawalConsent"))
-            PaymentMethodBadges("DK")
-            HcButton("Fortsæt til betaling — ${kr(prices.getValue(months))}", onClick = ::pay, enabled = ack && !busy)
-            error?.let { HcText(it, HcTypeRoles.Caption, Modifier.fillMaxWidth(), color = HcColors.RedDark, align = TextAlign.Center) }
-            HcText(
-                "Har du ikke en konto, opretter du den først — derefter kommer du direkte til betalingen.",
-                HcTypeRoles.Caption,
-                Modifier.fillMaxWidth(),
-                color = HcColors.TextSecondary,
-                align = TextAlign.Center,
             )
         }
     }

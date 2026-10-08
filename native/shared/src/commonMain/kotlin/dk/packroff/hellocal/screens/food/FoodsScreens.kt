@@ -161,7 +161,7 @@ fun FoodsScreen(args: RouteArgs) {
         scope.launch { runCatching { Api.post("/api/products/search-event", mapOf("productId" to productId, "localHour" to hour)) } }
     }
 
-    HcScreen(t.t("foods.title"), contentPadding = LIST_PAGE_PADDING) {
+    HcScreen(t.t("foods.title"), icon = { HcIcon("Apple", size = 20.dp, stroke = 2f, color = HcColors.White) }, contentPadding = LIST_PAGE_PADDING) {
         Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
             FoodSearchField(query, { query = it }, t.t("foods.searchPlaceholder"))
             if (!isSearching && ready && favorites.isNotEmpty()) {
@@ -287,7 +287,7 @@ fun DrinksScreen(args: RouteArgs) {
     val suffix = listOfNotNull(args.opt("date")?.let { "date=${encodeUri(it)}" }, args.opt("time")?.let { "time=${encodeUri(it)}" })
         .joinToString("&").let { if (it.isEmpty()) "" else "?$it" }
 
-    HcScreen(t.t("drinks.title"), contentPadding = LIST_PAGE_PADDING) {
+    HcScreen(t.t("drinks.title"), icon = { HcIcon("GlassCocktail", size = 20.dp, stroke = 2f, color = HcColors.White) }, contentPadding = LIST_PAGE_PADDING) {
         Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
             if (loading) FoodSkeletonCards(4, 96.dp, 16.dp)
             if (!loading && drinks.isEmpty()) HcText(t.t("drinks.noDrinksYet"), HcTypeRoles.Small, Modifier.fillMaxWidth(), color = HcColors.TextSecondary, align = TextAlign.Center)
@@ -355,7 +355,7 @@ fun DrinkDetailScreen(args: RouteArgs) {
         }
     }
 
-    HcScreen(drink?.name ?: t.t("drinks.title"), contentPadding = LIST_PAGE_PADDING) {
+    HcScreen(drink?.name ?: t.t("drinks.title"), icon = { HcIcon("GlassCocktail", size = 20.dp, stroke = 2f, color = HcColors.White) }, contentPadding = LIST_PAGE_PADDING) {
         Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
             if (loading) Box(Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) { FoodSkeleton(Modifier.size(180.dp), CircleShape) }
             if (!loading && drink == null) HcText(t.t("drinks.notFound"), HcTypeRoles.Small, Modifier.fillMaxWidth(), color = HcColors.TextSecondary, align = TextAlign.Center)
@@ -436,7 +436,7 @@ fun IngredientsScreen(args: RouteArgs) {
         }
     }
 
-    HcScreen(t.t("privateIngredients.listTitle"), contentPadding = LIST_PAGE_PADDING) {
+    HcScreen(t.t("privateIngredients.listTitle"), icon = { HcIcon("Carrot", size = 20.dp, stroke = 2f, color = HcColors.White) }, contentPadding = LIST_PAGE_PADDING) {
         Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
             val list = ingredients
             if (list != null && list.isEmpty()) HcText(t.t("privateIngredients.empty"), HcTypeRoles.Body, Modifier.fillMaxWidth(), color = HcColors.TextSecondary, align = TextAlign.Center)
@@ -552,7 +552,7 @@ fun IngredientNewScreen(args: RouteArgs) {
         }
     }
 
-    HcScreen(t.t("privateIngredients.title"), contentPadding = LIST_PAGE_PADDING) {
+    HcScreen(t.t("privateIngredients.title"), icon = { HcIcon("Carrot", size = 20.dp, stroke = 2f, color = HcColors.White) }, contentPadding = LIST_PAGE_PADDING) {
         Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
             HcText(t.t("privateIngredients.intro"), HcTypeRoles.Body, color = HcColors.Black)
             HcTextField(

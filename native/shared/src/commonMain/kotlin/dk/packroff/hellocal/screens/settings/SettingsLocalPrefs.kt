@@ -11,7 +11,6 @@ import kotlinx.serialization.json.contentOrNull
 /**
  * Per-device preferences that the web keeps in localStorage (same keys), kept
  * in NativeHooks.secureStorage here (PORTING.md rule 7):
- * - src/lib/units.ts             hellocal.units, hellocal.units.region
  * - src/lib/calendar-view-pref.ts hellocal.kalender.defaultView
  * - src/lib/frontpage-layout.ts  hellocal.frontpage.fabSide
  * - src/lib/add-actions.ts       hellocal.frontpage.wheelActions
@@ -32,47 +31,7 @@ object SettingsLocalPrefs {
         versionState.intValue++
     }
 
-    // ---- Units (src/lib/units.ts) ----
-
-    val WEIGHT_UNITS = listOf("kg", "lb", "st")
-    val HEIGHT_UNITS = listOf("cm", "in")
-    private const val UNITS_KEY = "hellocal.units"
-    private const val UNITS_REGION_KEY = "hellocal.units.region"
-
-    /** USA/Canada/Liberia/Myanmar: lb + in. UK/Ireland: st + in. Everywhere else metric. */
-    fun defaultUnitsForRegion(region: String?): Pair<String, String> = when (region?.uppercase()) {
-        "US", "CA", "LR", "MM" -> "lb" to "in"
-        "GB", "IE" -> "st" to "in"
-        else -> "kg" to "cm"
-    }
-
-    private fun storedUnits(): JsonObject? = read(UNITS_KEY)?.let { runCatching { ApiJson.parseToJsonElement(it) as? JsonObject }.getOrNull() }
-
-    /** Active (weight, height) units: explicit choice, else the country default. */
-    fun units(): Pair<String, String> {
-        val stored = storedUnits()
-        val auto = defaultUnitsForRegion(read(UNITS_REGION_KEY))
-        val weight = (stored?.get("weight") as? JsonPrimitive)?.contentOrNull?.takeIf { it in WEIGHT_UNITS } ?: auto.first
-        val height = (stored?.get("height") as? JsonPrimitive)?.contentOrNull?.takeIf { it in HEIGHT_UNITS } ?: auto.second
-        return weight to height
-    }
-
-    fun saveUnits(weight: String? = null, height: String? = null) {
-        val stored = storedUnits()
-        val w = weight ?: (stored?.get("weight") as? JsonPrimitive)?.contentOrNull?.takeIf { it in WEIGHT_UNITS }
-        val h = height ?: (stored?.get("height") as? JsonPrimitive)?.contentOrNull?.takeIf { it in HEIGHT_UNITS }
-        val map = buildMap<String, JsonPrimitive> {
-            if (w != null) put("weight", JsonPrimitive(w))
-            if (h != null) put("height", JsonPrimitive(h))
-        }
-        write(UNITS_KEY, JsonObject(map).toString())
-    }
-
-    /** Remembers the profile region so the automatic default follows the user's country. */
-    fun setUnitsRegion(region: String?) {
-        if (region.isNullOrEmpty() || read(UNITS_REGION_KEY) == region) return
-        write(UNITS_REGION_KEY, region)
-    }
+    // Units (src/lib/units.ts) live in the shared module ui/Units.kt.
 
     // ---- Calendar default view (src/lib/calendar-view-pref.ts) ----
 

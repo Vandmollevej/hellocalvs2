@@ -55,8 +55,10 @@ import dk.packroff.hellocal.api.Api
 import dk.packroff.hellocal.i18n.LocalTranslator
 import dk.packroff.hellocal.nav.LocalNavigator
 import dk.packroff.hellocal.platform.NativeHooks
+import dk.packroff.hellocal.screens.food.AddMenuSheet
 import dk.packroff.hellocal.theme.HcColors
 import dk.packroff.hellocal.theme.HcTypeRoles
+import dk.packroff.hellocal.ui.HcAppBar
 import dk.packroff.hellocal.ui.CalendarBathScaleIcon
 import dk.packroff.hellocal.ui.CalendarPartyPopperIcon
 import dk.packroff.hellocal.ui.CalendarPartyPopperImage
@@ -132,6 +134,7 @@ internal fun DayDetails(
     val nav = LocalNavigator.current
     val density = LocalDensity.current
     var addBarHour by remember { mutableStateOf<Int?>(null) }
+    var addTarget by remember { mutableStateOf<String?>(null) }
     var openHour by remember { mutableStateOf<Int?>(null) }
     // The target circle shows every time a day with a målsætning is opened (keyed by date).
     var goalPopupDismissed by remember { mutableStateOf(false) }
@@ -215,14 +218,18 @@ internal fun DayDetails(
     }
 
     fun goToAddFlow(hour: Double) {
-        // The "everything you can add" menu at the tapped hour (AddMenuSheet on the web).
-        val time = "${pad2(floorInt(hour))}:${if (hour % 1 != 0.0) "30" else "00"}"
-        nav.push("/add/menu?date=$date&time=$time")
+        // The "everything you can add" menu at the tapped hour — opened in the
+        // bottom sheet (AddMenuSheet) like the web, not the /add/menu page.
+        addTarget = "${pad2(floorInt(hour))}:${if (hour % 1 != 0.0) "30" else "00"}"
+    }
+
+    addTarget?.let { time ->
+        AddMenuSheet(onClose = { addTarget = null }, date = date.toString(), time = time)
     }
 
     Box(Modifier.fillMaxSize().blockTouchesBelow().background(HcColors.Cream)) {
         Column(Modifier.fillMaxSize()) {
-            CalendarAppBar(
+            HcAppBar(
                 title = capitalizeFirst(t.t("nav.calendar")),
                 onBack = onClose,
                 icon = { CalendarViewMenuButton(activeView, viewMenuOpen, onToggleViewMenu, onSelectView, onCloseViewMenu) },

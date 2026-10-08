@@ -158,100 +158,8 @@ fun CaptureTanRow(modifier: Modifier = Modifier, onClick: (() -> Unit)? = null, 
     )
 }
 
-/** .hf-choice — 40 px choice chip; selected = lime with a 2 px dark ring (.hf-selected). */
-@Composable
-fun CaptureChoice(
-    label: String,
-    selected: Boolean,
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier,
-    enabled: Boolean = true,
-    fill: Boolean = false,
-    align: TextAlign = TextAlign.Center,
-    height: Dp = 40.dp,
-) {
-    val shape = RoundedCornerShape(HcDimens.RadiusCard)
-    Box(
-        modifier.let { if (fill) it.fillMaxWidth() else it }.heightIn(min = height).clip(shape)
-            .background(if (selected) HcColors.SelectedBg else HcColors.Card, shape)
-            .let { if (selected) it.border(2.dp, HcColors.SelectedBorder, shape) else it }
-            .alpha(if (enabled) 1f else 0.4f)
-            .clickable(enabled = enabled, onClick = onClick)
-            .padding(horizontal = 12.dp),
-        contentAlignment = if (align == TextAlign.Start) Alignment.CenterStart else Alignment.Center,
-    ) {
-        HcText(label, HcTypeRoles.Small, color = if (selected) HcColors.SelectedText else HcColors.Text, bold = true, align = align)
-    }
-}
-
-/** .hf-search — 48 px white search field with a magnifier. */
-@Composable
-fun CaptureSearchField(value: String, onValueChange: (String) -> Unit, placeholder: String, modifier: Modifier = Modifier) {
-    val shape = RoundedCornerShape(HcDimens.RadiusCard)
-    Row(
-        modifier.fillMaxWidth().height(HcDimens.ControlHeight).clip(shape).background(HcColors.Surface, shape)
-            .border(1.dp, HcColors.Line, shape).padding(horizontal = HcDimens.SpaceBlock),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(12.dp),
-    ) {
-        HcIcon("Search", size = 16.dp, color = HcColors.Black)
-        BasicTextField(
-            value = value,
-            onValueChange = onValueChange,
-            singleLine = true,
-            textStyle = HcTypeRoles.Input.style(),
-            cursorBrush = SolidColor(HcColors.Action),
-            modifier = Modifier.weight(1f),
-            decorationBox = { inner ->
-                Box(contentAlignment = Alignment.CenterStart) {
-                    if (value.isEmpty()) HcText(placeholder, HcTypeRoles.Input, color = HcColors.Black.copy(alpha = 0.5f))
-                    inner()
-                }
-            },
-        )
-    }
-}
-
-/** src/components/hf/AccordionCard.tsx — tan card holding ChevronRows. */
-@Composable
-fun CaptureAccordionCard(modifier: Modifier = Modifier, content: @Composable ColumnScope.() -> Unit) {
-    val shape = RoundedCornerShape(HcDimens.RadiusCard)
-    Column(modifier.fillMaxWidth().clip(shape).background(HcColors.Tan, shape), content = content)
-}
-
-/** ChevronRow from AccordionCard.tsx — 48 px: icon, label, chevron; optional divider. */
-@Composable
-fun CaptureChevronRow(label: String, onClick: (() -> Unit)?, icon: String? = null, divider: Boolean = true, iconContent: (@Composable () -> Unit)? = null) {
-    Column(Modifier.fillMaxWidth()) {
-        Row(
-            Modifier.fillMaxWidth().height(48.dp).let { if (onClick != null) it.clickable(onClick = onClick) else it }.padding(horizontal = 16.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(16.dp),
-        ) {
-            Box(Modifier.size(20.dp), contentAlignment = Alignment.Center) {
-                if (iconContent != null) iconContent() else if (icon != null) HcIcon(icon, size = 20.dp, color = HcColors.Black)
-            }
-            HcText(label, HcTypeRoles.Body, Modifier.weight(1f), maxLines = 1)
-            HcChevron(color = HcColors.Black)
-        }
-        if (divider) Box(Modifier.fillMaxWidth().height(1.dp).background(HcColors.TanDark))
-    }
-}
-
-/**
- * Icons the web draws from a PNG with a CSS mask (src/components/icons/WaterGlass.tsx,
- * BathroomScale.tsx …): the same PNG tinted in [color].
- */
-@Composable
-fun CaptureMaskIcon(src: String, size: Dp = 24.dp, color: Color = HcColors.Black, modifier: Modifier = Modifier) {
-    AsyncImage(
-        model = Api.absoluteUrl(src),
-        contentDescription = null,
-        modifier = modifier.size(size),
-        contentScale = ContentScale.Fit,
-        colorFilter = ColorFilter.tint(color),
-    )
-}
+// Choice chips, search field, accordion card, chevron rows and mask icons are the shared
+// HcChoiceChip, HcSearchField, HcAccordionCard, HcChevronRow and HcMaskIcon (ui/HcShared.kt).
 
 /** Field like the web's FIELD class: 48 px, rounded-xl, tan or white background, no border. */
 @Composable
@@ -319,10 +227,4 @@ fun CaptureIntegrationIcon(icon: String?, label: String, size: Dp = 32.dp) {
             HcText(label.take(1).uppercase(), HcTypeRoles.Body, bold = true, color = HcColors.Black)
         }
     }
-}
-
-/** A thin tan-dark line (border-b border-hf-tan-dark). */
-@Composable
-fun CaptureLine(modifier: Modifier = Modifier, color: Color = HcColors.TanDark) {
-    Box(modifier.fillMaxWidth().height(1.dp).background(color))
 }

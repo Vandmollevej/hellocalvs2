@@ -28,30 +28,8 @@ import dk.packroff.hellocal.ui.icons.HcIcon
 
 /** src/components/knowledge/SearchField.tsx — pill-shaped tan search field with a search icon. */
 @Composable
-fun OnbSearchField(value: String, onValueChange: (String) -> Unit, placeholder: String, modifier: Modifier = Modifier) {
-    Row(
-        modifier.fillMaxWidth().clip(RoundedCornerShape(50)).background(HcColors.Tan).padding(horizontal = 16.dp, vertical = 8.dp),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
-    ) {
-        HcIcon("Search", size = 18.dp, color = HcColors.TextSecondary)
-        BasicTextField(
-            value = value,
-            onValueChange = onValueChange,
-            singleLine = true,
-            textStyle = HcTypeRoles.Body.style(),
-            cursorBrush = SolidColor(HcColors.Action),
-            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
-            modifier = Modifier.weight(1f),
-            decorationBox = { inner ->
-                Box(contentAlignment = Alignment.CenterStart) {
-                    if (value.isEmpty()) HcText(placeholder, HcTypeRoles.Body, color = HcColors.Placeholder, maxLines = 1)
-                    inner()
-                }
-            },
-        )
-    }
-}
+fun OnbSearchField(value: String, onValueChange: (String) -> Unit, placeholder: String, modifier: Modifier = Modifier) =
+    HcPillSearchField(value, onValueChange, placeholder, modifier)
 
 /** One row of src/components/knowledge/KnowledgeRows.tsx. */
 data class OnbRow(val key: String, val label: String, val href: String)

@@ -1,5 +1,6 @@
 package dk.packroff.hellocal.screens.statistics
 
+import dk.packroff.hellocal.ui.Units
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -102,7 +103,7 @@ private const val HISTORY_ROWS = 10
 fun ProfileStatusScreen(args: RouteArgs) {
     val t = LocalTranslator.current
     val nav = LocalNavigator.current
-    val units = remember { currentUnits() }
+    val units = remember { Units.current() }
     var data by remember { mutableStateOf<StatusData?>(null) }
     var loading by remember { mutableStateOf(true) }
 
@@ -140,8 +141,8 @@ fun ProfileStatusScreen(args: RouteArgs) {
     val currentKg = currentWeightKg(weightHistory, current.startWeightKg)
     val target = current.targetWeightKg?.takeIf { it > 0 }
     val remaining = remainingToGoalKg(currentKg, target)
-    val showWeight: (Double) -> String = { formatWeight(it, units.weight) }
-    val showLength: (Double) -> String = { formatLength(it, units.height) }
+    val showWeight: (Double) -> String = { Units.formatWeight(it, units.weight) }
+    val showLength: (Double) -> String = { Units.formatLength(it, units.height) }
     val bodyGoals = remember(current) { latestBodyGoals(current.goals) }
     val bodyGoalFields = BODY_MEASUREMENT_FIELDS.filter { bodyGoals[it.field] != null }
     val latestDetail: (List<HistoryPoint>, (Double) -> String) -> String? = { points, format ->

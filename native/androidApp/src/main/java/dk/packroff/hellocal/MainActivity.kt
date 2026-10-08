@@ -44,6 +44,12 @@ class MainActivity : FragmentActivity() {
         routeDeepLink(intent)
     }
 
+    /** Back on screen (e.g. from Stripe's portal in the browser): pages that wait for it reload. */
+    override fun onStart() {
+        super.onStart()
+        Device.notifyAppForeground()
+    }
+
     override fun onResume() {
         super.onResume()
         AndroidDevice.onResumed()

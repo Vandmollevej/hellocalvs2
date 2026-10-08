@@ -31,12 +31,12 @@ import dk.packroff.hellocal.platform.NativeHooks
 import dk.packroff.hellocal.theme.HcColors
 import dk.packroff.hellocal.theme.HcDimens
 import dk.packroff.hellocal.theme.HcTypeRoles
-import dk.packroff.hellocal.ui.CaptureAppBar
+import dk.packroff.hellocal.ui.HcAppBar
 import dk.packroff.hellocal.ui.CaptureDates
 import dk.packroff.hellocal.ui.CaptureDetailRow
 import dk.packroff.hellocal.ui.CaptureEntryDetailsSheet
 import dk.packroff.hellocal.ui.CaptureFilledField
-import dk.packroff.hellocal.ui.CaptureLine
+import dk.packroff.hellocal.ui.HcLine
 import dk.packroff.hellocal.ui.HcButton
 import dk.packroff.hellocal.ui.HcScreen
 import dk.packroff.hellocal.ui.HcText
@@ -173,7 +173,7 @@ fun ChatScreen(@Suppress("UNUSED_PARAMETER") args: RouteArgs) {
     val saved = items.filter { it.saved }
 
     Column(Modifier.fillMaxSize()) {
-        CaptureAppBar(
+        HcAppBar(
             title = t.t("web.chatTitle"),
             back = false,
             leading = { MealLanguagePicker(lang.language, lang.region) { lang.set(it) } },
@@ -210,7 +210,7 @@ fun ChatScreen(@Suppress("UNUSED_PARAMETER") args: RouteArgs) {
                                 adding = isAdding,
                                 addLabel = t.t("web.chatAdd"),
                             )
-                            if (index < suggested.lastIndex) CaptureLine()
+                            if (index < suggested.lastIndex) HcLine()
                         }
                         if (suggested.size > 1) {
                             HcButton(
@@ -234,7 +234,7 @@ fun ChatScreen(@Suppress("UNUSED_PARAMETER") args: RouteArgs) {
                                 onDelete = { deleteItem(entry) },
                                 onOpen = { nav.push("/registration/${entry.id}") },
                             )
-                            if (index < saved.lastIndex) CaptureLine()
+                            if (index < saved.lastIndex) HcLine()
                         }
                     }
                 }

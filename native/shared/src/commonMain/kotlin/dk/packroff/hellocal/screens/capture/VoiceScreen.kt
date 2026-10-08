@@ -53,12 +53,12 @@ import dk.packroff.hellocal.platform.NativeHooks
 import dk.packroff.hellocal.theme.HcColors
 import dk.packroff.hellocal.theme.HcDimens
 import dk.packroff.hellocal.theme.HcTypeRoles
-import dk.packroff.hellocal.ui.CaptureAppBar
+import dk.packroff.hellocal.ui.HcAppBar
 import dk.packroff.hellocal.ui.CaptureDates
 import dk.packroff.hellocal.ui.CaptureDetailRow
 import dk.packroff.hellocal.ui.CaptureEntryDetailsSheet
 import dk.packroff.hellocal.ui.CaptureFilledField
-import dk.packroff.hellocal.ui.CaptureLine
+import dk.packroff.hellocal.ui.HcLine
 import dk.packroff.hellocal.ui.CaptureSwipeableRow
 import dk.packroff.hellocal.ui.HcButton
 import dk.packroff.hellocal.ui.HcButtonKind
@@ -317,7 +317,7 @@ fun VoiceScreen(@Suppress("UNUSED_PARAMETER") args: RouteArgs) {
     val saved = items.filter { it.saved }
 
     Column(Modifier.fillMaxSize()) {
-        CaptureAppBar(
+        HcAppBar(
             title = if (isListening) t.t("voice.listeningTitle") else "",
             leading = { MealLanguagePicker(lang.language, lang.region, ::changeLanguage) },
         )
@@ -402,7 +402,7 @@ fun VoiceScreen(@Suppress("UNUSED_PARAMETER") args: RouteArgs) {
                                 onAdd = { addItems(listOf(entry)) },
                                 adding = isAdding,
                             )
-                            if (index < suggested.lastIndex) CaptureLine()
+                            if (index < suggested.lastIndex) HcLine()
                         }
                         if (suggested.size > 1) {
                             HcButton(
@@ -426,7 +426,7 @@ fun VoiceScreen(@Suppress("UNUSED_PARAMETER") args: RouteArgs) {
                                 onDelete = { deleteItem(entry) },
                                 onOpen = { nav.push("/registration/${entry.id}") },
                             )
-                            if (index < saved.lastIndex) CaptureLine()
+                            if (index < saved.lastIndex) HcLine()
                         }
                     }
                 }

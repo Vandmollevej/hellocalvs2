@@ -41,6 +41,9 @@ import dk.packroff.hellocal.i18n.Translator
 import dk.packroff.hellocal.nav.LocalNavigator
 import dk.packroff.hellocal.nav.RouteArgs
 import dk.packroff.hellocal.platform.NativeHooks
+import dk.packroff.hellocal.screens.onboarding.readLoginCountry
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import dk.packroff.hellocal.theme.HcColors
 import dk.packroff.hellocal.theme.HcDimens
 import dk.packroff.hellocal.theme.HcTypeRoles
@@ -126,14 +129,17 @@ fun LoginScreen(args: RouteArgs) {
         Column(Modifier.weight(1f).verticalScroll(rememberScrollState()).padding(horizontal = 16.dp).padding(top = 16.dp)) {
             Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
                 HcText(t.t("login.chooseCountry"), HcTypeRoles.Body, Modifier.weight(1f))
+                // The country chosen on /login/country (stored on the device), Denmark by default.
+                val country = remember(nav.current) { readLoginCountry() }
                 Row(
                     Modifier.heightIn(min = 44.dp).clip(RoundedCornerShape(50)).border(1.dp, HcColors.GrayBorder, RoundedCornerShape(50))
-                        .clickable { nav.push("/login/country") }.padding(horizontal = 12.dp),
+                        .clickable { nav.push("/login/country") }.padding(horizontal = 12.dp)
+                        .semantics { contentDescription = t.t("country.countries.${country.key}") },
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
                 ) {
-                    HcRemoteImage("/flags/dk.png", Modifier.width(22.dp).height(16.dp))
-                    HcText("DK", HcTypeRoles.Body, bold = true)
+                    HcRemoteImage("/flags/${country.flag}.png", Modifier.width(22.dp).height(16.dp).clip(RoundedCornerShape(2.dp)))
+                    HcText(country.code, HcTypeRoles.Body, bold = true)
                 }
             }
 

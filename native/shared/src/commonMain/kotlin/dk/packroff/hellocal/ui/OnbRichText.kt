@@ -24,7 +24,6 @@ import androidx.compose.ui.text.withLink
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import dk.packroff.hellocal.nav.LocalNavigator
-import dk.packroff.hellocal.platform.NativeHooks
 import dk.packroff.hellocal.theme.HcColors
 import dk.packroff.hellocal.theme.HcTypeRole
 import dk.packroff.hellocal.theme.HcTypeRoles
@@ -36,6 +35,7 @@ import dk.packroff.hellocal.theme.style
  *  - `**bold**`
  *  - `[[Firmanavn]]` → the web's <Placeholder> (bold "[Firmanavn]" on warning-bg)
  *  - `{label|href}` → underlined link; "/path" opens the screen, "mailto:"/"https:" opens outside the app.
+ * Server HTML (message bodies) goes through HcHtmlText instead; both open links with hcOpenHref.
  */
 @Composable
 fun OnbRichText(
@@ -49,9 +49,7 @@ fun OnbRichText(
 ) {
     val nav = LocalNavigator.current
     val text = remember(markup, linkColor) {
-        onbRichAnnotated(markup, linkColor) { href ->
-            if (href.startsWith("/")) nav.push(href) else NativeHooks.openExternalUrl(href)
-        }
+        onbRichAnnotated(markup, linkColor) { href -> hcOpenHref(nav, href) }
     }
     var style = role.style(color)
     if (bold) style = style.copy(fontWeight = FontWeight.Bold)

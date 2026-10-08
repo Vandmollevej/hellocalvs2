@@ -1,5 +1,7 @@
 package dk.packroff.hellocal.screens.profile
 
+import dk.packroff.hellocal.ui.Units
+import dk.packroff.hellocal.ui.HeightUnit
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -96,7 +98,7 @@ fun BodyMeasurementsScreen(args: RouteArgs) {
     val t = LocalTranslator.current
     val nav = LocalNavigator.current
     val scope = rememberCoroutineScope()
-    val lengthUnit = remember { ProfileUnits.current().height }
+    val lengthUnit = remember { Units.current().height }
     var entries by remember { mutableStateOf<List<BodyMeasurementEntry>>(emptyList()) }
     var loading by remember { mutableStateOf(true) }
     var saving by remember { mutableStateOf(false) }
@@ -117,7 +119,7 @@ fun BodyMeasurementsScreen(args: RouteArgs) {
             values.clear()
             BODY_MEASUREMENT_FIELDS.forEach { field ->
                 val cm = today?.value(field.field)
-                values[field.field] = if (cm == null) "" else jsNumber(if (lengthUnit == HeightUnit.In) round1(ProfileUnits.cmToIn(cm)) else cm)
+                values[field.field] = if (cm == null) "" else jsNumber(if (lengthUnit == HeightUnit.In) round1(Units.cmToIn(cm)) else cm)
             }
         } catch (e: Exception) {
             entries = emptyList()
@@ -138,7 +140,7 @@ fun BodyMeasurementsScreen(args: RouteArgs) {
         val typed = if (raw.isBlank()) null else raw.replaceFirst(",", ".").toDoubleOrNull() ?: 0.0
         if (typed != null && typed <= 0) return
         // Typed in the chosen unit, always saved in cm.
-        val parsed = typed?.let { if (lengthUnit == HeightUnit.In) round1(ProfileUnits.inToCm(it)) else it }
+        val parsed = typed?.let { if (lengthUnit == HeightUnit.In) round1(Units.inToCm(it)) else it }
         scope.launch {
             saving = true
             try {
@@ -207,7 +209,7 @@ fun BodyMeasurementsScreen(args: RouteArgs) {
                                     textAlign = TextAlign.End,
                                     minHeight = 32.dp,
                                 )
-                                HcText(ProfileUnits.lengthUnitLabel(lengthUnit), HcTypeRoles.Body, color = HcColors.TextSecondary)
+                                HcText(Units.lengthUnitLabel(lengthUnit), HcTypeRoles.Body, color = HcColors.TextSecondary)
                             }
                         }
                     }
@@ -240,7 +242,7 @@ fun BodyMeasurementsScreen(args: RouteArgs) {
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
                         val summary = BODY_MEASUREMENT_FIELDS.mapNotNull { field ->
-                            entry.value(field.field)?.let { "${t.t(field.labelKey)}: ${ProfileUnits.formatLength(it, lengthUnit)}" }
+                            entry.value(field.field)?.let { "${t.t(field.labelKey)}: ${Units.formatLength(it, lengthUnit)}" }
                         }.joinToString(" · ")
                         Column(Modifier.weight(1f)) {
                             HcText(summary, HcTypeRoles.Small, bold = true, color = HcColors.Black)

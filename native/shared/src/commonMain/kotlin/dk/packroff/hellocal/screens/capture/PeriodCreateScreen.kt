@@ -1,5 +1,6 @@
 package dk.packroff.hellocal.screens.capture
 
+import dk.packroff.hellocal.ui.icons.HcIcon
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -89,7 +90,7 @@ fun PeriodCreateScreen(@Suppress("UNUSED_PARAMETER") args: RouteArgs) {
         }
     }
 
-    HcScreen(title = t.t("periodLog.title"), contentPadding = PaddingValues(start = HcDimens.Gutter, end = HcDimens.Gutter, top = HcDimens.SpaceBlock, bottom = HcDimens.SpaceSection)) {
+    HcScreen(title = t.t("periodLog.title"), icon = { HcIcon("CalendarHeart", size = 20.dp, stroke = 2f, color = HcColors.White) }, contentPadding = PaddingValues(start = HcDimens.Gutter, end = HcDimens.Gutter, top = HcDimens.SpaceBlock, bottom = HcDimens.SpaceSection)) {
         Column(verticalArrangement = Arrangement.spacedBy(HcDimens.SpaceBlock)) {
             CaptureBrandCard(t.t("periodLog.intro"))
 

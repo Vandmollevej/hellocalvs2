@@ -29,7 +29,7 @@ import dk.packroff.hellocal.i18n.Locale
 import dk.packroff.hellocal.platform.NativeHooks
 import dk.packroff.hellocal.theme.HcColors
 import dk.packroff.hellocal.theme.HcTypeRoles
-import dk.packroff.hellocal.ui.CaptureLine
+import dk.packroff.hellocal.ui.HcLine
 import dk.packroff.hellocal.ui.HcBottomSheet
 import dk.packroff.hellocal.ui.HcRemoteImage
 import dk.packroff.hellocal.ui.HcText
@@ -143,7 +143,7 @@ internal fun MealLanguagePicker(language: String, region: String?, onChange: (St
                         HcText(if (danish) option.nameDa else option.nameEn, HcTypeRoles.Body, Modifier.weight(1f), color = HcColors.Black)
                         if (option.code == language) HcIcon("Check", size = 20.dp, stroke = 2.5f, color = HcColors.Green)
                     }
-                    CaptureLine()
+                    HcLine()
                 }
             }
         }

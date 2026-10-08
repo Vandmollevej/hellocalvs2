@@ -38,7 +38,9 @@ import dk.packroff.hellocal.i18n.LocalTranslator
 import dk.packroff.hellocal.nav.LocalNavigator
 import dk.packroff.hellocal.nav.RouteArgs
 import dk.packroff.hellocal.platform.NativeHooks
+import dk.packroff.hellocal.screens.food.AddMenuSheet
 import dk.packroff.hellocal.theme.HcColors
+import dk.packroff.hellocal.ui.HcAppBar
 import kotlin.math.abs
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
@@ -77,6 +79,8 @@ fun CalendarScreen(args: RouteArgs) {
     var monthMenuOpen by remember { mutableStateOf(false) }
     var viewMenuOpen by remember { mutableStateOf(false) }
     var slideNext by remember { mutableStateOf(true) }
+    // "Tilføj" on an hour in the week timeline opens the add menu as a bottom sheet (AddMenuSheet).
+    var addTarget by remember { mutableStateOf<Pair<LocalDate, String>?>(null) }
 
     // Mirror the open day so it survives leaving the page (src/lib/calendar-open-day.ts).
     val hadOpenDay = remember { mutableStateOf(false) }
@@ -222,8 +226,9 @@ fun CalendarScreen(args: RouteArgs) {
             null
         }
         Column(Modifier.fillMaxSize()) {
-            CalendarAppBar(
+            HcAppBar(
                 title = if (isLandscape) capitalizeWords(label) else t.t("nav.calendar"),
+                back = goBack != null,
                 onBack = goBack,
                 icon = {
                     CalendarViewMenuButton(
@@ -311,7 +316,7 @@ fun CalendarScreen(args: RouteArgs) {
                             onMove = ::movePeriod,
                             sleepWindowFor = ::sleepWindowFor,
                             onSleepAdjust = ::requestSleepAdjust,
-                            onAddAt = { date, time -> nav.push("/add/menu?date=$date&time=$time") },
+                            onAddAt = { date, time -> addTarget = date to time },
                         )
                     }
                 }
@@ -357,6 +362,10 @@ fun CalendarScreen(args: RouteArgs) {
                 )
             }
         }
+    }
+
+    addTarget?.let { (date, time) ->
+        AddMenuSheet(onClose = { addTarget = null }, date = date.toString(), time = time)
     }
 }
 

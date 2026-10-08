@@ -162,7 +162,7 @@ fun KnowledgeScreen(@Suppress("UNUSED_PARAMETER") args: RouteArgs) {
         KNOWLEDGE_SECTIONS.map { (id, title) -> OnbRow(id, title, "/viden-om/$id") }
     }
 
-    HcScreen(title = "Viden om mad", contentPadding = KnowledgePadding) {
+    HcScreen(title = "Viden om mad", icon = { KnowledgeTitleIcon("Book") }, contentPadding = KnowledgePadding) {
         Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
             OnbSearchField(query, { query = it }, "Søg i alt: vitaminer, E-numre, forbrænding, WHO og ord")
             OnbChevronRows(rows, icon = "Book", onOpen = { nav.push(it.href) })
@@ -184,7 +184,7 @@ fun KnowledgeSectionScreen(args: RouteArgs) {
         return
     }
     val rows = searchEntries(query, category).map { OnbRow(it.slug, it.title, entryHref(it.section, it.slug)) }
-    HcScreen(title = title, contentPadding = KnowledgePadding) {
+    HcScreen(title = title, icon = { KnowledgeTitleIcon("Book") }, contentPadding = KnowledgePadding) {
         Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
             OnbSearchField(query, { query = it }, "Søg i ${title.lowercase()}")
             OnbChevronRows(rows, icon = "Book", onOpen = { nav.push(it.href) })
@@ -206,7 +206,7 @@ fun KnowledgeEntryScreen(args: RouteArgs) {
             NotFoundScreen()
             return
         }
-        HcScreen(title = term.term, contentPadding = KnowledgePadding) {
+        HcScreen(title = term.term, icon = { KnowledgeTitleIcon("Book") }, contentPadding = KnowledgePadding) {
             Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
                 KnowledgeSection("På dansk") { HcText(term.danish, HcTypeRoles.Body, bold = true, color = HcColors.Black) }
                 KnowledgeSection("Forklaring") { HcText(term.explanation, HcTypeRoles.Body, color = HcColors.Black) }
@@ -221,7 +221,7 @@ fun KnowledgeEntryScreen(args: RouteArgs) {
         NotFoundScreen()
         return
     }
-    HcScreen(title = article.title, contentPadding = KnowledgePadding) {
+    HcScreen(title = article.title, icon = { KnowledgeTitleIcon("Book") }, contentPadding = KnowledgePadding) {
         Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
             KnowledgeSection("Kort fortalt") { HcText(article.summary, HcTypeRoles.Body, bold = true, color = HcColors.Black) }
             KnowledgeSection("Forklaring") {
@@ -231,6 +231,12 @@ fun KnowledgeEntryScreen(args: RouteArgs) {
             KnowledgeSources(listOf(article.source) + article.moreSources)
         }
     }
+}
+
+/** HfScreen icon={<IconBook size={20} stroke={2} />}: white title icon left of the title. */
+@Composable
+private fun KnowledgeTitleIcon(name: String) {
+    HcIcon(name, size = 20.dp, stroke = 2f, color = HcColors.White)
 }
 
 /** Section card: small uppercase grey title, body below (hf-card). */
@@ -276,7 +282,7 @@ fun KnowledgeENumbersScreen(@Suppress("UNUSED_PARAMETER") args: RouteArgs) {
     var additives by remember { mutableStateOf<List<AdditiveInfo>?>(null) }
     LaunchedEffect(Unit) { additives = runCatching { Additives.list() }.getOrDefault(emptyList()) }
 
-    HcScreen(title = "E-numre", contentPadding = KnowledgePadding) {
+    HcScreen(title = "E-numre", icon = { KnowledgeTitleIcon("Flask") }, contentPadding = KnowledgePadding) {
         Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
             OnbSearchField(query, { query = it }, "Søg på E-nummer eller navn")
             val list = additives

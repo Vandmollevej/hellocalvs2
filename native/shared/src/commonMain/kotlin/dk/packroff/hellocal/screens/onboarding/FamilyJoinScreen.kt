@@ -19,9 +19,9 @@ import dk.packroff.hellocal.nav.Location
 import dk.packroff.hellocal.nav.RouteArgs
 import dk.packroff.hellocal.theme.HcColors
 import dk.packroff.hellocal.theme.HcTypeRoles
-import dk.packroff.hellocal.ui.HcBottomSheet
 import dk.packroff.hellocal.ui.HcButton
 import dk.packroff.hellocal.ui.HcButtonKind
+import dk.packroff.hellocal.ui.HcConfirmSheet
 import dk.packroff.hellocal.ui.HcScreen
 import dk.packroff.hellocal.ui.HcText
 import kotlinx.coroutines.CancellationException
@@ -158,13 +158,6 @@ fun FamilyJoinScreen(args: RouteArgs) {
 
     // src/lib/use-confirm-sheet.tsx: confirmation as a bottom sheet, "Fortsæt" runs the action.
     if (confirming) {
-        HcBottomSheet(onDismiss = { confirming = false }) {
-            HcText(t.t("family.join.confirm"), HcTypeRoles.Body)
-            dk.packroff.hellocal.ui.VSpace(12.dp)
-            HcButton(t.t("common.continue"), onClick = {
-                confirming = false
-                doJoin()
-            })
-        }
+        HcConfirmSheet(t.t("family.join.confirm"), onDismiss = { confirming = false }, onConfirm = { doJoin() })
     }
 }

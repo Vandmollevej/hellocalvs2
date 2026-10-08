@@ -12,8 +12,8 @@ import dk.packroff.hellocal.ui.OnbLegalSummary
 
 /** Native port of src/app/privatlivspolitik/page.tsx (DECISIONS 2026-09-25). Same Danish text as the web. */
 @Composable
-fun PrivacyScreen(@Suppress("UNUSED_PARAMETER") args: RouteArgs) {
-    LegalPage("Privatlivspolitik") {
+fun PrivacyScreen(args: RouteArgs) {
+    LegalPage("Privatlivspolitik", fragment = args.fragment) {
         HcText("Senest opdateret: 2026-09-27", HcTypeRoles.Caption, color = HcColors.TextSecondary)
 
         OnbLegalSummary(
@@ -119,7 +119,7 @@ fun PrivacyScreen(@Suppress("UNUSED_PARAMETER") args: RouteArgs) {
             )
         }
 
-        OnbLegalSection("8. Datasporing, cookies og statistik") {
+        OnbLegalSection("8. Datasporing, cookies og statistik", id = "datasporing") {
             LegalP(
                 "Hello Cal bruger kun cookies og lokal lagring, der er nødvendige for, at Tjenesten virker: at holde dig logget ind, " +
                     "genkende din enhed ved sikkerhedsadvarsler og beskytte login mod misbrug. Derfor beder vi dig ikke om at klikke " +

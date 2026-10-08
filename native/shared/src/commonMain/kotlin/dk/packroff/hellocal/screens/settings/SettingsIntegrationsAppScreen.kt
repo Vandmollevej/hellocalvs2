@@ -19,6 +19,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import dk.packroff.hellocal.api.Api
@@ -30,8 +31,10 @@ import dk.packroff.hellocal.nav.LocalNavigator
 import dk.packroff.hellocal.nav.RouteArgs
 import dk.packroff.hellocal.platform.NativeHooks
 import dk.packroff.hellocal.theme.HcColors
+import dk.packroff.hellocal.theme.HcDimens
 import dk.packroff.hellocal.theme.HcTypeRoles
 import dk.packroff.hellocal.ui.HcBottomSheet
+import dk.packroff.hellocal.ui.HcSheetSkipButton
 import dk.packroff.hellocal.ui.HcText
 import dk.packroff.hellocal.ui.SettingsAccessCategory
 import dk.packroff.hellocal.ui.SettingsAccessFooter
@@ -592,7 +595,32 @@ private fun SettingsIntegrationsTesterPromoSheet(
 
     val finished = state == "signedUp" || state == "taken"
 
-    HcBottomSheet(onDismiss = ::close) {
+    HcBottomSheet(
+        onDismiss = ::close,
+        title = t.t("integrations.tester.headline", "name" to name, "points" to points),
+        footer = {
+            if (finished) {
+                // BottomSheetCloseButton className="hf-bottom-sheet__skip"
+                HcSheetSkipButton(t.t("integrations.tester.close"))
+            } else {
+                Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(HcDimens.SpaceInline)) {
+                    HcText(
+                        if (state == "busy") "…" else t.t("integrations.tester.signUp"),
+                        HcTypeRoles.Body,
+                        Modifier.clickable(enabled = state != "busy", onClick = ::signUp).alpha(if (state == "busy") 0.6f else 1f),
+                        color = HcColors.Black,
+                        bold = true,
+                        underline = true,
+                    )
+                    HcText(
+                        "* " + t.t("integrations.tester.terms"),
+                        HcTypeRoles.Caption,
+                        Modifier.clickable { nav.push("/betingelser#pointsystem") },
+                    )
+                }
+            }
+        },
+    ) {
         Column(Modifier.fillMaxWidth().padding(bottom = 8.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
             val shape = RoundedCornerShape(8.dp)
             Column(Modifier.fillMaxWidth().clip(shape).background(HcColors.Brand, shape).padding(16.dp)) {
@@ -607,29 +635,6 @@ private fun SettingsIntegrationsTesterPromoSheet(
                 },
                 HcTypeRoles.Body,
             )
-        }
-        Column(
-            Modifier.fillMaxWidth().padding(top = 8.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(12.dp),
-        ) {
-            if (finished) {
-                HcText(t.t("integrations.tester.close"), HcTypeRoles.Body, Modifier.clickable(onClick = ::close), color = HcColors.Black, bold = true, underline = true)
-            } else {
-                HcText(
-                    if (state == "busy") "…" else t.t("integrations.tester.signUp"),
-                    HcTypeRoles.Body,
-                    Modifier.clickable(enabled = state != "busy", onClick = ::signUp),
-                    color = HcColors.Black,
-                    bold = true,
-                    underline = true,
-                )
-                HcText(
-                    "* " + t.t("integrations.tester.terms"),
-                    HcTypeRoles.Caption,
-                    Modifier.clickable { nav.push("/betingelser#pointsystem") },
-                )
-            }
         }
     }
 }

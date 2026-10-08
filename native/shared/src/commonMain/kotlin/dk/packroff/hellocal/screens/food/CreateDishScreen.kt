@@ -57,6 +57,7 @@ import dk.packroff.hellocal.ui.HcButtonKind
 import dk.packroff.hellocal.ui.HcCard
 import dk.packroff.hellocal.ui.HcLink
 import dk.packroff.hellocal.ui.HcScreen
+import dk.packroff.hellocal.ui.HcSheetSize
 import dk.packroff.hellocal.ui.HcText
 import dk.packroff.hellocal.ui.HcToggle
 import dk.packroff.hellocal.ui.HcChevron
@@ -269,6 +270,7 @@ fun CreateDishScreen(args: RouteArgs) {
 
     HcScreen(
         t.t("createDish.title"),
+        icon = { HcIcon("Soup", size = 20.dp, stroke = 2f, color = HcColors.White) },
         contentPadding = LIST_PAGE_PADDING,
         bottom = {
             saveError?.let { HcText(it, HcTypeRoles.Body, Modifier.fillMaxWidth().padding(bottom = 8.dp), color = HcColors.TextSecondary, align = TextAlign.Center) }
@@ -450,15 +452,12 @@ private fun PasteTextSheet(onClose: () -> Unit, onResult: (ImportResult) -> Unit
     var sourceUrl by remember { mutableStateOf("") }
     var working by remember { mutableStateOf(false) }
     var error by remember { mutableStateOf(false) }
-    FoodScrollSheet(onDismiss = onClose, title = t.t("createDish.pasteTitle")) {
-        Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
-            if (working) {
-                FoodSkeletonMediaRows(5)
-            } else {
-                FoodTextArea(text, { text = it }, placeholder = t.t("createDish.pastePlaceholder"), minLines = 12, background = HcColors.Card, border = false)
-                FoodPillField(sourceUrl, { sourceUrl = it }, t.t("createDish.pasteSourcePlaceholder"), Modifier.fillMaxWidth(), keyboardType = KeyboardType.Uri)
-                if (error) HcText(t.t("createDish.pasteError"), HcTypeRoles.Body, Modifier.fillMaxWidth(), color = HcColors.TextSecondary, align = TextAlign.Center)
-            }
+    HcBottomSheet(
+        onDismiss = onClose,
+        title = t.t("createDish.pasteTitle"),
+        size = HcSheetSize.Full,
+        scrollable = true,
+        footer = {
             HcButton(
                 if (working) t.t("createDish.pasteWorking") else t.t("createDish.pasteInsert"),
                 onClick = {
@@ -476,6 +475,16 @@ private fun PasteTextSheet(onClose: () -> Unit, onResult: (ImportResult) -> Unit
                 },
                 enabled = !working && text.isNotBlank(),
             )
+        },
+    ) {
+        Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
+            if (working) {
+                FoodSkeletonMediaRows(5)
+            } else {
+                FoodTextArea(text, { text = it }, placeholder = t.t("createDish.pastePlaceholder"), minLines = 12, background = HcColors.Card, border = false)
+                FoodPillField(sourceUrl, { sourceUrl = it }, t.t("createDish.pasteSourcePlaceholder"), Modifier.fillMaxWidth(), keyboardType = KeyboardType.Uri)
+                if (error) HcText(t.t("createDish.pasteError"), HcTypeRoles.Body, Modifier.fillMaxWidth(), color = HcColors.TextSecondary, align = TextAlign.Center)
+            }
         }
     }
 }
@@ -499,7 +508,34 @@ private fun ScanSheet(onClose: () -> Unit, onResult: (ImportResult) -> Unit) {
     var pages by remember { mutableStateOf<List<FoodPhoto>>(emptyList()) }
     var working by remember { mutableStateOf(false) }
     var error by remember { mutableStateOf(false) }
-    FoodScrollSheet(onDismiss = onClose, title = t.t("createDish.scanTitle")) {
+    HcBottomSheet(
+        onDismiss = onClose,
+        title = t.t("createDish.scanTitle"),
+        size = HcSheetSize.Full,
+        scrollable = true,
+        footer = {
+            HcButton(
+                if (working) t.t("createDish.scanWorking") else t.t("createDish.scanFinish"),
+                onClick = {
+                    working = true
+                    error = false
+                    scope.launch {
+                        try {
+                            val texts = pages.map { readRecipePage(it) }
+                            val result = parseRecipeText(texts.joinToString("\n\n"), null)
+                            val dataUrls = pages.map { it.dataUrl() }
+                            onResult(result.copy(image = dataUrls.firstOrNull(), pageImages = dataUrls.drop(1)))
+                            onClose()
+                        } catch (_: Exception) {
+                            error = true
+                            working = false
+                        }
+                    }
+                },
+                enabled = !working && pages.isNotEmpty(),
+            )
+        },
+    ) {
         Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
             if (working) {
                 FoodSkeletonMediaRows(5)
@@ -531,26 +567,6 @@ private fun ScanSheet(onClose: () -> Unit, onResult: (ImportResult) -> Unit) {
                 }
                 if (error) HcText(t.t("createDish.scanError"), HcTypeRoles.Body, Modifier.fillMaxWidth(), color = HcColors.TextSecondary, align = TextAlign.Center)
             }
-            HcButton(
-                if (working) t.t("createDish.scanWorking") else t.t("createDish.scanFinish"),
-                onClick = {
-                    working = true
-                    error = false
-                    scope.launch {
-                        try {
-                            val texts = pages.map { readRecipePage(it) }
-                            val result = parseRecipeText(texts.joinToString("\n\n"), null)
-                            val dataUrls = pages.map { it.dataUrl() }
-                            onResult(result.copy(image = dataUrls.firstOrNull(), pageImages = dataUrls.drop(1)))
-                            onClose()
-                        } catch (_: Exception) {
-                            error = true
-                            working = false
-                        }
-                    }
-                },
-                enabled = !working && pages.isNotEmpty(),
-            )
         }
     }
 }

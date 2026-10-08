@@ -25,8 +25,10 @@ import dk.packroff.hellocal.theme.HcTypeRoles
 import dk.packroff.hellocal.ui.HcBottomSheet
 import dk.packroff.hellocal.ui.HcButton
 import dk.packroff.hellocal.ui.HcButtonKind
+import dk.packroff.hellocal.ui.HcSheetDots
+import dk.packroff.hellocal.ui.HcSheetSize
 import dk.packroff.hellocal.ui.HcText
-import dk.packroff.hellocal.ui.StatsSheetDots
+import dk.packroff.hellocal.ui.LocalHcSheetClose
 import kotlinx.coroutines.launch
 import kotlinx.serialization.json.JsonObject
 import kotlin.coroutines.cancellation.CancellationException
@@ -122,17 +124,24 @@ internal fun MealInsightsButton(tier: String?) {
 
     val current = state
     if (current is InsightState.Locked || current is InsightState.Empty || current is InsightState.Ready) {
-        val close = { state = InsightState.Idle }
-        HcBottomSheet(onDismiss = close) {
-            if (current is InsightState.Ready) InsightPages(current.insights, close)
-            else InsightMessage(locked = current is InsightState.Locked, close = close)
+        // size="half": a fixed half-screen panel whose body scrolls (.hf-bottom-sheet__body).
+        HcBottomSheet(
+            onDismiss = { state = InsightState.Idle },
+            title = "Indsigter i dine måltider",
+            size = HcSheetSize.Half,
+            scrollable = true,
+        ) {
+            if (current is InsightState.Ready) InsightPages(current.insights)
+            else InsightMessage(locked = current is InsightState.Locked)
         }
     }
 }
 
 @Composable
-private fun InsightMessage(locked: Boolean, close: () -> Unit) {
+private fun InsightMessage(locked: Boolean) {
     val nav = LocalNavigator.current
+    // useBottomSheetClose(): slides the sheet out, then dismisses it.
+    val close = LocalHcSheetClose.current
     Column(Modifier.fillMaxWidth().padding(bottom = 8.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
         HcText(if (locked) "Udregn kræver Seriøs" else "Ikke nok data endnu", HcTypeRoles.PageTitle, color = HcColors.Black)
         HcText(
@@ -168,8 +177,9 @@ private fun InsightLine(strong: String, small: String) {
 }
 
 @Composable
-private fun InsightPages(insights: MealInsights, close: () -> Unit) {
+private fun InsightPages(insights: MealInsights) {
     var page by remember { mutableIntStateOf(0) }
+    val close = LocalHcSheetClose.current
     val w = insights.window
     val pages = buildList {
         add(InsightPage("Hvornår spiser du?") {
@@ -213,7 +223,7 @@ private fun InsightPages(insights: MealInsights, close: () -> Unit) {
 
     Column(Modifier.fillMaxWidth().padding(bottom = 8.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
         Box(Modifier.fillMaxWidth().heightIn(min = 44.dp), contentAlignment = Alignment.Center) {
-            StatsSheetDots(pages.size, page)
+            HcSheetDots(pages.size, page)
         }
         HcText(current.title, HcTypeRoles.PageTitle, color = HcColors.Black)
         current.body()

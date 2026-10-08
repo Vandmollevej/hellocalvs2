@@ -1,5 +1,7 @@
 package dk.packroff.hellocal.screens.capture
 
+import dk.packroff.hellocal.ui.ProfileCircleTone
+import dk.packroff.hellocal.ui.ProfileCircle
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -32,7 +34,7 @@ import dk.packroff.hellocal.theme.HcColors
 import dk.packroff.hellocal.theme.HcDimens
 import dk.packroff.hellocal.theme.HcTypeRoles
 import dk.packroff.hellocal.ui.CaptureDates
-import dk.packroff.hellocal.ui.CaptureLine
+import dk.packroff.hellocal.ui.HcLine
 import dk.packroff.hellocal.ui.HcButton
 import dk.packroff.hellocal.ui.HcButtonKind
 import dk.packroff.hellocal.ui.HcCard
@@ -270,7 +272,7 @@ fun FamilyScreen(args: RouteArgs) {
                             val isPayer = member.userId == family.ownerId
                             Column(Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
                                 Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(16.dp)) {
-                                    ProfileCircle(member.displayName)
+                                    ProfileCircle(member.displayName, tone = ProfileCircleTone.Card)
                                     Column(Modifier.weight(1f)) {
                                         HcText(if (isPayer) t.t("family.switcher.meLabel", "name" to member.displayName) else member.displayName, HcTypeRoles.Body, maxLines = 1)
                                         val role = when {
@@ -307,7 +309,7 @@ fun FamilyScreen(args: RouteArgs) {
                                     }
                                 }
                             }
-                            if (index < members.lastIndex) CaptureLine()
+                            if (index < members.lastIndex) HcLine()
                         }
                     }
                 }

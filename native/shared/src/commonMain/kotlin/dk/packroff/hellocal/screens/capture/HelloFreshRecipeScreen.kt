@@ -60,8 +60,8 @@ import dk.packroff.hellocal.nav.RouteArgs
 import dk.packroff.hellocal.theme.HcColors
 import dk.packroff.hellocal.theme.HcDimens
 import dk.packroff.hellocal.theme.HcTypeRoles
-import dk.packroff.hellocal.ui.CaptureLine
-import dk.packroff.hellocal.ui.CaptureMaskIcon
+import dk.packroff.hellocal.ui.HcLine
+import dk.packroff.hellocal.ui.HcMaskIcon
 import dk.packroff.hellocal.ui.ChevronDirection
 import dk.packroff.hellocal.ui.HcButton
 import dk.packroff.hellocal.ui.HcChevron
@@ -237,7 +237,7 @@ fun HelloFreshRecipeScreen(args: RouteArgs) {
 
                         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                             OutlineButton(onClick = ::toggleFavorite) {
-                                CaptureMaskIcon(if (r.isFavorite) "/icons/favorite-filled.png" else "/icons/favorite.png", 22.dp, HcColors.Action)
+                                HcMaskIcon(if (r.isFavorite) "/icons/favorite-filled.png" else "/icons/favorite.png", 22.dp, HcColors.Action)
                                 HcText(t.t(if (r.isFavorite) "hfRecipe.saved" else "hfRecipe.save"), HcTypeRoles.Body, bold = true, color = HcColors.Action)
                             }
                             OutlineButton(onClick = {
@@ -291,7 +291,7 @@ fun HelloFreshRecipeScreen(args: RouteArgs) {
                                         HcText(row.name ?: t.t("hfRecipe.nutrients.${row.key}"), HcTypeRoles.Body, Modifier.weight(1f), color = HcColors.Black)
                                         HcText(amountText(row.amount, row.unit), HcTypeRoles.Body, color = HcColors.Black)
                                     }
-                                    if (index < r.nutrition.lastIndex) CaptureLine()
+                                    if (index < r.nutrition.lastIndex) HcLine()
                                 }
                                 HcText(t.t("hfRecipe.nutritionNote"), HcTypeRoles.Small, Modifier.padding(top = 8.dp), color = HcColors.TextSecondary)
                                 OutlineButton(onClick = { nav.push(registerHref) }, block = true) {
@@ -426,7 +426,7 @@ private fun RecipeDescription(text: String) {
 @Composable
 private fun RecipeAccordion(title: String, open: Boolean, onToggle: () -> Unit, content: @Composable ColumnScope.() -> Unit) {
     Column(Modifier.fillMaxWidth()) {
-        CaptureLine()
+        HcLine()
         Row(Modifier.fillMaxWidth().clickable(onClick = onToggle).padding(vertical = 16.dp), verticalAlignment = Alignment.CenterVertically) {
             HcText(title, HcTypeRoles.PageTitle, Modifier.weight(1f), color = HcColors.Black)
             HcChevron(if (open) ChevronDirection.Up else ChevronDirection.Down)

@@ -26,6 +26,7 @@ import dk.packroff.hellocal.i18n.LocalTranslator
 import dk.packroff.hellocal.nav.LocalNavigator
 import dk.packroff.hellocal.nav.RouteArgs
 import dk.packroff.hellocal.platform.NativeHooks
+import dk.packroff.hellocal.screens.profile.ProfileOnboardingWizard
 import dk.packroff.hellocal.theme.HcColors
 import dk.packroff.hellocal.theme.HcDimens
 import dk.packroff.hellocal.theme.HcTypeRole
@@ -88,14 +89,13 @@ fun SettingsScreen(args: RouteArgs) {
     // Sletteret vises for den, der har oprettet (eller styrer) andre profiler.
     val controlsOthers = myId != null && familyInfo?.members?.any { it.controllerId == myId && it.userId != myId } == true
 
-    // "Lær appen at kende": nulstil fremdriften og vis guiden.
-    // TODO(parity): the web opens OnboardingWizard as a sheet on this page; the
-    // native wizard is not ported yet, so the front page (which shows the
-    // wizard while onboarding is unfinished) is opened instead.
+    var showOnboarding by remember { mutableStateOf(false) }
+
+    // "Lær appen at kende": nulstil fremdriften og vis guiden som sheet her på siden.
     fun startOnboarding() {
         scope.launch {
-            settingsResetOnboardingProgress()
-            nav.resetTo("/")
+            runCatching { settingsResetOnboardingProgress() }
+            showOnboarding = true
         }
     }
 
@@ -140,6 +140,10 @@ fun SettingsScreen(args: RouteArgs) {
     }
     val normalized = query.trim().lowercase()
     val results = if (normalized.isNotEmpty()) searchItems.filter { it.label.lowercase().contains(normalized) } else null
+
+    if (showOnboarding) {
+        ProfileOnboardingWizard(forceVisible = true, onClose = { showOnboarding = false })
+    }
 
     HcScreen(title = t.t("settings.title"), back = nav.showBack, contentPadding = SettingsPagePadding) {
         SettingsPage(gap = HcDimens.SpaceSection) {

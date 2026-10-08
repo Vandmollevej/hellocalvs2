@@ -73,14 +73,12 @@ fun ProfilePage(gap: Dp = HcDimens.SpaceBlock, modifier: Modifier = Modifier, co
     Column(modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(gap), content = content)
 }
 
-/** src/components/hf/AccordionCard.tsx — tan card holding chevron rows. */
+/** src/components/hf/AccordionCard.tsx — the shared HcAccordionCard. */
 @Composable
-fun ProfileAccordionCard(modifier: Modifier = Modifier, content: @Composable ColumnScope.() -> Unit) {
-    val shape = RoundedCornerShape(HcDimens.RadiusCard)
-    Column(modifier.fillMaxWidth().clip(shape).background(HcColors.Tan, shape), content = content)
-}
+fun ProfileAccordionCard(modifier: Modifier = Modifier, content: @Composable ColumnScope.() -> Unit) =
+    HcAccordionCard(modifier, content)
 
-/** ChevronRow from AccordionCard.tsx: icon, label, optional green unread badge, chevron. */
+/** ChevronRow from AccordionCard.tsx — the shared HcChevronRow with a drawn icon. */
 @Composable
 fun ProfileChevronRow(
     label: String,
@@ -89,29 +87,7 @@ fun ProfileChevronRow(
     divider: Boolean = true,
     badgeCount: Int = 0,
     wrapLabel: Boolean = false,
-) {
-    Column(Modifier.fillMaxWidth()) {
-        Row(
-            Modifier.fillMaxWidth().heightIn(min = HcDimens.ControlHeight).clickable(onClick = onClick)
-                .padding(horizontal = 16.dp, vertical = if (wrapLabel) 12.dp else 0.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(16.dp),
-        ) {
-            Box(Modifier.size(20.dp), contentAlignment = Alignment.Center) { icon() }
-            HcText(label, HcTypeRoles.Body, Modifier.weight(1f), maxLines = if (wrapLabel) Int.MAX_VALUE else 1)
-            if (badgeCount > 0) {
-                Box(
-                    Modifier.heightIn(min = 20.dp).widthIn(min = 20.dp).clip(CircleShape).background(HcColors.Brand).padding(horizontal = 4.dp),
-                    contentAlignment = Alignment.Center,
-                ) {
-                    HcText(if (badgeCount > 99) "99+" else badgeCount.toString(), HcTypeRoles.Caption, color = HcColors.White)
-                }
-            }
-            HcChevron(color = HcColors.Black)
-        }
-        if (divider) HorizontalDivider(thickness = 1.dp, color = HcColors.TanDark)
-    }
-}
+) = HcChevronRow(label, onClick, divider = divider, badgeCount = badgeCount, wrapLabel = wrapLabel, iconContent = icon)
 
 /** src/components/hf/HfProgressStepper.tsx — dot per step, lines between, label under each dot. */
 @Composable
@@ -162,24 +138,21 @@ fun ProfileProgressStepper(steps: List<String>, current: Int, progress: Float, m
 enum class ProfileCircleTone { Appbar, Card, Brand }
 
 /** "Peter Thomsen" → "PT" (src/lib/initials.ts). */
-fun profileInitials(name: String?): String {
-    val parts = (name ?: "").trim().split(Regex("\\s+")).filter { it.isNotEmpty() }
-    if (parts.isEmpty()) return "?"
-    val first = parts.first().take(1)
-    val last = if (parts.size > 1) parts.last().take(1) else ""
-    return (first + last).uppercase()
-}
+fun profileInitials(name: String?): String = initialsOf(name)
 
 /** src/components/family/ProfileCircle.tsx — circle with the initials. */
 @Composable
-fun ProfileCircle(name: String?, size: Dp = 32.dp, tone: ProfileCircleTone = ProfileCircleTone.Appbar) {
+fun ProfileCircle(name: String?, size: Dp = 32.dp, tone: ProfileCircleTone = ProfileCircleTone.Appbar, outlined: Boolean = false) {
     val (bg, fg) = when (tone) {
         ProfileCircleTone.Brand -> HcColors.Green to HcColors.White
         ProfileCircleTone.Card -> HcColors.Cream to HcColors.Black
         ProfileCircleTone.Appbar -> HcColors.Tan to HcColors.Black
     }
     Box(
-        Modifier.size(size).clip(CircleShape).background(bg)
+        Modifier.size(size)
+            // .hf-avatar--outlined: a 1 px ring for light backgrounds (the front page).
+            .let { if (outlined) it.border(1.dp, HcColors.TanDark, CircleShape) else it }
+            .clip(CircleShape).background(bg)
             .let { if (tone == ProfileCircleTone.Card) it.border(1.dp, HcColors.GrayBorder, CircleShape) else it },
         contentAlignment = Alignment.Center,
     ) {
@@ -281,20 +254,8 @@ fun ProfileValueButton(
 
 /** .hf-choice.hf-control — selectable chip (lime + dark ring when pressed). */
 @Composable
-fun ProfileChoiceChip(label: String, selected: Boolean, onClick: () -> Unit, modifier: Modifier = Modifier, enabled: Boolean = true) {
-    val shape = RoundedCornerShape(HcDimens.RadiusCard)
-    Box(
-        modifier.height(HcDimens.ControlHeight).clip(shape)
-            .background(if (selected) HcColors.SelectedBg else HcColors.Card, shape)
-            .let { if (selected) it.border(2.dp, HcColors.SelectedBorder, shape) else it }
-            .alpha(if (enabled) 1f else 0.4f)
-            .clickable(enabled = enabled, onClick = onClick)
-            .padding(horizontal = 12.dp),
-        contentAlignment = Alignment.Center,
-    ) {
-        HcText(label, HcTypeRoles.Small, bold = true, color = if (selected) HcColors.SelectedText else HcColors.Text, align = TextAlign.Center, maxLines = 2)
-    }
-}
+fun ProfileChoiceChip(label: String, selected: Boolean, onClick: () -> Unit, modifier: Modifier = Modifier, enabled: Boolean = true) =
+    HcChoiceChip(label, selected, onClick, modifier, enabled, height = HcDimens.ControlHeight)
 
 /** .hf-card.hf-card--brand with one small white text. */
 @Composable

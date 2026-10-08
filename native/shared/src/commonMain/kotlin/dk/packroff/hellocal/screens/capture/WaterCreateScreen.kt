@@ -1,5 +1,6 @@
 package dk.packroff.hellocal.screens.capture
 
+import dk.packroff.hellocal.ui.CalendarWaterGlassIcon
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -39,8 +40,8 @@ import dk.packroff.hellocal.ui.CaptureCenteredError
 import dk.packroff.hellocal.ui.CaptureDates
 import dk.packroff.hellocal.ui.CaptureFoodRow
 import dk.packroff.hellocal.ui.CaptureFormCard
-import dk.packroff.hellocal.ui.CaptureLine
-import dk.packroff.hellocal.ui.CaptureMaskIcon
+import dk.packroff.hellocal.ui.HcLine
+import dk.packroff.hellocal.ui.HcMaskIcon
 import dk.packroff.hellocal.ui.CaptureSlider
 import dk.packroff.hellocal.ui.CaptureSuccess
 import dk.packroff.hellocal.ui.HcButton
@@ -75,7 +76,7 @@ private val CONTAINERS = listOf(
 /** The water glass icon (src/components/icons/WaterGlass.tsx — PNG used as a mask). */
 @Composable
 internal fun WaterGlassIcon(size: Dp, color: androidx.compose.ui.graphics.Color = HcColors.Black) =
-    CaptureMaskIcon("/icons/water-glass.png", size = size, color = color)
+    HcMaskIcon("/icons/water-glass.png", size = size, color = color)
 
 /** Native port of src/app/water/create/page.tsx. */
 @Composable
@@ -120,7 +121,7 @@ fun WaterCreateScreen(@Suppress("UNUSED_PARAMETER") args: RouteArgs) {
         }
     }
 
-    HcScreen(title = t.t("waterLog.title"), contentPadding = PaddingValues(start = HcDimens.Gutter, end = HcDimens.Gutter, top = HcDimens.SpaceBlock, bottom = HcDimens.SpaceSection)) {
+    HcScreen(title = t.t("waterLog.title"), icon = { CalendarWaterGlassIcon(20.dp, HcColors.White) }, contentPadding = PaddingValues(start = HcDimens.Gutter, end = HcDimens.Gutter, top = HcDimens.SpaceBlock, bottom = HcDimens.SpaceSection)) {
         Column(verticalArrangement = Arrangement.spacedBy(HcDimens.SpaceBlock)) {
             CaptureBrandCard(t.t("waterLog.intro"))
 
@@ -198,7 +199,7 @@ fun WaterCreateScreen(@Suppress("UNUSED_PARAMETER") args: RouteArgs) {
                                         )
                                     },
                                 )
-                                if (i < group.entries.lastIndex) CaptureLine()
+                                if (i < group.entries.lastIndex) HcLine()
                             }
                         }
                     }

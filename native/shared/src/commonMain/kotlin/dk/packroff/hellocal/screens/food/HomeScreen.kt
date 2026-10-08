@@ -5,6 +5,7 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -14,7 +15,6 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
-
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
@@ -29,37 +29,33 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInRoot
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import dk.packroff.hellocal.i18n.LocalTranslator
 import dk.packroff.hellocal.nav.LocalNavigator
 import dk.packroff.hellocal.nav.RouteArgs
+import dk.packroff.hellocal.screens.profile.ProfileOnboardingWizard
 import dk.packroff.hellocal.theme.HcColors
 import dk.packroff.hellocal.theme.HcTypeRoles
 import dk.packroff.hellocal.ui.FoodProfileCircle
-import dk.packroff.hellocal.ui.FoodSheetDots
-import dk.packroff.hellocal.ui.FoodSheetSkipButton
 import dk.packroff.hellocal.ui.HcBottomSheet
 import dk.packroff.hellocal.ui.HcButton
+import dk.packroff.hellocal.ui.HcSheetDots
+import dk.packroff.hellocal.ui.HcSheetSize
+import dk.packroff.hellocal.ui.HcSheetSkipButton
 import dk.packroff.hellocal.ui.HcText
-import dk.packroff.hellocal.ui.VSpace
+import dk.packroff.hellocal.ui.LocalHcSheetClose
 import dk.packroff.hellocal.ui.foodInitialsOf
 import dk.packroff.hellocal.ui.icons.HcIcon
 
 /**
- * Pieces of the front page that belong to other feature areas. Their ports
- * plug in here so the front page shows them exactly like the web
- * (src/app/page.tsx renders <HeartRateSpikePrompt/> and <WeighInPrompts/>, and
- * the welcome sheet's "Start guiden" opens <OnboardingWizard forceVisible/>).
- * TODO(parity): the activity, weight and onboarding areas set these.
+ * Native port of src/app/page.tsx (the logged-in front page): the pulse line
+ * (HomeWaves) behind the top bar + hero, the daily list, the footer half
+ * circle, and the two start-up prompts (HeartRateSpikePrompt, WeighInPrompts).
+ * The welcome sheet's "Start guiden" opens the onboarding wizard (Hero.tsx).
  */
-object HomeSlots {
-    var heartRateSpikePrompt: (@Composable () -> Unit)? = null
-    var weighInPrompts: (@Composable () -> Unit)? = null
-    var onboardingWizard: (@Composable (onClose: () -> Unit) -> Unit)? = null
-}
-
-/** Native port of src/app/page.tsx (the logged-in front page). */
 @Composable
 fun HomeScreen(args: RouteArgs) {
     val density = LocalDensity.current.density
@@ -69,6 +65,8 @@ fun HomeScreen(args: RouteArgs) {
     var rootTop by remember { mutableStateOf(0f) }
     var rootBottom by remember { mutableStateOf(0f) }
     var heroTop by remember { mutableStateOf(0f) }
+    var heroMeasured by remember { mutableStateOf(false) }
+    var topBlockTop by remember { mutableStateOf(0f) }
 
     LaunchedEffect(Unit) {
         showOnboarding = FoodPrefs.get(FoodPrefs.ONBOARDING_DISMISSED_KEY) != "1"
@@ -90,13 +88,24 @@ fun HomeScreen(args: RouteArgs) {
         },
     ) {
         Column(Modifier.fillMaxSize()) {
-            HomeTopBar()
+            // <div className="relative flex-none"><HomeWaves/><TopBar/><Hero/></div>
             Box(
-                Modifier.padding(top = 32.dp).fillMaxWidth().height(HERO_HEIGHT.dp).onGloballyPositioned {
-                    heroTop = it.positionInRoot().y / density
-                },
+                Modifier.fillMaxWidth().onGloballyPositioned { topBlockTop = it.positionInRoot().y / density },
             ) {
-                HomeStatsWheel(if (FoodPrefs.fabSide == "left") "right" else "left")
+                // The pulse's lowest point sits just above the wheel's last number.
+                val pulseY = if (heroMeasured) heroTop - topBlockTop + statsWheelLastRowY() - PULSE_ABOVE_LAST_ROW else null
+                HomeWaves(pulseY, Modifier.matchParentSize())
+                Column(Modifier.fillMaxWidth()) {
+                    HomeTopBar()
+                    Box(
+                        Modifier.padding(top = 32.dp).fillMaxWidth().height(HERO_HEIGHT.dp).onGloballyPositioned {
+                            heroTop = it.positionInRoot().y / density
+                            heroMeasured = true
+                        },
+                    ) {
+                        HomeStatsWheel(if (FoodPrefs.fabSide == "left") "right" else "left")
+                    }
+                }
             }
             // The list lies over the hero (z-10): the wheel's rows turn in behind it.
             HomeDailyList(Modifier.weight(1f).padding(top = 8.dp))
@@ -117,11 +126,11 @@ fun HomeScreen(args: RouteArgs) {
     if (showOnboarding) {
         HomeWelcomeSheet(onClose = { dismissOnboarding() }, onStartGuide = { showGuide = true })
     }
-    if (showGuide) HomeSlots.onboardingWizard?.invoke { showGuide = false }
+    if (showGuide) ProfileOnboardingWizard(forceVisible = true, onClose = { showGuide = false })
     if (menuSheetOpen) AddMenuSheet(onClose = { menuSheetOpen = false })
 
-    HomeSlots.heartRateSpikePrompt?.invoke()
-    HomeSlots.weighInPrompts?.invoke()
+    HomeHeartRateSpikePrompt()
+    HomeWeighInPrompts()
 }
 
 /** src/components/TopBar.tsx — the watcher phone icon (family) and the profile circle. */
@@ -154,45 +163,74 @@ private fun WatchPhoneIcon(name: String) {
     }
 }
 
-/** src/components/WelcomeSheet.tsx — welcome slides after sign-up. */
+private data class WelcomeSlide(val icon: String, val titleKey: String, val textKey: String)
+
+private val WELCOME_SLIDES = listOf(
+    WelcomeSlide("Heartbeat", "welcomeSheet.slide1Title", "welcomeSheet.slide1Text"),
+    WelcomeSlide("Fingerprint", "welcomeSheet.slide2Title", "welcomeSheet.slide2Text"),
+    WelcomeSlide("Calendar", "welcomeSheet.slide3Title", "welcomeSheet.slide3Text"),
+    WelcomeSlide("ChartBar", "welcomeSheet.slide4Title", "welcomeSheet.slide4Text"),
+)
+
+/**
+ * src/components/WelcomeSheet.tsx — welcome slides after sign-up (full sheet).
+ * "Start guiden" closes the sheet and then opens the guide; "Spring over" (or
+ * a drag down) just closes.
+ */
 @Composable
 private fun HomeWelcomeSheet(onClose: () -> Unit, onStartGuide: () -> Unit) {
     val t = LocalTranslator.current
-    val slides = listOf(
-        Triple("Heartbeat", "welcomeSheet.slide1Title", "welcomeSheet.slide1Text"),
-        Triple("Fingerprint", "welcomeSheet.slide2Title", "welcomeSheet.slide2Text"),
-        Triple("Calendar", "welcomeSheet.slide3Title", "welcomeSheet.slide3Text"),
-        Triple("ChartBar", "welcomeSheet.slide4Title", "welcomeSheet.slide4Text"),
-    )
     var index by remember { mutableStateOf(0) }
-    val (icon, titleKey, textKey) = slides[index]
-    val isLast = index == slides.lastIndex
-    HcBottomSheet(onDismiss = onClose) {
+    var startGuide by remember { mutableStateOf(false) }
+    val slide = WELCOME_SLIDES[index]
+    val isLast = index == WELCOME_SLIDES.lastIndex
+    HcBottomSheet(
+        onDismiss = {
+            onClose()
+            if (startGuide) onStartGuide()
+        },
+        title = t.t(slide.titleKey),
+        size = HcSheetSize.Full,
+        footer = {
+            val close = LocalHcSheetClose.current
+            BoxWithConstraints(Modifier.fillMaxWidth().height(40.dp), contentAlignment = Alignment.Center) {
+                val w = maxWidth
+                val progressLabel = t.t("welcomeSheet.progress", "current" to (index + 1), "total" to WELCOME_SLIDES.size)
+                Box(Modifier.semantics { contentDescription = progressLabel }) {
+                    HcSheetDots(WELCOME_SLIDES.size, index) { index = it }
+                }
+                if (!isLast) {
+                    val nextLabel = t.t("welcomeSheet.nextSlide")
+                    // absolute right-[20%] size-10
+                    Box(
+                        Modifier.align(Alignment.CenterEnd).padding(end = w * 0.2f).size(40.dp)
+                            .semantics { contentDescription = nextLabel }
+                            .clickable { index += 1 },
+                        contentAlignment = Alignment.Center,
+                    ) { HcIcon("ChevronRight", size = 24.dp, color = HcColors.Black) }
+                }
+            }
+            HcButton(
+                t.t("welcomeSheet.startGuide"),
+                onClick = {
+                    startGuide = true
+                    close()
+                },
+                modifier = Modifier.padding(top = 16.dp),
+            )
+            HcSheetSkipButton(t.t("welcomeSheet.skip"))
+        },
+    ) {
         Column(
-            Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 32.dp),
+            Modifier.fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(24.dp),
+            verticalArrangement = Arrangement.spacedBy(24.dp, Alignment.CenterVertically),
         ) {
             Box(Modifier.size(160.dp).clip(CircleShape).background(HcColors.Tan), contentAlignment = Alignment.Center) {
-                HcIcon(icon, size = 72.dp, color = HcColors.Green, stroke = 1.4f)
+                HcIcon(slide.icon, size = 72.dp, color = HcColors.Green, stroke = 1.4f)
             }
-            HcText(t.t(titleKey), HcTypeRoles.PageTitle, Modifier.fillMaxWidth(), align = TextAlign.Center)
-            HcText(t.t(textKey), HcTypeRoles.BodyLg, Modifier.fillMaxWidth(), align = TextAlign.Center)
+            HcText(t.t(slide.titleKey), HcTypeRoles.PageTitle, Modifier.fillMaxWidth(), align = TextAlign.Center)
+            HcText(t.t(slide.textKey), HcTypeRoles.BodyLg, Modifier.fillMaxWidth(), align = TextAlign.Center)
         }
-        Box(Modifier.fillMaxWidth().height(40.dp), contentAlignment = Alignment.Center) {
-            FoodSheetDots(slides.size, index) { index = it }
-            if (!isLast) {
-                Box(
-                    Modifier.align(Alignment.CenterEnd).padding(end = 60.dp).size(40.dp).clickable { index += 1 },
-                    contentAlignment = Alignment.Center,
-                ) { HcIcon("ChevronRight", size = 24.dp, color = HcColors.Black) }
-            }
-        }
-        VSpace(16.dp)
-        HcButton(t.t("welcomeSheet.startGuide"), onClick = {
-            onClose()
-            onStartGuide()
-        })
-        FoodSheetSkipButton(t.t("welcomeSheet.skip"), onClose)
     }
 }

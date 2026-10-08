@@ -26,15 +26,8 @@ import dk.packroff.hellocal.theme.HcColors
 
 /** A PNG icon from public/ tinted like `currentColor` (the web's CSS mask). */
 @Composable
-fun ProfileMaskIcon(src: String, size: Dp = 24.dp, color: Color = HcColors.Black, modifier: Modifier = Modifier) {
-    AsyncImage(
-        model = Api.absoluteUrl(src),
-        contentDescription = null,
-        modifier = modifier.size(size),
-        contentScale = ContentScale.Fit,
-        colorFilter = ColorFilter.tint(color),
-    )
-}
+fun ProfileMaskIcon(src: String, size: Dp = 24.dp, color: Color = HcColors.Black, modifier: Modifier = Modifier) =
+    HcMaskIcon(src, size, color, modifier)
 
 /** IconBathScale / IconBathroomScale — public/icons/bathroom-scale.png. */
 @Composable

@@ -22,6 +22,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import dk.packroff.hellocal.api.Session
+import dk.packroff.hellocal.i18n.AppLocale
 import dk.packroff.hellocal.i18n.Locale
 import dk.packroff.hellocal.i18n.LocalTranslator
 import dk.packroff.hellocal.nav.RouteArgs
@@ -37,6 +38,9 @@ import dk.packroff.hellocal.ui.SettingsPage
 import dk.packroff.hellocal.ui.SettingsPagePadding
 import dk.packroff.hellocal.ui.SettingsProgressStepper
 import dk.packroff.hellocal.ui.SettingsSelectCard
+import dk.packroff.hellocal.ui.HeightUnit
+import dk.packroff.hellocal.ui.Units
+import dk.packroff.hellocal.ui.WeightUnit
 import kotlinx.coroutines.launch
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.JsonPrimitive
@@ -93,21 +97,22 @@ fun LanguageRegionScreen(args: RouteArgs) {
     val scope = rememberCoroutineScope()
     var region by remember { mutableStateOf<String?>(null) }
     var loading by remember { mutableStateOf(true) }
-    // Recompose when a unit preference is saved.
-    @Suppress("UNUSED_VARIABLE") val prefsVersion = SettingsLocalPrefs.version
-    val (weightUnit, heightUnit) = SettingsLocalPrefs.units()
+    // Units.current() recomposes this screen when a unit preference is saved.
+    val units = Units.current()
+    val weightUnit = units.weight.code
+    val heightUnit = units.height.code
 
     LaunchedEffect(Unit) {
         runCatching { settingsLoadProfile() }.getOrNull()?.let { user ->
             region = user.settingsStr("region")
-            SettingsLocalPrefs.setUnitsRegion(user.settingsStr("region"))
+            Units.setRegion(user.settingsStr("region"))
         }
         loading = false
     }
 
     fun updateRegion(next: String) {
         region = next
-        SettingsLocalPrefs.setUnitsRegion(next)
+        Units.setRegion(next)
         scope.launch { settingsPatchProfile(mapOf("region" to next)) }
     }
 
@@ -115,6 +120,7 @@ fun LanguageRegionScreen(args: RouteArgs) {
     // user; Session.refresh() makes the app switch dictionary at once.
     fun updateLocale(code: String) {
         val next = Locale.entries.firstOrNull { it.code == code } ?: Locale.Default
+        AppLocale.set(next.code)
         scope.launch {
             settingsPatchProfile(mapOf("appLocale" to next.code))
             Session.refresh()
@@ -154,15 +160,15 @@ fun LanguageRegionScreen(args: RouteArgs) {
                     label = t.t("settings.unitsWeightLabel"),
                     description = t.t("settings.unitsWeightDescription"),
                     value = weightUnit,
-                    options = SettingsLocalPrefs.WEIGHT_UNITS.map { SettingsOption(it, unitLabel(it)) },
-                    onChange = { SettingsLocalPrefs.saveUnits(weight = it) },
+                    options = WeightUnit.entries.map { SettingsOption(it.code, unitLabel(it.code)) },
+                    onChange = { Units.save(weight = WeightUnit.fromCode(it)) },
                 )
                 SettingsSelectCard(
                     label = t.t("settings.unitsHeightLabel"),
                     description = t.t("settings.unitsHeightDescription"),
                     value = heightUnit,
-                    options = SettingsLocalPrefs.HEIGHT_UNITS.map { SettingsOption(it, unitLabel(it)) },
-                    onChange = { SettingsLocalPrefs.saveUnits(height = it) },
+                    options = HeightUnit.entries.map { SettingsOption(it.code, unitLabel(it.code)) },
+                    onChange = { Units.save(height = HeightUnit.fromCode(it)) },
                 )
             }
         }

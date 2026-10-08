@@ -1,5 +1,6 @@
 package dk.packroff.hellocal.screens.profile
 
+import dk.packroff.hellocal.ui.Units
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -176,20 +177,20 @@ private fun GoalForm(
 ) {
     val t = LocalTranslator.current
     val scope = rememberCoroutineScope()
-    val units = remember { ProfileUnits.current() }
+    val units = remember { Units.current() }
     var targetDate by remember { mutableStateOf(initial.targetDate) }
     var pickingDate by remember { mutableStateOf(false) }
     // Start values come in kg/cm; show them in the chosen unit.
     var weight by remember {
         val kg = initial.weight.replaceFirst(",", ".").toDoubleOrNull()
-        mutableStateOf(if (initial.weight.isNotBlank() && kg != null) ProfileUnits.weightToInputValue(kg, units.weight) else initial.weight)
+        mutableStateOf(if (initial.weight.isNotBlank() && kg != null) Units.weightToInputValue(kg, units.weight) else initial.weight)
     }
     val measurements = remember {
         mutableStateMapOf<String, String>().apply {
             BODY_MEASUREMENT_FIELDS.forEach { (field) ->
                 val raw = initial.measurements[field] ?: ""
                 val cm = raw.replaceFirst(",", ".").toDoubleOrNull()
-                put(field, if (raw.isNotBlank() && cm != null) ProfileUnits.lengthToInputValue(cm, units.height) else raw)
+                put(field, if (raw.isNotBlank() && cm != null) Units.lengthToInputValue(cm, units.height) else raw)
             }
         }
     }
@@ -200,8 +201,8 @@ private fun GoalForm(
 
     // Weight and body measurements are typed in the chosen unit but always saved as kg/cm.
     val parsed: Map<String, Parsed> = buildMap {
-        put("weight", parseConverted(weight) { ProfileUnits.parseWeightInput(it, units.weight) })
-        BODY_MEASUREMENT_FIELDS.forEach { put(it.field, parseConverted(measurements[it.field] ?: "") { raw -> ProfileUnits.parseLengthInput(raw, units.height) }) }
+        put("weight", parseConverted(weight) { Units.parseWeightInput(it, units.weight) })
+        BODY_MEASUREMENT_FIELDS.forEach { put(it.field, parseConverted(measurements[it.field] ?: "") { raw -> Units.parseLengthInput(raw, units.height) }) }
         COMPOSITION_GOAL_FIELDS.forEach { put(it.field, parseValue(composition[it.field] ?: "")) }
         NUTRITION_GOAL_FIELDS.forEach { put(it.field, parseValue(nutrition[it.field] ?: "")) }
     }
@@ -266,9 +267,9 @@ private fun GoalForm(
             FormCard {
                 GoalInput(
                     label = t.t("goals.targetWeight"),
-                    unit = ProfileUnits.weightUnitLabel(units.weight),
+                    unit = Units.weightUnitLabel(units.weight),
                     value = weight,
-                    placeholder = ProfileUnits.weightToInputValue(72.0, units.weight),
+                    placeholder = Units.weightToInputValue(72.0, units.weight),
                     autoFocus = focus == "weight",
                     onChange = { weight = it },
                 )
@@ -278,9 +279,9 @@ private fun GoalForm(
                 TwoColumns(BODY_MEASUREMENT_FIELDS) { field ->
                     GoalInput(
                         label = t.t(field.nameKey),
-                        unit = ProfileUnits.lengthUnitLabel(units.height),
+                        unit = Units.lengthUnitLabel(units.height),
                         value = measurements[field.field] ?: "",
-                        placeholder = ProfileUnits.lengthToInputValue(82.0, units.height),
+                        placeholder = Units.lengthToInputValue(82.0, units.height),
                         autoFocus = focus == field.field,
                         onChange = { measurements[field.field] = it },
                     )
@@ -327,7 +328,6 @@ private fun GoalForm(
             onDismiss = { pickingDate = false },
             onDone = { (y, m, d) ->
                 targetDate = "$y-${m.toString().padStart(2, '0')}-${d.toString().padStart(2, '0')}"
-                pickingDate = false
             },
         )
     }

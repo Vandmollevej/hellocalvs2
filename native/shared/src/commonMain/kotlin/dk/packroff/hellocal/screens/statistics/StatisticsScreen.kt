@@ -27,6 +27,7 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.boundsInRoot
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.unit.dp
+import dk.packroff.hellocal.app.TrendIcon
 import dk.packroff.hellocal.i18n.LocalTranslator
 import dk.packroff.hellocal.nav.LocalNavigator
 import dk.packroff.hellocal.nav.RouteArgs
@@ -156,7 +157,13 @@ private fun StatisticsContent(premiumPending: Boolean) {
         enabled = !premiumPending,
     )
 
-    HcScreen(t.t("statistics.title"), back = nav.showBack, scroll = false, contentPadding = PaddingValues(0.dp)) {
+    HcScreen(
+        t.t("statistics.title"),
+        back = nav.showBack,
+        scroll = false,
+        contentPadding = PaddingValues(0.dp),
+        icon = { TrendIcon(HcColors.White, size = 20) },
+    ) {
         Column(
             Modifier
                 .fillMaxSize()

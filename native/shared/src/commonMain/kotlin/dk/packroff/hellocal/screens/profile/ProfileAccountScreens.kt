@@ -1,5 +1,7 @@
 package dk.packroff.hellocal.screens.profile
 
+import dk.packroff.hellocal.ui.Units
+import dk.packroff.hellocal.ui.WeightUnit
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -178,7 +180,7 @@ fun StartWeightVerifyScreen(args: RouteArgs) {
     val nav = LocalNavigator.current
     val scope = rememberCoroutineScope()
     val token = args.opt("token") ?: ""
-    val weightUnit = remember { ProfileUnits.current().weight }
+    val weightUnit = remember { Units.current().weight }
     // loading | valid | invalid | saving | saved
     var state by remember(token) { mutableStateOf(if (token.isNotEmpty()) "loading" else "invalid") }
     var weight by remember { mutableStateOf("") }
@@ -191,7 +193,7 @@ fun StartWeightVerifyScreen(args: RouteArgs) {
             if (data["valid"]?.jsonPrimitive?.booleanOrNull != true) {
                 "invalid"
             } else {
-                data["currentWeightKg"]?.jsonPrimitive?.doubleOrNull?.let { weight = ProfileUnits.weightToInputValue(it, weightUnit) }
+                data["currentWeightKg"]?.jsonPrimitive?.doubleOrNull?.let { weight = Units.weightToInputValue(it, weightUnit) }
                 "valid"
             }
         } catch (e: Exception) {
@@ -201,7 +203,7 @@ fun StartWeightVerifyScreen(args: RouteArgs) {
 
     fun save() {
         if (state == "saving") return
-        val kg = ProfileUnits.parseWeightInput(weight, weightUnit)
+        val kg = Units.parseWeightInput(weight, weightUnit)
         val parsed = kg?.let { round1(it) }
         if (parsed == null || parsed < MIN_KG || parsed > MAX_KG) {
             error = t.t("profile.startWeight.invalidWeight")
@@ -254,7 +256,7 @@ fun StartWeightVerifyScreen(args: RouteArgs) {
                             Modifier.fillMaxWidth(),
                             enabled = state != "saving",
                             keyboardType = if (weightUnit == WeightUnit.St) KeyboardType.Text else KeyboardType.Decimal,
-                            suffix = ProfileUnits.weightUnitLabel(weightUnit).uppercase(),
+                            suffix = Units.weightUnitLabel(weightUnit).uppercase(),
                         )
                     }
                     HcError(error)

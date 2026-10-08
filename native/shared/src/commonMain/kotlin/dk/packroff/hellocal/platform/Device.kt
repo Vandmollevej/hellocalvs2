@@ -3,7 +3,6 @@ package dk.packroff.hellocal.platform
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.setValue
-import dk.packroff.hellocal.api.HelloCalConfig
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
@@ -155,6 +154,18 @@ object Device {
         appBackgroundCount += 1
     }
 
+    /**
+     * Bumped when the app comes back to the screen (web: a page that was left
+     * for an external site, e.g. Stripe's portal, is loaded again on return). Compose state.
+     */
+    var appForegroundCount by mutableIntStateOf(0)
+        private set
+
+    /** Called by the platforms when the app returns to the foreground (Android onStart, iOS willEnterForeground). */
+    fun notifyAppForeground() {
+        appForegroundCount += 1
+    }
+
     private fun requirePlatform(): DevicePlatform = platform ?: throw DeviceUnavailable()
 
     suspend fun takePhoto(maxEdge: Int = PHOTO_MAX_EDGE, quality: Double = PHOTO_QUALITY): ByteArray? {
@@ -267,15 +278,6 @@ object Device {
     suspend fun enablePush(): String {
         val p = platform ?: return DeviceError.UNSUPPORTED
         return awaitResult<String> { done -> p.enablePush { status -> done(status, null) } } ?: "failed"
-    }
-
-    /**
-     * web openHelpChat(): the help chat lives in the web layout. Natively the
-     * Support page opens in the browser, where the chat button is.
-     * TODO(parity): a native help chat screen.
-     */
-    fun openHelpChat() {
-        NativeHooks.openExternalUrl(HelloCalConfig.BASE_URL + "/settings/support")
     }
 
     /** "data:image/jpeg;base64,…" — how the web sends photos to the API. */

@@ -56,9 +56,13 @@ import kotlinx.serialization.json.put
 import kotlinx.coroutines.launch
 
 /**
- * src/lib/product-draft.ts — what the guided camera flow (/camera/create) already
- * photographed and recognised; /product/create pre-fills from it and clears it.
- * TODO(parity): the camera area sets [ProductDraftStore.draft] before navigating here.
+ * src/lib/product-draft.ts — sessionStorage "hellocal-product-create-draft":
+ * /product/create pre-fills from it and clears it. On the web nothing writes
+ * it any more: /camera/create redirects to /camera?mode=product, whose
+ * ProductCaptureFlow creates the product itself (POST /api/products/quick →
+ * /add/[id], docs/DECISIONS.md 2026-09-27). The native camera flow
+ * (screens/capture/ProductCaptureFlow.kt) does the same, so this store is only
+ * the reader side, kept 1:1 with the web page.
  */
 data class ProductCreateDraft(
     val brand: String? = null,
@@ -301,7 +305,7 @@ fun ProductCreateScreen(args: RouteArgs) {
     }
 
     if (savedOffline) {
-        HcScreen(t.t("productCreate.title"), contentPadding = LIST_PAGE_PADDING) {
+        HcScreen(t.t("productCreate.title"), icon = { HcIcon("Apple", size = 20.dp, stroke = 2f, color = HcColors.White) }, contentPadding = LIST_PAGE_PADDING) {
             Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
                 HcText(
                     t.t("productCreate.savedOffline"),
@@ -316,7 +320,7 @@ fun ProductCreateScreen(args: RouteArgs) {
         return
     }
 
-    HcScreen(t.t("productCreate.title"), contentPadding = LIST_PAGE_PADDING) {
+    HcScreen(t.t("productCreate.title"), icon = { HcIcon("Apple", size = 20.dp, stroke = 2f, color = HcColors.White) }, contentPadding = LIST_PAGE_PADDING) {
         Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
             if (fromFailedAdd) {
                 HcText(

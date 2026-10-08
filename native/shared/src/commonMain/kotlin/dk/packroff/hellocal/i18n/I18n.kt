@@ -7,6 +7,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import dk.packroff.hellocal.platform.NativeHooks
 import dk.packroff.hellocal.resources.Res
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonElement
@@ -75,10 +76,41 @@ object Dictionaries {
 
 val LocalTranslator = compositionLocalOf { Translator.Empty }
 
-/** Loads the dictionary for [locale] and recomposes when it is ready. */
+/**
+ * The app language (src/i18n/LocaleProvider.tsx). Before login it comes from
+ * the device ("hello-cal-locale", set by the login country picker); once logged
+ * in the profile's appLocale wins. Changing it switches every screen at once.
+ */
+object AppLocale {
+    const val STORAGE_KEY = "hello-cal-locale"
+
+    var current by mutableStateOf(Locale.Default)
+        private set
+
+    fun isLocale(code: String?): Boolean = Locale.entries.any { it.code == code }
+
+    /** Start-up: the stored choice, else [fallback] (e.g. the stored login country), else Danish. */
+    fun init(fallback: () -> String?) {
+        val stored = runCatching { NativeHooks.secureStorage.get(STORAGE_KEY) }.getOrNull()
+        val code = stored?.takeIf { isLocale(it) } ?: fallback()?.takeIf { isLocale(it) }
+        current = Locale.from(code)
+    }
+
+    /** web setLocale(): switches the app language; [persist] keeps it on the device for the next start. */
+    fun set(code: String?, persist: Boolean = true) {
+        if (!isLocale(code)) return
+        current = Locale.from(code)
+        if (persist) runCatching { NativeHooks.secureStorage.set(STORAGE_KEY, current.code) }
+    }
+}
+
+/**
+ * Loads the dictionary for [locale] and recomposes when it is ready. While a
+ * new language loads, the previous dictionary stays in use (no blank screen).
+ */
 @Composable
 fun rememberTranslator(locale: Locale): Translator? {
-    var translator by remember(locale) { mutableStateOf<Translator?>(null) }
+    var translator by remember { mutableStateOf<Translator?>(null) }
     LaunchedEffect(locale) { translator = Dictionaries.translator(locale) }
     return translator
 }

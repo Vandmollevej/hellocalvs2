@@ -102,9 +102,8 @@ fun FoodImage(
  * Tabler icon.
  */
 @Composable
-fun FoodMaskIcon(src: String, size: Dp = 24.dp, color: Color = HcColors.Action, modifier: Modifier = Modifier) {
-    FoodImage(src, modifier.size(size), contentScale = ContentScale.Fit, colorFilter = ColorFilter.tint(color))
-}
+fun FoodMaskIcon(src: String, size: Dp = 24.dp, color: Color = HcColors.Action, modifier: Modifier = Modifier) =
+    HcMaskIcon(src, size, color, modifier)
 
 /** src/components/icons/Favorite.tsx — bookmark outline / filled. */
 @Composable
@@ -243,9 +242,7 @@ fun FoodProductResultRow(
 
 /** 1 px border-hf-tan-dark divider between list rows. */
 @Composable
-fun FoodDivider(modifier: Modifier = Modifier) {
-    Box(modifier.fillMaxWidth().height(1.dp).background(HcColors.TanDark))
-}
+fun FoodDivider(modifier: Modifier = Modifier) = HcLine(modifier)
 
 /** Tan list card (overflow-hidden bg-hf-tan rounded-card). */
 @Composable
@@ -255,31 +252,8 @@ fun FoodListCard(modifier: Modifier = Modifier, radius: Dp = HcDimens.RadiusCard
 
 /** .hf-search — 48 px search field with the magnifier (design.md §6.5). */
 @Composable
-fun FoodSearchField(value: String, onValueChange: (String) -> Unit, placeholder: String, modifier: Modifier = Modifier) {
-    val shape = RoundedCornerShape(HcDimens.RadiusCard)
-    Row(
-        modifier.fillMaxWidth().height(HcDimens.ControlHeight).clip(shape).background(HcColors.Surface, shape).border(1.dp, HcColors.Line, shape)
-            .padding(horizontal = HcDimens.SpaceBlock),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(12.dp),
-    ) {
-        HcIcon("Search", size = 16.dp, color = HcColors.Black)
-        BasicTextField(
-            value = value,
-            onValueChange = onValueChange,
-            singleLine = true,
-            textStyle = HcTypeRoles.Input.style(HcColors.Action),
-            cursorBrush = SolidColor(HcColors.Action),
-            modifier = Modifier.weight(1f),
-            decorationBox = { inner ->
-                Box(contentAlignment = Alignment.CenterStart) {
-                    if (value.isEmpty()) HcText(placeholder, HcTypeRoles.Input, color = HcColors.Black.copy(alpha = 0.5f), maxLines = 1)
-                    inner()
-                }
-            },
-        )
-    }
-}
+fun FoodSearchField(value: String, onValueChange: (String) -> Unit, placeholder: String, modifier: Modifier = Modifier) =
+    HcSearchField(value, onValueChange, placeholder, modifier)
 
 /** Pill input on tan (Opret ret's name field and similar). */
 @Composable
@@ -353,15 +327,8 @@ fun FoodTextArea(
 
 /** src/components/hf/Skeleton.tsx — a pulsing skeleton surface (design.md §6.14). */
 @Composable
-fun FoodSkeleton(modifier: Modifier = Modifier, shape: Shape = RoundedCornerShape(6.dp)) {
-    val transition = rememberInfiniteTransition()
-    val phase by transition.animateFloat(
-        initialValue = 0f,
-        targetValue = 1f,
-        animationSpec = infiniteRepeatable(tween(HcDurations.SkeletonDurationMs, easing = LinearEasing), RepeatMode.Reverse),
-    )
-    Box(modifier.clip(shape).background(lerp(HcColors.Skeleton, HcColors.SkeletonHighlight, phase)))
-}
+fun FoodSkeleton(modifier: Modifier = Modifier, shape: Shape = RoundedCornerShape(HcDimens.RadiusCard)) =
+    HcSkeleton(modifier, shape)
 
 /** SkeletonMediaRows — rows with a 44 px tile and two text lines. */
 @Composable
@@ -483,49 +450,25 @@ fun FoodMacroSliderBar(label: String, grams: Double, max: Double, onChange: (Dou
 /** src/components/family/ProfileCircle.tsx — initials in a circle. */
 enum class FoodProfileTone { Appbar, Card, Brand }
 
-fun foodInitialsOf(name: String?): String {
-    val parts = (name ?: "").trim().split(Regex("\\s+")).filter { it.isNotEmpty() }
-    if (parts.isEmpty()) return "?"
-    val first = parts.first().take(1)
-    val last = if (parts.size > 1) parts.last().take(1) else ""
-    return (first + last).uppercase()
-}
+fun foodInitialsOf(name: String?): String = initialsOf(name)
 
+/** The shared ProfileCircle (ui/ProfileComponents.kt). */
 @Composable
-fun FoodProfileCircle(name: String, size: Dp = 32.dp, tone: FoodProfileTone = FoodProfileTone.Appbar, outlined: Boolean = false) {
-    val (bg, fg) = when (tone) {
-        FoodProfileTone.Brand -> HcColors.Green to HcColors.White
-        FoodProfileTone.Card -> HcColors.Cream to HcColors.Black
-        FoodProfileTone.Appbar -> HcColors.Tan to HcColors.Black
-    }
-    Box(
-        Modifier.size(size)
-            .let { if (outlined) it.border(1.dp, HcColors.TanDark, CircleShape) else it }
-            .let { if (tone == FoodProfileTone.Card) it.border(1.dp, HcColors.GrayBorder, CircleShape) else it }
-            .clip(CircleShape).background(bg),
-        contentAlignment = Alignment.Center,
-    ) {
-        Text(
-            foodInitialsOf(name),
-            style = HcTypeRoles.Body.style(fg).copy(fontWeight = FontWeight.Bold, fontSize = (size.value * 0.375f).sp, lineHeight = (size.value * 0.375f).sp),
-            maxLines = 1,
-            overflow = TextOverflow.Clip,
-        )
-    }
-}
+fun FoodProfileCircle(name: String, size: Dp = 32.dp, tone: FoodProfileTone = FoodProfileTone.Appbar, outlined: Boolean = false) =
+    ProfileCircle(
+        name,
+        size,
+        when (tone) {
+            FoodProfileTone.Brand -> ProfileCircleTone.Brand
+            FoodProfileTone.Card -> ProfileCircleTone.Card
+            FoodProfileTone.Appbar -> ProfileCircleTone.Appbar
+        },
+        outlined,
+    )
 
-/** BottomSheetDots — page dots for slides (active = brand green). */
+/** BottomSheetDots — the shared HcSheetDots. */
 @Composable
-fun FoodSheetDots(count: Int, active: Int, onSelect: ((Int) -> Unit)? = null) {
-    Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
-        repeat(count) { index ->
-            Box(
-                Modifier.size(8.dp).clip(CircleShape).background(if (index == active) HcColors.Brand else HcColors.Gray)
-                    .let { if (onSelect != null) it.clickable { onSelect(index) } else it },
-            )
-        }
-    }
-}
+fun FoodSheetDots(count: Int, active: Int, onSelect: ((Int) -> Unit)? = null) = HcSheetDots(count, active, onSelect)
 
 /** .hf-bottom-sheet__skip — text button under the primary button in a sheet. */
 @Composable
@@ -554,31 +497,14 @@ fun FoodEntryDetailsSheet(
     deleteWarning: String,
     onDelete: (() -> Unit)?,
     onClose: () -> Unit,
-) {
-    HcBottomSheet(onDismiss = onClose, title = title) {
-        Column(Modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(16.dp)) {
-            if (subtitle != null) HcText(subtitle, HcTypeRoles.Body, Modifier.fillMaxWidth(), color = HcColors.TextSecondary, align = TextAlign.Center)
-            if (rows.isNotEmpty()) {
-                FoodListCard {
-                    rows.forEachIndexed { index, row ->
-                        Row(Modifier.fillMaxWidth().heightIn(min = 48.dp).padding(horizontal = 16.dp), verticalAlignment = Alignment.CenterVertically) {
-                            HcText(row.label, HcTypeRoles.Body, Modifier.weight(1f), color = HcColors.Black)
-                            HcText(row.value, HcTypeRoles.Body, color = HcColors.Black, bold = true, align = TextAlign.End)
-                        }
-                        if (index < rows.lastIndex) FoodDivider()
-                    }
-                }
-            }
-            if (onDelete != null) HcText(deleteWarning, HcTypeRoles.Body, Modifier.fillMaxWidth(), color = HcColors.RedDark, align = TextAlign.Center)
-            if (onDelete != null) {
-                HcButton(deleteLabel, onClick = { onDelete(); onClose() }, kind = HcButtonKind.Danger)
-                FoodSheetSkipButton(cancelLabel, onClose)
-            } else {
-                HcButton(closeLabel, onClick = onClose)
-            }
-        }
-    }
-}
+) = CaptureEntryDetailsSheet(
+    // The one EntryDetailsSheet port (ui/CaptureRows.kt); its texts are the same entrySheet.* keys.
+    title = title,
+    onClose = onClose,
+    subtitle = subtitle,
+    rows = rows.map { CaptureDetailRow(it.label, it.value) },
+    onDelete = onDelete,
+)
 
 /** Small pill button (hf-btn-primary / hf-btn-secondary px-4 py-1.5). */
 @Composable
@@ -642,7 +568,5 @@ fun Modifier.foodSelected(selected: Boolean, shape: Shape, unselected: Color = H
 /** HcBottomSheet whose content scrolls when it is taller than the screen. */
 @Composable
 fun FoodScrollSheet(onDismiss: () -> Unit, title: String? = null, content: @Composable ColumnScope.() -> Unit) {
-    HcBottomSheet(onDismiss = onDismiss, title = title) {
-        Column(Modifier.fillMaxWidth().verticalScroll(androidx.compose.foundation.rememberScrollState()), content = content)
-    }
+    HcBottomSheet(onDismiss = onDismiss, title = title, scrollable = true, content = content)
 }

@@ -107,23 +107,8 @@ fun StatsChoiceChip(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     leading: (@Composable () -> Unit)? = null,
-) {
-    val shape = RoundedCornerShape(HcDimens.RadiusCard)
-    Row(
-        modifier
-            .heightIn(min = 40.dp)
-            .clip(shape)
-            .background(if (selected) HcColors.SelectedBg else HcColors.Card, shape)
-            .let { if (selected) it.statsOutline(HcColors.SelectedBorder, width = 2.dp, dashed = false) else it }
-            .clickable(onClick = onClick)
-            .padding(horizontal = 12.dp, vertical = 6.dp),
-        horizontalArrangement = Arrangement.spacedBy(6.dp, Alignment.CenterHorizontally),
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        leading?.invoke()
-        HcText(label, HcTypeRoles.Small, bold = true, color = if (selected) HcColors.SelectedText else HcColors.Text, align = TextAlign.Center)
-    }
-}
+) =
+    HcChoiceChip(label, selected, onClick, modifier, leading = leading)
 
 /** A coloured dot in front of a chart legend entry (`inline-block size-2 rounded-full`). */
 @Composable
@@ -133,29 +118,7 @@ fun StatsLegendDot(color: Color) {
 
 /** src/components/hf/Skeleton.tsx — a shimmering placeholder surface (design.md §6.14). */
 @Composable
-fun StatsSkeleton(modifier: Modifier = Modifier, shape: Shape = RoundedCornerShape(HcDimens.RadiusCard)) {
-    val transition = rememberInfiniteTransition()
-    val phase by transition.animateFloat(
-        initialValue = 1f,
-        targetValue = 0f,
-        animationSpec = infiniteRepeatable(tween(HcDurations.SkeletonDurationMs, easing = LinearEasing), RepeatMode.Restart),
-    )
-    Box(
-        modifier
-            .clip(shape)
-            .drawBehind {
-                val w = size.width.coerceAtLeast(1f)
-                val start = -w + 2f * w * phase
-                drawRect(
-                    Brush.linearGradient(
-                        colors = listOf(HcColors.Skeleton, HcColors.SkeletonHighlight, HcColors.Skeleton),
-                        start = Offset(start, 0f),
-                        end = Offset(start + w, 0f),
-                    ),
-                )
-            },
-    )
-}
+fun StatsSkeleton(modifier: Modifier = Modifier, shape: Shape = RoundedCornerShape(HcDimens.RadiusCard)) = HcSkeleton(modifier, shape)
 
 /**
  * src/components/hf/AccordionSection.tsx — tan header row (accent + frame
@@ -224,37 +187,8 @@ fun StatsDropdownSection(
 
 /** `.hf-search` — 48 px search field with a 16 px magnifier. */
 @Composable
-fun StatsSearchField(value: String, onValueChange: (String) -> Unit, placeholder: String, modifier: Modifier = Modifier) {
-    val shape = RoundedCornerShape(HcDimens.RadiusCard)
-    Row(
-        modifier
-            .fillMaxWidth()
-            .height(HcDimens.ControlHeight)
-            .clip(shape)
-            .background(HcColors.Surface, shape)
-            .border(1.dp, HcColors.Line, shape)
-            .padding(horizontal = HcDimens.SpaceBlock),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(12.dp),
-    ) {
-        HcIcon("Search", size = 16.dp, color = HcColors.Black)
-        BasicTextField(
-            value = value,
-            onValueChange = onValueChange,
-            singleLine = true,
-            textStyle = HcTypeRoles.Input.style(),
-            cursorBrush = SolidColor(HcColors.Action),
-            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
-            modifier = Modifier.weight(1f),
-            decorationBox = { inner ->
-                Box(contentAlignment = Alignment.CenterStart) {
-                    if (value.isEmpty()) HcText(placeholder, HcTypeRoles.Input, color = HcColors.Black.copy(alpha = 0.5f), maxLines = 1)
-                    inner()
-                }
-            },
-        )
-    }
-}
+fun StatsSearchField(value: String, onValueChange: (String) -> Unit, placeholder: String, modifier: Modifier = Modifier) =
+    HcSearchField(value, onValueChange, placeholder, modifier)
 
 /**
  * src/components/ui/RemoveCircleButton.tsx — the black remove circle shown on
@@ -294,16 +228,6 @@ fun StatsUncertaintyTilde(textSize: Float, small: Boolean = false) {
                 color = HcColors.Green,
             ),
         )
-    }
-}
-
-/** `.hf-bottom-sheet__dots` — page dots in a bottom sheet. */
-@Composable
-fun StatsSheetDots(count: Int, active: Int, modifier: Modifier = Modifier) {
-    Row(modifier, horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
-        repeat(count) { index ->
-            Box(Modifier.size(8.dp).background(if (index == active) HcColors.Brand else HcColors.Gray, CircleShape))
-        }
     }
 }
 

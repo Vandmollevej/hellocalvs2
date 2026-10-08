@@ -190,20 +190,5 @@ private fun SettingsControlLogEntryRow(entry: SettingsControlLogEntry, t: Transl
 
 /** src/components/family/ProfileCircle.tsx with tone="card" (32 px, cream with a thin border). */
 @Composable
-private fun SettingsControlLogProfileCircle(name: String) {
-    Box(
-        Modifier.size(32.dp).clip(CircleShape).background(HcColors.Cream, CircleShape).border(1.dp, HcColors.GrayBorder, CircleShape),
-        contentAlignment = Alignment.Center,
-    ) {
-        HcText(settingsControlLogInitials(name), HcTypeRoles.Small, color = HcColors.Black, bold = true, align = TextAlign.Center)
-    }
-}
-
-/** src/lib/initials.ts initialsOf(): "Peter Thomsen" → "PT", "Emma" → "E". */
-private fun settingsControlLogInitials(name: String?): String {
-    val parts = (name ?: "").trim().split(Regex("\\s+")).filter { it.isNotEmpty() }
-    if (parts.isEmpty()) return "?"
-    val first = parts.first().take(1)
-    val last = if (parts.size > 1) parts.last().take(1) else ""
-    return (first + last).uppercase()
-}
+private fun SettingsControlLogProfileCircle(name: String) =
+    dk.packroff.hellocal.ui.ProfileCircle(name, tone = dk.packroff.hellocal.ui.ProfileCircleTone.Card)

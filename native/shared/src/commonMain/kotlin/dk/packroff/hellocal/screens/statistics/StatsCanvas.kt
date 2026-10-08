@@ -2,6 +2,11 @@ package dk.packroff.hellocal.screens.statistics
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.awaitEachGesture
+import androidx.compose.foundation.gestures.awaitFirstDown
+import androidx.compose.foundation.gestures.waitForUpOrCancellation
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.aspectRatio
@@ -9,7 +14,22 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.pointer.PointerEventPass
+import androidx.compose.ui.input.pointer.PointerInputScope
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.layout.Layout
+import androidx.compose.ui.unit.Constraints
+import androidx.compose.ui.unit.dp
+import dk.packroff.hellocal.theme.HcTypeRoles
+import dk.packroff.hellocal.ui.HcText
+import kotlin.math.max
+import kotlin.math.roundToInt
+import kotlin.math.sqrt
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
@@ -110,12 +130,115 @@ internal class ViewBoxScope(private val scope: DrawScope, private val scale: Flo
     }
 }
 
-/** A chart canvas with an SVG-style viewBox of [width] × [height]. */
+/**
+ * An SVG `<title>` on a chart mark (circle or bar), in viewBox units. The
+ * browser shows the title when the pointer rests on the mark; the app shows
+ * [text] in a small bubble when the mark is tapped.
+ */
+internal data class ChartTip(val x: Float, val y: Float, val w: Float, val h: Float, val text: String, val round: Boolean) {
+    /** Distance from (px, py) to the mark's edge — 0 inside it. */
+    fun distance(px: Float, py: Float): Float {
+        if (round) {
+            val r = w / 2f
+            val dx = px - (x + r)
+            val dy = py - (y + r)
+            return max(0f, sqrt(dx * dx + dy * dy) - r)
+        }
+        val dx = max(max(x - px, 0f), px - (x + w))
+        val dy = max(max(y - py, 0f), py - (y + h))
+        return sqrt(dx * dx + dy * dy)
+    }
+
+    companion object {
+        fun circle(cx: Float, cy: Float, r: Float, text: String) = ChartTip(cx - r, cy - r, r * 2f, r * 2f, text, round = true)
+        fun rect(x: Float, y: Float, w: Float, h: Float, text: String) = ChartTip(x, y, w, h, text, round = false)
+    }
+}
+
+/** How far (dp) from a mark a tap still counts as a tap on it. */
+private const val TIP_TOLERANCE_DP = 12
+
+/**
+ * A short tap that nothing else took: the scroll (a swipe) and the edit-mode
+ * drag (a long press) consume their events, which cancels the tap here. Seen
+ * on the Final pass and never consumed, so the chart's own long press still works.
+ */
+private suspend fun PointerInputScope.detectChartTap(onTap: (Offset) -> Unit) {
+    awaitEachGesture {
+        awaitFirstDown(requireUnconsumed = false)
+        val up = waitForUpOrCancellation(pass = PointerEventPass.Final)
+        if (up != null) onTap(up.position)
+    }
+}
+
+/** A chart canvas with an SVG-style viewBox of [width] × [height]; [tips] are its point titles. */
 @Composable
-internal fun ViewBoxCanvas(width: Float, height: Float, modifier: Modifier = Modifier, draw: ViewBoxScope.() -> Unit) {
+internal fun ViewBoxCanvas(
+    width: Float,
+    height: Float,
+    modifier: Modifier = Modifier,
+    tips: List<ChartTip> = emptyList(),
+    draw: ViewBoxScope.() -> Unit,
+) {
     val measurer = rememberTextMeasurer()
-    Canvas(modifier.fillMaxWidth().aspectRatio(width / height)) {
-        ViewBoxScope(this, size.width / width, measurer).draw()
+    var shown by remember(tips) { mutableStateOf<ChartTip?>(null) }
+    Box(modifier.fillMaxWidth().aspectRatio(width / height)) {
+        Canvas(
+            Modifier
+                .matchParentSize()
+                .let { base ->
+                    if (tips.isEmpty()) base
+                    else base.pointerInput(tips) {
+                        detectChartTap { position ->
+                            // A tap near a mark shows its title; a tap anywhere else hides it.
+                            val scale = size.width / width
+                            val tolerance = TIP_TOLERANCE_DP.dp.toPx() / scale
+                            val px = position.x / scale
+                            val py = position.y / scale
+                            var best: ChartTip? = null
+                            var bestDistance = Float.MAX_VALUE
+                            for (tip in tips) {
+                                val d = tip.distance(px, py)
+                                // Later marks are drawn on top, so they win a tie.
+                                if (d <= tolerance && d <= bestDistance) {
+                                    best = tip
+                                    bestDistance = d
+                                }
+                            }
+                            shown = best
+                        }
+                    }
+                },
+        ) {
+            ViewBoxScope(this, size.width / width, measurer).draw()
+        }
+        shown?.let { tip -> ChartTipBubble(tip, width, Modifier.matchParentSize()) { shown = null } }
+    }
+}
+
+/** The title bubble, centred above its mark and kept inside the chart's width. */
+@Composable
+private fun ChartTipBubble(tip: ChartTip, viewBoxWidth: Float, modifier: Modifier, onClose: () -> Unit) {
+    Layout(
+        content = {
+            Box(
+                Modifier
+                    .background(HcColors.Black, RoundedCornerShape(HcDimens.RadiusCard))
+                    .clickable(onClick = onClose)
+                    .padding(horizontal = 8.dp, vertical = 4.dp),
+            ) {
+                HcText(tip.text, HcTypeRoles.Small, color = HcColors.White)
+            }
+        },
+        modifier = modifier,
+    ) { measurables, constraints ->
+        val placeable = measurables.first().measure(Constraints(maxWidth = constraints.maxWidth))
+        val scale = constraints.maxWidth / viewBoxWidth
+        val gap = 6.dp.roundToPx()
+        val centre = (tip.x + tip.w / 2f) * scale
+        val x = (centre - placeable.width / 2f).roundToInt().coerceIn(0, max(0, constraints.maxWidth - placeable.width))
+        val y = (tip.y * scale).roundToInt() - gap - placeable.height
+        layout(constraints.maxWidth, constraints.maxHeight) { placeable.place(x, y) }
     }
 }
 

@@ -34,6 +34,7 @@ import dk.packroff.hellocal.i18n.LocalTranslator
 import dk.packroff.hellocal.i18n.Translator
 import dk.packroff.hellocal.nav.LocalNavigator
 import dk.packroff.hellocal.nav.RouteArgs
+import dk.packroff.hellocal.platform.Device
 import dk.packroff.hellocal.platform.NativeHooks
 import dk.packroff.hellocal.theme.HcColors
 import dk.packroff.hellocal.theme.HcDimens
@@ -199,6 +200,17 @@ fun SettingsPaymentScreen(args: RouteArgs) {
     var confirmStop by remember { mutableStateOf(false) }
     var opening by remember { mutableStateOf(false) }
     var error by remember { mutableStateOf<String?>(null) }
+    // Stripe's portal was opened outside the app: reload when the app is back on screen
+    // (the web page is loaded again when the portal returns to it).
+    var awaitingPortal by remember { mutableStateOf(false) }
+    val foregroundCount = Device.appForegroundCount
+
+    LaunchedEffect(foregroundCount) {
+        if (awaitingPortal) {
+            awaitingPortal = false
+            reloadKey++
+        }
+    }
 
     LaunchedEffect(reloadKey) {
         if (preview != null) {
@@ -269,8 +281,7 @@ fun SettingsPaymentScreen(args: RouteArgs) {
                 if (url.isNullOrEmpty()) {
                     error = t.t("payment.changeError")
                 } else {
-                    // TODO(parity): the web reloads this page when Stripe's portal returns;
-                    // natively the data is refreshed only when the screen is opened again.
+                    awaitingPortal = true
                     NativeHooks.openExternalUrl(url)
                 }
             } catch (e: ApiException) {
