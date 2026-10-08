@@ -15,6 +15,8 @@ This version has breaking changes — APIs, conventions, and file structure may 
 5. Read `design.md` before any visual/UI change (colors, typography, spacing, radius, component variants) — it is not needed for backend-only, data, or integration work. This file is intentionally not auto-loaded; fetch it explicitly when the task is visual.
 6. Read `docs/handoffs/OPEN-TASKS.md`. Work is shared across several parallel sessions and Claude accounts: if your task is listed there, follow its rules — claim it, stay inside your group's files, and keep your row's status and next step current (commit it) so another account can resume exactly where you stopped.
 
+7. Read `docs/REGLER.md` — the single lookup for global system rules (naming, generic products, logos, UI conventions). Search it FIRST before digging through STATUS/DECISIONS or old sessions, and add every new rule there.
+
 ## Working rules
 
 - Preserve unrelated and uncommitted user changes.
