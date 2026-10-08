@@ -77,3 +77,5 @@ ikke her, er den ikke registreret og skal tilføjes.
 - Nye billedmapper med produkt-/opskrifts-/mærkebilleder skal i
   `PROTECTED_IMAGE_PREFIXES`.
 - Aldrig vandmærke eller skjult bruger-ID i billeder (brugerens regel 2026-10-08).
+
+- **Frida** (DTU-fødevaredatabasen): opbygning, nøgler og rå/kogt-fund står i `docs/FRIDA.md`.
