@@ -993,20 +993,26 @@
     {
       "route": "/profile/settings",
       "web": "src/app/profile/settings/page.tsx",
-      "status": "pending",
-      "native": []
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/settings/SettingsSetupScreens.kt"
+      ]
     },
     {
       "route": "/profile/settings/language-region",
       "web": "src/app/profile/settings/language-region/page.tsx",
-      "status": "pending",
-      "native": []
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/settings/SettingsSetupScreens.kt"
+      ]
     },
     {
       "route": "/profile/settings/results",
       "web": "src/app/profile/settings/results/page.tsx",
-      "status": "pending",
-      "native": []
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/settings/SettingsSetupScreens.kt"
+      ]
     },
     {
       "route": "/profile/sleep",
@@ -1166,152 +1172,202 @@
     {
       "route": "/settings",
       "web": "src/app/settings/page.tsx",
-      "status": "pending",
-      "native": []
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/settings/SettingsScreen.kt"
+      ]
     },
     {
       "route": "/settings/control-log",
       "web": "src/app/settings/control-log/page.tsx",
-      "status": "pending",
-      "native": []
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/settings/SettingsControlLogScreen.kt"
+      ]
     },
     {
       "route": "/settings/delete-permissions",
       "web": "src/app/settings/delete-permissions/page.tsx",
-      "status": "pending",
-      "native": []
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/settings/SettingsDeletePermissionsScreen.kt"
+      ]
     },
     {
       "route": "/settings/display",
       "web": "src/app/settings/display/page.tsx",
-      "status": "pending",
-      "native": []
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/settings/SettingsDisplayScreens.kt"
+      ]
     },
     {
       "route": "/settings/display/calendar-view",
       "web": "src/app/settings/display/calendar-view/page.tsx",
-      "status": "pending",
-      "native": []
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/settings/SettingsDisplayScreens.kt"
+      ]
     },
     {
       "route": "/settings/display/front-page",
       "web": "src/app/settings/display/front-page/page.tsx",
-      "status": "pending",
-      "native": []
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/settings/SettingsFrontPageScreen.kt"
+      ]
     },
     {
       "route": "/settings/display/limits",
       "web": "src/app/settings/display/limits/page.tsx",
-      "status": "pending",
-      "native": []
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/settings/SettingsDisplayScreens.kt"
+      ]
     },
     {
       "route": "/settings/display/menstrual-cycle",
       "web": "src/app/settings/display/menstrual-cycle/page.tsx",
-      "status": "pending",
-      "native": []
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/settings/SettingsDisplayScreens.kt"
+      ]
     },
     {
       "route": "/settings/display/sleep-quality",
       "web": "src/app/settings/display/sleep-quality/page.tsx",
-      "status": "pending",
-      "native": []
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/settings/SettingsDisplayScreens.kt"
+      ]
     },
     {
       "route": "/settings/display/tips",
       "web": "src/app/settings/display/tips/page.tsx",
-      "status": "pending",
-      "native": []
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/settings/SettingsDisplayScreens.kt"
+      ]
     },
     {
       "route": "/settings/display/uncertainty",
       "web": "src/app/settings/display/uncertainty/page.tsx",
-      "status": "pending",
-      "native": []
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/settings/SettingsDisplayScreens.kt"
+      ]
     },
     {
       "route": "/settings/hello-doc",
       "web": "src/app/settings/hello-doc/page.tsx",
-      "status": "pending",
-      "native": []
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/settings/SettingsHelloDocScreen.kt"
+      ]
     },
     {
       "route": "/settings/hello-doc/[id]",
       "web": "src/app/settings/hello-doc/[id]/page.tsx",
-      "status": "pending",
-      "native": []
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/settings/SettingsHelloDocEditScreen.kt"
+      ]
     },
     {
       "route": "/settings/hello-doc/invite",
       "web": "src/app/settings/hello-doc/invite/page.tsx",
-      "status": "pending",
-      "native": []
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/settings/SettingsHelloDocInviteScreen.kt"
+      ]
     },
     {
       "route": "/settings/hello-doc/preview",
       "web": "src/app/settings/hello-doc/preview/page.tsx",
-      "status": "pending",
-      "native": []
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/settings/SettingsHelloDocPreviewScreen.kt"
+      ]
     },
     {
       "route": "/settings/import",
       "web": "src/app/settings/import/page.tsx",
-      "status": "pending",
-      "native": []
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/settings/SettingsImportScreen.kt"
+      ]
     },
     {
       "route": "/settings/integrations",
       "web": "src/app/settings/integrations/page.tsx",
-      "status": "pending",
-      "native": []
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/settings/SettingsIntegrationsScreen.kt"
+      ]
     },
     {
       "route": "/settings/integrations/[app]",
       "web": "src/app/settings/integrations/[app]/page.tsx",
-      "status": "pending",
-      "native": []
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/settings/SettingsIntegrationsAppScreen.kt"
+      ]
     },
     {
       "route": "/settings/payment",
       "web": "src/app/settings/payment/page.tsx",
-      "status": "pending",
-      "native": []
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/settings/SettingsPaymentScreen.kt"
+      ]
     },
     {
       "route": "/settings/payment/mobilepay",
       "web": "src/app/settings/payment/mobilepay/page.tsx",
-      "status": "pending",
-      "native": []
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/settings/SettingsPaymentReturnScreens.kt"
+      ]
     },
     {
       "route": "/settings/payment/stripe",
       "web": "src/app/settings/payment/stripe/page.tsx",
-      "status": "pending",
-      "native": []
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/settings/SettingsPaymentReturnScreens.kt"
+      ]
     },
     {
       "route": "/settings/support",
       "web": "src/app/settings/support/page.tsx",
-      "status": "pending",
-      "native": []
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/settings/SettingsSupportScreen.kt"
+      ]
     },
     {
       "route": "/settings/support/contact",
       "web": "src/app/settings/support/contact/page.tsx",
-      "status": "pending",
-      "native": []
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/settings/SettingsSupportContactScreen.kt"
+      ]
     },
     {
       "route": "/settings/support/requests",
       "web": "src/app/settings/support/requests/page.tsx",
-      "status": "pending",
-      "native": []
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/settings/SettingsSupportRequestsScreen.kt"
+      ]
     },
     {
       "route": "/settings/support/requests/[id]",
       "web": "src/app/settings/support/requests/[id]/page.tsx",
-      "status": "pending",
-      "native": []
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/settings/SettingsSupportRequestThreadScreen.kt"
+      ]
     },
     {
       "route": "/signup",

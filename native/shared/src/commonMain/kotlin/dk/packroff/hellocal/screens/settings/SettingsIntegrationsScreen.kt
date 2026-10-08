@@ -146,7 +146,7 @@ private fun SettingsIntegrationsOverview() {
                 SettingsIntegrationsSection(
                     t.t("integrations.sections.active"),
                     active.map { item -> settingsIntegrationCardItem(item, t) { nav.push("/settings/integrations/${item.pageSlug}") } } +
-                        (if (helloFresh == true) listOf(hfCard) else emptyList()),
+                        (if (helloFresh == true) listOf(hfCard) else emptyList<@Composable () -> Unit>()),
                 )
                 SettingsIntegrationsSection(
                     t.t("integrations.sections.popular"),
@@ -154,7 +154,7 @@ private fun SettingsIntegrationsOverview() {
                 )
                 SettingsIntegrationsSection(
                     t.t("integrations.sections.recipes"),
-                    if (helloFresh == false) listOf(hfCard) else emptyList(),
+                    if (helloFresh == false) listOf(hfCard) else emptyList<@Composable () -> Unit>(),
                 )
                 SettingsIntegrationsSection(
                     t.t("integrations.sections.apps"),
@@ -162,7 +162,7 @@ private fun SettingsIntegrationsOverview() {
                 )
                 SettingsIntegrationsSection(
                     t.t("integrations.sections.moveFrom"),
-                    listOf {
+                    listOf<@Composable () -> Unit>({
                         SettingsIntegrationsCard(
                             title = t.t("integrations.moveFromTitle"),
                             description = t.t("integrations.moveFromDescription"),
@@ -171,7 +171,7 @@ private fun SettingsIntegrationsOverview() {
                             onClick = { nav.push("/settings/import") },
                             icon = { SettingsIntegrationsGlyph("FileImport") },
                         )
-                    },
+                    }),
                 )
             }
         }
