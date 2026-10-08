@@ -102,8 +102,8 @@ object Api {
     suspend fun patch(path: String, body: Any? = null) = send(HttpMethod.Patch, path, body ?: JsonObject(emptyMap()))
     suspend fun delete(path: String, body: Any? = null) = send(HttpMethod.Delete, path, body)
 
-    suspend inline fun <reified T> getAs(path: String): T = ApiJson.decodeFromJsonElement(get(path))
-    suspend inline fun <reified T> postAs(path: String, body: Any? = null): T = ApiJson.decodeFromJsonElement(post(path, body))
+    suspend inline fun <reified T> getAs(path: String): T = ApiJson.decodeFromJsonElement(kotlinx.serialization.serializer<T>(), get(path))
+    suspend inline fun <reified T> postAs(path: String, body: Any? = null): T = ApiJson.decodeFromJsonElement(kotlinx.serialization.serializer<T>(), post(path, body))
 
     /** multipart/form-data upload (photos, voice). */
     suspend fun upload(path: String, fields: Map<String, String>, fileField: String, fileName: String, bytes: ByteArray, mime: String): JsonElement {
