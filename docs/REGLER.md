@@ -57,3 +57,11 @@ ikke her, er den ikke registreret og skal tilføjes.
 
 - Flere parallelle sessioner: stage snævert, deploy-linjen er origin/master.
 - Efter rebase der rører `prisma/schema.prisma`: kør `prisma validate` + typecheck.
+
+## Crawlere og billeder
+
+- Kun forsiden + login/juridiske sider er åbne for anonyme; alt andet kræver
+  login (`src/lib/access-wall.ts`). Nye offentlige ruter skal tilføjes dér.
+- Nye billedmapper med produkt-/opskrifts-/mærkebilleder skal i
+  `PROTECTED_IMAGE_PREFIXES`.
+- Aldrig vandmærke eller skjult bruger-ID i billeder (brugerens regel 2026-10-08).

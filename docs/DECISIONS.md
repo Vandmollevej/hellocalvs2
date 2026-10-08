@@ -4659,3 +4659,29 @@ Brugeren valgte "helt native" frem for en web-app i en skal (bekræfter 2026-09-
 - **Genereret, ikke kopieret.** Farver, mål, typografi (`globals.css`), tekster (`src/i18n/locales`), ikoner og app-ikon genereres af `scripts/native/sync.mjs`. Håndskrevne hex-værdier i widgets er fjernet.
 - **Paritet håndhæves.** `native/parity/screens.json` binder hver web-side til sin native skærm. Fingeraftryk af sidens web-filer (siden + importerede komponenter) afslører, når web er ændret uden native. Det håndhæves af AGENTS.md-reglen, en Stop-hook i `.claude/settings.json` og CI.
 - Admin, partner-, erhvervs- og butiks-scanner-sider forbliver web (`web-only`).
+## 2026-10-08: Adgangsmur mod crawlere og scrapere
+
+Brugerens krav: strengt — crawlere/robotter får kun adgang til forsiden, heller
+ikke når de er logget ind; ingen vandmærkning/bruger-ID i billeder (afvist).
+Implementeret i `src/lib/access-wall.ts` + `middleware.ts` (forbrugerdomænet;
+admin har sin egen login + IP-spærre):
+
+- Kendte crawlere, AI-scrapere, SEO-værktøjer og script-/headless-klienter
+  (User-Agent) får 403 overalt, også på forsiden. Tom/kort UA afvises. Undtaget:
+  `/api/health` og token-API'er (widgets, MCP, HealthKit), plus localhost.
+- Anonyme ser kun forsiden, login/tilmelding/glemt kode, juridiske sider,
+  token-delingslinks (`/forward`, `/hello-doc`), `/family-code`, `/umami` og
+  logo/ikon-filer. Alt andet kræver gyldig `hc_user_session`: sider → redirect
+  til `/login`, API → 401, beskyttede billeder → 404. Lukker bl.a. de AI-ruter
+  (`/api/ai/*`), der ikke selv tjekker login.
+- Beskyttede billeder (`/product-images`, `/hellofresh-images`, `/brand-logos`,
+  `/dummy`, `/body-measurements`, `/measurements`, `/icons/animals`): kræver
+  session, afviser cross-site/hotlink og direkte åbning (`Sec-Fetch-*`, ellers
+  Referer), `Cache-Control: private`, `Cross-Origin-Resource-Policy: same-origin`.
+  `/_next/image` er med i middleware og vurderes på den ægte kilde-sti.
+- Rate limit pr. IP (anonym 60/min) og pr. bruger (sider 600, API 300, billeder
+  900 pr. minut), i processen. `public/robots.txt` er stadig `Disallow: /`.
+- Bevidst valgt frem for signerede kortlivede billed-URL'er: session-cookien er
+  strengere (en URL kan deles). Vandmærke/bruger-ID i billeder er afvist (privatliv).
+- Grænse: et billede en bruger kan se, kan altid screenshottes. Murens formål er
+  at stoppe automatisk indsamling, ikke manuel kopiering.
