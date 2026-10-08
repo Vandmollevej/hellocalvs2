@@ -2648,6 +2648,8 @@ enum MessageEvent {
   SUPPORT_REPLY
   SUPPORT_OVERDUE_ADMIN
   SUPPORT_RECEIVED
+  // Admin har afvist en delt ret som kopi (docs/DECISIONS.md 2026-10-08).
+  RECIPE_SHARE_REJECTED
 }
 
 enum MessageChannel {

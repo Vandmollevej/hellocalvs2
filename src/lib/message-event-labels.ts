@@ -8,6 +8,7 @@ export const EVENT_LABELS: Record<string, string> = {
   FRIEND_REFERRAL: "Invitér en ven — belønning givet",
   PRODUCT_APPROVED: "Vare godkendt",
   PRODUCT_REJECTED: "Vare afvist",
+  RECIPE_SHARE_REJECTED: "Delt ret afvist",
   PRODUCT_ESCALATION_ADMIN: "Admin: vare venter >48 timer",
   BUG_REPORT_ESCALATION_ADMIN: "Admin: fejlrapport venter >48 timer",
   BUG_REPORT_RESOLVED: "Fejlrapport løst",
