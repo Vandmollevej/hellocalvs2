@@ -21,6 +21,7 @@ const LINK_DEFS: { href: string; key: AdminI18nKey }[] = [
   { href: "/admin/ingredient-requests", key: "nav_ingredient_requests" },
   { href: "/admin/uncertainties", key: "nav_uncertainties" },
   { href: "/admin/cron-jobs", key: "nav_cron_jobs" },
+  { href: "/admin/pet-food-filter", key: "nav_pet_food_filter" },
   { href: "/admin/duplicate-products", key: "nav_duplicate_products" },
   { href: "/admin/search", key: "nav_search" },
   { href: "/admin/search-ranking", key: "nav_search_ranking" },
