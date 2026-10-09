@@ -3,6 +3,9 @@
 Last updated: 2026-10-03
 Last updated: 2026-10-04
 
+## 2026-10-09: Viden om mad — forsidesøgning dækker også E-numre
+
+- Søgefeltet på `/viden-om` finder nu E-numre på kode, navn og funktion (via `matchesAdditive`), ud over vitaminer, sundhedstips og Mad på latin. Underkategorierne og de selvstændige sider havde allerede egne søgefelter, der kun søger i deres eget indhold. Lint er ren; `npm run build` er ikke kørt, og siden er ikke prøvet i browser.
 ## 2026-10-04: Billed-upload for produktbilleder (admin → Varedatabase → Billed-upload)
 
 - Ny side `/admin/product-database/image-upload` (også knappen "Upload billeder" på Varer). Samme mønster som Logo-upload: træk filer eller en hel mappe ind, hvert slip er et parti med tidsstempel, oversigt med størrelse / original-dimensioner / filstørrelse / proces, og "Slet valgte" / "Slet hele partiet" gendanner de tidligere billeder.
