@@ -10,7 +10,7 @@
     "src/components/EnergyBreakdown.tsx": "97939a4c16e4b7fe",
     "src/components/EnergyGoalEditor.tsx": "9f39a1f62786e5bd",
     "src/components/FoodRow.tsx": "b5ec0c5a27228591",
-    "src/components/FooterArc.tsx": "82467c2c38be5d36",
+    "src/components/FooterArc.tsx": "969b0096eddae197",
     "src/components/FooterArcEditor.tsx": "6539c7244a199ffd",
     "src/components/Hero.tsx": "7bfb15911d015dd5",
     "src/components/HomeWaves.tsx": "0ca54f49d68deb2b",
@@ -215,7 +215,7 @@
     "src/components/web/WebShell.tsx": "5f2646ffd79af9cc"
   },
   "/calendar": {
-    "src/app/calendar/page.tsx": "4657aa0c79419531",
+    "src/app/calendar/page.tsx": "67e07641212b121c",
     "src/app/layout.tsx": "9a180a8c9b7bdec8",
     "src/components/AuthGate.tsx": "94db96b768f9f95f",
     "src/components/BottomNav.tsx": "0be4f645f07e4e9f",
