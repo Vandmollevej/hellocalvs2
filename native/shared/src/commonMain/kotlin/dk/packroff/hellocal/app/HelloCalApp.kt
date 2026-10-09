@@ -22,6 +22,8 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
+import dk.packroff.hellocal.screens.food.AddMenuSheet
+import dk.packroff.hellocal.screens.food.HomeFooterArc
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.style.TextAlign
@@ -181,6 +183,7 @@ private fun AppFrame(navigator: Navigator) {
     val location = navigator.current
     val resolved = Routes.resolve(location.path)
     val showNav = resolved?.first?.fullScreen != true && Session.state == Session.State.LoggedIn
+    var footerMenuSheetOpen by remember { mutableStateOf(false) }
     BoxWithConstraints(Modifier.fillMaxSize()) {
         // useIsCompactLandscape: "(orientation: landscape) and (max-height: 500px)".
         val compact = maxWidth > maxHeight && maxHeight <= 500.dp
@@ -193,11 +196,16 @@ private fun AppFrame(navigator: Navigator) {
                         val (route, params) = resolved
                         route.content(RouteArgs(params, location.query, location.fragment))
                     }
+                    // The bottom circle shows on every page with the bottom bar (user 2026-10-09).
+                    if (showNav) {
+                        HomeFooterArc(Modifier.align(Alignment.BottomCenter), onOpenMenuSheet = { footerMenuSheetOpen = true })
+                    }
                 }
                 if (showNav) {
                     Box(Modifier.navigationBarsPadding()) { BottomNav(navigator) }
                 }
             }
+            if (footerMenuSheetOpen) AddMenuSheet(onClose = { footerMenuSheetOpen = false })
             // The bottom bar's edit panel lies over the page, like the web's absolute panel.
             if (showNav) BottomNavEditOverlay()
         }

@@ -32,6 +32,7 @@ import {
   BOTTOM_NAV_STORAGE_KEY,
   DEFAULT_BOTTOM_NAV_ACTIVE,
 } from "@/lib/navigation";
+import { FooterArc } from "@/components/FooterArc";
 
 const ICON_SIZE = 24;
 // Aktiv/inaktiv fane: tekstfarven og den sekundære grå (tokens i globals.css).
@@ -830,6 +831,8 @@ export function BottomNav() {
 
   return (
     <div className="hf-bottom-nav relative select-none [-webkit-touch-callout:none]">
+      {/* Bundcirklen vises på alle sider (bruger 2026-10-09); popups (z-200) ligger over. */}
+      <FooterArc />
       {editMode && (
         <div
           className="fixed inset-0 z-40 bg-hf-black/10"
