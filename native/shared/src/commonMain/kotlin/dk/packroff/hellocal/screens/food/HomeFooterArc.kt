@@ -90,7 +90,6 @@ private const val ARC_HIGHLIGHT_SCALE = 1.35f
 private const val ARC_FINGER_CLEARANCE = 62f
 private const val ARC_TOP_ROOM = 90f
 internal const val ARC_ICON_SIZE = 26f
-private const val ARC_OFFSET_X_KEY = "hellocal.frontpage.arcOffsetX"
 /** Smallest distance from a button's centre to the screen edge. */
 private const val ARC_EDGE_MARGIN = ARC_ICON_CIRCLE / 2 + 8
 
@@ -208,7 +207,7 @@ private fun segmentPoints(height: Float, targetDeg: Double?, amount: Float): Lis
 
 internal data class ArcSlot(val key: String, val href: String, val label: String, val icon: FoodIconSpec)
 
-private enum class ArcMode { Undecided, Slide, Pull, Select }
+private enum class ArcMode { Undecided, Pull, Select }
 
 @Composable
 fun HomeFooterArc(modifier: Modifier = Modifier, onOpenMenuSheet: () -> Unit) {
@@ -229,8 +228,6 @@ fun HomeFooterArc(modifier: Modifier = Modifier, onOpenMenuSheet: () -> Unit) {
     val progress = remember { Animatable(0f) }
     var open by remember { mutableStateOf(false) }
     var gesturing by remember { mutableStateOf(false) }
-    var savedOffsetX by remember { mutableStateOf(FoodPrefs.get(ARC_OFFSET_X_KEY)?.toFloatOrNull() ?: 0f) }
-    var dragX by remember { mutableStateOf<Float?>(null) }
     var highlightedKey by remember { mutableStateOf<String?>(null) }
     var finger by remember { mutableStateOf<Pair<Float, Float>?>(null) }
     var editing by remember { mutableStateOf(false) }
@@ -249,9 +246,8 @@ fun HomeFooterArc(modifier: Modifier = Modifier, onOpenMenuSheet: () -> Unit) {
     BoxWithConstraints(modifier.fillMaxSize()) {
         val width = maxWidth.value
         val height = maxHeight.value
-        val maxOffset = max(0f, width / 2 - ARC_RADIUS - 8)
-        val offsetX = (dragX ?: savedOffsetX).coerceIn(-maxOffset, maxOffset)
-        val baseCx = width / 2 + offsetX
+        // The circle is fixed in the middle above the footer and cannot be dragged sideways.
+        val baseCx = width / 2
         // The fan follows the circle; buttons that would leave the screen move further up (fanLayout).
         val layout = fanLayout(angles, baseCx, width)
         val p = progress.value
@@ -321,21 +317,19 @@ fun HomeFooterArc(modifier: Modifier = Modifier, onOpenMenuSheet: () -> Unit) {
                 .graphicsLayer { rotationZ = if (plusFollows) 0f else p * 45 },
         ) { HcIcon("Plus", size = plusSize.dp, color = HcColors.White, stroke = 2.4f) }
 
-        // The touch area: tap toggles, push up opens and aims, slide sideways moves it.
+        // The touch area: tap toggles, push up opens and aims; it cannot be dragged sideways.
         val hitHeight = max(44f, visibleHeight)
         val liveCx = rememberUpdatedState(cx)
-        val liveOffsetX = rememberUpdatedState(offsetX)
         val liveHit = rememberUpdatedState(hitHeight)
         Box(
             Modifier
                 .offset(x = (cx - 60).dp, y = (height - hitHeight).dp)
                 .size(120.dp, hitHeight.dp)
-                .pointerInput(slots.map { it.key }, width, maxOffset, savedOffsetX) {
+                .pointerInput(slots.map { it.key }, width) {
                     awaitEachGesture {
                         val down = awaitFirstDown(requireUnconsumed = false)
                         val startX = down.position.x
                         val startY = down.position.y
-                        val startOffset = liveOffsetX.value
                         val boxLeft = liveCx.value - 60
                         val boxTop = height - liveHit.value
                         var mode = ArcMode.Undecided
@@ -380,13 +374,6 @@ fun HomeFooterArc(modifier: Modifier = Modifier, onOpenMenuSheet: () -> Unit) {
                                 val key = highlightedKey
                                 highlightedKey = null
                                 when {
-                                    mode == ArcMode.Slide -> {
-                                        dragX?.let {
-                                            savedOffsetX = it
-                                            FoodPrefs.set(ARC_OFFSET_X_KEY, it.toInt().toString())
-                                        }
-                                        dragX = null
-                                    }
                                     !moved -> setOpenState(!wasOpen)
                                     else -> {
                                         val slot = slots.firstOrNull { it.key == key }
@@ -404,11 +391,10 @@ fun HomeFooterArc(modifier: Modifier = Modifier, onOpenMenuSheet: () -> Unit) {
                                 if (hypot(dx, dy) <= ARC_MOVE_PX) continue
                                 moved = true
                                 longPress?.cancel()
-                                mode = if (wasOpen) ArcMode.Select else if (abs(dx) > abs(dy) && dy > -ARC_MOVE_PX * 2) ArcMode.Slide else ArcMode.Pull
+                                mode = if (wasOpen) ArcMode.Select else ArcMode.Pull
                             }
                             change.consume()
                             when (mode) {
-                                ArcMode.Slide -> dragX = (startOffset + dx).coerceIn(-maxOffset, maxOffset)
                                 ArcMode.Pull -> {
                                     // As soon as the finger moves up the circle and buttons jump to
                                     // full size at once (no animation, no gradual growth).

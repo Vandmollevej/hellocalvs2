@@ -4,8 +4,6 @@
 // den op, vokser den til samme størrelse som venstre-cirklen (AddButton.tsx,
 // HALF_CIRCLE_RADIUS = 83) og viser 5 knapper, hvor "alle" altid står i midten.
 
-import { useSyncExternalStore } from "react";
-
 export const SOURCE_HALF_CIRCLE_RADIUS = 83;
 /** Radius når cirklen er trukket op: samme som venstre-cirklen. */
 export const ARC_RADIUS = SOURCE_HALF_CIRCLE_RADIUS;
@@ -162,50 +160,4 @@ export function segmentPath(height: number, targetDeg: number | null = null, amo
     points.push(`${i === 0 ? "M" : "L"}${(r + radius * Math.sin(t)).toFixed(2)},${(centerY - radius * Math.cos(t)).toFixed(2)}`);
   }
   return `${points.join(" ")} L${(r + r * Math.sin(phi)).toFixed(2)},${lineY} L${(r - r * Math.sin(phi)).toFixed(2)},${lineY} Z`;
-}
-
-// Vandret placering (px fra skærmens midte) gemmes pr. enhed ligesom
-// frontpage-layout.ts; kun et ønske — komponenten klemmer den mod skærmbredden.
-const ARC_OFFSET_X_STORAGE_KEY = "hellocal.frontpage.arcOffsetX";
-
-let cachedRaw: string | null | undefined;
-let cachedValue = 0;
-const listeners = new Set<() => void>();
-
-function getSnapshot() {
-  if (typeof window === "undefined") return 0;
-  let raw: string | null;
-  try {
-    raw = window.localStorage.getItem(ARC_OFFSET_X_STORAGE_KEY);
-  } catch {
-    return 0;
-  }
-  if (raw === cachedRaw) return cachedValue;
-  cachedRaw = raw;
-  const value = Number(raw);
-  cachedValue = raw !== null && Number.isFinite(value) ? value : 0;
-  return cachedValue;
-}
-
-function subscribe(listener: () => void) {
-  listeners.add(listener);
-  return () => {
-    listeners.delete(listener);
-  };
-}
-
-export function saveArcOffsetX(offsetX: number) {
-  if (typeof window === "undefined") return;
-  try {
-    window.localStorage.setItem(ARC_OFFSET_X_STORAGE_KEY, String(Math.round(offsetX)));
-  } catch {
-    // localStorage utilgængeligt — placeringen nulstilles næste gang.
-  }
-  cachedRaw = undefined;
-  listeners.forEach((listener) => listener());
-}
-
-/** Gemt vandret forskydning fra midten (0 = midt imellem de to midterste footer-knapper). */
-export function useArcOffsetX() {
-  return useSyncExternalStore(subscribe, getSnapshot, () => 0);
 }
