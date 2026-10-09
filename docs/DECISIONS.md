@@ -4771,3 +4771,9 @@ Google/Apple/Facebook-login og integrationstilkobling kører i system-browseren,
 - **Trin 2 (næste, kræver egen migration):** flyt email/navn/telefon til en `UserIdentity`-tabel; fagdata refererer kun et nøglet pseudonym `HMAC(PSEUDONYM_KEY, userId)`. Koblingen kan kun laves med nøglen. Helst egen database/rolle, så et dump af fagdata ikke afslører identiteter.
 - **Trin 3:** nøgler i KMS/adskilt nøglefil, rotation, krypterede backups med separat nøgle. Ende-til-ende-boksen i `docs/PRIVACY.md` forbliver målet for private data.
 - Begrænsning: ingen af trinene beskytter mod en angriber med fuld kontrol over app-serveren (nøglerne er i hukommelsen). Kun ende-til-ende gør.
+
+## 2026-10-09 — OFF-varer: oversættelse + nyt-billede-banner
+- Open Food Facts-varer uden dansk tekst oversættes automatisk (gpt-4o-mini, `src/lib/translate-da.ts`); original gemmes i `nameOriginal`/`ingredientsOriginal`, `translationStatus=PENDING`.
+- Admin "Nye produkter" viser original og dansk side om side; dansk kan redigeres; "Godkend oversættelse" sætter APPROVED.
+- Banneret "Optjen 10 points" (genscanning) findes allerede for OFF-varer (`product-rescan-offer.ts`).
+- Migration 20261009180000_off_translation_photo skal med deployet.
