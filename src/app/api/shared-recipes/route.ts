@@ -119,7 +119,9 @@ export async function GET(req: Request) {
   const sourceParam = params.get("source") ?? "all";
   const source = ["shared", "hellofresh", "valdemarsro"].includes(sourceParam) ? sourceParam : "all";
   const includeHelloFresh = source === "hellofresh" || (source === "all" && params.get("hellofresh") === "1");
-  const includeValdemarsro = source === "valdemarsro" || (source === "all" && params.get("valdemarsro") === "1");
+  // Valdemarsro er ikke en integration, brugeren skal slå til: med "Opskrifter"
+  // (all) medtages de altid.
+  const includeValdemarsro = source === "valdemarsro" || source === "all";
   const includeShared = source === "all" || source === "shared";
   const withIngredientData = needsIngredientData(filters);
 
