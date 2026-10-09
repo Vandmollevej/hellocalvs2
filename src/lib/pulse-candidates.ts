@@ -247,6 +247,8 @@ export type PulseEvent = PulsePrompt & {
   status: "PENDING" | "ANSWERED";
   /** Valgt træningstype (kun besvarede). */
   sportType: string | null;
+  /** Visningsnavn for `sportType`. */
+  sportLabel: string | null;
   /** Den registrerede aktivitet, svaret oprettede (kun besvarede). */
   activityId: string | null;
 };
@@ -332,10 +334,12 @@ export async function getPulseEvents(
         ? reviews.find((r) => overlaps(row.startedAt.getTime(), row.endedAt.getTime(), r.startedAt.getTime(), r.endedAt.getTime()))
         : undefined;
       const activity = review?.activityId ? activities.find((a) => a.id === review.activityId) : undefined;
+      const sportType = isAnswered ? (activity?.sportType ?? row.answeredSport) : null;
       return {
         ...prompt,
         status: isAnswered ? ("ANSWERED" as const) : ("PENDING" as const),
-        sportType: isAnswered ? (activity?.sportType ?? row.answeredSport) : null,
+        sportType,
+        sportLabel: sportType ? getSportMeta(sportType).label : null,
         activityId: review?.activityId ?? null,
       };
     }),
