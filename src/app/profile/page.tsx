@@ -20,7 +20,7 @@ import { IconBathScale } from "@/components/hf/IconBathScale";
 import { IconWaistMeasure } from "@/components/icons/WaistMeasure";
 import { HfProgressStepper } from "@/components/hf/HfProgressStepper";
 import { OnboardingWizard } from "@/components/OnboardingWizard";
-import { accountSetupDone, isAccountSetupComplete, type AccountSetupUser } from "@/lib/account-setup";
+import { accountSetupDone, accountSetupPercent, isAccountSetupComplete, type AccountSetupUser } from "@/lib/account-setup";
 import { useTranslation } from "@/i18n/LocaleProvider";
 import { ProfileSwitcher } from "@/components/family/ProfileSwitcher";
 import { useFamilyStatus } from "@/components/family/FamilyStatusProvider";
@@ -118,6 +118,7 @@ export default function ProfilePage() {
               <ChevronRow
                 icon={<IconRefresh size={20} />}
                 label={t("settings.learnTheApp")}
+                centerText={`${accountSetupPercent(user)}%`}
                 onClick={() => setShowGuide(true)}
                 divider={false}
               />
