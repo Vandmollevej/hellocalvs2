@@ -1,5 +1,6 @@
 // Widget extension entry point: the five widgets from docs/WIDGETS.md.
 
+import AppIntents
 import SwiftUI
 import WidgetKit
 

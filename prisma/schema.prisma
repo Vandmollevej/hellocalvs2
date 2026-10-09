@@ -525,6 +525,30 @@ model LoginApproval {
   @@map("login_approvals")
 }
 
+// Engangskoder til den native app (docs/DECISIONS.md 2026-10-08 "Native
+// login-overdragelse"). Google/Apple/Facebook-login og integrationstilkobling
+// kører i system-browseren, som ikke har appens session-cookie.
+// purpose: "LOGIN" (callbacken udsteder koden; appen veksler den til session-
+// cookien via POST /api/auth/native/exchange med sin PKCE-verifier) |
+// "CONNECT" (den indloggede app beder om en kode, før integrationen åbnes i
+// browseren). Kun hash gemmes; 2 minutter; kan kun bruges én gang.
+model NativeAuthCode {
+  id            String    @id @default(cuid())
+  userId        String
+  purpose       String
+  method        String?
+  // S256-challenge fra appen (kun LOGIN), base64url af sha256(verifier).
+  codeChallenge String?
+  codeHash      String    @unique
+  expiresAt     DateTime
+  usedAt        DateTime?
+  createdAt     DateTime  @default(now())
+
+  @@index([userId])
+  @@index([expiresAt])
+  @@map("native_auth_codes")
+}
+
 // Engangskode sendt på SMS ved glemt adgangskode (docs/DECISIONS.md
 // 2026-10-02). Kun hash gemmes; 6 cifre, 10 minutter, højst 5 forsøg. En
 // godkendt kode udløser et almindeligt PasswordResetToken.
@@ -2154,6 +2178,10 @@ model IngredientRegionHourStat {
 model GenericIngredient {
   id       String                    @id @default(cuid())
   name     String
+  // Ental/flertal (docs/REGLER.md): søgning efter "et æble" må ikke give "æbler".
+  // Ens i begge felter hvor formen ikke kan afgøres (fx æg).
+  nameSingular String?
+  namePlural   String?
   category GenericIngredientCategory @default(OTHER)
   imageUrl String?
 
@@ -2648,6 +2676,8 @@ enum MessageEvent {
   SUPPORT_REPLY
   SUPPORT_OVERDUE_ADMIN
   SUPPORT_RECEIVED
+  // Admin har afvist en delt ret som kopi (docs/DECISIONS.md 2026-10-08).
+  RECIPE_SHARE_REJECTED
 }
 
 enum MessageChannel {
@@ -4847,6 +4877,23 @@ model PetFoodIncident {
   @@index([createdAt])
   @@index([reviewedAt, createdAt])
   @@map("pet_food_incidents")
+}
+
+// Admin-rettelser til dyrefoder-filteret (docs/PET-FOOD-FILTER.md): lægges oven på standardlisterne i
+// src/data/pet-food-*.json. list = strong | weak | brand | barcode | setting. action = ADD (tilføjet af
+// admin) eller REMOVE (standardudtryk slået fra). setting-rækker har value "minWeakHits=N".
+model PetFoodFilterEdit {
+  id        String   @id @default(cuid())
+  list      String
+  value     String
+  action    String
+  note      String?
+  adminId   String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([list, value])
+  @@map("pet_food_filter_edits")
 }
 // Singleton (id = 1): admin-styret algoritme, der gætter tøj-valget ved en vejning
 // ud fra de seneste vejninger (docs/DECISIONS.md 2026-10-07).
