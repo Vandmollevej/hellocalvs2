@@ -1725,7 +1725,8 @@
     "showAll": "Vis alle ({count})",
     "showLess": "Vis færre",
     "chartAria": "Utvikling for {name}",
-    "loadError": "Kunne ikke hente statusen din."
+    "loadError": "Kunne ikke hente statusen din.",
+    "customizeView": "Tilpass visning"
   },
   "bodyMeasurementChart": {
     "noData": "Ingen målinger ennå.",

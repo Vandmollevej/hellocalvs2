@@ -142,7 +142,7 @@ export default function WeightCreatePage() {
 
         <div className="flex flex-col gap-2">
           {!loading && entries.length > 0 && (
-            <p className="hf-type-caption px-1">{t("weightLog.recentTitle")}</p>
+            <h2 className="hf-type-title px-1 text-hf-black">{t("weightLog.recentTitle")}</h2>
           )}
           {loading && (
             <SkeletonScreen className="flex flex-col gap-2">

@@ -34,8 +34,8 @@ import { AddMenuSheet } from "@/components/add/AddMenuSheet";
 import { FooterArcEditor } from "@/components/FooterArcEditor";
 
 // Lille, fast halvcirkel over bundmenuen midt imellem de to midterste knapper
-// (brugerens ønske 2026-10-07). Hvile: et cirkelstykke på ca. 20 px med et
-// lille plus. Skub op med fingeren: cirklen vokser til 70 % af venstre-cirklen
+// (brugerens ønske 2026-10-07). Hvile: et fast cirkelstykke på ca. 40 px med et
+// stort plus. Skub op med fingeren: cirklen vokser til samme størrelse som venstre-cirklen
 // (AddButton) og viser viften — "alle" altid i midten, så et lodret træk op
 // altid rammer "alle". Slip på en knap åbner den. Træk vandret i hvile flytter
 // cirklen. Tryk åbner den (samme størrelse som ved træk op). Hold fingeren
@@ -372,7 +372,7 @@ export function FooterArc() {
           transform: `translate(-50%, 50%) rotate(${plusFollows ? 0 : progress * 45}deg)`,
         }}
       >
-        <IconPlus size={11 + progress * 9} stroke={2.4} />
+        <IconPlus size={33 + progress * 27} stroke={2.4} />
       </span>
 
       <button

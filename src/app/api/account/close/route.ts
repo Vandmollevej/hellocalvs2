@@ -3,6 +3,7 @@ import { getSessionUser, unauthorized } from "@/lib/session";
 import { anonymizeUser } from "@/lib/gdpr";
 import { closeAccount } from "@/lib/account-closure";
 import { USER_SESSION_COOKIE } from "@/lib/user-auth";
+import { isConfirmWord } from "@/lib/confirm-words";
 import { ACTIVE_PROFILE_COOKIE } from "@/lib/family-access";
 
 // Brugerens egen "Luk konto" og "Ret til at blive glemt" (nederst på Profil).
@@ -18,7 +19,7 @@ export async function POST(req: Request) {
   if (body.mode !== "close" && body.mode !== "forget") {
     return NextResponse.json({ message: "Ugyldig handling" }, { status: 400 });
   }
-  if (body.mode === "forget" && body.confirm !== "SLET") {
+  if (!isConfirmWord(body.mode, body.confirm)) {
     return NextResponse.json({ message: "Bekræftelse mangler" }, { status: 400 });
   }
 
