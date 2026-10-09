@@ -2,6 +2,12 @@
 
 Last updated: 2026-10-09
 
+## 2026-10-09: Ikoner tilbage (adgangsmur) + markeret cirkel væk fra fingeren
+
+- Ikoner (fingeraftryk, PNG/WebP-tilføj-ikoner) forsvandt efter adgangsmuren 2026-10-08: Next's billed-optimerer henter `/icons/*` internt uden browser-User-Agent, og muren afviste den som bot. Åbne statiske filer (`isPublicStaticAsset` i `access-wall.ts`) slipper nu forbi muren før UA-/rate-tjekket; beskyttede billeder er uændrede.
+- Footer-halvcirklen: den markerede cirkel rykkes 40 px ud fra viften (og teksten 8 px længere op), så den ikke ligger under tommelfingeren (`FooterArc.tsx` + `HomeFooterArc.kt`). Markeringen måles stadig ved hvilepladsen.
+- Lint ikke kørt (ingen `node_modules` her); logik tjekket med node. Ikke prøvet på telefon — tjek efter deploy at ikonerne er tilbage.
+
 ## 2026-10-09: Stregkode læses også med skygge hen over koden (lokal tærskel pr. scanlinje)
 
 - Brugerens test 2026-10-06: en mælk med lidt skygge over stregkoden kunne ikke læses, mens andre scanner-apps læste den straks. Årsag: ZXing binariserer hver scanlinje med én fælles sort/hvid-tærskel, så de hvide felter i skyggen var mørkere end de sorte streger i lyset. Bemærk: ZXing's `HybridBinarizer` (som 2026-10-07-ændringen skiftede til hver anden frame) adskiller sig kun fra den globale for 2D-koder — for 1D-rækker bruger begge samme ene tærskel pr. række, så den skiftende binarisering hjalp ikke mod skygge på iPhone (ingen native BarcodeDetector).

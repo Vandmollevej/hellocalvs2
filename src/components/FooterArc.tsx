@@ -46,6 +46,10 @@ const LONG_PRESS_MS = 550;
 const MOVE_PX = 8;
 const DEAD_ZONE = 34;
 const HIGHLIGHT_SCALE = 1.35;
+// Den markerede cirkel rykkes så langt ud fra viften, at den ikke ligger under
+// tommelfingeren, når man trækker højt op (kun visning; markeringen måles stadig
+// ved cirklens hvileplads).
+const HIGHLIGHT_LIFT = 40;
 const ANIMATION_MS = 200;
 const ICON_SIZE = 26;
 
@@ -389,8 +393,11 @@ export function FooterArc() {
       />
 
       {slots.map((slot, index) => {
-        const center = slotCenter(index, progress);
+        const base = slotCenter(index, progress);
         const highlighted = highlightedKey === slot.key;
+        const lift = highlighted ? HIGHLIGHT_LIFT * progress : 0;
+        const liftRad = (angles[index] * Math.PI) / 180;
+        const center = { x: base.x + lift * Math.sin(liftRad), y: base.y + lift * Math.cos(liftRad) };
         const Icon = slot.icon;
         return (
           <div
@@ -442,7 +449,7 @@ export function FooterArc() {
                 aria-hidden="true"
                 className="hf-type-strong pointer-events-none absolute left-1/2 whitespace-nowrap bg-hf-tan"
                 style={{
-                  bottom: ARC_ICON_CIRCLE + 14,
+                  bottom: ARC_ICON_CIRCLE + 22,
                   transform: "translateX(-50%)",
                   padding: "6px 10px",
                   borderRadius: 3,

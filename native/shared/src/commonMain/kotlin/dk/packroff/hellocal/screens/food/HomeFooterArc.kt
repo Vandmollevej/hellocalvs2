@@ -81,6 +81,7 @@ private const val ARC_BULGE_SAMPLES = 40
 private const val ARC_MOVE_PX = 8f
 private const val ARC_DEAD_ZONE = 34f
 private const val ARC_HIGHLIGHT_SCALE = 1.35f
+private const val ARC_HIGHLIGHT_LIFT = 40f
 internal const val ARC_ICON_SIZE = 26f
 private const val ARC_OFFSET_X_KEY = "hellocal.frontpage.arcOffsetX"
 private val ARC_FAN_HALF_WIDTH = (ARC_ICON_RADIUS * sin(ARC_ANGLE_STEP_DEG * 2 * PI / 180) + ARC_ICON_CIRCLE / 2 + 8).toFloat()
@@ -339,8 +340,12 @@ fun HomeFooterArc(modifier: Modifier = Modifier, onOpenMenuSheet: () -> Unit) {
         // The fan.
         slots.forEachIndexed { index, slot ->
             key(slot.key) {
-                val (sx, sy) = slotCenter(index, p)
+                val (bx, by) = slotCenter(index, p)
                 val highlighted = highlightedKey == slot.key
+                val lift = if (highlighted) ARC_HIGHLIGHT_LIFT * p else 0f
+                val liftRad = angles[index] * PI / 180
+                val sx = bx + (lift * sin(liftRad)).toFloat()
+                val sy = by + (lift * cos(liftRad)).toFloat()
                 val scale = (0.4f + 0.6f * p) * if (highlighted) ARC_HIGHLIGHT_SCALE else 1f
                 Box(
                     Modifier
@@ -369,7 +374,7 @@ fun HomeFooterArc(modifier: Modifier = Modifier, onOpenMenuSheet: () -> Unit) {
                 if (highlighted) {
                     Box(
                         Modifier
-                            .offset(x = (sx - 60).dp, y = (height - sy - ARC_ICON_CIRCLE / 2 - 14 - 34).dp)
+                            .offset(x = (sx - 60).dp, y = (height - sy - ARC_ICON_CIRCLE / 2 - 22 - 34).dp)
                             .size(120.dp, 34.dp),
                         contentAlignment = Alignment.Center,
                     ) {
