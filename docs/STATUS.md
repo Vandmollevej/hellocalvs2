@@ -2,6 +2,12 @@
 
 Last updated: 2026-10-09
 
+## 2026-10-09: Halvcirklens vifte rykker knapper op i stedet for ud over kanten
+
+- `FooterArc` (web + `HomeFooterArc.kt`): står halvcirklen langt ude til siden, flyttes viften ikke længere indad. De knapper, der ellers ville forsvinde ud over skærmkanten, holdes inden for kanten og rykkes i stedet længere op, væk fra halvcirklen, med samme afstand til naboen (`fanLayout`). Navnet på det valgte ikon holdes inden for skærmen. Størrelser og indstillinger er uændrede.
+- Rettet efter brugerens test: halvcirklens knapper toner ikke længere langsomt ind efter hvor langt cirklen er trukket op, men vises med det samme (150 ms) som i side-cirklen (web + native).
+- Lint, tsc, `sync.mjs --check` grønne; paritet for `/` accepteret. Kotlin ikke kompileret lokalt (ingen Gradle-afhængigheder offline) — CI bygger. Ikke prøvet på telefon.
+
 ## 2026-10-09: Delmål-formular i tre accordions
 
 - `GoalForm`: tre fold-ud (Vægt og opbygning, Kropsmål, Ernæring); kropsmålene har igen deres egne tegninger (efter profilens køn). Lint grøn; ikke visuelt testet.
