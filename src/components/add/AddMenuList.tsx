@@ -51,14 +51,14 @@ export function AddMenuList({ date, time }: { date?: string | null; time?: strin
             <Link
               key={tile.key}
               href={withContext(tile.href)}
-              className="flex flex-col items-center gap-1 rounded-[8px] p-2 text-center"
+              className="flex flex-col items-center gap-0 rounded-[8px] p-2 text-center"
             >
               <Image
                 src={tile.icon}
                 alt=""
                 width={96}
                 height={96}
-                className="h-24 w-24 object-contain"
+                className="-mb-4 h-24 w-24 object-contain"
                 unoptimized={tile.icon.endsWith(".svg")}
               />
               <span className="hf-type-body">{t(`addMenu.${tile.key}`)}</span>
