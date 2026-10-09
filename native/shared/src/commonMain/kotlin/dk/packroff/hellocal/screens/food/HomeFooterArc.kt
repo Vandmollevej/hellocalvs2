@@ -58,6 +58,7 @@ import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.pow
 import kotlin.math.sin
+import kotlin.math.sqrt
 
 // src/components/FooterArc.tsx + src/lib/footer-arc.ts — the small half circle
 // over the bottom navigation: tap or push up to fan out the add actions
@@ -83,7 +84,8 @@ private const val ARC_DEAD_ZONE = 34f
 private const val ARC_HIGHLIGHT_SCALE = 1.35f
 internal const val ARC_ICON_SIZE = 26f
 private const val ARC_OFFSET_X_KEY = "hellocal.frontpage.arcOffsetX"
-private val ARC_FAN_HALF_WIDTH = (ARC_ICON_RADIUS * sin(ARC_ANGLE_STEP_DEG * 2 * PI / 180) + ARC_ICON_CIRCLE / 2 + 8).toFloat()
+/** Smallest distance from a button's centre to the screen edge. */
+private const val ARC_EDGE_MARGIN = ARC_ICON_CIRCLE / 2 + 8
 
 internal fun fanAngles(userCount: Int): List<Double> {
     val total = userCount + 1
@@ -91,6 +93,37 @@ internal fun fanAngles(userCount: Int): List<Double> {
 }
 
 internal fun listSlotIndex(userCount: Int) = (userCount + 1) / 2
+
+/**
+ * Button centres (x from the left, y up from the footer edge), like fanLayout in
+ * src/lib/footer-arc.ts: each button keeps the fan's distance to its neighbour. A
+ * button that would end up off screen (the circle sits far to the side) stays
+ * inside the edge and moves further up, away from the circle, instead.
+ */
+internal fun fanLayout(angles: List<Double>, centerX: Float, width: Float): List<Pair<Float, Float>> {
+    if (angles.isEmpty()) return emptyList()
+    val ideal = angles.map {
+        val r = it * PI / 180
+        (centerX + ARC_ICON_RADIUS * sin(r)).toFloat() to (ARC_ICON_RADIUS * cos(r)).toFloat()
+    }
+    if (width <= ARC_EDGE_MARGIN * 2) return ideal
+    val anchor = angles.indices.minByOrNull { abs(angles[it]) } ?: 0
+    val placed = arrayOfNulls<Pair<Float, Float>>(angles.size)
+    placed[anchor] = ideal[anchor].first.coerceIn(ARC_EDGE_MARGIN, width - ARC_EDGE_MARGIN) to ideal[anchor].second
+    for (dir in intArrayOf(-1, 1)) {
+        var i = anchor + dir
+        while (i in angles.indices) {
+            val prev = placed[i - dir]!!
+            val spacing = hypot(ideal[i].first - ideal[i - dir].first, ideal[i].second - ideal[i - dir].second)
+            val x = ideal[i].first.coerceIn(ARC_EDGE_MARGIN, width - ARC_EDGE_MARGIN)
+            var y = ideal[i].second
+            if (x != ideal[i].first) y = max(y, prev.second + sqrt(max(0f, spacing * spacing - (x - prev.first) * (x - prev.first))))
+            placed[i] = x to y
+            i += dir
+        }
+    }
+    return placed.map { it!! }
+}
 
 /** Points of the circle segment of visible height [height] (flat bottom at y = R + BULGE). */
 private fun segmentPoints(height: Float, targetDeg: Double?, amount: Float): List<Pair<Float, Float>> {
@@ -162,19 +195,16 @@ fun HomeFooterArc(modifier: Modifier = Modifier, onOpenMenuSheet: () -> Unit) {
         val maxOffset = max(0f, width / 2 - ARC_RADIUS - 8)
         val offsetX = (dragX ?: savedOffsetX).coerceIn(-maxOffset, maxOffset)
         val baseCx = width / 2 + offsetX
-        val fanCx = if (width > ARC_FAN_HALF_WIDTH * 2) baseCx.coerceIn(ARC_FAN_HALF_WIDTH, width - ARC_FAN_HALF_WIDTH) else width / 2
-        fun centerAt(p: Float) = baseCx + (fanCx - baseCx) * p
+        // The fan follows the circle; buttons that would leave the screen move further up (fanLayout).
+        val layout = fanLayout(angles, baseCx, width)
         val p = progress.value
-        val cx = centerAt(p)
+        val cx = baseCx
         val visibleHeight = ARC_REST_HEIGHT + (ARC_RADIUS - ARC_REST_HEIGHT) * p
 
-        fun slotCenter(index: Int, pp: Float): Pair<Float, Float> {
-            val r = angles[index] * PI / 180
-            return (centerAt(pp) + ARC_ICON_RADIUS * sin(r)).toFloat() to (ARC_ICON_RADIUS * cos(r)).toFloat()
-        }
+        fun slotCenter(index: Int): Pair<Float, Float> = layout[index]
 
-        fun updateHighlight(px: Float, upY: Float, pp: Float) {
-            val center = centerAt(pp)
+        fun updateHighlight(px: Float, upY: Float) {
+            val center = baseCx
             finger = (px - center) to upY
             if (hypot(px - center, upY) < ARC_DEAD_ZONE) {
                 highlightedKey = null
@@ -183,7 +213,7 @@ fun HomeFooterArc(modifier: Modifier = Modifier, onOpenMenuSheet: () -> Unit) {
             var best = Float.MAX_VALUE
             var nearest: String? = null
             slots.forEachIndexed { index, slot ->
-                val (sx, sy) = slotCenter(index, pp)
+                val (sx, sy) = slotCenter(index)
                 val d = hypot(px - sx, upY - sy)
                 if (d < best) {
                     best = d
@@ -320,12 +350,12 @@ fun HomeFooterArc(modifier: Modifier = Modifier, onOpenMenuSheet: () -> Unit) {
                                 ArcMode.Pull -> {
                                     val pp = (-dy / ARC_PULL_DISTANCE).coerceIn(0f, 1f)
                                     scope.launch { progress.snapTo(pp) }
-                                    if (pp > 0.3f) updateHighlight(px, upY, pp) else {
+                                    if (pp > 0.3f) updateHighlight(px, upY) else {
                                         highlightedKey = null
                                         finger = null
                                     }
                                 }
-                                ArcMode.Select -> updateHighlight(px, upY, 1f)
+                                ArcMode.Select -> updateHighlight(px, upY)
                                 ArcMode.Undecided -> Unit
                             }
                         }
@@ -339,7 +369,7 @@ fun HomeFooterArc(modifier: Modifier = Modifier, onOpenMenuSheet: () -> Unit) {
         // The fan.
         slots.forEachIndexed { index, slot ->
             key(slot.key) {
-                val (sx, sy) = slotCenter(index, p)
+                val (sx, sy) = slotCenter(index)
                 val highlighted = highlightedKey == slot.key
                 val scale = (0.4f + 0.6f * p) * if (highlighted) ARC_HIGHLIGHT_SCALE else 1f
                 Box(
@@ -369,7 +399,7 @@ fun HomeFooterArc(modifier: Modifier = Modifier, onOpenMenuSheet: () -> Unit) {
                 if (highlighted) {
                     Box(
                         Modifier
-                            .offset(x = (sx - 60).dp, y = (height - sy - ARC_ICON_CIRCLE / 2 - 14 - 34).dp)
+                            .offset(x = (sx - 60).coerceIn(0f, max(0f, width - 120f)).dp, y = (height - sy - ARC_ICON_CIRCLE / 2 - 14 - 34).dp)
                             .size(120.dp, 34.dp),
                         contentAlignment = Alignment.Center,
                     ) {
