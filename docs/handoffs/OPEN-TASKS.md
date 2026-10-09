@@ -222,6 +222,7 @@ Ejer: cloud-session `claude/kontoopsaetning` (2026-10-03)
 
 | Id | Opgave | Status | Næste skridt |
 | --- | --- | --- | --- |
+| konto-procent | Kontoopsætning: mørkegrøn "XX%" (andel udfyldte felter) midt mellem tekst og pil | Færdig (kode) | Brugerens test på telefon |
 
 ## Venter på dig (ingen gruppe)
 | Id | Opgave | Status | Næste skridt |
