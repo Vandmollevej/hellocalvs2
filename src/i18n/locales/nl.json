@@ -1779,6 +1779,7 @@
     "openGoal": "Doelstelling openen",
     "editTargetAria": "{name} bewerken",
     "category": {
+      "activity": "Activiteit",
       "weight": "Gewicht",
       "body": "Lichaamsmaten",
       "nutrition": "Voeding"
@@ -1792,6 +1793,12 @@
       "bodyFatPercent": "bijv. 20",
       "muscleMassKg": "bijv. 35"
     },
+    "activityHeading": "Activiteit",
+    "activityIntro": "De WHO adviseert volwassenen minstens 150 min matige activiteit per week en krachttraining op 2 dagen per week. Horloges en activiteitentrackers kunnen dit registreren.",
+    "activityUseWho": "WHO-advies gebruiken",
+    "activityHeartRateHint": "Hartslag boven: je moet deze waarde minstens één keer per dag overschrijden. Matige intensiteit is ongeveer 64% van je maximale hartslag (220 − je leeftijd), bijv. ongeveer 120 bij een 30-jarige.",
+    "activity": {"stepsPerDay":"Stappen","activeMinutesPerWeek":"Actieve minuten","strengthDaysPerWeek":"Krachttraining","workoutsPerWeek":"Trainingen","runKmPerWeek":"Hardlopen","cycleKmPerWeek":"Fietsen","heartRateAboveBpm":"Hartslag boven"},
+    "activityPlaceholder": {"stepsPerDay":"bijv. 8000","activeMinutesPerWeek":"bijv. 150","strengthDaysPerWeek":"bijv. 2","workoutsPerWeek":"bijv. 3","runKmPerWeek":"bijv. 15","cycleKmPerWeek":"bijv. 50","heartRateAboveBpm":"bijv. 120"},
     "nutritionHeading": "Voeding per dag",
     "nutrition": {
       "kcal": "Calorieën",
