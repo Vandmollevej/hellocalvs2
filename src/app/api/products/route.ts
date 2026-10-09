@@ -18,6 +18,17 @@ import { petFoodBlockReason } from "@/lib/pet-food-blacklist";
 import { recordPetFoodAttempt } from "@/lib/pet-food-strikes";
 import { saveDataUrlImage } from "@/lib/qc-image-storage";
 
+// Søgeteksten deles i ord, som alle skal findes (i navn eller mærke).
+function searchTokens(q: string): string[] {
+  return q.split(/\s+/).filter(Boolean).slice(0, 6);
+}
+
+// Databasens "insensitive" ignorerer ikke accenter: "Nescafe" skal også finde "Nescafé".
+function tokenVariants(token: string): string[] {
+  const accented = token.replace(/e/gi, "é");
+  return accented === token ? [token] : [token, accented];
+}
+
 // GET /api/products?q=rugbrød — search in our own product database only. Results are ranked by src/lib/product-search-ranking.ts: text match
 // is always dominant, and hidden regional search/click/hour-of-day statistics
 // plus GS1 origin/market only reorder otherwise-comparable matches (see
@@ -79,24 +90,25 @@ export async function GET(req: Request) {
                 aiAnalyses: { some: { reviewedAt: null, confidence: { lt: HIDE_FROM_SEARCH_BELOW } } },
               },
             },
-            ...(q
-              ? [
-                  {
-                    OR: [
-                      { name: { contains: q, mode: "insensitive" } },
-                      { brand: { name: { contains: q, mode: "insensitive" } } },
-                      // Sukkerpåstande kan søges ("sukkerfri", "uden tilsat sukker",
-                      // "reduceret", "light", "lavt sukker"), men vises ikke som mærker
-                      // (docs/DECISIONS.md 2026-10-02).
-                      { filters: { is: { sugarFree: { contains: q, mode: "insensitive" } } } },
-                      { filters: { is: { noAddedSugar: { contains: q, mode: "insensitive" } } } },
-                      { filters: { is: { reducedSugar: { contains: q, mode: "insensitive" } } } },
-                      { filters: { is: { lightSugar: { contains: q, mode: "insensitive" } } } },
-                      { filters: { is: { lowSugar: { contains: q, mode: "insensitive" } } } },
-                    ],
-                  } satisfies Prisma.ProductWhereInput,
-                ]
-              : []),
+            // Hvert ord i søgningen skal ramme navn, mærke eller sukkerpåstand
+            // ("Nescafe gold" finder varen "Gold" fra mærket "Nescafé").
+            ...searchTokens(q).map(
+              (token) =>
+                ({
+                  OR: tokenVariants(token).flatMap((variant) => [
+                    { name: { contains: variant, mode: "insensitive" } },
+                    { brand: { name: { contains: variant, mode: "insensitive" } } },
+                    // Sukkerpåstande kan søges ("sukkerfri", "uden tilsat sukker",
+                    // "reduceret", "light", "lavt sukker"), men vises ikke som mærker
+                    // (docs/DECISIONS.md 2026-10-02).
+                    { filters: { is: { sugarFree: { contains: variant, mode: "insensitive" } } } },
+                    { filters: { is: { noAddedSugar: { contains: variant, mode: "insensitive" } } } },
+                    { filters: { is: { reducedSugar: { contains: variant, mode: "insensitive" } } } },
+                    { filters: { is: { lightSugar: { contains: variant, mode: "insensitive" } } } },
+                    { filters: { is: { lowSugar: { contains: variant, mode: "insensitive" } } } },
+                  ]),
+                }) satisfies Prisma.ProductWhereInput
+            ),
             source
               ? { externalSource: source }
               : {

@@ -2,6 +2,10 @@
 
 Last updated: 2026-10-08
 
+## 2026-10-09: Ordsøgning i varer
+
+- `/api/products?q=`: søgningen deles i ord, som hver skal ramme navn, mærke eller sukkerpåstand ("Nescafe gold" finder "Gold" fra Nescafé), og "e" matcher også "é". Før krævede den hele teksten i ét stykke. Ikke lintet/bygget lokalt (node_modules mangler i sessionen).
+
 ## 2026-10-08: Adgangsmur mod crawlere
 
 - `middleware.ts` + `src/lib/access-wall.ts`: bot-blokering (UA), login-krav på alt undtagen forside/login/juridiske sider, beskyttede billeder (session + hotlink-tjek), rate limit. Se DECISIONS 2026-10-08 og DEPLOYMENT "Search indexing".
