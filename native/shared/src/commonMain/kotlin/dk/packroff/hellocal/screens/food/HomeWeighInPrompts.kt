@@ -84,7 +84,7 @@ private data class WeighPendingEntry(
     val weightKg: Double,
     val weighedAt: String,
     val source: WeighPendingSource = WeighPendingSource(),
-    val suggestion: String? = null,
+    val suggestion: List<String> = emptyList(),
 )
 
 @Serializable
@@ -250,7 +250,7 @@ private fun weighWhen(at: LocalDateTime, t: Translator, now: LocalDateTime = Cap
         ago == 1 -> t.t("weighIn.when.yesterday.$part")
         // Same (Monday-based) week: "mandag morgen".
         ago <= sinceMonday -> t.t("weighIn.when.weekday", "weekday" to weekday, "part" to t.t("weighIn.when.part.$part"))
-        ago <= sinceMonday + 7 -> t.t("weighIn.when.lastWeek", "weekday" to weekday)
+        ago <= 7 -> t.t("weighIn.when.lastWeek", "weekday" to weekday)
         else -> CaptureDates.dayMonthLong(at.date, t.locale)
     }
     return WeighWhen(label, part, ago <= 0)
@@ -292,13 +292,13 @@ private fun PendingWeighInSheet(entries: List<WeighPendingEntry>, onDone: () -> 
     else t.t("weighIn.prompt.past", "when" to whenInfo.label)
 
     fun save() {
-        val attire = choices[entry.id] ?: return
+        val attire = choices[entry.id] ?: emptyList()
         val id = entry.id
         saving = true
         error = false
         scope.launch {
             try {
-                Api.patch("/api/weight-entries/$id", mapOf("attire" to attire))
+                Api.patch("/api/weight-entries/$id", mapOf("attireItems" to attire))
                 NativeHooks.onRegistrationChanged()
                 val rest = list.filter { it.id != id }
                 if (rest.isEmpty()) {
@@ -363,7 +363,7 @@ private fun PendingWeighInSheet(entries: List<WeighPendingEntry>, onDone: () -> 
                 HcText(t.t("weighIn.prompt.question"), HcTypeRoles.Body, Modifier.fillMaxWidth().padding(top = 8.dp), color = HcColors.Black, align = TextAlign.Center)
             }
 
-            AttireToggles(choices[entry.id], { value -> choices = choices + (entry.id to value) })
+            AttireToggles(choices[entry.id] ?: emptyList(), { value -> choices = choices + (entry.id to value) })
             if (error) {
                 HcText(t.t("weighIn.saveError"), HcTypeRoles.Body, Modifier.fillMaxWidth(), color = HcColors.RedDark, align = TextAlign.Center)
             }

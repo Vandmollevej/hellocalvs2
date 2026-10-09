@@ -39,11 +39,11 @@ export type ImportResult = {
   pageImages?: string[];
 };
 
-async function parseText(text: string, sourceUrl?: string): Promise<ImportResult> {
+async function parseText(text: string): Promise<ImportResult> {
   const res = await fetch("/api/dishes/parse-text", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ text, sourceUrl: sourceUrl || undefined }),
+    body: JSON.stringify({ text }),
   });
   if (!res.ok) throw new Error("parse");
   return (await res.json()) as ImportResult;
@@ -52,7 +52,6 @@ async function parseText(text: string, sourceUrl?: string): Promise<ImportResult
 export function PasteTextSheet({ onClose, onResult }: { onClose: () => void; onResult: (result: ImportResult) => void }) {
   const { t } = useTranslation();
   const [text, setText] = useState("");
-  const [sourceUrl, setSourceUrl] = useState("");
   const [working, setWorking] = useState(false);
   const [error, setError] = useState(false);
 
@@ -60,7 +59,7 @@ export function PasteTextSheet({ onClose, onResult }: { onClose: () => void; onR
     setWorking(true);
     setError(false);
     try {
-      onResult(await parseText(text, sourceUrl.trim()));
+      onResult(await parseText(text));
       onClose();
     } catch {
       setError(true);
@@ -96,16 +95,7 @@ export function PasteTextSheet({ onClose, onResult }: { onClose: () => void; onR
               onChange={(event) => setText(event.target.value)}
               placeholder={t("createDish.pastePlaceholder")}
               rows={12}
-              autoFocus
               className="hf-type-body w-full text-hf-black outline-none hf-card"
-            />
-            <input
-              value={sourceUrl}
-              onChange={(event) => setSourceUrl(event.target.value)}
-              inputMode="url"
-              autoComplete="off"
-              placeholder={t("createDish.pasteSourcePlaceholder")}
-              className="hf-type-body hf-field min-w-0 rounded-full bg-hf-tan px-4 text-hf-black outline-none"
             />
             {error && <p className="hf-type-body text-text-secondary text-center">{t("createDish.pasteError")}</p>}
           </>
