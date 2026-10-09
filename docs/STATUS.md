@@ -2,6 +2,10 @@
 
 Last updated: 2026-10-09
 
+## 2026-10-09: Periodevalg som dropdown
+
+- Søvn- og Væskestatistik bruger nu dropdown (`src/components/hf/StatPeriodSelect.tsx`) i stedet for periodeknapper. Ikke kørt lint/build/visuelt: `node_modules` mangler i dette cloud-miljø.
+
 ## 2026-10-09: Bundcirklen på alle sider, side-cirklen slået fra
 ## 2026-10-09: Genvej + "Guide mig" i Hjælpecenteret
 
