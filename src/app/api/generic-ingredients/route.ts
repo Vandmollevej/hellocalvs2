@@ -4,6 +4,7 @@ import { prisma } from "@/lib/prisma";
 import { getSessionUser } from "@/lib/session";
 import { rankProducts } from "@/lib/product-search-ranking";
 import { getActiveSearchRankingWeights } from "@/lib/search-ranking-config";
+import { getSynonymExpansions } from "@/lib/search-synonyms";
 import { matchFridaProduct } from "@/lib/generic-ingredient-match";
 import { deriveNumberForms, displayNameForQuery, matchesNumberQuery, parseNumberQuery } from "@/lib/danish-number";
 
@@ -23,6 +24,7 @@ export async function GET(req: Request) {
   const numberQuery = parseNumberQuery(q);
 
   try {
+    const synonyms = q ? await getSynonymExpansions(numberQuery.term) : [];
     const found = await prisma.genericIngredient.findMany({
       where: q
         ? {
@@ -30,6 +32,7 @@ export async function GET(req: Request) {
               { name: { contains: numberQuery.term, mode: "insensitive" } },
               { nameSingular: { contains: numberQuery.term, mode: "insensitive" } },
               { namePlural: { contains: numberQuery.term, mode: "insensitive" } },
+              ...synonyms.map((s) => ({ name: { contains: s.term, mode: "insensitive" as const } })),
             ],
           }
         : {},
@@ -65,7 +68,7 @@ export async function GET(req: Request) {
         personalClickCount: personalByIngredientId.get(ingredient.id)?.clickCount,
         entityBias: 1, // "Generiske ingredienser vs. varer" — en GenericIngredient
       }));
-      const ranked = rankProducts(rankable, numberQuery.term, user.region, localHour, take, weights);
+      const ranked = rankProducts(rankable, numberQuery.term, user.region, localHour, take, weights, synonyms);
       results = ranked.map((entry) => entry.product);
 
       if (results.length > 0) {

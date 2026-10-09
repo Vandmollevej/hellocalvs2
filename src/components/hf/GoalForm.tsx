@@ -5,6 +5,14 @@ import Image from "next/image";
 import { IconCalendar } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
 import { AccordionSection } from "@/components/hf/AccordionSection";
+import { HfSlider } from "@/components/hf/HfSlider";
+import {
+  compositionSliderRange,
+  lengthSliderRange,
+  nutritionSliderRange,
+  weightSliderRange,
+  type GoalSliderRange,
+} from "@/lib/goal-slider-ranges";
 import { useTranslation } from "@/i18n/LocaleProvider";
 import {
   lengthToInputValue,
@@ -75,6 +83,7 @@ function GoalInput({
   placeholder,
   autoFocus,
   onChange,
+  onActivate,
 }: {
   label: string;
   unit: string;
@@ -82,6 +91,8 @@ function GoalInput({
   placeholder: string;
   autoFocus?: boolean;
   onChange: (value: string) => void;
+  // Kaldes når feltet får fokus, så formularen kan vise slideren under det.
+  onActivate?: () => void;
 }) {
   const ref = useRef<HTMLInputElement>(null);
   useEffect(() => {
@@ -100,6 +111,7 @@ function GoalInput({
           inputMode={unit.includes(" ") ? "text" : "decimal"}
           value={value}
           onChange={(event) => onChange(event.target.value)}
+          onFocus={onActivate}
           className="hf-type-body-lg w-full min-w-0 bg-transparent text-hf-black outline-none"
           placeholder={placeholder}
         />
@@ -108,6 +120,77 @@ function GoalInput({
     </label>
   );
 }
+
+// Slider i fuld bredde, fastgjort nederst og løftet op over tastaturet, så man
+// både kan taste og trække. pointerdown på panelet stjæler ikke fokus fra
+// feltet, så tastaturet bliver oppe.
+function GoalSliderBar({
+  label,
+  unit,
+  value,
+  range,
+  onChange,
+  onClose,
+}: {
+  label: string;
+  unit: string;
+  value: string;
+  range: GoalSliderRange;
+  onChange: (value: string) => void;
+  onClose: () => void;
+}) {
+  const [offset, setOffset] = useState(0);
+  useEffect(() => {
+    const viewport = window.visualViewport;
+    if (!viewport) return;
+    const update = () => setOffset(Math.max(0, window.innerHeight - viewport.height - viewport.offsetTop));
+    update();
+    viewport.addEventListener("resize", update);
+    viewport.addEventListener("scroll", update);
+    return () => {
+      viewport.removeEventListener("resize", update);
+      viewport.removeEventListener("scroll", update);
+    };
+  }, []);
+
+  const parsed = Number(value.trim().replace(",", "."));
+  const current = Number.isFinite(parsed) && value.trim() !== "" ? Math.min(range.max, Math.max(range.min, parsed)) : range.min;
+  const decimals = range.step < 1 ? 1 : 0;
+
+  return (
+    <div
+      onPointerDown={(event) => event.preventDefault()}
+      style={{ bottom: offset }}
+      className="fixed inset-x-0 z-40 flex flex-col gap-2 border-t border-hf-black/10 bg-hf-white px-4 pb-3 pt-3 shadow-[0_-4px_16px_rgba(0,0,0,0.08)]"
+    >
+      <div className="flex items-center justify-between">
+        <span className="hf-type-small hf-type-strong text-hf-black">
+          {label}: {current.toFixed(decimals).replace(".", ",")} {unit}
+        </span>
+        <button type="button" onClick={onClose} className="hf-type-small hf-type-strong text-hf-green">
+          OK
+        </button>
+      </div>
+      <HfSlider
+        value={current}
+        min={range.min}
+        max={range.max}
+        step={range.step}
+        aria-label={label}
+        onChange={(next) => onChange(next.toFixed(decimals).replace(".", ","))}
+      />
+    </div>
+  );
+}
+
+type ActiveSlider = {
+  id: string;
+  label: string;
+  unit: string;
+  range: GoalSliderRange;
+  value: string;
+  set: (value: string) => void;
+};
 
 export function GoalForm({
   title,
@@ -154,6 +237,7 @@ export function GoalForm({
   }, []);
   const [saving, setSaving] = useState(false);
   const [saveError, setSaveError] = useState(false);
+  const [activeId, setActiveId] = useState<string | null>(null);
 
   // Vægt og kropsmål indtastes i den valgte enhed, men gemmes altid som kg/cm.
   const parsed = {
@@ -172,6 +256,40 @@ export function GoalForm({
   const today = localTodayIso();
   const hasDate = targetDate !== "" && targetDate >= today;
   const canSave = hasDate && hasAny && !hasInvalid && !saving;
+
+  // Slideren findes ikke til stone/pund-formatet ("10 4"), der ikke er ét tal.
+  const weightRange = units.weight === "st" ? null : weightSliderRange(units.weight === "lb" ? "lb" : "kg");
+  const lengthRange = lengthSliderRange(units.height === "in" ? "in" : "cm");
+  const sliders: ActiveSlider[] = [
+    ...(weightRange
+      ? [{ id: "weight", label: t("goals.targetWeight"), unit: weightUnitLabel(units.weight), range: weightRange, value: weight, set: setWeight }]
+      : []),
+    ...BODY_MEASUREMENT_FIELDS.map(({ field, nameKey }) => ({
+      id: field,
+      label: t(nameKey),
+      unit: lengthUnitLabel(units.height),
+      range: lengthRange,
+      value: measurements[field],
+      set: (value: string) => setMeasurements((current) => ({ ...current, [field]: value })),
+    })),
+    ...COMPOSITION_GOAL_FIELDS.map(({ field, unit, nameKey }) => ({
+      id: field,
+      label: t(nameKey),
+      unit,
+      range: compositionSliderRange(field),
+      value: composition[field],
+      set: (value: string) => setComposition((current) => ({ ...current, [field]: value })),
+    })),
+    ...NUTRITION_GOAL_FIELDS.map(({ field, unit, nameKey }) => ({
+      id: field,
+      label: t(nameKey),
+      unit,
+      range: nutritionSliderRange(field),
+      value: nutrition[field],
+      set: (value: string) => setNutrition((current) => ({ ...current, [field]: value })),
+    })),
+  ];
+  const activeSlider = sliders.find((slider) => slider.id === activeId) ?? null;
 
   async function save() {
     if (!canSave) return;
@@ -212,7 +330,7 @@ export function GoalForm({
         </div>
       }
     >
-      <div className="hf-page">
+      <div className={`hf-page ${activeSlider ? "pb-28" : ""}`}>
         {/* Dato-vælgeren står øverst på siden. */}
         <div className="hf-card">
           <label className="flex flex-col gap-1">
@@ -264,6 +382,7 @@ export function GoalForm({
               placeholder={weightToInputValue(72, units.weight)}
               autoFocus={focus === "weight"}
               onChange={setWeight}
+              onActivate={() => setActiveId("weight")}
             />
             {COMPOSITION_GOAL_FIELDS.map(({ field, unit, nameKey }) => (
               <GoalInput
@@ -274,6 +393,7 @@ export function GoalForm({
                 placeholder={t(`goals.compositionPlaceholder.${field}`)}
                 autoFocus={focus === field}
                 onChange={(value) => setComposition((current) => ({ ...current, [field]: value }))}
+                onActivate={() => setActiveId(field)}
               />
             ))}
           </div>
@@ -300,6 +420,7 @@ export function GoalForm({
                     placeholder={lengthToInputValue(82, units.height)}
                     autoFocus={focus === field}
                     onChange={(value) => setMeasurements((current) => ({ ...current, [field]: value }))}
+                    onActivate={() => setActiveId(field)}
                   />
                 </div>
               </div>
@@ -322,11 +443,26 @@ export function GoalForm({
                 placeholder={t(`goals.nutritionPlaceholder.${field}`)}
                 autoFocus={focus === field}
                 onChange={(value) => setNutrition((current) => ({ ...current, [field]: value }))}
+                onActivate={() => setActiveId(field)}
               />
             ))}
           </div>
         </AccordionSection>
       </div>
+      {activeSlider && (
+        <GoalSliderBar
+          key={activeSlider.id}
+          label={activeSlider.label}
+          unit={activeSlider.unit}
+          value={activeSlider.value}
+          range={activeSlider.range}
+          onChange={activeSlider.set}
+          onClose={() => {
+            setActiveId(null);
+            (document.activeElement as HTMLElement | null)?.blur();
+          }}
+        />
+      )}
     </HfScreen>
   );
 }

@@ -88,7 +88,8 @@ fun ProfileChevronRow(
     divider: Boolean = true,
     badgeCount: Int = 0,
     wrapLabel: Boolean = false,
-) = HcChevronRow(label, onClick, divider = divider, badgeCount = badgeCount, wrapLabel = wrapLabel, iconContent = icon)
+    centerText: String? = null,
+) = HcChevronRow(label, onClick, divider = divider, badgeCount = badgeCount, wrapLabel = wrapLabel, iconContent = icon, centerText = centerText)
 
 /** src/components/hf/HfProgressStepper.tsx — dot per step, lines between, label under each dot. */
 @Composable

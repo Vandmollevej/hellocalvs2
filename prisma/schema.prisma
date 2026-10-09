@@ -4932,3 +4932,22 @@ model WeighReminderPref {
 
   @@map("weigh_reminder_prefs")
 }
+
+// Admin synonym dictionary for search (e.g. "gris" ↔ "svin"). `similarity`
+// (0–100 %) says how interchangeable the two words are: the search also
+// matches the other word, but a hit via a synonym is scored at
+// similarity/100 of a direct text match (src/lib/search-synonyms.ts).
+model SearchSynonym {
+  id         String   @id @default(cuid())
+  language   Locale   @default(DA)
+  termA      String
+  termB      String
+  similarity Int      @default(100)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@unique([language, termA, termB])
+  @@index([termA])
+  @@index([termB])
+  @@map("search_synonyms")
+}

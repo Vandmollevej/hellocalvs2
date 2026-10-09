@@ -2120,6 +2120,9 @@
   "productUpdate": {
     "banner": "Tjäna {points} poäng genom att uppdatera varan",
     "toggle": "Visa eller dölj banner",
+    "tileFront": "Framsida",
+    "tileNutrition": "Energi",
+    "tileIngredients": "Innehåll",
     "title": "Uppdatera varan",
     "kindFront": "Framsidan av varan ({points} poäng)",
     "hintFront": "Ta en bild av framsidan så att varan får bild och logotyp.",

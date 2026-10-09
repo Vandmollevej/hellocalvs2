@@ -7,6 +7,11 @@ Last updated: 2026-10-09
 - Ikoner (fingeraftryk, PNG/WebP-tilføj-ikoner) forsvandt efter adgangsmuren 2026-10-08: Next's billed-optimerer henter `/icons/*` internt uden browser-User-Agent, og muren afviste den som bot. Åbne statiske filer (`isPublicStaticAsset` i `access-wall.ts`) slipper nu forbi muren før UA-/rate-tjekket; beskyttede billeder er uændrede.
 - Footer-halvcirklen: den markerede cirkel rykkes 40 px ud fra viften (og teksten 8 px længere op), så den ikke ligger under tommelfingeren (`FooterArc.tsx` + `HomeFooterArc.kt`). Markeringen måles stadig ved hvilepladsen.
 - Lint ikke kørt (ingen `node_modules` her); logik tjekket med node. Ikke prøvet på telefon — tjek efter deploy at ikonerne er tilbage.
+## 2026-10-09: Halvcirklens vifte rykker knapper op i stedet for ud over kanten
+
+- `FooterArc` (web + `HomeFooterArc.kt`): står halvcirklen langt ude til siden, flyttes viften ikke længere indad. De knapper, der ellers ville forsvinde ud over skærmkanten, holdes inden for kanten og rykkes i stedet længere op, væk fra halvcirklen, med samme afstand til naboen (`fanLayout`). Navnet på det valgte ikon holdes inden for skærmen. Størrelser og indstillinger er uændrede.
+- Rettet efter brugerens test: halvcirklens knapper toner ikke længere langsomt ind efter hvor langt cirklen er trukket op, men vises med det samme (150 ms) som i side-cirklen (web + native).
+- Lint, tsc, `sync.mjs --check` grønne; paritet for `/` accepteret. Kotlin ikke kompileret lokalt (ingen Gradle-afhængigheder offline) — CI bygger. Ikke prøvet på telefon.
 
 ## 2026-10-09: Delmål-formular i tre accordions
 
@@ -6142,3 +6147,9 @@ Ny `valdemarsro-agent` (scripts/valdemarsro-agent, compose.production.yaml, buil
 ## 2026-10-08 — Ental/flertal for generiske ingredienser (database + API)
 
 Skema, migration, `src/lib/danish-number.ts` og søgning/oprettelse er lavet (se DECISIONS.md samme dato). `prisma validate` og ESLint på de ændrede filer er grønne; `npm run build` og typecheck er ikke kørt (ingen genereret Prisma-klient i arbejdskopien). Mangler: UI skal vise `displayName`, ental/flertal i arkene, billedomdøbning.
+
+## 2026-10-09: Synonymordbog (admin > Soegning)
+
+- `/admin/search-synonyms`: ordpar pr. sprog (DA/EN) med "Ens"-procent; soegning i produkter og generiske ingredienser matcher ogsaa synonymet, rangeret efter procenten (0 % = slaaet fra). Tabel `search_synonyms` (migration 20261009120000, med eksempler). Forslag ud fra produkttyper: `docs/SYNONYM-FORSLAG.md`.
+
+- 2026-10-09: Opdater-banneret (`UpdatePointsBanner`) er nu et lag oven på siden (rykker ikke indholdet), med mindre luft over/under teksten. Trækstregen minimerer (op/tryk) og trækker en omvendt popup ned (ned) med et kamerafelt pr. manglende ting. Ikke prøvet i browser.
