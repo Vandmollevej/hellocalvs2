@@ -1,9 +1,9 @@
 "use client";
 
-import { Suspense, useEffect, useState } from "react";
+import { Suspense, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { IconAdjustmentsHorizontal, IconSearch } from "@tabler/icons-react";
+import { IconAdjustmentsHorizontal, IconPlus, IconSearch } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
 import { useTranslation } from "@/i18n/LocaleProvider";
 import { PremiumBadge } from "@/components/PremiumGate";
@@ -12,9 +12,12 @@ import {
   activeFilterCount,
   filtersToParams,
   loadRecipeFilters,
+  saveRecipeFilters,
   type RecipeFilters,
 } from "@/lib/recipe-filters";
+import { BottomSheet } from "@/components/hf/BottomSheet";
 import { SkeletonScreen } from "@/components/hf/Skeleton";
+import { RecipeFilterPanel } from "@/components/recipes/RecipeFilterPanel";
 import { RecipeRow, recipeHref, type RecipeRowData as Row } from "@/components/recipes/RecipeRow";
 
 // Indstillinger → Opskrifter (docs/DECISIONS.md 2026-09-24): to faner,
@@ -23,6 +26,8 @@ import { RecipeRow, recipeHref, type RecipeRowData as Row } from "@/components/r
 // brugeren har slået dem til under Integrationer).
 
 type Tab = "mine" | "shared";
+// Kilde-knapperne under søgefeltet: alle retter, eller kun én integration.
+type Source = "all" | "users" | "hellofresh" | "valdemarsro";
 type LoadState = "loading" | "ready" | "error";
 type Translate = (key: string, params?: Record<string, string | number>) => string;
 
@@ -135,7 +140,10 @@ type FavoriteSnapshot = { id: string; name: string; kcal: number; images?: strin
 
 function SharedTab({ t }: { t: Translate }) {
   const [query, setQuery] = useState("");
-  const [filters] = useState<RecipeFilters>(loadRecipeFilters);
+  const [filters, setFilters] = useState<RecipeFilters>(loadRecipeFilters);
+  const [filtersOpen, setFiltersOpen] = useState(false);
+  const [source, setSource] = useState<Source>("all");
+  const searchRef = useRef<HTMLInputElement>(null);
   const [helloFresh, setHelloFresh] = useState<boolean | null>(null);
   // Filtre/sortering og HelloFresh (en integration) er kun for Seriøs
   // (docs/DECISIONS.md 2026-09-26); Gratis sorteres altid efter relevans.
@@ -144,6 +152,16 @@ function SharedTab({ t }: { t: Translate }) {
   const [state, setState] = useState<LoadState>("loading");
   const [favorites, setFavorites] = useState<FavoriteSnapshot[] | null>(null);
   const searching = query.trim().length > 0;
+
+  // Markøren står i søgefeltet, så snart siden åbnes.
+  useEffect(() => {
+    searchRef.current?.focus();
+  }, []);
+
+  function updateFilters(next: RecipeFilters) {
+    setFilters(next);
+    saveRecipeFilters(next);
+  }
 
   useEffect(() => {
     fetch("/api/profile")
@@ -168,6 +186,7 @@ function SharedTab({ t }: { t: Translate }) {
         if (query.trim()) params.set("q", query.trim());
         else params.set("sort", "popular");
         if (helloFresh && isSerious) params.set("hellofresh", "1");
+        if (source !== "all") params.set("source", source);
         const res = await fetch(`/api/shared-recipes?${params.toString()}`, { signal: controller.signal });
         if (!res.ok) throw new Error("offline");
         setResults(((await res.json()) as { recipes: SearchResult[] }).recipes);
@@ -180,7 +199,7 @@ function SharedTab({ t }: { t: Translate }) {
       controller.abort();
       clearTimeout(timeout);
     };
-  }, [query, filters, helloFresh, isSerious]);
+  }, [query, filters, helloFresh, isSerious, source]);
 
   const view = filters;
   const activeCount = activeFilterCount(view);
@@ -228,6 +247,13 @@ function SharedTab({ t }: { t: Translate }) {
 
   const status = (text: string) => <p className="hf-type-body text-text-secondary text-center">{text}</p>;
   const trending = results.slice(0, TRENDING_COUNT);
+  // HelloFresh er en integration og vises kun, når brugeren har slået den til.
+  const sources: { value: Source; label: string }[] = [
+    { value: "all", label: t("recipes.sourceAll") },
+    { value: "users", label: t("recipes.sourceUsers") },
+    ...(helloFresh ? [{ value: "hellofresh" as const, label: t("recipes.helloFresh") }] : []),
+    { value: "valdemarsro", label: t("recipes.valdemarsro") },
+  ];
 
   return (
     <div className="hf-page">
@@ -235,6 +261,7 @@ function SharedTab({ t }: { t: Translate }) {
         <div className="hf-search min-w-0 flex-1">
           <IconSearch size={16} color="var(--hf-black)" />
           <input
+            ref={searchRef}
             value={query}
             onChange={(event) => setQuery(event.target.value)}
             placeholder={t("recipes.sharedSearchPlaceholder")}
@@ -252,18 +279,41 @@ function SharedTab({ t }: { t: Translate }) {
             <PremiumBadge />
           </Link>
         ) : (
-          <Link
-            href="/profile/recipes/filters"
+          <button
+            type="button"
+            onClick={() => setFiltersOpen(true)}
             aria-label={t("recipeFilters.openFilters")}
+            aria-haspopup="dialog"
             className="relative flex h-12 w-10 shrink-0 items-center justify-center text-hf-black"
           >
             <IconAdjustmentsHorizontal size={26} />
             {activeCount > 0 && (
               <span className="absolute right-0.5 top-2.5 h-2 w-2 rounded-full bg-hf-green" aria-hidden="true" />
             )}
-          </Link>
+          </button>
         )}
       </div>
+
+      {/* Kilde-knapper: Alle viser alt; en integration viser kun dens retter. */}
+      <div role="group" aria-label={t("recipes.sourceLabel")} className="flex flex-wrap gap-2">
+        {sources.map(({ value, label }) => (
+          <button
+            key={value}
+            type="button"
+            className="hf-chip"
+            aria-pressed={source === value}
+            onClick={() => setSource(value)}
+          >
+            {label}
+          </button>
+        ))}
+      </div>
+
+      {filtersOpen && (
+        <BottomSheet title={t("recipeFilters.title")} size="full" onClose={() => setFiltersOpen(false)}>
+          <RecipeFilterPanel filters={filters} onChange={updateFilters} />
+        </BottomSheet>
+      )}
 
       {searching ? (
         <>
@@ -344,6 +394,12 @@ function RecipesContent() {
             {t(value === "mine" ? "recipes.tabMine" : "recipes.tabShared")}
           </button>
         ))}
+      </div>
+      <div className="flex justify-end px-4 pt-3">
+        <Link href="/create-dish" className="hf-control hf-btn-primary inline-flex items-center gap-1 px-4">
+          <IconPlus size={18} aria-hidden="true" />
+          {t("recipes.createNewDish")}
+        </Link>
       </div>
       {tab === "mine" ? <MineTab t={t} /> : <SharedTab t={t} />}
     </HfScreen>

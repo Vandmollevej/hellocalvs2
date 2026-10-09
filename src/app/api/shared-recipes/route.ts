@@ -23,7 +23,8 @@ import { isRecipeImagePath } from "@/lib/recipe-image-storage";
 
 // Delte brugeropskrifter (docs/DECISIONS.md 2026-09-24).
 //
-// GET ?q=&sort=relevance|popular|date&hellofresh=1 — søg i delte retter.
+// GET ?q=&sort=relevance|popular|date&hellofresh=1&source=all|users|hellofresh|valdemarsro
+// — søg i delte retter.
 // Afviste retter og retter fra blokerede udgivere vises ikke. Med
 // hellofresh=1 (brugeren har slået HelloFresh til under Integrationer)
 // medtages HelloFresh-opskrifterne i samme liste.
@@ -114,14 +115,22 @@ export async function GET(req: Request) {
   const params = new URL(req.url).searchParams;
   const q = (params.get("q") ?? "").trim().toLowerCase().slice(0, 100);
   const filters = filtersFromParams(params);
-  const includeHelloFresh = params.get("hellofresh") === "1";
+  // source=all|users|hellofresh|valdemarsro afgrænser listen til én kilde
+  // (kilde-knapperne på Retter-siden). Uden source gælder hellofresh=1 som før.
+  // Valdemarsro-retter importeres ikke til appen endnu (DECISIONS 2026-09-28),
+  // så den kilde giver en tom liste.
+  const source = params.get("source") ?? "all";
+  const includeShared = source === "all" || source === "users";
+  const includeHelloFresh = source === "hellofresh" || (source === "all" && params.get("hellofresh") === "1");
   const withIngredientData = needsIngredientData(filters);
 
   try {
     const user = await getSessionUser();
     const portionKcal = portionKcalFor(user);
     const blocked = await prisma.sharedRecipePublisherBlock.findMany({ select: { publisherHash: true } });
-    const recipes = await prisma.sharedRecipe.findMany({
+    const recipes = !includeShared
+      ? []
+      : await prisma.sharedRecipe.findMany({
       where: {
         status: { not: "REJECTED" },
         publisherHash: { notIn: blocked.map((b) => b.publisherHash) },

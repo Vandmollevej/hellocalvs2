@@ -1,5 +1,11 @@
 # HELLO CAL — project status
 
+## 2026-10-09: Retter-siden — autofokus, Opret ny ret, filter-popup og kilde-knapper
+
+- `/profile/recipes`: markøren står i søgefeltet ved åbning; "Opret ny ret" øverst til højre; filterknappen ved søgefeltet åbner nu en popup (bundark) med samme valg som før (`src/components/recipes/RecipeFilterPanel.tsx`, delt med den gamle filterside); kilde-knapper under søgefeltet (Alle / Brugere / HelloFresh når integrationen er slået til / Valdemarsro). `GET /api/shared-recipes` har ny `source`-parameter.
+- **Ikke bygget endnu:** Valdemarsro-retter findes ikke i appens database (importen mangler, DECISIONS 2026-09-28), så knappen giver en tom liste. Mangler derfor også: Valdemarsro-visning (tilføj/gram, grøn "gå til opskrift"), natlig linkkontrol, og hele "Opret ret"-flowet med indsæt tekst/scan, plagiatkontrol og thumbs up/ned.
+- Tjek: lint og type-tjek er rene for de ændrede filer (kun den eksisterende fejl i `admin/product-database/products/page.tsx:343`). `npm run build` og browser er ikke prøvet.
+
 Last updated: 2026-10-03
 Last updated: 2026-10-04
 
