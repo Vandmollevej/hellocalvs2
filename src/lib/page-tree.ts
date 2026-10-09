@@ -190,6 +190,7 @@ export const PAGE_TREE: PageArea[] = [
           { path: "/profile/family", label: "Familie" },
           { path: "/profile/invite", label: "Invitér" },
           { path: "/profile/messages", label: "Beskeder" },
+          { path: "/profile/messages/trash", label: "Papirkurv" },
           { path: "/profile/notifications", label: "Notifikationer" },
           { path: "/profile/report-bug", label: "Rapportér fejl" },
         ],

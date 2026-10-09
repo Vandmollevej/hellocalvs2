@@ -1500,6 +1500,7 @@
       "markAllRead": "Alle als gelesen markieren",
       "unread": "Neu",
       "deleted": "Gelöscht",
+      "trash": "Papierkorb",
       "delete": "Löschen",
       "clearAll": "Alle leeren",
       "clearAllWarning": "Alle gelöschten Nachrichten werden endgültig entfernt. Das kann nicht rückgängig gemacht werden.",

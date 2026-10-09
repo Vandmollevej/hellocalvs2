@@ -33,7 +33,7 @@ Last updated: 2026-10-07
 
 - "Senest anvendte" hedder nu "Senest tilføjet". Bundark har ingen synlig overskrift (kun til skærmlæsere). Tilføj-knappen er fjernet fra vareraderne (Søg, Favoritter, Mine scanninger); tryk på varen åbner varesiden /add/[id] uden popup.
 - Fjernet "Sådan regner vi" på Profil; Luk konto kræver nu et kontrolord ligesom Slet mine data, og kontrolordet følger sproget (SLET/DELETE/LÖSCHEN …; serveren får stadig "SLET"). Tilføj-menuen: tekst tættere på ikonerne. Varesiden: "/stk." efter gram pr. servering/skive, brand-logo flyttet 12 px ud, ingen tom luft over Tilføj-knappen.
-- Beskeder: "Slettet" øverst til venstre, swipe viser "Slet" midt for beskeden, "Ryd alt" under Slettet (bekræftelse i bundark). Migration `20261007140000_outbound_message_user_delete` skal køre ved deploy; "Ryd alt" skjuler for brugeren, rækken bevares til admin-loggen. Ikke visuelt testet (brugerregel).
+- Beskeder: "Papirkurv" (grå, ikon foran, ikke understreget) øverst til venstre linker til egen side `/profile/messages/trash` med overskriften Papirkurv og et "Beskeder"-link med brev-ikon tilbage (komponent `MessagesView`); swipe viser "Slet" midt for beskeden, "Ryd alt" under Slettet (bekræftelse i bundark). Migration `20261007140000_outbound_message_user_delete` skal køre ved deploy; "Ryd alt" skjuler for brugeren, rækken bevares til admin-loggen. Ikke visuelt testet (brugerregel).
 ## 2026-10-07: Vægt — synk-status, tøj ved vejning, kalibrer
 
 - Vægtsiden viser synk-status pr. forbundet integration (sidst synkroniseret + Synk nu). Gammel synk (admin, standard 48 t) giver et bundark med Synk nu / link til integrationen (`WeighInPrompts` på forsiden).
