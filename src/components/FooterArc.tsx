@@ -94,7 +94,7 @@ export function FooterArc() {
   const highlightedRef = useRef<string | null>(null);
   const [gesturing, setGesturing] = useState(false);
   // Fingerens placering i forhold til cirklens midte (px opad/til siden) — får kanten til at pose ud og plusset til at følge med.
-  const [finger, setFinger] = useState<{ dx: number; dy: number } | null>(null);
+  const [finger, setFinger] = useState<{ dx: number; dy: number; top: number } | null>(null);
   const [editing, setEditing] = useState(false);
   const [menuSheetOpen, setMenuSheetOpen] = useState(false);
   const gestureRef = useRef<Gesture | null>(null);
@@ -187,7 +187,7 @@ export function FooterArc() {
     const px = event.clientX - rect.left;
     const py = rect.top - event.clientY; // px opad fra footerkanten
     const center = baseCx;
-    setFinger({ dx: px - center, dy: py });
+    setFinger({ dx: px - center, dy: py, top: rect.top });
     if (Math.hypot(px - center, py) < DEAD_ZONE) {
       setHighlight(null);
       return;
@@ -383,7 +383,7 @@ export function FooterArc() {
         // Den markerede knap må aldrig ende under fingeren: hold den over fingerspidsen.
         let centerY = base.y;
         if (highlighted && finger) {
-          const roomAbove = (wrapRef.current?.getBoundingClientRect().top ?? Infinity) - TOP_ROOM;
+          const roomAbove = finger.top - TOP_ROOM;
           centerY = Math.max(centerY, Math.min(finger.dy + FINGER_CLEARANCE, Math.max(centerY, roomAbove)));
         }
         const center = { x: base.x, y: centerY };

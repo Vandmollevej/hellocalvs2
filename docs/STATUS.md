@@ -6188,6 +6188,8 @@ Ikke bygget: Valdemarsro-import til app-databasen, Valdemarsro-detaljevisning ("
 Ny `valdemarsro-agent` (scripts/valdemarsro-agent, compose.production.yaml, build.yml, jobs-registret), model `RecipeSourceUrl` (migration 20261008130000_recipe_source_urls), "Gå til opskrift"-knap i AddProductView, admin Retter → Valdemarsro viser data. Parsingen er testet mod en rigtig Valdemarsro-side; agenten er IKKE kørt mod databasen eller i Docker endnu — første nat henter 150 retter, resten over de følgende nætter (sæt VALDEMARSRO_AGENT_BATCH_SIZE højere for hurtigere start). Kræver deploy, så containeren bygges og migrationen kører.
 
 
+- 2026-10-09: Trækstreg i bundark tilpasset iOS (36 × 4 px, 8 px over / 16 px under) på web (`.hf-bottom-sheet__grab`, HfAccessSheet) og native (`HcBottomSheet` dragHandle). Kalenderens nat/dag-håndtag uændret.
+
 ## 2026-10-08 — Ental/flertal for generiske ingredienser (database + API)
 
 Skema, migration, `src/lib/danish-number.ts` og søgning/oprettelse er lavet (se DECISIONS.md samme dato). `prisma validate` og ESLint på de ændrede filer er grønne; `npm run build` og typecheck er ikke kørt (ingen genereret Prisma-klient i arbejdskopien). Mangler: UI skal vise `displayName`, ental/flertal i arkene, billedomdøbning.
@@ -6200,3 +6202,5 @@ Skema, migration, `src/lib/danish-number.ts` og søgning/oprettelse er lavet (se
 
 - 2026-10-09: Tilføj-menu: teksten lå oven på ikonerne (dobbelt negativ margin fra #287). Overlappet fjernet på web (`AddMenuList.tsx`) og native (`AddMenu.kt`).
 - 2026-10-09: Halvcirklen over footeren kan ikke længere trækkes til siden (web + native); står altid midt over footeren.
+
+- 2026-10-09: Master bragt i takt igen efter #314/#315: lint-fejlen i `FooterArc.tsx` rettet (fingerens top gemmes i state i stedet for at læse ref under render), og paritet accepteret for alle skærme. Native (`HomeFooterArc.kt`, `HomeWeighInPrompts.kt`) var allerede opdateret i #305–#315; kun godkendelserne manglede.
