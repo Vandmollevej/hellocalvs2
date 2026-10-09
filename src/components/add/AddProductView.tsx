@@ -1220,7 +1220,7 @@ export function AddProductView({
                 </div>
               )}
 
-              {(isPending("ingredients") || !!view.ingredientsText || !!view.ingredientsUnreadable) && (
+              {(isPending("ingredients") || !!view.ingredientsText) && (
                 <div>
                   <p className="hf-type-body mb-2 text-hf-black">{t("createDish.ingredients")}</p>
                   {isPending("ingredients") ? (
@@ -1230,8 +1230,6 @@ export function AddProductView({
                         <Skeleton key={width} type="body-sm" width={width} height={16} />
                       ))}
                     </div>
-                  ) : !view.ingredientsText ? (
-                    <p className="hf-type-small text-text-secondary">{t("addProduct.ingredientsUnreadable")}</p>
                   ) : (
                     <p className="hf-type-small text-text-secondary">
                       {splitENumbers(view.ingredientsText ?? "").map((part, index) =>
