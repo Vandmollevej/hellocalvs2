@@ -298,7 +298,7 @@ fun HandSizePickerRow(item: HandSizeItem, imageUrl: String?, amount: Double, onS
  * tile per missing item (drag down). Place it inside a Box over the content.
  */
 @Composable
-fun UpdatePointsBanner(href: String, text: String, toggleLabel: String, tiles: List<String>) {
+fun UpdatePointsBanner(href: String, text: String, toggleLabel: String, tiles: List<String>, action: (@Composable () -> Unit)? = null) {
     val nav = LocalNavigator.current
     // 0 = collapsed, 1 = banner, 2 = panel
     var stage by remember { mutableStateOf(1) }
@@ -313,6 +313,7 @@ fun UpdatePointsBanner(href: String, text: String, toggleLabel: String, tiles: L
                 align = TextAlign.Center,
             )
         }
+        if (stage >= 1 && action != null) Box(Modifier.padding(start = 16.dp, end = 16.dp, top = 8.dp)) { action() }
         if (stage == 2) {
             Row(
                 Modifier.fillMaxWidth().padding(start = 16.dp, end = 16.dp, top = 12.dp),

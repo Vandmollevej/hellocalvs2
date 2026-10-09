@@ -715,6 +715,16 @@ export function AddProductView({
                 kind,
                 label: t(UPDATE_TILE_LABELS[kind]),
               }))}
+              action={
+                state.product.ingredientsUnreadable ? (
+                  <Link
+                    href={`/camera?mode=product&retake=ingredients&product=${encodeURIComponent(id)}`}
+                    className="hf-control hf-btn-secondary justify-center gap-2"
+                  >
+                    <IconCamera size={19} /> {t("addProduct.retakeIngredients")}
+                  </Link>
+                ) : undefined
+              }
             />
     ) : null;
 
@@ -1221,15 +1231,7 @@ export function AddProductView({
                       ))}
                     </div>
                   ) : !view.ingredientsText ? (
-                    <div className="flex flex-col gap-3">
-                      <p className="hf-type-small text-text-secondary">{t("addProduct.ingredientsUnreadable")}</p>
-                      <Link
-                        href={`/camera?mode=product&retake=ingredients&product=${encodeURIComponent(id)}`}
-                        className="hf-control hf-btn-secondary justify-center gap-2"
-                      >
-                        <IconCamera size={19} /> {t("addProduct.retakeIngredients")}
-                      </Link>
-                    </div>
+                    <p className="hf-type-small text-text-secondary">{t("addProduct.ingredientsUnreadable")}</p>
                   ) : (
                     <p className="hf-type-small text-text-secondary">
                       {splitENumbers(view.ingredientsText ?? "").map((part, index) =>

@@ -20,11 +20,13 @@ export function UpdatePointsBanner({
   text,
   toggleLabel,
   tiles,
+  action,
 }: {
   href: string;
   text: string;
   toggleLabel: string;
   tiles: UpdateTile[];
+  action?: React.ReactNode;
 }) {
   const [stage, setStage] = useState<Stage>("banner");
   const startY = useRef<number | null>(null);
@@ -61,6 +63,7 @@ export function UpdatePointsBanner({
           {text}
         </Link>
       )}
+      {showBanner && action && <div className="px-4 pt-2">{action}</div>}
       <div
         className="grid transition-[grid-template-rows] duration-200 ease-out"
         style={{ gridTemplateRows: showPanel ? "1fr" : "0fr" }}

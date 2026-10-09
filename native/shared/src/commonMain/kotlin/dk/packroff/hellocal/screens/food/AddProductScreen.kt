@@ -668,7 +668,16 @@ fun AddProductView(
                 t.t("productUpdate.banner", "points" to offer.points),
                 t.t("productUpdate.toggle"),
                 offer.kinds.mapNotNull { k -> tileKeys[k]?.let { t.t(it) } },
-            )
+            ) {
+                if (product?.ingredientsUnreadable == true) {
+                    HcButton(
+                        t.t("addProduct.retakeIngredients"),
+                        onClick = { nav.push("/camera?mode=product&retake=ingredients&product=${encodeUri(id)}") },
+                        kind = dk.packroff.hellocal.ui.HcButtonKind.Secondary,
+                        leading = { HcIcon("Camera", size = 19.dp, color = HcColors.Action) },
+                    )
+                }
+            }
         }
         }
 
