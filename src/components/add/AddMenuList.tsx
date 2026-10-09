@@ -279,13 +279,13 @@ export function AddMenuList({ date, time }: { date?: string | null; time?: strin
                     <IconX size={14} stroke={2.2} color="var(--hf-tan)" />
                   </span>
                 )}
-                <span className={`flex flex-col items-center gap-1 ${placeholder ? "invisible" : ""}`}>
+                <span className={`flex flex-col items-center gap-0 ${placeholder ? "invisible" : ""}`}>
                   <Image
                     src={tile.icon}
                     alt=""
                     width={96}
                     height={96}
-                    className="h-24 w-24 object-contain"
+                    className="-mb-4 h-24 w-24 object-contain"
                     unoptimized={tile.icon.endsWith(".svg")}
                     draggable={false}
                   />
@@ -307,7 +307,7 @@ export function AddMenuList({ date, time }: { date?: string | null; time?: strin
             alt=""
             width={96}
             height={96}
-            className="h-24 w-24 object-contain"
+            className="-mb-4 h-24 w-24 object-contain"
             unoptimized={draggedTile.icon.endsWith(".svg")}
           />
         </div>
@@ -329,14 +329,14 @@ export function AddMenuList({ date, time }: { date?: string | null; time?: strin
                       type="button"
                       onClick={() => restoreTile(key)}
                       aria-label={t("addMenu.editAddTile", { item: label })}
-                      className="flex flex-col items-center gap-1 p-2 text-center rounded-card"
+                      className="flex flex-col items-center gap-0 p-2 text-center rounded-card"
                     >
                       <Image
                         src={tile.icon}
                         alt=""
                         width={96}
                         height={96}
-                        className="h-24 w-24 object-contain"
+                        className="-mb-4 h-24 w-24 object-contain"
                         unoptimized={tile.icon.endsWith(".svg")}
                       />
                       <span className="hf-type-body -mt-4">{label}</span>

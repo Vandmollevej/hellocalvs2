@@ -2,6 +2,12 @@
 
 Last updated: 2026-10-09
 
+## 2026-10-09: Tøj ved vejning som til/fra-slidere
+
+- Vægt-siden, vejningens info-vindue og popuppen for smartvægt-vejninger viser nu syv slidere (undertøj, bukser, top/T-shirt, sweater, sko, mobil m.m. i lommen, efter toiletbesøg). Flere kan vælges; intet valgt = nøgen. Se DECISIONS 2026-10-09.
+- Ny kolonne `weight_entries.attireItems` (migration 20261009100000, gamle valg omregnes); algoritmen gætter nu det mest brugte sæt.
+- `tsc` og eslint på de ændrede filer er rene; logikken er kørt mod eksempler. Native (Compose) er fulgt med i `WeightComponents.kt`, `WeightCreateScreen.kt` og `HomeWeighInPrompts.kt`; ikke kompileret her (ingen Android-værktøjer). `npm run build` er grøn. Ikke prøvet i browser eller mod rigtig database.
+Last updated: 2026-10-08
 ## 2026-10-09: Stregkode læses også med skygge hen over koden (lokal tærskel pr. scanlinje)
 
 - Brugerens test 2026-10-06: en mælk med lidt skygge over stregkoden kunne ikke læses, mens andre scanner-apps læste den straks. Årsag: ZXing binariserer hver scanlinje med én fælles sort/hvid-tærskel, så de hvide felter i skyggen var mørkere end de sorte streger i lyset. Bemærk: ZXing's `HybridBinarizer` (som 2026-10-07-ændringen skiftede til hver anden frame) adskiller sig kun fra den globale for 2D-koder — for 1D-rækker bruger begge samme ene tærskel pr. række, så den skiftende binarisering hjalp ikke mod skygge på iPhone (ingen native BarcodeDetector).
@@ -43,6 +49,9 @@ Last updated: 2026-10-09
 - Hvert brand-kort (fuld admin) har nu "Erstat logo" (PNG-upload, samme pipeline som drag n drop/Logo-upload, PNG bruges som den er) og "Genkør logo" (`rerunBrandLogo` i `brands/actions.ts` sætter brandets BRAND_LOGO-job til PENDING; `cutout.py` skriver det nye resultat til brandet med `?v=`).
 - Genkør virker kun, når logoet stammer fra et fritlægningsjob (ikke uploadet). Billedrobotten skal genstartes/deployes med ny `cutout.py` (fix e745004e + denne).
 - Lint/typecheck/build kørt; ikke visuelt testet.
+
+## 2026-10-09: Kalender uden totaler i uge/måned
+Statusblokken i uge-/månedsvisning viser kun status (gennemsnit af forgangne dage mod delmålets dagsmål). Dagsvisningen er uændret. Lint + tsc grønne; ikke prøvet i browser.
 
 ## 2026-10-07: Alle popups som bundark + brand-logoets luft
 
@@ -146,6 +155,10 @@ Retter → HelloFresh åbner nu en skrivebeskyttet side under Retter (ikke Nye v
 - `/settings/import`: skærmoptagelse af MyFitnessPal/Lifesum → AI-aflæsning → gennemsyn → import som registreringer.
 - Migration `20261006200000_flow_conditions_migration_import` skal køre ved deploy. Tjek: `npm test`, lint og build (se commit). Ikke prøvet mod rigtig database eller med en rigtig optagelse — test importen med en kort optagelse først.
 - Fra samme overtagelse: `storeDescription` (butikkens originale varetekst, Cowboytoasten-sagen) er pushet til master (migration `20261005100000_product_store_description`), og SPAR-arket `spar.xlsx` er gemt med kode-forklaringerne.
+
+## 2026-10-09: Tilføj-menu — tekst tættere på ikonerne
+
+- Ikonerne har tomt luft i bunden, så teksten sad for langt nede. `AddMenuList.tsx`: `gap-0` og `-mb-4` på ikonet. Lint/build ikke kørt (ingen `node_modules` i cloud-sessionen). Justér `-mb-4` efter billedet på telefon.
 
 ## 2026-10-05: Pulslinjen — roligere uden ur, flyttet op over nederste tal
 
