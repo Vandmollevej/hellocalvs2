@@ -2,6 +2,10 @@
 
 Last updated: 2026-10-09
 
+## 2026-10-09: Statistik — ingen tomme rækker efter redigering
+
+- Når redigeringen af kort afsluttes (og når et gemt layout indlæses), fjernes nu alle helt tomme rækker i kort-gitteret, uanset hvor de står (`dropEmptyRows` i `src/lib/stat-layout.ts` + native `StatsLayout.kt`). En række med ét kort og ét tomt felt bliver. Under redigering er felterne stadig blanke, så kort kan flyttes. Test i `stat-layout.test.mjs` grøn; lint/tsc ikke kørt (ingen `node_modules`), Kotlin ikke kompileret lokalt, ikke prøvet på telefon.
+
 ## 2026-10-09: Børn kan ikke lukke konto eller melde sig ud
 
 - Kun forælderen kan lukke/fjerne et barns konto. Serveren afviser børn på `/api/account/close` (403) og `leaveFamily` (`childCannotLeave`); "Luk konto"/"Slet mine data" og "Meld dig ud" er skjult for børn i web og native (`meIsChild` fra `/api/family`). Barnet kan kun se, hvad forælderen viser (uændret). Se DECISIONS.md samme dato. Lint, tsc og native-paritet grønne; Kotlin ikke kompileret lokalt; ikke prøvet mod rigtig database.

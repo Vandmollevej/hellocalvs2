@@ -1,7 +1,7 @@
 // Kør: npm test  (node --test, Node 24 fjerner TypeScript-typer selv)
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { accordionAt, accordionRange, normalizeStatLayout } from "./stat-layout.ts";
+import { accordionAt, accordionRange, dropEmptyRows, normalizeStatLayout } from "./stat-layout.ts";
 
 const stat = (key) => ({ type: "stat", key });
 const acc = (id, open = true) => ({ type: "accordion", id, title: id, open });
@@ -40,5 +40,14 @@ test("fold-ud-boks: tomme rækker lige før slut-markøren fjernes, men ikke mid
   assert.deepEqual(
     next.map((item) => item.type),
     ["accordion", "empty", "empty", "stat", "empty", "accordionEnd"],
+  );
+});
+
+test("afsluttet redigering: helt tomme rækker fjernes, halvtomme bliver", () => {
+  const e = (id) => ({ type: "empty", id });
+  const next = dropEmptyRows([e("1"), e("2"), stat("a"), e("3"), e("4"), e("5"), stat("b"), e("6")]);
+  assert.deepEqual(
+    next.map((item) => (item.type === "stat" ? item.key : item.type)),
+    ["a", "empty", "b", "empty"],
   );
 });
