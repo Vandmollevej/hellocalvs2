@@ -17,7 +17,7 @@
     "src/components/IntegrationIcon.tsx": "36551d87b956c315",
     "src/components/OnboardingWizard.tsx": "381a3ffc6da066b3",
     "src/components/ProfileAvatarLink.tsx": "598cd23c3331619d",
-    "src/components/StatsWheel.tsx": "622a3e85bc95620f",
+    "src/components/StatsWheel.tsx": "d2c33461c0d413e6",
     "src/components/SwipeableRow.tsx": "7d580c5b4a7f2edf",
     "src/components/TopBar.tsx": "c466b089e2a38a9b",
     "src/components/WelcomeSheet.tsx": "2036784cdbd0c803",
