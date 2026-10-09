@@ -24,6 +24,21 @@ export function accountSetupDone(user: AccountSetupUser): Record<AccountSetupSte
   };
 }
 
+// Procent udført: andelen af de otte felter, der er udfyldt (afrundet).
+export function accountSetupPercent(user: AccountSetupUser): number {
+  const fields = [
+    user.sex,
+    user.birthDate,
+    user.heightCm,
+    user.weightKg,
+    user.goalMode,
+    user.activityLevel,
+    user.defaultBedtime,
+    user.defaultWakeTime,
+  ];
+  return Math.round((fields.filter(Boolean).length / fields.length) * 100);
+}
+
 export function isAccountSetupComplete(user: AccountSetupUser) {
   return Object.values(accountSetupDone(user)).every(Boolean);
 }

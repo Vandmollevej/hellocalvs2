@@ -13,7 +13,12 @@
 //   doesn't update its width/height when rotating. TRY_HARDER is still on for
 //   its dense row scan.
 // - Where the browser has the native BarcodeDetector it runs first; the JS
-//   decoder (alternating hybrid/global binarizer) is the fallback (iOS Safari).
+//   decoder is the fallback (iOS Safari). Its scan lines are thresholded
+//   locally first (`LocalRowBinarizer`: a shadow across part of the code
+//   must not stop the read, DECISIONS 2026-10-09), then with ZXing's global
+//   histogram (low contrast, blur). Note ZXing's HybridBinarizer only
+//   differs from the global one for 2D matrices — for 1D rows both use the
+//   same single black point per row, which is what fails under a shadow.
 
 import { BrowserMultiFormatOneDReader, HTMLCanvasElementLuminanceSource } from "@zxing/browser";
 import {
@@ -23,9 +28,10 @@ import {
   DecodeHintType,
   FormatException,
   GlobalHistogramBinarizer,
-  HybridBinarizer,
   NotFoundException,
+  type Result,
 } from "@zxing/library";
+import { LocalRowBinarizer } from "@/lib/barcode-local-binarizer";
 import type { BarcodeSymbology } from "@/lib/barcode-pattern";
 import { UpcEReader } from "@/lib/upce-reader";
 
@@ -89,15 +95,15 @@ function createNativeDetector(): NativeBarcodeDetector | null {
   }
 }
 
-// Row decoding on a binarizer of our choosing. Hybrid (local blocks) copes
-// with shadows; Global histogram copes with low contrast and blur — frames
-// alternate between them. Rotation is switched off on the source because the
-// canvas source's rotate doesn't update its size (see top of file); we turn
-// the frame ourselves.
-function bitmapFromCanvas(canvas: HTMLCanvasElement, binarizer: "hybrid" | "global"): BinaryBitmap {
+// One luminance conversion per canvas, two ways of turning its rows into
+// bars: local thresholds first (shadows, uneven light), then ZXing's global
+// histogram (low contrast, blur). Rotation is switched off on the source
+// because the canvas source's rotate doesn't update its size (see top of
+// file); we turn the frame ourselves.
+function bitmapsFromCanvas(canvas: HTMLCanvasElement): BinaryBitmap[] {
   const source = new HTMLCanvasElementLuminanceSource(canvas);
   source.isRotateSupported = () => false;
-  return new BinaryBitmap(binarizer === "hybrid" ? new HybridBinarizer(source) : new GlobalHistogramBinarizer(source));
+  return [new BinaryBitmap(new LocalRowBinarizer(source)), new BinaryBitmap(new GlobalHistogramBinarizer(source))];
 }
 
 type Orientation = "upright" | "sideways";
@@ -274,7 +280,6 @@ export function startBarcodeFrameScanner(
   // Try last frame's successful orientation first — a held barcode rarely
   // changes orientation between frames, so this halves the average work.
   let preferred: Orientation = "upright";
-  let frameCounter = 0;
   let unmeasuredCode: string | null = null;
   let unmeasuredCount = 0;
 
@@ -303,7 +308,7 @@ export function startBarcodeFrameScanner(
     return { text, symbology, points, side, barExtent, tiltDeg };
   }
 
-  function decode(orientation: Orientation, side: number, binarizer: "hybrid" | "global"): BarcodeRead | null {
+  function decode(orientation: Orientation, side: number): BarcodeRead | null {
     const canvas = orientation === "upright" ? frame : turned;
     if (orientation === "sideways") {
       if (!turnedContext) return null;
@@ -312,14 +317,19 @@ export function startBarcodeFrameScanner(
       turnedContext.rotate(Math.PI / 2);
       turnedContext.drawImage(frame, 0, 0);
     }
-    const bitmap = bitmapFromCanvas(canvas, binarizer);
-    let result;
-    try {
-      result = reader.decodeBitmap(bitmap);
-    } catch (error) {
-      if (!isExpectedMiss(error)) throw error;
-      result = upcEReader.decode(bitmap);
+    let result: Result | null = null;
+    for (const bitmap of bitmapsFromCanvas(canvas)) {
+      for (const decodeWith of [() => reader.decodeBitmap(bitmap), () => upcEReader.decode(bitmap)]) {
+        try {
+          result = decodeWith();
+          break;
+        } catch (error) {
+          if (!isExpectedMiss(error)) throw error;
+        }
+      }
+      if (result) break;
     }
+    if (!result) throw new NotFoundException();
     const symbology = SYMBOLOGY_BY_FORMAT.get(result.getBarcodeFormat());
     if (!symbology) return null;
     const points = result.getResultPoints().map((point) =>
@@ -362,7 +372,6 @@ export function startBarcodeFrameScanner(
         turned.width = turned.height = side;
       }
       frameContext.drawImage(video, (width - sourceSide) / 2, (height - sourceSide) / 2, sourceSide, sourceSide, 0, 0, side, side);
-      frameCounter += 1;
 
       try {
         let read: BarcodeRead | null = null;
@@ -375,11 +384,10 @@ export function startBarcodeFrameScanner(
         if (read) {
           onRead(read);
         } else {
-          const binarizer = frameCounter % 2 === 0 ? "hybrid" : "global";
           const order: Orientation[] = preferred === "upright" ? ["upright", "sideways"] : ["sideways", "upright"];
           for (const orientation of order) {
             try {
-              read = decode(orientation, side, binarizer);
+              read = decode(orientation, side);
               if (read) {
                 preferred = orientation;
                 onRead(read);
