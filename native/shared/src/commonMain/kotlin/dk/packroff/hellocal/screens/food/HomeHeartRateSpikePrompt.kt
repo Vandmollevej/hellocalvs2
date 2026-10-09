@@ -165,16 +165,16 @@ private fun pulseJsNumber(value: Double): String =
     if (value == floor(value) && abs(value) < 1e15) value.toLong().toString() else value.toString()
 
 @Serializable
-private data class PulseSampleDto(val at: String, val bpm: Double)
+internal data class PulseSampleDto(val at: String, val bpm: Double)
 
 @Serializable
-private data class PulseWeekActivityDto(val startedAt: String, val durationMinutes: Double = 0.0, val sportType: String = "")
+internal data class PulseWeekActivityDto(val startedAt: String, val durationMinutes: Double = 0.0, val sportType: String = "")
 
 @Serializable
-private data class PulseAlternativeDto(val sport: String, val label: String)
+internal data class PulseAlternativeDto(val sport: String, val label: String)
 
 @Serializable
-private data class PulseSuggestionDto(
+internal data class PulseSuggestionDto(
     val sport: String,
     val label: String,
     val confidence: Double = 0.0,
