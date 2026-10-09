@@ -35,6 +35,7 @@ import dk.packroff.hellocal.platform.NativeHooks
 import dk.packroff.hellocal.theme.HcColors
 import dk.packroff.hellocal.theme.HcDimens
 import dk.packroff.hellocal.theme.HcTypeRoles
+import dk.packroff.hellocal.ui.icons.HcIcon
 
 /** Hello Doc panels in default order (src/lib/insight-layout.ts INSIGHT_PANELS). */
 val HelloDocPanels = listOf("weight", "food", "vitamins", "fluid")
