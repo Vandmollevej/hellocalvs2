@@ -4699,3 +4699,7 @@ Google/Apple/Facebook-login og integrationstilkobling kører i system-browseren,
 - `src/lib/danish-number.ts`: `deriveNumberForms` (kendte ord + tillægsord), `parseNumberQuery` ("et/en X" = ental, "nogle/flere/mange X" = flertal) og `matchesNumberQuery`. `GET /api/generic-ingredients` søger i alle tre felter og filtrerer på hele ord, så "et æble" ikke giver "æbler"; svaret har `displayName` i den søgte form. Oprettelse (`POST` og `addIngredientRequestGlobally`) udfylder begge felter.
 - Kun generiske varer — almindelige varer med brand/EAN berøres ikke. Se docs/REGLER.md.
 - Ikke gjort endnu: UI skal bruge `displayName`; ental/flertal-kolonner i Bilka-/REMA-arkene; import af de afledte former til eksisterende rækker ud over backfill-listen.
+
+## 2026-10-09: Retter-søgning viser Valdemarsro under "Opskrifter"; "Opret ny ret" som tekstlink
+- Årsag til tom liste: `/api/shared-recipes` medtog kun Valdemarsro ved `valdemarsro=1`, som appen aldrig sender, så "Opskrifter" (source=all) viste aldrig Valdemarsro-retter. Nu medtages de altid ved all; HelloFresh kræver stadig, at integrationen er slået til (Seriøs).
+- "Opret ny ret" er sort, understreget tekst med plus foran (ikke grøn knap) — web og native.

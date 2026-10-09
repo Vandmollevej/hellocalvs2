@@ -79,13 +79,6 @@ private const val CALENDAR_VIEW_KEY = "hellocal.kalender.defaultView"
 
 /** src/lib/terms-hints.ts ONBOARDING_TERMS */
 private val ONBOARDING_TERMS = mapOf(
-    "units" to ProfileTermsHint(
-        "hvad-er-hello-cal",
-        listOf(
-            "Valget af vægt- og længdeenheder gemmes kun på denne enhed og ændrer blot, hvordan tallene vises og indtastes. Din vægt og højde gemmes altid ens, uanset hvilken enhed du vælger.",
-            "Du kan altid skifte under Indstillinger → Sprog og region.",
-        ),
-    ),
     "sleep-pattern" to ProfileTermsHint(
         "hvad-er-hello-cal",
         listOf(

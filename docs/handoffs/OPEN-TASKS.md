@@ -278,6 +278,7 @@ Ejer: Flows-sessionen (2026-09-27)
 | --- | --- | --- | --- |
 | 745f1ab5 | Telefon-editor (iPhone 17) til mails/notifikationer/svarskabeloner + hovedmenu "Flows" med flow-sider | Færdig (se git log "Admin: phone editor") | Guide-builderen (tooltips) er flyttet ind i `flows`-gruppen i `AdminShell.tsx` efter brugerens ønske |
 | 41 | Design-screening af admin-flowsider mod HelloFresh-retningen | Færdig (branch `claude/admin-flowsider-design-4tzgb4`) | Afventer brugerens visuelle test på desktop + telefon |
+| fredags-vejning | Fredags-banner under Flows: foreslår kalibrering i weekenden; `/weigh-reminders` med tidslinje (én kontakt pr. 2. time, push 5 min før); regler (ugedag, tid, dato m.m.) i Flows → Visning og betingelser | Venter på bruger | Kode i master (DECISIONS 2026-10-07), lint 0 fejl. Migration `20261007140000_weigh_reminders` skal køre ved deploy; flowet "Kalibrér vægten i weekenden" er en kladde — aktivér i admin → Flows. Kræver VAPID-nøgler + push-abonnement. Brugerens test på telefon |
 
 ## G-POPUP — Søg/vare/beskeder-efterrettelser + bundark-gennemgang
 Filer: `src/components/ui/WheelPicker.tsx`, `src/components/ui/BirthDatePicker.tsx`, `src/components/StartupTipOverlay.tsx`, `src/components/family/AccessLogPanel.tsx`, `src/components/hf/BottomSheet.tsx` (kun no-drag-markering), `src/lib/use-confirm-sheet.tsx`, `window.confirm`-kald i admin-/indstillingskomponenter, `src/components/add/AddProductView.tsx` (kun brand-logoets luft til cirklen).
