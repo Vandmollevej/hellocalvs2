@@ -469,6 +469,15 @@
     "later": "Senare",
     "dontAskAgain": "Fråga inte igen"
   },
+  "staleSyncPrompt": {
+    "title": "{name} är inte synkroniserad",
+    "body": "{name} har inte skickat data sedan {date}. Din vikt och aktivitet kan saknas. Synkronisera nu så att allt kommer med.",
+    "syncNow": "Synkronisera nu",
+    "open": "Öppna integration",
+    "later": "Senare",
+    "failed": "Synkroniseringen misslyckades. Försök igen eller öppna integrationen.",
+    "never": "aldrig"
+  },
   "sentNotice": {
     "title": "För din information",
     "body": "Vi skickade dig den {date} ett {type} om \"{subject}\". Det var inte skräppost.",

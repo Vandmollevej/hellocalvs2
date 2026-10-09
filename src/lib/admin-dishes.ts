@@ -17,8 +17,6 @@ export type DishRow = {
   status: "PENDING" | "APPROVED" | "REJECTED";
   href: string | null;
   note: string | null;
-  // Deaktiveret i admin (Product.discontinued) — vises ikke for brugerne.
-  disabled: boolean;
 };
 
 export type DishPage = { rows: DishRow[]; total: number; pageCount: number; page: number };
@@ -34,14 +32,9 @@ function words(q: string) {
   return q.split(/\s+/).filter(Boolean).slice(0, 8);
 }
 
-// Integrationernes retter (Product-rækker med kilde HELLOFRESH eller VALDEMARSRO).
-export async function loadHelloFreshDishes(
-  q: string,
-  page: number,
-  source: "HELLOFRESH" | "VALDEMARSRO" = "HELLOFRESH",
-): Promise<DishPage> {
+export async function loadHelloFreshDishes(q: string, page: number): Promise<DishPage> {
   const where: Prisma.ProductWhereInput = {
-    externalSource: source,
+    externalSource: "HELLOFRESH",
     AND: words(q).map((word) => ({ name: { contains: word, mode: "insensitive" as const } })),
   };
   const [total, products] = await Promise.all([
@@ -57,7 +50,6 @@ export async function loadHelloFreshDishes(
         imageUrl: true,
         kcalPer100g: true,
         status: true,
-        discontinued: true,
         _count: { select: { ingredients: true } },
       },
     }),
@@ -73,10 +65,8 @@ export async function loadHelloFreshDishes(
       kcal: p.kcalPer100g,
       kcalLabel: "kcal/100 g",
       status: p.status,
-      // Valdemarsro-retter åbnes som produktsiden (tilføj, "Gå til opskrift").
-      href: source === "VALDEMARSRO" ? `/add/${p.id}` : `/admin/dishes/hellofresh/${p.id}`,
+      href: null,
       note: p._count.ingredients > 0 ? `${p._count.ingredients} ingredienser` : null,
-      disabled: p.discontinued,
     })),
   };
 }
@@ -108,7 +98,6 @@ export async function loadUserDishes(q: string, page: number): Promise<DishPage>
       status: r.status,
       href: r.status === "PENDING" ? "/admin/quality-control/shared-recipes" : null,
       note: r.totalGrams > 0 ? `${Math.round(r.totalGrams)} g` : null,
-      disabled: false,
     })),
   };
 }

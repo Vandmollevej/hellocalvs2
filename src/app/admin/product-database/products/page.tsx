@@ -5,7 +5,6 @@ import { loadProductDatabase, loadProductDatabaseSuggestions, type ProductDataba
 import {
   PRODUCT_COLUMNS,
   PRODUCT_COLUMN_LABELS,
-  PRODUCT_DATABASE_PAGE_SIZE,
   PRODUCT_STATUS_LABELS,
   parseProductDatabaseFilters,
   productDatabaseHref,
@@ -13,6 +12,7 @@ import {
   type ProductDatabaseFilters as Filters,
   type ProductDatabaseSearchParams,
 } from "@/lib/admin-product-database-query";
+import { InfiniteScrollLoader } from "@/components/admin/InfiniteScrollLoader";
 import { ProductDatabaseFilters } from "@/components/admin/ProductDatabaseFilters";
 import { SavedViewsControls } from "@/components/admin/SavedViewsControls";
 
@@ -334,8 +334,9 @@ export default async function AdminProductDatabasePage({
     loadProductDatabaseSuggestions(filters.brand),
   ]);
   const { overview } = data;
-  const firstIndex = data.matching === 0 ? 0 : (filters.page - 1) * PRODUCT_DATABASE_PAGE_SIZE + 1;
-  const lastIndex = Math.min(filters.page * PRODUCT_DATABASE_PAGE_SIZE, data.matching);
+  const infinite = filters.paging === "infinite";
+  const firstIndex = data.matching === 0 ? 0 : infinite ? 1 : (filters.page - 1) * filters.perPage + 1;
+  const lastIndex = Math.min(filters.page * filters.perPage, data.matching);
   const clean: Filters = parseProductDatabaseFilters({});
 
   return (
@@ -414,7 +415,11 @@ export default async function AdminProductDatabasePage({
           <ListView rows={data.rows} columns={filters.cols} filters={filters} />
         )}
 
-        <Pagination filters={filters} pageCount={data.pageCount} />
+        {infinite ? (
+          lastIndex < data.matching && <InfiniteScrollLoader filters={filters} />
+        ) : (
+          <Pagination filters={filters} pageCount={data.pageCount} />
+        )}
       </div>
     </div>
   );

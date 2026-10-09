@@ -6,8 +6,12 @@ Last updated: 2026-10-09
 
 - Huawei Health (`bodyWater`, `boneMass`, `visceralFat`) og Apple Health (`fatFreeMass`) har fået de manglende til/fra-rækker i `SYNC_CAPABILITIES`. Før blev målingerne hentet, men sorteret fra, fordi rækken ikke fandtes. Garmin sendte knoglemasse to gange pr. vejning; dublet fjernet.
 - Understøttes ikke af leverandørens API (intet at hente): muskelmasse fra Health Connect og Apple Health, kropsvand og muskler fra Fitbit og Google Health, kropssammensætning fra Polar, WHOOP og Strava. Withings' segmentmålinger pr. arm/ben (173-175) er stadig ikke med (kræver nye `HealthMetricType`).
-- `parity.mjs` fejler allerede på master (FooterArc.tsx), uafhængigt af denne ændring. Ikke kørt lint/build ud over eslint på de to filer og `integration-items.test.mjs`.
 
+
+## 2026-10-09: Popup ved gammel integrations-synk
+
+- Ny `src/components/StaleSyncPrompt.tsx` (monteret i `layout.tsx`): er en tilkoblet integration (fx smartvægt via Withings/Google Health) ikke synkroniseret i over 3 dage, kommer en popup med "Synkroniser nu" (cloud-integrationer) eller link til integrationens side (companion/via). "Senere" udsætter pr. integration i et døgn. Tekster på alle 7 sprog (`staleSyncPrompt.*`). Se `docs/DECISIONS.md` 2026-10-09.
+- Sådan ser brugeren synk-status i dag: Indstillinger → Integrationer → appen viser "Sidst synkroniseret …" og fejl. Lint og typecheck uden fejl; ikke live-testet (ingen lokal DB/login).
 ## 2026-10-09: Periodevalg som dropdown
 
 - Søvn- og Væskestatistik bruger nu dropdown (`src/components/hf/StatPeriodSelect.tsx`) i stedet for periodeknapper. Ikke kørt lint/build/visuelt: `node_modules` mangler i dette cloud-miljø.

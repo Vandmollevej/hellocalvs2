@@ -471,6 +471,15 @@
     "later": "Later",
     "dontAskAgain": "Don't ask again"
   },
+  "staleSyncPrompt": {
+    "title": "{name} is not synced",
+    "body": "{name} has not sent data since {date}. Your weight and activity may be missing. Sync now to make sure everything is included.",
+    "syncNow": "Sync now",
+    "open": "Open integration",
+    "later": "Later",
+    "failed": "Sync failed. Try again or open the integration.",
+    "never": "never"
+  },
   "sentNotice": {
     "title": "For your information",
     "body": "On {date} we sent you {type} about \"{subject}\". This was not spam.",
