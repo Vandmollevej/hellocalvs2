@@ -415,3 +415,11 @@ Ejer: viden-hjaelp-guide-sessionen (2026-10-07)
 | --- | --- | --- | --- |
 | — | Genvejslink + Guide mig-overlay i hjælpe-chatten; søgning i Viden om mad; kalorieforbrænding; WHO-kilder | Færdig (se git log "Guide mig") | Brugeren tester på telefon: spørg chatten "hvordan logger jeg vægt?" |
 | retter-tekst-scan | Retter: auto-fokus søg, "Opret ny ret", integrationsknapper + filter-bundark; opret ret med Manuelt/Indsæt tekst/Scan + kopi-tjek (claude/retter-tekst-scan) | Færdig (kode) | Alt bygget inkl. valdemarsro-agent. Migrationer 20261008100000/110000/120000/130000 skal med deployet; agenten er ikke kørt mod rigtig database/Docker. Ikke prøvet i browser |
+
+## G-SLIDER — Tal-slider: valgbare felter, mål-linje, grøn ved mål
+Filer: `src/lib/frontpage-stats.ts`, `src/lib/frontpage-goal-math.ts`, `src/lib/pulse-zone-settings.ts`, `src/components/StatsWheel.tsx`, `src/app/settings/display/front-page/page.tsx`.
+Ejer: cloud-session `claude/slider-settings-goal-display-32jvk9` (2026-10-09)
+
+| Id | Opgave | Status | Næste skridt |
+| --- | --- | --- | --- |
+| slider-felter | 12 nye felter, mål under tallet, grøn ved nået mål, pulszoner i Visning → Forside | Færdig (kode, draft-PR #278) | Brugerens test på telefon + svar på antagelserne (sukkermål 10 % vs. 1 %, faste mål for trapper/skridt) |
