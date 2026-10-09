@@ -175,6 +175,12 @@ async function handleAccessWall(req: NextRequest, host: string): Promise<NextRes
   let pathname = url.pathname;
   if (isPublicHealthPath(pathname)) return null;
 
+  // Next's billed-optimerer henter kildefilen via en intern, header-løs forespørgsel
+  // (ingen Host/cookie/User-Agent). Den ydre /_next/image-forespørgsel afgøres
+  // allerede mod den ægte kilde-sti herunder; ellers blokeres alle optimerede
+  // billeder og ikoner som "bot uden session". Ægte HTTP-forespørgsler har altid Host.
+  if (!req.headers.get("host")) return null;
+
   // Next's billed-optimerer: afgør ud fra den ægte kilde, ikke /_next/image.
   const isOptimizer = pathname === "/_next/image";
   if (isOptimizer) {

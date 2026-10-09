@@ -12,12 +12,14 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import dk.packroff.hellocal.screens.food.FoodProfile
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
@@ -85,7 +87,10 @@ fun SettingsHelloDocEditor(
             HcSectionTitle(t.t("helloDoc.shareDataTitle"))
             VSpace(HcDimens.SpaceBlock)
             Column(verticalArrangement = Arrangement.spacedBy(HcDimens.SpaceInline)) {
-                for (category in SettingsHelloDoc.Categories) {
+                // Menstruation is only for women — not shown at all for men.
+                LaunchedEffect(Unit) { if (FoodProfile.user == null) FoodProfile.refresh() }
+                val isFemale = FoodProfile.user?.sex == "FEMALE"
+                for (category in SettingsHelloDoc.Categories.filter { it != "menstrualCycle" || isFemale }) {
                     val unavailable = category in SettingsHelloDoc.UnavailableCategories
                     HcToggle(
                         checked = !unavailable && category in categories,

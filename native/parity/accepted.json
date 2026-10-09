@@ -51,8 +51,8 @@
     "src/components/landing/StoreDownload.tsx": "d9b1151bdef1c9fa",
     "src/components/onboarding/ActivityStep.tsx": "1825e0f2fd58523f",
     "src/components/ui/Toggle.tsx": "8fc97afe3b61a5a3",
-    "src/components/weight/AttireToggles.tsx": "10dd72aa288824e4",
-    "src/components/weight/WeighInPrompts.tsx": "967c9a296d3bb553"
+    "src/components/weight/AttireToggles.tsx": "e5ce3e4e1da336dc",
+    "src/components/weight/WeighInPrompts.tsx": "757b76feecbf8527"
   },
   "/account/phone": {
     "src/app/account/phone/page.tsx": "113c8d9cf805a8d7",
@@ -247,8 +247,8 @@
     "src/components/icons/WaistMeasure.tsx": "47f849581ff0f288",
     "src/components/icons/WaterGlass.tsx": "be5a375224031164",
     "src/components/web/WebShell.tsx": "5f2646ffd79af9cc",
-    "src/components/weight/AttireToggles.tsx": "10dd72aa288824e4",
-    "src/components/weight/WeightEntryDetailsSheet.tsx": "0cfebcbeee966cb1"
+    "src/components/weight/AttireToggles.tsx": "e5ce3e4e1da336dc",
+    "src/components/weight/WeightEntryDetailsSheet.tsx": "1dd31caa5c2a8f18"
   },
   "/camera": {
     "src/app/camera/page.tsx": "462e40e531fb8252",
@@ -920,8 +920,9 @@
     "src/components/family/ProfileCircle.tsx": "08fe8d4db2620525",
     "src/components/family/ProfileSwitcher.tsx": "4db78b0f9354d1bf",
     "src/components/family/WatchPhoneIcon.tsx": "baaa51321cd10d07",
+    "src/components/hf/AccordionSection.tsx": "8179577885ae33f4",
     "src/components/hf/BottomSheet.tsx": "feac121d59e8efa0",
-    "src/components/hf/GoalForm.tsx": "97a9c60dec603c48",
+    "src/components/hf/GoalForm.tsx": "be9d696a2e915e5b",
     "src/components/hf/HfChevron.tsx": "11106e436ea8e3ef",
     "src/components/hf/ScreenHeader.tsx": "a7bbb02ab41e7756",
     "src/components/icons/Favorite.tsx": "70f85dd37d71acbf",
@@ -942,8 +943,9 @@
     "src/components/family/ProfileCircle.tsx": "08fe8d4db2620525",
     "src/components/family/ProfileSwitcher.tsx": "4db78b0f9354d1bf",
     "src/components/family/WatchPhoneIcon.tsx": "baaa51321cd10d07",
+    "src/components/hf/AccordionSection.tsx": "8179577885ae33f4",
     "src/components/hf/BottomSheet.tsx": "feac121d59e8efa0",
-    "src/components/hf/GoalForm.tsx": "97a9c60dec603c48",
+    "src/components/hf/GoalForm.tsx": "be9d696a2e915e5b",
     "src/components/hf/HfChevron.tsx": "11106e436ea8e3ef",
     "src/components/hf/ScreenHeader.tsx": "a7bbb02ab41e7756",
     "src/components/icons/Favorite.tsx": "70f85dd37d71acbf",
@@ -1038,7 +1040,7 @@
   },
   "/profile/messages": {
     "src/app/layout.tsx": "9a180a8c9b7bdec8",
-    "src/app/profile/messages/page.tsx": "c130098f88eef517",
+    "src/app/profile/messages/page.tsx": "470fa9f9d9540c92",
     "src/components/AuthGate.tsx": "94db96b768f9f95f",
     "src/components/BottomNav.tsx": "3428c5ae144e2dea",
     "src/components/EmailVerifySheet.tsx": "42e52d85f9bf57d9",
@@ -1861,7 +1863,7 @@
     "src/components/family/ProfileSwitcher.tsx": "4db78b0f9354d1bf",
     "src/components/family/WatchPhoneIcon.tsx": "baaa51321cd10d07",
     "src/components/hf/BottomSheet.tsx": "feac121d59e8efa0",
-    "src/components/hf/DoctorShareEditor.tsx": "e9991e968ccb8c45",
+    "src/components/hf/DoctorShareEditor.tsx": "917a747174c382a5",
     "src/components/hf/HfChevron.tsx": "11106e436ea8e3ef",
     "src/components/hf/ScreenHeader.tsx": "a7bbb02ab41e7756",
     "src/components/hf/Skeleton.tsx": "383d8a93fa858b4a",
@@ -1885,7 +1887,7 @@
     "src/components/family/ProfileSwitcher.tsx": "4db78b0f9354d1bf",
     "src/components/family/WatchPhoneIcon.tsx": "baaa51321cd10d07",
     "src/components/hf/BottomSheet.tsx": "feac121d59e8efa0",
-    "src/components/hf/DoctorShareEditor.tsx": "e9991e968ccb8c45",
+    "src/components/hf/DoctorShareEditor.tsx": "917a747174c382a5",
     "src/components/hf/HfChevron.tsx": "11106e436ea8e3ef",
     "src/components/hf/ScreenHeader.tsx": "a7bbb02ab41e7756",
     "src/components/hf/TextField.tsx": "f44c94024c219168",
@@ -2413,7 +2415,7 @@
   },
   "/water/create": {
     "src/app/layout.tsx": "9a180a8c9b7bdec8",
-    "src/app/water/create/page.tsx": "b45d87054d6e86cf",
+    "src/app/water/create/page.tsx": "16b988aee46794e6",
     "src/components/AuthGate.tsx": "94db96b768f9f95f",
     "src/components/BottomNav.tsx": "3428c5ae144e2dea",
     "src/components/EmailVerifySheet.tsx": "42e52d85f9bf57d9",
@@ -2458,7 +2460,7 @@
   },
   "/weight/create": {
     "src/app/layout.tsx": "9a180a8c9b7bdec8",
-    "src/app/weight/create/page.tsx": "b8fa8eca8e189e77",
+    "src/app/weight/create/page.tsx": "9b984f00d46f8aa4",
     "src/components/AuthGate.tsx": "94db96b768f9f95f",
     "src/components/BottomNav.tsx": "3428c5ae144e2dea",
     "src/components/EmailVerifySheet.tsx": "42e52d85f9bf57d9",
@@ -2479,9 +2481,9 @@
     "src/components/icons/PhotoFrame.tsx": "20ffbe92a0057321",
     "src/components/icons/WaistMeasure.tsx": "47f849581ff0f288",
     "src/components/web/WebShell.tsx": "5f2646ffd79af9cc",
-    "src/components/weight/AttireToggles.tsx": "10dd72aa288824e4",
-    "src/components/weight/WeighInPrompts.tsx": "967c9a296d3bb553",
-    "src/components/weight/WeightEntryDetailsSheet.tsx": "0cfebcbeee966cb1",
+    "src/components/weight/AttireToggles.tsx": "e5ce3e4e1da336dc",
+    "src/components/weight/WeighInPrompts.tsx": "757b76feecbf8527",
+    "src/components/weight/WeightEntryDetailsSheet.tsx": "1dd31caa5c2a8f18",
     "src/components/weight/WeightSyncStatus.tsx": "35e33268e7403c4e"
   },
   "/welcome": {

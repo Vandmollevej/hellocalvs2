@@ -606,6 +606,9 @@ model WeightEntry {
   note      String?
   // 2026-10-07: hvad brugeren havde på ved vejningen (null = ikke bekræftet endnu).
   attire    WeighAttire?
+  // 2026-10-09: de enkelte til/fra-valg (UNDERWEAR, PANTS, TOP, SWEATER, SHOES,
+  // POCKET_ITEMS, AFTER_TOILET). Tom + attire sat = nøgen. `attire` er grovsammenfatning.
+  attireItems String[]     @default([])
   weighedAt DateTime     @default(now())
 
   @@map("weight_entries")
@@ -2182,6 +2185,8 @@ model GenericIngredient {
   // Ens i begge felter hvor formen ikke kan afgøres (fx æg).
   nameSingular String?
   namePlural   String?
+  // Rå eller tilberedt (docs/REGLER.md, 2026-10-08). Standard RAW; sæt COOKED når varen er kogt/stegt/bagt o.l.
+  cookingState GenericIngredientCookingState @default(RAW)
   category GenericIngredientCategory @default(OTHER)
   imageUrl String?
 
@@ -2284,6 +2289,11 @@ model UserProductSearchHistory {
   @@unique([userId, genericIngredientId])
   @@index([userId, clickCount])
   @@map("user_product_search_history")
+}
+
+enum GenericIngredientCookingState {
+  RAW
+  COOKED
 }
 
 enum GenericIngredientCategory {
