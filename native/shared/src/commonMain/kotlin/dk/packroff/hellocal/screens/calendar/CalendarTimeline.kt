@@ -275,8 +275,8 @@ internal fun WeekTimelineView(
                     val met = dailyGoalMet(totals, date, goals.effective(date))
                     Column(
                         Modifier.width(columnWidth).height(48.dp)
-                            .background(if (current) HcColors.SelectedBg else Color.Transparent)
-                            .let { if (current) it.border(2.dp, HcColors.SelectedBorder) else it }
+                            .background(if (current) HcColors.White else Color.Transparent)
+                            .let { if (current) it.border(2.dp, HcColors.Brand) else it }
                             .cellLines(tan, right = index < days.lastIndex, bottom = true)
                             .clickable { onOpenDate(date) },
                         horizontalAlignment = Alignment.CenterHorizontally,
@@ -284,7 +284,7 @@ internal fun WeekTimelineView(
                     ) {
                         HcText(weekdayShort(date).uppercase(), HcTypeRoles.Micro, bold = true, color = HcColors.TextSecondary, maxLines = 1)
                         Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                            HcText(date.dayOfMonth.toString(), HcTypeRoles.Body, bold = true, color = if (current) HcColors.SelectedText else HcColors.Black)
+                            HcText(date.dayOfMonth.toString(), HcTypeRoles.Body, bold = true, color = HcColors.Black)
                             if (met) HcIcon("Check", size = 15.dp, stroke = 3.5f, color = HcColors.Green)
                             if (date in goalDates) CalendarPartyPopperIcon(15.dp, HcColors.Black)
                             if (!weighInsByDate[date].isNullOrEmpty()) CalendarBathScaleIcon(15.dp, HcColors.Black)

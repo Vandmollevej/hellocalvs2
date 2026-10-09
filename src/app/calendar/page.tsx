@@ -19,6 +19,7 @@ import {
   IconStarFilled,
 } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
+import { BottomNav } from "@/components/BottomNav";
 import { AddMenuSheet } from "@/components/add/AddMenuSheet";
 import { HfChevron } from "@/components/hf/HfChevron";
 import { ProfileAvatarLink } from "@/components/ProfileAvatarLink";
@@ -65,6 +66,7 @@ import { GoalStatusSummary } from "@/components/calendar/GoalStatusSummary";
 import {
   formatMeasurementValue,
   formatWeightKg,
+  integrationIconForSource,
   measurementsForDay,
   type CalendarMeasurement,
   type CalendarWeighIn,
@@ -570,6 +572,24 @@ export default function CalendarPage() {
     }
     const remaining = goalSum + bonusKcal - consumed;
 
+    // Status for perioden: gennemsnittet af de forgangne dage med registreringer
+    // mod gennemsnitligt dagsmål (budget-snapshots følger næste delmål). Dags
+    // dato tæller ikke med, den er ikke slut. Der vises ingen totaler.
+    const lastPastDay = isCurrentMonth ? today.getDate() - 1 : daysInMonth;
+    let pastLoggedDays = 0;
+    let pastIntake = 0;
+    let pastGoal = 0;
+    for (let day = 1; day <= lastPastDay; day += 1) {
+      const date = new Date(year, month, day);
+      const total = totalKcalForDate(dailyTotals, date);
+      if (total <= 0) continue;
+      pastLoggedDays += 1;
+      pastIntake += total;
+      pastGoal += goalForDate(date);
+    }
+    const periodStatus: "met" | "missed" | "none" =
+      pastLoggedDays === 0 ? "none" : pastIntake / pastLoggedDays <= pastGoal / pastLoggedDays ? "met" : "missed";
+
     let sevenDayConsumed = 0;
     for (let offset = 0; offset < 7; offset += 1) {
       sevenDayConsumed += totalKcalForDate(dailyTotals, addDays(today, -offset));
@@ -581,7 +601,7 @@ export default function CalendarPage() {
     let streak = 0;
     while (dailyGoalMet(dailyTotals, addDays(today, -streak), goalForDate(addDays(today, -streak)))) streak += 1;
 
-    return { isCurrentMonth, consideredDays, metCount, remaining, sevenDayRemaining, streak, goalSum, consumed, bonusKcal };
+    return { isCurrentMonth, consideredDays, metCount, remaining, sevenDayRemaining, streak, goalSum, consumed, bonusKcal, periodStatus };
   }, [dailyTotals, activityBonusByDay, year, month, today, goalForDate, baseGoalForDate]);
 
   useEffect(() => {
@@ -1223,7 +1243,7 @@ function MonthView({
                         isPast ? "" : "hf-type-strong"
                       } ${
                         current
-                          ? "border-transparent hf-selected"
+                          ? "border-transparent hf-cal-current"
                           : isOtherMonth
                             ? "border-hf-gray-border bg-transparent text-text-muted"
                             : isPast
@@ -1294,8 +1314,8 @@ function WeekView({
         const kcal = totalKcalForDate(dailyTotals, date);
         const goalKcal = goalForDate(date);
         const met = dailyGoalMet(dailyTotals, date, goalKcal);
-        // An unlogged day is not a missed goal: it shows "Ingen indtastninger"
-        // and the full remaining budget, both in gray.
+        // An unlogged day is not a missed goal: it shows a gray dash for both
+        // the status and the kcal.
         const logged = kcal > 0;
         const over = kcal > goalKcal;
         const diff = Math.round(Math.abs(goalKcal - kcal));
@@ -1316,7 +1336,7 @@ function WeekView({
             <span
               className={`hf-type-body flex size-9 shrink-0 items-center justify-center rounded-lg border ${
                 current
-                  ? "hf-type-strong border-transparent hf-selected"
+                  ? "hf-type-strong border-transparent hf-cal-current"
                   : future
                     ? "hf-type-strong border-hf-gray bg-hf-white text-hf-black"
                     : "border-hf-gray bg-hf-white text-text-muted"
@@ -1338,7 +1358,7 @@ function WeekView({
                   className={`hf-type-body flex items-center gap-1.5 ${tooLow ? "hf-type-strong text-hf-warning" : logged ? "" : "text-text-muted"}`}
                 >
                   {!logged
-                    ? t("calendar.noEntries")
+                    ? "–"
                     : tooLow
                       ? t("calendar.intakeTooLow")
                       : met
@@ -1354,8 +1374,7 @@ function WeekView({
                       !logged ? "text-text-muted" : tooLow ? "text-hf-warning" : over ? "text-hf-red-dark" : "text-hf-green"
                     }`}
                   >
-                    {over ? "÷" : "+"}
-                    {diff} kcal
+                    {!logged ? "–" : `${over ? "÷" : "+"}${diff} kcal`}
                   </span>
                   <IconChevronRight size={19} className="shrink-0" />
                 </span>
@@ -1533,8 +1552,8 @@ function ListView({
         const kcal = totalKcalForDate(dailyTotals, date);
         const goalKcal = goalForDate(date);
         const met = dailyGoalMet(dailyTotals, date, goalKcal);
-        // An unlogged day is not a missed goal: it shows "Ingen indtastninger"
-        // and the full remaining budget, both in gray.
+        // An unlogged day is not a missed goal: it shows a gray dash for both
+        // the status and the kcal.
         const logged = kcal > 0;
         const over = kcal > goalKcal;
         const diff = Math.round(Math.abs(goalKcal - kcal));
@@ -1555,7 +1574,7 @@ function ListView({
             <span
               className={`hf-type-body flex size-9 shrink-0 items-center justify-center rounded-lg border ${
                 current
-                  ? "hf-type-strong border-transparent hf-selected"
+                  ? "hf-type-strong border-transparent hf-cal-current"
                   : future
                     ? "hf-type-strong border-hf-gray bg-hf-white text-hf-black"
                     : "border-hf-gray bg-hf-white text-text-muted"
@@ -1577,7 +1596,7 @@ function ListView({
                   className={`hf-type-body flex items-center gap-1.5 ${tooLow ? "hf-type-strong text-hf-warning" : logged ? "" : "text-text-muted"}`}
                 >
                   {!logged
-                    ? t("calendar.noEntries")
+                    ? "–"
                     : tooLow
                       ? t("calendar.intakeTooLow")
                       : met
@@ -1593,8 +1612,7 @@ function ListView({
                       !logged ? "text-text-muted" : tooLow ? "text-hf-warning" : over ? "text-hf-red-dark" : "text-hf-green"
                     }`}
                   >
-                    {over ? "÷" : "+"}
-                    {diff} kcal
+                    {!logged ? "–" : `${over ? "÷" : "+"}${diff} kcal`}
                   </span>
                   <IconChevronRight size={19} className="shrink-0" />
                 </span>
@@ -1698,7 +1716,7 @@ function WeekTimelineView({
               type="button"
               onClick={() => onOpenDate(date)}
               className={`flex h-12 min-w-[92px] flex-1 flex-col items-center justify-center border-b border-r border-hf-tan last:border-r-0 focus-visible:outline-2 focus-visible:outline-hf-black ${
-                current ? "hf-selected" : "text-hf-black"
+                current ? "hf-cal-current" : "text-hf-black"
               }`}
             >
               <span className="hf-type-micro hf-type-strong text-text-secondary uppercase">
@@ -2532,6 +2550,8 @@ function DayDetails({
           onClose={() => setAddSheetHour(null)}
         />
       )}
+
+      <BottomNav />
     </div>
   );
 }
@@ -2948,7 +2968,9 @@ function HourEntriesOverlay({
         {goals.map((goal) => (
           <GoalAccordion key={goal.id} goal={goal} />
         ))}
-        {weighIns.map((entry) => (
+        {weighIns
+          .filter((entry) => !measurements.some((measurement) => measurement.id === `weight-${entry.id}`))
+          .map((entry) => (
           <div key={entry.id} className="hf-control-row mb-2 flex items-center justify-between rounded-2xl bg-hf-tan px-4">
             <span className="hf-type-body hf-type-strong text-hf-black">{formatClock(entry.weighedAt)}</span>
             <span className="hf-type-body hf-type-strong flex items-center gap-1.5 text-hf-black">
@@ -3029,7 +3051,14 @@ function HourEntriesOverlay({
                       );
                     }
                     if (item.kind === "measurement") {
-                      return <MeasurementRow key={item.id} measurement={item.measurement} className={rowClass} />;
+                      return (
+                        <MeasurementRow
+                          key={item.id}
+                          measurement={item.measurement}
+                          className={rowClass}
+                          hideWeight={item === groupWeight}
+                        />
+                      );
                     }
                     const { registration } = item;
                     const isWater = isWaterRegistration(registration);
@@ -3061,17 +3090,20 @@ function HourEntriesOverlay({
           );
         })}
       </div>
+      <BottomNav />
     </div>
   );
 }
 
 // En vejning med vægtens øvrige målinger (fedtprocent, muskelmasse …) eller
 // en måling uden vejning (fx blodtryk) — alt, integrationen har leveret.
-function MeasurementRow({ measurement, className }: { measurement: CalendarMeasurement; className: string }) {
+// Vægten står allerede i gruppens overskrift (hideWeight), så rækken viser den ikke igen.
+function MeasurementRow({ measurement, className, hideWeight = false }: { measurement: CalendarMeasurement; className: string; hideWeight?: boolean }) {
   const { t } = useTranslation();
   const [open, setOpen] = useState(false);
   const weighInId = measurement.id.startsWith("weight-") ? measurement.id.slice("weight-".length) : null;
   const source = measurement.source && measurement.source !== "MANUAL" ? t(`calendar.measurement.source.${measurement.source}`) : null;
+  const sourceIcon = integrationIconForSource(measurement.source);
   return (
     <div
       className={`${className} ${weighInId ? "cursor-pointer" : ""}`}
@@ -3087,11 +3119,18 @@ function MeasurementRow({ measurement, className }: { measurement: CalendarMeasu
         : {})}
     >
       <FoodRow
-        thumbnail={<IconScale size={22} className="text-hf-black" aria-hidden="true" />}
+        thumbnail={
+          sourceIcon ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img src={sourceIcon} alt="" className="h-full w-full object-contain p-1" />
+          ) : (
+            <IconScale size={22} className="text-hf-black" aria-hidden="true" />
+          )
+        }
         title={measurement.weightKg !== null ? t("calendar.measurement.weight") : t("calendar.measurement.title")}
         subtitle={source ? <p className="hf-type-small text-text-secondary">{source}</p> : undefined}
         right={
-          measurement.weightKg !== null ? (
+          measurement.weightKg !== null && !hideWeight ? (
             <span className="hf-type-body hf-type-strong text-hf-black">{formatWeightKg(measurement.weightKg)}</span>
           ) : undefined
         }
@@ -3125,12 +3164,12 @@ type MonthlyStatusData = {
   goalSum: number;
   consumed: number;
   bonusKcal: number;
+  periodStatus: "met" | "missed" | "none";
 };
 
 function MonthlyStatus({ status }: { status: MonthlyStatusData }) {
   const { t } = useTranslation();
-  const { remaining, streak } = status;
-  const withinGoal = remaining >= 0;
+  const { streak } = status;
 
   return (
     <div className="mb-8 mt-2 space-y-2 text-center">
@@ -3147,7 +3186,8 @@ function MonthlyStatus({ status }: { status: MonthlyStatusData }) {
       <GoalStatusSummary
         className="text-left"
         period="month"
-        status={withinGoal ? "met" : "missed"}
+        showTotals={false}
+        status={status.periodStatus}
         goalKcal={status.goalSum}
         intakeKcal={status.consumed}
         bonusKcal={status.bonusKcal}

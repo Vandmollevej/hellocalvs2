@@ -8,6 +8,7 @@ import {
   isBlockedUserAgent,
   isImageRequestAllowed,
   isProtectedImagePath,
+  isPublicStaticAsset,
   isPublicHealthPath,
   isTokenApiPath,
   throttle,
@@ -174,6 +175,12 @@ async function handleAccessWall(req: NextRequest, host: string): Promise<NextRes
   let pathname = url.pathname;
   if (isPublicHealthPath(pathname)) return null;
 
+  // Next's billed-optimerer henter kildefilen via en intern, header-løs forespørgsel
+  // (ingen Host/cookie/User-Agent). Den ydre /_next/image-forespørgsel afgøres
+  // allerede mod den ægte kilde-sti herunder; ellers blokeres alle optimerede
+  // billeder og ikoner som "bot uden session". Ægte HTTP-forespørgsler har altid Host.
+  if (!req.headers.get("host")) return null;
+
   // Next's billed-optimerer: afgør ud fra den ægte kilde, ikke /_next/image.
   const isOptimizer = pathname === "/_next/image";
   if (isOptimizer) {
@@ -181,6 +188,12 @@ async function handleAccessWall(req: NextRequest, host: string): Promise<NextRes
     pathname = src.startsWith("/") && !src.startsWith("//") ? src.split("?")[0] : "/_next/image-invalid";
     if (pathname === "/_next/image-invalid") return deny(400, "Bad request");
   }
+
+  // Åbne statiske filer (ikoner, flag, logoer) er ikke hemmelige og skal altid
+  // kunne hentes — også af Next's billed-optimerer, som henter filen internt
+  // uden browserens User-Agent. Før blev den afvist som "bot", og alle PNG/WebP-
+  // ikoner (fingeraftryk, tilføj-ikoner) forsvandt.
+  if (isPublicStaticAsset(pathname)) return null;
 
   const isLocal = host === "localhost" || host === "127.0.0.1";
   const ua = req.headers.get("user-agent");
