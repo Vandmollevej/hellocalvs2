@@ -2014,7 +2014,6 @@
   "addProduct": {
     "reportBug": "Hast du einen Fehler gefunden?",
     "reading": "Wird gelesen…",
-    "ingredientsUnreadable": "Die Zutaten konnten auf dem Bild nicht gelesen werden.",
     "retakeIngredients": "Neues Foto der Zutaten machen",
     "title": "Hinzufügen",
     "titleForDish": "Zutat hinzufügen",

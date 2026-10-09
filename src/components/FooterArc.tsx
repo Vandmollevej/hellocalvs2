@@ -44,6 +44,11 @@ const LONG_PRESS_MS = 550;
 const MOVE_PX = 8;
 const DEAD_ZONE = 34;
 const HIGHLIGHT_SCALE = 1.35;
+// Trækker man højere op end cirklen, må fingeren aldrig komme oven på den:
+// den markerede cirkel holdes mindst så højt over fingerspidsen.
+const FINGER_CLEARANCE = 62;
+// Plads øverst på skærmen, så cirklen og dens tekst ikke skæres af.
+const TOP_ROOM = 90;
 const ANIMATION_MS = 200;
 const ICON_SIZE = 26;
 
@@ -391,8 +396,15 @@ export function FooterArc() {
       />
 
       {slots.map((slot, index) => {
-        const center = drawLayout[index];
+        const base = drawLayout[index];
         const highlighted = highlightedKey === slot.key;
+        // Den markerede knap må aldrig ende under fingeren: hold den over fingerspidsen.
+        let centerY = base.y;
+        if (highlighted && finger) {
+          const roomAbove = (wrapRef.current?.getBoundingClientRect().top ?? Infinity) - TOP_ROOM;
+          centerY = Math.max(centerY, Math.min(finger.dy + FINGER_CLEARANCE, Math.max(centerY, roomAbove)));
+        }
+        const center = { x: base.x, y: centerY };
         const Icon = slot.icon;
         return (
           <div
@@ -447,7 +459,7 @@ export function FooterArc() {
                 aria-hidden="true"
                 className="hf-type-strong pointer-events-none absolute whitespace-nowrap bg-hf-tan"
                 style={{
-                  bottom: ARC_ICON_CIRCLE + 14,
+                  bottom: ARC_ICON_CIRCLE + 22,
                   ...(center.x < 72
                     ? { left: 0 }
                     : center.x > width - 72

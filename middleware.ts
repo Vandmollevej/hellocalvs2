@@ -8,6 +8,7 @@ import {
   isBlockedUserAgent,
   isImageRequestAllowed,
   isProtectedImagePath,
+  isPublicStaticAsset,
   isPublicHealthPath,
   isTokenApiPath,
   throttle,
@@ -187,6 +188,12 @@ async function handleAccessWall(req: NextRequest, host: string): Promise<NextRes
     pathname = src.startsWith("/") && !src.startsWith("//") ? src.split("?")[0] : "/_next/image-invalid";
     if (pathname === "/_next/image-invalid") return deny(400, "Bad request");
   }
+
+  // Åbne statiske filer (ikoner, flag, logoer) er ikke hemmelige og skal altid
+  // kunne hentes — også af Next's billed-optimerer, som henter filen internt
+  // uden browserens User-Agent. Før blev den afvist som "bot", og alle PNG/WebP-
+  // ikoner (fingeraftryk, tilføj-ikoner) forsvandt.
+  if (isPublicStaticAsset(pathname)) return null;
 
   const isLocal = host === "localhost" || host === "127.0.0.1";
   const ua = req.headers.get("user-agent");

@@ -1243,7 +1243,7 @@ function MonthView({
                         isPast ? "" : "hf-type-strong"
                       } ${
                         current
-                          ? "border-transparent hf-selected"
+                          ? "border-transparent hf-cal-current"
                           : isOtherMonth
                             ? "border-hf-gray-border bg-transparent text-text-muted"
                             : isPast
@@ -1336,7 +1336,7 @@ function WeekView({
             <span
               className={`hf-type-body flex size-9 shrink-0 items-center justify-center rounded-lg border ${
                 current
-                  ? "hf-type-strong border-transparent hf-selected"
+                  ? "hf-type-strong border-transparent hf-cal-current"
                   : future
                     ? "hf-type-strong border-hf-gray bg-hf-white text-hf-black"
                     : "border-hf-gray bg-hf-white text-text-muted"
@@ -1574,7 +1574,7 @@ function ListView({
             <span
               className={`hf-type-body flex size-9 shrink-0 items-center justify-center rounded-lg border ${
                 current
-                  ? "hf-type-strong border-transparent hf-selected"
+                  ? "hf-type-strong border-transparent hf-cal-current"
                   : future
                     ? "hf-type-strong border-hf-gray bg-hf-white text-hf-black"
                     : "border-hf-gray bg-hf-white text-text-muted"
@@ -1716,7 +1716,7 @@ function WeekTimelineView({
               type="button"
               onClick={() => onOpenDate(date)}
               className={`flex h-12 min-w-[92px] flex-1 flex-col items-center justify-center border-b border-r border-hf-tan last:border-r-0 focus-visible:outline-2 focus-visible:outline-hf-black ${
-                current ? "hf-selected" : "text-hf-black"
+                current ? "hf-cal-current" : "text-hf-black"
               }`}
             >
               <span className="hf-type-micro hf-type-strong text-text-secondary uppercase">
