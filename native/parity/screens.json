@@ -547,6 +547,13 @@
       "note": "Admin er et skrivebordsværktøj og bliver på web."
     },
     {
+      "route": "/admin/search-synonyms",
+      "web": "src/app/admin/search-synonyms/page.tsx",
+      "status": "web-only",
+      "native": [],
+      "note": "Admin er et skrivebordsværktøj og bliver på web."
+    },
+    {
       "route": "/admin/setup",
       "web": "src/app/admin/setup/page.tsx",
       "status": "web-only",
