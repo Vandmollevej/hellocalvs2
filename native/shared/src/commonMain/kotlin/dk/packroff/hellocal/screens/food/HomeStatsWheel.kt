@@ -129,7 +129,6 @@ private const val CAPTION_SPACE = 16f
 private const val ROW_HEIGHT = FONT_SIZE + CAPTION_SPACE
 private const val VERTICAL_SHIFT = -7f
 private const val DIVIDER_BELOW_HERO = 18f
-private const val CAPTION_PLACEHOLDER = "Dummytekst"
 
 private fun offsetAt(absDistance: Float): Float {
     val knee = (1 - MIN_SCALE) / SCALE_STEP
@@ -381,7 +380,7 @@ private fun androidx.compose.foundation.layout.BoxScope.WheelItem(
                 modifier = Modifier.graphicsLayer { alpha = op },
                 maxLines = 1,
             )
-            val captionLines = stat.caption ?: listOf(CAPTION_PLACEHOLDER)
+            val captionLines = stat.caption.orEmpty()
             captionLines.forEach { line ->
                 Text(
                     line,

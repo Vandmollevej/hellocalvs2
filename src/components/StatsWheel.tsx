@@ -120,9 +120,6 @@ const EDGE_OFFSET = { left: 13, right: 7 } as const;
 const VERTICAL_SHIFT = -7;
 /** The divider line lies 18px below the hero: the list's `pt-2` + half the 20px title line. */
 const DIVIDER_BELOW_HERO = 18;
-// Temporary grey caption under every number (user 2026-09-27) until
-// the real text is decided.
-const CAPTION_PLACEHOLDER = "Dummytekst";
 
 // Temporary made-up numbers (user 2026-09-25: "opfind et indtil jeg har dem
 // alle opsat") so the wheel can show all its rows while the visuals are tuned.
@@ -516,19 +513,19 @@ function WheelItem({
         {/* The caption only fades out at the wheel's ends, not with the
             neighbour dimming (user 2026-09-28: it vanished as soon as a row
             left the center). */}
-        <span
-          aria-hidden="true"
-          className={`hf-type-small absolute right-0 top-full mt-1 text-text-secondary ${transition}`}
-          style={{ opacity: captionOpacity, ...(stat.caption ? { lineHeight: 1.15 } : {}) }}
-        >
-          {stat.caption
-            ? stat.caption.map((line, lineIndex) => (
-                <span key={lineIndex} className="block">
-                  {line}
-                </span>
-              ))
-            : CAPTION_PLACEHOLDER}
-        </span>
+        {stat.caption && (
+          <span
+            aria-hidden="true"
+            className={`hf-type-small absolute right-0 top-full mt-1 text-text-secondary ${transition}`}
+            style={{ opacity: captionOpacity, lineHeight: 1.15 }}
+          >
+            {stat.caption.map((line, lineIndex) => (
+              <span key={lineIndex} className="block">
+                {line}
+              </span>
+            ))}
+          </span>
+        )}
       </span>
       <span
         className={`flex ${transition}`}
