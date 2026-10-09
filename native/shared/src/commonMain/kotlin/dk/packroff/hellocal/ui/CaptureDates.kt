@@ -97,14 +97,17 @@ fun CaptureDatePickerSheet(
     onPick: (LocalDate) -> Unit,
     onDismiss: () -> Unit,
     max: LocalDate? = null,
+    min: LocalDate? = null,
     title: String? = null,
     confirmLabel: String = "OK",
 ) {
     val maxMillis = max?.atStartOfDayIn(TimeZone.UTC)?.toEpochMilliseconds()
+    val minMillis = min?.atStartOfDayIn(TimeZone.UTC)?.toEpochMilliseconds()
     val state = rememberDatePickerState(
         initialSelectedDateMillis = initial.atStartOfDayIn(TimeZone.UTC).toEpochMilliseconds(),
         selectableDates = object : SelectableDates {
-            override fun isSelectableDate(utcTimeMillis: Long): Boolean = maxMillis == null || utcTimeMillis <= maxMillis
+            override fun isSelectableDate(utcTimeMillis: Long): Boolean =
+                (maxMillis == null || utcTimeMillis <= maxMillis) && (minMillis == null || utcTimeMillis >= minMillis)
         },
     )
     HcBottomSheet(onDismiss = onDismiss, title = title) {

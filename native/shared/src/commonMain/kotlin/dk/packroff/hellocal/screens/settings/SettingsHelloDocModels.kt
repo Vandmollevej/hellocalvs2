@@ -7,6 +7,7 @@ import dk.packroff.hellocal.ui.SettingsHelloDocFluidPoint
 import dk.packroff.hellocal.ui.SettingsHelloDocProfile
 import dk.packroff.hellocal.ui.SettingsHelloDocSleep
 import dk.packroff.hellocal.ui.SettingsHelloDocWeightPoint
+import dk.packroff.hellocal.ui.CaptureDates
 import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
 import kotlinx.serialization.Serializable
@@ -127,11 +128,18 @@ object SettingsHelloDoc {
         return if (daysLeft <= 1) t.t("helloDoc.expiresToday") else t.t("helloDoc.expiresIn", "days" to daysLeft)
     }
 
+    /** web: toDateInput() — the stored expiry as "YYYY-MM-DD" in local time, "" = no expiry. */
+    fun expiryDateInput(iso: String?): String {
+        val local = CaptureDates.local(iso) ?: return ""
+        return CaptureDates.isoDate(local.date)
+    }
+
     /** Edit screen: still has access → "Fjern adgang", otherwise "Forny adgang". */
     fun hasAccess(share: SettingsHelloDocShareDto): Boolean {
         if (share.status == "ACTIVE") return true
-        val expires = parseInstant(share.expiresAt) ?: return false
-        return share.status == "PENDING" && expires > Clock.System.now()
+        if (share.status != "PENDING") return false
+        val expires = parseInstant(share.expiresAt) ?: return true
+        return expires > Clock.System.now()
     }
 
     /** web: `data.message ?? t("helloDoc.errorGeneric")`. */

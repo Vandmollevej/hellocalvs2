@@ -4802,3 +4802,7 @@ Brugerens rettelse: "Et barn kan ikke selv lukke konto — det er kun forældere
 - Kun forælderen/betaleren kan fjerne eller slette et barns profil (eksisterende `removeFamilyMember` / `deleteFamilyProfile`).
 - Barnet har ingen kontakter til at skjule detaljer: "Del med andre" er kun visning, og betaleren bestemmer adgangen (uændret).
 - Afløser "Barnet kan melde sig ud" i beslutningen 2026-09-25 og tilsvarende i `docs/FAMILY.md`.
+
+## 2026-10-09 — Hello Doc: udløbsdato vælges med datepicker (ingen fast 14 dage)
+
+Ejeren vælger selv adgangens udløb med en datepicker i Hello Doc-editoren (web + native), med valget "Intet udløb". `DoctorShare.expiresAt` er den valgte dato (til og med den dag) eller `null` = intet udløb. Den faste 14-dages frist er fjernet; udløb gælder både ventende og aktive delinger. "Forny adgang" åbner uden udløbsdato.
