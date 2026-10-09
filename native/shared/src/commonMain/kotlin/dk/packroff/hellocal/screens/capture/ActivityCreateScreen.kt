@@ -203,7 +203,6 @@ fun ActivityCreateScreen(args: RouteArgs) {
     var intensity by remember { mutableStateOf("MODERATE") }
     var distanceKm by remember { mutableStateOf("") }
     var estimate by remember { mutableStateOf<ActivityEstimate?>(null) }
-    var hasWeight by remember { mutableStateOf(true) }
     var saving by remember { mutableStateOf(false) }
     var error by remember { mutableStateOf<String?>(null) }
     var pickDate by remember { mutableStateOf(false) }
@@ -224,7 +223,6 @@ fun ActivityCreateScreen(args: RouteArgs) {
         runCatching { ApiJson.decodeFromJsonElement(ActivityEstimateResponse.serializer(), Api.get("/api/activities/estimate?$query")) }
             .getOrNull()?.let {
                 estimate = it.estimate
-                hasWeight = it.hasWeight
             }
     }
 
@@ -368,20 +366,12 @@ fun ActivityCreateScreen(args: RouteArgs) {
                 }
                 Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
                     HcText(t.t("activity.kcal"), HcTypeRoles.Small, color = HcColors.TextSecondary)
-                    val est = estimate
-                    val estKcal: Int = est?.kcal ?: 0
+                    val estKcal: Int = estimate?.kcal ?: 0
                     CaptureFilledField(
-                        kcal,
+                        if (kcal.isNotEmpty()) kcal else if (estKcal > 0) estKcal.toString() else "",
                         { kcal = it.filter(Char::isDigit) },
-                        placeholder = if (estKcal > 0) t.t("activity.kcalEstimated", "kcal" to estKcal) else "",
                         keyboardType = KeyboardType.Number,
                     )
-                    val hint = when {
-                        !hasWeight -> t.t("activity.kcalNoWeight")
-                        est != null -> t.t(if (est.method == "SPEED") "activity.kcalHintSpeed" else "activity.kcalHintMet", "met" to formatMet(est.met))
-                        else -> ""
-                    }
-                    if (hint.isNotEmpty()) HcText(hint, HcTypeRoles.Small, color = HcColors.TextSecondary)
                 }
                 HcError(error)
                 HcButton(t.t("activity.save"), onClick = ::save, enabled = !saving)
@@ -398,6 +388,3 @@ fun ActivityCreateScreen(args: RouteArgs) {
         )
     }
 }
-
-/** MET as the web prints a JS number (3.5 → "3.5", 4 → "4"). */
-private fun formatMet(met: Double): String = if (met == kotlin.math.floor(met)) met.toLong().toString() else met.toString()

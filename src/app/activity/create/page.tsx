@@ -36,7 +36,6 @@ function ActivityCreateContent() {
   const [intensity, setIntensity] = useState<TrainingIntensity>("MODERATE");
   const [distanceKm, setDistanceKm] = useState("");
   const [estimate, setEstimate] = useState<ActivityEstimate | null>(null);
-  const [hasWeight, setHasWeight] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -50,10 +49,9 @@ function ActivityCreateContent() {
     let cancelled = false;
     fetch(`/api/activities/estimate?${query}`)
       .then((res) => (res.ok ? res.json() : null))
-      .then((data: { estimate: ActivityEstimate; hasWeight: boolean } | null) => {
+      .then((data: { estimate: ActivityEstimate } | null) => {
         if (cancelled || !data) return;
         setEstimate(data.estimate);
-        setHasWeight(data.hasWeight);
       })
       .catch(() => {});
     return () => {
@@ -218,17 +216,9 @@ function ActivityCreateContent() {
                 type="number"
                 inputMode="numeric"
                 min={1}
-                value={kcal}
-                placeholder={estimate?.kcal ? t("activity.kcalEstimated", { kcal: estimate.kcal }) : ""}
+                value={kcal !== "" ? kcal : estimate?.kcal ? String(estimate.kcal) : ""}
                 onChange={(e) => setKcal(e.target.value)}
               />
-              <span className="hf-type-small text-text-secondary">
-                {!hasWeight
-                  ? t("activity.kcalNoWeight")
-                  : estimate
-                    ? t(estimate.method === "SPEED" ? "activity.kcalHintSpeed" : "activity.kcalHintMet", { met: estimate.met })
-                    : ""}
-              </span>
             </label>
             {error && <p className="hf-type-small text-hf-red-dark">{error}</p>}
             <button type="button" className="hf-control hf-btn-primary w-full px-4" onClick={() => void save()} disabled={saving}>
