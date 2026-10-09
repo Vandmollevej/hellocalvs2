@@ -136,6 +136,12 @@ export function AddMenuList({ date, time }: { date?: string | null; time?: strin
     // startede uden touch-action: none (langt tryk). Trækket følger derfor
     // touch-hændelserne og afsluttes kun af dem; pointercancel ignoreres.
     function blockScroll(event: TouchEvent) {
+      // Ingen finger på skærmen: trækket er hængt fast (mistet touchend) —
+      // slip det, ellers låses al scroll og alle tryk.
+      if (event.touches.length === 0) {
+        onUp();
+        return;
+      }
       event.preventDefault();
       event.stopPropagation();
       const touch = event.touches[0];
@@ -144,12 +150,16 @@ export function AddMenuList({ date, time }: { date?: string | null; time?: strin
 
     window.addEventListener("pointermove", onMove);
     window.addEventListener("pointerup", onUp);
+    // Et nyt tryk betyder, at et tidligere træk er endt uden touchend (fx hurtigt
+    // tryk, før lytterne nåede at sidde på) — ryd det, så siden ikke sidder fast.
+    document.addEventListener("touchstart", onUp, { capture: true });
     document.addEventListener("touchmove", blockScroll, { passive: false, capture: true });
     document.addEventListener("touchend", onUp, { capture: true });
     document.addEventListener("touchcancel", onUp, { capture: true });
     return () => {
       window.removeEventListener("pointermove", onMove);
       window.removeEventListener("pointerup", onUp);
+      document.removeEventListener("touchstart", onUp, { capture: true });
       document.removeEventListener("touchmove", blockScroll, { capture: true });
       document.removeEventListener("touchend", onUp, { capture: true });
       document.removeEventListener("touchcancel", onUp, { capture: true });
@@ -218,10 +228,16 @@ export function AddMenuList({ date, time }: { date?: string | null; time?: strin
   const draggedTile = draggedKey ? byKey.get(draggedKey) : null;
 
   return (
-    <div className="hf-page">
+    <div
+      className="hf-page"
+      onClick={(event) => {
+        if (editMode && event.target === event.currentTarget) setEditMode(false);
+      }}
+    >
       <MealShareBar />
       {editMode && (
-        <div className="flex items-center justify-between">
+        // Sticky: "Færdig" skal altid kunne nås, også når listen er scrollet.
+        <div className="sticky top-0 z-20 -mx-[var(--hf-gutter)] flex items-center justify-between bg-[var(--hf-color-page)] px-[var(--hf-gutter)] py-1">
           <button
             type="button"
             onClick={() => setEditMode(false)}
