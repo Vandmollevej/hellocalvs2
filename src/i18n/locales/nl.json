@@ -466,6 +466,15 @@
     "later": "Later",
     "dontAskAgain": "Niet meer vragen"
   },
+  "staleSyncPrompt": {
+    "title": "{name} is niet gesynchroniseerd",
+    "body": "{name} heeft sinds {date} geen gegevens gestuurd. Je gewicht en activiteit ontbreken mogelijk. Synchroniseer nu zodat alles erbij is.",
+    "syncNow": "Nu synchroniseren",
+    "open": "Integratie openen",
+    "later": "Later",
+    "failed": "Synchroniseren mislukt. Probeer opnieuw of open de integratie.",
+    "never": "nooit"
+  },
   "sentNotice": {
     "title": "Ter info",
     "body": "We hebben je op {date} een {type} gestuurd over \"{subject}\". Dit was geen spam.",

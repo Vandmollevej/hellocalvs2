@@ -468,6 +468,15 @@
     "later": "Senere",
     "dontAskAgain": "Spørg ikke igen"
   },
+  "staleSyncPrompt": {
+    "title": "{name} er ikke synkroniseret",
+    "body": "{name} har ikke sendt data siden {date}. Din vægt og aktivitet kan mangle. Synkroniser nu for at sikre, at alt er med.",
+    "syncNow": "Synkroniser nu",
+    "open": "Åbn integration",
+    "later": "Senere",
+    "failed": "Synkroniseringen fejlede. Prøv igen eller åbn integrationen.",
+    "never": "aldrig"
+  },
   "sentNotice": {
     "title": "Til info",
     "body": "Vi sendte dig den {date} en {type} om \"{subject}\". Det var ikke spam.",
