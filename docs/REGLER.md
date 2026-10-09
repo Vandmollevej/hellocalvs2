@@ -68,6 +68,7 @@ ikke her, er den ikke registreret og skal tilføjes.
 - "Overlay"/"popup" = den træk-bare BottomSheet (`.hf-bottom-sheet`), se KRAV.md.
 - Aktiviteten `open_water` hedder "Svømning i åbent vand" — aldrig "Havsvømning" (bruger 2026-10-09). "havsvømning" er kun et søgeord.
 - Visuelle ændringer: læs design.md; størrelse/vægt ændres i moderate trin.
+- Faste bundknapper (Tilføj/Gem i `HfScreen`-footeren) skal ligge over bundcirklen (FooterArc, 40 px over menuen), aldrig bag den (bruger 2026-10-09).
 
 - Ingen ikke-bestilte tekster: ingen disclaimers, forklaringer eller
   "erstatter ikke læge"-noter på sider, medmindre brugeren har bedt om dem

@@ -44,7 +44,8 @@ export function HfScreen({
         <div className="h-full overflow-y-auto overscroll-contain">{children}</div>
       </div>
       {footer && (
-        <div className="flex-shrink-0 bg-hf-cream p-4">{footer}</div>
+        {/* pb: bundcirklen (FooterArc, 40 px) rager op over menuen — knapperne skal ligge over den */}
+        <div className="flex-shrink-0 bg-hf-cream px-4 pb-[calc(1rem+40px)] pt-4">{footer}</div>
       )}
       <BottomNav />
     </div>
