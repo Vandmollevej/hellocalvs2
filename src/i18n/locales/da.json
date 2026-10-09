@@ -1962,7 +1962,6 @@
   "addProduct": {
     "reportBug": "Har du fundet en fejl?",
     "reading": "Læses…",
-    "ingredientsUnreadable": "Indholdet kunne ikke læses på billedet.",
     "retakeIngredients": "Tag nyt billede af indholdet",
     "title": "Tilføj",
     "titleForDish": "Tilføj ingrediens",

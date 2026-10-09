@@ -2001,7 +2001,6 @@
   "addProduct": {
     "reportBug": "Har du hittat ett fel?",
     "reading": "Läser…",
-    "ingredientsUnreadable": "Innehållet gick inte att läsa på bilden.",
     "retakeIngredients": "Ta en ny bild av innehållet",
     "title": "Lägg till",
     "titleForDish": "Lägg till ingrediens",

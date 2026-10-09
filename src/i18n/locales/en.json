@@ -1981,7 +1981,6 @@
   "addProduct": {
     "reportBug": "Found a mistake?",
     "reading": "Reading…",
-    "ingredientsUnreadable": "The ingredients could not be read from the photo.",
     "retakeIngredients": "Take a new photo of the ingredients",
     "title": "Add",
     "titleForDish": "Add ingredient",

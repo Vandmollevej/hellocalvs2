@@ -2001,7 +2001,6 @@
   "addProduct": {
     "reportBug": "Tu as trouvé une erreur ?",
     "reading": "Lecture…",
-    "ingredientsUnreadable": "Les ingrédients n'ont pas pu être lus sur la photo.",
     "retakeIngredients": "Reprendre la photo des ingrédients",
     "title": "Ajouter",
     "titleForDish": "Ajouter un ingrédient",

@@ -1218,7 +1218,6 @@ export function AddProductView({
                     </div>
                   ) : !view.ingredientsText ? (
                     <div className="flex flex-col gap-3">
-                      <p className="hf-type-small text-text-secondary">{t("addProduct.ingredientsUnreadable")}</p>
                       <Link
                         href={`/camera?mode=product&retake=ingredients&product=${encodeURIComponent(id)}`}
                         className="hf-control hf-btn-secondary justify-center gap-2"
