@@ -312,7 +312,7 @@ Ejer: bølge-sessionen (2026-10-01)
 
 | Id | Opgave | Status | Næste skridt |
 | --- | --- | --- | --- |
-| — | Rolig, tilfældig bølge-animation bag forsiden med frostet-glas-bund og tåge | Færdig (kode) | Afventer brugerens visuelle godkendelse på telefon; justér tempo/farve efter feedback |
+| — | Rolig, tilfældig bølge-animation bag forsiden med frostet-glas-bund og tåge | Færdig (kode) | Afventer brugerens visuelle godkendelse på telefon; justér tempo/farve efter feedback | 2026-10-09: pause (PULSE_REST) mellem bølgerne, slagfrekvens uændret.
 
 ## G-SCAN — Kameraflow og vareside efter test (mælk/flødeboller)
 Filer: `src/components/camera/**`, `src/lib/focus-detection.ts`, `src/lib/product-naming*`, `src/lib/quick-product-enrichment.ts`, `src/lib/product-photo-analysis.ts`, `src/lib/brand-match.ts`, `src/lib/nutrient-resolution.ts`, `src/components/add/AddProductView.tsx` (cirkel/titel/næringspanel), `scripts/image-agent/cutout.py`.

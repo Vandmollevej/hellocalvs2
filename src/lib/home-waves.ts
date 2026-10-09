@@ -462,6 +462,13 @@ export function drawWaveScene(
 /** Px, over hvilke det gamle spors bagkant toner ud, mens det fjernes. */
 const PULSE_TAIL_TAPER = 60;
 
+/**
+ * Sekunder, det færdige spor står stille, før næste fej starter fra venstre.
+ * Slagene følger stadig pulsen; kun luften mellem to bølger er større
+ * (bruger 2026-10-09).
+ */
+export const PULSE_REST = 4;
+
 /** Pulsen for et fej: den, der gjaldt, da fejet startede. */
 function bpmForCycle(pulse: Pulse, cycle: number, bpm: number) {
   if (pulse.lockedBpm[cycle] === undefined) {
@@ -518,8 +525,9 @@ function drawPulse(
   baseY: number
 ) {
   const time = t + pulse.offset;
-  const cycle = Math.floor(time / pulse.sweep);
-  const progress = (time - cycle * pulse.sweep) / pulse.sweep;
+  const cycleLength = pulse.sweep + PULSE_REST;
+  const cycle = Math.floor(time / cycleLength);
+  const progress = Math.min(1, (time - cycle * cycleLength) / pulse.sweep);
   const left = -WAVE_BLEED;
   const right = width + WAVE_BLEED;
   const head = left + progress * (right - left);
