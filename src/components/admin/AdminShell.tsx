@@ -118,6 +118,7 @@ export const NAV: NavEntry[] = [
     links: [
       { href: "/admin/api-keys", key: "nav_api_keys" },
       { href: "/admin/cron-jobs", key: "nav_cron_jobs" },
+      { href: "/admin/pet-food-filter", key: "nav_pet_food_filter" },
       { href: "/admin/passkeys", key: "nav_passkeys" },
       { href: "/admin/support/templates", key: "nav_standard_mails" },
       { href: "/admin/messaging", key: "nav_messaging" },
