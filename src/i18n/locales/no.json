@@ -2533,6 +2533,10 @@
   "addButton": {
     "closeMenu": "Lukk legg til-meny",
     "openMenu": "Åpne legg til-meny",
+    "settingsHint": "Dra en knapp ned til halvsirkelen",
+    "settingsDone": "Ferdig",
+    "settingsAllInUse": "Alle knapper er i bruk.",
+    "settingsRemove": "Fjern {item}",
     "microphone": "Si inn",
     "ownDishes": "Retter",
     "search": "Søk",

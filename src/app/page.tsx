@@ -4,6 +4,7 @@ import { Hero } from "@/components/Hero";
 import { HomeWaves } from "@/components/HomeWaves";
 import { DailyList } from "@/components/DailyList";
 import { BottomNav } from "@/components/BottomNav";
+import { BottomArcButton } from "@/components/BottomArcButton";
 import { FooterArc } from "@/components/FooterArc";
 import { LandingPage } from "@/components/landing/LandingPage";
 import { getSessionUser } from "@/lib/session";
@@ -46,6 +47,7 @@ export default async function Home() {
       <FooterArc />
 
       <BottomNav />
+      <BottomArcButton />
 
       <HeartRateSpikePrompt />
       <WeighInPrompts />

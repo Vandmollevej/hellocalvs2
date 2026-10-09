@@ -2503,6 +2503,10 @@
   "addButton": {
     "closeMenu": "Close add menu",
     "openMenu": "Open add menu",
+    "settingsHint": "Drag a button down to the half circle",
+    "settingsDone": "Done",
+    "settingsAllInUse": "All buttons are in use.",
+    "settingsRemove": "Remove {item}",
     "microphone": "Speak",
     "ownDishes": "Dishes",
     "search": "Search",

@@ -4699,3 +4699,10 @@ Google/Apple/Facebook-login og integrationstilkobling kører i system-browseren,
 - `src/lib/danish-number.ts`: `deriveNumberForms` (kendte ord + tillægsord), `parseNumberQuery` ("et/en X" = ental, "nogle/flere/mange X" = flertal) og `matchesNumberQuery`. `GET /api/generic-ingredients` søger i alle tre felter og filtrerer på hele ord, så "et æble" ikke giver "æbler"; svaret har `displayName` i den søgte form. Oprettelse (`POST` og `addIngredientRequestGlobally`) udfylder begge felter.
 - Kun generiske varer — almindelige varer med brand/EAN berøres ikke. Se docs/REGLER.md.
 - Ikke gjort endnu: UI skal bruge `displayName`; ental/flertal-kolonner i Bilka-/REMA-arkene; import af de afledte former til eksisterende rækker ud over backfill-listen.
+
+## 2026-10-09 — Halvcirkel over footeren (prøve)
+
+- Forsiden får som prøve en fast halvcirkel midt over bundmenuen ved siden af den grønne cirkel i venstre side, som er uændret. Bliver prøven godkendt, erstatter den siden den venstre cirkel.
+- Samme funktion som den grønne cirkel: skub op / tap åbner viften, slip vælger, bule mod det valgte ikon, hold stille åbner indstillinger (550 ms som i footeren). Træk til siden flytter halvcirklen vandret og gemmes pr. enhed.
+- Viften har højst 5 knapper (4 valgte + "Se alle" altid i midten). Naboikoner har fast afstand; når halvcirklen står langt ude til siden, rykkes de ikoner, der ellers ville forsvinde ud over kanten, længere op i stedet for at blive skjult.
+- Egen opsætning (`bottom-arc.ts`), så prøven ikke ændrer indstillingerne for den eksisterende cirkel.

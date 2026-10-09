@@ -2,6 +2,12 @@
 
 Last updated: 2026-10-09
 
+## 2026-10-09: Halvcirkel over footeren (prøve på forsiden)
+
+- Ny fast halvcirkel midt over bundmenuen (`BottomArcButton.tsx`, logik i `src/lib/bottom-arc.ts`). I hvile ses kun en 20 px høj bue med et plus; skub op eller tap åbner den til en halv cirkel (70 % af den venstre cirkel) med 5 knapper i en vifte, "Se alle" lodret i midten. Slip på en knap vælger den; træk til siden flytter halvcirklen langs footeren (kan ikke trækkes helt ud). Hold fingeren stille 550 ms: sort, let gennemsigtigt vindue, hvor knapper trækkes ned i rækken (eller op for at fjerne), som i footeren.
+- Den eksisterende grønne cirkel i siden er uændret. Halvcirklen har sit eget valg (`hellocal.frontpage.bottomArcActions`, højst 4 + "Se alle") og sin egen placering. Se DECISIONS 2026-10-09.
+- Lint, tsc og build grønne; prøvet i Chromium (tap, skub, flyt til siden, indstillinger, træk ind/ud). Ikke prøvet på rigtig telefon.
+
 ## 2026-10-09: Startmængde — instantkaffe 2 g og aldrig over pakkens indhold
 
 - `default-amount.ts` (+ native `FoodLogic.kt`): instantkaffe → 2 g; forslaget kappes ved pakkens vægt/volumen. Test: `node --test src/lib/default-amount.test.mjs` (14 grønne). Lint/build ikke kørt (ingen node_modules her); Kotlin ikke kompileret lokalt.

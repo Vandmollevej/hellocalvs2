@@ -2533,6 +2533,10 @@
   "addButton": {
     "closeMenu": "Stäng lägg till-menyn",
     "openMenu": "Öppna lägg till-menyn",
+    "settingsHint": "Dra en knapp ned till halvcirkeln",
+    "settingsDone": "Klar",
+    "settingsAllInUse": "Alla knappar används.",
+    "settingsRemove": "Ta bort {item}",
     "microphone": "Tala in",
     "ownDishes": "Rätter",
     "search": "Sök",

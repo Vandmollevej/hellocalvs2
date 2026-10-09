@@ -429,3 +429,12 @@ Ejer: viden-hjaelp-guide-sessionen (2026-10-07)
 | --- | --- | --- | --- |
 | — | Genvejslink + Guide mig-overlay i hjælpe-chatten; søgning i Viden om mad; kalorieforbrænding; WHO-kilder | Færdig (se git log "Guide mig") | Brugeren tester på telefon: spørg chatten "hvordan logger jeg vægt?" |
 | retter-tekst-scan | Retter: auto-fokus søg, "Opret ny ret", integrationsknapper + filter-bundark; opret ret med Manuelt/Indsæt tekst/Scan + kopi-tjek (claude/retter-tekst-scan) | Færdig (kode) | Alt bygget inkl. valdemarsro-agent. Migrationer 20261008100000/110000/120000/130000 skal med deployet; agenten er ikke kørt mod rigtig database/Docker. Ikke prøvet i browser |
+
+## G-BUNDCIRKEL — Halvcirkel over footeren
+Filer: `src/components/BottomArcButton.tsx`, `src/lib/bottom-arc.ts`, én linje i `src/app/page.tsx`, nøglerne `addButton.settings*` i `src/i18n/locales/*.json`.
+Ejer: bund-halvcirkel-sessionen (2026-10-09)
+
+| Id | Opgave | Status | Næste skridt |
+| --- | --- | --- | --- |
+| bund-halvcirkel | Fast halvcirkel (20 px, plus) midt over footeren: skub/tap åbner, træk til siden, hold stille = indstillinger | Færdig (kode, PR åben) | Brugeren tester på telefon. Godkendes den, erstatter den den venstre cirkel (AddButton) og forsidens øvrige layout ændres |
+

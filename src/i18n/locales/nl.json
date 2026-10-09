@@ -2533,6 +2533,10 @@
   "addButton": {
     "closeMenu": "Toevoegmenu sluiten",
     "openMenu": "Toevoegmenu openen",
+    "settingsHint": "Sleep een knop omlaag naar de halve cirkel",
+    "settingsDone": "Klaar",
+    "settingsAllInUse": "Alle knoppen zijn in gebruik.",
+    "settingsRemove": "{item} verwijderen",
     "microphone": "Inspreken",
     "ownDishes": "Gerechten",
     "search": "Zoeken",

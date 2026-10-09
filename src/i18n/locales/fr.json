@@ -2533,6 +2533,10 @@
   "addButton": {
     "closeMenu": "Fermer le menu d'ajout",
     "openMenu": "Ouvrir le menu d'ajout",
+    "settingsHint": "Faites glisser un bouton vers le demi-cercle",
+    "settingsDone": "Terminé",
+    "settingsAllInUse": "Tous les boutons sont utilisés.",
+    "settingsRemove": "Retirer {item}",
     "microphone": "Dicter",
     "ownDishes": "Plats",
     "search": "Rechercher",

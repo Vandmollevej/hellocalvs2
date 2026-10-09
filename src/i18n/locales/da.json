@@ -2484,6 +2484,10 @@
   "addButton": {
     "closeMenu": "Luk tilføj-menu",
     "openMenu": "Åbn tilføj-menu",
+    "settingsHint": "Træk en knap ned til halvcirklen",
+    "settingsDone": "Færdig",
+    "settingsAllInUse": "Alle knapper er i brug.",
+    "settingsRemove": "Fjern {item}",
     "microphone": "Indtal",
     "ownDishes": "Retter",
     "search": "Søg",

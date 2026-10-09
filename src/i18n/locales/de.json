@@ -2533,6 +2533,10 @@
   "addButton": {
     "closeMenu": "Hinzufügen-Menü schließen",
     "openMenu": "Hinzufügen-Menü öffnen",
+    "settingsHint": "Ziehe eine Taste nach unten zum Halbkreis",
+    "settingsDone": "Fertig",
+    "settingsAllInUse": "Alle Tasten sind in Gebrauch.",
+    "settingsRemove": "{item} entfernen",
     "microphone": "Einsprechen",
     "ownDishes": "Gerichte",
     "search": "Suchen",
