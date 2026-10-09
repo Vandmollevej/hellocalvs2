@@ -20,7 +20,7 @@ import { IconBathScale } from "@/components/hf/IconBathScale";
 import { IconWaistMeasure } from "@/components/icons/WaistMeasure";
 import { HfProgressStepper } from "@/components/hf/HfProgressStepper";
 import { OnboardingWizard } from "@/components/OnboardingWizard";
-import { accountSetupDone, isAccountSetupComplete, type AccountSetupUser } from "@/lib/account-setup";
+import { accountSetupDone, accountSetupPercent, isAccountSetupComplete, type AccountSetupUser } from "@/lib/account-setup";
 import { useTranslation } from "@/i18n/LocaleProvider";
 import { ProfileSwitcher } from "@/components/family/ProfileSwitcher";
 import { useFamilyStatus } from "@/components/family/FamilyStatusProvider";
@@ -100,12 +100,25 @@ export default function ProfilePage() {
       ) : (
         <div className="hf-page">
           {showGuide && <OnboardingWizard forceVisible onClose={() => setShowGuide(false)} />}
-          {/* Kontoopsætning står allerøverst, til alle felter og indstillinger er sat. */}
+          {/* Proceslinjen og kassen står allerøverst, før alt andet, til alle felter og indstillinger er sat. */}
+          {!setupComplete && (
+            <HfProgressStepper
+              steps={[
+                t("profile.completion.aboutYou"),
+                t("profile.completion.goals"),
+                t("profile.completion.habits"),
+              ]}
+              current={Math.max(0, Object.values(setupDone).indexOf(false))}
+              progress={0}
+              label={t("profile.completion.label")}
+            />
+          )}
           {!setupComplete && (
             <AccordionCard>
               <ChevronRow
                 icon={<IconRefresh size={20} />}
                 label={t("settings.learnTheApp")}
+                centerText={`${accountSetupPercent(user)}%`}
                 onClick={() => setShowGuide(true)}
                 divider={false}
               />
@@ -122,18 +135,6 @@ export default function ProfilePage() {
             </AccordionCard>
           )}
           <ProfileSwitcher />
-          {!setupComplete && (
-            <HfProgressStepper
-              steps={[
-                t("profile.completion.aboutYou"),
-                t("profile.completion.goals"),
-                t("profile.completion.habits"),
-              ]}
-              current={Math.max(0, Object.values(setupDone).indexOf(false))}
-              progress={0}
-              label={t("profile.completion.label")}
-            />
-          )}
           <AccordionCard>
             <ChevronRow
               icon={<IconUser size={20} />}

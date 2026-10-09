@@ -18,7 +18,7 @@ export default async function AdminBugReportsPage() {
       sections: true,
       createdAt: true,
       source: true,
-      user: { select: { displayName: true, email: true } },
+      user: { select: { displayName: true } },
       product: { select: { id: true, name: true, brand: { select: { name: true } } } },
       notes: { select: { id: true, text: true, createdAt: true }, orderBy: { createdAt: "asc" } },
     },

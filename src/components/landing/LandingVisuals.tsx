@@ -50,19 +50,19 @@ export function WeightChartBackdrop({ className = "" }: { className?: string }) 
     <svg viewBox={`0 0 ${w} ${h}`} className={className} aria-hidden="true" preserveAspectRatio="none">
       <defs>
         <linearGradient id="hc-area" x1="0" x2="0" y1="0" y2="1">
-          <stop offset="0%" stopColor="#8fd6ac" stopOpacity="0.55" />
-          <stop offset="100%" stopColor="#8fd6ac" stopOpacity="0" />
+          <stop offset="0%" stopColor="var(--hf-green-light)" stopOpacity="0.55" />
+          <stop offset="100%" stopColor="var(--hf-green-light)" stopOpacity="0" />
         </linearGradient>
       </defs>
       {[0.2, 0.4, 0.6, 0.8].map((f) => (
-        <line key={f} x1="0" x2={w} y1={h * f} y2={h * f} stroke="#ffffff" strokeOpacity="0.14" strokeDasharray="4 8" />
+        <line key={f} x1="0" x2={w} y1={h * f} y2={h * f} stroke="var(--hf-color-white)" strokeOpacity="0.14" strokeDasharray="4 8" />
       ))}
       <path d={`${line} L${w - 24},${h} L24,${h} Z`} fill="url(#hc-area)" />
-      <path d={line} fill="none" stroke="#a3e635" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" />
+      <path d={line} fill="none" stroke="var(--hf-color-positive)" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" />
       {WEIGHT_POINTS.map((_, i) => {
         if (i % 3 !== 0 && i !== WEIGHT_POINTS.length - 1) return null;
         const seg = line.split(" ")[i].slice(1).split(",");
-        return <circle key={i} cx={seg[0]} cy={seg[1]} r="6" fill="#ffffff" stroke="#a3e635" strokeWidth="3" />;
+        return <circle key={i} cx={seg[0]} cy={seg[1]} r="6" fill="var(--hf-color-white)" stroke="var(--hf-color-positive)" strokeWidth="3" />;
       })}
     </svg>
   );
@@ -75,13 +75,13 @@ function KcalRing({ value, goal, size = 132 }: { value: number; goal: number; si
   return (
     <div className="relative shrink-0" style={{ width: size, height: size }}>
       <svg viewBox={`0 0 ${size} ${size}`} className="h-full w-full -rotate-90" aria-hidden="true">
-        <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke="#EEE9DF" strokeWidth="12" />
+        <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke="var(--hf-color-card)" strokeWidth="12" />
         <circle
           cx={size / 2}
           cy={size / 2}
           r={r}
           fill="none"
-          stroke="#067A46"
+          stroke="var(--hf-color-brand)"
           strokeWidth="12"
           strokeLinecap="round"
           strokeDasharray={`${c * pct} ${c}`}
@@ -119,9 +119,9 @@ export function TodayOverlayCard() {
       <div className="mt-3 flex items-center gap-5">
         <KcalRing value={1460} goal={2100} />
         <div className="flex min-w-0 flex-1 flex-col gap-3">
-          <MacroBar label="Protein" value="92 g" pct={72} color="#067A46" />
-          <MacroBar label="Kulhydrat" value="148 g" pct={58} color="#8fd6ac" />
-          <MacroBar label="Fedt" value="51 g" pct={64} color="#035624" />
+          <MacroBar label="Protein" value="92 g" pct={72} color="var(--hf-color-brand)" />
+          <MacroBar label="Kulhydrat" value="148 g" pct={58} color="var(--hf-green-light)" />
+          <MacroBar label="Fedt" value="51 g" pct={64} color="var(--hf-color-brand-dark)" />
         </div>
       </div>
       <div className="mt-5 grid grid-cols-2 gap-3">
@@ -198,7 +198,7 @@ function StatsScreen() {
       <div className="rounded-xl bg-hf-white p-3">
         <p className="text-xs text-text-secondary">Vægt — 3 mdr.</p>
         <svg viewBox="0 0 180 70" className="mt-1 h-20 w-full" aria-hidden="true">
-          <path d={linePath(WEIGHT_POINTS, 180, 70, 6)} fill="none" stroke="#067A46" strokeWidth="3" strokeLinecap="round" />
+          <path d={linePath(WEIGHT_POINTS, 180, 70, 6)} fill="none" stroke="var(--hf-color-brand)" strokeWidth="3" strokeLinecap="round" />
         </svg>
       </div>
       <div className="grid grid-cols-2 gap-2">
@@ -220,7 +220,7 @@ function ScanScreen() {
     <ScreenShell title="Scan" tall>
       <div className="relative flex flex-1 items-center justify-center rounded-2xl bg-hf-black/85">
         <div className="relative h-24 w-40 rounded-xl border-2 border-hf-white/80">
-          <div className="absolute inset-x-3 top-1/2 h-0.5 bg-[#a3e635]" />
+          <div className="absolute inset-x-3 top-1/2 h-0.5 bg-hf-positive" />
           <IconBarcode size={64} stroke={1.2} className="absolute inset-0 m-auto text-hf-white/70" aria-hidden="true" />
         </div>
       </div>
@@ -240,7 +240,7 @@ function WaterScreen() {
     <ScreenShell title="Vand">
       <div className="flex flex-1 flex-col items-center justify-center gap-3">
         <div className="relative h-40 w-24 overflow-hidden rounded-b-[28px] rounded-t-lg border-4 border-hf-green/30 bg-hf-white">
-          <div className="absolute inset-x-0 bottom-0 h-[64%] bg-[#8fd6ac]" />
+          <div className="absolute inset-x-0 bottom-0 h-[64%] bg-hf-green-light" />
         </div>
         <p className="text-2xl font-bold text-hf-black">1,6 l</p>
         <p className="text-xs text-text-secondary">af 2,5 l i dag</p>
@@ -261,7 +261,7 @@ function RecipeScreen() {
     <ScreenShell title="Opskrifter">
       {["Kylling i karry", "Laksebowl", "Grøntsagslasagne", "Chili sin carne"].map((name, i) => (
         <div key={name} className="flex items-center gap-2 rounded-xl bg-hf-white p-2">
-          <div className="h-11 w-11 shrink-0 rounded-lg" style={{ background: ["#8fd6ac", "#EEE9DF", "#067A46", "#DFD9CC"][i] }} />
+          <div className="h-11 w-11 shrink-0 rounded-lg" style={{ background: ["var(--hf-green-light)", "var(--hf-color-card)", "var(--hf-color-brand)", "var(--hf-color-nav)"][i] }} />
           <div className="min-w-0">
             <p className="truncate text-xs font-semibold text-hf-black">{name}</p>
             <p className="text-[10px] text-text-secondary">{[540, 610, 480, 430][i]} kcal pr. portion</p>
@@ -315,7 +315,7 @@ export function HelloDocScreens() {
         <div className="mt-4 rounded-xl bg-hf-cream p-3">
           <p className="text-xs text-text-secondary">Vægt</p>
           <svg viewBox="0 0 480 110" className="mt-1 h-24 w-full" aria-hidden="true">
-            <path d={linePath(WEIGHT_POINTS, 480, 110, 8)} fill="none" stroke="#067A46" strokeWidth="3" strokeLinecap="round" />
+            <path d={linePath(WEIGHT_POINTS, 480, 110, 8)} fill="none" stroke="var(--hf-color-brand)" strokeWidth="3" strokeLinecap="round" />
           </svg>
         </div>
       </div>

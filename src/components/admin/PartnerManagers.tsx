@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useConfirmSheet } from "@/lib/use-confirm-sheet";
 
 // Klientdele til admin Partnere → Kontakter/Reklamer (docs/DECISIONS.md 2026-09-29).
 export async function postJson(url: string, body: Record<string, unknown>) {
@@ -17,13 +18,13 @@ const PRIMARY = "hf-type-small rounded-md bg-hf-black px-3 py-1.5 text-hf-white 
 
 function useAction() {
   const router = useRouter();
+  const { ask, sheet } = useConfirmSheet();
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  async function run(body: Record<string, unknown>, confirmText?: string) {
-    if (confirmText && !window.confirm(confirmText)) return false;
+  async function execute(body: Record<string, unknown>) {
     setBusy(true);
     setError(null);
-    const res = await postJson("/api/admin/partners", body);
+    const res = await postJson("/api/admin/partners", body).catch(() => ({ ok: false, status: 0, data: { message: "Kunne ikke kontakte serveren" } }));
     setBusy(false);
     if (!res.ok) {
       setError(res.data.message ?? "Noget gik galt");
@@ -32,36 +33,53 @@ function useAction() {
     router.refresh();
     return true;
   }
-  return { busy, error, run };
+  // Med confirmText vises en bekræftelse som bundark (ikke window.confirm); handlingen kører efter "Fortsæt".
+  async function run(body: Record<string, unknown>, confirmText?: string) {
+    if (confirmText) {
+      ask(confirmText, () => void execute(body));
+      return false;
+    }
+    return execute(body);
+  }
+  return { busy, error, run, sheet };
 }
 
 type Contact = { id: string; name: string; email: string; active: boolean };
 type PartnerWithContacts = { id: string; name: string; contacts: Contact[] };
 
 export function ContactsManager({ partners }: { partners: PartnerWithContacts[] }) {
-  const { busy, error, run } = useAction();
+  const { busy, error, run, sheet } = useAction();
   const [partnerName, setPartnerName] = useState("");
+  const [contactName, setContactName] = useState("");
+  const [contactEmail, setContactEmail] = useState("");
   const [drafts, setDrafts] = useState<Record<string, { name: string; email: string }>>({});
 
   return (
     <div className="flex flex-col gap-4">
+      {sheet}
       <p className="hf-type-body text-text-secondary">Åbn en partner for virksomhedsoplysninger, sponsoraftale, performance og fakturering.</p>
       <form
         className="flex flex-wrap gap-2"
         onSubmit={async (e) => {
           e.preventDefault();
-          if (await run({ action: "createPartner", name: partnerName })) setPartnerName("");
+          if (await run({ action: "createPartner", name: partnerName, contactName, contactEmail })) {
+            setPartnerName("");
+            setContactName("");
+            setContactEmail("");
+          }
         }}
       >
         <input className={INPUT} placeholder="Ny partner" value={partnerName} onChange={(e) => setPartnerName(e.target.value)} />
-        <button className={PRIMARY} disabled={busy || !partnerName.trim()}>Opret partner</button>
+        <input className={INPUT} placeholder="Navn" value={contactName} onChange={(e) => setContactName(e.target.value)} />
+        <input className={INPUT} type="email" placeholder="E-mail" value={contactEmail} onChange={(e) => setContactEmail(e.target.value)} />
+        <button type="submit" className={PRIMARY} disabled={busy || !partnerName.trim() || !contactName.trim() || !contactEmail.trim()}>Opret partner</button>
       </form>
       {error && <p className="hf-type-small text-red-700">{error}</p>}
       {partners.length === 0 && <p className="hf-type-body text-text-secondary">Ingen partnere endnu.</p>}
       {partners.map((partner) => {
         const draft = drafts[partner.id] ?? { name: "", email: "" };
         return (
-          <div key={partner.id} className="flex flex-col gap-3 hf-surface p-4">
+          <div key={partner.id} className="hf-panel">
             <div className="flex items-center justify-between gap-3">
               <Link href={`/admin/partners/${partner.id}`} className="hf-type-strong text-hf-black hover:underline">{partner.name}</Link>
               <button

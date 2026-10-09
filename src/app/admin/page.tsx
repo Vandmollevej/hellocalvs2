@@ -2,6 +2,9 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { requireAdminUser } from "@/lib/require-admin";
 import { loadAdminDashboard } from "@/lib/admin-dashboard";
+import { loadPetFoodStrikeSummary } from "@/lib/pet-food-strikes";
+import { loadFailedMigrations } from "@/lib/deploy-health";
+import { PetFoodIncidentActions } from "@/components/admin/PetFoodIncidentActions";
 import { isSupportOverdue } from "@/lib/support-inbox";
 import { formatAdminTime, formatWaiting, SUPPORT_PRIORITY_LABELS } from "@/lib/support-labels";
 
@@ -28,7 +31,7 @@ function StatCard({
   return (
     <Link
       href={href}
-      className="group flex flex-col hf-surface p-4 hover:border-hf-green"
+      className="group hover:border-hf-green hf-panel"
     >
       <p className="hf-type-body text-text-secondary">{label}</p>
       <p className={`hf-type-hero mt-1 ${value > 0 ? "text-hf-green-dark" : "text-text-muted"}`}>{value}</p>
@@ -57,7 +60,7 @@ function Widget({
       <header className="flex items-center justify-between gap-3 border-b border-hf-tan-dark px-4 py-3">
         <h2 className="hf-type-body hf-type-strong text-hf-black">
           {title}
-          {count !== undefined && <span className="ml-1.5 font-normal text-text-muted">({count})</span>}
+          {count !== undefined && <span className="ml-1.5 text-text-muted">({count})</span>}
         </h2>
         <Link href={href} className="hf-type-small shrink-0 text-hf-green-dark hover:underline">
           Se alle →
@@ -72,6 +75,12 @@ function Empty({ text }: { text: string }) {
   return <p className="hf-type-body px-4 py-8 text-center text-text-muted">{text}</p>;
 }
 
+const PET_FOOD_KIND_LABELS: Record<string, string> = {
+  BLOCKED: "Spærret ved scanning/oprettelse",
+  AUTO_REJECTED: "Vare afvist automatisk",
+  FLAGGED_EXISTING: "Fund i eksisterende vare",
+};
+
 export default async function AdminDashboardPage() {
   const admin = await requireAdminUser();
   if (!admin) redirect("/admin/login");
@@ -80,6 +89,11 @@ export default async function AdminDashboardPage() {
   const { counts, latestSupport, latestProducts, latestBugReports, messages, jobs, nightRuns, missingApiKeys, stats } =
     await loadAdminDashboard(now);
   const failingJobs = jobs.filter((job) => job.lastStatus === "ERROR").length;
+  // Dyrefoder-spærringen (docs/DECISIONS.md 2026-10-07): spærrede brugere skriver sandsynligvis
+  // til support, så antallet vises som advarsel øverst.
+  const petFood = await loadPetFoodStrikeSummary(now).catch(() => null);
+  // En fejlet migrering blokerer alle senere deploys (docs/DECISIONS.md 2026-10-07).
+  const failedMigrations = await loadFailedMigrations().catch(() => []);
 
   const otherTasks = [
     { href: "/admin/images", label: "Billedforslag", value: counts.pendingImages },
@@ -89,6 +103,8 @@ export default async function AdminDashboardPage() {
     { href: "/admin/ingredient-requests", label: "Ønskede ingredienser", value: counts.ingredientRequests },
     { href: "/admin/scan-invites", label: "Scan-indsendelser", value: counts.scanSubmissions },
     { href: "/admin/scan-invites", label: "Ulæste scan-beskeder", value: counts.scanMessages },
+    { href: "/admin", label: "Dyrefoder til gennemsyn", value: petFood?.unreviewed ?? 0, alert: true },
+    { href: "/admin/users?show=blocked", label: "Spærrede konti (dyrefoder)", value: petFood?.blocked ?? 0, alert: true },
   ];
 
   const deliveryTasks = [
@@ -110,6 +126,71 @@ export default async function AdminDashboardPage() {
   return (
     <div className="flex flex-col gap-6">
       <h1 className="hf-type-title text-hf-black">Oversigt</h1>
+
+      {failedMigrations.length > 0 && (
+        <section className="flex flex-col hf-surface border-hf-red-dark">
+          <header className="border-b border-hf-tan-dark px-4 py-3">
+            <h2 className="hf-type-body hf-type-strong text-hf-red-dark">
+              Deploy blokeret: database-ændring fejlede
+            </h2>
+          </header>
+          <p className="hf-type-small px-4 py-3 text-text-secondary">
+            {failedMigrations.join(", ")} kunne ikke køres. Indtil den er rettet, når ingen nye versioner ud
+            til brugerne.
+          </p>
+        </section>
+      )}
+
+      {petFood && petFood.unreviewed > 0 && (
+        <section className="flex flex-col hf-surface border-hf-red-dark">
+          <header className="border-b border-hf-tan-dark px-4 py-3">
+            <h2 className="hf-type-body hf-type-strong text-hf-red-dark">
+              Afvist som dyrefoder: {petFood.unreviewed} til gennemsyn
+            </h2>
+            <p className="hf-type-small mt-0.5 text-text-secondary">
+              Hver afvisning kan være en kunde, der scannede en legitim vare, og som forlader appen. Gennemgå dem, og
+              frikend fejl — frikendelsen ophæver også en spærring, der kun skyldtes den. {petFood.blocked} spærrede konti ·{" "}
+              {petFood.last7d} hændelser de seneste 7 dage ·{" "}
+              <Link href="/admin/users?show=blocked" className="text-hf-green-dark hover:underline">
+                Spærrede brugere →
+              </Link>
+            </p>
+          </header>
+          <ul className="divide-y divide-border-strong">
+            {petFood.recent.map((incident) => (
+              <li key={incident.id} className="flex flex-wrap items-center justify-between gap-3 px-4 py-3">
+                {incident.imageUrls.length > 0 && (
+                  <div className="flex shrink-0 gap-2">
+                    {incident.imageUrls.slice(0, 3).map((url) => (
+                      <a key={url} href={url} target="_blank" rel="noreferrer" title="Åbn billedet i fuld størrelse">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img src={url} alt="Forsøgt oprettet" className="h-16 w-16 rounded-lg border border-hf-tan-dark object-cover" />
+                      </a>
+                    ))}
+                  </div>
+                )}
+                <div className="min-w-0 flex-1">
+                  <p className="hf-type-body truncate text-hf-black">
+                    <span className="hf-type-strong">{incident.productName ?? "Ukendt vare"}</span>
+                    {incident.barcode ? ` · ${incident.barcode}` : ""}
+                  </p>
+                  <p className="hf-type-small mt-0.5 truncate text-text-muted">
+                    {PET_FOOD_KIND_LABELS[incident.kind] ?? incident.kind} · {incident.matchedBy ?? "ukendt årsag"} ·{" "}
+                    {incident.userLabel}
+                    {incident.userBlocked ? " (spærret)" : ""} · {formatAdminTime(incident.createdAt)}
+                  </p>
+                </div>
+                <PetFoodIncidentActions id={incident.id} canRejectProduct={incident.kind === "FLAGGED_EXISTING" && Boolean(incident.productId)} />
+              </li>
+            ))}
+          </ul>
+          {petFood.unreviewed > petFood.recent.length && (
+            <p className="hf-type-small border-t border-hf-tan-dark px-4 py-3 text-text-muted">
+              + {petFood.unreviewed - petFood.recent.length} flere — de næste vises, når disse er gennemgået.
+            </p>
+          )}
+        </section>
+      )}
 
       <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
         <StatCard
@@ -169,7 +250,7 @@ export default async function AdminDashboardPage() {
                         )}
                       </div>
                       <p className="hf-type-small mt-0.5 truncate text-text-muted">
-                        {request.user.displayName} · {request.user.email} ·{" "}
+                        {request.user.displayName} ·{" "}
                         {SUPPORT_PRIORITY_LABELS[request.priority]} prioritet ·{" "}
                         {formatAdminTime(request.lastUserMessageAt)}
                       </p>
@@ -299,7 +380,10 @@ export default async function AdminDashboardPage() {
           <TaskList tasks={deliveryTasks} />
           {missingApiKeys.length > 0 && (
             <p className="hf-type-small border-t border-border-strong px-4 py-3 text-text-muted">
-              Mangler nøgle: {missingApiKeys.join(", ")}
+              Mangler nøgle: {missingApiKeys.join(", ")}.{" "}
+              <Link href="/admin/api-keys" className="text-hf-black underline hf-type-strong">
+                Indsæt nøglen under API-nøgler
+              </Link>
             </p>
           )}
         </Widget>

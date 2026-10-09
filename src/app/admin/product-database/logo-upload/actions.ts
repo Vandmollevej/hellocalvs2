@@ -12,7 +12,7 @@ import type { BrandSearchHit } from "@/lib/brand-logo-upload-types";
 
 type Result = { ok: true; message?: string } | { ok: false; message: string };
 
-const PATH = "/admin/product-database/logo-upload";
+const PATH = "/admin/product-database/images";
 
 export async function searchBrandsForLogo(query: string): Promise<BrandSearchHit[]> {
   if (!(await requireAdminUser())) return [];

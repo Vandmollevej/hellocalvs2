@@ -15,6 +15,7 @@ export default async function AdminValdemarsroDishesPage() {
       basePath="/admin/dishes/valdemarsro"
       q=""
       data={{ rows: [], total: 0, pageCount: 1, page: 1 }}
+      canDisable
       empty="Ingen Valdemarsro-retter er importeret endnu."
     />
   );

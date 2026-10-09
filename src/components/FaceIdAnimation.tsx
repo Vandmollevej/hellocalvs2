@@ -9,6 +9,8 @@ import { useEffect, useRef } from "react";
 // "failed":   rammerne ryster kort og vender tilbage til ro.
 export type FaceIdPhase = "idle" | "scanning" | "success" | "failed";
 
+// Samme værdier som tokens --hf-color-faceid / --hf-color-faceid-spin i
+// globals.css. Hex her, fordi mixColor() blander dem numerisk pr. frame.
 const COLOR = "#0A7AFF";
 const SPIN_COLOR = "#35C4D4";
 
@@ -170,14 +172,13 @@ export function FaceIdAnimation({
   const initial = frameAttrs(0);
 
   return (
-    <svg
+    <svg className="overflow-visible"
       width={size}
       height={size}
       viewBox="0 0 100 100"
       fill="none"
       role="img"
       aria-label="Face ID"
-      style={{ overflow: "visible" }}
     >
       <g ref={ringRef}>
         <rect

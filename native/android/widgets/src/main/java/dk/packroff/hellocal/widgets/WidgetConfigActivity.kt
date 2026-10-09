@@ -53,17 +53,17 @@ class WidgetConfigActivity : ComponentActivity() {
 
         setContent {
             Column(
-                modifier = Modifier.fillMaxSize().background(HcColors.page).padding(16.dp),
+                modifier = Modifier.fillMaxSize().background(HcColors.Page).padding(16.dp),
                 verticalArrangement = Arrangement.spacedBy(16.dp),
             ) {
                 Text(
                     if (isStatBox) "Vælg statistik-boks" else "Vælg op til $MAX_ADD_ROW_ACTIONS knapper",
                     fontSize = 20.sp,
                     fontWeight = FontWeight.Bold,
-                    color = HcColors.action,
+                    color = HcColors.Action,
                 )
                 if (snapshot == null) {
-                    Text("Åbn Hello Cal og log ind først.", fontSize = 15.sp, color = HcColors.textSecondary)
+                    Text("Åbn Hello Cal og log ind først.", fontSize = 15.sp, color = HcColors.TextSecondary)
                     return@Column
                 }
                 if (isStatBox) {
@@ -75,8 +75,8 @@ class WidgetConfigActivity : ComponentActivity() {
                                 verticalAlignment = Alignment.CenterVertically,
                             ) {
                                 RadioButton(selected = selected == box.key, onClick = { selected = box.key })
-                                Text(box.label, fontSize = 17.sp, color = HcColors.action, modifier = Modifier.weight(1f))
-                                Text(box.value, fontSize = 13.sp, color = HcColors.textSecondary)
+                                Text(box.label, fontSize = 17.sp, color = HcColors.Action, modifier = Modifier.weight(1f))
+                                Text(box.value, fontSize = 13.sp, color = HcColors.TextSecondary)
                             }
                         }
                     }
@@ -97,7 +97,7 @@ class WidgetConfigActivity : ComponentActivity() {
                                 verticalAlignment = Alignment.CenterVertically,
                             ) {
                                 Checkbox(checked = checked, onCheckedChange = { toggle() })
-                                Text(action.label, fontSize = 17.sp, color = HcColors.action)
+                                Text(action.label, fontSize = 17.sp, color = HcColors.Action)
                             }
                         }
                     }
@@ -128,7 +128,7 @@ private fun SaveButton(onClick: () -> Unit) {
         onClick = onClick,
         modifier = Modifier.fillMaxWidth().height(48.dp),
         shape = RoundedCornerShape(8.dp),
-        colors = ButtonDefaults.buttonColors(containerColor = HcColors.action),
+        colors = ButtonDefaults.buttonColors(containerColor = HcColors.Action),
     ) {
         Text("Gem", fontSize = 17.sp, fontWeight = FontWeight.Bold)
     }

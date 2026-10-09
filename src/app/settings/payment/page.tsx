@@ -236,7 +236,7 @@ export default function PaymentPage() {
         </SkeletonScreen>
       ) : (
         <div className="flex flex-col gap-4 p-4">
-          <div className="rounded-[8px] p-4" style={{ background: "var(--hf-black)" }}>
+          <div className="p-4 bg-hf-action rounded-card">
             <p className="hf-type-body text-hf-white">{t(`payment.status.${status === "ACTIVE" && isFamilyPlan ? "activeFamily" : statusKey(status)}`)}</p>
             {statusDetail && <p className="hf-type-small mt-1 text-hf-white">{statusDetail}</p>}
             {subscription && subscription.freeMonthsRemaining > 0 && (
@@ -251,8 +251,7 @@ export default function PaymentPage() {
             <div className="mt-2 flex flex-col gap-2">
               {activeMethod && (
                 <div
-                  className="flex flex-col gap-3 rounded-[8px] border p-3"
-                  style={{ borderColor: "var(--hf-color-line)" }}
+                  className="flex flex-col gap-3 border p-3 border-hf-line rounded-card"
                 >
                   {(() => {
                     const described = describeMethod(activeMethod);
@@ -296,7 +295,7 @@ export default function PaymentPage() {
                           <button
                             type="button"
                             onClick={stopAgreement}
-                            className="hf-control hf-btn-primary flex-1 disabled:opacity-40"
+                            className="hf-control hf-btn-primary flex-1"
                             disabled={stopping}
                           >
                             {stopping ? t("payment.stopping") : stopLabel}
@@ -313,7 +312,7 @@ export default function PaymentPage() {
               )}
 
               {!activeMethod && (
-                <div className="rounded-[8px] bg-hf-tan p-4 text-center">
+                <div className="bg-hf-tan p-4 text-center rounded-card">
                   <p className="hf-type-body text-hf-black">
                     {data.mobilePayPending ? t("payment.pendingApproval") : t("payment.noPaymentMethod")}
                   </p>

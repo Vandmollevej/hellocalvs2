@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { recognizeMealPhoto } from "@/lib/passio";
+import { recognizeMealPhoto } from "@/lib/meal-photo-recognition";
 
 // POST /api/ai/analyze-meal-photo — { photo: string (data URL) }
 //

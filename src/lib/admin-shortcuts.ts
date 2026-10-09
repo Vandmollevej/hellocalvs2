@@ -40,8 +40,7 @@ export const ADMIN_PAGE_SHORTCUTS: Record<string, readonly string[]> = {
   // Varedatabase
   "/admin/product-database/products": ["Alt+P", "Ctrl+P"],
   "/admin/product-database/brands": ["Alt+Shift+R"],
-  "/admin/product-database/tags": ["Alt+Shift+K"],
-  "/admin/product-database/logo-upload": ["Alt+Shift+X"],
+  "/admin/product-database/images": ["Alt+Shift+X"],
 
   // Retter
   "/admin/dishes/user": ["Alt+Shift+U"],
@@ -76,6 +75,7 @@ export const ADMIN_PAGE_SHORTCUTS: Record<string, readonly string[]> = {
 
   // Administration
   "/admin/scan-invites": ["Alt+Shift+V"],
+  "/admin/scan-invites/afvisningsaarsager": ["Alt+Shift+Z"],
   "/admin/jobs": ["Alt+J"],
   "/admin/agents": ["Alt+A"],
   "/admin/robots": ["Alt+R"],

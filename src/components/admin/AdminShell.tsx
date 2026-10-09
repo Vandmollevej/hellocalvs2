@@ -9,7 +9,7 @@ import { t, type AdminI18nKey } from "@/lib/admin-i18n";
 import { AdminCountryDialog, readAdminCountry } from "@/components/admin/AdminCountryDialog";
 import { AutomationMarkers } from "@/components/admin/AutomationMarkers";
 import { useAdminShortcuts } from "@/components/admin/useAdminShortcuts";
-import { ariaKeyShortcuts, formatCombo, shortcutsForHref } from "@/lib/admin-shortcuts";
+import { formatCombo, shortcutsForHref } from "@/lib/admin-shortcuts";
 import { automationProps, navSlug } from "@/lib/automation-markers";
 
 // Admin-skal efter Cloudflare-dashboardets struktur (docs/DECISIONS.md
@@ -53,9 +53,7 @@ export const NAV: NavEntry[] = [
     links: [
       { href: "/admin/product-database/products", key: "nav_product_database_products" },
       { href: "/admin/product-database/brands", key: "nav_product_database_brands" },
-      { href: "/admin/product-database/logo-upload", key: "nav_product_database_logo_upload" },
-      { href: "/admin/product-database/image-upload", key: "nav_product_database_image_upload" },
-      { href: "/admin/product-database/tags", key: "nav_product_database_tags" },
+      { href: "/admin/product-database/images", key: "nav_product_database_images" },
     ],
   },
   // Retter (docs/DECISIONS.md 2026-09-28): opskrifter er ikke produkter og
@@ -120,10 +118,13 @@ export const NAV: NavEntry[] = [
     links: [
       { href: "/admin/api-keys", key: "nav_api_keys" },
       { href: "/admin/cron-jobs", key: "nav_cron_jobs" },
+      { href: "/admin/pet-food-filter", key: "nav_pet_food_filter" },
       { href: "/admin/passkeys", key: "nav_passkeys" },
       { href: "/admin/support/templates", key: "nav_standard_mails" },
       { href: "/admin/messaging", key: "nav_messaging" },
       { href: "/admin/search-ranking", key: "nav_search_ranking" },
+      { href: "/admin/search-synonyms", key: "nav_search_synonyms" },
+      { href: "/admin/weight-attire", key: "nav_weight_attire" },
       { href: "/admin/shortcuts", key: "nav_shortcuts" },
     ],
   },
@@ -134,9 +135,11 @@ export const NAV: NavEntry[] = [
     icon: "shield",
     links: [
       { href: "/admin/scan-invites", key: "nav_scan_invites" },
+      { href: "/admin/scan-invites/afvisningsaarsager", key: "nav_rejection_reasons" },
       { href: "/admin/jobs", key: "nav_jobs" },
       { href: "/admin/agents", key: "nav_agents" },
       { href: "/admin/robots", key: "nav_robots" },
+      { href: "/admin/admin-users", key: "nav_admin_users" },
     ],
   },
   {
@@ -322,13 +325,6 @@ function LinkBadge({ href, badges }: { href: string; badges: Badges }) {
   return null;
 }
 
-function linkHasBadge(href: string, badges: Badges) {
-  return (
-    (href === "/admin/uncertainties" && badges.uncertainties) ||
-    (href === "/admin/support" && (badges.support?.unanswered ?? 0) > 0)
-  );
-}
-
 function groupHasBadge(links: NavLink[], badges: Badges) {
   return links.some(
     (link) =>
@@ -337,16 +333,11 @@ function groupHasBadge(links: NavLink[], badges: Badges) {
   );
 }
 
-// Genvejen vises som tastaturmærke, når man peger på rækken, og som
-// aria-keyshortcuts (UIA "AcceleratorKey") altid.
+// Genvejen vises kun i hurtigsøgningen (ikke som
+// aria-keyshortcuts) og aldrig ved mouse over i sidebjælken.
 function shortcutHint(href: string) {
   const combo = shortcutsForHref(href)[0];
   return combo ? formatCombo(combo) : undefined;
-}
-
-function withShortcut(label: string, href: string) {
-  const hint = shortcutHint(href);
-  return hint ? `${label} (${hint})` : label;
 }
 
 // Faste id'er til automatisering (docs/AUTOMATION.md): prefix er "hc-nav" i
@@ -377,15 +368,13 @@ function SidebarNav({
             <li key={entry.href}>
               <Link
                 href={entry.href}
-                title={collapsed ? withShortcut(t(locale, entry.key), entry.href) : undefined}
+                title={collapsed ? t(locale, entry.key) : undefined}
                 aria-current={active ? "page" : undefined}
-                aria-keyshortcuts={ariaKeyShortcuts(shortcutsForHref(entry.href))}
                 {...automationProps(`${idPrefix}-${navSlug(entry.key)}`)}
                 className={`hf-navrow ${collapsed ? "hf-navrow--rail" : ""}`}
               >
                 <Icon name={entry.icon} />
                 {!collapsed && <span className="hf-navrow__label">{t(locale, entry.key)}</span>}
-                {!collapsed && <ShortcutKbd href={entry.href} />}
               </Link>
             </li>
           );
@@ -439,13 +428,11 @@ function SidebarNav({
                       <Link
                         href={link.href}
                         aria-current={active ? "page" : undefined}
-                        aria-keyshortcuts={ariaKeyShortcuts(shortcutsForHref(link.href))}
                         {...automationProps(`${idPrefix}-${navSlug(link.key)}`)}
                         className="hf-navrow hf-navrow--sub"
                       >
                         <span className="hf-navrow__label">{t(locale, link.key)}</span>
                         <LinkBadge href={link.href} badges={badges} />
-                        {!linkHasBadge(link.href, badges) && <ShortcutKbd href={link.href} />}
                       </Link>
                     </li>
                   );
@@ -456,16 +443,6 @@ function SidebarNav({
         );
       })}
     </ul>
-  );
-}
-
-function ShortcutKbd({ href }: { href: string }) {
-  const hint = shortcutHint(href);
-  if (!hint) return null;
-  return (
-    <kbd aria-hidden="true" className="hf-kbd hf-navrow__kbd">
-      {hint}
-    </kbd>
   );
 }
 
@@ -539,7 +516,6 @@ function QuickSearch({ locale, onClose }: { locale: Locale; onClose: () => void 
                 type="button"
                 onMouseEnter={() => setIndex(i)}
                 onClick={() => go(item.href)}
-                aria-keyshortcuts={ariaKeyShortcuts(shortcutsForHref(item.href))}
                 {...automationProps(`hc-quick-search-${item.slug}`)}
                 className={`hf-navrow ${i === index ? "bg-hf-tan text-hf-black" : ""}`}
               >
@@ -612,12 +588,10 @@ function UserMenu({
             <Link
               href="/admin/admin-users"
               onClick={() => setOpen(false)}
-              aria-keyshortcuts={ariaKeyShortcuts(shortcutsForHref("/admin/admin-users"))}
               {...automationProps("hc-user-menu-admin-users")}
               className="hf-navrow"
             >
               <span className="hf-navrow__label">{t(locale, "nav_admin_users")}</span>
-              <ShortcutKbd href="/admin/admin-users" />
               {newAdminSignups > 0 && (
                 <span className="hf-type-small rounded-full bg-hf-red-dark px-1.5 text-hf-white">{newAdminSignups}</span>
               )}
@@ -675,7 +649,6 @@ function SearchField({
         onClick={onOpen}
         title={label}
         aria-label={label}
-        aria-keyshortcuts="Control+K"
         {...automationProps(id)}
         className="hf-shell__search hf-shell__search--rail"
       >
@@ -687,7 +660,6 @@ function SearchField({
     <button
       type="button"
       onClick={onOpen}
-      aria-keyshortcuts="Control+K"
       {...automationProps(id)}
       className="hf-shell__search"
     >
@@ -928,7 +900,6 @@ export function AdminShell({
           onClick={toggleCollapsed}
           title={t(currentLocale, collapsed ? "nav_expand" : "nav_collapse")}
           aria-label={t(currentLocale, collapsed ? "nav_expand" : "nav_collapse")}
-          aria-keyshortcuts="Control+B"
           {...automationProps("hc-sidebar-toggle")}
           className="hf-shell__handle"
         />
@@ -972,7 +943,7 @@ export function AdminShell({
           </div>
         </header>
 
-        <main className="hf-shell__main" {...automationProps("hc-main")}>
+        <main className="hf-shell__main admin-main" {...automationProps("hc-main")}>
           <div className="hf-shell__content">{children}</div>
         </main>
       </div>

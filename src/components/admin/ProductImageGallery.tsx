@@ -129,7 +129,7 @@ export function ProductImageGallery({
   }
 
   return (
-    <div className="hf-surface p-4">
+    <div className="hf-panel">
       <p className="hf-type-small hf-type-strong mb-4 uppercase tracking-wide text-text-muted">
         Billeder — ét hovedbillede + op til {MAX_SECONDARY} øvrige (fx en æskes andre sider)
       </p>
@@ -146,7 +146,7 @@ export function ProductImageGallery({
           onDrop={handlePrimaryDrop}
           className={
             "flex flex-col items-center gap-2 rounded-lg p-1 outline-2 outline-offset-2 " +
-            (dragOver ? "outline-dashed outline-hf-green-dark" : "outline-transparent")
+            (dragOver ? "outline-dashed outline-hf-black" : "outline-transparent")
           }
         >
           <Thumb
@@ -209,7 +209,7 @@ export function ProductImageGallery({
                     className={
                       "hf-type-micro rounded-full border px-1.5 py-0.5 " +
                       (active
-                        ? "border-hf-green-dark bg-hf-green-dark text-hf-white"
+                        ? "border-hf-black bg-hf-white text-hf-black"
                         : "border-hf-tan-dark text-text-muted")
                     }
                   >
@@ -241,7 +241,7 @@ export function ProductImageGallery({
           type="button"
           onClick={() => savePrimary()}
           disabled={savingPrimary}
-          className="hf-type-body rounded-md bg-hf-green-dark px-3 py-1.5 text-hf-white disabled:opacity-60"
+          className="hf-type-body rounded-md border border-hf-black bg-hf-white px-3 py-1.5 text-hf-black disabled:opacity-60"
         >
           {savingPrimary ? "Gemmer…" : "Gem hovedbillede"}
         </button>
@@ -262,7 +262,7 @@ export function ProductImageGallery({
             type="button"
             onClick={addSecondary}
             disabled={adding}
-            className="hf-type-body rounded-md border border-hf-green-dark px-3 py-1.5 text-hf-green-dark disabled:opacity-60"
+            className="hf-type-body rounded-md border border-hf-black bg-hf-white px-3 py-1.5 text-hf-black disabled:opacity-60"
           >
             {adding ? "Tilføjer…" : "Tilføj"}
           </button>

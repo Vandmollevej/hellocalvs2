@@ -56,7 +56,7 @@ export function AddForwardedItemButton({
         type="button"
         onClick={add}
         disabled={saving}
-        className="hf-control hf-btn-primary w-full disabled:opacity-50"
+        className="hf-control hf-btn-primary w-full"
       >
         {saving ? "Tilføjer…" : `Tilføj ${name} til i dag`}
       </button>

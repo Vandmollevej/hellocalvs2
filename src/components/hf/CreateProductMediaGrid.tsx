@@ -62,8 +62,7 @@ function MediaBox({
 }) {
   return (
     <label
-      className="relative flex aspect-square cursor-pointer flex-col items-center justify-center gap-2 overflow-hidden rounded-[12px]"
-      style={{ background: "var(--hf-color-card)" }}
+      className="relative flex aspect-square cursor-pointer flex-col items-center justify-center gap-2 overflow-hidden bg-hf-card rounded-card"
     >
       <NumberedBadge number={number} />
       {image ? (
@@ -71,7 +70,7 @@ function MediaBox({
         <img src={image} alt={label} className="h-full w-full object-cover" />
       ) : (
         <>
-          <span style={{ color: "var(--hf-color-action)" }}>{icon}</span>
+          <span className="text-hf-action">{icon}</span>
           <span className="hf-type-caption px-2 text-center">{label}</span>
         </>
       )}
@@ -111,14 +110,13 @@ function ImageSubCell({
 }) {
   return (
     <label
-      className="relative flex aspect-square cursor-pointer flex-col items-center justify-center overflow-hidden rounded-[6px]"
-      style={{ background: "var(--hf-color-surface)" }}
+      className="relative flex aspect-square cursor-pointer flex-col items-center justify-center overflow-hidden rounded-[6px] bg-hf-surface"
     >
       {image ? (
         // eslint-disable-next-line @next/next/no-img-element
         <img src={image} alt={label} className="h-full w-full object-cover" />
       ) : (
-        <IconPhoto size={18} stroke={1.75} style={{ color: "var(--hf-color-inactive)" }} />
+        <IconPhoto className="text-hf-inactive" size={18} stroke={1.75} />
       )}
       <input
         type="file"
@@ -327,7 +325,7 @@ export function CreateProductMediaGrid({
         doneLabel={t("productCreate.mediaVerified", { box: t("productCreate.mediaIngredients") })}
         onPick={pickIngredientsImage}
       />
-      <div className="relative aspect-square rounded-[12px] p-1.5" style={{ background: "var(--hf-color-card)" }}>
+      <div className="relative aspect-square p-1.5 bg-hf-card rounded-card">
         <NumberedBadge number={4} />
         <div className="grid h-full grid-cols-2 gap-2">
           <ImageSubCell label={t("productCreate.mediaMainImage")} image={value.mainImage} onPick={setMainImage} />

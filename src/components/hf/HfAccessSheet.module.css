@@ -1,5 +1,5 @@
 /* iOS "Sundhedsadgang"-arket (docs/DECISIONS.md 2026-09-27): bevidst en tro
-   kopi af iOS' eget adgangsark, målt fra HelloFreshs Apple Health-skærm
+   kopi af iOS' eget integrationsside, målt fra HelloFreshs Apple Health-skærm
    (390 pt bred). Værdierne er iOS-systemværdier og gælder kun dette ark. */
 
 .backdrop {
@@ -79,12 +79,12 @@
 /* Trækstreg (design.md §6.13): viser, at arket kan trækkes ned. */
 .grabber {
   position: absolute;
-  top: 6px;
+  top: 8px;
   left: 50%;
   z-index: 3;
-  width: 40px;
+  width: 36px;
   height: 4px;
-  margin-left: -20px;
+  margin-left: -18px;
   border-radius: 2px;
   background: #c7c7cc;
 }

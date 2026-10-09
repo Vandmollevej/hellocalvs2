@@ -1,12 +1,12 @@
 "use client";
 
 import { Suspense, useEffect, useMemo, useState } from "react";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { IconSearch } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
-import { AddProductView } from "@/components/add/AddProductView";
 import { ProductResultRow as ResultRow, type ProductResult as Result } from "@/components/ProductResultRow";
 import { useTranslation } from "@/i18n/LocaleProvider";
+import { useConnectionMessage } from "@/lib/use-online-status";
 import { hasEstimatedMacros } from "@/lib/nutrients";
 import { SkeletonMediaRows, SkeletonScreen } from "@/components/hf/Skeleton";
 
@@ -25,6 +25,7 @@ type LoadState = "loading" | "ready" | "error";
 
 function SoegContent() {
   const { t } = useTranslation();
+  const connectionMessage = useConnectionMessage();
   const searchParams = useSearchParams();
   const forDish = searchParams.get("for") === "ret";
   const [query, setQuery] = useState("");
@@ -32,7 +33,9 @@ function SoegContent() {
   const [resultsState, setResultsState] = useState<LoadState>("loading");
   const [recentlyAdded, setRecentlyAdded] = useState<Result[]>([]);
   const [favorites, setFavorites] = useState<Result[]>([]);
-  const [addId, setAddId] = useState<string | null>(null);
+  const router = useRouter();
+  // Tryk på en vare åbner varesiden direkte — ingen popup og ingen Tilføj-knap.
+  const openProduct = (productId: string) => router.push(`/add/${productId}${forDish ? "?for=ret" : ""}`);
   const favoriteIds = useMemo(() => new Set(favorites.map((f) => f.id)), [favorites]);
 
   function toggleFavorite(productId: string, next: boolean) {
@@ -58,7 +61,7 @@ function SoegContent() {
   }
 
   useEffect(() => {
-    // Tomt søgefelt: vis intet resultat-afsnit (Favoritter/Senest anvendte
+    // Tomt søgefelt: vis intet resultat-afsnit (Favoritter/Senest tilføjet
     // dækker den tomme tilstand) — undlader bevidst at kalde /api/products
     // uden søgetekst, jf. Fejlretninger/FEJLLISTE.md #31 ("Alle varer" gav
     // ingen mening som standardvisning).
@@ -174,14 +177,14 @@ function SoegContent() {
         {showFavorites && (
           <>
             <p className="hf-type-small hf-type-strong text-hf-black">{t("search.favorites")}</p>
-            <div className="overflow-hidden rounded-[8px] bg-hf-tan">
+            <div className="overflow-hidden bg-hf-tan rounded-card">
               {favorites.map((r) => (
                 <ResultRow
                   key={r.id}
                   id={r.id}
                   title={r.title}
                   image={r.image}
-                  onAdd={setAddId}
+                  onAdd={openProduct}
                   isFavorite={favoriteIds.has(r.id)}
                   onToggleFavorite={toggleFavorite}
                 />
@@ -193,14 +196,14 @@ function SoegContent() {
         {showRecentlyAdded && (
           <>
             <p className="hf-type-small hf-type-strong text-hf-black">{t("search.recentlyAdded")}</p>
-            <div className="overflow-hidden rounded-[8px] bg-hf-tan">
+            <div className="overflow-hidden bg-hf-tan rounded-card">
               {recentlyAdded.map((r) => (
                 <ResultRow
                   key={r.id}
                   id={r.id}
                   title={r.title}
                   image={r.image}
-                  onAdd={setAddId}
+                  onAdd={openProduct}
                   isFavorite={favoriteIds.has(r.id)}
                   onToggleFavorite={toggleFavorite}
                 />
@@ -216,7 +219,7 @@ function SoegContent() {
         {query.trim() && (
           <>
             <p className="hf-type-small hf-type-strong text-hf-black">{t("search.searchResults")}</p>
-            <div className="overflow-hidden rounded-[8px] bg-hf-tan">
+            <div className="overflow-hidden bg-hf-tan rounded-card">
               {resultsState === "loading" && (
                 <SkeletonScreen className="px-4">
                   <SkeletonMediaRows rows={6} />
@@ -224,7 +227,7 @@ function SoegContent() {
               )}
               {resultsState === "error" && (
                 <p className="hf-type-body text-text-secondary px-4 py-8 text-center">
-                  {t("foods.loadError")}
+                  {connectionMessage(t("foods.loadError"))}
                 </p>
               )}
               {resultsState === "ready" && results.slice(0, 6).map((r) => (
@@ -236,7 +239,7 @@ function SoegContent() {
                   brand={r.brand}
                   kcal={r.kcal}
                   macrosEstimated={r.macrosEstimated}
-                  onAdd={setAddId}
+                  onAdd={openProduct}
                   isFavorite={favoriteIds.has(r.id)}
                   onToggleFavorite={toggleFavorite}
                 />
@@ -250,10 +253,6 @@ function SoegContent() {
           </>
         )}
       </div>
-
-      {addId && (
-        <AddProductView key={addId} id={addId} forDish={forDish} inSheet onClose={() => setAddId(null)} />
-      )}
     </HfScreen>
   );
 }

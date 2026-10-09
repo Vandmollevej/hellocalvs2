@@ -3,7 +3,6 @@ import { prisma } from "@/lib/prisma";
 import {
   DISH_SOURCES,
   PRODUCT_CATEGORY_LABELS,
-  PRODUCT_DATABASE_PAGE_SIZE,
   PRODUCT_SOURCE_LABELS,
   type ProductDatabaseFilters,
   type ProductDatabaseSort,
@@ -94,6 +93,14 @@ function buildOrderBy(sort: ProductDatabaseSort): Prisma.ProductOrderByWithRelat
       return [{ imageUrl: { sort: "asc", nulls: "first" } }, byName, stable];
     case "brand":
       return [{ brand: { name: "asc" } }, byName, stable];
+    case "brand_desc":
+      return [{ brand: { name: "desc" } }, byName, stable];
+    // "Mest populære" = flest tilføjelser nogensinde; "Trending" afgøres i
+    // loadProductDatabase (tilføjelser de seneste 7 dage), her kun fallback.
+    case "popular":
+      return [{ registrations: { _count: "desc" } }, byName, stable];
+    case "trending":
+      return [byName, stable];
     case "kcal_desc":
       return [{ kcalPer100g: "desc" }, byName, stable];
     case "kcal_asc":
@@ -117,6 +124,9 @@ export type ProductDatabaseRow = {
   categoryLabel: string | null;
   stores: string[];
   barcodeCount: number;
+  // Hvor mange gange varen er tilføjet på brugernes konti i alt. Kun for
+  // godkendte varer (null ellers) — status afgøres under Godkendelse.
+  additions: number | null;
 };
 
 export type ProductDatabaseOverview = {
@@ -124,17 +134,51 @@ export type ProductDatabaseOverview = {
   withImage: number;
   approved: number;
   pending: number;
+  // Opdeling Total / EAN (med stregkode) / Generisk (uden stregkode):
+  // antal varer og tilføjelser (kun godkendte varer).
+  segments: Record<"total" | "ean" | "generic", { products: number; additions: number }>;
 };
+
+const TRENDING_DAYS = 7;
+
+// Trending: varer med tilføjelser de seneste dage kommer først (flest øverst),
+// derefter resten alfabetisk. Sidens udsnit lægges hen over begge dele.
+async function loadTrendingIds(where: Prisma.ProductWhereInput, skip: number, take: number) {
+  const since = new Date(Date.now() - TRENDING_DAYS * 24 * 60 * 60 * 1000);
+  const trending = await prisma.registration.groupBy({
+    by: ["productId"],
+    where: { createdAt: { gte: since }, product: where },
+    _count: { _all: true },
+    orderBy: [{ _count: { productId: "desc" } }, { productId: "asc" }],
+  });
+  const trendingIds = trending.map((r) => r.productId).filter((id): id is string => id !== null);
+  const head = trendingIds.slice(skip, skip + take);
+  const restTake = take - head.length;
+  const rest =
+    restTake > 0
+      ? await prisma.product.findMany({
+          where: { AND: [where, { id: { notIn: trendingIds } }] },
+          orderBy: [{ name: "asc" }, { id: "asc" }],
+          skip: Math.max(0, skip - trendingIds.length),
+          take: restTake,
+          select: { id: true },
+        })
+      : [];
+  return [...head, ...rest.map((r) => r.id)];
+}
 
 export async function loadProductDatabase(filters: ProductDatabaseFilters) {
   const where = buildWhere(filters);
-  const [matching, rows, stores, categories, overview] = await Promise.all([
+  const infinite = filters.paging === "infinite";
+  const skip = infinite ? 0 : (filters.page - 1) * filters.perPage;
+  const take = infinite ? filters.page * filters.perPage : filters.perPage;
+  const trendingIds = filters.sort === "trending" ? await loadTrendingIds(where, skip, take) : null;
+  const [matching, rawRows, stores, categories, overview] = await Promise.all([
     prisma.product.count({ where }),
     prisma.product.findMany({
-      where,
+      where: trendingIds ? { id: { in: trendingIds } } : where,
       orderBy: buildOrderBy(filters.sort),
-      skip: (filters.page - 1) * PRODUCT_DATABASE_PAGE_SIZE,
-      take: PRODUCT_DATABASE_PAGE_SIZE,
+      ...(trendingIds ? {} : { skip, take }),
       select: {
         id: true,
         name: true,
@@ -161,6 +205,18 @@ export async function loadProductDatabase(filters: ProductDatabaseFilters) {
     loadOverview(),
   ]);
 
+  const rows = trendingIds ? trendingIds.flatMap((id) => rawRows.filter((p) => p.id === id)) : rawRows;
+  const approvedIds = rows.filter((p) => p.status === "APPROVED").map((p) => p.id);
+  const additionRows =
+    approvedIds.length === 0
+      ? []
+      : await prisma.registration.groupBy({
+          by: ["productId"],
+          where: { productId: { in: approvedIds } },
+          _count: { _all: true },
+        });
+  const additionsById = new Map(additionRows.map((r) => [r.productId, r._count._all]));
+
   const result: ProductDatabaseRow[] = rows.map((p) => ({
     id: p.id,
     name: p.name,
@@ -177,12 +233,13 @@ export async function loadProductDatabase(filters: ProductDatabaseFilters) {
     categoryLabel: (p.category ? [p.category.parent?.name, p.category.name].filter(Boolean).join(" › ") : null) ?? (p.productCategory ? PRODUCT_CATEGORY_LABELS[p.productCategory] : null),
     stores: p.stores.map((s) => s.store.name),
     barcodeCount: p._count.barcodes,
+    additions: p.status === "APPROVED" ? (additionsById.get(p.id) ?? 0) : null,
   }));
 
   return {
     rows: result,
     matching,
-    pageCount: Math.max(1, Math.ceil(matching / PRODUCT_DATABASE_PAGE_SIZE)),
+    pageCount: Math.max(1, Math.ceil(matching / filters.perPage)),
     stores: stores.map((s) => ({ id: s.id, name: s.name, count: s._count.products })),
     categories,
     overview,
@@ -191,13 +248,30 @@ export async function loadProductDatabase(filters: ProductDatabaseFilters) {
 
 async function loadOverview(): Promise<ProductDatabaseOverview> {
   const base: Prisma.ProductWhereInput = PRODUCTS_ONLY;
-  const [total, withImage, approved, pending] = await Promise.all([
+  const withBarcode: Prisma.ProductWhereInput = { barcodes: { some: {} } };
+  const withoutBarcode: Prisma.ProductWhereInput = { barcodes: { none: {} } };
+  const approvedBase: Prisma.ProductWhereInput = { ...base, status: "APPROVED" };
+  const [total, withImage, approved, pending, ean, addTotal, addEan, addGeneric] = await Promise.all([
     prisma.product.count({ where: base }),
     prisma.product.count({ where: { ...base, imageUrl: { not: null } } }),
     prisma.product.count({ where: { ...base, status: "APPROVED" } }),
     prisma.product.count({ where: { ...base, status: "PENDING" } }),
+    prisma.product.count({ where: { AND: [base, withBarcode] } }),
+    prisma.registration.count({ where: { product: approvedBase } }),
+    prisma.registration.count({ where: { product: { AND: [approvedBase, withBarcode] } } }),
+    prisma.registration.count({ where: { product: { AND: [approvedBase, withoutBarcode] } } }),
   ]);
-  return { total, withImage, approved, pending };
+  return {
+    total,
+    withImage,
+    approved,
+    pending,
+    segments: {
+      total: { products: total, additions: addTotal },
+      ean: { products: ean, additions: addEan },
+      generic: { products: total - ean, additions: addGeneric },
+    },
+  };
 }
 
 // Valgmuligheder til mærke-/sub brand-dropdowns. Sub brands indsnævres til

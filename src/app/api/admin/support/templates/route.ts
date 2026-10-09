@@ -24,9 +24,8 @@ export async function POST(request: Request) {
   const title = cleanSupportText(body?.title, SUPPORT_TEMPLATE_TITLE_MAX);
   const text = cleanSupportText(body?.body, SUPPORT_MESSAGE_MAX);
   if (!title || !text) return NextResponse.json({ message: "Udfyld titel og tekst" }, { status: 400 });
-  const sortOrder = typeof body?.sortOrder === "number" && Number.isFinite(body.sortOrder) ? Math.round(body.sortOrder) : 0;
   const id = typeof body?.id === "string" ? body.id : undefined;
-  const saved = await saveSupportReplyTemplate({ id, title, body: text, sortOrder });
+  const saved = await saveSupportReplyTemplate({ id, title, body: text });
   if (!saved) return NextResponse.json({ message: "Findes ikke" }, { status: 404 });
   return NextResponse.json({ ok: true });
 }

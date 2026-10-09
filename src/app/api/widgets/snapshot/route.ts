@@ -17,9 +17,9 @@ async function resolveUserId(req: Request) {
   if (auth?.startsWith("Bearer ")) {
     const token = await prisma.deviceToken.findUnique({
       where: { tokenHash: hashDeviceToken(auth.slice("Bearer ".length)) },
-      include: { user: { select: { forgottenAt: true, closedAt: true } } },
+      include: { user: { select: { forgottenAt: true, closedAt: true, blockedAt: true } } },
     });
-    if (!token || token.user.forgottenAt || token.user.closedAt) return null;
+    if (!token || token.user.forgottenAt || token.user.closedAt || token.user.blockedAt) return null;
     await prisma.deviceToken.update({ where: { id: token.id }, data: { lastUsedAt: new Date() } });
     return token.userId;
   }

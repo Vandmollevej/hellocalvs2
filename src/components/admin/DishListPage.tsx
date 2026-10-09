@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { DishPage, DishRow } from "@/lib/admin-dishes";
+import { DishDisableButton } from "@/components/admin/DishDisableButton";
 
 // Fælles liste for admin → Retter (docs/DECISIONS.md 2026-09-28): søgning,
 // liste med billede, kcal og status, og sider à 48.
@@ -21,7 +22,7 @@ function StatusBadge({ status }: { status: DishRow["status"] }) {
   return <span className={`hf-type-micro hf-type-strong shrink-0 rounded-full px-2 py-0.5 ${tone}`}>{STATUS_LABELS[status]}</span>;
 }
 
-function Row({ row }: { row: DishRow }) {
+function Row({ row, canDisable }: { row: DishRow; canDisable: boolean }) {
   const body = (
     <>
       <div className="h-12 w-12 shrink-0 overflow-hidden rounded-md border border-hf-tan-dark bg-hf-white">
@@ -37,12 +38,17 @@ function Row({ row }: { row: DishRow }) {
       <p className="hf-type-small hidden text-right text-text-secondary sm:block">
         {numberFormat.format(Math.round(row.kcal))} {row.kcalLabel}
       </p>
-      <div className="flex justify-end">
+      <div className="flex items-center justify-end gap-2">
         <StatusBadge status={row.status} />
+        {canDisable && <DishDisableButton id={row.id} disabled={row.status === "REJECTED"} />}
       </div>
     </>
   );
-  const className = "grid grid-cols-[48px_minmax(0,1fr)_auto] items-center gap-4 px-4 py-3 sm:grid-cols-[48px_minmax(0,1fr)_140px_96px]";
+  const className = `grid items-center gap-4 px-4 py-3 ${
+    canDisable
+      ? "grid-cols-[48px_minmax(0,1fr)_auto] sm:grid-cols-[48px_minmax(0,1fr)_140px_200px]"
+      : "grid-cols-[48px_minmax(0,1fr)_auto] sm:grid-cols-[48px_minmax(0,1fr)_140px_96px]"
+  }`;
   return (
     <li>
       {row.href ? (
@@ -63,6 +69,7 @@ export function DishListPage({
   q,
   data,
   empty,
+  canDisable = false,
 }: {
   title: string;
   intro: string;
@@ -70,6 +77,8 @@ export function DishListPage({
   q: string;
   data: DishPage;
   empty: string;
+  // Kun "Disable"-knap på linjen — ingen anden redigering (HelloFresh/Valdemarsro).
+  canDisable?: boolean;
 }) {
   const href = (page: number) => {
     const params = new URLSearchParams();
@@ -106,13 +115,13 @@ export function DishListPage({
       </p>
 
       {data.rows.length === 0 ? (
-        <div className="hf-surface px-4 py-12 text-center">
+        <div className="rounded-lg border border-hf-tan-dark bg-hf-white px-4 py-12 text-center">
           <p className="hf-type-body text-text-secondary">{empty}</p>
         </div>
       ) : (
-        <ul className="divide-y divide-border-strong overflow-hidden hf-surface">
+        <ul className="divide-y divide-border-strong overflow-hidden rounded-lg border border-hf-tan-dark bg-hf-white">
           {data.rows.map((row) => (
-            <Row key={row.id} row={row} />
+            <Row key={row.id} row={row} canDisable={canDisable} />
           ))}
         </ul>
       )}

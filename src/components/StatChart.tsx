@@ -138,7 +138,7 @@ export function StatChart({
   const hasGoalSeries = visibleSeries.some((s) => s.goal != null);
 
   return (
-    <div className="relative rounded-2xl bg-hf-tan p-4">
+    <div className="relative hf-card">
       <div className="mb-4 flex items-baseline justify-between">
         <p className="hf-type-body hf-type-strong text-hf-black">{title}</p>
         <p className="hf-type-micro text-text-secondary">{t("statChart.last7Days")}</p>

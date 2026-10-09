@@ -2,7 +2,7 @@
 
 import { Suspense, useEffect, useRef, useState, type ReactNode } from "react";
 import Link from "next/link";
-import { IconChefHat, IconChevronRight } from "@tabler/icons-react";
+import { IconChefHat, IconChevronRight, IconFileImport } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
 import { IntegrationIcon } from "@/components/IntegrationIcon";
 import type { IntegrationCardStatus } from "@/lib/integrations";
@@ -38,7 +38,7 @@ function Card({
   children?: ReactNode;
 }) {
   return (
-    <div className={`flex flex-col gap-4 rounded-[8px] bg-hf-tan p-4 ${dimmed ? "opacity-60" : ""}`}>
+    <div className={`rounded-card flex flex-col gap-4 bg-hf-tan p-4 ${dimmed ? "opacity-60" : ""}`}>
       <div className="flex items-start gap-3">
         {icon}
         <div className="min-w-0 flex-1">
@@ -122,7 +122,7 @@ function IntegrationerContent() {
         chevron={!unavailable}
         title={integration.label}
         description={description}
-        icon={<IntegrationIcon icon={integration.icon} label={integration.label} size={36} className="h-9 w-9 rounded-[8px]" />}
+        icon={<IntegrationIcon icon={integration.icon} label={integration.label} size={36} className="h-9 w-9 rounded-card" />}
       >
         {unavailable ? (
           <p className="hf-type-small text-text-secondary">{t("integrations.unavailable")}</p>
@@ -223,6 +223,21 @@ function IntegrationerContent() {
             {section(t("integrations.sections.popular"), popular.map(integrationCard))}
             {section(t("integrations.sections.recipes"), helloFresh === false ? [helloFreshCard] : [])}
             {section(t("integrations.sections.apps"), apps.map(integrationCard))}
+            {section(t("integrations.sections.moveFrom"), [
+              <Link key="migration-import" href="/settings/import" className="block">
+                <Card
+                  active={false}
+                  chevron
+                  title={t("integrations.moveFromTitle")}
+                  description={t("integrations.moveFromDescription")}
+                  icon={
+                    <span className="mt-1 flex h-9 w-9 shrink-0 items-center justify-center text-hf-black">
+                      <IconFileImport size={24} />
+                    </span>
+                  }
+                />
+              </Link>,
+            ])}
           </>
         )}
       </div>

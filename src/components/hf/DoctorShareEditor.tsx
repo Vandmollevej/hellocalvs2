@@ -5,6 +5,7 @@ import { IconChevronDown } from "@tabler/icons-react";
 import { TextField } from "@/components/hf/TextField";
 import { Toggle } from "@/components/ui/Toggle";
 import { useTranslation } from "@/i18n/LocaleProvider";
+import { useAddActionsProfile } from "@/lib/add-actions";
 import {
   DOCTOR_SHARE_CATEGORIES,
   DOCTOR_SHARE_UNAVAILABLE_CATEGORIES,
@@ -66,6 +67,8 @@ export function DoctorShareEditor({
   previewExternal?: boolean;
 }) {
   const { t } = useTranslation();
+  // Menstruation exists only for women — not shown at all for men (user rule 2026-10-09).
+  const { sex } = useAddActionsProfile();
 
   function toggleCategory(category: DoctorShareCategory, checked: boolean) {
     if (checked) onCategoriesChange([...categories, category]);
@@ -103,7 +106,7 @@ export function DoctorShareEditor({
       <div>
         <h2 className="hf-type-section-title">{t("helloDoc.shareDataTitle")}</h2>
         <div className="flex flex-col gap-2">
-          {DOCTOR_SHARE_CATEGORIES.map((category) => {
+          {DOCTOR_SHARE_CATEGORIES.filter((category) => category !== "menstrualCycle" || sex === "FEMALE").map((category) => {
             const unavailable = DOCTOR_SHARE_UNAVAILABLE_CATEGORIES.includes(category);
             return (
               <Toggle
@@ -123,8 +126,7 @@ export function DoctorShareEditor({
         <h2 className="hf-type-section-title">{t("helloDoc.historyTitle")}</h2>
         <div className="relative">
           <select
-            className="hf-field hf-type-input w-full appearance-none rounded-[8px] border bg-hf-cream pl-4 pr-10 outline-none"
-            style={{ borderColor: "var(--hf-color-field-border)" }}
+            className="hf-field hf-type-input w-full appearance-none border bg-hf-cream pl-4 pr-10 outline-none border-hf-field-border rounded-card"
             value={historyRange}
             onChange={(event) => onHistoryRangeChange(event.target.value as DoctorShareHistoryRange)}
           >

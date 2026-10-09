@@ -3,14 +3,18 @@ import { redirect } from "next/navigation";
 import { requireAdminUser } from "@/lib/require-admin";
 import { loadProductDatabase, loadProductDatabaseSuggestions, type ProductDatabaseRow } from "@/lib/admin-product-database";
 import {
-  PRODUCT_DATABASE_PAGE_SIZE,
+  PRODUCT_COLUMNS,
+  PRODUCT_COLUMN_LABELS,
   PRODUCT_STATUS_LABELS,
   parseProductDatabaseFilters,
   productDatabaseHref,
+  type ProductColumn,
   type ProductDatabaseFilters as Filters,
   type ProductDatabaseSearchParams,
 } from "@/lib/admin-product-database-query";
+import { InfiniteScrollLoader } from "@/components/admin/InfiniteScrollLoader";
 import { ProductDatabaseFilters } from "@/components/admin/ProductDatabaseFilters";
+import { SavedViewsControls } from "@/components/admin/SavedViewsControls";
 
 // Admin "Produkt-database → Produkter" (docs/DECISIONS.md 2026-09-27,
 // 2026-09-28: flyttet fra /admin/product-database): alle produkter
@@ -21,7 +25,7 @@ const numberFormat = new Intl.NumberFormat("da-DK");
 
 function StatCard({ href, label, value, note }: { href: string; label: string; value: string; note: string }) {
   return (
-    <Link href={href} className="flex flex-col hf-surface p-4 hover:border-hf-green">
+    <Link href={href} className="hover:border-hf-green hf-panel">
       <p className="hf-type-body text-text-secondary">{label}</p>
       <p className="hf-type-hero mt-1 text-hf-green-dark">{value}</p>
       <p className="hf-type-small mt-auto pt-2 text-text-muted">{note}</p>
@@ -70,6 +74,10 @@ function Thumbnail({ row, size }: { row: ProductDatabaseRow; size: "row" | "card
   );
 }
 
+function additionsText(row: ProductDatabaseRow) {
+  return row.additions === null ? "—" : numberFormat.format(row.additions);
+}
+
 function subtitle(row: ProductDatabaseRow) {
   return [row.subbrand, row.variant, row.packageSizeText].filter(Boolean).join(" · ");
 }
@@ -87,48 +95,155 @@ function StoreTags({ stores }: { stores: string[] }) {
   );
 }
 
-function ListView({ rows }: { rows: ProductDatabaseRow[] }) {
+function BrandHeader({ filters }: { filters: Filters }) {
+  const next = filters.sort === "brand" ? "brand_desc" : "brand";
+  const arrow = filters.sort === "brand" ? " ↑" : filters.sort === "brand_desc" ? " ↓" : "";
+  return (
+    <Link href={productDatabaseHref(filters, { sort: next })} className="hover:text-hf-green-dark" title="Sortér efter mærke">
+      Mærke{arrow}
+    </Link>
+  );
+}
+
+// Kolonnebredder i listen, pr. valgbart felt (rækkefølgen følger PRODUCT_COLUMNS).
+const LIST_COLUMN_WIDTH: Record<ProductColumn, string> = {
+  brand: "minmax(0,1fr)",
+  stores: "minmax(0,1.1fr)",
+  category: "minmax(0,1fr)",
+  kcal: "88px",
+  additions: "96px",
+  status: "96px",
+};
+
+function ListView({ rows, columns, filters }: { rows: ProductDatabaseRow[]; columns: ProductColumn[]; filters: Filters }) {
+  const shown = PRODUCT_COLUMNS.filter((key) => columns.includes(key));
+  const has = (key: ProductColumn) => shown.includes(key);
+  const template = ["48px", "minmax(0,2.2fr)", ...shown.map((key) => LIST_COLUMN_WIDTH[key])].join(" ");
+  const mobileCols = has("status") ? "grid-cols-[48px_minmax(0,1fr)_auto]" : "grid-cols-[48px_minmax(0,1fr)]";
+  const rowStyle = { "--list-cols": template } as React.CSSProperties;
   return (
     <div className="overflow-hidden hf-surface">
-      <div className="hf-type-small hidden grid-cols-[48px_minmax(0,2.4fr)_minmax(0,1.2fr)_minmax(0,1fr)_88px_96px] gap-4 border-b border-hf-tan-dark px-4 py-2 text-text-secondary lg:grid">
+      <div style={rowStyle} className="hf-type-small hidden gap-4 border-b border-hf-tan-dark px-4 py-2 text-text-secondary lg:grid lg:[grid-template-columns:var(--list-cols)]">
         <span />
         <span>Vare</span>
-        <span>Kæder</span>
-        <span>Kategori · kilde</span>
-        <span className="text-right">Kcal/100</span>
-        <span className="text-right">Status</span>
+        {shown.map((key) => (
+          <span key={key} className={key === "kcal" || key === "additions" || key === "status" ? "text-right" : undefined}>
+            {key === "brand" ? <BrandHeader filters={filters} /> : PRODUCT_COLUMN_LABELS[key]}
+          </span>
+        ))}
       </div>
       <ul className="divide-y divide-border-strong">
         {rows.map((row) => (
           <li key={row.id}>
             <Link
               href={`/admin/products/${row.id}`}
-              className="grid grid-cols-[48px_minmax(0,1fr)_auto] items-center gap-4 px-4 py-3 hover:bg-hf-tan lg:grid-cols-[48px_minmax(0,2.4fr)_minmax(0,1.2fr)_minmax(0,1fr)_88px_96px]"
+              style={rowStyle}
+              className={`grid ${mobileCols} items-center gap-4 px-4 py-3 hover:bg-hf-tan lg:[grid-template-columns:var(--list-cols)]`}
             >
               <Thumbnail row={row} size="row" />
               <div className="min-w-0">
-                <p className="hf-type-body truncate text-hf-black">
-                  {row.brandName && <span className="hf-type-strong">{row.brandName} </span>}
-                  {row.name}
-                </p>
+                <p className="hf-type-body truncate text-hf-black">{row.name}</p>
                 <p className="hf-type-small truncate text-text-muted">
+                  {row.brandName && <span className="lg:hidden">{row.brandName} · </span>}
                   {subtitle(row) || (row.barcodeCount > 0 ? `${row.barcodeCount} stregkode${row.barcodeCount > 1 ? "r" : ""}` : "Ingen stregkode")}
                 </p>
-                <div className="mt-1 lg:hidden">
-                  <StoreTags stores={row.stores} />
-                </div>
+                {has("stores") && (
+                  <div className="mt-1 lg:hidden">
+                    <StoreTags stores={row.stores} />
+                  </div>
+                )}
               </div>
-              <div className="hidden min-w-0 lg:block">
+              {shown.map((key) => {
+                switch (key) {
+                  case "brand":
+                    return (
+                      <p key={key} className="hf-type-small hidden truncate text-hf-black lg:block">
+                        {row.brandName ?? "—"}
+                      </p>
+                    );
+                  case "stores":
+                    return (
+                      <div key={key} className="hidden min-w-0 lg:block">
+                        <StoreTags stores={row.stores} />
+                      </div>
+                    );
+                  case "category":
+                    return (
+                      <div key={key} className="hidden min-w-0 lg:block">
+                        <p className="hf-type-small truncate text-hf-black">{row.categoryLabel ?? "Uden kategori"}</p>
+                        <p className="hf-type-small truncate text-text-muted">{row.sourceLabel}</p>
+                      </div>
+                    );
+                  case "kcal":
+                    return (
+                      <p key={key} className="hf-type-small hidden text-right text-text-secondary lg:block">
+                        {row.nutritionMissing ? "Mangler næring" : Math.round(row.kcalPer100g)}
+                      </p>
+                    );
+                  case "additions":
+                    return (
+                      <p key={key} className="hf-type-small hidden text-right text-text-secondary lg:block">
+                        {additionsText(row)}
+                      </p>
+                    );
+                  case "status":
+                    return (
+                      <div key={key} className="flex justify-end">
+                        <StatusBadge status={row.status} />
+                      </div>
+                    );
+                }
+              })}
+            </Link>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+// Detaljer: kun tekst, uden billeder — flere felter pr. vare end i listen.
+function DetailsView({ rows, filters }: { rows: ProductDatabaseRow[]; filters: Filters }) {
+  const cols = "lg:grid-cols-[minmax(0,2.2fr)_minmax(0,1fr)_minmax(0,1.2fr)_minmax(0,1fr)_minmax(0,1fr)_72px_72px_96px_96px]";
+  return (
+    <div className="overflow-hidden hf-surface">
+      <div className={`hf-type-small hidden gap-4 border-b border-hf-tan-dark px-4 py-2 text-text-secondary lg:grid ${cols}`}>
+        <span>Vare</span>
+        <BrandHeader filters={filters} />
+        <span>Kæder</span>
+        <span>Kategori</span>
+        <span>Kilde</span>
+        <span className="text-right">Kcal/100</span>
+        <span className="text-right">Stregkoder</span>
+        <span className="text-right">Tilføjelser</span>
+        <span className="text-right">Status</span>
+      </div>
+      <ul className="divide-y divide-border-strong">
+        {rows.map((row) => (
+          <li key={row.id}>
+            <Link href={`/admin/products/${row.id}`} className={`grid grid-cols-[minmax(0,1fr)_auto] items-center gap-x-4 gap-y-1 px-4 py-2 hover:bg-hf-tan ${cols}`}>
+              <div className="min-w-0">
+                <p className="hf-type-body truncate text-hf-black">{row.name}</p>
+                {(row.brandName || subtitle(row)) && (
+                  <p className="hf-type-small truncate text-text-muted">
+                    {row.brandName && <span className="lg:hidden">{row.brandName}{subtitle(row) && " · "}</span>}
+                    {subtitle(row)}
+                  </p>
+                )}
+              </div>
+              <div className="flex justify-end lg:hidden">
+                <StatusBadge status={row.status} />
+              </div>
+              <p className="hf-type-small hidden truncate text-hf-black lg:block">{row.brandName ?? "—"}</p>
+              <div className="col-span-2 flex flex-wrap items-center gap-x-3 gap-y-1 lg:col-span-1 lg:block">
                 <StoreTags stores={row.stores} />
               </div>
-              <div className="hidden min-w-0 lg:block">
-                <p className="hf-type-small truncate text-hf-black">{row.categoryLabel ?? "Uden kategori"}</p>
-                <p className="hf-type-small truncate text-text-muted">{row.sourceLabel}</p>
-              </div>
-              <p className="hf-type-small hidden text-right text-text-secondary lg:block">
-                {row.nutritionMissing ? "Mangler næring" : Math.round(row.kcalPer100g)}
-              </p>
-              <div className="flex justify-end">
+              <p className="hf-type-small truncate text-hf-black">{row.categoryLabel ?? "Uden kategori"}</p>
+              <p className="hf-type-small truncate text-text-muted">{row.sourceLabel}</p>
+              <p className="hf-type-small text-right text-text-secondary">{Math.round(row.kcalPer100g)} kcal</p>
+              <p className="hf-type-small text-right text-text-secondary">{row.barcodeCount}</p>
+              <p className="hf-type-small text-right text-text-secondary">{additionsText(row)}</p>
+              <div className="hidden justify-end lg:flex">
                 <StatusBadge status={row.status} />
               </div>
             </Link>
@@ -139,7 +254,8 @@ function ListView({ rows }: { rows: ProductDatabaseRow[] }) {
   );
 }
 
-function GridView({ rows }: { rows: ProductDatabaseRow[] }) {
+function GridView({ rows, columns }: { rows: ProductDatabaseRow[]; columns: ProductColumn[] }) {
+  const has = (key: ProductColumn) => columns.includes(key);
   return (
     <ul className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6">
       {rows.map((row) => (
@@ -150,18 +266,22 @@ function GridView({ rows }: { rows: ProductDatabaseRow[] }) {
           >
             <div className="relative">
               <Thumbnail row={row} size="card" />
-              <span className="absolute left-2 top-2">
-                <StatusBadge status={row.status} />
-              </span>
+              {has("status") && (
+                <span className="absolute left-2 top-2">
+                  <StatusBadge status={row.status} />
+                </span>
+              )}
             </div>
             <div className="flex min-w-0 flex-1 flex-col gap-0.5 px-1 pb-1">
               {row.brandName && <p className="hf-type-small hf-type-strong truncate text-text-secondary">{row.brandName}</p>}
               <p className="hf-type-body line-clamp-2 text-hf-black">{row.name}</p>
               {subtitle(row) && <p className="hf-type-small truncate text-text-muted">{subtitle(row)}</p>}
               <div className="mt-auto flex items-end justify-between gap-2 pt-2">
-                <StoreTags stores={row.stores} />
+                {has("stores") ? <StoreTags stores={row.stores} /> : <span />}
                 <span className="hf-type-micro shrink-0 text-text-muted">
-                  {row.nutritionMissing ? "Mangler næring" : `${Math.round(row.kcalPer100g)} kcal`}
+                  {has("additions") && row.additions !== null && `${additionsText(row)} tilføjelser`}
+                  {has("additions") && row.additions !== null && has("kcal") && " · "}
+                  {has("kcal") && (row.nutritionMissing ? "Mangler næring" : `${Math.round(row.kcalPer100g)} kcal`)}
                 </span>
               </div>
             </div>
@@ -214,10 +334,9 @@ export default async function AdminProductDatabasePage({
     loadProductDatabaseSuggestions(filters.brand),
   ]);
   const { overview } = data;
-  const withoutImage = overview.total - overview.withImage;
-  const imagePercent = overview.total > 0 ? Math.round((overview.withImage / overview.total) * 100) : 0;
-  const firstIndex = data.matching === 0 ? 0 : (filters.page - 1) * PRODUCT_DATABASE_PAGE_SIZE + 1;
-  const lastIndex = Math.min(filters.page * PRODUCT_DATABASE_PAGE_SIZE, data.matching);
+  const infinite = filters.paging === "infinite";
+  const firstIndex = data.matching === 0 ? 0 : infinite ? 1 : (filters.page - 1) * filters.perPage + 1;
+  const lastIndex = Math.min(filters.page * filters.perPage, data.matching);
   const clean: Filters = parseProductDatabaseFilters({});
 
   return (
@@ -230,32 +349,31 @@ export default async function AdminProductDatabasePage({
           </p>
         </div>
         <Link
-          href="/admin/product-database/image-upload"
+          href="/admin/product-database/images"
           className="hf-type-body hf-control inline-flex items-center rounded-md bg-hf-green-dark px-4 text-hf-white"
         >
           Upload billeder
         </Link>
       </div>
 
-      <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
-        <StatCard href={productDatabaseHref(clean)} label="Varer i alt" value={numberFormat.format(overview.total)} note="Vis alle" />
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
         <StatCard
-          href={productDatabaseHref(clean, { image: "with" })}
-          label="Med billede"
-          value={numberFormat.format(overview.withImage)}
-          note={`${imagePercent} % af databasen`}
+          href={productDatabaseHref(clean)}
+          label="Total"
+          value={numberFormat.format(overview.segments.total.products)}
+          note={`${numberFormat.format(overview.segments.total.additions)} tilføjelser`}
         />
         <StatCard
-          href={productDatabaseHref(clean, { image: "without" })}
-          label="Uden billede"
-          value={numberFormat.format(withoutImage)}
-          note="Vis dem uden billede →"
+          href={productDatabaseHref(clean, { barcode: "with" })}
+          label="EAN"
+          value={numberFormat.format(overview.segments.ean.products)}
+          note={`${numberFormat.format(overview.segments.ean.additions)} tilføjelser`}
         />
         <StatCard
-          href={productDatabaseHref(clean, { status: "PENDING" })}
-          label="Afventer godkendelse"
-          value={numberFormat.format(overview.pending)}
-          note={`${numberFormat.format(overview.approved)} godkendt`}
+          href={productDatabaseHref(clean, { barcode: "without" })}
+          label="Generisk"
+          value={numberFormat.format(overview.segments.generic.products)}
+          note={`${numberFormat.format(overview.segments.generic.additions)} tilføjelser`}
         />
       </div>
 
@@ -268,16 +386,19 @@ export default async function AdminProductDatabasePage({
       />
 
       <div className="flex flex-col gap-4">
-        <p className="hf-type-body text-text-secondary">
-          {data.matching === 0 ? (
-            "Ingen varer matcher."
-          ) : (
-            <>
-              Viser <span className="hf-type-strong text-hf-black">{numberFormat.format(firstIndex)}–{numberFormat.format(lastIndex)}</span> af{" "}
-              <span className="hf-type-strong text-hf-black">{numberFormat.format(data.matching)}</span> varer
-            </>
-          )}
-        </p>
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <p className="hf-type-body text-text-secondary">
+            {data.matching === 0 ? (
+              "Ingen varer matcher."
+            ) : (
+              <>
+                Viser <span className="hf-type-strong text-hf-black">{numberFormat.format(firstIndex)}–{numberFormat.format(lastIndex)}</span> af{" "}
+                <span className="hf-type-strong text-hf-black">{numberFormat.format(data.matching)}</span> varer
+              </>
+            )}
+          </p>
+          <SavedViewsControls filters={filters} />
+        </div>
 
         {data.rows.length === 0 ? (
           <div className="hf-surface px-4 py-12 text-center">
@@ -287,12 +408,18 @@ export default async function AdminProductDatabasePage({
             </Link>
           </div>
         ) : filters.view === "grid" ? (
-          <GridView rows={data.rows} />
+          <GridView rows={data.rows} columns={filters.cols} />
+        ) : filters.view === "details" ? (
+          <DetailsView rows={data.rows} filters={filters} />
         ) : (
-          <ListView rows={data.rows} />
+          <ListView rows={data.rows} columns={filters.cols} filters={filters} />
         )}
 
-        <Pagination filters={filters} pageCount={data.pageCount} />
+        {infinite ? (
+          lastIndex < data.matching && <InfiniteScrollLoader filters={filters} />
+        ) : (
+          <Pagination filters={filters} pageCount={data.pageCount} />
+        )}
       </div>
     </div>
   );

@@ -155,7 +155,6 @@ export function garminItems(kind: GarminSummaryKind, records: unknown[]): Integr
         ...metric("MUSCLE_MASS_KG", positive(b.muscleMassInGrams) ? b.muscleMassInGrams / 1000 : null, at),
         ...metric("BONE_MASS_KG", positive(b.boneMassInGrams) ? b.boneMassInGrams / 1000 : null, at),
         ...metric("BODY_WATER_PERCENT", positive(b.bodyWaterInPercent) ? b.bodyWaterInPercent : null, at),
-        ...metric("BONE_MASS_KG", positive(b.boneMassInGrams) ? b.boneMassInGrams / 1000 : null, at),
         ...metric("BMI", positive(b.bodyMassIndex) ? b.bodyMassIndex : null, at)
       );
     } else if (kind === "bloodPressures") {

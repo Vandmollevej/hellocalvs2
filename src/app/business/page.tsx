@@ -48,11 +48,10 @@ export default async function BusinessPage({ searchParams }: { searchParams: Pro
   return (
     <MarketingShell>
       <section
-        className="px-4 py-20 text-hf-white sm:px-6"
-        style={{ background: "linear-gradient(135deg, #0a8f53 0%, #067A46 45%, #035624 100%)" }}
+        className="px-4 py-20 text-hf-white sm:px-6 mk-hero-bg"
       >
         <div className="mx-auto max-w-3xl text-center">
-          <p className="text-sm font-semibold uppercase tracking-widest text-hf-green-light">Business</p>
+          <p className="mk-eyebrow">Business</p>
           <h1 className="mt-4 text-4xl font-bold sm:text-5xl">Samarbejd med Hello Cal</h1>
           <p className="mt-6 text-lg leading-relaxed text-hf-white/85">
             Nå danskere, der hver dag træffer bevidste valg om mad og sundhed — på en måde, der respekterer deres data.

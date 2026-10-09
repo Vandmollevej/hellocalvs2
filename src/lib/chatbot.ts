@@ -18,6 +18,7 @@ import {
   type ChatbotCategoryKey,
 } from "@/lib/chatbot-categories";
 import { CHATBOT_KNOWLEDGE, CHATBOT_LINK_HREFS, isChatbotLinkHref } from "@/lib/chatbot-knowledge";
+import { HELP_GUIDES, HELP_GUIDE_IDS, helpGuideById, helpGuideLinkValue, isHelpGuideLink } from "@/lib/help-guides";
 
 // Hjælpe-chatbot øverst i appen og på web (docs/DECISIONS.md 2026-10-02).
 // Al logik ligger her; API-ruterne og UI'et er tynde.
@@ -72,7 +73,7 @@ function toMessageView(m: Prisma.ChatbotMessageGetPayload<{ select: typeof messa
     id: m.id,
     role: m.role,
     body: m.body,
-    links: m.links.filter(isChatbotLinkHref),
+    links: m.links.filter((link) => isChatbotLinkHref(link) || isHelpGuideLink(link)),
     needsHuman: m.needsHuman,
     createdAt: m.createdAt.toISOString(),
   };
@@ -151,6 +152,7 @@ type AiReply = {
   category: ChatbotCategoryKey;
   needsHuman: boolean;
   links: string[];
+  guide: string | null;
 };
 
 const REPLY_SCHEMA = {
@@ -160,8 +162,9 @@ const REPLY_SCHEMA = {
     category: { type: "string", enum: [...CHATBOT_CATEGORIES] },
     needsHuman: { type: "boolean" },
     links: { type: "array", items: { type: "string", enum: CHATBOT_LINK_HREFS } },
+    guide: { type: "string", enum: [...HELP_GUIDE_IDS, "none"] },
   },
-  required: ["answer", "category", "needsHuman", "links"],
+  required: ["answer", "category", "needsHuman", "links", "guide"],
   additionalProperties: false,
 };
 
@@ -187,6 +190,8 @@ function systemPrompt(locale: string, tier: string) {
     "Du kan ikke se brugerens data og kan ikke udføre handlinger for brugeren. Bed aldrig om adgangskoder, kortnumre eller CPR-nummer.",
     "Giv ikke medicinsk rådgivning ud over appens funktioner; henvis til egen læge ved helbredsspørgsmål.",
     "links: vælg 0-2 relevante sider fra den tilladte liste, som hjælper brugeren videre. Skriv ikke adresserne i selve svaret.",
+    "guide: handler spørgsmålet om at finde eller åbne noget i appen (navigation), og der findes en guide for det, så vælg guidens id; ellers \"none\". Appen viser så en \"Guide mig\"-knap, som fremhæver knapperne trin for trin. Tilgængelige guider:",
+    HELP_GUIDES.map((guide) => `- ${guide.id}: ${guide.steps.map((step, index) => `${index + 1}. ${step.da}`).join(" ")}`).join("\n"),
     "category: vælg den kategori, der passer bedst til brugerens SENESTE spørgsmål:",
     categories,
     "",
@@ -241,6 +246,7 @@ async function requestAiReply(input: {
     category: isChatbotCategory(parsed.category) ? parsed.category : "OTHER",
     needsHuman: parsed.needsHuman === true,
     links: Array.isArray(parsed.links) ? parsed.links.filter(isChatbotLinkHref).slice(0, 2) : [],
+    guide: typeof parsed.guide === "string" && HELP_GUIDE_IDS.includes(parsed.guide) ? parsed.guide : null,
   };
   if (!reply.answer) throw new Error("Tomt svar fra OpenAI");
   void debugLog({
@@ -252,6 +258,15 @@ async function requestAiReply(input: {
     data: { model, usage: data.usage ?? null },
   });
   return { reply, model };
+}
+
+// Guiden gemmes som "guide:<id>" ved siden af sidelinkene, og siden den
+// ender på kommer altid med som genvej (øverst i svaret).
+function withGuideLinks(reply: AiReply) {
+  const guide = helpGuideById(reply.guide);
+  if (!guide) return reply.links;
+  const pages = reply.links.includes(guide.href) ? reply.links : [guide.href, ...reply.links].slice(0, 2);
+  return [...pages, helpGuideLinkValue(guide.id)];
 }
 
 const FALLBACK_ANSWER = {
@@ -324,6 +339,7 @@ export async function askChatbot(input: {
       category: "OTHER",
       needsHuman: true,
       links: [],
+      guide: null,
     };
   }
 
@@ -336,7 +352,7 @@ export async function askChatbot(input: {
         role: "ASSISTANT",
         body: reply.answer,
         needsHuman: reply.needsHuman,
-        links: reply.links,
+        links: withGuideLinks(reply),
         model,
         createdAt: answeredAt,
       },
@@ -563,7 +579,7 @@ export async function listChatbotQuestions(filter: ChatbotAdminFilter) {
             userAgeSnapshot: true,
             userRegionSnapshot: true,
             userTierSnapshot: true,
-            user: { select: { id: true, displayName: true, email: true } },
+            user: { select: { id: true, displayName: true } },
           },
         },
       },
@@ -609,7 +625,7 @@ export async function listChatbotConversations(filter: ChatbotAdminFilter) {
       take: CHATBOT_ADMIN_THREADS_PAGE_SIZE,
       include: {
         messages: { orderBy: { createdAt: "asc" } },
-        user: { select: { id: true, displayName: true, email: true } },
+        user: { select: { id: true, displayName: true } },
       },
     }),
   ]);
@@ -626,7 +642,6 @@ export async function getChatbotThreadForAdmin(conversationId: string) {
         select: {
           id: true,
           displayName: true,
-          email: true,
           birthDate: true,
           sex: true,
           region: true,

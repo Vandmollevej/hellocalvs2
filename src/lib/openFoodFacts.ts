@@ -37,6 +37,9 @@ export type OffProduct = {
   // Mærkninger fra labels_tags ("Økologisk", "Fairtrade" …), se
   // src/lib/label-certifications.ts.
   certificationLabels: string[];
+  // Ingen dansk tekst hos OFF → navn/ingredienser er på et andet sprog og skal oversættes.
+  needsTranslation: boolean;
+  sourceLang: string | null;
 };
 
 // OFF-poster er ofte tynde (kun navn, brand og kalorier). En vare uden
@@ -136,6 +139,8 @@ function mapOffProduct(p: Record<string, unknown>): OffProduct | null {
     vitaminAPer100g: offNutrientAs(n, "vitamin-a", "µg"),
     vitaminCPer100g: offNutrientAs(n, "vitamin-c", "mg"),
     nutritionExtraPer100: offPer100Extra(n),
+    needsTranslation: !(p.product_name_da as string) && String(p.lang ?? "").toLowerCase() !== "da",
+    sourceLang: typeof p.lang === "string" ? p.lang : null,
     packageSizeText: typeof p.quantity === "string" && p.quantity.trim() ? p.quantity.trim() : null,
     certificationLabels: offLabelNames(p.labels_tags),
   };

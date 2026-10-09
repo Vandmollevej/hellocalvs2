@@ -6,6 +6,7 @@ import { ActionButton } from "@/components/hf/ActionButton";
 import { useTranslation } from "@/i18n/LocaleProvider";
 import type { KcalGoalSuggestion } from "@/lib/kcal-goal-suggestion";
 import { clientTzOffsetMinutesEast } from "@/lib/daily-budget";
+import { BottomSheet } from "@/components/hf/BottomSheet";
 
 // Popup that offers a new daily kcal limit once the app has enough logged
 // intake + weight data to see that the current limit is off
@@ -73,12 +74,9 @@ export function KcalGoalPrompt() {
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex flex-col justify-end bg-black/40" role="dialog" aria-modal="true" aria-labelledby="kcal-goal-title">
-      <div className="hf-page rounded-t-3xl bg-hf-cream pb-8 pt-6">
-        <h2 id="kcal-goal-title" className="hf-type-page-title hf-heading text-hf-black">
-          {t("kcalGoalPrompt.title")}
-        </h2>
-        <p className="hf-type-body mt-3 text-text-secondary">
+    <BottomSheet ariaLabel={t("kcalGoalPrompt.title")} onClose={() => void run({ action: "snooze" })}>
+      <div className="hf-page pb-4">
+        <p className="hf-type-body text-text-secondary">
           {t("kcalGoalPrompt.body", { weeks: current.weeks, from: current.currentKcal, to: current.suggestedKcal })}
         </p>
         <ActionButton
@@ -97,6 +95,6 @@ export function KcalGoalPrompt() {
           </button>
         </div>
       </div>
-    </div>
+    </BottomSheet>
   );
 }

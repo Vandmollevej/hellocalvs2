@@ -290,7 +290,7 @@ export default function SupportSettingsPage() {
             type="button"
             onClick={save}
             disabled={saving || loading}
-            className="hf-control hf-btn-primary w-full disabled:opacity-50"
+            className="hf-control hf-btn-primary w-full"
           >
             {saving ? t("settings.support.saving") : t("settings.support.saveAccess")}
           </button>

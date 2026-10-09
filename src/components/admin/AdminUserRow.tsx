@@ -1,14 +1,14 @@
-"use client";
+﻿"use client";
 
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { IconCoins, IconUserOff } from "@tabler/icons-react";
+import { IconCoins, IconLockOpen, IconUserOff } from "@tabler/icons-react";
+import { useConfirmSheet } from "@/lib/use-confirm-sheet";
 
 export type AdminUserRowData = {
   id: string;
   displayName: string;
-  email: string;
   createdAt: string;
   pointsBalance: number;
   subscriptionStatus: string;
@@ -18,6 +18,10 @@ export type AdminUserRowData = {
   forgottenAt: string | null;
   // Brugerens egen "Luk konto" — kan genåbnes ved login i 3 måneder.
   closedAt: string | null;
+  // Dyrefoder-spærringen (docs/DECISIONS.md 2026-10-07): kontoen er spærret og kan
+  // ikke logge ind, før en admin ophæver spærringen.
+  blockedAt: string | null;
+  blockedReason: string | null;
 };
 
 const SUBSCRIPTION_LABELS: Record<string, string> = {
@@ -30,19 +34,37 @@ const SUBSCRIPTION_LABELS: Record<string, string> = {
 
 export function AdminUserRow({ user }: { user: AdminUserRowData }) {
   const router = useRouter();
+  const { ask, sheet } = useConfirmSheet();
   // "Log ind som bruger" er fjernet (docs/PRIVACY.md, docs/DECISIONS.md
   // 2026-09-23): Support ser kun det, brugeren selv giver adgang til.
-  const [busy, setBusy] = useState<"forget" | null>(null);
+  const [busy, setBusy] = useState<"forget" | "unblock" | null>(null);
 
-  async function forget() {
-    if (!confirm(`Anonymisér ${user.displayName} (${user.email})? Dette kan ikke fortrydes.`)) return;
-    setBusy("forget");
-    try {
-      const res = await fetch(`/api/admin/users/${user.id}/forget`, { method: "POST" });
-      if (res.ok) router.refresh();
-    } finally {
-      setBusy(null);
-    }
+  function unblock() {
+    ask(`Ophæv spærringen af ${user.displayName}? Brugeren kan logge ind igen og har én advarsel tilbage.`, () => {
+      void (async () => {
+        setBusy("unblock");
+        try {
+          const res = await fetch(`/api/admin/users/${user.id}/unblock`, { method: "POST" });
+          if (res.ok) router.refresh();
+        } finally {
+          setBusy(null);
+        }
+      })();
+    });
+  }
+
+  function forget() {
+    ask(`Anonymisér ${user.displayName}? Dette kan ikke fortrydes.`, () => {
+      void (async () => {
+        setBusy("forget");
+        try {
+          const res = await fetch(`/api/admin/users/${user.id}/forget`, { method: "POST" });
+          if (res.ok) router.refresh();
+        } finally {
+          setBusy(null);
+        }
+      })();
+    });
   }
 
   const isActive = user.subscriptionStatus === "ACTIVE" || user.subscriptionStatus === "FREE_MONTH";
@@ -61,8 +83,17 @@ export function AdminUserRow({ user }: { user: AdminUserRowData }) {
   return (
     <tr className="border-b border-hf-tan-dark">
       <td className="py-2 pr-3">
+        {sheet}
         <p className="hf-type-strong text-hf-black">{user.displayName}</p>
-        <p className="hf-type-small text-text-muted">{user.email}</p>
+        {user.blockedAt && (
+          <p className="hf-type-small mt-1">
+            <span className="rounded-full bg-hf-red-dark px-2 py-0.5 text-hf-white">Spærret</span>{" "}
+            <span className="text-hf-red-dark">
+              {new Date(user.blockedAt).toLocaleDateString("da-DK")}
+              {user.blockedReason ? ` — ${user.blockedReason}` : ""}
+            </span>
+          </p>
+        )}
         {user.closedAt && (
           <p className="hf-type-small text-text-secondary">
             Lukket {new Date(user.closedAt).toLocaleDateString("da-DK")} — anonymiseres efter 3 måneder
@@ -93,6 +124,17 @@ export function AdminUserRow({ user }: { user: AdminUserRowData }) {
       </td>
       <td className="py-2">
         <div className="flex gap-2">
+          {user.blockedAt && (
+            <button
+              type="button"
+              onClick={unblock}
+              disabled={busy !== null}
+              title="Ophæv spærring"
+              className="flex h-8 w-8 items-center justify-center rounded-full text-hf-green-dark hover:bg-hf-tan disabled:opacity-50"
+            >
+              <IconLockOpen size={16} />
+            </button>
+          )}
           {!user.closedAt && (
             <Link
               href={`/admin/users/points?user=${user.id}`}

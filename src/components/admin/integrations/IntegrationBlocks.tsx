@@ -35,7 +35,7 @@ const PERIODS = [
 
 export function PeriodPicker({ basePath, active }: { basePath: string; active: string }) {
   return (
-    <nav aria-label="Periode" className="flex flex-wrap gap-1.5 text-sm">
+    <nav aria-label="Periode" className="flex flex-wrap gap-1.5 hf-type-body">
       {PERIODS.map((period) => {
         const on = period.value === active;
         return (
@@ -71,9 +71,9 @@ export function Delta({ k, invert = false }: { k: Kpi; invert?: boolean }) {
 export function Tile({ label, k, invert }: { label: string; k: Kpi; invert?: boolean }) {
   return (
     <div className="flex flex-col gap-1 rounded-lg bg-hf-tan p-4">
-      <p className="text-xs text-text-secondary">{label}</p>
-      <p className="text-2xl font-semibold text-text-primary">{num.format(k.current)}</p>
-      <p className="text-xs">
+      <p className="text-text-secondary hf-type-small">{label}</p>
+      <p className="text-text-primary hf-type-page-title hf-type-strong">{num.format(k.current)}</p>
+      <p className="hf-type-small">
         <Delta k={k} invert={invert} />
       </p>
     </div>
@@ -83,9 +83,9 @@ export function Tile({ label, k, invert }: { label: string; k: Kpi; invert?: boo
 export function Plain({ label, value, hint }: { label: string; value: string | number; hint?: string }) {
   return (
     <div className="flex flex-col gap-1 rounded-lg bg-hf-tan p-4">
-      <p className="text-xs text-text-secondary">{label}</p>
-      <p className="text-2xl font-semibold text-text-primary">{typeof value === "number" ? num.format(value) : value}</p>
-      {hint && <p className="text-xs text-text-muted">{hint}</p>}
+      <p className="text-text-secondary hf-type-small">{label}</p>
+      <p className="text-text-primary hf-type-page-title hf-type-strong">{typeof value === "number" ? num.format(value) : value}</p>
+      {hint && <p className="text-text-muted hf-type-small">{hint}</p>}
     </div>
   );
 }
@@ -93,8 +93,8 @@ export function Plain({ label, value, hint }: { label: string; value: string | n
 export function Section({ id, title, intro, children }: { id?: string; title: string; intro?: string; children: React.ReactNode }) {
   return (
     <section id={id} className="flex scroll-mt-4 flex-col gap-3">
-      <h2 className="border-b border-border-strong pb-1 text-base font-semibold text-hf-green-dark">{title}</h2>
-      {intro && <p className="text-sm text-text-secondary">{intro}</p>}
+      <h2 className="border-b border-border-strong pb-1 text-hf-green-dark hf-type-body-lg hf-type-strong">{title}</h2>
+      {intro && <p className="text-text-secondary hf-type-body">{intro}</p>}
       {children}
     </section>
   );
@@ -103,7 +103,7 @@ export function Section({ id, title, intro, children }: { id?: string; title: st
 export function Card({ title, children }: { title?: string; children: React.ReactNode }) {
   return (
     <div className="flex flex-col gap-2 rounded-lg border border-border-strong bg-surface-2 p-4">
-      {title && <p className="text-sm font-semibold text-text-primary">{title}</p>}
+      {title && <p className="text-text-primary hf-type-body hf-type-strong">{title}</p>}
       {children}
     </div>
   );
@@ -121,13 +121,13 @@ export function KindBadge({ kind, configured }: { kind: "oauth" | "companion" | 
         : configured
           ? ["Cloud · nøgler sat", "border border-hf-green-dark text-hf-green-dark"]
           : ["Cloud · mangler nøgler", "bg-hf-warning-bg text-hf-warning"];
-  return <span className={`inline-flex shrink-0 rounded-full px-2 py-0.5 text-xs ${tone}`}>{text}</span>;
+  return <span className={`hf-type-small inline-flex shrink-0 rounded-full px-2 py-0.5 ${tone}`}>{text}</span>;
 }
 
 export function IntegrationIcon({ src, size = 32 }: { src: string | null; size?: number }) {
-  if (!src) return <span aria-hidden className="inline-block shrink-0 rounded-[8px] bg-surface-1" style={{ width: size, height: size }} />;
+  if (!src) return <span aria-hidden className="inline-block shrink-0 bg-surface-1 rounded-card" style={{ width: size, height: size }} />;
   return (
     // eslint-disable-next-line @next/next/no-img-element
-    <img src={src} alt="" width={size} height={size} className="shrink-0 rounded-[8px] object-contain" style={{ width: size, height: size }} />
+    <img src={src} alt="" width={size} height={size} className="shrink-0 object-contain rounded-card" style={{ width: size, height: size }} />
   );
 }

@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import { BottomSheet } from "@/components/hf/BottomSheet";
 import { PRODUCT_CATEGORY_LABELS } from "@/lib/ad-inventory";
 import type { SpotStats } from "@/lib/partner-performance";
 
@@ -32,23 +33,14 @@ function Stat({ label, value, of }: { label: string; value: number; of: number |
   );
 }
 
+// Bundark (KRAV.md "Bundark"): swipe ned, scrim og Escape lukker.
 function PathsOverlay({ spot, onClose }: { spot: SpotStats; onClose: () => void }) {
-  useEffect(() => {
-    const onKey = (e: KeyboardEvent) => e.key === "Escape" && onClose();
-    document.addEventListener("keydown", onKey);
-    return () => document.removeEventListener("keydown", onKey);
-  }, [onClose]);
-
   return (
-    <div className="fixed inset-0 z-50 flex items-end justify-center sm:items-center" role="dialog" aria-modal="true" aria-label={`Sider for ${spot.name}`}>
-      <div className="absolute inset-0 bg-hf-black/40" onClick={onClose} />
-      <div className="relative flex max-h-[85dvh] w-full max-w-3xl flex-col gap-3 overflow-hidden rounded-t-xl bg-hf-white p-4 shadow-xl sm:rounded-xl">
-        <div className="flex items-start justify-between gap-3">
-          <div>
-            <h3 className="hf-type-title text-hf-black">{spot.name}</h3>
-            <p className="hf-type-caption">Alle sider reklamen er vist på</p>
-          </div>
-          <button onClick={onClose} aria-label="Tilbage" className="hf-btn-icon rounded-md text-text-secondary hover:bg-hf-tan">✕</button>
+    <BottomSheet ariaLabel={`Sider for ${spot.name}`} onClose={onClose}>
+      <div className="flex flex-col gap-3 p-4">
+        <div>
+          <h3 className="hf-type-title text-hf-black">{spot.name}</h3>
+          <p className="hf-type-caption">Alle sider reklamen er vist på</p>
         </div>
         <div className="overflow-auto">
           <table className="hf-type-body w-full text-left">
@@ -84,7 +76,7 @@ function PathsOverlay({ spot, onClose }: { spot: SpotStats; onClose: () => void 
           </table>
         </div>
       </div>
-    </div>
+    </BottomSheet>
   );
 }
 

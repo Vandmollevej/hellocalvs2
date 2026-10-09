@@ -34,7 +34,7 @@ export function TesterActions({ id }: { id: string }) {
         type="button"
         onClick={() => act("approve")}
         disabled={loading !== null}
-        className="hf-btn-primary px-3 py-1.5 disabled:opacity-60"
+        className="hf-btn-primary px-3 py-1.5"
       >
         {loading === "approve" ? "…" : `Godkend (+${INTEGRATION_TESTER_POINTS} points)`}
       </button>

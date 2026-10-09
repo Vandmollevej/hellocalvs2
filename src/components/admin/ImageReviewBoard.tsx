@@ -1,77 +1,62 @@
 "use client";
 
-import { useCallback, useEffect, useState, type ReactNode } from "react";
+import { useCallback, useEffect, useState } from "react";
+import { ReviewSizePicker, useReviewSize } from "@/components/admin/ReviewSizePicker";
 
 // Fælles gennemsynsvisning til Billedbehandling (docs/DECISIONS.md 2026-10-04):
 // størrelsesvælger (2/4/8 firkanter = 1/2/4 varer pr. side), paginering og en
 // lightbox med Afvis/Godkend, piletaster og tal i bunden. Bruges af
-// Billedforslag og Logoer — handlingerne leveres udefra.
+// Billedforslag og Logoer — handlingerne leveres udefra. Har en vare
+// `alternatives`, står originalen (slides[0]) ved siden af det valgte
+// alternativ med pile midt på billedet og en række af 6 alternativer under;
+// "godkend" gælder det viste alternativ. Alle klasser er fælles (.hf-pick-*).
 
-export type ReviewSlide = { src: string | null; label: string };
+export type ReviewSlide = { src: string | null; label: string; key?: string };
 export type ReviewItem = {
   id: string;
   title: string;
   subtitle?: string | null;
   slides: ReviewSlide[];
+  alternatives?: ReviewSlide[];
 };
 
 type Props = {
   items: ReviewItem[];
   approveLabel: string;
   rejectLabel: string;
-  onApprove: (id: string) => Promise<boolean>;
+  onApprove: (id: string, alternativeKey?: string) => Promise<boolean>;
   onReject: (id: string) => Promise<boolean>;
   emptyText: string;
-  // Valgfri ekstra knap pr. kort (fx "Se alternativer" på logoer).
-  extra?: (item: ReviewItem) => ReactNode;
   storageKey: string;
 };
 
-const SIZES = [
-  { squares: 2, perPage: 1, label: "2 firkanter: én vare pr. side i fuld størrelse" },
-  { squares: 4, perPage: 2, label: "4 firkanter: to varer pr. side" },
-  { squares: 8, perPage: 4, label: "8 firkanter: fire varer pr. side" },
-] as const;
+const STRIP = 6;
 
-function SizeIcon({ squares }: { squares: number }) {
-  const cols = 2;
-  const rows = squares / cols;
-  const gap = rows > 2 ? 1.5 : 2.5;
-  const side = Math.min((24 - gap) / 2, (24 - gap * (rows - 1)) / rows);
-  const top = (24 - (rows * side + (rows - 1) * gap)) / 2;
-  const left = (24 - (2 * side + gap)) / 2;
-  return (
-    <svg viewBox="0 0 24 24" className="h-5 w-5" fill="currentColor" aria-hidden="true">
-      {Array.from({ length: squares }).map((_, i) => (
-        <rect key={i} x={left + (i % cols) * (side + gap)} y={top + Math.floor(i / cols) * (side + gap)} width={side} height={side} rx={1} />
-      ))}
-    </svg>
-  );
-}
-
-function Pic({ slide, className, onClick }: { slide: ReviewSlide; className: string; onClick?: () => void }) {
+function Pic({ slide, onClick }: { slide: ReviewSlide; onClick?: () => void }) {
   const inner = slide.src ? (
     // eslint-disable-next-line @next/next/no-img-element
-    <img src={slide.src} alt={slide.label} className="h-full w-full object-contain" />
+    <img src={slide.src} alt={slide.label} />
   ) : (
     <span className="hf-type-small text-text-muted">Intet billede</span>
   );
-  const box = `flex items-center justify-center overflow-hidden rounded-lg bg-hf-tan ${className}`;
   return onClick && slide.src ? (
-    <button type="button" onClick={onClick} className={`${box} cursor-zoom-in`} aria-label={`Forstør: ${slide.label}`}>
+    <button type="button" onClick={onClick} className="hf-pick-frame cursor-zoom-in" aria-label={`Forstør: ${slide.label}`}>
       {inner}
     </button>
   ) : (
-    <div className={box}>{inner}</div>
+    <div className="hf-pick-frame">{inner}</div>
   );
 }
 
-export function ImageReviewBoard({ items: initialItems, approveLabel, rejectLabel, onApprove, onReject, emptyText, extra, storageKey }: Props) {
+export function ImageReviewBoard({ items: initialItems, approveLabel, rejectLabel, onApprove, onReject, emptyText, storageKey }: Props) {
   const [items, setItems] = useState(initialItems);
-  const [sizeIdx, setSizeIdx] = useState(2);
+  const { sizeIdx, perPage, choose } = useReviewSize(storageKey);
   const [page, setPage] = useState(0);
   const [busy, setBusy] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const [lightbox, setLightbox] = useState<number | null>(null);
+  // Valgt alternativ pr. vare (indeks i item.alternatives).
+  const [picked, setPicked] = useState<Record<string, number>>({});
 
   // Serverens liste vinder, når siden genindlæses efter en handling.
   useEffect(() => {
@@ -79,41 +64,48 @@ export function ImageReviewBoard({ items: initialItems, approveLabel, rejectLabe
     setItems(initialItems);
   }, [initialItems]);
 
-  useEffect(() => {
-    try {
-      const saved = Number(window.localStorage.getItem(storageKey));
-      // eslint-disable-next-line react-hooks/set-state-in-effect -- husket valg (kun i browseren)
-      if (saved >= 0 && saved <= 2 && window.localStorage.getItem(storageKey) !== null) setSizeIdx(saved);
-    } catch {}
-  }, [storageKey]);
-
-  const perPage = SIZES[sizeIdx].perPage;
   const pageCount = Math.max(1, Math.ceil(items.length / perPage));
   const safePage = Math.min(page, pageCount - 1);
   const visible = items.slice(safePage * perPage, safePage * perPage + perPage);
 
-  // Lightbox-billeder: alle billeder på tværs af varerne, kun dem der findes.
-  const flat = items.flatMap((item, itemIndex) =>
-    item.slides.flatMap((slide) => (slide.src ? [{ item, itemIndex, slide }] : [])),
+  const pickedIndex = (item: ReviewItem) => {
+    const count = item.alternatives?.length ?? 0;
+    return count === 0 ? 0 : Math.min(picked[item.id] ?? 0, count - 1);
+  };
+  const shownSlides = (item: ReviewItem): ReviewSlide[] =>
+    item.alternatives?.length ? [item.slides[0], item.alternatives[pickedIndex(item)]] : item.slides;
+  const pickedKey = (item: ReviewItem) => (item.alternatives?.length ? item.alternatives[pickedIndex(item)].key : undefined);
+  const movePick = (item: ReviewItem, delta: number) => {
+    const count = item.alternatives?.length ?? 0;
+    if (count < 2) return;
+    setPicked((current) => ({ ...current, [item.id]: (pickedIndex(item) + delta + count) % count }));
+  };
+
+  // Lightbox-billeder: original + alle alternativer (eller slides) for hver vare.
+  const flat = items.flatMap((item) =>
+    (item.alternatives?.length ? [item.slides[0], ...item.alternatives] : item.slides).flatMap((slide) =>
+      slide.src ? [{ item, slide }] : [],
+    ),
   );
 
   const chooseSize = (idx: number) => {
     // Bliv ved samme vare, når størrelsen skifter.
     const firstIndex = safePage * perPage;
-    setSizeIdx(idx);
-    setPage(Math.floor(firstIndex / SIZES[idx].perPage));
-    try {
-      window.localStorage.setItem(storageKey, String(idx));
-    } catch {}
+    choose(idx);
+    setPage(Math.floor(firstIndex / [1, 2, 4][idx]));
   };
 
   const act = useCallback(
-    async (item: ReviewItem, kind: "approve" | "reject") => {
+    async (item: ReviewItem, kind: "approve" | "reject", alternativeKey?: string) => {
       if (busy) return;
       setBusy(true);
+      setError(null);
       try {
-        const ok = await (kind === "approve" ? onApprove(item.id) : onReject(item.id));
+        const ok = await (kind === "approve" ? onApprove(item.id, alternativeKey) : onReject(item.id));
         if (ok) setItems((current) => current.filter((candidate) => candidate.id !== item.id));
+        else setError("Handlingen blev ikke gemt. Prøv igen.");
+      } catch {
+        setError("Handlingen mislykkedes (serverfejl). Prøv igen.");
       } finally {
         setBusy(false);
       }
@@ -149,7 +141,6 @@ export function ImageReviewBoard({ items: initialItems, approveLabel, rejectLabe
 
   if (items.length === 0) return <p className="hf-type-body text-text-secondary">{emptyText}</p>;
 
-  const single = perPage === 1;
   const current = lightbox !== null ? flat[lightbox] : null;
   // Tal i bunden: højst 9 ad gangen omkring det aktuelle billede.
   const numbers: number[] = [];
@@ -164,60 +155,75 @@ export function ImageReviewBoard({ items: initialItems, approveLabel, rejectLabe
         <p className="hf-type-small text-text-secondary">
           {items.length} {items.length === 1 ? "vare" : "varer"} · side {safePage + 1} af {pageCount}
         </p>
-        <div className="flex gap-1 rounded-md border border-hf-tan-dark bg-hf-white p-1" role="group" aria-label="Størrelse">
-          {SIZES.map((size, idx) => (
-            <button
-              key={size.squares}
-              type="button"
-              title={size.label}
-              aria-label={size.label}
-              aria-pressed={sizeIdx === idx}
-              onClick={() => chooseSize(idx)}
-              className={`flex h-9 w-9 items-center justify-center rounded ${
-                sizeIdx === idx ? "bg-hf-green-dark text-hf-white" : "text-text-secondary hover:bg-hf-tan"
-              }`}
-            >
-              <SizeIcon squares={size.squares} />
-            </button>
-          ))}
-        </div>
+        <ReviewSizePicker sizeIdx={sizeIdx} onChoose={chooseSize} />
       </div>
 
-      <div className={`grid gap-4 ${perPage === 4 ? "md:grid-cols-2" : "grid-cols-1"}`}>
+      {error && <p className="hf-type-small text-hf-red-dark">{error}</p>}
+
+      <div className={`grid gap-4 ${perPage === 4 ? "md:grid-cols-2 2xl:grid-cols-4" : perPage === 2 ? "md:grid-cols-2" : "grid-cols-1"}`}>
         {visible.map((item) => {
-          const firstIdx = (slide: ReviewSlide) => flat.findIndex((entry) => entry.item.id === item.id && entry.slide === slide);
+          const alternatives = item.alternatives ?? [];
+          const index = pickedIndex(item);
+          const stripStart = Math.max(0, Math.min(index - Math.floor(STRIP / 2), alternatives.length - STRIP));
+          const shown = shownSlides(item);
+          const lightboxIndex = (slide: ReviewSlide) =>
+            flat.findIndex((entry) => entry.item.id === item.id && entry.slide.src === slide.src);
           return (
-            <div key={item.id} className="flex flex-col gap-4 hf-surface p-4">
+            <div key={item.id} className="hf-panel hf-panel--form">
               <div>
                 <p className="hf-type-strong text-hf-black">{item.title}</p>
                 {item.subtitle && <p className="hf-type-small text-text-secondary">{item.subtitle}</p>}
               </div>
-              <div className="grid grid-cols-2 gap-4">
-                {item.slides.map((slide) => (
-                  <div key={slide.label} className="flex flex-col items-center gap-1">
-                    <Pic
-                      slide={slide}
-                      className={`aspect-square w-full ${single ? "" : perPage === 2 ? "max-w-md" : "max-w-xs"}`}
-                      onClick={() => setLightbox(firstIdx(slide))}
-                    />
+              <div className="hf-pick-grid">
+                {shown.map((slide, slideIdx) => (
+                  <div key={slideIdx} className="flex flex-col items-center gap-1">
+                    <div className="relative w-full">
+                      <Pic slide={slide} onClick={() => setLightbox(lightboxIndex(slide))} />
+                      {alternatives.length > 1 && slideIdx === 1 && (
+                        <>
+                          <button type="button" onClick={() => movePick(item, -1)} aria-label="Forrige alternativ" className="hf-pick-arrow hf-btn-icon is-prev">
+                            ‹
+                          </button>
+                          <button type="button" onClick={() => movePick(item, 1)} aria-label="Næste alternativ" className="hf-pick-arrow hf-btn-icon is-next">
+                            ›
+                          </button>
+                        </>
+                      )}
+                    </div>
                     <span className="hf-type-small text-text-muted">{slide.label}</span>
                   </div>
                 ))}
               </div>
+              {alternatives.length > 1 && (
+                <div className="hf-pick-strip" aria-label="Alternativer">
+                  {alternatives.slice(stripStart, stripStart + STRIP).map((alt, offset) => {
+                    const altIndex = stripStart + offset;
+                    return (
+                      <button
+                        key={alt.key ?? altIndex}
+                        type="button"
+                        onClick={() => setPicked((currentPicked) => ({ ...currentPicked, [item.id]: altIndex }))}
+                        aria-label={`Vis alternativ ${altIndex + 1}: ${alt.label}`}
+                        aria-pressed={altIndex === index}
+                        className={`hf-pick-thumb ${altIndex === index ? "is-selected" : ""}`}
+                      >
+                        {alt.src && (
+                          // eslint-disable-next-line @next/next/no-img-element
+                          <img src={alt.src} alt="" />
+                        )}
+                      </button>
+                    );
+                  })}
+                </div>
+              )}
               <div className="flex gap-2">
-                <button
-                  type="button"
-                  onClick={() => act(item, "reject")}
-                  disabled={busy}
-                  className="hf-type-body hf-control flex-1 rounded-md border border-hf-tan-dark px-3 text-hf-red-dark disabled:opacity-60"
-                >
+                <button type="button" onClick={() => act(item, "reject")} disabled={busy} className="hf-btn-danger h-12 flex-1 px-3">
                   {rejectLabel}
                 </button>
-                <button type="button" onClick={() => act(item, "approve")} disabled={busy} className="hf-btn-primary flex-1 px-3 py-1.5 disabled:opacity-60">
+                <button type="button" onClick={() => act(item, "approve", pickedKey(item))} disabled={busy} className="hf-btn-primary h-12 flex-1 px-3">
                   {approveLabel}
                 </button>
               </div>
-              {extra?.(item)}
             </div>
           );
         })}
@@ -225,13 +231,13 @@ export function ImageReviewBoard({ items: initialItems, approveLabel, rejectLabe
 
       {pageCount > 1 && (
         <div className="flex items-center justify-center gap-3">
-          <button type="button" onClick={() => setPage(Math.max(0, safePage - 1))} disabled={safePage === 0} className="hf-btn-text disabled:opacity-40">
+          <button type="button" onClick={() => setPage(Math.max(0, safePage - 1))} disabled={safePage === 0} className="hf-btn-text">
             ‹ Forrige
           </button>
           <span className="hf-type-small text-text-secondary">
             {safePage + 1} / {pageCount}
           </span>
-          <button type="button" onClick={() => setPage(Math.min(pageCount - 1, safePage + 1))} disabled={safePage >= pageCount - 1} className="hf-btn-text disabled:opacity-40">
+          <button type="button" onClick={() => setPage(Math.min(pageCount - 1, safePage + 1))} disabled={safePage >= pageCount - 1} className="hf-btn-text">
             Næste ›
           </button>
         </div>
@@ -247,31 +253,21 @@ export function ImageReviewBoard({ items: initialItems, approveLabel, rejectLabe
                 {current.item.subtitle ? ` · ${current.item.subtitle}` : ""}
               </p>
             </div>
-            <button type="button" onClick={() => setLightbox(null)} className="hf-type-body shrink-0 px-2" aria-label="Luk">
+            <button type="button" onClick={() => setLightbox(null)} className="hf-btn-icon" aria-label="Luk">
               ✕
             </button>
           </div>
 
           <div className="relative flex min-h-0 flex-1 items-center justify-center px-14">
             {flat.length > 1 && (
-              <button
-                type="button"
-                onClick={() => step(-1)}
-                aria-label="Forrige billede"
-                className="absolute left-2 top-1/2 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full bg-hf-white/90 text-hf-black"
-              >
+              <button type="button" onClick={() => step(-1)} aria-label="Forrige billede" className="hf-pick-arrow hf-btn-icon is-prev opacity-100">
                 ‹
               </button>
             )}
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src={current.slide.src ?? ""} alt={current.slide.label} className="max-h-full max-w-full rounded-lg bg-hf-white object-contain" />
             {flat.length > 1 && (
-              <button
-                type="button"
-                onClick={() => step(1)}
-                aria-label="Næste billede"
-                className="absolute right-2 top-1/2 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full bg-hf-white/90 text-hf-black"
-              >
+              <button type="button" onClick={() => step(1)} aria-label="Næste billede" className="hf-pick-arrow hf-btn-icon is-next opacity-100">
                 ›
               </button>
             )}
@@ -294,15 +290,15 @@ export function ImageReviewBoard({ items: initialItems, approveLabel, rejectLabe
               {numbers.length > 0 && numbers[numbers.length - 1] < flat.length - 1 && <span className="hf-type-small text-hf-white/70">…</span>}
             </div>
             <div className="mx-auto flex w-full max-w-xl gap-2">
-              <button
-                type="button"
-                onClick={() => act(current.item, "reject")}
-                disabled={busy}
-                className="hf-type-body hf-control flex-1 rounded-md border border-hf-tan-dark bg-hf-white px-3 text-hf-red-dark disabled:opacity-60"
-              >
+              <button type="button" onClick={() => act(current.item, "reject")} disabled={busy} className="hf-btn-danger h-12 flex-1 bg-hf-white px-3">
                 {rejectLabel}
               </button>
-              <button type="button" onClick={() => act(current.item, "approve")} disabled={busy} className="hf-btn-primary flex-1 px-3 py-1.5 disabled:opacity-60">
+              <button
+                type="button"
+                onClick={() => act(current.item, "approve", current.slide.key ?? pickedKey(current.item))}
+                disabled={busy}
+                className="hf-btn-primary h-12 flex-1 px-3"
+              >
                 {approveLabel}
               </button>
             </div>

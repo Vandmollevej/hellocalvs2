@@ -5,6 +5,7 @@ import type { KeyGroupId } from "@/lib/api-keys/catalog";
 import type { CheckResult } from "@/lib/api-keys/checks";
 import type { FieldStatus, ServiceStatus } from "@/lib/api-keys/status";
 import type { CustomApiView } from "@/lib/api-keys/custom";
+import { useConfirmSheet } from "@/lib/use-confirm-sheet";
 
 // Admin → API-nøgler. Status, redigering og live-test pr. tjeneste
 // (docs/DECISIONS.md 2026-09-25 "API-nøgler i admin").
@@ -27,6 +28,31 @@ const RESULT_LABEL: Record<CheckResult["status"], string> = {
 
 function formatDate(iso: string) {
   return new Date(iso).toLocaleString("da-DK", { timeZone: "Europe/Copenhagen", dateStyle: "short", timeStyle: "short" });
+}
+
+// Logoer til de tjenester, vi har billeder til (public/integrations).
+const SERVICE_LOGO: Record<string, string> = {
+  withings: "withings",
+  "google-health": "google-health",
+  strava: "strava",
+  polar: "polar-flow",
+  garmin: "garmin",
+};
+
+function ServiceLogo({ service, inactive }: { service: ServiceStatus; inactive: boolean }) {
+  const slug = SERVICE_LOGO[service.id];
+  // Rød ring om tjenester, der mangler nøgler (inaktive).
+  const ring = inactive ? "border-2 border-hf-red-dark" : "border border-hf-tan-dark";
+  return (
+    <span className={`flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-full bg-hf-white ${ring}`}>
+      {slug ? (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img src={`/integrations/${slug}.png`} alt="" className="h-full w-full object-cover" />
+      ) : (
+        <span className="hf-type-strong text-text-secondary">{service.name.charAt(0)}</span>
+      )}
+    </span>
+  );
 }
 
 function missingFields(service: ServiceStatus) {
@@ -66,6 +92,7 @@ export function ApiKeysManager({
   initialServices: ServiceStatus[];
   initialCustom: CustomState;
 }) {
+  const { ask, sheet } = useConfirmSheet();
   const [services, setServices] = useState(initialServices);
   const [tests, setTests] = useState<Record<string, TestState>>({});
   const [custom, setCustom] = useState(initialCustom);
@@ -106,7 +133,8 @@ export function ApiKeysManager({
 
   return (
     <div className="flex flex-col gap-6" data-allow-clipboard>
-      <div className="flex flex-col gap-3 hf-surface p-4">
+      {sheet}
+      <div className="hf-panel">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <p className="hf-type-body hf-type-strong text-hf-black">Status</p>
           <div className="flex flex-wrap gap-2">
@@ -219,14 +247,16 @@ export function ApiKeysManager({
             </div>
             {apis.length === 0 && <p className="hf-type-body text-text-secondary">Ingen API’er i gruppen endnu.</p>}
             {apis.map((api) => (
-              <div key={api.id} className="flex flex-col gap-2 hf-surface p-4">
+              <div key={api.id} className="hf-panel">
                 <div className="flex items-start justify-between gap-3">
                   <p className="hf-type-strong text-hf-black">{api.name}</p>
                   <button
                     type="button"
-                    onClick={async () => {
-                      if (confirm(`Slet ${api.name}?`)) setCustom(await sendCustom("DELETE", { type: "api", id: api.id }));
-                    }}
+                    onClick={() =>
+                      ask(`Slet ${api.name}?`, () => {
+                        void (async () => setCustom(await sendCustom("DELETE", { type: "api", id: api.id })))();
+                      })
+                    }
                     className="hf-btn-text text-hf-red-dark"
                   >
                     Slet
@@ -378,11 +408,14 @@ function ServiceCard({
   onChanged: (service: ServiceStatus) => void;
 }) {
   return (
-    <div className="flex flex-col gap-3 hf-surface p-4">
+    <div className="hf-panel">
       <div className="flex flex-wrap items-start justify-between gap-3">
-        <div className="min-w-0 flex-1">
-          <p className="hf-type-strong text-hf-black">{service.name}</p>
-          <p className="hf-type-body text-text-secondary">{service.purpose}</p>
+        <div className="flex min-w-0 flex-1 items-center gap-3">
+          <ServiceLogo service={service} inactive={missingFields(service).length > 0} />
+          <div className="min-w-0">
+            <p className="hf-type-strong text-hf-black">{service.name}</p>
+            <p className="hf-type-body text-text-secondary">{service.purpose}</p>
+          </div>
         </div>
         <div className="flex items-center gap-2">
           {test && test !== "running" && (
@@ -395,7 +428,7 @@ function ServiceCard({
               type="button"
               onClick={onTest}
               disabled={test === "running"}
-              className="hf-type-body rounded-md border border-hf-green-dark px-3 py-1 text-hf-green-dark disabled:opacity-50"
+              className="hf-btn-secondary hf-btn--compact"
             >
               {test === "running" ? "Tester…" : "Test"}
             </button>
@@ -442,7 +475,7 @@ function SourceTag({ field }: { field: FieldStatus }) {
   if (field.source === "admin") {
     return <span className="hf-type-small text-hf-green-dark">Rettet i admin {field.updatedAt && formatDate(field.updatedAt)}</span>;
   }
-  if (field.source === "env") return <span className="hf-type-small text-text-muted">Fra .env</span>;
+  if (field.source === "env") return <span className="hf-type-small text-text-muted">Sat på serveren (.env-filen)</span>;
   return (
     <span className={`hf-type-small ${field.optional ? "text-text-muted" : "text-hf-red-dark"}`}>
       {field.optional ? "Ikke sat (valgfri)" : "Mangler"}

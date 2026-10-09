@@ -7,6 +7,7 @@ import { PendingProductViews } from "@/components/admin/PendingProductViews";
 import { productConfidencePercent } from "@/lib/pending-product-confidence";
 import { asNumberRecord } from "@/lib/nutrients";
 import { t } from "@/lib/admin-i18n";
+import { userLabel } from "@/lib/user-label";
 
 const SORTS = [
   { key: "time", label: "Tidspunkt (nyeste øverst)" },
@@ -52,7 +53,7 @@ export default async function AdminProductsPage({
       category: { select: { name: true } },
       barcodes: { select: { code: true } },
       nutritionFeatures: { select: { sugarsPer100g: true, fiberPer100g: true, saltPer100g: true } },
-      createdBy: { select: { displayName: true, email: true } },
+      createdBy: { select: { id: true, displayName: true } },
       aiAnalyses: { select: { kind: true, confidence: true, prediction: true } },
       matchChecks: { select: { confidence: true } },
     },
@@ -81,9 +82,17 @@ export default async function AdminProductsPage({
     servingSizeGrams: p.servingSizeGrams,
     servingSizeUnitSingular: p.servingSizeUnitSingular,
     ingredientsText: p.ingredientsText,
+    translation:
+      p.translationStatus === "PENDING"
+        ? {
+            sourceLang: p.translationSourceLang,
+            nameOriginal: p.nameOriginal,
+            ingredientsOriginal: p.ingredientsOriginal,
+          }
+        : null,
     allergens: p.allergens,
     additives: p.additives,
-    createdBy: p.createdBy ? p.createdBy.displayName || p.createdBy.email : null,
+    createdBy: p.createdBy ? userLabel(p.createdBy) : null,
     extended: {
       saturatedFat: p.saturatedFatPer100g,
       unsaturatedFat: p.unsaturatedFatPer100g,

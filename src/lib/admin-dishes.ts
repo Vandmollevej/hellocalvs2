@@ -65,7 +65,7 @@ export async function loadHelloFreshDishes(q: string, page: number): Promise<Dis
       kcal: p.kcalPer100g,
       kcalLabel: "kcal/100 g",
       status: p.status,
-      href: `/admin/products/${p.id}`,
+      href: null,
       note: p._count.ingredients > 0 ? `${p._count.ingredients} ingredienser` : null,
     })),
   };

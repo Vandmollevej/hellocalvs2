@@ -54,7 +54,7 @@ export function EmailVerifySheet() {
               type="button"
               onClick={resend}
               disabled={status === "sending"}
-              className="hf-control hf-btn-primary w-full disabled:opacity-60"
+              className="hf-control hf-btn-primary w-full"
             >
               {t("verifyEmail.resend")}
             </button>

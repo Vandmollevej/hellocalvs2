@@ -178,8 +178,10 @@ type Pulse = {
   lockedBpm: Record<number, number>;
 };
 
-/** Puls uden tilsluttet ur (bruger 2026-10-03). */
-export const DEFAULT_PULSE_BPM = 60;
+/** Puls uden tilsluttet ur: ét slag hvert 4. sekund (bruger 2026-10-05). */
+export const DEFAULT_PULSE_BPM = 15;
+/** Nedre grænse for linjens tempo; målt puls ligger altid over 30. */
+const MIN_PULSE_BPM = 10;
 
 /** "top": øverste felt (topbar + hero). "frost": nederste felt bag listen. */
 export type WaveVariant = "top" | "frost";
@@ -460,6 +462,13 @@ export function drawWaveScene(
 /** Px, over hvilke det gamle spors bagkant toner ud, mens det fjernes. */
 const PULSE_TAIL_TAPER = 60;
 
+/**
+ * Sekunder, det færdige spor står stille, før næste fej starter fra venstre.
+ * Slagene følger stadig pulsen; kun luften mellem to bølger er større
+ * (bruger 2026-10-09).
+ */
+export const PULSE_REST = 4;
+
 /** Pulsen for et fej: den, der gjaldt, da fejet startede. */
 function bpmForCycle(pulse: Pulse, cycle: number, bpm: number) {
   if (pulse.lockedBpm[cycle] === undefined) {
@@ -479,7 +488,7 @@ export function pulseTrace(pulse: Pulse, cycle: number, bpm: number, width: numb
   const speed = span / pulse.sweep;
   // Slagets bredde i px som før; omregnet til sekunder ligger P→T på ca. 0,8 s.
   const beatSeconds = Math.max(90, Math.min(150, width * 0.3)) / speed;
-  const interval = 60 / Math.min(220, Math.max(30, Number.isFinite(bpm) ? bpm : DEFAULT_PULSE_BPM));
+  const interval = 60 / Math.min(220, Math.max(MIN_PULSE_BPM, Number.isFinite(bpm) ? bpm : DEFAULT_PULSE_BPM));
   const cycleRand = mulberry32(pulse.seed + cycle);
   const firstBeat = cycleRand() * interval;
   const beats: Array<{ at: number; amplitude: number }> = [];
@@ -516,8 +525,9 @@ function drawPulse(
   baseY: number
 ) {
   const time = t + pulse.offset;
-  const cycle = Math.floor(time / pulse.sweep);
-  const progress = (time - cycle * pulse.sweep) / pulse.sweep;
+  const cycleLength = pulse.sweep + PULSE_REST;
+  const cycle = Math.floor(time / cycleLength);
+  const progress = Math.min(1, (time - cycle * cycleLength) / pulse.sweep);
   const left = -WAVE_BLEED;
   const right = width + WAVE_BLEED;
   const head = left + progress * (right - left);

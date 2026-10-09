@@ -1,5 +1,21 @@
 @import "tailwindcss";
 
+/* =====================================================================
+   HELLO CAL — ÉN STILFIL (design.md §13 "CSS-arkitektur", 2026-10-07)
+
+   Alle designværdier står ÉT sted: tokens i :root herunder. Tailwind får
+   dem via @theme inline, så `bg-hf-card`, `border-hf-line`, `text-hf-brand`
+   osv. altid peger på samme token som klasserne i denne fil. Ændres et
+   token her, følger hele appen, webvisningen (WebShell) og admin med.
+
+   Regler (håndhæves af eslint.config.mjs, "design-tokens"):
+   - Ingen hex-farver, text-[Npx], text-sm/lg…, font-medium/semibold… i TSX.
+   - Ingen statisk `style={{ color: "var(--hf-color-…)" }}` — brug utility.
+   - Gentagne flader/knapper er klasser her (.hf-card, .hf-panel, .hf-btn-*).
+   Dokumenterede undtagelser: HfAccessSheet.module.css (iOS-kopi),
+   recipe-view.css (HelloFresh-opskriftsmål), PhonePreviewEditor (iOS-mock)
+   og admin → Designmanual (viser værdierne som indhold).
+   ===================================================================== */
 :root {
   /* Gamle generiske navne — peger nu på den faste palette nedenfor
      (én tekstfarve, én sekundær, én dæmpet; én side-, kort- og linjefarve). */
@@ -16,19 +32,29 @@
   --hf-color-surface: #ffffff;
   --hf-color-card: #eee9df;
   --hf-color-nav: #dfd9cc;
-  --hf-color-nav-legacy: #e0d9cb;
   --hf-color-white: #ffffff;
+  /* Grønne (design.md §3, oprydning 2026-10-07): præcis TRE grønne.
+     - brand: den eneste grønne flade (appbar, loader-baggrund, brandkort,
+       fremdrift) og grøn tekst/ikon.
+     - brand-dark: kun hover/tryk på grønne flader og mørk grøn tekst.
+     - accent: HelloFreshs lysegrønne lime — valgt-markering, load-cirkel,
+       positive markeringer og FAB. Målt på valgt-kortet i onboardingen
+       (IMG_2292/2298/2299). */
   --hf-color-brand: #067a46;
-  --hf-color-appbar: #35784a;
-  --hf-color-progress-dark: #035624;
-  --hf-color-progress: #007838;
-  /* Selected state (HelloFresh, punkt 46): lysegrøn flade, grøn stroke,
-     mørkegrøn tekst. Bruges af valgte bokse, åbne accordions og alle
-     andre selection-komponenter via .hf-selected. */
-  --hf-color-selected-bg: #e6f4ec;
-  --hf-color-selected-border: var(--hf-color-brand);
-  --hf-color-selected-text: var(--hf-color-progress-dark);
-  --hf-color-text: #242424;
+  --hf-color-brand-dark: #035624;
+  --hf-color-accent: #bbf06a;
+  /* Udfasede navne — peger på de tre ovenfor, må ikke bruges i ny kode. */
+  --hf-color-appbar: var(--hf-color-brand);
+  --hf-color-progress: var(--hf-color-brand);
+  --hf-color-progress-dark: var(--hf-color-brand-dark);
+  /* Selected state (HelloFresh): lime flade, 2 px sort stroke, sort tekst —
+     som HelloFreshs valgte kort. Bruges af valgte bokse, åbne accordions og
+     alle andre selection-komponenter via .hf-selected. */
+  --hf-color-selected-bg: var(--hf-color-accent);
+  --hf-color-selected-border: var(--hf-color-action);
+  --hf-color-selected-text: var(--hf-color-action);
+  /* Én tekstfarve: #242424 og #232323 var to navne for samme sorte. */
+  --hf-color-text: var(--hf-color-action);
   --hf-color-action: #232323;
   --hf-color-action-hover: #353535;
   --hf-color-action-active: #4b4b4b;
@@ -46,7 +72,7 @@
   --hf-color-facebook: #00178c;
 
   /* Bevidste Hello Cal-undtagelser (ikke fra HelloFresh-referencen) */
-  --hf-color-positive: #a3e635;
+  --hf-color-positive: var(--hf-color-accent);
   --hf-color-danger: #a3271f;
   /* For lavt indtag: mørk okker til tekst (læsbar på kortfarven), gul til firkanten. */
   --hf-color-warning: #8a5a00;
@@ -58,12 +84,41 @@
      telefonikonet i topbjælken og 1 px-rammen rundt om skærmen. Blå, så den
      aldrig forveksles med brand-grøn; hvid kant gør den læsbar på grøn. */
   --hf-color-watch: #2f80ed;
+  /* Apples Face ID-blå: ikonet på profilen/login og animationen. Én værdi —
+     tidligere havde knap og animation hver sin blå. */
+  --hf-color-faceid: #0a7aff;
+  --hf-color-faceid-spin: #35c4d4;
+  /* Marketing-sitet (landing, /business, /presse): heroens lyse grøn i
+     gradienten. Ikke en UI-farve i appen. */
+  --mk-color-brand-light: #0a8f53;
+
+  /* ---- Afstand, radius og kontrolhøjde (design.md §5) ----
+     Kun tre lodrette afstande: 8 inde i en blok, 16 mellem blokke/kortpadding/
+     gutter, 32 før en ny sektion. Radius 8 på kort, felter og knapper. */
+  --hf-space-inline: 8px;
+  --hf-space-block: 16px;
+  --hf-space-section: 32px;
+  --hf-gutter: 16px;
+  --hf-radius-card: 8px;
+  /* Bundark og telefon-mock: eneste større radius. */
+  --hf-radius-sheet: 16px;
+  /* Alle enkeltlinje-felter, dropdowns og fuldbredde-knapper er 48 px. */
+  --hf-control-height: 48px;
+  /* Fælles skal (admin, webvisning, Hello Doc), design.md §6.17. */
+  --hf-shell-bar: 56px;
+  --hf-shell-sidebar: 256px;
+  --hf-shell-rail: 64px;
+  /* Skelet-loading (design.md §6.14). Varigheden skal matche
+     SKELETON_SHIMMER_MS i src/components/hf/Skeleton.tsx. */
+  --hf-color-skeleton: #e2dacb;
+  --hf-color-skeleton-highlight: #f2eee6;
+  --hf-skeleton-duration: 1400ms;
 
   /* Legacy-navne — pegede tidligere på ikke-målte farver, peger nu på de
      korrekte tokens ovenfor, så eksisterende kode ikke skal migreres på én gang. */
   --hf-green: var(--hf-color-brand);
-  --hf-green-dark: var(--hf-color-progress-dark);
-  --hf-green-light: #8fd6ac;
+  --hf-green-dark: var(--hf-color-brand-dark);
+  --hf-green-light: var(--hf-color-accent);
   --hf-cream: var(--hf-color-page);
   --hf-tan: var(--hf-color-card);
   --hf-tan-dark: var(--hf-color-nav);
@@ -73,6 +128,7 @@
   --hf-gray: var(--hf-color-inactive);
   --hf-gray-dark: var(--hf-color-text-secondary);
   --hf-red-dark: var(--hf-color-danger);
+  /* Kun graf-serier (design.md §3), aldrig UI-flader eller tekst. */
   --hf-green-muted: #6fa584;
   --hf-red-muted: #b98077;
   --hf-gray-border: var(--hf-color-line);
@@ -113,11 +169,47 @@
   --color-hf-gray-border: var(--hf-gray-border);
   --color-hf-fab: var(--hf-fab);
   --color-hf-lime: var(--hf-lime);
+  --color-hf-accent: var(--hf-color-accent);
   --color-hf-meat: var(--hf-meat);
   --color-hf-warning: var(--hf-color-warning);
   --color-hf-watch: var(--hf-color-watch);
   --color-hf-warning-fill: var(--hf-color-warning-fill);
   --color-hf-warning-bg: var(--hf-color-warning-bg);
+  /* Kanoniske navne = tokens ovenfor, 1:1 (bg-hf-card, border-hf-line,
+     text-hf-text-secondary …). Nye sider bruger disse; legacy-navnene
+     ovenfor (hf-tan, hf-cream …) er aliaser for de samme farver. */
+  --color-hf-page: var(--hf-color-page);
+  --color-hf-surface: var(--hf-color-surface);
+  --color-hf-card: var(--hf-color-card);
+  --color-hf-nav: var(--hf-color-nav);
+  --color-hf-brand: var(--hf-color-brand);
+  --color-hf-brand-dark: var(--hf-color-brand-dark);
+  --color-hf-text: var(--hf-color-text);
+  --color-hf-action: var(--hf-color-action);
+  --color-hf-action-hover: var(--hf-color-action-hover);
+  --color-hf-action-active: var(--hf-color-action-active);
+  --color-hf-text-secondary: var(--hf-color-text-secondary);
+  --color-hf-inactive: var(--hf-color-inactive);
+  --color-hf-placeholder: var(--hf-color-placeholder);
+  --color-hf-disabled: var(--hf-color-disabled);
+  --color-hf-line: var(--hf-color-line);
+  --color-hf-field-border: var(--hf-color-field-border);
+  --color-hf-field-hover: var(--hf-color-field-hover);
+  --color-hf-field-focus: var(--hf-color-field-focus);
+  --color-hf-google: var(--hf-color-google);
+  --color-hf-facebook: var(--hf-color-facebook);
+  --color-hf-positive: var(--hf-color-positive);
+  --color-hf-danger: var(--hf-color-danger);
+  --color-hf-overlay: var(--hf-color-overlay);
+  --color-hf-selected-bg: var(--hf-color-selected-bg);
+  --color-hf-selected-border: var(--hf-color-selected-border);
+  --color-hf-selected-text: var(--hf-color-selected-text);
+  --color-hf-faceid: var(--hf-color-faceid);
+  --color-hf-skeleton: var(--hf-color-skeleton);
+  --color-mk-brand-light: var(--mk-color-brand-light);
+  /* rounded-card / rounded-sheet = de to eneste radier. */
+  --radius-card: var(--hf-radius-card);
+  --radius-sheet: var(--hf-radius-sheet);
   --font-sans: var(--font-hf-body);
   --font-mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
   --font-hf-heading: var(--font-hf-heading);
@@ -480,6 +572,25 @@ textarea::selection,
   justify-content: center;
 }
 
+/* Midterfeltet (ikon + titel) og højre slot med profilcirklen. Navngivet,
+   så webvisningen kan ramme dem uden :nth-child/[href]-selektorer. */
+.hf-appbar__center {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  justify-content: center;
+  gap: var(--hf-space-inline);
+}
+
+/* Knap/ikon i et slot fylder hele slottet. */
+.hf-appbar__slot-button {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  align-items: center;
+  justify-content: center;
+}
+
 /* Højre ende af appbaren: profilcirklen (44 px slot). */
 .hf-appbar__end {
   display: flex;
@@ -526,15 +637,8 @@ textarea::selection,
      8px  = inde i en blok (label→felt, titel→tekst, tekst→hjælpetekst)
      16px = mellem blokke, kortpadding og sidegutter
      32px = før en ny sektion (sektionsoverskrift)
-   Sider må ikke lægge egne mt-/mb-/gap-værdier ovenpå disse primitiver. ---- */
-:root {
-  --hf-space-inline: 8px;
-  --hf-space-block: 16px;
-  --hf-space-section: 32px;
-  --hf-gutter: 16px;
-  --hf-radius-card: 8px;
-}
-
+   Sider må ikke lægge egne mt-/mb-/gap-værdier ovenpå disse primitiver.
+   Tokens står i :root øverst. ---- */
 @layer components {
   /* Sideindhold under appbaren: 16px gutter og 16px mellem blokke. */
   .hf-page {
@@ -579,6 +683,13 @@ textarea::selection,
     color: var(--hf-color-white);
   }
 
+  /* Kort som vandret række (ikon/tal til venstre, tekst til højre). */
+  .hf-card--row {
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
   /* Tæt stak (fx felt + hjælpetekst) inde i en blok. */
   .hf-stack {
     display: flex;
@@ -586,6 +697,116 @@ textarea::selection,
     gap: var(--hf-space-inline);
   }
 
+  /* Skærme uden appbar (login, velkomst, kode): indholdet starter under
+     telefonens statuslinje, mindst 16 px nede. */
+  .hf-safe-top {
+    padding-top: max(var(--hf-space-block), env(safe-area-inset-top, 0px));
+  }
+
+  /* Blød udtoning i bunden af en scrolleliste (sidefarven). */
+  .hf-fade-bottom {
+    pointer-events: none;
+    background: linear-gradient(to bottom, transparent, var(--hf-color-page));
+  }
+
+  /* Store tegn-glyffer (−/+ ved mængde, E-numres "E"): ikke tekst, men et
+     symbol i en 44/48 px knap — derfor uden for typeskalaen. */
+  .hf-glyph-lg {
+    font-size: 34px;
+    font-weight: 700;
+    line-height: 1;
+  }
+
+  .hf-glyph-md {
+    font-size: 30px;
+    font-weight: 700;
+    line-height: 1;
+  }
+
+  /* "Skriver…"-prikker: tre hoppende prikker, forskudt 150 ms. */
+  .hf-typing-dot {
+    animation-delay: 0ms;
+  }
+
+  .hf-typing-dot:nth-child(2) {
+    animation-delay: 150ms;
+  }
+
+  .hf-typing-dot:nth-child(3) {
+    animation-delay: 300ms;
+  }
+}
+
+/* ---- Marketing-sitet (landing, /business, /presse) — egen zone, design.md
+   §13. Bruger Tailwinds typeskala (desktop-marketing), men KUN appens
+   farvetokens. Gentagne flader står her, så de kun rettes ét sted. ---- */
+@layer components {
+  /* Hero-gradient: lys brand-grøn → brand → mørk. */
+  .mk-hero-bg {
+    background: linear-gradient(135deg, var(--mk-color-brand-light) 0%, var(--hf-color-brand) 45%, var(--hf-color-brand-dark) 100%);
+    color: var(--hf-color-white);
+  }
+
+  /* Lodret udgave (prissektionen). */
+  .mk-hero-bg--vertical {
+    background: linear-gradient(180deg, var(--hf-color-brand-dark) 0%, var(--hf-color-brand) 100%);
+  }
+
+  /* Pille-knap (CTA): grøn, sort eller hvid. */
+  .mk-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--hf-space-inline);
+    padding: 12px 32px;
+    border-radius: 9999px;
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 20px;
+    transition: background-color 150ms ease, color 150ms ease;
+  }
+
+  .mk-btn--brand {
+    background: var(--hf-color-brand);
+    color: var(--hf-color-white);
+  }
+
+  .mk-btn--brand:hover {
+    background: var(--hf-color-brand-dark);
+  }
+
+  .mk-btn--dark {
+    background: var(--hf-color-action);
+    color: var(--hf-color-white);
+  }
+
+  .mk-btn--dark:hover {
+    background: var(--hf-color-action-hover);
+  }
+
+  .mk-btn--light {
+    background: var(--hf-color-white);
+    color: var(--hf-color-action);
+  }
+
+  .mk-btn--light:hover {
+    background: var(--hf-color-page);
+  }
+
+  .mk-btn--upper {
+    letter-spacing: 0.025em;
+    text-transform: uppercase;
+  }
+
+  /* Lille versal-overskrift over en sektion ("Business", "Presse"). */
+  .mk-eyebrow {
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 20px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--hf-green-light);
+  }
 }
 
 /* ---- Fælles skal (design.md §6.17, docs/DECISIONS.md 2026-10-03): admin
@@ -594,13 +815,8 @@ textarea::selection,
    dropdown-menu, skuffe og indholdsbredde. Ingen skal må style disse flader
    med egne Tailwind-kæder; mangler en variation, tilføjes den her.
    Responsivt: under 1024 px skjules sidebjælken, og menuen åbnes som skuffe
-   (.hf-shell__drawer) bag en menuknap (.hf-shell__mobile-only). ---- */
-:root {
-  --hf-shell-bar: 56px;
-  --hf-shell-sidebar: 256px;
-  --hf-shell-rail: 64px;
-}
-
+   (.hf-shell__drawer) bag en menuknap (.hf-shell__mobile-only).
+   Mål (--hf-shell-*) står i :root øverst. ---- */
 @layer components {
   /* Rod: egen scroll-container (html/body er låst mod scroll). */
   .hf-shell,
@@ -786,23 +1002,6 @@ textarea::selection,
     font-weight: 400;
     line-height: 18px;
     white-space: nowrap;
-  }
-
-  /* I sidebjælken svæver mærket over rækkens højre kant, når man peger på
-     rækken eller tabber til den — rækkens tekst flytter sig ikke. */
-  .hf-navrow__kbd {
-    position: absolute;
-    top: 50%;
-    right: 8px;
-    transform: translateY(-50%);
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 120ms;
-  }
-
-  .hf-navrow:hover .hf-navrow__kbd,
-  .hf-navrow:focus-visible .hf-navrow__kbd {
-    opacity: 1;
   }
 
   /* "Gå til…"-felt i sidebjælken (åbner hurtigsøgning). */
@@ -1188,6 +1387,11 @@ textarea::selection,
     padding: var(--hf-space-block);
   }
 
+  /* Panel med formularfelter/flere blokke: 16px mellem dem. */
+  .hf-panel--form {
+    gap: var(--hf-space-block);
+  }
+
   /* Tabel i en flade/et panel: scroller vandret på smalle skærme i stedet
      for at blive klippet eller skubbe siden. */
   .hf-table-scroll {
@@ -1279,12 +1483,13 @@ textarea::selection,
 @layer components {
   .hf-btn-primary,
   .hf-btn-secondary,
-  .hf-btn-danger {
+  .hf-btn-danger,
+  .hf-btn-brand {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 8px;
-    border-radius: 8px;
+    gap: var(--hf-space-inline);
+    border-radius: var(--hf-radius-card);
     font-family: var(--font-hf-body);
     font-size: 17px;
     font-weight: 700;
@@ -1296,6 +1501,22 @@ textarea::selection,
   .hf-btn-primary {
     background: var(--hf-color-action);
     color: var(--hf-color-white);
+  }
+
+  /* Grøn handlingsknap: admin-login/-opsætning, partnerportal og
+     godkendelser — steder uden for appens sorte knaprække. */
+  .hf-btn-brand {
+    background: var(--hf-color-brand-dark);
+    color: var(--hf-color-white);
+  }
+
+  /* Kompakt udgave (admin-værktøjslinjer, filtre): 40 px, 15 px skrift.
+     Eneste tilladte størrelsesvariant — aldrig !text-sm o.l. på knappen. */
+  .hf-btn--compact {
+    min-height: 40px;
+    padding: 0 12px;
+    font-size: 15px;
+    line-height: 22px;
   }
 
   /* Sekundær handling: sort kant, sort tekst. */
@@ -1314,6 +1535,7 @@ textarea::selection,
 
   .hf-btn-secondary:disabled,
   .hf-btn-danger:disabled,
+  .hf-btn-brand:disabled,
   .hf-btn-text:disabled,
   .hf-btn-icon:disabled,
   .hf-choice:disabled {
@@ -1359,7 +1581,7 @@ textarea::selection,
     justify-content: center;
     gap: 6px;
     padding: 0 12px;
-    border-radius: 8px;
+    border-radius: var(--hf-radius-card);
     background: var(--hf-color-card);
     color: var(--hf-color-text);
     font-family: var(--font-hf-body);
@@ -1373,7 +1595,7 @@ textarea::selection,
   .hf-choice[aria-selected="true"],
   .hf-choice.is-selected {
     background: var(--hf-color-selected-bg);
-    box-shadow: inset 0 0 0 1.5px var(--hf-color-selected-border);
+    box-shadow: inset 0 0 0 2px var(--hf-color-selected-border);
     color: var(--hf-color-selected-text);
   }
 }
@@ -1382,6 +1604,8 @@ textarea::selection,
    rund mørk overlay-knap, 8px fra top og højre billedkant. */
 .hf-favorite-button {
   position: absolute;
+  /* Altid forreste lag – over produktbillede, logo og certificeringer. */
+  z-index: 30;
   top: 8px;
   right: 8px;
   display: flex;
@@ -1396,21 +1620,21 @@ textarea::selection,
   color: var(--hf-white);
 }
 
-/* Valg-chip/kort (fx "Hvad er dine mål?") */
+/* Valg-chip/kort (fx "Hvad er dine mål?") — samme radius som alle kort. */
 .hf-chip {
   font-family: var(--font-hf-body);
-  border-radius: 12px;
-  background: var(--hf-tan);
-  color: var(--hf-black);
+  border-radius: var(--hf-radius-card);
+  background: var(--hf-color-card);
+  color: var(--hf-color-action);
   font-weight: 700;
-  padding: 16px;
+  padding: var(--hf-space-block);
   text-align: left;
 }
 
 .hf-chip[aria-pressed="true"],
 .hf-chip.is-selected {
   background: var(--hf-color-selected-bg);
-  box-shadow: inset 0 0 0 1.5px var(--hf-color-selected-border);
+  box-shadow: inset 0 0 0 2px var(--hf-color-selected-border);
   color: var(--hf-color-selected-text);
 }
 
@@ -1420,8 +1644,16 @@ textarea::selection,
 .hf-selected,
 .hf-selected-open[aria-expanded="true"] {
   background: var(--hf-color-selected-bg) !important;
-  box-shadow: inset 0 0 0 1.5px var(--hf-color-selected-border);
+  box-shadow: inset 0 0 0 2px var(--hf-color-selected-border);
   color: var(--hf-color-selected-text) !important;
+}
+
+/* Kalenderens valgte/dags dato: hvid flade med dyb grøn kant (brugerbeslutning
+   2026-10-09 — ikke lime). Kun kalenderen; øvrige valg bruger .hf-selected. */
+.hf-cal-current {
+  background: var(--hf-color-white, #fff) !important;
+  box-shadow: inset 0 0 0 2px var(--hf-color-brand);
+  color: var(--hf-color-action) !important;
 }
 
 /* Fælles kontrolhøjde (design.md §6, brugerbeslutning 2026-09-26): alle
@@ -1434,11 +1666,8 @@ textarea::selection,
    - .hf-control-row: listerække/accordion-overskrift, mindst 48 px (må
      vokse, hvis teksten ombrydes).
    Undtaget med vilje: footer, fliser, statistik-kort, ikonknapper, små
-   filter-/periodeknapper og flerlinjefelter (textarea). */
-:root {
-  --hf-control-height: 48px;
-}
-
+   filter-/periodeknapper og flerlinjefelter (textarea).
+   Højden (--hf-control-height) står i :root øverst. */
 .hf-field,
 .hf-control {
   box-sizing: border-box;
@@ -1461,12 +1690,12 @@ textarea::selection,
   display: flex;
   height: var(--hf-control-height);
   align-items: center;
-  gap: 0.75rem;
-  border-radius: 8px;
-  border: 1px solid var(--hf-gray-border);
-  background: var(--hf-white);
-  color: var(--hf-black);
-  padding: 0 1rem;
+  gap: 12px;
+  border-radius: var(--hf-radius-card);
+  border: 1px solid var(--hf-color-line);
+  background: var(--hf-color-surface);
+  color: var(--hf-color-action);
+  padding: 0 var(--hf-space-block);
 }
 
 .hf-search input {
@@ -1486,7 +1715,7 @@ textarea::selection,
 /* Accordion-kort (udvidelig varerække) */
 .hf-accordion {
   border-radius: var(--hf-radius-card);
-  background: var(--hf-tan);
+  background: var(--hf-color-card);
   overflow: hidden;
 }
 
@@ -1494,23 +1723,23 @@ textarea::selection,
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 12px 16px;
+  padding: 12px var(--hf-space-block);
 }
 
 .hf-accordion-row + .hf-accordion-row {
-  border-top: 1px solid var(--hf-tan-dark);
+  border-top: 1px solid var(--hf-color-nav);
 }
 
 .hf-accordion-toggle {
   display: flex;
   justify-content: center;
-  padding: 8px 0;
-  border-top: 1px solid var(--hf-tan-dark);
+  padding: var(--hf-space-inline) 0;
+  border-top: 1px solid var(--hf-color-nav);
 }
 
 .hf-accordion-body {
-  padding: 0 16px 16px;
-  border-top: 1px solid var(--hf-tan-dark);
+  padding: 0 var(--hf-space-block) var(--hf-space-block);
+  border-top: 1px solid var(--hf-color-nav);
 }
 
 @keyframes calendar-slide-next {
@@ -1612,9 +1841,23 @@ textarea::selection,
   animation: hf-nav-panel-in 180ms ease-out;
 }
 
+@keyframes hf-nav-ghost-lift {
+  from {
+    transform: scale(1);
+  }
+  to {
+    transform: scale(1.18);
+  }
+}
+
+.hf-nav-ghost {
+  animation: hf-nav-ghost-lift 140ms ease-out forwards;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .hf-nav-jiggle,
-  .hf-nav-panel-in {
+  .hf-nav-panel-in,
+  .hf-nav-ghost {
     animation: none;
   }
 }
@@ -1901,12 +2144,12 @@ textarea::selection,
 }
 
 .hello-loader-bg {
-  fill: #dfff78;
+  fill: var(--hf-color-accent);
 }
 
 .hello-loader-snake {
   fill: none;
-  stroke: #087a4b;
+  stroke: var(--hf-color-brand);
   stroke-width: 14;
   stroke-linecap: round;
   transform-origin: 50px 50px;
@@ -1961,14 +2204,7 @@ textarea::selection,
    står i samme fase (fælles ur via --hf-skeleton-delay, sat af
    src/components/hf/Skeleton.tsx), så ens bokse i en række glimter ens.
    Gradienten er relativ til boksens egen bredde: forskellige boksetyper ser
-   forskellige ud, samme type ser ens ud. */
-:root {
-  --hf-color-skeleton: #e2dacb;
-  --hf-color-skeleton-highlight: #f2eee6;
-  /* Skal matche SKELETON_SHIMMER_MS i src/components/hf/Skeleton.tsx. */
-  --hf-skeleton-duration: 1400ms;
-}
-
+   forskellige ud, samme type ser ens ud. Farver/varighed står i :root øverst. */
 @keyframes hf-skeleton-shimmer {
   from {
     background-position: 100% 0;
@@ -1996,7 +2232,7 @@ textarea::selection,
   ),
 [data-hf-loading="true"] .hf-type-section-title > * {
   border-color: transparent !important;
-  border-radius: 8px;
+  border-radius: var(--hf-radius-card);
   background-color: var(--hf-color-skeleton);
   background-image: linear-gradient(
     90deg,
@@ -2152,7 +2388,7 @@ textarea::selection,
   max-height: calc(100dvh - max(16px, env(safe-area-inset-top, 0px)) - 24px);
   flex-direction: column;
   overflow: hidden;
-  border-radius: 16px 16px 0 0;
+  border-radius: var(--hf-radius-sheet) var(--hf-radius-sheet) 0 0;
   background: var(--hf-color-page);
   box-shadow: 0 -4px 24px rgb(35 35 35 / 12%);
 }
@@ -2170,23 +2406,27 @@ textarea::selection,
   display: flex;
   flex-shrink: 0;
   justify-content: center;
-  padding: 12px 0 16px;
+  padding: 8px 0 16px;
   cursor: grab;
   touch-action: none;
 }
 
 .hf-bottom-sheet__handle {
   display: block;
-  width: 40px;
+  width: 36px;
   height: 4px;
   border-radius: 9999px;
   background: var(--hf-gray);
 }
 
+/* Bundark har ingen synlig overskrift (ejerens regel 2026-10-07); titlen er kun til skærmlæsere. */
 .hf-bottom-sheet__title {
-  flex-shrink: 0;
-  padding: 0 16px 16px;
-  text-align: center;
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
 }
 
 .hf-bottom-sheet__body {
@@ -2248,22 +2488,25 @@ textarea::selection,
   border-bottom: 1px solid var(--hf-color-nav);
 }
 
-.web-shell .hf-appbar .text-hf-white,
+/* Alt i appbaren (tilbagepil, ikon, titel) bliver mørkt — via egne klasser,
+   ikke via Tailwind-utilityens navn. */
+.web-shell .hf-appbar,
 .web-shell .hf-appbar .hf-appbar__title {
   color: var(--hf-color-text);
 }
 
-.web-shell .hf-appbar > div:nth-child(2) {
+.web-shell .hf-appbar__center {
   justify-content: flex-start;
 }
 
+/* Sideoverskrift i webvisningen: 22 px-rollen (hf-type-page-title). */
 .web-shell .hf-appbar__title {
-  font-size: 20px;
-  line-height: 24px;
+  font-size: 22px;
+  line-height: 28px;
   font-weight: 700;
 }
 
-.web-shell a.hf-appbar__slot[href="/profile"],
+.web-shell .hf-appbar__profile,
 .web-shell .hf-topbar {
   display: none;
 }
@@ -2334,4 +2577,151 @@ textarea::selection,
 .web-shell .web-search-page .hf-foodrow-thumb {
   width: 80px;
   height: 80px;
+}
+
+/* Admin: sidetitler dobbelt så store som app-standarden (17 px → 34 px). */
+.admin-main h1.hf-type-title,
+.admin-main h1.hf-type-page-title {
+  font-size: 34px;
+  line-height: 42px;
+}
+
+/* ---- Billedvalg (admin Billedbehandling + Dubletter): EN fælles stil.
+   Kort med billede + "Vælg"-knap, vælger-pile på billedet og en række
+   alternativer. Ingen side må style disse selv. ---- */
+@layer components {
+  .hf-pick-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+  }
+
+  .hf-pick-card {
+    display: flex;
+    min-width: 0;
+    flex-direction: column;
+    gap: 8px;
+    padding: 8px;
+    border: 1.5px solid var(--hf-color-nav);
+    border-radius: var(--hf-radius-card);
+    background: var(--hf-color-surface);
+  }
+
+  .hf-pick-card.is-selected {
+    background: var(--hf-color-selected-bg);
+    border-color: var(--hf-color-selected-border);
+    /* 1.5px kant + 0.5px ring = samme 2px valgt-kant som .hf-choice/.hf-selected. */
+    box-shadow: inset 0 0 0 0.5px var(--hf-color-selected-border);
+  }
+
+  .hf-pick-frame {
+    position: relative;
+    display: flex;
+    aspect-ratio: 1 / 1;
+    width: 100%;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    border-radius: var(--hf-radius-card);
+    background: var(--hf-color-card);
+  }
+
+  .hf-pick-frame img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+
+  .hf-pick-badge {
+    align-self: flex-start;
+    padding: 2px 8px;
+    border-radius: 9999px;
+    background: var(--hf-color-card);
+    color: var(--hf-color-text-secondary);
+    font-family: var(--font-hf-body);
+    font-size: 13px;
+    font-weight: 700;
+    line-height: 18px;
+  }
+
+  .hf-pick-badge.is-current {
+    background: var(--hf-color-selected-bg);
+    color: var(--hf-color-selected-text);
+  }
+
+  /* Pil frem/tilbage midt på billedet; vises ved mouse-over (altid på touch). */
+  .hf-pick-arrow {
+    position: absolute;
+    top: 50%;
+    z-index: 1;
+    display: flex;
+    width: 44px;
+    height: 44px;
+    align-items: center;
+    justify-content: center;
+    border-radius: 9999px;
+    background: rgb(255 255 255 / 90%);
+    color: var(--hf-color-text);
+    opacity: 0;
+    transform: translateY(-50%);
+    transition: opacity 120ms ease;
+  }
+
+  .hf-pick-arrow.is-prev {
+    left: 8px;
+  }
+
+  .hf-pick-arrow.is-next {
+    right: 8px;
+  }
+
+  .hf-pick-frame:hover .hf-pick-arrow,
+  .hf-pick-arrow:focus-visible {
+    opacity: 1;
+  }
+
+  @media (hover: none) {
+    .hf-pick-arrow {
+      opacity: 1;
+    }
+  }
+
+  /* Række af alternativer (6 ad gangen) under de to hovedbilleder. */
+  .hf-pick-strip {
+    display: grid;
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    gap: 8px;
+  }
+
+  .hf-pick-thumb {
+    display: flex;
+    aspect-ratio: 1 / 1;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    border: 1.5px solid var(--hf-color-nav);
+    border-radius: var(--hf-radius-card);
+    background: var(--hf-color-card);
+  }
+
+  .hf-pick-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+
+  .hf-pick-thumb.is-selected {
+    border-color: var(--hf-color-selected-border);
+    box-shadow: inset 0 0 0 0.5px var(--hf-color-selected-border);
+  }
+
+  /* Visningsvælger (2/4/8 firkanter) — samme på alle billedsider. */
+  .hf-pick-size {
+    display: flex;
+    gap: 4px;
+    padding: 4px;
+    border: 1.5px solid var(--hf-color-nav);
+    border-radius: var(--hf-radius-card);
+    background: var(--hf-color-surface);
+  }
 }

@@ -23,7 +23,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
     // Login/opsætning/bekræftelse: ingen skal, kun formularen.
     return (
       <div className="h-dvh overflow-y-auto bg-page-bg text-hf-black">
-        <main className="mx-auto max-w-4xl px-4 py-8 sm:px-6 sm:py-8">{children}</main>
+        <main className="admin-main mx-auto max-w-4xl px-4 py-8 sm:px-6 sm:py-8">{children}</main>
       </div>
     );
   }

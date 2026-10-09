@@ -10,7 +10,13 @@ datasource db {
 
 model User {
   id          String   @id @default(cuid())
+  // email + displayName er krypteret i databasen (AES-256-GCM, "enc:v1:"-
+  // praefiks, src/lib/user-crypto.ts, docs/DECISIONS.md 2026-10-04) og
+  // omskrives transparent af src/lib/prisma.ts. Opslag sker via emailHash
+  // (HMAC-SHA256 af lowercased e-mail). @unique paa email beholdes bevidst
+  // (tilfaeldig IV => indekset afsloerer intet), saa typer/legacy-opslag virker.
   email       String   @unique
+  emailHash   String?  @unique
   displayName String
   role        Role     @default(USER)
   weightKg    Float?
@@ -45,6 +51,8 @@ model User {
   // Tidspunkt for seneste e-mailverificerede ændring af start-vægten
   // (/profile/start-weight). Null = aldrig ændret; så gælder createdAt.
   startWeightUpdatedAt DateTime?
+  // 2026-10-07: sat, når brugeren har gennemført vægt-kalibreringen (skjuler 'Du mangler at kalibrere din vægt').
+  weightCalibratedAt DateTime?
   createdAt   DateTime @default(now())
 
   // Admin login (docs/ADMIN.md): only set for the single administrator
@@ -188,6 +196,15 @@ model User {
   // anonymiseres den automatisk (src/lib/account-closure.ts).
   closedAt DateTime?
 
+  // Dyrefoder-spærring (docs/DECISIONS.md 2026-10-07): første forsøg på at oprette
+  // dyrefoder giver en advarsel, andet forsøg spærrer kontoen (src/lib/pet-food-
+  // strikes.ts). En spærret konto logges ud overalt og kan ikke logge ind, før en
+  // admin ophæver spærringen under Brugere. petFoodStrikesResetAt nulstiller tællingen.
+  blockedAt             DateTime?
+  blockedReason         String?
+  petFoodStrikesResetAt DateTime?
+  petFoodIncidents      PetFoodIncident[]
+
   // Udtrykkeligt samtykke til behandling af helbredsoplysninger (GDPR art. 9,
   // docs/DECISIONS.md 2026-09-25). Null = ikke givet endnu; ConsentGate sender
   // brugeren til /samtykke, før appen kan bruges.
@@ -243,8 +260,12 @@ model User {
   oauthAccounts           UserOAuthAccount[]
   knownDevices            UserKnownDevice[]
   loginEvents             LoginEvent[]
-  sharedRecipeFavorites   SharedRecipeFavorite[]
+  flowViews               FlowView[]
+  sectionVisits           UserSectionVisit[]
+  migrationImports        MigrationImport[]
+  sharedRecipeFavorites  SharedRecipeFavorite[]
   recipeCookbookPhotos    RecipeCookbookPhoto[]
+  recipeRatings           RecipeRating[]
   nutritionReportsFiled   ProductNutritionReport[] @relation("NutritionReportReporter")
   referralsMade           Referral[]               @relation("ReferralsMade")
   referralReceived        Referral?                @relation("ReferralReceived")
@@ -504,6 +525,30 @@ model LoginApproval {
   @@map("login_approvals")
 }
 
+// Engangskoder til den native app (docs/DECISIONS.md 2026-10-08 "Native
+// login-overdragelse"). Google/Apple/Facebook-login og integrationstilkobling
+// kører i system-browseren, som ikke har appens session-cookie.
+// purpose: "LOGIN" (callbacken udsteder koden; appen veksler den til session-
+// cookien via POST /api/auth/native/exchange med sin PKCE-verifier) |
+// "CONNECT" (den indloggede app beder om en kode, før integrationen åbnes i
+// browseren). Kun hash gemmes; 2 minutter; kan kun bruges én gang.
+model NativeAuthCode {
+  id            String    @id @default(cuid())
+  userId        String
+  purpose       String
+  method        String?
+  // S256-challenge fra appen (kun LOGIN), base64url af sha256(verifier).
+  codeChallenge String?
+  codeHash      String    @unique
+  expiresAt     DateTime
+  usedAt        DateTime?
+  createdAt     DateTime  @default(now())
+
+  @@index([userId])
+  @@index([expiresAt])
+  @@map("native_auth_codes")
+}
+
 // Engangskode sendt på SMS ved glemt adgangskode (docs/DECISIONS.md
 // 2026-10-02). Kun hash gemmes; 6 cifre, 10 minutter, højst 5 forsøg. En
 // godkendt kode udløser et almindeligt PasswordResetToken.
@@ -559,9 +604,21 @@ model WeightEntry {
   // UNKNOWN/true (default) for rows written by an integration.
   source    WeightSource @default(MANUAL)
   note      String?
+  // 2026-10-07: hvad brugeren havde på ved vejningen (null = ikke bekræftet endnu).
+  attire    WeighAttire?
+  // 2026-10-09: de enkelte til/fra-valg (UNDERWEAR, PANTS, TOP, SWEATER, SHOES,
+  // POCKET_ITEMS, AFTER_TOILET). Tom + attire sat = nøgen. `attire` er grovsammenfatning.
+  attireItems String[]     @default([])
   weighedAt DateTime     @default(now())
 
   @@map("weight_entries")
+}
+
+enum WeighAttire {
+  NAKED
+  UNDERWEAR
+  CLOTHED
+  CLOTHED_PHONE
 }
 
 enum RelativeTime {
@@ -1320,6 +1377,13 @@ model Product {
   categoryId       String?
   imageUrl         String?
   pendingImageUrl  String?
+  // Open Food Facts-varer uden dansk tekst oversættes automatisk; originalen
+  // gemmes, så admin kan se den ved siden af den danske (translationStatus
+  // PENDING = afventer admins godkendelse, APPROVED = godkendt).
+  nameOriginal           String?
+  ingredientsOriginal    String?
+  translationSourceLang  String?
+  translationStatus      String?
   imageStatus      ImageStatus            @default(NONE)
   kcalPer100g      Float
   proteinPer100g   Float
@@ -1333,6 +1397,10 @@ model Product {
   servingSizeUnitSingular String?
   servingSizeUnitPlural   String?
   ingredientsText  String?
+  // Butikkens originale varetekst (Spar/Nemlig/…), gemt uændret så den senere
+  // kan screenes (fx "hakket oksekød" mod Okse/Gris-mærket). Aldrig vist til
+  // brugere; opdateres altid fra kilden.
+  storeDescription String?
   allergens        String[]               @default([])
   additives        String[]               @default([])
   externalSource   ExternalProductSource?
@@ -1485,6 +1553,8 @@ model Product {
   // Normaliserede søge-/ernæringsparametre (fiber-%, sukker-%, fuldkorn …),
   // docs/DECISIONS.md 2026-09-23. Højst én række pr. produkt.
   nutritionFeatures  ProductNutritionFeatures?
+  // Natlig robot "energy-split-check": afvigende energifordeling (docs/DECISIONS.md 2026-10-07).
+  energySplitFlag    ProductEnergySplitFlag?
   // Filtertabellen (økologisk, glutenfri, kødtype, nøglehul …), højst én
   // række pr. produkt — docs/DECISIONS.md 2026-09-27.
   filters            ProductFilters?
@@ -1492,6 +1562,10 @@ model Product {
   // (docs/DECISIONS.md 2026-10-02). labelsScannedAt = sidste kørsel.
   labels             ProductLabel[]
   labelsScannedAt    DateTime?
+  // Dyrefoder-billedtjek (natligt job "pet-food-scan", docs/DECISIONS.md 2026-10-07). petFoodCheckedAt = sidste kørsel.
+  petFoodCheckedAt   DateTime?
+  // Natlig gennemgang af eksisterende varer med stregkode- og ordspærringen (flag-only, ingen AI).
+  petFoodTextCheckedAt DateTime?
   registrations      Registration[]
   favorites          Favorite[]
   dishIngredients    DishIngredient[]
@@ -1959,6 +2033,7 @@ enum ExternalProductSource {
   HELLOFRESH
   REMA1000
   BILKA
+  VALDEMARSRO
 }
 
 // Reference database of EU-approved E-number additives (E100-E1521),
@@ -2113,6 +2188,12 @@ model IngredientRegionHourStat {
 model GenericIngredient {
   id       String                    @id @default(cuid())
   name     String
+  // Ental/flertal (docs/REGLER.md): søgning efter "et æble" må ikke give "æbler".
+  // Ens i begge felter hvor formen ikke kan afgøres (fx æg).
+  nameSingular String?
+  namePlural   String?
+  // Rå eller tilberedt (docs/REGLER.md, 2026-10-08). Standard RAW; sæt COOKED når varen er kogt/stegt/bagt o.l.
+  cookingState GenericIngredientCookingState @default(RAW)
   category GenericIngredientCategory @default(OTHER)
   imageUrl String?
 
@@ -2215,6 +2296,11 @@ model UserProductSearchHistory {
   @@unique([userId, genericIngredientId])
   @@index([userId, clickCount])
   @@map("user_product_search_history")
+}
+
+enum GenericIngredientCookingState {
+  RAW
+  COOKED
 }
 
 enum GenericIngredientCategory {
@@ -2328,6 +2414,8 @@ model Dish {
   externalSource String?
   // Offentligt ID på den delte udgave (SharedRecipe), når retten er delt.
   sharedRecipeId String?
+  // Antal personer retten er til (fra Indsæt tekst/Scan eller manuelt).
+  servings       Int?
   // Op til 3 billeder af den færdige ret (offentlige stier under
   // /product-images/recipe-images). Det første er forsidebillede.
   images         String[]  @default([])
@@ -2605,6 +2693,8 @@ enum MessageEvent {
   SUPPORT_REPLY
   SUPPORT_OVERDUE_ADMIN
   SUPPORT_RECEIVED
+  // Admin har afvist en delt ret som kopi (docs/DECISIONS.md 2026-10-08).
+  RECIPE_SHARE_REJECTED
 }
 
 enum MessageChannel {
@@ -2657,6 +2747,10 @@ model OutboundMessage {
   // "Til info sendte vi dig ..."-popuppen (src/lib/sent-notices.ts): sat, når
   // brugeren har trykket "Læst". Kun relevant for sendte mails/sms'er.
   noticeAckAt DateTime?
+  // Brugerens indbakke (Profil → Beskeder): "Slet" lægger beskeden under Slettet,
+  // "Ryd alt" skjuler den for altid for brugeren. Rækken bevares til admin-loggen.
+  userDeletedAt DateTime?
+  userPurgedAt  DateTime?
 
   @@index([status])
   @@index([userId, readAt])
@@ -3341,6 +3435,13 @@ model SharedRecipe {
   // Anonym brug (favorit, kopi): popularitet i søgningen.
   popularity    Int                @default(0)
   reviewedAt    DateTime?
+  // Kopi-tjek (src/lib/recipe-copy-check.ts): over 80 % sammenfald med en
+  // anden ret flagges og skjules for andre, til admin godkender eller afviser.
+  // copyCheck = kilde, sammenfald og markerede tekststykker. Afvisningen
+  // gemmer admins begrundelse; ejeren beholder retten privat.
+  copyFlagged     Boolean          @default(false)
+  copyCheck       Json?
+  rejectionReason String?
   createdAt     DateTime           @default(now())
   updatedAt     DateTime           @updatedAt
 
@@ -3373,6 +3474,36 @@ model RecipeCookbookPhoto {
 
   @@index([userId, productId])
   @@map("recipe_cookbook_photos")
+}
+
+// Tommel op/ned på en opskrift (HelloFresh, delt eller egen ret). recipeKey er
+// "shared:<id>", "hf:<produktId>" eller "own:<id>"; value er 1 eller -1.
+model RecipeRating {
+  id        String   @id @default(cuid())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String
+  recipeKey String
+  value     Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId, recipeKey])
+  @@map("recipe_ratings")
+}
+
+// Sider, det natlige integrations-job (scripts/valdemarsro-agent) har set:
+// opskrift eller ej, seneste sitemap-dato og svarstatus, så blogindlæg ikke
+// hentes igen og døde links kan ses.
+model RecipeSourceUrl {
+  url        String   @id
+  source     String
+  isRecipe   Boolean  @default(false)
+  lastmod    String?
+  httpStatus Int      @default(200)
+  checkedAt  DateTime @default(now())
+
+  @@index([source, isRecipe])
+  @@map("recipe_source_urls")
 }
 
 model SharedRecipeFavorite {
@@ -4165,6 +4296,24 @@ model DebugLogSettings {
   @@map("debug_log_settings")
 }
 
+// Gemte visninger i admin (docs/DECISIONS.md 2026-10-07): en admins navngivne
+// kombination af søgning, filtre, sortering, visning og synlige felter.
+// `query` er URL'ens søgestreng, normaliseret af den enkelte sides parser;
+// `scope` er siden (fx "product-database"). Ét navn pr. admin pr. side.
+model AdminSavedView {
+  id        String   @id @default(cuid())
+  userId    String
+  scope     String
+  name      String
+  query     String   @default("")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+
+  @@unique([userId, scope, name])
+  @@index([userId, scope])
+  @@map("admin_saved_views")
+}
+
 // Nøgleord på produktsiden (docs/DECISIONS.md 2026-10-02): én række
 // ("default") med de felter (src/lib/product-page-tags.ts) og frie nøgleord
 // fra Product.keywords, som admin har valgt at vise over "Energifordeling".
@@ -4199,9 +4348,20 @@ model Flow {
   name        String
   description String?
   enabled     Boolean    @default(false)
+  // Guide-flows med betingelser (docs/DECISIONS.md 2026-10-06): "popup" =
+  // bundark med siderne, "banner" = kort hint-banner (første side).
+  kind        String     @default("popup")
+  // Hvornår flowet vises — src/lib/flow-conditions.ts (FlowConditions).
+  // Null = til alle, på alle sider.
+  conditions  Json?
+  // Højeste vises først, når flere flows passer samtidig.
+  priority    Int        @default(0)
+  // Hvor mange gange samme bruger højst får flowet vist (0 = uden grænse).
+  maxShows    Int        @default(1)
   createdAt   DateTime   @default(now())
   updatedAt   DateTime   @default(now()) @updatedAt
   pages       FlowPage[]
+  views       FlowView[]
 
   @@map("flows")
 }
@@ -4214,11 +4374,92 @@ model FlowPage {
   title       String   @default("")
   bodyHtml    String   @default("")
   buttonLabel String   @default("Næste")
+  // Valgfri ekstra knap, fx "Integrér dit ur" → /settings/integrations.
+  // Brugeren kommer tilbage til samme side i guiden med tilbage-pilen.
+  actionLabel String?
+  actionHref  String?
   createdAt   DateTime @default(now())
   updatedAt   DateTime @default(now()) @updatedAt
 
   @@index([flowId, sortOrder])
   @@map("flow_pages")
+}
+
+// Hvor mange gange en bruger har set et flow, og om det er gennemført/lukket.
+model FlowView {
+  id          String    @id @default(cuid())
+  flowId      String
+  flow        Flow      @relation(fields: [flowId], references: [id], onDelete: Cascade)
+  userId      String
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  shownCount  Int       @default(0)
+  lastShownAt DateTime?
+  completedAt DateTime?
+  dismissedAt DateTime?
+  createdAt   DateTime  @default(now())
+
+  @@unique([flowId, userId])
+  @@map("flow_views")
+}
+
+// Hvilke dele af appen brugeren har besøgt (første sti-led, fx "/camera"),
+// til flow-betingelser som "har ikke brugt mad-scanningen".
+model UserSectionVisit {
+  id           String   @id @default(cuid())
+  userId       String
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  section      String
+  visitCount   Int      @default(1)
+  firstVisitAt DateTime @default(now())
+  lastVisitAt  DateTime @default(now())
+
+  @@unique([userId, section])
+  @@map("user_section_visits")
+}
+
+// --- Migrering fra MyFitnessPal / Lifesum (docs/DECISIONS.md 2026-10-06) ---
+
+// Én import = én skærmoptagelse/serie skærmbilleder fra en anden app.
+// Billederne gemmes ikke; kun de aflæste rækker.
+model MigrationImport {
+  id         String                 @id @default(cuid())
+  userId     String
+  user       User                   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  source     String
+  status     String                 @default("ANALYZING")
+  frameCount Int                    @default(0)
+  createdAt  DateTime               @default(now())
+  updatedAt  DateTime               @default(now()) @updatedAt
+  rows       MigrationImportRow[]
+
+  @@index([userId, createdAt])
+  @@map("migration_imports")
+}
+
+model MigrationImportRow {
+  id             String          @id @default(cuid())
+  importId       String
+  import         MigrationImport @relation(fields: [importId], references: [id], onDelete: Cascade)
+  // Dato i brugerens kalender (YYYY-MM-DD) og måltid (breakfast/lunch/dinner/snack).
+  date           String
+  meal           String
+  name           String
+  amountText     String?
+  amountGrams    Float?
+  kcal           Float
+  protein        Float?
+  carbs          Float?
+  fat            Float?
+  // Aflæsningens sikkerhed 0–1 fra AI'en.
+  confidence     Float           @default(0)
+  // PENDING → IMPORTED (registrering oprettet) eller SKIPPED.
+  status         String          @default("PENDING")
+  registrationId String?
+  createdAt      DateTime        @default(now())
+
+  @@unique([importId, date, meal, name, kcal])
+  @@index([importId, status])
+  @@map("migration_import_rows")
 }
 
 // --- Partnere: kontakter, reklamer og rapporter (docs/DECISIONS.md 2026-09-29) ---
@@ -4596,4 +4837,124 @@ model QuickEnrichmentJob {
 
   @@index([finishedAt, startedAt])
   @@map("quick_enrichment_jobs")
+}
+
+// Natlig robot "energy-split-check" (docs/DECISIONS.md 2026-10-07): en vare,
+// hvis energifordeling (% af kcal fra protein/kulhydrat/fedt) afviger fra
+// andre varer med samme brand/produkttype/serie/variant/smag, der kun
+// adskiller sig på mængde. Varen deaktiveres ikke — admin undersøger den.
+// Højst én række pr. vare; rækken slettes igen, når afvigelsen forsvinder.
+model ProductEnergySplitFlag {
+  id              String    @id @default(cuid())
+  product         Product   @relation(fields: [productId], references: [id], onDelete: Cascade)
+  productId       String    @unique
+  // Største afvigelse i procentpoint fra gruppens median-fordeling.
+  deviationPoints Float
+  // Varens egen og gruppens (median) fordeling: { protein, carbs, fat } i % af kcal.
+  split           Json
+  referenceSplit  Json
+  groupSize       Int
+  // Varens tal ved sidste vurdering, så en gennemgået vare først flagges
+  // igen, hvis dens tal ændres.
+  fingerprint     String
+  flaggedAt       DateTime  @default(now())
+  reviewedAt      DateTime?
+
+  @@index([reviewedAt])
+  @@map("product_energy_split_flags")
+}
+
+// Dyrefoder-forsøg pr. bruger (docs/DECISIONS.md 2026-10-07). Gentagelser inden for
+// få minutter (kameraet læser samme stregkode flere gange) tæller som ét forsøg.
+// source: LOOKUP (stregkode scannet), CREATE / QUICK (oprettelse), ENRICHMENT (AI læste
+// dyrefoder på forsiden), NIGHT (natrobotten så dyrefoder på billedet).
+model PetFoodIncident {
+  id              String    @id @default(cuid())
+  // Null = anonym (ikke logget ind) — hændelsen vises stadig i admin-oversigten.
+  user            User?     @relation(fields: [userId], references: [id], onDelete: SetNull)
+  userId          String?
+  source          String
+  // BLOCKED = spærret ved scanning/oprettelse (ingen vare oprettet), AUTO_REJECTED = vare oprettet og
+  // afvist (AI/natrobot), FLAGGED_EXISTING = fundet i en eksisterende vare (kun markeret).
+  kind            String    @default("BLOCKED")
+  barcode         String?
+  productId       String?
+  productName     String?
+  matchedBy       String?
+  // De billeder, brugeren forsøgte at oprette (gemte URL'er), så admin kan se dem i oversigten.
+  imageUrls       String[]  @default([])
+  // Tæller som et forsøg mod brugerens konto (advarsel/spærring).
+  countedAsStrike Boolean   @default(true)
+  // Admin har gennemgået hændelsen; falsePositive = fejlagtig afvisning (frikendt).
+  reviewedAt      DateTime?
+  falsePositive   Boolean   @default(false)
+  createdAt       DateTime  @default(now())
+
+  @@index([userId, createdAt])
+  @@index([createdAt])
+  @@index([reviewedAt, createdAt])
+  @@map("pet_food_incidents")
+}
+
+// Admin-rettelser til dyrefoder-filteret (docs/PET-FOOD-FILTER.md): lægges oven på standardlisterne i
+// src/data/pet-food-*.json. list = strong | weak | brand | barcode | setting. action = ADD (tilføjet af
+// admin) eller REMOVE (standardudtryk slået fra). setting-rækker har value "minWeakHits=N".
+model PetFoodFilterEdit {
+  id        String   @id @default(cuid())
+  list      String
+  value     String
+  action    String
+  note      String?
+  adminId   String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([list, value])
+  @@map("pet_food_filter_edits")
+}
+// Singleton (id = 1): admin-styret algoritme, der gætter tøj-valget ved en vejning
+// ud fra de seneste vejninger (docs/DECISIONS.md 2026-10-07).
+model WeightAttireSettings {
+  id             Int      @id @default(1)
+  enabled        Boolean  @default(true)
+  lookbackCount  Int      @default(10)
+  windowHours    Float    @default(1.5)
+  underwearBefore Int     @default(8)
+  syncStaleHours Int      @default(48)
+  updatedAt      DateTime @default(now()) @updatedAt
+
+  @@map("weight_attire_settings")
+}
+
+// Vejepaaminelser (docs/DECISIONS.md 2026-10-07): brugeren vaelger, hvilke
+// lige timer (fx 8, 10, 12 ...) der skal sende en push 5 minutter foer.
+// lastSlot = "YYYY-MM-DD-HH" for den seneste afsendte paaminelse.
+model WeighReminderPref {
+  id        String   @id @default(cuid())
+  userId    String   @unique
+  enabled   Boolean  @default(false)
+  hours     Int[]
+  lastSlot  String?
+  updatedAt DateTime @default(now()) @updatedAt
+
+  @@map("weigh_reminder_prefs")
+}
+
+// Admin synonym dictionary for search (e.g. "gris" ↔ "svin"). `similarity`
+// (0–100 %) says how interchangeable the two words are: the search also
+// matches the other word, but a hit via a synonym is scored at
+// similarity/100 of a direct text match (src/lib/search-synonyms.ts).
+model SearchSynonym {
+  id         String   @id @default(cuid())
+  language   Locale   @default(DA)
+  termA      String
+  termB      String
+  similarity Int      @default(100)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@unique([language, termA, termB])
+  @@index([termA])
+  @@index([termB])
+  @@map("search_synonyms")
 }

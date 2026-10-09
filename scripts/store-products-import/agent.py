@@ -24,6 +24,9 @@ until they get nutrition, so nobody logs 0 kcal and scanning the barcode
 still lets a user create the product. A product that already has nutrition
 from elsewhere keeps it. Rows without an EAN are keyed by "externalId".
 
+Rows deleted from other store sheets as EAN duplicates keep their chain:
+data/store_links.json adds it to the winner's product_stores every run.
+
 rema1000-agent rewrites its rows on every container start, so this agent
 waits START_DELAY_SECONDS first and runs after it.
 """
@@ -47,11 +50,9 @@ DATABASE_URL = os.environ["DATABASE_URL"].split("?")[0]
 # The full catalogue (JSON + images) is copied to the NAS volume /import;
 # the small sample baked into the image is only used when that is empty.
 IMPORT_DIR = os.environ.get("STORE_PRODUCTS_IMPORT_DIR", "/import")
-DATA_DIR = (
-    IMPORT_DIR
-    if os.path.isfile(os.path.join(IMPORT_DIR, "store_products.json"))
-    else os.environ.get("STORE_PRODUCTS_DATA_DIR", "/app/data")
-)
+# Baked into the image (git); store_links.json is always read from here.
+BAKED_DATA_DIR = os.environ.get("STORE_PRODUCTS_DATA_DIR", "/app/data")
+DATA_DIR = IMPORT_DIR if os.path.isfile(os.path.join(IMPORT_DIR, "store_products.json")) else BAKED_DATA_DIR
 IMAGE_OUTPUT_DIR = os.environ.get("IMAGE_OUTPUT_DIR", "/images")
 PUBLIC_PATH_PREFIX = os.environ.get("PUBLIC_PATH_PREFIX", "/product-images")
 START_DELAY_SECONDS = int(os.environ.get("START_DELAY_SECONDS", "180"))
@@ -247,6 +248,7 @@ def upsert_product(cur, p, store_ids, category_ids):
         "microSources": psycopg2.extras.Json({k: "LABEL" for k in micros}),
         "estimatedSources": psycopg2.extras.Json({k: "ESTIMATED" for k in estimated}),
         "ingredients": p.get("ingredients"),
+        "storeDescription": p.get("storeDescription"),
         "allergens": p.get("allergens") or [],
         "additives": p.get("additives") or [],
         "subbrand": p.get("subbrand"),
@@ -270,6 +272,10 @@ def upsert_product(cur, p, store_ids, category_ids):
             'UPDATE "products" SET "imageUrl" = %s WHERE id = %s AND "imageUrl" IS NULL',
             (image_url, product_id),
         )
+        cur.execute(
+            'UPDATE "products" SET "storeDescription" = %s WHERE id = %s',
+            (params["storeDescription"], product_id),
+        )
     elif existing_id:
         product_id = existing_id
         params["id"] = product_id
@@ -289,7 +295,8 @@ def upsert_product(cur, p, store_ids, category_ids):
             UPDATE "products" SET
                 name = %(name)s, "brandId" = %(brandId)s, "categoryId" = %(categoryId)s,
                 {nutrition_sql}
-                "ingredientsText" = %(ingredients)s, allergens = %(allergens)s, additives = %(additives)s,
+                "ingredientsText" = %(ingredients)s, "storeDescription" = %(storeDescription)s,
+                allergens = %(allergens)s, additives = %(additives)s,
                 subbrand = %(subbrand)s, variant = %(variant)s, flavor = %(flavor)s,
                 "packCount" = %(packCount)s, packaging = %(packaging)s, keywords = %(keywords)s, "packageSizeText" = %(packageSize)s,
                 "productType" = %(productType)s,
@@ -309,7 +316,7 @@ def upsert_product(cur, p, store_ids, category_ids):
             INSERT INTO "products" (
                 id, name, "brandId", "categoryId", "kcalPer100g", "proteinPer100g", "carbsPer100g",
                 "fatPer100g", "saturatedFatPer100g", "nutritionMissing", "nutrientSources",
-                "micronutrientsPer100g", "ingredientsText", allergens, additives,
+                "micronutrientsPer100g", "ingredientsText", "storeDescription", allergens, additives,
                 "externalSource", "externalId", "sourceCheckedAt", status, subbrand, variant, flavor,
                 "packCount", packaging, keywords, "packageSizeText", "productType", "productCategory",
                 "imageUrl", "imageStatus", "createdAt"
@@ -317,7 +324,7 @@ def upsert_product(cur, p, store_ids, category_ids):
                 %(id)s, %(name)s, %(brandId)s, %(categoryId)s, %(kcal)s, %(protein)s, %(carbs)s,
                 %(fat)s, %(satFat)s, %(nutritionMissing)s,
                 NULLIF(%(estimatedSources)s::jsonb || %(microSources)s::jsonb, '{}'::jsonb),
-                NULLIF(%(micros)s::jsonb, '{}'::jsonb), %(ingredients)s, %(allergens)s, %(additives)s,
+                NULLIF(%(micros)s::jsonb, '{}'::jsonb), %(ingredients)s, %(storeDescription)s, %(allergens)s, %(additives)s,
                 %(externalSource)s::"ExternalProductSource", %(externalId)s, now(), 'APPROVED',
                 %(subbrand)s, %(variant)s, %(flavor)s, %(packCount)s, %(packaging)s, %(keywords)s, %(packageSize)s,
                 %(productType)s, %(productCategory)s::"ProductCategory", %(imageUrl)s,
@@ -437,6 +444,43 @@ def upsert_filters(cur, product_id, f):
     )
 
 
+def apply_store_links(cur):
+    """Kæder for sheet rows deleted as EAN duplicates (docs/DECISIONS.md
+    2026-10-08 "Slettede gengangere beholder kæden"): the winning product gets
+    the losing row's chain in product_stores. Links whose product is not in
+    the database yet (SPAR/German sheets) are applied on a later run."""
+    path = os.path.join(BAKED_DATA_DIR, "store_links.json")
+    if not os.path.isfile(path):
+        return 0, 0
+    with open(path, "r", encoding="utf-8") as f:
+        links = json.load(f)
+    store_ids = {}
+    linked = waiting = 0
+    for link in links:
+        ean = link["ean"]
+        codes = list(dict.fromkeys([ean, ean.lstrip("0"), ean.zfill(13)]))
+        cur.execute(
+            """SELECT "productId" FROM "barcodes" WHERE code = ANY(%s)
+               UNION SELECT id FROM "products" WHERE "externalId" = ANY(%s)""",
+            (codes, codes),
+        )
+        product_ids = [row[0] for row in cur.fetchall()]
+        if not product_ids:
+            waiting += 1
+            continue
+        for store in link["stores"]:
+            if store not in store_ids:
+                store_ids[store] = get_or_create_id(cur, "stores", store)
+            for product_id in product_ids:
+                cur.execute(
+                    """INSERT INTO "product_stores" ("productId", "storeId") VALUES (%s, %s)
+                       ON CONFLICT ("productId", "storeId") DO NOTHING""",
+                    (product_id, store_ids[store]),
+                )
+                linked += cur.rowcount
+    return linked, waiting
+
+
 def run(conn):
     with open(os.path.join(DATA_DIR, "store_products.json"), "r", encoding="utf-8") as f:
         products = json.load(f)
@@ -464,9 +508,13 @@ def run(conn):
            AND "externalSource" IN ('BILKA'::"ExternalProductSource", 'REMA1000'::"ExternalProductSource")"""
     )
     hidden = cur.fetchone()[0]
+    linked, waiting = apply_store_links(cur)
     conn.commit()
     cur.close()
-    message = f"{imported} af {len(products)} butiksvarer importeret/opdateret ({hidden} skjult: ingen næring endnu)"
+    message = (
+        f"{imported} af {len(products)} butiksvarer importeret/opdateret ({hidden} skjult: ingen næring endnu); "
+        f"{linked} kædekoblinger fra slettede gengangere ({waiting} stregkoder venter på varen)"
+    )
     log.info(message)
     # (besked, antal udført) til admin "Robotter"/"Nattens kørsler".
     return message, imported

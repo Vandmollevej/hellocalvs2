@@ -6,7 +6,11 @@ import { lookupFoodDataCentral } from "@/lib/foodDataCentral";
 import { inferGs1OriginCountryCode } from "@/lib/regions";
 import { createExternalImageCutoutJob } from "@/lib/image-cutout-jobs";
 import { syncProductNutritionFeaturesSafely } from "@/lib/product-nutrition-features";
+import { translateToDanish } from "@/lib/translate-da";
 import { debugLog, errorText, flowIdFromRequest } from "@/lib/debug-log";
+import { petFoodBlockReason } from "@/lib/pet-food-blacklist";
+import { recordPetFoodAttempt } from "@/lib/pet-food-strikes";
+import { getSessionUser } from "@/lib/session";
 
 // GET /api/products/lookup/:barcode
 //
@@ -37,6 +41,39 @@ export async function GET(
     });
 
   try {
+    // Dyrefoder-spærring (src/lib/pet-food-blacklist.ts): spærret stregkode
+    // afvises før opslag, og dyrefoder fra Open Food Facts/USDA gemmes aldrig.
+    // En indlogget bruger får en advarsel første gang og spærres anden gang
+    // (src/lib/pet-food-strikes.ts).
+    const blockedResponse = async (reason: string, match: string, productName?: string) => {
+      const sessionUser = await getSessionUser();
+      const outcome = await recordPetFoodAttempt({
+        userId: sessionUser?.id,
+        source: "LOOKUP",
+        barcode,
+        productName,
+        matchedBy: `${reason}: ${match}`,
+      });
+      log("barcode_lookup", `Afvist: dyrefoder (${reason}: ${match})`, {
+        level: "warn",
+        data: { source: "blocked", strikes: outcome.strikes, accountBlocked: outcome.blocked },
+      });
+      return NextResponse.json(
+        {
+          source: "blocked",
+          product: null,
+          code: "PET_FOOD_BLOCKED",
+          message: outcome.message,
+          strikes: outcome.strikes,
+          accountBlocked: outcome.blocked,
+          incidentId: outcome.incidentId,
+        },
+        { status: 422 }
+      );
+    };
+    const barcodeBlock = await petFoodBlockReason({ barcode });
+    if (barcodeBlock) return blockedResponse(barcodeBlock.reason, barcodeBlock.match);
+
     const existing = await prisma.barcode.findUnique({
       where: { code: barcode },
       include: { product: { include: { brand: true } } },
@@ -83,6 +120,11 @@ export async function GET(
       return NextResponse.json({ source: "incomplete", product: null }, { status: 404 });
     }
 
+    const externalBlock = await petFoodBlockReason({
+      texts: [externalProduct.name, externalProduct.brand, offProduct?.ingredientsText],
+    });
+    if (externalBlock) return blockedResponse(externalBlock.reason, externalBlock.match, externalProduct.name);
+
     const brand = externalProduct.brand
       ? await prisma.brand.upsert({
           where: { name: externalProduct.brand },
@@ -91,9 +133,23 @@ export async function GET(
         })
       : null;
 
+    // OFF-tekst på fremmedsprog oversættes; originalen gemmes til admins side-om-side-godkendelse.
+    const needsTranslation = !!offProduct?.needsTranslation;
+    const translated = needsTranslation
+      ? await translateToDanish({ name: externalProduct.name, ingredients: offProduct?.ingredientsText ?? null })
+      : null;
+
     const product = await prisma.product.create({
       data: {
-        name: externalProduct.name,
+        name: translated?.name ?? externalProduct.name,
+        ...(needsTranslation
+          ? {
+              nameOriginal: externalProduct.name,
+              ingredientsOriginal: offProduct?.ingredientsText ?? null,
+              translationSourceLang: offProduct?.sourceLang ?? "en",
+              translationStatus: "PENDING",
+            }
+          : {}),
         brandId: brand?.id,
         imageUrl: externalProduct.imageUrl,
         kcalPer100g: externalProduct.kcalPer100g,
@@ -104,7 +160,7 @@ export async function GET(
         servingSizeUnitSingular: offProduct?.servingIsSlice ? "skive" : undefined,
         servingSizeUnitPlural: offProduct?.servingIsSlice ? "skiver" : undefined,
         productCategory: offProduct?.isBeverage ? "DRINK" : undefined,
-        ingredientsText: offProduct?.ingredientsText ?? null,
+        ingredientsText: translated?.ingredients ?? offProduct?.ingredientsText ?? null,
         allergens: offProduct?.allergens ?? [],
         additives: offProduct?.additives ?? [],
         saturatedFatPer100g: offProduct?.saturatedFatPer100g ?? null,
