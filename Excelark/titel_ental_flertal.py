@@ -234,6 +234,13 @@ def main(which):
         # variation + keywords
         vi = [nix[h] for h in cfg['var'] if h in nix]
         ki = [nix[h] for h in cfg['kw'] if h in nix]
+        # 'Uden' + 'Tilsat sukker' (fejlagtigt delt) -> 'uden tilsat sukker'
+        for n in range(len(ki) - 1):
+            x, y = nr[ki[n]], nr[ki[n + 1]]
+            if isinstance(x, str) and isinstance(y, str) and x.strip(' ,/').lower() == 'uden' and y.strip().lower().startswith('tilsat'):
+                nr[ki[n]] = 'uden ' + y.strip().lower()
+                nr[ki[n + 1]] = None
+                stats['uden_tilsat_samlet'] += 1
         si = nix[cfg['sugar']]
         for i in vi + ki:
             v = nr[i]
