@@ -470,10 +470,10 @@
     "src/components/web/WebShell.tsx": "5f2646ffd79af9cc"
   },
   "/favorites": {
-    "src/app/favorites/page.tsx": "f45a25d20c01668a",
+    "src/app/favorites/page.tsx": "c84fc3104f0b87e1",
     "src/app/layout.tsx": "9a180a8c9b7bdec8",
     "src/components/AuthGate.tsx": "94db96b768f9f95f",
-    "src/components/BottomNav.tsx": "50c4eb59b5807fa4",
+    "src/components/BottomNav.tsx": "3428c5ae144e2dea",
     "src/components/EmailVerifySheet.tsx": "42e52d85f9bf57d9",
     "src/components/FoodRow.tsx": "b5ec0c5a27228591",
     "src/components/HfScreen.tsx": "fa0b0a94f60cbbc5",
@@ -1550,9 +1550,9 @@
   },
   "/search": {
     "src/app/layout.tsx": "9a180a8c9b7bdec8",
-    "src/app/search/page.tsx": "4290e386926f9f4e",
+    "src/app/search/page.tsx": "117c56602c06937d",
     "src/components/AuthGate.tsx": "94db96b768f9f95f",
-    "src/components/BottomNav.tsx": "50c4eb59b5807fa4",
+    "src/components/BottomNav.tsx": "3428c5ae144e2dea",
     "src/components/EmailVerifySheet.tsx": "42e52d85f9bf57d9",
     "src/components/FoodRow.tsx": "b5ec0c5a27228591",
     "src/components/HfScreen.tsx": "fa0b0a94f60cbbc5",
@@ -1574,9 +1574,9 @@
   },
   "/settings": {
     "src/app/layout.tsx": "9a180a8c9b7bdec8",
-    "src/app/settings/page.tsx": "34dac309e7c1540c",
+    "src/app/settings/page.tsx": "b6b2197ca27131c3",
     "src/components/AuthGate.tsx": "94db96b768f9f95f",
-    "src/components/BottomNav.tsx": "50c4eb59b5807fa4",
+    "src/components/BottomNav.tsx": "3428c5ae144e2dea",
     "src/components/EmailVerifySheet.tsx": "42e52d85f9bf57d9",
     "src/components/EnergyBreakdown.tsx": "97939a4c16e4b7fe",
     "src/components/EnergyGoalEditor.tsx": "9f39a1f62786e5bd",
