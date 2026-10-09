@@ -68,9 +68,9 @@ import kotlin.math.sin
 /** Same hold time as the footer (FooterArc.tsx LONG_PRESS_MS). */
 private const val ARC_LONG_PRESS_MS = 550L
 
-internal const val ARC_RADIUS = 58f
-private const val ARC_REST_HEIGHT = 20f
-private const val ARC_PULL_DISTANCE = 70f
+internal const val ARC_RADIUS = 83f
+private const val ARC_REST_HEIGHT = 40f
+private const val ARC_PULL_DISTANCE = 100f
 internal const val ARC_ICON_CIRCLE = 46f
 internal const val ARC_ICON_RADIUS = ARC_RADIUS + 38 + ARC_ICON_CIRCLE / 2
 private const val ARC_ANGLE_STEP_DEG = 32.0
@@ -223,7 +223,7 @@ fun HomeFooterArc(modifier: Modifier = Modifier, onOpenMenuSheet: () -> Unit) {
         val plusFollows = finger != null && p > 0.1f
         val plusX = if (plusFollows) cx + (finger!!.first * 0.4f).coerceIn(-ARC_RADIUS * 0.5f, ARC_RADIUS * 0.5f) else cx
         val plusUp = if (plusFollows) max(visibleHeight / 2, min(finger!!.second * 0.5f, visibleHeight * 0.8f)) else visibleHeight / 2
-        val plusSize = 11 + p * 9
+        val plusSize = 33 + p * 27
         Box(
             Modifier
                 .offset(x = (plusX - plusSize / 2).dp, y = (height - plusUp - plusSize / 2).dp)

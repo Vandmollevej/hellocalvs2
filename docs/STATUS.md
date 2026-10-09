@@ -1,6 +1,16 @@
 # HELLO CAL — project status
 
-Last updated: 2026-10-08
+Last updated: 2026-10-09
+
+## 2026-10-09: Stregkode læses også med skygge hen over koden (lokal tærskel pr. scanlinje)
+
+- Brugerens test 2026-10-06: en mælk med lidt skygge over stregkoden kunne ikke læses, mens andre scanner-apps læste den straks. Årsag: ZXing binariserer hver scanlinje med én fælles sort/hvid-tærskel, så de hvide felter i skyggen var mørkere end de sorte streger i lyset. Bemærk: ZXing's `HybridBinarizer` (som 2026-10-07-ændringen skiftede til hver anden frame) adskiller sig kun fra den globale for 2D-koder — for 1D-rækker bruger begge samme ene tærskel pr. række, så den skiftende binarisering hjalp ikke mod skygge på iPhone (ingen native BarcodeDetector).
+- Nu tærskles hver scanlinje lokalt (`src/lib/barcode-row-threshold.ts`, koblet på ZXing via `src/lib/barcode-local-binarizer.ts`): hver pixel sammenlignes med gennemsnittet i et vindue på 10 % af linjen, så kun kontrasten mellem streg og nabo-felter tæller. I samme frame prøves derefter ZXing's globale histogram (lav kontrast/uskarphed), og UPC-E-læseren på begge. Én luminans-beregning pr. billede. Native BarcodeDetector (Android Chrome) kører stadig først.
+- Tjek: `npm test` (4 nye tests: uden skygge, blød og skarp skyggekant, ensfarvede områder), lint og typecheck rene for de ændrede filer. `npm run build` stopper på en eksisterende typefejl i `src/app/admin/product-database/products/page.tsx` (`"details"` vs. `"list"`, kendt fra 2026-10-04). Ikke prøvet på telefon — brugeren scanner mælken igen i samme lys.
+
+## 2026-10-09: Startmængde — instantkaffe 2 g og aldrig over pakkens indhold
+
+- `default-amount.ts` (+ native `FoodLogic.kt`): instantkaffe → 2 g; forslaget kappes ved pakkens vægt/volumen. Test: `node --test src/lib/default-amount.test.mjs` (14 grønne). Lint/build ikke kørt (ingen node_modules her); Kotlin ikke kompileret lokalt.
 
 ## 2026-10-08: Adgangsmur mod crawlere
 
@@ -33,6 +43,9 @@ Last updated: 2026-10-08
 - Hvert brand-kort (fuld admin) har nu "Erstat logo" (PNG-upload, samme pipeline som drag n drop/Logo-upload, PNG bruges som den er) og "Genkør logo" (`rerunBrandLogo` i `brands/actions.ts` sætter brandets BRAND_LOGO-job til PENDING; `cutout.py` skriver det nye resultat til brandet med `?v=`).
 - Genkør virker kun, når logoet stammer fra et fritlægningsjob (ikke uploadet). Billedrobotten skal genstartes/deployes med ny `cutout.py` (fix e745004e + denne).
 - Lint/typecheck/build kørt; ikke visuelt testet.
+
+## 2026-10-09: Kalender uden totaler i uge/måned
+Statusblokken i uge-/månedsvisning viser kun status (gennemsnit af forgangne dage mod delmålets dagsmål). Dagsvisningen er uændret. Lint + tsc grønne; ikke prøvet i browser.
 
 ## 2026-10-07: Alle popups som bundark + brand-logoets luft
 
@@ -6104,3 +6117,7 @@ Ikke bygget: Valdemarsro-import til app-databasen, Valdemarsro-detaljevisning ("
 
 Ny `valdemarsro-agent` (scripts/valdemarsro-agent, compose.production.yaml, build.yml, jobs-registret), model `RecipeSourceUrl` (migration 20261008130000_recipe_source_urls), "Gå til opskrift"-knap i AddProductView, admin Retter → Valdemarsro viser data. Parsingen er testet mod en rigtig Valdemarsro-side; agenten er IKKE kørt mod databasen eller i Docker endnu — første nat henter 150 retter, resten over de følgende nætter (sæt VALDEMARSRO_AGENT_BATCH_SIZE højere for hurtigere start). Kræver deploy, så containeren bygges og migrationen kører.
 
+
+## 2026-10-08 — Ental/flertal for generiske ingredienser (database + API)
+
+Skema, migration, `src/lib/danish-number.ts` og søgning/oprettelse er lavet (se DECISIONS.md samme dato). `prisma validate` og ESLint på de ændrede filer er grønne; `npm run build` og typecheck er ikke kørt (ingen genereret Prisma-klient i arbejdskopien). Mangler: UI skal vise `displayName`, ental/flertal i arkene, billedomdøbning.

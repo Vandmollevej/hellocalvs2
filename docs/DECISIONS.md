@@ -2,6 +2,10 @@
 
 This file records durable decisions. Add a dated entry when a later decision changes one of them.
 
+## 2026-10-09: Stregkoder tærskles lokalt pr. scanlinje — skygge må ikke stoppe en læsning
+
+Brugerens ord (2026-10-06): "bare fordi det var et lille stykke skygge, kunne kameraet ikke læse stregkoden … det kan ikke være rigtigt." Hver scanlinje binariseres derfor med en glidende lokal tærskel (vindue 10 % af linjen, mindst 32 px, mørk = mindst 8 under det lokale gennemsnit) før ZXing's globale tærskel pr. række, som beholdes som fallback i samme frame. Det ligger i `src/lib/barcode-row-threshold.ts` + `barcode-local-binarizer.ts`, ikke i ZXing-koden, så biblioteket kan opdateres frit. ZXing's HybridBinarizer bruges ikke længere til 1D: dens lokale blokke gælder kun 2D-matricen.
+
 ## 2026-10-08: Vagt-robot på NAS'en (hver time, mail)
 
 - Ud over GitHub-tjekket (hvert 5. min) kører `uptime-agent` på NAS'en og tjekker hver time site, app, containere og diskplads; mail til peter@packroff.dk ved fejl og ved løst. Brugerens valg: hver time "for nu", kun mail. Cloudflare-alarmer sættes op af brugeren i dashboardet (docs/DEPLOYMENT.md "Overvågning").
@@ -4646,6 +4650,9 @@ klip-klister mellem sider, og telefon/webvisning må ikke have hver sine klasser
 - Tommel op/ned påvirker populariteten (tommel ned -3, op +1, højst +3 i alt) for at undgå selvforstærkende ekkokammer.
 - "Python på serveren" er TypeScript (brugerens ok 2026-10-08). de/fr/nl oversættes senere.
 
+## 2026-10-09: Kalenderens statusblok viser ingen totaler (uge/måned)
+- Uge-/månedsvisningen viser kun statusen ("Inden for målet" / "Målet ikke opnået" / "Intet registreret") — ikke "Mål: N kcal", motion eller "Tilbage i måneden". Totaler står kun på den enkelte dag (`GoalStatusSummary` `showTotals`).
+- Status = gennemsnit af forgangne dage med registreringer mod gennemsnitligt dagsmål (budget-snapshots, som følger næste delmål). I dag tæller ikke med.
 ## 2026-10-08: Slettede gengangere beholder kæden
 
 - Brugerens regel: når en butiksrække slettes, fordi stregkoden allerede findes (Bilka/databasen vinder), skal den tabende butiks kæde altid udfyldes på vinderen (Kæder/`product_stores`) — ellers mister vi viden om, hvor varen sælges.
@@ -4692,3 +4699,14 @@ Google/Apple/Facebook-login og integrationstilkobling kører i system-browseren,
 - **Integrationer:** den indloggede app henter `POST /api/auth/native/connect-code` og åbner `/api/integrations/<slug>/connect?native=<kode>`. Brugeren bindes til OAuth-state med et signeret token i state-cookien; callbacken sender til `hellocal://settings/integrations/<slug>?connected=1` / `?error=…`.
 - **Koder** (`NativeAuthCode`, migration `20261008160000_native_auth_codes`): 32 tilfældige bytes, kun sha256-hash gemmes, 2 minutter, én gang (atomisk). Login-koder kræver appens PKCE-verifier, så en anden app, der opsnapper `hellocal://`-linket, ikke kan bruge koden. Exchange/connect-code kræver headeren `X-HelloCal-Client: native` (mod login-CSRF).
 - Kendt rest-risiko: et connect-link er bundet til den bruger, der hentede koden; det kan kun bruges i 2 minutter og én gang.
+
+## 2026-10-08 — Ental/flertal på generiske ingredienser (`nameSingular` / `namePlural`)
+
+- `GenericIngredient` har fået `nameSingular` og `namePlural` (migration `20261008220000_generic_ingredient_number_forms`, backfill for kendte ord, ellers = `name`). Hvor formen ikke kan afgøres (fx æg) er teksten ens i begge felter.
+- `src/lib/danish-number.ts`: `deriveNumberForms` (kendte ord + tillægsord), `parseNumberQuery` ("et/en X" = ental, "nogle/flere/mange X" = flertal) og `matchesNumberQuery`. `GET /api/generic-ingredients` søger i alle tre felter og filtrerer på hele ord, så "et æble" ikke giver "æbler"; svaret har `displayName` i den søgte form. Oprettelse (`POST` og `addIngredientRequestGlobally`) udfylder begge felter.
+- Kun generiske varer — almindelige varer med brand/EAN berøres ikke. Se docs/REGLER.md.
+- Ikke gjort endnu: UI skal bruge `displayName`; ental/flertal-kolonner i Bilka-/REMA-arkene; import af de afledte former til eksisterende rækker ud over backfill-listen.
+
+## 2026-10-09: Retter-søgning viser Valdemarsro under "Opskrifter"; "Opret ny ret" som tekstlink
+- Årsag til tom liste: `/api/shared-recipes` medtog kun Valdemarsro ved `valdemarsro=1`, som appen aldrig sender, så "Opskrifter" (source=all) viste aldrig Valdemarsro-retter. Nu medtages de altid ved all; HelloFresh kræver stadig, at integrationen er slået til (Seriøs).
+- "Opret ny ret" er sort, understreget tekst med plus foran (ikke grøn knap) — web og native.

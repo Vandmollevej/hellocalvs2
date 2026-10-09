@@ -1725,7 +1725,8 @@
     "showAll": "Toon alles ({count})",
     "showLess": "Toon minder",
     "chartAria": "Verloop van {name}",
-    "loadError": "Kon je status niet laden."
+    "loadError": "Kon je status niet laden.",
+    "customizeView": "Weergave aanpassen"
   },
   "bodyMeasurementChart": {
     "noData": "Nog geen metingen.",

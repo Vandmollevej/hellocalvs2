@@ -36,6 +36,18 @@ ikke her, er den ikke registreret og skal tilføjes.
   Vegansk).
 - **Dyrefoder**: spærres (blacklist) — se docs/DECISIONS.md "Pet-food blacklist".
 
+- **Produkttype: ental og flertal (kun generiske varer, besluttet 2026-10-08)**:
+  generiske varer får to kolonner/felter ved siden af produkttype: `Product type
+  singular` og `Product type plural`, begge udfyldt. Søgning efter "et æble"
+  må ikke give "æbler" (og omvendt). Hvor ental = flertal (fx æg) eller det ikke
+  kan afgøres, står samme tekst i begge. Gælder ark og database
+  (`GenericIngredient`); almindelige varer med brand/EAN berøres ikke.
+  Status: ikke implementeret endnu.
+- **Små ord i navne**: med, i, af, uden skrives altid med småt i
+  produktnavne/produkttype/variant (aftalt 2026-10-08, ikke gennemført endnu).
+- **Generisk vare** = ingen Brand og ingen Subbrand i arket (EAN ses bort fra).
+  I databasen ligger de i `GenericIngredient`, ikke `Product`.
+
 ## Logoer og billeder
 
 - Kun mad-/drikkevaremærker får logo (ikke husholdning/rengøring/køkkenudstyr);
@@ -56,6 +68,10 @@ ikke her, er den ikke registreret og skal tilføjes.
 ## Proces
 
 - Flere parallelle sessioner: stage snævert, deploy-linjen er origin/master.
+- Alle opgaver auto-arkiveres umiddelbart, så snart de melder klar til arkivering – i samme tur, uden at vente (bruger 2026-10-09, gentaget).
+- Færdig opgave: slut med "arkiver mig", og arkivér derefter selv sessionen (`archive_session`), når PR er flettet. Manglende test er aldrig en gyldig grund til ikke at arkivere (global regel, bruger 2026-10-09). Stop-hook `scripts/archive-reminder.mjs` minder om det (bruger 2026-10-09; AGENTS.md).
+- Commit, push, flet PR og alt andet der skal til for at færdiggøre en opgave sker uden at spørge først (bruger 2026-10-09; AGENTS.md).
+- Kan en ændring pushes sammen med en anden opgaves push/PR, så undlad egen push/PR og arkivér blot (bruger 2026-10-09; AGENTS.md).
 - Efter rebase der rører `prisma/schema.prisma`: kør `prisma validate` + typecheck.
 
 ## Crawlere og billeder
@@ -67,3 +83,6 @@ ikke her, er den ikke registreret og skal tilføjes.
 - Aldrig vandmærke eller skjult bruger-ID i billeder (brugerens regel 2026-10-08).
 
 - **Menstruation (bruger 2026-10-09):** alt om menstruation/cyklus vises slet ikke for mænd — heller ikke som deaktiveret række eller med "(kun for kvinder)". Vises kun når `sex = FEMALE`. Gælder web og native (fx Hello Doc "Rediger adgang").
+- **Frida** (DTU-fødevaredatabasen): opbygning, nøgler og rå/kogt-fund står i `docs/FRIDA.md`.
+
+- **Startmængde** (`src/lib/default-amount.ts`, brugerens regel 2026-10-09): forslaget må aldrig overstige pakkens indhold (g/ml fra pakningsstørrelsen). Al instantkaffe (instant, Nescafé, pulverkaffe …) starter på 2 g (pr. kop).

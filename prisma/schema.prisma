@@ -2178,6 +2178,10 @@ model IngredientRegionHourStat {
 model GenericIngredient {
   id       String                    @id @default(cuid())
   name     String
+  // Ental/flertal (docs/REGLER.md): søgning efter "et æble" må ikke give "æbler".
+  // Ens i begge felter hvor formen ikke kan afgøres (fx æg).
+  nameSingular String?
+  namePlural   String?
   category GenericIngredientCategory @default(OTHER)
   imageUrl String?
 
