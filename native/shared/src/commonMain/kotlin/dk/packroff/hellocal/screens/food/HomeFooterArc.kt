@@ -52,6 +52,7 @@ import kotlinx.coroutines.launch
 import kotlin.math.PI
 import kotlin.math.abs
 import kotlin.math.acos
+import kotlin.math.asin
 import kotlin.math.atan2
 import kotlin.math.cos
 import kotlin.math.hypot
@@ -59,7 +60,6 @@ import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.pow
 import kotlin.math.sin
-import kotlin.math.sqrt
 
 // src/components/FooterArc.tsx + src/lib/footer-arc.ts — the small half circle
 // over the bottom navigation: tap or push up to fan out the add actions
@@ -95,35 +95,40 @@ internal fun fanAngles(userCount: Int): List<Double> {
 
 internal fun listSlotIndex(userCount: Int) = (userCount + 1) / 2
 
+/** Largest angle (from vertical) a button may sit at, so it stays clear of the bottom bar. */
+private const val FAN_MAX_DEG = 75.0
+/** Smallest angle between two neighbouring buttons when the fan is squeezed. */
+private const val FAN_MIN_STEP_DEG = 22.0
+/** Extra distance to the circle for the lowest button when the fan is pushed to the side. */
+private const val FAN_LOW_EXTRA = 24f
+
 /**
  * Button centres (x from the left, y up from the footer edge), like fanLayout in
- * src/lib/footer-arc.ts: each button keeps the fan's distance to its neighbour. A
- * button that would end up off screen (the circle sits far to the side) stays
- * inside the edge and moves further up, away from the circle, instead.
+ * src/lib/footer-arc.ts. When the circle sits far to the side there is no room
+ * for the whole fan there: instead of stacking buttons in a column, the fan turns
+ * towards the free side (squeezed a little if needed) so it stays on screen, and
+ * the lowest button gets a larger distance to the circle.
  */
 internal fun fanLayout(angles: List<Double>, centerX: Float, width: Float): List<Pair<Float, Float>> {
     if (angles.isEmpty()) return emptyList()
-    val ideal = angles.map {
-        val r = it * PI / 180
-        (centerX + ARC_ICON_RADIUS * sin(r)).toFloat() to (ARC_ICON_RADIUS * cos(r)).toFloat()
+    fun edge(room: Float) = min(FAN_MAX_DEG, asin(min(1.0, max(0.0, (room / ARC_ICON_RADIUS).toDouble()))) * 180 / PI)
+    val lowest = -edge(centerX - ARC_EDGE_MARGIN)
+    val highest = edge(width - ARC_EDGE_MARGIN - centerX)
+    val first = angles.first()
+    val last = angles.last()
+    var placed = angles
+    if (width > ARC_EDGE_MARGIN * 2 && (first < lowest || last > highest)) {
+        val gaps = angles.size - 1
+        val step = if (gaps == 0) 0.0 else max(FAN_MIN_STEP_DEG, min((last - first) / gaps, (highest - lowest) / gaps))
+        val start = min(max(first, lowest), highest - step * gaps)
+        placed = angles.indices.map { start + step * it }
     }
-    if (width <= ARC_EDGE_MARGIN * 2) return ideal
-    val anchor = angles.indices.minByOrNull { abs(angles[it]) } ?: 0
-    val placed = arrayOfNulls<Pair<Float, Float>>(angles.size)
-    placed[anchor] = ideal[anchor].first.coerceIn(ARC_EDGE_MARGIN, width - ARC_EDGE_MARGIN) to ideal[anchor].second
-    for (dir in intArrayOf(-1, 1)) {
-        var i = anchor + dir
-        while (i in angles.indices) {
-            val prev = placed[i - dir]!!
-            val spacing = hypot(ideal[i].first - ideal[i - dir].first, ideal[i].second - ideal[i - dir].second)
-            val x = ideal[i].first.coerceIn(ARC_EDGE_MARGIN, width - ARC_EDGE_MARGIN)
-            var y = ideal[i].second
-            if (x != ideal[i].first) y = max(y, prev.second + sqrt(max(0f, spacing * spacing - (x - prev.first) * (x - prev.first))))
-            placed[i] = x to y
-            i += dir
-        }
+    return placed.map { deg ->
+        val rad = deg * PI / 180
+        val steep = min(1.0, max(0.0, (abs(deg) - last) / (FAN_MAX_DEG - last)))
+        val radius = ARC_ICON_RADIUS + FAN_LOW_EXTRA * steep.toFloat()
+        (centerX + radius * sin(rad)).toFloat() to (radius * cos(rad)).toFloat()
     }
-    return placed.map { it!! }
 }
 
 /** Points of the circle segment of visible height [height] (flat bottom at y = R + BULGE). */

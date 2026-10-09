@@ -28,33 +28,42 @@ export function fanAngles(userCount: number): number[] {
   return Array.from({ length: total }, (_, i) => (i - (total - 1) / 2) * ARC_ANGLE_STEP_DEG);
 }
 
+/** Vinklen (fra lodret) hvor en knap højst kan stå, så den ikke rammer bundmenuen. */
+const FAN_MAX_DEG = 75;
+/** Mindste vinkel mellem to nabo-knapper, når viften presses sammen. */
+const FAN_MIN_STEP_DEG = 22;
+/** Ekstra afstand til cirklen for den nederste knap, når viften er skubbet ud mod siden. */
+const FAN_LOW_EXTRA = 24;
+
 /**
- * Knappernes midter (x fra venstre, y opad fra footerkanten). Hver knap har den
- * faste afstand til sin nabo fra viften. Ville en knap havne uden for skærmen
- * (cirklen står langt ude til siden), holdes den inden for kanten og rykkes i
- * stedet længere op, væk fra cirklen — stadig med samme afstand til naboen.
+ * Knappernes midter (x fra venstre, y opad fra footerkanten). Står cirklen langt
+ * ude til siden, er der ikke plads til hele viften på den side. Knapperne lægges
+ * i stedet ikke ovenpå hinanden i en søjle, men viften drejes mod den frie side
+ * (og presses om nødvendigt lidt sammen), så hele viften stadig ligger inden for
+ * skærmen. Den nederste knap får samtidig en større afstand til cirklen, så den
+ * ikke kommer for tæt på bundmenuen eller sin nabo.
  */
 export function fanLayout(angles: number[], centerX: number, width: number): { x: number; y: number }[] {
   if (angles.length === 0) return [];
-  const ideal = angles.map((deg) => {
-    const rad = (deg * Math.PI) / 180;
-    return { x: centerX + ARC_ICON_RADIUS * Math.sin(rad), y: ARC_ICON_RADIUS * Math.cos(rad) };
-  });
-  if (width <= ARC_EDGE_MARGIN * 2) return ideal;
-  const anchor = angles.reduce((best, deg, i) => (Math.abs(deg) < Math.abs(angles[best]) ? i : best), 0);
-  const placed = new Array<{ x: number; y: number }>(angles.length);
-  placed[anchor] = { x: Math.min(width - ARC_EDGE_MARGIN, Math.max(ARC_EDGE_MARGIN, ideal[anchor].x)), y: ideal[anchor].y };
-  for (const dir of [-1, 1]) {
-    for (let i = anchor + dir; i >= 0 && i < angles.length; i += dir) {
-      const prev = placed[i - dir];
-      const spacing = Math.hypot(ideal[i].x - ideal[i - dir].x, ideal[i].y - ideal[i - dir].y);
-      const x = Math.min(width - ARC_EDGE_MARGIN, Math.max(ARC_EDGE_MARGIN, ideal[i].x));
-      let y = ideal[i].y;
-      if (x !== ideal[i].x) y = Math.max(y, prev.y + Math.sqrt(Math.max(0, spacing ** 2 - (x - prev.x) ** 2)));
-      placed[i] = { x, y };
-    }
+  const toDeg = 180 / Math.PI;
+  const edge = (room: number) => Math.min(FAN_MAX_DEG, Math.asin(Math.min(1, Math.max(0, room / ARC_ICON_RADIUS))) * toDeg);
+  const lowest = -edge(centerX - ARC_EDGE_MARGIN);
+  const highest = edge(width - ARC_EDGE_MARGIN - centerX);
+  const first = angles[0];
+  const last = angles[angles.length - 1];
+  let placed = angles;
+  if (width > ARC_EDGE_MARGIN * 2 && (first < lowest || last > highest)) {
+    const gaps = angles.length - 1;
+    const step = gaps === 0 ? 0 : Math.max(FAN_MIN_STEP_DEG, Math.min((last - first) / gaps, (highest - lowest) / gaps));
+    const start = Math.min(Math.max(first, lowest), highest - step * gaps);
+    placed = angles.map((_, i) => start + step * i);
   }
-  return placed;
+  return placed.map((deg) => {
+    const rad = (deg * Math.PI) / 180;
+    const steep = Math.min(1, Math.max(0, (Math.abs(deg) - last) / (FAN_MAX_DEG - last)));
+    const radius = ARC_ICON_RADIUS + FAN_LOW_EXTRA * steep;
+    return { x: centerX + radius * Math.sin(rad), y: radius * Math.cos(rad) };
+  });
 }
 
 /** Pladsen i viften, hvor "alle" altid står (midten). */

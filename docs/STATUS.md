@@ -2,6 +2,11 @@
 
 Last updated: 2026-10-09
 
+## 2026-10-09: Halvcirklens vifte drejes i stedet for at stable knapper
+
+- Brugerens rettelse: knapperne må ikke ligge ovenpå hinanden i en søjle ved skærmkanten. `fanLayout` (web `footer-arc.ts` + native `HomeFooterArc.kt`) drejer nu i stedet viften mod den frie side (presses lidt sammen, mindst 22° mellem naboer), så alle knapper ligger på skærmen uden at overlappe. Den nederste knap får større afstand til cirklen (op til +24 px), så den har mere plads til bundmenuen. Midt på skærmen er viften uændret.
+- Kontrolleret numerisk for bredde 320/402 og alle cirkelplaceringer: mindst 62 px mellem knapperne, alle inden for kanten. Lint/tsc kunne ikke køres (ingen node_modules); Kotlin ikke kompileret lokalt. Paritet for `/` accepteret. Ikke prøvet på telefon.
+
 ## 2026-10-09: Halvcirklens vifte rykker knapper op i stedet for ud over kanten
 
 - `FooterArc` (web + `HomeFooterArc.kt`): står halvcirklen langt ude til siden, flyttes viften ikke længere indad. De knapper, der ellers ville forsvinde ud over skærmkanten, holdes inden for kanten og rykkes i stedet længere op, væk fra halvcirklen, med samme afstand til naboen (`fanLayout`). Navnet på det valgte ikon holdes inden for skærmen. Størrelser og indstillinger er uændrede.
