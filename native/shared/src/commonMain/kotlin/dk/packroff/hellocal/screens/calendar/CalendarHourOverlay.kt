@@ -107,7 +107,7 @@ internal fun HourEntriesOverlay(
         }
         Column(Modifier.weight(1f).fillMaxWidth().verticalScroll(rememberScrollState()).padding(16.dp)) {
             for (goal in goals) GoalAccordion(goal)
-            for (entry in weighIns) {
+            for (entry in weighIns.filter { entry -> measurements.none { it.id == "weight-${entry.id}" } }) {
                 Row(
                     Modifier.padding(bottom = 8.dp).fillMaxWidth().heightIn(min = HcDimens.ControlHeight).clip(RoundedCornerShape(16.dp))
                         .background(HcColors.Tan).padding(horizontal = 16.dp),
@@ -132,7 +132,8 @@ internal fun HourEntriesOverlay(
                         is HourItem.Measurement -> 0.0
                     }
                 }
-                val groupWeight = items.firstNotNullOfOrNull { (it as? HourItem.Measurement)?.measurement?.weightKg }
+                val groupMeasurement = items.firstOrNull { it is HourItem.Measurement && it.measurement.weightKg != null }
+                val groupWeight = (groupMeasurement as? HourItem.Measurement)?.measurement?.weightKg
                 Column(Modifier.padding(bottom = 8.dp).fillMaxWidth().clip(RoundedCornerShape(16.dp)).background(HcColors.Tan)) {
                     Row(
                         Modifier.fillMaxWidth().heightIn(min = HcDimens.ControlHeight)
@@ -157,7 +158,7 @@ internal fun HourEntriesOverlay(
                     if (isOpen) {
                         Column(Modifier.fillMaxWidth().background(HcColors.Cream).padding(horizontal = 16.dp)) {
                             items.forEachIndexed { index, item ->
-                                HourItemRow(item)
+                                HourItemRow(item, hideWeight = item === groupMeasurement)
                                 if (index < items.lastIndex) Box(Modifier.fillMaxWidth().height(1.dp).background(HcColors.TanDark))
                             }
                         }
@@ -169,7 +170,7 @@ internal fun HourEntriesOverlay(
 }
 
 @Composable
-private fun HourItemRow(item: HourItem) {
+private fun HourItemRow(item: HourItem, hideWeight: Boolean = false) {
     val t = LocalTranslator.current
     val nav = LocalNavigator.current
     when (item) {
@@ -178,7 +179,7 @@ private fun HourItemRow(item: HourItem) {
             thumbnail = { CalendarWaterGlassIcon(22.dp, HcColors.Black) },
             right = { EnergyChip(EnergyChipKind.Water, item.entry.amountMl, iconSize = 18.dp, role = HcTypeRoles.Body) },
         )
-        is HourItem.Measurement -> MeasurementRow(item.measurement)
+        is HourItem.Measurement -> MeasurementRow(item.measurement, hideWeight)
         is HourItem.Registration -> {
             val registration = item.registration
             val isWater = isWaterRegistration(registration)
@@ -255,7 +256,7 @@ private fun GoalAccordion(goal: CalGoal) {
  * details sheet.
  */
 @Composable
-private fun MeasurementRow(measurement: CalendarMeasurement) {
+private fun MeasurementRow(measurement: CalendarMeasurement, hideWeight: Boolean = false) {
     val t = LocalTranslator.current
     val scope = rememberCoroutineScope()
     var open by remember { mutableStateOf(false) }
@@ -267,7 +268,7 @@ private fun MeasurementRow(measurement: CalendarMeasurement) {
     } else {
         null
     }
-    val right: (@Composable () -> Unit)? = if (weightKg != null) {
+    val right: (@Composable () -> Unit)? = if (weightKg != null && !hideWeight) {
         { HcText(formatWeightKg(weightKg), HcTypeRoles.Body, bold = true, color = HcColors.Black) }
     } else {
         null
@@ -275,7 +276,11 @@ private fun MeasurementRow(measurement: CalendarMeasurement) {
     Column(Modifier.fillMaxWidth().let { if (weighInId != null) it.clickable { open = true } else it }) {
         CalendarFoodRow(
             title = if (weightKg != null) t.t("calendar.measurement.weight") else t.t("calendar.measurement.title"),
-            thumbnail = { HcIcon("Scale", size = 22.dp, color = HcColors.Black) },
+            thumbnail = {
+                val sourceIcon = integrationIconForSource(measurement.source)
+                if (sourceIcon != null) HcRemoteImage(sourceIcon, Modifier.size(44.dp).padding(4.dp))
+                else HcIcon("Scale", size = 22.dp, color = HcColors.Black)
+            },
             subtitle = subtitle,
             right = right,
         )
