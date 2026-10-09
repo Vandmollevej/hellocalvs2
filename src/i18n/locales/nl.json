@@ -1754,6 +1754,7 @@
     "dateRequired": "Kies een doeldatum om op te slaan.",
     "targetDateLabel": "Uiterlijk bereikt op {date}",
     "weight": "Gewicht",
+    "weightCompositionHeading": "Gewicht en lichaamsbouw",
     "bodyMeasurementsHeading": "Lichaamsmaten",
     "weightPlaceholder": "bijv. 72,0",
     "measurementPlaceholder": "bijv. 82",

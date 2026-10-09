@@ -1721,6 +1721,7 @@
     "dateRequired": "Vælg en målsætningsdato for at gemme.",
     "targetDateLabel": "Nås senest {date}",
     "weight": "Vægt",
+    "weightCompositionHeading": "Vægt og opbygning",
     "bodyMeasurementsHeading": "Kropsmål",
     "weightPlaceholder": "fx 72,0",
     "measurementPlaceholder": "fx 82",

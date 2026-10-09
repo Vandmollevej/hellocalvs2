@@ -1754,6 +1754,7 @@
     "dateRequired": "Choisis une date d'objectif pour enregistrer.",
     "targetDateLabel": "À atteindre d'ici le {date}",
     "weight": "Poids",
+    "weightCompositionHeading": "Poids et corpulence",
     "bodyMeasurementsHeading": "Mensurations",
     "weightPlaceholder": "p. ex. 72,0",
     "measurementPlaceholder": "p. ex. 82",
