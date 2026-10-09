@@ -79,3 +79,5 @@ ikke her, er den ikke registreret og skal tilføjes.
 - Aldrig vandmærke eller skjult bruger-ID i billeder (brugerens regel 2026-10-08).
 
 - **Frida** (DTU-fødevaredatabasen): opbygning, nøgler og rå/kogt-fund står i `docs/FRIDA.md`.
+
+- Opret ret → Indsæt tekst: kun tekstfeltet og "Indsæt" — ingen ekstra felter (fx kilde-link). Antal personer bruger den eksisterende PersonsSlider, ikke et nyt talfelt (brugerens krav 2026-10-09).
