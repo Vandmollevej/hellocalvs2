@@ -1377,6 +1377,13 @@ model Product {
   categoryId       String?
   imageUrl         String?
   pendingImageUrl  String?
+  // Open Food Facts-varer uden dansk tekst oversættes automatisk; originalen
+  // gemmes, så admin kan se den ved siden af den danske (translationStatus
+  // PENDING = afventer admins godkendelse, APPROVED = godkendt).
+  nameOriginal           String?
+  ingredientsOriginal    String?
+  translationSourceLang  String?
+  translationStatus      String?
   imageStatus      ImageStatus            @default(NONE)
   kcalPer100g      Float
   proteinPer100g   Float

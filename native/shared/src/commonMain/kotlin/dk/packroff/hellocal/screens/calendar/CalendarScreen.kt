@@ -19,6 +19,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
+import dk.packroff.hellocal.screens.food.PulseCalendar
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
@@ -367,6 +368,8 @@ fun CalendarScreen(args: RouteArgs) {
     addTarget?.let { (date, time) ->
         AddMenuSheet(onClose = { addTarget = null }, date = date.toString(), time = time)
     }
+
+    PulseCalendar.Host()
 }
 
 @Composable

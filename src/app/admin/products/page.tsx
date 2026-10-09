@@ -82,6 +82,14 @@ export default async function AdminProductsPage({
     servingSizeGrams: p.servingSizeGrams,
     servingSizeUnitSingular: p.servingSizeUnitSingular,
     ingredientsText: p.ingredientsText,
+    translation:
+      p.translationStatus === "PENDING"
+        ? {
+            sourceLang: p.translationSourceLang,
+            nameOriginal: p.nameOriginal,
+            ingredientsOriginal: p.ingredientsOriginal,
+          }
+        : null,
     allergens: p.allergens,
     additives: p.additives,
     createdBy: p.createdBy ? userLabel(p.createdBy) : null,

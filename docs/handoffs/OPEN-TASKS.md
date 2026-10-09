@@ -40,6 +40,7 @@ Ejer: session "Native app" (e4e4d388), 2026-10-08. Fortsæt fra `native/README.m
 | fundament | Gradle/KMP-build, Android- og iPhone-app, tema/tekster/ikoner fra web, login, navigation, paritets-vagt, CI | Færdig | — |
 | skaerme | Portér alle forbruger-sider + finpudsning | Færdig (121/121, CI grøn, 80110278) | Ikke porteret: "Guide mig"-markering i hjælpechatten, FLIP-animation i bundmenu-panelet, reduceret bevægelse |
 | oauth | Apple/Google/Facebook-login og integrationer tilbage til appen | Færdig (PKCE + engangskoder) | — |
+| paritetsgaeld | Godkendt uden port 2026-10-09 (PR #282, brugerens valg): `FooterArc.tsx` (fast cirkel, ny vifte/labels) og `StaleSyncPrompt` i `layout.tsx`. `BottomNav.tsx` z-index er kun web | Åben | Port FooterArc og StaleSyncPrompt til native, derefter `parity.mjs --accept` |
 | konti | Push (Firebase/APNs), Face ID/passkey-login og butiks-udgivelse | Roadmap (brugerens valg 2026-10-08) | Admin → Roadmap (migration 20261008200000_roadmap_native_accounts); kræver brugerens konti |
 
 ---

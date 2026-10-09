@@ -1783,6 +1783,7 @@
     "openGoal": "Ouvrir l'objectif",
     "editTargetAria": "Modifier {name}",
     "category": {
+      "activity": "Activité",
       "weight": "Poids",
       "body": "Mensurations",
       "nutrition": "Nutrition"
@@ -1796,6 +1797,12 @@
       "bodyFatPercent": "p. ex. 20",
       "muscleMassKg": "p. ex. 35"
     },
+    "activityHeading": "Activité",
+    "activityIntro": "L'OMS recommande aux adultes au moins 150 min d'activité modérée par semaine et du renforcement musculaire 2 jours par semaine. Les montres et trackers d'activité peuvent les enregistrer.",
+    "activityUseWho": "Utiliser la recommandation de l'OMS",
+    "activityHeartRateHint": "Fréquence cardiaque au-dessus de : tu dois dépasser cette valeur au moins une fois par jour. L'intensité modérée correspond à environ 64 % de ta fréquence cardiaque maximale (220 − ton âge), p. ex. environ 120 pour une personne de 30 ans.",
+    "activity": {"stepsPerDay":"Pas","activeMinutesPerWeek":"Minutes actives","strengthDaysPerWeek":"Renforcement musculaire","workoutsPerWeek":"Séances","runKmPerWeek":"Course","cycleKmPerWeek":"Vélo","heartRateAboveBpm":"Fréquence cardiaque au-dessus de"},
+    "activityPlaceholder": {"stepsPerDay":"p. ex. 8000","activeMinutesPerWeek":"p. ex. 150","strengthDaysPerWeek":"p. ex. 2","workoutsPerWeek":"p. ex. 3","runKmPerWeek":"p. ex. 15","cycleKmPerWeek":"p. ex. 50","heartRateAboveBpm":"p. ex. 120"},
     "nutritionHeading": "Nutrition par jour",
     "nutrition": {
       "kcal": "Calories",
@@ -2514,6 +2521,13 @@
     "spikeTitle": "Tu as brûlé {kcal} calories en plus {day}. Qu'as-tu fait ?",
     "spikeHint": "Le pouls est monté jusqu'à {peak} (pouls au repos {rest}) pendant {minutes} min.",
     "spikeQuestion": "Choisir une activité",
+    "pulseHeading": "Pouls élevé",
+    "peakBpm": "Pouls maximal {peak} bpm",
+    "pickType": "Choisir le type d'entraînement",
+    "heartAria": "Pouls élevé – ouvrir les détails",
+    "eventAria": "Pouls élevé",
+    "older": "Plus ancien",
+    "newer": "Plus récent",
     "pulseTitle": "Ton pouls était plus élevé que d'habitude {day}",
     "yesterday": "hier",
     "onDate": "le {date}",
