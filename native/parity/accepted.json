@@ -1040,7 +1040,7 @@
   },
   "/profile/messages": {
     "src/app/layout.tsx": "9a180a8c9b7bdec8",
-    "src/app/profile/messages/page.tsx": "c130098f88eef517",
+    "src/app/profile/messages/page.tsx": "470fa9f9d9540c92",
     "src/components/AuthGate.tsx": "94db96b768f9f95f",
     "src/components/BottomNav.tsx": "3428c5ae144e2dea",
     "src/components/EmailVerifySheet.tsx": "42e52d85f9bf57d9",
