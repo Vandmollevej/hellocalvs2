@@ -203,6 +203,10 @@ Retter → HelloFresh åbner nu en skrivebeskyttet side under Retter (ikke Nye v
 
 - Ikonerne har tomt luft i bunden, så teksten sad for langt nede. `AddMenuList.tsx`: `gap-0` og `-mb-4` på ikonet. Lint/build ikke kørt (ingen `node_modules` i cloud-sessionen). Justér `-mb-4` efter billedet på telefon.
 
+## 2026-10-09: EDEKA-logoet viste kun det gule hjerte
+
+- Årsag: `drop_edge_fragments` skar kantrørende dele væk, og rembg regnede det store blå logofelt for baggrund. Rettet på master (kantrørende dele på mindst 10 % bevares; `is_solid_block_logo` bruger hele beskæringen, når feltet er en del af logoet). Denne PR tilføjer kun noten; den eksisterende EDEKA-fritskrabning skal laves igen i admin → Logoer.
+
 ## 2026-10-05: Pulslinjen — roligere uden ur, flyttet op over nederste tal
 
 - Uden tilsluttet ur slår pulslinjen kun hvert 4. sekund (`DEFAULT_PULSE_BPM` = 15), og grundlinjen er flyttet op, så bunden står lige over hjulets nederste tal (`PULSE_ABOVE_LAST_ROW` i `HomeWaves.tsx`). Lint/build ikke kørt (ingen `node_modules` i cloud-sessionen). Brugeren tester på telefon; justér konstanten på 25 px efter billedet.
