@@ -61,7 +61,7 @@ function SoegContent() {
   }
 
   useEffect(() => {
-    // Tomt søgefelt: vis intet resultat-afsnit (Favoritter/Senest anvendte
+    // Tomt søgefelt: vis intet resultat-afsnit (Favoritter/Senest tilføjet
     // dækker den tomme tilstand) — undlader bevidst at kalde /api/products
     // uden søgetekst, jf. Fejlretninger/FEJLLISTE.md #31 ("Alle varer" gav
     // ingen mening som standardvisning).

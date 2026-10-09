@@ -49,7 +49,7 @@ export function JobScheduleEditor({ control }: { control: ReturnType<typeof useJ
           className="w-20 rounded-md border border-hf-tan-dark bg-page-bg px-2 py-1"
         />
       )}
-      <button type="button" disabled={busy} onClick={saveSchedule} className="hf-btn-secondary px-2.5 py-1 disabled:opacity-50">
+      <button type="button" disabled={busy} onClick={saveSchedule} className="hf-btn-secondary hf-btn--compact w-fit disabled:opacity-50">
         Gem plan
       </button>
       {notice && <span className="text-hf-green-dark">{notice}</span>}

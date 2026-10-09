@@ -2,7 +2,9 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { EVENT_LABELS } from "@/lib/message-event-labels";
+import { EVENT_LABELS, channelFlags, channelFromFlags } from "@/lib/message-event-labels";
+import { fillSampleVars } from "@/components/admin/PhonePreviewEditor";
+import { Toggle } from "@/components/ui/Toggle";
 
 export type MessageTemplateData = {
   event: string;
@@ -12,10 +14,15 @@ export type MessageTemplateData = {
   bodyHtml: string;
 };
 
-// Listen viser kanal og til/fra direkte; selve indholdet redigeres i
+// Kolonnerne (Rediger, E-mail, Push, Aktiv) deles med overskriftsrækken i
+// MessageTemplateList; Aktiv står altid yderst til højre.
+export const TEMPLATE_COLUMNS = "grid grid-cols-[1fr_auto_auto_auto_auto] items-center gap-x-6";
+
+// Listen viser kanaler og til/fra direkte; selve indholdet redigeres i
 // telefon-editoren på /admin/messaging/[event].
 export function MessageTemplateRow({ template }: { template: MessageTemplateData }) {
   const [form, setForm] = useState(template);
+  const { email, push } = channelFlags(form.channel);
 
   async function save(patch: Partial<MessageTemplateData>) {
     setForm({ ...form, ...patch });
@@ -27,40 +34,27 @@ export function MessageTemplateRow({ template }: { template: MessageTemplateData
   }
 
   return (
-    <div className="hf-surface">
-      <div className="flex items-center justify-between gap-3 p-4">
-        <div className="min-w-0">
-          <p className="hf-type-strong text-hf-black">{EVENT_LABELS[template.event] ?? template.event}</p>
-          <p className="hf-type-small truncate text-text-muted">{form.subject}</p>
-        </div>
-        <div className="flex flex-shrink-0 items-center gap-3">
-          <select
-            value={form.channel}
-            onChange={(e) => save({ channel: e.target.value })}
-            className="hf-type-small hf-field rounded-md border border-hf-tan-dark px-2"
-          >
-            <option value="EMAIL">E-mail</option>
-            <option value="PUSH">Push</option>
-            <option value="BOTH">Begge</option>
-          </select>
-          <button
-            type="button"
-            role="switch"
-            aria-checked={form.enabled}
-            onClick={() => save({ enabled: !form.enabled })}
-            className={`relative h-[28px] w-[63px] rounded-full transition-colors ${form.enabled ? "bg-hf-green" : "bg-hf-tan-dark"}`}
-          >
-            <span
-              className={`absolute left-[2px] top-[2px] h-[24px] w-[38px] rounded-full bg-hf-white shadow transition-transform ${
-                form.enabled ? "translate-x-[21px]" : "translate-x-0"
-              }`}
-            />
-          </button>
-          <Link href={`/admin/messaging/${template.event}`} className="hf-btn-text text-hf-green-dark">
-            Rediger
-          </Link>
-        </div>
+    <div className={`${TEMPLATE_COLUMNS} border-b border-hf-tan-dark px-4 py-3 last:border-b-0`}>
+      <div className="min-w-0">
+        <p className="hf-type-strong text-hf-black">{EVENT_LABELS[template.event] ?? "Besked"}</p>
+        <p className="hf-type-small truncate text-text-muted">{fillSampleVars(form.subject)}</p>
       </div>
+      <Link href={`/admin/messaging/${template.event}`} className="hf-btn-text text-hf-green-dark">
+        Rediger
+      </Link>
+      <Toggle
+        ariaLabel="E-mail"
+        checked={email}
+        disabled={email && !push}
+        onChange={(value) => save({ channel: channelFromFlags(value, push) })}
+      />
+      <Toggle
+        ariaLabel="Push"
+        checked={push}
+        disabled={push && !email}
+        onChange={(value) => save({ channel: channelFromFlags(email, value) })}
+      />
+      <Toggle ariaLabel="Aktiv" checked={form.enabled} onChange={(value) => save({ enabled: value })} />
     </div>
   );
 }

@@ -345,7 +345,7 @@ private val SPORTS: Map<String, Pair<String, String>> = listOf(
     Triple("spinning", "Spinning", "Bike"),
     Triple("mountain_biking", "Mountainbike", "Bike"),
     Triple("ebike", "Elcykel", "Bike"),
-    Triple("open_water", "Havsvømning", "Swimming"),
+    Triple("open_water", "Svømning i åbent vand", "Swimming"),
     Triple("aqua_fitness", "Vandgymnastik", "Pool"),
     Triple("water_polo", "Vandpolo", "Swimming"),
     Triple("rowing", "Roning", "Kayak"),

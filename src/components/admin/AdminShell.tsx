@@ -123,6 +123,7 @@ export const NAV: NavEntry[] = [
       { href: "/admin/support/templates", key: "nav_standard_mails" },
       { href: "/admin/messaging", key: "nav_messaging" },
       { href: "/admin/search-ranking", key: "nav_search_ranking" },
+      { href: "/admin/search-synonyms", key: "nav_search_synonyms" },
       { href: "/admin/weight-attire", key: "nav_weight_attire" },
       { href: "/admin/shortcuts", key: "nav_shortcuts" },
     ],
@@ -134,6 +135,7 @@ export const NAV: NavEntry[] = [
     icon: "shield",
     links: [
       { href: "/admin/scan-invites", key: "nav_scan_invites" },
+      { href: "/admin/scan-invites/afvisningsaarsager", key: "nav_rejection_reasons" },
       { href: "/admin/jobs", key: "nav_jobs" },
       { href: "/admin/agents", key: "nav_agents" },
       { href: "/admin/robots", key: "nav_robots" },
