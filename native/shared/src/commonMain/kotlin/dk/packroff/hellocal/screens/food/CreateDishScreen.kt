@@ -4,6 +4,9 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import dk.packroff.hellocal.ui.FoodSheetDots
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.foundation.gestures.detectHorizontalDragGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -128,6 +131,11 @@ fun CreateDishScreen(args: RouteArgs) {
     var ingredients by remember { mutableStateOf(DishDraft.read()) }
     var saving by remember { mutableStateOf(false) }
     var saveError by remember { mutableStateOf<String?>(null) }
+    // Pages: 0 = ingredients, then one recipe step per page, last = pictures of the dish.
+    var page by remember { mutableStateOf(0) }
+    val stepList = details.steps.ifEmpty { listOf(DishDraftStep()) }
+    val totalPages = stepList.size + 2
+    fun goTo(next: Int) { page = next.coerceIn(0, totalPages - 1) }
     // Flow step one: three buttons in the middle. Skipped when a draft already exists.
     var started by remember {
         mutableStateOf(details.name.isNotBlank() || ingredients.isNotEmpty() || details.steps.isNotEmpty() || details.images.isNotEmpty())
@@ -297,10 +305,28 @@ fun CreateDishScreen(args: RouteArgs) {
         contentPadding = LIST_PAGE_PADDING,
         bottom = {
             saveError?.let { HcText(it, HcTypeRoles.Body, Modifier.fillMaxWidth().padding(bottom = 8.dp), color = HcColors.TextSecondary, align = TextAlign.Center) }
-            HcButton(if (saving) t.t("createDish.saving") else t.t("createDish.saveDish"), onClick = ::save, enabled = !saving && savedDish == null)
+            Row(Modifier.fillMaxWidth().padding(bottom = 12.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceBetween) {
+                PageArrow("ChevronLeft", enabled = page > 0) { goTo(page - 1) }
+                FoodSheetDots(totalPages, page) { goTo(it) }
+                PageArrow("ChevronRight", enabled = page < totalPages - 1) { goTo(page + 1) }
+            }
+            if (page == totalPages - 1) {
+                HcButton(if (saving) t.t("createDish.saving") else t.t("createDish.saveDish"), onClick = ::save, enabled = !saving && savedDish == null)
+            }
         },
     ) {
-        Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
+        Column(
+            Modifier.pointerInput(page) {
+                // Swipe back: a clear horizontal drag to the right.
+                var total = 0f
+                detectHorizontalDragGestures(
+                    onDragStart = { total = 0f },
+                    onDragEnd = { if (total > 160f) goTo(page - 1) },
+                ) { _, dx -> total += dx }
+            },
+            verticalArrangement = Arrangement.spacedBy(16.dp),
+        ) {
+          if (page == 0) {
             FoodPillField(details.name, { updateDetails(details.copy(name = it)) }, t.t("createDish.namePlaceholder"), Modifier.fillMaxWidth())
 
             importNote?.let { note ->
@@ -397,25 +423,28 @@ fun CreateDishScreen(args: RouteArgs) {
                 FoodTileButton(t.t("createDish.scan"), "Camera", { nav.push("/camera?mode=product&for=ret") }, Modifier.fillMaxWidth().padding(top = 16.dp))
             }
 
-            if (details.showImages) {
-                Column {
-                    HcText(t.t("recipeImages.title"), HcTypeRoles.Small, Modifier.padding(bottom = 8.dp), color = HcColors.Black, bold = true)
-                    RecipeImagesPicker(details.images) { updateDetails(details.copy(images = it)) }
-                }
+          } else if (page <= stepList.size) {
+            RecipeStepPage(
+                index = page - 1,
+                step = stepList[page - 1],
+                canRemove = stepList.size > 1,
+                onChange = { next -> updateDetails(details.copy(steps = stepList.mapIndexed { i, st -> if (i == page - 1) next else st })) },
+                onAddAfter = {
+                    val at = page - 1
+                    updateDetails(details.copy(steps = stepList.take(at + 1) + DishDraftStep() + stepList.drop(at + 1)))
+                    page += 1
+                },
+                onRemove = {
+                    updateDetails(details.copy(steps = stepList.filterIndexed { i, _ -> i != page - 1 }))
+                    page = maxOf(1, page - 1)
+                },
+            )
+          } else {
+            Column {
+                HcText(t.t("recipeImages.title"), HcTypeRoles.Small, Modifier.padding(bottom = 8.dp), color = HcColors.Black, bold = true)
+                RecipeImagesPicker(details.images) { updateDetails(details.copy(images = it)) }
             }
-            if (details.showSteps) {
-                Column {
-                    HcText(t.t("recipeSteps.title"), HcTypeRoles.Small, Modifier.padding(bottom = 4.dp), color = HcColors.Black, bold = true)
-                    HcText(t.t("recipeSteps.hint"), HcTypeRoles.Small, color = HcColors.TextSecondary)
-                    RecipeStepsEditor(details.steps) { updateDetails(details.copy(steps = it)) }
-                }
-            }
-            if (!details.showImages || !details.showSteps) {
-                Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    if (!details.showImages) FoodTileButton(t.t("recipeImages.addButton"), "Photo", { updateDetails(details.copy(showImages = true)) }, Modifier.weight(1f))
-                    if (!details.showSteps) FoodTileButton(t.t("recipeSteps.addButton"), "ListNumbers", { updateDetails(details.copy(showSteps = true)) }, Modifier.weight(1f))
-                }
-            }
+          }
         }
     }
 
@@ -596,101 +625,60 @@ private fun RecipeImagesPicker(images: List<String>, onChange: (List<String>) ->
     }
 }
 
-/**
- * src/components/recipes/RecipeStepsEditor.tsx — one active step at a time;
- * + makes it static and opens a new one; tap a static step to edit, × deletes.
- */
 @Composable
-private fun RecipeStepsEditor(steps: List<DishDraftStep>, onChange: (List<DishDraftStep>) -> Unit) {
-    val t = LocalTranslator.current
-    val scope = rememberCoroutineScope()
-    var active by remember { mutableStateOf(maxOf(0, steps.size - 1)) }
-    val list = steps.ifEmpty { listOf(DishDraftStep()) }
-    val activeIndex = minOf(active, list.lastIndex)
-    val draft = list[activeIndex]
-
-    fun publish(current: DishDraftStep) = onChange(list.mapIndexed { i, s -> if (i == activeIndex) current else s })
-
-    fun commit() {
-        if (draft.isEmpty()) return
-        val next = if (list.last().isEmpty()) list else list + DishDraftStep()
-        onChange(next)
-        active = next.lastIndex
-    }
-
-    fun edit(index: Int) {
-        if (draft.isEmpty() && list.size > 1) {
-            onChange(list.filterIndexed { i, _ -> i != activeIndex })
-            active = if (index > activeIndex) index - 1 else index
-        } else {
-            active = index
-        }
-    }
-
-    fun remove(index: Int) {
-        val next = list.filterIndexed { i, _ -> i != index }
-        if (next.isEmpty()) {
-            onChange(listOf(DishDraftStep()))
-            active = 0
-            return
-        }
-        onChange(next)
-        active = if (index < activeIndex) activeIndex - 1 else minOf(activeIndex, next.lastIndex)
-    }
-
-    Column(Modifier.fillMaxWidth()) {
-        list.take(activeIndex).forEachIndexed { i, step -> StaticStep(step, i, t.t("recipeSteps.stepNumber", "number" to i + 1), ::edit, ::remove) }
-        Row(
-            Modifier.fillMaxWidth().padding(vertical = 16.dp).clip(RoundedCornerShape(16.dp)).background(HcColors.Tan).padding(16.dp),
-            horizontalArrangement = Arrangement.spacedBy(12.dp),
-        ) {
-            Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                HcText(t.t("recipeSteps.stepNumber", "number" to activeIndex + 1), HcTypeRoles.Small, color = HcColors.TextSecondary, bold = true)
-                FoodPillField(
-                    draft.title,
-                    { publish(draft.copy(title = it)) },
-                    t.t("recipeSteps.titlePlaceholder"),
-                    Modifier.fillMaxWidth(),
-                    background = HcColors.White,
-                    shape = RoundedCornerShape(HcDimens.RadiusCard),
-                    bold = true,
-                )
-                FoodTextArea(draft.text, { publish(draft.copy(text = it)) }, placeholder = t.t("recipeSteps.textPlaceholder"), minLines = 4, background = HcColors.White, border = false)
-            }
-            Column(Modifier.padding(top = 32.dp), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                Box(
-                    Modifier.size(48.dp).clip(RoundedCornerShape(HcDimens.RadiusCard)).background(HcColors.White).clickable {
-                        scope.launch { FoodPlatform.photo(fromGallery = false)?.let { publish(draft.copy(image = it.dataUrl())) } }
-                    },
-                    contentAlignment = Alignment.Center,
-                ) {
-                    val image = draft.image
-                    if (image != null) FoodImage(image, Modifier.fillMaxSize(), ContentScale.Crop) else HcIcon("Camera", size = 22.dp, color = HcColors.Black)
-                }
-                if (draft.image != null) FoodRemoveButton(onClick = { publish(draft.copy(image = null)) }, size = 24.dp)
-            }
-        }
-        list.drop(activeIndex + 1).forEachIndexed { i, step -> StaticStep(step, activeIndex + 1 + i, t.t("recipeSteps.stepNumber", "number" to activeIndex + 2 + i), ::edit, ::remove) }
-        Box(
-            Modifier.align(Alignment.CenterHorizontally).padding(top = 4.dp).size(44.dp).clip(CircleShape).background(HcColors.Black)
-                .alpha(if (draft.isEmpty()) 0.3f else 1f).clickable(enabled = !draft.isEmpty()) { commit() },
-            contentAlignment = Alignment.Center,
-        ) { HcIcon("Plus", size = 22.dp, color = HcColors.White) }
-    }
+private fun PageArrow(icon: String, enabled: Boolean, onClick: () -> Unit) {
+    Box(
+        Modifier.size(44.dp).clip(CircleShape).background(HcColors.Tan).alpha(if (enabled) 1f else 0.3f).clickable(enabled = enabled, onClick = onClick),
+        contentAlignment = Alignment.Center,
+    ) { HcIcon(icon, size = 22.dp, color = HcColors.Black) }
 }
 
+/** src/components/recipes/RecipeStepPage.tsx — one recipe step on its own page, photo at the bottom. */
 @Composable
-private fun StaticStep(step: DishDraftStep, index: Int, numberLabel: String, onEdit: (Int) -> Unit, onRemove: (Int) -> Unit) {
-    Row(Modifier.fillMaxWidth().padding(vertical = 12.dp), verticalAlignment = Alignment.Top, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-        Column(Modifier.weight(1f).clickable { onEdit(index) }) {
-            HcText(numberLabel, HcTypeRoles.Small, color = HcColors.TextSecondary, bold = true)
-            if (step.title.isNotEmpty()) HcText(step.title, HcTypeRoles.Body, color = HcColors.Black, bold = true)
-            if (step.text.isNotEmpty()) HcText(step.text, HcTypeRoles.Small, color = HcColors.Black)
+private fun RecipeStepPage(
+    index: Int,
+    step: DishDraftStep,
+    canRemove: Boolean,
+    onChange: (DishDraftStep) -> Unit,
+    onAddAfter: () -> Unit,
+    onRemove: () -> Unit,
+) {
+    val t = LocalTranslator.current
+    val scope = rememberCoroutineScope()
+    Column(Modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+        Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceBetween) {
+            HcText(t.t("recipeSteps.stepNumber", "number" to index + 1), HcTypeRoles.Small, color = HcColors.TextSecondary, bold = true)
+            if (canRemove) FoodRemoveButton(onClick = onRemove, background = HcColors.Tan)
         }
-        step.image?.let { FoodImage(it, Modifier.size(48.dp).clip(RoundedCornerShape(HcDimens.RadiusCard)), ContentScale.Crop) }
-        FoodRemoveButton(onClick = { onRemove(index) }, background = HcColors.Tan)
+        FoodPillField(
+            step.title,
+            { onChange(step.copy(title = it)) },
+            t.t("recipeSteps.titlePlaceholder"),
+            Modifier.fillMaxWidth(),
+            background = HcColors.Tan,
+            shape = RoundedCornerShape(HcDimens.RadiusCard),
+            bold = true,
+        )
+        FoodTextArea(step.text, { onChange(step.copy(text = it)) }, placeholder = t.t("recipeSteps.textPlaceholder"), minLines = 6, background = HcColors.Tan, border = false)
+        Box(
+            Modifier.fillMaxWidth().heightIn(min = 128.dp).clip(RoundedCornerShape(HcDimens.RadiusCard)).background(HcColors.Tan).clickable {
+                scope.launch { FoodPlatform.photo(fromGallery = false)?.let { onChange(step.copy(image = it.dataUrl())) } }
+            },
+            contentAlignment = Alignment.Center,
+        ) {
+            val image = step.image
+            if (image != null) {
+                FoodImage(image, Modifier.fillMaxWidth().heightIn(max = 224.dp), ContentScale.Crop)
+                Box(Modifier.align(Alignment.TopEnd).padding(8.dp)) { FoodRemoveButton(onClick = { onChange(step.copy(image = null)) }) }
+            } else {
+                Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.padding(16.dp)) {
+                    HcIcon("Camera", size = 24.dp, color = HcColors.Black)
+                    HcText(t.t("recipeSteps.dropPhoto"), HcTypeRoles.Small, color = HcColors.TextSecondary, align = TextAlign.Center)
+                }
+            }
+        }
+        HcButton(t.t("recipeSteps.addStep"), onClick = onAddAfter, kind = HcButtonKind.Secondary)
     }
-    FoodDivider()
 }
 
 private val RECIPE_CATEGORY_GROUPS = listOf(

@@ -364,7 +364,7 @@
     "src/components/web/WebShell.tsx": "5f2646ffd79af9cc"
   },
   "/create-dish": {
-    "src/app/create-dish/page.tsx": "fe593556cf736899",
+    "src/app/create-dish/page.tsx": "c0c7c4a0b2e3f06b",
     "src/app/layout.tsx": "32a09f6743aabdc5",
     "src/components/AuthGate.tsx": "94db96b768f9f95f",
     "src/components/BottomNav.tsx": "0f81bf09480cc5b2",
@@ -395,6 +395,7 @@
     "src/components/recipes/RecipeCategoriesDialog.tsx": "6a78856eaf988968",
     "src/components/recipes/RecipeImagesPicker.tsx": "b0c3cbc65408142b",
     "src/components/recipes/RecipeImportSheets.tsx": "c66eec5909156859",
+    "src/components/recipes/RecipeStepPage.tsx": "901ff78cbbb4bd77",
     "src/components/recipes/RecipeStepsEditor.tsx": "0761b040d06d8ccf",
     "src/components/ui/Toggle.tsx": "8fc97afe3b61a5a3",
     "src/components/web/WebShell.tsx": "5f2646ffd79af9cc"

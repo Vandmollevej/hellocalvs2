@@ -1175,7 +1175,8 @@
     "addStep": "Schritt hinzufügen",
     "addPhoto": "Foto zum Schritt aufnehmen",
     "removePhoto": "Foto entfernen",
-    "remove": "Schritt löschen"
+    "remove": "Schritt löschen",
+    "dropPhoto": "Drag a picture here, or tap to add one"
   },
   "recipeImages": {
     "title": "Bilder des Gerichts",
@@ -1303,6 +1304,11 @@
     }
   },
   "createDish": {
+    "pageBack": "Previous page",
+    "pageNext": "Next page",
+    "pageDots": "Page {current} of {total}",
+    "pageIngredients": "Ingredients",
+    "pageImages": "Pictures of the dish",
     "servings": "Number of people",
 
     "shareLabel": "Möchtest du das Gericht mit anderen Nutzern teilen?",

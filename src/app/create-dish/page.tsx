@@ -1,14 +1,14 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import {
   IconCamera,
+  IconChevronLeft,
+  IconChevronRight,
   IconClipboardText,
-  IconListNumbers,
   IconPencil,
-  IconPhoto,
   IconSearch,
   IconX,
   IconSoup,
@@ -17,6 +17,7 @@ import { HfScreen } from "@/components/HfScreen";
 import {
   BottomSheet,
   BottomSheetCloseButton,
+  BottomSheetDots,
 } from "@/components/hf/BottomSheet";
 import { PersonsSlider } from "@/components/hf/PersonsSlider";
 import { MAX_RECIPE_PERSONS } from "@/lib/recipe-portions";
@@ -35,10 +36,12 @@ import {
   type DishDraftDetails,
   type DishDraftIngredient,
 } from "@/lib/dish-draft";
+import { RecipeStepPage } from "@/components/recipes/RecipeStepPage";
 import { RecipeImagesPicker } from "@/components/recipes/RecipeImagesPicker";
 import { ProductPhotoDropZone } from "@/components/recipes/ProductPhotoDropZone";
 import {
-  RecipeStepsEditor,
+  EMPTY_STEP,
+  type StepDraft,
   isEmptyStep,
 } from "@/components/recipes/RecipeStepsEditor";
 import { RecipeCategoriesDialog } from "@/components/recipes/RecipeCategoriesDialog";
@@ -290,6 +293,40 @@ export default function CreateDishPage() {
     }
   }
 
+  // Siderne i flowet: 0 = ingredienser, derefter ét trin pr. side, til sidst billeder.
+  const [page, setPage] = useState(0);
+  const swipeStart = useRef<{ x: number; y: number } | null>(null);
+  const stepList = steps.length ? steps : [EMPTY_STEP];
+  const totalPages = stepList.length + 2;
+
+  function goTo(next: number) {
+    setPage(Math.min(Math.max(next, 0), totalPages - 1));
+  }
+
+  function updateStep(index: number, next: StepDraft) {
+    updateDetails({
+      steps: stepList.map((step, i) => (i === index ? next : step)),
+    });
+  }
+
+  function addStepAfter() {
+    const at = page - 1;
+    updateDetails({
+      steps: [
+        ...stepList.slice(0, at + 1),
+        EMPTY_STEP,
+        ...stepList.slice(at + 1),
+      ],
+    });
+    setPage(page + 1);
+  }
+
+  function removeStep() {
+    const at = page - 1;
+    updateDetails({ steps: stepList.filter((_, i) => i !== at) });
+    setPage(Math.max(1, page - 1));
+  }
+
   const startOptions = [
     {
       key: "text",
@@ -329,13 +366,44 @@ export default function CreateDishPage() {
                   {saveError}
                 </p>
               )}
-              <button
-                onClick={handleSave}
-                disabled={saving || savedDish !== null}
-                className="hf-control hf-btn-primary w-full"
-              >
-                {saving ? t("createDish.saving") : t("createDish.saveDish")}
-              </button>
+              <div className="mb-3 flex items-center justify-between gap-3">
+                <button
+                  type="button"
+                  onClick={() => goTo(page - 1)}
+                  disabled={page === 0}
+                  aria-label={t("createDish.pageBack")}
+                  className="flex h-11 w-11 items-center justify-center rounded-full bg-hf-tan text-hf-black disabled:opacity-30"
+                >
+                  <IconChevronLeft size={22} />
+                </button>
+                <BottomSheetDots
+                  count={totalPages}
+                  active={page}
+                  label={t("createDish.pageDots", {
+                    current: page + 1,
+                    total: totalPages,
+                  })}
+                  onSelect={goTo}
+                />
+                <button
+                  type="button"
+                  onClick={() => goTo(page + 1)}
+                  disabled={page === totalPages - 1}
+                  aria-label={t("createDish.pageNext")}
+                  className="flex h-11 w-11 items-center justify-center rounded-full bg-hf-tan text-hf-black disabled:opacity-30"
+                >
+                  <IconChevronRight size={22} />
+                </button>
+              </div>
+              {page === totalPages - 1 && (
+                <button
+                  onClick={handleSave}
+                  disabled={saving || savedDish !== null}
+                  className="hf-control hf-btn-primary w-full"
+                >
+                  {saving ? t("createDish.saving") : t("createDish.saveDish")}
+                </button>
+              )}
             </>
           ) : undefined
         }
@@ -360,215 +428,250 @@ export default function CreateDishPage() {
             ))}
           </div>
         ) : (
-          <div className="hf-page">
-            <input
-              value={name}
-              onChange={(event) => setName(event.target.value)}
-              autoComplete="off"
-              aria-label={t("createDish.nameAriaLabel")}
-              placeholder={t("createDish.namePlaceholder")}
-              className="hf-type-body hf-field min-w-0 rounded-full bg-hf-tan px-4 text-hf-black outline-none"
-            />
-
-            {importNote && (
-              <div className="hf-card">
-                <p className="hf-type-small hf-type-strong text-hf-black">
-                  {t("createDish.importDone")}
-                </p>
-                {importNote.nutrition && (
-                  <p className="hf-type-small text-text-secondary">
-                    {t("createDish.importNutrition")}: {importNote.nutrition}
-                  </p>
-                )}
-                {importNote.missing.length > 0 && (
-                  <>
-                    <p className="hf-type-small hf-type-strong mt-2 text-hf-black">
-                      {t("createDish.importMissing")}
-                    </p>
-                    <ul className="hf-type-small text-text-secondary list-disc pl-5">
-                      {importNote.missing.map((line, index) => (
-                        <li key={index}>{line}</li>
-                      ))}
-                    </ul>
-                  </>
-                )}
-              </div>
-            )}
-
-            <div className="rounded-2xl bg-hf-tan px-4 py-3">
-              <PersonsSlider
-                label={t("createDish.servings")}
-                value={servings ?? 4}
-                max={MAX_RECIPE_PERSONS}
-                onChange={setServings}
-              />
-            </div>
-
-            <div>
-              <p className="hf-type-small hf-type-strong mb-2 text-hf-black">
-                {t("createDish.ingredients")}
-              </p>
-              {ingredients.length === 0 ? (
-                <div className="hf-card text-center">
-                  <p className="hf-type-body text-text-secondary">
-                    {t("createDish.noIngredientsYet")}
-                  </p>
-                </div>
-              ) : (
-                <div className="overflow-hidden rounded-2xl bg-hf-tan">
-                  {ingredients.map((ingredient, index) => (
-                    <div
-                      key={`${ingredient.productId}-${index}`}
-                      className="flex items-center gap-2.5 border-b border-hf-tan-dark px-4 py-3 last:border-b-0"
-                    >
-                      <div className="h-9 w-9 flex-shrink-0">
-                        {ingredient.imageUrl && (
-                          // eslint-disable-next-line @next/next/no-img-element
-                          <img
-                            src={ingredient.imageUrl}
-                            alt=""
-                            className="h-full w-full object-contain"
-                          />
-                        )}
-                      </div>
-                      <div className="flex-1">
-                        <p className="hf-type-body hf-type-strong text-hf-black">
-                          {ingredient.name}
-                        </p>
-                        <p className="hf-type-small text-text-secondary">
-                          {isPrivateIngredientId(ingredient.productId)
-                            ? t("createDish.kcalUnknown", {
-                                grams: ingredient.grams,
-                              })
-                            : t("createDish.gramsKcal", {
-                                grams: ingredient.grams,
-                                kcal: round(
-                                  (ingredient.kcalPer100g * ingredient.grams) /
-                                    100,
-                                ),
-                              })}
-                        </p>
-                      </div>
-                      <button
-                        type="button"
-                        onClick={() => handleRemove(index)}
-                        aria-label={t("createDish.removeIngredient")}
-                        className="flex h-7 w-7 items-center justify-center rounded-full bg-hf-white text-hf-black"
-                      >
-                        <IconX size={14} />
-                      </button>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-
-            {ingredients.length > 0 && (
-              <div className="hf-card">
-                <p className="hf-type-small hf-type-strong text-hf-black">
-                  {t("createDish.total")}
-                </p>
-                <p className="hf-type-body text-hf-black">
-                  {t("createDish.gramsKcal", {
-                    grams: round(totals.grams),
-                    kcal: round(totals.kcal),
-                  })}
-                </p>
-                <p className="hf-type-small text-text-secondary">
-                  {t("createDish.macrosSummary", {
-                    protein: round(totals.protein, 1),
-                    carbs: round(totals.carbs, 1),
-                    fat: round(totals.fat, 1),
-                  })}
-                </p>
-              </div>
-            )}
-
-            <div>
-              <p className="hf-type-small hf-type-strong mb-2 text-hf-black">
-                {t("createDish.addIngredient")}
-              </p>
-              <div className="hf-search">
-                <IconSearch size={16} color="var(--hf-black)" />
+          <div
+            className="hf-page"
+            onTouchStart={(event) => {
+              swipeStart.current = {
+                x: event.touches[0].clientX,
+                y: event.touches[0].clientY,
+              };
+            }}
+            onTouchEnd={(event) => {
+              const from = swipeStart.current;
+              swipeStart.current = null;
+              if (!from) return;
+              const dx = event.changedTouches[0].clientX - from.x;
+              const dy = event.changedTouches[0].clientY - from.y;
+              // Slide tilbage: et tydeligt vandret stryg mod højre.
+              if (dx > 80 && Math.abs(dx) > Math.abs(dy) * 2) goTo(page - 1);
+            }}
+          >
+            {page === 0 && (
+              <>
                 <input
-                  value={query}
-                  onChange={(event) => {
-                    const value = event.target.value;
-                    setQuery(value);
-                    if (!value.trim()) {
-                      setSearchState("idle");
-                      setResults([]);
-                    }
-                  }}
-                  placeholder={t("createDish.searchPlaceholder")}
+                  value={name}
+                  onChange={(event) => setName(event.target.value)}
+                  autoComplete="off"
+                  aria-label={t("createDish.nameAriaLabel")}
+                  placeholder={t("createDish.namePlaceholder")}
+                  className="hf-type-body hf-field min-w-0 rounded-full bg-hf-tan px-4 text-hf-black outline-none"
                 />
-              </div>
 
-              {query.trim() && (
-                <div className="mt-2 overflow-hidden bg-hf-tan rounded-card">
-                  {searchState === "loading" && (
-                    <SkeletonScreen className="px-4">
-                      <SkeletonMediaRows rows={4} />
-                    </SkeletonScreen>
-                  )}
-                  {searchState === "error" && (
-                    <p className="hf-type-body text-text-secondary px-4 py-4 text-center">
-                      {connectionMessage(t("createDish.noResults"))}
+                {importNote && (
+                  <div className="hf-card">
+                    <p className="hf-type-small hf-type-strong text-hf-black">
+                      {t("createDish.importDone")}
                     </p>
-                  )}
-                  {searchState === "ready" && results.length === 0 && (
-                    <p className="hf-type-body text-text-secondary px-4 py-4 text-center">
-                      {t("createDish.noResults")}
-                    </p>
-                  )}
-                  {searchState === "ready" &&
-                    results.slice(0, 6).map((product, index) => (
-                      <Link
-                        key={product.id}
-                        href={`/add/${product.id}?for=ret`}
-                        className={`flex items-center gap-2.5 px-4 py-3 ${
-                          index < Math.min(results.length, 6) - 1
-                            ? "border-b border-hf-tan-dark"
-                            : ""
-                        }`}
-                      >
-                        <div className="h-9 w-9 flex-shrink-0">
-                          {product.imageUrl && (
-                            // eslint-disable-next-line @next/next/no-img-element
-                            <img
-                              src={product.imageUrl}
-                              alt=""
-                              className="h-full w-full object-contain"
-                            />
-                          )}
-                        </div>
-                        <span className="hf-type-body hf-type-strong flex-1 text-hf-black">
-                          {product.name}
-                        </span>
-                      </Link>
-                    ))}
-                </div>
-              )}
-
-              {/* Nye varer oprettes kun ved scanning — ingen manuel formular (DECISIONS 2026-10-02). */}
-              <div className="mt-4">
-                {inWebShell ? (
-                  <ProductPhotoDropZone returnSuffix="?for=ret" />
-                ) : (
-                  <a
-                    href="/camera?mode=product&for=ret"
-                    className="flex flex-col items-center gap-2 rounded-2xl bg-hf-tan py-3 text-center"
-                  >
-                    <IconCamera size={20} color="var(--hf-black)" />
-                    <span className="hf-type-small hf-type-strong text-hf-black">
-                      {t("createDish.scan")}
-                    </span>
-                  </a>
+                    {importNote.nutrition && (
+                      <p className="hf-type-small text-text-secondary">
+                        {t("createDish.importNutrition")}:{" "}
+                        {importNote.nutrition}
+                      </p>
+                    )}
+                    {importNote.missing.length > 0 && (
+                      <>
+                        <p className="hf-type-small hf-type-strong mt-2 text-hf-black">
+                          {t("createDish.importMissing")}
+                        </p>
+                        <ul className="hf-type-small text-text-secondary list-disc pl-5">
+                          {importNote.missing.map((line, index) => (
+                            <li key={index}>{line}</li>
+                          ))}
+                        </ul>
+                      </>
+                    )}
+                  </div>
                 )}
-              </div>
-            </div>
 
-            {showImages && (
+                <div className="rounded-2xl bg-hf-tan px-4 py-3">
+                  <PersonsSlider
+                    label={t("createDish.servings")}
+                    value={servings ?? 4}
+                    max={MAX_RECIPE_PERSONS}
+                    onChange={setServings}
+                  />
+                </div>
+
+                <div>
+                  <p className="hf-type-small hf-type-strong mb-2 text-hf-black">
+                    {t("createDish.ingredients")}
+                  </p>
+                  {ingredients.length === 0 ? (
+                    <div className="hf-card text-center">
+                      <p className="hf-type-body text-text-secondary">
+                        {t("createDish.noIngredientsYet")}
+                      </p>
+                    </div>
+                  ) : (
+                    <div className="overflow-hidden rounded-2xl bg-hf-tan">
+                      {ingredients.map((ingredient, index) => (
+                        <div
+                          key={`${ingredient.productId}-${index}`}
+                          className="flex items-center gap-2.5 border-b border-hf-tan-dark px-4 py-3 last:border-b-0"
+                        >
+                          <div className="h-9 w-9 flex-shrink-0">
+                            {ingredient.imageUrl && (
+                              // eslint-disable-next-line @next/next/no-img-element
+                              <img
+                                src={ingredient.imageUrl}
+                                alt=""
+                                className="h-full w-full object-contain"
+                              />
+                            )}
+                          </div>
+                          <div className="flex-1">
+                            <p className="hf-type-body hf-type-strong text-hf-black">
+                              {ingredient.name}
+                            </p>
+                            <p className="hf-type-small text-text-secondary">
+                              {isPrivateIngredientId(ingredient.productId)
+                                ? t("createDish.kcalUnknown", {
+                                    grams: ingredient.grams,
+                                  })
+                                : t("createDish.gramsKcal", {
+                                    grams: ingredient.grams,
+                                    kcal: round(
+                                      (ingredient.kcalPer100g *
+                                        ingredient.grams) /
+                                        100,
+                                    ),
+                                  })}
+                            </p>
+                          </div>
+                          <button
+                            type="button"
+                            onClick={() => handleRemove(index)}
+                            aria-label={t("createDish.removeIngredient")}
+                            className="flex h-7 w-7 items-center justify-center rounded-full bg-hf-white text-hf-black"
+                          >
+                            <IconX size={14} />
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+
+                {ingredients.length > 0 && (
+                  <div className="hf-card">
+                    <p className="hf-type-small hf-type-strong text-hf-black">
+                      {t("createDish.total")}
+                    </p>
+                    <p className="hf-type-body text-hf-black">
+                      {t("createDish.gramsKcal", {
+                        grams: round(totals.grams),
+                        kcal: round(totals.kcal),
+                      })}
+                    </p>
+                    <p className="hf-type-small text-text-secondary">
+                      {t("createDish.macrosSummary", {
+                        protein: round(totals.protein, 1),
+                        carbs: round(totals.carbs, 1),
+                        fat: round(totals.fat, 1),
+                      })}
+                    </p>
+                  </div>
+                )}
+
+                <div>
+                  <p className="hf-type-small hf-type-strong mb-2 text-hf-black">
+                    {t("createDish.addIngredient")}
+                  </p>
+                  <div className="hf-search">
+                    <IconSearch size={16} color="var(--hf-black)" />
+                    <input
+                      value={query}
+                      onChange={(event) => {
+                        const value = event.target.value;
+                        setQuery(value);
+                        if (!value.trim()) {
+                          setSearchState("idle");
+                          setResults([]);
+                        }
+                      }}
+                      placeholder={t("createDish.searchPlaceholder")}
+                    />
+                  </div>
+
+                  {query.trim() && (
+                    <div className="mt-2 overflow-hidden bg-hf-tan rounded-card">
+                      {searchState === "loading" && (
+                        <SkeletonScreen className="px-4">
+                          <SkeletonMediaRows rows={4} />
+                        </SkeletonScreen>
+                      )}
+                      {searchState === "error" && (
+                        <p className="hf-type-body text-text-secondary px-4 py-4 text-center">
+                          {connectionMessage(t("createDish.noResults"))}
+                        </p>
+                      )}
+                      {searchState === "ready" && results.length === 0 && (
+                        <p className="hf-type-body text-text-secondary px-4 py-4 text-center">
+                          {t("createDish.noResults")}
+                        </p>
+                      )}
+                      {searchState === "ready" &&
+                        results.slice(0, 6).map((product, index) => (
+                          <Link
+                            key={product.id}
+                            href={`/add/${product.id}?for=ret`}
+                            className={`flex items-center gap-2.5 px-4 py-3 ${
+                              index < Math.min(results.length, 6) - 1
+                                ? "border-b border-hf-tan-dark"
+                                : ""
+                            }`}
+                          >
+                            <div className="h-9 w-9 flex-shrink-0">
+                              {product.imageUrl && (
+                                // eslint-disable-next-line @next/next/no-img-element
+                                <img
+                                  src={product.imageUrl}
+                                  alt=""
+                                  className="h-full w-full object-contain"
+                                />
+                              )}
+                            </div>
+                            <span className="hf-type-body hf-type-strong flex-1 text-hf-black">
+                              {product.name}
+                            </span>
+                          </Link>
+                        ))}
+                    </div>
+                  )}
+
+                  {/* Nye varer oprettes kun ved scanning — ingen manuel formular (DECISIONS 2026-10-02). */}
+                  <div className="mt-4">
+                    {inWebShell ? (
+                      <ProductPhotoDropZone returnSuffix="?for=ret" />
+                    ) : (
+                      <a
+                        href="/camera?mode=product&for=ret"
+                        className="flex flex-col items-center gap-2 rounded-2xl bg-hf-tan py-3 text-center"
+                      >
+                        <IconCamera size={20} color="var(--hf-black)" />
+                        <span className="hf-type-small hf-type-strong text-hf-black">
+                          {t("createDish.scan")}
+                        </span>
+                      </a>
+                    )}
+                  </div>
+                </div>
+              </>
+            )}
+
+            {page > 0 && page <= stepList.length && (
+              <RecipeStepPage
+                key={page}
+                index={page - 1}
+                step={stepList[page - 1]}
+                canRemove={stepList.length > 1}
+                onChange={(next) => updateStep(page - 1, next)}
+                onAddAfter={addStepAfter}
+                onRemove={removeStep}
+              />
+            )}
+
+            {page === stepList.length + 1 && (
               <div>
                 <p className="hf-type-small hf-type-strong mb-2 text-hf-black">
                   {t("recipeImages.title")}
@@ -577,54 +680,6 @@ export default function CreateDishPage() {
                   images={images}
                   onChange={(next) => updateDetails({ images: next })}
                 />
-              </div>
-            )}
-
-            {showSteps && (
-              <div>
-                <p className="hf-type-small hf-type-strong mb-1 text-hf-black">
-                  {t("recipeSteps.title")}
-                </p>
-                <p className="hf-type-small text-text-secondary">
-                  {t("recipeSteps.hint")}
-                </p>
-                <RecipeStepsEditor
-                  steps={steps}
-                  onChange={(next) => updateDetails({ steps: next })}
-                />
-              </div>
-            )}
-
-            {(!showImages || !showSteps) && (
-              <div className="grid grid-cols-2 gap-2">
-                {!showImages && (
-                  <button
-                    type="button"
-                    onClick={() => updateDetails({ showImages: true })}
-                    className={`flex flex-col items-center gap-2 rounded-2xl bg-hf-tan py-3 text-center ${
-                      showSteps ? "col-span-2" : ""
-                    }`}
-                  >
-                    <IconPhoto size={20} color="var(--hf-black)" />
-                    <span className="hf-type-small hf-type-strong text-hf-black">
-                      {t("recipeImages.addButton")}
-                    </span>
-                  </button>
-                )}
-                {!showSteps && (
-                  <button
-                    type="button"
-                    onClick={() => updateDetails({ showSteps: true })}
-                    className={`flex flex-col items-center gap-2 rounded-2xl bg-hf-tan py-3 text-center ${
-                      showImages ? "col-span-2" : ""
-                    }`}
-                  >
-                    <IconListNumbers size={20} color="var(--hf-black)" />
-                    <span className="hf-type-small hf-type-strong text-hf-black">
-                      {t("recipeSteps.addButton")}
-                    </span>
-                  </button>
-                )}
               </div>
             )}
           </div>

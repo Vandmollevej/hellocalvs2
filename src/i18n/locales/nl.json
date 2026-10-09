@@ -1175,7 +1175,8 @@
     "addStep": "Stap toevoegen",
     "addPhoto": "Foto bij de stap maken",
     "removePhoto": "Foto verwijderen",
-    "remove": "Stap verwijderen"
+    "remove": "Stap verwijderen",
+    "dropPhoto": "Drag a picture here, or tap to add one"
   },
   "recipeImages": {
     "title": "Foto's van het gerecht",
@@ -1303,6 +1304,11 @@
     }
   },
   "createDish": {
+    "pageBack": "Previous page",
+    "pageNext": "Next page",
+    "pageDots": "Page {current} of {total}",
+    "pageIngredients": "Ingredients",
+    "pageImages": "Pictures of the dish",
     "servings": "Number of people",
 
     "shareLabel": "Wil je het gerecht met andere gebruikers delen?",

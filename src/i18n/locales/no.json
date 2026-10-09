@@ -1175,7 +1175,8 @@
     "addStep": "Legg til trinn",
     "addPhoto": "Ta bilde til trinnet",
     "removePhoto": "Fjern bildet",
-    "remove": "Slett trinn"
+    "remove": "Slett trinn",
+    "dropPhoto": "Drag a picture here, or tap to add one"
   },
   "recipeImages": {
     "title": "Bilder av retten",
@@ -1303,6 +1304,11 @@
     }
   },
   "createDish": {
+    "pageBack": "Previous page",
+    "pageNext": "Next page",
+    "pageDots": "Page {current} of {total}",
+    "pageIngredients": "Ingredients",
+    "pageImages": "Pictures of the dish",
     "servings": "Number of people",
 
     "shareLabel": "Ønsker du å dele retten med andre brukere?",

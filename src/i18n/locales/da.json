@@ -1168,7 +1168,8 @@
     "addStep": "Tilføj trin",
     "addPhoto": "Tag billede til trinnet",
     "removePhoto": "Fjern billedet",
-    "remove": "Slet trin"
+    "remove": "Slet trin",
+    "dropPhoto": "Træk et billede hertil, eller tryk for at tilføje"
   },
   "recipeImages": {
     "title": "Billeder af retten",
@@ -1296,6 +1297,11 @@
     }
   },
   "createDish": {
+    "pageBack": "Forrige side",
+    "pageNext": "Næste side",
+    "pageDots": "Side {current} af {total}",
+    "pageIngredients": "Ingredienser",
+    "pageImages": "Billeder af retten",
     "servings": "Antal personer",
 
     "shareLabel": "Ønsker du at dele retten med andre brugere?",

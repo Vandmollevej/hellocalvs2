@@ -1175,7 +1175,8 @@
     "addStep": "Lägg till steg",
     "addPhoto": "Ta en bild till steget",
     "removePhoto": "Ta bort bilden",
-    "remove": "Ta bort steg"
+    "remove": "Ta bort steg",
+    "dropPhoto": "Drag a picture here, or tap to add one"
   },
   "recipeImages": {
     "title": "Bilder på rätten",
@@ -1303,6 +1304,11 @@
     }
   },
   "createDish": {
+    "pageBack": "Previous page",
+    "pageNext": "Next page",
+    "pageDots": "Page {current} of {total}",
+    "pageIngredients": "Ingredients",
+    "pageImages": "Pictures of the dish",
     "servings": "Number of people",
 
     "shareLabel": "Vill du dela rätten med andra användare?",
