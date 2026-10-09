@@ -13,6 +13,8 @@ import {
 } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
 import { BottomSheet, BottomSheetCloseButton } from "@/components/hf/BottomSheet";
+import { PersonsSlider } from "@/components/hf/PersonsSlider";
+import { MAX_RECIPE_PERSONS } from "@/lib/recipe-portions";
 import { PasteTextSheet, ScanSheet, type ImportResult } from "@/components/recipes/RecipeImportSheets";
 import {
   readDishDraft,
@@ -318,21 +320,14 @@ export default function CreateDishPage() {
           </div>
         )}
 
-        <label className="flex items-center gap-3 rounded-2xl bg-hf-tan px-4 py-2">
-          <span className="hf-type-body flex-1 text-hf-black">{t("createDish.servings")}</span>
-          <input
-            type="number"
-            inputMode="numeric"
-            min={1}
-            max={100}
-            value={servings ?? ""}
-            onChange={(event) => {
-              const value = Number.parseInt(event.target.value, 10);
-              setServings(Number.isFinite(value) && value > 0 ? Math.min(value, 100) : null);
-            }}
-            className="hf-type-body w-16 rounded-full bg-hf-white px-3 py-2 text-center text-hf-black outline-none"
+        <div className="rounded-2xl bg-hf-tan px-4 py-3">
+          <PersonsSlider
+            label={t("createDish.servings")}
+            value={servings ?? 4}
+            max={MAX_RECIPE_PERSONS}
+            onChange={setServings}
           />
-        </label>
+        </div>
 
         <div>
           <p className="hf-type-small hf-type-strong mb-2 text-hf-black">{t("createDish.ingredients")}</p>
