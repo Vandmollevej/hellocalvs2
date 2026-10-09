@@ -362,10 +362,13 @@ fun ProfileSwipeToDelete(label: String, onDelete: () -> Unit, content: @Composab
     val shape = RoundedCornerShape(HcDimens.RadiusCard)
     Box(Modifier.fillMaxWidth().clip(shape)) {
         Box(Modifier.matchParentSize(), contentAlignment = Alignment.CenterEnd) {
-            Box(
-                Modifier.fillMaxHeight().width(80.dp).background(HcColors.RedDark).clickable(onClick = onDelete),
-                contentAlignment = Alignment.Center,
-            ) { HcText(label, HcTypeRoles.Small, bold = true, color = HcColors.White) }
+            // Compact red button centred on the row (not full height), like the web.
+            Box(Modifier.width(80.dp), contentAlignment = Alignment.Center) {
+                Box(
+                    Modifier.clip(shape).background(HcColors.RedDark).clickable(onClick = onDelete).padding(horizontal = 12.dp, vertical = 8.dp),
+                    contentAlignment = Alignment.Center,
+                ) { HcText(label, HcTypeRoles.Small, bold = true, color = HcColors.White) }
+            }
         }
         Box(
             Modifier.fillMaxWidth().offset { IntOffset(shown.roundToInt(), 0) }.pointerInput(Unit) {
