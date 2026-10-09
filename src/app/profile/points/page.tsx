@@ -73,9 +73,9 @@ export default function PointsPage() {
     >
       <div className="px-4 pt-4 pb-8">
         <div className="rounded-lg p-4 text-center bg-hf-brand">
-          <p className="text-text-secondary hf-type-caption text-hf-white">Din saldo</p>
+          <p className="hf-type-caption text-hf-white">Din saldo</p>
           <p className="hf-type-hero text-hf-white">{balance ?? "…"}</p>
-          <p className="text-text-secondary hf-type-caption text-hf-white">points</p>
+          <p className="hf-type-caption text-hf-white">points</p>
         </div>
 
         <div className="mt-4 rounded-lg border p-4 border-hf-line">
