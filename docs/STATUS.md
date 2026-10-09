@@ -156,6 +156,10 @@ Retter → HelloFresh åbner nu en skrivebeskyttet side under Retter (ikke Nye v
 - Migration `20261006200000_flow_conditions_migration_import` skal køre ved deploy. Tjek: `npm test`, lint og build (se commit). Ikke prøvet mod rigtig database eller med en rigtig optagelse — test importen med en kort optagelse først.
 - Fra samme overtagelse: `storeDescription` (butikkens originale varetekst, Cowboytoasten-sagen) er pushet til master (migration `20261005100000_product_store_description`), og SPAR-arket `spar.xlsx` er gemt med kode-forklaringerne.
 
+## 2026-10-09: Tilføj-menu — tekst tættere på ikonerne
+
+- Ikonerne har tomt luft i bunden, så teksten sad for langt nede. `AddMenuList.tsx`: `gap-0` og `-mb-4` på ikonet. Lint/build ikke kørt (ingen `node_modules` i cloud-sessionen). Justér `-mb-4` efter billedet på telefon.
+
 ## 2026-10-05: Pulslinjen — roligere uden ur, flyttet op over nederste tal
 
 - Uden tilsluttet ur slår pulslinjen kun hvert 4. sekund (`DEFAULT_PULSE_BPM` = 15), og grundlinjen er flyttet op, så bunden står lige over hjulets nederste tal (`PULSE_ABOVE_LAST_ROW` i `HomeWaves.tsx`). Lint/build ikke kørt (ingen `node_modules` i cloud-sessionen). Brugeren tester på telefon; justér konstanten på 25 px efter billedet.

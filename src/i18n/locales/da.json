@@ -1831,7 +1831,7 @@
         "night": "nat"
       },
       "weekday": "{weekday} {part}",
-      "lastWeek": "sidste uge {weekday}"
+      "lastWeek": "i {weekday}s"
     },
     "details": {
       "title": "Vejning",

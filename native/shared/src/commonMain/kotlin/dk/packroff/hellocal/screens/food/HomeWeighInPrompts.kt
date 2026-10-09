@@ -250,7 +250,7 @@ private fun weighWhen(at: LocalDateTime, t: Translator, now: LocalDateTime = Cap
         ago == 1 -> t.t("weighIn.when.yesterday.$part")
         // Same (Monday-based) week: "mandag morgen".
         ago <= sinceMonday -> t.t("weighIn.when.weekday", "weekday" to weekday, "part" to t.t("weighIn.when.part.$part"))
-        ago <= sinceMonday + 7 -> t.t("weighIn.when.lastWeek", "weekday" to weekday)
+        ago <= 7 -> t.t("weighIn.when.lastWeek", "weekday" to weekday)
         else -> CaptureDates.dayMonthLong(at.date, t.locale)
     }
     return WeighWhen(label, part, ago <= 0)
