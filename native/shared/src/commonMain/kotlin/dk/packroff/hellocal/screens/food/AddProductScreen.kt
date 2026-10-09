@@ -625,7 +625,7 @@ fun AddProductView(
                                 isPending("ingredients") -> Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                                     listOf(0.94f, 0.82f, 0.88f, 0.46f).forEach { FoodSkeleton(Modifier.fillMaxWidth(it).height(16.dp)) }
                                 }
-                                else -> IngredientsTextView(view.ingredientsText) { openAdditive = it }
+                                else -> IngredientsTextView(view.ingredientsText.orEmpty()) { openAdditive = it }
                             }
                         }
                     }
