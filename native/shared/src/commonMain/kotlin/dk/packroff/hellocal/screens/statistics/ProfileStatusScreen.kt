@@ -153,7 +153,11 @@ fun ProfileStatusScreen(args: RouteArgs) {
         Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
             Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 Row(Modifier.fillMaxWidth().height(IntrinsicSize.Min), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    StatusTile(t.t("profileStatus.currentWeight"), currentKg?.let(showWeight) ?: "—", "/weight/create")
+                    CurrentWeightTile(
+                        t.t("profileStatus.currentWeight"),
+                        currentKg?.let(showWeight) ?: "—",
+                        weightHistory.lastOrNull()?.let { "d. ${formatLatestDate(it.atMillis)}" },
+                    )
                     if (target != null) StatusTile(t.t("profileStatus.goal"), showWeight(target), "/profile/goals")
                     else SetGoalTile(t.t("profileStatus.setGoal"))
                 }
@@ -170,6 +174,15 @@ fun ProfileStatusScreen(args: RouteArgs) {
                         align = TextAlign.Center,
                     )
                 }
+                HcText(
+                    t.t("profileStatus.seeAllGoals"),
+                    HcTypeRoles.Small,
+                    Modifier.fillMaxWidth().clickable { nav.push("/profile/goals") },
+                    bold = true,
+                    underline = true,
+                    color = HcColors.Black,
+                    align = TextAlign.Center,
+                )
             }
 
             if (bodyGoalFields.isNotEmpty()) {
@@ -227,6 +240,26 @@ private fun RowScope.StatusTile(label: String, value: String, href: String) {
     ) {
         HcText(label, HcTypeRoles.Small, color = HcColors.TextSecondary)
         HcText(value, HcTypeRoles.Title, color = HcColors.Black)
+    }
+}
+
+/** Current weight is not a link (overkill): weight and date share one line. */
+@Composable
+private fun RowScope.CurrentWeightTile(label: String, value: String, date: String?) {
+    Column(
+        Modifier
+            .weight(1f)
+            .fillMaxHeight()
+            .clip(RoundedCornerShape(HcDimens.RadiusCard))
+            .background(HcColors.Card)
+            .padding(HcDimens.SpaceBlock),
+        verticalArrangement = Arrangement.spacedBy(4.dp),
+    ) {
+        HcText(label, HcTypeRoles.Small, color = HcColors.TextSecondary)
+        Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.Bottom) {
+            HcText(value, HcTypeRoles.Title, color = HcColors.Black)
+            if (date != null) HcText(date, HcTypeRoles.Small, color = HcColors.TextSecondary)
+        }
     }
 }
 

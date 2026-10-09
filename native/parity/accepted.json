@@ -1370,7 +1370,7 @@
   },
   "/profile/status": {
     "src/app/layout.tsx": "9a180a8c9b7bdec8",
-    "src/app/profile/status/page.tsx": "c7a8332571ef7d5d",
+    "src/app/profile/status/page.tsx": "d3084501b206af21",
     "src/components/AuthGate.tsx": "94db96b768f9f95f",
     "src/components/BottomNav.tsx": "50c4eb59b5807fa4",
     "src/components/EmailVerifySheet.tsx": "42e52d85f9bf57d9",

@@ -30,7 +30,7 @@ type StatusData = {
 };
 
 async function fetchJson<T>(url: string): Promise<T> {
-  const response = await fetch(url);
+  const response = await fetch(url, { cache: "no-store" });
   if (!response.ok) throw new Error(`${url} svarede ${response.status}`);
   return (await response.json()) as T;
 }
@@ -62,6 +62,20 @@ function StatusTile({ label, value, href }: { label: string; value: string; href
       <span className="hf-type-small text-text-secondary">{label}</span>
       <span className="hf-type-title">{value}</span>
     </Link>
+  );
+}
+
+// Nuværende vægt er ikke et link (det ville være overkill): vægt og dato står
+// på samme linje.
+function CurrentWeightTile({ label, value, date }: { label: string; value: string; date?: string }) {
+  return (
+    <div className="flex-1 gap-1 text-hf-black hf-card">
+      <span className="hf-type-small text-text-secondary">{label}</span>
+      <span className="flex flex-wrap items-baseline gap-x-2">
+        <span className="hf-type-title">{value}</span>
+        {date && <span className="hf-type-small text-text-secondary">{date}</span>}
+      </span>
+    </div>
   );
 }
 
@@ -135,7 +149,7 @@ export default function ProfileStatusPage() {
 
   useEffect(() => {
     let cancelled = false;
-    Promise.all([
+    const load = () => Promise.all([
       fetchJson<{ user: { weightKg: number | null; targetWeightKg: number | null } }>("/api/profile"),
       fetchJson<{ entries: StatusWeightEntry[] }>("/api/weight-entries"),
       fetchJson<{ entries: BodyMeasurementSeriesEntry[] }>("/api/body-measurements"),
@@ -153,13 +167,22 @@ export default function ProfileStatusPage() {
         });
       })
       .catch(() => {
-        if (!cancelled) setData(null);
+        if (!cancelled) setData((previous) => previous);
       })
       .finally(() => {
         if (!cancelled) setLoading(false);
       });
+    void load();
+    // Et mål sat på en anden side (og tilbage via browserens pil) skal ses med det samme.
+    const reload = () => {
+      if (document.visibilityState === "visible") void load();
+    };
+    window.addEventListener("pageshow", reload);
+    document.addEventListener("visibilitychange", reload);
     return () => {
       cancelled = true;
+      window.removeEventListener("pageshow", reload);
+      document.removeEventListener("visibilitychange", reload);
     };
   }, []);
 
@@ -205,10 +228,10 @@ export default function ProfileStatusPage() {
       <div className="hf-page">
         <div className="flex flex-col gap-2">
           <div className="flex gap-2">
-            <StatusTile
+            <CurrentWeightTile
               label={t("profileStatus.currentWeight")}
               value={current != null ? showWeight(current) : "—"}
-              href="/weight/create"
+              date={weightHistory.length > 0 ? `d. ${formatLatestDate(weightHistory[weightHistory.length - 1].at)}` : undefined}
             />
             {target != null ? (
               <StatusTile label={t("profileStatus.goal")} value={showWeight(target)} href="/profile/goals" />
@@ -225,6 +248,9 @@ export default function ProfileStatusPage() {
                   })}
             </p>
           )}
+          <Link href="/profile/goals" className="hf-type-small hf-type-strong text-hf-black underline text-center">
+            {t("profileStatus.seeAllGoals")}
+          </Link>
         </div>
 
         {bodyGoalFields.length > 0 && (
