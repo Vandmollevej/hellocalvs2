@@ -21,7 +21,7 @@ export function StatsTabs({ active }: { active: StatsView }) {
           key={tab.id}
           href={tab.href}
           className={`rounded-md px-3 py-1.5 ${
-            tab.id === active ? "hf-type-strong bg-hf-tan text-hf-green-dark" : "text-text-secondary hover:text-text-primary"
+            tab.id === active ? "hf-type-strong hf-selected" : "text-text-secondary hover:text-text-primary"
           }`}
         >
           {tab.label}

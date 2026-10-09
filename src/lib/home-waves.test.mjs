@@ -1,7 +1,7 @@
 // Kør: npm test  (node --test, Node 24 fjerner TypeScript-typer selv)
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { createWaveScene, drawWaveScene, heartbeatShape, mulberry32, pulseTrace, PULSE_REST, WAVE_BLEED } from "./home-waves.ts";
+import { createWaveScene, drawWaveScene, heartbeatShape, mulberry32, pulseTrace, PULSE_TRAIL, WAVE_BLEED } from "./home-waves.ts";
 
 const palette = {
   ramp: [
@@ -102,9 +102,9 @@ test("hjerteslaget har én tydelig R-tak op og er fladt langt fra midten", () =>
 test("puls-linjen starter helt ude ved venstre kant og ligger midt i hero", () => {
   const scene = createWaveScene(5);
   assert.ok(scene.pulse.y >= 0.55 && scene.pulse.y <= 0.65);
-  for (const t of [0.5, 1, 2, 3]) {
-    // Find et tidspunkt i fejet og tjek, at sporet begynder uden for venstre kant.
-    const time = (scene.pulse.sweep + PULSE_REST) * 10 - scene.pulse.offset + t;
+  for (const progress of [0.05, 0.15, 0.25, 0.3]) {
+    // Tidligt i fejet har halen ikke sluppet venstre kant: sporet begynder uden for den.
+    const time = (scene.pulse.sweep * (1 + PULSE_TRAIL)) * 10 - scene.pulse.offset + scene.pulse.sweep * progress;
     const ctx = fakeContext();
     const starts = [];
     ctx.moveTo = (x) => starts.push(x);
@@ -159,7 +159,7 @@ test("pulsen låses pr. fej, så slagene ikke flytter sig midt i et fej", () => 
     const ys = [];
     const ctx = fakeContext();
     ctx.lineTo = (_x, y) => ys.push(y);
-    const time = (scene.pulse.sweep + PULSE_REST) * 20 - scene.pulse.offset + scene.pulse.sweep * 0.8;
+    const time = (scene.pulse.sweep * (1 + PULSE_TRAIL)) * 20 - scene.pulse.offset + scene.pulse.sweep * 0.8;
     drawWaveScene(ctx, { ...scene, bundles: [], fog: [] }, palette, { t: time, width: 393, height: 430, scale: 1, bpm });
     return ys;
   };
@@ -180,52 +180,39 @@ test("puls-linjen ligger på den givne grundlinje (over tal-hjulets midte)", () 
   const ctx = fakeContext();
   const starts = [];
   ctx.moveTo = (x, y) => starts.push([x, y]);
-  const time = (scene.pulse.sweep + PULSE_REST) * 10 - scene.pulse.offset + scene.pulse.sweep * 0.5;
+  const time = (scene.pulse.sweep * (1 + PULSE_TRAIL)) * 10 - scene.pulse.offset + scene.pulse.sweep * 0.2;
   drawWaveScene(ctx, { ...scene, bundles: [], fog: [] }, palette, { t: time, width: 393, height: 430, scale: 1, pulseY: 150 });
   const [x, y] = starts[0];
   assert.equal(x, -WAVE_BLEED);
   assert.ok(Math.abs(y - 150) <= scene.pulse.amplitude * 1.2, `starter i y=${y}`);
 });
 
-test("det forrige pulsspor toner ikke ud på én gang, men fjernes bagfra af det nye fej", () => {
+test("pulssporet er en slange: halen følger spidsen, og sporet forsvinder kort efter", () => {
   const scene = createWaveScene(5);
   const width = 393;
   const left = -WAVE_BLEED;
   const right = width + WAVE_BLEED;
+  const span = right - left;
   const trace = (progress) => {
     const starts = [];
-    const alphas = [];
     const ctx = fakeContext();
     ctx.moveTo = (x) => starts.push(x);
-    let alpha = 1;
-    Object.defineProperty(ctx, "globalAlpha", {
-      get: () => alpha,
-      set: (v) => {
-        alpha = v;
-      },
-    });
-    ctx.stroke = () => alphas.push(alpha);
-    const time = (scene.pulse.sweep + PULSE_REST) * 10 - scene.pulse.offset + scene.pulse.sweep * progress;
+    const time = scene.pulse.sweep * (1 + PULSE_TRAIL) * 10 - scene.pulse.offset + scene.pulse.sweep * progress;
     drawWaveScene(ctx, { ...scene, bundles: [], fog: [] }, palette, { t: time, width, height: 430, scale: 1 });
-    return { starts, alphas, head: left + progress * (right - left) };
+    return starts;
   };
-  // Langt inde i fejet står det gamle spor stadig foran spidsen — med fuld styrke.
-  const late = trace(0.8);
-  assert.ok(late.starts.some((x) => Math.abs(x - (late.head + 28)) < 0.01), "det gamle spor mangler foran spidsen");
-  assert.ok(Math.max(...late.alphas) >= 0.85, "det gamle spor må ikke være toner ud");
-  // Tæt på fejets slutning er det gamle spor fjernet bagfra: der er intet tilbage
-  // at tegne foran spidsen, og det nye fejs spor står fuldt.
-  const end = trace(0.99);
-  assert.ok(end.head + 28 >= right, "forudsætning: spidsen er tæt på højre kant");
-  assert.deepEqual(end.starts.filter((x) => x > end.head + 0.01), []);
+  // Midt i fejet er halen sluppet venstre kant: sporet starter ved halen, ikke ved kanten.
+  const mid = trace(0.8);
+  assert.ok(mid[0] > left + 1, "halen skal være sluppet venstre kant");
+  assert.ok(Math.abs(mid[0] - (left + (0.8 - PULSE_TRAIL) * span)) < 0.01);
+  // Når spidsen er nået højre kant, trækkes halen stadig ind.
+  const end = trace(1 + PULSE_TRAIL * 0.5);
+  assert.ok(end[0] > left + span * 0.5, "halen skal have bevæget sig forbi midten");
+  // Lige efter halen har forladt højre kant er intet spor tegnet.
+  assert.equal(trace(1 + PULSE_TRAIL - 0.001).filter((x) => x < right - 1).length, 0);
 });
 
-test("det færdige spor står stille et øjeblik, før næste bølge kommer ind fra venstre", () => {
-  const scene = createWaveScene(5);
-  const starts = [];
-  const ctx = fakeContext();
-  ctx.moveTo = (x) => starts.push(x);
-  const time = (scene.pulse.sweep + PULSE_REST) * 10 - scene.pulse.offset + scene.pulse.sweep + PULSE_REST / 2;
-  drawWaveScene(ctx, { ...scene, bundles: [], fog: [] }, palette, { t: time, width: 393, height: 430, scale: 1 });
-  assert.equal(starts.filter((x) => x > -WAVE_BLEED + 1 && x < 393).length, 0, "intet nyt fej i pausen");
+test("pulsen er 65 bpm uden ur, og der er ingen pause mellem fejene", async () => {
+  const { DEFAULT_PULSE_BPM } = await import("./home-waves.ts");
+  assert.equal(DEFAULT_PULSE_BPM, 65);
 });

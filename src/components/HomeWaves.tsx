@@ -17,13 +17,6 @@ import {
  * og overskriften (bruger 2026-10-03).
  */
 const PULSE_BELOW_HERO = 18;
-/**
- * Px fra pulsens grundlinje op til midten af hjulets nederste række. Slagets
- * laveste punkt ligger ca. 9 px under grundlinjen, og tallets top ca. 13 px
- * over rækkens midte, så bunden netop står oven over tallet.
- */
-const PULSE_ABOVE_LAST_ROW = 25;
-
 // Bruger 2026-10-03: skærmen har to felter. Det øverste (topbar + hero) har
 // skarpe, tynde linjer i skærmens fulde opløsning; det nederste (listen med
 // indtastningerne) har tykke, meget slørede bånd bag sig som frostet glas
@@ -111,17 +104,8 @@ export function HomeWaves({ variant = "top" }: { variant?: WaveVariant }) {
       width = host!.clientWidth;
       height = host!.clientHeight - layer.below;
       scale = layer.scale();
-      // Pulsens bund ligger lige over hjulets nederste tal (bruger 2026-10-05).
-      // Hjulets boks er centreret om den midterste række.
-      const wheel = host!.parentElement?.querySelector<HTMLElement>("[data-stats-wheel]");
-      const lastRow = Number(wheel?.dataset.statsWheelLastRow);
-      if (wheel && Number.isFinite(lastRow)) {
-        const box = wheel.getBoundingClientRect();
-        const lastRowY = box.top + box.height / 2 - host!.getBoundingClientRect().top + lastRow;
-        pulseY = lastRowY - PULSE_ABOVE_LAST_ROW;
-      } else {
-        pulseY = undefined;
-      }
+      // Pulsen ligger midt på skærmen, målt over hele visningen (bruger 2026-10-09).
+      pulseY = window.innerHeight / 2 - host!.getBoundingClientRect().top;
       ctx!.canvas.width = Math.max(1, Math.round((width + WAVE_BLEED * 2) * scale));
       ctx!.canvas.height = Math.max(1, Math.round((height + layer.below + WAVE_BLEED * 2) * scale));
       paint();

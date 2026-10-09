@@ -220,7 +220,7 @@ fun HomeStatsWheel(side: String, modifier: Modifier = Modifier) {
         )
         val own = FoodPrefs.statKeys.mapNotNull { key -> FRONTPAGE_STAT_DEFS.firstOrNull { it.key == key } }.map { def ->
             val (value, unit) = def.compute(data)
-            WheelStat(def.key, t.t(def.labelKey), def.icon, if (loading) "—" else value, unit)
+            WheelStat(def.key, t.t(def.labelKey), def.icon, if (loading) "—" else value, unit, measureTextLines(suggestMeasureText(t.t(def.labelKey))))
         }
         val custom = if (customMeasurements.isEmpty()) emptyList() else {
             val today = FoodTime.today()
@@ -249,8 +249,8 @@ fun HomeStatsWheel(side: String, modifier: Modifier = Modifier) {
             }
         }
         val placeholders = listOf(
-            WheelStat("placeholder-sleep", "Søvn (eksempel)", FoodIconSpec.Tabler("Moon"), "7,5", "t"),
-            WheelStat("placeholder-pulse", "Puls (eksempel)", FoodIconSpec.Tabler("Heartbeat"), "62", "bpm"),
+            WheelStat("placeholder-sleep", "Søvn (eksempel)", FoodIconSpec.Tabler("Moon"), "7,5", "t", listOf("Søvn")),
+            WheelStat("placeholder-pulse", "Puls (eksempel)", FoodIconSpec.Tabler("Heartbeat"), "62", "bpm", listOf("Puls")),
         )
         val all = own + custom
         val missing = max(0, SIDE_ROWS * 2 + 1 - all.size)
