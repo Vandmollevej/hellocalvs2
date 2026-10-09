@@ -3,6 +3,12 @@
 Last updated: 2026-10-03
 Last updated: 2026-10-04
 
+## 2026-10-09: Tilføj-menuen kan redigeres (langt tryk)
+
+- Siden/arket med de mange ikoner (`AddMenuList`) har samme redigering som bundmenuen og statistikken: langt tryk → felterne vibrerer, hold et felt inde og træk for at flytte det, slette-cirklen fjerner det. Øverst til højre vises **Tilføj** (viser de fjernede felter, tryk for at sætte et ind igen) og **Færdig**; et tryk på baggrunden afslutter også.
+- Rækkefølge og valg gemmes i localStorage (`src/lib/add-menu-layout.ts`) — pr. enhed, ikke på kontoen.
+- Tjek: lint og typecheck af de ændrede filer er rene. Ikke prøvet på telefon/i browser — test langt tryk, træk og at et kort tryk stadig åbner feltet.
+
 ## 2026-10-04: Brugerdata krypteret i databasen (User.email + User.displayName)
 
 - Feltkryptering (AES-256-GCM, `enc:v1:`-præfiks) af `User.email` og `User.displayName`, omskrevet transparent af en Prisma-klientudvidelse i `src/lib/prisma.ts` (logik i `src/lib/user-data-transform.ts`, krypto i `src/lib/user-crypto.ts`). Opslag på e-mail går via ny kolonne `User.emailHash` (HMAC-SHA256). Klartekst uden præfiks læses stadig, og uden env-nøgler kører appen som før — så deploy-rækkefølgen er sikker.

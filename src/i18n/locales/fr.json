@@ -554,6 +554,11 @@
     "distanceKm": "Kilomètres parcourus"
   },
   "addMenu": {
+    "addTiles": "Ajouter",
+    "done": "Terminé",
+    "addTile": "Ajouter {item}",
+    "removeTile": "Retirer {item}",
+    "allInUse": "Toutes les tuiles sont utilisées",
     "title": "Ajouter",
     "food": "Ajouter un aliment",
     "scan": "Scanner un produit",

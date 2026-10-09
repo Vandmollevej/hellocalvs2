@@ -554,6 +554,11 @@
     "distanceKm": "Kilometers bewogen"
   },
   "addMenu": {
+    "addTiles": "Toevoegen",
+    "done": "Klaar",
+    "addTile": "{item} toevoegen",
+    "removeTile": "{item} verwijderen",
+    "allInUse": "Alle tegels zijn in gebruik",
     "title": "Toevoegen",
     "food": "Eten toevoegen",
     "scan": "Product scannen",

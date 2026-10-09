@@ -556,6 +556,11 @@
     "distanceKm": "Kilometers moved"
   },
   "addMenu": {
+    "addTiles": "Add",
+    "done": "Done",
+    "addTile": "Add {item}",
+    "removeTile": "Remove {item}",
+    "allInUse": "All tiles are in use",
     "title": "Add",
     "food": "Add food",
     "scan": "Scan product",

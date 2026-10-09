@@ -556,6 +556,11 @@
     "distanceKm": "Kilometer bevæget"
   },
   "addMenu": {
+    "addTiles": "Tilføj",
+    "done": "Færdig",
+    "addTile": "Tilføj {item}",
+    "removeTile": "Fjern {item}",
+    "allInUse": "Alle felter er i brug",
     "title": "Tilføj",
     "food": "Tilføj mad",
     "scan": "Scan vare",

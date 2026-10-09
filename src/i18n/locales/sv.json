@@ -554,6 +554,11 @@
     "distanceKm": "Kilometer rört"
   },
   "addMenu": {
+    "addTiles": "Lägg till",
+    "done": "Klar",
+    "addTile": "Lägg till {item}",
+    "removeTile": "Ta bort {item}",
+    "allInUse": "Alla fält används",
     "title": "Lägg till",
     "food": "Lägg till mat",
     "scan": "Skanna vara",

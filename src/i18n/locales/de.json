@@ -554,6 +554,11 @@
     "distanceKm": "Zurückgelegte Kilometer"
   },
   "addMenu": {
+    "addTiles": "Hinzufügen",
+    "done": "Fertig",
+    "addTile": "{item} hinzufügen",
+    "removeTile": "{item} entfernen",
+    "allInUse": "Alle Felder sind in Gebrauch",
     "title": "Hinzufügen",
     "food": "Essen hinzufügen",
     "scan": "Artikel scannen",
