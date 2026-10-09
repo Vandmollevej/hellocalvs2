@@ -672,7 +672,7 @@
       "web": "src/app/calendar/page.tsx",
       "status": "ported",
       "native": [
-        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/calendar/CalendarScreen.kt"
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/calendar/CalendarViews.kt"
       ]
     },
     {
