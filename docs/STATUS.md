@@ -2,6 +2,10 @@
 
 Last updated: 2026-10-09
 
+## 2026-10-09: "Opret egen ingrediens" fjernet
+
+- Fjernet i web og native: siderne `/ingredients` ("Mine ingredienser") og `/ingredients/new`, tekstlinket under Opret ret og egne ingredienser i søgningen på Opret ret. Backend (`/api/private-ingredients`, admin "Ønskede ingredienser"), tabeller og eksisterende `private:`-ingredienser i retter er bevidst urørt (kun brugerindgangen er væk). Lint, tsc og native-paritet grønne; Kotlin ikke kompileret lokalt.
+
 ## 2026-10-09: Hello Doc — disclaimer væk + sammensæt dashboard
 
 - Disclaimer-teksten nederst i lægevisningen (og forhåndsvisningens indledende note) er fjernet i web og native.

@@ -64,7 +64,7 @@ export default function CreateDishPage() {
   const [saving, setSaving] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
   const [query, setQuery] = useState("");
-  const [results, setResults] = useState<{ id: string; name: string; imageUrl?: string | null; isPrivate?: boolean }[]>([]);
+  const [results, setResults] = useState<{ id: string; name: string; imageUrl?: string | null }[]>([]);
   const [searchState, setSearchState] = useState<"idle" | "loading" | "ready" | "error">("idle");
 
   useEffect(() => {
@@ -73,18 +73,10 @@ export default function CreateDishPage() {
     const timeout = setTimeout(async () => {
       setSearchState("loading");
       try {
-        const [res, own] = await Promise.all([
-          fetch(`/api/products?q=${encodeURIComponent(query)}`, { signal: controller.signal }),
-          // Egne ingredienser (kun i boksen) vises øverst — aldrig for andre.
-          fetch(`/api/private-ingredients?q=${encodeURIComponent(query)}`).catch(() => null),
-        ]);
+        const res = await fetch(`/api/products?q=${encodeURIComponent(query)}`, { signal: controller.signal });
         if (!res.ok) throw new Error("offline");
         const data = await res.json();
-        const ownData = own?.ok ? await own.json() : { ingredients: [] };
-        setResults([
-          ...(ownData.ingredients ?? []).map((i: { id: string; name: string }) => ({ ...i, isPrivate: true })),
-          ...(data.products ?? []),
-        ]);
+        setResults(data.products ?? []);
         setSearchState("ready");
       } catch {
         setSearchState("error");
@@ -428,11 +420,7 @@ export default function CreateDishPage() {
                 results.slice(0, 6).map((product, index) => (
                   <Link
                     key={product.id}
-                    href={
-                      product.isPrivate
-                        ? `/ingredients/new?for=ret&use=${encodeURIComponent(product.id)}`
-                        : `/add/${product.id}?for=ret`
-                    }
+                    href={`/add/${product.id}?for=ret`}
                     className={`flex items-center gap-2.5 px-4 py-3 ${
                       index < Math.min(results.length, 6) - 1 ? "border-b border-hf-tan-dark" : ""
                     }`}
@@ -444,9 +432,6 @@ export default function CreateDishPage() {
                       )}
                     </div>
                     <span className="hf-type-body hf-type-strong flex-1 text-hf-black">{product.name}</span>
-                    {product.isPrivate && (
-                      <span className="hf-type-small hf-type-strong text-text-secondary">{t("createDish.ownTag")}</span>
-                    )}
                   </Link>
                 ))}
             </div>
@@ -466,12 +451,6 @@ export default function CreateDishPage() {
               </a>
             )}
           </div>
-          <Link
-            href="/ingredients/new?for=ret"
-            className="hf-type-small hf-type-strong text-text-secondary mt-2 block text-center underline underline-offset-2"
-          >
-            {t("createDish.createOwnIngredient")}
-          </Link>
         </div>
 
         {showImages && (
