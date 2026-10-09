@@ -340,7 +340,8 @@
       "route": "/admin/messaging/kladde",
       "web": "src/app/admin/messaging/kladde/page.tsx",
       "status": "web-only",
-      "native": []
+      "native": [],
+      "note": "Admin er et skrivebordsværktøj og bliver på web."
     },
     {
       "route": "/admin/page-tree",
@@ -542,7 +543,8 @@
       "route": "/admin/scan-invites/afvisningsaarsager",
       "web": "src/app/admin/scan-invites/afvisningsaarsager/page.tsx",
       "status": "web-only",
-      "native": []
+      "native": [],
+      "note": "Admin er et skrivebordsværktøj og bliver på web."
     },
     {
       "route": "/admin/search",
