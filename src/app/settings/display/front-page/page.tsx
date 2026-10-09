@@ -19,6 +19,7 @@ import {
   useFrontpageStatKeys,
   type FrontpageStatKey,
 } from "@/lib/frontpage-stats";
+import { savePulseZoneSettings, usePulseZoneSettings } from "@/lib/pulse-zone-settings";
 import { useTranslation } from "@/i18n/LocaleProvider";
 
 // Settings → Visning → Forside: which of the catalog's add-elements
@@ -36,6 +37,15 @@ export default function FrontPageDisplaySettingsPage() {
   const actions = visibleAddActions(profile);
   const fabSide = useFabSide();
   const activeStatKeys = useFrontpageStatKeys();
+  const pulse = usePulseZoneSettings();
+
+  function setZoneBound(index: number, bound: "min" | "max", raw: string) {
+    const value = Math.round(Number(raw));
+    if (!Number.isFinite(value) || value < 30 || value > 250) return;
+    const zones = pulse.zones.map((zone, i) => (i === index ? { ...zone, [bound]: value } : zone));
+    if (zones[index].min > zones[index].max) return;
+    savePulseZoneSettings({ ...pulse, zones });
+  }
 
   function toggle(key: AddActionKey, checked: boolean) {
     const current = new Set(selectedKeys);
@@ -162,6 +172,56 @@ export default function FrontPageDisplaySettingsPage() {
                 </span>
                 <span className="hf-type-body flex-1 text-hf-black">{t(def.labelKey)}</span>
                 <Toggle checked={checked} onChange={(value) => toggleStat(def.key, value)} />
+              </div>
+            );
+          })}
+        </div>
+
+        <p className="hf-type-small hf-type-strong text-text-secondary hf-heading px-1 uppercase tracking-wide">
+          {t("frontPageSettings.zonesSectionTitle")}
+        </p>
+        <p className="hf-type-small text-text-secondary px-1">{t("frontPageSettings.zonesIntro")}</p>
+        <div className="flex flex-col gap-1 overflow-hidden rounded-2xl bg-hf-tan">
+          {pulse.zones.map((zone, index) => {
+            const selected = pulse.selected === index;
+            return (
+              <div
+                key={index}
+                className={`hf-control-row flex items-center gap-3 px-4 ${
+                  index < pulse.zones.length - 1 ? "border-b border-hf-tan-dark" : ""
+                }`}
+              >
+                <button
+                  type="button"
+                  aria-pressed={selected}
+                  onClick={() => savePulseZoneSettings({ ...pulse, selected: index })}
+                  className={`hf-type-body hf-type-strong rounded-full px-3 py-1 ${
+                    selected ? "hf-selected" : "bg-hf-white text-hf-black"
+                  }`}
+                >
+                  {t("frontPageSettings.zoneLabel", { zone: index + 1 })}
+                </button>
+                <span className="flex-1" />
+                <input
+                  type="number"
+                  inputMode="numeric"
+                  aria-label={t("frontPageSettings.zoneMin", { zone: index + 1 })}
+                  defaultValue={zone.min}
+                  key={`min-${index}-${zone.min}`}
+                  onBlur={(event) => setZoneBound(index, "min", event.target.value)}
+                  className="hf-type-body w-16 rounded-lg bg-hf-white px-2 py-1 text-right text-hf-black"
+                />
+                <span className="hf-type-body text-hf-black">–</span>
+                <input
+                  type="number"
+                  inputMode="numeric"
+                  aria-label={t("frontPageSettings.zoneMax", { zone: index + 1 })}
+                  defaultValue={zone.max}
+                  key={`max-${index}-${zone.max}`}
+                  onBlur={(event) => setZoneBound(index, "max", event.target.value)}
+                  className="hf-type-body w-16 rounded-lg bg-hf-white px-2 py-1 text-right text-hf-black"
+                />
+                <span className="hf-type-small text-text-secondary">bpm</span>
               </div>
             );
           })}

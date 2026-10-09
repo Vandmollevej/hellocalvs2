@@ -1,6 +1,15 @@
 # HELLO CAL — project status
 
-Last updated: 2026-10-07
+Last updated: 2026-10-09
+
+## 2026-10-09: Tal-slideren — flere valgbare felter, mål-linje og grøn ved mål
+
+- Dummytekst og opfundne eksempelrækker (Søvn/Puls) er fjernet; under hvert tal står nu feltets mål (`caption`), og hovedtallet bliver grønt, når et minimumsmål er nået (skridt, trapper, protein, vægtudsigt, chance).
+- Nye valgbare felter under Indstillinger → Visning → Forside: trapper, skridt, optjente kalorier, energifordeling (P/F/K), aktivitet (løbe-ikon ved løb), kalorier ved skridt (flamme + skridt), kalorieindtag (kniv og gaffel), indtag nu mod normalt (ur, ± %), tid med hvilepuls, tid i valgt pulszone, vægt på måldagen (sandsynligt/muligt/usandsynligt) og chance for at nå målet.
+- Pulszoner (5, bpm-grænser, valgt zone) sættes samme sted og gemmes pr. enhed (`src/lib/pulse-zone-settings.ts`). Beregninger i `src/lib/frontpage-goal-math.ts`.
+- Antagelser: sukker-mål = 10 % af kcal-målet (WHO; brugeren skrev "1 %"), salt 6 g, fedt 30 % og kulhydrat 55 % af energien medmindre Målsætning har egne gram-mål. Grænse-felter (sukker, salt, fedt, kulhydrat) bliver ikke grønne. Trapper 10 og skridt 10.000 er faste mål.
+- Tid i pulszone regnes af dagens pulsmålinger (hver gælder til næste, højst 5 min). Nye tekster er kun oversat til da/en; de/fr/nl/sv/no bruger engelsk.
+- Ikke testet i browser (kræver login og data). tsc og eslint på de ændrede filer er grønne.
 
 ## 2026-10-07: Alle popups som bundark + brand-logoets luft
 
