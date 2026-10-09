@@ -390,10 +390,8 @@ fun AddProductView(
     Column(Modifier.fillMaxSize().background(HcColors.Page)) {
         HcAppBar(title)
         val offer = product?.updateOffer
-        if (!isLoading && !forDish && !isEditing && id.isNotEmpty() && offer != null) {
-            UpdatePointsBanner("/add/${encodeUri(id)}/update", t.t("productUpdate.banner", "points" to offer.points), t.t("productUpdate.toggle"))
-        }
-        Column(Modifier.weight(1f).fillMaxWidth().verticalScroll(scrollState)) {
+        Box(Modifier.weight(1f).fillMaxWidth()) {
+        Column(Modifier.fillMaxSize().verticalScroll(scrollState)) {
             if (state == LoadState.NotFound || state == LoadState.Failed) {
                 HcCard(Modifier.padding(16.dp)) {
                     HcText(
@@ -662,6 +660,16 @@ fun AddProductView(
                     }
                 }
             }
+        }
+        if (!isLoading && !forDish && !isEditing && id.isNotEmpty() && offer != null) {
+            val tileKeys = mapOf("FRONT" to "productUpdate.tileFront", "NUTRITION" to "productUpdate.tileNutrition", "INGREDIENTS" to "productUpdate.tileIngredients")
+            UpdatePointsBanner(
+                "/add/${encodeUri(id)}/update",
+                t.t("productUpdate.banner", "points" to offer.points),
+                t.t("productUpdate.toggle"),
+                offer.kinds.mapNotNull { k -> tileKeys[k]?.let { t.t(it) } },
+            )
+        }
         }
 
         // Footer (fixed under the scroll area).
