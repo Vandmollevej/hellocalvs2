@@ -152,6 +152,22 @@ internal fun DayDetails(
             ?.asObj()?.objects("entries")?.firstOrNull()?.dbl("rating")?.toInt()
     }
 
+    // Screeninger med "Vis i kalenderen": the day's measurements as black bars.
+    var screeningBars by remember { mutableStateOf<List<Pair<String, String>>>(emptyList()) }
+    LaunchedEffect(date) {
+        val key = date.toString()
+        screeningBars = runCatching {
+            val names = dk.packroff.hellocal.screens.profile.ScreeningApi.load(t).associateBy { it.id }
+            val onCalendar = names.values.filter { it.showInCalendar && it.active }.map { it.id }.toSet()
+            dk.packroff.hellocal.screens.profile.ScreeningApi.entriesInRange(key, key)
+                .filter { it.screeningId in onCalendar }
+                .mapNotNull { entry ->
+                    val screening = names[entry.screeningId] ?: return@mapNotNull null
+                    entry.id to "${screening.name}: ${dk.packroff.hellocal.screens.profile.formatScreeningValue(entry.value, screening.scale)}"
+                }
+        }.getOrDefault(emptyList())
+    }
+
     val liveWindow = when (val drag = sleepDrag) {
         null -> sleepWindow
         else -> if (drag.first == SleepAdjustType.Wake) sleepWindow.copy(wakeTime = drag.second) else sleepWindow.copy(bedtime = drag.second)
@@ -255,6 +271,15 @@ internal fun DayDetails(
                             Modifier.align(Alignment.CenterEnd).clickable { nav.push("/statistics/sleep") },
                             color = HcColors.White,
                         )
+                    }
+                }
+            }
+            if (screeningBars.isNotEmpty()) {
+                Column(Modifier.fillMaxWidth().padding(horizontal = 16.dp).padding(top = 16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                    screeningBars.forEach { (id, text) ->
+                        Box(Modifier.fillMaxWidth().clip(RoundedCornerShape(8.dp)).background(HcColors.Black).clickable { nav.push("/profile/screenings/reports") }.padding(horizontal = 16.dp, vertical = 8.dp)) {
+                            HcText(text, HcTypeRoles.Body, Modifier.fillMaxWidth(), bold = true, color = HcColors.White, align = TextAlign.Center)
+                        }
                     }
                 }
             }

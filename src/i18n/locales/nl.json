@@ -243,6 +243,7 @@
     "chatSaveError": "Opslaan is niet gelukt. Probeer het opnieuw."
   },
   "nav": {
+    "screenings": "Screenings",
     "add": "Toevoegen",
     "foods": "Voedingsmiddelen",
     "calendar": "Agenda",
@@ -659,6 +660,7 @@
     "allInUse": "Alle knoppen zijn in gebruik"
   },
   "addMenu": {
+    "screenings": "Screening",
     "editEditHint": "Houd een tegel ingedrukt om hem te verplaatsen of te verwijderen",
     "editDone": "Klaar",
     "editAdd": "Toevoegen",
@@ -1560,6 +1562,7 @@
       "bodyMeasurements": "Lichaamsmaten"
     },
     "row": {
+      "screenings": "Screenings",
       "subscription": "Abonnement",
       "paymentMethods": "Betaling",
       "weightCalibration": "Weegkalibratie",
@@ -2661,6 +2664,7 @@
     "saveError": "De activiteit kon niet worden opgeslagen."
   },
   "addButton": {
+    "screenings": "Screenings",
     "closeMenu": "Toevoegmenu sluiten",
     "openMenu": "Toevoegmenu openen",
     "microphone": "Inspreken",
@@ -3390,6 +3394,131 @@
       "lunch": "Lunch",
       "dinner": "Dinner",
       "snack": "Snack"
+    }
+  },
+  "screenings": {
+    "title": "Screenings",
+    "intro": "Houd je gezondheid in de gaten. Ontdek je gegevens en nieuwe kanten van je gezondheid en hun verbanden.",
+    "createNew": "Nieuwe screening maken",
+    "reports": "Screeningrapporten",
+    "reportsTitle": "Screeningrapporten",
+    "chartTitle": "Alle metingen",
+    "chartEmpty": "Nog geen metingen in deze periode.",
+    "periodAria": "Kies periode",
+    "sleep": "Slaap",
+    "statusActive": "Actief",
+    "statusInactive": "Inactief",
+    "activate": "Activeren",
+    "deactivate": "Deactiveren",
+    "delete": "Verwijderen",
+    "deleteTitle": "Screening verwijderen?",
+    "deleteBody": "De screening en alle metingen worden definitief verwijderd.",
+    "loadError": "Screenings konden niet worden geladen.",
+    "loading": "Laden…",
+    "newTitle": "Nieuwe screening maken",
+    "editTitle": "Screening bewerken",
+    "stepAria": "Voortgang",
+    "stepName": "Naam",
+    "stepFrequency": "Frequentie",
+    "stepQuestions": "Vragen",
+    "stepNotifications": "Meldingen",
+    "stepMeasure": "Schaal",
+    "stepCalendar": "Agenda",
+    "nameTitle": "Naam en doel",
+    "nameLabel": "Naam",
+    "namePlaceholder": "bijv. Hoofdpijn",
+    "purposeLabel": "Doel",
+    "purposePlaceholder": "Wat wil je te weten komen?",
+    "frequencyTitle": "Hoe vaak moet je gevraagd worden?",
+    "questionsTitle": "Vragen",
+    "questionLabel": "Vraag {n}",
+    "questionPlaceholder": "bijv. Hoe erg is je hoofdpijn?",
+    "addQuestion": "Vraag toevoegen",
+    "removeQuestion": "Vraag verwijderen",
+    "notifTitle": "Meldingen",
+    "notifLabel": "Herinner mij",
+    "notifDesc": "Je krijgt een bericht als het tijd is om te antwoorden.",
+    "notifTime": "Tijdstip",
+    "measureTitle": "Meting",
+    "scaleTitle": "Schaal",
+    "inputTitle": "Kies invoer",
+    "preview": "Zo ziet het eruit",
+    "notesLabel": "Notitieveld",
+    "notesDesc": "Schrijf een korte notitie bij de meting.",
+    "minLabel": "Laagste waarde",
+    "maxLabel": "Hoogste waarde",
+    "minPlaceholder": "bijv. Geen pijn",
+    "maxPlaceholder": "bijv. Ergst denkbare",
+    "calendarTitle": "Agenda",
+    "calendarLabel": "Toon in de agenda",
+    "calendarDesc": "De metingen verschijnen op hun dag in de agenda.",
+    "next": "Volgende",
+    "back": "Terug",
+    "save": "Screening opslaan",
+    "saving": "Opslaan…",
+    "saveError": "Opslaan mislukt. Probeer opnieuw.",
+    "fillTitle": "Screening invullen",
+    "fillPick": "Welke screening wil je invullen?",
+    "fillEmpty": "Je hebt geen actieve screenings. Maak er een onder Profiel.",
+    "questionOf": "Vraag {n} van {total}",
+    "noteLabel": "Notitie",
+    "notePlaceholder": "Schrijf een notitie",
+    "saveEntry": "Meting opslaan",
+    "done": "Opgeslagen",
+    "dotsAria": "Vragen",
+    "reportsEmpty": "Nog geen screenings.",
+    "entries": "{n} metingen",
+    "noEntries": "Nog geen metingen.",
+    "sortDate": "Datum",
+    "sortValue": "Waarde",
+    "sortAria": "Sorteren op",
+    "hasNote": "Heeft notitie",
+    "average": "Gemiddelde",
+    "presets": {
+      "migraine": {
+        "name": "Migraine",
+        "purpose": "Houd bij hoe vaak en hoe erg je migraine hebt.",
+        "question": "Hoe erg is je migraine vandaag?",
+        "min": "Geen",
+        "max": "Ergst denkbare"
+      },
+      "stomachPain": {
+        "name": "Buikpijn",
+        "purpose": "Zie wanneer en hoeveel je buik pijn doet.",
+        "question": "Hoeveel pijn heeft je buik vandaag?",
+        "min": "Geen",
+        "max": "Ergst denkbare"
+      },
+      "mood": {
+        "name": "Stemming",
+        "purpose": "Volg je stemming in de tijd en vind verbanden.",
+        "question": "Hoe is je stemming vandaag?",
+        "min": "Slecht",
+        "max": "Uitstekend"
+      }
+    },
+    "period": {
+      "d7": "Laatste 7 dagen",
+      "d30": "Laatste 30 dagen",
+      "d90": "Laatste 3 maanden",
+      "d365": "Afgelopen jaar"
+    },
+    "scale": {
+      "FIVE": "1–5",
+      "TEN": "1–10",
+      "PERCENT": "Procent"
+    },
+    "frequency": {
+      "DAILY": "Elke dag",
+      "WEEKLY": "Elke week",
+      "MONTHLY": "Elke maand",
+      "MANUAL": "Alleen als ik het wil"
+    },
+    "input": {
+      "BUTTONS": "Knoppen",
+      "SLIDER": "Schuifregelaar",
+      "INPUT": "Invoerveld",
+      "STEPPER": "Plus en min"
     }
   }
 }

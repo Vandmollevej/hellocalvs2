@@ -243,6 +243,7 @@
     "chatSaveError": "Speichern fehlgeschlagen. Versuche es erneut."
   },
   "nav": {
+    "screenings": "Screenings",
     "add": "Hinzufügen",
     "foods": "Lebensmittel",
     "calendar": "Kalender",
@@ -659,6 +660,7 @@
     "allInUse": "Alle Tasten sind in Gebrauch"
   },
   "addMenu": {
+    "screenings": "Screening",
     "editEditHint": "Halte eine Kachel gedrückt, um sie zu verschieben oder zu löschen",
     "editDone": "Fertig",
     "editAdd": "Hinzufügen",
@@ -1560,6 +1562,7 @@
       "bodyMeasurements": "Körpermaße"
     },
     "row": {
+      "screenings": "Screenings",
       "subscription": "Abonnement",
       "paymentMethods": "Zahlung",
       "weightCalibration": "Gewichtskalibrierung",
@@ -2661,6 +2664,7 @@
     "saveError": "Die Aktivität konnte nicht gespeichert werden."
   },
   "addButton": {
+    "screenings": "Screenings",
     "closeMenu": "Hinzufügen-Menü schließen",
     "openMenu": "Hinzufügen-Menü öffnen",
     "microphone": "Einsprechen",
@@ -3390,6 +3394,131 @@
       "lunch": "Lunch",
       "dinner": "Dinner",
       "snack": "Snack"
+    }
+  },
+  "screenings": {
+    "title": "Screenings",
+    "intro": "Behalte deine Gesundheit im Blick. Entdecke deine Daten und neue Seiten deiner Gesundheit und ihre Zusammenhänge.",
+    "createNew": "Neues Screening erstellen",
+    "reports": "Screening-Berichte",
+    "reportsTitle": "Screening-Berichte",
+    "chartTitle": "Alle Messungen",
+    "chartEmpty": "Noch keine Messungen in diesem Zeitraum.",
+    "periodAria": "Zeitraum wählen",
+    "sleep": "Schlaf",
+    "statusActive": "Aktiv",
+    "statusInactive": "Inaktiv",
+    "activate": "Aktivieren",
+    "deactivate": "Deaktivieren",
+    "delete": "Löschen",
+    "deleteTitle": "Screening löschen?",
+    "deleteBody": "Das Screening und alle Messungen werden endgültig gelöscht.",
+    "loadError": "Screenings konnten nicht geladen werden.",
+    "loading": "Lädt…",
+    "newTitle": "Neues Screening erstellen",
+    "editTitle": "Screening bearbeiten",
+    "stepAria": "Fortschritt",
+    "stepName": "Name",
+    "stepFrequency": "Häufigkeit",
+    "stepQuestions": "Fragen",
+    "stepNotifications": "Hinweise",
+    "stepMeasure": "Skala",
+    "stepCalendar": "Kalender",
+    "nameTitle": "Name und Zweck",
+    "nameLabel": "Name",
+    "namePlaceholder": "z. B. Kopfschmerzen",
+    "purposeLabel": "Zweck",
+    "purposePlaceholder": "Was möchtest du herausfinden?",
+    "frequencyTitle": "Wie oft sollst du gefragt werden?",
+    "questionsTitle": "Fragen",
+    "questionLabel": "Frage {n}",
+    "questionPlaceholder": "z. B. Wie stark sind deine Kopfschmerzen?",
+    "addQuestion": "Frage hinzufügen",
+    "removeQuestion": "Frage entfernen",
+    "notifTitle": "Benachrichtigungen",
+    "notifLabel": "Erinnere mich",
+    "notifDesc": "Du bekommst eine Nachricht, wenn es Zeit zum Antworten ist.",
+    "notifTime": "Uhrzeit",
+    "measureTitle": "Messung",
+    "scaleTitle": "Skala",
+    "inputTitle": "Eingabe wählen",
+    "preview": "So sieht es aus",
+    "notesLabel": "Notizfeld",
+    "notesDesc": "Schreibe eine kurze Notiz zur Messung.",
+    "minLabel": "Niedrigster Wert",
+    "maxLabel": "Höchster Wert",
+    "minPlaceholder": "z. B. Kein Schmerz",
+    "maxPlaceholder": "z. B. Schlimmster denkbarer",
+    "calendarTitle": "Kalender",
+    "calendarLabel": "Im Kalender anzeigen",
+    "calendarDesc": "Die Messungen erscheinen an ihren Tagen im Kalender.",
+    "next": "Weiter",
+    "back": "Zurück",
+    "save": "Screening speichern",
+    "saving": "Speichert…",
+    "saveError": "Speichern fehlgeschlagen. Versuche es erneut.",
+    "fillTitle": "Screening ausfüllen",
+    "fillPick": "Welches Screening möchtest du ausfüllen?",
+    "fillEmpty": "Du hast keine aktiven Screenings. Erstelle eines unter Profil.",
+    "questionOf": "Frage {n} von {total}",
+    "noteLabel": "Notiz",
+    "notePlaceholder": "Notiz schreiben",
+    "saveEntry": "Messung speichern",
+    "done": "Gespeichert",
+    "dotsAria": "Fragen",
+    "reportsEmpty": "Noch keine Screenings.",
+    "entries": "{n} Messungen",
+    "noEntries": "Noch keine Messungen.",
+    "sortDate": "Datum",
+    "sortValue": "Wert",
+    "sortAria": "Sortieren nach",
+    "hasNote": "Hat Notiz",
+    "average": "Durchschnitt",
+    "presets": {
+      "migraine": {
+        "name": "Migräne",
+        "purpose": "Behalte im Auge, wie oft und wie stark du Migräne hast.",
+        "question": "Wie stark ist deine Migräne heute?",
+        "min": "Keine",
+        "max": "Schlimmste denkbare"
+      },
+      "stomachPain": {
+        "name": "Bauchschmerzen",
+        "purpose": "Sieh, wann und wie stark dein Bauch schmerzt.",
+        "question": "Wie stark schmerzt dein Bauch heute?",
+        "min": "Keine",
+        "max": "Schlimmste denkbare"
+      },
+      "mood": {
+        "name": "Stimmung",
+        "purpose": "Verfolge deine Stimmung und finde Zusammenhänge.",
+        "question": "Wie ist deine Stimmung heute?",
+        "min": "Schlecht",
+        "max": "Ausgezeichnet"
+      }
+    },
+    "period": {
+      "d7": "Letzte 7 Tage",
+      "d30": "Letzte 30 Tage",
+      "d90": "Letzte 3 Monate",
+      "d365": "Letztes Jahr"
+    },
+    "scale": {
+      "FIVE": "1–5",
+      "TEN": "1–10",
+      "PERCENT": "Prozent"
+    },
+    "frequency": {
+      "DAILY": "Jeden Tag",
+      "WEEKLY": "Jede Woche",
+      "MONTHLY": "Jeden Monat",
+      "MANUAL": "Nur wenn ich will"
+    },
+    "input": {
+      "BUTTONS": "Schaltflächen",
+      "SLIDER": "Schieberegler",
+      "INPUT": "Eingabefeld",
+      "STEPPER": "Plus und Minus"
     }
   }
 }

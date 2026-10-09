@@ -5,6 +5,7 @@ import {
   IconMoon,
   IconUser,
   IconStar,
+  IconClipboardHeart,
   IconBook,
   IconChartLine,
   IconUsers,
@@ -175,6 +176,11 @@ export default function ProfilePage() {
               icon={<IconMoon size={20} />}
               label={t("profile.row.sleep")}
               href="/profile/sleep"
+            />
+            <ChevronRow
+              icon={<IconClipboardHeart size={20} />}
+              label={t("profile.row.screenings")}
+              href="/profile/screenings"
             />
             <ChevronRow
               icon={<IconPhotoFrame size={20} />}

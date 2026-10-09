@@ -42,6 +42,8 @@ const TILES = [
   { key: "body", href: "/profile/body-measurements", icon: "/icons/add/body.webp" },
   { key: "activity", href: "/activity/create", icon: "/icons/activity-3d.png" },
   { key: "period", href: "/period/create", icon: "/icons/add/period.svg", requiresCycleTracking: true },
+  // Nederst (ejerens valg 2026-10-09): udfyld en screening.
+  { key: "screenings", href: "/profile/screenings?fill=1", icon: "/icons/add/screenings.svg" },
 ] as const;
 
 const TILE_KEYS = TILES.map((tile) => tile.key);

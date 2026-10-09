@@ -7,6 +7,7 @@ import {
   IconApple,
   IconCalendar,
   IconCamera,
+  IconClipboardHeart,
   IconSearch,
   IconMicrophone,
   IconUser,
@@ -170,6 +171,12 @@ const NAV_ITEMS: NavItem[] = [
     href: BOTTOM_NAV_HREFS.kropsmaal,
     labelKey: "bodyMeasurements",
     render: (color, size) => <IconWaistMeasure size={size} color={color} />,
+  },
+  {
+    key: "screeninger",
+    href: BOTTOM_NAV_HREFS.screeninger,
+    labelKey: "screenings",
+    render: (color, size) => <IconClipboardHeart size={size} stroke={1.6} color={color} />,
   },
   {
     // Kun med familieabonnement (se SWITCH_PROFILE_KEY nedenfor).
