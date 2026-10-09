@@ -2,6 +2,11 @@
 
 Last updated: 2026-10-09
 
+## 2026-10-09: Tilføj aktivitet — tidsslider og varighed med plus/minus
+
+- `/activity/create` (web + `ActivityCreateScreen.kt`): starttidspunktet er nu en dato + samme to-håndtags 24-timers-slider som søvnrytmen (`SleepRangeSlider`, ny prop `bedtimeFirst`: start til venstre, slut til højre; start-håndtaget flytter starten og holder sluttiden, slut-håndtaget ændrer varigheden). Varigheden står under som − [timer min] + i samme boks som mængdevælgeren; teksten kan rettes, og −/+ går i hele 5 minutter (`stepDuration` i `activity-duration.ts`, testet).
+- Kalorie-feltet viser nu bare tallet (forudfyldt, kan rettes) — ingen "ca."/"anslået" og ingen MET-tekst.
+- Paritet accepteret for `/activity/create` og `/profile/sleep`. Lint og `node --test` grønne; Kotlin ikke kompileret lokalt (CI bygger); ikke prøvet på telefon.
 ## 2026-10-09: Ikoner tilbage (adgangsmur) + markeret cirkel væk fra fingeren
 
 - Ikoner (fingeraftryk, PNG/WebP-tilføj-ikoner) forsvandt efter adgangsmuren 2026-10-08: Next's billed-optimerer henter `/icons/*` internt uden browser-User-Agent, og muren afviste den som bot. Åbne statiske filer (`isPublicStaticAsset` i `access-wall.ts`) slipper nu forbi muren før UA-/rate-tjekket; beskyttede billeder er uændrede.
