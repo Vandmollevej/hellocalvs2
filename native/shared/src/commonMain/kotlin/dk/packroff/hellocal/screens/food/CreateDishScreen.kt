@@ -64,8 +64,6 @@ import dk.packroff.hellocal.ui.HcToggle
 import dk.packroff.hellocal.ui.HcChevron
 import dk.packroff.hellocal.ui.ChevronDirection
 import dk.packroff.hellocal.ui.icons.HcIcon
-import kotlinx.coroutines.async
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
@@ -140,16 +138,8 @@ fun CreateDishScreen(args: RouteArgs) {
         delay(200)
         searchState = "loading"
         try {
-            val (products, own) = coroutineScope {
-                val p = async { ApiJson.decodeFromJsonElement(ProductListResponse.serializer(), Api.get("/api/products?q=${encodeUri(query)}")).products }
-                val o = async { runCatching { Api.get("/api/private-ingredients?q=${encodeUri(query)}").arr("ingredients") }.getOrNull() }
-                p.await() to o.await()
-            }
-            val ownResults = own?.mapNotNull { el ->
-                val id = el.str("id") ?: return@mapNotNull null
-                DishSearchResult(id, el.str("name") ?: "", null, true)
-            } ?: emptyList()
-            results = ownResults + products.map { DishSearchResult(it.id, it.name, it.imageUrl, false) }
+            val products = ApiJson.decodeFromJsonElement(ProductListResponse.serializer(), Api.get("/api/products?q=${encodeUri(query)}")).products
+            results = products.map { DishSearchResult(it.id, it.name, it.imageUrl, false) }
             searchState = "ready"
         } catch (e: Exception) {
             searchError = e
@@ -363,14 +353,13 @@ fun CreateDishScreen(args: RouteArgs) {
                                 shown.forEachIndexed { index, product ->
                                     Row(
                                         Modifier.fillMaxWidth().clickable {
-                                            nav.push(if (product.isPrivate) "/ingredients/new?for=ret&use=${encodeUri(product.id)}" else "/add/${product.id}?for=ret")
+                                            nav.push("/add/${product.id}?for=ret")
                                         }.padding(horizontal = 16.dp, vertical = 12.dp),
                                         verticalAlignment = Alignment.CenterVertically,
                                         horizontalArrangement = Arrangement.spacedBy(10.dp),
                                     ) {
                                         Box(Modifier.size(36.dp)) { if (product.imageUrl != null) FoodImage(product.imageUrl, Modifier.size(36.dp)) }
                                         HcText(product.name, HcTypeRoles.Body, Modifier.weight(1f), color = HcColors.Black, bold = true)
-                                        if (product.isPrivate) HcText(t.t("createDish.ownTag"), HcTypeRoles.Small, color = HcColors.TextSecondary, bold = true)
                                     }
                                     if (index < shown.lastIndex) FoodDivider()
                                 }
@@ -380,7 +369,6 @@ fun CreateDishScreen(args: RouteArgs) {
                 }
                 // New products are only created by scanning (DECISIONS 2026-10-02).
                 FoodTileButton(t.t("createDish.scan"), "Camera", { nav.push("/camera?mode=product&for=ret") }, Modifier.fillMaxWidth().padding(top = 16.dp))
-                HcLink(t.t("createDish.createOwnIngredient"), "/ingredients/new?for=ret", Modifier.fillMaxWidth().padding(top = 8.dp), role = HcTypeRoles.Small, align = TextAlign.Center)
             }
 
             if (details.showImages) {

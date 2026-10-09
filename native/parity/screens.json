@@ -840,22 +840,6 @@
       ]
     },
     {
-      "route": "/ingredients",
-      "web": "src/app/ingredients/page.tsx",
-      "status": "ported",
-      "native": [
-        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/food/FoodsScreens.kt"
-      ]
-    },
-    {
-      "route": "/ingredients/new",
-      "web": "src/app/ingredients/new/page.tsx",
-      "status": "ported",
-      "native": [
-        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/food/FoodsScreens.kt"
-      ]
-    },
-    {
       "route": "/login",
       "web": "src/app/login/page.tsx",
       "status": "ported",

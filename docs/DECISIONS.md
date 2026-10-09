@@ -3525,7 +3525,11 @@ Normaliserede produkt-søgeparametre (`ProductNutritionFeatures`, 1:1 med
 
 - `scripts/logo-agent` (docs/LOGO-AGENT.md) isolerer logoet med Vision `LOGO_DETECTION` og finder kandidater med Vision `WEB_DETECTION`. Googles Custom Search JSON API er lukket for nye kunder og stopper 2027-01-01, så det mønster (image-agent) genbruges ikke til søgningen — kun container-/databasemønstret. Besluttet af brugeren 2026-09-24.
 - ≥ 90 % og brandnavn på siden/linket → automatisk logo; ellers admin-kø "Logoer" (≥ 50 %). Hentede kandidater slettes 7 dage efter afgørelsen.
-## 2026-09-24: Egne, private ingredienser ("Opret egen ingrediens")
+## 2026-10-09: "Opret egen ingrediens" er fjernet fra appen (erstatter 2026-09-24)
+
+- Brugerens ønske: funktionen skal væk. Siderne `/ingredients` og `/ingredients/new`, linket i Opret ret og private ingredienser i søgningen er fjernet i web og native. Nye varer oprettes kun via scanning. Backend/tabeller bevares, så eksisterende retter med `private:`-ingredienser og admin-køen stadig virker; kan ryddes op senere.
+
+## 2026-09-24: Egne, private ingredienser ("Opret egen ingrediens") — UI fjernet 2026-10-09
 
 - Linket "Opret egen ingrediens" under Opret ret åbner `/ingredients/new`. Brugeren angiver kun et navn (og mængde, når det er fra en ret) — ikke kcal/makroer, som brugeren ikke kan kende. Næringsindholdet står som ukendt, indtil admin har oprettet ingrediensen globalt.
 - Den private ingrediens ligger kun i boksen (samling `privateIngredients`) og vises kun for brugeren selv: øverst i søgningen på Opret ret og på `/ingredients` ("Mine ingredienser": omdøb/slet). I retter bruges produkt-ID `private:<id>`, som aldrig sendes til serveren; retter med egne ingredienser kan ikke deles, før de er gjort globale.

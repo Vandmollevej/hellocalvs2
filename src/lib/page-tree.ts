@@ -104,11 +104,6 @@ export const PAGE_TREE: PageArea[] = [
               { path: "/foods/new", label: "Ny madvare (omdirigerer til scanning)" },
               { path: "/product/create", label: "Opret vare" },
               { path: "/create-dish", label: "Opret ret" },
-              {
-                path: "/ingredients",
-                label: "Ingredienser",
-                children: [{ path: "/ingredients/new", label: "Ny ingrediens" }],
-              },
             ],
           },
           { path: "/calendar", label: "Kalender" },
