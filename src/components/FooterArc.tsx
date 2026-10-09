@@ -192,13 +192,15 @@ export function FooterArc() {
       setHighlight(null);
       return;
     }
+    // Valget går på retning fra cirklen, ikke afstand: fingeren helt ude til siden rammer altid den yderste knap.
+    const fingerDeg = (Math.atan2(px - center, Math.max(1, py)) * 180) / Math.PI;
     let nearest: string | null = null;
     let best = Infinity;
     slots.forEach((slot, index) => {
       const c = slotCenter(index);
-      const distance = Math.hypot(px - c.x, py - c.y);
-      if (distance < best) {
-        best = distance;
+      const diff = Math.abs(fingerDeg - (Math.atan2(c.x - center, Math.max(1, c.y)) * 180) / Math.PI);
+      if (diff < best) {
+        best = diff;
         nearest = slot.key;
       }
     });
@@ -439,7 +441,13 @@ export function FooterArc() {
             {highlighted &&
               (() => {
                 const w = labelWidth(slot.label);
-                const spot = labelPlacement(drawLayout, index, baseCx, width, w);
+                const spot = labelPlacement(
+                  drawLayout.map((p, i) => (i === index ? center : p)),
+                  index,
+                  baseCx,
+                  width,
+                  w,
+                );
                 return (
                   <span
                     aria-hidden="true"
