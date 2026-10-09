@@ -225,6 +225,9 @@ model User {
   // og logges i MenstrualCycleEntry. De to gennemsnit bruges kun til en
   // simpel fremtidig prognose, ikke til noget klinisk.
   cycleTrackingEnabled    Boolean @default(false)
+  // Screeninger (docs/DECISIONS.md 2026-10-09): forudlavede screeninger (migræne,
+  // mavesmerter, humør) oprettes første gang brugeren åbner Profil → Screeninger.
+  screeningsSeeded        Boolean @default(false)
   averageCycleLengthDays  Int     @default(28)
   averagePeriodLengthDays Int     @default(5)
 
@@ -243,6 +246,8 @@ model User {
   menstrualCycleEntries   MenstrualCycleEntry[]
   sleepSchedules          SleepSchedule[]
   sleepQualityEntries     SleepQualityEntry[]
+  screenings              Screening[]
+  screeningEntries        ScreeningEntry[]
   workShifts              WorkShift[]
   integrations            Integration[]
   integrationEvents       IntegrationEvent[]
@@ -4950,4 +4955,54 @@ model SearchSynonym {
   @@index([termA])
   @@index([termB])
   @@map("search_synonyms")
+}
+
+// --- Screeninger (docs/DECISIONS.md 2026-10-09) ---
+// Egne målinger under Profil → Screeninger. Søvn er en fast række, der peger på
+// søvnmønsteret; migræne, mavesmerter og humør oprettes som almindelige
+// screeninger (presetKey) første gang siden åbnes. questions er en liste
+// [{ id, text }]; en måling (ScreeningEntry) har ét svar pr. spørgsmål.
+model Screening {
+  id                   String   @id @default(cuid())
+  user                 User     @relation(fields: [userId], references: [id])
+  userId               String
+  presetKey            String?
+  name                 String
+  purpose              String   @default("")
+  frequency            String   @default("DAILY") // DAILY | WEEKLY | MONTHLY | MANUAL
+  questions            Json
+  notificationsEnabled Boolean  @default(false)
+  notificationTime     String?
+  scale                String   @default("TEN") // FIVE | TEN | PERCENT
+  inputType            String   @default("SLIDER") // BUTTONS | SLIDER | INPUT | STEPPER
+  notesEnabled         Boolean  @default(true)
+  minLabel             String   @default("")
+  maxLabel             String   @default("")
+  showInCalendar       Boolean  @default(false)
+  active               Boolean  @default(true)
+  sortOrder            Int      @default(0)
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+  entries              ScreeningEntry[]
+
+  @@index([userId])
+  @@map("screenings")
+}
+
+model ScreeningEntry {
+  id          String    @id @default(cuid())
+  screening   Screening @relation(fields: [screeningId], references: [id], onDelete: Cascade)
+  screeningId String
+  user        User      @relation(fields: [userId], references: [id])
+  userId      String
+  date        DateTime  @db.Date
+  answers     Json // { [questionId]: number }
+  value       Float // gennemsnit af svarene, bruges til sortering og grafer
+  note        String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@unique([screeningId, date])
+  @@index([userId, date])
+  @@map("screening_entries")
 }

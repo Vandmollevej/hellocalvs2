@@ -243,6 +243,7 @@
     "chatSaveError": "Kunne ikke lagre. Prøv igjen."
   },
   "nav": {
+    "screenings": "Screeninger",
     "add": "Legg til",
     "foods": "Matvarer",
     "calendar": "Kalender",
@@ -566,6 +567,7 @@
     "allInUse": "Alle knappene er i bruk"
   },
   "addMenu": {
+    "screenings": "Screening",
     "editEditHint": "Hold en rute inne for å flytte eller slette den",
     "editDone": "Ferdig",
     "editAdd": "Legg til",
@@ -1460,6 +1462,7 @@
       "bodyMeasurements": "Kroppsmål"
     },
     "row": {
+      "screenings": "Screeninger",
       "subscription": "Abonnement",
       "paymentMethods": "Betaling",
       "weightCalibration": "Vektkalibrering",
@@ -2547,6 +2550,7 @@
     "saveError": "Aktiviteten kunne ikke lagres."
   },
   "addButton": {
+    "screenings": "Screeninger",
     "closeMenu": "Lukk legg til-meny",
     "openMenu": "Åpne legg til-meny",
     "microphone": "Si inn",
@@ -3275,6 +3279,131 @@
       "lunch": "Lunch",
       "dinner": "Dinner",
       "snack": "Snack"
+    }
+  },
+  "screenings": {
+    "title": "Screeninger",
+    "intro": "Hold styr på helsen din. Utforsk dataene dine og oppdag nye sider ved helsen din og sammenhenger.",
+    "createNew": "Opprett ny screening",
+    "reports": "Screeningrapporter",
+    "reportsTitle": "Screeningrapporter",
+    "chartTitle": "Alle målinger",
+    "chartEmpty": "Ingen målinger i perioden ennå.",
+    "periodAria": "Velg periode",
+    "sleep": "Søvn",
+    "statusActive": "Aktiv",
+    "statusInactive": "Inaktiv",
+    "activate": "Aktiver",
+    "deactivate": "Deaktiver",
+    "delete": "Slett",
+    "deleteTitle": "Slette screening?",
+    "deleteBody": "Screeningen og alle målingene slettes for alltid.",
+    "loadError": "Kunne ikke hente screeninger.",
+    "loading": "Henter…",
+    "newTitle": "Opprett ny screening",
+    "editTitle": "Rediger screening",
+    "stepAria": "Fremdrift",
+    "stepName": "Navn",
+    "stepFrequency": "Frekvens",
+    "stepQuestions": "Spørsmål",
+    "stepNotifications": "Varsel",
+    "stepMeasure": "Måling",
+    "stepCalendar": "Kalender",
+    "nameTitle": "Navn og formål",
+    "nameLabel": "Navn",
+    "namePlaceholder": "f.eks. Hodepine",
+    "purposeLabel": "Formål",
+    "purposePlaceholder": "Hva vil du bli klokere på?",
+    "frequencyTitle": "Hvor ofte skal du spørres?",
+    "questionsTitle": "Spørsmål",
+    "questionLabel": "Spørsmål {n}",
+    "questionPlaceholder": "f.eks. Hvor vondt har du i hodet?",
+    "addQuestion": "Legg til spørsmål",
+    "removeQuestion": "Fjern spørsmål",
+    "notifTitle": "Varsler",
+    "notifLabel": "Påminn meg",
+    "notifDesc": "Du får en melding når det er tid for å svare.",
+    "notifTime": "Tidspunkt",
+    "measureTitle": "Måling",
+    "scaleTitle": "Skala",
+    "inputTitle": "Velg felt",
+    "preview": "Slik ser det ut",
+    "notesLabel": "Notatfelt",
+    "notesDesc": "Skriv et kort notat sammen med målingen.",
+    "minLabel": "Laveste verdi",
+    "maxLabel": "Høyeste verdi",
+    "minPlaceholder": "f.eks. Ingen smerte",
+    "maxPlaceholder": "f.eks. Verst tenkelig",
+    "calendarTitle": "Kalender",
+    "calendarLabel": "Vis i kalenderen",
+    "calendarDesc": "Målingene vises på dagene i kalenderen.",
+    "next": "Neste",
+    "back": "Tilbake",
+    "save": "Lagre screening",
+    "saving": "Lagrer…",
+    "saveError": "Kunne ikke lagre. Prøv igjen.",
+    "fillTitle": "Fyll ut screening",
+    "fillPick": "Hvilken screening vil du fylle ut?",
+    "fillEmpty": "Du har ingen aktive screeninger. Opprett en under Profil.",
+    "questionOf": "Spørsmål {n} av {total}",
+    "noteLabel": "Notat",
+    "notePlaceholder": "Skriv et notat",
+    "saveEntry": "Lagre måling",
+    "done": "Lagret",
+    "dotsAria": "Spørsmål",
+    "reportsEmpty": "Ingen screeninger ennå.",
+    "entries": "{n} målinger",
+    "noEntries": "Ingen målinger ennå.",
+    "sortDate": "Dato",
+    "sortValue": "Verdi",
+    "sortAria": "Sorter etter",
+    "hasNote": "Har notat",
+    "average": "Gjennomsnitt",
+    "presets": {
+      "migraine": {
+        "name": "Migrene",
+        "purpose": "Hold øye med hvor ofte og hvor ille du har migrene.",
+        "question": "Hvor ille er migrenen din i dag?",
+        "min": "Ingen",
+        "max": "Verst tenkelig"
+      },
+      "stomachPain": {
+        "name": "Magesmerter",
+        "purpose": "Se når og hvor mye magen gjør vondt.",
+        "question": "Hvor vondt har du i magen i dag?",
+        "min": "Ingen",
+        "max": "Verst tenkelig"
+      },
+      "mood": {
+        "name": "Humør",
+        "purpose": "Følg humøret over tid og finn sammenhenger.",
+        "question": "Hvordan er humøret ditt i dag?",
+        "min": "Dårlig",
+        "max": "Utmerket"
+      }
+    },
+    "period": {
+      "d7": "Siste 7 dager",
+      "d30": "Siste 30 dager",
+      "d90": "Siste 3 måneder",
+      "d365": "Siste år"
+    },
+    "scale": {
+      "FIVE": "1–5",
+      "TEN": "1–10",
+      "PERCENT": "Prosent"
+    },
+    "frequency": {
+      "DAILY": "Hver dag",
+      "WEEKLY": "Hver uke",
+      "MONTHLY": "Hver måned",
+      "MANUAL": "Bare når jeg vil"
+    },
+    "input": {
+      "BUTTONS": "Knapper",
+      "SLIDER": "Slider",
+      "INPUT": "Inndatafelt",
+      "STEPPER": "Pluss og minus"
     }
   }
 }

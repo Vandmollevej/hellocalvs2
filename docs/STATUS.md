@@ -2,6 +2,12 @@
 
 Last updated: 2026-10-09
 
+## 2026-10-09: Screeninger under Profil
+
+- Ny side Profil → Screeninger med oprettelsesflow, udfyldningsark, rapporter og grafer, kalenderbjælker, valg i Tilføj-menuen og bundmenuen (se DECISIONS 2026-10-09). Web og native (`ScreeningScreens.kt`, `ScreeningModels.kt`, `ProfileSwipeActions`) er lavet sammen; sprogfilerne har fået `screenings`-teksterne på alle 7 sprog.
+- Tjekket: `tsc`, eslint på de ændrede filer, `node --test src/lib/screenings.test.mjs`, `parity.mjs` og `sync.mjs --check` er grønne. Kotlin og `npm run build` er ikke kørt her (se overleveringen); migrationen skal med deployet. Notifikationsudsendelsen er ikke bygget.
+- Migræne som eget menupunkt i Tilføj med til/fra under Visning (første ønske) er afløst af denne funktion: migræne er nu en forudlavet screening.
+
 ## 2026-10-09: Periodevalg som dropdown
 
 - Søvn- og Væskestatistik bruger nu dropdown (`src/components/hf/StatPeriodSelect.tsx`) i stedet for periodeknapper. Ikke kørt lint/build/visuelt: `node_modules` mangler i dette cloud-miljø.

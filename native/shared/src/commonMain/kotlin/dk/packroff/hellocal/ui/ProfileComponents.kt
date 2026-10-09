@@ -49,6 +49,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
@@ -366,6 +367,53 @@ fun ProfileSwipeToDelete(label: String, onDelete: () -> Unit, content: @Composab
                 Modifier.fillMaxHeight().width(80.dp).background(HcColors.RedDark).clickable(onClick = onDelete),
                 contentAlignment = Alignment.Center,
             ) { HcText(label, HcTypeRoles.Small, bold = true, color = HcColors.White) }
+        }
+        Box(
+            Modifier.fillMaxWidth().offset { IntOffset(shown.roundToInt(), 0) }.pointerInput(Unit) {
+                detectHorizontalDragGestures(
+                    onDragStart = { dragging = true },
+                    onDragEnd = {
+                        dragging = false
+                        dragX = if (dragX < -revealPx / 2) -revealPx else 0f
+                    },
+                    onDragCancel = {
+                        dragging = false
+                        dragX = 0f
+                    },
+                ) { _, amount -> dragX = (dragX + amount).coerceIn(-revealPx, 0f) }
+            },
+        ) { content() }
+    }
+}
+
+/**
+ * Swipe a row to the left to reveal two actions (screenings: activate/deactivate and delete),
+ * as in ScreeningSwipeRow on the web. Only horizontal drags are caught.
+ */
+@Composable
+fun ProfileSwipeActions(
+    firstLabel: String,
+    onFirst: () -> Unit,
+    secondLabel: String,
+    onSecond: () -> Unit,
+    content: @Composable () -> Unit,
+) {
+    val density = LocalDensity.current
+    val revealPx = with(density) { 160.dp.toPx() }
+    var dragX by remember { mutableFloatStateOf(0f) }
+    var dragging by remember { mutableStateOf(false) }
+    val animated by animateFloatAsState(dragX, label = "swipeActions")
+    val shown = if (dragging) dragX else animated
+    Box(Modifier.fillMaxWidth().clip(RectangleShape)) {
+        Row(Modifier.matchParentSize(), horizontalArrangement = Arrangement.End) {
+            Box(
+                Modifier.fillMaxHeight().width(80.dp).background(HcColors.TanDark).clickable { onFirst(); dragX = 0f },
+                contentAlignment = Alignment.Center,
+            ) { HcText(firstLabel, HcTypeRoles.Small, color = HcColors.Black, align = TextAlign.Center) }
+            Box(
+                Modifier.fillMaxHeight().width(80.dp).background(HcColors.RedDark).clickable { onSecond(); dragX = 0f },
+                contentAlignment = Alignment.Center,
+            ) { HcText(secondLabel, HcTypeRoles.Small, bold = true, color = HcColors.White, align = TextAlign.Center) }
         }
         Box(
             Modifier.fillMaxWidth().offset { IntOffset(shown.roundToInt(), 0) }.pointerInput(Unit) {

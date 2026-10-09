@@ -56,6 +56,8 @@ import { readOpenDay, syncOpenDay } from "@/lib/calendar-open-day";
 import { useTranslation } from "@/i18n/LocaleProvider";
 import { useInWebShell } from "@/components/web/WebShell";
 import { fetchSleepQuality, localDateKey } from "@/lib/sleep-quality";
+import { fetchEntriesInRange } from "@/lib/screenings-client";
+import { formatScreeningValue, type ScreeningDto } from "@/lib/screenings";
 import { IconPartyPopper, PartyPopperImage } from "@/components/icons/PartyPopper";
 import { BODY_MEASUREMENT_FIELDS } from "@/lib/body-measurements";
 import { COMPOSITION_GOAL_FIELDS } from "@/lib/goal-composition";
@@ -2110,6 +2112,29 @@ function DayDetails({
       cancelled = true;
     };
   }, [date]);
+  // Screeninger med "Vis i kalenderen" (docs/DECISIONS.md 2026-10-09): dagens
+  // målinger som sorte bjælker under søvnbjælken.
+  const [screeningBars, setScreeningBars] = useState<{ id: string; text: string }[]>([]);
+  useEffect(() => {
+    let cancelled = false;
+    const day = localDateKey(date);
+    Promise.all([fetchEntriesInRange(day, day, true), fetch("/api/screenings").then((response) => response.json())])
+      .then(([entries, list]) => {
+        if (cancelled) return;
+        const byId = new Map((list.screenings as ScreeningDto[]).map((screening) => [screening.id, screening]));
+        setScreeningBars(
+          entries.flatMap((entry) => {
+            const screening = byId.get(entry.screeningId);
+            if (!screening) return [];
+            return [{ id: entry.id, text: `${screening.name}: ${formatScreeningValue(entry.value, screening.scale)}` }];
+          }),
+        );
+      })
+      .catch(() => undefined);
+    return () => {
+      cancelled = true;
+    };
+  }, [date]);
   const liveSleepWindow: SleepWindow = sleepDrag
     ? sleepDrag.type === "wake"
       ? { ...sleepWindow, wakeTime: sleepDrag.minutes }
@@ -2332,6 +2357,19 @@ function DayDetails({
             </Link>
             <p className="hf-type-body hf-type-strong">{t("sleepQuality.calendarBar", { rating: sleepRating })}</p>
           </div>
+        </div>
+      )}
+      {screeningBars.length > 0 && (
+        <div className="flex flex-col gap-2 px-4 pt-4">
+          {screeningBars.map((bar) => (
+            <Link
+              key={bar.id}
+              href="/profile/screenings/reports"
+              className="hf-type-body hf-type-strong rounded-lg bg-hf-black px-4 py-2 text-center text-hf-white no-underline"
+            >
+              {bar.text}
+            </Link>
+          ))}
         </div>
       )}
       <div

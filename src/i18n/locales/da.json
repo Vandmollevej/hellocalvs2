@@ -245,6 +245,7 @@
       "chatSaveError": "Kunne ikke gemme. Prøv igen."
   },
   "nav": {
+    "screenings": "Screeninger",
     "add": "Tilføj",
     "foods": "Madvarer",
     "calendar": "Kalender",
@@ -568,6 +569,7 @@
     "allInUse": "Alle knapper er i brug"
   },
   "addMenu": {
+    "screenings": "Screening",
     "editEditHint": "Hold en flise inde for at flytte eller slette den",
     "editDone": "Færdig",
     "editAdd": "Tilføj",
@@ -1435,6 +1437,7 @@
       "bodyMeasurements": "Kropsmål"
     },
     "row": {
+      "screenings": "Screeninger",
       "subscription": "Abonnement",
       "paymentMethods": "Betaling",
       "weightCalibration": "Vægt kalibrering",
@@ -2498,6 +2501,7 @@
     "saveError": "Aktiviteten kunne ikke gemmes."
   },
   "addButton": {
+    "screenings": "Screeninger",
     "closeMenu": "Luk tilføj-menu",
     "openMenu": "Åbn tilføj-menu",
     "microphone": "Indtal",
@@ -3222,6 +3226,131 @@
       "lunch": "Frokost",
       "dinner": "Aftensmad",
       "snack": "Snack"
+    }
+  },
+  "screenings": {
+    "title": "Screeninger",
+    "intro": "Hold styr på dit helbred. Gå på opdagelse i dine data og opdag nye sider af dit helbred og sammenhænge.",
+    "createNew": "Opret ny screening",
+    "reports": "Screeningrapporter",
+    "reportsTitle": "Screeningrapporter",
+    "chartTitle": "Alle målinger",
+    "chartEmpty": "Ingen målinger i perioden endnu.",
+    "periodAria": "Vælg periode",
+    "sleep": "Søvn",
+    "statusActive": "Aktiv",
+    "statusInactive": "Inaktiv",
+    "activate": "Aktivér",
+    "deactivate": "Deaktivér",
+    "delete": "Slet",
+    "deleteTitle": "Slet screening?",
+    "deleteBody": "Screeningen og alle dens målinger slettes for altid.",
+    "loadError": "Kunne ikke hente screeninger.",
+    "loading": "Henter…",
+    "newTitle": "Opret ny screening",
+    "editTitle": "Redigér screening",
+    "stepAria": "Fremdrift",
+    "stepName": "Navn",
+    "stepFrequency": "Frekvens",
+    "stepQuestions": "Spørgsmål",
+    "stepNotifications": "Besked",
+    "stepMeasure": "Måling",
+    "stepCalendar": "Kalender",
+    "nameTitle": "Navn og formål",
+    "nameLabel": "Navn",
+    "namePlaceholder": "fx Hovedpine",
+    "purposeLabel": "Formål",
+    "purposePlaceholder": "Hvad vil du blive klogere på?",
+    "frequencyTitle": "Hvor ofte skal du spørges?",
+    "questionsTitle": "Spørgsmål",
+    "questionLabel": "Spørgsmål {n}",
+    "questionPlaceholder": "fx Hvor ondt har du i hovedet?",
+    "addQuestion": "Tilføj spørgsmål",
+    "removeQuestion": "Fjern spørgsmål",
+    "notifTitle": "Notifikationer",
+    "notifLabel": "Påmind mig",
+    "notifDesc": "Du får en besked, når det er tid til at svare.",
+    "notifTime": "Tidspunkt",
+    "measureTitle": "Måling",
+    "scaleTitle": "Skala",
+    "inputTitle": "Vælg felt",
+    "preview": "Sådan ser det ud",
+    "notesLabel": "Notefelt",
+    "notesDesc": "Skriv en kort note sammen med målingen.",
+    "minLabel": "Laveste værdi",
+    "maxLabel": "Højeste værdi",
+    "minPlaceholder": "fx Ingen smerte",
+    "maxPlaceholder": "fx Værst tænkelig",
+    "calendarTitle": "Kalender",
+    "calendarLabel": "Vis i kalenderen",
+    "calendarDesc": "Målingerne vises på dagene i kalenderen.",
+    "next": "Næste",
+    "back": "Tilbage",
+    "save": "Gem screening",
+    "saving": "Gemmer…",
+    "saveError": "Kunne ikke gemme. Prøv igen.",
+    "fillTitle": "Udfyld screening",
+    "fillPick": "Hvilken screening vil du udfylde?",
+    "fillEmpty": "Du har ingen aktive screeninger. Opret en under Profil.",
+    "questionOf": "Spørgsmål {n} af {total}",
+    "noteLabel": "Note",
+    "notePlaceholder": "Skriv en note",
+    "saveEntry": "Gem måling",
+    "done": "Gemt",
+    "dotsAria": "Spørgsmål",
+    "reportsEmpty": "Ingen screeninger endnu.",
+    "entries": "{n} målinger",
+    "noEntries": "Ingen målinger endnu.",
+    "sortDate": "Dato",
+    "sortValue": "Værdi",
+    "sortAria": "Sortér efter",
+    "hasNote": "Har note",
+    "average": "Gennemsnit",
+    "presets": {
+      "migraine": {
+        "name": "Migræne",
+        "purpose": "Hold øje med hvor ofte og hvor slemt du har migræne.",
+        "question": "Hvor slem er din migræne i dag?",
+        "min": "Ingen",
+        "max": "Værst tænkelig"
+      },
+      "stomachPain": {
+        "name": "Mavesmerter",
+        "purpose": "Se hvornår og hvor meget din mave gør ondt.",
+        "question": "Hvor ondt har du i maven i dag?",
+        "min": "Ingen",
+        "max": "Værst tænkelig"
+      },
+      "mood": {
+        "name": "Humør",
+        "purpose": "Følg dit humør over tid og find sammenhænge.",
+        "question": "Hvordan er dit humør i dag?",
+        "min": "Dårligt",
+        "max": "Fremragende"
+      }
+    },
+    "period": {
+      "d7": "Sidste 7 dage",
+      "d30": "Seneste 30 dage",
+      "d90": "Seneste 3 måneder",
+      "d365": "Seneste år"
+    },
+    "scale": {
+      "FIVE": "1–5",
+      "TEN": "1–10",
+      "PERCENT": "Procent"
+    },
+    "frequency": {
+      "DAILY": "Hver dag",
+      "WEEKLY": "Hver uge",
+      "MONTHLY": "Hver måned",
+      "MANUAL": "Kun når jeg selv vil"
+    },
+    "input": {
+      "BUTTONS": "Knapper",
+      "SLIDER": "Slider",
+      "INPUT": "Inputfelt",
+      "STEPPER": "Plus og minus"
     }
   }
 }
