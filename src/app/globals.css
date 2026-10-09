@@ -1573,7 +1573,7 @@ textarea::selection,
     background: transparent;
   }
 
-  /* Valgknap (segment/filter/periode): beige flade; valgt = sort flade, hvid tekst. */
+  /* Valgknap (segment/filter/periode): beige flade; valgt = lime flade, sort kant og tekst. */
   .hf-choice {
     display: inline-flex;
     min-height: 40px;
