@@ -4699,3 +4699,10 @@ Google/Apple/Facebook-login og integrationstilkobling kører i system-browseren,
 - `src/lib/danish-number.ts`: `deriveNumberForms` (kendte ord + tillægsord), `parseNumberQuery` ("et/en X" = ental, "nogle/flere/mange X" = flertal) og `matchesNumberQuery`. `GET /api/generic-ingredients` søger i alle tre felter og filtrerer på hele ord, så "et æble" ikke giver "æbler"; svaret har `displayName` i den søgte form. Oprettelse (`POST` og `addIngredientRequestGlobally`) udfylder begge felter.
 - Kun generiske varer — almindelige varer med brand/EAN berøres ikke. Se docs/REGLER.md.
 - Ikke gjort endnu: UI skal bruge `displayName`; ental/flertal-kolonner i Bilka-/REMA-arkene; import af de afledte former til eksisterende rækker ud over backfill-listen.
+
+## 2026-10-09 — Pulsudsving: 7 dage, bladring, rødt hjerte i kalenderen
+
+- Spørgsmålet om forhøjet puls (forsiden) spørger kun om de seneste 7 dage og bladrer som vejningerne: pil frem/tilbage mellem alle ubesvarede (`PulseEventSheet`, `GET /api/activities/spike` returnerer `events`).
+- Pulsarket viser øverst dato + start/slut (små) med tidspunktet for højeste puls i midten (stort, fedt), derunder pulsgrafen og træningstypen. Uden valg står "Angiv træningstype"; rækken åbner et bundark med søgefelt (`ActivityPicker`), og samme ark åbnes, når man trykker på den valgte type (skifter aktivitetens sport via `POST /api/activities/spike` med `changeSport`).
+- Kalenderen (måned/uge/liste/ugetidslinje) viser et rødt hjerte på dage med forhøjet puls (ubesvarede + besvarede, 7 dage) ved siden af vægt-ikonet, eller alene hvis man ikke har vejet sig (`PulseEventsProvider`, `GET /api/activities/spike/events`). Tryk på hjertet åbner pulsarket uden at åbne dagen.
+- Vejning: tryk på en vejning åbner allerede bundarket med valg af beklædning (`WeightEntryDetailsSheet`); uændret.

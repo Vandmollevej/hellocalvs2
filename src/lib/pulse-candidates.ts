@@ -241,58 +241,131 @@ function toSuggestionView(row: {
   };
 }
 
+type CandidateRow = Awaited<ReturnType<typeof loadPending>>[number];
+
+export type PulseEvent = PulsePrompt & {
+  status: "PENDING" | "ANSWERED";
+  /** Valgt træningstype (kun besvarede). */
+  sportType: string | null;
+  /** Den registrerede aktivitet, svaret oprettede (kun besvarede). */
+  activityId: string | null;
+};
+
+async function buildPrompt(
+  userId: string,
+  row: CandidateRow,
+  activities: { startedAt: Date; durationMinutes: number; sportType: string }[],
+): Promise<PulsePrompt> {
+  const start = row.startedAt.getTime();
+  const end = row.endedAt.getTime();
+  const middle = (start + end) / 2;
+  const windowStart = new Date(middle - CHART_HALF_WINDOW_MS);
+  const windowEnd = new Date(middle + CHART_HALF_WINDOW_MS);
+  const samples = await prisma.healthMetric.findMany({
+    where: { userId, type: "HEART_RATE_BPM", recordedAt: { gte: windowStart, lte: windowEnd } },
+    orderBy: { recordedAt: "asc" },
+    select: { recordedAt: true, value: true },
+  });
+  return {
+    startedAt: row.startedAt.toISOString(),
+    endedAt: row.endedAt.toISOString(),
+    durationMinutes: row.durationMinutes,
+    extraKcal: row.extraKcal,
+    peakBpm: row.peakBpm,
+    restingBpm: row.restingBpm,
+    windowStart: windowStart.toISOString(),
+    windowEnd: windowEnd.toISOString(),
+    samples: samples.map((s) => ({ at: s.recordedAt.toISOString(), bpm: Math.round(s.value) })),
+    weekActivities: activities
+      .filter((a) => Math.abs(a.startedAt.getTime() - start) <= WEEK_FETCH_MS)
+      .map((a) => ({ startedAt: a.startedAt.toISOString(), durationMinutes: a.durationMinutes, sportType: a.sportType })),
+    suggestion: toSuggestionView(row),
+  };
+}
+
+function loadActivitiesAround(userId: string, from: number, to: number) {
+  return prisma.activity.findMany({
+    where: { userId, startedAt: { gte: new Date(from - WEEK_FETCH_MS), lte: new Date(to + WEEK_FETCH_MS) } },
+    orderBy: { startedAt: "asc" },
+    select: { id: true, startedAt: true, durationMinutes: true, sportType: true },
+  });
+}
+
+/**
+ * Pulsudsving de seneste 7 dage (ældste først): ubesvarede og besvarede.
+ * Forsiden bladrer i de ubesvarede; kalenderen viser alle med rødt hjerte
+ * (docs/DECISIONS.md 2026-10-09).
+ */
+export async function getPulseEvents(
+  userId: string,
+  { now = new Date(), pendingOnly = false, sync = false }: { now?: Date; pendingOnly?: boolean; sync?: boolean } = {},
+): Promise<PulseEvent[]> {
+  if (sync) {
+    // Friske udsving siden nattens kørsel (de seneste 48 timer) tages med.
+    await syncPulseCandidates(userId, { lookbackHours: 48, now, detectedBy: "live" }).catch((error) =>
+      console.error("Pulse candidate sync failed", error),
+    );
+  }
+
+  const pending = await loadPending(userId, now);
+  const answered = pendingOnly
+    ? []
+    : await prisma.pulseActivityCandidate.findMany({
+        where: { userId, status: "ANSWERED", startedAt: { gte: new Date(now.getTime() - PROMPT_DAYS * DAY) } },
+      });
+  const rows = [...pending, ...answered].sort((a, b) => a.startedAt.getTime() - b.startedAt.getTime());
+  if (rows.length === 0) return [];
+
+  const activities = await loadActivitiesAround(userId, rows[0].startedAt.getTime(), rows[rows.length - 1].startedAt.getTime());
+  const reviews = answered.length
+    ? await prisma.heartRateSpikeReview.findMany({
+        where: { userId, startedAt: { gte: new Date(rows[0].startedAt.getTime() - DAY) }, activityId: { not: null } },
+        select: { startedAt: true, endedAt: true, activityId: true },
+      })
+    : [];
+
+  return Promise.all(
+    rows.map(async (row) => {
+      const prompt = await buildPrompt(userId, row, activities);
+      const isAnswered = row.status === "ANSWERED";
+      const review = isAnswered
+        ? reviews.find((r) => overlaps(row.startedAt.getTime(), row.endedAt.getTime(), r.startedAt.getTime(), r.endedAt.getTime()))
+        : undefined;
+      const activity = review?.activityId ? activities.find((a) => a.id === review.activityId) : undefined;
+      return {
+        ...prompt,
+        status: isAnswered ? ("ANSWERED" as const) : ("PENDING" as const),
+        sportType: isAnswered ? (activity?.sportType ?? row.answeredSport) : null,
+        activityId: review?.activityId ?? null,
+      };
+    }),
+  );
+}
+
 /** Næste "Vi kan se, at din puls var højere end sædvanlig …"-spørgsmål (eller null), plus hvor mange der venter efter det. */
 export async function getPulsePrompt(
   userId: string,
   now = new Date(),
 ): Promise<{ prompt: PulsePrompt | null; remaining: number }> {
-  // Friske udsving siden nattens kørsel (de seneste 48 timer) tages med.
-  await syncPulseCandidates(userId, { lookbackHours: 48, now, detectedBy: "live" }).catch((error) =>
-    console.error("Pulse candidate sync failed", error),
-  );
+  const events = await getPulseEvents(userId, { now, pendingOnly: true, sync: true });
+  const newest = events[events.length - 1];
+  if (!newest) return { prompt: null, remaining: 0 };
+  return { prompt: newest, remaining: events.length - 1 };
+}
 
-  const pending = await loadPending(userId, now);
-  const first = pending[0];
-  if (!first) return { prompt: null, remaining: 0 };
-
-  const start = first.startedAt.getTime();
-  const end = first.endedAt.getTime();
-  const middle = (start + end) / 2;
-  const windowStart = new Date(middle - CHART_HALF_WINDOW_MS);
-  const windowEnd = new Date(middle + CHART_HALF_WINDOW_MS);
-  const [samples, activities] = await Promise.all([
-    prisma.healthMetric.findMany({
-      where: { userId, type: "HEART_RATE_BPM", recordedAt: { gte: windowStart, lte: windowEnd } },
-      orderBy: { recordedAt: "asc" },
-      select: { recordedAt: true, value: true },
-    }),
-    prisma.activity.findMany({
-      where: { userId, startedAt: { gte: new Date(start - WEEK_FETCH_MS), lte: new Date(start + WEEK_FETCH_MS) } },
-      orderBy: { startedAt: "asc" },
-      select: { startedAt: true, durationMinutes: true, sportType: true },
-    }),
-  ]);
-
-  return {
-    remaining: pending.length - 1,
-    prompt: {
-      startedAt: first.startedAt.toISOString(),
-      endedAt: first.endedAt.toISOString(),
-      durationMinutes: first.durationMinutes,
-      extraKcal: first.extraKcal,
-      peakBpm: first.peakBpm,
-      restingBpm: first.restingBpm,
-      windowStart: windowStart.toISOString(),
-      windowEnd: windowEnd.toISOString(),
-      samples: samples.map((row) => ({ at: row.recordedAt.toISOString(), bpm: Math.round(row.value) })),
-      weekActivities: activities.map((a) => ({
-        startedAt: a.startedAt.toISOString(),
-        durationMinutes: a.durationMinutes,
-        sportType: a.sportType,
-      })),
-      suggestion: toSuggestionView(first),
-    },
-  };
+/** Ændrer træningstypen på et besvaret udsving (aktiviteten og robottens facit). */
+export async function changePulseSport(userId: string, activityId: string, sportType: string) {
+  const activity = await prisma.activity.findFirst({ where: { id: activityId, userId }, select: { id: true, startedAt: true } });
+  if (!activity) return false;
+  await prisma.activity.update({ where: { id: activity.id }, data: { sportType } });
+  const review = await prisma.heartRateSpikeReview.findFirst({ where: { userId, activityId }, select: { startedAt: true, endedAt: true } });
+  if (review) {
+    await prisma.pulseActivityCandidate.updateMany({
+      where: { userId, status: "ANSWERED", startedAt: { lte: review.endedAt }, endedAt: { gte: review.startedAt } },
+      data: { answeredSport: normalizeSportType(sportType) },
+    });
+  }
+  return true;
 }
 
 /** Brugerens svar (en aktivitet) eller "Spring over" — gemmes på fundet, så robotten kan lære af det. */

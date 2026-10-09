@@ -3,6 +3,7 @@
 import { SINNERS_ENABLED } from "@/lib/food-classification";
 import { useEffect, useMemo, useRef, useState, createContext, useContext } from "react";
 import Link from "next/link";
+import { PulseEventsProvider, PulseHeartMark } from "@/components/activity/PulseEventsProvider";
 import { WeightEntryDetailsSheet } from "@/components/weight/WeightEntryDetailsSheet";
 import { useRouter } from "next/navigation";
 import {
@@ -380,6 +381,14 @@ function useIsLandscape() {
 }
 
 export default function CalendarPage() {
+  return (
+    <PulseEventsProvider>
+      <CalendarPageContent />
+    </PulseEventsProvider>
+  );
+}
+
+function CalendarPageContent() {
   const { t } = useTranslation();
   const WEEKDAYS = useMemo(() => WEEKDAY_KEYS.map((key) => t(key)), [t]);
   const VIEW_OPTIONS = useMemo(
@@ -1232,6 +1241,7 @@ function MonthView({
                       }`}
                     >
                       {date.getDate()}
+                      <PulseHeartMark date={date} size={12} className="absolute bottom-0.5 left-0.5" />
                       {/* Målsætningsdato: konfettikanonen i øverste venstre
                           hjørne, modsat ✓/÷ i højre. */}
                       {hasGoal && (
@@ -1328,6 +1338,7 @@ function WeekView({
               <span className="flex flex-1 items-center gap-1.5">
                 {hasGoal && <IconPartyPopper size={18} className="shrink-0 text-hf-black" />}
                 <WeighInMark entries={dayWeighIns} />
+                <PulseHeartMark date={date} />
               </span>
             ) : (
               <>
@@ -1347,6 +1358,7 @@ function WeekView({
                   {/* Målsætningsdato: konfettikanonen efter teksten. */}
                   {hasGoal && <IconPartyPopper size={18} className="shrink-0 text-hf-black" />}
                   <WeighInMark entries={dayWeighIns} />
+                <PulseHeartMark date={date} />
                 </span>
                 <span className="ml-auto flex shrink-0 items-center gap-1">
                   <span
@@ -1567,6 +1579,7 @@ function ListView({
               <span className="flex flex-1 items-center gap-1.5">
                 {hasGoal && <IconPartyPopper size={18} className="shrink-0 text-hf-black" />}
                 <WeighInMark entries={dayWeighIns} />
+                <PulseHeartMark date={date} />
               </span>
             ) : (
               <>
@@ -1586,6 +1599,7 @@ function ListView({
                   {/* Målsætningsdato: konfettikanonen efter teksten. */}
                   {hasGoal && <IconPartyPopper size={18} className="shrink-0 text-hf-black" />}
                   <WeighInMark entries={dayWeighIns} />
+                <PulseHeartMark date={date} />
                 </span>
                 <span className="ml-auto flex shrink-0 items-center gap-1">
                   <span
@@ -1709,6 +1723,7 @@ function WeekTimelineView({
                 {met && <IconCheck size={15} stroke={3.5} className="text-hf-green" aria-hidden="true" />}
                 {goalsForDate(goalsByDate, date).length > 0 && <IconPartyPopper size={15} />}
                 {weighInsForDate(weighInsByDate, date).length > 0 && <IconBathScale size={15} />}
+                <PulseHeartMark date={date} size={15} />
               </span>
             </button>
           );
