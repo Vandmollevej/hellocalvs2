@@ -45,6 +45,14 @@ ikke her, er den ikke registreret og skal tilføjes.
   Status: ikke implementeret endnu.
 - **Små ord i navne**: med, i, af, uden skrives altid med småt i
   produktnavne/produkttype/variant (aftalt 2026-10-08, ikke gennemført endnu).
+- **Frida / generiske varer — navngivningsregler (aftalt 2026-10-09)**:
+  - **Raw / Cooked / Processed**: egne kolonner. `Raw` = rå (kød og fisk hedder *fersk* i titlen), `Cooked` = tilberedt (kogt, stegt, syltet, tørret, i sukkerlage, blandede salater), `Processed food` = alt der ikke er rå. Wokblandinger er rå. Ordene klippes ud af variation/nøgleord og vises i titlen.
+  - **Tørret/syltet står foran** produktet ("Tørret æggehvide"), flertal "Tørrede linser", "Syltede brombær". Farver står altid foran ("Hvid peber", "Grønne asparges").
+  - **Variation**: aldrig "/". To led: "a og b". Flere: "a, b og c". "m", "m." og "m/" betyder *med* og flyttes til variation ("Kartofler, med krydderurter").
+  - Samme produkttype må aldrig stå to gange i et navn (kun "Fuldkornsrugmel", ikke "Rugmel, fuldkornsrugmel"). Ost: produkttype "Ost", sorten (Havarti) er variant, "45+" er variant og står i titlen.
+  - Engelske, franske og andre udenlandske ord trækkes ikke sammen (creme fraiche, pommes frites, quinoa). Kun danske ord sættes sammen.
+  - `Decaf` skrives *Koffeinfri*. `Læskedrik` bruges ikke (Sodavand / Saftevand). `Konventionel` skrives *ikke-økologisk*. `Uspecificeret`, takeaway og fastfood bruges ikke. Alkohol-% står i `_is_alcohol` (ikke i titel), fedt-% i `_is_fat`.
+  - Dybfrost = `_is_frozen`. Landeord (atlantisk, dansk …) står i `_is_country_of_origen`. Light kan sorteres på særskilt flag, uafhængigt af sukker.
 - **Generisk vare** = ingen Brand og ingen Subbrand i arket (EAN ses bort fra).
   I databasen ligger de i `GenericIngredient`, ikke `Product`.
 
