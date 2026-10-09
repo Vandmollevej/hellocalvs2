@@ -90,18 +90,20 @@ fun parseScreening(obj: JsonObject): Screening? {
     )
 }
 
-fun parseScreeningEntry(obj: JsonObject): ScreeningEntry? = ScreeningEntry(
-    id = obj["id"].str() ?: return null,
-    screeningId = obj["screeningId"].str() ?: return null,
-    date = obj["date"].str() ?: return null,
-    value = (obj["value"] as? JsonPrimitive)?.doubleOrNull ?: 0.0,
-    note = obj["note"].str(),
-)
+fun parseScreeningEntry(obj: JsonObject): ScreeningEntry? {
+    return ScreeningEntry(
+        id = obj["id"].str() ?: return null,
+        screeningId = obj["screeningId"].str() ?: return null,
+        date = obj["date"].str() ?: return null,
+        value = (obj["value"] as? JsonPrimitive)?.doubleOrNull ?: 0.0,
+        note = obj["note"].str(),
+    )
+}
 
 object ScreeningApi {
     /** Loads the screenings; the first time, migraine, stomach pain and mood are created in the user's language. */
     suspend fun load(t: Translator): List<Screening> {
-        var data = Api.get("/api/screenings")
+        var data = Api.get("/api/screenings").jsonObject
         if (data["seeded"].bool() != true) {
             val texts = buildJsonObject {
                 for (key in SCREENING_PRESET_KEYS) {
@@ -115,17 +117,17 @@ object ScreeningApi {
                 }
             }
             Api.post("/api/screenings/seed", buildJsonObject { put("texts", texts) })
-            data = Api.get("/api/screenings")
+            data = Api.get("/api/screenings").jsonObject
         }
         return (data["screenings"] as? JsonArray).orEmpty().mapNotNull { parseScreening(it.jsonObject) }
     }
 
     suspend fun entriesInRange(from: String, to: String): List<ScreeningEntry> =
-        (Api.get("/api/screenings/entries?from=$from&to=$to")["entries"] as? JsonArray).orEmpty()
+        (Api.get("/api/screenings/entries?from=$from&to=$to").jsonObject["entries"] as? JsonArray).orEmpty()
             .mapNotNull { parseScreeningEntry(it.jsonObject) }
 
     suspend fun entries(id: String): List<ScreeningEntry> =
-        (Api.get("/api/screenings/$id/entries")["entries"] as? JsonArray).orEmpty()
+        (Api.get("/api/screenings/$id/entries").jsonObject["entries"] as? JsonArray).orEmpty()
             .mapNotNull { parseScreeningEntry(it.jsonObject) }
 
     suspend fun saveEntry(screeningId: String, answers: Map<String, Int>, note: String?) {

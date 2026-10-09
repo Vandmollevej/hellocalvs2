@@ -185,10 +185,10 @@ private fun ScreeningQuestionnaire(screening: Screening, onDone: () -> Unit) {
         HcText(question.text, HcTypeRoles.SectionTitle, color = HcColors.Black)
         // answerVersion makes the field redraw after the map changes.
         key(answerVersion) {
-            ScreeningInput(screening.inputType, screening.scale, screening.minLabel, screening.maxLabel, answers[question.id]) {
+            ScreeningInput(screening.inputType, screening.scale, screening.minLabel, screening.maxLabel, answers[question.id], onChange = {
                 answers[question.id] = it
                 answerVersion++
-            }
+            })
         }
         if (isLast && screening.notesEnabled) {
             HcText(t.t("screenings.noteLabel"), HcTypeRoles.Label)
