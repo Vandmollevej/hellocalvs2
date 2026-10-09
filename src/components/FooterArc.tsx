@@ -24,9 +24,7 @@ import {
   labelPlacement,
   labelWidth,
   listSlotIndex,
-  saveArcOffsetX,
   segmentPath,
-  useArcOffsetX,
 } from "@/lib/footer-arc";
 import { useIsSerious } from "@/lib/use-subscription-tier";
 import { useTranslation } from "@/i18n/LocaleProvider";
@@ -37,8 +35,8 @@ import { FooterArcEditor } from "@/components/FooterArcEditor";
 // (brugerens ønske 2026-10-07). Hvile: et fast cirkelstykke på ca. 40 px med et
 // stort plus. Skub op med fingeren: cirklen vokser til samme størrelse som venstre-cirklen
 // (AddButton) og viser viften — "alle" altid i midten, så et lodret træk op
-// altid rammer "alle". Slip på en knap åbner den. Træk vandret i hvile flytter
-// cirklen. Tryk åbner den (samme størrelse som ved træk op). Hold fingeren
+// altid rammer "alle". Slip på en knap åbner den. Cirklen står fast og kan ikke
+// trækkes til siden. Tryk åbner den (samme størrelse som ved træk op). Hold fingeren
 // stille som i footeren (LONG_PRESS_MS) åbner redigeringen (FooterArcEditor).
 // Den eksisterende venstre-cirkel (AddButton) er urørt.
 
@@ -66,8 +64,7 @@ type Gesture = {
   pointerId: number;
   startX: number;
   startY: number;
-  startOffset: number;
-  mode: "undecided" | "slide" | "pull" | "select";
+  mode: "undecided" | "pull" | "select";
   moved: boolean;
   wasOpen: boolean;
   /** Cirklen er sprunget til fuld størrelse (første træk opad). */
@@ -86,7 +83,6 @@ export function FooterArc() {
   const isSerious = useIsSerious();
   const keys = useWheelActionKeys();
   const profile = useAddActionsProfile();
-  const savedOffsetX = useArcOffsetX();
 
   const wrapRef = useRef<HTMLDivElement>(null);
   const [width, setWidth] = useState(0);
@@ -94,8 +90,6 @@ export function FooterArc() {
   const progressRef = useRef(0);
   const [open, setOpen] = useState(false);
   const openRef = useRef(false);
-  const [dragX, setDragX] = useState<number | null>(null);
-  const dragXRef = useRef<number | null>(null);
   const [highlightedKey, setHighlightedKey] = useState<string | null>(null);
   const highlightedRef = useRef<string | null>(null);
   const [gesturing, setGesturing] = useState(false);
@@ -142,11 +136,8 @@ export function FooterArc() {
     [],
   );
 
-  const maxOffset = Math.max(0, width / 2 - ARC_RADIUS - 8);
-  const offsetX = clamp(dragX ?? savedOffsetX, -maxOffset, maxOffset);
-  const baseCx = width / 2 + offsetX;
-  // Viften følger cirklen. Står cirklen langt ude til siden, rykker de knapper,
-  // der ellers ville forsvinde ud over kanten, længere op (se fanLayout).
+  // Cirklen står altid fast midt over footeren og kan ikke trækkes til siden.
+  const baseCx = width / 2;
   const cx = baseCx;
   const layout = fanLayout(angles, baseCx, width);
   // Den fremhævede knap træder længere ud (som venstre-cirklen); valg af knap sker ud fra hvilepladserne.
@@ -241,7 +232,6 @@ export function FooterArc() {
       pointerId: event.pointerId,
       startX: event.clientX,
       startY: event.clientY,
-      startOffset: offsetX,
       mode: "undecided",
       moved: false,
       wasOpen: openRef.current,
@@ -276,14 +266,10 @@ export function FooterArc() {
       gesture.moved = true;
       clearTimer(gesture);
       if (gesture.wasOpen) gesture.mode = "select";
-      else gesture.mode = Math.abs(dx) > Math.abs(dy) && dy > -MOVE_PX * 2 ? "slide" : "pull";
-      if (gesture.mode !== "slide") document.body.classList.add("select-none");
+      else gesture.mode = "pull";
+      document.body.classList.add("select-none");
     }
-    if (gesture.mode === "slide") {
-      const next = clamp(gesture.startOffset + dx, -maxOffset, maxOffset);
-      dragXRef.current = next;
-      setDragX(next);
-    } else if (gesture.mode === "pull") {
+    if (gesture.mode === "pull") {
       // Så snart fingeren er trukket opad, springer cirklen og knapperne
       // straks til fuld størrelse — ingen animation, ingen gradvis vækst.
       if (!gesture.expanded && gesture.startY - event.clientY > 0) {
@@ -316,12 +302,6 @@ export function FooterArc() {
     const key = highlightedRef.current;
     setHighlight(null);
 
-    if (gesture.mode === "slide") {
-      if (!cancelled && dragXRef.current !== null) saveArcOffsetX(dragXRef.current);
-      dragXRef.current = null;
-      setDragX(null);
-      return;
-    }
     if (cancelled) {
       setOpenState(false);
       return;

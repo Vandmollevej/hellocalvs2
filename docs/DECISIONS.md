@@ -4730,3 +4730,7 @@ Google/Apple/Facebook-login og integrationstilkobling kører i system-browseren,
 ## 2026-10-09 — Halvcirklens vifte: knapper rykker op ved kanten
 
 - Står halvcirklen over footeren langt ude til siden, rykkes de knapper, der ellers ville havne uden for skærmen, længere op (samme afstand til naboen) i stedet for at viften skubbes indad eller knapper skjules. Gælder web (`fanLayout` i `footer-arc.ts`) og native (`HomeFooterArc.kt`).
+
+## 2026-10-09 — Halvcirklen over footeren kan ikke trækkes
+
+- Ejerens rettelse: halvcirklen (`FooterArc` / `HomeFooterArc.kt`) står fast midt over footeren og kan ikke flyttes vandret. Vandret træk i hvile er fjernet (web + native), og den gemte placering (`hellocal.frontpage.arcOffsetX`) bruges ikke mere. Træk op åbner viften som før.
