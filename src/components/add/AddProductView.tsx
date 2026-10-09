@@ -709,7 +709,7 @@ export function AddProductView({
         state.status === "loaded" ? (
           <>
             {!forDish && !isEditing && (
-              <div className="mb-4">
+              <div className="mb-4 empty:hidden">
                 <MealShareBar />
               </div>
             )}
@@ -831,18 +831,19 @@ export function AddProductView({
                     </button>
                   )}
                   {/* Brandet vises kun på cirklen: logoet med bunden i cirklens
-                      bund og venstre kant 3/4 inde; uden logo brandnavnet i
-                      fed grøn tekst samme sted (DECISIONS 2026-09-28). */}
+                      bund og venstre kant 85 % inde, så der er luft mellem
+                      cirklens kant og logoet; uden logo brandnavnet i fed
+                      grøn tekst samme sted (DECISIONS 2026-09-28). */}
                   {view.brand &&
                     (view.brand.logoUrl ? (
                       // eslint-disable-next-line @next/next/no-img-element
                       <img
                         src={view.brand.logoUrl}
                         alt={view.brand.name}
-                        className="pointer-events-none absolute bottom-0 left-3/4 z-10 h-[66px] w-[95px] object-contain object-left-bottom"
+                        className="pointer-events-none absolute bottom-0 left-[85%] z-10 h-[66px] w-[95px] object-contain object-left-bottom"
                       />
                     ) : (
-                      <p className="hf-type-title hf-type-strong pointer-events-none absolute bottom-0 left-3/4 z-10 whitespace-nowrap text-hf-green">
+                      <p className="hf-type-title hf-type-strong pointer-events-none absolute bottom-0 left-[85%] z-10 whitespace-nowrap text-hf-green">
                         {view.brand.name}
                       </p>
                     ))}

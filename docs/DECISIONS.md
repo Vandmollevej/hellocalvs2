@@ -684,7 +684,7 @@ EU's NRV (forordning 1169/2011 bilag XIII), samme tal som "% RI".
 
 Hello Cal-frugten ligger ikke længere oven på produktcirklen. Har brandet et
 logo (`Brand.logoUrl`), ligger det med bunden i cirklens bund og venstre kant
-3/4 inde i cirklen (95px, `z-10`). Uden logo står brandnavnet samme sted i fed
+85 % inde i cirklen (95px, `z-10`; 2026-10-09: flyttet fra 3/4, så der er luft mellem cirklens kant og logoet). Uden logo står brandnavnet samme sted i fed
 grøn tekst. Brandet står ikke længere under produktnavnet, og certificeringer
 (Øko m.fl.) vises kun som logoer (nederst til venstre på cirklen). Erstatter logo-afsnittet i
 "hængelås på energifordeling"-beslutningen.

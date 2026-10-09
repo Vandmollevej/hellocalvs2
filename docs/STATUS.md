@@ -3,6 +3,12 @@
 Last updated: 2026-10-03
 Last updated: 2026-10-04
 
+## 2026-10-09: Tilføj-siden — brandlogo længere ud til højre + mere plads til kalorierne
+
+- Brandlogoet (eller brandnavnet i grøn tekst, fx «ØGO») på produktcirklen starter nu 85 % inde i stedet for 3/4, så der er luft mellem cirklens kant og logoet (`AddProductView.tsx`).
+- Luften over «Tilføj»-knappen er nu den samme som under den (16 px): den tomme `MealShareBar`-beholder (`mb-4`) tog 16 px ekstra, også når familiebjælken ikke vises; nu skjules den med `empty:hidden`. Det giver plads, så «(124 kcal/100g)» under mængdeboksen ikke skæres af.
+- Ikke set på telefon; `node_modules` findes ikke i cloud-sessionen, så lint/build er ikke kørt.
+
 ## 2026-10-05: Pulslinjen — roligere uden ur, flyttet op over nederste tal
 
 - Uden tilsluttet ur slår pulslinjen kun hvert 4. sekund (`DEFAULT_PULSE_BPM` = 15), og grundlinjen er flyttet op, så bunden står lige over hjulets nederste tal (`PULSE_ABOVE_LAST_ROW` i `HomeWaves.tsx`). Lint/build ikke kørt (ingen `node_modules` i cloud-sessionen). Brugeren tester på telefon; justér konstanten på 25 px efter billedet.
