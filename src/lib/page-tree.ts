@@ -393,7 +393,10 @@ export const PAGE_TREE: PageArea[] = [
           {
             path: "/admin/scan-invites",
             label: "scan-invites",
-            children: [{ path: "/admin/scan-invites/[id]", label: "Invitation" }],
+            children: [
+              { path: "/admin/scan-invites/[id]", label: "Agent" },
+              { path: "/admin/scan-invites/afvisningsaarsager", label: "Afvisningsårsager" },
+            ],
           },
           { path: "/admin/logos", label: "Logoer" },
           { path: "/admin/api-keys", label: "API-nøgler" },
