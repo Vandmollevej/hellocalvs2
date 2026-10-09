@@ -4468,3 +4468,11 @@ Ejerens krav: ingen "Bad Gateway" ved udrulning. Målt: hele sitet (begge værte
 - Afvigelse fra oplægget: `User.email` beholder `@unique` (tilfældig IV gør indekset ufarligt, typerne og klartekst-opslag på ikke-backfillede rækker virker). Den egentlige entydighed er `emailHash @unique`.
 - Uden nøgler i miljøet skrives/slås der op i klartekst som før (sikker deploy-rækkefølge); backfill-scriptet `scripts/encrypt-user-data/backfill.cjs` krypterer bagefter. Mistes `USER_DATA_KEY`, kan navn/e-mail ikke gendannes — gem nøglerne i en adgangskodemanager.
 - Admin → Brugere viser kun pseudonym; Admin → Admin-brugere viser navn + e-mail (dekrypteres server-side). Mail/push-udsendelse læser e-mail via samme klient og er uændret.
+
+## 2026-10-09 — Telefonnummer krypteres; identitet skilles fra fagdata i trin (besluttet af Claude efter brugerens "træf selv en beslutning")
+
+- Spørgsmål: kan e-mail/navn/telefon adskilles, så kun en nøgle kan koble dem til øvrig data? Svar: ja, i tre trin; sidste trin er det stærkeste.
+- **Trin 1 (gjort):** `User.phone` krypteres som email/displayName (AES-256-GCM, `USER_DATA_KEY`, samme Prisma-udvidelse). `phone` kan ikke bruges i `where` på User. Backfill-scriptet krypterer også telefon. `SmsVerification.phone` er korttidsdata og er uændret.
+- **Trin 2 (næste, kræver egen migration):** flyt email/navn/telefon til en `UserIdentity`-tabel; fagdata refererer kun et nøglet pseudonym `HMAC(PSEUDONYM_KEY, userId)`. Koblingen kan kun laves med nøglen. Helst egen database/rolle, så et dump af fagdata ikke afslører identiteter.
+- **Trin 3:** nøgler i KMS/adskilt nøglefil, rotation, krypterede backups med separat nøgle. Ende-til-ende-boksen i `docs/PRIVACY.md` forbliver målet for private data.
+- Begrænsning: ingen af trinene beskytter mod en angriber med fuld kontrol over app-serveren (nøglerne er i hukommelsen). Kun ende-til-ende gør.

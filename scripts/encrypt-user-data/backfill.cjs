@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-require-imports */
-// Idempotent backfill: krypterer User.email + User.displayName og udfylder
+// Idempotent backfill: krypterer User.email + User.displayName + User.phone og udfylder
 // User.emailHash for eksisterende raekker (docs/DEPLOYMENT.md, "Feltkryptering").
 //
 // Koeres INDE I app-containeren (faar noeglerne fra containerens miljoe):
@@ -39,21 +39,27 @@ const hash = (e) => createHmac("sha256", hashKey).update(e.trim().toLowerCase())
 async function main() {
   const prisma = new PrismaClient({ adapter: new PrismaPg({ connectionString: process.env.DATABASE_URL }) });
   const rows = await prisma.$queryRaw`
-    SELECT "id", "email", "displayName", "emailHash" FROM "User"
-    WHERE "emailHash" IS NULL OR "email" NOT LIKE 'enc:v1:%' OR "displayName" NOT LIKE 'enc:v1:%'`;
+    SELECT "id", "email", "displayName", "phone", "emailHash" FROM "User"
+    WHERE "emailHash" IS NULL OR "email" NOT LIKE 'enc:v1:%' OR "displayName" NOT LIKE 'enc:v1:%'
+       OR ("phone" IS NOT NULL AND "phone" NOT LIKE 'enc:v1:%')`;
   console.log(`${rows.length} raekke(r) skal behandles (${apply ? "APPLY" : "dry-run"}).`);
   let done = 0;
   const failed = [];
   for (const r of rows) {
     // Hvis email allerede er krypteret men hash mangler, kan hash ikke udledes uden at dekryptere.
     if (r.email.startsWith(PREFIX)) {
-      failed.push({ id: r.id, reason: "email krypteret men emailHash mangler" });
+      if (apply && r.phone && !r.phone.startsWith(PREFIX)) {
+        await prisma.$executeRaw`UPDATE "User" SET "phone" = ${enc(r.phone)} WHERE "id" = ${r.id}`;
+        done++;
+      } else if (!r.phone || r.phone.startsWith(PREFIX)) {
+        failed.push({ id: r.id, reason: "email krypteret men emailHash mangler" });
+      }
       continue;
     }
     if (!apply) continue;
     try {
       await prisma.$executeRaw`
-        UPDATE "User" SET "email" = ${enc(r.email)}, "displayName" = ${enc(r.displayName)}, "emailHash" = ${hash(r.email)}
+        UPDATE "User" SET "email" = ${enc(r.email)}, "displayName" = ${enc(r.displayName)}, "phone" = ${r.phone ? enc(r.phone) : null}, "emailHash" = ${hash(r.email)}
         WHERE "id" = ${r.id}`;
       done++;
     } catch (e) {
@@ -63,7 +69,8 @@ async function main() {
   console.log(`Krypteret: ${done}. Fejlede: ${failed.length}.`);
   for (const f of failed) console.log(`  id=${f.id}: ${f.reason}`);
   const left = await prisma.$queryRaw`
-    SELECT COUNT(*)::int AS n FROM "User" WHERE "emailHash" IS NULL OR "email" NOT LIKE 'enc:v1:%' OR "displayName" NOT LIKE 'enc:v1:%'`;
+    SELECT COUNT(*)::int AS n FROM "User" WHERE "emailHash" IS NULL OR "email" NOT LIKE 'enc:v1:%' OR "displayName" NOT LIKE 'enc:v1:%'
+       OR ("phone" IS NOT NULL AND "phone" NOT LIKE 'enc:v1:%')`;
   console.log(`Tilbage ukrypteret: ${left[0].n}.`);
   await prisma.$disconnect();
   if (failed.length) process.exitCode = 1;
