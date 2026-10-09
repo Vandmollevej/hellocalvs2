@@ -68,7 +68,7 @@ export async function GET(req: Request) {
           await prisma.$queryRaw<{ id: string }[]>(Prisma.sql`
             SELECT p."id" FROM "products" p
             LEFT JOIN "brands" b ON b."id" = p."brandId"
-            LEFT JOIN "ProductFilters" f ON f."productId" = p."id"
+            LEFT JOIN "product_filters" f ON f."productId" = p."id"
             WHERE ${Prisma.join(
               tokens.map(
                 (token) => Prisma.sql`translate(lower(concat_ws(' ', p."name", b."name", f."sugarFree", f."noAddedSugar", f."reducedSugar", f."lightSugar", f."lowSugar")), ${SEARCH_FOLD_FROM}, ${SEARCH_FOLD_TO}) LIKE ${"%" + token.replace(/[\\%_]/g, "\\$&") + "%"}`
