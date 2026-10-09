@@ -1725,7 +1725,8 @@
     "showAll": "Tout afficher ({count})",
     "showLess": "Afficher moins",
     "chartAria": "Évolution de {name}",
-    "loadError": "Impossible de charger ton statut."
+    "loadError": "Impossible de charger ton statut.",
+    "customizeView": "Personnaliser l'affichage"
   },
   "bodyMeasurementChart": {
     "noData": "Aucune mesure pour l'instant.",
@@ -1795,6 +1796,16 @@
   },
   "weighIn": {
     "attireTitle": "What were you wearing?",
+    "attireItem": {
+      "UNDERWEAR": "Underwear",
+      "PANTS": "Trousers",
+      "TOP": "Top / T-shirt",
+      "SWEATER": "Sweater",
+      "SHOES": "Shoes",
+      "POCKET_ITEMS": "Phone etc. in pocket",
+      "AFTER_TOILET": "After using the toilet"
+    },
+    "attireNaked": "Nothing selected = naked",
     "attire": {
       "NAKED": "Naked",
       "UNDERWEAR": "In underwear",

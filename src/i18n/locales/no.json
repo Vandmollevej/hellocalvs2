@@ -1725,7 +1725,8 @@
     "showAll": "Vis alle ({count})",
     "showLess": "Vis færre",
     "chartAria": "Utvikling for {name}",
-    "loadError": "Kunne ikke hente statusen din."
+    "loadError": "Kunne ikke hente statusen din.",
+    "customizeView": "Tilpass visning"
   },
   "bodyMeasurementChart": {
     "noData": "Ingen målinger ennå.",
@@ -1795,6 +1796,16 @@
   },
   "weighIn": {
     "attireTitle": "What were you wearing?",
+    "attireItem": {
+      "UNDERWEAR": "Underwear",
+      "PANTS": "Trousers",
+      "TOP": "Top / T-shirt",
+      "SWEATER": "Sweater",
+      "SHOES": "Shoes",
+      "POCKET_ITEMS": "Phone etc. in pocket",
+      "AFTER_TOILET": "After using the toilet"
+    },
+    "attireNaked": "Nothing selected = naked",
     "attire": {
       "NAKED": "Naked",
       "UNDERWEAR": "In underwear",

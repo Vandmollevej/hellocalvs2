@@ -1725,7 +1725,8 @@
     "showAll": "Visa alla ({count})",
     "showLess": "Visa färre",
     "chartAria": "Förlopp för {name}",
-    "loadError": "Kunde inte hämta din status."
+    "loadError": "Kunde inte hämta din status.",
+    "customizeView": "Anpassa visning"
   },
   "bodyMeasurementChart": {
     "noData": "Inga mätningar ännu.",
@@ -1795,6 +1796,16 @@
   },
   "weighIn": {
     "attireTitle": "What were you wearing?",
+    "attireItem": {
+      "UNDERWEAR": "Underwear",
+      "PANTS": "Trousers",
+      "TOP": "Top / T-shirt",
+      "SWEATER": "Sweater",
+      "SHOES": "Shoes",
+      "POCKET_ITEMS": "Phone etc. in pocket",
+      "AFTER_TOILET": "After using the toilet"
+    },
+    "attireNaked": "Nothing selected = naked",
     "attire": {
       "NAKED": "Naked",
       "UNDERWEAR": "In underwear",

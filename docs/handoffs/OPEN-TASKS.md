@@ -196,6 +196,7 @@ Ejer: G10-overtagelse, konto D (2026-09-24)
 | --- | --- | --- | --- |
 | 5f2ee781 | Fjern stregen mellem footer og indhold + sektionsoverskrifter mindre, ikke fed, centreret med streg på hver side | Færdig (be3a05d) | Verificeret i preview. Afventer brugerens godkendelse af udseendet |
 | a83d7a5a | Alle overskrifter med streger skal være samme klasse (Tidspunkt, datogrupper, statistik, "+ Skillelinje", Historik) | Færdig (136f502) | Deployet (Actions grøn). Obs: forside-indstillingernes "Knapper i hjulet" har en egen streg-overskrift, der kun findes på den lokale master — den skal over på `.hf-type-section-title`, når den lander på origin |
+| navx-slet | Bundmenu-redigering: slet-kryds lukkede hele redigeringen | Færdig (kode) | Nav løftes over lukke-laget (z-50) i redigering. Afventer test på telefon |
 | 6a503586 | Footer-redigering: slette-krydserne er skåret af + ikoner skal kunne trækkes til siden for at bytte rækkefølge | Færdig (8d5ba9b) | `overflow-x-clip` så krydserne ikke klippes; ombytning efter pladsen under fingeren (ingen hop) + roligere glide-animation; ikon fra panelet indsættes på den plads, det slippes. Afventer test på telefon (HelloFresh/knap-delen hører til G6) |
 
 ## G11 — Næringsdata på produktsiden (E-numre, toksiner, fedt-advarsel)
@@ -276,6 +277,7 @@ Ejer: Flows-sessionen (2026-09-27)
 | --- | --- | --- | --- |
 | 745f1ab5 | Telefon-editor (iPhone 17) til mails/notifikationer/svarskabeloner + hovedmenu "Flows" med flow-sider | Færdig (se git log "Admin: phone editor") | Guide-builderen (tooltips) er flyttet ind i `flows`-gruppen i `AdminShell.tsx` efter brugerens ønske |
 | 41 | Design-screening af admin-flowsider mod HelloFresh-retningen | Færdig (branch `claude/admin-flowsider-design-4tzgb4`) | Afventer brugerens visuelle test på desktop + telefon |
+| fredags-vejning | Fredags-banner under Flows: foreslår kalibrering i weekenden; `/weigh-reminders` med tidslinje (én kontakt pr. 2. time, push 5 min før); regler (ugedag, tid, dato m.m.) i Flows → Visning og betingelser | Venter på bruger | Kode i master (DECISIONS 2026-10-07), lint 0 fejl. Migration `20261007140000_weigh_reminders` skal køre ved deploy; flowet "Kalibrér vægten i weekenden" er en kladde — aktivér i admin → Flows. Kræver VAPID-nøgler + push-abonnement. Brugerens test på telefon |
 
 ## G-POPUP — Søg/vare/beskeder-efterrettelser + bundark-gennemgang
 Filer: `src/components/ui/WheelPicker.tsx`, `src/components/ui/BirthDatePicker.tsx`, `src/components/StartupTipOverlay.tsx`, `src/components/family/AccessLogPanel.tsx`, `src/components/hf/BottomSheet.tsx` (kun no-drag-markering), `src/lib/use-confirm-sheet.tsx`, `window.confirm`-kald i admin-/indstillingskomponenter, `src/components/add/AddProductView.tsx` (kun brand-logoets luft til cirklen).
@@ -310,7 +312,7 @@ Ejer: bølge-sessionen (2026-10-01)
 
 | Id | Opgave | Status | Næste skridt |
 | --- | --- | --- | --- |
-| — | Rolig, tilfældig bølge-animation bag forsiden med frostet-glas-bund og tåge | Færdig (kode) | Afventer brugerens visuelle godkendelse på telefon; justér tempo/farve efter feedback |
+| — | Rolig, tilfældig bølge-animation bag forsiden med frostet-glas-bund og tåge | Færdig (kode) | Afventer brugerens visuelle godkendelse på telefon; justér tempo/farve efter feedback | 2026-10-09: pause (PULSE_REST) mellem bølgerne, slagfrekvens uændret.
 
 ## G-SCAN — Kameraflow og vareside efter test (mælk/flødeboller)
 Filer: `src/components/camera/**`, `src/lib/focus-detection.ts`, `src/lib/product-naming*`, `src/lib/quick-product-enrichment.ts`, `src/lib/product-photo-analysis.ts`, `src/lib/brand-match.ts`, `src/lib/nutrient-resolution.ts`, `src/components/add/AddProductView.tsx` (cirkel/titel/næringspanel), `scripts/image-agent/cutout.py`.
@@ -412,7 +414,7 @@ Ejer: offline/PII/scan-sessionen (2026-10-07), branch `claude/offline-pii-scan`
 | 1 | Offline-audit + fælles offline-besked | Færdig (se git log "Offline") | Registreringer køes ikke offline (se OFFLINE-AUDIT) |
 | 2 | PII-adskillelse: anbefaling | Færdig (docs/SECURITY-PII-OPTIONS.md) | Afventer brugerens valg før noget bygges |
 | 3 | Tallerken-scan midlertidigt på OpenAI | Færdig (flag MEAL_PHOTO_PROVIDER) | Skal rulles tilbage, se DECISIONS 2026-10-07 |
-| 4 | Stregkodescanner robusthed (skygge) | Færdig (kode) | Afventer brugerens test på telefon med mælk i skygge |
+| 4 | Stregkodescanner robusthed (skygge) | Færdig (kode) + lokal tærskel pr. scanlinje i JS-stien (PR #297, `barcode-row-threshold.ts`/`barcode-local-binarizer.ts`, 2026-10-09) | Afventer brugerens test på telefon med mælk i skygge. Virker det stadig ikke på iPhone: eksportér scan-loggen fra admin → Log; vinduet (10 %) og kontrastgrænsen (8) kan justeres |
 ## G-VAEGT — Vægt: synk-status, tøj ved vejning, kalibrer
 Filer: `src/components/weight/**`, `src/app/weight/**`, `src/app/api/weight-*`, `src/lib/weigh-*`, `src/app/admin/weight-attire/**`.
 Ejer: vægt-sessionen (2026-10-07)
@@ -420,6 +422,7 @@ Ejer: vægt-sessionen (2026-10-07)
 | Id | Opgave | Status | Næste skridt |
 | --- | --- | --- | --- |
 | vaegt-synk | Synk-status, synk-popup, tøj-popup, tøj-blok + admin-algoritme, kalibrer-link, klik ind på vejning, Tilføj-tekst tættere | Færdig (se git log "Vægt:") | Afventer brugerens test på telefon; de/fr/nl/sv/no mangler oversættelse af `weighIn.*` |
+| vaegt-tojslidere | Tøj ved vejning som flere til/fra-slidere (undertøj, bukser, top/T-shirt, sweater, sko, mobil m.m. i lommen, efter toiletbesøg); intet valgt = nøgen | Færdig (kode) | Migration 20261009100000 (`attireItems`, gamle valg omregnes) skal med deployet. Ikke prøvet i browser/mod rigtig database; de/fr/nl/sv/no har engelske tekster |
 ## G-VIDEN — Guide mig + Viden om mad
 Filer: `src/lib/help-guides.ts`, `src/components/help/**`, `src/lib/knowledge*.ts`, `src/app/viden-om/**`.
 Ejer: viden-hjaelp-guide-sessionen (2026-10-07)
