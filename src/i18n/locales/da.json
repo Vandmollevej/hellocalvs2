@@ -2081,6 +2081,9 @@
   "productUpdate": {
     "banner": "Optjen {points} points ved at opdatere varen",
     "toggle": "Vis eller skjul banner",
+    "tileFront": "Forside",
+    "tileNutrition": "Energi",
+    "tileIngredients": "Indhold",
     "title": "Opdater varen",
     "kindFront": "Forsiden af varen ({points} points)",
     "hintFront": "Tag et billede af forsiden, så varen får et produktbillede.",

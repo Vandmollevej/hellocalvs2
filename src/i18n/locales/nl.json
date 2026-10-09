@@ -2120,6 +2120,9 @@
   "productUpdate": {
     "banner": "Verdien {points} punten door het product bij te werken",
     "toggle": "Banner tonen of verbergen",
+    "tileFront": "Voorkant",
+    "tileNutrition": "Energie",
+    "tileIngredients": "Ingrediënten",
     "title": "Product bijwerken",
     "kindFront": "Voorkant van het product ({points} punten)",
     "hintFront": "Maak een foto van de voorkant, zodat het product een afbeelding en logo krijgt.",
