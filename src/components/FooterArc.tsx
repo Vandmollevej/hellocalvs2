@@ -43,6 +43,8 @@ import { FooterArcEditor } from "@/components/FooterArcEditor";
 const LONG_PRESS_MS = 550;
 const MOVE_PX = 8;
 const DEAD_ZONE = 34;
+// Fingeren under denne højde over footerkanten er "tilbage nede": intet er valgt, og cirklen skrumper igen.
+const RETURN_PX = 12;
 const HIGHLIGHT_SCALE = 1.35;
 // Trækker man højere op end cirklen, må fingeren aldrig komme oven på den:
 // den markerede cirkel holdes mindst så højt over fingerspidsen.
@@ -188,7 +190,7 @@ export function FooterArc() {
     const py = rect.top - event.clientY; // px opad fra footerkanten
     const center = baseCx;
     setFinger({ dx: px - center, dy: py, top: rect.top });
-    if (Math.hypot(px - center, py) < DEAD_ZONE) {
+    if (py < RETURN_PX || Math.hypot(px - center, py) < DEAD_ZONE) {
       setHighlight(null);
       return;
     }
@@ -274,7 +276,19 @@ export function FooterArc() {
     if (gesture.mode === "pull") {
       // Så snart fingeren er trukket opad, springer cirklen og knapperne
       // straks til fuld størrelse — ingen animation, ingen gradvis vækst.
-      if (!gesture.expanded && gesture.startY - event.clientY > 0) {
+      const rect = wrapRef.current?.getBoundingClientRect();
+      const back = rect ? rect.top - event.clientY < RETURN_PX : false;
+      if (gesture.expanded && back) {
+        // Fingeren er bragt tilbage ned: cirklen bliver lille igen og intet er valgt.
+        gesture.expanded = false;
+        openRef.current = false;
+        setOpen(false);
+        setP(0);
+        setHighlight(null);
+        setFinger(null);
+        return;
+      }
+      if (!gesture.expanded && !back && gesture.startY - event.clientY > 0) {
         gesture.expanded = true;
         openRef.current = true;
         setOpen(true);
