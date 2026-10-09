@@ -1,6 +1,10 @@
 # HELLO CAL — project status
 
-Last updated: 2026-10-08
+Last updated: 2026-10-09
+
+## 2026-10-09: Startmængde — instantkaffe 2 g og aldrig over pakkens indhold
+
+- `default-amount.ts` (+ native `FoodLogic.kt`): instantkaffe → 2 g; forslaget kappes ved pakkens vægt/volumen. Test: `node --test src/lib/default-amount.test.mjs` (14 grønne). Lint/build ikke kørt (ingen node_modules her); Kotlin ikke kompileret lokalt.
 
 ## 2026-10-08: Adgangsmur mod crawlere
 
