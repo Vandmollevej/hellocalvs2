@@ -444,7 +444,7 @@ export function FlowEditor({ flow }: { flow: Flow }) {
                     const next = on ? current.filter((d) => d !== day.value) : [...current, day.value].sort();
                     setCondition({ weekdays: next.length ? next : undefined });
                   }}
-                  className={`hf-choice px-4 ${on ? "border-[1.5px] border-hf-black bg-hf-tan" : ""}`}
+                  className={`hf-choice px-4 ${on ? "hf-selected" : ""}`}
                 >
                   {day.label}
                 </button>

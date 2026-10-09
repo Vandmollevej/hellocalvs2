@@ -190,7 +190,7 @@ fun PaymentMethodBadges(country: String) {
 fun PeriodBox(label: String, total: String, perMonth: String, saving: String?, selected: Boolean, onClick: () -> Unit, modifier: Modifier = Modifier) {
     val shape = RoundedCornerShape(8.dp)
     Column(
-        modifier.clip(shape).background(if (selected) HcColors.Tan else HcColors.White, shape)
+        modifier.clip(shape).background(if (selected) HcColors.SelectedBg else HcColors.White, shape)
             .border(2.dp, if (selected) HcColors.Black else HcColors.White.copy(alpha = 0f), shape)
             .clickable(onClick = onClick).padding(horizontal = 4.dp, vertical = 12.dp),
         horizontalAlignment = Alignment.CenterHorizontally,

@@ -6,6 +6,14 @@ Last updated: 2026-10-09
 
 - Når redigeringen af kort afsluttes (og når et gemt layout indlæses), fjernes nu alle helt tomme rækker i kort-gitteret, uanset hvor de står (`dropEmptyRows` i `src/lib/stat-layout.ts` + native `StatsLayout.kt`). En række med ét kort og ét tomt felt bliver. Under redigering er felterne stadig blanke, så kort kan flyttes. Test i `stat-layout.test.mjs` grøn; lint/tsc ikke kørt (ingen `node_modules`), Kotlin ikke kompileret lokalt, ikke prøvet på telefon.
 
+## 2026-10-09: Tidsslider på Aktivitet viser kun dagen
+
+- Slideren under Starttidspunkt (`SleepRangeSlider` med `bedtimeFirst`, native `ProfileSleepRangeSlider`) er nu ét døgn: venstre = 00:00, højre = 23:59. Start-håndtaget står til venstre, slut-håndtaget til højre, og den grønne markering ligger imellem dem uden at pakke over midnat. Slut kan ikke gå forbi 23:59 og ligger altid efter start (også med +/−). Søvnsiden er uændret. Lint grønt; Kotlin ikke kompileret lokalt; ikke visuelt testet.
+
+## 2026-10-09: Tekst under tallene i tal-hjulet
+
+- Alle rækker i tal-hjulet har nu den grå tekst under tallet (web `StatsWheel.tsx`, native `HomeStatsWheel.kt`): standardtal får deres navn (fx "Kalorier indtaget" på to linjer), eksempelrækkerne "Søvn"/"Puls". Egne målinger beholder deres egen tekst. Lint og native-paritet grønne; ikke visuelt testet.
+
 ## 2026-10-09: Børn kan ikke lukke konto eller melde sig ud
 
 - Kun forælderen kan lukke/fjerne et barns konto. Serveren afviser børn på `/api/account/close` (403) og `leaveFamily` (`childCannotLeave`); "Luk konto"/"Slet mine data" og "Meld dig ud" er skjult for børn i web og native (`meIsChild` fra `/api/family`). Barnet kan kun se, hvad forælderen viser (uændret). Se DECISIONS.md samme dato. Lint, tsc og native-paritet grønne; Kotlin ikke kompileret lokalt; ikke prøvet mod rigtig database.
@@ -97,6 +105,10 @@ Last updated: 2026-10-08
 ## 2026-10-09: Startmængde — instantkaffe 2 g og aldrig over pakkens indhold
 
 - `default-amount.ts` (+ native `FoodLogic.kt`): instantkaffe → 2 g; forslaget kappes ved pakkens vægt/volumen. Test: `node --test src/lib/default-amount.test.mjs` (14 grønne). Lint/build ikke kørt (ingen node_modules her); Kotlin ikke kompileret lokalt.
+
+## 2026-10-09: Pulsen — 65 bpm, slange-spor, midt på skærmen
+
+- Puls-linjen slår 65 bpm uden ur, uden pause, og sporet forsvinder bagfra som en slange (`PULSE_TRAIL`). Grundlinjen ligger midt på skærmen. Web + native. Se DECISIONS 2026-10-09. Lint og `home-waves`-tests grønne; ikke set på telefon.
 
 ## 2026-10-09: Pulsudsving — bladring og rødt hjerte i kalenderen
 

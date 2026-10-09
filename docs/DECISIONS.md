@@ -4803,6 +4803,15 @@ Brugerens rettelse: "Et barn kan ikke selv lukke konto — det er kun forældere
 - Barnet har ingen kontakter til at skjule detaljer: "Del med andre" er kun visning, og betaleren bestemmer adgangen (uændret).
 - Afløser "Barnet kan melde sig ud" i beslutningen 2026-09-25 og tilsvarende i `docs/FAMILY.md`.
 
+## 2026-10-09: Pulsen — 65 bpm, slange-spor og midt på skærmen
+
+Brugerens ord: pulsen skal gå normal hastighed igen (65 bpm), sporet må ikke blive stående, men forsvinde kort efter som en slange, og pulsen flyttes op til midten af skærmen (målt totalt).
+
+- `DEFAULT_PULSE_BPM` er 65 (uden ur). Pausen mellem fejene (`PULSE_REST`) og det gamle spor foran spidsen er væk.
+- Sporet er en slange: halen følger spidsen i en fast afstand (`PULSE_TRAIL` = 35 % af bredden) og toner ud bagtil. Når halen har forladt højre kant, starter næste fej straks.
+- Grundlinjen ligger i midten af hele visningen (`window.innerHeight / 2`), ikke længere over hjulets nederste tal. "Mindstemål" er tolket som "midten".
+- Web (`home-waves.ts`, `HomeWaves.tsx`) og native (`HomeWaves.kt`, `HomeScreen.kt`) er ændret sammen.
+
 ## 2026-10-09 — Hello Doc: udløbsdato vælges med datepicker (ingen fast 14 dage)
 
 Ejeren vælger selv adgangens udløb med en datepicker i Hello Doc-editoren (web + native), med valget "Intet udløb". `DoctorShare.expiresAt` er den valgte dato (til og med den dag) eller `null` = intet udløb. Den faste 14-dages frist er fjernet; udløb gælder både ventende og aktive delinger. "Forny adgang" åbner uden udløbsdato.

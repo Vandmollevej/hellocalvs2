@@ -121,7 +121,7 @@ export function AdminNav({
                 type="button"
                 onClick={() => changeLocale(option)}
                 className={`px-2 py-1 ${
-                  currentLocale === option ? "bg-hf-green-dark text-hf-white" : "text-text-secondary hover:bg-hf-tan"
+                  currentLocale === option ? "hf-selected" : "text-text-secondary hover:bg-hf-tan"
                 }`}
               >
                 {option}
