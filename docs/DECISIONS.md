@@ -2,6 +2,10 @@
 
 This file records durable decisions. Add a dated entry when a later decision changes one of them.
 
+## 2026-10-09: Stregkoder tærskles lokalt pr. scanlinje — skygge må ikke stoppe en læsning
+
+Brugerens ord (2026-10-06): "bare fordi det var et lille stykke skygge, kunne kameraet ikke læse stregkoden … det kan ikke være rigtigt." Hver scanlinje binariseres derfor med en glidende lokal tærskel (vindue 10 % af linjen, mindst 32 px, mørk = mindst 8 under det lokale gennemsnit) før ZXing's globale tærskel pr. række, som beholdes som fallback i samme frame. Det ligger i `src/lib/barcode-row-threshold.ts` + `barcode-local-binarizer.ts`, ikke i ZXing-koden, så biblioteket kan opdateres frit. ZXing's HybridBinarizer bruges ikke længere til 1D: dens lokale blokke gælder kun 2D-matricen.
+
 ## 2026-10-08: Vagt-robot på NAS'en (hver time, mail)
 
 - Ud over GitHub-tjekket (hvert 5. min) kører `uptime-agent` på NAS'en og tjekker hver time site, app, containere og diskplads; mail til peter@packroff.dk ved fejl og ved løst. Brugerens valg: hver time "for nu", kun mail. Cloudflare-alarmer sættes op af brugeren i dashboardet (docs/DEPLOYMENT.md "Overvågning").
@@ -4646,6 +4650,9 @@ klip-klister mellem sider, og telefon/webvisning må ikke have hver sine klasser
 - Tommel op/ned påvirker populariteten (tommel ned -3, op +1, højst +3 i alt) for at undgå selvforstærkende ekkokammer.
 - "Python på serveren" er TypeScript (brugerens ok 2026-10-08). de/fr/nl oversættes senere.
 
+## 2026-10-09: Kalenderens statusblok viser ingen totaler (uge/måned)
+- Uge-/månedsvisningen viser kun statusen ("Inden for målet" / "Målet ikke opnået" / "Intet registreret") — ikke "Mål: N kcal", motion eller "Tilbage i måneden". Totaler står kun på den enkelte dag (`GoalStatusSummary` `showTotals`).
+- Status = gennemsnit af forgangne dage med registreringer mod gennemsnitligt dagsmål (budget-snapshots, som følger næste delmål). I dag tæller ikke med.
 ## 2026-10-08: Slettede gengangere beholder kæden
 
 - Brugerens regel: når en butiksrække slettes, fordi stregkoden allerede findes (Bilka/databasen vinder), skal den tabende butiks kæde altid udfyldes på vinderen (Kæder/`product_stores`) — ellers mister vi viden om, hvor varen sælges.
@@ -4705,3 +4712,7 @@ Google/Apple/Facebook-login og integrationstilkobling kører i system-browseren,
 - I redigering ruller et swipe på et ikon rækken; et stille tryk (250 ms) løfter ikonet. Holdes et løftet ikon ved rækkens kant, ruller rækken kontinuerligt (ingen sidehop, ingen snap).
 - Alle flytninger i menuen glider via script-animation (`el.animate`), fordi vibrationen (CSS-animation) ellers overstyrer inline-transform. Et sluppet ikon glider fra fingeren til sin plads. Samme mønster som statistik-gitteret (`StatCardsGrid`).
 
+
+## 2026-10-09: Retter-søgning viser Valdemarsro under "Opskrifter"; "Opret ny ret" som tekstlink
+- Årsag til tom liste: `/api/shared-recipes` medtog kun Valdemarsro ved `valdemarsro=1`, som appen aldrig sender, så "Opskrifter" (source=all) viste aldrig Valdemarsro-retter. Nu medtages de altid ved all; HelloFresh kræver stadig, at integrationen er slået til (Seriøs).
+- "Opret ny ret" er sort, understreget tekst med plus foran (ikke grøn knap) — web og native.
