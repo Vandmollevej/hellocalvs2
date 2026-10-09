@@ -244,7 +244,7 @@ private fun MonthDayCell(
     val otherMonth = date.monthNumber != month
     val shape = RoundedCornerShape(HcDimens.RadiusCard)
     val (background, textColor) = when {
-        current -> HcColors.SelectedBg to HcColors.SelectedText
+        current -> HcColors.White to HcColors.Black
         otherMonth -> Color.Transparent to HcColors.Inactive
         isPast -> HcColors.Tan to HcColors.Inactive
         else -> HcColors.Tan to HcColors.Black
@@ -257,7 +257,7 @@ private fun MonthDayCell(
         Modifier.fillMaxSize().clip(shape).background(background)
             .let {
                 when {
-                    current -> it.border(2.dp, HcColors.SelectedBorder, shape)
+                    current -> it.border(2.dp, HcColors.Brand, shape)
                     otherMonth -> it.border(1.dp, HcColors.GrayBorder, shape)
                     else -> it
                 }
@@ -267,7 +267,7 @@ private fun MonthDayCell(
     ) {
         HcText(date.dayOfMonth.toString(), HcTypeRoles.Body, bold = !isPast, color = textColor)
         if (hasGoal) {
-            CalendarPartyPopperIcon(12.dp, if (current) HcColors.White else HcColors.Black, Modifier.align(Alignment.TopStart).padding(2.dp))
+            CalendarPartyPopperIcon(12.dp, HcColors.Black, Modifier.align(Alignment.TopStart).padding(2.dp))
         }
         if (!current && marked) {
             if (met) {
@@ -312,15 +312,15 @@ internal fun DayRow(
         val boxShape = RoundedCornerShape(HcDimens.RadiusCard)
         Box(
             Modifier.size(36.dp).clip(boxShape)
-                .background(if (current) HcColors.SelectedBg else HcColors.White)
-                .border(if (current) 2.dp else 1.dp, if (current) HcColors.SelectedBorder else HcColors.Gray, boxShape),
+                .background(HcColors.White)
+                .border(if (current) 2.dp else 1.dp, if (current) HcColors.Brand else HcColors.Gray, boxShape),
             contentAlignment = Alignment.Center,
         ) {
             HcText(
                 date.dayOfMonth.toString(),
                 HcTypeRoles.Body,
                 bold = current || future,
-                color = if (current) HcColors.SelectedText else if (future) HcColors.Black else HcColors.Inactive,
+                color = if (current) HcColors.Black else if (future) HcColors.Black else HcColors.Inactive,
             )
         }
         if (future) {
