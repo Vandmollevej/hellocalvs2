@@ -65,6 +65,7 @@ import { GoalStatusSummary } from "@/components/calendar/GoalStatusSummary";
 import {
   formatMeasurementValue,
   formatWeightKg,
+  integrationIconForSource,
   measurementsForDay,
   type CalendarMeasurement,
   type CalendarWeighIn,
@@ -2948,7 +2949,9 @@ function HourEntriesOverlay({
         {goals.map((goal) => (
           <GoalAccordion key={goal.id} goal={goal} />
         ))}
-        {weighIns.map((entry) => (
+        {weighIns
+          .filter((entry) => !measurements.some((measurement) => measurement.id === `weight-${entry.id}`))
+          .map((entry) => (
           <div key={entry.id} className="hf-control-row mb-2 flex items-center justify-between rounded-2xl bg-hf-tan px-4">
             <span className="hf-type-body hf-type-strong text-hf-black">{formatClock(entry.weighedAt)}</span>
             <span className="hf-type-body hf-type-strong flex items-center gap-1.5 text-hf-black">
@@ -3029,7 +3032,14 @@ function HourEntriesOverlay({
                       );
                     }
                     if (item.kind === "measurement") {
-                      return <MeasurementRow key={item.id} measurement={item.measurement} className={rowClass} />;
+                      return (
+                        <MeasurementRow
+                          key={item.id}
+                          measurement={item.measurement}
+                          className={rowClass}
+                          hideWeight={item === groupWeight}
+                        />
+                      );
                     }
                     const { registration } = item;
                     const isWater = isWaterRegistration(registration);
@@ -3067,11 +3077,13 @@ function HourEntriesOverlay({
 
 // En vejning med vægtens øvrige målinger (fedtprocent, muskelmasse …) eller
 // en måling uden vejning (fx blodtryk) — alt, integrationen har leveret.
-function MeasurementRow({ measurement, className }: { measurement: CalendarMeasurement; className: string }) {
+// Vægten står allerede i gruppens overskrift (hideWeight), så rækken viser den ikke igen.
+function MeasurementRow({ measurement, className, hideWeight = false }: { measurement: CalendarMeasurement; className: string; hideWeight?: boolean }) {
   const { t } = useTranslation();
   const [open, setOpen] = useState(false);
   const weighInId = measurement.id.startsWith("weight-") ? measurement.id.slice("weight-".length) : null;
   const source = measurement.source && measurement.source !== "MANUAL" ? t(`calendar.measurement.source.${measurement.source}`) : null;
+  const sourceIcon = integrationIconForSource(measurement.source);
   return (
     <div
       className={`${className} ${weighInId ? "cursor-pointer" : ""}`}
@@ -3087,11 +3099,18 @@ function MeasurementRow({ measurement, className }: { measurement: CalendarMeasu
         : {})}
     >
       <FoodRow
-        thumbnail={<IconScale size={22} className="text-hf-black" aria-hidden="true" />}
+        thumbnail={
+          sourceIcon ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img src={sourceIcon} alt="" className="h-full w-full object-contain p-1" />
+          ) : (
+            <IconScale size={22} className="text-hf-black" aria-hidden="true" />
+          )
+        }
         title={measurement.weightKg !== null ? t("calendar.measurement.weight") : t("calendar.measurement.title")}
         subtitle={source ? <p className="hf-type-small text-text-secondary">{source}</p> : undefined}
         right={
-          measurement.weightKg !== null ? (
+          measurement.weightKg !== null && !hideWeight ? (
             <span className="hf-type-body hf-type-strong text-hf-black">{formatWeightKg(measurement.weightKg)}</span>
           ) : undefined
         }
