@@ -1725,7 +1725,8 @@
     "showAll": "Visa alla ({count})",
     "showLess": "Visa färre",
     "chartAria": "Förlopp för {name}",
-    "loadError": "Kunde inte hämta din status."
+    "loadError": "Kunde inte hämta din status.",
+    "customizeView": "Anpassa visning"
   },
   "bodyMeasurementChart": {
     "noData": "Inga mätningar ännu.",

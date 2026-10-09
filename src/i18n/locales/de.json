@@ -1725,7 +1725,8 @@
     "showAll": "Alle anzeigen ({count})",
     "showLess": "Weniger anzeigen",
     "chartAria": "Verlauf für {name}",
-    "loadError": "Dein Status konnte nicht geladen werden."
+    "loadError": "Dein Status konnte nicht geladen werden.",
+    "customizeView": "Ansicht anpassen"
   },
   "bodyMeasurementChart": {
     "noData": "Noch keine Messungen.",

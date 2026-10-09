@@ -1692,7 +1692,8 @@
     "showAll": "Show all ({count})",
     "showLess": "Show less",
     "chartAria": "Trend for {name}",
-    "loadError": "Could not load your status."
+    "loadError": "Could not load your status.",
+    "customizeView": "Customise view"
   },
   "bodyMeasurementChart": {
     "noData": "No measurements yet.",
