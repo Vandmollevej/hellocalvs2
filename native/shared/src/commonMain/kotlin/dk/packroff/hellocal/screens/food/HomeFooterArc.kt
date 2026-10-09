@@ -82,6 +82,8 @@ private const val ARC_MOVE_PX = 8f
 private const val ARC_DEAD_ZONE = 34f
 private const val ARC_HIGHLIGHT_SCALE = 1.35f
 private const val ARC_HIGHLIGHT_LIFT = 40f
+private const val ARC_FINGER_CLEARANCE = 62f
+private const val ARC_TOP_ROOM = 90f
 internal const val ARC_ICON_SIZE = 26f
 private const val ARC_OFFSET_X_KEY = "hellocal.frontpage.arcOffsetX"
 private val ARC_FAN_HALF_WIDTH = (ARC_ICON_RADIUS * sin(ARC_ANGLE_STEP_DEG * 2 * PI / 180) + ARC_ICON_CIRCLE / 2 + 8).toFloat()
@@ -345,7 +347,12 @@ fun HomeFooterArc(modifier: Modifier = Modifier, onOpenMenuSheet: () -> Unit) {
                 val lift = if (highlighted) ARC_HIGHLIGHT_LIFT * p else 0f
                 val liftRad = angles[index] * PI / 180
                 val sx = bx + (lift * sin(liftRad)).toFloat()
-                val sy = by + (lift * cos(liftRad)).toFloat()
+                var sy = by + (lift * cos(liftRad)).toFloat()
+                val fingerNow = finger
+                if (highlighted && fingerNow != null) {
+                    val roomAbove = height - ARC_TOP_ROOM
+                    sy = max(sy, min(fingerNow.second + ARC_FINGER_CLEARANCE, max(sy, roomAbove)))
+                }
                 val scale = (0.4f + 0.6f * p) * if (highlighted) ARC_HIGHLIGHT_SCALE else 1f
                 Box(
                     Modifier

@@ -50,6 +50,11 @@ const HIGHLIGHT_SCALE = 1.35;
 // tommelfingeren, når man trækker højt op (kun visning; markeringen måles stadig
 // ved cirklens hvileplads).
 const HIGHLIGHT_LIFT = 40;
+// Trækker man højere op end cirklen, må fingeren aldrig komme oven på den:
+// den markerede cirkel holdes mindst så højt over fingerspidsen.
+const FINGER_CLEARANCE = 62;
+// Plads øverst på skærmen, så cirklen og dens tekst ikke skæres af.
+const TOP_ROOM = 90;
 const ANIMATION_MS = 200;
 const ICON_SIZE = 26;
 
@@ -397,7 +402,12 @@ export function FooterArc() {
         const highlighted = highlightedKey === slot.key;
         const lift = highlighted ? HIGHLIGHT_LIFT * progress : 0;
         const liftRad = (angles[index] * Math.PI) / 180;
-        const center = { x: base.x + lift * Math.sin(liftRad), y: base.y + lift * Math.cos(liftRad) };
+        let centerY = base.y + lift * Math.cos(liftRad);
+        if (highlighted && finger) {
+          const roomAbove = (wrapRef.current?.getBoundingClientRect().top ?? Infinity) - TOP_ROOM;
+          centerY = Math.max(centerY, Math.min(finger.dy + FINGER_CLEARANCE, Math.max(centerY, roomAbove)));
+        }
+        const center = { x: base.x + lift * Math.sin(liftRad), y: centerY };
         const Icon = slot.icon;
         return (
           <div
