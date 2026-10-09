@@ -4745,3 +4745,8 @@ Google/Apple/Facebook-login og integrationstilkobling kører i system-browseren,
 - Øverst i et emne står emnets "Gå til …"-link som almindeligt understreget link; hvis emnet hører til en guide (`topics` i registret), står knappen "Guide mig" under linket, før beskrivelsen. Siden henter knapperne fra `/api/help/guides`, så en ændring i registret slår igennem uden at HTML-filerne skal rettes.
 - Knappen åbner `/?guide=<id>`; `HelpGuideSpotlight` starter guiden og fjerner parameteren fra adressen.
 - Ny guide til et Hjælpecenter-emne: tilføj emnets `<details id>` i `topics` på guiden (testen tjekker, at emnet findes på alle sprog).
+
+## 2026-10-09: Indlæsning og varer pr. side i admin Varer
+
+- Kortet "Visning" har to nye valg: "Indlæsning" (Sider med Forrige/Næste, eller Uendelig scroll) og "Varer pr. side" (24/48/96/200). URL-parametre `paging=infinite` og `perPage`; standard (sider, 48) udelades. Gemmes med i en gemt visning.
+- Uendelig scroll: `page` betyder antal indlæste portioner; serveren viser portion 1..page, og `InfiniteScrollLoader` hæver `page` når bunden kommer til syne.

@@ -3,7 +3,6 @@ import { prisma } from "@/lib/prisma";
 import {
   DISH_SOURCES,
   PRODUCT_CATEGORY_LABELS,
-  PRODUCT_DATABASE_PAGE_SIZE,
   PRODUCT_SOURCE_LABELS,
   type ProductDatabaseFilters,
   type ProductDatabaseSort,
@@ -170,15 +169,16 @@ async function loadTrendingIds(where: Prisma.ProductWhereInput, skip: number, ta
 
 export async function loadProductDatabase(filters: ProductDatabaseFilters) {
   const where = buildWhere(filters);
-  const skip = (filters.page - 1) * PRODUCT_DATABASE_PAGE_SIZE;
-  const trendingIds =
-    filters.sort === "trending" ? await loadTrendingIds(where, skip, PRODUCT_DATABASE_PAGE_SIZE) : null;
+  const infinite = filters.paging === "infinite";
+  const skip = infinite ? 0 : (filters.page - 1) * filters.perPage;
+  const take = infinite ? filters.page * filters.perPage : filters.perPage;
+  const trendingIds = filters.sort === "trending" ? await loadTrendingIds(where, skip, take) : null;
   const [matching, rawRows, stores, categories, overview] = await Promise.all([
     prisma.product.count({ where }),
     prisma.product.findMany({
       where: trendingIds ? { id: { in: trendingIds } } : where,
       orderBy: buildOrderBy(filters.sort),
-      ...(trendingIds ? {} : { skip, take: PRODUCT_DATABASE_PAGE_SIZE }),
+      ...(trendingIds ? {} : { skip, take }),
       select: {
         id: true,
         name: true,
@@ -239,7 +239,7 @@ export async function loadProductDatabase(filters: ProductDatabaseFilters) {
   return {
     rows: result,
     matching,
-    pageCount: Math.max(1, Math.ceil(matching / PRODUCT_DATABASE_PAGE_SIZE)),
+    pageCount: Math.max(1, Math.ceil(matching / filters.perPage)),
     stores: stores.map((s) => ({ id: s.id, name: s.name, count: s._count.products })),
     categories,
     overview,
