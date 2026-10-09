@@ -2458,9 +2458,9 @@
   },
   "/weight/create": {
     "src/app/layout.tsx": "9a180a8c9b7bdec8",
-    "src/app/weight/create/page.tsx": "cbbf051b88b3701b",
+    "src/app/weight/create/page.tsx": "b8fa8eca8e189e77",
     "src/components/AuthGate.tsx": "94db96b768f9f95f",
-    "src/components/BottomNav.tsx": "50c4eb59b5807fa4",
+    "src/components/BottomNav.tsx": "3428c5ae144e2dea",
     "src/components/EmailVerifySheet.tsx": "42e52d85f9bf57d9",
     "src/components/HfScreen.tsx": "fa0b0a94f60cbbc5",
     "src/components/IntegrationIcon.tsx": "36551d87b956c315",

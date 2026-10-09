@@ -150,7 +150,7 @@ fun WeightCreateScreen(@Suppress("UNUSED_PARAMETER") args: RouteArgs) {
             }
 
             Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                if (!loading && entries.isNotEmpty()) HcText(t.t("weightLog.recentTitle"), HcTypeRoles.Caption, Modifier.padding(horizontal = 4.dp))
+                if (!loading && entries.isNotEmpty()) HcText(t.t("weightLog.recentTitle"), HcTypeRoles.Title, Modifier.padding(horizontal = 4.dp), color = HcColors.Black)
                 if (loading) HcLoader()
                 if (!loading && entries.isEmpty()) {
                     HcText(t.t("weightLog.noEntriesYet"), HcTypeRoles.Small, Modifier.fillMaxWidth(), color = HcColors.TextSecondary, align = TextAlign.Center)
