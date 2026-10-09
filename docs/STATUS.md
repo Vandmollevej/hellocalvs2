@@ -6148,3 +6148,5 @@ Skema, migration, `src/lib/danish-number.ts` og søgning/oprettelse er lavet (se
 - `/admin/search-synonyms`: ordpar pr. sprog (DA/EN) med "Ens"-procent; soegning i produkter og generiske ingredienser matcher ogsaa synonymet, rangeret efter procenten (0 % = slaaet fra). Tabel `search_synonyms` (migration 20261009120000, med eksempler). Forslag ud fra produkttyper: `docs/SYNONYM-FORSLAG.md`.
 
 - 2026-10-09: Opdater-banneret (`UpdatePointsBanner`) er nu et lag oven på siden (rykker ikke indholdet), med mindre luft over/under teksten. Trækstregen minimerer (op/tryk) og trækker en omvendt popup ned (ned) med et kamerafelt pr. manglende ting. Ikke prøvet i browser.
+
+- 2026-10-09: Tilføj-menu: teksten lå oven på ikonerne (dobbelt negativ margin fra #287). Overlappet fjernet på web (`AddMenuList.tsx`) og native (`AddMenu.kt`).
