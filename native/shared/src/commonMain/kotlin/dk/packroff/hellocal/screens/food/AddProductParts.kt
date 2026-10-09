@@ -296,7 +296,7 @@ fun HandSizePickerRow(item: HandSizeItem, imageUrl: String?, amount: Double, onS
  * ("Optjen 20 points …"); drag/tap the grip to collapse it.
  */
 @Composable
-fun UpdatePointsBanner(href: String, text: String, toggleLabel: String) {
+fun UpdatePointsBanner(href: String, text: String, toggleLabel: String, action: (@Composable () -> Unit)? = null) {
     val nav = LocalNavigator.current
     var collapsed by remember { mutableStateOf(false) }
     Column(Modifier.fillMaxWidth().shadow(4.dp).background(HcColors.White)) {
@@ -309,6 +309,7 @@ fun UpdatePointsBanner(href: String, text: String, toggleLabel: String) {
                 bold = true,
                 align = TextAlign.Center,
             )
+            if (action != null) Box(Modifier.padding(start = 16.dp, end = 16.dp, bottom = 12.dp)) { action() }
         }
         Box(
             Modifier.fillMaxWidth().height(24.dp)
