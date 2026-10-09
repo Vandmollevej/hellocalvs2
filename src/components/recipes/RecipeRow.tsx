@@ -46,7 +46,7 @@ export function RecipeRow({ row, loadingTitleWidth }: { row: RecipeRowData | nul
   }
   return (
     <Link href={row.href} className={RECIPE_ROW_CLASS}>
-      <div className="flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-[8px] bg-hf-tan text-hf-black">
+      <div className="flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden bg-hf-tan text-hf-black rounded-card">
         {row.imageUrl ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img src={row.imageUrl} alt="" className="h-full w-full object-cover" />

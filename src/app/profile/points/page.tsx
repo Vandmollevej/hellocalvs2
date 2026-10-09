@@ -72,13 +72,13 @@ export default function PointsPage() {
       title="Points"
     >
       <div className="px-4 pt-4 pb-8">
-        <div className="rounded-lg p-4 text-center" style={{ background: "var(--hf-color-brand)" }}>
-          <p className="text-text-secondary hf-type-caption" style={{ color: "var(--hf-color-white)" }}>Din saldo</p>
-          <p className="hf-type-hero" style={{ color: "var(--hf-color-white)" }}>{balance ?? "…"}</p>
-          <p className="text-text-secondary hf-type-caption" style={{ color: "var(--hf-color-white)" }}>points</p>
+        <div className="rounded-lg p-4 text-center bg-hf-brand">
+          <p className="text-text-secondary hf-type-caption text-hf-white">Din saldo</p>
+          <p className="hf-type-hero text-hf-white">{balance ?? "…"}</p>
+          <p className="text-text-secondary hf-type-caption text-hf-white">points</p>
         </div>
 
-        <div className="mt-4 rounded-lg border p-4" style={{ borderColor: "var(--hf-color-line)" }}>
+        <div className="mt-4 rounded-lg border p-4 border-hf-line">
           <p className="hf-type-body">
             {FREE_MONTH_COST} points kan indløses til 1 gratis måned med Seriøs — ingen
             betalingskort nødvendigt. Abonnementet falder tilbage til Gratis igen bagefter.
@@ -87,7 +87,7 @@ export default function PointsPage() {
             type="button"
             onClick={redeem}
             disabled={redeeming || (balance ?? 0) < FREE_MONTH_COST}
-            className="hf-control hf-btn-primary mt-4 w-full disabled:opacity-40"
+            className="hf-control hf-btn-primary mt-4 w-full"
           >
             {redeeming ? "Indløser…" : `Indløs ${FREE_MONTH_COST} points til 1 gratis måned`}
           </button>
@@ -102,8 +102,7 @@ export default function PointsPage() {
             {transactions.map((tx) => (
               <div
                 key={tx.id}
-                className="flex items-center justify-between border-b py-3"
-                style={{ borderColor: "var(--hf-color-line)" }}
+                className="flex items-center justify-between border-b py-3 border-hf-line"
               >
                 <div>
                   <p className="hf-type-body">{REASON_LABELS[tx.reason as PointsReason] ?? tx.reason}</p>

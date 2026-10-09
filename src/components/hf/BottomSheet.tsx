@@ -174,6 +174,9 @@ export function BottomSheet({
 
     function begin(y: number, target: EventTarget | null) {
       if (closingRef.current) return;
+      // Hjulvælgere o.l. (data-sheet-no-drag) scroller selv; kun trækstregen
+      // og resten af arket kan trække det ned.
+      if (target instanceof Element && target.closest("[data-sheet-no-drag]")) return;
       dragRef.current = {
         startY: y,
         lastY: y,

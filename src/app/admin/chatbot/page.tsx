@@ -83,7 +83,7 @@ export default async function AdminChatbotPage({
         <Kpi label="Andel sendt videre" value={`${percent(stats.escalated, stats.conversations)} %`} />
       </dl>
 
-      <section className="flex flex-col gap-3 rounded-lg border border-hf-tan-dark bg-hf-white p-4">
+      <section className="hf-panel">
         <h2 className="hf-type-title text-hf-black">Oftest spurgt</h2>
         {stats.rows.length === 0 ? (
           <p className="hf-type-body text-text-secondary">Ingen spørgsmål i perioden.</p>
@@ -138,7 +138,7 @@ export default async function AdminChatbotPage({
           </div>
         </div>
 
-        <form method="get" action="/admin/chatbot" className="hf-type-small flex flex-wrap items-end gap-2 rounded-lg border border-hf-tan-dark bg-hf-white p-3">
+        <form method="get" action="/admin/chatbot" className="hf-type-small flex flex-wrap items-end gap-2 p-3 hf-surface">
           {filter.view !== "questions" && <input type="hidden" name="view" value={filter.view} />}
           {filter.period !== "30" && <input type="hidden" name="period" value={filter.period} />}
           <label className="flex min-w-48 flex-1 flex-col gap-1">
@@ -188,7 +188,7 @@ export default async function AdminChatbotPage({
 
 function Kpi({ label, value }: { label: string; value: number | string }) {
   return (
-    <div className="rounded-lg border border-hf-tan-dark bg-hf-white p-3">
+    <div className="p-3 hf-surface">
       <dt className="hf-type-small text-text-secondary">{label}</dt>
       <dd className="hf-type-page-title tabular-nums text-hf-black">{value}</dd>
     </div>
@@ -203,7 +203,7 @@ function UserCell({
   tier,
   plan,
 }: {
-  user: { displayName: string; email: string };
+  user: { displayName: string };
   age: number | null;
   sex?: string | null;
   region: string;
@@ -213,7 +213,6 @@ function UserCell({
   return (
     <div className="flex flex-col">
       <span className="text-hf-black">{user.displayName}</span>
-      <span className="hf-type-small text-text-muted">{user.email}</span>
       <span className="hf-type-small text-text-secondary">
         {[ageLabel(age), sex !== undefined ? sexLabel(sex) : null, regionLabel(region), tierLabel(tier, plan)]
           .filter(Boolean)
@@ -251,7 +250,7 @@ async function QuestionsTable({ filter }: { filter: ChatbotAdminFilter }) {
   if (rows.length === 0) return <p className="hf-type-body py-4 text-text-secondary">Ingen spørgsmål matcher filteret.</p>;
   return (
     <div className="flex flex-col gap-2">
-      <div className="overflow-x-auto rounded-lg border border-hf-tan-dark bg-hf-white">
+      <div className="overflow-x-auto hf-surface">
         <table className="hf-type-body w-full min-w-[56rem] text-left align-top">
           <thead>
             <tr className="hf-type-small border-b border-hf-tan-dark uppercase tracking-wide text-text-muted">
@@ -304,7 +303,7 @@ async function ThreadsList({ filter }: { filter: ChatbotAdminFilter }) {
     <div className="flex flex-col gap-3">
       <ul className="flex flex-col gap-3">
         {conversations.map((conversation) => (
-          <li key={conversation.id} className="flex flex-col gap-3 rounded-lg border border-hf-tan-dark bg-hf-white p-4">
+          <li key={conversation.id} className="hf-panel">
             <div className="flex flex-wrap items-start justify-between gap-3">
               <UserCell
                 user={conversation.user}

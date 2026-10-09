@@ -119,7 +119,7 @@ export function ProductOutlineOverlay({
         className={`pointer-events-none absolute inset-0 h-full w-full ${filled === "mask" ? "hf-scan-fill" : "transition-opacity duration-200"}`}
         style={{ opacity: filled === "mask" ? undefined : active && visible ? 1 : 0 }}
       />
-      {filled === "frame" && <div aria-hidden className="hf-scan-fill pointer-events-none absolute inset-[12%] rounded-[12px] bg-hf-white" />}
+      {filled === "frame" && <div aria-hidden className="hf-scan-fill pointer-events-none absolute inset-[12%] bg-hf-white rounded-card" />}
     </>
   );
 }

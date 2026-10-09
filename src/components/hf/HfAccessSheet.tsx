@@ -4,9 +4,9 @@ import { useEffect, useRef, useState, type ReactNode } from "react";
 import { IconApple, IconBed, IconFlame, IconHeart, IconMan, IconX } from "@tabler/icons-react";
 import styles from "./HfAccessSheet.module.css";
 
-// iOS-adgangsarket, som Apple Health viser ved tilkobling
+// iOS-integrationssiden, som Apple Health viser ved tilkobling
 // (docs/DECISIONS.md 2026-09-27). Bruges af hver integrations egen side og
-// vises live i admin → Designmanual → Adgangsark.
+// vises live i admin → Designmanual → Integrationer.
 
 // Health-appens kategorier med dens egne farver.
 export type AccessCategory = "nutrition" | "activity" | "body" | "heart" | "sleep";

@@ -79,6 +79,7 @@ export const PAGE_TREE: PageArea[] = [
             label: "Tilføj-menu (+)",
             children: [
               { path: "/weight/create", label: "Registrér vægt" },
+              { path: "/weigh-reminders", label: "Vejepåmindelser", note: "Åbnes fra fredags-flowet" },
               { path: "/water/create", label: "Registrér vand" },
               { path: "/drinks", label: "Drinks", children: [{ path: "/drinks/[id]", label: "Tilføj drink" }] },
               { path: "/activity/create", label: "Tilføj aktivitet" },
@@ -222,7 +223,10 @@ export const PAGE_TREE: PageArea[] = [
           {
             path: "/settings/integrations",
             label: "Integrationer",
-            children: [{ path: "/settings/integrations/[app]", label: "Integration" }],
+            children: [
+              { path: "/settings/integrations/[app]", label: "Integration" },
+              { path: "/settings/import", label: "Flyt fra MyFitnessPal / Lifesum" },
+            ],
           },
           {
             path: "/settings/hello-doc",
@@ -367,6 +371,7 @@ export const PAGE_TREE: PageArea[] = [
             children: [{ path: "/admin/warnings", label: "Advarsler", note: "Gammel adresse — sender videre" }],
           },
           { path: "/admin/cron-jobs", label: "Cron-jobs" },
+          { path: "/admin/pet-food-filter", label: "Dyrefoder-filter", note: "Se og redigér filteret, der afviser dyrefoder; afprøv varer og stregkoder" },
           { path: "/admin/log", label: "Log", note: "Test-log indtil go-live: scanninger trin for trin, AI-kald, cron, fejl" },
           { path: "/admin/duplicate-products", label: "Dubletter" },
           {
@@ -377,11 +382,11 @@ export const PAGE_TREE: PageArea[] = [
               { path: "/admin/product-database/products", label: "Varer" },
               { path: "/admin/product-database/brands", label: "Brands" },
               { path: "/admin/product-database/images", label: "Billeder", note: "Træk produktbilleder (EAN/produkttype) og brand-logoer (filnavn = brand) ind, to kolonner" },
-              { path: "/admin/product-database/tags", label: "Nøgleord" },
             ],
           },
           { path: "/admin/search", label: "Søg", note: "Gammel adresse — sender videre til Varer" },
           { path: "/admin/search-ranking", label: "Søgealgoritmer" },
+          { path: "/admin/weight-attire", label: "Vejning: tøj-algoritme" },
           { path: "/admin/passkeys", label: "Passkeys" },
           { path: "/admin/shortcuts", label: "Genveje", note: "Tastaturgenvej til hvert menupunkt + AutoHotkey-tekst" },
           {

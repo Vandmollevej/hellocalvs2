@@ -27,7 +27,7 @@ export default async function AdminMessagingPage() {
     prisma.outboundMessage.findMany({
       orderBy: { createdAt: "desc" },
       take: 30,
-      include: { user: { select: { displayName: true, email: true } } },
+      include: { user: { select: { displayName: true } } },
     }),
     Promise.resolve(Boolean(process.env.SMTP_HOST)),
     Promise.resolve(Boolean(process.env.VAPID_PUBLIC_KEY)),
@@ -80,7 +80,7 @@ export default async function AdminMessagingPage() {
               {recentMessages.map((m) => (
                 <tr key={m.id} className="border-b border-hf-tan-dark">
                   <td className="py-2 pr-3">{m.event}</td>
-                  <td className="py-2 pr-3 text-text-secondary">{m.toEmail ?? m.user?.email ?? "—"}</td>
+                  <td className="py-2 pr-3 text-text-secondary">{m.user?.displayName ?? "—"}</td>
                   <td className="py-2 pr-3 text-text-secondary">{m.channel}</td>
                   <td className="py-2 pr-3 text-text-secondary">{STATUS_LABELS[m.status] ?? m.status}</td>
                   <td className="hf-type-small py-2 text-text-muted">

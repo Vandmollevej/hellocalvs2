@@ -42,17 +42,16 @@ export default async function AdminChatbotThreadPage({ params }: { params: Promi
       </div>
 
       <div className="grid gap-4 lg:grid-cols-[1fr_20rem]">
-        <section className="rounded-lg border border-hf-tan-dark bg-hf-white p-4">
+        <section className="hf-panel">
           <ChatbotThreadMessages messages={conversation.messages} />
         </section>
 
         <aside className="flex flex-col gap-4">
-          <section className="flex flex-col gap-2 rounded-lg border border-hf-tan-dark bg-hf-white p-4">
+          <section className="hf-panel">
             <h2 className="hf-type-title text-hf-black">Bruger</h2>
             <Facts
               rows={[
                 ["Navn", user.displayName],
-                ["E-mail", user.email],
                 ["Alder", ageLabel(currentAge)],
                 ["Køn", sexLabel(user.sex)],
                 ["Region", regionLabel(user.region)],
@@ -68,7 +67,7 @@ export default async function AdminChatbotThreadPage({ params }: { params: Promi
             />
           </section>
 
-          <section className="flex flex-col gap-2 rounded-lg border border-hf-tan-dark bg-hf-white p-4">
+          <section className="hf-panel">
             <h2 className="hf-type-title text-hf-black">Ved samtalens start</h2>
             <Facts
               rows={[
@@ -82,7 +81,7 @@ export default async function AdminChatbotThreadPage({ params }: { params: Promi
           </section>
 
           {conversation.supportRequest && (
-            <section className="flex flex-col gap-1 rounded-lg border border-hf-tan-dark bg-hf-white p-4">
+            <section className="gap-1 hf-panel">
               <h2 className="hf-type-title text-hf-black">Sendt til medarbejder</h2>
               <p className="hf-type-small text-text-secondary">
                 {conversation.escalatedAt ? formatAdminTime(conversation.escalatedAt) : ""} ·{" "}
@@ -95,7 +94,7 @@ export default async function AdminChatbotThreadPage({ params }: { params: Promi
           )}
 
           {otherConversations.length > 0 && (
-            <section className="flex flex-col gap-2 rounded-lg border border-hf-tan-dark bg-hf-white p-4">
+            <section className="hf-panel">
               <h2 className="hf-type-title text-hf-black">Andre samtaler</h2>
               <ul className="flex flex-col gap-1">
                 {otherConversations.map((other) => (

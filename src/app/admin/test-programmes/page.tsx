@@ -23,7 +23,6 @@ export default async function AdminTestProgrammesPage() {
       user: {
         select: {
           displayName: true,
-          email: true,
           integrations: { select: { provider: true, status: true, connectedAt: true, lastSyncedAt: true } },
         },
       },
@@ -45,7 +44,7 @@ export default async function AdminTestProgrammesPage() {
           const tester = byProvider.get(meta.provider);
           const connection = tester?.user.integrations.find((row) => row.provider === meta.provider);
           return (
-            <div key={meta.provider} className="rounded-lg border border-hf-tan-dark bg-hf-white p-4">
+            <div key={meta.provider} className="hf-panel">
               <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
                 <div className="flex min-w-0 flex-1 items-start gap-3">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -57,7 +56,7 @@ export default async function AdminTestProgrammesPage() {
                     ) : (
                       <>
                         <p className="hf-type-small text-text-muted">
-                          {tester.user.displayName} · {tester.user.email} · tilmeldt {date(tester.createdAt)}
+                          {tester.user.displayName} · tilmeldt {date(tester.createdAt)}
                         </p>
                         <p className="hf-type-small text-text-muted">
                           Forbindelse:{" "}

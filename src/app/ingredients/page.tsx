@@ -5,6 +5,7 @@ import { IconCarrot } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
 import { ActionLink } from "@/components/hf/ActionButton";
 import { useTranslation } from "@/i18n/LocaleProvider";
+import { useConfirmSheet } from "@/lib/use-confirm-sheet";
 
 type PrivateIngredient = { id: string; name: string; requestId: string | null };
 
@@ -19,6 +20,7 @@ async function fetchIngredients(): Promise<PrivateIngredient[]> {
 // erstattet af den globale — også i brugerens retter.
 export default function PrivateIngredientsPage() {
   const { t } = useTranslation();
+  const { ask, sheet: confirmSheet } = useConfirmSheet();
   const [ingredients, setIngredients] = useState<PrivateIngredient[] | null>(null);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [draftName, setDraftName] = useState("");
@@ -48,8 +50,11 @@ export default function PrivateIngredientsPage() {
     await load();
   }
 
-  async function remove(ingredient: PrivateIngredient) {
-    if (!window.confirm(t("privateIngredients.deleteConfirm", { name: ingredient.name }))) return;
+  function remove(ingredient: PrivateIngredient) {
+    ask(t("privateIngredients.deleteConfirm", { name: ingredient.name }), () => void doRemove(ingredient));
+  }
+
+  async function doRemove(ingredient: PrivateIngredient) {
     await fetch(`/api/private-ingredients/${encodeURIComponent(ingredient.id)}`, { method: "DELETE" }).catch(
       () => null
     );
@@ -59,6 +64,7 @@ export default function PrivateIngredientsPage() {
   return (
     <HfScreen title={t("privateIngredients.listTitle")} icon={<IconCarrot size={20} stroke={2} />}>
       <div className="hf-page">
+        {confirmSheet}
         {ingredients !== null && ingredients.length === 0 && (
           <p className="hf-type-body text-text-secondary text-center">{t("privateIngredients.empty")}</p>
         )}
@@ -73,7 +79,7 @@ export default function PrivateIngredientsPage() {
                       onChange={(event) => setDraftName(event.target.value)}
                       maxLength={80}
                       aria-label={t("privateIngredients.nameLabel")}
-                      className="hf-type-body hf-field min-w-0 flex-1 rounded-[8px] bg-hf-white px-3 text-hf-black outline-none"
+                      className="hf-type-body hf-field min-w-0 flex-1 bg-hf-white px-3 text-hf-black outline-none rounded-card"
                     />
                     <button
                       type="button"

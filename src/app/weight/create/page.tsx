@@ -6,6 +6,10 @@ import { IconInfoCircle } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
 import { TextField } from "@/components/hf/TextField";
 import { IconBathroomScale } from "@/components/icons/BathroomScale";
+import { AttireToggles } from "@/components/weight/AttireToggles";
+import { WeightEntryDetailsSheet } from "@/components/weight/WeightEntryDetailsSheet";
+import { WeightSyncStatus } from "@/components/weight/WeightSyncStatus";
+import type { WeighAttire } from "@/lib/weigh-attire";
 import { useTranslation } from "@/i18n/LocaleProvider";
 import { formatWeight, parseWeightInput, useUnits, weightToInputValue, weightUnitLabel } from "@/lib/units";
 import { Skeleton, SkeletonCards, SkeletonScreen } from "@/components/hf/Skeleton";
@@ -14,23 +18,7 @@ type WeightEntry = {
   id: string;
   weightKg: number;
   weighedAt: string;
-  clothed?: boolean;
-  shoes?: string;
-  toilet?: string;
-  meal?: string;
-  timeOfDay?: string;
 };
-
-// Kalibreret = mindst én vejning med angivne forhold (tøj, sko, toilet, mad, tidspunkt).
-function hasCalibrationEntry(entry: WeightEntry) {
-  return (
-    entry.clothed === false ||
-    (entry.shoes ?? "UNKNOWN") !== "UNKNOWN" ||
-    (entry.toilet ?? "UNKNOWN") !== "UNKNOWN" ||
-    (entry.meal ?? "UNKNOWN") !== "UNKNOWN" ||
-    (entry.timeOfDay ?? "UNKNOWN") !== "UNKNOWN"
-  );
-}
 
 function formatDateTime(value: string) {
   return new Intl.DateTimeFormat("da-DK", {
@@ -49,8 +37,10 @@ export default function WeightCreatePage() {
   const [saveError, setSaveError] = useState<string | null>(null);
   const [saved, setSaved] = useState(false);
   const [entries, setEntries] = useState<WeightEntry[]>([]);
-  const [needsCalibration, setNeedsCalibration] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [attire, setAttire] = useState<WeighAttire | null>(null);
+  const [calibrated, setCalibrated] = useState(true);
+  const [openId, setOpenId] = useState<string | null>(null);
 
   function load() {
     fetch("/api/weight-entries")
@@ -58,16 +48,22 @@ export default function WeightCreatePage() {
         if (!response.ok) throw new Error("failed");
         return (await response.json()) as { entries: WeightEntry[] };
       })
-      .then((data) => {
-        setEntries(data.entries.slice(0, 5));
-        setNeedsCalibration(!data.entries.some(hasCalibrationEntry));
-      })
+      .then((data) => setEntries(data.entries.slice(0, 5)))
       .catch(() => setEntries([]))
       .finally(() => setLoading(false));
   }
 
   useEffect(() => {
     load();
+    // Algoritmen (admin) gætter tøjet ud fra de seneste vejninger og tidspunktet.
+    fetch("/api/weight-attire/suggest")
+      .then((response) => (response.ok ? response.json() : null))
+      .then((data: { suggestion?: WeighAttire } | null) => data?.suggestion && setAttire(data.suggestion))
+      .catch(() => {});
+    fetch("/api/weight-calibration")
+      .then((response) => (response.ok ? response.json() : null))
+      .then((data: { calibrated?: boolean } | null) => setCalibrated(data?.calibrated ?? true))
+      .catch(() => {});
   }, []);
 
   async function handleSubmit(event: React.FormEvent) {
@@ -82,7 +78,7 @@ export default function WeightCreatePage() {
       const response = await fetch("/api/weight-entries", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ weightKg: parsed }),
+        body: JSON.stringify({ weightKg: parsed, ...(attire ? { attire } : {}) }),
       });
       if (!response.ok) {
         setSaveError(t("weightLog.saveError"));
@@ -104,7 +100,7 @@ export default function WeightCreatePage() {
       icon={<IconBathroomScale size={20} stroke={2} />}
     >
       <div className="hf-page">
-        <div className="rounded-2xl bg-hf-green px-4 py-4 text-hf-white">
+        <div className="hf-card hf-card--brand">
           <p className="hf-type-small">{t("weightLog.intro")}</p>
         </div>
 
@@ -120,23 +116,27 @@ export default function WeightCreatePage() {
             required
           />
 
+          <AttireToggles value={attire} onChange={setAttire} />
+
           {saveError && <p className="hf-type-caption text-center">{saveError}</p>}
           {saved && !saveError && (
             <p className="hf-type-small hf-type-strong text-center text-hf-green">{t("weightLog.saved")}</p>
           )}
 
-          <button type="submit" disabled={saving} className="hf-control hf-btn-primary disabled:opacity-40">
+          <button type="submit" disabled={saving} className="hf-control hf-btn-primary">
             <span className="hf-type-button">{saving ? t("weightLog.saving") : t("weightLog.save")}</span>
           </button>
         </form>
 
-        {!loading && needsCalibration && (
+        <WeightSyncStatus onSynced={load} />
+
+        {!calibrated && (
           <Link
             href="/profile/weight-calibration"
             className="hf-type-small hf-type-strong flex items-center justify-center gap-2 text-text-secondary"
           >
-            <IconInfoCircle size={20} aria-hidden />
-            {t("weightLog.calibrateLink")}
+            <IconInfoCircle size={20} aria-hidden="true" />
+            {t("weightLog.moreDetailsLink")}
           </Link>
         )}
 
@@ -154,15 +154,21 @@ export default function WeightCreatePage() {
             <p className="hf-type-small text-text-secondary text-center">{t("weightLog.noEntriesYet")}</p>
           )}
           {entries.map((entry) => (
-            <div key={entry.id} className="hf-control-row flex items-center justify-between rounded-2xl bg-hf-tan px-4">
+            <button
+              type="button"
+              key={entry.id}
+              onClick={() => setOpenId(entry.id)}
+              className="hf-control-row flex w-full items-center justify-between rounded-2xl bg-hf-tan px-4 text-left"
+            >
               <p className="hf-type-body hf-type-strong text-hf-black">
                 {formatWeight(entry.weightKg, weightUnit)}
                 <span className="hf-type-small text-text-secondary ml-2">{formatDateTime(entry.weighedAt)}</span>
               </p>
-            </div>
+            </button>
           ))}
         </div>
       </div>
+      {openId && <WeightEntryDetailsSheet id={openId} onClose={() => setOpenId(null)} onChanged={load} />}
     </HfScreen>
   );
 }

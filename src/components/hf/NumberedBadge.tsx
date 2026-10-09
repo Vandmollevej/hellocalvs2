@@ -3,8 +3,7 @@
 export function NumberedBadge({ number }: { number: number }) {
   return (
     <span
-      className="hf-type-button absolute -left-2 -top-2 flex h-7 w-7 items-center justify-center rounded-full"
-      style={{ background: "var(--hf-color-brand)", color: "var(--hf-color-white)" }}
+      className="hf-type-button absolute -left-2 -top-2 flex h-7 w-7 items-center justify-center rounded-full bg-hf-brand text-hf-white"
       aria-hidden="true"
     >
       {number}

@@ -430,8 +430,7 @@ export function WebShell({ children }: { children: React.ReactNode }) {
           <main className="hf-shell__main min-h-0 overflow-y-auto">
             {/* transform holder appens position: fixed-ark og -menuer inde i indholdsfladen. */}
             <div
-              className="web-shell-content mx-auto flex h-full w-full max-w-7xl flex-col overflow-hidden bg-hf-cream"
-              style={{ transform: "translateZ(0)" }}
+              className="web-shell-content mx-auto flex h-full w-full max-w-7xl flex-col overflow-hidden bg-hf-cream transform-gpu"
             >
               {!isWebRootPath(pathname) && <Crumbs pathname={pathname} />}
               <div className="flex min-h-0 flex-1 flex-col">{children}</div>

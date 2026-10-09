@@ -5,6 +5,7 @@ import { useSyncExternalStore } from "react";
 // localStorage-not-database pattern as src/lib/calendar-view-pref.ts.
 const TOOLTIPS_KEY = "hellocal.help.showTooltips";
 const STARTUP_TIPS_KEY = "hellocal.help.showStartupTips";
+const GOAL_TIPS_KEY = "hellocal.help.showGoalTips";
 const SEEN_TIPS_KEY = "hellocal.help.seenStartupTips";
 
 function read(key: string): string | null {
@@ -61,6 +62,14 @@ export function useShowStartupTips(): boolean {
 
 export function saveShowStartupTips(value: boolean) {
   write(STARTUP_TIPS_KEY, value ? "1" : "0");
+}
+
+export function useShowGoalTips(): boolean {
+  return useFlag(GOAL_TIPS_KEY);
+}
+
+export function saveShowGoalTips(value: boolean) {
+  write(GOAL_TIPS_KEY, value ? "1" : "0");
 }
 
 /** Ids of start-up tips the user has closed or whose feature they have used. */

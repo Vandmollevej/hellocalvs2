@@ -21,7 +21,22 @@ export async function GET(
     if (!dish) {
       return NextResponse.json({ dish: null }, { status: 404 });
     }
-    return NextResponse.json({ dish });
+    // Afvist som kopi: retten er ikke delt, og ejeren ser begrundelsen.
+    const recipe = dish.sharedRecipeId
+      ? await prisma.sharedRecipe.findUnique({
+          where: { id: dish.sharedRecipeId },
+          select: { status: true, rejectionReason: true },
+        })
+      : null;
+    const rejected = recipe?.status === "REJECTED";
+    return NextResponse.json({
+      dish: {
+        ...dish,
+        sharedRecipeId: rejected ? null : dish.sharedRecipeId,
+        shareRejected: rejected,
+        shareRejectionReason: rejected ? (recipe?.rejectionReason ?? null) : null,
+      },
+    });
   } catch (error) {
     console.error("Dish fetch failed", error);
     return NextResponse.json(

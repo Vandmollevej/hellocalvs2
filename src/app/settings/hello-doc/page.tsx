@@ -52,8 +52,7 @@ export default function HelloDocPage() {
         ) : (
           <Link
             href="/settings/hello-doc/invite"
-            className="hf-control hf-type-body flex w-full items-center justify-between rounded-[8px] border bg-hf-white px-4"
-            style={{ borderColor: "var(--hf-color-field-border)" }}
+            className="hf-control hf-type-body flex w-full items-center justify-between border bg-hf-white px-4 border-hf-field-border rounded-card"
           >
             <span>{t("helloDoc.inviteButton")}</span>
             <HfChevron />
@@ -82,8 +81,7 @@ export default function HelloDocPage() {
                 <Link
                   key={share.id}
                   href={`/settings/hello-doc/${share.id}`}
-                  className="hf-control-row flex items-center justify-between border-b text-left"
-                  style={{ borderColor: "var(--hf-color-line)" }}
+                  className="hf-control-row flex items-center justify-between border-b text-left border-hf-line"
                 >
                   <div className="min-w-0 flex-1">
                     <p className="hf-type-body truncate">{share.name}</p>

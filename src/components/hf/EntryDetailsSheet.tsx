@@ -53,8 +53,8 @@ export function EntryDetailsSheet({
         {subtitle && <p className="hf-type-body text-center text-text-secondary">{subtitle}</p>}
 
         {source?.kind === "synced" && (
-          <div className="flex items-center gap-3 rounded-[8px] bg-hf-tan px-4 py-3">
-            <IntegrationIcon icon={source.icon} label={source.label} size={32} className="rounded-[8px]" />
+          <div className="flex items-center gap-3 bg-hf-tan px-4 py-3 rounded-card">
+            <IntegrationIcon icon={source.icon} label={source.label} size={32} className="rounded-card" />
             <div className="min-w-0 flex-1">
               <p className="hf-type-body hf-type-strong text-hf-black">
                 {t("entrySheet.syncedFrom", { name: source.label })}
@@ -74,7 +74,7 @@ export function EntryDetailsSheet({
         )}
 
         {rows.length > 0 && (
-          <dl className="overflow-hidden rounded-[8px] bg-hf-tan">
+          <dl className="overflow-hidden bg-hf-tan rounded-card">
             {rows.map((row, index) => (
               <div
                 key={row.label}

@@ -2,6 +2,7 @@
 
 import { defaultAmountGrams } from "@/lib/default-amount";
 import { mealShareBody } from "@/lib/meal-share";
+import { BRAND_NAME_HEIGHT_PX, brandLogoLeftPx, brandLogoRenderedHeight } from "@/lib/brand-logo-layout";
 import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
@@ -24,7 +25,6 @@ import { selectRawContextImageUrl } from "@/lib/image-tags";
 import { MacroSliderBar } from "@/components/hf/MacroSliderBar";
 import { CertificationLogos } from "@/components/hf/CertificationLogos";
 import { certificationBadges, type CertificationFilters, type ProductLabelView } from "@/lib/certification-badges";
-import type { ProductPageTag } from "@/lib/product-page-tags";
 import { AdditiveInfoModal } from "@/components/hf/AdditiveInfoModal";
 import { getAdditiveInfo, splitENumbers } from "@/lib/additives";
 import { IngredientsText } from "@/components/hf/IngredientsText";
@@ -131,14 +131,14 @@ type Product = {
   filters?: CertificationFilters | null;
   // Mærkater fundet på forsiden af det natlige job (docs/DECISIONS.md 2026-10-02).
   labels?: ProductLabelView[] | null;
-  // Admins valgte nøgleord (smag, økologisk …), vist over energifordelingen
-  // (src/lib/product-page-tags.ts, docs/DECISIONS.md 2026-10-02).
-  pageTags?: ProductPageTag[];
   barcodes?: { code: string }[];
   createdByUserId?: string | null;
   // Kilde + genscanning — styrer banneret "Optjen 10 points"
   // (src/lib/product-rescan-offer.ts, docs/DECISIONS.md 2026-10-02).
   externalSource?: string | null;
+  // Opskrifter fra integrationer (HelloFresh/Valdemarsro): websiteUrl er
+  // kildesidens link, som Valdemarsro-retter åbner med "Gå til opskrift".
+  recipeDetails?: { websiteUrl?: string | null } | null;
   rescannedAt?: string | null;
   privateOwnerId?: string | null;
   // HelloFresh-recipe extra nutrition, per Product.servingSizeGrams — see
@@ -316,6 +316,9 @@ export function AddProductView({
   // med 10 % overskud: stående varer rager 10 % op over cirklen, liggende
   // 10 % ud til højre — hele varen ses altid (brugerens regel 2026-10-02).
   const [imageLandscape, setImageLandscape] = useState(false);
+  // Brand-logoets bredde/højde — bestemmer hvor langt ud det står, så der er
+  // luft mellem logoet og cirklen (src/lib/brand-logo-layout.ts).
+  const [brandLogoRatio, setBrandLogoRatio] = useState<number | null>(null);
   const extendedNutritionOpen = extendedNutritionToggle ?? Boolean(profile?.showExtendedNutrition);
   const [toxinsOpen, setToxinsOpen] = useState(false);
   const [openToxin, setOpenToxin] = useState<ToxinInfo | null>(null);
@@ -663,7 +666,8 @@ export function AddProductView({
       }
       router.push("/");
     } catch {
-      setSaveError(t("addProduct.saveError"));
+      // Ingen forbindelse: tydelig besked i stedet for en generisk fejl.
+      setSaveError(navigator.onLine === false ? t("offline.message") : t("addProduct.saveError"));
     } finally {
       setSaving(false);
     }
@@ -700,16 +704,26 @@ export function AddProductView({
 
   const title = forDish ? t("addProduct.titleForDish") : t("addProduct.title");
   const Frame = inSheet ? SheetFrame : ScreenFrame;
+  // Opdater-banneret sidder fast direkte under topbaren, uden for scroll-området.
+  const updateBanner =
+    !isLoading && !forDish && !isEditing && !!id && state.status === "loaded" && state.product.updateOffer ? (
+            <UpdatePointsBanner
+              href={`/add/${encodeURIComponent(id)}/update`}
+              text={t("productUpdate.banner", { points: state.product.updateOffer.points })}
+              toggleLabel={t("productUpdate.toggle")}
+            />
+    ) : null;
 
   return (
     <Frame
       title={title}
+      banner={updateBanner}
       onClose={onClose}
       footer={
         state.status === "loaded" ? (
           <>
             {!forDish && !isEditing && (
-              <div className="mb-4">
+              <div className="mb-4 empty:hidden">
                 <MealShareBar />
               </div>
             )}
@@ -719,7 +733,7 @@ export function AddProductView({
             <button
               onClick={forDish ? handleAddToDish : handleAdd}
               disabled={saving}
-              className="hf-control hf-btn-primary w-full disabled:opacity-60"
+              className="hf-control hf-btn-primary w-full"
             >
               {forDish
                 ? t("addProduct.addToDish")
@@ -737,7 +751,7 @@ export function AddProductView({
     >
       <div className="flex h-full flex-col overflow-y-auto">
         {(state.status === "not_found" || state.status === "error") && (
-          <div className="m-4 rounded-2xl bg-hf-tan p-4 text-center">
+          <div className="m-4 text-center hf-card">
             <p className="hf-type-body text-text-secondary">
               {state.status === "not_found"
                 ? t("addProduct.notFound")
@@ -748,13 +762,6 @@ export function AddProductView({
 
         {view && (
           <>
-            {!isLoading && !forDish && !isEditing && !!id && state.status === "loaded" && state.product.updateOffer && (
-              <UpdatePointsBanner
-                href={`/add/${encodeURIComponent(id)}/update`}
-                text={t("productUpdate.banner", { points: state.product.updateOffer.points })}
-                toggleLabel={t("productUpdate.toggle")}
-              />
-            )}
             {!isLoading && !forDish && !!id && photoAwards.length > 0 && (
               <Link
                 href={`/add/${id}/photo-award`}
@@ -839,10 +846,17 @@ export function AddProductView({
                       <img
                         src={view.brand.logoUrl}
                         alt={view.brand.name}
-                        className="pointer-events-none absolute bottom-0 left-3/4 z-10 h-[66px] w-[95px] object-contain object-left-bottom"
+                        onLoad={(event) =>
+                          setBrandLogoRatio(event.currentTarget.naturalWidth / (event.currentTarget.naturalHeight || 1))
+                        }
+                        style={{ left: brandLogoLeftPx(brandLogoRenderedHeight(brandLogoRatio)) }}
+                        className="pointer-events-none absolute bottom-0 z-10 h-[66px] w-[95px] object-contain object-left-bottom"
                       />
                     ) : (
-                      <p className="hf-type-title hf-type-strong pointer-events-none absolute bottom-0 left-3/4 z-10 whitespace-nowrap text-hf-green">
+                      <p
+                        style={{ left: brandLogoLeftPx(BRAND_NAME_HEIGHT_PX) }}
+                        className="hf-type-title hf-type-strong pointer-events-none absolute bottom-0 z-10 whitespace-nowrap text-hf-green"
+                      >
                         {view.brand.name}
                       </p>
                     ))}
@@ -876,7 +890,7 @@ export function AddProductView({
               <button
                 type="button"
                 onClick={scrollToDetails}
-                className="hf-btn-text mt-[14px] mb-4 flex items-center gap-1 self-center font-normal text-hf-black"
+                className="hf-btn-text mt-[14px] mb-4 flex items-center gap-1 self-center text-hf-black"
               >
                 {t("addProduct.details")}
                 <IconChevronDown size={15} />
@@ -922,7 +936,7 @@ export function AddProductView({
                 <button
                   type="button"
                   onClick={() => setAmount((a) => Math.max(step, a - step))}
-                  className="h-11 w-11 text-[34px] font-bold leading-none text-hf-black"
+                  className="h-11 w-11 text-hf-black hf-glyph-lg"
                 >
                   −
                 </button>
@@ -952,7 +966,7 @@ export function AddProductView({
                         style={{ width: `${Math.max(1, String(displayAmount).length) + 0.5}ch` }}
                         className="bg-transparent text-right outline-none"
                       />
-                      <span>&nbsp;{displayUnit}</span>
+                      <span>&nbsp;{displayUnit}{!hasServingUnit && displayUnit === "g" && servingSizeGrams === amount ? t("addProduct.perPiece") : ""}</span>
                     </label>
                   )}
                   <p className="hf-type-body text-text-secondary flex justify-center">
@@ -968,7 +982,7 @@ export function AddProductView({
                 <button
                   type="button"
                   onClick={() => setAmount((a) => a + step)}
-                  className="h-11 w-11 text-[34px] font-bold leading-none text-hf-black"
+                  className="h-11 w-11 text-hf-black hf-glyph-lg"
                 >
                   +
                 </button>
@@ -1008,12 +1022,12 @@ export function AddProductView({
               {profile?.showAdditives && !!view.additives?.length && (
                 <section
                   aria-labelledby="product-additives-heading"
-                  className="rounded-2xl border-2 border-hf-green bg-hf-tan p-4"
+                  className="border-2 border-hf-green hf-card"
                 >
                   <div className="mb-3 flex items-center gap-3">
                     <span
                       aria-hidden
-                      className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-hf-green text-[30px] font-bold leading-none text-hf-white"
+                      className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-hf-green text-hf-white hf-glyph-md"
                     >
                       E
                     </span>
@@ -1050,22 +1064,6 @@ export function AddProductView({
                 </section>
               )}
 
-              {!!view.pageTags?.length && (
-                <p className="hf-type-body-lg text-hf-black">
-                  {view.pageTags
-                    .map((tag) =>
-                      tag.kind === "text"
-                        ? tag.text
-                        : tag.kind === "countryOfOrigin"
-                        ? t("addProduct.tagCountryOfOrigin", { country: tag.text })
-                        : t(tag.kind === "alcoholPercent" ? "addProduct.tagAlcoholPercent" : "addProduct.tagFatPercent", {
-                            percent: formatDaNumber(tag.value, 1),
-                          }),
-                    )
-                    .join(" · ")}
-                </p>
-              )}
-
               <div>
                 <div className="mb-4 flex items-center justify-between">
                   <h2 className="hf-type-title hf-type-strong text-hf-black">{t("common.macroBreakdown")}</h2>
@@ -1100,7 +1098,7 @@ export function AddProductView({
                           <Skeleton type="body-sm" width={width} height={18} />
                           <Skeleton type="body" width={44} height={20} />
                         </div>
-                        <Skeleton type="row" height={8} className="my-1.5" style={{ borderRadius: 4 }} />
+                        <Skeleton type="row" height={8} className="my-1.5 rounded-sm" />
                       </div>
                     ))}
                   </div>
@@ -1176,6 +1174,19 @@ export function AddProductView({
                     </div>
                   )}
                 </div>
+              )}
+
+              {/* Valdemarsro-retter: grøn knap til kildesiden, åbnes på en ny side
+                  (brugerens krav 2026-10-07); ingredienser og næring står herunder. */}
+              {!isLoading && view.externalSource === "VALDEMARSRO" && !!view.recipeDetails?.websiteUrl && (
+                <a
+                  href={view.recipeDetails.websiteUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hf-control hf-btn-primary flex w-full items-center justify-center"
+                >
+                  {t("recipes.goToRecipe")}
+                </a>
               )}
 
               {!!visibleAllergens.length && (
@@ -1373,23 +1384,25 @@ export function AddProductView({
 
 type FrameProps = {
   title: string;
+  banner?: React.ReactNode;
   footer?: React.ReactNode;
   onClose?: () => void;
   children: React.ReactNode;
 };
 
-function ScreenFrame({ title, footer, children }: FrameProps) {
+function ScreenFrame({ title, footer, banner, children }: FrameProps) {
   return (
-    <HfScreen title={title} footer={footer}>
+    <HfScreen title={title} footer={footer} topBanner={banner}>
       {children}
     </HfScreen>
   );
 }
 
 // Bundark-rammen med samme props som HfScreen (titel, indhold, fast bund).
-function SheetFrame({ title, footer, onClose, children }: FrameProps) {
+function SheetFrame({ title, footer, banner, onClose, children }: FrameProps) {
   return (
     <BottomSheet title={title} footer={footer} size="full" onClose={() => onClose?.()}>
+      {banner}
       {children}
     </BottomSheet>
   );

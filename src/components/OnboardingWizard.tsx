@@ -205,7 +205,7 @@ export function OnboardingWizard({
       onClose={handleSheetClosed}
       footer={
         <>
-          {currentStep && <TermsSheet key={currentStep} hint={ONBOARDING_TERMS[currentStep]} />}
+          {currentStep && currentStep !== "units" && <TermsSheet key={currentStep} hint={ONBOARDING_TERMS[currentStep]} />}
           <div className="pb-4">
             <BottomSheetDots count={totalSteps} active={stepIndex} label={progressLabel} />
           </div>

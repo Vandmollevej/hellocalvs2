@@ -5,6 +5,7 @@ import type { KeyGroupId } from "@/lib/api-keys/catalog";
 import type { CheckResult } from "@/lib/api-keys/checks";
 import type { FieldStatus, ServiceStatus } from "@/lib/api-keys/status";
 import type { CustomApiView } from "@/lib/api-keys/custom";
+import { useConfirmSheet } from "@/lib/use-confirm-sheet";
 
 // Admin → API-nøgler. Status, redigering og live-test pr. tjeneste
 // (docs/DECISIONS.md 2026-09-25 "API-nøgler i admin").
@@ -66,6 +67,7 @@ export function ApiKeysManager({
   initialServices: ServiceStatus[];
   initialCustom: CustomState;
 }) {
+  const { ask, sheet } = useConfirmSheet();
   const [services, setServices] = useState(initialServices);
   const [tests, setTests] = useState<Record<string, TestState>>({});
   const [custom, setCustom] = useState(initialCustom);
@@ -106,7 +108,8 @@ export function ApiKeysManager({
 
   return (
     <div className="flex flex-col gap-6" data-allow-clipboard>
-      <div className="flex flex-col gap-3 hf-surface p-4">
+      {sheet}
+      <div className="hf-panel">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <p className="hf-type-body hf-type-strong text-hf-black">Status</p>
           <div className="flex flex-wrap gap-2">
@@ -219,14 +222,16 @@ export function ApiKeysManager({
             </div>
             {apis.length === 0 && <p className="hf-type-body text-text-secondary">Ingen API’er i gruppen endnu.</p>}
             {apis.map((api) => (
-              <div key={api.id} className="flex flex-col gap-2 hf-surface p-4">
+              <div key={api.id} className="hf-panel">
                 <div className="flex items-start justify-between gap-3">
                   <p className="hf-type-strong text-hf-black">{api.name}</p>
                   <button
                     type="button"
-                    onClick={async () => {
-                      if (confirm(`Slet ${api.name}?`)) setCustom(await sendCustom("DELETE", { type: "api", id: api.id }));
-                    }}
+                    onClick={() =>
+                      ask(`Slet ${api.name}?`, () => {
+                        void (async () => setCustom(await sendCustom("DELETE", { type: "api", id: api.id })))();
+                      })
+                    }
                     className="hf-btn-text text-hf-red-dark"
                   >
                     Slet
@@ -378,7 +383,7 @@ function ServiceCard({
   onChanged: (service: ServiceStatus) => void;
 }) {
   return (
-    <div className="flex flex-col gap-3 hf-surface p-4">
+    <div className="hf-panel">
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div className="min-w-0 flex-1">
           <p className="hf-type-strong text-hf-black">{service.name}</p>

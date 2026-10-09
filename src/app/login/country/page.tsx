@@ -34,8 +34,7 @@ export default function CountryPickerPage() {
   return (
     <div className="flex h-full min-h-full flex-col bg-hf-cream">
       <div
-        className="hf-appbar hf-appbar--brand"
-        style={{ paddingTop: "max(16px, env(safe-area-inset-top, 0px))" }}
+        className="hf-appbar hf-appbar--brand hf-safe-top"
       >
         <div className="hf-appbar__slot">
           <Link href="/login" aria-label={t("country.back")} className="flex h-full w-full items-center justify-center text-hf-white">

@@ -7,6 +7,9 @@ import { inferGs1OriginCountryCode } from "@/lib/regions";
 import { createExternalImageCutoutJob } from "@/lib/image-cutout-jobs";
 import { syncProductNutritionFeaturesSafely } from "@/lib/product-nutrition-features";
 import { debugLog, errorText, flowIdFromRequest } from "@/lib/debug-log";
+import { petFoodBlockReason } from "@/lib/pet-food-blacklist";
+import { recordPetFoodAttempt } from "@/lib/pet-food-strikes";
+import { getSessionUser } from "@/lib/session";
 
 // GET /api/products/lookup/:barcode
 //
@@ -37,6 +40,39 @@ export async function GET(
     });
 
   try {
+    // Dyrefoder-spærring (src/lib/pet-food-blacklist.ts): spærret stregkode
+    // afvises før opslag, og dyrefoder fra Open Food Facts/USDA gemmes aldrig.
+    // En indlogget bruger får en advarsel første gang og spærres anden gang
+    // (src/lib/pet-food-strikes.ts).
+    const blockedResponse = async (reason: string, match: string, productName?: string) => {
+      const sessionUser = await getSessionUser();
+      const outcome = await recordPetFoodAttempt({
+        userId: sessionUser?.id,
+        source: "LOOKUP",
+        barcode,
+        productName,
+        matchedBy: `${reason}: ${match}`,
+      });
+      log("barcode_lookup", `Afvist: dyrefoder (${reason}: ${match})`, {
+        level: "warn",
+        data: { source: "blocked", strikes: outcome.strikes, accountBlocked: outcome.blocked },
+      });
+      return NextResponse.json(
+        {
+          source: "blocked",
+          product: null,
+          code: "PET_FOOD_BLOCKED",
+          message: outcome.message,
+          strikes: outcome.strikes,
+          accountBlocked: outcome.blocked,
+          incidentId: outcome.incidentId,
+        },
+        { status: 422 }
+      );
+    };
+    const barcodeBlock = await petFoodBlockReason({ barcode });
+    if (barcodeBlock) return blockedResponse(barcodeBlock.reason, barcodeBlock.match);
+
     const existing = await prisma.barcode.findUnique({
       where: { code: barcode },
       include: { product: { include: { brand: true } } },
@@ -82,6 +118,11 @@ export async function GET(
       });
       return NextResponse.json({ source: "incomplete", product: null }, { status: 404 });
     }
+
+    const externalBlock = await petFoodBlockReason({
+      texts: [externalProduct.name, externalProduct.brand, offProduct?.ingredientsText],
+    });
+    if (externalBlock) return blockedResponse(externalBlock.reason, externalBlock.match, externalProduct.name);
 
     const brand = externalProduct.brand
       ? await prisma.brand.upsert({

@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { HfScreen } from "@/components/HfScreen";
 import { useTranslation } from "@/i18n/LocaleProvider";
+import { useConfirmSheet } from "@/lib/use-confirm-sheet";
 
 // Siden, en scannet familie-QR-kode åbner (docs/DECISIONS.md 2026-10-03).
 // Linket bærer koden og e-mailen krypteret; tilknytningen kræver, at man er
@@ -15,6 +16,7 @@ type Invite = { kind: "join" | "claim"; ownerName: string; email: string; profil
 
 function JoinContent() {
   const { t } = useTranslation();
+  const { ask, sheet: confirmSheet } = useConfirmSheet();
   const token = useSearchParams()?.get("t") ?? "";
   const [invite, setInvite] = useState<Invite | null>(null);
   const [currentEmail, setCurrentEmail] = useState<string | null | undefined>(undefined);
@@ -50,8 +52,11 @@ function JoinContent() {
     };
   }, [token, t]);
 
-  async function join() {
-    if (!window.confirm(t("family.join.confirm"))) return;
+  function join() {
+    ask(t("family.join.confirm"), () => void doJoin());
+  }
+
+  async function doJoin() {
     setError(null);
     setBusy(true);
     const res = await fetch("/api/family/join", {
@@ -73,6 +78,7 @@ function JoinContent() {
 
   return (
     <div className="hf-page hf-stack">
+      {confirmSheet}
       {invite && !done && (
         <>
           <p className="hf-type-body-lg userback-ignore userback-block">{t("family.joinPage.intro", { owner: invite.ownerName })}</p>

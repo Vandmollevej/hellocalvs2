@@ -20,6 +20,12 @@
   velkomst efter kontooprettelse, guiden (onboarding + admin-guidebyggerens
   startup-guide/tooltips), manglende e-mailbekræftelse, "Tilføj" ud for et
   produkt i søgelisten, "Tilføj" i kalenderen og "Se alle" i tilføj-hjulet.
+- Popups vises **aldrig** som fuldskærms-overlay, centreret dialog eller
+  `window.confirm`/`prompt` — kun som bundark nedefra (ejerens regel
+  2026-10-07). Swipe ned = annullér. Bundark har ingen synlig overskrift.
+  Bekræftelser: `useConfirmSheet`/`useTypedConfirmSheet`
+  (`src/lib/use-confirm-sheet.tsx`). Vælgere med hjul markeres med
+  `data-sheet-no-drag`.
 - Vist live i admin → Designmanual → Overlay.
 
 ## Navngivning

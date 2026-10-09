@@ -67,7 +67,7 @@ export function ShelfItemSheet({ item, onClose, onChanged }: { item: ShelfItem; 
         <div>
           <h2 className="hf-type-section-title">{item.detectedName}</h2>
           {item.detectedBrand && <p className="hf-type-body">{item.detectedBrand}</p>}
-          <p className="hf-type-caption" style={{ color: "var(--hf-color-text-secondary)" }}>
+          <p className="hf-type-caption text-hf-text-secondary">
             {STATUS_TEXT[item.status]}
             {item.product ? ` · ${[item.product.brand?.name, item.product.name].filter(Boolean).join(" ")}` : ""}
             {item.matchConfidence != null && !item.manuallyAssigned ? ` · ${Math.round(item.matchConfidence * 100)} %` : ""}
@@ -87,7 +87,7 @@ export function ShelfItemSheet({ item, onClose, onChanged }: { item: ShelfItem; 
         ) : (
           <div className="flex flex-col gap-2">
             <TextField variant="standard" label="Søg vare" value={query} onChange={(event) => setQuery(event.target.value)} />
-            <ul className="flex flex-col rounded-[8px]" style={{ background: "var(--hf-color-card)" }}>
+            <ul className="flex flex-col bg-hf-card rounded-card">
               {results.map((product) => (
                 <li key={product.id}>
                   <button type="button" onClick={() => void assign(product.id)} className="hf-type-body w-full px-4 py-3 text-left">

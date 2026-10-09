@@ -52,7 +52,7 @@ export function TopSinnersCard({
   loading?: boolean;
 }) {
   return (
-    <section className="flex flex-col gap-4 rounded-2xl bg-hf-tan p-4">
+    <section className="hf-card--form hf-card">
       <h2 className="hf-type-body hf-heading text-hf-black">Største syndere</h2>
 
       {SOURCE_METRICS.map((metric) => {

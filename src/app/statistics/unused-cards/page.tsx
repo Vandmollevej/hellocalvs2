@@ -310,7 +310,7 @@ export default function UnusedStatCardsPage() {
             key={card.key}
             type="button"
             onClick={() => addCard(card.key)}
-            className="flex flex-col justify-between gap-1 rounded-2xl bg-hf-tan p-4 text-left active:opacity-80"
+            className="justify-between gap-1 text-left active:opacity-80 hf-card"
           >
             <span className="flex items-start justify-between gap-2">
               <span className="hf-type-small text-text-secondary min-w-0">{card.label}</span>
