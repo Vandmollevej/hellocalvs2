@@ -28,6 +28,10 @@ JA = {'is_vegan': 'vegansk', 'is_lactose_free': 'laktosefri', 'is_gluten_free': 
       'is_alcohol_free': 'alkoholfri', 'is_biological': 'økologisk', 'is_whole_grain': 'fuldkorn'}
 STOP = {'og', 'med', 'uden', 'af', 'i', 'på', 'fra', 'tilsat', 'eller', 'til', 'en', 'et', 'de', 'den', 'det', 'for', 'er', 'ikke', 'som'}
 PROPER = {'beluga', 'hokkaido', 'thüringer', 'schwarzwalder', 'serrano', 'marmite', 'curacao'}
+SUGAR_KW = {'tilsat sukker': 'med tilsat sukker', 'indeholder sukker': 'med tilsat sukker', 'indeholder tilsat sukker': 'med tilsat sukker',
+            'lavt sukkerindhold': 'med lavt sukkerindhold', 'tilsat sødestof': 'med tilsat kunstig sødestof',
+            'tilsat sødestoffer': 'med tilsat kunstig sødestof', 'tilsat kunstigt sødestof': 'med tilsat kunstig sødestof',
+            'tilsat kunstig sødestof': 'med tilsat kunstig sødestof', 'indeholder sødestoffer': 'med tilsat kunstig sødestof'}
 SUGAR_RE = re.compile(r'\b(sukkerfri[a-zæøå]*|uden tilsat sukker|ikke tilsat sukker)\b', re.I)
 
 
@@ -246,12 +250,23 @@ def main(which):
             v = nr[i]
             if isinstance(v, str):
                 nr[i] = lower_phrase(v)
+        # sukker-ord som i Frida: 'tilsat sukker' o.l. er keyword med 'med' foran, sødestof -> _is_sweeteners
+        swi = nix.get('_is_sweeteners')
+        for i in ki:
+            v = nr[i]
+            if isinstance(v, str) and v.strip().lower() in SUGAR_KW:
+                nr[i] = SUGAR_KW[v.strip().lower()]
+                stats['sukker_keyword_normaliseret'] += 1
+                if 'sødestof' in nr[i] and swi is not None and not nr[swi]:
+                    nr[swi] = 'sødestoffer'
+        if isinstance(nr[nix[cfg['sugar']]], str) and nr[nix[cfg['sugar']]].lower().startswith('ikke tilsat'):
+            nr[nix[cfg['sugar']]] = 'uden tilsat sukker'
         # sukkerfri -> sukkerkolonne
         for i in vi + ki:
             v = nr[i]
             if isinstance(v, str) and SUGAR_RE.search(v):
                 mo = SUGAR_RE.search(v)
-                val = 'sukkerfri' if mo.group(1).startswith('sukkerfri') else 'uden tilsat sukker'
+                val = 'sukkerfri' if mo.group(1).lower().startswith('sukkerfri') else 'uden tilsat sukker'
                 if not nr[si]:
                     nr[si] = val
                 nr[i] = clean_phrase(SUGAR_RE.sub('', v)) or None
