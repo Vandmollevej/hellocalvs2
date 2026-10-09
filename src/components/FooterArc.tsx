@@ -340,13 +340,17 @@ export function FooterArc() {
   const hitHeight = Math.max(44, visibleHeight);
   const bulgeActive = Boolean(finger) && progress > 0.3;
   const fingerDistance = finger ? Math.hypot(finger.dx, finger.dy) : 0;
-  const bulgeDeg = finger ? (Math.atan2(finger.dx, Math.max(1, finger.dy)) * 180) / Math.PI : null;
+  // Som venstre-cirklen: kanten poser mod den markerede knap (ikke mod den rå fingerposition).
+  const bulgeDeg =
+    highlightedIndex >= 0
+      ? (Math.atan2(drawLayout[highlightedIndex].x - cx, Math.max(1, drawLayout[highlightedIndex].y)) * 180) / Math.PI
+      : null;
   const bulgeAmount = bulgeActive ? ARC_BULGE_MAX * Math.min(1, fingerDistance / (ARC_RADIUS * 1.5)) : 0;
-  // Plusset følger fingeren lidt (højere op, jo længere op fingeren er).
+  // Plusset bæres af fingeren (som fingeraftrykket i venstre-cirklen), men holdes inden for cirklen.
   const plusFollows = Boolean(finger) && progress > 0.1;
-  const plusLeft = plusFollows && finger ? cx + clamp(finger.dx * 0.4, -ARC_RADIUS * 0.5, ARC_RADIUS * 0.5) : cx;
+  const plusLeft = plusFollows && finger ? cx + clamp(finger.dx, -ARC_RADIUS * 0.55, ARC_RADIUS * 0.55) : cx;
   const plusBottom =
-    plusFollows && finger ? Math.max(visibleHeight / 2, Math.min(finger.dy * 0.5, visibleHeight * 0.8)) : visibleHeight / 2;
+    plusFollows && finger ? Math.max(visibleHeight / 2, Math.min(finger.dy, visibleHeight * 0.8)) : visibleHeight / 2;
 
   return (
     <div ref={wrapRef} className="pointer-events-none relative z-30 h-0 w-full select-none [-webkit-touch-callout:none]">
