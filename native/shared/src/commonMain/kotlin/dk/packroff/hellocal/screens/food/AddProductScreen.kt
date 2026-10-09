@@ -628,7 +628,6 @@ fun AddProductView(
                                     listOf(0.94f, 0.82f, 0.88f, 0.46f).forEach { FoodSkeleton(Modifier.fillMaxWidth(it).height(16.dp)) }
                                 }
                                 view.ingredientsText.isNullOrEmpty() -> Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                                    HcText(t.t("addProduct.ingredientsUnreadable"), HcTypeRoles.Small, color = HcColors.TextSecondary)
                                     HcButton(
                                         t.t("addProduct.retakeIngredients"),
                                         onClick = { nav.push("/camera?mode=product&retake=ingredients&product=${encodeUri(id)}") },
