@@ -75,7 +75,7 @@ export function ProductResultRow({
             <button type="button" onClick={(event) => {
                 event.stopPropagation();
                 onAdd(id);
-              }} className="hf-btn-primary px-4 py-1.5">
+              }} className="px-2 py-2 text-sm font-medium text-black">
               {t("search.add")}
             </button>
           </>
