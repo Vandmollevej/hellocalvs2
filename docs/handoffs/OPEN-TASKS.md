@@ -424,6 +424,7 @@ Ejer: vægt-sessionen (2026-10-07)
 | Id | Opgave | Status | Næste skridt |
 | --- | --- | --- | --- |
 | vaegt-synk | Synk-status, synk-popup, tøj-popup, tøj-blok + admin-algoritme, kalibrer-link, klik ind på vejning, Tilføj-tekst tættere | Færdig (se git log "Vægt:") | Afventer brugerens test på telefon; de/fr/nl/sv/no mangler oversættelse af `weighIn.*` |
+| vaegt-kalender-ret | Timeoversigt: vejning alene på tidspunktet åbner info-vinduet direkte (ingen accordion), dublet-række og gammelt badevægt-ikon væk, vægt-linjen nederst ved kalorierne fjernet | Færdig (kode, `src/app/calendar/page.tsx`) | Brugerens test på telefon |
 | vaegt-tojslidere | Tøj ved vejning som flere til/fra-slidere (undertøj, bukser, top/T-shirt, sweater, sko, mobil m.m. i lommen, efter toiletbesøg); intet valgt = nøgen | Færdig (kode) | Migration 20261009100000 (`attireItems`, gamle valg omregnes) skal med deployet. Ikke prøvet i browser/mod rigtig database; de/fr/nl/sv/no har engelske tekster |
 ## G-VIDEN — Guide mig + Viden om mad
 Filer: `src/lib/help-guides.ts`, `src/components/help/**`, `src/lib/knowledge*.ts`, `src/app/viden-om/**`.
@@ -433,3 +434,12 @@ Ejer: viden-hjaelp-guide-sessionen (2026-10-07)
 | --- | --- | --- | --- |
 | — | Genvejslink + Guide mig-overlay i hjælpe-chatten; søgning i Viden om mad; kalorieforbrænding; WHO-kilder | Færdig (se git log "Guide mig") | Brugeren tester på telefon: spørg chatten "hvordan logger jeg vægt?" |
 | retter-tekst-scan | Retter: auto-fokus søg, "Opret ny ret", integrationsknapper + filter-bundark; opret ret med Manuelt/Indsæt tekst/Scan + kopi-tjek (claude/retter-tekst-scan) | Færdig (kode) | Alt bygget inkl. valdemarsro-agent. Migrationer 20261008100000/110000/120000/130000 skal med deployet; agenten er ikke kørt mod rigtig database/Docker. Ikke prøvet i browser |
+
+## G-GUIDE — Genvej + "Guide mig" i Hjælpecenteret
+Filer: `public/hjaelp.html` + `public/help-*.html` (script nederst), `src/app/api/help/guides/**`, `topics` i `src/lib/help-guides.ts`, `?guide=` i `HelpGuideSpotlight.tsx`.
+Ejer: cloud-session `claude/help-center-shortcut-overlay-2cql8y` (2026-10-09)
+
+| Id | Opgave | Status | Næste skridt |
+| --- | --- | --- | --- |
+| guide-hjaelpecenter | Understreget genvej øverst + "Guide mig" i Hjælpecenter-emner | Venter på bruger | Draft-PR #318. Brugeren tester på telefon: Hjælpecenter → "Hvordan registrerer jeg min vægt?" → Guide mig |
+

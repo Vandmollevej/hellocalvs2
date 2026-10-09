@@ -3,6 +3,11 @@
 Last updated: 2026-10-09
 
 ## 2026-10-09: Bundcirklen på alle sider, side-cirklen slået fra
+## 2026-10-09: Genvej + "Guide mig" i Hjælpecenteret
+
+- Hjælpecenter-siderne (7 sprog) viser øverst i emnet et understreget genvejslink og, hvor der findes en guide, "Guide mig" under linket. Bruger masters spotlight-guide fra chatten (DECISIONS 2026-10-09). 10 emner har guide: vægt, vand, stregkode, stemme, tilføj mad, opret ret, kropsmål, mål, flyt registrering, statistik.
+- Tjekket: `help-guides.test.mjs`, lint, typecheck for ændrede filer, og i Chromium: scriptet viser link + knap, knappen åbner `/?guide=…` og starter guiden. Ikke prøvet logget ind på telefon.
+
 
 - Side-cirklen (`AddButton` i `Hero`) vises ikke længere. Bundcirklen (`FooterArc`) ligger nu i `BottomNav` og er derfor på alle sider med bundmenu; popups (BottomSheet, z-200) ligger over den. Native: `HomeFooterArc` flyttet fra `HomeScreen` til `HelloCalApp` over bundmenuen, med egen `AddMenuSheet`. `AddButton`-koden er bevaret.
 - Ikke kørt: lint/tsc (ingen `node_modules`), Kotlin ikke kompileret lokalt (CI bygger); ikke prøvet på telefon. Paritet grøn.
@@ -197,6 +202,10 @@ Retter → HelloFresh åbner nu en skrivebeskyttet side under Retter (ikke Nye v
 ## 2026-10-09: Tilføj-menu — tekst tættere på ikonerne
 
 - Ikonerne har tomt luft i bunden, så teksten sad for langt nede. `AddMenuList.tsx`: `gap-0` og `-mb-4` på ikonet. Lint/build ikke kørt (ingen `node_modules` i cloud-sessionen). Justér `-mb-4` efter billedet på telefon.
+
+## 2026-10-09: EDEKA-logoet viste kun det gule hjerte
+
+- Årsag: `drop_edge_fragments` skar kantrørende dele væk, og rembg regnede det store blå logofelt for baggrund. Rettet på master (kantrørende dele på mindst 10 % bevares; `is_solid_block_logo` bruger hele beskæringen, når feltet er en del af logoet). Denne PR tilføjer kun noten; den eksisterende EDEKA-fritskrabning skal laves igen i admin → Logoer.
 
 ## 2026-10-05: Pulslinjen — roligere uden ur, flyttet op over nederste tal
 

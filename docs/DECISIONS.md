@@ -4734,3 +4734,10 @@ Google/Apple/Facebook-login og integrationstilkobling kører i system-browseren,
 ## 2026-10-09 — Halvcirklen over footeren kan ikke trækkes
 
 - Ejerens rettelse: halvcirklen (`FooterArc` / `HomeFooterArc.kt`) står fast midt over footeren og kan ikke flyttes vandret. Vandret træk i hvile er fjernet (web + native), og den gemte placering (`hellocal.frontpage.arcOffsetX`) bruges ikke mere. Træk op åbner viften som før.
+
+## 2026-10-09 — Genvej og "Guide mig" også i selve Hjælpecenteret
+
+- Bygger videre på 2026-10-07 (chatten): samme spotlight-guide (`HelpGuideSpotlight`, registret `src/lib/help-guides.ts`) bruges nu fra de statiske Hjælpecenter-sider (`public/hjaelp.html` + `help-*.html`, 7 sprog). Ingen ny overlay.
+- Øverst i et emne står emnets "Gå til …"-link som almindeligt understreget link; hvis emnet hører til en guide (`topics` i registret), står knappen "Guide mig" under linket, før beskrivelsen. Siden henter knapperne fra `/api/help/guides`, så en ændring i registret slår igennem uden at HTML-filerne skal rettes.
+- Knappen åbner `/?guide=<id>`; `HelpGuideSpotlight` starter guiden og fjerner parameteren fra adressen.
+- Ny guide til et Hjælpecenter-emne: tilføj emnets `<details id>` i `topics` på guiden (testen tjekker, at emnet findes på alle sprog).
