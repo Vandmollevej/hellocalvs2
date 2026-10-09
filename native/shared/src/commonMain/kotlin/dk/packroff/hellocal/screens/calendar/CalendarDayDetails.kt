@@ -399,7 +399,6 @@ internal fun DayDetails(
                 waterEntries = waterEntries.filter { it.at.hour == hour },
                 measurements = measurements.filter { it.time.hour == hour },
                 goals = if (hour == GOAL_HOUR) goals else emptyList(),
-                weighIns = weighIns.filter { it.at.hour == hour },
                 onClose = { openHour = null },
             )
         }

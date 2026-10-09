@@ -73,7 +73,6 @@ internal fun HourEntriesOverlay(
     waterEntries: List<CalWater>,
     measurements: List<CalendarMeasurement>,
     goals: List<CalGoal>,
-    weighIns: List<CalWeighIn>,
     onClose: () -> Unit,
 ) {
     val t = LocalTranslator.current
@@ -107,19 +106,6 @@ internal fun HourEntriesOverlay(
         }
         Column(Modifier.weight(1f).fillMaxWidth().verticalScroll(rememberScrollState()).padding(16.dp)) {
             for (goal in goals) GoalAccordion(goal)
-            for (entry in weighIns) {
-                Row(
-                    Modifier.padding(bottom = 8.dp).fillMaxWidth().heightIn(min = HcDimens.ControlHeight).clip(RoundedCornerShape(16.dp))
-                        .background(HcColors.Tan).padding(horizontal = 16.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    HcText(clock(entry.at), HcTypeRoles.Body, Modifier.weight(1f), bold = true, color = HcColors.Black)
-                    Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-                        dk.packroff.hellocal.ui.CalendarBathScaleIcon(18.dp, HcColors.Black)
-                        HcText("${formatKg(entry.weightKg)} kg", HcTypeRoles.Body, bold = true, color = HcColors.Black)
-                    }
-                }
-            }
             for ((key, items) in groups) {
                 val isOpen = key in openKeys
                 // Food as "540 kcal", water as glass + cl — both can share a time; water products are not food.
