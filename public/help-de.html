@@ -210,6 +210,16 @@
       font-weight: 600;
       text-decoration: none;
     }
+
+    /* Genvej + "Guide mig" øverst i et emne — indsættes af scriptet nederst, ud fra /api/help/guides */
+    .shortcut-row { display: flex; flex-direction: column; align-items: flex-start; gap: 8px; margin: 0 0 12px; }
+    .answer .shortcut { color: var(--black); font-size: 15px; line-height: 22px; text-decoration: underline; }
+    .answer .gm-btn {
+      display: inline-flex; align-items: center; justify-content: center;
+      height: 40px; padding: 0 20px; border: 0; border-radius: 999px;
+      background: var(--black); color: var(--white);
+      font: inherit; font-size: 15px; font-weight: 600; text-decoration: none; cursor: pointer;
+    }
   </style>
 </head>
 <body>
@@ -602,6 +612,58 @@
       clearBtn.addEventListener("click", function () { input.value = ""; filter(); input.focus(); });
       window.addEventListener("hashchange", openFromHash);
       openFromHash();
+    })();
+  </script>
+  <script>
+    // Genvej (understreget link) øverst i hvert emne og "Guide mig" under linket, før beskrivelsen.
+    // Genvejen er emnets eget "Gå til …"-link; knappen kommer fra guide-registret
+    // (src/lib/help-guides.ts) via /api/help/guides, så alt opdateres automatisk.
+    (function () {
+      var lang = (document.documentElement.lang || "da").toLowerCase().slice(0, 2);
+      if (lang === "nb" || lang === "nn") lang = "no";
+      var rows = {};
+      Array.prototype.forEach.call(document.querySelectorAll("details[id]"), function (d) {
+        var answer = d.querySelector(".answer");
+        var go = answer && answer.querySelector("a.go");
+        if (!go) return;
+        var link = document.createElement("a");
+        link.className = "shortcut";
+        link.href = go.getAttribute("href");
+        link.textContent = go.textContent;
+        var row = document.createElement("div");
+        row.className = "shortcut-row";
+        row.appendChild(link);
+        answer.insertBefore(row, answer.firstChild);
+        var next = go.nextSibling;
+        if (next && next.nodeName === "BR") next.parentNode.removeChild(next);
+        go.parentNode.removeChild(go);
+        rows[d.id] = row;
+      });
+      fetch("/api/help/guides").then(function (r) { return r.ok ? r.json() : null; }).then(function (data) {
+        if (!data) return;
+        var labels = data.labels[lang] || data.labels.en;
+        data.guides.forEach(function (g) {
+          var d = document.getElementById(g.id);
+          var answer = d && d.querySelector(".answer");
+          if (!answer) return;
+          var row = rows[g.id];
+          if (!row) {
+            row = document.createElement("div");
+            row.className = "shortcut-row";
+            var link = document.createElement("a");
+            link.className = "shortcut";
+            link.href = g.shortcut;
+            link.textContent = labels.shortcut;
+            row.appendChild(link);
+            answer.insertBefore(row, answer.firstChild);
+          }
+          var btn = document.createElement("a");
+          btn.className = "gm-btn";
+          btn.href = g.start;
+          btn.textContent = labels.guideMe;
+          row.appendChild(btn);
+        });
+      }).catch(function () {});
     })();
   </script>
 </body>

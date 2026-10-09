@@ -433,3 +433,12 @@ Ejer: viden-hjaelp-guide-sessionen (2026-10-07)
 | --- | --- | --- | --- |
 | — | Genvejslink + Guide mig-overlay i hjælpe-chatten; søgning i Viden om mad; kalorieforbrænding; WHO-kilder | Færdig (se git log "Guide mig") | Brugeren tester på telefon: spørg chatten "hvordan logger jeg vægt?" |
 | retter-tekst-scan | Retter: auto-fokus søg, "Opret ny ret", integrationsknapper + filter-bundark; opret ret med Manuelt/Indsæt tekst/Scan + kopi-tjek (claude/retter-tekst-scan) | Færdig (kode) | Alt bygget inkl. valdemarsro-agent. Migrationer 20261008100000/110000/120000/130000 skal med deployet; agenten er ikke kørt mod rigtig database/Docker. Ikke prøvet i browser |
+
+## G-GUIDE — Genvej + "Guide mig" i Hjælpecenteret
+Filer: `public/hjaelp.html` + `public/help-*.html` (script nederst), `src/app/api/help/guides/**`, `topics` i `src/lib/help-guides.ts`, `?guide=` i `HelpGuideSpotlight.tsx`.
+Ejer: cloud-session `claude/help-center-shortcut-overlay-2cql8y` (2026-10-09)
+
+| Id | Opgave | Status | Næste skridt |
+| --- | --- | --- | --- |
+| guide-hjaelpecenter | Understreget genvej øverst + "Guide mig" i Hjælpecenter-emner | Venter på bruger | Draft-PR #318. Brugeren tester på telefon: Hjælpecenter → "Hvordan registrerer jeg min vægt?" → Guide mig |
+
