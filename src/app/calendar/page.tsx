@@ -19,6 +19,7 @@ import {
   IconStarFilled,
 } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
+import { BottomNav } from "@/components/BottomNav";
 import { AddMenuSheet } from "@/components/add/AddMenuSheet";
 import { HfChevron } from "@/components/hf/HfChevron";
 import { ProfileAvatarLink } from "@/components/ProfileAvatarLink";
@@ -2520,7 +2521,6 @@ function DayDetails({
           waterEntries={waterEntries.filter((entry) => new Date(entry.loggedAt).getHours() === openHour)}
           measurements={measurements.filter((item) => item.time.getHours() === openHour)}
           goals={openHour === GOAL_HOUR ? goals : []}
-          weighIns={weighIns.filter((entry) => new Date(entry.weighedAt).getHours() === openHour)}
           onClose={() => setOpenHour(null)}
         />
       )}
@@ -2532,6 +2532,8 @@ function DayDetails({
           onClose={() => setAddSheetHour(null)}
         />
       )}
+
+      <BottomNav />
     </div>
   );
 }
@@ -2881,7 +2883,6 @@ function HourEntriesOverlay({
   waterEntries,
   measurements,
   goals,
-  weighIns,
   onClose,
 }: {
   hour: number;
@@ -2889,7 +2890,6 @@ function HourEntriesOverlay({
   waterEntries: WaterEntry[];
   measurements: CalendarMeasurement[];
   goals: GoalDTO[];
-  weighIns: WeightEntry[];
   onClose: () => void;
 }) {
   const { t } = useTranslation();
@@ -2947,15 +2947,6 @@ function HourEntriesOverlay({
       <div className="flex-1 overflow-y-auto p-4">
         {goals.map((goal) => (
           <GoalAccordion key={goal.id} goal={goal} />
-        ))}
-        {weighIns.map((entry) => (
-          <div key={entry.id} className="hf-control-row mb-2 flex items-center justify-between rounded-2xl bg-hf-tan px-4">
-            <span className="hf-type-body hf-type-strong text-hf-black">{formatClock(entry.weighedAt)}</span>
-            <span className="hf-type-body hf-type-strong flex items-center gap-1.5 text-hf-black">
-              <IconBathScale size={18} />
-              {formatKg(entry.weightKg)} kg
-            </span>
-          </div>
         ))}
         {groups.map((group) => {
           const isOpen = openKeys.has(group.key);
@@ -3061,6 +3052,7 @@ function HourEntriesOverlay({
           );
         })}
       </div>
+      <BottomNav />
     </div>
   );
 }
