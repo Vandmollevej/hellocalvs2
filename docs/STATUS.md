@@ -6104,3 +6104,5 @@ Ikke bygget: Valdemarsro-import til app-databasen, Valdemarsro-detaljevisning ("
 
 Ny `valdemarsro-agent` (scripts/valdemarsro-agent, compose.production.yaml, build.yml, jobs-registret), model `RecipeSourceUrl` (migration 20261008130000_recipe_source_urls), "Gå til opskrift"-knap i AddProductView, admin Retter → Valdemarsro viser data. Parsingen er testet mod en rigtig Valdemarsro-side; agenten er IKKE kørt mod databasen eller i Docker endnu — første nat henter 150 retter, resten over de følgende nætter (sæt VALDEMARSRO_AGENT_BATCH_SIZE højere for hurtigere start). Kræver deploy, så containeren bygges og migrationen kører.
 
+
+- 2026-10-09: Trækstreg i bundark tilpasset iOS (36 × 4 px, 8 px over / 16 px under) på web (`.hf-bottom-sheet__grab`, HfAccessSheet) og native (`HcBottomSheet` dragHandle). Kalenderens nat/dag-håndtag uændret.

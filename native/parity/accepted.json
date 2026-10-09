@@ -1955,7 +1955,7 @@
     "src/app/settings/integrations/status-badge.tsx": "872c13d7dcef8c2e",
     "src/components/IntegrationIcon.tsx": "36551d87b956c315",
     "src/components/hf/BottomSheet.tsx": "feac121d59e8efa0",
-    "src/components/hf/HfAccessSheet.module.css": "cf631c72534aec75",
+    "src/components/hf/HfAccessSheet.module.css": "2c6cc35046ca351d",
     "src/components/hf/HfAccessSheet.tsx": "fe9df2e4a049f8dc",
     "src/components/hf/HfChevron.tsx": "11106e436ea8e3ef",
     "src/components/hf/TermsSheet.tsx": "3697190ef039cf8b",
