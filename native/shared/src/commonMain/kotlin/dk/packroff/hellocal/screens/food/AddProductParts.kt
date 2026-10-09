@@ -299,7 +299,8 @@ fun HandSizePickerRow(item: HandSizeItem, imageUrl: String?, amount: Double, onS
 fun UpdatePointsBanner(href: String, text: String, toggleLabel: String) {
     val nav = LocalNavigator.current
     var collapsed by remember { mutableStateOf(false) }
-    Column(Modifier.fillMaxWidth().shadow(4.dp).background(HcColors.White)) {
+    val bannerShape = RoundedCornerShape(bottomStart = 16.dp, bottomEnd = 16.dp)
+    Column(Modifier.fillMaxWidth().shadow(4.dp, bannerShape).background(HcColors.White, bannerShape)) {
         if (!collapsed) {
             HcText(
                 text,
