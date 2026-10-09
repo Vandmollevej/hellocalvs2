@@ -47,7 +47,6 @@ import dk.packroff.hellocal.i18n.LocalTranslator
 import dk.packroff.hellocal.theme.HcColors
 import dk.packroff.hellocal.theme.HcDimens
 import dk.packroff.hellocal.theme.HcTypeRoles
-import dk.packroff.hellocal.ui.CalendarBathScaleIcon
 import dk.packroff.hellocal.ui.CalendarPartyPopperIcon
 import dk.packroff.hellocal.ui.HcText
 import dk.packroff.hellocal.ui.formatNumber
@@ -373,7 +372,7 @@ private fun WeighInMark(entries: List<CalWeighIn>) {
     val latest = entries.lastOrNull() ?: return
     // The weight itself is only read out (sr-only on the web) and shown in the day view.
     Box(Modifier.semantics { contentDescription = t.t("calendar.weighInSrLabel", "value" to formatKg(latest.weightKg)) }) {
-        CalendarBathScaleIcon(18.dp, HcColors.Black)
+        HcIcon("Scale", size = 18.dp, color = HcColors.Black)
     }
 }
 
