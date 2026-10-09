@@ -94,7 +94,7 @@ private data class MacroValues(val amount: Double, val protein: Double, val carb
 
 private data class NutrientRow(
     val key: String,
-    val value: Double,
+    val value: Double?,
     val unit: String,
     val digits: Int,
     val estimated: Boolean,
@@ -308,8 +308,12 @@ fun AddProductView(
                 Triple("vitaminC", fromPer100(product.vitaminCPer100g), "mg" to 0),
                 Triple("calcium", fromExtra("calciumMg"), "mg" to 0),
                 Triple("iron", fromExtra("ironMg"), "mg" to 1),
-            ).mapNotNull { (key, value, unit) ->
-                value?.let { NutrientRow(key, it, unit.first, unit.second, false, null, t.t("addProduct.nutrient.$key")) }
+            ).let { all ->
+                // Manglende værdi vises som "–", men kun når mindst én værdi findes.
+                if (all.all { it.second == null }) emptyList()
+                else all.map { (key, value, unit) ->
+                    NutrientRow(key, value, unit.first, unit.second, false, null, t.t("addProduct.nutrient.$key"))
+                }
             }
         }
     }
@@ -880,11 +884,11 @@ private fun ExtendedNutritionSection(
                             }
                             Row(verticalAlignment = Alignment.CenterVertically) {
                                 if (row.estimated) FoodUncertaintyTilde()
-                                HcText("${daNumber(row.value, row.digits)} ${row.unit}", HcTypeRoles.Small, color = HcColors.Black, bold = true)
+                                HcText(row.value?.let { "${daNumber(it, row.digits)} ${row.unit}" } ?: "–", HcTypeRoles.Small, color = HcColors.Black, bold = true)
                             }
                         }
                         if (expanded) {
-                            val hasEstimate = row.estimated && row.value > 0
+                            val hasEstimate = row.estimated && (row.value ?: 0.0) > 0
                             val tolerance = row.tolerance?.takeIf { it > 0 }
                             if (hasEstimate || tolerance != null) {
                                 Row(Modifier.fillMaxWidth().padding(top = 4.dp), horizontalArrangement = Arrangement.End, verticalAlignment = Alignment.CenterVertically) {
@@ -892,7 +896,7 @@ private fun ExtendedNutritionSection(
                                     if (tolerance != null && hasEstimate) HcText("  ", HcTypeRoles.Small)
                                     if (hasEstimate) {
                                         FoodUncertaintyTilde(small = true)
-                                        HcText("${daNumber(row.value, row.digits)} ${row.unit}", HcTypeRoles.Small, color = HcColors.Black.copy(alpha = 0.6f))
+                                        HcText("${daNumber(row.value ?: 0.0, row.digits)} ${row.unit}", HcTypeRoles.Small, color = HcColors.Black.copy(alpha = 0.6f))
                                     }
                                 }
                             }

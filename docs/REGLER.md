@@ -79,3 +79,4 @@ ikke her, er den ikke registreret og skal tilføjes.
 - Aldrig vandmærke eller skjult bruger-ID i billeder (brugerens regel 2026-10-08).
 
 - **Frida** (DTU-fødevaredatabasen): opbygning, nøgler og rå/kogt-fund står i `docs/FRIDA.md`.
+- Næringsindhold (produktsiden): mangler en værdi, vises "–" (en streg) i stedet for rækken udeladt — blokken vises dog kun, når mindst én værdi findes (brugerens regel 2026-10-09).

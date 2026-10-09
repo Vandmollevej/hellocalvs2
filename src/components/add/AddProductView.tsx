@@ -574,14 +574,15 @@ export function AddProductView({
       { key: "iron", value: fromExtra("ironMg"), unit: "mg", digits: 1 },
     ];
 
-    return rows
-      .filter((row): row is { key: string; value: number; unit: string; digits?: number } => row.value !== null)
-      .map((row) => ({
-        ...row,
-        estimated: false,
-        tolerance: null as number | null,
-        label: t(`addProduct.nutrient.${row.key}`),
-      }));
+    // Mangler en værdi, vises rækken med en streg (–) — men kun når mindst én
+    // værdi findes, så blokken aldrig er helt tom.
+    if (rows.every((row) => row.value === null)) return [];
+    return rows.map((row) => ({
+      ...row,
+      estimated: false,
+      tolerance: null as number | null,
+      label: t(`addProduct.nutrient.${row.key}`),
+    }));
   }, [product, amount, factor, t]);
 
   const visibleAllergens = useMemo(() => {
@@ -1311,12 +1312,12 @@ export function AddProductView({
                             </span>
                             <span className="hf-type-strong">
                               {row.estimated && <UncertaintyTilde />}
-                              {formatDaNumber(row.value, row.digits ?? 0)} {row.unit}
+                              {row.value === null ? "–" : `${formatDaNumber(row.value, row.digits ?? 0)} ${row.unit}`}
                             </span>
                             {expanded && (
                               <UncertaintyLine
                                 className="mt-1 w-full text-right"
-                                estimated={row.estimated ? row.value : null}
+                                estimated={row.estimated ? (row.value ?? null) : null}
                                 tolerance={row.tolerance}
                                 unit={row.unit}
                                 digits={row.digits ?? 0}
