@@ -2014,7 +2014,6 @@
   "addProduct": {
     "reportBug": "Har du funnet en feil?",
     "reading": "Leser…",
-    "ingredientsUnreadable": "Innholdet kunne ikke leses på bildet.",
     "retakeIngredients": "Ta nytt bilde av innholdet",
     "title": "Legg til",
     "titleForDish": "Legg til ingrediens",
