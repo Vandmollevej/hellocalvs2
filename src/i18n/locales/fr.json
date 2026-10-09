@@ -1690,7 +1690,7 @@
     "saving": "Enregistrement…",
     "saveError": "Impossible d'enregistrer le poids.",
     "saved": "Poids enregistré.",
-    "moreDetailsLink": "Enregistrer avec plus de détails (vêtements, chaussures, moment)",
+    "calibrateLink": "Tu dois encore calibrer ton poids",
     "loading": "Chargement…",
     "noEntriesYet": "Aucune pesée enregistrée pour l'instant.",
     "recentTitle": "Dernières pesées"

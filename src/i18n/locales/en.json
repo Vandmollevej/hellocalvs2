@@ -1660,7 +1660,7 @@
     "saving": "Saving…",
     "saveError": "Couldn't save the weight.",
     "saved": "Weight saved.",
-    "moreDetailsLink": "Log with more detail (clothes, shoes, time of day)",
+    "calibrateLink": "You still need to calibrate your weight",
     "loading": "Loading…",
     "noEntriesYet": "No weigh-ins logged yet.",
     "recentTitle": "Recent weigh-ins"

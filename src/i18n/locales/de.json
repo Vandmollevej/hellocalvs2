@@ -1690,7 +1690,7 @@
     "saving": "Speichert…",
     "saveError": "Das Gewicht konnte nicht gespeichert werden.",
     "saved": "Gewicht gespeichert.",
-    "moreDetailsLink": "Mit mehr Details erfassen (Kleidung, Schuhe, Uhrzeit)",
+    "calibrateLink": "Du musst dein Gewicht noch kalibrieren",
     "loading": "Lädt…",
     "noEntriesYet": "Noch keine Wiegungen erfasst.",
     "recentTitle": "Letzte Wiegungen"

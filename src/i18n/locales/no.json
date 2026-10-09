@@ -1690,7 +1690,7 @@
     "saving": "Lagrer…",
     "saveError": "Vekten kunne ikke lagres.",
     "saved": "Vekt lagret.",
-    "moreDetailsLink": "Registrer med flere detaljer (klær, sko, tidspunkt)",
+    "calibrateLink": "Du mangler å kalibrere vekten din",
     "loading": "Henter…",
     "noEntriesYet": "Ingen veiinger registrert ennå.",
     "recentTitle": "Siste veiinger"

@@ -1660,7 +1660,7 @@
     "saving": "Gemmer…",
     "saveError": "Vægten kunne ikke gemmes.",
     "saved": "Vægt gemt.",
-    "moreDetailsLink": "Registrér med flere detaljer (tøj, sko, tidspunkt)",
+    "calibrateLink": "Du mangler at kalibrere din vægt",
     "loading": "Henter…",
     "noEntriesYet": "Ingen vejninger registreret endnu.",
     "recentTitle": "Seneste vejninger"

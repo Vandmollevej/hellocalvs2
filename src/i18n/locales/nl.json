@@ -1690,7 +1690,7 @@
     "saving": "Opslaan…",
     "saveError": "Het gewicht kon niet worden opgeslagen.",
     "saved": "Gewicht opgeslagen.",
-    "moreDetailsLink": "Registreren met meer details (kleding, schoenen, tijdstip)",
+    "calibrateLink": "Je moet je gewicht nog kalibreren",
     "loading": "Laden…",
     "noEntriesYet": "Nog geen wegingen geregistreerd.",
     "recentTitle": "Laatste wegingen"

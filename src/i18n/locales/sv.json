@@ -1690,7 +1690,7 @@
     "saving": "Sparar…",
     "saveError": "Vikten kunde inte sparas.",
     "saved": "Vikt sparad.",
-    "moreDetailsLink": "Registrera med fler detaljer (kläder, skor, tidpunkt)",
+    "calibrateLink": "Du behöver fortfarande kalibrera din vikt",
     "loading": "Hämtar…",
     "noEntriesYet": "Inga vägningar registrerade ännu.",
     "recentTitle": "Senaste vägningar"

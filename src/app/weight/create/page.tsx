@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { IconInfoCircle } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
 import { TextField } from "@/components/hf/TextField";
 import { IconBathroomScale } from "@/components/icons/BathroomScale";
@@ -13,7 +14,23 @@ type WeightEntry = {
   id: string;
   weightKg: number;
   weighedAt: string;
+  clothed?: boolean;
+  shoes?: string;
+  toilet?: string;
+  meal?: string;
+  timeOfDay?: string;
 };
+
+// Kalibreret = mindst én vejning med angivne forhold (tøj, sko, toilet, mad, tidspunkt).
+function hasCalibrationEntry(entry: WeightEntry) {
+  return (
+    entry.clothed === false ||
+    (entry.shoes ?? "UNKNOWN") !== "UNKNOWN" ||
+    (entry.toilet ?? "UNKNOWN") !== "UNKNOWN" ||
+    (entry.meal ?? "UNKNOWN") !== "UNKNOWN" ||
+    (entry.timeOfDay ?? "UNKNOWN") !== "UNKNOWN"
+  );
+}
 
 function formatDateTime(value: string) {
   return new Intl.DateTimeFormat("da-DK", {
@@ -32,6 +49,7 @@ export default function WeightCreatePage() {
   const [saveError, setSaveError] = useState<string | null>(null);
   const [saved, setSaved] = useState(false);
   const [entries, setEntries] = useState<WeightEntry[]>([]);
+  const [needsCalibration, setNeedsCalibration] = useState(false);
   const [loading, setLoading] = useState(true);
 
   function load() {
@@ -40,7 +58,10 @@ export default function WeightCreatePage() {
         if (!response.ok) throw new Error("failed");
         return (await response.json()) as { entries: WeightEntry[] };
       })
-      .then((data) => setEntries(data.entries.slice(0, 5)))
+      .then((data) => {
+        setEntries(data.entries.slice(0, 5));
+        setNeedsCalibration(!data.entries.some(hasCalibrationEntry));
+      })
       .catch(() => setEntries([]))
       .finally(() => setLoading(false));
   }
@@ -109,13 +130,19 @@ export default function WeightCreatePage() {
           </button>
         </form>
 
-        <Link href="/profile/weight-calibration" className="hf-type-small hf-type-strong text-text-secondary text-center underline">
-          {t("weightLog.moreDetailsLink")}
-        </Link>
+        {!loading && needsCalibration && (
+          <Link
+            href="/profile/weight-calibration"
+            className="hf-type-small hf-type-strong flex items-center justify-center gap-2 text-text-secondary"
+          >
+            <IconInfoCircle size={20} aria-hidden />
+            {t("weightLog.calibrateLink")}
+          </Link>
+        )}
 
         <div className="flex flex-col gap-2">
           {!loading && entries.length > 0 && (
-            <p className="hf-type-caption px-1">{t("weightLog.recentTitle")}</p>
+            <h2 className="hf-type-title px-1 text-hf-black">{t("weightLog.recentTitle")}</h2>
           )}
           {loading && (
             <SkeletonScreen className="flex flex-col gap-2">
