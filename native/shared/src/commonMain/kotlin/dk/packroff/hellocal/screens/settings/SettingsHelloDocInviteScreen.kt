@@ -92,9 +92,9 @@ fun SettingsHelloDocInviteScreen(args: RouteArgs) {
             }
         },
     ) {
-        HcText(t.t("helloDoc.inviteHeading"), HcTypeRoles.Hero, color = HcColors.Black)
+        HcText(t.t("helloDoc.inviteHeading"), HcTypeRoles.PageTitle, color = HcColors.Black)
         VSpace(8.dp)
-        HcText(t.t("helloDoc.inviteHeadingDescription"), HcTypeRoles.BodyLg, color = HcColors.TextSecondary)
+        HcText(t.t("helloDoc.inviteHeadingDescription"), HcTypeRoles.Body, color = HcColors.TextSecondary)
         VSpace(32.dp)
 
         SettingsHelloDocEditor(

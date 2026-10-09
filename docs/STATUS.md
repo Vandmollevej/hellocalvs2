@@ -2,6 +2,10 @@
 
 Last updated: 2026-10-09
 
+## 2026-10-09: Hello Doc-invitation — mindre overskrift
+
+- `/settings/hello-doc/invite` (web + `SettingsHelloDocInviteScreen.kt`): overskriften var 32 px (`hf-type-hero`) og beskrivelsen `body-lg`; nu standard sidetitel 22 px og brødtekst som på de andre sider. Paritet accepteret. Kotlin ikke kompileret lokalt; ikke visuelt prøvet.
+
 ## 2026-10-09: Børn kan ikke lukke konto eller melde sig ud
 
 - Kun forælderen kan lukke/fjerne et barns konto. Serveren afviser børn på `/api/account/close` (403) og `leaveFamily` (`childCannotLeave`); "Luk konto"/"Slet mine data" og "Meld dig ud" er skjult for børn i web og native (`meIsChild` fra `/api/family`). Barnet kan kun se, hvad forælderen viser (uændret). Se DECISIONS.md samme dato. Lint, tsc og native-paritet grønne; Kotlin ikke kompileret lokalt; ikke prøvet mod rigtig database.

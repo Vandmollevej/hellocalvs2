@@ -59,12 +59,10 @@ export default function InviteHelloDocUserPage() {
       }
     >
       <div className="px-4 pb-8 pt-4">
-        {/* Heading/description + field styling matches the HelloFresh
-            checkout reference the user supplied (docs/DECISIONS.md
-            2026-09-12), deliberately departing from the standard page-title
-            treatment for this one screen. */}
-        <h1 className="hf-type-hero mb-2 text-hf-black">{t("helloDoc.inviteHeading")}</h1>
-        <p className="text-text-secondary hf-type-body-lg mb-8">{t("helloDoc.inviteHeadingDescription")}</p>
+        {/* Standard sidetitel (22 px) som alle andre sider; den tidligere
+            32 px-overskrift var for stor (bruger 2026-10-09). */}
+        <h1 className="hf-type-page-title mb-2 text-hf-black">{t("helloDoc.inviteHeading")}</h1>
+        <p className="text-text-secondary hf-type-body mb-8">{t("helloDoc.inviteHeadingDescription")}</p>
 
         <DoctorShareEditor
           name={name}

@@ -2335,7 +2335,7 @@
   },
   "/settings/hello-doc/invite": {
     "src/app/layout.tsx": "32a09f6743aabdc5",
-    "src/app/settings/hello-doc/invite/page.tsx": "274011315c439aef",
+    "src/app/settings/hello-doc/invite/page.tsx": "d31e0726a5812560",
     "src/components/AuthGate.tsx": "94db96b768f9f95f",
     "src/components/BottomNav.tsx": "0f81bf09480cc5b2",
     "src/components/EmailVerifySheet.tsx": "42e52d85f9bf57d9",
