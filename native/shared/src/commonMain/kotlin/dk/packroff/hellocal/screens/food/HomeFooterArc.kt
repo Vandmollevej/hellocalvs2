@@ -71,8 +71,12 @@ private const val ARC_LONG_PRESS_MS = 550L
 internal const val ARC_RADIUS = 83f
 private const val ARC_REST_HEIGHT = 40f
 internal const val ARC_ICON_CIRCLE = 46f
-internal const val ARC_ICON_RADIUS = ARC_RADIUS + 38 + ARC_ICON_CIRCLE / 2
-private const val ARC_ANGLE_STEP_DEG = 32.0
+// Same geometry as the left circle (AddButton): icons 52 dp outside the circle, unselected
+// ones 8 dp closer, the highlighted one 14 dp further out, angles spread evenly over -75..75.
+private const val ARC_BASE_RADIUS = ARC_RADIUS + 52 + ARC_ICON_CIRCLE / 2
+internal const val ARC_ICON_RADIUS = ARC_BASE_RADIUS - 8
+internal const val ARC_ICON_RADIUS_ACTIVE = ARC_BASE_RADIUS + 14
+private const val ARC_MAX_ANGLE_DEG = 75.0
 internal const val ARC_MAX_USER_ACTIONS = 4
 private const val ARC_BULGE_MAX = 18f
 private const val ARC_BULGE_SPREAD_DEG = 50.0
@@ -82,11 +86,13 @@ private const val ARC_DEAD_ZONE = 34f
 private const val ARC_HIGHLIGHT_SCALE = 1.35f
 internal const val ARC_ICON_SIZE = 26f
 private const val ARC_OFFSET_X_KEY = "hellocal.frontpage.arcOffsetX"
-private val ARC_FAN_HALF_WIDTH = (ARC_ICON_RADIUS * sin(ARC_ANGLE_STEP_DEG * 2 * PI / 180) + ARC_ICON_CIRCLE / 2 + 8).toFloat()
+private val ARC_FAN_HALF_WIDTH = (ARC_ICON_RADIUS_ACTIVE * sin(ARC_MAX_ANGLE_DEG * PI / 180) + ARC_ICON_CIRCLE * ARC_HIGHLIGHT_SCALE / 2 + 8).toFloat()
 
 internal fun fanAngles(userCount: Int): List<Double> {
     val total = userCount + 1
-    return List(total) { (it - (total - 1) / 2.0) * ARC_ANGLE_STEP_DEG }
+    if (total <= 1) return listOf(0.0)
+    val step = ARC_MAX_ANGLE_DEG * 2 / (total - 1)
+    return List(total) { -ARC_MAX_ANGLE_DEG + it * step }
 }
 
 internal fun listSlotIndex(userCount: Int) = (userCount + 1) / 2
@@ -167,9 +173,10 @@ fun HomeFooterArc(modifier: Modifier = Modifier, onOpenMenuSheet: () -> Unit) {
         val cx = centerAt(p)
         val visibleHeight = ARC_REST_HEIGHT + (ARC_RADIUS - ARC_REST_HEIGHT) * p
 
-        fun slotCenter(index: Int, pp: Float): Pair<Float, Float> {
+        fun slotCenter(index: Int, pp: Float, active: Boolean = false): Pair<Float, Float> {
             val r = angles[index] * PI / 180
-            return (centerAt(pp) + ARC_ICON_RADIUS * sin(r)).toFloat() to (ARC_ICON_RADIUS * cos(r)).toFloat()
+            val radius = if (active) ARC_ICON_RADIUS_ACTIVE else ARC_ICON_RADIUS
+            return (centerAt(pp) + radius * sin(r)).toFloat() to (radius * cos(r)).toFloat()
         }
 
         fun updateHighlight(px: Float, upY: Float, pp: Float) {
@@ -342,8 +349,8 @@ fun HomeFooterArc(modifier: Modifier = Modifier, onOpenMenuSheet: () -> Unit) {
         // The fan.
         slots.forEachIndexed { index, slot ->
             key(slot.key) {
-                val (sx, sy) = slotCenter(index, p)
                 val highlighted = highlightedKey == slot.key
+                val (sx, sy) = slotCenter(index, p, highlighted)
                 val scale = (0.4f + 0.6f * p) * if (highlighted) ARC_HIGHLIGHT_SCALE else 1f
                 Box(
                     Modifier

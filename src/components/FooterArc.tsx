@@ -15,9 +15,11 @@ import {
 } from "@/lib/add-actions";
 import {
   ARC_BULGE_MAX,
+  ARC_HIGHLIGHT_SCALE as HIGHLIGHT_SCALE,
   ARC_FAN_HALF_WIDTH,
   ARC_ICON_CIRCLE,
   ARC_ICON_RADIUS,
+  ARC_ICON_RADIUS_ACTIVE,
   ARC_MAX_USER_ACTIONS,
   ARC_RADIUS,
   ARC_REST_HEIGHT,
@@ -44,7 +46,6 @@ import { FooterArcEditor } from "@/components/FooterArcEditor";
 const LONG_PRESS_MS = 550;
 const MOVE_PX = 8;
 const DEAD_ZONE = 34;
-const HIGHLIGHT_SCALE = 1.35;
 const ANIMATION_MS = 200;
 const ICON_SIZE = 26;
 
@@ -180,9 +181,10 @@ export function FooterArc() {
     setHighlightedKey(key);
   }
 
-  function slotCenter(index: number, p: number) {
+  function slotCenter(index: number, p: number, active = false) {
     const rad = (angles[index] * Math.PI) / 180;
-    return { x: centerAt(p) + ARC_ICON_RADIUS * Math.sin(rad), y: ARC_ICON_RADIUS * Math.cos(rad) };
+    const radius = active ? ARC_ICON_RADIUS_ACTIVE : ARC_ICON_RADIUS;
+    return { x: centerAt(p) + radius * Math.sin(rad), y: radius * Math.cos(rad) };
   }
 
   function updateHighlight(event: React.PointerEvent, p: number) {
@@ -393,8 +395,8 @@ export function FooterArc() {
       />
 
       {slots.map((slot, index) => {
-        const center = slotCenter(index, progress);
         const highlighted = highlightedKey === slot.key;
+        const center = slotCenter(index, progress, highlighted);
         const Icon = slot.icon;
         return (
           <div
@@ -405,6 +407,7 @@ export function FooterArc() {
               bottom: center.y - ARC_ICON_CIRCLE / 2,
               width: ARC_ICON_CIRCLE,
               height: ARC_ICON_CIRCLE,
+              transition: gesturing ? "left 120ms ease, bottom 120ms ease" : undefined,
             }}
           >
             <button
