@@ -1376,7 +1376,7 @@
   },
   "/profile/status": {
     "src/app/layout.tsx": "9a180a8c9b7bdec8",
-    "src/app/profile/status/page.tsx": "fcb9c806ae7b7568",
+    "src/app/profile/status/page.tsx": "8797eea8be65f3bf",
     "src/components/AuthGate.tsx": "94db96b768f9f95f",
     "src/components/BottomNav.tsx": "bdbc569251c10836",
     "src/components/EmailVerifySheet.tsx": "42e52d85f9bf57d9",
