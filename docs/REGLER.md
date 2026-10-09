@@ -14,11 +14,39 @@ ikke her, er den ikke registreret og skal tilføjes.
   altid `INGREDIENT`, enhed g) og scannes ikke. Kilde: session
   "HelloCal OpenAI produktgenkendelse", 2026-09-18; se også DECISIONS.md
   (Frida-match, mikrodata kopieres fra Frida).
-- **Navngivning af billeder til generiske varer**: ⚠️ ENDNU IKKE REGISTRERET —
-  skal udfyldes (se OPEN-TASKS).
+- **Billedfilnavne** (udledt af `Productdatabase/Bilka/bilka.py`, `build_key`/
+  `download_image`, og `Produkter klar til import/_rename_log.csv`; mønster
+  afledt 2026-10-08, afventer brugerens bekræftelse):
+  - Har varen EAN → `<EAN>.<ext>`. Dublet (samme EAN fra anden kilde) →
+    `<EAN>_2`, `_3` … Første rang: BILKA (DK) / EDEKA (DE).
+  - Har varen IKKE EAN → filnavn = Key: `Navn, mængde (Brand)`.
+  - **Generisk vare uden brand og uden EAN (besluttet af brugeren 2026-10-08)**:
+    filnavn = `<produkttype> <variant>` adskilt med mellemrum (ingen mængde,
+    ingen parentes). Overlap (samme navn) → `_2`, `_3` osv.
+    **Undtagelse:** er der angivet energifordeling/næringsindhold på varen, er
+    den et unikt produkt og får butiksnavnet hægtet på efter varianten:
+    `<produkttype> <variant> <butik>` (ikke `_2`). Eksport-udseende afgøres
+    senere. Gælder også allerede eksisterende billeder/rækker (omdøb overalt).
+  - (Gammelt udkast, afløst af reglen ovenfor: `Navn, mængde`.)
+  - Ikke afklaret: 601 filer i `Færdige produktbilleder` hedder kun et kort
+    tal (`100.png`, `1068.png`) — kilde ukendt.
+  - Skal gælde alle steder: originale, til gennemgang, færdige. Filer i
+    Færdig-mapper må også ligge i Original, men aldrig i Fejlet/Til gennemgang.
 - **Boolske felter**: aldrig "Ja"; brug beskrivende ord (Sukkerfri, Laktosefri,
   Vegansk).
 - **Dyrefoder**: spærres (blacklist) — se docs/DECISIONS.md "Pet-food blacklist".
+
+- **Produkttype: ental og flertal (kun generiske varer, besluttet 2026-10-08)**:
+  generiske varer får to kolonner/felter ved siden af produkttype: `Product type
+  singular` og `Product type plural`, begge udfyldt. Søgning efter "et æble"
+  må ikke give "æbler" (og omvendt). Hvor ental = flertal (fx æg) eller det ikke
+  kan afgøres, står samme tekst i begge. Gælder ark og database
+  (`GenericIngredient`); almindelige varer med brand/EAN berøres ikke.
+  Status: ikke implementeret endnu.
+- **Små ord i navne**: med, i, af, uden skrives altid med småt i
+  produktnavne/produkttype/variant (aftalt 2026-10-08, ikke gennemført endnu).
+- **Generisk vare** = ingen Brand og ingen Subbrand i arket (EAN ses bort fra).
+  I databasen ligger de i `GenericIngredient`, ikke `Product`.
 
 ## Logoer og billeder
 
@@ -49,3 +77,33 @@ ikke her, er den ikke registreret og skal tilføjes.
 - Nye billedmapper med produkt-/opskrifts-/mærkebilleder skal i
   `PROTECTED_IMAGE_PREFIXES`.
 - Aldrig vandmærke eller skjult bruger-ID i billeder (brugerens regel 2026-10-08).
+
+## Midlertidige filer
+
+- Midlertidige filer (Excel-udtræk, CSV, scripts, mellemresultater) må aldrig
+  ligge i projektets rodmappe. Brug scratchpad/temp-mappen, og slet dem selv
+  når de er brugt. Skal en fil blive liggende, så spørg brugeren først
+  (brugerens regel 2026-10-09).
+
+## Produktnavne i ark (globale regler, gælder ALLE ark — brugerens regel 2026-10-09)
+
+- **Titelrækkefølge**: `_is_cooked` > Product Type (småt begyndelsesbogstav
+  hvis det ikke er første ord) > Variation > `_is_light`, `_is_alcohol`,
+  `_is_glutenfree`, `_is_vegan`, `_is_lactose_free` > `(Packaging, Keyword 1-3,
+  _is_raw)`. `_is_raw` står altid sidst og i parentes.
+- **`_is_cooked`** (stegt/tørret/kogt/syltet/ristet/røget …) står altid først
+  i titlen og skrives i ental/flertal efter varen: "Tørrede figner",
+  "Friturestegte pommes frites", "Tørrede og kogte hvide bønner" — aldrig
+  "Tørret, Kogt". Ordet fjernes fra Product Type/Variation.
+- **Forkortelser i de originale felter** (Product Name / Original Title /
+  Subtitle): `m.` `m/` → "med", `u.` `u/` → "uden", `i`, `af`. Det der står
+  efter dem og ligger i Variation skrives med småt begyndelsesbogstav og
+  får ordet foran: "Ymerdrys m. kanel" → Variation "med farin og kanel".
+- med/uden/i/af/på/fra/tilsat står altid med småt i Variation og titel.
+- Keywords må aldrig deles op midt i en frase: "Uden tilsat sukker" er ét
+  keyword (ikke "Uden" + "Tilsat sukker").
+- Instantkaffe hedder altid "Instantkaffe" (Product Type), ikke "Kaffe, instant".
+- Vitaminer hører ikke hjemme i keywords, men i specifikationsarket
+  (`*_vitamins.xlsx`/`*_product_information.xlsx`) — status: ikke gennemført.
+- Status 2026-10-09: gennemført i Frida-ark/frida-rettet.xlsx og
+  Excelark/bilka_matchet.xlsx; resten af arkene mangler.
