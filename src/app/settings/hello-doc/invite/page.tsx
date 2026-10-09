@@ -15,6 +15,7 @@ export default function InviteHelloDocUserPage() {
   const [email, setEmail] = useState("");
   const [categories, setCategories] = useState<DoctorShareCategory[]>(DEFAULT_DOCTOR_SHARE_CATEGORIES);
   const [historyRange, setHistoryRange] = useState<DoctorShareHistoryRange>("ALL");
+  const [expiresAt, setExpiresAt] = useState("");
   const [sending, setSending] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -25,7 +26,7 @@ export default function InviteHelloDocUserPage() {
       const res = await fetch("/api/doctor-shares", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, email, categories, historyRange }),
+        body: JSON.stringify({ name, email, categories, historyRange, expiresAt: expiresAt || null }),
       });
       const data = await res.json();
       if (!res.ok) {
@@ -53,7 +54,6 @@ export default function InviteHelloDocUserPage() {
           >
             {sending ? t("helloDoc.sending") : t("helloDoc.sendInvitation")}
           </button>
-          <p className="text-text-secondary hf-type-caption text-center">{t("helloDoc.invitationExpiryHint")}</p>
           {error && <p className="hf-type-caption text-center text-hf-red-dark">{error}</p>}
         </div>
       }
@@ -75,6 +75,8 @@ export default function InviteHelloDocUserPage() {
           onCategoriesChange={setCategories}
           historyRange={historyRange}
           onHistoryRangeChange={setHistoryRange}
+          expiresAt={expiresAt}
+          onExpiresAtChange={setExpiresAt}
           previewHref="/settings/hello-doc/preview"
         />
       </div>
