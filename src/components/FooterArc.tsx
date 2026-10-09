@@ -17,7 +17,6 @@ import {
   ARC_BULGE_MAX,
   ARC_ICON_CIRCLE,
   ARC_MAX_USER_ACTIONS,
-  ARC_PULL_DISTANCE,
   ARC_RADIUS,
   ARC_REST_HEIGHT,
   fanAngles,
@@ -45,10 +44,6 @@ const LONG_PRESS_MS = 550;
 const MOVE_PX = 8;
 const DEAD_ZONE = 34;
 const HIGHLIGHT_SCALE = 1.35;
-// Den markerede cirkel rykkes så langt ud fra viften, at den ikke ligger under
-// tommelfingeren, når man trækker højt op (kun visning; markeringen måles stadig
-// ved cirklens hvileplads).
-const HIGHLIGHT_LIFT = 40;
 // Trækker man højere op end cirklen, må fingeren aldrig komme oven på den:
 // den markerede cirkel holdes mindst så højt over fingerspidsen.
 const FINGER_CLEARANCE = 62;
@@ -73,6 +68,8 @@ type Gesture = {
   mode: "undecided" | "slide" | "pull" | "select";
   moved: boolean;
   wasOpen: boolean;
+  /** Cirklen er sprunget til fuld størrelse (første træk opad). */
+  expanded: boolean;
   consumed: boolean;
   timer: ReturnType<typeof setTimeout> | null;
 };
@@ -150,6 +147,9 @@ export function FooterArc() {
   // der ellers ville forsvinde ud over kanten, længere op (se fanLayout).
   const cx = baseCx;
   const layout = fanLayout(angles, baseCx, width);
+  // Den fremhævede knap træder længere ud (som venstre-cirklen); valg af knap sker ud fra hvilepladserne.
+  const highlightedIndex = slots.findIndex((slot) => slot.key === highlightedKey);
+  const drawLayout = highlightedIndex >= 0 ? fanLayout(angles, baseCx, width, highlightedIndex) : layout;
   const visibleHeight = ARC_REST_HEIGHT + (ARC_RADIUS - ARC_REST_HEIGHT) * progress;
 
   const setP = useCallback((value: number) => {
@@ -243,6 +243,7 @@ export function FooterArc() {
       mode: "undecided",
       moved: false,
       wasOpen: openRef.current,
+      expanded: false,
       consumed: false,
       timer: null,
     };
@@ -281,13 +282,15 @@ export function FooterArc() {
       dragXRef.current = next;
       setDragX(next);
     } else if (gesture.mode === "pull") {
-      const p = clamp((gesture.startY - event.clientY) / ARC_PULL_DISTANCE, 0, 1);
-      setP(p);
-      if (p > 0.3) updateHighlight(event);
-      else {
-        setHighlight(null);
-        setFinger(null);
+      // Så snart fingeren er trukket opad, springer cirklen og knapperne
+      // straks til fuld størrelse — ingen animation, ingen gradvis vækst.
+      if (!gesture.expanded && gesture.startY - event.clientY > 0) {
+        gesture.expanded = true;
+        openRef.current = true;
+        setOpen(true);
+        setP(1);
       }
+      if (gesture.expanded) updateHighlight(event);
     } else if (gesture.mode === "select") {
       updateHighlight(event);
     }
@@ -331,8 +334,8 @@ export function FooterArc() {
       activate(slot);
       return;
     }
-    // Trukket op uden at ramme en knap: bliver åben, hvis den er over halvvejs.
-    setOpenState(gesture.mode === "pull" ? progressRef.current > 0.5 : false);
+    // Trukket op uden at ramme en knap: cirklen bliver åben i fuld størrelse.
+    setOpenState(gesture.mode === "pull" && gesture.expanded);
   }
 
   const showFan = progress > 0.02;
@@ -393,16 +396,15 @@ export function FooterArc() {
       />
 
       {slots.map((slot, index) => {
-        const base = slotCenter(index);
+        const base = drawLayout[index];
         const highlighted = highlightedKey === slot.key;
-        const lift = highlighted ? HIGHLIGHT_LIFT : 0;
-        const liftRad = (angles[index] * Math.PI) / 180;
-        let centerY = base.y + lift * Math.cos(liftRad);
+        // Den markerede knap må aldrig ende under fingeren: hold den over fingerspidsen.
+        let centerY = base.y;
         if (highlighted && finger) {
           const roomAbove = (wrapRef.current?.getBoundingClientRect().top ?? Infinity) - TOP_ROOM;
           centerY = Math.max(centerY, Math.min(finger.dy + FINGER_CLEARANCE, Math.max(centerY, roomAbove)));
         }
-        const center = { x: base.x + lift * Math.sin(liftRad), y: centerY };
+        const center = { x: base.x, y: centerY };
         const Icon = slot.icon;
         return (
           <div
@@ -413,6 +415,7 @@ export function FooterArc() {
               bottom: center.y - ARC_ICON_CIRCLE / 2,
               width: ARC_ICON_CIRCLE,
               height: ARC_ICON_CIRCLE,
+              transition: "left 120ms ease, bottom 120ms ease",
             }}
           >
             <button

@@ -1715,6 +1715,7 @@
     "measurementGoal": "Ziel",
     "latest": "am {date} {value}",
     "setGoal": "Ziel setzen",
+    "seeAllGoals": "Alle Ziele ansehen",
     "toLose": "{value} bis zum Ziel",
     "toGain": "{value} bis zum Ziel",
     "goalReached": "Du hast dein Ziel erreicht",
@@ -2013,7 +2014,6 @@
   "addProduct": {
     "reportBug": "Hast du einen Fehler gefunden?",
     "reading": "Wird gelesen…",
-    "ingredientsUnreadable": "Die Zutaten konnten auf dem Bild nicht gelesen werden.",
     "retakeIngredients": "Neues Foto der Zutaten machen",
     "title": "Hinzufügen",
     "titleForDish": "Zutat hinzufügen",

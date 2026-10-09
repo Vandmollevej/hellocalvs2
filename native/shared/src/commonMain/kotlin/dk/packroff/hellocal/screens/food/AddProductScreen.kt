@@ -618,23 +618,14 @@ fun AddProductView(
                         }
                     }
 
-                    if (isPending("ingredients") || !view.ingredientsText.isNullOrEmpty() || view.ingredientsUnreadable) {
+                    if (isPending("ingredients") || !view.ingredientsText.isNullOrEmpty()) {
                         Column {
                             HcText(t.t("createDish.ingredients"), HcTypeRoles.Body, Modifier.padding(bottom = 8.dp), color = HcColors.Black)
                             when {
                                 isPending("ingredients") -> Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                                     listOf(0.94f, 0.82f, 0.88f, 0.46f).forEach { FoodSkeleton(Modifier.fillMaxWidth(it).height(16.dp)) }
                                 }
-                                view.ingredientsText.isNullOrEmpty() -> Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                                    HcText(t.t("addProduct.ingredientsUnreadable"), HcTypeRoles.Small, color = HcColors.TextSecondary)
-                                    HcButton(
-                                        t.t("addProduct.retakeIngredients"),
-                                        onClick = { nav.push("/camera?mode=product&retake=ingredients&product=${encodeUri(id)}") },
-                                        kind = dk.packroff.hellocal.ui.HcButtonKind.Secondary,
-                                        leading = { HcIcon("Camera", size = 19.dp, color = HcColors.Action) },
-                                    )
-                                }
-                                else -> IngredientsTextView(view.ingredientsText) { openAdditive = it }
+                                else -> IngredientsTextView(view.ingredientsText.orEmpty()) { openAdditive = it }
                             }
                         }
                     }

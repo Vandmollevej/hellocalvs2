@@ -285,11 +285,11 @@ export function AddMenuList({ date, time }: { date?: string | null; time?: strin
                     alt=""
                     width={96}
                     height={96}
-                    className="-mb-4 h-24 w-24 object-contain"
+                    className="h-24 w-24 object-contain"
                     unoptimized={tile.icon.endsWith(".svg")}
                     draggable={false}
                   />
-                  <span className="hf-type-body -mt-4">{label}</span>
+                  <span className="hf-type-body">{label}</span>
                 </span>
               </Link>
             );
@@ -307,7 +307,7 @@ export function AddMenuList({ date, time }: { date?: string | null; time?: strin
             alt=""
             width={96}
             height={96}
-            className="-mb-4 h-24 w-24 object-contain"
+            className="h-24 w-24 object-contain"
             unoptimized={draggedTile.icon.endsWith(".svg")}
           />
         </div>
@@ -336,10 +336,10 @@ export function AddMenuList({ date, time }: { date?: string | null; time?: strin
                         alt=""
                         width={96}
                         height={96}
-                        className="-mb-4 h-24 w-24 object-contain"
+                        className="h-24 w-24 object-contain"
                         unoptimized={tile.icon.endsWith(".svg")}
                       />
-                      <span className="hf-type-body -mt-4">{label}</span>
+                      <span className="hf-type-body">{label}</span>
                     </button>
                   );
                 })}
