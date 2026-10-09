@@ -2,6 +2,12 @@ package dk.packroff.hellocal.screens.capture
 
 import dk.packroff.hellocal.ui.icons.HcIcon
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.draw.clip
+import dk.packroff.hellocal.ui.FoodFavoriteIcon
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -59,6 +65,9 @@ internal data class ActivityOption(
 private data class ActivityOptionsResponse(val options: List<ActivityOption> = emptyList())
 
 @Serializable
+private data class ActivityFavoritesResponse(val keys: List<String> = emptyList())
+
+@Serializable
 private data class ActivityOptionResponse(val option: ActivityOption)
 
 @Serializable
@@ -99,12 +108,28 @@ internal fun ActivityPicker(onPick: (ActivityOption) -> Unit, busy: Boolean = fa
     var options by remember { mutableStateOf<List<ActivityOption>>(emptyList()) }
     var query by remember { mutableStateOf("") }
     var adding by remember { mutableStateOf(false) }
+    var favoriteKeys by remember { mutableStateOf<List<String>>(emptyList()) }
 
     LaunchedEffect(Unit) {
         options = try {
             ApiJson.decodeFromJsonElement(ActivityOptionsResponse.serializer(), Api.get("/api/activity-types")).options
         } catch (e: Exception) {
             emptyList()
+        }
+        favoriteKeys = try {
+            ApiJson.decodeFromJsonElement(ActivityFavoritesResponse.serializer(), Api.get("/api/activity-favorites")).keys
+        } catch (e: Exception) {
+            emptyList()
+        }
+    }
+
+    fun toggleFavorite(key: String, next: Boolean) {
+        favoriteKeys = if (next) favoriteKeys.filter { it != key } + key else favoriteKeys.filter { it != key }
+        scope.launch {
+            try {
+                if (next) Api.post("/api/activity-favorites", mapOf("key" to key)) else Api.delete("/api/activity-favorites", mapOf("key" to key))
+            } catch (e: Exception) {
+            }
         }
     }
 
@@ -132,29 +157,50 @@ internal fun ActivityPicker(onPick: (ActivityOption) -> Unit, busy: Boolean = fa
     }
 
     val disabled = busy || adding
-    Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
-        HcSearchField(query, { query = it }, t.t("activity.searchPlaceholder"))
-        val showAdd = trimmed.length >= 2 && !exact
-        if (matches.isNotEmpty() || showAdd) {
-            HcAccordionCard {
-                matches.forEachIndexed { index, option ->
-                    HcChevronRow(
-                        label = if (option.pending) "${option.label} (${t.t("activity.pending")})" else option.label,
-                        onClick = if (disabled) null else ({ onPick(option) }),
-                        icon = sportIcon(option.key),
-                        divider = index < matches.lastIndex || showAdd,
-                    )
-                }
-                if (showAdd) {
-                    HcChevronRow(
-                        label = t.t("activity.addManual", "name" to trimmed),
-                        onClick = if (disabled) null else ({ addManual() }),
-                        icon = "Plus",
-                        divider = false,
-                    )
-                }
+    val favoriteSet = favoriteKeys.toSet()
+    // Without a search: favorites on top under their own heading, the rest under "All activities".
+    val favoriteOptions = if (trimmed.isEmpty()) options.filter { it.key in favoriteSet } else emptyList()
+    val showFavorites = favoriteOptions.isNotEmpty()
+    val listed = if (showFavorites) matches.filter { it.key !in favoriteSet } else matches
+    val showAdd = trimmed.length >= 2 && !exact
+
+    @Composable
+    fun OptionRows(list: List<ActivityOption>, withAdd: Boolean) {
+        HcAccordionCard {
+            list.forEachIndexed { index, option ->
+                val isFavorite = option.key in favoriteSet
+                HcChevronRow(
+                    label = if (option.pending) "${option.label} (${t.t("activity.pending")})" else option.label,
+                    onClick = if (disabled) null else ({ onPick(option) }),
+                    icon = sportIcon(option.key),
+                    divider = index < list.lastIndex || withAdd,
+                    trailing = {
+                        Box(
+                            Modifier.size(32.dp).clip(CircleShape).clickable { toggleFavorite(option.key, !isFavorite) },
+                            contentAlignment = Alignment.Center,
+                        ) { FoodFavoriteIcon(isFavorite, 20.dp, HcColors.Green) }
+                    },
+                )
+            }
+            if (withAdd) {
+                HcChevronRow(
+                    label = t.t("activity.addManual", "name" to trimmed),
+                    onClick = if (disabled) null else ({ addManual() }),
+                    icon = "Plus",
+                    divider = false,
+                )
             }
         }
+    }
+
+    Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
+        HcSearchField(query, { query = it }, t.t("activity.searchPlaceholder"))
+        if (showFavorites) {
+            HcText(t.t("activity.favorites"), HcTypeRoles.Small, color = HcColors.Black, bold = true)
+            OptionRows(favoriteOptions, false)
+            if (listed.isNotEmpty()) HcText(t.t("activity.allActivities"), HcTypeRoles.Small, color = HcColors.Black, bold = true)
+        }
+        if (listed.isNotEmpty() || showAdd) OptionRows(listed, showAdd)
     }
 }
 

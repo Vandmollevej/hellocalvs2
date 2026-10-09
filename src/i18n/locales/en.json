@@ -2464,6 +2464,10 @@
   },
   "activity": {
     "title": "Activity",
+    "favorites": "Favorites",
+    "allActivities": "All activities",
+    "addFavorite": "Add to favorites",
+    "removeFavorite": "Remove from favorites",
     "searchPlaceholder": "Search activities",
     "addManual": "Add \"{name}\" as an activity",
     "pending": "awaiting approval",

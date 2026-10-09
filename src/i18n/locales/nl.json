@@ -2494,6 +2494,10 @@
   },
   "activity": {
     "title": "Activiteit",
+    "favorites": "Favorieten",
+    "allActivities": "Alle activiteiten",
+    "addFavorite": "Toevoegen aan favorieten",
+    "removeFavorite": "Verwijderen uit favorieten",
     "searchPlaceholder": "Zoek een activiteit",
     "addManual": "\"{name}\" toevoegen als activiteit",
     "pending": "wacht op goedkeuring",

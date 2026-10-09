@@ -93,6 +93,7 @@ fun HcChevronRow(
     wrapLabel: Boolean = false,
     iconContent: (@Composable () -> Unit)? = null,
     centerText: String? = null,
+    trailing: (@Composable () -> Unit)? = null,
 ) {
     Column(Modifier.fillMaxWidth()) {
         Row(
@@ -115,6 +116,7 @@ fun HcChevronRow(
                     HcText(if (badgeCount > 99) "99+" else badgeCount.toString(), HcTypeRoles.Caption, color = HcColors.White, align = TextAlign.Center)
                 }
             }
+            if (trailing != null) trailing()
             HcChevron(color = HcColors.Black)
         }
         if (divider) HcLine()

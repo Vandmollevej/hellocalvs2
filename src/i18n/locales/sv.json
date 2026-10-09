@@ -2494,6 +2494,10 @@
   },
   "activity": {
     "title": "Aktivitet",
+    "favorites": "Favoriter",
+    "allActivities": "Alla aktiviteter",
+    "addFavorite": "Lägg till i favoriter",
+    "removeFavorite": "Ta bort från favoriter",
     "searchPlaceholder": "Sök aktivitet",
     "addManual": "Lägg till \"{name}\" som aktivitet",
     "pending": "väntar på godkännande",

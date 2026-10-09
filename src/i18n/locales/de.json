@@ -2494,6 +2494,10 @@
   },
   "activity": {
     "title": "Aktivität",
+    "favorites": "Favoriten",
+    "allActivities": "Alle Aktivitäten",
+    "addFavorite": "Zu Favoriten hinzufügen",
+    "removeFavorite": "Aus Favoriten entfernen",
     "searchPlaceholder": "Aktivität suchen",
     "addManual": "\"{name}\" als Aktivität hinzufügen",
     "pending": "wartet auf Freigabe",

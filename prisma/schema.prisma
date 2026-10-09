@@ -249,6 +249,7 @@ model User {
   integrationTesterSlots  IntegrationTester[]
   activities              Activity[]
   customActivityTypes     CustomActivityType[]
+  activityFavorites       ActivityFavorite[]
   heartRateSpikeReviews   HeartRateSpikeReview[]
   pulseActivityCandidates PulseActivityCandidate[]
   activityProfileSnapshots ActivityProfileSnapshot[]
@@ -1029,6 +1030,19 @@ model CustomActivityType {
 
   @@index([status])
   @@map("custom_activity_types")
+}
+
+// Brugerens favorit-aktiviteter (vises øverst i aktivitetssøgningen).
+// sportKey er en SPORT_TYPES-nøgle eller navnet på en brugertilføjet aktivitet.
+model ActivityFavorite {
+  id        String   @id @default(cuid())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String
+  sportKey  String
+  createdAt DateTime @default(now())
+
+  @@unique([userId, sportKey])
+  @@map("activity_favorites")
 }
 
 enum CustomActivityStatus {

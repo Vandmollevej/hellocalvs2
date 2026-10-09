@@ -2,6 +2,13 @@
 
 Last updated: 2026-10-09
 
+## 2026-10-09: Favorit-aktiviteter (sport)
+
+- Aktivitetssøgningen (`ActivityPicker`, `/activity/create` og pulsspørgsmålet) har fået et favorit-bogmærke på hver række. Uden søgning vises favoritterne øverst under overskriften "Favoritter", resten under "Alle aktiviteter".
+- Ny tabel `activity_favorites` (migration `20261009130000_activity_favorites`) og `/api/activity-favorites` (GET/POST/DELETE med `key`).
+- Native: samme opførsel i `ActivityPicker` (Kotlin); `HcChevronRow` har fået `trailing`-slot. Paritet godkendt for `/activity/create` og `/`.
+- Migrationen skal med deployet. Ikke prøvet mod rigtig database.
+
 ## 2026-10-09: Halvcirklens vifte rykker knapper op i stedet for ud over kanten
 
 - `FooterArc` (web + `HomeFooterArc.kt`): står halvcirklen langt ude til siden, flyttes viften ikke længere indad. De knapper, der ellers ville forsvinde ud over skærmkanten, holdes inden for kanten og rykkes i stedet længere op, væk fra halvcirklen, med samme afstand til naboen (`fanLayout`). Navnet på det valgte ikon holdes inden for skærmen. Størrelser og indstillinger er uændrede.

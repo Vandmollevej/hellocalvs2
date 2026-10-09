@@ -2445,6 +2445,10 @@
   },
   "activity": {
     "title": "Aktivitet",
+    "favorites": "Favoritter",
+    "allActivities": "Alle aktiviteter",
+    "addFavorite": "Tilføj til favoritter",
+    "removeFavorite": "Fjern fra favoritter",
     "searchPlaceholder": "Søg efter aktivitet",
     "addManual": "Tilføj \"{name}\" som aktivitet",
     "pending": "afventer godkendelse",

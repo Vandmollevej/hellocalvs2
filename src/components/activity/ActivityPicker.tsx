@@ -2,7 +2,9 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { IconPlus, IconSearch } from "@tabler/icons-react";
-import { AccordionCard, ChevronRow } from "@/components/hf/AccordionCard";
+import { AccordionCard } from "@/components/hf/AccordionCard";
+import { HfChevron } from "@/components/hf/HfChevron";
+import { IconFavorite, IconFavoriteFilled } from "@/components/icons/Favorite";
 import { getSportMeta } from "@/lib/sport-icons";
 import type { ActivityOption } from "@/lib/activity-types";
 import { useTranslation } from "@/i18n/LocaleProvider";
@@ -14,13 +16,27 @@ export function ActivityPicker({ onPick, busy }: { onPick: (option: ActivityOpti
   const [options, setOptions] = useState<ActivityOption[]>([]);
   const [query, setQuery] = useState("");
   const [adding, setAdding] = useState(false);
+  const [favoriteKeys, setFavoriteKeys] = useState<string[]>([]);
 
   useEffect(() => {
     fetch("/api/activity-types")
       .then((res) => (res.ok ? (res.json() as Promise<{ options: ActivityOption[] }>) : { options: [] }))
       .then((data) => setOptions(data.options))
       .catch(() => setOptions([]));
+    fetch("/api/activity-favorites")
+      .then((res) => (res.ok ? (res.json() as Promise<{ keys: string[] }>) : { keys: [] }))
+      .then((data) => setFavoriteKeys(data.keys))
+      .catch(() => setFavoriteKeys([]));
   }, []);
+
+  function toggleFavorite(key: string, next: boolean) {
+    setFavoriteKeys((current) => (next ? [...current.filter((k) => k !== key), key] : current.filter((k) => k !== key)));
+    fetch("/api/activity-favorites", {
+      method: next ? "POST" : "DELETE",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ key }),
+    }).catch(() => {});
+  }
 
   const trimmed = query.trim();
   const matches = useMemo(() => {
@@ -51,27 +67,69 @@ export function ActivityPicker({ onPick, busy }: { onPick: (option: ActivityOpti
     }
   }
 
-  const rows = [
-    ...matches.map((option) => {
-      const Icon = getSportMeta(option.key).icon;
-      return {
-        key: option.key,
-        icon: <Icon size={20} />,
-        label: option.pending ? `${option.label} (${t("activity.pending")})` : option.label,
-        onClick: () => onPick(option),
-      };
-    }),
-    ...(trimmed.length >= 2 && !exact
-      ? [
-          {
-            key: "__add",
-            icon: <IconPlus size={20} />,
-            label: t("activity.addManual", { name: trimmed }),
-            onClick: () => void addManual(),
-          },
-        ]
-      : []),
-  ];
+  const favoriteSet = new Set(favoriteKeys);
+  // Uden søgning: favoritter øverst under egen overskrift, resten under "Alle aktiviteter".
+  const showFavorites = !trimmed && options.some((option) => favoriteSet.has(option.key));
+  const favoriteOptions = showFavorites ? options.filter((option) => favoriteSet.has(option.key)) : [];
+  const listed = showFavorites ? matches.filter((option) => !favoriteSet.has(option.key)) : matches;
+
+  function renderRows(list: ActivityOption[], extra?: { label: string; onClick: () => void }) {
+    const disabled = busy || adding;
+    const total = list.length + (extra ? 1 : 0);
+    const rowClass = (index: number) =>
+      `flex h-12 w-full items-center gap-4 px-4 text-left ${index < total - 1 ? "border-b border-hf-tan-dark" : ""}`;
+    return (
+      <AccordionCard>
+        {list.map((option, index) => {
+          const Icon = getSportMeta(option.key).icon;
+          const isFavorite = favoriteSet.has(option.key);
+          return (
+            <div key={option.key} className={rowClass(index)}>
+              <button
+                type="button"
+                onClick={disabled ? undefined : () => onPick(option)}
+                className="flex h-full min-w-0 flex-1 items-center gap-4 text-left"
+              >
+                <span className="flex h-5 w-5 items-center justify-center text-hf-black">
+                  <Icon size={20} />
+                </span>
+                <span className="hf-type-body flex-1 truncate">
+                  {option.pending ? `${option.label} (${t("activity.pending")})` : option.label}
+                </span>
+              </button>
+              <button
+                type="button"
+                onClick={() => toggleFavorite(option.key, !isFavorite)}
+                aria-label={t(isFavorite ? "activity.removeFavorite" : "activity.addFavorite")}
+                className="text-hf-green"
+              >
+                {isFavorite ? <IconFavoriteFilled size={20} /> : <IconFavorite size={20} />}
+              </button>
+              <button
+                type="button"
+                tabIndex={-1}
+                aria-hidden="true"
+                onClick={disabled ? undefined : () => onPick(option)}
+              >
+                <HfChevron className="text-hf-black" />
+              </button>
+            </div>
+          );
+        })}
+        {extra && (
+          <button type="button" onClick={disabled ? undefined : extra.onClick} className={rowClass(total - 1)}>
+            <span className="flex h-5 w-5 items-center justify-center text-hf-black">
+              <IconPlus size={20} />
+            </span>
+            <span className="hf-type-body flex-1 truncate">{extra.label}</span>
+            <HfChevron className="text-hf-black" />
+          </button>
+        )}
+      </AccordionCard>
+    );
+  }
+
+  const showAdd = trimmed.length >= 2 && !exact;
 
   return (
     <div className="flex flex-col gap-4" aria-busy={busy || adding}>
@@ -85,19 +143,15 @@ export function ActivityPicker({ onPick, busy }: { onPick: (option: ActivityOpti
           aria-label={t("activity.searchPlaceholder")}
         />
       </div>
-      {rows.length > 0 && (
-        <AccordionCard>
-          {rows.map((row, index) => (
-            <ChevronRow
-              key={row.key}
-              icon={row.icon}
-              label={row.label}
-              onClick={busy || adding ? undefined : row.onClick}
-              divider={index < rows.length - 1}
-            />
-          ))}
-        </AccordionCard>
+      {showFavorites && (
+        <>
+          <p className="hf-type-small hf-type-strong text-hf-black">{t("activity.favorites")}</p>
+          {renderRows(favoriteOptions)}
+          {listed.length > 0 && <p className="hf-type-small hf-type-strong text-hf-black">{t("activity.allActivities")}</p>}
+        </>
       )}
+      {(listed.length > 0 || showAdd) &&
+        renderRows(listed, showAdd ? { label: t("activity.addManual", { name: trimmed }), onClick: () => void addManual() } : undefined)}
     </div>
   );
 }
