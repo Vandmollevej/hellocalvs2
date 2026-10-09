@@ -107,3 +107,5 @@ ikke her, er den ikke registreret og skal tilføjes.
   (`*_vitamins.xlsx`/`*_product_information.xlsx`) — status: ikke gennemført.
 - Status 2026-10-09: gennemført i Frida-ark/frida-rettet.xlsx og
   Excelark/bilka_matchet.xlsx; resten af arkene mangler.
+- Lister i Variation/Keywords: `/` og komma → "a, b og c" (to led: "a og b");
+  fedt% → `_is_fat`; gram kun i Quantity (brugerens regel 2026-10-09). Se Excelark/NAVNEREGLER.md.
