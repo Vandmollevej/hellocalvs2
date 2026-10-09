@@ -2,6 +2,10 @@
 
 This file records durable decisions. Add a dated entry when a later decision changes one of them.
 
+## 2026-10-09: Tallerken-scanning kører midlertidigt på OpenAI i stedet for Passio
+
+Brugeren bad om at sætte scanning af tallerken op til OpenAI, indtil Passio er på plads. Udbyderen vælges i `analyze-meal-photo`: `MEAL_SCAN_PROVIDER` (`openai`/`passio`), ellers Passio hvis `PASSIO_API_KEY` er sat, ellers OpenAI. Begge returnerer samme form, så resten af flowet er uændret. Passio-koden er urørt og kan fjernes eller bruges igen, når nøglen findes.
+
 ## 2026-10-05: Bølge-baggrunden på forsiden fjernes
 
 Brugerens ord: "fjern bølgerne i baggrunden. Jeg har aldrig kunnet lide dem." Strenge, skær og tåge tegnes ikke længere (`HomeWaves.tsx` tømmer `bundles`/`fog`), og det frostede nederste lag er fjernet fra `page.tsx`. Puls-linjen er uændret. Tegnekoden i `home-waves.ts` ligger uberørt, så bølgerne kan genindsættes.

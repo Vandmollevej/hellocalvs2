@@ -3,6 +3,10 @@
 Last updated: 2026-10-03
 Last updated: 2026-10-04
 
+## 2026-10-09: Tallerken-scanning midlertidigt via OpenAI
+
+- `/api/ai/analyze-meal-photo` bruger OpenAI vision (`src/lib/openai-meal.ts`), så længe `PASSIO_API_KEY` mangler. Sæt `PASSIO_API_KEY` (eller `MEAL_SCAN_PROVIDER=passio`) for at skifte tilbage; `MEAL_SCAN_PROVIDER=openai` tvinger OpenAI. Kræver `OPENAI_API_KEY`; model kan ændres med `OPENAI_MEAL_MODEL` (standard `gpt-4o-mini`). Lint/build ikke kørt (ingen `node_modules` i cloud-sessionen). Ikke prøvet mod live-API.
+
 ## 2026-10-05: Pulslinjen — roligere uden ur, flyttet op over nederste tal
 
 - Uden tilsluttet ur slår pulslinjen kun hvert 4. sekund (`DEFAULT_PULSE_BPM` = 15), og grundlinjen er flyttet op, så bunden står lige over hjulets nederste tal (`PULSE_ABOVE_LAST_ROW` i `HomeWaves.tsx`). Lint/build ikke kørt (ingen `node_modules` i cloud-sessionen). Brugeren tester på telefon; justér konstanten på 25 px efter billedet.

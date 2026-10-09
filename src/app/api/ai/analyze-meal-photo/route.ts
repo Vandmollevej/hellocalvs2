@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { recognizeMealPhoto } from "@/lib/passio";
+import { recognizeMealPhotoWithOpenAi } from "@/lib/openai-meal";
 
 // POST /api/ai/analyze-meal-photo — { photo: string (data URL) }
 //
@@ -35,7 +36,12 @@ export async function POST(req: Request) {
   }
 
   try {
-    const ingredients = await recognizeMealPhoto(photo);
+    const useOpenAi =
+      process.env.MEAL_SCAN_PROVIDER === "openai" ||
+      (process.env.MEAL_SCAN_PROVIDER !== "passio" && !process.env.PASSIO_API_KEY);
+    const ingredients = useOpenAi
+      ? await recognizeMealPhotoWithOpenAi(photo)
+      : await recognizeMealPhoto(photo);
 
     const items = await Promise.all(
       ingredients.map(async (ingredient) => {
