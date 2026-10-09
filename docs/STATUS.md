@@ -69,6 +69,11 @@ Last updated: 2026-10-08
 
 - `default-amount.ts` (+ native `FoodLogic.kt`): instantkaffe → 2 g; forslaget kappes ved pakkens vægt/volumen. Test: `node --test src/lib/default-amount.test.mjs` (14 grønne). Lint/build ikke kørt (ingen node_modules her); Kotlin ikke kompileret lokalt.
 
+## 2026-10-09: Pulsudsving — bladring og rødt hjerte i kalenderen
+
+- Pulsspørgsmålet (7 dage) bladrer frem/tilbage; nyt fælles ark `PulseEventSheet` (peak-tid, graf, "Angiv træningstype" i bundark). Kalenderen har røde hjerter på dage med forhøjet puls. Se DECISIONS 2026-10-09.
+- Ikke testet i browser/mod rigtig database (kræver login + pulsdata). Kun da/en-tekster tilføjet; øvrige sprog falder tilbage til engelsk.
+
 ## 2026-10-08: Adgangsmur mod crawlere
 
 - `middleware.ts` + `src/lib/access-wall.ts`: bot-blokering (UA), login-krav på alt undtagen forside/login/juridiske sider, beskyttede billeder (session + hotlink-tjek), rate limit. Se DECISIONS 2026-10-08 og DEPLOYMENT "Search indexing".
