@@ -279,13 +279,13 @@ export function FooterArc() {
       dragXRef.current = next;
       setDragX(next);
     } else if (gesture.mode === "pull") {
-      // Så snart fingeren er trukket opad, får cirklen sin fulde størrelse
-      // (kort animation) — den vokser ikke gradvist med fingerens afstand.
+      // Så snart fingeren er trukket opad, springer cirklen og knapperne
+      // straks til fuld størrelse — ingen animation, ingen gradvis vækst.
       if (!gesture.expanded && gesture.startY - event.clientY > 0) {
         gesture.expanded = true;
         openRef.current = true;
         setOpen(true);
-        animateTo(1);
+        setP(1);
       }
       if (gesture.expanded) updateHighlight(event, 1);
     } else if (gesture.mode === "select") {

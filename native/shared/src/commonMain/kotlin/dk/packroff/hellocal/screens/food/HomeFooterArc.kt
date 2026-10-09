@@ -319,12 +319,12 @@ fun HomeFooterArc(modifier: Modifier = Modifier, onOpenMenuSheet: () -> Unit) {
                             when (mode) {
                                 ArcMode.Slide -> dragX = (startOffset + dx).coerceIn(-maxOffset, maxOffset)
                                 ArcMode.Pull -> {
-                                    // As soon as the finger moves up the circle gets its full size
-                                    // (short animation) instead of growing with the distance.
+                                    // As soon as the finger moves up the circle and buttons jump to
+                                    // full size at once (no animation, no gradual growth).
                                     if (!expanded && dy < 0f) {
                                         expanded = true
                                         open = true
-                                        scope.launch { progress.animateTo(1f, tween(200)) }
+                                        scope.launch { progress.snapTo(1f) }
                                     }
                                     if (expanded) updateHighlight(px, upY, 1f)
                                 }

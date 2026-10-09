@@ -4,7 +4,7 @@ Last updated: 2026-10-09
 
 ## 2026-10-09: Footer-cirklen får fuld størrelse straks ved træk op
 
-- `FooterArc` (web) og `HomeFooterArc.kt` (native): første træk opad åbner cirklen i fuld størrelse med en kort animation i stedet for at vokse gradvist med fingerens afstand. Slip uden at ramme en knap lader den stå åben. `ARC_PULL_DISTANCE` er fjernet.
+- `FooterArc` (web) og `HomeFooterArc.kt` (native): første træk opad springer cirklen og knapperne straks til fuld størrelse (ingen animation) i stedet for at vokse gradvist med fingerens afstand. Slip uden at ramme en knap lader den stå åben. `ARC_PULL_DISTANCE` er fjernet.
 - Ikke kørt: lint/build (ingen `node_modules` i sessionen), Kotlin ikke kompileret, ikke prøvet på telefon.
 
 ## 2026-10-09: Tøj ved vejning som til/fra-slidere
