@@ -36,6 +36,18 @@ ikke her, er den ikke registreret og skal tilføjes.
   Vegansk).
 - **Dyrefoder**: spærres (blacklist) — se docs/DECISIONS.md "Pet-food blacklist".
 
+- **Produkttype: ental og flertal (kun generiske varer, besluttet 2026-10-08)**:
+  generiske varer får to kolonner/felter ved siden af produkttype: `Product type
+  singular` og `Product type plural`, begge udfyldt. Søgning efter "et æble"
+  må ikke give "æbler" (og omvendt). Hvor ental = flertal (fx æg) eller det ikke
+  kan afgøres, står samme tekst i begge. Gælder ark og database
+  (`GenericIngredient`); almindelige varer med brand/EAN berøres ikke.
+  Status: ikke implementeret endnu.
+- **Små ord i navne**: med, i, af, uden skrives altid med småt i
+  produktnavne/produkttype/variant (aftalt 2026-10-08, ikke gennemført endnu).
+- **Generisk vare** = ingen Brand og ingen Subbrand i arket (EAN ses bort fra).
+  I databasen ligger de i `GenericIngredient`, ikke `Product`.
+
 ## Logoer og billeder
 
 - Kun mad-/drikkevaremærker får logo (ikke husholdning/rengøring/køkkenudstyr);
@@ -71,3 +83,7 @@ ikke her, er den ikke registreret og skal tilføjes.
 - Nye billedmapper med produkt-/opskrifts-/mærkebilleder skal i
   `PROTECTED_IMAGE_PREFIXES`.
 - Aldrig vandmærke eller skjult bruger-ID i billeder (brugerens regel 2026-10-08).
+
+- **Frida** (DTU-fødevaredatabasen): opbygning, nøgler og rå/kogt-fund står i `docs/FRIDA.md`.
+
+- **Startmængde** (`src/lib/default-amount.ts`, brugerens regel 2026-10-09): forslaget må aldrig overstige pakkens indhold (g/ml fra pakningsstørrelsen). Al instantkaffe (instant, Nescafé, pulverkaffe …) starter på 2 g (pr. kop).

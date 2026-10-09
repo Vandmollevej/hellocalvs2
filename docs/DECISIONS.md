@@ -4692,3 +4692,10 @@ Google/Apple/Facebook-login og integrationstilkobling kører i system-browseren,
 - **Integrationer:** den indloggede app henter `POST /api/auth/native/connect-code` og åbner `/api/integrations/<slug>/connect?native=<kode>`. Brugeren bindes til OAuth-state med et signeret token i state-cookien; callbacken sender til `hellocal://settings/integrations/<slug>?connected=1` / `?error=…`.
 - **Koder** (`NativeAuthCode`, migration `20261008160000_native_auth_codes`): 32 tilfældige bytes, kun sha256-hash gemmes, 2 minutter, én gang (atomisk). Login-koder kræver appens PKCE-verifier, så en anden app, der opsnapper `hellocal://`-linket, ikke kan bruge koden. Exchange/connect-code kræver headeren `X-HelloCal-Client: native` (mod login-CSRF).
 - Kendt rest-risiko: et connect-link er bundet til den bruger, der hentede koden; det kan kun bruges i 2 minutter og én gang.
+
+## 2026-10-08 — Ental/flertal på generiske ingredienser (`nameSingular` / `namePlural`)
+
+- `GenericIngredient` har fået `nameSingular` og `namePlural` (migration `20261008220000_generic_ingredient_number_forms`, backfill for kendte ord, ellers = `name`). Hvor formen ikke kan afgøres (fx æg) er teksten ens i begge felter.
+- `src/lib/danish-number.ts`: `deriveNumberForms` (kendte ord + tillægsord), `parseNumberQuery` ("et/en X" = ental, "nogle/flere/mange X" = flertal) og `matchesNumberQuery`. `GET /api/generic-ingredients` søger i alle tre felter og filtrerer på hele ord, så "et æble" ikke giver "æbler"; svaret har `displayName` i den søgte form. Oprettelse (`POST` og `addIngredientRequestGlobally`) udfylder begge felter.
+- Kun generiske varer — almindelige varer med brand/EAN berøres ikke. Se docs/REGLER.md.
+- Ikke gjort endnu: UI skal bruge `displayName`; ental/flertal-kolonner i Bilka-/REMA-arkene; import af de afledte former til eksisterende rækker ud over backfill-listen.

@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import { queueMessage } from "@/lib/messaging";
 import { matchFridaProduct } from "@/lib/generic-ingredient-match";
+import { deriveNumberForms } from "@/lib/danish-number";
 
 // "Opret egen ingrediens" (docs/DECISIONS.md 2026-09-24). Brugerens private
 // ingrediens (src/lib/private-ingredients.ts) sendes som anmodning til
@@ -33,9 +34,12 @@ export async function addIngredientRequestGlobally(requestId: string, name: stri
     select: { id: true, name: true, kcalPer100g: true, proteinPer100g: true, carbsPer100g: true, fatPer100g: true },
   });
   const match = matchFridaProduct(name, fridaCandidates);
+  const forms = deriveNumberForms(name);
   const ingredient = await prisma.genericIngredient.create({
     data: {
       name,
+      nameSingular: forms.singular,
+      namePlural: forms.plural,
       fridaProductId: match?.id,
       kcalPer100g: match?.kcalPer100g,
       proteinPer100g: match?.proteinPer100g,
