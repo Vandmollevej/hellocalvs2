@@ -48,6 +48,7 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.booleanOrNull
 import kotlinx.serialization.json.contentOrNull
+import kotlinx.serialization.json.jsonArray
 import kotlinx.serialization.json.jsonPrimitive
 
 @Serializable
@@ -69,7 +70,7 @@ fun WeightCreateScreen(@Suppress("UNUSED_PARAMETER") args: RouteArgs) {
     var saved by remember { mutableStateOf(false) }
     var entries by remember { mutableStateOf<List<WeightEntry>>(emptyList()) }
     var loading by remember { mutableStateOf(true) }
-    var attire by remember { mutableStateOf<String?>(null) }
+    var attire by remember { mutableStateOf<List<String>>(emptyList()) }
     var calibrated by remember { mutableStateOf(true) }
     var openId by remember { mutableStateOf<String?>(null) }
     var reload by remember { mutableStateOf(0) }
@@ -86,7 +87,7 @@ fun WeightCreateScreen(@Suppress("UNUSED_PARAMETER") args: RouteArgs) {
     LaunchedEffect(Unit) {
         // The admin algorithm guesses the attire from recent weigh-ins and the time of day.
         runCatching {
-            (Api.get("/api/weight-attire/suggest") as? JsonObject)?.get("suggestion")?.jsonPrimitive?.contentOrNull
+            (Api.get("/api/weight-attire/suggest") as? JsonObject)?.get("suggestion")?.jsonArray?.map { it.jsonPrimitive.content }
         }.getOrNull()?.let { attire = it }
         calibrated = runCatching {
             (Api.get("/api/weight-calibration") as? JsonObject)?.get("calibrated")?.jsonPrimitive?.booleanOrNull
@@ -102,7 +103,7 @@ fun WeightCreateScreen(@Suppress("UNUSED_PARAMETER") args: RouteArgs) {
             try {
                 val body = buildMap<String, Any> {
                     put("weightKg", parsed)
-                    attire?.let { put("attire", it) }
+                    put("attireItems", attire)
                 }
                 Api.post("/api/weight-entries", body)
                 weight = ""
