@@ -86,6 +86,8 @@ private const val ARC_BULGE_SAMPLES = 40
 private const val ARC_MOVE_PX = 8f
 private const val ARC_DEAD_ZONE = 34f
 private const val ARC_HIGHLIGHT_SCALE = 1.35f
+private const val ARC_FINGER_CLEARANCE = 62f
+private const val ARC_TOP_ROOM = 90f
 internal const val ARC_ICON_SIZE = 26f
 private const val ARC_OFFSET_X_KEY = "hellocal.frontpage.arcOffsetX"
 /** Smallest distance from a button's centre to the screen edge. */
@@ -383,11 +385,18 @@ fun HomeFooterArc(modifier: Modifier = Modifier, onOpenMenuSheet: () -> Unit) {
         // The fan.
         slots.forEachIndexed { index, slot ->
             key(slot.key) {
-                val (sx, sy) = drawLayout[index]
+                val (sx, baseY) = drawLayout[index]
                 val highlighted = highlightedKey == slot.key
                 // Like the side circle: the buttons appear at once (short fade/pop), not gradually with the pull.
                 val appear by animateFloatAsState(if (p > 0.02f) 1f else 0f, tween(150), label = "arcAppear")
                 val scale = (0.4f + 0.6f * appear) * if (highlighted) ARC_HIGHLIGHT_SCALE else 1f
+                // The highlighted button must never end up under the thumb: keep it above the fingertip.
+                var sy = baseY
+                val fingerNow = finger
+                if (highlighted && fingerNow != null) {
+                    val roomAbove = height - ARC_TOP_ROOM
+                    sy = max(sy, min(fingerNow.second + ARC_FINGER_CLEARANCE, max(sy, roomAbove)))
+                }
                 Box(
                     Modifier
                         .offset(x = (sx - ARC_ICON_CIRCLE / 2).dp, y = (height - sy - ARC_ICON_CIRCLE / 2).dp)
@@ -415,7 +424,7 @@ fun HomeFooterArc(modifier: Modifier = Modifier, onOpenMenuSheet: () -> Unit) {
                 if (highlighted) {
                     Box(
                         Modifier
-                            .offset(x = (sx - 60).coerceIn(0f, max(0f, width - 120f)).dp, y = (height - sy - ARC_ICON_CIRCLE / 2 - 14 - 34).dp)
+                            .offset(x = (sx - 60).coerceIn(0f, max(0f, width - 120f)).dp, y = (height - sy - ARC_ICON_CIRCLE / 2 - 22 - 34).dp)
                             .size(120.dp, 34.dp),
                         contentAlignment = Alignment.Center,
                     ) {

@@ -2,6 +2,11 @@
 
 Last updated: 2026-10-09
 
+## 2026-10-09: Ikoner tilbage (adgangsmur) + markeret cirkel væk fra fingeren
+
+- Ikoner (fingeraftryk, PNG/WebP-tilføj-ikoner) forsvandt efter adgangsmuren 2026-10-08: Next's billed-optimerer henter `/icons/*` internt uden browser-User-Agent, og muren afviste den som bot. Åbne statiske filer (`isPublicStaticAsset` i `access-wall.ts`) slipper nu forbi muren før UA-/rate-tjekket; beskyttede billeder er uændrede.
+- Footer-halvcirklen: den markerede cirkel rykkes 40 px ud fra viften (og teksten 8 px længere op), så den ikke ligger under tommelfingeren (`FooterArc.tsx` + `HomeFooterArc.kt`). Markeringen måles stadig ved hvilepladsen.
+- Lint ikke kørt (ingen `node_modules` her); logik tjekket med node. Ikke prøvet på telefon — tjek efter deploy at ikonerne er tilbage.
 ## 2026-10-09: Footer-cirklen får fuld størrelse straks ved træk op
 
 - `FooterArc` (web) og `HomeFooterArc.kt` (native): første træk opad springer cirklen og knapperne straks til fuld størrelse (ingen animation) i stedet for at vokse gradvist med fingerens afstand. Slip uden at ramme en knap lader den stå åben. `ARC_PULL_DISTANCE` er fjernet.
