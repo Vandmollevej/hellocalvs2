@@ -12,6 +12,7 @@ export function SwipeableRow({
   onCopyToAccount,
   onReportError,
   onDelete,
+  deleteStyle = "full",
   surfaceClassName = "bg-hf-cream",
   children,
 }: {
@@ -21,6 +22,9 @@ export function SwipeableRow({
   onCopyToAccount?: () => void;
   onReportError?: () => void;
   onDelete: () => void;
+  // "pill": Slet er en kompakt rød knap midt for rækken i stedet for en
+  // fuldhøjde rød flade (Beskeder).
+  deleteStyle?: "full" | "pill";
   // Baggrund på den forreste flade; skal matche listen rækken ligger i.
   surfaceClassName?: string;
   children: React.ReactNode;
@@ -117,14 +121,16 @@ export function SwipeableRow({
           </button>
         </div>
       )}
-      <div className="absolute inset-y-0 right-0 flex w-20 items-center justify-center bg-hf-red-dark">
+      <div
+        className={`absolute inset-y-0 right-0 flex w-20 items-center justify-center ${deleteStyle === "pill" ? "" : "bg-hf-red-dark"}`}
+      >
         <button
           onClick={() => {
             onDelete();
             setDragX(0);
           }}
           aria-label={t("swipeableRow.delete")}
-          className="hf-type-small hf-type-strong text-hf-white"
+          className={`hf-type-small hf-type-strong text-hf-white ${deleteStyle === "pill" ? "rounded-[8px] bg-hf-red-dark px-3 py-2" : ""}`}
         >
           {t("swipeableRow.delete")}
         </button>

@@ -1376,7 +1376,15 @@
     "messages": {
       "title": "Beskeder",
       "empty": "Du har ingen beskeder endnu.",
-      "markAllRead": "Markér alle som læst"
+      "markAllRead": "Markér alle som læst",
+      "deleted": "Slettet",
+      "inbox": "Beskeder",
+      "emptyDeleted": "Du har ingen slettede beskeder.",
+      "clearAll": "Ryd alt",
+      "clearTitle": "Ryd alle slettede beskeder?",
+      "clearBody": "Alle slettede beskeder fjernes permanent og kan ikke gendannes.",
+      "clearConfirm": "Ryd alt",
+      "cancel": "Annuller"
     },
     "communication": {
       "intro": "Vælg hvilke beskeder du vil have som e-mail og/eller push. Vigtige kontobeskeder (fx verifikation og nulstil kodeord) sendes altid.",

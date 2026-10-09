@@ -3,6 +3,13 @@
 Last updated: 2026-10-03
 Last updated: 2026-10-04
 
+## 2026-10-09: Beskeder — Slettet, swipe-slet og "Ryd alt" i bundark
+
+- Profil → Beskeder: øverst til venstre står "Slettet" (i Slettet-visningen "Beskeder" som vej tilbage); til højre "Markér alle som læst", som i Slettet erstattes af "Ryd alt".
+- Swipe på en besked viser en kompakt rød "Slet"-knap midt for beskeden (`SwipeableRow deleteStyle="pill"`), ikke en fuldhøjde rød flade. Slet lægger beskeden i Slettet (`OutboundMessage.deletedAt`, migration `20261009120000_outbound_message_deleted_at`).
+- "Ryd alt" åbner et bundark (ikke overlay) og fjerner slettede beskeder permanent (`DELETE /api/messages`; QUEUED røres ikke). Swipe ned/Annuller lukker uden at slette. Bemærk: rækkerne forsvinder også fra admin-loggen.
+- Tjek: lint rent, `tsc` viser kun den eksisterende fejl i `products/page.tsx:343`. Ikke prøvet mod en rigtig database eller i browser; migrationen skal deployes.
+
 ## 2026-10-04: Brugerdata krypteret i databasen (User.email + User.displayName)
 
 - Feltkryptering (AES-256-GCM, `enc:v1:`-præfiks) af `User.email` og `User.displayName`, omskrevet transparent af en Prisma-klientudvidelse i `src/lib/prisma.ts` (logik i `src/lib/user-data-transform.ts`, krypto i `src/lib/user-crypto.ts`). Opslag på e-mail går via ny kolonne `User.emailHash` (HMAC-SHA256). Klartekst uden præfiks læses stadig, og uden env-nøgler kører appen som før — så deploy-rækkefølgen er sikker.

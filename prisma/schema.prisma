@@ -2663,9 +2663,13 @@ model OutboundMessage {
   // "Til info sendte vi dig ..."-popuppen (src/lib/sent-notices.ts): sat, når
   // brugeren har trykket "Læst". Kun relevant for sendte mails/sms'er.
   noticeAckAt DateTime?
+  // Profil → Beskeder → Slettet: sat, når brugeren har swipet beskeden væk.
+  // "Ryd alt" fjerner rækkerne permanent (src/app/api/messages/route.ts).
+  deletedAt DateTime?
 
   @@index([status])
   @@index([userId, readAt])
+  @@index([userId, deletedAt])
   @@map("outbound_messages")
 }
 

@@ -1392,7 +1392,15 @@
     "messages": {
       "title": "Meddelanden",
       "empty": "Du har inga meddelanden ännu.",
-      "markAllRead": "Markera alla som lästa"
+      "markAllRead": "Markera alla som lästa",
+      "deleted": "Raderade",
+      "inbox": "Meddelanden",
+      "emptyDeleted": "Du har inga raderade meddelanden.",
+      "clearAll": "Rensa allt",
+      "clearTitle": "Rensa alla raderade meddelanden?",
+      "clearBody": "Alla raderade meddelanden tas bort permanent och kan inte återställas.",
+      "clearConfirm": "Rensa allt",
+      "cancel": "Avbryt"
     },
     "communication": {
       "intro": "Välj vilka meddelanden du vill ha som e-post och/eller push. Viktiga kontomeddelanden (t.ex. verifiering och återställning av lösenord) skickas alltid.",

@@ -1392,7 +1392,15 @@
     "messages": {
       "title": "Berichten",
       "empty": "Je hebt nog geen berichten.",
-      "markAllRead": "Alles als gelezen markeren"
+      "markAllRead": "Alles als gelezen markeren",
+      "deleted": "Verwijderd",
+      "inbox": "Berichten",
+      "emptyDeleted": "Je hebt geen verwijderde berichten.",
+      "clearAll": "Alles wissen",
+      "clearTitle": "Alle verwijderde berichten wissen?",
+      "clearBody": "Alle verwijderde berichten worden definitief verwijderd en kunnen niet worden hersteld.",
+      "clearConfirm": "Alles wissen",
+      "cancel": "Annuleren"
     },
     "communication": {
       "intro": "Kies welke berichten je per e-mail en/of push wilt ontvangen. Belangrijke accountberichten (bijv. verificatie en wachtwoord resetten) worden altijd verstuurd.",

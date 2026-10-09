@@ -1376,7 +1376,15 @@
     "messages": {
       "title": "Messages",
       "empty": "You have no messages yet.",
-      "markAllRead": "Mark all as read"
+      "markAllRead": "Mark all as read",
+      "deleted": "Deleted",
+      "inbox": "Messages",
+      "emptyDeleted": "You have no deleted messages.",
+      "clearAll": "Clear all",
+      "clearTitle": "Clear all deleted messages?",
+      "clearBody": "All deleted messages are removed permanently and cannot be restored.",
+      "clearConfirm": "Clear all",
+      "cancel": "Cancel"
     },
     "communication": {
       "intro": "Choose which messages you get as email and/or push. Important account messages (e.g. verification and password reset) are always sent.",

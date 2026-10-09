@@ -1392,7 +1392,15 @@
     "messages": {
       "title": "Nachrichten",
       "empty": "Du hast noch keine Nachrichten.",
-      "markAllRead": "Alle als gelesen markieren"
+      "markAllRead": "Alle als gelesen markieren",
+      "deleted": "Gelöscht",
+      "inbox": "Nachrichten",
+      "emptyDeleted": "Du hast keine gelöschten Nachrichten.",
+      "clearAll": "Alle leeren",
+      "clearTitle": "Alle gelöschten Nachrichten leeren?",
+      "clearBody": "Alle gelöschten Nachrichten werden dauerhaft entfernt und können nicht wiederhergestellt werden.",
+      "clearConfirm": "Alle leeren",
+      "cancel": "Abbrechen"
     },
     "communication": {
       "intro": "Wähle, welche Nachrichten du per E-Mail und/oder Push erhalten möchtest. Wichtige Kontonachrichten (z. B. Verifizierung und Passwort zurücksetzen) werden immer gesendet.",

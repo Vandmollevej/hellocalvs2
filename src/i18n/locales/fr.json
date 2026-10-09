@@ -1392,7 +1392,15 @@
     "messages": {
       "title": "Messages",
       "empty": "Tu n'as pas encore de messages.",
-      "markAllRead": "Tout marquer comme lu"
+      "markAllRead": "Tout marquer comme lu",
+      "deleted": "Supprimés",
+      "inbox": "Messages",
+      "emptyDeleted": "Vous n'avez aucun message supprimé.",
+      "clearAll": "Tout vider",
+      "clearTitle": "Vider tous les messages supprimés ?",
+      "clearBody": "Tous les messages supprimés sont retirés définitivement et ne peuvent pas être restaurés.",
+      "clearConfirm": "Tout vider",
+      "cancel": "Annuler"
     },
     "communication": {
       "intro": "Choisis les messages que tu veux recevoir par e-mail et/ou en push. Les messages importants du compte (p. ex. vérification et réinitialisation du mot de passe) sont toujours envoyés.",

@@ -1392,7 +1392,15 @@
     "messages": {
       "title": "Meldinger",
       "empty": "Du har ingen meldinger ennå.",
-      "markAllRead": "Merk alle som lest"
+      "markAllRead": "Merk alle som lest",
+      "deleted": "Slettet",
+      "inbox": "Meldinger",
+      "emptyDeleted": "Du har ingen slettede meldinger.",
+      "clearAll": "Tøm alt",
+      "clearTitle": "Tømme alle slettede meldinger?",
+      "clearBody": "Alle slettede meldinger fjernes permanent og kan ikke gjenopprettes.",
+      "clearConfirm": "Tøm alt",
+      "cancel": "Avbryt"
     },
     "communication": {
       "intro": "Velg hvilke meldinger du vil ha som e-post og/eller push. Viktige kontomeldinger (f.eks. verifisering og tilbakestilling av passord) sendes alltid.",
