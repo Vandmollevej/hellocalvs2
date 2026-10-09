@@ -19,7 +19,6 @@ import {
   ARC_ICON_CIRCLE,
   ARC_ICON_RADIUS,
   ARC_MAX_USER_ACTIONS,
-  ARC_PULL_DISTANCE,
   ARC_RADIUS,
   ARC_REST_HEIGHT,
   fanAngles,
@@ -35,7 +34,7 @@ import { FooterArcEditor } from "@/components/FooterArcEditor";
 
 // Lille, fast halvcirkel over bundmenuen midt imellem de to midterste knapper
 // (brugerens ønske 2026-10-07). Hvile: et fast cirkelstykke på ca. 40 px med et
-// stort plus. Skub op med fingeren: cirklen vokser til samme størrelse som venstre-cirklen
+// stort plus. Skub op med fingeren: cirklen får straks samme størrelse som venstre-cirklen
 // (AddButton) og viser viften — "alle" altid i midten, så et lodret træk op
 // altid rammer "alle". Slip på en knap åbner den. Træk vandret i hvile flytter
 // cirklen. Tryk åbner den (samme størrelse som ved træk op). Hold fingeren
@@ -65,6 +64,8 @@ type Gesture = {
   mode: "undecided" | "slide" | "pull" | "select";
   moved: boolean;
   wasOpen: boolean;
+  /** Cirklen er sprunget til fuld størrelse (første træk opad). */
+  expanded: boolean;
   consumed: boolean;
   timer: ReturnType<typeof setTimeout> | null;
 };
@@ -239,6 +240,7 @@ export function FooterArc() {
       mode: "undecided",
       moved: false,
       wasOpen: openRef.current,
+      expanded: false,
       consumed: false,
       timer: null,
     };
@@ -277,13 +279,15 @@ export function FooterArc() {
       dragXRef.current = next;
       setDragX(next);
     } else if (gesture.mode === "pull") {
-      const p = clamp((gesture.startY - event.clientY) / ARC_PULL_DISTANCE, 0, 1);
-      setP(p);
-      if (p > 0.3) updateHighlight(event, p);
-      else {
-        setHighlight(null);
-        setFinger(null);
+      // Så snart fingeren er trukket opad, får cirklen sin fulde størrelse
+      // (kort animation) — den vokser ikke gradvist med fingerens afstand.
+      if (!gesture.expanded && gesture.startY - event.clientY > 0) {
+        gesture.expanded = true;
+        openRef.current = true;
+        setOpen(true);
+        animateTo(1);
       }
+      if (gesture.expanded) updateHighlight(event, 1);
     } else if (gesture.mode === "select") {
       updateHighlight(event, 1);
     }
@@ -327,8 +331,8 @@ export function FooterArc() {
       activate(slot);
       return;
     }
-    // Trukket op uden at ramme en knap: bliver åben, hvis den er over halvvejs.
-    setOpenState(gesture.mode === "pull" ? progressRef.current > 0.5 : false);
+    // Trukket op uden at ramme en knap: cirklen bliver åben i fuld størrelse.
+    setOpenState(gesture.mode === "pull" && gesture.expanded);
   }
 
   const showFan = progress > 0.02;

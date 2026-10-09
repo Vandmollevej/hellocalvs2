@@ -70,7 +70,6 @@ private const val ARC_LONG_PRESS_MS = 550L
 
 internal const val ARC_RADIUS = 83f
 private const val ARC_REST_HEIGHT = 40f
-private const val ARC_PULL_DISTANCE = 100f
 internal const val ARC_ICON_CIRCLE = 46f
 internal const val ARC_ICON_RADIUS = ARC_RADIUS + 38 + ARC_ICON_CIRCLE / 2
 private const val ARC_ANGLE_STEP_DEG = 32.0
@@ -250,6 +249,8 @@ fun HomeFooterArc(modifier: Modifier = Modifier, onOpenMenuSheet: () -> Unit) {
                         val boxTop = height - liveHit.value
                         var mode = ArcMode.Undecided
                         var moved = false
+                        // Pulled up: the circle has jumped to full size (no gradual growth).
+                        var expanded = false
                         // Set when the long press opened the editor: the rest of the gesture is ignored.
                         var consumed = false
                         val wasOpen = open
@@ -302,7 +303,7 @@ fun HomeFooterArc(modifier: Modifier = Modifier, onOpenMenuSheet: () -> Unit) {
                                             setOpenState(false)
                                             activate(slot)
                                         } else {
-                                            setOpenState(mode == ArcMode.Pull && progress.value > 0.5f)
+                                            setOpenState(mode == ArcMode.Pull && expanded)
                                         }
                                     }
                                 }
@@ -318,12 +319,14 @@ fun HomeFooterArc(modifier: Modifier = Modifier, onOpenMenuSheet: () -> Unit) {
                             when (mode) {
                                 ArcMode.Slide -> dragX = (startOffset + dx).coerceIn(-maxOffset, maxOffset)
                                 ArcMode.Pull -> {
-                                    val pp = (-dy / ARC_PULL_DISTANCE).coerceIn(0f, 1f)
-                                    scope.launch { progress.snapTo(pp) }
-                                    if (pp > 0.3f) updateHighlight(px, upY, pp) else {
-                                        highlightedKey = null
-                                        finger = null
+                                    // As soon as the finger moves up the circle gets its full size
+                                    // (short animation) instead of growing with the distance.
+                                    if (!expanded && dy < 0f) {
+                                        expanded = true
+                                        open = true
+                                        scope.launch { progress.animateTo(1f, tween(200)) }
                                     }
+                                    if (expanded) updateHighlight(px, upY, 1f)
                                 }
                                 ArcMode.Select -> updateHighlight(px, upY, 1f)
                                 ArcMode.Undecided -> Unit
