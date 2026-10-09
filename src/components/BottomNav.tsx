@@ -285,6 +285,15 @@ function slideIcon(el: HTMLElement, dx: number, dy: number, lift: boolean) {
   );
 }
 
+// Mellemrummet (0..PAGE_SIZE) nærmest fingeren, omregnet til et indeks i hele
+// listen. Et ikon fra panelet sættes ind mellem to ikoner, ikke oven på ét.
+function gapIndexAt(bar: HTMLElement | null, clientX: number, scrollPages: number) {
+  if (!bar) return null;
+  const r = bar.getBoundingClientRect();
+  const slotWidth = r.width / PAGE_SIZE;
+  return Math.max(0, Math.round((clientX - r.left) / slotWidth + scrollPages * PAGE_SIZE));
+}
+
 export function BottomNav() {
   const { t } = useTranslation();
   const pathname = usePathname();
@@ -529,6 +538,21 @@ export function BottomNav() {
           : overRect(barRef.current, e.clientX, e.clientY)
         : false;
       const next = { ...current, x: e.clientX, y: e.clientY, moved, overTarget };
+
+      // Ikon trukket ind over bunden: sæt det ind mellem to ikoner med det
+      // samme, så de andre rykker og gør plads. Derefter opfører det sig som
+      // et ikon, der allerede er i menuen (kan flyttes, eller trækkes tilbage).
+      if (moved && current.source === "inactive" && overTarget) {
+        const at = gapIndexAt(barRef.current, e.clientX, scrollPagesRef.current);
+        next.source = "active";
+        setInactiveKeys((prev) => prev.filter((k) => k !== current.key));
+        setActiveKeys((prev) => {
+          if (prev.includes(current.key)) return prev;
+          const copy = [...prev];
+          copy.splice(Math.min(at ?? copy.length, copy.length), 0, current.key);
+          return copy;
+        });
+      }
       dragRef.current = next;
       setDrag(next);
 

@@ -19,6 +19,7 @@ import {
   IconStarFilled,
 } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
+import { BottomNav } from "@/components/BottomNav";
 import { AddMenuSheet } from "@/components/add/AddMenuSheet";
 import { HfChevron } from "@/components/hf/HfChevron";
 import { ProfileAvatarLink } from "@/components/ProfileAvatarLink";
@@ -2549,6 +2550,8 @@ function DayDetails({
           onClose={() => setAddSheetHour(null)}
         />
       )}
+
+      <BottomNav />
     </div>
   );
 }
@@ -3087,6 +3090,7 @@ function HourEntriesOverlay({
           );
         })}
       </div>
+      <BottomNav />
     </div>
   );
 }
