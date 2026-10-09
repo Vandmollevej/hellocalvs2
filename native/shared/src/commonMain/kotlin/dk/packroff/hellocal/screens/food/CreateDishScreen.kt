@@ -128,6 +128,10 @@ fun CreateDishScreen(args: RouteArgs) {
     var ingredients by remember { mutableStateOf(DishDraft.read()) }
     var saving by remember { mutableStateOf(false) }
     var saveError by remember { mutableStateOf<String?>(null) }
+    // Flow step one: three buttons in the middle. Skipped when a draft already exists.
+    var started by remember {
+        mutableStateOf(details.name.isNotBlank() || ingredients.isNotEmpty() || details.steps.isNotEmpty() || details.images.isNotEmpty())
+    }
     var query by remember { mutableStateOf("") }
     var results by remember { mutableStateOf<List<DishSearchResult>>(emptyList()) }
     var searchState by remember { mutableStateOf("idle") }
@@ -258,6 +262,35 @@ fun CreateDishScreen(args: RouteArgs) {
         }
     }
 
+    if (!started) {
+        HcScreen(
+            t.t("createDish.title"),
+            icon = { HcIcon("Soup", size = 20.dp, stroke = 2f, color = HcColors.White) },
+            contentPadding = LIST_PAGE_PADDING,
+        ) {
+            Column(Modifier.fillMaxWidth().heightIn(min = 420.dp), verticalArrangement = Arrangement.spacedBy(12.dp, Alignment.CenterVertically), horizontalAlignment = Alignment.CenterHorizontally) {
+                listOf(
+                    Triple("Camera", t.t("createDish.modeScan"), "scan"),
+                    Triple("ClipboardText", t.t("createDish.modeText"), "paste"),
+                    Triple("Pencil", t.t("createDish.modeManual"), "none"),
+                ).forEach { (icon, label, target) ->
+                    Column(
+                        Modifier.fillMaxWidth().clip(RoundedCornerShape(16.dp)).background(HcColors.Tan)
+                            .clickable { sheet = target; started = true }.padding(vertical = 20.dp),
+                        verticalArrangement = Arrangement.spacedBy(8.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                    ) {
+                        HcIcon(icon, size = 28.dp, color = HcColors.Black)
+                        HcText(label, HcTypeRoles.Body, color = HcColors.Black, bold = true)
+                    }
+                }
+            }
+        }
+        if (sheet == "paste") PasteTextSheet(onClose = { sheet = "none" }, onResult = ::applyImport)
+        if (sheet == "scan") ScanSheet(onClose = { sheet = "none" }, onResult = ::applyImport)
+        return
+    }
+
     HcScreen(
         t.t("createDish.title"),
         icon = { HcIcon("Soup", size = 20.dp, stroke = 2f, color = HcColors.White) },
@@ -269,13 +302,6 @@ fun CreateDishScreen(args: RouteArgs) {
     ) {
         Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
             FoodPillField(details.name, { updateDetails(details.copy(name = it)) }, t.t("createDish.namePlaceholder"), Modifier.fillMaxWidth())
-
-            // Three ways in: Manual, Paste text, Scan.
-            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                ModeButton(t.t("createDish.modeManual"), selected = true, Modifier.weight(1f)) { sheet = "none" }
-                ModeButton(t.t("createDish.modeText"), selected = false, Modifier.weight(1f)) { sheet = "paste" }
-                ModeButton(t.t("createDish.modeScan"), selected = false, Modifier.weight(1f)) { sheet = "scan" }
-            }
 
             importNote?.let { note ->
                 HcCard {
@@ -406,15 +432,6 @@ fun CreateDishScreen(args: RouteArgs) {
         }
     }
     if (dish != null && !sharePrompt) RecipeCategoriesSheet(dish.first, dish.second, onClose = ::finish)
-}
-
-@Composable
-private fun ModeButton(label: String, selected: Boolean, modifier: Modifier, onClick: () -> Unit) {
-    Box(
-        modifier.clip(RoundedCornerShape(50)).background(if (selected) HcColors.Black else HcColors.White)
-            .border(1.dp, HcColors.Black, RoundedCornerShape(50)).clickable(onClick = onClick).padding(horizontal = 8.dp, vertical = 12.dp),
-        contentAlignment = Alignment.Center,
-    ) { HcText(label, HcTypeRoles.Small, color = if (selected) HcColors.White else HcColors.Black, bold = true, align = TextAlign.Center) }
 }
 
 /** src/components/recipes/RecipeImportSheets.tsx PasteTextSheet. */

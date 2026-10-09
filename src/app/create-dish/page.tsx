@@ -5,7 +5,9 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import {
   IconCamera,
+  IconClipboardText,
   IconListNumbers,
+  IconPencil,
   IconPhoto,
   IconSearch,
   IconX,
@@ -63,6 +65,11 @@ export default function CreateDishPage() {
   const [ingredients, setIngredients] = useState<DishDraftIngredient[]>(readDishDraft);
   const [saving, setSaving] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
+  // Flowets første trin: tre knapper midt på skærmen. Springes over, når der
+  // allerede er en kladde (fx ved retur fra en vare).
+  const [started, setStarted] = useState(
+    () => details.name.trim() !== "" || ingredients.length > 0 || details.steps.length > 0 || details.images.length > 0
+  );
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<{ id: string; name: string; imageUrl?: string | null }[]>([]);
   const [searchState, setSearchState] = useState<"idle" | "loading" | "ready" | "error">("idle");
@@ -236,6 +243,34 @@ export default function CreateDishPage() {
     }
   }
 
+  if (!started) {
+    const startOptions = [
+      { key: "scan", label: t("createDish.modeScan"), icon: <IconCamera size={28} />, sheet: "scan" as const },
+      { key: "text", label: t("createDish.modeText"), icon: <IconClipboardText size={28} />, sheet: "paste" as const },
+      { key: "manual", label: t("createDish.modeManual"), icon: <IconPencil size={28} />, sheet: "none" as const },
+    ];
+    return (
+      <HfScreen title={t("createDish.title")} icon={<IconSoup size={20} stroke={2} />}>
+        <div className="hf-page flex min-h-[60vh] flex-col items-center justify-center gap-3">
+          {startOptions.map((option) => (
+            <button
+              key={option.key}
+              type="button"
+              onClick={() => {
+                setSheet(option.sheet);
+                setStarted(true);
+              }}
+              className="flex w-full max-w-xs flex-col items-center gap-2 rounded-2xl bg-hf-tan py-5 text-hf-black"
+            >
+              {option.icon}
+              <span className="hf-type-body hf-type-strong">{option.label}</span>
+            </button>
+          ))}
+        </div>
+      </HfScreen>
+    );
+  }
+
   return (
     <HfScreen
       title={t("createDish.title")}
@@ -264,32 +299,6 @@ export default function CreateDishPage() {
           placeholder={t("createDish.namePlaceholder")}
           className="hf-type-body hf-field min-w-0 rounded-full bg-hf-tan px-4 text-hf-black outline-none"
         />
-
-        {/* Tre veje ind: Manuelt (som før), Indsæt tekst og Scan. */}
-        <div role="group" className="grid grid-cols-3 gap-2">
-          <button
-            type="button"
-            aria-pressed={sheet === "none"}
-            onClick={() => setSheet("none")}
-            className="hf-type-small hf-type-strong rounded-full border border-hf-black bg-hf-black px-2 py-3 text-hf-white"
-          >
-            {t("createDish.modeManual")}
-          </button>
-          <button
-            type="button"
-            onClick={() => setSheet("paste")}
-            className="hf-type-small hf-type-strong rounded-full border border-hf-black bg-hf-white px-2 py-3 text-hf-black"
-          >
-            {t("createDish.modeText")}
-          </button>
-          <button
-            type="button"
-            onClick={() => setSheet("scan")}
-            className="hf-type-small hf-type-strong rounded-full border border-hf-black bg-hf-white px-2 py-3 text-hf-black"
-          >
-            {t("createDish.modeScan")}
-          </button>
-        </div>
 
         {importNote && (
           <div className="hf-card">

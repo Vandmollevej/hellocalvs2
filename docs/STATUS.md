@@ -2,6 +2,12 @@
 
 Last updated: 2026-10-09
 
+## 2026-10-09: Opret ret som flow — startskærm med tre knapper
+
+- `/create-dish` (web + `CreateDishScreen.kt`) åbner nu med et startskærm-trin: tre knapper midt på skærmen — Scan, Indsæt tekst, Manuelt (de to første åbner deres ark, den sidste går til formularen). Springes over, når der allerede er en kladde (fx retur fra en vare). Knap-rækken i formularen er fjernet.
+- Ikonerne er midlertidige Tabler-ikoner (kamera, udklipsholder, blyant); brugeren laver de rigtige. Layoutet (tre knapper under hinanden, centreret) er et gæt på "to en ned" — ret hvis det skulle være to ved siden af hinanden og én under.
+- Lint og native-paritet grønne; Kotlin ikke kompileret lokalt; ikke prøvet i browser/telefon.
+
 ## 2026-10-09: "Opret egen ingrediens" fjernet
 
 - Fjernet i web og native: siderne `/ingredients` ("Mine ingredienser") og `/ingredients/new`, tekstlinket under Opret ret og egne ingredienser i søgningen på Opret ret. Backend (`/api/private-ingredients`, admin "Ønskede ingredienser"), tabeller og eksisterende `private:`-ingredienser i retter er bevidst urørt (kun brugerindgangen er væk). Lint, tsc og native-paritet grønne; Kotlin ikke kompileret lokalt.
