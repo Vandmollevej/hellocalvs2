@@ -1,6 +1,10 @@
 # HELLO CAL — project status
 
-Last updated: 2026-10-07
+Last updated: 2026-10-09
+
+## 2026-10-09: Periodevalg som dropdown
+
+- Søvn- og Væskestatistik bruger nu dropdown (`src/components/hf/StatPeriodSelect.tsx`) i stedet for periodeknapper. Ikke kørt lint/build/visuelt: `node_modules` mangler i dette cloud-miljø.
 
 ## 2026-10-07: Alle popups som bundark + brand-logoets luft
 
