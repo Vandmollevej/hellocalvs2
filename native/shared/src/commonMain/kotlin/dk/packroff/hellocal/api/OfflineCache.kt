@@ -72,7 +72,7 @@ object OfflineCache {
         all[key]?.let { return it.items.map { i -> i.toResult() } }
         val hits = LinkedHashMap<String, FoodProductResult>()
         for (entry in all.values.reversed()) {
-            for (item in entry.items) if (item.title.lowercase().contains(key)) hits.putIfAbsent(item.id, item.toResult())
+            for (item in entry.items) if (item.title.lowercase().contains(key)) if (item.id !in hits) hits[item.id] = item.toResult()
         }
         return hits.values.toList().takeIf { it.isNotEmpty() }
     }
