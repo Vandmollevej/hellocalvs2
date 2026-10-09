@@ -59,7 +59,6 @@ import dk.packroff.hellocal.screens.food.AddMenuSheet
 import dk.packroff.hellocal.theme.HcColors
 import dk.packroff.hellocal.theme.HcTypeRoles
 import dk.packroff.hellocal.ui.HcAppBar
-import dk.packroff.hellocal.ui.CalendarBathScaleIcon
 import dk.packroff.hellocal.ui.CalendarPartyPopperIcon
 import dk.packroff.hellocal.ui.CalendarPartyPopperImage
 import dk.packroff.hellocal.ui.HcLoader
@@ -362,22 +361,6 @@ internal fun DayDetails(
                     }
                 }
 
-                // The day's weigh-in with its time — here there is room for the number.
-                if (latestWeighIn != null) {
-                    Row(
-                        Modifier.fillMaxWidth().padding(top = 16.dp, end = 4.dp),
-                        horizontalArrangement = Arrangement.spacedBy(6.dp, Alignment.End),
-                        verticalAlignment = Alignment.CenterVertically,
-                    ) {
-                        CalendarBathScaleIcon(16.dp, HcColors.Black)
-                        HcText(
-                            t.t("calendar.dayWeighIn", "value" to formatKg(latestWeighIn.weightKg), "time" to clock(latestWeighIn.at)),
-                            HcTypeRoles.Body,
-                            color = HcColors.Black,
-                            maxLines = 1,
-                        )
-                    }
-                }
                 GoalStatusSummary(
                     status = if (isFutureDay) null else if (hasEntries) (if (met) GoalStatusKind.Met else GoalStatusKind.Missed) else GoalStatusKind.None,
                     goalKcal = dayGoalKcal,
@@ -399,7 +382,6 @@ internal fun DayDetails(
                 waterEntries = waterEntries.filter { it.at.hour == hour },
                 measurements = measurements.filter { it.time.hour == hour },
                 goals = if (hour == GOAL_HOUR) goals else emptyList(),
-                weighIns = weighIns.filter { it.at.hour == hour },
                 onClose = { openHour = null },
             )
         }
@@ -534,7 +516,7 @@ private fun HourRow(
                 if (hasGoal) CalendarPartyPopperIcon(16.dp, HcColors.Black)
                 for (entry in data.weighIns) {
                     Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(4.dp)) {
-                        CalendarBathScaleIcon(16.dp, HcColors.Black)
+                        HcIcon("Scale", size = 16.dp, color = HcColors.Black)
                         HcText("${formatKg(entry.weightKg)} kg", HcTypeRoles.Small, bold = true, color = HcColors.Black, maxLines = 1)
                     }
                 }
