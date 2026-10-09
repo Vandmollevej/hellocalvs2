@@ -2,6 +2,11 @@
 
 Last updated: 2026-10-09
 
+## 2026-10-09: Bundcirklen på alle sider, side-cirklen slået fra
+
+- Side-cirklen (`AddButton` i `Hero`) vises ikke længere. Bundcirklen (`FooterArc`) ligger nu i `BottomNav` og er derfor på alle sider med bundmenu; popups (BottomSheet, z-200) ligger over den. Native: `HomeFooterArc` flyttet fra `HomeScreen` til `HelloCalApp` over bundmenuen, med egen `AddMenuSheet`. `AddButton`-koden er bevaret.
+- Ikke kørt: lint/tsc (ingen `node_modules`), Kotlin ikke kompileret lokalt (CI bygger); ikke prøvet på telefon. Paritet grøn.
+
 ## 2026-10-09: Halvcirklens vifte drejes i stedet for at stable knapper
 
 - Brugerens rettelse: knapperne må ikke ligge ovenpå hinanden i en søjle ved skærmkanten. `fanLayout` (web `footer-arc.ts` + native `HomeFooterArc.kt`) drejer nu viften mod den frie side (presses lidt sammen, mindst 18° mellem naboer), så alle knapper ligger på skærmen uden at overlappe. Midt på skærmen er viften uændret.
