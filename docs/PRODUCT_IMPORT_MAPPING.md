@@ -32,6 +32,12 @@ Arkene og billederne ligger siden 2026-10-02 på NAS-sharet
 - Samme EAN i begge ark (500 stk.) = ét produkt med begge kæder.
 - Bilka vinder ved uenighed; REMA udfylder tomme felter (fx energi,
   varedeklaration).
+- Slettes en række som stregkode-gænger i et andet butiksark, skal den
+  tabende butiks kæde altid gemmes på vinderen (Kæder/`product_stores`):
+  skriv EAN + kæde i `scripts/store-products-import/data/store_links.json`.
+  Agenten kobler ved hver kørsel; varer der endnu ikke er i databasen
+  (SPAR/tyske ark) kobles, når de kommer ind. Overblik på NAS'en:
+  `Productdatabase\Kaeder for slettede EAN-gengangere.xlsx`.
 - En eksisterende vare med samme stregkode opdateres i stedet for at blive
   dubleret; har den næring fra andetsteds (bruger, Open Food Facts), beholder
   den sin næring, hvor arkene ingen har.
