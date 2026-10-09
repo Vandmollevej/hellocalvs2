@@ -1725,7 +1725,8 @@
     "showAll": "Tout afficher ({count})",
     "showLess": "Afficher moins",
     "chartAria": "Évolution de {name}",
-    "loadError": "Impossible de charger ton statut."
+    "loadError": "Impossible de charger ton statut.",
+    "customizeView": "Personnaliser l'affichage"
   },
   "bodyMeasurementChart": {
     "noData": "Aucune mesure pour l'instant.",

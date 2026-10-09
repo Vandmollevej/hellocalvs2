@@ -1,6 +1,48 @@
 # HELLO CAL — project status
 
-Last updated: 2026-10-07
+Last updated: 2026-10-09
+
+## 2026-10-09: Stregkode læses også med skygge hen over koden (lokal tærskel pr. scanlinje)
+
+- Brugerens test 2026-10-06: en mælk med lidt skygge over stregkoden kunne ikke læses, mens andre scanner-apps læste den straks. Årsag: ZXing binariserer hver scanlinje med én fælles sort/hvid-tærskel, så de hvide felter i skyggen var mørkere end de sorte streger i lyset. Bemærk: ZXing's `HybridBinarizer` (som 2026-10-07-ændringen skiftede til hver anden frame) adskiller sig kun fra den globale for 2D-koder — for 1D-rækker bruger begge samme ene tærskel pr. række, så den skiftende binarisering hjalp ikke mod skygge på iPhone (ingen native BarcodeDetector).
+- Nu tærskles hver scanlinje lokalt (`src/lib/barcode-row-threshold.ts`, koblet på ZXing via `src/lib/barcode-local-binarizer.ts`): hver pixel sammenlignes med gennemsnittet i et vindue på 10 % af linjen, så kun kontrasten mellem streg og nabo-felter tæller. I samme frame prøves derefter ZXing's globale histogram (lav kontrast/uskarphed), og UPC-E-læseren på begge. Én luminans-beregning pr. billede. Native BarcodeDetector (Android Chrome) kører stadig først.
+- Tjek: `npm test` (4 nye tests: uden skygge, blød og skarp skyggekant, ensfarvede områder), lint og typecheck rene for de ændrede filer. `npm run build` stopper på en eksisterende typefejl i `src/app/admin/product-database/products/page.tsx` (`"details"` vs. `"list"`, kendt fra 2026-10-04). Ikke prøvet på telefon — brugeren scanner mælken igen i samme lys.
+
+## 2026-10-09: Startmængde — instantkaffe 2 g og aldrig over pakkens indhold
+
+- `default-amount.ts` (+ native `FoodLogic.kt`): instantkaffe → 2 g; forslaget kappes ved pakkens vægt/volumen. Test: `node --test src/lib/default-amount.test.mjs` (14 grønne). Lint/build ikke kørt (ingen node_modules her); Kotlin ikke kompileret lokalt.
+
+## 2026-10-08: Adgangsmur mod crawlere
+
+- `middleware.ts` + `src/lib/access-wall.ts`: bot-blokering (UA), login-krav på alt undtagen forside/login/juridiske sider, beskyttede billeder (session + hotlink-tjek), rate limit. Se DECISIONS 2026-10-08 og DEPLOYMENT "Search indexing".
+- Logik testet med 30 enhedstjek; lint på ændrede filer grøn. Ikke testet live (ingen lokal DB/login) — efter deploy: tjek forside, login, Face ID, Google/Apple-login, betaling-webhook, widgets og produktbilleder i appen.
+- Mangler hos dig: Cloudflare Bot Fight Mode / AI-bot-blokering + rate limit på login (se DEPLOYMENT).
+
+## 2026-10-04: Drinks (forberedt)
+
+- Ny kategori "Drinks" nederst i tilføj-menuen, `/drinks` og `/drinks/[id]` (cirkelbillede + én skyder pr. ingrediens), API `/api/drinks` + `/api/drinks/log`, migration `20261004100000_drinks` skal køre ved deploy.
+- Mangler: regneark-import (format i `docs/DRINKS.md`) — databasen er tom indtil da.
+
+## 2026-10-08: Native app — login-overdragelse, manglende API'er, genererede videnstekster
+
+- Google/Apple/Facebook-login og integrationstilkobling fra appen vender nu tilbage til appen (`hellocal://auth/complete?code=…`, `hellocal://settings/integrations/<app>?connected=1`) via engangskoder + PKCE. Nye ruter `POST /api/auth/native/exchange` og `POST /api/auth/native/connect-code`; ny migration `20261008160000_native_auth_codes` (DECISIONS 2026-10-08 "Native login-overdragelse"). Native: `api/NativeAuth.kt`, login-/opstartsknapper, integrationssiden og deep-link-håndtering i `HelloCalApp.kt`; `Location` har nu `fragment` (#anker), også i `RouteArgs`.
+- Nye API'er til native skærme: `GET /api/forwards/[token]` (samme claim-logik som `/forward/[token]`, nu i `src/lib/forward-view.ts`) og `GET /api/additives/[code]`; `GET /api/additives` har fået `category`, `euStatus`, `variantOf`. Native `ForwardScreen` og E-nummer-skærmene (EU-status-filter, "Forbudt i EU", chips, alle afsnit) er færdige.
+- `OnbKnowledgeData.kt` og `FoodReferenceData.kt` genereres nu af `scripts/native/sync.mjs` fra `src/lib/{food-latin,knowledge,knowledge-research,micronutrient-info,toxins}.ts` (Nodes indbyggede type-stripping, ingen pakker; CI kører Node 24). `--check` fejler ved drift.
+- Lint, `sync.mjs --check` og `parity.mjs` grønne. `tsc` kun fejl om `prisma.nativeAuthCode` (Prisma-klienten i worktree'et er ikke regenereret). Kotlin ikke kompileret lokalt (ingen Gradle) — CI-jobbet bygger APK/iPhone.
+## 2026-10-08: Kæder for slettede EAN-gengangere (Rewe/DM)
+
+- De 264 Rewe/DM-rækker, der blev slettet 2026-10-07 som stregkode-gængere, er genskabt fra backup-arkene og gemt som kædekoblinger (259 EAN) i `scripts/store-products-import/data/store_links.json`; store-products-agent sætter Kæder (`product_stores`) ved hver kørsel. 87 EAN findes allerede i databasen (Bilka/REMA) og får Rewe/DM ved næste deploy; 48 SPAR- og 124 Rewe-ark-varer kobles, når de importeres.
+- Overblik på NAS'en: `Productdatabase\Kaeder for slettede EAN-gengangere.xlsx`. Regel: DECISIONS 2026-10-08.
+## 2026-10-08: Vagt-robot på NAS'en
+
+- Ny service `uptime-agent` (`scripts/uptime-agent`): hver time site udefra/indefra, containere, diskplads; mail til peter@packroff.dk ved fejl, påmindelse hver 6. t og ved løst, samt en "startet"-mail ved opstart. Se DEPLOYMENT "Overvågning".
+- Logik og dekryptering af admin-gemte SMTP-nøgler testet lokalt (Python); første kørsel på NAS'en verificeres via containerlog.
+
+## 2026-10-08: Admin Brands — "Erstat logo" og "Genkør logo"
+
+- Hvert brand-kort (fuld admin) har nu "Erstat logo" (PNG-upload, samme pipeline som drag n drop/Logo-upload, PNG bruges som den er) og "Genkør logo" (`rerunBrandLogo` i `brands/actions.ts` sætter brandets BRAND_LOGO-job til PENDING; `cutout.py` skriver det nye resultat til brandet med `?v=`).
+- Genkør virker kun, når logoet stammer fra et fritlægningsjob (ikke uploadet). Billedrobotten skal genstartes/deployes med ny `cutout.py` (fix e745004e + denne).
+- Lint/typecheck/build kørt; ikke visuelt testet.
 
 ## 2026-10-09: Kalender uden totaler i uge/måned
 Statusblokken i uge-/månedsvisning viser kun status (gennemsnit af forgangne dage mod delmålets dagsmål). Dagsvisningen er uændret. Lint + tsc grønne; ikke prøvet i browser.
@@ -12,6 +54,23 @@ Statusblokken i uge-/månedsvisning viser kun status (gennemsnit af forgangne da
 - Verificeret på master (0a7d3593): "Sådan regner vi" væk, "/stk." efter gram pr. skive, ingen tom luft over Tilføj-knappen, Tilføj-knap væk fra rækker, menutekst tættere på ikonerne, beskeder swipe-slet midt for rækken.
 - Lint grøn på de ændrede filer; `tsc` har kun to fejl i `api/dishes/route.ts` fra en forældet Prisma-klient i worktree'et. Ikke visuelt testet (brugerens regel).
 
+## 2026-10-08: Native apps — alle 121 forbruger-skærme porteret, Android + iPhone bygger
+
+- Alle forbruger-sider i `native/parity/screens.json` er nu `ported` (121), og 100 er `web-only` (admin/partner/erhverv/butiks-scanner). CI ("Native apps") bygger Android-APK og iPhone-app (simulator) grønt.
+- Telefon-funktioner (`platform/Device.kt`, `AndroidDevice.kt`, `IosDevice.swift`): kamera, foto-/filvalg, video→billeder, OCR, stregkode/QR, tale, deling, biometri.
+- Login med Google/Apple/Facebook og integration-forbindelser vender tilbage til appen (PKCE + engangskoder, migration `20261008160000_native_auth_codes`).
+- Nye API'er: `GET /api/forwards/[token]`, `GET /api/additives/[code]`; `/api/additives` har category/euStatus/variantOf.
+- Web-fix: `/statistics/body-water` viste aldrig kcal/salt/sugar (forkert dagsnøgle i `src/lib/water-stats.ts`).
+- Mangler eksterne konti: push til login-godkendelse (Firebase/APNs) og Face ID/passkey-login i appen (Apple Associated Domains + assetlinks).
+
+## 2026-10-07: Native apps (Android + iPhone) — fundament
+
+- Brugerens valg: Hello Cal bliver **helt native** og ikke en web-app i en skal. Alle skærme skrives én gang i Kotlin/Compose Multiplatform (`native/shared`) og kompileres til både Android og iPhone. Se DECISIONS 2026-10-07.
+- Fundamentet er klar: Gradle-build (`native/`), Android-app (`androidApp`) med deep links, widgets og Health Connect, og iPhone-app (`iosApp/project.yml`, XcodeGen) med Keychain og widgets.
+- Tema, alle tekster (7 sprog), 176 Tabler-ikoner og app-ikonet genereres fra web med `scripts/native/sync.mjs`.
+- Login (cookie som i browseren, krypteret lager), navigation med web-stier og bundmenu.
+- Paritets-vagten: `native/parity/screens.json` (121 forbruger-sider, 100 kun web), `scripts/native/parity.mjs`, Stop-hook i `.claude/settings.json` og CI-jobbet `.github/workflows/native.yml`. Det bygger også APK og iPhone-simulator-build.
+- Porteret: `/login`. De øvrige sider står som `pending` og vises i appen som "endnu ikke bygget" med et link til browseren.
 ## 2026-10-07: Prod-nedbrud — fejlet emailHash-migrering
 
 - Migrationen `20261004190000_user_email_hash` fejlede ved deploy 2026-10-06 22:42 UTC. Live-koden læste `User.emailHash` → P2022 (side-fejl digest 3069122648), og `migrate deploy` afviste siden alle nye migreringer (P3009), så ingen deploys gik igennem.
@@ -79,6 +138,7 @@ Retter → HelloFresh åbner nu en skrivebeskyttet side under Retter (ikke Nye v
 - Billedspærring bygget som natrobot `pet-food-scan` (kl. 03:45, kun om natten, aldrig i scan-flowet): AI'en ser forsidefotoet af brugeroprettede/ventende varer og afviser dyrefoder; migration `20261007100000_product_pet_food_checked` skal køre ved deploy. Mangler: evt. oprydning af ca. 150 dyrefodervarer i de eksisterende Nemlig-ark.
 - Advarsel/spærring af brugere: første dyrefoder-forsøg giver en advarsel på skærmen, andet spærrer kontoen (admin → Brugere → Spærrede, "Ophæv spærring", rød advarsel i Oversigten). Migration `20261007110000_pet_food_strikes` skal køre ved deploy. Ikke live-testet (ingen lokal DB/login).
 - Alle afvisninger vises i Oversigten til gennemsyn med "Fejl – frikend"; natjobbet gennemgår også eksisterende varer. Migration `20261007120000_pet_food_incident_review` skal køre ved deploy. Tyske kilder (EDEKA24, Fressnapf, Zooplus.de) scrapes og lægges på spærrelisten bagefter.
+- Dyrefoder-filter kan ses og redigeres i admin (Indstillinger → Dyrefoder-filter) med afprøvning; tyske kilder (EDEKA24, Fressnapf, Futterhaus, Zooplus.de, dm) er scrapet og lagt på spærrelisten (ca. 28.800 stregkoder). Migration `20261008160000_pet_food_filter_edits` skal køre ved deploy. Fuld rapport: `docs/PET-FOOD-FILTER.md`. Ikke live-testet.
 
 ## 2026-10-06: Guide-flows med betingelser, opsætningsguide (slået fra) og MyFitnessPal/Lifesum-import
 
@@ -6057,3 +6117,7 @@ Ikke bygget: Valdemarsro-import til app-databasen, Valdemarsro-detaljevisning ("
 
 Ny `valdemarsro-agent` (scripts/valdemarsro-agent, compose.production.yaml, build.yml, jobs-registret), model `RecipeSourceUrl` (migration 20261008130000_recipe_source_urls), "Gå til opskrift"-knap i AddProductView, admin Retter → Valdemarsro viser data. Parsingen er testet mod en rigtig Valdemarsro-side; agenten er IKKE kørt mod databasen eller i Docker endnu — første nat henter 150 retter, resten over de følgende nætter (sæt VALDEMARSRO_AGENT_BATCH_SIZE højere for hurtigere start). Kræver deploy, så containeren bygges og migrationen kører.
 
+
+## 2026-10-08 — Ental/flertal for generiske ingredienser (database + API)
+
+Skema, migration, `src/lib/danish-number.ts` og søgning/oprettelse er lavet (se DECISIONS.md samme dato). `prisma validate` og ESLint på de ændrede filer er grønne; `npm run build` og typecheck er ikke kørt (ingen genereret Prisma-klient i arbejdskopien). Mangler: UI skal vise `displayName`, ental/flertal i arkene, billedomdøbning.

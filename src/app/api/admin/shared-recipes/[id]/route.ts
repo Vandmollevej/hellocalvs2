@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { requireAdminUser } from "@/lib/require-admin";
+import { queueMessage } from "@/lib/messaging";
 
 // Admin-afgørelse på en delt ret (docs/DECISIONS.md 2026-09-24):
 // APPROVE — godkendt; "Anmeld" forsvinder for brugerne.
@@ -50,5 +51,18 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
       ...(action === "REJECT" && reason ? { rejectionReason: reason } : {}),
     },
   });
+  // Ejeren får besked i Profil → Beskeder om afvisningen og begrundelsen.
+  if (action === "REJECT") {
+    const dish = await prisma.dish.findFirst({
+      where: { sharedRecipeId: id },
+      select: { name: true, ownerId: true },
+    });
+    if (dish) {
+      await queueMessage("RECIPE_SHARE_REJECTED", {
+        userId: dish.ownerId,
+        vars: { dishName: dish.name, reason: reason || "Retten ligner en anden ret for meget." },
+      }).catch((error) => console.error("Reject message failed", error));
+    }
+  }
   return NextResponse.json({ ok: true });
 }
