@@ -1831,9 +1831,28 @@ textarea::selection,
   animation: hf-nav-panel-in 180ms ease-out;
 }
 
+@keyframes hf-arc-pop {
+  0% {
+    transform: scale(0.4);
+    opacity: 0;
+  }
+  60% {
+    transform: scale(1.12);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.hf-arc-pop {
+  animation: hf-arc-pop 280ms ease-out;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .hf-nav-jiggle,
-  .hf-nav-panel-in {
+  .hf-nav-panel-in,
+  .hf-arc-pop {
     animation: none;
   }
 }

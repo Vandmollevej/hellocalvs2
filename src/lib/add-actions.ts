@@ -3,6 +3,7 @@ import {
   IconCalendarHeart,
   IconCamera,
   IconGlassCocktail,
+  IconHeartbeat,
   IconMicrophone,
   IconSearch,
   type Icon,
@@ -86,7 +87,7 @@ export const ADD_ACTIONS: AddAction[] = [
   {
     key: "activity",
     href: "/activity/create",
-    imageSrc: "/icons/activity-3d.png",
+    icon: IconHeartbeat,
     labelKey: "addButton.activity",
   },
   {
