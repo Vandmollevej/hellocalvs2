@@ -2,7 +2,7 @@
 
 import { activitySummaryUrl } from "@/lib/daily-budget";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { IconHeartbeat, IconMoon, type Icon } from "@tabler/icons-react";
+import { IconHeartbeat, IconMoon, IconRuler2, type Icon } from "@tabler/icons-react";
 import { DAILY_KCAL_GOAL } from "@/lib/goals";
 import {
   FRONTPAGE_STAT_DEFS,
@@ -10,6 +10,9 @@ import {
   type FrontpageMetricTotals,
   type FrontpageNutritionTotals,
 } from "@/lib/frontpage-stats";
+import { groupByDay } from "@/lib/daily-totals";
+import { computeMeasurement, useCustomMeasurements } from "@/lib/custom-measurements";
+import { measureTextLines } from "@/lib/custom-measure-text";
 import { useTranslation } from "@/i18n/LocaleProvider";
 import { HERO_HEIGHT } from "./AddButton";
 
@@ -41,6 +44,8 @@ type Stat = {
   icon: Icon;
   value: string;
   unit: string;
+  /** Egen måling: den grå tekst under tallet (højst 2 linjer). */
+  caption?: string[];
 };
 
 function isToday(dateString: string) {
@@ -154,10 +159,13 @@ function offsetAt(absDistance: number) {
 export function StatsWheel({ side }: { side: "left" | "right" }) {
   const { t } = useTranslation();
   const activeKeys = useFrontpageStatKeys();
+  const customMeasurements = useCustomMeasurements();
   const [activeIndex, setActiveIndex] = useState(0);
   const [dragPixels, setDragPixels] = useState(0);
   const [dragging, setDragging] = useState(false);
   const [registrations, setRegistrations] = useState<Registration[]>([]);
+  // Alle registreringer, til egne målinger med andre perioder end i dag.
+  const [allRegistrations, setAllRegistrations] = useState<Registration[]>([]);
   const [metrics, setMetrics] = useState<HealthMetric[]>([]);
   const [goalKcal, setGoalKcal] = useState<number>(DAILY_KCAL_GOAL);
   const [loading, setLoading] = useState(true);
@@ -179,6 +187,7 @@ export function StatsWheel({ side }: { side: "left" | "right" }) {
     ])
       .then(([registrationData, metricData]) => {
         if (cancelled) return;
+        setAllRegistrations(registrationData.registrations);
         setRegistrations(registrationData.registrations.filter((item) => isToday(item.createdAt)));
         setMetrics(metricData.metrics);
       })
@@ -253,9 +262,26 @@ export function StatsWheel({ side }: { side: "left" | "right" }) {
           unit,
         };
       });
-    const missing = Math.max(0, SIDE_ROWS * 2 + 1 - own.length);
-    return [...own, ...PLACEHOLDER_STATS.slice(0, missing)];
-  }, [activeKeys, goalKcal, loading, metrics, registrations, t]);
+    const customDays = customMeasurements.length > 0 ? groupByDay(allRegistrations) : [];
+    const custom: Stat[] = customMeasurements.map((measurement) => {
+      const { value, unit } = computeMeasurement(measurement, {
+        days: customDays,
+        metrics,
+        goalKcal,
+      });
+      return {
+        key: `custom:${measurement.id}`,
+        label: measurement.name,
+        icon: IconRuler2,
+        value: loading ? "—" : value,
+        unit,
+        caption: measureTextLines(measurement.text),
+      };
+    });
+    const all = [...own, ...custom];
+    const missing = Math.max(0, SIDE_ROWS * 2 + 1 - all.length);
+    return [...all, ...PLACEHOLDER_STATS.slice(0, missing)];
+  }, [activeKeys, allRegistrations, customMeasurements, goalKcal, loading, metrics, registrations, t]);
 
   // Rows fade out half a row past the outermost visible one. With too few
   // stats for all 7 rows, the range shrinks so the item that wraps from the
@@ -493,9 +519,15 @@ function WheelItem({
         <span
           aria-hidden="true"
           className={`hf-type-small absolute right-0 top-full mt-1 text-text-secondary ${transition}`}
-          style={{ opacity: captionOpacity }}
+          style={{ opacity: captionOpacity, ...(stat.caption ? { lineHeight: 1.15 } : {}) }}
         >
-          {CAPTION_PLACEHOLDER}
+          {stat.caption
+            ? stat.caption.map((line, lineIndex) => (
+                <span key={lineIndex} className="block">
+                  {line}
+                </span>
+              ))
+            : CAPTION_PLACEHOLDER}
         </span>
       </span>
       <span

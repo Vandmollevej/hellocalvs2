@@ -1,6 +1,13 @@
 # HELLO CAL — project status
 
-Last updated: 2026-10-08
+Last updated: 2026-10-09
+
+## 2026-10-09: "Tilføj egen måling" i tal-hjulet
+
+- Indstillinger → Visning → Forside har øverst knappen "Tilføj egen måling" (bundark): navn og beskrivelse, parameter (søgbar liste over kalorier, næringsstoffer, skridt, søvn, puls, kropsmål m.m.), periode (i dag, i går, seneste 7/30 dage, denne/sidste uge, måned, år) og en tekst under tallet (højst 2 linjer á 15 tegn, foreslås ud fra parameteren).
+- Egne målinger gemmes pr. enhed (`hellocal.frontpage.customMeasurements`) og vises som egne rækker i tal-hjulet på forsiden. Perioder over én dag viser dagsgennemsnit. Kode: `src/lib/custom-measurements.ts`, `src/lib/custom-measure-text.ts` (+ test), `src/components/CustomMeasureSection.tsx`, `StatsWheel.tsx`; native: `CustomMeasurements.kt`, `CustomMeasureSection.kt`, `HomeStatsWheel.kt`.
+- `customMeasure.*` er oversat til da/en; de/fr/nl/sv/no har foreløbig engelsk tekst. Lint, tsc og native-paritet grønne; Kotlin ikke kompileret lokalt (CI bygger). Ikke visuelt testet.
+- Åbent fra statistik-kortene (ikke lavet endnu, venter på brugerens svar): "Screening-status seneste 7 dage", skridt vs. mål (kræver skridtmål), minutter i valgt pulszone.
 
 ## 2026-10-08: Adgangsmur mod crawlere
 

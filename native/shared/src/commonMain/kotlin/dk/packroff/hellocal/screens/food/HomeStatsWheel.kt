@@ -114,7 +114,7 @@ private data class HealthMetricDto(val type: String = "", val value: Double = 0.
 @Serializable
 private data class HealthMetricsResponse(val metrics: List<HealthMetricDto> = emptyList())
 
-private data class WheelStat(val key: String, val label: String, val icon: FoodIconSpec, val value: String, val unit: String)
+private data class WheelStat(val key: String, val label: String, val icon: FoodIconSpec, val value: String, val unit: String, val caption: List<String>? = null)
 
 private const val SIDE_ROWS = 3
 private const val FONT_SIZE = 27f
@@ -149,7 +149,7 @@ private val WHEEL_HEIGHT = 2 * (offsetAt(SIDE_ROWS.toFloat()) + ROW_HEIGHT)
  */
 internal fun statsWheelLastRowY(): Float = HERO_HEIGHT / 2 + VERTICAL_SHIFT + offsetAt(SIDE_ROWS.toFloat())
 
-/** Today's registrations, health metrics and calorie budget for the wheel. */
+/** All registrations (today's are filtered in the wheel), health metrics and calorie budget for the wheel. */
 private suspend fun loadWheelData(): Triple<List<RegistrationDto>, List<HealthMetricDto>, Double?> = coroutineScope {
     val regs = async {
         runCatching { ApiJson.decodeFromJsonElement(RegistrationsResponse.serializer(), Api.get("/api/registrations")).registrations }.getOrNull()
@@ -164,7 +164,7 @@ private suspend fun loadWheelData(): Triple<List<RegistrationDto>, List<HealthMe
     val m = metrics.await()
     // Both lists or neither (the web's Promise.all).
     if (r == null || m == null) Triple(emptyList(), emptyList(), budget.await())
-    else Triple(r.filter { FoodTime.isToday(it.createdAt) }, m, budget.await())
+    else Triple(r, m, budget.await())
 }
 
 @Composable
@@ -187,9 +187,10 @@ fun HomeStatsWheel(side: String, modifier: Modifier = Modifier) {
         loading = false
     }
 
-    val stats = remember(registrations, metrics, goalKcal, loading, FoodPrefs.statKeys, t) {
+    val customMeasurements = CustomMeasurePrefs.measurements
+    val stats = remember(registrations, metrics, goalKcal, loading, FoodPrefs.statKeys, customMeasurements, t) {
         var totals = FrontpageTotals()
-        for (item in registrations) {
+        for (item in registrations.filter { FoodTime.isToday(it.createdAt) }) {
             totals = totals.copy(
                 kcal = totals.kcal + item.kcalSnapshot,
                 protein = totals.protein + item.proteinSnapshot,
@@ -222,12 +223,39 @@ fun HomeStatsWheel(side: String, modifier: Modifier = Modifier) {
             val (value, unit) = def.compute(data)
             WheelStat(def.key, t.t(def.labelKey), def.icon, if (loading) "—" else value, unit)
         }
+        val custom = if (customMeasurements.isEmpty()) emptyList() else {
+            val today = FoodTime.today()
+            val days = registrations.mapNotNull { item ->
+                val date = FoodTime.parse(item.createdAt)?.let { FoodTime.local(it).date } ?: return@mapNotNull null
+                val legacy = mapOf(
+                    "sugar" to item.sugarSnapshot, "fiber" to item.fiberSnapshot, "salt" to item.saltSnapshot,
+                    "potassium" to item.potassiumSnapshot, "calcium" to item.calciumSnapshot, "iron" to item.ironSnapshot,
+                    "saturatedFat" to item.saturatedFatSnapshot, "unsaturatedFat" to item.unsaturatedFatSnapshot,
+                    "transFat" to item.transFatSnapshot, "cholesterol" to item.cholesterolSnapshot,
+                    "vitaminA" to item.vitaminASnapshot, "vitaminC" to item.vitaminCSnapshot,
+                ).mapNotNull { (k, v) -> v?.let { k to it } }.toMap()
+                MeasureDay(date, item.kcalSnapshot, item.proteinSnapshot, item.carbsSnapshot, item.fatSnapshot, legacy + (item.nutrientSnapshot ?: emptyMap()))
+            }.groupBy { it.date }.map { (date, rows) ->
+                MeasureDay(
+                    date, rows.sumOf { it.kcal }, rows.sumOf { it.protein }, rows.sumOf { it.carbs }, rows.sumOf { it.fat },
+                    rows.flatMap { it.nutrients.entries }.groupBy({ it.key }, { it.value }).mapValues { (_, v) -> v.sum() },
+                )
+            }
+            val measureMetrics = metrics.mapNotNull { m ->
+                FoodTime.parse(m.recordedAt)?.let { MeasureMetric(m.type, m.value, FoodTime.local(it).date, m.recordedAt) }
+            }
+            customMeasurements.map { measurement ->
+                val (value, unit) = computeMeasurement(measurement, days, measureMetrics, goalKcal, today)
+                WheelStat("custom:${measurement.id}", measurement.name, FoodIconSpec.Tabler("Ruler2"), if (loading) "—" else value, unit, measureTextLines(measurement.text))
+            }
+        }
         val placeholders = listOf(
             WheelStat("placeholder-sleep", "Søvn (eksempel)", FoodIconSpec.Tabler("Moon"), "7,5", "t"),
             WheelStat("placeholder-pulse", "Puls (eksempel)", FoodIconSpec.Tabler("Heartbeat"), "62", "bpm"),
         )
-        val missing = max(0, SIDE_ROWS * 2 + 1 - own.size)
-        own + placeholders.take(missing)
+        val all = own + custom
+        val missing = max(0, SIDE_ROWS * 2 + 1 - all.size)
+        all + placeholders.take(missing)
     }
 
     val visibleRange = min(SIDE_ROWS, (stats.size - 1) / 2) + 0.5f
@@ -353,12 +381,15 @@ private fun androidx.compose.foundation.layout.BoxScope.WheelItem(
                 modifier = Modifier.graphicsLayer { alpha = op },
                 maxLines = 1,
             )
-            Text(
-                CAPTION_PLACEHOLDER,
-                style = HcTypeRoles.Small.style(HcColors.TextSecondary),
-                modifier = Modifier.graphicsLayer { alpha = capOp },
-                maxLines = 1,
-            )
+            val captionLines = stat.caption ?: listOf(CAPTION_PLACEHOLDER)
+            captionLines.forEach { line ->
+                Text(
+                    line,
+                    style = HcTypeRoles.Small.style(HcColors.TextSecondary),
+                    modifier = Modifier.graphicsLayer { alpha = capOp },
+                    maxLines = 1,
+                )
+            }
         }
         Box(Modifier.graphicsLayer { alpha = op }) {
             FoodIcon(stat.icon, STAT_ICON_SIZE.dp, lerp(HcColors.Black, HcColors.Green, foc), stroke = 2.2f)
