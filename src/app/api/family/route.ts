@@ -8,7 +8,7 @@ import {
   canActFor,
   listAccessibleProfiles,
 } from "@/lib/family-access";
-import { MAX_FAMILY_PROFILES, createFamily, getFamilyOverview, hasActiveFamilyPlan } from "@/lib/family";
+import { MAX_FAMILY_PROFILES, createFamily, getFamilyOverview, hasActiveFamilyPlan, isChildMember } from "@/lib/family";
 import { familyErrorResponse } from "@/lib/family-api";
 
 // Familiestatus til profilvælgeren, topbjælken (telefonikon + blå ramme) og
@@ -22,10 +22,11 @@ export async function GET() {
   const cookieId = store.get(ACTIVE_PROFILE_COOKIE)?.value;
   const activeId = cookieId && (await canActFor(login.id, cookieId)) ? cookieId : login.id;
 
-  const [profiles, family, hasFamilyPlan] = await Promise.all([
+  const [profiles, family, hasFamilyPlan, meIsChild] = await Promise.all([
     listAccessibleProfiles(login.id),
     getFamilyOverview(login.id),
     hasActiveFamilyPlan(login.id),
+    isChildMember(login.id),
   ]);
   const activeProfile = profiles.find((profile) => profile.id === activeId) ?? profiles[0];
 
@@ -58,6 +59,8 @@ export async function GET() {
 
   return NextResponse.json({
     me: { id: login.id, displayName: login.displayName },
+    // Børn kan ikke selv lukke kontoen eller melde sig ud; skjuler knapperne.
+    meIsChild,
     activeProfile,
     profiles,
     family,

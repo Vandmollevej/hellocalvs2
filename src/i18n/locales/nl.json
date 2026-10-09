@@ -3082,7 +3082,8 @@
       "intro": "Je zit in het gezinsabonnement van {owner}. {owner} beheert het gezin en kan alles op je profiel zien en wijzigen. Alles wat anderen op je profiel doen, staat in je Controlelog.",
       "seeLog": "Bekijk Controlelog",
       "leave": "Uit het gezin stappen",
-      "leaveConfirm": "Wil je eruit stappen? {owner} en anderen in het gezin verliezen de toegang tot je profiel en jij verliest het gezinsabonnement."
+      "leaveConfirm": "Wil je eruit stappen? {owner} en anderen in het gezin verliezen de toegang tot je profiel en jij verliest het gezinsabonnement.",
+      "childNote": "{owner} heeft toegang tot je profiel en bepaalt wat er getoond wordt. Je kunt zien wat er gedeeld wordt, maar het niet wijzigen of uit het gezin stappen. Dat kan alleen een ouder."
     },
     "sharing": {
       "title": "Delen met anderen",
@@ -3181,7 +3182,7 @@
       "invalidCode": "De code en het e-mailadres horen niet bij elkaar, of de code is verlopen.",
       "emailTaken": "Dit e-mailadres wordt al gebruikt door een ander account.",
       "ownerCannotLeave": "Degene die betaalt kan niet uit het gezin stappen.",
-      "tooYoungToLeave": "Je kunt pas uit het gezin stappen als je 15 bent geworden.",
+      "childCannotLeave": "Alleen een ouder kan een kind uit het gezin halen.",
       "profileWithoutLogin": "Het profiel heeft geen eigen login en kan nog niet worden verwijderd.",
       "invalidEmail": "Vul een geldig e-mailadres in.",
       "passwordTooShort": "Het wachtwoord moet minimaal 8 tekens zijn.",

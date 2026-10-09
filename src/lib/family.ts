@@ -15,8 +15,8 @@ export const MAX_FAMILY_PROFILES = 5;
 // Højst så mange ekstra pladser kan tilkøbes ud over de 5 (ejerens valg
 // 2026-10-03: "0/5 ekstra tilkøb"). Selve købet er ikke bygget endnu.
 export const MAX_EXTRA_SEATS = 5;
-// Under denne alder kan man ikke selv oprette en konto eller melde sig ud af
-// familien (databeskyttelsesloven § 6, stk. 2, se docs/FAMILY.md).
+// Under denne alder kan man ikke selv oprette en konto (databeskyttelsesloven
+// § 6, stk. 2, se docs/FAMILY.md). Børn kan aldrig selv melde sig ud.
 export const FAMILY_SELF_CONSENT_AGE = 15;
 const CODE_TTL_MS = 7 * 24 * 60 * 60 * 1000;
 
@@ -506,19 +506,25 @@ async function detachMember(familyId: string, userId: string) {
   ]);
 }
 
-// Medlemmet låser de andre ude. Kræver eget login og — for børn — at barnet
-// er fyldt 15 (docs/FAMILY.md, fortolkning af punkt 3 + 4).
+// Er brugeren et barn i en andens familie? Børn kan hverken lukke kontoen eller
+// melde sig ud — det kan kun forælderen (brugerens regel 2026-10-09).
+export async function isChildMember(userId: string) {
+  const member = await prisma.familyMember.findUnique({ where: { userId }, select: { isChild: true } });
+  return member?.isChild === true;
+}
+
+// Medlemmet låser de andre ude. Kræver eget login. Børn kan aldrig selv melde
+// sig ud — kun forælderen (betaleren) kan fjerne dem (docs/FAMILY.md punkt 4).
 export async function leaveFamily(userId: string) {
   const member = await prisma.familyMember.findUnique({
     where: { userId },
-    include: { family: true, user: { select: { birthDate: true, passwordHash: true, oauthAccounts: { select: { id: true } } } } },
+    include: { family: true, user: { select: { passwordHash: true, oauthAccounts: { select: { id: true } } } } },
   });
   if (!member) throw new FamilyError("notMember", 404);
   if (member.family.ownerId === userId) throw new FamilyError("ownerCannotLeave");
   const hasLogin = Boolean(member.user.passwordHash) || member.user.oauthAccounts.length > 0;
   if (!hasLogin) throw new FamilyError("notAllowed", 403);
-  const age = computeAge(member.user.birthDate);
-  if (member.isChild && (age === null || age < FAMILY_SELF_CONSENT_AGE)) throw new FamilyError("tooYoungToLeave", 403);
+  if (member.isChild) throw new FamilyError("childCannotLeave", 403);
   await detachMember(member.familyId, userId);
 }
 

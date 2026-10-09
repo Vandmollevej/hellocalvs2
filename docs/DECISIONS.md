@@ -1281,7 +1281,7 @@ konto. Ingen husstands-/familieprofiler … ingen forældrekontrol".
   bestemt medlem. Betaleren har adgang til alle familiens profiler.
 - Under 15 år kan man ikke selv oprette en konto; en forælder opretter
   profilen. Barnet kan få eget login via en engangskode.
-- Barnet kan melde sig ud og låse de andre ude (fortolket: fra 15 år).
+- ~~Barnet kan melde sig ud og låse de andre ude (fortolket: fra 15 år).~~ Afløst 2026-10-09, se nedenfor.
 - Barnet ser samme visning som voksne.
 - Alt, hvad andre gør på en profil (åbner, ser, tilføjer, ændrer, sletter),
   logges og vises for profilens ejer, både som liste og i et panel, der glider
@@ -4793,3 +4793,12 @@ Google/Apple/Facebook-login og integrationstilkobling kører i system-browseren,
   (skjules, hvis de er refereret). Se docs/FRIDA.md.
 - Ny global søgeregel: flertalssøgning viser `namePlural`, ental viser `name`.
 - Migration `20261009210000_product_name_plural` (`products."namePlural"`).
+
+## 2026-10-09: Børn kan hverken lukke konto eller melde sig ud
+
+Brugerens rettelse: "Et barn kan ikke selv lukke konto — det er kun forælderen. Og barnet kan ikke fravælge at vise detaljer, kun se hvad forælderen får vist."
+
+- **Børn** (`FamilyMember.isChild`, ikke betaleren) kan hverken bruge "Luk konto" / "Ret til at blive glemt" eller "Meld dig ud af familien". Serveren afviser: `POST /api/account/close` giver 403, `leaveFamily` kaster `childCannotLeave` (erstatter `tooYoungToLeave`; ingen 15-års-grænse mere). Knapperne er skjult i web og native (`meIsChild` i `GET /api/family`), og Familie-siden viser en forklaring i stedet.
+- Kun forælderen/betaleren kan fjerne eller slette et barns profil (eksisterende `removeFamilyMember` / `deleteFamilyProfile`).
+- Barnet har ingen kontakter til at skjule detaljer: "Del med andre" er kun visning, og betaleren bestemmer adgangen (uændret).
+- Afløser "Barnet kan melde sig ud" i beslutningen 2026-09-25 og tilsvarende i `docs/FAMILY.md`.

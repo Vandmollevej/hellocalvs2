@@ -3064,7 +3064,8 @@
       "intro": "You are part of {owner}'s family subscription. {owner} manages the family and can see and change everything on your profile. Everything others do on your profile is in your control log.",
       "seeLog": "See control log",
       "leave": "Leave the family",
-      "leaveConfirm": "Leave the family? {owner} and others in the family lose access to your profile, and you lose the family subscription."
+      "leaveConfirm": "Leave the family? {owner} and others in the family lose access to your profile, and you lose the family subscription.",
+      "childNote": "{owner} has access to your profile and decides what is shown. You can see what is shared, but you cannot change it or leave. Only a parent can do that."
     },
     "sharing": {
       "title": "Share with others",
@@ -3163,7 +3164,7 @@
       "invalidCode": "The code and email don't match, or the code has expired.",
       "emailTaken": "The email is already used by another account.",
       "ownerCannotLeave": "The payer cannot leave the family.",
-      "tooYoungToLeave": "You can leave the family once you are 15.",
+      "childCannotLeave": "Only a parent can remove a child from the family.",
       "profileWithoutLogin": "The profile has no login of its own and cannot be removed yet.",
       "invalidEmail": "Enter a valid email.",
       "passwordTooShort": "The password must be at least 8 characters.",

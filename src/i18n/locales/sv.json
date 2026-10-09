@@ -3082,7 +3082,8 @@
       "intro": "Du är med i {owner}s familjeprenumeration. {owner} bestämmer över familjen och kan se och ändra allt på din profil. Allt som andra gör på din profil står i din Kontrolllogg.",
       "seeLog": "Se Kontrolllogg",
       "leave": "Lämna familjen",
-      "leaveConfirm": "Vill du lämna familjen? {owner} och andra i familjen förlorar åtkomsten till din profil, och du förlorar familjeprenumerationen."
+      "leaveConfirm": "Vill du lämna familjen? {owner} och andra i familjen förlorar åtkomsten till din profil, och du förlorar familjeprenumerationen.",
+      "childNote": "{owner} har tillgång till din profil och bestämmer vad som visas. Du kan se vad som delas, men inte ändra det eller lämna familjen. Det kan bara en förälder göra."
     },
     "sharing": {
       "title": "Dela med andra",
@@ -3181,7 +3182,7 @@
       "invalidCode": "Koden och e-postadressen passar inte ihop, eller så har koden gått ut.",
       "emailTaken": "E-postadressen används redan av ett annat konto.",
       "ownerCannotLeave": "Den som betalar kan inte lämna familjen.",
-      "tooYoungToLeave": "Du kan först lämna familjen när du har fyllt 15.",
+      "childCannotLeave": "Bara en förälder kan ta bort ett barn från familjen.",
       "profileWithoutLogin": "Profilen har ingen egen inloggning och kan inte tas bort ännu.",
       "invalidEmail": "Skriv en giltig e-postadress.",
       "passwordTooShort": "Lösenordet måste vara minst 8 tecken.",

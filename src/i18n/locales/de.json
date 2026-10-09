@@ -3082,7 +3082,8 @@
       "intro": "Du bist Teil des Familienabos von {owner}. {owner} verwaltet die Familie und kann alles in deinem Profil sehen und ändern. Alles, was andere in deinem Profil tun, steht in deinem Kontrollprotokoll.",
       "seeLog": "Kontrollprotokoll ansehen",
       "leave": "Aus der Familie austreten",
-      "leaveConfirm": "Möchtest du austreten? {owner} und andere in der Familie verlieren den Zugriff auf dein Profil, und du verlierst das Familienabo."
+      "leaveConfirm": "Möchtest du austreten? {owner} und andere in der Familie verlieren den Zugriff auf dein Profil, und du verlierst das Familienabo.",
+      "childNote": "{owner} hat Zugriff auf dein Profil und bestimmt, was angezeigt wird. Du kannst sehen, was geteilt wird, es aber nicht ändern oder austreten. Das kann nur ein Elternteil."
     },
     "sharing": {
       "title": "Mit anderen teilen",
@@ -3181,7 +3182,7 @@
       "invalidCode": "Code und E-Mail passen nicht zusammen, oder der Code ist abgelaufen.",
       "emailTaken": "Die E-Mail-Adresse wird bereits von einem anderen Konto verwendet.",
       "ownerCannotLeave": "Der Zahler kann nicht aus der Familie austreten.",
-      "tooYoungToLeave": "Du kannst erst aus der Familie austreten, wenn du 15 geworden bist.",
+      "childCannotLeave": "Nur ein Elternteil kann ein Kind aus der Familie entfernen.",
       "profileWithoutLogin": "Das Profil hat keine eigene Anmeldung und kann noch nicht entfernt werden.",
       "invalidEmail": "Gib eine gültige E-Mail-Adresse ein.",
       "passwordTooShort": "Das Passwort muss mindestens 8 Zeichen lang sein.",

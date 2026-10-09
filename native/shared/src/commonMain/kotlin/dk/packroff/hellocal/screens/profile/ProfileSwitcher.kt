@@ -55,6 +55,8 @@ data class FamilyInfo(val isOwner: Boolean = false)
 @Serializable
 data class FamilyStatus(
     val me: FamilyMe,
+    /** Children can neither close the account nor leave the family — only a parent can. */
+    val meIsChild: Boolean = false,
     val activeProfile: FamilyProfile,
     val profiles: List<FamilyProfile> = emptyList(),
     val family: FamilyInfo? = null,

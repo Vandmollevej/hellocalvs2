@@ -3045,7 +3045,8 @@
       "intro": "Du er med i {owner}s familieabonnement. {owner} bestemmer over familien og kan se og ændre alt på din profil. Alt, hvad andre gør på din profil, står i din Kontrol-log.",
       "seeLog": "Se Kontrol-log",
       "leave": "Meld dig ud af familien",
-      "leaveConfirm": "Vil du melde dig ud? {owner} og andre i familien mister adgangen til din profil, og du mister familieabonnementet."
+      "leaveConfirm": "Vil du melde dig ud? {owner} og andre i familien mister adgangen til din profil, og du mister familieabonnementet.",
+      "childNote": "{owner} har adgang til din profil og bestemmer, hvad der vises. Du kan se, hvad der deles, men ikke ændre det eller melde dig ud. Det kan kun en forælder."
     },
     "sharing": {
       "title": "Del med andre",
@@ -3144,7 +3145,7 @@
       "invalidCode": "Koden og e-mailen passer ikke sammen, eller koden er udløbet.",
       "emailTaken": "E-mailen bruges allerede af en anden konto.",
       "ownerCannotLeave": "Den, der betaler, kan ikke melde sig ud.",
-      "tooYoungToLeave": "Du kan først melde dig ud af familien, når du er fyldt 15.",
+      "childCannotLeave": "Kun en forælder kan melde et barn ud.",
       "profileWithoutLogin": "Profilen har intet eget login og kan ikke fjernes endnu.",
       "invalidEmail": "Skriv en gyldig e-mail.",
       "passwordTooShort": "Adgangskoden skal være mindst 8 tegn.",
