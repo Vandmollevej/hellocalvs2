@@ -245,6 +245,7 @@
       "chatSaveError": "Could not save. Try again."
   },
   "nav": {
+    "screenings": "Screenings",
     "add": "Add",
     "foods": "Foods",
     "calendar": "Calendar",
@@ -661,6 +662,7 @@
     "allInUse": "All buttons are in use"
   },
   "addMenu": {
+    "screenings": "Screening",
     "editEditHint": "Hold a tile to move or delete it",
     "editDone": "Done",
     "editAdd": "Add",
@@ -1535,6 +1537,7 @@
       "bodyMeasurements": "Body measurements"
     },
     "row": {
+      "screenings": "Screenings",
       "subscription": "Subscription",
       "paymentMethods": "Payment",
       "weightCalibration": "Weight calibration",
@@ -2647,6 +2650,7 @@
     "saveError": "The activity could not be saved."
   },
   "addButton": {
+    "screenings": "Screenings",
     "closeMenu": "Close add menu",
     "openMenu": "Open add menu",
     "microphone": "Speak",
@@ -3372,6 +3376,131 @@
       "lunch": "Lunch",
       "dinner": "Dinner",
       "snack": "Snack"
+    }
+  },
+  "screenings": {
+    "title": "Screenings",
+    "intro": "Keep track of your health. Explore your data and discover new sides of your health and the connections between them.",
+    "createNew": "Create new screening",
+    "reports": "Screening reports",
+    "reportsTitle": "Screening reports",
+    "chartTitle": "All measurements",
+    "chartEmpty": "No measurements in this period yet.",
+    "periodAria": "Choose period",
+    "sleep": "Sleep",
+    "statusActive": "Active",
+    "statusInactive": "Inactive",
+    "activate": "Activate",
+    "deactivate": "Deactivate",
+    "delete": "Delete",
+    "deleteTitle": "Delete screening?",
+    "deleteBody": "The screening and all its measurements are deleted for good.",
+    "loadError": "Could not load screenings.",
+    "loading": "Loading…",
+    "newTitle": "Create new screening",
+    "editTitle": "Edit screening",
+    "stepAria": "Progress",
+    "stepName": "Name",
+    "stepFrequency": "Frequency",
+    "stepQuestions": "Questions",
+    "stepNotifications": "Alerts",
+    "stepMeasure": "Scale",
+    "stepCalendar": "Calendar",
+    "nameTitle": "Name and purpose",
+    "nameLabel": "Name",
+    "namePlaceholder": "e.g. Headache",
+    "purposeLabel": "Purpose",
+    "purposePlaceholder": "What do you want to learn?",
+    "frequencyTitle": "How often should you be asked?",
+    "questionsTitle": "Questions",
+    "questionLabel": "Question {n}",
+    "questionPlaceholder": "e.g. How bad is your headache?",
+    "addQuestion": "Add question",
+    "removeQuestion": "Remove question",
+    "notifTitle": "Notifications",
+    "notifLabel": "Remind me",
+    "notifDesc": "You get a message when it is time to answer.",
+    "notifTime": "Time",
+    "measureTitle": "Measurement",
+    "scaleTitle": "Scale",
+    "inputTitle": "Choose input",
+    "preview": "This is how it looks",
+    "notesLabel": "Note field",
+    "notesDesc": "Write a short note with the measurement.",
+    "minLabel": "Lowest value",
+    "maxLabel": "Highest value",
+    "minPlaceholder": "e.g. No pain",
+    "maxPlaceholder": "e.g. Worst imaginable",
+    "calendarTitle": "Calendar",
+    "calendarLabel": "Show in the calendar",
+    "calendarDesc": "The measurements show on their days in the calendar.",
+    "next": "Next",
+    "back": "Back",
+    "save": "Save screening",
+    "saving": "Saving…",
+    "saveError": "Could not save. Try again.",
+    "fillTitle": "Fill in screening",
+    "fillPick": "Which screening do you want to fill in?",
+    "fillEmpty": "You have no active screenings. Create one under Profile.",
+    "questionOf": "Question {n} of {total}",
+    "noteLabel": "Note",
+    "notePlaceholder": "Write a note",
+    "saveEntry": "Save measurement",
+    "done": "Saved",
+    "dotsAria": "Questions",
+    "reportsEmpty": "No screenings yet.",
+    "entries": "{n} measurements",
+    "noEntries": "No measurements yet.",
+    "sortDate": "Date",
+    "sortValue": "Value",
+    "sortAria": "Sort by",
+    "hasNote": "Has note",
+    "average": "Average",
+    "presets": {
+      "migraine": {
+        "name": "Migraine",
+        "purpose": "Keep an eye on how often and how bad your migraines are.",
+        "question": "How bad is your migraine today?",
+        "min": "None",
+        "max": "Worst imaginable"
+      },
+      "stomachPain": {
+        "name": "Stomach pain",
+        "purpose": "See when and how much your stomach hurts.",
+        "question": "How much does your stomach hurt today?",
+        "min": "None",
+        "max": "Worst imaginable"
+      },
+      "mood": {
+        "name": "Mood",
+        "purpose": "Follow your mood over time and find connections.",
+        "question": "How is your mood today?",
+        "min": "Bad",
+        "max": "Excellent"
+      }
+    },
+    "period": {
+      "d7": "Last 7 days",
+      "d30": "Last 30 days",
+      "d90": "Last 3 months",
+      "d365": "Last year"
+    },
+    "scale": {
+      "FIVE": "1–5",
+      "TEN": "1–10",
+      "PERCENT": "Percent"
+    },
+    "frequency": {
+      "DAILY": "Every day",
+      "WEEKLY": "Every week",
+      "MONTHLY": "Every month",
+      "MANUAL": "Only when I choose"
+    },
+    "input": {
+      "BUTTONS": "Buttons",
+      "SLIDER": "Slider",
+      "INPUT": "Input field",
+      "STEPPER": "Plus and minus"
     }
   }
 }

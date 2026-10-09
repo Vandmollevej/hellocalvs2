@@ -243,6 +243,7 @@
     "chatSaveError": "Det gick inte att spara. Försök igen."
   },
   "nav": {
+    "screenings": "Screeningar",
     "add": "Lägg till",
     "foods": "Livsmedel",
     "calendar": "Kalender",
@@ -659,6 +660,7 @@
     "allInUse": "Alla knappar används"
   },
   "addMenu": {
+    "screenings": "Screening",
     "editEditHint": "Håll en ruta intryckt för att flytta eller ta bort den",
     "editDone": "Klar",
     "editAdd": "Lägg till",
@@ -1560,6 +1562,7 @@
       "bodyMeasurements": "Kroppsmått"
     },
     "row": {
+      "screenings": "Screeningar",
       "subscription": "Prenumeration",
       "paymentMethods": "Betalning",
       "weightCalibration": "Viktkalibrering",
@@ -2661,6 +2664,7 @@
     "saveError": "Aktiviteten kunde inte sparas."
   },
   "addButton": {
+    "screenings": "Screeningar",
     "closeMenu": "Stäng lägg till-menyn",
     "openMenu": "Öppna lägg till-menyn",
     "microphone": "Tala in",
@@ -3390,6 +3394,131 @@
       "lunch": "Lunch",
       "dinner": "Dinner",
       "snack": "Snack"
+    }
+  },
+  "screenings": {
+    "title": "Screeningar",
+    "intro": "Håll koll på din hälsa. Utforska dina data och upptäck nya sidor av din hälsa och sambanden.",
+    "createNew": "Skapa ny screening",
+    "reports": "Screeningrapporter",
+    "reportsTitle": "Screeningrapporter",
+    "chartTitle": "Alla mätningar",
+    "chartEmpty": "Inga mätningar i perioden ännu.",
+    "periodAria": "Välj period",
+    "sleep": "Sömn",
+    "statusActive": "Aktiv",
+    "statusInactive": "Inaktiv",
+    "activate": "Aktivera",
+    "deactivate": "Inaktivera",
+    "delete": "Radera",
+    "deleteTitle": "Radera screening?",
+    "deleteBody": "Screeningen och alla dess mätningar raderas för alltid.",
+    "loadError": "Kunde inte hämta screeningar.",
+    "loading": "Hämtar…",
+    "newTitle": "Skapa ny screening",
+    "editTitle": "Redigera screening",
+    "stepAria": "Framsteg",
+    "stepName": "Namn",
+    "stepFrequency": "Frekvens",
+    "stepQuestions": "Frågor",
+    "stepNotifications": "Avisering",
+    "stepMeasure": "Mätning",
+    "stepCalendar": "Kalender",
+    "nameTitle": "Namn och syfte",
+    "nameLabel": "Namn",
+    "namePlaceholder": "t.ex. Huvudvärk",
+    "purposeLabel": "Syfte",
+    "purposePlaceholder": "Vad vill du bli klokare på?",
+    "frequencyTitle": "Hur ofta ska du få frågan?",
+    "questionsTitle": "Frågor",
+    "questionLabel": "Fråga {n}",
+    "questionPlaceholder": "t.ex. Hur ont har du i huvudet?",
+    "addQuestion": "Lägg till fråga",
+    "removeQuestion": "Ta bort fråga",
+    "notifTitle": "Aviseringar",
+    "notifLabel": "Påminn mig",
+    "notifDesc": "Du får ett meddelande när det är dags att svara.",
+    "notifTime": "Tidpunkt",
+    "measureTitle": "Mätning",
+    "scaleTitle": "Skala",
+    "inputTitle": "Välj fält",
+    "preview": "Så här ser det ut",
+    "notesLabel": "Anteckningsfält",
+    "notesDesc": "Skriv en kort anteckning till mätningen.",
+    "minLabel": "Lägsta värde",
+    "maxLabel": "Högsta värde",
+    "minPlaceholder": "t.ex. Ingen smärta",
+    "maxPlaceholder": "t.ex. Värsta tänkbara",
+    "calendarTitle": "Kalender",
+    "calendarLabel": "Visa i kalendern",
+    "calendarDesc": "Mätningarna visas på sina dagar i kalendern.",
+    "next": "Nästa",
+    "back": "Tillbaka",
+    "save": "Spara screening",
+    "saving": "Sparar…",
+    "saveError": "Kunde inte spara. Försök igen.",
+    "fillTitle": "Fyll i screening",
+    "fillPick": "Vilken screening vill du fylla i?",
+    "fillEmpty": "Du har inga aktiva screeningar. Skapa en under Profil.",
+    "questionOf": "Fråga {n} av {total}",
+    "noteLabel": "Anteckning",
+    "notePlaceholder": "Skriv en anteckning",
+    "saveEntry": "Spara mätning",
+    "done": "Sparat",
+    "dotsAria": "Frågor",
+    "reportsEmpty": "Inga screeningar ännu.",
+    "entries": "{n} mätningar",
+    "noEntries": "Inga mätningar ännu.",
+    "sortDate": "Datum",
+    "sortValue": "Värde",
+    "sortAria": "Sortera efter",
+    "hasNote": "Har anteckning",
+    "average": "Genomsnitt",
+    "presets": {
+      "migraine": {
+        "name": "Migrän",
+        "purpose": "Håll koll på hur ofta och hur svår din migrän är.",
+        "question": "Hur svår är din migrän i dag?",
+        "min": "Ingen",
+        "max": "Värsta tänkbara"
+      },
+      "stomachPain": {
+        "name": "Magsmärtor",
+        "purpose": "Se när och hur mycket magen gör ont.",
+        "question": "Hur ont har du i magen i dag?",
+        "min": "Ingen",
+        "max": "Värsta tänkbara"
+      },
+      "mood": {
+        "name": "Humör",
+        "purpose": "Följ ditt humör över tid och hitta samband.",
+        "question": "Hur är ditt humör i dag?",
+        "min": "Dåligt",
+        "max": "Utmärkt"
+      }
+    },
+    "period": {
+      "d7": "Senaste 7 dagarna",
+      "d30": "Senaste 30 dagarna",
+      "d90": "Senaste 3 månaderna",
+      "d365": "Senaste året"
+    },
+    "scale": {
+      "FIVE": "1–5",
+      "TEN": "1–10",
+      "PERCENT": "Procent"
+    },
+    "frequency": {
+      "DAILY": "Varje dag",
+      "WEEKLY": "Varje vecka",
+      "MONTHLY": "Varje månad",
+      "MANUAL": "Bara när jag vill"
+    },
+    "input": {
+      "BUTTONS": "Knappar",
+      "SLIDER": "Reglage",
+      "INPUT": "Inmatningsfält",
+      "STEPPER": "Plus och minus"
     }
   }
 }

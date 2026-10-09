@@ -25,6 +25,7 @@ export const BOTTOM_NAV_HREFS: Record<string, string> = {
   status: "/profile/status",
   billeddagbog: "/profile/photo-diary",
   kropsmaal: "/profile/body-measurements",
+  screeninger: "/profile/screenings",
 };
 
 export const DEFAULT_BOTTOM_NAV_ACTIVE = ["tilfoej", "madvarer", "kalender", "statistik"];

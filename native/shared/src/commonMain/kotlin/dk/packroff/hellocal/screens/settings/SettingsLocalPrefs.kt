@@ -116,6 +116,7 @@ val SETTINGS_ADD_ACTIONS = listOf(
     SettingsAddAction("bodyMeasurements", "/profile/body-measurements", "profile.row.bodyMeasurements", imageSrc = "/icons/body-measurements/waist-male.png"),
     SettingsAddAction("menstrualCycle", "/period/create", "addButton.menstrualCycle", icon = "CalendarHeart", requiresCycleTracking = true),
     SettingsAddAction("drinks", "/drinks", "addButton.drinks", icon = "GlassCocktail"),
+    SettingsAddAction("screenings", "/profile/screenings?fill=1", "addButton.screenings", icon = "ClipboardHeart"),
 )
 
 /** visibleAddActions(): menstrual cycle only for FEMALE + cycle tracking; female waist figure for women. */
