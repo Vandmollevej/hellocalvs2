@@ -407,6 +407,7 @@ Ejer: vægt-sessionen (2026-10-07)
 | Id | Opgave | Status | Næste skridt |
 | --- | --- | --- | --- |
 | vaegt-synk | Synk-status, synk-popup, tøj-popup, tøj-blok + admin-algoritme, kalibrer-link, klik ind på vejning, Tilføj-tekst tættere | Færdig (se git log "Vægt:") | Afventer brugerens test på telefon; de/fr/nl/sv/no mangler oversættelse af `weighIn.*` |
+| vaegt-tojslidere | Tøj ved vejning som flere til/fra-slidere (undertøj, bukser, top/T-shirt, sweater, sko, mobil m.m. i lommen, efter toiletbesøg); intet valgt = nøgen | Færdig (kode) | Migration 20261009100000 (`attireItems`, gamle valg omregnes) skal med deployet. Ikke prøvet i browser/mod rigtig database; de/fr/nl/sv/no har engelske tekster |
 ## G-VIDEN — Guide mig + Viden om mad
 Filer: `src/lib/help-guides.ts`, `src/components/help/**`, `src/lib/knowledge*.ts`, `src/app/viden-om/**`.
 Ejer: viden-hjaelp-guide-sessionen (2026-10-07)

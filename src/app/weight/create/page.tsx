@@ -9,7 +9,7 @@ import { IconBathroomScale } from "@/components/icons/BathroomScale";
 import { AttireToggles } from "@/components/weight/AttireToggles";
 import { WeightEntryDetailsSheet } from "@/components/weight/WeightEntryDetailsSheet";
 import { WeightSyncStatus } from "@/components/weight/WeightSyncStatus";
-import type { WeighAttire } from "@/lib/weigh-attire";
+import type { AttireItem } from "@/lib/weigh-attire";
 import { useTranslation } from "@/i18n/LocaleProvider";
 import { formatWeight, parseWeightInput, useUnits, weightToInputValue, weightUnitLabel } from "@/lib/units";
 import { Skeleton, SkeletonCards, SkeletonScreen } from "@/components/hf/Skeleton";
@@ -38,7 +38,7 @@ export default function WeightCreatePage() {
   const [saved, setSaved] = useState(false);
   const [entries, setEntries] = useState<WeightEntry[]>([]);
   const [loading, setLoading] = useState(true);
-  const [attire, setAttire] = useState<WeighAttire | null>(null);
+  const [attire, setAttire] = useState<AttireItem[]>([]);
   const [calibrated, setCalibrated] = useState(true);
   const [openId, setOpenId] = useState<string | null>(null);
 
@@ -58,7 +58,7 @@ export default function WeightCreatePage() {
     // Algoritmen (admin) gætter tøjet ud fra de seneste vejninger og tidspunktet.
     fetch("/api/weight-attire/suggest")
       .then((response) => (response.ok ? response.json() : null))
-      .then((data: { suggestion?: WeighAttire } | null) => data?.suggestion && setAttire(data.suggestion))
+      .then((data: { suggestion?: AttireItem[] } | null) => data?.suggestion && setAttire(data.suggestion))
       .catch(() => {});
     fetch("/api/weight-calibration")
       .then((response) => (response.ok ? response.json() : null))
@@ -78,7 +78,7 @@ export default function WeightCreatePage() {
       const response = await fetch("/api/weight-entries", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ weightKg: parsed, ...(attire ? { attire } : {}) }),
+        body: JSON.stringify({ weightKg: parsed, attireItems: attire }),
       });
       if (!response.ok) {
         setSaveError(t("weightLog.saveError"));

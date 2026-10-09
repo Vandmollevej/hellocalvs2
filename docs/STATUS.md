@@ -1,6 +1,12 @@
 # HELLO CAL — project status
 
-Last updated: 2026-10-07
+Last updated: 2026-10-09
+
+## 2026-10-09: Tøj ved vejning som til/fra-slidere
+
+- Vægt-siden, vejningens info-vindue og popuppen for smartvægt-vejninger viser nu syv slidere (undertøj, bukser, top/T-shirt, sweater, sko, mobil m.m. i lommen, efter toiletbesøg). Flere kan vælges; intet valgt = nøgen. Se DECISIONS 2026-10-09.
+- Ny kolonne `weight_entries.attireItems` (migration 20261009100000, gamle valg omregnes); algoritmen gætter nu det mest brugte sæt.
+- `tsc` og eslint på de ændrede filer er rene; logikken er kørt mod eksempler. Ikke prøvet i browser eller mod rigtig database; `npm run build` er ikke kørt.
 
 ## 2026-10-07: Alle popups som bundark + brand-logoets luft
 
