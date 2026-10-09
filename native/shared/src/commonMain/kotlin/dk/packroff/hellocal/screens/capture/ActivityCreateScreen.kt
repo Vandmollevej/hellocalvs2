@@ -1,7 +1,13 @@
 package dk.packroff.hellocal.screens.capture
 
 import dk.packroff.hellocal.ui.icons.HcIcon
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.ui.Alignment
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -302,16 +308,19 @@ fun ActivityCreateScreen(args: RouteArgs) {
                 Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                     HcText(t.t("activity.intensity"), HcTypeRoles.Small, color = HcColors.TextSecondary)
                     HcText(t.t("activity.intensityHint"), HcTypeRoles.Small, color = HcColors.TextSecondary)
-                    TRAINING_INTENSITIES.forEach { key ->
-                        HcChoiceChip(
-                            t.t("onboarding.activity.intensity.$key"),
-                            selected = intensity == key,
-                            onClick = { intensity = key },
-                            fill = true,
-                            align = TextAlign.Start,
-                            height = HcDimens.ControlHeight,
-                        )
+                    val level = TRAINING_INTENSITIES.indexOf(intensity)
+                    Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.Bottom) {
+                        TRAINING_INTENSITIES.forEachIndexed { index, key ->
+                            Box(
+                                Modifier
+                                    .weight(1f)
+                                    .height((24 + index * 16).dp)
+                                    .background(if (index <= level) HcColors.Accent else HcColors.Card, RoundedCornerShape(HcDimens.RadiusCard))
+                                    .clickable { intensity = key },
+                            )
+                        }
                     }
+                    HcText(t.t("onboarding.activity.intensity.$intensity"), HcTypeRoles.Body, bold = true, align = TextAlign.Center, modifier = Modifier.fillMaxWidth())
                 }
                 if (showsDistance) {
                     Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
