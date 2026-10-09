@@ -65,3 +65,5 @@ ikke her, er den ikke registreret og skal tilføjes.
 - Nye billedmapper med produkt-/opskrifts-/mærkebilleder skal i
   `PROTECTED_IMAGE_PREFIXES`.
 - Aldrig vandmærke eller skjult bruger-ID i billeder (brugerens regel 2026-10-08).
+
+- **Menstruation (bruger 2026-10-09):** alt om menstruation/cyklus vises slet ikke for mænd — heller ikke som deaktiveret række eller med "(kun for kvinder)". Vises kun når `sex = FEMALE`. Gælder web og native (fx Hello Doc "Rediger adgang").
