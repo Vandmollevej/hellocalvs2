@@ -3,6 +3,12 @@
 Last updated: 2026-10-03
 Last updated: 2026-10-04
 
+## 2026-10-09: EDEKA-logoet viste kun det gule hjerte
+
+- Årsag (fundet i koden, ikke reproduceret på det rigtige foto): `drop_edge_fragments` i `cutout.py` fjernede enhver forgrundsdel, der rørte kanten af logoudsnittet, undtagen den største. Logoboksen har 15 % luft, og EDEKA-logoet består af to dele (gult hjerte øverst, blåt felt nederst); hjertet var den største, så det blå felt blev skåret væk som "tekst fra nabolaget".
+- Rettelse: dele på mindst 15 % af den største bevares nu, selv om de rører kanten. Små tekststumper fjernes stadig. Testet med syntetisk billede (blå del bevaret, lille stump fjernet).
+- Hvis det blå felt stadig mangler: rembg kan have behandlet den næsten sorte firkant (RGB ~8,1,8) som baggrund — send det rå foto, så undersøges det. Det eksisterende EDEKA-logo skal genskabes (admin → Logoer → ny fritskrabning).
+
 ## 2026-10-05: Pulslinjen — roligere uden ur, flyttet op over nederste tal
 
 - Uden tilsluttet ur slår pulslinjen kun hvert 4. sekund (`DEFAULT_PULSE_BPM` = 15), og grundlinjen er flyttet op, så bunden står lige over hjulets nederste tal (`PULSE_ABOVE_LAST_ROW` i `HomeWaves.tsx`). Lint/build ikke kørt (ingen `node_modules` i cloud-sessionen). Brugeren tester på telefon; justér konstanten på 25 px efter billedet.

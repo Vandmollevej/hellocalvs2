@@ -84,7 +84,9 @@ def drop_edge_fragments(cutout):
     EDEKA-logoet). Fjernes: stumper, der rører kanten, og bittesmå stumper
     (under 1 % af den største del) uden for den største dels område, fx
     prikkerne over et afskåret "ü". Den største del fjernes aldrig, så et
-    logo, der selv rører kanten, bevares. Ordlogoer med separate bogstaver
+    logo, der selv rører kanten, bevares; det samme gælder store dele
+    (mindst 15 % af den største), så et logo i flere dele ikke skæres over.
+    Ordlogoer med separate bogstaver
     rører ikke kanten, og deres bogstaver er ikke bittesmå, så de bevares.
     """
     alpha = np.array(cutout.getchannel("A"))
@@ -103,7 +105,12 @@ def drop_edge_fragments(cutout):
         touches_edge = x == 0 or y == 0 or x + w >= width or y + h >= height
         cx, cy = centroids[index]
         outside_largest = not (lx <= cx <= lx + lw and ly <= cy <= ly + lh)
-        if touches_edge or (area < larea * 0.01 and outside_largest):
+        # En stor stump, der rører kanten, er en del af logoet (fx EDEKA's
+        # blå felt under det gule hjerte), ikke tekst fra nabolaget: tekst-
+        # stumper er små i forhold til logoet. Uden denne grænse blev kun
+        # hjertet tilbage (2026-10-09).
+        substantial = area >= larea * 0.15
+        if (touches_edge and not substantial) or (area < larea * 0.01 and outside_largest):
             drop |= labels == index
     if not drop.any():
         return cutout
