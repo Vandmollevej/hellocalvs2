@@ -525,6 +525,30 @@ model LoginApproval {
   @@map("login_approvals")
 }
 
+// Engangskoder til den native app (docs/DECISIONS.md 2026-10-08 "Native
+// login-overdragelse"). Google/Apple/Facebook-login og integrationstilkobling
+// kører i system-browseren, som ikke har appens session-cookie.
+// purpose: "LOGIN" (callbacken udsteder koden; appen veksler den til session-
+// cookien via POST /api/auth/native/exchange med sin PKCE-verifier) |
+// "CONNECT" (den indloggede app beder om en kode, før integrationen åbnes i
+// browseren). Kun hash gemmes; 2 minutter; kan kun bruges én gang.
+model NativeAuthCode {
+  id            String    @id @default(cuid())
+  userId        String
+  purpose       String
+  method        String?
+  // S256-challenge fra appen (kun LOGIN), base64url af sha256(verifier).
+  codeChallenge String?
+  codeHash      String    @unique
+  expiresAt     DateTime
+  usedAt        DateTime?
+  createdAt     DateTime  @default(now())
+
+  @@index([userId])
+  @@index([expiresAt])
+  @@map("native_auth_codes")
+}
+
 // Engangskode sendt på SMS ved glemt adgangskode (docs/DECISIONS.md
 // 2026-10-02). Kun hash gemmes; 6 cifre, 10 minutter, højst 5 forsøg. En
 // godkendt kode udløser et almindeligt PasswordResetToken.
@@ -2154,6 +2178,10 @@ model IngredientRegionHourStat {
 model GenericIngredient {
   id       String                    @id @default(cuid())
   name     String
+  // Ental/flertal (docs/REGLER.md): søgning efter "et æble" må ikke give "æbler".
+  // Ens i begge felter hvor formen ikke kan afgøres (fx æg).
+  nameSingular String?
+  namePlural   String?
   category GenericIngredientCategory @default(OTHER)
   imageUrl String?
 

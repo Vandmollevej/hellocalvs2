@@ -14,6 +14,7 @@ object AndroidPlatform {
         NativeHooks.openExternalUrl = { url ->
             app.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
         }
+        NativeHooks.deviceRegion = { java.util.Locale.getDefault().country.takeIf { it.isNotEmpty() } }
     }
 }
 

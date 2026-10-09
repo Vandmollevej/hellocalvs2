@@ -20,6 +20,9 @@ object NativeHooks {
 
     /** Opens a URL outside the app (browser, mail, phone). */
     var openExternalUrl: (String) -> Unit = {}
+
+    /** The phone's region ("DK", "US", …) — web: the browser's region (src/lib/units.ts browserRegion()). */
+    var deviceRegion: () -> String? = { null }
 }
 
 interface SecureStorage {

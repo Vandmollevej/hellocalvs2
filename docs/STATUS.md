@@ -13,6 +13,12 @@ Last updated: 2026-10-08
 - Ny kategori "Drinks" nederst i tilføj-menuen, `/drinks` og `/drinks/[id]` (cirkelbillede + én skyder pr. ingrediens), API `/api/drinks` + `/api/drinks/log`, migration `20261004100000_drinks` skal køre ved deploy.
 - Mangler: regneark-import (format i `docs/DRINKS.md`) — databasen er tom indtil da.
 
+## 2026-10-08: Native app — login-overdragelse, manglende API'er, genererede videnstekster
+
+- Google/Apple/Facebook-login og integrationstilkobling fra appen vender nu tilbage til appen (`hellocal://auth/complete?code=…`, `hellocal://settings/integrations/<app>?connected=1`) via engangskoder + PKCE. Nye ruter `POST /api/auth/native/exchange` og `POST /api/auth/native/connect-code`; ny migration `20261008160000_native_auth_codes` (DECISIONS 2026-10-08 "Native login-overdragelse"). Native: `api/NativeAuth.kt`, login-/opstartsknapper, integrationssiden og deep-link-håndtering i `HelloCalApp.kt`; `Location` har nu `fragment` (#anker), også i `RouteArgs`.
+- Nye API'er til native skærme: `GET /api/forwards/[token]` (samme claim-logik som `/forward/[token]`, nu i `src/lib/forward-view.ts`) og `GET /api/additives/[code]`; `GET /api/additives` har fået `category`, `euStatus`, `variantOf`. Native `ForwardScreen` og E-nummer-skærmene (EU-status-filter, "Forbudt i EU", chips, alle afsnit) er færdige.
+- `OnbKnowledgeData.kt` og `FoodReferenceData.kt` genereres nu af `scripts/native/sync.mjs` fra `src/lib/{food-latin,knowledge,knowledge-research,micronutrient-info,toxins}.ts` (Nodes indbyggede type-stripping, ingen pakker; CI kører Node 24). `--check` fejler ved drift.
+- Lint, `sync.mjs --check` og `parity.mjs` grønne. `tsc` kun fejl om `prisma.nativeAuthCode` (Prisma-klienten i worktree'et er ikke regenereret). Kotlin ikke kompileret lokalt (ingen Gradle) — CI-jobbet bygger APK/iPhone.
 ## 2026-10-08: Kæder for slettede EAN-gengangere (Rewe/DM)
 
 - De 264 Rewe/DM-rækker, der blev slettet 2026-10-07 som stregkode-gængere, er genskabt fra backup-arkene og gemt som kædekoblinger (259 EAN) i `scripts/store-products-import/data/store_links.json`; store-products-agent sætter Kæder (`product_stores`) ved hver kørsel. 87 EAN findes allerede i databasen (Bilka/REMA) og får Rewe/DM ved næste deploy; 48 SPAR- og 124 Rewe-ark-varer kobles, når de importeres.
@@ -34,6 +40,15 @@ Last updated: 2026-10-08
 - Varesidens brand-logo/navn står nu med 8 px luft til cirklen (`src/lib/brand-logo-layout.ts`).
 - Verificeret på master (0a7d3593): "Sådan regner vi" væk, "/stk." efter gram pr. skive, ingen tom luft over Tilføj-knappen, Tilføj-knap væk fra rækker, menutekst tættere på ikonerne, beskeder swipe-slet midt for rækken.
 - Lint grøn på de ændrede filer; `tsc` har kun to fejl i `api/dishes/route.ts` fra en forældet Prisma-klient i worktree'et. Ikke visuelt testet (brugerens regel).
+
+## 2026-10-08: Native apps — alle 121 forbruger-skærme porteret, Android + iPhone bygger
+
+- Alle forbruger-sider i `native/parity/screens.json` er nu `ported` (121), og 100 er `web-only` (admin/partner/erhverv/butiks-scanner). CI ("Native apps") bygger Android-APK og iPhone-app (simulator) grønt.
+- Telefon-funktioner (`platform/Device.kt`, `AndroidDevice.kt`, `IosDevice.swift`): kamera, foto-/filvalg, video→billeder, OCR, stregkode/QR, tale, deling, biometri.
+- Login med Google/Apple/Facebook og integration-forbindelser vender tilbage til appen (PKCE + engangskoder, migration `20261008160000_native_auth_codes`).
+- Nye API'er: `GET /api/forwards/[token]`, `GET /api/additives/[code]`; `/api/additives` har category/euStatus/variantOf.
+- Web-fix: `/statistics/body-water` viste aldrig kcal/salt/sugar (forkert dagsnøgle i `src/lib/water-stats.ts`).
+- Mangler eksterne konti: push til login-godkendelse (Firebase/APNs) og Face ID/passkey-login i appen (Apple Associated Domains + assetlinks).
 
 ## 2026-10-07: Native apps (Android + iPhone) — fundament
 
@@ -6089,3 +6104,7 @@ Ikke bygget: Valdemarsro-import til app-databasen, Valdemarsro-detaljevisning ("
 
 Ny `valdemarsro-agent` (scripts/valdemarsro-agent, compose.production.yaml, build.yml, jobs-registret), model `RecipeSourceUrl` (migration 20261008130000_recipe_source_urls), "Gå til opskrift"-knap i AddProductView, admin Retter → Valdemarsro viser data. Parsingen er testet mod en rigtig Valdemarsro-side; agenten er IKKE kørt mod databasen eller i Docker endnu — første nat henter 150 retter, resten over de følgende nætter (sæt VALDEMARSRO_AGENT_BATCH_SIZE højere for hurtigere start). Kræver deploy, så containeren bygges og migrationen kører.
 
+
+## 2026-10-08 — Ental/flertal for generiske ingredienser (database + API)
+
+Skema, migration, `src/lib/danish-number.ts` og søgning/oprettelse er lavet (se DECISIONS.md samme dato). `prisma validate` og ESLint på de ændrede filer er grønne; `npm run build` og typecheck er ikke kørt (ingen genereret Prisma-klient i arbejdskopien). Mangler: UI skal vise `displayName`, ental/flertal i arkene, billedomdøbning.

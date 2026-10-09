@@ -43,6 +43,8 @@
 	<string>Hello Cal bruger mikrofonen, når du indtaler hvad du har spist.</string>
 	<key>NSSpeechRecognitionUsageDescription</key>
 	<string>Hello Cal omsætter din tale til tekst, når du indtaler hvad du har spist.</string>
+	<key>NSFaceIDUsageDescription</key>
+	<string>Hello Cal bruger Face ID til at låse din billeddagbog op.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Hello Cal henter billeder fra dit fotobibliotek, når du vælger et billede.</string>
 	<key>NSHealthShareUsageDescription</key>
