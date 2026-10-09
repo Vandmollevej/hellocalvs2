@@ -400,6 +400,12 @@
       "note": "Admin er et skrivebordsværktøj og bliver på web."
     },
     {
+      "route": "/admin/pet-food-filter",
+      "web": "src/app/admin/pet-food-filter/page.tsx",
+      "status": "pending",
+      "native": []
+    },
+    {
       "route": "/admin/product-database",
       "web": "src/app/admin/product-database/page.tsx",
       "status": "web-only",
