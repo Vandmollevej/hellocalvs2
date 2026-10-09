@@ -47,20 +47,9 @@ import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.util.Locale
 
-// design.md §3
-object HcColors {
-    val page = Color(0xFFFAF8F3)
-    val card = Color(0xFFEEE9DF)
-    val nav = Color(0xFFDFD9CC)
-    val brand = Color(0xFF067A46)
-    val action = Color(0xFF232323)
-    val textSecondary = Color(0xFF656565)
-    val danger = Color(0xFFA3271F)
-}
-
-private val caption = TextStyle(fontSize = 13.sp, color = ColorProvider(HcColors.action))
+private val caption = TextStyle(fontSize = 13.sp, color = ColorProvider(HcColors.Action))
 private val captionStrong = caption.copy(fontWeight = FontWeight.Bold)
-private val captionSecondary = caption.copy(color = ColorProvider(HcColors.textSecondary))
+private val captionSecondary = caption.copy(color = ColorProvider(HcColors.TextSecondary))
 
 fun openDeepLink(deepLink: String): Action =
     actionStartActivity(Intent(Intent.ACTION_VIEW, Uri.parse(deepLink)).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
@@ -70,7 +59,7 @@ private fun kcal(value: Number) = String.format(Locale("da", "DK"), "%,d", value
 @Composable
 private fun WidgetShell(content: @Composable () -> Unit) {
     Box(
-        modifier = GlanceModifier.fillMaxSize().background(HcColors.page).cornerRadius(16.dp).padding(12.dp),
+        modifier = GlanceModifier.fillMaxSize().background(HcColors.Page).cornerRadius(16.dp).padding(12.dp),
     ) { content() }
 }
 
@@ -85,7 +74,7 @@ class QuickAddWidget : GlanceAppWidget() {
                     contentAlignment = Alignment.Center,
                 ) {
                     Box(
-                        modifier = GlanceModifier.size(48.dp).background(HcColors.brand).cornerRadius(24.dp),
+                        modifier = GlanceModifier.size(48.dp).background(HcColors.Brand).cornerRadius(24.dp),
                         contentAlignment = Alignment.Center,
                     ) {
                         Image(ImageProvider(R.drawable.ic_widget_plus), contentDescription = "Tilføj", modifier = GlanceModifier.size(28.dp))
@@ -117,7 +106,7 @@ class AddRowWidget : GlanceAppWidget() {
                     actions.forEachIndexed { index, action ->
                         if (index > 0) Spacer(GlanceModifier.width(8.dp))
                         Column(
-                            modifier = GlanceModifier.defaultWeight().fillMaxHeight().background(HcColors.card)
+                            modifier = GlanceModifier.defaultWeight().fillMaxHeight().background(HcColors.Card)
                                 .cornerRadius(12.dp).clickable(openDeepLink(action.deepLink)),
                             horizontalAlignment = Alignment.CenterHorizontally,
                             verticalAlignment = Alignment.CenterVertically,
@@ -181,7 +170,7 @@ class StatBoxWidget : GlanceAppWidget() {
                         style = TextStyle(
                             fontSize = if (box?.progress != null) 15.sp else 20.sp,
                             fontWeight = FontWeight.Bold,
-                            color = ColorProvider(HcColors.action),
+                            color = ColorProvider(HcColors.Action),
                         ),
                         maxLines = 1,
                     )
