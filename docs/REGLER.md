@@ -93,4 +93,5 @@ ikke her, er den ikke registreret og skal tilføjes.
 - **Menstruation (bruger 2026-10-09):** alt om menstruation/cyklus vises slet ikke for mænd — heller ikke som deaktiveret række eller med "(kun for kvinder)". Vises kun når `sex = FEMALE`. Gælder web og native (fx Hello Doc "Rediger adgang").
 - **Frida** (DTU-fødevaredatabasen): opbygning, nøgler og rå/kogt-fund står i `docs/FRIDA.md`.
 
+- Opret ret → Indsæt tekst: kun tekstfeltet og "Indsæt" — ingen ekstra felter (fx kilde-link). Antal personer bruger den eksisterende PersonsSlider, ikke et nyt talfelt (brugerens krav 2026-10-09).
 - **Startmængde** (`src/lib/default-amount.ts`, brugerens regel 2026-10-09): forslaget må aldrig overstige pakkens indhold (g/ml fra pakningsstørrelsen). Al instantkaffe (instant, Nescafé, pulverkaffe …) starter på 2 g (pr. kop).
