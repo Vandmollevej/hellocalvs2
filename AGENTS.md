@@ -51,6 +51,7 @@ on the web must be carried over to the native screen in the same task:
   them otherwise (user rule 2026-09-26).
 - Stop ikke midtvejs: færdiggør opgaven helt, med mindre det kan konflikte med andet arbejde (user rule 2026-10-05). Hvis der er noget at vente på (CI, review), så tjek PR'en med få minutters mellemrum og flet den ind, så snart det er muligt.
 - Afslut hver færdig opgave med teksten "arkiver mig" og ingen anden tekst (user rule 2026-10-05).
+- Auto-arkivering (user rule 2026-10-09): når opgaven er helt færdig og dens PR er flettet (eller der ingen PR er), skriv "arkiver mig" som sidste tekst og kald derefter selv `archive_session` på din egen session (claude-code-remote; brug dit eget session-id). Arkivér aldrig en session med åbent arbejde, rød CI, uflettet PR eller ubesvaret spørgsmål. At noget mangler at blive testet (manuelt, på enhed, i produktion) er ALDRIG en gyldig grund til ikke at arkivere (global regel, user rule 2026-10-09): nævn det kort i overleveringen/OPEN-TASKS, og arkivér alligevel. Stop-hooken `scripts/archive-reminder.mjs` minder om reglen, hvis en færdig session glemmer den.
 - Update `docs/STATUS.md` after material work and add durable architectural or product decisions to `docs/DECISIONS.md`.
 
 ## Verification
