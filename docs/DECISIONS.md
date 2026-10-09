@@ -4640,3 +4640,8 @@ klip-klister mellem sider, og telefon/webvisning må ikke have hver sine klasser
 - Afvist som kopi: Mine retter viser "Ikke delt" (ikke "delt"), og retten viser info med admins begrundelse.
 - Tommel op/ned påvirker populariteten (tommel ned -3, op +1, højst +3 i alt) for at undgå selvforstærkende ekkokammer.
 - "Python på serveren" er TypeScript (brugerens ok 2026-10-08). de/fr/nl oversættes senere.
+
+## 2026-10-09: Kropsmål-synlighed som Json på brugeren
+
+- Hvilke kropsmål Kropsmål-siden viser, gemmes som `User.bodyMeasurementVisibility` (Json, felt → boolean; null/manglende = vist), samme mønster som `allergenVisibility`. Kun siden filtreres — Målsætning, Statistik og Status viser stadig alle mål med data.
+- Bagdel, læg og ankel er tilføjet som kolonner på `BodyMeasurement` (ikke en generisk nøgle/værdi-tabel), så de følger de eksisterende mål.

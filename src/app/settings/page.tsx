@@ -11,6 +11,7 @@ import {
   IconCreditCard,
   IconBell,
   IconEye,
+  IconRuler,
   IconHome2,
   IconCalendarHeart,
   IconCalendarWeek,
@@ -112,6 +113,7 @@ export default function SettingsPage() {
     { icon: <IconBell size={20} />, label: t("settings.notifications"), href: "/profile/notifications" },
     { icon: <IconHome2 size={20} />, label: t("settings.frontPage"), href: "/settings/display/front-page" },
     { icon: <IconEye size={20} />, label: t("settings.resultsDisplay"), href: "/profile/settings/results" },
+    { icon: <IconRuler size={20} />, label: t("settings.bodyMeasurementsDisplay"), href: "/settings/display/body-measurements" },
     { icon: <IconAlertTriangle size={20} />, label: t("settings.recommendedLimits"), href: "/settings/display/limits" },
     { icon: <IconAdjustments size={20} />, label: t("displaySettings.uncertainty"), href: "/settings/display/uncertainty" },
     { icon: <IconCalendarWeek size={20} />, label: t("settings.calendarView"), href: "/settings/display/calendar-view" },
@@ -254,6 +256,12 @@ export default function SettingsPage() {
               icon={<IconEye size={20} />}
               label={t("settings.resultsDisplay")}
               href="/profile/settings/results"
+              divider
+            />
+            <ChevronRow
+              icon={<IconRuler size={20} />}
+              label={t("settings.bodyMeasurementsDisplay")}
+              href="/settings/display/body-measurements"
               divider
             />
             <ChevronRow
