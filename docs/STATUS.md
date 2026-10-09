@@ -8,6 +8,11 @@ Last updated: 2026-10-09
 - Brugerens test, cirklen i midten: knapperne står længere fra cirklen (`ARC_GAP` 78 i stedet for 52, så fingeren ikke dækker). Navneboksen ved den valgte knap sættes skråt ud væk fra cirklen (langs strålen fra cirklens midte gennem knappen) og må aldrig overlappe en knap: rammer den en nabo eller kanten, prøves større afstand og lodret placering (`labelPlacement`, web + native; bruger den tegnede stilling, hvor den valgte knap står længere ude).
 - Flettet med #304 (fuld størrelse straks, vinkler -75..75, valgt knap længere ude). Kontrolleret numerisk for bredde 320–430 og alle cirkelplaceringer. Lint/tsc ikke kørt (ingen node_modules), Kotlin ikke kompileret lokalt (CI bygger), ikke prøvet på telefon.
 
+## 2026-10-09: Tilføj aktivitet — tidsslider og varighed med plus/minus
+
+- `/activity/create` (web + `ActivityCreateScreen.kt`): starttidspunktet er nu en dato + samme to-håndtags 24-timers-slider som søvnrytmen (`SleepRangeSlider`, ny prop `bedtimeFirst`: start til venstre, slut til højre; start-håndtaget flytter starten og holder sluttiden, slut-håndtaget ændrer varigheden). Varigheden står under som − [timer min] + i samme boks som mængdevælgeren; teksten kan rettes, og −/+ går i hele 5 minutter (`stepDuration` i `activity-duration.ts`, testet).
+- Kalorie-feltet viser nu bare tallet (forudfyldt, kan rettes) — ingen "ca."/"anslået" og ingen MET-tekst.
+- Paritet accepteret for `/activity/create` og `/profile/sleep`. Lint og `node --test` grønne; Kotlin ikke kompileret lokalt (CI bygger); ikke prøvet på telefon.
 ## 2026-10-09: Ikoner tilbage (adgangsmur) + markeret cirkel væk fra fingeren
 
 - Ikoner (fingeraftryk, PNG/WebP-tilføj-ikoner) forsvandt efter adgangsmuren 2026-10-08: Next's billed-optimerer henter `/icons/*` internt uden browser-User-Agent, og muren afviste den som bot. Åbne statiske filer (`isPublicStaticAsset` i `access-wall.ts`) slipper nu forbi muren før UA-/rate-tjekket; beskyttede billeder er uændrede.
