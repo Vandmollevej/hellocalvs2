@@ -381,6 +381,31 @@ services:
     networks:
       - backend
 
+  # Vagt-robot (docs/DEPLOYMENT.md "Overvågning"): tjekker hver time sitet udefra
+  # og indefra, containerne og diskpladsen og mailer ALERT_EMAIL ved fejl/løst.
+  # Ingen depends_on: den skal køre, også når db/migrate fejler.
+  uptime-agent:
+    build: ./scripts/uptime-agent
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: ${DATABASE_URL:?Set DATABASE_URL in .env.production}
+      # Til at læse SMTP-nøgler gemt i admin (app_secrets), som appen gør.
+      ADMIN_SESSION_SECRET: ${ADMIN_SESSION_SECRET:?Set ADMIN_SESSION_SECRET in .env.production}
+      SMTP_HOST: ${SMTP_HOST:-}
+      SMTP_PORT: ${SMTP_PORT:-587}
+      SMTP_USER: ${SMTP_USER:-}
+      SMTP_PASS: ${SMTP_PASS:-}
+      SMTP_FROM: ${SMTP_FROM:-}
+      ALERT_EMAIL: ${UPTIME_ALERT_EMAIL:-peter@packroff.dk}
+      CHECK_INTERVAL_SECONDS: ${UPTIME_CHECK_INTERVAL_SECONDS:-3600}
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      # Kun til at måle ledig plads på /volume1.
+      - ./data:/volume:ro
+    networks:
+      - backend
+      - edge
+
   # Umami-analyse (docs/DECISIONS.md 2026-09-27 "Umami-analyse"): selv-hostet,
   # cookiefri besøgsstatistik vist i admin → Analyse. Egen database "umami" i
   # samme PostgreSQL (oprettes af umami-db-init). Kun på det interne netværk:
