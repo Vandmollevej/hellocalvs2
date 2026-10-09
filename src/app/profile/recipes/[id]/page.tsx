@@ -28,6 +28,8 @@ type View = { name: string; ingredients: Ingredient[]; images: string[]; steps: 
 type OwnDish = {
   name: string;
   servings?: number | null;
+  description?: string | null;
+  durationMinutes?: number | null;
   shareRejected?: boolean;
   shareRejectionReason?: string | null;
   sharedRecipeId?: string | null;
@@ -83,6 +85,8 @@ function RecipeDetailContent() {
   const [shared, setShared] = useState(false);
   const [rejection, setRejection] = useState<{ reason: string | null } | null>(null);
   const [dishServings, setDishServings] = useState<number | null>(null);
+  const [dishDescription, setDishDescription] = useState<string | null>(null);
+  const [dishDuration, setDishDuration] = useState<number | null>(null);
   const [showShareInfo, setShowShareInfo] = useState(false);
   // Delt ret
   const [isFavorite, setIsFavorite] = useState(false);
@@ -114,6 +118,8 @@ function RecipeDetailContent() {
           setShared(Boolean(dish.sharedRecipeId));
           setRejection(dish.shareRejected ? { reason: dish.shareRejectionReason ?? null } : null);
           setDishServings(dish.servings ?? null);
+          setDishDescription(dish.description ?? null);
+          setDishDuration(dish.durationMinutes ?? null);
           setView({
             name: dish.name,
             images: dish.images ?? [],
@@ -310,6 +316,12 @@ function RecipeDetailContent() {
                   </p>
                 )}
               </div>
+            )}
+            {kind === "own" && dishDescription && (
+              <p className="hf-type-body text-hf-black whitespace-pre-line">{dishDescription}</p>
+            )}
+            {kind === "own" && dishDuration && (
+              <p className="hf-type-small text-text-secondary">{t("recipeDetail.durationLabel", { minutes: dishDuration })}</p>
             )}
             {kind === "own" && dishServings && (
               <p className="hf-type-small text-text-secondary">{t("recipeDetail.servingsLabel", { count: dishServings })}</p>

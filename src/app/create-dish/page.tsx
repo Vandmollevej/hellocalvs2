@@ -5,6 +5,8 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import {
   IconCamera,
+  IconMinus,
+  IconPlus,
   IconChevronLeft,
   IconChevronRight,
   IconClipboardText,
@@ -36,6 +38,7 @@ import {
   type DishDraftDetails,
   type DishDraftIngredient,
 } from "@/lib/dish-draft";
+import { stepDuration } from "@/lib/activity-duration";
 import { RecipeStepPage } from "@/components/recipes/RecipeStepPage";
 import { RecipeImagesPicker } from "@/components/recipes/RecipeImagesPicker";
 import { ProductPhotoDropZone } from "@/components/recipes/ProductPhotoDropZone";
@@ -223,6 +226,7 @@ export default function CreateDishPage() {
       steps: nextSteps.length > 0 ? nextSteps : steps,
       showSteps: nextSteps.length > 0 || showSteps,
     });
+    setPage(1);
     const n = result.nutrition;
     setImportNote({
       missing,
@@ -248,10 +252,12 @@ export default function CreateDishPage() {
     setSaveError(null);
     if (!name.trim()) {
       setSaveError(t("createDish.nameRequired"));
+      setPage(pageKinds.findIndex((entry) => entry.kind === "title"));
       return;
     }
     if (ingredients.length === 0) {
       setSaveError(t("createDish.ingredientRequired"));
+      setPage(pageKinds.findIndex((entry) => entry.kind === "ingredients"));
       return;
     }
     setSaving(true);
@@ -262,6 +268,8 @@ export default function CreateDishPage() {
         body: JSON.stringify({
           name: name.trim(),
           servings,
+          description: details.description.trim(),
+          durationMinutes: details.durationMinutes,
           ingredients: ingredients.map((i) => ({
             productId: i.productId,
             grams: i.grams,
@@ -295,9 +303,22 @@ export default function CreateDishPage() {
 
   // Siderne i flowet: 0 = ingredienser, derefter ét trin pr. side, til sidst billeder.
   const [page, setPage] = useState(0);
+  // Indsæt tekst / Scan opskrift: importen er side 1, titlen kommer først på side 2.
+  const [importMode, setImportMode] = useState(false);
   const swipeStart = useRef<{ x: number; y: number } | null>(null);
   const stepList = steps.length ? steps : [EMPTY_STEP];
-  const totalPages = stepList.length + 2;
+  type PageKind =
+    | { kind: "import" | "title" | "ingredients" | "images" }
+    | { kind: "step"; index: number };
+  const pageKinds: PageKind[] = [
+    ...(importMode ? [{ kind: "import" as const }] : []),
+    { kind: "title" },
+    { kind: "ingredients" },
+    ...stepList.map((_, index) => ({ kind: "step" as const, index })),
+    { kind: "images" },
+  ];
+  const totalPages = pageKinds.length;
+  const current = pageKinds[Math.min(page, totalPages - 1)];
 
   function goTo(next: number) {
     setPage(Math.min(Math.max(next, 0), totalPages - 1));
@@ -322,9 +343,9 @@ export default function CreateDishPage() {
   }
 
   function removeStep() {
-    const at = page - 1;
+    const at = current.kind === "step" ? current.index : 0;
     updateDetails({ steps: stepList.filter((_, i) => i !== at) });
-    setPage(Math.max(1, page - 1));
+    setPage(page - 1);
   }
 
   const startOptions = [
@@ -358,6 +379,18 @@ export default function CreateDishPage() {
         size="full"
         title={t("createDish.title")}
         onClose={() => router.back()}
+        headerAction={
+          started ? (
+            <button
+              type="button"
+              onClick={handleSave}
+              disabled={saving || savedDish !== null}
+              className="hf-type-body hf-type-strong rounded-full bg-hf-black px-4 py-2 text-hf-white disabled:opacity-40"
+            >
+              {saving ? t("createDish.saving") : t("createDish.done")}
+            </button>
+          ) : undefined
+        }
         footer={
           started ? (
             <>
@@ -395,15 +428,6 @@ export default function CreateDishPage() {
                   <IconChevronRight size={22} />
                 </button>
               </div>
-              {page === totalPages - 1 && (
-                <button
-                  onClick={handleSave}
-                  disabled={saving || savedDish !== null}
-                  className="hf-control hf-btn-primary w-full"
-                >
-                  {saving ? t("createDish.saving") : t("createDish.saveDish")}
-                </button>
-              )}
             </>
           ) : undefined
         }
@@ -415,6 +439,7 @@ export default function CreateDishPage() {
                 key={option.key}
                 type="button"
                 onClick={() => {
+                  setImportMode(option.sheet !== "none");
                   setSheet(option.sheet);
                   setStarted(true);
                 }}
@@ -446,8 +471,31 @@ export default function CreateDishPage() {
               if (dx > 80 && Math.abs(dx) > Math.abs(dy) * 2) goTo(page - 1);
             }}
           >
-            {page === 0 && (
+            {current.kind === "import" && (
+              <div className="flex min-h-[40vh] flex-col items-center justify-center gap-3">
+                {startOptions
+                  .filter((option) => option.sheet !== "none")
+                  .map((option) => (
+                    <button
+                      key={option.key}
+                      type="button"
+                      onClick={() => setSheet(option.sheet)}
+                      className="flex w-full max-w-xs flex-col items-center gap-2 rounded-2xl bg-hf-tan py-5 text-hf-black"
+                    >
+                      {option.icon}
+                      <span className="hf-type-body hf-type-strong">
+                        {option.label}
+                      </span>
+                    </button>
+                  ))}
+              </div>
+            )}
+
+            {current.kind === "title" && (
               <>
+                <p className="hf-type-small hf-type-strong text-hf-black">
+                  {t("createDish.pageTitle")}
+                </p>
                 <input
                   value={name}
                   onChange={(event) => setName(event.target.value)}
@@ -456,7 +504,81 @@ export default function CreateDishPage() {
                   placeholder={t("createDish.namePlaceholder")}
                   className="hf-type-body hf-field min-w-0 rounded-full bg-hf-tan px-4 text-hf-black outline-none"
                 />
+                <textarea
+                  value={details.description}
+                  onChange={(event) =>
+                    updateDetails({ description: event.target.value })
+                  }
+                  placeholder={t("createDish.descriptionPlaceholder")}
+                  aria-label={t("createDish.descriptionPlaceholder")}
+                  rows={5}
+                  className="hf-type-body resize-none rounded-card bg-hf-tan px-4 py-3 text-hf-black outline-none"
+                />
+                <div className="flex items-center justify-between rounded-2xl bg-hf-tan px-4 py-3">
+                  <span className="hf-type-body text-hf-black">
+                    {t("createDish.durationLabel")}
+                  </span>
+                  <div className="flex items-center gap-2">
+                    <button
+                      type="button"
+                      onClick={() =>
+                        updateDetails({
+                          durationMinutes: details.durationMinutes
+                            ? details.durationMinutes <= 5
+                              ? null
+                              : stepDuration(details.durationMinutes, -1)
+                            : null,
+                        })
+                      }
+                      aria-label="-"
+                      className="flex h-9 w-9 items-center justify-center rounded-full bg-hf-white text-hf-black"
+                    >
+                      <IconMinus size={16} />
+                    </button>
+                    <input
+                      value={details.durationMinutes ?? ""}
+                      onChange={(event) => {
+                        const value = Number.parseInt(
+                          event.target.value.replace(/\D/g, ""),
+                          10,
+                        );
+                        updateDetails({
+                          durationMinutes:
+                            Number.isFinite(value) && value > 0
+                              ? Math.min(value, 5999)
+                              : null,
+                        });
+                      }}
+                      inputMode="numeric"
+                      placeholder="0"
+                      aria-label={t("createDish.durationLabel")}
+                      className="hf-type-body w-16 rounded-card bg-hf-white py-2 text-center text-hf-black outline-none"
+                    />
+                    <span className="hf-type-small text-text-secondary">
+                      {t("createDish.minutes")}
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() =>
+                        updateDetails({
+                          durationMinutes: stepDuration(
+                            details.durationMinutes ?? 0,
+                            1,
+                          ),
+                        })
+                      }
+                      aria-label="+"
+                      className="flex h-9 w-9 items-center justify-center rounded-full bg-hf-white text-hf-black"
+                    >
+                      <IconPlus size={16} />
+                    </button>
+                  </div>
+                </div>
+              </>
+            )}
 
+            {current.kind === "ingredients" && (
+              <>
                 {importNote && (
                   <div className="hf-card">
                     <p className="hf-type-small hf-type-strong text-hf-black">
@@ -659,19 +781,19 @@ export default function CreateDishPage() {
               </>
             )}
 
-            {page > 0 && page <= stepList.length && (
+            {current.kind === "step" && (
               <RecipeStepPage
                 key={page}
-                index={page - 1}
-                step={stepList[page - 1]}
+                index={current.index}
+                step={stepList[current.index]}
                 canRemove={stepList.length > 1}
-                onChange={(next) => updateStep(page - 1, next)}
+                onChange={(next) => updateStep(current.index, next)}
                 onAddAfter={addStepAfter}
                 onRemove={removeStep}
               />
             )}
 
-            {page === stepList.length + 1 && (
+            {current.kind === "images" && (
               <div>
                 <p className="hf-type-small hf-type-strong mb-2 text-hf-black">
                   {t("recipeImages.title")}

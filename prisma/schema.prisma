@@ -2419,6 +2419,9 @@ model Dish {
   sharedRecipeId String?
   // Antal personer retten er til (fra Indsæt tekst/Scan eller manuelt).
   servings       Int?
+  // Kort beskrivelse og varighed i minutter (Opret ret, side 1).
+  description    String?
+  durationMinutes Int?
   // Op til 3 billeder af den færdige ret (offentlige stier under
   // /product-images/recipe-images). Det første er forsidebillede.
   images         String[]  @default([])

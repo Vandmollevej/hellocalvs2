@@ -131,10 +131,14 @@ fun CreateDishScreen(args: RouteArgs) {
     var ingredients by remember { mutableStateOf(DishDraft.read()) }
     var saving by remember { mutableStateOf(false) }
     var saveError by remember { mutableStateOf<String?>(null) }
-    // Pages: 0 = ingredients, then one recipe step per page, last = pictures of the dish.
+    // Pages: [import], title + description + duration, ingredients, one recipe step per page, pictures of the dish.
     var page by remember { mutableStateOf(0) }
+    var importMode by remember { mutableStateOf(false) }
     val stepList = details.steps.ifEmpty { listOf(DishDraftStep()) }
-    val totalPages = stepList.size + 2
+    val pageKinds = (if (importMode) listOf("import") else emptyList()) + listOf("title", "ingredients") + stepList.indices.map { "step:$it" } + listOf("images")
+    val totalPages = pageKinds.size
+    val current = pageKinds[page.coerceIn(0, totalPages - 1)]
+    val currentStep = current.removePrefix("step:").toIntOrNull() ?: 0
     fun goTo(next: Int) { page = next.coerceIn(0, totalPages - 1) }
     // Flow step one: three buttons in the middle. Skipped when a draft already exists.
     var started by remember {
@@ -192,6 +196,7 @@ fun CreateDishScreen(args: RouteArgs) {
     }
 
     fun applyImport(result: ImportResult) {
+        page = 1
         val missing = mutableListOf<String>()
         for (ingredient in result.ingredients) {
             val product = ingredient.product
@@ -235,10 +240,12 @@ fun CreateDishScreen(args: RouteArgs) {
         saveError = null
         if (details.name.isBlank()) {
             saveError = t.t("createDish.nameRequired")
+            page = pageKinds.indexOf("title")
             return
         }
         if (ingredients.isEmpty()) {
             saveError = t.t("createDish.ingredientRequired")
+            page = pageKinds.indexOf("ingredients")
             return
         }
         saving = true
@@ -247,6 +254,8 @@ fun CreateDishScreen(args: RouteArgs) {
                 val body = mapOf(
                     "name" to details.name.trim(),
                     "servings" to servings,
+                    "description" to details.description.trim(),
+                    "durationMinutes" to details.durationMinutes,
                     "ingredients" to ingredients.map { mapOf("productId" to it.productId, "grams" to it.grams) },
                     "images" to details.images,
                     "steps" to details.steps.filter { !it.isEmpty() }.map { mapOf("title" to it.title, "text" to it.text, "image" to it.image) },
@@ -284,7 +293,7 @@ fun CreateDishScreen(args: RouteArgs) {
                 ).forEach { (icon, label, target) ->
                     Column(
                         Modifier.fillMaxWidth().clip(RoundedCornerShape(16.dp)).background(HcColors.Tan)
-                            .clickable { sheet = target; started = true }.padding(vertical = 20.dp),
+                            .clickable { importMode = target != "none"; sheet = target; started = true }.padding(vertical = 20.dp),
                         verticalArrangement = Arrangement.spacedBy(8.dp),
                         horizontalAlignment = Alignment.CenterHorizontally,
                     ) {
@@ -310,9 +319,13 @@ fun CreateDishScreen(args: RouteArgs) {
                 FoodSheetDots(totalPages, page) { goTo(it) }
                 PageArrow("ChevronRight", enabled = page < totalPages - 1) { goTo(page + 1) }
             }
-            if (page == totalPages - 1) {
-                HcButton(if (saving) t.t("createDish.saving") else t.t("createDish.saveDish"), onClick = ::save, enabled = !saving && savedDish == null)
-            }
+        },
+        trailing = {
+            Box(
+                Modifier.clip(RoundedCornerShape(50)).background(HcColors.Black).alpha(if (!saving && savedDish == null) 1f else 0.4f)
+                    .clickable(enabled = !saving && savedDish == null) { save() }.padding(horizontal = 16.dp, vertical = 8.dp),
+                contentAlignment = Alignment.Center,
+            ) { HcText(if (saving) t.t("createDish.saving") else t.t("createDish.done"), HcTypeRoles.Body, color = HcColors.White, bold = true) }
         },
     ) {
         Column(
@@ -326,8 +339,46 @@ fun CreateDishScreen(args: RouteArgs) {
             },
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
-          if (page == 0) {
+          if (current == "import") {
+            Column(Modifier.fillMaxWidth().heightIn(min = 320.dp), verticalArrangement = Arrangement.spacedBy(12.dp, Alignment.CenterVertically), horizontalAlignment = Alignment.CenterHorizontally) {
+                listOf(
+                    Triple("ClipboardText", t.t("createDish.modeText"), "paste"),
+                    Triple("Camera", t.t("createDish.modeScan"), "scan"),
+                ).forEach { (icon, label, target) ->
+                    Column(
+                        Modifier.fillMaxWidth().clip(RoundedCornerShape(16.dp)).background(HcColors.Tan).clickable { sheet = target }.padding(vertical = 20.dp),
+                        verticalArrangement = Arrangement.spacedBy(8.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                    ) {
+                        HcIcon(icon, size = 28.dp, color = HcColors.Black)
+                        HcText(label, HcTypeRoles.Body, color = HcColors.Black, bold = true)
+                    }
+                }
+            }
+          } else if (current == "title") {
+            HcText(t.t("createDish.pageTitle"), HcTypeRoles.Small, color = HcColors.Black, bold = true)
             FoodPillField(details.name, { updateDetails(details.copy(name = it)) }, t.t("createDish.namePlaceholder"), Modifier.fillMaxWidth())
+            FoodTextArea(details.description, { updateDetails(details.copy(description = it)) }, placeholder = t.t("createDish.descriptionPlaceholder"), minLines = 5, background = HcColors.Tan, border = false)
+            Row(
+                Modifier.fillMaxWidth().clip(RoundedCornerShape(16.dp)).background(HcColors.Tan).padding(horizontal = 16.dp, vertical = 12.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween,
+            ) {
+                HcText(t.t("createDish.durationLabel"), HcTypeRoles.Body, color = HcColors.Black)
+                Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    PageArrow("Minus", enabled = details.durationMinutes != null) {
+                        val d = details.durationMinutes
+                        updateDetails(details.copy(durationMinutes = if (d == null || d <= 5) null else maxOf(5, (d + 4) / 5 * 5 - 5)))
+                    }
+                    HcText(details.durationMinutes?.toString() ?: "0", HcTypeRoles.Body, color = HcColors.Black, bold = true)
+                    HcText(t.t("createDish.minutes"), HcTypeRoles.Small, color = HcColors.TextSecondary)
+                    PageArrow("Plus", enabled = true) {
+                        val d = details.durationMinutes ?: 0
+                        updateDetails(details.copy(durationMinutes = minOf(5999, d / 5 * 5 + 5)))
+                    }
+                }
+            }
+          } else if (current == "ingredients") {
 
             importNote?.let { note ->
                 HcCard {
@@ -423,20 +474,20 @@ fun CreateDishScreen(args: RouteArgs) {
                 FoodTileButton(t.t("createDish.scan"), "Camera", { nav.push("/camera?mode=product&for=ret") }, Modifier.fillMaxWidth().padding(top = 16.dp))
             }
 
-          } else if (page <= stepList.size) {
+          } else if (current.startsWith("step:")) {
             RecipeStepPage(
-                index = page - 1,
-                step = stepList[page - 1],
+                index = currentStep,
+                step = stepList[currentStep],
                 canRemove = stepList.size > 1,
-                onChange = { next -> updateDetails(details.copy(steps = stepList.mapIndexed { i, st -> if (i == page - 1) next else st })) },
+                onChange = { next -> updateDetails(details.copy(steps = stepList.mapIndexed { i, st -> if (i == currentStep) next else st })) },
                 onAddAfter = {
-                    val at = page - 1
+                    val at = currentStep
                     updateDetails(details.copy(steps = stepList.take(at + 1) + DishDraftStep() + stepList.drop(at + 1)))
                     page += 1
                 },
                 onRemove = {
-                    updateDetails(details.copy(steps = stepList.filterIndexed { i, _ -> i != page - 1 }))
-                    page = maxOf(1, page - 1)
+                    updateDetails(details.copy(steps = stepList.filterIndexed { i, _ -> i != currentStep }))
+                    page -= 1
                 },
             )
           } else {

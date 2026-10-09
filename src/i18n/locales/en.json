@@ -1219,6 +1219,7 @@
     }
   },
   "recipeDetail": {
+    "durationLabel": "{minutes} min.",
 
     "shareRejected": "Your dish is not shared with others because it was rejected. You keep it yourself.",
 
@@ -1297,6 +1298,12 @@
     }
   },
   "createDish": {
+    "pageTitle": "Title and description",
+    "descriptionPlaceholder": "Description",
+    "durationLabel": "Duration",
+    "minutes": "min.",
+    "done": "Done",
+    "pageImport": "Import",
     "pageBack": "Previous page",
     "pageNext": "Next page",
     "pageDots": "Page {current} of {total}",

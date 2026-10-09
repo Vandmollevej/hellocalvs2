@@ -4,6 +4,7 @@ Last updated: 2026-10-09
 
 ## 2026-10-09: Opret ret som flow — startskærm med tre knapper
 
+- Rettelse (bruger 2026-10-09): side 1 er Titel + beskrivelse + varighed (nye felter `Dish.description`, `Dish.durationMinutes`, migration 20261009220000 — skal med deployet). Færdig-knap øverst til højre gemmer retten fra enhver side (springer til siden, der mangler navn/ingredienser). Indsæt tekst/Scan: importen er side 1, titlen kommer først på side 2. Ingen beskrivelse/varighed fra importen endnu.
 - Trin-flow (bruger 2026-10-09): Opret manuelt er sider i popuppen — side 1 alle ingredienser (navn, personer, søgning), derefter ét trin af fremgangsmåden pr. side (overskrift, tekst, billede nederst; på web også drag and drop), til sidst billeder af retten med Gem. Navigation med pile + prikker i bunden, og et stryg mod højre går tilbage. `RecipeStepPage.tsx` / `CreateDishScreen.kt`. Lint/tsc grønne for web; Kotlin ikke kompileret lokalt; ikke prøvet i browser/på telefon. Sessionen arkiveres først, når brugeren siger til.
 
 - `/create-dish` (web + `CreateDishScreen.kt`) åbner nu med et startskærm-trin: tre knapper midt på skærmen — Scan, Indsæt tekst, Manuelt (de to første åbner deres ark, den sidste går til formularen). Springes over, når der allerede er en kladde (fx retur fra en vare). Knap-rækken i formularen er fjernet.

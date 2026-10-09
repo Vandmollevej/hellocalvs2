@@ -1219,6 +1219,7 @@
     }
   },
   "recipeDetail": {
+    "durationLabel": "{minutes} min.",
 
     "shareRejected": "Din ret er ikke delt med andre, fordi den blev afvist. Du beholder den selv.",
 
@@ -1297,6 +1298,12 @@
     }
   },
   "createDish": {
+    "pageTitle": "Titel og beskrivelse",
+    "descriptionPlaceholder": "Beskrivelse",
+    "durationLabel": "Varighed",
+    "minutes": "min.",
+    "done": "Færdig",
+    "pageImport": "Importér",
     "pageBack": "Forrige side",
     "pageNext": "Næste side",
     "pageDots": "Side {current} af {total}",

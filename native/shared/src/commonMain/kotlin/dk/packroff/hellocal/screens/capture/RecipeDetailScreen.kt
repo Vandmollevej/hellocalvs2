@@ -78,6 +78,8 @@ private data class OwnDishIngredient(val id: String, val grams: Double = 0.0, va
 private data class OwnDish(
     val name: String,
     val servings: Int? = null,
+    val description: String? = null,
+    val durationMinutes: Int? = null,
     val shareRejected: Boolean = false,
     val shareRejectionReason: String? = null,
     val sharedRecipeId: String? = null,
@@ -152,6 +154,8 @@ fun RecipeDetailScreen(args: RouteArgs) {
     var rejection by remember { mutableStateOf<String?>(null) }
     var rejected by remember { mutableStateOf(false) }
     var dishServings by remember { mutableStateOf<Int?>(null) }
+    var dishDescription by remember { mutableStateOf<String?>(null) }
+    var dishDuration by remember { mutableStateOf<Int?>(null) }
     var showShareInfo by remember { mutableStateOf(false) }
     var isFavorite by remember { mutableStateOf(false) }
     var canReport by remember { mutableStateOf(false) }
@@ -168,6 +172,8 @@ fun RecipeDetailScreen(args: RouteArgs) {
                 rejected = dish.shareRejected
                 rejection = dish.shareRejectionReason
                 dishServings = dish.servings
+                dishDescription = dish.description
+                dishDuration = dish.durationMinutes
                 view = RecipeView(
                     dish.name,
                     dish.ingredients.map { i ->
@@ -308,6 +314,12 @@ fun RecipeDetailScreen(args: RouteArgs) {
                             }
                             rejection?.let { HcText(t.t("recipeDetail.shareRejectedReason", "reason" to it), HcTypeRoles.Small, Modifier.padding(top = 4.dp), color = HcColors.TextSecondary) }
                         }
+                    }
+                    dishDescription?.takeIf { it.isNotBlank() }?.let {
+                        HcText(it, HcTypeRoles.Body, color = HcColors.Black)
+                    }
+                    dishDuration?.takeIf { it > 0 }?.let {
+                        HcText(t.t("recipeDetail.durationLabel", "minutes" to it), HcTypeRoles.Small, color = HcColors.TextSecondary)
                     }
                     dishServings?.takeIf { it > 0 }?.let {
                         HcText(t.t("recipeDetail.servingsLabel", "count" to it), HcTypeRoles.Small, color = HcColors.TextSecondary)

@@ -108,10 +108,17 @@ export async function POST(req: Request) {
       typeof body.servings === "number" && Number.isInteger(body.servings) && body.servings > 0 && body.servings <= 100
         ? body.servings
         : null;
+    const description = typeof body.description === "string" ? body.description.trim().slice(0, 1000) || null : null;
+    const durationMinutes =
+      typeof body.durationMinutes === "number" && Number.isInteger(body.durationMinutes) && body.durationMinutes > 0 && body.durationMinutes <= 5999
+        ? body.durationMinutes
+        : null;
     const dish = await prisma.dish.create({
       data: {
         name,
         servings,
+        description,
+        durationMinutes,
         ownerId: user.id,
         images,
         steps,
