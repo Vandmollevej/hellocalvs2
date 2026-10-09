@@ -1715,6 +1715,7 @@
     "measurementGoal": "Mål",
     "latest": "{date} {value}",
     "setGoal": "Sett et mål",
+    "seeAllGoals": "Se alle mål",
     "toLose": "{value} til målet",
     "toGain": "{value} opp til målet",
     "goalReached": "Du har nådd målet ditt",

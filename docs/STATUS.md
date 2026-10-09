@@ -2,6 +2,12 @@
 
 Last updated: 2026-10-09
 
+## 2026-10-09: Footer-cirklen får fuld størrelse straks ved træk op
+
+- `FooterArc` (web) og `HomeFooterArc.kt` (native): første træk opad springer cirklen og knapperne straks til fuld størrelse (ingen animation) i stedet for at vokse gradvist med fingerens afstand. Slip uden at ramme en knap lader den stå åben. `ARC_PULL_DISTANCE` er fjernet.
+- Knapperne har samme geometri som venstre-cirklen (`AddButton`): 52 px fra cirklen (valgt knap 22 px længere ude end de øvrige), vinkler jævnt fordelt over −75°…75°.
+- Ikke kørt: build (lint og tsc på de ændrede filer er rene), Kotlin ikke kompileret, ikke prøvet på telefon.
+
 ## 2026-10-09: Halvcirklens vifte rykker knapper op i stedet for ud over kanten
 
 - `FooterArc` (web + `HomeFooterArc.kt`): står halvcirklen langt ude til siden, flyttes viften ikke længere indad. De knapper, der ellers ville forsvinde ud over skærmkanten, holdes inden for kanten og rykkes i stedet længere op, væk fra halvcirklen, med samme afstand til naboen (`fanLayout`). Navnet på det valgte ikon holdes inden for skærmen. Størrelser og indstillinger er uændrede.
@@ -6148,3 +6154,5 @@ Skema, migration, `src/lib/danish-number.ts` og søgning/oprettelse er lavet (se
 - `/admin/search-synonyms`: ordpar pr. sprog (DA/EN) med "Ens"-procent; soegning i produkter og generiske ingredienser matcher ogsaa synonymet, rangeret efter procenten (0 % = slaaet fra). Tabel `search_synonyms` (migration 20261009120000, med eksempler). Forslag ud fra produkttyper: `docs/SYNONYM-FORSLAG.md`.
 
 - 2026-10-09: Opdater-banneret (`UpdatePointsBanner`) er nu et lag oven på siden (rykker ikke indholdet), med mindre luft over/under teksten. Trækstregen minimerer (op/tryk) og trækker en omvendt popup ned (ned) med et kamerafelt pr. manglende ting. Ikke prøvet i browser.
+
+- 2026-10-09: Tilføj-menu: teksten lå oven på ikonerne (dobbelt negativ margin fra #287). Overlappet fjernet på web (`AddMenuList.tsx`) og native (`AddMenu.kt`).

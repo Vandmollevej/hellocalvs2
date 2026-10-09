@@ -1715,6 +1715,7 @@
     "measurementGoal": "Objectif",
     "latest": "le {date} {value}",
     "setGoal": "Fixer un objectif",
+    "seeAllGoals": "Voir tous les objectifs",
     "toLose": "{value} jusqu'à l'objectif",
     "toGain": "{value} de plus jusqu'à l'objectif",
     "goalReached": "Tu as atteint ton objectif",
