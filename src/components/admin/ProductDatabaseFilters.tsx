@@ -8,6 +8,7 @@ import {
   PRODUCT_COLUMNS,
   PRODUCT_COLUMN_LABELS,
   PRODUCT_CATEGORY_LABELS,
+  PRODUCT_DATABASE_PER_PAGE_OPTIONS,
   PRODUCT_DATABASE_SORTS,
   PRODUCT_SOURCES,
   PRODUCT_SOURCE_LABELS,
@@ -43,6 +44,11 @@ const SOURCE_OPTIONS = PRODUCT_SOURCES.map((key) => ({ value: key, label: PRODUC
 const STATUS_OPTIONS = PRODUCT_STATUSES.map((key) => ({ value: key, label: PRODUCT_STATUS_LABELS[key] }));
 const COLUMN_OPTIONS = PRODUCT_COLUMNS.map((key) => ({ value: key, label: PRODUCT_COLUMN_LABELS[key] }));
 const SORT_OPTIONS = PRODUCT_DATABASE_SORTS.map((s) => ({ value: s.key, label: s.label }));
+const PAGING_OPTIONS = [
+  { value: "pages", label: "Sider (Forrige / Næste)" },
+  { value: "infinite", label: "Uendelig scroll" },
+];
+const PER_PAGE_OPTIONS = PRODUCT_DATABASE_PER_PAGE_OPTIONS.map((n) => ({ value: String(n), label: `${n} varer` }));
 const IMAGE_OPTIONS = [
   { value: "with", label: "Med billede" },
   { value: "without", label: "Uden billede" },
@@ -178,6 +184,18 @@ export function ProductDatabaseFilters({
               if (cols.length > 0) go({ cols: cols as Filters["cols"], page: filters.page });
             }}
             alignRight
+          />
+          <FilterDropdown
+            label="Indlæsning"
+            value={filters.paging}
+            options={PAGING_OPTIONS}
+            onChange={(paging) => go({ paging: paging === "infinite" ? "infinite" : "pages" })}
+          />
+          <FilterDropdown
+            label="Varer pr. side"
+            value={String(filters.perPage)}
+            options={PER_PAGE_OPTIONS}
+            onChange={(perPage) => go({ perPage: Number(perPage) || filters.perPage })}
           />
         </div>
       </section>
