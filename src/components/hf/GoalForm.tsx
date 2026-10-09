@@ -1,8 +1,10 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import Image from "next/image";
 import { IconCalendar } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
+import { AccordionSection } from "@/components/hf/AccordionSection";
 import { HfSlider } from "@/components/hf/HfSlider";
 import {
   compositionSliderRange,
@@ -23,15 +25,18 @@ import {
 } from "@/lib/units";
 import {
   BODY_MEASUREMENT_FIELDS,
+  isBodyMeasurementField,
   emptyBodyMeasurementValues,
   type BodyMeasurementField,
+  type BodyMeasurementSex,
 } from "@/lib/body-measurements";
 import {
   COMPOSITION_GOAL_FIELDS,
+  isCompositionGoalField,
   emptyCompositionGoalValues,
   type CompositionGoalField,
 } from "@/lib/goal-composition";
-import { emptyNutritionGoalValues, NUTRITION_GOAL_FIELDS, type NutritionGoalField } from "@/lib/goal-nutrition";
+import { emptyNutritionGoalValues, isNutritionGoalField, NUTRITION_GOAL_FIELDS, type NutritionGoalField } from "@/lib/goal-nutrition";
 
 // Formularen til at oprette og redigere en målsætning (dato, vægt, kropsmål,
 // ernæring).
@@ -219,6 +224,17 @@ export function GoalForm({
   );
   const [composition, setComposition] = useState(initial.composition);
   const [nutrition, setNutrition] = useState(initial.nutrition);
+  // Kropsmålenes tegninger følger profilens køn (aldrig gætte: uden køn vises ingen).
+  const [sex, setSex] = useState<BodyMeasurementSex | null>(null);
+  useEffect(() => {
+    fetch("/api/profile")
+      .then(async (response) => {
+        if (!response.ok) throw new Error("profile");
+        return (await response.json()) as { user: { sex: BodyMeasurementSex | null } };
+      })
+      .then((data) => setSex(data.user.sex ?? null))
+      .catch(() => {});
+  }, []);
   const [saving, setSaving] = useState(false);
   const [saveError, setSaveError] = useState(false);
   const [activeId, setActiveId] = useState<string | null>(null);
@@ -353,39 +369,21 @@ export function GoalForm({
           <p className="hf-type-small">{t("goals.intro")}</p>
         </div>
 
-        <div className="hf-card">
-          <GoalInput
-            label={t("goals.targetWeight")}
-            unit={weightUnitLabel(units.weight)}
-            value={weight}
-            placeholder={weightToInputValue(72, units.weight)}
-            autoFocus={focus === "weight"}
-            onChange={setWeight}
-            onActivate={() => setActiveId("weight")}
-          />
-        </div>
-
-        <div className="hf-card hf-card--form">
-          <p className="hf-type-body hf-type-strong text-hf-black">{t("goals.bodyMeasurementsHeading")}</p>
+        <AccordionSection
+          title={t("goals.weightCompositionHeading")}
+          defaultOpen={focus === null || focus === undefined || focus === "weight" || (typeof focus === "string" && isCompositionGoalField(focus))}
+          bodyClassName="p-4"
+        >
           <div className="grid grid-cols-2 gap-4">
-            {BODY_MEASUREMENT_FIELDS.map(({ field, nameKey }) => (
-              <GoalInput
-                key={field}
-                label={t(nameKey)}
-                unit={lengthUnitLabel(units.height)}
-                value={measurements[field]}
-                placeholder={lengthToInputValue(82, units.height)}
-                autoFocus={focus === field}
-                onChange={(value) => setMeasurements((current) => ({ ...current, [field]: value }))}
-                onActivate={() => setActiveId(field)}
-              />
-            ))}
-          </div>
-        </div>
-
-        <div className="hf-card hf-card--form">
-          <p className="hf-type-body hf-type-strong text-hf-black">{t("goals.compositionHeading")}</p>
-          <div className="grid grid-cols-2 gap-4">
+            <GoalInput
+              label={t("goals.targetWeight")}
+              unit={weightUnitLabel(units.weight)}
+              value={weight}
+              placeholder={weightToInputValue(72, units.weight)}
+              autoFocus={focus === "weight"}
+              onChange={setWeight}
+              onActivate={() => setActiveId("weight")}
+            />
             {COMPOSITION_GOAL_FIELDS.map(({ field, unit, nameKey }) => (
               <GoalInput
                 key={field}
@@ -399,10 +397,42 @@ export function GoalForm({
               />
             ))}
           </div>
-        </div>
+        </AccordionSection>
 
-        <div className="hf-card--form hf-card">
-          <p className="hf-type-body hf-type-strong text-hf-black">{t("goals.nutritionHeading")}</p>
+        <AccordionSection
+          title={t("goals.bodyMeasurementsHeading")}
+          defaultOpen={typeof focus === "string" && isBodyMeasurementField(focus)}
+          bodyClassName="p-4"
+        >
+          <div className="flex flex-col gap-4">
+            {BODY_MEASUREMENT_FIELDS.map(({ field, nameKey, image }) => (
+              <div key={field} className="flex items-center gap-4">
+                <span className="flex h-[76px] w-14 shrink-0 items-center justify-center">
+                  {image && sex && (
+                    <Image src={image[sex]} alt="" width={56} height={76} className="h-full w-full object-contain" />
+                  )}
+                </span>
+                <div className="min-w-0 flex-1">
+                  <GoalInput
+                    label={t(nameKey)}
+                    unit={lengthUnitLabel(units.height)}
+                    value={measurements[field]}
+                    placeholder={lengthToInputValue(82, units.height)}
+                    autoFocus={focus === field}
+                    onChange={(value) => setMeasurements((current) => ({ ...current, [field]: value }))}
+                    onActivate={() => setActiveId(field)}
+                  />
+                </div>
+              </div>
+            ))}
+          </div>
+        </AccordionSection>
+
+        <AccordionSection
+          title={t("goals.nutritionHeading")}
+          defaultOpen={typeof focus === "string" && isNutritionGoalField(focus)}
+          bodyClassName="p-4"
+        >
           <div className="grid grid-cols-2 gap-4">
             {NUTRITION_GOAL_FIELDS.map(({ field, unit, nameKey }) => (
               <GoalInput
@@ -417,7 +447,7 @@ export function GoalForm({
               />
             ))}
           </div>
-        </div>
+        </AccordionSection>
       </div>
       {activeSlider && (
         <GoalSliderBar

@@ -2,6 +2,11 @@
 
 Last updated: 2026-10-09
 
+## 2026-10-09: Delmål-formular i tre accordions
+
+- `GoalForm`: tre fold-ud (Vægt og opbygning, Kropsmål, Ernæring); kropsmålene har igen deres egne tegninger (efter profilens køn). Lint grøn; ikke visuelt testet.
+
+
 ## 2026-10-09: Tøj ved vejning som til/fra-slidere
 
 - Vægt-siden, vejningens info-vindue og popuppen for smartvægt-vejninger viser nu syv slidere (undertøj, bukser, top/T-shirt, sweater, sko, mobil m.m. i lommen, efter toiletbesøg). Flere kan vælges; intet valgt = nøgen. Se DECISIONS 2026-10-09.
@@ -6131,3 +6136,7 @@ Ny `valdemarsro-agent` (scripts/valdemarsro-agent, compose.production.yaml, buil
 ## 2026-10-08 — Ental/flertal for generiske ingredienser (database + API)
 
 Skema, migration, `src/lib/danish-number.ts` og søgning/oprettelse er lavet (se DECISIONS.md samme dato). `prisma validate` og ESLint på de ændrede filer er grønne; `npm run build` og typecheck er ikke kørt (ingen genereret Prisma-klient i arbejdskopien). Mangler: UI skal vise `displayName`, ental/flertal i arkene, billedomdøbning.
+
+## 2026-10-09: Synonymordbog (admin > Soegning)
+
+- `/admin/search-synonyms`: ordpar pr. sprog (DA/EN) med "Ens"-procent; soegning i produkter og generiske ingredienser matcher ogsaa synonymet, rangeret efter procenten (0 % = slaaet fra). Tabel `search_synonyms` (migration 20261009120000, med eksempler). Forslag ud fra produkttyper: `docs/SYNONYM-FORSLAG.md`.
