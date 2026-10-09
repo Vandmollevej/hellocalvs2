@@ -1646,6 +1646,14 @@ textarea::selection,
   color: var(--hf-color-selected-text) !important;
 }
 
+/* Kalenderens valgte/dags dato: hvid flade med dyb grøn kant (brugerbeslutning
+   2026-10-09 — ikke lime). Kun kalenderen; øvrige valg bruger .hf-selected. */
+.hf-cal-current {
+  background: var(--hf-color-white, #fff) !important;
+  box-shadow: inset 0 0 0 2px var(--hf-color-brand);
+  color: var(--hf-color-action) !important;
+}
+
 /* Fælles kontrolhøjde (design.md §6, brugerbeslutning 2026-09-26): alle
    enkeltlinje-felter, dropdowns, madindtastninger, fuldbredde-knapper og
    listerækker er 48 px. Klasserne ejer højden og den vertikale padding og
