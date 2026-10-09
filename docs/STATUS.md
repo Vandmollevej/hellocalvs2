@@ -2,6 +2,12 @@
 
 Last updated: 2026-10-09
 
+## 2026-10-09: Stregkode læses også med skygge hen over koden (lokal tærskel pr. scanlinje)
+
+- Brugerens test 2026-10-06: en mælk med lidt skygge over stregkoden kunne ikke læses, mens andre scanner-apps læste den straks. Årsag: ZXing binariserer hver scanlinje med én fælles sort/hvid-tærskel, så de hvide felter i skyggen var mørkere end de sorte streger i lyset. Bemærk: ZXing's `HybridBinarizer` (som 2026-10-07-ændringen skiftede til hver anden frame) adskiller sig kun fra den globale for 2D-koder — for 1D-rækker bruger begge samme ene tærskel pr. række, så den skiftende binarisering hjalp ikke mod skygge på iPhone (ingen native BarcodeDetector).
+- Nu tærskles hver scanlinje lokalt (`src/lib/barcode-row-threshold.ts`, koblet på ZXing via `src/lib/barcode-local-binarizer.ts`): hver pixel sammenlignes med gennemsnittet i et vindue på 10 % af linjen, så kun kontrasten mellem streg og nabo-felter tæller. I samme frame prøves derefter ZXing's globale histogram (lav kontrast/uskarphed), og UPC-E-læseren på begge. Én luminans-beregning pr. billede. Native BarcodeDetector (Android Chrome) kører stadig først.
+- Tjek: `npm test` (4 nye tests: uden skygge, blød og skarp skyggekant, ensfarvede områder), lint og typecheck rene for de ændrede filer. `npm run build` stopper på en eksisterende typefejl i `src/app/admin/product-database/products/page.tsx` (`"details"` vs. `"list"`, kendt fra 2026-10-04). Ikke prøvet på telefon — brugeren scanner mælken igen i samme lys.
+
 ## 2026-10-09: Startmængde — instantkaffe 2 g og aldrig over pakkens indhold
 
 - `default-amount.ts` (+ native `FoodLogic.kt`): instantkaffe → 2 g; forslaget kappes ved pakkens vægt/volumen. Test: `node --test src/lib/default-amount.test.mjs` (14 grønne). Lint/build ikke kørt (ingen node_modules her); Kotlin ikke kompileret lokalt.
