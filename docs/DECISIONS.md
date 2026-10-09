@@ -4699,3 +4699,9 @@ Google/Apple/Facebook-login og integrationstilkobling kører i system-browseren,
 - `src/lib/danish-number.ts`: `deriveNumberForms` (kendte ord + tillægsord), `parseNumberQuery` ("et/en X" = ental, "nogle/flere/mange X" = flertal) og `matchesNumberQuery`. `GET /api/generic-ingredients` søger i alle tre felter og filtrerer på hele ord, så "et æble" ikke giver "æbler"; svaret har `displayName` i den søgte form. Oprettelse (`POST` og `addIngredientRequestGlobally`) udfylder begge felter.
 - Kun generiske varer — almindelige varer med brand/EAN berøres ikke. Se docs/REGLER.md.
 - Ikke gjort endnu: UI skal bruge `displayName`; ental/flertal-kolonner i Bilka-/REMA-arkene; import af de afledte former til eksisterende rækker ud over backfill-listen.
+
+## 2026-10-09 — Bundmenu-redigering: swipe, kant-rulning og animationer
+
+- I redigering ruller et swipe på et ikon rækken; et stille tryk (250 ms) løfter ikonet. Holdes et løftet ikon ved rækkens kant, ruller rækken kontinuerligt (ingen sidehop, ingen snap).
+- Alle flytninger i menuen glider via script-animation (`el.animate`), fordi vibrationen (CSS-animation) ellers overstyrer inline-transform. Et sluppet ikon glider fra fingeren til sin plads. Samme mønster som statistik-gitteret (`StatCardsGrid`).
+

@@ -1831,9 +1831,23 @@ textarea::selection,
   animation: hf-nav-panel-in 180ms ease-out;
 }
 
+@keyframes hf-nav-ghost-lift {
+  from {
+    transform: scale(1);
+  }
+  to {
+    transform: scale(1.18);
+  }
+}
+
+.hf-nav-ghost {
+  animation: hf-nav-ghost-lift 140ms ease-out forwards;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .hf-nav-jiggle,
-  .hf-nav-panel-in {
+  .hf-nav-panel-in,
+  .hf-nav-ghost {
     animation: none;
   }
 }

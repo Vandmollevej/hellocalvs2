@@ -43,11 +43,17 @@ const LONG_PRESS_MS = 550;
 const READY_MS = 1000;
 const MOVE_CANCEL_PX = 10;
 const SHEET_CLOSE_PX = 60;
-const FLIP_MS = 260;
-const FLIP_EASING = "cubic-bezier(0.25, 0.8, 0.25, 1)";
+const FLIP_MS = 220;
+const FLIP_EASING = "cubic-bezier(0.2, 0, 0, 1)";
+const SLIDE_ANIMATION_ID = "nav-slide";
 const PAGE_SIZE = 4;
-const EDGE_ZONE_PX = 36;
-const EDGE_HOLD_MS = 650;
+// Som i statistik-gitteret: i redigering løfter et kort, stille tryk ikonet;
+// bevæger fingeren sig først, er det et swipe, der ruller rækken.
+const EDIT_LIFT_DELAY_MS = 250;
+const EDGE_ZONE_PX = 56;
+// Rækken ruller kontinuerligt (sider pr. sekund) når et løftet ikon holdes
+// ved kanten; hastigheden vokser jo tættere på kanten.
+const AUTO_SCROLL_MAX_PAGES_PER_S = 2.4;
 const PAGE_ANIM_MS = 220;
 
 export function TrendIcon({ color, size }: { color: string; size: number }) {
@@ -244,12 +250,39 @@ function overRect(el: HTMLElement | null, clientX: number, clientY: number) {
 // omregnet til et indeks i hele listen. Bruges i stedet for "nærmeste andet
 // ikon", som fik det trukne ikon til at hoppe frem og tilbage mellem to
 // naboer ved hver bevægelse (6a503586).
-function slotIndexAt(bar: HTMLElement | null, clientX: number, page: number) {
+function slotIndexAt(bar: HTMLElement | null, clientX: number, scrollPages: number) {
   if (!bar) return null;
   const r = bar.getBoundingClientRect();
   const slotWidth = r.width / PAGE_SIZE;
-  const slot = Math.min(PAGE_SIZE - 1, Math.max(0, Math.floor((clientX - r.left) / slotWidth)));
-  return page * PAGE_SIZE + slot;
+  // Rækken kan stå midt mellem to sider, så pladsen regnes i rullet indhold.
+  return Math.max(0, Math.floor((clientX - r.left) / slotWidth + scrollPages * PAGE_SIZE));
+}
+
+// sx: skærmposition, nx: position i rullet indhold (= sx uden for rækken).
+type IconPlace = { sx: number; nx: number; y: number; inBar: boolean };
+
+function reduceMotion() {
+  return typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+}
+
+// Script-animation: vinder over vibrationen (CSS-animation) mens den kører,
+// og vibrationen fortsætter af sig selv bagefter.
+function slideIcon(el: HTMLElement, dx: number, dy: number, lift: boolean) {
+  if (reduceMotion()) return;
+  el.getAnimations().forEach((a) => {
+    if (a.id === SLIDE_ANIMATION_ID) a.cancel();
+  });
+  el.animate(
+    [
+      {
+        transform: `translate(${dx}px, ${dy}px) scale(${lift ? 1.18 : 1})`,
+        zIndex: 30,
+        boxShadow: lift ? "0 10px 18px rgb(0 0 0 / 0.18)" : "none",
+      },
+      { transform: "translate(0px, 0px) scale(1)", zIndex: 30, boxShadow: "none" },
+    ],
+    { duration: FLIP_MS, easing: FLIP_EASING, id: SLIDE_ANIMATION_ID },
+  );
 }
 
 export function BottomNav() {
@@ -288,15 +321,22 @@ export function BottomNav() {
   const itemRefs = useRef(new Map<string, HTMLElement>());
   const longPressTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const readyTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const edgeHoldTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const edgeHoldDir = useRef(0);
   const pressStart = useRef<{ x: number; y: number } | null>(null);
   const dragRef = useRef<DragState | null>(null);
   const pageSwipeRef = useRef<PageSwipeState | null>(null);
   const activeKeysRef = useRef(activeKeys);
   const scrollPagesRef = useRef(scrollPages);
   const sheetDrag = useRef<{ pointerId: number; startY: number } | null>(null);
-  const prevRects = useRef(new Map<string, DOMRect>());
+  const prevPlaces = useRef(new Map<string, IconPlace>());
+  const settleFrom = useRef<{ key: string; x: number; y: number } | null>(null);
+  const pendingLift = useRef<{
+    key: string;
+    startX: number;
+    startY: number;
+    pointerId: number;
+    timer: ReturnType<typeof setTimeout> | null;
+  } | null>(null);
+  const autoScrollRaf = useRef<number | null>(null);
 
   const pages = chunk(activeKeys, PAGE_SIZE);
   const maxScrollPages = Math.max(0, pages.length - 1);
@@ -360,29 +400,46 @@ export function BottomNav() {
     };
   }, [editMode]);
 
-  // FLIP-animate icons that shift position when the active/inactive lists reorder.
+  // FLIP: hvert ikon, der skifter plads (omrokering, ud/ind af panelet, et
+  // andet ikon fjernes), glider derhen i stedet for at hoppe. Rullede ikoner
+  // i rækken måles i rullet indhold, så swipe/auto-rulning ikke tæller som
+  // flytning. Et sluppet ikon glider fra fingeren til sin plads.
+  const shownScroll = pageSwipe ? scrollPages : clampedScrollPages;
   useLayoutEffect(() => {
-    const nextRects = new Map<string, DOMRect>();
+    const barWidth = barRef.current?.getBoundingClientRect().width ?? 0;
+    const next = new Map<string, IconPlace>();
     itemRefs.current.forEach((el, key) => {
-      nextRects.set(key, el.getBoundingClientRect());
+      const r = el.getBoundingClientRect();
+      const inBar = barRef.current?.contains(el) ?? false;
+      const sx = r.left + r.width / 2;
+      next.set(key, { sx, nx: sx + (inBar ? shownScroll * barWidth : 0), y: r.top + r.height / 2, inBar });
     });
+    const settle = settleFrom.current;
+    if (!drag) settleFrom.current = null;
     itemRefs.current.forEach((el, key) => {
+      const now = next.get(key);
+      if (!now) return;
+      if (settle && !drag && settle.key === key) {
+        const rect = el.getBoundingClientRect();
+        slideIcon(
+          el,
+          settle.x - (rect.left + rect.width / 2),
+          settle.y - (rect.top + rect.height / 2),
+          true,
+        );
+        return;
+      }
       if (dragRef.current?.moved && dragRef.current.key === key) return;
-      const prev = prevRects.current.get(key);
-      const next = nextRects.get(key);
-      if (!prev || !next) return;
-      const dx = prev.left - next.left;
-      const dy = prev.top - next.top;
-      if (Math.abs(dx) < 0.5 && Math.abs(dy) < 0.5) return;
-      el.style.transition = "none";
-      el.style.transform = `translate(${dx}px, ${dy}px)`;
-      requestAnimationFrame(() => {
-        el.style.transition = `transform ${FLIP_MS}ms ${FLIP_EASING}`;
-        el.style.transform = "";
-      });
+      const prev = prevPlaces.current.get(key);
+      if (!prev) return;
+      // I samme område er forskellen uden rulning; på tværs er det skærmpositioner.
+      const dx = prev.inBar === now.inBar ? prev.nx - now.nx : prev.sx - now.sx;
+      const dy = prev.y - now.y;
+      if (Math.abs(dx) < 1 && Math.abs(dy) < 1) return;
+      slideIcon(el, dx, dy, false);
     });
-    prevRects.current = nextRects;
-  }, [activeKeys, inactiveKeys]);
+    prevPlaces.current = next;
+  }, [activeKeys, inactiveKeys, drag, shownScroll]);
 
   const clearLongPress = useCallback(() => {
     if (longPressTimer.current) {
@@ -398,19 +455,11 @@ export function BottomNav() {
     }
   }, []);
 
-  const clearEdgeHoldTimer = useCallback(() => {
-    if (edgeHoldTimer.current) {
-      clearTimeout(edgeHoldTimer.current);
-      edgeHoldTimer.current = null;
-    }
-    edgeHoldDir.current = 0;
-  }, []);
-
   const finishDrag = useCallback((clientX: number, clientY: number) => {
     clearReadyTimer();
-    clearEdgeHoldTimer();
     const current = dragRef.current;
     dragRef.current = null;
+    if (current?.moved) settleFrom.current = { key: current.key, x: clientX, y: clientY };
     setDrag(null);
     if (!current) return;
 
@@ -430,7 +479,7 @@ export function BottomNav() {
 
     if (current.source === "inactive") {
       if (overRect(barRef.current, clientX, clientY)) {
-        const target = slotIndexAt(barRef.current, clientX, Math.round(scrollPagesRef.current));
+        const target = slotIndexAt(barRef.current, clientX, scrollPagesRef.current);
         setInactiveKeys((prev) => prev.filter((k) => k !== current.key));
         setActiveKeys((prev) => {
           if (prev.includes(current.key)) return prev;
@@ -440,7 +489,27 @@ export function BottomNav() {
         });
       }
     }
-  }, [clearReadyTimer, clearEdgeHoldTimer]);
+  }, [clearReadyTimer]);
+
+  // Aktivt ikon over baren: de andre glider til side, så pladsen under
+  // fingeren er fri (kun mens fingeren er over selve baren).
+  const reorderUnderFinger = useCallback(
+    (key: string, source: "active" | "inactive", x: number, y: number) => {
+      if (source !== "active" || !overRect(barRef.current, x, y)) return;
+      const target = slotIndexAt(barRef.current, x, scrollPagesRef.current);
+      if (target === null) return;
+      setActiveKeys((prev) => {
+        const from = prev.indexOf(key);
+        const to = Math.min(target, prev.length - 1);
+        if (from === -1 || from === to) return prev;
+        const copy = [...prev];
+        copy.splice(from, 1);
+        copy.splice(to, 0, key);
+        return copy;
+      });
+    },
+    [],
+  );
 
   useEffect(() => {
     if (!drag) return;
@@ -463,47 +532,7 @@ export function BottomNav() {
       dragRef.current = next;
       setDrag(next);
 
-      if (moved && current.source === "active") {
-        const barRect = barRef.current?.getBoundingClientRect();
-        const totalPages = Math.max(1, Math.ceil(activeKeysRef.current.length / PAGE_SIZE));
-        if (barRect) {
-          const nearLeft = e.clientX - barRect.left < EDGE_ZONE_PX && scrollPagesRef.current > 0;
-          const nearRight =
-            barRect.right - e.clientX < EDGE_ZONE_PX && scrollPagesRef.current < totalPages - 1;
-          const dir = nearLeft ? -1 : nearRight ? 1 : 0;
-          if (dir !== 0) {
-            if (edgeHoldDir.current !== dir) {
-              clearEdgeHoldTimer();
-              edgeHoldDir.current = dir;
-              edgeHoldTimer.current = setTimeout(() => {
-                const total = Math.max(1, Math.ceil(activeKeysRef.current.length / PAGE_SIZE));
-                setScrollPages((p) => Math.min(total - 1, Math.max(0, Math.round(p) + dir)));
-                edgeHoldTimer.current = null;
-                edgeHoldDir.current = 0;
-              }, EDGE_HOLD_MS);
-            }
-          } else {
-            clearEdgeHoldTimer();
-          }
-        }
-
-        // Kun mens fingeren er over selve baren — trækkes ikonet op mod
-        // panelet, bliver de andre stående, indtil det slippes.
-        const target = overRect(barRef.current, e.clientX, e.clientY)
-          ? slotIndexAt(barRef.current, e.clientX, Math.round(scrollPagesRef.current))
-          : null;
-        if (target !== null) {
-          setActiveKeys((prev) => {
-            const from = prev.indexOf(current.key);
-            const to = Math.min(target, prev.length - 1);
-            if (from === -1 || from === to) return prev;
-            const copy = [...prev];
-            copy.splice(from, 1);
-            copy.splice(to, 0, current.key);
-            return copy;
-          });
-        }
-      }
+      if (moved) reorderUnderFinger(current.key, current.source, e.clientX, e.clientY);
     }
 
     function onUp(e: PointerEvent) {
@@ -519,9 +548,51 @@ export function BottomNav() {
       window.removeEventListener("pointermove", onMove);
       window.removeEventListener("pointerup", onUp);
       window.removeEventListener("pointercancel", onUp);
-      clearEdgeHoldTimer();
     };
-  }, [drag, finishDrag, clearReadyTimer, clearEdgeHoldTimer]);
+  }, [drag, finishDrag, clearReadyTimer, reorderUnderFinger]);
+
+  // Mens et ikon holdes ved rækkens kant, ruller rækken kontinuerligt (som at
+  // trække noget mod kanten af en scroller) — hurtigere jo tættere på kanten.
+  const isDraggingMoved = Boolean(drag?.moved);
+  useEffect(() => {
+    if (!isDraggingMoved) return;
+    let last = performance.now();
+    function frame(now: number) {
+      const dt = Math.min(0.05, (now - last) / 1000);
+      last = now;
+      const current = dragRef.current;
+      const bar = barRef.current;
+      if (current?.moved && bar) {
+        const r = bar.getBoundingClientRect();
+        const inBarBand = current.y >= r.top - 24 && current.y <= r.bottom + 24;
+        const maxPages = Math.max(0, Math.ceil(activeKeysRef.current.length / PAGE_SIZE) - 1);
+        let speed = 0;
+        if (inBarBand) {
+          const intoLeft = (r.left + EDGE_ZONE_PX - current.x) / EDGE_ZONE_PX;
+          const intoRight = (current.x - (r.right - EDGE_ZONE_PX)) / EDGE_ZONE_PX;
+          if (intoLeft > 0) speed = -Math.min(1, intoLeft);
+          else if (intoRight > 0) speed = Math.min(1, intoRight);
+        }
+        if (speed !== 0) {
+          const nextScroll = Math.min(
+            maxPages,
+            Math.max(0, scrollPagesRef.current + speed * AUTO_SCROLL_MAX_PAGES_PER_S * dt),
+          );
+          if (nextScroll !== scrollPagesRef.current) {
+            scrollPagesRef.current = nextScroll;
+            setScrollPages(nextScroll);
+            reorderUnderFinger(current.key, current.source, current.x, current.y);
+          }
+        }
+      }
+      autoScrollRaf.current = requestAnimationFrame(frame);
+    }
+    autoScrollRaf.current = requestAnimationFrame(frame);
+    return () => {
+      if (autoScrollRaf.current !== null) cancelAnimationFrame(autoScrollRaf.current);
+      autoScrollRaf.current = null;
+    };
+  }, [isDraggingMoved, reorderUnderFinger]);
 
   function beginPageSwipe(pointerId: number, startX: number) {
     const state: PageSwipeState = { pointerId, startX, startScrollPages: scrollPagesRef.current };
@@ -572,7 +643,12 @@ export function BottomNav() {
     };
   }, [pageSwipe]);
 
-  function beginDrag(key: string, source: "active" | "inactive", e: React.PointerEvent) {
+  function beginDrag(
+    key: string,
+    source: "active" | "inactive",
+    e: React.PointerEvent,
+    lifted = false,
+  ) {
     clearReadyTimer();
     const state: DragState = {
       key,
@@ -581,11 +657,12 @@ export function BottomNav() {
       x: e.clientX,
       y: e.clientY,
       moved: false,
-      ready: false,
+      ready: lifted,
       overTarget: false,
     };
     dragRef.current = state;
     setDrag(state);
+    if (lifted) return;
     readyTimer.current = setTimeout(() => {
       if (dragRef.current && dragRef.current.key === key && !dragRef.current.moved) {
         const next = { ...dragRef.current, ready: true };
@@ -597,7 +674,19 @@ export function BottomNav() {
 
   function handleActivePointerDown(key: string, e: React.PointerEvent) {
     if (editMode) {
-      beginDrag(key, "active", e);
+      // Stille tryk løfter ikonet; bevæger fingeren sig først, ruller rækken.
+      clearPendingLift();
+      const startX = e.clientX;
+      const startY = e.clientY;
+      const pointerId = e.pointerId;
+      const press = { key, startX, startY, pointerId, timer: null as ReturnType<typeof setTimeout> | null };
+      press.timer = setTimeout(() => {
+        if (pendingLift.current !== press) return;
+        pendingLift.current = null;
+        navigator.vibrate?.(8);
+        beginDrag(key, "active", { pointerId, clientX: startX, clientY: startY } as React.PointerEvent, true);
+      }, EDIT_LIFT_DELAY_MS);
+      pendingLift.current = press;
       return;
     }
     pressStart.current = { x: e.clientX, y: e.clientY };
@@ -610,7 +699,22 @@ export function BottomNav() {
     }, LONG_PRESS_MS);
   }
 
+  function clearPendingLift() {
+    if (pendingLift.current?.timer) clearTimeout(pendingLift.current.timer);
+    pendingLift.current = null;
+  }
+
   function handleActivePointerMove(e: React.PointerEvent) {
+    const lift = pendingLift.current;
+    if (editMode && lift) {
+      const dx = e.clientX - lift.startX;
+      const dy = e.clientY - lift.startY;
+      if (Math.hypot(dx, dy) > MOVE_CANCEL_PX) {
+        clearPendingLift();
+        if (Math.abs(dx) > Math.abs(dy) && pages.length > 1) beginPageSwipe(e.pointerId, lift.startX);
+      }
+      return;
+    }
     if (editMode || !pressStart.current) return;
     const start = pressStart.current;
     const dx = e.clientX - start.x;
@@ -626,6 +730,7 @@ export function BottomNav() {
   }
 
   function handleActivePointerUp(item: NavItem) {
+    clearPendingLift();
     const hadTimer = longPressTimer.current !== null;
     clearLongPress();
     if (editMode) return;
@@ -839,8 +944,8 @@ export function BottomNav() {
           <div
             className="flex"
             style={{
-              transform: `translateX(${-(pageSwipe ? scrollPages : clampedScrollPages) * 100}%)`,
-              transition: pageSwipe ? "none" : `transform ${PAGE_ANIM_MS}ms ease`,
+              transform: `translateX(${-shownScroll * 100}%)`,
+              transition: pageSwipe || drag?.moved ? "none" : `transform ${PAGE_ANIM_MS}ms ease`,
             }}
           >
             {pages.map((pageKeys, pageIndex) => (
@@ -881,6 +986,7 @@ export function BottomNav() {
                       onPointerDown={(e) => handleActivePointerDown(key, e)}
                       onPointerMove={handleActivePointerMove}
                       onPointerUp={() => handleActivePointerUp(item)}
+                      onPointerCancel={clearPendingLift}
                       className={`relative flex h-14 w-16 flex-none flex-col items-center justify-center gap-1 rounded-xl py-1.5 touch-none select-none ${
                         editMode ? "border" : "border-transparent"
                       } ${
@@ -924,8 +1030,8 @@ export function BottomNav() {
 
       {drag?.moved && (
         <div
-          className="pointer-events-none fixed z-50 flex w-16 flex-col items-center gap-1 opacity-90"
-          style={{ left: drag.x - 32, top: drag.y - 32 }}
+          className="hf-nav-ghost pointer-events-none fixed z-50 flex h-14 w-16 flex-col items-center justify-center gap-1 rounded-xl bg-hf-tan-dark opacity-95 shadow-[0_10px_18px_rgba(0,0,0,0.18)]"
+          style={{ left: drag.x - 32, top: drag.y - 28 }}
         >
           {ITEMS_BY_KEY.get(drag.key)?.render("var(--hf-black)", ICON_SIZE)}
         </div>
