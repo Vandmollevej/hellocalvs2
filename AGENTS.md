@@ -15,6 +15,24 @@ This version has breaking changes — APIs, conventions, and file structure may 
 5. Read `design.md` before any visual/UI change (colors, typography, spacing, radius, component variants) — it is not needed for backend-only, data, or integration work. This file is intentionally not auto-loaded; fetch it explicitly when the task is visual.
 6. Read `docs/handoffs/OPEN-TASKS.md`. Work is shared across several parallel sessions and Claude accounts: if your task is listed there, follow its rules — claim it, stay inside your group's files, and keep your row's status and next step current (commit it) so another account can resume exactly where you stopped.
 
+7. Read `docs/REGLER.md` — the single lookup for global system rules (naming, generic products, logos, UI conventions). Search it FIRST before digging through STATUS/DECISIONS or old sessions, and add every new rule there.
+
+## Web and native must change together (user rule 2026-10-07)
+
+Hello Cal is also a fully native Android + iPhone app (`native/`, one Kotlin
+Compose Multiplatform codebase for both phones). Every user-facing UI change
+on the web must be carried over to the native screen in the same task:
+
+- Changed `src/app/globals.css` tokens, `src/i18n/locales/*.json` texts or
+  Tabler icons → run `node scripts/native/sync.mjs` and commit the generated files.
+- Changed a page/component that a ported native screen is built from → update
+  the native screen listed in `native/parity/screens.json`, then
+  `node scripts/native/parity.mjs --accept <route>`.
+- New page → `node scripts/native/parity.mjs --register`.
+- `node scripts/native/parity.mjs` must exit 0 before you hand off. A Stop hook
+  (`.claude/settings.json`) and the CI job "Web ↔ native in step" enforce it.
+  Details: `native/README.md`.
+
 ## Working rules
 
 - Preserve unrelated and uncommitted user changes.
