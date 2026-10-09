@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { GenericIngredientCategory } from "@prisma/client";
+import { GenericIngredientCategory, GenericIngredientCookingState } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { getSessionUser } from "@/lib/session";
 import { rankProducts } from "@/lib/product-search-ranking";
@@ -151,6 +151,10 @@ export async function POST(req: Request) {
     ? (categoryRaw as GenericIngredientCategory)
     : GenericIngredientCategory.OTHER;
   const imageUrl = typeof body.imageUrl === "string" ? body.imageUrl : undefined;
+  const cookingState =
+    body.cookingState === GenericIngredientCookingState.COOKED
+      ? GenericIngredientCookingState.COOKED
+      : GenericIngredientCookingState.RAW;
 
   if (!name) {
     return NextResponse.json({ message: "Navn skal udfyldes" }, { status: 400 });
@@ -180,6 +184,7 @@ export async function POST(req: Request) {
         nameSingular: forms.singular,
         namePlural: forms.plural,
         category,
+        cookingState,
         imageUrl,
         fridaProductId: match?.id,
         kcalPer100g: match?.kcalPer100g,
