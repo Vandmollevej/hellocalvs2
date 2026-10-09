@@ -40,7 +40,7 @@ export type ProviderSyncCapabilities = { read: ReadType[]; write: WriteType[] };
 // Health og følger valgene dér.
 export const SYNC_CAPABILITIES: Partial<Record<IntegrationProvider, ProviderSyncCapabilities>> = {
   APPLE_HEALTH: {
-    read: ["weight", "bodyFat", "muscleMass", "bodyWater", "activities", "steps", "energy", "heart", "sleep", "water", "body"],
+    read: ["weight", "bodyFat", "muscleMass", "fatFreeMass", "bodyWater", "activities", "steps", "energy", "heart", "sleep", "water", "body"],
     write: ["nutrition", "water", "weight", "activities"],
   },
   HEALTH_CONNECT: {
@@ -77,7 +77,7 @@ export const SYNC_CAPABILITIES: Partial<Record<IntegrationProvider, ProviderSync
   },
   WHOOP: { read: ["activities", "heart", "sleep", "body"], write: [] },
   HUAWEI_HEALTH: {
-    read: ["weight", "bodyFat", "muscleMass", "activities", "steps", "energy", "heart", "sleep", "body"],
+    read: ["weight", "bodyFat", "muscleMass", "bodyWater", "boneMass", "visceralFat", "activities", "steps", "energy", "heart", "sleep", "body"],
     write: [],
   },
 };

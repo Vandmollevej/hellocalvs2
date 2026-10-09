@@ -92,6 +92,7 @@ fun HcChevronRow(
     badgeCount: Int = 0,
     wrapLabel: Boolean = false,
     iconContent: (@Composable () -> Unit)? = null,
+    centerText: String? = null,
 ) {
     Column(Modifier.fillMaxWidth()) {
         Row(
@@ -104,7 +105,8 @@ fun HcChevronRow(
             Box(Modifier.size(20.dp), contentAlignment = Alignment.Center) {
                 if (iconContent != null) iconContent() else if (icon != null) HcIcon(icon, size = 20.dp, color = HcColors.Black)
             }
-            HcText(label, HcTypeRoles.Body, Modifier.weight(1f), maxLines = if (wrapLabel) Int.MAX_VALUE else 1)
+            HcText(label, HcTypeRoles.Body, if (centerText != null) Modifier else Modifier.weight(1f), maxLines = if (wrapLabel) Int.MAX_VALUE else 1)
+            if (centerText != null) HcText(centerText, HcTypeRoles.Body, Modifier.weight(1f), color = HcColors.Brand, align = TextAlign.Center)
             if (badgeCount > 0) {
                 Box(
                     Modifier.heightIn(min = 20.dp).widthIn(min = 20.dp).clip(CircleShape).background(HcColors.Brand).padding(horizontal = 4.dp),

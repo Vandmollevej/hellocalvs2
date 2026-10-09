@@ -165,16 +165,16 @@ private fun pulseJsNumber(value: Double): String =
     if (value == floor(value) && abs(value) < 1e15) value.toLong().toString() else value.toString()
 
 @Serializable
-private data class PulseSampleDto(val at: String, val bpm: Double)
+internal data class PulseSampleDto(val at: String, val bpm: Double)
 
 @Serializable
-private data class PulseWeekActivityDto(val startedAt: String, val durationMinutes: Double = 0.0, val sportType: String = "")
+internal data class PulseWeekActivityDto(val startedAt: String, val durationMinutes: Double = 0.0, val sportType: String = "")
 
 @Serializable
-private data class PulseAlternativeDto(val sport: String, val label: String)
+internal data class PulseAlternativeDto(val sport: String, val label: String)
 
 @Serializable
-private data class PulseSuggestionDto(
+internal data class PulseSuggestionDto(
     val sport: String,
     val label: String,
     val confidence: Double = 0.0,
@@ -184,7 +184,7 @@ private data class PulseSuggestionDto(
 )
 
 @Serializable
-private data class PulsePromptDto(
+internal data class PulsePromptDto(
     val startedAt: String,
     val endedAt: String,
     val durationMinutes: Double = 0.0,
@@ -198,147 +198,295 @@ private data class PulsePromptDto(
     val suggestion: PulseSuggestionDto? = null,
 )
 
-/** The parsed spike plus the raw JSON, so the numbers go back to the server untouched. */
-private class PulsePrompt(val dto: PulsePromptDto, val raw: JsonObject)
-
-private class PulsePromptCounters {
-    var outcome = "later"
-    var shown = 0
+/** A pulse event (src/lib/pulse-candidates.ts PulseEvent): the spike plus status and chosen workout type. */
+internal class PulseEvent(
+    val dto: PulsePromptDto,
+    val raw: JsonObject,
+    val status: String,
+    val sportType: String?,
+    val sportLabel: String?,
+    val activityId: String?,
+) {
+    val startedAt: String get() = dto.startedAt
 }
 
-private suspend fun fetchPulseSpike(): PulsePrompt? = try {
-    val spike = Api.get("/api/activities/spike").obj("spike")
-    if (spike == null) null else PulsePrompt(ApiJson.decodeFromJsonElement(PulsePromptDto.serializer(), spike), spike)
+private fun parsePulseEvent(raw: JsonObject): PulseEvent = PulseEvent(
+    ApiJson.decodeFromJsonElement(PulsePromptDto.serializer(), raw),
+    raw,
+    raw.str("status") ?: "PENDING",
+    raw.str("sportType"),
+    raw.str("sportLabel"),
+    raw.str("activityId"),
+)
+
+/** GET /api/activities/spike (unanswered, 7 days) or /api/activities/spike/events (all, 7 days); oldest first. */
+internal suspend fun fetchPulseEvents(path: String): List<PulseEvent> = try {
+    (Api.get(path).arr("events") ?: emptyList()).mapNotNull { (it as? JsonObject)?.let(::parsePulseEvent) }
 } catch (e: Exception) {
-    null
+    emptyList()
 }
 
 @Composable
 fun HomeHeartRateSpikePrompt() {
-    val scope = rememberCoroutineScope()
-    var spike by remember { mutableStateOf<PulsePrompt?>(null) }
-    val counters = remember { PulsePromptCounters() }
+    var events by remember { mutableStateOf<List<PulseEvent>>(emptyList()) }
+    var open by remember { mutableStateOf(false) }
 
-    fun load() {
-        scope.launch {
-            val next = fetchPulseSpike() ?: return@launch
-            counters.shown += 1
-            counters.outcome = "later"
-            spike = next
+    LaunchedEffect(Unit) {
+        if (HomeSessionFlags.has(PULSE_LATER_KEY)) return@LaunchedEffect
+        val loaded = fetchPulseEvents("/api/activities/spike")
+        if (loaded.isNotEmpty()) {
+            events = loaded
+            open = true
         }
     }
 
-    LaunchedEffect(Unit) {
-        if (!HomeSessionFlags.has(PULSE_LATER_KEY)) load()
+    if (!open || events.isEmpty()) return
+    PulseEventSheet(
+        events = events,
+        initialIndex = events.size - 1,
+        mode = "prompt",
+        onClose = {
+            HomeSessionFlags.set(PULSE_LATER_KEY)
+            open = false
+        },
+        onChanged = {},
+    )
+}
+
+/**
+ * src/components/activity/PulseEventsProvider.tsx — the calendar's red hearts:
+ * days with a high pulse in the last 7 days. State is process-wide (Compose
+ * snapshot state) so the row/cell composables can read it without plumbing;
+ * [Host] loads the events and shows the sheet.
+ */
+internal object PulseCalendar {
+    private var events by mutableStateOf<List<PulseEvent>>(emptyList())
+    private var openIndex by mutableStateOf<Int?>(null)
+
+    fun eventsOn(date: LocalDate): List<PulseEvent> =
+        events.filter { (CaptureDates.local(it.startedAt)?.date) == date }
+
+    fun open(event: PulseEvent) {
+        openIndex = events.indexOfFirst { it.startedAt == event.startedAt }.takeIf { it >= 0 }
     }
 
-    val current = spike ?: return
-    key(current.dto.startedAt) {
-        PulseSheet(
-            current,
-            onClose = {
-                spike = null
-                // Swipe/scrim = "later": asked again next time, but not again in this session.
-                if (counters.outcome == "later") HomeSessionFlags.set(PULSE_LATER_KEY)
-                else if (counters.shown < MAX_PROMPTS_PER_VISIT) load()
-            },
-            onOutcome = { counters.outcome = it },
-        )
+    @Composable
+    fun Host() {
+        val scope = rememberCoroutineScope()
+        fun load() {
+            scope.launch { events = fetchPulseEvents("/api/activities/spike/events") }
+        }
+        LaunchedEffect(Unit) { load() }
+        val index = openIndex ?: return
+        if (events.isEmpty()) return
+        PulseEventSheet(events, index, "calendar", onClose = { openIndex = null }, onChanged = { load() })
     }
 }
 
+/** Red heart for a day with a high pulse; tapping opens the pulse sheet (not the day). */
 @Composable
-private fun PulseSheet(spike: PulsePrompt, onClose: () -> Unit, onOutcome: (String) -> Unit) {
+internal fun PulseHeartMark(date: LocalDate, size: Dp = 18.dp, modifier: Modifier = Modifier) {
+    val t = LocalTranslator.current
+    val events = PulseCalendar.eventsOn(date)
+    if (events.isEmpty()) return
+    val target = events.firstOrNull { it.status == "PENDING" } ?: events.last()
+    Box(
+        modifier
+            .semantics { contentDescription = t.t("activity.heartAria") }
+            .clickable { PulseCalendar.open(target) },
+    ) { HcIcon("HeartFilled", size = size, color = HcColors.RedDark) }
+}
+
+@Composable
+private fun PulseChevronButton(icon: String, label: String, enabled: Boolean, onClick: () -> Unit) {
+    Box(
+        Modifier
+            .size(40.dp)
+            .alpha(if (enabled) 1f else 0.25f)
+            .clip(CircleShape)
+            .semantics { contentDescription = label }
+            .clickable(enabled = enabled, onClick = onClick),
+        contentAlignment = Alignment.Center,
+    ) { HcIcon(icon, size = 24.dp, color = HcColors.Text) }
+}
+
+/** Time of the highest pulse inside the spike (PulseEventSheet.peakAt). */
+private fun pulsePeak(event: PulseEvent): Pair<Double, Double> {
+    val start = pulseMillis(event.dto.startedAt)
+    val end = pulseMillis(event.dto.endedAt)
+    var best: Pair<Double, Double>? = null
+    for (sample in event.dto.samples) {
+        val at = pulseMillis(sample.at)
+        if (at < start || at > end) continue
+        if (best == null || sample.bpm > best.second) best = at to sample.bpm
+    }
+    return best ?: (((start + end) / 2) to event.dto.peakBpm)
+}
+
+private fun pulseClock(ms: Double, locale: Locale): String =
+    CaptureDates.time(Instant.fromEpochMilliseconds(ms.toLong()).toLocalDateTime(CaptureDates.zone), locale)
+
+/**
+ * src/components/activity/PulseEventSheet.tsx — one pulse event: date and
+ * interval (small) with the peak time in the middle (large, bold), the graph,
+ * and the workout-type row ("Angiv træningstype" opens a picker sheet).
+ * "prompt" browses the unanswered ones; "calendar" keeps all of them.
+ */
+@Composable
+internal fun PulseEventSheet(events: List<PulseEvent>, initialIndex: Int, mode: String, onClose: () -> Unit, onChanged: () -> Unit) {
     val t = LocalTranslator.current
     val scope = rememberCoroutineScope()
+    var list by remember { mutableStateOf(events) }
+    var index by remember { mutableStateOf(initialIndex.coerceIn(0, events.size - 1)) }
+    var picking by remember { mutableStateOf(false) }
     var busy by remember { mutableStateOf(false) }
     var failed by remember { mutableStateOf(false) }
-    val dto = spike.dto
 
+    val event = list[index.coerceIn(0, list.size - 1)]
+    val peak = remember(event) { pulsePeak(event) }
+    val dto = event.dto
     val started = CaptureDates.local(dto.startedAt) ?: CaptureDates.nowLocal()
-    val dayDiff = started.date.daysUntil(CaptureDates.today())
     val dateText = HomeIntl.weekdayDayMonthLong(started.date, t.locale)
-    val timeText = CaptureDates.time(started, t.locale)
-    val day = when {
-        dayDiff <= 0 -> t.t("activity.today")
-        dayDiff == 1 -> t.t("activity.yesterday")
-        else -> t.t("activity.onDate", "date" to dateText)
+
+    fun replace(updated: PulseEvent) {
+        if (mode == "calendar") {
+            list = list.map { if (it.startedAt == updated.startedAt) updated else it }
+            return
+        }
+        val rest = list.filter { it.startedAt != updated.startedAt }
+        if (rest.isEmpty()) {
+            onClose()
+            return
+        }
+        list = rest
+        index = min(index, rest.size - 1)
     }
 
-    suspend fun answer(activityId: String?) {
-        onOutcome(if (activityId != null) "answered" else "skipped")
-        val body = buildMap<String, JsonElement> {
-            spike.raw["startedAt"]?.let { put("startedAt", it) }
-            spike.raw["endedAt"]?.let { put("endedAt", it) }
-            spike.raw["extraKcal"]?.let { put("extraKcal", it) }
-            if (activityId != null) put("activityId", JsonPrimitive(activityId))
-        }
-        try {
-            Api.post("/api/activities/spike", JsonObject(body))
-        } catch (e: Exception) {
+    fun choose(sportType: String, label: String) {
+        busy = true
+        failed = false
+        scope.launch {
+            try {
+                if (event.status == "ANSWERED" && event.activityId != null) {
+                    val change = JsonObject(mapOf("activityId" to JsonPrimitive(event.activityId), "sportType" to JsonPrimitive(sportType)))
+                    Api.post("/api/activities/spike", JsonObject(mapOf("changeSport" to change)))
+                    replace(PulseEvent(dto, event.raw, "ANSWERED", sportType, label, event.activityId))
+                } else {
+                    val body = buildMap<String, JsonElement> {
+                        put("sportType", JsonPrimitive(sportType))
+                        event.raw["startedAt"]?.let { put("startedAt", it) }
+                        event.raw["durationMinutes"]?.let { put("durationMinutes", it) }
+                        event.raw["extraKcal"]?.let { put("caloriesBurned", it) }
+                    }
+                    val id = Api.post("/api/activities", JsonObject(body)).obj("activity").str("id") ?: throw IllegalStateException("activity")
+                    NativeHooks.onRegistrationChanged()
+                    val answer = buildMap<String, JsonElement> {
+                        event.raw["startedAt"]?.let { put("startedAt", it) }
+                        event.raw["endedAt"]?.let { put("endedAt", it) }
+                        event.raw["extraKcal"]?.let { put("extraKcal", it) }
+                        put("activityId", JsonPrimitive(id))
+                    }
+                    Api.post("/api/activities/spike", JsonObject(answer))
+                    replace(PulseEvent(dto, event.raw, "ANSWERED", sportType, label, id))
+                }
+                picking = false
+                onChanged()
+            } catch (e: Exception) {
+                failed = true
+            } finally {
+                busy = false
+            }
         }
     }
 
     HcBottomSheet(
         onDismiss = onClose,
-        title = t.t("activity.pulseTitle", "day" to day),
+        title = null,
         size = HcSheetSize.Full,
         scrollable = true,
         footer = {
             val close = LocalHcSheetClose.current
-            FoodSheetSkipButton(
-                t.t("activity.skip"),
-                onClick = {
-                    scope.launch {
-                        answer(null)
-                        close()
-                    }
-                },
-                enabled = !busy,
-            )
+            if (list.size > 1) {
+                HcText("${index + 1}/${list.size}", HcTypeRoles.Body, Modifier.fillMaxWidth(), color = HcColors.TextSecondary, align = TextAlign.Center)
+            }
+            if (mode == "prompt") {
+                HcButton(t.t("weighIn.later"), onClick = { close() })
+                FoodSheetSkipButton(
+                    t.t("activity.skip"),
+                    onClick = {
+                        busy = true
+                        scope.launch {
+                            try {
+                                val body = buildMap<String, JsonElement> {
+                                    event.raw["startedAt"]?.let { put("startedAt", it) }
+                                    event.raw["endedAt"]?.let { put("endedAt", it) }
+                                    event.raw["extraKcal"]?.let { put("extraKcal", it) }
+                                }
+                                Api.post("/api/activities/spike", JsonObject(body))
+                            } catch (e: Exception) {
+                            }
+                            busy = false
+                            replace(event)
+                        }
+                    },
+                    enabled = !busy,
+                )
+            } else {
+                HcButton(t.t("common.close"), onClick = { close() })
+            }
         },
     ) {
-        val close = LocalHcSheetClose.current
-
-        fun save(sportType: String) {
-            busy = true
-            failed = false
-            scope.launch {
-                try {
-                    val body = buildMap<String, JsonElement> {
-                        put("sportType", JsonPrimitive(sportType))
-                        spike.raw["startedAt"]?.let { put("startedAt", it) }
-                        spike.raw["durationMinutes"]?.let { put("durationMinutes", it) }
-                        spike.raw["extraKcal"]?.let { put("caloriesBurned", it) }
-                    }
-                    val response = Api.post("/api/activities", JsonObject(body))
-                    val id = response.obj("activity").str("id") ?: throw IllegalStateException("activity")
-                    NativeHooks.onRegistrationChanged()
-                    answer(id)
-                    close()
-                } catch (e: Exception) {
-                    failed = true
-                } finally {
-                    busy = false
+        Column(Modifier.fillMaxWidth().padding(bottom = 16.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
+            if (list.size > 1) {
+                Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
+                    PulseChevronButton("ChevronLeft", t.t("activity.older"), enabled = index > 0) { index -= 1 }
+                    HcText(t.t("activity.pulseHeading"), HcTypeRoles.Body, color = HcColors.Black)
+                    PulseChevronButton("ChevronRight", t.t("activity.newer"), enabled = index < list.size - 1) { index += 1 }
                 }
             }
-        }
-
-        val whenText = t.t("activity.pulseWhen", "date" to dateText, "time" to timeText, "kcal" to dto.extraKcal.roundToLong())
-        val hint = t.t(
-            "activity.spikeHint",
-            "peak" to pulseJsNumber(dto.peakBpm),
-            "rest" to pulseJsNumber(dto.restingBpm),
-            "minutes" to pulseJsNumber(dto.durationMinutes),
-        )
-        Column(Modifier.fillMaxWidth().padding(bottom = 16.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
-            HcText("$whenText $hint", HcTypeRoles.Small, Modifier.fillMaxWidth(), color = HcColors.TextSecondary, align = TextAlign.Center)
+            Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                HcText(dateText, HcTypeRoles.Small, color = HcColors.TextSecondary, align = TextAlign.Center)
+                Row(horizontalArrangement = Arrangement.spacedBy(20.dp), verticalAlignment = Alignment.Bottom) {
+                    HcText(pulseClock(pulseMillis(dto.startedAt), t.locale), HcTypeRoles.Small, color = HcColors.TextSecondary)
+                    HcText(pulseClock(peak.first, t.locale), HcTypeRoles.Hero, bold = true, color = HcColors.Black)
+                    HcText(pulseClock(pulseMillis(dto.endedAt), t.locale), HcTypeRoles.Small, color = HcColors.TextSecondary)
+                }
+                HcText(t.t("activity.peakBpm", "peak" to pulseRound(peak.second).toLong()), HcTypeRoles.Small, color = HcColors.TextSecondary, align = TextAlign.Center)
+            }
             HeartRateSpikeChart(dto.samples, dto.windowStart, dto.windowEnd, dto.startedAt, dto.endedAt)
-            PulseWeekStrip(dto.weekActivities, dto.startedAt)
-            dto.suggestion?.let { suggestion -> PulseSuggestionCard(suggestion, busy) { save(it) } }
-            HcText(t.t("activity.pulseQuestion"), HcTypeRoles.Body, bold = true, color = HcColors.Black)
-            ActivityPicker(onPick = { save(it.key) }, busy = busy)
+            if (event.status == "PENDING") {
+                dto.suggestion?.let { suggestion -> PulseSuggestionCard(suggestion, busy) { choose(it, suggestion.label) } }
+            }
+            Row(
+                Modifier
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(HcDimens.RadiusCard))
+                    .background(HcColors.Tan)
+                    .clickable { picking = true }
+                    .height(48.dp)
+                    .padding(horizontal = 16.dp),
+                horizontalArrangement = Arrangement.spacedBy(16.dp),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                HcIcon(if (event.sportType != null) sportIcon(event.sportType) else "Activity", size = 20.dp, color = HcColors.Black)
+                HcText(
+                    event.sportLabel ?: event.sportType ?: t.t("activity.pickType"),
+                    HcTypeRoles.Body,
+                    Modifier.weight(1f),
+                    color = HcColors.Black,
+                )
+                HcIcon("ChevronRight", size = 20.dp, color = HcColors.Black)
+            }
             if (failed) HcText(t.t("activity.saveFailed"), HcTypeRoles.Small, color = HcColors.RedDark)
+            PulseWeekStrip(dto.weekActivities, dto.startedAt)
+        }
+    }
+
+    if (picking) {
+        HcBottomSheet(onDismiss = { picking = false }, title = t.t("activity.pickType"), size = HcSheetSize.Full, scrollable = true) {
+            Column(Modifier.fillMaxWidth().padding(bottom = 16.dp)) {
+                ActivityPicker(onPick = { choose(it.key, it.label) }, busy = busy)
+            }
         }
     }
 }

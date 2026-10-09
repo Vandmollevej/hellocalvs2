@@ -15,18 +15,16 @@ import {
 } from "@/lib/add-actions";
 import {
   ARC_BULGE_MAX,
-  ARC_FAN_HALF_WIDTH,
   ARC_ICON_CIRCLE,
-  ARC_ICON_RADIUS,
   ARC_MAX_USER_ACTIONS,
-  ARC_PULL_DISTANCE,
   ARC_RADIUS,
   ARC_REST_HEIGHT,
   fanAngles,
+  fanLayout,
+  labelPlacement,
+  labelWidth,
   listSlotIndex,
-  saveArcOffsetX,
   segmentPath,
-  useArcOffsetX,
 } from "@/lib/footer-arc";
 import { useIsSerious } from "@/lib/use-subscription-tier";
 import { useTranslation } from "@/i18n/LocaleProvider";
@@ -34,11 +32,11 @@ import { AddMenuSheet } from "@/components/add/AddMenuSheet";
 import { FooterArcEditor } from "@/components/FooterArcEditor";
 
 // Lille, fast halvcirkel over bundmenuen midt imellem de to midterste knapper
-// (brugerens ønske 2026-10-07). Hvile: et cirkelstykke på ca. 20 px med et
-// lille plus. Skub op med fingeren: cirklen vokser til 70 % af venstre-cirklen
+// (brugerens ønske 2026-10-07). Hvile: et fast cirkelstykke på ca. 40 px med et
+// stort plus. Skub op med fingeren: cirklen vokser til samme størrelse som venstre-cirklen
 // (AddButton) og viser viften — "alle" altid i midten, så et lodret træk op
-// altid rammer "alle". Slip på en knap åbner den. Træk vandret i hvile flytter
-// cirklen. Tryk åbner den (samme størrelse som ved træk op). Hold fingeren
+// altid rammer "alle". Slip på en knap åbner den. Cirklen står fast og kan ikke
+// trækkes til siden. Tryk åbner den (samme størrelse som ved træk op). Hold fingeren
 // stille som i footeren (LONG_PRESS_MS) åbner redigeringen (FooterArcEditor).
 // Den eksisterende venstre-cirkel (AddButton) er urørt.
 
@@ -46,6 +44,11 @@ const LONG_PRESS_MS = 550;
 const MOVE_PX = 8;
 const DEAD_ZONE = 34;
 const HIGHLIGHT_SCALE = 1.35;
+// Trækker man højere op end cirklen, må fingeren aldrig komme oven på den:
+// den markerede cirkel holdes mindst så højt over fingerspidsen.
+const FINGER_CLEARANCE = 62;
+// Plads øverst på skærmen, så cirklen og dens tekst ikke skæres af.
+const TOP_ROOM = 90;
 const ANIMATION_MS = 200;
 const ICON_SIZE = 26;
 
@@ -61,10 +64,11 @@ type Gesture = {
   pointerId: number;
   startX: number;
   startY: number;
-  startOffset: number;
-  mode: "undecided" | "slide" | "pull" | "select";
+  mode: "undecided" | "pull" | "select";
   moved: boolean;
   wasOpen: boolean;
+  /** Cirklen er sprunget til fuld størrelse (første træk opad). */
+  expanded: boolean;
   consumed: boolean;
   timer: ReturnType<typeof setTimeout> | null;
 };
@@ -79,7 +83,6 @@ export function FooterArc() {
   const isSerious = useIsSerious();
   const keys = useWheelActionKeys();
   const profile = useAddActionsProfile();
-  const savedOffsetX = useArcOffsetX();
 
   const wrapRef = useRef<HTMLDivElement>(null);
   const [width, setWidth] = useState(0);
@@ -87,13 +90,11 @@ export function FooterArc() {
   const progressRef = useRef(0);
   const [open, setOpen] = useState(false);
   const openRef = useRef(false);
-  const [dragX, setDragX] = useState<number | null>(null);
-  const dragXRef = useRef<number | null>(null);
   const [highlightedKey, setHighlightedKey] = useState<string | null>(null);
   const highlightedRef = useRef<string | null>(null);
   const [gesturing, setGesturing] = useState(false);
   // Fingerens placering i forhold til cirklens midte (px opad/til siden) — får kanten til at pose ud og plusset til at følge med.
-  const [finger, setFinger] = useState<{ dx: number; dy: number } | null>(null);
+  const [finger, setFinger] = useState<{ dx: number; dy: number; top: number } | null>(null);
   const [editing, setEditing] = useState(false);
   const [menuSheetOpen, setMenuSheetOpen] = useState(false);
   const gestureRef = useRef<Gesture | null>(null);
@@ -135,16 +136,13 @@ export function FooterArc() {
     [],
   );
 
-  const maxOffset = Math.max(0, width / 2 - ARC_RADIUS - 8);
-  const offsetX = clamp(dragX ?? savedOffsetX, -maxOffset, maxOffset);
-  const baseCx = width / 2 + offsetX;
-  // Ved åben vifte skubbes midten ind, så alle knapper er på skærmen.
-  const fanCx = width > ARC_FAN_HALF_WIDTH * 2 ? clamp(baseCx, ARC_FAN_HALF_WIDTH, width - ARC_FAN_HALF_WIDTH) : width / 2;
-  const centerAt = useCallback(
-    (p: number) => baseCx + (fanCx - baseCx) * p,
-    [baseCx, fanCx],
-  );
-  const cx = centerAt(progress);
+  // Cirklen står altid fast midt over footeren og kan ikke trækkes til siden.
+  const baseCx = width / 2;
+  const cx = baseCx;
+  const layout = fanLayout(angles, baseCx, width);
+  // Den fremhævede knap træder længere ud (som venstre-cirklen); valg af knap sker ud fra hvilepladserne.
+  const highlightedIndex = slots.findIndex((slot) => slot.key === highlightedKey);
+  const drawLayout = highlightedIndex >= 0 ? fanLayout(angles, baseCx, width, highlightedIndex) : layout;
   const visibleHeight = ARC_REST_HEIGHT + (ARC_RADIUS - ARC_REST_HEIGHT) * progress;
 
   const setP = useCallback((value: number) => {
@@ -179,18 +177,17 @@ export function FooterArc() {
     setHighlightedKey(key);
   }
 
-  function slotCenter(index: number, p: number) {
-    const rad = (angles[index] * Math.PI) / 180;
-    return { x: centerAt(p) + ARC_ICON_RADIUS * Math.sin(rad), y: ARC_ICON_RADIUS * Math.cos(rad) };
+  function slotCenter(index: number) {
+    return layout[index];
   }
 
-  function updateHighlight(event: React.PointerEvent, p: number) {
+  function updateHighlight(event: React.PointerEvent) {
     const rect = wrapRef.current?.getBoundingClientRect();
     if (!rect) return;
     const px = event.clientX - rect.left;
     const py = rect.top - event.clientY; // px opad fra footerkanten
-    const center = centerAt(p);
-    setFinger({ dx: px - center, dy: py });
+    const center = baseCx;
+    setFinger({ dx: px - center, dy: py, top: rect.top });
     if (Math.hypot(px - center, py) < DEAD_ZONE) {
       setHighlight(null);
       return;
@@ -198,7 +195,7 @@ export function FooterArc() {
     let nearest: string | null = null;
     let best = Infinity;
     slots.forEach((slot, index) => {
-      const c = slotCenter(index, p);
+      const c = slotCenter(index);
       const distance = Math.hypot(px - c.x, py - c.y);
       if (distance < best) {
         best = distance;
@@ -235,10 +232,10 @@ export function FooterArc() {
       pointerId: event.pointerId,
       startX: event.clientX,
       startY: event.clientY,
-      startOffset: offsetX,
       mode: "undecided",
       moved: false,
       wasOpen: openRef.current,
+      expanded: false,
       consumed: false,
       timer: null,
     };
@@ -269,23 +266,21 @@ export function FooterArc() {
       gesture.moved = true;
       clearTimer(gesture);
       if (gesture.wasOpen) gesture.mode = "select";
-      else gesture.mode = Math.abs(dx) > Math.abs(dy) && dy > -MOVE_PX * 2 ? "slide" : "pull";
-      if (gesture.mode !== "slide") document.body.classList.add("select-none");
+      else gesture.mode = "pull";
+      document.body.classList.add("select-none");
     }
-    if (gesture.mode === "slide") {
-      const next = clamp(gesture.startOffset + dx, -maxOffset, maxOffset);
-      dragXRef.current = next;
-      setDragX(next);
-    } else if (gesture.mode === "pull") {
-      const p = clamp((gesture.startY - event.clientY) / ARC_PULL_DISTANCE, 0, 1);
-      setP(p);
-      if (p > 0.3) updateHighlight(event, p);
-      else {
-        setHighlight(null);
-        setFinger(null);
+    if (gesture.mode === "pull") {
+      // Så snart fingeren er trukket opad, springer cirklen og knapperne
+      // straks til fuld størrelse — ingen animation, ingen gradvis vækst.
+      if (!gesture.expanded && gesture.startY - event.clientY > 0) {
+        gesture.expanded = true;
+        openRef.current = true;
+        setOpen(true);
+        setP(1);
       }
+      if (gesture.expanded) updateHighlight(event);
     } else if (gesture.mode === "select") {
-      updateHighlight(event, 1);
+      updateHighlight(event);
     }
   }
 
@@ -307,12 +302,6 @@ export function FooterArc() {
     const key = highlightedRef.current;
     setHighlight(null);
 
-    if (gesture.mode === "slide") {
-      if (!cancelled && dragXRef.current !== null) saveArcOffsetX(dragXRef.current);
-      dragXRef.current = null;
-      setDragX(null);
-      return;
-    }
     if (cancelled) {
       setOpenState(false);
       return;
@@ -327,8 +316,8 @@ export function FooterArc() {
       activate(slot);
       return;
     }
-    // Trukket op uden at ramme en knap: bliver åben, hvis den er over halvvejs.
-    setOpenState(gesture.mode === "pull" ? progressRef.current > 0.5 : false);
+    // Trukket op uden at ramme en knap: cirklen bliver åben i fuld størrelse.
+    setOpenState(gesture.mode === "pull" && gesture.expanded);
   }
 
   const showFan = progress > 0.02;
@@ -372,7 +361,7 @@ export function FooterArc() {
           transform: `translate(-50%, 50%) rotate(${plusFollows ? 0 : progress * 45}deg)`,
         }}
       >
-        <IconPlus size={11 + progress * 9} stroke={2.4} />
+        <IconPlus size={33 + progress * 27} stroke={2.4} />
       </span>
 
       <button
@@ -389,8 +378,15 @@ export function FooterArc() {
       />
 
       {slots.map((slot, index) => {
-        const center = slotCenter(index, progress);
+        const base = drawLayout[index];
         const highlighted = highlightedKey === slot.key;
+        // Den markerede knap må aldrig ende under fingeren: hold den over fingerspidsen.
+        let centerY = base.y;
+        if (highlighted && finger) {
+          const roomAbove = finger.top - TOP_ROOM;
+          centerY = Math.max(centerY, Math.min(finger.dy + FINGER_CLEARANCE, Math.max(centerY, roomAbove)));
+        }
+        const center = { x: base.x, y: centerY };
         const Icon = slot.icon;
         return (
           <div
@@ -401,6 +397,7 @@ export function FooterArc() {
               bottom: center.y - ARC_ICON_CIRCLE / 2,
               width: ARC_ICON_CIRCLE,
               height: ARC_ICON_CIRCLE,
+              transition: "left 120ms ease, bottom 120ms ease",
             }}
           >
             <button
@@ -414,14 +411,16 @@ export function FooterArc() {
               }}
               className="absolute inset-0 flex items-center justify-center rounded-full border-0 bg-hf-tan"
               style={{
-                opacity: showFan ? progress : 0,
+                // Som venstre-cirklen: knapperne vises med det samme (kort fade/pop),
+                // ikke gradvist efter hvor langt cirklen er trukket op.
+                opacity: showFan ? 1 : 0,
                 pointerEvents: open && !gesturing ? "auto" : "none",
-                transform: `scale(${(0.4 + 0.6 * progress) * (highlighted ? HIGHLIGHT_SCALE : 1)})`,
+                transform: `scale(${(showFan ? 1 : 0.4) * (highlighted ? HIGHLIGHT_SCALE : 1)})`,
                 backgroundColor: highlighted ? "var(--hf-green)" : undefined,
                 boxShadow: highlighted
                   ? "0 8px 18px rgba(0,0,0,0.15), 0 3px 8px rgba(0,0,0,0.08)"
                   : "0 2px 5px rgba(0,0,0,0.10), 0 1px 2px rgba(0,0,0,0.05)",
-                transition: "transform 120ms ease, background-color 120ms ease",
+                transition: "transform 150ms ease, opacity 150ms ease, background-color 120ms ease",
               }}
             >
               {Icon ? (
@@ -437,23 +436,29 @@ export function FooterArc() {
                 />
               )}
             </button>
-            {highlighted && (
-              <span
-                aria-hidden="true"
-                className="hf-type-strong pointer-events-none absolute left-1/2 whitespace-nowrap bg-hf-tan"
-                style={{
-                  bottom: ARC_ICON_CIRCLE + 14,
-                  transform: "translateX(-50%)",
-                  padding: "6px 10px",
-                  borderRadius: 3,
-                  boxShadow: "0 2px 4px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.04)",
-                  color: "var(--hf-green)",
-                  fontSize: 15,
-                }}
-              >
-                {slot.label}
-              </span>
-            )}
+            {highlighted &&
+              (() => {
+                const w = labelWidth(slot.label);
+                const spot = labelPlacement(drawLayout, index, baseCx, width, w);
+                return (
+                  <span
+                    aria-hidden="true"
+                    className="hf-type-strong pointer-events-none absolute whitespace-nowrap bg-hf-tan text-center"
+                    style={{
+                      left: spot.left - (center.x - ARC_ICON_CIRCLE / 2),
+                      bottom: spot.bottom - (center.y - ARC_ICON_CIRCLE / 2),
+                      width: w,
+                      padding: "6px 0",
+                      borderRadius: 3,
+                      boxShadow: "0 2px 4px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.04)",
+                      color: "var(--hf-green)",
+                      fontSize: 15,
+                    }}
+                  >
+                    {slot.label}
+                  </span>
+                );
+              })()}
           </div>
         );
       })}

@@ -3,6 +3,7 @@
 import { SINNERS_ENABLED } from "@/lib/food-classification";
 import { useEffect, useMemo, useRef, useState, createContext, useContext } from "react";
 import Link from "next/link";
+import { PulseEventsProvider, PulseHeartMark } from "@/components/activity/PulseEventsProvider";
 import { WeightEntryDetailsSheet } from "@/components/weight/WeightEntryDetailsSheet";
 import { useRouter } from "next/navigation";
 import {
@@ -19,10 +20,10 @@ import {
   IconStarFilled,
 } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
+import { BottomNav } from "@/components/BottomNav";
 import { AddMenuSheet } from "@/components/add/AddMenuSheet";
 import { HfChevron } from "@/components/hf/HfChevron";
 import { ProfileAvatarLink } from "@/components/ProfileAvatarLink";
-import { IconBathScale } from "@/components/hf/IconBathScale";
 import { ActionLink } from "@/components/hf/ActionButton";
 import { FoodRow } from "@/components/FoodRow";
 import { EnergyChip } from "@/components/calendar/EnergyChip";
@@ -65,6 +66,7 @@ import { GoalStatusSummary } from "@/components/calendar/GoalStatusSummary";
 import {
   formatMeasurementValue,
   formatWeightKg,
+  integrationIconForSource,
   measurementsForDay,
   type CalendarMeasurement,
   type CalendarWeighIn,
@@ -380,6 +382,14 @@ function useIsLandscape() {
 }
 
 export default function CalendarPage() {
+  return (
+    <PulseEventsProvider>
+      <CalendarPageContent />
+    </PulseEventsProvider>
+  );
+}
+
+function CalendarPageContent() {
   const { t } = useTranslation();
   const WEEKDAYS = useMemo(() => WEEKDAY_KEYS.map((key) => t(key)), [t]);
   const VIEW_OPTIONS = useMemo(
@@ -570,6 +580,24 @@ export default function CalendarPage() {
     }
     const remaining = goalSum + bonusKcal - consumed;
 
+    // Status for perioden: gennemsnittet af de forgangne dage med registreringer
+    // mod gennemsnitligt dagsmål (budget-snapshots følger næste delmål). Dags
+    // dato tæller ikke med, den er ikke slut. Der vises ingen totaler.
+    const lastPastDay = isCurrentMonth ? today.getDate() - 1 : daysInMonth;
+    let pastLoggedDays = 0;
+    let pastIntake = 0;
+    let pastGoal = 0;
+    for (let day = 1; day <= lastPastDay; day += 1) {
+      const date = new Date(year, month, day);
+      const total = totalKcalForDate(dailyTotals, date);
+      if (total <= 0) continue;
+      pastLoggedDays += 1;
+      pastIntake += total;
+      pastGoal += goalForDate(date);
+    }
+    const periodStatus: "met" | "missed" | "none" =
+      pastLoggedDays === 0 ? "none" : pastIntake / pastLoggedDays <= pastGoal / pastLoggedDays ? "met" : "missed";
+
     let sevenDayConsumed = 0;
     for (let offset = 0; offset < 7; offset += 1) {
       sevenDayConsumed += totalKcalForDate(dailyTotals, addDays(today, -offset));
@@ -581,7 +609,7 @@ export default function CalendarPage() {
     let streak = 0;
     while (dailyGoalMet(dailyTotals, addDays(today, -streak), goalForDate(addDays(today, -streak)))) streak += 1;
 
-    return { isCurrentMonth, consideredDays, metCount, remaining, sevenDayRemaining, streak, goalSum, consumed, bonusKcal };
+    return { isCurrentMonth, consideredDays, metCount, remaining, sevenDayRemaining, streak, goalSum, consumed, bonusKcal, periodStatus };
   }, [dailyTotals, activityBonusByDay, year, month, today, goalForDate, baseGoalForDate]);
 
   useEffect(() => {
@@ -1223,7 +1251,7 @@ function MonthView({
                         isPast ? "" : "hf-type-strong"
                       } ${
                         current
-                          ? "border-transparent hf-selected"
+                          ? "border-transparent hf-cal-current"
                           : isOtherMonth
                             ? "border-hf-gray-border bg-transparent text-text-muted"
                             : isPast
@@ -1232,6 +1260,7 @@ function MonthView({
                       }`}
                     >
                       {date.getDate()}
+                      <PulseHeartMark date={date} size={12} className="absolute bottom-0.5 left-0.5" />
                       {/* Målsætningsdato: konfettikanonen i øverste venstre
                           hjørne, modsat ✓/÷ i højre. */}
                       {hasGoal && (
@@ -1294,8 +1323,8 @@ function WeekView({
         const kcal = totalKcalForDate(dailyTotals, date);
         const goalKcal = goalForDate(date);
         const met = dailyGoalMet(dailyTotals, date, goalKcal);
-        // An unlogged day is not a missed goal: it shows "Ingen indtastninger"
-        // and the full remaining budget, both in gray.
+        // An unlogged day is not a missed goal: it shows a gray dash for both
+        // the status and the kcal.
         const logged = kcal > 0;
         const over = kcal > goalKcal;
         const diff = Math.round(Math.abs(goalKcal - kcal));
@@ -1316,7 +1345,7 @@ function WeekView({
             <span
               className={`hf-type-body flex size-9 shrink-0 items-center justify-center rounded-lg border ${
                 current
-                  ? "hf-type-strong border-transparent hf-selected"
+                  ? "hf-type-strong border-transparent hf-cal-current"
                   : future
                     ? "hf-type-strong border-hf-gray bg-hf-white text-hf-black"
                     : "border-hf-gray bg-hf-white text-text-muted"
@@ -1328,6 +1357,7 @@ function WeekView({
               <span className="flex flex-1 items-center gap-1.5">
                 {hasGoal && <IconPartyPopper size={18} className="shrink-0 text-hf-black" />}
                 <WeighInMark entries={dayWeighIns} />
+                <PulseHeartMark date={date} />
               </span>
             ) : (
               <>
@@ -1338,7 +1368,7 @@ function WeekView({
                   className={`hf-type-body flex items-center gap-1.5 ${tooLow ? "hf-type-strong text-hf-warning" : logged ? "" : "text-text-muted"}`}
                 >
                   {!logged
-                    ? t("calendar.noEntries")
+                    ? "–"
                     : tooLow
                       ? t("calendar.intakeTooLow")
                       : met
@@ -1347,6 +1377,7 @@ function WeekView({
                   {/* Målsætningsdato: konfettikanonen efter teksten. */}
                   {hasGoal && <IconPartyPopper size={18} className="shrink-0 text-hf-black" />}
                   <WeighInMark entries={dayWeighIns} />
+                <PulseHeartMark date={date} />
                 </span>
                 <span className="ml-auto flex shrink-0 items-center gap-1">
                   <span
@@ -1354,8 +1385,7 @@ function WeekView({
                       !logged ? "text-text-muted" : tooLow ? "text-hf-warning" : over ? "text-hf-red-dark" : "text-hf-green"
                     }`}
                   >
-                    {over ? "÷" : "+"}
-                    {diff} kcal
+                    {!logged ? "–" : `${over ? "÷" : "+"}${diff} kcal`}
                   </span>
                   <IconChevronRight size={19} className="shrink-0" />
                 </span>
@@ -1378,7 +1408,7 @@ function WeighInMark({ entries }: { entries: WeightEntry[] }) {
   if (!latest) return null;
   return (
     <>
-      <IconBathScale size={18} className="shrink-0 text-hf-black" />
+      <IconScale size={18} className="shrink-0 text-hf-black" />
       <span className="sr-only">{t("calendar.weighInSrLabel", { value: formatKg(latest.weightKg) })}</span>
     </>
   );
@@ -1533,8 +1563,8 @@ function ListView({
         const kcal = totalKcalForDate(dailyTotals, date);
         const goalKcal = goalForDate(date);
         const met = dailyGoalMet(dailyTotals, date, goalKcal);
-        // An unlogged day is not a missed goal: it shows "Ingen indtastninger"
-        // and the full remaining budget, both in gray.
+        // An unlogged day is not a missed goal: it shows a gray dash for both
+        // the status and the kcal.
         const logged = kcal > 0;
         const over = kcal > goalKcal;
         const diff = Math.round(Math.abs(goalKcal - kcal));
@@ -1555,7 +1585,7 @@ function ListView({
             <span
               className={`hf-type-body flex size-9 shrink-0 items-center justify-center rounded-lg border ${
                 current
-                  ? "hf-type-strong border-transparent hf-selected"
+                  ? "hf-type-strong border-transparent hf-cal-current"
                   : future
                     ? "hf-type-strong border-hf-gray bg-hf-white text-hf-black"
                     : "border-hf-gray bg-hf-white text-text-muted"
@@ -1567,6 +1597,7 @@ function ListView({
               <span className="flex flex-1 items-center gap-1.5">
                 {hasGoal && <IconPartyPopper size={18} className="shrink-0 text-hf-black" />}
                 <WeighInMark entries={dayWeighIns} />
+                <PulseHeartMark date={date} />
               </span>
             ) : (
               <>
@@ -1577,7 +1608,7 @@ function ListView({
                   className={`hf-type-body flex items-center gap-1.5 ${tooLow ? "hf-type-strong text-hf-warning" : logged ? "" : "text-text-muted"}`}
                 >
                   {!logged
-                    ? t("calendar.noEntries")
+                    ? "–"
                     : tooLow
                       ? t("calendar.intakeTooLow")
                       : met
@@ -1586,6 +1617,7 @@ function ListView({
                   {/* Målsætningsdato: konfettikanonen efter teksten. */}
                   {hasGoal && <IconPartyPopper size={18} className="shrink-0 text-hf-black" />}
                   <WeighInMark entries={dayWeighIns} />
+                <PulseHeartMark date={date} />
                 </span>
                 <span className="ml-auto flex shrink-0 items-center gap-1">
                   <span
@@ -1593,8 +1625,7 @@ function ListView({
                       !logged ? "text-text-muted" : tooLow ? "text-hf-warning" : over ? "text-hf-red-dark" : "text-hf-green"
                     }`}
                   >
-                    {over ? "÷" : "+"}
-                    {diff} kcal
+                    {!logged ? "–" : `${over ? "÷" : "+"}${diff} kcal`}
                   </span>
                   <IconChevronRight size={19} className="shrink-0" />
                 </span>
@@ -1698,7 +1729,7 @@ function WeekTimelineView({
               type="button"
               onClick={() => onOpenDate(date)}
               className={`flex h-12 min-w-[92px] flex-1 flex-col items-center justify-center border-b border-r border-hf-tan last:border-r-0 focus-visible:outline-2 focus-visible:outline-hf-black ${
-                current ? "hf-selected" : "text-hf-black"
+                current ? "hf-cal-current" : "text-hf-black"
               }`}
             >
               <span className="hf-type-micro hf-type-strong text-text-secondary uppercase">
@@ -1708,7 +1739,8 @@ function WeekTimelineView({
                 {date.getDate()}
                 {met && <IconCheck size={15} stroke={3.5} className="text-hf-green" aria-hidden="true" />}
                 {goalsForDate(goalsByDate, date).length > 0 && <IconPartyPopper size={15} />}
-                {weighInsForDate(weighInsByDate, date).length > 0 && <IconBathScale size={15} />}
+                {weighInsForDate(weighInsByDate, date).length > 0 && <IconScale size={15} />}
+                <PulseHeartMark date={date} size={15} />
               </span>
             </button>
           );
@@ -1799,7 +1831,7 @@ function WeekTimelineView({
                       style={{ top: (minutesFromMidnight(time) / 60) * HOUR_HEIGHT, minHeight: 18 }}
                       title={t("calendar.dayWeighIn", { value: formatKg(entry.weightKg), time: formatClock(entry.weighedAt) })}
                     >
-                      <IconBathScale size={12} />
+                      <IconScale size={12} />
                       {formatKg(entry.weightKg)} kg
                     </div>
                   );
@@ -2486,20 +2518,6 @@ function DayDetails({
           </>
         )}
 
-        {/* Dagens vejning(er) med klokkeslæt — her er der plads til tallet. */}
-        {latestWeighIn && (
-          <div className="mt-4 space-y-1 pr-1">
-            {[latestWeighIn].map((entry) => (
-              <p
-                key={entry.id}
-                className="hf-type-body flex items-center justify-end gap-1.5 whitespace-nowrap text-right text-hf-black"
-              >
-                <IconBathScale size={16} />
-                {t("calendar.dayWeighIn", { value: formatKg(entry.weightKg), time: formatClock(entry.weighedAt) })}
-              </p>
-            ))}
-          </div>
-        )}
         <GoalStatusSummary
           className="mt-2 pr-1"
           status={isFutureDay ? null : hasEntries ? (met ? "met" : "missed") : "none"}
@@ -2520,7 +2538,6 @@ function DayDetails({
           waterEntries={waterEntries.filter((entry) => new Date(entry.loggedAt).getHours() === openHour)}
           measurements={measurements.filter((item) => item.time.getHours() === openHour)}
           goals={openHour === GOAL_HOUR ? goals : []}
-          weighIns={weighIns.filter((entry) => new Date(entry.weighedAt).getHours() === openHour)}
           onClose={() => setOpenHour(null)}
         />
       )}
@@ -2532,6 +2549,8 @@ function DayDetails({
           onClose={() => setAddSheetHour(null)}
         />
       )}
+
+      <BottomNav />
     </div>
   );
 }
@@ -2645,7 +2664,7 @@ function HourRow({
           {hasGoal && <IconPartyPopper size={16} className="text-hf-black" />}
           {weighIns.map((entry) => (
             <span key={entry.id} className="hf-type-small hf-type-strong flex items-center gap-1 text-hf-black">
-              <IconBathScale size={16} />
+              <IconScale size={16} />
               {formatKg(entry.weightKg)} kg
             </span>
           ))}
@@ -2881,7 +2900,6 @@ function HourEntriesOverlay({
   waterEntries,
   measurements,
   goals,
-  weighIns,
   onClose,
 }: {
   hour: number;
@@ -2889,7 +2907,6 @@ function HourEntriesOverlay({
   waterEntries: WaterEntry[];
   measurements: CalendarMeasurement[];
   goals: GoalDTO[];
-  weighIns: WeightEntry[];
   onClose: () => void;
 }) {
   const { t } = useTranslation();
@@ -2948,16 +2965,11 @@ function HourEntriesOverlay({
         {goals.map((goal) => (
           <GoalAccordion key={goal.id} goal={goal} />
         ))}
-        {weighIns.map((entry) => (
-          <div key={entry.id} className="hf-control-row mb-2 flex items-center justify-between rounded-2xl bg-hf-tan px-4">
-            <span className="hf-type-body hf-type-strong text-hf-black">{formatClock(entry.weighedAt)}</span>
-            <span className="hf-type-body hf-type-strong flex items-center gap-1.5 text-hf-black">
-              <IconBathScale size={18} />
-              {formatKg(entry.weightKg)} kg
-            </span>
-          </div>
-        ))}
         {groups.map((group) => {
+          const soloWeight = group.items.length === 1 && group.items[0].kind === "measurement" ? group.items[0].measurement : null;
+          if (soloWeight && soloWeight.weightKg !== null && soloWeight.id.startsWith("weight-")) {
+            return <WeightGroupRow key={group.key} time={group.time} measurement={soloWeight} />;
+          }
           const isOpen = openKeys.has(group.key);
           // Kalorier fra mad som "540 kcal", vand som glas + cl — begge kan
           // stå på samme tidspunkt. Vand-varer tæller ikke som mad.
@@ -3029,7 +3041,14 @@ function HourEntriesOverlay({
                       );
                     }
                     if (item.kind === "measurement") {
-                      return <MeasurementRow key={item.id} measurement={item.measurement} className={rowClass} />;
+                      return (
+                        <MeasurementRow
+                          key={item.id}
+                          measurement={item.measurement}
+                          className={rowClass}
+                          hideWeight={item === groupWeight}
+                        />
+                      );
                     }
                     const { registration } = item;
                     const isWater = isWaterRegistration(registration);
@@ -3061,17 +3080,46 @@ function HourEntriesOverlay({
           );
         })}
       </div>
+      <BottomNav />
     </div>
+  );
+}
+
+// Vejning alene på sit tidspunkt: rækken åbner info-vinduet (kilde, tøj,
+// fedtprocent …) direkte — ingen foldbar mellemstation.
+function WeightGroupRow({ time, measurement }: { time: Date; measurement: CalendarMeasurement }) {
+  const [open, setOpen] = useState(false);
+  const weighInId = measurement.id.slice("weight-".length);
+  return (
+    <>
+      <button
+        type="button"
+        onClick={() => setOpen(true)}
+        className="hf-control-row mb-2 flex w-full items-center justify-between rounded-2xl bg-hf-tan px-4 text-left focus-visible:outline-2 focus-visible:outline-hf-black"
+      >
+        <span className="hf-type-body hf-type-strong text-hf-black">
+          {new Intl.DateTimeFormat("da-DK", { hour: "2-digit", minute: "2-digit" }).format(time)}
+        </span>
+        <span className="hf-type-body hf-type-strong flex items-center gap-2 text-hf-black">
+          <IconScale size={18} aria-hidden="true" />
+          {formatWeightKg(measurement.weightKg as number)}
+          <HfChevron direction="right" className="-ml-1 text-hf-black" />
+        </span>
+      </button>
+      {open && <WeightEntryDetailsSheet id={weighInId} onClose={() => setOpen(false)} />}
+    </>
   );
 }
 
 // En vejning med vægtens øvrige målinger (fedtprocent, muskelmasse …) eller
 // en måling uden vejning (fx blodtryk) — alt, integrationen har leveret.
-function MeasurementRow({ measurement, className }: { measurement: CalendarMeasurement; className: string }) {
+// Vægten står allerede i gruppens overskrift (hideWeight), så rækken viser den ikke igen.
+function MeasurementRow({ measurement, className, hideWeight = false }: { measurement: CalendarMeasurement; className: string; hideWeight?: boolean }) {
   const { t } = useTranslation();
   const [open, setOpen] = useState(false);
   const weighInId = measurement.id.startsWith("weight-") ? measurement.id.slice("weight-".length) : null;
   const source = measurement.source && measurement.source !== "MANUAL" ? t(`calendar.measurement.source.${measurement.source}`) : null;
+  const sourceIcon = integrationIconForSource(measurement.source);
   return (
     <div
       className={`${className} ${weighInId ? "cursor-pointer" : ""}`}
@@ -3087,11 +3135,18 @@ function MeasurementRow({ measurement, className }: { measurement: CalendarMeasu
         : {})}
     >
       <FoodRow
-        thumbnail={<IconScale size={22} className="text-hf-black" aria-hidden="true" />}
+        thumbnail={
+          sourceIcon ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img src={sourceIcon} alt="" className="h-full w-full object-contain p-1" />
+          ) : (
+            <IconScale size={22} className="text-hf-black" aria-hidden="true" />
+          )
+        }
         title={measurement.weightKg !== null ? t("calendar.measurement.weight") : t("calendar.measurement.title")}
         subtitle={source ? <p className="hf-type-small text-text-secondary">{source}</p> : undefined}
         right={
-          measurement.weightKg !== null ? (
+          measurement.weightKg !== null && !hideWeight ? (
             <span className="hf-type-body hf-type-strong text-hf-black">{formatWeightKg(measurement.weightKg)}</span>
           ) : undefined
         }
@@ -3125,12 +3180,12 @@ type MonthlyStatusData = {
   goalSum: number;
   consumed: number;
   bonusKcal: number;
+  periodStatus: "met" | "missed" | "none";
 };
 
 function MonthlyStatus({ status }: { status: MonthlyStatusData }) {
   const { t } = useTranslation();
-  const { remaining, streak } = status;
-  const withinGoal = remaining >= 0;
+  const { streak } = status;
 
   return (
     <div className="mb-8 mt-2 space-y-2 text-center">
@@ -3147,7 +3202,8 @@ function MonthlyStatus({ status }: { status: MonthlyStatusData }) {
       <GoalStatusSummary
         className="text-left"
         period="month"
-        status={withinGoal ? "met" : "missed"}
+        showTotals={false}
+        status={status.periodStatus}
         goalKcal={status.goalSum}
         intakeKcal={status.consumed}
         bonusKcal={status.bonusKcal}

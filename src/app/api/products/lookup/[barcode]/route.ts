@@ -6,6 +6,7 @@ import { lookupFoodDataCentral } from "@/lib/foodDataCentral";
 import { inferGs1OriginCountryCode } from "@/lib/regions";
 import { createExternalImageCutoutJob } from "@/lib/image-cutout-jobs";
 import { syncProductNutritionFeaturesSafely } from "@/lib/product-nutrition-features";
+import { translateToDanish } from "@/lib/translate-da";
 import { debugLog, errorText, flowIdFromRequest } from "@/lib/debug-log";
 import { petFoodBlockReason } from "@/lib/pet-food-blacklist";
 import { recordPetFoodAttempt } from "@/lib/pet-food-strikes";
@@ -132,9 +133,23 @@ export async function GET(
         })
       : null;
 
+    // OFF-tekst på fremmedsprog oversættes; originalen gemmes til admins side-om-side-godkendelse.
+    const needsTranslation = !!offProduct?.needsTranslation;
+    const translated = needsTranslation
+      ? await translateToDanish({ name: externalProduct.name, ingredients: offProduct?.ingredientsText ?? null })
+      : null;
+
     const product = await prisma.product.create({
       data: {
-        name: externalProduct.name,
+        name: translated?.name ?? externalProduct.name,
+        ...(needsTranslation
+          ? {
+              nameOriginal: externalProduct.name,
+              ingredientsOriginal: offProduct?.ingredientsText ?? null,
+              translationSourceLang: offProduct?.sourceLang ?? "en",
+              translationStatus: "PENDING",
+            }
+          : {}),
         brandId: brand?.id,
         imageUrl: externalProduct.imageUrl,
         kcalPer100g: externalProduct.kcalPer100g,
@@ -145,7 +160,7 @@ export async function GET(
         servingSizeUnitSingular: offProduct?.servingIsSlice ? "skive" : undefined,
         servingSizeUnitPlural: offProduct?.servingIsSlice ? "skiver" : undefined,
         productCategory: offProduct?.isBeverage ? "DRINK" : undefined,
-        ingredientsText: offProduct?.ingredientsText ?? null,
+        ingredientsText: translated?.ingredients ?? offProduct?.ingredientsText ?? null,
         allergens: offProduct?.allergens ?? [],
         additives: offProduct?.additives ?? [],
         saturatedFatPer100g: offProduct?.saturatedFatPer100g ?? null,

@@ -469,6 +469,15 @@
     "later": "Senere",
     "dontAskAgain": "Ikke spør igjen"
   },
+  "staleSyncPrompt": {
+    "title": "{name} er ikke synkronisert",
+    "body": "{name} har ikke sendt data siden {date}. Vekten og aktiviteten din kan mangle. Synkroniser nå for å få med alt.",
+    "syncNow": "Synkroniser nå",
+    "open": "Åpne integrasjon",
+    "later": "Senere",
+    "failed": "Synkroniseringen mislyktes. Prøv igjen eller åpne integrasjonen.",
+    "never": "aldri"
+  },
   "sentNotice": {
     "title": "Til info",
     "body": "Vi sendte deg den {date} en {type} om \"{subject}\". Det var ikke spam.",
@@ -710,7 +719,7 @@
     "categoryProfileDescription": "Navn, e-post osv.",
     "categoryWeight": "Vekt",
     "categoryGoals": "Mål",
-    "categoryMenstrualCycle": "Menstruasjonssyklus (kun for kvinner)",
+    "categoryMenstrualCycle": "Menstruasjonssyklus",
     "categoryDigestion": "Fordøyelse",
     "categoryComingSoon": "Kommer senere",
     "categoryUnavailable": "Ikke tilgjengelig i appen ennå",
@@ -1584,6 +1593,7 @@
       "markAllRead": "Merk alle som lest",
       "unread": "Ny",
       "deleted": "Slettet",
+      "trash": "Papirkurv",
       "delete": "Slett",
       "clearAll": "Tøm alt",
       "clearAllWarning": "Alle slettede meldinger fjernes permanent. Dette kan ikke angres.",
@@ -1799,6 +1809,7 @@
     "measurementGoal": "Mål",
     "latest": "{date} {value}",
     "setGoal": "Sett et mål",
+    "seeAllGoals": "Se alle mål",
     "toLose": "{value} til målet",
     "toGain": "{value} opp til målet",
     "goalReached": "Du har nådd målet ditt",
@@ -1809,7 +1820,8 @@
     "showAll": "Vis alle ({count})",
     "showLess": "Vis færre",
     "chartAria": "Utvikling for {name}",
-    "loadError": "Kunne ikke hente statusen din."
+    "loadError": "Kunne ikke hente statusen din.",
+    "customizeView": "Tilpass visning"
   },
   "bodyMeasurementChart": {
     "noData": "Ingen målinger ennå.",
@@ -1837,6 +1849,7 @@
     "dateRequired": "Velg en måldato for å lagre.",
     "targetDateLabel": "Nås senest {date}",
     "weight": "Vekt",
+    "weightCompositionHeading": "Vekt og kroppsbygning",
     "bodyMeasurementsHeading": "Kroppsmål",
     "weightPlaceholder": "f.eks. 72,0",
     "measurementPlaceholder": "f.eks. 82",
@@ -1850,6 +1863,7 @@
     "openGoal": "Åpne målsetningen",
     "editTargetAria": "Rediger {name}",
     "category": {
+      "activity": "Aktivitet",
       "weight": "Vekt",
       "body": "Kroppsmål",
       "nutrition": "Ernæring"
@@ -1863,6 +1877,12 @@
       "bodyFatPercent": "f.eks. 20",
       "muscleMassKg": "f.eks. 35"
     },
+    "activityHeading": "Aktivitet",
+    "activityIntro": "WHO anbefaler voksne minst 150 min moderat aktivitet i uken og styrketrening 2 dager i uken. Klokker og aktivitetsmålere kan registrere dem.",
+    "activityUseWho": "Bruk WHO-anbefaling",
+    "activityHeartRateHint": "Puls over: du må komme over verdien minst én gang om dagen. Moderat intensitet er ca. 64 % av makspulsen din (220 − alderen din), f.eks. ca. 120 for en 30-åring.",
+    "activity": {"stepsPerDay":"Skritt","activeMinutesPerWeek":"Aktive minutter","strengthDaysPerWeek":"Styrketrening","workoutsPerWeek":"Treningsøkter","runKmPerWeek":"Løping","cycleKmPerWeek":"Sykling","heartRateAboveBpm":"Puls over"},
+    "activityPlaceholder": {"stepsPerDay":"f.eks. 8000","activeMinutesPerWeek":"f.eks. 150","strengthDaysPerWeek":"f.eks. 2","workoutsPerWeek":"f.eks. 3","runKmPerWeek":"f.eks. 15","cycleKmPerWeek":"f.eks. 50","heartRateAboveBpm":"f.eks. 120"},
     "nutritionHeading": "Ernæring per dag",
     "nutrition": {
       "kcal": "Kalorier",
@@ -1879,6 +1899,16 @@
   },
   "weighIn": {
     "attireTitle": "What were you wearing?",
+    "attireItem": {
+      "UNDERWEAR": "Underwear",
+      "PANTS": "Trousers",
+      "TOP": "Top / T-shirt",
+      "SWEATER": "Sweater",
+      "SHOES": "Shoes",
+      "POCKET_ITEMS": "Phone etc. in pocket",
+      "AFTER_TOILET": "After using the toilet"
+    },
+    "attireNaked": "Nothing selected = naked",
     "attire": {
       "NAKED": "Naked",
       "UNDERWEAR": "In underwear",
@@ -2085,7 +2115,6 @@
   "addProduct": {
     "reportBug": "Har du funnet en feil?",
     "reading": "Leser…",
-    "ingredientsUnreadable": "Innholdet kunne ikke leses på bildet.",
     "retakeIngredients": "Ta nytt bilde av innholdet",
     "title": "Legg til",
     "titleForDish": "Legg til ingrediens",
@@ -2192,6 +2221,9 @@
   "productUpdate": {
     "banner": "Tjen {points} poeng ved å oppdatere varen",
     "toggle": "Vis eller skjul banner",
+    "tileFront": "Forside",
+    "tileNutrition": "Energi",
+    "tileIngredients": "Innhold",
     "title": "Oppdater varen",
     "kindFront": "Forsiden av varen ({points} poeng)",
     "hintFront": "Ta et bilde av forsiden, så varen får bilde og logo.",
@@ -2569,6 +2601,13 @@
     "spikeTitle": "Du har {day} forbrent {kcal} ekstra kalorier. Hva holdt du på med?",
     "spikeHint": "Pulsen var opptil {peak} (hvilepuls {rest}) i {minutes} min.",
     "spikeQuestion": "Velg aktivitet",
+    "pulseHeading": "Forhøyet puls",
+    "peakBpm": "Høyeste puls {peak} bpm",
+    "pickType": "Velg treningstype",
+    "heartAria": "Høy puls – åpne detaljer",
+    "eventAria": "Forhøyet puls",
+    "older": "Eldre",
+    "newer": "Nyere",
     "pulseTitle": "Vi ser at pulsen din var høyere enn vanlig {day}",
     "yesterday": "i går",
     "onDate": "{date}",

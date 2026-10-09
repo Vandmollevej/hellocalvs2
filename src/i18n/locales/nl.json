@@ -469,6 +469,15 @@
     "later": "Later",
     "dontAskAgain": "Niet meer vragen"
   },
+  "staleSyncPrompt": {
+    "title": "{name} is niet gesynchroniseerd",
+    "body": "{name} heeft sinds {date} geen gegevens gestuurd. Je gewicht en activiteit ontbreken mogelijk. Synchroniseer nu zodat alles erbij is.",
+    "syncNow": "Nu synchroniseren",
+    "open": "Integratie openen",
+    "later": "Later",
+    "failed": "Synchroniseren mislukt. Probeer opnieuw of open de integratie.",
+    "never": "nooit"
+  },
   "sentNotice": {
     "title": "Ter info",
     "body": "We hebben je op {date} een {type} gestuurd over \"{subject}\". Dit was geen spam.",
@@ -710,7 +719,7 @@
     "categoryProfileDescription": "Naam, e-mail enz.",
     "categoryWeight": "Gewicht",
     "categoryGoals": "Doelen",
-    "categoryMenstrualCycle": "Menstruatiecyclus (alleen voor vrouwen)",
+    "categoryMenstrualCycle": "Menstruatiecyclus",
     "categoryDigestion": "Spijsvertering",
     "categoryComingSoon": "Binnenkort beschikbaar",
     "categoryUnavailable": "Nog niet beschikbaar in de app",
@@ -1584,6 +1593,7 @@
       "markAllRead": "Alles als gelezen markeren",
       "unread": "Nieuw",
       "deleted": "Verwijderd",
+      "trash": "Prullenbak",
       "delete": "Verwijderen",
       "clearAll": "Alles wissen",
       "clearAllWarning": "Alle verwijderde berichten worden definitief gewist. Dit kan niet ongedaan worden gemaakt.",
@@ -1799,6 +1809,7 @@
     "measurementGoal": "Doel",
     "latest": "{date} {value}",
     "setGoal": "Stel een doel in",
+    "seeAllGoals": "Alle doelen bekijken",
     "toLose": "{value} tot het doel",
     "toGain": "{value} omhoog tot het doel",
     "goalReached": "Je hebt je doel bereikt",
@@ -1809,7 +1820,8 @@
     "showAll": "Toon alles ({count})",
     "showLess": "Toon minder",
     "chartAria": "Verloop van {name}",
-    "loadError": "Kon je status niet laden."
+    "loadError": "Kon je status niet laden.",
+    "customizeView": "Weergave aanpassen"
   },
   "bodyMeasurementChart": {
     "noData": "Nog geen metingen.",
@@ -1837,6 +1849,7 @@
     "dateRequired": "Kies een doeldatum om op te slaan.",
     "targetDateLabel": "Uiterlijk bereikt op {date}",
     "weight": "Gewicht",
+    "weightCompositionHeading": "Gewicht en lichaamsbouw",
     "bodyMeasurementsHeading": "Lichaamsmaten",
     "weightPlaceholder": "bijv. 72,0",
     "measurementPlaceholder": "bijv. 82",
@@ -1850,6 +1863,7 @@
     "openGoal": "Doelstelling openen",
     "editTargetAria": "{name} bewerken",
     "category": {
+      "activity": "Activiteit",
       "weight": "Gewicht",
       "body": "Lichaamsmaten",
       "nutrition": "Voeding"
@@ -1863,6 +1877,12 @@
       "bodyFatPercent": "bijv. 20",
       "muscleMassKg": "bijv. 35"
     },
+    "activityHeading": "Activiteit",
+    "activityIntro": "De WHO adviseert volwassenen minstens 150 min matige activiteit per week en krachttraining op 2 dagen per week. Horloges en activiteitentrackers kunnen dit registreren.",
+    "activityUseWho": "WHO-advies gebruiken",
+    "activityHeartRateHint": "Hartslag boven: je moet deze waarde minstens één keer per dag overschrijden. Matige intensiteit is ongeveer 64% van je maximale hartslag (220 − je leeftijd), bijv. ongeveer 120 bij een 30-jarige.",
+    "activity": {"stepsPerDay":"Stappen","activeMinutesPerWeek":"Actieve minuten","strengthDaysPerWeek":"Krachttraining","workoutsPerWeek":"Trainingen","runKmPerWeek":"Hardlopen","cycleKmPerWeek":"Fietsen","heartRateAboveBpm":"Hartslag boven"},
+    "activityPlaceholder": {"stepsPerDay":"bijv. 8000","activeMinutesPerWeek":"bijv. 150","strengthDaysPerWeek":"bijv. 2","workoutsPerWeek":"bijv. 3","runKmPerWeek":"bijv. 15","cycleKmPerWeek":"bijv. 50","heartRateAboveBpm":"bijv. 120"},
     "nutritionHeading": "Voeding per dag",
     "nutrition": {
       "kcal": "Calorieën",
@@ -1879,6 +1899,16 @@
   },
   "weighIn": {
     "attireTitle": "What were you wearing?",
+    "attireItem": {
+      "UNDERWEAR": "Underwear",
+      "PANTS": "Trousers",
+      "TOP": "Top / T-shirt",
+      "SWEATER": "Sweater",
+      "SHOES": "Shoes",
+      "POCKET_ITEMS": "Phone etc. in pocket",
+      "AFTER_TOILET": "After using the toilet"
+    },
+    "attireNaked": "Nothing selected = naked",
     "attire": {
       "NAKED": "Naked",
       "UNDERWEAR": "In underwear",
@@ -2085,7 +2115,6 @@
   "addProduct": {
     "reportBug": "Een fout gevonden?",
     "reading": "Lezen…",
-    "ingredientsUnreadable": "De ingrediënten zijn niet leesbaar op de foto.",
     "retakeIngredients": "Maak een nieuwe foto van de ingrediënten",
     "title": "Toevoegen",
     "titleForDish": "Ingrediënt toevoegen",
@@ -2192,6 +2221,9 @@
   "productUpdate": {
     "banner": "Verdien {points} punten door het product bij te werken",
     "toggle": "Banner tonen of verbergen",
+    "tileFront": "Voorkant",
+    "tileNutrition": "Energie",
+    "tileIngredients": "Ingrediënten",
     "title": "Product bijwerken",
     "kindFront": "Voorkant van het product ({points} punten)",
     "hintFront": "Maak een foto van de voorkant, zodat het product een afbeelding en logo krijgt.",
@@ -2569,6 +2601,13 @@
     "spikeTitle": "Je hebt {day} {kcal} extra calorieën verbrand. Wat heb je gedaan?",
     "spikeHint": "Je hartslag was maximaal {peak} (rusthartslag {rest}) gedurende {minutes} min.",
     "spikeQuestion": "Kies activiteit",
+    "pulseHeading": "Verhoogde hartslag",
+    "peakBpm": "Hoogste hartslag {peak} bpm",
+    "pickType": "Kies trainingstype",
+    "heartAria": "Hoge hartslag – details openen",
+    "eventAria": "Verhoogde hartslag",
+    "older": "Ouder",
+    "newer": "Nieuwer",
     "pulseTitle": "We zien dat je hartslag {day} hoger was dan normaal",
     "yesterday": "gisteren",
     "onDate": "op {date}",

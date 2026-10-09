@@ -95,7 +95,7 @@ export function AmountSuggestionRobotPanel({ initial }: { initial: AmountSuggest
               type="button"
               disabled={busy}
               onClick={() => send("PATCH", API, { enabled: !robot.enabled }, robot.enabled ? "Robotten er slået fra." : "Robotten er slået til.")}
-              className="rounded-md border border-border-strong px-3 py-2 text-text-secondary hover:bg-hf-tan disabled:opacity-50 hf-type-body"
+              className="hf-btn-secondary hf-btn--compact"
             >
               {robot.enabled ? "Slå fra" : "Slå til"}
             </button>
@@ -103,7 +103,7 @@ export function AmountSuggestionRobotPanel({ initial }: { initial: AmountSuggest
               type="button"
               disabled={busy || running}
               onClick={() => send("POST", `${API}/run`, undefined, "Kørsel bestilt — robotten starter inden for et minut.")}
-              className="rounded-md bg-hf-green-dark px-4 py-2 text-hf-white disabled:opacity-50 hf-type-body hf-type-strong"
+              className="hf-btn-primary hf-btn--compact"
             >
               {running ? "Kører…" : "Kør nu"}
             </button>

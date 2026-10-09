@@ -5,6 +5,7 @@ import { toUploadItem } from "@/lib/brand-logo-upload";
 import { toProductImageItem } from "@/lib/product-image-upload";
 import { BrandLogoUploader } from "@/components/admin/BrandLogoUploader";
 import { BrandLogoUploadHistory } from "@/components/admin/BrandLogoUploadHistory";
+import { GenericImageList } from "@/components/admin/GenericImageList";
 import { ProductImageUploader } from "@/components/admin/ProductImageUploader";
 import { ProductImageConflicts } from "@/components/admin/ProductImageConflicts";
 import { ProductImageUploadHistory } from "@/components/admin/ProductImageUploadHistory";
@@ -20,7 +21,8 @@ export default async function AdminImagesPage() {
   if (!admin) redirect("/admin/login");
   const canEdit = admin.adminAccessLevel === "FULL";
 
-  const [conflicts, imageBatches, logoBatches] = await Promise.all([
+  const [generics, conflicts, imageBatches, logoBatches] = await Promise.all([
+    prisma.genericIngredient.findMany({ select: { id: true, name: true, imageUrl: true, cookingState: true }, orderBy: { name: "asc" }, take: 1000 }),
     prisma.productImageUpload.findMany({ where: { status: "CONFLICT" }, orderBy: [{ createdAt: "asc" }, { id: "asc" }] }),
     prisma.productImageUploadBatch.findMany({
       where: { items: { some: {} } },
@@ -54,6 +56,7 @@ export default async function AdminImagesPage() {
         <section className="flex min-w-0 flex-col gap-6">
           <h2 className="hf-type-body hf-type-strong text-hf-black">Produktbilleder</h2>
           <ProductImageUploader canEdit={canEdit} />
+          <GenericImageList rows={generics.map((g) => ({ id: g.id, name: g.name, imageUrl: g.imageUrl, cooked: g.cookingState !== "RAW" }))} />
           <ProductImageConflicts items={conflicts.map(toProductImageItem)} canEdit={canEdit} />
           <ProductImageUploadHistory
             canEdit={canEdit}

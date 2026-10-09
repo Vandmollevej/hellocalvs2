@@ -45,7 +45,17 @@ export async function inviteWorker(form: FormData) {
   const existing = await prisma.scanWorker.findUnique({ where: { email } });
   if (existing) redirect(`/admin/scan-invites/${existing.id}?error=exists`);
 
-  const worker = await prisma.scanWorker.create({ data: { name, email } });
+  const birth = text(form, "birthDate");
+  const worker = await prisma.scanWorker.create({
+    data: {
+      name,
+      email,
+      phone: text(form, "phone") || null,
+      address: text(form, "address") || null,
+      gender: text(form, "gender") || null,
+      birthDate: birth ? new Date(birth) : null,
+    },
+  });
   const result = await issueScanInvite(worker.id);
   await rememberInviteLink(result.link);
   redirect(`/admin/scan-invites/${worker.id}?invite=${result.mailSent ? "sent" : "manual"}`);
@@ -187,6 +197,7 @@ export async function updatePayRate(form: FormData) {
   const payPerItemOre = Math.round(kroner * 100);
   await prisma.scanSettings.upsert({ where: { id: 1 }, update: { payPerItemOre }, create: { id: 1, payPerItemOre } });
   revalidatePath("/admin/scan-invites");
+  revalidatePath("/admin/scan-invites/afvisningsaarsager");
 }
 
 export async function saveRejectionReason(form: FormData) {

@@ -33,6 +33,7 @@ import dk.packroff.hellocal.ui.ProfileWaistMeasureIcon
 import dk.packroff.hellocal.ui.icons.HcIcon
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
+import kotlin.math.roundToInt
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.intOrNull
 import kotlinx.serialization.json.jsonPrimitive
@@ -43,6 +44,21 @@ private fun accountSetupDone(user: ProfileUser): List<Boolean> = listOf(
     !user.goalMode.isNullOrEmpty(),
     !user.activityLevel.isNullOrEmpty() && !user.defaultBedtime.isNullOrEmpty() && !user.defaultWakeTime.isNullOrEmpty(),
 )
+
+/** src/lib/account-setup.ts accountSetupPercent: share of the eight setup fields that are filled. */
+private fun accountSetupPercent(user: ProfileUser): Int {
+    val filled = listOf(
+        !user.sex.isNullOrEmpty(),
+        !user.birthDate.isNullOrEmpty(),
+        (user.heightCm ?: 0.0) != 0.0,
+        (user.weightKg ?: 0.0) != 0.0,
+        !user.goalMode.isNullOrEmpty(),
+        !user.activityLevel.isNullOrEmpty(),
+        !user.defaultBedtime.isNullOrEmpty(),
+        !user.defaultWakeTime.isNullOrEmpty(),
+    ).count { it }
+    return (filled * 100f / 8).roundToInt()
+}
 
 /** Native port of src/app/profile/page.tsx. */
 @Composable
@@ -95,6 +111,7 @@ fun ProfileScreen(args: RouteArgs) {
                     ProfileAccordionCard {
                         ProfileChevronRow(
                             label = t.t("settings.learnTheApp"),
+                            centerText = "${accountSetupPercent(current)}%",
                             onClick = { showGuide = true },
                             icon = { HcIcon("Refresh", size = 20.dp, color = HcColors.Black) },
                             divider = false,
