@@ -2,6 +2,17 @@ package dk.packroff.hellocal.screens.capture
 
 import dk.packroff.hellocal.ui.icons.HcIcon
 import androidx.compose.foundation.clickable
+import dk.packroff.hellocal.theme.style
+import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.Alignment
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -34,12 +45,13 @@ import dk.packroff.hellocal.ui.CaptureDatePickerSheet
 import dk.packroff.hellocal.ui.CaptureDates
 import dk.packroff.hellocal.ui.CaptureFilledField
 import dk.packroff.hellocal.ui.HcSearchField
-import dk.packroff.hellocal.ui.CaptureTimePickerSheet
 import dk.packroff.hellocal.ui.CaptureValueField
 import dk.packroff.hellocal.ui.HcButton
 import dk.packroff.hellocal.ui.HcError
 import dk.packroff.hellocal.ui.HcScreen
 import dk.packroff.hellocal.ui.HcText
+import dk.packroff.hellocal.ui.ProfileSleepRangeSlider
+import dk.packroff.hellocal.screens.food.GlyphButton
 import kotlinx.coroutines.launch
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalDateTime
@@ -158,8 +170,6 @@ internal fun ActivityPicker(onPick: (ActivityOption) -> Unit, busy: Boolean = fa
     }
 }
 
-private fun pad2(n: Int) = n.toString().padStart(2, '0')
-
 /** Default start: date/time from the calendar, else now. */
 private fun defaultStart(date: String?, time: String?): LocalDateTime {
     val now = CaptureDates.nowLocal()
@@ -197,8 +207,6 @@ fun ActivityCreateScreen(args: RouteArgs) {
     var saving by remember { mutableStateOf(false) }
     var error by remember { mutableStateOf<String?>(null) }
     var pickDate by remember { mutableStateOf(false) }
-    var pickStartTime by remember { mutableStateOf(false) }
-    var pickEndTime by remember { mutableStateOf(false) }
 
     val current = option
     val showsDistance = current?.key == "walking" || current?.key == "running"
@@ -222,13 +230,30 @@ fun ActivityCreateScreen(args: RouteArgs) {
 
     val endMinutes = ((startedAt.hour * 60 + startedAt.minute + totalMinutes) % (24 * 60) + 24 * 60) % (24 * 60)
 
-    fun setEnd(hour: Int, minute: Int) {
-        val start = startedAt.hour * 60 + startedAt.minute
-        val stop = hour * 60 + minute
+    fun applyDuration(total: Int) {
+        hours = (total / 60).toString()
+        mins = (total % 60).toString()
+    }
+
+    /** src/lib/activity-duration.ts minutesUntil */
+    fun minutesUntil(start: Int, stop: Int): Int {
         val diff = stop - start
-        val next = if (diff > 0) diff else diff + 24 * 60
-        hours = (next / 60).toString()
-        mins = (next % 60).toString()
+        return if (diff > 0) diff else diff + 24 * 60
+    }
+
+    // End handle changes the duration; start handle moves the start so the end stays put.
+    fun setEnd(value: Int) = applyDuration(minutesUntil(startedAt.hour * 60 + startedAt.minute, value))
+
+    fun setStart(value: Int) {
+        val end = endMinutes
+        startedAt = LocalDateTime(startedAt.year, startedAt.monthNumber, startedAt.dayOfMonth, value / 60, value % 60)
+        applyDuration(minutesUntil(value, end))
+    }
+
+    /** src/lib/activity-duration.ts stepDuration — whole five-minute steps. */
+    fun step(direction: Int) {
+        val next = if (direction > 0) (totalMinutes / 5) * 5 + 5 else (totalMinutes + 4) / 5 * 5 - 5
+        applyDuration(next.coerceIn(5, 24 * 60))
     }
 
     fun save() {
@@ -275,27 +300,49 @@ fun ActivityCreateScreen(args: RouteArgs) {
                     underline = true,
                     color = HcColors.Black,
                 )
-                Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                     HcText(t.t("activity.startedAt"), HcTypeRoles.Small, color = HcColors.TextSecondary)
-                    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                        CaptureValueField(CaptureDates.dayMonthShort(startedAt.date, withYear = true, locale = t.locale), onClick = { pickDate = true }, modifier = Modifier.weight(1f))
-                        CaptureValueField(CaptureDates.clock(startedAt), onClick = { pickStartTime = true }, modifier = Modifier.weight(1f))
-                    }
+                    CaptureValueField(CaptureDates.dayMonthShort(startedAt.date, withYear = true, locale = t.locale), onClick = { pickDate = true })
+                    ProfileSleepRangeSlider(
+                        wakeMinutes = endMinutes,
+                        bedtimeMinutes = startedAt.hour * 60 + startedAt.minute,
+                        onChangeWake = ::setEnd,
+                        onChangeBedtime = ::setStart,
+                        bedtimeFirst = true,
+                    )
                 }
                 Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
                     HcText(t.t("activity.duration"), HcTypeRoles.Small, color = HcColors.TextSecondary)
-                    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                        Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                            CaptureFilledField(hours, { hours = it.filter(Char::isDigit) }, keyboardType = KeyboardType.Number)
-                            HcText(t.t("activity.hours"), HcTypeRoles.Small, color = HcColors.TextSecondary)
-                        }
-                        Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                            CaptureFilledField(mins, { mins = it.filter(Char::isDigit) }, keyboardType = KeyboardType.Number)
-                            HcText(t.t("activity.minutesShort"), HcTypeRoles.Small, color = HcColors.TextSecondary)
-                        }
-                        Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                            CaptureValueField("${pad2(endMinutes / 60)}:${pad2(endMinutes % 60)}", onClick = { pickEndTime = true })
-                            HcText(t.t("activity.endedAt"), HcTypeRoles.Small, color = HcColors.TextSecondary)
+                    Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
+                        Row(Modifier.widthIn(max = 320.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                            GlyphButton("−", { step(-1) })
+                            Row(
+                                Modifier.weight(1f).clip(RoundedCornerShape(16.dp)).background(HcColors.Tan).padding(vertical = 12.dp),
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.Center,
+                            ) {
+                                BasicTextField(
+                                    value = hours,
+                                    onValueChange = { hours = it.filter(Char::isDigit) },
+                                    singleLine = true,
+                                    textStyle = HcTypeRoles.PageTitle.style(HcColors.Black).copy(textAlign = TextAlign.End),
+                                    cursorBrush = SolidColor(HcColors.Action),
+                                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                                    modifier = Modifier.width(((hours.length.coerceAtLeast(1) + 0.5f) * 13).dp),
+                                )
+                                HcText(" ${t.t("activity.hours")} ", HcTypeRoles.PageTitle, color = HcColors.Black)
+                                BasicTextField(
+                                    value = mins,
+                                    onValueChange = { mins = it.filter(Char::isDigit) },
+                                    singleLine = true,
+                                    textStyle = HcTypeRoles.PageTitle.style(HcColors.Black).copy(textAlign = TextAlign.End),
+                                    cursorBrush = SolidColor(HcColors.Action),
+                                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                                    modifier = Modifier.width(((mins.length.coerceAtLeast(1) + 0.5f) * 13).dp),
+                                )
+                                HcText(" ${t.t("activity.minutesShort")}", HcTypeRoles.PageTitle, color = HcColors.Black)
+                            }
+                            GlyphButton("+", { step(1) })
                         }
                     }
                 }
@@ -348,24 +395,6 @@ fun ActivityCreateScreen(args: RouteArgs) {
             onPick = { d: LocalDate -> startedAt = LocalDateTime(d.year, d.monthNumber, d.dayOfMonth, startedAt.hour, startedAt.minute) },
             onDismiss = { pickDate = false },
             title = t.t("activity.startedAt"),
-        )
-    }
-    if (pickStartTime) {
-        CaptureTimePickerSheet(
-            hour = startedAt.hour,
-            minute = startedAt.minute,
-            onPick = { h, m -> startedAt = LocalDateTime(startedAt.year, startedAt.monthNumber, startedAt.dayOfMonth, h, m) },
-            onDismiss = { pickStartTime = false },
-            title = t.t("activity.startedAt"),
-        )
-    }
-    if (pickEndTime) {
-        CaptureTimePickerSheet(
-            hour = endMinutes / 60,
-            minute = endMinutes % 60,
-            onPick = { h, m -> setEnd(h, m) },
-            onDismiss = { pickEndTime = false },
-            title = t.t("activity.endedAt"),
         )
     }
 }

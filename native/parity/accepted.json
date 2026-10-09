@@ -60,7 +60,7 @@
     "src/components/hf/TextField.tsx": "f44c94024c219168"
   },
   "/activity/create": {
-    "src/app/activity/create/page.tsx": "0ebf5d6a290f3366",
+    "src/app/activity/create/page.tsx": "e8b5922f3e3a8b94",
     "src/app/layout.tsx": "9a180a8c9b7bdec8",
     "src/components/AuthGate.tsx": "94db96b768f9f95f",
     "src/components/BottomNav.tsx": "bdbc569251c10836",
@@ -76,6 +76,7 @@
     "src/components/hf/BottomSheet.tsx": "feac121d59e8efa0",
     "src/components/hf/HfChevron.tsx": "11106e436ea8e3ef",
     "src/components/hf/ScreenHeader.tsx": "a7bbb02ab41e7756",
+    "src/components/hf/SleepRangeSlider.tsx": "06761c7205104033",
     "src/components/icons/Favorite.tsx": "70f85dd37d71acbf",
     "src/components/icons/PhotoFrame.tsx": "20ffbe92a0057321",
     "src/components/icons/WaistMeasure.tsx": "47f849581ff0f288",
@@ -1327,7 +1328,7 @@
     "src/components/hf/HfChevron.tsx": "11106e436ea8e3ef",
     "src/components/hf/ScreenHeader.tsx": "a7bbb02ab41e7756",
     "src/components/hf/Skeleton.tsx": "383d8a93fa858b4a",
-    "src/components/hf/SleepRangeSlider.tsx": "318093b814705bb3",
+    "src/components/hf/SleepRangeSlider.tsx": "06761c7205104033",
     "src/components/icons/Favorite.tsx": "70f85dd37d71acbf",
     "src/components/icons/PhotoFrame.tsx": "20ffbe92a0057321",
     "src/components/icons/WaistMeasure.tsx": "47f849581ff0f288",

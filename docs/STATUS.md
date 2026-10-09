@@ -2,6 +2,11 @@
 
 Last updated: 2026-10-09
 
+## 2026-10-09: Tilføj aktivitet — tidsslider og varighed med plus/minus
+
+- `/activity/create` (web + `ActivityCreateScreen.kt`): starttidspunktet er nu en dato + samme to-håndtags 24-timers-slider som søvnrytmen (`SleepRangeSlider`, ny prop `bedtimeFirst`: start til venstre, slut til højre; start-håndtaget flytter starten og holder sluttiden, slut-håndtaget ændrer varigheden). Varigheden står under som − [timer min] + i samme boks som mængdevælgeren; teksten kan rettes, og −/+ går i hele 5 minutter (`stepDuration` i `activity-duration.ts`, testet).
+- Paritet accepteret for `/activity/create` og `/profile/sleep`. Lint og `node --test` grønne; Kotlin ikke kompileret lokalt (CI bygger); ikke prøvet på telefon.
+
 ## 2026-10-09: Halvcirklens vifte rykker knapper op i stedet for ud over kanten
 
 - `FooterArc` (web + `HomeFooterArc.kt`): står halvcirklen langt ude til siden, flyttes viften ikke længere indad. De knapper, der ellers ville forsvinde ud over skærmkanten, holdes inden for kanten og rykkes i stedet længere op, væk fra halvcirklen, med samme afstand til naboen (`fanLayout`). Navnet på det valgte ikon holdes inden for skærmen. Størrelser og indstillinger er uændrede.
