@@ -4721,3 +4721,12 @@ Google/Apple/Facebook-login og integrationstilkobling kører i system-browseren,
 ## 2026-10-09: Retter-søgning viser Valdemarsro under "Opskrifter"; "Opret ny ret" som tekstlink
 - Årsag til tom liste: `/api/shared-recipes` medtog kun Valdemarsro ved `valdemarsro=1`, som appen aldrig sender, så "Opskrifter" (source=all) viste aldrig Valdemarsro-retter. Nu medtages de altid ved all; HelloFresh kræver stadig, at integrationen er slået til (Seriøs).
 - "Opret ny ret" er sort, understreget tekst med plus foran (ikke grøn knap) — web og native.
+
+## 2026-10-09 — Rå/tilberedt (cookingState) på generiske ingredienser
+
+- `GenericIngredient.cookingState` (enum `RAW`/`COOKED`, standard `RAW`; migration `20261009090000_generic_ingredient_cooking_state`). `POST /api/generic-ingredients` accepterer `cookingState`. Brugerens ønske 2026-10-08; sheet-kolonnen `Raw / Cooked` i `generic_products.xlsx` er den tilsvarende. Mangler: UI-valg og afledning af COOKED for eksisterende rækker.
+
+
+## 2026-10-09 — Halvcirklens vifte: knapper rykker op ved kanten
+
+- Står halvcirklen over footeren langt ude til siden, rykkes de knapper, der ellers ville havne uden for skærmen, længere op (samme afstand til naboen) i stedet for at viften skubbes indad eller knapper skjules. Gælder web (`fanLayout` i `footer-arc.ts`) og native (`HomeFooterArc.kt`).

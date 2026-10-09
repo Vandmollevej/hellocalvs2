@@ -13,10 +13,12 @@ export function UpdatePointsBanner({
   href,
   text,
   toggleLabel,
+  action,
 }: {
   href: string;
   text: string;
   toggleLabel: string;
+  action?: React.ReactNode;
 }) {
   const [collapsed, setCollapsed] = useState(false);
   const startY = useRef<number | null>(null);
@@ -50,6 +52,7 @@ export function UpdatePointsBanner({
           >
             {text}
           </Link>
+          {action && <div className="px-4 pb-3">{action}</div>}
         </div>
       </div>
       <button
