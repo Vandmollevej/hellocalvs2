@@ -469,6 +469,15 @@
     "later": "Später",
     "dontAskAgain": "Nicht mehr fragen"
   },
+  "staleSyncPrompt": {
+    "title": "{name} ist nicht synchronisiert",
+    "body": "{name} hat seit {date} keine Daten gesendet. Dein Gewicht und deine Aktivitäten fehlen eventuell. Synchronisiere jetzt, damit alles erfasst ist.",
+    "syncNow": "Jetzt synchronisieren",
+    "open": "Integration öffnen",
+    "later": "Später",
+    "failed": "Synchronisierung fehlgeschlagen. Versuche es erneut oder öffne die Integration.",
+    "never": "nie"
+  },
   "sentNotice": {
     "title": "Zur Info",
     "body": "Wir haben dir am {date} eine {type} zu \"{subject}\" geschickt. Das war kein Spam.",

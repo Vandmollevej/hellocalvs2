@@ -2,6 +2,10 @@
 
 Last updated: 2026-10-09
 
+## 2026-10-09: Popup ved gammel integrations-synk
+
+- Ny `src/components/StaleSyncPrompt.tsx` (monteret i `layout.tsx`): er en tilkoblet integration (fx smartvægt via Withings/Google Health) ikke synkroniseret i over 3 dage, kommer en popup med "Synkroniser nu" (cloud-integrationer) eller link til integrationens side (companion/via). "Senere" udsætter pr. integration i et døgn. Tekster på alle 7 sprog (`staleSyncPrompt.*`). Se `docs/DECISIONS.md` 2026-10-09.
+- Sådan ser brugeren synk-status i dag: Indstillinger → Integrationer → appen viser "Sidst synkroniseret …" og fejl. Lint og typecheck uden fejl; ikke live-testet (ingen lokal DB/login).
 ## 2026-10-09: Periodevalg som dropdown
 
 - Søvn- og Væskestatistik bruger nu dropdown (`src/components/hf/StatPeriodSelect.tsx`) i stedet for periodeknapper. Ikke kørt lint/build/visuelt: `node_modules` mangler i dette cloud-miljø.
