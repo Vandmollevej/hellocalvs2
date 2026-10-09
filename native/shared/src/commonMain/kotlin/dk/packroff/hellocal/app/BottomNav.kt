@@ -46,6 +46,7 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.graphics.Color
@@ -206,6 +207,10 @@ private const val PAGE_SIZE = 4
 private const val LONG_PRESS_MS = 550L
 private const val FLIP_MS = 260
 private const val PAGE_ANIM_MS = 220
+// BottomNav.tsx: a still press (250 ms) lifts an icon in edit mode; moving first swipes the bar.
+private const val EDIT_LIFT_MS = 250L
+private const val AUTO_SCROLL_MAX_PAGES_PER_S = 2.4f
+private const val TICK_MS = 16L
 private val ICON_SIZE = 24.dp
 
 /** An icon being dragged: from the bar (reorder/remove) or from the panel (add). */
@@ -230,6 +235,42 @@ private fun slotIndexAt(x: Float): Int {
     val slotWidth = bar.width / PAGE_SIZE
     val slot = floor((x - bar.left) / slotWidth).toInt().coerceIn(0, PAGE_SIZE - 1)
     return BottomNavEdit.scrollPages.roundToInt() * PAGE_SIZE + slot
+}
+
+/**
+ * Index of the slot under [x] while the bar can rest between two pages:
+ * the position is counted in scrolled content (BottomNav.tsx slotIndexAt).
+ */
+private fun slotIndexAtScrolled(x: Float): Int {
+    val bar = BottomNavEdit.barBounds
+    val slotWidth = bar.width / PAGE_SIZE
+    return max(0, floor((x - bar.left) / slotWidth + BottomNavEdit.scrollPages * PAGE_SIZE).toInt())
+}
+
+/**
+ * While a dragged icon is held near the bar's edge the bar scrolls continuously,
+ * faster the closer to the edge (like dragging something to the edge of a scroller).
+ */
+private fun edgeScrollStep(position: Offset, dtSeconds: Float) {
+    val bar = BottomNavEdit.barBounds
+    if (position.y < bar.top - bar.height / 2 || position.y > bar.bottom + bar.height / 2) return
+    val zone = bar.width * 0.14f
+    val intoLeft = (bar.left + zone - position.x) / zone
+    val intoRight = (position.x - (bar.right - zone)) / zone
+    val speed = when {
+        intoLeft > 0f -> -min(1f, intoLeft)
+        intoRight > 0f -> min(1f, intoRight)
+        else -> return
+    }
+    val maxScroll = (max(1, (BottomNavLayout.active.size + PAGE_SIZE - 1) / PAGE_SIZE) - 1).toFloat()
+    BottomNavEdit.scrollPages = (BottomNavEdit.scrollPages + speed * AUTO_SCROLL_MAX_PAGES_PER_S * dtSeconds).coerceIn(0f, maxScroll)
+}
+
+/** The gap between two icons nearest the finger (scrolled content), as an index in the whole list: a panel icon is inserted between icons, not on one. */
+private fun gapIndexAtScrolled(x: Float): Int {
+    val bar = BottomNavEdit.barBounds
+    val slotWidth = bar.width / PAGE_SIZE
+    return max(0, ((x - bar.left) / slotWidth + BottomNavEdit.scrollPages * PAGE_SIZE).roundToInt())
 }
 
 private fun openItem(item: NavItem, navigator: Navigator) {
@@ -295,8 +336,8 @@ private fun NavBar(navigator: Navigator) {
         val slotPx = widthPx / PAGE_SIZE
         val scroll = BottomNavEdit.scrollPages
         val shownScroll by animateFloatAsState(
-            if (BottomNavEdit.swiping) scroll else scroll.coerceIn(0f, maxScroll),
-            tween(if (BottomNavEdit.swiping) 0 else PAGE_ANIM_MS),
+            if (BottomNavEdit.swiping || drag?.moved == true) scroll else scroll.coerceIn(0f, maxScroll),
+            tween(if (BottomNavEdit.swiping || drag?.moved == true) 0 else PAGE_ANIM_MS),
         )
         // The gesture must survive reorders mid-drag, so it reads the latest values instead of restarting.
         val latestKeys by rememberUpdatedState(keys)
@@ -318,7 +359,10 @@ private fun NavBar(navigator: Navigator) {
 
                     // Edit mode: × in the item's top-right corner removes it; anything else drags it.
                     if (BottomNavEdit.editMode) {
-                        if (key == null) return@awaitEachGesture
+                        if (key == null) {
+                            if (pageCount > 1) swipeBar(down.id, start, widthPx, maxScroll)
+                            return@awaitEachGesture
+                        }
                         val slotLeft = (index % PAGE_SIZE) * slotPx
                         val itemRight = slotLeft + slotPx / 2 + with(density) { 32.dp.toPx() }
                         val onCross = start.y < with(density) { 18.dp.toPx() } && abs(start.x - itemRight) < with(density) { 14.dp.toPx() }
@@ -327,45 +371,25 @@ private fun NavBar(navigator: Navigator) {
                             if (up) BottomNavLayout.removeFromActive(key)
                             return@awaitEachGesture
                         }
-                        trackBarDrag(key, down.id, start, bar, slop)
+                        // A still press lifts the icon; moving first is a swipe that scrolls the bar.
+                        val outcome = withTimeoutOrNull(EDIT_LIFT_MS) { awaitUpOrMove(down.id, start, slop) }
+                        when (outcome) {
+                            "move" -> if (pageCount > 1) swipeBar(down.id, start, widthPx, maxScroll)
+                            null -> trackBarDrag(key, down.id, start, bar, slop)
+                        }
                         return@awaitEachGesture
                     }
 
                     // Normal mode: tap opens, horizontal swipe pages, long press (Seriøs) edits.
                     // null = the finger was held for LONG_PRESS_MS without moving.
-                    val result: String? = withTimeoutOrNull(LONG_PRESS_MS) {
-                        var outcome = ""
-                        while (outcome.isEmpty()) {
-                            val event = awaitPointerEvent()
-                            val change = event.changes.firstOrNull { it.id == down.id }
-                            outcome = when {
-                                change == null || !change.pressed -> "up"
-                                change != null && (change.position - start).getDistance() > slop -> "move"
-                                else -> ""
-                            }
-                        }
-                        outcome
-                    }
+                    val result: String? = withTimeoutOrNull(LONG_PRESS_MS) { awaitUpOrMove(down.id, start, slop) }
                     when {
                         result == "up" -> {
                             if (item != null) openItem(item, navigator)
                         }
                         result == "move" -> {
                             if (pageCount <= 1) return@awaitEachGesture
-                            // Continuous paging that follows the finger and stays where released (FEJLLISTE #7).
-                            BottomNavEdit.swiping = true
-                            val startScroll = BottomNavEdit.scrollPages.coerceIn(0f, maxScroll)
-                            while (true) {
-                                val event = awaitPointerEvent()
-                                val change = event.changes.firstOrNull { it.id == down.id } ?: break
-                                if (!change.pressed) break
-                                change.consume()
-                                var next = startScroll + (start.x - change.position.x) / widthPx
-                                if (next < 0f) next *= 0.3f else if (next > maxScroll) next = maxScroll + (next - maxScroll) * 0.3f
-                                BottomNavEdit.scrollPages = next
-                            }
-                            BottomNavEdit.scrollPages = BottomNavEdit.scrollPages.coerceIn(0f, maxScroll)
-                            BottomNavEdit.swiping = false
+                            swipeBar(down.id, start, widthPx, maxScroll)
                         }
                         result == null -> {
                             // Long press. Free: release navigates like a tap.
@@ -398,6 +422,34 @@ private fun NavBar(navigator: Navigator) {
     }
 }
 
+/** "up" when the finger lifts, "move" once it travels further than [slop]; cancelled counts as "up". */
+private suspend fun AwaitPointerEventScope.awaitUpOrMove(id: PointerId, start: Offset, slop: Float): String {
+    while (true) {
+        val event = awaitPointerEvent()
+        val change = event.changes.firstOrNull { it.id == id }
+        if (change == null || !change.pressed) return "up"
+        val delta = change.position - start
+        if (delta.getDistance() > slop) return "move"
+    }
+}
+
+/** Continuous paging that follows the finger and stays where released (FEJLLISTE #7). */
+private suspend fun AwaitPointerEventScope.swipeBar(id: PointerId, start: Offset, widthPx: Float, maxScroll: Float) {
+    BottomNavEdit.swiping = true
+    val startScroll = BottomNavEdit.scrollPages.coerceIn(0f, maxScroll)
+    while (true) {
+        val event = awaitPointerEvent()
+        val change = event.changes.firstOrNull { it.id == id } ?: break
+        if (!change.pressed) break
+        change.consume()
+        var next = startScroll + (start.x - change.position.x) / widthPx
+        if (next < 0f) next *= 0.3f else if (next > maxScroll) next = maxScroll + (next - maxScroll) * 0.3f
+        BottomNavEdit.scrollPages = next
+    }
+    BottomNavEdit.scrollPages = BottomNavEdit.scrollPages.coerceIn(0f, maxScroll)
+    BottomNavEdit.swiping = false
+}
+
 /** Waits for the finger to lift; false when the pointer was cancelled. */
 private suspend fun AwaitPointerEventScope.awaitDragOrUp(id: PointerId): Boolean {
     while (true) {
@@ -419,16 +471,23 @@ private suspend fun AwaitPointerEventScope.trackBarDrag(
     var position = Offset(bar.left + start.x, bar.top + start.y)
     BottomNavEdit.drag = NavDrag(key, fromPanel = false, position = position, moved = false)
     while (true) {
-        val event = awaitPointerEvent()
-        val change = event.changes.firstOrNull { it.id == id } ?: break
-        if (!change.pressed) break
-        if (!moved && (change.position - start).getDistance() > slop) moved = true
+        // Ticks even while the finger rests, so the bar keeps scrolling at the edge.
+        val event = withTimeoutOrNull(TICK_MS) { awaitPointerEvent() }
+        val change = event?.changes?.firstOrNull { it.id == id }
+        if (event != null && change == null) break
+        if (change != null && !change.pressed) break
+        if (change != null) {
+            if (!moved && (change.position - start).getDistance() > slop) moved = true
+            if (moved) {
+                change.consume()
+                position = Offset(bar.left + change.position.x, bar.top + change.position.y)
+            }
+        }
         if (!moved) continue
-        change.consume()
-        position = Offset(bar.left + change.position.x, bar.top + change.position.y)
+        edgeScrollStep(position, TICK_MS / 1000f)
         BottomNavEdit.drag = NavDrag(key, fromPanel = false, position = position, moved = true)
         // Only while the finger is over the bar do the others make room.
-        if (bar.contains(position)) BottomNavLayout.moveActive(key, slotIndexAt(position.x))
+        if (bar.contains(position)) BottomNavLayout.moveActive(key, slotIndexAtScrolled(position.x))
     }
     if (moved && BottomNavEdit.panelBounds.contains(position)) BottomNavLayout.removeFromActive(key)
     BottomNavEdit.drag = null
@@ -560,14 +619,29 @@ fun BottomNavEditOverlay() {
         if (drag != null && drag.moved) {
             val item = NavItems.byKey(drag.key)
             if (item != null) {
-                Box(
-                    Modifier.offset {
-                        IntOffset((drag.position.x - rootBounds.left - 32.dp.toPx()).roundToInt(), (drag.position.y - rootBounds.top - 32.dp.toPx()).roundToInt())
-                    }.width(64.dp).alpha(0.9f),
-                    contentAlignment = Alignment.Center,
-                ) { NavIcon(item, HcColors.Black) }
+                DragGhost(item, drag.position, rootBounds)
             }
         }
+    }
+}
+
+/** The lifted icon: grows a little as it leaves its place and follows the finger. */
+@Composable
+private fun DragGhost(item: NavItem, position: Offset, rootBounds: Rect) {
+    val density = LocalDensity.current
+    var lifted by remember { mutableStateOf(false) }
+    LaunchedEffect(Unit) { lifted = true }
+    val scale by animateFloatAsState(if (lifted) 1.18f else 1f, tween(140))
+    val shape = RoundedCornerShape(12.dp)
+    with(density) {
+        Box(
+            Modifier.offset { IntOffset((position.x - rootBounds.left - 32.dp.toPx()).roundToInt(), (position.y - rootBounds.top - 28.dp.toPx()).roundToInt()) }
+                .width(64.dp).height(56.dp)
+                .graphicsLayer { scaleX = scale; scaleY = scale; shadowElevation = 8.dp.toPx(); this.shape = shape; clip = false }
+                .background(HcColors.TanDark, shape)
+                .alpha(0.95f),
+            contentAlignment = Alignment.Center,
+        ) { NavIcon(item, HcColors.Black) }
     }
 }
 
@@ -591,19 +665,25 @@ private fun PanelItem(item: NavItem, drag: NavDrag?) {
                     var position = Offset(bounds.left + down.position.x, bounds.top + down.position.y)
                     BottomNavEdit.drag = NavDrag(item.key, fromPanel = true, position = position, moved = false)
                     while (true) {
-                        val event = awaitPointerEvent()
-                        val change = event.changes.firstOrNull { it.id == down.id } ?: break
-                        if (!change.pressed) break
-                        if (!moved && (change.position - down.position).getDistance() > slop) moved = true
+                        val event = withTimeoutOrNull(TICK_MS) { awaitPointerEvent() }
+                        val change = event?.changes?.firstOrNull { it.id == down.id }
+                        if (event != null && change == null) break
+                        if (change != null && !change.pressed) break
+                        if (change != null) {
+                            if (!moved && (change.position - down.position).getDistance() > slop) moved = true
+                            if (moved) {
+                                change.consume()
+                                position = Offset(bounds.left + change.position.x, bounds.top + change.position.y)
+                            }
+                        }
                         if (!moved) continue
-                        change.consume()
-                        position = Offset(bounds.left + change.position.x, bounds.top + change.position.y)
+                        edgeScrollStep(position, TICK_MS / 1000f)
                         BottomNavEdit.drag = NavDrag(item.key, fromPanel = true, position = position, moved = true)
                     }
                     BottomNavEdit.drag = null
                     when {
                         !moved -> BottomNavLayout.addToActive(item.key)
-                        BottomNavEdit.barBounds.contains(position) -> BottomNavLayout.addToActive(item.key, slotIndexAt(position.x))
+                        BottomNavEdit.barBounds.contains(position) -> BottomNavLayout.addToActive(item.key, gapIndexAtScrolled(position.x))
                     }
                 }
             }

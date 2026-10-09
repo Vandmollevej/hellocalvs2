@@ -61,7 +61,6 @@ fun HomeScreen(args: RouteArgs) {
     val density = LocalDensity.current.density
     var showOnboarding by remember { mutableStateOf(false) }
     var showGuide by remember { mutableStateOf(false) }
-    var menuSheetOpen by remember { mutableStateOf(false) }
     var rootTop by remember { mutableStateOf(0f) }
     var rootBottom by remember { mutableStateOf(0f) }
     var heroTop by remember { mutableStateOf(0f) }
@@ -110,24 +109,12 @@ fun HomeScreen(args: RouteArgs) {
             // The list lies over the hero (z-10): the wheel's rows turn in behind it.
             HomeDailyList(Modifier.weight(1f).padding(top = 8.dp))
         }
-        // The add-button's fan (z-30) lies above everything, at the hero's place.
-        Box(Modifier.fillMaxWidth().height(HERO_HEIGHT.dp).offset(y = (heroTop - rootTop).dp)) {
-            HomeAddButton(
-                onOpen = { dismissOnboarding() },
-                // The circle may not rise above the page top nor sink below the bottom navigation.
-                topLimitDp = rootTop - heroTop,
-                bottomLimitDp = rootBottom - heroTop,
-                onOpenMenuSheet = { menuSheetOpen = true },
-            )
-        }
-        HomeFooterArc(Modifier.align(Alignment.BottomCenter), onOpenMenuSheet = { menuSheetOpen = true })
     }
 
     if (showOnboarding) {
         HomeWelcomeSheet(onClose = { dismissOnboarding() }, onStartGuide = { showGuide = true })
     }
     if (showGuide) ProfileOnboardingWizard(forceVisible = true, onClose = { showGuide = false })
-    if (menuSheetOpen) AddMenuSheet(onClose = { menuSheetOpen = false })
 
     HomeHeartRateSpikePrompt()
     HomeWeighInPrompts()

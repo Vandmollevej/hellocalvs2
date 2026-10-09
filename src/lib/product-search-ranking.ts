@@ -217,14 +217,23 @@ export function rankProducts<T extends RankableProduct>(
   region: string,
   localHour: number,
   take: number,
-  weights: SearchRankingWeights = DEFAULT_SEARCH_RANKING_WEIGHTS
+  weights: SearchRankingWeights = DEFAULT_SEARCH_RANKING_WEIGHTS,
+  synonyms: Array<{ term: string; similarity: number }> = []
 ): RankedProduct<T>[] {
   const popularityValues = products.map((product) => regionalPopularity(product, region));
   const maxPopularity = Math.max(0, ...popularityValues);
 
   return products
     .map((product, index) => {
-      const similarity = textSimilarity(query, product.name, product.brand?.name);
+      // Admin synonym dictionary: a hit via a synonym counts at its
+      // similarity (0..1) share of a direct text match.
+      let similarity = textSimilarity(query, product.name, product.brand?.name);
+      for (const synonym of synonyms) {
+        similarity = Math.max(
+          similarity,
+          textSimilarity(synonym.term, product.name, product.brand?.name) * synonym.similarity
+        );
+      }
       const popularity = popularityValues[index];
       const popularityRatio = maxPopularity > 0 ? popularity / maxPopularity : 0.5;
       const lowPopularity = Math.max(0, 1 - popularityRatio);

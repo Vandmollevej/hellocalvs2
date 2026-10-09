@@ -390,10 +390,8 @@ fun AddProductView(
     Column(Modifier.fillMaxSize().background(HcColors.Page)) {
         HcAppBar(title)
         val offer = product?.updateOffer
-        if (!isLoading && !forDish && !isEditing && id.isNotEmpty() && offer != null) {
-            UpdatePointsBanner("/add/${encodeUri(id)}/update", t.t("productUpdate.banner", "points" to offer.points), t.t("productUpdate.toggle"))
-        }
-        Column(Modifier.weight(1f).fillMaxWidth().verticalScroll(scrollState)) {
+        Box(Modifier.weight(1f).fillMaxWidth()) {
+        Column(Modifier.fillMaxSize().verticalScroll(scrollState)) {
             if (state == LoadState.NotFound || state == LoadState.Failed) {
                 HcCard(Modifier.padding(16.dp)) {
                     HcText(
@@ -620,23 +618,14 @@ fun AddProductView(
                         }
                     }
 
-                    if (isPending("ingredients") || !view.ingredientsText.isNullOrEmpty() || view.ingredientsUnreadable) {
+                    if (isPending("ingredients") || !view.ingredientsText.isNullOrEmpty()) {
                         Column {
                             HcText(t.t("createDish.ingredients"), HcTypeRoles.Body, Modifier.padding(bottom = 8.dp), color = HcColors.Black)
                             when {
                                 isPending("ingredients") -> Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                                     listOf(0.94f, 0.82f, 0.88f, 0.46f).forEach { FoodSkeleton(Modifier.fillMaxWidth(it).height(16.dp)) }
                                 }
-                                view.ingredientsText.isNullOrEmpty() -> Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                                    HcText(t.t("addProduct.ingredientsUnreadable"), HcTypeRoles.Small, color = HcColors.TextSecondary)
-                                    HcButton(
-                                        t.t("addProduct.retakeIngredients"),
-                                        onClick = { nav.push("/camera?mode=product&retake=ingredients&product=${encodeUri(id)}") },
-                                        kind = dk.packroff.hellocal.ui.HcButtonKind.Secondary,
-                                        leading = { HcIcon("Camera", size = 19.dp, color = HcColors.Action) },
-                                    )
-                                }
-                                else -> IngredientsTextView(view.ingredientsText) { openAdditive = it }
+                                else -> IngredientsTextView(view.ingredientsText.orEmpty()) { openAdditive = it }
                             }
                         }
                     }
@@ -662,6 +651,25 @@ fun AddProductView(
                     }
                 }
             }
+        }
+        if (!isLoading && !forDish && !isEditing && id.isNotEmpty() && offer != null) {
+            val tileKeys = mapOf("FRONT" to "productUpdate.tileFront", "NUTRITION" to "productUpdate.tileNutrition", "INGREDIENTS" to "productUpdate.tileIngredients")
+            UpdatePointsBanner(
+                "/add/${encodeUri(id)}/update",
+                t.t("productUpdate.banner", "points" to offer.points),
+                t.t("productUpdate.toggle"),
+                offer.kinds.mapNotNull { k -> tileKeys[k]?.let { t.t(it) } },
+            ) {
+                if (product?.ingredientsUnreadable == true) {
+                    HcButton(
+                        t.t("addProduct.retakeIngredients"),
+                        onClick = { nav.push("/camera?mode=product&retake=ingredients&product=${encodeUri(id)}") },
+                        kind = dk.packroff.hellocal.ui.HcButtonKind.Secondary,
+                        leading = { HcIcon("Camera", size = 19.dp, color = HcColors.Action) },
+                    )
+                }
+            }
+        }
         }
 
         // Footer (fixed under the scroll area).

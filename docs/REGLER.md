@@ -45,6 +45,14 @@ ikke her, er den ikke registreret og skal tilføjes.
   Status: ikke implementeret endnu.
 - **Små ord i navne**: med, i, af, uden skrives altid med småt i
   produktnavne/produkttype/variant (aftalt 2026-10-08, ikke gennemført endnu).
+- **Frida / generiske varer — navngivningsregler (aftalt 2026-10-09)**:
+  - **Raw / Cooked / Processed**: egne kolonner. `Raw` = rå (kød og fisk hedder *fersk* i titlen), `Cooked` = tilberedt (kogt, stegt, syltet, tørret, i sukkerlage, blandede salater), `Processed food` = alt der ikke er rå. Wokblandinger er rå. Ordene klippes ud af variation/nøgleord og vises i titlen.
+  - **Tørret/syltet står foran** produktet ("Tørret æggehvide"), flertal "Tørrede linser", "Syltede brombær". Farver står altid foran ("Hvid peber", "Grønne asparges").
+  - **Variation**: aldrig "/". To led: "a og b". Flere: "a, b og c". "m", "m." og "m/" betyder *med* og flyttes til variation ("Kartofler, med krydderurter").
+  - Samme produkttype må aldrig stå to gange i et navn (kun "Fuldkornsrugmel", ikke "Rugmel, fuldkornsrugmel"). Ost: produkttype "Ost", sorten (Havarti) er variant, "45+" er variant og står i titlen.
+  - Engelske, franske og andre udenlandske ord trækkes ikke sammen (creme fraiche, pommes frites, quinoa). Kun danske ord sættes sammen.
+  - `Decaf` skrives *Koffeinfri*. `Læskedrik` bruges ikke (Sodavand / Saftevand). `Konventionel` skrives *ikke-økologisk*. `Uspecificeret`, takeaway og fastfood bruges ikke. Alkohol-% står i `_is_alcohol` (ikke i titel), fedt-% i `_is_fat`.
+  - Dybfrost = `_is_frozen`. Landeord (atlantisk, dansk …) står i `_is_country_of_origen`. Light kan sorteres på særskilt flag, uafhængigt af sukker.
 - **Generisk vare** = ingen Brand og ingen Subbrand i arket (EAN ses bort fra).
   I databasen ligger de i `GenericIngredient`, ikke `Product`.
 
@@ -58,6 +66,7 @@ ikke her, er den ikke registreret og skal tilføjes.
 ## UI
 
 - "Overlay"/"popup" = den træk-bare BottomSheet (`.hf-bottom-sheet`), se KRAV.md.
+- Aktiviteten `open_water` hedder "Svømning i åbent vand" — aldrig "Havsvømning" (bruger 2026-10-09). "havsvømning" er kun et søgeord.
 - Visuelle ændringer: læs design.md; størrelse/vægt ændres i moderate trin.
 
 ## Sikkerhed
@@ -68,6 +77,10 @@ ikke her, er den ikke registreret og skal tilføjes.
 ## Proces
 
 - Flere parallelle sessioner: stage snævert, deploy-linjen er origin/master.
+- Alle opgaver auto-arkiveres umiddelbart, så snart de melder klar til arkivering – i samme tur, uden at vente (bruger 2026-10-09, gentaget).
+- Færdig opgave: slut med "arkiver mig", og arkivér derefter selv sessionen (`archive_session`), når PR er flettet. Manglende test er aldrig en gyldig grund til ikke at arkivere (global regel, bruger 2026-10-09). Stop-hook `scripts/archive-reminder.mjs` minder om det (bruger 2026-10-09; AGENTS.md).
+- Commit, push, flet PR og alt andet der skal til for at færdiggøre en opgave sker uden at spørge først (bruger 2026-10-09; AGENTS.md).
+- Kan en ændring pushes sammen med en anden opgaves push/PR, så undlad egen push/PR og arkivér blot (bruger 2026-10-09; AGENTS.md).
 - Efter rebase der rører `prisma/schema.prisma`: kør `prisma validate` + typecheck.
 
 ## Crawlere og billeder
@@ -78,4 +91,8 @@ ikke her, er den ikke registreret og skal tilføjes.
   `PROTECTED_IMAGE_PREFIXES`.
 - Aldrig vandmærke eller skjult bruger-ID i billeder (brugerens regel 2026-10-08).
 
+- **Menstruation (bruger 2026-10-09):** alt om menstruation/cyklus vises slet ikke for mænd — heller ikke som deaktiveret række eller med "(kun for kvinder)". Vises kun når `sex = FEMALE`. Gælder web og native (fx Hello Doc "Rediger adgang").
 - **Frida** (DTU-fødevaredatabasen): opbygning, nøgler og rå/kogt-fund står i `docs/FRIDA.md`.
+
+- Opret ret → Indsæt tekst: kun tekstfeltet og "Indsæt" — ingen ekstra felter (fx kilde-link). Antal personer bruger den eksisterende PersonsSlider, ikke et nyt talfelt (brugerens krav 2026-10-09).
+- **Startmængde** (`src/lib/default-amount.ts`, brugerens regel 2026-10-09): forslaget må aldrig overstige pakkens indhold (g/ml fra pakningsstørrelsen). Al instantkaffe (instant, Nescafé, pulverkaffe …) starter på 2 g (pr. kop).
