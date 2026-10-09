@@ -7,6 +7,11 @@ Last updated: 2026-10-09
 - `FooterArc` (web) og `HomeFooterArc.kt` (native): første træk opad springer cirklen og knapperne straks til fuld størrelse (ingen animation) i stedet for at vokse gradvist med fingerens afstand. Slip uden at ramme en knap lader den stå åben. `ARC_PULL_DISTANCE` er fjernet.
 - Ikke kørt: lint/build (ingen `node_modules` i sessionen), Kotlin ikke kompileret, ikke prøvet på telefon.
 
+## 2026-10-09: Delmål-formular i tre accordions
+
+- `GoalForm`: tre fold-ud (Vægt og opbygning, Kropsmål, Ernæring); kropsmålene har igen deres egne tegninger (efter profilens køn). Lint grøn; ikke visuelt testet.
+
+
 ## 2026-10-09: Tøj ved vejning som til/fra-slidere
 
 - Vægt-siden, vejningens info-vindue og popuppen for smartvægt-vejninger viser nu syv slidere (undertøj, bukser, top/T-shirt, sweater, sko, mobil m.m. i lommen, efter toiletbesøg). Flere kan vælges; intet valgt = nøgen. Se DECISIONS 2026-10-09.
