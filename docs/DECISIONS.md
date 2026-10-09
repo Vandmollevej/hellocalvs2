@@ -4802,3 +4802,12 @@ Brugerens rettelse: "Et barn kan ikke selv lukke konto — det er kun forældere
 - Kun forælderen/betaleren kan fjerne eller slette et barns profil (eksisterende `removeFamilyMember` / `deleteFamilyProfile`).
 - Barnet har ingen kontakter til at skjule detaljer: "Del med andre" er kun visning, og betaleren bestemmer adgangen (uændret).
 - Afløser "Barnet kan melde sig ud" i beslutningen 2026-09-25 og tilsvarende i `docs/FAMILY.md`.
+
+## 2026-10-09: Pulsen — 65 bpm, slange-spor og midt på skærmen
+
+Brugerens ord: pulsen skal gå normal hastighed igen (65 bpm), sporet må ikke blive stående, men forsvinde kort efter som en slange, og pulsen flyttes op til midten af skærmen (målt totalt).
+
+- `DEFAULT_PULSE_BPM` er 65 (uden ur). Pausen mellem fejene (`PULSE_REST`) og det gamle spor foran spidsen er væk.
+- Sporet er en slange: halen følger spidsen i en fast afstand (`PULSE_TRAIL` = 35 % af bredden) og toner ud bagtil. Når halen har forladt højre kant, starter næste fej straks.
+- Grundlinjen ligger i midten af hele visningen (`window.innerHeight / 2`), ikke længere over hjulets nederste tal. "Mindstemål" er tolket som "midten".
+- Web (`home-waves.ts`, `HomeWaves.tsx`) og native (`HomeWaves.kt`, `HomeScreen.kt`) er ændret sammen.

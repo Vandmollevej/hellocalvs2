@@ -94,6 +94,10 @@ Last updated: 2026-10-08
 
 - `default-amount.ts` (+ native `FoodLogic.kt`): instantkaffe → 2 g; forslaget kappes ved pakkens vægt/volumen. Test: `node --test src/lib/default-amount.test.mjs` (14 grønne). Lint/build ikke kørt (ingen node_modules her); Kotlin ikke kompileret lokalt.
 
+## 2026-10-09: Pulsen — 65 bpm, slange-spor, midt på skærmen
+
+- Puls-linjen slår 65 bpm uden ur, uden pause, og sporet forsvinder bagfra som en slange (`PULSE_TRAIL`). Grundlinjen ligger midt på skærmen. Web + native. Se DECISIONS 2026-10-09. Lint og `home-waves`-tests grønne; ikke set på telefon.
+
 ## 2026-10-09: Pulsudsving — bladring og rødt hjerte i kalenderen
 
 - Pulsspørgsmålet (7 dage) bladrer frem/tilbage; nyt fælles ark `PulseEventSheet` (peak-tid, graf, "Angiv træningstype" i bundark). Kalenderen har røde hjerter på dage med forhøjet puls. Se DECISIONS 2026-10-09.
