@@ -69,6 +69,12 @@ ikke her, er den ikke registreret og skal tilføjes.
 - Aktiviteten `open_water` hedder "Svømning i åbent vand" — aldrig "Havsvømning" (bruger 2026-10-09). "havsvømning" er kun et søgeord.
 - Visuelle ændringer: læs design.md; størrelse/vægt ændres i moderate trin.
 
+- Ingen ikke-bestilte tekster: ingen disclaimers, forklaringer eller
+  "erstatter ikke læge"-noter på sider, medmindre brugeren har bedt om dem
+  (brugerens regel 2026-10-09; Hello Doc-disclaimeren er fjernet).
+- Hello Doc har burger-menu øverst til højre, hvor modtageren sammensætter
+  dashboardet (vis/skjul + rækkefølge pr. panel, gemt på enheden).
+
 ## Sikkerhed
 
 - Streng sikkerhed (vault) kun for admin; almindelige brugere får normalt login
@@ -76,6 +82,9 @@ ikke her, er den ikke registreret og skal tilføjes.
 
 ## Proces
 
+- Spørgsmål til brugeren stilles ALTID i spørgsmålsboksen (AskUserQuestion),
+  aldrig som almindelig tekst i et svar og aldrig midt i en opgave: tekst giver
+  ingen gul prik, så brugeren ser den ikke (brugerens regel 2026-10-09, global).
 - Flere parallelle sessioner: stage snævert, deploy-linjen er origin/master.
 - Alle opgaver auto-arkiveres umiddelbart, så snart de melder klar til arkivering – i samme tur, uden at vente (bruger 2026-10-09, gentaget).
 - Færdig opgave: slut med "arkiver mig", og arkivér derefter selv sessionen (`archive_session`), når PR er flettet. Manglende test er aldrig en gyldig grund til ikke at arkivere (global regel, bruger 2026-10-09). Stop-hook `scripts/archive-reminder.mjs` minder om det (bruger 2026-10-09; AGENTS.md).

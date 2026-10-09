@@ -2,6 +2,11 @@
 
 Last updated: 2026-10-09
 
+## 2026-10-09: Hello Doc — disclaimer væk + sammensæt dashboard
+
+- Disclaimer-teksten nederst i lægevisningen (og forhåndsvisningens indledende note) er fjernet i web og native.
+- Burger-menu øverst til højre (`InsightMenu`, native `HelloDocDashboardMenu`): vis/skjul og flyt paneler op/ned; valget gemmes på enheden (`src/lib/insight-layout.ts`).
+- Lint, tsc og build grønne; Kotlin er ikke kompileret her (kun CI/Android Studio). Ikke testet i browser.
 ## 2026-10-09: "Tilføj egen måling" i tal-hjulet
 
 - Indstillinger → Visning → Forside har øverst knappen "Tilføj egen måling" (bundark): navn og beskrivelse, parameter (søgbar liste over kalorier, næringsstoffer, skridt, søvn, puls, kropsmål m.m.), periode (i dag, i går, seneste 7/30 dage, denne/sidste uge, måned, år) og en tekst under tallet (højst 2 linjer á 15 tegn, foreslås ud fra parameteren).

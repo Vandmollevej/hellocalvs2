@@ -734,9 +734,14 @@
     "historyAll": "Tout l'historique",
     "sending": "Envoi…",
     "errorGeneric": "Une erreur s'est produite — réessaie",
+    "dashboard": {
+      "menu": "Personnaliser le tableau de bord",
+      "menuTitle": "Compose ton tableau de bord",
+      "moveUp": "Monter",
+      "moveDown": "Descendre"
+    },
     "preview": {
       "title": "Voir l'aperçu",
-      "disclaimer": "Aperçu avec tes propres données, dans la mise en page que voit le destinataire.",
       "startWeight": "Poids de départ",
       "startGoal": "Objectif de départ",
       "recordedOn": "Saisi le {date}",
@@ -771,7 +776,6 @@
       "accepting": "Confirmation…",
       "acceptError": "Impossible de confirmer l'invitation — réessaie.",
       "greeting": "Bonjour {name}",
-      "disclaimer": "Ces données sont partagées par {ownerName} via Hello Cal et ne remplacent pas une évaluation clinique professionnelle.",
       "loadError": "Impossible de charger cette page."
     }
   },

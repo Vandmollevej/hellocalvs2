@@ -734,9 +734,14 @@
     "historyAll": "Hela historiken",
     "sending": "Skickar…",
     "errorGeneric": "Något gick fel — försök igen",
+    "dashboard": {
+      "menu": "Anpassa dashboard",
+      "menuTitle": "Sätt ihop din dashboard",
+      "moveUp": "Flytta upp",
+      "moveDown": "Flytta ner"
+    },
     "preview": {
       "title": "Så här ser det ut",
-      "disclaimer": "Förhandsvisning med dina egna data, i den layout som mottagaren ser.",
       "startWeight": "Startvikt",
       "startGoal": "Startmål",
       "recordedOn": "Registrerat {date}",
@@ -771,7 +776,6 @@
       "accepting": "Bekräftar…",
       "acceptError": "Det gick inte att bekräfta inbjudan — försök igen.",
       "greeting": "Hej {name}",
-      "disclaimer": "Dessa data delas av {ownerName} via Hello Cal och ersätter inte en professionell klinisk bedömning.",
       "loadError": "Det gick inte att hämta den här sidan."
     }
   },

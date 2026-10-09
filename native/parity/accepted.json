@@ -640,9 +640,10 @@
     "src/components/AddForwardedItemButton.tsx": "d95f5ca4e4d48a74"
   },
   "/hello-doc/[token]": {
-    "src/app/hello-doc/[token]/page.tsx": "467a9892bad853c5",
+    "src/app/hello-doc/[token]/page.tsx": "bc2fb67fbdfa33f5",
     "src/app/layout.tsx": "32a09f6743aabdc5",
-    "src/components/hf/HelloDocInsight.tsx": "077d9d2cbed9df2e",
+    "src/components/hf/HelloDocInsight.tsx": "fd0818c6f02274be",
+    "src/components/hf/InsightMenu.tsx": "51e32abb44913626",
     "src/components/hf/MiniChart.tsx": "14a7b60675b63296",
     "src/components/hf/Skeleton.tsx": "383d8a93fa858b4a"
   },
@@ -2363,8 +2364,9 @@
   },
   "/settings/hello-doc/preview": {
     "src/app/layout.tsx": "32a09f6743aabdc5",
-    "src/app/settings/hello-doc/preview/page.tsx": "4a8442bd6405020e",
-    "src/components/hf/HelloDocInsight.tsx": "077d9d2cbed9df2e",
+    "src/app/settings/hello-doc/preview/page.tsx": "3973a0deca48acbc",
+    "src/components/hf/HelloDocInsight.tsx": "fd0818c6f02274be",
+    "src/components/hf/InsightMenu.tsx": "51e32abb44913626",
     "src/components/hf/MiniChart.tsx": "14a7b60675b63296",
     "src/components/hf/Skeleton.tsx": "383d8a93fa858b4a"
   },

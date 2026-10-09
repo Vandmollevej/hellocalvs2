@@ -734,9 +734,14 @@
     "historyAll": "Hele historikken",
     "sending": "Sender…",
     "errorGeneric": "Noe gikk galt — prøv igjen",
+    "dashboard": {
+      "menu": "Tilpass dashbordet",
+      "menuTitle": "Sett sammen dashbordet ditt",
+      "moveUp": "Flytt opp",
+      "moveDown": "Flytt ned"
+    },
     "preview": {
       "title": "Slik ser det ut",
-      "disclaimer": "Forhåndsvisning med dine egne data, i layouten mottakeren ser.",
       "startWeight": "Startvekt",
       "startGoal": "Startmål",
       "recordedOn": "Registrert {date}",
@@ -771,7 +776,6 @@
       "accepting": "Bekrefter…",
       "acceptError": "Kunne ikke bekrefte invitasjonen — prøv igjen.",
       "greeting": "Hei {name}",
-      "disclaimer": "Disse dataene er delt av {ownerName} via Hello Cal og erstatter ikke en profesjonell klinisk vurdering.",
       "loadError": "Kunne ikke hente denne siden."
     }
   },

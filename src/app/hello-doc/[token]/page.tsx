@@ -6,6 +6,8 @@ import Image from "next/image";
 import { HelloDocInsight, formatInsightDate, type InsightData } from "@/components/hf/HelloDocInsight";
 import { useTranslation } from "@/i18n/LocaleProvider";
 import { DOCTOR_SHARE_UNAVAILABLE_CATEGORIES, type DoctorShareCategory } from "@/lib/doctor-share";
+import { InsightMenu } from "@/components/hf/InsightMenu";
+import { useInsightLayout, type InsightPanelId } from "@/lib/insight-layout";
 import { Skeleton, SkeletonCards, SkeletonScreen, SkeletonText } from "@/components/hf/Skeleton";
 
 type TokenStatus = "NOT_FOUND" | "REVOKED" | "EXPIRED" | "PENDING" | "ACTIVE";
@@ -55,6 +57,7 @@ export default function HelloDocTokenPage() {
   const [loadError, setLoadError] = useState(false);
   const [accepting, setAccepting] = useState(false);
   const [acceptError, setAcceptError] = useState(false);
+  const { layout, toggle, move } = useInsightLayout();
 
   useEffect(() => {
     let cancelled = false;
@@ -94,6 +97,11 @@ export default function HelloDocTokenPage() {
       <header className="hf-shell__topbar">
         <Image src="/hello-cal-logo.png" alt="Hello Cal" width={90} height={40} priority />
         <span className="hf-type-title">Hello Doc</span>
+        {data && data.status === "ACTIVE" && (
+          <div className="ml-auto">
+            <InsightMenu layout={layout} onToggle={toggle} onMove={move} available={availablePanels(data)} />
+          </div>
+        )}
       </header>
 
       <main className="hf-insight__main">
@@ -149,17 +157,22 @@ export default function HelloDocTokenPage() {
         )}
 
         {data && data.status === "ACTIVE" && (
-          <HelloDocInsight data={toInsightData(data)} greeting={t("helloDoc.token.greeting", { name: data.doctorName })} />
+          <HelloDocInsight data={toInsightData(data)} greeting={t("helloDoc.token.greeting", { name: data.doctorName })} layout={layout} />
         )}
       </main>
 
-      {data && data.status === "ACTIVE" && (
-        <footer className="hf-insight__footer">
-          <p className="hf-type-caption">{t("helloDoc.token.disclaimer", { ownerName: data.ownerName })}</p>
-        </footer>
-      )}
     </div>
   );
+}
+
+function availablePanels(data: TokenResponse): InsightPanelId[] {
+  const categories = data.categories ?? [];
+  const panels: InsightPanelId[] = [];
+  if (data.weight) panels.push("weight");
+  if (data.dailyNutrition && categories.includes("foodAndCalories")) panels.push("food");
+  if (data.dailyNutrition && categories.includes("vitaminsMinerals")) panels.push("vitamins");
+  if (data.fluidHistory) panels.push("fluid");
+  return panels;
 }
 
 function StatusCard({ title, body }: { title: string; body: string }) {

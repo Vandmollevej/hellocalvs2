@@ -734,9 +734,14 @@
     "historyAll": "Gesamter Verlauf",
     "sending": "Wird gesendet…",
     "errorGeneric": "Etwas ist schiefgelaufen — versuche es noch einmal",
+    "dashboard": {
+      "menu": "Dashboard anpassen",
+      "menuTitle": "Dein Dashboard zusammenstellen",
+      "moveUp": "Nach oben",
+      "moveDown": "Nach unten"
+    },
     "preview": {
       "title": "So sieht es aus",
-      "disclaimer": "Vorschau mit deinen eigenen Daten, im Layout, das der Empfänger sieht.",
       "startWeight": "Startgewicht",
       "startGoal": "Startziel",
       "recordedOn": "Erfasst am {date}",
@@ -771,7 +776,6 @@
       "accepting": "Wird bestätigt…",
       "acceptError": "Die Einladung konnte nicht bestätigt werden — versuche es noch einmal.",
       "greeting": "Hallo {name}",
-      "disclaimer": "Diese Daten wurden von {ownerName} über Hello Cal geteilt und ersetzen keine professionelle klinische Beurteilung.",
       "loadError": "Diese Seite konnte nicht geladen werden."
     }
   },
