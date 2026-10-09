@@ -99,13 +99,9 @@
     "src/components/ForwardButton.tsx": "e28f5572f127deac",
     "src/components/HfScreen.tsx": "f3cc65c66355e16c",
     "src/components/ProfileAvatarLink.tsx": "598cd23c3331619d",
-<<<<<<< HEAD
-    "src/components/add/AddProductView.tsx": "8e0ce4355b14a5bd",
-=======
     "src/components/add/AddMenuList.tsx": "75f67951f11d7971",
     "src/components/add/AddMenuSheet.tsx": "da5cc2553ea30e9e",
-    "src/components/add/AddProductView.tsx": "77770087b0e23ed5",
->>>>>>> origin/master
+    "src/components/add/AddProductView.tsx": "572642ff9b78adff",
     "src/components/family/FamilyStatusProvider.tsx": "5f900dbc44b3189b",
     "src/components/family/MealShareBar.tsx": "1a89f02c26cffff5",
     "src/components/family/ProfileCircle.tsx": "08fe8d4db2620525",
@@ -1868,13 +1864,9 @@
     "src/components/ForwardButton.tsx": "e28f5572f127deac",
     "src/components/HfScreen.tsx": "f3cc65c66355e16c",
     "src/components/ProfileAvatarLink.tsx": "598cd23c3331619d",
-<<<<<<< HEAD
-    "src/components/add/AddProductView.tsx": "8e0ce4355b14a5bd",
-=======
     "src/components/add/AddMenuList.tsx": "75f67951f11d7971",
     "src/components/add/AddMenuSheet.tsx": "da5cc2553ea30e9e",
-    "src/components/add/AddProductView.tsx": "77770087b0e23ed5",
->>>>>>> origin/master
+    "src/components/add/AddProductView.tsx": "572642ff9b78adff",
     "src/components/family/FamilyStatusProvider.tsx": "5f900dbc44b3189b",
     "src/components/family/MealShareBar.tsx": "1a89f02c26cffff5",
     "src/components/family/ProfileCircle.tsx": "08fe8d4db2620525",

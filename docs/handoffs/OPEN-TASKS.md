@@ -36,7 +36,7 @@ Filer: `src/components/add/AddProductView.tsx`, `AddProductScreen.kt`, `docs/REG
 
 | Id | Opgave | Status | Næste skridt |
 | --- | --- | --- | --- |
-| streg | Manglende næringsværdi vises som "–" (web + native) | Venter på CI | Kun "Web ↔ native in step" er rød, og den er også rød på master pga. BottomNav (#273). Når master er grøn: flet master ind i branchen, kør `node scripts/native/parity.mjs`, og flet PR #252 |
+| streg | Manglende næringsværdi vises som "–" (web + native) | Venter på CI | Min del er klar og godkendt i paritet. Tjekket "Web ↔ native in step" kan stadig være rødt pga. mål-siderne (`/profile/goals`, `/profile/goals/[id]/edit`) på master — ikke denne PR. Når master er grøn: flet master ind, kør `node scripts/native/parity.mjs`, og flet PR #252 |
 
 ---
 
