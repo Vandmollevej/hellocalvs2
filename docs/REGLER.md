@@ -90,7 +90,7 @@ ikke her, er den ikke registreret og skal tilføjes.
 - **Titelrækkefølge**: `_is_cooked` > Product Type (småt begyndelsesbogstav
   hvis det ikke er første ord) > Variation > `_is_light`, `_is_alcohol`,
   `_is_glutenfree`, `_is_vegan`, `_is_lactose_free` > `(Packaging, Keyword 1-3,
-  _is_raw)`. `_is_raw` står altid sidst og i parentes.
+  _is_raw)`. `_is_raw` står i parentesen FØR nøgleordene (rettet 2026-10-09).
 - **`_is_cooked`** (stegt/tørret/kogt/syltet/ristet/røget …) står altid først
   i titlen og skrives i ental/flertal efter varen: "Tørrede figner",
   "Friturestegte pommes frites", "Tørrede og kogte hvide bønner" — aldrig
@@ -105,7 +105,11 @@ ikke her, er den ikke registreret og skal tilføjes.
 - Instantkaffe hedder altid "Instantkaffe" (Product Type), ikke "Kaffe, instant".
 - Vitaminer hører ikke hjemme i keywords, men i specifikationsarket
   (`*_vitamins.xlsx`/`*_product_information.xlsx`) — status: ikke gennemført.
-- Status 2026-10-09: gennemført i Frida-ark/frida-rettet.xlsx og
+- Status 2026-10-09: HelloCal_Title genopbygget i Frida-ark/frida.xlsx (se Excelark/NAVNEREGLER.md, nøgleord-regler); også
   Excelark/bilka_matchet.xlsx; resten af arkene mangler.
 - Lister i Variation/Keywords: `/` og komma → "a, b og c" (to led: "a og b");
   fedt% → `_is_fat`; gram kun i Quantity (brugerens regel 2026-10-09). Se Excelark/NAVNEREGLER.md.
+- Nøgleord-regler fra Frida (vild, på dåse, tør/sød m.fl.): se Excelark/NAVNEREGLER.md.
+- **`_is_decaf`** (global, alle ark): kun værdien "Koffeinfri"; "koffeinfri" flyttes fra Variation/titel hertil. Gælder alle ark (Bilka, REMA, Nemlig, DRK, Wolt m.fl.) — indføres i hvert ark når det tages igen. Se Excelark/NAVNEREGLER.md.
+- Frida-ark: navngivningsreglerne i Excelark/NAVNEREGLER.md (afsnittene "Nøgleord-regler", "Flere Frida-regler", "Nye globale felter") er globale og gælder alle ark.
+- Bilka/REMA ental/flertal + DB-kolonnenavne: se Excelark/NAVNEREGLER.md (status 2026-10-09: _ny-ark lavet, ikke gennemgået).
