@@ -1294,8 +1294,8 @@ function WeekView({
         const kcal = totalKcalForDate(dailyTotals, date);
         const goalKcal = goalForDate(date);
         const met = dailyGoalMet(dailyTotals, date, goalKcal);
-        // An unlogged day is not a missed goal: it shows "Ingen indtastninger"
-        // and the full remaining budget, both in gray.
+        // An unlogged day is not a missed goal: it shows a gray dash for both
+        // the status and the kcal.
         const logged = kcal > 0;
         const over = kcal > goalKcal;
         const diff = Math.round(Math.abs(goalKcal - kcal));
@@ -1338,7 +1338,7 @@ function WeekView({
                   className={`hf-type-body flex items-center gap-1.5 ${tooLow ? "hf-type-strong text-hf-warning" : logged ? "" : "text-text-muted"}`}
                 >
                   {!logged
-                    ? t("calendar.noEntries")
+                    ? "–"
                     : tooLow
                       ? t("calendar.intakeTooLow")
                       : met
@@ -1354,8 +1354,7 @@ function WeekView({
                       !logged ? "text-text-muted" : tooLow ? "text-hf-warning" : over ? "text-hf-red-dark" : "text-hf-green"
                     }`}
                   >
-                    {over ? "÷" : "+"}
-                    {diff} kcal
+                    {!logged ? "–" : `${over ? "÷" : "+"}${diff} kcal`}
                   </span>
                   <IconChevronRight size={19} className="shrink-0" />
                 </span>
@@ -1533,8 +1532,8 @@ function ListView({
         const kcal = totalKcalForDate(dailyTotals, date);
         const goalKcal = goalForDate(date);
         const met = dailyGoalMet(dailyTotals, date, goalKcal);
-        // An unlogged day is not a missed goal: it shows "Ingen indtastninger"
-        // and the full remaining budget, both in gray.
+        // An unlogged day is not a missed goal: it shows a gray dash for both
+        // the status and the kcal.
         const logged = kcal > 0;
         const over = kcal > goalKcal;
         const diff = Math.round(Math.abs(goalKcal - kcal));
@@ -1577,7 +1576,7 @@ function ListView({
                   className={`hf-type-body flex items-center gap-1.5 ${tooLow ? "hf-type-strong text-hf-warning" : logged ? "" : "text-text-muted"}`}
                 >
                   {!logged
-                    ? t("calendar.noEntries")
+                    ? "–"
                     : tooLow
                       ? t("calendar.intakeTooLow")
                       : met
@@ -1593,8 +1592,7 @@ function ListView({
                       !logged ? "text-text-muted" : tooLow ? "text-hf-warning" : over ? "text-hf-red-dark" : "text-hf-green"
                     }`}
                   >
-                    {over ? "÷" : "+"}
-                    {diff} kcal
+                    {!logged ? "–" : `${over ? "÷" : "+"}${diff} kcal`}
                   </span>
                   <IconChevronRight size={19} className="shrink-0" />
                 </span>
