@@ -97,7 +97,7 @@ export function ProductDetailEditor({ product }: { product: Product }) {
     <div className="flex flex-col gap-4">
       <ProductImageGallery productId={product.id} imageUrl={product.imageUrl} images={product.images} />
       <div className="grid grid-cols-1 gap-4 md:grid-cols-[1fr_200px]">
-      <div className="hf-surface p-4">
+      <div className="hf-panel">
         <div className="grid grid-cols-2 gap-4">
           <label className="hf-type-small flex flex-col gap-1 text-text-secondary">
             Navn
@@ -183,7 +183,7 @@ export function ProductDetailEditor({ product }: { product: Product }) {
         </button>
 
         {mergeOpen && (
-          <div className="hf-surface p-4">
+          <div className="hf-panel">
             <p className="hf-type-small mb-2 text-text-secondary">
               Flet denne vare ind i en anden — alle registreringer, favoritter og stregkoder flyttes,
               og denne vare slettes.

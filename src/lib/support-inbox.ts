@@ -236,7 +236,6 @@ export async function listSupportInbox(filter: SupportInboxFilter) {
     const q = filter.q;
     where.OR = [
       { subject: { contains: q, mode: "insensitive" } },
-      { user: { email: { contains: q, mode: "insensitive" } } },
       { user: { displayName: { contains: q, mode: "insensitive" } } },
       // Sagsnummeret er de sidste 8 tegn af id'et.
       { id: { endsWith: q.toLowerCase() } },
@@ -250,7 +249,7 @@ export async function listSupportInbox(filter: SupportInboxFilter) {
     orderBy: [{ lastUserMessageAt: direction }, { id: direction }],
     take: 300,
     include: {
-      user: { select: { displayName: true, email: true } },
+      user: { select: { displayName: true } },
       _count: { select: { messages: { where: { author: { in: ["USER", "SUPPORT"] } } } } },
     },
   });
@@ -274,7 +273,7 @@ export async function getAdminSupportThread(requestId: string) {
   return prisma.supportRequest.findUnique({
     where: { id: requestId },
     include: {
-      user: { select: { id: true, displayName: true, email: true, createdAt: true } },
+      user: { select: { id: true, displayName: true, createdAt: true } },
       supportGrant: true,
       messages: { orderBy: { createdAt: "asc" }, include: { attachments: attachmentIds } },
     },
@@ -363,7 +362,7 @@ export async function alertOverdueSupportRequests(now: Date = new Date()) {
   const overdue = await prisma.supportRequest.findMany({
     where: { status: "OPEN", awaitingReply: true, lastUserMessageAt: { lt: cutoff }, overdueAlertSentAt: null },
     orderBy: [{ priority: "asc" }, { lastUserMessageAt: "asc" }],
-    include: { user: { select: { displayName: true, email: true } } },
+    include: { user: { select: { displayName: true } } },
     take: 100,
   });
   if (overdue.length === 0) return { alerted: 0 };
@@ -379,7 +378,7 @@ export async function alertOverdueSupportRequests(now: Date = new Date()) {
       const hours = Math.floor((now.getTime() - r.lastUserMessageAt.getTime()) / (60 * 60 * 1000));
       return `<li><a href="${ADMIN_BASE_URL}/admin/support/${r.id}">${escapeHtml(r.subject)}</a> — ${escapeHtml(
         r.user.displayName
-      )} (${escapeHtml(r.user.email)}) · prioritet ${priorityLabel[r.priority]} · venter ${hours} timer · sag ${supportCaseCode(r.id)}</li>`;
+      )} · prioritet ${priorityLabel[r.priority]} · venter ${hours} timer · sag ${supportCaseCode(r.id)}</li>`;
     })
     .join("");
 
@@ -413,13 +412,15 @@ export async function listSupportReplyTemplates() {
   return prisma.supportReplyTemplate.findMany({ orderBy: [{ sortOrder: "asc" }, { title: "asc" }] });
 }
 
-export async function saveSupportReplyTemplate(input: { id?: string; title: string; body: string; sortOrder: number }) {
-  const data = { title: input.title, body: input.body, sortOrder: input.sortOrder };
+// Admin styrer ikke rækkefølgen: nye skabeloner lægges nederst, ret bevarer pladsen.
+export async function saveSupportReplyTemplate(input: { id?: string; title: string; body: string }) {
+  const data = { title: input.title, body: input.body };
   if (input.id) {
     const updated = await prisma.supportReplyTemplate.updateMany({ where: { id: input.id }, data });
     return updated.count > 0;
   }
-  await prisma.supportReplyTemplate.create({ data });
+  const last = await prisma.supportReplyTemplate.aggregate({ _max: { sortOrder: true } });
+  await prisma.supportReplyTemplate.create({ data: { ...data, sortOrder: (last._max.sortOrder ?? 0) + 1 } });
   return true;
 }
 

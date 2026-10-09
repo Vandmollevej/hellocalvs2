@@ -83,7 +83,7 @@ export function PartnerInviteForm({ token }: { token: string }) {
         <form onSubmit={onSubmitConfirm} className="flex flex-col gap-4">
           <PartnerCodeInput code={code} onChange={setCode} />
           {error && <p className="hf-type-body text-hf-red-dark">{error}</p>}
-          <button type="submit" disabled={loading || code.length !== 6} className="hf-btn-primary w-full py-2.5 disabled:opacity-60">
+          <button type="submit" disabled={loading || code.length !== 6} className="hf-btn-primary w-full py-2.5">
             {loading ? "Bekræfter…" : "Bekræft og opret adgang"}
           </button>
         </form>
@@ -102,7 +102,7 @@ export function PartnerInviteForm({ token }: { token: string }) {
         showErrors={attempted}
       />
       {error && <p className="hf-type-body text-hf-red-dark">{error}</p>}
-      <button type="submit" disabled={loading} className="hf-btn-primary w-full py-2.5 disabled:opacity-60">
+      <button type="submit" disabled={loading} className="hf-btn-primary w-full py-2.5">
         {loading ? "Genererer…" : "Fortsæt til QR-kode"}
       </button>
     </form>

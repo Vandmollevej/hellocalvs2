@@ -10,10 +10,10 @@ export function TextField({
   const input = (
     <input
       {...props}
-      className={`hf-field hf-type-input w-full border bg-hf-cream outline-none ${
- variant === "auth" ? "h-12 rounded-[4px] px-3" : "h-12 rounded-[8px] px-4"
- } ${className}`}
-      style={{ borderColor: "var(--hf-color-field-border)" }}
+      // Højden ejes af .hf-field (48 px); kant og radius er tokens.
+      className={`hf-field hf-type-input w-full border border-hf-field-border bg-hf-page outline-none ${
+        variant === "auth" ? "rounded-sm px-3" : "rounded-card px-4"
+      } ${className}`}
     />
   );
 

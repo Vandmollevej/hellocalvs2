@@ -98,7 +98,7 @@ export default function PhotoAwardPage() {
                   type="button"
                   disabled={submittingId === award.id}
                   onClick={() => startCapture(award.id)}
-                  className="hf-control hf-btn-primary w-full disabled:opacity-60"
+                  className="hf-control hf-btn-primary w-full"
                 >
                   {submittingId === award.id ? t("photoAward.submitting") : t("photoAward.takePhoto")}
                 </button>

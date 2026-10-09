@@ -24,7 +24,7 @@ import type { HubProvider, IntegrationCardStatus } from "@/lib/integrations";
 import { formatDateTime, integrationStatusKey } from "../status-badge";
 
 // Én side pr. integration (docs/DECISIONS.md 2026-09-26), vist som iOS'
-// adgangsark (docs/DECISIONS.md 2026-09-27): brugeren vælger til/fra pr.
+// integrationsside (docs/DECISIONS.md 2026-09-27): brugeren vælger til/fra pr.
 // datatype — hvad Hello Cal skriver til appen, og hvad Hello Cal læser —
 // både før tilkobling og når som helst bagefter. Valget gemmes med det samme.
 

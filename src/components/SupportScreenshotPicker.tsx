@@ -65,7 +65,7 @@ export function SupportScreenshotPicker({
     <div className="flex flex-col gap-2">
       <div className="flex flex-wrap gap-2">
         {images.map((src, index) => (
-          <div key={index} className="relative h-20 w-20 overflow-hidden rounded-[8px] bg-hf-tan">
+          <div key={index} className="relative h-20 w-20 overflow-hidden bg-hf-tan rounded-card">
             {/* eslint-disable-next-line @next/next/no-img-element -- lokal data-URL, ingen optimering mulig */}
             <img src={src} alt="" className="h-full w-full object-cover" />
             <button
@@ -83,7 +83,7 @@ export function SupportScreenshotPicker({
             type="button"
             disabled={disabled}
             onClick={() => inputRef.current?.click()}
-            className="flex h-20 w-20 flex-col items-center justify-center gap-1 rounded-[8px] border border-dashed border-hf-black disabled:opacity-50"
+            className="flex h-20 w-20 flex-col items-center justify-center gap-1 border border-dashed border-hf-black disabled:opacity-50 rounded-card"
             aria-label={t("settings.support.attachScreenshots")}
           >
             <IconPhotoPlus size={24} stroke={1.75} />

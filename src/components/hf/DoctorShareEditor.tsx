@@ -123,8 +123,7 @@ export function DoctorShareEditor({
         <h2 className="hf-type-section-title">{t("helloDoc.historyTitle")}</h2>
         <div className="relative">
           <select
-            className="hf-field hf-type-input w-full appearance-none rounded-[8px] border bg-hf-cream pl-4 pr-10 outline-none"
-            style={{ borderColor: "var(--hf-color-field-border)" }}
+            className="hf-field hf-type-input w-full appearance-none border bg-hf-cream pl-4 pr-10 outline-none border-hf-field-border rounded-card"
             value={historyRange}
             onChange={(event) => onHistoryRangeChange(event.target.value as DoctorShareHistoryRange)}
           >

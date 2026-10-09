@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { PhonePreviewEditor, fillSampleVars } from "@/components/admin/PhonePreviewEditor";
+import { useConfirmSheet } from "@/lib/use-confirm-sheet";
 
 type Template = { id?: string; title: string; body: string; sortOrder: number };
 
@@ -27,16 +28,16 @@ export function SupportTemplateEditor({ templates }: { templates: Template[] }) 
 function SupportThreadPreview({ body }: { body: string }) {
   return (
     <div className="flex min-h-0 flex-1 flex-col bg-hf-cream text-hf-black">
-      <div className="-mt-[54px] flex h-[108px] shrink-0 items-end justify-center pb-3" style={{ background: "var(--hf-color-appbar)" }}>
-        <p className="text-[20px] font-bold leading-6 text-hf-white">Appen lukker ned</p>
+      <div className="-mt-[54px] flex h-[108px] shrink-0 items-end justify-center pb-3 bg-hf-brand">
+        <p className="leading-6 text-hf-white hf-type-page-title hf-type-strong">Appen lukker ned</p>
       </div>
       <div className="flex min-h-0 flex-1 flex-col gap-3 overflow-y-auto p-4">
         <p className="hf-type-caption opacity-60">Sag HC-4821</p>
-        <div className="ml-8 rounded-[8px] bg-hf-tan p-3">
+        <div className="ml-8 bg-hf-tan p-3 rounded-card">
           <p className="hf-type-caption opacity-60">Dig · 27.9.2026 09.12</p>
           <p className="hf-type-body mt-1">Appen lukker ned, når jeg scanner en stregkode.</p>
         </div>
-        <div className="mr-8 rounded-[8px] bg-hf-green-light p-3">
+        <div className="mr-8 bg-hf-green-light p-3 rounded-card">
           <p className="hf-type-caption opacity-60">Support · 27.9.2026 09.41</p>
           <p className="hf-type-body mt-1 whitespace-pre-wrap">{fillSampleVars(body) || "…"}</p>
         </div>
@@ -47,13 +48,13 @@ function SupportThreadPreview({ body }: { body: string }) {
 
 function TemplateForm({ initial, onPreview }: { initial: Template; onPreview: (body: string) => void }) {
   const router = useRouter();
+  const { ask, sheet } = useConfirmSheet();
   const [title, setTitle] = useState(initial.title);
   const [body, setBody] = useState(initial.body);
-  const [sortOrder, setSortOrder] = useState(initial.sortOrder);
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
   const isNew = !initial.id;
-  const dirty = title !== initial.title || body !== initial.body || sortOrder !== initial.sortOrder;
+  const dirty = title !== initial.title || body !== initial.body;
 
   async function save() {
     setBusy(true);
@@ -62,7 +63,7 @@ function TemplateForm({ initial, onPreview }: { initial: Template; onPreview: (b
       const res = await fetch("/api/admin/support/templates", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ id: initial.id, title, body, sortOrder }),
+        body: JSON.stringify({ id: initial.id, title, body }),
       });
       if (!res.ok) {
         setMessage("Udfyld titel og tekst.");
@@ -75,15 +76,18 @@ function TemplateForm({ initial, onPreview }: { initial: Template; onPreview: (b
     }
   }
 
-  async function remove() {
-    if (!initial.id || !window.confirm(`Slet skabelonen "${initial.title}"?`)) return;
-    setBusy(true);
-    try {
-      await fetch(`/api/admin/support/templates?id=${encodeURIComponent(initial.id)}`, { method: "DELETE" });
-      router.refresh();
-    } finally {
-      setBusy(false);
-    }
+  function remove() {
+    const id = initial.id;
+    if (!id) return;
+    ask(`Slet skabelonen "${initial.title}"?`, async () => {
+      setBusy(true);
+      try {
+        await fetch(`/api/admin/support/templates?id=${encodeURIComponent(id)}`, { method: "DELETE" });
+        router.refresh();
+      } finally {
+        setBusy(false);
+      }
+    });
   }
 
   const fieldClass = "rounded-md border border-hf-tan-dark bg-hf-cream px-2 py-1 text-hf-black";
@@ -93,25 +97,15 @@ function TemplateForm({ initial, onPreview }: { initial: Template; onPreview: (b
       onFocus={() => onPreview(body)}
       className="hf-type-small flex flex-col gap-2 hf-surface p-3"
     >
+      {sheet}
       {isNew && <p className="hf-type-strong text-hf-black">Ny skabelon</p>}
-      <div className="flex gap-2">
-        <input
-          value={title}
-          maxLength={100}
-          onChange={(event) => setTitle(event.target.value)}
-          placeholder="Titel, fx 'Tak for fejlrapporten'"
-          className={`min-w-0 flex-1 ${fieldClass}`}
-        />
-        <label className="flex items-center gap-1 text-text-secondary">
-          Rækkefølge
-          <input
-            type="number"
-            value={sortOrder}
-            onChange={(event) => setSortOrder(Number(event.target.value) || 0)}
-            className={`w-16 ${fieldClass}`}
-          />
-        </label>
-      </div>
+      <input
+        value={title}
+        maxLength={100}
+        onChange={(event) => setTitle(event.target.value)}
+        placeholder="Titel, fx 'Tak for fejlrapporten'"
+        className={`w-full ${fieldClass}`}
+      />
       <textarea
         rows={4}
         maxLength={5000}

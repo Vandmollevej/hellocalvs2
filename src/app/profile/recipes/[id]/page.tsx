@@ -10,6 +10,7 @@ import { Toggle } from "@/components/ui/Toggle";
 import { useTranslation } from "@/i18n/LocaleProvider";
 import { loadRecipeFilters, saveRecipeFilters } from "@/lib/recipe-filters";
 import { MAX_RECIPE_PERSONS, portionKcalFor, scaleFactorFor, type PortionProfile } from "@/lib/recipe-portions";
+import { RecipeThumbs } from "@/components/recipes/RecipeThumbs";
 import { Skeleton, SkeletonTitleLines } from "@/components/hf/Skeleton";
 
 // En ret fra Indstillinger → Opskrifter (docs/DECISIONS.md 2026-09-24).
@@ -26,6 +27,9 @@ type View = { name: string; ingredients: Ingredient[]; images: string[]; steps: 
 
 type OwnDish = {
   name: string;
+  servings?: number | null;
+  shareRejected?: boolean;
+  shareRejectionReason?: string | null;
   sharedRecipeId?: string | null;
   images?: string[];
   steps?: Step[] | null;
@@ -77,6 +81,8 @@ function RecipeDetailContent() {
   const [busy, setBusy] = useState(false);
   // Egen ret
   const [shared, setShared] = useState(false);
+  const [rejection, setRejection] = useState<{ reason: string | null } | null>(null);
+  const [dishServings, setDishServings] = useState<number | null>(null);
   const [showShareInfo, setShowShareInfo] = useState(false);
   // Delt ret
   const [isFavorite, setIsFavorite] = useState(false);
@@ -106,6 +112,8 @@ function RecipeDetailContent() {
         if (kind === "own") {
           const { dish } = (await res.json()) as { dish: OwnDish };
           setShared(Boolean(dish.sharedRecipeId));
+          setRejection(dish.shareRejected ? { reason: dish.shareRejectionReason ?? null } : null);
+          setDishServings(dish.servings ?? null);
           setView({
             name: dish.name,
             images: dish.images ?? [],
@@ -228,7 +236,7 @@ function RecipeDetailContent() {
             type="button"
             onClick={saveCopy}
             disabled={busy || loading}
-            className="hf-control hf-btn-primary w-full disabled:opacity-60"
+            className="hf-control hf-btn-primary w-full"
           >
             {t("recipeDetail.saveCopy")}
           </button>
@@ -247,7 +255,7 @@ function RecipeDetailContent() {
 
         {(loading || (state === "ready" && view)) && (
           <>
-            {notice && <p className="hf-type-small rounded-[8px] bg-hf-tan px-4 py-3 text-hf-black">{notice}</p>}
+            {notice && <p className="hf-type-small bg-hf-tan px-4 py-3 text-hf-black rounded-card">{notice}</p>}
 
             {view && view.images.length > 0 && (
               <div className="no-scrollbar -mx-4 flex snap-x gap-2 overflow-x-auto px-4">
@@ -283,12 +291,33 @@ function RecipeDetailContent() {
                   </span>
                 </div>
                 {showShareInfo && (
-                  <p className="hf-type-small mt-2 rounded-[8px] border border-hf-tan-dark bg-hf-white px-3 py-2 text-hf-black">
+                  <p className="hf-type-small mt-2 border border-hf-tan-dark bg-hf-white px-3 py-2 text-hf-black rounded-card">
                     {t("createDish.shareInfo")}
                   </p>
                 )}
               </div>
             )}
+
+            {kind === "own" && rejection && (
+              <div className="rounded-[8px] border border-hf-tan-dark bg-hf-white px-3 py-2">
+                <p className="hf-type-small hf-type-strong flex items-center gap-2 text-hf-black">
+                  <IconInfoCircle size={18} />
+                  {t("recipeDetail.shareRejected")}
+                </p>
+                {rejection.reason && (
+                  <p className="hf-type-small text-text-secondary mt-1">
+                    {t("recipeDetail.shareRejectedReason", { reason: rejection.reason })}
+                  </p>
+                )}
+              </div>
+            )}
+            {kind === "own" && dishServings && (
+              <p className="hf-type-small text-text-secondary">{t("recipeDetail.servingsLabel", { count: dishServings })}</p>
+            )}
+
+            <div className={hideWhileLoading}>
+              <RecipeThumbs recipeKey={`${kind}:${id}`} />
+            </div>
 
             {kind === "shared" && (
               <div className={`flex items-center justify-between ${hideWhileLoading}`}>
@@ -405,7 +434,7 @@ function RecipeDetailContent() {
                       </div>
                       {step.image && (
                         // eslint-disable-next-line @next/next/no-img-element
-                        <img src={step.image} alt="" className="h-16 w-16 shrink-0 rounded-[8px] object-cover" />
+                        <img src={step.image} alt="" className="h-16 w-16 shrink-0 object-cover rounded-card" />
                       )}
                     </div>
                   ))}

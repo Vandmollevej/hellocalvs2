@@ -66,7 +66,7 @@ export function BodyMeasurementChart({
   const coords = points.map((p, i) => ({ x: x(times[i]), y: y(p.value) }));
 
   return (
-    <div className="flex items-center gap-4 rounded-2xl bg-hf-tan p-4">
+    <div className="items-center hf-card--row hf-card--form hf-card">
       <span className="flex h-[108px] w-20 shrink-0 items-center justify-center">
         {definition.image && (
           <Image

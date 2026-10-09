@@ -92,15 +92,17 @@ export function ScreenHeader({
             type="button"
             onClick={handleBack}
             aria-label={t("common.back")}
-            className="flex h-full w-full items-center justify-center text-hf-white focus-visible:outline-2 focus-visible:outline-hf-white"
+            className="hf-appbar__slot-button focus-visible:outline-2 focus-visible:outline-hf-white"
           >
             <HfChevron direction="left" />
           </button>
         )}
       </div>
-      <div className="flex min-w-0 items-center justify-center gap-2">
+      {/* Farven (hvid på grøn, mørk i webvisningen) arves fra .hf-appbar —
+          ingen tekstfarve-utilities herinde. */}
+      <div className="hf-appbar__center">
         {icon && (
-          <span className="flex h-6 w-6 shrink-0 items-center justify-center text-hf-white" aria-hidden="true">
+          <span className="flex h-6 w-6 shrink-0 items-center justify-center" aria-hidden="true">
             {icon}
           </span>
         )}
@@ -117,7 +119,7 @@ export function ScreenHeader({
           <Link
             href="/settings"
             aria-label={t("settings.openAppSettings")}
-            className="hf-appbar__slot text-hf-white focus-visible:outline-2 focus-visible:outline-hf-white"
+            className="hf-appbar__slot focus-visible:outline-2 focus-visible:outline-hf-white"
           >
             {/* Samme størrelse som profilcirklen (h-8 = 32 px). Tabler-
                 tandhjulets ydre kant fylder ca. 19,5 af ikonets 24 enheder,

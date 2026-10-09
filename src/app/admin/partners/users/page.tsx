@@ -61,7 +61,7 @@ export default async function PartnerUsersPage({
       </div>
 
       {isFull ? (
-        <section className="flex flex-col gap-3 rounded-lg border border-hf-tan-dark bg-hf-white p-4">
+        <section className="hf-panel">
           <h2 className="hf-type-body hf-type-strong">Inviter ny B2B-bruger</h2>
           {partners.length === 0 ? (
             <p className="hf-type-body text-text-secondary">Opret først en partner under Kontakter.</p>
@@ -110,7 +110,7 @@ export default async function PartnerUsersPage({
           )}
         </section>
       ) : (
-        <p className="hf-type-body rounded-lg border border-hf-tan-dark bg-hf-white p-4 text-text-secondary">
+        <p className="hf-type-body text-text-secondary hf-panel">
           Kun administratorer med fuld adgang kan oprette og ændre B2B-brugere.
         </p>
       )}
@@ -119,7 +119,7 @@ export default async function PartnerUsersPage({
         <h2 className="hf-type-body hf-type-strong">Brugere pr. partner</h2>
         {partners.length === 0 && <p className="hf-type-body text-text-secondary">Ingen partnere endnu.</p>}
         {partners.map((partner) => (
-          <div key={partner.id} className="flex flex-col gap-2 rounded-lg border border-hf-tan-dark bg-hf-white p-4">
+          <div key={partner.id} className="hf-panel">
             <p className="hf-type-strong text-hf-black">{partner.name}</p>
             {partner.users.length === 0 ? (
               <p className="hf-type-small text-text-muted">Ingen B2B-brugere.</p>

@@ -183,7 +183,6 @@ export function BrandLogoUploader({ canEdit }: { canEdit: boolean }) {
   const done = jobs.filter((job) => job.phase === "saved" || job.phase === "error").length;
   const saved = jobs.filter((job) => job.phase === "saved");
   const matched = saved.filter((job) => job.item?.status === "DONE").length;
-  const unmatched = saved.filter((job) => job.item?.status === "UNMATCHED").length;
   const failed = jobs.filter((job) => job.phase === "error").length;
   const percent = jobs.length > 0 ? Math.round((done / jobs.length) * 100) : 0;
 
@@ -207,10 +206,7 @@ export function BrandLogoUploader({ canEdit }: { canEdit: boolean }) {
         <p className="hf-type-title text-hf-black">
           {busy ? "Upload i gang…" : canEdit ? "Træk logoer eller en hel mappe hertil" : "Kun fuld admin-adgang kan uploade logoer"}
         </p>
-        <p className="hf-type-body max-w-xl text-text-secondary">
-          Filnavnet er brandets navn, fx <span className="hf-type-strong">Arla.png</span>. Ekstra udgaver af samme brand hedder{" "}
-          <span className="hf-type-strong">Arla_2.png</span> og sættes ikke i brug, før du vælger dem. PNG, JPG, WebP, GIF og SVG.
-        </p>
+        <p className="hf-type-body text-text-secondary">Filnavnet skal være brandets navn</p>
         <div className="flex flex-wrap justify-center gap-2">
           <button
             type="button"
@@ -229,9 +225,6 @@ export function BrandLogoUploader({ canEdit }: { canEdit: boolean }) {
             Vælg mappe
           </button>
         </div>
-        <p className="hf-type-small text-text-muted">
-          Hvert slip får et tidsstempel som ét parti — et helt parti kan slettes igen under «Uploads» nedenfor, og brandenes tidligere logoer kommer tilbage.
-        </p>
         <input ref={filesInput} type="file" accept="image/*" multiple className="hidden" onChange={onPick} />
         <input
           ref={folderInput}
@@ -244,7 +237,7 @@ export function BrandLogoUploader({ canEdit }: { canEdit: boolean }) {
       </div>
 
       {run && (
-        <section className="hf-surface flex flex-col gap-3 p-4" aria-live="polite">
+        <section className="hf-panel" aria-live="polite">
           <div className="flex flex-wrap items-baseline justify-between gap-2">
             <h2 className="hf-type-card-title text-hf-black">
               {run.startedAt ? `Upload ${formatTimestamp(run.startedAt)}` : "Upload"}
@@ -270,15 +263,13 @@ export function BrandLogoUploader({ canEdit }: { canEdit: boolean }) {
           <p className="hf-type-body text-text-secondary">
             <span className="text-hf-green-dark">{matched} sat som logo</span>
             {" · "}
-            <span className={unmatched > 0 ? "text-hf-warning" : ""}>{unmatched} mangler brand</span>
-            {" · "}
-            <span className={failed > 0 ? "text-hf-red-dark" : ""}>{failed} fejlede</span>
+            <span className={failed > 0 ? "text-hf-red-dark" : ""}>{failed} afvist/fejlede</span>
             {run.skipped > 0 && <span> · {run.skipped} ikke-billedfiler sprunget over</span>}
           </p>
           {run.error && <p className="hf-type-body text-hf-red-dark">{run.error}</p>}
           {run.finished && jobs.length > 0 && (
             <p className="hf-type-body text-hf-black">
-              Færdig. Resultatet står i oversigten nedenfor — der kan du vælge brand til filer uden match og slette hele partiet, hvis noget er gået galt.
+              Færdig. Filer uden præcist brand-match er afvist og ikke gemt. Resultatet står i oversigten nedenfor.
             </p>
           )}
 

@@ -274,8 +274,11 @@
     "forgetTitle": "Droit à l'oubli",
     "forgetIntro": "Fais supprimer toutes tes données personnelles (RGPD). Les données anonymisées, qui ne peuvent pas être reliées à toi, sont conservées.",
     "forgetButton": "Supprimer mes données",
-    "confirmWarning": "Cette action est irréversible. Écris SLET pour confirmer.",
-    "confirmPlaceholder": "SLET",
+    "confirmWarning": "Cette action est irréversible. Écris {word} pour confirmer.",
+    "confirmPlaceholder": "{word}",
+    "confirmWord": "SUPPRIMER",
+    "closeWarning": "Écris {word} pour confirmer.",
+    "closeWord": "FERMER",
     "confirmButton": "Confirmer",
     "error": "Une erreur s'est produite — réessaie"
   },
@@ -553,7 +556,23 @@
     "steps": "Pas",
     "distanceKm": "Kilomètres parcourus"
   },
+  "footerArc": {
+    "open": "Ouvrir les boutons d'ajout",
+    "close": "Fermer les boutons d'ajout",
+    "editHint": "Faites glisser un bouton vers le bas pour le retirer",
+    "done": "Terminé",
+    "removeItem": "Retirer {item}",
+    "addItem": "Ajouter {item}",
+    "allInUse": "Tous les boutons sont utilisés"
+  },
   "addMenu": {
+    "editEditHint": "Maintenez une tuile pour la déplacer ou la supprimer",
+    "editDone": "Terminé",
+    "editAdd": "Ajouter",
+    "editRemoveTile": "Retirer {item}",
+    "editAddTile": "Ajouter {item}",
+    "editNoneHidden": "Toutes les tuiles sont utilisées",
+    "editAddTitle": "Ajouter une tuile",
     "title": "Ajouter",
     "food": "Ajouter un aliment",
     "scan": "Scanner un produit",
@@ -933,7 +952,27 @@
     "noResults": "Aucune recette ne correspond à ta recherche",
     "tabMine": "Mes plats",
     "tabShared": "Plats partagés",
+    "statusNotShared": "Not shared",
+
     "sharedSearchPlaceholder": "Rechercher par titre, ingrédients …",
+
+    "createNew": "Créer un plat",
+
+    "sourceAll": "Recettes",
+
+    "sourceShared": "Plats partagés",
+
+    "sourceHelloFresh": "Hello Fresh",
+
+    "sourceValdemarsro": "Valdemarsro",
+
+    "sourceFilterAria": "Choisir la source",
+
+    "filtersSheetTitle": "Filtres",
+
+    "goToRecipe": "Aller à la recette",
+
+    "valdemarsroSource": "Valdemarsro",
     "sortRelevance": "Pertinence",
     "sortPopular": "Popularité",
     "sortDate": "Date",
@@ -1089,6 +1128,19 @@
     }
   },
   "recipeDetail": {
+
+    "shareRejected": "Your dish is not shared with others because it was rejected. You keep it yourself.",
+
+
+    "shareRejectedReason": "Reason: {reason}",
+
+
+    "servingsLabel": "{count} people",
+
+
+    "thumbUp": "Pouce levé",
+
+    "thumbDown": "Pouce baissé",
     "loading": "Chargement du plat …",
     "notFound": "Ce plat n'existe plus",
     "ingredients": "Ingrédients",
@@ -1154,7 +1206,55 @@
     }
   },
   "createDish": {
+    "servings": "Number of people",
+
     "shareLabel": "Veux-tu partager ce plat avec d'autres utilisateurs ?",
+
+    "modeManual": "Manual",
+
+    "modeText": "Paste text",
+
+    "modeScan": "Scan",
+
+    "shareQuestionTitle": "Share this dish?",
+
+    "shareQuestionBody": "Other users can find and use your dish. No personal details are shared. You can also share it later from the dish.",
+
+    "shareYes": "Share",
+
+    "shareNo": "Not now",
+
+    "pasteTitle": "Paste recipe text",
+
+    "pastePlaceholder": "Paste the complete recipe text here",
+
+    "pasteSourcePlaceholder": "Source link (optional)",
+
+    "pasteInsert": "Insert",
+
+    "pasteWorking": "Reading the recipe …",
+
+    "pasteError": "Could not read the recipe",
+
+    "scanTitle": "Scan recipe",
+
+    "scanTake": "Take photo",
+
+    "scanGallery": "From library",
+
+    "scanFinish": "Done",
+
+    "scanWorking": "Reading the pages …",
+
+    "scanError": "Could not read the pages",
+
+    "scanHint": "Add the pages in order. The first photo becomes the dish image.",
+
+    "importMissing": "Missing a match or an amount — add these yourself:",
+
+    "importDone": "The recipe was inserted",
+
+    "importNutrition": "Nutrition in the text (per serving)",
     "shareInfo": "Aucune donnée personnelle n'est partagée quand tu partages un plat",
     "shareInfoAria": "À propos du partage",
     "shareError": "Le plat est enregistré, mais n'a pas pu être partagé pour le moment",
@@ -1259,6 +1359,11 @@
   "offlineQueue": {
     "pendingBannerOne": "1 création en attente d'envoi",
     "pendingBannerMany": "{count} créations en attente d'envoi"
+  },
+  "offline": {
+    "message": "Pas de connexion — cela nécessite internet. Réessaie une fois en ligne.",
+    "banner": "Tu es hors ligne — certaines fonctions ne marchent pas",
+    "barcodeLookup": "Le code-barres a été lu, mais tu n’as pas de connexion. Réessaie une fois en ligne."
   },
   "profile": {
     "title": "Mes informations",
@@ -1392,7 +1497,13 @@
     "messages": {
       "title": "Messages",
       "empty": "Tu n'as pas encore de messages.",
-      "markAllRead": "Tout marquer comme lu"
+      "markAllRead": "Tout marquer comme lu",
+      "unread": "Nouveau",
+      "deleted": "Supprimés",
+      "delete": "Supprimer",
+      "clearAll": "Tout effacer",
+      "clearAllWarning": "Tous les messages supprimés seront définitivement effacés. Action irréversible.",
+      "emptyDeleted": "Aucun message supprimé."
     },
     "communication": {
       "intro": "Choisis les messages que tu veux recevoir par e-mail et/ou en push. Les messages importants du compte (p. ex. vérification et réinitialisation du mot de passe) sont toujours envoyés.",
@@ -1500,6 +1611,7 @@
     }
   },
   "profileSleep": {
+    "intro": "Le sommeil peut avoir une grande influence sur le poids et le bien-être. Voyez votre vie dans une perspective plus large une fois que vous avez collecté suffisamment de données. Le sommeil par défaut est réglé sur 22h00 - 07h00.",
     "title": "Rythme de sommeil",
     "loading": "Chargement…",
     "loadError": "Impossible de charger le rythme de sommeil.",
@@ -1681,6 +1793,79 @@
       "fatG": "p. ex. 70"
     }
   },
+  "weighIn": {
+    "attireTitle": "What were you wearing?",
+    "attire": {
+      "NAKED": "Naked",
+      "UNDERWEAR": "In underwear",
+      "CLOTHED": "Clothed",
+      "CLOTHED_PHONE": "Clothed, phone in pocket"
+    },
+    "save": "Save",
+    "saving": "Saving…",
+    "saveError": "Could not save. Try again.",
+    "later": "Later",
+    "continue": "Continue",
+    "ago": {
+      "justNow": "just now",
+      "minutes": "{n} min. ago",
+      "hours": "{n} hours ago",
+      "days": "{n} days ago"
+    },
+    "sync": {
+      "now": "Sync now",
+      "syncing": "Syncing…",
+      "done": "Synced",
+      "failed": "Sync failed",
+      "error": "Error — reconnect",
+      "last": "Synced {ago}",
+      "never": "Not synced yet",
+      "open": "Open {name}",
+      "openShort": "Open",
+      "noneConnected": "No smart scale connected",
+      "connect": "Connect"
+    },
+    "stale": {
+      "title": "It has been a while since the last sync",
+      "body": "{name} was last synced {ago}. Sync so your latest weigh-ins come through.",
+      "bodyNever": "{name} has not been synced yet. Sync so your weigh-ins come through."
+    },
+    "prompt": {
+      "aria": "What were you wearing when you weighed in?",
+      "todayMorning": "You weighed yourself this morning.",
+      "past": "You weighed yourself {when}",
+      "andWeighed": "and weighed",
+      "question": "But was it:",
+      "older": "Older weigh-in",
+      "newer": "Newer weigh-in"
+    },
+    "when": {
+      "today": {
+        "morning": "this morning",
+        "afternoon": "this afternoon",
+        "evening": "this evening",
+        "night": "last night"
+      },
+      "yesterday": {
+        "morning": "yesterday morning",
+        "afternoon": "yesterday afternoon",
+        "evening": "yesterday evening",
+        "night": "last night"
+      },
+      "part": {
+        "morning": "morning",
+        "afternoon": "afternoon",
+        "evening": "evening",
+        "night": "night"
+      },
+      "weekday": "{weekday} {part}",
+      "lastWeek": "last {weekday}"
+    },
+    "details": {
+      "title": "Weigh-in",
+      "failed": "Could not load the weigh-in."
+    }
+  },
   "weightLog": {
     "title": "Poids",
     "intro": "Enregistre ton poids. Il est sauvegardé immédiatement et intégré au calendrier et aux statistiques.",
@@ -1690,7 +1875,7 @@
     "saving": "Enregistrement…",
     "saveError": "Impossible d'enregistrer le poids.",
     "saved": "Poids enregistré.",
-    "moreDetailsLink": "Enregistrer avec plus de détails (vêtements, chaussures, moment)",
+    "moreDetailsLink": "Vous devez encore calibrer votre balance",
     "loading": "Chargement…",
     "noEntriesYet": "Aucune pesée enregistrée pour l'instant.",
     "recentTitle": "Dernières pesées"
@@ -1830,6 +2015,7 @@
     "kcalPer100g": "({kcal} kcal/100g)",
     "kcalPer100ml": "({kcal} kcal/100ml)",
     "kcalAmount": "{kcal} calories",
+    "perPiece": "/pièce",
     "sizeLabel": "Taille",
     "sizeSmall": "Petite",
     "sizeMedium": "Moyenne",
@@ -1869,9 +2055,6 @@
     "extendedNutrition": "Valeurs nutritionnelles",
     "extendedNutritionDisclaimer": "Affiché uniquement lorsque des données existent pour ce produit.",
     "toxins": "Toxines",
-    "tagCountryOfOrigin": "De {country}",
-    "tagAlcoholPercent": "{percent} % d'alcool",
-    "tagFatPercent": "{percent} % de lipides",
     "toxinPregnancyBadge": "Grossesse/allaitement",
     "toxinsDisclaimer": "D'après la liste des ingrédients — il ne s'agit pas d'une mesure de ce produit précis. Sources : Fødevarestyrelsen et EFSA.",
     "unhealthyFat": "Mauvaises graisses",
@@ -1967,7 +2150,7 @@
     "favorites": "Favoris",
     "addFavorite": "Ajouter aux favoris",
     "removeFavorite": "Retirer des favoris",
-    "recentlyAdded": "Utilisés récemment",
+    "recentlyAdded": "Ajoutés récemment",
     "searchResults": "Résultats de recherche",
     "allItems": "Tous les produits",
     "emptyState": "Recherche un aliment ou ajoute un favori pour le voir ici.",
@@ -1975,6 +2158,8 @@
     "noResults": "Aucun résultat"
   },
   "integrations": {
+    "moveFromTitle": "MyFitnessPal or Lifesum",
+    "moveFromDescription": "Move your diary over with a screen recording.",
     "helloFreshTitle": "Recettes HelloFresh",
     "helloFreshDescription": "Affiche les recettes HelloFresh avec les plats partagés dans Recettes",
     "title": "Intégrations",
@@ -2004,6 +2189,7 @@
     "enable": "Activer",
     "unavailable": "Pas encore disponible",
     "sections": {
+      "moveFrom": "Move from another app",
       "active": "Intégrations actives",
       "popular": "Les plus utilisées",
       "recipes": "Recettes",
@@ -3014,7 +3200,13 @@
     "devicesHeading": "Suis ton sommeil avec tes appareils",
     "devicesIntro": "Connecte une montre ou une appli pour comparer ton sommeil ressenti au sommeil réel."
   },
+  "helpGuide": {
+    "title": "Guide",
+    "end": "Terminer le guide",
+    "missing": "Je ne trouve pas le bouton pour le moment. Ouvrez la page manuellement avec le raccourci dans le chat."
+  },
   "helpChat": {
+    "guideMe": "Guide-moi",
     "open": "Aide",
     "title": "Aide",
     "welcome": "Salut ! Je suis le chatbot d'aide de Hello Cal. Pose-moi tes questions sur l'appli et je t'aiderai. Tu préfères parler à une personne ? Appuie sur « Parler à un conseiller ».",
@@ -3042,5 +3234,31 @@
     "sendError": "Le message n'a pas été envoyé. Réessaie.",
     "escalateError": "L'envoi au Support a échoué. Réessaie ou utilise le formulaire de contact.",
     "rateLimited": "Tu as posé beaucoup de questions en peu de temps. Patiente un peu ou parle à un conseiller."
+  },
+  "migrationImport": {
+    "title": "Move from MyFitnessPal or Lifesum",
+    "intro": "Record your screen while you scroll through your diary in the other app. Hello Cal reads the foods, amounts and calories and adds them to your calendar.",
+    "fromApp": "From the app",
+    "step1": "Start a screen recording on your phone (or take screenshots).",
+    "step2": "Open the diary in the other app and scroll calmly back, day by day.",
+    "step3": "Stop the recording and choose the video here.",
+    "choose": "Choose screen recording or screenshots",
+    "privacy": "The images are not saved. They are read once, and only the rows (date, meal, food, amount and nutrition) are kept until you choose what to import.",
+    "preparing": "Preparing the recording…",
+    "reading": "Reading image {done} of {total}…",
+    "readError": "The recording could not be read. Try again, or use screenshots.",
+    "reviewHint": "Review the rows. Uncertain rows are not preselected.",
+    "nothingFound": "We found no foods in the recording. Try scrolling more slowly so each day stays still for a moment.",
+    "unsure": "uncertain",
+    "importSelected": "Import {count} rows",
+    "commitError": "The import failed. Please try again.",
+    "done": "{count} entries have been added to your calendar.",
+    "openCalendar": "Open the calendar",
+    "meal": {
+      "breakfast": "Breakfast",
+      "lunch": "Lunch",
+      "dinner": "Dinner",
+      "snack": "Snack"
+    }
   }
 }

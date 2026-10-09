@@ -20,7 +20,7 @@ export default async function AdminFlowsPage() {
       <div>
         <h1 className="hf-type-page-title text-hf-black">Flow-sider</h1>
         <p className="mt-1 hf-type-body text-text-secondary">
-          Egne flows: en række sider, der vises efter hinanden. Tryk på et flow for at redigere siderne på telefonen.
+          Egne flows: en række sider, der vises efter hinanden. Tryk på et flow for at redigere siderne på telefonen og vælge, hvornår og for hvem det vises.
         </p>
       </div>
 
@@ -37,6 +37,7 @@ export default async function AdminFlowsPage() {
               </div>
               <span className="shrink-0 hf-type-caption">
                 {flow._count.pages} {flow._count.pages === 1 ? "side" : "sider"}
+                {flow.kind === "banner" ? " · banner" : ""} · set af {flow._count.views}
               </span>
               <span
                 className={`shrink-0 rounded-full px-2 py-0.5 hf-type-micro hf-type-strong ${

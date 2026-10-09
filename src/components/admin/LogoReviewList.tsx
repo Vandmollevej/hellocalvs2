@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { ImageReviewBoard } from "@/components/admin/ImageReviewBoard";
 import { chooseLogo, rejectAllLogos } from "@/app/admin/logos/actions";
@@ -19,21 +19,10 @@ type Search = { id: string; brandName: string; originalUrl: string; candidates: 
 
 const pct = (value: number) => `${Math.round(value * 100)} %`;
 
-function Thumb({ src, alt, size = "h-14 w-14" }: { src: string; alt: string; size?: string }) {
-  return (
-    // eslint-disable-next-line @next/next/no-img-element
-    <img src={src} alt={alt} className={`${size} rounded border border-hf-tan-dark bg-hf-white object-contain p-1`} />
-  );
-}
-
-// Rækker: brandnavn → original-thumbnail → bedste fund. Klik åbner stor
-// sammenligning (original og fund side om side) med 5-10 alternativer
-// nedenunder; klik på et alternativ forstørrer det (lightbox), og "VÆLG"
-// under hvert billede vælger det.
+// Logoer til gennemsyn: originalen fra varefotoet ved siden af det valgte
+// fund, med pile midt på billedet og en række af 6 alternativer under. "Vælg"
+// gemmer det viste fund; "Ingen passer" lukker sagen.
 export function LogoReviewList({ searches }: { searches: Search[] }) {
-  const [openId, setOpenId] = useState<string | null>(null);
-  const [lightbox, setLightbox] = useState<string | null>(null);
-  const open = searches.find((search) => search.id === openId) ?? null;
   const router = useRouter();
 
   const items = useMemo(
@@ -42,105 +31,43 @@ export function LogoReviewList({ searches }: { searches: Search[] }) {
         id: search.id,
         title: search.brandName,
         subtitle: search.candidates[0] ? `Bedste fund: ${pct(search.candidates[0].confidence)}` : "Ingen fund",
-        slides: [
-          { src: search.originalUrl, label: "Original fra varefoto" },
-          { src: search.candidates[0]?.imageUrl ?? null, label: "Bedste fund" },
-        ],
+        slides: [{ src: search.originalUrl, label: "Original fra varefoto" }],
+        alternatives: search.candidates.map((candidate, index) => ({
+          key: candidate.id,
+          src: candidate.imageUrl,
+          label: `${index === 0 ? "Bedste fund" : `Alternativ ${index + 1}`} · ${pct(candidate.confidence)} · ${candidate.width}×${candidate.height}`,
+        })),
       })),
     [searches],
   );
 
-  async function approve(id: string) {
-    const best = searches.find((search) => search.id === id)?.candidates[0];
-    if (!best) return false;
+  async function approve(id: string, candidateId?: string) {
+    const chosen = candidateId ?? searches.find((search) => search.id === id)?.candidates[0]?.id;
+    if (!chosen) return false;
     const form = new FormData();
-    form.set("candidateId", best.id);
-    await chooseLogo(form);
-    router.refresh();
-    return true;
+    form.set("candidateId", chosen);
+    const result = await chooseLogo(form);
+    if (result.ok) router.refresh();
+    return result.ok;
   }
 
   async function reject(id: string) {
     const form = new FormData();
     form.set("searchId", id);
-    await rejectAllLogos(form);
-    router.refresh();
-    return true;
+    const result = await rejectAllLogos(form);
+    if (result.ok) router.refresh();
+    return result.ok;
   }
 
   return (
-    <>
-      <ImageReviewBoard
-        items={items}
-        approveLabel="Vælg bedste"
-        rejectLabel="Ingen passer"
-        onApprove={approve}
-        onReject={reject}
-        emptyText="Ingen logoer venter på gennemsyn."
-        storageKey="hc-admin-logo-board-size"
-        extra={(item) => (
-          <button type="button" onClick={() => setOpenId(item.id)} className="hf-btn-text self-center">
-            Se alternativer
-          </button>
-        )}
-      />
-
-      {open && (
-        <div className="fixed inset-0 z-40 flex items-center justify-center bg-hf-black/60 p-4" onClick={() => setOpenId(null)}>
-          <div className="max-h-full w-full max-w-3xl overflow-y-auto rounded-lg bg-page-bg p-4" onClick={(event) => event.stopPropagation()}>
-            <div className="mb-4 flex items-center justify-between">
-              <h2 className="hf-type-body hf-type-strong">{open.brandName}</h2>
-              <button type="button" onClick={() => setOpenId(null)} className="hf-btn-text">
-                Luk
-              </button>
-            </div>
-            <div className="grid grid-cols-2 gap-4">
-              <figure className="flex flex-col items-center gap-2">
-                <Thumb src={open.originalUrl} alt="Original" size="h-48 w-full" />
-                <figcaption className="hf-type-small text-text-secondary">Original fra varefoto</figcaption>
-              </figure>
-              {open.candidates[0] && (
-                <figure className="flex flex-col items-center gap-2">
-                  <Thumb src={open.candidates[0].imageUrl} alt="Bedste fund" size="h-48 w-full" />
-                  <figcaption className="hf-type-small text-text-secondary">Bedste fund · {pct(open.candidates[0].confidence)}</figcaption>
-                </figure>
-              )}
-            </div>
-
-            <h3 className="hf-type-body hf-type-strong mb-2 mt-6">Alternativer (mindst 50 %)</h3>
-            <div className="grid grid-cols-2 gap-3 sm:grid-cols-5">
-              {open.candidates.map((candidate) => (
-                <div key={candidate.id} className="flex flex-col items-center gap-1">
-                  <button type="button" onClick={() => setLightbox(candidate.imageUrl)} aria-label="Forstør">
-                    <Thumb src={candidate.imageUrl} alt="Kandidat" size="h-24 w-24" />
-                  </button>
-                  <span className="hf-type-small">
-                    {pct(candidate.confidence)} · {candidate.width}×{candidate.height}
-                  </span>
-                  <a href={candidate.pageUrl} target="_blank" rel="noreferrer" className="hf-type-micro max-w-full truncate underline">
-                    {candidate.brandInPage ? "✓ brand på siden" : "kilde"}
-                  </a>
-                  <form action={chooseLogo}>
-                    <input type="hidden" name="candidateId" value={candidate.id} />
-                    <button className="hf-btn-primary px-3 py-1">VÆLG</button>
-                  </form>
-                </div>
-              ))}
-            </div>
-            <form action={rejectAllLogos} className="mt-6">
-              <input type="hidden" name="searchId" value={open.id} />
-              <button className="hf-btn-text">Ingen af dem passer</button>
-            </form>
-          </div>
-        </div>
-      )}
-
-      {lightbox && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-hf-black/80 p-6" onClick={() => setLightbox(null)}>
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={lightbox} alt="Forstørret kandidat" className="max-h-full max-w-full rounded bg-hf-white object-contain p-4" />
-        </div>
-      )}
-    </>
+    <ImageReviewBoard
+      items={items}
+      approveLabel="Vælg"
+      rejectLabel="Ingen passer"
+      onApprove={approve}
+      onReject={reject}
+      emptyText="Ingen logoer venter på gennemsyn."
+      storageKey="hc-admin-logo-board-size"
+    />
   );
 }

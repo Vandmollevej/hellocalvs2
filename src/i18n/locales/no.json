@@ -274,8 +274,11 @@
     "forgetTitle": "Rett til å bli glemt",
     "forgetIntro": "Få slettet alle personopplysningene dine (GDPR). Anonymiserte data som ikke kan knyttes til deg, beholdes.",
     "forgetButton": "Slett dataene mine",
-    "confirmWarning": "Dette kan ikke angres. Skriv SLET for å bekrefte.",
-    "confirmPlaceholder": "SLET",
+    "confirmWarning": "Dette kan ikke angres. Skriv {word} for å bekrefte.",
+    "confirmPlaceholder": "{word}",
+    "confirmWord": "SLETT",
+    "closeWarning": "Skriv {word} for å bekrefte.",
+    "closeWord": "LUKK",
     "confirmButton": "Bekreft",
     "error": "Noe gikk galt — prøv igjen"
   },
@@ -553,7 +556,23 @@
     "steps": "Skritt",
     "distanceKm": "Kilometer beveget"
   },
+  "footerArc": {
+    "open": "Åpne legg til-knapper",
+    "close": "Lukk legg til-knapper",
+    "editHint": "Dra en knapp ned for å fjerne den",
+    "done": "Ferdig",
+    "removeItem": "Fjern {item}",
+    "addItem": "Legg til {item}",
+    "allInUse": "Alle knappene er i bruk"
+  },
   "addMenu": {
+    "editEditHint": "Hold en rute inne for å flytte eller slette den",
+    "editDone": "Ferdig",
+    "editAdd": "Legg til",
+    "editRemoveTile": "Fjern {item}",
+    "editAddTile": "Legg til {item}",
+    "editNoneHidden": "Alle rutene er i bruk",
+    "editAddTitle": "Legg til rute",
     "title": "Legg til",
     "food": "Legg til mat",
     "scan": "Skann vare",
@@ -933,7 +952,27 @@
     "noResults": "Ingen oppskrifter samsvarer med søket ditt",
     "tabMine": "Mine retter",
     "tabShared": "Delte retter",
+    "statusNotShared": "Not shared",
+
     "sharedSearchPlaceholder": "Søk i tittel, ingredienser …",
+
+    "createNew": "Opprett ny rett",
+
+    "sourceAll": "Oppskrifter",
+
+    "sourceShared": "Delte retter",
+
+    "sourceHelloFresh": "Hello Fresh",
+
+    "sourceValdemarsro": "Valdemarsro",
+
+    "sourceFilterAria": "Velg oppskriftskilde",
+
+    "filtersSheetTitle": "Filtre",
+
+    "goToRecipe": "Gå til oppskrift",
+
+    "valdemarsroSource": "Valdemarsro",
     "sortRelevance": "Relevans",
     "sortPopular": "Popularitet",
     "sortDate": "Dato",
@@ -1089,6 +1128,19 @@
     }
   },
   "recipeDetail": {
+
+    "shareRejected": "Your dish is not shared with others because it was rejected. You keep it yourself.",
+
+
+    "shareRejectedReason": "Reason: {reason}",
+
+
+    "servingsLabel": "{count} people",
+
+
+    "thumbUp": "Tommel opp",
+
+    "thumbDown": "Tommel ned",
     "loading": "Henter retten …",
     "notFound": "Retten finnes ikke lenger",
     "ingredients": "Ingredienser",
@@ -1154,7 +1206,55 @@
     }
   },
   "createDish": {
+    "servings": "Number of people",
+
     "shareLabel": "Ønsker du å dele retten med andre brukere?",
+
+    "modeManual": "Manuelt",
+
+    "modeText": "Lim inn tekst",
+
+    "modeScan": "Skann",
+
+    "shareQuestionTitle": "Vil du dele retten?",
+
+    "shareQuestionBody": "Andre brukere kan finne og bruke retten din. Ingen personlige detaljer deles. Du kan også dele den senere.",
+
+    "shareYes": "Del",
+
+    "shareNo": "Ikke nå",
+
+    "pasteTitle": "Lim inn oppskrift",
+
+    "pastePlaceholder": "Lim inn hele oppskriften her",
+
+    "pasteSourcePlaceholder": "Lenke til kilden (valgfritt)",
+
+    "pasteInsert": "Lim inn",
+
+    "pasteWorking": "Leser oppskriften …",
+
+    "pasteError": "Kunne ikke lese oppskriften",
+
+    "scanTitle": "Skann oppskrift",
+
+    "scanTake": "Ta bilde",
+
+    "scanGallery": "Fra bibliotek",
+
+    "scanFinish": "Ferdig",
+
+    "scanWorking": "Leser sidene …",
+
+    "scanError": "Kunne ikke lese sidene",
+
+    "scanHint": "Legg til sidene i rekkefølge. Første bilde blir rettens bilde.",
+
+    "importMissing": "Mangler treff eller mengde — legg til selv:",
+
+    "importDone": "Oppskriften er limt inn",
+
+    "importNutrition": "Næring i teksten (per porsjon)",
     "shareInfo": "Ingen personlige detaljer deles når du deler en rett",
     "shareInfoAria": "Om deling",
     "shareError": "Retten er lagret, men kunne ikke deles akkurat nå",
@@ -1259,6 +1359,11 @@
   "offlineQueue": {
     "pendingBannerOne": "1 oppretting venter på opplasting",
     "pendingBannerMany": "{count} opprettinger venter på opplasting"
+  },
+  "offline": {
+    "message": "Ingen tilkobling — dette krever internett. Prøv igjen når du er online.",
+    "banner": "Du er offline — noen funksjoner virker ikke",
+    "barcodeLookup": "Strekkoden ble lest, men du har ingen tilkobling. Prøv igjen når du er online."
   },
   "profile": {
     "title": "Mine opplysninger",
@@ -1392,7 +1497,13 @@
     "messages": {
       "title": "Meldinger",
       "empty": "Du har ingen meldinger ennå.",
-      "markAllRead": "Merk alle som lest"
+      "markAllRead": "Merk alle som lest",
+      "unread": "Ny",
+      "deleted": "Slettet",
+      "delete": "Slett",
+      "clearAll": "Tøm alt",
+      "clearAllWarning": "Alle slettede meldinger fjernes permanent. Dette kan ikke angres.",
+      "emptyDeleted": "Ingen slettede meldinger."
     },
     "communication": {
       "intro": "Velg hvilke meldinger du vil ha som e-post og/eller push. Viktige kontomeldinger (f.eks. verifisering og tilbakestilling av passord) sendes alltid.",
@@ -1500,6 +1611,7 @@
     }
   },
   "profileSleep": {
+    "intro": "Søvnen kan ha stor innvirkning på vekt og trivsel. Se livet ditt i et større perspektiv når du har samlet inn nok data. Standard søvn er satt til 22.00 - 07.00.",
     "title": "Søvnmønster",
     "loading": "Henter…",
     "loadError": "Kunne ikke hente søvnmønster.",
@@ -1681,6 +1793,79 @@
       "fatG": "f.eks. 70"
     }
   },
+  "weighIn": {
+    "attireTitle": "What were you wearing?",
+    "attire": {
+      "NAKED": "Naked",
+      "UNDERWEAR": "In underwear",
+      "CLOTHED": "Clothed",
+      "CLOTHED_PHONE": "Clothed, phone in pocket"
+    },
+    "save": "Save",
+    "saving": "Saving…",
+    "saveError": "Could not save. Try again.",
+    "later": "Later",
+    "continue": "Continue",
+    "ago": {
+      "justNow": "just now",
+      "minutes": "{n} min. ago",
+      "hours": "{n} hours ago",
+      "days": "{n} days ago"
+    },
+    "sync": {
+      "now": "Sync now",
+      "syncing": "Syncing…",
+      "done": "Synced",
+      "failed": "Sync failed",
+      "error": "Error — reconnect",
+      "last": "Synced {ago}",
+      "never": "Not synced yet",
+      "open": "Open {name}",
+      "openShort": "Open",
+      "noneConnected": "No smart scale connected",
+      "connect": "Connect"
+    },
+    "stale": {
+      "title": "It has been a while since the last sync",
+      "body": "{name} was last synced {ago}. Sync so your latest weigh-ins come through.",
+      "bodyNever": "{name} has not been synced yet. Sync so your weigh-ins come through."
+    },
+    "prompt": {
+      "aria": "What were you wearing when you weighed in?",
+      "todayMorning": "You weighed yourself this morning.",
+      "past": "You weighed yourself {when}",
+      "andWeighed": "and weighed",
+      "question": "But was it:",
+      "older": "Older weigh-in",
+      "newer": "Newer weigh-in"
+    },
+    "when": {
+      "today": {
+        "morning": "this morning",
+        "afternoon": "this afternoon",
+        "evening": "this evening",
+        "night": "last night"
+      },
+      "yesterday": {
+        "morning": "yesterday morning",
+        "afternoon": "yesterday afternoon",
+        "evening": "yesterday evening",
+        "night": "last night"
+      },
+      "part": {
+        "morning": "morning",
+        "afternoon": "afternoon",
+        "evening": "evening",
+        "night": "night"
+      },
+      "weekday": "{weekday} {part}",
+      "lastWeek": "last {weekday}"
+    },
+    "details": {
+      "title": "Weigh-in",
+      "failed": "Could not load the weigh-in."
+    }
+  },
   "weightLog": {
     "title": "Vekt",
     "intro": "Registrer vekten din. Den lagres med en gang og inngår i kalenderen og statistikken.",
@@ -1690,7 +1875,7 @@
     "saving": "Lagrer…",
     "saveError": "Vekten kunne ikke lagres.",
     "saved": "Vekt lagret.",
-    "moreDetailsLink": "Registrer med flere detaljer (klær, sko, tidspunkt)",
+    "moreDetailsLink": "Du mangler å kalibrere vekten din",
     "loading": "Henter…",
     "noEntriesYet": "Ingen veiinger registrert ennå.",
     "recentTitle": "Siste veiinger"
@@ -1830,6 +2015,7 @@
     "kcalPer100g": "({kcal} kcal/100g)",
     "kcalPer100ml": "({kcal} kcal/100ml)",
     "kcalAmount": "{kcal} kalorier",
+    "perPiece": "/stk.",
     "sizeLabel": "Størrelse",
     "sizeSmall": "Liten",
     "sizeMedium": "Normal",
@@ -1869,9 +2055,6 @@
     "extendedNutrition": "Næringsinnhold",
     "extendedNutritionDisclaimer": "Vises bare når det finnes data for dette produktet.",
     "toxins": "Giftstoffer",
-    "tagCountryOfOrigin": "Fra {country}",
-    "tagAlcoholPercent": "{percent} % alkohol",
-    "tagFatPercent": "{percent} % fett",
     "toxinPregnancyBadge": "Gravid/ammende",
     "toxinsDisclaimer": "Basert på innholdsfortegnelsen — ikke en måling av akkurat dette produktet. Kilder: Mattilsynet og EFSA.",
     "unhealthyFat": "Usunt fett",
@@ -1967,7 +2150,7 @@
     "favorites": "Favoritter",
     "addFavorite": "Legg til i favoritter",
     "removeFavorite": "Fjern fra favoritter",
-    "recentlyAdded": "Sist brukt",
+    "recentlyAdded": "Sist lagt til",
     "searchResults": "Søkeresultater",
     "allItems": "Alle varer",
     "emptyState": "Søk etter en matvare, eller legg til en favoritt for å se den her.",
@@ -1975,6 +2158,8 @@
     "noResults": "Ingen resultater"
   },
   "integrations": {
+    "moveFromTitle": "MyFitnessPal or Lifesum",
+    "moveFromDescription": "Move your diary over with a screen recording.",
     "helloFreshTitle": "HelloFresh-oppskrifter",
     "helloFreshDescription": "Vis HelloFresh-oppskrifter sammen med de delte rettene under Oppskrifter",
     "title": "Integrasjoner",
@@ -2004,6 +2189,7 @@
     "enable": "Slå på",
     "unavailable": "Ikke tilgjengelig ennå",
     "sections": {
+      "moveFrom": "Move from another app",
       "active": "Aktive integrasjoner",
       "popular": "Mest brukt",
       "recipes": "Oppskrifter",
@@ -3014,7 +3200,13 @@
     "devicesHeading": "Spor søvn med smartutstyr",
     "devicesIntro": "Koble til en klokke eller app, så kan du sammenligne opplevd søvn med faktisk søvn."
   },
+  "helpGuide": {
+    "title": "Veiledning",
+    "end": "Avslutt veiledningen",
+    "missing": "Jeg finner ikke knappen akkurat nå. Åpne siden manuelt via snarveien i chatten."
+  },
   "helpChat": {
+    "guideMe": "Veiled meg",
     "open": "Hjelp",
     "title": "Hjelp",
     "welcome": "Hei! Jeg er Hello Cals hjelpechatbot. Spør meg om appen, så hjelper jeg deg videre. Vil du heller snakke med et menneske, trykker du på \"Snakk med en medarbeider\".",
@@ -3042,5 +3234,31 @@
     "sendError": "Meldingen ble ikke sendt. Prøv igjen.",
     "escalateError": "Det lyktes ikke å sende til Support. Prøv igjen, eller bruk kontaktskjemaet.",
     "rateLimited": "Du har stilt mange spørsmål på kort tid. Vent litt, eller snakk med en medarbeider."
+  },
+  "migrationImport": {
+    "title": "Move from MyFitnessPal or Lifesum",
+    "intro": "Record your screen while you scroll through your diary in the other app. Hello Cal reads the foods, amounts and calories and adds them to your calendar.",
+    "fromApp": "From the app",
+    "step1": "Start a screen recording on your phone (or take screenshots).",
+    "step2": "Open the diary in the other app and scroll calmly back, day by day.",
+    "step3": "Stop the recording and choose the video here.",
+    "choose": "Choose screen recording or screenshots",
+    "privacy": "The images are not saved. They are read once, and only the rows (date, meal, food, amount and nutrition) are kept until you choose what to import.",
+    "preparing": "Preparing the recording…",
+    "reading": "Reading image {done} of {total}…",
+    "readError": "The recording could not be read. Try again, or use screenshots.",
+    "reviewHint": "Review the rows. Uncertain rows are not preselected.",
+    "nothingFound": "We found no foods in the recording. Try scrolling more slowly so each day stays still for a moment.",
+    "unsure": "uncertain",
+    "importSelected": "Import {count} rows",
+    "commitError": "The import failed. Please try again.",
+    "done": "{count} entries have been added to your calendar.",
+    "openCalendar": "Open the calendar",
+    "meal": {
+      "breakfast": "Breakfast",
+      "lunch": "Lunch",
+      "dinner": "Dinner",
+      "snack": "Snack"
+    }
   }
 }

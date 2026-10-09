@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { postJson } from "@/components/admin/PartnerManagers";
+import { useConfirmSheet } from "@/lib/use-confirm-sheet";
 import type { AgreementUsage } from "@/lib/partner-performance";
 import { INPUT, LABEL, dateDa, dkk, isoDate, BTN, PRIMARY } from "@/components/admin/partner/ui";
 
@@ -39,14 +40,14 @@ function UsageBar({ spent, budget }: { spent: number; budget: number }) {
 
 export function AgreementsPanel({ partnerId, agreements }: { partnerId: string; agreements: AgreementUsage[] }) {
   const router = useRouter();
+  const { ask, sheet } = useConfirmSheet();
   const [draft, setDraft] = useState<Draft | null>(null);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const current = agreements.filter((a) => a.isCurrent);
   const others = agreements.filter((a) => !a.isCurrent);
 
-  async function run(body: Record<string, unknown>, confirmText?: string) {
-    if (confirmText && !window.confirm(confirmText)) return false;
+  async function execute(body: Record<string, unknown>) {
     setBusy(true);
     setError(null);
     const res = await postJson("/api/admin/partners", body);
@@ -57,6 +58,15 @@ export function AgreementsPanel({ partnerId, agreements }: { partnerId: string; 
     }
     router.refresh();
     return true;
+  }
+
+  // Med confirmText vises en bekræftelse som bundark (ikke window.confirm).
+  async function run(body: Record<string, unknown>, confirmText?: string) {
+    if (confirmText) {
+      ask(confirmText, () => void execute(body));
+      return false;
+    }
+    return execute(body);
   }
 
   async function save(e: React.FormEvent) {
@@ -105,6 +115,7 @@ export function AgreementsPanel({ partnerId, agreements }: { partnerId: string; 
 
   return (
     <section className="flex flex-col gap-3">
+      {sheet}
       <div className="flex items-center justify-between gap-2">
         <h3 className="hf-type-title text-hf-black">Aktive aftaler</h3>
         {!draft && <button className={BTN} onClick={() => setDraft(emptyDraft())}>Ny aftale</button>}

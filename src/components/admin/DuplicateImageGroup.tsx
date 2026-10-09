@@ -20,32 +20,12 @@ function fileName(url: string) {
 
 export function DuplicateImageGroup({ group }: { group: ImageGroup }) {
   const router = useRouter();
-  const [primaryId, setPrimaryId] = useState(
-    group.images.find((img) => img.isPrimary)?.id ?? group.images[0]?.id ?? "",
-  );
-  const [kept, setKept] = useState<Set<string>>(() => new Set(group.images.map((img) => img.id)));
+  const currentId = group.images.find((img) => img.isPrimary)?.id ?? group.images[0]?.id ?? "";
+  const [primaryId, setPrimaryId] = useState(currentId);
   const [sizes, setSizes] = useState<Record<string, string>>({});
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [done, setDone] = useState(false);
-
-  function toggleKeep(id: string) {
-    setKept((prev) => {
-      const next = new Set(prev);
-      if (next.has(id)) {
-        if (id === primaryId) return prev;
-        next.delete(id);
-      } else {
-        next.add(id);
-      }
-      return next;
-    });
-  }
-
-  function choosePrimary(id: string) {
-    setPrimaryId(id);
-    setKept((prev) => new Set(prev).add(id));
-  }
 
   async function save(keepIds: string[]) {
     setBusy(true);
@@ -71,7 +51,7 @@ export function DuplicateImageGroup({ group }: { group: ImageGroup }) {
   if (done) return null;
 
   return (
-    <section className="flex flex-col gap-3 hf-surface p-4">
+    <section className="hf-panel">
       <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
         <a
           href={`/admin/products/${group.productId}`}
@@ -87,18 +67,14 @@ export function DuplicateImageGroup({ group }: { group: ImageGroup }) {
         )}
       </div>
 
-      <div className="flex gap-3 overflow-x-auto pb-1">
+      <div className="hf-pick-grid">
         {group.images.map((img) => {
           const isPrimary = img.id === primaryId;
-          const isKept = kept.has(img.id);
+          const isCurrent = img.id === currentId;
           return (
-            <div
-              key={img.id}
-              className={`flex w-44 shrink-0 flex-col gap-1.5 rounded-lg p-2 ${
-                isPrimary ? "border-2 border-hf-green-dark bg-hf-gray-light" : "border border-hf-gray-border"
-              }`}
-            >
-              <a href={img.url} target="_blank" rel="noreferrer" className="block">
+            <div key={img.id} className={`hf-pick-card ${isPrimary ? "is-selected" : ""}`}>
+              <span className={`hf-pick-badge ${isCurrent ? "is-current" : ""}`}>{isCurrent ? "Vises i dag" : "Alternativ"}</span>
+              <a href={img.url} target="_blank" rel="noreferrer" className="hf-pick-frame">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={img.url}
@@ -107,33 +83,20 @@ export function DuplicateImageGroup({ group }: { group: ImageGroup }) {
                     const el = e.currentTarget;
                     setSizes((prev) => ({ ...prev, [img.id]: `${el.naturalWidth} × ${el.naturalHeight}` }));
                   }}
-                  className={`h-40 w-full rounded-md bg-hf-white object-contain ${isKept ? "" : "opacity-30"}`}
                 />
               </a>
               <span className="hf-type-caption break-all text-hf-black">{fileName(img.url)}</span>
               <span className="hf-type-caption text-text-secondary">
                 {[sizes[img.id], ...img.tags.filter((t) => t !== "Import")].filter(Boolean).join(" · ") || " "}
               </span>
-              <label className="hf-type-small flex items-center gap-2 text-hf-black">
-                <input
-                  type="radio"
-                  name={`primary-${group.productId}`}
-                  checked={isPrimary}
-                  onChange={() => choosePrimary(img.id)}
-                  className="accent-hf-green-dark"
-                />
-                Hovedbillede
-              </label>
-              <label className="hf-type-small flex items-center gap-2 text-hf-black">
-                <input
-                  type="checkbox"
-                  checked={isKept}
-                  disabled={isPrimary}
-                  onChange={() => toggleKeep(img.id)}
-                  className="accent-hf-green-dark"
-                />
-                Behold
-              </label>
+              <button
+                type="button"
+                onClick={() => setPrimaryId(img.id)}
+                aria-pressed={isPrimary}
+                className={`h-12 ${isPrimary ? "hf-btn-secondary" : "hf-btn-primary"}`}
+              >
+                {isPrimary ? "Valgt" : "Vælg"}
+              </button>
             </div>
           );
         })}
@@ -142,21 +105,11 @@ export function DuplicateImageGroup({ group }: { group: ImageGroup }) {
       {error && <p className="hf-type-small text-hf-red-dark">{error}</p>}
 
       <div className="flex flex-wrap justify-end gap-2">
-        <button
-          type="button"
-          onClick={() => save([primaryId])}
-          disabled={busy}
-          className="hf-type-small rounded-md border border-hf-gray-border px-3 py-1.5 text-text-secondary disabled:opacity-60"
-        >
-          Behold kun hovedbilledet
+        <button type="button" onClick={() => save([primaryId])} disabled={busy} className="hf-btn-secondary h-12 px-4">
+          Slet de øvrige billeder
         </button>
-        <button
-          type="button"
-          onClick={() => save([...kept])}
-          disabled={busy}
-          className="hf-type-small hf-type-strong rounded-md bg-hf-green-dark px-4 py-1.5 text-hf-white disabled:opacity-60"
-        >
-          {busy ? "Gemmer…" : `Gem valg (${kept.size} af ${group.images.length})`}
+        <button type="button" onClick={() => save(group.images.map((img) => img.id))} disabled={busy} className="hf-btn-primary h-12 px-4">
+          {busy ? "Gemmer…" : "Gem hovedbillede"}
         </button>
       </div>
     </section>

@@ -9,6 +9,7 @@ import {
   IconSearch,
 } from "@tabler/icons-react";
 import { flattenPageTree, isDynamicPath, type PageArea, type PageNode } from "@/lib/page-tree";
+import { useConfirmSheet } from "@/lib/use-confirm-sheet";
 
 // Flueben for "testet" gemmes kun i denne browser (en bekvemmelighed for
 // admin under test, ikke data der skal deles).
@@ -81,6 +82,7 @@ function countNodes(nodes: PageNode[]): number {
 }
 
 export function PageTreeView({ areas }: { areas: PageArea[] }) {
+  const { ask, sheet } = useConfirmSheet();
   const [query, setQuery] = useState("");
   const [collapsed, setCollapsed] = useState<Set<string>>(new Set());
   const testedRaw = useSyncExternalStore(subscribe, readRaw, () => "[]");
@@ -104,8 +106,7 @@ export function PageTreeView({ areas }: { areas: PageArea[] }) {
   }
 
   function resetTested() {
-    if (!window.confirm("Fjern alle flueben for testede sider?")) return;
-    writeTested(new Set());
+    ask("Fjern alle flueben for testede sider?", () => writeTested(new Set()));
   }
 
   function toggleArea(id: string) {
@@ -122,7 +123,8 @@ export function PageTreeView({ areas }: { areas: PageArea[] }) {
 
   return (
     <div className="flex flex-col gap-5">
-      <div className="flex flex-col gap-3 hf-surface p-4">
+      {sheet}
+      <div className="hf-panel">
         <div className="hf-type-body flex flex-wrap items-center gap-x-6 gap-y-2">
           <span className="hf-type-strong text-hf-black">{total} sider</span>
           <span className="text-text-secondary">
@@ -181,7 +183,7 @@ export function PageTreeView({ areas }: { areas: PageArea[] }) {
             >
               <span className="flex-1">
                 <span className="hf-type-strong block">{area.title}</span>
-                <span className="hf-type-small text-text-secondary block">{area.description}</span>
+                <span className="hf-type-small text-hf-white/85 block">{area.description}</span>
               </span>
               <span className="hf-type-small rounded-full bg-hf-white/20 px-2 py-0.5">{countNodes(area.pages)}</span>
               <IconChevronDown size={18} className={`transition-transform ${isCollapsed ? "-rotate-90" : ""}`} />

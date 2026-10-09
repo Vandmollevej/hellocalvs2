@@ -55,8 +55,8 @@ export default async function AdminIntegrationsPage({
     <div className="flex flex-col gap-8">
       <div className="flex flex-col gap-3">
         <div>
-          <h1 className="text-lg font-semibold text-text-primary">Integrationer</h1>
-          <p className="text-sm text-text-secondary">
+          <h1 className="text-text-primary hf-type-title hf-type-strong">Integrationer</h1>
+          <p className="text-text-secondary hf-type-body">
             {o.range.label}: {o.range.fromDay} – {o.range.toDay} · procenter sammenlignes med en lige så lang periode lige før.
             Til-/frakoblinger og synkroniseringer registreres fra 2. oktober 2026; forbindelser, der var aktive
             da, er talt med fra deres tilkoblingsdato.
@@ -93,7 +93,7 @@ export default async function AdminIntegrationsPage({
               <li key={i}>
                 <Link
                   href={`/admin/integrations/${alert.slug}`}
-                  className={`flex items-center gap-2 rounded-lg border bg-surface-1 px-3 py-2 text-sm hover:bg-surface-2 ${ALERT_TONE[alert.tone]}`}
+                  className={`hf-type-body flex items-center gap-2 rounded-lg border bg-surface-1 px-3 py-2 hover:bg-surface-2 ${ALERT_TONE[alert.tone]}`}
                 >
                   <span aria-hidden>{alert.tone === "info" ? "ℹ" : "!"}</span>
                   <span>{alert.text}</span>
@@ -108,19 +108,19 @@ export default async function AdminIntegrationsPage({
       )}
 
       <Section title="Alle integrationer" intro="Klik på en integration for installationer, brug, grafer og frakoblinger.">
-        <div className="overflow-x-auto rounded-lg border border-border-strong bg-surface-1">
-          <table className="w-full min-w-[860px] text-sm">
+        <div className="overflow-x-auto hf-surface">
+          <table className="w-full min-w-[860px] hf-type-body">
             <thead>
-              <tr className="border-b border-border-strong bg-surface-2 text-left text-xs text-text-secondary">
-                <th className="px-3 py-2 font-medium">Integration</th>
-                <th className="px-3 py-2 font-medium">Aktive nu</th>
-                <th className="px-3 py-2 text-right font-medium">Nye</th>
-                <th className="px-3 py-2 text-right font-medium">Frakoblet</th>
-                <th className="px-3 py-2 text-right font-medium">Synk.</th>
-                <th className="px-3 py-2 text-right font-medium">Brugere i brug</th>
-                <th className="px-3 py-2 text-right font-medium">Datapunkter</th>
-                <th className="px-3 py-2 text-right font-medium">Fejl nu</th>
-                <th className="px-3 py-2 text-right font-medium">Seneste synk.</th>
+              <tr className="border-b border-border-strong bg-surface-2 text-left text-text-secondary hf-type-small">
+                <th className="px-3 py-2 hf-type-strong">Integration</th>
+                <th className="px-3 py-2 hf-type-strong">Aktive nu</th>
+                <th className="px-3 py-2 text-right hf-type-strong">Nye</th>
+                <th className="px-3 py-2 text-right hf-type-strong">Frakoblet</th>
+                <th className="px-3 py-2 text-right hf-type-strong">Synk.</th>
+                <th className="px-3 py-2 text-right hf-type-strong">Brugere i brug</th>
+                <th className="px-3 py-2 text-right hf-type-strong">Datapunkter</th>
+                <th className="px-3 py-2 text-right hf-type-strong">Fejl nu</th>
+                <th className="px-3 py-2 text-right hf-type-strong">Seneste synk.</th>
               </tr>
             </thead>
             <tbody>
@@ -132,7 +132,7 @@ export default async function AdminIntegrationsPage({
                       <Link href={`/admin/integrations/${row.slug}`} className="flex items-center gap-2.5">
                         <IntegrationIcon src={row.meta.icon} />
                         <span className="flex flex-col gap-0.5">
-                          <span className="font-medium text-text-primary underline-offset-2 hover:underline">{row.meta.label}</span>
+                          <span className="text-text-primary underline-offset-2 hover:underline hf-type-strong">{row.meta.label}</span>
                           <KindBadge kind={row.meta.kind} configured={row.configured} />
                         </span>
                       </Link>
@@ -146,7 +146,7 @@ export default async function AdminIntegrationsPage({
                             style={{ width: `${(active / maxActive) * 100}%`, background: C.green }}
                           />
                         </span>
-                        <span className="text-xs text-text-muted">{pct(active, activeTotal)}</span>
+                        <span className="text-text-muted hf-type-small">{pct(active, activeTotal)}</span>
                       </div>
                     </td>
                     <td className="px-3 py-2 text-right tabular-nums text-text-primary">{num.format(row.period.connected)}</td>
@@ -155,11 +155,11 @@ export default async function AdminIntegrationsPage({
                     <td className="px-3 py-2 text-right tabular-nums text-text-primary">{num.format(row.period.activeUsers)}</td>
                     <td className="px-3 py-2 text-right tabular-nums text-text-primary">{num.format(row.period.delivered)}</td>
                     <td
-                      className={`px-3 py-2 text-right tabular-nums ${row.errorNow > 0 ? "font-semibold text-hf-red-dark" : "text-text-primary"}`}
+                      className={`px-3 py-2 text-right tabular-nums ${row.errorNow > 0 ? "hf-type-strong text-hf-red-dark" : "text-text-primary"}`}
                     >
                       {num.format(row.errorNow)}
                     </td>
-                    <td className="px-3 py-2 text-right text-xs text-text-secondary">{formatDateTime(row.lastSyncAt)}</td>
+                    <td className="px-3 py-2 text-right text-text-secondary hf-type-small">{formatDateTime(row.lastSyncAt)}</td>
                   </tr>
                 );
               })}

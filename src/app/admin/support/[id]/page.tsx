@@ -46,7 +46,7 @@ export default async function AdminSupportThreadPage({ params }: { params: Promi
           {formatAdminTime(request.createdAt)}
         </p>
         <p className="hf-type-small text-text-secondary">
-          {request.user.displayName} · {request.user.email} · bruger siden {instantToDateKey(request.user.createdAt)}
+          {request.user.displayName} · bruger siden {instantToDateKey(request.user.createdAt)}
         </p>
         {unanswered && (
           <p className={`hf-type-small hf-type-strong ${overdue ? "text-hf-red-dark" : "text-hf-warning-text"}`}>

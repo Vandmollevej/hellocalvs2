@@ -60,7 +60,7 @@ export default async function AgentsPage({ searchParams }: { searchParams: Promi
 
       <form
         action={createAgent}
-        className="flex flex-col gap-3 hf-surface p-4 sm:flex-row sm:items-end"
+        className="sm:flex-row sm:items-end hf-panel"
       >
         <label className="hf-type-body flex flex-1 flex-col gap-1">
           Navn

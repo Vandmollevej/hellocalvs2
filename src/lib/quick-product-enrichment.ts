@@ -20,6 +20,9 @@ import { syncProductNutritionFeaturesSafely } from "@/lib/product-nutrition-feat
 import type { IngredientsAnalysis, NutritionAnalysis } from "@/lib/product-analysis-types";
 import { debugLog, errorText } from "@/lib/debug-log";
 import { composeProductName, normalizeProductName } from "@/lib/product-naming";
+import { petFoodBlockReason } from "@/lib/pet-food-blacklist";
+import { recordPetFoodAttempt } from "@/lib/pet-food-strikes";
+import { rejectProduct } from "@/lib/product-approval";
 import { addCertificationFilters } from "@/lib/product-certification-filters";
 
 // "Opret straks" (docs/DECISIONS.md 2026-09-27): kameraflowet opretter varen,
@@ -518,9 +521,43 @@ export async function enrichQuickProduct(
   const product = await prisma.product
     .findUnique({
       where: { id: input.productId },
-      select: { name: true, pendingFields: true, kcalPer100g: true, brand: { select: { name: true } } },
+      select: {
+        name: true,
+        pendingFields: true,
+        kcalPer100g: true,
+        ingredientsText: true,
+        createdByUserId: true,
+        brand: { select: { name: true } },
+      },
     })
     .catch(() => null);
+
+  // Dyrefoder-spærring: først nu kender vi navn/brand/ingredienser — er det
+  // dyrefoder, afvises varen med det samme (src/lib/pet-food-blacklist.ts).
+  const petFoodBlock = product
+    ? await petFoodBlockReason({ texts: [product.name, product.brand?.name, product.ingredientsText] })
+    : null;
+  if (product && petFoodBlock) {
+    await rejectProduct(input.productId).catch(() => null);
+    // Vises i admin-oversigten til gennemsyn og tæller som forsøg for den, der oprettede varen.
+    await recordPetFoodAttempt({
+      userId: product.createdByUserId,
+      source: "ENRICHMENT",
+      kind: "AUTO_REJECTED",
+      productId: input.productId,
+      productName: product.name,
+      imageUrls: input.frontPhotoUrl ? [input.frontPhotoUrl] : undefined,
+      matchedBy: `${petFoodBlock.reason}: ${petFoodBlock.match}`,
+    });
+    await debugLog({
+      category: "scan",
+      event: "pet_food_rejected",
+      level: "warn",
+      message: `Varen afvist automatisk: dyrefoder (${petFoodBlock.reason}: ${petFoodBlock.match}) — ${product.name}`,
+      productId: input.productId,
+    });
+  }
+
   await debugLog({
     category: "scan",
     event: "enrichment_done",

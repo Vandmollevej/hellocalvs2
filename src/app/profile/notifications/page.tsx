@@ -40,7 +40,7 @@ function SectionTitle({ children }: { children: React.ReactNode }) {
 }
 
 function SectionDivider() {
-  return <div className="border-t" style={{ borderColor: "var(--hf-color-line)" }} />;
+  return <div className="border-t border-hf-line" />;
 }
 
 export default function CommunicationPage() {
@@ -138,7 +138,7 @@ export default function CommunicationPage() {
         ) : (
           <div className="flex flex-col gap-4">
             {preferences.map((pref) => (
-              <div key={pref.event} className="rounded-[8px] bg-hf-tan p-4">
+              <div key={pref.event} className="bg-hf-tan p-4 rounded-card">
                 <p className="hf-type-body mb-4">
                   {EVENT_LABELS[pref.event] ?? pref.event}
                 </p>

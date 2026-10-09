@@ -191,7 +191,7 @@ export function BarcodeScanOverlay({
   const guideShort = guideLong / BARCODE_GUIDE_ASPECT;
 
   return (
-    <div className="pointer-events-none absolute inset-0" style={{ containerType: "inline-size" }}>
+    <div className="pointer-events-none absolute inset-0 @container">
       {/* Guide box + light dim around it. Fades (never snaps) away once a
           real barcode is being decoded, and back when it's gone. */}
       <div

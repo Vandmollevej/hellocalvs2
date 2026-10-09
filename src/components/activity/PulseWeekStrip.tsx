@@ -43,7 +43,7 @@ export function PulseWeekStrip({ activities, askedAt }: { activities: WeekActivi
               key={day.key}
               aria-label={label}
               aria-current={day.isToday ? "date" : undefined}
-              className={`flex min-w-0 flex-col items-center gap-1 rounded-[8px] px-0.5 py-2 ${
+              className={`rounded-card flex min-w-0 flex-col items-center gap-1 px-0.5 py-2 ${
                 day.isAskedDay ? "bg-hf-tan" : ""
               } ${day.isFuture ? "opacity-50" : ""}`}
             >

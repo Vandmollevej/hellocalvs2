@@ -208,23 +208,24 @@ export async function ingestLogoUpload(batchId: string, meta: LogoClientMeta, up
   started = performance.now();
   const { baseName, variant } = parseLogoFileName(meta.fileName);
   const brand = (await brandsByKey()).get(normalizeBrandName(baseName)) ?? null;
-  steps.push(
-    brand
-      ? {
-          key: "match",
-          label: "Finder brand",
-          status: "ok",
-          ms: Math.round(performance.now() - started),
-          detail: `«${baseName}» = brandet ${brand.name}${variant ? ` (ekstra udgave ${variant})` : ""}`,
-        }
-      : {
-          key: "match",
-          label: "Finder brand",
-          status: "warn",
-          ms: Math.round(performance.now() - started),
-          detail: `Intet brand hedder «${baseName}» — vælg brand nedenfor, eller opret det`,
-        },
-  );
+  if (!brand) {
+    // Uden præcist brand-match afvises filen og gemmes ikke, så databasen ikke
+    // fyldes med logoer uden ejer (kun afvisningen står i oversigten).
+    const message = `Afvist: intet brand hedder «${baseName}»`;
+    steps.push({ key: "match", label: "Finder brand", status: "error", ms: Math.round(performance.now() - started), detail: message });
+    const row = await prisma.brandLogoUpload.create({
+      data: { ...common, status: "FAILED", steps: steps as unknown as Prisma.InputJsonValue, message },
+      include: withBrand,
+    });
+    return toUploadItem(row);
+  }
+  steps.push({
+    key: "match",
+    label: "Finder brand",
+    status: "ok",
+    ms: Math.round(performance.now() - started),
+    detail: `«${baseName}» = brandet ${brand.name}${variant ? ` (ekstra udgave ${variant})` : ""}`,
+  });
 
   // 3. Gem filen (nyt navn pr. upload, så ingen gammel cache rammer)
   started = performance.now();
@@ -243,14 +244,6 @@ export async function ingestLogoUpload(batchId: string, meta: LogoClientMeta, up
   const fileData = { ...common, imageUrl, width: size.width, height: size.height, bytes: png.length };
 
   try {
-    if (!brand) {
-      const row = await prisma.brandLogoUpload.create({
-        data: { ...fileData, status: "UNMATCHED", steps: steps as unknown as Prisma.InputJsonValue, message: "Intet brand matcher filnavnet" },
-        include: withBrand,
-      });
-      return toUploadItem(row);
-    }
-
     // 4. Sæt som brandets logo (en ekstra udgave sættes ikke, hvis brandet
     //    allerede har fået logo fra samme parti)
     return await withBrandLock(brand.id, async () => {

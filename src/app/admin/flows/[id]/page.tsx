@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { requireAdminUser } from "@/lib/require-admin";
 import { getFlow } from "@/lib/flows";
+import { sanitizeFlowConditions, sanitizeFlowKind } from "@/lib/flow-conditions";
 import { FlowEditor } from "@/components/admin/FlowEditor";
 import { HfChevron } from "@/components/hf/HfChevron";
 
@@ -28,11 +29,17 @@ export default async function AdminFlowPage({ params }: { params: Promise<{ id: 
           name: flow.name,
           description: flow.description ?? "",
           enabled: flow.enabled,
+          kind: sanitizeFlowKind(flow.kind),
+          conditions: sanitizeFlowConditions(flow.conditions),
+          priority: flow.priority,
+          maxShows: flow.maxShows,
           pages: flow.pages.map((page) => ({
             id: page.id,
             title: page.title,
             bodyHtml: page.bodyHtml,
             buttonLabel: page.buttonLabel,
+            actionLabel: page.actionLabel ?? "",
+            actionHref: page.actionHref ?? "",
           })),
         }}
       />

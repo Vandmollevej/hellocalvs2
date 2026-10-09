@@ -54,7 +54,7 @@ export default function MenstrualCycleDisplaySettingsPage() {
   return (
     <HfScreen title={t("settings.menstrualCycle")}>
       <div className="hf-page">
-        <div className="rounded-2xl bg-hf-green px-4 py-4 text-hf-white">
+        <div className="hf-card hf-card--brand">
           <p className="hf-type-small">{t("menstrualCycleSettings.intro")}</p>
         </div>
 

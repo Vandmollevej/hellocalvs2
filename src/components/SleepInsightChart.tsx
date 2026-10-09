@@ -113,7 +113,7 @@ function BodyFatChart({ days }: { days: SleepStatDay[] }) {
   const labelIndexes = n <= 7 ? days.map((_, i) => i) : [0, Math.floor((n - 1) / 2), n - 1];
 
   return (
-    <div className="rounded-2xl bg-hf-tan p-4">
+    <div className="hf-card">
       <h3 className="hf-type-body hf-type-strong text-hf-black">{t("sleepStats.chart.bodyFat")}</h3>
       <p className="hf-type-small mt-1 text-text-secondary">{t("sleepStats.chartInfo.bodyFat")}</p>
       <svg viewBox="0 0 320 146" className="mt-3 w-full" role="img" aria-label={t("sleepStats.chart.bodyFat")}>
@@ -217,7 +217,7 @@ function SleepBarChart({ kind, days }: { kind: Exclude<SleepInsightKind, "bodyFa
   const labelIndexes = n <= 7 ? days.map((_, i) => i) : [0, Math.floor((n - 1) / 2), n - 1];
 
   return (
-    <div className="rounded-2xl bg-hf-tan p-4">
+    <div className="hf-card">
       <h3 className="hf-type-body hf-type-strong text-hf-black">{t(`sleepStats.chart.${kind}`)}</h3>
       <p className="hf-type-small mt-1 text-text-secondary">{t(`sleepStats.chartInfo.${kind}`)}</p>
 

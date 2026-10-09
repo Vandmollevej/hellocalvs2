@@ -17,11 +17,11 @@ export default async function ScanHistorikPage() {
     <ScanScreen title="Historik" showBack>
       <div className="flex flex-col gap-4 p-4">
         <div className="grid grid-cols-2 gap-4">
-          <div className="rounded-[12px] p-4" style={{ background: "var(--hf-color-card)" }}>
+          <div className="p-4 bg-hf-card rounded-card">
             <p className="hf-type-section-title">{rows.length}</p>
             <p className="hf-type-caption">Oprettede varer</p>
           </div>
-          <div className="rounded-[12px] p-4" style={{ background: "var(--hf-color-card)" }}>
+          <div className="p-4 bg-hf-card rounded-card">
             <p className="hf-type-section-title">{formatKroner(paidOre)}</p>
             <p className="hf-type-caption">Udbetalt i alt</p>
           </div>

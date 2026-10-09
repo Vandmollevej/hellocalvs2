@@ -276,8 +276,11 @@
     "forgetTitle": "Ret til at blive glemt",
     "forgetIntro": "Få alle dine personoplysninger slettet (GDPR). Anonymiserede data, der ikke kan kobles til dig, bevares.",
     "forgetButton": "Slet mine data",
-    "confirmWarning": "Dette kan ikke fortrydes. Skriv SLET for at bekræfte.",
-    "confirmPlaceholder": "SLET",
+    "confirmWarning": "Dette kan ikke fortrydes. Skriv {word} for at bekræfte.",
+    "confirmPlaceholder": "{word}",
+    "confirmWord": "SLET",
+    "closeWarning": "Skriv {word} for at bekræfte.",
+    "closeWord": "LUK",
     "confirmButton": "Bekræft",
     "error": "Noget gik galt — prøv igen"
   },
@@ -440,7 +443,7 @@
     "showTooltips": "Vis tooltips",
     "showTooltipsDescription": "Viser en lille hjælpetekst under de forskellige indstillinger og vinduer.",
     "showStartupTips": "Vis start-up tips",
-    "showStartupTipsDescription": "Viser et kort tip på hele skærmen, når du åbner appen, om funktioner, du endnu ikke har brugt."
+    "showStartupTipsDescription": "Viser korte tips, guider og hint-bannere om funktioner, du endnu ikke har brugt."
   },
   "guide": {
     "back": "Tilbage",
@@ -555,7 +558,23 @@
     "steps": "Skridt",
     "distanceKm": "Kilometer bevæget"
   },
+  "footerArc": {
+    "open": "Åbn tilføj-knapper",
+    "close": "Luk tilføj-knapper",
+    "editHint": "Træk en knap ned for at fjerne den",
+    "done": "Færdig",
+    "removeItem": "Fjern {item}",
+    "addItem": "Tilføj {item}",
+    "allInUse": "Alle knapper er i brug"
+  },
   "addMenu": {
+    "editEditHint": "Hold en flise inde for at flytte eller slette den",
+    "editDone": "Færdig",
+    "editAdd": "Tilføj",
+    "editRemoveTile": "Fjern {item}",
+    "editAddTile": "Tilføj {item}",
+    "editNoneHidden": "Alle felter er i brug",
+    "editAddTitle": "Tilføj felt",
     "title": "Tilføj",
     "food": "Tilføj mad",
     "scan": "Scan vare",
@@ -935,7 +954,18 @@
     "noResults": "Ingen opskrifter matcher din søgning",
     "tabMine": "Mine retter",
     "tabShared": "Delte retter",
+    "statusNotShared": "Ikke delt",
+
     "sharedSearchPlaceholder": "Søg i titel, ingredienser …",
+    "createNew": "Opret ny ret",
+    "sourceAll": "Opskrifter",
+    "sourceShared": "Delte retter",
+    "sourceHelloFresh": "Hello Fresh",
+    "sourceValdemarsro": "Valdemarsro",
+    "sourceFilterAria": "Vælg opskriftskilde",
+    "filtersSheetTitle": "Filtre",
+    "goToRecipe": "Gå til opskrift",
+    "valdemarsroSource": "Valdemarsro",
     "sortRelevance": "Relevans",
     "sortPopular": "Popularitet",
     "sortDate": "Dato",
@@ -1091,6 +1121,19 @@
     }
   },
   "recipeDetail": {
+
+    "shareRejected": "Din ret er ikke delt med andre, fordi den blev afvist. Du beholder den selv.",
+
+
+    "shareRejectedReason": "Begrundelse: {reason}",
+
+
+    "servingsLabel": "{count} personer",
+
+
+    "thumbUp": "Tommel op",
+
+    "thumbDown": "Tommel ned",
     "loading": "Henter retten …",
     "notFound": "Retten findes ikke længere",
     "ingredients": "Ingredienser",
@@ -1156,7 +1199,55 @@
     }
   },
   "createDish": {
+    "servings": "Antal personer",
+
     "shareLabel": "Ønsker du at dele retten med andre brugere?",
+
+    "modeManual": "Manuelt",
+
+    "modeText": "Indsæt tekst",
+
+    "modeScan": "Scan",
+
+    "shareQuestionTitle": "Vil du dele retten?",
+
+    "shareQuestionBody": "Andre brugere kan finde og bruge din ret. Ingen personlige detaljer deles. Du kan også dele den senere under retten.",
+
+    "shareYes": "Del",
+
+    "shareNo": "Ikke nu",
+
+    "pasteTitle": "Indsæt opskriftstekst",
+
+    "pastePlaceholder": "Indsæt hele opskriftsteksten her",
+
+    "pasteSourcePlaceholder": "Link til kilden (valgfrit)",
+
+    "pasteInsert": "Indsæt",
+
+    "pasteWorking": "Læser opskriften …",
+
+    "pasteError": "Kunne ikke læse opskriften",
+
+    "scanTitle": "Scan opskrift",
+
+    "scanTake": "Tag billede",
+
+    "scanGallery": "Fra arkiv",
+
+    "scanFinish": "Afslut",
+
+    "scanWorking": "Læser siderne …",
+
+    "scanError": "Kunne ikke læse siderne",
+
+    "scanHint": "Tilføj siderne i rækkefølge. Første billede bliver rettens billede.",
+
+    "importMissing": "Mangler match eller mængde — tilføj selv:",
+
+    "importDone": "Opskriften er indsat",
+
+    "importNutrition": "Næring i teksten (pr. portion)",
     "shareInfo": "Ingen personlige detaljer deles, når du deler en ret",
     "shareInfoAria": "Om deling",
     "shareError": "Retten er gemt, men kunne ikke deles lige nu",
@@ -1261,6 +1352,11 @@
   "offlineQueue": {
     "pendingBannerOne": "1 oprettelse afventer upload",
     "pendingBannerMany": "{count} oprettelser afventer upload"
+  },
+  "offline": {
+    "message": "Ingen forbindelse — det her kræver internet. Prøv igen, når du er online.",
+    "banner": "Du er offline — nogle funktioner virker ikke",
+    "barcodeLookup": "Stregkoden blev læst, men du har ingen forbindelse. Prøv igen, når du er online."
   },
   "profile": {
     "title": "Mine oplysninger",
@@ -1376,7 +1472,13 @@
     "messages": {
       "title": "Beskeder",
       "empty": "Du har ingen beskeder endnu.",
-      "markAllRead": "Markér alle som læst"
+      "markAllRead": "Markér alle som læst",
+      "unread": "Ny",
+      "deleted": "Slettet",
+      "delete": "Slet",
+      "clearAll": "Ryd alt",
+      "clearAllWarning": "Alle slettede beskeder fjernes permanent. Det kan ikke fortrydes.",
+      "emptyDeleted": "Ingen slettede beskeder."
     },
     "communication": {
       "intro": "Vælg hvilke beskeder du vil have som e-mail og/eller push. Vigtige kontobeskeder (fx verifikation og nulstil kodeord) sendes altid.",
@@ -1476,6 +1578,7 @@
     }
   },
   "profileSleep": {
+    "intro": "Søvnen kan have stor indflydelse på vægt og trivsel. Se dit liv i et større perspektiv, når du har indsamlet nok data. Standard søvn sættes til 22.00 - 07.00.",
     "title": "Søvnmønster",
     "loading": "Henter…",
     "loadError": "Kunne ikke hente søvnmønster.",
@@ -1651,6 +1754,79 @@
       "fatG": "fx 70"
     }
   },
+  "weighIn": {
+    "attireTitle": "Hvad havde du på?",
+    "attire": {
+      "NAKED": "Nøgen",
+      "UNDERWEAR": "Med undertøj",
+      "CLOTHED": "Med tøj",
+      "CLOTHED_PHONE": "Med tøj og mobil i lommen"
+    },
+    "save": "Gem",
+    "saving": "Gemmer…",
+    "saveError": "Kunne ikke gemme. Prøv igen.",
+    "later": "Senere",
+    "continue": "Fortsæt",
+    "ago": {
+      "justNow": "lige nu",
+      "minutes": "for {n} min. siden",
+      "hours": "for {n} timer siden",
+      "days": "for {n} dage siden"
+    },
+    "sync": {
+      "now": "Synk nu",
+      "syncing": "Synkroniserer…",
+      "done": "Synkroniseret",
+      "failed": "Synkroniseringen mislykkedes",
+      "error": "Fejl — forbind igen",
+      "last": "Synkroniseret {ago}",
+      "never": "Ikke synkroniseret endnu",
+      "open": "Åbn {name}",
+      "openShort": "Åbn",
+      "noneConnected": "Ingen smartvægt er forbundet",
+      "connect": "Forbind"
+    },
+    "stale": {
+      "title": "Det er længe siden, der er synkroniseret",
+      "body": "{name} blev sidst synkroniseret {ago}. Synkronisér, så dine nyeste vejninger kommer med.",
+      "bodyNever": "{name} er ikke synkroniseret endnu. Synkronisér, så dine vejninger kommer med."
+    },
+    "prompt": {
+      "aria": "Hvad havde du på ved vejningen?",
+      "todayMorning": "Du har vejet dig i morges.",
+      "past": "Du vejede dig {when}",
+      "andWeighed": "og vejede",
+      "question": "Men var det:",
+      "older": "Ældre vejning",
+      "newer": "Nyere vejning"
+    },
+    "when": {
+      "today": {
+        "morning": "i morges",
+        "afternoon": "i eftermiddags",
+        "evening": "i aftes",
+        "night": "i nat"
+      },
+      "yesterday": {
+        "morning": "i går morges",
+        "afternoon": "i går eftermiddags",
+        "evening": "i går aftes",
+        "night": "i nat"
+      },
+      "part": {
+        "morning": "morgen",
+        "afternoon": "eftermiddag",
+        "evening": "aften",
+        "night": "nat"
+      },
+      "weekday": "{weekday} {part}",
+      "lastWeek": "sidste uge {weekday}"
+    },
+    "details": {
+      "title": "Vejning",
+      "failed": "Vejningen kunne ikke hentes."
+    }
+  },
   "weightLog": {
     "title": "Vægt",
     "intro": "Registrér din vægt. Den gemmes med det samme og indgår i kalenderen og statistikken.",
@@ -1660,7 +1836,7 @@
     "saving": "Gemmer…",
     "saveError": "Vægten kunne ikke gemmes.",
     "saved": "Vægt gemt.",
-    "moreDetailsLink": "Registrér med flere detaljer (tøj, sko, tidspunkt)",
+    "moreDetailsLink": "Du mangler at kalibrere din vægt",
     "loading": "Henter…",
     "noEntriesYet": "Ingen vejninger registreret endnu.",
     "recentTitle": "Seneste vejninger"
@@ -1800,6 +1976,7 @@
     "kcalPer100g": "({kcal} kcal/100g)",
     "kcalPer100ml": "({kcal} kcal/100ml)",
     "kcalAmount": "{kcal} kalorier",
+    "perPiece": "/stk.",
     "sizeLabel": "Størrelse",
     "sizeSmall": "Lille",
     "sizeMedium": "Normal",
@@ -1839,9 +2016,6 @@
     "extendedNutrition": "Næringsindhold",
     "extendedNutritionDisclaimer": "Vises kun når der findes data for dette produkt.",
     "toxins": "Toksiner",
-    "tagCountryOfOrigin": "Fra {country}",
-    "tagAlcoholPercent": "{percent} % alkohol",
-    "tagFatPercent": "{percent} % fedt",
     "toxinPregnancyBadge": "Gravid/ammende",
     "toxinsDisclaimer": "Ud fra indholdsfortegnelsen — ikke en måling af netop dette produkt. Kilder: Fødevarestyrelsen og EFSA.",
     "unhealthyFat": "Usundt fedt",
@@ -1937,7 +2111,7 @@
     "favorites": "Favoritter",
     "addFavorite": "Tilføj til favoritter",
     "removeFavorite": "Fjern fra favoritter",
-    "recentlyAdded": "Senest anvendte",
+    "recentlyAdded": "Senest tilføjet",
     "searchResults": "Søgeresultater",
     "allItems": "Alle varer",
     "emptyState": "Søg efter en fødevare, eller tilføj en favorit for at se den her.",
@@ -1945,6 +2119,8 @@
     "noResults": "Ingen resultater"
   },
   "integrations": {
+    "moveFromTitle": "MyFitnessPal eller Lifesum",
+    "moveFromDescription": "Flyt din dagbog over med en skærmoptagelse.",
     "helloFreshTitle": "HelloFresh-opskrifter",
     "helloFreshDescription": "Vis HelloFresh-opskrifter sammen med de delte retter under Opskrifter",
     "title": "Integrationer",
@@ -1974,6 +2150,7 @@
     "enable": "Slå til",
     "unavailable": "Ikke tilgængelig endnu",
     "sections": {
+      "moveFrom": "Flyt fra en anden app",
       "active": "Aktive integrationer",
       "popular": "Oftest anvendt",
       "recipes": "Opskrifter",
@@ -2970,7 +3147,13 @@
     "devicesHeading": "Track søvn med smartudstyr",
     "devicesIntro": "Forbind et ur eller en app, så kan du sammenligne oplevet søvn med faktisk søvn."
   },
+  "helpGuide": {
+    "title": "Guide",
+    "end": "Afslut guide",
+    "missing": "Jeg kan ikke finde knappen lige nu. Åbn siden manuelt via genvejen i chatten."
+  },
   "helpChat": {
+    "guideMe": "Guide mig",
     "open": "Hjælp",
     "title": "Hjælp",
     "welcome": "Hej! Jeg er Hello Cals hjælpe-chatbot. Spørg mig om appen, så hjælper jeg dig videre. Vil du hellere tale med et menneske, så tryk på \"Tal med en medarbejder\".",
@@ -2998,5 +3181,31 @@
     "sendError": "Beskeden blev ikke sendt. Prøv igen.",
     "escalateError": "Det lykkedes ikke at sende til Support. Prøv igen, eller brug kontaktformularen.",
     "rateLimited": "Du har stillet mange spørgsmål på kort tid. Vent lidt, eller tal med en medarbejder."
+  },
+  "migrationImport": {
+    "title": "Flyt fra MyFitnessPal eller Lifesum",
+    "intro": "Optag skærmen, mens du bladrer i din dagbog i den anden app. Hello Cal aflæser varer, mængder og kalorier og lægger dem ind i din kalender.",
+    "fromApp": "Fra appen",
+    "step1": "Start skærmoptagelse på telefonen (eller tag skærmbilleder).",
+    "step2": "Åbn dagbogen i den anden app, og bladr roligt dag for dag tilbage i tiden.",
+    "step3": "Stop optagelsen, og vælg videoen her.",
+    "choose": "Vælg skærmoptagelse eller skærmbilleder",
+    "privacy": "Billederne gemmes ikke. De aflæses én gang, og kun rækkerne (dato, måltid, vare, mængde og næring) gemmes, til du har valgt, hvad der skal importeres.",
+    "preparing": "Gør optagelsen klar…",
+    "reading": "Aflæser billede {done} af {total}…",
+    "readError": "Optagelsen kunne ikke aflæses. Prøv igen, eller brug skærmbilleder.",
+    "reviewHint": "Se rækkerne igennem. Usikre rækker er ikke valgt på forhånd.",
+    "nothingFound": "Vi fandt ingen varer i optagelsen. Prøv at bladre langsommere, så hver dag står stille et øjeblik.",
+    "unsure": "usikker",
+    "importSelected": "Importér {count} rækker",
+    "commitError": "Importen fejlede. Prøv igen.",
+    "done": "{count} registreringer er lagt ind i din kalender.",
+    "openCalendar": "Åbn kalenderen",
+    "meal": {
+      "breakfast": "Morgenmad",
+      "lunch": "Frokost",
+      "dinner": "Aftensmad",
+      "snack": "Snack"
+    }
   }
 }

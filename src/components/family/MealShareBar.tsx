@@ -91,7 +91,7 @@ export function MealShareBar() {
                 <select
                   value={target.factor}
                   onChange={(event) => setFactor(target.profileId, Number(event.target.value))}
-                  className="hf-type-body h-10 rounded-[8px] border border-hf-gray-border bg-hf-cream px-2"
+                  className="hf-type-body h-10 border border-hf-gray-border bg-hf-cream px-2 rounded-card"
                 >
                   {PORTION_FACTORS.map((factor) => (
                     <option key={factor} value={factor}>

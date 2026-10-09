@@ -44,6 +44,9 @@ export default async function AdminProductDetailPage({ params }: { params: Promi
     }),
   ]);
   if (!product) notFound();
+  // HelloFresh-retter kan ikke redigeres og hører ikke under Nye varer
+  // (docs/DECISIONS.md 2026-10-07) — kun visning under Retter.
+  if (product.externalSource === "HELLOFRESH") redirect(`/admin/dishes/hellofresh/${product.id}`);
 
   return (
     <div className="flex flex-col gap-4">

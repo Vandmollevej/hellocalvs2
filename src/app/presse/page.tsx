@@ -26,11 +26,10 @@ export default function PressPage() {
   return (
     <MarketingShell>
       <section
-        className="px-4 py-20 text-hf-white sm:px-6"
-        style={{ background: "linear-gradient(135deg, #0a8f53 0%, #067A46 45%, #035624 100%)" }}
+        className="px-4 py-20 text-hf-white sm:px-6 mk-hero-bg"
       >
         <div className="mx-auto max-w-3xl text-center">
-          <p className="text-sm font-semibold uppercase tracking-widest text-hf-green-light">Presse</p>
+          <p className="mk-eyebrow">Presse</p>
           <h1 className="mt-4 text-4xl font-bold sm:text-5xl">Hello Cal til pressen</h1>
           <p className="mt-6 text-lg leading-relaxed text-hf-white/85">Fakta, logoer og kontakt til dig, der skriver om Hello Cal.</p>
         </div>
@@ -72,7 +71,7 @@ export default function PressPage() {
         <SectionHeading title="Pressekontakt" text="Skriv til os via kontaktformularen — vælg emnet Presse." />
         <Link
           href="/business?emne=press#kontakt"
-          className="mt-8 inline-flex rounded-full bg-hf-green px-8 py-3 text-sm font-semibold text-hf-white transition hover:bg-hf-green-dark"
+          className="mt-8 mk-btn mk-btn--brand"
         >
           Kontakt os
         </Link>

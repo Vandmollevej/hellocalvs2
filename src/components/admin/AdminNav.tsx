@@ -21,6 +21,7 @@ const LINK_DEFS: { href: string; key: AdminI18nKey }[] = [
   { href: "/admin/ingredient-requests", key: "nav_ingredient_requests" },
   { href: "/admin/uncertainties", key: "nav_uncertainties" },
   { href: "/admin/cron-jobs", key: "nav_cron_jobs" },
+  { href: "/admin/pet-food-filter", key: "nav_pet_food_filter" },
   { href: "/admin/duplicate-products", key: "nav_duplicate_products" },
   { href: "/admin/search", key: "nav_search" },
   { href: "/admin/search-ranking", key: "nav_search_ranking" },
@@ -84,16 +85,16 @@ export function AdminNav({
       <div className="mx-auto flex max-w-4xl flex-wrap items-center gap-x-6 gap-y-2 px-4 py-3 sm:px-6">
         <span className="flex items-center gap-2">
           <Image src="/hello-cal-logo.png" alt="Hello Cal" width={110} height={49} priority />
-          <span className="text-sm font-semibold text-hf-green-dark">Admin</span>
+          <span className="text-hf-green-dark hf-type-body hf-type-strong">Admin</span>
         </span>
-        <nav className="flex flex-1 flex-wrap gap-4 text-sm">
+        <nav className="flex flex-1 flex-wrap gap-4 hf-type-body">
           {LINK_DEFS.map((link) => (
             <Link
               key={link.href}
               href={link.href}
               className={
                 pathname === link.href
-                  ? "font-medium text-hf-green-dark"
+                  ? "hf-type-strong text-hf-green-dark"
                   : "text-text-secondary hover:text-text-primary"
               }
             >
@@ -110,7 +111,7 @@ export function AdminNav({
             </Link>
           ))}
         </nav>
-        <div className="flex items-center gap-3 text-xs text-text-muted">
+        <div className="flex items-center gap-3 text-text-muted hf-type-small">
           <div className="flex overflow-hidden rounded-md border border-border-strong">
             {(["DA", "EN"] as const).map((option) => (
               <button

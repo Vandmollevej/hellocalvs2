@@ -19,7 +19,7 @@ const numberFormat = new Intl.NumberFormat("da-DK");
 
 function StatCard({ href, label, value, note }: { href: string; label: string; value: string; note: string }) {
   return (
-    <Link href={href} className="flex flex-col hf-surface p-4 hover:border-hf-green">
+    <Link href={href} className="hover:border-hf-green hf-panel">
       <p className="hf-type-body text-text-secondary">{label}</p>
       <p className="hf-type-hero mt-1 text-hf-green-dark">{value}</p>
       <p className="hf-type-small mt-auto pt-2 text-text-muted">{note}</p>

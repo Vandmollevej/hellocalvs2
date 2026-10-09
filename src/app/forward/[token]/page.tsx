@@ -1,15 +1,13 @@
 import Link from "next/link";
-import { prisma } from "@/lib/prisma";
 import { getSessionUser } from "@/lib/session";
-import { claimForward, ForwardAbuseError } from "@/lib/forwards";
+import { FORWARD_SENDER_FALLBACK, loadForwardView } from "@/lib/forward-view";
 import { AddForwardedItemButton } from "@/components/AddForwardedItemButton";
-import { defaultAmountGrams } from "@/lib/default-amount";
-import { mediumHandSizeGrams } from "@/lib/hand-sizes";
 
 // "Videresend ret/produkt til en ven" — modtager-siden. Kræver login (så vi
 // kender modtagerens identitet, jf. docs/DECISIONS.md 2026-09-02); claimer
 // forwarden (sætter recipientId + status OPENED) ved første besøg, hvilket
-// også er hvor krydsspærringen tjekkes.
+// også er hvor krydsspærringen tjekkes. Selve opslaget ligger i
+// src/lib/forward-view.ts, som også bruges af GET /api/forwards/[token].
 export default async function ForwardPage({ params }: { params: Promise<{ token: string }> }) {
   const { token } = await params;
   const user = await getSessionUser();
@@ -25,51 +23,30 @@ export default async function ForwardPage({ params }: { params: Promise<{ token:
     );
   }
 
-  let forward;
-  try {
-    forward = await claimForward(token, user.id);
-  } catch (error) {
+  const view = await loadForwardView(token, user.id);
+
+  if (view.status === "error") {
     return (
       <div className="mx-auto max-w-sm p-4 text-center">
-        <p className="hf-type-body text-hf-red-dark">
-          {error instanceof ForwardAbuseError ? error.message : "Kunne ikke åbne linket."}
-        </p>
+        <p className="hf-type-body text-hf-red-dark">{view.message}</p>
       </div>
     );
   }
 
-  if (!forward) {
+  if (view.status !== "ok") {
     return (
       <div className="mx-auto max-w-sm p-4 text-center">
-        <p className="hf-type-body">Linket er ikke gyldigt.</p>
-      </div>
-    );
-  }
-
-  const item =
-    forward.kind === "PRODUCT" && forward.productId
-      ? await prisma.product.findUnique({ where: { id: forward.productId } })
-      : forward.dishId
-        ? await prisma.dish.findUnique({ where: { id: forward.dishId } })
-        : null;
-  const sender = await prisma.user.findUnique({ where: { id: forward.senderId } });
-  // Samme startmængde som mængdevælgeren (fx en hel 33 cl dåse), ikke 100 g.
-  const amountGrams = forward.kind === "PRODUCT" && item && "kcalPer100g" in item ? defaultAmountGrams(item, mediumHandSizeGrams(item.name)) : 100;
-
-  if (!item) {
-    return (
-      <div className="mx-auto max-w-sm p-4 text-center">
-        <p className="hf-type-body">Varen findes ikke længere.</p>
+        <p className="hf-type-body">{view.message}</p>
       </div>
     );
   }
 
   return (
     <div className="mx-auto max-w-sm p-4 text-center">
-      <p className="text-text-secondary hf-type-body">{sender?.displayName ?? "En ven"} har sendt dig</p>
-      <h1 className="hf-type-page-title mt-1">{item.name}</h1>
+      <p className="text-text-secondary hf-type-body">{view.senderDisplayName ?? FORWARD_SENDER_FALLBACK} har sendt dig</p>
+      <h1 className="hf-type-page-title mt-1">{view.item.name}</h1>
       <div className="mt-8">
-        <AddForwardedItemButton kind={forward.kind} itemId={item.id} name={item.name} amountGrams={amountGrams} />
+        <AddForwardedItemButton kind={view.kind} itemId={view.item.id} name={view.item.name} amountGrams={view.amountGrams} />
       </div>
     </div>
   );
