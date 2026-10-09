@@ -65,6 +65,7 @@ import { GoalStatusSummary } from "@/components/calendar/GoalStatusSummary";
 import {
   formatMeasurementValue,
   formatWeightKg,
+  integrationIconForSource,
   measurementsForDay,
   type CalendarMeasurement,
   type CalendarWeighIn,
@@ -570,6 +571,24 @@ export default function CalendarPage() {
     }
     const remaining = goalSum + bonusKcal - consumed;
 
+    // Status for perioden: gennemsnittet af de forgangne dage med registreringer
+    // mod gennemsnitligt dagsmål (budget-snapshots følger næste delmål). Dags
+    // dato tæller ikke med, den er ikke slut. Der vises ingen totaler.
+    const lastPastDay = isCurrentMonth ? today.getDate() - 1 : daysInMonth;
+    let pastLoggedDays = 0;
+    let pastIntake = 0;
+    let pastGoal = 0;
+    for (let day = 1; day <= lastPastDay; day += 1) {
+      const date = new Date(year, month, day);
+      const total = totalKcalForDate(dailyTotals, date);
+      if (total <= 0) continue;
+      pastLoggedDays += 1;
+      pastIntake += total;
+      pastGoal += goalForDate(date);
+    }
+    const periodStatus: "met" | "missed" | "none" =
+      pastLoggedDays === 0 ? "none" : pastIntake / pastLoggedDays <= pastGoal / pastLoggedDays ? "met" : "missed";
+
     let sevenDayConsumed = 0;
     for (let offset = 0; offset < 7; offset += 1) {
       sevenDayConsumed += totalKcalForDate(dailyTotals, addDays(today, -offset));
@@ -581,7 +600,7 @@ export default function CalendarPage() {
     let streak = 0;
     while (dailyGoalMet(dailyTotals, addDays(today, -streak), goalForDate(addDays(today, -streak)))) streak += 1;
 
-    return { isCurrentMonth, consideredDays, metCount, remaining, sevenDayRemaining, streak, goalSum, consumed, bonusKcal };
+    return { isCurrentMonth, consideredDays, metCount, remaining, sevenDayRemaining, streak, goalSum, consumed, bonusKcal, periodStatus };
   }, [dailyTotals, activityBonusByDay, year, month, today, goalForDate, baseGoalForDate]);
 
   useEffect(() => {
@@ -2948,7 +2967,9 @@ function HourEntriesOverlay({
         {goals.map((goal) => (
           <GoalAccordion key={goal.id} goal={goal} />
         ))}
-        {weighIns.map((entry) => (
+        {weighIns
+          .filter((entry) => !measurements.some((measurement) => measurement.id === `weight-${entry.id}`))
+          .map((entry) => (
           <div key={entry.id} className="hf-control-row mb-2 flex items-center justify-between rounded-2xl bg-hf-tan px-4">
             <span className="hf-type-body hf-type-strong text-hf-black">{formatClock(entry.weighedAt)}</span>
             <span className="hf-type-body hf-type-strong flex items-center gap-1.5 text-hf-black">
@@ -3029,7 +3050,14 @@ function HourEntriesOverlay({
                       );
                     }
                     if (item.kind === "measurement") {
-                      return <MeasurementRow key={item.id} measurement={item.measurement} className={rowClass} />;
+                      return (
+                        <MeasurementRow
+                          key={item.id}
+                          measurement={item.measurement}
+                          className={rowClass}
+                          hideWeight={item === groupWeight}
+                        />
+                      );
                     }
                     const { registration } = item;
                     const isWater = isWaterRegistration(registration);
@@ -3067,11 +3095,13 @@ function HourEntriesOverlay({
 
 // En vejning med vægtens øvrige målinger (fedtprocent, muskelmasse …) eller
 // en måling uden vejning (fx blodtryk) — alt, integrationen har leveret.
-function MeasurementRow({ measurement, className }: { measurement: CalendarMeasurement; className: string }) {
+// Vægten står allerede i gruppens overskrift (hideWeight), så rækken viser den ikke igen.
+function MeasurementRow({ measurement, className, hideWeight = false }: { measurement: CalendarMeasurement; className: string; hideWeight?: boolean }) {
   const { t } = useTranslation();
   const [open, setOpen] = useState(false);
   const weighInId = measurement.id.startsWith("weight-") ? measurement.id.slice("weight-".length) : null;
   const source = measurement.source && measurement.source !== "MANUAL" ? t(`calendar.measurement.source.${measurement.source}`) : null;
+  const sourceIcon = integrationIconForSource(measurement.source);
   return (
     <div
       className={`${className} ${weighInId ? "cursor-pointer" : ""}`}
@@ -3087,11 +3117,18 @@ function MeasurementRow({ measurement, className }: { measurement: CalendarMeasu
         : {})}
     >
       <FoodRow
-        thumbnail={<IconScale size={22} className="text-hf-black" aria-hidden="true" />}
+        thumbnail={
+          sourceIcon ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img src={sourceIcon} alt="" className="h-full w-full object-contain p-1" />
+          ) : (
+            <IconScale size={22} className="text-hf-black" aria-hidden="true" />
+          )
+        }
         title={measurement.weightKg !== null ? t("calendar.measurement.weight") : t("calendar.measurement.title")}
         subtitle={source ? <p className="hf-type-small text-text-secondary">{source}</p> : undefined}
         right={
-          measurement.weightKg !== null ? (
+          measurement.weightKg !== null && !hideWeight ? (
             <span className="hf-type-body hf-type-strong text-hf-black">{formatWeightKg(measurement.weightKg)}</span>
           ) : undefined
         }
@@ -3125,12 +3162,12 @@ type MonthlyStatusData = {
   goalSum: number;
   consumed: number;
   bonusKcal: number;
+  periodStatus: "met" | "missed" | "none";
 };
 
 function MonthlyStatus({ status }: { status: MonthlyStatusData }) {
   const { t } = useTranslation();
-  const { remaining, streak } = status;
-  const withinGoal = remaining >= 0;
+  const { streak } = status;
 
   return (
     <div className="mb-8 mt-2 space-y-2 text-center">
@@ -3147,7 +3184,8 @@ function MonthlyStatus({ status }: { status: MonthlyStatusData }) {
       <GoalStatusSummary
         className="text-left"
         period="month"
-        status={withinGoal ? "met" : "missed"}
+        showTotals={false}
+        status={status.periodStatus}
         goalKcal={status.goalSum}
         intakeKcal={status.consumed}
         bonusKcal={status.bonusKcal}

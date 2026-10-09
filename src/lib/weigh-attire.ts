@@ -60,7 +60,7 @@ export function suggestAttire(at: Date, history: AttireHistoryItem[], settings: 
   return best;
 }
 
-// "I går morges", "mandag morgen", "sidste uge tirsdag", ellers dato. Aldrig længere end en uge tilbage.
+// "I går morges", "mandag morgen", "i tirsdags", ellers dato. Aldrig længere end en uge tilbage.
 export const MAX_PROMPT_DAYS = 7;
 
 export function startOfDay(date: Date) {

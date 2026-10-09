@@ -353,7 +353,7 @@ export async function POST(req: Request) {
 
   // Dyrefoder-spærring: stregkode på spærrelisten eller dyrefoder-ordmønstre
   // i navn/brand/ingredienser (src/lib/pet-food-blacklist.ts).
-  const petFoodBlock = petFoodBlockReason({
+  const petFoodBlock = await petFoodBlockReason({
     barcode,
     texts: [name, brandName, subbrand, variant, productType, ingredientsText],
   });

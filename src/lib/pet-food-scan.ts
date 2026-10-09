@@ -80,10 +80,16 @@ async function screenExistingProducts(): Promise<{ screened: number; flagged: nu
   });
   let flagged = 0;
   for (const product of products) {
-    const barcodeHit = product.barcodes.map((b) => b.code).find((code) => isBlacklistedPetFoodBarcode(code));
+    let barcodeHit: string | undefined;
+    for (const { code } of product.barcodes) {
+      if (await isBlacklistedPetFoodBarcode(code)) {
+        barcodeHit = code;
+        break;
+      }
+    }
     const verdict = barcodeHit
       ? { reason: "barcode", match: barcodeHit }
-      : petFoodBlockReason({
+      : await petFoodBlockReason({
           texts: [product.name, product.brand?.name, product.subbrand, product.variant, product.ingredientsText],
         });
     if (!verdict) continue;

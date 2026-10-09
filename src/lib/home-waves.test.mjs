@@ -1,7 +1,7 @@
 // Kør: npm test  (node --test, Node 24 fjerner TypeScript-typer selv)
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { createWaveScene, drawWaveScene, heartbeatShape, mulberry32, pulseTrace, WAVE_BLEED } from "./home-waves.ts";
+import { createWaveScene, drawWaveScene, heartbeatShape, mulberry32, pulseTrace, PULSE_REST, WAVE_BLEED } from "./home-waves.ts";
 
 const palette = {
   ramp: [
@@ -104,7 +104,7 @@ test("puls-linjen starter helt ude ved venstre kant og ligger midt i hero", () =
   assert.ok(scene.pulse.y >= 0.55 && scene.pulse.y <= 0.65);
   for (const t of [0.5, 1, 2, 3]) {
     // Find et tidspunkt i fejet og tjek, at sporet begynder uden for venstre kant.
-    const time = scene.pulse.sweep * 10 - scene.pulse.offset + t;
+    const time = (scene.pulse.sweep + PULSE_REST) * 10 - scene.pulse.offset + t;
     const ctx = fakeContext();
     const starts = [];
     ctx.moveTo = (x) => starts.push(x);
@@ -159,7 +159,7 @@ test("pulsen låses pr. fej, så slagene ikke flytter sig midt i et fej", () => 
     const ys = [];
     const ctx = fakeContext();
     ctx.lineTo = (_x, y) => ys.push(y);
-    const time = scene.pulse.sweep * 20 - scene.pulse.offset + scene.pulse.sweep * 0.8;
+    const time = (scene.pulse.sweep + PULSE_REST) * 20 - scene.pulse.offset + scene.pulse.sweep * 0.8;
     drawWaveScene(ctx, { ...scene, bundles: [], fog: [] }, palette, { t: time, width: 393, height: 430, scale: 1, bpm });
     return ys;
   };
@@ -180,7 +180,7 @@ test("puls-linjen ligger på den givne grundlinje (over tal-hjulets midte)", () 
   const ctx = fakeContext();
   const starts = [];
   ctx.moveTo = (x, y) => starts.push([x, y]);
-  const time = scene.pulse.sweep * 10 - scene.pulse.offset + scene.pulse.sweep * 0.5;
+  const time = (scene.pulse.sweep + PULSE_REST) * 10 - scene.pulse.offset + scene.pulse.sweep * 0.5;
   drawWaveScene(ctx, { ...scene, bundles: [], fog: [] }, palette, { t: time, width: 393, height: 430, scale: 1, pulseY: 150 });
   const [x, y] = starts[0];
   assert.equal(x, -WAVE_BLEED);
@@ -205,7 +205,7 @@ test("det forrige pulsspor toner ikke ud på én gang, men fjernes bagfra af det
       },
     });
     ctx.stroke = () => alphas.push(alpha);
-    const time = scene.pulse.sweep * 10 - scene.pulse.offset + scene.pulse.sweep * progress;
+    const time = (scene.pulse.sweep + PULSE_REST) * 10 - scene.pulse.offset + scene.pulse.sweep * progress;
     drawWaveScene(ctx, { ...scene, bundles: [], fog: [] }, palette, { t: time, width, height: 430, scale: 1 });
     return { starts, alphas, head: left + progress * (right - left) };
   };
@@ -218,4 +218,14 @@ test("det forrige pulsspor toner ikke ud på én gang, men fjernes bagfra af det
   const end = trace(0.99);
   assert.ok(end.head + 28 >= right, "forudsætning: spidsen er tæt på højre kant");
   assert.deepEqual(end.starts.filter((x) => x > end.head + 0.01), []);
+});
+
+test("det færdige spor står stille et øjeblik, før næste bølge kommer ind fra venstre", () => {
+  const scene = createWaveScene(5);
+  const starts = [];
+  const ctx = fakeContext();
+  ctx.moveTo = (x) => starts.push(x);
+  const time = (scene.pulse.sweep + PULSE_REST) * 10 - scene.pulse.offset + scene.pulse.sweep + PULSE_REST / 2;
+  drawWaveScene(ctx, { ...scene, bundles: [], fog: [] }, palette, { t: time, width: 393, height: 430, scale: 1 });
+  assert.equal(starts.filter((x) => x > -WAVE_BLEED + 1 && x < 393).length, 0, "intet nyt fej i pausen");
 });

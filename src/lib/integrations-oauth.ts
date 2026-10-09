@@ -9,10 +9,12 @@ import { recordIntegrationEvent } from "@/lib/integrations/events";
 // Fælles OAuth-tilstand for cloud-integrationerne (CSRF-state i en cookie;
 // ved PKCE også code_verifier).
 
-type State = { state: string; verifier?: string };
+// native: signeret binding til brugeren, når tilkoblingen er startet fra den
+// native app i system-browseren (src/lib/native-auth.ts).
+type State = { state: string; verifier?: string; native?: string };
 
-export function newOAuthState(): string {
-  return randomUUID();
+export function newOAuthState(prefix = ""): string {
+  return prefix + randomUUID();
 }
 
 // PKCE (RFC 7636, S256).
@@ -36,7 +38,10 @@ export function readOAuthState(req: NextRequest, cookieName: string): State | nu
   try {
     const parsed = JSON.parse(req.cookies.get(cookieName)?.value ?? "") as Partial<State>;
     if (typeof parsed.state !== "string") return null;
-    return typeof parsed.verifier === "string" ? { state: parsed.state, verifier: parsed.verifier } : { state: parsed.state };
+    const state: State = { state: parsed.state };
+    if (typeof parsed.verifier === "string") state.verifier = parsed.verifier;
+    if (typeof parsed.native === "string") state.native = parsed.native;
+    return state;
   } catch {
     return null;
   }
@@ -45,9 +50,12 @@ export function readOAuthState(req: NextRequest, cookieName: string): State | nu
 export async function saveIntegrationTokens(
   provider: IntegrationProvider,
   tokens: OAuthTokens,
-  externalUserId?: string
+  externalUserId?: string,
+  // Native tilkobling: brugeren fra den signerede binding i state-cookien
+  // (system-browseren har ingen session).
+  nativeUserId?: string
 ) {
-  const user = await getSessionUser();
+  const user = nativeUserId ? { id: nativeUserId } : await getSessionUser();
   if (!user) throw new Error("Ikke logget ind");
   const data = {
     status: "CONNECTED" as const,

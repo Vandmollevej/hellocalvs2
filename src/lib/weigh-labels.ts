@@ -1,7 +1,7 @@
-import { dayPartOf, daysAgo, type DayPart } from "@/lib/weigh-attire";
+import { dayPartOf, daysAgo, MAX_PROMPT_DAYS, type DayPart } from "@/lib/weigh-attire";
 
 // Tidsangivelse til vejnings-popuppen: "i morges", "i går morges", "mandag
-// morgen", "sidste uge tirsdag", ellers datoen (aldrig længere end en uge tilbage).
+// morgen", "i tirsdags" (ugen før), ellers datoen (aldrig længere end en uge tilbage).
 type T = (key: string, params?: Record<string, string | number>) => string;
 
 export function weighWhen(at: Date, t: T, intlLocale: string, now = new Date()): { label: string; part: DayPart; today: boolean } {
@@ -15,7 +15,7 @@ export function weighWhen(at: Date, t: T, intlLocale: string, now = new Date()):
   else if (ago <= sinceMonday) {
     // Samme uge (mandag-baseret): "mandag morgen".
     label = t("weighIn.when.weekday", { weekday, part: t(`weighIn.when.part.${part}`) });
-  } else if (ago <= sinceMonday + 7) label = t("weighIn.when.lastWeek", { weekday });
+  } else if (ago <= MAX_PROMPT_DAYS) label = t("weighIn.when.lastWeek", { weekday });
   else label = new Intl.DateTimeFormat(intlLocale, { day: "numeric", month: "long" }).format(at);
   return { label, part, today: ago <= 0 };
 }
