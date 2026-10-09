@@ -409,14 +409,16 @@ export function FooterArc() {
               }}
               className="absolute inset-0 flex items-center justify-center rounded-full border-0 bg-hf-tan"
               style={{
-                opacity: showFan ? progress : 0,
+                // Som venstre-cirklen: knapperne vises med det samme (kort fade/pop),
+                // ikke gradvist efter hvor langt cirklen er trukket op.
+                opacity: showFan ? 1 : 0,
                 pointerEvents: open && !gesturing ? "auto" : "none",
-                transform: `scale(${(0.4 + 0.6 * progress) * (highlighted ? HIGHLIGHT_SCALE : 1)})`,
+                transform: `scale(${(showFan ? 1 : 0.4) * (highlighted ? HIGHLIGHT_SCALE : 1)})`,
                 backgroundColor: highlighted ? "var(--hf-green)" : undefined,
                 boxShadow: highlighted
                   ? "0 8px 18px rgba(0,0,0,0.15), 0 3px 8px rgba(0,0,0,0.08)"
                   : "0 2px 5px rgba(0,0,0,0.10), 0 1px 2px rgba(0,0,0,0.05)",
-                transition: "transform 120ms ease, background-color 120ms ease",
+                transition: "transform 150ms ease, opacity 150ms ease, background-color 120ms ease",
               }}
             >
               {Icon ? (

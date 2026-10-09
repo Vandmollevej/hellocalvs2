@@ -1,6 +1,7 @@
 package dk.packroff.hellocal.screens.food
 
 import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
@@ -371,13 +372,15 @@ fun HomeFooterArc(modifier: Modifier = Modifier, onOpenMenuSheet: () -> Unit) {
             key(slot.key) {
                 val (sx, sy) = slotCenter(index)
                 val highlighted = highlightedKey == slot.key
-                val scale = (0.4f + 0.6f * p) * if (highlighted) ARC_HIGHLIGHT_SCALE else 1f
+                // Like the side circle: the buttons appear at once (short fade/pop), not gradually with the pull.
+                val appear by animateFloatAsState(if (p > 0.02f) 1f else 0f, tween(150), label = "arcAppear")
+                val scale = (0.4f + 0.6f * appear) * if (highlighted) ARC_HIGHLIGHT_SCALE else 1f
                 Box(
                     Modifier
                         .offset(x = (sx - ARC_ICON_CIRCLE / 2).dp, y = (height - sy - ARC_ICON_CIRCLE / 2).dp)
                         .size(ARC_ICON_CIRCLE.dp)
                         .graphicsLayer {
-                            alpha = if (p > 0.02f) p else 0f
+                            alpha = appear
                             scaleX = scale
                             scaleY = scale
                         }
