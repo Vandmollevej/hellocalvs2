@@ -47,8 +47,7 @@ export default function ScanBeskederPage() {
             onChange={(event) => setDraft(event.target.value)}
             rows={2}
             placeholder="Skriv til Hello Cal"
-            className="hf-type-input w-full rounded-[8px] border bg-hf-cream px-4 py-3 outline-none"
-            style={{ borderColor: "var(--hf-color-field-border)" }}
+            className="hf-type-input w-full border bg-hf-cream px-4 py-3 outline-none border-hf-field-border rounded-card"
           />
           <ActionButton type="submit" disabled={sending || !draft.trim()} className="hf-control disabled:opacity-40">
             <span className="hf-type-button">Send</span>
@@ -58,14 +57,14 @@ export default function ScanBeskederPage() {
     >
       <ul className="flex flex-col gap-3 p-4">
         {messages.length === 0 && (
-          <li className="hf-type-body text-center" style={{ color: "var(--hf-color-text-secondary)" }}>
+          <li className="hf-type-body text-center text-hf-text-secondary">
             Ingen beskeder endnu. Skriv, hvis du har spørgsmål.
           </li>
         )}
         {messages.map((message) => (
           <li
             key={message.id}
-            className={`hf-type-body max-w-[80%] rounded-[12px] px-4 py-2 ${message.fromAdmin ? "self-start" : "self-end"}`}
+            className={`rounded-card hf-type-body max-w-[80%] px-4 py-2 ${message.fromAdmin ? "self-start" : "self-end"}`}
             style={
               message.fromAdmin
                 ? { background: "var(--hf-color-card)" }
@@ -73,7 +72,7 @@ export default function ScanBeskederPage() {
             }
           >
             {message.body}
-            <span className="hf-type-caption block" style={{ color: "inherit" }}>
+            <span className="hf-type-caption block text-inherit">
               {new Date(message.createdAt).toLocaleString("da-DK", { dateStyle: "short", timeStyle: "short" })}
             </span>
           </li>

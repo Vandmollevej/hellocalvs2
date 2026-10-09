@@ -58,7 +58,7 @@ function formatLatestDate(value: string) {
 
 function StatusTile({ label, value, href }: { label: string; value: string; href: string }) {
   return (
-    <Link href={href} className="flex flex-1 flex-col gap-1 rounded-2xl bg-hf-tan p-4 text-hf-black">
+    <Link href={href} className="flex-1 gap-1 text-hf-black hf-card">
       <span className="hf-type-small text-text-secondary">{label}</span>
       <span className="hf-type-title">{value}</span>
     </Link>
@@ -70,7 +70,7 @@ function SetGoalTile({ label }: { label: string }) {
   return (
     <Link
       href="/profile/goals"
-      className="hf-type-body hf-type-strong flex flex-1 items-center justify-center rounded-2xl bg-hf-tan p-4 text-center text-hf-black underline"
+      className="hf-type-body hf-type-strong flex-1 items-center justify-center text-center text-hf-black underline hf-card--row hf-card"
     >
       {label}
     </Link>
@@ -263,6 +263,10 @@ export default function ProfileStatusPage() {
             </DropdownSection>
           ))}
         </div>
+
+        <Link href="/settings/display" className="hf-type-small hf-type-strong text-hf-black underline text-center">
+          {t("profileStatus.customizeView")}
+        </Link>
       </div>
     </HfScreen>
   );

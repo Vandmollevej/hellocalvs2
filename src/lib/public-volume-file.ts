@@ -30,7 +30,7 @@ export async function servePublicVolumeFile(folder: "product-images" | "hellofre
       headers: {
         "Content-Type": type,
         "Content-Length": String(info.size),
-        "Cache-Control": "public, max-age=3600",
+        "Cache-Control": "private, max-age=3600",
         // SVG kan indeholde scripts; vis den aldrig som et aktivt dokument.
         "Content-Security-Policy": "default-src 'none'; style-src 'unsafe-inline'",
         "X-Content-Type-Options": "nosniff",

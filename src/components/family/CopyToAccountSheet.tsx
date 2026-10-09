@@ -1,5 +1,6 @@
 "use client";
 
+import { BottomSheet } from "@/components/hf/BottomSheet";
 import { ProfileCircle } from "@/components/family/ProfileCircle";
 import type { FamilyProfile } from "@/components/family/FamilyStatusProvider";
 import { useTranslation } from "@/i18n/LocaleProvider";
@@ -17,11 +18,9 @@ export function CopyToAccountSheet({
 }) {
   const { t } = useTranslation();
   return (
-    <div className="fixed inset-0 z-[9000] flex items-end justify-center" role="dialog" aria-label={t("family.copy.title")}>
-      <button type="button" aria-label={t("common.close")} onClick={onClose} className="absolute inset-0 bg-[var(--hf-color-overlay)]" />
-      <div className="relative w-full max-w-[402px] rounded-t-[8px] bg-hf-cream p-4 pb-[calc(16px+env(safe-area-inset-bottom,0px))]">
-        <p className="hf-type-card-title">{t("family.copy.title")}</p>
-        <ul className="mt-2">
+    <BottomSheet ariaLabel={t("family.copy.title")} onClose={onClose}>
+      <div className="p-4">
+        <ul>
           {profiles.map((profile) => (
             <li key={profile.id}>
               <button
@@ -39,6 +38,6 @@ export function CopyToAccountSheet({
           {t("common.cancel")}
         </button>
       </div>
-    </div>
+    </BottomSheet>
   );
 }

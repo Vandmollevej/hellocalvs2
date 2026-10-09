@@ -86,7 +86,7 @@ export function RecipeStepsEditor({
         </button>
         {step.image && (
           // eslint-disable-next-line @next/next/no-img-element
-          <img src={step.image} alt="" className="h-12 w-12 shrink-0 rounded-[8px] object-cover" />
+          <img src={step.image} alt="" className="h-12 w-12 shrink-0 object-cover rounded-card" />
         )}
         <button
           type="button"
@@ -120,7 +120,7 @@ export function RecipeStepsEditor({
             onChange={(event) => publish({ ...draft, title: event.target.value })}
             placeholder={t("recipeSteps.titlePlaceholder")}
             aria-label={t("recipeSteps.titlePlaceholder")}
-            className="hf-type-body hf-type-strong rounded-[8px] bg-hf-white px-3 py-2.5 text-hf-black outline-none"
+            className="hf-type-body hf-type-strong bg-hf-white px-3 py-2.5 text-hf-black outline-none rounded-card"
           />
           <textarea
             value={draft.text}
@@ -128,7 +128,7 @@ export function RecipeStepsEditor({
             placeholder={t("recipeSteps.textPlaceholder")}
             aria-label={t("recipeSteps.textPlaceholder")}
             rows={4}
-            className="hf-type-body resize-none rounded-[8px] bg-hf-white px-3 py-2.5 text-hf-black outline-none"
+            className="hf-type-body resize-none bg-hf-white px-3 py-2.5 text-hf-black outline-none rounded-card"
           />
         </div>
         <div className="flex shrink-0 flex-col items-center gap-2 pt-8">
@@ -136,7 +136,7 @@ export function RecipeStepsEditor({
             type="button"
             onClick={() => fileRef.current?.click()}
             aria-label={t("recipeSteps.addPhoto")}
-            className="relative flex h-12 w-12 items-center justify-center overflow-hidden rounded-[8px] bg-hf-white text-hf-black"
+            className="relative flex h-12 w-12 items-center justify-center overflow-hidden bg-hf-white text-hf-black rounded-card"
           >
             {draft.image ? (
               // eslint-disable-next-line @next/next/no-img-element

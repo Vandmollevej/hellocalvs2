@@ -161,7 +161,7 @@ export default function InvitePage() {
           type="button"
           onClick={share}
           disabled={!shareUrl}
-          className="hf-control hf-btn-primary flex w-full items-center justify-center gap-2 disabled:opacity-40"
+          className="hf-control hf-btn-primary flex w-full items-center justify-center gap-2"
         >
           <IconShare3 size={24} aria-hidden="true" />
           <span>{copied ? "Tekst og link kopieret!" : "Del dit invite-link"}</span>
@@ -193,8 +193,7 @@ export default function InvitePage() {
               value={note}
               onChange={(event) => updateDraft({ note: event.target.value })}
               placeholder="Skriv en hilsen til din ven"
-              className="hf-type-input w-full resize-none rounded-[8px] border bg-hf-cream px-4 py-3 outline-none"
-              style={{ borderColor: "var(--hf-color-field-border)" }}
+              className="hf-type-input w-full resize-none border bg-hf-cream px-4 py-3 outline-none border-hf-field-border rounded-card"
             />
             <span className="hf-type-caption self-end">
               {note.length}/{INVITE_NOTE_MAX_LENGTH}
@@ -203,7 +202,7 @@ export default function InvitePage() {
         </div>
 
         <h2 className="hf-type-section-title">Sådan ser beskeden ud</h2>
-        <div className="rounded-lg p-4" style={{ background: "var(--hf-color-card)" }}>
+        <div className="rounded-lg p-4 bg-hf-card">
           <p className="hf-type-body whitespace-pre-line">{shareText}</p>
           <p className="hf-type-caption mt-2 break-all">{shareUrl ?? "Henter dit link…"}</p>
         </div>
@@ -216,13 +215,12 @@ export default function InvitePage() {
             value={inviteEmail}
             onChange={(event) => setInviteEmail(event.target.value)}
             placeholder="ven@eksempel.dk"
-            className="hf-field hf-type-input min-w-0 flex-1 rounded-[8px] border bg-hf-cream px-4 outline-none"
-            style={{ borderColor: "var(--hf-color-field-border)" }}
+            className="hf-field hf-type-input min-w-0 flex-1 border bg-hf-cream px-4 outline-none border-hf-field-border rounded-card"
           />
           <button
             type="submit"
             disabled={sendingInvite}
-            className="hf-control hf-btn-primary px-4 disabled:opacity-50"
+            className="hf-control hf-btn-primary px-4"
           >
             {sendingInvite ? "Sender…" : "Send"}
           </button>
@@ -231,14 +229,13 @@ export default function InvitePage() {
 
         <h2 className="hf-type-section-title">Afsendte invitationer</h2>
         {invitations.length === 0 ? (
-          <p className="hf-type-body" style={{ color: "var(--hf-color-text-secondary)" }}>Ingen invitationer sendt endnu.</p>
+          <p className="hf-type-body text-hf-text-secondary">Ingen invitationer sendt endnu.</p>
         ) : (
           <div className="flex flex-col">
             {invitations.map((invitation) => (
               <div
                 key={invitation.id}
-                className="flex items-center justify-between border-b py-3 last:border-b-0"
-                style={{ borderColor: "var(--hf-color-line)" }}
+                className="flex items-center justify-between border-b py-3 last:border-b-0 border-hf-line"
               >
                 <div className="min-w-0 flex-1">
                   <p className="hf-type-body truncate">{invitation.email}</p>
@@ -262,14 +259,13 @@ export default function InvitePage() {
 
         <h2 className="hf-type-section-title">Tilmeldte venner</h2>
         {referrals.length === 0 ? (
-          <p className="hf-type-body" style={{ color: "var(--hf-color-text-secondary)" }}>Ingen venner inviteret endnu.</p>
+          <p className="hf-type-body text-hf-text-secondary">Ingen venner inviteret endnu.</p>
         ) : (
           <div className="flex flex-col">
             {referrals.map((r) => (
               <div
                 key={r.id}
-                className="flex items-center justify-between border-b py-3 last:border-b-0"
-                style={{ borderColor: "var(--hf-color-line)" }}
+                className="flex items-center justify-between border-b py-3 last:border-b-0 border-hf-line"
               >
                 <span className="userback-ignore userback-block hf-type-body">{r.referredUser.displayName}</span>
                 <span className="text-text-secondary hf-type-caption">

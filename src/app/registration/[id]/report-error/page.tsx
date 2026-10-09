@@ -132,7 +132,7 @@ export default function RegistrationReportErrorPage({ params }: { params: Promis
                         <p className="hf-type-label">{t(point.labelKey)}</p>
                         {point.imageUrl ? (
                           // eslint-disable-next-line @next/next/no-img-element
-                          <img src={point.imageUrl} alt="" className="mt-1 h-16 w-16 rounded-[8px] object-cover" />
+                          <img src={point.imageUrl} alt="" className="mt-1 h-16 w-16 object-cover rounded-card" />
                         ) : (
                           <p className="hf-type-body text-text-secondary break-words">
                             {point.value || t("registrationReportError.missingValue")}
@@ -144,7 +144,7 @@ export default function RegistrationReportErrorPage({ params }: { params: Promis
                         onClick={() => togglePoint(point.key)}
                         aria-pressed={isSelected}
                         aria-label={t("registrationReportError.selectPoint", { point: t(point.labelKey) })}
-                        className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-lg font-bold"
+                        className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full hf-type-title hf-type-strong"
                         style={{
                           background: isSelected ? "var(--hf-color-brand)" : "transparent",
                           border: "2px solid var(--hf-color-brand)",
@@ -161,8 +161,7 @@ export default function RegistrationReportErrorPage({ params }: { params: Promis
                         value={notes[point.key] ?? ""}
                         onChange={(e) => setNotes((prev) => ({ ...prev, [point.key]: e.target.value }))}
                         placeholder={t("registrationReportError.correctionPlaceholder")}
-                        className="hf-type-input mt-2 w-full rounded-[4px] border bg-hf-cream p-3 outline-none"
-                        style={{ borderColor: "var(--hf-color-field-border)" }}
+                        className="hf-type-input mt-2 w-full border bg-hf-cream p-3 outline-none border-hf-field-border rounded-sm"
                       />
                     )}
                   </li>
@@ -173,7 +172,7 @@ export default function RegistrationReportErrorPage({ params }: { params: Promis
             <button
               type="submit"
               disabled={!canSubmit || submitting}
-              className="hf-control hf-btn-primary w-full disabled:opacity-50"
+              className="hf-control hf-btn-primary w-full"
             >
               {submitting ? t("registrationReportError.sending") : t("registrationReportError.submit")}
             </button>

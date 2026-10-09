@@ -75,7 +75,7 @@ function CheckoutSheet({ plan, name, onClose }: { plan: SubscriptionPlan; name: 
             onClick={pay}
             disabled={!ack || busy}
             aria-busy={busy}
-            className="hf-control hf-btn-primary w-full disabled:opacity-40"
+            className="hf-control hf-btn-primary w-full"
           >
             Fortsæt til betaling — {kr(prices[months])}
           </button>
@@ -213,14 +213,14 @@ export function LandingPlans({
               </ul>
               <div className="px-8 pb-8 text-center">
                 {isCurrent ? (
-                  <span className="inline-block rounded-full bg-hf-tan px-8 py-3 text-sm font-semibold uppercase tracking-wide text-hf-black">
+                  <span className="bg-hf-tan text-hf-black mk-btn mk-btn--upper">
                     Din plan
                   </span>
                 ) : currentPlan !== undefined && !key ? null : (
                   <button
                     type="button"
                     onClick={() => (key ? setOpen({ plan: key, name: p.name }) : router.push("/signup"))}
-                    className="rounded-full bg-hf-black px-8 py-3 text-sm font-semibold uppercase tracking-wide text-hf-white transition hover:bg-[#353535]"
+                    className="mk-btn mk-btn--dark mk-btn--upper"
                   >
                     {key ? "Vælg" : "Kom i gang"}
                   </button>

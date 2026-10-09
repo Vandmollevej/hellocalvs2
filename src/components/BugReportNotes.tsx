@@ -53,8 +53,7 @@ export function BugReportNotes({ bugReportId }: { bugReportId: string }) {
           {notes.map((note) => (
             <li
               key={note.id}
-              className="rounded-[4px] border bg-hf-cream p-3"
-              style={{ borderColor: "var(--hf-color-field-border)" }}
+              className="border bg-hf-cream p-3 border-hf-field-border rounded-sm"
             >
               <p className="hf-type-caption text-text-secondary">
                 {new Date(note.createdAt).toLocaleString("da-DK", { dateStyle: "short", timeStyle: "short" })}
@@ -72,8 +71,7 @@ export function BugReportNotes({ bugReportId }: { bugReportId: string }) {
           onChange={(e) => setText(e.target.value)}
           placeholder="Skriv en note til din indberetning"
           aria-label="Ny note"
-          className="hf-type-input w-full rounded-[4px] border bg-hf-cream p-3 outline-none"
-          style={{ borderColor: "var(--hf-color-field-border)" }}
+          className="hf-type-input w-full border bg-hf-cream p-3 outline-none border-hf-field-border rounded-sm"
         />
         {error && <p className="hf-type-caption text-hf-red-dark">{error}</p>}
         <button

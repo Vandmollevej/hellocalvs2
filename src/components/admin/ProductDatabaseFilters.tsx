@@ -1,10 +1,12 @@
 "use client";
 
-import { useEffect, useRef, useState, useTransition } from "react";
+import { useEffect, useRef, useState, useTransition, type ReactNode } from "react";
 import { useRouter } from "next/navigation";
 import { FilterDropdown } from "@/components/admin/FilterDropdown";
 import {
   PRODUCT_CATEGORIES,
+  PRODUCT_COLUMNS,
+  PRODUCT_COLUMN_LABELS,
   PRODUCT_CATEGORY_LABELS,
   PRODUCT_DATABASE_SORTS,
   PRODUCT_SOURCES,
@@ -20,40 +22,26 @@ import {
 // Alle filtre er dropdowns; mærke, sub brand, kategori, varetype og kilde er
 // flervalg.
 
-function Segment<T extends string>({
-  label,
-  value,
-  options,
-  onChange,
-}: {
-  label: string;
-  value: T;
-  options: { value: T; label: string }[];
-  onChange: (value: T) => void;
-}) {
-  return (
-    <div className="flex min-w-0 flex-col gap-1">
-      <span className="hf-type-label text-text-secondary">{label}</span>
-      <div className="flex gap-1 rounded-md border border-hf-tan-dark bg-hf-white p-1">
-        {options.map((option) => (
-          <button
-            key={option.value}
-            type="button"
-            aria-pressed={value === option.value}
-            onClick={() => onChange(option.value)}
-            className="hf-choice flex-1"
-          >
-            {option.label}
-          </button>
-        ))}
-      </div>
-    </div>
-  );
-}
-
+const VIEW_OPTIONS: { value: Filters["view"]; label: string; icon: ReactNode }[] = [
+  { value: "list", label: "Liste", icon: <path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01" /> },
+  {
+    value: "grid",
+    label: "Galleri",
+    icon: (
+      <>
+        <rect x="3" y="3" width="7" height="7" rx="1" />
+        <rect x="14" y="3" width="7" height="7" rx="1" />
+        <rect x="3" y="14" width="7" height="7" rx="1" />
+        <rect x="14" y="14" width="7" height="7" rx="1" />
+      </>
+    ),
+  },
+  { value: "details", label: "Detaljer", icon: <path d="M4 6h16M4 10h16M4 14h10M4 18h10" /> },
+];
 const PRODUCT_CATEGORY_OPTIONS = PRODUCT_CATEGORIES.map((key) => ({ value: key, label: PRODUCT_CATEGORY_LABELS[key] }));
 const SOURCE_OPTIONS = PRODUCT_SOURCES.map((key) => ({ value: key, label: PRODUCT_SOURCE_LABELS[key] }));
 const STATUS_OPTIONS = PRODUCT_STATUSES.map((key) => ({ value: key, label: PRODUCT_STATUS_LABELS[key] }));
+const COLUMN_OPTIONS = PRODUCT_COLUMNS.map((key) => ({ value: key, label: PRODUCT_COLUMN_LABELS[key] }));
 const SORT_OPTIONS = PRODUCT_DATABASE_SORTS.map((s) => ({ value: s.key, label: s.label }));
 const IMAGE_OPTIONS = [
   { value: "with", label: "Med billede" },
@@ -150,10 +138,51 @@ export function ProductDatabaseFilters({
   if (filters.barcode) chips.push({ key: "barcode", label: filters.barcode === "with" ? "Med stregkode" : "Uden stregkode", clear: { barcode: "" } });
 
   return (
-    <section
-      aria-busy={pending}
-      className="flex flex-col gap-4 hf-surface p-4"
-    >
+    <div aria-busy={pending} className="flex flex-col gap-4">
+      <section className="hf-panel">
+        <h2 className="hf-type-body hf-type-strong text-hf-black">Visning</h2>
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+          <FilterDropdown
+            label="Sortér efter"
+            value={filters.sort}
+            options={SORT_OPTIONS}
+            onChange={(sort) => go({ sort: sort as Filters["sort"] })}
+          />
+          <div className="flex min-w-0 flex-col gap-1">
+            <span className="hf-type-label text-text-secondary">Visning</span>
+            <div className="flex gap-1 rounded-md border border-hf-tan-dark bg-hf-white p-1">
+              {VIEW_OPTIONS.map((option) => (
+                <button
+                  key={option.value}
+                  type="button"
+                  aria-pressed={filters.view === option.value}
+                  aria-label={option.label}
+                  title={option.label}
+                  onClick={() => go({ view: option.value, page: filters.page })}
+                  className="hf-choice flex flex-1 items-center justify-center"
+                >
+                  <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                    {option.icon}
+                  </svg>
+                </button>
+              ))}
+            </div>
+          </div>
+          <FilterDropdown
+            multiple
+            label="Felter"
+            placeholder="Alle felter"
+            values={filters.cols}
+            options={COLUMN_OPTIONS}
+            onChange={(cols) => {
+              if (cols.length > 0) go({ cols: cols as Filters["cols"], page: filters.page });
+            }}
+            alignRight
+          />
+        </div>
+      </section>
+
+      <section className="hf-panel hf-panel--form">
       <div className="flex flex-col gap-3 md:flex-row md:items-end">
         <label className="flex min-w-0 flex-1 flex-col gap-1">
           <span className="hf-type-label text-text-secondary">Søg</span>
@@ -171,24 +200,6 @@ export function ProductDatabaseFilters({
             />
           </span>
         </label>
-        <div className="grid grid-cols-2 gap-3 md:flex md:w-auto">
-          <FilterDropdown
-            label="Sortér efter"
-            value={filters.sort}
-            options={SORT_OPTIONS}
-            onChange={(sort) => go({ sort: sort as Filters["sort"] })}
-            className="md:w-52"
-          />
-          <Segment
-            label="Visning"
-            value={filters.view}
-            options={[
-              { value: "list", label: "Liste" },
-              { value: "grid", label: "Galleri" },
-            ]}
-            onChange={(view) => go({ view, page: filters.page })}
-          />
-        </div>
       </div>
 
       <div className="flex items-center justify-between gap-3 border-t border-hf-tan-dark pt-3">
@@ -339,6 +350,7 @@ export function ProductDatabaseFilters({
           ))}
         </ul>
       )}
-    </section>
+      </section>
+    </div>
   );
 }

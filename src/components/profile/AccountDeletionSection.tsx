@@ -27,14 +27,18 @@ export function AccountDeletionSection() {
     setError(null);
   }
 
+  // Kontrolordet skrives på brugerens eget sprog (serveren får altid "SLET").
+  const controlWord = t(mode === "close" ? "accountSettings.closeWord" : "accountSettings.confirmWord");
+  const controlOk = confirm.trim().toLocaleUpperCase() === controlWord.toLocaleUpperCase();
+
   async function submit() {
-    if (!mode) return;
+    if (!mode || !controlOk) return;
     setBusy(true);
     setError(null);
     const res = await fetch("/api/account/close", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ mode, confirm: confirm.trim() }),
+      body: JSON.stringify({ mode, confirm: mode === "forget" ? "SLET" : confirm.trim() }),
     }).catch(() => null);
     if (res?.ok) {
       router.push("/login");
@@ -67,25 +71,22 @@ export function AccountDeletionSection() {
 
       {mode && (
         <BottomSheet
-          title={t(mode === "close" ? "accountSettings.closeLink" : "accountSettings.forgetButton")}
+          ariaLabel={t(mode === "close" ? "accountSettings.closeLink" : "accountSettings.forgetButton")}
           onClose={() => !busy && setMode(null)}
         >
           <div className="flex flex-col gap-3 p-4">
-            {mode === "close" ? (
-              <p className="hf-type-body">{t("accountSettings.closeSheetText")}</p>
-            ) : (
-              <>
-                <p className="hf-type-body">{t("accountSettings.confirmWarning")}</p>
-                <input
+            {mode === "close" && <p className="hf-type-body">{t("accountSettings.closeSheetText")}</p>}
+            <>
+              <p className="hf-type-body">{t(mode === "close" ? "accountSettings.closeWarning" : "accountSettings.confirmWarning", { word: controlWord })}</p>
+              <input
                   className="hf-type-body hf-field rounded-xl bg-hf-tan px-4 text-hf-black outline-none focus-visible:ring-2 focus-visible:ring-hf-green"
                   value={confirm}
                   onChange={(event) => setConfirm(event.target.value)}
-                  placeholder={t("accountSettings.confirmPlaceholder")}
+                  placeholder={t("accountSettings.confirmPlaceholder", { word: controlWord })}
                   autoCapitalize="characters"
                   autoComplete="off"
                 />
               </>
-            )}
             {error && (
               <p role="alert" className="hf-type-body text-hf-red-dark">
                 {error}
@@ -93,7 +94,7 @@ export function AccountDeletionSection() {
             )}
             <button
               type="button"
-              disabled={busy || (mode === "forget" && confirm.trim() !== "SLET")}
+              disabled={busy || !controlOk}
               onClick={() => void submit()}
               className={
                 mode === "close"

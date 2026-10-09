@@ -88,3 +88,13 @@ export function formatMeasurementValue(metric: CalendarMetric): string {
 export function formatWeightKg(weightKg: number): string {
   return `${new Intl.NumberFormat("da-DK", { minimumFractionDigits: 1, maximumFractionDigits: 1 }).format(weightKg)} kg`;
 }
+
+// Logoet for den smartvægt/app, der har leveret målingen (public/integrations/).
+// Klientsikker modsvar til katalogets ikon — kilder uden logo giver null.
+const SOURCE_ICON_SLUGS = new Set(["apple-health", "garmin", "google-health", "health-connect", "polar-flow", "samsung-health", "strava", "withings"]);
+
+export function integrationIconForSource(source: string | null): string | null {
+  if (!source) return null;
+  const slug = source === "FITBIT" ? "google-health" : source.toLowerCase().replace(/_/g, "-");
+  return SOURCE_ICON_SLUGS.has(slug) ? `/integrations/${slug}.png` : null;
+}

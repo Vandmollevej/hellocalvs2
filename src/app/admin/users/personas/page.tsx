@@ -97,9 +97,9 @@ export default async function AdminPersonasPage({
                 </div>
                 <p className="hf-type-body text-text-primary">{persona.summary}</p>
                 <dl className="hf-type-small grid grid-cols-[auto_1fr] gap-x-3 gap-y-1 text-text-secondary">
-                  <dt className="font-semibold text-text-primary">Hvem</dt>
+                  <dt className="text-text-primary hf-type-strong">Hvem</dt>
                   <dd>{persona.demographics}</dd>
-                  <dt className="font-semibold text-text-primary">Adfærd</dt>
+                  <dt className="text-text-primary hf-type-strong">Adfærd</dt>
                   <dd>{persona.behaviour}</dd>
                 </dl>
                 <BulletList title="Mønstre" items={persona.patterns} />
@@ -234,7 +234,7 @@ export default async function AdminPersonasPage({
 function Section({ title, intro, children }: { title: string; intro?: string; children: React.ReactNode }) {
   return (
     <section className="flex flex-col gap-3">
-      <h2 className="border-b border-border-strong pb-1 text-base font-semibold text-hf-green-dark">{title}</h2>
+      <h2 className="border-b border-border-strong pb-1 text-hf-green-dark hf-type-body-lg hf-type-strong">{title}</h2>
       {intro && <p className="hf-type-small text-text-secondary">{intro}</p>}
       {children}
     </section>
@@ -244,7 +244,7 @@ function Section({ title, intro, children }: { title: string; intro?: string; ch
 function Card({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <div className="flex flex-col gap-2 rounded-lg border border-border-strong bg-surface-2 p-4">
-      <p className="text-sm font-semibold text-text-primary">{title}</p>
+      <p className="text-text-primary hf-type-body hf-type-strong">{title}</p>
       {children}
     </div>
   );
@@ -254,7 +254,7 @@ function BulletList({ title, items }: { title: string; items: string[] }) {
   if (items.length === 0) return null;
   return (
     <div className="flex flex-col gap-1">
-      <p className="hf-type-small font-semibold text-text-primary">{title}</p>
+      <p className="hf-type-small text-text-primary hf-type-strong">{title}</p>
       <ul className="hf-type-small list-disc pl-5 text-text-secondary">
         {items.map((item, i) => (
           <li key={i}>{item}</li>
@@ -338,12 +338,12 @@ function SimpleTable({
   alignRight?: boolean;
 }) {
   return (
-    <div className="overflow-x-auto rounded-lg border border-border-strong bg-surface-1">
-      <table className="w-full text-sm">
+    <div className="overflow-x-auto hf-surface">
+      <table className="w-full hf-type-body">
         <thead>
-          <tr className="border-b border-border-strong bg-surface-2 text-left text-xs text-text-secondary">
+          <tr className="border-b border-border-strong bg-surface-2 text-left text-text-secondary hf-type-small">
             {head.map((h, i) => (
-              <th key={h} className={`whitespace-nowrap px-3 py-2 font-medium ${i > 0 && alignRight ? "text-right" : ""}`}>
+              <th key={h} className={`hf-type-strong whitespace-nowrap px-3 py-2 ${i > 0 && alignRight ? "text-right" : ""}`}>
                 {h}
               </th>
             ))}

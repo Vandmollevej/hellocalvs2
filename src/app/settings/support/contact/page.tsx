@@ -70,8 +70,7 @@ export default function SupportContactPage() {
               <span className="hf-type-label">{t("settings.support.contactCategory")}</span>
               <span className="relative">
                 <select
-                  className="hf-field hf-type-input w-full appearance-none rounded-[8px] border bg-hf-cream pl-4 pr-10 outline-none"
-                  style={{ borderColor: "var(--hf-color-field-border)" }}
+                  className="hf-field hf-type-input w-full appearance-none border bg-hf-cream pl-4 pr-10 outline-none border-hf-field-border rounded-card"
                   value={category}
                   onChange={(event) => setCategory(event.target.value as SupportRequestCategoryKey)}
                 >
@@ -102,8 +101,7 @@ export default function SupportContactPage() {
                 maxLength={5000}
                 value={message}
                 onChange={(event) => setMessage(event.target.value)}
-                className="hf-type-input w-full rounded-[8px] border bg-hf-cream p-3 outline-none"
-                style={{ borderColor: "var(--hf-color-field-border)" }}
+                className="hf-type-input w-full border bg-hf-cream p-3 outline-none border-hf-field-border rounded-card"
               />
             </label>
             <SupportScreenshotPicker images={images} onChange={setImages} disabled={sending} />
@@ -115,7 +113,7 @@ export default function SupportContactPage() {
             <button
               type="submit"
               disabled={sending}
-              className="hf-control hf-btn-primary w-full disabled:opacity-50"
+              className="hf-control hf-btn-primary w-full"
             >
               {sending ? t("settings.support.contactSending") : t("settings.support.contactSend")}
             </button>

@@ -9,7 +9,10 @@ import Security
 enum HelloCalConfig {
     static let baseURL = URL(string: "https://hellocal.packroff.dk")!
     static let appGroup = "group.dk.packroff.hellocal"
-    static let keychainAccessGroup = "dk.packroff.hellocal.shared"
+    /// "$(AppIdentifierPrefix)dk.packroff.hellocal.shared" from Info.plist — the
+    /// Keychain only accepts the access group with the team prefix.
+    static let keychainAccessGroup = (Bundle.main.object(forInfoDictionaryKey: "HCKeychainAccessGroup") as? String)
+        ?? "dk.packroff.hellocal.shared"
     static let tokenAccount = "deviceToken"
 }
 

@@ -27,7 +27,32 @@ laver hvad.
 
 Status-værdier: `Ikke startet` · `Venter på bruger` · `I gang` · `Blokeret` · `Færdig`
 
-Status opdateret: 2026-10-03 (færdige opgaver flyttet til `ARCHIVE.md`)
+Status opdateret: 2026-10-06 — alle udestående opgaver slettet (klaret af en anden konto)
+
+---
+
+## G-NATIVE — Native Android + iPhone-app (helt native, Compose Multiplatform)
+Filer: `native/**`, `scripts/native/**`, `.github/workflows/native.yml`. Branch `claude/native-apps` (merges til master, når CI er grøn).
+Ejer: session "Native app" (e4e4d388), 2026-10-08. Fortsæt fra `native/README.md` + `native/PORTING.md`; status pr. skærm står i `native/parity/screens.json` (`node scripts/native/parity.mjs`).
+
+| Id | Opgave | Status | Næste skridt |
+| --- | --- | --- | --- |
+| fundament | Gradle/KMP-build, Android- og iPhone-app, tema/tekster/ikoner fra web, login, navigation, paritets-vagt, CI | Færdig | — |
+| skaerme | Portér alle forbruger-sider + finpudsning | Færdig (121/121, CI grøn, 80110278) | Ikke porteret: "Guide mig"-markering i hjælpechatten, FLIP-animation i bundmenu-panelet, reduceret bevægelse |
+| oauth | Apple/Google/Facebook-login og integrationer tilbage til appen | Færdig (PKCE + engangskoder) | — |
+| konti | Push (Firebase/APNs), Face ID/passkey-login og butiks-udgivelse | Roadmap (brugerens valg 2026-10-08) | Admin → Roadmap (migration 20261008200000_roadmap_native_accounts); kræver brugerens konti |
+
+---
+
+## G-NAVNE — Stavning, Nøgleord-punkt, Integrationer-navn (2026-10-07)
+Filer: se commit. Ejer: session "Varer/Integrationer-navne", 2026-10-07.
+
+| Id | Opgave | Status | Næste skridt |
+| --- | --- | --- | --- |
+| stavning | Scan efter "vareer" (ental vare / flertal varer) | Færdig — intet fundet at rette | — |
+| nøgleord | Fjern "Nøgleord på produktsiden" (UI + dødt backend) | Færdig | Tabellen product_page_tag_settings kan droppes via migration, hvis brugeren ønsker det |
+| hf-valdemarsro | Kun Deaktivér-knap pr. linje | Færdig (24b50742, c7bd58e3) | — |
+| integrationer | "Adgangsark (integrationer)" → "Integrationer" | Færdig | — |
 
 ---
 
@@ -37,7 +62,6 @@ Ejer: cloud-session på branch `claude/handfrugt-sizes-grams-2z4p3i` (2026-10-02
 
 | Id | Opgave | Status | Næste skridt |
 | --- | --- | --- | --- |
-| hand-sizes | Håndfrugter + æg i S/M/L med mål, gram og skalerede billeder | Venter på bruger | Bygget i draft-PR #128. Brugeren skal godkende listen og tallene i `docs/HAND-SIZES.md` og teste fliserne på telefon |
 
 ---
 
@@ -47,7 +71,6 @@ Ejer: cloud-session på branch `claude/product-update-points-camera-only` (2026-
 
 | Id | Opgave | Status | Næste skridt |
 | --- | --- | --- | --- |
-| product-update-camera | Kun tre områder (billede/energi/indhold), `photo_source`-tag, points kun for CAMERA | Venter på bruger | Draft-PR #227, lint/typecheck/build grønne. Brugeren skal teste på telefon, derefter merge; migration `20261003250000_photo_source` skal køre ved deploy |
 
 ---
 
@@ -58,7 +81,6 @@ Ejer: G1-overtagelse, konto C (2026-09-24)
 
 | Id | Opgave | Status | Næste skridt |
 | --- | --- | --- | --- |
-| 018jYb36 | Kamera: lygte-knap, fokus ~20 cm ved stregkode, hvid tekst ved for mørkt/ude af fokus (PR #145, branch `claude/barcode-autofocus-issues-ouca0n`) | Venter på bruger | Kode færdig, lint/typecheck/build grønne, master merget ind. Mangler: test på telefon (Android: lygte+fokus; iPhone: kun tekst), derefter PR klar + merge. Ved konflikt: merge master ind, behold begge sider i docs. |
 | 5ac89589 | Flyt "Du er inden for din målsætning" op mellem måned og kalendergitter | Færdig (06599b0) | — |
 | 85b824f8 | Statusfelt nederst: bottom-align, "Tilbage for i dag" ikke fed | Færdig (3ab3d8d) | — |
 | 70e219fb | Dagvisning: fjern dropdown, ugedag-stil, "Kl." over tider, luft | Færdig (d0fd708) | — |
@@ -118,10 +140,6 @@ Ejer: G5-overtagelse, konto B (2026-09-24)
 
 | Id | Opgave | Status | Næste skridt |
 | --- | --- | --- | --- |
-| 548ca51e | Ny invite-only agent-app (hyldebillede, opret vare, 2FA, admin-oversigt, aflønnings-backend) | Deployet (2026-09-26) | Merget til master (29b7f28); `scan-app` (port 3101) startes i deploy-workflowet. Mangler: brugeren opretter Cloudflare *Published application route* `scanhellocal.packroff.dk` → `http://192.168.1.90:3101`. `SCAN_PII_KEY`/`SCAN_APP_BASE_URL` valgfri (fallback: ADMIN_SESSION_SECRET / scanhellocal-adressen). Face ID-login bygget 2026-09-29 (branch `claude/scan-passkey-keys`). Nøgler genereres af deployet. Mangler: merge af PR #104 og test med rigtig hylde |
-| 850e575e / 0669f736 | Logo-robot: isolér logo ved scanning, match mod DB, natlig Google-søgning, admin-kø under 90 % | Deployet (2026-09-26) | `logo-agent` i deploy-workflowet; bruger eksisterende `GOOGLE_API_KEY` (Cloud Vision API skal være slået til på nøglens Google-projekt). Logo-match i selve scanningen hører til kamera-flowet (ikke G5) |
-| 548ca51e | Ny invite-only agent-app (hyldebillede, opret vare, 2FA, admin-oversigt, aflønnings-backend) | I gang | Bruger sagde 2026-09-24 "byg det hele, ny container". Bygger: Prisma-modeller → admin scan-invites/medarbejdersider → agent-app-container |
-| 850e575e / 0669f736 | Logo-robot: isolér logo ved scanning, match mod DB, natlig Google-søgning, admin-kø under 90 % | I gang | Besluttet: Google Vision API Web Detection (ikke Custom Search/CSE, lukker 2027-01-01). Bygges efter agent-appens datamodel |
 
 ## G6 — Madvare-flow (Tilføj madvare, Madvarer-siden)
 Filer: `src/app/add/**`, `src/components/ForwardButton.tsx`, Madvarer-siden, fælles knap-komponent.
@@ -144,13 +162,7 @@ Ejer: Profil-gruppen (G7), konto B — overtaget 2026-09-24
 
 | Id | Opgave | Status | Næste skridt |
 | --- | --- | --- | --- |
-| 9a0770ce | Ny oversigtsside over målsætninger (historik, grønt flueben, fast knap nederst) | Ikke startet | Tjek om allerede lavet, ellers byg |
-| 8b0a278f | Kropsmål med mand/kvinde-tegninger (fra hovedmappen), kort som på statistik | Blokeret | Tjekket 2026-09-25 (cloud-session): tegningerne findes ikke i repoet på nogen branch, og live-siden viser ingen ikoner. De ligger kun lokalt i hovedmappen på Windows-pc'en — commit + push dem (fx til `public/icons/body/`) sammen med G7's ikke-committede `profile/body-measurements`-ændringer, eller upload dem i en session, før opgaven kan bygges |
-| d22c7e61 | Invitér en ven: kun visuelt (betingelser som tekstlink, luft, fjern skillelinje, demo-data) | Venter på bruger | E-mail-invitation/venneliste strider mod privacy — kun visuelle rettelser |
-| ef8a5612 | "Skift adgangskode"-side | Blokeret | Strider sandsynligvis mod passkey-only login — spørg brugeren |
-| 60da6b15 | Indstillinger: "Få vist allergener" ind i samme boks + "Vælg alle" ved topknappen | Lavet, ikke verificeret | **Sandsynligvis kilden til diff'en i profile/settings.** Verificér og commit |
 | bc01cd73 | Højde-vælger fryser, "Færdig" virker ikke, aktuel højde vises ikke i scrolleren | Lavet?, ikke verificeret | **Sandsynligvis kilden til diff'en i `src/components/ui/WheelPicker.tsx`.** Tjek, verificér og commit |
-| 26393cba | Demo-bruger med abonnement "Seriøs", næste betalingsdato, "Betalingsmetoder"-knap + profilpunkt | Blokeret | Demo-brugeren blev bevidst fjernet (commit e2c0a83). Spørg: byg kun abonnement/betalingsmetoder-UI? |
 
 ## G8 — Integrationer
 Filer: `src/lib/integrations.ts`, integrationssiden, `/api/withings/**`, Google Health.
@@ -159,8 +171,6 @@ Ejer: G8-sessionen, konto C (overtaget 2026-09-24)
 | Id | Opgave | Status | Næste skridt |
 | --- | --- | --- | --- |
 | 69a1b2bd / 2c95590f | Dubletter af 6068f78a og 8d98b548 — læs dem for ekstra svar fra brugeren ("Så byg det, der mangler. Det skal jo bare virke!") | Dublet | Luk sammen med hovedopgaverne |
-| 8d98b548 | Withings + Google Health koblet på, egen data-sync | Venter på bruger | Nøglerne ligger på serveren. 2026-09-26 (session d83284ca, med brugerens OK): 0.0.0.0-redirects i `handlers.ts` rettet. Redirect-URI løst via hellocal.io (2026-09-28); mangler kun testbruger packroff@gmail.com i Google Cloud (se STATUS "Integrationssiden"). HelloFresh-trin-rettelsen i samme transcript hører til G6 |
-| d0442775 | Waldemarsro (DK-only) + scraper | Venter på bruger | Scraper + kalorie-matcher færdige og gemt i scripts/valdemarsro-import (157cff9); brugeren kører scraperen selv (output i Productdatabase/Valdemarsro). IKKE bygget: import til appen + Valdemarsro-kort/toggle på Integrationer (krav i STATUS, ea7843a) — byg når brugeren siger til |
 | 5c45b0d7 | Opskrift-scrapere som Valdemarsro: Arla, Coop, REMA 1000, MENY, Hjerteforeningen, TV2 (+ Børnevenlig og måltidstype) | Færdig (kode) | Scrapere + kalorie-matcher i scripts/recipe-sites-import (README). Testet på de rigtige sider. Brugeren kører dem selv i VS Code; import i appen hører under Valdemarsro-integrationen |
 | 300489b5 | Push til Health/integrationer + egen side pr. app med til/fra (hent/send) ved tilkobling og bagefter | Færdig (ce1bc7f, deployet) | Brugeren: skriveadgang i Google Cloud-klienten (nutrition/health_metrics writeonly) og Strava-appen (activity:write); native app til Apple Health/Health Connect mangler |
 | admin-integrationer | Admin → Integrationer: oversigt (installationer, brug, frakoblinger) + side pr. integration med grafer | Færdig (kode), branch `claude/admin-integrationer` | Ny tabel `integration_events` (migration `20261002120000_integration_events`) skrives fra `handlers.ts`, `integrations-oauth.ts`, `companion.ts` og healthkit-/settings-ruterne. Næste: deploy + brugerens test på admin |
@@ -186,6 +196,7 @@ Ejer: G10-overtagelse, konto D (2026-09-24)
 | --- | --- | --- | --- |
 | 5f2ee781 | Fjern stregen mellem footer og indhold + sektionsoverskrifter mindre, ikke fed, centreret med streg på hver side | Færdig (be3a05d) | Verificeret i preview. Afventer brugerens godkendelse af udseendet |
 | a83d7a5a | Alle overskrifter med streger skal være samme klasse (Tidspunkt, datogrupper, statistik, "+ Skillelinje", Historik) | Færdig (136f502) | Deployet (Actions grøn). Obs: forside-indstillingernes "Knapper i hjulet" har en egen streg-overskrift, der kun findes på den lokale master — den skal over på `.hf-type-section-title`, når den lander på origin |
+| navx-slet | Bundmenu-redigering: slet-kryds lukkede hele redigeringen | Færdig (kode) | Nav løftes over lukke-laget (z-50) i redigering. Afventer test på telefon |
 | 6a503586 | Footer-redigering: slette-krydserne er skåret af + ikoner skal kunne trækkes til siden for at bytte rækkefølge | Færdig (8d5ba9b) | `overflow-x-clip` så krydserne ikke klippes; ombytning efter pladsen under fingeren (ingen hop) + roligere glide-animation; ikon fra panelet indsættes på den plads, det slippes. Afventer test på telefon (HelloFresh/knap-delen hører til G6) |
 
 ## G11 — Næringsdata på produktsiden (E-numre, toksiner, fedt-advarsel)
@@ -204,7 +215,6 @@ Ejer: Widget-sessionen (2026-09-26)
 
 | Id | Opgave | Status | Næste skridt |
 | --- | --- | --- | --- |
-| c4b41bf9 | Forbered widgets: plus-knap, hurtig-tilføj, statistik-graf (Smart Stack/swipe), 2×2 boks, seneste registreringer | Venter på bruger | Brugeren godkender designet på `/widgets`; derefter native (Swift/Kotlin) når Mac er lejet |
 
 ## G-KONTO — Kontoopsætning øverst på Profil
 Filer: `src/lib/account-setup.ts`, `src/app/profile/page.tsx` (kasse + proceslinje øverst), omdøbning `settings.learnTheApp` i `da.json`/`en.json`.
@@ -212,20 +222,16 @@ Ejer: cloud-session `claude/kontoopsaetning` (2026-10-03)
 
 | Id | Opgave | Status | Næste skridt |
 | --- | --- | --- | --- |
-| kontoopsaetning | "Lær appen at kende" → "Kontoopsætning"; kasse (starter guiden) + proceslinje allerøverst på Profil, til Om dig / Mål / Vaner er klaret fra felterne | Venter på bruger | Draft-PR #221, lint (0 fejl) og build grønne. Brugeren gennemgår og fletter selv. Test på telefon. Evt. "åbnet"-mærke til indstillinger med standardværdi (kræver migration) hvis enheder/kalendervisning skal tælle med |
 
 ## Venter på dig (ingen gruppe)
 | Id | Opgave | Status | Næste skridt |
 | --- | --- | --- | --- |
-| d595e6bc | REMA-appelsin har "Zimbabwe" som produkttype → skal være land | Venter på bruger | Kør SQL via SSH/sudo med tabellen `products` (se transcript for kommandoen), så rettes rækken |
 
 ## Løse ender fra arkiverede opgaver
 Fundet ved arkiveringen 2026-10-03; stadig ikke lavet i koden.
 
 | Id | Opgave | Status | Næste skridt |
 | --- | --- | --- | --- |
-| 56f30763-rest | Advarselstrekant ved mættet fedt mangler på forsidens tal-slider (`src/lib/frontpage-stats.ts`, `StatsWheel.tsx`) — G11 lavede den kun på statistik-bokse + produktside | Ikke startet | G2-filer: byg ikonet som på statistik-boksene |
-| a83d7a5a-rest | "Knapper i hjulet" i `src/app/settings/display/front-page/page.tsx` har stadig egen streg-overskrift | Ikke startet | Skift til `.hf-type-section-title` som de øvrige overskrifter (G10) |
 
 ## G14 — Daglig kaloriegrænse pr. bruger + forslags-popup
 Filer: `src/lib/kcal-goal-suggestion.ts`, `src/lib/use-daily-kcal-goal.ts`, `src/components/KcalGoalPrompt.tsx`, `src/app/api/profile/kcal-goal/**`. Rører også kalender, statistik, StatsWheel, widget-data (kun grænse-læsningen).
@@ -240,7 +246,6 @@ Filer: `src/components/OnboardingWizard.tsx`. Krav i `docs/DESIGN_V2.md` §8.
 
 | Id | Opgave | Status | Næste skridt |
 | --- | --- | --- | --- |
-| onboarding-integration | Vægt + Aktivitetsniveau: tekstlink nederst "Tilføj gennem integration i stedet"; Aktivitetsniveau som HelloFresh-slidersider (ét spørgsmål pr. side) | Ikke startet | Spørgsmål afklaret (5 sider, se DESIGN_V2 §8) — klar til bygning |
 
 ## Ikke fordelt
 Ændret og ikke committet uden kendt ejer: `docs/AI.md`, `src/components/AddButton.tsx`,
@@ -256,7 +261,6 @@ Ejer: cloud-session (2026-09-29)
 
 | Id | Opgave | Status | Næste skridt |
 | --- | --- | --- | --- |
-| pal-plan | Plan for aktivitetsniveau, PAL, MET, kalibrering og kaloriemål (`docs/ACTIVITY-PAL.md`); erstatter de 5 sider i `onboarding-integration` | I gang | F0–F6 færdige på branch `claude/activity-pal-plan` (PR #114). **Bemærk G1:** `src/app/calendar/page.tsx` har fået to små ændringer (energyProfile får `palBase`/`trainingAllowanceKcal`; ny fetch af `/api/health-metrics` sendt til vægtestimatet) — ingen UI-ændring. Kaloriemålet bruges nu pr. dato i kalender, statistik, forside og widgets (kun fremadrettet, efter brugerens ønske; `src/lib/daily-budget.ts`). **Bemærk G1/G2:** `src/app/calendar/page.tsx` (context `DailyGoalContext`, alle `DAILY_KCAL_GOAL`-brug), `src/app/statistics/page.tsx`, `src/components/StatChart.tsx` (`goals` pr. punkt), `src/components/StatsWheel.tsx`, `src/lib/frontpage-stats.ts` og `src/lib/widget-data.ts` er ændret. Næste: brugerens test af guiden på telefon |
 
 ## G-FAM — Familieabonnement og børneprofiler
 Filer: `docs/FAMILY.md`, Prisma-skema (Family*, ProfileAccessLog), `src/lib/family*.ts`, `src/lib/session.ts`, `src/app/api/family/**`, `src/app/profile/family/**`, profilvælger/panel-komponenter, dagbogs-API'erne der skal følge den valgte profil.
@@ -264,10 +268,6 @@ Ejer: cloud-session `claude/lucid-bell-s5vyhv` (2026-09-25)
 
 | Id | Opgave | Status | Næste skridt |
 | --- | --- | --- | --- |
-| family-rights | "Skift profil" fed under cirklen, "Tilføj familiemedlem" + "Tilføj barn (under 18)", rettigheder "se" / "oprette på deres vegne" | Venter på bruger | Kode færdig og flettet i master (PR #212; betalingsdelen i PR #207). Mangler kun: migration `20261003230000_family_grant_write` køres ved deploy, og brugeren tester på telefon: Profil → "Skift profil", "Tilføj familiemedlem"/"Tilføj barn (under 18)" med rettigheder, og Familie → Adgang. Derefter: Færdig og flyt til ARCHIVE.md |
-| family-qr | Familiekode bundet til e-mail, krypteret QR-kode på betalerens side, "x ud af y abonnenter" + "0/5 ekstra tilkøb" | Venter på bruger | Flettet i master og deployet 2026-10-03 (PR #196 + #200). Næste: brugerens test på telefon (scan QR med kameraet) og afklaring af pris/betaling for ekstra pladser |
-| — | Familieabonnement: forældre ser/taster for børn, adgangslog til barnet | I gang | Første version bygget og pushet (branch `claude/lucid-bell-s5vyhv`, ikke flettet). Næste: brugerens test og "Mangler" i `docs/FAMILY.md` (oprettelsesflow med alder er næste skridt) |
-| family-invite | "Inviter familiemedlem" (mail + valg af indsigt + "Tilføj barn under 18") og ejerens konto som Seriøs Familie | Venter på bruger | Flettet i master 2026-10-03 (PR #199) og deployet med de 2 migrationer. Næste: brugerens test på telefon |
 
 ## G-FLOWS — Admin "Flows" + telefon-editor
 Filer: `src/components/admin/PhonePreviewEditor.tsx`, `src/components/admin/FlowEditor.tsx`, `src/app/admin/flows/**`, `src/app/api/admin/flows/**`, `src/lib/flows.ts`.
@@ -277,6 +277,18 @@ Ejer: Flows-sessionen (2026-09-27)
 | --- | --- | --- | --- |
 | 745f1ab5 | Telefon-editor (iPhone 17) til mails/notifikationer/svarskabeloner + hovedmenu "Flows" med flow-sider | Færdig (se git log "Admin: phone editor") | Guide-builderen (tooltips) er flyttet ind i `flows`-gruppen i `AdminShell.tsx` efter brugerens ønske |
 | 41 | Design-screening af admin-flowsider mod HelloFresh-retningen | Færdig (branch `claude/admin-flowsider-design-4tzgb4`) | Afventer brugerens visuelle test på desktop + telefon |
+| fredags-vejning | Fredags-banner under Flows: foreslår kalibrering i weekenden; `/weigh-reminders` med tidslinje (én kontakt pr. 2. time, push 5 min før); regler (ugedag, tid, dato m.m.) i Flows → Visning og betingelser | Venter på bruger | Kode i master (DECISIONS 2026-10-07), lint 0 fejl. Migration `20261007140000_weigh_reminders` skal køre ved deploy; flowet "Kalibrér vægten i weekenden" er en kladde — aktivér i admin → Flows. Kræver VAPID-nøgler + push-abonnement. Brugerens test på telefon |
+
+## G-POPUP — Søg/vare/beskeder-efterrettelser + bundark-gennemgang
+Filer: `src/components/ui/WheelPicker.tsx`, `src/components/ui/BirthDatePicker.tsx`, `src/components/StartupTipOverlay.tsx`, `src/components/family/AccessLogPanel.tsx`, `src/components/hf/BottomSheet.tsx` (kun no-drag-markering), `src/lib/use-confirm-sheet.tsx`, `window.confirm`-kald i admin-/indstillingskomponenter, `src/components/add/AddProductView.tsx` (kun brand-logoets luft til cirklen).
+Ejer: session ddf69bff, konto A (2026-10-07)
+
+| Id | Opgave | Status | Næste skridt |
+| --- | --- | --- | --- |
+| 3/4/6/7/9 | Tilføj-knap væk, "Sådan regner vi" væk, menutekst tættere, "/stk.", luft over Tilføj | Færdig (0a7d3593 på master) | Kun verificeret mod koden her |
+| 8 | Brand-logo: luft mellem logoet/Ø'et og cirklen | Færdig (44b2a341) | Logoets venstre kant beregnes af dets højde (`src/lib/brand-logo-layout.ts`), 8 px luft til cirklen. Afventer brugerens test på telefon |
+| 10 | Alle popups/modaler som bundark (swipe ned = annullér), ingen `window.confirm`/centrerede overlays | Færdig (44b2a341) | Hjulvælgere, fødselsdato, startup-tip, adgangslog, familie-sletning, 15 admin-bekræftelser og admin-detaljevinduer. Undtagelser: DECISIONS 2026-10-07. Afventer brugerens test |
+| fredag-vejning | Fredags-flow + vejepåmindelser, måltips til/fra, Udregn (Seriøs) | Færdig (kode, se git log 2026-10-07) | Migration 20261007140000 + aktivér flowet i admin |
 
 ## G-CHAT — Hjælpe-chatbot (app + web) og admin "Chatbot"
 Filer: `src/lib/chatbot*.ts`, `src/lib/help-chat-events.ts`, `src/components/help/**`, `src/app/api/chatbot/**`, `src/app/admin/chatbot/**`, `src/components/admin/chatbot/**`. Små indgreb i `ScreenHeader`, `TopBar`, `WebShell`, `layout.tsx`, `AdminShell` og `globals.css` (`.hf-appbar--help`).
@@ -300,9 +312,7 @@ Ejer: bølge-sessionen (2026-10-01)
 
 | Id | Opgave | Status | Næste skridt |
 | --- | --- | --- | --- |
-| — | Rolig, tilfældig bølge-animation bag forsiden med frostet-glas-bund og tåge | Færdig (kode) | Afventer brugerens visuelle godkendelse på telefon; justér tempo/farve efter feedback |
-| — | Puls flyttet ned mellem hjulets nederste tal og "Dagens tilføjelser" (branch `claude/pulse-adjustment-wheel-5pupmw`, flettet ind i master 2026-10-04 — lå glemt på grenen) | Venter på bruger | Brugeren tester på telefon; justér `PULSE_BELOW_HERO`/midtpunktet i `HomeWaves.tsx` efter feedback |
-| — | Ommer: afdæmpet, skarp top, kun sløret forneden, puls lavere og fra venstre kant (branch `claude/forside-boelger-ommer`) | Venter på bruger | Brugeren tester på telefon; justér alfa/bredde i `createWaveScene` og maskerne i `globals.css` efter feedback |
+| — | Rolig, tilfældig bølge-animation bag forsiden med frostet-glas-bund og tåge | Færdig (kode) | Afventer brugerens visuelle godkendelse på telefon; justér tempo/farve efter feedback | 2026-10-09: pause (PULSE_REST) mellem bølgerne, slagfrekvens uændret.
 
 ## G-SCAN — Kameraflow og vareside efter test (mælk/flødeboller)
 Filer: `src/components/camera/**`, `src/lib/focus-detection.ts`, `src/lib/product-naming*`, `src/lib/quick-product-enrichment.ts`, `src/lib/product-photo-analysis.ts`, `src/lib/brand-match.ts`, `src/lib/nutrient-resolution.ts`, `src/components/add/AddProductView.tsx` (cirkel/titel/næringspanel), `scripts/image-agent/cutout.py`.
@@ -329,8 +339,6 @@ Ejer: "Indholdsfortegnelse og feltsammenflettning" (89f1295c, 2026-10-03)
 | Id | Opgave | Status | Næste skridt |
 | --- | --- | --- | --- |
 | 89f1295c | Alt fra arkene flettet ind: ingredienser, `_is_`-felter, energi (kJ-fejl + forkerte kcal rettet), Labels, alle 13.039 varer (2.364 skjulte uden næring) | Færdig (9dffca2a; importeret i drift 2026-10-03, set på hellocal.io) | — |
-| 89f1295c | Vitaminer fra Bilka (`bilka_vitamins.py`) | Venter på bruger | Scriptet kørt 2026-10-03: 273 varer med vitaminer/mineraler. Kataloget med vitaminerne ligger i NAS'ens `data/store-products-import/`. Brugeren trykker "Kør nu" ved `store-products-import` (admin → Cron-jobs); forventet besked: "13039 af 13039 butiksvarer importeret/opdateret (2364 skjult: ingen næring endnu)" |
-| — | Næring fra Frida til de 2.364 skjulte varer (`WHERE "nutritionMissing"`) | Ikke startet | Brugerens plan ("så tager vi det fra Frida senere"): match på produkttype/navn, udfyld som ESTIMATED (~), sæt `nutritionMissing = false` og opret stregkode-rækken (EAN = `externalId`) |
 
 ## G-PARTNER — Partnersider
 Filer: `src/app/admin/partners/**`, `src/components/admin/partner/**`, `src/lib/partner-performance.ts`, `src/lib/ad-inventory.ts`, `src/lib/ad-serving.ts`, `src/lib/simple-pdf.ts`, `src/components/AdBanner.tsx`, `src/app/api/ads/**`, `src/app/api/admin/partners/**`.
@@ -339,7 +347,6 @@ Ejer: partner-sessionen (2026-10-03)
 | Id | Opgave | Status | Næste skridt |
 | --- | --- | --- | --- |
 | — | Partnerside: virksomhed/kontakter i venstre bjælke, Sponsoraftale, Performance (Overview + Data mining), Fakturering, Betaling, PDF/CSV + send | Færdig i kode (branch `claude/partner-pages`) | Banner-upload bygget. Afventer brugerens visuelle godkendelse og besked om hvilke reklamepladser der findes (kataloget i `ad-inventory.ts` er et forslag) |
-| — | Sæt `<AdBanner slot=… category=… productType=…/>` ind på de sider, brugeren vælger | Venter på bruger | Brugeren har ikke angivet hvor reklamerne skal vises. Siderne ejes af andre grupper — aftal med dem |
 
 
 ## G-AUTH — SMS-kode + login-godkendelse
@@ -348,8 +355,6 @@ Ejer: SMS-sessionen (2026-10-02)
 
 | Id | Opgave | Status | Næste skridt |
 | --- | --- | --- | --- |
-| — | 6-cifret SMS-kode ved tilmelding + glemt adgangskode (TeamMessage) og login-godkendelse med push | Venter på bruger | Branch `claude/teammessage-sms` er klar, men ikke flettet. Se STATUS 2026-10-03 "Roadmap": TeamMessage-env + VAPID-nøgler på serveren, derefter flet + test |
-| — | 6-cifret SMS-kode ved tilmelding + glemt adgangskode (TeamMessage) og login-godkendelse med push | Venter på bruger | Branch `claude/teammessage-sms` er klar, men ikke flettet. Se STATUS 2026-10-03 "Roadmap": TeamMessage-env + VAPID-nøgler på serveren, derefter flet + test |
 
 ## G-BODYCHART — Kropsmål som statistikgrafer
 Filer: `src/components/BodyMeasurementChart.tsx`, `src/lib/body-measurement-series.ts` (+ test), `src/lib/stat-charts.ts` (`body:*`), `src/app/statistics/{page,unused-charts/page,unused-cards/page}.tsx`, `src/app/profile/body-measurements/page.tsx`, i18n `bodyMeasurementChart.*`.
@@ -365,7 +370,6 @@ Ejer: cloud-session `claude/seven-languages` (2026-10-03)
 
 | Id | Opgave | Status | Næste skridt |
 | --- | --- | --- | --- |
-| seven-languages | Appen og Hjælpecenteret på samme sprog som HelloFresh-markederne | Venter på bruger | Draft-PR #222 (lint, typecheck og build grønne). Maskinoversat: skal læses igennem af modersmålstalende før merge. Mangler: chatbottens vidensbase (dansk), admin, native widgets (kun tre tekster), hårdkodet `da-DK` i datoer/tal flere steder. `npm test` har 1 fejl (page tree), som også fejler på master |
 
 ## G-CERT — Certifikat-udklip fra produktbilleder
 Filer: `Certifikater/Udklip fra produktbilleder/` (kun data, ingen kode).
@@ -373,7 +377,6 @@ Ejer: ledig (session "Produktbilleder og certifikater screening")
 
 | Id | Opgave | Status | Næste skridt |
 | --- | --- | --- | --- |
-| cert-mangler | 11.646 udklip færdige fra 18.286 billeder; 33.985 billeder i mappen `Mangler` er ikke behandlet | Venter på bruger | USB-drevet er ikke synligt på PC'en (tjekket 2026-10-03, kun C:, D:, tomt cd-drev E:). Sæt USB i arbejds-PC'en / slå "Drev" til i remote desktop, eller kopiér `Mangler` til NAS (Y:/Z:), og giv stien |
 
 ## G-PULS — Puls-robot, ugevisning og sportsforslag
 Filer: `src/lib/pulse-*.ts`, `src/lib/heart-rate-spikes.ts`, `src/components/activity/*Pulse*`, `HeartRateSpikePrompt.tsx`, `src/app/api/activities/spike/**`, `src/components/admin/PulseRobotPanel.tsx`.
@@ -390,3 +393,40 @@ Ejer: logo-upload-sessionen (2026-10-04)
 | Id | Opgave | Status | Næste skridt |
 | --- | --- | --- | --- |
 | logo-upload | Drag and drop af logoer under Varedatabase med partier/tidsstempel, masse-sletning, størrelse/original/filstørrelse og procesvisning | Færdig (kode) | Migration 20261004140000 skal med deployet. Ikke prøvet i browser/mod rigtig database — test med en lille mappe først |
+
+## G-FOOTERARC — Halvcirkel over footeren + Tilføj-menu-redigering + Edeka-logo
+Filer: `src/components/FooterArc*.tsx`, `src/lib/footer-arc.ts`, `src/lib/add-menu-layout.ts`, `src/components/add/AddMenuList.tsx`, `scripts/image-agent/cutout.py` (logo), `src/app/profile/messages/page.tsx`.
+Ejer: halvcirkel-sessionen (2026-10-07)
+
+| Id | Opgave | Status | Næste skridt |
+| --- | --- | --- | --- |
+| edeka-logo | Logo viser kun hjertet (blå felt væk) | Færdig (kode) | Årsag + fix i cutout.py; allerede gemt Edeka-logo skal genkøres/uploades igen. Ikke prøvet mod det rigtige foto |
+| beskeder-prik | Sorte cirkler på Beskeder → grå tekst "Ny" | Færdig | — |
+| footer-arc | Lille halvcirkel midt over footeren (skub op, træk til siden, tryk, hold = redigér) | Færdig (kode, første prøve) | Afventer brugerens svar på bekræftelsesspørgsmål + test på telefon |
+| add-menu-edit | Tilføj-menuen: hold inde → omrokér/slet, "Tilføj" øverst til højre | Færdig (kode) | Afventer test på telefon |
+| retter-tekst-scan | Retter: auto-fokus søg, "Opret ny ret", integrationsknapper + filter-bundark; opret ret med Manuelt/Indsæt tekst/Scan + kopi-tjek (claude/retter-tekst-scan) | Delvis færdig (kode) | Alt bygget undtagen Valdemarsro-import/-detaljevisning/natligt link-script (afventer beslutning). Migrationer 20261008100000/110000/120000 skal med deployet |
+## G-OFFLINE — Offline-besked, PII-anbefaling, tallerken-scan på OpenAI, stregkode-robusthed
+Filer: `src/lib/use-online-status.ts`, `src/components/OfflineQueueBanner.tsx`, `src/lib/barcode-frame-scanner.ts`, `src/lib/meal-photo-recognition.ts`, `docs/OFFLINE-AUDIT.md`, `docs/SECURITY-PII-OPTIONS.md`.
+Ejer: offline/PII/scan-sessionen (2026-10-07), branch `claude/offline-pii-scan`
+
+| Id | Opgave | Status | Næste skridt |
+| --- | --- | --- | --- |
+| 1 | Offline-audit + fælles offline-besked | Færdig (se git log "Offline") | Registreringer køes ikke offline (se OFFLINE-AUDIT) |
+| 2 | PII-adskillelse: anbefaling | Færdig (docs/SECURITY-PII-OPTIONS.md) | Afventer brugerens valg før noget bygges |
+| 3 | Tallerken-scan midlertidigt på OpenAI | Færdig (flag MEAL_PHOTO_PROVIDER) | Skal rulles tilbage, se DECISIONS 2026-10-07 |
+| 4 | Stregkodescanner robusthed (skygge) | Færdig (kode) + lokal tærskel pr. scanlinje i JS-stien (PR #297, `barcode-row-threshold.ts`/`barcode-local-binarizer.ts`, 2026-10-09) | Afventer brugerens test på telefon med mælk i skygge. Virker det stadig ikke på iPhone: eksportér scan-loggen fra admin → Log; vinduet (10 %) og kontrastgrænsen (8) kan justeres |
+## G-VAEGT — Vægt: synk-status, tøj ved vejning, kalibrer
+Filer: `src/components/weight/**`, `src/app/weight/**`, `src/app/api/weight-*`, `src/lib/weigh-*`, `src/app/admin/weight-attire/**`.
+Ejer: vægt-sessionen (2026-10-07)
+
+| Id | Opgave | Status | Næste skridt |
+| --- | --- | --- | --- |
+| vaegt-synk | Synk-status, synk-popup, tøj-popup, tøj-blok + admin-algoritme, kalibrer-link, klik ind på vejning, Tilføj-tekst tættere | Færdig (se git log "Vægt:") | Afventer brugerens test på telefon; de/fr/nl/sv/no mangler oversættelse af `weighIn.*` |
+## G-VIDEN — Guide mig + Viden om mad
+Filer: `src/lib/help-guides.ts`, `src/components/help/**`, `src/lib/knowledge*.ts`, `src/app/viden-om/**`.
+Ejer: viden-hjaelp-guide-sessionen (2026-10-07)
+
+| Id | Opgave | Status | Næste skridt |
+| --- | --- | --- | --- |
+| — | Genvejslink + Guide mig-overlay i hjælpe-chatten; søgning i Viden om mad; kalorieforbrænding; WHO-kilder | Færdig (se git log "Guide mig") | Brugeren tester på telefon: spørg chatten "hvordan logger jeg vægt?" |
+| retter-tekst-scan | Retter: auto-fokus søg, "Opret ny ret", integrationsknapper + filter-bundark; opret ret med Manuelt/Indsæt tekst/Scan + kopi-tjek (claude/retter-tekst-scan) | Færdig (kode) | Alt bygget inkl. valdemarsro-agent. Migrationer 20261008100000/110000/120000/130000 skal med deployet; agenten er ikke kørt mod rigtig database/Docker. Ikke prøvet i browser |

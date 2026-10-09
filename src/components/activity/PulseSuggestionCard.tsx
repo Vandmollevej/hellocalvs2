@@ -24,7 +24,7 @@ export function PulseSuggestionCard({
   });
 
   return (
-    <section className="hf-surface flex flex-col gap-3 p-4" aria-label={t("activity.suggestTitle", { sport: suggestion.label })}>
+    <section className="hf-panel" aria-label={t("activity.suggestTitle", { sport: suggestion.label })}>
       <div className="flex items-start gap-3">
         <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-hf-tan text-hf-green-dark">
           <Icon size={22} />
@@ -36,7 +36,7 @@ export function PulseSuggestionCard({
       </div>
       <button
         type="button"
-        className="hf-control hf-btn-primary w-full disabled:opacity-60"
+        className="hf-control hf-btn-primary w-full"
         disabled={busy}
         onClick={() => onPick(suggestion.sport)}
       >

@@ -189,7 +189,7 @@ export function GoalForm({
             onClick={save}
             disabled={!canSave}
             aria-busy={saving}
-            className="hf-control hf-btn-primary w-full disabled:opacity-40"
+            className="hf-control hf-btn-primary w-full"
           >
             {saving ? t("goals.saving") : t("goals.save")}
           </button>
@@ -231,7 +231,7 @@ export function GoalForm({
           </label>
         </div>
 
-        <div className="rounded-2xl bg-hf-green px-4 py-4 text-hf-white">
+        <div className="hf-card hf-card--brand">
           <p className="hf-type-small">{t("goals.intro")}</p>
         </div>
 
@@ -280,7 +280,7 @@ export function GoalForm({
           </div>
         </div>
 
-        <div className="flex flex-col gap-4 rounded-2xl bg-hf-tan p-4">
+        <div className="hf-card--form hf-card">
           <p className="hf-type-body hf-type-strong text-hf-black">{t("goals.nutritionHeading")}</p>
           <div className="grid grid-cols-2 gap-4">
             {NUTRITION_GOAL_FIELDS.map(({ field, unit, nameKey }) => (

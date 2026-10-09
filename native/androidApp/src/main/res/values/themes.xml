@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- The real theme is HelloCalTheme in :shared; this only sets the window
+         background shown before Compose draws (generated page colour). -->
+    <style name="Theme.HelloCal" parent="android:Theme.Material.Light.NoActionBar">
+        <item name="android:windowBackground">@color/hc_page</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+    </style>
+</resources>

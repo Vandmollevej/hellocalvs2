@@ -18,7 +18,27 @@ export async function GET() {
       orderBy: { createdAt: "desc" },
       include: { ingredients: { include: { product: true } } },
     });
-    return NextResponse.json({ dishes });
+    // Afvist som kopi: retten er ikke delt, og ejeren ser begrundelsen.
+    const sharedIds = dishes.map((d) => d.sharedRecipeId).filter((id): id is string => !!id);
+    const shared = sharedIds.length
+      ? await prisma.sharedRecipe.findMany({
+          where: { id: { in: sharedIds } },
+          select: { id: true, status: true, rejectionReason: true },
+        })
+      : [];
+    const byId = new Map(shared.map((r) => [r.id, r]));
+    return NextResponse.json({
+      dishes: dishes.map((dish) => {
+        const recipe = dish.sharedRecipeId ? byId.get(dish.sharedRecipeId) : undefined;
+        const rejected = recipe?.status === "REJECTED";
+        return {
+          ...dish,
+          sharedRecipeId: rejected ? null : dish.sharedRecipeId,
+          shareRejected: rejected,
+          shareRejectionReason: rejected ? (recipe?.rejectionReason ?? null) : null,
+        };
+      }),
+    });
   } catch (error) {
     console.error("Dish list failed", error);
     return NextResponse.json(
@@ -84,9 +104,14 @@ export async function POST(req: Request) {
       const image = await storeRecipeImage(raw?.image);
       if (title || text || image) steps.push({ title, text, image: image && isRecipeImagePath(image) ? image : null });
     }
+    const servings =
+      typeof body.servings === "number" && Number.isInteger(body.servings) && body.servings > 0 && body.servings <= 100
+        ? body.servings
+        : null;
     const dish = await prisma.dish.create({
       data: {
         name,
+        servings,
         ownerId: user.id,
         images,
         steps,

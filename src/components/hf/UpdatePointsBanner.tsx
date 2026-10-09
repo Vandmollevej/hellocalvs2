@@ -61,13 +61,11 @@ export function UpdatePointsBanner({
         onPointerCancel={() => {
           startY.current = null;
         }}
-        className="flex h-6 w-full items-center justify-center"
-        style={{ touchAction: "none" }}
+        className="flex h-6 w-full items-center justify-center touch-none"
       >
         <span
           aria-hidden="true"
-          className="block h-1 w-10 rounded-full"
-          style={{ background: "var(--hf-gray)" }}
+          className="block h-1 w-10 rounded-full bg-hf-inactive"
         />
       </button>
     </div>

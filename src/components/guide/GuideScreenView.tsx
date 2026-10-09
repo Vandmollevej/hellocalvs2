@@ -40,14 +40,14 @@ type Palette = { background: string; text: string; muted: string; dark: boolean 
 function paletteFor(config: GuideConfig, screen: GuideScreen): Palette {
   const bg = screenBackground(config, screen);
   return bg.dark
-    ? { background: bg.hex, text: "#FFFFFF", muted: "#FFFFFF", dark: true }
-    : { background: bg.hex, text: "#242424", muted: "#656565", dark: false };
+    ? { background: bg.hex, text: "var(--hf-color-white)", muted: "var(--hf-color-white)", dark: true }
+    : { background: bg.hex, text: "var(--hf-color-text)", muted: "var(--hf-color-text-secondary)", dark: false };
 }
 
 function accentFor(config: GuideConfig, palette: Palette) {
   const accent = backgroundById(themeById(config.theme).accent);
   // En accent må aldrig forsvinde i sin egen baggrund.
-  if (accent.hex === palette.background) return palette.dark ? "#FFFFFF" : "#232323";
+  if (accent.hex === palette.background) return palette.dark ? "var(--hf-color-white)" : "var(--hf-color-action)";
   return accent.hex;
 }
 
@@ -186,8 +186,8 @@ function buttonStyles(palette: Palette): { primary: CSSProperties; secondary: CS
   // knappen ikke forsvinder i baggrunden.
   return palette.dark
     ? {
-        primary: { background: "#FFFFFF", color: "#232323" },
-        secondary: { borderColor: "#FFFFFF", color: "#FFFFFF" },
+        primary: { background: "var(--hf-color-white)", color: "var(--hf-color-action)" },
+        secondary: { borderColor: "var(--hf-color-white)", color: "var(--hf-color-white)" },
       }
     : { primary: {}, secondary: {} };
 }
@@ -228,7 +228,7 @@ export function StartupGuideView({
           {
             "--hf-color-progress": accent,
             "--hf-color-progress-dark": accent,
-            "--hf-color-inactive": palette.dark ? "rgb(255 255 255 / 55%)" : "#828282",
+            "--hf-color-inactive": palette.dark ? "rgb(255 255 255 / 55%)" : "var(--hf-color-inactive)",
           } as CSSProperties
         }
       >
@@ -247,7 +247,7 @@ export function StartupGuideView({
       </div>
       {/* Vilkår og betingelser under hvert trin (docs/DECISIONS.md 2026-09-27). */}
       {screen.terms && termsText && (
-        <div className="shrink-0 px-4 py-2" style={palette.dark ? ({ "--hf-black": "#FFFFFF" } as CSSProperties) : undefined}>
+        <div className="shrink-0 px-4 py-2" style={palette.dark ? ({ "--hf-black": "var(--hf-color-white)" } as CSSProperties) : undefined}>
           <TermsSheet
             key={screen.id}
             hint={{ anchor: screen.terms.anchor, paragraphs: termsParagraphs(termsText) }}

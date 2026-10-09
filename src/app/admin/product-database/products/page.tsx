@@ -3,14 +3,18 @@ import { redirect } from "next/navigation";
 import { requireAdminUser } from "@/lib/require-admin";
 import { loadProductDatabase, loadProductDatabaseSuggestions, type ProductDatabaseRow } from "@/lib/admin-product-database";
 import {
+  PRODUCT_COLUMNS,
+  PRODUCT_COLUMN_LABELS,
   PRODUCT_DATABASE_PAGE_SIZE,
   PRODUCT_STATUS_LABELS,
   parseProductDatabaseFilters,
   productDatabaseHref,
+  type ProductColumn,
   type ProductDatabaseFilters as Filters,
   type ProductDatabaseSearchParams,
 } from "@/lib/admin-product-database-query";
 import { ProductDatabaseFilters } from "@/components/admin/ProductDatabaseFilters";
+import { SavedViewsControls } from "@/components/admin/SavedViewsControls";
 
 // Admin "Produkt-database → Produkter" (docs/DECISIONS.md 2026-09-27,
 // 2026-09-28: flyttet fra /admin/product-database): alle produkter
@@ -21,7 +25,7 @@ const numberFormat = new Intl.NumberFormat("da-DK");
 
 function StatCard({ href, label, value, note }: { href: string; label: string; value: string; note: string }) {
   return (
-    <Link href={href} className="flex flex-col hf-surface p-4 hover:border-hf-green">
+    <Link href={href} className="hover:border-hf-green hf-panel">
       <p className="hf-type-body text-text-secondary">{label}</p>
       <p className="hf-type-hero mt-1 text-hf-green-dark">{value}</p>
       <p className="hf-type-small mt-auto pt-2 text-text-muted">{note}</p>
@@ -91,52 +95,105 @@ function StoreTags({ stores }: { stores: string[] }) {
   );
 }
 
-function ListView({ rows }: { rows: ProductDatabaseRow[] }) {
+function BrandHeader({ filters }: { filters: Filters }) {
+  const next = filters.sort === "brand" ? "brand_desc" : "brand";
+  const arrow = filters.sort === "brand" ? " ↑" : filters.sort === "brand_desc" ? " ↓" : "";
+  return (
+    <Link href={productDatabaseHref(filters, { sort: next })} className="hover:text-hf-green-dark" title="Sortér efter mærke">
+      Mærke{arrow}
+    </Link>
+  );
+}
+
+// Kolonnebredder i listen, pr. valgbart felt (rækkefølgen følger PRODUCT_COLUMNS).
+const LIST_COLUMN_WIDTH: Record<ProductColumn, string> = {
+  brand: "minmax(0,1fr)",
+  stores: "minmax(0,1.1fr)",
+  category: "minmax(0,1fr)",
+  kcal: "88px",
+  additions: "96px",
+  status: "96px",
+};
+
+function ListView({ rows, columns, filters }: { rows: ProductDatabaseRow[]; columns: ProductColumn[]; filters: Filters }) {
+  const shown = PRODUCT_COLUMNS.filter((key) => columns.includes(key));
+  const has = (key: ProductColumn) => shown.includes(key);
+  const template = ["48px", "minmax(0,2.2fr)", ...shown.map((key) => LIST_COLUMN_WIDTH[key])].join(" ");
+  const mobileCols = has("status") ? "grid-cols-[48px_minmax(0,1fr)_auto]" : "grid-cols-[48px_minmax(0,1fr)]";
+  const rowStyle = { "--list-cols": template } as React.CSSProperties;
   return (
     <div className="overflow-hidden hf-surface">
-      <div className="hf-type-small hidden grid-cols-[48px_minmax(0,2.4fr)_minmax(0,1.2fr)_minmax(0,1fr)_88px_96px_96px] gap-4 border-b border-hf-tan-dark px-4 py-2 text-text-secondary lg:grid">
+      <div style={rowStyle} className="hf-type-small hidden gap-4 border-b border-hf-tan-dark px-4 py-2 text-text-secondary lg:grid lg:[grid-template-columns:var(--list-cols)]">
         <span />
         <span>Vare</span>
-        <span>Kæder</span>
-        <span>Kategori · kilde</span>
-        <span className="text-right">Kcal/100</span>
-        <span className="text-right">Tilføjelser</span>
-        <span className="text-right">Status</span>
+        {shown.map((key) => (
+          <span key={key} className={key === "kcal" || key === "additions" || key === "status" ? "text-right" : undefined}>
+            {key === "brand" ? <BrandHeader filters={filters} /> : PRODUCT_COLUMN_LABELS[key]}
+          </span>
+        ))}
       </div>
       <ul className="divide-y divide-border-strong">
         {rows.map((row) => (
           <li key={row.id}>
             <Link
               href={`/admin/products/${row.id}`}
-              className="grid grid-cols-[48px_minmax(0,1fr)_auto] items-center gap-4 px-4 py-3 hover:bg-hf-tan lg:grid-cols-[48px_minmax(0,2.4fr)_minmax(0,1.2fr)_minmax(0,1fr)_88px_96px_96px]"
+              style={rowStyle}
+              className={`grid ${mobileCols} items-center gap-4 px-4 py-3 hover:bg-hf-tan lg:[grid-template-columns:var(--list-cols)]`}
             >
               <Thumbnail row={row} size="row" />
               <div className="min-w-0">
-                <p className="hf-type-body truncate text-hf-black">
-                  {row.brandName && <span className="hf-type-strong">{row.brandName} </span>}
-                  {row.name}
-                </p>
+                <p className="hf-type-body truncate text-hf-black">{row.name}</p>
                 <p className="hf-type-small truncate text-text-muted">
+                  {row.brandName && <span className="lg:hidden">{row.brandName} · </span>}
                   {subtitle(row) || (row.barcodeCount > 0 ? `${row.barcodeCount} stregkode${row.barcodeCount > 1 ? "r" : ""}` : "Ingen stregkode")}
                 </p>
-                <div className="mt-1 lg:hidden">
-                  <StoreTags stores={row.stores} />
-                </div>
+                {has("stores") && (
+                  <div className="mt-1 lg:hidden">
+                    <StoreTags stores={row.stores} />
+                  </div>
+                )}
               </div>
-              <div className="hidden min-w-0 lg:block">
-                <StoreTags stores={row.stores} />
-              </div>
-              <div className="hidden min-w-0 lg:block">
-                <p className="hf-type-small truncate text-hf-black">{row.categoryLabel ?? "Uden kategori"}</p>
-                <p className="hf-type-small truncate text-text-muted">{row.sourceLabel}</p>
-              </div>
-              <p className="hf-type-small hidden text-right text-text-secondary lg:block">
-                {row.nutritionMissing ? "Mangler næring" : Math.round(row.kcalPer100g)}
-              </p>
-              <p className="hf-type-small hidden text-right text-text-secondary lg:block">{additionsText(row)}</p>
-              <div className="flex justify-end">
-                <StatusBadge status={row.status} />
-              </div>
+              {shown.map((key) => {
+                switch (key) {
+                  case "brand":
+                    return (
+                      <p key={key} className="hf-type-small hidden truncate text-hf-black lg:block">
+                        {row.brandName ?? "—"}
+                      </p>
+                    );
+                  case "stores":
+                    return (
+                      <div key={key} className="hidden min-w-0 lg:block">
+                        <StoreTags stores={row.stores} />
+                      </div>
+                    );
+                  case "category":
+                    return (
+                      <div key={key} className="hidden min-w-0 lg:block">
+                        <p className="hf-type-small truncate text-hf-black">{row.categoryLabel ?? "Uden kategori"}</p>
+                        <p className="hf-type-small truncate text-text-muted">{row.sourceLabel}</p>
+                      </div>
+                    );
+                  case "kcal":
+                    return (
+                      <p key={key} className="hf-type-small hidden text-right text-text-secondary lg:block">
+                        {row.nutritionMissing ? "Mangler næring" : Math.round(row.kcalPer100g)}
+                      </p>
+                    );
+                  case "additions":
+                    return (
+                      <p key={key} className="hf-type-small hidden text-right text-text-secondary lg:block">
+                        {additionsText(row)}
+                      </p>
+                    );
+                  case "status":
+                    return (
+                      <div key={key} className="flex justify-end">
+                        <StatusBadge status={row.status} />
+                      </div>
+                    );
+                }
+              })}
             </Link>
           </li>
         ))}
@@ -146,12 +203,13 @@ function ListView({ rows }: { rows: ProductDatabaseRow[] }) {
 }
 
 // Detaljer: kun tekst, uden billeder — flere felter pr. vare end i listen.
-function DetailsView({ rows }: { rows: ProductDatabaseRow[] }) {
-  const cols = "lg:grid-cols-[minmax(0,2.4fr)_minmax(0,1.2fr)_minmax(0,1fr)_minmax(0,1fr)_72px_72px_96px_96px]";
+function DetailsView({ rows, filters }: { rows: ProductDatabaseRow[]; filters: Filters }) {
+  const cols = "lg:grid-cols-[minmax(0,2.2fr)_minmax(0,1fr)_minmax(0,1.2fr)_minmax(0,1fr)_minmax(0,1fr)_72px_72px_96px_96px]";
   return (
-    <div className="overflow-hidden rounded-lg border border-hf-tan-dark bg-hf-white">
+    <div className="overflow-hidden hf-surface">
       <div className={`hf-type-small hidden gap-4 border-b border-hf-tan-dark px-4 py-2 text-text-secondary lg:grid ${cols}`}>
         <span>Vare</span>
+        <BrandHeader filters={filters} />
         <span>Kæder</span>
         <span>Kategori</span>
         <span>Kilde</span>
@@ -165,15 +223,18 @@ function DetailsView({ rows }: { rows: ProductDatabaseRow[] }) {
           <li key={row.id}>
             <Link href={`/admin/products/${row.id}`} className={`grid grid-cols-[minmax(0,1fr)_auto] items-center gap-x-4 gap-y-1 px-4 py-2 hover:bg-hf-tan ${cols}`}>
               <div className="min-w-0">
-                <p className="hf-type-body truncate text-hf-black">
-                  {row.brandName && <span className="hf-type-strong">{row.brandName} </span>}
-                  {row.name}
-                </p>
-                {subtitle(row) && <p className="hf-type-small truncate text-text-muted">{subtitle(row)}</p>}
+                <p className="hf-type-body truncate text-hf-black">{row.name}</p>
+                {(row.brandName || subtitle(row)) && (
+                  <p className="hf-type-small truncate text-text-muted">
+                    {row.brandName && <span className="lg:hidden">{row.brandName}{subtitle(row) && " · "}</span>}
+                    {subtitle(row)}
+                  </p>
+                )}
               </div>
               <div className="flex justify-end lg:hidden">
                 <StatusBadge status={row.status} />
               </div>
+              <p className="hf-type-small hidden truncate text-hf-black lg:block">{row.brandName ?? "—"}</p>
               <div className="col-span-2 flex flex-wrap items-center gap-x-3 gap-y-1 lg:col-span-1 lg:block">
                 <StoreTags stores={row.stores} />
               </div>
@@ -193,7 +254,8 @@ function DetailsView({ rows }: { rows: ProductDatabaseRow[] }) {
   );
 }
 
-function GridView({ rows }: { rows: ProductDatabaseRow[] }) {
+function GridView({ rows, columns }: { rows: ProductDatabaseRow[]; columns: ProductColumn[] }) {
+  const has = (key: ProductColumn) => columns.includes(key);
   return (
     <ul className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6">
       {rows.map((row) => (
@@ -204,19 +266,22 @@ function GridView({ rows }: { rows: ProductDatabaseRow[] }) {
           >
             <div className="relative">
               <Thumbnail row={row} size="card" />
-              <span className="absolute left-2 top-2">
-                <StatusBadge status={row.status} />
-              </span>
+              {has("status") && (
+                <span className="absolute left-2 top-2">
+                  <StatusBadge status={row.status} />
+                </span>
+              )}
             </div>
             <div className="flex min-w-0 flex-1 flex-col gap-0.5 px-1 pb-1">
               {row.brandName && <p className="hf-type-small hf-type-strong truncate text-text-secondary">{row.brandName}</p>}
               <p className="hf-type-body line-clamp-2 text-hf-black">{row.name}</p>
               {subtitle(row) && <p className="hf-type-small truncate text-text-muted">{subtitle(row)}</p>}
               <div className="mt-auto flex items-end justify-between gap-2 pt-2">
-                <StoreTags stores={row.stores} />
+                {has("stores") ? <StoreTags stores={row.stores} /> : <span />}
                 <span className="hf-type-micro shrink-0 text-text-muted">
-                  {row.additions !== null && `${additionsText(row)} tilføjelser · `}
-                  {row.nutritionMissing ? "Mangler næring" : `${Math.round(row.kcalPer100g)} kcal`}
+                  {has("additions") && row.additions !== null && `${additionsText(row)} tilføjelser`}
+                  {has("additions") && row.additions !== null && has("kcal") && " · "}
+                  {has("kcal") && (row.nutritionMissing ? "Mangler næring" : `${Math.round(row.kcalPer100g)} kcal`)}
                 </span>
               </div>
             </div>
@@ -320,16 +385,19 @@ export default async function AdminProductDatabasePage({
       />
 
       <div className="flex flex-col gap-4">
-        <p className="hf-type-body text-text-secondary">
-          {data.matching === 0 ? (
-            "Ingen varer matcher."
-          ) : (
-            <>
-              Viser <span className="hf-type-strong text-hf-black">{numberFormat.format(firstIndex)}–{numberFormat.format(lastIndex)}</span> af{" "}
-              <span className="hf-type-strong text-hf-black">{numberFormat.format(data.matching)}</span> varer
-            </>
-          )}
-        </p>
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <p className="hf-type-body text-text-secondary">
+            {data.matching === 0 ? (
+              "Ingen varer matcher."
+            ) : (
+              <>
+                Viser <span className="hf-type-strong text-hf-black">{numberFormat.format(firstIndex)}–{numberFormat.format(lastIndex)}</span> af{" "}
+                <span className="hf-type-strong text-hf-black">{numberFormat.format(data.matching)}</span> varer
+              </>
+            )}
+          </p>
+          <SavedViewsControls filters={filters} />
+        </div>
 
         {data.rows.length === 0 ? (
           <div className="hf-surface px-4 py-12 text-center">
@@ -339,11 +407,11 @@ export default async function AdminProductDatabasePage({
             </Link>
           </div>
         ) : filters.view === "grid" ? (
-          <GridView rows={data.rows} />
+          <GridView rows={data.rows} columns={filters.cols} />
         ) : filters.view === "details" ? (
-          <DetailsView rows={data.rows} />
+          <DetailsView rows={data.rows} filters={filters} />
         ) : (
-          <ListView rows={data.rows} />
+          <ListView rows={data.rows} columns={filters.cols} filters={filters} />
         )}
 
         <Pagination filters={filters} pageCount={data.pageCount} />

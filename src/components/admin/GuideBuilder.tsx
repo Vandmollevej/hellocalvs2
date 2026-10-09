@@ -33,6 +33,7 @@ import { TERMS_ANCHORS, type TermsAnchor } from "@/lib/terms-hints";
 import { OverlayCloseControl } from "@/components/hf/OverlayFrameControls";
 import { StartupGuideView, TooltipsView, type GuideEditorHooks } from "@/components/guide/GuideScreenView";
 import { GuideOverlay } from "@/components/guide/GuideOverlay";
+import { useConfirmSheet } from "@/lib/use-confirm-sheet";
 
 // Admin → Design → Guide-builder. Venstre: byggeklodser i masonry (farvetema,
 // baggrunde, fonte, elementer, skærme, valgt element). Højre: live telefon-
@@ -108,6 +109,7 @@ export function GuideBuilder({
 }) {
   const tr = (key: AdminI18nKey) => adminT(locale, key);
   const uiLang: GuideLang = locale === "EN" ? "en" : "da";
+  const { ask, sheet } = useConfirmSheet();
 
   const [configs, setConfigs] = useState(initialConfigs);
   const [kind, setKind] = useState<GuideKind>("startup");
@@ -362,9 +364,10 @@ export function GuideBuilder({
   }
 
   function resetToDefault() {
-    if (!window.confirm(tr("gb_reset_confirm"))) return;
-    update(() => defaultGuideConfig(kind));
-    selectScreen(0);
+    ask(tr("gb_reset_confirm"), () => {
+      update(() => defaultGuideConfig(kind));
+      selectScreen(0);
+    });
   }
 
   // --- Render ------------------------------------------------------------
@@ -384,7 +387,7 @@ export function GuideBuilder({
   const previewTop = (
     <div
       className="flex shrink-0 justify-end px-4 pt-6"
-      style={backgroundById(screen.background ?? themeById(config.theme).background).dark ? ({ "--hf-black": "#FFFFFF" } as CSSProperties) : undefined}
+      style={backgroundById(screen.background ?? themeById(config.theme).background).dark ? ({ "--hf-black": "var(--hf-color-white)" } as CSSProperties) : undefined}
     >
       <OverlayCloseControl label={translate(lang, "guide.close")} counting={false} secondsLeft={0} onClose={() => undefined} />
     </div>
@@ -392,6 +395,7 @@ export function GuideBuilder({
 
   return (
     <div className="flex flex-col gap-4">
+      {sheet}
       <div className="flex flex-wrap items-center gap-3">
         <div className="flex rounded-md border border-hf-tan-dark p-0.5" role="tablist">
           {(["startup", "tooltips"] as GuideKind[]).map((k) => (
@@ -533,7 +537,7 @@ export function GuideBuilder({
                   onClick={() => insertElement({ type: "text", role: role.id }, "end")}
                   className={`${tileBase} cursor-grab justify-between disabled:cursor-not-allowed disabled:opacity-40`}
                 >
-                  <span className={`${role.className} truncate`} style={{ textAlign: "left" }}>
+                  <span className={`text-left ${role.className} truncate`}>
                     {role.label[uiLang]}
                   </span>
                   <span className="shrink-0 text-text-muted">{role.sample}</span>

@@ -50,7 +50,7 @@ export function TokenApprovalActions({ token }: { token: string }) {
           type="button"
           onClick={() => act("approve")}
           disabled={loading !== null}
-          className="hf-btn-primary px-4 py-2 disabled:opacity-60"
+          className="hf-btn-primary px-4 py-2"
         >
           {loading === "approve" ? "…" : "Godkend"}
         </button>

@@ -42,7 +42,7 @@ export default async function TokenApprovePage({ params }: { params: Promise<{ t
             <h1 className="hf-type-title text-hf-black">Fejlrapport</h1>
             <p className="hf-type-body mt-1 text-text-secondary">
               {bugReport.user
-                ? `Fra ${bugReport.user.displayName} (${bugReport.user.email})`
+                ? `Fra ${bugReport.user.displayName}`
                 : "AI-genereret (ingen bruger)"}
             </p>
             <p className="hf-type-body mt-4 whitespace-pre-wrap text-hf-black">{bugReport.description}</p>

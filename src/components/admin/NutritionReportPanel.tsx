@@ -152,7 +152,7 @@ export function NutritionReportPanel({ reports }: { reports: NutritionReport[] }
   if (reports.length === 0) return null;
 
   return (
-    <div className="flex flex-col gap-4 hf-surface p-4">
+    <div className="hf-panel hf-panel--form">
       <h2 className="hf-type-body hf-type-strong text-hf-black">
         {reports.length === 1 ? "1 brugerindberetning" : `${reports.length} brugerindberetninger`}
       </h2>

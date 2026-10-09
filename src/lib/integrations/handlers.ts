@@ -9,6 +9,14 @@ import { storeIntegrationItems } from "@/lib/integrations/store-items";
 import { filterItemsBySettings, missingWriteScopes, resolveSyncSettings } from "@/lib/integrations/sync-settings";
 import { collectPushData, pushCount } from "@/lib/integrations/push";
 import { recordIntegrationEvent } from "@/lib/integrations/events";
+import {
+  NATIVE_STATE_PREFIX,
+  activeUserId,
+  consumeNativeCode,
+  nativeIntegrationUrl,
+  readConnectBinding,
+  signConnectBinding,
+} from "@/lib/native-auth";
 import { OAUTH_PROVIDERS, adapterBySlug, isConfigured, publicUrl, redirectUri } from "./registry";
 import { DAY_MS, type OAuthProviderAdapter } from "./types";
 
@@ -34,29 +42,51 @@ export type ConnectError = "config" | "tier" | "denied" | "expired" | "failed";
 
 // GET — starter OAuth for den indloggede bruger.
 // Fejl sendes tilbage til siden som ?error=<årsag>, ikke som rå JSON.
-export async function connect(_req: NextRequest, adapter: OAuthProviderAdapter) {
-  const failed = (reason: ConnectError) => NextResponse.redirect(publicUrl(`${doneUrl(adapter)}?error=${reason}`));
+// Den native app åbner ?native=<engangskode> i system-browseren (ingen
+// session-cookie dér); koden fra POST /api/auth/native/connect-code afgør
+// brugeren, og svaret går tilbage til appen som hellocal://-link
+// (docs/DECISIONS.md 2026-10-08 "Native login-overdragelse").
+export async function connect(req: NextRequest, adapter: OAuthProviderAdapter) {
+  const nativeCode = req.nextUrl.searchParams.get("native");
+  const isNative = nativeCode !== null;
+  const failed = (reason: ConnectError) =>
+    NextResponse.redirect(
+      isNative ? nativeIntegrationUrl(adapter.slug, `error=${reason}`) : publicUrl(`${doneUrl(adapter)}?error=${reason}`)
+    );
   if (!isConfigured(adapter)) {
     console.error(`${adapter.label} connect: ${adapter.envPrefix}_CLIENT_ID/_CLIENT_SECRET er ikke sat`);
     return failed("config");
   }
-  const user = await getSessionUser();
-  if (!user) return NextResponse.redirect(publicUrl("/welcome"));
+  let userId: string;
+  if (isNative) {
+    const consumed = await consumeNativeCode(nativeCode, "CONNECT");
+    const active = consumed ? await activeUserId(consumed.userId) : null;
+    if (!active) return failed("expired");
+    userId = active;
+  } else {
+    const user = await getSessionUser();
+    if (!user) return NextResponse.redirect(publicUrl("/welcome"));
+    userId = user.id;
+  }
   // Integrationer er kun for Seriøs (docs/DECISIONS.md 2026-09-26).
-  if ((await getUserSubscriptionTier(user.id)) !== "SERIOUS") return failed("tier");
+  if ((await getUserSubscriptionTier(userId)) !== "SERIOUS") return failed("tier");
 
   // Brugerens til/fra-valg (gemt på integrationens side før tilkobling)
   // afgør, hvilken skriveadgang der bedes om.
   const row = await prisma.integration.findUnique({
-    where: { userId_provider: { userId: user.id, provider: adapter.provider } },
+    where: { userId_provider: { userId, provider: adapter.provider } },
     select: { syncSettings: true },
   });
   const settings = resolveSyncSettings(adapter.provider, row?.syncSettings);
 
-  const state = newOAuthState();
+  const state = newOAuthState(isNative ? NATIVE_STATE_PREFIX : "");
   const pkce = adapter.pkce ? newPkcePair() : null;
   const response = NextResponse.redirect(adapter.buildAuthorizeUrl(state, redirectUri(adapter), settings, pkce?.challenge));
-  setOAuthCookie(response, stateCookie(adapter), pkce ? { state, verifier: pkce.verifier } : { state });
+  setOAuthCookie(response, stateCookie(adapter), {
+    state,
+    ...(pkce ? { verifier: pkce.verifier } : {}),
+    ...(isNative ? { native: await signConnectBinding(userId, adapter.slug, state) } : {}),
+  });
   return response;
 }
 
@@ -64,11 +94,13 @@ export async function callback(req: NextRequest, adapter: OAuthProviderAdapter) 
   const code = req.nextUrl.searchParams.get("code");
   const state = req.nextUrl.searchParams.get("state");
   const expected = readOAuthState(req, stateCookie(adapter));
+  // Startet fra den native app: svaret går tilbage til appen (hellocal://).
+  const isNative = Boolean(expected?.native) || (state?.startsWith(NATIVE_STATE_PREFIX) ?? false);
 
   function done(query: string) {
     const url = publicUrl(doneUrl(adapter));
     url.search = query;
-    const response = NextResponse.redirect(url);
+    const response = NextResponse.redirect(isNative ? nativeIntegrationUrl(adapter.slug, query) : url);
     response.cookies.delete(stateCookie(adapter));
     return response;
   }
@@ -78,12 +110,20 @@ export async function callback(req: NextRequest, adapter: OAuthProviderAdapter) 
   // Forsøget er for gammelt (state-cookien lever 10 min) eller startet i en anden browser.
   if (!code || !state || !expected || state !== expected.state) return done("error=expired");
   if (adapter.pkce && !expected.verifier) return done("error=expired");
+  // Native: brugeren kommer fra den signerede binding, ikke fra en session.
+  let nativeUserId: string | undefined;
+  if (expected.native) {
+    const bound = await readConnectBinding(expected.native, adapter.slug, state);
+    const active = bound ? await activeUserId(bound) : null;
+    if (!active) return done("error=expired");
+    nativeUserId = active;
+  }
   try {
     const tokens = await adapter.exchangeCode(code, redirectUri(adapter), expected.verifier);
     const extra = await adapter.afterConnect?.(tokens);
     // Strava sender de givne scopes i adressen i stedet for i token-svaret.
     const scope = tokens.scope ?? req.nextUrl.searchParams.get("scope") ?? undefined;
-    await saveIntegrationTokens(adapter.provider, { ...tokens, scope }, extra?.externalUserId);
+    await saveIntegrationTokens(adapter.provider, { ...tokens, scope }, extra?.externalUserId, nativeUserId);
   } catch (error) {
     console.error(`${adapter.label} callback failed`, errorMessage(error));
     return done("error=failed");

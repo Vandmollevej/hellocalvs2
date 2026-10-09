@@ -274,8 +274,11 @@
     "forgetTitle": "Rätt att bli bortglömd",
     "forgetIntro": "Få alla dina personuppgifter raderade (GDPR). Anonymiserade data som inte kan kopplas till dig sparas.",
     "forgetButton": "Radera mina data",
-    "confirmWarning": "Detta kan inte ångras. Skriv SLET för att bekräfta.",
-    "confirmPlaceholder": "SLET",
+    "confirmWarning": "Detta kan inte ångras. Skriv {word} för att bekräfta.",
+    "confirmPlaceholder": "{word}",
+    "confirmWord": "RADERA",
+    "closeWarning": "Skriv {word} för att bekräfta.",
+    "closeWord": "STÄNG",
     "confirmButton": "Bekräfta",
     "error": "Något gick fel — försök igen"
   },
@@ -553,7 +556,23 @@
     "steps": "Steg",
     "distanceKm": "Kilometer rört"
   },
+  "footerArc": {
+    "open": "Öppna lägg till-knappar",
+    "close": "Stäng lägg till-knappar",
+    "editHint": "Dra en knapp nedåt för att ta bort den",
+    "done": "Klar",
+    "removeItem": "Ta bort {item}",
+    "addItem": "Lägg till {item}",
+    "allInUse": "Alla knappar används"
+  },
   "addMenu": {
+    "editEditHint": "Håll en ruta intryckt för att flytta eller ta bort den",
+    "editDone": "Klar",
+    "editAdd": "Lägg till",
+    "editRemoveTile": "Ta bort {item}",
+    "editAddTile": "Lägg till {item}",
+    "editNoneHidden": "Alla rutor används",
+    "editAddTitle": "Lägg till ruta",
     "title": "Lägg till",
     "food": "Lägg till mat",
     "scan": "Skanna vara",
@@ -933,7 +952,27 @@
     "noResults": "Inga recept matchar din sökning",
     "tabMine": "Mina rätter",
     "tabShared": "Delade rätter",
+    "statusNotShared": "Not shared",
+
     "sharedSearchPlaceholder": "Sök i titel, ingredienser …",
+
+    "createNew": "Skapa ny rätt",
+
+    "sourceAll": "Recept",
+
+    "sourceShared": "Delade rätter",
+
+    "sourceHelloFresh": "Hello Fresh",
+
+    "sourceValdemarsro": "Valdemarsro",
+
+    "sourceFilterAria": "Välj receptkälla",
+
+    "filtersSheetTitle": "Filter",
+
+    "goToRecipe": "Gå till recept",
+
+    "valdemarsroSource": "Valdemarsro",
     "sortRelevance": "Relevans",
     "sortPopular": "Popularitet",
     "sortDate": "Datum",
@@ -1089,6 +1128,19 @@
     }
   },
   "recipeDetail": {
+
+    "shareRejected": "Your dish is not shared with others because it was rejected. You keep it yourself.",
+
+
+    "shareRejectedReason": "Reason: {reason}",
+
+
+    "servingsLabel": "{count} people",
+
+
+    "thumbUp": "Tummen upp",
+
+    "thumbDown": "Tummen ner",
     "loading": "Hämtar rätten …",
     "notFound": "Rätten finns inte längre",
     "ingredients": "Ingredienser",
@@ -1154,7 +1206,55 @@
     }
   },
   "createDish": {
+    "servings": "Number of people",
+
     "shareLabel": "Vill du dela rätten med andra användare?",
+
+    "modeManual": "Manuellt",
+
+    "modeText": "Klistra in text",
+
+    "modeScan": "Skanna",
+
+    "shareQuestionTitle": "Vill du dela rätten?",
+
+    "shareQuestionBody": "Andra användare kan hitta och använda din rätt. Inga personuppgifter delas. Du kan också dela den senare.",
+
+    "shareYes": "Dela",
+
+    "shareNo": "Inte nu",
+
+    "pasteTitle": "Klistra in receptet",
+
+    "pastePlaceholder": "Klistra in hela receptet här",
+
+    "pasteSourcePlaceholder": "Länk till källan (valfritt)",
+
+    "pasteInsert": "Klistra in",
+
+    "pasteWorking": "Läser receptet …",
+
+    "pasteError": "Kunde inte läsa receptet",
+
+    "scanTitle": "Skanna recept",
+
+    "scanTake": "Ta bild",
+
+    "scanGallery": "Från bibliotek",
+
+    "scanFinish": "Klar",
+
+    "scanWorking": "Läser sidorna …",
+
+    "scanError": "Kunde inte läsa sidorna",
+
+    "scanHint": "Lägg till sidorna i ordning. Första bilden blir rättens bild.",
+
+    "importMissing": "Saknar match eller mängd — lägg till själv:",
+
+    "importDone": "Receptet har lagts in",
+
+    "importNutrition": "Näring i texten (per portion)",
     "shareInfo": "Inga personuppgifter delas när du delar en rätt",
     "shareInfoAria": "Om delning",
     "shareError": "Rätten är sparad, men kunde inte delas just nu",
@@ -1259,6 +1359,11 @@
   "offlineQueue": {
     "pendingBannerOne": "1 skapad väntar på uppladdning",
     "pendingBannerMany": "{count} skapade väntar på uppladdning"
+  },
+  "offline": {
+    "message": "Ingen anslutning — det här kräver internet. Försök igen när du är online.",
+    "banner": "Du är offline — vissa funktioner fungerar inte",
+    "barcodeLookup": "Streckkoden lästes, men du har ingen anslutning. Försök igen när du är online."
   },
   "profile": {
     "title": "Mina uppgifter",
@@ -1392,7 +1497,13 @@
     "messages": {
       "title": "Meddelanden",
       "empty": "Du har inga meddelanden ännu.",
-      "markAllRead": "Markera alla som lästa"
+      "markAllRead": "Markera alla som lästa",
+      "unread": "Ny",
+      "deleted": "Raderat",
+      "delete": "Radera",
+      "clearAll": "Rensa allt",
+      "clearAllWarning": "Alla raderade meddelanden tas bort permanent. Detta kan inte ångras.",
+      "emptyDeleted": "Inga raderade meddelanden."
     },
     "communication": {
       "intro": "Välj vilka meddelanden du vill ha som e-post och/eller push. Viktiga kontomeddelanden (t.ex. verifiering och återställning av lösenord) skickas alltid.",
@@ -1500,6 +1611,7 @@
     }
   },
   "profileSleep": {
+    "intro": "Sömnen kan ha stor påverkan på vikt och välmående. Se ditt liv i ett större perspektiv när du har samlat in tillräckligt med data. Standardsömn är satt till 22.00 - 07.00.",
     "title": "Sömnmönster",
     "loading": "Hämtar…",
     "loadError": "Kunde inte hämta sömnmönster.",
@@ -1613,7 +1725,8 @@
     "showAll": "Visa alla ({count})",
     "showLess": "Visa färre",
     "chartAria": "Förlopp för {name}",
-    "loadError": "Kunde inte hämta din status."
+    "loadError": "Kunde inte hämta din status.",
+    "customizeView": "Anpassa visning"
   },
   "bodyMeasurementChart": {
     "noData": "Inga mätningar ännu.",
@@ -1681,6 +1794,79 @@
       "fatG": "t.ex. 70"
     }
   },
+  "weighIn": {
+    "attireTitle": "What were you wearing?",
+    "attire": {
+      "NAKED": "Naked",
+      "UNDERWEAR": "In underwear",
+      "CLOTHED": "Clothed",
+      "CLOTHED_PHONE": "Clothed, phone in pocket"
+    },
+    "save": "Save",
+    "saving": "Saving…",
+    "saveError": "Could not save. Try again.",
+    "later": "Later",
+    "continue": "Continue",
+    "ago": {
+      "justNow": "just now",
+      "minutes": "{n} min. ago",
+      "hours": "{n} hours ago",
+      "days": "{n} days ago"
+    },
+    "sync": {
+      "now": "Sync now",
+      "syncing": "Syncing…",
+      "done": "Synced",
+      "failed": "Sync failed",
+      "error": "Error — reconnect",
+      "last": "Synced {ago}",
+      "never": "Not synced yet",
+      "open": "Open {name}",
+      "openShort": "Open",
+      "noneConnected": "No smart scale connected",
+      "connect": "Connect"
+    },
+    "stale": {
+      "title": "It has been a while since the last sync",
+      "body": "{name} was last synced {ago}. Sync so your latest weigh-ins come through.",
+      "bodyNever": "{name} has not been synced yet. Sync so your weigh-ins come through."
+    },
+    "prompt": {
+      "aria": "What were you wearing when you weighed in?",
+      "todayMorning": "You weighed yourself this morning.",
+      "past": "You weighed yourself {when}",
+      "andWeighed": "and weighed",
+      "question": "But was it:",
+      "older": "Older weigh-in",
+      "newer": "Newer weigh-in"
+    },
+    "when": {
+      "today": {
+        "morning": "this morning",
+        "afternoon": "this afternoon",
+        "evening": "this evening",
+        "night": "last night"
+      },
+      "yesterday": {
+        "morning": "yesterday morning",
+        "afternoon": "yesterday afternoon",
+        "evening": "yesterday evening",
+        "night": "last night"
+      },
+      "part": {
+        "morning": "morning",
+        "afternoon": "afternoon",
+        "evening": "evening",
+        "night": "night"
+      },
+      "weekday": "{weekday} {part}",
+      "lastWeek": "last {weekday}"
+    },
+    "details": {
+      "title": "Weigh-in",
+      "failed": "Could not load the weigh-in."
+    }
+  },
   "weightLog": {
     "title": "Vikt",
     "intro": "Registrera din vikt. Den sparas direkt och ingår i kalendern och statistiken.",
@@ -1690,7 +1876,7 @@
     "saving": "Sparar…",
     "saveError": "Vikten kunde inte sparas.",
     "saved": "Vikt sparad.",
-    "moreDetailsLink": "Registrera med fler detaljer (kläder, skor, tidpunkt)",
+    "moreDetailsLink": "Du måste fortfarande kalibrera din våg",
     "loading": "Hämtar…",
     "noEntriesYet": "Inga vägningar registrerade ännu.",
     "recentTitle": "Senaste vägningar"
@@ -1830,6 +2016,7 @@
     "kcalPer100g": "({kcal} kcal/100g)",
     "kcalPer100ml": "({kcal} kcal/100ml)",
     "kcalAmount": "{kcal} kalorier",
+    "perPiece": "/st.",
     "sizeLabel": "Storlek",
     "sizeSmall": "Liten",
     "sizeMedium": "Normal",
@@ -1869,9 +2056,6 @@
     "extendedNutrition": "Näringsinnehåll",
     "extendedNutritionDisclaimer": "Visas bara när det finns data för den här produkten.",
     "toxins": "Gifter",
-    "tagCountryOfOrigin": "Från {country}",
-    "tagAlcoholPercent": "{percent} % alkohol",
-    "tagFatPercent": "{percent} % fett",
     "toxinPregnancyBadge": "Gravid/ammande",
     "toxinsDisclaimer": "Utifrån ingredienslistan — inte en mätning av just den här produkten. Källor: Livsmedelsstyrelsen i Danmark och EFSA.",
     "unhealthyFat": "Onyttigt fett",
@@ -1967,7 +2151,7 @@
     "favorites": "Favoriter",
     "addFavorite": "Lägg till i favoriter",
     "removeFavorite": "Ta bort från favoriter",
-    "recentlyAdded": "Senast använda",
+    "recentlyAdded": "Senast tillagda",
     "searchResults": "Sökresultat",
     "allItems": "Alla varor",
     "emptyState": "Sök efter ett livsmedel, eller lägg till en favorit för att se den här.",
@@ -1975,6 +2159,8 @@
     "noResults": "Inga resultat"
   },
   "integrations": {
+    "moveFromTitle": "MyFitnessPal or Lifesum",
+    "moveFromDescription": "Move your diary over with a screen recording.",
     "helloFreshTitle": "HelloFresh-recept",
     "helloFreshDescription": "Visa HelloFresh-recept tillsammans med de delade rätterna under Recept",
     "title": "Integrationer",
@@ -2004,6 +2190,7 @@
     "enable": "Aktivera",
     "unavailable": "Inte tillgänglig ännu",
     "sections": {
+      "moveFrom": "Move from another app",
       "active": "Aktiva integrationer",
       "popular": "Mest använda",
       "recipes": "Recept",
@@ -3014,7 +3201,13 @@
     "devicesHeading": "Spåra sömn med smart utrustning",
     "devicesIntro": "Anslut en klocka eller en app, så kan du jämföra upplevd sömn med faktisk sömn."
   },
+  "helpGuide": {
+    "title": "Guide",
+    "end": "Avsluta guiden",
+    "missing": "Jag hittar inte knappen just nu. Öppna sidan manuellt via genvägen i chatten."
+  },
   "helpChat": {
+    "guideMe": "Guida mig",
     "open": "Hjälp",
     "title": "Hjälp",
     "welcome": "Hej! Jag är Hello Cals hjälpchatbot. Fråga mig om appen, så hjälper jag dig vidare. Vill du hellre prata med en människa, tryck på \"Prata med en medarbetare\".",
@@ -3042,5 +3235,31 @@
     "sendError": "Meddelandet skickades inte. Försök igen.",
     "escalateError": "Det gick inte att skicka till Support. Försök igen eller använd kontaktformuläret.",
     "rateLimited": "Du har ställt många frågor på kort tid. Vänta en stund eller prata med en medarbetare."
+  },
+  "migrationImport": {
+    "title": "Move from MyFitnessPal or Lifesum",
+    "intro": "Record your screen while you scroll through your diary in the other app. Hello Cal reads the foods, amounts and calories and adds them to your calendar.",
+    "fromApp": "From the app",
+    "step1": "Start a screen recording on your phone (or take screenshots).",
+    "step2": "Open the diary in the other app and scroll calmly back, day by day.",
+    "step3": "Stop the recording and choose the video here.",
+    "choose": "Choose screen recording or screenshots",
+    "privacy": "The images are not saved. They are read once, and only the rows (date, meal, food, amount and nutrition) are kept until you choose what to import.",
+    "preparing": "Preparing the recording…",
+    "reading": "Reading image {done} of {total}…",
+    "readError": "The recording could not be read. Try again, or use screenshots.",
+    "reviewHint": "Review the rows. Uncertain rows are not preselected.",
+    "nothingFound": "We found no foods in the recording. Try scrolling more slowly so each day stays still for a moment.",
+    "unsure": "uncertain",
+    "importSelected": "Import {count} rows",
+    "commitError": "The import failed. Please try again.",
+    "done": "{count} entries have been added to your calendar.",
+    "openCalendar": "Open the calendar",
+    "meal": {
+      "breakfast": "Breakfast",
+      "lunch": "Lunch",
+      "dinner": "Dinner",
+      "snack": "Snack"
+    }
   }
 }

@@ -235,8 +235,7 @@ function OpretProduktContent() {
       <HfScreen title={t("productCreate.title")} icon={<IconApple size={20} stroke={2} />}>
         <div className="hf-page">
           <div
-            className="hf-type-body rounded-[8px] p-4 text-center"
-            style={{ background: "var(--hf-color-brand)", color: "var(--hf-color-white)" }}
+            className="hf-type-body p-4 text-center bg-hf-brand text-hf-white rounded-card"
           >
             {t("productCreate.savedOffline")}
           </div>
@@ -256,8 +255,7 @@ function OpretProduktContent() {
       <div className="hf-page">
         {fromFailedAdd && (
           <div
-            className="hf-type-body rounded-[8px] p-4 text-center"
-            style={{ background: "var(--hf-color-brand)", color: "var(--hf-color-white)" }}
+            className="hf-type-body p-4 text-center bg-hf-brand text-hf-white rounded-card"
           >
             {t("productCreate.failedAddBanner")}
           </div>
@@ -266,16 +264,11 @@ function OpretProduktContent() {
         {fromFailedAdd && (
           <div>
             <div
-              className="hf-type-body rounded-[8px] border-2 p-4 text-center"
-              style={{
-                background: "var(--hf-color-warning-bg)",
-                borderColor: "var(--hf-color-brand)",
-                color: "var(--hf-color-text)",
-              }}
+              className="hf-type-body border-2 p-4 text-center bg-hf-warning-bg border-hf-brand text-hf-text rounded-card"
             >
               {t("productCreate.pointsBanner")}
             </div>
-            <p className="hf-type-caption mt-1 text-center" style={{ color: "var(--hf-color-text-secondary)" }}>
+            <p className="hf-type-caption mt-1 text-center text-hf-text-secondary">
               *<Link href="/betingelser#pointsystem" className="underline">{t("productCreate.readTerms")}</Link>
             </p>
           </div>
@@ -301,7 +294,7 @@ function OpretProduktContent() {
             placeholder={t("productCreate.barcodePlaceholder")}
           />
 
-          <div className="flex flex-col gap-4 rounded-[8px] p-4" style={{ background: "var(--hf-color-card)" }}>
+          <div className="flex flex-col gap-4 p-4 bg-hf-card rounded-card">
             <TextField
               variant="standard"
               value={form.brand}
@@ -421,15 +414,14 @@ function OpretProduktContent() {
                 value={form.ingredientsText}
                 onChange={(event) => update("ingredientsText", event.target.value)}
                 rows={3}
-                className="hf-type-input w-full rounded-[8px] border bg-hf-cream px-4 py-3 outline-none"
-                style={{ borderColor: "var(--hf-color-field-border)" }}
+                className="hf-type-input w-full border bg-hf-cream px-4 py-3 outline-none border-hf-field-border rounded-card"
               />
             </label>
           </div>
 
           {saveError && <p className="hf-type-caption text-center">{saveError}</p>}
 
-          <button type="submit" disabled={saving} className="hf-control hf-btn-primary disabled:opacity-40">
+          <button type="submit" disabled={saving} className="hf-control hf-btn-primary">
             <span className="hf-type-button">{saving ? t("productCreate.saving") : t("productCreate.createProduct")}</span>
           </button>
         </form>

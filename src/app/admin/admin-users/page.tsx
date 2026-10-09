@@ -102,7 +102,7 @@ export default async function AdminUsersPage({
         </p>
       ))}
 
-      <section className="flex flex-col gap-3 hf-surface p-4">
+      <section className="hf-panel">
         <h2 className="hf-type-body hf-type-strong">Inviter ny admin-bruger</h2>
         <form action={inviteAdmin} className="flex flex-col gap-3 sm:flex-row sm:items-end">
           <label className="hf-type-body flex flex-1 flex-col gap-1">
@@ -198,7 +198,7 @@ export default async function AdminUsersPage({
           const isMe = admin.id === me.id;
           const disabled = Boolean(admin.adminDisabledAt);
           return (
-            <div key={admin.id} className="flex flex-col gap-3 hf-surface p-4">
+            <div key={admin.id} className="hf-panel">
               <div className="flex flex-wrap items-start justify-between gap-2">
                 <div>
                   <div className="hf-type-body hf-type-strong">

@@ -20,7 +20,7 @@ type Props = {
 
 export function HelloFreshMatchReview({ status, product, onConfirm, onRetake }: Props) {
   return (
-    <div className="rounded-2xl bg-hf-tan p-4">
+    <div className="hf-card">
       {status === "processing" && (
         <p className="hf-type-small text-text-secondary mb-4">Genkender retten...</p>
       )}

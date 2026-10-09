@@ -3,9 +3,10 @@
 import { Suspense, useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { IconAdjustmentsHorizontal, IconSearch } from "@tabler/icons-react";
+import { IconAdjustmentsHorizontal, IconPlus, IconSearch } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
 import { useTranslation } from "@/i18n/LocaleProvider";
+import { useConnectionMessage } from "@/lib/use-online-status";
 import { PremiumBadge } from "@/components/PremiumGate";
 import { useIsSerious } from "@/lib/use-subscription-tier";
 import {
@@ -15,6 +16,8 @@ import {
   type RecipeFilters,
 } from "@/lib/recipe-filters";
 import { SkeletonScreen } from "@/components/hf/Skeleton";
+import { BottomSheet } from "@/components/hf/BottomSheet";
+import { RecipeFiltersBody } from "@/components/recipes/RecipeFiltersBody";
 import { RecipeRow, recipeHref, type RecipeRowData as Row } from "@/components/recipes/RecipeRow";
 
 // Indstillinger → Opskrifter (docs/DECISIONS.md 2026-09-24): to faner,
@@ -31,12 +34,14 @@ type OwnDish = {
   name: string;
   createdAt: string;
   sharedRecipeId?: string | null;
+  shareRejected?: boolean;
   images?: string[];
   ingredients: { grams: number; product: { kcalPer100g: number } }[];
 };
 type FavoriteRecipe = { id: string; name: string; kcal: number };
+type Source = "all" | "shared" | "hellofresh" | "valdemarsro";
 type SearchResult = {
-  kind: "shared" | "hellofresh";
+  kind: "shared" | "hellofresh" | "valdemarsro";
   id: string;
   name: string;
   imageUrl: string | null;
@@ -69,6 +74,7 @@ function LoadingRows({ count }: { count: number }) {
 }
 
 function MineTab({ t }: { t: Translate }) {
+  const connectionMessage = useConnectionMessage();
   const [rows, setRows] = useState<Row[]>([]);
   const [state, setState] = useState<LoadState>("loading");
 
@@ -89,7 +95,9 @@ function MineTab({ t }: { t: Translate }) {
             subtitle: t("recipes.kcalTotal", { kcal: dishKcal(dish) }),
             label: dish.sharedRecipeId
               ? { text: t("recipes.statusShared"), tone: "green" as const }
-              : { text: t("recipes.statusPrivate"), tone: "muted" as const },
+              : dish.shareRejected
+                ? { text: t("recipes.statusNotShared"), tone: "muted" as const }
+                : { text: t("recipes.statusPrivate"), tone: "muted" as const },
           })),
           ...favorites.map((recipe) => ({
             key: `fav-${recipe.id}`,
@@ -109,7 +117,7 @@ function MineTab({ t }: { t: Translate }) {
     <div className="hf-page">
       {state === "loading" && <LoadingRows count={4} />}
       {state === "error" && (
-        <p className="hf-type-body text-text-secondary py-8 text-center">{t("recipes.loadError")}</p>
+        <p className="hf-type-body text-text-secondary py-8 text-center">{connectionMessage(t("recipes.loadError"))}</p>
       )}
       {state === "ready" && rows.length === 0 && (
         <p className="hf-type-body text-text-secondary py-8 text-center">{t("recipes.mineEmpty")}</p>
@@ -134,8 +142,11 @@ const TRENDING_COUNT = 3;
 type FavoriteSnapshot = { id: string; name: string; kcal: number; images?: string[] };
 
 function SharedTab({ t }: { t: Translate }) {
+  const connectionMessage = useConnectionMessage();
   const [query, setQuery] = useState("");
-  const [filters] = useState<RecipeFilters>(loadRecipeFilters);
+  const [filters, setFilters] = useState<RecipeFilters>(loadRecipeFilters);
+  const [filterSheetOpen, setFilterSheetOpen] = useState(false);
+  const [source, setSource] = useState<Source>("all");
   const [helloFresh, setHelloFresh] = useState<boolean | null>(null);
   // Filtre/sortering og HelloFresh (en integration) er kun for Seriøs
   // (docs/DECISIONS.md 2026-09-26); Gratis sorteres altid efter relevans.
@@ -168,6 +179,9 @@ function SharedTab({ t }: { t: Translate }) {
         if (query.trim()) params.set("q", query.trim());
         else params.set("sort", "popular");
         if (helloFresh && isSerious) params.set("hellofresh", "1");
+        // Integrationsknapperne under søgefeltet: "Opskrifter" viser alle,
+        // en enkelt integration viser kun dens retter.
+        if (source !== "all") params.set("source", source);
         const res = await fetch(`/api/shared-recipes?${params.toString()}`, { signal: controller.signal });
         if (!res.ok) throw new Error("offline");
         setResults(((await res.json()) as { recipes: SearchResult[] }).recipes);
@@ -180,8 +194,14 @@ function SharedTab({ t }: { t: Translate }) {
       controller.abort();
       clearTimeout(timeout);
     };
-  }, [query, filters, helloFresh, isSerious]);
+  }, [query, filters, helloFresh, isSerious, source]);
 
+  const sourceOptions: { value: Source; label: string }[] = [
+    { value: "all", label: t("recipes.sourceAll") },
+    { value: "shared", label: t("recipes.sourceShared") },
+    ...(helloFresh ? [{ value: "hellofresh" as const, label: t("recipes.sourceHelloFresh") }] : []),
+    { value: "valdemarsro", label: t("recipes.sourceValdemarsro") },
+  ];
   const view = filters;
   const activeCount = activeFilterCount(view);
 
@@ -206,14 +226,19 @@ function SharedTab({ t }: { t: Translate }) {
   }
 
   function rowFor(result: SearchResult): Row {
-    return result.kind === "hellofresh"
+    return result.kind !== "shared"
       ? {
           key: result.id,
-          href: recipeHref(result.id),
+          // Valdemarsro-retter åbnes som produktsiden (tilføj + gram, "Gå til
+          // opskrift", ingredienser og næring); HelloFresh har sin egen visning.
+          href: result.kind === "valdemarsro" ? `/add/${encodeURIComponent(result.id)}` : recipeHref(result.id),
           name: result.name,
           imageUrl: result.imageUrl,
           subtitle: subtitleFor(result),
-          label: { text: t("recipes.helloFresh"), tone: "green" },
+          label: {
+            text: result.kind === "valdemarsro" ? t("recipes.valdemarsroSource") : t("recipes.helloFresh"),
+            tone: "green",
+          },
           ...extrasFor(result),
         }
       : {
@@ -239,6 +264,8 @@ function SharedTab({ t }: { t: Translate }) {
             onChange={(event) => setQuery(event.target.value)}
             placeholder={t("recipes.sharedSearchPlaceholder")}
             className="min-w-0"
+            // Markøren står i søgefeltet, så snart man åbner Retter.
+            autoFocus
           />
         </div>
         {/* Filterikon til højre for søgefeltet, uden ramme (brugerens valg
@@ -252,8 +279,9 @@ function SharedTab({ t }: { t: Translate }) {
             <PremiumBadge />
           </Link>
         ) : (
-          <Link
-            href="/profile/recipes/filters"
+          <button
+            type="button"
+            onClick={() => setFilterSheetOpen(true)}
             aria-label={t("recipeFilters.openFilters")}
             className="relative flex h-12 w-10 shrink-0 items-center justify-center text-hf-black"
           >
@@ -261,14 +289,39 @@ function SharedTab({ t }: { t: Translate }) {
             {activeCount > 0 && (
               <span className="absolute right-0.5 top-2.5 h-2 w-2 rounded-full bg-hf-green" aria-hidden="true" />
             )}
-          </Link>
+          </button>
         )}
       </div>
+
+      {/* Integrationer under søgefeltet: Opskrifter viser alle, de andre
+          viser kun den integrations retter. */}
+      <div role="group" aria-label={t("recipes.sourceFilterAria")} className="-mx-1 flex gap-2 overflow-x-auto px-1">
+        {sourceOptions.map((option) => (
+          <button
+            key={option.value}
+            type="button"
+            aria-pressed={source === option.value}
+            onClick={() => setSource(option.value)}
+            className={`hf-type-small hf-type-strong shrink-0 rounded-full border px-4 py-2 ${
+              source === option.value
+                ? "border-hf-black bg-hf-black text-hf-white"
+                : "border-hf-black bg-hf-white text-hf-black"
+            }`}
+          >
+            {option.label}
+          </button>
+        ))}
+      </div>
+      {filterSheetOpen && (
+        <BottomSheet size="full" title={t("recipes.filtersSheetTitle")} onClose={() => setFilterSheetOpen(false)}>
+          <RecipeFiltersBody onChange={setFilters} />
+        </BottomSheet>
+      )}
 
       {searching ? (
         <>
           {state === "loading" && <LoadingRows count={5} />}
-          {state === "error" && status(t("recipes.loadError"))}
+          {state === "error" && status(connectionMessage(t("recipes.loadError")))}
           {state === "ready" && results.length === 0 && status(t("recipes.noResults"))}
           {state === "ready" && results.length > 0 && (
             <div>
@@ -282,7 +335,7 @@ function SharedTab({ t }: { t: Translate }) {
         <>
           <h2 className="hf-type-section-title">{t("recipes.trendingTitle")}</h2>
           {state === "loading" && <LoadingRows count={TRENDING_COUNT} />}
-          {state === "error" && status(t("recipes.loadError"))}
+          {state === "error" && status(connectionMessage(t("recipes.loadError")))}
           {state === "ready" && trending.length === 0 && status(t("recipes.trendingEmpty"))}
           {state === "ready" && trending.length > 0 && (
             <div>
@@ -329,6 +382,12 @@ function RecipesContent() {
 
   return (
     <HfScreen title={t("recipes.title")}>
+      <div className="flex justify-end px-4 pt-3">
+        <Link href="/create-dish" className="hf-type-small hf-type-strong inline-flex items-center gap-1 py-2 text-hf-black underline">
+          <IconPlus size={16} aria-hidden="true" />
+          {t("recipes.createNew")}
+        </Link>
+      </div>
       <div role="tablist" className="flex border-b border-hf-tan-dark">
         {(["mine", "shared"] as const).map((value) => (
           <button

@@ -55,8 +55,7 @@ function FaceIdOfferContent() {
   return (
     <div className="flex h-full min-h-full flex-col bg-hf-cream">
       <div
-        className="hf-appbar hf-appbar--brand"
-        style={{ paddingTop: "max(16px, env(safe-area-inset-top, 0px))" }}
+        className="hf-appbar hf-appbar--brand hf-safe-top"
       >
         <span className="hf-appbar__slot" aria-hidden="true" />
         <h1 className="hf-type-nav-title hf-appbar__title">{t("faceIdOffer.title")}</h1>
@@ -76,7 +75,7 @@ function FaceIdOfferContent() {
           type="button"
           onClick={enable}
           disabled={busy}
-          className="hf-control hf-btn-primary w-full disabled:opacity-40"
+          className="hf-control hf-btn-primary w-full"
         >
           {busy ? t("faceIdOffer.enabling") : t("faceIdOffer.enable")}
         </button>
