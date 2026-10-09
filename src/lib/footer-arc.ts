@@ -11,21 +11,28 @@ export const SOURCE_HALF_CIRCLE_RADIUS = 83;
 export const ARC_RADIUS = SOURCE_HALF_CIRCLE_RADIUS;
 /** Synlig højde i hvile (cirklens øverste stykke). */
 export const ARC_REST_HEIGHT = 40;
-/** Hvor langt fingeren skal op (px) for at cirklen er helt åben. */
-export const ARC_PULL_DISTANCE = 100;
 export const ARC_ICON_CIRCLE = 46;
-/** Afstand fra cirklens midte (ved footerkanten) til knappernes midte. */
-export const ARC_ICON_RADIUS = ARC_RADIUS + 38 + ARC_ICON_CIRCLE / 2;
-export const ARC_ANGLE_STEP_DEG = 32;
+// Samme geometri som venstre-cirklen (AddButton.tsx): knapperne ligger
+// 52 px uden for cirklen, ikke-valgte 8 px tættere på, den valgte 14 px længere
+// ude end grundafstanden, og vinklerne fordeles jævnt over -75..75 grader.
+const ARC_GAP = 52;
+const ARC_BASE_RADIUS = ARC_RADIUS + ARC_GAP + ARC_ICON_CIRCLE / 2;
+/** Afstand fra cirklens midte (ved footerkanten) til de ikke-valgte knappers midte. */
+export const ARC_ICON_RADIUS = ARC_BASE_RADIUS - 8;
+/** Afstand til den fremhævede knaps midte (træder længere ud). */
+export const ARC_ICON_RADIUS_ACTIVE = ARC_BASE_RADIUS + 14;
+const ARC_MAX_ANGLE_DEG = 75;
 /** Højst så mange egne knapper i viften ("alle" kommer i midten ovenpå). */
 export const ARC_MAX_USER_ACTIONS = 4;
 /** Mindste afstand fra en knaps midte til skærmkanten. */
 const ARC_EDGE_MARGIN = ARC_ICON_CIRCLE / 2 + 8;
 
-/** Antal knapper i viften, når der er `userCount` egne + "alle". */
+/** Vinkler (fra lodret) for knapperne, når der er `userCount` egne + "alle": jævnt fordelt over -75..75 som venstre-cirklen. */
 export function fanAngles(userCount: number): number[] {
   const total = userCount + 1;
-  return Array.from({ length: total }, (_, i) => (i - (total - 1) / 2) * ARC_ANGLE_STEP_DEG);
+  if (total <= 1) return [0];
+  const step = (ARC_MAX_ANGLE_DEG * 2) / (total - 1);
+  return Array.from({ length: total }, (_, i) => -ARC_MAX_ANGLE_DEG + i * step);
 }
 
 /**
@@ -34,11 +41,12 @@ export function fanAngles(userCount: number): number[] {
  * (cirklen står langt ude til siden), holdes den inden for kanten og rykkes i
  * stedet længere op, væk fra cirklen — stadig med samme afstand til naboen.
  */
-export function fanLayout(angles: number[], centerX: number, width: number): { x: number; y: number }[] {
+export function fanLayout(angles: number[], centerX: number, width: number, highlightedIndex = -1): { x: number; y: number }[] {
   if (angles.length === 0) return [];
-  const ideal = angles.map((deg) => {
+  const ideal = angles.map((deg, i) => {
     const rad = (deg * Math.PI) / 180;
-    return { x: centerX + ARC_ICON_RADIUS * Math.sin(rad), y: ARC_ICON_RADIUS * Math.cos(rad) };
+    const radius = i === highlightedIndex ? ARC_ICON_RADIUS_ACTIVE : ARC_ICON_RADIUS;
+    return { x: centerX + radius * Math.sin(rad), y: radius * Math.cos(rad) };
   });
   if (width <= ARC_EDGE_MARGIN * 2) return ideal;
   const anchor = angles.reduce((best, deg, i) => (Math.abs(deg) < Math.abs(angles[best]) ? i : best), 0);
