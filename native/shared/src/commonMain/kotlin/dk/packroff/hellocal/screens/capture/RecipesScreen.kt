@@ -130,10 +130,13 @@ fun RecipesScreen(args: RouteArgs) {
 
     HcScreen(title = t.t("recipes.title"), contentPadding = PaddingValues(0.dp)) {
         Row(Modifier.fillMaxWidth().padding(start = 16.dp, end = 16.dp, top = 12.dp), horizontalArrangement = Arrangement.End) {
-            Box(
-                Modifier.clip(RoundedCornerShape(50)).background(HcColors.Green).clickable { nav.push("/create-dish") }.padding(horizontal = 16.dp, vertical = 8.dp),
+            Row(
+                Modifier.clickable { nav.push("/create-dish") }.padding(vertical = 8.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(4.dp),
             ) {
-                HcText(t.t("recipes.createNew"), HcTypeRoles.Small, bold = true, color = HcColors.White)
+                HcIcon("Plus", size = 16.dp, color = HcColors.Black)
+                HcText(t.t("recipes.createNew"), HcTypeRoles.Small, bold = true, underline = true, color = HcColors.Black)
             }
         }
         Row(Modifier.fillMaxWidth()) {

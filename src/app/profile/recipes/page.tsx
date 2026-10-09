@@ -3,7 +3,7 @@
 import { Suspense, useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { IconAdjustmentsHorizontal, IconSearch } from "@tabler/icons-react";
+import { IconAdjustmentsHorizontal, IconPlus, IconSearch } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
 import { useTranslation } from "@/i18n/LocaleProvider";
 import { useConnectionMessage } from "@/lib/use-online-status";
@@ -383,7 +383,8 @@ function RecipesContent() {
   return (
     <HfScreen title={t("recipes.title")}>
       <div className="flex justify-end px-4 pt-3">
-        <Link href="/create-dish" className="hf-type-small hf-type-strong rounded-full bg-hf-green px-4 py-2 text-hf-white">
+        <Link href="/create-dish" className="hf-type-small hf-type-strong inline-flex items-center gap-1 py-2 text-hf-black underline">
+          <IconPlus size={16} aria-hidden="true" />
           {t("recipes.createNew")}
         </Link>
       </div>
