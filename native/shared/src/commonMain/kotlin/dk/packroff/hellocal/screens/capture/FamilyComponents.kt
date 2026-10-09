@@ -101,6 +101,7 @@ internal data class FamilyInfo(
 @Serializable
 internal data class FamilyStatus(
     val me: FamilyMe,
+    val meIsChild: Boolean = false,
     val family: FamilyInfo? = null,
     val hasFamilyPlan: Boolean = false,
     val maxProfiles: Int = 0,

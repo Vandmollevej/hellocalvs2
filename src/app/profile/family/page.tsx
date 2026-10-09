@@ -19,7 +19,7 @@ import { useConfirmSheet, useTypedConfirmSheet } from "@/lib/use-confirm-sheet";
 
 // Familien (docs/FAMILY.md): betaleren opretter profiler, markerer børn,
 // laver login-koder og bestemmer, hvem der må se og taste ind for hvem.
-// Et almindeligt medlem ser, hvem der bestemmer, og kan melde sig ud.
+// Et almindeligt medlem ser, hvem der bestemmer, og kan melde sig ud (ikke børn).
 // Koder er bundet til en e-mail og vises med QR-kode, indtil de er brugt.
 
 type PendingCode = {
@@ -307,18 +307,22 @@ function FamilyPageContent() {
             <Link href="/settings/control-log" className="hf-type-body underline">
               {t("family.member.seeLog")}
             </Link>
-            <button
-              type="button"
-              disabled={busy}
-              onClick={() => {
-                ask(t("family.member.leaveConfirm", { owner: family.ownerName }), () => {
-                  void run("/api/family/leave", "POST");
-                });
-              }}
-              className="hf-control hf-btn-secondary w-full px-4"
-            >
-              {t("family.member.leave")}
-            </button>
+            {status.meIsChild ? (
+              <p className="hf-type-caption text-text-secondary">{t("family.member.childNote", { owner: family.ownerName })}</p>
+            ) : (
+              <button
+                type="button"
+                disabled={busy}
+                onClick={() => {
+                  ask(t("family.member.leaveConfirm", { owner: family.ownerName }), () => {
+                    void run("/api/family/leave", "POST");
+                  });
+                }}
+                className="hf-control hf-btn-secondary w-full px-4"
+              >
+                {t("family.member.leave")}
+              </button>
+            )}
           </div>
         </section>
       )}

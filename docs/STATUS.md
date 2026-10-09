@@ -2,6 +2,10 @@
 
 Last updated: 2026-10-09
 
+## 2026-10-09: Børn kan ikke lukke konto eller melde sig ud
+
+- Kun forælderen kan lukke/fjerne et barns konto. Serveren afviser børn på `/api/account/close` (403) og `leaveFamily` (`childCannotLeave`); "Luk konto"/"Slet mine data" og "Meld dig ud" er skjult for børn i web og native (`meIsChild` fra `/api/family`). Barnet kan kun se, hvad forælderen viser (uændret). Se DECISIONS.md samme dato. Lint, tsc og native-paritet grønne; Kotlin ikke kompileret lokalt; ikke prøvet mod rigtig database.
+
 ## 2026-10-09: "Opret egen ingrediens" fjernet
 
 - Fjernet i web og native: siderne `/ingredients` ("Mine ingredienser") og `/ingredients/new`, tekstlinket under Opret ret og egne ingredienser i søgningen på Opret ret. Backend (`/api/private-ingredients`, admin "Ønskede ingredienser"), tabeller og eksisterende `private:`-ingredienser i retter er bevidst urørt (kun brugerindgangen er væk). Lint, tsc og native-paritet grønne; Kotlin ikke kompileret lokalt.

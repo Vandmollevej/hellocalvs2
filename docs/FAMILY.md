@@ -21,8 +21,10 @@ hvornår andre har været inde, hvad de har set, og hvad de har ændret.
 3. **Under 15 år kan man ikke selv oprette en konto.** Profilen skal oprettes
    af en forælder. Barnet kan derefter få sit eget login (valgfrit) via en
    kode fra forælderen.
-4. **Barnet kan melde sig ud.** Barnet skal kunne oprette sin egen konto og
-   låse de andre ude.
+4. **Barnet kan hverken lukke konto eller melde sig ud (rettet 2026-10-09).**
+   Det kan kun forælderen (betaleren). Barnet kan heller ikke fravælge at vise
+   detaljer: det kan kun se, hvad forælderen viser ("Del med andre" er kun
+   visning). Erstatter den tidligere regel om ingen udmelding for børn — kun forælderen kan fjerne dem.
 5. **Barnet ser alt som en voksen.** Samme visning som voksne, inkl. kalorier
    og vægt.
 6. **Gennemsigtighed.** Barnet skal tydeligt kunne se, hvem der har adgang, og
@@ -55,7 +57,8 @@ hvornår andre har været inde, hvad de har set, og hvad de har ændret.
 
 ### Min fortolkning (bekræft eller ret)
 
-- Punkt 3 + 4: Barnet kan først melde sig ud af familien (låse andre ude), når
+- (Afløst 2026-10-09, se punkt 4: barnet kan aldrig selv melde sig ud eller
+  lukke kontoen.) Punkt 3 + 4: Barnet kan først melde sig ud af familien (låse andre ude), når
   det er fyldt 15, da udmelding svarer til at oprette sin egen konto. Under 15
   år kan barnet se loggen, men ikke låse forælderen ude.
 - Betaleren har altid adgang til alle familiens profiler. Andre voksne får kun
@@ -208,6 +211,6 @@ Kilder:
 3. **Log:** hvert kald på en andens profil logges (åbnet, set, ændret).
 4. **Profilvælger og familieside** under Profil, bjælke i toppen når man ser en
    andens profil, panel der glider ned med nye loghændelser, logside.
-5. **Barnets eget login** via engangskode fra betaleren; udmelding fra 15 år.
+5. **Barnets eget login** via engangskode fra betaleren; ingen udmelding for børn — kun forælderen kan fjerne dem.
 6. **Abonnement:** familieplan, alle medlemmer får Seriøs, ingen reklamer eller
    partnertilbud på familieprofiler.

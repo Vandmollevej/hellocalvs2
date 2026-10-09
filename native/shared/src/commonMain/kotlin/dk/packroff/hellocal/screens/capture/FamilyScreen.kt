@@ -243,16 +243,20 @@ fun FamilyScreen(args: RouteArgs) {
                     HcCard {
                         HcText(t.t("family.member.intro", "owner" to family.ownerName), HcTypeRoles.Body)
                         HcText(t.t("family.member.seeLog"), HcTypeRoles.Body, Modifier.clickable { nav.push("/settings/control-log") }, underline = true)
-                        HcButton(
-                            t.t("family.member.leave"),
-                            onClick = {
-                                confirm = Confirm(t.t("family.member.leaveConfirm", "owner" to family.ownerName)) {
-                                    launchRun("/api/family/leave", HttpMethod.Post)
-                                }
-                            },
-                            kind = HcButtonKind.Secondary,
-                            enabled = !busy,
-                        )
+                        if (current.meIsChild) {
+                            HcText(t.t("family.member.childNote", "owner" to family.ownerName), HcTypeRoles.Caption)
+                        } else {
+                            HcButton(
+                                t.t("family.member.leave"),
+                                onClick = {
+                                    confirm = Confirm(t.t("family.member.leaveConfirm", "owner" to family.ownerName)) {
+                                        launchRun("/api/family/leave", HttpMethod.Post)
+                                    }
+                                },
+                                kind = HcButtonKind.Secondary,
+                                enabled = !busy,
+                            )
+                        }
                     }
                 }
             }

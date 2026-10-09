@@ -3082,7 +3082,8 @@
       "intro": "Tu fais partie de l'abonnement Famille de {owner}. {owner} gère la famille et peut tout voir et modifier sur ton profil. Tout ce que d'autres font sur ton profil figure dans ton journal de contrôle.",
       "seeLog": "Voir le journal de contrôle",
       "leave": "Quitter la famille",
-      "leaveConfirm": "Tu veux quitter la famille ? {owner} et les autres membres perdent l'accès à ton profil, et tu perds l'abonnement Famille."
+      "leaveConfirm": "Tu veux quitter la famille ? {owner} et les autres membres perdent l'accès à ton profil, et tu perds l'abonnement Famille.",
+      "childNote": "{owner} a accès à ton profil et décide de ce qui est affiché. Tu peux voir ce qui est partagé, mais pas le modifier ni quitter la famille. Seul un parent peut le faire."
     },
     "sharing": {
       "title": "Partager avec d'autres",
@@ -3181,7 +3182,7 @@
       "invalidCode": "Le code et l'e-mail ne correspondent pas, ou le code a expiré.",
       "emailTaken": "Cet e-mail est déjà utilisé par un autre compte.",
       "ownerCannotLeave": "La personne qui paie ne peut pas quitter la famille.",
-      "tooYoungToLeave": "Tu ne peux quitter la famille qu'à partir de 15 ans.",
+      "childCannotLeave": "Seul un parent peut retirer un enfant de la famille.",
       "profileWithoutLogin": "Ce profil n'a pas d'accès propre et ne peut pas encore être retiré.",
       "invalidEmail": "Écris un e-mail valide.",
       "passwordTooShort": "Le mot de passe doit contenir au moins 8 caractères.",

@@ -73,6 +73,8 @@ fun ProfileEditScreen(args: RouteArgs) {
     var loading by remember { mutableStateOf(true) }
     var trendWeightKg by remember { mutableStateOf<Double?>(null) }
     var energySummary by remember { mutableStateOf<EnergySummary?>(null) }
+    // Children cannot close the account — only a parent can.
+    var meIsChild by remember { mutableStateOf(false) }
     // Phone (docs/DECISIONS.md 2026-10-02): required, can be corrected but not deleted.
     var phoneDraft by remember { mutableStateOf<String?>(null) }
     var phoneError by remember { mutableStateOf<String?>(null) }
@@ -80,6 +82,9 @@ fun ProfileEditScreen(args: RouteArgs) {
     LaunchedEffect(Unit) {
         user = runCatching { ProfileApi.loadUser() }.getOrNull()
         loading = false
+    }
+    LaunchedEffect(Unit) {
+        meIsChild = FamilyApi.status()?.meIsChild == true
     }
     LaunchedEffect(Unit) {
         trendWeightKg = runCatching { ProfileWeights.latestTrendWeight(ProfileWeights.entries(), ProfileWeights.mealTimes()) }.getOrNull()
@@ -241,7 +246,7 @@ fun ProfileEditScreen(args: RouteArgs) {
 
                 Box(Modifier.padding(top = 16.dp)) { ProfileFaceIdButton() }
 
-                ProfileAccountDeletionSection()
+                if (!meIsChild) ProfileAccountDeletionSection()
             }
         }
     }
