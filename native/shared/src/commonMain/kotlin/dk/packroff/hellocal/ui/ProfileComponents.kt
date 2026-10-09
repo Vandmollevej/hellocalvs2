@@ -19,6 +19,7 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -345,13 +346,13 @@ fun ProfilePointsPromoBanner(headline: String, onTermsClick: () -> Unit, subtext
 fun ProfileLine(color: Color = HcColors.Line) = HorizontalDivider(thickness = 1.dp, color = color)
 
 /**
- * Swipe a row to the left to reveal a red "Slet" pill (profile messages).
+ * Swipe a row to the left to reveal the red "Slet" panel as in SwipeableRow (profile messages).
  * Only horizontal drags are caught; vertical scrolling passes through.
  */
 @Composable
 fun ProfileSwipeToDelete(label: String, onDelete: () -> Unit, content: @Composable () -> Unit) {
     val density = LocalDensity.current
-    val revealPx = with(density) { 88.dp.toPx() }
+    val revealPx = with(density) { 80.dp.toPx() }
     var dragX by remember { mutableFloatStateOf(0f) }
     var dragging by remember { mutableStateOf(false) }
     // Follows the finger while dragging, glides to the resting place afterwards (150 ms on the web).
@@ -360,11 +361,10 @@ fun ProfileSwipeToDelete(label: String, onDelete: () -> Unit, content: @Composab
     val shape = RoundedCornerShape(HcDimens.RadiusCard)
     Box(Modifier.fillMaxWidth().clip(shape)) {
         Box(Modifier.matchParentSize(), contentAlignment = Alignment.CenterEnd) {
-            Box(Modifier.size(width = 88.dp, height = 44.dp), contentAlignment = Alignment.Center) {
-                Box(
-                    Modifier.clip(RoundedCornerShape(50)).background(HcColors.RedDark).clickable(onClick = onDelete).padding(horizontal = 16.dp, vertical = 8.dp),
-                ) { HcText(label, HcTypeRoles.Small, bold = true, color = HcColors.White) }
-            }
+            Box(
+                Modifier.fillMaxHeight().width(80.dp).background(HcColors.RedDark).clickable(onClick = onDelete),
+                contentAlignment = Alignment.Center,
+            ) { HcText(label, HcTypeRoles.Small, bold = true, color = HcColors.White) }
         }
         Box(
             Modifier.fillMaxWidth().offset { IntOffset(shown.roundToInt(), 0) }.pointerInput(Unit) {
