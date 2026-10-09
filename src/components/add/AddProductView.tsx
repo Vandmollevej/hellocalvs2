@@ -704,13 +704,27 @@ export function AddProductView({
 
   const title = forDish ? t("addProduct.titleForDish") : t("addProduct.title");
   const Frame = inSheet ? SheetFrame : ScreenFrame;
-  // Opdater-banneret sidder fast direkte under topbaren, uden for scroll-området.
+  // Opdater-banneret ligger som lag oven på siden og skubber den aldrig.
   const updateBanner =
     !isLoading && !forDish && !isEditing && !!id && state.status === "loaded" && state.product.updateOffer ? (
             <UpdatePointsBanner
               href={`/add/${encodeURIComponent(id)}/update`}
               text={t("productUpdate.banner", { points: state.product.updateOffer.points })}
               toggleLabel={t("productUpdate.toggle")}
+              tiles={state.product.updateOffer.kinds.map((kind) => ({
+                kind,
+                label: t(UPDATE_TILE_LABELS[kind]),
+              }))}
+              action={
+                state.product.ingredientsUnreadable ? (
+                  <Link
+                    href={`/camera?mode=product&retake=ingredients&product=${encodeURIComponent(id)}`}
+                    className="hf-control hf-btn-secondary justify-center gap-2"
+                  >
+                    <IconCamera size={19} /> {t("addProduct.retakeIngredients")}
+                  </Link>
+                ) : undefined
+              }
             />
     ) : null;
 
@@ -1217,15 +1231,7 @@ export function AddProductView({
                       ))}
                     </div>
                   ) : !view.ingredientsText ? (
-                    <div className="flex flex-col gap-3">
-                      <p className="hf-type-small text-text-secondary">{t("addProduct.ingredientsUnreadable")}</p>
-                      <Link
-                        href={`/camera?mode=product&retake=ingredients&product=${encodeURIComponent(id)}`}
-                        className="hf-control hf-btn-secondary justify-center gap-2"
-                      >
-                        <IconCamera size={19} /> {t("addProduct.retakeIngredients")}
-                      </Link>
-                    </div>
+                    <p className="hf-type-small text-text-secondary">{t("addProduct.ingredientsUnreadable")}</p>
                   ) : (
                     <p className="hf-type-small text-text-secondary">
                       {splitENumbers(view.ingredientsText ?? "").map((part, index) =>
@@ -1382,6 +1388,12 @@ export function AddProductView({
   );
 }
 
+const UPDATE_TILE_LABELS = {
+  FRONT: "productUpdate.tileFront",
+  NUTRITION: "productUpdate.tileNutrition",
+  INGREDIENTS: "productUpdate.tileIngredients",
+} as const;
+
 type FrameProps = {
   title: string;
   banner?: React.ReactNode;
@@ -1402,7 +1414,7 @@ function ScreenFrame({ title, footer, banner, children }: FrameProps) {
 function SheetFrame({ title, footer, banner, onClose, children }: FrameProps) {
   return (
     <BottomSheet title={title} footer={footer} size="full" onClose={() => onClose?.()}>
-      {banner}
+      {banner && <div className="relative h-0">{banner}</div>}
       {children}
     </BottomSheet>
   );

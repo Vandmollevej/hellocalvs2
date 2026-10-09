@@ -626,7 +626,7 @@
     "categoryProfileDescription": "Naam, e-mail enz.",
     "categoryWeight": "Gewicht",
     "categoryGoals": "Doelen",
-    "categoryMenstrualCycle": "Menstruatiecyclus (alleen voor vrouwen)",
+    "categoryMenstrualCycle": "Menstruatiecyclus",
     "categoryDigestion": "Spijsvertering",
     "categoryComingSoon": "Binnenkort beschikbaar",
     "categoryUnavailable": "Nog niet beschikbaar in de app",
@@ -1725,7 +1725,8 @@
     "showAll": "Toon alles ({count})",
     "showLess": "Toon minder",
     "chartAria": "Verloop van {name}",
-    "loadError": "Kon je status niet laden."
+    "loadError": "Kon je status niet laden.",
+    "customizeView": "Weergave aanpassen"
   },
   "bodyMeasurementChart": {
     "noData": "Nog geen metingen.",
@@ -1753,6 +1754,7 @@
     "dateRequired": "Kies een doeldatum om op te slaan.",
     "targetDateLabel": "Uiterlijk bereikt op {date}",
     "weight": "Gewicht",
+    "weightCompositionHeading": "Gewicht en lichaamsbouw",
     "bodyMeasurementsHeading": "Lichaamsmaten",
     "weightPlaceholder": "bijv. 72,0",
     "measurementPlaceholder": "bijv. 82",
@@ -1795,6 +1797,16 @@
   },
   "weighIn": {
     "attireTitle": "What were you wearing?",
+    "attireItem": {
+      "UNDERWEAR": "Underwear",
+      "PANTS": "Trousers",
+      "TOP": "Top / T-shirt",
+      "SWEATER": "Sweater",
+      "SHOES": "Shoes",
+      "POCKET_ITEMS": "Phone etc. in pocket",
+      "AFTER_TOILET": "After using the toilet"
+    },
+    "attireNaked": "Nothing selected = naked",
     "attire": {
       "NAKED": "Naked",
       "UNDERWEAR": "In underwear",
@@ -2108,6 +2120,9 @@
   "productUpdate": {
     "banner": "Verdien {points} punten door het product bij te werken",
     "toggle": "Banner tonen of verbergen",
+    "tileFront": "Voorkant",
+    "tileNutrition": "Energie",
+    "tileIngredients": "Ingrediënten",
     "title": "Product bijwerken",
     "kindFront": "Voorkant van het product ({points} punten)",
     "hintFront": "Maak een foto van de voorkant, zodat het product een afbeelding en logo krijgt.",

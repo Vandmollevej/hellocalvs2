@@ -1,16 +1,23 @@
 package dk.packroff.hellocal.screens.profile
 
+import dk.packroff.hellocal.ui.HeightUnit
+import dk.packroff.hellocal.ui.UnitPrefs
 import dk.packroff.hellocal.ui.Units
+import dk.packroff.hellocal.ui.WeightUnit
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
@@ -30,7 +37,9 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -39,12 +48,15 @@ import dk.packroff.hellocal.i18n.LocalTranslator
 import dk.packroff.hellocal.nav.LocalNavigator
 import dk.packroff.hellocal.nav.Location
 import dk.packroff.hellocal.nav.RouteArgs
+import dk.packroff.hellocal.screens.capture.AccordionSection
 import dk.packroff.hellocal.theme.HcColors
 import dk.packroff.hellocal.theme.HcDimens
 import dk.packroff.hellocal.theme.HcTypeRoles
 import dk.packroff.hellocal.theme.style
 import dk.packroff.hellocal.ui.HcButton
 import dk.packroff.hellocal.ui.HcScreen
+import dk.packroff.hellocal.ui.HcRemoteImage
+import dk.packroff.hellocal.ui.FoodSlider
 import dk.packroff.hellocal.ui.HcText
 import dk.packroff.hellocal.ui.ProfileBrandCard
 import dk.packroff.hellocal.ui.ProfileDateWheelSheet
@@ -79,6 +91,26 @@ data class GoalFormValues(
             return GoalFormValues(goal.targetDate ?: "", weight, measurements, composition, nutrition)
         }
     }
+}
+
+/** src/lib/goal-slider-ranges.ts — slider interval in the displayed unit. */
+private data class SliderRange(val min: Double, val max: Double, val step: Double)
+
+private fun sliderRange(id: String, units: UnitPrefs): SliderRange? = when (id) {
+    "weight" -> when (units.weight) {
+        WeightUnit.Kg -> SliderRange(30.0, 200.0, 0.5)
+        WeightUnit.Lb -> SliderRange(66.0, 440.0, 1.0)
+        WeightUnit.St -> null // stone/pounds ("10 4") is not one number
+    }
+    "bodyFatPercent" -> SliderRange(3.0, 60.0, 0.5)
+    "muscleMassKg" -> SliderRange(10.0, 80.0, 0.5)
+    "kcal" -> SliderRange(800.0, 5000.0, 50.0)
+    "proteinG" -> SliderRange(20.0, 400.0, 5.0)
+    "carbsG" -> SliderRange(20.0, 800.0, 5.0)
+    "fatG" -> SliderRange(10.0, 300.0, 5.0)
+    else -> if (BODY_MEASUREMENT_FIELDS.any { it.field == id }) {
+        if (units.height == HeightUnit.In) SliderRange(8.0, 80.0, 0.5) else SliderRange(20.0, 200.0, 0.5)
+    } else null
 }
 
 /** A parsed form value: Empty (ignored), Invalid, or a number. */
@@ -198,6 +230,28 @@ private fun GoalForm(
     val nutrition = remember { mutableStateMapOf<String, String>().apply { putAll(initial.nutrition) } }
     var saving by remember { mutableStateOf(false) }
     var saveError by remember { mutableStateOf(false) }
+    // The field in focus gets a full-width slider above the keyboard (GoalSliderBar in GoalForm.tsx).
+    var activeId by remember { mutableStateOf<String?>(null) }
+    val activeRange = activeId?.let { sliderRange(it, units) }
+    fun activeValue(): String = when (val id = activeId) {
+        "weight" -> weight
+        null -> ""
+        else -> measurements[id] ?: composition[id] ?: nutrition[id] ?: ""
+    }
+    fun setActive(value: String) {
+        when (val id = activeId) {
+            "weight" -> weight = value
+            null -> Unit
+            else -> when {
+                measurements.containsKey(id) -> measurements[id] = value
+                composition.containsKey(id) -> composition[id] = value
+                else -> nutrition[id] = value
+            }
+        }
+    }
+    // Sex only decides which drawings are shown; without a chosen sex no drawing is guessed.
+    var sex by remember { mutableStateOf<String?>(null) }
+    LaunchedEffect(Unit) { runCatching { ProfileApi.loadUser() }.getOrNull()?.let { sex = it.sex } }
 
     // Weight and body measurements are typed in the chosen unit but always saved as kg/cm.
     val parsed: Map<String, Parsed> = buildMap {
@@ -232,6 +286,17 @@ private fun GoalForm(
         contentPadding = ProfilePagePadding,
         bottom = {
             Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                if (activeId != null && activeRange != null) {
+                    val decimals = activeRange.step < 1
+                    val current = activeValue().trim().replaceFirst(",", ".").toDoubleOrNull()?.coerceIn(activeRange.min, activeRange.max) ?: activeRange.min
+                    FoodSlider(
+                        value = current,
+                        min = activeRange.min,
+                        max = activeRange.max,
+                        step = activeRange.step,
+                        onChange = { next -> setActive(if (decimals) jsNumber(round1(next)).replace(".", ",") else next.toLong().toString()) },
+                    )
+                }
                 if (!hasDate || !hasAny) {
                     HcText(
                         if (!hasDate) t.t("goals.dateRequired") else t.t("goals.atLeastOne"),
@@ -264,53 +329,82 @@ private fun GoalForm(
                 }
             }
             ProfileBrandCard(t.t("goals.intro"))
-            FormCard {
-                GoalInput(
-                    label = t.t("goals.targetWeight"),
-                    unit = Units.weightUnitLabel(units.weight),
-                    value = weight,
-                    placeholder = Units.weightToInputValue(72.0, units.weight),
-                    autoFocus = focus == "weight",
-                    onChange = { weight = it },
-                )
-            }
-            FormCard(gap = HcDimens.SpaceBlock) {
-                HcText(t.t("goals.bodyMeasurementsHeading"), HcTypeRoles.Body, bold = true, color = HcColors.Black)
-                TwoColumns(BODY_MEASUREMENT_FIELDS) { field ->
-                    GoalInput(
-                        label = t.t(field.nameKey),
-                        unit = Units.lengthUnitLabel(units.height),
-                        value = measurements[field.field] ?: "",
-                        placeholder = Units.lengthToInputValue(82.0, units.height),
-                        autoFocus = focus == field.field,
-                        onChange = { measurements[field.field] = it },
-                    )
+            AccordionSection(
+                title = t.t("goals.weightCompositionHeading"),
+                defaultOpen = focus == null || focus == "weight" || COMPOSITION_GOAL_FIELDS.any { it.field == focus },
+            ) {
+                Column(Modifier.fillMaxWidth().padding(16.dp)) {
+                    TwoColumns(listOf<GoalField?>(null) + COMPOSITION_GOAL_FIELDS) { field ->
+                        // null = the target weight, then the composition fields.
+                        if (field == null) {
+                            GoalInput(
+                                label = t.t("goals.targetWeight"),
+                                unit = Units.weightUnitLabel(units.weight),
+                                value = weight,
+                                placeholder = Units.weightToInputValue(72.0, units.weight),
+                                autoFocus = focus == "weight",
+                                onChange = { weight = it },
+                                onActivate = { activeId = "weight" },
+                            )
+                        } else {
+                            GoalInput(
+                                label = t.t(field.nameKey),
+                                unit = field.unit,
+                                value = composition[field.field] ?: "",
+                                placeholder = t.t("goals.compositionPlaceholder.${field.field}"),
+                                autoFocus = focus == field.field,
+                                onChange = { composition[field.field] = it },
+                                onActivate = { activeId = field.field },
+                            )
+                        }
+                    }
                 }
             }
-            FormCard(gap = HcDimens.SpaceBlock) {
-                HcText(t.t("goals.compositionHeading"), HcTypeRoles.Body, bold = true, color = HcColors.Black)
-                TwoColumns(COMPOSITION_GOAL_FIELDS) { field ->
-                    GoalInput(
-                        label = t.t(field.nameKey),
-                        unit = field.unit,
-                        value = composition[field.field] ?: "",
-                        placeholder = t.t("goals.compositionPlaceholder.${field.field}"),
-                        autoFocus = focus == field.field,
-                        onChange = { composition[field.field] = it },
-                    )
+            AccordionSection(
+                title = t.t("goals.bodyMeasurementsHeading"),
+                defaultOpen = BODY_MEASUREMENT_FIELDS.any { it.field == focus },
+            ) {
+                Column(Modifier.fillMaxWidth().padding(16.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
+                    BODY_MEASUREMENT_FIELDS.forEach { field ->
+                        Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(16.dp)) {
+                            Box(Modifier.width(56.dp).height(76.dp), contentAlignment = Alignment.Center) {
+                                val currentSex = sex
+                                if (field.drawing != null && currentSex != null) {
+                                    val prefix = if (currentSex == "FEMALE") "female" else "male"
+                                    HcRemoteImage("/body-measurements/$prefix-${field.drawing}.png", Modifier.fillMaxSize(), contentScale = ContentScale.Fit)
+                                }
+                            }
+                            Column(Modifier.weight(1f)) {
+                                GoalInput(
+                                    label = t.t(field.nameKey),
+                                    unit = Units.lengthUnitLabel(units.height),
+                                    value = measurements[field.field] ?: "",
+                                    placeholder = Units.lengthToInputValue(82.0, units.height),
+                                    autoFocus = focus == field.field,
+                                    onChange = { measurements[field.field] = it },
+                                    onActivate = { activeId = field.field },
+                                )
+                            }
+                        }
+                    }
                 }
             }
-            FormCard(gap = HcDimens.SpaceBlock) {
-                HcText(t.t("goals.nutritionHeading"), HcTypeRoles.Body, bold = true, color = HcColors.Black)
-                TwoColumns(NUTRITION_GOAL_FIELDS) { field ->
-                    GoalInput(
-                        label = t.t(field.nameKey),
-                        unit = field.unit,
-                        value = nutrition[field.field] ?: "",
-                        placeholder = t.t("goals.nutritionPlaceholder.${field.field}"),
-                        autoFocus = focus == field.field,
-                        onChange = { nutrition[field.field] = it },
-                    )
+            AccordionSection(
+                title = t.t("goals.nutritionHeading"),
+                defaultOpen = NUTRITION_GOAL_FIELDS.any { it.field == focus },
+            ) {
+                Column(Modifier.fillMaxWidth().padding(16.dp)) {
+                    TwoColumns(NUTRITION_GOAL_FIELDS) { field ->
+                        GoalInput(
+                            label = t.t(field.nameKey),
+                            unit = field.unit,
+                            value = nutrition[field.field] ?: "",
+                            placeholder = t.t("goals.nutritionPlaceholder.${field.field}"),
+                            autoFocus = focus == field.field,
+                            onChange = { nutrition[field.field] = it },
+                            onActivate = { activeId = field.field },
+                        )
+                    }
                 }
             }
         }
@@ -358,7 +452,7 @@ private fun <T> TwoColumns(items: List<T>, cell: @Composable (T) -> Unit) {
 
 /** GoalInput: label above, number and unit on one line with a thin line under it. */
 @Composable
-private fun GoalInput(label: String, unit: String, value: String, placeholder: String, autoFocus: Boolean, onChange: (String) -> Unit) {
+private fun GoalInput(label: String, unit: String, value: String, placeholder: String, autoFocus: Boolean, onChange: (String) -> Unit, onActivate: () -> Unit) {
     val focus = remember { FocusRequester() }
     LaunchedEffect(autoFocus) { if (autoFocus) runCatching { focus.requestFocus() } }
     Column(Modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(4.dp)) {
@@ -371,7 +465,7 @@ private fun GoalInput(label: String, unit: String, value: String, placeholder: S
                 textStyle = HcTypeRoles.BodyLg.style(HcColors.Black),
                 cursorBrush = SolidColor(HcColors.Action),
                 keyboardOptions = KeyboardOptions(keyboardType = if (unit.contains(' ')) KeyboardType.Text else KeyboardType.Decimal),
-                modifier = Modifier.weight(1f).focusRequester(focus),
+                modifier = Modifier.weight(1f).focusRequester(focus).onFocusChanged { if (it.isFocused) onActivate() },
                 decorationBox = { inner ->
                     androidx.compose.foundation.layout.Box {
                         if (value.isEmpty()) HcText(placeholder, HcTypeRoles.BodyLg, color = HcColors.Placeholder, maxLines = 1)

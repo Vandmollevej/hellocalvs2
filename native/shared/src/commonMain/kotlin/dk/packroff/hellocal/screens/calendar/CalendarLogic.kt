@@ -439,6 +439,15 @@ internal fun formatKg(value: Double): String = formatNumber(value, 1)
 /** src/lib/calendar-measurements.ts formatWeightKg: always one decimal + " kg". */
 internal fun formatWeightKg(value: Double): String = "${formatNumber(value, 1, minDecimals = 1)} kg"
 
+private val SOURCE_ICON_SLUGS = setOf("apple-health", "garmin", "google-health", "health-connect", "polar-flow", "samsung-health", "strava", "withings")
+
+/** Logo of the smart scale/app that delivered the measurement (mirror of integrationIconForSource on web). */
+internal fun integrationIconForSource(source: String?): String? {
+    if (source == null) return null
+    val slug = if (source == "FITBIT") "google-health" else source.lowercase().replace('_', '-')
+    return if (slug in SOURCE_ICON_SLUGS) "/integrations/$slug.png" else null
+}
+
 internal fun formatGoalValue(value: Double): String = formatNumber(value, 1)
 
 // ---------- Measurements (src/lib/calendar-measurements.ts) ----------

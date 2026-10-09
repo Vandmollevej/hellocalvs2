@@ -1,32 +1,60 @@
 // Geometri og lager for forsidens lille halvcirkel over bundmenuen
 // (FooterArc.tsx). Brugerens ønske 2026-10-07: en fast, lille halvcirkel
-// (ca. 20 px høj) midt over footeren med et lille plus; skubbes den op,
-// vokser den til 70 % af den nuværende venstre-cirkel (AddButton.tsx,
+// (ca. 40 px høj, vist statisk) midt over footeren med et stort plus; skubbes
+// den op, vokser den til samme størrelse som venstre-cirklen (AddButton.tsx,
 // HALF_CIRCLE_RADIUS = 83) og viser 5 knapper, hvor "alle" altid står i midten.
 
 import { useSyncExternalStore } from "react";
 
 export const SOURCE_HALF_CIRCLE_RADIUS = 83;
-/** Radius når cirklen er trukket op: 70 % af den nuværende venstre-cirkel. */
-export const ARC_RADIUS = Math.round(SOURCE_HALF_CIRCLE_RADIUS * 0.7);
+/** Radius når cirklen er trukket op: samme som venstre-cirklen. */
+export const ARC_RADIUS = SOURCE_HALF_CIRCLE_RADIUS;
 /** Synlig højde i hvile (cirklens øverste stykke). */
-export const ARC_REST_HEIGHT = 20;
+export const ARC_REST_HEIGHT = 40;
 /** Hvor langt fingeren skal op (px) for at cirklen er helt åben. */
-export const ARC_PULL_DISTANCE = 70;
+export const ARC_PULL_DISTANCE = 100;
 export const ARC_ICON_CIRCLE = 46;
 /** Afstand fra cirklens midte (ved footerkanten) til knappernes midte. */
 export const ARC_ICON_RADIUS = ARC_RADIUS + 38 + ARC_ICON_CIRCLE / 2;
 export const ARC_ANGLE_STEP_DEG = 32;
 /** Højst så mange egne knapper i viften ("alle" kommer i midten ovenpå). */
 export const ARC_MAX_USER_ACTIONS = 4;
-/** Vandret plads viften skal have til hver side for ikke at ryge ud over skærmen. */
-export const ARC_FAN_HALF_WIDTH =
-  ARC_ICON_RADIUS * Math.sin((ARC_ANGLE_STEP_DEG * 2 * Math.PI) / 180) + ARC_ICON_CIRCLE / 2 + 8;
+/** Mindste afstand fra en knaps midte til skærmkanten. */
+const ARC_EDGE_MARGIN = ARC_ICON_CIRCLE / 2 + 8;
 
 /** Antal knapper i viften, når der er `userCount` egne + "alle". */
 export function fanAngles(userCount: number): number[] {
   const total = userCount + 1;
   return Array.from({ length: total }, (_, i) => (i - (total - 1) / 2) * ARC_ANGLE_STEP_DEG);
+}
+
+/**
+ * Knappernes midter (x fra venstre, y opad fra footerkanten). Hver knap har den
+ * faste afstand til sin nabo fra viften. Ville en knap havne uden for skærmen
+ * (cirklen står langt ude til siden), holdes den inden for kanten og rykkes i
+ * stedet længere op, væk fra cirklen — stadig med samme afstand til naboen.
+ */
+export function fanLayout(angles: number[], centerX: number, width: number): { x: number; y: number }[] {
+  if (angles.length === 0) return [];
+  const ideal = angles.map((deg) => {
+    const rad = (deg * Math.PI) / 180;
+    return { x: centerX + ARC_ICON_RADIUS * Math.sin(rad), y: ARC_ICON_RADIUS * Math.cos(rad) };
+  });
+  if (width <= ARC_EDGE_MARGIN * 2) return ideal;
+  const anchor = angles.reduce((best, deg, i) => (Math.abs(deg) < Math.abs(angles[best]) ? i : best), 0);
+  const placed = new Array<{ x: number; y: number }>(angles.length);
+  placed[anchor] = { x: Math.min(width - ARC_EDGE_MARGIN, Math.max(ARC_EDGE_MARGIN, ideal[anchor].x)), y: ideal[anchor].y };
+  for (const dir of [-1, 1]) {
+    for (let i = anchor + dir; i >= 0 && i < angles.length; i += dir) {
+      const prev = placed[i - dir];
+      const spacing = Math.hypot(ideal[i].x - ideal[i - dir].x, ideal[i].y - ideal[i - dir].y);
+      const x = Math.min(width - ARC_EDGE_MARGIN, Math.max(ARC_EDGE_MARGIN, ideal[i].x));
+      let y = ideal[i].y;
+      if (x !== ideal[i].x) y = Math.max(y, prev.y + Math.sqrt(Math.max(0, spacing ** 2 - (x - prev.x) ** 2)));
+      placed[i] = { x, y };
+    }
+  }
+  return placed;
 }
 
 /** Pladsen i viften, hvor "alle" altid står (midten). */
