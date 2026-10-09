@@ -1,6 +1,6 @@
 import Link from "next/link";
-import { IconSearch } from "@tabler/icons-react";
 import type { DishPage, DishRow } from "@/lib/admin-dishes";
+import { DishDisableButton } from "@/components/admin/DishDisableButton";
 
 // Fælles liste for admin → Retter (docs/DECISIONS.md 2026-09-28): søgning,
 // liste med billede, kcal og status, og sider à 48.
@@ -22,68 +22,42 @@ function StatusBadge({ status }: { status: DishRow["status"] }) {
   return <span className={`hf-type-micro hf-type-strong shrink-0 rounded-full px-2 py-0.5 ${tone}`}>{STATUS_LABELS[status]}</span>;
 }
 
-type DisableAction = (form: FormData) => Promise<void>;
-
-// "Deaktivér"/"Aktivér" på linjen (docs/DECISIONS.md 2026-10-07) — det eneste,
-// admin kan ændre på en importeret ret.
-function DisableButton({ row, action, path }: { row: DishRow; action: DisableAction; path: string }) {
-  return (
-    <form action={action} className="shrink-0 pr-4">
-      <input type="hidden" name="id" value={row.id} />
-      <input type="hidden" name="path" value={path} />
-      <input type="hidden" name="disable" value={row.disabled ? "0" : "1"} />
-      <button
-        type="submit"
-        className={`hf-type-small rounded-md border px-3 py-1.5 ${
-          row.disabled
-            ? "border-hf-green-dark text-hf-green-dark hover:bg-hf-green-light"
-            : "border-hf-red-dark text-hf-red-dark hover:bg-hf-tan"
-        }`}
-      >
-        {row.disabled ? "Aktivér" : "Deaktivér"}
-      </button>
-    </form>
-  );
-}
-
-function Row({ row, disableAction, path }: { row: DishRow; disableAction?: DisableAction; path: string }) {
+function Row({ row, canDisable }: { row: DishRow; canDisable: boolean }) {
   const body = (
     <>
-      <div className={`h-12 w-12 shrink-0 overflow-hidden rounded-md border border-hf-tan-dark bg-hf-white ${row.disabled ? "opacity-40" : ""}`}>
+      <div className="h-12 w-12 shrink-0 overflow-hidden rounded-md border border-hf-tan-dark bg-hf-white">
         {row.imageUrl && (
           // eslint-disable-next-line @next/next/no-img-element
           <img src={row.imageUrl} alt="" loading="lazy" className="h-full w-full object-cover" />
         )}
       </div>
       <div className="min-w-0">
-        <p className={`hf-type-body truncate ${row.disabled ? "text-text-muted line-through" : "text-hf-black"}`}>{row.name}</p>
-        {(row.disabled || row.note) && (
-          <p className="hf-type-small truncate text-text-muted">
-            {[row.disabled ? "Deaktiveret — vises ikke for brugerne" : null, row.note].filter(Boolean).join(" · ")}
-          </p>
-        )}
+        <p className="hf-type-body truncate text-hf-black">{row.name}</p>
+        {row.note && <p className="hf-type-small truncate text-text-muted">{row.note}</p>}
       </div>
       <p className="hf-type-small hidden text-right text-text-secondary sm:block">
         {numberFormat.format(Math.round(row.kcal))} {row.kcalLabel}
       </p>
-      <div className="flex justify-end">
+      <div className="flex items-center justify-end gap-2">
         <StatusBadge status={row.status} />
+        {canDisable && <DishDisableButton id={row.id} disabled={row.status === "REJECTED"} />}
       </div>
     </>
   );
-  const className = "grid grid-cols-[48px_minmax(0,1fr)_auto] items-center gap-4 px-4 py-3 sm:grid-cols-[48px_minmax(0,1fr)_140px_96px]";
-  const content = row.href ? (
-    <Link href={row.href} className={`${className} hover:bg-hf-tan`}>
-      {body}
-    </Link>
-  ) : (
-    <div className={className}>{body}</div>
-  );
-  if (!disableAction) return <li>{content}</li>;
+  const className = `grid items-center gap-4 px-4 py-3 ${
+    canDisable
+      ? "grid-cols-[48px_minmax(0,1fr)_auto] sm:grid-cols-[48px_minmax(0,1fr)_140px_200px]"
+      : "grid-cols-[48px_minmax(0,1fr)_auto] sm:grid-cols-[48px_minmax(0,1fr)_140px_96px]"
+  }`;
   return (
-    <li className="flex items-center">
-      <div className="min-w-0 flex-1">{content}</div>
-      <DisableButton row={row} action={disableAction} path={path} />
+    <li>
+      {row.href ? (
+        <Link href={row.href} className={`${className} hover:bg-hf-tan`}>
+          {body}
+        </Link>
+      ) : (
+        <div className={className}>{body}</div>
+      )}
     </li>
   );
 }
@@ -95,7 +69,7 @@ export function DishListPage({
   q,
   data,
   empty,
-  disableAction,
+  canDisable = false,
 }: {
   title: string;
   intro: string;
@@ -103,8 +77,8 @@ export function DishListPage({
   q: string;
   data: DishPage;
   empty: string;
-  // Kun importerede retter (HelloFresh/Valdemarsro) får knappen på linjen.
-  disableAction?: DisableAction;
+  // Kun "Disable"-knap på linjen — ingen anden redigering (HelloFresh/Valdemarsro).
+  canDisable?: boolean;
 }) {
   const href = (page: number) => {
     const params = new URLSearchParams();
@@ -123,10 +97,17 @@ export function DishListPage({
         <p className="hf-type-body text-text-secondary">{intro}</p>
       </div>
 
-      {/* Fælles søgefelt (.hf-search, design.md §6.5); Enter sender søgningen. */}
-      <form action={basePath} role="search" className="hf-search">
-        <IconSearch size={16} color="var(--hf-black)" aria-hidden />
-        <input type="search" name="q" defaultValue={q} placeholder="Søg efter ret" aria-label="Søg efter ret" className="min-w-0" />
+      <form action={basePath} className="flex gap-2">
+        <input
+          type="search"
+          name="q"
+          defaultValue={q}
+          placeholder="Søg efter ret"
+          className="hf-type-body h-12 min-w-0 flex-1 rounded-md border border-hf-tan-dark bg-hf-white px-4 text-hf-black"
+        />
+        <button type="submit" className="hf-btn-text h-12 rounded-md bg-hf-green-dark px-5 text-hf-white">
+          Søg
+        </button>
       </form>
 
       <p className="hf-type-body text-text-secondary">
@@ -134,13 +115,13 @@ export function DishListPage({
       </p>
 
       {data.rows.length === 0 ? (
-        <div className="hf-surface px-4 py-12 text-center">
+        <div className="rounded-lg border border-hf-tan-dark bg-hf-white px-4 py-12 text-center">
           <p className="hf-type-body text-text-secondary">{empty}</p>
         </div>
       ) : (
-        <ul className="divide-y divide-border-strong overflow-hidden hf-surface">
+        <ul className="divide-y divide-border-strong overflow-hidden rounded-lg border border-hf-tan-dark bg-hf-white">
           {data.rows.map((row) => (
-            <Row key={row.id} row={row} disableAction={disableAction} path={basePath} />
+            <Row key={row.id} row={row} canDisable={canDisable} />
           ))}
         </ul>
       )}

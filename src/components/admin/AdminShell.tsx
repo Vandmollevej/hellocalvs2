@@ -9,7 +9,7 @@ import { t, type AdminI18nKey } from "@/lib/admin-i18n";
 import { AdminCountryDialog, readAdminCountry } from "@/components/admin/AdminCountryDialog";
 import { AutomationMarkers } from "@/components/admin/AutomationMarkers";
 import { useAdminShortcuts } from "@/components/admin/useAdminShortcuts";
-import { ariaKeyShortcuts, formatCombo, shortcutsForHref } from "@/lib/admin-shortcuts";
+import { formatCombo, shortcutsForHref } from "@/lib/admin-shortcuts";
 import { automationProps, navSlug } from "@/lib/automation-markers";
 
 // Admin-skal efter Cloudflare-dashboardets struktur (docs/DECISIONS.md
@@ -123,6 +123,7 @@ export const NAV: NavEntry[] = [
       { href: "/admin/support/templates", key: "nav_standard_mails" },
       { href: "/admin/messaging", key: "nav_messaging" },
       { href: "/admin/search-ranking", key: "nav_search_ranking" },
+      { href: "/admin/search-synonyms", key: "nav_search_synonyms" },
       { href: "/admin/weight-attire", key: "nav_weight_attire" },
       { href: "/admin/shortcuts", key: "nav_shortcuts" },
     ],
@@ -134,6 +135,7 @@ export const NAV: NavEntry[] = [
     icon: "shield",
     links: [
       { href: "/admin/scan-invites", key: "nav_scan_invites" },
+      { href: "/admin/scan-invites/afvisningsaarsager", key: "nav_rejection_reasons" },
       { href: "/admin/jobs", key: "nav_jobs" },
       { href: "/admin/agents", key: "nav_agents" },
       { href: "/admin/robots", key: "nav_robots" },
@@ -331,8 +333,8 @@ function groupHasBadge(links: NavLink[], badges: Badges) {
   );
 }
 
-// Genvejen vises kun i hurtigsøgningen og som aria-keyshortcuts (UIA
-// "AcceleratorKey"), ikke ved mouse over i sidebjælken.
+// Genvejen vises kun i hurtigsøgningen (ikke som
+// aria-keyshortcuts) og aldrig ved mouse over i sidebjælken.
 function shortcutHint(href: string) {
   const combo = shortcutsForHref(href)[0];
   return combo ? formatCombo(combo) : undefined;
@@ -368,7 +370,6 @@ function SidebarNav({
                 href={entry.href}
                 title={collapsed ? t(locale, entry.key) : undefined}
                 aria-current={active ? "page" : undefined}
-                aria-keyshortcuts={ariaKeyShortcuts(shortcutsForHref(entry.href))}
                 {...automationProps(`${idPrefix}-${navSlug(entry.key)}`)}
                 className={`hf-navrow ${collapsed ? "hf-navrow--rail" : ""}`}
               >
@@ -427,7 +428,6 @@ function SidebarNav({
                       <Link
                         href={link.href}
                         aria-current={active ? "page" : undefined}
-                        aria-keyshortcuts={ariaKeyShortcuts(shortcutsForHref(link.href))}
                         {...automationProps(`${idPrefix}-${navSlug(link.key)}`)}
                         className="hf-navrow hf-navrow--sub"
                       >
@@ -516,7 +516,6 @@ function QuickSearch({ locale, onClose }: { locale: Locale; onClose: () => void 
                 type="button"
                 onMouseEnter={() => setIndex(i)}
                 onClick={() => go(item.href)}
-                aria-keyshortcuts={ariaKeyShortcuts(shortcutsForHref(item.href))}
                 {...automationProps(`hc-quick-search-${item.slug}`)}
                 className={`hf-navrow ${i === index ? "bg-hf-tan text-hf-black" : ""}`}
               >
@@ -589,7 +588,6 @@ function UserMenu({
             <Link
               href="/admin/admin-users"
               onClick={() => setOpen(false)}
-              aria-keyshortcuts={ariaKeyShortcuts(shortcutsForHref("/admin/admin-users"))}
               {...automationProps("hc-user-menu-admin-users")}
               className="hf-navrow"
             >
@@ -651,7 +649,6 @@ function SearchField({
         onClick={onOpen}
         title={label}
         aria-label={label}
-        aria-keyshortcuts="Control+K"
         {...automationProps(id)}
         className="hf-shell__search hf-shell__search--rail"
       >
@@ -663,7 +660,6 @@ function SearchField({
     <button
       type="button"
       onClick={onOpen}
-      aria-keyshortcuts="Control+K"
       {...automationProps(id)}
       className="hf-shell__search"
     >
@@ -904,7 +900,6 @@ export function AdminShell({
           onClick={toggleCollapsed}
           title={t(currentLocale, collapsed ? "nav_expand" : "nav_collapse")}
           aria-label={t(currentLocale, collapsed ? "nav_expand" : "nav_collapse")}
-          aria-keyshortcuts="Control+B"
           {...automationProps("hc-sidebar-toggle")}
           className="hf-shell__handle"
         />

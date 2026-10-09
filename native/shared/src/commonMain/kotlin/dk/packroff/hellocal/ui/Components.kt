@@ -396,6 +396,10 @@ fun HcBottomSheet(
         containerColor = containerColor,
         shape = RoundedCornerShape(topStart = HcDimens.RadiusSheet, topEnd = HcDimens.RadiusSheet),
         scrimColor = HcColors.Overlay,
+        // iOS grabber: 36 × 4, 8 above and 16 below (web .hf-bottom-sheet__grab).
+        dragHandle = {
+            Box(Modifier.padding(top = 8.dp, bottom = 16.dp).size(36.dp, 4.dp).clip(RoundedCornerShape(50)).background(HcColors.Gray))
+        },
     ) {
         CompositionLocalProvider(LocalHcSheetClose provides close) {
             val outer = when (size) {

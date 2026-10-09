@@ -28,7 +28,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import dk.packroff.hellocal.api.Api
@@ -36,6 +35,8 @@ import dk.packroff.hellocal.api.ApiException
 import dk.packroff.hellocal.api.ApiJson
 import dk.packroff.hellocal.i18n.Locale
 import dk.packroff.hellocal.i18n.LocalTranslator
+import dk.packroff.hellocal.screens.capture.PersonsSlider
+import dk.packroff.hellocal.screens.capture.RecipePortions
 import dk.packroff.hellocal.nav.LocalNavigator
 import dk.packroff.hellocal.nav.RouteArgs
 import dk.packroff.hellocal.theme.HcColors
@@ -102,10 +103,9 @@ data class ImportResult(
     val pageImages: List<String> = emptyList(),
 )
 
-private suspend fun parseRecipeText(text: String, sourceUrl: String?): ImportResult {
+private suspend fun parseRecipeText(text: String): ImportResult {
     val body = buildMap<String, Any> {
         put("text", text)
-        if (!sourceUrl.isNullOrBlank()) put("sourceUrl", sourceUrl)
     }
     return ApiJson.decodeFromJsonElement(ImportResult.serializer(), Api.post("/api/dishes/parse-text", body))
 }
@@ -298,22 +298,8 @@ fun CreateDishScreen(args: RouteArgs) {
                 }
             }
 
-            Row(
-                Modifier.fillMaxWidth().clip(RoundedCornerShape(16.dp)).background(HcColors.Tan).padding(horizontal = 16.dp, vertical = 8.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(12.dp),
-            ) {
-                HcText(t.t("createDish.servings"), HcTypeRoles.Body, Modifier.weight(1f), color = HcColors.Black)
-                FoodPillField(
-                    servings?.toString() ?: "",
-                    { v -> servings = v.toIntOrNull()?.takeIf { it > 0 }?.coerceAtMost(100) },
-                    "",
-                    Modifier.width(64.dp),
-                    background = HcColors.White,
-                    keyboardType = KeyboardType.Number,
-                    minHeight = 40.dp,
-                    textAlign = TextAlign.Center,
-                )
+            Column(Modifier.fillMaxWidth().clip(RoundedCornerShape(16.dp)).background(HcColors.Tan).padding(horizontal = 16.dp, vertical = 12.dp)) {
+                PersonsSlider(t.t("createDish.servings"), servings ?: 4, RecipePortions.MAX_PERSONS, { servings = it })
             }
 
             Column {
@@ -449,7 +435,6 @@ private fun PasteTextSheet(onClose: () -> Unit, onResult: (ImportResult) -> Unit
     val t = LocalTranslator.current
     val scope = rememberCoroutineScope()
     var text by remember { mutableStateOf("") }
-    var sourceUrl by remember { mutableStateOf("") }
     var working by remember { mutableStateOf(false) }
     var error by remember { mutableStateOf(false) }
     HcBottomSheet(
@@ -465,7 +450,7 @@ private fun PasteTextSheet(onClose: () -> Unit, onResult: (ImportResult) -> Unit
                     error = false
                     scope.launch {
                         try {
-                            onResult(parseRecipeText(text, sourceUrl.trim()))
+                            onResult(parseRecipeText(text))
                             onClose()
                         } catch (_: Exception) {
                             error = true
@@ -482,7 +467,6 @@ private fun PasteTextSheet(onClose: () -> Unit, onResult: (ImportResult) -> Unit
                 FoodSkeletonMediaRows(5)
             } else {
                 FoodTextArea(text, { text = it }, placeholder = t.t("createDish.pastePlaceholder"), minLines = 12, background = HcColors.Card, border = false)
-                FoodPillField(sourceUrl, { sourceUrl = it }, t.t("createDish.pasteSourcePlaceholder"), Modifier.fillMaxWidth(), keyboardType = KeyboardType.Uri)
                 if (error) HcText(t.t("createDish.pasteError"), HcTypeRoles.Body, Modifier.fillMaxWidth(), color = HcColors.TextSecondary, align = TextAlign.Center)
             }
         }
@@ -522,7 +506,7 @@ private fun ScanSheet(onClose: () -> Unit, onResult: (ImportResult) -> Unit) {
                     scope.launch {
                         try {
                             val texts = pages.map { readRecipePage(it) }
-                            val result = parseRecipeText(texts.joinToString("\n\n"), null)
+                            val result = parseRecipeText(texts.joinToString("\n\n"))
                             val dataUrls = pages.map { it.dataUrl() }
                             onResult(result.copy(image = dataUrls.firstOrNull(), pageImages = dataUrls.drop(1)))
                             onClose()

@@ -30,6 +30,8 @@ export type PendingProduct = {
   servingSizeGrams: number | null;
   servingSizeUnitSingular: string | null;
   ingredientsText: string | null;
+  // Automatisk oversættelse fra Open Food Facts, afventer admins godkendelse.
+  translation: { sourceLang: string | null; nameOriginal: string | null; ingredientsOriginal: string | null } | null;
   allergens: string[];
   additives: string[];
   createdBy: string | null;
@@ -109,12 +111,14 @@ export function PendingProductCard({ product }: { product: PendingProduct }) {
   const router = useRouter();
   const [loading, setLoading] = useState<"approve" | "reject" | null>(null);
   const [done, setDone] = useState(false);
-  const [expanded, setExpanded] = useState(false);
+  const [expanded, setExpanded] = useState(!!product.translation);
+  const [translationOpen, setTranslationOpen] = useState(!!product.translation);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [form, setForm] = useState({
     name: product.name,
+    ingredientsText: product.ingredientsText ?? "",
     productType: product.productType ?? "",
     brand: product.brand?.name ?? "",
     subbrand: product.subbrand ?? "",
@@ -128,6 +132,14 @@ export function PendingProductCard({ product }: { product: PendingProduct }) {
   async function act(action: "approve" | "reject") {
     setLoading(action);
     try {
+      // Godkendes varen, mens oversættelsen stadig afventer, gemmes den viste danske tekst som godkendt.
+      if (action === "approve" && product.translation && translationOpen) {
+        await fetch(`/api/admin/products/${product.id}`, {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ name: form.name, ingredientsText: form.ingredientsText, translationApproved: true }),
+        });
+      }
       const res = await fetch(`/api/admin/products/${product.id}/${action}`, { method: "POST" });
       if (res.ok) {
         setDone(true);
@@ -150,6 +162,26 @@ export function PendingProductCard({ product }: { product: PendingProduct }) {
       const data = await res.json();
       if (!res.ok) throw new Error(data.message ?? "Kunne ikke gemme");
       setSaved(true);
+      router.refresh();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Kunne ikke gemme");
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  async function approveTranslation() {
+    setSaving(true);
+    setError(null);
+    try {
+      const res = await fetch(`/api/admin/products/${product.id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name: form.name, ingredientsText: form.ingredientsText, translationApproved: true }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message ?? "Kunne ikke gemme");
+      setTranslationOpen(false);
       router.refresh();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Kunne ikke gemme");
@@ -197,6 +229,9 @@ export function PendingProductCard({ product }: { product: PendingProduct }) {
         </div>
         <div className="min-w-0 flex-1">
           <p className="hf-type-strong truncate text-hf-black">{product.name}</p>
+          {product.translation && (
+            <p className="hf-type-small text-hf-warning">⚠ Fremmedsproget tekst oversat automatisk — gennemse oversættelsen</p>
+          )}
           <p className="hf-type-small truncate text-text-secondary">
             {[
               product.brand?.name,
@@ -277,6 +312,52 @@ export function PendingProductCard({ product }: { product: PendingProduct }) {
 
       {expanded && (
         <div className="border-t border-hf-tan-dark">
+          {product.translation && translationOpen && (
+            <Section title="Oversættelse afventer godkendelse">
+              <p className="hf-type-small mb-3 text-text-secondary">
+                Open Food Facts har kun teksten på {product.translation.sourceLang ?? "et andet sprog"}. Til venstre
+                originalen, til højre den danske oversættelse — ret den, hvis der er fejl, og tryk Godkend.
+              </p>
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                <div className="flex flex-col gap-3">
+                  <p className="hf-type-small hf-type-strong text-text-secondary">
+                    Original ({product.translation.sourceLang ?? "?"})
+                  </p>
+                  <div>
+                    <p className="hf-type-small text-text-secondary">Navn</p>
+                    <p className="hf-type-body rounded-md bg-hf-tan p-2 text-hf-black">{product.translation.nameOriginal || "—"}</p>
+                  </div>
+                  <div>
+                    <p className="hf-type-small text-text-secondary">Ingredienser</p>
+                    <p className="hf-type-body whitespace-pre-line rounded-md bg-hf-tan p-2 text-hf-black">
+                      {product.translation.ingredientsOriginal || "—"}
+                    </p>
+                  </div>
+                </div>
+                <div className="flex flex-col gap-3">
+                  <p className="hf-type-small hf-type-strong text-text-secondary">Dansk (kan redigeres)</p>
+                  <Field label="Navn" value={form.name} onChange={set("name")} />
+                  <label className="hf-type-small flex flex-col gap-1 text-text-secondary">
+                    Ingredienser
+                    <textarea
+                      value={form.ingredientsText}
+                      onChange={(e) => set("ingredientsText")(e.target.value)}
+                      rows={6}
+                      className="hf-type-body rounded-md border border-hf-tan-dark p-2"
+                    />
+                  </label>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={approveTranslation}
+                disabled={saving}
+                className="hf-type-body mt-4 rounded-md bg-hf-green-dark px-4 py-1.5 text-hf-white disabled:opacity-60"
+              >
+                {saving ? "Gemmer…" : "Godkend oversættelse"}
+              </button>
+            </Section>
+          )}
           <Section
             title="Vare"
             action={

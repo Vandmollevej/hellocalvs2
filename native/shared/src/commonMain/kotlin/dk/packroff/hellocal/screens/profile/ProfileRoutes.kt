@@ -23,6 +23,7 @@ object ProfileRoutes {
         ScreenRoute("/profile/points") { PointsScreen(it) },
         ScreenRoute("/profile/notifications") { NotificationsScreen(it) },
         ScreenRoute("/profile/messages") { MessagesScreen(it) },
+        ScreenRoute("/profile/messages/trash") { MessagesScreen(it, trash = true) },
         ScreenRoute("/profile/login-approval") { LoginApprovalScreen(it) },
         ScreenRoute("/profile/invite") { InviteScreen(it) },
         ScreenRoute("/profile/report-bug") { ReportBugScreen(it) },

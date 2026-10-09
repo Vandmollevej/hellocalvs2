@@ -223,7 +223,7 @@ fun AddMenuList(date: String?, time: String?, onNavigate: () -> Unit = {}) {
                                     horizontalAlignment = Alignment.CenterHorizontally,
                                 ) {
                                     FoodImage(tile.icon, Modifier.size(96.dp))
-                                    HcText(label, HcTypeRoles.Body, Modifier.offset(y = (-16).dp), align = TextAlign.Center)
+                                    HcText(label, HcTypeRoles.Body, align = TextAlign.Center)
                                 }
                                 if (editMode) {
                                     Box(
@@ -272,7 +272,7 @@ fun AddMenuList(date: String?, time: String?, onNavigate: () -> Unit = {}) {
                                     horizontalAlignment = Alignment.CenterHorizontally,
                                 ) {
                                     FoodImage(tile.icon, Modifier.size(96.dp))
-                                    HcText(t.t("addMenu.${tile.key}"), HcTypeRoles.Body, Modifier.offset(y = (-16).dp), align = TextAlign.Center)
+                                    HcText(t.t("addMenu.${tile.key}"), HcTypeRoles.Body, align = TextAlign.Center)
                                 }
                             }
                             if (row.size == 1) Box(Modifier.weight(1f))

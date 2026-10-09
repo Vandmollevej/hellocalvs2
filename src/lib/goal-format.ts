@@ -1,6 +1,7 @@
 import { BODY_MEASUREMENT_FIELDS } from "@/lib/body-measurements";
 import { COMPOSITION_GOAL_FIELDS, isCompositionGoalField } from "@/lib/goal-composition";
 import { isNutritionGoalField, NUTRITION_GOAL_FIELDS } from "@/lib/goal-nutrition";
+import { ACTIVITY_GOAL_FIELDS, isActivityGoalField } from "@/lib/goal-activity";
 import type { GoalDTO, GoalTargetDTO } from "@/lib/user-goals";
 
 // Visningshjælpere til målsætningssiderne (ingen forretningslogik).
@@ -21,6 +22,7 @@ export function goalTargetNameKey(type: GoalTargetDTO["type"]) {
     BODY_MEASUREMENT_FIELDS.find(({ field }) => field === type)?.nameKey ??
     COMPOSITION_GOAL_FIELDS.find(({ field }) => field === type)?.nameKey ??
     NUTRITION_GOAL_FIELDS.find(({ field }) => field === type)?.nameKey ??
+    ACTIVITY_GOAL_FIELDS.find(({ field }) => field === type)?.nameKey ??
     type
   );
 }
@@ -28,7 +30,7 @@ export function goalTargetNameKey(type: GoalTargetDTO["type"]) {
 // Ernæringsmål er daglige rettesnore og bliver aldrig "nået" af en måling, så
 // kun vægt og kropsmål afgør, om målsætningen er nået.
 export function isGoalCompleted(goal: GoalDTO) {
-  const measurable = goal.targets.filter((target) => !isNutritionGoalField(target.type));
+  const measurable = goal.targets.filter((target) => !isNutritionGoalField(target.type) && !isActivityGoalField(target.type));
   return measurable.length > 0 && measurable.every((target) => target.completedAt);
 }
 
@@ -38,18 +40,19 @@ export function goalDisplayDate(goal: GoalDTO) {
 }
 
 // Ikonkategori pr. target: vægt, kropsmål eller ernæring (kcal/makroer).
-export type GoalTargetCategory = "weight" | "body" | "nutrition";
+export type GoalTargetCategory = "weight" | "body" | "nutrition" | "activity";
 
 export function goalTargetCategory(type: string): GoalTargetCategory {
   if (type === "weight") return "weight";
   if (BODY_MEASUREMENT_FIELDS.some(({ field }) => field === type) || isCompositionGoalField(type)) return "body";
+  if (isActivityGoalField(type)) return "activity";
   return "nutrition";
 }
 
 // De kategorier, en målsætning indeholder, i fast rækkefølge.
 export function goalCategories(goal: GoalDTO): GoalTargetCategory[] {
   const present = new Set(goal.targets.map((target) => goalTargetCategory(target.type)));
-  return (["weight", "body", "nutrition"] as const).filter((category) => present.has(category));
+  return (["weight", "body", "nutrition", "activity"] as const).filter((category) => present.has(category));
 }
 
 // Kommende = ikke nået og med en målsætningsdato fra i dag og frem; nærmeste først.

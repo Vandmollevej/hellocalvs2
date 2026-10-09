@@ -469,6 +469,15 @@
     "later": "Später",
     "dontAskAgain": "Nicht mehr fragen"
   },
+  "staleSyncPrompt": {
+    "title": "{name} ist nicht synchronisiert",
+    "body": "{name} hat seit {date} keine Daten gesendet. Dein Gewicht und deine Aktivitäten fehlen eventuell. Synchronisiere jetzt, damit alles erfasst ist.",
+    "syncNow": "Jetzt synchronisieren",
+    "open": "Integration öffnen",
+    "later": "Später",
+    "failed": "Synchronisierung fehlgeschlagen. Versuche es erneut oder öffne die Integration.",
+    "never": "nie"
+  },
   "sentNotice": {
     "title": "Zur Info",
     "body": "Wir haben dir am {date} eine {type} zu \"{subject}\" geschickt. Das war kein Spam.",
@@ -626,7 +635,7 @@
     "categoryProfileDescription": "Name, E-Mail usw.",
     "categoryWeight": "Gewicht",
     "categoryGoals": "Ziele",
-    "categoryMenstrualCycle": "Menstruationszyklus (nur für Frauen)",
+    "categoryMenstrualCycle": "Menstruationszyklus",
     "categoryDigestion": "Verdauung",
     "categoryComingSoon": "Kommt später",
     "categoryUnavailable": "In der App noch nicht verfügbar",
@@ -1500,6 +1509,7 @@
       "markAllRead": "Alle als gelesen markieren",
       "unread": "Neu",
       "deleted": "Gelöscht",
+      "trash": "Papierkorb",
       "delete": "Löschen",
       "clearAll": "Alle leeren",
       "clearAllWarning": "Alle gelöschten Nachrichten werden endgültig entfernt. Das kann nicht rückgängig gemacht werden.",
@@ -1715,6 +1725,7 @@
     "measurementGoal": "Ziel",
     "latest": "am {date} {value}",
     "setGoal": "Ziel setzen",
+    "seeAllGoals": "Alle Ziele ansehen",
     "toLose": "{value} bis zum Ziel",
     "toGain": "{value} bis zum Ziel",
     "goalReached": "Du hast dein Ziel erreicht",
@@ -1754,6 +1765,7 @@
     "dateRequired": "Wähle zum Speichern ein Zieldatum.",
     "targetDateLabel": "Zu erreichen bis {date}",
     "weight": "Gewicht",
+    "weightCompositionHeading": "Gewicht und Körperbau",
     "bodyMeasurementsHeading": "Körpermaße",
     "weightPlaceholder": "z. B. 72,0",
     "measurementPlaceholder": "z. B. 82",
@@ -1767,6 +1779,7 @@
     "openGoal": "Zielsetzung öffnen",
     "editTargetAria": "{name} bearbeiten",
     "category": {
+      "activity": "Aktivität",
       "weight": "Gewicht",
       "body": "Körpermaße",
       "nutrition": "Ernährung"
@@ -1780,6 +1793,12 @@
       "bodyFatPercent": "z. B. 20",
       "muscleMassKg": "z. B. 35"
     },
+    "activityHeading": "Aktivität",
+    "activityIntro": "Die WHO empfiehlt Erwachsenen mindestens 150 Min. moderate Aktivität pro Woche und Krafttraining an 2 Tagen pro Woche. Uhren und Aktivitätstracker können sie erfassen.",
+    "activityUseWho": "WHO-Empfehlung verwenden",
+    "activityHeartRateHint": "Puls über: Du musst den Wert mindestens einmal am Tag überschreiten. Moderate Intensität liegt bei etwa 64 % deiner maximalen Herzfrequenz (220 − dein Alter), z. B. etwa 120 bei einer 30-Jährigen.",
+    "activity": {"stepsPerDay":"Schritte","activeMinutesPerWeek":"Aktive Minuten","strengthDaysPerWeek":"Krafttraining","workoutsPerWeek":"Trainingseinheiten","runKmPerWeek":"Laufen","cycleKmPerWeek":"Radfahren","heartRateAboveBpm":"Puls über"},
+    "activityPlaceholder": {"stepsPerDay":"z. B. 8000","activeMinutesPerWeek":"z. B. 150","strengthDaysPerWeek":"z. B. 2","workoutsPerWeek":"z. B. 3","runKmPerWeek":"z. B. 15","cycleKmPerWeek":"z. B. 50","heartRateAboveBpm":"z. B. 120"},
     "nutritionHeading": "Ernährung pro Tag",
     "nutrition": {
       "kcal": "Kalorien",
@@ -1796,6 +1815,16 @@
   },
   "weighIn": {
     "attireTitle": "What were you wearing?",
+    "attireItem": {
+      "UNDERWEAR": "Underwear",
+      "PANTS": "Trousers",
+      "TOP": "Top / T-shirt",
+      "SWEATER": "Sweater",
+      "SHOES": "Shoes",
+      "POCKET_ITEMS": "Phone etc. in pocket",
+      "AFTER_TOILET": "After using the toilet"
+    },
+    "attireNaked": "Nothing selected = naked",
     "attire": {
       "NAKED": "Naked",
       "UNDERWEAR": "In underwear",
@@ -2002,7 +2031,6 @@
   "addProduct": {
     "reportBug": "Hast du einen Fehler gefunden?",
     "reading": "Wird gelesen…",
-    "ingredientsUnreadable": "Die Zutaten konnten auf dem Bild nicht gelesen werden.",
     "retakeIngredients": "Neues Foto der Zutaten machen",
     "title": "Hinzufügen",
     "titleForDish": "Zutat hinzufügen",
@@ -2109,6 +2137,9 @@
   "productUpdate": {
     "banner": "Verdiene {points} Punkte, indem du das Produkt aktualisierst",
     "toggle": "Banner ein- oder ausblenden",
+    "tileFront": "Vorderseite",
+    "tileNutrition": "Energie",
+    "tileIngredients": "Zutaten",
     "title": "Produkt aktualisieren",
     "kindFront": "Vorderseite des Produkts ({points} Punkte)",
     "hintFront": "Mach ein Foto der Vorderseite, damit das Produkt ein Bild und Logo bekommt.",
@@ -2486,6 +2517,13 @@
     "spikeTitle": "Du hast {day} {kcal} zusätzliche Kalorien verbrannt. Was hast du gemacht?",
     "spikeHint": "Der Puls lag bei bis zu {peak} (Ruhepuls {rest}) für {minutes} Min.",
     "spikeQuestion": "Aktivität wählen",
+    "pulseHeading": "Erhöhter Puls",
+    "peakBpm": "Höchster Puls {peak} bpm",
+    "pickType": "Trainingsart wählen",
+    "heartAria": "Hoher Puls – Details öffnen",
+    "eventAria": "Erhöhter Puls",
+    "older": "Älter",
+    "newer": "Neuer",
     "pulseTitle": "Wir sehen, dass dein Puls {day} höher war als sonst",
     "yesterday": "gestern",
     "onDate": "am {date}",

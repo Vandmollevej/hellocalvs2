@@ -471,6 +471,15 @@
     "later": "Later",
     "dontAskAgain": "Don't ask again"
   },
+  "staleSyncPrompt": {
+    "title": "{name} is not synced",
+    "body": "{name} has not sent data since {date}. Your weight and activity may be missing. Sync now to make sure everything is included.",
+    "syncNow": "Sync now",
+    "open": "Open integration",
+    "later": "Later",
+    "failed": "Sync failed. Try again or open the integration.",
+    "never": "never"
+  },
   "sentNotice": {
     "title": "For your information",
     "body": "On {date} we sent you {type} about \"{subject}\". This was not spam.",
@@ -628,7 +637,7 @@
     "categoryProfileDescription": "Name, email, etc.",
     "categoryWeight": "Weight",
     "categoryGoals": "Goals",
-    "categoryMenstrualCycle": "Menstrual cycle (women only)",
+    "categoryMenstrualCycle": "Menstrual cycle",
     "categoryDigestion": "Digestion",
     "categoryComingSoon": "Coming later",
     "categoryUnavailable": "Not yet available in the app",
@@ -1475,6 +1484,7 @@
       "markAllRead": "Mark all as read",
       "unread": "New",
       "deleted": "Deleted",
+      "trash": "Trash",
       "delete": "Delete",
       "clearAll": "Clear all",
       "clearAllWarning": "All deleted messages are removed permanently. This cannot be undone.",
@@ -1682,6 +1692,7 @@
     "measurementGoal": "Goal",
     "latest": "{date} {value}",
     "setGoal": "Set a goal",
+    "seeAllGoals": "See all goals",
     "toLose": "{value} to go",
     "toGain": "{value} to gain",
     "goalReached": "You have reached your goal",
@@ -1721,6 +1732,7 @@
     "dateRequired": "Choose a target date to save.",
     "targetDateLabel": "Reach by {date}",
     "weight": "Weight",
+    "weightCompositionHeading": "Weight and build",
     "bodyMeasurementsHeading": "Body measurements",
     "weightPlaceholder": "e.g. 72.0",
     "measurementPlaceholder": "e.g. 82",
@@ -1736,7 +1748,30 @@
     "category": {
       "weight": "Weight",
       "body": "Body measurements",
-      "nutrition": "Nutrition"
+      "nutrition": "Nutrition",
+      "activity": "Activity"
+    },
+    "activityHeading": "Activity",
+    "activityIntro": "WHO recommends adults get at least 150 min of moderate activity per week and strength training 2 days per week. Watches and activity trackers can record them.",
+    "activityUseWho": "Use WHO recommendation",
+    "activityHeartRateHint": "Heart rate above: you must exceed the value at least once a day. Moderate intensity is about 64% of your maximum heart rate (220 − your age), e.g. about 120 for a 30-year-old.",
+    "activity": {
+      "stepsPerDay": "Steps",
+      "activeMinutesPerWeek": "Active minutes",
+      "strengthDaysPerWeek": "Strength training",
+      "workoutsPerWeek": "Workouts",
+      "runKmPerWeek": "Running",
+      "cycleKmPerWeek": "Cycling",
+      "heartRateAboveBpm": "Heart rate above"
+    },
+    "activityPlaceholder": {
+      "stepsPerDay": "e.g. 8000",
+      "activeMinutesPerWeek": "e.g. 150",
+      "strengthDaysPerWeek": "e.g. 2",
+      "workoutsPerWeek": "e.g. 3",
+      "runKmPerWeek": "e.g. 15",
+      "cycleKmPerWeek": "e.g. 50",
+      "heartRateAboveBpm": "e.g. 120"
     },
     "compositionHeading": "Body composition",
     "composition": {"bodyFatPercent":"Body fat","muscleMassKg":"Muscle mass"},
@@ -1757,6 +1792,16 @@
   },
   "weighIn": {
     "attireTitle": "What were you wearing?",
+    "attireItem": {
+      "UNDERWEAR": "Underwear",
+      "PANTS": "Trousers",
+      "TOP": "Top / T-shirt",
+      "SWEATER": "Sweater",
+      "SHOES": "Shoes",
+      "POCKET_ITEMS": "Phone etc. in pocket",
+      "AFTER_TOILET": "After using the toilet"
+    },
+    "attireNaked": "Nothing selected = naked",
     "attire": {
       "NAKED": "Naked",
       "UNDERWEAR": "In underwear",
@@ -1982,7 +2027,6 @@
   "addProduct": {
     "reportBug": "Found a mistake?",
     "reading": "Reading…",
-    "ingredientsUnreadable": "The ingredients could not be read from the photo.",
     "retakeIngredients": "Take a new photo of the ingredients",
     "title": "Add",
     "titleForDish": "Add ingredient",
@@ -2089,6 +2133,9 @@
   "productUpdate": {
     "banner": "Earn {points} points by updating this product",
     "toggle": "Show or hide banner",
+    "tileFront": "Front",
+    "tileNutrition": "Energy",
+    "tileIngredients": "Ingredients",
     "title": "Update product",
     "kindFront": "Front of the product ({points} points)",
     "hintFront": "Take a photo of the front so the product gets an image and logo.",
@@ -2456,6 +2503,13 @@
     "spikeTitle": "You burned {kcal} extra calories {day}. What were you doing?",
     "spikeHint": "Your heart rate reached {peak} (resting {rest}) for {minutes} min.",
     "spikeQuestion": "Choose activity",
+    "pulseHeading": "Elevated heart rate",
+    "peakBpm": "Peak heart rate {peak} bpm",
+    "pickType": "Select workout type",
+    "heartAria": "High heart rate – open details",
+    "eventAria": "Elevated heart rate",
+    "older": "Older",
+    "newer": "Newer",
     "pulseTitle": "We can see your heart rate was higher than usual {day}",
     "yesterday": "yesterday",
     "onDate": "on {date}",

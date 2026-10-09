@@ -469,6 +469,15 @@
     "later": "Plus tard",
     "dontAskAgain": "Ne plus demander"
   },
+  "staleSyncPrompt": {
+    "title": "{name} n'est pas synchronisé",
+    "body": "{name} n'a pas envoyé de données depuis {date}. Ton poids et ton activité peuvent manquer. Synchronise maintenant pour que tout soit pris en compte.",
+    "syncNow": "Synchroniser maintenant",
+    "open": "Ouvrir l'intégration",
+    "later": "Plus tard",
+    "failed": "Échec de la synchronisation. Réessaie ou ouvre l'intégration.",
+    "never": "jamais"
+  },
   "sentNotice": {
     "title": "Pour info",
     "body": "Nous t'avons envoyé le {date} un(e) {type} concernant \"{subject}\". Ce n'était pas du spam.",
@@ -626,7 +635,7 @@
     "categoryProfileDescription": "Nom, e-mail, etc.",
     "categoryWeight": "Poids",
     "categoryGoals": "Objectifs",
-    "categoryMenstrualCycle": "Cycle menstruel (femmes uniquement)",
+    "categoryMenstrualCycle": "Cycle menstruel",
     "categoryDigestion": "Digestion",
     "categoryComingSoon": "Bientôt disponible",
     "categoryUnavailable": "Pas encore disponible dans l'appli",
@@ -1500,6 +1509,7 @@
       "markAllRead": "Tout marquer comme lu",
       "unread": "Nouveau",
       "deleted": "Supprimés",
+      "trash": "Corbeille",
       "delete": "Supprimer",
       "clearAll": "Tout effacer",
       "clearAllWarning": "Tous les messages supprimés seront définitivement effacés. Action irréversible.",
@@ -1715,6 +1725,7 @@
     "measurementGoal": "Objectif",
     "latest": "le {date} {value}",
     "setGoal": "Fixer un objectif",
+    "seeAllGoals": "Voir tous les objectifs",
     "toLose": "{value} jusqu'à l'objectif",
     "toGain": "{value} de plus jusqu'à l'objectif",
     "goalReached": "Tu as atteint ton objectif",
@@ -1754,6 +1765,7 @@
     "dateRequired": "Choisis une date d'objectif pour enregistrer.",
     "targetDateLabel": "À atteindre d'ici le {date}",
     "weight": "Poids",
+    "weightCompositionHeading": "Poids et corpulence",
     "bodyMeasurementsHeading": "Mensurations",
     "weightPlaceholder": "p. ex. 72,0",
     "measurementPlaceholder": "p. ex. 82",
@@ -1767,6 +1779,7 @@
     "openGoal": "Ouvrir l'objectif",
     "editTargetAria": "Modifier {name}",
     "category": {
+      "activity": "Activité",
       "weight": "Poids",
       "body": "Mensurations",
       "nutrition": "Nutrition"
@@ -1780,6 +1793,12 @@
       "bodyFatPercent": "p. ex. 20",
       "muscleMassKg": "p. ex. 35"
     },
+    "activityHeading": "Activité",
+    "activityIntro": "L'OMS recommande aux adultes au moins 150 min d'activité modérée par semaine et du renforcement musculaire 2 jours par semaine. Les montres et trackers d'activité peuvent les enregistrer.",
+    "activityUseWho": "Utiliser la recommandation de l'OMS",
+    "activityHeartRateHint": "Fréquence cardiaque au-dessus de : tu dois dépasser cette valeur au moins une fois par jour. L'intensité modérée correspond à environ 64 % de ta fréquence cardiaque maximale (220 − ton âge), p. ex. environ 120 pour une personne de 30 ans.",
+    "activity": {"stepsPerDay":"Pas","activeMinutesPerWeek":"Minutes actives","strengthDaysPerWeek":"Renforcement musculaire","workoutsPerWeek":"Séances","runKmPerWeek":"Course","cycleKmPerWeek":"Vélo","heartRateAboveBpm":"Fréquence cardiaque au-dessus de"},
+    "activityPlaceholder": {"stepsPerDay":"p. ex. 8000","activeMinutesPerWeek":"p. ex. 150","strengthDaysPerWeek":"p. ex. 2","workoutsPerWeek":"p. ex. 3","runKmPerWeek":"p. ex. 15","cycleKmPerWeek":"p. ex. 50","heartRateAboveBpm":"p. ex. 120"},
     "nutritionHeading": "Nutrition par jour",
     "nutrition": {
       "kcal": "Calories",
@@ -1796,6 +1815,16 @@
   },
   "weighIn": {
     "attireTitle": "What were you wearing?",
+    "attireItem": {
+      "UNDERWEAR": "Underwear",
+      "PANTS": "Trousers",
+      "TOP": "Top / T-shirt",
+      "SWEATER": "Sweater",
+      "SHOES": "Shoes",
+      "POCKET_ITEMS": "Phone etc. in pocket",
+      "AFTER_TOILET": "After using the toilet"
+    },
+    "attireNaked": "Nothing selected = naked",
     "attire": {
       "NAKED": "Naked",
       "UNDERWEAR": "In underwear",
@@ -2002,7 +2031,6 @@
   "addProduct": {
     "reportBug": "Tu as trouvé une erreur ?",
     "reading": "Lecture…",
-    "ingredientsUnreadable": "Les ingrédients n'ont pas pu être lus sur la photo.",
     "retakeIngredients": "Reprendre la photo des ingrédients",
     "title": "Ajouter",
     "titleForDish": "Ajouter un ingrédient",
@@ -2109,6 +2137,9 @@
   "productUpdate": {
     "banner": "Gagne {points} points en mettant à jour le produit",
     "toggle": "Afficher ou masquer la bannière",
+    "tileFront": "Face avant",
+    "tileNutrition": "Énergie",
+    "tileIngredients": "Ingrédients",
     "title": "Mettre à jour le produit",
     "kindFront": "Face avant du produit ({points} points)",
     "hintFront": "Prends une photo de la face avant pour que le produit ait une image et un logo.",
@@ -2486,6 +2517,13 @@
     "spikeTitle": "Tu as brûlé {kcal} calories en plus {day}. Qu'as-tu fait ?",
     "spikeHint": "Le pouls est monté jusqu'à {peak} (pouls au repos {rest}) pendant {minutes} min.",
     "spikeQuestion": "Choisir une activité",
+    "pulseHeading": "Pouls élevé",
+    "peakBpm": "Pouls maximal {peak} bpm",
+    "pickType": "Choisir le type d'entraînement",
+    "heartAria": "Pouls élevé – ouvrir les détails",
+    "eventAria": "Pouls élevé",
+    "older": "Plus ancien",
+    "newer": "Plus récent",
     "pulseTitle": "Ton pouls était plus élevé que d'habitude {day}",
     "yesterday": "hier",
     "onDate": "le {date}",

@@ -2,6 +2,69 @@
 
 Last updated: 2026-10-09
 
+## 2026-10-09: Alle kropsmålinger en integration kan levere
+
+- Huawei Health (`bodyWater`, `boneMass`, `visceralFat`) og Apple Health (`fatFreeMass`) har fået de manglende til/fra-rækker i `SYNC_CAPABILITIES`. Før blev målingerne hentet, men sorteret fra, fordi rækken ikke fandtes. Garmin sendte knoglemasse to gange pr. vejning; dublet fjernet.
+- Understøttes ikke af leverandørens API (intet at hente): muskelmasse fra Health Connect og Apple Health, kropsvand og muskler fra Fitbit og Google Health, kropssammensætning fra Polar, WHOOP og Strava. Withings' segmentmålinger pr. arm/ben (173-175) er stadig ikke med (kræver nye `HealthMetricType`).
+
+
+## 2026-10-09: Popup ved gammel integrations-synk
+
+- Ny `src/components/StaleSyncPrompt.tsx` (monteret i `layout.tsx`): er en tilkoblet integration (fx smartvægt via Withings/Google Health) ikke synkroniseret i over 3 dage, kommer en popup med "Synkroniser nu" (cloud-integrationer) eller link til integrationens side (companion/via). "Senere" udsætter pr. integration i et døgn. Tekster på alle 7 sprog (`staleSyncPrompt.*`). Se `docs/DECISIONS.md` 2026-10-09.
+- Sådan ser brugeren synk-status i dag: Indstillinger → Integrationer → appen viser "Sidst synkroniseret …" og fejl. Lint og typecheck uden fejl; ikke live-testet (ingen lokal DB/login).
+## 2026-10-09: Periodevalg som dropdown
+
+- Søvn- og Væskestatistik bruger nu dropdown (`src/components/hf/StatPeriodSelect.tsx`) i stedet for periodeknapper. Ikke kørt lint/build/visuelt: `node_modules` mangler i dette cloud-miljø.
+
+## 2026-10-09: Bundcirklen på alle sider, side-cirklen slået fra
+## 2026-10-09: Genvej + "Guide mig" i Hjælpecenteret
+
+- Hjælpecenter-siderne (7 sprog) viser øverst i emnet et understreget genvejslink og, hvor der findes en guide, "Guide mig" under linket. Bruger masters spotlight-guide fra chatten (DECISIONS 2026-10-09). 10 emner har guide: vægt, vand, stregkode, stemme, tilføj mad, opret ret, kropsmål, mål, flyt registrering, statistik.
+- Tjekket: `help-guides.test.mjs`, lint, typecheck for ændrede filer, og i Chromium: scriptet viser link + knap, knappen åbner `/?guide=…` og starter guiden. Ikke prøvet logget ind på telefon.
+
+
+- Side-cirklen (`AddButton` i `Hero`) vises ikke længere. Bundcirklen (`FooterArc`) ligger nu i `BottomNav` og er derfor på alle sider med bundmenu; popups (BottomSheet, z-200) ligger over den. Native: `HomeFooterArc` flyttet fra `HomeScreen` til `HelloCalApp` over bundmenuen, med egen `AddMenuSheet`. `AddButton`-koden er bevaret.
+- Ikke kørt: lint/tsc (ingen `node_modules`), Kotlin ikke kompileret lokalt (CI bygger); ikke prøvet på telefon. Paritet grøn.
+
+## 2026-10-09: Halvcirklens vifte drejes i stedet for at stable knapper
+
+- Brugerens rettelse: knapperne må ikke ligge ovenpå hinanden i en søjle ved skærmkanten. `fanLayout` (web `footer-arc.ts` + native `HomeFooterArc.kt`) drejer nu viften mod den frie side (presses lidt sammen, mindst 18° mellem naboer), så alle knapper ligger på skærmen uden at overlappe. Midt på skærmen er viften uændret.
+- Brugerens test, cirklen i midten: knapperne står længere fra cirklen (`ARC_GAP` 78 i stedet for 52, så fingeren ikke dækker). Navneboksen ved den valgte knap sættes skråt ud væk fra cirklen (langs strålen fra cirklens midte gennem knappen) og må aldrig overlappe en knap: rammer den en nabo eller kanten, prøves større afstand og lodret placering (`labelPlacement`, web + native; bruger den tegnede stilling, hvor den valgte knap står længere ude).
+- Flettet med #304 (fuld størrelse straks, vinkler -75..75, valgt knap længere ude). Kontrolleret numerisk for bredde 320–430 og alle cirkelplaceringer. Lint/tsc ikke kørt (ingen node_modules), Kotlin ikke kompileret lokalt (CI bygger), ikke prøvet på telefon.
+
+## 2026-10-09: Tilføj aktivitet — tidsslider og varighed med plus/minus
+
+- `/activity/create` (web + `ActivityCreateScreen.kt`): starttidspunktet er nu en dato + samme to-håndtags 24-timers-slider som søvnrytmen (`SleepRangeSlider`, ny prop `bedtimeFirst`: start til venstre, slut til højre; start-håndtaget flytter starten og holder sluttiden, slut-håndtaget ændrer varigheden). Varigheden står under som − [timer min] + i samme boks som mængdevælgeren; teksten kan rettes, og −/+ går i hele 5 minutter (`stepDuration` i `activity-duration.ts`, testet).
+- Kalorie-feltet viser nu bare tallet (forudfyldt, kan rettes) — ingen "ca."/"anslået" og ingen MET-tekst.
+- Paritet accepteret for `/activity/create` og `/profile/sleep`. Lint og `node --test` grønne; Kotlin ikke kompileret lokalt (CI bygger); ikke prøvet på telefon.
+## 2026-10-09: Ikoner tilbage (adgangsmur) + markeret cirkel væk fra fingeren
+
+- Ikoner (fingeraftryk, PNG/WebP-tilføj-ikoner) forsvandt efter adgangsmuren 2026-10-08: Next's billed-optimerer henter `/icons/*` internt uden browser-User-Agent, og muren afviste den som bot. Åbne statiske filer (`isPublicStaticAsset` i `access-wall.ts`) slipper nu forbi muren før UA-/rate-tjekket; beskyttede billeder er uændrede.
+- Footer-halvcirklen: den markerede cirkel rykkes 40 px ud fra viften (og teksten 8 px længere op), så den ikke ligger under tommelfingeren (`FooterArc.tsx` + `HomeFooterArc.kt`). Markeringen måles stadig ved hvilepladsen.
+- Lint ikke kørt (ingen `node_modules` her); logik tjekket med node. Ikke prøvet på telefon — tjek efter deploy at ikonerne er tilbage.
+## 2026-10-09: Footer-cirklen får fuld størrelse straks ved træk op
+
+- `FooterArc` (web) og `HomeFooterArc.kt` (native): første træk opad springer cirklen og knapperne straks til fuld størrelse (ingen animation) i stedet for at vokse gradvist med fingerens afstand. Slip uden at ramme en knap lader den stå åben. `ARC_PULL_DISTANCE` er fjernet.
+- Knapperne har samme geometri som venstre-cirklen (`AddButton`): 52 px fra cirklen (valgt knap 22 px længere ude end de øvrige), vinkler jævnt fordelt over −75°…75°.
+- Ikke kørt: build (lint og tsc på de ændrede filer er rene), Kotlin ikke kompileret, ikke prøvet på telefon.
+
+## 2026-10-09: Halvcirklens vifte rykker knapper op i stedet for ud over kanten
+
+- `FooterArc` (web + `HomeFooterArc.kt`): står halvcirklen langt ude til siden, flyttes viften ikke længere indad. De knapper, der ellers ville forsvinde ud over skærmkanten, holdes inden for kanten og rykkes i stedet længere op, væk fra halvcirklen, med samme afstand til naboen (`fanLayout`). Navnet på det valgte ikon holdes inden for skærmen. Størrelser og indstillinger er uændrede.
+- Rettet efter brugerens test: halvcirklens knapper toner ikke længere langsomt ind efter hvor langt cirklen er trukket op, men vises med det samme (150 ms) som i side-cirklen (web + native).
+- Lint, tsc, `sync.mjs --check` grønne; paritet for `/` accepteret. Kotlin ikke kompileret lokalt (ingen Gradle-afhængigheder offline) — CI bygger. Ikke prøvet på telefon.
+
+## 2026-10-09: Delmål-formular i tre accordions
+
+- `GoalForm`: tre fold-ud (Vægt og opbygning, Kropsmål, Ernæring); kropsmålene har igen deres egne tegninger (efter profilens køn). Lint grøn; ikke visuelt testet.
+
+
+## 2026-10-09: Tøj ved vejning som til/fra-slidere
+
+- Vægt-siden, vejningens info-vindue og popuppen for smartvægt-vejninger viser nu syv slidere (undertøj, bukser, top/T-shirt, sweater, sko, mobil m.m. i lommen, efter toiletbesøg). Flere kan vælges; intet valgt = nøgen. Se DECISIONS 2026-10-09.
+- Ny kolonne `weight_entries.attireItems` (migration 20261009100000, gamle valg omregnes); algoritmen gætter nu det mest brugte sæt.
+- `tsc` og eslint på de ændrede filer er rene; logikken er kørt mod eksempler. Native (Compose) er fulgt med i `WeightComponents.kt`, `WeightCreateScreen.kt` og `HomeWeighInPrompts.kt`; ikke kompileret her (ingen Android-værktøjer). `npm run build` er grøn. Ikke prøvet i browser eller mod rigtig database.
+Last updated: 2026-10-08
 ## 2026-10-09: Stregkode læses også med skygge hen over koden (lokal tærskel pr. scanlinje)
 
 - Brugerens test 2026-10-06: en mælk med lidt skygge over stregkoden kunne ikke læses, mens andre scanner-apps læste den straks. Årsag: ZXing binariserer hver scanlinje med én fælles sort/hvid-tærskel, så de hvide felter i skyggen var mørkere end de sorte streger i lyset. Bemærk: ZXing's `HybridBinarizer` (som 2026-10-07-ændringen skiftede til hver anden frame) adskiller sig kun fra den globale for 2D-koder — for 1D-rækker bruger begge samme ene tærskel pr. række, så den skiftende binarisering hjalp ikke mod skygge på iPhone (ingen native BarcodeDetector).
@@ -11,6 +74,11 @@ Last updated: 2026-10-09
 ## 2026-10-09: Startmængde — instantkaffe 2 g og aldrig over pakkens indhold
 
 - `default-amount.ts` (+ native `FoodLogic.kt`): instantkaffe → 2 g; forslaget kappes ved pakkens vægt/volumen. Test: `node --test src/lib/default-amount.test.mjs` (14 grønne). Lint/build ikke kørt (ingen node_modules her); Kotlin ikke kompileret lokalt.
+
+## 2026-10-09: Pulsudsving — bladring og rødt hjerte i kalenderen
+
+- Pulsspørgsmålet (7 dage) bladrer frem/tilbage; nyt fælles ark `PulseEventSheet` (peak-tid, graf, "Angiv træningstype" i bundark). Kalenderen har røde hjerter på dage med forhøjet puls. Se DECISIONS 2026-10-09.
+- Ikke testet i browser/mod rigtig database (kræver login + pulsdata). Kun da/en-tekster tilføjet; øvrige sprog falder tilbage til engelsk.
 
 ## 2026-10-08: Adgangsmur mod crawlere
 
@@ -95,7 +163,7 @@ Statusblokken i uge-/månedsvisning viser kun status (gennemsnit af forgangne da
 
 - "Senest anvendte" hedder nu "Senest tilføjet". Bundark har ingen synlig overskrift (kun til skærmlæsere). Tilføj-knappen er fjernet fra vareraderne (Søg, Favoritter, Mine scanninger); tryk på varen åbner varesiden /add/[id] uden popup.
 - Fjernet "Sådan regner vi" på Profil; Luk konto kræver nu et kontrolord ligesom Slet mine data, og kontrolordet følger sproget (SLET/DELETE/LÖSCHEN …; serveren får stadig "SLET"). Tilføj-menuen: tekst tættere på ikonerne. Varesiden: "/stk." efter gram pr. servering/skive, brand-logo flyttet 12 px ud, ingen tom luft over Tilføj-knappen.
-- Beskeder: "Slettet" øverst til venstre, swipe viser "Slet" midt for beskeden, "Ryd alt" under Slettet (bekræftelse i bundark). Migration `20261007140000_outbound_message_user_delete` skal køre ved deploy; "Ryd alt" skjuler for brugeren, rækken bevares til admin-loggen. Ikke visuelt testet (brugerregel).
+- Beskeder: "Papirkurv" (grå, ikon foran, ikke understreget) øverst til venstre linker til egen side `/profile/messages/trash` med overskriften Papirkurv og et "Beskeder"-link med brev-ikon tilbage (komponent `MessagesView`); swipe viser "Slet" midt for beskeden, "Ryd alt" under Slettet (bekræftelse i bundark). Migration `20261007140000_outbound_message_user_delete` skal køre ved deploy; "Ryd alt" skjuler for brugeren, rækken bevares til admin-loggen. Ikke visuelt testet (brugerregel).
 ## 2026-10-07: Vægt — synk-status, tøj ved vejning, kalibrer
 
 - Vægtsiden viser synk-status pr. forbundet integration (sidst synkroniseret + Synk nu). Gammel synk (admin, standard 48 t) giver et bundark med Synk nu / link til integrationen (`WeighInPrompts` på forsiden).
@@ -149,6 +217,14 @@ Retter → HelloFresh åbner nu en skrivebeskyttet side under Retter (ikke Nye v
 - `/settings/import`: skærmoptagelse af MyFitnessPal/Lifesum → AI-aflæsning → gennemsyn → import som registreringer.
 - Migration `20261006200000_flow_conditions_migration_import` skal køre ved deploy. Tjek: `npm test`, lint og build (se commit). Ikke prøvet mod rigtig database eller med en rigtig optagelse — test importen med en kort optagelse først.
 - Fra samme overtagelse: `storeDescription` (butikkens originale varetekst, Cowboytoasten-sagen) er pushet til master (migration `20261005100000_product_store_description`), og SPAR-arket `spar.xlsx` er gemt med kode-forklaringerne.
+
+## 2026-10-09: Tilføj-menu — tekst tættere på ikonerne
+
+- Ikonerne har tomt luft i bunden, så teksten sad for langt nede. `AddMenuList.tsx`: `gap-0` og `-mb-4` på ikonet. Lint/build ikke kørt (ingen `node_modules` i cloud-sessionen). Justér `-mb-4` efter billedet på telefon.
+
+## 2026-10-09: EDEKA-logoet viste kun det gule hjerte
+
+- Årsag: `drop_edge_fragments` skar kantrørende dele væk, og rembg regnede det store blå logofelt for baggrund. Rettet på master (kantrørende dele på mindst 10 % bevares; `is_solid_block_logo` bruger hele beskæringen, når feltet er en del af logoet). Denne PR tilføjer kun noten; den eksisterende EDEKA-fritskrabning skal laves igen i admin → Logoer.
 
 ## 2026-10-05: Pulslinjen — roligere uden ur, flyttet op over nederste tal
 
@@ -6118,6 +6194,19 @@ Ikke bygget: Valdemarsro-import til app-databasen, Valdemarsro-detaljevisning ("
 Ny `valdemarsro-agent` (scripts/valdemarsro-agent, compose.production.yaml, build.yml, jobs-registret), model `RecipeSourceUrl` (migration 20261008130000_recipe_source_urls), "Gå til opskrift"-knap i AddProductView, admin Retter → Valdemarsro viser data. Parsingen er testet mod en rigtig Valdemarsro-side; agenten er IKKE kørt mod databasen eller i Docker endnu — første nat henter 150 retter, resten over de følgende nætter (sæt VALDEMARSRO_AGENT_BATCH_SIZE højere for hurtigere start). Kræver deploy, så containeren bygges og migrationen kører.
 
 
+- 2026-10-09: Trækstreg i bundark tilpasset iOS (36 × 4 px, 8 px over / 16 px under) på web (`.hf-bottom-sheet__grab`, HfAccessSheet) og native (`HcBottomSheet` dragHandle). Kalenderens nat/dag-håndtag uændret.
+
 ## 2026-10-08 — Ental/flertal for generiske ingredienser (database + API)
 
 Skema, migration, `src/lib/danish-number.ts` og søgning/oprettelse er lavet (se DECISIONS.md samme dato). `prisma validate` og ESLint på de ændrede filer er grønne; `npm run build` og typecheck er ikke kørt (ingen genereret Prisma-klient i arbejdskopien). Mangler: UI skal vise `displayName`, ental/flertal i arkene, billedomdøbning.
+
+## 2026-10-09: Synonymordbog (admin > Soegning)
+
+- `/admin/search-synonyms`: ordpar pr. sprog (DA/EN) med "Ens"-procent; soegning i produkter og generiske ingredienser matcher ogsaa synonymet, rangeret efter procenten (0 % = slaaet fra). Tabel `search_synonyms` (migration 20261009120000, med eksempler). Forslag ud fra produkttyper: `docs/SYNONYM-FORSLAG.md`.
+
+- 2026-10-09: Opdater-banneret (`UpdatePointsBanner`) er nu et lag oven på siden (rykker ikke indholdet), med mindre luft over/under teksten. Trækstregen minimerer (op/tryk) og trækker en omvendt popup ned (ned) med et kamerafelt pr. manglende ting. Ikke prøvet i browser.
+
+- 2026-10-09: Tilføj-menu: teksten lå oven på ikonerne (dobbelt negativ margin fra #287). Overlappet fjernet på web (`AddMenuList.tsx`) og native (`AddMenu.kt`).
+- 2026-10-09: Halvcirklen over footeren kan ikke længere trækkes til siden (web + native); står altid midt over footeren.
+
+- 2026-10-09: Master bragt i takt igen efter #314/#315: lint-fejlen i `FooterArc.tsx` rettet (fingerens top gemmes i state i stedet for at læse ref under render), og paritet accepteret for alle skærme. Native (`HomeFooterArc.kt`, `HomeWeighInPrompts.kt`) var allerede opdateret i #305–#315; kun godkendelserne manglede.

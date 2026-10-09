@@ -47,7 +47,7 @@ import dk.packroff.hellocal.i18n.LocalTranslator
 import dk.packroff.hellocal.theme.HcColors
 import dk.packroff.hellocal.theme.HcDimens
 import dk.packroff.hellocal.theme.HcTypeRoles
-import dk.packroff.hellocal.ui.CalendarBathScaleIcon
+import dk.packroff.hellocal.screens.food.PulseHeartMark
 import dk.packroff.hellocal.ui.CalendarPartyPopperIcon
 import dk.packroff.hellocal.ui.HcText
 import dk.packroff.hellocal.ui.formatNumber
@@ -244,7 +244,7 @@ private fun MonthDayCell(
     val otherMonth = date.monthNumber != month
     val shape = RoundedCornerShape(HcDimens.RadiusCard)
     val (background, textColor) = when {
-        current -> HcColors.SelectedBg to HcColors.SelectedText
+        current -> HcColors.White to HcColors.Black
         otherMonth -> Color.Transparent to HcColors.Inactive
         isPast -> HcColors.Tan to HcColors.Inactive
         else -> HcColors.Tan to HcColors.Black
@@ -257,7 +257,7 @@ private fun MonthDayCell(
         Modifier.fillMaxSize().clip(shape).background(background)
             .let {
                 when {
-                    current -> it.border(2.dp, HcColors.SelectedBorder, shape)
+                    current -> it.border(2.dp, HcColors.Brand, shape)
                     otherMonth -> it.border(1.dp, HcColors.GrayBorder, shape)
                     else -> it
                 }
@@ -266,8 +266,9 @@ private fun MonthDayCell(
         contentAlignment = Alignment.Center,
     ) {
         HcText(date.dayOfMonth.toString(), HcTypeRoles.Body, bold = !isPast, color = textColor)
+        PulseHeartMark(date, 12.dp, Modifier.align(Alignment.BottomStart).padding(2.dp))
         if (hasGoal) {
-            CalendarPartyPopperIcon(12.dp, if (current) HcColors.White else HcColors.Black, Modifier.align(Alignment.TopStart).padding(2.dp))
+            CalendarPartyPopperIcon(12.dp, HcColors.Black, Modifier.align(Alignment.TopStart).padding(2.dp))
         }
         if (!current && marked) {
             if (met) {
@@ -312,21 +313,22 @@ internal fun DayRow(
         val boxShape = RoundedCornerShape(HcDimens.RadiusCard)
         Box(
             Modifier.size(36.dp).clip(boxShape)
-                .background(if (current) HcColors.SelectedBg else HcColors.White)
-                .border(if (current) 2.dp else 1.dp, if (current) HcColors.SelectedBorder else HcColors.Gray, boxShape),
+                .background(HcColors.White)
+                .border(if (current) 2.dp else 1.dp, if (current) HcColors.Brand else HcColors.Gray, boxShape),
             contentAlignment = Alignment.Center,
         ) {
             HcText(
                 date.dayOfMonth.toString(),
                 HcTypeRoles.Body,
                 bold = current || future,
-                color = if (current) HcColors.SelectedText else if (future) HcColors.Black else HcColors.Inactive,
+                color = if (current) HcColors.Black else if (future) HcColors.Black else HcColors.Inactive,
             )
         }
         if (future) {
             Row(Modifier.weight(1f), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
                 if (hasGoal) CalendarPartyPopperIcon(18.dp, HcColors.Black)
                 WeighInMark(weighIns)
+                PulseHeartMark(date)
             }
             HcIcon("ChevronRight", size = 19.dp, color = HcColors.Black)
         } else {
@@ -334,7 +336,7 @@ internal fun DayRow(
             Row(Modifier.weight(1f, fill = false), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
                 HcText(
                     when {
-                        !logged -> t.t("calendar.noEntries")
+                        !logged -> "–"
                         tooLow -> t.t("calendar.intakeTooLow")
                         met -> t.t("calendar.goalMet")
                         else -> t.t("calendar.goalMissed")
@@ -345,11 +347,12 @@ internal fun DayRow(
                 )
                 if (hasGoal) CalendarPartyPopperIcon(18.dp, HcColors.Black)
                 WeighInMark(weighIns)
+                PulseHeartMark(date)
             }
             Spacer(Modifier.weight(1f))
             Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(4.dp)) {
                 HcText(
-                    "${if (over) "÷" else "+"}$diff kcal",
+                    if (!logged) "–" else "${if (over) "÷" else "+"}$diff kcal",
                     HcTypeRoles.Body,
                     bold = true,
                     color = when {
@@ -373,7 +376,7 @@ private fun WeighInMark(entries: List<CalWeighIn>) {
     val latest = entries.lastOrNull() ?: return
     // The weight itself is only read out (sr-only on the web) and shown in the day view.
     Box(Modifier.semantics { contentDescription = t.t("calendar.weighInSrLabel", "value" to formatKg(latest.weightKg)) }) {
-        CalendarBathScaleIcon(18.dp, HcColors.Black)
+        HcIcon("Scale", size = 18.dp, color = HcColors.Black)
     }
 }
 

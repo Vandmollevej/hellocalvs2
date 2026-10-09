@@ -4,7 +4,6 @@ import { Hero } from "@/components/Hero";
 import { HomeWaves } from "@/components/HomeWaves";
 import { DailyList } from "@/components/DailyList";
 import { BottomNav } from "@/components/BottomNav";
-import { FooterArc } from "@/components/FooterArc";
 import { LandingPage } from "@/components/landing/LandingPage";
 import { getSessionUser } from "@/lib/session";
 import { HeartRateSpikePrompt } from "@/components/activity/HeartRateSpikePrompt";
@@ -40,10 +39,6 @@ export default async function Home() {
       <div className="relative z-10 min-h-0 flex-1 overflow-hidden pt-2">
         <DailyList />
       </div>
-
-      {/* Lille halvcirkel midt over footeren (bruger 2026-10-07, prøve). */}
-
-      <FooterArc />
 
       <BottomNav />
 
