@@ -42,3 +42,13 @@ test("ikke-understoettede krypterede filtre afvises", () => {
   assert.throws(() => transformArgs("User", "findMany", { where: { email: { contains: "a" } } }));
   assert.throws(() => transformArgs("User", "findMany", { where: { displayName: "A" } }));
 });
+
+test("User.phone krypteres ved skrivning, dekrypteres ved laesning, null uroert", () => {
+  const c = transformArgs("User", "update", { where: { id: "1" }, data: { phone: "+4512345678" } });
+  assert.ok(c.data.phone.startsWith("enc:v1:"));
+  const n = transformArgs("User", "update", { where: { id: "1" }, data: { phone: null } });
+  assert.equal(n.data.phone, null);
+  const r = decryptResult("User", { id: "1", phone: c.data.phone });
+  assert.equal(r.phone, "+4512345678");
+  assert.throws(() => transformArgs("User", "findFirst", { where: { phone: "+4512345678" } }));
+});
