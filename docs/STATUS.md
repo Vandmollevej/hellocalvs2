@@ -2,6 +2,12 @@
 
 Last updated: 2026-10-09
 
+## 2026-10-09: Favorit-bookmark på aktiviteter (web + native)
+
+- Aktivitetslisten (`/activity/create`, `ActivityPicker`) har nu samme bookmark-ikon som madvarer til højre i hver række. Favoritter står øverst, resten alfabetisk.
+- Ny tabel `activity_favorites` (migration `20261009220000_activity_favorites`), `PUT /api/activity-types { key, favorite }`, `favorite` på `ActivityOption`.
+- `ChevronRow`/`HcChevronRow` har fået valgfri `trailing`-knap. Native `ActivityCreateScreen.kt` følger med. Migrationen skal med deployet; ikke prøvet mod rigtig database.
+
 ## 2026-10-09: Tekst under tallene i tal-hjulet
 
 - Alle rækker i tal-hjulet har nu den grå tekst under tallet (web `StatsWheel.tsx`, native `HomeStatsWheel.kt`): standardtal får deres navn (fx "Kalorier indtaget" på to linjer), eksempelrækkerne "Søvn"/"Puls". Egne målinger beholder deres egen tekst. Lint og native-paritet grønne; ikke visuelt testet.
