@@ -1361,6 +1361,7 @@
     "pendingBannerMany": "{count} skapade väntar på uppladdning"
   },
   "offline": {
+    "cachedResults": "Visar sparade resultat från tidigare sökningar (offline)",
     "message": "Ingen anslutning — det här kräver internet. Försök igen när du är online.",
     "banner": "Du är offline — vissa funktioner fungerar inte",
     "barcodeLookup": "Streckkoden lästes, men du har ingen anslutning. Försök igen när du är online."

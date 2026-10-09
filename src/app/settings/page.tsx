@@ -31,6 +31,7 @@ import { OnboardingWizard } from "@/components/OnboardingWizard";
 import { useTranslation } from "@/i18n/LocaleProvider";
 import { helpPagePath } from "@/i18n";
 import { SearchField } from "@/components/knowledge/SearchField";
+import { clearOfflineCache } from "@/lib/offline-cache";
 import { useFamilyStatus } from "@/components/family/FamilyStatusProvider";
 
 function resetOnboardingProgress() {
@@ -325,6 +326,7 @@ export default function SettingsPage() {
           type="button"
           onClick={() => {
             fetch("/api/auth/logout", { method: "POST" }).finally(() => {
+              clearOfflineCache();
               router.push("/login");
               router.refresh();
             });

@@ -1354,6 +1354,7 @@
     "pendingBannerMany": "{count} oprettelser afventer upload"
   },
   "offline": {
+    "cachedResults": "Viser gemte resultater fra tidligere søgninger (offline)",
     "message": "Ingen forbindelse — det her kræver internet. Prøv igen, når du er online.",
     "banner": "Du er offline — nogle funktioner virker ikke",
     "barcodeLookup": "Stregkoden blev læst, men du har ingen forbindelse. Prøv igen, når du er online."

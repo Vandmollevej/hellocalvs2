@@ -1354,6 +1354,7 @@
     "pendingBannerMany": "{count} creations pending upload"
   },
   "offline": {
+    "cachedResults": "Showing saved results from earlier searches (offline)",
     "message": "No connection — this needs internet. Try again when you are back online.",
     "banner": "You are offline — some features will not work",
     "barcodeLookup": "The barcode was read, but you have no connection. Try again when you are back online."

@@ -7,6 +7,7 @@ import { HfScreen } from "@/components/HfScreen";
 import { ProductResultRow as ResultRow, type ProductResult as Result } from "@/components/ProductResultRow";
 import { useTranslation } from "@/i18n/LocaleProvider";
 import { useConnectionMessage } from "@/lib/use-online-status";
+import { findCachedSearch, readCache, saveSearchResults, writeCache, type CachedProduct } from "@/lib/offline-cache";
 import { hasEstimatedMacros } from "@/lib/nutrients";
 import { SkeletonMediaRows, SkeletonScreen } from "@/components/hf/Skeleton";
 
@@ -31,6 +32,7 @@ function SoegContent() {
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<Result[]>([]);
   const [resultsState, setResultsState] = useState<LoadState>("loading");
+  const [fromCache, setFromCache] = useState(false);
   const [recentlyAdded, setRecentlyAdded] = useState<Result[]>([]);
   const [favorites, setFavorites] = useState<Result[]>([]);
   const router = useRouter();
@@ -76,8 +78,7 @@ function SoegContent() {
         );
         if (!res.ok) throw new Error("offline");
         const data = await res.json();
-        setResults(
-          data.products.map(
+        const mapped: Result[] = data.products.map(
             (p: {
               id: string;
               name: string;
@@ -93,10 +94,22 @@ function SoegContent() {
               kcal: p.kcalPer100g,
               macrosEstimated: hasEstimatedMacros(p.nutrientSources),
             })
-          )
         );
+        setResults(mapped);
+        saveSearchResults(query, mapped);
+        setFromCache(false);
         setResultsState("ready");
       } catch {
+        if (controller.signal.aborted) return;
+        // Ingen forbindelse: vis gemte resultater fra tidligere søgninger.
+        const cached = findCachedSearch(query);
+        if (cached) {
+          setResults(cached);
+          setFromCache(true);
+          setResultsState("ready");
+          return;
+        }
+        setFromCache(false);
         setResultsState("error");
         setResults([]);
       }
@@ -129,8 +142,11 @@ function SoegContent() {
           if (recent.length >= 5) break;
         }
         setRecentlyAdded(recent);
+        writeCache<CachedProduct[]>("recent", recent);
       })
-      .catch(() => setRecentlyAdded([]));
+      .catch(() => {
+        if (!controller.signal.aborted) setRecentlyAdded(readCache<CachedProduct[]>("recent")?.data ?? []);
+      });
 
     return () => controller.abort();
   }, []);
@@ -143,17 +159,19 @@ function SoegContent() {
         return (await response.json()) as FavoriteResponse;
       })
       .then((data) => {
-        setFavorites(
-          data.favorites
-            .filter((favorite) => favorite.product)
-            .map((favorite) => ({
-              id: favorite.product!.id,
-              title: favorite.product!.name,
-              image: favorite.product!.imageUrl,
-            }))
-        );
+        const mapped = data.favorites
+          .filter((favorite) => favorite.product)
+          .map((favorite) => ({
+            id: favorite.product!.id,
+            title: favorite.product!.name,
+            image: favorite.product!.imageUrl,
+          }));
+        setFavorites(mapped);
+        writeCache<CachedProduct[]>("favorites", mapped);
       })
-      .catch(() => setFavorites([]));
+      .catch(() => {
+        if (!controller.signal.aborted) setFavorites(readCache<CachedProduct[]>("favorites")?.data ?? []);
+      });
 
     return () => controller.abort();
   }, []);
@@ -229,6 +247,9 @@ function SoegContent() {
                 <p className="hf-type-body text-text-secondary px-4 py-8 text-center">
                   {connectionMessage(t("foods.loadError"))}
                 </p>
+              )}
+              {resultsState === "ready" && fromCache && results.length > 0 && (
+                <p className="hf-type-caption text-text-secondary px-4 pt-3 text-center">{t("offline.cachedResults")}</p>
               )}
               {resultsState === "ready" && results.slice(0, 6).map((r) => (
                 <ResultRow

@@ -7,6 +7,7 @@ import { ProductResultRow, type ProductResult } from "@/components/ProductResult
 import { RecipeRow, recipeHref } from "@/components/recipes/RecipeRow";
 import { SkeletonMediaRows, SkeletonScreen } from "@/components/hf/Skeleton";
 import { useTranslation } from "@/i18n/LocaleProvider";
+import { readCache, writeCache, type CachedProduct } from "@/lib/offline-cache";
 
 // Favoritter (kan lægges i bundmenuen): brugerens favoritmadvarer
 // (/api/favorites) og favoritopskrifter fra delte retter (/api/recipe-favorites)
@@ -32,19 +33,19 @@ export default function FavoritesPage() {
         if (!response.ok) throw new Error("offline");
         return (await response.json()) as FavoriteResponse;
       })
-      .then((data) =>
-        setProducts(
-          data.favorites
-            .filter((favorite) => favorite.product)
-            .map((favorite) => ({
-              id: favorite.product!.id,
-              title: favorite.product!.name,
-              image: favorite.product!.imageUrl,
-            }))
-        )
-      )
+      .then((data) => {
+        const mapped = data.favorites
+          .filter((favorite) => favorite.product)
+          .map((favorite) => ({
+            id: favorite.product!.id,
+            title: favorite.product!.name,
+            image: favorite.product!.imageUrl,
+          }));
+        setProducts(mapped);
+        writeCache<CachedProduct[]>("favorites", mapped);
+      })
       .catch(() => {
-        if (!controller.signal.aborted) setProducts([]);
+        if (!controller.signal.aborted) setProducts(readCache<CachedProduct[]>("favorites")?.data ?? []);
       });
     fetch("/api/recipe-favorites", { signal: controller.signal })
       .then(async (response) => (response.ok ? ((await response.json()) as { favorites: FavoriteRecipe[] }).favorites : []))

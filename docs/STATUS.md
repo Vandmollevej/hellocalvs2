@@ -6118,3 +6118,7 @@ Ny `valdemarsro-agent` (scripts/valdemarsro-agent, compose.production.yaml, buil
 ## 2026-10-08 — Ental/flertal for generiske ingredienser (database + API)
 
 Skema, migration, `src/lib/danish-number.ts` og søgning/oprettelse er lavet (se DECISIONS.md samme dato). `prisma validate` og ESLint på de ændrede filer er grønne; `npm run build` og typecheck er ikke kørt (ingen genereret Prisma-klient i arbejdskopien). Mangler: UI skal vise `displayName`, ental/flertal i arkene, billedomdøbning.
+
+## 2026-10-09: Offline læsecache (favoritter, senest anvendte, seneste søgninger)
+
+`src/lib/offline-cache.ts` gemmer sidste svar lokalt og bruges kun ved fejlet hentning; ryddes ved log ud. Søgning viser gemte resultater med en tydelig tekst (`offline.cachedResults`, 7 sprog). Se `docs/OFFLINE-AUDIT.md`. Ikke testet i browser mod rigtig database.
