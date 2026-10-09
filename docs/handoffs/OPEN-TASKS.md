@@ -390,3 +390,12 @@ Ejer: logo-upload-sessionen (2026-10-04)
 | Id | Opgave | Status | Næste skridt |
 | --- | --- | --- | --- |
 | logo-upload | Drag and drop af logoer under Varedatabase med partier/tidsstempel, masse-sletning, størrelse/original/filstørrelse og procesvisning | Færdig (kode) | Migration 20261004140000 skal med deployet. Ikke prøvet i browser/mod rigtig database — test med en lille mappe først |
+
+## G-GOALTIPS — Mål-tips i dagsvisningen
+Filer: `src/lib/goal-tips.ts` (+ test), `src/lib/help-prefs.ts`, `src/app/settings/display/tips/page.tsx`, tip-linjen i `DayDetails` (`src/app/calendar/page.tsx`).
+Ejer: cloud-session `claude/goal-tips` (2026-10-09)
+
+| Id | Opgave | Status | Næste skridt |
+| --- | --- | --- | --- |
+| goal-tips | Til/fra-kontakt + tip om gåtur/gulerødder, når man plejer at spise over dagens mål | Venter på bruger | Draft-PR; brugerens test på telefon. Evt. oversættelse til de 5 øvrige sprog |
+

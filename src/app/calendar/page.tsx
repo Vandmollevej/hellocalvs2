@@ -61,6 +61,8 @@ import { COMPOSITION_GOAL_FIELDS } from "@/lib/goal-composition";
 import type { GoalDTO, GoalTargetDTO } from "@/lib/user-goals";
 import { Skeleton, SkeletonCards, SkeletonScreen } from "@/components/hf/Skeleton";
 import { GoalStatusSummary } from "@/components/calendar/GoalStatusSummary";
+import { buildGoalTip, typicalDailyKcal } from "@/lib/goal-tips";
+import { useShowGoalTips } from "@/lib/help-prefs";
 import {
   formatMeasurementValue,
   formatWeightKg,
@@ -1055,6 +1057,7 @@ export default function CalendarPage() {
           sleepWindow={resolveSleepWindow(selectedDate)}
           previousSleepWindow={resolveSleepWindow(addDays(selectedDate, -1))}
           hasHistory={registrations.length > 0}
+          typicalKcal={typicalDailyKcal(dailyTotals, today, dayKey)}
           onEntryMoved={handleEntryMoved}
           onSleepAdjust={(type, minutes) => requestSleepAdjust(selectedDate, type, minutes)}
           onClose={() => setSelectedDate(null)}
@@ -2019,6 +2022,7 @@ function DayDetails({
   sleepWindow,
   previousSleepWindow,
   hasHistory,
+  typicalKcal,
   onSleepAdjust,
   onEntryMoved,
   onClose,
@@ -2044,6 +2048,8 @@ function DayDetails({
   previousSleepWindow: SleepWindow;
   /** Har brugeren registreret noget før? Ellers vises altid morgenen. */
   hasHistory: boolean;
+  /** Sædvanligt dagsindtag de seneste uger (null = for lidt historik). */
+  typicalKcal: number | null;
   onSleepAdjust: (type: SleepAdjustType, minutes: number) => void;
   onEntryMoved: (registrationId: string, newCreatedAt: Date) => void;
   onClose: () => void;
@@ -2203,6 +2209,11 @@ function DayDetails({
   // Dagsstatus: fremtidige dage viser ingen status.
   const todayKey = dayKey(new Date());
   const isFutureDay = dateKey > todayKey;
+  const showGoalTips = useShowGoalTips();
+  const goalTip =
+    showGoalTips && dateKey === todayKey
+      ? buildGoalTip({ typicalKcal, goalKcal: dayGoalKcal, bonusKcal: dayBonusKcal, intakeKcal: dayKcal })
+      : null;
 
   function goToAddFlow(hour: number) {
     // Opens the same "everything you can add" menu as the front page's
@@ -2506,6 +2517,16 @@ function DayDetails({
           intakeKcal={dayKcal}
           bonusKcal={dayBonusKcal}
         />
+        {goalTip && (
+          <p className="hf-type-small mt-3 rounded-xl bg-hf-gray-light p-3 text-text-muted">
+            {t("calendar.goalTip", {
+              typical: goalTip.typicalKcal,
+              over: goalTip.overKcal,
+              km: goalTip.walkKm,
+              grams: goalTip.carrotGrams,
+            })}
+          </p>
+        )}
       </div>
 
       {!goalPopupDismissed && goals.length > 0 && (

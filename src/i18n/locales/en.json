@@ -440,7 +440,9 @@
     "showTooltips": "Show tooltips",
     "showTooltipsDescription": "Shows a small help text under the various settings and windows.",
     "showStartupTips": "Show start-up tips",
-    "showStartupTipsDescription": "Shows a short full-screen tip when you open the app, about features you have not used yet."
+    "showStartupTipsDescription": "Shows a short full-screen tip when you open the app, about features you have not used yet.",
+    "showGoalTips": "Show tips for your goal",
+    "showGoalTipsDescription": "Shows a small tip in the day view if you usually eat more than today's goal allows — for example a walk or a few more carrots."
   },
   "guide": {
     "back": "Back",
@@ -716,6 +718,7 @@
     "goalLabel": "Goal: {goal} kcal",
     "remainingToday": "Left for today: {amount} kcal",
     "remainingMonth": "Left this month: {amount} kcal",
+    "goalTip": "Tip: you usually eat about {typical} kcal a day, {over} kcal over today's goal. Walk about {km} km, or swap about {grams} g of your food for carrots, to stay within your goal.",
     "exceededCalories": "Over by {amount} kcal",
     "exerciseBonus": "+ {amount} kcal",
     "statusWithinGoal": "Within the goal",

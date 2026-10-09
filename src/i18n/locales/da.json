@@ -440,7 +440,9 @@
     "showTooltips": "Vis tooltips",
     "showTooltipsDescription": "Viser en lille hjælpetekst under de forskellige indstillinger og vinduer.",
     "showStartupTips": "Vis start-up tips",
-    "showStartupTipsDescription": "Viser et kort tip på hele skærmen, når du åbner appen, om funktioner, du endnu ikke har brugt."
+    "showStartupTipsDescription": "Viser et kort tip på hele skærmen, når du åbner appen, om funktioner, du endnu ikke har brugt.",
+    "showGoalTips": "Vis tips til dit mål",
+    "showGoalTipsDescription": "Viser et lille tip i dagsvisningen, hvis du plejer at spise mere, end dagens mål tillader — fx en gåtur eller lidt flere gulerødder."
   },
   "guide": {
     "back": "Tilbage",
@@ -716,6 +718,7 @@
     "goalLabel": "Mål: {goal} kcal",
     "remainingToday": "Tilbage for i dag: {amount} kcal",
     "remainingMonth": "Tilbage i måneden: {amount} kcal",
+    "goalTip": "Tip: du plejer at spise ca. {typical} kcal om dagen, {over} kcal over dagens mål. Gå ca. {km} km, eller byt ca. {grams} g af maden ud med gulerødder, så holder du målet.",
     "exceededCalories": "Overskredet med {amount} kcal",
     "exerciseBonus": "+ {amount} kcal",
     "statusWithinGoal": "Inden for målet",

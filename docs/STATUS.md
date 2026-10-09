@@ -3,6 +3,12 @@
 Last updated: 2026-10-03
 Last updated: 2026-10-04
 
+## 2026-10-09: Mål-tips i dagsvisningen (til/fra under Visning → Tips)
+
+- Ny kontakt "Vis tips til dit mål" i Indstillinger → Visning → Tips og hjælpetekster (lokalt pr. enhed, standard til; `useShowGoalTips` i `help-prefs.ts`).
+- Dagsvisningen (kun i dag) viser et tip under statusblokken, hvis det sædvanlige dagsindtag (gennemsnit af loggede dage de seneste 28, mindst 5) ligger ≥ 50 kcal over dagens mål + motion, og dagen endnu ikke er overskredet: "gå ca. X km, eller byt ca. Y g af maden ud med gulerødder". Regnestykket (60 kcal/km, 1,6 kcal sparet pr. gram) står i `src/lib/goal-tips.ts` med test. "AI" er her en simpel gennemsnitsberegning; ingen model-kald.
+- Tekster kun på dansk og engelsk (øvrige sprog falder tilbage til dansk). Lint, typecheck og `goal-tips`-testen er grønne; `npm test` har 2 eksisterende fejl (admin-genveje, page tree) uden forbindelse hertil. Build og visuel test på telefon ikke gjort.
+
 ## 2026-10-05: Pulslinjen — roligere uden ur, flyttet op over nederste tal
 
 - Uden tilsluttet ur slår pulslinjen kun hvert 4. sekund (`DEFAULT_PULSE_BPM` = 15), og grundlinjen er flyttet op, så bunden står lige over hjulets nederste tal (`PULSE_ABOVE_LAST_ROW` i `HomeWaves.tsx`). Lint/build ikke kørt (ingen `node_modules` i cloud-sessionen). Brugeren tester på telefon; justér konstanten på 25 px efter billedet.
