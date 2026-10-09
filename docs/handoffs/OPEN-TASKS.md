@@ -414,7 +414,7 @@ Ejer: offline/PII/scan-sessionen (2026-10-07), branch `claude/offline-pii-scan`
 | 1 | Offline-audit + fælles offline-besked | Færdig (se git log "Offline") | Registreringer køes ikke offline (se OFFLINE-AUDIT) |
 | 2 | PII-adskillelse: anbefaling | Færdig (docs/SECURITY-PII-OPTIONS.md) | Afventer brugerens valg før noget bygges |
 | 3 | Tallerken-scan midlertidigt på OpenAI | Færdig (flag MEAL_PHOTO_PROVIDER) | Skal rulles tilbage, se DECISIONS 2026-10-07 |
-| 4 | Stregkodescanner robusthed (skygge) | Færdig (kode) | Afventer brugerens test på telefon med mælk i skygge |
+| 4 | Stregkodescanner robusthed (skygge) | Færdig (kode) + lokal tærskel pr. scanlinje i JS-stien (PR #297, `barcode-row-threshold.ts`/`barcode-local-binarizer.ts`, 2026-10-09) | Afventer brugerens test på telefon med mælk i skygge. Virker det stadig ikke på iPhone: eksportér scan-loggen fra admin → Log; vinduet (10 %) og kontrastgrænsen (8) kan justeres |
 ## G-VAEGT — Vægt: synk-status, tøj ved vejning, kalibrer
 Filer: `src/components/weight/**`, `src/app/weight/**`, `src/app/api/weight-*`, `src/lib/weigh-*`, `src/app/admin/weight-attire/**`.
 Ejer: vægt-sessionen (2026-10-07)

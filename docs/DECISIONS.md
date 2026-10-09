@@ -2,6 +2,10 @@
 
 This file records durable decisions. Add a dated entry when a later decision changes one of them.
 
+## 2026-10-09: Stregkoder tærskles lokalt pr. scanlinje — skygge må ikke stoppe en læsning
+
+Brugerens ord (2026-10-06): "bare fordi det var et lille stykke skygge, kunne kameraet ikke læse stregkoden … det kan ikke være rigtigt." Hver scanlinje binariseres derfor med en glidende lokal tærskel (vindue 10 % af linjen, mindst 32 px, mørk = mindst 8 under det lokale gennemsnit) før ZXing's globale tærskel pr. række, som beholdes som fallback i samme frame. Det ligger i `src/lib/barcode-row-threshold.ts` + `barcode-local-binarizer.ts`, ikke i ZXing-koden, så biblioteket kan opdateres frit. ZXing's HybridBinarizer bruges ikke længere til 1D: dens lokale blokke gælder kun 2D-matricen.
+
 ## 2026-10-08: Vagt-robot på NAS'en (hver time, mail)
 
 - Ud over GitHub-tjekket (hvert 5. min) kører `uptime-agent` på NAS'en og tjekker hver time site, app, containere og diskplads; mail til peter@packroff.dk ved fejl og ved løst. Brugerens valg: hver time "for nu", kun mail. Cloudflare-alarmer sættes op af brugeren i dashboardet (docs/DEPLOYMENT.md "Overvågning").
