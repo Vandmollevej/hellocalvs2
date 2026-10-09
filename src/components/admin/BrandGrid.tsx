@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { isImageFile, processLogoFile } from "@/lib/brand-logo-image";
 import type { LogoClientMeta, LogoUploadItem } from "@/lib/brand-logo-upload-types";
 import { assignLogoUpload } from "@/app/admin/product-database/logo-upload/actions";
+import { rerunBrandLogo } from "@/app/admin/product-database/brands/actions";
 import type { AdminBrandRow } from "@/lib/admin-brands";
 
 // Brand-gitteret med "Drag n drop" til/fra (admin → Varedatabase → Brands). Når
@@ -80,11 +81,28 @@ export function BrandGrid({ rows, productHrefs, canEdit }: { rows: AdminBrandRow
     };
   }, [dragDrop]);
 
+  function rerun(brand: AdminBrandRow) {
+    setStatus((current) => ({ ...current, [brand.id]: { phase: "busy", message: "Sætter i kø…" } }));
+    rerunBrandLogo(brand.id)
+      .then((result) =>
+        setStatus((current) => ({ ...current, [brand.id]: { phase: result.ok ? "ok" : "error", message: result.message } })),
+      )
+      .catch(() => setStatus((current) => ({ ...current, [brand.id]: { phase: "error", message: "Kunne ikke genkøre logoet" } })));
+  }
+
   function onDrop(event: DragEvent, brand: AdminBrandRow) {
     event.preventDefault();
     setOverId(null);
     const file = Array.from(event.dataTransfer.files).find(isImageFile);
     if (!file) {
+      setStatus((current) => ({ ...current, [brand.id]: { phase: "error", message: "Ikke et billede" } }));
+      return;
+    }
+    replaceLogo(file, brand);
+  }
+
+  function replaceLogo(file: File, brand: AdminBrandRow) {
+    if (!isImageFile(file)) {
       setStatus((current) => ({ ...current, [brand.id]: { phase: "error", message: "Ikke et billede" } }));
       return;
     }
@@ -132,6 +150,7 @@ export function BrandGrid({ rows, productHrefs, canEdit }: { rows: AdminBrandRow
             return (
               <li
                 key={brand.id}
+                className="flex flex-col gap-1"
                 onDragOver={
                   dragDrop
                     ? (event) => {
@@ -147,7 +166,7 @@ export function BrandGrid({ rows, productHrefs, canEdit }: { rows: AdminBrandRow
                 <Link
                   href={productHrefs[brand.id]}
                   draggable={false}
-                  className={`flex h-full flex-col gap-2 hf-surface p-2 hover:border-hf-green ${overId === brand.id ? "border-hf-green-dark bg-hf-green-light" : ""}`}
+                  className={`flex flex-1 flex-col gap-2 hf-surface p-2 hover:border-hf-green ${overId === brand.id ? "border-hf-green-dark bg-hf-green-light" : ""}`}
                 >
                   <BrandLogo name={brand.name} logoUrl={logos[brand.id] ?? brand.logoUrl} />
                   <div className="flex min-w-0 flex-col gap-0.5 px-1 pb-1">
@@ -157,11 +176,40 @@ export function BrandGrid({ rows, productHrefs, canEdit }: { rows: AdminBrandRow
                     </p>
                     {state && (
                       <p className={`hf-type-small ${state.phase === "error" ? "text-hf-red-dark" : state.phase === "ok" ? "text-hf-green-dark" : "text-text-muted"}`}>
-                        {state.phase === "busy" ? "Gemmer logo…" : state.phase === "ok" ? "Logo gemt" : state.message}
+                        {state.message ?? (state.phase === "busy" ? "Gemmer logo…" : "Logo gemt")}
                       </p>
                     )}
                   </div>
                 </Link>
+                {canEdit && (
+                  <div className="mt-1 flex gap-2">
+                    <label
+                      className={`hf-type-small hf-type-strong flex-1 cursor-pointer rounded-md border border-hf-tan-dark bg-hf-white px-2 py-1.5 text-center text-hf-black hover:border-hf-green ${state?.phase === "busy" ? "pointer-events-none opacity-50" : ""}`}
+                    >
+                      Erstat logo
+                      <input
+                        type="file"
+                        accept="image/png,image/*"
+                        className="sr-only"
+                        onChange={(event) => {
+                          const file = event.target.files?.[0];
+                          event.target.value = "";
+                          if (file) replaceLogo(file, brand);
+                        }}
+                      />
+                    </label>
+                    {brand.logoUrl && (
+                      <button
+                        type="button"
+                        disabled={state?.phase === "busy"}
+                        onClick={() => rerun(brand)}
+                        className="hf-type-small hf-type-strong flex-1 rounded-md border border-hf-tan-dark bg-hf-white px-2 py-1.5 text-hf-black hover:border-hf-green disabled:opacity-50"
+                      >
+                        Genkør logo
+                      </button>
+                    )}
+                  </div>
+                )}
               </li>
             );
           })}

@@ -535,7 +535,7 @@ export async function enrichQuickProduct(
   // Dyrefoder-spærring: først nu kender vi navn/brand/ingredienser — er det
   // dyrefoder, afvises varen med det samme (src/lib/pet-food-blacklist.ts).
   const petFoodBlock = product
-    ? petFoodBlockReason({ texts: [product.name, product.brand?.name, product.ingredientsText] })
+    ? await petFoodBlockReason({ texts: [product.name, product.brand?.name, product.ingredientsText] })
     : null;
   if (product && petFoodBlock) {
     await rejectProduct(input.productId).catch(() => null);

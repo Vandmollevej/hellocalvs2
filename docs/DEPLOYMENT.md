@@ -253,14 +253,22 @@ Routing. OAuth-redirect-URI'er hos Google, Facebook, Apple, Strava, Withings,
 Polar, Garmin, WHOOP, Huawei m.fl. og MobilePay-webhooken skal pege på `hellocal.io`. Garmins ping-adresse er `https://hellocal.io/api/integrations/garmin/webhook?key=<GARMIN_WEBHOOK_KEY>`. Passkeys er
 bundet til hostnavnet og skal oprettes igen på det nye domæne.
 
-## Search indexing
+## Search indexing and crawler protection
 
-The application adds `X-Robots-Tag: noindex, nofollow, noarchive, nosnippet,
-noimageindex` to every response. This lets search engines crawl the public app
-only to see that it must not be indexed. Do not use `robots.txt` to block the
-app while relying on `noindex`, because a blocked crawler cannot read that
-instruction. If the application must be private rather than merely hidden from
-search, protect it with an access-control layer such as Cloudflare Access.
+Every response carries `X-Robots-Tag: noindex, nofollow, noarchive, nosnippet,
+noimageindex`, and `public/robots.txt` is `Disallow: /`. This is only a request
+to well-behaved bots. The real protection is the access wall in
+`middleware.ts` / `src/lib/access-wall.ts` (docs/DECISIONS.md 2026-10-08):
+known crawlers and script clients get 403, anonymous visitors only reach the
+front page, login and legal pages, and everything else (pages, APIs, product
+images) needs a valid user session.
+
+Recommended Cloudflare settings for hellocal.io (dashboard, not code):
+Security → Bots → Bot Fight Mode on; "Block AI bots" / AI Scrapers and Crawlers
+on; a rate-limiting rule on `/api/auth/*` (e.g. 10 requests/min per IP).
+New public routes (webhooks, OAuth callbacks) must be added to
+`PUBLIC_API_PREFIXES` in `src/lib/access-wall.ts`, otherwise anonymous calls
+get 401.
 
 ## Backup
 
@@ -452,6 +460,14 @@ Sikringer:
 - **Overvågning:** `.github/workflows/uptime.yml` kalder `https://hellocal.io/api/health?deep=1` hvert 5. minut fra GitHubs servere (virker også, når NAS'en er nede; tre forsøg før alarm). En fejlet kørsel giver mail/push fra GitHub til den, der sidst ændrede workflowet (GitHub-indstilling: Notifications → Actions → "Only notify for failed workflows").
 - **Admin:** forsiden viser en rød boks "Deploy blokeret", når en migrering står som fejlet.
 - Gendannelsen 2026-10-07 skete via en midlertidig `prisma migrate resolve --rolled-back …` i `migrate`-servicen (c245f4cb), fjernet igen efter migreringen var anvendt. Samme fremgangsmåde bruges, hvis en migrering igen står som fejlet.
+
+### Overvågning (2026-10-08)
+
+Tre lag, så en fejl altid giver besked:
+
+1. **GitHub** (`.github/workflows/uptime.yml`): hvert 5. minut udefra; virker også, når NAS'en er slukket. Mail/push fra GitHub.
+2. **Vagt-robot på NAS'en** (`scripts/uptime-agent`, service `uptime-agent`): hver time (`UPTIME_CHECK_INTERVAL_SECONDS`, standard 3600) tjekkes `hellocal.io` udefra (gennem tunnelen), appen indefra (`http://app:3000`, uden om Cloudflare — skelner tunnel- fra app-fejl), alle `hellocal-v2`-containere (Docker-socket, kun læsning; afsluttede containere med `restart: "no"` springes over) og ledig plads på `/volume1` (alarm under 10 %). Mail til `UPTIME_ALERT_EMAIL` (standard `peter@packroff.dk`) ved ny fejl, påmindelse hver 6. time og "løst"-mail, når det virker igen; en "vagt-robot startet"-mail ved hver opstart bekræfter, at mail virker (og afslører en NAS-genstart). SMTP som appen: `.env.production` overskrevet af admin-gemte nøgler i `app_secrets` (dekrypteres med `ADMIN_SESSION_SECRET`). Startes i deploy-jobbet før migreringer og app, uden `depends_on`, så den kører, selv om de fejler.
+3. **Cloudflare** (sættes op i Cloudflare-dashboardet af brugeren, ikke i koden): Notifications → "Tunnel Health Alert" for tunnelen og evt. "Passive Origin Monitoring" for hellocal.io — mail, når tunnelen eller NAS'en ikke svarer Cloudflare.
 
 ## Feltkryptering af brugerdata (2026-10-04)
 

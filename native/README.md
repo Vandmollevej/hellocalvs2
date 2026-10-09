@@ -1,8 +1,88 @@
-# Hello Cal — native widgets og Health Connect
+# Hello Cal — native apps (Android + iPhone)
 
-Færdig kildekode til hjemmeskærm-widgets (se `docs/WIDGETS.md`). Koden er
-skrevet på Windows og er **ikke kompileret endnu** — den bygges første gang,
-når der er en Mac (iPhone) / Android Studio (Android). Designet svarer til
+Hello Cal er en **helt native** app (docs/DECISIONS.md 2026-10-07). Alle skærme
+er skrevet én gang i Kotlin med Compose Multiplatform (`shared/`) og kompileres
+til både Android og iPhone. Der er altså to steder at rette en skærm: webappen
+(`src/`) og `native/shared/`.
+
+| Mappe | Indhold |
+| --- | --- |
+| `shared/` | Alle skærme, tema, tekster, API-klient (Android + iPhone) |
+| `androidApp/` | Android-appen (MainActivity, deep links, widgets, Health Connect) |
+| `iosApp/` | iPhone-appen (`project.yml` → `xcodegen generate`) |
+| `android/widgets`, `android/healthconnect` | Android-widgets og Health Connect-synk |
+| `ios/HelloCalWidgets` | iPhone-widgets (WidgetKit) |
+| `parity/` | Hvilken native skærm der svarer til hvilken web-side |
+
+Byg: GitHub Actions (`.github/workflows/native.yml`) bygger Android-APK'en og
+iPhone-appen (simulator) ved hvert push, der rører `native/`. APK'en ligger som
+artefakt på kørslen. Lokalt: `gradle -p native :androidApp:assembleDebug`
+(kræver JDK 17 + Android SDK).
+
+## Hold web og native i takt
+
+Der er tre mekanismer, så en rettelse ikke kun lander ét sted:
+
+1. **Genereret fra web — rettes aldrig i hånden.** `node scripts/native/sync.mjs`
+   læser `src/app/globals.css` (farver, mål, `.hf-type-*`), `src/i18n/locales/*.json`
+   (alle tekster), de Tabler-ikoner web bruger og app-ikonet, og skriver
+   `HcTokens.kt`, `HcTokens.swift`, `hc_tokens.xml`, `TablerData.kt` og
+   `composeResources/files/locales/*.json`. Ændrer du et token, en tekst eller et
+   ikon på web, så kør scriptet og commit resultatet.
+2. **Paritets-manifest.** `parity/screens.json` har én række pr. web-side:
+   `ported` (native skærm findes), `pending` (mangler) eller `web-only`
+   (admin/partner/butiks-scanner). For hver porteret skærm gemmer
+   `parity/accepted.json` et fingeraftryk af web-filerne, skærmen er bygget af:
+   siden plus alle komponenter, den importerer, rekursivt.
+   - `node scripts/native/parity.mjs` viser, hvilke native skærme der er bagud.
+   - `--port <rute> <fil.kt>`: ny skærm porteret.
+   - `--accept <rute>`: ændringen er overført.
+   - `--register`: nye web-sider tilføjes som `pending`.
+3. **Automatisk håndhævelse.**
+   - Claude Code-hooken i `.claude/settings.json` stopper en session, der har
+     ændret web-UI uden at overføre ændringen til native.
+   - CI-jobbet "Web ↔ native in step" fejler på GitHub, hvis noget er ude af takt.
+
+Kun UI tæller (`src/app/**` undtagen `api/`, og `src/components/**`).
+Forretningslogik i `src/lib` når native via de samme `/api`-ruter som web.
+
+## Telefon-funktioner (platform)
+
+Alt der kræver telefonen selv, går gennem ét lag:
+`shared/src/commonMain/.../platform/Device.kt`. Skærmene kalder `Device.*`
+(suspend-funktioner) eller områdets lille facade (`CaptureHooks`,
+`FoodPlatform`, `OnboardingHooks`, `ProfileNativeBridge`, `SettingsImportMedia`,
+`SettingsSupportHooks`), som sender videre til `Device`. Platformene
+implementerer `DevicePlatform` (callback-baseret, så Swift kan implementere den
+direkte) og sætter `Device.platform` ved opstart.
+
+| Funktion | Android (`androidApp/.../device/AndroidDevice.kt`) | iPhone (`iosApp/HelloCal/IosDevice.swift`) |
+| --- | --- | --- |
+| Tag foto (JPEG, maks. 1600 px) | `TakePicture` + FileProvider, EXIF-rotation | `UIImagePickerController` |
+| Vælg fotos / filer (også video) | Systemets fotovælger (`PickVisualMedia`) | `PHPickerViewController` |
+| Video → billeder (hvert 1,2 s, maks. 900 px, dubletter fjernes i fælles kode) | `MediaMetadataRetriever` | `AVAssetImageGenerator` |
+| Tekstgenkendelse (OCR) | ML Kit Text Recognition (i appen, offline) | Vision `VNRecognizeTextRequest` |
+| Stregkode/QR live | Google code scanner (Play-tjenester) | Egen AVFoundation-scanner |
+| Stregkode i foto | ML Kit Barcode (Play-tjenester) | Vision `VNDetectBarcodesRequest` |
+| Tale → tekst | `SpeechRecognizer` | `SFSpeechRecognizer` + `AVAudioEngine` |
+| Del | `ACTION_SEND`-vælger | `UIActivityViewController` |
+| Bekræft ejer (billeddagbog) | `BiometricPrompt` (fingeraftryk/ansigt/kode) | `LAContext` (Face ID/Touch ID/kode) |
+| App i baggrunden | `MainActivity.onStop` | `didEnterBackgroundNotification` |
+| App tilbage i forgrunden (fx efter Stripe-portalen) | `MainActivity.onStart` | `willEnterForegroundNotification` |
+
+Ikke slået til endnu (kræver eksterne konti/opsætning, svarer `"unsupported"`):
+
+- **Passkeys/Face ID-login:** Android kræver `/.well-known/assetlinks.json` på
+  hellocal.packroff.dk med appens signeringscertifikat + `androidx.credentials`;
+  iPhone kræver Associated Domains (`webcredentials:hellocal.packroff.dk`) og
+  `apple-app-site-association` på serveren.
+- **Push (login-godkendelse):** Android kræver et Firebase-projekt
+  (`google-services.json`) og FCM på serveren; iPhone kræver Push
+  Notifications-capability og en APNs-nøgle på serveren.
+
+## Widgets og Health Connect
+
+Widget-kildekoden er beskrevet i `docs/WIDGETS.md`. Designet svarer til
 forhåndsvisningen på `/widgets` i web-appen.
 
 Begge platforme henter alt fra `GET /api/widgets/snapshot` med brugerens
