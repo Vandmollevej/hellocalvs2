@@ -4762,3 +4762,11 @@ Google/Apple/Facebook-login og integrationstilkobling kører i system-browseren,
 
 - Kortet "Visning" har to nye valg: "Indlæsning" (Sider med Forrige/Næste, eller Uendelig scroll) og "Varer pr. side" (24/48/96/200). URL-parametre `paging=infinite` og `perPage`; standard (sider, 48) udelades. Gemmes med i en gemt visning.
 - Uendelig scroll: `page` betyder antal indlæste portioner; serveren viser portion 1..page, og `InfiniteScrollLoader` hæver `page` når bunden kommer til syne.
+
+## 2026-10-09 — Telefonnummer krypteres; identitet skilles fra fagdata i trin (besluttet af Claude efter brugerens "træf selv en beslutning")
+
+- Spørgsmål: kan e-mail/navn/telefon adskilles, så kun en nøgle kan koble dem til øvrig data? Svar: ja, i tre trin; sidste trin er det stærkeste.
+- **Trin 1 (gjort):** `User.phone` krypteres som email/displayName (AES-256-GCM, `USER_DATA_KEY`, samme Prisma-udvidelse). `phone` kan ikke bruges i `where` på User. Backfill-scriptet krypterer også telefon. `SmsVerification.phone` er korttidsdata og er uændret.
+- **Trin 2 (næste, kræver egen migration):** flyt email/navn/telefon til en `UserIdentity`-tabel; fagdata refererer kun et nøglet pseudonym `HMAC(PSEUDONYM_KEY, userId)`. Koblingen kan kun laves med nøglen. Helst egen database/rolle, så et dump af fagdata ikke afslører identiteter.
+- **Trin 3:** nøgler i KMS/adskilt nøglefil, rotation, krypterede backups med separat nøgle. Ende-til-ende-boksen i `docs/PRIVACY.md` forbliver målet for private data.
+- Begrænsning: ingen af trinene beskytter mod en angriber med fuld kontrol over app-serveren (nøglerne er i hukommelsen). Kun ende-til-ende gør.
