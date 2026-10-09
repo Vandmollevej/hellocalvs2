@@ -1,3 +1,4 @@
+import { foldSearchText, searchTokens } from "./search-text.ts";
 import { barcodeMatchesRegion } from "@/lib/regions";
 
 // Regional search ranking (2026-09-19, see docs/DECISIONS.md): text match is
@@ -153,7 +154,12 @@ export function textSimilarity(query: string, productName: string, brandName?: s
   if (name.includes(q)) return 0.88;
   if (searchable.includes(q)) return 0.82;
 
-  return Math.max(diceSimilarity(q, name), diceSimilarity(q, searchable));
+  // Alle ord i søgningen findes i navn/mærke, men ikke som én sammenhængende
+  // streng ("nescafe instant" → mærke Nescafé + navn "Crema instant kaffe").
+  const tokens = searchTokens(query);
+  const allTokensMatch = tokens.length > 1 && tokens.every((token) => foldSearchText(searchable).includes(token));
+
+  return Math.max(allTokensMatch ? 0.78 : 0, diceSimilarity(q, name), diceSimilarity(q, searchable));
 }
 
 function regionalPopularity(product: RankableProduct, region: string): number {

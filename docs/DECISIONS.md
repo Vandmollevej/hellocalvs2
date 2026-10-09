@@ -4659,6 +4659,12 @@ Brugeren valgte "helt native" frem for en web-app i en skal (bekræfter 2026-09-
 - **Genereret, ikke kopieret.** Farver, mål, typografi (`globals.css`), tekster (`src/i18n/locales`), ikoner og app-ikon genereres af `scripts/native/sync.mjs`. Håndskrevne hex-værdier i widgets er fjernet.
 - **Paritet håndhæves.** `native/parity/screens.json` binder hver web-side til sin native skærm. Fingeraftryk af sidens web-filer (siden + importerede komponenter) afslører, når web er ændret uden native. Det håndhæves af AGENTS.md-reglen, en Stop-hook i `.claude/settings.json` og CI.
 - Admin, partner-, erhvervs- og butiks-scanner-sider forbliver web (`web-only`).
+## 2026-10-09: Tolerant produktsøgning (accenter og flere ord)
+
+- `GET /api/products` delte ikke søgeteksten op og fulgte accenter bogstaveligt, så "Nescafe gold" ikke fandt mærket Nescafé + navnet "Crema instant kaffe". Nu deles søgningen i ord (`src/lib/search-text.ts`); hvert ord skal findes i navn, mærke eller sukkerpåstand, uden hensyn til accenter (e = é). æ/ø/å bevares som egne bogstaver. Ord på 5+ tegn søges uden sidste bogstav ("creme" finder "crema").
+- Rangeringen giver et gulv på 0,78, når alle ord findes, så fund på tværs af mærke og navn ikke bliver filtreret fra.
+- Ord, der kun står på emballagen og ikke i navn/mærke (fx "gold"), kan stadig ikke findes — det kræver data (variantnavn), ikke søgelogik.
+
 ## 2026-10-08: Adgangsmur mod crawlere og scrapere
 
 Brugerens krav: strengt — crawlere/robotter får kun adgang til forsiden, heller

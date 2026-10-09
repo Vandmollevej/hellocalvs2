@@ -7,6 +7,8 @@ ikke her, er den ikke registreret og skal tilføjes.
 
 ## Varer og navngivning
 
+- **Søgning er tolerant (2026-10-09)**: flere ord på tværs af mærke og navn, accenter ignoreres (Nescafe = Nescafé), æ/ø/å bevares. Brug `src/lib/search-text.ts` i nye søgninger.
+
 - **Key-format**: `Brand Produktnavn (Mængde)`. Mængden står præcis én gang;
   brand og mængde fjernes først fra den rå titel.
 - **Generiske varer (uden brandnavn/EAN)**: 100 % uden brandnavn (grøntsager,

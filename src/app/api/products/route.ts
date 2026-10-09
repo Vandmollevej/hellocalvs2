@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { ExternalProductSource, type Prisma } from "@prisma/client";
+import { ExternalProductSource, Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { inferGs1OriginCountryCode } from "@/lib/regions";
 import { getSessionUser } from "@/lib/session";
@@ -17,6 +17,7 @@ import { HIDE_FROM_SEARCH_BELOW } from "@/lib/uncertainty-thresholds";
 import { petFoodBlockReason } from "@/lib/pet-food-blacklist";
 import { recordPetFoodAttempt } from "@/lib/pet-food-strikes";
 import { saveDataUrlImage } from "@/lib/qc-image-storage";
+import { SEARCH_FOLD_FROM, SEARCH_FOLD_TO, searchTokens } from "@/lib/search-text";
 
 // GET /api/products?q=rugbrød — search in our own product database only. Results are ranked by src/lib/product-search-ranking.ts: text match
 // is always dominant, and hidden regional search/click/hour-of-day statistics
@@ -58,6 +59,25 @@ export async function GET(req: Request) {
     // low-popularity-but-exact match further down createdAt-order must still
     // be able to surface once ranked.
     const candidateTake = q ? Math.max(take * 6, 80) : take;
+    // Tolerant tekstmatch: hvert ord i søgningen skal findes i navn, mærke eller
+    // sukkerpåstand, uden hensyn til accenter (Nescafe = Nescafé) og på tværs af
+    // felterne ("nescafe instant" = mærke + navn). Se src/lib/search-text.ts.
+    const tokens = q ? searchTokens(q) : [];
+    const textMatchIds = tokens.length
+      ? (
+          await prisma.$queryRaw<{ id: string }[]>(Prisma.sql`
+            SELECT p."id" FROM "products" p
+            LEFT JOIN "brands" b ON b."id" = p."brandId"
+            LEFT JOIN "ProductFilters" f ON f."productId" = p."id"
+            WHERE ${Prisma.join(
+              tokens.map(
+                (token) => Prisma.sql`translate(lower(concat_ws(' ', p."name", b."name", f."sugarFree", f."noAddedSugar", f."reducedSugar", f."lightSugar", f."lowSugar")), ${SEARCH_FOLD_FROM}, ${SEARCH_FOLD_TO}) LIKE ${"%" + token.replace(/[\\%_]/g, "\\$&") + "%"}`
+              ),
+              " AND "
+            )}
+            LIMIT 2000`)
+        ).map((row) => row.id)
+      : null;
     const findProducts = () =>
       prisma.product.findMany({
         where: {
@@ -79,24 +99,7 @@ export async function GET(req: Request) {
                 aiAnalyses: { some: { reviewedAt: null, confidence: { lt: HIDE_FROM_SEARCH_BELOW } } },
               },
             },
-            ...(q
-              ? [
-                  {
-                    OR: [
-                      { name: { contains: q, mode: "insensitive" } },
-                      { brand: { name: { contains: q, mode: "insensitive" } } },
-                      // Sukkerpåstande kan søges ("sukkerfri", "uden tilsat sukker",
-                      // "reduceret", "light", "lavt sukker"), men vises ikke som mærker
-                      // (docs/DECISIONS.md 2026-10-02).
-                      { filters: { is: { sugarFree: { contains: q, mode: "insensitive" } } } },
-                      { filters: { is: { noAddedSugar: { contains: q, mode: "insensitive" } } } },
-                      { filters: { is: { reducedSugar: { contains: q, mode: "insensitive" } } } },
-                      { filters: { is: { lightSugar: { contains: q, mode: "insensitive" } } } },
-                      { filters: { is: { lowSugar: { contains: q, mode: "insensitive" } } } },
-                    ],
-                  } satisfies Prisma.ProductWhereInput,
-                ]
-              : []),
+            ...(textMatchIds ? [{ id: { in: textMatchIds } }] : []),
             source
               ? { externalSource: source }
               : {
