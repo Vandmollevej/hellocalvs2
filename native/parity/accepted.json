@@ -1550,9 +1550,9 @@
   },
   "/search": {
     "src/app/layout.tsx": "9a180a8c9b7bdec8",
-    "src/app/search/page.tsx": "4290e386926f9f4e",
+    "src/app/search/page.tsx": "601add5368b390e7",
     "src/components/AuthGate.tsx": "94db96b768f9f95f",
-    "src/components/BottomNav.tsx": "50c4eb59b5807fa4",
+    "src/components/BottomNav.tsx": "3428c5ae144e2dea",
     "src/components/EmailVerifySheet.tsx": "42e52d85f9bf57d9",
     "src/components/FoodRow.tsx": "b5ec0c5a27228591",
     "src/components/HfScreen.tsx": "fa0b0a94f60cbbc5",
