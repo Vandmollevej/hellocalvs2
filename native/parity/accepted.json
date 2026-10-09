@@ -2815,7 +2815,7 @@
     "src/components/ProfileAvatarLink.tsx": "598cd23c3331619d",
     "src/components/SleepInsightChart.tsx": "ae679fa045fd9e9e",
     "src/components/StatCardIcon.tsx": "f2436e241e0c8134",
-    "src/components/StatCardsGrid.tsx": "3b08ea6eac88f01e",
+    "src/components/StatCardsGrid.tsx": "12a360304a8a9226",
     "src/components/StatChart.tsx": "62198e0cff77f4bb",
     "src/components/StatChartsSection.tsx": "1642be01c5b15213",
     "src/components/StatPeriodPicker.tsx": "f953ad8fc6e795ce",

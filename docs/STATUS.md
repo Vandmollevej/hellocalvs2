@@ -2,6 +2,10 @@
 
 Last updated: 2026-10-09
 
+## 2026-10-09: Statistik — ingen tomme rækker efter redigering
+
+- Når redigeringen af kort afsluttes (og når et gemt layout indlæses), fjernes nu alle helt tomme rækker i kort-gitteret, uanset hvor de står (`dropEmptyRows` i `src/lib/stat-layout.ts` + native `StatsLayout.kt`). En række med ét kort og ét tomt felt bliver. Under redigering er felterne stadig blanke, så kort kan flyttes. Test i `stat-layout.test.mjs` grøn; lint/tsc ikke kørt (ingen `node_modules`), Kotlin ikke kompileret lokalt, ikke prøvet på telefon.
+
 ## 2026-10-09: Screeninger under Profil
 
 - Ny side Profil → Screeninger med oprettelsesflow, udfyldningsark, rapporter og grafer, kalenderbjælker, valg i Tilføj-menuen og bundmenuen (se DECISIONS 2026-10-09). Web og native (`ScreeningScreens.kt`, `ScreeningModels.kt`, `ProfileSwipeActions`) er lavet sammen; sprogfilerne har fået `screenings`-teksterne på alle 7 sprog.
