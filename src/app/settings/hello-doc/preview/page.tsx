@@ -3,13 +3,15 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { IconChevronLeft, IconMenu2, IconChevronDown, IconLock } from "@tabler/icons-react";
+import { IconChevronLeft, IconChevronDown, IconLock } from "@tabler/icons-react";
 import { HelloDocInsight, type InsightData } from "@/components/hf/HelloDocInsight";
 import { useTranslation } from "@/i18n/LocaleProvider";
 import {
   DOCTOR_SHARE_HISTORY_RANGES,
   type DoctorShareHistoryRange,
 } from "@/lib/doctor-share";
+import { InsightMenu } from "@/components/hf/InsightMenu";
+import { useInsightLayout } from "@/lib/insight-layout";
 import { Skeleton, SkeletonCards, SkeletonScreen } from "@/components/hf/Skeleton";
 
 type PreviewData = {
@@ -49,7 +51,7 @@ export default function HelloDocPreviewPage() {
   const [data, setData] = useState<PreviewData | null>(null);
   const [error, setError] = useState(false);
   const [range, setRange] = useState<DoctorShareHistoryRange>("ALL");
-  const [menuOpen, setMenuOpen] = useState(false);
+  const { layout, toggle, move } = useInsightLayout();
 
   useEffect(() => {
     let cancelled = false;
@@ -87,37 +89,17 @@ export default function HelloDocPreviewPage() {
           <IconChevronLeft size={22} stroke={2.5} />
         </button>
         <span className="hf-type-title">Hello Doc</span>
-        <div className="relative">
-          <button
-            type="button"
-            aria-haspopup="true"
-            aria-expanded={menuOpen}
-            onClick={() => setMenuOpen((open) => !open)}
-            aria-label={t("helloDoc.preview.menuView")}
-            className="hf-btn-icon text-hf-black"
-          >
-            <IconMenu2 size={22} stroke={2} />
+        <InsightMenu layout={layout} onToggle={toggle} onMove={move}>
+          <button type="button" className="hf-navrow hf-control-row">
+            {t("helloDoc.preview.menuHelp")}
           </button>
-          {menuOpen && (
-            <>
-              <button type="button" aria-hidden="true" tabIndex={-1} className="fixed inset-0 z-40 cursor-default" onClick={() => setMenuOpen(false)} />
-              <div className="hf-menu absolute right-0 top-12 w-52">
-                <button type="button" className="hf-navrow hf-control-row">
-                  {t("helloDoc.preview.menuHelp")}
-                </button>
-                <button type="button" className="hf-navrow hf-control-row">
-                  {t("helloDoc.preview.menuView")}
-                </button>
-                <Link href="/profile/edit" className="hf-navrow hf-control-row">
-                  {t("helloDoc.preview.menuMyDetails")}
-                </Link>
-                <button type="button" onClick={logOut} className="hf-navrow hf-control-row text-hf-red-dark">
-                  {t("helloDoc.preview.menuLogout")}
-                </button>
-              </div>
-            </>
-          )}
-        </div>
+          <Link href="/profile/edit" className="hf-navrow hf-control-row">
+            {t("helloDoc.preview.menuMyDetails")}
+          </Link>
+          <button type="button" onClick={logOut} className="hf-navrow hf-control-row text-hf-red-dark">
+            {t("helloDoc.preview.menuLogout")}
+          </button>
+        </InsightMenu>
       </div>
 
       <div
@@ -131,8 +113,6 @@ export default function HelloDocPreviewPage() {
       </div>
 
       <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain">
-        <p className="hf-card hf-type-caption mx-4 mt-4">{t("helloDoc.preview.disclaimer")}</p>
-
         {error && <p className="hf-type-body p-4 text-hf-red-dark">{t("helloDoc.loadError")}</p>}
 
         {!error && !data && (
@@ -162,7 +142,7 @@ export default function HelloDocPreviewPage() {
               </select>
               <IconChevronDown size={16} stroke={2.5} className="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 text-hf-black" />
             </div>
-            <HelloDocInsight data={insight} />
+            <HelloDocInsight data={insight} layout={layout} />
           </div>
         )}
       </div>

@@ -643,9 +643,14 @@
     "historyAll": "Entire history",
     "sending": "Sending…",
     "errorGeneric": "Something went wrong — try again",
+    "dashboard": {
+      "menu": "Customise dashboard",
+      "menuTitle": "Customise your dashboard",
+      "moveUp": "Move up",
+      "moveDown": "Move down"
+    },
     "preview": {
       "title": "See what it looks like",
-      "disclaimer": "Preview using your own data, in the layout the recipient sees.",
       "startWeight": "Starting weight",
       "startGoal": "Starting goal",
       "recordedOn": "Entered {date}",
@@ -680,7 +685,6 @@
       "accepting": "Confirming…",
       "acceptError": "Could not confirm the invitation — try again.",
       "greeting": "Hi {name}",
-      "disclaimer": "This data was shared by {ownerName} via Hello Cal and does not replace a professional clinical assessment.",
       "loadError": "Could not load this page."
     }
   },

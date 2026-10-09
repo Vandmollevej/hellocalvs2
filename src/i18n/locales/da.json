@@ -643,9 +643,14 @@
     "historyAll": "Hele historikken",
     "sending": "Sender…",
     "errorGeneric": "Noget gik galt — prøv igen",
+    "dashboard": {
+      "menu": "Sammensæt dashboard",
+      "menuTitle": "Sammensæt dit dashboard",
+      "moveUp": "Flyt op",
+      "moveDown": "Flyt ned"
+    },
     "preview": {
       "title": "Sådan ser det ud",
-      "disclaimer": "Forhåndsvisning med dine egne data, i det layout modtageren ser.",
       "startWeight": "Start-vægt",
       "startGoal": "Startmål",
       "recordedOn": "Indtastet {date}",
@@ -680,7 +685,6 @@
       "accepting": "Bekræfter…",
       "acceptError": "Kunne ikke bekræfte invitationen — prøv igen.",
       "greeting": "Hej {name}",
-      "disclaimer": "Disse data er delt af {ownerName} via Hello Cal og erstatter ikke en professionel klinisk vurdering.",
       "loadError": "Kunne ikke hente denne side."
     }
   },

@@ -48,6 +48,12 @@ ikke her, er den ikke registreret og skal tilføjes.
 - "Overlay"/"popup" = den træk-bare BottomSheet (`.hf-bottom-sheet`), se KRAV.md.
 - Visuelle ændringer: læs design.md; størrelse/vægt ændres i moderate trin.
 
+- Ingen ikke-bestilte tekster: ingen disclaimers, forklaringer eller
+  "erstatter ikke læge"-noter på sider, medmindre brugeren har bedt om dem
+  (brugerens regel 2026-10-09; Hello Doc-disclaimeren er fjernet).
+- Hello Doc har burger-menu øverst til højre, hvor modtageren sammensætter
+  dashboardet (vis/skjul + rækkefølge pr. panel, gemt på enheden).
+
 ## Sikkerhed
 
 - Streng sikkerhed (vault) kun for admin; almindelige brugere får normalt login

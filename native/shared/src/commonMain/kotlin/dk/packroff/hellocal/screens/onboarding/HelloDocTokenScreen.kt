@@ -46,6 +46,9 @@ import dk.packroff.hellocal.ui.HcCard
 import dk.packroff.hellocal.ui.HcLoader
 import dk.packroff.hellocal.ui.HcRemoteImage
 import dk.packroff.hellocal.ui.HcText
+import dk.packroff.hellocal.ui.HelloDocDashboardLayout
+import dk.packroff.hellocal.ui.HelloDocDashboardMenu
+import dk.packroff.hellocal.ui.rememberHelloDocDashboardLayout
 import dk.packroff.hellocal.ui.OnbChartPoint
 import dk.packroff.hellocal.ui.OnbMiniBarChart
 import dk.packroff.hellocal.ui.OnbMiniLineChart
@@ -158,6 +161,8 @@ fun HelloDocTokenScreen(args: RouteArgs) {
         }
     }
 
+    val layout = rememberHelloDocDashboardLayout()
+
     Column(Modifier.fillMaxSize().background(HcColors.Page)) {
         // .hf-shell__topbar: logo + "Hello Doc".
         Row(
@@ -167,6 +172,12 @@ fun HelloDocTokenScreen(args: RouteArgs) {
         ) {
             HcRemoteImage("/hello-cal-logo.png", Modifier.width(90.dp).height(40.dp), contentDescription = "Hello Cal")
             HcText("Hello Doc", HcTypeRoles.Title)
+            val active = data
+            if (active != null && active.status == "ACTIVE") {
+                Box(Modifier.weight(1f), contentAlignment = Alignment.CenterEnd) {
+                    HelloDocDashboardMenu(layout, available = availablePanels(active))
+                }
+            }
         }
 
         Column(
@@ -237,13 +248,7 @@ fun HelloDocTokenScreen(args: RouteArgs) {
                         showFood = "foodAndCalories" in categories,
                         showVitamins = "vitaminsMinerals" in categories,
                         greeting = t.t("helloDoc.token.greeting", "name" to share.doctorName),
-                    )
-                    // .hf-insight__footer
-                    HcText(
-                        t.t("helloDoc.token.disclaimer", "ownerName" to share.ownerName),
-                        HcTypeRoles.Caption,
-                        Modifier.fillMaxWidth().padding(top = HcDimens.SpaceBlock),
-                        align = TextAlign.Center,
+                        layout = layout,
                     )
                 }
             }
@@ -280,7 +285,7 @@ private fun Panel(content: @Composable ColumnScope.() -> Unit) {
 
 /** src/components/hf/HelloDocInsight.tsx (phone layout: profile card above the chart panels). */
 @Composable
-private fun HelloDocInsight(data: HelloDocResponse, showFood: Boolean, showVitamins: Boolean, greeting: String?) {
+private fun HelloDocInsight(data: HelloDocResponse, showFood: Boolean, showVitamins: Boolean, greeting: String?, layout: HelloDocDashboardLayout) {
     val t = LocalTranslator.current
     val hasFacts = data.weight != null || data.goals != null || data.sleep != null
     Column(verticalArrangement = Arrangement.spacedBy(HcDimens.SpaceBlock)) {
@@ -336,34 +341,49 @@ private fun HelloDocInsight(data: HelloDocResponse, showFood: Boolean, showVitam
 
         // InsightGrid
         val noData = t.t("helloDoc.preview.noChartData")
-        data.weight?.let { weight ->
-            InsightPanel(t.t("helloDoc.preview.weightSection")) {
-                OnbMiniLineChart(weight.history.map { OnbChartPoint(formatInsightDate(it.date, t.locale), it.weightKg) }, emptyLabel = noData)
-            }
-        }
         val days = data.dailyNutrition
-        if (days != null && showFood) {
-            InsightPanel(t.t("helloDoc.preview.foodSection"), footnote = "${t.t("helloDoc.preview.kcalUnit")}/dag") {
-                OnbMiniBarChart(days.map { OnbChartPoint(it.dateKey, it.kcal.roundToLong().toDouble()) }, emptyLabel = noData)
+        for (id in layout.visible()) {
+            when (id) {
+                "weight" -> data.weight?.let { weight ->
+                    InsightPanel(t.t("helloDoc.preview.weightSection")) {
+                        OnbMiniLineChart(weight.history.map { OnbChartPoint(formatInsightDate(it.date, t.locale), it.weightKg) }, emptyLabel = noData)
+                    }
+                }
+                "food" -> if (days != null && showFood) {
+                    InsightPanel(t.t("helloDoc.preview.foodSection"), footnote = "${t.t("helloDoc.preview.kcalUnit")}/dag") {
+                        OnbMiniBarChart(days.map { OnbChartPoint(it.dateKey, it.kcal.roundToLong().toDouble()) }, emptyLabel = noData)
+                    }
+                }
+                "vitamins" -> if (days != null && showVitamins) {
+                    val points = listOf(
+                        OnbChartPoint("Vitamin A", days.sumOf { it.vitaminA }.roundToLong().toDouble()),
+                        OnbChartPoint("Vitamin C", days.sumOf { it.vitaminC }.roundToLong().toDouble()),
+                        OnbChartPoint("Calcium", days.sumOf { it.calcium }.roundToLong().toDouble()),
+                        OnbChartPoint("Jern", days.sumOf { it.iron }.roundToLong().toDouble()),
+                        OnbChartPoint("Kalium", days.sumOf { it.potassium }.roundToLong().toDouble()),
+                    )
+                    InsightPanel(t.t("helloDoc.preview.vitaminsSection")) {
+                        OnbMiniBarChart(points, color = HcColors.Appbar, emptyLabel = noData)
+                    }
+                }
+                "fluid" -> data.fluidHistory?.let { fluid ->
+                    InsightPanel(t.t("helloDoc.preview.fluidSection")) {
+                        OnbMiniBarChart(fluid.map { OnbChartPoint(formatInsightDate(it.date, t.locale), it.valueMl) }, color = HcColors.Google, emptyLabel = noData)
+                    }
+                }
             }
         }
-        if (days != null && showVitamins) {
-            val points = listOf(
-                OnbChartPoint("Vitamin A", days.sumOf { it.vitaminA }.roundToLong().toDouble()),
-                OnbChartPoint("Vitamin C", days.sumOf { it.vitaminC }.roundToLong().toDouble()),
-                OnbChartPoint("Calcium", days.sumOf { it.calcium }.roundToLong().toDouble()),
-                OnbChartPoint("Jern", days.sumOf { it.iron }.roundToLong().toDouble()),
-                OnbChartPoint("Kalium", days.sumOf { it.potassium }.roundToLong().toDouble()),
-            )
-            InsightPanel(t.t("helloDoc.preview.vitaminsSection")) {
-                OnbMiniBarChart(points, color = HcColors.Appbar, emptyLabel = noData)
-            }
-        }
-        data.fluidHistory?.let { fluid ->
-            InsightPanel(t.t("helloDoc.preview.fluidSection")) {
-                OnbMiniBarChart(fluid.map { OnbChartPoint(formatInsightDate(it.date, t.locale), it.valueMl) }, color = HcColors.Google, emptyLabel = noData)
-            }
-        }
+    }
+}
+
+/** Panels the recipient may arrange (HelloDocTokenPage availablePanels). */
+private fun availablePanels(data: HelloDocResponse): List<String> {
+    val categories = data.categories.orEmpty()
+    return buildList {
+        if (data.weight != null) add("weight")
+        if (data.dailyNutrition != null && "foodAndCalories" in categories) add("food")
+        if (data.dailyNutrition != null && "vitaminsMinerals" in categories) add("vitamins")
+        if (data.fluidHistory != null) add("fluid")
     }
 }
 

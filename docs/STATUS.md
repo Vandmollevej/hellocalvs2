@@ -1,6 +1,12 @@
 # HELLO CAL — project status
 
-Last updated: 2026-10-08
+Last updated: 2026-10-09
+
+## 2026-10-09: Hello Doc — disclaimer væk + sammensæt dashboard
+
+- Disclaimer-teksten nederst i lægevisningen (og forhåndsvisningens indledende note) er fjernet i web og native.
+- Burger-menu øverst til højre (`InsightMenu`, native `HelloDocDashboardMenu`): vis/skjul og flyt paneler op/ned; valget gemmes på enheden (`src/lib/insight-layout.ts`).
+- Lint, tsc og build grønne; Kotlin er ikke kompileret her (kun CI/Android Studio). Ikke testet i browser.
 
 ## 2026-10-08: Adgangsmur mod crawlere
 

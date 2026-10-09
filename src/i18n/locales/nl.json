@@ -641,9 +641,14 @@
     "historyAll": "Volledige geschiedenis",
     "sending": "Versturen…",
     "errorGeneric": "Er ging iets mis — probeer het opnieuw",
+    "dashboard": {
+      "menu": "Dashboard aanpassen",
+      "menuTitle": "Stel je dashboard samen",
+      "moveUp": "Omhoog",
+      "moveDown": "Omlaag"
+    },
     "preview": {
       "title": "Zo ziet het eruit",
-      "disclaimer": "Voorbeeld met je eigen gegevens, in de opmaak die de ontvanger ziet.",
       "startWeight": "Startgewicht",
       "startGoal": "Startdoel",
       "recordedOn": "Ingevoerd {date}",
@@ -678,7 +683,6 @@
       "accepting": "Bevestigen…",
       "acceptError": "De uitnodiging kon niet worden bevestigd — probeer het opnieuw.",
       "greeting": "Hallo {name}",
-      "disclaimer": "Deze gegevens zijn gedeeld door {ownerName} via Hello Cal en vervangen geen professionele klinische beoordeling.",
       "loadError": "Deze pagina kon niet worden geladen."
     }
   },
