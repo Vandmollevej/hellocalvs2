@@ -29,7 +29,7 @@ export function FamilySharingSection({
       {people.length === 0 ? (
         <p className="hf-type-body text-text-secondary">{t("family.sharing.none")}</p>
       ) : (
-        <div className="overflow-hidden rounded-[8px] bg-hf-tan">
+        <div className="overflow-hidden bg-hf-tan rounded-card">
           {people.map((person) => {
             const open = openId === person.userId;
             return (

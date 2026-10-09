@@ -346,8 +346,7 @@ export function RecentEntriesWidget({
           <Link
             key={entry.id}
             href={entry.path}
-            className="flex items-center gap-2 border-t border-hf-tan-dark first:border-t-0"
-            style={{ height: 36 }}
+            className="flex items-center gap-2 border-t border-hf-tan-dark first:border-t-0 h-9"
           >
             {entry.imageUrl ? (
               // eslint-disable-next-line @next/next/no-img-element

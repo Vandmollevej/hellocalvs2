@@ -3,7 +3,7 @@ import { HfChevron } from "@/components/hf/HfChevron";
 
 export function AccordionCard({ children }: { children: React.ReactNode }) {
   return (
-    <div className="overflow-hidden rounded-[8px] bg-hf-tan">{children}</div>
+    <div className="overflow-hidden bg-hf-tan rounded-card">{children}</div>
   );
 }
 
@@ -14,6 +14,7 @@ export function ChevronRow({
   href,
   onClick,
   badgeCount,
+  centerText,
 }: {
   icon: React.ReactNode;
   label: string;
@@ -23,6 +24,8 @@ export function ChevronRow({
   // Ulæst-tal (fx Profil → Beskeder): grøn cirkel med hvidt tal (ejerens valg
   // 2026-10-03). Sidder til venstre for pilen, yderst til højre i rækken.
   badgeCount?: number;
+  // Mørkegrøn tekst midt mellem labelen og pilen (fx "50%" på Kontoopsætning).
+  centerText?: string;
 }) {
   const className = `flex h-12 w-full items-center gap-4 px-4 text-left ${
     divider ? "border-b border-hf-tan-dark" : ""
@@ -30,11 +33,13 @@ export function ChevronRow({
   const content = (
     <>
       <span className="flex h-5 w-5 items-center justify-center text-hf-black">{icon}</span>
-      <span className="hf-type-body flex-1 truncate">{label}</span>
+      <span className={`hf-type-body truncate ${centerText ? "" : "flex-1"}`}>{label}</span>
+      {centerText && (
+        <span className="hf-type-body flex-1 text-center text-hf-brand">{centerText}</span>
+      )}
       {!!badgeCount && badgeCount > 0 && (
         <span
-          className="hf-type-caption flex h-5 min-w-5 items-center justify-center rounded-full px-1"
-          style={{ background: "var(--hf-color-brand)", color: "var(--hf-color-white)" }}
+          className="hf-type-caption flex h-5 min-w-5 items-center justify-center rounded-full px-1 bg-hf-brand text-hf-white"
           aria-label={`${badgeCount} ulæste`}
         >
           {badgeCount > 99 ? "99+" : badgeCount}

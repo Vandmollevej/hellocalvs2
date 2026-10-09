@@ -274,8 +274,11 @@
     "forgetTitle": "Recht om vergeten te worden",
     "forgetIntro": "Laat al je persoonsgegevens verwijderen (AVG). Geanonimiseerde gegevens die niet aan jou te koppelen zijn, blijven bewaard.",
     "forgetButton": "Mijn gegevens verwijderen",
-    "confirmWarning": "Dit kan niet ongedaan worden gemaakt. Typ SLET om te bevestigen.",
-    "confirmPlaceholder": "SLET",
+    "confirmWarning": "Dit kan niet ongedaan worden gemaakt. Typ {word} om te bevestigen.",
+    "confirmPlaceholder": "{word}",
+    "confirmWord": "VERWIJDEREN",
+    "closeWarning": "Typ {word} om te bevestigen.",
+    "closeWord": "SLUITEN",
     "confirmButton": "Bevestigen",
     "error": "Er ging iets mis — probeer het opnieuw"
   },
@@ -466,6 +469,15 @@
     "later": "Later",
     "dontAskAgain": "Niet meer vragen"
   },
+  "staleSyncPrompt": {
+    "title": "{name} is niet gesynchroniseerd",
+    "body": "{name} heeft sinds {date} geen gegevens gestuurd. Je gewicht en activiteit ontbreken mogelijk. Synchroniseer nu zodat alles erbij is.",
+    "syncNow": "Nu synchroniseren",
+    "open": "Integratie openen",
+    "later": "Later",
+    "failed": "Synchroniseren mislukt. Probeer opnieuw of open de integratie.",
+    "never": "nooit"
+  },
   "sentNotice": {
     "title": "Ter info",
     "body": "We hebben je op {date} een {type} gestuurd over \"{subject}\". Dit was geen spam.",
@@ -553,7 +565,23 @@
     "steps": "Stappen",
     "distanceKm": "Kilometers bewogen"
   },
+  "footerArc": {
+    "open": "Toevoegknoppen openen",
+    "close": "Toevoegknoppen sluiten",
+    "editHint": "Sleep een knop omlaag om hem te verwijderen",
+    "done": "Klaar",
+    "removeItem": "{item} verwijderen",
+    "addItem": "{item} toevoegen",
+    "allInUse": "Alle knoppen zijn in gebruik"
+  },
   "addMenu": {
+    "editEditHint": "Houd een tegel ingedrukt om hem te verplaatsen of te verwijderen",
+    "editDone": "Klaar",
+    "editAdd": "Toevoegen",
+    "editRemoveTile": "{item} verwijderen",
+    "editAddTile": "{item} toevoegen",
+    "editNoneHidden": "Alle tegels zijn in gebruik",
+    "editAddTitle": "Tegel toevoegen",
     "title": "Toevoegen",
     "food": "Eten toevoegen",
     "scan": "Product scannen",
@@ -607,7 +635,7 @@
     "categoryProfileDescription": "Naam, e-mail enz.",
     "categoryWeight": "Gewicht",
     "categoryGoals": "Doelen",
-    "categoryMenstrualCycle": "Menstruatiecyclus (alleen voor vrouwen)",
+    "categoryMenstrualCycle": "Menstruatiecyclus",
     "categoryDigestion": "Spijsvertering",
     "categoryComingSoon": "Binnenkort beschikbaar",
     "categoryUnavailable": "Nog niet beschikbaar in de app",
@@ -933,7 +961,27 @@
     "noResults": "Geen recepten gevonden voor je zoekopdracht",
     "tabMine": "Mijn gerechten",
     "tabShared": "Gedeelde gerechten",
+    "statusNotShared": "Not shared",
+
     "sharedSearchPlaceholder": "Zoek op titel, ingrediënten …",
+
+    "createNew": "Nieuw gerecht maken",
+
+    "sourceAll": "Recepten",
+
+    "sourceShared": "Gedeelde gerechten",
+
+    "sourceHelloFresh": "Hello Fresh",
+
+    "sourceValdemarsro": "Valdemarsro",
+
+    "sourceFilterAria": "Kies receptbron",
+
+    "filtersSheetTitle": "Filters",
+
+    "goToRecipe": "Naar recept",
+
+    "valdemarsroSource": "Valdemarsro",
     "sortRelevance": "Relevantie",
     "sortPopular": "Populariteit",
     "sortDate": "Datum",
@@ -1089,6 +1137,19 @@
     }
   },
   "recipeDetail": {
+
+    "shareRejected": "Your dish is not shared with others because it was rejected. You keep it yourself.",
+
+
+    "shareRejectedReason": "Reason: {reason}",
+
+
+    "servingsLabel": "{count} people",
+
+
+    "thumbUp": "Duim omhoog",
+
+    "thumbDown": "Duim omlaag",
     "loading": "Gerecht laden …",
     "notFound": "Het gerecht bestaat niet meer",
     "ingredients": "Ingrediënten",
@@ -1154,7 +1215,55 @@
     }
   },
   "createDish": {
+    "servings": "Number of people",
+
     "shareLabel": "Wil je het gerecht met andere gebruikers delen?",
+
+    "modeManual": "Manual",
+
+    "modeText": "Paste text",
+
+    "modeScan": "Scan",
+
+    "shareQuestionTitle": "Share this dish?",
+
+    "shareQuestionBody": "Other users can find and use your dish. No personal details are shared. You can also share it later from the dish.",
+
+    "shareYes": "Share",
+
+    "shareNo": "Not now",
+
+    "pasteTitle": "Paste recipe text",
+
+    "pastePlaceholder": "Paste the complete recipe text here",
+
+    "pasteSourcePlaceholder": "Source link (optional)",
+
+    "pasteInsert": "Insert",
+
+    "pasteWorking": "Reading the recipe …",
+
+    "pasteError": "Could not read the recipe",
+
+    "scanTitle": "Scan recipe",
+
+    "scanTake": "Take photo",
+
+    "scanGallery": "From library",
+
+    "scanFinish": "Done",
+
+    "scanWorking": "Reading the pages …",
+
+    "scanError": "Could not read the pages",
+
+    "scanHint": "Add the pages in order. The first photo becomes the dish image.",
+
+    "importMissing": "Missing a match or an amount — add these yourself:",
+
+    "importDone": "The recipe was inserted",
+
+    "importNutrition": "Nutrition in the text (per serving)",
     "shareInfo": "Er worden geen persoonlijke gegevens gedeeld wanneer je een gerecht deelt",
     "shareInfoAria": "Over delen",
     "shareError": "Het gerecht is opgeslagen, maar kon nu niet worden gedeeld",
@@ -1259,6 +1368,11 @@
   "offlineQueue": {
     "pendingBannerOne": "1 aanmaak wacht op upload",
     "pendingBannerMany": "{count} aanmaakacties wachten op upload"
+  },
+  "offline": {
+    "message": "Geen verbinding — hiervoor is internet nodig. Probeer het opnieuw als je online bent.",
+    "banner": "Je bent offline — sommige functies werken niet",
+    "barcodeLookup": "De barcode is gelezen, maar je hebt geen verbinding. Probeer het opnieuw als je online bent."
   },
   "profile": {
     "title": "Mijn gegevens",
@@ -1392,7 +1506,14 @@
     "messages": {
       "title": "Berichten",
       "empty": "Je hebt nog geen berichten.",
-      "markAllRead": "Alles als gelezen markeren"
+      "markAllRead": "Alles als gelezen markeren",
+      "unread": "Nieuw",
+      "deleted": "Verwijderd",
+      "trash": "Prullenbak",
+      "delete": "Verwijderen",
+      "clearAll": "Alles wissen",
+      "clearAllWarning": "Alle verwijderde berichten worden definitief gewist. Dit kan niet ongedaan worden gemaakt.",
+      "emptyDeleted": "Geen verwijderde berichten."
     },
     "communication": {
       "intro": "Kies welke berichten je per e-mail en/of push wilt ontvangen. Belangrijke accountberichten (bijv. verificatie en wachtwoord resetten) worden altijd verstuurd.",
@@ -1500,6 +1621,7 @@
     }
   },
   "profileSleep": {
+    "intro": "Slaap kan veel invloed hebben op gewicht en welzijn. Bekijk je leven in een groter perspectief zodra je genoeg gegevens hebt verzameld. Standaard slaap is ingesteld op 22:00 - 07:00.",
     "title": "Slaappatroon",
     "loading": "Laden…",
     "loadError": "Kon slaappatroon niet laden.",
@@ -1603,6 +1725,7 @@
     "measurementGoal": "Doel",
     "latest": "{date} {value}",
     "setGoal": "Stel een doel in",
+    "seeAllGoals": "Alle doelen bekijken",
     "toLose": "{value} tot het doel",
     "toGain": "{value} omhoog tot het doel",
     "goalReached": "Je hebt je doel bereikt",
@@ -1613,7 +1736,8 @@
     "showAll": "Toon alles ({count})",
     "showLess": "Toon minder",
     "chartAria": "Verloop van {name}",
-    "loadError": "Kon je status niet laden."
+    "loadError": "Kon je status niet laden.",
+    "customizeView": "Weergave aanpassen"
   },
   "bodyMeasurementChart": {
     "noData": "Nog geen metingen.",
@@ -1641,6 +1765,7 @@
     "dateRequired": "Kies een doeldatum om op te slaan.",
     "targetDateLabel": "Uiterlijk bereikt op {date}",
     "weight": "Gewicht",
+    "weightCompositionHeading": "Gewicht en lichaamsbouw",
     "bodyMeasurementsHeading": "Lichaamsmaten",
     "weightPlaceholder": "bijv. 72,0",
     "measurementPlaceholder": "bijv. 82",
@@ -1681,6 +1806,89 @@
       "fatG": "bijv. 70"
     }
   },
+  "weighIn": {
+    "attireTitle": "What were you wearing?",
+    "attireItem": {
+      "UNDERWEAR": "Underwear",
+      "PANTS": "Trousers",
+      "TOP": "Top / T-shirt",
+      "SWEATER": "Sweater",
+      "SHOES": "Shoes",
+      "POCKET_ITEMS": "Phone etc. in pocket",
+      "AFTER_TOILET": "After using the toilet"
+    },
+    "attireNaked": "Nothing selected = naked",
+    "attire": {
+      "NAKED": "Naked",
+      "UNDERWEAR": "In underwear",
+      "CLOTHED": "Clothed",
+      "CLOTHED_PHONE": "Clothed, phone in pocket"
+    },
+    "save": "Save",
+    "saving": "Saving…",
+    "saveError": "Could not save. Try again.",
+    "later": "Later",
+    "continue": "Continue",
+    "ago": {
+      "justNow": "just now",
+      "minutes": "{n} min. ago",
+      "hours": "{n} hours ago",
+      "days": "{n} days ago"
+    },
+    "sync": {
+      "now": "Sync now",
+      "syncing": "Syncing…",
+      "done": "Synced",
+      "failed": "Sync failed",
+      "error": "Error — reconnect",
+      "last": "Synced {ago}",
+      "never": "Not synced yet",
+      "open": "Open {name}",
+      "openShort": "Open",
+      "noneConnected": "No smart scale connected",
+      "connect": "Connect"
+    },
+    "stale": {
+      "title": "It has been a while since the last sync",
+      "body": "{name} was last synced {ago}. Sync so your latest weigh-ins come through.",
+      "bodyNever": "{name} has not been synced yet. Sync so your weigh-ins come through."
+    },
+    "prompt": {
+      "aria": "What were you wearing when you weighed in?",
+      "todayMorning": "You weighed yourself this morning.",
+      "past": "You weighed yourself {when}",
+      "andWeighed": "and weighed",
+      "question": "But was it:",
+      "older": "Older weigh-in",
+      "newer": "Newer weigh-in"
+    },
+    "when": {
+      "today": {
+        "morning": "this morning",
+        "afternoon": "this afternoon",
+        "evening": "this evening",
+        "night": "last night"
+      },
+      "yesterday": {
+        "morning": "yesterday morning",
+        "afternoon": "yesterday afternoon",
+        "evening": "yesterday evening",
+        "night": "last night"
+      },
+      "part": {
+        "morning": "morning",
+        "afternoon": "afternoon",
+        "evening": "evening",
+        "night": "night"
+      },
+      "weekday": "{weekday} {part}",
+      "lastWeek": "last {weekday}"
+    },
+    "details": {
+      "title": "Weigh-in",
+      "failed": "Could not load the weigh-in."
+    }
+  },
   "weightLog": {
     "title": "Gewicht",
     "intro": "Registreer je gewicht. Het wordt direct opgeslagen en verschijnt in de agenda en de statistieken.",
@@ -1690,7 +1898,7 @@
     "saving": "Opslaan…",
     "saveError": "Het gewicht kon niet worden opgeslagen.",
     "saved": "Gewicht opgeslagen.",
-    "moreDetailsLink": "Registreren met meer details (kleding, schoenen, tijdstip)",
+    "moreDetailsLink": "Je moet je weegschaal nog kalibreren",
     "loading": "Laden…",
     "noEntriesYet": "Nog geen wegingen geregistreerd.",
     "recentTitle": "Laatste wegingen"
@@ -1816,7 +2024,6 @@
   "addProduct": {
     "reportBug": "Een fout gevonden?",
     "reading": "Lezen…",
-    "ingredientsUnreadable": "De ingrediënten zijn niet leesbaar op de foto.",
     "retakeIngredients": "Maak een nieuwe foto van de ingrediënten",
     "title": "Toevoegen",
     "titleForDish": "Ingrediënt toevoegen",
@@ -1830,6 +2037,7 @@
     "kcalPer100g": "({kcal} kcal/100g)",
     "kcalPer100ml": "({kcal} kcal/100ml)",
     "kcalAmount": "{kcal} calorieën",
+    "perPiece": "/stuk",
     "sizeLabel": "Grootte",
     "sizeSmall": "Klein",
     "sizeMedium": "Normaal",
@@ -1869,9 +2077,6 @@
     "extendedNutrition": "Voedingswaarde",
     "extendedNutritionDisclaimer": "Wordt alleen getoond als er gegevens voor dit product zijn.",
     "toxins": "Toxines",
-    "tagCountryOfOrigin": "Uit {country}",
-    "tagAlcoholPercent": "{percent} % alcohol",
-    "tagFatPercent": "{percent} % vet",
     "toxinPregnancyBadge": "Zwanger/borstvoeding",
     "toxinsDisclaimer": "Gebaseerd op de ingrediëntenlijst — geen meting van dit specifieke product. Bronnen: de Deense voedselautoriteit (Fødevarestyrelsen) en EFSA.",
     "unhealthyFat": "Ongezond vet",
@@ -1925,6 +2130,9 @@
   "productUpdate": {
     "banner": "Verdien {points} punten door het product bij te werken",
     "toggle": "Banner tonen of verbergen",
+    "tileFront": "Voorkant",
+    "tileNutrition": "Energie",
+    "tileIngredients": "Ingrediënten",
     "title": "Product bijwerken",
     "kindFront": "Voorkant van het product ({points} punten)",
     "hintFront": "Maak een foto van de voorkant, zodat het product een afbeelding en logo krijgt.",
@@ -1967,7 +2175,7 @@
     "favorites": "Favorieten",
     "addFavorite": "Toevoegen aan favorieten",
     "removeFavorite": "Verwijderen uit favorieten",
-    "recentlyAdded": "Recent gebruikt",
+    "recentlyAdded": "Recent toegevoegd",
     "searchResults": "Zoekresultaten",
     "allItems": "Alle producten",
     "emptyState": "Zoek een voedingsmiddel of voeg een favoriet toe om het hier te zien.",
@@ -1975,6 +2183,8 @@
     "noResults": "Geen resultaten"
   },
   "integrations": {
+    "moveFromTitle": "MyFitnessPal or Lifesum",
+    "moveFromDescription": "Move your diary over with a screen recording.",
     "helloFreshTitle": "HelloFresh-recepten",
     "helloFreshDescription": "Toon HelloFresh-recepten samen met de gedeelde gerechten onder Recepten",
     "title": "Integraties",
@@ -2004,6 +2214,7 @@
     "enable": "Inschakelen",
     "unavailable": "Nog niet beschikbaar",
     "sections": {
+      "moveFrom": "Move from another app",
       "active": "Actieve integraties",
       "popular": "Meest gebruikt",
       "recipes": "Recepten",
@@ -3014,7 +3225,13 @@
     "devicesHeading": "Slaap bijhouden met slimme apparatuur",
     "devicesIntro": "Koppel een horloge of app, dan kun je ervaren slaap vergelijken met werkelijke slaap."
   },
+  "helpGuide": {
+    "title": "Gids",
+    "end": "Gids beëindigen",
+    "missing": "Ik kan de knop nu niet vinden. Open de pagina handmatig via de snelkoppeling in de chat."
+  },
   "helpChat": {
+    "guideMe": "Begeleid mij",
     "open": "Hulp",
     "title": "Hulp",
     "welcome": "Hoi! Ik ben de hulpchatbot van Hello Cal. Vraag me iets over de app, dan help ik je verder. Wil je liever met een mens praten, tik dan op \"Praat met een medewerker\".",
@@ -3042,5 +3259,31 @@
     "sendError": "Het bericht is niet verstuurd. Probeer het opnieuw.",
     "escalateError": "Doorsturen naar Support is niet gelukt. Probeer het opnieuw of gebruik het contactformulier.",
     "rateLimited": "Je hebt veel vragen gesteld in korte tijd. Wacht even of praat met een medewerker."
+  },
+  "migrationImport": {
+    "title": "Move from MyFitnessPal or Lifesum",
+    "intro": "Record your screen while you scroll through your diary in the other app. Hello Cal reads the foods, amounts and calories and adds them to your calendar.",
+    "fromApp": "From the app",
+    "step1": "Start a screen recording on your phone (or take screenshots).",
+    "step2": "Open the diary in the other app and scroll calmly back, day by day.",
+    "step3": "Stop the recording and choose the video here.",
+    "choose": "Choose screen recording or screenshots",
+    "privacy": "The images are not saved. They are read once, and only the rows (date, meal, food, amount and nutrition) are kept until you choose what to import.",
+    "preparing": "Preparing the recording…",
+    "reading": "Reading image {done} of {total}…",
+    "readError": "The recording could not be read. Try again, or use screenshots.",
+    "reviewHint": "Review the rows. Uncertain rows are not preselected.",
+    "nothingFound": "We found no foods in the recording. Try scrolling more slowly so each day stays still for a moment.",
+    "unsure": "uncertain",
+    "importSelected": "Import {count} rows",
+    "commitError": "The import failed. Please try again.",
+    "done": "{count} entries have been added to your calendar.",
+    "openCalendar": "Open the calendar",
+    "meal": {
+      "breakfast": "Breakfast",
+      "lunch": "Lunch",
+      "dinner": "Dinner",
+      "snack": "Snack"
+    }
   }
 }

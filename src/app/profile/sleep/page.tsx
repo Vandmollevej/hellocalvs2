@@ -18,6 +18,11 @@ type SleepUser = {
 // Sæt til true for at vise kontakten igen.
 const SHOW_SHIFT_WORK = false;
 
+// Standard søvn 22.00–07.00 (docs/DECISIONS.md 2026-10-06), samme tekst som i
+// opsætningsguidens søvn-side.
+const DEFAULT_BEDTIME_MINUTES = 22 * 60;
+const DEFAULT_WAKE_MINUTES = 7 * 60;
+
 type SleepSchedule = {
   weekday: number;
   bedtime: string;
@@ -189,6 +194,7 @@ export default function SleepSchedulePage() {
         )
       ) : (
         <div className="hf-page">
+          <p className="hf-type-body text-text-secondary">{t("profileSleep.intro")}</p>
           <div className="grid grid-cols-2 gap-4">
             <Field label={t("profileSleep.defaultWakeTime")}>
               <input
@@ -248,9 +254,9 @@ export default function SleepSchedulePage() {
                 // en dags-specifik afvigelse, når brugeren rent faktisk
                 // rører netop den dags slider.
                 const wakeMinutes =
-                  timeToMinutes(schedule?.wakeTime) ?? timeToMinutes(user.defaultWakeTime) ?? 7 * 60;
+                  timeToMinutes(schedule?.wakeTime) ?? timeToMinutes(user.defaultWakeTime) ?? DEFAULT_WAKE_MINUTES;
                 const bedtimeMinutes =
-                  timeToMinutes(schedule?.bedtime) ?? timeToMinutes(user.defaultBedtime) ?? 23 * 60;
+                  timeToMinutes(schedule?.bedtime) ?? timeToMinutes(user.defaultBedtime) ?? DEFAULT_BEDTIME_MINUTES;
                 return (
                   <div key={label} className="flex flex-col gap-2">
                     <span className="hf-type-small hf-type-strong text-hf-black">{label}</span>

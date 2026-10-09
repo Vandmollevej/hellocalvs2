@@ -18,7 +18,7 @@ export function IngredientsText({ text }: { text: string }) {
           ),
         );
         return segment.allergen ? (
-          <strong key={index} className="font-bold uppercase">
+          <strong key={index} className="uppercase hf-type-strong">
             {content}
           </strong>
         ) : (

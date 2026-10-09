@@ -62,6 +62,18 @@ export const JOBS: JobDefinition[] = [
     defaultRunAtTime: "04:00",
   },
   {
+    // Dyrefoder-spærringens billedtjek (docs/DECISIONS.md 2026-10-07): kun om
+    // natten som robot, aldrig i scan-flowet (brugerregel).
+    key: "pet-food-scan",
+    name: "Dyrefoder: billedtjek",
+    description:
+      "Gennemgår først alle eksisterende varer med stregkode- og ordspærringen (fund markeres til admin i Oversigten) og lader derefter AI'en se forsidefotoet af brugeroprettede og ventende varer, der ikke er tjekket endnu. Er emballagen tydeligt dyrefoder (hundemad, kattemad, dyregodbidder m.m.), afvises varen automatisk, og ejeren får besked. Stregkode- og ordspærringen kører stadig live ved oprettelsen.",
+    runtime: "app",
+    robot: true,
+    defaultIntervalMinutes: null,
+    defaultRunAtTime: "03:45",
+  },
+  {
     // Puls-robotten (docs/DECISIONS.md 2026-10-04): om natten finder den
     // pulsudsving uden registreret sport og gætter sporten ud fra kurvens form.
     key: "pulse-activity",
@@ -96,6 +108,16 @@ export const JOBS: JobDefinition[] = [
     defaultRunAtTime: "03:30",
   },
   {
+    key: "energy-split-check",
+    name: "Energifordeling: afvigelser",
+    description:
+      "Sammenligner energifordelingen (protein/kulhydrat/fedt i % af kcal) for varer med samme brand, produkttype, serie og variant, der kun adskiller sig på mængde. Afviger en vare, får den et flag under Usikkerheder → Energi-afvigelser. Varen deaktiveres ikke.",
+    runtime: "app",
+    robot: true,
+    defaultIntervalMinutes: null,
+    defaultRunAtTime: "04:30",
+  },
+  {
     key: "frida-import",
     name: "Frida-import",
     description:
@@ -104,6 +126,15 @@ export const JOBS: JobDefinition[] = [
     container: "frida-agent",
     defaultIntervalMinutes: 24 * 60,
     defaultRunAtTime: null,
+  },
+  {
+    key: "valdemarsro-import",
+    name: "Valdemarsro-import",
+    description: "Finder nye opskrifter på Valdemarsro hver nat og sikrer, at alle gemte opskrifters links stadig lever (døde links spærres).",
+    runtime: "agent",
+    container: "valdemarsro-agent",
+    defaultIntervalMinutes: null,
+    defaultRunAtTime: "03:30",
   },
   {
     key: "hellofresh-import",

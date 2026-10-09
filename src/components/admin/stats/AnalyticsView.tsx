@@ -33,7 +33,7 @@ function StatCard({
 }) {
   const good = change !== null && (invert ? change < 0 : change > 0);
   return (
-    <div className="flex flex-col hf-surface p-4">
+    <div className="hf-panel">
       <p className="hf-type-body text-text-secondary">{label}</p>
       <p className="hf-type-hero mt-1 text-hf-black">{value}</p>
       <p
@@ -116,7 +116,7 @@ function TrafficChart({ overview }: { overview: AnalyticsOverview }) {
   const labelEvery = Math.max(1, Math.ceil(buckets.length / 12));
 
   return (
-    <section className="hf-surface p-4">
+    <section className="hf-panel">
       <header className="mb-3 flex flex-wrap items-center justify-between gap-2">
         <h2 className="hf-type-body hf-type-strong text-hf-black">Trafik</h2>
         <div className="hf-type-small flex gap-4 text-text-secondary">
@@ -222,7 +222,7 @@ function Unavailable({ error }: { error: unknown }) {
         ? "Appen kan ikke logge ind i Umami. Har du skiftet Umamis admin-kode, skal den nye kode sættes som UMAMI_PASSWORD i .env.production."
         : "Umami svarede med en fejl. Prøv igen om lidt.";
   return (
-    <div className="hf-type-body hf-surface p-4 text-text-secondary">
+    <div className="hf-type-body text-text-secondary hf-panel">
       <p className="hf-type-strong text-hf-black">Analysen er ikke tilgængelig lige nu</p>
       <p className="mt-1">{text}</p>
       {error instanceof Error && <p className="hf-type-small mt-2 text-text-muted">{error.message}</p>}

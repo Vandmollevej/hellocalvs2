@@ -139,6 +139,12 @@ const DEFAULT_TEMPLATES: Record<MessageEventType, { subject: string; bodyHtml: s
     bodyHtml: "<p>Hej {{displayName}},</p><p>Varen \"{{productName}}\" kunne desværre ikke godkendes.</p>",
     channel: "EMAIL",
   },
+  RECIPE_SHARE_REJECTED: {
+    subject: "Din ret blev ikke delt",
+    bodyHtml:
+      "<p>Hej {{displayName}},</p><p>Retten \"{{dishName}}\" er ikke delt med andre, fordi den blev afvist.</p><p>Begrundelse: {{reason}}</p><p>Du beholder retten selv under Mine retter.</p>",
+    channel: "EMAIL",
+  },
   PRODUCT_ESCALATION_ADMIN: {
     subject: "Vare venter på godkendelse (>48 timer)",
     bodyHtml: "<p>Varen \"{{productName}}\" har ventet mere end 48 timer.</p><p><a href=\"{{approveLink}}\">Godkend/afvis direkte</a></p>",

@@ -31,7 +31,7 @@ export function PersonaRecompute({ canRun, hasSnapshot }: { canRun: boolean; has
         onClick={run}
         disabled={!canRun || state.loading}
         title={canRun ? undefined : "Kræver fuld administratoradgang"}
-        className="rounded-md bg-hf-fab px-3 py-1.5 text-sm text-hf-white disabled:opacity-60"
+        className="rounded-md bg-hf-fab px-3 py-1.5 text-hf-white disabled:opacity-60 hf-type-body"
       >
         {state.loading ? "Beregner …" : hasSnapshot ? "Beregn igen med AI" : "Beregn personas med AI"}
       </button>

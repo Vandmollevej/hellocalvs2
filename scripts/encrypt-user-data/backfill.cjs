@@ -39,7 +39,7 @@ const hash = (e) => createHmac("sha256", hashKey).update(e.trim().toLowerCase())
 async function main() {
   const prisma = new PrismaClient({ adapter: new PrismaPg({ connectionString: process.env.DATABASE_URL }) });
   const rows = await prisma.$queryRaw`
-    SELECT "id", "email", "displayName", "phone", "emailHash" FROM "User"
+    SELECT "id", "email", "displayName", "phone", "emailHash" FROM "users"
     WHERE "emailHash" IS NULL OR "email" NOT LIKE 'enc:v1:%' OR "displayName" NOT LIKE 'enc:v1:%'
        OR ("phone" IS NOT NULL AND "phone" NOT LIKE 'enc:v1:%')`;
   console.log(`${rows.length} raekke(r) skal behandles (${apply ? "APPLY" : "dry-run"}).`);
@@ -49,7 +49,7 @@ async function main() {
     // Hvis email allerede er krypteret men hash mangler, kan hash ikke udledes uden at dekryptere.
     if (r.email.startsWith(PREFIX)) {
       if (apply && r.phone && !r.phone.startsWith(PREFIX)) {
-        await prisma.$executeRaw`UPDATE "User" SET "phone" = ${enc(r.phone)} WHERE "id" = ${r.id}`;
+        await prisma.$executeRaw`UPDATE "users" SET "phone" = ${enc(r.phone)} WHERE "id" = ${r.id}`;
         done++;
       } else if (!r.phone || r.phone.startsWith(PREFIX)) {
         failed.push({ id: r.id, reason: "email krypteret men emailHash mangler" });
@@ -59,7 +59,7 @@ async function main() {
     if (!apply) continue;
     try {
       await prisma.$executeRaw`
-        UPDATE "User" SET "email" = ${enc(r.email)}, "displayName" = ${enc(r.displayName)}, "phone" = ${r.phone ? enc(r.phone) : null}, "emailHash" = ${hash(r.email)}
+        UPDATE "users" SET "email" = ${enc(r.email)}, "displayName" = ${enc(r.displayName)}, "phone" = ${r.phone ? enc(r.phone) : null}, "emailHash" = ${hash(r.email)}
         WHERE "id" = ${r.id}`;
       done++;
     } catch (e) {
@@ -69,7 +69,7 @@ async function main() {
   console.log(`Krypteret: ${done}. Fejlede: ${failed.length}.`);
   for (const f of failed) console.log(`  id=${f.id}: ${f.reason}`);
   const left = await prisma.$queryRaw`
-    SELECT COUNT(*)::int AS n FROM "User" WHERE "emailHash" IS NULL OR "email" NOT LIKE 'enc:v1:%' OR "displayName" NOT LIKE 'enc:v1:%'
+    SELECT COUNT(*)::int AS n FROM "users" WHERE "emailHash" IS NULL OR "email" NOT LIKE 'enc:v1:%' OR "displayName" NOT LIKE 'enc:v1:%'
        OR ("phone" IS NOT NULL AND "phone" NOT LIKE 'enc:v1:%')`;
   console.log(`Tilbage ukrypteret: ${left[0].n}.`);
   await prisma.$disconnect();

@@ -31,7 +31,7 @@ const STATUS_LABELS: Record<string, string> = {
 
 function Tile({ label, value }: { label: string; value: string }) {
   return (
-    <div className="hf-surface p-4">
+    <div className="hf-panel">
       <p className="hf-type-body text-text-secondary">{label}</p>
       <p className="hf-type-hero mt-1 text-hf-black">{value}</p>
     </div>
@@ -100,7 +100,7 @@ export async function HelloDocView({ range }: { range: AdStatsRange }) {
         <Tile label="Brugere der deler" value={number.format(data.totals.sharers)} />
         <Tile label="Aktive delinger nu" value={number.format(data.totals.activeNow)} />
       </div>
-      <div className="hf-surface p-4">
+      <div className="hf-panel">
         <h2 className="hf-type-body hf-type-strong mb-3 text-hf-black">Invitationer pr. dag</h2>
         <StatsBarChart
           points={data.series.map((b) => ({ key: b.key, label: b.label, values: { created: b.created, accepted: b.accepted } }))}

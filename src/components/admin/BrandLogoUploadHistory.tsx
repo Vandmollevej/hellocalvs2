@@ -103,7 +103,7 @@ export function BrandLogoUploadHistory({ batches, canEdit }: { batches: LogoUplo
         const batchConfirm = confirm && confirm.ids.every((id) => batch.items.some((item) => item.id === id)) ? confirm : null;
 
         return (
-          <article key={batch.id} className="hf-surface flex flex-col gap-3 p-4">
+          <article key={batch.id} className="hf-panel">
             <header className="flex flex-col gap-2">
               <div className="flex flex-wrap items-baseline justify-between gap-2">
                 <h3 className="hf-type-body-lg hf-type-strong text-hf-black">Parti {formatTimestamp(batch.createdAt)}</h3>
@@ -168,13 +168,13 @@ export function BrandLogoUploadHistory({ batches, canEdit }: { batches: LogoUplo
                 <thead>
                   <tr className="hf-type-small border-b border-hf-tan-dark text-text-muted">
                     {canEdit && <th className="w-8 py-2 pr-2" aria-label="Vælg" />}
-                    <th className="w-20 py-2 pr-3 font-normal">Logo</th>
-                    <th className="py-2 pr-3 font-normal">Fil og brand</th>
-                    <th className="py-2 pr-3 font-normal">Størrelse</th>
-                    <th className="py-2 pr-3 font-normal">Original</th>
-                    <th className="py-2 pr-3 font-normal">Filstørrelse</th>
-                    <th className="py-2 pr-3 font-normal">Status</th>
-                    <th className="py-2 font-normal">
+                    <th className="w-20 py-2 pr-3">Logo</th>
+                    <th className="py-2 pr-3">Fil og brand</th>
+                    <th className="py-2 pr-3">Størrelse</th>
+                    <th className="py-2 pr-3">Original</th>
+                    <th className="py-2 pr-3">Filstørrelse</th>
+                    <th className="py-2 pr-3">Status</th>
+                    <th className="py-2">
                       <span className="sr-only">Handlinger</span>
                     </th>
                   </tr>

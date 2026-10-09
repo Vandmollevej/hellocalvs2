@@ -31,7 +31,7 @@ export function StatsAiSummary({ query }: { query: string }) {
           type="button"
           onClick={run}
           disabled={state.loading}
-          className="hf-btn-primary h-10 px-4 disabled:opacity-60"
+          className="hf-btn-primary h-10 px-4"
         >
           {state.loading ? "Analyserer …" : state.text ? "Analysér igen" : "Analysér med AI"}
         </button>

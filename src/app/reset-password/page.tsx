@@ -101,8 +101,7 @@ function ResetPasswordContent() {
   return (
     <div className="flex h-full min-h-full flex-col bg-hf-cream">
       <div
-        className="hf-appbar hf-appbar--brand"
-        style={{ paddingTop: "max(16px, env(safe-area-inset-top, 0px))" }}
+        className="hf-appbar hf-appbar--brand hf-safe-top"
       >
         <div className="hf-appbar__slot">
           <Link href="/login" aria-label={t("forgotPassword.back")} className="flex h-full w-full items-center justify-center text-hf-white">
@@ -129,7 +128,7 @@ function ResetPasswordContent() {
             type="button"
             disabled={submitting}
             onClick={sendCode}
-            className="hf-control hf-btn-primary mb-8 w-full disabled:opacity-50"
+            className="hf-control hf-btn-primary mb-8 w-full"
           >
             {submitting ? t("sms.sendingCode") : t("sms.sendCode")}
           </button>
@@ -180,7 +179,7 @@ function ResetPasswordContent() {
           <button
             type="submit"
             disabled={submitting}
-            className="hf-control hf-btn-primary mb-8 w-full disabled:opacity-50"
+            className="hf-control hf-btn-primary mb-8 w-full"
           >
             {submitting ? t("resetPassword.submitting") : t("resetPassword.submit")}
           </button>

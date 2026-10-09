@@ -219,6 +219,8 @@ export async function listUncertainties(): Promise<UncertaintyRow[]> {
 
 // Rød prik ved "Uncertainties" i admin-menuen.
 export async function hasOpenUncertainties(): Promise<boolean> {
+  const energyFlag = await prisma.productEnergySplitFlag.findFirst({ where: { reviewedAt: null }, select: { id: true } });
+  if (energyFlag) return true;
   const [analyses, matchCheck] = await Promise.all([
     prisma.aiProductAnalysis.findMany({
       where: {

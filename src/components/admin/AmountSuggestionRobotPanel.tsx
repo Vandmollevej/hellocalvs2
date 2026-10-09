@@ -81,8 +81,8 @@ export function AmountSuggestionRobotPanel({ initial }: { initial: AmountSuggest
       <section className="flex flex-col gap-3 rounded-md border border-border-strong bg-surface-2 p-4">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
-            <h2 className="text-sm font-medium text-text-primary">Mængde-robot</h2>
-            <p className="text-xs text-text-secondary">
+            <h2 className="text-text-primary hf-type-body hf-type-strong">Mængde-robot</h2>
+            <p className="text-text-secondary hf-type-small">
               Container <code>amount-suggestion-agent</code> ·{" "}
               <span className={robot.online ? "text-hf-green-dark" : "text-hf-red-dark"}>
                 {robot.online ? "kører" : "ingen kontakt"}
@@ -95,7 +95,7 @@ export function AmountSuggestionRobotPanel({ initial }: { initial: AmountSuggest
               type="button"
               disabled={busy}
               onClick={() => send("PATCH", API, { enabled: !robot.enabled }, robot.enabled ? "Robotten er slået fra." : "Robotten er slået til.")}
-              className="rounded-md border border-border-strong px-3 py-2 text-sm text-text-secondary hover:bg-hf-tan disabled:opacity-50"
+              className="hf-btn-secondary hf-btn--compact"
             >
               {robot.enabled ? "Slå fra" : "Slå til"}
             </button>
@@ -103,14 +103,14 @@ export function AmountSuggestionRobotPanel({ initial }: { initial: AmountSuggest
               type="button"
               disabled={busy || running}
               onClick={() => send("POST", `${API}/run`, undefined, "Kørsel bestilt — robotten starter inden for et minut.")}
-              className="rounded-md bg-hf-green-dark px-4 py-2 text-sm font-medium text-hf-white disabled:opacity-50"
+              className="hf-btn-primary hf-btn--compact"
             >
               {running ? "Kører…" : "Kør nu"}
             </button>
           </div>
         </div>
 
-        <dl className="grid grid-cols-2 gap-x-4 gap-y-1 text-xs sm:grid-cols-4">
+        <dl className="grid grid-cols-2 gap-x-4 gap-y-1 sm:grid-cols-4 hf-type-small">
           <dt className="text-text-muted">Status</dt>
           <dd className="text-text-primary">{robot.enabled ? (robot.lastRunStatus ?? "Ikke kørt endnu") : "Slået fra"}</dd>
           <dt className="text-text-muted">Seneste kørsel</dt>
@@ -126,13 +126,13 @@ export function AmountSuggestionRobotPanel({ initial }: { initial: AmountSuggest
           <dt className="text-text-muted">Varighed</dt>
           <dd className="text-text-primary">{summary?.durationMs != null ? `${summary.durationMs} ms` : "–"}</dd>
         </dl>
-        {robot.lastError && <p className="text-xs text-hf-red-dark">Fejl: {robot.lastError}</p>}
-        {message && <p className="text-sm text-text-secondary">{message}</p>}
+        {robot.lastError && <p className="text-hf-red-dark hf-type-small">Fejl: {robot.lastError}</p>}
+        {message && <p className="text-text-secondary hf-type-body">{message}</p>}
       </section>
 
       <section className="flex flex-col gap-3 rounded-md border border-border-strong bg-surface-2 p-4">
-        <h2 className="text-sm font-medium text-text-primary">Indstillinger</h2>
-        <label className="flex items-start gap-2 text-sm">
+        <h2 className="text-text-primary hf-type-body hf-type-strong">Indstillinger</h2>
+        <label className="flex items-start gap-2 hf-type-body">
           <input
             type="checkbox"
             checked={draft.useInApp}
@@ -141,14 +141,14 @@ export function AmountSuggestionRobotPanel({ initial }: { initial: AmountSuggest
           />
           <span>
             <span className="text-text-primary">Brug forslagene i app&apos;en</span>
-            <span className="block text-xs text-text-secondary">
+            <span className="block text-text-secondary hf-type-small">
               Slået fra: slideren starter som før på 100 g / 1 portion, men robotten regner videre.
             </span>
           </span>
         </label>
         <div className="grid gap-3 sm:grid-cols-2">
           {AMOUNT_SUGGESTION_FIELDS.map((field) => (
-            <label key={field.key} className="flex flex-col gap-1 text-sm">
+            <label key={field.key} className="flex flex-col gap-1 hf-type-body">
               <span className="text-text-primary">{field.label}</span>
               <input
                 type="number"
@@ -157,9 +157,9 @@ export function AmountSuggestionRobotPanel({ initial }: { initial: AmountSuggest
                 step={field.step}
                 value={draft[field.key]}
                 onChange={(event) => setDraft({ ...draft, [field.key]: Number(event.target.value) })}
-                className="rounded-md border border-border-strong px-3 py-2 text-sm"
+                className="rounded-md border border-border-strong px-3 py-2 hf-type-body"
               />
-              <span className="text-xs text-text-secondary">{field.help}</span>
+              <span className="text-text-secondary hf-type-small">{field.help}</span>
             </label>
           ))}
         </div>
@@ -168,7 +168,7 @@ export function AmountSuggestionRobotPanel({ initial }: { initial: AmountSuggest
             type="button"
             disabled={busy || !dirty}
             onClick={() => send("PATCH", API, { settings: draft }, "Gemt. Robotten bruger de nye indstillinger ved næste kørsel.")}
-            className="rounded-md bg-hf-green-dark px-4 py-2 text-sm font-medium text-hf-white disabled:opacity-50"
+            className="rounded-md bg-hf-green-dark px-4 py-2 text-hf-white disabled:opacity-50 hf-type-body hf-type-strong"
           >
             Gem indstillinger
           </button>
@@ -176,7 +176,7 @@ export function AmountSuggestionRobotPanel({ initial }: { initial: AmountSuggest
             type="button"
             disabled={busy}
             onClick={() => setDraft(DEFAULT_AMOUNT_SUGGESTION_SETTINGS)}
-            className="rounded-md border border-border-strong px-3 py-2 text-sm text-text-secondary hover:bg-hf-tan"
+            className="rounded-md border border-border-strong px-3 py-2 text-text-secondary hover:bg-hf-tan hf-type-body"
           >
             Standardværdier
           </button>
@@ -184,30 +184,30 @@ export function AmountSuggestionRobotPanel({ initial }: { initial: AmountSuggest
       </section>
 
       <section className="flex flex-col gap-3 rounded-md border border-border-strong bg-surface-2 p-4">
-        <h2 className="text-sm font-medium text-text-primary">Test et forslag</h2>
+        <h2 className="text-text-primary hf-type-body hf-type-strong">Test et forslag</h2>
         <div className="flex flex-wrap items-end gap-3">
-          <label className="flex min-w-[200px] flex-1 flex-col gap-1 text-sm">
+          <label className="flex min-w-[200px] flex-1 flex-col gap-1 hf-type-body">
             <span className="text-text-secondary">Vare-id (produkt eller løs ingrediens)</span>
             <input
               value={testItemId}
               onChange={(event) => setTestItemId(event.target.value)}
-              className="rounded-md border border-border-strong px-3 py-2 text-sm"
+              className="rounded-md border border-border-strong px-3 py-2 hf-type-body"
             />
           </label>
-          <label className="flex min-w-[160px] flex-col gap-1 text-sm">
+          <label className="flex min-w-[160px] flex-col gap-1 hf-type-body">
             <span className="text-text-secondary">Bruger-id (valgfrit)</span>
             <input
               value={testUserId}
               onChange={(event) => setTestUserId(event.target.value)}
-              className="rounded-md border border-border-strong px-3 py-2 text-sm"
+              className="rounded-md border border-border-strong px-3 py-2 hf-type-body"
             />
           </label>
-          <label className="flex flex-col gap-1 text-sm">
+          <label className="flex flex-col gap-1 hf-type-body">
             <span className="text-text-secondary">Kontekst</span>
             <select
               value={testContext}
               onChange={(event) => setTestContext(event.target.value as "EATEN" | "RECIPE")}
-              className="rounded-md border border-border-strong px-3 py-2 text-sm"
+              className="rounded-md border border-border-strong px-3 py-2 hf-type-body"
             >
               <option value="EATEN">Spist</option>
               <option value="RECIPE">Opskrift</option>
@@ -216,40 +216,40 @@ export function AmountSuggestionRobotPanel({ initial }: { initial: AmountSuggest
           <button
             type="button"
             onClick={runTest}
-            className="rounded-md border border-border-strong px-3 py-2 text-sm text-text-secondary hover:bg-hf-tan"
+            className="rounded-md border border-border-strong px-3 py-2 text-text-secondary hover:bg-hf-tan hf-type-body"
           >
             Beregn
           </button>
         </div>
         {testResult === "none" && (
-          <p className="text-xs text-text-secondary">
+          <p className="text-text-secondary hf-type-small">
             Intet forslag (ingen data, eller forslag er slået fra i app&apos;en) — slideren starter på standarden.
           </p>
         )}
         {testResult && testResult !== "none" && (
-          <p className="text-sm text-text-primary">
+          <p className="text-text-primary hf-type-body">
             {testResult.grams} g · kilde: {testResult.source} · sikkerhed {Math.round(testResult.confidence * 100)} %
           </p>
         )}
       </section>
 
       <section className="flex flex-col gap-2 rounded-md border border-border-strong bg-surface-2 p-4">
-        <h2 className="text-sm font-medium text-text-primary">
+        <h2 className="text-text-primary hf-type-body hf-type-strong">
           Forslag med flest brugere bag ({robot.suggestionCount} i alt)
         </h2>
         {robot.topSuggestions.length === 0 ? (
-          <p className="text-xs text-text-muted">Ingen forslag endnu — kræver mindst {robot.settings.minUsers} brugere pr. vare.</p>
+          <p className="text-text-muted hf-type-small">Ingen forslag endnu — kræver mindst {robot.settings.minUsers} brugere pr. vare.</p>
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full text-left text-xs">
+            <table className="w-full text-left hf-type-small">
               <thead className="text-text-muted">
                 <tr>
-                  <th className="py-1 pr-3 font-normal">Vare</th>
-                  <th className="py-1 pr-3 font-normal">Kontekst</th>
-                  <th className="py-1 pr-3 font-normal">Forslag</th>
-                  <th className="py-1 pr-3 font-normal">Typisk spænd</th>
-                  <th className="py-1 pr-3 font-normal">Sikkerhed</th>
-                  <th className="py-1 pr-3 font-normal">Brugere / valg</th>
+                  <th className="py-1 pr-3">Vare</th>
+                  <th className="py-1 pr-3">Kontekst</th>
+                  <th className="py-1 pr-3">Forslag</th>
+                  <th className="py-1 pr-3">Typisk spænd</th>
+                  <th className="py-1 pr-3">Sikkerhed</th>
+                  <th className="py-1 pr-3">Brugere / valg</th>
                 </tr>
               </thead>
               <tbody>

@@ -112,7 +112,7 @@ export function AdminResetPasswordForm({ token }: { token: string }) {
             <button
               type="submit"
               disabled={loading || code.length !== 6}
-              className="hf-type-body hf-type-strong rounded-md bg-hf-green-dark px-4 py-2.5 text-hf-white disabled:opacity-60"
+              className="hf-btn-brand hf-btn--compact"
             >
               {loading ? "Bekræfter…" : "Bekræft og log ind"}
             </button>
@@ -132,7 +132,7 @@ export function AdminResetPasswordForm({ token }: { token: string }) {
           <button
             type="submit"
             disabled={loading}
-            className="hf-type-body hf-type-strong rounded-md bg-hf-green-dark px-4 py-2.5 text-hf-white disabled:opacity-60"
+            className="hf-btn-brand hf-btn--compact"
           >
             {loading ? "Gemmer…" : "Fortsæt til QR-kode"}
           </button>

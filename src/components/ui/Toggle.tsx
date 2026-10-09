@@ -43,7 +43,7 @@ export function Toggle({
   if (!label) return switchEl;
 
   return (
-    <div className="flex items-start gap-3 rounded-2xl bg-hf-tan px-4 py-4">
+    <div className="hf-card--row hf-card">
       <span className="flex-1">
         <span className="hf-type-body hf-type-strong block text-hf-black">{label}</span>
         {description && (

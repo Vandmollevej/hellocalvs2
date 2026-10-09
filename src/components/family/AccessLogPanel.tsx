@@ -2,17 +2,21 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { BottomSheet, BottomSheetCloseButton } from "@/components/hf/BottomSheet";
 import { useFamilyStatus } from "@/components/family/FamilyStatusProvider";
 import { AccessLogEntryRow, type AccessLogEntry } from "@/components/family/AccessLogEntryRow";
 import { useTranslation } from "@/i18n/LocaleProvider";
 
-// Panel, der glider ned fra toppen, når andre har været på ens profil siden
-// sidst (docs/FAMILY.md punkt 6). Lukkes med "OK", og så er hændelserne set.
+// Bundark, når andre har været på ens profil siden sidst (docs/FAMILY.md
+// punkt 6; popups er altid bundark, KRAV.md). Lukkes med "OK", og så er
+// hændelserne set.
 export function AccessLogPanel() {
   const { t } = useTranslation();
   const { status, refresh } = useFamilyStatus();
   const [entries, setEntries] = useState<AccessLogEntry[] | null>(null);
-  const [visible, setVisible] = useState(false);
+  // Hændelserne arket er skjult for (swipe ned) — ikke det samme som "set".
+  const [hiddenKey, setHiddenKey] = useState<string | null>(null);
+  const entriesKey = entries ? entries.map((entry) => entry.id).join(",") : "";
   const unseen = status?.unseenCount ?? 0;
   // Panelet gælder den indloggedes egen profil — ikke mens man ser en andens.
   const onOwnProfile = Boolean(status && status.activeProfile.id === status.me.id);
@@ -25,7 +29,6 @@ export function AccessLogPanel() {
       .then((data: { entries: AccessLogEntry[] } | null) => {
         if (cancelled || !data || data.entries.length === 0) return;
         setEntries(data.entries);
-        window.requestAnimationFrame(() => setVisible(true));
       })
       .catch(() => undefined);
     return () => {
@@ -33,40 +36,36 @@ export function AccessLogPanel() {
     };
   }, [onOwnProfile, unseen, entries]);
 
-  async function dismiss() {
-    setVisible(false);
+  // "OK" og "Se hele Kontrol-loggen" markerer hændelserne som set. Swipe ned
+  // (bundarkets annullér) skjuler kun arket — hændelserne er stadig ulæste og
+  // vises igen ved næste opstart.
+  async function acknowledge() {
     await fetch("/api/family/access-log", { method: "POST" }).catch(() => undefined);
-    window.setTimeout(() => setEntries(null), 300);
+    setEntries(null);
     await refresh();
   }
 
-  if (!entries) return null;
+  if (!entries || hiddenKey === entriesKey) return null;
 
   return (
-    <div className="pointer-events-none fixed inset-x-0 top-0 z-[9998] flex justify-center">
-      <div
-        role="dialog"
-        aria-label={t("family.panel.title")}
-        className={`pointer-events-auto w-full max-w-[402px] rounded-b-[8px] bg-hf-cream px-4 pb-4 pt-[calc(16px+env(safe-area-inset-top,0px))] shadow-2xl transition-transform duration-300 ease-out ${
-          visible ? "translate-y-0" : "-translate-y-full"
-        }`}
-      >
+    <BottomSheet ariaLabel={t("family.panel.title")} onClose={() => setHiddenKey(entriesKey)}>
+      <div className="flex flex-col gap-2 px-4 pb-4">
         <p className="hf-type-card-title">{t("family.panel.title")}</p>
         <p className="hf-type-body text-text-secondary">{t("family.panel.intro", { count: entries.length })}</p>
-        <ul className="mt-2 max-h-[45vh] divide-y divide-hf-gray-border overflow-y-auto">
+        <ul className="max-h-[45vh] divide-y divide-hf-gray-border overflow-y-auto">
           {entries.map((entry) => (
             <AccessLogEntryRow key={entry.id} entry={entry} />
           ))}
         </ul>
-        <div className="mt-4 flex items-center justify-between gap-4">
-          <Link href="/settings/control-log" onClick={dismiss} className="hf-type-body underline">
+        <div className="mt-2 flex items-center justify-between gap-4">
+          <Link href="/settings/control-log" onClick={() => void acknowledge()} className="hf-type-body underline">
             {t("family.panel.seeAll")}
           </Link>
-          <button type="button" onClick={dismiss} className="hf-control hf-btn-primary px-6">
+          <BottomSheetCloseButton onClick={() => void acknowledge()} className="hf-control hf-btn-primary px-6">
             {t("family.panel.ok")}
-          </button>
+          </BottomSheetCloseButton>
         </div>
       </div>
-    </div>
+    </BottomSheet>
   );
 }

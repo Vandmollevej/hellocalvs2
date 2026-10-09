@@ -136,7 +136,7 @@ export default function ProductUpdatePage() {
                     type="button"
                     disabled={workingKind !== null}
                     onClick={() => startCapture(kind)}
-                    className="hf-control hf-btn-primary w-full disabled:opacity-60"
+                    className="hf-control hf-btn-primary w-full"
                   >
                     {workingKind === kind ? t("productUpdate.reading") : t("productUpdate.takePhoto")}
                   </button>

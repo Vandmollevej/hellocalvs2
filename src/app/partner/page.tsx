@@ -67,11 +67,11 @@ export default async function PartnerHomePage({ searchParams }: { searchParams: 
           </div>
         </div>
         {!stats || stats.locations.length === 0 ? (
-          <p className="hf-type-body rounded-lg border border-hf-tan-dark bg-hf-white p-4 text-text-secondary">
+          <p className="hf-type-body text-text-secondary hf-panel">
             Der er endnu ingen placeringer registreret for jer. Kontakt Hello Cal, hvis det er en fejl.
           </p>
         ) : (
-          <div className="overflow-x-auto rounded-lg border border-hf-tan-dark bg-hf-white p-4">
+          <div className="overflow-x-auto hf-panel">
             <table className="hf-type-body w-full text-left">
               <thead>
                 <tr className="hf-type-small border-b border-hf-tan-dark uppercase tracking-wide text-text-muted">
@@ -112,7 +112,7 @@ export default async function PartnerHomePage({ searchParams }: { searchParams: 
           {sends.length === 0 ? (
             <p className="hf-type-small text-text-secondary">Der er ikke sendt rapporter endnu.</p>
           ) : (
-            <ul className="hf-type-small flex flex-col gap-1 rounded-lg border border-hf-tan-dark bg-hf-white p-4">
+            <ul className="hf-type-small gap-1 hf-panel">
               {sends.map((send) => (
                 <li key={send.id}>
                   {fmt(send.createdAt)} · {fmtDate(send.periodStart)}–{fmtDate(send.periodEnd)} · til {send.contactName}
@@ -126,7 +126,7 @@ export default async function PartnerHomePage({ searchParams }: { searchParams: 
           {contacts.length === 0 ? (
             <p className="hf-type-small text-text-secondary">Ingen modtagere registreret. Kontakt Hello Cal for at få tilføjet nogen.</p>
           ) : (
-            <ul className="hf-type-small flex flex-col gap-1 rounded-lg border border-hf-tan-dark bg-hf-white p-4">
+            <ul className="hf-type-small gap-1 hf-panel">
               {contacts.map((contact) => (
                 <li key={contact.id}>
                   {contact.name} · {contact.email}

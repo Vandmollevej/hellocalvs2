@@ -6,7 +6,8 @@
 import { useMemo, useState } from "react";
 import { HfScreen } from "@/components/HfScreen";
 import { useTranslation } from "@/i18n/LocaleProvider";
-import { SLEEP_STAT_PERIODS, sleepPeriodDays, type SleepStatPeriodKey } from "@/lib/sleep-stats";
+import { StatPeriodSelect } from "@/components/hf/StatPeriodSelect";
+import { sleepPeriodDays, type SleepStatPeriodKey } from "@/lib/sleep-stats";
 import { useSleepStatInputs } from "@/lib/use-sleep-stat-inputs";
 import { buildWaterStatDays, waterCorrelation, WATER_FACTORS, type WaterFactorKey } from "@/lib/water-stats";
 import type { RegistrationTotals } from "@/lib/daily-totals";
@@ -57,16 +58,10 @@ export default function BodyWaterStatisticsPage() {
   return (
     <HfScreen title={t("waterStats.title")}>
       <div className="hf-page">
-        <div className="rounded-2xl bg-hf-green px-4 py-4 text-hf-white">
+        <div className="hf-card hf-card--brand">
           <p className="hf-type-small">{t("waterStats.intro")}</p>
         </div>
-        <div className="flex flex-wrap gap-2" role="group" aria-label={t("sleepStats.periodAria")}>
-          {SLEEP_STAT_PERIODS.map((key) => (
-            <button key={key} type="button" aria-pressed={period === key} onClick={() => setPeriod(key)} className="hf-choice px-3 py-1.5">
-              {t(`sleepStats.period.${key}`)}
-            </button>
-          ))}
-        </div>
+        <StatPeriodSelect value={period} onChange={setPeriod} />
         <div className="flex flex-wrap gap-2" role="group">
           {WATER_FACTORS.map(({ key }) => (
             <button key={key} type="button" aria-pressed={factor === key} onClick={() => setFactor(key)} className="hf-choice px-3 py-1.5">
@@ -79,14 +74,14 @@ export default function BodyWaterStatisticsPage() {
         ) : !hasWater ? (
           <p className="hf-type-small text-text-secondary text-center">{t("waterStats.noData")}</p>
         ) : (
-          <div className="rounded-2xl bg-hf-tan p-4">
+          <div className="hf-card">
             <svg viewBox="0 0 320 130" className="w-full" role="img" aria-label={t("waterStats.title")}>
               {line(days.map((d) => d[factor]), yFactor, "var(--hf-gray)")}
               {line(days.map((d) => d.waterPercent), yWater, "var(--hf-green)")}
             </svg>
             <div className="mt-3 flex flex-wrap gap-4">
-              <span className="hf-type-small flex items-center gap-1.5"><span className="inline-block size-2 rounded-full" style={{ backgroundColor: "var(--hf-green)" }} />{t("waterStats.water")}</span>
-              <span className="hf-type-small flex items-center gap-1.5"><span className="inline-block size-2 rounded-full" style={{ backgroundColor: "var(--hf-gray)" }} />{t(`waterStats.factor.${factor}`)}</span>
+              <span className="hf-type-small flex items-center gap-1.5"><span className="inline-block size-2 rounded-full bg-hf-brand" />{t("waterStats.water")}</span>
+              <span className="hf-type-small flex items-center gap-1.5"><span className="inline-block size-2 rounded-full bg-hf-inactive" />{t(`waterStats.factor.${factor}`)}</span>
             </div>
             <p className="hf-type-small mt-3 text-hf-black">
               {r === null ? t("waterStats.correlationNone") : t("waterStats.correlation", { value: String(r).replace(".", ",") })}

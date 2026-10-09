@@ -61,6 +61,13 @@ export function setContinuousFocus(track: MediaStreamTrack, controls: CameraCont
   return applyAdvanced(track, { focusMode: "continuous" });
 }
 
+// Stregkode-trinnet: automatisk eksponering/hvidbalance løbende, så en skygge
+// på emballagen ikke efterlader stregerne under- eller overeksponeret. Ukendte
+// felter ignoreres af kameraet, og fejl er harmløse.
+export function setScanExposure(track: MediaStreamTrack): Promise<boolean> {
+  return applyAdvanced(track, { exposureMode: "continuous", whiteBalanceMode: "continuous" });
+}
+
 // Låser fokus på en fast afstand (meter), begrænset til kameraets område.
 export function lockFocusDistance(track: MediaStreamTrack, controls: CameraControls, meters: number): Promise<boolean> {
   const range = controls.focusDistance;

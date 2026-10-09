@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { createPortal } from "react-dom";
+import { BottomSheet, BottomSheetCloseButton } from "@/components/hf/BottomSheet";
 import { useWheelSnap } from "./useWheelSnap";
 
 const ITEM_HEIGHT = 40;
@@ -56,9 +56,9 @@ export function WheelPicker({
     setPendingValue(options[clamped]);
   }
 
+  // Arket lukker selv (glid ud) via BottomSheetCloseButton; her gemmes kun værdien.
   function handleDone() {
     if (pendingValue !== null) onChange(pendingValue);
-    setOpen(false);
   }
 
   return (
@@ -71,33 +71,14 @@ export function WheelPicker({
         {value !== null ? `${value}${unit ? ` ${unit}` : ""}` : "Vælg"}
       </button>
 
-      {/* Arket portales til <body> (2026-10-03): ligger hjulet i et <label>
-          (Profil), sendte iOS ellers tryk på "Færdig" videre til
-          åbne-knappen, så arket åbnede igen og intet skete. */}
-      {open && createPortal(
-        <div
-          className="fixed inset-0 z-[70] flex flex-col justify-end bg-hf-black/40"
-          role="dialog"
-          aria-modal="true"
-        >
-          <button
-            type="button"
-            aria-label="Luk"
-            className="flex-1"
-            onClick={() => setOpen(false)}
-          />
-          <div className="rounded-t-2xl bg-hf-cream pb-[max(16px,env(safe-area-inset-bottom))]">
-            <div className="flex items-center justify-between px-4 py-3">
-              <span className="hf-type-body hf-type-strong text-hf-black">{label}</span>
-              <button
-                type="button"
-                onClick={handleDone}
-                className="hf-type-body hf-type-strong text-hf-green"
-              >
-                Færdig
-              </button>
-            </div>
-            <div className="relative">
+      {/* Bundark (KRAV.md): portales til <body> af BottomSheet, så tryk på
+          "Færdig" aldrig sendes videre til åbne-knappen, når hjulet ligger i
+          et <label> (Profil, 2026-10-03). Swipe ned/scrim = annullér: værdien
+          gemmes kun med "Færdig". */}
+      {open && (
+        <BottomSheet ariaLabel={label} onClose={() => setOpen(false)}>
+          <div className="flex flex-col gap-3 px-4 pb-4">
+            <div data-sheet-no-drag className="relative">
               <div
                 className="pointer-events-none absolute inset-x-0 top-1/2 z-0 h-10 -translate-y-1/2 rounded-lg bg-hf-tan"
                 aria-hidden="true"
@@ -105,9 +86,9 @@ export function WheelPicker({
               <div
                 ref={scrollRef}
                 className="relative z-10 h-[200px] snap-y snap-mandatory overflow-y-auto overscroll-contain"
-                style={{ scrollPaddingTop: 80, scrollPaddingBottom: 80 }}
+                style={{ scrollPaddingTop: ITEM_HEIGHT * 2, scrollPaddingBottom: ITEM_HEIGHT * 2 }}
               >
-                <div style={{ height: 80 }} />
+                <div style={{ height: ITEM_HEIGHT * 2 }} />
                 {options.map((option) => (
                   <div
                     key={option}
@@ -119,12 +100,14 @@ export function WheelPicker({
                     {unit ? ` ${unit}` : ""}
                   </div>
                 ))}
-                <div style={{ height: 80 }} />
+                <div style={{ height: ITEM_HEIGHT * 2 }} />
               </div>
             </div>
+            <BottomSheetCloseButton onClick={handleDone} className="hf-control hf-btn-primary w-full px-4">
+              Færdig
+            </BottomSheetCloseButton>
           </div>
-        </div>,
-        document.body
+        </BottomSheet>
       )}
     </>
   );

@@ -64,7 +64,7 @@ export default async function PartnerPerformancePage({
     <>
       <h2 className="hf-type-page-title text-hf-black">Performance</h2>
 
-      <nav className="hf-type-body flex flex-wrap self-start rounded-lg border border-hf-tan-dark bg-hf-white p-0.5" aria-label="Performance">
+      <nav className="hf-type-body flex flex-wrap self-start p-0.5 hf-surface" aria-label="Performance">
         {[
           { id: "overview", label: "Overview", to: href({ tab: "" }) },
           { id: "mining", label: "Data mining", to: href({ tab: "mining" }) },

@@ -103,7 +103,11 @@ def drop_edge_fragments(cutout):
         touches_edge = x == 0 or y == 0 or x + w >= width or y + h >= height
         cx, cy = centroids[index]
         outside_largest = not (lx <= cx <= lx + lw and ly <= cy <= ly + lh)
-        if touches_edge or (area < larea * 0.01 and outside_largest):
+        # En kantrørende del af betydelig størrelse hører til logoet (fx det
+        # blå felt under EDEKA-hjertet, som rører beskæringskanten) og droppes
+        # ikke; kun små kantstumper (rester af tekst ved siden af) fjernes.
+        significant = area >= larea * 0.10
+        if (touches_edge and not significant) or (area < larea * 0.01 and outside_largest):
             drop |= labels == index
     if not drop.any():
         return cutout
@@ -113,6 +117,31 @@ def drop_edge_fragments(cutout):
     cleaned = cutout.copy()
     cleaned.putalpha(Image.fromarray(alpha))
     return cleaned
+
+
+def is_solid_block_logo(cropped, cutout):
+    """Sandt, når rembg har skåret et farvefelt-logo over (kun hjertet tilbage).
+
+    rembg regner et stort, mørkt/mættet logofelt for baggrund (EDEKA: gult
+    hjerte foroven, blåt felt forneden — kun hjertet blev tilbage). Logoboksen
+    er beskåret til selve logoet, så hvis kanten af beskæringen for størstedelen
+    har én ikke-lys farve (feltet), og rembg kun beholdt under 75 % af arealet,
+    er feltet en del af logoet og hele beskæringen bruges uændret.
+    """
+    rgb = np.array(cropped.convert("RGB")).astype(np.float32)
+    height, width = rgb.shape[:2]
+    margin = max(2, int(min(height, width) * 0.04))
+    ring = np.ones((height, width), dtype=bool)
+    ring[margin:-margin, margin:-margin] = False
+    pixels = rgb[ring]
+    median = np.median(pixels, axis=0)
+    luminance = float(median @ np.array([0.2126, 0.7152, 0.0722]))
+    if luminance > 170:  # lys kant = papir/emballage, ikke et logofelt
+        return False
+    close = float((np.abs(pixels - median).sum(axis=1) < 90).mean())
+    alpha = np.array(cutout.getchannel("A"))
+    kept = float((alpha > 128).mean())
+    return close >= 0.55 and kept < 0.75
 
 
 def level_lighting(cutout, strength=0.35, max_gain=1.6):
@@ -321,6 +350,8 @@ def make_cutout(source_path, box, kind="PRODUCT_FRONT"):
     cutout = Image.open(io.BytesIO(remove(buffer.getvalue()))).convert("RGBA")
     if kind in ("BRAND_LOGO", "PRODUCT_LABEL"):
         cutout = drop_edge_fragments(cutout)
+        if kind == "BRAND_LOGO" and is_solid_block_logo(cropped, cutout):
+            cutout = cropped.convert("RGBA")
     bbox = cutout.getbbox()
     if not bbox:
         raise ValueError("background removal left nothing")
@@ -419,6 +450,26 @@ def apply_finished_jobs(conn):
             SET "appliedAt" = now()
             WHERE kind = 'PRODUCT_FRONT' AND status = 'DONE' AND "appliedAt" IS NULL
               AND "productId" IS NOT NULL
+            """
+        )
+        # Genkørt logo (admin "Genkør logo"): filen {job}.png er overskrevet på
+        # samme sti, så brandets logo opdateres med ?v= mod browser-cache.
+        cur.execute(
+            """
+            UPDATE brands b
+            SET "logoUrl" = j."resultUrl" || '?v=' || floor(extract(epoch from now()))::bigint
+            FROM image_cutout_jobs j
+            WHERE j.kind = 'BRAND_LOGO' AND j.status = 'DONE' AND j."appliedAt" IS NULL
+              AND j."brandId" = b.id AND split_part(b."logoUrl", '?', 1) = j."resultUrl"
+            """
+        )
+        cur.execute(
+            """
+            UPDATE image_cutout_jobs j
+            SET "appliedAt" = now()
+            FROM brands b
+            WHERE j.kind = 'BRAND_LOGO' AND j.status = 'DONE' AND j."appliedAt" IS NULL
+              AND j."brandId" = b.id AND split_part(b."logoUrl", '?', 1) = j."resultUrl"
             """
         )
         cur.execute(

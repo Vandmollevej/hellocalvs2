@@ -44,7 +44,7 @@ export function LoginApprovalActions({ token }: { token: string }) {
         type="button"
         onClick={() => act("approve")}
         disabled={loading !== null}
-        className="hf-type-body hf-type-strong rounded-md bg-hf-green-dark px-4 py-2.5 text-hf-white disabled:opacity-60"
+        className="hf-btn-brand hf-btn--compact"
       >
         {loading === "approve" ? "…" : "Ja, det er mig — godkend"}
       </button>

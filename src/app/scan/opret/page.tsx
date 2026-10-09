@@ -158,7 +158,7 @@ function OpretContent() {
   if (done) {
     return (
       <div className="flex flex-col gap-4 p-4">
-        <div className="hf-type-body rounded-[8px] p-4 text-center" style={{ background: "var(--hf-color-brand)", color: "var(--hf-color-white)" }}>
+        <div className="hf-type-body p-4 text-center bg-hf-brand text-hf-white rounded-card">
           {done.kind === "SUPPLEMENT" ? "Varen fandtes allerede og er nu suppleret." : "Varen er oprettet og kan ses i Hello Cal."}
           {!done.payable && " Du oprettede selv varen tidligere, så suppleringen tæller ikke med i afregningen."}
         </div>
@@ -203,7 +203,7 @@ function OpretContent() {
         placeholder={t("productCreate.barcodePlaceholder")}
       />
 
-      <div className="flex flex-col gap-3 rounded-[8px] p-4" style={{ background: "var(--hf-color-card)" }}>
+      <div className="flex flex-col gap-3 p-4 bg-hf-card rounded-card">
         <TextField variant="standard" value={form.brand} onChange={(e) => update("brand", e.target.value)} label={t("productCreate.brandLabel")} autoComplete="off" />
         <TextField variant="standard" value={form.subbrand} onChange={(e) => update("subbrand", e.target.value)} label={t("productCreate.subbrandLabel")} autoComplete="off" />
         <TextField variant="standard" value={form.name} onChange={(e) => update("name", e.target.value)} label={t("productCreate.productNameLabel")} autoComplete="off" required />
@@ -223,8 +223,7 @@ function OpretContent() {
             value={form.ingredientsText}
             onChange={(e) => update("ingredientsText", e.target.value)}
             rows={3}
-            className="hf-type-input w-full rounded-[8px] border bg-hf-cream px-4 py-3 outline-none"
-            style={{ borderColor: "var(--hf-color-field-border)" }}
+            className="hf-type-input w-full border bg-hf-cream px-4 py-3 outline-none border-hf-field-border rounded-card"
           />
         </label>
       </div>

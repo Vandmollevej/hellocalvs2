@@ -17,10 +17,11 @@ export default async function AdminHelloFreshDishesPage({
   return (
     <DishListPage
       title="HelloFresh-retter"
-      intro="Alle retter fra HelloFresh-importen. Klik på en ret for at åbne den."
+      intro="Alle retter fra HelloFresh-importen. Du kan kun deaktivere en ret."
       basePath="/admin/dishes/hellofresh"
       q={q}
       data={data}
+      canDisable
       empty={q ? "Ingen retter matcher søgningen." : "Ingen HelloFresh-retter er importeret endnu."}
     />
   );

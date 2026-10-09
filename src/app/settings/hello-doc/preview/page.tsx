@@ -121,8 +121,7 @@ export default function HelloDocPreviewPage() {
       </div>
 
       <div
-        className="hf-type-caption flex flex-shrink-0 items-center gap-2 border-b bg-hf-cream px-4 py-2 text-text-secondary"
-        style={{ borderColor: "var(--hf-color-line)" }}
+        className="hf-type-caption flex flex-shrink-0 items-center gap-2 border-b bg-hf-cream px-4 py-2 text-text-secondary border-hf-line"
       >
         <IconLock size={14} stroke={2.5} />
         <span className="truncate">
@@ -151,8 +150,7 @@ export default function HelloDocPreviewPage() {
           <div className="hf-page hf-page--sections">
             <div className="relative ml-auto w-48">
               <select
-                className="hf-field hf-type-input w-full appearance-none rounded-[8px] border bg-hf-cream pl-3 pr-9 outline-none"
-                style={{ borderColor: "var(--hf-color-field-border)" }}
+                className="hf-field hf-type-input w-full appearance-none border bg-hf-cream pl-3 pr-9 outline-none border-hf-field-border rounded-card"
                 value={range}
                 onChange={(event) => setRange(event.target.value as DoctorShareHistoryRange)}
               >

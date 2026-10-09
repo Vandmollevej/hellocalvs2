@@ -24,12 +24,12 @@ const STEP_ML = 25;
 // freely adjustable afterwards for a manual amount. The slider snaps to 25 ml;
 // the amount field can be typed into directly for any other exact amount. Presets are labelled in cl
 // but register the exact ml amount. Images are alpha-trimmed PNGs; bottles get
-// a slightly taller box than glasses so they read naturally taller/slimmer.
+// descending heights (75>50>33>25 cl) so the size difference is clearly visible.
 const CONTAINERS = [
-  { key: "bottleLarge", ml: 750, src: "/icons/water/bottle-large.png", width: 75, boxHeight: 56 },
-  { key: "bottleSmall", ml: 500, src: "/icons/water/bottle-small.png", width: 91, boxHeight: 56 },
-  { key: "glassLarge", ml: 330, src: "/icons/water/glass-large.png", width: 113, boxHeight: 46 },
-  { key: "glassSmall", ml: 250, src: "/icons/water/glass-small.png", width: 129, boxHeight: 46 },
+  { key: "bottleLarge", ml: 750, src: "/icons/water/bottle-large.png", width: 75, boxHeight: 68 },
+  { key: "bottleSmall", ml: 500, src: "/icons/water/bottle-small.png", width: 91, boxHeight: 58 },
+  { key: "glassLarge", ml: 330, src: "/icons/water/glass-large.png", width: 113, boxHeight: 48 },
+  { key: "glassSmall", ml: 250, src: "/icons/water/glass-small.png", width: 129, boxHeight: 38 },
 ] as const;
 
 function formatTime(value: string) {
@@ -128,7 +128,7 @@ export default function WaterCreatePage() {
   return (
     <HfScreen title={t("waterLog.title")} icon={<IconWaterGlass size={20} stroke={2} />}>
       <div className="hf-page">
-        <div className="rounded-2xl bg-hf-green px-4 py-4 text-hf-white">
+        <div className="hf-card hf-card--brand">
           <p className="hf-type-small">{t("waterLog.intro")}</p>
         </div>
 
@@ -144,7 +144,7 @@ export default function WaterCreatePage() {
                   isSelected ? "hf-selected" : "bg-hf-tan text-hf-black"
                 }`}
               >
-                <span className="flex h-14 w-full items-center justify-center">
+                <span className="flex h-[72px] w-full items-end justify-center">
                   <Image
                     src={src}
                     alt=""
@@ -165,7 +165,7 @@ export default function WaterCreatePage() {
           })}
         </div>
 
-        <div className="flex flex-col gap-4 rounded-2xl bg-hf-tan p-4 lg:gap-5 lg:p-6">
+        <div className="lg:gap-5 lg:p-6 hf-card--form hf-card">
           <div className="flex items-baseline justify-between">
             <span className="hf-type-small hf-type-strong hf-water-amount__label text-hf-black">
               {t("waterLog.amountLabel")}
@@ -195,7 +195,7 @@ export default function WaterCreatePage() {
             type="button"
             onClick={handleSubmit}
             disabled={saving || amountMl <= 0}
-            className="hf-control hf-btn-primary disabled:opacity-40"
+            className="hf-control hf-btn-primary"
           >
             <span className="hf-type-button">{saving ? t("waterLog.saving") : t("waterLog.add")}</span>
           </button>
