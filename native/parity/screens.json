@@ -1056,6 +1056,14 @@
       ]
     },
     {
+      "route": "/profile/messages/trash",
+      "web": "src/app/profile/messages/trash/page.tsx",
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/profile/MessagesScreen.kt"
+      ]
+    },
+    {
       "route": "/profile/notifications",
       "web": "src/app/profile/notifications/page.tsx",
       "status": "ported",
