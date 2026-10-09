@@ -186,7 +186,7 @@ export function FilterDropdown(props: SingleProps | MultiProps) {
                     {props.multiple && (
                       <span
                         className={`flex h-5 w-5 shrink-0 items-center justify-center rounded border ${
-                          selected ? "border-hf-black bg-hf-black text-hf-white" : "border-hf-tan-dark bg-hf-white"
+                          selected ? "border-hf-black hf-selected" : "border-hf-tan-dark bg-hf-white"
                         }`}
                       >
                         {selected && <CheckIcon className="h-3.5 w-3.5" />}

@@ -37,7 +37,8 @@ export function SleepRangeSlider({
   bedtimeMinutes: number;
   onChangeWake: (value: number) => void;
   onChangeBedtime: (value: number) => void;
-  // Aktivitet: start (= "bedtime") står til venstre og slut (= "wake") til højre.
+  // Aktivitet: banen er ét døgn fra 00:00 (venstre) til 23:59 (højre); start (= "bedtime")
+  // står til venstre og slut (= "wake") til højre, og markeringen ligger mellem dem uden at pakke over midnat.
   bedtimeFirst?: boolean;
 }) {
   const trackRef = useRef<HTMLDivElement>(null);
@@ -100,7 +101,7 @@ export function SleepRangeSlider({
   // minutværdi), så søvnperioden pakker over midnat: markeringen består af to
   // stykker (sengetid→24:00 og 00:00→stå-op), medmindre håndtagene af en
   // eller anden grund er blevet krydset den anden vej.
-  const wrapsMidnight = bedtimePct > wakePct;
+  const wrapsMidnight = !bedtimeFirst && bedtimePct > wakePct;
 
   return (
     <div className="flex flex-col gap-2">
