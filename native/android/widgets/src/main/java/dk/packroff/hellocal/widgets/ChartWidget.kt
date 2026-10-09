@@ -82,13 +82,13 @@ private class ChartStackFactory(private val context: Context) : RemoteViewsServi
 
 /** Canvas drawings shared by the chart pages and the stat-box ring. */
 object ChartRenderer {
-    private val brand = HcColors.brand.toArgb()
-    private val action = HcColors.action.toArgb()
-    private val danger = HcColors.danger.toArgb()
-    private val secondary = HcColors.textSecondary.toArgb()
+    private val brand = HcColors.Brand.toArgb()
+    private val action = HcColors.Action.toArgb()
+    private val danger = HcColors.Danger.toArgb()
+    private val secondary = HcColors.TextSecondary.toArgb()
     private val inactive = 0xFF828282.toInt()
-    private val nav = HcColors.nav.toArgb()
-    private val page = HcColors.page.toArgb()
+    private val nav = HcColors.Nav.toArgb()
+    private val page = HcColors.Page.toArgb()
 
     fun chart(chart: WidgetSnapshot.Chart, width: Int, height: Int, d: Float, pageIndex: Int, pageCount: Int): Bitmap {
         val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)

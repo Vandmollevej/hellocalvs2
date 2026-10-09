@@ -833,6 +833,10 @@ export function BottomNav() {
         ref={barRef}
         data-bottom-navigation
         className={`relative bg-hf-tan-dark ${
+          // Over lukke-laget (z-40) i redigering, ellers rammer et tryk på
+          // slet-krydset laget og afslutter hele redigeringen.
+          editMode ? "z-50" : ""
+        } ${
           showCollapsedBar ? "py-1" : "pb-[env(safe-area-inset-bottom,0px)] pt-2"
         } ${draggedOverPanel ? "border border-dashed border-hf-gray-dark" : ""}`}
         aria-label={t("nav.mainNavigationAriaLabel")}
