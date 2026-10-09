@@ -135,7 +135,7 @@ private fun BodyWaterContent() {
             Column(Modifier.fillMaxWidth().background(HcColors.Brand, RoundedCornerShape(HcDimens.RadiusCard)).padding(HcDimens.SpaceBlock)) {
                 HcText(t.t("waterStats.intro"), HcTypeRoles.Small, color = HcColors.White)
             }
-            SleepPeriodChips(period) { period = it }
+            SleepPeriodSelect(period) { period = it }
             FlowRow(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 WaterFactorKey.entries.forEach { key ->
                     StatsChoiceChip(t.t("waterStats.factor.${key.key}"), selected = factor == key, onClick = { factor = key })

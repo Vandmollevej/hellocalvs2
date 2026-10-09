@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useTranslation } from "@/i18n/LocaleProvider";
-import { START_HELP_GUIDE_EVENT } from "@/lib/help-chat-events";
+import { START_HELP_GUIDE_EVENT, startHelpGuide } from "@/lib/help-chat-events";
 import { helpGuideById, type HelpGuide } from "@/lib/help-guides";
 
 // "Guide mig" (docs/DECISIONS.md 2026-10-07): sort skærm med 20 % gennemsigtighed
@@ -44,7 +44,24 @@ export function HelpGuideSpotlight() {
       if (next) setGuide(next);
     }
     window.addEventListener(START_HELP_GUIDE_EVENT, onStart);
-    return () => window.removeEventListener(START_HELP_GUIDE_EVENT, onStart);
+
+    // Hjælpecenteret (statisk side) starter en guide med /?guide=<id> (DECISIONS 2026-10-09).
+    const params = new URLSearchParams(window.location.search);
+    const requested = params.get("guide");
+    let timer: number | undefined;
+    if (requested) {
+      params.delete("guide");
+      const query = params.toString();
+      // Efter Next's egen historik-synkronisering, ellers skrives adressen tilbage.
+      timer = window.setTimeout(() => {
+        window.history.replaceState(window.history.state, "", `${window.location.pathname}${query ? `?${query}` : ""}${window.location.hash}`);
+        startHelpGuide(requested);
+      }, 0);
+    }
+    return () => {
+      window.removeEventListener(START_HELP_GUIDE_EVENT, onStart);
+      if (timer !== undefined) window.clearTimeout(timer);
+    };
   }, []);
 
   if (!guide) return null;

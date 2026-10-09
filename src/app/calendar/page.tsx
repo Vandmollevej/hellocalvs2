@@ -19,10 +19,10 @@ import {
   IconStarFilled,
 } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
+import { BottomNav } from "@/components/BottomNav";
 import { AddMenuSheet } from "@/components/add/AddMenuSheet";
 import { HfChevron } from "@/components/hf/HfChevron";
 import { ProfileAvatarLink } from "@/components/ProfileAvatarLink";
-import { IconBathScale } from "@/components/hf/IconBathScale";
 import { ActionLink } from "@/components/hf/ActionButton";
 import { FoodRow } from "@/components/FoodRow";
 import { EnergyChip } from "@/components/calendar/EnergyChip";
@@ -1242,7 +1242,7 @@ function MonthView({
                         isPast ? "" : "hf-type-strong"
                       } ${
                         current
-                          ? "border-transparent hf-selected"
+                          ? "border-transparent hf-cal-current"
                           : isOtherMonth
                             ? "border-hf-gray-border bg-transparent text-text-muted"
                             : isPast
@@ -1313,8 +1313,8 @@ function WeekView({
         const kcal = totalKcalForDate(dailyTotals, date);
         const goalKcal = goalForDate(date);
         const met = dailyGoalMet(dailyTotals, date, goalKcal);
-        // An unlogged day is not a missed goal: it shows "Ingen indtastninger"
-        // and the full remaining budget, both in gray.
+        // An unlogged day is not a missed goal: it shows a gray dash for both
+        // the status and the kcal.
         const logged = kcal > 0;
         const over = kcal > goalKcal;
         const diff = Math.round(Math.abs(goalKcal - kcal));
@@ -1335,7 +1335,7 @@ function WeekView({
             <span
               className={`hf-type-body flex size-9 shrink-0 items-center justify-center rounded-lg border ${
                 current
-                  ? "hf-type-strong border-transparent hf-selected"
+                  ? "hf-type-strong border-transparent hf-cal-current"
                   : future
                     ? "hf-type-strong border-hf-gray bg-hf-white text-hf-black"
                     : "border-hf-gray bg-hf-white text-text-muted"
@@ -1357,7 +1357,7 @@ function WeekView({
                   className={`hf-type-body flex items-center gap-1.5 ${tooLow ? "hf-type-strong text-hf-warning" : logged ? "" : "text-text-muted"}`}
                 >
                   {!logged
-                    ? t("calendar.noEntries")
+                    ? "–"
                     : tooLow
                       ? t("calendar.intakeTooLow")
                       : met
@@ -1373,8 +1373,7 @@ function WeekView({
                       !logged ? "text-text-muted" : tooLow ? "text-hf-warning" : over ? "text-hf-red-dark" : "text-hf-green"
                     }`}
                   >
-                    {over ? "÷" : "+"}
-                    {diff} kcal
+                    {!logged ? "–" : `${over ? "÷" : "+"}${diff} kcal`}
                   </span>
                   <IconChevronRight size={19} className="shrink-0" />
                 </span>
@@ -1397,7 +1396,7 @@ function WeighInMark({ entries }: { entries: WeightEntry[] }) {
   if (!latest) return null;
   return (
     <>
-      <IconBathScale size={18} className="shrink-0 text-hf-black" />
+      <IconScale size={18} className="shrink-0 text-hf-black" />
       <span className="sr-only">{t("calendar.weighInSrLabel", { value: formatKg(latest.weightKg) })}</span>
     </>
   );
@@ -1552,8 +1551,8 @@ function ListView({
         const kcal = totalKcalForDate(dailyTotals, date);
         const goalKcal = goalForDate(date);
         const met = dailyGoalMet(dailyTotals, date, goalKcal);
-        // An unlogged day is not a missed goal: it shows "Ingen indtastninger"
-        // and the full remaining budget, both in gray.
+        // An unlogged day is not a missed goal: it shows a gray dash for both
+        // the status and the kcal.
         const logged = kcal > 0;
         const over = kcal > goalKcal;
         const diff = Math.round(Math.abs(goalKcal - kcal));
@@ -1574,7 +1573,7 @@ function ListView({
             <span
               className={`hf-type-body flex size-9 shrink-0 items-center justify-center rounded-lg border ${
                 current
-                  ? "hf-type-strong border-transparent hf-selected"
+                  ? "hf-type-strong border-transparent hf-cal-current"
                   : future
                     ? "hf-type-strong border-hf-gray bg-hf-white text-hf-black"
                     : "border-hf-gray bg-hf-white text-text-muted"
@@ -1596,7 +1595,7 @@ function ListView({
                   className={`hf-type-body flex items-center gap-1.5 ${tooLow ? "hf-type-strong text-hf-warning" : logged ? "" : "text-text-muted"}`}
                 >
                   {!logged
-                    ? t("calendar.noEntries")
+                    ? "–"
                     : tooLow
                       ? t("calendar.intakeTooLow")
                       : met
@@ -1612,8 +1611,7 @@ function ListView({
                       !logged ? "text-text-muted" : tooLow ? "text-hf-warning" : over ? "text-hf-red-dark" : "text-hf-green"
                     }`}
                   >
-                    {over ? "÷" : "+"}
-                    {diff} kcal
+                    {!logged ? "–" : `${over ? "÷" : "+"}${diff} kcal`}
                   </span>
                   <IconChevronRight size={19} className="shrink-0" />
                 </span>
@@ -1717,7 +1715,7 @@ function WeekTimelineView({
               type="button"
               onClick={() => onOpenDate(date)}
               className={`flex h-12 min-w-[92px] flex-1 flex-col items-center justify-center border-b border-r border-hf-tan last:border-r-0 focus-visible:outline-2 focus-visible:outline-hf-black ${
-                current ? "hf-selected" : "text-hf-black"
+                current ? "hf-cal-current" : "text-hf-black"
               }`}
             >
               <span className="hf-type-micro hf-type-strong text-text-secondary uppercase">
@@ -1727,7 +1725,7 @@ function WeekTimelineView({
                 {date.getDate()}
                 {met && <IconCheck size={15} stroke={3.5} className="text-hf-green" aria-hidden="true" />}
                 {goalsForDate(goalsByDate, date).length > 0 && <IconPartyPopper size={15} />}
-                {weighInsForDate(weighInsByDate, date).length > 0 && <IconBathScale size={15} />}
+                {weighInsForDate(weighInsByDate, date).length > 0 && <IconScale size={15} />}
               </span>
             </button>
           );
@@ -1818,7 +1816,7 @@ function WeekTimelineView({
                       style={{ top: (minutesFromMidnight(time) / 60) * HOUR_HEIGHT, minHeight: 18 }}
                       title={t("calendar.dayWeighIn", { value: formatKg(entry.weightKg), time: formatClock(entry.weighedAt) })}
                     >
-                      <IconBathScale size={12} />
+                      <IconScale size={12} />
                       {formatKg(entry.weightKg)} kg
                     </div>
                   );
@@ -2505,20 +2503,6 @@ function DayDetails({
           </>
         )}
 
-        {/* Dagens vejning(er) med klokkeslæt — her er der plads til tallet. */}
-        {latestWeighIn && (
-          <div className="mt-4 space-y-1 pr-1">
-            {[latestWeighIn].map((entry) => (
-              <p
-                key={entry.id}
-                className="hf-type-body flex items-center justify-end gap-1.5 whitespace-nowrap text-right text-hf-black"
-              >
-                <IconBathScale size={16} />
-                {t("calendar.dayWeighIn", { value: formatKg(entry.weightKg), time: formatClock(entry.weighedAt) })}
-              </p>
-            ))}
-          </div>
-        )}
         <GoalStatusSummary
           className="mt-2 pr-1"
           status={isFutureDay ? null : hasEntries ? (met ? "met" : "missed") : "none"}
@@ -2539,7 +2523,6 @@ function DayDetails({
           waterEntries={waterEntries.filter((entry) => new Date(entry.loggedAt).getHours() === openHour)}
           measurements={measurements.filter((item) => item.time.getHours() === openHour)}
           goals={openHour === GOAL_HOUR ? goals : []}
-          weighIns={weighIns.filter((entry) => new Date(entry.weighedAt).getHours() === openHour)}
           onClose={() => setOpenHour(null)}
         />
       )}
@@ -2551,6 +2534,8 @@ function DayDetails({
           onClose={() => setAddSheetHour(null)}
         />
       )}
+
+      <BottomNav />
     </div>
   );
 }
@@ -2664,7 +2649,7 @@ function HourRow({
           {hasGoal && <IconPartyPopper size={16} className="text-hf-black" />}
           {weighIns.map((entry) => (
             <span key={entry.id} className="hf-type-small hf-type-strong flex items-center gap-1 text-hf-black">
-              <IconBathScale size={16} />
+              <IconScale size={16} />
               {formatKg(entry.weightKg)} kg
             </span>
           ))}
@@ -2900,7 +2885,6 @@ function HourEntriesOverlay({
   waterEntries,
   measurements,
   goals,
-  weighIns,
   onClose,
 }: {
   hour: number;
@@ -2908,7 +2892,6 @@ function HourEntriesOverlay({
   waterEntries: WaterEntry[];
   measurements: CalendarMeasurement[];
   goals: GoalDTO[];
-  weighIns: WeightEntry[];
   onClose: () => void;
 }) {
   const { t } = useTranslation();
@@ -2967,18 +2950,11 @@ function HourEntriesOverlay({
         {goals.map((goal) => (
           <GoalAccordion key={goal.id} goal={goal} />
         ))}
-        {weighIns
-          .filter((entry) => !measurements.some((measurement) => measurement.id === `weight-${entry.id}`))
-          .map((entry) => (
-          <div key={entry.id} className="hf-control-row mb-2 flex items-center justify-between rounded-2xl bg-hf-tan px-4">
-            <span className="hf-type-body hf-type-strong text-hf-black">{formatClock(entry.weighedAt)}</span>
-            <span className="hf-type-body hf-type-strong flex items-center gap-1.5 text-hf-black">
-              <IconBathScale size={18} />
-              {formatKg(entry.weightKg)} kg
-            </span>
-          </div>
-        ))}
         {groups.map((group) => {
+          const soloWeight = group.items.length === 1 && group.items[0].kind === "measurement" ? group.items[0].measurement : null;
+          if (soloWeight && soloWeight.weightKg !== null && soloWeight.id.startsWith("weight-")) {
+            return <WeightGroupRow key={group.key} time={group.time} measurement={soloWeight} />;
+          }
           const isOpen = openKeys.has(group.key);
           // Kalorier fra mad som "540 kcal", vand som glas + cl — begge kan
           // stå på samme tidspunkt. Vand-varer tæller ikke som mad.
@@ -3089,7 +3065,34 @@ function HourEntriesOverlay({
           );
         })}
       </div>
+      <BottomNav />
     </div>
+  );
+}
+
+// Vejning alene på sit tidspunkt: rækken åbner info-vinduet (kilde, tøj,
+// fedtprocent …) direkte — ingen foldbar mellemstation.
+function WeightGroupRow({ time, measurement }: { time: Date; measurement: CalendarMeasurement }) {
+  const [open, setOpen] = useState(false);
+  const weighInId = measurement.id.slice("weight-".length);
+  return (
+    <>
+      <button
+        type="button"
+        onClick={() => setOpen(true)}
+        className="hf-control-row mb-2 flex w-full items-center justify-between rounded-2xl bg-hf-tan px-4 text-left focus-visible:outline-2 focus-visible:outline-hf-black"
+      >
+        <span className="hf-type-body hf-type-strong text-hf-black">
+          {new Intl.DateTimeFormat("da-DK", { hour: "2-digit", minute: "2-digit" }).format(time)}
+        </span>
+        <span className="hf-type-body hf-type-strong flex items-center gap-2 text-hf-black">
+          <IconScale size={18} aria-hidden="true" />
+          {formatWeightKg(measurement.weightKg as number)}
+          <HfChevron direction="right" className="-ml-1 text-hf-black" />
+        </span>
+      </button>
+      {open && <WeightEntryDetailsSheet id={weighInId} onClose={() => setOpen(false)} />}
+    </>
   );
 }
 

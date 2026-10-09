@@ -626,7 +626,7 @@
     "categoryProfileDescription": "Name, E-Mail usw.",
     "categoryWeight": "Gewicht",
     "categoryGoals": "Ziele",
-    "categoryMenstrualCycle": "Menstruationszyklus (nur für Frauen)",
+    "categoryMenstrualCycle": "Menstruationszyklus",
     "categoryDigestion": "Verdauung",
     "categoryComingSoon": "Kommt später",
     "categoryUnavailable": "In der App noch nicht verfügbar",
@@ -1500,6 +1500,7 @@
       "markAllRead": "Alle als gelesen markieren",
       "unread": "Neu",
       "deleted": "Gelöscht",
+      "trash": "Papierkorb",
       "delete": "Löschen",
       "clearAll": "Alle leeren",
       "clearAllWarning": "Alle gelöschten Nachrichten werden endgültig entfernt. Das kann nicht rückgängig gemacht werden.",
@@ -1715,6 +1716,7 @@
     "measurementGoal": "Ziel",
     "latest": "am {date} {value}",
     "setGoal": "Ziel setzen",
+    "seeAllGoals": "Alle Ziele ansehen",
     "toLose": "{value} bis zum Ziel",
     "toGain": "{value} bis zum Ziel",
     "goalReached": "Du hast dein Ziel erreicht",
@@ -1754,6 +1756,7 @@
     "dateRequired": "Wähle zum Speichern ein Zieldatum.",
     "targetDateLabel": "Zu erreichen bis {date}",
     "weight": "Gewicht",
+    "weightCompositionHeading": "Gewicht und Körperbau",
     "bodyMeasurementsHeading": "Körpermaße",
     "weightPlaceholder": "z. B. 72,0",
     "measurementPlaceholder": "z. B. 82",
@@ -1796,6 +1799,16 @@
   },
   "weighIn": {
     "attireTitle": "What were you wearing?",
+    "attireItem": {
+      "UNDERWEAR": "Underwear",
+      "PANTS": "Trousers",
+      "TOP": "Top / T-shirt",
+      "SWEATER": "Sweater",
+      "SHOES": "Shoes",
+      "POCKET_ITEMS": "Phone etc. in pocket",
+      "AFTER_TOILET": "After using the toilet"
+    },
+    "attireNaked": "Nothing selected = naked",
     "attire": {
       "NAKED": "Naked",
       "UNDERWEAR": "In underwear",
@@ -2002,7 +2015,6 @@
   "addProduct": {
     "reportBug": "Hast du einen Fehler gefunden?",
     "reading": "Wird gelesen…",
-    "ingredientsUnreadable": "Die Zutaten konnten auf dem Bild nicht gelesen werden.",
     "retakeIngredients": "Neues Foto der Zutaten machen",
     "title": "Hinzufügen",
     "titleForDish": "Zutat hinzufügen",
@@ -2109,6 +2121,9 @@
   "productUpdate": {
     "banner": "Verdiene {points} Punkte, indem du das Produkt aktualisierst",
     "toggle": "Banner ein- oder ausblenden",
+    "tileFront": "Vorderseite",
+    "tileNutrition": "Energie",
+    "tileIngredients": "Zutaten",
     "title": "Produkt aktualisieren",
     "kindFront": "Vorderseite des Produkts ({points} Punkte)",
     "hintFront": "Mach ein Foto der Vorderseite, damit das Produkt ein Bild und Logo bekommt.",

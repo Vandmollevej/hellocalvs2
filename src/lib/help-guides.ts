@@ -18,6 +18,9 @@ export type HelpGuide = {
   id: string;
   // Siden guiden ender på (vises som understreget genvej i chatten).
   href: ChatbotLinkHref;
+  // Emner i Hjælpecenteret (`<details id="…">` i public/hjaelp.html + help-*.html),
+  // som får "Guide mig" under genvejslinket (/api/help/guides).
+  topics?: string[];
   steps: HelpGuideStep[];
 };
 
@@ -31,51 +34,61 @@ export const HELP_GUIDES: HelpGuide[] = [
   {
     id: "log-weight",
     href: "/weight/create",
+    topics: ["vaegt"],
     steps: [ADD_STEP, { target: "add-weight", da: "Vælg vægt", en: "Choose weight" }],
   },
   {
     id: "log-water",
     href: "/water/create",
+    topics: ["vand"],
     steps: [ADD_STEP, { target: "add-water", da: "Vælg vand", en: "Choose water" }],
   },
   {
     id: "scan-barcode",
     href: "/camera?mode=product",
+    topics: ["scan-stregkode"],
     steps: [ADD_STEP, { target: "add-camera", da: "Vælg kameraet", en: "Choose the camera" }],
   },
   {
     id: "voice-log",
     href: "/voice",
+    topics: ["stemme"],
     steps: [ADD_STEP, { target: "add-microphone", da: "Vælg mikrofonen", en: "Choose the microphone" }],
   },
   {
     id: "search-food",
     href: "/search",
+    topics: ["tilfoej-mad"],
     steps: [ADD_STEP, { target: "add-search", da: "Vælg søg", en: "Choose search" }],
   },
   {
     id: "create-dish",
     href: "/create-dish",
+    topics: ["opret-ret"],
     steps: [ADD_STEP, { target: "add-ownDishes", da: "Vælg egne retter", en: "Choose your dishes" }],
   },
   {
     id: "body-measurements",
     href: "/profile/body-measurements",
+    topics: ["kropsmaal"],
     steps: [ADD_STEP, { target: "add-bodyMeasurements", da: "Vælg kropsmål", en: "Choose body measurements" }],
   },
   {
     id: "goals",
     href: "/profile/goals",
+    topics: ["maal"],
     steps: [ADD_STEP, { target: "add-targetWeight", da: "Vælg målsætning", en: "Choose goal" }],
   },
   {
     id: "calendar",
     href: "/calendar",
+    topics: ["flyt-registrering"],
     steps: [{ target: "nav-kalender", da: "Tryk på Kalender i bundmenuen", en: "Tap Calendar in the bottom menu" }],
   },
   {
     id: "statistics",
     href: "/statistics",
+    topics: ["statistik"],
     steps: [{ target: "nav-statistik", da: "Tryk på Statistik i bundmenuen", en: "Tap Statistics in the bottom menu" }],
   },
 ];

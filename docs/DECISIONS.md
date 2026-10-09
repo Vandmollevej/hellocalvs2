@@ -387,7 +387,7 @@ Erstatter "Varer uden kcal/protein/kulhydrat/fedt springes over" fra 2026-09-27.
 - Forside, energi og indhold tages nu som kameraets stillbillede (`ImageCapture.takePhoto`, `src/lib/camera-still.ts`) — stadig automatisk, uden tryk. Har browseren ikke funktionen, bedes videostrømmen om 4K, og det skarpeste af tre videobilleder bruges. Stregkodefotoet er stadig ét videobillede (må ikke forsinke scanningen).
 - Energi- og indholdsfotoet beskæres til det kvadrat, brugeren så i søgeren (ændrer "ingen beskæring" fra 2026-09-17 for de to trin; forsiden er stadig hele fotoet). Længste side højst 2048 px.
 - Hvert foto logges (`photo_captured`: stillbillede/videobillede, opløsning, skarphed).
-- Kunne AI ikke læse ingredienslisten, viser varesiden "Indholdet kunne ikke læses på billedet" med knappen "Tag nyt billede af indholdet" — kun for den, der oprettede varen (`ingredientsUnreadable` i `GET /api/products/[id]`). Knappen åbner `/camera?retake=ingredients&product=<id>` (`IngredientsRetakeFlow`), og `POST /api/products/[id]/ingredients-photo` læser det nye foto med OpenAI. Intet automatisk genforsøg på det samme foto (brugerens valg).
+- Kunne AI ikke læse ingredienslisten, viser varesiden kun knappen "Tag nyt billede af indholdet" — kun for den, der oprettede varen (`ingredientsUnreadable` i `GET /api/products/[id]`). Knappen åbner `/camera?retake=ingredients&product=<id>` (`IngredientsRetakeFlow`), og `POST /api/products/[id]/ingredients-photo` læser det nye foto med OpenAI. Intet automatisk genforsøg på det samme foto (brugerens valg).
 
 ## 2026-10-02: "Til info sendte vi dig …" (mail/sms var ikke spam)
 
@@ -512,7 +512,7 @@ om varen var "taget", og det føltes ikke som scanning i realtid.
 - Forside, energi og indhold tages nu som kameraets stillbillede (`ImageCapture.takePhoto`, `src/lib/camera-still.ts`) — stadig automatisk, uden tryk. Har browseren ikke funktionen, bedes videostrømmen om 4K, og det skarpeste af tre videobilleder bruges. Stregkodefotoet er stadig ét videobillede (må ikke forsinke scanningen).
 - Energi- og indholdsfotoet beskæres til det kvadrat, brugeren så i søgeren (ændrer "ingen beskæring" fra 2026-09-17 for de to trin; forsiden er stadig hele fotoet). Længste side højst 2048 px.
 - Hvert foto logges (`photo_captured`: stillbillede/videobillede, opløsning, skarphed).
-- Kunne AI ikke læse ingredienslisten, viser varesiden "Indholdet kunne ikke læses på billedet" med knappen "Tag nyt billede af indholdet" — kun for den, der oprettede varen (`ingredientsUnreadable` i `GET /api/products/[id]`). Knappen åbner `/camera?retake=ingredients&product=<id>` (`IngredientsRetakeFlow`), og `POST /api/products/[id]/ingredients-photo` læser det nye foto med OpenAI. Intet automatisk genforsøg på det samme foto (brugerens valg).
+- Kunne AI ikke læse ingredienslisten, viser varesiden kun knappen "Tag nyt billede af indholdet" — kun for den, der oprettede varen (`ingredientsUnreadable` i `GET /api/products/[id]`). Knappen åbner `/camera?retake=ingredients&product=<id>` (`IngredientsRetakeFlow`), og `POST /api/products/[id]/ingredients-photo` læser det nye foto med OpenAI. Intet automatisk genforsøg på det samme foto (brugerens valg).
 
 ## 2026-10-02: "Til info sendte vi dig …" (mail/sms var ikke spam)
 
@@ -588,7 +588,7 @@ månedsgitteret. Regel for dagfelterne i månedsvisningen:
 - Afsluttet dag (før i dag) uden registreringer: ÷. En dag, der ikke er
   registreret, tæller som ikke nået.
 - I dag og fremtidige dage: ingen markering.
-Uge- og Liste-visningen beholder "Ingen indtastninger" i gråt på tomme dage.
+Uge- og Liste-visningen viser en grå streg (–) i stedet for "Ingen indtastninger" og kcal på tomme dage (brugerens ønske 2026-10-09).
 ## 2026-10-02: Smagsvarianten står kun i H2 på varesiden
 
 - Brugerregel: smagsvarianten (fx "Pære & havtorn") må aldrig gentages i H1. Den står kun i den grønne H2 sammen med mængden.
@@ -4650,6 +4650,15 @@ klip-klister mellem sider, og telefon/webvisning må ikke have hver sine klasser
 - Tommel op/ned påvirker populariteten (tommel ned -3, op +1, højst +3 i alt) for at undgå selvforstærkende ekkokammer.
 - "Python på serveren" er TypeScript (brugerens ok 2026-10-08). de/fr/nl oversættes senere.
 
+## 2026-10-09: Periodevalg på statistiksider er altid dropdown
+
+- Perioder (Sidste 7 dage … I år) vælges med `StatPeriodSelect` (`<select>`), aldrig med knapper/chips. Brugerens faste regel; gælder Søvnstatistik og Væskestatistik og alle fremtidige statistiksider.
+
+## 2026-10-09 — Tøj ved vejning: flere til/fra-slidere
+- Erstatter de fire gensidigt udelukkende valg med slidere: undertøj, bukser, top/T-shirt, sweater, sko, mobil m.m. i lommen, efter toiletbesøg. Flere kan vælges; intet valgt = nøgen.
+- De enkelte valg gemmes i `weight_entries.attireItems`. `attire` bliver som bekræftelsesmærke (null = ikke bekræftet; tom liste + `attire` sat = bekræftet nøgen) og grov sammenfatning, så popup, historik og admin-algoritme virker uændret.
+- Gamle rækker uden `attireItems` omregnes: undertøj → [undertøj]; tøj → [undertøj, bukser, top]; tøj + mobil → + mobil i lommen.
+- Gættet vælger det mest brugte sæt af valg omkring samme tidspunkt (uafgjort: nyeste).
 ## 2026-10-09: Kalenderens statusblok viser ingen totaler (uge/måned)
 - Uge-/månedsvisningen viser kun statusen ("Inden for målet" / "Målet ikke opnået" / "Intet registreret") — ikke "Mål: N kcal", motion eller "Tilbage i måneden". Totaler står kun på den enkelte dag (`GoalStatusSummary` `showTotals`).
 - Status = gennemsnit af forgangne dage med registreringer mod gennemsnitligt dagsmål (budget-snapshots, som følger næste delmål). I dag tæller ikke med.
@@ -4707,6 +4716,37 @@ Google/Apple/Facebook-login og integrationstilkobling kører i system-browseren,
 - Kun generiske varer — almindelige varer med brand/EAN berøres ikke. Se docs/REGLER.md.
 - Ikke gjort endnu: UI skal bruge `displayName`; ental/flertal-kolonner i Bilka-/REMA-arkene; import af de afledte former til eksisterende rækker ud over backfill-listen.
 
+## 2026-10-09 — Bundmenu-redigering: swipe, kant-rulning og animationer
+
+- I redigering ruller et swipe på et ikon rækken; et stille tryk (250 ms) løfter ikonet. Holdes et løftet ikon ved rækkens kant, ruller rækken kontinuerligt (ingen sidehop, ingen snap).
+- Alle flytninger i menuen glider via script-animation (`el.animate`), fordi vibrationen (CSS-animation) ellers overstyrer inline-transform. Et sluppet ikon glider fra fingeren til sin plads. Samme mønster som statistik-gitteret (`StatCardsGrid`).
+
+
 ## 2026-10-09: Retter-søgning viser Valdemarsro under "Opskrifter"; "Opret ny ret" som tekstlink
 - Årsag til tom liste: `/api/shared-recipes` medtog kun Valdemarsro ved `valdemarsro=1`, som appen aldrig sender, så "Opskrifter" (source=all) viste aldrig Valdemarsro-retter. Nu medtages de altid ved all; HelloFresh kræver stadig, at integrationen er slået til (Seriøs).
 - "Opret ny ret" er sort, understreget tekst med plus foran (ikke grøn knap) — web og native.
+
+## 2026-10-09 — Rå/tilberedt (cookingState) på generiske ingredienser
+
+- `GenericIngredient.cookingState` (enum `RAW`/`COOKED`, standard `RAW`; migration `20261009090000_generic_ingredient_cooking_state`). `POST /api/generic-ingredients` accepterer `cookingState`. Brugerens ønske 2026-10-08; sheet-kolonnen `Raw / Cooked` i `generic_products.xlsx` er den tilsvarende. Mangler: UI-valg og afledning af COOKED for eksisterende rækker.
+
+
+## 2026-10-09 — Halvcirklens vifte: knapper rykker op ved kanten
+
+- Står halvcirklen over footeren langt ude til siden, rykkes de knapper, der ellers ville havne uden for skærmen, længere op (samme afstand til naboen) i stedet for at viften skubbes indad eller knapper skjules. Gælder web (`fanLayout` i `footer-arc.ts`) og native (`HomeFooterArc.kt`).
+
+## 2026-10-09 — Halvcirklen over footeren kan ikke trækkes
+
+- Ejerens rettelse: halvcirklen (`FooterArc` / `HomeFooterArc.kt`) står fast midt over footeren og kan ikke flyttes vandret. Vandret træk i hvile er fjernet (web + native), og den gemte placering (`hellocal.frontpage.arcOffsetX`) bruges ikke mere. Træk op åbner viften som før.
+
+## 2026-10-09 — Genvej og "Guide mig" også i selve Hjælpecenteret
+
+- Bygger videre på 2026-10-07 (chatten): samme spotlight-guide (`HelpGuideSpotlight`, registret `src/lib/help-guides.ts`) bruges nu fra de statiske Hjælpecenter-sider (`public/hjaelp.html` + `help-*.html`, 7 sprog). Ingen ny overlay.
+- Øverst i et emne står emnets "Gå til …"-link som almindeligt understreget link; hvis emnet hører til en guide (`topics` i registret), står knappen "Guide mig" under linket, før beskrivelsen. Siden henter knapperne fra `/api/help/guides`, så en ændring i registret slår igennem uden at HTML-filerne skal rettes.
+- Knappen åbner `/?guide=<id>`; `HelpGuideSpotlight` starter guiden og fjerner parameteren fra adressen.
+- Ny guide til et Hjælpecenter-emne: tilføj emnets `<details id>` i `topics` på guiden (testen tjekker, at emnet findes på alle sprog).
+
+## 2026-10-09: Indlæsning og varer pr. side i admin Varer
+
+- Kortet "Visning" har to nye valg: "Indlæsning" (Sider med Forrige/Næste, eller Uendelig scroll) og "Varer pr. side" (24/48/96/200). URL-parametre `paging=infinite` og `perPage`; standard (sider, 48) udelades. Gemmes med i en gemt visning.
+- Uendelig scroll: `page` betyder antal indlæste portioner; serveren viser portion 1..page, og `InfiniteScrollLoader` hæver `page` når bunden kommer til syne.

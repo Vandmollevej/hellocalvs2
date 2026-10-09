@@ -44,3 +44,14 @@ test("every step target still exists in the UI code", () => {
     }
   }
 });
+
+test("every help-centre topic of a guide exists in all language versions", () => {
+  for (const file of ["hjaelp", "help-en", "help-de", "help-fr", "help-nl", "help-sv", "help-no"]) {
+    const html = read(`../../public/${file}.html`);
+    for (const guide of HELP_GUIDES) {
+      for (const topic of guide.topics ?? []) {
+        assert.ok(html.includes(`<details id="${topic}"`), `${file}: emnet ${topic} (guide ${guide.id}) findes ikke`);
+      }
+    }
+  }
+});

@@ -279,7 +279,7 @@ export function AddMenuList({ date, time }: { date?: string | null; time?: strin
                     <IconX size={14} stroke={2.2} color="var(--hf-tan)" />
                   </span>
                 )}
-                <span className={`flex flex-col items-center gap-1 ${placeholder ? "invisible" : ""}`}>
+                <span className={`flex flex-col items-center gap-0 ${placeholder ? "invisible" : ""}`}>
                   <Image
                     src={tile.icon}
                     alt=""
@@ -289,7 +289,7 @@ export function AddMenuList({ date, time }: { date?: string | null; time?: strin
                     unoptimized={tile.icon.endsWith(".svg")}
                     draggable={false}
                   />
-                  <span className="hf-type-body -mt-4">{label}</span>
+                  <span className="hf-type-body">{label}</span>
                 </span>
               </Link>
             );
@@ -329,7 +329,7 @@ export function AddMenuList({ date, time }: { date?: string | null; time?: strin
                       type="button"
                       onClick={() => restoreTile(key)}
                       aria-label={t("addMenu.editAddTile", { item: label })}
-                      className="flex flex-col items-center gap-1 p-2 text-center rounded-card"
+                      className="flex flex-col items-center gap-0 p-2 text-center rounded-card"
                     >
                       <Image
                         src={tile.icon}
@@ -339,7 +339,7 @@ export function AddMenuList({ date, time }: { date?: string | null; time?: strin
                         className="h-24 w-24 object-contain"
                         unoptimized={tile.icon.endsWith(".svg")}
                       />
-                      <span className="hf-type-body -mt-4">{label}</span>
+                      <span className="hf-type-body">{label}</span>
                     </button>
                   );
                 })}

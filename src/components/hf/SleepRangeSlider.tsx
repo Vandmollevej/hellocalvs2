@@ -31,11 +31,14 @@ export function SleepRangeSlider({
   bedtimeMinutes,
   onChangeWake,
   onChangeBedtime,
+  bedtimeFirst = false,
 }: {
   wakeMinutes: number;
   bedtimeMinutes: number;
   onChangeWake: (value: number) => void;
   onChangeBedtime: (value: number) => void;
+  // Aktivitet: start (= "bedtime") står til venstre og slut (= "wake") til højre.
+  bedtimeFirst?: boolean;
 }) {
   const trackRef = useRef<HTMLDivElement>(null);
   const draggingRef = useRef<Handle | null>(null);
@@ -101,7 +104,7 @@ export function SleepRangeSlider({
 
   return (
     <div className="flex flex-col gap-2">
-      <div className="flex items-center justify-between px-0.5">
+      <div className={`flex items-center justify-between px-0.5 ${bedtimeFirst ? "flex-row-reverse" : ""}`}>
         {editing === "wake" ? (
           <input
             autoFocus

@@ -8,24 +8,29 @@ import { intlLocale } from "@/i18n";
 import { useTranslation } from "@/i18n/LocaleProvider";
 import { formatBodyMetric, orderBodyMetrics } from "@/lib/body-metrics";
 import { formatWeight, useUnits } from "@/lib/units";
-import type { WeighAttire } from "@/lib/weigh-attire";
+import { itemsFromAttire, parseAttireItems, type AttireItem, type WeighAttire } from "@/lib/weigh-attire";
 
 // Info-vindue for én vejning (2026-10-07, brugerkrav: man skal altid kunne
 // klikke ind på vejningen fra Seneste vejninger og kalenderen). Viser kilde,
 // tøj (kan ændres) og — under tøjet — fedtprocent m.m. fra smartvægten.
 
 type Detail = {
-  entry: { id: string; weightKg: number; weighedAt: string; source: string; attire: WeighAttire | null };
+  entry: { id: string; weightKg: number; weighedAt: string; source: string; attire: WeighAttire | null; attireItems: string[] };
   source: { label: string; icon: string | null } | null;
   metrics: { type: string; value: number }[];
 };
+
+function storedItems(entry: Detail["entry"]): AttireItem[] {
+  if (entry.attireItems.length > 0) return parseAttireItems(entry.attireItems) ?? [];
+  return entry.attire ? itemsFromAttire(entry.attire) : [];
+}
 
 export function WeightEntryDetailsSheet({ id, onClose, onChanged }: { id: string; onClose: () => void; onChanged?: () => void }) {
   const { t, locale } = useTranslation();
   const { weight: weightUnit } = useUnits();
   const [detail, setDetail] = useState<Detail | null>(null);
   const [failed, setFailed] = useState(false);
-  const [attire, setAttire] = useState<WeighAttire | null>(null);
+  const [attire, setAttire] = useState<AttireItem[]>([]);
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
@@ -38,7 +43,7 @@ export function WeightEntryDetailsSheet({ id, onClose, onChanged }: { id: string
       .then((data) => {
         if (cancelled) return;
         setDetail(data);
-        setAttire(data.entry.attire);
+        setAttire(storedItems(data.entry));
       })
       .catch(() => !cancelled && setFailed(true));
     return () => {
@@ -47,13 +52,12 @@ export function WeightEntryDetailsSheet({ id, onClose, onChanged }: { id: string
   }, [id]);
 
   async function save() {
-    if (!attire) return;
     setSaving(true);
     try {
       const response = await fetch(`/api/weight-entries/${id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ attire }),
+        body: JSON.stringify({ attireItems: attire }),
       });
       if (response.ok) onChanged?.();
     } finally {
@@ -62,7 +66,7 @@ export function WeightEntryDetailsSheet({ id, onClose, onChanged }: { id: string
   }
 
   const at = detail ? new Date(detail.entry.weighedAt) : null;
-  const changed = detail ? attire !== detail.entry.attire && attire !== null : false;
+  const changed = detail ? attire.join(",") !== storedItems(detail.entry).join(",") || detail.entry.attire === null : false;
   const metrics = detail ? orderBodyMetrics(detail.metrics) : [];
 
   return (

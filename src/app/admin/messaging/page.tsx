@@ -2,8 +2,11 @@ import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { requireAdminUser } from "@/lib/require-admin";
 import { ensureDefaultMessageTemplates } from "@/lib/messaging";
-import { MessageTemplateRow } from "@/components/admin/MessageTemplateRow";
+import { MessageTemplateList } from "@/components/admin/MessageTemplateList";
+import { EVENT_LABELS } from "@/lib/message-event-labels";
 import { t } from "@/lib/admin-i18n";
+
+const CHANNEL_LABELS: Record<string, string> = { EMAIL: "E-mail", PUSH: "Push", BOTH: "E-mail og push" };
 
 const STATUS_LABELS: Record<string, string> = {
   QUEUED: "I kø",
@@ -46,20 +49,15 @@ export default async function AdminMessagingPage() {
         </p>
       </div>
 
-      <section className="flex flex-col gap-4">
-        {templates.map((t) => (
-          <MessageTemplateRow
-            key={t.event}
-            template={{
-              event: t.event,
-              channel: t.channel,
-              enabled: t.enabled,
-              subject: t.subject,
-              bodyHtml: t.bodyHtml,
-            }}
-          />
-        ))}
-      </section>
+      <MessageTemplateList
+        templates={templates.map((t) => ({
+          event: t.event,
+          channel: t.channel,
+          enabled: t.enabled,
+          subject: t.subject,
+          bodyHtml: t.bodyHtml,
+        }))}
+      />
 
       <section>
         <h2 className="hf-type-body hf-type-strong uppercase tracking-wide text-text-muted">
@@ -79,9 +77,9 @@ export default async function AdminMessagingPage() {
             <tbody>
               {recentMessages.map((m) => (
                 <tr key={m.id} className="border-b border-hf-tan-dark">
-                  <td className="py-2 pr-3">{m.event}</td>
+                  <td className="py-2 pr-3">{EVENT_LABELS[m.event] ?? "Besked"}</td>
                   <td className="py-2 pr-3 text-text-secondary">{m.user?.displayName ?? "—"}</td>
-                  <td className="py-2 pr-3 text-text-secondary">{m.channel}</td>
+                  <td className="py-2 pr-3 text-text-secondary">{CHANNEL_LABELS[m.channel] ?? m.channel}</td>
                   <td className="py-2 pr-3 text-text-secondary">{STATUS_LABELS[m.status] ?? m.status}</td>
                   <td className="hf-type-small py-2 text-text-muted">
                     {m.createdAt.toLocaleString("da-DK")}
