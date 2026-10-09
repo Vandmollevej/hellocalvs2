@@ -99,17 +99,17 @@ export function AddMenuList({ date, time }: { date?: string | null; time?: strin
   useEffect(() => {
     if (!drag) return;
 
-    function onMove(event: PointerEvent) {
+    function moveTo(x: number, y: number) {
       const current = dragRef.current;
       if (!current) return;
-      const next = { ...current, x: event.clientX, y: event.clientY };
+      const next = { ...current, x, y };
       dragRef.current = next;
       setDrag(next);
       let overKey: string | null = null;
       tileRefs.current.forEach((el, key) => {
         if (key === current.key) return;
         const r = el.getBoundingClientRect();
-        if (event.clientX >= r.left && event.clientX <= r.right && event.clientY >= r.top && event.clientY <= r.bottom) {
+        if (x >= r.left && x <= r.right && y >= r.top && y <= r.bottom) {
           overKey = key;
         }
       });
@@ -123,25 +123,36 @@ export function AddMenuList({ date, time }: { date?: string | null; time?: strin
       commit({ ...layoutRef.current, order });
     }
 
+    function onMove(event: PointerEvent) {
+      moveTo(event.clientX, event.clientY);
+    }
+
     function onUp() {
       dragRef.current = null;
       setDrag(null);
     }
 
+    // iOS sender pointercancel, når browseren overtager en berøring, der
+    // startede uden touch-action: none (langt tryk). Trækket følger derfor
+    // touch-hændelserne og afsluttes kun af dem; pointercancel ignoreres.
     function blockScroll(event: TouchEvent) {
       event.preventDefault();
       event.stopPropagation();
+      const touch = event.touches[0];
+      if (touch) moveTo(touch.clientX, touch.clientY);
     }
 
     window.addEventListener("pointermove", onMove);
     window.addEventListener("pointerup", onUp);
-    window.addEventListener("pointercancel", onUp);
     document.addEventListener("touchmove", blockScroll, { passive: false, capture: true });
+    document.addEventListener("touchend", onUp, { capture: true });
+    document.addEventListener("touchcancel", onUp, { capture: true });
     return () => {
       window.removeEventListener("pointermove", onMove);
       window.removeEventListener("pointerup", onUp);
-      window.removeEventListener("pointercancel", onUp);
       document.removeEventListener("touchmove", blockScroll, { capture: true });
+      document.removeEventListener("touchend", onUp, { capture: true });
+      document.removeEventListener("touchcancel", onUp, { capture: true });
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps -- trækket styres via dragRef; kun start/stop afhænger af `drag`
   }, [drag === null]);
@@ -253,7 +264,7 @@ export function AddMenuList({ date, time }: { date?: string | null; time?: strin
                   editMode ? (placeholder ? "border-dashed border-hf-gray-dark" : "border-hf-tan-dark") : "border-transparent"
                 } ${editMode && !placeholder ? "hf-nav-jiggle" : ""} ${editMode ? "touch-none" : ""}`}
               >
-                {editMode && !placeholder && (
+                {editMode && (
                   <span
                     role="button"
                     aria-label={t("addMenu.editRemoveTile", { item: label })}
@@ -268,7 +279,7 @@ export function AddMenuList({ date, time }: { date?: string | null; time?: strin
                     <IconX size={14} stroke={2.2} color="var(--hf-tan)" />
                   </span>
                 )}
-                <span className={`flex flex-col items-center gap-1 ${placeholder ? "invisible" : ""}`}>
+                <span className={`flex flex-col items-center gap-0 ${placeholder ? "invisible" : ""}`}>
                   <Image
                     src={tile.icon}
                     alt=""
@@ -278,7 +289,7 @@ export function AddMenuList({ date, time }: { date?: string | null; time?: strin
                     unoptimized={tile.icon.endsWith(".svg")}
                     draggable={false}
                   />
-                  <span className="hf-type-body -mt-4">{label}</span>
+                  <span className="hf-type-body">{label}</span>
                 </span>
               </Link>
             );
@@ -318,7 +329,7 @@ export function AddMenuList({ date, time }: { date?: string | null; time?: strin
                       type="button"
                       onClick={() => restoreTile(key)}
                       aria-label={t("addMenu.editAddTile", { item: label })}
-                      className="flex flex-col items-center gap-1 p-2 text-center rounded-card"
+                      className="flex flex-col items-center gap-0 p-2 text-center rounded-card"
                     >
                       <Image
                         src={tile.icon}
@@ -328,7 +339,7 @@ export function AddMenuList({ date, time }: { date?: string | null; time?: strin
                         className="h-24 w-24 object-contain"
                         unoptimized={tile.icon.endsWith(".svg")}
                       />
-                      <span className="hf-type-body -mt-4">{label}</span>
+                      <span className="hf-type-body">{label}</span>
                     </button>
                   );
                 })}

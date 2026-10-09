@@ -190,6 +190,7 @@ export const PAGE_TREE: PageArea[] = [
           { path: "/profile/family", label: "Familie" },
           { path: "/profile/invite", label: "Invitér" },
           { path: "/profile/messages", label: "Beskeder" },
+          { path: "/profile/messages/trash", label: "Papirkurv" },
           { path: "/profile/notifications", label: "Notifikationer" },
           { path: "/profile/report-bug", label: "Rapportér fejl" },
         ],
@@ -371,6 +372,7 @@ export const PAGE_TREE: PageArea[] = [
             children: [{ path: "/admin/warnings", label: "Advarsler", note: "Gammel adresse — sender videre" }],
           },
           { path: "/admin/cron-jobs", label: "Cron-jobs" },
+          { path: "/admin/pet-food-filter", label: "Dyrefoder-filter", note: "Se og redigér filteret, der afviser dyrefoder; afprøv varer og stregkoder" },
           { path: "/admin/log", label: "Log", note: "Test-log indtil go-live: scanninger trin for trin, AI-kald, cron, fejl" },
           { path: "/admin/duplicate-products", label: "Dubletter" },
           {

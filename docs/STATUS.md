@@ -6,6 +6,100 @@ Last updated: 2026-10-09
 
 - Søvn- og Væskestatistik bruger nu dropdown (`src/components/hf/StatPeriodSelect.tsx`) i stedet for periodeknapper. Ikke kørt lint/build/visuelt: `node_modules` mangler i dette cloud-miljø.
 
+## 2026-10-09: Bundcirklen på alle sider, side-cirklen slået fra
+## 2026-10-09: Genvej + "Guide mig" i Hjælpecenteret
+
+- Hjælpecenter-siderne (7 sprog) viser øverst i emnet et understreget genvejslink og, hvor der findes en guide, "Guide mig" under linket. Bruger masters spotlight-guide fra chatten (DECISIONS 2026-10-09). 10 emner har guide: vægt, vand, stregkode, stemme, tilføj mad, opret ret, kropsmål, mål, flyt registrering, statistik.
+- Tjekket: `help-guides.test.mjs`, lint, typecheck for ændrede filer, og i Chromium: scriptet viser link + knap, knappen åbner `/?guide=…` og starter guiden. Ikke prøvet logget ind på telefon.
+
+
+- Side-cirklen (`AddButton` i `Hero`) vises ikke længere. Bundcirklen (`FooterArc`) ligger nu i `BottomNav` og er derfor på alle sider med bundmenu; popups (BottomSheet, z-200) ligger over den. Native: `HomeFooterArc` flyttet fra `HomeScreen` til `HelloCalApp` over bundmenuen, med egen `AddMenuSheet`. `AddButton`-koden er bevaret.
+- Ikke kørt: lint/tsc (ingen `node_modules`), Kotlin ikke kompileret lokalt (CI bygger); ikke prøvet på telefon. Paritet grøn.
+
+## 2026-10-09: Halvcirklens vifte drejes i stedet for at stable knapper
+
+- Brugerens rettelse: knapperne må ikke ligge ovenpå hinanden i en søjle ved skærmkanten. `fanLayout` (web `footer-arc.ts` + native `HomeFooterArc.kt`) drejer nu viften mod den frie side (presses lidt sammen, mindst 18° mellem naboer), så alle knapper ligger på skærmen uden at overlappe. Midt på skærmen er viften uændret.
+- Brugerens test, cirklen i midten: knapperne står længere fra cirklen (`ARC_GAP` 78 i stedet for 52, så fingeren ikke dækker). Navneboksen ved den valgte knap sættes skråt ud væk fra cirklen (langs strålen fra cirklens midte gennem knappen) og må aldrig overlappe en knap: rammer den en nabo eller kanten, prøves større afstand og lodret placering (`labelPlacement`, web + native; bruger den tegnede stilling, hvor den valgte knap står længere ude).
+- Flettet med #304 (fuld størrelse straks, vinkler -75..75, valgt knap længere ude). Kontrolleret numerisk for bredde 320–430 og alle cirkelplaceringer. Lint/tsc ikke kørt (ingen node_modules), Kotlin ikke kompileret lokalt (CI bygger), ikke prøvet på telefon.
+
+## 2026-10-09: Tilføj aktivitet — tidsslider og varighed med plus/minus
+
+- `/activity/create` (web + `ActivityCreateScreen.kt`): starttidspunktet er nu en dato + samme to-håndtags 24-timers-slider som søvnrytmen (`SleepRangeSlider`, ny prop `bedtimeFirst`: start til venstre, slut til højre; start-håndtaget flytter starten og holder sluttiden, slut-håndtaget ændrer varigheden). Varigheden står under som − [timer min] + i samme boks som mængdevælgeren; teksten kan rettes, og −/+ går i hele 5 minutter (`stepDuration` i `activity-duration.ts`, testet).
+- Kalorie-feltet viser nu bare tallet (forudfyldt, kan rettes) — ingen "ca."/"anslået" og ingen MET-tekst.
+- Paritet accepteret for `/activity/create` og `/profile/sleep`. Lint og `node --test` grønne; Kotlin ikke kompileret lokalt (CI bygger); ikke prøvet på telefon.
+## 2026-10-09: Ikoner tilbage (adgangsmur) + markeret cirkel væk fra fingeren
+
+- Ikoner (fingeraftryk, PNG/WebP-tilføj-ikoner) forsvandt efter adgangsmuren 2026-10-08: Next's billed-optimerer henter `/icons/*` internt uden browser-User-Agent, og muren afviste den som bot. Åbne statiske filer (`isPublicStaticAsset` i `access-wall.ts`) slipper nu forbi muren før UA-/rate-tjekket; beskyttede billeder er uændrede.
+- Footer-halvcirklen: den markerede cirkel rykkes 40 px ud fra viften (og teksten 8 px længere op), så den ikke ligger under tommelfingeren (`FooterArc.tsx` + `HomeFooterArc.kt`). Markeringen måles stadig ved hvilepladsen.
+- Lint ikke kørt (ingen `node_modules` her); logik tjekket med node. Ikke prøvet på telefon — tjek efter deploy at ikonerne er tilbage.
+## 2026-10-09: Footer-cirklen får fuld størrelse straks ved træk op
+
+- `FooterArc` (web) og `HomeFooterArc.kt` (native): første træk opad springer cirklen og knapperne straks til fuld størrelse (ingen animation) i stedet for at vokse gradvist med fingerens afstand. Slip uden at ramme en knap lader den stå åben. `ARC_PULL_DISTANCE` er fjernet.
+- Knapperne har samme geometri som venstre-cirklen (`AddButton`): 52 px fra cirklen (valgt knap 22 px længere ude end de øvrige), vinkler jævnt fordelt over −75°…75°.
+- Ikke kørt: build (lint og tsc på de ændrede filer er rene), Kotlin ikke kompileret, ikke prøvet på telefon.
+
+## 2026-10-09: Halvcirklens vifte rykker knapper op i stedet for ud over kanten
+
+- `FooterArc` (web + `HomeFooterArc.kt`): står halvcirklen langt ude til siden, flyttes viften ikke længere indad. De knapper, der ellers ville forsvinde ud over skærmkanten, holdes inden for kanten og rykkes i stedet længere op, væk fra halvcirklen, med samme afstand til naboen (`fanLayout`). Navnet på det valgte ikon holdes inden for skærmen. Størrelser og indstillinger er uændrede.
+- Rettet efter brugerens test: halvcirklens knapper toner ikke længere langsomt ind efter hvor langt cirklen er trukket op, men vises med det samme (150 ms) som i side-cirklen (web + native).
+- Lint, tsc, `sync.mjs --check` grønne; paritet for `/` accepteret. Kotlin ikke kompileret lokalt (ingen Gradle-afhængigheder offline) — CI bygger. Ikke prøvet på telefon.
+
+## 2026-10-09: Delmål-formular i tre accordions
+
+- `GoalForm`: tre fold-ud (Vægt og opbygning, Kropsmål, Ernæring); kropsmålene har igen deres egne tegninger (efter profilens køn). Lint grøn; ikke visuelt testet.
+
+
+## 2026-10-09: Tøj ved vejning som til/fra-slidere
+
+- Vægt-siden, vejningens info-vindue og popuppen for smartvægt-vejninger viser nu syv slidere (undertøj, bukser, top/T-shirt, sweater, sko, mobil m.m. i lommen, efter toiletbesøg). Flere kan vælges; intet valgt = nøgen. Se DECISIONS 2026-10-09.
+- Ny kolonne `weight_entries.attireItems` (migration 20261009100000, gamle valg omregnes); algoritmen gætter nu det mest brugte sæt.
+- `tsc` og eslint på de ændrede filer er rene; logikken er kørt mod eksempler. Native (Compose) er fulgt med i `WeightComponents.kt`, `WeightCreateScreen.kt` og `HomeWeighInPrompts.kt`; ikke kompileret her (ingen Android-værktøjer). `npm run build` er grøn. Ikke prøvet i browser eller mod rigtig database.
+Last updated: 2026-10-08
+## 2026-10-09: Stregkode læses også med skygge hen over koden (lokal tærskel pr. scanlinje)
+
+- Brugerens test 2026-10-06: en mælk med lidt skygge over stregkoden kunne ikke læses, mens andre scanner-apps læste den straks. Årsag: ZXing binariserer hver scanlinje med én fælles sort/hvid-tærskel, så de hvide felter i skyggen var mørkere end de sorte streger i lyset. Bemærk: ZXing's `HybridBinarizer` (som 2026-10-07-ændringen skiftede til hver anden frame) adskiller sig kun fra den globale for 2D-koder — for 1D-rækker bruger begge samme ene tærskel pr. række, så den skiftende binarisering hjalp ikke mod skygge på iPhone (ingen native BarcodeDetector).
+- Nu tærskles hver scanlinje lokalt (`src/lib/barcode-row-threshold.ts`, koblet på ZXing via `src/lib/barcode-local-binarizer.ts`): hver pixel sammenlignes med gennemsnittet i et vindue på 10 % af linjen, så kun kontrasten mellem streg og nabo-felter tæller. I samme frame prøves derefter ZXing's globale histogram (lav kontrast/uskarphed), og UPC-E-læseren på begge. Én luminans-beregning pr. billede. Native BarcodeDetector (Android Chrome) kører stadig først.
+- Tjek: `npm test` (4 nye tests: uden skygge, blød og skarp skyggekant, ensfarvede områder), lint og typecheck rene for de ændrede filer. `npm run build` stopper på en eksisterende typefejl i `src/app/admin/product-database/products/page.tsx` (`"details"` vs. `"list"`, kendt fra 2026-10-04). Ikke prøvet på telefon — brugeren scanner mælken igen i samme lys.
+
+## 2026-10-09: Startmængde — instantkaffe 2 g og aldrig over pakkens indhold
+
+- `default-amount.ts` (+ native `FoodLogic.kt`): instantkaffe → 2 g; forslaget kappes ved pakkens vægt/volumen. Test: `node --test src/lib/default-amount.test.mjs` (14 grønne). Lint/build ikke kørt (ingen node_modules her); Kotlin ikke kompileret lokalt.
+
+## 2026-10-08: Adgangsmur mod crawlere
+
+- `middleware.ts` + `src/lib/access-wall.ts`: bot-blokering (UA), login-krav på alt undtagen forside/login/juridiske sider, beskyttede billeder (session + hotlink-tjek), rate limit. Se DECISIONS 2026-10-08 og DEPLOYMENT "Search indexing".
+- Logik testet med 30 enhedstjek; lint på ændrede filer grøn. Ikke testet live (ingen lokal DB/login) — efter deploy: tjek forside, login, Face ID, Google/Apple-login, betaling-webhook, widgets og produktbilleder i appen.
+- Mangler hos dig: Cloudflare Bot Fight Mode / AI-bot-blokering + rate limit på login (se DEPLOYMENT).
+
+## 2026-10-04: Drinks (forberedt)
+
+- Ny kategori "Drinks" nederst i tilføj-menuen, `/drinks` og `/drinks/[id]` (cirkelbillede + én skyder pr. ingrediens), API `/api/drinks` + `/api/drinks/log`, migration `20261004100000_drinks` skal køre ved deploy.
+- Mangler: regneark-import (format i `docs/DRINKS.md`) — databasen er tom indtil da.
+
+## 2026-10-08: Native app — login-overdragelse, manglende API'er, genererede videnstekster
+
+- Google/Apple/Facebook-login og integrationstilkobling fra appen vender nu tilbage til appen (`hellocal://auth/complete?code=…`, `hellocal://settings/integrations/<app>?connected=1`) via engangskoder + PKCE. Nye ruter `POST /api/auth/native/exchange` og `POST /api/auth/native/connect-code`; ny migration `20261008160000_native_auth_codes` (DECISIONS 2026-10-08 "Native login-overdragelse"). Native: `api/NativeAuth.kt`, login-/opstartsknapper, integrationssiden og deep-link-håndtering i `HelloCalApp.kt`; `Location` har nu `fragment` (#anker), også i `RouteArgs`.
+- Nye API'er til native skærme: `GET /api/forwards/[token]` (samme claim-logik som `/forward/[token]`, nu i `src/lib/forward-view.ts`) og `GET /api/additives/[code]`; `GET /api/additives` har fået `category`, `euStatus`, `variantOf`. Native `ForwardScreen` og E-nummer-skærmene (EU-status-filter, "Forbudt i EU", chips, alle afsnit) er færdige.
+- `OnbKnowledgeData.kt` og `FoodReferenceData.kt` genereres nu af `scripts/native/sync.mjs` fra `src/lib/{food-latin,knowledge,knowledge-research,micronutrient-info,toxins}.ts` (Nodes indbyggede type-stripping, ingen pakker; CI kører Node 24). `--check` fejler ved drift.
+- Lint, `sync.mjs --check` og `parity.mjs` grønne. `tsc` kun fejl om `prisma.nativeAuthCode` (Prisma-klienten i worktree'et er ikke regenereret). Kotlin ikke kompileret lokalt (ingen Gradle) — CI-jobbet bygger APK/iPhone.
+## 2026-10-08: Kæder for slettede EAN-gengangere (Rewe/DM)
+
+- De 264 Rewe/DM-rækker, der blev slettet 2026-10-07 som stregkode-gængere, er genskabt fra backup-arkene og gemt som kædekoblinger (259 EAN) i `scripts/store-products-import/data/store_links.json`; store-products-agent sætter Kæder (`product_stores`) ved hver kørsel. 87 EAN findes allerede i databasen (Bilka/REMA) og får Rewe/DM ved næste deploy; 48 SPAR- og 124 Rewe-ark-varer kobles, når de importeres.
+- Overblik på NAS'en: `Productdatabase\Kaeder for slettede EAN-gengangere.xlsx`. Regel: DECISIONS 2026-10-08.
+## 2026-10-08: Vagt-robot på NAS'en
+
+- Ny service `uptime-agent` (`scripts/uptime-agent`): hver time site udefra/indefra, containere, diskplads; mail til peter@packroff.dk ved fejl, påmindelse hver 6. t og ved løst, samt en "startet"-mail ved opstart. Se DEPLOYMENT "Overvågning".
+- Logik og dekryptering af admin-gemte SMTP-nøgler testet lokalt (Python); første kørsel på NAS'en verificeres via containerlog.
+
+## 2026-10-08: Admin Brands — "Erstat logo" og "Genkør logo"
+
+- Hvert brand-kort (fuld admin) har nu "Erstat logo" (PNG-upload, samme pipeline som drag n drop/Logo-upload, PNG bruges som den er) og "Genkør logo" (`rerunBrandLogo` i `brands/actions.ts` sætter brandets BRAND_LOGO-job til PENDING; `cutout.py` skriver det nye resultat til brandet med `?v=`).
+- Genkør virker kun, når logoet stammer fra et fritlægningsjob (ikke uploadet). Billedrobotten skal genstartes/deployes med ny `cutout.py` (fix e745004e + denne).
+- Lint/typecheck/build kørt; ikke visuelt testet.
+
+## 2026-10-09: Kalender uden totaler i uge/måned
+Statusblokken i uge-/månedsvisning viser kun status (gennemsnit af forgangne dage mod delmålets dagsmål). Dagsvisningen er uændret. Lint + tsc grønne; ikke prøvet i browser.
+
 ## 2026-10-07: Alle popups som bundark + brand-logoets luft
 
 - Hjulvælgere (højde/fødselsår/fødselsdato), opstartstips, adgangslog-panelet, Hello Doc-tilbagetrækning, slet familieprofil og alle admin-bekræftelser/-detaljevinduer er nu bundark (swipe ned/scrim = annullér); ingen `window.confirm`/`prompt` tilbage. Se DECISIONS 2026-10-07 for undtagelser (fuldskærms-visere, Face ID, kommandopalet).
@@ -13,6 +107,23 @@ Last updated: 2026-10-09
 - Verificeret på master (0a7d3593): "Sådan regner vi" væk, "/stk." efter gram pr. skive, ingen tom luft over Tilføj-knappen, Tilføj-knap væk fra rækker, menutekst tættere på ikonerne, beskeder swipe-slet midt for rækken.
 - Lint grøn på de ændrede filer; `tsc` har kun to fejl i `api/dishes/route.ts` fra en forældet Prisma-klient i worktree'et. Ikke visuelt testet (brugerens regel).
 
+## 2026-10-08: Native apps — alle 121 forbruger-skærme porteret, Android + iPhone bygger
+
+- Alle forbruger-sider i `native/parity/screens.json` er nu `ported` (121), og 100 er `web-only` (admin/partner/erhverv/butiks-scanner). CI ("Native apps") bygger Android-APK og iPhone-app (simulator) grønt.
+- Telefon-funktioner (`platform/Device.kt`, `AndroidDevice.kt`, `IosDevice.swift`): kamera, foto-/filvalg, video→billeder, OCR, stregkode/QR, tale, deling, biometri.
+- Login med Google/Apple/Facebook og integration-forbindelser vender tilbage til appen (PKCE + engangskoder, migration `20261008160000_native_auth_codes`).
+- Nye API'er: `GET /api/forwards/[token]`, `GET /api/additives/[code]`; `/api/additives` har category/euStatus/variantOf.
+- Web-fix: `/statistics/body-water` viste aldrig kcal/salt/sugar (forkert dagsnøgle i `src/lib/water-stats.ts`).
+- Mangler eksterne konti: push til login-godkendelse (Firebase/APNs) og Face ID/passkey-login i appen (Apple Associated Domains + assetlinks).
+
+## 2026-10-07: Native apps (Android + iPhone) — fundament
+
+- Brugerens valg: Hello Cal bliver **helt native** og ikke en web-app i en skal. Alle skærme skrives én gang i Kotlin/Compose Multiplatform (`native/shared`) og kompileres til både Android og iPhone. Se DECISIONS 2026-10-07.
+- Fundamentet er klar: Gradle-build (`native/`), Android-app (`androidApp`) med deep links, widgets og Health Connect, og iPhone-app (`iosApp/project.yml`, XcodeGen) med Keychain og widgets.
+- Tema, alle tekster (7 sprog), 176 Tabler-ikoner og app-ikonet genereres fra web med `scripts/native/sync.mjs`.
+- Login (cookie som i browseren, krypteret lager), navigation med web-stier og bundmenu.
+- Paritets-vagten: `native/parity/screens.json` (121 forbruger-sider, 100 kun web), `scripts/native/parity.mjs`, Stop-hook i `.claude/settings.json` og CI-jobbet `.github/workflows/native.yml`. Det bygger også APK og iPhone-simulator-build.
+- Porteret: `/login`. De øvrige sider står som `pending` og vises i appen som "endnu ikke bygget" med et link til browseren.
 ## 2026-10-07: Prod-nedbrud — fejlet emailHash-migrering
 
 - Migrationen `20261004190000_user_email_hash` fejlede ved deploy 2026-10-06 22:42 UTC. Live-koden læste `User.emailHash` → P2022 (side-fejl digest 3069122648), og `migrate deploy` afviste siden alle nye migreringer (P3009), så ingen deploys gik igennem.
@@ -37,7 +148,7 @@ Last updated: 2026-10-09
 
 - "Senest anvendte" hedder nu "Senest tilføjet". Bundark har ingen synlig overskrift (kun til skærmlæsere). Tilføj-knappen er fjernet fra vareraderne (Søg, Favoritter, Mine scanninger); tryk på varen åbner varesiden /add/[id] uden popup.
 - Fjernet "Sådan regner vi" på Profil; Luk konto kræver nu et kontrolord ligesom Slet mine data, og kontrolordet følger sproget (SLET/DELETE/LÖSCHEN …; serveren får stadig "SLET"). Tilføj-menuen: tekst tættere på ikonerne. Varesiden: "/stk." efter gram pr. servering/skive, brand-logo flyttet 12 px ud, ingen tom luft over Tilføj-knappen.
-- Beskeder: "Slettet" øverst til venstre, swipe viser "Slet" midt for beskeden, "Ryd alt" under Slettet (bekræftelse i bundark). Migration `20261007140000_outbound_message_user_delete` skal køre ved deploy; "Ryd alt" skjuler for brugeren, rækken bevares til admin-loggen. Ikke visuelt testet (brugerregel).
+- Beskeder: "Papirkurv" (grå, ikon foran, ikke understreget) øverst til venstre linker til egen side `/profile/messages/trash` med overskriften Papirkurv og et "Beskeder"-link med brev-ikon tilbage (komponent `MessagesView`); swipe viser "Slet" midt for beskeden, "Ryd alt" under Slettet (bekræftelse i bundark). Migration `20261007140000_outbound_message_user_delete` skal køre ved deploy; "Ryd alt" skjuler for brugeren, rækken bevares til admin-loggen. Ikke visuelt testet (brugerregel).
 ## 2026-10-07: Vægt — synk-status, tøj ved vejning, kalibrer
 
 - Vægtsiden viser synk-status pr. forbundet integration (sidst synkroniseret + Synk nu). Gammel synk (admin, standard 48 t) giver et bundark med Synk nu / link til integrationen (`WeighInPrompts` på forsiden).
@@ -80,6 +191,7 @@ Retter → HelloFresh åbner nu en skrivebeskyttet side under Retter (ikke Nye v
 - Billedspærring bygget som natrobot `pet-food-scan` (kl. 03:45, kun om natten, aldrig i scan-flowet): AI'en ser forsidefotoet af brugeroprettede/ventende varer og afviser dyrefoder; migration `20261007100000_product_pet_food_checked` skal køre ved deploy. Mangler: evt. oprydning af ca. 150 dyrefodervarer i de eksisterende Nemlig-ark.
 - Advarsel/spærring af brugere: første dyrefoder-forsøg giver en advarsel på skærmen, andet spærrer kontoen (admin → Brugere → Spærrede, "Ophæv spærring", rød advarsel i Oversigten). Migration `20261007110000_pet_food_strikes` skal køre ved deploy. Ikke live-testet (ingen lokal DB/login).
 - Alle afvisninger vises i Oversigten til gennemsyn med "Fejl – frikend"; natjobbet gennemgår også eksisterende varer. Migration `20261007120000_pet_food_incident_review` skal køre ved deploy. Tyske kilder (EDEKA24, Fressnapf, Zooplus.de) scrapes og lægges på spærrelisten bagefter.
+- Dyrefoder-filter kan ses og redigeres i admin (Indstillinger → Dyrefoder-filter) med afprøvning; tyske kilder (EDEKA24, Fressnapf, Futterhaus, Zooplus.de, dm) er scrapet og lagt på spærrelisten (ca. 28.800 stregkoder). Migration `20261008160000_pet_food_filter_edits` skal køre ved deploy. Fuld rapport: `docs/PET-FOOD-FILTER.md`. Ikke live-testet.
 
 ## 2026-10-06: Guide-flows med betingelser, opsætningsguide (slået fra) og MyFitnessPal/Lifesum-import
 
@@ -90,6 +202,14 @@ Retter → HelloFresh åbner nu en skrivebeskyttet side under Retter (ikke Nye v
 - `/settings/import`: skærmoptagelse af MyFitnessPal/Lifesum → AI-aflæsning → gennemsyn → import som registreringer.
 - Migration `20261006200000_flow_conditions_migration_import` skal køre ved deploy. Tjek: `npm test`, lint og build (se commit). Ikke prøvet mod rigtig database eller med en rigtig optagelse — test importen med en kort optagelse først.
 - Fra samme overtagelse: `storeDescription` (butikkens originale varetekst, Cowboytoasten-sagen) er pushet til master (migration `20261005100000_product_store_description`), og SPAR-arket `spar.xlsx` er gemt med kode-forklaringerne.
+
+## 2026-10-09: Tilføj-menu — tekst tættere på ikonerne
+
+- Ikonerne har tomt luft i bunden, så teksten sad for langt nede. `AddMenuList.tsx`: `gap-0` og `-mb-4` på ikonet. Lint/build ikke kørt (ingen `node_modules` i cloud-sessionen). Justér `-mb-4` efter billedet på telefon.
+
+## 2026-10-09: EDEKA-logoet viste kun det gule hjerte
+
+- Årsag: `drop_edge_fragments` skar kantrørende dele væk, og rembg regnede det store blå logofelt for baggrund. Rettet på master (kantrørende dele på mindst 10 % bevares; `is_solid_block_logo` bruger hele beskæringen, når feltet er en del af logoet). Denne PR tilføjer kun noten; den eksisterende EDEKA-fritskrabning skal laves igen i admin → Logoer.
 
 ## 2026-10-05: Pulslinjen — roligere uden ur, flyttet op over nederste tal
 
@@ -6058,3 +6178,16 @@ Ikke bygget: Valdemarsro-import til app-databasen, Valdemarsro-detaljevisning ("
 
 Ny `valdemarsro-agent` (scripts/valdemarsro-agent, compose.production.yaml, build.yml, jobs-registret), model `RecipeSourceUrl` (migration 20261008130000_recipe_source_urls), "Gå til opskrift"-knap i AddProductView, admin Retter → Valdemarsro viser data. Parsingen er testet mod en rigtig Valdemarsro-side; agenten er IKKE kørt mod databasen eller i Docker endnu — første nat henter 150 retter, resten over de følgende nætter (sæt VALDEMARSRO_AGENT_BATCH_SIZE højere for hurtigere start). Kræver deploy, så containeren bygges og migrationen kører.
 
+
+## 2026-10-08 — Ental/flertal for generiske ingredienser (database + API)
+
+Skema, migration, `src/lib/danish-number.ts` og søgning/oprettelse er lavet (se DECISIONS.md samme dato). `prisma validate` og ESLint på de ændrede filer er grønne; `npm run build` og typecheck er ikke kørt (ingen genereret Prisma-klient i arbejdskopien). Mangler: UI skal vise `displayName`, ental/flertal i arkene, billedomdøbning.
+
+## 2026-10-09: Synonymordbog (admin > Soegning)
+
+- `/admin/search-synonyms`: ordpar pr. sprog (DA/EN) med "Ens"-procent; soegning i produkter og generiske ingredienser matcher ogsaa synonymet, rangeret efter procenten (0 % = slaaet fra). Tabel `search_synonyms` (migration 20261009120000, med eksempler). Forslag ud fra produkttyper: `docs/SYNONYM-FORSLAG.md`.
+
+- 2026-10-09: Opdater-banneret (`UpdatePointsBanner`) er nu et lag oven på siden (rykker ikke indholdet), med mindre luft over/under teksten. Trækstregen minimerer (op/tryk) og trækker en omvendt popup ned (ned) med et kamerafelt pr. manglende ting. Ikke prøvet i browser.
+
+- 2026-10-09: Tilføj-menu: teksten lå oven på ikonerne (dobbelt negativ margin fra #287). Overlappet fjernet på web (`AddMenuList.tsx`) og native (`AddMenu.kt`).
+- 2026-10-09: Halvcirklen over footeren kan ikke længere trækkes til siden (web + native); står altid midt over footeren.

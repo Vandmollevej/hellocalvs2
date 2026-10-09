@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { unauthorized } from "@/lib/session";
 import { getProfileUser } from "@/lib/family-access";
-import { isWeighAttire } from "@/lib/weigh-attire";
+import { attireFromItems, parseAttireItems } from "@/lib/weigh-attire";
 import { INTEGRATION_CATALOG } from "@/lib/integrations";
 import { BODY_METRIC_TYPES, SAME_MEASUREMENT_MS } from "@/lib/body-metrics";
 import type { HealthMetricSource, HealthMetricType } from "@prisma/client";
@@ -57,15 +57,16 @@ export async function GET(_req: Request, { params }: RouteContext) {
 
 export async function PATCH(req: Request, { params }: RouteContext) {
   const { id } = await params;
-  const { weightKg, attire } = (await req.json()) as { weightKg?: number; attire?: string };
+  const { weightKg, attireItems } = (await req.json()) as { weightKg?: number; attireItems?: string[] };
 
   // Tøj kan altid bekræftes — også på synkroniserede vejninger (kun selve vægten er låst).
-  if (attire !== undefined && weightKg === undefined) {
-    if (!isWeighAttire(attire)) return NextResponse.json({ message: "attire er ugyldig" }, { status: 400 });
+  if (attireItems !== undefined && weightKg === undefined) {
+    const items = parseAttireItems(attireItems);
+    if (!items) return NextResponse.json({ message: "attireItems er ugyldig" }, { status: 400 });
     try {
       const user = await getProfileUser("weight", "UPDATED");
       if (!user) return unauthorized();
-      const result = await prisma.weightEntry.updateMany({ where: { id, userId: user.id }, data: { attire } });
+      const result = await prisma.weightEntry.updateMany({ where: { id, userId: user.id }, data: { attire: attireFromItems(items), attireItems: items } });
       if (result.count === 0) return NextResponse.json({ message: "Vejningen findes ikke" }, { status: 404 });
       return NextResponse.json({ updated: true });
     } catch (error) {

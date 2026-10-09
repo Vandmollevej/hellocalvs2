@@ -10,7 +10,7 @@ import { intlLocale } from "@/i18n";
 import { useTranslation } from "@/i18n/LocaleProvider";
 import { formatWeight, useUnits } from "@/lib/units";
 import { agoLabel, capitalize, weighWhen } from "@/lib/weigh-labels";
-import type { WeighAttire } from "@/lib/weigh-attire";
+import type { AttireItem } from "@/lib/weigh-attire";
 
 // To popups ved åbning af appen (2026-10-07), begge bundark (KRAV.md):
 // 1) "Det er længe siden, der er synkroniseret" med Synk nu / link til integrationen.
@@ -34,7 +34,7 @@ type PendingWeighIn = {
   weightKg: number;
   weighedAt: string;
   source: { label: string; icon: string | null };
-  suggestion: WeighAttire;
+  suggestion: AttireItem[];
 };
 
 const SYNC_LATER_KEY = "hf-weight-sync-later";
@@ -218,7 +218,7 @@ function PendingWeighInSheet({
   const [list, setList] = useState(entries);
   // Ældste først; start ved den nyeste.
   const [index, setIndex] = useState(entries.length - 1);
-  const [choices, setChoices] = useState<Record<string, WeighAttire | null>>(() =>
+  const [choices, setChoices] = useState<Record<string, AttireItem[]>>(() =>
     Object.fromEntries(entries.map((entry) => [entry.id, entry.suggestion]))
   );
   const [saving, setSaving] = useState(false);
@@ -232,15 +232,14 @@ function PendingWeighInSheet({
     when.today && when.part === "morning" ? t("weighIn.prompt.todayMorning") : t("weighIn.prompt.past", { when: when.label });
 
   async function save() {
-    const attire = choices[entry.id];
-    if (!attire) return;
+    const attire = choices[entry.id] ?? [];
     setSaving(true);
     setError(false);
     try {
       const response = await fetch(`/api/weight-entries/${entry.id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ attire }),
+        body: JSON.stringify({ attireItems: attire }),
       });
       if (!response.ok) throw new Error("failed");
       const rest = list.filter((item) => item.id !== entry.id);
@@ -270,7 +269,7 @@ function PendingWeighInSheet({
           )}
           <button
             type="button"
-            disabled={saving || !choices[entry.id]}
+            disabled={saving}
             onClick={() => void save()}
             className="hf-btn-primary h-12 w-full px-4"
           >
@@ -317,7 +316,7 @@ function PendingWeighInSheet({
         </div>
 
         <AttireToggles
-          value={choices[entry.id] ?? null}
+          value={choices[entry.id] ?? []}
           onChange={(value) => setChoices((current) => ({ ...current, [entry.id]: value }))}
         />
         {error && (

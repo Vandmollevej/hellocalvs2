@@ -13,6 +13,7 @@ import { composeProductName, normalizeProductName } from "@/lib/product-naming";
 import { isProductCategory } from "@/lib/product-display-unit";
 import { linkCutoutJobsToProduct } from "@/lib/image-cutout-jobs";
 import { recordNutrientSources } from "@/lib/product-nutrient-sources";
+import { getSynonymExpansions } from "@/lib/search-synonyms";
 import { HIDE_FROM_SEARCH_BELOW } from "@/lib/uncertainty-thresholds";
 import { petFoodBlockReason } from "@/lib/pet-food-blacklist";
 import { recordPetFoodAttempt } from "@/lib/pet-food-strikes";
@@ -57,6 +58,7 @@ export async function GET(req: Request) {
     // Ranking re-sorts a wider candidate pool than `take`, since a
     // low-popularity-but-exact match further down createdAt-order must still
     // be able to surface once ranked.
+    const synonyms = q && !source ? await getSynonymExpansions(q) : [];
     const candidateTake = q ? Math.max(take * 6, 80) : take;
     const findProducts = () =>
       prisma.product.findMany({
@@ -85,6 +87,7 @@ export async function GET(req: Request) {
                     OR: [
                       { name: { contains: q, mode: "insensitive" } },
                       { brand: { name: { contains: q, mode: "insensitive" } } },
+                      ...synonyms.map((s) => ({ name: { contains: s.term, mode: "insensitive" as const } })),
                       // Sukkerpåstande kan søges ("sukkerfri", "uden tilsat sukker",
                       // "reduceret", "light", "lavt sukker"), men vises ikke som mærker
                       // (docs/DECISIONS.md 2026-10-02).
@@ -155,7 +158,7 @@ export async function GET(req: Request) {
         entityBias: -1, // "Generiske ingredienser vs. varer" — et rigtigt Product
       }));
 
-      const ranked = rankProducts(rankable, q, user.region, localHour, take, weights);
+      const ranked = rankProducts(rankable, q, user.region, localHour, take, weights, synonyms);
       products = ranked.map((entry) => entry.product);
       // "Søgninger uden resultat" i admin-statistikken (/admin/statistics).
       if (products.length === 0 && q.length >= 3) {
@@ -353,7 +356,7 @@ export async function POST(req: Request) {
 
   // Dyrefoder-spærring: stregkode på spærrelisten eller dyrefoder-ordmønstre
   // i navn/brand/ingredienser (src/lib/pet-food-blacklist.ts).
-  const petFoodBlock = petFoodBlockReason({
+  const petFoodBlock = await petFoodBlockReason({
     barcode,
     texts: [name, brandName, subbrand, variant, productType, ingredientsText],
   });

@@ -626,7 +626,7 @@
     "categoryProfileDescription": "Nom, e-mail, etc.",
     "categoryWeight": "Poids",
     "categoryGoals": "Objectifs",
-    "categoryMenstrualCycle": "Cycle menstruel (femmes uniquement)",
+    "categoryMenstrualCycle": "Cycle menstruel",
     "categoryDigestion": "Digestion",
     "categoryComingSoon": "Bientôt disponible",
     "categoryUnavailable": "Pas encore disponible dans l'appli",
@@ -1500,6 +1500,7 @@
       "markAllRead": "Tout marquer comme lu",
       "unread": "Nouveau",
       "deleted": "Supprimés",
+      "trash": "Corbeille",
       "delete": "Supprimer",
       "clearAll": "Tout effacer",
       "clearAllWarning": "Tous les messages supprimés seront définitivement effacés. Action irréversible.",
@@ -1715,6 +1716,7 @@
     "measurementGoal": "Objectif",
     "latest": "le {date} {value}",
     "setGoal": "Fixer un objectif",
+    "seeAllGoals": "Voir tous les objectifs",
     "toLose": "{value} jusqu'à l'objectif",
     "toGain": "{value} de plus jusqu'à l'objectif",
     "goalReached": "Tu as atteint ton objectif",
@@ -1725,7 +1727,8 @@
     "showAll": "Tout afficher ({count})",
     "showLess": "Afficher moins",
     "chartAria": "Évolution de {name}",
-    "loadError": "Impossible de charger ton statut."
+    "loadError": "Impossible de charger ton statut.",
+    "customizeView": "Personnaliser l'affichage"
   },
   "bodyMeasurementChart": {
     "noData": "Aucune mesure pour l'instant.",
@@ -1753,6 +1756,7 @@
     "dateRequired": "Choisis une date d'objectif pour enregistrer.",
     "targetDateLabel": "À atteindre d'ici le {date}",
     "weight": "Poids",
+    "weightCompositionHeading": "Poids et corpulence",
     "bodyMeasurementsHeading": "Mensurations",
     "weightPlaceholder": "p. ex. 72,0",
     "measurementPlaceholder": "p. ex. 82",
@@ -1795,6 +1799,16 @@
   },
   "weighIn": {
     "attireTitle": "What were you wearing?",
+    "attireItem": {
+      "UNDERWEAR": "Underwear",
+      "PANTS": "Trousers",
+      "TOP": "Top / T-shirt",
+      "SWEATER": "Sweater",
+      "SHOES": "Shoes",
+      "POCKET_ITEMS": "Phone etc. in pocket",
+      "AFTER_TOILET": "After using the toilet"
+    },
+    "attireNaked": "Nothing selected = naked",
     "attire": {
       "NAKED": "Naked",
       "UNDERWEAR": "In underwear",
@@ -2001,7 +2015,6 @@
   "addProduct": {
     "reportBug": "Tu as trouvé une erreur ?",
     "reading": "Lecture…",
-    "ingredientsUnreadable": "Les ingrédients n'ont pas pu être lus sur la photo.",
     "retakeIngredients": "Reprendre la photo des ingrédients",
     "title": "Ajouter",
     "titleForDish": "Ajouter un ingrédient",
@@ -2108,6 +2121,9 @@
   "productUpdate": {
     "banner": "Gagne {points} points en mettant à jour le produit",
     "toggle": "Afficher ou masquer la bannière",
+    "tileFront": "Face avant",
+    "tileNutrition": "Énergie",
+    "tileIngredients": "Ingrédients",
     "title": "Mettre à jour le produit",
     "kindFront": "Face avant du produit ({points} points)",
     "hintFront": "Prends une photo de la face avant pour que le produit ait une image et un logo.",
