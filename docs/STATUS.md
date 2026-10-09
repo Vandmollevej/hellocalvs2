@@ -1,6 +1,10 @@
 # HELLO CAL — project status
 
-Last updated: 2026-10-07
+Last updated: 2026-10-09
+
+## 2026-10-09: Delmål-formular i tre accordions
+
+- `GoalForm`: tre fold-ud (Vægt og opbygning, Kropsmål, Ernæring); kropsmålene har igen deres egne tegninger (efter profilens køn). Lint grøn; ikke visuelt testet.
 
 ## 2026-10-07: Alle popups som bundark + brand-logoets luft
 

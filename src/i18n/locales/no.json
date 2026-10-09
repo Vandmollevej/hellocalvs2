@@ -1753,6 +1753,7 @@
     "dateRequired": "Velg en måldato for å lagre.",
     "targetDateLabel": "Nås senest {date}",
     "weight": "Vekt",
+    "weightCompositionHeading": "Vekt og kroppsbygning",
     "bodyMeasurementsHeading": "Kroppsmål",
     "weightPlaceholder": "f.eks. 72,0",
     "measurementPlaceholder": "f.eks. 82",

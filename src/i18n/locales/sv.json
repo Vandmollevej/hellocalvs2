@@ -1753,6 +1753,7 @@
     "dateRequired": "Välj ett måldatum för att spara.",
     "targetDateLabel": "Uppnås senast {date}",
     "weight": "Vikt",
+    "weightCompositionHeading": "Vikt och kroppsbyggnad",
     "bodyMeasurementsHeading": "Kroppsmått",
     "weightPlaceholder": "t.ex. 72,0",
     "measurementPlaceholder": "t.ex. 82",
