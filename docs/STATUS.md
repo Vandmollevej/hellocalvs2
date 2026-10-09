@@ -6089,3 +6089,5 @@ Ikke bygget: Valdemarsro-import til app-databasen, Valdemarsro-detaljevisning ("
 
 Ny `valdemarsro-agent` (scripts/valdemarsro-agent, compose.production.yaml, build.yml, jobs-registret), model `RecipeSourceUrl` (migration 20261008130000_recipe_source_urls), "Gå til opskrift"-knap i AddProductView, admin Retter → Valdemarsro viser data. Parsingen er testet mod en rigtig Valdemarsro-side; agenten er IKKE kørt mod databasen eller i Docker endnu — første nat henter 150 retter, resten over de følgende nætter (sæt VALDEMARSRO_AGENT_BATCH_SIZE højere for hurtigere start). Kræver deploy, så containeren bygges og migrationen kører.
 
+
+- 2026-10-09: Adgangsmuren afviste Next's interne billedhentning (/_next/image henter kilden uden Host/User-Agent/cookie), så alle optimerede billeder, bl.a. fingeraftrykket i +-knappen, blev til en hvid firkant. Rettet i `middleware.ts`: den header-løse interne hentning slipper kun igennem for offentlige statiske filer; beskyttede billeder kræver stadig session.

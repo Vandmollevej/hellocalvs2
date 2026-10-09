@@ -182,6 +182,22 @@ async function handleAccessWall(req: NextRequest, host: string): Promise<NextRes
     if (pathname === "/_next/image-invalid") return deny(400, "Bad request");
   }
 
+  // Next henter kilden til /_next/image via en intern forespørgsel helt uden
+  // headers (ingen Host, User-Agent, cookie eller IP-headers). Den ydre
+  // forespørgsel er allerede kontrolleret. Undtagelsen gælder KUN offentlige
+  // statiske filer (ikoner, flag, logo); beskyttede billeder kræver stadig session.
+  if (
+    !req.headers.get("host") &&
+    !req.headers.get("user-agent") &&
+    !req.headers.get("cookie") &&
+    !clientIp(req) &&
+    !isProtectedImagePath(pathname) &&
+    isAnonymousAllowed(pathname) &&
+    !pathname.startsWith("/api/")
+  ) {
+    return null;
+  }
+
   const isLocal = host === "localhost" || host === "127.0.0.1";
   const ua = req.headers.get("user-agent");
   const ip = clientIp(req) || "unknown";
