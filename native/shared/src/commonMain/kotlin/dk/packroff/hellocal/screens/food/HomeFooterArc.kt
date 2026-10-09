@@ -52,14 +52,15 @@ import kotlinx.coroutines.launch
 import kotlin.math.PI
 import kotlin.math.abs
 import kotlin.math.acos
+import kotlin.math.asin
 import kotlin.math.atan2
 import kotlin.math.cos
 import kotlin.math.hypot
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.pow
+import kotlin.math.roundToInt
 import kotlin.math.sin
-import kotlin.math.sqrt
 
 // src/components/FooterArc.tsx + src/lib/footer-arc.ts — the small half circle
 // over the bottom navigation: tap or push up to fan out the add actions
@@ -73,9 +74,9 @@ private const val ARC_LONG_PRESS_MS = 550L
 internal const val ARC_RADIUS = 83f
 private const val ARC_REST_HEIGHT = 40f
 internal const val ARC_ICON_CIRCLE = 46f
-// Same geometry as the left circle (AddButton): icons 52 dp outside the circle, unselected
+// Same geometry as the left circle (AddButton): icons 78 dp outside the circle (room for the finger), unselected
 // ones 8 dp closer, the highlighted one 14 dp further out, angles spread evenly over -75..75.
-private const val ARC_BASE_RADIUS = ARC_RADIUS + 52 + ARC_ICON_CIRCLE / 2
+private const val ARC_BASE_RADIUS = ARC_RADIUS + 78 + ARC_ICON_CIRCLE / 2
 internal const val ARC_ICON_RADIUS = ARC_BASE_RADIUS - 8
 internal const val ARC_ICON_RADIUS_ACTIVE = ARC_BASE_RADIUS + 14
 private const val ARC_MAX_ANGLE_DEG = 75.0
@@ -102,36 +103,83 @@ internal fun fanAngles(userCount: Int): List<Double> {
 
 internal fun listSlotIndex(userCount: Int) = (userCount + 1) / 2
 
+/** Largest angle (from vertical) a button may sit at, so it stays clear of the bottom bar. */
+private const val FAN_MAX_DEG = ARC_MAX_ANGLE_DEG
+/** Smallest angle between two neighbouring buttons when the fan is squeezed. */
+private const val FAN_MIN_STEP_DEG = 18.0
+
 /**
  * Button centres (x from the left, y up from the footer edge), like fanLayout in
- * src/lib/footer-arc.ts: each button keeps the fan's distance to its neighbour. A
- * button that would end up off screen (the circle sits far to the side) stays
- * inside the edge and moves further up, away from the circle, instead.
+ * src/lib/footer-arc.ts. When the circle sits far to the side there is no room
+ * for the whole fan there: instead of stacking buttons in a column, the fan turns
+ * towards the free side (squeezed a little if needed) so it stays on screen. The
+ * highlighted button ([highlightedIndex]) steps further out.
  */
 internal fun fanLayout(angles: List<Double>, centerX: Float, width: Float, highlightedIndex: Int = -1): List<Pair<Float, Float>> {
     if (angles.isEmpty()) return emptyList()
-    val ideal = angles.mapIndexed { i, deg ->
-        val r = deg * PI / 180
-        val radius = if (i == highlightedIndex) ARC_ICON_RADIUS_ACTIVE else ARC_ICON_RADIUS
-        (centerX + radius * sin(r)).toFloat() to (radius * cos(r)).toFloat()
+    fun edge(room: Float) = min(FAN_MAX_DEG, asin(min(1.0, max(0.0, (room / ARC_ICON_RADIUS_ACTIVE).toDouble()))) * 180 / PI)
+    val lowest = -edge(centerX - ARC_EDGE_MARGIN)
+    val highest = edge(width - ARC_EDGE_MARGIN - centerX)
+    val first = angles.first()
+    val last = angles.last()
+    var placed = angles
+    if (width > ARC_EDGE_MARGIN * 2 && (first < lowest || last > highest)) {
+        val gaps = angles.size - 1
+        val step = if (gaps == 0) 0.0 else max(FAN_MIN_STEP_DEG, min((last - first) / gaps, (highest - lowest) / gaps))
+        val start = min(max(first, lowest), highest - step * gaps)
+        placed = angles.indices.map { start + step * it }
     }
-    if (width <= ARC_EDGE_MARGIN * 2) return ideal
-    val anchor = angles.indices.minByOrNull { abs(angles[it]) } ?: 0
-    val placed = arrayOfNulls<Pair<Float, Float>>(angles.size)
-    placed[anchor] = ideal[anchor].first.coerceIn(ARC_EDGE_MARGIN, width - ARC_EDGE_MARGIN) to ideal[anchor].second
-    for (dir in intArrayOf(-1, 1)) {
-        var i = anchor + dir
-        while (i in angles.indices) {
-            val prev = placed[i - dir]!!
-            val spacing = hypot(ideal[i].first - ideal[i - dir].first, ideal[i].second - ideal[i - dir].second)
-            val x = ideal[i].first.coerceIn(ARC_EDGE_MARGIN, width - ARC_EDGE_MARGIN)
-            var y = ideal[i].second
-            if (x != ideal[i].first) y = max(y, prev.second + sqrt(max(0f, spacing * spacing - (x - prev.first) * (x - prev.first))))
-            placed[i] = x to y
-            i += dir
+    return placed.mapIndexed { i, deg ->
+        val rad = deg * PI / 180
+        val radius = if (i == highlightedIndex) ARC_ICON_RADIUS_ACTIVE else ARC_ICON_RADIUS
+        (centerX + radius * sin(rad)).toFloat() to (radius * cos(rad)).toFloat()
+    }
+}
+
+/** Same as LABEL_BUTTON_SCALE in src/lib/footer-arc.ts. */
+private const val LABEL_BUTTON_SCALE = 1.35f
+private const val LABEL_GAP = 12f
+private const val LABEL_HEIGHT = 34f
+
+/** Estimated width of the name box at the highlighted button (bold 15 + padding). */
+internal fun labelWidth(text: String) = (text.length * 9.2f + 24f).roundToInt().toFloat()
+
+private fun boxHitsCircle(left: Float, bottom: Float, w: Float, h: Float, cx: Float, cy: Float, r: Float): Boolean {
+    val nx = cx.coerceIn(left, left + w)
+    val ny = cy.coerceIn(bottom, bottom + h)
+    return hypot(cx - nx, cy - ny) < r
+}
+
+/**
+ * Where the name box of the highlighted button goes (left/bottom corner, same
+ * coordinates as fanLayout), like labelPlacement in src/lib/footer-arc.ts: placed
+ * diagonally outward along the ray from the circle through the button so the
+ * finger does not cover it; larger distance / vertical placement when that hits a
+ * neighbour or the screen edge. It never overlaps a button.
+ */
+internal fun labelPlacement(centers: List<Pair<Float, Float>>, index: Int, circleX: Float, width: Float, w: Float, h: Float = LABEL_HEIGHT): Pair<Float, Float> {
+    val (cx, cy) = centers[index]
+    val len = hypot(cx - circleX, cy).let { if (it == 0f) 1f else it }
+    val radial = (cx - circleX) / len to cy / len
+    val own = ARC_ICON_CIRCLE / 2 * LABEL_BUTTON_SCALE
+    val others = centers.filterIndexed { i, _ -> i != index }
+    fun fits(left: Float, bottom: Float) =
+        left >= 6f && left + w <= width - 6f &&
+            !boxHitsCircle(left, bottom, w, h, cx, cy, own + 4) &&
+            others.all { !boxHitsCircle(left, bottom, w, h, it.first, it.second, ARC_ICON_CIRCLE / 2 + 4) }
+    for (dir in listOf(radial, 0f to 1f)) {
+        var extra = 0f
+        while (extra <= 120f) {
+            val dist = own + LABEL_GAP + extra
+            val norm = max(abs(dir.first), abs(dir.second)).let { if (it == 0f) 1f else it }
+            val left = cx + dir.first * dist + dir.first / norm * (w / 2) - w / 2
+            val bottom = cy + dir.second * dist + dir.second / norm * (h / 2) - h / 2
+            val clamped = left.coerceIn(6f, max(6f, width - 6f - w))
+            if (fits(clamped, bottom)) return clamped to bottom
+            extra += 12f
         }
     }
-    return placed.map { it!! }
+    return cx.minus(w / 2).coerceIn(6f, max(6f, width - 6f - w)) to (cy + own + LABEL_GAP)
 }
 
 /** Points of the circle segment of visible height [height] (flat bottom at y = R + BULGE). */
@@ -422,15 +470,17 @@ fun HomeFooterArc(modifier: Modifier = Modifier, onOpenMenuSheet: () -> Unit) {
                     else FoodIcon(spec, ARC_ICON_SIZE.dp, if (highlighted) HcColors.White else HcColors.Black)
                 }
                 if (highlighted) {
+                    val labelW = labelWidth(slot.label)
+                    val (lx, ly) = labelPlacement(drawLayout, index, baseCx, width, labelW)
                     Box(
                         Modifier
-                            .offset(x = (sx - 60).coerceIn(0f, max(0f, width - 120f)).dp, y = (height - sy - ARC_ICON_CIRCLE / 2 - 22 - 34).dp)
-                            .size(120.dp, 34.dp),
+                            .offset(x = lx.dp, y = (height - ly - LABEL_HEIGHT).dp)
+                            .size(labelW.dp, LABEL_HEIGHT.dp)
+                            .shadow(2.dp, RoundedCornerShape(3.dp))
+                            .background(HcColors.Tan, RoundedCornerShape(3.dp)),
                         contentAlignment = Alignment.Center,
                     ) {
-                        Box(Modifier.shadow(2.dp, RoundedCornerShape(3.dp)).background(HcColors.Tan, RoundedCornerShape(3.dp)).padding(horizontal = 10.dp, vertical = 6.dp)) {
-                            Text(slot.label, style = HcTypeRoles.Body.style(HcColors.Green).copy(fontWeight = FontWeight.Bold, fontSize = 15.sp), maxLines = 1)
-                        }
+                        Text(slot.label, style = HcTypeRoles.Body.style(HcColors.Green).copy(fontWeight = FontWeight.Bold, fontSize = 15.sp), maxLines = 1)
                     }
                 }
             }

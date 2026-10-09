@@ -2,6 +2,12 @@
 
 Last updated: 2026-10-09
 
+## 2026-10-09: Halvcirklens vifte drejes i stedet for at stable knapper
+
+- Brugerens rettelse: knapperne må ikke ligge ovenpå hinanden i en søjle ved skærmkanten. `fanLayout` (web `footer-arc.ts` + native `HomeFooterArc.kt`) drejer nu viften mod den frie side (presses lidt sammen, mindst 18° mellem naboer), så alle knapper ligger på skærmen uden at overlappe. Midt på skærmen er viften uændret.
+- Brugerens test, cirklen i midten: knapperne står længere fra cirklen (`ARC_GAP` 78 i stedet for 52, så fingeren ikke dækker). Navneboksen ved den valgte knap sættes skråt ud væk fra cirklen (langs strålen fra cirklens midte gennem knappen) og må aldrig overlappe en knap: rammer den en nabo eller kanten, prøves større afstand og lodret placering (`labelPlacement`, web + native; bruger den tegnede stilling, hvor den valgte knap står længere ude).
+- Flettet med #304 (fuld størrelse straks, vinkler -75..75, valgt knap længere ude). Kontrolleret numerisk for bredde 320–430 og alle cirkelplaceringer. Lint/tsc ikke kørt (ingen node_modules), Kotlin ikke kompileret lokalt (CI bygger), ikke prøvet på telefon.
+
 ## 2026-10-09: Tilføj aktivitet — tidsslider og varighed med plus/minus
 
 - `/activity/create` (web + `ActivityCreateScreen.kt`): starttidspunktet er nu en dato + samme to-håndtags 24-timers-slider som søvnrytmen (`SleepRangeSlider`, ny prop `bedtimeFirst`: start til venstre, slut til højre; start-håndtaget flytter starten og holder sluttiden, slut-håndtaget ændrer varigheden). Varigheden står under som − [timer min] + i samme boks som mængdevælgeren; teksten kan rettes, og −/+ går i hele 5 minutter (`stepDuration` i `activity-duration.ts`, testet).
