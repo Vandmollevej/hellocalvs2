@@ -44,6 +44,9 @@ Last updated: 2026-10-09
 - Genkør virker kun, når logoet stammer fra et fritlægningsjob (ikke uploadet). Billedrobotten skal genstartes/deployes med ny `cutout.py` (fix e745004e + denne).
 - Lint/typecheck/build kørt; ikke visuelt testet.
 
+## 2026-10-09: Kalender uden totaler i uge/måned
+Statusblokken i uge-/månedsvisning viser kun status (gennemsnit af forgangne dage mod delmålets dagsmål). Dagsvisningen er uændret. Lint + tsc grønne; ikke prøvet i browser.
+
 ## 2026-10-07: Alle popups som bundark + brand-logoets luft
 
 - Hjulvælgere (højde/fødselsår/fødselsdato), opstartstips, adgangslog-panelet, Hello Doc-tilbagetrækning, slet familieprofil og alle admin-bekræftelser/-detaljevinduer er nu bundark (swipe ned/scrim = annullér); ingen `window.confirm`/`prompt` tilbage. Se DECISIONS 2026-10-07 for undtagelser (fuldskærms-visere, Face ID, kommandopalet).
