@@ -1715,6 +1715,7 @@
     "measurementGoal": "Mål",
     "latest": "{date} {value}",
     "setGoal": "Sett et mål",
+    "seeAllGoals": "Se alle mål",
     "toLose": "{value} til målet",
     "toGain": "{value} opp til målet",
     "goalReached": "Du har nådd målet ditt",
@@ -2013,7 +2014,6 @@
   "addProduct": {
     "reportBug": "Har du funnet en feil?",
     "reading": "Leser…",
-    "ingredientsUnreadable": "Innholdet kunne ikke leses på bildet.",
     "retakeIngredients": "Ta nytt bilde av innholdet",
     "title": "Legg til",
     "titleForDish": "Legg til ingrediens",

@@ -4,10 +4,15 @@ Last updated: 2026-10-09
 
 ## 2026-10-09: Halvcirklens vifte drejes i stedet for at stable knapper
 
-- Opfølgning (brugerens test, cirklen i midten): knapperne står nu længere fra cirklen (`ARC_ICON_RADIUS` = 83 + 70 + 23), så fingeren ikke dækker for dem. Navneboksen ved den valgte knap sættes skråt ud væk fra cirklen (langs strålen fra cirklens midte gennem knappen) i stedet for lige over knappen, og den må aldrig overlappe en knap: rammer den en nabo eller kanten, prøves større afstand og lodret placering (`labelPlacement`, web + native). Mindste vinkel mellem knapper sænket til 18°. Kontrolleret numerisk for bredde 320–430 og alle cirkelplaceringer: ingen overlap, alt inden for skærmen. Ikke prøvet på telefon.
+- Brugerens rettelse: knapperne må ikke ligge ovenpå hinanden i en søjle ved skærmkanten. `fanLayout` (web `footer-arc.ts` + native `HomeFooterArc.kt`) drejer nu viften mod den frie side (presses lidt sammen, mindst 18° mellem naboer), så alle knapper ligger på skærmen uden at overlappe. Midt på skærmen er viften uændret.
+- Brugerens test, cirklen i midten: knapperne står længere fra cirklen (`ARC_GAP` 78 i stedet for 52, så fingeren ikke dækker). Navneboksen ved den valgte knap sættes skråt ud væk fra cirklen (langs strålen fra cirklens midte gennem knappen) og må aldrig overlappe en knap: rammer den en nabo eller kanten, prøves større afstand og lodret placering (`labelPlacement`, web + native; bruger den tegnede stilling, hvor den valgte knap står længere ude).
+- Flettet med #304 (fuld størrelse straks, vinkler -75..75, valgt knap længere ude). Kontrolleret numerisk for bredde 320–430 og alle cirkelplaceringer. Lint/tsc ikke kørt (ingen node_modules), Kotlin ikke kompileret lokalt (CI bygger), ikke prøvet på telefon.
 
-- Brugerens rettelse: knapperne må ikke ligge ovenpå hinanden i en søjle ved skærmkanten. `fanLayout` (web `footer-arc.ts` + native `HomeFooterArc.kt`) drejer nu i stedet viften mod den frie side (presses lidt sammen, mindst 22° mellem naboer), så alle knapper ligger på skærmen uden at overlappe. Den nederste knap får større afstand til cirklen (op til +24 px), så den har mere plads til bundmenuen. Midt på skærmen er viften uændret.
-- Kontrolleret numerisk for bredde 320/402 og alle cirkelplaceringer: mindst 62 px mellem knapperne, alle inden for kanten. Lint/tsc kunne ikke køres (ingen node_modules); Kotlin ikke kompileret lokalt. Paritet for `/` accepteret. Ikke prøvet på telefon.
+## 2026-10-09: Footer-cirklen får fuld størrelse straks ved træk op
+
+- `FooterArc` (web) og `HomeFooterArc.kt` (native): første træk opad springer cirklen og knapperne straks til fuld størrelse (ingen animation) i stedet for at vokse gradvist med fingerens afstand. Slip uden at ramme en knap lader den stå åben. `ARC_PULL_DISTANCE` er fjernet.
+- Knapperne har samme geometri som venstre-cirklen (`AddButton`): 52 px fra cirklen (valgt knap 22 px længere ude end de øvrige), vinkler jævnt fordelt over −75°…75°.
+- Ikke kørt: build (lint og tsc på de ændrede filer er rene), Kotlin ikke kompileret, ikke prøvet på telefon.
 
 ## 2026-10-09: Halvcirklens vifte rykker knapper op i stedet for ud over kanten
 
@@ -6155,3 +6160,5 @@ Skema, migration, `src/lib/danish-number.ts` og søgning/oprettelse er lavet (se
 - `/admin/search-synonyms`: ordpar pr. sprog (DA/EN) med "Ens"-procent; soegning i produkter og generiske ingredienser matcher ogsaa synonymet, rangeret efter procenten (0 % = slaaet fra). Tabel `search_synonyms` (migration 20261009120000, med eksempler). Forslag ud fra produkttyper: `docs/SYNONYM-FORSLAG.md`.
 
 - 2026-10-09: Opdater-banneret (`UpdatePointsBanner`) er nu et lag oven på siden (rykker ikke indholdet), med mindre luft over/under teksten. Trækstregen minimerer (op/tryk) og trækker en omvendt popup ned (ned) med et kamerafelt pr. manglende ting. Ikke prøvet i browser.
+
+- 2026-10-09: Tilføj-menu: teksten lå oven på ikonerne (dobbelt negativ margin fra #287). Overlappet fjernet på web (`AddMenuList.tsx`) og native (`AddMenu.kt`).

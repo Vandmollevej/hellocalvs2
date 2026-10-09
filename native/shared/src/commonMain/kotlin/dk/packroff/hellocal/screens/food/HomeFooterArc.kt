@@ -73,10 +73,13 @@ private const val ARC_LONG_PRESS_MS = 550L
 
 internal const val ARC_RADIUS = 83f
 private const val ARC_REST_HEIGHT = 40f
-private const val ARC_PULL_DISTANCE = 100f
 internal const val ARC_ICON_CIRCLE = 46f
-internal const val ARC_ICON_RADIUS = ARC_RADIUS + 70 + ARC_ICON_CIRCLE / 2
-private const val ARC_ANGLE_STEP_DEG = 32.0
+// Same geometry as the left circle (AddButton): icons 78 dp outside the circle (room for the finger), unselected
+// ones 8 dp closer, the highlighted one 14 dp further out, angles spread evenly over -75..75.
+private const val ARC_BASE_RADIUS = ARC_RADIUS + 78 + ARC_ICON_CIRCLE / 2
+internal const val ARC_ICON_RADIUS = ARC_BASE_RADIUS - 8
+internal const val ARC_ICON_RADIUS_ACTIVE = ARC_BASE_RADIUS + 14
+private const val ARC_MAX_ANGLE_DEG = 75.0
 internal const val ARC_MAX_USER_ACTIONS = 4
 private const val ARC_BULGE_MAX = 18f
 private const val ARC_BULGE_SPREAD_DEG = 50.0
@@ -91,28 +94,28 @@ private const val ARC_EDGE_MARGIN = ARC_ICON_CIRCLE / 2 + 8
 
 internal fun fanAngles(userCount: Int): List<Double> {
     val total = userCount + 1
-    return List(total) { (it - (total - 1) / 2.0) * ARC_ANGLE_STEP_DEG }
+    if (total <= 1) return listOf(0.0)
+    val step = ARC_MAX_ANGLE_DEG * 2 / (total - 1)
+    return List(total) { -ARC_MAX_ANGLE_DEG + it * step }
 }
 
 internal fun listSlotIndex(userCount: Int) = (userCount + 1) / 2
 
 /** Largest angle (from vertical) a button may sit at, so it stays clear of the bottom bar. */
-private const val FAN_MAX_DEG = 75.0
+private const val FAN_MAX_DEG = ARC_MAX_ANGLE_DEG
 /** Smallest angle between two neighbouring buttons when the fan is squeezed. */
 private const val FAN_MIN_STEP_DEG = 18.0
-/** Extra distance to the circle for the lowest button when the fan is pushed to the side. */
-private const val FAN_LOW_EXTRA = 24f
 
 /**
  * Button centres (x from the left, y up from the footer edge), like fanLayout in
  * src/lib/footer-arc.ts. When the circle sits far to the side there is no room
  * for the whole fan there: instead of stacking buttons in a column, the fan turns
- * towards the free side (squeezed a little if needed) so it stays on screen, and
- * the lowest button gets a larger distance to the circle.
+ * towards the free side (squeezed a little if needed) so it stays on screen. The
+ * highlighted button ([highlightedIndex]) steps further out.
  */
-internal fun fanLayout(angles: List<Double>, centerX: Float, width: Float): List<Pair<Float, Float>> {
+internal fun fanLayout(angles: List<Double>, centerX: Float, width: Float, highlightedIndex: Int = -1): List<Pair<Float, Float>> {
     if (angles.isEmpty()) return emptyList()
-    fun edge(room: Float) = min(FAN_MAX_DEG, asin(min(1.0, max(0.0, (room / (ARC_ICON_RADIUS + FAN_LOW_EXTRA)).toDouble()))) * 180 / PI)
+    fun edge(room: Float) = min(FAN_MAX_DEG, asin(min(1.0, max(0.0, (room / ARC_ICON_RADIUS_ACTIVE).toDouble()))) * 180 / PI)
     val lowest = -edge(centerX - ARC_EDGE_MARGIN)
     val highest = edge(width - ARC_EDGE_MARGIN - centerX)
     val first = angles.first()
@@ -124,10 +127,9 @@ internal fun fanLayout(angles: List<Double>, centerX: Float, width: Float): List
         val start = min(max(first, lowest), highest - step * gaps)
         placed = angles.indices.map { start + step * it }
     }
-    return placed.map { deg ->
+    return placed.mapIndexed { i, deg ->
         val rad = deg * PI / 180
-        val steep = min(1.0, max(0.0, (abs(deg) - last) / (FAN_MAX_DEG - last)))
-        val radius = ARC_ICON_RADIUS + FAN_LOW_EXTRA * steep.toFloat()
+        val radius = if (i == highlightedIndex) ARC_ICON_RADIUS_ACTIVE else ARC_ICON_RADIUS
         (centerX + radius * sin(rad)).toFloat() to (radius * cos(rad)).toFloat()
     }
 }
@@ -255,6 +257,9 @@ fun HomeFooterArc(modifier: Modifier = Modifier, onOpenMenuSheet: () -> Unit) {
         val visibleHeight = ARC_REST_HEIGHT + (ARC_RADIUS - ARC_REST_HEIGHT) * p
 
         fun slotCenter(index: Int): Pair<Float, Float> = layout[index]
+        // The highlighted button steps further out (like the left circle); picking uses the resting spots.
+        val highlightedIndex = slots.indexOfFirst { it.key == highlightedKey }
+        val drawLayout = if (highlightedIndex >= 0) fanLayout(angles, baseCx, width, highlightedIndex) else layout
 
         fun updateHighlight(px: Float, upY: Float) {
             val center = baseCx
@@ -333,6 +338,8 @@ fun HomeFooterArc(modifier: Modifier = Modifier, onOpenMenuSheet: () -> Unit) {
                         val boxTop = height - liveHit.value
                         var mode = ArcMode.Undecided
                         var moved = false
+                        // Pulled up: the circle has jumped to full size (no gradual growth).
+                        var expanded = false
                         // Set when the long press opened the editor: the rest of the gesture is ignored.
                         var consumed = false
                         val wasOpen = open
@@ -385,7 +392,7 @@ fun HomeFooterArc(modifier: Modifier = Modifier, onOpenMenuSheet: () -> Unit) {
                                             setOpenState(false)
                                             activate(slot)
                                         } else {
-                                            setOpenState(mode == ArcMode.Pull && progress.value > 0.5f)
+                                            setOpenState(mode == ArcMode.Pull && expanded)
                                         }
                                     }
                                 }
@@ -401,12 +408,14 @@ fun HomeFooterArc(modifier: Modifier = Modifier, onOpenMenuSheet: () -> Unit) {
                             when (mode) {
                                 ArcMode.Slide -> dragX = (startOffset + dx).coerceIn(-maxOffset, maxOffset)
                                 ArcMode.Pull -> {
-                                    val pp = (-dy / ARC_PULL_DISTANCE).coerceIn(0f, 1f)
-                                    scope.launch { progress.snapTo(pp) }
-                                    if (pp > 0.3f) updateHighlight(px, upY) else {
-                                        highlightedKey = null
-                                        finger = null
+                                    // As soon as the finger moves up the circle and buttons jump to
+                                    // full size at once (no animation, no gradual growth).
+                                    if (!expanded && dy < 0f) {
+                                        expanded = true
+                                        open = true
+                                        scope.launch { progress.snapTo(1f) }
                                     }
+                                    if (expanded) updateHighlight(px, upY)
                                 }
                                 ArcMode.Select -> updateHighlight(px, upY)
                                 ArcMode.Undecided -> Unit
@@ -422,7 +431,7 @@ fun HomeFooterArc(modifier: Modifier = Modifier, onOpenMenuSheet: () -> Unit) {
         // The fan.
         slots.forEachIndexed { index, slot ->
             key(slot.key) {
-                val (sx, sy) = slotCenter(index)
+                val (sx, sy) = drawLayout[index]
                 val highlighted = highlightedKey == slot.key
                 // Like the side circle: the buttons appear at once (short fade/pop), not gradually with the pull.
                 val appear by animateFloatAsState(if (p > 0.02f) 1f else 0f, tween(150), label = "arcAppear")
@@ -453,7 +462,7 @@ fun HomeFooterArc(modifier: Modifier = Modifier, onOpenMenuSheet: () -> Unit) {
                 }
                 if (highlighted) {
                     val labelW = labelWidth(slot.label)
-                    val (lx, ly) = labelPlacement(layout, index, baseCx, width, labelW)
+                    val (lx, ly) = labelPlacement(drawLayout, index, baseCx, width, labelW)
                     Box(
                         Modifier
                             .offset(x = lx.dp, y = (height - ly - LABEL_HEIGHT).dp)
