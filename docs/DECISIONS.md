@@ -4640,3 +4640,7 @@ klip-klister mellem sider, og telefon/webvisning må ikke have hver sine klasser
 - Afvist som kopi: Mine retter viser "Ikke delt" (ikke "delt"), og retten viser info med admins begrundelse.
 - Tommel op/ned påvirker populariteten (tommel ned -3, op +1, højst +3 i alt) for at undgå selvforstærkende ekkokammer.
 - "Python på serveren" er TypeScript (brugerens ok 2026-10-08). de/fr/nl oversættes senere.
+
+## 2026-10-09: Kalenderens statusblok viser ingen totaler (uge/måned)
+- Uge-/månedsvisningen viser kun statusen ("Inden for målet" / "Målet ikke opnået" / "Intet registreret") — ikke "Mål: N kcal", motion eller "Tilbage i måneden". Totaler står kun på den enkelte dag (`GoalStatusSummary` `showTotals`).
+- Status = gennemsnit af forgangne dage med registreringer mod gennemsnitligt dagsmål (budget-snapshots, som følger næste delmål). I dag tæller ikke med.

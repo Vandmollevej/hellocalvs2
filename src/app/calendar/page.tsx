@@ -570,6 +570,24 @@ export default function CalendarPage() {
     }
     const remaining = goalSum + bonusKcal - consumed;
 
+    // Status for perioden: gennemsnittet af de forgangne dage med registreringer
+    // mod gennemsnitligt dagsmål (budget-snapshots følger næste delmål). Dags
+    // dato tæller ikke med, den er ikke slut. Der vises ingen totaler.
+    const lastPastDay = isCurrentMonth ? today.getDate() - 1 : daysInMonth;
+    let pastLoggedDays = 0;
+    let pastIntake = 0;
+    let pastGoal = 0;
+    for (let day = 1; day <= lastPastDay; day += 1) {
+      const date = new Date(year, month, day);
+      const total = totalKcalForDate(dailyTotals, date);
+      if (total <= 0) continue;
+      pastLoggedDays += 1;
+      pastIntake += total;
+      pastGoal += goalForDate(date);
+    }
+    const periodStatus: "met" | "missed" | "none" =
+      pastLoggedDays === 0 ? "none" : pastIntake / pastLoggedDays <= pastGoal / pastLoggedDays ? "met" : "missed";
+
     let sevenDayConsumed = 0;
     for (let offset = 0; offset < 7; offset += 1) {
       sevenDayConsumed += totalKcalForDate(dailyTotals, addDays(today, -offset));
@@ -581,7 +599,7 @@ export default function CalendarPage() {
     let streak = 0;
     while (dailyGoalMet(dailyTotals, addDays(today, -streak), goalForDate(addDays(today, -streak)))) streak += 1;
 
-    return { isCurrentMonth, consideredDays, metCount, remaining, sevenDayRemaining, streak, goalSum, consumed, bonusKcal };
+    return { isCurrentMonth, consideredDays, metCount, remaining, sevenDayRemaining, streak, goalSum, consumed, bonusKcal, periodStatus };
   }, [dailyTotals, activityBonusByDay, year, month, today, goalForDate, baseGoalForDate]);
 
   useEffect(() => {
@@ -3125,12 +3143,12 @@ type MonthlyStatusData = {
   goalSum: number;
   consumed: number;
   bonusKcal: number;
+  periodStatus: "met" | "missed" | "none";
 };
 
 function MonthlyStatus({ status }: { status: MonthlyStatusData }) {
   const { t } = useTranslation();
-  const { remaining, streak } = status;
-  const withinGoal = remaining >= 0;
+  const { streak } = status;
 
   return (
     <div className="mb-8 mt-2 space-y-2 text-center">
@@ -3147,7 +3165,8 @@ function MonthlyStatus({ status }: { status: MonthlyStatusData }) {
       <GoalStatusSummary
         className="text-left"
         period="month"
-        status={withinGoal ? "met" : "missed"}
+        showTotals={false}
+        status={status.periodStatus}
         goalKcal={status.goalSum}
         intakeKcal={status.consumed}
         bonusKcal={status.bonusKcal}
