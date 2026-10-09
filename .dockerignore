@@ -11,3 +11,5 @@ docs
 .claude
 # Windows-programmet til admin (tools/admin-desktop) er ikke en del af app-imaget.
 tools
+# Native Android/iPhone-apps er ikke en del af web-imaget.
+native

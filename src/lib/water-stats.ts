@@ -33,7 +33,8 @@ export function buildWaterStatDays(input: {
   }
   return input.days.map((date) => {
     const key = localDateKey(date);
-    const total = totals.get(key);
+    // groupByDay keys days as `y-m0-d` (month 0-based), not YYYY-MM-DD.
+    const total = totals.get(`${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`);
     const w = water.get(key);
     return {
       date,
