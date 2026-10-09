@@ -19,6 +19,7 @@ import {
   useFrontpageStatKeys,
   type FrontpageStatKey,
 } from "@/lib/frontpage-stats";
+import { CustomMeasureSection } from "@/components/CustomMeasureSection";
 import { useTranslation } from "@/i18n/LocaleProvider";
 
 // Settings → Visning → Forside: which of the catalog's add-elements
@@ -65,6 +66,8 @@ export default function FrontPageDisplaySettingsPage() {
         <div className="hf-card hf-card--brand">
           <p className="hf-type-small">{t("frontPageSettings.intro")}</p>
         </div>
+
+        <CustomMeasureSection />
 
         <p className="hf-type-small hf-type-strong text-text-secondary hf-heading px-1 uppercase tracking-wide">
           {t("frontPageSettings.sideSectionTitle")}
