@@ -19,9 +19,8 @@ type Message = {
 
 const DELETE_WIDTH = 80;
 
-// Swipe til venstre viser "Slet" på samme røde flade som SwipeableRow
-// (Madvarer m.fl.) — ingen egen knaptype. Kun vandret træk fanges; lodret
-// scroll går igennem.
+// Swipe til venstre viser en kompakt rød "Slet"-knap midt for beskeden (ikke
+// i fuld højde). Kun vandret træk fanges; lodret scroll går igennem.
 function SwipeToDelete({
   label,
   onDelete,
@@ -38,8 +37,12 @@ function SwipeToDelete({
 
   return (
     <div className="relative overflow-hidden rounded-card">
-      <div className="absolute inset-y-0 right-0 flex w-20 items-center justify-center bg-hf-red-dark">
-        <button type="button" onClick={onDelete} className="hf-type-small hf-type-strong text-hf-white">
+      <div className="absolute inset-y-0 right-0 flex w-20 items-center justify-center">
+        <button
+          type="button"
+          onClick={onDelete}
+          className="hf-type-small hf-type-strong rounded-card bg-hf-red-dark px-3 py-2 text-hf-white"
+        >
           {label}
         </button>
       </div>
@@ -127,7 +130,7 @@ export function MessagesView({ trash = false }: { trash?: boolean }) {
   const hasUnread = !!messages?.some((m) => !m.readAt);
 
   return (
-    <HfScreen title={deletedView ? t("profile.messages.trash") : t("profile.messages.title")}>
+    <HfScreen title={deletedView ? t("profile.messages.deleted") : t("profile.messages.title")}>
       <div className="hf-page">
         <div className="flex items-center justify-between">
           <Link
@@ -135,7 +138,7 @@ export function MessagesView({ trash = false }: { trash?: boolean }) {
             className="hf-type-body inline-flex items-center gap-2 text-text-secondary"
           >
             {deletedView ? <IconMail size={20} aria-hidden /> : <IconTrash size={20} aria-hidden />}
-            {deletedView ? t("profile.messages.title") : t("profile.messages.trash")}
+            {deletedView ? t("profile.messages.title") : t("profile.messages.deleted")}
           </Link>
           {deletedView ? (
             !!messages?.length && (

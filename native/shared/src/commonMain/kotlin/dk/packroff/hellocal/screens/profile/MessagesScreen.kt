@@ -59,7 +59,7 @@ private data class InboxMessage(
 
 /**
  * Native port of src/app/profile/messages/page.tsx and .../messages/trash/page.tsx (MessagesView) — the user's inbox
- * with read/unread and delete, and the separate "Papirkurv" page for deleted messages.
+ * with read/unread and delete, and the separate "Slettet" page for deleted messages.
  */
 @Composable
 fun MessagesScreen(args: RouteArgs, trash: Boolean = false) {
@@ -101,10 +101,10 @@ fun MessagesScreen(args: RouteArgs, trash: Boolean = false) {
 
     val hasUnread = messages?.any { it.readAt == null } == true
 
-    HcScreen(title = if (deletedView) t.t("profile.messages.trash") else t.t("profile.messages.title"), contentPadding = ProfilePagePadding) {
+    HcScreen(title = if (deletedView) t.t("profile.messages.deleted") else t.t("profile.messages.title"), contentPadding = ProfilePagePadding) {
         ProfilePage {
             Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceBetween) {
-                // Grey link with icon in front, not underlined: Papirkurv in the inbox, Beskeder in the trash.
+                // Grey link with icon in front, not underlined: Slettet in the inbox, Beskeder in the trash.
                 Row(
                     Modifier.heightIn(min = 44.dp).clickable {
                         nav.push(if (deletedView) "/profile/messages" else "/profile/messages/trash")
@@ -114,7 +114,7 @@ fun MessagesScreen(args: RouteArgs, trash: Boolean = false) {
                 ) {
                     HcIcon(if (deletedView) "Mail" else "Trash", size = 20.dp, color = HcColors.TextSecondary)
                     HcText(
-                        if (deletedView) t.t("profile.messages.title") else t.t("profile.messages.trash"),
+                        if (deletedView) t.t("profile.messages.title") else t.t("profile.messages.deleted"),
                         HcTypeRoles.Body,
                         color = HcColors.TextSecondary,
                     )
