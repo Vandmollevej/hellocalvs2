@@ -243,6 +243,7 @@
     "chatSaveError": "Opslaan is niet gelukt. Probeer het opnieuw."
   },
   "nav": {
+    "home": "Home",
     "add": "Toevoegen",
     "foods": "Voedingsmiddelen",
     "calendar": "Agenda",
@@ -527,6 +528,8 @@
     "sideLeft": "Links",
     "sideRight": "Rechts",
     "sideHint": "De cijferschuif staat altijd aan de tegenovergestelde kant: {side}.",
+    "mirrorNavTitle": "Onderste menu spiegelen",
+    "mirrorNavHint": "Home staat vast aan één kant en de pictogrammen schuiven aan de andere. Zet aan om te wisselen, zoals op het startscherm.",
     "buttonsSectionTitle": "Knoppen in het wiel",
     "selectedCount": "{count} van {max} velden geselecteerd",
     "maxReachedHint": "Verwijder een veld om een ander toe te voegen.",

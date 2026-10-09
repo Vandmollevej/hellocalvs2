@@ -243,6 +243,7 @@
     "chatSaveError": "Kunne ikke lagre. Prøv igjen."
   },
   "nav": {
+    "home": "Hjem",
     "add": "Legg til",
     "foods": "Matvarer",
     "calendar": "Kalender",
@@ -527,6 +528,8 @@
     "sideLeft": "Venstre",
     "sideRight": "Høyre",
     "sideHint": "Tallglideren vises alltid på motsatt side: {side}.",
+    "mirrorNavTitle": "Speilvend bunnmenyen",
+    "mirrorNavHint": "Hjem står fast på den ene siden og ikonene kan skyves på den andre. Slå på for å bytte side, som på forsiden.",
     "buttonsSectionTitle": "Knapper i hjulet",
     "selectedCount": "{count} av {max} felt valgt",
     "maxReachedHint": "Fjern et felt for å kunne legge til et annet.",
