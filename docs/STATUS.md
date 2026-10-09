@@ -1,5 +1,10 @@
 # HELLO CAL — project status
 
+## 2026-10-09: Thumbs op/ned på retter
+
+- Ny tabel `recipe_ratings` (migration `20261009120000_recipe_ratings`, skal med deployet), `GET/PUT /api/recipe-ratings`, og `RecipeRatingButtons` nederst på delte retter og HelloFresh-opskrifter. Et tryk på den valgte tommelfinger fjerner vurderingen. Tal vises ikke.
+- Ikke koblet til popularitet/sortering endnu. Ikke prøvet i browser/mod rigtig database; udseendet er ikke afstemt med Hello Fresh-referencebilleder.
+
 ## 2026-10-09: Retter-siden — autofokus, Opret ny ret, filter-popup og kilde-knapper
 
 - `/profile/recipes`: markøren står i søgefeltet ved åbning; "Opret ny ret" øverst til højre; filterknappen ved søgefeltet åbner nu en popup (bundark) med samme valg som før (`src/components/recipes/RecipeFilterPanel.tsx`, delt med den gamle filterside); kilde-knapper under søgefeltet (Alle / Brugere / HelloFresh når integrationen er slået til / Valdemarsro). `GET /api/shared-recipes` har ny `source`-parameter.

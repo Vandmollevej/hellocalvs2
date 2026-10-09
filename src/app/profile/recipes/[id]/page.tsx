@@ -5,6 +5,7 @@ import { useParams, useSearchParams } from "next/navigation";
 import { IconInfoCircle, IconSoup } from "@tabler/icons-react";
 import { IconFavorite as IconBookmark, IconFavoriteFilled as IconBookmarkFilled } from "@/components/icons/Favorite";
 import { HfScreen } from "@/components/HfScreen";
+import { RecipeRatingButtons } from "@/components/recipes/RecipeRatingButtons";
 import { PersonsSlider } from "@/components/hf/PersonsSlider";
 import { Toggle } from "@/components/ui/Toggle";
 import { useTranslation } from "@/i18n/LocaleProvider";
@@ -412,6 +413,8 @@ function RecipeDetailContent() {
                 </div>
               </div>
             )}
+
+            {kind === "shared" && view && <RecipeRatingButtons recipeId={id} />}
           </>
         )}
       </div>

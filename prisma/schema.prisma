@@ -250,6 +250,7 @@ model User {
   knownDevices            UserKnownDevice[]
   loginEvents             LoginEvent[]
   sharedRecipeFavorites   SharedRecipeFavorite[]
+  recipeRatings           RecipeRating[]
   recipeCookbookPhotos    RecipeCookbookPhoto[]
   nutritionReportsFiled   ProductNutritionReport[] @relation("NutritionReportReporter")
   referralsMade           Referral[]               @relation("ReferralsMade")
@@ -3379,6 +3380,22 @@ model RecipeCookbookPhoto {
 
   @@index([userId, productId])
   @@map("recipe_cookbook_photos")
+}
+
+// Thumbs op/ned på en ret (delt brugerret eller HelloFresh-opskrift).
+// value: 1 = op, -1 = ned; en bruger har højst én vurdering pr. ret.
+model RecipeRating {
+  id        String   @id @default(cuid())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String
+  recipeId  String
+  value     Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId, recipeId])
+  @@index([recipeId])
+  @@map("recipe_ratings")
 }
 
 model SharedRecipeFavorite {
