@@ -2,6 +2,10 @@
 
 This file records durable decisions. Add a dated entry when a later decision changes one of them.
 
+## 2026-10-09: Egne målinger i tal-hjulet gemmes pr. enhed
+
+- Brugerens ønske: under Visning → Forside kan man bygge sin egen måling (navn, beskrivelse, parameter, periode, tekst under tallet). Teksten må højst være 2 linjer á 15 tegn.
+- Måling gemmes i localStorage/secureStorage som resten af forsidens visning (`hellocal.frontpage.customMeasurements`), ikke i databasen. Flerdages-perioder viser dagsgennemsnit (summer og forbrug pr. dag, puls m.fl. som gennemsnit af målingerne, kropsmål som seneste måling); "Kalorier tilbage" = dagsmål × dage minus indtag.
 ## 2026-10-09: Stregkoder tærskles lokalt pr. scanlinje — skygge må ikke stoppe en læsning
 
 Brugerens ord (2026-10-06): "bare fordi det var et lille stykke skygge, kunne kameraet ikke læse stregkoden … det kan ikke være rigtigt." Hver scanlinje binariseres derfor med en glidende lokal tærskel (vindue 10 % af linjen, mindst 32 px, mørk = mindst 8 under det lokale gennemsnit) før ZXing's globale tærskel pr. række, som beholdes som fallback i samme frame. Det ligger i `src/lib/barcode-row-threshold.ts` + `barcode-local-binarizer.ts`, ikke i ZXing-koden, så biblioteket kan opdateres frit. ZXing's HybridBinarizer bruges ikke længere til 1D: dens lokale blokke gælder kun 2D-matricen.
