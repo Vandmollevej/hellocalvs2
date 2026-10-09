@@ -4,6 +4,8 @@ Last updated: 2026-10-09
 
 ## 2026-10-09: Halvcirklens vifte drejes i stedet for at stable knapper
 
+- Opfølgning (brugerens test, cirklen i midten): knapperne står nu længere fra cirklen (`ARC_ICON_RADIUS` = 83 + 70 + 23), så fingeren ikke dækker for dem. Navneboksen ved den valgte knap sættes skråt ud væk fra cirklen (langs strålen fra cirklens midte gennem knappen) i stedet for lige over knappen, og den må aldrig overlappe en knap: rammer den en nabo eller kanten, prøves større afstand og lodret placering (`labelPlacement`, web + native). Mindste vinkel mellem knapper sænket til 18°. Kontrolleret numerisk for bredde 320–430 og alle cirkelplaceringer: ingen overlap, alt inden for skærmen. Ikke prøvet på telefon.
+
 - Brugerens rettelse: knapperne må ikke ligge ovenpå hinanden i en søjle ved skærmkanten. `fanLayout` (web `footer-arc.ts` + native `HomeFooterArc.kt`) drejer nu i stedet viften mod den frie side (presses lidt sammen, mindst 22° mellem naboer), så alle knapper ligger på skærmen uden at overlappe. Den nederste knap får større afstand til cirklen (op til +24 px), så den har mere plads til bundmenuen. Midt på skærmen er viften uændret.
 - Kontrolleret numerisk for bredde 320/402 og alle cirkelplaceringer: mindst 62 px mellem knapperne, alle inden for kanten. Lint/tsc kunne ikke køres (ingen node_modules); Kotlin ikke kompileret lokalt. Paritet for `/` accepteret. Ikke prøvet på telefon.
 

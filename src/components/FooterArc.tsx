@@ -22,6 +22,8 @@ import {
   ARC_REST_HEIGHT,
   fanAngles,
   fanLayout,
+  labelPlacement,
+  labelWidth,
   listSlotIndex,
   saveArcOffsetX,
   segmentPath,
@@ -434,27 +436,29 @@ export function FooterArc() {
                 />
               )}
             </button>
-            {highlighted && (
-              <span
-                aria-hidden="true"
-                className="hf-type-strong pointer-events-none absolute whitespace-nowrap bg-hf-tan"
-                style={{
-                  bottom: ARC_ICON_CIRCLE + 14,
-                  ...(center.x < 72
-                    ? { left: 0 }
-                    : center.x > width - 72
-                      ? { right: 0 }
-                      : { left: "50%", transform: "translateX(-50%)" }),
-                  padding: "6px 10px",
-                  borderRadius: 3,
-                  boxShadow: "0 2px 4px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.04)",
-                  color: "var(--hf-green)",
-                  fontSize: 15,
-                }}
-              >
-                {slot.label}
-              </span>
-            )}
+            {highlighted &&
+              (() => {
+                const w = labelWidth(slot.label);
+                const spot = labelPlacement(layout, index, baseCx, width, w);
+                return (
+                  <span
+                    aria-hidden="true"
+                    className="hf-type-strong pointer-events-none absolute whitespace-nowrap bg-hf-tan text-center"
+                    style={{
+                      left: spot.left - (center.x - ARC_ICON_CIRCLE / 2),
+                      bottom: spot.bottom - (center.y - ARC_ICON_CIRCLE / 2),
+                      width: w,
+                      padding: "6px 0",
+                      borderRadius: 3,
+                      boxShadow: "0 2px 4px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.04)",
+                      color: "var(--hf-green)",
+                      fontSize: 15,
+                    }}
+                  >
+                    {slot.label}
+                  </span>
+                );
+              })()}
           </div>
         );
       })}

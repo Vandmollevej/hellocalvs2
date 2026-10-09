@@ -14,8 +14,8 @@ export const ARC_REST_HEIGHT = 40;
 /** Hvor langt fingeren skal op (px) for at cirklen er helt åben. */
 export const ARC_PULL_DISTANCE = 100;
 export const ARC_ICON_CIRCLE = 46;
-/** Afstand fra cirklens midte (ved footerkanten) til knappernes midte. */
-export const ARC_ICON_RADIUS = ARC_RADIUS + 38 + ARC_ICON_CIRCLE / 2;
+/** Afstand fra cirklens midte (ved footerkanten) til knappernes midte — god plads, så fingeren ikke dækker for naboerne. */
+export const ARC_ICON_RADIUS = ARC_RADIUS + 70 + ARC_ICON_CIRCLE / 2;
 export const ARC_ANGLE_STEP_DEG = 32;
 /** Højst så mange egne knapper i viften ("alle" kommer i midten ovenpå). */
 export const ARC_MAX_USER_ACTIONS = 4;
@@ -31,7 +31,7 @@ export function fanAngles(userCount: number): number[] {
 /** Vinklen (fra lodret) hvor en knap højst kan stå, så den ikke rammer bundmenuen. */
 const FAN_MAX_DEG = 75;
 /** Mindste vinkel mellem to nabo-knapper, når viften presses sammen. */
-const FAN_MIN_STEP_DEG = 22;
+const FAN_MIN_STEP_DEG = 18;
 /** Ekstra afstand til cirklen for den nederste knap, når viften er skubbet ud mod siden. */
 const FAN_LOW_EXTRA = 24;
 
@@ -46,7 +46,7 @@ const FAN_LOW_EXTRA = 24;
 export function fanLayout(angles: number[], centerX: number, width: number): { x: number; y: number }[] {
   if (angles.length === 0) return [];
   const toDeg = 180 / Math.PI;
-  const edge = (room: number) => Math.min(FAN_MAX_DEG, Math.asin(Math.min(1, Math.max(0, room / ARC_ICON_RADIUS))) * toDeg);
+  const edge = (room: number) => Math.min(FAN_MAX_DEG, Math.asin(Math.min(1, Math.max(0, room / (ARC_ICON_RADIUS + FAN_LOW_EXTRA)))) * toDeg);
   const lowest = -edge(centerX - ARC_EDGE_MARGIN);
   const highest = edge(width - ARC_EDGE_MARGIN - centerX);
   const first = angles[0];
@@ -64,6 +64,64 @@ export function fanLayout(angles: number[], centerX: number, width: number): { x
     const radius = ARC_ICON_RADIUS + FAN_LOW_EXTRA * steep;
     return { x: centerX + radius * Math.sin(rad), y: radius * Math.cos(rad) };
   });
+}
+
+/** Forstørrelsen af den knap, fingeren står på (HIGHLIGHT_SCALE i FooterArc.tsx). */
+const LABEL_BUTTON_SCALE = 1.35;
+const LABEL_GAP = 12;
+const LABEL_HEIGHT = 34;
+
+/** Skønnet bredde på navneboksen ved den valgte knap (fed 15 px + polstring). */
+export function labelWidth(text: string) {
+  return Math.round(text.length * 9.2 + 24);
+}
+
+function boxHitsCircle(left: number, bottom: number, w: number, h: number, cx: number, cy: number, r: number) {
+  const nx = Math.min(Math.max(cx, left), left + w);
+  const ny = Math.min(Math.max(cy, bottom), bottom + h);
+  return Math.hypot(cx - nx, cy - ny) < r;
+}
+
+/**
+ * Hvor navneboksen står ved den valgte knap (venstre/nederste hjørne i samme
+ * koordinater som `fanLayout`). Boksen sættes skråt ud væk fra cirklen — langs
+ * strålen fra cirklens midte gennem knappen — så fingeren (der kommer fra
+ * cirklen) ikke dækker teksten, og så den ligger uden for naboknapperne. Rammer
+ * den en nabo eller skærmkanten, prøves større afstand og lodret placering;
+ * den overlapper aldrig en knap.
+ */
+export function labelPlacement(
+  centers: { x: number; y: number }[],
+  index: number,
+  circleX: number,
+  width: number,
+  w: number,
+  h = LABEL_HEIGHT,
+): { left: number; bottom: number } {
+  const c = centers[index];
+  const len = Math.hypot(c.x - circleX, c.y) || 1;
+  const radial = { x: (c.x - circleX) / len, y: c.y / len };
+  const own = (ARC_ICON_CIRCLE / 2) * LABEL_BUTTON_SCALE;
+  const others = centers.filter((_, i) => i !== index);
+  const fits = (left: number, bottom: number) =>
+    left >= 6 &&
+    left + w <= width - 6 &&
+    !boxHitsCircle(left, bottom, w, h, c.x, c.y, own + 4) &&
+    others.every((o) => !boxHitsCircle(left, bottom, w, h, o.x, o.y, ARC_ICON_CIRCLE / 2 + 4));
+  const fallback = { left: Math.min(Math.max(6, c.x - w / 2), Math.max(6, width - 6 - w)), bottom: c.y + own + LABEL_GAP };
+  for (const dir of [radial, { x: 0, y: 1 }]) {
+    for (let extra = 0; extra <= 120; extra += 12) {
+      const dist = own + LABEL_GAP + extra;
+      const px = c.x + dir.x * dist;
+      const py = c.y + dir.y * dist;
+      const norm = Math.max(Math.abs(dir.x), Math.abs(dir.y)) || 1;
+      const left = px + (dir.x / norm) * (w / 2) - w / 2;
+      const bottom = py + (dir.y / norm) * (h / 2) - h / 2;
+      const clamped = Math.min(Math.max(6, left), Math.max(6, width - 6 - w));
+      if (fits(clamped, bottom)) return { left: clamped, bottom };
+    }
+  }
+  return fallback;
 }
 
 /** Pladsen i viften, hvor "alle" altid står (midten). */

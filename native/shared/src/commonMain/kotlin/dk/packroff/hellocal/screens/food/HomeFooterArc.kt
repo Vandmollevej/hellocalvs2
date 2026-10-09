@@ -59,6 +59,7 @@ import kotlin.math.hypot
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.pow
+import kotlin.math.roundToInt
 import kotlin.math.sin
 
 // src/components/FooterArc.tsx + src/lib/footer-arc.ts — the small half circle
@@ -74,7 +75,7 @@ internal const val ARC_RADIUS = 83f
 private const val ARC_REST_HEIGHT = 40f
 private const val ARC_PULL_DISTANCE = 100f
 internal const val ARC_ICON_CIRCLE = 46f
-internal const val ARC_ICON_RADIUS = ARC_RADIUS + 38 + ARC_ICON_CIRCLE / 2
+internal const val ARC_ICON_RADIUS = ARC_RADIUS + 70 + ARC_ICON_CIRCLE / 2
 private const val ARC_ANGLE_STEP_DEG = 32.0
 internal const val ARC_MAX_USER_ACTIONS = 4
 private const val ARC_BULGE_MAX = 18f
@@ -98,7 +99,7 @@ internal fun listSlotIndex(userCount: Int) = (userCount + 1) / 2
 /** Largest angle (from vertical) a button may sit at, so it stays clear of the bottom bar. */
 private const val FAN_MAX_DEG = 75.0
 /** Smallest angle between two neighbouring buttons when the fan is squeezed. */
-private const val FAN_MIN_STEP_DEG = 22.0
+private const val FAN_MIN_STEP_DEG = 18.0
 /** Extra distance to the circle for the lowest button when the fan is pushed to the side. */
 private const val FAN_LOW_EXTRA = 24f
 
@@ -111,7 +112,7 @@ private const val FAN_LOW_EXTRA = 24f
  */
 internal fun fanLayout(angles: List<Double>, centerX: Float, width: Float): List<Pair<Float, Float>> {
     if (angles.isEmpty()) return emptyList()
-    fun edge(room: Float) = min(FAN_MAX_DEG, asin(min(1.0, max(0.0, (room / ARC_ICON_RADIUS).toDouble()))) * 180 / PI)
+    fun edge(room: Float) = min(FAN_MAX_DEG, asin(min(1.0, max(0.0, (room / (ARC_ICON_RADIUS + FAN_LOW_EXTRA)).toDouble()))) * 180 / PI)
     val lowest = -edge(centerX - ARC_EDGE_MARGIN)
     val highest = edge(width - ARC_EDGE_MARGIN - centerX)
     val first = angles.first()
@@ -129,6 +130,52 @@ internal fun fanLayout(angles: List<Double>, centerX: Float, width: Float): List
         val radius = ARC_ICON_RADIUS + FAN_LOW_EXTRA * steep.toFloat()
         (centerX + radius * sin(rad)).toFloat() to (radius * cos(rad)).toFloat()
     }
+}
+
+/** Same as LABEL_BUTTON_SCALE in src/lib/footer-arc.ts. */
+private const val LABEL_BUTTON_SCALE = 1.35f
+private const val LABEL_GAP = 12f
+private const val LABEL_HEIGHT = 34f
+
+/** Estimated width of the name box at the highlighted button (bold 15 + padding). */
+internal fun labelWidth(text: String) = (text.length * 9.2f + 24f).roundToInt().toFloat()
+
+private fun boxHitsCircle(left: Float, bottom: Float, w: Float, h: Float, cx: Float, cy: Float, r: Float): Boolean {
+    val nx = cx.coerceIn(left, left + w)
+    val ny = cy.coerceIn(bottom, bottom + h)
+    return hypot(cx - nx, cy - ny) < r
+}
+
+/**
+ * Where the name box of the highlighted button goes (left/bottom corner, same
+ * coordinates as fanLayout), like labelPlacement in src/lib/footer-arc.ts: placed
+ * diagonally outward along the ray from the circle through the button so the
+ * finger does not cover it; larger distance / vertical placement when that hits a
+ * neighbour or the screen edge. It never overlaps a button.
+ */
+internal fun labelPlacement(centers: List<Pair<Float, Float>>, index: Int, circleX: Float, width: Float, w: Float, h: Float = LABEL_HEIGHT): Pair<Float, Float> {
+    val (cx, cy) = centers[index]
+    val len = hypot(cx - circleX, cy).let { if (it == 0f) 1f else it }
+    val radial = (cx - circleX) / len to cy / len
+    val own = ARC_ICON_CIRCLE / 2 * LABEL_BUTTON_SCALE
+    val others = centers.filterIndexed { i, _ -> i != index }
+    fun fits(left: Float, bottom: Float) =
+        left >= 6f && left + w <= width - 6f &&
+            !boxHitsCircle(left, bottom, w, h, cx, cy, own + 4) &&
+            others.all { !boxHitsCircle(left, bottom, w, h, it.first, it.second, ARC_ICON_CIRCLE / 2 + 4) }
+    for (dir in listOf(radial, 0f to 1f)) {
+        var extra = 0f
+        while (extra <= 120f) {
+            val dist = own + LABEL_GAP + extra
+            val norm = max(abs(dir.first), abs(dir.second)).let { if (it == 0f) 1f else it }
+            val left = cx + dir.first * dist + dir.first / norm * (w / 2) - w / 2
+            val bottom = cy + dir.second * dist + dir.second / norm * (h / 2) - h / 2
+            val clamped = left.coerceIn(6f, max(6f, width - 6f - w))
+            if (fits(clamped, bottom)) return clamped to bottom
+            extra += 12f
+        }
+    }
+    return cx.minus(w / 2).coerceIn(6f, max(6f, width - 6f - w)) to (cy + own + LABEL_GAP)
 }
 
 /** Points of the circle segment of visible height [height] (flat bottom at y = R + BULGE). */
@@ -405,15 +452,17 @@ fun HomeFooterArc(modifier: Modifier = Modifier, onOpenMenuSheet: () -> Unit) {
                     else FoodIcon(spec, ARC_ICON_SIZE.dp, if (highlighted) HcColors.White else HcColors.Black)
                 }
                 if (highlighted) {
+                    val labelW = labelWidth(slot.label)
+                    val (lx, ly) = labelPlacement(layout, index, baseCx, width, labelW)
                     Box(
                         Modifier
-                            .offset(x = (sx - 60).coerceIn(0f, max(0f, width - 120f)).dp, y = (height - sy - ARC_ICON_CIRCLE / 2 - 14 - 34).dp)
-                            .size(120.dp, 34.dp),
+                            .offset(x = lx.dp, y = (height - ly - LABEL_HEIGHT).dp)
+                            .size(labelW.dp, LABEL_HEIGHT.dp)
+                            .shadow(2.dp, RoundedCornerShape(3.dp))
+                            .background(HcColors.Tan, RoundedCornerShape(3.dp)),
                         contentAlignment = Alignment.Center,
                     ) {
-                        Box(Modifier.shadow(2.dp, RoundedCornerShape(3.dp)).background(HcColors.Tan, RoundedCornerShape(3.dp)).padding(horizontal = 10.dp, vertical = 6.dp)) {
-                            Text(slot.label, style = HcTypeRoles.Body.style(HcColors.Green).copy(fontWeight = FontWeight.Bold, fontSize = 15.sp), maxLines = 1)
-                        }
+                        Text(slot.label, style = HcTypeRoles.Body.style(HcColors.Green).copy(fontWeight = FontWeight.Bold, fontSize = 15.sp), maxLines = 1)
                     }
                 }
             }
