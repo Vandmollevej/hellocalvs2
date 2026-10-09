@@ -2088,6 +2088,9 @@
   "productUpdate": {
     "banner": "Earn {points} points by updating this product",
     "toggle": "Show or hide banner",
+    "tileFront": "Front",
+    "tileNutrition": "Energy",
+    "tileIngredients": "Ingredients",
     "title": "Update product",
     "kindFront": "Front of the product ({points} points)",
     "hintFront": "Take a photo of the front so the product gets an image and logo.",

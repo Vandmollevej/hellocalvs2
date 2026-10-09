@@ -2108,6 +2108,9 @@
   "productUpdate": {
     "banner": "Verdiene {points} Punkte, indem du das Produkt aktualisierst",
     "toggle": "Banner ein- oder ausblenden",
+    "tileFront": "Vorderseite",
+    "tileNutrition": "Energie",
+    "tileIngredients": "Zutaten",
     "title": "Produkt aktualisieren",
     "kindFront": "Vorderseite des Produkts ({points} Punkte)",
     "hintFront": "Mach ein Foto der Vorderseite, damit das Produkt ein Bild und Logo bekommt.",

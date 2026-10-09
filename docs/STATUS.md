@@ -6108,3 +6108,5 @@ Ny `valdemarsro-agent` (scripts/valdemarsro-agent, compose.production.yaml, buil
 ## 2026-10-08 — Ental/flertal for generiske ingredienser (database + API)
 
 Skema, migration, `src/lib/danish-number.ts` og søgning/oprettelse er lavet (se DECISIONS.md samme dato). `prisma validate` og ESLint på de ændrede filer er grønne; `npm run build` og typecheck er ikke kørt (ingen genereret Prisma-klient i arbejdskopien). Mangler: UI skal vise `displayName`, ental/flertal i arkene, billedomdøbning.
+
+- 2026-10-09: Opdater-banneret (`UpdatePointsBanner`) er nu et lag oven på siden (rykker ikke indholdet), med mindre luft over/under teksten. Trækstregen minimerer (op/tryk) og trækker en omvendt popup ned (ned) med et kamerafelt pr. manglende ting. Ikke prøvet i browser.
