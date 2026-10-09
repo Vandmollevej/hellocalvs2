@@ -8,8 +8,6 @@ import {
   productGaps,
   updateKindsFor,
 } from "@/lib/product-update";
-import { productPageTags } from "@/lib/product-page-tags";
-import { getProductPageTagSettings } from "@/lib/product-page-tags-settings";
 
 export async function GET(
   _req: Request,
@@ -31,7 +29,7 @@ export async function GET(
             wholeGrain: true,
             animalWelfare: true,
             certifications: true,
-            // Nøgleord på produktsiden (src/lib/product-page-tags.ts).
+            // Fødevareegenskaber på varen.
             glutenFree: true,
             lactoseFree: true,
             sugarFree: true,
@@ -103,13 +101,10 @@ export async function GET(
         user && !product.privateOwnerId && !(await hasEarnedUpdatePoints(user.id, product.id).catch(() => true))
           ? updateKindsFor(productGaps(product))
           : [];
-      // Admins valgte nøgleord (smag, økologisk …) vist over "Energifordeling".
-      const pageTags = productPageTags(product, await getProductPageTagSettings());
       return NextResponse.json({
         product: {
           ...product,
           nutrients,
-          pageTags,
           updateOffer: updateKinds.length ? { kinds: updateKinds, points: PRODUCT_UPDATE_POINTS } : null,
           lastAmountGrams: last?.amountGrams ?? null,
           ingredientsUnreadable,

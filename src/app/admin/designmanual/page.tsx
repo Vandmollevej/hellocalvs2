@@ -9,7 +9,6 @@ import {
   IconSearch,
   IconSettings,
   IconUser,
-  IconX,
 } from "@tabler/icons-react";
 import { IconFavorite } from "@/components/icons/Favorite";
 import { requireAdminUser } from "@/lib/require-admin";
@@ -36,7 +35,7 @@ const SECTIONS = [
   { id: "grafiske-elementer", label: "Grafiske elementer" },
   { id: "sidestruktur", label: "Sidestruktur" },
   { id: "bokse", label: "Bokse" },
-  { id: "adgangsark", label: "Adgangsark (integrationer)" },
+  { id: "integrationer", label: "Integrationer" },
 ] as const;
 
 type Swatch = { token: string; hex: string; name: string; use: string };
@@ -54,16 +53,15 @@ const COLOR_GROUPS: { title: string; swatches: Swatch[] }[] = [
   {
     title: "Grønne",
     swatches: [
-      { token: "--hf-color-brand", hex: "#067A46", name: "Brand", use: "Login, onboarding, brand-header" },
-      { token: "--hf-color-appbar", hex: "#35784A", name: "Appbar", use: "Nyere appbar (Kogebog, Indstillinger)" },
-      { token: "--hf-color-progress-dark", hex: "#035624", name: "Progress mørk", use: "Aktiv progress-tekst" },
-      { token: "--hf-color-progress", hex: "#007838", name: "Progress", use: "Aktiv progress-linje" },
+      { token: "--hf-color-brand", hex: "#067A46", name: "Brand", use: "Eneste grønne flade: appbar, loader-baggrund, brandkort, fremdrift" },
+      { token: "--hf-color-brand-dark", hex: "#035624", name: "Brand mørk", use: "Kun hover/tryk på grøn flade og mørk grøn tekst" },
+      { token: "--hf-color-accent", hex: "#BBF06A", name: "Accent (lime)", use: "Valgt-markering, load-cirkel, positive markeringer, FAB" },
     ],
   },
   {
     title: "Tekst",
     swatches: [
-      { token: "--hf-color-text", hex: "#242424", name: "Primær tekst", use: "Al almindelig tekst" },
+      { token: "--hf-color-text", hex: "#232323", name: "Primær tekst", use: "Al almindelig tekst (samme sort som handling)" },
       { token: "--hf-color-text-secondary", hex: "#656565", name: "Sekundær tekst", use: "Hjælpetekst, inaktive labels" },
       { token: "--hf-color-inactive", hex: "#828282", name: "Inaktiv", use: "Inaktiv progress, nedtonet" },
       { token: "--hf-color-placeholder", hex: "#C1C0BE", name: "Placeholder", use: "Placeholder i felter" },
@@ -92,7 +90,6 @@ const COLOR_GROUPS: { title: string; swatches: Swatch[] }[] = [
   {
     title: "Hello Cal-signaler",
     swatches: [
-      { token: "--hf-color-positive", hex: "#A3E635", name: "Positiv (lime)", use: "Positive markeringer, FAB" },
       { token: "--hf-color-danger", hex: "#A3271F", name: "Fare", use: "Fejl, slet, over mål" },
       { token: "--hf-color-overlay", hex: "rgb(35 35 35 / 40%)", name: "Scrim", use: "Mørk baggrund bag dialoger" },
     ],
@@ -193,7 +190,8 @@ export default async function DesignManualPage() {
             ))}
             <Rules
               items={[
-                "Brand-grøn (#067A46) og appbar-grøn (#35784A) er to separate varianter — bland dem aldrig til en tredje grøn.",
+                "Præcis tre grønne: brand #067A46 (al grøn flade), brand mørk #035624 (kun hover/tryk og mørk grøn tekst) og accent-lime #BBF06A (valgt, load-cirkel, positive markeringer). Ingen andre grønne.",
+                "Tekst på grøn flade er altid hvid — aldrig grå. Tekst på lime er altid sort #232323.",
                 "Brug ikke opacity til at lave en ny tekstfarve; vælg den rigtige tekst-token.",
                 "Hover/tryk-farver må kun bruges til netop den tilstand.",
                 "Ingen Tailwind-standarder som red-500 eller green-600 direkte i sider.",
@@ -220,13 +218,13 @@ export default async function DesignManualPage() {
               items={[
                 "Infobokse fylder hele indholdsbredden og ligger i sidens normale flow — aldrig flydende.",
                 "Titel er valgfri; teksten skal kunne stå alene i én til to linjer.",
-                "Fejl bruger danger-token (#A3271F); positive beskeder må bruge lime (#A3E635) som markering, ikke som tekstfarve.",
+                "Fejl bruger danger-token (#A3271F); positive beskeder må bruge accent-lime (#BBF06A) som markering, ikke som tekstfarve.",
               ]}
             />
           </Section>
 
           {/* 3. Overlay */}
-          <Section id="overlay" number={3} title="Overlay" intro="Tre godkendte typer. Bundarket er standard for alle screen-overlays og popups (KRAV.md, afsnit Bundark); fuldskærms-overlay (opstartstips, søvnoplevelse) og centreret dialog på mørk scrim bruges kun hvor de allerede står. Prøv dem live:">
+          <Section id="overlay" number={3} title="Overlay" intro="Kun én godkendt type: bundarket. Alle popups, bekræftelser og vælgere vises som bundark nedefra (KRAV.md, afsnit Bundark) — aldrig som fuldskærms-overlay, centreret dialog eller window.confirm. Prøv det live:">
             <OverlayDemo />
             <div className="grid gap-4 sm:grid-cols-3">
               <Mock label="Bundark (.hf-bottom-sheet)">
@@ -246,31 +244,6 @@ export default async function DesignManualPage() {
                   </div>
                 </div>
               </Mock>
-              <Mock label="Fuldskærms-overlay">
-                <div className="flex h-full flex-col bg-hf-cream p-3">
-                  <p className="hf-type-micro hf-type-strong self-end text-hf-black">Luk</p>
-                  <div className="flex flex-1 flex-col items-center justify-center gap-2 text-center">
-                    <span className="flex size-10 items-center justify-center rounded-full bg-hf-tan text-hf-green">
-                      <IconInfoCircle size={20} />
-                    </span>
-                    <p className="hf-type-small hf-type-strong text-hf-black">Titel</p>
-                    <p className="hf-type-micro text-hf-black">Tekst i midten</p>
-                  </div>
-                  <p className="hf-type-micro self-end text-hf-black">Slå fra ●</p>
-                </div>
-              </Mock>
-              <Mock label="Dialog på scrim">
-                <div className="flex h-full items-center justify-center p-3" style={{ background: "var(--hf-color-overlay)" }}>
-                  <div className="w-full rounded-lg bg-hf-white p-2">
-                    <div className="flex items-center justify-between border-b border-hf-tan-dark pb-1">
-                      <p className="hf-type-micro hf-type-strong text-hf-black">Titel</p>
-                      <IconX size={12} />
-                    </div>
-                    <p className="hf-type-micro py-2 text-hf-black">Indhold</p>
-                    <div className="h-4 rounded bg-hf-black" />
-                  </div>
-                </div>
-              </Mock>
             </div>
             <Rules
               items={[
@@ -278,11 +251,10 @@ export default async function DesignManualPage() {
                 "Trækstregen øverst (.hf-bottom-sheet__handle) er samme streg som kalenderens nat/dag-håndtag: 40 × 4 px, grå, rund.",
                 "Arket kan trækkes ned. Et hurtigt swipe ned eller et træk forbi 30 % af højden lukker det; ellers glider det tilbage. Klik på scrim og Escape lukker også.",
                 "Fast bund: prikker (aktiv = brand-grøn) og pil ved flere sider, primær knap i fuld bredde og tekstknappen \"Spring over\" (.hf-bottom-sheet__skip), som lukker med samme animation.",
-                "Bruges ved velkomst efter kontooprettelse, guiden, e-mailbekræftelse, \"Tilføj\" ud for en vare, kalenderens \"Tilføj\" og \"Se alle\" i tilføj-hjulet.",
-                "Fuldskærm: baggrund #FAF8F3, \"Luk\" øverst til højre, ikon + titel + tekst centreret, \"Slå fra\" nederst til højre.",
-                "Slår man \"Slå fra\" fra, tæller \"Luk\" ned 3–1 før overlayet lukker og slås fra.",
-                "Dialog: scrim --hf-color-overlay, hvid flade, 12 px radius, 16 px padding. Klik udenfor lukker.",
-                "Overlays bruger role=\"dialog\" og aria-modal=\"true\".",
+                "Bruges ved velkomst efter kontooprettelse, guiden, e-mailbekræftelse, kalenderens \"Tilføj\" og \"Se alle\" i tilføj-hjulet, opstartstips, adgangslog, hjul-/datovælgere og alle bekræftelser (useConfirmSheet i stedet for window.confirm, useTypedConfirmSheet i stedet for window.prompt).",
+                "Arket har ingen synlig overskrift (kun aria-label); hjulvælgere markeres med data-sheet-no-drag, så de scroller uden at trække arket.",
+                "Opstartstips: ikon + titel + tekst, \"Luk\" nederst til venstre og \"Slå fra\" nederst til højre; slår man \"Slå fra\" fra, tæller \"Luk\" ned 3–1, før arket lukker og tips slås fra.",
+                "Arket bruger role=\"dialog\" og aria-modal=\"true\".",
               ]}
             />
           </Section>
@@ -300,16 +272,16 @@ export default async function DesignManualPage() {
               </div>
               <div className="flex flex-col gap-3 rounded-lg border border-hf-tan-dark bg-hf-cream p-4">
                 <p className="hf-type-body hf-type-strong text-hf-black">Kun i Hello Cal · lime FAB</p>
-                <button type="button" aria-label="Tilføj" className="flex size-14 items-center justify-center rounded-[14px] bg-hf-lime text-hf-black">
+                <button type="button" aria-label="Tilføj" className="flex size-14 items-center justify-center rounded-[14px] bg-hf-accent text-hf-black">
                   <IconPlus size={28} stroke={2.25} />
                 </button>
-                <p className="hf-type-small text-text-secondary">56 × 56 · radius 14 · #A3E635. Forlæggets FAB er mørk #242424 med radius 12.</p>
+                <p className="hf-type-small text-text-secondary">56 × 56 · radius 14 · accent #BBF06A. Forlæggets FAB er mørk #242424 med radius 12.</p>
               </div>
             </div>
             <Rules
               items={[
                 "Næsten-sort #232323 betyder handling eller valgt. Grøn bruges kun til topbjælke og fremdrift, aldrig som knapfyld.",
-                "Beige #EFE9DE er neutral flade til valg. Lime #BBF06A + 3 px sort kant markerer det valgte kort.",
+                "Beige #EFE9DE er neutral flade til valg. Accent-lime #BBF06A + 2 px sort kant og sort tekst markerer alt valgt (.hf-selected, .hf-choice, .hf-chip).",
                 "Alle konturer er 1 px. Ingen gradienter eller skygger på knapper.",
                 "Formen følger beslutningen: få svar → valgkort, antal → plus/minus, lille talsæt → segmenter, lang liste → rækker med flueben, filtre → piller.",
                 "I flows ligger handlingen fast i den beige bundbjælke. På log ind står den midt på siden under felterne.",
@@ -424,7 +396,7 @@ export default async function DesignManualPage() {
                 <SpecTable
                   head={["Zone", "Mål", "Regel"]}
                   rows={[
-                    ["Appbar", "52 px + safe area", "Brand #067A46 eller main #35784A. Tre faste slots: venstre 44 · titel · højre 44."],
+                    ["Appbar", "52 px + safe area", "Brand #067A46. Tre faste slots: venstre 44 · titel · højre 44."],
                     ["Indhold", "16 px gutter", "Kun .hf-screen__scroll scroller. Børn tilføjer ikke ekstra sidepadding."],
                     ["Blokke", "16 px", "Afstand mellem almindelige blokke."],
                     ["Sektioner", "32 px", "Afstand mellem selvstændige sektioner/kortgrupper."],
@@ -450,8 +422,8 @@ export default async function DesignManualPage() {
             <BoxOverview />
           </Section>
 
-          {/* 9. Adgangsark (integrationer) */}
-          <Section id="adgangsark" number={9} title="Adgangsark (integrationer)" intro="Hver integration (/settings/integrations/<app>) vises som en tro kopi af iOS' Apple Health-adgangsark. Komponent: HfAccessSheet. Prøv kontakterne:">
+          {/* 9. Integrationer */}
+          <Section id="integrationer" number={9} title="Integrationer" intro="Hver integration (/settings/integrations/<app>) vises som en tro kopi af iOS' Apple Health-integrationsside. Komponent: HfAccessSheet. Prøv kontakterne:">
             <div className="flex flex-col gap-6 sm:flex-row sm:items-start">
               <AccessSheetDemo />
               <div className="flex min-w-0 flex-1 flex-col gap-4">

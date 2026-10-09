@@ -53,9 +53,9 @@ const GROUP_COLORS = [
   "var(--hf-green)",
   "var(--hf-black)",
   "var(--hf-red-muted)",
-  "var(--hf-green-light)",
+  "var(--hf-color-accent)",
   "var(--hf-gray)",
-  "var(--hf-lime)",
+  "var(--hf-color-watch)",
   "var(--hf-green-muted)",
 ];
 

@@ -39,7 +39,7 @@ const hash = (e) => createHmac("sha256", hashKey).update(e.trim().toLowerCase())
 async function main() {
   const prisma = new PrismaClient({ adapter: new PrismaPg({ connectionString: process.env.DATABASE_URL }) });
   const rows = await prisma.$queryRaw`
-    SELECT "id", "email", "displayName", "emailHash" FROM "User"
+    SELECT "id", "email", "displayName", "emailHash" FROM "users"
     WHERE "emailHash" IS NULL OR "email" NOT LIKE 'enc:v1:%' OR "displayName" NOT LIKE 'enc:v1:%'`;
   console.log(`${rows.length} raekke(r) skal behandles (${apply ? "APPLY" : "dry-run"}).`);
   let done = 0;
@@ -53,7 +53,7 @@ async function main() {
     if (!apply) continue;
     try {
       await prisma.$executeRaw`
-        UPDATE "User" SET "email" = ${enc(r.email)}, "displayName" = ${enc(r.displayName)}, "emailHash" = ${hash(r.email)}
+        UPDATE "users" SET "email" = ${enc(r.email)}, "displayName" = ${enc(r.displayName)}, "emailHash" = ${hash(r.email)}
         WHERE "id" = ${r.id}`;
       done++;
     } catch (e) {
@@ -63,7 +63,7 @@ async function main() {
   console.log(`Krypteret: ${done}. Fejlede: ${failed.length}.`);
   for (const f of failed) console.log(`  id=${f.id}: ${f.reason}`);
   const left = await prisma.$queryRaw`
-    SELECT COUNT(*)::int AS n FROM "User" WHERE "emailHash" IS NULL OR "email" NOT LIKE 'enc:v1:%' OR "displayName" NOT LIKE 'enc:v1:%'`;
+    SELECT COUNT(*)::int AS n FROM "users" WHERE "emailHash" IS NULL OR "email" NOT LIKE 'enc:v1:%' OR "displayName" NOT LIKE 'enc:v1:%'`;
   console.log(`Tilbage ukrypteret: ${left[0].n}.`);
   await prisma.$disconnect();
   if (failed.length) process.exitCode = 1;

@@ -15,7 +15,8 @@ export async function getSessionUser() {
 
   const user = await prisma.user.findUnique({ where: { id: session.userId } });
   // En lukket konto (src/lib/account-closure.ts) logges ud på alle enheder.
-  if (!user || user.forgottenAt || user.closedAt) return null;
+  // En spærret konto (dyrefoder-spærringen, src/lib/pet-food-strikes.ts) logges ud på alle enheder.
+  if (!user || user.forgottenAt || user.closedAt || user.blockedAt) return null;
   return user;
 }
 

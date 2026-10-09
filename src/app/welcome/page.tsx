@@ -32,8 +32,7 @@ export default function VelkommenPage() {
   return (
     <div className="flex h-full min-h-full flex-col bg-hf-cream">
       <div
-        className="flex items-center bg-hf-green px-4 pb-4"
-        style={{ paddingTop: "max(16px, env(safe-area-inset-top, 0px))" }}
+        className="flex items-center bg-hf-green px-4 pb-4 hf-safe-top"
       >
         <Image src="/hello-cal-logo-white.png" alt="Hello Cal" width={130} height={42} priority />
       </div>

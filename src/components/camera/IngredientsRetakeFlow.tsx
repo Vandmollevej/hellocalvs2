@@ -142,7 +142,7 @@ export function IngredientsRetakeFlow({ productId }: { productId: string }) {
 
   return (
     <div className="flex flex-col gap-4">
-      <div className="relative aspect-square w-full overflow-hidden rounded-[12px] bg-hf-black">
+      <div className="relative aspect-square w-full overflow-hidden bg-hf-black rounded-card">
         <video
           ref={videoRef}
           className="h-full w-full object-cover"
@@ -157,7 +157,7 @@ export function IngredientsRetakeFlow({ productId }: { productId: string }) {
         )}
         {!photo && (
           <div
-            className="pointer-events-none absolute inset-[12%] rounded-[12px] border-2 shadow-[0_0_0_999px_rgba(0,0,0,0.2)] transition-colors"
+            className="pointer-events-none absolute inset-[12%] border-2 shadow-[0_0_0_999px_rgba(0,0,0,0.2)] transition-colors rounded-card"
             style={{ borderColor: autoCaptureProgress > 0 ? "var(--hf-color-brand)" : "rgba(255,255,255,0.8)" }}
           >
             <div
@@ -198,7 +198,7 @@ export function IngredientsRetakeFlow({ productId }: { productId: string }) {
         type="button"
         onClick={() => void capturePhoto()}
         disabled={cameraStatus !== "active" || working}
-        className="hf-control hf-btn-primary justify-center gap-2 disabled:opacity-40"
+        className="hf-control hf-btn-primary justify-center gap-2"
       >
         <IconCamera size={19} /> {t("camera.takePhoto")}
       </button>

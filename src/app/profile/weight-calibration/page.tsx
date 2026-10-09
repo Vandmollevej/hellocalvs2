@@ -210,6 +210,8 @@ export default function WeightCalibrationPage() {
       if (responses.every((response) => response.ok)) {
         setConditionValues({});
         setStatus("saved");
+        // Skjuler "Du mangler at kalibrere din vægt" på vægtsiden.
+        void fetch("/api/weight-calibration", { method: "POST" }).catch(() => {});
       } else {
         setStatus("error");
       }
@@ -224,7 +226,7 @@ export default function WeightCalibrationPage() {
   return (
     <HfScreen title={t("weightCalibration.title")}>
       <div className="hf-page hf-page--sections">
-        <div className="rounded-2xl bg-hf-tan px-4 py-4">
+        <div className="hf-card">
           <p className="hf-type-body text-hf-black">{t("weightCalibration.intro")}</p>
         </div>
 

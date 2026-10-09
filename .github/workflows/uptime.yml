@@ -1,0 +1,31 @@
+name: Uptime
+
+# Ekstern overvågning (docs/DEPLOYMENT.md, "Overvågning"): kører på GitHubs servere,
+# så den også slår alarm, når hele NAS'en er nede. Et fejlet kørsel giver en mail
+# (og push i GitHub-appen) til den, der sidst ændrede denne fil.
+on:
+  schedule:
+    - cron: "*/5 * * * *"
+  workflow_dispatch:
+
+concurrency:
+  group: uptime
+  cancel-in-progress: true
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Check hellocal.io (database, brugertabel, migreringer)
+        run: |
+          # Tre forsøg med 20 sekunders mellemrum, så et enkelt udfald ikke giver alarm.
+          for attempt in 1 2 3; do
+            body="$(curl -sS --max-time 20 -w '\n%{http_code}' 'https://hellocal.io/api/health?deep=1' || true)"
+            code="$(printf '%s' "$body" | tail -n1)"
+            if [ "$code" = "200" ]; then echo "OK"; exit 0; fi
+            echo "Forsøg $attempt: HTTP $code $(printf '%s' "$body" | head -n1)"
+            [ "$attempt" = 3 ] || sleep 20
+          done
+          echo "::error::hellocal.io svarer ikke korrekt"
+          exit 1

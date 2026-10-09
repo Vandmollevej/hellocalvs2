@@ -11,7 +11,7 @@ export function CronJobRow({ job, state }: { job: JobDefinition; state: JobState
   const { busy, running, runPending, toggleEnabled, runNow } = control;
 
   return (
-    <div className="flex flex-col gap-3 hf-surface p-4">
+    <div className="hf-panel">
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div className="min-w-0 flex-1">
           <p className="hf-type-strong flex items-center gap-2 text-hf-black">
@@ -51,7 +51,7 @@ export function CronJobRow({ job, state }: { job: JobDefinition; state: JobState
             type="button"
             disabled={busy || runPending}
             onClick={runNow}
-            className="hf-btn-primary px-3 py-1.5 disabled:opacity-50"
+            className="hf-btn-primary px-3 py-1.5"
           >
             Kør nu
           </button>

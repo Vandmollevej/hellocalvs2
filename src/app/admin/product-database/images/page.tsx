@@ -46,7 +46,7 @@ export default async function AdminImagesPage() {
       <div className="flex flex-col gap-1">
         <h1 className="hf-type-title text-hf-black">Billeder</h1>
         <p className="hf-type-body text-text-secondary">
-          Træk produktbilleder (filnavn = EAN eller produkttype) og brand-logoer (filnavn = brandets navn) ind.
+          Billeder som lægges op på varer, generiske ingredienser og brands.
         </p>
       </div>
 

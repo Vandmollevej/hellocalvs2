@@ -139,7 +139,7 @@ export function ChangePasswordForm({ loggedIn }: { loggedIn: boolean }) {
             type="submit"
             disabled={submitting}
             aria-busy={submitting}
-            className="hf-control hf-btn-primary mt-4 w-full px-4 disabled:opacity-50"
+            className="hf-control hf-btn-primary mt-4 w-full px-4"
           >
             {submitting ? t("profile.changePassword.submitting") : t("profile.changePassword.submit")}
           </button>

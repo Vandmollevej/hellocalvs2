@@ -7,6 +7,7 @@ import { IconChevronRight } from "@tabler/icons-react";
 import { SwipeableRow } from "@/components/SwipeableRow";
 import { FoodRow } from "@/components/FoodRow";
 import { useTranslation } from "@/i18n/LocaleProvider";
+import { useConnectionMessage } from "@/lib/use-online-status";
 import { useFamilyStatus, type FamilyProfile } from "@/components/family/FamilyStatusProvider";
 import { CopyToAccountSheet } from "@/components/family/CopyToAccountSheet";
 import { SkeletonMediaRows } from "@/components/hf/Skeleton";
@@ -54,6 +55,7 @@ function formatTime(dateString: string) {
 
 export function DailyList() {
   const { t } = useTranslation();
+  const connectionMessage = useConnectionMessage();
   const router = useRouter();
   const [entries, setEntries] = useState<Entry[]>([]);
   const [loading, setLoading] = useState(true);
@@ -183,7 +185,7 @@ export function DailyList() {
                 <FoodRow
                   image={entry.image}
                   overline={
-                    <p className="hf-type-small font-bold text-hf-black">
+                    <p className="hf-type-small text-hf-black hf-type-strong">
                       {t("dailyList.atTime", { time: formatTime(entry.createdAt) })}
                     </p>
                   }
@@ -209,7 +211,7 @@ export function DailyList() {
             {t("dailyList.noEntriesToday")}
           </li>
         )}
-        {error && <li className="hf-type-small pb-4 text-center text-hf-red-dark">{error}</li>}
+        {error && <li className="hf-type-small pb-4 text-center text-hf-red-dark">{connectionMessage(error)}</li>}
       </ul>
       {hasScans && !loading && (
         <div className={entries.length > 0 ? "mt-3" : "-mt-5 text-center"}>
@@ -220,7 +222,7 @@ export function DailyList() {
       )}
       </div>
       {notice && (
-        <p role="status" className="hf-type-body absolute inset-x-4 bottom-10 rounded-[8px] bg-hf-black px-4 py-2 text-center text-hf-white">
+        <p role="status" className="hf-type-body absolute inset-x-4 bottom-10 bg-hf-black px-4 py-2 text-center text-hf-white rounded-card">
           {notice}
         </p>
       )}
@@ -244,8 +246,7 @@ export function DailyList() {
         />
       )}
       <div
-        className="pointer-events-none absolute inset-x-0 bottom-0 h-9"
-        style={{ background: "linear-gradient(to bottom, transparent, var(--hf-cream))" }}
+        className="pointer-events-none absolute inset-x-0 bottom-0 h-9 hf-fade-bottom"
       />
     </div>
   );

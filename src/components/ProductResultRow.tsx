@@ -71,13 +71,6 @@ export function ProductResultRow({
             >
               {isFavorite ? <IconBookmarkFilled size={20} /> : <IconBookmark size={20} />}
             </button>
-            {/* Åbner "Tilføj produkt" i bundarket (KRAV.md "Bundark"). */}
-            <button type="button" onClick={(event) => {
-                event.stopPropagation();
-                onAdd(id);
-              }} className="px-2 py-2 text-sm font-medium text-black">
-              {t("search.add")}
-            </button>
           </>
         }
       />

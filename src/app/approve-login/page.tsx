@@ -56,7 +56,7 @@ export default function ApproveLoginPage() {
         )}
         {approvals?.map((approval) => (
           <div key={approval.id} className="flex flex-col gap-3 rounded-xl bg-hf-white p-4">
-            <p className="hf-type-body font-semibold">{t("loginApproval.question", { device: approval.device })}</p>
+            <p className="hf-type-body hf-type-strong">{t("loginApproval.question", { device: approval.device })}</p>
             {approval.country && <p className="hf-type-caption text-text-secondary">{approval.country}</p>}
             <div className="flex gap-3">
               <button

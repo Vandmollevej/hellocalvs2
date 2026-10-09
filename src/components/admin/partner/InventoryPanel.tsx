@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { postJson } from "@/components/admin/PartnerManagers";
+import { useConfirmSheet } from "@/lib/use-confirm-sheet";
 import { PRODUCT_CATEGORY_LABELS, type AdInventoryItem } from "@/lib/ad-inventory";
 import { INPUT, LABEL, BTN, PRIMARY } from "@/components/admin/partner/ui";
 
@@ -60,6 +61,7 @@ export function InventoryPanel({
   agreements: { id: string; title: string }[];
 }) {
   const router = useRouter();
+  const { ask, sheet } = useConfirmSheet();
   const [draft, setDraft] = useState<Draft | null>(null);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -67,8 +69,7 @@ export function InventoryPanel({
   const item = draft ? inventory.find((i) => i.key === draft.inventoryKey) : undefined;
   const set = (key: keyof Draft) => (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => setDraft((d) => (d ? { ...d, [key]: e.target.value } : d));
 
-  async function run(body: Record<string, unknown>, confirmText?: string) {
-    if (confirmText && !window.confirm(confirmText)) return false;
+  async function execute(body: Record<string, unknown>) {
     setBusy(true);
     setError(null);
     const res = await postJson("/api/admin/partners", body);
@@ -79,6 +80,15 @@ export function InventoryPanel({
     }
     router.refresh();
     return true;
+  }
+
+  // Med confirmText vises en bekræftelse som bundark (ikke window.confirm).
+  async function run(body: Record<string, unknown>, confirmText?: string) {
+    if (confirmText) {
+      ask(confirmText, () => void execute(body));
+      return false;
+    }
+    return execute(body);
   }
 
   async function upload(file: File) {
@@ -146,6 +156,7 @@ export function InventoryPanel({
 
   return (
     <section className="flex flex-col gap-3">
+      {sheet}
       <h3 className="hf-type-title text-hf-black">Reklamemuligheder</h3>
       {error && <p className="hf-type-small text-red-700">{error}</p>}
       {draft && (

@@ -7,8 +7,10 @@ import { runDueAppJobs } from "@/lib/jobs/runner";
 import { pruneOldJobRuns } from "@/lib/jobs/runs";
 import { rerunUncertainAnalyses } from "@/lib/uncertainty-rerun";
 import { scanProductLabels } from "@/lib/product-label-scan";
+import { scanProductsForPetFood } from "@/lib/pet-food-scan";
 import { analyzeDeclinedExternalImages } from "@/lib/external-image-ai";
 import { recoverQuickEnrichments } from "@/lib/quick-enrichment-jobs";
+import { checkEnergySplits } from "@/lib/energy-split-check";
 import { grantEligibleReferralRewards } from "@/lib/referrals";
 import { runMobilePayTick } from "@/lib/payments/mobilepay-subscription";
 import { runStripeTick } from "@/lib/payments/stripe-subscription";
@@ -17,6 +19,7 @@ import { syncAllIntegrations } from "@/lib/integrations/handlers";
 import { sendDueReports } from "@/lib/partner-reports";
 import { requestPersonaRunOnDeploy, runPersonaJob } from "@/lib/personas";
 import { anonymizeExpiredClosedAccounts } from "@/lib/account-closure";
+import { sendDueWeighReminders } from "@/lib/weigh-reminders";
 import { runPulseNightJob } from "@/lib/pulse-candidates";
 
 // In-process baggrundsjob (docs/DECISIONS.md 2026-09-02): DB-drevet, kører i
@@ -117,6 +120,8 @@ export function startScheduler() {
   globalForScheduler.hellocalSchedulerStarted = true;
 
   const tick = () => {
+    // Vejepåmindelser: præcis 5 min før valgte lige timer (docs/DECISIONS.md 2026-10-07).
+    sendDueWeighReminders().catch((error) => console.error("[scheduler] Vejepåmindelser fejlede", error));
     runDueAppJobs({
       maintenance: async () => {
         await runSchedulerTick();
@@ -126,10 +131,12 @@ export function startScheduler() {
       },
       "uncertainty-rerun": rerunUncertainAnalyses,
       "label-scan": scanProductLabels,
+      "pet-food-scan": scanProductsForPetFood,
       "pulse-activity": runPulseNightJob,
       personas: runPersonaJob,
       "external-image-ai": analyzeDeclinedExternalImages,
       "quick-enrichment-recovery": () => recoverQuickEnrichments(),
+      "energy-split-check": checkEnergySplits,
     }).catch((error) => {
       console.error("[scheduler] tick fejlede", error);
     });

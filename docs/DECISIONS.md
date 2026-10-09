@@ -2,6 +2,54 @@
 
 This file records durable decisions. Add a dated entry when a later decision changes one of them.
 
+## 2026-10-09: Stregkoder tærskles lokalt pr. scanlinje — skygge må ikke stoppe en læsning
+
+Brugerens ord (2026-10-06): "bare fordi det var et lille stykke skygge, kunne kameraet ikke læse stregkoden … det kan ikke være rigtigt." Hver scanlinje binariseres derfor med en glidende lokal tærskel (vindue 10 % af linjen, mindst 32 px, mørk = mindst 8 under det lokale gennemsnit) før ZXing's globale tærskel pr. række, som beholdes som fallback i samme frame. Det ligger i `src/lib/barcode-row-threshold.ts` + `barcode-local-binarizer.ts`, ikke i ZXing-koden, så biblioteket kan opdateres frit. ZXing's HybridBinarizer bruges ikke længere til 1D: dens lokale blokke gælder kun 2D-matricen.
+
+## 2026-10-08: Vagt-robot på NAS'en (hver time, mail)
+
+- Ud over GitHub-tjekket (hvert 5. min) kører `uptime-agent` på NAS'en og tjekker hver time site, app, containere og diskplads; mail til peter@packroff.dk ved fejl og ved løst. Brugerens valg: hver time "for nu", kun mail. Cloudflare-alarmer sættes op af brugeren i dashboardet (docs/DEPLOYMENT.md "Overvågning").
+
+## 2026-10-07: Alle popups er bundark — også vælgere, tips, adgangslog og admin-bekræftelser
+
+- Ejerens regel ("Popups vises aldrig som overlay men som bundark nedefra. Swipe ned = annuller") gælder nu alle brugerrettede og admin-popups. `BottomSheet` er den eneste godkendte overlay-type (KRAV.md "Bundark"); fuldskærms-overlay og centreret dialog er afskaffet som popup-typer (designmanualen viser kun bundarket).
+- Konverteret: hjulvælgere (`WheelPicker`, `BirthDatePicker`: "Færdig" gemmer, swipe/scrim annullerer), opstartstips (`StartupTipOverlay`), adgangslog-panelet (`AccessLogPanel`: OK/"Se hele Kontrol-loggen" markerer som set, swipe ned skjuler kun til næste opstart), Hello Doc "Træk adgang tilbage", sletning af familieprofil (skriv SLET i et bundark i stedet for `window.prompt`), og i admin alle `window.confirm`/`confirm`/`window.prompt` (15 steder) samt detaljevinduerne (Uncertainties, nye varer, Billed-forskel, reklamespot-sider, landevælger, rapport-bekræftelse, passkey-navngivning).
+- Nye hooks i `src/lib/use-confirm-sheet.tsx`: `useConfirmSheet().ask(tekst, handling)` (Fortsæt-knap) og `useTypedConfirmSheet().ask(tekst, ord, handling)` (kontrolordet skal skrives). `BottomSheet` ignorerer træk, der starter i et element med `data-sheet-no-drag` (hjulene), så de kan scrolles.
+- Bevidste undtagelser (ikke popups): Face ID-animationen på login, fuldskærms-visere (billede-dagbog, kalenderens dagvisning, admin-billedvisning), spotlight-guiden "Guide mig", admin-kommandopaletten (Ctrl/Cmd+K) og dropdown-menuer.
+- Varesidens brand-logo (`src/lib/brand-logo-layout.ts`): logoets/navnets venstre kant beregnes af dets højde, så der altid er 8 px luft til produktcirklens kant.
+## 2026-10-07: Sikring mod fejlede migreringer + ekstern overvågning
+
+- Hvert deploy prøvekører migreringerne på en kopi af produktionens skema, før produktionen røres; fejler de, stopper deployet (`scripts/deploy/test-migrations.sh`).
+- Migreringer køres eksplicit før ny app-kode startes; `/api/health` tjekker brugertabellens kolonner, så ny kode mod gammel database aldrig går i drift.
+- Ekstern overvågning hvert 5. minut fra GitHub (`.github/workflows/uptime.yml`) med mail/push ved fejl; admin-forsiden viser fejlede migreringer. Brugerens valg efter nedbruddet 2026-10-07 (docs/DEPLOYMENT.md "Prøvekørsel af migreringer og overvågning").
+
+## 2026-10-07: "Nøgleord på produktsiden" fjernet; "Adgangsark" hedder Integrationer
+
+- Brugeren har aldrig bedt om punktet "Nøgleord på produktsiden" (DECISIONS 2026-10-02 og 2026-10-07 er afløst): admin-siden `/admin/product-database/tags`, API'et `/api/admin/product-page-tags`, editoren, `product-page-tags*.ts`, `product-keyword-groups.ts`, menu-/genvejs-/sidetræ-punkterne og nøgleordslinjen på produktsiden (`pageTags`) er slettet. Produktsiden viser ikke længere en nøgleordslinje over "Energifordeling".
+- Tabellen `product_page_tag_settings` (Prisma-modellen `ProductPageTagSettings`) er bevidst IKKE droppet og ingen data er rørt; den er nu ubrugt og kan fjernes med en migration, hvis brugeren siger til.
+- Det, der før blev kaldt "Adgangsark (integrationer)", hedder bare **Integrationer** (designmanualens afsnit 9 og al tekst i docs/kommentarer). Nævn ikke "adgangsark" som navn igen.
+- Admin → Retter → HelloFresh/Valdemarsro: det eneste admin kan ændre er "Deaktivér"/"Aktivér" på linjen (allerede bygget 2026-10-07, 24b50742); detaljesiden er kun visning.
+- Stavning: ental "vare", flertal "varer". En gennemgang af hele repoet fandt ingen fejlstavningen "vareer".
+## 2026-10-07: MIDLERTIDIG DISPENSATION — tallerken-scanning kører på OpenAI i stedet for Passio
+
+- Brugerens ønske: sæt tallerken-scanning ("Måltid"-kameraet) til OpenAI, indtil den endelige løsning er klar. `/api/ai/analyze-meal-photo` kalder nu `src/lib/meal-photo-recognition.ts`, som som standard bruger OpenAI (`gpt-4o`, billede uden metadata, struktureret svar: ingredienser + estimeret gram + kcal/makroer). Resten af flowet er uændret: hver ingrediens slås først op i vores egen produktdatabase, kun uden match bruges AI'ens estimat (markeret `estimated`).
+- Feature-flag: `MEAL_PHOTO_PROVIDER` (`openai` = standard, `passio` = den oprindelige Passio-klient i `src/lib/passio.ts`, som er urørt). Kræver `OPENAI_API_KEY` (findes allerede til de øvrige AI-ruter).
+- **SKAL RULLES TILBAGE:** når den endelige løsning (Passio eller en anden) er klar, sæt `MEAL_PHOTO_PROVIDER` til den, eller fjern `meal-photo-recognition.ts` og lad ruten kalde udbyderen direkte. Slet derefter denne dispensation.
+## 2026-10-07: "Guide mig" i hjælpe-chatten, søgning i Viden om mad, kalorieforbrænding og WHO-kilder
+
+- **Genvej + "Guide mig"** (`src/lib/help-guides.ts`, `HelpGuideSpotlight`): chat-svar viser øverst et understreget link til siden, derunder knappen "Guide mig" (kun når spørgsmålet handler om navigation og en guide findes), og først derefter forklaringen. Guiden mørklægger skærmen (sort, 20 % gennemsigtighed) med et rundt hul om knappen, så tryk går igennem; trinene står over teksten ("1. Tryk på plus-knappen 2. Vælg vægt"). Chatbotten vælger guide-id i svarskemaet (gemmes som `guide:<id>` i `ChatbotMessage.links`, ingen migration).
+- **Automatisk opdatering:** guider er data. Knapper har `data-guide`-felter (plus-knap, hjulets handlinger, bundmenu), og `help-guides.test.mjs` fejler, hvis et trin peger på noget, der er fjernet. Nye guider = ét element i registret. Findes knappen ikke (fx fjernet fra bundmenuen), dæmpes skærmen ikke, og brugeren får kun teksten.
+- **Viden om mad:** forsidens søgning dækker alt inkl. enkelte E-numre; undersiderne søger kun i eget afsnit. Nye afsnit "Kalorieforbrænding" og "WHO og officielle kilder" (`src/lib/knowledge-research.ts`). Kun WHO, Sundhedsstyrelsen/Borger.dk, Nordisk Ministerråd og peer-reviewede artikler på PubMed — alle links åbnet 2026-10-07 og låst af `knowledge-research.test.mjs`.
+
+## 2026-10-06: Guide-flows med betingelser, opsætningsguiden som flow og migrering fra MyFitnessPal/Lifesum
+
+- **Flows vises nu for brugerne.** Et aktivt flow fra admin → Flows vises som *popup* (bundarket, alle sider, tilbage-pil mellem siderne, "Vis ikke igen") eller *banner* (kort hint over bundmenuen med første side). `FlowGate` (i `src/app/layout.tsx`) spørger `/api/flows/active` ved hvert sideskift; højst ét nyt flow pr. app-indlæsning, højeste prioritet først. Slås fra sammen med start-up tips (Indstillinger → Visning → Tips; teksten nævner nu guider og hint-bannere).
+- **Betingelser** (alle udfyldte skal passe, `src/lib/flow-conditions.ts`): fra/til dato, kun på bestemte sider, min/maks log-ins (`LoginEvent`), min/maks dage siden oprettelse, mindst N dage med indtastninger, har besøgt / har IKKE besøgt faner (fx `/camera` = har ikke brugt mad-scanningen), højst N visninger pr. bruger og dage mellem visninger. Fanebesøg gemmes pr. første sti-led i `UserSectionVisit`; visninger/gennemført/lukket i `FlowView`.
+- **Ekstra knap pr. side** (fx "Integrér dit ur" → `/settings/integrations`). Flowet huskes i sessionStorage; når brugeren går tilbage fra den side, åbner guiden igen på samme side — den lukker ikke.
+- **Opsætningsguiden** er oprettet som flowet "Opsætningsguide" (id `flow_opsaetning_v1`) med de 7 sider fra brugerens beskrivelse (ur, smart-vægt, vægt/højde/fødselsdato, søvn, mål, allergier, Hello Fresh) og står som **Kladde** (slået fra). Siderne linker til de eksisterende indstillingssider; selve indtastningen sker dér. Den gamle `OnboardingWizard` er uændret.
+- **Søvn:** standard 22.00–07.00 (før 23.00–07.00 som udgangspunkt i dag-for-dag-skyderne), og søvnsiden viser samme tekst som guiden ("Søvnen kan have stor indflydelse på vægt og trivsel …").
+- **Migrering fra MyFitnessPal/Lifesum** (grundsten): Integrationer → "Flyt fra en anden app" → `/settings/import`. Brugeren vælger en skærmoptagelse (eller skærmbilleder) af dagbogen; browseren tager et billede ca. hvert 1,2 sek. og springer næsten ens billeder over; hvert billede aflæses af OpenAI (`src/lib/migration-import-ai.ts`, uden metadata, `store: false`) til rækker (dato, måltid, vare, mængde, kcal/protein/kulhydrat/fedt). Billederne gemmes ikke. Brugeren ser rækkerne igennem (usikre er fravalgt) og importerer dem som registreringer uden vare (snapshot = den anden apps tal, tidspunkt = måltidets time i dansk tid). Feltopsætningen tilpasses, når brugeren har adgang til apps/servere og har set rigtige optagelser.
+
 ## 2026-10-05: Bølge-baggrunden på forsiden fjernes
 
 Brugerens ord: "fjern bølgerne i baggrunden. Jeg har aldrig kunnet lide dem." Strenge, skær og tåge tegnes ikke længere (`HomeWaves.tsx` tømmer `bundles`/`fog`), og det frostede nederste lag er fjernet fra `page.tsx`. Puls-linjen er uændret. Tegnekoden i `home-waves.ts` ligger uberørt, så bølgerne kan genindsættes.
@@ -143,7 +191,7 @@ Brugerens krav: "Pulsen skal svare til den rigtige puls som måles, hvis ur tils
   **ikke bygget** — pris og betaling skal afklares med ejeren.
 
 
-## 2026-10-03: Adgangsarkets knapper ligger under listen, ikke ovenpå
+## 2026-10-03: Integrationssidens knapper ligger under listen, ikke ovenpå
 
 Ændrer "faste knapper nederst" fra 2026-09-27: knapperne og "Vilkår og
 betingelser"-bjælken står stadig fast i bunden af `HfAccessSheet`, men i deres
@@ -167,7 +215,7 @@ Brugerens krav: "Denne [højden] skal også låses ligesom vægten. I integratio
 - Hjul-arkene (`WheelPicker`, `BirthDatePicker`) portales til `<body>`: inde i et `<label>` sendte iOS tryk på "Færdig" videre til åbne-knappen, så arket ikke lukkede.
 ## 2026-10-03: "Tillad" giver altid synlig besked
 
-Afløser "ellers er valget allerede gemt → luk" fra 2026-09-27: "Tillad" på en integrations adgangsark lukker aldrig arket uden at vise, hvad der skete. Forbundet cloud-app → hent data nu og vis resultatet; knappen hedder derefter "Færdig" og lukker først da. Tilkoblingsfejl sendes tilbage med årsag (`config`, `tier`, `denied`, `expired`, `failed`) og vises øverst i arket.
+Afløser "ellers er valget allerede gemt → luk" fra 2026-09-27: "Tillad" på en integrations integrationsside lukker aldrig arket uden at vise, hvad der skete. Forbundet cloud-app → hent data nu og vis resultatet; knappen hedder derefter "Færdig" og lukker først da. Tilkoblingsfejl sendes tilbage med årsag (`config`, `tier`, `denied`, `expired`, `failed`) og vises øverst i arket.
 
 ## 2026-10-03: ALT med fra integrationerne
 
@@ -206,7 +254,7 @@ Brugerens krav: "I Withings og øvrige integrationer skal ALT med. Fedtprocent, 
 - Valg sker med en hvid afkrydsningsboks på billedkortet; første afkrydsning åbner straks overlayet med billede 1 som "Før" og en tom "Efter"-plads. Rækkefølgen er brugerens valg (ikke dato), og kan byttes om.
 - Sammenligningen er kun visning: intet nyt billede gemmes, og intet forlader telefonen. Billedfeltet får før-billedets format; efter-billedet beskæres til samme felt (object-cover), så linjen deler samme udsnit.
 - Overlayet følger den eksisterende fuldskærmsvisning (mørk flade) og lukker, når siden låses (adgangskode-låsen).
-## 2026-10-03: Adgangsarkets knapper ligger under listen, ikke ovenpå
+## 2026-10-03: Integrationssidens knapper ligger under listen, ikke ovenpå
 
 Ændrer "faste knapper nederst" fra 2026-09-27: knapperne og "Vilkår og
 betingelser"-bjælken står stadig fast i bunden af `HfAccessSheet`, men i deres
@@ -589,6 +637,11 @@ Uge- og Liste-visningen beholder "Ingen indtastninger" i gråt på tomme dage.
   (efter Vægt/Trendvægt) — og kun når en tilsluttet integration har læsetypen
   "Fedtprocent m.m." (`read.bodyFat`) slået til i sin opsætning. Linket til
   `/statistics/body-water` fra Kropsmål er fjernet; siden findes stadig uden link.
+
+## 2026-10-07: Nøgleord på produktsiden — typer og grupper, oversat
+
+- Brugerens krav: admin vælger nøgleordsTYPER og -GRUPPER, ikke enkelte nøgleord. De frie nøgleord fra produktarkene (Bilka/REMA/SPAR, 4.517 forskellige) er analyseret og inddelt i grupper efter mønstre i `src/lib/product-keyword-groups.ts`: Smag, Farve, Tilberedning, Udskæring og form, Frost og opbevaring, Emballage, Størrelse, Indhold og tilsætning, Druesort og vintype, Kød og fisk, Kvalitet, Mærkning, Oprindelse, Varetype, Advarsler og oplysninger. ~44 % af forekomsterne får en gruppe; resten (mest mærkenavne og afkortede brudstykker) vises ikke. Forkortelser (Glf, Lkf, Bib …) vises som hele ord. Kolonnen `product_page_tag_settings.keywords` rummer nu gruppenavnene (ingen migration); gamle enkelt-nøgleord falder fra.
+- Sprog: faste typer (økologisk, glutenfri, laktosefri, vegansk, vegetarisk, fuldkorn, nøglehul) vises via `addProduct.tagFlag.*` på brugerens sprog. Smagsretning, kødtype, certificeringer m.fl. er fri tekst fra produktarket og vises uoversat (dansk).
 
 ## 2026-10-02: Nøgleord på produktsiden
 
@@ -3701,10 +3754,10 @@ Se `docs/WIDGETS.md`.
 - Gamle `*.packroff.dk`-hostnavne virker under overgangen (tunnel-ruter bevares, `middleware.ts` kender begge admin-hostnavne).
 - Afsender: `no-reply@hellocal.io` (Mailjet). Kontakt i betingelser/privatlivspolitik: `support@hellocal.io`. Admin-notifikationer går fortsat til `ADMIN_NOTIFICATION_EMAIL`.
 
-## 2026-09-27: Integrationssiden er iOS' Apple Health-adgangsark
+## 2026-09-27: Integrationssiden er iOS' Apple Health-integrationsside
 
 Brugerens krav: hver integrations egen side skal være 100 % identisk med
-Apple Health-adgangsarket (som HelloFresh viser), med alle Hello Cals punkter.
+Apple Health-integrationssiden (som HelloFresh viser), med alle Hello Cals punkter.
 - `/settings/integrations/<app>` vises nu som `HfAccessSheet`
   (`src/components/hf/HfAccessSheet.tsx` + CSS Module): mørk baggrund, hvidt
   ark, titlen "Adgang til <app>", app-ikon, "“Hello Cal” vil gerne have adgang
@@ -3720,7 +3773,7 @@ Apple Health-adgangsarket (som HelloFresh viser), med alle Hello Cals punkter.
   arket. Tryk på den mørke kant øverst lukker.
 - Status, "Synkroniser nu", "Frakobl" og enhedskoder ligger som ekstra grupper
   i samme stil. Valgene gemmes stadig med det samme; datatyperne er uændrede.
-- Designmanualen har afsnit 9 "Adgangsark (integrationer)" med live eksempel.
+- Designmanualen har afsnit 9 "Integrationer" med live eksempel.
 ## 2026-09-26: Fælles 48 px-højde på felter, dropdowns, knapper og rækker
 
 - Brugerens beslutning: alle enkeltlinje-felter, dropdowns, madindtastninger,
@@ -3756,7 +3809,7 @@ Apple Health-adgangsarket (som HelloFresh viser), med alle Hello Cals punkter.
 - Tryk åbner bundarket (KRAV.md "Bundark", ny størrelse `size="half"` = 50 % af skærmen) med scrollbar tekst og et fedt, sort, højrestillet link "Gå til vilkår og betingelser" nederst, som går til det relevante afsnit i `/betingelser#<anker>`.
 - Samme komponent overalt: `src/components/hf/TermsSheet.tsx`. Teksterne ligger ét sted, `src/lib/terms-hints.ts`: unik tekst pr. startguide-trin, abonnementsoversigt, hvert abonnement (Seriøs, Seriøs Familie), points-indløsning og hver integration.
 - Guide-builderen (`/admin/guide-builder`): hvert startup-trin har sin egen vilkårstekst (da/en) og sit eget afsnit i betingelserne (`GuideScreen.terms`), redigeres i kortet "Vilkår og betingelser" og vises som bjælke over Tilbage/Næste. Ældre opsætninger får en standardtekst. Tooltips har ingen bjælke.
-- Integrationssiderne (iOS-adgangsarket) viser bjælken over "Tillad"/"Tillad ikke" via `HfAccessSheet`s `terms`-slot.
+- Integrationssiderne (iOS-integrationssiden) viser bjælken over "Tillad"/"Tillad ikke" via `HfAccessSheet`s `terms`-slot.
 - Ligger bundark oven på hinanden (vilkårsarket over startguiden), lukker Escape kun det øverste.
 - Betingelserne har fået ankre på alle afsnit og et nyt afsnit 7 "Forbindelser til andre apps og enheder" (`#integrationer`); de følgende afsnit er rykket ét nummer.
 
@@ -4468,3 +4521,192 @@ Ejerens krav: ingen "Bad Gateway" ved udrulning. Målt: hele sitet (begge værte
 - Afvigelse fra oplægget: `User.email` beholder `@unique` (tilfældig IV gør indekset ufarligt, typerne og klartekst-opslag på ikke-backfillede rækker virker). Den egentlige entydighed er `emailHash @unique`.
 - Uden nøgler i miljøet skrives/slås der op i klartekst som før (sikker deploy-rækkefølge); backfill-scriptet `scripts/encrypt-user-data/backfill.cjs` krypterer bagefter. Mistes `USER_DATA_KEY`, kan navn/e-mail ikke gendannes — gem nøglerne i en adgangskodemanager.
 - Admin → Brugere viser kun pseudonym; Admin → Admin-brugere viser navn + e-mail (dekrypteres server-side). Mail/push-udsendelse læser e-mail via samme klient og er uændret.
+
+## 2026-10-07: Dyrefoder-spærring (brugere må ikke uploade dyrefoder som madvarer)
+
+- Besluttet af brugeren: scrape alt dyrefoder (kun **mad**, ikke tilbehør/legetøj) og spær stregkoderne; Fable finder ord- og mærkemønstre i produkttekster, så også nye dyrefodervarer fanges.
+- Kilder: Bilka, Nemlig, SPAR, Maxi Zoo og Zooplus (~10.800 produkter, ca. 13.600 foderstregkoder). Alt scraper-materiale ligger i mappen `Produklter/Blacklistede produkter` (scraper, Excel med al produkttekst i én celle, billeder, Fable-rapport `fable-moenstre.md`) og er ikke i git. Nemlig viser ingen stregkoder på sine sider — de varer bidrager kun til tekstmønstrene.
+- Håndhævelse (`src/lib/pet-food-blacklist.ts`, data i `src/data/pet-food-barcodes.json` og `src/data/pet-food-patterns.json`): `POST /api/products`, `POST /api/products/quick` (stregkode) og `GET /api/products/lookup/[barcode]` svarer 422 `PET_FOOD_BLOCKED`; opslag henter aldrig dyrefoder fra Open Food Facts/USDA; efter AI-udfyldning (`quick-product-enrichment.ts`) afvises varen automatisk (`rejectProduct`), hvis navn/mærke/ingredienser rammer et mønster. Kameraflowet viser serverens besked ved spærret stregkode.
+- Mønstre: ~430 stærke ord/vendinger (fx "analytiske bestanddele", "kød og animalske biprodukter"), ~260 dyrefodermærker (hele ord) og 59 svage ord (kræver 3 forskellige). Måling mod ~46.000 menneskemadvarer: 0 rigtige falske positive (de 153 "træffere" er dyrefoder, som ligger i de eksisterende Nemlig-ark). Genkendelse: 99,9 % på hele siden, ca. 96 % på etiket-tekst, ca. 88 % på kun navn+mærke. Tvetydige mærker (Ultima, Heim, Moments, Burns m.fl.) er bevidst udeladt.
+- Ikke bygget: billedmønstre er beskrevet i `fable-moenstre.md`, men der er ingen billedbaseret spærring i appen endnu. Genkør scraper + `build_app_blacklist.py` for at opdatere listerne.
+- Fund: de eksisterende Nemlig-ark indeholder ca. 150 dyrefodervarer (Best Friend, Chrisco, Whiskas, Pedigree m.fl.), som er kommet med i madvaredatabasen ved import — bør ryddes, hvis de er importeret.
+
+## 2026-10-04: Drinks som tilføjelseskategori
+
+Drinks er en ny kategori nederst i tilføj-menuen. Hver drink har ingredienser; hver ingrediens får sin egen skyder med standardmængde fra et regneark (importeres senere). Et log gemmes som én Registration med summeret næring (snapshot-princippet). Se `docs/DRINKS.md`.
+
+## 2026-10-07: Natlig robot "Energifordeling: afvigelser"
+
+Varer med samme brand, produkttype, serie, variant og smag, der kun adskiller sig på mængde, skal have næsten samme energifordeling (% af kcal fra protein 4/kulhydrat 4/fedt 9 kcal pr. g). Jobbet `energy-split-check` (kl. 04:30, app-runtime, admin → Cron-jobs) sammenligner hver vare med medianen af de andre i gruppen; over 8 procentpoint på en af de tre → række i `product_energy_split_flags` og sektionen "Energi-afvigelser" på admin → Usikkerheder (+ rød prik). Varen deaktiveres/skjules ikke; admin undersøger og trykker "Undersøgt". En gennemgået vare flagges først igen, hvis dens tal ændres; flag ryddes, når afvigelsen forsvinder. Kun godkendte, ikke-private, aktive varer med produkttype. Migration 20261007100000 skal med deployet.
+- Billedspærring (brugerregel: billedgenkendelse kun om natten som robot, aldrig i scan-flowet): natjobbet `pet-food-scan` (`src/lib/pet-food-scan.ts`, standard kl. 03:45, admin → Cron-jobs/Robotter) lader AI'en se forsidefotoet af brugeroprettede og ventende varer, der ikke er tjekket (`Product.petFoodCheckedAt`, migration `20261007100000_product_pet_food_checked` skal køre ved deploy). Er emballagen dyrefoder med mindst 75 % sikkerhed, afvises varen via `rejectProduct`; tvivl = ikke dyrefoder, så menneskemad blokeres aldrig på billedet alene. Højst 150 varer pr. nat. Stregkode- og ordspærringen er gratis og kører stadig live. Billedmønstrene fra Fable er beskrevet i `fable-moenstre.md`. Genkør scraper + `build_app_blacklist.py` for at opdatere listerne.
+- Advarsel og spærring (ejerens regel 2026-10-07): en bruger, der bliver taget i at ville oprette dyrefoder (spærret stregkode ved scanning/oprettelse, dyrefoder-ord i det oprettede, eller AI/natrobot ser dyrefoder), får første gang en advarsel på skærmen om, at kontoen spærres, hvis det sker igen. Andet forsøg spærrer kontoen (`User.blockedAt`, `blockedReason`): sessionen afvises på alle enheder (`getSessionUser`), og login afvises med beskeden i alle login-metoder (`completeLogin`; OAuth sendes til `/login?error=account-blocked`). Forsøg gemmes i `pet_food_incidents`; gentagelser inden for 10 minutter (kameraet læser samme kode flere gange) tæller som ét; administratorer rammes ikke; billedsvar fra natrobotten tæller først fra 90 % sikkerhed. Admin → Brugere har et "Spærrede"-filter og en "Spærret"-markering pr. bruger med "Ophæv spærring" (nulstiller tællingen, `petFoodStrikesResetAt`), og Oversigten viser en rød advarsel med antal spærrede konti og forsøg de seneste 7 dage, fordi spærrede brugere skriver til support. Migration `20261007110000_pet_food_strikes` skal køre ved deploy. Logikken ligger i `src/lib/pet-food-strikes.ts`, beskederne i `src/lib/pet-food-messages.ts`.
+- Gennemgang af afvisninger (ejerens krav 2026-10-07): hver afvisning (spærret ved scanning/oprettelse, vare afvist automatisk af AI/natrobot, fund i en eksisterende vare) gemmes i `pet_food_incidents` — også for anonyme og administratorer — og vises i admin-Oversigten som en rød advarsel til gennemsyn, fordi en fejlagtig afvisning kan koste en kunde, der forlader appen. Admin kan "Fejl – frikend" (hændelsen tæller ikke som forsøg, en spærring der kun skyldtes den ophæves, en afvist vare sættes tilbage til afventende), "Var dyrefoder" (set) eller, ved fund i en eksisterende vare, "Afvis vare". Natjobbet `pet-food-scan` gennemgår desuden alle eksisterende varer med stregkode- og ordspærringen (`Product.petFoodTextCheckedAt`, 3.000 pr. nat, kun markering, ingen AI). Migration `20261007120000_pet_food_incident_review` skal køre ved deploy. Test mod eksisterende indhold: ca. 46.700 danske menneskemadrækker (Bilka/Nemlig/SPAR) og ca. 52.000 billedfiler på F: (tysk/dansk menneskemad og EDEKA): det fandt tre mærker, der ramte menneskemad (Butcher's BBQ-kød, Alnatura Kräcker, Sammy's sandwich) — fjernet; ingen af ca. 35.000 stregkode-navngivne billeder på F: ligger på spærrelisten.
+- Dyrefoder-filter i admin og tyske kilder (ejerens krav 2026-10-08): filteret kan ses, afprøves og redigeres under admin → Indstillinger → Dyrefoder-filter (`/admin/pet-food-filter`): tilføj/slå fra/gendan stærke ord, mærker, svage ord og stregkoder, ændr antal svage træf (1-6) og afprøv en tekst/stregkode (viser hvilket udtryk der rammer). Rettelserne gemmes i `pet_food_filter_edits` (migration `20261008160000_pet_food_filter_edits`) oven på standardlisterne i `src/data/pet-food-*.json` og virker inden for ét minut (cache 60 s); uden database gælder standardlisterne. `petFoodBlockReason` m.fl. er derfor async. Kun administratorer med fuld adgang kan ændre; afprøvning er åben for alle admin-niveauer. Tyske kilder scrapet: EDEKA24, Fressnapf, Futterhaus, Zooplus.de, dm (ca. 23.400 produkter); i alt ca. 32.300 produkter og ca. 28.800 foder-stregkoder. Test mod eksisterende tysk/dansk menneskemad (ca. 71.000 tekster, bl.a. 23.700 produktnavne på F:) fandt og fjernede mærkerne Butcher's, Kräcker og Sammy's samt udtrykket "snack cream" (testscriptet sammensatte felter uden skilletegn; appen bruger ` | `). Fuld rapport: `docs/PET-FOOD-FILTER.md`.
+- Fund: de eksisterende Nemlig-ark indeholder ca. 150 dyrefodervarer (Best Friend, Chrisco, Whiskas, Pedigree m.fl.), som er kommet med i madvaredatabasen ved import — bør ryddes, hvis de er importeret.
+## 2026-10-07 — Billedvalg: fælles `.hf-pick-*`-klasser og "Vælg" under billedet
+
+- Dubletter → Varebilleder: to kolonner, mærkaterne "Vises i dag" / "Alternativ", og en "Vælg"-knap direkte under hvert billede (erstatter radio "Hovedbillede" + afkrydsning "Behold"). Samme visningsvælger (1/2/4 varer) som Logoer og Billedforslag (`ReviewSizePicker`).
+- Logoer: original ved siden af det viste fund, hover-pile midt på billedet, række med 6 alternativer under; "Vælg" gemmer det viste fund, "Ingen passer" lukker sagen. Server-actions returnerer `{ ok }`, og fejl vises i stedet for at ske tavst.
+- Stil ligger samlet i `globals.css` (`.hf-pick-grid/-card/-frame/-badge/-arrow/-strip/-thumb/-size`); sider må ikke style disse selv.
+## 2026-10-07: HelloFresh-retter kun til visning (admin → Retter → HelloFresh)
+HelloFresh-retter åbnes på `/admin/dishes/hellofresh/[id]`, ikke på varesiden under Varegodkendelse/Nye varer, og kan ikke redigeres (`/admin/products/[id]` sender HelloFresh-rækker videre). Siden viser billede, titel, undertitel, tid/sværhedsgrad og beskrivelse; ingredienser, næring pr. portion og fremgangsmåde ligger i en lukket dropdown "Indhold". Varesidens tre tabeller (basisinfo, næring, filtre) ligger ligeledes i en lukket dropdown "Indhold" i stedet for tre store kolonner (brugerens krav).
+
+## 2026-10-07 Logo-upload afviser filer uden brand-match
+
+Et logo, hvis filnavn ikke præcist matcher et eksisterende brand, afvises og gemmes ikke (ingen fil, kun en afvisningslinje i oversigten). Produktbilleder afviste allerede ukendte varer før lagring.
+
+## 2026-10-07: Farvepalette — tre grønne og HelloFreshs lime som accent
+
+Brugeren: "Bruger Hello Fresh alle disse farver? Og 4 forskellige grønne? Hvad med den lysegrønne som anvendes både når en knap vælges + i load-cirklen!?" Paletten har nu præcis tre grønne (design.md §3): `--hf-color-brand` #067A46 (al grøn flade og grøn tekst), `--hf-color-brand-dark` #035624 (kun hover/tryk og mørk grøn tekst) og ny `--hf-color-accent` #BBF06A (HelloFreshs lime fra det valgte onboarding-kort og load-cirklen). Appbar-grøn #35784A og progress #007838 er lagt sammen med brand; vores egen lime #A3E635, `--hf-green-light` #8FD6AC og selected-fladen #E6F4EC er lagt sammen med accent. Valgt-markering (`.hf-selected`, `.hf-choice`, `.hf-chip`) = accent + 2 px #232323 kant + #232323 tekst, som i HelloFresh. Primær tekst #242424 er lagt sammen med #232323. Ændringen ligger i tokens (gamle navne er aliasser), så ingen sider skulle migreres. Guide-builderens baggrund "Appbar-grøn" er erstattet af "Accent (lime)"; gemte guides med appbar vises med brand-grøn.
+Varer med samme brand, produkttype, serie, variant og smag, der kun adskiller sig på mængde, skal have næsten samme energifordeling (% af kcal fra protein 4/kulhydrat 4/fedt 9 kcal pr. g). Jobbet `energy-split-check` (kl. 03:30, app-runtime, admin → Cron-jobs) sammenligner hver vare med medianen af de andre i gruppen; over 8 procentpoint på en af de tre → række i `product_energy_split_flags` og sektionen "Energi-afvigelser" på admin → Usikkerheder (+ rød prik). Varen deaktiveres/skjules ikke; admin undersøger og trykker "Undersøgt". En gennemgået vare flagges først igen, hvis dens tal ændres; flag ryddes, når afvigelsen forsvinder. Kun godkendte, ikke-private, aktive varer med produkttype. Migration 20261007100000 skal med deployet.
+
+## 2026-10-07: Brugerens e-mail vises aldrig i admin
+
+Brugerens krav. En app-brugers e-mail (login-navn) må ikke kunne ses af en
+administrator: ikke i brugerlisten, support, fejlrapporter, log (logins,
+beskeder, audit), beskedoversigt, produkter, søgerangering, admin-forsiden,
+chatbot-samtaler, points-tildeling, integrationsstatistik, testprogrammer,
+videresend-misbrug-advarslen eller i mailen om forfaldne supportsager.
+Admin-forespørgsler vælger ikke `email` på `User`; navne vises via
+`userLabel()` (`src/lib/user-label.ts`): visningsnavn, ellers "Bruger <6 tegn
+af ID>". Admins egne e-mails, partnerbrugere, scan-medarbejdere og
+partnerkontakter er ikke omfattet. Points-søgning må stadig slå op på præcis
+e-mail (via emailHash), men viser den aldrig. Support-søgningens "contains" på
+e-mail er fjernet (virker ikke på det krypterede felt).
+## 2026-10-07: Deaktivér-knap på linjen (admin → Retter → HelloFresh/Valdemarsro)
+Det eneste, admin kan ændre på importerede retter, er "Deaktivér"/"Aktivér" på linjen i listen (brugerens krav). Knappen sætter `Product.discontinued`, som al søgning og AI-genkendelse allerede filtrerer på; HelloFresh-importen overskriver ikke feltet ved genimport. Deaktiverede retter vises gennemstreget med teksten "Deaktiveret — vises ikke for brugerne". Valdemarsro-listen bruger samme knap, men er tom, indtil importen er bygget (den skal så bruge `discontinued` på samme måde og udvide `setDishDisabled` til sin kilde).
+
+## 2026-10-07: Tøj ved vejning og synk-popups
+
+- `WeightEntry.attire` (NAKED/UNDERWEAR/CLOTHED/CLOTHED_PHONE, null = ubekræftet) kan bekræftes også på låste, synkroniserede vejninger; selve vægten forbliver låst.
+- Gæt: de seneste N bekræftede vejninger inden for ±vindue timer af klokkeslættet, mest brugte valg vinder; ellers før kl. 08 undertøj, ellers tøj + mobil. Parametre i singleton `WeightAttireSettings` (admin → Vejning: tøj).
+- Popup-spørgsmål kun op til 7 dage tilbage. Synk-popup når der er gået mere end `syncStaleHours` (standard 48).
+- Kalibrering regnes først som gjort, når brugeren har gemt på kalibreringssiden (`User.weightCalibratedAt`).
+
+## 2026-10-07: Gemte visninger i admin Varer
+
+- Filterbjælken på admin → Varer er delt i to kort: "Visning" (sortering, Liste/Galleri/Detaljer, valg af synlige felter) og "Filtre" (søgning + filtre).
+- Over produktlisten til højre: grøn knap "Gem visning" (navn → gemmer) og dropdown "Visninger" (vælg for at hente, × for at slette). Samme navn overskrives.
+- En visning er hele sidens URL-søgestreng (søgning, filtre, sortering, visning, `cols`), normaliseret server-side af sidens parser, i tabellen `admin_saved_views` (`userId`+`scope`+`name` unik; hver admin ser kun sine egne). Migration `20261007130000_admin_saved_views` skal køre ved deploy. Nye sider tilføjer en `scope` i `src/lib/admin-saved-views.ts`.
+- Synlige felter er URL-parameteret `cols` (Kæder, Kategori · kilde, Kcal/100, Tilføjelser, Status; mindst ét; udeladt = alle) og gælder Liste og Galleri.
+
+## 2026-10-07 — Halvcirkel over footeren (prøve) og redigerbar Tilføj-menu
+
+- Ejerens ønske: inden forsiden ændres, prøves en lille fast halvcirkel midt over footeren (`FooterArc`) ved siden af den eksisterende venstre-cirkel. Den deler knapvalg med venstre-cirklen (samme lagring) i stedet for en ny indstilling; den viser højst 4 egne knapper + "alle" i midten.
+- Tilføj-menuens felter kan omrokeres/slettes/tilføjes pr. enhed med samme hold-tid og Seriøs-regel som footeren.
+- Logo-udklip (`cutout.py`): farvefelt-logoer må ikke skæres over af baggrundsfjernelsen — se STATUS 2026-10-07.
+
+## 2026-10-07: Retter — Manuelt / Indsæt tekst / Scan, kopi-tjek, integrationsknapper
+
+- Retter-siden: søgefeltet får fokus ved åbning, grøn "Opret ny ret" øverst til højre, filterikonet åbner et BottomSheet (`RecipeFiltersBody`), og knapper under søgefeltet (Opskrifter / Delte retter / Hello Fresh / Valdemarsro) sætter `source` i `/api/shared-recipes`. `ExternalProductSource` har fået `VALDEMARSRO`; selve Valdemarsro-importen til appen er IKKE bygget.
+- Opret ret har tre knapper: Manuelt (som før), Indsæt tekst og Scan. Robot 1 (`recipe-text-parser.ts` + `/api/dishes/parse-text`) finder titel, antal personer, ingredienser (omregnet til gram), trin og næringstabel straks og matcher ingredienser mod produkter; det der ikke kan matches, listes, så brugeren tilføjer det selv. Kilde-link giver rettens billede (og:image, SSRF-sikret).
+- Scan: telefonens OCR (tesseract.js) først; lav sikkerhed tolkes som håndskrift og sendes direkte til OpenAI (`/api/dishes/ocr-handwriting`). Første billede = rettens billede, øvrige sættes ved trinene. Der findes ingen Python på serveren i Next-appen, så "Python efter telefonens OCR" er implementeret som serverens TypeScript-parser.
+- Deling er ikke længere en kontakt øverst, men et spørgsmål i et BottomSheet efter gem; den kan stadig slås til senere under retten.
+- Kopi-tjek (`recipe-copy-check.ts`): når en ret deles, sammenlignes titel+ingredienser+trin på ordniveau (4-ords vinduer) med andre delte retter og HelloFresh. ≥ 80 % sammenfald sætter `SharedRecipe.copyFlagged`, skjuler retten for andre til admin godkender, og viser i Kvalitetskontrol kilde + side-om-side-visning med markerede stykker. Afvis kræver begrundelse (`rejectionReason`). Ejeren beholder retten privat.
+- Tommel op/ned (`RecipeRating`, `/api/recipe-ratings`) på HelloFresh-, delte og egne retter.
+
+## 2026-10-07: Fredags-flow, vejepåmindelser, måltips og "Udregn"
+
+- Flow-betingelser har nu `weekdays` (0 = søndag … 6 = lørdag, dansk tid) og `fromHour`/`toHour`; sættes i admin → Flows → Visning og betingelser (ugedagsknapper).
+- Migration `20261007140000_weigh_reminders` opretter `weigh_reminder_prefs` og et **deaktiveret kladde-flow** "Kalibrér vægten i weekenden" (banner, kun fredag, link til `/weigh-reminders`). Admin aktiverer det under Flows.
+- `/weigh-reminders`: dagen som tidslinje med én kontakt pr. 2. time (06–22). Scheduleren sender en push 5 min før valgte timer (`src/lib/weigh-reminders.ts`, kaldt hvert minut). Kræver VAPID-nøgler + push-abonnement (ellers no-op).
+- Tips til dagens mål: til/fra under Indstillinger → Visning → Tips (localStorage, som de øvrige tips). `/api/tips/goal` bruger gennemsnit af seneste 14 dage (mindst 4 dage, i dag udeladt) mod dagens mål; regelbaseret, ikke LLM. Gå-km = overskud / (0,55 × kg).
+- "Udregn" på statistik-siden: kun Seriøs (POST `/api/insights/meal-timing` giver 403 ellers). Bundark med sider: spisetider vs. anbefalet, spisevindue/sidste måltid før sengetid, fordeling over dagen, hverdag vs. weekend. Anbefalinger står i `src/lib/meal-timing.ts`.
+## 2026-10-08: Valdemarsro-integration (natligt job, Retter-filter, "Gå til opskrift")
+
+- Valdemarsro-retter ligger som Product-rækker (`externalSource = VALDEMARSRO`, kategori "Retter"), skrevet af `scripts/valdemarsro-agent/agent.py` (container `valdemarsro-agent`, job `valdemarsro-import`, dagligt kl. 03:30 dansk tid, styres under admin Cron-jobs). Siderne læses som almindelig HTML (ingen Playwright). `recipeDetails.websiteUrl` er kildelinket.
+- Jobbet finder nye/ændrede indlæg via sitemap (150 pr. nat; blogindlæg huskes i `recipe_source_urls`), og tjekker hver nat 300 gemte opskrifters links: 404/410 sætter `discontinued = true` (retten forsvinder fra søgningen), lever linket igen, åbnes den igen. Midlertidige fejl (5xx) ændrer intet.
+- Næring står kun i Valdemarsros Premium og beregnes derfor af os: ingredienser med vægt matches mod godkendte varer; kun hvis ≥ 70 % af linjerne kan regnes med, bruges tallene, ellers `nutritionMissing = true`.
+- Retter-søgningen: knappen "Valdemarsro" viser kun Valdemarsro-retter; rækken åbner produktsiden `/add/<id>` (tilføj + gram som på produkter), derunder grøn knap "Gå til opskrift" (ny side), derunder ingredienser og næring som sædvanlig. Admin → Retter → Valdemarsro viser nu rigtige data.
+
+## 2026-10-07: Én CSS-arkitektur — tokens, fælles klasser og lint-håndhævelse
+
+Brugerens krav: alt design skal kunne rettes ét sted, ingen hardcoding, ingen
+klip-klister mellem sider, og telefon/webvisning må ikke have hver sine klasser.
+
+- Alle `--hf-color-*`-tokens har nu en Tailwind-utility med samme navn
+  (`bg-hf-card`, `border-hf-line`, `text-hf-text-secondary` …) via
+  `@theme inline`; `rounded-card`/`rounded-sheet` er de to radier. Alle
+  `:root`-blokke er samlet i én øverst i `globals.css`.
+- 108 statiske `style={{ … var(--hf-color-…) }}` er blevet utilities; 63 døde
+  `disabled:opacity-*` på `.hf-btn-primary` fjernet; ~120 klonede fladestrenge
+  er `.hf-panel`/`.hf-surface`/`.hf-card(--brand/--form/--row)`; admins grønne
+  knap er `.hf-btn-brand`; ~160 rå `text-*`/`font-*` i app og admin er
+  `.hf-type-*`-roller; hex-farver uden for undtagelserne er tokens.
+- Webvisningens appbar-overstyring bruger navngivne klasser
+  (`.hf-appbar__center`, `.hf-appbar__profile`, `__slot-button`) i stedet for
+  `:nth-child`, `[href]` og Tailwind-klassenavne.
+- Marketing-sitet er en egen zone: Tailwinds typeskala, men appens farver og
+  fælles `.mk-*`-klasser (hero-gradient, CTA-pille, eyebrow).
+- ESLint ("design-tokens") håndhæver reglerne fremover. Se design.md §13.
+- Vælgerværktøj: codemoden kørte via TypeScript-AST, så kun `className`/`style`
+  blev ændret. Små bevidste visuelle normaliseringer: 12 px-radier → 8 px og
+  12 px-mellemrum i paneler → 8 px (design.md §5), to Face ID-blå → én.
+
+## 2026-10-08: Antal personer, afvist ret og tommel-popularitet
+
+- `Dish.servings` (migration 20261008140000): antal personer gemmes på retten (fra Indsæt tekst/Scan eller indtastet) og vises på egen ret.
+- Afvist som kopi: Mine retter viser "Ikke delt" (ikke "delt"), og retten viser info med admins begrundelse.
+- Tommel op/ned påvirker populariteten (tommel ned -3, op +1, højst +3 i alt) for at undgå selvforstærkende ekkokammer.
+- "Python på serveren" er TypeScript (brugerens ok 2026-10-08). de/fr/nl oversættes senere.
+
+## 2026-10-09: Kalenderens statusblok viser ingen totaler (uge/måned)
+- Uge-/månedsvisningen viser kun statusen ("Inden for målet" / "Målet ikke opnået" / "Intet registreret") — ikke "Mål: N kcal", motion eller "Tilbage i måneden". Totaler står kun på den enkelte dag (`GoalStatusSummary` `showTotals`).
+- Status = gennemsnit af forgangne dage med registreringer mod gennemsnitligt dagsmål (budget-snapshots, som følger næste delmål). I dag tæller ikke med.
+## 2026-10-08: Slettede gengangere beholder kæden
+
+- Brugerens regel: når en butiksrække slettes, fordi stregkoden allerede findes (Bilka/databasen vinder), skal den tabende butiks kæde altid udfyldes på vinderen (Kæder/`product_stores`) — ellers mister vi viden om, hvor varen sælges.
+- Kilden er `scripts/store-products-import/data/store_links.json` (EAN → kæder), bagt ind i store-products-agent, der kobler ved hver kørsel; EAN uden vare i databasen endnu kobles, når varen importeres. Kæder oprettes efter navn ("Rewe", "DM").
+- 2026-10-07-sletningen (127 Rewe + 137 DM rækker) er genskabt fra backup-arkene: 259 EAN.
+## 2026-10-07: Helt native app — Compose Multiplatform, web og native holdes i takt automatisk
+
+Brugeren valgte "helt native" frem for en web-app i en skal (bekræfter 2026-09-26). Kravet: rettelser skal slå igennem overalt, uden at brugeren selv holder styr på det.
+- **Én native kodebase til begge telefoner.** Skærmene skrives i Kotlin med Compose Multiplatform (`native/shared`), som kompileres til Android og iPhone. Der rettes altså to steder (web + native) og ikke tre. Widgets er fortsat platformens egne (Glance / WidgetKit), fordi de skal være det.
+- **Samme backend, samme stier.** Native kalder de samme `/api`-ruter som web, med samme login-cookie. Skærme adresseres med web-stierne, og deep links er `hellocal://<web-sti>`.
+- **Genereret, ikke kopieret.** Farver, mål, typografi (`globals.css`), tekster (`src/i18n/locales`), ikoner og app-ikon genereres af `scripts/native/sync.mjs`. Håndskrevne hex-værdier i widgets er fjernet.
+- **Paritet håndhæves.** `native/parity/screens.json` binder hver web-side til sin native skærm. Fingeraftryk af sidens web-filer (siden + importerede komponenter) afslører, når web er ændret uden native. Det håndhæves af AGENTS.md-reglen, en Stop-hook i `.claude/settings.json` og CI.
+- Admin, partner-, erhvervs- og butiks-scanner-sider forbliver web (`web-only`).
+## 2026-10-08: Adgangsmur mod crawlere og scrapere
+
+Brugerens krav: strengt — crawlere/robotter får kun adgang til forsiden, heller
+ikke når de er logget ind; ingen vandmærkning/bruger-ID i billeder (afvist).
+Implementeret i `src/lib/access-wall.ts` + `middleware.ts` (forbrugerdomænet;
+admin har sin egen login + IP-spærre):
+
+- Kendte crawlere, AI-scrapere, SEO-værktøjer og script-/headless-klienter
+  (User-Agent) får 403 overalt, også på forsiden. Tom/kort UA afvises. Undtaget:
+  `/api/health` og token-API'er (widgets, MCP, HealthKit), plus localhost.
+- Anonyme ser kun forsiden, login/tilmelding/glemt kode, juridiske sider,
+  token-delingslinks (`/forward`, `/hello-doc`), `/family-code`, `/umami` og
+  logo/ikon-filer. Alt andet kræver gyldig `hc_user_session`: sider → redirect
+  til `/login`, API → 401, beskyttede billeder → 404. Lukker bl.a. de AI-ruter
+  (`/api/ai/*`), der ikke selv tjekker login.
+- Beskyttede billeder (`/product-images`, `/hellofresh-images`, `/brand-logos`,
+  `/dummy`, `/body-measurements`, `/measurements`, `/icons/animals`): kræver
+  session, afviser cross-site/hotlink og direkte åbning (`Sec-Fetch-*`, ellers
+  Referer), `Cache-Control: private`, `Cross-Origin-Resource-Policy: same-origin`.
+  `/_next/image` er med i middleware og vurderes på den ægte kilde-sti.
+- Rate limit pr. IP (anonym 60/min) og pr. bruger (sider 600, API 300, billeder
+  900 pr. minut), i processen. `public/robots.txt` er stadig `Disallow: /`.
+- Bevidst valgt frem for signerede kortlivede billed-URL'er: session-cookien er
+  strengere (en URL kan deles). Vandmærke/bruger-ID i billeder er afvist (privatliv).
+- Grænse: et billede en bruger kan se, kan altid screenshottes. Murens formål er
+  at stoppe automatisk indsamling, ikke manuel kopiering.
+## 2026-10-08: Native login-overdragelse (system-browser → app)
+
+Google/Apple/Facebook-login og integrationstilkobling kører i system-browseren, som ikke har appens session-cookie (`hc_user_session` ligger i appens egen krypterede cookie-krukke).
+- **Login:** appen åbner `/api/auth/oauth/<udbyder>?native=1&challenge=<S256>`. Callbacken sætter ingen cookie i browseren, men udsteder en engangskode og sender til `hellocal://auth/complete?code=…` (fejl: `?error=…`). Appen veksler via `POST /api/auth/native/exchange {code, verifier}` → almindelig `completeLogin` (enhedsgenkendelse, spærrede konti afvises).
+- **Integrationer:** den indloggede app henter `POST /api/auth/native/connect-code` og åbner `/api/integrations/<slug>/connect?native=<kode>`. Brugeren bindes til OAuth-state med et signeret token i state-cookien; callbacken sender til `hellocal://settings/integrations/<slug>?connected=1` / `?error=…`.
+- **Koder** (`NativeAuthCode`, migration `20261008160000_native_auth_codes`): 32 tilfældige bytes, kun sha256-hash gemmes, 2 minutter, én gang (atomisk). Login-koder kræver appens PKCE-verifier, så en anden app, der opsnapper `hellocal://`-linket, ikke kan bruge koden. Exchange/connect-code kræver headeren `X-HelloCal-Client: native` (mod login-CSRF).
+- Kendt rest-risiko: et connect-link er bundet til den bruger, der hentede koden; det kan kun bruges i 2 minutter og én gang.
+
+## 2026-10-08 — Ental/flertal på generiske ingredienser (`nameSingular` / `namePlural`)
+
+- `GenericIngredient` har fået `nameSingular` og `namePlural` (migration `20261008220000_generic_ingredient_number_forms`, backfill for kendte ord, ellers = `name`). Hvor formen ikke kan afgøres (fx æg) er teksten ens i begge felter.
+- `src/lib/danish-number.ts`: `deriveNumberForms` (kendte ord + tillægsord), `parseNumberQuery` ("et/en X" = ental, "nogle/flere/mange X" = flertal) og `matchesNumberQuery`. `GET /api/generic-ingredients` søger i alle tre felter og filtrerer på hele ord, så "et æble" ikke giver "æbler"; svaret har `displayName` i den søgte form. Oprettelse (`POST` og `addIngredientRequestGlobally`) udfylder begge felter.
+- Kun generiske varer — almindelige varer med brand/EAN berøres ikke. Se docs/REGLER.md.
+- Ikke gjort endnu: UI skal bruge `displayName`; ental/flertal-kolonner i Bilka-/REMA-arkene; import af de afledte former til eksisterende rækker ud over backfill-listen.
+
+## 2026-10-09: Retter-søgning viser Valdemarsro under "Opskrifter"; "Opret ny ret" som tekstlink
+- Årsag til tom liste: `/api/shared-recipes` medtog kun Valdemarsro ved `valdemarsro=1`, som appen aldrig sender, så "Opskrifter" (source=all) viste aldrig Valdemarsro-retter. Nu medtages de altid ved all; HelloFresh kræver stadig, at integrationen er slået til (Seriøs).
+- "Opret ny ret" er sort, understreget tekst med plus foran (ikke grøn knap) — web og native.

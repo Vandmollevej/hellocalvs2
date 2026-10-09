@@ -63,7 +63,7 @@ export default function ControlLogPage() {
               {log.whoHasAccess.length === 0 ? (
                 <p className="hf-type-body">{t("family.log.nobody")}</p>
               ) : (
-                <div className="overflow-hidden rounded-[8px] bg-hf-tan">
+                <div className="overflow-hidden bg-hf-tan rounded-card">
                   {log.whoHasAccess.map((person) => (
                     <div key={person.id} className="flex h-14 items-center gap-4 border-b border-hf-tan-dark px-4 last:border-b-0">
                       <ProfileCircle name={person.displayName} tone="card" />

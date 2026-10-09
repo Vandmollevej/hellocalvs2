@@ -88,81 +88,91 @@ export function ProductTablesPanel({
   filters: ProductFilters | null;
 }) {
   const unit = basics.productCategory === "DRINK" ? "100 ml" : "100 g";
+  // Lukket dropdown "Indhold" (docs/DECISIONS.md 2026-10-07): de tre
+  // tabeller fylder for meget til altid at stå åbne.
   return (
-    <div className="grid gap-4 lg:grid-cols-3">
-      <Table
-        title="1 · Basisinfo"
-        rows={[
-          ["Navn", basics.name],
-          ["Brand", basics.brand],
-          ["Sub brand", basics.subbrand],
-          ["Varetype", basics.productType],
-          ["Variant", basics.variant],
-          ["Smag", basics.flavor],
-          ["Mængde", basics.packageSizeText],
-          ["Antal i pakken", basics.packCount],
-          ["Type", basics.productCategory ? CATEGORY_LABELS[basics.productCategory] ?? basics.productCategory : null],
-          ["Kategori", basics.category],
-          ["Emballage", basics.packaging],
-          ["Stregkode", basics.barcodes],
-          ["Kæder", basics.stores],
-          ["Nøgleord", basics.keywords],
-          ["Kilde", basics.externalSource],
-          ["Allergener", basics.allergens],
-          ["E-numre", basics.additives],
-          ["Ingredienser", basics.ingredientsText],
-        ]}
-      />
-      <Table
-        title={`2 · Næring pr. ${unit}`}
-        rows={[
-          ["Energi (kJ)", nutrition?.energyKjPer100g],
-          ["Energi (kcal)", macros.nutritionMissing ? MISSING : macros.kcalPer100g],
-          ["Fedt (g)", placeholder(macros, macros.fatPer100g)],
-          ["Mættet fedt (g)", macros.saturatedFatPer100g],
-          ["Enkeltumættet fedt (g)", nutrition?.monounsaturatedFatPer100g],
-          ["Flerumættet fedt (g)", nutrition?.polyunsaturatedFatPer100g],
-          ["Kulhydrat (g)", placeholder(macros, macros.carbsPer100g)],
-          ["Sukkerarter (g)", nutrition?.sugarsPer100g],
-          ["Kostfibre (g)", nutrition?.fiberPer100g],
-          ["Protein (g)", placeholder(macros, macros.proteinPer100g)],
-          ["Salt (g)", nutrition?.saltPer100g],
-          ["Natrium (g)", nutrition?.sodiumPer100g],
-          ["Alkohol (g)", nutrition?.alcoholPer100g],
-          ["B2-vitamin (mg)", nutrition?.vitaminB2MgPer100g],
-          ["B12-vitamin (µg)", nutrition?.vitaminB12UgPer100g],
-          ["Calcium (mg)", nutrition?.calciumMgPer100g],
-          ["Fosfor (mg)", nutrition?.phosphorusMgPer100g],
-        ]}
-      />
-      <Table
-        title="3 · Filtre"
-        rows={[
-          ["Økologisk", filters?.organic],
-          ["Glutenfri", filters?.glutenFree],
-          ["Laktosefri", filters?.lactoseFree],
-          ["Sukkerfri", filters?.sugarFree],
-          ["Lavt sukkerindhold", filters?.lowSugar],
-          ["Uden tilsat sukker", filters?.noAddedSugar],
-          ["Reduceret sukker", filters?.reducedSugar],
-          ["Light", filters?.lightSugar],
-          ["Sødemidler", filters?.sweeteners],
-          ["Vegansk", filters?.vegan],
-          ["Vegetarisk", filters?.vegetarian],
-          ["Kødtype", filters?.meatType],
-          ["Alkohol", filters?.alcohol],
-          ["Alkohol %", filters?.alcoholPercent],
-          ["Fedt %", filters?.fatPercent],
-          ["Oprindelsesland", filters?.countryOfOrigin],
-          ["Fuldkorn", filters?.wholeGrain],
-          ["Nøglehul", filters?.keyhole],
-          ["Dyrevelfærd", filters?.animalWelfare],
-          ["Certificeringer", filters?.certifications],
-          ["Opbevaring", filters?.storage],
-          ["Størrelse", filters?.size],
-          ["Toxiner", filters?.toxins],
-        ]}
-      />
-    </div>
+    <details className="hf-surface group">
+      <summary className="hf-type-body hf-type-strong flex cursor-pointer list-none items-center justify-between px-4 py-3 text-hf-black">
+        Indhold
+        <span aria-hidden className="text-text-secondary transition-transform group-open:rotate-180">
+          ▾
+        </span>
+      </summary>
+      <div className="grid gap-4 border-t border-hf-tan-dark p-4 lg:grid-cols-3">
+        <Table
+          title="1 · Basisinfo"
+          rows={[
+            ["Navn", basics.name],
+            ["Brand", basics.brand],
+            ["Sub brand", basics.subbrand],
+            ["Varetype", basics.productType],
+            ["Variant", basics.variant],
+            ["Smag", basics.flavor],
+            ["Mængde", basics.packageSizeText],
+            ["Antal i pakken", basics.packCount],
+            ["Type", basics.productCategory ? CATEGORY_LABELS[basics.productCategory] ?? basics.productCategory : null],
+            ["Kategori", basics.category],
+            ["Emballage", basics.packaging],
+            ["Stregkode", basics.barcodes],
+            ["Kæder", basics.stores],
+            ["Nøgleord", basics.keywords],
+            ["Kilde", basics.externalSource],
+            ["Allergener", basics.allergens],
+            ["E-numre", basics.additives],
+            ["Ingredienser", basics.ingredientsText],
+          ]}
+        />
+        <Table
+          title={`2 · Næring pr. ${unit}`}
+          rows={[
+            ["Energi (kJ)", nutrition?.energyKjPer100g],
+            ["Energi (kcal)", macros.nutritionMissing ? MISSING : macros.kcalPer100g],
+            ["Fedt (g)", placeholder(macros, macros.fatPer100g)],
+            ["Mættet fedt (g)", macros.saturatedFatPer100g],
+            ["Enkeltumættet fedt (g)", nutrition?.monounsaturatedFatPer100g],
+            ["Flerumættet fedt (g)", nutrition?.polyunsaturatedFatPer100g],
+            ["Kulhydrat (g)", placeholder(macros, macros.carbsPer100g)],
+            ["Sukkerarter (g)", nutrition?.sugarsPer100g],
+            ["Kostfibre (g)", nutrition?.fiberPer100g],
+            ["Protein (g)", placeholder(macros, macros.proteinPer100g)],
+            ["Salt (g)", nutrition?.saltPer100g],
+            ["Natrium (g)", nutrition?.sodiumPer100g],
+            ["Alkohol (g)", nutrition?.alcoholPer100g],
+            ["B2-vitamin (mg)", nutrition?.vitaminB2MgPer100g],
+            ["B12-vitamin (µg)", nutrition?.vitaminB12UgPer100g],
+            ["Calcium (mg)", nutrition?.calciumMgPer100g],
+            ["Fosfor (mg)", nutrition?.phosphorusMgPer100g],
+          ]}
+        />
+        <Table
+          title="3 · Filtre"
+          rows={[
+            ["Økologisk", filters?.organic],
+            ["Glutenfri", filters?.glutenFree],
+            ["Laktosefri", filters?.lactoseFree],
+            ["Sukkerfri", filters?.sugarFree],
+            ["Lavt sukkerindhold", filters?.lowSugar],
+            ["Uden tilsat sukker", filters?.noAddedSugar],
+            ["Reduceret sukker", filters?.reducedSugar],
+            ["Light", filters?.lightSugar],
+            ["Sødemidler", filters?.sweeteners],
+            ["Vegansk", filters?.vegan],
+            ["Vegetarisk", filters?.vegetarian],
+            ["Kødtype", filters?.meatType],
+            ["Alkohol", filters?.alcohol],
+            ["Alkohol %", filters?.alcoholPercent],
+            ["Fedt %", filters?.fatPercent],
+            ["Oprindelsesland", filters?.countryOfOrigin],
+            ["Fuldkorn", filters?.wholeGrain],
+            ["Nøglehul", filters?.keyhole],
+            ["Dyrevelfærd", filters?.animalWelfare],
+            ["Certificeringer", filters?.certifications],
+            ["Opbevaring", filters?.storage],
+            ["Størrelse", filters?.size],
+            ["Toxiner", filters?.toxins],
+          ]}
+        />
+      </div>
+    </details>
   );
 }

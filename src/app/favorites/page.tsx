@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { HfScreen } from "@/components/HfScreen";
-import { AddProductView } from "@/components/add/AddProductView";
 import { ProductResultRow, type ProductResult } from "@/components/ProductResultRow";
 import { RecipeRow, recipeHref } from "@/components/recipes/RecipeRow";
 import { SkeletonMediaRows, SkeletonScreen } from "@/components/hf/Skeleton";
@@ -21,7 +21,9 @@ export default function FavoritesPage() {
   const { t } = useTranslation();
   const [products, setProducts] = useState<ProductResult[] | null>(null);
   const [recipes, setRecipes] = useState<FavoriteRecipe[] | null>(null);
-  const [addId, setAddId] = useState<string | null>(null);
+  const router = useRouter();
+  // Tryk på en vare åbner varesiden direkte — ingen popup og ingen Tilføj-knap.
+  const openProduct = (productId: string) => router.push(`/add/${productId}`);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -74,12 +76,12 @@ export default function FavoritesPage() {
         ) : products.length === 0 ? (
           <p className="hf-type-body text-text-secondary px-1 text-center">{t("favorites.foodsEmpty")}</p>
         ) : (
-          <div className="overflow-hidden rounded-[8px] bg-hf-tan">
+          <div className="overflow-hidden bg-hf-tan rounded-card">
             {products.map((product) => (
               <ProductResultRow
                 key={product.id}
                 {...product}
-                onAdd={setAddId}
+                onAdd={openProduct}
                 isFavorite
                 onToggleFavorite={removeFavorite}
               />
@@ -111,8 +113,6 @@ export default function FavoritesPage() {
           </div>
         )}
       </div>
-
-      {addId && <AddProductView key={addId} id={addId} forDish={false} inSheet onClose={() => setAddId(null)} />}
     </HfScreen>
   );
 }

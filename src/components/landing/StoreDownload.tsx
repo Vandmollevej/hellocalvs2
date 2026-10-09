@@ -5,12 +5,17 @@ import { APP_STORE_URL, PLAY_STORE_URL } from "@/lib/landing-content";
 // Butiksknapper + QR-koder til App Store og Google Play. QR-koderne tegnes på
 // serveren ud fra de samme links som knapperne.
 
+// QR-biblioteket skriver farverne direkte i SVG'en og kræver hex — værdierne er
+// tokens --hf-color-brand-dark og --hf-color-white (globals.css), ikke egne farver.
+const QR_DARK = "#035624";
+const QR_LIGHT = "#ffffff";
+
 async function qrSvg(url: string) {
   return QRCode.toString(url, {
     type: "svg",
     margin: 0,
     errorCorrectionLevel: "M",
-    color: { dark: "#035624", light: "#ffffff" },
+    color: { dark: QR_DARK, light: QR_LIGHT },
   });
 }
 
@@ -22,7 +27,7 @@ function StoreButton({ href, store, dark }: { href: string; store: "apple" | "go
       target="_blank"
       rel="noopener noreferrer"
       className={`flex h-14 w-[184px] items-center gap-3 rounded-xl px-4 transition ${
-        dark ? "bg-hf-black text-hf-white hover:bg-[#353535]" : "bg-hf-white text-hf-black hover:bg-hf-cream"
+        dark ? "bg-hf-black text-hf-white hover:bg-hf-action-hover" : "bg-hf-white text-hf-black hover:bg-hf-cream"
       }`}
     >
       <Icon size={28} aria-hidden="true" />

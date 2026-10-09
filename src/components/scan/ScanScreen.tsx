@@ -63,7 +63,7 @@ export function ScanScreen({
         <div className="grid grid-cols-2 justify-items-center pt-1">
           {NAV_ITEMS.map(({ href, label, Icon }) => {
             const active = pathname === href;
-            const color = active ? "#232323" : "#656565";
+            const color = active ? "var(--hf-color-action)" : "var(--hf-color-text-secondary)";
             return (
               <Link
                 key={href}

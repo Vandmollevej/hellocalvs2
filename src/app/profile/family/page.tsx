@@ -15,6 +15,7 @@ import { FamilySharingSection } from "@/components/family/FamilySharingSection";
 import { useFamilyStatus, type FamilyMemberInfo } from "@/components/family/FamilyStatusProvider";
 import { useTranslation } from "@/i18n/LocaleProvider";
 import { SkeletonCards, SkeletonList, SkeletonScreen, SkeletonSectionTitle } from "@/components/hf/Skeleton";
+import { useConfirmSheet, useTypedConfirmSheet } from "@/lib/use-confirm-sheet";
 
 // Familien (docs/FAMILY.md): betaleren opretter profiler, markerer børn,
 // laver login-koder og bestemmer, hvem der må se og taste ind for hvem.
@@ -48,6 +49,8 @@ async function send(url: string, method: string, body?: unknown) {
 }
 
 function FamilyPageContent() {
+  const { ask, sheet: confirmSheet } = useConfirmSheet();
+  const { ask: askTyped, sheet: typedConfirmSheet } = useTypedConfirmSheet();
   const { t } = useTranslation();
   const searchParams = useSearchParams();
   const { status, refresh } = useFamilyStatus();
@@ -114,9 +117,12 @@ function FamilyPageContent() {
   }
 
   async function revokeCode(pending: PendingCode) {
-    if (!window.confirm(t("family.pending.revokeConfirm", { email: pending.email }))) return;
-    await run(`/api/family/codes/${pending.id}`, "DELETE");
-    await loadCodes();
+    ask(t("family.pending.revokeConfirm", { email: pending.email }), () => {
+      void (async () => {
+        await run(`/api/family/codes/${pending.id}`, "DELETE");
+        await loadCodes();
+      })();
+    });
   }
 
   async function addProfile() {
@@ -219,14 +225,17 @@ function FamilyPageContent() {
         <button
           type="button"
           disabled={busy || joinCode.trim().length < 8 || !joinEmail.includes("@")}
-          onClick={async () => {
-            if (!window.confirm(t("family.join.confirm"))) return;
-            const result = await run("/api/family/join", "POST", { code: joinCode, email: joinEmail });
-            if (result.ok) {
-              setJoinCode("");
-              setJoinEmail("");
-            }
-          }}
+          onClick={() =>
+            ask(t("family.join.confirm"), () => {
+              void (async () => {
+                const result = await run("/api/family/join", "POST", { code: joinCode, email: joinEmail });
+                if (result.ok) {
+                  setJoinCode("");
+                  setJoinEmail("");
+                }
+              })();
+            })
+          }
           className="hf-control hf-btn-primary w-full px-4"
         >
           {t("family.join.submit")}
@@ -237,6 +246,8 @@ function FamilyPageContent() {
 
   return (
     <div className="hf-page hf-page--sections">
+      {confirmSheet}
+      {typedConfirmSheet}
       {error && (
         <p role="alert" className="hf-type-body text-hf-red-dark">
           {error}
@@ -300,9 +311,9 @@ function FamilyPageContent() {
               type="button"
               disabled={busy}
               onClick={() => {
-                if (window.confirm(t("family.member.leaveConfirm", { owner: family.ownerName }))) {
+                ask(t("family.member.leaveConfirm", { owner: family.ownerName }), () => {
                   void run("/api/family/leave", "POST");
-                }
+                });
               }}
               className="hf-control hf-btn-secondary w-full px-4"
             >
@@ -330,7 +341,7 @@ function FamilyPageContent() {
 
           <section>
             <h2 className="hf-type-section-title">{t("family.members.title", { count: members.length, max: capacity })}</h2>
-            <div className="overflow-hidden rounded-[8px] bg-hf-tan">
+            <div className="overflow-hidden bg-hf-tan rounded-card">
               {members.map((member: FamilyMemberInfo) => (
                 <div key={member.userId} className="border-b border-hf-tan-dark px-4 py-2 last:border-b-0">
                   <div className="flex items-center gap-4">
@@ -373,10 +384,9 @@ function FamilyPageContent() {
                           type="button"
                           disabled={busy}
                           onClick={() => {
-                            const typed = window.prompt(t("family.members.deleteProfileConfirm", { name: member.displayName }));
-                            if (typed?.trim().toUpperCase() === "SLET") {
+                            askTyped(t("family.members.deleteProfileConfirm", { name: member.displayName }), "SLET", () => {
                               void run(`/api/family/members/${member.userId}?deleteProfile=1`, "DELETE", { confirm: "SLET" });
-                            }
+                            });
                           }}
                           className="hf-btn-text self-start text-hf-red-dark"
                         >
@@ -388,9 +398,9 @@ function FamilyPageContent() {
                           type="button"
                           disabled={busy}
                           onClick={() => {
-                            if (window.confirm(t("family.members.removeConfirm", { name: member.displayName }))) {
+                            ask(t("family.members.removeConfirm", { name: member.displayName }), () => {
                               void run(`/api/family/members/${member.userId}`, "DELETE");
-                            }
+                            });
                           }}
                           className="hf-btn-text self-start"
                         >
@@ -426,7 +436,7 @@ function FamilyPageContent() {
                         alt={t("family.pending.qrAlt", { email: pending.email })}
                         width={240}
                         height={240}
-                        className="userback-ignore userback-block mx-auto rounded-[8px] bg-hf-white"
+                        className="userback-ignore userback-block mx-auto bg-hf-white rounded-card"
                       />
                       <p className="userback-ignore userback-block hf-type-body-lg hf-type-strong text-center tracking-widest">{pending.code}</p>
                       <p className="hf-type-caption">
@@ -501,7 +511,7 @@ function FamilyPageContent() {
                     <select
                       value={form.sex}
                       onChange={(event) => setForm({ ...form, sex: event.target.value })}
-                      className="hf-type-input h-12 rounded-[8px] border border-hf-gray-border bg-hf-cream px-4"
+                      className="hf-type-input h-12 border border-hf-gray-border bg-hf-cream px-4 rounded-card"
                     >
                       <option value="">{t("family.add.sexUnknown")}</option>
                       <option value="FEMALE">{t("family.add.sexFemale")}</option>

@@ -45,7 +45,7 @@ export default function SupportRequestsPage() {
         )}
         {!requests && !error && (
           <SkeletonScreen className="">
-            <div className="overflow-hidden rounded-[8px] bg-hf-tan px-4">
+            <div className="overflow-hidden bg-hf-tan px-4 rounded-card">
               <SkeletonMediaRows rows={4} thumb={false} />
             </div>
           </SkeletonScreen>
@@ -74,8 +74,7 @@ export default function SupportRequestsPage() {
                   <span className="hf-type-caption flex items-center gap-1.5">
                     <span
                       aria-hidden="true"
-                      className="h-2.5 w-2.5 flex-none rounded-full"
-                      style={{ background: "var(--hf-black)" }}
+                      className="h-2.5 w-2.5 flex-none rounded-full bg-hf-action"
                     />
                     {t("settings.support.newReply")}
                   </span>

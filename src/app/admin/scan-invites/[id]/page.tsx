@@ -205,13 +205,13 @@ export default async function ScanWorkerPage({
         })}
       </section>
 
-      <section className="flex flex-col gap-2 hf-surface p-4">
+      <section className="hf-panel">
         <h2 className="hf-type-body hf-type-strong">Udbetalinger</h2>
         <form action={registerPayout} className="flex flex-wrap items-end gap-2">
           <input type="hidden" name="workerId" value={worker.id} />
           <p className="hf-type-body">Klar til udbetaling: {formatKroner(due)}</p>
           <input name="note" placeholder="Note (fx overført dato)" className={inputClass} />
-          <button disabled={due === 0} className="hf-btn-primary px-3 py-2 disabled:opacity-40">
+          <button disabled={due === 0} className="hf-btn-primary px-3 py-2">
             Registrér udbetaling
           </button>
         </form>
@@ -225,7 +225,7 @@ export default async function ScanWorkerPage({
         </ul>
       </section>
 
-      <section className="flex flex-col gap-3 hf-surface p-4">
+      <section className="hf-panel">
         <h2 className="hf-type-body hf-type-strong">Profil og bank (kun admin redigerer)</h2>
         <form action={updateWorkerProfile} className="grid gap-3 sm:grid-cols-2">
           <input type="hidden" name="workerId" value={worker.id} />
@@ -285,7 +285,7 @@ export default async function ScanWorkerPage({
         </details>
       </section>
 
-      <section className="flex flex-col gap-2 hf-surface p-4">
+      <section className="hf-panel">
         <h2 className="hf-type-body hf-type-strong">Beskeder</h2>
         <ul className="flex flex-col gap-2">
           {worker.messages.map((message) => (

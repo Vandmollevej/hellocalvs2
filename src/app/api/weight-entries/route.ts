@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { unauthorized } from "@/lib/session";
 import { getProfileUser } from "@/lib/family-access";
+import { isWeighAttire } from "@/lib/weigh-attire";
 
 export async function GET() {
   try {
@@ -28,7 +29,8 @@ export async function GET() {
 
 export async function POST(req: Request) {
   const body = await req.json();
-  const { weightKg, clothed, shoes, toilet, meal, timeOfDay, note, weighedAt } = body as {
+  const { weightKg, clothed, shoes, toilet, meal, timeOfDay, note, weighedAt, attire } = body as {
+    attire?: string;
     weightKg: number;
     clothed: boolean;
     shoes?: "ON" | "OFF" | "UNKNOWN";
@@ -65,6 +67,7 @@ export async function POST(req: Request) {
         meal: meal ?? "UNKNOWN",
         timeOfDay: timeOfDay ?? "UNKNOWN",
         note: note || null,
+        attire: isWeighAttire(attire) ? attire : null,
         ...(parsedWeighedAt ? { weighedAt: parsedWeighedAt } : {}),
       },
     });

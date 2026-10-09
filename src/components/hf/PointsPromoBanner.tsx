@@ -24,22 +24,21 @@ export function PointsPromoBanner({
 
   return (
     <div className="flex flex-col gap-2">
-      <div className="relative rounded-lg p-4" style={{ background: "var(--hf-color-brand)" }}>
+      <div className="relative rounded-lg p-4 bg-hf-brand">
         <button
           type="button"
           onClick={() => setDismissed(true)}
           aria-label="Luk"
-          className="hf-btn-icon absolute right-1 top-1"
-          style={{ color: "var(--hf-color-white)" }}
+          className="hf-btn-icon absolute right-1 top-1 text-hf-white"
         >
           <IconX size={20} />
         </button>
         <div className="pr-8">
-          <p className="hf-type-body" style={{ color: "var(--hf-color-white)" }}>
+          <p className="hf-type-body text-hf-white">
             *{headline}
           </p>
           {subtext && (
-            <p className="hf-type-caption mt-1" style={{ color: "var(--hf-color-white)" }}>
+            <p className="hf-type-caption mt-1 text-hf-white">
               {subtext}
             </p>
           )}

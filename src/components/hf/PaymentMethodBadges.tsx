@@ -8,14 +8,14 @@ import { STRIPE_MARKETS, type StripeCountry } from "@/lib/payments/stripe-market
 // mærkerne står ens. SVG'erne er beskåret til selve mærket.
 function TextBadge({ label }: { label: string }) {
   return (
-    <span className="hf-type-small hf-type-strong flex h-10 items-center rounded-[8px] bg-hf-tan px-3">{label}</span>
+    <span className="hf-type-small hf-type-strong flex h-10 items-center bg-hf-tan px-3 rounded-card">{label}</span>
   );
 }
 
 export function LogoBadge({ src, label, withName }: { src: string; label: string; withName?: boolean }) {
   return (
     <span
-      className={`flex h-10 items-center justify-center gap-2 rounded-[8px] bg-hf-tan ${withName ? "px-3" : "w-16"}`}
+      className={`rounded-card flex h-10 items-center justify-center gap-2 bg-hf-tan ${withName ? "px-3" : "w-16"}`}
     >
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img src={src} alt={withName ? "" : label} className={`h-6 object-contain ${withName ? "w-6" : "w-10"}`} />
