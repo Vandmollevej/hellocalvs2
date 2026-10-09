@@ -51,8 +51,8 @@
     "src/components/landing/StoreDownload.tsx": "d9b1151bdef1c9fa",
     "src/components/onboarding/ActivityStep.tsx": "1825e0f2fd58523f",
     "src/components/ui/Toggle.tsx": "8fc97afe3b61a5a3",
-    "src/components/weight/AttireToggles.tsx": "10dd72aa288824e4",
-    "src/components/weight/WeighInPrompts.tsx": "967c9a296d3bb553"
+    "src/components/weight/AttireToggles.tsx": "e5ce3e4e1da336dc",
+    "src/components/weight/WeighInPrompts.tsx": "757b76feecbf8527"
   },
   "/account/phone": {
     "src/app/account/phone/page.tsx": "113c8d9cf805a8d7",
@@ -247,8 +247,8 @@
     "src/components/icons/WaistMeasure.tsx": "47f849581ff0f288",
     "src/components/icons/WaterGlass.tsx": "be5a375224031164",
     "src/components/web/WebShell.tsx": "5f2646ffd79af9cc",
-    "src/components/weight/AttireToggles.tsx": "10dd72aa288824e4",
-    "src/components/weight/WeightEntryDetailsSheet.tsx": "0cfebcbeee966cb1"
+    "src/components/weight/AttireToggles.tsx": "e5ce3e4e1da336dc",
+    "src/components/weight/WeightEntryDetailsSheet.tsx": "1dd31caa5c2a8f18"
   },
   "/camera": {
     "src/app/camera/page.tsx": "462e40e531fb8252",
@@ -2458,7 +2458,7 @@
   },
   "/weight/create": {
     "src/app/layout.tsx": "9a180a8c9b7bdec8",
-    "src/app/weight/create/page.tsx": "b8fa8eca8e189e77",
+    "src/app/weight/create/page.tsx": "9b984f00d46f8aa4",
     "src/components/AuthGate.tsx": "94db96b768f9f95f",
     "src/components/BottomNav.tsx": "3428c5ae144e2dea",
     "src/components/EmailVerifySheet.tsx": "42e52d85f9bf57d9",
@@ -2479,9 +2479,9 @@
     "src/components/icons/PhotoFrame.tsx": "20ffbe92a0057321",
     "src/components/icons/WaistMeasure.tsx": "47f849581ff0f288",
     "src/components/web/WebShell.tsx": "5f2646ffd79af9cc",
-    "src/components/weight/AttireToggles.tsx": "10dd72aa288824e4",
-    "src/components/weight/WeighInPrompts.tsx": "967c9a296d3bb553",
-    "src/components/weight/WeightEntryDetailsSheet.tsx": "0cfebcbeee966cb1",
+    "src/components/weight/AttireToggles.tsx": "e5ce3e4e1da336dc",
+    "src/components/weight/WeighInPrompts.tsx": "757b76feecbf8527",
+    "src/components/weight/WeightEntryDetailsSheet.tsx": "1dd31caa5c2a8f18",
     "src/components/weight/WeightSyncStatus.tsx": "35e33268e7403c4e"
   },
   "/welcome": {

@@ -1,14 +1,56 @@
-// Tøj ved vejning (2026-10-07): nøgen, undertøj, tøj, tøj + mobil i lommen.
+// Tøj ved vejning (2026-10-09): en liste af til/fra-valg (undertøj, bukser, top,
+// sweater, sko, mobil m.m. i lommen, efter toiletbesøg). Intet valgt = nøgen.
 // Gættet kommer fra en admin-styret algoritme (WeightAttireSettings): kig på de
-// seneste vejninger med bekræftet tøj og tag det mest brugte valg omkring samme
+// seneste vejninger med bekræftet tøj og tag det mest brugte sæt omkring samme
 // tidspunkt på dagen; mangler data, bruges standardreglen (før kl. 08 undertøj,
 // ellers tøj med mobil i lommen). Klientsikker (ingen Prisma).
+//
+// `attire` (NAKED/UNDERWEAR/CLOTHED/CLOTHED_PHONE) bliver i databasen som
+// bekræftelsesmærke (null = ikke bekræftet) og afledt grovsammenfatning af
+// valgene; de præcise valg ligger i `attireItems`.
+
+export const ATTIRE_ITEMS = ["UNDERWEAR", "PANTS", "TOP", "SWEATER", "SHOES", "POCKET_ITEMS", "AFTER_TOILET"] as const;
+export type AttireItem = (typeof ATTIRE_ITEMS)[number];
+
+export function isAttireItem(value: unknown): value is AttireItem {
+  return typeof value === "string" && (ATTIRE_ITEMS as readonly string[]).includes(value);
+}
+
+/** Gyldige, unikke valg i fast rækkefølge; ukendte værdier kasseres. Ikke-liste => null. */
+export function parseAttireItems(value: unknown): AttireItem[] | null {
+  if (!Array.isArray(value)) return null;
+  return ATTIRE_ITEMS.filter((item) => value.includes(item));
+}
 
 export const WEIGH_ATTIRES = ["NAKED", "UNDERWEAR", "CLOTHED", "CLOTHED_PHONE"] as const;
 export type WeighAttire = (typeof WEIGH_ATTIRES)[number];
 
 export function isWeighAttire(value: unknown): value is WeighAttire {
   return typeof value === "string" && (WEIGH_ATTIRES as readonly string[]).includes(value);
+}
+
+const CLOTHING_ITEMS: readonly AttireItem[] = ["PANTS", "TOP", "SWEATER", "SHOES"];
+
+/** Grovsammenfatning gemt i `attire`; tom liste = nøgen. */
+export function attireFromItems(items: readonly AttireItem[]): WeighAttire {
+  if (items.includes("POCKET_ITEMS")) return "CLOTHED_PHONE";
+  if (items.some((item) => CLOTHING_ITEMS.includes(item))) return "CLOTHED";
+  if (items.includes("UNDERWEAR")) return "UNDERWEAR";
+  return "NAKED";
+}
+
+/** Ældre vejninger uden `attireItems`: udled valgene af det gamle ene valg. */
+export function itemsFromAttire(attire: WeighAttire): AttireItem[] {
+  switch (attire) {
+    case "NAKED":
+      return [];
+    case "UNDERWEAR":
+      return ["UNDERWEAR"];
+    case "CLOTHED":
+      return ["UNDERWEAR", "PANTS", "TOP"];
+    case "CLOTHED_PHONE":
+      return ["UNDERWEAR", "PANTS", "TOP", "POCKET_ITEMS"];
+  }
 }
 
 export type AttireSettings = {
@@ -27,7 +69,7 @@ export const DEFAULT_ATTIRE_SETTINGS: AttireSettings = {
   syncStaleHours: 48,
 };
 
-export type AttireHistoryItem = { weighedAt: string | Date; attire: WeighAttire | null };
+export type AttireHistoryItem = { weighedAt: string | Date; items: AttireItem[] };
 
 const hourOf = (value: string | Date) => {
   const date = new Date(value);
@@ -40,24 +82,27 @@ function clockDistance(a: number, b: number) {
   return Math.min(diff, 24 - diff);
 }
 
-export function defaultAttireFor(at: Date, settings: AttireSettings): WeighAttire {
-  return hourOf(at) < settings.underwearBefore ? "UNDERWEAR" : "CLOTHED_PHONE";
+export function defaultAttireFor(at: Date, settings: AttireSettings): AttireItem[] {
+  return itemsFromAttire(hourOf(at) < settings.underwearBefore ? "UNDERWEAR" : "CLOTHED_PHONE");
 }
 
-/** history: nyeste først. Kun rækker med bekræftet tøj tæller. */
-export function suggestAttire(at: Date, history: AttireHistoryItem[], settings: AttireSettings): WeighAttire {
+/** history: nyeste først. Kun bekræftede vejninger er med (tom liste = bekræftet nøgen). */
+export function suggestAttire(at: Date, history: AttireHistoryItem[], settings: AttireSettings): AttireItem[] {
   if (!settings.enabled) return defaultAttireFor(at, settings);
-  const recent = history.filter((item) => item.attire).slice(0, Math.max(1, settings.lookbackCount));
+  const recent = history.slice(0, Math.max(1, settings.lookbackCount));
   const target = hourOf(at);
   const near = recent.filter((item) => clockDistance(hourOf(item.weighedAt), target) <= settings.windowHours);
   if (near.length === 0) return defaultAttireFor(at, settings);
 
-  const counts = new Map<WeighAttire, number>();
-  for (const item of near) counts.set(item.attire as WeighAttire, (counts.get(item.attire as WeighAttire) ?? 0) + 1);
-  // Uafgjort: det nyeste valg vinder (near er nyeste først, Map bevarer indsættelsesrækkefølge).
-  let best: WeighAttire = near[0].attire as WeighAttire;
-  for (const [attire, count] of counts) if (count > (counts.get(best) ?? 0)) best = attire;
-  return best;
+  const counts = new Map<string, number>();
+  for (const item of near) {
+    const key = item.items.join(",");
+    counts.set(key, (counts.get(key) ?? 0) + 1);
+  }
+  // Uafgjort: det nyeste sæt vinder (near er nyeste først, Map bevarer indsættelsesrækkefølge).
+  let bestKey = near[0].items.join(",");
+  for (const [key, count] of counts) if (count > (counts.get(bestKey) ?? 0)) bestKey = key;
+  return parseAttireItems(bestKey ? bestKey.split(",") : []) ?? [];
 }
 
 // "I går morges", "mandag morgen", "i tirsdags", ellers dato. Aldrig længere end en uge tilbage.

@@ -1,36 +1,35 @@
 "use client";
 
 import { useTranslation } from "@/i18n/LocaleProvider";
-import { WEIGH_ATTIRES, type WeighAttire } from "@/lib/weigh-attire";
+import { ATTIRE_ITEMS, type AttireItem } from "@/lib/weigh-attire";
 
-// Blok med on/off pr. tøj-valg: nøgen, undertøj, tøj, tøj + mobil i lommen.
-// Ét valg ad gangen — tænder man et, slukkes de andre; slukker man det valgte,
-// står vejningen uden bekræftet tøj.
+// Slidere med til/fra pr. tøj-valg: undertøj, bukser, top/t-shirt, sweater, sko,
+// mobil m.m. i lommen og efter toiletbesøg. Flere kan vælges; intet valgt = nøgen.
 export function AttireToggles({
   value,
   onChange,
   disabled = false,
 }: {
-  value: WeighAttire | null;
-  onChange: (value: WeighAttire | null) => void;
+  value: AttireItem[];
+  onChange: (value: AttireItem[]) => void;
   disabled?: boolean;
 }) {
   const { t } = useTranslation();
   return (
     <div className="flex flex-col gap-2" role="group" aria-label={t("weighIn.attireTitle")}>
-      {WEIGH_ATTIRES.map((attire) => {
-        const on = value === attire;
+      {ATTIRE_ITEMS.map((item) => {
+        const on = value.includes(item);
         return (
           <button
-            key={attire}
+            key={item}
             type="button"
             role="switch"
             aria-checked={on}
             disabled={disabled}
-            onClick={() => onChange(on ? null : attire)}
+            onClick={() => onChange(ATTIRE_ITEMS.filter((other) => (other === item ? !on : value.includes(other))))}
             className="hf-control-row flex w-full items-center justify-between gap-3 rounded-xl bg-hf-white px-4 text-left disabled:opacity-50"
           >
-            <span className="hf-type-body text-hf-black">{t(`weighIn.attire.${attire}`)}</span>
+            <span className="hf-type-body text-hf-black">{t(`weighIn.attireItem.${item}`)}</span>
             <span
               aria-hidden="true"
               className={`relative h-6 w-11 shrink-0 rounded-full transition-colors ${on ? "bg-hf-green" : "bg-hf-tan-dark"}`}
@@ -42,6 +41,9 @@ export function AttireToggles({
           </button>
         );
       })}
+      {value.length === 0 && (
+        <p className="hf-type-small text-center text-text-secondary">{t("weighIn.attireNaked")}</p>
+      )}
     </div>
   );
 }
