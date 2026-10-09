@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { useRouter, usePathname } from "next/navigation";
 import {
   IconPlus,
@@ -415,22 +416,30 @@ export function BottomNav() {
   // i rækken måles i rullet indhold, så swipe/auto-rulning ikke tæller som
   // flytning. Et sluppet ikon glider fra fingeren til sin plads.
   const shownScroll = pageSwipe ? scrollPages : clampedScrollPages;
+  // Kun start/slut på et træk tæller (ikke hver fingerbevægelse), ellers
+  // genstartes alle glide-animationer 60 gange i sekundet.
+  const dragging = drag !== null;
+  const lastEditMode = useRef(false);
   useLayoutEffect(() => {
     const barWidth = barRef.current?.getBoundingClientRect().width ?? 0;
     const next = new Map<string, IconPlace>();
+    // Målt på cellen om knappen: selve knappen vibrerer (roterer) og glider,
+    // og det fik hver måling til at ligne en flytning, så ikonerne flimrede.
     itemRefs.current.forEach((el, key) => {
-      const r = el.getBoundingClientRect();
+      const r = (el.parentElement ?? el).getBoundingClientRect();
       const inBar = barRef.current?.contains(el) ?? false;
       const sx = r.left + r.width / 2;
       next.set(key, { sx, nx: sx + (inBar ? shownScroll * barWidth : 0), y: r.top + r.height / 2, inBar });
     });
     const settle = settleFrom.current;
-    if (!drag) settleFrom.current = null;
+    if (!dragging) settleFrom.current = null;
+    const editChanged = lastEditMode.current !== editMode;
+    lastEditMode.current = editMode;
     itemRefs.current.forEach((el, key) => {
       const now = next.get(key);
       if (!now) return;
-      if (settle && !drag && settle.key === key) {
-        const rect = el.getBoundingClientRect();
+      if (settle && !dragging && settle.key === key) {
+        const rect = (el.parentElement ?? el).getBoundingClientRect();
         slideIcon(
           el,
           settle.x - (rect.left + rect.width / 2),
@@ -440,6 +449,7 @@ export function BottomNav() {
         return;
       }
       if (dragRef.current?.moved && dragRef.current.key === key) return;
+      if (editChanged) return;
       const prev = prevPlaces.current.get(key);
       if (!prev) return;
       // I samme område er forskellen uden rulning; på tværs er det skærmpositioner.
@@ -449,7 +459,7 @@ export function BottomNav() {
       slideIcon(el, dx, dy, false);
     });
     prevPlaces.current = next;
-  }, [activeKeys, inactiveKeys, drag, shownScroll]);
+  }, [activeKeys, inactiveKeys, dragging, shownScroll, editMode]);
 
   const clearLongPress = useCallback(() => {
     if (longPressTimer.current) {
@@ -473,13 +483,8 @@ export function BottomNav() {
     setDrag(null);
     if (!current) return;
 
-    if (!current.moved) {
-      if (current.source === "inactive") {
-        setInactiveKeys((prev) => prev.filter((k) => k !== current.key));
-        setActiveKeys((prev) => (prev.includes(current.key) ? prev : [...prev, current.key]));
-      }
-      return;
-    }
+    // Et tryk uden træk flytter aldrig et ikon (som på iPhone).
+    if (!current.moved) return;
 
     if (current.source === "active" && overRect(panelRef.current, clientX, clientY)) {
       setActiveKeys((prev) => prev.filter((k) => k !== current.key));
@@ -886,8 +891,8 @@ export function BottomNav() {
               const isReady =
                 drag?.key === key && drag.source === "inactive" && !drag.moved && drag.ready;
               return (
+                <div key={key} className="flex-none">
                 <button
-                  key={key}
                   type="button"
                   ref={(el) => {
                     if (el) itemRefs.current.set(key, el);
@@ -912,6 +917,7 @@ export function BottomNav() {
                     </span>
                   </span>
                 </button>
+                </div>
               );
             })}
             {visibleInactiveKeys.length === 0 && (
@@ -945,7 +951,7 @@ export function BottomNav() {
           editMode ? "z-50" : ""
         } ${
           showCollapsedBar ? "py-1" : "pb-[env(safe-area-inset-bottom,0px)] pt-2"
-        } ${draggedOverPanel ? "border border-dashed border-hf-gray-dark" : ""}`}
+        } ${draggedOverPanel ? "outline-dashed outline-1 -outline-offset-1 outline-hf-gray-dark" : ""}`}
         aria-label={t("nav.mainNavigationAriaLabel")}
       >
         {showCollapsedBar ? (
@@ -1004,8 +1010,8 @@ export function BottomNav() {
                   const isReady =
                     drag?.key === key && drag.source === "active" && !drag.moved && drag.ready;
                   return (
+                    <div key={key} className="h-14 w-16">
                     <button
-                      key={key}
                       type="button"
                       ref={(el) => {
                         if (el) itemRefs.current.set(key, el);
@@ -1049,6 +1055,7 @@ export function BottomNav() {
                         </span>
                       </span>
                     </button>
+                    </div>
                   );
                 })}
               </div>
@@ -1059,13 +1066,14 @@ export function BottomNav() {
         )}
       </nav>
 
-      {drag?.moved && (
+      {drag?.moved && createPortal(
         <div
           className="hf-nav-ghost pointer-events-none fixed z-50 flex h-14 w-16 flex-col items-center justify-center gap-1 rounded-xl bg-hf-tan-dark opacity-95 shadow-[0_10px_18px_rgba(0,0,0,0.18)]"
           style={{ left: drag.x - 32, top: drag.y - 28 }}
         >
           {ITEMS_BY_KEY.get(drag.key)?.render("var(--hf-black)", ICON_SIZE)}
-        </div>
+        </div>,
+        document.body,
       )}
 
       {switchSheetOpen && (

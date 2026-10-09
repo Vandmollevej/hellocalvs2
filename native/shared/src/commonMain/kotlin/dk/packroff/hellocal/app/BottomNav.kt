@@ -98,7 +98,7 @@ import kotlin.math.roundToInt
  * same default four (Tilføj, Madvarer, Kalender, Statistik), same stored layout
  * ("hellocal:bottomnav:v1"). Pages of four icons that slide continuously with a
  * swipe; long press (Seriøs) opens the edit panel: drag icons to reorder, drag
- * one up into the panel (or tap ×) to remove it, tap/drag a panel icon down to
+ * one up into the panel (or tap ×) to remove it, drag a panel icon down to
  * add it. "Skift konto" (family plan only) opens the profile switcher sheet.
  */
 data class NavItem(val key: String, val href: String?, val labelKey: String, val icon: String, val action: String? = null)
@@ -645,7 +645,7 @@ private fun DragGhost(item: NavItem, position: Offset, rootBounds: Rect) {
     }
 }
 
-/** A hidden icon in the panel: tap adds it at the end, drag drops it into a bar slot. */
+/** A hidden icon in the panel: drag it down into a bar slot (a tap does nothing). */
 @Composable
 private fun PanelItem(item: NavItem, drag: NavDrag?) {
     val t = LocalTranslator.current
@@ -682,7 +682,7 @@ private fun PanelItem(item: NavItem, drag: NavDrag?) {
                     }
                     BottomNavEdit.drag = null
                     when {
-                        !moved -> BottomNavLayout.addToActive(item.key)
+                        // A tap alone never moves an icon (as on iPhone): only a drag does.
                         BottomNavEdit.barBounds.contains(position) -> BottomNavLayout.addToActive(item.key, gapIndexAtScrolled(position.x))
                     }
                 }

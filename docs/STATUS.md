@@ -2,6 +2,11 @@
 
 Last updated: 2026-10-09
 
+## 2026-10-09: Rediger bundmenu — ikoner flimrede og forsvandt
+
+- Web (`BottomNav.tsx`) og native: et tryk på et skjult ikon i panelet flytter det ikke længere (kun træk, som på iPhone). Flimmer rettet: glide-animationen (FLIP) måles nu på den ubevægelige celle om knappen (før blev den vibrerende/glidende knap målt, så hver måling lignede en flytning) og kører kun ved ændret rækkefølge, ikke ved hver fingerbevægelse. Stiplet kant på baren er en outline (ændrer ikke højden), og det trukne ikon tegnes i `document.body`.
+- Afprøvet i Chromium med berøringsevents: tryk flytter intet, træk ind i baren og op i panelet virker. Kotlin ikke kompileret lokalt (CI bygger); ikke prøvet på telefon. Paritet grøn.
+
 ## 2026-10-09: Børn kan ikke lukke konto eller melde sig ud
 
 - Kun forælderen kan lukke/fjerne et barns konto. Serveren afviser børn på `/api/account/close` (403) og `leaveFamily` (`childCannotLeave`); "Luk konto"/"Slet mine data" og "Meld dig ud" er skjult for børn i web og native (`meIsChild` fra `/api/family`). Barnet kan kun se, hvad forælderen viser (uændret). Se DECISIONS.md samme dato. Lint, tsc og native-paritet grønne; Kotlin ikke kompileret lokalt; ikke prøvet mod rigtig database.
