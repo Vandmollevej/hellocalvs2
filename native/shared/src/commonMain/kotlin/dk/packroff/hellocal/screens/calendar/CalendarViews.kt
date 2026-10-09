@@ -334,7 +334,7 @@ internal fun DayRow(
             Row(Modifier.weight(1f, fill = false), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
                 HcText(
                     when {
-                        !logged -> t.t("calendar.noEntries")
+                        !logged -> "–"
                         tooLow -> t.t("calendar.intakeTooLow")
                         met -> t.t("calendar.goalMet")
                         else -> t.t("calendar.goalMissed")
@@ -349,7 +349,7 @@ internal fun DayRow(
             Spacer(Modifier.weight(1f))
             Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(4.dp)) {
                 HcText(
-                    "${if (over) "÷" else "+"}$diff kcal",
+                    if (!logged) "–" else "${if (over) "÷" else "+"}$diff kcal",
                     HcTypeRoles.Body,
                     bold = true,
                     color = when {
