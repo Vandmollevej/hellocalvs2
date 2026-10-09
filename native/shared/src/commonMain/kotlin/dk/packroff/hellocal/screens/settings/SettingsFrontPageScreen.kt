@@ -92,6 +92,8 @@ fun FrontPageSettingsScreen(args: RouteArgs) {
         SettingsPage {
             SettingsBrandCard(t.t("frontPageSettings.intro"))
 
+            CustomMeasureSection()
+
             SettingsGroupLabel(t.t("frontPageSettings.sideSectionTitle"))
             Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(16.dp)) {
                 listOf("left", "right").forEach { side ->
