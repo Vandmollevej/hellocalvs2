@@ -232,6 +232,14 @@ private fun slotIndexAt(x: Float): Int {
     return BottomNavEdit.scrollPages.roundToInt() * PAGE_SIZE + slot
 }
 
+/** The gap between two icons nearest the finger, as an index in the whole list: a panel icon is inserted between icons, not on one. */
+private fun gapIndexAt(x: Float): Int {
+    val bar = BottomNavEdit.barBounds
+    val slotWidth = bar.width / PAGE_SIZE
+    val gap = ((x - bar.left) / slotWidth).roundToInt().coerceIn(0, PAGE_SIZE)
+    return BottomNavEdit.scrollPages.roundToInt() * PAGE_SIZE + gap
+}
+
 private fun openItem(item: NavItem, navigator: Navigator) {
     if (item.action == "switchProfile") BottomNavEdit.switchSheetOpen = true
     else if (item.href != null) navigator.switchTab(Location(item.href))
@@ -603,7 +611,7 @@ private fun PanelItem(item: NavItem, drag: NavDrag?) {
                     BottomNavEdit.drag = null
                     when {
                         !moved -> BottomNavLayout.addToActive(item.key)
-                        BottomNavEdit.barBounds.contains(position) -> BottomNavLayout.addToActive(item.key, slotIndexAt(position.x))
+                        BottomNavEdit.barBounds.contains(position) -> BottomNavLayout.addToActive(item.key, gapIndexAt(position.x))
                     }
                 }
             }
