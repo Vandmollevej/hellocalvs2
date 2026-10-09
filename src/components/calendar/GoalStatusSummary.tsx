@@ -24,6 +24,7 @@ export function GoalStatusSummary({
   intakeKcal,
   bonusKcal = 0,
   period = "day",
+  showTotals = true,
   className = "",
 }: {
   /** `null` skjuler statusbjælken (fx fremtidige dage). */
@@ -34,6 +35,8 @@ export function GoalStatusSummary({
   /** Forbrændte kalorier fra registreret motion (lægges oven i målet). */
   bonusKcal?: number;
   period?: "day" | "month";
+  /** `false`: kun statusbjælken — ingen mål, motion eller "tilbage" (periodevisning). */
+  showTotals?: boolean;
   className?: string;
 }) {
   const { t } = useTranslation();
@@ -42,7 +45,7 @@ export function GoalStatusSummary({
 
   return (
     <div className={`space-y-1 ${className}`.trim()}>
-      {bonus > 0 && (
+      {showTotals && bonus > 0 && (
         <p className="hf-type-body flex items-center justify-end gap-1 whitespace-nowrap text-right tabular-nums text-hf-green">
           <IconFlame size={16} className="shrink-0 text-hf-red-dark" aria-hidden="true" />
           <span>{t("calendar.exerciseBonus", { amount: bonus })}</span>
@@ -75,12 +78,14 @@ export function GoalStatusSummary({
         ) : (
           <span aria-hidden="true" />
         )}
-        <p className="hf-type-body shrink-0 whitespace-nowrap text-right tabular-nums text-text-muted">
-          {t("calendar.goalLabel", { goal: Math.round(goalKcal) })}
-        </p>
+        {showTotals && (
+          <p className="hf-type-body shrink-0 whitespace-nowrap text-right tabular-nums text-text-muted">
+            {t("calendar.goalLabel", { goal: Math.round(goalKcal) })}
+          </p>
+        )}
       </div>
 
-      {remaining >= 0 ? (
+      {!showTotals ? null : remaining >= 0 ? (
         <p className="hf-type-body whitespace-nowrap text-right tabular-nums text-hf-black">
           {t(period === "month" ? "calendar.remainingMonth" : "calendar.remainingToday", { amount: remaining })}
         </p>

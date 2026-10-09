@@ -1,7 +1,7 @@
 // Kør: npm test  (node --test, Node 24 fjerner TypeScript-typer selv)
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { defaultAmountGrams, packageVolumeMl } from "./default-amount.ts";
+import { defaultAmountGrams, packageVolumeMl, packageWeightGrams } from "./default-amount.ts";
 
 const drink = (fields) => ({ productCategory: "DRINK", ...fields });
 
@@ -72,4 +72,15 @@ test("packageVolumeMl", () => {
   assert.equal(packageVolumeMl("1,5 l"), 1500);
   assert.equal(packageVolumeMl("5 dl"), 500);
   assert.equal(packageVolumeMl("500 g"), null);
+});
+
+test("instantkaffe starter på 2 g", () => {
+  assert.equal(defaultAmountGrams({ name: "Crema instant kaffe", packageSizeText: "200 g", productCategory: "DRINK" }), 2);
+  assert.equal(defaultAmountGrams({ name: "Nescafé Gold", packageSizeText: "100 g" }), 2);
+});
+
+test("forslaget overstiger aldrig pakkens indhold", () => {
+  assert.equal(defaultAmountGrams({ name: "Kaffe", productCategory: "DRINK", packageSizeText: "200 g" }), 200);
+  assert.equal(defaultAmountGrams({ name: "Chokolade", packageSizeText: "20 g" }), 20);
+  assert.equal(packageWeightGrams("1,5 kg"), 1500);
 });
