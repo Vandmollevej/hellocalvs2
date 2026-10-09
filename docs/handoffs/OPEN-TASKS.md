@@ -198,6 +198,7 @@ Ejer: G10-overtagelse, konto D (2026-09-24)
 | a83d7a5a | Alle overskrifter med streger skal være samme klasse (Tidspunkt, datogrupper, statistik, "+ Skillelinje", Historik) | Færdig (136f502) | Deployet (Actions grøn). Obs: forside-indstillingernes "Knapper i hjulet" har en egen streg-overskrift, der kun findes på den lokale master — den skal over på `.hf-type-section-title`, når den lander på origin |
 | navx-slet | Bundmenu-redigering: slet-kryds lukkede hele redigeringen | Færdig (kode) | Nav løftes over lukke-laget (z-50) i redigering. Afventer test på telefon |
 | 6a503586 | Footer-redigering: slette-krydserne er skåret af + ikoner skal kunne trækkes til siden for at bytte rækkefølge | Færdig (8d5ba9b) | `overflow-x-clip` så krydserne ikke klippes; ombytning efter pladsen under fingeren (ingen hop) + roligere glide-animation; ikon fra panelet indsættes på den plads, det slippes. Afventer test på telefon (HelloFresh/knap-delen hører til G6) |
+| footer-edit-motion | Footer-redigering som statistik-gitteret: swipe side til side mens ikonerne vibrerer, stille tryk løfter et ikon, rækken ruller kontinuerligt når et ikon trækkes mod kanten, alle flytninger glider (FLIP via script-animation, som vibrationen ellers overstyrede), sluppet ikon glider fra fingeren | Færdig (web + native `app/BottomNav.kt`; native ikke kompileret lokalt, CI tjekker) | Afventer test på telefon |
 
 ## G11 — Næringsdata på produktsiden (E-numre, toksiner, fedt-advarsel)
 Filer: produktsidens næringsvisning, statistik-boks-katalog (koordinér med G2), Opsætning/Visning (koordinér med G7).
@@ -222,6 +223,7 @@ Ejer: cloud-session `claude/kontoopsaetning` (2026-10-03)
 
 | Id | Opgave | Status | Næste skridt |
 | --- | --- | --- | --- |
+| konto-procent | Kontoopsætning: mørkegrøn "XX%" (andel udfyldte felter) midt mellem tekst og pil | Færdig (kode) | Brugerens test på telefon |
 
 ## Venter på dig (ingen gruppe)
 | Id | Opgave | Status | Næste skridt |

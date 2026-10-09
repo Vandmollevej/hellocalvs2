@@ -8,6 +8,12 @@ Last updated: 2026-10-09
 - Knapperne har samme geometri som venstre-cirklen (`AddButton`): 52 px fra cirklen (valgt knap 22 px længere ude end de øvrige), vinkler jævnt fordelt over −75°…75°.
 - Ikke kørt: build (lint og tsc på de ændrede filer er rene), Kotlin ikke kompileret, ikke prøvet på telefon.
 
+## 2026-10-09: Halvcirklens vifte rykker knapper op i stedet for ud over kanten
+
+- `FooterArc` (web + `HomeFooterArc.kt`): står halvcirklen langt ude til siden, flyttes viften ikke længere indad. De knapper, der ellers ville forsvinde ud over skærmkanten, holdes inden for kanten og rykkes i stedet længere op, væk fra halvcirklen, med samme afstand til naboen (`fanLayout`). Navnet på det valgte ikon holdes inden for skærmen. Størrelser og indstillinger er uændrede.
+- Rettet efter brugerens test: halvcirklens knapper toner ikke længere langsomt ind efter hvor langt cirklen er trukket op, men vises med det samme (150 ms) som i side-cirklen (web + native).
+- Lint, tsc, `sync.mjs --check` grønne; paritet for `/` accepteret. Kotlin ikke kompileret lokalt (ingen Gradle-afhængigheder offline) — CI bygger. Ikke prøvet på telefon.
+
 ## 2026-10-09: Delmål-formular i tre accordions
 
 - `GoalForm`: tre fold-ud (Vægt og opbygning, Kropsmål, Ernæring); kropsmålene har igen deres egne tegninger (efter profilens køn). Lint grøn; ikke visuelt testet.
@@ -6142,3 +6148,7 @@ Ny `valdemarsro-agent` (scripts/valdemarsro-agent, compose.production.yaml, buil
 ## 2026-10-08 — Ental/flertal for generiske ingredienser (database + API)
 
 Skema, migration, `src/lib/danish-number.ts` og søgning/oprettelse er lavet (se DECISIONS.md samme dato). `prisma validate` og ESLint på de ændrede filer er grønne; `npm run build` og typecheck er ikke kørt (ingen genereret Prisma-klient i arbejdskopien). Mangler: UI skal vise `displayName`, ental/flertal i arkene, billedomdøbning.
+
+## 2026-10-09: Synonymordbog (admin > Soegning)
+
+- `/admin/search-synonyms`: ordpar pr. sprog (DA/EN) med "Ens"-procent; soegning i produkter og generiske ingredienser matcher ogsaa synonymet, rangeret efter procenten (0 % = slaaet fra). Tabel `search_synonyms` (migration 20261009120000, med eksempler). Forslag ud fra produkttyper: `docs/SYNONYM-FORSLAG.md`.

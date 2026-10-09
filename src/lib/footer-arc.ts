@@ -21,13 +21,11 @@ const ARC_BASE_RADIUS = ARC_RADIUS + ARC_GAP + ARC_ICON_CIRCLE / 2;
 export const ARC_ICON_RADIUS = ARC_BASE_RADIUS - 8;
 /** Afstand til den fremhævede knaps midte (træder længere ud). */
 export const ARC_ICON_RADIUS_ACTIVE = ARC_BASE_RADIUS + 14;
-export const ARC_HIGHLIGHT_SCALE = 1.35;
 const ARC_MAX_ANGLE_DEG = 75;
 /** Højst så mange egne knapper i viften ("alle" kommer i midten ovenpå). */
 export const ARC_MAX_USER_ACTIONS = 4;
-/** Vandret plads viften skal have til hver side for ikke at ryge ud over skærmen. */
-export const ARC_FAN_HALF_WIDTH =
-  ARC_ICON_RADIUS_ACTIVE * Math.sin((ARC_MAX_ANGLE_DEG * Math.PI) / 180) + (ARC_ICON_CIRCLE * ARC_HIGHLIGHT_SCALE) / 2 + 8;
+/** Mindste afstand fra en knaps midte til skærmkanten. */
+const ARC_EDGE_MARGIN = ARC_ICON_CIRCLE / 2 + 8;
 
 /** Vinkler (fra lodret) for knapperne, når der er `userCount` egne + "alle": jævnt fordelt over -75..75 som venstre-cirklen. */
 export function fanAngles(userCount: number): number[] {
@@ -35,6 +33,36 @@ export function fanAngles(userCount: number): number[] {
   if (total <= 1) return [0];
   const step = (ARC_MAX_ANGLE_DEG * 2) / (total - 1);
   return Array.from({ length: total }, (_, i) => -ARC_MAX_ANGLE_DEG + i * step);
+}
+
+/**
+ * Knappernes midter (x fra venstre, y opad fra footerkanten). Hver knap har den
+ * faste afstand til sin nabo fra viften. Ville en knap havne uden for skærmen
+ * (cirklen står langt ude til siden), holdes den inden for kanten og rykkes i
+ * stedet længere op, væk fra cirklen — stadig med samme afstand til naboen.
+ */
+export function fanLayout(angles: number[], centerX: number, width: number, highlightedIndex = -1): { x: number; y: number }[] {
+  if (angles.length === 0) return [];
+  const ideal = angles.map((deg, i) => {
+    const rad = (deg * Math.PI) / 180;
+    const radius = i === highlightedIndex ? ARC_ICON_RADIUS_ACTIVE : ARC_ICON_RADIUS;
+    return { x: centerX + radius * Math.sin(rad), y: radius * Math.cos(rad) };
+  });
+  if (width <= ARC_EDGE_MARGIN * 2) return ideal;
+  const anchor = angles.reduce((best, deg, i) => (Math.abs(deg) < Math.abs(angles[best]) ? i : best), 0);
+  const placed = new Array<{ x: number; y: number }>(angles.length);
+  placed[anchor] = { x: Math.min(width - ARC_EDGE_MARGIN, Math.max(ARC_EDGE_MARGIN, ideal[anchor].x)), y: ideal[anchor].y };
+  for (const dir of [-1, 1]) {
+    for (let i = anchor + dir; i >= 0 && i < angles.length; i += dir) {
+      const prev = placed[i - dir];
+      const spacing = Math.hypot(ideal[i].x - ideal[i - dir].x, ideal[i].y - ideal[i - dir].y);
+      const x = Math.min(width - ARC_EDGE_MARGIN, Math.max(ARC_EDGE_MARGIN, ideal[i].x));
+      let y = ideal[i].y;
+      if (x !== ideal[i].x) y = Math.max(y, prev.y + Math.sqrt(Math.max(0, spacing ** 2 - (x - prev.x) ** 2)));
+      placed[i] = { x, y };
+    }
+  }
+  return placed;
 }
 
 /** Pladsen i viften, hvor "alle" altid står (midten). */
