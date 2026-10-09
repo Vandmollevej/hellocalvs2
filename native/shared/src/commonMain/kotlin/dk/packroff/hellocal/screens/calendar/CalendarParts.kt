@@ -166,13 +166,14 @@ internal fun GoalStatusSummary(
     intakeKcal: Double,
     bonusKcal: Double = 0.0,
     month: Boolean = false,
+    showTotals: Boolean = true,
     modifier: Modifier = Modifier,
 ) {
     val t = LocalTranslator.current
     val bonus = jsRound(bonusKcal)
     val remaining = jsRound(goalKcal + bonusKcal - intakeKcal)
     Column(modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(4.dp)) {
-        if (bonus > 0) {
+        if (showTotals && bonus > 0) {
             Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(4.dp, Alignment.End), verticalAlignment = Alignment.CenterVertically) {
                 HcIcon("Flame", size = 16.dp, color = HcColors.RedDark)
                 HcText(t.t("calendar.exerciseBonus", "amount" to bonus), HcTypeRoles.Body, color = HcColors.Green)
@@ -206,9 +207,11 @@ internal fun GoalStatusSummary(
             } else {
                 Spacer(Modifier.weight(1f))
             }
-            HcText(t.t("calendar.goalLabel", "goal" to jsRound(goalKcal)), HcTypeRoles.Body, color = HcColors.Inactive, maxLines = 1)
+            if (showTotals) HcText(t.t("calendar.goalLabel", "goal" to jsRound(goalKcal)), HcTypeRoles.Body, color = HcColors.Inactive, maxLines = 1)
         }
-        if (remaining >= 0) {
+        if (!showTotals) {
+            // Periodevisning: kun status, ingen totaler.
+        } else if (remaining >= 0) {
             HcText(
                 t.t(if (month) "calendar.remainingMonth" else "calendar.remainingToday", "amount" to remaining),
                 HcTypeRoles.Body,

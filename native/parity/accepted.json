@@ -215,10 +215,10 @@
     "src/components/web/WebShell.tsx": "5f2646ffd79af9cc"
   },
   "/calendar": {
-    "src/app/calendar/page.tsx": "46fb32f1e6250a2b",
+    "src/app/calendar/page.tsx": "d2263c995452de09",
     "src/app/layout.tsx": "9a180a8c9b7bdec8",
     "src/components/AuthGate.tsx": "94db96b768f9f95f",
-    "src/components/BottomNav.tsx": "50c4eb59b5807fa4",
+    "src/components/BottomNav.tsx": "3428c5ae144e2dea",
     "src/components/EmailVerifySheet.tsx": "42e52d85f9bf57d9",
     "src/components/FoodRow.tsx": "b5ec0c5a27228591",
     "src/components/HfScreen.tsx": "fa0b0a94f60cbbc5",
@@ -227,7 +227,7 @@
     "src/components/add/AddMenuList.tsx": "bc0e130a0c342d23",
     "src/components/add/AddMenuSheet.tsx": "da5cc2553ea30e9e",
     "src/components/calendar/EnergyChip.tsx": "956bbe8b5462c133",
-    "src/components/calendar/GoalStatusSummary.tsx": "682fa1459097ad1b",
+    "src/components/calendar/GoalStatusSummary.tsx": "033fdc5cb15d8e9a",
     "src/components/family/FamilyStatusProvider.tsx": "5f900dbc44b3189b",
     "src/components/family/MealShareBar.tsx": "1a89f02c26cffff5",
     "src/components/family/ProfileCircle.tsx": "08fe8d4db2620525",

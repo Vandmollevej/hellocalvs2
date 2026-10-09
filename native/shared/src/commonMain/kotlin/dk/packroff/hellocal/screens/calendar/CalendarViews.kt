@@ -164,11 +164,12 @@ internal fun MonthlyStatus(status: MonthlyStatusData) {
             }
         }
         GoalStatusSummary(
-            status = if (status.remaining >= 0) GoalStatusKind.Met else GoalStatusKind.Missed,
+            status = status.periodStatus,
             goalKcal = status.goalSum,
             intakeKcal = status.consumed,
             bonusKcal = status.bonusKcal,
             month = true,
+            showTotals = false,
         )
     }
 }
