@@ -183,6 +183,7 @@ Ejer: G10-overtagelse, konto D (2026-09-24)
 | --- | --- | --- | --- |
 | 5f2ee781 | Fjern stregen mellem footer og indhold + sektionsoverskrifter mindre, ikke fed, centreret med streg på hver side | Færdig (be3a05d) | Verificeret i preview. Afventer brugerens godkendelse af udseendet |
 | a83d7a5a | Alle overskrifter med streger skal være samme klasse (Tidspunkt, datogrupper, statistik, "+ Skillelinje", Historik) | Færdig (136f502) | Deployet (Actions grøn). Obs: forside-indstillingernes "Knapper i hjulet" har en egen streg-overskrift, der kun findes på den lokale master — den skal over på `.hf-type-section-title`, når den lander på origin |
+| navx-slet | Bundmenu-redigering: slet-kryds lukkede hele redigeringen | Færdig (kode) | Nav løftes over lukke-laget (z-50) i redigering. Afventer test på telefon |
 | 6a503586 | Footer-redigering: slette-krydserne er skåret af + ikoner skal kunne trækkes til siden for at bytte rækkefølge | Færdig (8d5ba9b) | `overflow-x-clip` så krydserne ikke klippes; ombytning efter pladsen under fingeren (ingen hop) + roligere glide-animation; ikon fra panelet indsættes på den plads, det slippes. Afventer test på telefon (HelloFresh/knap-delen hører til G6) |
 
 ## G11 — Næringsdata på produktsiden (E-numre, toksiner, fedt-advarsel)
