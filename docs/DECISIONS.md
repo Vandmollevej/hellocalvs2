@@ -13,6 +13,10 @@ Ejerens krav: egne screeninger under Profil → Screeninger. Søvn ligger som fa
 - Data: `Screening` (spørgsmål som JSON) og `ScreeningEntry` (én måling pr. screening pr. dag, `value` = gennemsnit af svarene). Én måling pr. dag erstattes af den nyeste. Migration 20261009140000.
 - Ikke bygget endnu: selve notifikationsudsendelsen (valget gemmes: `notificationsEnabled`/`notificationTime`) og frekvens-styret påmindelse i appen.
 
+## 2026-10-09: Egne målinger i tal-hjulet gemmes pr. enhed
+
+- Brugerens ønske: under Visning → Forside kan man bygge sin egen måling (navn, beskrivelse, parameter, periode, tekst under tallet). Teksten må højst være 2 linjer á 15 tegn.
+- Måling gemmes i localStorage/secureStorage som resten af forsidens visning (`hellocal.frontpage.customMeasurements`), ikke i databasen. Flerdages-perioder viser dagsgennemsnit (summer og forbrug pr. dag, puls m.fl. som gennemsnit af målingerne, kropsmål som seneste måling); "Kalorier tilbage" = dagsmål × dage minus indtag.
 ## 2026-10-09: Stregkoder tærskles lokalt pr. scanlinje — skygge må ikke stoppe en læsning
 
 Brugerens ord (2026-10-06): "bare fordi det var et lille stykke skygge, kunne kameraet ikke læse stregkoden … det kan ikke være rigtigt." Hver scanlinje binariseres derfor med en glidende lokal tærskel (vindue 10 % af linjen, mindst 32 px, mørk = mindst 8 under det lokale gennemsnit) før ZXing's globale tærskel pr. række, som beholdes som fallback i samme frame. Det ligger i `src/lib/barcode-row-threshold.ts` + `barcode-local-binarizer.ts`, ikke i ZXing-koden, så biblioteket kan opdateres frit. ZXing's HybridBinarizer bruges ikke længere til 1D: dens lokale blokke gælder kun 2D-matricen.
@@ -223,6 +227,7 @@ Brugerens krav: "Denne [højden] skal også låses ligesom vægten. I integratio
 - Den låste højde følger den nyeste gyldige `HEIGHT_CM`, en integration har målt (alle kilder), hver gang en integration leverer højde (`store-items.ts`). Withings henter altid hele højdehistorikken, da højden typisk er indtastet for længe siden.
 - Withings henter alt, vægten måler: vægt, højde, fedtprocent, fedtmasse, fedtfri masse, muskelmasse, kropsvand, knoglemasse, visceralt fedt, puls, iltmætning, temperatur og VO2 max. Nye `HealthMetricType`: `FAT_MASS_KG`, `FAT_FREE_MASS_KG`, `BONE_MASS_KG`, `VISCERAL_FAT_INDEX` (migration `20261003150000_full_body_composition`). Garmin henter også knoglemasse; Health Connect-modulet læser også knoglemasse og fedtfri masse (LeanBodyMass).
 - Hver kropsmåling har sin egen til/fra-række på integrationssiden (`ReadType`: `bodyFat` = fedtprocent og fedtmasse, `muscleMass`, `fatFreeMass`, `bodyWater`, `boneMass`, `visceralFat`; `body` = højde, BMI og temperatur). Nye rækker er slået til, indtil brugeren slår dem fra — også hvor "Fedtprocent" før var slået fra og dækkede muskler/kropsvand.
+- **2026-10-09, "al tilgængelig måling skal med":** en integration får en til/fra-række for hver kropsmåling, dens API leverer (`SYNC_CAPABILITIES`). Huawei: også kropsvand, knoglemasse og visceralt fedt. Apple Health: også fedtfri masse. Målinger uden række filtreres fra i `filterItemsBySettings`, så en manglende række = tabt data.
 - Hjul-arkene (`WheelPicker`, `BirthDatePicker`) portales til `<body>`: inde i et `<label>` sendte iOS tryk på "Færdig" videre til åbne-knappen, så arket ikke lukkede.
 ## 2026-10-03: "Tillad" giver altid synlig besked
 
@@ -1287,7 +1292,7 @@ konto. Ingen husstands-/familieprofiler … ingen forældrekontrol".
   bestemt medlem. Betaleren har adgang til alle familiens profiler.
 - Under 15 år kan man ikke selv oprette en konto; en forælder opretter
   profilen. Barnet kan få eget login via en engangskode.
-- Barnet kan melde sig ud og låse de andre ude (fortolket: fra 15 år).
+- ~~Barnet kan melde sig ud og låse de andre ude (fortolket: fra 15 år).~~ Afløst 2026-10-09, se nedenfor.
 - Barnet ser samme visning som voksne.
 - Alt, hvad andre gør på en profil (åbner, ser, tilføjer, ændrer, sletter),
   logges og vises for profilens ejer, både som liste og i et panel, der glider
@@ -3531,7 +3536,11 @@ Normaliserede produkt-søgeparametre (`ProductNutritionFeatures`, 1:1 med
 
 - `scripts/logo-agent` (docs/LOGO-AGENT.md) isolerer logoet med Vision `LOGO_DETECTION` og finder kandidater med Vision `WEB_DETECTION`. Googles Custom Search JSON API er lukket for nye kunder og stopper 2027-01-01, så det mønster (image-agent) genbruges ikke til søgningen — kun container-/databasemønstret. Besluttet af brugeren 2026-09-24.
 - ≥ 90 % og brandnavn på siden/linket → automatisk logo; ellers admin-kø "Logoer" (≥ 50 %). Hentede kandidater slettes 7 dage efter afgørelsen.
-## 2026-09-24: Egne, private ingredienser ("Opret egen ingrediens")
+## 2026-10-09: "Opret egen ingrediens" er fjernet fra appen (erstatter 2026-09-24)
+
+- Brugerens ønske: funktionen skal væk. Siderne `/ingredients` og `/ingredients/new`, linket i Opret ret og private ingredienser i søgningen er fjernet i web og native. Nye varer oprettes kun via scanning. Backend/tabeller bevares, så eksisterende retter med `private:`-ingredienser og admin-køen stadig virker; kan ryddes op senere.
+
+## 2026-09-24: Egne, private ingredienser ("Opret egen ingrediens") — UI fjernet 2026-10-09
 
 - Linket "Opret egen ingrediens" under Opret ret åbner `/ingredients/new`. Brugeren angiver kun et navn (og mængde, når det er fra en ret) — ikke kcal/makroer, som brugeren ikke kan kende. Næringsindholdet står som ukendt, indtil admin har oprettet ingrediensen globalt.
 - Den private ingrediens ligger kun i boksen (samling `privateIngredients`) og vises kun for brugeren selv: øverst i søgningen på Opret ret og på `/ingredients` ("Mine ingredienser": omdøb/slet). I retter bruges produkt-ID `private:<id>`, som aldrig sendes til serveren; retter med egne ingredienser kan ikke deles, før de er gjort globale.
@@ -4552,6 +4561,11 @@ Varer med samme brand, produkttype, serie, variant og smag, der kun adskiller si
 - Billedspærring (brugerregel: billedgenkendelse kun om natten som robot, aldrig i scan-flowet): natjobbet `pet-food-scan` (`src/lib/pet-food-scan.ts`, standard kl. 03:45, admin → Cron-jobs/Robotter) lader AI'en se forsidefotoet af brugeroprettede og ventende varer, der ikke er tjekket (`Product.petFoodCheckedAt`, migration `20261007100000_product_pet_food_checked` skal køre ved deploy). Er emballagen dyrefoder med mindst 75 % sikkerhed, afvises varen via `rejectProduct`; tvivl = ikke dyrefoder, så menneskemad blokeres aldrig på billedet alene. Højst 150 varer pr. nat. Stregkode- og ordspærringen er gratis og kører stadig live. Billedmønstrene fra Fable er beskrevet i `fable-moenstre.md`. Genkør scraper + `build_app_blacklist.py` for at opdatere listerne.
 - Advarsel og spærring (ejerens regel 2026-10-07): en bruger, der bliver taget i at ville oprette dyrefoder (spærret stregkode ved scanning/oprettelse, dyrefoder-ord i det oprettede, eller AI/natrobot ser dyrefoder), får første gang en advarsel på skærmen om, at kontoen spærres, hvis det sker igen. Andet forsøg spærrer kontoen (`User.blockedAt`, `blockedReason`): sessionen afvises på alle enheder (`getSessionUser`), og login afvises med beskeden i alle login-metoder (`completeLogin`; OAuth sendes til `/login?error=account-blocked`). Forsøg gemmes i `pet_food_incidents`; gentagelser inden for 10 minutter (kameraet læser samme kode flere gange) tæller som ét; administratorer rammes ikke; billedsvar fra natrobotten tæller først fra 90 % sikkerhed. Admin → Brugere har et "Spærrede"-filter og en "Spærret"-markering pr. bruger med "Ophæv spærring" (nulstiller tællingen, `petFoodStrikesResetAt`), og Oversigten viser en rød advarsel med antal spærrede konti og forsøg de seneste 7 dage, fordi spærrede brugere skriver til support. Migration `20261007110000_pet_food_strikes` skal køre ved deploy. Logikken ligger i `src/lib/pet-food-strikes.ts`, beskederne i `src/lib/pet-food-messages.ts`.
 - Gennemgang af afvisninger (ejerens krav 2026-10-07): hver afvisning (spærret ved scanning/oprettelse, vare afvist automatisk af AI/natrobot, fund i en eksisterende vare) gemmes i `pet_food_incidents` — også for anonyme og administratorer — og vises i admin-Oversigten som en rød advarsel til gennemsyn, fordi en fejlagtig afvisning kan koste en kunde, der forlader appen. Admin kan "Fejl – frikend" (hændelsen tæller ikke som forsøg, en spærring der kun skyldtes den ophæves, en afvist vare sættes tilbage til afventende), "Var dyrefoder" (set) eller, ved fund i en eksisterende vare, "Afvis vare". Natjobbet `pet-food-scan` gennemgår desuden alle eksisterende varer med stregkode- og ordspærringen (`Product.petFoodTextCheckedAt`, 3.000 pr. nat, kun markering, ingen AI). Migration `20261007120000_pet_food_incident_review` skal køre ved deploy. Test mod eksisterende indhold: ca. 46.700 danske menneskemadrækker (Bilka/Nemlig/SPAR) og ca. 52.000 billedfiler på F: (tysk/dansk menneskemad og EDEKA): det fandt tre mærker, der ramte menneskemad (Butcher's BBQ-kød, Alnatura Kräcker, Sammy's sandwich) — fjernet; ingen af ca. 35.000 stregkode-navngivne billeder på F: ligger på spærrelisten.
+- Fund: de eksisterende Nemlig-ark indeholder ca. 150 dyrefodervarer (Best Friend, Chrisco, Whiskas, Pedigree m.fl.), som er kommet med i madvaredatabasen ved import — bør ryddes, hvis de er importeret.
+## 2026-10-09: Popup ved gammel integrations-synk
+
+- Besluttet: tærskel 3 dage uden synk (`lastSyncedAt`, ellers `connectedAt`) for tilkoblede integrationer (status CONNECTED/ERROR). Kun én popup ad gangen (den ældste), højst ét tjek pr. besøg, ikke på login-, admin-, scan- og integrationssider.
+- "Synkroniser nu" kalder den eksisterende `POST /api/integrations/{slug}/sync`; integrationer uden server-synk (Apple Health, Health Connect, via-mærker) får kun link til deres side, fordi data sendes fra telefonen. Udsættelse gemmes kun i browserens localStorage (bekvemmelighed, ikke sandhed).
 - Dyrefoder-filter i admin og tyske kilder (ejerens krav 2026-10-08): filteret kan ses, afprøves og redigeres under admin → Indstillinger → Dyrefoder-filter (`/admin/pet-food-filter`): tilføj/slå fra/gendan stærke ord, mærker, svage ord og stregkoder, ændr antal svage træf (1-6) og afprøv en tekst/stregkode (viser hvilket udtryk der rammer). Rettelserne gemmes i `pet_food_filter_edits` (migration `20261008160000_pet_food_filter_edits`) oven på standardlisterne i `src/data/pet-food-*.json` og virker inden for ét minut (cache 60 s); uden database gælder standardlisterne. `petFoodBlockReason` m.fl. er derfor async. Kun administratorer med fuld adgang kan ændre; afprøvning er åben for alle admin-niveauer. Tyske kilder scrapet: EDEKA24, Fressnapf, Futterhaus, Zooplus.de, dm (ca. 23.400 produkter); i alt ca. 32.300 produkter og ca. 28.800 foder-stregkoder. Test mod eksisterende tysk/dansk menneskemad (ca. 71.000 tekster, bl.a. 23.700 produktnavne på F:) fandt og fjernede mærkerne Butcher's, Kräcker og Sammy's samt udtrykket "snack cream" (testscriptet sammensatte felter uden skilletegn; appen bruger ` | `). Fuld rapport: `docs/PET-FOOD-FILTER.md`.
 - Fund: de eksisterende Nemlig-ark indeholder ca. 150 dyrefodervarer (Best Friend, Chrisco, Whiskas, Pedigree m.fl.), som er kommet med i madvaredatabasen ved import — bør ryddes, hvis de er importeret.
 ## 2026-10-07 — Billedvalg: fælles `.hf-pick-*`-klasser og "Vælg" under billedet
@@ -4727,6 +4741,13 @@ Google/Apple/Facebook-login og integrationstilkobling kører i system-browseren,
 - Kun generiske varer — almindelige varer med brand/EAN berøres ikke. Se docs/REGLER.md.
 - Ikke gjort endnu: UI skal bruge `displayName`; ental/flertal-kolonner i Bilka-/REMA-arkene; import af de afledte former til eksisterende rækker ud over backfill-listen.
 
+## 2026-10-09 — Pulsudsving: 7 dage, bladring, rødt hjerte i kalenderen
+
+- Spørgsmålet om forhøjet puls (forsiden) spørger kun om de seneste 7 dage og bladrer som vejningerne: pil frem/tilbage mellem alle ubesvarede (`PulseEventSheet`, `GET /api/activities/spike` returnerer `events`).
+- Pulsarket viser øverst dato + start/slut (små) med tidspunktet for højeste puls i midten (stort, fedt), derunder pulsgrafen og træningstypen. Uden valg står "Angiv træningstype"; rækken åbner et bundark med søgefelt (`ActivityPicker`), og samme ark åbnes, når man trykker på den valgte type (skifter aktivitetens sport via `POST /api/activities/spike` med `changeSport`).
+- Kalenderen (måned/uge/liste/ugetidslinje) viser et rødt hjerte på dage med forhøjet puls (ubesvarede + besvarede, 7 dage) ved siden af vægt-ikonet, eller alene hvis man ikke har vejet sig (`PulseEventsProvider`, `GET /api/activities/spike/events`). Tryk på hjertet åbner pulsarket uden at åbne dagen.
+- Vejning: tryk på en vejning åbner allerede bundarket med valg af beklædning (`WeightEntryDetailsSheet`); uændret.
+
 ## 2026-10-09 — Bundmenu-redigering: swipe, kant-rulning og animationer
 
 - I redigering ruller et swipe på et ikon rækken; et stille tryk (250 ms) løfter ikonet. Holdes et løftet ikon ved rækkens kant, ruller rækken kontinuerligt (ingen sidehop, ingen snap).
@@ -4756,3 +4777,43 @@ Google/Apple/Facebook-login og integrationstilkobling kører i system-browseren,
 - Øverst i et emne står emnets "Gå til …"-link som almindeligt understreget link; hvis emnet hører til en guide (`topics` i registret), står knappen "Guide mig" under linket, før beskrivelsen. Siden henter knapperne fra `/api/help/guides`, så en ændring i registret slår igennem uden at HTML-filerne skal rettes.
 - Knappen åbner `/?guide=<id>`; `HelpGuideSpotlight` starter guiden og fjerner parameteren fra adressen.
 - Ny guide til et Hjælpecenter-emne: tilføj emnets `<details id>` i `topics` på guiden (testen tjekker, at emnet findes på alle sprog).
+
+## 2026-10-09: Indlæsning og varer pr. side i admin Varer
+
+- Kortet "Visning" har to nye valg: "Indlæsning" (Sider med Forrige/Næste, eller Uendelig scroll) og "Varer pr. side" (24/48/96/200). URL-parametre `paging=infinite` og `perPage`; standard (sider, 48) udelades. Gemmes med i en gemt visning.
+- Uendelig scroll: `page` betyder antal indlæste portioner; serveren viser portion 1..page, og `InfiniteScrollLoader` hæver `page` når bunden kommer til syne.
+
+## 2026-10-09 — Telefonnummer krypteres; identitet skilles fra fagdata i trin (besluttet af Claude efter brugerens "træf selv en beslutning")
+
+- Spørgsmål: kan e-mail/navn/telefon adskilles, så kun en nøgle kan koble dem til øvrig data? Svar: ja, i tre trin; sidste trin er det stærkeste.
+- **Trin 1 (gjort):** `User.phone` krypteres som email/displayName (AES-256-GCM, `USER_DATA_KEY`, samme Prisma-udvidelse). `phone` kan ikke bruges i `where` på User. Backfill-scriptet krypterer også telefon. `SmsVerification.phone` er korttidsdata og er uændret.
+- **Trin 2 (næste, kræver egen migration):** flyt email/navn/telefon til en `UserIdentity`-tabel; fagdata refererer kun et nøglet pseudonym `HMAC(PSEUDONYM_KEY, userId)`. Koblingen kan kun laves med nøglen. Helst egen database/rolle, så et dump af fagdata ikke afslører identiteter.
+- **Trin 3:** nøgler i KMS/adskilt nøglefil, rotation, krypterede backups med separat nøgle. Ende-til-ende-boksen i `docs/PRIVACY.md` forbliver målet for private data.
+- Begrænsning: ingen af trinene beskytter mod en angriber med fuld kontrol over app-serveren (nøglerne er i hukommelsen). Kun ende-til-ende gør.
+
+## 2026-10-09 — OFF-varer: oversættelse + nyt-billede-banner
+- Open Food Facts-varer uden dansk tekst oversættes automatisk (gpt-4o-mini, `src/lib/translate-da.ts`); original gemmes i `nameOriginal`/`ingredientsOriginal`, `translationStatus=PENDING`.
+- Admin "Nye produkter" viser original og dansk side om side; dansk kan redigeres; "Godkend oversættelse" sætter APPROVED.
+- Banneret "Optjen 10 points" (genscanning) findes allerede for OFF-varer (`product-rescan-offer.ts`).
+- Migration 20261009180000_off_translation_photo skal med deployet.
+
+## 2026-10-09 — Frida-arket er sandheden for Frida-varerne; ental/flertal-titel
+
+- Det færdige Frida-ark (`Frida-ark/frida.xlsx`) publiceres til databasen: nye titler (ental `name` + flertal
+  `namePlural`), nøgleord, _is_-felter og næring pr. FoodID. Varer der er slettet i arket slettes i databasen
+  (skjules, hvis de er refereret). Se docs/FRIDA.md.
+- Ny global søgeregel: flertalssøgning viser `namePlural`, ental viser `name`.
+- Migration `20261009210000_product_name_plural` (`products."namePlural"`).
+
+## 2026-10-09: Børn kan hverken lukke konto eller melde sig ud
+
+Brugerens rettelse: "Et barn kan ikke selv lukke konto — det er kun forælderen. Og barnet kan ikke fravælge at vise detaljer, kun se hvad forælderen får vist."
+
+- **Børn** (`FamilyMember.isChild`, ikke betaleren) kan hverken bruge "Luk konto" / "Ret til at blive glemt" eller "Meld dig ud af familien". Serveren afviser: `POST /api/account/close` giver 403, `leaveFamily` kaster `childCannotLeave` (erstatter `tooYoungToLeave`; ingen 15-års-grænse mere). Knapperne er skjult i web og native (`meIsChild` i `GET /api/family`), og Familie-siden viser en forklaring i stedet.
+- Kun forælderen/betaleren kan fjerne eller slette et barns profil (eksisterende `removeFamilyMember` / `deleteFamilyProfile`).
+- Barnet har ingen kontakter til at skjule detaljer: "Del med andre" er kun visning, og betaleren bestemmer adgangen (uændret).
+- Afløser "Barnet kan melde sig ud" i beslutningen 2026-09-25 og tilsvarende i `docs/FAMILY.md`.
+
+## 2026-10-09 — Hello Doc: udløbsdato vælges med datepicker (ingen fast 14 dage)
+
+Ejeren vælger selv adgangens udløb med en datepicker i Hello Doc-editoren (web + native), med valget "Intet udløb". `DoctorShare.expiresAt` er den valgte dato (til og med den dag) eller `null` = intet udløb. Den faste 14-dages frist er fjernet; udløb gælder både ventende og aktive delinger. "Forny adgang" åbner uden udløbsdato.

@@ -86,6 +86,7 @@ export async function GET(req: Request) {
                   {
                     OR: [
                       { name: { contains: q, mode: "insensitive" } },
+                      { namePlural: { contains: q, mode: "insensitive" } },
                       { brand: { name: { contains: q, mode: "insensitive" } } },
                       ...synonyms.map((s) => ({ name: { contains: s.term, mode: "insensitive" as const } })),
                       // Sukkerpåstande kan søges ("sukkerfri", "uden tilsat sukker",
@@ -260,7 +261,15 @@ export async function GET(req: Request) {
         ? // eslint-disable-next-line @typescript-eslint/no-unused-vars -- deliberately stripped, never sent to the client
           (({ regionSearchStats, ...publicBrand }) => publicBrand)(publicProduct.brand)
         : publicProduct.brand;
-      return { ...publicProduct, brand };
+      // Ental/flertal-søgeregel (2026-10-09): søger brugeren i flertal, vises varens
+      // flertalstitel (namePlural); søger brugeren i ental, vises name (ental).
+      const queryLower = q.toLowerCase();
+      const matchesPlural =
+        Boolean(q) &&
+        Boolean(publicProduct.namePlural) &&
+        publicProduct.namePlural!.toLowerCase().includes(queryLower) &&
+        !publicProduct.name.toLowerCase().includes(queryLower);
+      return { ...publicProduct, name: matchesPlural ? (publicProduct.namePlural as string) : publicProduct.name, brand };
     });
 
     return NextResponse.json({ products: publicProducts, minQueryLength: 2 });

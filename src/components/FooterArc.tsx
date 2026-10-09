@@ -43,6 +43,8 @@ import { FooterArcEditor } from "@/components/FooterArcEditor";
 const LONG_PRESS_MS = 550;
 const MOVE_PX = 8;
 const DEAD_ZONE = 34;
+// Fingeren under denne højde over footerkanten er "tilbage nede": intet er valgt, og cirklen skrumper igen.
+const RETURN_PX = 12;
 const HIGHLIGHT_SCALE = 1.35;
 // Trækker man højere op end cirklen, må fingeren aldrig komme oven på den:
 // den markerede cirkel holdes mindst så højt over fingerspidsen.
@@ -94,7 +96,7 @@ export function FooterArc() {
   const highlightedRef = useRef<string | null>(null);
   const [gesturing, setGesturing] = useState(false);
   // Fingerens placering i forhold til cirklens midte (px opad/til siden) — får kanten til at pose ud og plusset til at følge med.
-  const [finger, setFinger] = useState<{ dx: number; dy: number } | null>(null);
+  const [finger, setFinger] = useState<{ dx: number; dy: number; top: number } | null>(null);
   const [editing, setEditing] = useState(false);
   const [menuSheetOpen, setMenuSheetOpen] = useState(false);
   const gestureRef = useRef<Gesture | null>(null);
@@ -187,18 +189,20 @@ export function FooterArc() {
     const px = event.clientX - rect.left;
     const py = rect.top - event.clientY; // px opad fra footerkanten
     const center = baseCx;
-    setFinger({ dx: px - center, dy: py });
-    if (Math.hypot(px - center, py) < DEAD_ZONE) {
+    setFinger({ dx: px - center, dy: py, top: rect.top });
+    if (py < RETURN_PX || Math.hypot(px - center, py) < DEAD_ZONE) {
       setHighlight(null);
       return;
     }
+    // Valget går på retning fra cirklen, ikke afstand: fingeren helt ude til siden rammer altid den yderste knap.
+    const fingerDeg = (Math.atan2(px - center, Math.max(1, py)) * 180) / Math.PI;
     let nearest: string | null = null;
     let best = Infinity;
     slots.forEach((slot, index) => {
       const c = slotCenter(index);
-      const distance = Math.hypot(px - c.x, py - c.y);
-      if (distance < best) {
-        best = distance;
+      const diff = Math.abs(fingerDeg - (Math.atan2(c.x - center, Math.max(1, c.y)) * 180) / Math.PI);
+      if (diff < best) {
+        best = diff;
         nearest = slot.key;
       }
     });
@@ -272,7 +276,19 @@ export function FooterArc() {
     if (gesture.mode === "pull") {
       // Så snart fingeren er trukket opad, springer cirklen og knapperne
       // straks til fuld størrelse — ingen animation, ingen gradvis vækst.
-      if (!gesture.expanded && gesture.startY - event.clientY > 0) {
+      const rect = wrapRef.current?.getBoundingClientRect();
+      const back = rect ? rect.top - event.clientY < RETURN_PX : false;
+      if (gesture.expanded && back) {
+        // Fingeren er bragt tilbage ned: cirklen bliver lille igen og intet er valgt.
+        gesture.expanded = false;
+        openRef.current = false;
+        setOpen(false);
+        setP(0);
+        setHighlight(null);
+        setFinger(null);
+        return;
+      }
+      if (!gesture.expanded && !back && gesture.startY - event.clientY > 0) {
         gesture.expanded = true;
         openRef.current = true;
         setOpen(true);
@@ -324,13 +340,17 @@ export function FooterArc() {
   const hitHeight = Math.max(44, visibleHeight);
   const bulgeActive = Boolean(finger) && progress > 0.3;
   const fingerDistance = finger ? Math.hypot(finger.dx, finger.dy) : 0;
-  const bulgeDeg = finger ? (Math.atan2(finger.dx, Math.max(1, finger.dy)) * 180) / Math.PI : null;
+  // Som venstre-cirklen: kanten poser mod den markerede knap (ikke mod den rå fingerposition).
+  const bulgeDeg =
+    highlightedIndex >= 0
+      ? (Math.atan2(drawLayout[highlightedIndex].x - cx, Math.max(1, drawLayout[highlightedIndex].y)) * 180) / Math.PI
+      : null;
   const bulgeAmount = bulgeActive ? ARC_BULGE_MAX * Math.min(1, fingerDistance / (ARC_RADIUS * 1.5)) : 0;
-  // Plusset følger fingeren lidt (højere op, jo længere op fingeren er).
+  // Plusset bæres af fingeren (som fingeraftrykket i venstre-cirklen), men holdes inden for cirklen.
   const plusFollows = Boolean(finger) && progress > 0.1;
-  const plusLeft = plusFollows && finger ? cx + clamp(finger.dx * 0.4, -ARC_RADIUS * 0.5, ARC_RADIUS * 0.5) : cx;
+  const plusLeft = plusFollows && finger ? cx + clamp(finger.dx, -ARC_RADIUS * 0.55, ARC_RADIUS * 0.55) : cx;
   const plusBottom =
-    plusFollows && finger ? Math.max(visibleHeight / 2, Math.min(finger.dy * 0.5, visibleHeight * 0.8)) : visibleHeight / 2;
+    plusFollows && finger ? Math.max(visibleHeight / 2, Math.min(finger.dy, visibleHeight * 0.8)) : visibleHeight / 2;
 
   return (
     <div ref={wrapRef} className="pointer-events-none relative z-30 h-0 w-full select-none [-webkit-touch-callout:none]">
@@ -383,7 +403,7 @@ export function FooterArc() {
         // Den markerede knap må aldrig ende under fingeren: hold den over fingerspidsen.
         let centerY = base.y;
         if (highlighted && finger) {
-          const roomAbove = (wrapRef.current?.getBoundingClientRect().top ?? Infinity) - TOP_ROOM;
+          const roomAbove = finger.top - TOP_ROOM;
           centerY = Math.max(centerY, Math.min(finger.dy + FINGER_CLEARANCE, Math.max(centerY, roomAbove)));
         }
         const center = { x: base.x, y: centerY };
@@ -439,7 +459,13 @@ export function FooterArc() {
             {highlighted &&
               (() => {
                 const w = labelWidth(slot.label);
-                const spot = labelPlacement(drawLayout, index, baseCx, width, w);
+                const spot = labelPlacement(
+                  drawLayout.map((p, i) => (i === index ? center : p)),
+                  index,
+                  baseCx,
+                  width,
+                  w,
+                );
                 return (
                   <span
                     aria-hidden="true"

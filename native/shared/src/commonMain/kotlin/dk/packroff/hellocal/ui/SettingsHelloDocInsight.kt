@@ -122,7 +122,7 @@ private fun helloDocInitials(name: String): String =
 
 /** HelloDocInsight: profile column (hf-insight__aside hf-card) + chart grid. */
 @Composable
-fun SettingsHelloDocInsight(data: SettingsHelloDocInsightData, modifier: Modifier = Modifier, greeting: String? = null) {
+fun SettingsHelloDocInsight(data: SettingsHelloDocInsightData, modifier: Modifier = Modifier, greeting: String? = null, layout: HelloDocDashboardLayout? = null) {
     val t = LocalTranslator.current
     val hasFacts = data.weight != null || data.goals != null || data.sleep != null
     val shape = RoundedCornerShape(HcDimens.RadiusCard)
@@ -193,50 +193,52 @@ fun SettingsHelloDocInsight(data: SettingsHelloDocInsightData, modifier: Modifie
             }
         }
 
-        SettingsHelloDocInsightGrid(data)
+        SettingsHelloDocInsightGrid(data, layout)
     }
 }
 
 /** InsightGrid: one panel per shared category (1 column on phones). */
 @Composable
-fun SettingsHelloDocInsightGrid(data: SettingsHelloDocInsightData) {
+fun SettingsHelloDocInsightGrid(data: SettingsHelloDocInsightData, layout: HelloDocDashboardLayout? = null) {
     val t = LocalTranslator.current
     val noData = t.t("helloDoc.preview.noChartData")
     val nutrition = data.dailyNutrition
 
     Column(Modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(HcDimens.SpaceBlock)) {
-        val weight = data.weight
-        if (weight != null) {
-            HelloDocInsightPanel(t.t("helloDoc.preview.weightSection")) {
-                SettingsHelloDocMiniLineChart(weight.history.map { it.weightKg }, emptyLabel = noData)
-            }
-        }
-        if (nutrition != null && data.showFood) {
-            HelloDocInsightPanel(t.t("helloDoc.preview.foodSection"), footnote = "${t.t("helloDoc.preview.kcalUnit")}/dag") {
-                SettingsHelloDocMiniBarChart(nutrition.map { it.kcal.roundToLong().toDouble() }, emptyLabel = noData)
-            }
-        }
-        if (nutrition != null && data.showVitamins) {
-            // Vitamin A, Vitamin C, Calcium, Jern, Kalium — summed over the period.
-            val values = if (nutrition.isEmpty()) {
-                emptyList()
-            } else {
-                listOf(
-                    nutrition.sumOf { it.vitaminA },
-                    nutrition.sumOf { it.vitaminC },
-                    nutrition.sumOf { it.calcium },
-                    nutrition.sumOf { it.iron },
-                    nutrition.sumOf { it.potassium },
-                ).map { it.roundToLong().toDouble() }
-            }
-            HelloDocInsightPanel(t.t("helloDoc.preview.vitaminsSection")) {
-                SettingsHelloDocMiniBarChart(values, color = HcColors.Appbar, emptyLabel = noData)
-            }
-        }
-        val fluid = data.fluidHistory
-        if (fluid != null) {
-            HelloDocInsightPanel(t.t("helloDoc.preview.fluidSection")) {
-                SettingsHelloDocMiniBarChart(fluid.map { it.valueMl }, color = HcColors.Google, emptyLabel = noData)
+        for (id in layout?.visible() ?: HelloDocPanels) {
+            when (id) {
+                "weight" -> data.weight?.let { weight ->
+                    HelloDocInsightPanel(t.t("helloDoc.preview.weightSection")) {
+                        SettingsHelloDocMiniLineChart(weight.history.map { it.weightKg }, emptyLabel = noData)
+                    }
+                }
+                "food" -> if (nutrition != null && data.showFood) {
+                    HelloDocInsightPanel(t.t("helloDoc.preview.foodSection"), footnote = "${t.t("helloDoc.preview.kcalUnit")}/dag") {
+                        SettingsHelloDocMiniBarChart(nutrition.map { it.kcal.roundToLong().toDouble() }, emptyLabel = noData)
+                    }
+                }
+                "vitamins" -> if (nutrition != null && data.showVitamins) {
+                    // Vitamin A, Vitamin C, Calcium, Jern, Kalium — summed over the period.
+                    val values = if (nutrition.isEmpty()) {
+                        emptyList()
+                    } else {
+                        listOf(
+                            nutrition.sumOf { it.vitaminA },
+                            nutrition.sumOf { it.vitaminC },
+                            nutrition.sumOf { it.calcium },
+                            nutrition.sumOf { it.iron },
+                            nutrition.sumOf { it.potassium },
+                        ).map { it.roundToLong().toDouble() }
+                    }
+                    HelloDocInsightPanel(t.t("helloDoc.preview.vitaminsSection")) {
+                        SettingsHelloDocMiniBarChart(values, color = HcColors.Appbar, emptyLabel = noData)
+                    }
+                }
+                "fluid" -> data.fluidHistory?.let { fluid ->
+                    HelloDocInsightPanel(t.t("helloDoc.preview.fluidSection")) {
+                        SettingsHelloDocMiniBarChart(fluid.map { it.valueMl }, color = HcColors.Google, emptyLabel = noData)
+                    }
+                }
             }
         }
     }

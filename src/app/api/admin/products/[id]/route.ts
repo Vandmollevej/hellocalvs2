@@ -40,6 +40,9 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
   const productType = parseOptionalText(body.productType);
   const subbrand = parseOptionalText(body.subbrand);
   const variant = parseOptionalText(body.variant);
+  const ingredientsText = parseOptionalText(body.ingredientsText);
+  // Admin har gennemgået den automatiske oversættelse side om side med originalen.
+  const translationApproved = body.translationApproved === true;
 
   if (name !== undefined && !name) {
     return NextResponse.json({ message: "Navn må ikke være tomt" }, { status: 400 });
@@ -65,6 +68,8 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
       ...(productType !== undefined ? { productType } : {}),
       ...(subbrand !== undefined ? { subbrand } : {}),
       ...(variant !== undefined ? { variant } : {}),
+      ...(ingredientsText !== undefined ? { ingredientsText } : {}),
+      ...(translationApproved ? { translationStatus: "APPROVED" } : {}),
     },
     include: { brand: true, images: { orderBy: { order: "asc" } } },
   });

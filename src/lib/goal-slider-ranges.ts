@@ -22,6 +22,20 @@ export function nutritionSliderRange(field: string): GoalSliderRange {
   return NUTRITION[field] ?? { min: 0, max: 100, step: 1 };
 }
 
+const ACTIVITY: Record<string, GoalSliderRange> = {
+  stepsPerDay: { min: 1000, max: 30000, step: 500 },
+  activeMinutesPerWeek: { min: 30, max: 600, step: 10 },
+  strengthDaysPerWeek: { min: 1, max: 7, step: 1 },
+  workoutsPerWeek: { min: 1, max: 14, step: 1 },
+  runKmPerWeek: { min: 1, max: 100, step: 1 },
+  cycleKmPerWeek: { min: 5, max: 400, step: 5 },
+  heartRateAboveBpm: { min: 80, max: 190, step: 1 },
+};
+
+export function activitySliderRange(field: string): GoalSliderRange {
+  return ACTIVITY[field] ?? { min: 0, max: 100, step: 1 };
+}
+
 export function weightSliderRange(unit: "kg" | "lb"): GoalSliderRange {
   return unit === "kg" ? { min: 30, max: 200, step: 0.5 } : { min: 66, max: 440, step: 1 };
 }

@@ -105,6 +105,7 @@ internal data class MonthlyStatusData(
     val goalSum: Double,
     val consumed: Double,
     val bonusKcal: Double,
+    val periodStatus: GoalStatusKind,
 )
 
 internal fun monthlyStatus(year: Int, month: Int, today: LocalDate, totals: Map<LocalDate, Double>, goals: GoalLookup): MonthlyStatusData {
@@ -123,6 +124,24 @@ internal fun monthlyStatus(year: Int, month: Int, today: LocalDate, totals: Map<
         if (total > 0 && total <= goals.effective(date)) metCount += 1
     }
     val remaining = goalSum + bonusKcal - consumed
+    // Status: gennemsnit af forgangne dage med registreringer mod gennemsnitligt dagsmål (i dag tæller ikke med).
+    val lastPastDay = if (isCurrentMonth) today.dayOfMonth - 1 else daysInMonth(year, month)
+    var pastLoggedDays = 0
+    var pastIntake = 0.0
+    var pastGoal = 0.0
+    for (day in 1..lastPastDay) {
+        val date = LocalDate(year, month, day)
+        val total = totals.kcalOn(date)
+        if (total <= 0) continue
+        pastLoggedDays += 1
+        pastIntake += total
+        pastGoal += goals.effective(date)
+    }
+    val periodStatus = when {
+        pastLoggedDays == 0 -> GoalStatusKind.None
+        pastIntake / pastLoggedDays <= pastGoal / pastLoggedDays -> GoalStatusKind.Met
+        else -> GoalStatusKind.Missed
+    }
     var sevenDayConsumed = 0.0
     var sevenDayGoal = 0.0
     for (offset in 0 until 7) {
@@ -131,7 +150,7 @@ internal fun monthlyStatus(year: Int, month: Int, today: LocalDate, totals: Map<
     }
     var streak = 0
     while (dailyGoalMet(totals, today.plusDays(-streak), goals.effective(today.plusDays(-streak)))) streak += 1
-    return MonthlyStatusData(isCurrentMonth, consideredDays, metCount, remaining, sevenDayGoal - sevenDayConsumed, streak, goalSum, consumed, bonusKcal)
+    return MonthlyStatusData(isCurrentMonth, consideredDays, metCount, remaining, sevenDayGoal - sevenDayConsumed, streak, goalSum, consumed, bonusKcal, periodStatus)
 }
 
 // ---------- Sleep ----------

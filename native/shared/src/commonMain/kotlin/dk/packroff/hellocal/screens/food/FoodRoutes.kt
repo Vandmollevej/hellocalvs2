@@ -19,8 +19,6 @@ object FoodRoutes {
         ScreenRoute("/foods/new") { FoodsNewScreen(it) },
         ScreenRoute("/drinks") { DrinksScreen(it) },
         ScreenRoute("/drinks/[id]") { DrinkDetailScreen(it) },
-        ScreenRoute("/ingredients") { IngredientsScreen(it) },
-        ScreenRoute("/ingredients/new") { IngredientNewScreen(it) },
         ScreenRoute("/create-dish") { CreateDishScreen(it) },
         ScreenRoute("/product/create") { ProductCreateScreen(it) },
     )

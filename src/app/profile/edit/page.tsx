@@ -15,6 +15,7 @@ import { latestTrendWeight, type MealSample, type WeightSample } from "@/lib/wei
 import { computeAge } from "@/lib/age";
 import { ACTIVITY_LEVELS, type ActivityLevel } from "@/lib/activity-level";
 import { useTranslation } from "@/i18n/LocaleProvider";
+import { useFamilyStatus } from "@/components/family/FamilyStatusProvider";
 import { cmToIn, formatLength, formatWeight, inToCm, useUnits, weightUnitLabel } from "@/lib/units";
 import { formatPhone, validatePhone } from "@/lib/phone";
 import { FaceIdButton } from "@/components/FaceIdButton";
@@ -124,6 +125,7 @@ const inputClass =
 
 export default function ProfileEditPage() {
   const { t } = useTranslation();
+  const family = useFamilyStatus();
   const router = useRouter();
   const units = useUnits();
   const [user, setUser] = useState<ProfileUser | null>(null);
@@ -438,7 +440,7 @@ export default function ProfileEditPage() {
             <FaceIdButton />
           </div>
 
-          <AccountDeletionSection />
+          {!family.status?.meIsChild && <AccountDeletionSection />}
         </div>
       )}
     </HfScreen>

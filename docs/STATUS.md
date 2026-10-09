@@ -8,6 +8,35 @@ Last updated: 2026-10-09
 - Tjekket: `tsc`, eslint på de ændrede filer, `node --test src/lib/screenings.test.mjs`, `parity.mjs` og `sync.mjs --check` er grønne. Kotlin og `npm run build` er ikke kørt her (se overleveringen); migrationen skal med deployet. Notifikationsudsendelsen er ikke bygget.
 - Migræne som eget menupunkt i Tilføj med til/fra under Visning (første ønske) er afløst af denne funktion: migræne er nu en forudlavet screening.
 
+## 2026-10-09: Børn kan ikke lukke konto eller melde sig ud
+
+- Kun forælderen kan lukke/fjerne et barns konto. Serveren afviser børn på `/api/account/close` (403) og `leaveFamily` (`childCannotLeave`); "Luk konto"/"Slet mine data" og "Meld dig ud" er skjult for børn i web og native (`meIsChild` fra `/api/family`). Barnet kan kun se, hvad forælderen viser (uændret). Se DECISIONS.md samme dato. Lint, tsc og native-paritet grønne; Kotlin ikke kompileret lokalt; ikke prøvet mod rigtig database.
+
+## 2026-10-09: "Opret egen ingrediens" fjernet
+
+- Fjernet i web og native: siderne `/ingredients` ("Mine ingredienser") og `/ingredients/new`, tekstlinket under Opret ret og egne ingredienser i søgningen på Opret ret. Backend (`/api/private-ingredients`, admin "Ønskede ingredienser"), tabeller og eksisterende `private:`-ingredienser i retter er bevidst urørt (kun brugerindgangen er væk). Lint, tsc og native-paritet grønne; Kotlin ikke kompileret lokalt.
+
+## 2026-10-09: Hello Doc — disclaimer væk + sammensæt dashboard
+
+- Disclaimer-teksten nederst i lægevisningen (og forhåndsvisningens indledende note) er fjernet i web og native.
+- Burger-menu øverst til højre (`InsightMenu`, native `HelloDocDashboardMenu`): vis/skjul og flyt paneler op/ned; valget gemmes på enheden (`src/lib/insight-layout.ts`).
+- Lint, tsc og build grønne; Kotlin er ikke kompileret her (kun CI/Android Studio). Ikke testet i browser.
+## 2026-10-09: "Tilføj egen måling" i tal-hjulet
+
+- Indstillinger → Visning → Forside har øverst knappen "Tilføj egen måling" (bundark): navn og beskrivelse, parameter (søgbar liste over kalorier, næringsstoffer, skridt, søvn, puls, kropsmål m.m.), periode (i dag, i går, seneste 7/30 dage, denne/sidste uge, måned, år) og en tekst under tallet (højst 2 linjer á 15 tegn, foreslås ud fra parameteren).
+- Egne målinger gemmes pr. enhed (`hellocal.frontpage.customMeasurements`) og vises som egne rækker i tal-hjulet på forsiden. Perioder over én dag viser dagsgennemsnit. Kode: `src/lib/custom-measurements.ts`, `src/lib/custom-measure-text.ts` (+ test), `src/components/CustomMeasureSection.tsx`, `StatsWheel.tsx`; native: `CustomMeasurements.kt`, `CustomMeasureSection.kt`, `HomeStatsWheel.kt`.
+- `customMeasure.*` er oversat til da/en; de/fr/nl/sv/no har foreløbig engelsk tekst. Lint, tsc og native-paritet grønne; Kotlin ikke kompileret lokalt (CI bygger). Ikke visuelt testet.
+- Åbent fra statistik-kortene (ikke lavet endnu, venter på brugerens svar): "Screening-status seneste 7 dage", skridt vs. mål (kræver skridtmål), minutter i valgt pulszone.
+## 2026-10-09: Alle kropsmålinger en integration kan levere
+
+- Huawei Health (`bodyWater`, `boneMass`, `visceralFat`) og Apple Health (`fatFreeMass`) har fået de manglende til/fra-rækker i `SYNC_CAPABILITIES`. Før blev målingerne hentet, men sorteret fra, fordi rækken ikke fandtes. Garmin sendte knoglemasse to gange pr. vejning; dublet fjernet.
+- Understøttes ikke af leverandørens API (intet at hente): muskelmasse fra Health Connect og Apple Health, kropsvand og muskler fra Fitbit og Google Health, kropssammensætning fra Polar, WHOOP og Strava. Withings' segmentmålinger pr. arm/ben (173-175) er stadig ikke med (kræver nye `HealthMetricType`).
+
+
+## 2026-10-09: Popup ved gammel integrations-synk
+
+- Ny `src/components/StaleSyncPrompt.tsx` (monteret i `layout.tsx`): er en tilkoblet integration (fx smartvægt via Withings/Google Health) ikke synkroniseret i over 3 dage, kommer en popup med "Synkroniser nu" (cloud-integrationer) eller link til integrationens side (companion/via). "Senere" udsætter pr. integration i et døgn. Tekster på alle 7 sprog (`staleSyncPrompt.*`). Se `docs/DECISIONS.md` 2026-10-09.
+- Sådan ser brugeren synk-status i dag: Indstillinger → Integrationer → appen viser "Sidst synkroniseret …" og fejl. Lint og typecheck uden fejl; ikke live-testet (ingen lokal DB/login).
 ## 2026-10-09: Periodevalg som dropdown
 
 - Søvn- og Væskestatistik bruger nu dropdown (`src/components/hf/StatPeriodSelect.tsx`) i stedet for periodeknapper. Ikke kørt lint/build/visuelt: `node_modules` mangler i dette cloud-miljø.
@@ -70,6 +99,11 @@ Last updated: 2026-10-08
 ## 2026-10-09: Startmængde — instantkaffe 2 g og aldrig over pakkens indhold
 
 - `default-amount.ts` (+ native `FoodLogic.kt`): instantkaffe → 2 g; forslaget kappes ved pakkens vægt/volumen. Test: `node --test src/lib/default-amount.test.mjs` (14 grønne). Lint/build ikke kørt (ingen node_modules her); Kotlin ikke kompileret lokalt.
+
+## 2026-10-09: Pulsudsving — bladring og rødt hjerte i kalenderen
+
+- Pulsspørgsmålet (7 dage) bladrer frem/tilbage; nyt fælles ark `PulseEventSheet` (peak-tid, graf, "Angiv træningstype" i bundark). Kalenderen har røde hjerter på dage med forhøjet puls. Se DECISIONS 2026-10-09.
+- Ikke testet i browser/mod rigtig database (kræver login + pulsdata). Kun da/en-tekster tilføjet; øvrige sprog falder tilbage til engelsk.
 
 ## 2026-10-08: Adgangsmur mod crawlere
 
@@ -6185,6 +6219,8 @@ Ikke bygget: Valdemarsro-import til app-databasen, Valdemarsro-detaljevisning ("
 Ny `valdemarsro-agent` (scripts/valdemarsro-agent, compose.production.yaml, build.yml, jobs-registret), model `RecipeSourceUrl` (migration 20261008130000_recipe_source_urls), "Gå til opskrift"-knap i AddProductView, admin Retter → Valdemarsro viser data. Parsingen er testet mod en rigtig Valdemarsro-side; agenten er IKKE kørt mod databasen eller i Docker endnu — første nat henter 150 retter, resten over de følgende nætter (sæt VALDEMARSRO_AGENT_BATCH_SIZE højere for hurtigere start). Kræver deploy, så containeren bygges og migrationen kører.
 
 
+- 2026-10-09: Trækstreg i bundark tilpasset iOS (36 × 4 px, 8 px over / 16 px under) på web (`.hf-bottom-sheet__grab`, HfAccessSheet) og native (`HcBottomSheet` dragHandle). Kalenderens nat/dag-håndtag uændret.
+
 ## 2026-10-08 — Ental/flertal for generiske ingredienser (database + API)
 
 Skema, migration, `src/lib/danish-number.ts` og søgning/oprettelse er lavet (se DECISIONS.md samme dato). `prisma validate` og ESLint på de ændrede filer er grønne; `npm run build` og typecheck er ikke kørt (ingen genereret Prisma-klient i arbejdskopien). Mangler: UI skal vise `displayName`, ental/flertal i arkene, billedomdøbning.
@@ -6197,3 +6233,5 @@ Skema, migration, `src/lib/danish-number.ts` og søgning/oprettelse er lavet (se
 
 - 2026-10-09: Tilføj-menu: teksten lå oven på ikonerne (dobbelt negativ margin fra #287). Overlappet fjernet på web (`AddMenuList.tsx`) og native (`AddMenu.kt`).
 - 2026-10-09: Halvcirklen over footeren kan ikke længere trækkes til siden (web + native); står altid midt over footeren.
+
+- 2026-10-09: Master bragt i takt igen efter #314/#315: lint-fejlen i `FooterArc.tsx` rettet (fingerens top gemmes i state i stedet for at læse ref under render), og paritet accepteret for alle skærme. Native (`HomeFooterArc.kt`, `HomeWeighInPrompts.kt`) var allerede opdateret i #305–#315; kun godkendelserne manglede.

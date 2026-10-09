@@ -48,7 +48,8 @@ on the web must be carried over to the native screen in the same task:
   decision, required authorization, or an exact external blocker.
 - Ask the user questions only in the big question box (the AskUserQuestion
   tool), never as plain text at the end of a reply — the user does not see
-  them otherwise (user rule 2026-09-26).
+  them otherwise (user rule 2026-09-26); repeated 2026-10-09: plain-text questions give no yellow dot, so
+  the user never sees them. Never interrupt a task with one).
 - Stop ikke midtvejs: færdiggør opgaven helt, med mindre det kan konflikte med andet arbejde (user rule 2026-10-05). Hvis der er noget at vente på (CI, review), så tjek PR'en med få minutters mellemrum og flet den ind, så snart det er muligt.
 - Afslut hver færdig opgave med teksten "arkiver mig" og ingen anden tekst (user rule 2026-10-05).
 - ALLE opgaver auto-arkiveres UMIDDELBART, så snart de melder klar (eller har meldt klar) til arkivering: kald `archive_session` i samme tur som "arkiver mig", uden at vente på svar, test eller bekræftelse. Er en tidligere session allerede meldt klar uden at være arkiveret, så arkivér den nu (user rule 2026-10-09, gentaget).

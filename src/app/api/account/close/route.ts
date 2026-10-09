@@ -5,6 +5,7 @@ import { closeAccount } from "@/lib/account-closure";
 import { USER_SESSION_COOKIE } from "@/lib/user-auth";
 import { isConfirmWord } from "@/lib/confirm-words";
 import { ACTIVE_PROFILE_COOKIE } from "@/lib/family-access";
+import { isChildMember } from "@/lib/family";
 
 // Brugerens egen "Luk konto" og "Ret til at blive glemt" (nederst på Profil).
 // "Luk konto" kan fortrydes ved at logge ind inden for 3 måneder
@@ -14,6 +15,11 @@ import { ACTIVE_PROFILE_COOKIE } from "@/lib/family-access";
 export async function POST(req: Request) {
   const user = await getSessionUser();
   if (!user) return unauthorized();
+
+  // Kun forælderen kan lukke eller slette et barns konto (brugerens regel 2026-10-09).
+  if (await isChildMember(user.id)) {
+    return NextResponse.json({ message: "Kun en forælder kan lukke et barns konto" }, { status: 403 });
+  }
 
   const body = (await req.json().catch(() => ({}))) as { mode?: string; confirm?: string };
   if (body.mode !== "close" && body.mode !== "forget") {

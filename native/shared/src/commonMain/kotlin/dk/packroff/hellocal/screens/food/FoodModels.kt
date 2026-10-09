@@ -164,6 +164,8 @@ data class RegistrationDto(
     val cholesterolSnapshot: Double? = null,
     val vitaminASnapshot: Double? = null,
     val vitaminCSnapshot: Double? = null,
+    /** Every nutrient in src/lib/nutrients.ts (per registration); used by the user's own wheel measurements. */
+    val nutrientSnapshot: Map<String, Double>? = null,
     val amountGrams: Double = 0.0,
     val createdAt: String = "",
     val productId: String? = null,

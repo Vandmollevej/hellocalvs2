@@ -739,8 +739,8 @@ Standard for alle screen-overlays og popups (KRAV.md "Bundark"). Klasse
 - Scrim `--hf-color-overlay`; panel `--hf-color-page`, radius 16 px foroven
   (bevidst undtagelse fra §5.3), maks. højde = skærm − safe-area − 24 px;
   `--full` fylder den højde.
-- Trækstreg: 40 × 4 px, `--hf-gray`, rund, 12 px over / 16 px under — samme
-  streg som kalenderens nat/dag-håndtag.
+- Trækstreg: 36 × 4 px, `--hf-gray`, rund, 8 px over / 16 px under — målt efter
+  iOS' native ark (2026-10-09). Kalenderens nat/dag-håndtag er en separat linje.
 - Titel (valgfri) `.hf-type-page-title`, centreret. Fast bund med 16 px
   padding: prikker 8 px (aktiv brand-grøn), primær knap i fuld bredde og
   tekstknap `.hf-bottom-sheet__skip` (48 px, fed).

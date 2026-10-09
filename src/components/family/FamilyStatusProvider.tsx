@@ -24,6 +24,8 @@ export type FamilyMemberInfo = {
 
 export type FamilyStatus = {
   me: { id: string; displayName: string };
+  // Børn kan ikke selv lukke kontoen eller melde sig ud (kun forælderen).
+  meIsChild: boolean;
   activeProfile: FamilyProfile;
   profiles: FamilyProfile[];
   family: {

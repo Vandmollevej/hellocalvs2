@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { groupByDay } from "@/lib/daily-totals";
-import { historyRangeToDays, isDoctorSharePendingExpired, sanitizeDoctorShareCategories } from "@/lib/doctor-share";
+import { historyRangeToDays, isDoctorShareExpired, sanitizeDoctorShareCategories } from "@/lib/doctor-share";
 
 // The real, login-free view a doctor/dietitian opens from the invitation
 // e-mail's link (docs/STATUS.md "Next work" #12A, docs/DECISIONS.md
@@ -24,7 +24,7 @@ export async function GET(request: Request, { params }: { params: Promise<{ toke
   if (!share) return NextResponse.json({ status: "NOT_FOUND" }, { status: 404 });
 
   let status = share.status;
-  if (isDoctorSharePendingExpired(share)) {
+  if (isDoctorShareExpired(share)) {
     status = "EXPIRED";
     await prisma.doctorShare.update({ where: { id: share.id }, data: { status: "EXPIRED" } });
   }
@@ -140,7 +140,7 @@ export async function POST(_request: Request, { params }: { params: Promise<{ to
   if (share.status !== "PENDING") {
     return NextResponse.json({ status: share.status });
   }
-  if (isDoctorSharePendingExpired(share)) {
+  if (isDoctorShareExpired(share)) {
     await prisma.doctorShare.update({ where: { id: share.id }, data: { status: "EXPIRED" } });
     return NextResponse.json({ status: "EXPIRED" });
   }

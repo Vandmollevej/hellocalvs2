@@ -337,6 +337,13 @@
       "note": "Admin er et skrivebordsværktøj og bliver på web."
     },
     {
+      "route": "/admin/messaging/kladde",
+      "web": "src/app/admin/messaging/kladde/page.tsx",
+      "status": "web-only",
+      "native": [],
+      "note": "Admin er et skrivebordsværktøj og bliver på web."
+    },
+    {
       "route": "/admin/page-tree",
       "web": "src/app/admin/page-tree/page.tsx",
       "status": "web-only",
@@ -528,6 +535,13 @@
     {
       "route": "/admin/scan-invites/[id]",
       "web": "src/app/admin/scan-invites/[id]/page.tsx",
+      "status": "web-only",
+      "native": [],
+      "note": "Admin er et skrivebordsværktøj og bliver på web."
+    },
+    {
+      "route": "/admin/scan-invites/afvisningsaarsager",
+      "web": "src/app/admin/scan-invites/afvisningsaarsager/page.tsx",
       "status": "web-only",
       "native": [],
       "note": "Admin er et skrivebordsværktøj og bliver på web."
@@ -823,22 +837,6 @@
       "status": "ported",
       "native": [
         "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/onboarding/HelloDocTokenScreen.kt"
-      ]
-    },
-    {
-      "route": "/ingredients",
-      "web": "src/app/ingredients/page.tsx",
-      "status": "ported",
-      "native": [
-        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/food/FoodsScreens.kt"
-      ]
-    },
-    {
-      "route": "/ingredients/new",
-      "web": "src/app/ingredients/new/page.tsx",
-      "status": "ported",
-      "native": [
-        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/food/FoodsScreens.kt"
       ]
     },
     {

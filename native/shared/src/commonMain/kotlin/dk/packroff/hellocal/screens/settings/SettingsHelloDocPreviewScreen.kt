@@ -1,7 +1,6 @@
 package dk.packroff.hellocal.screens.settings
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -30,13 +29,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.Popup
-import androidx.compose.ui.window.PopupProperties
 import dk.packroff.hellocal.api.Api
 import dk.packroff.hellocal.api.ApiJson
 import dk.packroff.hellocal.api.Session
@@ -57,6 +51,8 @@ import dk.packroff.hellocal.ui.SettingsHelloDocSleep
 import dk.packroff.hellocal.ui.SettingsPagePadding
 import dk.packroff.hellocal.ui.icons.HcIcon
 import kotlinx.coroutines.CancellationException
+import dk.packroff.hellocal.ui.HelloDocDashboardMenu
+import dk.packroff.hellocal.ui.rememberHelloDocDashboardLayout
 import kotlinx.coroutines.launch
 
 /**
@@ -74,7 +70,7 @@ fun SettingsHelloDocPreviewScreen(args: RouteArgs) {
     var data by remember { mutableStateOf<SettingsHelloDocPreviewDto?>(null) }
     var error by remember { mutableStateOf(false) }
     var range by remember { mutableStateOf("ALL") }
-    var menuOpen by remember { mutableStateOf(false) }
+    val layout = rememberHelloDocDashboardLayout()
 
     LaunchedEffect(range) {
         try {
@@ -87,7 +83,6 @@ fun SettingsHelloDocPreviewScreen(args: RouteArgs) {
     }
 
     fun logOut() {
-        menuOpen = false
         scope.launch {
             Session.logout()
             nav.resetTo("/login")
@@ -108,38 +103,14 @@ fun SettingsHelloDocPreviewScreen(args: RouteArgs) {
                 HcIcon("ChevronLeft", size = 22.dp, stroke = 2.5f, color = HcColors.Black, contentDescription = t.t("common.back"))
             }
             HcText("Hello Doc", HcTypeRoles.Title)
-            Box {
-                Box(
-                    Modifier.size(44.dp).clip(CircleShape).clickable { menuOpen = !menuOpen },
-                    contentAlignment = Alignment.Center,
-                ) {
-                    HcIcon("Menu2", size = 22.dp, stroke = 2f, color = HcColors.Black, contentDescription = t.t("helloDoc.preview.menuView"))
-                }
-                if (menuOpen) {
-                    val offsetY = with(LocalDensity.current) { 48.dp.roundToPx() }
-                    Popup(
-                        alignment = Alignment.TopEnd,
-                        offset = IntOffset(0, offsetY),
-                        onDismissRequest = { menuOpen = false },
-                        properties = PopupProperties(focusable = true),
-                    ) {
-                        val shape = RoundedCornerShape(HcDimens.RadiusCard)
-                        Column(
-                            Modifier.width(208.dp).shadow(8.dp, shape).clip(shape).background(HcColors.Surface, shape)
-                                .border(1.dp, HcColors.Nav, shape).padding(4.dp),
-                            verticalArrangement = Arrangement.spacedBy(2.dp),
-                        ) {
-                            // Hjælp and Visning have no action on the web yet either.
-                            HelloDocPreviewMenuRow(t.t("helloDoc.preview.menuHelp"), onClick = {})
-                            HelloDocPreviewMenuRow(t.t("helloDoc.preview.menuView"), onClick = {})
-                            HelloDocPreviewMenuRow(t.t("helloDoc.preview.menuMyDetails"), onClick = {
-                                menuOpen = false
-                                nav.push("/profile/edit")
-                            })
-                            HelloDocPreviewMenuRow(t.t("helloDoc.preview.menuLogout"), onClick = ::logOut, color = HcColors.RedDark)
-                        }
-                    }
-                }
+            HelloDocDashboardMenu(layout) { close ->
+                // Hjælp has no action on the web yet either.
+                HelloDocPreviewMenuRow(t.t("helloDoc.preview.menuHelp"), onClick = {})
+                HelloDocPreviewMenuRow(t.t("helloDoc.preview.menuMyDetails"), onClick = {
+                    close()
+                    nav.push("/profile/edit")
+                })
+                HelloDocPreviewMenuRow(t.t("helloDoc.preview.menuLogout"), onClick = ::logOut, color = HcColors.RedDark)
             }
         }
         Box(Modifier.fillMaxWidth().height(1.dp).background(HcColors.Nav))
@@ -156,10 +127,6 @@ fun SettingsHelloDocPreviewScreen(args: RouteArgs) {
         Box(Modifier.fillMaxWidth().height(1.dp).background(HcColors.Line))
 
         Column(Modifier.weight(1f).fillMaxWidth().verticalScroll(rememberScrollState())) {
-            HcCard(Modifier.padding(start = 16.dp, end = 16.dp, top = 16.dp)) {
-                HcText(t.t("helloDoc.preview.disclaimer"), HcTypeRoles.Caption)
-            }
-
             if (error) {
                 HcText(t.t("helloDoc.loadError"), HcTypeRoles.Body, Modifier.padding(16.dp), color = HcColors.RedDark)
             }
@@ -189,6 +156,7 @@ fun SettingsHelloDocPreviewScreen(args: RouteArgs) {
                             dailyNutrition = loaded.dailyNutrition,
                             fluidHistory = loaded.fluidHistory,
                         ),
+                        layout = layout,
                     )
                 }
             }

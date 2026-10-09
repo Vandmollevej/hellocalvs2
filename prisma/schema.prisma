@@ -1376,12 +1376,22 @@ model Category {
 model Product {
   id               String                 @id @default(cuid())
   name             String
+  // Flertalstitel (Frida-arket "Product title plural", 2026-10-09): søger brugeren i flertal
+  // vises denne, ellers name (ental). null = ingen separat flertalsform.
+  namePlural       String?
   brand            Brand?                 @relation(fields: [brandId], references: [id])
   brandId          String?
   category         Category?              @relation(fields: [categoryId], references: [id])
   categoryId       String?
   imageUrl         String?
   pendingImageUrl  String?
+  // Open Food Facts-varer uden dansk tekst oversættes automatisk; originalen
+  // gemmes, så admin kan se den ved siden af den danske (translationStatus
+  // PENDING = afventer admins godkendelse, APPROVED = godkendt).
+  nameOriginal           String?
+  ingredientsOriginal    String?
+  translationSourceLang  String?
+  translationStatus      String?
   imageStatus      ImageStatus            @default(NONE)
   kcalPer100g      Float
   proteinPer100g   Float
