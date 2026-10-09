@@ -12,10 +12,12 @@ FRIDA = os.path.join(ROOT, 'Frida-ark', 'frida.xlsx')
 CFG = {
     'bilka': dict(src=os.path.join(ROOT, 'Excelark', 'bilka.xlsx'), out=os.path.join(ROOT, 'Excelark', 'bilka_ny.xlsx'),
                   title='HelloCal_Title', type='Product Type', var=['Variation'], kw=['Keyword 1', 'Keyword 2', 'Keyword 3', 'Keyword 4', 'Keyword 5'],
-                  sugar='_is_sugar_free', vegan='_is_vegan', alc='_is_alcohol', gluten='_is_glutenfree', lactose='_is_lactose_free'),
+                  sugar='_is_sugar_free', vegan='_is_vegan', alc='_is_alcohol', gluten='_is_glutenfree', lactose='_is_lactose_free',
+                  fat='_is_fat', alcfree='_is_alcohol_free', pack='Packaging'),
     'rema': dict(src=os.path.join(ROOT, 'Produkter', 'rema1000_version 2.xlsx'), out=os.path.join(ROOT, 'Produkter', 'rema1000_version 2_ny.xlsx'),
                  title='Hello Cal product title', type='Product type', var=['Variant', 'taste'], kw=['Keyword 1'],
-                 sugar='is_sugar_free', vegan='is_vegan', alc=None, gluten='is_gluten_free', lactose='is_lactose_free'),
+                 sugar='is_sugar_free', vegan='is_vegan', alc=None, gluten='is_gluten_free', lactose='is_lactose_free',
+                 fat='fat', alcfree='is_alcohol_free', pack=None),
 }
 DBNAMES = {  # arkets kolonne -> navn i serverens database (prisma Product/Barcode)
     'Brand': 'brand', 'Subbrand': 'subbrand', 'Product Type': 'productType', 'Variation': 'variant', 'Quantity': 'packageSizeText',
@@ -108,7 +110,7 @@ MASS = ('mel', 'sukker', 'olie', 'salt', 'smør', 'mælk', 'saft', 'vand', 'øl'
         'chokolade', 'lakrids', 'karamel', 'nougat', 'marcipan', 'kiks', 'knækbrød', 'rugbrød', 'toast', 'pizza', 'dej', 'lage', 'pulver')
 ADJ = {'rød': 'røde', 'grøn': 'grønne', 'hvid': 'hvide', 'sort': 'sorte', 'gul': 'gule', 'blandet': 'blandede', 'tørret': 'tørrede', 'kogt': 'kogte',
        'hakket': 'hakkede', 'frisk': 'friske', 'stor': 'store', 'lille': 'små', 'rå': 'rå', 'fersk': 'ferske', 'røget': 'røgede', 'syltet': 'syltede',
-       'stegt': 'stegte', 'sød': 'søde', 'sur': 'sure', 'blå': 'blå', 'lys': 'lyse', 'mørk': 'mørke', 'fuldkorn': 'fuldkorn'}
+       'stegt': 'stegte', 'sød': 'søde', 'sur': 'sure', 'blå': 'blå', 'lys': 'lyse', 'mørk': 'mørke', 'blød': 'bløde', 'skimmelmodnet': 'skimmelmodnede', 'modnet': 'modnede', 'fuldkorn': 'fuldkorn'}
 PREP = {'med', 'af', 'i', 'til', 'uden', 'på', 'og', 'fra', 'for'}
 IRREG = {'mand': 'mænd', 'datter': 'døtre', 'bog': 'bøger', 'ben': 'ben', 'barn': 'børn', 'æg': 'æg', 'ærte': 'ærter', 'bær': 'bær',
          'løg': 'løg', 'knoglemarv': 'knoglemarv', 'sandwich': 'sandwiches', 'burger': 'burgere', 'cookie': 'cookies', 'pommes frites': 'pommes frites',
@@ -118,53 +120,56 @@ IRREG = {'mand': 'mænd', 'datter': 'døtre', 'bog': 'bøger', 'ben': 'ben', 'ba
          'tyggegummi': 'tyggegummi', 'vin': 'vine', 'gin': 'gin', 'rom': 'rom', 'vodka': 'vodka', 'whisky': 'whisky', 'cognac': 'cognac'}
 
 
+SUFFIX_PL = {  # kun sikre, taelleligt navneord (ellers: ental = flertal)
+    'pølse': 'pølser', 'kage': 'kager', 'bolle': 'boller', 'frikadelle': 'frikadeller', 'filet': 'fileter', 'bryst': 'bryster',
+    'stang': 'stænger', 'stykke': 'stykker', 'skive': 'skiver', 'tomat': 'tomater', 'agurk': 'agurker', 'gulerod': 'gulerødder',
+    'kartoffel': 'kartofler', 'æble': 'æbler', 'pære': 'pærer', 'banan': 'bananer', 'appelsin': 'appelsiner', 'citron': 'citroner',
+    'lime': 'limer', 'ring': 'ringe', 'kapsel': 'kapsler', 'pind': 'pinde', 'kugle': 'kugler', 'tablet': 'tabletter', 'pastil': 'pastiller',
+    'bønne': 'bønner', 'nød': 'nødder', 'mandel': 'mandler', 'rosin': 'rosiner', 'dadel': 'dadler', 'figen': 'figner', 'burger': 'burgere',
+    'sandwich': 'sandwiches', 'wrap': 'wraps', 'pizza': 'pizzaer', 'flaske': 'flasker', 'dåse': 'dåser', 'rulle': 'ruller', 'snegl': 'snegle',
+    'croissant': 'croissanter', 'bagel': 'bagels', 'muffin': 'muffins', 'cookie': 'cookies', 'bøf': 'bøffer', 'steak': 'steaks',
+    'kotelet': 'koteletter', 'vinge': 'vinger', 'plade': 'plader', 'tærte': 'tærter', 'kiwi': 'kiwier', 'avocado': 'avocadoer',
+    'peberfrugt': 'peberfrugter', 'tortilla': 'tortillaer', 'pita': 'pitaer', 'bar': 'barer', 'nudel': 'nudler', 'ost': 'oste',
+    'vin': 'vine', 'chili': 'chilier', 'paprika': 'paprikaer',
+}
+SHORT_SUF = {'ost', 'vin', 'bar', 'ring', 'stang', 'plade', 'bryst', 'bønne', 'nød', 'lime', 'pind', 'kiwi', 'pita', 'chili'}
+ADJ = {'rød': 'røde', 'grøn': 'grønne', 'hvid': 'hvide', 'sort': 'sorte', 'gul': 'gule', 'blandet': 'blandede', 'tørret': 'tørrede', 'kogt': 'kogte',
+       'hakket': 'hakkede', 'frisk': 'friske', 'stor': 'store', 'lille': 'små', 'fersk': 'ferske', 'røget': 'røgede', 'syltet': 'syltede',
+       'stegt': 'stegte', 'sød': 'søde', 'sur': 'sure', 'lys': 'lyse', 'mørk': 'mørke', 'blød': 'bløde', 'skimmelmodnet': 'skimmelmodnede', 'modnet': 'modnede', 'fyldt': 'fyldte', 'saltet': 'saltede',
+       'krydret': 'krydrede', 'marineret': 'marinerede', 'paneret': 'panerede'}
+PREP = {'med', 'af', 'i', 'til', 'uden', 'på', 'og', 'fra', 'for', 'eller'}
+
+
 def plural_word(w):
     lw = w.lower()
-    if lw in IRREG:
-        p = IRREG[lw]
-    elif lw.endswith(MASS) and not lw.endswith(('vin', 'kage', 'bolle', 'pølse')):
-        return w
-    elif lw.endswith('vin') or lw.endswith('ost') or lw.endswith('sild'):
-        p = lw + ('e' if not lw.endswith('sild') else 'e')
-    elif lw.endswith('e'):
-        p = lw + 'r'
-    elif lw.endswith(('er', 'el', 'en', 'or')):
-        p = lw[:-2] + (lw[-2:] if lw.endswith('el') and False else '') + (lw[-2:])  # uaendret
-    elif lw.endswith(('ing', 'ling')):
-        p = lw + 'er'
-    elif lw[-1] in 'aiouyåø' or lw.endswith('eau'):
-        p = lw + 'er'
-    elif lw.endswith('s'):
-        p = lw
-    else:
-        p = lw + 'er'
-    return w[0] + p[1:] if w[0].isupper() and p else p
+    for suf in sorted(SUFFIX_PL, key=len, reverse=True):
+        if lw.endswith(suf) and (len(lw) > len(suf) + 2 or lw == suf or suf in SHORT_SUF):
+            p = lw[:len(lw) - len(suf)] + SUFFIX_PL[suf]
+            return w[0] + p[1:] if w[0].isupper() else p
+    return w
 
 
 def plural_phrase(t, fr):
     key = t.strip().lower()
     if key in fr:
-        r = fr[key]
-        return r
+        return fr[key]
     words = t.strip().split(' ')
-    # find hoved-led: foer foerste praeposition
     idx = len(words)
     for i, w in enumerate(words):
-        if i > 0 and w.lower() in PREP:
+        if i > 0 and (w.lower() in PREP or w.startswith('(') or re.search(r'\d', w) or w.endswith(',')):
             idx = i
             break
     head = idx - 1
-    if words[head].lower() in MASS or words[head].lower().endswith(MASS) and not words[head].lower().endswith(('vin', 'kage', 'bolle', 'pølse')):
-        head_pl = words[head]
-    else:
-        head_pl = plural_word(words[head])
+    hw = words[head].rstrip(',')
     out = words[:]
-    out[head] = head_pl
-    if head_pl != words[head]:
-        for i in range(head):
-            a = words[i].lower()
-            if a in ADJ:
-                out[i] = ADJ[a] if words[i][0].islower() else ADJ[a].capitalize()
+    pl = plural_word(hw)
+    if pl == hw:
+        return t
+    out[head] = pl + words[head][len(hw):]
+    for i in range(head):
+        a = words[i].lower()
+        if a in ADJ:
+            out[i] = ADJ[a] if words[i][0].islower() else ADJ[a].capitalize()
     return ' '.join(out)
 
 
@@ -191,6 +196,122 @@ def build_formula(tpl, row, m, extra_fl=None, var_expr=None):
     return t
 
 
+COOKED = {'stegt', 'friturestegt', 'tørret', 'kogt', 'syltet', 'tørristet', 'ristet', 'dampet', 'grillet', 'bagt'}
+RAW = {'rå', 'fersk'}
+OWN_KW = ['vild', 'raffinol', 'hydrogeneret', 'grove', 'grov', 'parboiled', 'tør', 'sød']
+OWN_PHRASES = [('på dåse/ konserves', r'på dåse(?:\s*/\s*konserves)?'), ('på glas', r'på glas'), ('i saltlage', r'i saltlage'),
+               ('uden sten', r'uden sten'), ('hele eller knækkede', r'hele eller knækkede')]
+
+
+def fmt_list(parts):
+    parts = [p.strip() for p in parts if p.strip()]
+    if len(parts) <= 1:
+        return ''.join(parts)
+    return ', '.join(parts[:-1]) + ' og ' + parts[-1]
+
+
+def put_kw(nr, ki, val):
+    if any(isinstance(nr[i], str) and nr[i].lower() == val.lower() for i in ki):
+        return
+    for i in ki:
+        if not nr[i]:
+            nr[i] = val
+            return
+
+
+def frida_rules(nr, vi, ki, nix, cfg, stats):
+    ti = nix[cfg['type']]
+    fi, ai, di = nix[cfg['fat']], nix[cfg['alcfree']], nix['_is_decaf']
+    ci, ri, zi = nix['_is_cooked'], nix['_is_raw'], nix['_is_frozen']
+    if cfg.get('pack') and isinstance(nr[nix[cfg['pack']]], str) and nr[nix[cfg['pack']]].lower() == 'frozen' and not nr[zi]:
+        nr[zi] = 'frozen'
+    if cfg['alc'] and isinstance(nr[nix[cfg['alc']]], str) and nr[nix[cfg['alc']]].lower() in ('alkoholfri', 'uden alkohol'):
+        nr[ai] = 'alkoholfri'
+        nr[nix[cfg['alc']]] = None
+        stats['alkoholfri_flyttet'] += 1
+    if isinstance(nr[ti], str) and re.search(r'\S\s+blade\b', nr[ti], re.I):
+        nr[ti] = re.sub(r'(\S)\s+(blade)\b', r'\1\2', nr[ti], flags=re.I)
+        stats['blade_sammen'] += 1
+    for i in vi + ki:
+        v = nr[i]
+        if not isinstance(v, str):
+            continue
+        v = re.sub(r'\bm\.\s*', 'med ', v)
+        v = re.sub(r'\bm/\s*', 'med ', v)
+        v = re.sub(r'\bu\.\s*', 'uden ', v)
+        v = re.sub(r'\bu/\s*', 'uden ', v)
+        v = re.sub(r'\busukrede\b', 'uden sukker', v)
+        v = re.sub(r'\bsukrede\b', 'med sukker', v)
+        v = re.sub(r'(\S)\s+(blade)\b', r'\1\2', v)
+        mo = re.search(r'(\d+)\s*[/,.]\s*(\d+)\s*%\s*(?:fedt)?', v) or re.search(r'(\d+)()\s*%\s*fedt', v)
+        if mo and (re.search(r'fedt', v) or mo.group(2)):
+            val = mo.group(1) + (',' + mo.group(2) if mo.group(2) else '') + '%'
+            if not nr[fi]:
+                nr[fi] = val
+            v = v[:mo.start()] + v[mo.end():]
+            v = re.sub(r'\bfedt\b', '', v)
+            stats['fedt_flyttet'] += 1
+        v2 = re.sub(r'\b\d+(?:[,.]\d+)?\s*(?:kg|gram|g)\b', '', v)
+        if v2 != v:
+            stats['gram_fjernet'] += 1
+            v = v2
+        if re.search(r'\bkoffeinfr[it]*\b', v):
+            nr[di] = 'koffeinfri'
+            v = re.sub(r'\bkoffeinfr[it]*\b', '', v)
+            stats['koffeinfri_flyttet'] += 1
+        if re.search(r'\b(alkoholfri|uden alkohol)\b', v):
+            nr[ai] = 'alkoholfri'
+            v = re.sub(r'\b(alkoholfri|uden alkohol)\b', '', v)
+            stats['alkoholfri_flyttet'] += 1
+        if re.search(r'\buht\b', v, re.I):
+            v = re.sub(r'\buht\b', 'langtidsholdbar', v, flags=re.I)
+            stats['uht'] += 1
+        if '/' in v and ' men ' not in v and not re.search(r'konserves', v):
+            v = fmt_list(re.split(r'\s*/\s*', v))
+            stats['liste'] += 1
+        elif ',' in v and i in vi:
+            v = fmt_list(re.split(r'\s*,\s*', v))
+            stats['liste'] += 1
+        nr[i] = clean_phrase(v.strip()) or None
+    for i in vi:
+        v = nr[i]
+        if not isinstance(v, str):
+            continue
+        for kw, pat in OWN_PHRASES:
+            if re.search(r'(?<!\w)' + pat + r'(?!\w)', v):
+                v = re.sub(r'(?<!\w)' + pat + r'(?!\w)', '', v)
+                put_kw(nr, ki, kw)
+                stats['keyword_ud_af_variation'] += 1
+        for w in OWN_KW:
+            if re.search(r'(?<!\w)' + w + r'(?!\w)', v):
+                v = re.sub(r'(?<!\w)' + w + r'(?!\w)', '', v)
+                put_kw(nr, ki, w)
+                stats['keyword_ud_af_variation'] += 1
+        nr[i] = clean_phrase(v.strip()) or None
+    for i in vi + ki:
+        v = nr[i]
+        if not isinstance(v, str):
+            continue
+        t = v.strip().lower()
+        if t in COOKED:
+            nr[ci] = t if not nr[ci] or nr[ci] == t else nr[ci] + ' og ' + t
+            nr[i] = None
+            stats['cooked_flyttet'] += 1
+        elif t in RAW:
+            nr[ri] = nr[ri] or t
+            nr[i] = None
+            stats['raw_flyttet'] += 1
+        elif t in ('frosset', 'frost', 'dybfrost', 'dybfrossen'):
+            nr[zi] = nr[zi] or 'frozen'
+            nr[i] = None
+        elif t.startswith('vitamin'):
+            nr[i] = None
+            stats['vitamin_keyword_fjernet'] += 1
+    kv = [nr[i] for i in ki if nr[i]]
+    for j, i in enumerate(ki):
+        nr[i] = kv[j] if j < len(kv) else None
+
+
 def main(which):
     cfg = CFG[which]
     fr = load_frida_plurals()
@@ -208,7 +329,7 @@ def main(which):
     rows = [list(r) for r in ws.iter_rows(min_row=2, values_only=True)]
     # nye kolonner: fjern titel, tilfoej foran ental+flertal, bagest frozen/raw/cooked/plural
     new_hdr = ['Product title singular', 'Product title plural'] + [h for i, h in enumerate(hdr) if i != tcol]
-    for extra in ['_is_frozen', '_is_raw', '_is_cooked', 'Product type plural']:
+    for extra in ['_is_frozen', '_is_raw', '_is_cooked', '_is_decaf', cfg['alcfree'], 'Product type plural']:
         if extra not in new_hdr:
             new_hdr.append(extra)
     nix = {}
@@ -250,6 +371,7 @@ def main(which):
             v = nr[i]
             if isinstance(v, str):
                 nr[i] = lower_phrase(v)
+        frida_rules(nr, vi, ki, nix, cfg, stats)
         # sukker-ord som i Frida: 'tilsat sukker' o.l. er keyword med 'med' foran, sødestof -> _is_sweeteners
         swi = nix.get('_is_sweeteners')
         for i in ki:
@@ -309,7 +431,7 @@ def main(which):
     for j, h in enumerate(new_hdr, 1):
         ws.cell(1, j, h)
     col = lambda name: L(nix[name] + 1)
-    m = {'A': col(cfg['type']), 'F': col('_is_frozen'), 'G': col('_is_raw'), 'H': col('_is_cooked'), 'J': '""', 'X': '""', 'Z': '""',
+    m = {'A': col(cfg['type']), 'F': col('_is_frozen'), 'G': col('_is_raw'), 'H': col('_is_cooked'), 'J': '""', 'X': col(cfg['alcfree']), 'Z': col('_is_decaf'),
          'S': col(cfg['vegan']), 'T': col(cfg['sugar']), 'Y': col('Product type plural'),
          'N': col(cfg['kw'][0]), 'O': col(cfg['kw'][1]) if len(cfg['kw']) > 1 else '""', 'P': col(cfg['kw'][2]) if len(cfg['kw']) > 2 else '""',
          'K': col(cfg['alc']) if cfg['alc'] else '""', 'D': col(cfg['var'][0])}
