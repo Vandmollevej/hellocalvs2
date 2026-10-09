@@ -1285,7 +1285,7 @@
     "src/components/icons/Favorite.tsx": "70f85dd37d71acbf",
     "src/components/icons/PhotoFrame.tsx": "20ffbe92a0057321",
     "src/components/icons/WaistMeasure.tsx": "47f849581ff0f288",
-    "src/components/profile/MessagesView.tsx": "5cfa72bcdeada85d",
+    "src/components/profile/MessagesView.tsx": "b8c5befe8a12c992",
     "src/components/web/WebShell.tsx": "5f2646ffd79af9cc"
   },
   "/profile/messages/trash": {
@@ -1313,7 +1313,7 @@
     "src/components/icons/Favorite.tsx": "70f85dd37d71acbf",
     "src/components/icons/PhotoFrame.tsx": "20ffbe92a0057321",
     "src/components/icons/WaistMeasure.tsx": "47f849581ff0f288",
-    "src/components/profile/MessagesView.tsx": "5cfa72bcdeada85d",
+    "src/components/profile/MessagesView.tsx": "b8c5befe8a12c992",
     "src/components/web/WebShell.tsx": "5f2646ffd79af9cc"
   },
   "/profile/notifications": {
