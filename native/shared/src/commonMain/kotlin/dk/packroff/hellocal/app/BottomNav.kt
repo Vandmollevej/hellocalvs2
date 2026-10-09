@@ -266,6 +266,13 @@ private fun edgeScrollStep(position: Offset, dtSeconds: Float) {
     BottomNavEdit.scrollPages = (BottomNavEdit.scrollPages + speed * AUTO_SCROLL_MAX_PAGES_PER_S * dtSeconds).coerceIn(0f, maxScroll)
 }
 
+/** The gap between two icons nearest the finger (scrolled content), as an index in the whole list: a panel icon is inserted between icons, not on one. */
+private fun gapIndexAtScrolled(x: Float): Int {
+    val bar = BottomNavEdit.barBounds
+    val slotWidth = bar.width / PAGE_SIZE
+    return max(0, ((x - bar.left) / slotWidth + BottomNavEdit.scrollPages * PAGE_SIZE).roundToInt())
+}
+
 private fun openItem(item: NavItem, navigator: Navigator) {
     if (item.action == "switchProfile") BottomNavEdit.switchSheetOpen = true
     else if (item.href != null) navigator.switchTab(Location(item.href))
@@ -676,7 +683,7 @@ private fun PanelItem(item: NavItem, drag: NavDrag?) {
                     BottomNavEdit.drag = null
                     when {
                         !moved -> BottomNavLayout.addToActive(item.key)
-                        BottomNavEdit.barBounds.contains(position) -> BottomNavLayout.addToActive(item.key, slotIndexAtScrolled(position.x))
+                        BottomNavEdit.barBounds.contains(position) -> BottomNavLayout.addToActive(item.key, gapIndexAtScrolled(position.x))
                     }
                 }
             }

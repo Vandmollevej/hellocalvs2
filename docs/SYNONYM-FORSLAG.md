@@ -1,6 +1,6 @@
 # Forslag til synonymordbogen (2026-10-09)
 
-Grundlag: feltet "Product Type" i Nemlig-, Bilka- og SPAR-regnearkene (6.250 unikke typer). Kun par, hvor begge ord faktisk findes som produkttype, er med (tal i parentes = antal produkter). Indtast i admin under Synonymordbog; "Ens" er mit bud.
+Grundlag: feltet "Product Type" i Nemlig-, Bilka- og SPAR-regnearkene (6.250 unikke typer). Kun par, hvor begge ord faktisk findes som produkttype, er med. **Tallet i parentes efter et ord er, hvor mange produkter i regnearkene der har netop det ord som produkttype** (fx "sodavand (200)" = 200 produkter) — det viser, hvor udbredt ordet er. "Ens" er procenten i admin: 100 = samme ord, lavere = tættere beslægtet men ikke 1:1.
 
 Allerede lagt ind: gris/svin 100, ko/okse 80, porter/stout 90, ipa/indian pale ale 100.
 
@@ -50,7 +50,6 @@ Allerede lagt ind: gris/svin 100, ko/okse 80, porter/stout 90, ipa/indian pale a
 | ispinde (5) | isbar (4) | 80 |
 | bolcher (33) | bolsjer (3) | 100 |
 | chokolade (25) | choko (5) | 80 |
-| mælkechokolade (65) | mælkechokoladeplade (34) | 70 |
 | slik (24) | konfekt (1) | 60 |
 | kiks (54) | biscuit (4) | 80 |
 | småkager (33) | cookies (14) | 80 |
@@ -77,7 +76,6 @@ Allerede lagt ind: gris/svin 100, ko/okse 80, porter/stout 90, ipa/indian pale a
 | --- | --- | --- |
 | tomatketchup (32) | ketchup (9) | 100 |
 | remoulade (16) | remolade (1) | 100 |
-| bbq sauce (6) | barbecuesauce (1) | 100 |
 | chilisauce (8) | chili sauce (4) | 100 |
 | pesto (27) | grøn pesto (5) | 80 |
 | salsa (7) | tomatsalsa (19) | 80 |
@@ -92,6 +90,13 @@ Allerede lagt ind: gris/svin 100, ko/okse 80, porter/stout 90, ipa/indian pale a
 | kaffekapsler (96) | kapsler (10) | 70 |
 | te (17) | urtete (43) | 50 |
 | løg (13) | rødløg (4) | 50 |
+
+## Tilføjet efter gennemgang (2026-10-09)
+- vand ↔ drikkevand/postevand/flaskevand 90, kildevand/mineralvand 70; kildevand ↔ mineralvand 80; mineralvand ↔ naturligt mineralvand 100; postevand ↔ drikkevand 80; flaskevand ↔ kildevand/mineralvand 70
+- cookie dough ↔ cookiedough 100; charlotteløg ↔ skalotteløg / charlotte løg 100; te ↔ the 100
+- bbq ↔ barbecue 100 (gælder alt, ikke kun sauce); sovs ↔ sauce 100
+- weissbier ↔ weizenbier / weizen 100; weizen ↔ hvedeøl 90
+- Fjernet: mælkechokolade ↔ mælkechokoladeplade
 
 ## Bemærkninger
 - Ental/flertal (æble/æbler, vaffel/vafler, kartoffel/kartofler, pølse/pølser osv.) dækkes af søgningens ental/flertal-logik og hører ikke hjemme her.

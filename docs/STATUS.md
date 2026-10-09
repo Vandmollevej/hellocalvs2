@@ -7,6 +7,11 @@ Last updated: 2026-10-09
 - `/activity/create` (web + `ActivityCreateScreen.kt`): starttidspunktet er nu en dato + samme to-håndtags 24-timers-slider som søvnrytmen (`SleepRangeSlider`, ny prop `bedtimeFirst`: start til venstre, slut til højre; start-håndtaget flytter starten og holder sluttiden, slut-håndtaget ændrer varigheden). Varigheden står under som − [timer min] + i samme boks som mængdevælgeren; teksten kan rettes, og −/+ går i hele 5 minutter (`stepDuration` i `activity-duration.ts`, testet).
 - Kalorie-feltet viser nu bare tallet (forudfyldt, kan rettes) — ingen "ca."/"anslået" og ingen MET-tekst.
 - Paritet accepteret for `/activity/create` og `/profile/sleep`. Lint og `node --test` grønne; Kotlin ikke kompileret lokalt (CI bygger); ikke prøvet på telefon.
+## 2026-10-09: Footer-cirklen får fuld størrelse straks ved træk op
+
+- `FooterArc` (web) og `HomeFooterArc.kt` (native): første træk opad springer cirklen og knapperne straks til fuld størrelse (ingen animation) i stedet for at vokse gradvist med fingerens afstand. Slip uden at ramme en knap lader den stå åben. `ARC_PULL_DISTANCE` er fjernet.
+- Knapperne har samme geometri som venstre-cirklen (`AddButton`): 52 px fra cirklen (valgt knap 22 px længere ude end de øvrige), vinkler jævnt fordelt over −75°…75°.
+- Ikke kørt: build (lint og tsc på de ændrede filer er rene), Kotlin ikke kompileret, ikke prøvet på telefon.
 
 ## 2026-10-09: Halvcirklens vifte rykker knapper op i stedet for ud over kanten
 

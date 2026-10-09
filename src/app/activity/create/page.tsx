@@ -191,17 +191,23 @@ function ActivityCreateContent() {
             <div className="flex flex-col gap-2">
               <span className="hf-type-small text-text-secondary">{t("activity.intensity")}</span>
               <p className="hf-type-small text-text-secondary">{t("activity.intensityHint")}</p>
-              {TRAINING_INTENSITIES.map((key) => (
-                <button
-                  key={key}
-                  type="button"
-                  className="hf-choice hf-control w-full text-left"
-                  aria-pressed={intensity === key}
-                  onClick={() => setIntensity(key)}
-                >
-                  {t(`onboarding.activity.intensity.${key}`)}
-                </button>
-              ))}
+              <div className="flex items-end gap-2" role="radiogroup" aria-label={t("activity.intensity")}>
+                {TRAINING_INTENSITIES.map((key, index) => (
+                  <button
+                    key={key}
+                    type="button"
+                    role="radio"
+                    aria-checked={index <= TRAINING_INTENSITIES.indexOf(intensity)}
+                    aria-label={t(`onboarding.activity.intensity.${key}`)}
+                    className={`flex-1 rounded-card transition-colors ${
+                      index <= TRAINING_INTENSITIES.indexOf(intensity) ? "bg-hf-accent" : "bg-hf-card"
+                    }`}
+                    style={{ height: 24 + index * 16 }}
+                    onClick={() => setIntensity(key)}
+                  />
+                ))}
+              </div>
+              <p className="hf-type-body hf-type-strong text-center">{t(`onboarding.activity.intensity.${intensity}`)}</p>
             </div>
             {showsDistance && (
               <label className="flex flex-col gap-1">

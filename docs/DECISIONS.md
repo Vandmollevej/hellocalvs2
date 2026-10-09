@@ -588,7 +588,7 @@ månedsgitteret. Regel for dagfelterne i månedsvisningen:
 - Afsluttet dag (før i dag) uden registreringer: ÷. En dag, der ikke er
   registreret, tæller som ikke nået.
 - I dag og fremtidige dage: ingen markering.
-Uge- og Liste-visningen beholder "Ingen indtastninger" i gråt på tomme dage.
+Uge- og Liste-visningen viser en grå streg (–) i stedet for "Ingen indtastninger" og kcal på tomme dage (brugerens ønske 2026-10-09).
 ## 2026-10-02: Smagsvarianten står kun i H2 på varesiden
 
 - Brugerregel: smagsvarianten (fx "Pære & havtorn") må aldrig gentages i H1. Den står kun i den grønne H2 sammen med mængden.
