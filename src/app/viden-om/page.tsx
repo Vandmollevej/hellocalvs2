@@ -28,7 +28,7 @@ export default function KnowledgePage() {
   return (
     <HfScreen title="Viden om mad" icon={<IconBook size={20} stroke={2} />} alwaysShowBackButton>
       <div className="hf-page flex flex-col gap-3">
-        <SearchField value={query} onChange={setQuery} placeholder="Søg i vitaminer, sundhedstips og ord" />
+        <SearchField value={query} onChange={setQuery} placeholder="Søg i vitaminer, kalorieforbrænding og ord" />
         <KnowledgeRows rows={rows} icon={<IconBook size={20} />} />
       </div>
     </HfScreen>

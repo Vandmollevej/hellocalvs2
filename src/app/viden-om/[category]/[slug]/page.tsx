@@ -15,17 +15,20 @@ function Section({ title, children }: { title: string; children: React.ReactNode
   );
 }
 
-function Source({ label, href }: { label: string; href: string }) {
+function Sources({ items }: { items: { label: string; href: string }[] }) {
   return (
-    <Section title="Kilde">
-      <a
-        href={href}
-        target="_blank"
-        rel="noreferrer"
-        className="inline-flex items-center gap-1 text-hf-green underline underline-offset-2"
-      >
-        {label} <IconExternalLink size={14} />
-      </a>
+    <Section title={items.length > 1 ? "Kilder og forskning" : "Kilde"}>
+      {items.map((item) => (
+        <a
+          key={item.href}
+          href={item.href}
+          target="_blank"
+          rel="noreferrer"
+          className="inline-flex items-center gap-1 text-hf-green underline underline-offset-2"
+        >
+          {item.label} <IconExternalLink size={14} />
+        </a>
+      ))}
     </Section>
   );
 }
@@ -46,7 +49,7 @@ export default function KnowledgeEntryPage() {
           <Section title="Forklaring">
             <p>{term.explanation}</p>
           </Section>
-          <Source {...term.source} />
+          <Sources items={[term.source]} />
         </div>
       </HfScreen>
     );
@@ -70,7 +73,7 @@ export default function KnowledgeEntryPage() {
             <p>{article.funFact}</p>
           </Section>
         )}
-        <Source {...article.source} />
+        <Sources items={[article.source, ...(article.moreSources ?? [])]} />
       </div>
     </HfScreen>
   );

@@ -3,11 +3,12 @@
 import { KNOWLEDGE_ARTICLES, type KnowledgeArticle } from "@/lib/knowledge";
 import { FOOD_TERMS, foodTermAnchor, matchesFoodTerm } from "@/lib/food-latin";
 
-export type KnowledgeSection = "vitaminer" | "sundhedstips" | "mad-paa-latin";
+export type KnowledgeSection = "vitaminer" | "sundhedstips" | "kalorieforbraending" | "mad-paa-latin";
 
 export const KNOWLEDGE_SECTIONS: { id: KnowledgeSection | "e-numre"; title: string }[] = [
   { id: "vitaminer", title: "Vitaminer" },
   { id: "e-numre", title: "E-numre" },
+  { id: "kalorieforbraending", title: "Kalorieforbrænding" },
   { id: "sundhedstips", title: "Sundhedstips" },
   { id: "mad-paa-latin", title: "Mad på latin" },
 ];
@@ -44,7 +45,7 @@ function articleMatches(article: KnowledgeArticle, q: string) {
 
 export function searchEntries(query: string, section?: KnowledgeSection): KnowledgeEntry[] {
   const q = query.trim().toLowerCase();
-  const sections: KnowledgeSection[] = section ? [section] : ["vitaminer", "sundhedstips", "mad-paa-latin"];
+  const sections: KnowledgeSection[] = section ? [section] : ["vitaminer", "kalorieforbraending", "sundhedstips", "mad-paa-latin"];
   return sections.flatMap((id) =>
     listEntries(id).filter((entry) => {
       if (!q) return true;

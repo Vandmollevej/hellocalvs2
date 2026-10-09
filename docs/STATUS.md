@@ -898,6 +898,13 @@ Lint og build grønne.
 - `/e-numre`: liste grupperet i nummerområder med søgning og filter (godkendt / forbudt-ikke godkendt); gamle `#e330`-links omdirigeres.
 - `/api/additives` leverer katalogets data (DB-tabellen `additives` kun som supplement).
 - Kun EU-godkendte numre vises (333). Alle er faktatjekket i tre runder: EU-status/ADI/EFSA (runde 1) og udsagn for udsagn via websøgning (runde 2–3, ~4.200 udsagn: bekræftet, rettet eller fjernet). Kilder pr. nummer i `verification.sources`; britiske kilder bruges aldrig som belæg for EU-regler. Poster med status `uncertain` har enkelte udsagn, der ikke kunne afklares — se `verification.notes`.
+## 2026-10-09: Viden om mad — Kalorieforbrænding + flere WHO-artikler
+
+- Ny sektion "Kalorieforbrænding" (`/viden-om/kalorieforbraending`): 10 artikler om hvilestofskifte, døgnrytme (hvornår forbrændingen er højest), måltids- og træningstidspunkt, hverdagsbevægelse (NEAT), protein, søvn, stofskiftemyter og en samlet dagsplan med tips og tricks.
+- Fire nye sundhedstips baseret på WHO (fysisk aktivitet, sund kost, sukker, salt).
+- Artikler kan nu have flere kilder (`moreSources`): WHO-faktaark/retningslinjer og peer-reviewede studier som DOI-links. Siden viser dem under "Kilder og forskning".
+- Kilderne kunne ikke åbnes fra udviklingsmiljøet (netværk blokeret): tjek WHO-/DOI-linkene og tallene manuelt før udgivelse.
+
 ## 2026-09-29: "Viden om" (fra profilsiden)
 
 - `/viden-om` med søgefelt og blokke (profilsidens række-stil): Vitaminer, E-numre, Sundhedstips, Mad på latin.

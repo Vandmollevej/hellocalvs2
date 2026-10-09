@@ -2,7 +2,7 @@
 // slug, så popups og andre sider kan linke til /viden-om/<slug>.
 // Kilder skal være officielle (Fødevarestyrelsen m.fl.), se DECISIONS 2026-09-29.
 
-export type KnowledgeCategory = "vitaminer" | "sundhedstips";
+export type KnowledgeCategory = "vitaminer" | "sundhedstips" | "kalorieforbraending";
 
 export type KnowledgeArticle = {
   slug: string;
@@ -12,6 +12,8 @@ export type KnowledgeArticle = {
   body: string[];
   funFact?: string;
   source: { label: string; href: string };
+  // Yderligere officielle kilder og forskning (vises under "Kilder").
+  moreSources?: { label: string; href: string }[];
 };
 
 const VITAMIN_SOURCE = {
@@ -34,6 +36,45 @@ const KOSTTILSKUD_SOURCE = {
   label: "Fødevarestyrelsen: Kosttilskudsanbefalinger",
   href: "https://foedevarestyrelsen.dk/kost-og-foedevarer/alt-om-mad/kosttilskud/kosttilskudsanbefalinger",
 };
+
+const WHO_ACTIVITY = {
+  label: "WHO: Physical activity (faktaark)",
+  href: "https://www.who.int/news-room/fact-sheets/detail/physical-activity",
+};
+const WHO_ACTIVITY_GUIDE = {
+  label: "WHO: Guidelines on physical activity and sedentary behaviour (2020)",
+  href: "https://www.who.int/publications/i/item/9789240015128",
+};
+const WHO_DIET = {
+  label: "WHO: Healthy diet (faktaark)",
+  href: "https://www.who.int/news-room/fact-sheets/detail/healthy-diet",
+};
+const WHO_SUGAR = {
+  label: "WHO: Guideline: Sugars intake for adults and children",
+  href: "https://www.who.int/publications/i/item/9789241549028",
+};
+const WHO_SALT = {
+  label: "WHO: Salt reduction (faktaark)",
+  href: "https://www.who.int/news-room/fact-sheets/detail/salt-reduction",
+};
+const WHO_OBESITY = {
+  label: "WHO: Obesity and overweight (faktaark)",
+  href: "https://www.who.int/news-room/fact-sheets/detail/obesity-and-overweight",
+};
+const doi = (label: string, id: string) => ({ label, href: `https://doi.org/${id}` });
+const PONTZER_2021 = doi("Pontzer m.fl. (2021), Science: Daily energy expenditure through the human life course", "10.1126/science.abe5017");
+const PONTZER_2016 = doi("Pontzer m.fl. (2016), Current Biology: Constrained total energy expenditure", "10.1016/j.cub.2015.12.046");
+const ZITTING_2018 = doi("Zitting m.fl. (2018), Current Biology: Human resting energy expenditure varies with circadian phase", "10.1016/j.cub.2018.10.005");
+const RICHTER_2020 = doi("Richter m.fl. (2020), J Clin Endocrinol Metab: Twice as high diet-induced thermogenesis after breakfast vs dinner", "10.1210/clinem/dgz311");
+const SCHEER_2009 = doi("Scheer m.fl. (2009), PNAS: Adverse metabolic consequences of circadian misalignment", "10.1073/pnas.0808180106");
+const MCHILL_2014 = doi("McHill m.fl. (2014), PNAS: Circadian misalignment and energy metabolism during simulated night shift work", "10.1073/pnas.1412898111");
+const LEVINE_2005 = doi("Levine m.fl. (2005), Science: Interindividual variation in posture allocation (NEAT)", "10.1126/science.1108571");
+const DUNSTAN_2012 = doi("Dunstan m.fl. (2012), Diabetes Care: Breaking up prolonged sitting", "10.2337/dc11-1931");
+const BUFFEY_2022 = doi("Buffey m.fl. (2022), Sports Medicine: Walking after meals and blood glucose", "10.1007/s40279-022-01649-4");
+const NEDELTCHEVA_2010 = doi("Nedeltcheva m.fl. (2010), Annals of Internal Medicine: Insufficient sleep undermines dietary efforts", "10.7326/0003-4819-153-7-201010050-00006");
+const JAKUBOWICZ_2013 = doi("Jakubowicz m.fl. (2013), Obesity: High caloric intake at breakfast vs. dinner", "10.1002/oby.20376");
+const SAVIKJ_2019 = doi("Savikj m.fl. (2019), Diabetologia: Afternoon exercise is more efficacious than morning exercise", "10.1007/s00125-018-4783-z");
+const HALL_2011 = doi("Hall m.fl. (2011), The Lancet: Energy imbalance and bodyweight", "10.1016/S0140-6736(11)60812-X");
 
 export const KNOWLEDGE_ARTICLES: KnowledgeArticle[] = [
   {
@@ -209,6 +250,204 @@ export const KNOWLEDGE_ARTICLES: KnowledgeArticle[] = [
     ],
     funFact: "Hjernen består af omkring 75 % vand.",
     source: KOSTRAAD_SOURCE,
+  },
+  {
+    slug: "who-fysisk-aktivitet",
+    category: "sundhedstips",
+    title: "WHO: Hvor meget skal du bevæge dig?",
+    summary: "150-300 minutters moderat aktivitet om ugen for voksne.",
+    body: [
+      "WHO anbefaler voksne mindst 150-300 minutters moderat fysisk aktivitet om ugen, eller 75-150 minutters hård aktivitet, eller en kombination. Moderat betyder, at du bliver varm og får hurtigere vejrtrækning, men stadig kan tale.",
+      "Dertil anbefales styrketræning af de store muskelgrupper mindst to gange om ugen. Ældre bør desuden træne balance.",
+      "WHO understreger, at al bevægelse tæller, og at lidt er bedre end ingenting. Man bør også sidde mindre stille og afbryde lange perioder med siddende arbejde.",
+    ],
+    funFact: "WHO vurderer, at omkring en fjerdedel af verdens voksne ikke når anbefalingen.",
+    source: WHO_ACTIVITY,
+    moreSources: [WHO_ACTIVITY_GUIDE],
+  },
+  {
+    slug: "who-sund-kost",
+    category: "sundhedstips",
+    title: "WHO: Sund kost i store træk",
+    summary: "Meget frugt og grønt, fuldkorn og bælgfrugter — lidt sukker, salt og mættet fedt.",
+    body: [
+      "WHO anbefaler mindst 400 g frugt og grønt om dagen (ca. fem håndfulde), fuldkorn, bælgfrugter og nødder, og at fedt højst udgør 30 % af energien, med mættet fedt under 10 %.",
+      "Frit sukker bør udgøre under 10 % af energien — og et yderligere fald til under 5 % giver ekstra sundhedsgevinst. Det svarer til ca. 25 g (6 teskefulde) for en voksen med normalvægt.",
+      "Kalorieindtaget skal passe til forbruget: Når indtag og forbrug er i balance, holder vægten sig stabil.",
+    ],
+    source: WHO_DIET,
+    moreSources: [WHO_OBESITY],
+  },
+  {
+    slug: "who-sukker",
+    category: "sundhedstips",
+    title: "WHO og sukker",
+    summary: "Under 10 % af energien fra frit sukker — helst under 5 %.",
+    body: [
+      "WHO's retningslinje fra 2015 bygger på gennemgange af forskningen i sukker, vægtøgning og huller i tænderne. Der ses sammenhæng mellem frit sukker og både overvægt og caries.",
+      "Frit sukker er tilsat sukker plus sukker i honning, sirup og juice. Sukker i hel frugt, grøntsager og mælk tæller ikke med.",
+      "Sukkerholdige drikke er den største enkeltkilde i mange lande, fordi de giver kalorier uden at mætte tilsvarende.",
+    ],
+    source: WHO_SUGAR,
+  },
+  {
+    slug: "who-salt",
+    category: "sundhedstips",
+    title: "WHO og salt",
+    summary: "Under 5 g salt om dagen sænker blodtrykket og risikoen for hjerte-kar-sygdom.",
+    body: [
+      "WHO anbefaler voksne under 5 g salt (under 2 g natrium) om dagen — cirka en teskefuld. Højt saltindtag øger blodtrykket og dermed risikoen for hjertesygdom og slagtilfælde.",
+      "Det meste salt kommer fra forarbejdet mad som brød, pålæg, færdigretter og snacks, ikke fra saltbøssen. Tjek derfor næringsdeklarationen.",
+      "Kalium fra frugt og grønt modvirker noget af saltets virkning på blodtrykket.",
+    ],
+    source: WHO_SALT,
+  },
+
+  // ---- Kalorieforbrænding ----
+  {
+    slug: "saadan-forbraender-kroppen",
+    category: "kalorieforbraending",
+    title: "Sådan forbrænder kroppen kalorier",
+    summary: "Hvilende stofskifte, mad og bevægelse — de tre poster i dit daglige forbrug.",
+    body: [
+      "Dit samlede energiforbrug består af tre dele. Hvilende stofskifte (BMR) er det, kroppen bruger på at holde hjerte, hjerne, lunger og temperatur i gang. Det er typisk 60-70 % af forbruget.",
+      "Madens varmeeffekt (TEF) er den energi, der går til at fordøje, optage og oplagre maden. Den udgør omkring 10 % af forbruget og er størst for protein.",
+      "Aktivitet udgør resten: dels motion, dels al den hverdagsbevægelse, der ikke er træning (NEAT) — at gå, stå, rydde op og fidgete. NEAT kan variere med flere hundrede kcal fra person til person.",
+      "Vægten ændrer sig, når indtag og forbrug ikke er i balance. Forskningen viser dog, at kroppen tilpasser forbruget over tid, så tommelfingerreglen om 7.700 kcal pr. kilo er en forenkling.",
+    ],
+    funFact: "Hjernen vejer kun ca. 2 % af kroppen, men bruger omkring 20 % af hvilestofskiftet.",
+    source: HALL_2011,
+    moreSources: [LEVINE_2005, WHO_OBESITY],
+  },
+  {
+    slug: "forbraending-over-dagen",
+    category: "kalorieforbraending",
+    title: "Kalorieforbrænding over døgnet",
+    summary: "Hvilestofskiftet svinger med døgnrytmen — lavest om natten, højest sidst på dagen.",
+    body: [
+      "Kroppens ur styrer ikke kun søvn, men også energiomsætningen. I et kontrolleret laboratorieforsøg varierede hvilende energiforbrug med døgnrytmen med ca. 10 %: lavest sent om natten og højest sidst på dagen/om aftenen.",
+      "I praksis forbrænder kroppen lidt mere i dagtimerne, når du er vågen og aktiv, end om natten. Forskellen er lille i kalorier, men viser, at tidspunktet betyder noget.",
+      "Mad udnyttes også forskelligt over dagen: Varmeeffekten af et måltid er højere om morgenen end om aftenen, og blodsukkeret reguleres bedst tidligt på dagen.",
+      "Tommelfingerregel: Læg hovedparten af energien i den første halvdel af dagen, hold aftensmaden moderat og undgå store måltider lige før sengetid.",
+      "Skiftearbejde og uregelmæssig søvn forskyder døgnrytmen. I forsøg gav det lavere energiforbrug og dårligere blodsukkerregulering.",
+    ],
+    funFact: "Selv i søvn bruger du mange kalorier — kroppen arbejder stadig, og hvilestofskiftet er kun ca. 10 % lavere om natten end sidst på dagen.",
+    source: ZITTING_2018,
+    moreSources: [SCHEER_2009, MCHILL_2014],
+  },
+  {
+    slug: "maaltidstidspunkt",
+    category: "kalorieforbraending",
+    title: "Hvornår på dagen skal du spise?",
+    summary: "Samme måltid giver omkring dobbelt så stor varmeeffekt om morgenen som om aftenen.",
+    body: [
+      "I et tysk forsøg fik raske forsøgspersoner det samme måltid til morgenmad og til aftensmad. Efter morgenmaden var varmeeffekten omkring dobbelt så høj som efter aftensmaden.",
+      "Et israelsk forsøg med overvægtige kvinder, der spiste samme kalorier men fordelte dem forskelligt, gav større vægttab og bedre blodsukker i gruppen med stor morgenmad og let aftensmad.",
+      "Det er ikke et trylleord: Det samlede kalorieindtag betyder stadig mest. Men måltidsmønstret kan hjælpe — fx stor morgenmad/frokost og let aftensmad.",
+      "Lad der gå nogle timer mellem sidste store måltid og sengetid. Det understøtter både søvn og stabilt blodsukker.",
+    ],
+    source: RICHTER_2020,
+    moreSources: [JAKUBOWICZ_2013, SCHEER_2009],
+  },
+  {
+    slug: "traening-tidspunkt",
+    category: "kalorieforbraending",
+    title: "Hvornår skal du træne?",
+    summary: "Det bedste tidspunkt er det, du faktisk holder fast i.",
+    body: [
+      "Forskningen peger ikke på ét tidspunkt, der forbrænder markant flere kalorier. Det vigtigste er at få bevægelsen med: 150-300 minutter om ugen ifølge WHO.",
+      "Nogle studier viser små fordele ved eftermiddag/aften: I et forsøg med type 2-diabetes sænkede træning om eftermiddagen blodsukkeret mere end morgentræning.",
+      "Morgentræning har sine egne fordele: Den bliver oftere gennemført og kommer ikke i klemme med dagens øvrige planer.",
+      "Undgå hård træning lige før sengetid, hvis den forstyrrer din søvn — dårlig søvn øger appetitten og sænker energien dagen efter.",
+      "Spis gerne et måltid med protein inden for et par timer efter styrketræning.",
+    ],
+    source: WHO_ACTIVITY_GUIDE,
+    moreSources: [SAVIKJ_2019, NEDELTCHEVA_2010],
+  },
+  {
+    slug: "daglig-bevaegelse-neat",
+    category: "kalorieforbraending",
+    title: "Hverdagsbevægelse — den undervurderede forbrænding",
+    summary: "At stå, gå og afbryde siddetid kan give flere hundrede kcal om dagen.",
+    body: [
+      "NEAT er alt, hvad du bevæger dig i løbet af dagen uden at træne. I et klassisk studie sad let overvægtige personer i gennemsnit knap to timer mere om dagen end slanke — svarende til op mod 350 kcal i daglig forskel.",
+      "Tips: Stå op og gå et par minutter hver halve time, tag trapperne, gå eller cykl korte ture og tag telefonmøder stående.",
+      "Korte gåture efter måltider sænker blodsukkerstigningen efter maden. Allerede få minutters gang har effekt i studierne.",
+      "Afbrydelser i siddetid hjælper også, hvis du træner regelmæssigt — lange, uafbrudte siddeperioder er en selvstændig risikofaktor.",
+    ],
+    funFact: "Fidgeting — at vippe med foden eller trommefingre — giver i sig selv en lille ekstra forbrænding.",
+    source: LEVINE_2005,
+    moreSources: [DUNSTAN_2012, BUFFEY_2022, WHO_ACTIVITY],
+  },
+  {
+    slug: "protein-og-forbraending",
+    category: "kalorieforbraending",
+    title: "Protein og madens varmeeffekt",
+    summary: "Protein kræver mest energi at fordøje — og mætter bedst.",
+    body: [
+      "Kroppen bruger energi på at fordøje maden. For protein går ca. 20-30 % af kalorierne til det, for kulhydrat 5-10 % og for fedt 0-3 %. Proteinrig mad giver derfor en lidt højere forbrænding.",
+      "Forskellen er mindre, end markedsføringen antyder, men protein mætter også mere og hjælper med at bevare muskelmasse under vægttab.",
+      "Uforarbejdet mad som fuldkorn, grøntsager og kød kræver mere fordøjelsesarbejde end meget forarbejdet mad og mætter ofte bedre.",
+      "Fordel gerne proteinet over dagens måltider i stedet for at samle det til aftensmad.",
+    ],
+    source: WHO_DIET,
+    moreSources: [RICHTER_2020],
+  },
+  {
+    slug: "soevn-og-forbraending",
+    category: "kalorieforbraending",
+    title: "Søvn og kalorieforbrænding",
+    summary: "For lidt søvn får kroppen til at spare på fedtet og dig til at spise mere.",
+    body: [
+      "I et amerikansk forsøg fulgte overvægtige voksne den samme kalorierestriktion med enten 8,5 eller 5,5 timers søvn. Ved kort søvn faldt andelen af fedt i vægttabet fra ca. 55 % til ca. 25 %, og sultfølelsen steg.",
+      "Søvnmangel og forskubbet døgnrytme gav i andre forsøg lavere hvilestofskifte og dårligere insulinfølsomhed.",
+      "Voksne har brug for ca. 7-9 timers søvn. Hold faste sengetider, mørkt soveværelse og undgå skærme og koffein sent på dagen.",
+    ],
+    source: NEDELTCHEVA_2010,
+    moreSources: [SCHEER_2009, MCHILL_2014],
+  },
+  {
+    slug: "langsomt-stofskifte",
+    category: "kalorieforbraending",
+    title: "Er dit stofskifte 'langsomt'? Myter og fakta",
+    summary: "Stofskiftet er stabilt fra 20 til 60 år.",
+    body: [
+      "En stor international undersøgelse med data fra ca. 6.400 personer fra nyfødte til 95 år (Science, 2021) viste, at det justerede energiforbrug er stabilt fra omkring 20 til 60 år. Stofskiftet falder altså ikke markant i 30'erne og 40'erne.",
+      "Efter 60 år falder det langsomt, ca. 0,7 % om året.",
+      "Når vægten stiger i voksenlivet, skyldes det derfor oftere kost og bevægelse end 'langsomt stofskifte'. Muskelmasse betyder noget, fordi muskler bruger lidt mere energi end fedt.",
+      "Hjælp stofskiftet på vej med nok protein, styrketræning, søvn og regelmæssig bevægelse.",
+    ],
+    source: PONTZER_2021,
+  },
+  {
+    slug: "traening-kompensation",
+    category: "kalorieforbraending",
+    title: "Hvorfor træning forbrænder mindre end forventet",
+    summary: "Kroppen sparer på energi andre steder, når du bevæger dig mere.",
+    body: [
+      "Studier af bl.a. Hadza-jægersamlere og vestlige motionister viser, at det samlede daglige forbrug stiger mindre end de ekstra kalorier fra træningen: Kroppen kompenserer ved at spare på andre processer.",
+      "Det betyder ikke, at motion er værdiløs — den forbedrer hjerte, blodsukker, humør og sundhed uafhængigt af vægten. Men som vægttabsmetode alene er den mindre effektiv end som vedligeholdelse.",
+      "Man spiser også ofte lidt mere efter en træning. Pas på belønningsmad: en energibar kan ophæve det meste af en times gåtur.",
+      "Kombinér motion med et fornuftigt indtag, og brug Hello Cal til at holde øje med begge sider af regnskabet.",
+    ],
+    source: PONTZER_2016,
+    moreSources: [PONTZER_2021, WHO_ACTIVITY],
+  },
+  {
+    slug: "kalorie-tips-og-tricks",
+    category: "kalorieforbraending",
+    title: "Tips og tricks: Dagsplan for højere forbrænding",
+    summary: "En samlet huskeliste baseret på forskningen i de øvrige artikler.",
+    body: [
+      "Morgen: Spis en solid morgenmad med protein og fuldkorn, og få dagslys og lidt bevægelse tidligt.",
+      "Formiddag og eftermiddag: Afbryd siddende arbejde hver halve time. Gå en tur efter frokost og efter aftensmaden.",
+      "Sidst på eftermiddagen: Her er muskler og kondition for mange bedst, så det passer godt til styrketræning eller cardio. Undgå hård træning lige før sengetid.",
+      "Aften: Hold aftensmaden moderat, drik vand, og lad der gå nogle timer fra sidste store måltid til sengetid.",
+      "Nat: Sov 7-9 timer. Søvn er en af de mest undervurderede måder at passe sit stofskifte på.",
+      "Hele ugen: 150-300 minutters moderat aktivitet plus styrketræning to gange (WHO). Undgå ekstreme kure — kroppen sænker forbruget, når du sulter.",
+    ],
+    source: WHO_ACTIVITY_GUIDE,
+    moreSources: [WHO_DIET, ZITTING_2018, RICHTER_2020, NEDELTCHEVA_2010],
   },
 ];
 
