@@ -18,5 +18,18 @@
       "Read(./.env)",
       "Read(./.env.*)"
     ]
+  },
+  "hooks": {
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"$CLAUDE_PROJECT_DIR/scripts/native/parity.mjs\" --hook",
+            "timeout": 60
+          }
+        ]
+      }
+    ]
   }
 }

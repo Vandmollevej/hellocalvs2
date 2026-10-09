@@ -452,6 +452,26 @@ def apply_finished_jobs(conn):
               AND "productId" IS NOT NULL
             """
         )
+        # Genkørt logo (admin "Genkør logo"): filen {job}.png er overskrevet på
+        # samme sti, så brandets logo opdateres med ?v= mod browser-cache.
+        cur.execute(
+            """
+            UPDATE brands b
+            SET "logoUrl" = j."resultUrl" || '?v=' || floor(extract(epoch from now()))::bigint
+            FROM image_cutout_jobs j
+            WHERE j.kind = 'BRAND_LOGO' AND j.status = 'DONE' AND j."appliedAt" IS NULL
+              AND j."brandId" = b.id AND split_part(b."logoUrl", '?', 1) = j."resultUrl"
+            """
+        )
+        cur.execute(
+            """
+            UPDATE image_cutout_jobs j
+            SET "appliedAt" = now()
+            FROM brands b
+            WHERE j.kind = 'BRAND_LOGO' AND j.status = 'DONE' AND j."appliedAt" IS NULL
+              AND j."brandId" = b.id AND split_part(b."logoUrl", '?', 1) = j."resultUrl"
+            """
+        )
         cur.execute(
             """
             UPDATE brands b
