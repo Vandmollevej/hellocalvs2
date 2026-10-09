@@ -292,33 +292,58 @@ fun HandSizePickerRow(item: HandSizeItem, imageUrl: String?, amount: Double, onS
 }
 
 /**
- * src/components/hf/UpdatePointsBanner.tsx — white banner under the app bar
- * ("Optjen 20 points …"); drag/tap the grip to collapse it.
+ * src/components/hf/UpdatePointsBanner.tsx — white overlay under the app bar
+ * ("Optjen 20 points …"); it floats over the page and never pushes it. The grip
+ * collapses it (drag up / tap) or pulls down an inverted popup with one camera
+ * tile per missing item (drag down). Place it inside a Box over the content.
  */
 @Composable
-fun UpdatePointsBanner(href: String, text: String, toggleLabel: String) {
+fun UpdatePointsBanner(href: String, text: String, toggleLabel: String, tiles: List<String>, action: (@Composable () -> Unit)? = null) {
     val nav = LocalNavigator.current
-    var collapsed by remember { mutableStateOf(false) }
+    // 0 = collapsed, 1 = banner, 2 = panel
+    var stage by remember { mutableStateOf(1) }
     Column(Modifier.fillMaxWidth().shadow(4.dp).background(HcColors.White)) {
-        if (!collapsed) {
+        if (stage >= 1) {
             HcText(
                 text,
                 HcTypeRoles.Small,
-                Modifier.fillMaxWidth().clickable { nav.push(href) }.padding(horizontal = 16.dp, vertical = 12.dp),
+                Modifier.fillMaxWidth().clickable { nav.push(href) }.padding(start = 16.dp, end = 16.dp, top = 12.dp),
                 color = HcColors.Black,
                 bold = true,
                 align = TextAlign.Center,
             )
         }
+        if (stage >= 1 && action != null) Box(Modifier.padding(start = 16.dp, end = 16.dp, top = 8.dp)) { action() }
+        if (stage == 2) {
+            Row(
+                Modifier.fillMaxWidth().padding(start = 16.dp, end = 16.dp, top = 12.dp),
+                horizontalArrangement = Arrangement.spacedBy(16.dp, Alignment.CenterHorizontally),
+            ) {
+                tiles.forEach { label ->
+                    Column(
+                        Modifier.width(96.dp).clickable { nav.push(href) },
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.spacedBy(8.dp),
+                    ) {
+                        Box(
+                            Modifier.size(96.dp).clip(RoundedCornerShape(16.dp)).background(HcColors.Page),
+                            contentAlignment = Alignment.Center,
+                        ) { HcIcon("Camera", size = 32.dp, color = HcColors.Black) }
+                        HcText(label, HcTypeRoles.Small, color = HcColors.Black, align = TextAlign.Center)
+                    }
+                }
+            }
+        }
         Box(
-            Modifier.fillMaxWidth().height(24.dp)
-                .clickable { collapsed = !collapsed }
+            Modifier.fillMaxWidth().height(20.dp)
+                .clickable { stage = if (stage == 1) 0 else 1 }
                 .pointerInput(Unit) {
                     var total = 0f
                     detectVerticalDragGestures(
                         onDragStart = { total = 0f },
                         onDragEnd = {
-                            if (total <= -16 * density) collapsed = true else if (total >= 16 * density) collapsed = false
+                            if (total >= 16 * density) stage = if (stage == 0) 1 else 2
+                            else if (total <= -16 * density) stage = if (stage == 2) 1 else 0
                         },
                     ) { change, amount ->
                         change.consume()

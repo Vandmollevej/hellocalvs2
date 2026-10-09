@@ -128,6 +128,16 @@ export function isPublicHealthPath(pathname: string): boolean {
   return pathname === "/api/health";
 }
 
+// Statiske filer til de åbne sider (ikoner, flag, logoer). Brug ægte
+// filendelse, så /icons/... kun åbnes som billede og ikke som side.
+export function isPublicStaticAsset(pathname: string): boolean {
+  if (isProtectedImagePath(pathname)) return false;
+  return (
+    /\.(png|jpe?g|svg|webp|ico|woff2?|webmanifest|js|css|txt)$/i.test(pathname) &&
+    startsWithAny(pathname, PUBLIC_STATIC_PREFIXES)
+  );
+}
+
 export function isAnonymousAllowed(pathname: string): boolean {
   if (isProtectedImagePath(pathname)) return false;
   if (PUBLIC_PAGE_EXACT.has(pathname)) return true;
@@ -135,12 +145,7 @@ export function isAnonymousAllowed(pathname: string): boolean {
     return matchesPrefix(pathname, PUBLIC_API_PREFIXES) || isTokenApiPath(pathname);
   }
   if (matchesPrefix(pathname, PUBLIC_PAGE_PREFIXES)) return true;
-  // Statiske filer til de åbne sider. Brug ægte filendelse, så /icons/... kun
-  // åbnes som billede og ikke som side.
-  return (
-    /\.(png|jpe?g|svg|webp|ico|woff2?|webmanifest|js|css|txt)$/i.test(pathname) &&
-    startsWithAny(pathname, PUBLIC_STATIC_PREFIXES)
-  );
+  return isPublicStaticAsset(pathname);
 }
 
 // ---- Hotlink-/direkte-adgang til beskyttede billeder -----------------------

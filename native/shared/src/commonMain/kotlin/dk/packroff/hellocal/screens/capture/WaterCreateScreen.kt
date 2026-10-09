@@ -67,10 +67,10 @@ private class WaterContainer(val key: String, val ml: Int, val src: String, val 
 
 // Four presets that tap-select an ml amount; the slider stays freely adjustable.
 private val CONTAINERS = listOf(
-    WaterContainer("bottleLarge", 750, "/icons/water/bottle-large.png", 56.dp),
-    WaterContainer("bottleSmall", 500, "/icons/water/bottle-small.png", 56.dp),
-    WaterContainer("glassLarge", 330, "/icons/water/glass-large.png", 46.dp),
-    WaterContainer("glassSmall", 250, "/icons/water/glass-small.png", 46.dp),
+    WaterContainer("bottleLarge", 750, "/icons/water/bottle-large.png", 68.dp),
+    WaterContainer("bottleSmall", 500, "/icons/water/bottle-small.png", 58.dp),
+    WaterContainer("glassLarge", 330, "/icons/water/glass-large.png", 48.dp),
+    WaterContainer("glassSmall", 250, "/icons/water/glass-small.png", 38.dp),
 )
 
 /** The water glass icon (src/components/icons/WaterGlass.tsx — PNG used as a mask). */
@@ -141,7 +141,7 @@ fun WaterCreateScreen(@Suppress("UNUSED_PARAMETER") args: RouteArgs) {
                         horizontalAlignment = Alignment.CenterHorizontally,
                         verticalArrangement = Arrangement.spacedBy(4.dp, Alignment.CenterVertically),
                     ) {
-                        Box(Modifier.fillMaxWidth().height(56.dp), contentAlignment = Alignment.Center) {
+                        Box(Modifier.fillMaxWidth().height(72.dp), contentAlignment = Alignment.BottomCenter) {
                             HcRemoteImage(c.src, Modifier.height(c.boxHeight))
                         }
                         HcText("${c.ml / 10}cl", HcTypeRoles.Micro, bold = true, color = HcColors.Black)
