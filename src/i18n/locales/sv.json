@@ -1500,6 +1500,7 @@
       "markAllRead": "Markera alla som lästa",
       "unread": "Ny",
       "deleted": "Raderat",
+      "trash": "Papperskorg",
       "delete": "Radera",
       "clearAll": "Rensa allt",
       "clearAllWarning": "Alla raderade meddelanden tas bort permanent. Detta kan inte ångras.",

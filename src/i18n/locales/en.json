@@ -1475,6 +1475,7 @@
       "markAllRead": "Mark all as read",
       "unread": "New",
       "deleted": "Deleted",
+      "trash": "Trash",
       "delete": "Delete",
       "clearAll": "Clear all",
       "clearAllWarning": "All deleted messages are removed permanently. This cannot be undone.",

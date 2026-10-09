@@ -2,7 +2,16 @@
 
 Last updated: 2026-10-09
 
+## 2026-10-09: Periodevalg som dropdown
+
+- Søvn- og Væskestatistik bruger nu dropdown (`src/components/hf/StatPeriodSelect.tsx`) i stedet for periodeknapper. Ikke kørt lint/build/visuelt: `node_modules` mangler i dette cloud-miljø.
+
 ## 2026-10-09: Bundcirklen på alle sider, side-cirklen slået fra
+## 2026-10-09: Genvej + "Guide mig" i Hjælpecenteret
+
+- Hjælpecenter-siderne (7 sprog) viser øverst i emnet et understreget genvejslink og, hvor der findes en guide, "Guide mig" under linket. Bruger masters spotlight-guide fra chatten (DECISIONS 2026-10-09). 10 emner har guide: vægt, vand, stregkode, stemme, tilføj mad, opret ret, kropsmål, mål, flyt registrering, statistik.
+- Tjekket: `help-guides.test.mjs`, lint, typecheck for ændrede filer, og i Chromium: scriptet viser link + knap, knappen åbner `/?guide=…` og starter guiden. Ikke prøvet logget ind på telefon.
+
 
 - Side-cirklen (`AddButton` i `Hero`) vises ikke længere. Bundcirklen (`FooterArc`) ligger nu i `BottomNav` og er derfor på alle sider med bundmenu; popups (BottomSheet, z-200) ligger over den. Native: `HomeFooterArc` flyttet fra `HomeScreen` til `HelloCalApp` over bundmenuen, med egen `AddMenuSheet`. `AddButton`-koden er bevaret.
 - Ikke kørt: lint/tsc (ingen `node_modules`), Kotlin ikke kompileret lokalt (CI bygger); ikke prøvet på telefon. Paritet grøn.
@@ -139,7 +148,7 @@ Statusblokken i uge-/månedsvisning viser kun status (gennemsnit af forgangne da
 
 - "Senest anvendte" hedder nu "Senest tilføjet". Bundark har ingen synlig overskrift (kun til skærmlæsere). Tilføj-knappen er fjernet fra vareraderne (Søg, Favoritter, Mine scanninger); tryk på varen åbner varesiden /add/[id] uden popup.
 - Fjernet "Sådan regner vi" på Profil; Luk konto kræver nu et kontrolord ligesom Slet mine data, og kontrolordet følger sproget (SLET/DELETE/LÖSCHEN …; serveren får stadig "SLET"). Tilføj-menuen: tekst tættere på ikonerne. Varesiden: "/stk." efter gram pr. servering/skive, brand-logo flyttet 12 px ud, ingen tom luft over Tilføj-knappen.
-- Beskeder: "Slettet" øverst til venstre, swipe viser "Slet" midt for beskeden, "Ryd alt" under Slettet (bekræftelse i bundark). Migration `20261007140000_outbound_message_user_delete` skal køre ved deploy; "Ryd alt" skjuler for brugeren, rækken bevares til admin-loggen. Ikke visuelt testet (brugerregel).
+- Beskeder: "Papirkurv" (grå, ikon foran, ikke understreget) øverst til venstre linker til egen side `/profile/messages/trash` med overskriften Papirkurv og et "Beskeder"-link med brev-ikon tilbage (komponent `MessagesView`); swipe viser "Slet" midt for beskeden, "Ryd alt" under Slettet (bekræftelse i bundark). Migration `20261007140000_outbound_message_user_delete` skal køre ved deploy; "Ryd alt" skjuler for brugeren, rækken bevares til admin-loggen. Ikke visuelt testet (brugerregel).
 ## 2026-10-07: Vægt — synk-status, tøj ved vejning, kalibrer
 
 - Vægtsiden viser synk-status pr. forbundet integration (sidst synkroniseret + Synk nu). Gammel synk (admin, standard 48 t) giver et bundark med Synk nu / link til integrationen (`WeighInPrompts` på forsiden).
@@ -197,6 +206,10 @@ Retter → HelloFresh åbner nu en skrivebeskyttet side under Retter (ikke Nye v
 ## 2026-10-09: Tilføj-menu — tekst tættere på ikonerne
 
 - Ikonerne har tomt luft i bunden, så teksten sad for langt nede. `AddMenuList.tsx`: `gap-0` og `-mb-4` på ikonet. Lint/build ikke kørt (ingen `node_modules` i cloud-sessionen). Justér `-mb-4` efter billedet på telefon.
+
+## 2026-10-09: EDEKA-logoet viste kun det gule hjerte
+
+- Årsag: `drop_edge_fragments` skar kantrørende dele væk, og rembg regnede det store blå logofelt for baggrund. Rettet på master (kantrørende dele på mindst 10 % bevares; `is_solid_block_logo` bruger hele beskæringen, når feltet er en del af logoet). Denne PR tilføjer kun noten; den eksisterende EDEKA-fritskrabning skal laves igen i admin → Logoer.
 
 ## 2026-10-05: Pulslinjen — roligere uden ur, flyttet op over nederste tal
 

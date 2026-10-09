@@ -1500,6 +1500,7 @@
       "markAllRead": "Tout marquer comme lu",
       "unread": "Nouveau",
       "deleted": "Supprimés",
+      "trash": "Corbeille",
       "delete": "Supprimer",
       "clearAll": "Tout effacer",
       "clearAllWarning": "Tous les messages supprimés seront définitivement effacés. Action irréversible.",

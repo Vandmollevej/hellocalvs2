@@ -13,7 +13,8 @@ import { TrendIcon } from "@/components/BottomNav";
 import { SleepInsightChart } from "@/components/SleepInsightChart";
 import { useTranslation } from "@/i18n/LocaleProvider";
 import { fetchSleepQuality, localDateKey } from "@/lib/sleep-quality";
-import { buildSleepStatDays, SLEEP_STAT_PERIODS, sleepPeriodDays, type SleepStatPeriodKey } from "@/lib/sleep-stats";
+import { StatPeriodSelect } from "@/components/hf/StatPeriodSelect";
+import { buildSleepStatDays, sleepPeriodDays, type SleepStatPeriodKey } from "@/lib/sleep-stats";
 import { useSleepStatInputs } from "@/lib/use-sleep-stat-inputs";
 
 export default function SleepStatisticsPage() {
@@ -45,19 +46,7 @@ export default function SleepStatisticsPage() {
   return (
     <HfScreen title={t("sleepStats.title")} icon={<TrendIcon color="currentColor" size={20} />}>
       <div className="hf-page">
-        <div className="flex flex-wrap gap-2" role="group" aria-label={t("sleepStats.periodAria")}>
-          {SLEEP_STAT_PERIODS.map((key) => (
-            <button
-              key={key}
-              type="button"
-              aria-pressed={period === key}
-              onClick={() => setPeriod(key)}
-              className="hf-choice px-3 py-1.5"
-            >
-              {t(`sleepStats.period.${key}`)}
-            </button>
-          ))}
-        </div>
+        <StatPeriodSelect value={period} onChange={setPeriod} />
 
         {inputs.loading ? (
           <div className="h-56 animate-pulse rounded-2xl bg-hf-tan" />
