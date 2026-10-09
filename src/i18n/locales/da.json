@@ -1692,7 +1692,8 @@
     "showAll": "Vis alle ({count})",
     "showLess": "Vis færre",
     "chartAria": "Forløb for {name}",
-    "loadError": "Kunne ikke hente din status."
+    "loadError": "Kunne ikke hente din status.",
+    "customizeView": "Tilpas visning"
   },
   "bodyMeasurementChart": {
     "noData": "Ingen målinger endnu.",
@@ -1820,7 +1821,7 @@
         "night": "nat"
       },
       "weekday": "{weekday} {part}",
-      "lastWeek": "sidste uge {weekday}"
+      "lastWeek": "i {weekday}s"
     },
     "details": {
       "title": "Vejning",

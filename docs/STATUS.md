@@ -1,6 +1,16 @@
 # HELLO CAL — project status
 
-Last updated: 2026-10-08
+Last updated: 2026-10-09
+
+## 2026-10-09: Stregkode læses også med skygge hen over koden (lokal tærskel pr. scanlinje)
+
+- Brugerens test 2026-10-06: en mælk med lidt skygge over stregkoden kunne ikke læses, mens andre scanner-apps læste den straks. Årsag: ZXing binariserer hver scanlinje med én fælles sort/hvid-tærskel, så de hvide felter i skyggen var mørkere end de sorte streger i lyset. Bemærk: ZXing's `HybridBinarizer` (som 2026-10-07-ændringen skiftede til hver anden frame) adskiller sig kun fra den globale for 2D-koder — for 1D-rækker bruger begge samme ene tærskel pr. række, så den skiftende binarisering hjalp ikke mod skygge på iPhone (ingen native BarcodeDetector).
+- Nu tærskles hver scanlinje lokalt (`src/lib/barcode-row-threshold.ts`, koblet på ZXing via `src/lib/barcode-local-binarizer.ts`): hver pixel sammenlignes med gennemsnittet i et vindue på 10 % af linjen, så kun kontrasten mellem streg og nabo-felter tæller. I samme frame prøves derefter ZXing's globale histogram (lav kontrast/uskarphed), og UPC-E-læseren på begge. Én luminans-beregning pr. billede. Native BarcodeDetector (Android Chrome) kører stadig først.
+- Tjek: `npm test` (4 nye tests: uden skygge, blød og skarp skyggekant, ensfarvede områder), lint og typecheck rene for de ændrede filer. `npm run build` stopper på en eksisterende typefejl i `src/app/admin/product-database/products/page.tsx` (`"details"` vs. `"list"`, kendt fra 2026-10-04). Ikke prøvet på telefon — brugeren scanner mælken igen i samme lys.
+
+## 2026-10-09: Startmængde — instantkaffe 2 g og aldrig over pakkens indhold
+
+- `default-amount.ts` (+ native `FoodLogic.kt`): instantkaffe → 2 g; forslaget kappes ved pakkens vægt/volumen. Test: `node --test src/lib/default-amount.test.mjs` (14 grønne). Lint/build ikke kørt (ingen node_modules her); Kotlin ikke kompileret lokalt.
 
 ## 2026-10-08: Adgangsmur mod crawlere
 
@@ -33,6 +43,9 @@ Last updated: 2026-10-08
 - Hvert brand-kort (fuld admin) har nu "Erstat logo" (PNG-upload, samme pipeline som drag n drop/Logo-upload, PNG bruges som den er) og "Genkør logo" (`rerunBrandLogo` i `brands/actions.ts` sætter brandets BRAND_LOGO-job til PENDING; `cutout.py` skriver det nye resultat til brandet med `?v=`).
 - Genkør virker kun, når logoet stammer fra et fritlægningsjob (ikke uploadet). Billedrobotten skal genstartes/deployes med ny `cutout.py` (fix e745004e + denne).
 - Lint/typecheck/build kørt; ikke visuelt testet.
+
+## 2026-10-09: Kalender uden totaler i uge/måned
+Statusblokken i uge-/månedsvisning viser kun status (gennemsnit af forgangne dage mod delmålets dagsmål). Dagsvisningen er uændret. Lint + tsc grønne; ikke prøvet i browser.
 
 ## 2026-10-07: Alle popups som bundark + brand-logoets luft
 
@@ -136,6 +149,10 @@ Retter → HelloFresh åbner nu en skrivebeskyttet side under Retter (ikke Nye v
 - `/settings/import`: skærmoptagelse af MyFitnessPal/Lifesum → AI-aflæsning → gennemsyn → import som registreringer.
 - Migration `20261006200000_flow_conditions_migration_import` skal køre ved deploy. Tjek: `npm test`, lint og build (se commit). Ikke prøvet mod rigtig database eller med en rigtig optagelse — test importen med en kort optagelse først.
 - Fra samme overtagelse: `storeDescription` (butikkens originale varetekst, Cowboytoasten-sagen) er pushet til master (migration `20261005100000_product_store_description`), og SPAR-arket `spar.xlsx` er gemt med kode-forklaringerne.
+
+## 2026-10-09: Tilføj-menu — tekst tættere på ikonerne
+
+- Ikonerne har tomt luft i bunden, så teksten sad for langt nede. `AddMenuList.tsx`: `gap-0` og `-mb-4` på ikonet. Lint/build ikke kørt (ingen `node_modules` i cloud-sessionen). Justér `-mb-4` efter billedet på telefon.
 
 ## 2026-10-05: Pulslinjen — roligere uden ur, flyttet op over nederste tal
 
