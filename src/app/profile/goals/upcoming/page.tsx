@@ -2,7 +2,7 @@
 
 import { useEffect, useId, useState } from "react";
 import Link from "next/link";
-import { IconCheck, IconMeat, IconRulerMeasure } from "@tabler/icons-react";
+import { IconCheck, IconMeat, IconRulerMeasure, IconRun } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
 import { HfChevron } from "@/components/hf/HfChevron";
 import { IconBathScale } from "@/components/hf/IconBathScale";
@@ -30,6 +30,8 @@ function CategoryIcon({ category }: { category: GoalTargetCategory }) {
       <IconBathScale size={20} />
     ) : category === "body" ? (
       <IconRulerMeasure size={20} />
+    ) : category === "activity" ? (
+      <IconRun size={20} />
     ) : (
       <IconMeat size={20} />
     );

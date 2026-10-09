@@ -956,6 +956,7 @@
     "searching": "Searching...",
     "noResults": "No products match your search",
     "scan": "Take photo",
+    "scanWeb": "Upload an image or drop them here",
     "manually": "Create manually",
     "createOwnIngredient": "Create your own ingredient",
     "kcalUnknown": "{grams} g · kcal unknown",
@@ -1363,7 +1364,30 @@
     "category": {
       "weight": "Weight",
       "body": "Body measurements",
-      "nutrition": "Nutrition"
+      "nutrition": "Nutrition",
+      "activity": "Activity"
+    },
+    "activityHeading": "Activity",
+    "activityIntro": "WHO recommends adults get at least 150 min of moderate activity per week and strength training 2 days per week. Watches and activity trackers can record them.",
+    "activityUseWho": "Use WHO recommendation",
+    "activityHeartRateHint": "Heart rate above: you must exceed the value at least once a day. Moderate intensity is about 64% of your maximum heart rate (220 − your age), e.g. about 120 for a 30-year-old.",
+    "activity": {
+      "stepsPerDay": "Steps",
+      "activeMinutesPerWeek": "Active minutes",
+      "strengthDaysPerWeek": "Strength training",
+      "workoutsPerWeek": "Workouts",
+      "runKmPerWeek": "Running",
+      "cycleKmPerWeek": "Cycling",
+      "heartRateAboveBpm": "Heart rate above"
+    },
+    "activityPlaceholder": {
+      "stepsPerDay": "e.g. 8000",
+      "activeMinutesPerWeek": "e.g. 150",
+      "strengthDaysPerWeek": "e.g. 2",
+      "workoutsPerWeek": "e.g. 3",
+      "runKmPerWeek": "e.g. 15",
+      "cycleKmPerWeek": "e.g. 50",
+      "heartRateAboveBpm": "e.g. 120"
     },
     "compositionHeading": "Body composition",
     "composition": {"bodyFatPercent":"Body fat","muscleMassKg":"Muscle mass"},
@@ -1395,6 +1419,15 @@
     "loading": "Loading…",
     "noEntriesYet": "No weigh-ins logged yet.",
     "recentTitle": "Recent weigh-ins"
+  },
+  "drinks": {
+    "title": "Drinks",
+    "noDrinksYet": "There are no drinks yet.",
+    "notFound": "Drink not found.",
+    "add": "Add",
+    "saving": "Saving…",
+    "saveError": "The drink could not be saved.",
+    "kcalTotal": "About {kcal} kcal in total"
   },
   "waterLog": {
     "title": "Water",
@@ -1861,6 +1894,7 @@
     "camera": "Scan with camera",
     "list": "See all",
     "menstrualCycle": "Period",
+    "drinks": "Drinks",
     "hint": {
       "list": "See all"
     }

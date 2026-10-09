@@ -16,6 +16,12 @@ import {
   type CompositionGoalField,
 } from "@/lib/goal-composition";
 import { emptyNutritionGoalValues, NUTRITION_GOAL_FIELDS, type NutritionGoalField } from "@/lib/goal-nutrition";
+import {
+  ACTIVITY_GOAL_FIELDS,
+  emptyActivityGoalValues,
+  WHO_ACTIVITY_SUGGESTION,
+  type ActivityGoalField,
+} from "@/lib/goal-activity";
 
 // Formularen til at oprette og redigere en målsætning (dato, vægt, kropsmål,
 // ernæring).
@@ -27,10 +33,11 @@ export type GoalFormValues = {
   measurements: Record<BodyMeasurementField, string>;
   composition: Record<CompositionGoalField, string>;
   nutrition: Record<NutritionGoalField, string>;
+  activity: Record<ActivityGoalField, string>;
 };
 
 export function emptyGoalFormValues(): GoalFormValues {
-  return { targetDate: "", weight: "", measurements: emptyBodyMeasurementValues(), composition: emptyCompositionGoalValues(), nutrition: emptyNutritionGoalValues() };
+  return { targetDate: "", weight: "", measurements: emptyBodyMeasurementValues(), composition: emptyCompositionGoalValues(), nutrition: emptyNutritionGoalValues(), activity: emptyActivityGoalValues() };
 }
 
 // "" = tomt felt (ignoreres), null = ugyldig værdi, ellers det parsede tal.
@@ -107,6 +114,7 @@ export function GoalForm({
   const [measurements, setMeasurements] = useState(initial.measurements);
   const [composition, setComposition] = useState(initial.composition);
   const [nutrition, setNutrition] = useState(initial.nutrition);
+  const [activity, setActivity] = useState(initial.activity);
   const [saving, setSaving] = useState(false);
   const [saveError, setSaveError] = useState(false);
 
@@ -115,6 +123,7 @@ export function GoalForm({
     ...Object.fromEntries(BODY_MEASUREMENT_FIELDS.map(({ field }) => [field, parseValue(measurements[field])])),
     ...Object.fromEntries(COMPOSITION_GOAL_FIELDS.map(({ field }) => [field, parseValue(composition[field])])),
     ...Object.fromEntries(NUTRITION_GOAL_FIELDS.map(({ field }) => [field, parseValue(nutrition[field])])),
+    ...Object.fromEntries(ACTIVITY_GOAL_FIELDS.map(({ field }) => [field, parseValue(activity[field])])),
   } as Record<string, number | "" | null>;
   const hasInvalid = Object.values(parsed).some((value) => value === null);
   const hasAny = Object.values(parsed).some((value) => typeof value === "number");
@@ -260,6 +269,32 @@ export function GoalForm({
               />
             ))}
           </div>
+        </div>
+
+        <div className="hf-card hf-card--form">
+          <p className="hf-type-body hf-type-strong text-hf-black">{t("goals.activityHeading")}</p>
+          <p className="text-text-secondary hf-type-small">{t("goals.activityIntro")}</p>
+          <button
+            type="button"
+            onClick={() => setActivity((current) => ({ ...current, ...WHO_ACTIVITY_SUGGESTION }))}
+            className="hf-type-small hf-type-strong self-start text-hf-black underline"
+          >
+            {t("goals.activityUseWho")}
+          </button>
+          <div className="grid grid-cols-2 gap-4">
+            {ACTIVITY_GOAL_FIELDS.map(({ field, unit, nameKey }) => (
+              <GoalInput
+                key={field}
+                label={t(nameKey)}
+                unit={unit}
+                value={activity[field]}
+                placeholder={t(`goals.activityPlaceholder.${field}`)}
+                autoFocus={focus === field}
+                onChange={(value) => setActivity((current) => ({ ...current, [field]: value }))}
+              />
+            ))}
+          </div>
+          <p className="text-text-secondary hf-type-small">{t("goals.activityHeartRateHint")}</p>
         </div>
       </div>
     </HfScreen>

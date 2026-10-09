@@ -956,6 +956,7 @@
     "searching": "Søger...",
     "noResults": "Ingen varer matcher din søgning",
     "scan": "Tag billede",
+    "scanWeb": "Upload billede eller drop dem her",
     "manually": "Opret manuelt",
     "createOwnIngredient": "Opret egen ingrediens",
     "kcalUnknown": "{grams} g · kcal ukendt",
@@ -1363,7 +1364,30 @@
     "category": {
       "weight": "Vægt",
       "body": "Kropsmål",
-      "nutrition": "Ernæring"
+      "nutrition": "Ernæring",
+      "activity": "Aktivitet"
+    },
+    "activityHeading": "Aktivitet",
+    "activityIntro": "WHO anbefaler voksne mindst 150 min moderat aktivitet om ugen og styrketræning 2 dage om ugen. Ur og aktivitetsmålere kan registrere dem.",
+    "activityUseWho": "Brug WHO-anbefaling",
+    "activityHeartRateHint": "Puls over: du skal komme over værdien mindst én gang om dagen. Moderat intensitet er ca. 64 % af din maksimale puls (220 − din alder), fx ca. 120 for en 30-årig.",
+    "activity": {
+      "stepsPerDay": "Skridt",
+      "activeMinutesPerWeek": "Aktive minutter",
+      "strengthDaysPerWeek": "Styrketræning",
+      "workoutsPerWeek": "Træningspas",
+      "runKmPerWeek": "Løb",
+      "cycleKmPerWeek": "Cykling",
+      "heartRateAboveBpm": "Puls over"
+    },
+    "activityPlaceholder": {
+      "stepsPerDay": "fx 8000",
+      "activeMinutesPerWeek": "fx 150",
+      "strengthDaysPerWeek": "fx 2",
+      "workoutsPerWeek": "fx 3",
+      "runKmPerWeek": "fx 15",
+      "cycleKmPerWeek": "fx 50",
+      "heartRateAboveBpm": "fx 120"
     },
     "compositionHeading": "Kropssammensætning",
     "composition": {"bodyFatPercent":"Fedtprocent","muscleMassKg":"Muskelmasse"},
@@ -1395,6 +1419,15 @@
     "loading": "Henter…",
     "noEntriesYet": "Ingen vejninger registreret endnu.",
     "recentTitle": "Seneste vejninger"
+  },
+  "drinks": {
+    "title": "Drinks",
+    "noDrinksYet": "Der er endnu ingen drinks.",
+    "notFound": "Drinken blev ikke fundet.",
+    "add": "Tilføj",
+    "saving": "Gemmer…",
+    "saveError": "Drinken kunne ikke gemmes.",
+    "kcalTotal": "Ca. {kcal} kcal i alt"
   },
   "waterLog": {
     "title": "Vand",
@@ -1861,6 +1894,7 @@
     "camera": "Scan med kamera",
     "list": "Se alle",
     "menstrualCycle": "Menstruation",
+    "drinks": "Drinks",
     "hint": {
       "list": "Se alle"
     }
