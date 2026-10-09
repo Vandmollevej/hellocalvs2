@@ -14,10 +14,17 @@ import {
   IconSoup,
 } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
-import { BottomSheet, BottomSheetCloseButton } from "@/components/hf/BottomSheet";
+import {
+  BottomSheet,
+  BottomSheetCloseButton,
+} from "@/components/hf/BottomSheet";
 import { PersonsSlider } from "@/components/hf/PersonsSlider";
 import { MAX_RECIPE_PERSONS } from "@/lib/recipe-portions";
-import { PasteTextSheet, ScanSheet, type ImportResult } from "@/components/recipes/RecipeImportSheets";
+import {
+  PasteTextSheet,
+  ScanSheet,
+  type ImportResult,
+} from "@/components/recipes/RecipeImportSheets";
 import {
   readDishDraft,
   removeDishDraftIngredient,
@@ -30,7 +37,10 @@ import {
 } from "@/lib/dish-draft";
 import { RecipeImagesPicker } from "@/components/recipes/RecipeImagesPicker";
 import { ProductPhotoDropZone } from "@/components/recipes/ProductPhotoDropZone";
-import { RecipeStepsEditor, isEmptyStep } from "@/components/recipes/RecipeStepsEditor";
+import {
+  RecipeStepsEditor,
+  isEmptyStep,
+} from "@/components/recipes/RecipeStepsEditor";
 import { RecipeCategoriesDialog } from "@/components/recipes/RecipeCategoriesDialog";
 import { useTranslation } from "@/i18n/LocaleProvider";
 import { useConnectionMessage } from "@/lib/use-online-status";
@@ -50,10 +60,14 @@ export default function CreateDishPage() {
   const router = useRouter();
   // Navn, billeder og fremgangsmåde gemmes i kladden, så de overlever
   // turen ud efter ingredienser (docs/DECISIONS.md 2026-09-25).
-  const [details, setDetails] = useState<DishDraftDetails>(readDishDraftDetails);
+  const [details, setDetails] =
+    useState<DishDraftDetails>(readDishDraftDetails);
   const { name, images, steps, showImages, showSteps } = details;
   // Vindue med kategorier efter Gem.
-  const [savedDish, setSavedDish] = useState<{ id: string; tags: string[] } | null>(null);
+  const [savedDish, setSavedDish] = useState<{
+    id: string;
+    tags: string[];
+  } | null>(null);
   // Deling spørges om i et vindue efter oprettelsen (brugerens krav 2026-10-07);
   // den kan stadig slås til senere under retten.
   const [sharePrompt, setSharePrompt] = useState(false);
@@ -61,18 +75,30 @@ export default function CreateDishPage() {
   // Indsæt tekst / Scan: arket, der er åbent, og hvad robotten ikke kunne placere.
   const [servings, setServings] = useState<number | null>(null);
   const [sheet, setSheet] = useState<"none" | "paste" | "scan">("none");
-  const [importNote, setImportNote] = useState<{ missing: string[]; nutrition: string | null } | null>(null);
-  const [ingredients, setIngredients] = useState<DishDraftIngredient[]>(readDishDraft);
+  const [importNote, setImportNote] = useState<{
+    missing: string[];
+    nutrition: string | null;
+  } | null>(null);
+  const [ingredients, setIngredients] =
+    useState<DishDraftIngredient[]>(readDishDraft);
   const [saving, setSaving] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
   // Flowets første trin: tre knapper midt på skærmen. Springes over, når der
   // allerede er en kladde (fx ved retur fra en vare).
   const [started, setStarted] = useState(
-    () => details.name.trim() !== "" || ingredients.length > 0 || details.steps.length > 0 || details.images.length > 0
+    () =>
+      details.name.trim() !== "" ||
+      ingredients.length > 0 ||
+      details.steps.length > 0 ||
+      details.images.length > 0,
   );
   const [query, setQuery] = useState("");
-  const [results, setResults] = useState<{ id: string; name: string; imageUrl?: string | null }[]>([]);
-  const [searchState, setSearchState] = useState<"idle" | "loading" | "ready" | "error">("idle");
+  const [results, setResults] = useState<
+    { id: string; name: string; imageUrl?: string | null }[]
+  >([]);
+  const [searchState, setSearchState] = useState<
+    "idle" | "loading" | "ready" | "error"
+  >("idle");
 
   useEffect(() => {
     if (!query.trim()) return;
@@ -80,7 +106,10 @@ export default function CreateDishPage() {
     const timeout = setTimeout(async () => {
       setSearchState("loading");
       try {
-        const res = await fetch(`/api/products?q=${encodeURIComponent(query)}`, { signal: controller.signal });
+        const res = await fetch(
+          `/api/products?q=${encodeURIComponent(query)}`,
+          { signal: controller.signal },
+        );
         if (!res.ok) throw new Error("offline");
         const data = await res.json();
         setResults(data.products ?? []);
@@ -97,7 +126,9 @@ export default function CreateDishPage() {
     };
   }, [query]);
 
-  const hasPrivateIngredient = ingredients.some((i) => isPrivateIngredientId(i.productId));
+  const hasPrivateIngredient = ingredients.some((i) =>
+    isPrivateIngredientId(i.productId),
+  );
 
   const totals = useMemo(
     () =>
@@ -111,9 +142,9 @@ export default function CreateDishPage() {
           acc.fat += ingredient.fatPer100g * factor;
           return acc;
         },
-        { grams: 0, kcal: 0, protein: 0, carbs: 0, fat: 0 }
+        { grams: 0, kcal: 0, protein: 0, carbs: 0, fat: 0 },
       ),
-    [ingredients]
+    [ingredients],
   );
 
   function updateDetails(patch: Partial<DishDraftDetails>) {
@@ -135,11 +166,17 @@ export default function CreateDishPage() {
   async function answerShare(share: boolean) {
     if (share && savedDish) {
       setSharing(true);
-      const shareRes = await fetch(`/api/dishes/${encodeURIComponent(savedDish.id)}/share`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ shared: true, language: locale === "en" ? "en" : "da" }),
-      }).catch(() => null);
+      const shareRes = await fetch(
+        `/api/dishes/${encodeURIComponent(savedDish.id)}/share`,
+        {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            shared: true,
+            language: locale === "en" ? "en" : "da",
+          }),
+        },
+      ).catch(() => null);
       setSharing(false);
       // Retten er gemt privat; delingen kan slås til senere under retten.
       if (!shareRes?.ok) setSaveError(t("createDish.shareError"));
@@ -171,7 +208,11 @@ export default function CreateDishPage() {
     // Første billede øverst som titlen; flere billeder hører til trinene.
     const pageImages = result.pageImages ?? [];
     const nextImages = result.image ? [result.image, ...images] : images;
-    const nextSteps = result.steps.map((text, index) => ({ title: "", text, image: pageImages[index] ?? null }));
+    const nextSteps = result.steps.map((text, index) => ({
+      title: "",
+      text,
+      image: pageImages[index] ?? null,
+    }));
     updateDetails({
       name: result.title || name,
       images: nextImages,
@@ -218,7 +259,10 @@ export default function CreateDishPage() {
         body: JSON.stringify({
           name: name.trim(),
           servings,
-          ingredients: ingredients.map((i) => ({ productId: i.productId, grams: i.grams })),
+          ingredients: ingredients.map((i) => ({
+            productId: i.productId,
+            grams: i.grams,
+          })),
           images,
           steps: steps.filter((step) => !isEmptyStep(step)),
         }),
@@ -231,7 +275,10 @@ export default function CreateDishPage() {
       clearDishDraft();
       // Retten er gemt; først spørges der om deling, derefter om kategorier.
       if (data.dish?.id) {
-        setSavedDish({ id: data.dish.id, tags: Array.isArray(data.suggestedTags) ? data.suggestedTags : [] });
+        setSavedDish({
+          id: data.dish.id,
+          tags: Array.isArray(data.suggestedTags) ? data.suggestedTags : [],
+        });
         setSharePrompt(!hasPrivateIngredient);
       } else {
         finish();
@@ -243,275 +290,364 @@ export default function CreateDishPage() {
     }
   }
 
-  if (!started) {
-    const startOptions = [
-      { key: "scan", label: t("createDish.modeScan"), icon: <IconCamera size={28} />, sheet: "scan" as const },
-      { key: "text", label: t("createDish.modeText"), icon: <IconClipboardText size={28} />, sheet: "paste" as const },
-      { key: "manual", label: t("createDish.modeManual"), icon: <IconPencil size={28} />, sheet: "none" as const },
-    ];
-    return (
-      <HfScreen title={t("createDish.title")} icon={<IconSoup size={20} stroke={2} />}>
-        <div className="hf-page flex min-h-[60vh] flex-col items-center justify-center gap-3">
-          {startOptions.map((option) => (
-            <button
-              key={option.key}
-              type="button"
-              onClick={() => {
-                setSheet(option.sheet);
-                setStarted(true);
-              }}
-              className="flex w-full max-w-xs flex-col items-center gap-2 rounded-2xl bg-hf-tan py-5 text-hf-black"
-            >
-              {option.icon}
-              <span className="hf-type-body hf-type-strong">{option.label}</span>
-            </button>
-          ))}
-        </div>
-      </HfScreen>
-    );
-  }
+  const startOptions = [
+    {
+      key: "text",
+      label: t("createDish.modeText"),
+      icon: <IconClipboardText size={28} />,
+      sheet: "paste" as const,
+    },
+    {
+      key: "scan",
+      label: t("createDish.modeScan"),
+      icon: <IconCamera size={28} />,
+      sheet: "scan" as const,
+    },
+    {
+      key: "manual",
+      label: t("createDish.modeManual"),
+      icon: <IconPencil size={28} />,
+      sheet: "none" as const,
+    },
+  ];
 
   return (
     <HfScreen
       title={t("createDish.title")}
       icon={<IconSoup size={20} stroke={2} />}
-      footer={
-        <>
-          {saveError && (
-            <p className="hf-type-body text-text-secondary mb-2 text-center">{saveError}</p>
-          )}
-          <button
-            onClick={handleSave}
-            disabled={saving || savedDish !== null}
-            className="hf-control hf-btn-primary w-full"
-          >
-            {saving ? t("createDish.saving") : t("createDish.saveDish")}
-          </button>
-        </>
-      }
     >
-      <div className="hf-page">
-        <input
-          value={name}
-          onChange={(event) => setName(event.target.value)}
-          autoComplete="off"
-          aria-label={t("createDish.nameAriaLabel")}
-          placeholder={t("createDish.namePlaceholder")}
-          className="hf-type-body hf-field min-w-0 rounded-full bg-hf-tan px-4 text-hf-black outline-none"
-        />
-
-        {importNote && (
-          <div className="hf-card">
-            <p className="hf-type-small hf-type-strong text-hf-black">{t("createDish.importDone")}</p>
-            {importNote.nutrition && (
-              <p className="hf-type-small text-text-secondary">
-                {t("createDish.importNutrition")}: {importNote.nutrition}
-              </p>
-            )}
-            {importNote.missing.length > 0 && (
-              <>
-                <p className="hf-type-small hf-type-strong mt-2 text-hf-black">{t("createDish.importMissing")}</p>
-                <ul className="hf-type-small text-text-secondary list-disc pl-5">
-                  {importNote.missing.map((line, index) => (
-                    <li key={index}>{line}</li>
-                  ))}
-                </ul>
-              </>
-            )}
+      {/* Alle flows er helsides popups (docs/REGLER.md). */}
+      <BottomSheet
+        size="full"
+        title={t("createDish.title")}
+        onClose={() => router.back()}
+        footer={
+          started ? (
+            <>
+              {saveError && (
+                <p className="hf-type-body text-text-secondary mb-2 text-center">
+                  {saveError}
+                </p>
+              )}
+              <button
+                onClick={handleSave}
+                disabled={saving || savedDish !== null}
+                className="hf-control hf-btn-primary w-full"
+              >
+                {saving ? t("createDish.saving") : t("createDish.saveDish")}
+              </button>
+            </>
+          ) : undefined
+        }
+      >
+        {!started ? (
+          <div className="hf-page flex min-h-[50vh] flex-col items-center justify-center gap-3">
+            {startOptions.map((option) => (
+              <button
+                key={option.key}
+                type="button"
+                onClick={() => {
+                  setSheet(option.sheet);
+                  setStarted(true);
+                }}
+                className="flex w-full max-w-xs flex-col items-center gap-2 rounded-2xl bg-hf-tan py-5 text-hf-black"
+              >
+                {option.icon}
+                <span className="hf-type-body hf-type-strong">
+                  {option.label}
+                </span>
+              </button>
+            ))}
           </div>
-        )}
+        ) : (
+          <div className="hf-page">
+            <input
+              value={name}
+              onChange={(event) => setName(event.target.value)}
+              autoComplete="off"
+              aria-label={t("createDish.nameAriaLabel")}
+              placeholder={t("createDish.namePlaceholder")}
+              className="hf-type-body hf-field min-w-0 rounded-full bg-hf-tan px-4 text-hf-black outline-none"
+            />
 
-        <div className="rounded-2xl bg-hf-tan px-4 py-3">
-          <PersonsSlider
-            label={t("createDish.servings")}
-            value={servings ?? 4}
-            max={MAX_RECIPE_PERSONS}
-            onChange={setServings}
-          />
-        </div>
-
-        <div>
-          <p className="hf-type-small hf-type-strong mb-2 text-hf-black">{t("createDish.ingredients")}</p>
-          {ingredients.length === 0 ? (
-            <div className="hf-card text-center">
-              <p className="hf-type-body text-text-secondary">{t("createDish.noIngredientsYet")}</p>
-            </div>
-          ) : (
-            <div className="overflow-hidden rounded-2xl bg-hf-tan">
-              {ingredients.map((ingredient, index) => (
-                <div
-                  key={`${ingredient.productId}-${index}`}
-                  className="flex items-center gap-2.5 border-b border-hf-tan-dark px-4 py-3 last:border-b-0"
-                >
-                  <div className="h-9 w-9 flex-shrink-0">
-                    {ingredient.imageUrl && (
-                      // eslint-disable-next-line @next/next/no-img-element
-                      <img src={ingredient.imageUrl} alt="" className="h-full w-full object-contain" />
-                    )}
-                  </div>
-                  <div className="flex-1">
-                    <p className="hf-type-body hf-type-strong text-hf-black">{ingredient.name}</p>
-                    <p className="hf-type-small text-text-secondary">
-                      {isPrivateIngredientId(ingredient.productId)
-                        ? t("createDish.kcalUnknown", { grams: ingredient.grams })
-                        : t("createDish.gramsKcal", {
-                            grams: ingredient.grams,
-                            kcal: round((ingredient.kcalPer100g * ingredient.grams) / 100),
-                          })}
+            {importNote && (
+              <div className="hf-card">
+                <p className="hf-type-small hf-type-strong text-hf-black">
+                  {t("createDish.importDone")}
+                </p>
+                {importNote.nutrition && (
+                  <p className="hf-type-small text-text-secondary">
+                    {t("createDish.importNutrition")}: {importNote.nutrition}
+                  </p>
+                )}
+                {importNote.missing.length > 0 && (
+                  <>
+                    <p className="hf-type-small hf-type-strong mt-2 text-hf-black">
+                      {t("createDish.importMissing")}
                     </p>
-                  </div>
+                    <ul className="hf-type-small text-text-secondary list-disc pl-5">
+                      {importNote.missing.map((line, index) => (
+                        <li key={index}>{line}</li>
+                      ))}
+                    </ul>
+                  </>
+                )}
+              </div>
+            )}
+
+            <div className="rounded-2xl bg-hf-tan px-4 py-3">
+              <PersonsSlider
+                label={t("createDish.servings")}
+                value={servings ?? 4}
+                max={MAX_RECIPE_PERSONS}
+                onChange={setServings}
+              />
+            </div>
+
+            <div>
+              <p className="hf-type-small hf-type-strong mb-2 text-hf-black">
+                {t("createDish.ingredients")}
+              </p>
+              {ingredients.length === 0 ? (
+                <div className="hf-card text-center">
+                  <p className="hf-type-body text-text-secondary">
+                    {t("createDish.noIngredientsYet")}
+                  </p>
+                </div>
+              ) : (
+                <div className="overflow-hidden rounded-2xl bg-hf-tan">
+                  {ingredients.map((ingredient, index) => (
+                    <div
+                      key={`${ingredient.productId}-${index}`}
+                      className="flex items-center gap-2.5 border-b border-hf-tan-dark px-4 py-3 last:border-b-0"
+                    >
+                      <div className="h-9 w-9 flex-shrink-0">
+                        {ingredient.imageUrl && (
+                          // eslint-disable-next-line @next/next/no-img-element
+                          <img
+                            src={ingredient.imageUrl}
+                            alt=""
+                            className="h-full w-full object-contain"
+                          />
+                        )}
+                      </div>
+                      <div className="flex-1">
+                        <p className="hf-type-body hf-type-strong text-hf-black">
+                          {ingredient.name}
+                        </p>
+                        <p className="hf-type-small text-text-secondary">
+                          {isPrivateIngredientId(ingredient.productId)
+                            ? t("createDish.kcalUnknown", {
+                                grams: ingredient.grams,
+                              })
+                            : t("createDish.gramsKcal", {
+                                grams: ingredient.grams,
+                                kcal: round(
+                                  (ingredient.kcalPer100g * ingredient.grams) /
+                                    100,
+                                ),
+                              })}
+                        </p>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => handleRemove(index)}
+                        aria-label={t("createDish.removeIngredient")}
+                        className="flex h-7 w-7 items-center justify-center rounded-full bg-hf-white text-hf-black"
+                      >
+                        <IconX size={14} />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {ingredients.length > 0 && (
+              <div className="hf-card">
+                <p className="hf-type-small hf-type-strong text-hf-black">
+                  {t("createDish.total")}
+                </p>
+                <p className="hf-type-body text-hf-black">
+                  {t("createDish.gramsKcal", {
+                    grams: round(totals.grams),
+                    kcal: round(totals.kcal),
+                  })}
+                </p>
+                <p className="hf-type-small text-text-secondary">
+                  {t("createDish.macrosSummary", {
+                    protein: round(totals.protein, 1),
+                    carbs: round(totals.carbs, 1),
+                    fat: round(totals.fat, 1),
+                  })}
+                </p>
+              </div>
+            )}
+
+            <div>
+              <p className="hf-type-small hf-type-strong mb-2 text-hf-black">
+                {t("createDish.addIngredient")}
+              </p>
+              <div className="hf-search">
+                <IconSearch size={16} color="var(--hf-black)" />
+                <input
+                  value={query}
+                  onChange={(event) => {
+                    const value = event.target.value;
+                    setQuery(value);
+                    if (!value.trim()) {
+                      setSearchState("idle");
+                      setResults([]);
+                    }
+                  }}
+                  placeholder={t("createDish.searchPlaceholder")}
+                />
+              </div>
+
+              {query.trim() && (
+                <div className="mt-2 overflow-hidden bg-hf-tan rounded-card">
+                  {searchState === "loading" && (
+                    <SkeletonScreen className="px-4">
+                      <SkeletonMediaRows rows={4} />
+                    </SkeletonScreen>
+                  )}
+                  {searchState === "error" && (
+                    <p className="hf-type-body text-text-secondary px-4 py-4 text-center">
+                      {connectionMessage(t("createDish.noResults"))}
+                    </p>
+                  )}
+                  {searchState === "ready" && results.length === 0 && (
+                    <p className="hf-type-body text-text-secondary px-4 py-4 text-center">
+                      {t("createDish.noResults")}
+                    </p>
+                  )}
+                  {searchState === "ready" &&
+                    results.slice(0, 6).map((product, index) => (
+                      <Link
+                        key={product.id}
+                        href={`/add/${product.id}?for=ret`}
+                        className={`flex items-center gap-2.5 px-4 py-3 ${
+                          index < Math.min(results.length, 6) - 1
+                            ? "border-b border-hf-tan-dark"
+                            : ""
+                        }`}
+                      >
+                        <div className="h-9 w-9 flex-shrink-0">
+                          {product.imageUrl && (
+                            // eslint-disable-next-line @next/next/no-img-element
+                            <img
+                              src={product.imageUrl}
+                              alt=""
+                              className="h-full w-full object-contain"
+                            />
+                          )}
+                        </div>
+                        <span className="hf-type-body hf-type-strong flex-1 text-hf-black">
+                          {product.name}
+                        </span>
+                      </Link>
+                    ))}
+                </div>
+              )}
+
+              {/* Nye varer oprettes kun ved scanning — ingen manuel formular (DECISIONS 2026-10-02). */}
+              <div className="mt-4">
+                {inWebShell ? (
+                  <ProductPhotoDropZone returnSuffix="?for=ret" />
+                ) : (
+                  <a
+                    href="/camera?mode=product&for=ret"
+                    className="flex flex-col items-center gap-2 rounded-2xl bg-hf-tan py-3 text-center"
+                  >
+                    <IconCamera size={20} color="var(--hf-black)" />
+                    <span className="hf-type-small hf-type-strong text-hf-black">
+                      {t("createDish.scan")}
+                    </span>
+                  </a>
+                )}
+              </div>
+            </div>
+
+            {showImages && (
+              <div>
+                <p className="hf-type-small hf-type-strong mb-2 text-hf-black">
+                  {t("recipeImages.title")}
+                </p>
+                <RecipeImagesPicker
+                  images={images}
+                  onChange={(next) => updateDetails({ images: next })}
+                />
+              </div>
+            )}
+
+            {showSteps && (
+              <div>
+                <p className="hf-type-small hf-type-strong mb-1 text-hf-black">
+                  {t("recipeSteps.title")}
+                </p>
+                <p className="hf-type-small text-text-secondary">
+                  {t("recipeSteps.hint")}
+                </p>
+                <RecipeStepsEditor
+                  steps={steps}
+                  onChange={(next) => updateDetails({ steps: next })}
+                />
+              </div>
+            )}
+
+            {(!showImages || !showSteps) && (
+              <div className="grid grid-cols-2 gap-2">
+                {!showImages && (
                   <button
                     type="button"
-                    onClick={() => handleRemove(index)}
-                    aria-label={t("createDish.removeIngredient")}
-                    className="flex h-7 w-7 items-center justify-center rounded-full bg-hf-white text-hf-black"
-                  >
-                    <IconX size={14} />
-                  </button>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-
-        {ingredients.length > 0 && (
-          <div className="hf-card">
-            <p className="hf-type-small hf-type-strong text-hf-black">{t("createDish.total")}</p>
-            <p className="hf-type-body text-hf-black">
-              {t("createDish.gramsKcal", { grams: round(totals.grams), kcal: round(totals.kcal) })}
-            </p>
-            <p className="hf-type-small text-text-secondary">
-              {t("createDish.macrosSummary", {
-                protein: round(totals.protein, 1),
-                carbs: round(totals.carbs, 1),
-                fat: round(totals.fat, 1),
-              })}
-            </p>
-          </div>
-        )}
-
-        <div>
-          <p className="hf-type-small hf-type-strong mb-2 text-hf-black">{t("createDish.addIngredient")}</p>
-          <div className="hf-search">
-            <IconSearch size={16} color="var(--hf-black)" />
-            <input
-              value={query}
-              onChange={(event) => {
-                const value = event.target.value;
-                setQuery(value);
-                if (!value.trim()) {
-                  setSearchState("idle");
-                  setResults([]);
-                }
-              }}
-              placeholder={t("createDish.searchPlaceholder")}
-            />
-          </div>
-
-          {query.trim() && (
-            <div className="mt-2 overflow-hidden bg-hf-tan rounded-card">
-              {searchState === "loading" && (
-                <SkeletonScreen className="px-4">
-                  <SkeletonMediaRows rows={4} />
-                </SkeletonScreen>
-              )}
-              {searchState === "error" && (
-                <p className="hf-type-body text-text-secondary px-4 py-4 text-center">
-                  {connectionMessage(t("createDish.noResults"))}
-                </p>
-              )}
-              {searchState === "ready" && results.length === 0 && (
-                <p className="hf-type-body text-text-secondary px-4 py-4 text-center">
-                  {t("createDish.noResults")}
-                </p>
-              )}
-              {searchState === "ready" &&
-                results.slice(0, 6).map((product, index) => (
-                  <Link
-                    key={product.id}
-                    href={`/add/${product.id}?for=ret`}
-                    className={`flex items-center gap-2.5 px-4 py-3 ${
-                      index < Math.min(results.length, 6) - 1 ? "border-b border-hf-tan-dark" : ""
+                    onClick={() => updateDetails({ showImages: true })}
+                    className={`flex flex-col items-center gap-2 rounded-2xl bg-hf-tan py-3 text-center ${
+                      showSteps ? "col-span-2" : ""
                     }`}
                   >
-                    <div className="h-9 w-9 flex-shrink-0">
-                      {product.imageUrl && (
-                        // eslint-disable-next-line @next/next/no-img-element
-                        <img src={product.imageUrl} alt="" className="h-full w-full object-contain" />
-                      )}
-                    </div>
-                    <span className="hf-type-body hf-type-strong flex-1 text-hf-black">{product.name}</span>
-                  </Link>
-                ))}
-            </div>
-          )}
-
-          {/* Nye varer oprettes kun ved scanning — ingen manuel formular (DECISIONS 2026-10-02). */}
-          <div className="mt-4">
-            {inWebShell ? (
-              <ProductPhotoDropZone returnSuffix="?for=ret" />
-            ) : (
-              <a
-                href="/camera?mode=product&for=ret"
-                className="flex flex-col items-center gap-2 rounded-2xl bg-hf-tan py-3 text-center"
-              >
-                <IconCamera size={20} color="var(--hf-black)" />
-                <span className="hf-type-small hf-type-strong text-hf-black">{t("createDish.scan")}</span>
-              </a>
-            )}
-          </div>
-        </div>
-
-        {showImages && (
-          <div>
-            <p className="hf-type-small hf-type-strong mb-2 text-hf-black">{t("recipeImages.title")}</p>
-            <RecipeImagesPicker images={images} onChange={(next) => updateDetails({ images: next })} />
-          </div>
-        )}
-
-        {showSteps && (
-          <div>
-            <p className="hf-type-small hf-type-strong mb-1 text-hf-black">{t("recipeSteps.title")}</p>
-            <p className="hf-type-small text-text-secondary">{t("recipeSteps.hint")}</p>
-            <RecipeStepsEditor steps={steps} onChange={(next) => updateDetails({ steps: next })} />
-          </div>
-        )}
-
-        {(!showImages || !showSteps) && (
-          <div className="grid grid-cols-2 gap-2">
-            {!showImages && (
-              <button
-                type="button"
-                onClick={() => updateDetails({ showImages: true })}
-                className={`flex flex-col items-center gap-2 rounded-2xl bg-hf-tan py-3 text-center ${
-                  showSteps ? "col-span-2" : ""
-                }`}
-              >
-                <IconPhoto size={20} color="var(--hf-black)" />
-                <span className="hf-type-small hf-type-strong text-hf-black">{t("recipeImages.addButton")}</span>
-              </button>
-            )}
-            {!showSteps && (
-              <button
-                type="button"
-                onClick={() => updateDetails({ showSteps: true })}
-                className={`flex flex-col items-center gap-2 rounded-2xl bg-hf-tan py-3 text-center ${
-                  showImages ? "col-span-2" : ""
-                }`}
-              >
-                <IconListNumbers size={20} color="var(--hf-black)" />
-                <span className="hf-type-small hf-type-strong text-hf-black">{t("recipeSteps.addButton")}</span>
-              </button>
+                    <IconPhoto size={20} color="var(--hf-black)" />
+                    <span className="hf-type-small hf-type-strong text-hf-black">
+                      {t("recipeImages.addButton")}
+                    </span>
+                  </button>
+                )}
+                {!showSteps && (
+                  <button
+                    type="button"
+                    onClick={() => updateDetails({ showSteps: true })}
+                    className={`flex flex-col items-center gap-2 rounded-2xl bg-hf-tan py-3 text-center ${
+                      showImages ? "col-span-2" : ""
+                    }`}
+                  >
+                    <IconListNumbers size={20} color="var(--hf-black)" />
+                    <span className="hf-type-small hf-type-strong text-hf-black">
+                      {t("recipeSteps.addButton")}
+                    </span>
+                  </button>
+                )}
+              </div>
             )}
           </div>
         )}
-      </div>
-      {sheet === "paste" && <PasteTextSheet onClose={() => setSheet("none")} onResult={applyImport} />}
-      {sheet === "scan" && <ScanSheet onClose={() => setSheet("none")} onResult={applyImport} />}
+      </BottomSheet>
+      {sheet === "paste" && (
+        <PasteTextSheet
+          onClose={() => setSheet("none")}
+          onResult={applyImport}
+        />
+      )}
+      {sheet === "scan" && (
+        <ScanSheet onClose={() => setSheet("none")} onResult={applyImport} />
+      )}
       {savedDish && sharePrompt && (
-        <BottomSheet title={t("createDish.shareQuestionTitle")} onClose={() => void answerShare(false)}>
+        <BottomSheet
+          title={t("createDish.shareQuestionTitle")}
+          onClose={() => void answerShare(false)}
+        >
           <div className="hf-page">
-            <p className="hf-type-body text-hf-black">{t("createDish.shareQuestionBody")}</p>
+            <p className="hf-type-body text-hf-black">
+              {t("createDish.shareQuestionBody")}
+            </p>
             <button
               type="button"
               disabled={sharing}
@@ -527,7 +663,11 @@ export default function CreateDishPage() {
         </BottomSheet>
       )}
       {savedDish && !sharePrompt && (
-        <RecipeCategoriesDialog dishId={savedDish.id} initialTags={savedDish.tags} onClose={finish} />
+        <RecipeCategoriesDialog
+          dishId={savedDish.id}
+          initialTags={savedDish.tags}
+          onClose={finish}
+        />
       )}
     </HfScreen>
   );

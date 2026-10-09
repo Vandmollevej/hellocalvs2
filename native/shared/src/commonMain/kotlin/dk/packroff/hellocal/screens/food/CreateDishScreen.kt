@@ -270,8 +270,8 @@ fun CreateDishScreen(args: RouteArgs) {
         ) {
             Column(Modifier.fillMaxWidth().heightIn(min = 420.dp), verticalArrangement = Arrangement.spacedBy(12.dp, Alignment.CenterVertically), horizontalAlignment = Alignment.CenterHorizontally) {
                 listOf(
-                    Triple("Camera", t.t("createDish.modeScan"), "scan"),
                     Triple("ClipboardText", t.t("createDish.modeText"), "paste"),
+                    Triple("Camera", t.t("createDish.modeScan"), "scan"),
                     Triple("Pencil", t.t("createDish.modeManual"), "none"),
                 ).forEach { (icon, label, target) ->
                     Column(

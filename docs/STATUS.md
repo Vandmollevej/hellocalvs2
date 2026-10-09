@@ -5,6 +5,7 @@ Last updated: 2026-10-09
 ## 2026-10-09: Opret ret som flow — startskærm med tre knapper
 
 - `/create-dish` (web + `CreateDishScreen.kt`) åbner nu med et startskærm-trin: tre knapper midt på skærmen — Scan, Indsæt tekst, Manuelt (de to første åbner deres ark, den sidste går til formularen). Springes over, når der allerede er en kladde (fx retur fra en vare). Knap-rækken i formularen er fjernet.
+- Opdateret: hele flowet ligger i en helsides popup (`BottomSheet size="full"`); knapperne hedder Indsæt tekst, Scan opskrift, Opret manuelt (se REGLER.md). Ingredienser tilføjes én ad gangen via søgningen.
 - Ikonerne er midlertidige Tabler-ikoner (kamera, udklipsholder, blyant); brugeren laver de rigtige. Layoutet (tre knapper under hinanden, centreret) er et gæt på "to en ned" — ret hvis det skulle være to ved siden af hinanden og én under.
 - Lint og native-paritet grønne; Kotlin ikke kompileret lokalt; ikke prøvet i browser/telefon.
 
