@@ -29,6 +29,8 @@ import dk.packroff.hellocal.api.Api
 import dk.packroff.hellocal.api.ApiException
 import dk.packroff.hellocal.i18n.LocalTranslator
 import dk.packroff.hellocal.screens.food.FoodPlatform
+import dk.packroff.hellocal.screens.food.obj
+import dk.packroff.hellocal.screens.food.str
 import dk.packroff.hellocal.theme.HcColors
 import dk.packroff.hellocal.theme.HcTypeRoles
 import dk.packroff.hellocal.ui.FoodPillField
