@@ -2,6 +2,10 @@
 
 Last updated: 2026-10-09
 
+## 2026-10-09: Videresend ret til en ven
+
+- Knappen "Send til en ven" på egne retter åbner en helsides popup (varighed, venns navn + mail, Fra, valgfri besked) og deler et krypteret link via deleark (+ mail). Se DECISIONS 2026-10-09. Migration `20261009230000_forward_expiry_details` skal med deployet. Lint/tsc grønne for web; Kotlin ikke kompileret; ikke prøvet i browser/på telefon; mail afhænger af SMTP.
+
 ## 2026-10-09: Opret ret som flow — startskærm med tre knapper
 
 - Rettelse (bruger 2026-10-09): side 1 er Titel + beskrivelse + varighed (nye felter `Dish.description`, `Dish.durationMinutes`, migration 20261009220000 — skal med deployet). Færdig-knap øverst til højre gemmer retten fra enhver side (springer til siden, der mangler navn/ingredienser). Indsæt tekst/Scan: importen er side 1, titlen kommer først på side 2. Ingen beskrivelse/varighed fra importen endnu.

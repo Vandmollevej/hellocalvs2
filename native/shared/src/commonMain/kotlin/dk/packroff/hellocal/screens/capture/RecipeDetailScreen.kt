@@ -43,6 +43,7 @@ import dk.packroff.hellocal.theme.HcTypeRoles
 import dk.packroff.hellocal.ui.HcLine
 import dk.packroff.hellocal.ui.HcMaskIcon
 import dk.packroff.hellocal.ui.HcButton
+import dk.packroff.hellocal.ui.HcButtonKind
 import dk.packroff.hellocal.ui.HcCard
 import dk.packroff.hellocal.ui.HcLoader
 import dk.packroff.hellocal.ui.HcRemoteImage
@@ -154,6 +155,7 @@ fun RecipeDetailScreen(args: RouteArgs) {
     var rejection by remember { mutableStateOf<String?>(null) }
     var rejected by remember { mutableStateOf(false) }
     var dishServings by remember { mutableStateOf<Int?>(null) }
+    var forwardOpen by remember { mutableStateOf(false) }
     var dishDescription by remember { mutableStateOf<String?>(null) }
     var dishDuration by remember { mutableStateOf<Int?>(null) }
     var showShareInfo by remember { mutableStateOf(false) }
@@ -315,6 +317,7 @@ fun RecipeDetailScreen(args: RouteArgs) {
                             rejection?.let { HcText(t.t("recipeDetail.shareRejectedReason", "reason" to it), HcTypeRoles.Small, Modifier.padding(top = 4.dp), color = HcColors.TextSecondary) }
                         }
                     }
+                    HcButton(t.t("forwardRecipe.button"), onClick = { forwardOpen = true }, kind = HcButtonKind.Secondary, leading = { HcIcon("Share3", size = 18.dp, color = HcColors.Action) })
                     dishDescription?.takeIf { it.isNotBlank() }?.let {
                         HcText(it, HcTypeRoles.Body, color = HcColors.Black)
                     }
@@ -423,6 +426,7 @@ fun RecipeDetailScreen(args: RouteArgs) {
             }
         }
     }
+    if (forwardOpen && id != null) ForwardRecipeSheet(id, view?.name ?: "", onClose = { forwardOpen = false })
 }
 
 /** Horizontal strip of dish photos (4:3, 85 % wide when several). */
