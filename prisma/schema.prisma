@@ -1371,6 +1371,9 @@ model Category {
 model Product {
   id               String                 @id @default(cuid())
   name             String
+  // Flertalstitel (Frida-arket "Product title plural", 2026-10-09): søger brugeren i flertal
+  // vises denne, ellers name (ental). null = ingen separat flertalsform.
+  namePlural       String?
   brand            Brand?                 @relation(fields: [brandId], references: [id])
   brandId          String?
   category         Category?              @relation(fields: [categoryId], references: [id])

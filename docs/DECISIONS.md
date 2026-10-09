@@ -4781,3 +4781,11 @@ Google/Apple/Facebook-login og integrationstilkobling kører i system-browseren,
 - Admin "Nye produkter" viser original og dansk side om side; dansk kan redigeres; "Godkend oversættelse" sætter APPROVED.
 - Banneret "Optjen 10 points" (genscanning) findes allerede for OFF-varer (`product-rescan-offer.ts`).
 - Migration 20261009180000_off_translation_photo skal med deployet.
+
+## 2026-10-09 — Frida-arket er sandheden for Frida-varerne; ental/flertal-titel
+
+- Det færdige Frida-ark (`Frida-ark/frida.xlsx`) publiceres til databasen: nye titler (ental `name` + flertal
+  `namePlural`), nøgleord, _is_-felter og næring pr. FoodID. Varer der er slettet i arket slettes i databasen
+  (skjules, hvis de er refereret). Se docs/FRIDA.md.
+- Ny global søgeregel: flertalssøgning viser `namePlural`, ental viser `name`.
+- Migration `20261009210000_product_name_plural` (`products."namePlural"`).

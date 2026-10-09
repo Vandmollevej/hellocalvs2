@@ -74,3 +74,21 @@ Eksempel: `FoodID 1` = "Jordbær, rå"; `ParameterID 137` = Energi (kJ) = 161,95
 ## Ikke bygget endnu
 
 - Frida-AI-beregning af kødandel i sammensatte retter.
+
+## Det færdige Frida-ark → databasen (2026-10-09)
+
+- Kilde: `Frida-ark/frida.xlsx` (titler er formler: `Product title singular` / `Product title plural`,
+  se `Excelark/NAVNEREGLER.md`). `scripts/frida-import/build_sheet.py` bygger
+  `scripts/frida-import/sheet/frida_sheet.json` (arket + næring fra Fridas officielle datasæt pr. FoodID) som
+  bages ind i Docker-imaget.
+- `agent.py` (`apply_sheet`) kører først ved hver start/kørsel, når JSON'en er ændret (sha256 i
+  `frida_import_state`, sentinel-id -1): opdaterer eksisterende Frida-varer (match på FoodID), opretter nye
+  (rækker der deler FoodID får `<FoodID>-2` …) og **sletter** Frida-varer, der ikke længere står i arket. Er en
+  slettet vare refereret andetsteds (registreringer m.m.), skjules den (`discontinued`) i stedet.
+- Felter: `name` = ental-titel, `namePlural` = flertalstitel, `productType`, `variant`, `keywords` (Keyword 1-3),
+  `dietaryTags` (_is_-felterne, fx isVegan/isSugarFree/isDecaf/isAlcoholFree), kcal/protein/kulhydrat/fedt og
+  `micronutrientsPer100g` fra Frida.
+- Når arket er publiceret, opdaterer Figshare-importen kun næringen på arkets varer — aldrig navne, og den opretter
+  ingen nye Frida-varer.
+- **Søgeregel (global)**: søger brugeren i flertal, vises `namePlural`; søger brugeren i ental, vises `name`
+  (`GET /api/products`).
