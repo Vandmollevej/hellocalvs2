@@ -181,7 +181,10 @@ type ProfileUser = {
 };
 
 // Mættet fedt og transfedt får en advarselstrekant (G11, 56f30763).
-const UNHEALTHY_FAT_KEYS = new Set(["saturatedFat", "transFat"]);
+// Advarselstrekant kun ved salt og transfedt, og kun når mængden i rækken
+// overstiger den anbefalede grænse pr. dag (WHO: salt 5 g, transfedt < 1 % af
+// energien ≈ 2,2 g ved 2000 kcal).
+const WARNING_LIMITS: Record<string, number> = { salt: 5, transFat: 2.2 };
 
 // En allerede tilføjet registrering, der redigeres (/registration/[id]).
 export type EditableRegistration = {
@@ -1274,7 +1277,8 @@ export function AddProductView({
                         // altid ved estimerede værdier; den grå linje er foldet
                         // ind, medmindre brugeren har slået automatisk udfoldning
                         // til — et tryk på rækken vender det.
-                        const hasUncertainty = row.estimated || (row.tolerance ?? 0) > 0;
+                        // Ingen bølge/pil ved 0-værdier.
+                        const hasUncertainty = row.value > 0 && (row.estimated || (row.tolerance ?? 0) > 0);
                         const expanded =
                           hasUncertainty &&
                           Boolean(profile?.autoExpandUncertainty) !== uncertaintyToggled.has(row.key);
@@ -1284,8 +1288,8 @@ export function AddProductView({
                         const content = (
                           <>
                             <span className="flex items-center gap-1">
-                              {UNHEALTHY_FAT_KEYS.has(row.key) && (
-                                <IconAlertTriangle size={15} className="shrink-0" aria-label={t("addProduct.unhealthyFat")} />
+                              {row.key in WARNING_LIMITS && row.value > WARNING_LIMITS[row.key] && (
+                                <IconAlertTriangle size={15} className="shrink-0" aria-label={row.label} />
                               )}
                               {MICRONUTRIENT_INFO_BY_KEY[row.key] ? (
                                 // Vitaminer og mineraler er klikbare som E-numre.
@@ -1310,7 +1314,7 @@ export function AddProductView({
                               )}
                             </span>
                             <span className="hf-type-strong">
-                              {row.estimated && <UncertaintyTilde />}
+                              {row.estimated && row.value > 0 && <UncertaintyTilde />}
                               {formatDaNumber(row.value, row.digits ?? 0)} {row.unit}
                             </span>
                             {expanded && (

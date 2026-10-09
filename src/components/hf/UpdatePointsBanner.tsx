@@ -37,7 +37,7 @@ export function UpdatePointsBanner({
   }
 
   return (
-    <div className="sticky top-0 z-30 bg-hf-white shadow-[0_2px_8px_rgba(0,0,0,0.12)]">
+    <div className="sticky top-0 z-30 rounded-b-2xl bg-hf-white shadow-[0_2px_8px_rgba(0,0,0,0.12)]">
       <div
         className="grid transition-[grid-template-rows] duration-200 ease-out"
         style={{ gridTemplateRows: collapsed ? "0fr" : "1fr" }}
