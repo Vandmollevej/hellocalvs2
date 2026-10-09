@@ -3,6 +3,11 @@
 Last updated: 2026-10-09
 
 ## 2026-10-09: Bundcirklen på alle sider, side-cirklen slået fra
+## 2026-10-09: Genvej + "Guide mig" i Hjælpecenteret
+
+- Hjælpecenter-siderne (7 sprog) viser øverst i emnet et understreget genvejslink og, hvor der findes en guide, "Guide mig" under linket. Bruger masters spotlight-guide fra chatten (DECISIONS 2026-10-09). 10 emner har guide: vægt, vand, stregkode, stemme, tilføj mad, opret ret, kropsmål, mål, flyt registrering, statistik.
+- Tjekket: `help-guides.test.mjs`, lint, typecheck for ændrede filer, og i Chromium: scriptet viser link + knap, knappen åbner `/?guide=…` og starter guiden. Ikke prøvet logget ind på telefon.
+
 
 - Side-cirklen (`AddButton` i `Hero`) vises ikke længere. Bundcirklen (`FooterArc`) ligger nu i `BottomNav` og er derfor på alle sider med bundmenu; popups (BottomSheet, z-200) ligger over den. Native: `HomeFooterArc` flyttet fra `HomeScreen` til `HelloCalApp` over bundmenuen, med egen `AddMenuSheet`. `AddButton`-koden er bevaret.
 - Ikke kørt: lint/tsc (ingen `node_modules`), Kotlin ikke kompileret lokalt (CI bygger); ikke prøvet på telefon. Paritet grøn.
