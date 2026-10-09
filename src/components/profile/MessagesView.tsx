@@ -17,10 +17,11 @@ type Message = {
   readAt: string | null;
 };
 
-const DELETE_WIDTH = 88;
+const DELETE_WIDTH = 80;
 
-// Swipe til venstre viser "Slet" som en rød knap midt for beskeden (ikke i
-// hele rækkens højde). Kun vandret træk fanges; lodret scroll går igennem.
+// Swipe til venstre viser "Slet" på samme røde flade som SwipeableRow
+// (Madvarer m.fl.) — ingen egen knaptype. Kun vandret træk fanges; lodret
+// scroll går igennem.
 function SwipeToDelete({
   label,
   onDelete,
@@ -37,12 +38,8 @@ function SwipeToDelete({
 
   return (
     <div className="relative overflow-hidden rounded-card">
-      <div className="absolute inset-y-0 right-0 flex items-center justify-center" style={{ width: DELETE_WIDTH }}>
-        <button
-          type="button"
-          onClick={onDelete}
-          className="hf-type-small hf-type-strong rounded-full bg-hf-red-dark px-4 py-2 text-hf-white"
-        >
+      <div className="absolute inset-y-0 right-0 flex w-20 items-center justify-center bg-hf-red-dark">
+        <button type="button" onClick={onDelete} className="hf-type-small hf-type-strong text-hf-white">
           {label}
         </button>
       </div>

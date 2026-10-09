@@ -628,7 +628,7 @@
     "categoryProfileDescription": "Navn, e-mail m.v.",
     "categoryWeight": "Vægt",
     "categoryGoals": "Mål",
-    "categoryMenstrualCycle": "Menstruationscyklus (kun for kvinder)",
+    "categoryMenstrualCycle": "Menstruationscyklus",
     "categoryDigestion": "Fordøjelse",
     "categoryComingSoon": "Kommer senere",
     "categoryUnavailable": "Endnu ikke tilgængelig i appen",
@@ -1683,6 +1683,7 @@
     "measurementGoal": "Mål",
     "latest": "d. {date} {value}",
     "setGoal": "Sæt et mål",
+    "seeAllGoals": "Se alle mål",
     "toLose": "{value} til målet",
     "toGain": "{value} op til målet",
     "goalReached": "Du har nået dit mål",
@@ -1693,7 +1694,8 @@
     "showAll": "Vis alle ({count})",
     "showLess": "Vis færre",
     "chartAria": "Forløb for {name}",
-    "loadError": "Kunne ikke hente din status."
+    "loadError": "Kunne ikke hente din status.",
+    "customizeView": "Tilpas visning"
   },
   "bodyMeasurementChart": {
     "noData": "Ingen målinger endnu.",
@@ -1721,6 +1723,7 @@
     "dateRequired": "Vælg en målsætningsdato for at gemme.",
     "targetDateLabel": "Nås senest {date}",
     "weight": "Vægt",
+    "weightCompositionHeading": "Vægt og opbygning",
     "bodyMeasurementsHeading": "Kropsmål",
     "weightPlaceholder": "fx 72,0",
     "measurementPlaceholder": "fx 82",
@@ -1757,6 +1760,16 @@
   },
   "weighIn": {
     "attireTitle": "Hvad havde du på?",
+    "attireItem": {
+      "UNDERWEAR": "Undertøj",
+      "PANTS": "Bukser",
+      "TOP": "Top / T-shirt",
+      "SWEATER": "Sweater",
+      "SHOES": "Sko",
+      "POCKET_ITEMS": "Mobil og lign. i lommen",
+      "AFTER_TOILET": "Efter toiletbesøg"
+    },
+    "attireNaked": "Intet valgt = nøgen",
     "attire": {
       "NAKED": "Nøgen",
       "UNDERWEAR": "Med undertøj",
@@ -1821,7 +1834,7 @@
         "night": "nat"
       },
       "weekday": "{weekday} {part}",
-      "lastWeek": "sidste uge {weekday}"
+      "lastWeek": "i {weekday}s"
     },
     "details": {
       "title": "Vejning",
@@ -1963,7 +1976,6 @@
   "addProduct": {
     "reportBug": "Har du fundet en fejl?",
     "reading": "Læses…",
-    "ingredientsUnreadable": "Indholdet kunne ikke læses på billedet.",
     "retakeIngredients": "Tag nyt billede af indholdet",
     "title": "Tilføj",
     "titleForDish": "Tilføj ingrediens",
@@ -2070,6 +2082,9 @@
   "productUpdate": {
     "banner": "Optjen {points} points ved at opdatere varen",
     "toggle": "Vis eller skjul banner",
+    "tileFront": "Forside",
+    "tileNutrition": "Energi",
+    "tileIngredients": "Indhold",
     "title": "Opdater varen",
     "kindFront": "Forsiden af varen ({points} points)",
     "hintFront": "Tag et billede af forsiden, så varen får et produktbillede.",

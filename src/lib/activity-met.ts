@@ -64,7 +64,7 @@ export const ACTIVITY_CATALOG: ActivityCatalogEntry[] = [
   { key: "ebike", label: "Elcykel", met: [3.0, 4.0, 5.0, 6.0], words: ["e-bike", "el-cykel"] },
 
   // Vand
-  { key: "open_water", label: "Havsvømning", met: [5.0, 6.5, 8.5, 10.0], words: ["åbent vand", "open water", "vinterbadning"] },
+  { key: "open_water", label: "Svømning i åbent vand", met: [5.0, 6.5, 8.5, 10.0], words: ["havsvømning", "åbent vand","open water", "vinterbadning"] },
   { key: "aqua_fitness", label: "Vandgymnastik", met: [3.0, 4.0, 5.5, 6.5], words: ["aqua fitness", "aquajogging", "vandaerobic"] },
   { key: "water_polo", label: "Vandpolo", met: [5.0, 7.0, 10.0, 12.0] },
   { key: "rowing", label: "Roning", met: [3.5, 5.8, 8.5, 12.0], words: ["robåd", "kaproning"] },

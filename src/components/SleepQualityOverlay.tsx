@@ -7,9 +7,8 @@ import { useTranslation } from "@/i18n/LocaleProvider";
 import { useShowTooltips } from "@/lib/help-prefs";
 import { SLEEP_QUALITY_RATINGS } from "@/lib/sleep-quality";
 
-// "Oplevelse af søvn" (docs/DECISIONS.md 2026-09-29): vises som bundark
-// (popup, lukkes ved træk ned) — aldrig "Luk". Tallene står i skærmens
-// lodrette midte; "Slå fra" (uden understregning) nederst til venstre åbner
+// "Oplevelse af søvn" (docs/DECISIONS.md 2026-09-29): vises som lille bundark
+// (popup i indholdets højde, lukkes ved træk ned) — aldrig "Luk"; "Slå fra" (uden understregning) nederst til venstre åbner
 // indstillingen under Visning. Et tryk på et tal fylder en grøn cirkel bag
 // det, og efter ~0,5 s glider arket ned.
 const CLOSE_DELAY_MS = 500;
@@ -29,7 +28,6 @@ export function SleepQualityOverlay({
 
   return (
     <BottomSheet
-      size="full"
       ariaLabel={t("sleepQuality.question")}
       onClose={() => {
         onClose();
@@ -79,8 +77,8 @@ function SleepQualityBody({ onRate }: { onRate: (rating: number) => void }) {
   }
 
   return (
-    <div className="relative h-full min-h-[24rem] px-6 text-center">
-      <div className="absolute inset-x-6 bottom-[calc(50%+3.5rem)] flex flex-col gap-3">
+    <div className="flex flex-col gap-6 px-6 pb-2 pt-2 text-center">
+      <div className="flex flex-col gap-3">
         <h2 className="hf-type-page-title hf-heading text-hf-black">
           {t("sleepQuality.question")}
         </h2>
@@ -90,7 +88,7 @@ function SleepQualityBody({ onRate }: { onRate: (rating: number) => void }) {
           </p>
         )}
       </div>
-      <div className="absolute inset-x-0 top-1/2 flex -translate-y-1/2 items-center justify-center gap-2">
+      <div className="flex items-center justify-center gap-2">
         {SLEEP_QUALITY_RATINGS.map((rating) => (
           <button
             key={rating}

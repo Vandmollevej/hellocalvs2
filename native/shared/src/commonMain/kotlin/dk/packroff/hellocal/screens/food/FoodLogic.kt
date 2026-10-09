@@ -161,8 +161,28 @@ private fun typicalAmountGrams(p: ProductDto): Double? {
     return if (p.productCategory == "DRINK") 250.0 else null
 }
 
+private val INSTANT_COFFEE = rx("(instant|nescaf|neskaf|pulverkaffe|kaffepulver|granulatkaffe|frysetørret kaffe)")
+private val WEIGHT_PATTERN = rx("(\\d+(?:[.,]\\d+)?)\\s*(kg|g)\\b")
+
+fun packageWeightGrams(text: String?): Double? {
+    val match = text?.let { WEIGHT_PATTERN.find(it) } ?: return null
+    val value = match.groupValues[1].replace(",", ".").toDoubleOrNull() ?: return null
+    val grams = if (match.groupValues[2].lowercase() == "kg") value * 1000 else value
+    return if (grams > 0) grams else null
+}
+
+private fun packageContentGrams(p: ProductDto): Double? =
+    packageWeightGrams(p.packageSizeText) ?: packageVolumeMl(p.packageSizeText) ?: packageWeightGrams(p.name)
+
 fun defaultAmountGrams(p: ProductDto, handSizeGrams: Double?): Double {
     p.lastAmountGrams?.takeIf { it > 0 }?.let { return it }
+    val amount = suggestedAmountGrams(p, handSizeGrams)
+    val cap = packageContentGrams(p)
+    return if (cap != null && amount > cap) cap else amount
+}
+
+private fun suggestedAmountGrams(p: ProductDto, handSizeGrams: Double?): Double {
+    if (INSTANT_COFFEE.containsMatchIn(productText(p))) return 2.0
     val serving = p.servingSizeGrams?.takeIf { it > 0 }
     if (serving != null && p.servingSizeUnitSingular != null && p.servingSizeUnitPlural != null) return serving
     if (serving != null && Regex("skive", RegexOption.IGNORE_CASE).containsMatchIn(productText(p))) return serving
