@@ -47,6 +47,7 @@ import dk.packroff.hellocal.i18n.LocalTranslator
 import dk.packroff.hellocal.theme.HcColors
 import dk.packroff.hellocal.theme.HcDimens
 import dk.packroff.hellocal.theme.HcTypeRoles
+import dk.packroff.hellocal.screens.food.PulseHeartMark
 import dk.packroff.hellocal.ui.CalendarPartyPopperIcon
 import dk.packroff.hellocal.ui.HcText
 import dk.packroff.hellocal.ui.formatNumber
@@ -266,6 +267,7 @@ private fun MonthDayCell(
         contentAlignment = Alignment.Center,
     ) {
         HcText(date.dayOfMonth.toString(), HcTypeRoles.Body, bold = !isPast, color = textColor)
+        PulseHeartMark(date, 12.dp, Modifier.align(Alignment.BottomStart).padding(2.dp))
         if (hasGoal) {
             CalendarPartyPopperIcon(12.dp, HcColors.Black, Modifier.align(Alignment.TopStart).padding(2.dp))
         }
@@ -327,6 +329,7 @@ internal fun DayRow(
             Row(Modifier.weight(1f), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
                 if (hasGoal) CalendarPartyPopperIcon(18.dp, HcColors.Black)
                 WeighInMark(weighIns)
+                PulseHeartMark(date)
             }
             HcIcon("ChevronRight", size = 19.dp, color = HcColors.Black)
         } else {
@@ -345,6 +348,7 @@ internal fun DayRow(
                 )
                 if (hasGoal) CalendarPartyPopperIcon(18.dp, HcColors.Black)
                 WeighInMark(weighIns)
+                PulseHeartMark(date)
             }
             Spacer(Modifier.weight(1f))
             Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(4.dp)) {

@@ -1779,6 +1779,7 @@
     "openGoal": "Öppna målet",
     "editTargetAria": "Redigera {name}",
     "category": {
+      "activity": "Aktivitet",
       "weight": "Vikt",
       "body": "Kroppsmått",
       "nutrition": "Näring"
@@ -1792,6 +1793,12 @@
       "bodyFatPercent": "t.ex. 20",
       "muscleMassKg": "t.ex. 35"
     },
+    "activityHeading": "Aktivitet",
+    "activityIntro": "WHO rekommenderar vuxna minst 150 min måttlig aktivitet i veckan och styrketräning 2 dagar i veckan. Klockor och aktivitetsmätare kan registrera dem.",
+    "activityUseWho": "Använd WHO:s rekommendation",
+    "activityHeartRateHint": "Puls över: du måste komma över värdet minst en gång om dagen. Måttlig intensitet är ca 64 % av din maxpuls (220 − din ålder), t.ex. ca 120 för en 30-åring.",
+    "activity": {"stepsPerDay":"Steg","activeMinutesPerWeek":"Aktiva minuter","strengthDaysPerWeek":"Styrketräning","workoutsPerWeek":"Träningspass","runKmPerWeek":"Löpning","cycleKmPerWeek":"Cykling","heartRateAboveBpm":"Puls över"},
+    "activityPlaceholder": {"stepsPerDay":"t.ex. 8000","activeMinutesPerWeek":"t.ex. 150","strengthDaysPerWeek":"t.ex. 2","workoutsPerWeek":"t.ex. 3","runKmPerWeek":"t.ex. 15","cycleKmPerWeek":"t.ex. 50","heartRateAboveBpm":"t.ex. 120"},
     "nutritionHeading": "Näring per dag",
     "nutrition": {
       "kcal": "Kalorier",
@@ -2510,6 +2517,13 @@
     "spikeTitle": "Du har {day} förbrukat {kcal} extra kalorier. Vad gjorde du?",
     "spikeHint": "Pulsen var upp till {peak} (vilopuls {rest}) i {minutes} min.",
     "spikeQuestion": "Välj aktivitet",
+    "pulseHeading": "Förhöjd puls",
+    "peakBpm": "Högsta puls {peak} bpm",
+    "pickType": "Välj träningstyp",
+    "heartAria": "Hög puls – öppna detaljer",
+    "eventAria": "Förhöjd puls",
+    "older": "Äldre",
+    "newer": "Nyare",
     "pulseTitle": "Vi ser att din puls var högre än vanligt {day}",
     "yesterday": "i går",
     "onDate": "{date}",

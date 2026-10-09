@@ -212,6 +212,7 @@ Brugerens krav: "Denne [højden] skal også låses ligesom vægten. I integratio
 - Den låste højde følger den nyeste gyldige `HEIGHT_CM`, en integration har målt (alle kilder), hver gang en integration leverer højde (`store-items.ts`). Withings henter altid hele højdehistorikken, da højden typisk er indtastet for længe siden.
 - Withings henter alt, vægten måler: vægt, højde, fedtprocent, fedtmasse, fedtfri masse, muskelmasse, kropsvand, knoglemasse, visceralt fedt, puls, iltmætning, temperatur og VO2 max. Nye `HealthMetricType`: `FAT_MASS_KG`, `FAT_FREE_MASS_KG`, `BONE_MASS_KG`, `VISCERAL_FAT_INDEX` (migration `20261003150000_full_body_composition`). Garmin henter også knoglemasse; Health Connect-modulet læser også knoglemasse og fedtfri masse (LeanBodyMass).
 - Hver kropsmåling har sin egen til/fra-række på integrationssiden (`ReadType`: `bodyFat` = fedtprocent og fedtmasse, `muscleMass`, `fatFreeMass`, `bodyWater`, `boneMass`, `visceralFat`; `body` = højde, BMI og temperatur). Nye rækker er slået til, indtil brugeren slår dem fra — også hvor "Fedtprocent" før var slået fra og dækkede muskler/kropsvand.
+- **2026-10-09, "al tilgængelig måling skal med":** en integration får en til/fra-række for hver kropsmåling, dens API leverer (`SYNC_CAPABILITIES`). Huawei: også kropsvand, knoglemasse og visceralt fedt. Apple Health: også fedtfri masse. Målinger uden række filtreres fra i `filterItemsBySettings`, så en manglende række = tabt data.
 - Hjul-arkene (`WheelPicker`, `BirthDatePicker`) portales til `<body>`: inde i et `<label>` sendte iOS tryk på "Færdig" videre til åbne-knappen, så arket ikke lukkede.
 ## 2026-10-03: "Tillad" giver altid synlig besked
 
@@ -4721,6 +4722,13 @@ Google/Apple/Facebook-login og integrationstilkobling kører i system-browseren,
 - Kun generiske varer — almindelige varer med brand/EAN berøres ikke. Se docs/REGLER.md.
 - Ikke gjort endnu: UI skal bruge `displayName`; ental/flertal-kolonner i Bilka-/REMA-arkene; import af de afledte former til eksisterende rækker ud over backfill-listen.
 
+## 2026-10-09 — Pulsudsving: 7 dage, bladring, rødt hjerte i kalenderen
+
+- Spørgsmålet om forhøjet puls (forsiden) spørger kun om de seneste 7 dage og bladrer som vejningerne: pil frem/tilbage mellem alle ubesvarede (`PulseEventSheet`, `GET /api/activities/spike` returnerer `events`).
+- Pulsarket viser øverst dato + start/slut (små) med tidspunktet for højeste puls i midten (stort, fedt), derunder pulsgrafen og træningstypen. Uden valg står "Angiv træningstype"; rækken åbner et bundark med søgefelt (`ActivityPicker`), og samme ark åbnes, når man trykker på den valgte type (skifter aktivitetens sport via `POST /api/activities/spike` med `changeSport`).
+- Kalenderen (måned/uge/liste/ugetidslinje) viser et rødt hjerte på dage med forhøjet puls (ubesvarede + besvarede, 7 dage) ved siden af vægt-ikonet, eller alene hvis man ikke har vejet sig (`PulseEventsProvider`, `GET /api/activities/spike/events`). Tryk på hjertet åbner pulsarket uden at åbne dagen.
+- Vejning: tryk på en vejning åbner allerede bundarket med valg af beklædning (`WeightEntryDetailsSheet`); uændret.
+
 ## 2026-10-09 — Bundmenu-redigering: swipe, kant-rulning og animationer
 
 - I redigering ruller et swipe på et ikon rækken; et stille tryk (250 ms) løfter ikonet. Holdes et løftet ikon ved rækkens kant, ruller rækken kontinuerligt (ingen sidehop, ingen snap).
@@ -4755,3 +4763,17 @@ Google/Apple/Facebook-login og integrationstilkobling kører i system-browseren,
 
 - Kortet "Visning" har to nye valg: "Indlæsning" (Sider med Forrige/Næste, eller Uendelig scroll) og "Varer pr. side" (24/48/96/200). URL-parametre `paging=infinite` og `perPage`; standard (sider, 48) udelades. Gemmes med i en gemt visning.
 - Uendelig scroll: `page` betyder antal indlæste portioner; serveren viser portion 1..page, og `InfiniteScrollLoader` hæver `page` når bunden kommer til syne.
+
+## 2026-10-09 — Telefonnummer krypteres; identitet skilles fra fagdata i trin (besluttet af Claude efter brugerens "træf selv en beslutning")
+
+- Spørgsmål: kan e-mail/navn/telefon adskilles, så kun en nøgle kan koble dem til øvrig data? Svar: ja, i tre trin; sidste trin er det stærkeste.
+- **Trin 1 (gjort):** `User.phone` krypteres som email/displayName (AES-256-GCM, `USER_DATA_KEY`, samme Prisma-udvidelse). `phone` kan ikke bruges i `where` på User. Backfill-scriptet krypterer også telefon. `SmsVerification.phone` er korttidsdata og er uændret.
+- **Trin 2 (næste, kræver egen migration):** flyt email/navn/telefon til en `UserIdentity`-tabel; fagdata refererer kun et nøglet pseudonym `HMAC(PSEUDONYM_KEY, userId)`. Koblingen kan kun laves med nøglen. Helst egen database/rolle, så et dump af fagdata ikke afslører identiteter.
+- **Trin 3:** nøgler i KMS/adskilt nøglefil, rotation, krypterede backups med separat nøgle. Ende-til-ende-boksen i `docs/PRIVACY.md` forbliver målet for private data.
+- Begrænsning: ingen af trinene beskytter mod en angriber med fuld kontrol over app-serveren (nøglerne er i hukommelsen). Kun ende-til-ende gør.
+
+## 2026-10-09 — OFF-varer: oversættelse + nyt-billede-banner
+- Open Food Facts-varer uden dansk tekst oversættes automatisk (gpt-4o-mini, `src/lib/translate-da.ts`); original gemmes i `nameOriginal`/`ingredientsOriginal`, `translationStatus=PENDING`.
+- Admin "Nye produkter" viser original og dansk side om side; dansk kan redigeres; "Godkend oversættelse" sætter APPROVED.
+- Banneret "Optjen 10 points" (genscanning) findes allerede for OFF-varer (`product-rescan-offer.ts`).
+- Migration 20261009180000_off_translation_photo skal med deployet.

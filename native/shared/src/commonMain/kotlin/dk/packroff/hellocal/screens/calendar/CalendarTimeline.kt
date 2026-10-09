@@ -57,6 +57,7 @@ import androidx.compose.ui.zIndex
 import dk.packroff.hellocal.i18n.LocalTranslator
 import dk.packroff.hellocal.theme.HcColors
 import dk.packroff.hellocal.theme.HcTypeRoles
+import dk.packroff.hellocal.screens.food.PulseHeartMark
 import dk.packroff.hellocal.ui.CalendarPartyPopperIcon
 import dk.packroff.hellocal.ui.HcText
 import dk.packroff.hellocal.ui.formatNumber
@@ -287,6 +288,7 @@ internal fun WeekTimelineView(
                             if (met) HcIcon("Check", size = 15.dp, stroke = 3.5f, color = HcColors.Green)
                             if (date in goalDates) CalendarPartyPopperIcon(15.dp, HcColors.Black)
                             if (!weighInsByDate[date].isNullOrEmpty()) HcIcon("Scale", size = 15.dp, color = HcColors.Black)
+                            PulseHeartMark(date, 15.dp)
                         }
                     }
                 }

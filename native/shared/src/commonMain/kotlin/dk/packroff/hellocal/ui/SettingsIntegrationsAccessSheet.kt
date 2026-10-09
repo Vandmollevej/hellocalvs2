@@ -310,7 +310,7 @@ fun SettingsAccessSheet(
                         }
                         // Grab handle.
                         Box(
-                            Modifier.align(Alignment.TopCenter).padding(top = 6.dp).size(40.dp, 4.dp)
+                            Modifier.align(Alignment.TopCenter).padding(top = 8.dp).size(36.dp, 4.dp)
                                 .clip(RoundedCornerShape(2.dp)).background(HcColors.Placeholder),
                         )
                         if (onDismiss != null) {

@@ -1779,6 +1779,7 @@
     "openGoal": "Åpne målsetningen",
     "editTargetAria": "Rediger {name}",
     "category": {
+      "activity": "Aktivitet",
       "weight": "Vekt",
       "body": "Kroppsmål",
       "nutrition": "Ernæring"
@@ -1792,6 +1793,12 @@
       "bodyFatPercent": "f.eks. 20",
       "muscleMassKg": "f.eks. 35"
     },
+    "activityHeading": "Aktivitet",
+    "activityIntro": "WHO anbefaler voksne minst 150 min moderat aktivitet i uken og styrketrening 2 dager i uken. Klokker og aktivitetsmålere kan registrere dem.",
+    "activityUseWho": "Bruk WHO-anbefaling",
+    "activityHeartRateHint": "Puls over: du må komme over verdien minst én gang om dagen. Moderat intensitet er ca. 64 % av makspulsen din (220 − alderen din), f.eks. ca. 120 for en 30-åring.",
+    "activity": {"stepsPerDay":"Skritt","activeMinutesPerWeek":"Aktive minutter","strengthDaysPerWeek":"Styrketrening","workoutsPerWeek":"Treningsøkter","runKmPerWeek":"Løping","cycleKmPerWeek":"Sykling","heartRateAboveBpm":"Puls over"},
+    "activityPlaceholder": {"stepsPerDay":"f.eks. 8000","activeMinutesPerWeek":"f.eks. 150","strengthDaysPerWeek":"f.eks. 2","workoutsPerWeek":"f.eks. 3","runKmPerWeek":"f.eks. 15","cycleKmPerWeek":"f.eks. 50","heartRateAboveBpm":"f.eks. 120"},
     "nutritionHeading": "Ernæring per dag",
     "nutrition": {
       "kcal": "Kalorier",
@@ -2510,6 +2517,13 @@
     "spikeTitle": "Du har {day} forbrent {kcal} ekstra kalorier. Hva holdt du på med?",
     "spikeHint": "Pulsen var opptil {peak} (hvilepuls {rest}) i {minutes} min.",
     "spikeQuestion": "Velg aktivitet",
+    "pulseHeading": "Forhøyet puls",
+    "peakBpm": "Høyeste puls {peak} bpm",
+    "pickType": "Velg treningstype",
+    "heartAria": "Høy puls – åpne detaljer",
+    "eventAria": "Forhøyet puls",
+    "older": "Eldre",
+    "newer": "Nyere",
     "pulseTitle": "Vi ser at pulsen din var høyere enn vanlig {day}",
     "yesterday": "i går",
     "onDate": "{date}",

@@ -140,6 +140,10 @@ fun HelloCalApp() {
                     if (Session.state == Session.State.LoggedIn && Session.user?.emailVerified == false && !isPublic(navigator.current.path)) {
                         EmailVerifySheet()
                     }
+                    // Connected integration that has not synced for a while: "Sync now".
+                    if (Session.state == Session.State.LoggedIn && !isPublic(navigator.current.path)) {
+                        StaleSyncPrompt(navigator.current.path)
+                    }
                 }
             }
         }

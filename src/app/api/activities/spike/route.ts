@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { unauthorized } from "@/lib/session";
 import { getProfileUser } from "@/lib/family-access";
-import { getPulsePrompt, recordPulseAnswer } from "@/lib/pulse-candidates";
+import { changePulseSport, getPulseEvents, recordPulseAnswer } from "@/lib/pulse-candidates";
 
 // GET: næste "Vi kan se, at din puls var højere end sædvanlig …"-spørgsmål
 // (nattens puls-robot + friske udsving), eller { spike: null }.
@@ -10,8 +10,9 @@ export async function GET() {
   const user = await getProfileUser("activities", "VIEWED");
   if (!user) return unauthorized();
   try {
-    const { prompt, remaining } = await getPulsePrompt(user.id);
-    return NextResponse.json({ spike: prompt, remaining });
+    // `events`: alle ubesvarede de seneste 7 dage (ældste først), så arket kan bladre frem og tilbage.
+    const events = await getPulseEvents(user.id, { pendingOnly: true, sync: true });
+    return NextResponse.json({ spike: events[events.length - 1] ?? null, remaining: Math.max(0, events.length - 1), events });
   } catch (error) {
     console.error("Heart rate spike lookup failed", error);
     return NextResponse.json({ spike: null, remaining: 0 });
@@ -29,7 +30,13 @@ export async function POST(req: Request) {
     endedAt?: string;
     extraKcal?: number;
     activityId?: string;
+    changeSport?: { activityId?: string; sportType?: string };
   };
+  // Skift af træningstype på et allerede besvaret udsving (kalenderen).
+  if (body.changeSport?.activityId && body.changeSport.sportType) {
+    const ok = await changePulseSport(user.id, body.changeSport.activityId, body.changeSport.sportType);
+    return ok ? NextResponse.json({ ok: true }) : NextResponse.json({ message: "Aktivitet findes ikke" }, { status: 404 });
+  }
   const startedAt = new Date(body.startedAt ?? "");
   const endedAt = new Date(body.endedAt ?? "");
   if (Number.isNaN(startedAt.getTime()) || Number.isNaN(endedAt.getTime())) {
