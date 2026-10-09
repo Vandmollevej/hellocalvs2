@@ -6,6 +6,10 @@ Last updated: 2026-10-09
 
 - `AddMenuList.tsx`: et hængt træk (mistet touchend) blokerede al scroll og alle tryk, så man ikke kunne afslutte redigeringen. Nu slippes trækket ved nyt tryk eller når ingen finger er på skærmen; "Færdig"/"Tilføj"-linjen er sticky øverst, og et tryk på tom baggrund afslutter redigeringen. Native (Compose-gestus) har ikke fejlen; paritet accepteret. Ikke kørt lint/tsc (ingen `node_modules`) og ikke prøvet på telefon.
 
+## 2026-10-09: Tidsslider på Aktivitet viser kun dagen
+
+- Slideren under Starttidspunkt (`SleepRangeSlider` med `bedtimeFirst`, native `ProfileSleepRangeSlider`) er nu ét døgn: venstre = 00:00, højre = 23:59. Start-håndtaget står til venstre, slut-håndtaget til højre, og den grønne markering ligger imellem dem uden at pakke over midnat. Slut kan ikke gå forbi 23:59 og ligger altid efter start (også med +/−). Søvnsiden er uændret. Lint grønt; Kotlin ikke kompileret lokalt; ikke visuelt testet.
+
 ## 2026-10-09: Tekst under tallene i tal-hjulet
 
 - Alle rækker i tal-hjulet har nu den grå tekst under tallet (web `StatsWheel.tsx`, native `HomeStatsWheel.kt`): standardtal får deres navn (fx "Kalorier indtaget" på to linjer), eksempelrækkerne "Søvn"/"Puls". Egne målinger beholder deres egen tekst. Lint og native-paritet grønne; ikke visuelt testet.
