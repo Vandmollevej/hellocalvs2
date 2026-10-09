@@ -289,6 +289,10 @@ export default function ProfileStatusPage() {
             </DropdownSection>
           ))}
         </div>
+
+        <Link href="/settings/display" className="hf-type-small hf-type-strong text-hf-black underline text-center">
+          {t("profileStatus.customizeView")}
+        </Link>
       </div>
     </HfScreen>
   );

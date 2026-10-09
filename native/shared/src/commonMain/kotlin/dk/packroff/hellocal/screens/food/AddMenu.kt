@@ -225,7 +225,7 @@ fun AddMenuList(date: String?, time: String?, onNavigate: () -> Unit = {}) {
                                     FoodImage(tile.icon, Modifier.size(96.dp))
                                     HcText(label, HcTypeRoles.Body, Modifier.offset(y = (-16).dp), align = TextAlign.Center)
                                 }
-                                if (editMode && !placeholder) {
+                                if (editMode) {
                                     Box(
                                         Modifier.align(Alignment.TopEnd).size(24.dp).clip(CircleShape).background(HcColors.Black)
                                             .clickable { commit(layout.copy(hidden = layout.hidden + key)) },

@@ -221,6 +221,16 @@ fun ProfileStatusScreen(args: RouteArgs) {
                     }
                 }
             }
+
+            HcText(
+                t.t("profileStatus.customizeView"),
+                HcTypeRoles.Small,
+                Modifier.fillMaxWidth().clickable { nav.push("/settings/display") }.padding(vertical = 12.dp),
+                color = HcColors.Black,
+                bold = true,
+                align = TextAlign.Center,
+                underline = true,
+            )
         }
     }
 }
