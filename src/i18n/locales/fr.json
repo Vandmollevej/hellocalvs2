@@ -3072,5 +3072,50 @@
       "dinner": "Dinner",
       "snack": "Snack"
     }
+  },
+  "weighIn": {
+    "ariaLabel": "Comment vous êtes-vous pesé ?",
+    "headlineToday": "Vous vous êtes pesé {when}.",
+    "headlinePast": "Vous vous êtes pesé {when}.",
+    "andWeighed": "et pesiez",
+    "question": "Mais était-ce :",
+    "option": {
+      "NAKED": "Nu",
+      "CLOTHES": "Avec des vêtements",
+      "FULLY_DRESSED": "Entièrement habillé"
+    },
+    "optionHint": {
+      "NAKED": "",
+      "CLOTHES": "",
+      "FULLY_DRESSED": "Pantalon et haut/T-shirt avec le téléphone dans la poche"
+    },
+    "save": "Enregistrer",
+    "saveError": "La réponse n’a pas pu être enregistrée. Réessayez.",
+    "previous": "Pesée précédente",
+    "next": "Pesée suivante",
+    "today": {
+      "morning": "ce matin",
+      "forenoon": "ce matin",
+      "afternoon": "cet après-midi",
+      "evening": "ce soir",
+      "night": "cette nuit"
+    },
+    "yesterday": {
+      "morning": "hier matin",
+      "forenoon": "hier matin",
+      "afternoon": "hier après-midi",
+      "evening": "hier soir",
+      "night": "la nuit dernière"
+    },
+    "partNoun": {
+      "morning": "matin",
+      "forenoon": "matin",
+      "afternoon": "après-midi",
+      "evening": "soir",
+      "night": "nuit"
+    },
+    "weekdayPart": "{weekday} {part}",
+    "lastWeek": "la semaine dernière, {when}",
+    "onDate": "le {date}"
   }
 }

@@ -3072,5 +3072,50 @@
       "dinner": "Dinner",
       "snack": "Snack"
     }
+  },
+  "weighIn": {
+    "ariaLabel": "Hvordan veide du deg?",
+    "headlineToday": "Du veide deg {when}.",
+    "headlinePast": "Du veide deg {when}.",
+    "andWeighed": "og veide",
+    "question": "Men var det:",
+    "option": {
+      "NAKED": "Naken",
+      "CLOTHES": "Med klær",
+      "FULLY_DRESSED": "Fullt påkledd"
+    },
+    "optionHint": {
+      "NAKED": "",
+      "CLOTHES": "",
+      "FULLY_DRESSED": "Bukse og topp/t-skjorte med mobilen i lommen"
+    },
+    "save": "Lagre",
+    "saveError": "Svaret kunne ikke lagres. Prøv igjen.",
+    "previous": "Forrige veiing",
+    "next": "Neste veiing",
+    "today": {
+      "morning": "i morges",
+      "forenoon": "i formiddag",
+      "afternoon": "i ettermiddag",
+      "evening": "i kveld",
+      "night": "i natt"
+    },
+    "yesterday": {
+      "morning": "i går morges",
+      "forenoon": "i går formiddag",
+      "afternoon": "i går ettermiddag",
+      "evening": "i går kveld",
+      "night": "i går natt"
+    },
+    "partNoun": {
+      "morning": "morgen",
+      "forenoon": "formiddag",
+      "afternoon": "ettermiddag",
+      "evening": "kveld",
+      "night": "natt"
+    },
+    "weekdayPart": "{weekday} {part}",
+    "lastWeek": "forrige uke {when}",
+    "onDate": "den {date}"
   }
 }

@@ -3072,5 +3072,50 @@
       "dinner": "Dinner",
       "snack": "Snack"
     }
+  },
+  "weighIn": {
+    "ariaLabel": "Hoe heb je jezelf gewogen?",
+    "headlineToday": "Je hebt jezelf {when} gewogen.",
+    "headlinePast": "Je woog jezelf {when}.",
+    "andWeighed": "en woog",
+    "question": "Maar was het:",
+    "option": {
+      "NAKED": "Naakt",
+      "CLOTHES": "Met kleren",
+      "FULLY_DRESSED": "Volledig gekleed"
+    },
+    "optionHint": {
+      "NAKED": "",
+      "CLOTHES": "",
+      "FULLY_DRESSED": "Broek en top/T-shirt met je telefoon in je zak"
+    },
+    "save": "Opslaan",
+    "saveError": "Het antwoord kon niet worden opgeslagen. Probeer het opnieuw.",
+    "previous": "Vorige weging",
+    "next": "Volgende weging",
+    "today": {
+      "morning": "vanochtend",
+      "forenoon": "vanochtend",
+      "afternoon": "vanmiddag",
+      "evening": "vanavond",
+      "night": "vannacht"
+    },
+    "yesterday": {
+      "morning": "gisterochtend",
+      "forenoon": "gisterochtend",
+      "afternoon": "gistermiddag",
+      "evening": "gisteravond",
+      "night": "afgelopen nacht"
+    },
+    "partNoun": {
+      "morning": "ochtend",
+      "forenoon": "ochtend",
+      "afternoon": "middag",
+      "evening": "avond",
+      "night": "nacht"
+    },
+    "weekdayPart": "{weekday} {part}",
+    "lastWeek": "vorige week {when}",
+    "onDate": "op {date}"
   }
 }

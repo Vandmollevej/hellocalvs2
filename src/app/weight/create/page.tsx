@@ -7,6 +7,7 @@ import { TextField } from "@/components/hf/TextField";
 import { IconBathroomScale } from "@/components/icons/BathroomScale";
 import { useTranslation } from "@/i18n/LocaleProvider";
 import { formatWeight, parseWeightInput, useUnits, weightToInputValue, weightUnitLabel } from "@/lib/units";
+import { openWeighIn } from "@/components/WeighInPrompt";
 import { Skeleton, SkeletonCards, SkeletonScreen } from "@/components/hf/Skeleton";
 
 type WeightEntry = {
@@ -127,12 +128,17 @@ export default function WeightCreatePage() {
             <p className="hf-type-small text-text-secondary text-center">{t("weightLog.noEntriesYet")}</p>
           )}
           {entries.map((entry) => (
-            <div key={entry.id} className="hf-control-row flex items-center justify-between rounded-2xl bg-hf-tan px-4">
+            <button
+              type="button"
+              key={entry.id}
+              onClick={() => openWeighIn(entry.id)}
+              className="hf-control-row flex w-full items-center justify-between rounded-2xl bg-hf-tan px-4 text-left"
+            >
               <p className="hf-type-body hf-type-strong text-hf-black">
                 {formatWeight(entry.weightKg, weightUnit)}
                 <span className="hf-type-small text-text-secondary ml-2">{formatDateTime(entry.weighedAt)}</span>
               </p>
-            </div>
+            </button>
           ))}
         </div>
       </div>

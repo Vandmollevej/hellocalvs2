@@ -3072,5 +3072,50 @@
       "dinner": "Dinner",
       "snack": "Snack"
     }
+  },
+  "weighIn": {
+    "ariaLabel": "Wie hast du dich gewogen?",
+    "headlineToday": "Du hast dich {when} gewogen.",
+    "headlinePast": "Du hast dich {when} gewogen.",
+    "andWeighed": "und wogst",
+    "question": "Aber war es:",
+    "option": {
+      "NAKED": "Nackt",
+      "CLOTHES": "Mit Kleidung",
+      "FULLY_DRESSED": "Voll bekleidet"
+    },
+    "optionHint": {
+      "NAKED": "",
+      "CLOTHES": "",
+      "FULLY_DRESSED": "Hose und Oberteil/T-Shirt mit Handy in der Tasche"
+    },
+    "save": "Speichern",
+    "saveError": "Die Antwort konnte nicht gespeichert werden. Bitte versuche es erneut.",
+    "previous": "Vorherige Wägung",
+    "next": "Nächste Wägung",
+    "today": {
+      "morning": "heute Morgen",
+      "forenoon": "heute Vormittag",
+      "afternoon": "heute Nachmittag",
+      "evening": "heute Abend",
+      "night": "heute Nacht"
+    },
+    "yesterday": {
+      "morning": "gestern Morgen",
+      "forenoon": "gestern Vormittag",
+      "afternoon": "gestern Nachmittag",
+      "evening": "gestern Abend",
+      "night": "gestern Nacht"
+    },
+    "partNoun": {
+      "morning": "Morgen",
+      "forenoon": "Vormittag",
+      "afternoon": "Nachmittag",
+      "evening": "Abend",
+      "night": "Nacht"
+    },
+    "weekdayPart": "{weekday} {part}",
+    "lastWeek": "letzte Woche {when}",
+    "onDate": "am {date}"
   }
 }

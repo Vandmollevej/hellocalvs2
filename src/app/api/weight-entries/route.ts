@@ -3,13 +3,23 @@ import { prisma } from "@/lib/prisma";
 import { unauthorized } from "@/lib/session";
 import { getProfileUser } from "@/lib/family-access";
 
-export async function GET() {
+export async function GET(req: Request) {
   try {
     const user = await getProfileUser("weight", "VIEWED");
 
     if (!user) return unauthorized();
+    // ?pending=1: smartvægt-vejninger fra de seneste to uger, hvor brugeren
+    // endnu ikke har svaret på tøj-spørgsmålet (src/lib/weigh-in-prompt.ts).
+    const pending = new URL(req.url).searchParams.get("pending") === "1";
     const entries = await prisma.weightEntry.findMany({
-      where: { userId: user.id },
+      where: pending
+        ? {
+            userId: user.id,
+            source: { not: "MANUAL" },
+            clothing: null,
+            weighedAt: { gte: new Date(Date.now() - 15 * 24 * 60 * 60 * 1000) },
+          }
+        : { userId: user.id },
       orderBy: { weighedAt: "desc" },
       // Integrationer (Withings m.fl.) leverer op til et års vejninger; kalenderen
       // viser dem pr. dag (2026-10-03).

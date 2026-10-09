@@ -1652,6 +1652,51 @@
       "fatG": "fx 70"
     }
   },
+  "weighIn": {
+    "ariaLabel": "Hvordan vejede du dig?",
+    "headlineToday": "Du har vejet dig {when}.",
+    "headlinePast": "Du vejede dig {when}.",
+    "andWeighed": "og vejede",
+    "question": "Men var det:",
+    "option": {
+      "NAKED": "Nøgen",
+      "CLOTHES": "Med tøj",
+      "FULLY_DRESSED": "Fuldt påklædt"
+    },
+    "optionHint": {
+      "NAKED": "",
+      "CLOTHES": "",
+      "FULLY_DRESSED": "Bukser og top/t-shirt med mobil i lommen"
+    },
+    "save": "Gem",
+    "saveError": "Svaret kunne ikke gemmes. Prøv igen.",
+    "previous": "Forrige vejning",
+    "next": "Næste vejning",
+    "today": {
+      "morning": "i morges",
+      "forenoon": "i formiddags",
+      "afternoon": "i eftermiddags",
+      "evening": "i aftes",
+      "night": "i nat"
+    },
+    "yesterday": {
+      "morning": "i går morges",
+      "forenoon": "i går formiddags",
+      "afternoon": "i går eftermiddags",
+      "evening": "i går aftes",
+      "night": "i går nat"
+    },
+    "partNoun": {
+      "morning": "morgen",
+      "forenoon": "formiddag",
+      "afternoon": "eftermiddag",
+      "evening": "aften",
+      "night": "nat"
+    },
+    "weekdayPart": "{weekday} {part}",
+    "lastWeek": "sidste uge {when}",
+    "onDate": "den {date}"
+  },
   "weightLog": {
     "title": "Vægt",
     "intro": "Registrér din vægt. Den gemmes med det samme og indgår i kalenderen og statistikken.",

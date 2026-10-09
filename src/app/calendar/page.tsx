@@ -57,6 +57,7 @@ import { useInWebShell } from "@/components/web/WebShell";
 import { fetchSleepQuality, localDateKey } from "@/lib/sleep-quality";
 import { IconPartyPopper, PartyPopperImage } from "@/components/icons/PartyPopper";
 import { BODY_MEASUREMENT_FIELDS } from "@/lib/body-measurements";
+import { openWeighIn } from "@/components/WeighInPrompt";
 import { COMPOSITION_GOAL_FIELDS } from "@/lib/goal-composition";
 import type { GoalDTO, GoalTargetDTO } from "@/lib/user-goals";
 import { Skeleton, SkeletonCards, SkeletonScreen } from "@/components/hf/Skeleton";
@@ -3070,8 +3071,25 @@ function HourEntriesOverlay({
 function MeasurementRow({ measurement, className }: { measurement: CalendarMeasurement; className: string }) {
   const { t } = useTranslation();
   const source = measurement.source && measurement.source !== "MANUAL" ? t(`calendar.measurement.source.${measurement.source}`) : null;
+  // Vejninger åbner "Hvordan vejede du dig?"-vinduet (nøgen / med tøj / fuldt påklædt).
+  const weighInId = measurement.id.startsWith("weight-") ? measurement.id.slice("weight-".length) : null;
   return (
-    <div className={className}>
+    <div
+      className={`${className}${weighInId ? " cursor-pointer" : ""}`}
+      {...(weighInId
+        ? {
+            role: "button",
+            tabIndex: 0,
+            onClick: () => openWeighIn(weighInId),
+            onKeyDown: (event: React.KeyboardEvent) => {
+              if (event.key === "Enter" || event.key === " ") {
+                event.preventDefault();
+                openWeighIn(weighInId);
+              }
+            },
+          }
+        : {})}
+    >
       <FoodRow
         thumbnail={<IconScale size={22} className="text-hf-black" aria-hidden="true" />}
         title={measurement.weightKg !== null ? t("calendar.measurement.weight") : t("calendar.measurement.title")}

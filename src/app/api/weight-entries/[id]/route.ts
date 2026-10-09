@@ -54,9 +54,36 @@ export async function GET(_req: Request, { params }: RouteContext) {
   }
 }
 
+const CLOTHING_VALUES = ["NAKED", "CLOTHES", "FULLY_DRESSED"] as const;
+type Clothing = (typeof CLOTHING_VALUES)[number];
+
 export async function PATCH(req: Request, { params }: RouteContext) {
   const { id } = await params;
-  const { weightKg } = (await req.json()) as { weightKg: number };
+  const { weightKg, clothing } = (await req.json()) as { weightKg?: number; clothing?: Clothing };
+
+  // Svaret på "var det nøgen, med tøj eller fuldt påklædt" kan gives på alle
+  // vejninger, også synkroniserede; selve vægten kun på indtastede.
+  if (clothing !== undefined) {
+    if (!CLOTHING_VALUES.includes(clothing)) {
+      return NextResponse.json({ message: "clothing er ugyldig" }, { status: 400 });
+    }
+    try {
+      const user = await getProfileUser("weight", "UPDATED");
+
+      if (!user) return unauthorized();
+      const result = await prisma.weightEntry.updateMany({
+        where: { id, userId: user.id },
+        data: { clothing, clothed: clothing !== "NAKED" },
+      });
+      if (result.count === 0) {
+        return NextResponse.json({ message: "Vejningen findes ikke" }, { status: 404 });
+      }
+      return NextResponse.json({ updated: true });
+    } catch (error) {
+      console.error("Weight entry clothing update failed", error);
+      return NextResponse.json({ message: "Database ikke tilgængelig" }, { status: 503 });
+    }
+  }
 
   if (!weightKg || weightKg <= 0) {
     return NextResponse.json({ message: "weightKg (> 0) er påkrævet" }, { status: 400 });

@@ -12,6 +12,7 @@ import { AccessLogPanel } from "@/components/family/AccessLogPanel";
 import { StartupTipsGate } from "@/components/StartupTipsGate";
 import { FlowGate } from "@/components/FlowGate";
 import { KcalGoalPrompt } from "@/components/KcalGoalPrompt";
+import { WeighInPrompt } from "@/components/WeighInPrompt";
 import { SentMessageNotice } from "@/components/SentMessageNotice";
 import { SleepQualityGate } from "@/components/SleepQualityGate";
 import { UmamiTracker } from "@/components/UmamiTracker";
@@ -68,6 +69,7 @@ export default function RootLayout({
           <StartupTipsGate />
           <FlowGate />
           <KcalGoalPrompt />
+          <WeighInPrompt />
           <SentMessageNotice />
           <SleepQualityGate />
           <OfflineQueueBanner />

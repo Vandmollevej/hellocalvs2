@@ -5971,3 +5971,10 @@ Skal gøres, før branchen flettes:
 - Se DECISIONS 2026-10-03 "Syv sprog". Ordbøger i `src/i18n/locales/`, hjælpesider i `public/help-*.html`, sprogvalg under Indstillinger → Sprog og region.
 - Typecheck, lint (0 fejl) og build grønne. `npm test`: 1 fejl (`page tree lists every page`) som også fejler på master uden disse ændringer.
 - Mangler: gennemlæsning af oversættelserne af en person, der taler sprogene; datoer/tal flere steder er stadig formateret med `da-DK`.
+
+## 2026-10-09: Smartvægt-popup "Du har vejet dig i morges"
+
+- Ny popup (`src/components/WeighInPrompt.tsx`, monteret i `layout.tsx`): ved besøg vises smartvægt-vejninger uden svar fra de seneste dage (aldrig længere tilbage end sidste uges mandag, `src/lib/weigh-in-prompt.ts` + test). Valg: Nøgen / Med tøj / Fuldt påklædt (bukser og top/t-shirt med mobil i lommen), gemmes i ny kolonne `weight_entries.clothing`. Pile frem/tilbage og "1/3" ved flere vejninger; overskrift "I går morges", "Mandag morgen", "Sidste uge tirsdag" eller dato; kropssammensætning fra vægten (fedt % m.m.) vises under valgene.
+- Vejningen kan altid åbnes igen: tryk på en vejning i kalenderens dagsvisning eller i "Seneste vejninger" (`openWeighIn(id)`).
+- Migration `20261009100000_weigh_in_clothing` skal med deployet. `PATCH /api/weight-entries/[id]` accepterer nu `{ clothing }` også på synkroniserede vejninger; `GET /api/weight-entries?pending=1` leverer ubesvarede.
+- Typecheck, lint (0 fejl) og build grønne. `npm test`: de to kendte fejl (`admin menu shortcut`, `page tree`) fejler også uden disse ændringer. Ikke prøvet i browser/mod rigtig database.

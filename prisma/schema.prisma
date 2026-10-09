@@ -578,7 +578,12 @@ model WeightEntry {
   source    WeightSource @default(MANUAL)
   note      String?
   weighedAt DateTime     @default(now())
+  // 2026-10-09: hvad brugeren havde på, da smartvægten målte (popup'en
+  // "Du har vejet dig i morges"). Null = ikke besvaret endnu; manuelle
+  // vejninger bruger clothed/shoes i stedet.
+  clothing  WeighInClothing?
 
+  @@index([userId, weighedAt])
   @@map("weight_entries")
 }
 
@@ -598,6 +603,12 @@ enum ShoesState {
   ON
   OFF
   UNKNOWN
+}
+
+enum WeighInClothing {
+  NAKED
+  CLOTHES
+  FULLY_DRESSED
 }
 
 enum WeightSource {

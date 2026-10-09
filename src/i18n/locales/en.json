@@ -1652,6 +1652,51 @@
       "fatG": "e.g. 70"
     }
   },
+  "weighIn": {
+    "ariaLabel": "How did you weigh yourself?",
+    "headlineToday": "You weighed yourself {when}.",
+    "headlinePast": "You weighed yourself {when}.",
+    "andWeighed": "and weighed",
+    "question": "But was it:",
+    "option": {
+      "NAKED": "Naked",
+      "CLOTHES": "With clothes",
+      "FULLY_DRESSED": "Fully dressed"
+    },
+    "optionHint": {
+      "NAKED": "",
+      "CLOTHES": "",
+      "FULLY_DRESSED": "Trousers and top/T-shirt with your phone in your pocket"
+    },
+    "save": "Save",
+    "saveError": "The answer could not be saved. Please try again.",
+    "previous": "Previous weigh-in",
+    "next": "Next weigh-in",
+    "today": {
+      "morning": "this morning",
+      "forenoon": "this morning",
+      "afternoon": "this afternoon",
+      "evening": "this evening",
+      "night": "last night"
+    },
+    "yesterday": {
+      "morning": "yesterday morning",
+      "forenoon": "yesterday morning",
+      "afternoon": "yesterday afternoon",
+      "evening": "yesterday evening",
+      "night": "last night"
+    },
+    "partNoun": {
+      "morning": "morning",
+      "forenoon": "morning",
+      "afternoon": "afternoon",
+      "evening": "evening",
+      "night": "night"
+    },
+    "weekdayPart": "{weekday} {part}",
+    "lastWeek": "last week {when}",
+    "onDate": "on {date}"
+  },
   "weightLog": {
     "title": "Weight",
     "intro": "Log your weight. It's saved right away and shows up in the calendar and statistics.",
