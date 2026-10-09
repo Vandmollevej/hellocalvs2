@@ -25,19 +25,19 @@ export function AdditiveList() {
         onChange={(e) => setQuery(e.target.value)}
         placeholder="Søg på E-nummer eller navn"
         aria-label="Søg E-numre"
-        className="sticky top-0 mt-4 w-full rounded-xl border border-neutral-300 bg-white px-4 py-3 text-base outline-none focus:border-[#067a46]"
+        className="sticky top-0 mt-4 w-full rounded-xl border px-4 py-3 outline-none border-hf-line bg-hf-white hf-type-body-lg focus:border-hf-brand"
       />
-      {error && <p className="mt-4 text-neutral-600">Kunne ikke hente E-numre.</p>}
-      {!additives && !error && <p className="mt-4 text-neutral-600">Henter…</p>}
-      {additives && filtered.length === 0 && <p className="mt-4 text-neutral-600">Ingen E-numre matcher søgningen.</p>}
-      <ul className="mt-4 divide-y divide-neutral-200">
+      {error && <p className="mt-4 text-hf-text-secondary">Kunne ikke hente E-numre.</p>}
+      {!additives && !error && <p className="mt-4 text-hf-text-secondary">Henter…</p>}
+      {additives && filtered.length === 0 && <p className="mt-4 text-hf-text-secondary">Ingen E-numre matcher søgningen.</p>}
+      <ul className="mt-4 divide-y divide-hf-nav">
         {filtered.map((a) => (
           <li key={a.eNumber} className="py-3">
-            <p className="font-semibold">
-              {a.eNumber} <span className="font-normal">{a.danishName || a.internationalName}</span>
+            <p className="hf-type-strong">
+              {a.eNumber} <span className="">{a.danishName || a.internationalName}</span>
             </p>
-            {a.function && <p className="text-sm text-neutral-600">{a.function}</p>}
-            {a.risks && <p className="mt-1 text-sm text-neutral-600">{a.risks}</p>}
+            {a.function && <p className="text-hf-text-secondary hf-type-body">{a.function}</p>}
+            {a.risks && <p className="mt-1 text-hf-text-secondary hf-type-body">{a.risks}</p>}
           </li>
         ))}
       </ul>

@@ -253,14 +253,22 @@ Routing. OAuth-redirect-URI'er hos Google, Facebook, Apple, Strava, Withings,
 Polar, Garmin, WHOOP, Huawei m.fl. og MobilePay-webhooken skal pege på `hellocal.io`. Garmins ping-adresse er `https://hellocal.io/api/integrations/garmin/webhook?key=<GARMIN_WEBHOOK_KEY>`. Passkeys er
 bundet til hostnavnet og skal oprettes igen på det nye domæne.
 
-## Search indexing
+## Search indexing and crawler protection
 
-The application adds `X-Robots-Tag: noindex, nofollow, noarchive, nosnippet,
-noimageindex` to every response. This lets search engines crawl the public app
-only to see that it must not be indexed. Do not use `robots.txt` to block the
-app while relying on `noindex`, because a blocked crawler cannot read that
-instruction. If the application must be private rather than merely hidden from
-search, protect it with an access-control layer such as Cloudflare Access.
+Every response carries `X-Robots-Tag: noindex, nofollow, noarchive, nosnippet,
+noimageindex`, and `public/robots.txt` is `Disallow: /`. This is only a request
+to well-behaved bots. The real protection is the access wall in
+`middleware.ts` / `src/lib/access-wall.ts` (docs/DECISIONS.md 2026-10-08):
+known crawlers and script clients get 403, anonymous visitors only reach the
+front page, login and legal pages, and everything else (pages, APIs, product
+images) needs a valid user session.
+
+Recommended Cloudflare settings for hellocal.io (dashboard, not code):
+Security → Bots → Bot Fight Mode on; "Block AI bots" / AI Scrapers and Crawlers
+on; a rate-limiting rule on `/api/auth/*` (e.g. 10 requests/min per IP).
+New public routes (webhooks, OAuth callbacks) must be added to
+`PUBLIC_API_PREFIXES` in `src/lib/access-wall.ts`, otherwise anonymous calls
+get 401.
 
 ## Backup
 
@@ -434,11 +442,32 @@ Før: hver udrulning genskabte `app`-containeren, og sitet gav "Bad Gateway" i c
 Nu:
 
 - `edge-proxy` (nginx, `scripts/edge-proxy/nginx.conf`) ejer serverens port `3100` (`HELLOCAL_HTTP_PORT`); Cloudflare Tunnel peger stadig på `http://192.168.1.90:3100`. `app` udgiver ikke længere en port og kan derfor køre i flere kopier. Proxyen sætter ingen `X-Forwarded-*`-headere: appen læser klient-IP (admin-IP-begrænsningen) fra `cf-connecting-ip`, og tunnelens headere skal videregives uændret.
-- Deploy-trinnet kalder `scripts/deploy/rollout-app.sh`: (1) `nginx -t` på konfigurationen, (2) ny app-container startes ved siden af den gamle (`up -d --scale app=2 --no-recreate app`; migrationer køres først via `depends_on`), (3) venter til den er sund (healthcheck hvert 5. sekund, op til 3 minutter), (4) stopper og fjerner den gamle. Bliver den nye ikke sund, fjernes den, den gamle bliver stående, og udrulningen fejler — sitet er uberørt.
+- Deploy-trinnet kalder `scripts/deploy/rollout-app.sh`: (1) `nginx -t` på konfigurationen, (1b) migreringerne køres eksplicit (`run --rm --no-deps migrate`) og stopper udrulningen, hvis de fejler — `depends_on` alene var ikke nok, se "Prøvekørsel af migreringer", (2) ny app-container startes ved siden af den gamle (`up -d --scale app=2 --no-recreate app`), (3) venter til den er sund (healthcheck hvert 5. sekund, op til 3 minutter), (4) stopper og fjerner den gamle. Bliver den nye ikke sund, fjernes den, den gamle bliver stående, og udrulningen fejler — sitet er uberørt.
 - Første udrulning efter denne ændring har én kort afbrydelse (den gamle app ejer endnu port 3100 og genskabes uden port, derefter starter proxyen). Scriptet vælger selv den vej.
 - `scan-app` (scan.hellocal.io) og agenterne er uændrede og genstartes som før.
 - Ændringer, der kun rører `docs/**`, `**/*.md` eller `tools/**`, starter intet build/deploy.
 - Ved problemer: `docker compose ... logs edge-proxy`; hurtig tilbagerulning er at gendanne `ports` på `app` i compose-filen og køre `docker compose ... up -d app` (proxyen fjernes med `rm -sf edge-proxy`).
+
+## Prøvekørsel af migreringer og overvågning (2026-10-07)
+
+Hændelse 2026-10-06/07: migreringen `20261004190000_user_email_hash` brugte tabelnavnet `"User"` (tabellen hedder `"users"`) og fejlede i produktion. `up --no-recreate` genbrugte den gamle, afsluttede migrate-container som "gennemført", så den nye kode gik i drift uden kolonnen (P2022 ved hvert brugeropslag). `migrate deploy` afviste derefter alle senere deploys (P3009), og `/api/health` svarede "ok" (kun `SELECT 1`) — fejlen stod ubemærket i 17 timer.
+
+Sikringer:
+
+- **Prøvekørsel:** `scripts/deploy/test-migrations.sh` (deploy-trin før udrulningen) kopierer produktionens skema + `_prisma_migrations` (ingen brugerdata) til en midlertidig PostgreSQL (`hellocal-migrate-test` på `backend`-netværket) og kører den nye releases `migrate`-service mod kopien. Fejler den, stopper deployet før produktionen røres. Kan kopien ikke indlæses, advares der, og testen springes over.
+- **Rækkefølge:** `rollout-app.sh` kører migreringerne eksplicit, før en ny app-container startes.
+- **Healthcheck:** `/api/health` henter også en (ikke-eksisterende) bruger med alle kolonner, så ny kode mod en database uden sine migreringer aldrig bliver sund. `/api/health?deep=1` melder desuden fejlede migreringer (HTTP 503 `degraded`).
+- **Overvågning:** `.github/workflows/uptime.yml` kalder `https://hellocal.io/api/health?deep=1` hvert 5. minut fra GitHubs servere (virker også, når NAS'en er nede; tre forsøg før alarm). En fejlet kørsel giver mail/push fra GitHub til den, der sidst ændrede workflowet (GitHub-indstilling: Notifications → Actions → "Only notify for failed workflows").
+- **Admin:** forsiden viser en rød boks "Deploy blokeret", når en migrering står som fejlet.
+- Gendannelsen 2026-10-07 skete via en midlertidig `prisma migrate resolve --rolled-back …` i `migrate`-servicen (c245f4cb), fjernet igen efter migreringen var anvendt. Samme fremgangsmåde bruges, hvis en migrering igen står som fejlet.
+
+### Overvågning (2026-10-08)
+
+Tre lag, så en fejl altid giver besked:
+
+1. **GitHub** (`.github/workflows/uptime.yml`): hvert 5. minut udefra; virker også, når NAS'en er slukket. Mail/push fra GitHub.
+2. **Vagt-robot på NAS'en** (`scripts/uptime-agent`, service `uptime-agent`): hver time (`UPTIME_CHECK_INTERVAL_SECONDS`, standard 3600) tjekkes `hellocal.io` udefra (gennem tunnelen), appen indefra (`http://app:3000`, uden om Cloudflare — skelner tunnel- fra app-fejl), alle `hellocal-v2`-containere (Docker-socket, kun læsning; afsluttede containere med `restart: "no"` springes over) og ledig plads på `/volume1` (alarm under 10 %). Mail til `UPTIME_ALERT_EMAIL` (standard `peter@packroff.dk`) ved ny fejl, påmindelse hver 6. time og "løst"-mail, når det virker igen; en "vagt-robot startet"-mail ved hver opstart bekræfter, at mail virker (og afslører en NAS-genstart). SMTP som appen: `.env.production` overskrevet af admin-gemte nøgler i `app_secrets` (dekrypteres med `ADMIN_SESSION_SECRET`). Startes i deploy-jobbet før migreringer og app, uden `depends_on`, så den kører, selv om de fejler.
+3. **Cloudflare** (sættes op i Cloudflare-dashboardet af brugeren, ikke i koden): Notifications → "Tunnel Health Alert" for tunnelen og evt. "Passive Origin Monitoring" for hellocal.io — mail, når tunnelen eller NAS'en ikke svarer Cloudflare.
 
 ## Feltkryptering af brugerdata (2026-10-04)
 

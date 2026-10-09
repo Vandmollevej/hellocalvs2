@@ -75,7 +75,7 @@ export async function POST(req: Request) {
 
   // Dyrefoder-spærring (stregkode, src/lib/pet-food-blacklist.ts). Ordmønstrene
   // køres bagefter på det AI læser (quick-product-enrichment.ts).
-  const petFoodBlock = petFoodBlockReason({ barcode, texts: [localIngredients, ingredientsOcrText, nutritionOcrText] });
+  const petFoodBlock = await petFoodBlockReason({ barcode, texts: [localIngredients, ingredientsOcrText, nutritionOcrText] });
   if (petFoodBlock) {
     void debugLog({
       category: "scan",
@@ -85,10 +85,19 @@ export async function POST(req: Request) {
       flowId,
       barcode,
     });
+    // Billederne, brugeren forsøgte at oprette, gemmes på hændelsen, så admin kan se dem.
+    const savedPhotos = (
+      await Promise.all(
+        [frontPhoto, nutritionPhoto, ingredientsPhoto].map((photo) =>
+          isPhoto(photo) ? saveDataUrlImage(photo).catch(() => null) : Promise.resolve(null)
+        )
+      )
+    ).filter((url): url is string => Boolean(url));
     const outcome = await recordPetFoodAttempt({
       userId: (await getSessionUser())?.id,
       source: "QUICK",
       barcode,
+      imageUrls: savedPhotos,
       matchedBy: `${petFoodBlock.reason}: ${petFoodBlock.match}`,
     });
     return NextResponse.json(

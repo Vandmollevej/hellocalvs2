@@ -24,8 +24,6 @@ import { getLandingStats } from "@/lib/landing-stats";
 // 2026-09-29): hent-appen-side i Hello Cal-farver med butikslinks + QR-koder,
 // "Log ind" øverst til højre og Business/Presse i footeren. Ingen telefonramme.
 
-const HERO_BG = "linear-gradient(135deg, #0a8f53 0%, #067A46 45%, #035624 100%)";
-
 function FeatureItem({ icon, title, text, align }: (typeof FEATURES_LEFT)[number] & { align: "left" | "right" }) {
   return (
     <div className={`flex items-start gap-4 ${align === "right" ? "lg:flex-row-reverse lg:text-right" : ""}`}>
@@ -57,14 +55,14 @@ export async function LandingPage() {
   return (
     <MarketingShell nav={[...nav]}>
       {/* Hero: tekst + butikker til venstre, bundark-overlay over en vægtgraf til højre. */}
-      <section className="relative overflow-hidden text-hf-white" style={{ background: HERO_BG }}>
+      <section className="mk-hero-bg relative overflow-hidden">
         <div aria-hidden="true" className="pointer-events-none absolute -right-24 -top-24 h-96 w-96 rounded-full bg-hf-white/5" />
         <div aria-hidden="true" className="pointer-events-none absolute -bottom-32 left-1/3 h-80 w-80 rounded-full bg-hf-white/5" />
         <div className="relative mx-auto grid max-w-6xl items-center gap-12 px-4 pb-32 pt-16 sm:px-6 lg:grid-cols-2 lg:pb-40 lg:pt-24">
           <div>
-            <p className="text-sm font-semibold uppercase tracking-widest text-hf-green-light">Kalorietæller på dansk</p>
+            <p className="mk-eyebrow">Kalorietæller på dansk</p>
             <h1 className="mt-4 text-4xl font-bold leading-tight sm:text-5xl">
-              Hold styr på kalorierne — <span className="text-[#a3e635]">uden besvær</span>
+              Hold styr på kalorierne — <span className="text-hf-positive">uden besvær</span>
             </h1>
             <p className="mt-6 max-w-lg text-lg leading-relaxed text-hf-white/85">
               Scan maden, følg vand og vægt, og se din udvikling i grafer der giver mening. Hello Cal gør det nemt at
@@ -113,13 +111,13 @@ export async function LandingPage() {
             </p>
             <a
               href="#hent"
-              className="mt-8 inline-flex rounded-full bg-hf-green px-8 py-3 text-sm font-semibold text-hf-white transition hover:bg-hf-green-dark"
+              className="mt-8 mk-btn mk-btn--brand"
             >
               Hent appen
             </a>
           </div>
           {/* Plads til billede af badevægt senere (brugerens plan 2026-09-29). */}
-          <div className="relative overflow-hidden rounded-3xl p-8" style={{ background: HERO_BG }}>
+          <div className="mk-hero-bg relative overflow-hidden rounded-3xl p-8">
             <WeightChartBackdrop className="h-64 w-full" />
             <div className="absolute bottom-6 left-6 rounded-2xl bg-hf-white px-4 py-3 shadow-lg">
               <p className="text-xs text-text-secondary">Vægt, seneste 3 måneder</p>
@@ -129,7 +127,7 @@ export async function LandingPage() {
         </div>
       </section>
 
-      <section id="funktioner" className="scroll-mt-20 px-4 py-24 sm:px-6" style={{ background: HERO_BG }}>
+      <section id="funktioner" className="mk-hero-bg scroll-mt-20 px-4 py-24 sm:px-6">
         <SectionHeading
           light
           title="Alt det"
@@ -181,7 +179,7 @@ export async function LandingPage() {
       <section id="hello-doc" className="scroll-mt-20 bg-hf-green-dark px-4 py-24 text-hf-white sm:px-6">
         <div className="mx-auto grid max-w-6xl items-center gap-14 lg:grid-cols-2">
           <div>
-            <p className="flex items-center gap-2 text-sm font-semibold uppercase tracking-widest text-hf-green-light">
+            <p className="flex items-center gap-2 mk-eyebrow">
               <IconStethoscope size={18} aria-hidden="true" /> Hello Doc
             </p>
             <h2 className="mt-4 text-3xl font-bold sm:text-4xl">Del din fremgang med lægen eller diætisten</h2>
@@ -192,7 +190,7 @@ export async function LandingPage() {
             <ul className="mt-6 flex flex-col gap-3">
               {["Du bestemmer hvilke data der deles", "Overskuelige grafer og nøgletal", "Adgang uden app eller konto for behandleren"].map((t) => (
                 <li key={t} className="flex items-center gap-3">
-                  <IconCheck size={20} className="shrink-0 text-[#a3e635]" aria-hidden="true" />
+                  <IconCheck size={20} className="shrink-0 text-hf-positive" aria-hidden="true" />
                   <span>{t}</span>
                 </li>
               ))}
@@ -207,8 +205,7 @@ export async function LandingPage() {
 
       <section
         id="priser"
-        className="scroll-mt-20 px-4 py-24 sm:px-6"
-        style={{ background: "linear-gradient(180deg, #035624 0%, #067A46 100%)" }}
+        className="scroll-mt-20 px-4 py-24 sm:px-6 mk-hero-bg--vertical"
       >
         <SectionHeading light title="Vælg din" accent="plan" text="Start gratis. Opgradér når du vil have hele historikken og statistikken." />
         <div className="mx-auto mt-16 max-w-6xl">

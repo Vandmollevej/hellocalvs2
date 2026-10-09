@@ -3,6 +3,7 @@
 import type { JobDefinition } from "@/lib/jobs/registry";
 import { describeNextRun } from "@/lib/jobs/schedule";
 import { formatDateTime, formatDuration, useJobControl, type JobState } from "@/components/admin/useJobControl";
+import { Toggle } from "@/components/ui/Toggle";
 import { JobScheduleEditor } from "@/components/admin/JobScheduleEditor";
 
 // Én række på admin "Robotter" (docs/DECISIONS.md 2026-09-28): robot,
@@ -32,23 +33,7 @@ export function RobotRow({
         </p>
       </td>
       <td className="py-3 pr-4">
-        <button
-          type="button"
-          role="switch"
-          aria-checked={state.enabled}
-          aria-label={state.enabled ? "Slå fra" : "Slå til"}
-          disabled={busy}
-          onClick={toggleEnabled}
-          className={`relative inline-flex h-6 w-11 shrink-0 items-center rounded-full transition-colors disabled:opacity-50 ${
-            state.enabled ? "bg-hf-green-dark" : "bg-hf-tan-dark"
-          }`}
-        >
-          <span
-            className={`inline-block h-5 w-5 rounded-full bg-hf-white shadow transition-transform ${
-              state.enabled ? "translate-x-5" : "translate-x-0.5"
-            }`}
-          />
-        </button>
+        <Toggle checked={state.enabled} ariaLabel={state.enabled ? "Slå fra" : "Slå til"} disabled={busy} onChange={toggleEnabled} />
         <p className="hf-type-small mt-1 text-text-muted">{state.enabled ? "On" : "Off"}</p>
       </td>
       <td className="py-3 pr-4">
@@ -56,7 +41,7 @@ export function RobotRow({
           type="button"
           disabled={busy || runPending}
           onClick={runNow}
-          className="hf-btn-primary px-3 py-1.5 disabled:opacity-50"
+          className="hf-btn-primary hf-btn--compact w-fit"
         >
           KØR
         </button>

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { createPortal } from "react-dom";
+import { BottomSheet, BottomSheetCloseButton } from "@/components/hf/BottomSheet";
 import { useWheelSnap } from "./useWheelSnap";
 
 const ITEM_HEIGHT = 40;
@@ -81,34 +81,12 @@ export function BirthDatePicker({
         {saved ? `${saved.day}. ${MONTHS[saved.month - 1]} ${saved.year}` : "Vælg"}
       </button>
 
-      {/* Portales til <body> — se WheelPicker.tsx (2026-10-03). */}
-      {draft && createPortal(
-        <div
-          className="fixed inset-0 z-[70] flex flex-col justify-end bg-hf-black/40"
-          role="dialog"
-          aria-modal="true"
-        >
-          <button
-            type="button"
-            aria-label="Luk"
-            className="flex-1"
-            onClick={() => setDraft(null)}
-          />
-          <div className="rounded-t-2xl bg-hf-cream pb-[max(16px,env(safe-area-inset-bottom))]">
-            <div className="flex items-center justify-between px-4 py-3">
-              <span className="hf-type-body hf-type-strong text-hf-black">{label}</span>
-              <button
-                type="button"
-                onClick={() => {
-                  onChange(format(draft));
-                  setDraft(null);
-                }}
-                className="hf-type-body hf-type-strong text-hf-green"
-              >
-                Færdig
-              </button>
-            </div>
-            <div className="relative">
+      {/* Bundark (KRAV.md) — portales til <body>, se WheelPicker.tsx (2026-10-03).
+          Swipe ned/scrim = annullér: datoen gemmes kun med "Færdig". */}
+      {draft && (
+        <BottomSheet ariaLabel={label} onClose={() => setDraft(null)}>
+          <div className="flex flex-col gap-3 px-4 pb-4">
+            <div data-sheet-no-drag className="relative">
               <div
                 className="pointer-events-none absolute inset-x-0 top-1/2 h-10 -translate-y-1/2 rounded-lg bg-hf-tan"
                 aria-hidden="true"
@@ -134,9 +112,11 @@ export function BirthDatePicker({
                 />
               </div>
             </div>
+            <BottomSheetCloseButton onClick={() => onChange(format(draft))} className="hf-control hf-btn-primary w-full px-4">
+              Færdig
+            </BottomSheetCloseButton>
           </div>
-        </div>,
-        document.body
+        </BottomSheet>
       )}
     </>
   );
@@ -176,9 +156,9 @@ function WheelColumn({
     <div
       ref={scrollRef}
       className="h-[200px] snap-y snap-mandatory overflow-y-auto overscroll-contain"
-      style={{ scrollPaddingTop: 80, scrollPaddingBottom: 80 }}
+      style={{ scrollPaddingTop: ITEM_HEIGHT * 2, scrollPaddingBottom: ITEM_HEIGHT * 2 }}
     >
-      <div style={{ height: 80 }} />
+      <div style={{ height: ITEM_HEIGHT * 2 }} />
       {options.map((option) => (
         <div
           key={option}
@@ -189,7 +169,7 @@ function WheelColumn({
           {render(option)}
         </div>
       ))}
-      <div style={{ height: 80 }} />
+      <div style={{ height: ITEM_HEIGHT * 2 }} />
     </div>
   );
 }

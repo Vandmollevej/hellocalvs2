@@ -4,7 +4,7 @@ import { HfScreen } from "@/components/HfScreen";
 import { Toggle } from "@/components/ui/Toggle";
 import { HelpTip } from "@/components/hf/HelpTip";
 import { useTranslation } from "@/i18n/LocaleProvider";
-import { saveShowStartupTips, saveShowTooltips, useShowStartupTips, useShowTooltips } from "@/lib/help-prefs";
+import { saveShowGoalTips, saveShowStartupTips, saveShowTooltips, useShowGoalTips, useShowStartupTips, useShowTooltips } from "@/lib/help-prefs";
 
 // Settings → Visning → Tips og hjælpetekster: de to on/off-kontakter, der før
 // lå løse nederst på Indstillinger.
@@ -12,6 +12,7 @@ export default function TipsSettingsPage() {
   const { t } = useTranslation();
   const showTooltips = useShowTooltips();
   const showStartupTips = useShowStartupTips();
+  const showGoalTips = useShowGoalTips();
 
   return (
     <HfScreen title={t("settings.tipsTitle")}>
@@ -28,6 +29,12 @@ export default function TipsSettingsPage() {
           description={t("settings.showStartupTipsDescription")}
           checked={showStartupTips}
           onChange={saveShowStartupTips}
+        />
+        <Toggle
+          label="Tips til at nå dine mål"
+          description="Foreslår fx en gåtur eller flere gulerødder, hvis du plejer at spise mere end dagens mål."
+          checked={showGoalTips}
+          onChange={saveShowGoalTips}
         />
       </div>
     </HfScreen>

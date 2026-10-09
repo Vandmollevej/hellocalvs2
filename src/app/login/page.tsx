@@ -11,6 +11,7 @@ import { TextField } from "@/components/hf/TextField";
 import { FaceIdAnimation, type FaceIdPhase } from "@/components/FaceIdAnimation";
 import { useTranslation } from "@/i18n/LocaleProvider";
 import { hasPasskeyOnDevice, loginWithPasskey } from "@/lib/passkey-client";
+import { BottomSheet } from "@/components/hf/BottomSheet";
 import { afterLoginPath, oauthErrorKey, startOAuth } from "@/lib/login-flow";
 import { findLoginCountry, readLoginCountry, type LoginCountry } from "@/lib/login-country";
 
@@ -117,8 +118,7 @@ function LogIndContent() {
   return (
     <div className="flex h-full min-h-full flex-col bg-hf-cream">
       <div
-        className="flex items-center justify-between bg-hf-green px-4 pb-4"
-        style={{ paddingTop: "max(16px, env(safe-area-inset-top, 0px))" }}
+        className="flex items-center justify-between bg-hf-green px-4 pb-4 hf-safe-top"
       >
         <span className="w-[52px]" aria-hidden="true" />
         <p className="hf-type-nav-title">
@@ -136,7 +136,7 @@ function LogIndContent() {
             className="hf-type-body inline-flex min-h-[44px] items-center gap-2 rounded-full border border-hf-gray-border px-3"
           >
             <Image src={`/flags/${country.flag}.png`} alt="" width={22} height={16} className="rounded-[2px]" />
-            <span className="font-semibold">{country.code}</span>
+            <span className="hf-type-strong">{country.code}</span>
             <HfChevron className="text-text-muted" />
           </Link>
         </div>
@@ -147,7 +147,7 @@ function LogIndContent() {
               type="button"
               onClick={handleFaceId}
               disabled={submitting}
-              className="hf-control hf-btn-primary w-full disabled:opacity-40"
+              className="hf-control hf-btn-primary w-full"
             >
               {t("login.continueWithFaceId")}
             </button>
@@ -196,7 +196,7 @@ function LogIndContent() {
           type="submit"
           form="login-form"
           disabled={submitting || !email || !password}
-          className="hf-control hf-btn-primary w-full disabled:opacity-40"
+          className="hf-control hf-btn-primary w-full"
         >
           {submitting ? t("login.submitting") : t("login.continueButton")}
         </button>
@@ -206,9 +206,14 @@ function LogIndContent() {
       </div>
 
       {approval && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-hf-black/40 p-4">
-          <div className="flex w-full max-w-sm flex-col gap-4 rounded-[28px] bg-hf-cream p-6 shadow-xl">
-            <h2 className="hf-type-body-lg font-semibold">{t("loginApproval.waitingTitle")}</h2>
+        <BottomSheet
+          ariaLabel={t("loginApproval.waitingTitle")}
+          onClose={() => {
+            setApproval(null);
+            setSubmitting(false);
+          }}
+        >
+          <div className="flex flex-col gap-4 p-4">
             <p className="hf-type-body">{t("loginApproval.waitingBody")}</p>
             <button
               type="button"
@@ -221,7 +226,7 @@ function LogIndContent() {
               {t("loginApproval.waitingCancel")}
             </button>
           </div>
-        </div>
+        </BottomSheet>
       )}
 
       {faceIdPhase && (

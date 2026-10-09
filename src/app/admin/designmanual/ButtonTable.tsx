@@ -230,7 +230,7 @@ const CONTROL_GROUPS: ControlGroup[] = [
         use: "Tilføj noget nyt, fx en opskrift i Kogebogen.",
         placement: "Nederst til højre over bundmenuen.",
         count: 1,
-        helloCal: "56 × 56 · r14 · lime #A3E635 · mørkt ikon",
+        helloCal: "56 × 56 · r14 · accent #BBF06A · mørkt ikon",
       },
     ],
   },
@@ -336,7 +336,7 @@ const CONTROL_GROUPS: ControlGroup[] = [
         use: "Det valgte kort. Lime bruges kun her.",
         placement: "I samme gitter som de ikke-valgte kort.",
         count: 1,
-        helloCal: "2 px kontur, samme beige fyld",
+        helloCal: ".hf-selected · accent #BBF06A · 2 px #232323 · sort tekst",
       },
       {
         id: "segment",

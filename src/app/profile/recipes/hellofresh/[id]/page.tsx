@@ -6,6 +6,7 @@ import { IconBasket, IconClockFilled, IconPrinter } from "@tabler/icons-react";
 import { IconFavorite as IconBookmark, IconFavoriteFilled as IconBookmarkFilled } from "@/components/icons/Favorite";
 import { useTranslation } from "@/i18n/LocaleProvider";
 import { formatHfAmount, HF_RECIPE_MAX_PHOTOS, proteinRow, type HfRecipeView } from "@/lib/hellofresh-recipe";
+import { RecipeThumbs } from "@/components/recipes/RecipeThumbs";
 import { RecipeViewScreen } from "@/components/recipe-view/RecipeViewLayout";
 import {
   RecipeAccordion,
@@ -193,6 +194,9 @@ export default function HelloFreshRecipePage() {
               <IconPrinter size={22} stroke={2} />
             </button>
           </RecipeActions>
+          <div className="rv-no-print">
+            <RecipeThumbs recipeKey={`hf:${id}`} />
+          </div>
 
           {recipe.description && (
             <RecipeDescription

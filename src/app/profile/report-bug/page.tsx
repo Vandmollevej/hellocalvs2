@@ -172,7 +172,7 @@ function ReportBugContent() {
                   return (
                     <div
                       key={section.key}
-                      className="rounded-[8px] border"
+                      className="border rounded-card"
                       style={{ borderColor: open ? "var(--hf-color-action)" : "var(--hf-color-field-border)" }}
                     >
                       <button
@@ -191,8 +191,7 @@ function ReportBugContent() {
                           onChange={(e) => setSections((prev) => ({ ...prev, [section.key]: e.target.value }))}
                           placeholder="Hvad er forkert, og hvad burde der stå?"
                           aria-label={section.label}
-                          className="hf-type-input mx-3 mb-3 w-[calc(100%-1.5rem)] rounded-[4px] border bg-hf-cream p-3 outline-none"
-                          style={{ borderColor: "var(--hf-color-field-border)" }}
+                          className="hf-type-input mx-3 mb-3 w-[calc(100%-1.5rem)] border bg-hf-cream p-3 outline-none border-hf-field-border rounded-sm"
                         />
                       )}
                     </div>
@@ -228,8 +227,7 @@ function ReportBugContent() {
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
                   placeholder="Hvad skete der, og hvad forventede du i stedet?"
-                  className="hf-type-input w-full rounded-[4px] border bg-hf-cream p-3 outline-none"
-                  style={{ borderColor: "var(--hf-color-field-border)" }}
+                  className="hf-type-input w-full border bg-hf-cream p-3 outline-none border-hf-field-border rounded-sm"
                 />
               )}
             </div>
@@ -243,7 +241,7 @@ function ReportBugContent() {
                     type="button"
                     onClick={() => toggleCategory(cat.value)}
                     aria-pressed={selected}
-                    className="flex flex-col items-center gap-1 rounded-[8px] border p-2"
+                    className="flex flex-col items-center gap-1 border p-2 rounded-card"
                     style={{
                       borderColor: selected ? "var(--hf-color-action)" : "var(--hf-color-field-border)",
                       background: selected ? "var(--hf-color-action)" : "transparent",
@@ -261,7 +259,7 @@ function ReportBugContent() {
             <button
               type="submit"
               disabled={submitting}
-              className="hf-control hf-btn-primary mb-8 mt-2 w-full disabled:opacity-50"
+              className="hf-control hf-btn-primary mb-8 mt-2 w-full"
             >
               {submitting ? "Sender…" : "Send indberetning"}
             </button>

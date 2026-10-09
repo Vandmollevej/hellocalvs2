@@ -15,12 +15,13 @@ export default async function AdminSharedRecipesPage() {
 
   const recipes = await prisma.sharedRecipe.findMany({
     where: { status: "PENDING" },
-    orderBy: [{ reportCount: "desc" }, { createdAt: "desc" }],
+    orderBy: [{ copyFlagged: "desc" }, { reportCount: "desc" }, { createdAt: "desc" }],
     take: 200,
   });
 
   const rows: SharedRecipeReviewRow[] = recipes.map((recipe) => ({
     id: recipe.id,
+    copyCheck: recipe.copyFlagged ? (recipe.copyCheck as SharedRecipeReviewRow["copyCheck"]) : null,
     name: recipe.name,
     owner: publisherPseudonym(recipe.publisherHash),
     reportCount: recipe.reportCount,

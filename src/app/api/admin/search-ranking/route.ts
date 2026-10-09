@@ -3,6 +3,7 @@ import { requireAdminUser } from "@/lib/require-admin";
 import { prisma } from "@/lib/prisma";
 import { DEFAULT_SEARCH_RANKING_WEIGHTS } from "@/lib/product-search-ranking";
 import { commitSearchRankingWeights, sanitizeWeights } from "@/lib/search-ranking-config";
+import { userLabel } from "@/lib/user-label";
 
 // GET /api/admin/search-ranking — the currently active (committed) weights
 // plus the full commit history, for the Søgealgoritmer admin page. Every
@@ -15,7 +16,7 @@ export async function GET() {
   const configs = await prisma.searchRankingConfig.findMany({
     orderBy: { createdAt: "desc" },
     take: 50,
-    include: { createdBy: { select: { displayName: true, email: true } } },
+    include: { createdBy: { select: { id: true, displayName: true } } },
   });
   const active = configs.find((config) => config.isActive);
 
@@ -29,7 +30,7 @@ export async function GET() {
       isActive: config.isActive,
       note: config.note,
       createdAt: config.createdAt,
-      createdBy: config.createdBy?.displayName ?? config.createdBy?.email ?? null,
+      createdBy: config.createdBy ? userLabel(config.createdBy) : null,
     })),
   });
 }

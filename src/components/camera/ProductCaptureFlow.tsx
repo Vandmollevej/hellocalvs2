@@ -56,11 +56,13 @@ import {
   type CaptureStep,
 } from "@/lib/product-capture";
 import { useFrameQuality } from "./useFrameQuality";
+import { useOnlineStatus } from "@/lib/use-online-status";
 import {
   BARCODE_FOCUS_DISTANCE_M,
   lockFocusDistance,
   readCameraControls,
   setContinuousFocus,
+  setScanExposure,
   setTorch,
   type CameraControls,
 } from "@/lib/camera-controls";
@@ -210,6 +212,7 @@ export function ProductCaptureFlow({ returnSuffix, rescan }: { returnSuffix: str
   const barcodeLabelJobRef = useRef<{ frame: Frame; startedAt: number; result: Promise<LabelRead> } | null>(null);
   const [createFailed, setCreateFailed] = useState(false);
   const [lookupError, setLookupError] = useState(false);
+  const online = useOnlineStatus();
   // Dyrefoder-spærring: serverens besked, når stregkoden er på spærrelisten.
   const [lookupBlockedMessage, setLookupBlockedMessage] = useState<string | null>(null);
   const [region, setRegion] = useState("DK");
@@ -349,7 +352,10 @@ export function ProductCaptureFlow({ returnSuffix, rescan }: { returnSuffix: str
         if (!cancelled) {
           const track = stream.getVideoTracks()[0];
           const controls = readCameraControls(track);
-          if (track) void setContinuousFocus(track, controls);
+          if (track) {
+            void setContinuousFocus(track, controls);
+            void setScanExposure(track);
+          }
           setCameraControls(controls);
           setTorchOn(false);
           setCameraStatus("active");
@@ -596,9 +602,22 @@ export function ProductCaptureFlow({ returnSuffix, rescan }: { returnSuffix: str
           return;
         }
         if (response.status === 422) {
-          const blocked = (await response.json().catch(() => null)) as { code?: string; message?: string } | null;
+          const blocked = (await response.json().catch(() => null)) as {
+            code?: string;
+            message?: string;
+            incidentId?: string | null;
+          } | null;
           if (blocked?.code === "PET_FOOD_BLOCKED") {
             scanLog(flowId, "barcode_blocked", { level: "warn", message: "Stregkoden er spærret (dyrefoder)", barcode: code });
+            // Billedet af den spærrede scanning gemmes på hændelsen, så admin kan se, hvad brugeren forsøgte.
+            const blockedFrame = blocked.incidentId ? captureVideoFrame(videoRef.current, BARCODE_PHOTO_MAX_SIDE) : null;
+            if (blocked.incidentId && blockedFrame) {
+              void fetch("/api/products/blocked-photo", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ incidentId: blocked.incidentId, photo: blockedFrame.url }),
+              }).catch(() => {});
+            }
             setLookupBlockedMessage(blocked.message ?? "Dyrefoder kan ikke oprettes i Hello Cal.");
             setBarcodeDetection(null);
             activeCodeRef.current = null;
@@ -1082,7 +1101,7 @@ export function ProductCaptureFlow({ returnSuffix, rescan }: { returnSuffix: str
   );
 
   const stepHints: Record<CaptureStep, string> = {
-    barcode: lookupBlockedMessage ?? (lookupError ? t("camera.barcodeLookupError") : t("camera.holdCameraStill")),
+    barcode: lookupBlockedMessage ?? (lookupError ? (online ? t("camera.barcodeLookupError") : t("offline.barcodeLookup")) : t("camera.holdCameraStill")),
     front: t("cameraCreate.hintFront"),
     nutrition: t("cameraCreate.hintNutrition"),
     ingredients: t("cameraCreate.hintIngredients"),
@@ -1106,7 +1125,7 @@ export function ProductCaptureFlow({ returnSuffix, rescan }: { returnSuffix: str
       {/* Ingen "Tag billede"-knap (brugerens krav 2026-10-02): billedet tages
           automatisk; et tryk på selve kamerabilledet tager det med det samme. */}
       <div
-        className="relative aspect-square w-full overflow-hidden rounded-[12px] bg-hf-black"
+        className="relative aspect-square w-full overflow-hidden bg-hf-black rounded-card"
         onClick={() => {
           if (step !== "barcode" && cameraStatus === "active" && !working && !pickObjects && !flash) {
             void capturePhoto();
@@ -1139,7 +1158,7 @@ export function ProductCaptureFlow({ returnSuffix, rescan }: { returnSuffix: str
 
         {!scanning && !pickPhoto && !flash && (
           <div
-            className="pointer-events-none absolute inset-[4%] rounded-[12px] border-2 shadow-[0_0_0_999px_rgba(0,0,0,0.2)] transition-colors"
+            className="pointer-events-none absolute inset-[4%] border-2 shadow-[0_0_0_999px_rgba(0,0,0,0.2)] transition-colors rounded-card"
             style={{ borderColor: liveProgress > 0 ? "var(--hf-color-brand)" : "rgba(255,255,255,0.8)" }}
           >
             <div
@@ -1160,7 +1179,7 @@ export function ProductCaptureFlow({ returnSuffix, rescan }: { returnSuffix: str
 
         {frameIssue && !cameraMessage && (
           <div className="pointer-events-none absolute inset-x-3 bottom-3 flex justify-center" aria-live="polite">
-            <p className="hf-type-small hf-type-strong rounded-[8px] bg-hf-black/60 px-3 py-1.5 text-center text-hf-white">
+            <p className="hf-type-small hf-type-strong bg-hf-black/60 px-3 py-1.5 text-center text-hf-white rounded-card">
               {frameIssue === "dark"
                 ? cameraControls.torch && !torchOn
                   ? t("camera.qualityDarkTorch")
@@ -1238,7 +1257,7 @@ export function ProductCaptureFlow({ returnSuffix, rescan }: { returnSuffix: str
               onClick={() => selectStep(item)}
               disabled={disabled && item !== step}
               aria-current={item === step ? "step" : undefined}
-              className="relative flex h-16 flex-col items-center justify-center gap-1 overflow-hidden rounded-[8px] px-1 text-center text-hf-black disabled:opacity-50"
+              className="relative flex h-16 flex-col items-center justify-center gap-1 overflow-hidden px-1 text-center text-hf-black disabled:opacity-50 rounded-card"
               style={{
                 background: "var(--hf-color-card)",
                 outline: item === step ? "2px solid var(--hf-color-brand)" : undefined,

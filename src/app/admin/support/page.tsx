@@ -71,7 +71,7 @@ export default async function AdminSupportPage({
                       {request.subject}
                     </p>
                     <p className="hf-type-small truncate text-text-muted">
-                      {request.user.displayName} · {request.user.email}
+                      {request.user.displayName}
                     </p>
                   </div>
                   <div className="hf-type-small flex flex-wrap items-center gap-2">

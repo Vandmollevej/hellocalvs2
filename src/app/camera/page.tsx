@@ -11,6 +11,7 @@ import { IngredientsRetakeFlow } from "@/components/camera/IngredientsRetakeFlow
 import { ObjectPickerOverlay } from "@/components/camera/ObjectPickerOverlay";
 import { cropToObject, detectObjects, type ObjectBox } from "@/lib/object-picker";
 import { useTranslation } from "@/i18n/LocaleProvider";
+import { useConnectionMessage } from "@/lib/use-online-status";
 import { scaleItemToGrams } from "@/lib/scale-meal-item";
 
 type CameraStatus = "starting" | "active" | "denied" | "unavailable" | "error";
@@ -117,6 +118,7 @@ function KameraContent() {
 }
 
 function PhotoModeContent({ mode, forDish }: { mode: "meal" | "hellofresh"; forDish: boolean }) {
+  const connectionMessage = useConnectionMessage();
   const { t } = useTranslation();
   const router = useRouter();
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -320,7 +322,7 @@ function PhotoModeContent({ mode, forDish }: { mode: "meal" | "hellofresh"; forD
     <div className="flex h-full min-h-0 flex-col gap-4 p-4">
       {mode === "hellofresh" && forDish && <ModeTabs mode={mode} />}
 
-      <div className="relative aspect-square w-full overflow-hidden rounded-[12px] bg-hf-black">
+      <div className="relative aspect-square w-full overflow-hidden bg-hf-black rounded-card">
         {capture ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img src={capture} alt={t("camera.photoAlt")} className="h-full w-full object-cover" />
@@ -381,7 +383,7 @@ function PhotoModeContent({ mode, forDish }: { mode: "meal" | "hellofresh"; forD
           )
         ) : (
           <div className="flex justify-center py-1">
-            <button onClick={() => void capturePhoto()} disabled={cameraStatus !== "active"} className="hf-control hf-btn-primary gap-2 px-6 disabled:opacity-40">
+            <button onClick={() => void capturePhoto()} disabled={cameraStatus !== "active"} className="hf-control hf-btn-primary gap-2 px-6">
               <IconCamera size={19} /> {t("camera.takePhotoOfProduct")}
             </button>
           </div>
@@ -394,7 +396,7 @@ function PhotoModeContent({ mode, forDish }: { mode: "meal" | "hellofresh"; forD
                 {t("camera.retakePhoto")}
               </button>
             ) : (
-              <button onClick={() => void capturePhoto()} disabled={cameraStatus !== "active"} className="hf-control hf-btn-primary gap-2 px-6 disabled:opacity-40">
+              <button onClick={() => void capturePhoto()} disabled={cameraStatus !== "active"} className="hf-control hf-btn-primary gap-2 px-6">
                 <IconCamera size={19} /> {t("camera.takePhoto")}
               </button>
             )}
@@ -404,7 +406,7 @@ function PhotoModeContent({ mode, forDish }: { mode: "meal" | "hellofresh"; forD
             <p className="hf-type-small hf-type-strong text-text-secondary text-center">{t("camera.analyzingMeal")}</p>
           )}
           {photo && mealAnalyzeStatus === "error" && (
-            <p className="hf-type-small hf-type-strong text-center text-hf-red-dark">{t("camera.mealAnalyzeError")}</p>
+            <p className="hf-type-small hf-type-strong text-center text-hf-red-dark">{connectionMessage(t("camera.mealAnalyzeError"))}</p>
           )}
           {photo && mealAnalyzeStatus === "done" && mealItems.length === 0 && (
             <p className="hf-type-small hf-type-strong text-text-secondary text-center">
@@ -415,7 +417,7 @@ function PhotoModeContent({ mode, forDish }: { mode: "meal" | "hellofresh"; forD
             <>
               <ul className="flex max-h-[38vh] flex-col gap-2 overflow-y-auto">
                 {mealItems.map((item) => (
-                  <li key={item.id} className="flex items-center gap-2.5 rounded-[8px] bg-hf-tan p-4">
+                  <li key={item.id} className="flex items-center gap-2.5 bg-hf-tan p-4 rounded-card">
                     <div className="min-w-0 flex-1">
                       <p className="hf-type-body hf-type-strong flex items-center gap-1.5 text-hf-black">
                         <span className="truncate">{item.title}</span>
@@ -443,7 +445,7 @@ function PhotoModeContent({ mode, forDish }: { mode: "meal" | "hellofresh"; forD
                 type="button"
                 onClick={saveMeal}
                 disabled={mealSaving}
-                className="hf-control hf-btn-primary justify-center disabled:opacity-40"
+                className="hf-control hf-btn-primary justify-center"
               >
                 {mealSaving ? t("camera.savingMeal") : t("camera.saveMeal")}
               </button>

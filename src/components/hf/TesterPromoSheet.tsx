@@ -67,7 +67,7 @@ export function TesterPromoSheet({
               type="button"
               onClick={signUp}
               disabled={state === "busy"}
-              className="hf-type-body self-center font-bold text-hf-black underline underline-offset-4 disabled:opacity-60"
+              className="hf-type-body self-center text-hf-black underline underline-offset-4 disabled:opacity-60 hf-type-strong"
             >
               {state === "busy" ? "…" : t("integrations.tester.signUp")}
             </button>
@@ -79,8 +79,8 @@ export function TesterPromoSheet({
       }
     >
       <div className="flex flex-col gap-3 px-4 pb-2">
-        <div className="rounded-lg p-4" style={{ background: "var(--hf-color-brand)" }}>
-          <p className="hf-type-body font-bold" style={{ color: "var(--hf-color-white)" }}>
+        <div className="rounded-lg p-4 bg-hf-brand">
+          <p className="hf-type-body text-hf-white hf-type-strong">
             *{t("integrations.tester.headline", { name, points })}
           </p>
         </div>

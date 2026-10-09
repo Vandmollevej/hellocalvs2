@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { AccessFooter, AccessToggleGroup, HfAccessSheet, type AccessCategory } from "@/components/hf/HfAccessSheet";
 
-// Live eksempel på integrationernes adgangsark (samme komponent som
+// Live eksempel på integrationernes integrationsside (samme komponent som
 // /settings/integrations/<app>), vist inde i en telefonramme.
 
 const WRITE: { key: string; label: string; category: AccessCategory }[] = [

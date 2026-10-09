@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
+import { BottomSheet } from "@/components/hf/BottomSheet";
 import type { Box } from "@/lib/ai-regions";
 import type { UncertaintyRow, UncertaintyTabKey } from "@/lib/uncertainties";
 
@@ -187,29 +188,12 @@ export function UncertaintiesBoard({
   );
 }
 
+// Detaljevinduet er et bundark (KRAV.md "Bundark"): swipe ned eller klik på scrim lukker.
 function Overlay({ children, onClose }: { children: React.ReactNode; onClose: () => void }) {
   return (
-    <div
-      role="dialog"
-      aria-modal="true"
-      className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-hf-black/60 p-4 sm:p-8"
-      onClick={onClose}
-    >
-      <div
-        className="relative w-full max-w-3xl rounded-lg bg-hf-white p-4 shadow-xl"
-        onClick={(e) => e.stopPropagation()}
-      >
-        <button
-          type="button"
-          onClick={onClose}
-          className="hf-type-body-lg absolute right-3 top-2 text-text-muted hover:text-text-primary"
-          aria-label="Luk"
-        >
-          ×
-        </button>
-        {children}
-      </div>
-    </div>
+    <BottomSheet size="full" ariaLabel="Detaljer" onClose={onClose}>
+      <div className="p-4">{children}</div>
+    </BottomSheet>
   );
 }
 
@@ -344,7 +328,7 @@ function EditLightbox({ row, fields, onSaved }: { row: UncertaintyRow; fields: F
           type="button"
           disabled={saving}
           onClick={save}
-          className="hf-btn-primary px-4 py-2 disabled:opacity-50"
+          className="hf-btn-primary px-4 py-2"
         >
           {saving ? "Gemmer…" : "Gem rettelse"}
         </button>
@@ -428,7 +412,7 @@ function ImageLightbox({ row, onSaved }: { row: UncertaintyRow; onSaved: () => v
           type="button"
           disabled={saving}
           onClick={() => decide("CORRECT")}
-          className="hf-btn-primary px-3 py-2 disabled:opacity-50"
+          className="hf-btn-primary px-3 py-2"
         >
           Samme vare
         </button>

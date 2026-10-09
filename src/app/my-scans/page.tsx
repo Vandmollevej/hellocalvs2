@@ -1,11 +1,12 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
 import { HfScreen } from "@/components/HfScreen";
-import { AddProductView } from "@/components/add/AddProductView";
 import { ProductResultRow, type ProductResult } from "@/components/ProductResultRow";
 import { SkeletonMediaRows, SkeletonScreen } from "@/components/hf/Skeleton";
 import { useTranslation } from "@/i18n/LocaleProvider";
+import { useConnectionMessage } from "@/lib/use-online-status";
 import { intlLocale } from "@/i18n";
 import type { UserScan } from "@/lib/user-scans";
 
@@ -44,10 +45,13 @@ function groupByDay(scans: UserScan[]): DayGroup[] {
 
 export default function MyScansPage() {
   const { t, locale } = useTranslation();
+  const connectionMessage = useConnectionMessage();
   const [scans, setScans] = useState<UserScan[]>([]);
   const [state, setState] = useState<LoadState>("loading");
   const [favoriteIds, setFavoriteIds] = useState<Set<string>>(new Set());
-  const [addId, setAddId] = useState<string | null>(null);
+  const router = useRouter();
+  // Tryk på en vare åbner varesiden direkte — ingen popup og ingen Tilføj-knap.
+  const openProduct = (productId: string) => router.push(`/add/${productId}`);
   const groups = useMemo(() => groupByDay(scans), [scans]);
 
   useEffect(() => {
@@ -113,12 +117,12 @@ export default function MyScansPage() {
     <HfScreen title={t("myScans.title")}>
       <div className="hf-page web-search-page">
         {state === "loading" && (
-          <SkeletonScreen className="overflow-hidden rounded-[8px] bg-hf-tan px-4">
+          <SkeletonScreen className="overflow-hidden bg-hf-tan px-4 rounded-card">
             <SkeletonMediaRows rows={4} />
           </SkeletonScreen>
         )}
         {state === "error" && (
-          <p className="hf-type-body text-text-secondary px-1 text-center">{t("myScans.loadError")}</p>
+          <p className="hf-type-body text-text-secondary px-1 text-center">{connectionMessage(t("myScans.loadError"))}</p>
         )}
         {state === "ready" && groups.length === 0 && (
           <p className="hf-type-body text-text-secondary px-1 text-center">{t("myScans.empty")}</p>
@@ -128,12 +132,12 @@ export default function MyScansPage() {
             <h2 className="hf-type-small hf-type-strong border-b border-hf-tan-dark pb-1 text-hf-black first-letter:uppercase">
               {dayHeading(group.date)}
             </h2>
-            <div className="overflow-hidden rounded-[8px] bg-hf-tan">
+            <div className="overflow-hidden bg-hf-tan rounded-card">
               {group.scans.map((scan) => (
                 <ProductResultRow
                   key={scan.id}
                   {...scan}
-                  onAdd={setAddId}
+                  onAdd={openProduct}
                   isFavorite={favoriteIds.has(scan.id)}
                   onToggleFavorite={toggleFavorite}
                 />
@@ -142,8 +146,6 @@ export default function MyScansPage() {
           </section>
         ))}
       </div>
-
-      {addId && <AddProductView key={addId} id={addId} forDish={false} inSheet onClose={() => setAddId(null)} />}
     </HfScreen>
   );
 }

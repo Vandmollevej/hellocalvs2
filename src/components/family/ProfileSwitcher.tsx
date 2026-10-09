@@ -52,7 +52,7 @@ export function ProfileSwitcher() {
         </button>
       </div>
       {open && (
-        <div className="overflow-hidden rounded-[8px] bg-hf-tan">
+        <div className="overflow-hidden bg-hf-tan rounded-card">
           <ProfileSwitchList onDone={() => setOpen(false)} />
         </div>
       )}

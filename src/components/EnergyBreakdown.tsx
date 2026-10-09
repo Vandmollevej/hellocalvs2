@@ -59,7 +59,6 @@ export function EnergyBreakdown({ summary }: { summary: EnergySummary }) {
   if (!daily || bmr === null || pal === null) {
     return (
       <div className="hf-card flex flex-col gap-2 rounded-xl bg-hf-tan p-4">
-        <span className="hf-type-title text-hf-black">{t("energy.title")}</span>
         <p className="hf-type-body text-text-secondary">{t("energy.missingData")}</p>
         <ul className="hf-type-small text-text-secondary">
           {summary.missing.map((field) => (
@@ -83,7 +82,6 @@ export function EnergyBreakdown({ summary }: { summary: EnergySummary }) {
 
   return (
     <div className="hf-card flex flex-col gap-3 rounded-xl bg-hf-tan p-4">
-      <span className="hf-type-title text-hf-black">{t("energy.title")}</span>
       <Line label={t("energy.rest")} value={`${t("energy.approx")} ${formatKcal(bmr)}`} why={lines.rest} />
       <Line label={t("energy.everyday")} value={formatKcal(everydayKcal)} sign="+" why={lines.everyday} />
       {trainingAllowanceKcal > 0 && (

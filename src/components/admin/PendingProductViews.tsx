@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { PendingProductCard, type PendingProduct } from "@/components/admin/PendingProductCard";
+import { BottomSheet } from "@/components/hf/BottomSheet";
 
 // Nye varer: tre visninger som i Produkt-databasen (docs/DECISIONS.md
 // 2026-10-04): Detaljer (fulde kort, som før), Liste (kompakte linjer) og
@@ -111,16 +112,11 @@ export function PendingProductViews({ products }: { products: PendingProduct[] }
       )}
 
       {open && (
-        <div className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-hf-black/60 p-4" onClick={() => setOpenId(null)}>
-          <div className="w-full max-w-3xl" onClick={(event) => event.stopPropagation()}>
-            <div className="mb-2 flex justify-end">
-              <button type="button" onClick={() => setOpenId(null)} className="hf-btn-primary px-4 py-1.5">
-                Luk
-              </button>
-            </div>
+        <BottomSheet size="full" ariaLabel={open.name} onClose={() => setOpenId(null)}>
+          <div className="p-4">
             <PendingProductCard product={open} />
           </div>
-        </div>
+        </BottomSheet>
       )}
     </div>
   );

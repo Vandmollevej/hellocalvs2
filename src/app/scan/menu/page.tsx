@@ -28,9 +28,9 @@ export default function ScanMenuPage() {
   return (
     <ScanScreen title="Menu" showBack>
       <div className="p-4">
-        <ul className="overflow-hidden rounded-[8px]" style={{ background: "var(--hf-color-card)" }}>
+        <ul className="overflow-hidden bg-hf-card rounded-card">
           {ITEMS.map(({ href, label, Icon }) => (
-            <li key={href} className="border-b last:border-b-0" style={{ borderColor: "var(--hf-color-line)" }}>
+            <li key={href} className="border-b last:border-b-0 border-hf-line">
               <Link href={href} className="flex h-12 items-center gap-4 px-4">
                 <Icon size={20} stroke={1.8} />
                 <span className="hf-type-body flex-1">{label}</span>

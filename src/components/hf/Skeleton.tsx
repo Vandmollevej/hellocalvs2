@@ -187,7 +187,7 @@ const LABEL_WIDTHS = ["28%", "22%", "34%", "25%"];
 /** Indstillings-/menuliste: kort med 48 px-rækker (ikon, tekst, pil). */
 export function SkeletonList({ rows = 5, icons = true }: { rows?: number; icons?: boolean }) {
   return (
-    <div className="overflow-hidden rounded-[8px] bg-hf-tan" aria-hidden>
+    <div className="overflow-hidden bg-hf-tan rounded-card" aria-hidden>
       {Array.from({ length: rows }, (_, index) => (
         <div
           key={index}
@@ -302,7 +302,7 @@ export function SkeletonToggle({ count = 1 }: { count?: number }) {
   return (
     <div className="flex flex-col gap-4" aria-hidden>
       {Array.from({ length: count }, (_, index) => (
-        <div key={index} className="flex items-start gap-3 rounded-2xl bg-hf-tan px-4 py-4">
+        <div key={index} className="hf-card--row hf-card">
           <span className="flex flex-1 flex-col gap-2">
             <Skeleton type="body-sm" width={ROW_WIDTHS[index % ROW_WIDTHS.length]} height={18} />
             <Skeleton type="caption" width="88%" height={12} />

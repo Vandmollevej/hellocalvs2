@@ -73,16 +73,23 @@ async function screenExistingProducts(): Promise<{ screened: number; flagged: nu
       subbrand: true,
       variant: true,
       ingredientsText: true,
+      imageUrl: true,
       brand: { select: { name: true } },
       barcodes: { select: { code: true } },
     },
   });
   let flagged = 0;
   for (const product of products) {
-    const barcodeHit = product.barcodes.map((b) => b.code).find((code) => isBlacklistedPetFoodBarcode(code));
+    let barcodeHit: string | undefined;
+    for (const { code } of product.barcodes) {
+      if (await isBlacklistedPetFoodBarcode(code)) {
+        barcodeHit = code;
+        break;
+      }
+    }
     const verdict = barcodeHit
       ? { reason: "barcode", match: barcodeHit }
-      : petFoodBlockReason({
+      : await petFoodBlockReason({
           texts: [product.name, product.brand?.name, product.subbrand, product.variant, product.ingredientsText],
         });
     if (!verdict) continue;
@@ -92,6 +99,7 @@ async function screenExistingProducts(): Promise<{ screened: number; flagged: nu
       kind: "FLAGGED_EXISTING",
       productId: product.id,
       productName: product.name,
+      imageUrls: product.imageUrl ? [product.imageUrl] : undefined,
       barcode: barcodeHit ?? product.barcodes[0]?.code,
       matchedBy: `${verdict.reason}: ${verdict.match}`,
       countAsStrike: false,
@@ -171,6 +179,7 @@ export async function scanProductsForPetFood(): Promise<string> {
           kind: "AUTO_REJECTED",
           productId: product.id,
           productName: product.name,
+          imageUrls: sourceUrl ? [sourceUrl] : undefined,
           barcode: product.barcodes[0]?.code,
           matchedBy: value.reason ?? "dyrefoder på billedet",
           countAsStrike: value.confidence >= MIN_STRIKE_CONFIDENCE,

@@ -88,7 +88,6 @@ export default async function AdminUsersPage({ searchParams }: { searchParams: P
                   id: user.id,
                   // Navn og e-mail sendes aldrig til admin-siden (brugerdata er fortrolige).
                   displayName: `Bruger ${user.id.slice(-6)}`,
-                  email: "",
                   createdAt: user.createdAt.toISOString(),
                   pointsBalance: balanceByUser.get(user.id) ?? 0,
                   subscriptionStatus: user.subscription?.status ?? "INACTIVE",

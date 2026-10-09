@@ -65,11 +65,12 @@ export async function GET(
           message: outcome.message,
           strikes: outcome.strikes,
           accountBlocked: outcome.blocked,
+          incidentId: outcome.incidentId,
         },
         { status: 422 }
       );
     };
-    const barcodeBlock = petFoodBlockReason({ barcode });
+    const barcodeBlock = await petFoodBlockReason({ barcode });
     if (barcodeBlock) return blockedResponse(barcodeBlock.reason, barcodeBlock.match);
 
     const existing = await prisma.barcode.findUnique({
@@ -118,7 +119,7 @@ export async function GET(
       return NextResponse.json({ source: "incomplete", product: null }, { status: 404 });
     }
 
-    const externalBlock = petFoodBlockReason({
+    const externalBlock = await petFoodBlockReason({
       texts: [externalProduct.name, externalProduct.brand, offProduct?.ingredientsText],
     });
     if (externalBlock) return blockedResponse(externalBlock.reason, externalBlock.match, externalProduct.name);

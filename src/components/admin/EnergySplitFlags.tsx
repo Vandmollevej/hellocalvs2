@@ -29,7 +29,7 @@ export async function EnergySplitFlags() {
         <p className="hf-type-body text-text-secondary">Ingen afvigelser fundet.</p>
       ) : (
         flags.map((flag) => (
-          <div key={flag.id} className="flex flex-col gap-2 rounded-lg border border-hf-tan-dark bg-hf-white p-4">
+          <div key={flag.id} className="hf-panel">
             <div className="flex items-start justify-between gap-3">
               <Link href={`/admin/products/${flag.product.id}`} className="hf-type-body hf-type-strong text-hf-black">
                 {flag.product.brand?.name ? `${flag.product.brand.name} ` : ""}

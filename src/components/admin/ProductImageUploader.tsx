@@ -7,7 +7,6 @@ import { readDroppedFiles } from "@/lib/dropped-files";
 import { isImageFile } from "@/lib/brand-logo-image";
 import { ProductImageProcessError, processProductImage } from "@/lib/product-image-client";
 import {
-  NAME_RULE_TEXT,
   ROLE_LABEL,
   parseProductImageName,
   targetsLabel,
@@ -25,6 +24,14 @@ import { Spinner, StepChips, StepList } from "@/components/admin/BrandLogoSteps"
 // det står under «Findes allerede» med Ignorer / Erstat / Vis forskel.
 
 const CONCURRENCY = 3;
+
+const TABS = [
+  { id: "ean", label: "EAN-nummer", rule: "Billedet skal navngives efter EAN-nummeret" },
+  { id: "generic", label: "Generisk", rule: "Billedet skal navngives efter produkttypen" },
+  { id: "prepared", label: "Tilberedt", rule: "Billedet skal navngives efter produkttypen" },
+  { id: "quantity", label: "Mængde", rule: "Billedet skal navngives efter produkttypen + _pl" },
+] as const;
+type TabId = (typeof TABS)[number]["id"];
 
 type JobPhase = "queued" | "processing" | "uploading" | "done" | "error";
 
@@ -50,6 +57,7 @@ type Run = {
 export function ProductImageUploader({ canEdit }: { canEdit: boolean }) {
   const router = useRouter();
   const [run, setRun] = useState<Run | null>(null);
+  const [tab, setTab] = useState<TabId>("ean");
   const [dragOver, setDragOver] = useState(false);
   const [openJob, setOpenJob] = useState<number | null>(null);
   const filesInput = useRef<HTMLInputElement>(null);
@@ -207,6 +215,23 @@ export function ProductImageUploader({ canEdit }: { canEdit: boolean }) {
 
   return (
     <div className="flex flex-col gap-4">
+      <div role="tablist" className="flex flex-wrap gap-2">
+        {TABS.map((entry) => (
+          <button
+            key={entry.id}
+            type="button"
+            role="tab"
+            aria-selected={tab === entry.id}
+            onClick={() => setTab(entry.id)}
+            className={
+              "hf-type-body hf-control rounded-md px-4 " +
+              (tab === entry.id ? "bg-hf-green-dark text-hf-white" : "border border-hf-tan-dark text-hf-black")
+            }
+          >
+            {entry.label}
+          </button>
+        ))}
+      </div>
       <div
         onDragOver={(event) => {
           event.preventDefault();
@@ -225,11 +250,7 @@ export function ProductImageUploader({ canEdit }: { canEdit: boolean }) {
         <p className="hf-type-title text-hf-black">
           {busy ? "Upload i gang…" : canEdit ? "Træk produktbilleder eller en hel mappe hertil" : "Kun fuld admin-adgang kan uploade billeder"}
         </p>
-        <p className="hf-type-body max-w-2xl text-text-secondary">{NAME_RULE_TEXT}</p>
-        <p className="hf-type-small max-w-2xl text-text-muted">
-          Findes varen allerede med et billede, lægges det nye <span className="hf-type-strong">ikke</span> op. Det står i stedet under «Findes allerede»,
-          hvor du vælger Ignorer, Erstat eller Vis forskel.
-        </p>
+        <p className="hf-type-body text-text-secondary">{TABS.find((entry) => entry.id === tab)?.rule}</p>
         <div className="flex flex-wrap justify-center gap-2">
           <button
             type="button"
@@ -260,7 +281,7 @@ export function ProductImageUploader({ canEdit }: { canEdit: boolean }) {
       </div>
 
       {run && (
-        <section className="hf-surface flex flex-col gap-3 p-4" aria-live="polite">
+        <section className="hf-panel" aria-live="polite">
           <div className="flex flex-wrap items-baseline justify-between gap-2">
             <h2 className="hf-type-card-title text-hf-black">{run.startedAt ? `Upload ${formatTimestamp(run.startedAt)}` : "Upload"}</h2>
             <p className="hf-type-body text-text-secondary">

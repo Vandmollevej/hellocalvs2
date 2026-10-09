@@ -57,7 +57,7 @@ export async function LegacyWarnings() {
           duplicateGroups.map((group) => {
             const conflict = group.some((p, i) => i > 0 && macrosDiffer(group[0], p));
             return (
-              <div key={group[0].name} className="hf-surface p-4">
+              <div key={group[0].name} className="hf-panel">
                 <p className="hf-type-strong mb-2 flex items-center gap-2 text-hf-black">
                   {group[0].name}
                   {conflict && (
@@ -123,7 +123,7 @@ export async function LegacyWarnings() {
                 <div>
                   <p className="hf-type-body hf-type-strong text-hf-black">{user.displayName}</p>
                   <p className="hf-type-small text-text-muted">
-                    {user.email} · flagget {user.forwardAbuseFlaggedAt?.toLocaleString("da-DK")}
+                    Flagget {user.forwardAbuseFlaggedAt?.toLocaleString("da-DK")}
                   </p>
                 </div>
                 <ClearForwardFlagButton userId={user.id} />

@@ -11,12 +11,14 @@ import { FamilyWatchFrame } from "@/components/family/FamilyWatchFrame";
 import { AccessLogPanel } from "@/components/family/AccessLogPanel";
 import { StartupTipsGate } from "@/components/StartupTipsGate";
 import { FlowGate } from "@/components/FlowGate";
+import { GoalTipCard } from "@/components/GoalTipCard";
 import { KcalGoalPrompt } from "@/components/KcalGoalPrompt";
 import { StaleSyncPrompt } from "@/components/StaleSyncPrompt";
 import { SentMessageNotice } from "@/components/SentMessageNotice";
 import { SleepQualityGate } from "@/components/SleepQualityGate";
 import { UmamiTracker } from "@/components/UmamiTracker";
 import { HelpChat } from "@/components/help/HelpChat";
+import { HelpGuideSpotlight } from "@/components/help/HelpGuideSpotlight";
 import { UserbackWidget } from "@/components/UserbackWidget";
 
 const geistSans = Geist({
@@ -70,6 +72,7 @@ export default function RootLayout({
           <FlowGate />
           <KcalGoalPrompt />
           <StaleSyncPrompt />
+          <GoalTipCard />
           <SentMessageNotice />
           <SleepQualityGate />
           <OfflineQueueBanner />
@@ -80,6 +83,7 @@ export default function RootLayout({
               <AccessLogPanel />
             </AppFrame>
             <HelpChat />
+            <HelpGuideSpotlight />
           </FamilyStatusProvider>
         </LocaleProvider>
       </body>

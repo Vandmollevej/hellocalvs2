@@ -188,7 +188,7 @@ export default function BodyMeasurementsPage() {
   return (
     <HfScreen title={t("bodyMeasurements.title")}>
       <div className="hf-page">
-        <div className="rounded-2xl bg-hf-green px-4 py-4 text-hf-white">
+        <div className="hf-card hf-card--brand">
           <p className="hf-type-small">{t("bodyMeasurements.intro")}</p>
         </div>
 
@@ -202,7 +202,7 @@ export default function BodyMeasurementsPage() {
             bredde (så titlerne flugter), titel og felt på samme linje til højre. */}
         <div className="flex flex-col gap-3">
           {BODY_MEASUREMENT_FIELDS.map(({ field, labelKey, image }) => (
-            <label key={field} className="flex items-center gap-4 rounded-2xl bg-hf-tan p-4 text-left">
+            <label key={field} className="items-center text-left hf-card--row hf-card--form hf-card">
               <span className="flex h-[108px] w-20 shrink-0 items-center justify-center">
                 {image && sex && (
                   <Image

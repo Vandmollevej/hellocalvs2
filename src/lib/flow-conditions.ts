@@ -22,6 +22,11 @@ export type FlowConditions = {
   visited?: string[];
   /** Faner/sider brugeren IKKE må have besøgt, fx "/camera" = har ikke brugt mad-scanningen. */
   notVisited?: string[];
+  /** Kun disse ugedage (0 = søndag … 6 = lørdag, dansk tid), fx [5] = fredag. Tom = alle dage. */
+  weekdays?: number[];
+  /** Kun fra dette klokkeslæt (hel time 0-23, dansk tid) og til (ikke inkl.) sluttimen. */
+  fromHour?: number;
+  toHour?: number;
   /** Mindst så mange dage mellem to visninger (når flowet må vises flere gange). */
   minDaysBetweenShows?: number;
 };
@@ -83,6 +88,17 @@ function cleanCount(value: unknown): number | undefined {
   return Math.min(Math.floor(n), 100_000);
 }
 
+function cleanWeekdays(value: unknown): number[] | undefined {
+  if (!Array.isArray(value)) return undefined;
+  const days = value.map(Number).filter((n) => Number.isInteger(n) && n >= 0 && n <= 6);
+  return days.length ? Array.from(new Set(days)).sort() : undefined;
+}
+
+function cleanHour(value: unknown): number | undefined {
+  const n = typeof value === "string" && value.trim() ? Number(value) : value;
+  return typeof n === "number" && Number.isInteger(n) && n >= 0 && n <= 24 ? n : undefined;
+}
+
 function cleanDate(value: unknown): string | undefined {
   return typeof value === "string" && DATE_RE.test(value) ? value : undefined;
 }
@@ -102,6 +118,9 @@ export function sanitizeFlowConditions(raw: unknown): FlowConditions {
     minActiveDays: cleanCount(r.minActiveDays),
     visited: cleanList(r.visited),
     notVisited: cleanList(r.notVisited),
+    weekdays: cleanWeekdays(r.weekdays),
+    fromHour: cleanHour(r.fromHour),
+    toHour: cleanHour(r.toHour),
     minDaysBetweenShows: cleanCount(r.minDaysBetweenShows),
   };
   for (const key of Object.keys(out) as (keyof FlowConditions)[]) {
@@ -117,6 +136,14 @@ export function sanitizeFlowKind(value: unknown): FlowKind {
 /** YYYY-MM-DD for en dato i dansk tid (flows planlægges i dansk kalender). */
 function copenhagenDay(date: Date): string {
   return new Intl.DateTimeFormat("sv-SE", { timeZone: "Europe/Copenhagen" }).format(date);
+}
+
+/** Ugedag (0 = søndag) og time i dansk tid. */
+export function copenhagenWeekdayHour(date: Date): { weekday: number; hour: number } {
+  const parts = new Intl.DateTimeFormat("en-US", { timeZone: "Europe/Copenhagen", weekday: "short", hour: "2-digit", hourCycle: "h23" }).formatToParts(date);
+  const day = parts.find((p) => p.type === "weekday")?.value ?? "Sun";
+  const hour = Number(parts.find((p) => p.type === "hour")?.value ?? 0);
+  return { weekday: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].indexOf(day), hour };
 }
 
 /** Skal flowet vises for brugeren lige nu? */
@@ -137,6 +164,11 @@ export function flowIsEligible(
   const today = copenhagenDay(facts.now);
   if (c.startDate && today < c.startDate) return false;
   if (c.endDate && today > c.endDate) return false;
+
+  const { weekday, hour } = copenhagenWeekdayHour(facts.now);
+  if (c.weekdays?.length && !c.weekdays.includes(weekday)) return false;
+  if (c.fromHour !== undefined && hour < c.fromHour) return false;
+  if (c.toHour !== undefined && hour >= c.toHour) return false;
 
   if (c.pages?.length && !c.pages.some((prefix) => pathMatches(facts.path, prefix))) return false;
 

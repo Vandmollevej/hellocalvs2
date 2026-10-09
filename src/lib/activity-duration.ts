@@ -4,7 +4,7 @@
 
 const DAY_MINUTES = 24 * 60;
 
-function clockMinutes(clock: string): number | null {
+export function clockToMinutes(clock: string): number | null {
   const match = /^(\d{1,2}):(\d{2})/.exec(clock);
   if (!match) return null;
   const hours = Number(match[1]);
@@ -33,7 +33,7 @@ export function splitDuration(total: number): { hours: string; minutes: string }
 
 /** Sluttidspunkt "HH:MM" = start + varighed (går over midnat). */
 export function endClock(startedAt: string, minutes: number): string {
-  const start = clockMinutes(startedAt.split("T")[1] ?? "");
+  const start = clockToMinutes(startedAt.split("T")[1] ?? "");
   if (start === null || !(minutes >= 0)) return "";
   const end = (((start + Math.round(minutes)) % DAY_MINUTES) + DAY_MINUTES) % DAY_MINUTES;
   return `${pad(Math.floor(end / 60))}:${pad(end % 60)}`;
@@ -44,9 +44,21 @@ export function endClock(startedAt: string, minutes: number): string {
  * er aktiviteten gået over midnat. Null ved ugyldig tid.
  */
 export function minutesUntil(startedAt: string, end: string): number | null {
-  const start = clockMinutes(startedAt.split("T")[1] ?? "");
-  const stop = clockMinutes(end);
+  const start = clockToMinutes(startedAt.split("T")[1] ?? "");
+  const stop = clockToMinutes(end);
   if (start === null || stop === null) return null;
   const diff = stop - start;
   return diff > 0 ? diff : diff + DAY_MINUTES;
+}
+
+/** Ny startværdi "YYYY-MM-DDTHH:MM" med samme dag og et nyt klokkeslæt. */
+export function setStartClock(startedAt: string, clock: string): string {
+  return `${startedAt.split("T")[0]}T${clock.slice(0, 5)}`;
+}
+
+/** Plus/minus i femminutters trin: går til næste/forrige hele 5 min (mindst 5, højst 24 t). */
+export function stepDuration(total: number, direction: 1 | -1): number {
+  const safe = Math.max(0, Math.round(total));
+  const next = direction === 1 ? Math.floor(safe / 5) * 5 + 5 : Math.ceil(safe / 5) * 5 - 5;
+  return Math.min(DAY_MINUTES, Math.max(5, next));
 }

@@ -52,7 +52,7 @@ function DrinksContent() {
               <Link
                 key={drink.id}
                 href={`/drinks/${drink.id}${suffix}`}
-                className="flex flex-col items-center gap-2 rounded-2xl bg-hf-tan p-4 text-hf-black"
+                className="items-center text-hf-black hf-card"
               >
                 <span className="flex h-24 w-24 items-center justify-center overflow-hidden rounded-full bg-hf-cream">
                   {drink.imageUrl ? (

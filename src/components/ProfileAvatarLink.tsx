@@ -15,7 +15,7 @@ export function ProfileAvatarLink({ outlined = false }: { outlined?: boolean }) 
   const { status } = useFamilyStatus();
 
   return (
-    <Link href="/profile" aria-label={t("settings.openProfile")} className="hf-appbar__slot">
+    <Link href="/profile" aria-label={t("settings.openProfile")} className="hf-appbar__slot hf-appbar__profile">
       <ProfileCircle
         name={status?.activeProfile.displayName ?? ""}
         className={outlined ? "hf-avatar--outlined" : ""}
