@@ -7,6 +7,10 @@ Last updated: 2026-10-09
 - Ny side Profil → Screeninger med oprettelsesflow, udfyldningsark, rapporter og grafer, kalenderbjælker, valg i Tilføj-menuen og bundmenuen (se DECISIONS 2026-10-09). Web og native (`ScreeningScreens.kt`, `ScreeningModels.kt`, `ProfileSwipeActions`) er lavet sammen; sprogfilerne har fået `screenings`-teksterne på alle 7 sprog.
 - Tjekket: `tsc`, eslint på de ændrede filer, `node --test src/lib/screenings.test.mjs`, `parity.mjs` og `sync.mjs --check` er grønne. Kotlin og `npm run build` er ikke kørt her (se overleveringen); migrationen skal med deployet. Notifikationsudsendelsen er ikke bygget.
 - Migræne som eget menupunkt i Tilføj med til/fra under Visning (første ønske) er afløst af denne funktion: migræne er nu en forudlavet screening.
+## 2026-10-09: Redigering af genveje kunne sidde fast
+
+- `AddMenuList.tsx`: et hængt træk (mistet touchend) blokerede al scroll og alle tryk, så man ikke kunne afslutte redigeringen. Nu slippes trækket ved nyt tryk eller når ingen finger er på skærmen; "Færdig"/"Tilføj"-linjen er sticky øverst, og et tryk på tom baggrund afslutter redigeringen. Native (Compose-gestus) har ikke fejlen; paritet accepteret. Ikke kørt lint/tsc (ingen `node_modules`) og ikke prøvet på telefon.
+
 ## 2026-10-09: Tidsslider på Aktivitet viser kun dagen
 
 - Slideren under Starttidspunkt (`SleepRangeSlider` med `bedtimeFirst`, native `ProfileSleepRangeSlider`) er nu ét døgn: venstre = 00:00, højre = 23:59. Start-håndtaget står til venstre, slut-håndtaget til højre, og den grønne markering ligger imellem dem uden at pakke over midnat. Slut kan ikke gå forbi 23:59 og ligger altid efter start (også med +/−). Søvnsiden er uændret. Lint grønt; Kotlin ikke kompileret lokalt; ikke visuelt testet.
