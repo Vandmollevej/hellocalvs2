@@ -57,7 +57,6 @@ import androidx.compose.ui.zIndex
 import dk.packroff.hellocal.i18n.LocalTranslator
 import dk.packroff.hellocal.theme.HcColors
 import dk.packroff.hellocal.theme.HcTypeRoles
-import dk.packroff.hellocal.ui.CalendarBathScaleIcon
 import dk.packroff.hellocal.ui.CalendarPartyPopperIcon
 import dk.packroff.hellocal.ui.HcText
 import dk.packroff.hellocal.ui.formatNumber
@@ -275,8 +274,8 @@ internal fun WeekTimelineView(
                     val met = dailyGoalMet(totals, date, goals.effective(date))
                     Column(
                         Modifier.width(columnWidth).height(48.dp)
-                            .background(if (current) HcColors.SelectedBg else Color.Transparent)
-                            .let { if (current) it.border(2.dp, HcColors.SelectedBorder) else it }
+                            .background(if (current) HcColors.White else Color.Transparent)
+                            .let { if (current) it.border(2.dp, HcColors.Brand) else it }
                             .cellLines(tan, right = index < days.lastIndex, bottom = true)
                             .clickable { onOpenDate(date) },
                         horizontalAlignment = Alignment.CenterHorizontally,
@@ -284,10 +283,10 @@ internal fun WeekTimelineView(
                     ) {
                         HcText(weekdayShort(date).uppercase(), HcTypeRoles.Micro, bold = true, color = HcColors.TextSecondary, maxLines = 1)
                         Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                            HcText(date.dayOfMonth.toString(), HcTypeRoles.Body, bold = true, color = if (current) HcColors.SelectedText else HcColors.Black)
+                            HcText(date.dayOfMonth.toString(), HcTypeRoles.Body, bold = true, color = HcColors.Black)
                             if (met) HcIcon("Check", size = 15.dp, stroke = 3.5f, color = HcColors.Green)
                             if (date in goalDates) CalendarPartyPopperIcon(15.dp, HcColors.Black)
-                            if (!weighInsByDate[date].isNullOrEmpty()) CalendarBathScaleIcon(15.dp, HcColors.Black)
+                            if (!weighInsByDate[date].isNullOrEmpty()) HcIcon("Scale", size = 15.dp, color = HcColors.Black)
                         }
                     }
                 }
@@ -343,7 +342,7 @@ internal fun WeekTimelineView(
                                     verticalAlignment = Alignment.CenterVertically,
                                     horizontalArrangement = Arrangement.spacedBy(4.dp),
                                 ) {
-                                    CalendarBathScaleIcon(12.dp, HcColors.Black)
+                                    HcIcon("Scale", size = 12.dp, color = HcColors.Black)
                                     HcText("${formatKg(entry.weightKg)} kg", HcTypeRoles.Micro, bold = true, color = HcColors.Black, maxLines = 1)
                                 }
                             }

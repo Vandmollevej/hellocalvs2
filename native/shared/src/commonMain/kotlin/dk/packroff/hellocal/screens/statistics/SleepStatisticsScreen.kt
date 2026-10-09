@@ -1,12 +1,11 @@
 package dk.packroff.hellocal.screens.statistics
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ExperimentalLayoutApi
-import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -36,7 +35,8 @@ import dk.packroff.hellocal.ui.HcDivider
 import dk.packroff.hellocal.ui.HcRemoteImage
 import dk.packroff.hellocal.ui.HcScreen
 import dk.packroff.hellocal.ui.HcText
-import dk.packroff.hellocal.ui.StatsChoiceChip
+import dk.packroff.hellocal.ui.SettingsDropdown
+import dk.packroff.hellocal.ui.SettingsOption
 import dk.packroff.hellocal.ui.StatsSkeleton
 import dk.packroff.hellocal.ui.icons.HcIcon
 import kotlinx.coroutines.async
@@ -67,14 +67,25 @@ internal fun rememberSleepStatInputs(): SleepStatInputs {
     return inputs
 }
 
-/** The period buttons shared by the sleep and body-water statistics. */
-@OptIn(ExperimentalLayoutApi::class)
+/** src/components/hf/StatPeriodSelect.tsx — the period dropdown shared by the sleep and body-water statistics. */
 @Composable
-internal fun SleepPeriodChips(period: SleepStatPeriodKey, onChange: (SleepStatPeriodKey) -> Unit) {
+internal fun SleepPeriodSelect(period: SleepStatPeriodKey, onChange: (SleepStatPeriodKey) -> Unit) {
     val t = LocalTranslator.current
-    FlowRow(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-        SleepStatPeriodKey.entries.forEach { key ->
-            StatsChoiceChip(t.t("sleepStats.period.${key.key}"), selected = period == key, onClick = { onChange(key) })
+    val options = SleepStatPeriodKey.entries.map { SettingsOption(it.key, t.t("sleepStats.period.${it.key}")) }
+    SettingsDropdown(
+        value = period.key,
+        options = options,
+        onChange = { value -> SleepStatPeriodKey.entries.firstOrNull { it.key == value }?.let(onChange) },
+        modifier = Modifier.fillMaxWidth(),
+    ) { selectedLabel ->
+        val shape = RoundedCornerShape(12.dp)
+        Row(
+            Modifier.fillMaxWidth().heightIn(min = HcDimens.ControlHeight).clip(shape).background(HcColors.White, shape)
+                .border(1.dp, HcColors.TanDark, shape).padding(start = 12.dp, end = 12.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            HcText(selectedLabel, HcTypeRoles.Body, Modifier.weight(1f), color = HcColors.Black, maxLines = 1)
+            HcIcon("ChevronDown", size = 14.dp, stroke = 2.5f, color = HcColors.Black)
         }
     }
 }
@@ -123,7 +134,7 @@ private fun SleepStatisticsContent() {
 
     HcScreen(t.t("sleepStats.title"), back = nav.showBack, icon = { TrendIcon(HcColors.White, size = 20) }) {
         Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
-            SleepPeriodChips(period) { period = it }
+            SleepPeriodSelect(period) { period = it }
 
             if (inputs.loading) {
                 StatsSkeleton(Modifier.fillMaxWidth().height(224.dp))

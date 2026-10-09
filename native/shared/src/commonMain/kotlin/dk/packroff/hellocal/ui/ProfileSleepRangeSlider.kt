@@ -73,6 +73,7 @@ fun ProfileSleepRangeSlider(
     bedtimeMinutes: Int,
     onChangeWake: (Int) -> Unit,
     onChangeBedtime: (Int) -> Unit,
+    bedtimeFirst: Boolean = false,
 ) {
     var editing by remember { mutableStateOf<SleepHandle?>(null) }
     var editValue by remember { mutableStateOf("") }
@@ -127,8 +128,14 @@ fun ProfileSleepRangeSlider(
 
     Column(Modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(8.dp)) {
         Row(Modifier.fillMaxWidth().padding(horizontal = 2.dp), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
-            TimeLabel(SleepHandle.Wake)
-            TimeLabel(SleepHandle.Bedtime)
+            // Activity: start (= "bedtime") on the left, end (= "wake") on the right.
+            if (bedtimeFirst) {
+                TimeLabel(SleepHandle.Bedtime)
+                TimeLabel(SleepHandle.Wake)
+            } else {
+                TimeLabel(SleepHandle.Wake)
+                TimeLabel(SleepHandle.Bedtime)
+            }
         }
         var active by remember { mutableStateOf<SleepHandle?>(null) }
         Box(

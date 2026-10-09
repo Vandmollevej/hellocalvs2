@@ -5,6 +5,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -23,6 +24,7 @@ import androidx.compose.ui.unit.dp
 import dk.packroff.hellocal.api.Api
 import dk.packroff.hellocal.api.ApiJson
 import dk.packroff.hellocal.i18n.LocalTranslator
+import dk.packroff.hellocal.nav.LocalNavigator
 import dk.packroff.hellocal.nav.RouteArgs
 import dk.packroff.hellocal.theme.HcColors
 import dk.packroff.hellocal.theme.HcDimens
@@ -38,6 +40,7 @@ import dk.packroff.hellocal.ui.ProfilePage
 import dk.packroff.hellocal.ui.ProfilePagePadding
 import dk.packroff.hellocal.ui.ProfileSwipeToDelete
 import dk.packroff.hellocal.ui.ProfileTextButton
+import dk.packroff.hellocal.ui.icons.HcIcon
 import kotlinx.coroutines.launch
 import kotlinx.datetime.Clock
 import kotlinx.serialization.Serializable
@@ -54,13 +57,17 @@ private data class InboxMessage(
     val readAt: String? = null,
 )
 
-/** Native port of src/app/profile/messages/page.tsx — the user's inbox with read/unread, delete and "Slettet". */
+/**
+ * Native port of src/app/profile/messages/page.tsx and .../messages/trash/page.tsx (MessagesView) — the user's inbox
+ * with read/unread and delete, and the separate "Papirkurv" page for deleted messages.
+ */
 @Composable
-fun MessagesScreen(args: RouteArgs) {
+fun MessagesScreen(args: RouteArgs, trash: Boolean = false) {
     val t = LocalTranslator.current
+    val nav = LocalNavigator.current
     val scope = rememberCoroutineScope()
     var messages by remember { mutableStateOf<List<InboxMessage>?>(null) }
-    var deletedView by remember { mutableStateOf(false) }
+    val deletedView = trash
     var confirmClear by remember { mutableStateOf(false) }
 
     LaunchedEffect(deletedView) {
@@ -94,13 +101,24 @@ fun MessagesScreen(args: RouteArgs) {
 
     val hasUnread = messages?.any { it.readAt == null } == true
 
-    HcScreen(title = t.t("profile.messages.title"), contentPadding = ProfilePagePadding) {
+    HcScreen(title = if (deletedView) t.t("profile.messages.trash") else t.t("profile.messages.title"), contentPadding = ProfilePagePadding) {
         ProfilePage {
             Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceBetween) {
-                ProfileTextButton(if (deletedView) t.t("profile.messages.title") else t.t("profile.messages.deleted"), onClick = {
-                    messages = null
-                    deletedView = !deletedView
-                })
+                // Grey link with icon in front, not underlined: Papirkurv in the inbox, Beskeder in the trash.
+                Row(
+                    Modifier.heightIn(min = 44.dp).clickable {
+                        nav.push(if (deletedView) "/profile/messages" else "/profile/messages/trash")
+                    },
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                ) {
+                    HcIcon(if (deletedView) "Mail" else "Trash", size = 20.dp, color = HcColors.TextSecondary)
+                    HcText(
+                        if (deletedView) t.t("profile.messages.title") else t.t("profile.messages.trash"),
+                        HcTypeRoles.Body,
+                        color = HcColors.TextSecondary,
+                    )
+                }
                 if (deletedView) {
                     if (!messages.isNullOrEmpty()) ProfileTextButton(t.t("profile.messages.clearAll"), onClick = { confirmClear = true })
                 } else if (hasUnread) {

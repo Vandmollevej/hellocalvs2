@@ -73,7 +73,6 @@ internal fun HourEntriesOverlay(
     waterEntries: List<CalWater>,
     measurements: List<CalendarMeasurement>,
     goals: List<CalGoal>,
-    weighIns: List<CalWeighIn>,
     onClose: () -> Unit,
 ) {
     val t = LocalTranslator.current
@@ -107,20 +106,13 @@ internal fun HourEntriesOverlay(
         }
         Column(Modifier.weight(1f).fillMaxWidth().verticalScroll(rememberScrollState()).padding(16.dp)) {
             for (goal in goals) GoalAccordion(goal)
-            for (entry in weighIns) {
-                Row(
-                    Modifier.padding(bottom = 8.dp).fillMaxWidth().heightIn(min = HcDimens.ControlHeight).clip(RoundedCornerShape(16.dp))
-                        .background(HcColors.Tan).padding(horizontal = 16.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    HcText(clock(entry.at), HcTypeRoles.Body, Modifier.weight(1f), bold = true, color = HcColors.Black)
-                    Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-                        dk.packroff.hellocal.ui.CalendarBathScaleIcon(18.dp, HcColors.Black)
-                        HcText("${formatKg(entry.weightKg)} kg", HcTypeRoles.Body, bold = true, color = HcColors.Black)
-                    }
-                }
-            }
             for ((key, items) in groups) {
+                // A weigh-in alone at its time opens the details sheet directly (no fold-out).
+                val solo = (items.singleOrNull() as? HourItem.Measurement)?.measurement
+                if (solo != null && solo.weightKg != null && solo.id.startsWith("weight-")) {
+                    SoloWeightRow(items.first().time, solo)
+                    continue
+                }
                 val isOpen = key in openKeys
                 // Food as "540 kcal", water as glass + cl — both can share a time; water products are not food.
                 val foodItems = items.filter { it is HourItem.Registration && !isWaterRegistration(it.registration) }
@@ -132,7 +124,8 @@ internal fun HourEntriesOverlay(
                         is HourItem.Measurement -> 0.0
                     }
                 }
-                val groupWeight = items.firstNotNullOfOrNull { (it as? HourItem.Measurement)?.measurement?.weightKg }
+                val groupMeasurement = items.firstOrNull { it is HourItem.Measurement && it.measurement.weightKg != null }
+                val groupWeight = (groupMeasurement as? HourItem.Measurement)?.measurement?.weightKg
                 Column(Modifier.padding(bottom = 8.dp).fillMaxWidth().clip(RoundedCornerShape(16.dp)).background(HcColors.Tan)) {
                     Row(
                         Modifier.fillMaxWidth().heightIn(min = HcDimens.ControlHeight)
@@ -157,7 +150,7 @@ internal fun HourEntriesOverlay(
                     if (isOpen) {
                         Column(Modifier.fillMaxWidth().background(HcColors.Cream).padding(horizontal = 16.dp)) {
                             items.forEachIndexed { index, item ->
-                                HourItemRow(item)
+                                HourItemRow(item, hideWeight = item === groupMeasurement)
                                 if (index < items.lastIndex) Box(Modifier.fillMaxWidth().height(1.dp).background(HcColors.TanDark))
                             }
                         }
@@ -169,7 +162,25 @@ internal fun HourEntriesOverlay(
 }
 
 @Composable
-private fun HourItemRow(item: HourItem) {
+private fun SoloWeightRow(time: LocalDateTime, measurement: CalendarMeasurement) {
+    var open by remember { mutableStateOf(false) }
+    Row(
+        Modifier.padding(bottom = 8.dp).fillMaxWidth().heightIn(min = HcDimens.ControlHeight).clip(RoundedCornerShape(16.dp))
+            .background(HcColors.Tan).clickable { open = true }.padding(horizontal = 16.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        HcText(clock(time), HcTypeRoles.Body, Modifier.weight(1f), bold = true, color = HcColors.Black)
+        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            HcIcon("Scale", size = 18.dp, color = HcColors.Black)
+            HcText(formatWeightKg(measurement.weightKg ?: 0.0), HcTypeRoles.Body, bold = true, color = HcColors.Black)
+            Box(Modifier.offset(x = (-4).dp)) { HcChevron(ChevronDirection.Right, color = HcColors.Black) }
+        }
+    }
+    if (open) WeightEntryDetailsSheet(measurement.id.removePrefix("weight-"), onClose = { open = false })
+}
+
+@Composable
+private fun HourItemRow(item: HourItem, hideWeight: Boolean = false) {
     val t = LocalTranslator.current
     val nav = LocalNavigator.current
     when (item) {
@@ -178,7 +189,7 @@ private fun HourItemRow(item: HourItem) {
             thumbnail = { CalendarWaterGlassIcon(22.dp, HcColors.Black) },
             right = { EnergyChip(EnergyChipKind.Water, item.entry.amountMl, iconSize = 18.dp, role = HcTypeRoles.Body) },
         )
-        is HourItem.Measurement -> MeasurementRow(item.measurement)
+        is HourItem.Measurement -> MeasurementRow(item.measurement, hideWeight)
         is HourItem.Registration -> {
             val registration = item.registration
             val isWater = isWaterRegistration(registration)
@@ -255,7 +266,7 @@ private fun GoalAccordion(goal: CalGoal) {
  * details sheet.
  */
 @Composable
-private fun MeasurementRow(measurement: CalendarMeasurement) {
+private fun MeasurementRow(measurement: CalendarMeasurement, hideWeight: Boolean = false) {
     val t = LocalTranslator.current
     val scope = rememberCoroutineScope()
     var open by remember { mutableStateOf(false) }
@@ -267,7 +278,7 @@ private fun MeasurementRow(measurement: CalendarMeasurement) {
     } else {
         null
     }
-    val right: (@Composable () -> Unit)? = if (weightKg != null) {
+    val right: (@Composable () -> Unit)? = if (weightKg != null && !hideWeight) {
         { HcText(formatWeightKg(weightKg), HcTypeRoles.Body, bold = true, color = HcColors.Black) }
     } else {
         null
@@ -275,7 +286,11 @@ private fun MeasurementRow(measurement: CalendarMeasurement) {
     Column(Modifier.fillMaxWidth().let { if (weighInId != null) it.clickable { open = true } else it }) {
         CalendarFoodRow(
             title = if (weightKg != null) t.t("calendar.measurement.weight") else t.t("calendar.measurement.title"),
-            thumbnail = { HcIcon("Scale", size = 22.dp, color = HcColors.Black) },
+            thumbnail = {
+                val sourceIcon = integrationIconForSource(measurement.source)
+                if (sourceIcon != null) HcRemoteImage(sourceIcon, Modifier.size(44.dp).padding(4.dp))
+                else HcIcon("Scale", size = 22.dp, color = HcColors.Black)
+            },
             subtitle = subtitle,
             right = right,
         )

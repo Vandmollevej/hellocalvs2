@@ -160,7 +160,7 @@ export function ImageReviewBoard({ items: initialItems, approveLabel, rejectLabe
 
       {error && <p className="hf-type-small text-hf-red-dark">{error}</p>}
 
-      <div className={`grid gap-4 ${perPage === 4 ? "md:grid-cols-2" : "grid-cols-1"}`}>
+      <div className={`grid gap-4 ${perPage === 4 ? "md:grid-cols-2 2xl:grid-cols-4" : perPage === 2 ? "md:grid-cols-2" : "grid-cols-1"}`}>
         {visible.map((item) => {
           const alternatives = item.alternatives ?? [];
           const index = pickedIndex(item);
