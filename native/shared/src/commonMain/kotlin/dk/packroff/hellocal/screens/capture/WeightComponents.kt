@@ -55,28 +55,37 @@ import kotlinx.serialization.Serializable
 import kotlin.math.max
 import kotlin.math.roundToInt
 
-/** src/lib/weigh-attire.ts WEIGH_ATTIRES */
-internal val WEIGH_ATTIRES = listOf("NAKED", "UNDERWEAR", "CLOTHED", "CLOTHED_PHONE")
+/** src/lib/weigh-attire.ts ATTIRE_ITEMS */
+internal val ATTIRE_ITEMS = listOf("UNDERWEAR", "PANTS", "TOP", "SWEATER", "SHOES", "POCKET_ITEMS", "AFTER_TOILET")
 
-/** src/components/weight/AttireToggles.tsx — one switch row per attire, one on at a time. */
+/** src/lib/weigh-attire.ts itemsFromAttire — older weigh-ins only have the single legacy choice. */
+internal fun itemsFromAttire(attire: String?): List<String> = when (attire) {
+    "UNDERWEAR" -> listOf("UNDERWEAR")
+    "CLOTHED" -> listOf("UNDERWEAR", "PANTS", "TOP")
+    "CLOTHED_PHONE" -> listOf("UNDERWEAR", "PANTS", "TOP", "POCKET_ITEMS")
+    else -> emptyList()
+}
+
+/** src/components/weight/AttireToggles.tsx — one switch row per item, several can be on; none = naked. */
 @Composable
-internal fun AttireToggles(value: String?, onChange: (String?) -> Unit, enabled: Boolean = true) {
+internal fun AttireToggles(value: List<String>, onChange: (List<String>) -> Unit, enabled: Boolean = true) {
     val t = LocalTranslator.current
     Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-        WEIGH_ATTIRES.forEach { attire ->
-            val on = value == attire
+        ATTIRE_ITEMS.forEach { attire ->
+            val on = attire in value
             val shape = RoundedCornerShape(12.dp)
             Row(
                 Modifier.fillMaxWidth().heightIn(min = HcDimens.ControlHeight).clip(shape).background(HcColors.White, shape)
-                    .alpha(if (enabled) 1f else 0.5f).clickable(enabled = enabled) { onChange(if (on) null else attire) }
+                    .alpha(if (enabled) 1f else 0.5f).clickable(enabled = enabled) { onChange(ATTIRE_ITEMS.filter { if (it == attire) !on else it in value }) }
                     .padding(horizontal = 16.dp),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(12.dp),
             ) {
-                HcText(t.t("weighIn.attire.$attire"), HcTypeRoles.Body, Modifier.weight(1f), color = HcColors.Black)
+                HcText(t.t("weighIn.attireItem.$attire"), HcTypeRoles.Body, Modifier.weight(1f), color = HcColors.Black)
                 SmallSwitch(on)
             }
         }
+        if (value.isEmpty()) HcText(t.t("weighIn.attireNaked"), HcTypeRoles.Small, Modifier.fillMaxWidth(), color = HcColors.TextSecondary, align = TextAlign.Center)
     }
 }
 
@@ -193,7 +202,7 @@ internal fun WeightSyncStatus(onSynced: () -> Unit) {
 }
 
 @Serializable
-private data class WeightDetailEntry(val id: String, val weightKg: Double, val weighedAt: String, val source: String = "", val attire: String? = null)
+private data class WeightDetailEntry(val id: String, val weightKg: Double, val weighedAt: String, val source: String = "", val attire: String? = null, val attireItems: List<String> = emptyList())
 
 @Serializable
 private data class WeightDetailSource(val label: String, val icon: String? = null)
@@ -226,21 +235,21 @@ internal fun WeightEntryDetailsSheet(id: String, onClose: () -> Unit, onChanged:
     val scope = rememberCoroutineScope()
     var detail by remember { mutableStateOf<WeightDetail?>(null) }
     var failed by remember { mutableStateOf(false) }
-    var attire by remember { mutableStateOf<String?>(null) }
+    var attire by remember { mutableStateOf<List<String>>(emptyList()) }
     var saving by remember { mutableStateOf(false) }
 
     LaunchedEffect(id) {
         try {
             val d = ApiJson.decodeFromJsonElement(WeightDetail.serializer(), Api.get("/api/weight-entries/$id"))
             detail = d
-            attire = d.entry.attire
+            attire = d.entry.attireItems.ifEmpty { itemsFromAttire(d.entry.attire) }
         } catch (e: Exception) {
             failed = true
         }
     }
 
     val d = detail
-    val changed = d != null && attire != d.entry.attire && attire != null
+    val changed = d != null && (d.entry.attire == null || attire != d.entry.attireItems.ifEmpty { itemsFromAttire(d.entry.attire) })
     val metrics = if (d == null) emptyList() else BODY_METRIC_DISPLAY.mapNotNull { display -> d.metrics.firstOrNull { it.type == display.first }?.let { it to display } }
 
     HcBottomSheet(
@@ -251,11 +260,11 @@ internal fun WeightEntryDetailsSheet(id: String, onClose: () -> Unit, onChanged:
             val close = LocalHcSheetClose.current
             if (changed) {
                 HcButton(if (saving) t.t("weighIn.saving") else t.t("weighIn.save"), onClick = {
-                    val chosen = attire ?: return@HcButton
+                    val chosen = attire
                     saving = true
                     scope.launch {
                         try {
-                            Api.patch("/api/weight-entries/$id", mapOf("attire" to chosen))
+                            Api.patch("/api/weight-entries/$id", mapOf("attireItems" to chosen))
                             NativeHooks.onRegistrationChanged()
                             onChanged()
                         } catch (e: Exception) {

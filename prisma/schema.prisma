@@ -606,6 +606,9 @@ model WeightEntry {
   note      String?
   // 2026-10-07: hvad brugeren havde på ved vejningen (null = ikke bekræftet endnu).
   attire    WeighAttire?
+  // 2026-10-09: de enkelte til/fra-valg (UNDERWEAR, PANTS, TOP, SWEATER, SHOES,
+  // POCKET_ITEMS, AFTER_TOILET). Tom + attire sat = nøgen. `attire` er grovsammenfatning.
+  attireItems String[]     @default([])
   weighedAt DateTime     @default(now())
 
   @@map("weight_entries")
