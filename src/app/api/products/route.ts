@@ -95,7 +95,7 @@ export async function GET(req: Request) {
             ...searchTokens(q).map(
               (token) =>
                 ({
-                  OR: tokenVariants(token).flatMap((variant) => [
+                  OR: tokenVariants(token).flatMap((variant): Prisma.ProductWhereInput[] => [
                     { name: { contains: variant, mode: "insensitive" } },
                     { brand: { name: { contains: variant, mode: "insensitive" } } },
                     // Sukkerpåstande kan søges ("sukkerfri", "uden tilsat sukker",
