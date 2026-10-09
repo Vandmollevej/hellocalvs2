@@ -10,6 +10,9 @@ on:
       - "**/*.md"
       # Windows-programmerne (tools/desktop) er ikke en del af app-imaget.
       - "tools/**"
+      # De native apps (Android/iPhone) bygges af native.yml, ikke her.
+      - "native/**"
+      - "scripts/native/**"
 
 jobs:
   build:
@@ -58,7 +61,7 @@ jobs:
           cp compose.production.yaml /deploy/compose.production.yaml
           # Alle agenter, som compose.production.yaml bygger lokalt (build: ./scripts/...).
           # (edge-proxy er nginx-konfigurationen foran app, ingen agent.)
-          for agent in image-agent frida-import hellofresh-import rema1000-import store-products-import quality-control-agent logo-agent amount-suggestion-agent edge-proxy; do
+          for agent in image-agent frida-import hellofresh-import valdemarsro-agent rema1000-import store-products-import quality-control-agent logo-agent amount-suggestion-agent uptime-agent edge-proxy; do
             mkdir -p "/deploy/scripts/$agent"
             cp -R "scripts/$agent/." "/deploy/scripts/$agent/"
           done
@@ -111,6 +114,17 @@ jobs:
           fi
           docker compose --project-directory /volume1/docker/App/hellocal-v2 -f compose.production.yaml --env-file .env.production pull
 
+      # Vagt-robotten startes før migreringer og app, så den kører, selv om de fejler.
+      - name: Build and start uptime agent
+        run: |
+          set -euo pipefail
+          cd /deploy
+          docker compose --project-directory /volume1/docker/App/hellocal-v2 -f compose.production.yaml --env-file .env.production up -d --build --no-deps uptime-agent
+
+      # Migreringerne prøves først på en kopi af produktionens skema (scripts/deploy/test-migrations.sh).
+      - name: Test database migrations on a schema copy
+        run: bash scripts/deploy/test-migrations.sh
+
       # Udrulning uden nedetid: ny app-container startes ved siden af den gamle og skiftes ind, når den er sund
       # (scripts/deploy/rollout-app.sh, docs/DEPLOYMENT.md "Udrulning uden nedetid").
       - name: Deploy database migrations and app
@@ -120,7 +134,7 @@ jobs:
         run: |
           set -euo pipefail
           cd /deploy
-          docker compose --project-directory /volume1/docker/App/hellocal-v2 -f compose.production.yaml --env-file .env.production up -d --build image-agent frida-agent hellofresh-agent rema1000-agent store-products-agent
+          docker compose --project-directory /volume1/docker/App/hellocal-v2 -f compose.production.yaml --env-file .env.production up -d --build image-agent frida-agent hellofresh-agent valdemarsro-agent rema1000-agent store-products-agent
 
       - name: Build and start quality-control agent
         run: |

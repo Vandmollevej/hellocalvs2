@@ -20,6 +20,13 @@ docker run --rm --entrypoint nginx \
   -v "$HOST_DIR/scripts/edge-proxy/nginx.conf:/etc/nginx/conf.d/default.conf:ro" \
   "$NGINX_IMAGE" -t
 
+# Migreringerne køres eksplicit, før nogen ny app-container startes. `up --no-recreate` nedenfor
+# genbruger ellers den gamle, afsluttede migrate-container som "gennemført", så ny kode gik i drift
+# før (og uden) sine migreringer (2026-10-06). Fejler de, stopper udrulningen her; den gamle app kører videre.
+log "Kører database-migreringer"
+"${COMPOSE[@]}" up -d --wait db
+"${COMPOSE[@]}" run --rm --no-deps migrate
+
 old_ids="$("${COMPOSE[@]}" ps -q app || true)"
 
 # 2) Første gang (eller hvis app ikke kører): almindelig opstart. I den allerførste udrulning med proxy

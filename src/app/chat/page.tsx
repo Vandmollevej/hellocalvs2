@@ -274,13 +274,13 @@ export default function ChatPage() {
             rows={2}
             placeholder={t("web.chatIntro")}
             aria-label={t("web.chatPlaceholder")}
-            className="hf-type-body flex-1 resize-none rounded-lg border border-[var(--hf-color-field-border)] bg-white px-3 py-3 text-hf-black outline-none focus:border-[var(--hf-color-field-focus)]"
+            className="hf-type-body flex-1 resize-none rounded-lg border border-[var(--hf-color-field-border)] px-3 py-3 text-hf-black outline-none focus:border-[var(--hf-color-field-focus)] bg-hf-white"
           />
           <button
             type="submit"
             disabled={busy || !text.trim()}
             aria-label={t("web.chatSend")}
-            className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-[var(--hf-color-action)] text-white transition hover:bg-[var(--hf-color-action-hover)] disabled:bg-[var(--hf-color-disabled)]"
+            className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-[var(--hf-color-action)] transition hover:bg-[var(--hf-color-action-hover)] disabled:bg-[var(--hf-color-disabled)] text-hf-white"
           >
             <IconSend size={20} stroke={1.6} />
           </button>

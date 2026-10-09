@@ -4,6 +4,7 @@ import { prisma } from "@/lib/prisma";
 import { DEFAULT_SEARCH_RANKING_WEIGHTS } from "@/lib/product-search-ranking";
 import { sanitizeWeights } from "@/lib/search-ranking-config";
 import { SearchRankingTuner } from "@/components/admin/SearchRankingTuner";
+import { userLabel } from "@/lib/user-label";
 
 export default async function AdminSearchRankingPage() {
   const admin = await requireAdminUser();
@@ -12,7 +13,7 @@ export default async function AdminSearchRankingPage() {
   const configs = await prisma.searchRankingConfig.findMany({
     orderBy: { createdAt: "desc" },
     take: 50,
-    include: { createdBy: { select: { displayName: true, email: true } } },
+    include: { createdBy: { select: { id: true, displayName: true } } },
   });
   const active = configs.find((config) => config.isActive);
 
@@ -37,7 +38,7 @@ export default async function AdminSearchRankingPage() {
           isActive: config.isActive,
           note: config.note,
           createdAt: config.createdAt.toISOString(),
-          createdBy: config.createdBy?.displayName ?? config.createdBy?.email ?? null,
+          createdBy: config.createdBy ? userLabel(config.createdBy) : null,
         }))}
       />
     </div>

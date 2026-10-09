@@ -92,7 +92,7 @@ export default function SupportRequestThreadPage() {
               {thread.messages.map((message) => (
                 <li
                   key={message.id}
-                  className={`rounded-[8px] p-3 ${message.author === "USER" ? "ml-8 bg-hf-tan" : "mr-8 bg-hf-green-light"}`}
+                  className={`rounded-card p-3 ${message.author === "USER" ? "ml-8 bg-hf-tan" : "mr-8 bg-hf-green-light"}`}
                 >
                   <p className="text-text-secondary hf-type-caption">
                     {message.author === "USER" ? t("settings.support.threadYou") : t("settings.support.threadSupport")} ·{" "}
@@ -107,7 +107,7 @@ export default function SupportRequestThreadPage() {
                           href={`/api/support/attachments/${attachment.id}`}
                           target="_blank"
                           rel="noreferrer"
-                          className="block h-20 w-20 overflow-hidden rounded-[8px] bg-hf-cream"
+                          className="block h-20 w-20 overflow-hidden bg-hf-cream rounded-card"
                         >
                           {/* eslint-disable-next-line @next/next/no-img-element -- beskyttet route, ikke next/image */}
                           <img src={`/api/support/attachments/${attachment.id}`} alt="" className="h-full w-full object-cover" />
@@ -130,8 +130,7 @@ export default function SupportRequestThreadPage() {
                   maxLength={5000}
                   value={reply}
                   onChange={(event) => setReply(event.target.value)}
-                  className="hf-type-input w-full rounded-[8px] border bg-hf-cream p-3 outline-none"
-                  style={{ borderColor: "var(--hf-color-field-border)" }}
+                  className="hf-type-input w-full border bg-hf-cream p-3 outline-none border-hf-field-border rounded-card"
                 />
               </label>
               <SupportScreenshotPicker images={images} onChange={setImages} disabled={sending} />
@@ -143,7 +142,7 @@ export default function SupportRequestThreadPage() {
               <button
                 type="submit"
                 disabled={sending || !reply.trim()}
-                className="hf-control hf-btn-primary w-full disabled:opacity-50"
+                className="hf-control hf-btn-primary w-full"
               >
                 {sending ? t("settings.support.replySending") : t("settings.support.replySend")}
               </button>

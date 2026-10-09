@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useLayoutEffect, useMemo, useState } from "react";
 import Link from "next/link";
+import { MealInsightsButton } from "@/components/MealInsightsSheet";
 import { IconChevronDown, IconChevronUp, IconPlus } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
 import { TrendIcon } from "@/components/BottomNav";
@@ -269,6 +270,7 @@ export default function StatisticsPage() {
           onShowAddChange={setShowAddCard}
           loading={loading}
         />
+        <MealInsightsButton />
         {SINNERS_ENABLED && <TopSinnersCard registrations={periodSources} loading={sourcesLoading} />}
       </>
     );

@@ -20,7 +20,7 @@ export const GUIDE_BACKGROUNDS = [
   { id: "card", token: "--hf-color-card", hex: "#EEE9DF", label: { da: "Kort (beige)", en: "Card (beige)" }, dark: false },
   { id: "nav", token: "--hf-color-nav", hex: "#DFD9CC", label: { da: "Navigation (tan)", en: "Navigation (tan)" }, dark: false },
   { id: "brand", token: "--hf-color-brand", hex: "#067A46", label: { da: "Brand-grøn", en: "Brand green" }, dark: true },
-  { id: "appbar", token: "--hf-color-appbar", hex: "#35784A", label: { da: "Appbar-grøn", en: "Appbar green" }, dark: true },
+  { id: "accent", token: "--hf-color-accent", hex: "#BBF06A", label: { da: "Accent (lime)", en: "Accent (lime)" }, dark: false },
   { id: "action", token: "--hf-color-action", hex: "#232323", label: { da: "Mørk (action)", en: "Dark (action)" }, dark: true },
 ] as const;
 export type GuideBackgroundId = (typeof GUIDE_BACKGROUNDS)[number]["id"];
@@ -123,8 +123,10 @@ export function defaultGuideTerms(): GuideTerms {
 }
 const MAX_IMAGE = 400_000;
 
-export function backgroundById(id: GuideBackgroundId) {
-  return GUIDE_BACKGROUNDS.find((bg) => bg.id === id) ?? GUIDE_BACKGROUNDS[0];
+export function backgroundById(id: GuideBackgroundId | "appbar") {
+  // "appbar" (#35784A) er lagt sammen med brand-grøn (design.md §3, 2026-10-07).
+  const wanted = id === "appbar" ? "brand" : id;
+  return GUIDE_BACKGROUNDS.find((bg) => bg.id === wanted) ?? GUIDE_BACKGROUNDS[0];
 }
 
 export function themeById(id: GuideThemeId) {
@@ -361,7 +363,8 @@ export function sanitizeGuideConfig(kind: GuideKind, value: unknown): GuideConfi
     return [
       {
         id: str(screen.id, 40) || newId("scr"),
-        background: screen.background == null ? null : oneOf(screen.background, BACKGROUND_IDS, "page"),
+        background:
+          screen.background == null ? null : oneOf(screen.background === "appbar" ? "brand" : screen.background, BACKGROUND_IDS, "page"),
         stepLabel: stepLabel.da || stepLabel.en ? stepLabel : { da: `Trin ${index + 1}`, en: `Step ${index + 1}` },
         image: sanitizeImage(screen.image),
         elements,

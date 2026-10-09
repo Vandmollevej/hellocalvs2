@@ -14,6 +14,9 @@ export const PRODUCT_DATABASE_SORTS = [
   { key: "image_first", label: "Med billede først" },
   { key: "image_last", label: "Uden billede først" },
   { key: "brand", label: "Mærke A–Å" },
+  { key: "brand_desc", label: "Mærke Å–A" },
+  { key: "popular", label: "Mest populære" },
+  { key: "trending", label: "Trending (seneste 7 dage)" },
   { key: "kcal_desc", label: "Flest kcal" },
   { key: "kcal_asc", label: "Færrest kcal" },
 ] as const;
@@ -42,6 +45,18 @@ export const PRODUCT_SOURCE_LABELS: Record<ProductDatabaseSource, string> = {
   USDA: "USDA",
 };
 
+// Felter der kan vises/skjules i listen og galleriet (gemmes i en visning).
+export const PRODUCT_COLUMNS = ["brand", "stores", "category", "kcal", "additions", "status"] as const;
+export type ProductColumn = (typeof PRODUCT_COLUMNS)[number];
+export const PRODUCT_COLUMN_LABELS: Record<ProductColumn, string> = {
+  brand: "Mærke",
+  stores: "Kæder",
+  category: "Kategori · kilde",
+  kcal: "Kcal/100",
+  additions: "Tilføjelser",
+  status: "Status",
+};
+
 export { PRODUCT_CATEGORIES, PRODUCT_CATEGORY_LABELS };
 
 // Mærke, sub brand, kategori, varetype og kilde er flervalg (gentagne
@@ -58,7 +73,9 @@ export type ProductDatabaseFilters = {
   image: "with" | "without" | "";
   barcode: "with" | "without" | "";
   sort: ProductDatabaseSort;
-  view: "list" | "grid";
+  view: "list" | "grid" | "details";
+  // Synlige felter; altid mindst ét (ingen i URL'en = alle).
+  cols: ProductColumn[];
   page: number;
 };
 
@@ -96,6 +113,11 @@ function pickMany<T extends string>(values: string[], allowed: readonly T[]): T[
   return values.filter((v): v is T => (allowed as readonly string[]).includes(v));
 }
 
+function columnsOrAll(cols: ProductColumn[]): ProductColumn[] {
+  const picked = PRODUCT_COLUMNS.filter((c) => cols.includes(c));
+  return picked.length > 0 ? picked : [...PRODUCT_COLUMNS];
+}
+
 export function parseProductDatabaseFilters(params: ProductDatabaseSearchParams): ProductDatabaseFilters {
   const page = Number.parseInt(one(params.page), 10);
   return {
@@ -114,7 +136,8 @@ export function parseProductDatabaseFilters(params: ProductDatabaseSearchParams)
         one(params.sort),
         PRODUCT_DATABASE_SORTS.map((s) => s.key),
       ) || "name",
-    view: one(params.view) === "grid" ? "grid" : "list",
+    view: one(params.view) === "grid" ? "grid" : one(params.view) === "details" ? "details" : "list",
+    cols: columnsOrAll(pickMany(many(params.cols), PRODUCT_COLUMNS)),
     page: Number.isFinite(page) && page > 1 ? page : 1,
   };
 }
@@ -126,6 +149,7 @@ export function productDatabaseHref(filters: ProductDatabaseFilters, changes: Pa
   const params = new URLSearchParams();
   for (const [key, value] of Object.entries(next)) {
     if (value === "" || value === undefined) continue;
+    if (key === "cols" && Array.isArray(value) && value.length === PRODUCT_COLUMNS.length) continue;
     if (Array.isArray(value)) {
       for (const item of value) params.append(key, item);
       continue;

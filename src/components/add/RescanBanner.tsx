@@ -130,8 +130,7 @@ export function RescanBanner({
           type="button"
           aria-label={t("rescan.collapse")}
           onClick={() => setState("peek")}
-          className="absolute inset-0 z-30"
-          style={{ background: "var(--hf-color-overlay)" }}
+          className="absolute inset-0 z-30 bg-hf-overlay"
         />
       )}
       <div
@@ -144,16 +143,14 @@ export function RescanBanner({
           <button
             type="button"
             aria-label={handleLabel}
-            className="pointer-events-auto flex h-5 w-[72px] touch-none items-center justify-center rounded-b-[12px] shadow-md"
-            style={{ background: "var(--hf-color-white)" }}
+            className="pointer-events-auto flex h-5 w-[72px] touch-none items-center justify-center rounded-b-[12px] shadow-md bg-hf-white"
             {...dragHandlers}
           >
             <Handle tone="dark" />
           </button>
         ) : state === "open" ? (
           <div
-            className="pointer-events-auto flex w-full flex-col rounded-b-[16px] shadow-lg"
-            style={{ background: "var(--hf-color-page)", maxHeight: "calc(100% - 24px)" }}
+            className="pointer-events-auto flex w-full flex-col rounded-b-[16px] shadow-lg bg-hf-page max-h-[calc(100%-24px)]"
           >
             <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain p-4">
               <p className="hf-type-body hf-type-strong text-hf-black">
@@ -190,8 +187,7 @@ export function RescanBanner({
             tabIndex={state === "thanks" ? undefined : 0}
             aria-label={state === "thanks" ? undefined : handleLabel}
             aria-live="polite"
-            className="pointer-events-auto flex w-full touch-none select-none flex-col items-center gap-2 rounded-b-[16px] px-4 pt-3 pb-2 shadow-md"
-            style={{ background: "var(--hf-color-brand)", color: "var(--hf-color-white)" }}
+            className="pointer-events-auto flex w-full touch-none select-none flex-col items-center gap-2 rounded-b-[16px] px-4 pt-3 pb-2 shadow-md bg-hf-brand text-hf-white"
             {...(state === "thanks" ? {} : dragHandlers)}
           >
             <span className="hf-type-body hf-type-strong flex items-center gap-2 text-center">

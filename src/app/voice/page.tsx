@@ -147,9 +147,9 @@ function loadPersistedItems(): Item[] {
 function TypingDots() {
   return (
     <span className="ml-1 inline-flex items-end gap-0.5" aria-hidden="true">
-      <span className="h-1 w-1 animate-bounce rounded-full bg-hf-black opacity-60" style={{ animationDelay: "0ms" }} />
-      <span className="h-1 w-1 animate-bounce rounded-full bg-hf-black opacity-60" style={{ animationDelay: "150ms" }} />
-      <span className="h-1 w-1 animate-bounce rounded-full bg-hf-black opacity-60" style={{ animationDelay: "300ms" }} />
+      <span className="h-1 w-1 animate-bounce rounded-full bg-hf-black opacity-60 hf-typing-dot" />
+      <span className="h-1 w-1 animate-bounce rounded-full bg-hf-black opacity-60 hf-typing-dot" />
+      <span className="h-1 w-1 animate-bounce rounded-full bg-hf-black opacity-60 hf-typing-dot" />
     </span>
   );
 }

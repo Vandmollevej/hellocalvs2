@@ -77,6 +77,10 @@ const TYPICAL_AMOUNTS: { pattern: RegExp; grams: number }[] = [
   { pattern: /(olie|olivenolie|rapsolie)/i, grams: 10 },
 ];
 
+// Instantkaffe (pulver/granulat) doseres pr. kop, ikke pr. glas: 2 g.
+const INSTANT_COFFEE = /(instant|nescaf|neskaf|pulverkaffe|kaffepulver|granulatkaffe|frysetørret kaffe)/i;
+const INSTANT_COFFEE_GRAMS = 2;
+
 const CATEGORY_AMOUNTS: Record<string, number> = {
   DRINK: 250,
 };
@@ -170,8 +174,31 @@ export function typicalAmountGrams(product: DefaultAmountProduct): number | null
   return (product.productCategory && CATEGORY_AMOUNTS[product.productCategory]) || null;
 }
 
+const WEIGHT_PATTERN = /(\d+(?:[.,]\d+)?)\s*(kg|g)\b/i;
+
+// "200 g", "1,5 kg", "4 x 125 g" (pr. enhed) → g. Null hvis ukendt.
+export function packageWeightGrams(text?: string | null): number | null {
+  const match = text?.match(WEIGHT_PATTERN);
+  if (!match) return null;
+  const value = Number(match[1].replace(",", "."));
+  const grams = match[2].toLowerCase() === "kg" ? value * 1000 : value;
+  return Number.isFinite(grams) && grams > 0 ? grams : null;
+}
+
+// Pakkens indhold (g eller ml) — et forslag må aldrig overstige det.
+function packageContentGrams(product: DefaultAmountProduct): number | null {
+  return packageWeightGrams(product.packageSizeText) ?? packageVolumeMl(product.packageSizeText) ?? packageWeightGrams(product.name);
+}
+
 export function defaultAmountGrams(product: DefaultAmountProduct, handSizeGrams?: number | null): number {
   if (product.lastAmountGrams && product.lastAmountGrams > 0) return product.lastAmountGrams;
+  const amount = suggestedAmountGrams(product, handSizeGrams);
+  const cap = packageContentGrams(product);
+  return cap !== null && amount > cap ? cap : amount;
+}
+
+function suggestedAmountGrams(product: DefaultAmountProduct, handSizeGrams?: number | null): number {
+  if (INSTANT_COFFEE.test(productText(product))) return INSTANT_COFFEE_GRAMS;
   const serving = product.servingSizeGrams && product.servingSizeGrams > 0 ? product.servingSizeGrams : null;
   if (serving && product.servingSizeUnitSingular && product.servingSizeUnitPlural) return serving;
   if (serving && isSlicedProduct(product)) return serving;

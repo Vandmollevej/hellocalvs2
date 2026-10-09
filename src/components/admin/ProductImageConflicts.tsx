@@ -102,7 +102,7 @@ export function ProductImageConflicts({ items, canEdit }: { items: ProductImageU
         {items.map((item) => {
           const conflicting = item.targets.filter((target) => target.existingUrl);
           return (
-            <li key={item.id} className="flex flex-col gap-3 rounded-lg border border-hf-tan-dark bg-hf-white p-3">
+            <li key={item.id} className="flex flex-col gap-3 p-3 hf-surface">
               <div className="flex flex-wrap items-start gap-4">
                 <figure className="flex flex-col items-center gap-1">
                   <CheckerThumb src={conflicting[0]?.existingUrl ?? null} alt="Nuværende billede" className="h-28 w-28" />

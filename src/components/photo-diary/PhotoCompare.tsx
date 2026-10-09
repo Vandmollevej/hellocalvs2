@@ -107,7 +107,7 @@ export function PhotoCompare({
           <div className="grid grid-cols-2 gap-4">
             <SlotLabel number={1} label={t("photoDiary.compare.before")} date={formatPhotoDay(before.takenAt)} />
             <SlotLabel number={2} label={t("photoDiary.compare.after")} />
-            <div className="relative overflow-hidden rounded-2xl bg-hf-black" style={{ aspectRatio: "3 / 4" }}>
+            <div className="relative overflow-hidden rounded-2xl bg-hf-black aspect-[3/4]">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={before.url}
@@ -123,8 +123,7 @@ export function PhotoCompare({
               />
             </div>
             <div
-              className="flex items-center justify-center rounded-2xl border-2 border-dashed border-hf-white/50"
-              style={{ aspectRatio: "3 / 4" }}
+              className="flex items-center justify-center rounded-2xl border-2 border-dashed border-hf-white/50 aspect-[3/4]"
             >
               <button
                 type="button"
@@ -150,7 +149,7 @@ export function PhotoCompare({
               const day = formatPhotoDay(photo.takenAt);
               return (
                 <li key={photo.id} className="flex flex-col gap-1">
-                  <div className="relative overflow-hidden rounded-xl bg-hf-black" style={{ aspectRatio: "3 / 4" }}>
+                  <div className="relative overflow-hidden rounded-xl bg-hf-black aspect-[3/4]">
                     <button
                       type="button"
                       onClick={() => chooseAfter(photo.id)}
@@ -215,12 +214,12 @@ function SlotLabel({
     <div className={`flex min-w-0 items-center gap-2 ${alignEnd ? "justify-end" : ""}`}>
       <span
         aria-hidden
-        className="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full bg-hf-white text-[14px] font-bold text-hf-black"
+        className="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full bg-hf-white text-hf-black hf-type-body hf-type-strong"
       >
         {number}
       </span>
       <p className="hf-type-small min-w-0 truncate">
-        <span className="font-bold">{label}</span>
+        <span className="hf-type-strong">{label}</span>
         {date ? ` · ${date}` : null}
       </p>
     </div>

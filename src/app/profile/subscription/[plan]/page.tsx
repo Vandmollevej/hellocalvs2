@@ -135,7 +135,7 @@ export default function SubscriptionPlanPage() {
             onClick={buy}
             disabled={!paymentAvailable || !withdrawalAck || buying}
             aria-busy={buying}
-            className="hf-control hf-btn-primary w-full disabled:opacity-40"
+            className="hf-control hf-btn-primary w-full"
           >
             {t("subscription.planPage.buyCta")}
           </button>
@@ -148,8 +148,7 @@ export default function SubscriptionPlanPage() {
     >
       <div className="flex flex-col gap-4 p-4">
         <div
-          className="rounded-lg p-4"
-          style={{ background: "var(--hf-color-brand)", color: "var(--hf-color-white)" }}
+          className="rounded-lg p-4 bg-hf-brand text-hf-white"
         >
           <div className="flex items-center gap-2">
             <IconStar size={18} aria-hidden="true" />

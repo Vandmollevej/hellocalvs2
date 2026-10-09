@@ -53,7 +53,7 @@ export function PartnerLoginForm() {
         />
       </label>
       {error && <p className="hf-type-body text-hf-red-dark">{error}</p>}
-      <button type="submit" disabled={loading} className="hf-btn-primary w-full py-2.5 disabled:opacity-60">
+      <button type="submit" disabled={loading} className="hf-btn-primary w-full py-2.5">
         {loading ? "Logger ind…" : "Log ind"}
       </button>
       <p className="hf-type-small text-text-secondary">

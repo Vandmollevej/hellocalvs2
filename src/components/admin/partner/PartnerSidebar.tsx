@@ -96,7 +96,7 @@ export function PartnerSidebar({ partner, canEdit }: { partner: SidebarPartner; 
   const address = [partner.addressStreet, [partner.addressZip, partner.addressCity].filter(Boolean).join(" ")].filter(Boolean).join(", ");
 
   return (
-    <aside className="flex w-full shrink-0 flex-col gap-4 rounded-lg border border-hf-tan-dark bg-hf-white p-4 lg:sticky lg:top-20 lg:w-72">
+    <aside className="w-full shrink-0 lg:sticky lg:top-20 lg:w-72 hf-panel hf-panel--form">
       {editing ? (
         <form className="flex flex-col gap-3" onSubmit={save}>
           <label className="flex flex-col gap-1"><span className={LABEL}>Virksomhed</span><input className={INPUT} value={draft.name} onChange={set("name")} required /></label>

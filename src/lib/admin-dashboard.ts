@@ -118,7 +118,7 @@ export async function loadAdminDashboard(now: Date = new Date()) {
           priority: true,
           awaitingReply: true,
           lastUserMessageAt: true,
-          user: { select: { displayName: true, email: true } },
+          user: { select: { displayName: true } },
           messages: {
             where: { author: "USER" },
             orderBy: { createdAt: "desc" },

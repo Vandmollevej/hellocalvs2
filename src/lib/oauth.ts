@@ -3,6 +3,7 @@ import { SignJWT, createRemoteJWKSet, importPKCS8, jwtVerify } from "jose";
 import type { OAuthProvider } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { awardSignupBonus } from "@/lib/points";
+import { NATIVE_STATE_PREFIX } from "@/lib/native-auth";
 
 // Log ind med Google, Apple eller Facebook (docs/DECISIONS.md 2026-09-24
 // "Normalt login"). Almindelig OAuth 2 / OpenID Connect uden ekstra pakker:
@@ -51,15 +52,33 @@ function stateSecret() {
   return new TextEncoder().encode(secret);
 }
 
-type OAuthState = { provider: ProviderSlug; state: string; nonce: string; next: string; consent: boolean };
+// native: login startet fra den native app (docs/DECISIONS.md 2026-10-08
+// "Native login-overdragelse"); challenge er appens PKCE-challenge (S256).
+type OAuthState = {
+  provider: ProviderSlug;
+  state: string;
+  nonce: string;
+  next: string;
+  consent: boolean;
+  native: boolean;
+  challenge: string | null;
+};
 
-export async function createState(provider: ProviderSlug, next: string, consent = false) {
+export async function createState(
+  provider: ProviderSlug,
+  next: string,
+  consent = false,
+  nativeChallenge: string | null = null
+) {
+  const native = nativeChallenge !== null;
   const data: OAuthState = {
     provider,
-    state: randomBytes(16).toString("base64url"),
+    state: (native ? NATIVE_STATE_PREFIX : "") + randomBytes(16).toString("base64url"),
     nonce: randomBytes(16).toString("base64url"),
     next: next.startsWith("/") && !next.startsWith("//") ? next : "/",
     consent,
+    native,
+    challenge: nativeChallenge,
   };
   const token = await new SignJWT({ ...data, purpose: "oauth-state" })
     .setProtectedHeader({ alg: "HS256" })
@@ -74,10 +93,18 @@ export async function readState(token: string | undefined): Promise<OAuthState |
   try {
     const { payload } = await jwtVerify(token, stateSecret());
     if (payload.purpose !== "oauth-state") return null;
-    const { provider, state, nonce, next, consent } = payload as Record<string, unknown>;
+    const { provider, state, nonce, next, consent, native, challenge } = payload as Record<string, unknown>;
     if (typeof provider !== "string" || !isProviderSlug(provider)) return null;
     if (typeof state !== "string" || typeof nonce !== "string" || typeof next !== "string") return null;
-    return { provider, state, nonce, next, consent: consent === true };
+    return {
+      provider,
+      state,
+      nonce,
+      next,
+      consent: consent === true,
+      native: native === true,
+      challenge: typeof challenge === "string" ? challenge : null,
+    };
   } catch {
     return null;
   }

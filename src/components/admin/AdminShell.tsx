@@ -54,7 +54,6 @@ export const NAV: NavEntry[] = [
       { href: "/admin/product-database/products", key: "nav_product_database_products" },
       { href: "/admin/product-database/brands", key: "nav_product_database_brands" },
       { href: "/admin/product-database/images", key: "nav_product_database_images" },
-      { href: "/admin/product-database/tags", key: "nav_product_database_tags" },
     ],
   },
   // Retter (docs/DECISIONS.md 2026-09-28): opskrifter er ikke produkter og
@@ -119,10 +118,13 @@ export const NAV: NavEntry[] = [
     links: [
       { href: "/admin/api-keys", key: "nav_api_keys" },
       { href: "/admin/cron-jobs", key: "nav_cron_jobs" },
+      { href: "/admin/pet-food-filter", key: "nav_pet_food_filter" },
       { href: "/admin/passkeys", key: "nav_passkeys" },
       { href: "/admin/support/templates", key: "nav_standard_mails" },
       { href: "/admin/messaging", key: "nav_messaging" },
       { href: "/admin/search-ranking", key: "nav_search_ranking" },
+      { href: "/admin/search-synonyms", key: "nav_search_synonyms" },
+      { href: "/admin/weight-attire", key: "nav_weight_attire" },
       { href: "/admin/shortcuts", key: "nav_shortcuts" },
     ],
   },
@@ -322,13 +324,6 @@ function LinkBadge({ href, badges }: { href: string; badges: Badges }) {
   return null;
 }
 
-function linkHasBadge(href: string, badges: Badges) {
-  return (
-    (href === "/admin/uncertainties" && badges.uncertainties) ||
-    (href === "/admin/support" && (badges.support?.unanswered ?? 0) > 0)
-  );
-}
-
 function groupHasBadge(links: NavLink[], badges: Badges) {
   return links.some(
     (link) =>
@@ -337,16 +332,11 @@ function groupHasBadge(links: NavLink[], badges: Badges) {
   );
 }
 
-// Genvejen vises som tastaturmærke, når man peger på rækken, og som
-// aria-keyshortcuts (UIA "AcceleratorKey") altid.
+// Genvejen vises kun i hurtigsøgningen og som aria-keyshortcuts (UIA
+// "AcceleratorKey"), ikke ved mouse over i sidebjælken.
 function shortcutHint(href: string) {
   const combo = shortcutsForHref(href)[0];
   return combo ? formatCombo(combo) : undefined;
-}
-
-function withShortcut(label: string, href: string) {
-  const hint = shortcutHint(href);
-  return hint ? `${label} (${hint})` : label;
 }
 
 // Faste id'er til automatisering (docs/AUTOMATION.md): prefix er "hc-nav" i
@@ -377,7 +367,7 @@ function SidebarNav({
             <li key={entry.href}>
               <Link
                 href={entry.href}
-                title={collapsed ? withShortcut(t(locale, entry.key), entry.href) : undefined}
+                title={collapsed ? t(locale, entry.key) : undefined}
                 aria-current={active ? "page" : undefined}
                 aria-keyshortcuts={ariaKeyShortcuts(shortcutsForHref(entry.href))}
                 {...automationProps(`${idPrefix}-${navSlug(entry.key)}`)}
@@ -385,7 +375,6 @@ function SidebarNav({
               >
                 <Icon name={entry.icon} />
                 {!collapsed && <span className="hf-navrow__label">{t(locale, entry.key)}</span>}
-                {!collapsed && <ShortcutKbd href={entry.href} />}
               </Link>
             </li>
           );
@@ -445,7 +434,6 @@ function SidebarNav({
                       >
                         <span className="hf-navrow__label">{t(locale, link.key)}</span>
                         <LinkBadge href={link.href} badges={badges} />
-                        {!linkHasBadge(link.href, badges) && <ShortcutKbd href={link.href} />}
                       </Link>
                     </li>
                   );
@@ -456,16 +444,6 @@ function SidebarNav({
         );
       })}
     </ul>
-  );
-}
-
-function ShortcutKbd({ href }: { href: string }) {
-  const hint = shortcutHint(href);
-  if (!hint) return null;
-  return (
-    <kbd aria-hidden="true" className="hf-kbd hf-navrow__kbd">
-      {hint}
-    </kbd>
   );
 }
 
@@ -617,7 +595,6 @@ function UserMenu({
               className="hf-navrow"
             >
               <span className="hf-navrow__label">{t(locale, "nav_admin_users")}</span>
-              <ShortcutKbd href="/admin/admin-users" />
               {newAdminSignups > 0 && (
                 <span className="hf-type-small rounded-full bg-hf-red-dark px-1.5 text-hf-white">{newAdminSignups}</span>
               )}

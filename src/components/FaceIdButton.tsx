@@ -46,7 +46,7 @@ export function FaceIdButton() {
         disabled={done || state === "busy"}
         className="hf-type-body hf-type-strong hf-control flex w-full items-center justify-center gap-3 rounded-xl bg-hf-tan px-4 text-hf-black disabled:cursor-default"
       >
-        <span className="text-[#05aaf5]">
+        <span className="text-hf-faceid">
           <FaceIdIcon size={30} animate={!done} />
         </span>
         {done ? t("faceIdOffer.active") : state === "busy" ? t("faceIdOffer.enabling") : t("faceIdOffer.activate")}

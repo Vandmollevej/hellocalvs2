@@ -87,7 +87,7 @@ function DrinkContent() {
   return (
     <HfScreen title={drink?.name ?? t("drinks.title")} icon={<IconGlassCocktail size={20} stroke={2} />}>
       <div className="hf-page">
-        {loading && <Skeleton width={180} height={180} className="self-center" style={{ borderRadius: "50%" }} />}
+        {loading && <Skeleton width={180} height={180} className="self-center rounded-full" />}
         {!loading && !drink && (
           <p className="hf-type-small text-text-secondary text-center">{t("drinks.notFound")}</p>
         )}
@@ -102,7 +102,7 @@ function DrinkContent() {
             </div>
 
             {drink.ingredients.map((ingredient) => (
-              <div key={ingredient.id} className="flex flex-col gap-4 rounded-2xl bg-hf-tan p-4">
+              <div key={ingredient.id} className="hf-card--form hf-card">
                 <div className="flex items-baseline justify-between">
                   <span className="hf-type-small hf-type-strong text-hf-black">{ingredient.name}</span>
                   <span className="hf-type-title text-hf-black">
@@ -130,7 +130,7 @@ function DrinkContent() {
               type="button"
               onClick={handleSubmit}
               disabled={saving || !hasAmount}
-              className="hf-control hf-btn-primary disabled:opacity-40"
+              className="hf-control hf-btn-primary"
             >
               <span className="hf-type-button">{saving ? t("drinks.saving") : t("drinks.add")}</span>
             </button>

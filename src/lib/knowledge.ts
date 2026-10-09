@@ -2,7 +2,9 @@
 // slug, så popups og andre sider kan linke til /viden-om/<slug>.
 // Kilder skal være officielle (Fødevarestyrelsen m.fl.), se DECISIONS 2026-09-29.
 
-export type KnowledgeCategory = "vitaminer" | "sundhedstips";
+import { RESEARCH_ARTICLES } from "@/lib/knowledge-research";
+
+export type KnowledgeCategory = "vitaminer" | "sundhedstips" | "kalorieforbraending" | "who-og-kilder";
 
 export type KnowledgeArticle = {
   slug: string;
@@ -12,6 +14,8 @@ export type KnowledgeArticle = {
   body: string[];
   funFact?: string;
   source: { label: string; href: string };
+  // Yderligere officielle kilder, vist under hovedkilden.
+  moreSources?: { label: string; href: string }[];
 };
 
 const VITAMIN_SOURCE = {
@@ -210,6 +214,7 @@ export const KNOWLEDGE_ARTICLES: KnowledgeArticle[] = [
     funFact: "Hjernen består af omkring 75 % vand.",
     source: KOSTRAAD_SOURCE,
   },
+  ...RESEARCH_ARTICLES,
 ];
 
 export function knowledgeHref(slug: string): string {

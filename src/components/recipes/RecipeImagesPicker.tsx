@@ -32,7 +32,7 @@ export function RecipeImagesPicker({
   return (
     <div className="grid grid-cols-3 gap-2">
       {images.map((image, index) => (
-        <div key={index} className="relative aspect-square overflow-hidden rounded-[8px] bg-hf-tan">
+        <div key={index} className="relative aspect-square overflow-hidden bg-hf-tan rounded-card">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src={image} alt="" className="h-full w-full object-cover" />
           <button
@@ -50,7 +50,7 @@ export function RecipeImagesPicker({
           type="button"
           onClick={() => fileRef.current?.click()}
           aria-label={t("recipeImages.add")}
-          className="flex aspect-square flex-col items-center justify-center gap-1 rounded-[8px] bg-hf-tan text-hf-black"
+          className="flex aspect-square flex-col items-center justify-center gap-1 bg-hf-tan text-hf-black rounded-card"
         >
           <IconCamera size={24} />
           <span className="hf-type-micro text-text-secondary">

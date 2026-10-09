@@ -11,7 +11,7 @@ function Logo({ badge }: { badge: CertificationBadge }) {
   if (!src) {
     return (
       <span
-        className="flex items-center rounded-full bg-hf-gray-light px-3 text-xs font-semibold text-hf-black"
+        className="flex items-center rounded-full bg-hf-gray-light px-3 text-hf-black hf-type-small hf-type-strong"
         style={{ height: LOGO_HEIGHT }}
       >
         {badge.label}

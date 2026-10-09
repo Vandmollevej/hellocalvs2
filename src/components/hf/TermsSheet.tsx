@@ -33,7 +33,7 @@ export function TermsSheet({ hint, labels = DEFAULT_LABELS }: { hint: TermsHint;
           ariaLabel={labels.title}
           onClose={() => setOpen(false)}
           footer={
-            <Link href={termsHref(hint.anchor)} className="hf-type-body-sm self-end font-bold text-hf-black">
+            <Link href={termsHref(hint.anchor)} className="hf-type-body-sm self-end text-hf-black hf-type-strong">
               {labels.goTo}
             </Link>
           }
@@ -69,7 +69,7 @@ function TermsBar({ open, title, onToggle }: { open: boolean; title: string; onT
       className="flex h-12 w-full shrink-0 items-center gap-3 px-2 text-left text-hf-black"
     >
       <IconFileText size={24} stroke={1.75} aria-hidden="true" className="shrink-0" />
-      <span className="hf-type-body min-w-0 flex-1 font-bold">{title}</span>
+      <span className="hf-type-body min-w-0 flex-1 hf-type-strong">{title}</span>
       <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border-2 border-hf-black">
         <HfChevron direction={open ? "down" : "up"} compact />
       </span>

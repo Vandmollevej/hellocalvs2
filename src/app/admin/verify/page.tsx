@@ -61,7 +61,7 @@ export default function AdminVerifyPage() {
         <button
           type="submit"
           disabled={loading || code.length !== 6}
-          className="hf-btn-primary px-4 py-2.5 disabled:opacity-60"
+          className="hf-btn-primary px-4 py-2.5"
         >
           {loading ? "Bekræfter…" : "Log ind"}
         </button>

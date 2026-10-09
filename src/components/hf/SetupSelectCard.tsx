@@ -16,7 +16,7 @@ export function SetupSelectCard({
   onChange: (value: string) => void;
 }) {
   return (
-    <label className="flex items-center justify-between gap-3 rounded-2xl bg-hf-tan px-4 py-4">
+    <label className="items-center justify-between hf-card--row hf-card">
       <span className="min-w-0 flex-1">
         <span className="hf-type-body hf-type-strong block text-hf-black">{label}</span>
         <span className="text-text-secondary hf-type-small block">{description}</span>

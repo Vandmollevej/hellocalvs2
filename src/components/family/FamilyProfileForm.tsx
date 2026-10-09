@@ -68,7 +68,7 @@ export function FamilyProfileForm({
         <select
           value={form.sex}
           onChange={(event) => setForm({ ...form, sex: event.target.value })}
-          className="hf-type-input h-12 rounded-[8px] border border-hf-gray-border bg-hf-cream px-4"
+          className="hf-type-input h-12 border border-hf-gray-border bg-hf-cream px-4 rounded-card"
         >
           <option value="">{t("family.add.sexUnknown")}</option>
           <option value="FEMALE">{t("family.add.sexFemale")}</option>

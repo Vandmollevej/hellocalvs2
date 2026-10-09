@@ -62,14 +62,14 @@ function Slide({ photo, onSelect }: { photo: ShelfPhoto; onSelect: (item: ShelfI
         })}
         {photo.analysisStatus === "PENDING" && (
           <div className="absolute inset-x-0 bottom-0 bg-hf-black/60 p-2 text-center">
-            <span className="hf-type-caption" style={{ color: "var(--hf-color-white)" }}>
+            <span className="hf-type-caption text-hf-white">
               Analyserer hylden…
             </span>
           </div>
         )}
         {photo.analysisStatus === "FAILED" && (
           <div className="absolute inset-x-0 bottom-0 bg-hf-black/60 p-2 text-center">
-            <span className="hf-type-caption" style={{ color: "var(--hf-color-white)" }}>
+            <span className="hf-type-caption text-hf-white">
               Analysen fejlede — tag billedet igen
             </span>
           </div>
@@ -157,7 +157,7 @@ function ShelfContent() {
         {photos?.map((photo) => <Slide key={photo.id} photo={photo} onSelect={setSelected} />)}
         {photos && photos.length === 0 && (
           <div className="flex w-full flex-col items-center justify-center gap-2 p-4 text-center">
-            <p className="hf-type-body" style={{ color: "var(--hf-color-white)" }}>
+            <p className="hf-type-body text-hf-white">
               Tag et billede af en hylde med kameraknappen øverst til venstre.
             </p>
           </div>
@@ -198,11 +198,11 @@ function ShelfContent() {
 
       {current && (
         <div className="flex items-center justify-between bg-hf-black px-4 py-2">
-          <span className="hf-type-caption" style={{ color: "var(--hf-color-white)" }}>
+          <span className="hf-type-caption text-hf-white">
             {new Date(current.capturedAt).toLocaleString("da-DK", { dateStyle: "short", timeStyle: "short" })}
             {current.storeName ? ` · ${current.storeName}` : ""}
           </span>
-          <span className="hf-type-caption" style={{ color: "var(--hf-color-white)" }}>
+          <span className="hf-type-caption text-hf-white">
             {index + 1} / {photos?.length}
           </span>
         </div>
@@ -210,13 +210,13 @@ function ShelfContent() {
 
       {uploading && (
         <div className="absolute inset-0 flex items-center justify-center bg-hf-black/60">
-          <span className="hf-type-body" style={{ color: "var(--hf-color-white)" }}>
+          <span className="hf-type-body text-hf-white">
             Gemmer billede…
           </span>
         </div>
       )}
       {error && (
-        <p className="hf-type-caption absolute inset-x-4 top-16 rounded-[8px] bg-hf-white p-2 text-center">{error}</p>
+        <p className="hf-type-caption absolute inset-x-4 top-16 bg-hf-white p-2 text-center rounded-card">{error}</p>
       )}
 
       {confirmDelete && (

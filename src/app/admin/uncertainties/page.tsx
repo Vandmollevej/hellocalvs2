@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 import { requireAdminUser } from "@/lib/require-admin";
 import { UncertaintiesBoard } from "@/components/admin/UncertaintiesBoard";
+import { EnergySplitFlags } from "@/components/admin/EnergySplitFlags";
 import { LegacyWarnings } from "@/components/admin/LegacyWarnings";
 import { UNCERTAINTY_FIELDS, UNCERTAINTY_TABS, listUncertainties } from "@/lib/uncertainties";
 import { HIDE_FROM_SEARCH_BELOW, UNCERTAINTY_TARGET, URGENT_BELOW } from "@/lib/uncertainty-thresholds";
@@ -34,6 +35,10 @@ export default async function AdminUncertaintiesPage() {
         urgentBelow={URGENT_BELOW}
         hideBelow={HIDE_FROM_SEARCH_BELOW}
       />
+
+      <div className="border-t border-hf-tan-dark pt-6">
+        <EnergySplitFlags />
+      </div>
 
       <div className="flex flex-col gap-8 border-t border-hf-tan-dark pt-6">
         <h2 className="hf-type-body hf-type-strong text-hf-black">Øvrige advarsler</h2>

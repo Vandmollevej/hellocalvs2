@@ -2,10 +2,12 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useConfirmSheet } from "@/lib/use-confirm-sheet";
 
 // Til/fra og "Ryd log" øverst på admin "Log" (docs/DECISIONS.md 2026-09-28).
 export function DebugLogControls({ enabled, total }: { enabled: boolean; total: number }) {
   const router = useRouter();
+  const { ask, sheet } = useConfirmSheet();
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -32,12 +34,12 @@ export function DebugLogControls({ enabled, total }: { enabled: boolean; total: 
   }
 
   function clear() {
-    if (!window.confirm(`Slet alle ${total} log-rækker? Det kan ikke fortrydes.`)) return;
-    void send({ method: "DELETE" });
+    ask(`Slet alle ${total} log-rækker? Det kan ikke fortrydes.`, () => void send({ method: "DELETE" }));
   }
 
   return (
-    <div className="flex flex-col gap-2 hf-surface p-4 sm:flex-row sm:items-center sm:justify-between">
+    <div className="sm:flex-row sm:items-center sm:justify-between hf-panel">
+      {sheet}
       <div className="flex items-center gap-2">
         <span
           aria-hidden="true"

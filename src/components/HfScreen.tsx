@@ -12,6 +12,7 @@ export function HfScreen({
   alwaysShowBackButton,
   showAppSettingsButton,
   leading,
+  topBanner,
 }: {
   title: string;
   icon?: React.ReactNode;
@@ -23,6 +24,8 @@ export function HfScreen({
   alwaysShowBackButton?: boolean;
   showAppSettingsButton?: boolean;
   leading?: React.ReactNode;
+  /** Lag oven på indholdet, forankret under topbaren (fx opdater-banneret på varesiden) — skubber aldrig siden. */
+  topBanner?: React.ReactNode;
 }) {
   return (
     <div className="flex h-full min-h-0 flex-1 flex-col overflow-hidden bg-hf-cream">
@@ -36,7 +39,10 @@ export function HfScreen({
         showAppSettingsButton={showAppSettingsButton}
         leading={leading}
       />
-      <div className="relative min-h-0 flex-1 overflow-y-auto overscroll-contain">{children}</div>
+      <div className="relative min-h-0 flex-1">
+        {topBanner}
+        <div className="h-full overflow-y-auto overscroll-contain">{children}</div>
+      </div>
       {footer && (
         <div className="flex-shrink-0 bg-hf-cream p-4">{footer}</div>
       )}

@@ -5,6 +5,7 @@ import { queueMessage } from "@/lib/messaging";
 import { USER_SESSION_COOKIE, USER_SESSION_MAX_AGE, signUserSession } from "@/lib/user-auth";
 import { ACTIVE_PROFILE_COOKIE, logProfileAccess } from "@/lib/family-access";
 import { reopenClosedAccount } from "@/lib/account-closure";
+import { ACCOUNT_BLOCKED_MESSAGE } from "@/lib/pet-food-messages";
 
 // Fælles afslutning på alle login-metoder (e-mail + adgangskode, Face ID/
 // passkey, Google, Apple, Facebook): sætter session-cookien og genkender
@@ -151,6 +152,18 @@ export async function completeLogin<T extends NextResponse>(
   userId: string,
   method: LoginMethod
 ): Promise<T> {
+  // Spærret konto (dyrefoder-spærringen, docs/DECISIONS.md 2026-10-07): ingen session.
+  // OAuth-callbacks (omdirigeringer) sendes til login-siden med beskeden.
+  const account = await prisma.user.findUnique({ where: { id: userId }, select: { blockedAt: true } });
+  if (account?.blockedAt) {
+    const isRedirect = response.status >= 300 && response.status < 400;
+    return (
+      isRedirect
+        ? NextResponse.redirect(new URL("/login?error=account-blocked", req.url))
+        : NextResponse.json({ code: "ACCOUNT_BLOCKED", message: ACCOUNT_BLOCKED_MESSAGE }, { status: 403 })
+    ) as unknown as T;
+  }
+
   const token = await signUserSession(userId);
   response.cookies.set(USER_SESSION_COOKIE, token, {
     httpOnly: true,

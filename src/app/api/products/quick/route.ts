@@ -7,6 +7,8 @@ import { saveDataUrlImage } from "@/lib/qc-image-storage";
 import type { PendingField } from "@/lib/quick-product-enrichment";
 import { createQuickEnrichmentJob, runQuickEnrichment } from "@/lib/quick-enrichment-jobs";
 import { debugLog, errorText, flowIdFromRequest, withDebugContext } from "@/lib/debug-log";
+import { petFoodBlockReason } from "@/lib/pet-food-blacklist";
+import { recordPetFoodAttempt } from "@/lib/pet-food-strikes";
 
 // POST /api/products/quick — "opret straks" fra kameraflowet under Tilføj
 // (docs/DECISIONS.md 2026-09-27). Varen oprettes, så snart den lokale OCR er
@@ -69,6 +71,39 @@ export async function POST(req: Request) {
       data: { hasBarcode: Boolean(barcode), hasFront: isPhoto(frontPhoto), hasNutrition: isPhoto(nutritionPhoto) },
     });
     return NextResponse.json({ message: "Stregkode, forside og energi er påkrævet" }, { status: 400 });
+  }
+
+  // Dyrefoder-spærring (stregkode, src/lib/pet-food-blacklist.ts). Ordmønstrene
+  // køres bagefter på det AI læser (quick-product-enrichment.ts).
+  const petFoodBlock = await petFoodBlockReason({ barcode, texts: [localIngredients, ingredientsOcrText, nutritionOcrText] });
+  if (petFoodBlock) {
+    void debugLog({
+      category: "scan",
+      event: "product_create",
+      level: "warn",
+      message: `Afvist: dyrefoder (${petFoodBlock.reason}: ${petFoodBlock.match})`,
+      flowId,
+      barcode,
+    });
+    // Billederne, brugeren forsøgte at oprette, gemmes på hændelsen, så admin kan se dem.
+    const savedPhotos = (
+      await Promise.all(
+        [frontPhoto, nutritionPhoto, ingredientsPhoto].map((photo) =>
+          isPhoto(photo) ? saveDataUrlImage(photo).catch(() => null) : Promise.resolve(null)
+        )
+      )
+    ).filter((url): url is string => Boolean(url));
+    const outcome = await recordPetFoodAttempt({
+      userId: (await getSessionUser())?.id,
+      source: "QUICK",
+      barcode,
+      imageUrls: savedPhotos,
+      matchedBy: `${petFoodBlock.reason}: ${petFoodBlock.match}`,
+    });
+    return NextResponse.json(
+      { message: outcome.message, code: "PET_FOOD_BLOCKED", strikes: outcome.strikes, accountBlocked: outcome.blocked },
+      { status: 422 }
+    );
   }
 
   try {

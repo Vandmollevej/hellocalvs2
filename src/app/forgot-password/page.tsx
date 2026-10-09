@@ -85,8 +85,7 @@ export default function ForgotPasswordPage() {
   return (
     <div className="flex h-full min-h-full flex-col bg-hf-cream">
       <div
-        className="hf-appbar hf-appbar--brand"
-        style={{ paddingTop: "max(16px, env(safe-area-inset-top, 0px))" }}
+        className="hf-appbar hf-appbar--brand hf-safe-top"
       >
         <div className="hf-appbar__slot">
           <Link href="/login" aria-label={t("forgotPassword.back")} className="flex h-full w-full items-center justify-center text-hf-white">
@@ -129,7 +128,7 @@ export default function ForgotPasswordPage() {
           <button
             type="submit"
             disabled={submitting || code.length !== 6}
-            className="hf-control hf-btn-primary mb-8 w-full disabled:opacity-50"
+            className="hf-control hf-btn-primary mb-8 w-full"
           >
             {submitting ? t("forgotPassword.verifying") : t("forgotPassword.verifySubmit")}
           </button>
@@ -158,7 +157,7 @@ export default function ForgotPasswordPage() {
           <button
             type="submit"
             disabled={submitting || !email}
-            className="hf-control hf-btn-primary mb-8 w-full disabled:opacity-50"
+            className="hf-control hf-btn-primary mb-8 w-full"
           >
             {submitting
               ? t("forgotPassword.submitting")

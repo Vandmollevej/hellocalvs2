@@ -14,7 +14,7 @@ export function LegalSection({ id, title, children }: { id?: string; title: stri
 // "Kort fortalt"-boks øverst: det brugeren bør vide, uden at læse det hele.
 export function LegalSummary({ title, items }: { title: string; items: ReactNode[] }) {
   return (
-    <div className="mt-4 rounded-2xl bg-hf-tan px-4 py-4">
+    <div className="mt-4 hf-card">
       <p className="hf-type-section-title">{title}</p>
       <ul className="hf-type-body mt-2 flex list-disc flex-col gap-1.5 pl-5">
         {items.map((item, i) => (
