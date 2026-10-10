@@ -93,6 +93,7 @@ fun HcChevronRow(
     wrapLabel: Boolean = false,
     iconContent: (@Composable () -> Unit)? = null,
     centerText: String? = null,
+    trailing: (@Composable () -> Unit)? = null,
 ) {
     Column(Modifier.fillMaxWidth()) {
         Row(
@@ -116,6 +117,7 @@ fun HcChevronRow(
                 }
             }
             HcChevron(color = HcColors.Black)
+            trailing?.invoke()
         }
         if (divider) HcLine()
     }

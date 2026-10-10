@@ -54,7 +54,7 @@ export function UpdatePointsBanner({
   const showPanel = stage === "panel";
 
   return (
-    <div className="absolute inset-x-0 top-0 z-30 bg-hf-white shadow-[0_2px_8px_rgba(0,0,0,0.12)]">
+    <div className="absolute inset-x-0 top-0 z-30 rounded-b-2xl bg-hf-white shadow-[0_2px_8px_rgba(0,0,0,0.12)]">
       {showBanner && (
         <Link
           href={href}

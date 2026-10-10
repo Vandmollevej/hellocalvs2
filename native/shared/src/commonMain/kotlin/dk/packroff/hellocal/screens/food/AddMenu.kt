@@ -70,6 +70,8 @@ private val TILES = listOf(
     AddTile("body", "/profile/body-measurements", "/icons/add/body.webp"),
     AddTile("activity", "/activity/create", "/icons/activity-3d.png"),
     AddTile("period", "/period/create", "/icons/add/period.svg", requiresCycleTracking = true),
+    // Last (owner's choice 2026-10-09): fill in a screening.
+    AddTile("screenings", "/profile/screenings?fill=1", "/icons/add/screenings.svg"),
 )
 
 private val TILE_KEYS = TILES.map { it.key }

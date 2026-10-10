@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -42,6 +43,7 @@ import dk.packroff.hellocal.theme.HcColors
 import dk.packroff.hellocal.theme.HcDimens
 import dk.packroff.hellocal.theme.HcTypeRoles
 import dk.packroff.hellocal.ui.HcAccordionCard
+import dk.packroff.hellocal.ui.FoodFavoriteIcon
 import dk.packroff.hellocal.ui.HcChevronRow
 import dk.packroff.hellocal.ui.HcChoiceChip
 import dk.packroff.hellocal.ui.CaptureDatePickerSheet
@@ -67,6 +69,7 @@ internal data class ActivityOption(
     val label: String,
     val custom: Boolean = false,
     val pending: Boolean = false,
+    val favorite: Boolean = false,
     val words: List<String> = emptyList(),
 )
 
@@ -133,6 +136,22 @@ internal fun ActivityPicker(onPick: (ActivityOption) -> Unit, busy: Boolean = fa
     }
     val exact = options.any { it.label.lowercase() == needle }
 
+    fun toggleFavorite(option: ActivityOption) {
+        val next = !option.favorite
+        fun apply(value: Boolean) {
+            val updated = options.map { if (it.key == option.key) it.copy(favorite = value) else it }
+            options = updated.filter { it.favorite } + updated.filter { !it.favorite }
+        }
+        apply(next)
+        scope.launch {
+            try {
+                Api.put("/api/activity-types", mapOf("key" to option.key, "favorite" to next))
+            } catch (e: Exception) {
+                apply(!next)
+            }
+        }
+    }
+
     fun addManual() {
         adding = true
         scope.launch {
@@ -158,6 +177,12 @@ internal fun ActivityPicker(onPick: (ActivityOption) -> Unit, busy: Boolean = fa
                         onClick = if (disabled) null else ({ onPick(option) }),
                         icon = sportIcon(option.key),
                         divider = index < matches.lastIndex || showAdd,
+                        trailing = {
+                            Box(
+                                Modifier.heightIn(min = HcDimens.ControlHeight).clickable { toggleFavorite(option) }.padding(start = 4.dp),
+                                contentAlignment = Alignment.Center,
+                            ) { FoodFavoriteIcon(option.favorite, size = 20.dp, color = HcColors.Green) }
+                        },
                     )
                 }
                 if (showAdd) {
@@ -229,32 +254,30 @@ fun ActivityCreateScreen(args: RouteArgs) {
             }
     }
 
-    val endMinutes = ((startedAt.hour * 60 + startedAt.minute + totalMinutes) % (24 * 60) + 24 * 60) % (24 * 60)
+    val startMinutes = startedAt.hour * 60 + startedAt.minute
+    val lastMinute = 24 * 60 - 1
+    // The track shows only the chosen day (00:00-23:59): the end never passes midnight.
+    val endMinutes = minOf(startMinutes + totalMinutes, lastMinute)
 
     fun applyDuration(total: Int) {
         hours = (total / 60).toString()
         mins = (total % 60).toString()
     }
 
-    /** src/lib/activity-duration.ts minutesUntil */
-    fun minutesUntil(start: Int, stop: Int): Int {
-        val diff = stop - start
-        return if (diff > 0) diff else diff + 24 * 60
-    }
-
     // End handle changes the duration; start handle moves the start so the end stays put.
-    fun setEnd(value: Int) = applyDuration(minutesUntil(startedAt.hour * 60 + startedAt.minute, value))
+    fun setEnd(value: Int) = applyDuration(value.coerceIn(startMinutes + 1, lastMinute) - startMinutes)
 
     fun setStart(value: Int) {
-        val end = endMinutes
-        startedAt = LocalDateTime(startedAt.year, startedAt.monthNumber, startedAt.dayOfMonth, value / 60, value % 60)
-        applyDuration(minutesUntil(value, end))
+        val nextStart = minOf(lastMinute - 1, value)
+        val end = minOf(lastMinute, maxOf(endMinutes, nextStart + 5))
+        startedAt = LocalDateTime(startedAt.year, startedAt.monthNumber, startedAt.dayOfMonth, nextStart / 60, nextStart % 60)
+        applyDuration(end - nextStart)
     }
 
-    /** src/lib/activity-duration.ts stepDuration — whole five-minute steps. */
+    /** src/lib/activity-duration.ts stepDuration — whole five-minute steps, kept within the day. */
     fun step(direction: Int) {
         val next = if (direction > 0) (totalMinutes / 5) * 5 + 5 else (totalMinutes + 4) / 5 * 5 - 5
-        applyDuration(next.coerceIn(5, 24 * 60))
+        applyDuration(minOf(next.coerceIn(5, 24 * 60), lastMinute - startMinutes))
     }
 
     fun save() {
@@ -306,7 +329,7 @@ fun ActivityCreateScreen(args: RouteArgs) {
                     CaptureValueField(CaptureDates.dayMonthShort(startedAt.date, withYear = true, locale = t.locale), onClick = { pickDate = true })
                     ProfileSleepRangeSlider(
                         wakeMinutes = endMinutes,
-                        bedtimeMinutes = startedAt.hour * 60 + startedAt.minute,
+                        bedtimeMinutes = startMinutes,
                         onChangeWake = ::setEnd,
                         onChangeBedtime = ::setStart,
                         bedtimeFirst = true,

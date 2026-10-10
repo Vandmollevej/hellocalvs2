@@ -12,7 +12,7 @@ export function buildInviteMessage({ name, note }: { name: string; note: string 
     `${greeting} Jeg vil gerne invitere dig til Hello Cal – appen, der gør det nemt at holde styr på kalorier, vægt og gode vaner.`,
   ];
   if (trimmedNote) parts.push(trimmedNote);
-  parts.push("Opret din gratis konto via linket, så optjener vi begge 300 points.");
+  parts.push("Opret din konto via linket, så får du 1 gratis måned med Seriøs.");
   return parts.join("\n\n");
 }
 

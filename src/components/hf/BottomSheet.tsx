@@ -1,6 +1,14 @@
 "use client";
 
-import { createContext, useCallback, useContext, useEffect, useId, useRef, useState } from "react";
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useId,
+  useRef,
+  useState,
+} from "react";
 import { createPortal } from "react-dom";
 
 // Bundarket (KRAV.md "Bundark", docs/DECISIONS.md 2026-09-27): det faste
@@ -103,6 +111,7 @@ export function BottomSheet({
   title,
   ariaLabel,
   footer,
+  headerAction,
   children,
   size = "auto",
   className = "",
@@ -113,6 +122,8 @@ export function BottomSheet({
   /** Tilgængeligt navn, når arket ikke har en synlig titel. */
   ariaLabel?: string;
   footer?: React.ReactNode;
+  /** Knap øverst til højre i arket (fx "Færdig"). */
+  headerAction?: React.ReactNode;
   children: React.ReactNode;
   /** "full" = næsten hele skærmhøjden (som referencebilledet), "half" = halv skærmhøjde (vilkårsarket), "auto" = indholdets højde. */
   size?: "auto" | "half" | "full";
@@ -148,7 +159,9 @@ export function BottomSheet({
 
   // Første frame står arket under skærmkanten, næste frame glider det op.
   useEffect(() => {
-    const frame = requestAnimationFrame(() => requestAnimationFrame(() => setPhase("open")));
+    const frame = requestAnimationFrame(() =>
+      requestAnimationFrame(() => setPhase("open")),
+    );
     return () => cancelAnimationFrame(frame);
   }, []);
 
@@ -176,14 +189,19 @@ export function BottomSheet({
       if (closingRef.current) return;
       // Hjulvælgere o.l. (data-sheet-no-drag) scroller selv; kun trækstregen
       // og resten af arket kan trække det ned.
-      if (target instanceof Element && target.closest("[data-sheet-no-drag]")) return;
+      if (target instanceof Element && target.closest("[data-sheet-no-drag]"))
+        return;
       dragRef.current = {
         startY: y,
         lastY: y,
         lastT: performance.now(),
         velocity: 0,
         active: false,
-        fromHandle: Boolean(grabRef.current && target instanceof Node && grabRef.current.contains(target)),
+        fromHandle: Boolean(
+          grabRef.current &&
+          target instanceof Node &&
+          grabRef.current.contains(target),
+        ),
         atTop: panel ? contentIsAtTop(target, panel) : true,
       };
     }
@@ -222,7 +240,9 @@ export function BottomSheet({
       dragRef.current = null;
       if (!drag?.active) return;
       const height = panel?.offsetHeight ?? 1;
-      const flicked = drag.velocity > CLOSE_VELOCITY_PX_PER_MS && offsetRef.current > START_DRAG_PX;
+      const flicked =
+        drag.velocity > CLOSE_VELOCITY_PX_PER_MS &&
+        offsetRef.current > START_DRAG_PX;
       if (flicked || offsetRef.current > height * CLOSE_FRACTION) {
         close();
       } else {
@@ -232,8 +252,10 @@ export function BottomSheet({
       }
     }
 
-    const onTouchStart = (event: TouchEvent) => begin(event.touches[0].clientY, event.target);
-    const onTouchMove = (event: TouchEvent) => move(event.touches[0].clientY, event);
+    const onTouchStart = (event: TouchEvent) =>
+      begin(event.touches[0].clientY, event.target);
+    const onTouchMove = (event: TouchEvent) =>
+      move(event.touches[0].clientY, event);
     const onMouseMove = (event: MouseEvent) => move(event.clientY, event);
     const onMouseUp = () => {
       window.removeEventListener("mousemove", onMouseMove);
@@ -267,7 +289,11 @@ export function BottomSheet({
   if (typeof document === "undefined") return null;
 
   const shown = phase === "open";
-  const scrimOpacity = !shown ? 0 : panelHeight > 0 ? Math.max(0, 1 - offset / panelHeight) : 1;
+  const scrimOpacity = !shown
+    ? 0
+    : panelHeight > 0
+      ? Math.max(0, 1 - offset / panelHeight)
+      : 1;
 
   return createPortal(
     <BottomSheetCloseContext.Provider value={close}>
@@ -288,7 +314,12 @@ export function BottomSheet({
         onWheel={stopPropagation}
         onKeyDown={stopPropagation}
       >
-        <div className="hf-bottom-sheet__scrim" style={{ opacity: scrimOpacity }} onClick={close} aria-hidden="true" />
+        <div
+          className="hf-bottom-sheet__scrim"
+          style={{ opacity: scrimOpacity }}
+          onClick={close}
+          aria-hidden="true"
+        />
         <div
           ref={panelRef}
           role="dialog"
@@ -300,15 +331,31 @@ export function BottomSheet({
             ...panelStyle,
             // I hvile: ingen transform, ellers bliver panelet containing block
             // for position:fixed-modaler inde i arket (fx tilsætningsstof-info).
-            transform: !shown ? "translateY(100%)" : offset > 0 ? `translateY(${offset}px)` : "none",
-            transition: dragging ? "none" : `transform ${CLOSE_MS}ms cubic-bezier(0.32, 0.72, 0, 1)`,
+            transform: !shown
+              ? "translateY(100%)"
+              : offset > 0
+                ? `translateY(${offset}px)`
+                : "none",
+            transition: dragging
+              ? "none"
+              : `transform ${CLOSE_MS}ms cubic-bezier(0.32, 0.72, 0, 1)`,
           }}
         >
-          <div ref={grabRef} className="hf-bottom-sheet__grab" aria-hidden="true">
+          <div
+            ref={grabRef}
+            className="hf-bottom-sheet__grab"
+            aria-hidden="true"
+          >
             <span className="hf-bottom-sheet__handle" />
           </div>
+          {headerAction && (
+            <div className="hf-bottom-sheet__action">{headerAction}</div>
+          )}
           {title && (
-            <h2 id={titleId} className="hf-bottom-sheet__title hf-type-page-title">
+            <h2
+              id={titleId}
+              className="hf-bottom-sheet__title hf-type-page-title"
+            >
               {title}
             </h2>
           )}
@@ -319,6 +366,6 @@ export function BottomSheet({
         </div>
       </div>
     </BottomSheetCloseContext.Provider>,
-    document.body
+    document.body,
   );
 }

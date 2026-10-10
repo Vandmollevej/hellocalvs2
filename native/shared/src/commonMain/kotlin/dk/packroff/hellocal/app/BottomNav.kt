@@ -121,6 +121,7 @@ object NavItems {
         NavItem("status", "/profile/status", "status", "ChartLine"),
         NavItem("billeddagbog", "/profile/photo-diary", "photoDiary", "photoFrame"),
         NavItem("kropsmaal", "/profile/body-measurements", "bodyMeasurements", "waist"),
+        NavItem("screeninger", "/profile/screenings", "screenings", "ClipboardHeart"),
         // Only with a family plan (canSwitchProfile below).
         NavItem(SWITCH_PROFILE_KEY, null, "switchProfile", "Users", action = "switchProfile"),
     )

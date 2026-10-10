@@ -1573,7 +1573,7 @@ textarea::selection,
     background: transparent;
   }
 
-  /* Valgknap (segment/filter/periode): beige flade; valgt = sort flade, hvid tekst. */
+  /* Valgknap (segment/filter/periode): beige flade; valgt = lime flade, sort kant og tekst. */
   .hf-choice {
     display: inline-flex;
     min-height: 40px;
@@ -1668,6 +1668,21 @@ textarea::selection,
    Undtaget med vilje: footer, fliser, statistik-kort, ikonknapper, små
    filter-/periodeknapper og flerlinjefelter (textarea).
    Højden (--hf-control-height) står i :root øverst. */
+/* iOS Safari giver date/time-felter en indbygget minimumsbredde, så de løber
+   ud over siden. Nulstil udseende og bredde, så feltet følger sin container. */
+input.hf-field[type="time"],
+input.hf-field[type="date"],
+input.hf-field[type="datetime-local"],
+input.hf-field[type="month"],
+input.hf-field[type="week"] {
+  -webkit-appearance: none;
+  appearance: none;
+  display: block;
+  min-width: 0;
+  max-width: 100%;
+  width: 100%;
+}
+
 .hf-field,
 .hf-control {
   box-sizing: border-box;
@@ -2427,6 +2442,13 @@ textarea::selection,
   overflow: hidden;
   clip: rect(0 0 0 0);
   white-space: nowrap;
+}
+
+.hf-bottom-sheet__action {
+  position: absolute;
+  top: 8px;
+  right: 16px;
+  z-index: 2;
 }
 
 .hf-bottom-sheet__body {
