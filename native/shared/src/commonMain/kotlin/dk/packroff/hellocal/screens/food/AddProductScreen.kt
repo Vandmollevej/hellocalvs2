@@ -876,14 +876,14 @@ private fun ExtendedNutritionSection(
         if (open) {
             Column(Modifier.padding(top = 16.dp).fillMaxWidth().clip(RoundedCornerShape(16.dp)).background(HcColors.Tan)) {
                 rows.forEachIndexed { index, row ->
-                    val hasUncertainty = row.value > 0 && (row.estimated || (row.tolerance ?: 0.0) > 0)
+                    val hasUncertainty = (row.value ?: 0.0) > 0 && (row.estimated || (row.tolerance ?: 0.0) > 0)
                     val expanded = hasUncertainty && autoExpand != (row.key in toggled)
                     Column(
                         Modifier.fillMaxWidth().let { if (hasUncertainty) it.clickable { onToggleRow(row.key) } else it }.padding(horizontal = 16.dp, vertical = 10.dp),
                     ) {
                         Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
                             Row(Modifier.weight(1f), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(4.dp)) {
-                                if (WARNING_LIMITS[row.key]?.let { row.value > it } == true) HcIcon("AlertTriangle", size = 15.dp, color = HcColors.Black, contentDescription = row.label)
+                                if (WARNING_LIMITS[row.key]?.let { (row.value ?: return@let false) > it } == true) HcIcon("AlertTriangle", size = 15.dp, color = HcColors.Black, contentDescription = row.label)
                                 if (FoodReferenceData.micronutrientByKey.containsKey(row.key)) {
                                     HcText(row.label, HcTypeRoles.Small, Modifier.clickable { onMicronutrient(row.key) }, color = HcColors.Black, underline = true)
                                 } else {
