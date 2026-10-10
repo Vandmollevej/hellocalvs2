@@ -22,7 +22,7 @@ Brugerens krav: de danske måltidskasser, der viser fuld energioplysning online,
 - Brugeren slår hver måltidskasse til under Integrationer → Opskrifter (`User.recipeProviders`, PATCH `/api/profile`). Det afløser `helloFreshEnabled`, som ikke fandtes i databasen længere (kontakten sprang tilbage til "fra"), så HelloFresh virker nu også igen. Retter → Delte retter får en kildeknap pr. slået-til måltidskasse; `/api/shared-recipes` tager `providers=` (gammel `hellofresh=1` virker stadig).
 - Visning: alle tre bruger HelloFresh-opskriftssiden (`/profile/recipes/hellofresh/[id]`). RetNemt som HelloFresh (ingredienser, trin, næring pr. portion, RetNemts egen allergennote). BetterFeast er færdigretter: varedeklaration i stedet for ingredienser, ingen fremgangsmåde, "Næringsværdier pr. 100 g", og den faste knap er "Registrér retten". Listen viser "kcal pr. 100 g" for retter uden portionsvægt.
 - Admin → Retter: RetNemt og BetterFeast har egen liste og visningsside (samme som HelloFresh). "Deaktivér" bruger igen `Product.discontinued` for alle importerede retter (en mellemversion satte status REJECTED, som Retter-listen ikke filtrerede på; migrationen flytter de retter over), og Valdemarsro-listen viser igen de importerede retter i stedet for den tomme pladsholder.
-- Migration `20261010220000_meal_kit_providers` skal med deployet; de to nye containere bygges af deploy-workflowet.
+- Migration `20261010235000_meal_kit_providers` skal med deployet; de to nye containere bygges af deploy-workflowet.
 
 ## 2026-10-10: Søgning læser varetype og tåler sammensatte ord
 
