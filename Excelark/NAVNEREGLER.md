@@ -134,3 +134,14 @@ Kort version står også i `docs/REGLER.md`.
 - Mærkenavne i variant/nøgleord skrives med stort (fx "Tyrkisk Peber", "Aqua d'Or", "San Pellegrino"). Mærket i Brand (fx "M&M's") tilføjes aldrig til variant.
 - "m" i "M&M's" er ikke "med". HTML som `<BR>` i originalteksten skal ikke med.
 - 45+ (osteprocent i tørstof) står i variant, ikke i produkttype.
+
+## Frida-gennemgangen 2026-10-09/10 — samlet (gælder alle ark)
+- **Nøgleord (egne Keywords, ikke Variation)**: vild, raffinol, hydrogeneret, grove/groft/fint, parboiled, tør, sød/søde, "på dåse/ konserves", "på glas", "i saltlage", "uden sten", "hele eller knækkede", "ikke beriget", saltet/usaltet, fra opdræt, acidophilus, UHT = "langtidsholdbar", colostrum, årstider/måneder ("maj til september"), "med tilsat sukker"/"med tilsat kunstig sødestof", dobbelte, instant.
+- **Foran produkttypen i titlen**: sur, sød/søde, groft, fint, grove, dobbelte, instant ("Instant kakaopulver", "Groft knækbrød"). "Kaffe, instant" = Product Type "Instantkaffe".
+- **Sammensatte produkttyper i én celle**: Fennikelknold, Ægte kastanje, Torskerogn, Hvedemeldurum, Korianderblade; "blade" sættes altid sammen med ordet før (Teblade). Fast + ost = "Fast-ost".
+- **Delte varer**: to varer i én række deles (Rødvin/rosévin, Sortmundfilet/blåhvilling, Høstsild/fed sild, Riskiks/riskage, Sapote/stor sapodil, græsk/tyrkisk stil).
+- **`_is_cooked`**: "Færdigbagt" kun for kager/småkager; alt andet færdigt (brød, røræg, detailbageri) = "Færdiglavet".
+- **Små bogstaver**: alle `_is_`-værdier (også land), Keyword 1-5 og Variation starter med småt (undtagen egennavne: Beluga, Hokkaido, Thüringer, Serrano m.fl.).
+- **Ental/flertal**: `Product title singular`/`plural` er formler; flertalsord i `Product type plural` (tom for masse-ord → flertalstitel = ental-titel). Flagene bøjes: vegansk→veganske, -fri→-frie; "panerede" i flertal.
+- **Kommaer i Variation** fjernes (Frida brugte dem som adskiller): "med/uden/af/i/på"-led sættes med mellemrum, øvrige led "a, b og c".
+- **Frida publiceres til databasen** (`scripts/frida-import/build_sheet.py` → `sheet/frida_sheet.json`, `agent.py apply_sheet`); søgereglen (flertal → plural-titel, ental → singular-titel) står i `GET /api/products`. Se docs/FRIDA.md.
