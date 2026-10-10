@@ -160,3 +160,4 @@ Kort version står også i `docs/REGLER.md`.
 
 ## Engelsk "sugarfree" (brugerens regel 2026-10-10, gælder alle ark)
 - Kun sukkerfeltet rettes: står der engelsk sugarfree / sugar free / zero sugar / no sugar på varen, skal sukkerfeltet være "sukkerfri" ("no added sugar" → "uden tilsat sukker"). Ordet fjernes IKKE fra navn/variant, da det ofte er en del af det engelske produkt- eller brandnavn (Coca-Cola Zero Sugar). Rettet 2026-10-10: Bilka 1 række (Mirinda zero sugar); REMA's 6 rækker havde allerede "sukkerfri".
+- Samme regler kørt på SPAR, Wolt, Årstiderne og Frida 2026-10-10 (brandnavn som keyword slettes, sukker/fedt/alkohol i egne kolonner, "med kulsyre"). "med tilsat kunstig sødestof" → `_is_sweeteners` = sødestoffer. Flertal (ental = flertal) rettes IKKE automatisk — gennemgås med brugeren til sidst. Nemlig og DRK venter, til produkttypen er flyttet ud af Keyword 1.
