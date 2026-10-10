@@ -18,6 +18,7 @@ import { HIDE_FROM_SEARCH_BELOW } from "@/lib/uncertainty-thresholds";
 import { petFoodBlockReason } from "@/lib/pet-food-blacklist";
 import { recordPetFoodAttempt } from "@/lib/pet-food-strikes";
 import { saveDataUrlImage } from "@/lib/qc-image-storage";
+import { accentInsensitiveProductIds, correctedQuery } from "@/lib/search-correction";
 
 // GET /api/products?q=rugbrød — search in our own product database only. Results are ranked by src/lib/product-search-ranking.ts: text match
 // is always dominant, and hidden regional search/click/hour-of-day statistics
@@ -49,245 +50,44 @@ export async function GET(req: Request) {
     Number.isInteger(requestedHour) && requestedHour >= 0 && requestedHour <= 23
       ? requestedHour
       : new Date().getHours();
+  // ?exact=1: søg præcis på det skrevne, uden rettelse ("Søg i stedet efter …").
+  const exact = params.get("exact") === "1";
 
   if (q.length === 1 && !source) {
     return NextResponse.json({ products: [], minQueryLength: 2 });
   }
 
   try {
-    // Ranking re-sorts a wider candidate pool than `take`, since a
-    // low-popularity-but-exact match further down createdAt-order must still
-    // be able to surface once ranked.
-    const synonyms = q && !source ? await getSynonymExpansions(q) : [];
-    const candidateTake = q ? Math.max(take * 6, 80) : take;
-    const queryWords = q.split(/\s+/).filter((word) => word.length >= 2).slice(0, 6);
-    const findProducts = () =>
-      prisma.product.findMany({
-        where: {
-          discontinued: false,
-          // Butiksvarer uden kalorietal er skjult, til de har fået næring
-          // (docs/DECISIONS.md 2026-10-02) — ingen skal logge 0 kcal.
-          nutritionMissing: false,
-          // Egne private ingredienser vises kun for ejeren (via /api/private-ingredients).
-          privateOwnerId: null,
-          // Ét samlet AND: en objekt-literal må kun have én AND-nøgle, og
-          // tekstfilter og kildefilter er begge OR-betingelser, som ellers
-          // ville overskrive hinanden.
-          AND: [
-            // Admin "Uncertainties" (docs/DECISIONS.md 2026-09-25): et produkt,
-            // hvor AI'en var under 50 % sikker på en aflæsning, skjules i
-            // søgningen, indtil en admin har gennemgået den.
-            {
-              NOT: {
-                aiAnalyses: { some: { reviewedAt: null, confidence: { lt: HIDE_FROM_SEARCH_BELOW } } },
-              },
-            },
-            ...(q
-              ? [
-                  {
-                    OR: [
-                      { name: { contains: q, mode: "insensitive" } },
-                      { namePlural: { contains: q, mode: "insensitive" } },
-                      { brand: { name: { contains: q, mode: "insensitive" } } },
-                      ...synonyms.map((s) => ({ name: { contains: s.term, mode: "insensitive" as const } })),
-                      // Sukkerpåstande kan søges ("sukkerfri", "uden tilsat sukker",
-                      // "reduceret", "light", "lavt sukker"), men vises ikke som mærker
-                      // (docs/DECISIONS.md 2026-10-02).
-                      { filters: { is: { sugarFree: { contains: q, mode: "insensitive" } } } },
-                      { filters: { is: { noAddedSugar: { contains: q, mode: "insensitive" } } } },
-                      { filters: { is: { reducedSugar: { contains: q, mode: "insensitive" } } } },
-                      { filters: { is: { lightSugar: { contains: q, mode: "insensitive" } } } },
-                      { filters: { is: { lowSugar: { contains: q, mode: "insensitive" } } } },
-                      // Flere ord ("arla letmælk"): hvert ord skal stå i navnet
-                      // eller brandet (docs/DECISIONS.md 2026-10-04).
-                      ...(queryWords.length > 1
-                        ? [
-                            {
-                              AND: queryWords.map((word): Prisma.ProductWhereInput => ({
-                                OR: [
-                                  { name: { contains: word, mode: "insensitive" } },
-                                  { brand: { name: { contains: word, mode: "insensitive" } } },
-                                ],
-                              })),
-                            },
-                          ]
-                        : []),
-                    ],
-                  } satisfies Prisma.ProductWhereInput,
-                ]
-              : []),
-            source
-              ? { externalSource: source }
-              : {
-                  OR: [
-                    { externalSource: null },
-                    { externalSource: { notIn: ["HELLOFRESH", "OPEN_FOOD_FACTS"] } },
-                  ],
-                },
-          ],
-        },
-        include: {
-          // Altid samme include-form (ikke betinget på q/source), så Prisma's
-          // udledte returtype er ét fast skema — undgår en union-type der
-          // ellers ville kræve en cast for hver adgang nedenfor. De ekstra
-          // felter bruges kun i søge-grenen (q && !source), men er billige
-          // at hente for de få kandidater de øvrige grene henter.
-          brand: { include: { regionSearchStats: true } },
-          barcodes: true,
-          regionSearchStats: true,
-          regionHourStats: true,
-          // Verificerings-signal (Søgealgoritmer, 2026-09-19): kun
-          // billed-*antal*, aldrig selve billederne.
-          _count: { select: { images: true } },
-          aiAnalyses: { select: { kind: true } },
-        },
-        take: candidateTake,
-        orderBy: { createdAt: "desc" },
-      });
+    let products = await searchProducts({ q, source, take, localHour });
 
-    let products = await findProducts();
-
-    if (q && !source) {
-      const sessionUser = await getSessionUser();
-      const user = { region: sessionUser?.region ?? "DK" };
-      const weights = await getActiveSearchRankingWeights();
-
-      // Personlig historik (2026-09-19, se docs/DECISIONS.md) — kun for en
-      // rigtig indlogget bruger, aldrig den delte demo-bruger.
-      const personalHistory = sessionUser
-        ? await prisma.userProductSearchHistory.findMany({
-            where: { userId: sessionUser.id, productId: { in: products.map((p) => p.id) } },
-          })
-        : [];
-      const personalByProductId = new Map(personalHistory.map((entry) => [entry.productId, entry]));
-
-      const rankable = products.map((product) => ({
-        ...product,
-        isVerified: deriveIsVerified({
-          barcodeCount: product.barcodes.length,
-          imageCount: product._count?.images ?? 0,
-          aiAnalyses: product.aiAnalyses,
-        }),
-        brandRegionStats: product.brand?.regionSearchStats,
-        personalSearchCount: personalByProductId.get(product.id)?.searchCount,
-        personalClickCount: personalByProductId.get(product.id)?.clickCount,
-        entityBias: -1, // "Generiske ingredienser vs. varer" — et rigtigt Product
-      }));
-
-      const ranked = rankProducts(rankable, q, user.region, localHour, take, weights, synonyms);
-      products = ranked.map((entry) => entry.product);
-      // "Søgninger uden resultat" i admin-statistikken (/admin/statistics).
-      if (products.length === 0 && q.length >= 3) {
-        await prisma.searchMiss
-          .create({ data: { query: q.toLowerCase().slice(0, 120), region: user.region } })
-          .catch((error) => console.error("Search miss logging failed", error));
+    // "Mente du …?" (docs/DECISIONS.md 2026-10-10): ingen hits → søg på den
+    // rettede tekst og sig til, hvad der blev rettet; 1-2 hits → foreslå
+    // rettelsen uden at bruge den.
+    let searchedQuery: string | undefined;
+    let suggestedQuery: string | undefined;
+    if (q.length >= 3 && !source && !exact && products.length <= 2) {
+      const fixed = await correctedQuery(q);
+      if (fixed && fixed.toLowerCase() !== q.toLowerCase()) {
+        if (products.length === 0) {
+          const fixedProducts = await searchProducts({ q: fixed, source, take, localHour });
+          if (fixedProducts.length > 0) {
+            products = fixedProducts;
+            searchedQuery = fixed;
+          }
+        } else {
+          suggestedQuery = fixed;
+        }
       }
-
-      // Impressions: every ranked result shown to the user counts as a
-      // regional "search" for that product/brand, feeding the popularity
-      // signal above for future queries. Never blocks the response.
-      if (products.length > 0) {
-        const now = new Date();
-        await prisma.$transaction([
-          ...products.map((product) =>
-            prisma.productRegionSearchStat.upsert({
-              where: { productId_region: { productId: product.id, region: user.region } },
-              create: {
-                productId: product.id,
-                region: user.region,
-                searchCount: 1,
-                lastSearchedAt: now,
-              },
-              update: {
-                searchCount: { increment: 1 },
-                lastSearchedAt: now,
-              },
-            })
-          ),
-          ...products
-            .filter((product) => product.brandId)
-            .map((product) =>
-              prisma.brandRegionSearchStat.upsert({
-                where: { brandId_region: { brandId: product.brandId as string, region: user.region } },
-                create: {
-                  brandId: product.brandId as string,
-                  region: user.region,
-                  searchCount: 1,
-                  lastSearchedAt: now,
-                },
-                update: { searchCount: { increment: 1 }, lastSearchedAt: now },
-              })
-            ),
-          // Personlig historik (2026-09-19): kun for rigtige, indloggede
-          // brugere — se User.productSearchHistory og anonymizeUser() i
-          // src/lib/gdpr.ts, som sletter denne igen ved "Ret til at blive
-          // glemt".
-          ...(sessionUser
-            ? products.map((product) =>
-                prisma.userProductSearchHistory.upsert({
-                  where: { userId_productId: { userId: sessionUser.id, productId: product.id } },
-                  create: {
-                    userId: sessionUser.id,
-                    productId: product.id,
-                    searchCount: 1,
-                    lastSearchedAt: now,
-                  },
-                  update: { searchCount: { increment: 1 }, lastSearchedAt: now },
-                })
-              )
-            : []),
-        ]);
-      }
-    } else if (products.length > take) {
-      products = products.slice(0, take);
     }
 
-    // Hidden ranking statistics/origin data are internal and must never be
-    // exposed to users (design.md, docs/DECISIONS.md 2026-09-19).
-    const publicProducts = products.map((product) => {
-      /* eslint-disable @typescript-eslint/no-unused-vars -- deliberately stripped, never sent to the client */
-      const {
-        regionSearchStats,
-        regionHourStats,
-        originCountryCode,
-        aiAnalyses,
-        isVerified,
-        brandRegionStats,
-        personalSearchCount,
-        personalClickCount,
-        entityBias,
-        _count,
-        ...publicProduct
-      } = product as typeof product & {
-        regionSearchStats?: unknown;
-        regionHourStats?: unknown;
-        aiAnalyses?: unknown;
-        isVerified?: unknown;
-        brandRegionStats?: unknown;
-        personalSearchCount?: unknown;
-        personalClickCount?: unknown;
-        entityBias?: unknown;
-        _count?: unknown;
-      };
-      /* eslint-enable @typescript-eslint/no-unused-vars */
-      // Mærkets egen hidden region-popularitet (brandRegionStats' kilde,
-      // se ovenfor) må heller aldrig lække til klienten.
-      const brand = publicProduct.brand
-        ? // eslint-disable-next-line @typescript-eslint/no-unused-vars -- deliberately stripped, never sent to the client
-          (({ regionSearchStats, ...publicBrand }) => publicBrand)(publicProduct.brand)
-        : publicProduct.brand;
-      // Ental/flertal-søgeregel (2026-10-09): søger brugeren i flertal, vises varens
-      // flertalstitel (namePlural); søger brugeren i ental, vises name (ental).
-      const queryLower = q.toLowerCase();
-      const matchesPlural =
-        Boolean(q) &&
-        Boolean(publicProduct.namePlural) &&
-        publicProduct.namePlural!.toLowerCase().includes(queryLower) &&
-        !publicProduct.name.toLowerCase().includes(queryLower);
-      return { ...publicProduct, name: matchesPlural ? (publicProduct.namePlural as string) : publicProduct.name, brand };
+    return NextResponse.json({
+      products,
+      minQueryLength: 2,
+      // Sat, når resultatet er søgt på rettet tekst: correctedQuery = det der blev
+      // søgt på, originalQuery = det brugeren skrev ("Søg i stedet efter …").
+      ...(searchedQuery ? { correctedQuery: searchedQuery, originalQuery: q } : {}),
+      ...(suggestedQuery ? { suggestedQuery } : {}),
     });
-
-    return NextResponse.json({ products: publicProducts, minQueryLength: 2 });
   } catch (error) {
     console.error("Product search failed", error);
     return NextResponse.json(
@@ -295,6 +95,256 @@ export async function GET(req: Request) {
       { status: 503 }
     );
   }
+}
+
+async function searchProducts({
+  q,
+  source,
+  take,
+  localHour,
+}: {
+  q: string;
+  source: ExternalProductSource | undefined;
+  take: number;
+  localHour: number;
+}) {
+  // Ranking re-sorts a wider candidate pool than `take`, since a
+  // low-popularity-but-exact match further down createdAt-order must still
+  // be able to surface once ranked.
+  const synonyms = q && !source ? await getSynonymExpansions(q) : [];
+  // Accent-ufølsomt match ("Nescafé" finder "Nescafe"): Prismas contains kender
+  // ikke accenter, så id'erne hentes med hc_search_norm() og lægges til nedenfor.
+  const accentIds = q && !source ? await accentInsensitiveProductIds(q) : [];
+  const candidateTake = q ? Math.max(take * 6, 80) : take;
+  const queryWords = q.split(/\s+/).filter((word) => word.length >= 2).slice(0, 6);
+  const findProducts = () =>
+    prisma.product.findMany({
+      where: {
+        discontinued: false,
+        // Varer uden kalorietal vises i søgningen (docs/DECISIONS.md 2026-10-10,
+        // afløser 2026-10-02): søgningen viser alt, til brugeren indsnævrer.
+        // Varesiden viser "Næringsindhold ukendt".
+        // Egne private ingredienser vises kun for ejeren (via /api/private-ingredients).
+        privateOwnerId: null,
+        // Ét samlet AND: en objekt-literal må kun have én AND-nøgle, og
+        // tekstfilter og kildefilter er begge OR-betingelser, som ellers
+        // ville overskrive hinanden.
+        AND: [
+          // Admin "Uncertainties" (docs/DECISIONS.md 2026-09-25): et produkt,
+          // hvor AI'en var under 50 % sikker på en aflæsning, skjules i
+          // søgningen, indtil en admin har gennemgået den.
+          {
+            NOT: {
+              aiAnalyses: { some: { reviewedAt: null, confidence: { lt: HIDE_FROM_SEARCH_BELOW } } },
+            },
+          },
+          ...(q
+            ? [
+                {
+                  OR: [
+                    { name: { contains: q, mode: "insensitive" } },
+                    { namePlural: { contains: q, mode: "insensitive" } },
+                    { brand: { name: { contains: q, mode: "insensitive" } } },
+                    ...(accentIds.length > 0 ? [{ id: { in: accentIds } }] : []),
+                    ...synonyms.map((s) => ({ name: { contains: s.term, mode: "insensitive" as const } })),
+                    // Sukkerpåstande kan søges ("sukkerfri", "uden tilsat sukker",
+                    // "reduceret", "light", "lavt sukker"), men vises ikke som mærker
+                    // (docs/DECISIONS.md 2026-10-02).
+                    { filters: { is: { sugarFree: { contains: q, mode: "insensitive" } } } },
+                    { filters: { is: { noAddedSugar: { contains: q, mode: "insensitive" } } } },
+                    { filters: { is: { reducedSugar: { contains: q, mode: "insensitive" } } } },
+                    { filters: { is: { lightSugar: { contains: q, mode: "insensitive" } } } },
+                    { filters: { is: { lowSugar: { contains: q, mode: "insensitive" } } } },
+                    // Flere ord ("arla letmælk"): hvert ord skal stå i navnet
+                    // eller brandet (docs/DECISIONS.md 2026-10-04).
+                    ...(queryWords.length > 1
+                      ? [
+                          {
+                            AND: queryWords.map((word): Prisma.ProductWhereInput => ({
+                              OR: [
+                                { name: { contains: word, mode: "insensitive" } },
+                                { brand: { name: { contains: word, mode: "insensitive" } } },
+                              ],
+                            })),
+                          },
+                        ]
+                      : []),
+                  ],
+                } satisfies Prisma.ProductWhereInput,
+              ]
+            : []),
+          source
+            ? { externalSource: source }
+            : {
+                OR: [
+                  { externalSource: null },
+                  { externalSource: { notIn: ["HELLOFRESH", "OPEN_FOOD_FACTS"] } },
+                ],
+              },
+        ],
+      },
+      include: {
+        // Altid samme include-form (ikke betinget på q/source), så Prisma's
+        // udledte returtype er ét fast skema — undgår en union-type der
+        // ellers ville kræve en cast for hver adgang nedenfor. De ekstra
+        // felter bruges kun i søge-grenen (q && !source), men er billige
+        // at hente for de få kandidater de øvrige grene henter.
+        brand: { include: { regionSearchStats: true } },
+        barcodes: true,
+        regionSearchStats: true,
+        regionHourStats: true,
+        // Verificerings-signal (Søgealgoritmer, 2026-09-19): kun
+        // billed-*antal*, aldrig selve billederne.
+        _count: { select: { images: true } },
+        aiAnalyses: { select: { kind: true } },
+      },
+      take: candidateTake,
+      orderBy: { createdAt: "desc" },
+    });
+
+  let products = await findProducts();
+
+  if (q && !source) {
+    const sessionUser = await getSessionUser();
+    const user = { region: sessionUser?.region ?? "DK" };
+    const weights = await getActiveSearchRankingWeights();
+
+    // Personlig historik (2026-09-19, se docs/DECISIONS.md) — kun for en
+    // rigtig indlogget bruger, aldrig den delte demo-bruger.
+    const personalHistory = sessionUser
+      ? await prisma.userProductSearchHistory.findMany({
+          where: { userId: sessionUser.id, productId: { in: products.map((p) => p.id) } },
+        })
+      : [];
+    const personalByProductId = new Map(personalHistory.map((entry) => [entry.productId, entry]));
+
+    const rankable = products.map((product) => ({
+      ...product,
+      isVerified: deriveIsVerified({
+        barcodeCount: product.barcodes.length,
+        imageCount: product._count?.images ?? 0,
+        aiAnalyses: product.aiAnalyses,
+      }),
+      brandRegionStats: product.brand?.regionSearchStats,
+      personalSearchCount: personalByProductId.get(product.id)?.searchCount,
+      personalClickCount: personalByProductId.get(product.id)?.clickCount,
+      entityBias: -1, // "Generiske ingredienser vs. varer" — et rigtigt Product
+    }));
+
+    const ranked = rankProducts(rankable, q, user.region, localHour, take, weights, synonyms);
+    products = ranked.map((entry) => entry.product);
+    // "Søgninger uden resultat" i admin-statistikken (/admin/statistics).
+    if (products.length === 0 && q.length >= 3) {
+      await prisma.searchMiss
+        .create({ data: { query: q.toLowerCase().slice(0, 120), region: user.region } })
+        .catch((error) => console.error("Search miss logging failed", error));
+    }
+
+    // Impressions: every ranked result shown to the user counts as a
+    // regional "search" for that product/brand, feeding the popularity
+    // signal above for future queries. Never blocks the response.
+    if (products.length > 0) {
+      const now = new Date();
+      await prisma.$transaction([
+        ...products.map((product) =>
+          prisma.productRegionSearchStat.upsert({
+            where: { productId_region: { productId: product.id, region: user.region } },
+            create: {
+              productId: product.id,
+              region: user.region,
+              searchCount: 1,
+              lastSearchedAt: now,
+            },
+            update: {
+              searchCount: { increment: 1 },
+              lastSearchedAt: now,
+            },
+          })
+        ),
+        ...products
+          .filter((product) => product.brandId)
+          .map((product) =>
+            prisma.brandRegionSearchStat.upsert({
+              where: { brandId_region: { brandId: product.brandId as string, region: user.region } },
+              create: {
+                brandId: product.brandId as string,
+                region: user.region,
+                searchCount: 1,
+                lastSearchedAt: now,
+              },
+              update: { searchCount: { increment: 1 }, lastSearchedAt: now },
+            })
+          ),
+        // Personlig historik (2026-09-19): kun for rigtige, indloggede
+        // brugere — se User.productSearchHistory og anonymizeUser() i
+        // src/lib/gdpr.ts, som sletter denne igen ved "Ret til at blive
+        // glemt".
+        ...(sessionUser
+          ? products.map((product) =>
+              prisma.userProductSearchHistory.upsert({
+                where: { userId_productId: { userId: sessionUser.id, productId: product.id } },
+                create: {
+                  userId: sessionUser.id,
+                  productId: product.id,
+                  searchCount: 1,
+                  lastSearchedAt: now,
+                },
+                update: { searchCount: { increment: 1 }, lastSearchedAt: now },
+              })
+            )
+          : []),
+      ]);
+    }
+  } else if (products.length > take) {
+    products = products.slice(0, take);
+  }
+
+  // Hidden ranking statistics/origin data are internal and must never be
+  // exposed to users (design.md, docs/DECISIONS.md 2026-09-19).
+  const publicProducts = products.map((product) => {
+    /* eslint-disable @typescript-eslint/no-unused-vars -- deliberately stripped, never sent to the client */
+    const {
+      regionSearchStats,
+      regionHourStats,
+      originCountryCode,
+      aiAnalyses,
+      isVerified,
+      brandRegionStats,
+      personalSearchCount,
+      personalClickCount,
+      entityBias,
+      _count,
+      ...publicProduct
+    } = product as typeof product & {
+      regionSearchStats?: unknown;
+      regionHourStats?: unknown;
+      aiAnalyses?: unknown;
+      isVerified?: unknown;
+      brandRegionStats?: unknown;
+      personalSearchCount?: unknown;
+      personalClickCount?: unknown;
+      entityBias?: unknown;
+      _count?: unknown;
+    };
+    /* eslint-enable @typescript-eslint/no-unused-vars */
+    // Mærkets egen hidden region-popularitet (brandRegionStats' kilde,
+    // se ovenfor) må heller aldrig lække til klienten.
+    const brand = publicProduct.brand
+      ? // eslint-disable-next-line @typescript-eslint/no-unused-vars -- deliberately stripped, never sent to the client
+        (({ regionSearchStats, ...publicBrand }) => publicBrand)(publicProduct.brand)
+      : publicProduct.brand;
+    // Ental/flertal-søgeregel (2026-10-09): søger brugeren i flertal, vises varens
+    // flertalstitel (namePlural); søger brugeren i ental, vises name (ental).
+    const queryLower = q.toLowerCase();
+    const matchesPlural =
+      Boolean(q) &&
+      Boolean(publicProduct.namePlural) &&
+      publicProduct.namePlural!.toLowerCase().includes(queryLower) &&
+      !publicProduct.name.toLowerCase().includes(queryLower);
+    return { ...publicProduct, name: matchesPlural ? (publicProduct.namePlural as string) : publicProduct.name, brand };
+  });
+
+  return publicProducts;
 }
 
 function parsePositiveNumber(value: unknown): number | null {

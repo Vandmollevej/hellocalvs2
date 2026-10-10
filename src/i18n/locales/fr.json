@@ -3584,5 +3584,10 @@
     "copied": "Link copied.",
     "shareText": "Try “{name}” in Hello Cal!",
     "button": "Send to a friend"
+  },
+  "searchCorrection": {
+    "showingFor": "Résultats pour {query}",
+    "searchInstead": "Rechercher plutôt {query}",
+    "didYouMean": "Vouliez-vous dire {query} ?"
   }
 }

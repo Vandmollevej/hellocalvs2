@@ -117,7 +117,7 @@ export type ProductDatabaseRow = {
   packageSizeText: string | null;
   imageUrl: string | null;
   kcalPer100g: number;
-  // Butiksvare uden kalorietal, skjult i appen (docs/DECISIONS.md 2026-10-02).
+  // Butiksvare uden kalorietal: vises i søgning, skjult i genkendelse (docs/DECISIONS.md 2026-10-10).
   nutritionMissing: boolean;
   status: ProductStatus;
   sourceLabel: string;

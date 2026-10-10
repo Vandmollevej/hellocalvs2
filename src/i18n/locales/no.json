@@ -3584,5 +3584,10 @@
     "copied": "Link copied.",
     "shareText": "Try “{name}” in Hello Cal!",
     "button": "Send to a friend"
+  },
+  "searchCorrection": {
+    "showingFor": "Viser resultater for {query}",
+    "searchInstead": "Søk i stedet etter {query}",
+    "didYouMean": "Mente du {query}?"
   }
 }
