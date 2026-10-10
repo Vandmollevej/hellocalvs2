@@ -376,6 +376,8 @@ def convert(name, cfg, bhdr, a2, b2, master, fr, dry):
     used = set(DROP) | ALC_SRC | set(bhdr) | {s for v in SRC.values() for s in v}
     orig_extra = [h for h in ORIG_EXTRA if (h in pos and col_fill(rows, pos[h][0])) or (raw_hdr and h in raw_hdr and col_fill(raw_rows, raw_hdr.index(h)))]
     own_extra = [h for h in dict.fromkeys(hdr) if h and h not in used and h not in ORIG_EXTRA and col_fill(rows, pos[h][0])]
+    if cfg.get('identical'):  # brugeren 2026-10-10: kolonnerne skal vaere 100% som Bilkas, ingen ekstra bagerst
+        orig_extra, own_extra = [], []
     out_hdr = list(bhdr) + orig_extra + own_extra
     nix = {}
     for i, h in enumerate(out_hdr):
@@ -421,6 +423,10 @@ def convert(name, cfg, bhdr, a2, b2, master, fr, dry):
         for i, v in enumerate(nr):
             if isinstance(v, str) and i not in orig_ix:
                 nr[i] = v.strip() or None
+        bc = nr[nix['barcode']]  # stregkode altid tekst (ellers viser Excel 5,70604E+12)
+        if isinstance(bc, (int, float)) and not isinstance(bc, bool):
+            nr[nix['barcode']] = str(int(bc))
+            stats['stregkode_til_tekst'] += 1
         # Yes -> beskrivende ord
         for h, i in nix.items():
             if h.startswith('_is_') and isinstance(nr[i], str) and nr[i].strip().lower() in YES:
@@ -451,7 +457,7 @@ def convert(name, cfg, bhdr, a2, b2, master, fr, dry):
         if rules:  # REMA har allerede faaet decimalpunktum
             stats['decimal_punktum'] += decimal_points(nr, out_hdr, orig_ix)
         out_rows.append(nr)
-    if any(flags):
+    if any(flags) and not cfg.get('identical'):
         out_hdr.append('Flag')
         for nr, f in zip(out_rows, flags):
             nr.append(f)

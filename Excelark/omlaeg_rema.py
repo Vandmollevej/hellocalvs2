@@ -7,7 +7,7 @@ Bygger oven paa omlaeg_til_bilka_kolonner.py (samme kolonner, formler og danske 
   den raa skrabning `Excelark/rema1000 - To be compaired.xlsx` (match paa varenummeret i Source URL) og rettes aldrig.
 - category udfyldes med REMA's egen kategori fra skrabningen, hvor den er tom.
 - _is_fat "0.4% fedt" -> "0.4%"; "light"/"0 kcal" i sukker-/fedtkolonnen og "i skiver" i pakning bliver keywords (som i Bilka).
-- REMA's ekstra kolonner (Type, size, is_healthy, is_social_responsibility) bevares bagerst; dem bruger importen.
+- Kolonnerne bliver 100% identiske med Bilkas (ingen ekstra bagerst, brugeren 2026-10-10); stregkoder gemmes som tekst.
 - Masse-ord (O.MASS_BLANK) faar tomt `Product type plural`, foer Bilkas flertal slaas op.
 - Kan koeres igen paa det omlagte ark.
 """
@@ -125,7 +125,7 @@ def main(dry):
         shutil.copy2(SRC, os.path.join(O.BACKUP, f'rema1000_version 2_{stamp}_foer_bilka-kolonner.xlsx'))
     bhdr, a2, b2, master = O.bilka_master()
     fr = T.load_frida_plurals()
-    cfg = dict(src=SRC, read=read_path, raw=raw_path, lang='da')
+    cfg = dict(src=SRC, read=read_path, raw=raw_path, lang='da', identical=True)
     return O.convert('rema', cfg, bhdr, a2, b2, master, fr, dry)
 
 
