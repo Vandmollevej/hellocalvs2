@@ -1,8 +1,8 @@
 "use client";
 
-import { Suspense, useEffect, useMemo, useState } from "react";
+import { Suspense, useEffect, useMemo, useRef, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { IconSearch } from "@tabler/icons-react";
+import { IconChevronDown, IconSearch } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
 import { ProductResultRow as ResultRow, type ProductResult as Result } from "@/components/ProductResultRow";
 import { useTranslation } from "@/i18n/LocaleProvider";
@@ -24,6 +24,62 @@ type FavoriteResponse = {
 
 type LoadState = "loading" | "ready" | "error";
 
+// Højst tre rækker pr. liste, til brugeren folder hele listen ud.
+const COLLAPSED_ROWS = 3;
+// Så mange forskellige varer hentes til "Senest tilføjet" (var 5, før listen kunne foldes ud).
+const RECENT_LIMIT = 30;
+
+/**
+ * Liste med fast overskrift. Over tre rækker vises en foldepil; udfoldet fylder
+ * listen hele rullefladen under søgefeltet, og overskriften klistrer til toppen,
+ * så man altid kan folde den sammen igen.
+ */
+function CollapsibleSection({
+  title,
+  total,
+  open,
+  onToggle,
+  children,
+}: {
+  title: string;
+  total: number;
+  open: boolean;
+  onToggle: () => void;
+  children: React.ReactNode;
+}) {
+  const canFold = total > COLLAPSED_ROWS;
+  const ref = useRef<HTMLElement>(null);
+  const toggle = () => {
+    onToggle();
+    // Udfoldet liste starter med sin overskrift øverst under søgefeltet.
+    requestAnimationFrame(() => ref.current?.scrollIntoView({ block: "start" }));
+  };
+  return (
+    <section ref={ref} className="flex flex-col" style={open ? { minHeight: "100%" } : undefined}>
+      <div className="sticky top-0 z-10 bg-hf-cream py-2">
+        {canFold ? (
+          <button
+            type="button"
+            onClick={toggle}
+            aria-expanded={open}
+            className="hf-type-small hf-type-strong text-hf-black flex items-center gap-1"
+          >
+            {title}
+            <IconChevronDown
+              size={18}
+              aria-hidden="true"
+              className={`transition-transform ${open ? "rotate-180" : ""}`}
+            />
+          </button>
+        ) : (
+          <p className="hf-type-small hf-type-strong text-hf-black">{title}</p>
+        )}
+      </div>
+      <div className="overflow-hidden bg-hf-tan rounded-card">{children}</div>
+    </section>
+  );
+}
+
 function SoegContent() {
   const { t } = useTranslation();
   const connectionMessage = useConnectionMessage();
@@ -35,6 +91,8 @@ function SoegContent() {
   const [fromCache, setFromCache] = useState(false);
   const [recentlyAdded, setRecentlyAdded] = useState<Result[]>([]);
   const [favorites, setFavorites] = useState<Result[]>([]);
+  const [favoritesOpen, setFavoritesOpen] = useState(false);
+  const [recentOpen, setRecentOpen] = useState(false);
   const router = useRouter();
   // Tryk på en vare åbner varesiden direkte — ingen popup og ingen Tilføj-knap.
   const openProduct = (productId: string) => router.push(`/add/${productId}${forDish ? "?for=ret" : ""}`);
@@ -139,7 +197,7 @@ function SoegContent() {
             title: registration.titleSnapshot,
             image: registration.product?.imageUrl,
           });
-          if (recent.length >= 5) break;
+          if (recent.length >= RECENT_LIMIT) break;
         }
         setRecentlyAdded(recent);
         writeCache<CachedProduct[]>("recent", recent);
@@ -181,53 +239,60 @@ function SoegContent() {
 
   return (
     <HfScreen title={t("search.title")}>
-      <div className="hf-page web-search-page">
-        <div className="hf-search">
-          <IconSearch size={16} color="var(--hf-black)" />
-          <input
-            autoFocus
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            placeholder={t("search.searchPlaceholder")}
-          />
+      <div className="web-search-page flex h-full min-h-0 flex-col">
+        <div className="px-[var(--hf-gutter)] pb-[var(--hf-space-block)] pt-[var(--hf-space-block)]">
+          <div className="hf-search">
+            <IconSearch size={16} color="var(--hf-black)" />
+            <input
+              autoFocus
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder={t("search.searchPlaceholder")}
+            />
+          </div>
         </div>
 
+        <div className="flex min-h-0 flex-1 flex-col gap-[var(--hf-space-block)] overflow-y-auto overscroll-contain px-[var(--hf-gutter)] pb-[var(--hf-space-section)]">
         {showFavorites && (
-          <>
-            <p className="hf-type-small hf-type-strong text-hf-black">{t("search.favorites")}</p>
-            <div className="overflow-hidden bg-hf-tan rounded-card">
-              {favorites.map((r) => (
-                <ResultRow
-                  key={r.id}
-                  id={r.id}
-                  title={r.title}
-                  image={r.image}
-                  onAdd={openProduct}
-                  isFavorite={favoriteIds.has(r.id)}
-                  onToggleFavorite={toggleFavorite}
-                />
-              ))}
-            </div>
-          </>
+          <CollapsibleSection
+            title={t("search.favorites")}
+            total={favorites.length}
+            open={favoritesOpen}
+            onToggle={() => setFavoritesOpen((v) => !v)}
+          >
+            {(favoritesOpen ? favorites : favorites.slice(0, COLLAPSED_ROWS)).map((r) => (
+              <ResultRow
+                key={r.id}
+                id={r.id}
+                title={r.title}
+                image={r.image}
+                onAdd={openProduct}
+                isFavorite={favoriteIds.has(r.id)}
+                onToggleFavorite={toggleFavorite}
+              />
+            ))}
+          </CollapsibleSection>
         )}
 
         {showRecentlyAdded && (
-          <>
-            <p className="hf-type-small hf-type-strong text-hf-black">{t("search.recentlyAdded")}</p>
-            <div className="overflow-hidden bg-hf-tan rounded-card">
-              {recentlyAdded.map((r) => (
-                <ResultRow
-                  key={r.id}
-                  id={r.id}
-                  title={r.title}
-                  image={r.image}
-                  onAdd={openProduct}
-                  isFavorite={favoriteIds.has(r.id)}
-                  onToggleFavorite={toggleFavorite}
-                />
-              ))}
-            </div>
-          </>
+          <CollapsibleSection
+            title={t("search.recentlyAdded")}
+            total={recentlyAdded.length}
+            open={recentOpen}
+            onToggle={() => setRecentOpen((v) => !v)}
+          >
+            {(recentOpen ? recentlyAdded : recentlyAdded.slice(0, COLLAPSED_ROWS)).map((r) => (
+              <ResultRow
+                key={r.id}
+                id={r.id}
+                title={r.title}
+                image={r.image}
+                onAdd={openProduct}
+                isFavorite={favoriteIds.has(r.id)}
+                onToggleFavorite={toggleFavorite}
+              />
+            ))}
+          </CollapsibleSection>
         )}
 
         {!query.trim() && !showFavorites && !showRecentlyAdded && (
@@ -273,6 +338,7 @@ function SoegContent() {
             </div>
           </>
         )}
+        </div>
       </div>
     </HfScreen>
   );
