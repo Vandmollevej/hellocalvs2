@@ -500,11 +500,3 @@ Ejer: ledig (2026-10-10)
 | Id | Opgave | Status | Næste skridt |
 | --- | --- | --- | --- |
 | slider-native | Valgbare felter, mål-linje, grøn ved mål, flere ikoner og pulszone-valg i native tal-hjul + Forside-indstillinger | Ikke startet (web flettet, paritet midlertidigt accepteret) | Port felterne fra `frontpage-stats.ts`/`frontpage-goal-math.ts` til Kotlin, derefter `parity.mjs --accept / /settings/display/front-page` |
-
-## G-MADKASSER — RetNemt og BetterFeast som integrationer (som HelloFresh)
-Filer: `scripts/retnemt-agent/**`, `scripts/betterfeast-agent/**`, `src/lib/meal-kit-providers.ts`, `src/lib/admin-dishes.ts`, `src/app/admin/dishes/**`, `src/app/api/hellofresh-recipes/**`, `src/app/profile/recipes/hellofresh/**`, migration `20261010235000_meal_kit_providers`; desuden små rettelser i `shared-recipes`, `profile`, integrations- og Retter-siden og de tilsvarende native skærme.
-Ejer: session "Måltidskasser som integrationer" (bede0566), 2026-10-10
-
-| Id | Opgave | Status | Næste skridt |
-| --- | --- | --- | --- |
-| madkasser | Skrab alle retter fra måltidskasserne med fuld energioplysning (RetNemt, BetterFeast) og opret dem som integrationer som HelloFresh | I gang (branch `claude/madkasse-integrationer`) | PR → flet → deploy; tjek bagefter admin → Cron-jobs, at `retnemt-import` og `betterfeast-import` har kørt uden fejl |
