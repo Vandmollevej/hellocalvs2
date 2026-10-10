@@ -177,7 +177,7 @@ fun FoodRow(
         }
         Column(Modifier.weight(1f)) {
             overline?.invoke()
-            HcText(title, HcTypeRoles.Body, color = HcColors.Black, maxLines = 2)
+            HcText(localizedDecimals(title), HcTypeRoles.Body, color = HcColors.Black, maxLines = 2)
             subtitle?.invoke()
         }
         if (right != null) Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp), content = right)

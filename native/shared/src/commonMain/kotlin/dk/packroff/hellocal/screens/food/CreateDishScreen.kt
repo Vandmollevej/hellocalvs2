@@ -5,6 +5,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import dk.packroff.hellocal.ui.localizedDecimals
 import dk.packroff.hellocal.ui.FoodSheetDots
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.foundation.gestures.detectHorizontalDragGestures
@@ -429,7 +430,7 @@ fun CreateDishScreen(args: RouteArgs) {
                                         horizontalArrangement = Arrangement.spacedBy(10.dp),
                                     ) {
                                         Box(Modifier.size(36.dp)) { if (product.imageUrl != null) FoodImage(product.imageUrl, Modifier.size(36.dp)) }
-                                        HcText(product.name, HcTypeRoles.Body, Modifier.weight(1f), color = HcColors.Black, bold = true)
+                                        HcText(localizedDecimals(product.name), HcTypeRoles.Body, Modifier.weight(1f), color = HcColors.Black, bold = true)
                                     }
                                     if (index < shown.lastIndex) FoodDivider()
                                 }
