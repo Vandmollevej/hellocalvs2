@@ -104,6 +104,12 @@ Ejerens krav: "Om natten kan en kørsel køre (tilføj den til robotterne i admi
 - **Privatliv:** al beregning sker på egen server; ingen pulsdata sendes til OpenAI eller andre. Skridttal kan ikke bruges (integrationerne leverer kun dagssummer, ikke trin pr. minut), så løb/cykling skelnes af belastning, varighed og brugerens egne eksempler.
 - **Spørgsmålet** (`HeartRateSpikePrompt`) er nu et bundark (KRAV.md "Bundark"), også på desktop: overskrift "Vi kan se, at din puls var højere end sædvanlig i går" (i dag / i går / ugedag + dato), graf, **ugen mandag–søndag vandret med datoer** (✓ + klokkeslæt ved registreret sport, "?" + klokkeslæt ved det udsving, der spørges om), robottens forslag med "Ja, det var …" og to alternativer, og aktivitetssøgningen. Swipe/scrim = "senere" (spørges igen næste åbning, ikke igen i samme fane); "Spring over" spørger aldrig igen. Op til tre ubesvarede pr. besøg.
 - Svaret gemmes på fundet (`answeredSport`), så robotten lærer af det.
+## 2026-10-03: Voksne bestemmer selv, hvem i familien der ser deres profil
+
+- Ejerens svar: "Det kommer ikke ejeren ved, om andre kan se hinandens konti." Ændrer beslutning 2 ("betaleren giver andre adgang") for voksne medlemmer.
+- Den, der bestemmer over en profils deling (`sharingDeciderId` i `src/lib/family-sharing.ts`): personen selv, når vedkommende har eget login og ikke er et barn under 15; ellers betaleren (profiler uden eget login og børn under 15, samme aldersgrænse som udmelding). Betaleren bestemmer også over sin egen profil.
+- Gælder begge niveauer ("se profilen" og "oprette på deres vegne"). Betaleren har stadig altid fuld adgang til alle familiens profiler og kan ikke slås fra.
+- `PUT /api/family/grants` afviser andre end den, der bestemmer. Betalerens "Adgang", invitationens adgangsvalg og "Tilføj familiemedlem/barn" (den nye profils adgang til andre) viser og gemmer kun adgang til profiler, betaleren bestemmer over; `joinFamily` giver kun den. Tildelinger, betaleren gav før, bliver liggende, men personen kan nu selv ændre dem.
 
 ## 2026-10-03: Beskeder på Profil, Resultatvisning under Visning
 

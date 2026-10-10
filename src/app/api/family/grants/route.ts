@@ -3,7 +3,8 @@ import { getSessionUser, unauthorized } from "@/lib/session";
 import { parseAccessLevel, setAccessGrant } from "@/lib/family";
 import { familyErrorResponse, readJson } from "@/lib/family-api";
 
-// Betaleren sætter en persons adgang til et bestemt familiemedlem: level =
+// Sætter en persons adgang til et bestemt familiemedlem. Voksne med eget
+// login bestemmer selv over deres profil, ellers betaleren (setAccessGrant). level =
 // "none", "read" (se profilen) eller "write" (også oprette på deres vegne).
 // Det ældre { allowed: boolean } svarer til "write"/"none".
 export async function PUT(req: Request) {
