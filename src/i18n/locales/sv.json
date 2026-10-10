@@ -1117,7 +1117,11 @@
     "trendingTitle": "Trendar just nu",
     "trendingEmpty": "Det finns inga delade rätter ännu",
     "favoritesTitle": "Mina favoriter",
-    "favoritesEmpty": "Du har inga favoriter ännu"
+    "favoritesEmpty": "Du har inga favoriter ännu",
+    "sourceRetnemt": "RetNemt",
+    "sourceBetterfeast": "BetterFeast",
+    "retnemt": "RetNemt",
+    "betterfeast": "BetterFeast"
   },
   "recipeFilters": {
     "title": "Filter",
@@ -1196,7 +1200,8 @@
       "carbs-low": "Lite kolhydrater",
       "fat-high": "Mycket fett",
       "fat-low": "Lite fett"
-    }
+    },
+    "kcalPer100g": "{kcal} kcal per 100 g"
   },
   "recipeSteps": {
     "title": "Tillvägagångssätt",
@@ -1333,7 +1338,13 @@
       "fiber": "Kostfibrer",
       "protein": "Protein",
       "salt": "Salt"
-    }
+    },
+    "register": "Registrera rätten",
+    "declaration": "Innehållsförteckning",
+    "nutritionPer100g": "Näringsvärden per 100 g",
+    "nutritionNoteRetnemt": "Näringsinnehållet per portion är beräknat av RetNemt utifrån receptets ingredienser.",
+    "nutritionNoteBetterfeast": "Näringsinnehållet per 100 g kommer från BetterFeasts innehållsdeklaration.",
+    "allergenNoteRetnemt": "Allergenerna är vägledande och baserade på ingredienserna, inte på spår av allergener."
   },
   "createDish": {
     "pageTitle": "Title and description",
@@ -2467,7 +2478,11 @@
         "water": "Vatten",
         "body": "Längd, BMI och temperatur"
       }
-    }
+    },
+    "retNemtTitle": "RetNemt-recept",
+    "retNemtDescription": "Visa RetNemt-recept tillsammans med de delade rätterna under Recept",
+    "betterFeastTitle": "BetterFeast-rätter",
+    "betterFeastDescription": "Visa BetterFeasts färdigrätter tillsammans med de delade rätterna under Recept"
   },
   "payment": {
     "title": "Betalning",

@@ -80,6 +80,9 @@ const SOURCE_LABEL: Record<string, string> = {
   USDA: "USDA",
   FRIDA: "Frida (DTU)",
   HELLOFRESH: "HelloFresh",
+  RETNEMT: "RetNemt",
+  BETTERFEAST: "BetterFeast",
+  VALDEMARSRO: "Valdemarsro",
   REMA1000: "REMA 1000",
   BILKA: "Bilka",
 };

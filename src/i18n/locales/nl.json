@@ -1117,7 +1117,11 @@
     "trendingTitle": "Nu in trek",
     "trendingEmpty": "Er zijn nog geen gedeelde gerechten",
     "favoritesTitle": "Mijn favorieten",
-    "favoritesEmpty": "Je hebt nog geen favorieten"
+    "favoritesEmpty": "Je hebt nog geen favorieten",
+    "sourceRetnemt": "RetNemt",
+    "sourceBetterfeast": "BetterFeast",
+    "retnemt": "RetNemt",
+    "betterfeast": "BetterFeast"
   },
   "recipeFilters": {
     "title": "Filters",
@@ -1196,7 +1200,8 @@
       "carbs-low": "Weinig koolhydraten",
       "fat-high": "Veel vet",
       "fat-low": "Weinig vet"
-    }
+    },
+    "kcalPer100g": "{kcal} kcal per 100 g"
   },
   "recipeSteps": {
     "title": "Bereiding",
@@ -1333,7 +1338,13 @@
       "fiber": "Voedingsvezels",
       "protein": "Eiwit",
       "salt": "Zout"
-    }
+    },
+    "register": "Gerecht registreren",
+    "declaration": "Ingrediëntendeclaratie",
+    "nutritionPer100g": "Voedingswaarden per 100 g",
+    "nutritionNoteRetnemt": "De voedingswaarden per portie zijn door RetNemt berekend op basis van de ingrediënten van het recept.",
+    "nutritionNoteBetterfeast": "De voedingswaarden per 100 g komen uit de productdeclaratie van BetterFeast.",
+    "allergenNoteRetnemt": "De allergenen zijn indicatief en gebaseerd op de ingrediënten, niet op sporen van allergenen."
   },
   "createDish": {
     "pageTitle": "Title and description",
@@ -2467,7 +2478,11 @@
         "water": "Water",
         "body": "Lengte, BMI en temperatuur"
       }
-    }
+    },
+    "retNemtTitle": "RetNemt-recepten",
+    "retNemtDescription": "RetNemt-recepten samen met de gedeelde gerechten onder Recepten tonen",
+    "betterFeastTitle": "BetterFeast-gerechten",
+    "betterFeastDescription": "Kant-en-klaarmaaltijden van BetterFeast samen met de gedeelde gerechten onder Recepten tonen"
   },
   "payment": {
     "title": "Betaling",

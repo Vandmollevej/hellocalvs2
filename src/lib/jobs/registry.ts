@@ -170,6 +170,26 @@ export const JOBS: JobDefinition[] = [
     defaultRunAtTime: "03:30",
   },
   {
+    key: "retnemt-import",
+    name: "RetNemt-import",
+    description:
+      "Henter RetNemts retter (ugens menu hver nat, hele opskriftsarkivet en gang om ugen) med næring, ingredienser og billeder, og spærrer retter, hvis side er forsvundet.",
+    runtime: "agent",
+    container: "retnemt-agent",
+    defaultIntervalMinutes: null,
+    defaultRunAtTime: "03:45",
+  },
+  {
+    key: "betterfeast-import",
+    name: "BetterFeast-import",
+    description:
+      "Henter BetterFeasts færdigretter fra ugens menu med varedeklaration og næring pr. 100 g, og spærrer retter, der ikke har været på menuen i fire måneder.",
+    runtime: "agent",
+    container: "betterfeast-agent",
+    defaultIntervalMinutes: null,
+    defaultRunAtTime: "04:00",
+  },
+  {
     key: "hellofresh-import",
     name: "HelloFresh-import",
     description: "Henter nye/ændrede HelloFresh-opskrifter i små portioner og matcher ingredienserne mod varer.",

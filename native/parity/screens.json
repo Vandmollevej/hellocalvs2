@@ -162,6 +162,20 @@
       "note": "Admin er et skrivebordsværktøj og bliver på web."
     },
     {
+      "route": "/admin/dishes/betterfeast",
+      "web": "src/app/admin/dishes/betterfeast/page.tsx",
+      "status": "web-only",
+      "native": [],
+      "note": "Admin er et skrivebordsværktøj og bliver på web."
+    },
+    {
+      "route": "/admin/dishes/betterfeast/[id]",
+      "web": "src/app/admin/dishes/betterfeast/[id]/page.tsx",
+      "status": "web-only",
+      "native": [],
+      "note": "Admin er et skrivebordsværktøj og bliver på web."
+    },
+    {
       "route": "/admin/dishes/hellofresh",
       "web": "src/app/admin/dishes/hellofresh/page.tsx",
       "status": "web-only",
@@ -171,6 +185,20 @@
     {
       "route": "/admin/dishes/hellofresh/[id]",
       "web": "src/app/admin/dishes/hellofresh/[id]/page.tsx",
+      "status": "web-only",
+      "native": [],
+      "note": "Admin er et skrivebordsværktøj og bliver på web."
+    },
+    {
+      "route": "/admin/dishes/retnemt",
+      "web": "src/app/admin/dishes/retnemt/page.tsx",
+      "status": "web-only",
+      "native": [],
+      "note": "Admin er et skrivebordsværktøj og bliver på web."
+    },
+    {
+      "route": "/admin/dishes/retnemt/[id]",
+      "web": "src/app/admin/dishes/retnemt/[id]/page.tsx",
       "status": "web-only",
       "native": [],
       "note": "Admin er et skrivebordsværktøj og bliver på web."

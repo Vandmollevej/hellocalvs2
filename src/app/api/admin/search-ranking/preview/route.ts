@@ -1,3 +1,4 @@
+import { MEAL_KIT_SOURCES } from "@/lib/meal-kit-providers";
 import { NextResponse } from "next/server";
 import type { Prisma } from "@prisma/client";
 import { requireAdminUser } from "@/lib/require-admin";
@@ -76,7 +77,7 @@ export async function POST(req: Request) {
               : []),
           ],
           AND: {
-            OR: [{ externalSource: null }, { externalSource: { notIn: ["HELLOFRESH", "OPEN_FOOD_FACTS"] } }],
+            OR: [{ externalSource: null }, { externalSource: { notIn: [...MEAL_KIT_SOURCES, "OPEN_FOOD_FACTS"] } }],
           },
         },
         include: {

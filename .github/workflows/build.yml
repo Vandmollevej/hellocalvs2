@@ -61,7 +61,7 @@ jobs:
           cp compose.production.yaml /deploy/compose.production.yaml
           # Alle agenter, som compose.production.yaml bygger lokalt (build: ./scripts/...).
           # (edge-proxy er nginx-konfigurationen foran app, ingen agent.)
-          for agent in image-agent frida-import hellofresh-import valdemarsro-agent rema1000-import store-products-import quality-control-agent logo-agent amount-suggestion-agent uptime-agent edge-proxy; do
+          for agent in image-agent frida-import hellofresh-import valdemarsro-agent retnemt-agent betterfeast-agent rema1000-import store-products-import quality-control-agent logo-agent amount-suggestion-agent uptime-agent edge-proxy; do
             mkdir -p "/deploy/scripts/$agent"
             cp -R "scripts/$agent/." "/deploy/scripts/$agent/"
           done
@@ -144,7 +144,7 @@ jobs:
         run: |
           set -euo pipefail
           cd /deploy
-          docker compose --project-directory /volume1/docker/App/hellocal-v2 -f compose.production.yaml --env-file .env.production up -d --build image-agent frida-agent hellofresh-agent valdemarsro-agent rema1000-agent store-products-agent
+          docker compose --project-directory /volume1/docker/App/hellocal-v2 -f compose.production.yaml --env-file .env.production up -d --build image-agent frida-agent hellofresh-agent valdemarsro-agent retnemt-agent betterfeast-agent rema1000-agent store-products-agent
 
       - name: Build and start quality-control agent
         run: |

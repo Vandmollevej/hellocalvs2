@@ -1117,7 +1117,11 @@
     "trendingTitle": "Trending right now",
     "trendingEmpty": "There are no shared dishes yet",
     "favoritesTitle": "My favourites",
-    "favoritesEmpty": "You have no favourites yet"
+    "favoritesEmpty": "You have no favourites yet",
+    "sourceRetnemt": "RetNemt",
+    "sourceBetterfeast": "BetterFeast",
+    "retnemt": "RetNemt",
+    "betterfeast": "BetterFeast"
   },
   "recipeFilters": {
     "title": "Filters",
@@ -1196,7 +1200,8 @@
       "carbs-low": "Low in carbs",
       "fat-high": "High in fat",
       "fat-low": "Low in fat"
-    }
+    },
+    "kcalPer100g": "{kcal} kcal per 100 g"
   },
   "recipeSteps": {
     "title": "Method",
@@ -1333,7 +1338,13 @@
       "fiber": "Dietary fibre",
       "protein": "Protein",
       "salt": "Salt"
-    }
+    },
+    "register": "Log this dish",
+    "declaration": "Ingredients declaration",
+    "nutritionPer100g": "Nutrition per 100 g",
+    "nutritionNoteRetnemt": "The nutrition per serving is calculated by RetNemt from the recipe's ingredients.",
+    "nutritionNoteBetterfeast": "The nutrition per 100 g comes from BetterFeast's product declaration.",
+    "allergenNoteRetnemt": "The allergens are a guide based on the ingredients, not on traces of allergens."
   },
   "createDish": {
     "pageTitle": "Title and description",
@@ -2467,7 +2478,11 @@
         "water": "Water",
         "body": "Height, BMI and temperature"
       }
-    }
+    },
+    "retNemtTitle": "RetNemt recipes",
+    "retNemtDescription": "Show RetNemt recipes together with the shared dishes under Recipes",
+    "betterFeastTitle": "BetterFeast dishes",
+    "betterFeastDescription": "Show BetterFeast's ready meals together with the shared dishes under Recipes"
   },
   "payment": {
     "title": "Payment",

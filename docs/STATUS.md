@@ -9,6 +9,13 @@ Last updated: 2026-10-10
 - Migration `20261010210000_search_events` og ny container `meilisearch` skal med deployet (begge håndteres af `build.yml`).
 - Samtidig rettet: de to røde tests på master (admin-genveje: genveje til Søgning, Synonymordbog, Dyrefoder-filter, Vejning: tøj; sidetræet: 55 manglende sider).
 - Tjekket: tsc, eslint, `npm test` (315/315 grønne), paritet, build. Lokalt mod Meilisearch v1.53.2 + Postgres 16 med de 2.830 REMA-/butiksvarer fra repoet: søgninger, indekssynk (2.830 varer på 5 s; anden kørsel 0 ændringer), statistik, raffinering, klik og admin-siden. AI-vurderingen er ikke prøvet (ingen OpenAI-nøgle lokalt), og intet er prøvet mod produktionsdata.
+## 2026-10-10: RetNemt og BetterFeast som integrationer (som HelloFresh)
+
+- To nye natlige robotter: `retnemt-agent` (job `retnemt-import`, 03:45; ugens menu + hele opskriftsarkivet ugentligt, ca. 150 retter på menuen) og `betterfeast-agent` (job `betterfeast-import`, 04:00; ugens menu, ca. 100 unikke færdigretter med deklaration). Første kørsel sker straks efter deploy (jobbene har ikke kørt før). Styres under admin → Cron-jobs.
+- Integrationer → Opskrifter har kort for HelloFresh, RetNemt og BetterFeast (`User.recipeProviders`); Retter → Delte retter viser kildeknapper for dem, der er slået til (Seriøs). Opskriftssiden er HelloFreshs; BetterFeast viser deklaration og næring pr. 100 g. Admin → Retter har RetNemt- og BetterFeast-lister.
+- Rettet undervejs: HelloFresh-kontakten under Integrationer kunne ikke gemmes (feltet fandtes ikke i databasen); admin "Deaktivér" satte status i stedet for `discontinued`; Valdemarsro-listen i admin var tom.
+- Migration `20261010220000_meal_kit_providers` skal med deployet. Native app (Opskrifter, opskriftsside, Integrationer, Favoritter) er porteret.
+- Tjekket: robotternes indhentning og tolkning kørt mod de rigtige sider (RetNemt: næring/ingredienser/allergener/arkiv-bladring; BetterFeast: 164 menupunkter, deklaration, næring, allergener), prisma validate, tsc, eslint, `npm test` (de 2 kendte røde er røde på master), paritet, sync og build. Robotternes databaseskrivning er ikke kørt mod en rigtig database før deploy.
 
 ## 2026-10-10: Søgning — "Nescafé instant kaffe" og "instantkaffe" finder Nescafé
 

@@ -62,8 +62,9 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.JsonArray
 import kotlinx.serialization.json.JsonObject
-import kotlinx.serialization.json.booleanOrNull
+import kotlinx.serialization.json.JsonPrimitive
 import kotlinx.serialization.json.contentOrNull
 import kotlinx.serialization.json.jsonPrimitive
 import kotlin.math.max
@@ -83,9 +84,40 @@ internal class RecipeRowData(
     val clickKey: String? = null,
 )
 
-/** HelloFresh recipes (id "hf_…") have their own page (docs/DECISIONS.md 2026-09-27). */
+/**
+ * src/lib/meal-kit-providers.ts — meal-kit integrations HelloFresh, RetNemt and BetterFeast
+ * (docs/DECISIONS.md 2026-10-10): i18n keys for the source button, the row label and the
+ * integrations card.
+ */
+internal class MealKitProvider(
+    val key: String,
+    val idPrefix: String,
+    val sourceLabel: String,
+    val rowLabel: String,
+    val title: String,
+    val description: String,
+)
+
+internal val MEAL_KIT_PROVIDERS = listOf(
+    MealKitProvider("hellofresh", "hf_", "recipes.sourceHelloFresh", "recipes.helloFresh", "integrations.helloFreshTitle", "integrations.helloFreshDescription"),
+    MealKitProvider("retnemt", "rn_", "recipes.sourceRetnemt", "recipes.retnemt", "integrations.retNemtTitle", "integrations.retNemtDescription"),
+    MealKitProvider("betterfeast", "bf_", "recipes.sourceBetterfeast", "recipes.betterfeast", "integrations.betterFeastTitle", "integrations.betterFeastDescription"),
+)
+
+/** parseRecipeProviders: User.recipeProviders from /api/profile — known keys only, fixed order. */
+internal fun parseRecipeProviders(user: JsonObject?): List<String> {
+    val list = (user?.get("recipeProviders") as? JsonArray)?.mapNotNull { (it as? JsonPrimitive)?.contentOrNull }.orEmpty()
+    return MEAL_KIT_PROVIDERS.map { it.key }.filter { it in list }
+}
+
+/** Meal-kit dishes (id "hf_…", "rn_…", "bf_…") have their own page (docs/DECISIONS.md 2026-09-27, 2026-10-10). */
 internal fun recipeHref(id: String) =
-    if (id.startsWith("hf_")) "/profile/recipes/hellofresh/${Location.encode(id)}" else "/profile/recipes/${Location.encode(id)}?kind=shared"
+    if (MEAL_KIT_PROVIDERS.any { id.startsWith(it.idPrefix) }) "/profile/recipes/hellofresh/${Location.encode(id)}"
+    else "/profile/recipes/${Location.encode(id)}?kind=shared"
+
+/** favoriteKcalText: a BetterFeast favourite without serving weight shows kcal per 100 g. */
+private fun favoriteKcalText(t: Translator, kcal: Double, per100g: Boolean) =
+    if (per100g) t.t("recipeFilters.kcalPer100g", "kcal" to kcal.roundToInt()) else t.t("recipes.kcalTotal", "kcal" to kcal.roundToInt())
 
 /** RecipeRow: image (or soup icon), name, warnings, subtitle + label, extra, chevron. */
 @Composable
@@ -210,7 +242,7 @@ private data class OwnDishSummary(
 private data class DishesResponse(val dishes: List<OwnDishSummary> = emptyList())
 
 @Serializable
-private data class FavoriteRecipe(val id: String, val name: String, val kcal: Double = 0.0, val images: List<String> = emptyList())
+private data class FavoriteRecipe(val id: String, val name: String, val kcal: Double = 0.0, val per100g: Boolean = false, val images: List<String> = emptyList())
 
 @Serializable
 private data class FavoritesResponse(val favorites: List<FavoriteRecipe> = emptyList())
@@ -250,7 +282,7 @@ private fun MineTab(t: Translator) {
                         href = recipeHref(recipe.id),
                         name = recipe.name,
                         imageUrl = null,
-                        subtitle = t.t("recipes.kcalTotal", "kcal" to recipe.kcal.roundToInt()),
+                        subtitle = favoriteKcalText(t, recipe.kcal, recipe.per100g),
                         label = t.t("recipes.statusFavorite") to false,
                     )
                 }
@@ -285,6 +317,7 @@ private data class SearchResult(
     val name: String,
     val imageUrl: String? = null,
     val kcal: Double = 0.0,
+    val per100g: Boolean = false,
     val servings: Int = 1,
     val split: Split? = null,
     val warnings: List<Warning> = emptyList(),
@@ -300,7 +333,7 @@ private fun SharedTab(t: Translator) {
     var filters by remember { mutableStateOf(RecipeFilters.load()) }
     var filterSheetOpen by remember { mutableStateOf(false) }
     var source by remember { mutableStateOf("all") }
-    var helloFresh by remember { mutableStateOf<Boolean?>(null) }
+    var providers by remember { mutableStateOf<List<String>?>(null) }
     var isSerious by remember { mutableStateOf<Boolean?>(null) }
     var results by remember { mutableStateOf<List<SearchResult>>(emptyList()) }
     var state by remember { mutableStateOf("loading") }
@@ -308,18 +341,18 @@ private fun SharedTab(t: Translator) {
     val searching = query.isNotBlank()
 
     LaunchedEffect(Unit) {
-        helloFresh = loadProfileUser()?.get("helloFreshEnabled")?.jsonPrimitive?.booleanOrNull ?: false
+        providers = parseRecipeProviders(loadProfileUser())
         favorites = runCatching { ApiJson.decodeFromJsonElement(FavoritesResponse.serializer(), Api.get("/api/recipe-favorites")).favorites }.getOrDefault(emptyList())
     }
-    // Filters/sorting and HelloFresh are Seriøs-only (docs/DECISIONS.md 2026-09-26).
+    // Filters/sorting and the meal kits are Seriøs-only (docs/DECISIONS.md 2026-09-26).
     LaunchedEffect(Unit) {
         val tier = runCatching { (Api.get("/api/subscription") as? JsonObject)?.get("tier")?.jsonPrimitive?.contentOrNull }.getOrNull() ?: "FREE"
         isSerious = tier == "SERIOUS"
     }
 
     // Without a search: the most popular dishes ("Trender netop nu"); with a search: results.
-    LaunchedEffect(query, filters, helloFresh, isSerious, source) {
-        val hf = helloFresh ?: return@LaunchedEffect
+    LaunchedEffect(query, filters, providers, isSerious, source) {
+        val enabled = providers ?: return@LaunchedEffect
         val serious = isSerious ?: return@LaunchedEffect
         delay(200)
         state = "loading"
@@ -330,7 +363,7 @@ private fun SharedTab(t: Translator) {
                 params.removeAll { it.first == "sort" }
                 params += "trending" to "1"
             }
-            if (hf && serious) params += "hellofresh" to "1"
+            if (enabled.isNotEmpty() && serious) params += "providers" to enabled.joinToString(",")
             if (source != "all") params += "source" to source
             results = ApiJson.decodeFromJsonElement(SearchResponse.serializer(), Api.get("/api/shared-recipes?${queryString(params)}")).recipes
             state = "ready"
@@ -343,13 +376,14 @@ private fun SharedTab(t: Translator) {
 
     val sourceOptions = buildList {
         add("all" to t.t("recipes.sourceAll"))
-        if (helloFresh == true) add("hellofresh" to t.t("recipes.sourceHelloFresh"))
+        MEAL_KIT_PROVIDERS.filter { providers?.contains(it.key) == true }.forEach { add(it.key to t.t(it.sourceLabel)) }
         add("valdemarsro" to t.t("recipes.sourceValdemarsro"))
     }
 
     fun subtitleFor(result: SearchResult): String {
         if (!filters.showKcal) return ""
         val perServing = (result.kcal / max(1, result.servings)).roundToInt()
+        if (result.per100g) return t.t("recipeFilters.kcalPer100g", "kcal" to result.kcal.roundToInt())
         return if (result.kind == "shared" && result.servings > 1)
             "${t.t("recipeFilters.kcalPerServing", "kcal" to perServing)} · ${t.t("recipeFilters.servings", "count" to result.servings)}"
         else t.t("recipeFilters.kcalPerServing", "kcal" to perServing)
@@ -366,12 +400,12 @@ private fun SharedTab(t: Translator) {
         return if (result.kind != "shared") RecipeRowData(
             key = result.id,
             clickKey = clickKey,
-            // Valdemarsro dishes open as the product page; HelloFresh has its own view.
+            // Valdemarsro dishes open as the product page; the meal kits have their own view.
             href = if (result.kind == "valdemarsro") "/add/${Location.encode(result.id)}" else recipeHref(result.id),
             name = result.name,
             imageUrl = result.imageUrl,
             subtitle = subtitleFor(result),
-            label = (if (result.kind == "valdemarsro") t.t("recipes.valdemarsroSource") else t.t("recipes.helloFresh")) to true,
+            label = (MEAL_KIT_PROVIDERS.firstOrNull { it.key == result.kind }?.let { t.t(it.rowLabel) } ?: t.t("recipes.valdemarsroSource")) to true,
             warnings = warnings,
             extra = extra,
         ) else RecipeRowData(
@@ -447,7 +481,7 @@ private fun SharedTab(t: Translator) {
                         href = recipeHref(recipe.id),
                         name = recipe.name,
                         imageUrl = recipe.images.firstOrNull(),
-                        subtitle = t.t("recipes.kcalTotal", "kcal" to recipe.kcal.roundToInt()),
+                        subtitle = favoriteKcalText(t, recipe.kcal, recipe.per100g),
                     )
                 })
             }

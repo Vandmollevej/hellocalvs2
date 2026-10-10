@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { unauthorized } from "@/lib/session";
 import { getProfileUser } from "@/lib/family-access";
+import { MEAL_KIT_SOURCES } from "@/lib/meal-kit-providers";
 import { HF_RECIPE_MAX_PHOTOS } from "@/lib/hellofresh-recipe";
 
 // "Mine kogebogsbilleder" på en HelloFresh-opskrift (docs/DECISIONS.md
@@ -19,7 +20,7 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
   if (typeof image !== "string" || !image.startsWith("data:image/") || image.length > MAX_IMAGE_LENGTH) {
     return NextResponse.json({ message: "Ugyldigt billede" }, { status: 400 });
   }
-  const product = await prisma.product.findFirst({ where: { id, externalSource: "HELLOFRESH" }, select: { id: true } });
+  const product = await prisma.product.findFirst({ where: { id, externalSource: { in: MEAL_KIT_SOURCES } }, select: { id: true } });
   if (!product) return NextResponse.json({ message: "Opskriften findes ikke" }, { status: 404 });
   const count = await prisma.recipeCookbookPhoto.count({ where: { userId: user.id, productId: id } });
   if (count >= HF_RECIPE_MAX_PHOTOS) return NextResponse.json({ message: "For mange billeder" }, { status: 400 });

@@ -27,12 +27,25 @@ import {
 import { RecipeDifficultyIcon, RecipeHealthAppIcon, RecipeProteinIcon } from "@/components/recipe-view/RecipeIcons";
 import { RecipeUnitToggle, type RecipeUnitMode } from "@/components/recipe-view/RecipeUnitToggle";
 import { measureAsGramsText } from "@/lib/kitchen-conversions";
+import type { MealKitKey } from "@/lib/meal-kit-providers";
 
 // En HelloFresh-opskrift vist præcis som i HelloFresh-appen
-// (docs/DECISIONS.md 2026-09-27). Kun HelloFresh-opskrifter bruger denne
-// side; brugerens egne og delte retter vises stadig på /profile/recipes/[id].
+// (docs/DECISIONS.md 2026-09-27). Måltidskasse-retter (HelloFresh, RetNemt,
+// BetterFeast — DECISIONS 2026-10-10) bruger denne side; brugerens egne og
+// delte retter vises stadig på /profile/recipes/[id]. BetterFeast er
+// færdigretter: ingen fremgangsmåde, men varedeklaration og næring pr. 100 g.
 
-type Sections = { ingredients: boolean; steps: boolean; nutrition: boolean; photos: boolean };
+type Sections = { ingredients: boolean; declaration: boolean; steps: boolean; nutrition: boolean; photos: boolean };
+
+const NUTRITION_NOTES: Record<MealKitKey, string> = {
+  hellofresh: "hfRecipe.nutritionNote",
+  retnemt: "hfRecipe.nutritionNoteRetnemt",
+  betterfeast: "hfRecipe.nutritionNoteBetterfeast",
+};
+const ALLERGEN_NOTES: Partial<Record<MealKitKey, string>> = {
+  hellofresh: "hfRecipe.allergenNote",
+  retnemt: "hfRecipe.allergenNoteRetnemt",
+};
 
 function amountText(amount: number | null, unit: string | null) {
   return [amount === null ? null : formatHfAmount(amount), unit].filter(Boolean).join(" ");
@@ -47,7 +60,13 @@ export default function HelloFreshRecipePage() {
   const [recipe, setRecipe] = useState<HfRecipeView | null>(null);
   const [state, setState] = useState<"loading" | "ready" | "missing">("loading");
   const [notice, setNotice] = useState<string | null>(null);
-  const [sections, setSections] = useState<Sections>({ ingredients: true, steps: true, nutrition: false, photos: true });
+  const [sections, setSections] = useState<Sections>({
+    ingredients: true,
+    declaration: true,
+    steps: true,
+    nutrition: false,
+    photos: true,
+  });
   // Mål (dl, spsk) som i opskriften, eller omregnet til gram (src/lib/kitchen-conversions.ts).
   const [unitMode, setUnitMode] = useState<RecipeUnitMode>("measures");
 
@@ -147,6 +166,9 @@ export default function HelloFreshRecipePage() {
       ] as (RecipeMetaItem | false | null)[]).filter((item): item is RecipeMetaItem => Boolean(item))
     : [];
 
+  // Udbyderens egne noter: HelloFreshs anlægsnote, RetNemts "vejledende".
+  const allergenNote = recipe && ALLERGEN_NOTES[recipe.provider] ? t(ALLERGEN_NOTES[recipe.provider]!) : undefined;
+
   const allergenNames = recipe
     ? recipe.allergenNames.length
       ? recipe.allergenNames
@@ -169,10 +191,17 @@ export default function HelloFreshRecipePage() {
       onShare={recipe ? () => void share({ title: recipe.name, url: window.location.href }) : undefined}
       scrollRef={scrollRef}
       footer={
-        state === "ready" ? (
-          <button type="button" className="rv-primary-button" onClick={startCooking}>
-            {t("hfRecipe.letsCook")}
-          </button>
+        state === "ready" && recipe ? (
+          recipe.steps.length > 0 ? (
+            <button type="button" className="rv-primary-button" onClick={startCooking}>
+              {t("hfRecipe.letsCook")}
+            </button>
+          ) : (
+            // Færdigret uden fremgangsmåde (BetterFeast): registrér direkte.
+            <button type="button" className="rv-primary-button" onClick={() => router.push(registerHref)}>
+              {t("hfRecipe.register")}
+            </button>
+          )
         ) : undefined
       }
     >
@@ -191,9 +220,11 @@ export default function HelloFreshRecipePage() {
               {recipe.isFavorite ? <IconBookmarkFilled size={22} /> : <IconBookmark size={22} stroke={2} />}
               {t(recipe.isFavorite ? "hfRecipe.saved" : "hfRecipe.save")}
             </button>
-            <button type="button" className="rv-outline-button rv-outline-button--icon" onClick={shareShoppingList} aria-label={t("hfRecipe.shoppingList")}>
-              <IconBasket size={22} stroke={2} />
-            </button>
+            {recipe.ingredients.length > 0 && (
+              <button type="button" className="rv-outline-button rv-outline-button--icon" onClick={shareShoppingList} aria-label={t("hfRecipe.shoppingList")}>
+                <IconBasket size={22} stroke={2} />
+              </button>
+            )}
             <button type="button" className="rv-outline-button rv-outline-button--icon" onClick={() => window.print()} aria-label={t("hfRecipe.print")}>
               <IconPrinter size={22} stroke={2} />
             </button>
@@ -210,8 +241,15 @@ export default function HelloFreshRecipePage() {
               readLess={t("hfRecipe.readLess")}
             />
           )}
-          <RecipeAllergens label={t("hfRecipe.allergens")} names={allergenNames} note={t("hfRecipe.allergenNote")} />
+          <RecipeAllergens label={t("hfRecipe.allergens")} names={allergenNames} note={allergenNote} />
 
+          {recipe.declaration && (
+            <RecipeAccordion title={t("hfRecipe.declaration")} open={sections.declaration} onToggle={() => toggle("declaration")}>
+              <p className="rv-declaration">{recipe.declaration}</p>
+            </RecipeAccordion>
+          )}
+
+          {recipe.ingredients.length > 0 && (
           <RecipeAccordion title={t("hfRecipe.ingredients")} open={sections.ingredients} onToggle={() => toggle("ingredients")}>
             {recipe.ingredients.some((i) => measureAsGramsText(i.amount, i.unit, i.name) !== null) && (
               <div className="rv-no-print mb-3">
@@ -228,16 +266,23 @@ export default function HelloFreshRecipePage() {
               }))}
             />
           </RecipeAccordion>
+          )}
 
-          <RecipeAccordion id="rv-steps" title={t("hfRecipe.steps")} open={sections.steps} onToggle={() => toggle("steps")}>
-            <RecipeStepList steps={recipe.steps.map((step) => step.text)} />
-            <button type="button" className="rv-outline-button rv-outline-button--block rv-no-print" onClick={() => router.push(registerHref)}>
-              {t("hfRecipe.markCooked")}
-            </button>
-          </RecipeAccordion>
+          {recipe.steps.length > 0 && (
+            <RecipeAccordion id="rv-steps" title={t("hfRecipe.steps")} open={sections.steps} onToggle={() => toggle("steps")}>
+              <RecipeStepList steps={recipe.steps.map((step) => step.text)} />
+              <button type="button" className="rv-outline-button rv-outline-button--block rv-no-print" onClick={() => router.push(registerHref)}>
+                {t("hfRecipe.markCooked")}
+              </button>
+            </RecipeAccordion>
+          )}
 
           {recipe.nutrition.length > 0 && (
-            <RecipeAccordion title={t("hfRecipe.nutrition")} open={sections.nutrition} onToggle={() => toggle("nutrition")}>
+            <RecipeAccordion
+              title={t(recipe.nutritionBasis === "100g" ? "hfRecipe.nutritionPer100g" : "hfRecipe.nutrition")}
+              open={sections.nutrition}
+              onToggle={() => toggle("nutrition")}
+            >
               <RecipeNutritionTable
                 rows={recipe.nutrition.map((row, index) => ({
                   key: `${row.key ?? row.name}-${index}`,
@@ -245,7 +290,7 @@ export default function HelloFreshRecipePage() {
                   value: amountText(row.amount, row.unit),
                 }))}
               />
-              <p className="rv-nutrition-note">{t("hfRecipe.nutritionNote")}</p>
+              <p className="rv-nutrition-note">{t(NUTRITION_NOTES[recipe.provider])}</p>
               <button type="button" className="rv-outline-button rv-outline-button--block rv-no-print" onClick={() => router.push(registerHref)}>
                 <RecipeHealthAppIcon />
                 {t("hfRecipe.addToHealthApp")}

@@ -23,41 +23,47 @@ function StatusBadge({ status }: { status: DishRow["status"] }) {
 }
 
 function Row({ row, canDisable }: { row: DishRow; canDisable: boolean }) {
-  const body = (
+  // Billede + navn er linket til retten; knapperne ligger uden for linket.
+  const main = (
     <>
       <div className="h-12 w-12 shrink-0 overflow-hidden rounded-md border border-hf-tan-dark bg-hf-white">
         {row.imageUrl && (
           // eslint-disable-next-line @next/next/no-img-element
-          <img src={row.imageUrl} alt="" loading="lazy" className="h-full w-full object-cover" />
+          <img src={row.imageUrl} alt="" loading="lazy" className={`h-full w-full object-cover ${row.disabled ? "opacity-50" : ""}`} />
         )}
       </div>
       <div className="min-w-0">
-        <p className="hf-type-body truncate text-hf-black">{row.name}</p>
-        {row.note && <p className="hf-type-small truncate text-text-muted">{row.note}</p>}
-      </div>
-      <p className="hf-type-small hidden text-right text-text-secondary sm:block">
-        {numberFormat.format(Math.round(row.kcal))} {row.kcalLabel}
-      </p>
-      <div className="flex items-center justify-end gap-2">
-        <StatusBadge status={row.status} />
-        {canDisable && <DishDisableButton id={row.id} disabled={row.status === "REJECTED"} />}
+        <p className={`hf-type-body truncate text-hf-black ${row.disabled ? "line-through" : ""}`}>{row.name}</p>
+        {row.disabled ? (
+          <p className="hf-type-small truncate text-hf-red-dark">Deaktiveret — vises ikke for brugerne</p>
+        ) : (
+          row.note && <p className="hf-type-small truncate text-text-muted">{row.note}</p>
+        )}
       </div>
     </>
   );
   const className = `grid items-center gap-4 px-4 py-3 ${
     canDisable
-      ? "grid-cols-[48px_minmax(0,1fr)_auto] sm:grid-cols-[48px_minmax(0,1fr)_140px_200px]"
-      : "grid-cols-[48px_minmax(0,1fr)_auto] sm:grid-cols-[48px_minmax(0,1fr)_140px_96px]"
+      ? "grid-cols-[minmax(0,1fr)_auto] sm:grid-cols-[minmax(0,1fr)_140px_200px]"
+      : "grid-cols-[minmax(0,1fr)_auto] sm:grid-cols-[minmax(0,1fr)_140px_96px]"
   }`;
+  const mainClass = "grid min-w-0 grid-cols-[48px_minmax(0,1fr)] items-center gap-4";
   return (
-    <li>
+    <li className={`${className} ${row.href ? "hover:bg-hf-tan" : ""}`}>
       {row.href ? (
-        <Link href={row.href} className={`${className} hover:bg-hf-tan`}>
-          {body}
+        <Link href={row.href} className={mainClass}>
+          {main}
         </Link>
       ) : (
-        <div className={className}>{body}</div>
+        <div className={mainClass}>{main}</div>
       )}
+      <p className="hf-type-small hidden text-right text-text-secondary sm:block">
+        {numberFormat.format(Math.round(row.kcal))} {row.kcalLabel}
+      </p>
+      <div className="flex items-center justify-end gap-2">
+        <StatusBadge status={row.status} />
+        {canDisable && <DishDisableButton id={row.id} disabled={row.disabled} />}
+      </div>
     </li>
   );
 }
@@ -77,7 +83,7 @@ export function DishListPage({
   q: string;
   data: DishPage;
   empty: string;
-  // Kun "Disable"-knap på linjen — ingen anden redigering (HelloFresh/Valdemarsro).
+  // Kun "Disable"-knap på linjen — ingen anden redigering (importerede retter).
   canDisable?: boolean;
 }) {
   const href = (page: number) => {

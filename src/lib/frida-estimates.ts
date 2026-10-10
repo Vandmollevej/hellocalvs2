@@ -1,3 +1,4 @@
+import { IMPORTED_DISH_SOURCES } from "@/lib/meal-kit-providers";
 import { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { findKitchenConversion } from "@/lib/kitchen-conversions";
@@ -213,7 +214,7 @@ async function estimateProducts(frida: { rows: FridaRow[]; groups: FridaTypeGrou
         AND: [
           { OR: [{ nutritionMissing: true }, { fridaEstimateId: { not: null } }] },
           // Også brugeroprettede varer (externalSource null); retter og Frida selv ikke.
-          { OR: [{ externalSource: null }, { externalSource: { notIn: ["FRIDA", "VALDEMARSRO", "HELLOFRESH"] } }] },
+          { OR: [{ externalSource: null }, { externalSource: { notIn: ["FRIDA", ...IMPORTED_DISH_SOURCES] } }] },
         ],
         privateOwnerId: null,
         discontinued: false,

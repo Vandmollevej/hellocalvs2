@@ -1117,7 +1117,11 @@
     "trendingTitle": "Gerade im Trend",
     "trendingEmpty": "Es gibt noch keine geteilten Gerichte",
     "favoritesTitle": "Meine Favoriten",
-    "favoritesEmpty": "Du hast noch keine Favoriten"
+    "favoritesEmpty": "Du hast noch keine Favoriten",
+    "sourceRetnemt": "RetNemt",
+    "sourceBetterfeast": "BetterFeast",
+    "retnemt": "RetNemt",
+    "betterfeast": "BetterFeast"
   },
   "recipeFilters": {
     "title": "Filter",
@@ -1196,7 +1200,8 @@
       "carbs-low": "Wenig Kohlenhydrate",
       "fat-high": "Viel Fett",
       "fat-low": "Wenig Fett"
-    }
+    },
+    "kcalPer100g": "{kcal} kcal pro 100 g"
   },
   "recipeSteps": {
     "title": "Zubereitung",
@@ -1333,7 +1338,13 @@
       "fiber": "Ballaststoffe",
       "protein": "Eiweiß",
       "salt": "Salz"
-    }
+    },
+    "register": "Gericht erfassen",
+    "declaration": "Zutatenverzeichnis",
+    "nutritionPer100g": "Nährwerte pro 100 g",
+    "nutritionNoteRetnemt": "Die Nährwerte pro Portion berechnet RetNemt aus den Zutaten des Rezepts.",
+    "nutritionNoteBetterfeast": "Die Nährwerte pro 100 g stammen aus der Produktdeklaration von BetterFeast.",
+    "allergenNoteRetnemt": "Die Allergene sind Richtwerte auf Grundlage der Zutaten, nicht von Allergenspuren."
   },
   "createDish": {
     "pageTitle": "Title and description",
@@ -2467,7 +2478,11 @@
         "water": "Wasser",
         "body": "Größe, BMI und Temperatur"
       }
-    }
+    },
+    "retNemtTitle": "RetNemt-Rezepte",
+    "retNemtDescription": "RetNemt-Rezepte zusammen mit den geteilten Gerichten unter Rezepte anzeigen",
+    "betterFeastTitle": "BetterFeast-Gerichte",
+    "betterFeastDescription": "Fertiggerichte von BetterFeast zusammen mit den geteilten Gerichten unter Rezepte anzeigen"
   },
   "payment": {
     "title": "Zahlung",

@@ -335,6 +335,43 @@ services:
       - backend
       - edge
 
+  # Måltidskasse-integrationer (docs/DECISIONS.md 2026-10-10): RetNemt- og
+  # BetterFeast-retter som Product-rækker; billeder i den delte retmappe.
+  retnemt-agent:
+    build: ./scripts/retnemt-agent
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: ${DATABASE_URL:?Set DATABASE_URL in .env.production}
+      RETNEMT_RUN_AT_TIME: ${RETNEMT_AGENT_RUN_AT_TIME:-03:45}
+      RETNEMT_BATCH_SIZE: ${RETNEMT_AGENT_BATCH_SIZE:-1000}
+    volumes:
+      - ./data/hellofresh-images:/images
+    depends_on:
+      db:
+        condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
+    networks:
+      - backend
+      - edge
+
+  betterfeast-agent:
+    build: ./scripts/betterfeast-agent
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: ${DATABASE_URL:?Set DATABASE_URL in .env.production}
+      BETTERFEAST_RUN_AT_TIME: ${BETTERFEAST_AGENT_RUN_AT_TIME:-04:00}
+    volumes:
+      - ./data/hellofresh-images:/images
+    depends_on:
+      db:
+        condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
+    networks:
+      - backend
+      - edge
+
   rema1000-agent:
     build: ./scripts/rema1000-import
     restart: "no"

@@ -54,6 +54,8 @@ const DICTIONARY = {
   nav_group_dishes: { DA: "Retter", EN: "Dishes" },
   nav_dishes_user: { DA: "Brugeroprettede", EN: "User-created" },
   nav_dishes_hellofresh: { DA: "HelloFresh", EN: "HelloFresh" },
+  nav_dishes_retnemt: { DA: "RetNemt", EN: "RetNemt" },
+  nav_dishes_betterfeast: { DA: "BetterFeast", EN: "BetterFeast" },
   nav_dishes_valdemarsro: { DA: "Valdemarsro", EN: "Valdemarsro" },
   nav_users_all: { DA: "Alle brugere", EN: "All users" },
   nav_grant_points: { DA: "Tildel points", EN: "Grant points" },

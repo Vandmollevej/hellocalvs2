@@ -66,6 +66,8 @@ export const NAV: NavEntry[] = [
     links: [
       { href: "/admin/dishes/user", key: "nav_dishes_user" },
       { href: "/admin/dishes/hellofresh", key: "nav_dishes_hellofresh" },
+      { href: "/admin/dishes/retnemt", key: "nav_dishes_retnemt" },
+      { href: "/admin/dishes/betterfeast", key: "nav_dishes_betterfeast" },
       { href: "/admin/dishes/valdemarsro", key: "nav_dishes_valdemarsro" },
     ],
   },

@@ -1,6 +1,7 @@
 // Fortæller serveren, at en ret i Delte retter er klikket på, så den kan
 // indgå i "Trender netop nu". Fejl ignoreres; navigationen må aldrig vente.
-export function recipeClickKey(kind: "shared" | "hellofresh" | "valdemarsro", id: string) {
+// Alle importerede retter (måltidskasser og Valdemarsro) deler "hf:"-nøglen.
+export function recipeClickKey(kind: string, id: string) {
   return `${kind === "shared" ? "shared" : "hf"}:${id}`;
 }
 

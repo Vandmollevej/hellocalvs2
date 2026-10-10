@@ -1,3 +1,4 @@
+import { MEAL_KIT_SOURCES } from "@/lib/meal-kit-providers";
 import { NextResponse } from "next/server";
 import { ExternalProductSource, type Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
@@ -37,7 +38,8 @@ import { recordSearchEvent } from "@/lib/search-analytics";
 // ?hour=0..23 overrides the ranking's local-hour bucket (defaults to the
 // server's current hour) — used by the client to send the *browser's* local
 // hour so region×time ranking reflects the user, not the server.
-// HelloFresh dishes are deliberately excluded unless ?source=HELLOFRESH is passed
+// Meal-kit dishes (HelloFresh, RetNemt, BetterFeast — src/lib/meal-kit-providers.ts)
+// are deliberately excluded unless ?source=HELLOFRESH (etc.) is passed
 // explicitly — they must stay discoverable only via the dedicated dish-recognition
 // flow (/api/ai/recognize-hellofresh), not through ordinary Madvarer/Søg search.
 // Open Food Facts products are never shown in search, not even via ?source=
@@ -159,7 +161,7 @@ async function searchProducts({
     : {
         OR: [
           { externalSource: null },
-          { externalSource: { notIn: ["HELLOFRESH", "OPEN_FOOD_FACTS"] } },
+          { externalSource: { notIn: [...MEAL_KIT_SOURCES, "OPEN_FOOD_FACTS"] } },
         ],
       };
   // Synlighed uden tekstfilter — gælder også søgemotorens træffere, hvis

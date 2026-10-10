@@ -26,11 +26,13 @@ import {
   type RecipeRowData as Row,
 } from "@/components/recipes/RecipeRow";
 import { recipeClickKey } from "@/lib/recipe-clicks";
+import { isMealKitKey, MEAL_KIT_PROVIDERS, parseRecipeProviders, type MealKitKey } from "@/lib/meal-kit-providers";
 
 // Indstillinger → Opskrifter (docs/DECISIONS.md 2026-09-24): to faner,
 // "Mine retter" (egne retter og favoritter fra delte retter, fra boksen) og
-// "Delte retter" (andres delte retter, plus HelloFresh-opskrifter når
-// brugeren har slået dem til under Integrationer).
+// "Delte retter" (andres delte retter, plus retter fra de måltidskasser —
+// HelloFresh, RetNemt, BetterFeast — brugeren har slået til under
+// Integrationer, docs/DECISIONS.md 2026-10-10).
 
 type Tab = "mine" | "shared";
 type LoadState = "loading" | "ready" | "error";
@@ -45,19 +47,33 @@ type OwnDish = {
   images?: string[];
   ingredients: { grams: number; product: { kcalPer100g: number } }[];
 };
-type FavoriteRecipe = { id: string; name: string; kcal: number };
-type Source = "all" | "shared" | "hellofresh" | "valdemarsro";
+type FavoriteRecipe = { id: string; name: string; kcal: number; per100g?: boolean };
+type Source = "all" | "shared" | "valdemarsro" | MealKitKey;
 type SearchResult = {
-  kind: "shared" | "hellofresh" | "valdemarsro";
+  kind: "shared" | "valdemarsro" | MealKitKey;
   id: string;
   name: string;
   imageUrl: string | null;
-  // Hele retten (delte retter) eller én servering (HelloFresh).
+  // Hele retten (delte retter), én servering (HelloFresh/RetNemt) eller
+  // 100 g (per100g, BetterFeast uden portionsvægt).
   kcal: number;
+  per100g?: boolean;
   servings: number;
   split: { protein: number; carbs: number; fat: number } | null;
   warnings: { ingredient: string; allergen: string }[];
 };
+
+// Kildemærkat og knaptekst pr. måltidskasse (i18n-nøgler).
+const MEAL_KIT_LABELS: Record<MealKitKey, { source: string; label: string }> = {
+  hellofresh: { source: "recipes.sourceHelloFresh", label: "recipes.helloFresh" },
+  retnemt: { source: "recipes.sourceRetnemt", label: "recipes.retnemt" },
+  betterfeast: { source: "recipes.sourceBetterfeast", label: "recipes.betterfeast" },
+};
+
+function favoriteKcalText(t: Translate, recipe: { kcal: number; per100g?: boolean }) {
+  const kcal = Math.round(recipe.kcal);
+  return recipe.per100g ? t("recipeFilters.kcalPer100g", { kcal }) : t("recipes.kcalTotal", { kcal });
+}
 
 function dishKcal(dish: OwnDish) {
   return Math.round(dish.ingredients.reduce((sum, i) => sum + (i.product.kcalPer100g * i.grams) / 100, 0));
@@ -111,7 +127,7 @@ function MineTab({ t }: { t: Translate }) {
             href: recipeHref(recipe.id),
             name: recipe.name,
             imageUrl: null,
-            subtitle: t("recipes.kcalTotal", { kcal: Math.round(recipe.kcal) }),
+            subtitle: favoriteKcalText(t, recipe),
             label: { text: t("recipes.statusFavorite"), tone: "muted" as const },
           })),
         ]);
@@ -147,7 +163,7 @@ function MineTab({ t }: { t: Translate }) {
 // fylder op med tilfældige, så der altid er mindst tre (DECISIONS 2026-10-10).
 const TRENDING_SKELETONS = 3;
 
-type FavoriteSnapshot = { id: string; name: string; kcal: number; images?: string[] };
+type FavoriteSnapshot = { id: string; name: string; kcal: number; per100g?: boolean; images?: string[] };
 
 function SharedTab({ t }: { t: Translate }) {
   const connectionMessage = useConnectionMessage();
@@ -155,8 +171,9 @@ function SharedTab({ t }: { t: Translate }) {
   const [filters, setFilters] = useState<RecipeFilters>(loadRecipeFilters);
   const [filterSheetOpen, setFilterSheetOpen] = useState(false);
   const [source, setSource] = useState<Source>("all");
-  const [helloFresh, setHelloFresh] = useState<boolean | null>(null);
-  // Filtre/sortering og HelloFresh (en integration) er kun for Seriøs
+  // Måltidskasser, brugeren har slået til under Integrationer.
+  const [providers, setProviders] = useState<MealKitKey[] | null>(null);
+  // Filtre/sortering og måltidskasserne (integrationer) er kun for Seriøs
   // (docs/DECISIONS.md 2026-09-26); Gratis sorteres altid efter relevans.
   const isSerious = useIsSerious();
   const [results, setResults] = useState<SearchResult[]>([]);
@@ -166,9 +183,9 @@ function SharedTab({ t }: { t: Translate }) {
 
   useEffect(() => {
     fetch("/api/profile")
-      .then(async (res) => (res.ok ? ((await res.json()) as { user?: { helloFreshEnabled?: boolean } }) : {}))
-      .then((data) => setHelloFresh(Boolean(data.user?.helloFreshEnabled)))
-      .catch(() => setHelloFresh(false));
+      .then(async (res) => (res.ok ? ((await res.json()) as { user?: { recipeProviders?: unknown } }) : {}))
+      .then((data) => setProviders(parseRecipeProviders(data.user?.recipeProviders)))
+      .catch(() => setProviders([]));
     fetch("/api/recipe-favorites")
       .then(async (res) => (res.ok ? ((await res.json()) as { favorites: FavoriteSnapshot[] }).favorites : []))
       .then(setFavorites)
@@ -178,7 +195,7 @@ function SharedTab({ t }: { t: Translate }) {
   // Uden søgning hentes de retter med flest nye klik til "Trender netop nu";
   // med søgning hentes resultaterne i den valgte sortering.
   useEffect(() => {
-    if (helloFresh === null || isSerious === null) return;
+    if (providers === null || isSerious === null) return;
     const controller = new AbortController();
     const timeout = setTimeout(async () => {
       setState("loading");
@@ -186,7 +203,7 @@ function SharedTab({ t }: { t: Translate }) {
         const params = isSerious ? filtersToParams(filters) : new URLSearchParams({ sort: "relevance" });
         if (query.trim()) params.set("q", query.trim());
         else params.set("trending", "1");
-        if (helloFresh && isSerious) params.set("hellofresh", "1");
+        if (providers.length > 0 && isSerious) params.set("providers", providers.join(","));
         // Integrationsknapperne under søgefeltet: "Opskrifter" viser alle,
         // en enkelt integration viser kun dens retter.
         if (source !== "all") params.set("source", source);
@@ -202,11 +219,14 @@ function SharedTab({ t }: { t: Translate }) {
       controller.abort();
       clearTimeout(timeout);
     };
-  }, [query, filters, helloFresh, isSerious, source]);
+  }, [query, filters, providers, isSerious, source]);
 
   const sourceOptions: { value: Source; label: string }[] = [
     { value: "all", label: t("recipes.sourceAll") },
-    ...(helloFresh ? [{ value: "hellofresh" as const, label: t("recipes.sourceHelloFresh") }] : []),
+    ...MEAL_KIT_PROVIDERS.filter((p) => providers?.includes(p.key)).map((p) => ({
+      value: p.key,
+      label: t(MEAL_KIT_LABELS[p.key].source),
+    })),
     { value: "valdemarsro", label: t("recipes.sourceValdemarsro") },
   ];
   const view = filters;
@@ -215,6 +235,7 @@ function SharedTab({ t }: { t: Translate }) {
   function subtitleFor(result: SearchResult) {
     if (!view.showKcal) return "";
     const perServing = Math.round(result.kcal / Math.max(1, result.servings));
+    if (result.per100g) return t("recipeFilters.kcalPer100g", { kcal: result.kcal });
     return result.kind === "shared" && result.servings > 1
       ? `${t("recipeFilters.kcalPerServing", { kcal: perServing })} · ${t("recipeFilters.servings", { count: result.servings })}`
       : t("recipeFilters.kcalPerServing", { kcal: perServing });
@@ -238,13 +259,13 @@ function SharedTab({ t }: { t: Translate }) {
           key: result.id,
           clickKey: recipeClickKey(result.kind, result.id),
           // Valdemarsro-retter åbnes som produktsiden (tilføj + gram, "Gå til
-          // opskrift", ingredienser og næring); HelloFresh har sin egen visning.
+          // opskrift", ingredienser og næring); måltidskasserne har deres egen visning.
           href: result.kind === "valdemarsro" ? `/add/${encodeURIComponent(result.id)}` : recipeHref(result.id),
           name: result.name,
           imageUrl: result.imageUrl,
           subtitle: subtitleFor(result),
           label: {
-            text: result.kind === "valdemarsro" ? t("recipes.valdemarsroSource") : t("recipes.helloFresh"),
+            text: isMealKitKey(result.kind) ? t(MEAL_KIT_LABELS[result.kind].label) : t("recipes.valdemarsroSource"),
             tone: "green",
           },
           ...extrasFor(result),
@@ -373,7 +394,7 @@ function SharedTab({ t }: { t: Translate }) {
                     href: recipeHref(recipe.id),
                     name: recipe.name,
                     imageUrl: recipe.images?.[0] ?? null,
-                    subtitle: t("recipes.kcalTotal", { kcal: Math.round(recipe.kcal) }),
+                    subtitle: favoriteKcalText(t, recipe),
                   }}
                 />
               ))}

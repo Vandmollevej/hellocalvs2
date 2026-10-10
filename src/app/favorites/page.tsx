@@ -16,7 +16,8 @@ import { readCache, writeCache, type CachedProduct } from "@/lib/offline-cache";
 type FavoriteResponse = {
   favorites: Array<{ id: string; product: { id: string; name: string; imageUrl: string | null } | null }>;
 };
-type FavoriteRecipe = { id: string; name: string; kcal: number; images?: string[] };
+// per100g: måltidskasse-ret uden portionsvægt (BetterFeast), kcal pr. 100 g.
+type FavoriteRecipe = { id: string; name: string; kcal: number; per100g?: boolean; images?: string[] };
 
 export default function FavoritesPage() {
   const { t } = useTranslation();
@@ -107,7 +108,9 @@ export default function FavoritesPage() {
                   href: recipeHref(recipe.id),
                   name: recipe.name,
                   imageUrl: recipe.images?.[0] ?? null,
-                  subtitle: t("recipes.kcalTotal", { kcal: Math.round(recipe.kcal) }),
+                  subtitle: t(recipe.per100g ? "recipeFilters.kcalPer100g" : "recipes.kcalTotal", {
+                    kcal: Math.round(recipe.kcal),
+                  }),
                 }}
               />
             ))}

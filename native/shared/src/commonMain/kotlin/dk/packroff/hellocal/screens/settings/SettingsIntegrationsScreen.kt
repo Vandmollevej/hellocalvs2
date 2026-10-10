@@ -33,6 +33,9 @@ import dk.packroff.hellocal.i18n.LocalTranslator
 import dk.packroff.hellocal.i18n.Translator
 import dk.packroff.hellocal.nav.LocalNavigator
 import dk.packroff.hellocal.nav.RouteArgs
+import dk.packroff.hellocal.screens.capture.MEAL_KIT_PROVIDERS
+import dk.packroff.hellocal.screens.capture.MealKitProvider
+import dk.packroff.hellocal.screens.capture.parseRecipeProviders
 import dk.packroff.hellocal.theme.HcColors
 import dk.packroff.hellocal.theme.HcDimens
 import dk.packroff.hellocal.theme.HcTypeRoles
@@ -52,8 +55,6 @@ import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.serialization.json.JsonObject
-import kotlinx.serialization.json.JsonPrimitive
-import kotlinx.serialization.json.booleanOrNull
 
 // Sections and order (docs/DECISIONS.md 2026-09-25 "Integrationssiden"):
 // Active integrations → Most used → Recipes → Apps → Move from another app.
@@ -78,8 +79,9 @@ private fun SettingsIntegrationsOverview() {
     val scope = rememberCoroutineScope()
     var integrations by remember { mutableStateOf<List<SettingsIntegrationStatus>>(emptyList()) }
     var loading by remember { mutableStateOf(true) }
-    // HelloFresh recipes among "Delte retter" (docs/DECISIONS.md 2026-09-24).
-    var helloFresh by remember { mutableStateOf<Boolean?>(null) }
+    // Meal-kit dishes among "Delte retter" (docs/DECISIONS.md 2026-09-24, 2026-10-10),
+    // stored in User.recipeProviders.
+    var providers by remember { mutableStateOf<List<String>?>(null) }
     var autoSynced by remember { mutableStateOf(false) }
 
     suspend fun load() {
@@ -109,20 +111,22 @@ private fun SettingsIntegrationsOverview() {
         }
     }
 
-    fun changeHelloFresh(next: Boolean) {
-        helloFresh = next
+    fun changeProvider(key: String, enabled: Boolean) {
+        val previous = providers.orEmpty()
+        val wanted = if (enabled) previous + key else previous - key
+        val next = MEAL_KIT_PROVIDERS.map { it.key }.filter { it in wanted }
+        providers = next
         scope.launch {
-            val ok = runCatching { Api.patch("/api/profile", mapOf("helloFreshEnabled" to next)) }.isSuccess
-            if (!ok) helloFresh = !next
+            val ok = runCatching { Api.patch("/api/profile", mapOf("recipeProviders" to next)) }.isSuccess
+            if (!ok) providers = previous
         }
     }
 
     LaunchedEffect(Unit) {
         launch {
-            helloFresh = runCatching {
-                val user = (Api.get("/api/profile") as? JsonObject)?.get("user") as? JsonObject
-                (user?.get("helloFreshEnabled") as? JsonPrimitive)?.booleanOrNull == true
-            }.getOrElse { false }
+            providers = runCatching {
+                parseRecipeProviders((Api.get("/api/profile") as? JsonObject)?.get("user") as? JsonObject)
+            }.getOrElse { emptyList() }
         }
         load()
     }
@@ -139,14 +143,16 @@ private fun SettingsIntegrationsOverview() {
             if (loading) {
                 HcLoader()
             } else {
-                val hfCard: @Composable () -> Unit = {
-                    val enabled = helloFresh
-                    if (enabled != null) SettingsIntegrationsHelloFreshCard(enabled, t) { changeHelloFresh(it) }
+                val enabledKits = providers?.let { keys -> MEAL_KIT_PROVIDERS.filter { it.key in keys } }.orEmpty()
+                val otherKits = providers?.let { keys -> MEAL_KIT_PROVIDERS.filter { it.key !in keys } }.orEmpty()
+                fun kitCard(kit: MealKitProvider): @Composable () -> Unit = {
+                    val enabled = providers?.contains(kit.key) == true
+                    SettingsIntegrationsMealKitCard(kit, enabled, t) { changeProvider(kit.key, it) }
                 }
                 SettingsIntegrationsSection(
                     t.t("integrations.sections.active"),
                     active.map { item -> settingsIntegrationCardItem(item, t) { nav.push("/settings/integrations/${item.pageSlug}") } } +
-                        (if (helloFresh == true) listOf(hfCard) else emptyList<@Composable () -> Unit>()),
+                        enabledKits.map { kitCard(it) },
                 )
                 SettingsIntegrationsSection(
                     t.t("integrations.sections.popular"),
@@ -154,7 +160,7 @@ private fun SettingsIntegrationsOverview() {
                 )
                 SettingsIntegrationsSection(
                     t.t("integrations.sections.recipes"),
-                    if (helloFresh == false) listOf(hfCard) else emptyList<@Composable () -> Unit>(),
+                    otherKits.map { kitCard(it) },
                 )
                 SettingsIntegrationsSection(
                     t.t("integrations.sections.apps"),
@@ -235,11 +241,12 @@ private fun SettingsIntegrationsStatusCard(integration: SettingsIntegrationStatu
     }
 }
 
+/** A meal-kit card (HelloFresh, RetNemt, BetterFeast) under "Opskrifter" with Slå til / Fjern. */
 @Composable
-private fun SettingsIntegrationsHelloFreshCard(enabled: Boolean, t: Translator, onChange: (Boolean) -> Unit) {
+private fun SettingsIntegrationsMealKitCard(kit: MealKitProvider, enabled: Boolean, t: Translator, onChange: (Boolean) -> Unit) {
     SettingsIntegrationsCard(
-        title = t.t("integrations.helloFreshTitle"),
-        description = t.t("integrations.helloFreshDescription"),
+        title = t.t(kit.title),
+        description = t.t(kit.description),
         active = enabled,
         icon = { SettingsIntegrationsGlyph("ChefHat") },
     ) {

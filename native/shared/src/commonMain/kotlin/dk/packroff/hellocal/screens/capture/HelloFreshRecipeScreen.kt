@@ -92,6 +92,8 @@ private data class HfPhoto(val id: String, val image: String)
 @Serializable
 private data class HfRecipeView(
     val id: String,
+    /** "hellofresh" | "retnemt" | "betterfeast" (src/lib/meal-kit-providers.ts). */
+    val provider: String = "hellofresh",
     val name: String,
     val headline: String? = null,
     val description: String? = null,
@@ -104,6 +106,10 @@ private data class HfRecipeView(
     val ingredients: List<HfIngredient> = emptyList(),
     val steps: List<HfStep> = emptyList(),
     val nutrition: List<HfNutritionRow> = emptyList(),
+    /** "portion" or "100g" (BetterFeast ready meals without serving weight). */
+    val nutritionBasis: String = "portion",
+    /** The full product declaration, when that is all the provider has (BetterFeast). */
+    val declaration: String? = null,
     val isFavorite: Boolean = false,
     val photos: List<HfPhoto> = emptyList(),
 )
@@ -112,6 +118,19 @@ private data class HfRecipeView(
 private data class HfRecipeResponse(val recipe: HfRecipeView)
 
 private const val HF_RECIPE_MAX_PHOTOS = 12
+
+/** The provider's own notes (page.tsx NUTRITION_NOTES / ALLERGEN_NOTES). */
+private fun nutritionNoteKey(provider: String) = when (provider) {
+    "retnemt" -> "hfRecipe.nutritionNoteRetnemt"
+    "betterfeast" -> "hfRecipe.nutritionNoteBetterfeast"
+    else -> "hfRecipe.nutritionNote"
+}
+
+private fun allergenNoteKey(provider: String) = when (provider) {
+    "hellofresh" -> "hfRecipe.allergenNote"
+    "retnemt" -> "hfRecipe.allergenNoteRetnemt"
+    else -> null
+}
 
 /** formatHfAmount: rounded to 3 decimals, printed like a JS number. */
 private fun formatHfAmount(amount: Double): String = jsNumber((amount * 1000).roundToLong() / 1000.0)
@@ -122,7 +141,9 @@ private fun amountText(amount: Double?, unit: String?) = listOfNotNull(amount?.l
  * Native port of src/app/profile/recipes/hellofresh/[id]/page.tsx — a HelloFresh
  * recipe shown like the HelloFresh app (docs/DECISIONS.md 2026-09-27): edge-to-edge
  * photo, round back/share buttons, a solid top bar once the photo is scrolled away
- * and a fixed "Lad os lave mad" button. No bottom navigation.
+ * and a fixed "Lad os lave mad" button. No bottom navigation. RetNemt and BetterFeast
+ * dishes use the same page (2026-10-10); BetterFeast ready meals show the declaration
+ * and nutrition per 100 g, and "Registrér retten" instead of the cooking steps.
  */
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
@@ -136,6 +157,7 @@ fun HelloFreshRecipeScreen(args: RouteArgs) {
     var state by remember { mutableStateOf("loading") }
     var notice by remember { mutableStateOf<String?>(null) }
     var openIngredients by remember { mutableStateOf(true) }
+    var openDeclaration by remember { mutableStateOf(true) }
     var openSteps by remember { mutableStateOf(true) }
     var openNutrition by remember { mutableStateOf(false) }
     var openPhotos by remember { mutableStateOf(true) }
@@ -244,7 +266,7 @@ fun HelloFreshRecipeScreen(args: RouteArgs) {
                                 HcMaskIcon(if (r.isFavorite) "/icons/favorite-filled.png" else "/icons/favorite.png", 22.dp, HcColors.Action)
                                 HcText(t.t(if (r.isFavorite) "hfRecipe.saved" else "hfRecipe.save"), HcTypeRoles.Body, bold = true, color = HcColors.Action)
                             }
-                            OutlineButton(onClick = {
+                            if (r.ingredients.isNotEmpty()) OutlineButton(onClick = {
                                 val lines = r.ingredients.joinToString("\n") { i ->
                                     val a = amountText(i.amount, i.unit)
                                     "• ${i.name}" + if (a.isNotEmpty()) " ($a)" else ""
@@ -266,9 +288,15 @@ fun HelloFreshRecipeScreen(args: RouteArgs) {
                         if (allergenNames.isNotEmpty()) {
                             HcText("${t.t("hfRecipe.allergens")}  ${allergenNames.joinToString(" • ")}", HcTypeRoles.BodyLg, color = HcColors.Black)
                         }
-                        HcText(t.t("hfRecipe.allergenNote"), HcTypeRoles.Body, color = HcColors.TextSecondary)
+                        allergenNoteKey(r.provider)?.let { HcText(t.t(it), HcTypeRoles.Body, color = HcColors.TextSecondary) }
 
-                        RecipeAccordion(t.t("hfRecipe.ingredients"), openIngredients, { openIngredients = !openIngredients }) {
+                        r.declaration?.takeIf { it.isNotBlank() }?.let { declaration ->
+                            RecipeAccordion(t.t("hfRecipe.declaration"), openDeclaration, { openDeclaration = !openDeclaration }) {
+                                HcText(declaration, HcTypeRoles.BodyLg, Modifier.padding(bottom = 16.dp), color = HcColors.Black)
+                            }
+                        }
+
+                        if (r.ingredients.isNotEmpty()) RecipeAccordion(t.t("hfRecipe.ingredients"), openIngredients, { openIngredients = !openIngredients }) {
                             if (r.ingredients.any { measureAsGramsText(conversions, it.amount, it.unit, it.name) != null }) {
                                 RecipeUnitToggle(showGrams, { showGrams = it }, Modifier.padding(bottom = 12.dp))
                             }
@@ -278,7 +306,7 @@ fun HelloFreshRecipeScreen(args: RouteArgs) {
                             }
                         }
 
-                        Box(Modifier.onGloballyPositioned { stepsY = it.positionInParent().y.toInt() + heroHeight }) {
+                        if (r.steps.isNotEmpty()) Box(Modifier.onGloballyPositioned { stepsY = it.positionInParent().y.toInt() + heroHeight }) {
                             RecipeAccordion(t.t("hfRecipe.steps"), openSteps, { openSteps = !openSteps }) {
                                 r.steps.forEachIndexed { index, step ->
                                     Row(Modifier.fillMaxWidth().padding(vertical = 8.dp), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
@@ -295,7 +323,8 @@ fun HelloFreshRecipeScreen(args: RouteArgs) {
                         }
 
                         if (r.nutrition.isNotEmpty()) {
-                            RecipeAccordion(t.t("hfRecipe.nutrition"), openNutrition, { openNutrition = !openNutrition }) {
+                            val nutritionTitle = if (r.nutritionBasis == "100g") "hfRecipe.nutritionPer100g" else "hfRecipe.nutrition"
+                            RecipeAccordion(t.t(nutritionTitle), openNutrition, { openNutrition = !openNutrition }) {
                                 r.nutrition.forEachIndexed { index, row ->
                                     Row(Modifier.fillMaxWidth().heightIn(min = 40.dp), verticalAlignment = Alignment.CenterVertically) {
                                         HcText(row.name ?: t.t("hfRecipe.nutrients.${row.key}"), HcTypeRoles.Body, Modifier.weight(1f), color = HcColors.Black)
@@ -303,7 +332,7 @@ fun HelloFreshRecipeScreen(args: RouteArgs) {
                                     }
                                     if (index < r.nutrition.lastIndex) HcLine()
                                 }
-                                HcText(t.t("hfRecipe.nutritionNote"), HcTypeRoles.Small, Modifier.padding(top = 8.dp), color = HcColors.TextSecondary)
+                                HcText(t.t(nutritionNoteKey(r.provider)), HcTypeRoles.Small, Modifier.padding(top = 8.dp), color = HcColors.TextSecondary)
                                 OutlineButton(onClick = { nav.push(registerHref) }, block = true) {
                                     Image(healthAppIcon, null, Modifier.size(22.dp), colorFilter = ColorFilter.tint(HcColors.Action))
                                     HcText(t.t("hfRecipe.addToHealthApp"), HcTypeRoles.Body, bold = true, color = HcColors.Action)
@@ -336,9 +365,11 @@ fun HelloFreshRecipeScreen(args: RouteArgs) {
                     }
                 }
             }
-            if (state == "ready") {
+            if (state == "ready" && r != null) {
                 Column(Modifier.fillMaxWidth().background(HcColors.Page).navigationBarsPadding().padding(16.dp)) {
-                    HcButton(t.t("hfRecipe.letsCook"), onClick = ::startCooking)
+                    // A ready meal without steps (BetterFeast) is registered directly.
+                    if (r.steps.isNotEmpty()) HcButton(t.t("hfRecipe.letsCook"), onClick = ::startCooking)
+                    else HcButton(t.t("hfRecipe.register"), onClick = { nav.push(registerHref) })
                 }
             }
         }

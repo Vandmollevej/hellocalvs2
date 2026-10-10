@@ -179,5 +179,6 @@ Valgte knapper/faner/chips/planvalg har ALTID den lysegrønne farve (`--hf-color
 
 - Flows med mange trin (fx "Opret ny screening") viser kun teksten under det aktive trin (`activeLabelOnly`), og prikkerne i bjælken er tryk-bare (`onSelect`): tilbage altid, frem kun når de forudgående trin er udfyldt (`isStepEnabled`). Web og native (`ProfileProgressStepper`). 2026-10-10.
 
-- Opskrifter → fanen "Delte retter": kildeknapperne under søgefeltet er "Vis alle", Valdemarsro og Hello Fresh. Ingen separat "Delte retter"-knap (den gentog fanen) (2026-10-10).
+- Opskrifter → fanen "Delte retter": kildeknapperne under søgefeltet er "Vis alle", én knap pr. måltidskasse, brugeren har slået til under Integrationer (Hello Fresh, RetNemt, BetterFeast), og Valdemarsro. Ingen separat "Delte retter"-knap (den gentog fanen) (2026-10-10).
+- **Måltidskasser (2026-10-10)**: HelloFresh, RetNemt og BetterFeast står ét sted, `src/lib/meal-kit-providers.ts` (id-præfiks, kilde, navn). En ny måltidskasse tilføjes dér + egen agent i `scripts/<navn>-agent`; dens retter er Product-rækker i kategori "Retter" og vises på HelloFresh-opskriftssiden. Se DECISIONS 2026-10-10.
 - Opskrifter → filter → Antal personer: standard 0 = ikke valgt, vist lysegråt/underordnet; ingen person er valgt som default. Receptsiden bruger mindst 1 (brugerens krav 2026-10-10).

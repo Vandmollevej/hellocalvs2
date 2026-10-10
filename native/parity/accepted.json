@@ -571,7 +571,7 @@
     "src/components/web/WebShell.tsx": "5f2646ffd79af9cc"
   },
   "/favorites": {
-    "src/app/favorites/page.tsx": "c84fc3104f0b87e1",
+    "src/app/favorites/page.tsx": "800d58d96f0b449a",
     "src/app/layout.tsx": "ce9cce1fff73600a",
     "src/components/AuthGate.tsx": "94db96b768f9f95f",
     "src/components/BottomNav.tsx": "5bab069a374d4d04",
@@ -598,7 +598,7 @@
     "src/components/icons/Favorite.tsx": "70f85dd37d71acbf",
     "src/components/icons/PhotoFrame.tsx": "20ffbe92a0057321",
     "src/components/icons/WaistMeasure.tsx": "47f849581ff0f288",
-    "src/components/recipes/RecipeRow.tsx": "94bfcf4529eab0dd",
+    "src/components/recipes/RecipeRow.tsx": "92f2c6783f45b643",
     "src/components/ui/UncertaintyTilde.tsx": "5ebb8736e5dc7b59",
     "src/components/web/WebShell.tsx": "5f2646ffd79af9cc"
   },
@@ -1417,7 +1417,7 @@
   },
   "/profile/recipes": {
     "src/app/layout.tsx": "ce9cce1fff73600a",
-    "src/app/profile/recipes/page.tsx": "7df01eba57fcabbb",
+    "src/app/profile/recipes/page.tsx": "c9b3c570c9aa14dd",
     "src/components/AuthGate.tsx": "94db96b768f9f95f",
     "src/components/BottomNav.tsx": "5bab069a374d4d04",
     "src/components/EmailVerifySheet.tsx": "42e52d85f9bf57d9",
@@ -1445,7 +1445,7 @@
     "src/components/icons/PhotoFrame.tsx": "20ffbe92a0057321",
     "src/components/icons/WaistMeasure.tsx": "47f849581ff0f288",
     "src/components/recipes/RecipeFiltersBody.tsx": "d43c27354247043d",
-    "src/components/recipes/RecipeRow.tsx": "94bfcf4529eab0dd",
+    "src/components/recipes/RecipeRow.tsx": "92f2c6783f45b643",
     "src/components/ui/Toggle.tsx": "8fc97afe3b61a5a3",
     "src/components/web/WebShell.tsx": "5f2646ffd79af9cc"
   },
@@ -1515,15 +1515,15 @@
   },
   "/profile/recipes/hellofresh/[id]": {
     "src/app/layout.tsx": "ce9cce1fff73600a",
-    "src/app/profile/recipes/hellofresh/[id]/page.tsx": "06a95d6e5438788c",
+    "src/app/profile/recipes/hellofresh/[id]/page.tsx": "0294e3737e5c8059",
     "src/components/hf/HfChevron.tsx": "11106e436ea8e3ef",
     "src/components/icons/Favorite.tsx": "70f85dd37d71acbf",
     "src/components/recipe-view/RecipeIcons.tsx": "5cd41722e7043bed",
     "src/components/recipe-view/RecipeUnitToggle.tsx": "119afef16dd652ce",
     "src/components/recipe-view/RecipeViewLayout.tsx": "e8ee369f2fe3647a",
     "src/components/recipe-view/RecipeViewLists.tsx": "8c0fd0dafea27abf",
-    "src/components/recipe-view/RecipeViewSections.tsx": "e37aaa19c710cbbc",
-    "src/components/recipe-view/recipe-view.css": "f3ef38ac8c3c819b",
+    "src/components/recipe-view/RecipeViewSections.tsx": "bbde200107831d21",
+    "src/components/recipe-view/recipe-view.css": "27040147ae3c699b",
     "src/components/recipes/RecipeThumbs.tsx": "894c8710e8ee4305"
   },
   "/profile/report-bug": {
@@ -2575,7 +2575,7 @@
   "/settings/integrations": {
     "src/app/layout.tsx": "ce9cce1fff73600a",
     "src/app/settings/integrations/layout.tsx": "c7cf9d6642d4284e",
-    "src/app/settings/integrations/page.tsx": "c82c237ca091c50c",
+    "src/app/settings/integrations/page.tsx": "533d5561bb0c3ccc",
     "src/app/settings/integrations/status-badge.tsx": "872c13d7dcef8c2e",
     "src/components/AuthGate.tsx": "94db96b768f9f95f",
     "src/components/BottomNav.tsx": "5bab069a374d4d04",

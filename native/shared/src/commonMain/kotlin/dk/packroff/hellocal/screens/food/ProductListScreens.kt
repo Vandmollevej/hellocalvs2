@@ -310,14 +310,25 @@ private fun androidx.compose.foundation.lazy.LazyListScope.searchSection(
 }
 
 @Serializable
-private data class FavoriteRecipe(val id: String = "", val name: String = "", val kcal: Double = 0.0, val images: List<String> = emptyList())
+private data class FavoriteRecipe(
+    val id: String = "",
+    val name: String = "",
+    val kcal: Double = 0.0,
+    /** A meal-kit dish without serving weight (BetterFeast): kcal per 100 g. */
+    val per100g: Boolean = false,
+    val images: List<String> = emptyList(),
+)
 
 @Serializable
 private data class FavoriteRecipesResponse(val favorites: List<FavoriteRecipe> = emptyList())
 
-/** src/components/recipes/RecipeRow.tsx recipeHref — HelloFresh recipes have their own page. */
+/**
+ * src/components/recipes/RecipeRow.tsx recipeHref — meal-kit dishes (HelloFresh "hf_", RetNemt "rn_",
+ * BetterFeast "bf_"; src/lib/meal-kit-providers.ts) have their own page.
+ */
 fun recipeHref(id: String) =
-    if (id.startsWith("hf_")) "/profile/recipes/hellofresh/${encodeUri(id)}" else "/profile/recipes/${encodeUri(id)}?kind=shared"
+    if (listOf("hf_", "rn_", "bf_").any { id.startsWith(it) }) "/profile/recipes/hellofresh/${encodeUri(id)}"
+    else "/profile/recipes/${encodeUri(id)}?kind=shared"
 
 /** src/components/recipes/RecipeRow.tsx (image, name, subtitle, chevron). */
 @Composable
@@ -387,7 +398,7 @@ fun FavoritesScreen(args: RouteArgs) {
                         FoodRecipeRow(
                             name = recipe.name,
                             imageUrl = recipe.images.firstOrNull(),
-                            subtitle = t.t("recipes.kcalTotal", "kcal" to jsRound(recipe.kcal)),
+                            subtitle = t.t(if (recipe.per100g) "recipeFilters.kcalPer100g" else "recipes.kcalTotal", "kcal" to jsRound(recipe.kcal)),
                             onClick = { nav.push(recipeHref(recipe.id)) },
                             divider = index < r.lastIndex,
                         )

@@ -1,3 +1,4 @@
+import { IMPORTED_DISH_SOURCES } from "@/lib/meal-kit-providers";
 import { PRODUCT_CATEGORIES, PRODUCT_CATEGORY_LABELS, type ProductCategory } from "@/lib/product-display-unit";
 
 // URL-kontrakten for admin "Produkt-database" (docs/DECISIONS.md 2026-09-27).
@@ -35,8 +36,8 @@ export const PRODUCT_STATUS_LABELS: Record<ProductDatabaseStatus, string> = {
 // "USER" = externalSource null (oprettet af en bruger).
 export const PRODUCT_SOURCES = ["USER", "BILKA", "REMA1000", "OPEN_FOOD_FACTS", "FRIDA", "USDA"] as const;
 // Opskrift-kilder er retter, ikke produkter: de vises under admin → Retter
-// og aldrig i Produkt-database (docs/DECISIONS.md 2026-09-28).
-export const DISH_SOURCES = ["HELLOFRESH"] as const;
+// og aldrig i Produkt-database (docs/DECISIONS.md 2026-09-28 og 2026-10-10).
+export const DISH_SOURCES = IMPORTED_DISH_SOURCES;
 export type ProductDatabaseSource = (typeof PRODUCT_SOURCES)[number];
 export const PRODUCT_SOURCE_LABELS: Record<ProductDatabaseSource, string> = {
   USER: "Oprettet af bruger",

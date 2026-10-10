@@ -4,6 +4,7 @@ import Link from "next/link";
 import { IconChevronRight, IconSoup } from "@tabler/icons-react";
 import { Skeleton, SkeletonTitleLines } from "@/components/hf/Skeleton";
 import { trackRecipeClick } from "@/lib/recipe-clicks";
+import { mealKitForId } from "@/lib/meal-kit-providers";
 
 // En opskriftsrække (billede, navn, undertekst, pil). Bruges af Opskrifter
 // og Favoritter.
@@ -22,11 +23,11 @@ export type RecipeRowData = {
   clickKey?: string;
 };
 
-// HelloFresh-opskrifter (Product-id "hf_…") har deres egen side i
-// HelloFresh-stil (docs/DECISIONS.md 2026-09-27); det gælder også, når de
-// er gemt som favorit.
+// Måltidskasse-retter (Product-id "hf_…", "rn_…", "bf_…") har deres egen side
+// i HelloFresh-stil (docs/DECISIONS.md 2026-09-27 og 2026-10-10); det gælder
+// også, når de er gemt som favorit.
 export function recipeHref(id: string) {
-  return id.startsWith("hf_")
+  return mealKitForId(id)
     ? `/profile/recipes/hellofresh/${encodeURIComponent(id)}`
     : `/profile/recipes/${encodeURIComponent(id)}?kind=shared`;
 }

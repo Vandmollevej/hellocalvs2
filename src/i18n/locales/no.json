@@ -1117,7 +1117,11 @@
     "trendingTitle": "Trender akkurat nå",
     "trendingEmpty": "Det er ingen delte retter ennå",
     "favoritesTitle": "Mine favoritter",
-    "favoritesEmpty": "Du har ingen favoritter ennå"
+    "favoritesEmpty": "Du har ingen favoritter ennå",
+    "sourceRetnemt": "RetNemt",
+    "sourceBetterfeast": "BetterFeast",
+    "retnemt": "RetNemt",
+    "betterfeast": "BetterFeast"
   },
   "recipeFilters": {
     "title": "Filtre",
@@ -1196,7 +1200,8 @@
       "carbs-low": "Lavt karbohydratinnhold",
       "fat-high": "Høyt fettinnhold",
       "fat-low": "Lavt fettinnhold"
-    }
+    },
+    "kcalPer100g": "{kcal} kcal per 100 g"
   },
   "recipeSteps": {
     "title": "Fremgangsmåte",
@@ -1333,7 +1338,13 @@
       "fiber": "Kostfiber",
       "protein": "Protein",
       "salt": "Salt"
-    }
+    },
+    "register": "Registrer retten",
+    "declaration": "Varedeklarasjon",
+    "nutritionPer100g": "Næringsverdier per 100 g",
+    "nutritionNoteRetnemt": "Næringsinnholdet per porsjon er beregnet av RetNemt ut fra oppskriftens ingredienser.",
+    "nutritionNoteBetterfeast": "Næringsinnholdet per 100 g er fra BetterFeasts varedeklarasjon.",
+    "allergenNoteRetnemt": "Allergenene er veiledende og basert på ingrediensene, ikke på spor av allergener."
   },
   "createDish": {
     "pageTitle": "Title and description",
@@ -2467,7 +2478,11 @@
         "water": "Vann",
         "body": "Høyde, BMI og temperatur"
       }
-    }
+    },
+    "retNemtTitle": "RetNemt-oppskrifter",
+    "retNemtDescription": "Vis RetNemt-oppskrifter sammen med de delte rettene under Oppskrifter",
+    "betterFeastTitle": "BetterFeast-retter",
+    "betterFeastDescription": "Vis BetterFeasts ferdigretter sammen med de delte rettene under Oppskrifter"
   },
   "payment": {
     "title": "Betaling",

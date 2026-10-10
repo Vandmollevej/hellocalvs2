@@ -1,3 +1,4 @@
+import { MEAL_KIT_SOURCES } from "@/lib/meal-kit-providers";
 import { createHash } from "node:crypto";
 import { prisma } from "@/lib/prisma";
 import { HIDE_FROM_SEARCH_BELOW } from "@/lib/uncertainty-thresholds";
@@ -48,7 +49,7 @@ async function searchableProducts(): Promise<IndexDocument[]> {
     where: {
       discontinued: false,
       privateOwnerId: null,
-      OR: [{ externalSource: null }, { externalSource: { notIn: ["HELLOFRESH", "OPEN_FOOD_FACTS"] } }],
+      OR: [{ externalSource: null }, { externalSource: { notIn: [...MEAL_KIT_SOURCES, "OPEN_FOOD_FACTS"] } }],
       NOT: { aiAnalyses: { some: { reviewedAt: null, confidence: { lt: HIDE_FROM_SEARCH_BELOW } } } },
     },
     select: {

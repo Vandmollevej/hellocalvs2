@@ -175,6 +175,11 @@ model User {
   wantsAdviceEmails        Boolean @default(false)
   wantsPartnerOffersEmails Boolean @default(false)
 
+  // Måltidskasse-integrationer, brugeren har slået til under Integrationer
+  // ("hellofresh", "retnemt", "betterfeast"; src/lib/meal-kit-providers.ts).
+  // Deres retter vises under Retter → Delte retter (docs/DECISIONS.md 2026-10-10).
+  recipeProviders String[] @default([])
+
   // "Invitér en ven": kort delbar kode brugt i invite-linket
   // (https://.../tilmeld?ref=<referralCode>). Belønning (2026-10-03): 300
   // points til afsenderen efter 3 måneder (PointsReason FRIEND_REFERRAL); den
@@ -2071,6 +2076,8 @@ enum ExternalProductSource {
   REMA1000
   BILKA
   VALDEMARSRO
+  RETNEMT
+  BETTERFEAST
 }
 
 // Reference database of EU-approved E-number additives (E100-E1521),
