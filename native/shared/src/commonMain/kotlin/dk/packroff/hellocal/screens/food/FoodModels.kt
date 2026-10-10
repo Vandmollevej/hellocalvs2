@@ -233,7 +233,13 @@ data class ProductListItem(
 )
 
 @Serializable
-data class ProductListResponse(val products: List<ProductListItem> = emptyList(), val profileId: String? = null)
+data class ProductListResponse(
+    val products: List<ProductListItem> = emptyList(),
+    val profileId: String? = null,
+    val correctedQuery: String? = null,
+    val originalQuery: String? = null,
+    val suggestedQuery: String? = null,
+)
 
 /** src/lib/user-scans.ts UserScan. */
 @Serializable

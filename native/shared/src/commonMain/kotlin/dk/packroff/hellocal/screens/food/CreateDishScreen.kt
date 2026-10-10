@@ -158,14 +158,20 @@ fun CreateDishScreen(args: RouteArgs) {
     var results by remember { mutableStateOf<List<DishSearchResult>>(emptyList()) }
     var searchState by remember { mutableStateOf("idle") }
     var searchError by remember { mutableStateOf<Throwable?>(null) }
+    var correction by remember { mutableStateOf(SearchCorrection()) }
+    var exactQuery by remember { mutableStateOf<String?>(null) }
     val searchScope = rememberCoroutineScope()
 
-    LaunchedEffect(query) {
+    LaunchedEffect(query, exactQuery) {
         if (query.isBlank()) return@LaunchedEffect
+        val exact = exactQuery == query
+        correction = SearchCorrection()
         delay(200)
         searchState = "loading"
         try {
-            val products = ApiJson.decodeFromJsonElement(ProductListResponse.serializer(), Api.get("/api/products?q=${encodeUri(query)}")).products
+            val data = ApiJson.decodeFromJsonElement(ProductListResponse.serializer(), Api.get("/api/products?q=${encodeUri(query)}${if (exact) "&exact=1" else ""}"))
+            correction = SearchCorrection.of(data)
+            val products = data.products
             results = products.map { DishSearchResult(it.id, it.name, it.imageUrl, false) }
             searchState = "ready"
         } catch (e: Exception) {
@@ -411,8 +417,9 @@ fun CreateDishScreen(args: RouteArgs) {
                             "loading" -> FoodSkeletonMediaRows(4, Modifier.padding(horizontal = 16.dp))
                             "error" -> HcText(connectionMessage(t, searchError, t.t("createDish.noResults")), HcTypeRoles.Body, Modifier.fillMaxWidth().padding(16.dp), color = HcColors.TextSecondary, align = TextAlign.Center)
                             "ready" -> {
+                                SearchCorrectionNotice(correction, onSearchInstead = { exactQuery = query }, onUseSuggestion = { query = it }, modifier = Modifier.padding(horizontal = 12.dp, vertical = 12.dp))
                                 if (results.isEmpty()) HcText(t.t("createDish.noResults"), HcTypeRoles.Body, Modifier.fillMaxWidth().padding(16.dp), color = HcColors.TextSecondary, align = TextAlign.Center)
-                                val shown = results.take(6)
+                                val shown = results
                                 shown.forEachIndexed { index, product ->
                                     Row(
                                         Modifier.fillMaxWidth().clickable {

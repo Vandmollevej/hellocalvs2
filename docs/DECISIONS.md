@@ -2,6 +2,14 @@
 
 This file records durable decisions. Add a dated entry when a later decision changes one of them.
 
+## 2026-10-10: Søgning viser alt, retter stavefejl og ignorerer accenter
+
+Ejerens krav: søgningen skal vise alt, indtil brugeren indsnævrer, og være intelligent som Google ved stavefejl. Valgt: Postgres (ingen Elasticsearch/Meilisearch) — `unaccent` + `pg_trgm` + `fuzzystrmatch` (migration `20261010120000_search_unaccent_trgm`).
+
+- **Afløser 2026-10-02 for søgningen:** varer uden kalorietal (`nutritionMissing`) vises nu i `GET /api/products` (og admin-forhåndsvisningen). Varesiden viser "Næringsindhold ukendt". Reglen står uændret for tekst-/foto-/måltidsgenkendelse, næringsmatch og generiske kandidater.
+- **Accenter:** `hc_search_norm()` (små bogstaver + unaccent) bruges i et ekstra match på navn, flertalsnavn og mærke ("Nescafé" finder "Nescafe"); GIN-trigramindeks på kolonnerne.
+- **"Mente du …?":** materialiseret visning `search_words` (ord fra varenavne/mærker + hyppighed), genopbygget i baggrunden efter 6 timers uptime (`src/lib/search-correction.ts`). 0 hits → serveren søger på den rettede tekst og svarer med `correctedQuery` + `originalQuery`; 1-2 hits → `suggestedQuery`; `&exact=1` slår rettelse fra ("Søg i stedet efter …"). Et ord rettes kun, hvis det ikke findes og ikke er begyndelsen på et ord (ingen rettelse midt i indtastning); afstand ≤ 1 for 3-4 bogstaver, ≤ 2 ellers.
+- Rangeringens øvrige regler (minimumsscore, flere tegn for upopulære varer) er uændrede; kandidatpuljen er stadig 80 varer.
 ## 2026-10-10: Præcise links til hvor eksterne nøgler styres
 
 Brugerens ønske: "I alle eksterne input i admin — API-nøgler, integrationer, SMTP-server, SMS-server og alt det — tilføj det præcise link dertil, hvor informationerne styres. Ikke kun forsiden, men det præcise link."

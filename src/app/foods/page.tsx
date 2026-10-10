@@ -9,6 +9,8 @@ import { HfScreen } from "@/components/HfScreen";
 import { FoodRow } from "@/components/FoodRow";
 import { ActionLink } from "@/components/hf/ActionButton";
 import { useTranslation } from "@/i18n/LocaleProvider";
+import { SearchCorrectionNotice } from "@/components/hf/SearchCorrectionNotice";
+import { readSearchCorrection, type SearchCorrection } from "@/lib/search-notice";
 import { useConnectionMessage } from "@/lib/use-online-status";
 import { SkeletonMediaRows, SkeletonScreen } from "@/components/hf/Skeleton";
 import { useFamilyStatus } from "@/components/family/FamilyStatusProvider";
@@ -98,6 +100,8 @@ function MadvarerContent() {
   })();
   const [query, setQuery] = useState("");
   const [searchResults, setSearchResults] = useState<Product[]>([]);
+  const [correction, setCorrection] = useState<SearchCorrection | null>(null);
+  const [exactFor, setExactFor] = useState<string | null>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
 
   // Sidste liste for den aktive profil tegnes med det samme (også ved klik i
@@ -212,15 +216,25 @@ function MadvarerContent() {
       try {
         const hour = new Date().getHours();
         const response = await fetch(
-          `/api/products?q=${encodeURIComponent(q)}&hour=${hour}&take=20`,
+          `/api/products?q=${encodeURIComponent(q)}&hour=${hour}&take=20${exactFor === q ? "&exact=1" : ""}`,
           { signal: controller.signal }
         );
         if (!response.ok) throw new Error("search failed");
-        const data = (await response.json()) as { products: Product[] };
-        searchCache.set(cacheKey, {
-          expiresAt: Date.now() + SEARCH_CACHE_TTL_MS,
-          products: data.products,
-        });
+        const data = (await response.json()) as {
+          products: Product[];
+          correctedQuery?: string;
+          originalQuery?: string;
+          suggestedQuery?: string;
+        };
+        const info = readSearchCorrection(data, q);
+        setCorrection(info);
+        // Rettede/foreslåede svar caches ikke, så cachen aldrig viser forkert linje.
+        if (!info) {
+          searchCache.set(cacheKey, {
+            expiresAt: Date.now() + SEARCH_CACHE_TTL_MS,
+            products: data.products,
+          });
+        }
         setSearchResults(data.products);
       } catch (error) {
         if ((error as Error).name !== "AbortError" && !hadCacheHit) {
@@ -233,7 +247,7 @@ function MadvarerContent() {
       window.clearTimeout(timer);
       controller.abort();
     };
-  }, [query]);
+  }, [query, exactFor]);
 
   function trackSearchClick(productId: string) {
     if (query.trim().length < SEARCH_MIN_LENGTH) return;
@@ -278,6 +292,14 @@ function MadvarerContent() {
             placeholder={t("foods.searchPlaceholder")}
           />
         </div>
+
+        {isSearching && correction?.forQuery === normalizedQuery && (
+          <SearchCorrectionNotice
+            correction={correction}
+            onSearchExact={() => setExactFor(normalizedQuery)}
+            onUseSuggestion={setQuery}
+          />
+        )}
 
         {!isSearching && ready && favorites.length > 0 && (
           <p className="hf-type-small hf-type-strong text-text-secondary px-1 uppercase tracking-[0.08em]">
