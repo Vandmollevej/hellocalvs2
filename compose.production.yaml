@@ -24,7 +24,16 @@ services:
     restart: "no"
     environment:
       DATABASE_URL: ${DATABASE_URL:?Set DATABASE_URL in .env.production}
-    command: ["npx", "prisma", "migrate", "deploy"]
+    # MIDLERTIDIG (2026-10-10): 20261010120000_search_unaccent_trgm fejlede i produktion
+    # (unaccent() fandt ikke funktionen under Postgres 17's begrænsede search_path) og
+    # står som fejlet (P3009). Migrationen er rettet; resolve --rolled-back markerer den
+    # fejlede kørsel som rullet tilbage, så deploy kører den igen. Fejler harmløst
+    # (|| true), når der intet er at rulle tilbage. FJERNES, når migrationen er anvendt
+    # (docs/DEPLOYMENT.md, samme fremgangsmåde som 2026-10-07).
+    command:
+      - sh
+      - -c
+      - npx prisma migrate resolve --rolled-back 20261010120000_search_unaccent_trgm || true; npx prisma migrate deploy
     depends_on:
       db:
         condition: service_healthy

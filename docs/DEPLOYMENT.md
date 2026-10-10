@@ -461,6 +461,12 @@ Sikringer:
 - **Admin:** forsiden viser en rød boks "Deploy blokeret", når en migrering står som fejlet.
 - Gendannelsen 2026-10-07 skete via en midlertidig `prisma migrate resolve --rolled-back …` i `migrate`-servicen (c245f4cb), fjernet igen efter migreringen var anvendt. Samme fremgangsmåde bruges, hvis en migrering igen står som fejlet.
 
+### Hændelse 2026-10-10: søge-migrationen fejlede i produktion trods prøvekørslen
+
+`20261010120000_search_unaccent_trgm` fejlede på prøvekørslen (Postgres 17 bygger indeks/visninger med begrænset `search_path`, så `unaccent()` ikke fandtes), og deployet blev stoppet. Men trinnet "Build and start amount-suggestion agent" har `if: ${{ !cancelled() }}` og afhænger af `migrate` (compose `depends_on`), så det kørte `migrate deploy` mod **produktionen** straks efter og efterlod migrationen som fejlet (P3009) — prøvekørslens beskyttelse blev omgået. Migrationens DDL kører i én transaktion og blev rullet tilbage; kun rækken i `_prisma_migrations` står som fejlet. Gendannelse: midlertidig `migrate resolve --rolled-back` i `migrate`-servicen (se `compose.production.yaml`), fjernes igen efter anvendelse.
+
+Forslag (kræver ejerens godkendelse, ændret ikke): lad agent-trinnene kun køre, når trinnet "Test database migrations on a schema copy" ikke fejlede (fx `if: ${{ !cancelled() && steps.migrate-test.conclusion != 'failure' }}`), så en fejlet prøvekørsel aldrig udløser `migrate` i produktion.
+
 ### Overvågning (2026-10-08)
 
 Tre lag, så en fejl altid giver besked:
