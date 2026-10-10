@@ -27,6 +27,7 @@ import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.ui.layout.ContentScale
 import dk.packroff.hellocal.platform.Device
 import dk.packroff.hellocal.ui.HcBottomSheet
@@ -220,6 +221,11 @@ private fun ReportBugContent(productId: String?) {
                 Column(Modifier.fillMaxWidth().padding(top = 16.dp, bottom = 32.dp)) { BugReportNotes(current.id) }
             }
             showForm -> Column(Modifier.fillMaxWidth().padding(top = 32.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
+                HcButton(
+                    if (submitting) "Sender…" else "Send indberetning",
+                    onClick = ::submit,
+                    enabled = !submitting,
+                )
                 if (productId != null) {
                     HcText("Hvad er forkert på varen?", HcTypeRoles.Label)
                     BUG_REPORT_SECTIONS.forEach { (sectionKey, label) ->
@@ -268,12 +274,7 @@ private fun ReportBugContent(productId: String?) {
                         }
                     }
                 }
-                HcButton(
-                    if (submitting) "Sender…" else "Send indberetning",
-                    onClick = ::submit,
-                    enabled = !submitting,
-                    modifier = Modifier.padding(top = 8.dp, bottom = 112.dp),
-                )
+                Spacer(Modifier.height(96.dp))
             }
         }
     }
