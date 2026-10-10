@@ -3484,5 +3484,47 @@
       "INPUT": "Inputfelt",
       "STEPPER": "Plus og minus"
     }
+  },
+  "circleBadges": {
+    "priorityTitle": "Prioritering af visning",
+    "priorityIntro": "Træk blokkene op og ned. Øverst har højeste prioritet og vises først på produktcirklen; certifikater viger pladsen.",
+    "priorityEmpty": "Slå visninger til under Resultatvisning for at prioritere dem her.",
+    "priorityDrag": "Træk for at flytte",
+    "priorityReset": "Nulstil rækkefølge",
+    "blocks": {
+      "sugar": "Sukkerindhold",
+      "allergens": "Allergener",
+      "additives": "E-numre",
+      "diets": "Kosthensyn",
+      "flags": "Mærker (alkohol, sukkerfri m.fl.)",
+      "vegan": "Vegansk"
+    },
+    "blockDescription": {
+      "sugar": "Viser sukkerindhold pr. 100 g på produktcirklen, fx ved diabetes.",
+      "diets": "Kosthensyn som fx høj på protein og lavt sukkerindhold.",
+      "flags": "Mærker som indeholder alkohol, sukkerfri og vegetarisk.",
+      "vegan": "Viser, når varen er vegansk."
+    },
+    "mode": {
+      "contains": "Indeholder",
+      "free": "Indeholder ikke",
+      "both": "Begge dele",
+      "off": "Deaktiveret"
+    },
+    "sheet": {
+      "activate": "Aktivér",
+      "deactivate": "Deaktivér"
+    },
+    "contains": "Indeholder {name}",
+    "free": "{name}-fri",
+    "sugar": "Sukker: {grams} g pr. 100 g",
+    "additives": "{count} E-numre",
+    "highProtein": "Høj på protein",
+    "lowSugar": "Lavt sukkerindhold",
+    "noAddedSugar": "Uden tilsat sukker",
+    "alcohol": "Indeholder alkohol",
+    "sugarFree": "Sukkerfri",
+    "vegetarian": "Vegetarisk",
+    "vegan": "Vegansk"
   }
 }

@@ -123,3 +123,7 @@ ikke her, er den ikke registreret og skal tilføjes.
 ## Valgte knapper (user rule 2026-10-09)
 
 Valgte knapper/faner/chips/planvalg har ALTID den lysegrønne farve (`--hf-color-accent`, #BBF06A) med sort kant og tekst — brug `.hf-selected` / `.hf-choice` / `.hf-chip`, aldrig sort, mørkegrøn eller beige som valgt-flade. Eneste undtagelse: kalenderens dags dato (`.hf-cal-current`). Native bruger `HcColors.SelectedBg`.
+
+## Mærker på produktcirklen (user rule 2026-10-10)
+
+Certifikater står nederst til venstre ud for cirklens bund (økologi altid nederst), advarsels-/kostikoner øverst ud for cirklens top; øverste har førsteret og æder certifikaterne, økologi sidst. Rækkefølge og allergen-tilstand sættes under Indstillinger → Visning → Prioritering af visning. Se `src/lib/circle-badges.ts`.

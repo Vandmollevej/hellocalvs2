@@ -114,6 +114,10 @@ model User {
   showAllergens      Boolean @default(false)
   allergenVisibility Json?
 
+  // Mærker på produktcirklen (2026-10-10, src/lib/circle-badges.ts): rækkefølge
+  // af blokke, hvilke blokke der er slået til og visningstilstand pr. allergen.
+  displayPrefs Json?
+
   // Personal setting (2026-09-11): shows the MyFitnessPal-style extended
   // nutrition panel (saturated/unsaturated/trans fat, cholesterol, sodium,
   // potassium, fibre, sugar, vitamin A/C, calcium, iron) as a collapsed
