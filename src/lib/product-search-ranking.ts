@@ -1,6 +1,7 @@
-import { barcodeMatchesRegion } from "@/lib/regions";
-import { queryNamesBrand } from "@/lib/search-brand-intent";
-import { allWordsMatch, compactText, productDetailsText } from "@/lib/search-text-match";
+// Relative .ts imports so `npm test` (node --test) can load this module.
+import { barcodeMatchesRegion } from "./regions.ts";
+import { queryNamesBrand, queryNamesSubbrand, queryWithoutNames } from "./search-brand-intent.ts";
+import { allWordsMatch, compactText, productDetailsText } from "./search-text-match.ts";
 
 // Regional search ranking (2026-09-19, see docs/DECISIONS.md): text match is
 // always dominant, and regional popularity/history/origin only reorder
@@ -9,6 +10,9 @@ import { allWordsMatch, compactText, productDetailsText } from "@/lib/search-tex
 // never hides it (docs/DECISIONS.md 2026-10-10: søgningen viser alt). A
 // product nobody has seen yet — e.g. one without nutrition, hidden until
 // 2026-10-10 — has no impressions and would otherwise never surface.
+// Exception (brugerens krav 2026-10-10): when the query names a product's
+// brand or subbrand, that product goes above everything else, even when its
+// product type matches the rest of the query worse than another product.
 
 export type SearchStat = {
   region: string;
@@ -73,6 +77,8 @@ export type SearchRankingBreakdown = {
   personalHistory: number;
   genericVsProduct: number;
   genericBroadSearch: number;
+  brandInQuery: number;
+  subbrandInQuery: number;
 };
 
 export type RankedProduct<T extends RankableProduct> = {
@@ -99,7 +105,15 @@ export type SearchRankingWeights = {
   personalHistory: number; // "Personligt tidligere søgte produkter"
   genericVsProduct: number; // "Generiske ingredienser vs. varer" (signed: negative favors products, positive favors ingredients)
   genericBroadSearch: number; // "Generiske varer ved bred søgning" — brand-less items first unless the query names a brand
+  brandInQuery: number; // "Brand nævnt i søgningen" — the brand's products always on top
+  subbrandInQuery: number; // "Subbrand nævnt i søgningen" — the subbrand's products always on top
 };
+
+// Brand/subbrand-prioritet (2026-10-10): the signal is worth this many points
+// per weight unit, so the default weight 100 adds 10.000 points. Every other
+// signal together tops out at ~1.900 (all weights at 100), so from weight 20
+// up a named brand/subbrand is always above everything else.
+export const NAMED_BRAND_POINTS = 100;
 
 export const DEFAULT_SEARCH_RANKING_WEIGHTS: SearchRankingWeights = {
   regionalPopularity: 18,
@@ -113,6 +127,10 @@ export const DEFAULT_SEARCH_RANKING_WEIGHTS: SearchRankingWeights = {
   // letmælk before branded ones. Large enough to beat a branded item's
   // regional EAN + popularity lead, see docs/DECISIONS.md.
   genericBroadSearch: 45,
+  // Brugerens krav 2026-10-10: nævner søgningen et brand/subbrand, står dets
+  // varer altid øverst — også over en vare, hvis produkttype passer bedre.
+  brandInQuery: 100,
+  subbrandInQuery: 100,
 };
 
 const MIN_SIMILARITY = 0.18;
@@ -125,6 +143,8 @@ function normalize(value: string): string {
   return value
     .normalize("NFKD")
     .replace(/\p{Diacritic}/gu, "")
+    // "1,5" og "1.5" er samme tal (src/lib/decimal-separator.ts).
+    .replace(/(\d),(\d)/g, "$1.$2")
     .toLocaleLowerCase()
     .trim();
 }
@@ -257,12 +277,15 @@ export function rankProducts<T extends RankableProduct>(
 ): RankedProduct<T>[] {
   const popularityValues = products.map((product) => regionalPopularity(product, region));
   const maxPopularity = Math.max(0, ...popularityValues);
-  // Brand intent is read from the candidates' own brands: the database
-  // filter already pulls in a brand's products when the query names it.
-  const brandSearch = queryNamesBrand(
-    query,
-    products.flatMap((product) => (product.brand ? [product.brand.name] : []))
+  const namesBrand = products.map((product) =>
+    product.brand ? queryNamesBrand(query, [product.brand.name]) : false
   );
+  const namesSubbrand = products.map((product) =>
+    queryNamesSubbrand(query, product.subbrand, product.brand?.name)
+  );
+  // Brand intent is read from the candidates' own brands/subbrands: the
+  // database filter already pulls in their products when the query names one.
+  const brandSearch = namesBrand.some(Boolean) || namesSubbrand.some(Boolean);
 
   return products
     .map((product, index) => {
@@ -277,10 +300,23 @@ export function rankProducts<T extends RankableProduct>(
         );
       }
       similarity = Math.max(similarity, engineScores?.get(product.id) ?? 0);
+      const brandNamed = namesBrand[index] ? 1 : 0;
+      const subbrandNamed = namesSubbrand[index] ? 1 : 0;
+      if (brandNamed || subbrandNamed) {
+        // Inside the brand's own group, the rest of the query ("arla skyr"
+        // → "skyr") orders its products against their name and product type.
+        const rest = queryWithoutNames(query, [
+          product.brand ? `${product.brand.name} ${product.subbrand ?? ""}` : null,
+          product.brand?.name,
+          product.subbrand,
+        ]);
+        if (rest) similarity = Math.max(similarity, textSimilarity(rest, product.name, null, details));
+      }
       const popularity = popularityValues[index];
 
       // Only a real text match counts; popularity just orders (score below).
-      if (similarity < MIN_SIMILARITY) return null;
+      // A named brand/subbrand is a match in itself, whatever the product type.
+      if (similarity < MIN_SIMILARITY && !brandNamed && !subbrandNamed) return null;
 
       const regional = maxPopularity > 0 ? popularity / maxPopularity : 0;
       const hour = hourPopularity(product, region, localHour);
@@ -306,7 +342,9 @@ export function rankProducts<T extends RankableProduct>(
         brandRegional * weights.regionBrand +
         personal * weights.personalHistory +
         entityBias * weights.genericVsProduct +
-        genericBroad * weights.genericBroadSearch;
+        genericBroad * weights.genericBroadSearch +
+        brandNamed * NAMED_BRAND_POINTS * weights.brandInQuery +
+        subbrandNamed * NAMED_BRAND_POINTS * weights.subbrandInQuery;
 
       const breakdown: SearchRankingBreakdown = {
         similarity,
@@ -318,6 +356,8 @@ export function rankProducts<T extends RankableProduct>(
         personalHistory: personal,
         genericVsProduct: entityBias,
         genericBroadSearch: genericBroad,
+        brandInQuery: brandNamed * NAMED_BRAND_POINTS,
+        subbrandInQuery: subbrandNamed * NAMED_BRAND_POINTS,
       };
 
       return { product, score, similarity, breakdown };

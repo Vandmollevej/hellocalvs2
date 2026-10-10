@@ -26,6 +26,7 @@ import { HfChevron } from "@/components/hf/HfChevron";
 import { ProfileAvatarLink } from "@/components/ProfileAvatarLink";
 import { ActionLink } from "@/components/hf/ActionButton";
 import { FoodRow } from "@/components/FoodRow";
+import { DecimalText } from "@/components/DecimalText";
 import { EnergyChip } from "@/components/calendar/EnergyChip";
 import { IconWaterGlass } from "@/components/icons/WaterGlass";
 import { formatCl, isWaterRegistration, waterRegistrationMl } from "@/lib/water-display";
@@ -2838,9 +2839,13 @@ function DraggableEntryMarker({
       }`}
       style={{ top, height: 16, lineHeight: "16px" }}
     >
-      {dragMinutes !== null
-        ? `${minutesToTime(displayMinutes)} · ${registration.titleSnapshot}`
-        : registration.titleSnapshot}
+      <DecimalText
+        text={
+          dragMinutes !== null
+            ? `${minutesToTime(displayMinutes)} · ${registration.titleSnapshot}`
+            : registration.titleSnapshot
+        }
+      />
     </div>
   );
 }

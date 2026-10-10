@@ -42,6 +42,7 @@ import { ToxinInfoModal } from "@/components/hf/ToxinInfoModal";
 import { MicronutrientInfoModal } from "@/components/hf/MicronutrientInfoModal";
 import { MICRONUTRIENT_INFO_BY_KEY } from "@/lib/micronutrient-info";
 import { useTranslation } from "@/i18n/LocaleProvider";
+import { DecimalText } from "@/components/DecimalText";
 import { isAlternativeServingConfident } from "@/lib/alternative-servings";
 import type { AlternativeServing } from "@/lib/product-analysis-types";
 import { fromDisplayAmount, getProductDisplayUnit, toDisplayAmount } from "@/lib/product-display-unit";
@@ -958,11 +959,11 @@ export function AddProductView({
                     <Skeleton type="hero" width={200} />
                   </ReadingSkeleton>
                 ) : (
-                  <h1 className="hf-type-hero text-hf-black">{productTitle}</h1>
+                  <h1 className="hf-type-hero text-hf-black"><DecimalText text={productTitle} /></h1>
                 )}
                 {/* Uden grøn linje står luften tilbage, så resten ikke rykker op. */}
                 {subtitle ? (
-                  <h2 className="hf-type-hero text-hf-green">{subtitle}</h2>
+                  <h2 className="hf-type-hero text-hf-green"><DecimalText text={subtitle} /></h2>
                 ) : (
                   <div aria-hidden="true" className="hf-type-hero">&nbsp;</div>
                 )}

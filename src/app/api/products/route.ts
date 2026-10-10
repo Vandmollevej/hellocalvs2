@@ -15,11 +15,12 @@ import { linkCutoutJobsToProduct } from "@/lib/image-cutout-jobs";
 import { recordNutrientSources } from "@/lib/product-nutrient-sources";
 import { getSynonymExpansions } from "@/lib/search-synonyms";
 import { accentVariants } from "@/lib/accent-variants";
+import { decimalVariants } from "@/lib/decimal-separator";
 import { HIDE_FROM_SEARCH_BELOW } from "@/lib/uncertainty-thresholds";
 import { petFoodBlockReason } from "@/lib/pet-food-blacklist";
 import { recordPetFoodAttempt } from "@/lib/pet-food-strikes";
 import { saveDataUrlImage } from "@/lib/qc-image-storage";
-import { accentInsensitiveProductIds, correctedQuery } from "@/lib/search-correction";
+import { accentInsensitiveProductIds, brandsNamedInQuery, correctedQuery } from "@/lib/search-correction";
 import { productDetailsText } from "@/lib/search-text-match";
 import { searchProductIndex, type MeiliHit } from "@/lib/search-engine/meili";
 import { cachedSearch, storeSearch } from "@/lib/search-engine/search-cache";
@@ -28,7 +29,8 @@ import { recordSearchEvent } from "@/lib/search-analytics";
 // GET /api/products?q=rugbrød — search in our own product database only. Results are ranked by src/lib/product-search-ranking.ts: text match
 // is always dominant, and hidden regional search/click/hour-of-day statistics
 // plus GS1 origin/market only reorder otherwise-comparable matches (see
-// docs/DECISIONS.md, 2026-09-19). Live autosuggest deliberately starts at 2
+// docs/DECISIONS.md, 2026-09-19) — except that a brand/subbrand named in the
+// query always puts its products on top (2026-10-10). Live autosuggest deliberately starts at 2
 // typed characters (?q= with 1 character returns an empty list).
 // ?source=HELLOFRESH filters to a single external source (e.g. to browse the entire
 // HelloFresh catalog); ?take=N overrides the default limit of 20 (max 200).
@@ -133,17 +135,24 @@ async function searchProducts({
   // Ranking re-sorts a wider candidate pool than `take`, since a
   // low-popularity-but-exact match further down createdAt-order must still
   // be able to surface once ranked.
-  const synonyms = q && !source ? await getSynonymExpansions(q) : [];
+  const textSearch = Boolean(q) && !source;
   const candidateTake = q ? Math.max(take * 6, 80) : take;
   // Søgemotoren (Meilisearch, docs/DECISIONS.md 2026-10-10) finder kandidaterne
   // med stavefejl, sammensatte ord, præfiks og vægtede felter. Svarer den ikke,
   // bruges Postgres-søgningen nedenfor som reserve.
-  const engine = q && !source ? await engineCandidates(q, candidateTake) : null;
-  // Accent-ufølsomt match ("Nescafé" finder "Nescafe") og sammensatte ord
-  // ("instantkaffe" finder "Instant Kaffe") på tværs af navn, mærke, varetype,
-  // serie, variant, smag og søgeord: Prismas contains kan ingen af delene, så
-  // id'erne hentes med hc_search_norm() og lægges til nedenfor.
-  const accentIds = q && !source && !engine ? await accentInsensitiveProductIds(q) : [];
+  const engine = textSearch ? await engineCandidates(q, candidateTake) : null;
+  const [synonyms, accentIds, named] = await Promise.all([
+    textSearch ? getSynonymExpansions(q) : [],
+    // Accent-ufølsomt match ("Nescafé" finder "Nescafe") og sammensatte ord
+    // ("instantkaffe" finder "Instant Kaffe") på tværs af navn, mærke, varetype,
+    // serie, variant, smag og søgeord: Prismas contains kan ingen af delene, så
+    // id'erne hentes med hc_search_norm() og lægges til nedenfor. Kun når
+    // søgemotoren ikke svarede.
+    textSearch && !engine ? accentInsensitiveProductIds(q) : [],
+    // Brand/subbrand først (docs/DECISIONS.md 2026-10-10): nævner søgningen et
+    // brand eller subbrand, er alle dets varer kandidater, uanset produkttype.
+    textSearch ? brandsNamedInQuery(q) : { brandIds: [], subbrands: [] },
+  ]);
   const queryWords = q.split(/\s+/).filter((word) => word.length >= 2).slice(0, 6);
   const sourceFilter: Prisma.ProductWhereInput = source
     ? { externalSource: source }
@@ -188,18 +197,25 @@ async function searchProducts({
               OR: [
                 { name: { contains: q, mode: "insensitive" } },
                 { namePlural: { contains: q, mode: "insensitive" } },
+                // Brand og subbrand er søgbare, også når varesiden kun viser dem
+                // som logo (brugerens krav 2026-10-10).
                 { brand: { name: { contains: q, mode: "insensitive" } } },
                 // Butiksvarer hedder ofte kun "Gold" med varetypen "Instant kaffe".
                 { productType: { contains: q, mode: "insensitive" } },
                 { subbrand: { contains: q, mode: "insensitive" } },
                 { variant: { contains: q, mode: "insensitive" } },
+                ...(named.brandIds.length > 0 ? [{ brandId: { in: named.brandIds } }] : []),
+                ...(named.subbrands.length > 0 ? [{ subbrand: { in: named.subbrands } }] : []),
                 ...(accentIds.length > 0 ? [{ id: { in: accentIds } }] : []),
-                // "nescafe" finder "Nescafé" (navn og brand), jf. accent-variants.ts.
+                // "nescafe" finder "Nescafé" (navn, brand og subbrand), jf. accent-variants.ts.
                 ...accentVariants(q).flatMap((v) => [
                   { name: { contains: v, mode: "insensitive" as const } },
                   { brand: { name: { contains: v, mode: "insensitive" as const } } },
+                  { subbrand: { contains: v, mode: "insensitive" as const } },
                 ]),
                 ...synonyms.map((s) => ({ name: { contains: s.term, mode: "insensitive" as const } })),
+                // "1,5 l" finder "1.5 l" og omvendt (src/lib/decimal-separator.ts).
+                ...decimalVariants(q).map((v) => ({ name: { contains: v, mode: "insensitive" as const } })),
                 // Sukkerpåstande kan søges ("sukkerfri", "uden tilsat sukker",
                 // "reduceret", "light", "lavt sukker"), men vises ikke som mærker
                 // (docs/DECISIONS.md 2026-10-02).
@@ -220,6 +236,10 @@ async function searchProducts({
                             { productType: { contains: word, mode: "insensitive" } },
                             { subbrand: { contains: word, mode: "insensitive" } },
                             { variant: { contains: word, mode: "insensitive" } },
+                            ...decimalVariants(word).flatMap((v) => [
+                              { name: { contains: v, mode: "insensitive" as const } },
+                              { variant: { contains: v, mode: "insensitive" as const } },
+                            ]),
                           ],
                         })),
                       },
@@ -257,15 +277,15 @@ async function searchProducts({
 
   let products = await findProducts(
     engine
-      ? engine.hits.map((hit) => hit.id)
-      : q && !source
-        ? await candidateIdsByTextMatch(where, q, synonyms, candidateTake)
+      ? await withNamedBrandProducts(engine.hits.map((hit) => hit.id), visibleWhere, named, candidateTake)
+      : textSearch
+        ? await candidateIdsByTextMatch(where, q, synonyms, named, candidateTake)
         : undefined
   );
-  const sessionUser = q && !source ? await getSessionUser() : null;
+  const sessionUser = textSearch ? await getSessionUser() : null;
   const user = { region: sessionUser?.region ?? "DK" };
 
-  if (q && !source) {
+  if (textSearch) {
     const weights = await getActiveSearchRankingWeights();
 
     // Personlig historik (2026-09-19, se docs/DECISIONS.md) — kun for en
@@ -419,6 +439,34 @@ async function searchProducts({
   };
 }
 
+// Et nævnt brand/subbrand står altid øverst (docs/DECISIONS.md 2026-10-10), så
+// alle dets varer kommer med i puljen ved siden af søgemotorens træffere.
+async function withNamedBrandProducts(
+  engineIds: string[],
+  visibleWhere: Prisma.ProductWhereInput,
+  named: { brandIds: string[]; subbrands: string[] },
+  take: number
+) {
+  if (named.brandIds.length === 0 && named.subbrands.length === 0) return engineIds;
+  const rows = await prisma.product.findMany({
+    where: {
+      AND: [
+        visibleWhere,
+        {
+          OR: [
+            ...(named.brandIds.length > 0 ? [{ brandId: { in: named.brandIds } }] : []),
+            ...(named.subbrands.length > 0 ? [{ subbrand: { in: named.subbrands } }] : []),
+          ],
+        },
+      ],
+    },
+    select: { id: true },
+    take,
+    orderBy: { createdAt: "desc" },
+  });
+  return [...new Set([...engineIds, ...rows.map((row) => row.id)])];
+}
+
 // Søgemotorens kandidater, cachet kort (src/lib/search-engine/search-cache.ts).
 // null = søgemotoren er ikke sat op eller svarede ikke → Postgres.
 async function engineCandidates(q: string, limit: number) {
@@ -440,6 +488,7 @@ async function candidateIdsByTextMatch(
   where: Prisma.ProductWhereInput,
   q: string,
   synonyms: Array<{ term: string; similarity: number }>,
+  named: { brandIds: string[]; subbrands: string[] },
   take: number
 ) {
   const rows = await prisma.product.findMany({
@@ -452,11 +501,14 @@ async function candidateIdsByTextMatch(
       subbrand: true,
       variant: true,
       flavor: true,
+      brandId: true,
       brand: { select: { name: true } },
     },
     take: CANDIDATE_SCAN_LIMIT,
     orderBy: { createdAt: "desc" },
   });
+  const namedBrandIds = new Set(named.brandIds);
+  const namedSubbrands = new Set(named.subbrands);
   const match = (name: string, brand: string | null | undefined, details: string) =>
     Math.max(
       textSimilarity(q, name, brand, details),
@@ -468,10 +520,14 @@ async function candidateIdsByTextMatch(
       return {
         id: row.id,
         index,
-        score: Math.max(
-          match(row.name, row.brand?.name, details),
-          row.namePlural ? match(row.namePlural, row.brand?.name, details) : 0
-        ),
+        score:
+          Math.max(
+            match(row.name, row.brand?.name, details),
+            row.namePlural ? match(row.namePlural, row.brand?.name, details) : 0
+          ) +
+          // Et nævnt brand/subbrand står altid øverst og skal derfor med i puljen.
+          (row.brandId && namedBrandIds.has(row.brandId) ? 2 : 0) +
+          (row.subbrand && namedSubbrands.has(row.subbrand) ? 2 : 0),
       };
     })
     .sort((a, b) => b.score - a.score || a.index - b.index)

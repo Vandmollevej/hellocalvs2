@@ -48,6 +48,7 @@ import {
 } from "@/components/recipes/RecipeStepsEditor";
 import { RecipeCategoriesDialog } from "@/components/recipes/RecipeCategoriesDialog";
 import { useTranslation } from "@/i18n/LocaleProvider";
+import { DecimalText } from "@/components/DecimalText";
 import { SearchCorrectionNotice } from "@/components/hf/SearchCorrectionNotice";
 import { readSearchCorrection, type SearchCorrection } from "@/lib/search-notice";
 import { useConnectionMessage } from "@/lib/use-online-status";
@@ -724,7 +725,7 @@ export default function CreateDishPage() {
                               )}
                             </div>
                             <span className="hf-type-body hf-type-strong flex-1 text-hf-black">
-                              {product.name}
+                              <DecimalText text={product.name} />
                             </span>
                           </Link>
                         ))}

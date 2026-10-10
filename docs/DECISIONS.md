@@ -17,6 +17,23 @@ Ejeren: søgningen skal være "perfekt dynamisk", ikke lappeløsninger, og admin
 
 - Butiksvarer (Bilka/REMA-arkene) hedder ofte kun fx "Gold" med mærket Nescafé og varetypen "Instant kaffe" i `productType`. Søgningen læste kun navn og mærke, så "Nescafé instant kaffe" og "instantkaffe" fandt dem ikke.
 - Nu: hvert søgeord skal stå i navn, flertalsnavn, mærke, serie, varetype, variant, smag eller søgeord (`keywords`) — accent-ufølsomt, og også når teksten læses uden mellemrum, så "instantkaffe" finder "Instant Kaffe" og "instant kaffe" finder "Instantkaffe". Opslaget er `accentInsensitiveProductIds` (`src/lib/search-correction.ts`); rangeringen bruger de samme felter (`src/lib/search-text-match.ts`, `textSimilarity`). Navn/mærke-match rangerer stadig over varetype-match.
+## 2026-10-10: Decimalpunktum i arkene, landets decimaltegn i appen
+
+Brugerens regel: i arkene skrives decimaler med punktum ("1.5 liter"), men i appen vises de med komma for Danmark og alle andre lande, der bruger komma ("1,5 liter"); punktum-lande ser punktum.
+
+- **Lagring**: arkene og dermed databasens varetekster (navn, mængde, variant) bruger punktum. Danske tusindtalspunktummer er fjernet i arkene ("1.080 g" → "1080 g"), så et punktum altid er et decimaltegn. Ældre varer og registreringernes `titleSnapshot` har stadig komma og ændres ikke (snapshot-reglen).
+- **Visning** (`src/lib/decimal-separator.ts`): `decimalSeparatorForRegion` slår landets decimaltegn op i CLDR via `Intl` (fast liste som reserve; ukendt land = DK = komma). `localizeDecimals` omskriver begge veje, men kun tal med ét decimaltegn uden mellemrum — opremsninger ("Omega 3,6,9", "45+, med kommen") og datoer røres ikke, og et gammelt "1.080 g" bliver stående i komma-lande. Brugerens land kommer fra profilen: `/api/auth/me` sender `region`, og `LocaleProvider` gemmer det i enheds-lageret (`src/lib/units.ts`, `useRegion()`), så også enhedernes standard følger profilen. Klientkomponenten `DecimalText` bruges i `FoodRow` (søgning, dagbog, kalender, Mine madvarer), på varesiden (navn og mængde/variant), i kalenderens tidslinje, Opret ret og hyldescanningen; widgetten omskriver serverside med brugerens land. Konverteringen sker kun ved visning — API'erne sender den gemte tekst, så intet lokaliseret skrives tilbage i databasen.
+- **Søgning**: "1,5" finder "1.5" og omvendt (`decimalVariants` i `/api/products` og `/api/generic-ingredients`; rangeringen sidestiller de to).
+
+## 2026-10-10: Søgning — brand og subbrand søgbare og altid øverst
+
+Brugerens krav: brand og subbrand skal kunne søges, selvom varesiden kun viser dem som logo, og nævner søgeteksten et brand, skal brandets varer altid stå øverst — også når produkttypen passer bedre på en anden vare. Parametrene skal kunne ses og justeres i admin.
+
+- **Søgefelter** (`GET /api/products`): titel, flertalstitel, brand og `Product.subbrand` (fri tekst; læses også via varetype-ændringen ovenfor) — også i accent-varianterne ("nescafe"). Migration `20261010230000_search_subbrand` lægger trigram-indeks på `hc_search_norm(subbrand)` og genopbygger `search_words` med subbrandenes ord ("Mente du …?").
+- **Nævnt brand/subbrand**: `brandsNamedInQuery` (`src/lib/search-correction.ts`) finder de brands/subbrands, hvis navn står som hele ord i søgningen (subbrand alene eller med brandet foran, mindst 3 tegn), og alle deres varer kommer med i kandidatpuljen — også dem, hvis navn ikke matcher resten af søgningen.
+- **Rangering** (`rankProducts`): to nye vægte i Søgealgoritmer, `brandInQuery` og `subbrandInQuery`, standard **100**. Signalet er 100 point pr. vægtenhed (`NAMED_BRAND_POINTS`), så standard giver +10.000; alle andre signaler tilsammen kan højst give ~1.900, så fra vægt 20 står et nævnt brand/subbrand altid øverst. 0 slår reglen fra. Brand + subbrand nævnt slår kun brand. Indbyrdes ordnes brandets varer efter resten af søgningen ("arla skyr" → "skyr" mod navnet), og et nævnt brand/subbrand er et match i sig selv (under `MIN_SIMILARITY` skjules det ikke). Undtagelsen afløser for denne situation princippet fra 2026-09-19 om, at tekstmatch altid dominerer.
+- **Admin** (`/admin/search-ranking`): de to vægte står øverst blandt parametrene, og en boks "Søgeparametre" viser søgefelterne og rækkefølgen. Live-testen bruger samme brand-regel og subbrand.
+- Ældre gemte versioner i `search_ranking_configs` mangler de nye nøgler og får standarden (100) via `sanitizeWeights`.
 
 ## 2026-10-10: Frida-skøn (∼) på varer uden energimærkning
 

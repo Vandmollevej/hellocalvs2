@@ -26,3 +26,27 @@ export function queryNamesBrand(query: string, brandNames: Iterable<string>): bo
   }
   return false;
 }
+
+// Brand/subbrand først (docs/DECISIONS.md 2026-10-10): et subbrand tæller,
+// når det står som hele ord i søgningen — alene ("cheasy") eller med brandet
+// foran ("arla cheasy"). Mindst 3 tegn, så et kort subbrand ikke rammer tilfældigt.
+export function queryNamesSubbrand(
+  query: string,
+  subbrand: string | null | undefined,
+  brandName?: string | null
+): boolean {
+  if (!subbrand || normalizeSearchText(subbrand).length < 3) return false;
+  return queryNamesBrand(query, brandName ? [subbrand, `${brandName} ${subbrand}`] : [subbrand]);
+}
+
+// Søgningen uden de ord, der udgør brand/subbrand ("arla skyr" → "skyr"), så
+// brandets varer indbyrdes sorteres efter resten af søgningen. Tom, når hele
+// søgningen er brandet.
+export function queryWithoutNames(query: string, names: Iterable<string | null | undefined>): string {
+  let q = ` ${normalizeSearchText(query)} `;
+  for (const name of names) {
+    const n = name ? normalizeSearchText(name) : "";
+    if (n.length >= 2) q = q.split(` ${n} `).join(" ");
+  }
+  return q.replace(/\s+/g, " ").trim();
+}
