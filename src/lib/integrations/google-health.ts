@@ -204,6 +204,37 @@ async function samples(accessToken: string, since: Date, spec: (typeof SAMPLE_TY
   });
 }
 
+// Iltmætning, åndedræt og HRV kommer som en måling hvert minut; det fylder
+// kalenderen med 60 rækker i timen. De samles til ét gennemsnit pr. time.
+const HOURLY_TYPES = new Set(["OXYGEN_SATURATION_PERCENT", "RESPIRATORY_RATE_BPM", "HEART_RATE_VARIABILITY_MS"]);
+
+type MetricPayload = { type: string; value: number; recordedAt: string };
+
+export function averagePerHour(items: IntegrationItem[]): IntegrationItem[] {
+  const groups = new Map<string, { sum: number; count: number; first: IntegrationItem }>();
+  const rest: IntegrationItem[] = [];
+  for (const item of items) {
+    const p = item.payload as MetricPayload;
+    if (item.kind !== "metric" || !HOURLY_TYPES.has(p.type)) {
+      rest.push(item);
+      continue;
+    }
+    const key = `${p.type}|${p.recordedAt.slice(0, 13)}`;
+    const group = groups.get(key);
+    if (group) {
+      group.sum += p.value;
+      group.count += 1;
+      if (p.recordedAt < (group.first.payload as MetricPayload).recordedAt) group.first = item;
+    } else {
+      groups.set(key, { sum: p.value, count: 1, first: item });
+    }
+  }
+  for (const { sum, count, first } of groups.values()) {
+    rest.push({ ...first, payload: { ...(first.payload as MetricPayload), value: Math.round((sum / count) * 100) / 100 } });
+  }
+  return rest;
+}
+
 export const googleHealth: OAuthProviderAdapter = {
   provider: "GOOGLE_HEALTH",
   slug: "google-health",
@@ -252,7 +283,7 @@ export const googleHealth: OAuthProviderAdapter = {
     ]);
     const ok = results.filter((r): r is PromiseFulfilledResult<IntegrationItem[]> => r.status === "fulfilled");
     if (ok.length === 0) throw (results[0] as PromiseRejectedResult).reason;
-    return ok.flatMap((r) => r.value);
+    return averagePerHour(ok.flatMap((r) => r.value));
   },
   writeScopes: WRITE_SCOPES,
   // Måltider som nutrition-log, vand som hydration-log og manuelle

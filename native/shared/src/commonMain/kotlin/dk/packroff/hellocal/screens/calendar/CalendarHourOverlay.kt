@@ -1,5 +1,6 @@
 package dk.packroff.hellocal.screens.calendar
 
+import dk.packroff.hellocal.ui.CalendarBathScaleIcon
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -138,7 +139,7 @@ internal fun HourEntriesOverlay(
                             if (groupWaterMl > 0) EnergyChip(EnergyChipKind.Water, groupWaterMl, iconSize = 18.dp, role = HcTypeRoles.Body)
                             if (groupWeight != null) {
                                 Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(4.dp)) {
-                                    HcIcon("Scale", size = 18.dp, color = HcColors.Black)
+                                    CalendarBathScaleIcon(18.dp, HcColors.Black)
                                     HcText(formatWeightKg(groupWeight), HcTypeRoles.Body, bold = true, color = HcColors.Black)
                                 }
                             }
@@ -171,7 +172,7 @@ private fun SoloWeightRow(time: LocalDateTime, measurement: CalendarMeasurement)
     ) {
         HcText(clock(time), HcTypeRoles.Body, Modifier.weight(1f), bold = true, color = HcColors.Black)
         Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            HcIcon("Scale", size = 18.dp, color = HcColors.Black)
+            CalendarBathScaleIcon(18.dp, HcColors.Black)
             HcText(formatWeightKg(measurement.weightKg ?: 0.0), HcTypeRoles.Body, bold = true, color = HcColors.Black)
             Box(Modifier.offset(x = (-4).dp)) { HcChevron(ChevronDirection.Right, color = HcColors.Black) }
         }
@@ -289,7 +290,7 @@ private fun MeasurementRow(measurement: CalendarMeasurement, hideWeight: Boolean
             thumbnail = {
                 val sourceIcon = integrationIconForSource(measurement.source)
                 if (sourceIcon != null) HcRemoteImage(sourceIcon, Modifier.size(44.dp).padding(4.dp))
-                else HcIcon("Scale", size = 22.dp, color = HcColors.Black)
+                else HcIcon("Heartbeat", size = 22.dp, color = HcColors.Black)
             },
             subtitle = subtitle,
             right = right,

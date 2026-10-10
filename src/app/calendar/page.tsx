@@ -1,5 +1,6 @@
 "use client";
 
+import { IconBathScale } from "@/components/hf/IconBathScale";
 import { SINNERS_ENABLED } from "@/lib/food-classification";
 import { useEffect, useMemo, useRef, useState, createContext, useContext } from "react";
 import Link from "next/link";
@@ -16,7 +17,7 @@ import {
   IconChevronRight,
   IconLayoutList,
   IconMoon,
-  IconScale,
+  IconHeartbeat,
   IconStarFilled,
 } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
@@ -1411,7 +1412,7 @@ function WeighInMark({ entries }: { entries: WeightEntry[] }) {
   if (!latest) return null;
   return (
     <>
-      <IconScale size={18} className="shrink-0 text-hf-black" />
+      <IconBathScale size={18} className="shrink-0 text-hf-black" />
       <span className="sr-only">{t("calendar.weighInSrLabel", { value: formatKg(latest.weightKg) })}</span>
     </>
   );
@@ -1742,7 +1743,7 @@ function WeekTimelineView({
                 {date.getDate()}
                 {met && <IconCheck size={15} stroke={3.5} className="text-hf-green" aria-hidden="true" />}
                 {goalsForDate(goalsByDate, date).length > 0 && <IconPartyPopper size={15} />}
-                {weighInsForDate(weighInsByDate, date).length > 0 && <IconScale size={15} />}
+                {weighInsForDate(weighInsByDate, date).length > 0 && <IconBathScale size={15} />}
                 <PulseHeartMark date={date} size={15} />
               </span>
             </button>
@@ -1834,7 +1835,7 @@ function WeekTimelineView({
                       style={{ top: (minutesFromMidnight(time) / 60) * HOUR_HEIGHT, minHeight: 18 }}
                       title={t("calendar.dayWeighIn", { value: formatKg(entry.weightKg), time: formatClock(entry.weighedAt) })}
                     >
-                      <IconScale size={12} />
+                      <IconBathScale size={12} />
                       {formatKg(entry.weightKg)} kg
                     </div>
                   );
@@ -2703,7 +2704,7 @@ function HourRow({
           {hasGoal && <IconPartyPopper size={16} className="text-hf-black" />}
           {weighIns.map((entry) => (
             <span key={entry.id} className="hf-type-small hf-type-strong flex items-center gap-1 text-hf-black">
-              <IconScale size={16} />
+              <IconBathScale size={16} />
               {formatKg(entry.weightKg)} kg
             </span>
           ))}
@@ -2726,7 +2727,7 @@ function HourRow({
           {waterMl > 0 && <EnergyChip kind="water" value={waterMl} />}
           {hasMeasurement && weighIns.length === 0 && (
             <span className="flex items-center gap-1">
-              <IconScale size={16} aria-hidden="true" />
+              {weightKg !== null ? <IconBathScale size={16} aria-hidden="true" /> : <IconHeartbeat size={16} aria-hidden="true" />}
               {weightKg !== null && formatWeightKg(weightKg)}
             </span>
           )}
@@ -3052,7 +3053,7 @@ function HourEntriesOverlay({
                   {groupWaterMl > 0 && <EnergyChip kind="water" value={groupWaterMl} iconSize={18} />}
                   {groupWeight && (
                     <span className="flex items-center gap-1">
-                      <IconScale size={18} aria-hidden="true" />
+                      <IconBathScale size={18} aria-hidden="true" />
                       {formatWeightKg(groupWeight.measurement.weightKg as number)}
                     </span>
                   )}
@@ -3144,7 +3145,7 @@ function WeightGroupRow({ time, measurement }: { time: Date; measurement: Calend
           {new Intl.DateTimeFormat("da-DK", { hour: "2-digit", minute: "2-digit" }).format(time)}
         </span>
         <span className="hf-type-body hf-type-strong flex items-center gap-2 text-hf-black">
-          <IconScale size={18} aria-hidden="true" />
+          <IconBathScale size={18} aria-hidden="true" />
           {formatWeightKg(measurement.weightKg as number)}
           <HfChevron direction="right" className="-ml-1 text-hf-black" />
         </span>
@@ -3183,7 +3184,11 @@ function MeasurementRow({ measurement, className, hideWeight = false }: { measur
             // eslint-disable-next-line @next/next/no-img-element
             <img src={sourceIcon} alt="" className="h-full w-full object-contain p-1" />
           ) : (
-            <IconScale size={22} className="text-hf-black" aria-hidden="true" />
+            measurement.weightKg !== null ? (
+              <IconBathScale size={22} className="text-hf-black" aria-hidden="true" />
+            ) : (
+              <IconHeartbeat size={22} className="text-hf-black" aria-hidden="true" />
+            )
           )
         }
         title={measurement.weightKg !== null ? t("calendar.measurement.weight") : t("calendar.measurement.title")}
