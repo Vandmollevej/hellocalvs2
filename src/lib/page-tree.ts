@@ -452,6 +452,16 @@ export const PAGE_TREE: PageArea[] = [
                 label: "HelloFresh-retter",
                 children: [{ path: "/admin/dishes/hellofresh/[id]", label: "HelloFresh-ret", note: "Kun visning" }],
               },
+              {
+                path: "/admin/dishes/retnemt",
+                label: "RetNemt-retter",
+                children: [{ path: "/admin/dishes/retnemt/[id]", label: "RetNemt-ret", note: "Kun visning" }],
+              },
+              {
+                path: "/admin/dishes/betterfeast",
+                label: "BetterFeast-retter",
+                children: [{ path: "/admin/dishes/betterfeast/[id]", label: "BetterFeast-ret", note: "Kun visning" }],
+              },
               { path: "/admin/dishes/valdemarsro", label: "Valdemarsro-retter" },
             ],
           },
@@ -480,30 +490,6 @@ export const PAGE_TREE: PageArea[] = [
                   { path: "/admin/product-database/logo-upload", label: "Logo-upload", note: "Gammel adresse — sender videre til Billeder" },
                 ],
               },
-            ],
-          },
-          {
-            path: "/admin/dishes",
-            label: "Retter",
-            note: "Sender videre til Brugeroprettede",
-            children: [
-              { path: "/admin/dishes/user", label: "Brugeroprettede" },
-              {
-                path: "/admin/dishes/hellofresh",
-                label: "HelloFresh",
-                children: [{ path: "/admin/dishes/hellofresh/[id]", label: "HelloFresh-ret", note: "Kun visning" }],
-              },
-              {
-                path: "/admin/dishes/retnemt",
-                label: "RetNemt",
-                children: [{ path: "/admin/dishes/retnemt/[id]", label: "RetNemt-ret", note: "Kun visning" }],
-              },
-              {
-                path: "/admin/dishes/betterfeast",
-                label: "BetterFeast",
-                children: [{ path: "/admin/dishes/betterfeast/[id]", label: "BetterFeast-ret", note: "Kun visning" }],
-              },
-              { path: "/admin/dishes/valdemarsro", label: "Valdemarsro", note: "Rækken åbner produktsiden" },
             ],
           },
           { path: "/admin/search", label: "Søg", note: "Gammel adresse — sender videre til Varer" },

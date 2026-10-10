@@ -47,8 +47,8 @@ export const ADMIN_PAGE_SHORTCUTS: Record<string, readonly string[]> = {
   "/admin/dishes/user": ["Alt+Shift+U"],
   "/admin/dishes/hellofresh": ["Alt+Shift+H"],
   "/admin/dishes/valdemarsro": ["Alt+V"],
-  "/admin/dishes/retnemt": ["Alt+Q"],
-  "/admin/dishes/betterfeast": ["Alt+Shift+K"],
+  "/admin/dishes/retnemt": ["Alt+X"],
+  "/admin/dishes/betterfeast": ["Alt+7"],
 
   // Flows
   "/admin/flows": ["Alt+Shift+W"],
