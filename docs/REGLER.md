@@ -95,6 +95,16 @@ ikke her, er den ikke registreret og skal tilføjes.
 - Streng sikkerhed (vault) kun for admin; almindelige brugere får normalt login
   (email/adgangskode, Face ID, Google/Apple/Facebook).
 
+## Eksterne nøgler og integrationer (user rule 2026-10-10)
+
+- Hvert eksternt input i admin (API-nøgler, integrationer, SMTP, SMS, betaling,
+  push, systemværdier) viser "Styres her" med det præcise link til siden, hvor
+  værdien findes og styres hos udbyderen — aldrig kun forsiden. Linket står i
+  `src/lib/api-keys/catalog.ts` som `manage` (påkrævet felt, så en ny nøgle
+  ikke kan tilføjes uden). Egne API'er kræver et https-link ved oprettelse.
+- Interne henvisninger til en nøgle går til tjenestens anker
+  (`/admin/api-keys#<id>`), ikke kun til API-nøgle-siden.
+
 ## Proces
 
 - Spørgsmål til brugeren stilles ALTID i spørgsmålsboksen (AskUserQuestion),
