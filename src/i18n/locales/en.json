@@ -3448,6 +3448,7 @@
     "sleep": "Sleep",
     "statusActive": "Active",
     "statusInactive": "Inactive",
+    "activeDesc": "Inactive screenings are hidden and send no reminders, but your entries are kept.",
     "activate": "Activate",
     "deactivate": "Deactivate",
     "delete": "Delete",

@@ -409,6 +409,11 @@ private fun ScreeningFlowScreen(existing: Screening?) {
             ProfileProgressStepper(FLOW_STEPS.map { t.t("screenings.$it") }, step, 0f)
             when (step) {
                 0 -> {
+                    HcToggle(
+                        draft.active, { draft = draft.copy(active = it) },
+                        if (draft.active) t.t("screenings.statusActive") else t.t("screenings.statusInactive"),
+                        t.t("screenings.activeDesc"),
+                    )
                     HcText(t.t("screenings.nameTitle"), HcTypeRoles.SectionTitle)
                     HcTextField(draft.name, { draft = draft.copy(name = it.take(60)) }, placeholder = t.t("screenings.namePlaceholder"), label = t.t("screenings.nameLabel"), standard = true)
                     HcText(t.t("screenings.purposeLabel"), HcTypeRoles.Label)

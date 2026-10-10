@@ -2657,6 +2657,9 @@ model BugReport {
   // { <sektionsnøgle>: "brugerens tekst" }, nøgler i
   // src/lib/bug-report-sections.ts. Null for ældre/generelle rapporter.
   sections      Json?
+  // Fotos taget direkte i "Indberet fejl" pr. sektion: { <sektionsnøgle>:
+  // "/product-images/bug-report-images/<uuid>.jpg" } (docs/DECISIONS.md 2026-10-10).
+  sectionPhotos Json?
   screenshotUrl String?
   status        BugReportStatus     @default(PENDING)
   createdAt     DateTime            @default(now())

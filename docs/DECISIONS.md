@@ -2,6 +2,12 @@
 
 This file records durable decisions. Add a dated entry when a later decision changes one of them.
 
+## 2026-10-10: Indberet fejl — bundark pr. punkt med kamera
+
+Ejerens krav: under "Indberet fejl" er punkterne ikke dropdowns, men åbner hver et bundark nedefra med punktet som overskrift, notefelt og derunder kamera, så man kan tage et nyt billede direkte og sende det ind. Send-knappen nederst er sort. Efter indsendelse står man på samme oversigt, men banneret er erstattet af et sort felt med "TAK! Vi har modtaget din indberetning. Du vil få svar på din henvendelse og points i din indbakke, når vi har behandlet din sag."
+
+- Ét foto pr. punkt (`bug_reports.sectionPhotos`, JSON nøgle → sti). Billeder gemmes uden EXIF/GPS i det eksisterende `/product-images`-volume; admin ser dem under punktet. Et punkt med kun foto får teksten "Se vedhæftet foto", så det tæller som udfyldt.
+
 ## 2026-10-09: Screeninger under Profil
 
 Ejerens krav: egne screeninger under Profil → Screeninger. Søvn ligger som fast række (peger på søvnmønsteret); migræne, mavesmerter og humør oprettes som almindelige screeninger første gang siden åbnes (`User.screeningsSeeded`, tekster på brugerens sprog) og kan redigeres, deaktiveres og slettes.

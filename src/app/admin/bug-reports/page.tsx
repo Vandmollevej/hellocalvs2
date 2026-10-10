@@ -16,6 +16,7 @@ export default async function AdminBugReportsPage() {
       description: true,
       screenshotUrl: true,
       sections: true,
+      sectionPhotos: true,
       createdAt: true,
       source: true,
       user: { select: { displayName: true } },
@@ -41,6 +42,7 @@ export default async function AdminBugReportsPage() {
               report={{
                 ...report,
                 sections: report.sections as BugReportSections | null,
+                sectionPhotos: report.sectionPhotos as BugReportSections | null,
                 createdAt: report.createdAt.toISOString(),
                 notes: report.notes.map((n) => ({ ...n, createdAt: n.createdAt.toISOString() })),
               }}

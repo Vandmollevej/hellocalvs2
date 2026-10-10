@@ -3448,6 +3448,7 @@
     "sleep": "Søvn",
     "statusActive": "Aktiv",
     "statusInactive": "Inaktiv",
+    "activeDesc": "Inaktive screeninger vises ikke og giver ingen påmindelser, men dine målinger bevares.",
     "activate": "Aktivér",
     "deactivate": "Deaktivér",
     "delete": "Slet",
