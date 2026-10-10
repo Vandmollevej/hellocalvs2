@@ -1,0 +1,5462 @@
+[
+ {
+  "ean": "5701050361954",
+  "frida_id": "1003",
+  "confidence": 90,
+  "note": "Økologiske koteletter = grisekam uden svær"
+ },
+ {
+  "ean": "5701200191226",
+  "frida_id": "1003",
+  "confidence": 90,
+  "note": "Koteletter = grisekam uden svær"
+ },
+ {
+  "ean": "5705830613905",
+  "frida_id": "1003",
+  "confidence": 90,
+  "note": "Kotelet = grisekam uden svær; ben/fedtkant varierer"
+ },
+ {
+  "ean": "5705830011169",
+  "frida_id": "1008",
+  "confidence": 90,
+  "note": "Karameller"
+ },
+ {
+  "ean": "5709385011872",
+  "frida_id": "1008",
+  "confidence": 92,
+  "note": "Karameller"
+ },
+ {
+  "ean": "5774540082509",
+  "frida_id": "1008",
+  "confidence": 90,
+  "note": "Karameller, mærkevariant"
+ },
+ {
+  "ean": "4005614000305",
+  "frida_id": "101",
+  "confidence": 95,
+  "note": "Hel and med skind"
+ },
+ {
+  "ean": "5705644003442",
+  "frida_id": "101",
+  "confidence": 95,
+  "note": "Hel and med skind"
+ },
+ {
+  "ean": "5704000001023",
+  "frida_id": "1010",
+  "confidence": 95,
+  "note": "Almindelig leverpostej, grovhakket"
+ },
+ {
+  "ean": "5704000467041",
+  "frida_id": "1010",
+  "confidence": 93,
+  "note": "Leverpostej"
+ },
+ {
+  "ean": "5704000502391",
+  "frida_id": "1010",
+  "confidence": 95,
+  "note": "Almindelig leverpostej, grovhakket"
+ },
+ {
+  "ean": "5704000503121",
+  "frida_id": "1010",
+  "confidence": 95,
+  "note": "Leverpostej"
+ },
+ {
+  "ean": "5705830602909",
+  "frida_id": "1010",
+  "confidence": 95,
+  "note": "Leverpostej"
+ },
+ {
+  "ean": "5705830605344",
+  "frida_id": "1010",
+  "confidence": 95,
+  "note": "Leverpostej"
+ },
+ {
+  "ean": "5705830606747",
+  "frida_id": "1010",
+  "confidence": 90,
+  "note": "Mælkefri leverpostej"
+ },
+ {
+  "ean": "5762385293914",
+  "frida_id": "1010",
+  "confidence": 95,
+  "note": "Leverpostej"
+ },
+ {
+  "ean": "5740900403390",
+  "frida_id": "1015",
+  "confidence": 97,
+  "note": "Usaltet smør"
+ },
+ {
+  "ean": "5701043001065",
+  "frida_id": "1018",
+  "confidence": 90,
+  "note": "Plantemargarine til stegning og bagning"
+ },
+ {
+  "ean": "5705830014214",
+  "frida_id": "1018",
+  "confidence": 90,
+  "note": "Plantemargarine til stegning/bagning"
+ },
+ {
+  "ean": "3046920028004",
+  "frida_id": "1022",
+  "confidence": 90,
+  "note": "Mørk chokolade 70%"
+ },
+ {
+  "ean": "4006985151061",
+  "frida_id": "1022",
+  "confidence": 95,
+  "note": "Mørk chokolade"
+ },
+ {
+  "ean": "5701049153256",
+  "frida_id": "1022",
+  "confidence": 92,
+  "note": "Mørk chokolade"
+ },
+ {
+  "ean": "5705830008299",
+  "frida_id": "1022",
+  "confidence": 92,
+  "note": "Mørk chokolade 72%"
+ },
+ {
+  "ean": "5705830017208",
+  "frida_id": "1022",
+  "confidence": 92,
+  "note": "Mørk chokolade i knapper"
+ },
+ {
+  "ean": "5705550305364",
+  "frida_id": "1024",
+  "confidence": 90,
+  "note": "Kryddersildebidder, marinerede"
+ },
+ {
+  "ean": "5709345003114",
+  "frida_id": "1024",
+  "confidence": 97,
+  "note": "Kryddersild marineret"
+ },
+ {
+  "ean": "5709345006689",
+  "frida_id": "1024",
+  "confidence": 97,
+  "note": "Kryddersild marineret"
+ },
+ {
+  "ean": "5705830010650",
+  "frida_id": "103",
+  "confidence": 95,
+  "note": "Samme vare"
+ },
+ {
+  "ean": "5705830014207",
+  "frida_id": "1044",
+  "confidence": 90,
+  "note": "Margarine generel"
+ },
+ {
+  "ean": "5701014052386",
+  "frida_id": "1047",
+  "confidence": 90,
+  "note": "Fuldkornsbolle med græskarkerner"
+ },
+ {
+  "ean": "5701205005108",
+  "frida_id": "1047",
+  "confidence": 90,
+  "note": "Fuldkornsboller med kerner/frø"
+ },
+ {
+  "ean": "5700426293929",
+  "frida_id": "1048",
+  "confidence": 95,
+  "note": "Skummetmælk 0,1 %"
+ },
+ {
+  "ean": "5705830606082",
+  "frida_id": "1048",
+  "confidence": 95,
+  "note": "Skummetmælk 0,1 %"
+ },
+ {
+  "ean": "5705830610089",
+  "frida_id": "1048",
+  "confidence": 95,
+  "note": "Skummetmælk"
+ },
+ {
+  "ean": "5701043001010",
+  "frida_id": "1052",
+  "confidence": 92,
+  "note": "Smør, saltet"
+ },
+ {
+  "ean": "5705830611833",
+  "frida_id": "1052",
+  "confidence": 93,
+  "note": "Smør, saltet"
+ },
+ {
+  "ean": "5711953025365",
+  "frida_id": "1052",
+  "confidence": 95,
+  "note": "Smør, saltet"
+ },
+ {
+  "ean": "5740900403383",
+  "frida_id": "1052",
+  "confidence": 97,
+  "note": "Saltet smør"
+ },
+ {
+  "ean": "7310860565025",
+  "frida_id": "1052",
+  "confidence": 92,
+  "note": "Saltet smør, laktosefrit"
+ },
+ {
+  "ean": "5705830611406",
+  "frida_id": "1056",
+  "confidence": 95,
+  "note": "Bierwurst pålæg"
+ },
+ {
+  "ean": "5701001602259",
+  "frida_id": "1059",
+  "confidence": 95,
+  "note": "Roulade med hindbær"
+ },
+ {
+  "ean": "2083590000009",
+  "frida_id": "1064",
+  "confidence": 92,
+  "note": "Rå okseculotte, ungkvæg"
+ },
+ {
+  "ean": "57037875",
+  "frida_id": "1066",
+  "confidence": 97,
+  "note": "Minimælk"
+ },
+ {
+  "ean": "5705830606075",
+  "frida_id": "1066",
+  "confidence": 97,
+  "note": "Minimælk 0,4%"
+ },
+ {
+  "ean": "5705830610065",
+  "frida_id": "1066",
+  "confidence": 97,
+  "note": "Minimælk 0,4%"
+ },
+ {
+  "ean": "5711953055706",
+  "frida_id": "1066",
+  "confidence": 92,
+  "note": "Minimælk, laktosefri"
+ },
+ {
+  "ean": "5701200157758",
+  "frida_id": "1070",
+  "confidence": 90,
+  "note": "Hakket kalv og flæsk 8-12 %"
+ },
+ {
+  "ean": "5705830611420",
+  "frida_id": "1074",
+  "confidence": 92,
+  "note": "Jagdwurst = jagtpølse"
+ },
+ {
+  "ean": "5701037015337",
+  "frida_id": "1075",
+  "confidence": 95,
+  "note": "Formalet ristet kaffe"
+ },
+ {
+  "ean": "5701037058488",
+  "frida_id": "1075",
+  "confidence": 95,
+  "note": "Formalet ristet kaffe"
+ },
+ {
+  "ean": "5709345000045",
+  "frida_id": "1078",
+  "confidence": 95,
+  "note": "Karrysild"
+ },
+ {
+  "ean": "5709345003206",
+  "frida_id": "1078",
+  "confidence": 90,
+  "note": "Karrysild, med æble/timian"
+ },
+ {
+  "ean": "5705830617798",
+  "frida_id": "1082",
+  "confidence": 90,
+  "note": "Striploin = tyndstegsfilet med fedtkant"
+ },
+ {
+  "ean": "5705830009616",
+  "frida_id": "1088",
+  "confidence": 97,
+  "note": "Tun i olie på dåse"
+ },
+ {
+  "ean": "5705830009630",
+  "frida_id": "1088",
+  "confidence": 95,
+  "note": "Tun i olie på dåse, art ukendt i Frida"
+ },
+ {
+  "ean": "7310340464435",
+  "frida_id": "1098",
+  "confidence": 92,
+  "note": "Lys sirup"
+ },
+ {
+  "ean": "5705830605153",
+  "frida_id": "1099",
+  "confidence": 90,
+  "note": "Paté; grønne peberkorn som smagsvariant"
+ },
+ {
+  "ean": "5705830605160",
+  "frida_id": "1099",
+  "confidence": 90,
+  "note": "Paté"
+ },
+ {
+  "ean": "5705830605177",
+  "frida_id": "1099",
+  "confidence": 90,
+  "note": "Leverpaté med hvidløg"
+ },
+ {
+  "ean": "5705830611505",
+  "frida_id": "1099",
+  "confidence": 90,
+  "note": "Krydderpaté = leverpaté pålæg"
+ },
+ {
+  "ean": "5704080955841",
+  "frida_id": "1101",
+  "confidence": 95,
+  "note": "Kødpølse pålæg"
+ },
+ {
+  "ean": "5705522023067",
+  "frida_id": "1101",
+  "confidence": 95,
+  "note": "Kødpølse pålæg"
+ },
+ {
+  "ean": "5707196194623",
+  "frida_id": "1101",
+  "confidence": 95,
+  "note": "Kødpølse pålæg"
+ },
+ {
+  "ean": "5705830017130",
+  "frida_id": "1103",
+  "confidence": 92,
+  "note": "Flæskesvær snacks"
+ },
+ {
+  "ean": "5705830019837",
+  "frida_id": "1103",
+  "confidence": 95,
+  "note": "Flæskesvær snacks"
+ },
+ {
+  "ean": "2011200000002",
+  "frida_id": "1109",
+  "confidence": 92,
+  "note": "Rib eye = højrebsfilet med kappe"
+ },
+ {
+  "ean": "4037400716190",
+  "frida_id": "1114",
+  "confidence": 90,
+  "note": "Salt lakridsfisk = lakrids med salt"
+ },
+ {
+  "ean": "6412500076258",
+  "frida_id": "1114",
+  "confidence": 90,
+  "note": "Salmiaklakrids = lakrids med salt"
+ },
+ {
+  "ean": "5705830003447",
+  "frida_id": "1115",
+  "confidence": 92,
+  "note": "Digestive med fuldkorn"
+ },
+ {
+  "ean": "5705830080011",
+  "frida_id": "1115",
+  "confidence": 90,
+  "note": "Digestivekiks"
+ },
+ {
+  "ean": "4001686304211",
+  "frida_id": "1118",
+  "confidence": 92,
+  "note": "Gummibamser som vingummi"
+ },
+ {
+  "ean": "5705830006615",
+  "frida_id": "1118",
+  "confidence": 92,
+  "note": "Engelsk vingummi"
+ },
+ {
+  "ean": "5705830010643",
+  "frida_id": "1118",
+  "confidence": 92,
+  "note": "Vingummibamser"
+ },
+ {
+  "ean": "5705830018601",
+  "frida_id": "1118",
+  "confidence": 90,
+  "note": "Vingummi blandede smage"
+ },
+ {
+  "ean": "5711070708226",
+  "frida_id": "1118",
+  "confidence": 92,
+  "note": "Kulørte fisk = vingummi"
+ },
+ {
+  "ean": "5711070808537",
+  "frida_id": "1118",
+  "confidence": 90,
+  "note": "Sur vingummi, sukkerovertræk"
+ },
+ {
+  "ean": "57304922",
+  "frida_id": "1118",
+  "confidence": 90,
+  "note": "Frugtvingummi"
+ },
+ {
+  "ean": "5730000122505",
+  "frida_id": "1126",
+  "confidence": 98,
+  "note": "Havrefras"
+ },
+ {
+  "ean": "7311171008416",
+  "frida_id": "1126",
+  "confidence": 90,
+  "note": "Havrefras, minivariant"
+ },
+ {
+  "ean": "5708123000109",
+  "frida_id": "1128",
+  "confidence": 95,
+  "note": "Samme pålægstype"
+ },
+ {
+  "ean": "5704000482815",
+  "frida_id": "1136",
+  "confidence": 95,
+  "note": "Røget medisterpølse"
+ },
+ {
+  "ean": "5704080955858",
+  "frida_id": "1136",
+  "confidence": 95,
+  "note": "Røget medisterpølse, pålæg"
+ },
+ {
+  "ean": "5705830070401",
+  "frida_id": "1137",
+  "confidence": 95,
+  "note": "Rå bacon i skiver"
+ },
+ {
+  "ean": "5705830601940",
+  "frida_id": "1137",
+  "confidence": 90,
+  "note": "Rå bacon i tern"
+ },
+ {
+  "ean": "5705830603043",
+  "frida_id": "1137",
+  "confidence": 90,
+  "note": "Rå bacon i tern"
+ },
+ {
+  "ean": "5705830608338",
+  "frida_id": "1137",
+  "confidence": 92,
+  "note": "Rå bacon i skiver"
+ },
+ {
+  "ean": "5705830608345",
+  "frida_id": "1137",
+  "confidence": 90,
+  "note": "Rå bacon i tern"
+ },
+ {
+  "ean": "5707196031805",
+  "frida_id": "1137",
+  "confidence": 95,
+  "note": "Rå bacon i skiver"
+ },
+ {
+  "ean": "5707196217940",
+  "frida_id": "1137",
+  "confidence": 92,
+  "note": "Rå bacon i skiver"
+ },
+ {
+  "ean": "5741300021603",
+  "frida_id": "1138",
+  "confidence": 90,
+  "note": "Parisertoast"
+ },
+ {
+  "ean": "5705830000965",
+  "frida_id": "114",
+  "confidence": 95,
+  "note": "Ristede løg"
+ },
+ {
+  "ean": "5705830004222",
+  "frida_id": "114",
+  "confidence": 95,
+  "note": "Ristede løg"
+ },
+ {
+  "ean": "5701483014748",
+  "frida_id": "1143",
+  "confidence": 92,
+  "note": "Wienerpølser til hotdog"
+ },
+ {
+  "ean": "5705830007568",
+  "frida_id": "1143",
+  "confidence": 90,
+  "note": "Cocktailpølser = små wienerpølser"
+ },
+ {
+  "ean": "5705830500182",
+  "frida_id": "1143",
+  "confidence": 95,
+  "note": "Wienerpølser"
+ },
+ {
+  "ean": "5705830500199",
+  "frida_id": "1143",
+  "confidence": 90,
+  "note": "Små wienerpølser"
+ },
+ {
+  "ean": "5705830500359",
+  "frida_id": "1143",
+  "confidence": 90,
+  "note": "Cocktailpølser = små wienerpølser"
+ },
+ {
+  "ean": "5705830605382",
+  "frida_id": "1143",
+  "confidence": 92,
+  "note": "Wienerpølser til hotdog"
+ },
+ {
+  "ean": "5707196133561",
+  "frida_id": "1143",
+  "confidence": 92,
+  "note": "Wienerpølser til hotdog"
+ },
+ {
+  "ean": "5705830617804",
+  "frida_id": "1149",
+  "confidence": 92,
+  "note": "Rib eye = entrecote"
+ },
+ {
+  "ean": "5705830006882",
+  "frida_id": "1150",
+  "confidence": 98,
+  "note": "Kippers i olie på dåse"
+ },
+ {
+  "ean": "5705830006899",
+  "frida_id": "1150",
+  "confidence": 95,
+  "note": "Kippers i olie, peber"
+ },
+ {
+  "ean": "57037868",
+  "frida_id": "1154",
+  "confidence": 97,
+  "note": "Letmælk"
+ },
+ {
+  "ean": "5705830606068",
+  "frida_id": "1154",
+  "confidence": 97,
+  "note": "Letmælk 1,5%"
+ },
+ {
+  "ean": "5705830610072",
+  "frida_id": "1154",
+  "confidence": 97,
+  "note": "Letmælk 1,5%"
+ },
+ {
+  "ean": "5711953075575",
+  "frida_id": "1154",
+  "confidence": 92,
+  "note": "Letmælk, laktosefri"
+ },
+ {
+  "ean": "5701200088762",
+  "frida_id": "1158",
+  "confidence": 95,
+  "note": "Rullepølse"
+ },
+ {
+  "ean": "5701483994347",
+  "frida_id": "1158",
+  "confidence": 95,
+  "note": "Rullepølse"
+ },
+ {
+  "ean": "5705830500014",
+  "frida_id": "1158",
+  "confidence": 95,
+  "note": "Rullepølse"
+ },
+ {
+  "ean": "5705830603548",
+  "frida_id": "1158",
+  "confidence": 95,
+  "note": "Rullepølse"
+ },
+ {
+  "ean": "5705830607829",
+  "frida_id": "1158",
+  "confidence": 92,
+  "note": "Rullepølse, røget"
+ },
+ {
+  "ean": "5707196154603",
+  "frida_id": "1158",
+  "confidence": 95,
+  "note": "Rullepølse"
+ },
+ {
+  "ean": "5705830017765",
+  "frida_id": "1162",
+  "confidence": 90,
+  "note": "Jordnøddesmør, crunchy"
+ },
+ {
+  "ean": "5707381019267",
+  "frida_id": "1162",
+  "confidence": 95,
+  "note": "Jordnøddesmør"
+ },
+ {
+  "ean": "3083681127621",
+  "frida_id": "1164",
+  "confidence": 95,
+  "note": "Majs på dåse"
+ },
+ {
+  "ean": "5705830006257",
+  "frida_id": "1164",
+  "confidence": 95,
+  "note": "Majs på dåse"
+ },
+ {
+  "ean": "5705830019998",
+  "frida_id": "1164",
+  "confidence": 95,
+  "note": "Majs på dåse"
+ },
+ {
+  "ean": "5705830606334",
+  "frida_id": "1164",
+  "confidence": 92,
+  "note": "Majskerner, dåse"
+ },
+ {
+  "ean": "5705830610058",
+  "frida_id": "1169",
+  "confidence": 90,
+  "note": "Frugtyoghurt med appelsin"
+ },
+ {
+  "ean": "5705830603173",
+  "frida_id": "1174",
+  "confidence": 95,
+  "note": "Piskefløde 38%"
+ },
+ {
+  "ean": "5705830610010",
+  "frida_id": "1174",
+  "confidence": 95,
+  "note": "Piskefløde 36%"
+ },
+ {
+  "ean": "5711953177774",
+  "frida_id": "1174",
+  "confidence": 95,
+  "note": "Piskefløde 36%"
+ },
+ {
+  "ean": "5760466870764",
+  "frida_id": "1174",
+  "confidence": 95,
+  "note": "Piskefløde 38%"
+ },
+ {
+  "ean": "7310865224576",
+  "frida_id": "1174",
+  "confidence": 92,
+  "note": "Piskefløde 36 %, laktosefri"
+ },
+ {
+  "ean": "5700002185037",
+  "frida_id": "1176",
+  "confidence": 98,
+  "note": "Honning"
+ },
+ {
+  "ean": "5700002185068",
+  "frida_id": "1176",
+  "confidence": 95,
+  "note": "Honning"
+ },
+ {
+  "ean": "5705830008657",
+  "frida_id": "1176",
+  "confidence": 98,
+  "note": "Honning"
+ },
+ {
+  "ean": "5705830018007",
+  "frida_id": "1176",
+  "confidence": 95,
+  "note": "Honning"
+ },
+ {
+  "ean": "5772739448044",
+  "frida_id": "1176",
+  "confidence": 95,
+  "note": "Honning"
+ },
+ {
+  "ean": "5772739448211",
+  "frida_id": "1176",
+  "confidence": 98,
+  "note": "Honning"
+ },
+ {
+  "ean": "5705830010346",
+  "frida_id": "1178",
+  "confidence": 90,
+  "note": "Usødet sojadrik; berigelse ukendt"
+ },
+ {
+  "ean": "5705830607805",
+  "frida_id": "1181",
+  "confidence": 95,
+  "note": "Creme fraiche 38 %"
+ },
+ {
+  "ean": "5701073066478",
+  "frida_id": "1190",
+  "confidence": 98,
+  "note": "Husblas = gelatine"
+ },
+ {
+  "ean": "57035185",
+  "frida_id": "1199",
+  "confidence": 98,
+  "note": "Tørgær"
+ },
+ {
+  "ean": "5711953161858",
+  "frida_id": "1205",
+  "confidence": 90,
+  "note": "Kakaomælk"
+ },
+ {
+  "ean": "8445291570085",
+  "frida_id": "1206",
+  "confidence": 92,
+  "note": "Kakaopulver med sukker, uden mælk"
+ },
+ {
+  "ean": "5707673104565",
+  "frida_id": "1211",
+  "confidence": 92,
+  "note": "Fast ost 20+"
+ },
+ {
+  "ean": "5705830005779",
+  "frida_id": "1216",
+  "confidence": 93,
+  "note": "Koncentreret tomatpuré"
+ },
+ {
+  "ean": "5706911031304",
+  "frida_id": "1220",
+  "confidence": 92,
+  "note": "Røget makrel, peberdrys"
+ },
+ {
+  "ean": "5705830605030",
+  "frida_id": "1221",
+  "confidence": 90,
+  "note": "Kogt oksebryst som pålæg"
+ },
+ {
+  "ean": "5705830015563",
+  "frida_id": "1224",
+  "confidence": 97,
+  "note": "Kammerjunkere"
+ },
+ {
+  "ean": "5705830006325",
+  "frida_id": "1225",
+  "confidence": 97,
+  "note": "Polerede grødris, rå"
+ },
+ {
+  "ean": "2397370000005",
+  "frida_id": "1226",
+  "confidence": 92,
+  "note": "Røget skinke"
+ },
+ {
+  "ean": "5705830605313",
+  "frida_id": "1226",
+  "confidence": 92,
+  "note": "Røget rå landskinke"
+ },
+ {
+  "ean": "3523230000413",
+  "frida_id": "1235",
+  "confidence": 90,
+  "note": "Camembert, antaget 45+"
+ },
+ {
+  "ean": "5701200161687",
+  "frida_id": "1249",
+  "confidence": 92,
+  "note": "Stegeflæsk = brystflæsk med svær"
+ },
+ {
+  "ean": "5705830615404",
+  "frida_id": "1249",
+  "confidence": 92,
+  "note": "Stegeflæsk = brystflæsk med svær"
+ },
+ {
+  "ean": "5708427020438",
+  "frida_id": "1249",
+  "confidence": 92,
+  "note": "Ribbenssteg = bryst med svær"
+ },
+ {
+  "ean": "5705830000347",
+  "frida_id": "1252",
+  "confidence": 95,
+  "note": "Rå polerede ris"
+ },
+ {
+  "ean": "5705830000354",
+  "frida_id": "1252",
+  "confidence": 95,
+  "note": "Polerede ris, rå"
+ },
+ {
+  "ean": "5705830012821",
+  "frida_id": "1252",
+  "confidence": 95,
+  "note": "Jasminris, polerede rå"
+ },
+ {
+  "ean": "5705830014634",
+  "frida_id": "1252",
+  "confidence": 95,
+  "note": "Rå polerede ris, økologisk"
+ },
+ {
+  "ean": "5705830016720",
+  "frida_id": "1252",
+  "confidence": 92,
+  "note": "Polerede ris, rå"
+ },
+ {
+  "ean": "5706911026836",
+  "frida_id": "1252",
+  "confidence": 92,
+  "note": "Polerede ris, rå"
+ },
+ {
+  "ean": "5705830010377",
+  "frida_id": "1253",
+  "confidence": 92,
+  "note": "Bouillon oksekød, koncentreret"
+ },
+ {
+  "ean": "8714100783511",
+  "frida_id": "1253",
+  "confidence": 92,
+  "note": "Bouillon oksekød, koncentreret"
+ },
+ {
+  "ean": "5705830003836",
+  "frida_id": "1256",
+  "confidence": 95,
+  "note": "Kakaopulver"
+ },
+ {
+  "ean": "5701018057608",
+  "frida_id": "1262",
+  "confidence": 95,
+  "note": "Tomatketchup"
+ },
+ {
+  "ean": "5701116011403",
+  "frida_id": "1262",
+  "confidence": 95,
+  "note": "Tomatketchup"
+ },
+ {
+  "ean": "5704000486493",
+  "frida_id": "1262",
+  "confidence": 90,
+  "note": "Tomatketchup til hotdog"
+ },
+ {
+  "ean": "5705830016065",
+  "frida_id": "1262",
+  "confidence": 95,
+  "note": "Tomatketchup"
+ },
+ {
+  "ean": "8715700125992",
+  "frida_id": "1262",
+  "confidence": 95,
+  "note": "Tomatketchup"
+ },
+ {
+  "ean": "5700426101019",
+  "frida_id": "1266",
+  "confidence": 97,
+  "note": "Sødmælk 3,5 %"
+ },
+ {
+  "ean": "5700426101026",
+  "frida_id": "1266",
+  "confidence": 97,
+  "note": "Sødmælk 3,5 %"
+ },
+ {
+  "ean": "5705830602343",
+  "frida_id": "1266",
+  "confidence": 97,
+  "note": "Sødmælk 3,5 %"
+ },
+ {
+  "ean": "5700426220024",
+  "frida_id": "1270",
+  "confidence": 95,
+  "note": "Jordbæryoghurt"
+ },
+ {
+  "ean": "5705830610027",
+  "frida_id": "1270",
+  "confidence": 95,
+  "note": "Jordbæryoghurt"
+ },
+ {
+  "ean": "5711953030789",
+  "frida_id": "1270",
+  "confidence": 95,
+  "note": "Jordbæryoghurt"
+ },
+ {
+  "ean": "5701841174053",
+  "frida_id": "1271",
+  "confidence": 90,
+  "note": "Kogeposeris er typisk parboiled, rå"
+ },
+ {
+  "ean": "5705830000378",
+  "frida_id": "1271",
+  "confidence": 98,
+  "note": "Parboiled ris, rå"
+ },
+ {
+  "ean": "5705830006332",
+  "frida_id": "1271",
+  "confidence": 98,
+  "note": "Parboiled ris, rå"
+ },
+ {
+  "ean": "5701841131100",
+  "frida_id": "1272",
+  "confidence": 98,
+  "note": "Kartoffelmel"
+ },
+ {
+  "ean": "7310867800358",
+  "frida_id": "1273",
+  "confidence": 90,
+  "note": "Skovbæryoghurt, laktosefri"
+ },
+ {
+  "ean": "5705830601438",
+  "frida_id": "1274",
+  "confidence": 92,
+  "note": "Skiveost 30+"
+ },
+ {
+  "ean": "5705830605146",
+  "frida_id": "1274",
+  "confidence": 92,
+  "note": "Skiveost 30+"
+ },
+ {
+  "ean": "5705830614858",
+  "frida_id": "1274",
+  "confidence": 90,
+  "note": "Skæreost 30+, med kommen"
+ },
+ {
+  "ean": "5705830614865",
+  "frida_id": "1274",
+  "confidence": 93,
+  "note": "Skæreost 30+"
+ },
+ {
+  "ean": "5705830610041",
+  "frida_id": "1284",
+  "confidence": 95,
+  "note": "Yoghurt peach melba"
+ },
+ {
+  "ean": "5700426221045",
+  "frida_id": "1289",
+  "confidence": 92,
+  "note": "Yoghurt med pære og banan"
+ },
+ {
+  "ean": "5705830610034",
+  "frida_id": "1289",
+  "confidence": 92,
+  "note": "Yoghurt med pære og banan"
+ },
+ {
+  "ean": "5711953004230",
+  "frida_id": "1289",
+  "confidence": 90,
+  "note": "Laktosefri yoghurt med pære og banan"
+ },
+ {
+  "ean": "5711953030802",
+  "frida_id": "1289",
+  "confidence": 92,
+  "note": "Yoghurt med pære og banan"
+ },
+ {
+  "ean": "5711953159077",
+  "frida_id": "1290",
+  "confidence": 95,
+  "note": "Kirsebæryoghurt"
+ },
+ {
+  "ean": "5705830610690",
+  "frida_id": "1291",
+  "confidence": 90,
+  "note": "Tykmælk 3,5%; Frida er A38-kultur af sødmælk"
+ },
+ {
+  "ean": "5760932004730",
+  "frida_id": "1292",
+  "confidence": 95,
+  "note": "Birkes"
+ },
+ {
+  "ean": "5705830008909",
+  "frida_id": "1297",
+  "confidence": 97,
+  "note": "Majsmel"
+ },
+ {
+  "ean": "5705830008916",
+  "frida_id": "1297",
+  "confidence": 90,
+  "note": "Majsgryn vs majsmel, samme kornprodukt"
+ },
+ {
+  "ean": "5701075222407",
+  "frida_id": "1301",
+  "confidence": 92,
+  "note": "Hvedemel"
+ },
+ {
+  "ean": "5701075223015",
+  "frida_id": "1301",
+  "confidence": 90,
+  "note": "Hvedemel tipo 00"
+ },
+ {
+  "ean": "5705830000286",
+  "frida_id": "1301",
+  "confidence": 98,
+  "note": "Hvedemel"
+ },
+ {
+  "ean": "5710326006895",
+  "frida_id": "1301",
+  "confidence": 92,
+  "note": "Hvedemel tipo 00"
+ },
+ {
+  "ean": "5710326006932",
+  "frida_id": "1301",
+  "confidence": 92,
+  "note": "Manitoba hvedemel"
+ },
+ {
+  "ean": "4016241031198",
+  "frida_id": "1305",
+  "confidence": 90,
+  "note": "Yoghurt med müslitop"
+ },
+ {
+  "ean": "4016241031204",
+  "frida_id": "1305",
+  "confidence": 90,
+  "note": "Yoghurt med müslitop"
+ },
+ {
+  "ean": "5705830604934",
+  "frida_id": "1313",
+  "confidence": 98,
+  "note": "Brie 50+"
+ },
+ {
+  "ean": "5705830605092",
+  "frida_id": "1318",
+  "confidence": 98,
+  "note": "Samsø 30+"
+ },
+ {
+  "ean": "5705830008381",
+  "frida_id": "132",
+  "confidence": 95,
+  "note": "Grove kartoffelchips med havsalt"
+ },
+ {
+  "ean": "5705830008404",
+  "frida_id": "132",
+  "confidence": 90,
+  "note": "Grove chips, sourcream-krydderi som lille forskel"
+ },
+ {
+  "ean": "5711156008660",
+  "frida_id": "1334",
+  "confidence": 92,
+  "note": "Tebolle"
+ },
+ {
+  "ean": "5705830604927",
+  "frida_id": "138",
+  "confidence": 98,
+  "note": "Danablu 50+"
+ },
+ {
+  "ean": "5705830009463",
+  "frida_id": "1382",
+  "confidence": 98,
+  "note": "Solsikkeolie"
+ },
+ {
+  "ean": "5705830603531",
+  "frida_id": "1406",
+  "confidence": 95,
+  "note": "Frosne melboller"
+ },
+ {
+  "ean": "5705830009692",
+  "frida_id": "1412",
+  "confidence": 98,
+  "note": "Sesamolie"
+ },
+ {
+  "ean": "5705830005625",
+  "frida_id": "1414",
+  "confidence": 90,
+  "note": "Rørsukker"
+ },
+ {
+  "ean": "8007153030153",
+  "frida_id": "1429",
+  "confidence": 98,
+  "note": "Vindruekerneolie"
+ },
+ {
+  "ean": "5705830011572",
+  "frida_id": "143",
+  "confidence": 97,
+  "note": "Knækkede rugkerner"
+ },
+ {
+  "ean": "5703603006312",
+  "frida_id": "144",
+  "confidence": 90,
+  "note": "Leverpølse pålæg"
+ },
+ {
+  "ean": "5705830009760",
+  "frida_id": "1440",
+  "confidence": 98,
+  "note": "Kokosolie"
+ },
+ {
+  "ean": "5705830012081",
+  "frida_id": "1467",
+  "confidence": 98,
+  "note": "Olivenolie"
+ },
+ {
+  "ean": "5705830019127",
+  "frida_id": "1467",
+  "confidence": 98,
+  "note": "Olivenolie"
+ },
+ {
+  "ean": "8007153004079",
+  "frida_id": "1467",
+  "confidence": 98,
+  "note": "Olivenolie"
+ },
+ {
+  "ean": "8007153006837",
+  "frida_id": "1467",
+  "confidence": 98,
+  "note": "Olivenolie"
+ },
+ {
+  "ean": "8007153160331",
+  "frida_id": "1467",
+  "confidence": 100,
+  "note": "Olivenolie"
+ },
+ {
+  "ean": "2424020000006",
+  "frida_id": "148",
+  "confidence": 92,
+  "note": "Lagret fast ost 45+"
+ },
+ {
+  "ean": "2424040000000",
+  "frida_id": "148",
+  "confidence": 90,
+  "note": "Fast ost 45+"
+ },
+ {
+  "ean": "5703985045015",
+  "frida_id": "148",
+  "confidence": 92,
+  "note": "Fast ost 45+"
+ },
+ {
+  "ean": "5703985049877",
+  "frida_id": "148",
+  "confidence": 92,
+  "note": "Fast ost 45+, lagret"
+ },
+ {
+  "ean": "5705830601421",
+  "frida_id": "148",
+  "confidence": 92,
+  "note": "Skiveost 45+"
+ },
+ {
+  "ean": "5705830601445",
+  "frida_id": "148",
+  "confidence": 92,
+  "note": "Skiveost 45+"
+ },
+ {
+  "ean": "5705830605122",
+  "frida_id": "148",
+  "confidence": 92,
+  "note": "Skiveost 45+"
+ },
+ {
+  "ean": "5705830605139",
+  "frida_id": "148",
+  "confidence": 92,
+  "note": "Skiveost 45+"
+ },
+ {
+  "ean": "5705830614872",
+  "frida_id": "148",
+  "confidence": 93,
+  "note": "Skæreost 45+"
+ },
+ {
+  "ean": "5705830615008",
+  "frida_id": "148",
+  "confidence": 93,
+  "note": "Skæreost 45+, lagret"
+ },
+ {
+  "ean": "5707673100567",
+  "frida_id": "148",
+  "confidence": 90,
+  "note": "Dansk fast ost 45+"
+ },
+ {
+  "ean": "5707673109720",
+  "frida_id": "148",
+  "confidence": 90,
+  "note": "Fast ost 45+"
+ },
+ {
+  "ean": "5707673109737",
+  "frida_id": "148",
+  "confidence": 92,
+  "note": "Fast ost 45+"
+ },
+ {
+  "ean": "5711953034053",
+  "frida_id": "148",
+  "confidence": 92,
+  "note": "Fast ost 45+"
+ },
+ {
+  "ean": "5711953135033",
+  "frida_id": "148",
+  "confidence": 92,
+  "note": "Skæreost 45+"
+ },
+ {
+  "ean": "5711953148705",
+  "frida_id": "148",
+  "confidence": 90,
+  "note": "Skæreost 45+ med kommen"
+ },
+ {
+  "ean": "5711953148712",
+  "frida_id": "148",
+  "confidence": 93,
+  "note": "Skæreost 45+"
+ },
+ {
+  "ean": "5760466731744",
+  "frida_id": "148",
+  "confidence": 92,
+  "note": "Lagret skiveost 45+"
+ },
+ {
+  "ean": "5704214030024",
+  "frida_id": "1483",
+  "confidence": 98,
+  "note": "Rapsolie"
+ },
+ {
+  "ean": "5705830009456",
+  "frida_id": "1483",
+  "confidence": 98,
+  "note": "Rapsolie"
+ },
+ {
+  "ean": "5706068600262",
+  "frida_id": "1483",
+  "confidence": 98,
+  "note": "Rapsolie"
+ },
+ {
+  "ean": "5705830011428",
+  "frida_id": "149",
+  "confidence": 97,
+  "note": "Hørfrø"
+ },
+ {
+  "ean": "5705830610263",
+  "frida_id": "1492",
+  "confidence": 98,
+  "note": "Rucola"
+ },
+ {
+  "ean": "5705830011473",
+  "frida_id": "1507",
+  "confidence": 95,
+  "note": "Græskarkerner"
+ },
+ {
+  "ean": "5706779187106",
+  "frida_id": "1507",
+  "confidence": 95,
+  "note": "Græskarkerner"
+ },
+ {
+  "ean": "5710326006918",
+  "frida_id": "1512",
+  "confidence": 92,
+  "note": "Durum hvedemel/semolina"
+ },
+ {
+  "ean": "5705830605252",
+  "frida_id": "1552",
+  "confidence": 95,
+  "note": "Koldrøget laks, opdræt"
+ },
+ {
+  "ean": "5705830605276",
+  "frida_id": "1553",
+  "confidence": 92,
+  "note": "Varmrøget opdrætslaks, peberdrys"
+ },
+ {
+  "ean": "5705830014641",
+  "frida_id": "156",
+  "confidence": 95,
+  "note": "Tørre brune fuldkornsris"
+ },
+ {
+  "ean": "5705830007179",
+  "frida_id": "1574",
+  "confidence": 90,
+  "note": "Færdigbagte cookies"
+ },
+ {
+  "ean": "5705830002891",
+  "frida_id": "1588",
+  "confidence": 90,
+  "note": "Sandwichkiks = søde dobbelte hvedekiks med fyld"
+ },
+ {
+  "ean": "5708308031546",
+  "frida_id": "1589",
+  "confidence": 92,
+  "note": "Søde havrekiks"
+ },
+ {
+  "ean": "5705830013439",
+  "frida_id": "1590",
+  "confidence": 92,
+  "note": "Havrekiks med mælkechokolade"
+ },
+ {
+  "ean": "5705830016249",
+  "frida_id": "1591",
+  "confidence": 90,
+  "note": "Müslibar, XL størrelse"
+ },
+ {
+  "ean": "5711070506457",
+  "frida_id": "1591",
+  "confidence": 90,
+  "note": "Müslibar med abrikos"
+ },
+ {
+  "ean": "5705830014931",
+  "frida_id": "1592",
+  "confidence": 95,
+  "note": "Vaffelrør"
+ },
+ {
+  "ean": "3700619345390",
+  "frida_id": "164",
+  "confidence": 95,
+  "note": "Tør hvidvin, Chardonnay"
+ },
+ {
+  "ean": "3700619348353",
+  "frida_id": "164",
+  "confidence": 95,
+  "note": "Tør hvidvin, Sauvignon Blanc"
+ },
+ {
+  "ean": "3700619362618",
+  "frida_id": "164",
+  "confidence": 95,
+  "note": "Tør hvidvin, Chardonnay"
+ },
+ {
+  "ean": "7804350596373",
+  "frida_id": "164",
+  "confidence": 95,
+  "note": "Tør hvidvin, Chardonnay"
+ },
+ {
+  "ean": "8007880210101",
+  "frida_id": "164",
+  "confidence": 95,
+  "note": "Tør hvidvin, Soave"
+ },
+ {
+  "ean": "5705830615541",
+  "frida_id": "1645",
+  "confidence": 90,
+  "note": "Panerede nuggets; Frida friturestegt"
+ },
+ {
+  "ean": "5705830613967",
+  "frida_id": "1646",
+  "confidence": 95,
+  "note": "Pizza margherita"
+ },
+ {
+  "ean": "5705830618764",
+  "frida_id": "1646",
+  "confidence": 95,
+  "note": "Pizza margherita"
+ },
+ {
+  "ean": "4001724010753",
+  "frida_id": "1648",
+  "confidence": 90,
+  "note": "Pepperoni ~ salami"
+ },
+ {
+  "ean": "4001724039839",
+  "frida_id": "1648",
+  "confidence": 92,
+  "note": "Salamipizza"
+ },
+ {
+  "ean": "5391520183454",
+  "frida_id": "1648",
+  "confidence": 90,
+  "note": "Pepperoni ~ salami; deep pan"
+ },
+ {
+  "ean": "5705830606471",
+  "frida_id": "1648",
+  "confidence": 90,
+  "note": "Pepperoni ~ salami"
+ },
+ {
+  "ean": "5705830606495",
+  "frida_id": "1648",
+  "confidence": 90,
+  "note": "Pizza med spicy salami"
+ },
+ {
+  "ean": "5706216505197",
+  "frida_id": "1648",
+  "confidence": 90,
+  "note": "Pepperoni = salami på pizza"
+ },
+ {
+  "ean": "5702024202020",
+  "frida_id": "165",
+  "confidence": 92,
+  "note": "Fiskeboller i lage"
+ },
+ {
+  "ean": "4001724030638",
+  "frida_id": "1650",
+  "confidence": 90,
+  "note": "Pizza med skinke og ost"
+ },
+ {
+  "ean": "5705830606501",
+  "frida_id": "1650",
+  "confidence": 90,
+  "note": "Pizza med kød"
+ },
+ {
+  "ean": "5701338915312",
+  "frida_id": "1654",
+  "confidence": 95,
+  "note": "Kogte rejer i lage"
+ },
+ {
+  "ean": "5705830606105",
+  "frida_id": "1654",
+  "confidence": 95,
+  "note": "Kogte rejer i lage"
+ },
+ {
+  "ean": "5706911031595",
+  "frida_id": "1654",
+  "confidence": 95,
+  "note": "Kogte rejer i lage"
+ },
+ {
+  "ean": "5705830605245",
+  "frida_id": "1655",
+  "confidence": 95,
+  "note": "Gravad laks, opdrætslaks"
+ },
+ {
+  "ean": "5705830606563",
+  "frida_id": "1657",
+  "confidence": 95,
+  "note": "Frosne panerede fiskepinde"
+ },
+ {
+  "ean": "5701542105202",
+  "frida_id": "1658",
+  "confidence": 95,
+  "note": "Laksefilet fra opdræt"
+ },
+ {
+  "ean": "5703370621961",
+  "frida_id": "1658",
+  "confidence": 95,
+  "note": "Laksefilet fra opdræt"
+ },
+ {
+  "ean": "5705830609373",
+  "frida_id": "1658",
+  "confidence": 95,
+  "note": "Lakseportioner fra opdræt"
+ },
+ {
+  "ean": "5701607583204",
+  "frida_id": "1663",
+  "confidence": 98,
+  "note": "Frilandsæg rå"
+ },
+ {
+  "ean": "5701607584782",
+  "frida_id": "1663",
+  "confidence": 95,
+  "note": "Frilandsæg"
+ },
+ {
+  "ean": "5701607582207",
+  "frida_id": "1664",
+  "confidence": 98,
+  "note": "Skrabeæg"
+ },
+ {
+  "ean": "5701607583167",
+  "frida_id": "1664",
+  "confidence": 98,
+  "note": "Skrabeæg"
+ },
+ {
+  "ean": "5701607584362",
+  "frida_id": "1664",
+  "confidence": 98,
+  "note": "Skrabeæg rå"
+ },
+ {
+  "ean": "5704214020056",
+  "frida_id": "1664",
+  "confidence": 90,
+  "note": "Æg, hønsetype antaget skrabe"
+ },
+ {
+  "ean": "5701607583259",
+  "frida_id": "1665",
+  "confidence": 98,
+  "note": "Økologiske æg rå"
+ },
+ {
+  "ean": "5705830607270",
+  "frida_id": "1665",
+  "confidence": 98,
+  "note": "Økologiske æg rå"
+ },
+ {
+  "ean": "5701607588087",
+  "frida_id": "1667",
+  "confidence": 95,
+  "note": "Pasteuriserede æggeblommer"
+ },
+ {
+  "ean": "5705830010117",
+  "frida_id": "1670",
+  "confidence": 92,
+  "note": "Mørkt rugbrød"
+ },
+ {
+  "ean": "5705830011688",
+  "frida_id": "1671",
+  "confidence": 92,
+  "note": "Fuldkornsrugbrød"
+ },
+ {
+  "ean": "5705830010681",
+  "frida_id": "1676",
+  "confidence": 90,
+  "note": "Soft rugbrød med kerner"
+ },
+ {
+  "ean": "5711156012445",
+  "frida_id": "1676",
+  "confidence": 90,
+  "note": "Soft rugbrød med kerner"
+ },
+ {
+  "ean": "5700426205366",
+  "frida_id": "1677",
+  "confidence": 90,
+  "note": "Frugtyoghurt uden tilsat sukker"
+ },
+ {
+  "ean": "5700426205373",
+  "frida_id": "1677",
+  "confidence": 90,
+  "note": "Frugtyoghurt uden tilsat sukker"
+ },
+ {
+  "ean": "5711953205538",
+  "frida_id": "1677",
+  "confidence": 90,
+  "note": "Yoghurt med smag uden tilsat sukker"
+ },
+ {
+  "ean": "5760466793865",
+  "frida_id": "1677",
+  "confidence": 90,
+  "note": "Frugtyoghurt uden tilsat sukker"
+ },
+ {
+  "ean": "5760466976527",
+  "frida_id": "1677",
+  "confidence": 90,
+  "note": "Frugtyoghurt uden tilsat sukker"
+ },
+ {
+  "ean": "5711953003295",
+  "frida_id": "1681",
+  "confidence": 90,
+  "note": "Frugtyoghurt med bær, 1,4 %"
+ },
+ {
+  "ean": "5700426107103",
+  "frida_id": "1682",
+  "confidence": 92,
+  "note": "Koldskål, citronsmag"
+ },
+ {
+  "ean": "5700426190716",
+  "frida_id": "1682",
+  "confidence": 92,
+  "note": "Koldskål"
+ },
+ {
+  "ean": "5740900101951",
+  "frida_id": "1684",
+  "confidence": 90,
+  "note": "Smørbart blandingsprodukt"
+ },
+ {
+  "ean": "5740900403376",
+  "frida_id": "1684",
+  "confidence": 92,
+  "note": "Smørbart blandingsprodukt"
+ },
+ {
+  "ean": "5740900405530",
+  "frida_id": "1684",
+  "confidence": 92,
+  "note": "Smørbar, pisket"
+ },
+ {
+  "ean": "5760466904919",
+  "frida_id": "1684",
+  "confidence": 92,
+  "note": "Smørbart blandingsprodukt"
+ },
+ {
+  "ean": "5760466904964",
+  "frida_id": "1684",
+  "confidence": 92,
+  "note": "Smørbar blanding smør og rapsolie"
+ },
+ {
+  "ean": "5701977010089",
+  "frida_id": "1690",
+  "confidence": 90,
+  "note": "Havredrik; berigelse ukendt"
+ },
+ {
+  "ean": "5705830010315",
+  "frida_id": "1690",
+  "confidence": 90,
+  "note": "Usødet havredrik; berigelse ukendt"
+ },
+ {
+  "ean": "5705830010339",
+  "frida_id": "1691",
+  "confidence": 90,
+  "note": "Risdrik; berigelse ukendt"
+ },
+ {
+  "ean": "5701977002534",
+  "frida_id": "1692",
+  "confidence": 90,
+  "note": "Mandeldrik; berigelse ukendt"
+ },
+ {
+  "ean": "5705830607546",
+  "frida_id": "1693",
+  "confidence": 95,
+  "note": "Skyr naturel, laktosefri"
+ },
+ {
+  "ean": "5705830610119",
+  "frida_id": "1693",
+  "confidence": 95,
+  "note": "Skyr naturel, laktosefri"
+ },
+ {
+  "ean": "5705830018366",
+  "frida_id": "1699",
+  "confidence": 90,
+  "note": "Tahin, antaget lys"
+ },
+ {
+  "ean": "5711953030352",
+  "frida_id": "170",
+  "confidence": 92,
+  "note": "Ymer naturel 3,5% (A38-kultur)"
+ },
+ {
+  "ean": "5705830618238",
+  "frida_id": "1704",
+  "confidence": 92,
+  "note": "Fint pitabrød"
+ },
+ {
+  "ean": "5705830618245",
+  "frida_id": "1705",
+  "confidence": 90,
+  "note": "Groft pitabrød"
+ },
+ {
+  "ean": "5701164712963",
+  "frida_id": "1707",
+  "confidence": 90,
+  "note": "Klidflager morgenmad"
+ },
+ {
+  "ean": "5705830011589",
+  "frida_id": "1722",
+  "confidence": 97,
+  "note": "Sigtet speltmel"
+ },
+ {
+  "ean": "5705830003959",
+  "frida_id": "1723",
+  "confidence": 97,
+  "note": "Fuldkornsspeltmel"
+ },
+ {
+  "ean": "5705830008862",
+  "frida_id": "1724",
+  "confidence": 98,
+  "note": "Hvid quinoa, rå"
+ },
+ {
+  "ean": "5705830008879",
+  "frida_id": "1728",
+  "confidence": 100,
+  "note": "Samme vare"
+ },
+ {
+  "ean": "5710183010950",
+  "frida_id": "1728",
+  "confidence": 97,
+  "note": "Chiafrø, hvid sort"
+ },
+ {
+  "ean": "5710183056446",
+  "frida_id": "1728",
+  "confidence": 100,
+  "note": "Samme vare"
+ },
+ {
+  "ean": "5705830013057",
+  "frida_id": "1729",
+  "confidence": 92,
+  "note": "Polerede speltkerner = perlespelt"
+ },
+ {
+  "ean": "4006542005134",
+  "frida_id": "173",
+  "confidence": 90,
+  "note": "Halvtør Riesling, 8,5 %"
+ },
+ {
+  "ean": "5701043000303",
+  "frida_id": "1731",
+  "confidence": 92,
+  "note": "Flydende margarine på rapsolie"
+ },
+ {
+  "ean": "5705830500090",
+  "frida_id": "1731",
+  "confidence": 90,
+  "note": "Flydende plantemargarine"
+ },
+ {
+  "ean": "5701243546205",
+  "frida_id": "1741",
+  "confidence": 97,
+  "note": "Rå babyspinat"
+ },
+ {
+  "ean": "5705830006486",
+  "frida_id": "1748",
+  "confidence": 90,
+  "note": "Riskiks med havsalt"
+ },
+ {
+  "ean": "5705830600844",
+  "frida_id": "1749",
+  "confidence": 97,
+  "note": "Frossen helbladet spinat"
+ },
+ {
+  "ean": "2083560000008",
+  "frida_id": "1758",
+  "confidence": 92,
+  "note": "Rå oksecuvette, ungkvæg"
+ },
+ {
+  "ean": "2490310000001",
+  "frida_id": "1758",
+  "confidence": 92,
+  "note": "Fersk oksecuvette"
+ },
+ {
+  "ean": "5700426219097",
+  "frida_id": "1766",
+  "confidence": 90,
+  "note": "A38 af letmælk 1,5%"
+ },
+ {
+  "ean": "5760466870306",
+  "frida_id": "1767",
+  "confidence": 95,
+  "note": "A38 af minimælk 0,4%"
+ },
+ {
+  "ean": "5703855102688",
+  "frida_id": "1768",
+  "confidence": 95,
+  "note": "Revet pizzatopping"
+ },
+ {
+  "ean": "5711953079870",
+  "frida_id": "1768",
+  "confidence": 90,
+  "note": "Revet pizza-mozzarella"
+ },
+ {
+  "ean": "5760466817233",
+  "frida_id": "1768",
+  "confidence": 90,
+  "note": "Revet pizza-mozzarella"
+ },
+ {
+  "ean": "5760466817325",
+  "frida_id": "1768",
+  "confidence": 90,
+  "note": "Revet pizza-mozzarella"
+ },
+ {
+  "ean": "5711953182556",
+  "frida_id": "1771",
+  "confidence": 90,
+  "note": "Salatost-tern 3% vs 5%"
+ },
+ {
+  "ean": "3070050570201",
+  "frida_id": "1774",
+  "confidence": 90,
+  "note": "Brie, fedtprocent ukendt"
+ },
+ {
+  "ean": "3228024170043",
+  "frida_id": "1774",
+  "confidence": 90,
+  "note": "Brie, fedtprocent ukendt"
+ },
+ {
+  "ean": "3523230038898",
+  "frida_id": "1775",
+  "confidence": 90,
+  "note": "Blød gedeost"
+ },
+ {
+  "ean": "5711953084676",
+  "frida_id": "1779",
+  "confidence": 92,
+  "note": "Fast ost 45+"
+ },
+ {
+  "ean": "5705830008947",
+  "frida_id": "1799",
+  "confidence": 98,
+  "note": "Tørrede røde linser"
+ },
+ {
+  "ean": "5705830006622",
+  "frida_id": "180",
+  "confidence": 97,
+  "note": "Lakridskonfekt"
+ },
+ {
+  "ean": "5705830607676",
+  "frida_id": "1806",
+  "confidence": 92,
+  "note": "Frosne edamamebønner"
+ },
+ {
+  "ean": "5705830008930",
+  "frida_id": "1807",
+  "confidence": 90,
+  "note": "Kogte grønne linser på dåse"
+ },
+ {
+  "ean": "5705830004314",
+  "frida_id": "1808",
+  "confidence": 95,
+  "note": "Hvide bønner i tomatsauce"
+ },
+ {
+  "ean": "5705830004321",
+  "frida_id": "1809",
+  "confidence": 95,
+  "note": "Kidneybønner i chilisauce"
+ },
+ {
+  "ean": "5711156007748",
+  "frida_id": "181",
+  "confidence": 92,
+  "note": "Spandauer med creme"
+ },
+ {
+  "ean": "3083681012583",
+  "frida_id": "1810",
+  "confidence": 92,
+  "note": "Kogte kidneybønner på dåse"
+ },
+ {
+  "ean": "5705830004307",
+  "frida_id": "1810",
+  "confidence": 97,
+  "note": "Kogte kidneybønner, dåse"
+ },
+ {
+  "ean": "5705830010780",
+  "frida_id": "1810",
+  "confidence": 95,
+  "note": "Kogte kidneybønner, økologiske"
+ },
+ {
+  "ean": "3083681012668",
+  "frida_id": "1812",
+  "confidence": 90,
+  "note": "Kogte kikærter, lille dåse"
+ },
+ {
+  "ean": "5705830008886",
+  "frida_id": "1812",
+  "confidence": 97,
+  "note": "Kogte kikærter, dåse"
+ },
+ {
+  "ean": "5705830010773",
+  "frida_id": "1812",
+  "confidence": 95,
+  "note": "Kogte kikærter, økologiske"
+ },
+ {
+  "ean": "5705830012418",
+  "frida_id": "1814",
+  "confidence": 90,
+  "note": "Kogte sorte bønner, dåse"
+ },
+ {
+  "ean": "5705830008954",
+  "frida_id": "1815",
+  "confidence": 90,
+  "note": "Kogte hvide bønner, dåse"
+ },
+ {
+  "ean": "5705830601865",
+  "frida_id": "1818",
+  "confidence": 90,
+  "note": "Frosne hindbær"
+ },
+ {
+  "ean": "5705830603982",
+  "frida_id": "1818",
+  "confidence": 90,
+  "note": "Frosne hindbær"
+ },
+ {
+  "ean": "5705830601889",
+  "frida_id": "1819",
+  "confidence": 90,
+  "note": "Frosne jordbær"
+ },
+ {
+  "ean": "5705830603975",
+  "frida_id": "1819",
+  "confidence": 90,
+  "note": "Frosne jordbær"
+ },
+ {
+  "ean": "5705830606242",
+  "frida_id": "1821",
+  "confidence": 92,
+  "note": "Frosne grønne ærter"
+ },
+ {
+  "ean": "5705830606259",
+  "frida_id": "1821",
+  "confidence": 95,
+  "note": "Frosne grønne ærter"
+ },
+ {
+  "ean": "5705830601087",
+  "frida_id": "1822",
+  "confidence": 95,
+  "note": "Frosne haricots verts"
+ },
+ {
+  "ean": "5705830604002",
+  "frida_id": "1822",
+  "confidence": 95,
+  "note": "Frosne haricots verts"
+ },
+ {
+  "ean": "5705830600851",
+  "frida_id": "1824",
+  "confidence": 90,
+  "note": "REMA frostbroccoli i pose"
+ },
+ {
+  "ean": "5705830002419",
+  "frida_id": "1826",
+  "confidence": 95,
+  "note": "Frosne suppeurter"
+ },
+ {
+  "ean": "5705830607898",
+  "frida_id": "1831",
+  "confidence": 95,
+  "note": "Frosne blandede bær"
+ },
+ {
+  "ean": "5705830607980",
+  "frida_id": "1834",
+  "confidence": 90,
+  "note": "Frossen avocado i tern"
+ },
+ {
+  "ean": "5705830603647",
+  "frida_id": "1838",
+  "confidence": 90,
+  "note": "Frossen bønneblanding"
+ },
+ {
+  "ean": "5701232470566",
+  "frida_id": "1840",
+  "confidence": 93,
+  "note": "Frosne søde kartoffelfritter"
+ },
+ {
+  "ean": "5705830600059",
+  "frida_id": "1841",
+  "confidence": 90,
+  "note": "Frosne kartoffelbåde, BBQ-krydderi"
+ },
+ {
+  "ean": "5705830602152",
+  "frida_id": "1841",
+  "confidence": 95,
+  "note": "Frosne kartoffelbåde"
+ },
+ {
+  "ean": "5705830604071",
+  "frida_id": "1842",
+  "confidence": 95,
+  "note": "Frosne halve kartofler"
+ },
+ {
+  "ean": "5705830600042",
+  "frida_id": "1843",
+  "confidence": 90,
+  "note": "Frosne kartoffelspiraler med krydderi"
+ },
+ {
+  "ean": "5705830613684",
+  "frida_id": "1844",
+  "confidence": 95,
+  "note": "Frossen kartoffelrøsti"
+ },
+ {
+  "ean": "5701194621297",
+  "frida_id": "1847",
+  "confidence": 90,
+  "note": "Frosne pommes frites, anden skæring"
+ },
+ {
+  "ean": "5705830600073",
+  "frida_id": "1847",
+  "confidence": 90,
+  "note": "Frosne pommes frites, anden skæring"
+ },
+ {
+  "ean": "5705830616876",
+  "frida_id": "1847",
+  "confidence": 90,
+  "note": "Frosne pommes frites, anden skæring"
+ },
+ {
+  "ean": "5705830601872",
+  "frida_id": "1848",
+  "confidence": 90,
+  "note": "Blåbær; frisk/frost næsten ens"
+ },
+ {
+  "ean": "5704959113075",
+  "frida_id": "1855",
+  "confidence": 95,
+  "note": "Frisk ananas i stykker"
+ },
+ {
+  "ean": "5705830606341",
+  "frida_id": "1859",
+  "confidence": 90,
+  "note": "Mango, frisk/udskåret"
+ },
+ {
+  "ean": "5705830014481",
+  "frida_id": "1862",
+  "confidence": 97,
+  "note": "Ananasjuice"
+ },
+ {
+  "ean": "5705830000064",
+  "frida_id": "1863",
+  "confidence": 97,
+  "note": "Appelsinjuice"
+ },
+ {
+  "ean": "5705830007674",
+  "frida_id": "1863",
+  "confidence": 97,
+  "note": "Appelsinjuice"
+ },
+ {
+  "ean": "5705830011305",
+  "frida_id": "1863",
+  "confidence": 97,
+  "note": "Appelsinjuice"
+ },
+ {
+  "ean": "5705830014498",
+  "frida_id": "1864",
+  "confidence": 90,
+  "note": "Grapefrugtjuice"
+ },
+ {
+  "ean": "5705830007667",
+  "frida_id": "1865",
+  "confidence": 95,
+  "note": "Sveskejuice"
+ },
+ {
+  "ean": "5703210000017",
+  "frida_id": "1866",
+  "confidence": 92,
+  "note": "Æblemost, ufiltreret æblejuice"
+ },
+ {
+  "ean": "5703210041256",
+  "frida_id": "1866",
+  "confidence": 92,
+  "note": "Æblemost, ufiltreret æblejuice"
+ },
+ {
+  "ean": "5705830000088",
+  "frida_id": "1866",
+  "confidence": 97,
+  "note": "Æblejuice"
+ },
+ {
+  "ean": "5705830007650",
+  "frida_id": "1866",
+  "confidence": 97,
+  "note": "Æblejuice"
+ },
+ {
+  "ean": "5705830007681",
+  "frida_id": "1866",
+  "confidence": 97,
+  "note": "Æblejuice"
+ },
+ {
+  "ean": "5705830011008",
+  "frida_id": "1866",
+  "confidence": 92,
+  "note": "Æblemost, ufiltreret æblejuice"
+ },
+ {
+  "ean": "5705830011299",
+  "frida_id": "1866",
+  "confidence": 97,
+  "note": "Æblejuice"
+ },
+ {
+  "ean": "5705830011329",
+  "frida_id": "1866",
+  "confidence": 97,
+  "note": "Æblejuice"
+ },
+ {
+  "ean": "5705830616142",
+  "frida_id": "1866",
+  "confidence": 97,
+  "note": "Æblejuice"
+ },
+ {
+  "ean": "5705830002662",
+  "frida_id": "1867",
+  "confidence": 95,
+  "note": "Multijuice = blandet frugtjuice"
+ },
+ {
+  "ean": "5705830007643",
+  "frida_id": "1867",
+  "confidence": 95,
+  "note": "Blandet frugtjuice"
+ },
+ {
+  "ean": "5705830011312",
+  "frida_id": "1867",
+  "confidence": 95,
+  "note": "Multijuice = blandet frugtjuice"
+ },
+ {
+  "ean": "5705830616159",
+  "frida_id": "1867",
+  "confidence": 90,
+  "note": "Blandet frugtjuice, primært æble"
+ },
+ {
+  "ean": "5705830006561",
+  "frida_id": "1869",
+  "confidence": 97,
+  "note": "Tomatjuice"
+ },
+ {
+  "ean": "5701607588100",
+  "frida_id": "187",
+  "confidence": 95,
+  "note": "Pasteuriserede æggehvider"
+ },
+ {
+  "ean": "5705830616135",
+  "frida_id": "1871",
+  "confidence": 90,
+  "note": "Blandet frugt- og grøntsagsjuice"
+ },
+ {
+  "ean": "5710326021119",
+  "frida_id": "1872",
+  "confidence": 90,
+  "note": "Frugtsmoothie mango/passion"
+ },
+ {
+  "ean": "5710326021133",
+  "frida_id": "1872",
+  "confidence": 92,
+  "note": "Frugtsmoothie banan/jordbær"
+ },
+ {
+  "ean": "5705010083474",
+  "frida_id": "1879",
+  "confidence": 90,
+  "note": "Appelsinnektar med tilsat sukker"
+ },
+ {
+  "ean": "5711018032253",
+  "frida_id": "1882",
+  "confidence": 90,
+  "note": "Alkoholfri æblecider med sukker"
+ },
+ {
+  "ean": "5705830013026",
+  "frida_id": "1888",
+  "confidence": 92,
+  "note": "Citron iste-pulver med sukker"
+ },
+ {
+  "ean": "5060108452991",
+  "frida_id": "1889",
+  "confidence": 90,
+  "note": "Tonic med sukker"
+ },
+ {
+  "ean": "5449000050519",
+  "frida_id": "1889",
+  "confidence": 95,
+  "note": "Cola med sukker"
+ },
+ {
+  "ean": "54491229",
+  "frida_id": "1889",
+  "confidence": 95,
+  "note": "Cola med sukker"
+ },
+ {
+  "ean": "5701598027022",
+  "frida_id": "1889",
+  "confidence": 90,
+  "note": "Almindelig cola med sukker"
+ },
+ {
+  "ean": "5701598028753",
+  "frida_id": "1889",
+  "confidence": 90,
+  "note": "Almindelig cola med sukker"
+ },
+ {
+  "ean": "5701598119857",
+  "frida_id": "1889",
+  "confidence": 90,
+  "note": "Almindelig cola med sukker"
+ },
+ {
+  "ean": "5701872203005",
+  "frida_id": "1889",
+  "confidence": 95,
+  "note": "Cola med sukker"
+ },
+ {
+  "ean": "5710326005331",
+  "frida_id": "1889",
+  "confidence": 90,
+  "note": "Citronsodavand med sukker"
+ },
+ {
+  "ean": "5710326005348",
+  "frida_id": "1889",
+  "confidence": 90,
+  "note": "Tonic med sukker"
+ },
+ {
+  "ean": "5711018004618",
+  "frida_id": "1889",
+  "confidence": 90,
+  "note": "Sukkerholdig citronsodavand, antaget"
+ },
+ {
+  "ean": "5711018021608",
+  "frida_id": "1889",
+  "confidence": 90,
+  "note": "Sukkerholdig citronsodavand, antaget"
+ },
+ {
+  "ean": "5711018023718",
+  "frida_id": "1889",
+  "confidence": 90,
+  "note": "Citronsodavand med sukker, ingefær"
+ },
+ {
+  "ean": "5711018024043",
+  "frida_id": "1889",
+  "confidence": 90,
+  "note": "Almindelig cola med sukker"
+ },
+ {
+  "ean": "5711018034158",
+  "frida_id": "1889",
+  "confidence": 90,
+  "note": "Sodavand med sukker"
+ },
+ {
+  "ean": "5711018034196",
+  "frida_id": "1889",
+  "confidence": 90,
+  "note": "Sodavand med sukker"
+ },
+ {
+  "ean": "5711018038644",
+  "frida_id": "1889",
+  "confidence": 90,
+  "note": "Citronsodavand med sukker"
+ },
+ {
+  "ean": "5711018038651",
+  "frida_id": "1889",
+  "confidence": 90,
+  "note": "Citronsodavand med sukker"
+ },
+ {
+  "ean": "5740700992612",
+  "frida_id": "1889",
+  "confidence": 95,
+  "note": "Cola med sukker"
+ },
+ {
+  "ean": "5701598026926",
+  "frida_id": "1890",
+  "confidence": 95,
+  "note": "Sukkerfri cola"
+ },
+ {
+  "ean": "5701598028838",
+  "frida_id": "1890",
+  "confidence": 95,
+  "note": "Sukkerfri cola"
+ },
+ {
+  "ean": "5711018000115",
+  "frida_id": "1890",
+  "confidence": 95,
+  "note": "Sukkerfri cola"
+ },
+ {
+  "ean": "5711018024050",
+  "frida_id": "1890",
+  "confidence": 95,
+  "note": "Sukkerfri cola"
+ },
+ {
+  "ean": "5711018024074",
+  "frida_id": "1890",
+  "confidence": 92,
+  "note": "Sukkerfri sodavand"
+ },
+ {
+  "ean": "5711018024098",
+  "frida_id": "1890",
+  "confidence": 92,
+  "note": "Sukkerfri sodavand"
+ },
+ {
+  "ean": "5711018024104",
+  "frida_id": "1890",
+  "confidence": 92,
+  "note": "Sukkerfri sodavand"
+ },
+ {
+  "ean": "5711018029833",
+  "frida_id": "1890",
+  "confidence": 92,
+  "note": "Sukkerfri sodavand"
+ },
+ {
+  "ean": "5711018029840",
+  "frida_id": "1890",
+  "confidence": 92,
+  "note": "Sukkerfri sodavand"
+ },
+ {
+  "ean": "5711018029857",
+  "frida_id": "1890",
+  "confidence": 92,
+  "note": "Sukkerfri sodavand"
+ },
+ {
+  "ean": "5711018031096",
+  "frida_id": "1890",
+  "confidence": 92,
+  "note": "Sukkerfri sodavand"
+ },
+ {
+  "ean": "5711018031102",
+  "frida_id": "1890",
+  "confidence": 92,
+  "note": "Sukkerfri sodavand"
+ },
+ {
+  "ean": "5711018031119",
+  "frida_id": "1890",
+  "confidence": 92,
+  "note": "Sukkerfri sodavand"
+ },
+ {
+  "ean": "5711018034974",
+  "frida_id": "1890",
+  "confidence": 92,
+  "note": "Sukkerfri sodavand"
+ },
+ {
+  "ean": "5711018034981",
+  "frida_id": "1890",
+  "confidence": 92,
+  "note": "Sukkerfri sodavand"
+ },
+ {
+  "ean": "5711018036404",
+  "frida_id": "1890",
+  "confidence": 92,
+  "note": "Sukkerfri sodavand"
+ },
+ {
+  "ean": "5711018036411",
+  "frida_id": "1890",
+  "confidence": 92,
+  "note": "Sukkerfri sodavand med sødestof"
+ },
+ {
+  "ean": "5711018037227",
+  "frida_id": "1890",
+  "confidence": 92,
+  "note": "Sukkerfri sodavand"
+ },
+ {
+  "ean": "5711018037371",
+  "frida_id": "1890",
+  "confidence": 92,
+  "note": "Sukkerfri sodavand"
+ },
+ {
+  "ean": "5711018039016",
+  "frida_id": "1890",
+  "confidence": 92,
+  "note": "Sukkerfri sodavand"
+ },
+ {
+  "ean": "5711018039085",
+  "frida_id": "1890",
+  "confidence": 90,
+  "note": "Sukkerfri citronsodavand"
+ },
+ {
+  "ean": "57112954",
+  "frida_id": "1890",
+  "confidence": 95,
+  "note": "Sukkerfri sodavand"
+ },
+ {
+  "ean": "57123004",
+  "frida_id": "1890",
+  "confidence": 92,
+  "note": "Sukkerfri sodavand med sødestof"
+ },
+ {
+  "ean": "5741000119020",
+  "frida_id": "1890",
+  "confidence": 95,
+  "note": "Sukkerfri cola"
+ },
+ {
+  "ean": "5741000155264",
+  "frida_id": "1890",
+  "confidence": 95,
+  "note": "Sukkerfri cola med sødestof"
+ },
+ {
+  "ean": "5741000236741",
+  "frida_id": "1890",
+  "confidence": 92,
+  "note": "Sukkerfri sodavand"
+ },
+ {
+  "ean": "5700002137715",
+  "frida_id": "1905",
+  "confidence": 90,
+  "note": "Lys lager 4,5%"
+ },
+ {
+  "ean": "57007007",
+  "frida_id": "1905",
+  "confidence": 95,
+  "note": "Pilsner 4,6%"
+ },
+ {
+  "ean": "57008004",
+  "frida_id": "1905",
+  "confidence": 97,
+  "note": "Pilsner 4,6%"
+ },
+ {
+  "ean": "5701598034396",
+  "frida_id": "1905",
+  "confidence": 95,
+  "note": "Pilsner 4,6%"
+ },
+ {
+  "ean": "5707323540965",
+  "frida_id": "1905",
+  "confidence": 95,
+  "note": "Pilsner 4,4%"
+ },
+ {
+  "ean": "57089157",
+  "frida_id": "1905",
+  "confidence": 97,
+  "note": "Pilsner 4,6%"
+ },
+ {
+  "ean": "57089188",
+  "frida_id": "1905",
+  "confidence": 97,
+  "note": "Pilsner 4,6%"
+ },
+ {
+  "ean": "5711018034882",
+  "frida_id": "1905",
+  "confidence": 95,
+  "note": "Pilsner"
+ },
+ {
+  "ean": "5711018034899",
+  "frida_id": "1905",
+  "confidence": 95,
+  "note": "Pilsner"
+ },
+ {
+  "ean": "5740600371715",
+  "frida_id": "1905",
+  "confidence": 97,
+  "note": "Pilsner 4,6%"
+ },
+ {
+  "ean": "5740700301544",
+  "frida_id": "1905",
+  "confidence": 97,
+  "note": "Pilsner 4,6%"
+ },
+ {
+  "ean": "5740700301551",
+  "frida_id": "1905",
+  "confidence": 97,
+  "note": "Pilsner 4,6%"
+ },
+ {
+  "ean": "5740700977756",
+  "frida_id": "1905",
+  "confidence": 97,
+  "note": "Pilsner 4,6%"
+ },
+ {
+  "ean": "5740700994104",
+  "frida_id": "1905",
+  "confidence": 97,
+  "note": "Pilsner 4,6%"
+ },
+ {
+  "ean": "5740700994128",
+  "frida_id": "1905",
+  "confidence": 97,
+  "note": "Pilsner 4,6%"
+ },
+ {
+  "ean": "5741000126868",
+  "frida_id": "1905",
+  "confidence": 95,
+  "note": "Lys pilsner 4,6%"
+ },
+ {
+  "ean": "5741000126875",
+  "frida_id": "1905",
+  "confidence": 95,
+  "note": "Lys pilsner 4,6%"
+ },
+ {
+  "ean": "5741000126899",
+  "frida_id": "1905",
+  "confidence": 95,
+  "note": "Lys pilsner 4,6%"
+ },
+ {
+  "ean": "5741000229316",
+  "frida_id": "1905",
+  "confidence": 92,
+  "note": "Pilsner 4,6%"
+ },
+ {
+  "ean": "7501049929404",
+  "frida_id": "1905",
+  "confidence": 90,
+  "note": "Lys lager 4,2%"
+ },
+ {
+  "ean": "57008165",
+  "frida_id": "1906",
+  "confidence": 95,
+  "note": "Classic pilsner"
+ },
+ {
+  "ean": "5701598037984",
+  "frida_id": "1906",
+  "confidence": 92,
+  "note": "Classic-øl 4,6%"
+ },
+ {
+  "ean": "5740700981388",
+  "frida_id": "1906",
+  "confidence": 95,
+  "note": "Tuborg Classic"
+ },
+ {
+  "ean": "5740700981449",
+  "frida_id": "1906",
+  "confidence": 95,
+  "note": "Tuborg Classic"
+ },
+ {
+  "ean": "5740700981746",
+  "frida_id": "1906",
+  "confidence": 95,
+  "note": "Tuborg Classic"
+ },
+ {
+  "ean": "5740700981760",
+  "frida_id": "1906",
+  "confidence": 95,
+  "note": "Tuborg Classic"
+ },
+ {
+  "ean": "5740700981784",
+  "frida_id": "1906",
+  "confidence": 95,
+  "note": "Tuborg Classic"
+ },
+ {
+  "ean": "5740700994050",
+  "frida_id": "1906",
+  "confidence": 95,
+  "note": "Tuborg Classic"
+ },
+ {
+  "ean": "5740700997075",
+  "frida_id": "1906",
+  "confidence": 95,
+  "note": "Tuborg Classic"
+ },
+ {
+  "ean": "5740700999833",
+  "frida_id": "1906",
+  "confidence": 95,
+  "note": "Tuborg Classic"
+ },
+ {
+  "ean": "5701598032019",
+  "frida_id": "1907",
+  "confidence": 97,
+  "note": "Guldøl 5,7%"
+ },
+ {
+  "ean": "5701598037953",
+  "frida_id": "1907",
+  "confidence": 97,
+  "note": "Guldøl 5,7%"
+ },
+ {
+  "ean": "5740700030680",
+  "frida_id": "1907",
+  "confidence": 95,
+  "note": "Guldøl 5,6%"
+ },
+ {
+  "ean": "5740700301582",
+  "frida_id": "1907",
+  "confidence": 95,
+  "note": "Guldøl 5,6%"
+ },
+ {
+  "ean": "5740700991370",
+  "frida_id": "1907",
+  "confidence": 95,
+  "note": "Guldøl 5,6%"
+ },
+ {
+  "ean": "5711018030020",
+  "frida_id": "1908",
+  "confidence": 92,
+  "note": "Stærk lagerøl 7,7%"
+ },
+ {
+  "ean": "5740600371807",
+  "frida_id": "1908",
+  "confidence": 92,
+  "note": "Stærk lagerøl 7,2%"
+ },
+ {
+  "ean": "5740700991929",
+  "frida_id": "1908",
+  "confidence": 90,
+  "note": "Stærk lagerøl 7%"
+ },
+ {
+  "ean": "5740700977268",
+  "frida_id": "1910",
+  "confidence": 97,
+  "note": "Alkoholfri pilsner"
+ },
+ {
+  "ean": "5740700982361",
+  "frida_id": "1910",
+  "confidence": 92,
+  "note": "Alkoholfri pilsner"
+ },
+ {
+  "ean": "57008080",
+  "frida_id": "1911",
+  "confidence": 92,
+  "note": "Mørk hvidtøl 1,7%"
+ },
+ {
+  "ean": "5741000000915",
+  "frida_id": "1911",
+  "confidence": 92,
+  "note": "Mørk hvidtøl, julevariant"
+ },
+ {
+  "ean": "5741000229965",
+  "frida_id": "1911",
+  "confidence": 92,
+  "note": "Mørk hvidtøl, julevariant"
+ },
+ {
+  "ean": "5035766580331",
+  "frida_id": "1912",
+  "confidence": 90,
+  "note": "Brown ale, mørk ale"
+ },
+ {
+  "ean": "57073705",
+  "frida_id": "1912",
+  "confidence": 90,
+  "note": "Brown ale, mørk ale"
+ },
+ {
+  "ean": "57088938",
+  "frida_id": "1912",
+  "confidence": 90,
+  "note": "Mørk abbey ale (ambrée)"
+ },
+ {
+  "ean": "3080216034508",
+  "frida_id": "1913",
+  "confidence": 92,
+  "note": "Blonde ale 6,7%"
+ },
+ {
+  "ean": "5740700982620",
+  "frida_id": "1913",
+  "confidence": 90,
+  "note": "IPA som lys ale"
+ },
+ {
+  "ean": "5740700982637",
+  "frida_id": "1913",
+  "confidence": 90,
+  "note": "IPA som lys ale"
+ },
+ {
+  "ean": "5741000148181",
+  "frida_id": "1913",
+  "confidence": 90,
+  "note": "IPA som lys ale"
+ },
+ {
+  "ean": "5741000229194",
+  "frida_id": "1913",
+  "confidence": 90,
+  "note": "IPA som lys ale"
+ },
+ {
+  "ean": "4002103251026",
+  "frida_id": "1914",
+  "confidence": 97,
+  "note": "Tysk weissbier"
+ },
+ {
+  "ean": "4052197000017",
+  "frida_id": "1914",
+  "confidence": 97,
+  "note": "Tysk weissbier"
+ },
+ {
+  "ean": "3080216051437",
+  "frida_id": "1915",
+  "confidence": 92,
+  "note": "Witbier 5%"
+ },
+ {
+  "ean": "3080216051444",
+  "frida_id": "1915",
+  "confidence": 92,
+  "note": "Witbier 5%"
+ },
+ {
+  "ean": "5741000229255",
+  "frida_id": "1915",
+  "confidence": 95,
+  "note": "Belgisk witbier"
+ },
+ {
+  "ean": "5741000229279",
+  "frida_id": "1915",
+  "confidence": 95,
+  "note": "Belgisk witbier"
+ },
+ {
+  "ean": "57014388",
+  "frida_id": "1916",
+  "confidence": 95,
+  "note": "Porter 7,9%"
+ },
+ {
+  "ean": "5740700987663",
+  "frida_id": "1916",
+  "confidence": 95,
+  "note": "Stout"
+ },
+ {
+  "ean": "7070097070296",
+  "frida_id": "1918",
+  "confidence": 97,
+  "note": "Serranoskinke i skiver"
+ },
+ {
+  "ean": "5705830606099",
+  "frida_id": "1919",
+  "confidence": 97,
+  "note": "Lufttørret schwarzwälder-skinke"
+ },
+ {
+  "ean": "5705830009883",
+  "frida_id": "192",
+  "confidence": 90,
+  "note": "Panko er rasp"
+ },
+ {
+  "ean": "5705830080035",
+  "frida_id": "192",
+  "confidence": 95,
+  "note": "Rasp"
+ },
+ {
+  "ean": "5705830601193",
+  "frida_id": "1921",
+  "confidence": 90,
+  "note": "Chokoladeis af mælk og fløde, gelato-stil"
+ },
+ {
+  "ean": "5766632529900",
+  "frida_id": "1924",
+  "confidence": 90,
+  "note": "Jordbæris af fløde"
+ },
+ {
+  "ean": "5705830600479",
+  "frida_id": "1926",
+  "confidence": 95,
+  "note": "Nougatis af mælk og fløde"
+ },
+ {
+  "ean": "5766632529719",
+  "frida_id": "1926",
+  "confidence": 95,
+  "note": "Nougatis af mælk og fløde"
+ },
+ {
+  "ean": "5705830600561",
+  "frida_id": "1928",
+  "confidence": 92,
+  "note": "Stracciatella is"
+ },
+ {
+  "ean": "5766632528590",
+  "frida_id": "1928",
+  "confidence": 92,
+  "note": "Stracciatella flødeis"
+ },
+ {
+  "ean": "5705830601391",
+  "frida_id": "1933",
+  "confidence": 92,
+  "note": "Limonadeis = saftevandsis"
+ },
+ {
+  "ean": "5705830601407",
+  "frida_id": "1933",
+  "confidence": 92,
+  "note": "Limonadeis = saftevandsis"
+ },
+ {
+  "ean": "5705830602053",
+  "frida_id": "1933",
+  "confidence": 90,
+  "note": "Saftevandsis"
+ },
+ {
+  "ean": "5705830606402",
+  "frida_id": "1933",
+  "confidence": 92,
+  "note": "Limonadeis = saftevandsis"
+ },
+ {
+  "ean": "5705830606426",
+  "frida_id": "1936",
+  "confidence": 90,
+  "note": "Vanilje pindeis med choko og mandler"
+ },
+ {
+  "ean": "5705830611673",
+  "frida_id": "1939",
+  "confidence": 92,
+  "note": "Isbåd med jordbærsauce"
+ },
+ {
+  "ean": "5705830616654",
+  "frida_id": "1939",
+  "confidence": 95,
+  "note": "Isbåd med jordbærsauce"
+ },
+ {
+  "ean": "5701295292990",
+  "frida_id": "1942",
+  "confidence": 93,
+  "note": "Hønsesalat pålæg"
+ },
+ {
+  "ean": "5704000496539",
+  "frida_id": "1942",
+  "confidence": 95,
+  "note": "Hønsesalat pålæg"
+ },
+ {
+  "ean": "5705830605528",
+  "frida_id": "1942",
+  "confidence": 95,
+  "note": "Hønsesalat pålæg"
+ },
+ {
+  "ean": "5704000496515",
+  "frida_id": "1944",
+  "confidence": 92,
+  "note": "Skinkesalat"
+ },
+ {
+  "ean": "5705830605535",
+  "frida_id": "1944",
+  "confidence": 95,
+  "note": "Skinkesalat"
+ },
+ {
+  "ean": "5710607000659",
+  "frida_id": "1944",
+  "confidence": 93,
+  "note": "Skinkesalat"
+ },
+ {
+  "ean": "5701295293034",
+  "frida_id": "1945",
+  "confidence": 90,
+  "note": "Tunsalat med mayonnaise"
+ },
+ {
+  "ean": "5704000486844",
+  "frida_id": "1945",
+  "confidence": 95,
+  "note": "Tunsalat pålæg"
+ },
+ {
+  "ean": "5704000496836",
+  "frida_id": "1945",
+  "confidence": 90,
+  "note": "Tunsalat med jalapeño"
+ },
+ {
+  "ean": "5701295292976",
+  "frida_id": "1946",
+  "confidence": 95,
+  "note": "Italiensk salat pålæg"
+ },
+ {
+  "ean": "5705830500137",
+  "frida_id": "1946",
+  "confidence": 95,
+  "note": "Italiensk salat pålæg"
+ },
+ {
+  "ean": "5701018044707",
+  "frida_id": "1947",
+  "confidence": 95,
+  "note": "Æggesalat pålæg"
+ },
+ {
+  "ean": "5704000496744",
+  "frida_id": "1948",
+  "confidence": 95,
+  "note": "Kylling- og baconsalat pålæg"
+ },
+ {
+  "ean": "5701295293065",
+  "frida_id": "1949",
+  "confidence": 95,
+  "note": "Peberrodssalat"
+ },
+ {
+  "ean": "5704000472229",
+  "frida_id": "1949",
+  "confidence": 92,
+  "note": "Peberrodssalat, grov"
+ },
+ {
+  "ean": "5701295292983",
+  "frida_id": "1950",
+  "confidence": 95,
+  "note": "Karrysalat pålæg"
+ },
+ {
+  "ean": "5705830500144",
+  "frida_id": "1950",
+  "confidence": 95,
+  "note": "Karrysalat pålæg"
+ },
+ {
+  "ean": "5701295293027",
+  "frida_id": "1951",
+  "confidence": 90,
+  "note": "Rejesalat = skaldyrssalat"
+ },
+ {
+  "ean": "5704000514868",
+  "frida_id": "1951",
+  "confidence": 95,
+  "note": "Skaldyrsalat pålæg"
+ },
+ {
+  "ean": "5701295294062",
+  "frida_id": "1952",
+  "confidence": 95,
+  "note": "Thousand Island dressing"
+ },
+ {
+  "ean": "5705830020659",
+  "frida_id": "1952",
+  "confidence": 95,
+  "note": "Thousand island dressing"
+ },
+ {
+  "ean": "5705830020833",
+  "frida_id": "1952",
+  "confidence": 95,
+  "note": "Thousand Island dressing"
+ },
+ {
+  "ean": "5701295294079",
+  "frida_id": "1953",
+  "confidence": 95,
+  "note": "Creme fraiche dressing"
+ },
+ {
+  "ean": "5705830004888",
+  "frida_id": "1953",
+  "confidence": 95,
+  "note": "Creme fraiche dressing"
+ },
+ {
+  "ean": "5705830012197",
+  "frida_id": "1953",
+  "confidence": 95,
+  "note": "Creme fraiche dressing"
+ },
+ {
+  "ean": "5705830020840",
+  "frida_id": "1954",
+  "confidence": 95,
+  "note": "Hvidløgsdressing"
+ },
+ {
+  "ean": "5704000436825",
+  "frida_id": "1955",
+  "confidence": 95,
+  "note": "Burgerdressing"
+ },
+ {
+  "ean": "5704959100396",
+  "frida_id": "1957",
+  "confidence": 95,
+  "note": "Aioli"
+ },
+ {
+  "ean": "5705830018281",
+  "frida_id": "1957",
+  "confidence": 95,
+  "note": "Aioli"
+ },
+ {
+  "ean": "5705830001719",
+  "frida_id": "1958",
+  "confidence": 95,
+  "note": "Basilikumpesto"
+ },
+ {
+  "ean": "5705830010858",
+  "frida_id": "1958",
+  "confidence": 92,
+  "note": "Basilikumpesto, økologisk"
+ },
+ {
+  "ean": "5705830001726",
+  "frida_id": "1959",
+  "confidence": 92,
+  "note": "Rød tomatpesto"
+ },
+ {
+  "ean": "5705830010841",
+  "frida_id": "1959",
+  "confidence": 92,
+  "note": "Rød tomatpesto"
+ },
+ {
+  "ean": "5705830007902",
+  "frida_id": "1961",
+  "confidence": 95,
+  "note": "Cæsardressing"
+ },
+ {
+  "ean": "5701295291030",
+  "frida_id": "1964",
+  "confidence": 95,
+  "note": "Mayonnaise"
+ },
+ {
+  "ean": "5704000437556",
+  "frida_id": "1964",
+  "confidence": 95,
+  "note": "Mayonnaise"
+ },
+ {
+  "ean": "5704000529275",
+  "frida_id": "1964",
+  "confidence": 95,
+  "note": "Mayonnaise"
+ },
+ {
+  "ean": "5705830001504",
+  "frida_id": "1964",
+  "confidence": 97,
+  "note": "Mayonnaise"
+ },
+ {
+  "ean": "5705830017499",
+  "frida_id": "1964",
+  "confidence": 97,
+  "note": "Økologisk mayonnaise"
+ },
+ {
+  "ean": "8712100536939",
+  "frida_id": "1964",
+  "confidence": 95,
+  "note": "Mayonnaise"
+ },
+ {
+  "ean": "5705830003522",
+  "frida_id": "1965",
+  "confidence": 97,
+  "note": "Light mayonnaise"
+ },
+ {
+  "ean": "5705830009746",
+  "frida_id": "1966",
+  "confidence": 92,
+  "note": "Mayonnaise med chili"
+ },
+ {
+  "ean": "5701295291047",
+  "frida_id": "1968",
+  "confidence": 95,
+  "note": "Remoulade"
+ },
+ {
+  "ean": "5704000437495",
+  "frida_id": "1968",
+  "confidence": 95,
+  "note": "Remoulade"
+ },
+ {
+  "ean": "5704000437754",
+  "frida_id": "1968",
+  "confidence": 95,
+  "note": "Remoulade"
+ },
+ {
+  "ean": "5704000529268",
+  "frida_id": "1968",
+  "confidence": 90,
+  "note": "Grov remoulade, almindelig fedtniveau"
+ },
+ {
+  "ean": "5705830001528",
+  "frida_id": "1968",
+  "confidence": 95,
+  "note": "Remoulade"
+ },
+ {
+  "ean": "5705830007728",
+  "frida_id": "1968",
+  "confidence": 95,
+  "note": "Remoulade"
+ },
+ {
+  "ean": "5705830003515",
+  "frida_id": "1969",
+  "confidence": 95,
+  "note": "Remoulade light"
+ },
+ {
+  "ean": "4001724039860",
+  "frida_id": "1970",
+  "confidence": 90,
+  "note": "Pizza med skinke og ananas"
+ },
+ {
+  "ean": "5712849017280",
+  "frida_id": "1975",
+  "confidence": 90,
+  "note": "Sushi"
+ },
+ {
+  "ean": "3700619347653",
+  "frida_id": "206",
+  "confidence": 95,
+  "note": "Rosévin"
+ },
+ {
+  "ean": "3760114001122",
+  "frida_id": "206",
+  "confidence": 95,
+  "note": "Rosévin"
+ },
+ {
+  "ean": "8007880211108",
+  "frida_id": "206",
+  "confidence": 95,
+  "note": "Rosévin"
+ },
+ {
+  "ean": "5705830606709",
+  "frida_id": "209",
+  "confidence": 98,
+  "note": "Samsø 45+"
+ },
+ {
+  "ean": "8002915010039",
+  "frida_id": "217",
+  "confidence": 95,
+  "note": "Tør vermouth"
+ },
+ {
+  "ean": "8002915000924",
+  "frida_id": "220",
+  "confidence": 90,
+  "note": "Bianco er sød vermouth"
+ },
+ {
+  "ean": "8002915000931",
+  "frida_id": "220",
+  "confidence": 95,
+  "note": "Rosso er sød vermouth"
+ },
+ {
+  "ean": "5705830013262",
+  "frida_id": "221",
+  "confidence": 95,
+  "note": "Svesker"
+ },
+ {
+  "ean": "5410146401435",
+  "frida_id": "223",
+  "confidence": 90,
+  "note": "Croissanter"
+ },
+ {
+  "ean": "5705830606891",
+  "frida_id": "223",
+  "confidence": 93,
+  "note": "Smørcroissant"
+ },
+ {
+  "ean": "5705830001610",
+  "frida_id": "226",
+  "confidence": 92,
+  "note": "Lagereddike = eddike"
+ },
+ {
+  "ean": "5705830010865",
+  "frida_id": "226",
+  "confidence": 95,
+  "note": "Klar eddike"
+ },
+ {
+  "ean": "5705830021069",
+  "frida_id": "226",
+  "confidence": 92,
+  "note": "Vineddike"
+ },
+ {
+  "ean": "5707653223507",
+  "frida_id": "226",
+  "confidence": 90,
+  "note": "Æblecidereddike som eddike"
+ },
+ {
+  "ean": "5705830604859",
+  "frida_id": "23",
+  "confidence": 92,
+  "note": "Frisk snittet grønkål"
+ },
+ {
+  "ean": "5701014073428",
+  "frida_id": "230",
+  "confidence": 93,
+  "note": "Tebirkes"
+ },
+ {
+  "ean": "5711156006352",
+  "frida_id": "230",
+  "confidence": 93,
+  "note": "Tebirkes"
+ },
+ {
+  "ean": "5740200001012",
+  "frida_id": "231",
+  "confidence": 90,
+  "note": "Creamy blue 70+, blå- og hvidskimmel"
+ },
+ {
+  "ean": "5703161580002",
+  "frida_id": "2385",
+  "confidence": 92,
+  "note": "Sukkerfri energidrik"
+ },
+ {
+  "ean": "5710326001760",
+  "frida_id": "2385",
+  "confidence": 92,
+  "note": "Sukkerfri energidrik"
+ },
+ {
+  "ean": "4000378839277",
+  "frida_id": "2387",
+  "confidence": 90,
+  "note": "Kølet vs frossen, samme suppetype"
+ },
+ {
+  "ean": "5741300056162",
+  "frida_id": "2387",
+  "confidence": 90,
+  "note": "Samme suppetype, evt. kølet vs frossen"
+ },
+ {
+  "ean": "5741300056179",
+  "frida_id": "2388",
+  "confidence": 90,
+  "note": "Hønsekødsuppe, Mou"
+ },
+ {
+  "ean": "5705830016836",
+  "frida_id": "2390",
+  "confidence": 90,
+  "note": "Aspargessuppe, spiseklar"
+ },
+ {
+  "ean": "5741300056186",
+  "frida_id": "2390",
+  "confidence": 90,
+  "note": "Aspargessuppe, spiseklar"
+ },
+ {
+  "ean": "5700426233673",
+  "frida_id": "2392",
+  "confidence": 92,
+  "note": "Kølet tomatsuppe"
+ },
+ {
+  "ean": "5705830015402",
+  "frida_id": "2393",
+  "confidence": 90,
+  "note": "Tomatsuppe på dåse"
+ },
+ {
+  "ean": "5741300056094",
+  "frida_id": "2395",
+  "confidence": 90,
+  "note": "Gullaschsuppe, Mou"
+ },
+ {
+  "ean": "5741300057398",
+  "frida_id": "2396",
+  "confidence": 90,
+  "note": "Karrysuppe, Mou"
+ },
+ {
+  "ean": "5705830006073",
+  "frida_id": "251",
+  "confidence": 90,
+  "note": "Sorte oliven i lage"
+ },
+ {
+  "ean": "5709289001306",
+  "frida_id": "251",
+  "confidence": 90,
+  "note": "Sorte oliven i lage"
+ },
+ {
+  "ean": "5709289003225",
+  "frida_id": "251",
+  "confidence": 90,
+  "note": "Kalamata = sorte oliven i saltlage"
+ },
+ {
+  "ean": "4009301041244",
+  "frida_id": "261",
+  "confidence": 95,
+  "note": "Emmentaler"
+ },
+ {
+  "ean": "8004691700371",
+  "frida_id": "268",
+  "confidence": 90,
+  "note": "Citronsaft på flaske vs friskpresset"
+ },
+ {
+  "ean": "5706041007613",
+  "frida_id": "272",
+  "confidence": 95,
+  "note": "Almindelig tofu"
+ },
+ {
+  "ean": "5711070902990",
+  "frida_id": "272",
+  "confidence": 93,
+  "note": "Tofu"
+ },
+ {
+  "ean": "5711156006383",
+  "frida_id": "279",
+  "confidence": 90,
+  "note": "Kanelsnegl, wienerbrød"
+ },
+ {
+  "ean": "5705830008893",
+  "frida_id": "283",
+  "confidence": 95,
+  "note": "Tør bulgur"
+ },
+ {
+  "ean": "3267682136138",
+  "frida_id": "286",
+  "confidence": 98,
+  "note": "Whisky 40%"
+ },
+ {
+  "ean": "3267682136152",
+  "frida_id": "286",
+  "confidence": 98,
+  "note": "Whisky 40%"
+ },
+ {
+  "ean": "5704080959191",
+  "frida_id": "287",
+  "confidence": 97,
+  "note": "Spegepølse af oksekød"
+ },
+ {
+  "ean": "5704080960289",
+  "frida_id": "287",
+  "confidence": 97,
+  "note": "Spegepølse af oksekød"
+ },
+ {
+  "ean": "5705830604941",
+  "frida_id": "291",
+  "confidence": 98,
+  "note": "Havarti 60+"
+ },
+ {
+  "ean": "5705830604880",
+  "frida_id": "300",
+  "confidence": 95,
+  "note": "Fraiche 9 %"
+ },
+ {
+  "ean": "5705830610102",
+  "frida_id": "300",
+  "confidence": 95,
+  "note": "Fraiche 9 %"
+ },
+ {
+  "ean": "5705830008756",
+  "frida_id": "302",
+  "confidence": 97,
+  "note": "Hasselnøddekerner"
+ },
+ {
+  "ean": "5705830008787",
+  "frida_id": "302",
+  "confidence": 95,
+  "note": "Hasselnødder, flager"
+ },
+ {
+  "ean": "5705830010414",
+  "frida_id": "305",
+  "confidence": 95,
+  "note": "Spaghetti, tørret"
+ },
+ {
+  "ean": "5705830010421",
+  "frida_id": "305",
+  "confidence": 95,
+  "note": "Tørret pasta"
+ },
+ {
+  "ean": "5705830010438",
+  "frida_id": "305",
+  "confidence": 95,
+  "note": "Tørret pasta"
+ },
+ {
+  "ean": "5705830010445",
+  "frida_id": "305",
+  "confidence": 93,
+  "note": "Tørret pasta"
+ },
+ {
+  "ean": "5705830010452",
+  "frida_id": "305",
+  "confidence": 92,
+  "note": "Tør pasta, farvet med grønt"
+ },
+ {
+  "ean": "5705830010469",
+  "frida_id": "305",
+  "confidence": 92,
+  "note": "Tør hvedepasta, anden form"
+ },
+ {
+  "ean": "5705830010476",
+  "frida_id": "305",
+  "confidence": 92,
+  "note": "Tørrede lasagneplader = rå pasta"
+ },
+ {
+  "ean": "5705830010490",
+  "frida_id": "305",
+  "confidence": 95,
+  "note": "Spaghetti, tørret, økologisk"
+ },
+ {
+  "ean": "8004690053195",
+  "frida_id": "305",
+  "confidence": 95,
+  "note": "Tørret pasta"
+ },
+ {
+  "ean": "8004690057308",
+  "frida_id": "305",
+  "confidence": 95,
+  "note": "Tørret pasta"
+ },
+ {
+  "ean": "8004690172803",
+  "frida_id": "305",
+  "confidence": 95,
+  "note": "Tør hvedepasta"
+ },
+ {
+  "ean": "8004690420201",
+  "frida_id": "305",
+  "confidence": 95,
+  "note": "Tørret pasta"
+ },
+ {
+  "ean": "8004690420287",
+  "frida_id": "305",
+  "confidence": 92,
+  "note": "Tør økologisk pasta"
+ },
+ {
+  "ean": "8002503211138",
+  "frida_id": "308",
+  "confidence": 92,
+  "note": "Grana Padano er grana-ost"
+ },
+ {
+  "ean": "2274388001913",
+  "frida_id": "309",
+  "confidence": 95,
+  "note": "Parmesan"
+ },
+ {
+  "ean": "5706680028222",
+  "frida_id": "317",
+  "confidence": 92,
+  "note": "Agurkesalat uden tilsat sukker"
+ },
+ {
+  "ean": "57035055",
+  "frida_id": "319",
+  "confidence": 98,
+  "note": "Presset bagegær"
+ },
+ {
+  "ean": "5710815000700",
+  "frida_id": "319",
+  "confidence": 98,
+  "note": "Presset bagegær"
+ },
+ {
+  "ean": "5700426101613",
+  "frida_id": "32",
+  "confidence": 95,
+  "note": "Kærnemælk 0,3%"
+ },
+ {
+  "ean": "5705830603227",
+  "frida_id": "32",
+  "confidence": 95,
+  "note": "Kærnemælk 0,5%"
+ },
+ {
+  "ean": "5011056025102",
+  "frida_id": "321",
+  "confidence": 92,
+  "note": "Cheddar"
+ },
+ {
+  "ean": "5011056025119",
+  "frida_id": "321",
+  "confidence": 92,
+  "note": "Lagret cheddar"
+ },
+ {
+  "ean": "5011056025126",
+  "frida_id": "321",
+  "confidence": 95,
+  "note": "Cheddar, lagret"
+ },
+ {
+  "ean": "5705830618221",
+  "frida_id": "321",
+  "confidence": 92,
+  "note": "Cheddar"
+ },
+ {
+  "ean": "5744004530280",
+  "frida_id": "321",
+  "confidence": 90,
+  "note": "Revet cheddar"
+ },
+ {
+  "ean": "5701410338343",
+  "frida_id": "324",
+  "confidence": 92,
+  "note": "Fiskefars"
+ },
+ {
+  "ean": "5706779187069",
+  "frida_id": "328",
+  "confidence": 92,
+  "note": "Pistaciekerner uden skal"
+ },
+ {
+  "ean": "5701912007198",
+  "frida_id": "330",
+  "confidence": 95,
+  "note": "Flødeboller, ministørrelse"
+ },
+ {
+  "ean": "5705830011336",
+  "frida_id": "330",
+  "confidence": 95,
+  "note": "Flødeboller"
+ },
+ {
+  "ean": "5711156006765",
+  "frida_id": "343",
+  "confidence": 90,
+  "note": "Wienerbrødsstang med glasur"
+ },
+ {
+  "ean": "5705830008732",
+  "frida_id": "35",
+  "confidence": 97,
+  "note": "Mandler naturel"
+ },
+ {
+  "ean": "5705830008770",
+  "frida_id": "35",
+  "confidence": 92,
+  "note": "Mandelsplitter = rå mandler"
+ },
+ {
+  "ean": "5706779187090",
+  "frida_id": "35",
+  "confidence": 97,
+  "note": "Mandler naturel"
+ },
+ {
+  "ean": "5703603009030",
+  "frida_id": "358",
+  "confidence": 92,
+  "note": "Sønderjysk spegepølse"
+ },
+ {
+  "ean": "5703986063223",
+  "frida_id": "358",
+  "confidence": 93,
+  "note": "Spegepølse, økologisk"
+ },
+ {
+  "ean": "5704080955865",
+  "frida_id": "358",
+  "confidence": 95,
+  "note": "Sønderjysk spegepølse"
+ },
+ {
+  "ean": "5704080959856",
+  "frida_id": "358",
+  "confidence": 92,
+  "note": "Mild spegepølse"
+ },
+ {
+  "ean": "5705830603555",
+  "frida_id": "358",
+  "confidence": 93,
+  "note": "Spegepølse i skiver"
+ },
+ {
+  "ean": "5705830605375",
+  "frida_id": "358",
+  "confidence": 93,
+  "note": "Spegepølse i skiver"
+ },
+ {
+  "ean": "5707196194739",
+  "frida_id": "358",
+  "confidence": 92,
+  "note": "Spegepølse med hvidløg"
+ },
+ {
+  "ean": "5707196194760",
+  "frida_id": "358",
+  "confidence": 92,
+  "note": "Sønderjysk spegepølse"
+ },
+ {
+  "ean": "5707196194791",
+  "frida_id": "358",
+  "confidence": 92,
+  "note": "Spegepølse med peber"
+ },
+ {
+  "ean": "5708123010009",
+  "frida_id": "358",
+  "confidence": 92,
+  "note": "Spegepølse"
+ },
+ {
+  "ean": "7070097514332",
+  "frida_id": "358",
+  "confidence": 90,
+  "note": "Fuet = lufttørret spegepølse"
+ },
+ {
+  "ean": "5705830006080",
+  "frida_id": "371",
+  "confidence": 90,
+  "note": "Grønne oliven på glas"
+ },
+ {
+  "ean": "5709289003232",
+  "frida_id": "371",
+  "confidence": 90,
+  "note": "Marinerede grønne oliven"
+ },
+ {
+  "ean": "7300400114752",
+  "frida_id": "375",
+  "confidence": 90,
+  "note": "Groft rugknækbrød"
+ },
+ {
+  "ean": "7300400118132",
+  "frida_id": "375",
+  "confidence": 90,
+  "note": "Groft rugknækbrød"
+ },
+ {
+  "ean": "5705830010506",
+  "frida_id": "377",
+  "confidence": 90,
+  "note": "Fuldkornsspaghetti, tørret"
+ },
+ {
+  "ean": "5705830010513",
+  "frida_id": "377",
+  "confidence": 90,
+  "note": "Tør fuldkornspasta"
+ },
+ {
+  "ean": "5705830010520",
+  "frida_id": "377",
+  "confidence": 92,
+  "note": "Fuldkornspasta, tørret"
+ },
+ {
+  "ean": "5705830080196",
+  "frida_id": "386",
+  "confidence": 97,
+  "note": "Mikroovnspopcorn"
+ },
+ {
+  "ean": "5705830005274",
+  "frida_id": "393",
+  "confidence": 90,
+  "note": "Nøddecreme med kakao"
+ },
+ {
+  "ean": "80177173",
+  "frida_id": "393",
+  "confidence": 97,
+  "note": "Nøddepasta med kakao"
+ },
+ {
+  "ean": "5705830005489",
+  "frida_id": "404",
+  "confidence": 92,
+  "note": "Syltet agurk med sukker"
+ },
+ {
+  "ean": "5706680041924",
+  "frida_id": "404",
+  "confidence": 90,
+  "note": "Syltede drueagurker, sødsure"
+ },
+ {
+  "ean": "5708229700293",
+  "frida_id": "404",
+  "confidence": 92,
+  "note": "Syltede agurker"
+ },
+ {
+  "ean": "5707196196306",
+  "frida_id": "406",
+  "confidence": 95,
+  "note": "Fedtreduceret kødpølse"
+ },
+ {
+  "ean": "5705830006806",
+  "frida_id": "409",
+  "confidence": 98,
+  "note": "Majsstivelse"
+ },
+ {
+  "ean": "5704025007109",
+  "frida_id": "419",
+  "confidence": 90,
+  "note": "Frosne forårsruller med grønt"
+ },
+ {
+  "ean": "5741200317264",
+  "frida_id": "419",
+  "confidence": 92,
+  "note": "Frosne forårsruller"
+ },
+ {
+  "ean": "5741200319107",
+  "frida_id": "419",
+  "confidence": 90,
+  "note": "Frosne forårsruller til ovn"
+ },
+ {
+  "ean": "4007415005480",
+  "frida_id": "423",
+  "confidence": 90,
+  "note": "Ananas på dåse"
+ },
+ {
+  "ean": "5705830010308",
+  "frida_id": "426",
+  "confidence": 95,
+  "note": "Kryddere = tørret brød (krydder)"
+ },
+ {
+  "ean": "5705830014375",
+  "frida_id": "427",
+  "confidence": 95,
+  "note": "Tvebakker"
+ },
+ {
+  "ean": "5705830007209",
+  "frida_id": "434",
+  "confidence": 90,
+  "note": "Ferskner på dåse i sirup"
+ },
+ {
+  "ean": "5705830080349",
+  "frida_id": "436",
+  "confidence": 92,
+  "note": "Almindelige cornflakes"
+ },
+ {
+  "ean": "5705830011435",
+  "frida_id": "438",
+  "confidence": 97,
+  "note": "Afskallede solsikkekerner"
+ },
+ {
+  "ean": "5710183010974",
+  "frida_id": "438",
+  "confidence": 97,
+  "note": "Afskallede solsikkekerner"
+ },
+ {
+  "ean": "5701410338305",
+  "frida_id": "45",
+  "confidence": 92,
+  "note": "Rå rødspættefilet"
+ },
+ {
+  "ean": "5701542105462",
+  "frida_id": "45",
+  "confidence": 93,
+  "note": "Hel rødspætte"
+ },
+ {
+  "ean": "5706779058307",
+  "frida_id": "458",
+  "confidence": 95,
+  "note": "Tørrede abrikoser"
+ },
+ {
+  "ean": "5706779187007",
+  "frida_id": "458",
+  "confidence": 92,
+  "note": "Tørrede abrikoser"
+ },
+ {
+  "ean": "5705830006639",
+  "frida_id": "459",
+  "confidence": 92,
+  "note": "BBQ-sauce"
+ },
+ {
+  "ean": "5705830018298",
+  "frida_id": "459",
+  "confidence": 90,
+  "note": "BBQ-sauce, røget smag"
+ },
+ {
+  "ean": "5709345001349",
+  "frida_id": "47",
+  "confidence": 95,
+  "note": "Marinerede sild"
+ },
+ {
+  "ean": "5709345003107",
+  "frida_id": "47",
+  "confidence": 92,
+  "note": "Marineret sild"
+ },
+ {
+  "ean": "5709345006658",
+  "frida_id": "47",
+  "confidence": 95,
+  "note": "Marinerede sild"
+ },
+ {
+  "ean": "5705830002693",
+  "frida_id": "470",
+  "confidence": 90,
+  "note": "Syltede jalapeños på glas"
+ },
+ {
+  "ean": "5705830011442",
+  "frida_id": "471",
+  "confidence": 90,
+  "note": "Sesamfrø, antaget afskallede"
+ },
+ {
+  "ean": "5701075201174",
+  "frida_id": "480",
+  "confidence": 97,
+  "note": "Havregryn, ikke beriget"
+ },
+ {
+  "ean": "5701164710389",
+  "frida_id": "480",
+  "confidence": 95,
+  "note": "Havregryn, ikke beriget"
+ },
+ {
+  "ean": "5701164710426",
+  "frida_id": "480",
+  "confidence": 98,
+  "note": "Havregryn, ikke beriget"
+ },
+ {
+  "ean": "5705830005885",
+  "frida_id": "480",
+  "confidence": 95,
+  "note": "Glutenfri havregryn"
+ },
+ {
+  "ean": "5705830009210",
+  "frida_id": "480",
+  "confidence": 97,
+  "note": "Havregryn, ikke beriget"
+ },
+ {
+  "ean": "5705830016553",
+  "frida_id": "480",
+  "confidence": 97,
+  "note": "Havregryn, ikke beriget"
+ },
+ {
+  "ean": "4000404872353",
+  "frida_id": "489",
+  "confidence": 90,
+  "note": "Salami, snackformat"
+ },
+ {
+  "ean": "5703603108795",
+  "frida_id": "489",
+  "confidence": 90,
+  "note": "Krosalami i skiver = salami pålæg"
+ },
+ {
+  "ean": "5703603109174",
+  "frida_id": "489",
+  "confidence": 90,
+  "note": "Krosalami = salami"
+ },
+ {
+  "ean": "5704080955919",
+  "frida_id": "489",
+  "confidence": 92,
+  "note": "Salami pålæg"
+ },
+ {
+  "ean": "5704080959863",
+  "frida_id": "489",
+  "confidence": 92,
+  "note": "Salami pålæg"
+ },
+ {
+  "ean": "5705830611390",
+  "frida_id": "489",
+  "confidence": 92,
+  "note": "Salami pålæg"
+ },
+ {
+  "ean": "5707196265170",
+  "frida_id": "489",
+  "confidence": 90,
+  "note": "Italiensk salami"
+ },
+ {
+  "ean": "7070097070302",
+  "frida_id": "489",
+  "confidence": 90,
+  "note": "Spansk salami"
+ },
+ {
+  "ean": "5706680095910",
+  "frida_id": "492",
+  "confidence": 92,
+  "note": "Syltede rødbeder uden tilsat sukker"
+ },
+ {
+  "ean": "5705425003609",
+  "frida_id": "517",
+  "confidence": 92,
+  "note": "Hytteost 4 % svarer til 20+"
+ },
+ {
+  "ean": "5705425005757",
+  "frida_id": "517",
+  "confidence": 92,
+  "note": "Hytteost 4 % svarer til 20+"
+ },
+ {
+  "ean": "5702024008035",
+  "frida_id": "525",
+  "confidence": 93,
+  "note": "Torskerogn på dåse"
+ },
+ {
+  "ean": "5705830011862",
+  "frida_id": "525",
+  "confidence": 90,
+  "note": "Torskerogn på dåse"
+ },
+ {
+  "ean": "5705830010612",
+  "frida_id": "533",
+  "confidence": 95,
+  "note": "Tørrede dadler"
+ },
+ {
+  "ean": "5705830600462",
+  "frida_id": "535",
+  "confidence": 92,
+  "note": "Trefarvet is"
+ },
+ {
+  "ean": "5705830009005",
+  "frida_id": "537",
+  "confidence": 92,
+  "note": "Sorte teblade, Earl Grey"
+ },
+ {
+  "ean": "5701018012744",
+  "frida_id": "542",
+  "confidence": 92,
+  "note": "Syltede asier"
+ },
+ {
+  "ean": "5706680026242",
+  "frida_id": "542",
+  "confidence": 92,
+  "note": "Syltede asier"
+ },
+ {
+  "ean": "5701075180059",
+  "frida_id": "558",
+  "confidence": 98,
+  "note": "Havreklid"
+ },
+ {
+  "ean": "5701243016685",
+  "frida_id": "559",
+  "confidence": 95,
+  "note": "Rå gulerod, revet"
+ },
+ {
+  "ean": "5703370621725",
+  "frida_id": "582",
+  "confidence": 95,
+  "note": "Kullerfilet, fersk/frost"
+ },
+ {
+  "ean": "5705830615923",
+  "frida_id": "582",
+  "confidence": 92,
+  "note": "Kullerloins = kullerfilet"
+ },
+ {
+  "ean": "5704000468987",
+  "frida_id": "583",
+  "confidence": 92,
+  "note": "Letpostej = fedtreduceret leverpostej"
+ },
+ {
+  "ean": "5704000502292",
+  "frida_id": "583",
+  "confidence": 92,
+  "note": "Letpostej = fedtreduceret leverpostej"
+ },
+ {
+  "ean": "5701075202997",
+  "frida_id": "592",
+  "confidence": 97,
+  "note": "Gule flækærter, tørrede"
+ },
+ {
+  "ean": "5705830000637",
+  "frida_id": "596",
+  "confidence": 90,
+  "note": "Hakkede dåsetomater, lidt chili"
+ },
+ {
+  "ean": "5705830000644",
+  "frida_id": "596",
+  "confidence": 90,
+  "note": "Hakkede dåsetomater, lidt hvidløg"
+ },
+ {
+  "ean": "5705830000668",
+  "frida_id": "596",
+  "confidence": 90,
+  "note": "Hakkede dåsetomater, lidt krydderi"
+ },
+ {
+  "ean": "5705830005694",
+  "frida_id": "596",
+  "confidence": 98,
+  "note": "Flåede tomater på dåse"
+ },
+ {
+  "ean": "5705830017857",
+  "frida_id": "596",
+  "confidence": 95,
+  "note": "Hakkede tomater på dåse"
+ },
+ {
+  "ean": "5705830615725",
+  "frida_id": "598",
+  "confidence": 92,
+  "note": "Fiskefrikadeller"
+ },
+ {
+  "ean": "5705830615732",
+  "frida_id": "598",
+  "confidence": 92,
+  "note": "Fiskefrikadeller"
+ },
+ {
+  "ean": "5709345000991",
+  "frida_id": "598",
+  "confidence": 92,
+  "note": "Fiskefrikadeller"
+ },
+ {
+  "ean": "5709345007372",
+  "frida_id": "598",
+  "confidence": 90,
+  "note": "Fiskefrikadeller, glutenfri"
+ },
+ {
+  "ean": "5709345007464",
+  "frida_id": "598",
+  "confidence": 90,
+  "note": "Fiskefrikadeller, glutenfri"
+ },
+ {
+  "ean": "5705830003942",
+  "frida_id": "60",
+  "confidence": 98,
+  "note": "Fuldkornsrugmel"
+ },
+ {
+  "ean": "5702024007847",
+  "frida_id": "607",
+  "confidence": 95,
+  "note": "Røget torskelever"
+ },
+ {
+  "ean": "5705380017307",
+  "frida_id": "61",
+  "confidence": 97,
+  "note": "Fuldkornshvedemel"
+ },
+ {
+  "ean": "5705830011558",
+  "frida_id": "61",
+  "confidence": 98,
+  "note": "Grahamsmel = fuldkornshvedemel"
+ },
+ {
+  "ean": "5705830011565",
+  "frida_id": "61",
+  "confidence": 97,
+  "note": "Fuldkornshvedemel"
+ },
+ {
+  "ean": "5701205002015",
+  "frida_id": "615",
+  "confidence": 90,
+  "note": "Groft kernebrød"
+ },
+ {
+  "ean": "5701018003544",
+  "frida_id": "621",
+  "confidence": 92,
+  "note": "Syltede rødbeder"
+ },
+ {
+  "ean": "5701243018313",
+  "frida_id": "621",
+  "confidence": 90,
+  "note": "Syltede rødbeder"
+ },
+ {
+  "ean": "5705830009234",
+  "frida_id": "621",
+  "confidence": 92,
+  "note": "Syltede rødbeder"
+ },
+ {
+  "ean": "5701018003766",
+  "frida_id": "629",
+  "confidence": 95,
+  "note": "Syltet rødkål på glas"
+ },
+ {
+  "ean": "5705830009241",
+  "frida_id": "629",
+  "confidence": 95,
+  "note": "Syltet rødkål på glas"
+ },
+ {
+  "ean": "5705830013545",
+  "frida_id": "629",
+  "confidence": 95,
+  "note": "Syltet rødkål på glas"
+ },
+ {
+  "ean": "5701205001568",
+  "frida_id": "646",
+  "confidence": 90,
+  "note": "Rugbrød med solsikkekerner og rugkerner"
+ },
+ {
+  "ean": "5701205001582",
+  "frida_id": "646",
+  "confidence": 90,
+  "note": "Rugbrød med solsikkekerner og rugkerner"
+ },
+ {
+  "ean": "5701205010157",
+  "frida_id": "646",
+  "confidence": 90,
+  "note": "Rugbrød med solsikkekerner"
+ },
+ {
+  "ean": "5701246102835",
+  "frida_id": "646",
+  "confidence": 90,
+  "note": "Rugbrød med solsikkekerner"
+ },
+ {
+  "ean": "5701246266209",
+  "frida_id": "646",
+  "confidence": 90,
+  "note": "Rugbrød med frø og kerner"
+ },
+ {
+  "ean": "5705830007339",
+  "frida_id": "646",
+  "confidence": 90,
+  "note": "Rugbrød med solsikkekerner"
+ },
+ {
+  "ean": "5705830010728",
+  "frida_id": "646",
+  "confidence": 90,
+  "note": "Rugbrød med solsikkekerner"
+ },
+ {
+  "ean": "5705830008749",
+  "frida_id": "647",
+  "confidence": 95,
+  "note": "Valnøddekerner"
+ },
+ {
+  "ean": "5706779187014",
+  "frida_id": "647",
+  "confidence": 95,
+  "note": "Valnødder"
+ },
+ {
+  "ean": "5700002308108",
+  "frida_id": "649",
+  "confidence": 92,
+  "note": "Asparges på dåse/glas"
+ },
+ {
+  "ean": "5705830009197",
+  "frida_id": "649",
+  "confidence": 93,
+  "note": "Konserverede asparges"
+ },
+ {
+  "ean": "5707381011230",
+  "frida_id": "649",
+  "confidence": 92,
+  "note": "Asparges på dåse/glas"
+ },
+ {
+  "ean": "5705830615749",
+  "frida_id": "66",
+  "confidence": 95,
+  "note": "Fersk mørksej"
+ },
+ {
+  "ean": "5705830617286",
+  "frida_id": "66",
+  "confidence": 95,
+  "note": "Mørksej fersk/frost"
+ },
+ {
+  "ean": "5700426219035",
+  "frida_id": "671",
+  "confidence": 95,
+  "note": "Creme fraiche 18 %"
+ },
+ {
+  "ean": "5760466871235",
+  "frida_id": "671",
+  "confidence": 95,
+  "note": "Creme fraiche 18 %"
+ },
+ {
+  "ean": "5705830615794",
+  "frida_id": "674",
+  "confidence": 98,
+  "note": "Saltkød pålæg"
+ },
+ {
+  "ean": "4009097024773",
+  "frida_id": "688",
+  "confidence": 90,
+  "note": "Lyse flutes"
+ },
+ {
+  "ean": "5705830070241",
+  "frida_id": "688",
+  "confidence": 92,
+  "note": "Miniflutes = fint flute"
+ },
+ {
+  "ean": "5711156006079",
+  "frida_id": "688",
+  "confidence": 90,
+  "note": "Lys baguette ~ fint flûte"
+ },
+ {
+  "ean": "5410153614408",
+  "frida_id": "691",
+  "confidence": 95,
+  "note": "Konserverede kartofler"
+ },
+ {
+  "ean": "5705830500038",
+  "frida_id": "693",
+  "confidence": 95,
+  "note": "Kogt skinke i skiver"
+ },
+ {
+  "ean": "5705830605320",
+  "frida_id": "693",
+  "confidence": 90,
+  "note": "Kogt skinke pålæg med peber"
+ },
+ {
+  "ean": "5745000332045",
+  "frida_id": "693",
+  "confidence": 92,
+  "note": "Kogt skinke i skiver, italiensk"
+ },
+ {
+  "ean": "5705830602954",
+  "frida_id": "695",
+  "confidence": 90,
+  "note": "Frosne suppekødboller"
+ },
+ {
+  "ean": "5707196213621",
+  "frida_id": "695",
+  "confidence": 92,
+  "note": "Frosne suppekødboller"
+ },
+ {
+  "ean": "5707196340143",
+  "frida_id": "695",
+  "confidence": 90,
+  "note": "Frosne suppekødboller, glutenfri"
+ },
+ {
+  "ean": "5701607594491",
+  "frida_id": "696",
+  "confidence": 95,
+  "note": "Pasteuriseret helæg"
+ },
+ {
+  "ean": "5705830009555",
+  "frida_id": "701",
+  "confidence": 95,
+  "note": "Lyst toastbrød"
+ },
+ {
+  "ean": "5705830008794",
+  "frida_id": "704",
+  "confidence": 97,
+  "note": "Kokosmel"
+ },
+ {
+  "ean": "5707446008175",
+  "frida_id": "709",
+  "confidence": 98,
+  "note": "Ribsgelé"
+ },
+ {
+  "ean": "5703370622081",
+  "frida_id": "72",
+  "confidence": 90,
+  "note": "Rå torskefilet, frossen"
+ },
+ {
+  "ean": "5705830500069",
+  "frida_id": "729",
+  "confidence": 95,
+  "note": "Kalkunbryst pålæg"
+ },
+ {
+  "ean": "3760116002301",
+  "frida_id": "738",
+  "confidence": 90,
+  "note": "Rå andebryst"
+ },
+ {
+  "ean": "5705644003480",
+  "frida_id": "738",
+  "confidence": 90,
+  "note": "Rå andebryst"
+ },
+ {
+  "ean": "5705830500021",
+  "frida_id": "743",
+  "confidence": 92,
+  "note": "Røget svinefilet pålæg"
+ },
+ {
+  "ean": "5705830009562",
+  "frida_id": "745",
+  "confidence": 90,
+  "note": "Groft fuldkornstoastbrød"
+ },
+ {
+  "ean": "5701200005325",
+  "frida_id": "749",
+  "confidence": 90,
+  "note": "Røget hamburgerryg pålæg"
+ },
+ {
+  "ean": "5705522023050",
+  "frida_id": "749",
+  "confidence": 90,
+  "note": "Røget hamburgerryg pålæg"
+ },
+ {
+  "ean": "5705830500007",
+  "frida_id": "749",
+  "confidence": 90,
+  "note": "Røget hamburgerryg pålæg"
+ },
+ {
+  "ean": "5705830603562",
+  "frida_id": "749",
+  "confidence": 90,
+  "note": "Røget hamburgerryg pålæg"
+ },
+ {
+  "ean": "5707196154573",
+  "frida_id": "749",
+  "confidence": 90,
+  "note": "Røget hamburgerryg pålæg"
+ },
+ {
+  "ean": "5705550826364",
+  "frida_id": "751",
+  "confidence": 95,
+  "note": "Tun i tomat på dåse"
+ },
+ {
+  "ean": "5705830070517",
+  "frida_id": "754",
+  "confidence": 95,
+  "note": "Kyllingebryst pålæg"
+ },
+ {
+  "ean": "5705830605221",
+  "frida_id": "754",
+  "confidence": 90,
+  "note": "Kyllingebryst pålæg, krydderurter"
+ },
+ {
+  "ean": "5705830605238",
+  "frida_id": "754",
+  "confidence": 90,
+  "note": "Kyllingebryst sandwichskiver naturel"
+ },
+ {
+  "ean": "5705830607843",
+  "frida_id": "754",
+  "confidence": 90,
+  "note": "Stegt vs kogt kyllingebryst pålæg"
+ },
+ {
+  "ean": "5707196154443",
+  "frida_id": "754",
+  "confidence": 90,
+  "note": "Kyllingebryst pålæg, let krydret"
+ },
+ {
+  "ean": "5707196154634",
+  "frida_id": "754",
+  "confidence": 90,
+  "note": "Kyllingebryst pålæg, peber"
+ },
+ {
+  "ean": "5707196179194",
+  "frida_id": "754",
+  "confidence": 90,
+  "note": "Kyllingebryst pålæg, chili"
+ },
+ {
+  "ean": "5760725239196",
+  "frida_id": "754",
+  "confidence": 90,
+  "note": "Stegte kyllingestrimler, tilberedt bryst"
+ },
+ {
+  "ean": "5705830006547",
+  "frida_id": "757",
+  "confidence": 90,
+  "note": "Ristede saltede pistacienødder"
+ },
+ {
+  "ean": "5701246101418",
+  "frida_id": "766",
+  "confidence": 93,
+  "note": "Pølsebrød"
+ },
+ {
+  "ean": "5705830010155",
+  "frida_id": "766",
+  "confidence": 95,
+  "note": "Pølsebrød"
+ },
+ {
+  "ean": "5701259000043",
+  "frida_id": "77",
+  "confidence": 98,
+  "note": "Stødt melis"
+ },
+ {
+  "ean": "5701259000784",
+  "frida_id": "77",
+  "confidence": 92,
+  "note": "Flormelis = finmalet sukker"
+ },
+ {
+  "ean": "5701259000975",
+  "frida_id": "77",
+  "confidence": 97,
+  "note": "Hugget hvidt sukker"
+ },
+ {
+  "ean": "5705830006189",
+  "frida_id": "77",
+  "confidence": 98,
+  "note": "Sukker"
+ },
+ {
+  "ean": "2104990000007",
+  "frida_id": "771",
+  "confidence": 95,
+  "note": "Fersk grisemørbrad"
+ },
+ {
+  "ean": "5708427020407",
+  "frida_id": "771",
+  "confidence": 97,
+  "note": "Grisemørbrad fersk"
+ },
+ {
+  "ean": "5709521035595",
+  "frida_id": "787",
+  "confidence": 97,
+  "note": "Marcipan"
+ },
+ {
+  "ean": "5701043001751",
+  "frida_id": "79",
+  "confidence": 95,
+  "note": "Afsmeltet svinefedt"
+ },
+ {
+  "ean": "5705830000767",
+  "frida_id": "794",
+  "confidence": 90,
+  "note": "Marmelade, blandet bær"
+ },
+ {
+  "ean": "5705830005953",
+  "frida_id": "794",
+  "confidence": 90,
+  "note": "Marmelade, brombær"
+ },
+ {
+  "ean": "5705830006431",
+  "frida_id": "794",
+  "confidence": 90,
+  "note": "Marmelade, boysenbær"
+ },
+ {
+  "ean": "5705830018762",
+  "frida_id": "794",
+  "confidence": 90,
+  "note": "Marmelade, blandet frugt"
+ },
+ {
+  "ean": "5707446092167",
+  "frida_id": "794",
+  "confidence": 90,
+  "note": "Generisk marmelade, tyttebærsmag"
+ },
+ {
+  "ean": "5705830603036",
+  "frida_id": "795",
+  "confidence": 90,
+  "note": "Rå kyllingetern, kød uden skind"
+ },
+ {
+  "ean": "5705830604187",
+  "frida_id": "795",
+  "confidence": 90,
+  "note": "Rå kyllingestrimler, kød uden skind"
+ },
+ {
+  "ean": "5705830604699",
+  "frida_id": "799",
+  "confidence": 90,
+  "note": "Rå revet blomkål"
+ },
+ {
+  "ean": "5705830608239",
+  "frida_id": "8",
+  "confidence": 98,
+  "note": "Frisk persille"
+ },
+ {
+  "ean": "4000417670618",
+  "frida_id": "804",
+  "confidence": 90,
+  "note": "Mælkechokolade med jordnødder"
+ },
+ {
+  "ean": "4000417700001",
+  "frida_id": "804",
+  "confidence": 90,
+  "note": "Mælkechokolade med hele nødder"
+ },
+ {
+  "ean": "7622202275845",
+  "frida_id": "804",
+  "confidence": 90,
+  "note": "Mælkechokolade med hasselnødder"
+ },
+ {
+  "ean": "5701050232490",
+  "frida_id": "805",
+  "confidence": 90,
+  "note": "Bøffer af tykstegsfilet"
+ },
+ {
+  "ean": "5705830013491",
+  "frida_id": "806",
+  "confidence": 95,
+  "note": "Pinjekerner"
+ },
+ {
+  "ean": "5706779065558",
+  "frida_id": "806",
+  "confidence": 95,
+  "note": "Pinjekerner"
+ },
+ {
+  "ean": "5706779187052",
+  "frida_id": "806",
+  "confidence": 95,
+  "note": "Pinjekerner"
+ },
+ {
+  "ean": "5705830600820",
+  "frida_id": "813",
+  "confidence": 90,
+  "note": "Fuldkorns miniflutes = groft flute"
+ },
+ {
+  "ean": "5060145250741",
+  "frida_id": "823",
+  "confidence": 98,
+  "note": "Guldkorn morgenmad"
+ },
+ {
+  "ean": "5705830009609",
+  "frida_id": "825",
+  "confidence": 97,
+  "note": "Tun i vand på dåse"
+ },
+ {
+  "ean": "5705830009623",
+  "frida_id": "825",
+  "confidence": 95,
+  "note": "Tun i vand på dåse"
+ },
+ {
+  "ean": "5705830013507",
+  "frida_id": "825",
+  "confidence": 97,
+  "note": "Tun i vand på dåse"
+ },
+ {
+  "ean": "5705830605023",
+  "frida_id": "828",
+  "confidence": 95,
+  "note": "Roastbeef pålæg"
+ },
+ {
+  "ean": "5707653001266",
+  "frida_id": "833",
+  "confidence": 95,
+  "note": "Frugtpålæg med figen"
+ },
+ {
+  "ean": "5711156006062",
+  "frida_id": "836",
+  "confidence": 92,
+  "note": "Trekornsbrød"
+ },
+ {
+  "ean": "4018077871337",
+  "frida_id": "839",
+  "confidence": 95,
+  "note": "Franske kartofler = chips"
+ },
+ {
+  "ean": "5701979910318",
+  "frida_id": "839",
+  "confidence": 92,
+  "note": "Saltede kartoffelchips"
+ },
+ {
+  "ean": "5701979910325",
+  "frida_id": "839",
+  "confidence": 90,
+  "note": "Kartoffelchips med sour cream-krydderi"
+ },
+ {
+  "ean": "5701979910356",
+  "frida_id": "839",
+  "confidence": 93,
+  "note": "Almindelige kartoffelchips"
+ },
+ {
+  "ean": "5705830001788",
+  "frida_id": "839",
+  "confidence": 90,
+  "note": "Kartoffelchips med barbecuekrydderi"
+ },
+ {
+  "ean": "5705830012616",
+  "frida_id": "839",
+  "confidence": 90,
+  "note": "Almindelige kartoffelchips med salt"
+ },
+ {
+  "ean": "5705830018540",
+  "frida_id": "839",
+  "confidence": 90,
+  "note": "Kartoffelchips med smagsvariant"
+ },
+ {
+  "ean": "5705830000774",
+  "frida_id": "840",
+  "confidence": 97,
+  "note": "Appelsinmarmelade"
+ },
+ {
+  "ean": "5705830002464",
+  "frida_id": "843",
+  "confidence": 97,
+  "note": "Frossen hakket spinat"
+ },
+ {
+  "ean": "5705830007490",
+  "frida_id": "864",
+  "confidence": 90,
+  "note": "Ristede saltede peanuts, jalapenokrydret"
+ },
+ {
+  "ean": "5705830015181",
+  "frida_id": "864",
+  "confidence": 90,
+  "note": "Ristede saltede peanuts, chilikrydret"
+ },
+ {
+  "ean": "5705830019219",
+  "frida_id": "864",
+  "confidence": 92,
+  "note": "Ristede saltede peanuts"
+ },
+ {
+  "ean": "5705830005670",
+  "frida_id": "868",
+  "confidence": 90,
+  "note": "Bambusskud på dåse; saltindhold ukendt"
+ },
+ {
+  "ean": "5701259000661",
+  "frida_id": "876",
+  "confidence": 100,
+  "note": "Samme vare"
+ },
+ {
+  "ean": "5718151305015",
+  "frida_id": "877",
+  "confidence": 97,
+  "note": "Koffeinfri instantkaffe, pulver"
+ },
+ {
+  "ean": "5705830008435",
+  "frida_id": "880",
+  "confidence": 95,
+  "note": "Rosiner"
+ },
+ {
+  "ean": "5705830009487",
+  "frida_id": "880",
+  "confidence": 95,
+  "note": "Rosiner"
+ },
+ {
+  "ean": "5705830009494",
+  "frida_id": "880",
+  "confidence": 95,
+  "note": "Rosiner, økologiske"
+ },
+ {
+  "ean": "5705830009500",
+  "frida_id": "880",
+  "confidence": 92,
+  "note": "Rosiner"
+ },
+ {
+  "ean": "5705830000736",
+  "frida_id": "884",
+  "confidence": 93,
+  "note": "Solbærmarmelade"
+ },
+ {
+  "ean": "5705830008374",
+  "frida_id": "884",
+  "confidence": 93,
+  "note": "Solbærmarmelade"
+ },
+ {
+  "ean": "5705830020000",
+  "frida_id": "884",
+  "confidence": 97,
+  "note": "Solbærmarmelade"
+ },
+ {
+  "ean": "5705830601964",
+  "frida_id": "886",
+  "confidence": 90,
+  "note": "Rå kyllingelår; lille BBQ-marinade"
+ },
+ {
+  "ean": "5705830602022",
+  "frida_id": "886",
+  "confidence": 95,
+  "note": "Kyllingelår med skind"
+ },
+ {
+  "ean": "5705830604217",
+  "frida_id": "886",
+  "confidence": 95,
+  "note": "Hele kyllingelår med skind, rå"
+ },
+ {
+  "ean": "5705830604835",
+  "frida_id": "886",
+  "confidence": 95,
+  "note": "Økologiske kyllingelår med skind, rå"
+ },
+ {
+  "ean": "5705830604477",
+  "frida_id": "888",
+  "confidence": 90,
+  "note": "Frossen grønkål"
+ },
+ {
+  "ean": "5701205005542",
+  "frida_id": "899",
+  "confidence": 90,
+  "note": "Multikerne sandwichbrød med frø"
+ },
+ {
+  "ean": "5701295293089",
+  "frida_id": "90",
+  "confidence": 95,
+  "note": "Makrel i mayonnaise pålæg"
+ },
+ {
+  "ean": "5705830500151",
+  "frida_id": "90",
+  "confidence": 95,
+  "note": "Makrelsalat med mayonnaise"
+ },
+ {
+  "ean": "5705830002204",
+  "frida_id": "903",
+  "confidence": 95,
+  "note": "Blandede bolcher"
+ },
+ {
+  "ean": "5705830017673",
+  "frida_id": "903",
+  "confidence": 90,
+  "note": "Bolsjer med sukker"
+ },
+ {
+  "ean": "5705892030016",
+  "frida_id": "903",
+  "confidence": 95,
+  "note": "Blandede bolcher"
+ },
+ {
+  "ean": "5709385015900",
+  "frida_id": "903",
+  "confidence": 90,
+  "note": "Slikkepinde = hårde bolcher"
+ },
+ {
+  "ean": "5709521037605",
+  "frida_id": "908",
+  "confidence": 95,
+  "note": "Nougat"
+ },
+ {
+  "ean": "5701379505015",
+  "frida_id": "917",
+  "confidence": 93,
+  "note": "Stegt sild i lage"
+ },
+ {
+  "ean": "5705830009722",
+  "frida_id": "92",
+  "confidence": 95,
+  "note": "Sojasauce"
+ },
+ {
+  "ean": "8715035110304",
+  "frida_id": "92",
+  "confidence": 95,
+  "note": "Sojasauce"
+ },
+ {
+  "ean": "5704080960227",
+  "frida_id": "925",
+  "confidence": 95,
+  "note": "Kyllingepølse pålæg 8%"
+ },
+ {
+  "ean": "5705830615930",
+  "frida_id": "925",
+  "confidence": 90,
+  "note": "Kyllingekødpølse pålæg"
+ },
+ {
+  "ean": "3083681019162",
+  "frida_id": "927",
+  "confidence": 95,
+  "note": "Champignon på dåse, hele"
+ },
+ {
+  "ean": "3435649855006",
+  "frida_id": "927",
+  "confidence": 95,
+  "note": "Champignon på dåse, skiver"
+ },
+ {
+  "ean": "5708427020452",
+  "frida_id": "949",
+  "confidence": 90,
+  "note": "Nakkefilet; Frida helt afpudset"
+ },
+ {
+  "ean": "5705830604194",
+  "frida_id": "959",
+  "confidence": 95,
+  "note": "Hel kylling med skind, rå"
+ },
+ {
+  "ean": "5705830604842",
+  "frida_id": "959",
+  "confidence": 95,
+  "note": "Hel økologisk kylling, rå"
+ },
+ {
+  "ean": "5705830614384",
+  "frida_id": "959",
+  "confidence": 95,
+  "note": "Hel kylling med skind, rå"
+ },
+ {
+  "ean": "5705830012890",
+  "frida_id": "960",
+  "confidence": 95,
+  "note": "Makrelfilet i tomat, dåse"
+ },
+ {
+  "ean": "5705830012357",
+  "frida_id": "967",
+  "confidence": 97,
+  "note": "Mariekiks"
+ },
+ {
+  "ean": "3228023050285",
+  "frida_id": "97",
+  "confidence": 92,
+  "note": "Frisk mozzarella"
+ },
+ {
+  "ean": "8000430132267",
+  "frida_id": "97",
+  "confidence": 92,
+  "note": "Frisk mini mozzarella"
+ },
+ {
+  "ean": "8002503403267",
+  "frida_id": "97",
+  "confidence": 92,
+  "note": "Frisk mozzarella"
+ },
+ {
+  "ean": "8002503406176",
+  "frida_id": "97",
+  "confidence": 90,
+  "note": "Mozzarella, laktosefri"
+ },
+ {
+  "ean": "5708618120114",
+  "frida_id": "970",
+  "confidence": 90,
+  "note": "Bønnespirer er typisk mungbønnespirer"
+ },
+ {
+  "ean": "5705830009593",
+  "frida_id": "971",
+  "confidence": 92,
+  "note": "Finsk sød lakrids"
+ },
+ {
+  "ean": "5774540449807",
+  "frida_id": "971",
+  "confidence": 90,
+  "note": "Sød lakrids, snoet form"
+ },
+ {
+  "ean": "6410602227219",
+  "frida_id": "971",
+  "confidence": 90,
+  "note": "Sød lakrids, piber"
+ },
+ {
+  "ean": "6412500078757",
+  "frida_id": "971",
+  "confidence": 95,
+  "note": "Sød lakrids"
+ },
+ {
+  "ean": "5701116018211",
+  "frida_id": "972",
+  "confidence": 90,
+  "note": "Hindbærmarmelade"
+ },
+ {
+  "ean": "5705830000743",
+  "frida_id": "972",
+  "confidence": 95,
+  "note": "Hindbærmarmelade"
+ },
+ {
+  "ean": "5705830008367",
+  "frida_id": "972",
+  "confidence": 95,
+  "note": "Hindbærmarmelade"
+ },
+ {
+  "ean": "5701050258803",
+  "frida_id": "982",
+  "confidence": 95,
+  "note": "Rå økologisk medisterpølse"
+ },
+ {
+  "ean": "5701200157772",
+  "frida_id": "982",
+  "confidence": 95,
+  "note": "Rå medisterpølse"
+ },
+ {
+  "ean": "5705451650242",
+  "frida_id": "982",
+  "confidence": 95,
+  "note": "Rå medisterpølse"
+ },
+ {
+  "ean": "5701293653700",
+  "frida_id": "989",
+  "confidence": 95,
+  "note": "Sylte pålæg"
+ },
+ {
+  "ean": "5705830604682",
+  "frida_id": "990",
+  "confidence": 97,
+  "note": "Kyllingevinger med skind, rå"
+ },
+ {
+  "ean": "5701116011618",
+  "frida_id": "997",
+  "confidence": 90,
+  "note": "Jordbærmarmelade"
+ },
+ {
+  "ean": "5705830000750",
+  "frida_id": "997",
+  "confidence": 95,
+  "note": "Jordbærmarmelade"
+ },
+ {
+  "ean": "5705830004758",
+  "frida_id": "997",
+  "confidence": 95,
+  "note": "Jordbærmarmelade"
+ },
+ {
+  "ean": "5705830008350",
+  "frida_id": "997",
+  "confidence": 95,
+  "note": "Jordbærmarmelade"
+ }
+]

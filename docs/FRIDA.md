@@ -92,3 +92,8 @@ Eksempel: `FoodID 1` = "Jordbær, rå"; `ParameterID 137` = Energi (kJ) = 161,95
   ingen nye Frida-varer.
 - **Søgeregel (global)**: søger brugeren i flertal, vises `namePlural`; søger brugeren i ental, vises `name`
   (`GET /api/products`).
+
+## Frida-sammenligning med butiksvarer (2026-10-10)
+
+- `scripts/frida-compare/` bygger et Excel-ark, der sammenligner Rema 1000-/Bilka-varers energifordeling med den 1:1-matchede Frida-vare (afvigelse i procentpoint, indikator for nærmere undersøgelse). Metode, matchregler og hvordan Bilka tilføjes lokalt: `scripts/frida-compare/README.md`.
+- Fund: REMA-datasættet bruger 0,5 g som pladsholder for "under 0,5 g" (fedt hos 601 varer, kostfibre hos 1.361).
