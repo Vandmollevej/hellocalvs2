@@ -22,16 +22,16 @@ ROOT = os.path.dirname(HERE)
 BACKUP = os.path.join(HERE, 'backup')
 P_ = lambda *a: os.path.join(ROOT, *a)
 GERMAN = {
-    'dm': P_('Excelark', 'dm_ny.xlsx'),
-    'edeka': P_('Excelark', 'edeka_ny.xlsx'),
-    'rewe': P_('Excelark', 'rewe_ny.xlsx'),
+    'dm': P_('Excelark', 'dm.xlsx'),
+    'edeka': P_('Excelark', 'edeka.xlsx'),
+    'rewe': P_('Excelark', 'rewe.xlsx'),
 }
 DANISH = [  # Bilka er master: ved flere stavemaader vinder Bilkas
     P_('Excelark', 'bilka.xlsx'),
     P_('Produkter', 'rema1000_version 2.xlsx'),
     P_('Produkter', 'SPAR', 'spar.xlsx'),
     P_('Produkter', 'Nemlig', 'nemlig.xlsx'),
-    P_('Excelark', 'wolt_ny.xlsx'),
+    P_('Excelark', 'wolt.xlsx'),
     P_('Excelark', 'drk.xlsx'),
     P_('Excelark', 'aarstiderne.xlsx'),
 ]

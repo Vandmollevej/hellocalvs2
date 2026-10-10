@@ -26,17 +26,17 @@ import procent_ost_regler as P  # noqa: E402
 BILKA = os.path.join(HERE, 'bilka.xlsx')
 BACKUP = os.path.join(HERE, 'backup')
 P_ = lambda *a: os.path.join(ROOT, *a)
-STORES = {  # raw = tidligste raa skrabning; originalkolonnerne hentes derfra
+STORES = {  # src = brugerens eget ark (aldrig _ny/_ens-kopier); raw = raa skrabning, originalkolonnerne hentes derfra
     # SPAR: den gamle Packaging "Frozen" staar ogsaa paa vin, sodavand osv. -> frost foelger kategorien Frost (som Bilka)
     'spar': dict(src=P_('Produkter', 'SPAR', 'spar.xlsx'), raw=P_('Produkter', 'SPAR', 'Snapshots', 'spar.xlsx'), lang='da',
                  frozen_packaging=False),
     'nemlig': dict(src=P_('Produkter', 'Nemlig', 'nemlig.xlsx'), lang='da'),
-    'wolt': dict(src=P_('Excelark', 'wolt_ny.xlsx'), raw=P_('Excelark', 'wolt.xlsx'), lang='da'),
+    'wolt': dict(src=P_('Excelark', 'wolt.xlsx'), raw=P_('Excelark', 'backup', 'wolt_2026-10-10_raa-skrabning.xlsx'), lang='da'),
     'drk': dict(src=P_('Excelark', 'drk.xlsx'), lang='da'),
     'aarstiderne': dict(src=P_('Excelark', 'aarstiderne.xlsx'), lang='da'),
-    'dm': dict(src=P_('Excelark', 'dm_ny.xlsx'), raw=P_('Excelark', 'dm.xlsx'), lang='de'),
-    'edeka': dict(src=P_('Excelark', 'edeka_ny.xlsx'), raw=P_('Excelark', 'edeka.xlsx'), lang='de'),
-    'rewe': dict(src=P_('Excelark', 'rewe_ny.xlsx'), raw=P_('Excelark', 'rewe.xlsx'), lang='de'),
+    'dm': dict(src=P_('Excelark', 'dm.xlsx'), raw=P_('Excelark', 'backup', 'dm_2026-10-10_raa-skrabning.xlsx'), lang='de'),
+    'edeka': dict(src=P_('Excelark', 'edeka.xlsx'), raw=P_('Excelark', 'backup', 'edeka_2026-10-10_raa-skrabning.xlsx'), lang='de'),
+    'rewe': dict(src=P_('Excelark', 'rewe.xlsx'), raw=P_('Excelark', 'backup', 'rewe_2026-10-10_raa-skrabning.xlsx'), lang='de'),
     # REMA omlaegges af Excelark/omlaeg_rema.py (bygger paa dette script; raa skrabning 'rema1000 - To be compaired.xlsx')
 }
 HEADER_ALIAS = {'Source url': 'Source URL', 'Image file': 'Image File', 'Parse status': 'Parse Status', 'Original title': 'Original Title',
