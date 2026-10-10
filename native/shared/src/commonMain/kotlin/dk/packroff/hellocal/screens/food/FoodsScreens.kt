@@ -190,13 +190,14 @@ fun FoodsScreen(args: RouteArgs) {
                             nav.push("/add/${product.id}$prefill")
                         }) {
                             FoodRow(
-                                title = product.name,
+                                title = product.searchTitle ?: product.name,
                                 image = product.imageUrl,
                                 modifier = Modifier.padding(horizontal = 16.dp),
                                 subtitle = {
                                     HcText(
                                         listOfNotNull(
-                                            product.brand?.name,
+                                            // The brand already leads a search hit's title.
+                                            if (product.searchTitle != null) null else product.brand?.name,
                                             if (product.nutritionMissing) t.t("addProduct.nutritionUnknown")
                                             else t.t("foods.kcalPer100g", "kcal" to jsRound(product.kcalPer100g)),
                                         ).joinToString(" · "),

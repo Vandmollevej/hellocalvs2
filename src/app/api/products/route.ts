@@ -26,6 +26,7 @@ import { productDetailsText } from "@/lib/search-text-match";
 import { searchProductIndex, type MeiliHit } from "@/lib/search-engine/meili";
 import { cachedSearch, storeSearch } from "@/lib/search-engine/search-cache";
 import { recordSearchEvent } from "@/lib/search-analytics";
+import { searchResultTitle } from "@/lib/search-result-title";
 
 // GET /api/products?q=rugbrød — search in our own product database only. Results are ranked by src/lib/product-search-ranking.ts: text match
 // is always dominant, and hidden regional search/click/hour-of-day statistics
@@ -427,7 +428,10 @@ async function searchProducts({
       Boolean(publicProduct.namePlural) &&
       publicProduct.namePlural!.toLowerCase().includes(queryLower) &&
       !publicProduct.name.toLowerCase().includes(queryLower);
-    return { ...publicProduct, name: matchesPlural ? (publicProduct.namePlural as string) : publicProduct.name, brand };
+    const name = matchesPlural ? (publicProduct.namePlural as string) : publicProduct.name;
+    // Søgeresultatets tekstlinje: brand og subbrand først (docs/REGLER.md → Søgning).
+    const searchTitle = searchResultTitle({ name, brand: brand?.name, subbrand: publicProduct.subbrand });
+    return { ...publicProduct, name, searchTitle, brand };
   });
 
   return {

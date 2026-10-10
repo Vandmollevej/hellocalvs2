@@ -134,7 +134,7 @@ export default function CreateDishPage() {
   );
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<
-    { id: string; name: string; imageUrl?: string | null }[]
+    { id: string; name: string; searchTitle?: string; imageUrl?: string | null }[]
   >([]);
   const [correction, setCorrection] = useState<SearchCorrection | null>(null);
   const [exactFor, setExactFor] = useState<string | null>(null);
@@ -725,7 +725,7 @@ export default function CreateDishPage() {
                               )}
                             </div>
                             <span className="hf-type-body hf-type-strong flex-1 text-hf-black">
-                              <DecimalText text={product.name} />
+                              <DecimalText text={product.searchTitle ?? product.name} />
                             </span>
                           </Link>
                         ))}

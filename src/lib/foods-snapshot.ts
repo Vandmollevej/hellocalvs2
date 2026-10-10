@@ -7,6 +7,8 @@
 export type FoodsProduct = {
   id: string;
   name: string;
+  // Kun på søgeresultater: "Brand Subbrand Navn" (src/lib/search-result-title.ts).
+  searchTitle?: string;
   imageUrl: string | null;
   kcalPer100g: number;
   brand: { name: string } | null;

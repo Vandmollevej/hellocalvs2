@@ -58,11 +58,12 @@ function ProductRow({
       <Link href={`/add/${product.id}${prefillQuery}`} onClick={() => onOpen?.(product.id)} className="block">
         <FoodRow
           image={product.imageUrl}
-          title={product.name}
+          title={product.searchTitle ?? product.name}
           subtitle={
             <p className="hf-type-small text-text-secondary truncate">
               {[
-                product.brand?.name,
+                // Brandet står allerede forrest i søgeresultatets titel.
+                product.searchTitle ? null : product.brand?.name,
                 // Uden energitabel (nutritionMissing) er 0 kun en pladsholder.
                 product.nutritionMissing
                   ? t("addProduct.nutritionUnknown")

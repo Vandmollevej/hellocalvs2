@@ -144,6 +144,7 @@ function SoegContent() {
             (p: {
               id: string;
               name: string;
+              searchTitle?: string;
               imageUrl?: string | null;
               kcalPer100g?: number;
               brand?: { name: string } | null;
@@ -151,9 +152,10 @@ function SoegContent() {
               nutritionMissing?: boolean;
             }) => ({
               id: p.id,
-              title: p.name,
+              // Brand og subbrand står forrest i titlen, så ikke igen i undertitlen.
+              title: p.searchTitle ?? p.name,
               image: p.imageUrl,
-              brand: p.brand?.name ?? null,
+              brand: p.searchTitle ? null : (p.brand?.name ?? null),
               kcal: p.kcalPer100g,
               macrosEstimated: hasEstimatedMacros(p.nutrientSources),
               nutritionMissing: p.nutritionMissing === true,

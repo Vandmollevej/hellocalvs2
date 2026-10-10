@@ -173,7 +173,7 @@ fun CreateDishScreen(args: RouteArgs) {
             val data = ApiJson.decodeFromJsonElement(ProductListResponse.serializer(), Api.get("/api/products?q=${encodeUri(query)}${if (exact) "&exact=1" else ""}"))
             correction = SearchCorrection.of(data)
             val products = data.products
-            results = products.map { DishSearchResult(it.id, it.name, it.imageUrl, false) }
+            results = products.map { DishSearchResult(it.id, it.searchTitle ?: it.name, it.imageUrl, false) }
             searchState = "ready"
         } catch (e: Exception) {
             searchError = e
