@@ -114,20 +114,22 @@ export function MacroSliderBar({
         )}
       </div>
       <div
-        ref={trackRef}
+        data-sheet-no-drag
         onPointerDown={handlePointerDown}
         onPointerMove={handlePointerMove}
         onPointerUp={stopHold}
         onPointerCancel={stopHold}
-        className={`relative flex h-5 items-center ${disabled ? "" : "touch-none"}`}
+        className={`flex h-10 items-center px-6 ${disabled ? "" : "touch-none"}`}
       >
-        <div className="relative h-1 w-full rounded bg-hf-tan-dark">
-          <div className="absolute inset-y-0 left-0 rounded bg-hf-green" style={{ width: `${pct}%` }} />
+        <div ref={trackRef} className="relative flex w-full items-center">
+          <div className="relative h-1 w-full rounded bg-hf-tan-dark">
+            <div className="absolute inset-y-0 left-0 rounded bg-hf-green" style={{ width: `${pct}%` }} />
+          </div>
+          <div
+            className="absolute h-[18px] w-[18px] -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-hf-green bg-hf-white"
+            style={{ left: `${pct}%`, top: "50%" }}
+          />
         </div>
-        <div
-          className="absolute h-[18px] w-[18px] -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-hf-green bg-hf-white"
-          style={{ left: `${pct}%`, top: "50%" }}
-        />
       </div>
     </div>
   );
