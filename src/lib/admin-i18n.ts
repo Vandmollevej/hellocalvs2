@@ -125,6 +125,11 @@ const DICTIONARY = {
   quality_control_filter_all: { DA: "Alle", EN: "All" },
   quality_control_issue_nutrition: { DA: "Næringsindhold", EN: "Nutrition" },
   quality_control_user_reported: { DA: "Brugerindberettet", EN: "User-reported" },
+  quality_control_warning: { DA: "Advarsel", EN: "Warning" },
+  quality_control_warning_hint: {
+    DA: "Brugeren har låst energifordelingen op, ændret den og gemt. Ændringen ligger kun i brugerens egen registrering; varen, som andre ser, er uændret.",
+    EN: "The user unlocked the energy distribution, changed it and saved. The change only lives in the user's own entry; the product other users see is unchanged.",
+  },
   quality_control_user_report_count: { DA: "brugerindberetninger", EN: "user reports" },
 
   products_title: { DA: "Nye varer", EN: "New products" },

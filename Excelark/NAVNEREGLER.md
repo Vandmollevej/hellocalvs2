@@ -90,3 +90,4 @@ Kort version står også i `docs/REGLER.md`.
 - Alle `_is_`-værdier, variant og keywords med småt (undtagen store forkortelser og egennavne).
 - Sukkerfri / uden tilsat sukker står i sukker-kolonnen, aldrig i variant/keyword.
 - Intet ord må stå dobbelt på tværs af productType, `_is_`-felter, variant og keywords (funktionsord undtaget).
+- Opdatering 2026-10-10: `Excelark/bilka.xlsx` og `Produkter/rema1000_version 2.xlsx` er selv omskrevet (ikke kun `_ny`). `scripts/store-products-import/build_data.py` læser både nye (databasenavne) og gamle kolonnenavne via `NEW_ALIAS` i `load()`.

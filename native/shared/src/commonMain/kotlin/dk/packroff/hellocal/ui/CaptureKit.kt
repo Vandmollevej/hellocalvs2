@@ -94,7 +94,8 @@ fun CaptureSlider(value: Int, min: Int, max: Int, step: Int = 1, onChange: (Int)
         val snapped = ((next - min) / step).roundToInt() * step + min
         return snapped.coerceIn(min, max)
     }
-    BoxWithConstraints(modifier.fillMaxWidth().height(28.dp)) {
+    // 24 dp luft i hver side (som HfSlider.tsx), så et træk ikke starter ved skærmkanten.
+    BoxWithConstraints(modifier.fillMaxWidth().padding(horizontal = 24.dp).height(28.dp)) {
         val widthPx = constraints.maxWidth.toFloat().coerceAtLeast(1f)
         val trackWidth = maxWidth
         fun update(x: Float) {

@@ -370,7 +370,8 @@ fun FoodSlider(
         return stepped.coerceIn(min, max)
     }
     val fraction = if (max > min) ((value - min) / (max - min)).coerceIn(0.0, 1.0).toFloat() else 0f
-    BoxWithConstraints(modifier.fillMaxWidth().height(20.dp)) {
+    // 24 dp luft i hver side (som HfSlider.tsx), så et træk ikke starter ved skærmkanten.
+    BoxWithConstraints(modifier.fillMaxWidth().padding(horizontal = 24.dp).height(20.dp)) {
         val widthPx = constraints.maxWidth.toFloat().coerceAtLeast(1f)
         val trackWidth = maxWidth
         val track = Modifier.fillMaxWidth().height(20.dp).let { base ->
