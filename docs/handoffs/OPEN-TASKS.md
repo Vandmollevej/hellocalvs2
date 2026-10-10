@@ -31,6 +31,16 @@ Status opdateret: 2026-10-06 — alle udestående opgaver slettet (klaret af en 
 
 ---
 
+## G-AABNE-PR — Åbne PR'er der IKKE blev flettet (2026-10-10)
+
+Flettet og deployet 2026-10-10: #339, #344, #348, #354, #355, #360, #361, #362, #363, #364. Resten står tilbage; ingen af dem er rør­t.
+
+| Id | Opgave | Status | Næste skridt |
+| --- | --- | --- | --- |
+| #249, #261 | Søgning ord for ord / tolerant søgning (`src/app/api/products/route.ts`) | Overhalet | Master har allerede flerords-søgning + synonymer (DECISIONS 2026-10-04). Luk begge, eller byg kun accent-tolerancen ovenpå master |
+| #220 | Profil: Kontoopsætning-række øverst | Overhalet | Master har egen række med procentvisning. Luk |
+| #359, #281, #311, #266, #317, #327, #272 | Mange konflikter mod master (7–23 filer hver) | Ikke flettet | Genbyg ovenpå nuværende master (flet master ind, vurdér hvad der stadig mangler) i stedet for at tvinge konflikterne |
+
 ## G-NAERING — Streg (–) for manglende næringsindhold (2026-10-09)
 Filer: `src/components/add/AddProductView.tsx`, `AddProductScreen.kt`, `docs/REGLER.md`. Branch `claude/nutrient-dash`, PR #252 (klar til review).
 
