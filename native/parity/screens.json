@@ -1417,6 +1417,12 @@
       ]
     },
     {
+      "route": "/settings/display/body-measurements",
+      "web": "src/app/settings/display/body-measurements/page.tsx",
+      "status": "pending",
+      "native": []
+    },
+    {
       "route": "/settings/display/calendar-view",
       "web": "src/app/settings/display/calendar-view/page.tsx",
       "status": "ported",
