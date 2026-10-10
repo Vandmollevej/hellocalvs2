@@ -3124,7 +3124,7 @@
     "src/app/layout.tsx": "32a09f6743aabdc5",
     "src/app/viden-om/omregning/page.tsx": "71b343c105536fc5",
     "src/components/AuthGate.tsx": "94db96b768f9f95f",
-    "src/components/BottomNav.tsx": "d645fd71889835c6",
+    "src/components/BottomNav.tsx": "5bab069a374d4d04",
     "src/components/EmailVerifySheet.tsx": "42e52d85f9bf57d9",
     "src/components/FooterArc.tsx": "47c1658b27644b39",
     "src/components/FooterArcEditor.tsx": "6539c7244a199ffd",
