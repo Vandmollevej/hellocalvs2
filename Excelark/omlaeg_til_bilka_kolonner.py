@@ -37,16 +37,25 @@ STORES = {  # raw = tidligste raa skrabning; originalkolonnerne hentes derfra
     'dm': dict(src=P_('Excelark', 'dm_ny.xlsx'), raw=P_('Excelark', 'dm.xlsx'), lang='de'),
     'edeka': dict(src=P_('Excelark', 'edeka_ny.xlsx'), raw=P_('Excelark', 'edeka.xlsx'), lang='de'),
     'rewe': dict(src=P_('Excelark', 'rewe_ny.xlsx'), raw=P_('Excelark', 'rewe.xlsx'), lang='de'),
+    # REMA er allerede rettet efter reglerne (andre sessioner) -> kun kolonnerne; originalerne hentes fra den raa skrabning
+    'rema': dict(src=P_('Produkter', 'rema1000_version 2.xlsx'), raw=P_('Excelark', 'rema1000.xlsx'), lang='da', rules=False),
 }
+HEADER_ALIAS = {'Source url': 'Source URL', 'Image file': 'Image File', 'Parse status': 'Parse Status', 'Original title': 'Original Title',
+                'Hellocal_title': 'Product Name'}  # REMA: skraberens sammensatte navn svarer til Bilkas Product Name
 
 ORIG = ['Original Title', 'Product Name', 'Subtitle', 'Source URL', 'Image File', 'Parse Status']
-ORIG_EXTRA = ['Manufacturer', 'Servings', 'Price', 'Venue', 'Subcategory', 'Vare', 'Variant', 'quantity']
-SRC = {  # Bilka-kolonne -> kildekolonner (foerste udfyldte vinder)
+ORIG_EXTRA = ['Manufacturer', 'Servings', 'Price', 'Venue', 'Subcategory', 'Vare', 'Variant', 'quantity', 'Kategori', 'Sort']
+SRC = {  # Bilka-kolonne -> kildekolonner (foerste udfyldte vinder); is_*-navnene er REMA's
     'packageSizeText': ['packageSizeText', 'Quantity'], 'brand': ['brand', 'Brand'], 'subbrand': ['subbrand', 'Subbrand'],
     'barcode': ['barcode', 'EAN'], 'packCount': ['packCount', 'Pack Count'],
     'productType': ['productType', 'Product Type', 'Vare'], 'variant': ['variant', 'Variation', 'Variant'],
-    'category': ['category', 'Category'], 'packaging': ['packaging', 'Packaging'],
-    '_is_animal_welfare': ['_is_animal_welfare', '_is_animal_wellfare'],
+    'category': ['category', 'Category'], 'packaging': ['packaging', 'Packaging', 'is_Packaging'],
+    '_is_animal_welfare': ['_is_animal_welfare', '_is_animal_wellfare', 'is_animal_wellfare'],
+    '_is_country_of_origen': ['_is_country_of_origen', 'is_country_of_origin'], '_is_organic': ['_is_organic', 'is_biological'],
+    '_is_glutenfree': ['_is_glutenfree', 'is_gluten_free'], '_is_lactose_free': ['_is_lactose_free', 'is_lactose_free'],
+    '_is_vegan': ['_is_vegan', 'is_vegan'], '_is_meat': ['_is_meat', 'is_meat'], '_is_allergy': ['_is_allergy', '_is_allergies'],
+    '_is_sugar_free': ['_is_sugar_free', 'is_sugar_free'], '_is_whole_grain': ['_is_whole_grain', 'is_whole_grain'],
+    '_is_alcohol_free': ['_is_alcohol_free', 'is_alcohol_free'],
     **{f'keyword{n}': [f'keyword{n}', f'Keyword {n}'] for n in range(1, 6)},
 }
 DROP = {'HelloCal_Title', 'Hellocal_title', 'Hello Cal product title', 'Key', 'Product Title (ny)'}  # titlen er nu formlerne i kolonne A/B
@@ -94,6 +103,7 @@ def read(path):
     ws = openpyxl.load_workbook(path, read_only=True).active
     it = ws.iter_rows(values_only=True)
     hdr = [fix_text(h.strip()) if isinstance(h, str) else h for h in next(it)]
+    hdr = [HEADER_ALIAS.get(h, h) if not (HEADER_ALIAS.get(h) in hdr) else h for h in hdr]
     rows = [list(r) + [None] * (len(hdr) - len(r)) for r in it if any(v not in (None, '') for v in r)]
     return hdr, rows
 
@@ -380,7 +390,7 @@ def convert(name, cfg, bhdr, a2, b2, master, fr, dry):
         g = lambda h: r[pos[h][0]] if h in pos else None
         nr = [None] * len(out_hdr)
         for j, h in enumerate(bhdr):
-            if h in ('Product title singular', 'Product title plural', '_is_alcohol', 'Product type plural') or h in ORIG:
+            if h in ('Product title singular', 'Product title plural', '_is_alcohol') or h in ORIG:  # flertal genberegnes af reglerne
                 continue
             for s in SRC.get(h, [h]):
                 if g(s) not in (None, ''):
@@ -421,8 +431,12 @@ def convert(name, cfg, bhdr, a2, b2, master, fr, dry):
             nr[nix['_is_alcohol_free']] = nr[nix['_is_alcohol_free']] or WORD[lang]['_is_alcohol_free']
             nr[nix['_is_alcohol']] = None
             stats['alkoholfri_flyttet'] += 1
+        if o is not None and not nr[nix['category']] and 'Kategori' in rix and o[rix['Kategori']]:  # REMA: butikkens kategori
+            nr[nix['category']] = str(o[rix['Kategori']]).strip()
+            stats['kategori_fra_raat_ark'] += 1
         trust = cfg.get('frozen_packaging', True)
-        if lang == 'da':
+        rules = cfg.get('rules', True)
+        if lang == 'da' and rules:
             danish_rules(nr, nix, stats, master, fr, cats, trust)
         frost_cat = str(nr[nix['category']] or '').strip().lower() in FROST_CATS
         if isinstance(nr[nix['packaging']], str) and nr[nix['packaging']].strip().lower() == 'frozen':  # frost kun i _is_frozen
@@ -435,7 +449,8 @@ def convert(name, cfg, bhdr, a2, b2, master, fr, dry):
         if frost_cat and not nr[nix['_is_frozen']]:  # hele kategorien Frost er frost (som Bilka)
             nr[nix['_is_frozen']] = 'frozen'
             stats['frost_fra_kategori'] += 1
-        stats['decimal_punktum'] += decimal_points(nr, out_hdr, orig_ix)
+        if rules:  # REMA har allerede faaet decimalpunktum
+            stats['decimal_punktum'] += decimal_points(nr, out_hdr, orig_ix)
         out_rows.append(nr)
     if any(flags):
         out_hdr.append('Flag')
