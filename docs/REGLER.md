@@ -140,4 +140,6 @@ Valgte knapper/faner/chips/planvalg har ALTID den lysegrønne farve (`--hf-color
 ## Trinindikator (HfProgressStepper)
 
 - Flows med mange trin (fx "Opret ny screening") viser kun teksten under det aktive trin (`activeLabelOnly`), og prikkerne i bjælken er tryk-bare (`onSelect`): tilbage altid, frem kun når de forudgående trin er udfyldt (`isStepEnabled`). Web og native (`ProfileProgressStepper`). 2026-10-10.
+
+- Opskrifter → fanen "Delte retter": kildeknapperne under søgefeltet er "Vis alle", Valdemarsro og Hello Fresh. Ingen separat "Delte retter"-knap (den gentog fanen) (2026-10-10).
 - Opskrifter → filter → Antal personer: standard 0 = ikke valgt, vist lysegråt/underordnet; ingen person er valgt som default. Receptsiden bruger mindst 1 (brugerens krav 2026-10-10).

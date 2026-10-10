@@ -206,7 +206,6 @@ function SharedTab({ t }: { t: Translate }) {
 
   const sourceOptions: { value: Source; label: string }[] = [
     { value: "all", label: t("recipes.sourceAll") },
-    { value: "shared", label: t("recipes.sourceShared") },
     ...(helloFresh ? [{ value: "hellofresh" as const, label: t("recipes.sourceHelloFresh") }] : []),
     { value: "valdemarsro", label: t("recipes.sourceValdemarsro") },
   ];

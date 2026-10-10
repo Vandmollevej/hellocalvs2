@@ -343,7 +343,6 @@ private fun SharedTab(t: Translator) {
 
     val sourceOptions = buildList {
         add("all" to t.t("recipes.sourceAll"))
-        add("shared" to t.t("recipes.sourceShared"))
         if (helloFresh == true) add("hellofresh" to t.t("recipes.sourceHelloFresh"))
         add("valdemarsro" to t.t("recipes.sourceValdemarsro"))
     }
