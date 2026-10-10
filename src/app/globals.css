@@ -1869,10 +1869,29 @@ input.hf-field[type="week"] {
   animation: hf-nav-ghost-lift 140ms ease-out forwards;
 }
 
+@keyframes hf-arc-pop {
+  0% {
+    transform: scale(0.4);
+    opacity: 0;
+  }
+  60% {
+    transform: scale(1.12);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.hf-arc-pop {
+  animation: hf-arc-pop 280ms ease-out;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .hf-nav-jiggle,
   .hf-nav-panel-in,
-  .hf-nav-ghost {
+  .hf-nav-ghost,
+  .hf-arc-pop {
     animation: none;
   }
 }
