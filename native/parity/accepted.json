@@ -2604,7 +2604,7 @@
   },
   "/settings/integrations/[app]": {
     "src/app/layout.tsx": "ce9cce1fff73600a",
-    "src/app/settings/integrations/[app]/page.tsx": "46f3217d2d9cb460",
+    "src/app/settings/integrations/[app]/page.tsx": "eea3d653e39c41bd",
     "src/app/settings/integrations/layout.tsx": "c7cf9d6642d4284e",
     "src/app/settings/integrations/status-badge.tsx": "872c13d7dcef8c2e",
     "src/components/IntegrationIcon.tsx": "36551d87b956c315",

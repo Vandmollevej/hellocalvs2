@@ -2445,6 +2445,7 @@
       "title": "Zugriff auf {name}",
       "messageReadWrite": "„Hello Cal“ möchte auf deine {name}-Daten zugreifen und sie aktualisieren.",
       "messageRead": "„Hello Cal“ möchte auf deine {name}-Daten zugreifen.",
+      "messageConnected": "Hello Cal ist mit {name} verbunden. Wähle unten, was abgerufen und gesendet wird.",
       "turnOnAll": "Alle einschalten",
       "turnOffAll": "Alle ausschalten",
       "writeTitle": "„Hello Cal“ das Schreiben erlauben",

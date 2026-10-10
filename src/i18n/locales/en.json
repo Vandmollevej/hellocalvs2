@@ -2445,6 +2445,7 @@
       "title": "{name} Access",
       "messageReadWrite": "“Hello Cal” would like to access and update your {name} data.",
       "messageRead": "“Hello Cal” would like to access your {name} data.",
+      "messageConnected": "Hello Cal is connected to {name}. Choose below what is fetched and sent.",
       "turnOnAll": "Turn On All",
       "turnOffAll": "Turn Off All",
       "writeTitle": "Allow “Hello Cal” to write",

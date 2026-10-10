@@ -242,6 +242,9 @@ function IntegrationContent() {
   const hubName = (hub: HubProvider) => t(`integrations.hubs.${hub}`);
   const hubPage = (hub: HubProvider) => `/settings/integrations/${hub.toLowerCase().replace(/_/g, "-")}`;
   const connected = integration.status !== "DISCONNECTED";
+  // Forbundet og intet mangler: arket er en indstillingsside, ikke en ny
+  // godkendelse — "Forbundet" øverst, Færdig/Frakobl og ingen vilkårsbjælke.
+  const linked = isOAuth && connected && integration.needsReconnect.length === 0;
   const { read: readTypes, write: writeTypes } = integration.capabilities;
   const { settings } = integration;
   const cardTokens = tokens.filter(
@@ -296,7 +299,7 @@ function IntegrationContent() {
   // appen forbundet, hentes data nu; en companion-app uden enhedskode får en.
   // Arket lukker først, når brugeren har set resultatet og trykker "Færdig".
   function allow() {
-    if (done) return close();
+    if (done || linked) return close();
     if (isVia && hubs[0]) return router.push(hubPage(hubs[0]));
     if (isOAuth && (!connected || integration!.needsReconnect.length > 0)) return connect();
     setDone(true);
@@ -330,20 +333,24 @@ function IntegrationContent() {
       title={t("integrations.access.title", { name })}
       icon={<IntegrationIcon icon={integration.icon} label={name} size={64} />}
       heading={name}
-      message={t(writeTypes.length > 0 ? "integrations.access.messageReadWrite" : "integrations.access.messageRead", {
-        name,
-      })}
+      message={
+        linked
+          ? t("integrations.access.messageConnected", { name })
+          : t(writeTypes.length > 0 ? "integrations.access.messageReadWrite" : "integrations.access.messageRead", {
+              name,
+            })
+      }
       toggleAllLabel={hasTypes ? t(allOn ? "integrations.access.turnOffAll" : "integrations.access.turnOnAll") : undefined}
       onToggleAll={hasTypes ? toggleAll : undefined}
-      allowLabel={t(done ? "integrations.access.done" : "integrations.access.allow")}
-      denyLabel={t("integrations.access.deny")}
-      allowDisabled={busy || (!done && ((hasTypes && !anyOn) || (isOAuth && !integration.configured)))}
+      allowLabel={t(done || linked ? "integrations.access.done" : "integrations.access.allow")}
+      denyLabel={t(linked ? "integrations.disconnect" : "integrations.access.deny")}
+      allowDisabled={busy || (!done && !linked && ((hasTypes && !anyOn) || (isOAuth && !integration.configured)))}
       denyDisabled={busy}
       onAllow={allow}
       onDeny={deny}
       onDismiss={close}
       closeLabel={t("integrations.close")}
-      terms={<TermsSheet hint={integrationTerms(integration.provider)} />}
+      terms={linked ? undefined : <TermsSheet hint={integrationTerms(integration.provider)} />}
     >
       {notice && (
         <div role="status" aria-live="polite">

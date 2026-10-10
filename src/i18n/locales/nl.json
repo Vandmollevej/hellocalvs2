@@ -2445,6 +2445,7 @@
       "title": "Toegang tot {name}",
       "messageReadWrite": "“Hello Cal” wil graag toegang tot je {name}-gegevens en deze bijwerken.",
       "messageRead": "“Hello Cal” wil graag toegang tot je {name}-gegevens.",
+      "messageConnected": "Hello Cal is verbonden met {name}. Kies hieronder wat er wordt opgehaald en verzonden.",
       "turnOnAll": "Alles inschakelen",
       "turnOffAll": "Alles uitschakelen",
       "writeTitle": "“Hello Cal” toestaan te schrijven",

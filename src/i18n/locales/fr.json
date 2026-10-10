@@ -2445,6 +2445,7 @@
       "title": "Accès à {name}",
       "messageReadWrite": "« Hello Cal » souhaite accéder à tes données {name} et les mettre à jour.",
       "messageRead": "« Hello Cal » souhaite accéder à tes données {name}.",
+      "messageConnected": "Hello Cal est connecté à {name}. Choisis ci-dessous ce qui est récupéré et envoyé.",
       "turnOnAll": "Tout activer",
       "turnOffAll": "Tout désactiver",
       "writeTitle": "Autoriser « Hello Cal » à écrire",

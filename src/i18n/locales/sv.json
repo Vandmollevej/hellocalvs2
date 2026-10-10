@@ -2445,6 +2445,7 @@
       "title": "Åtkomst till {name}",
       "messageReadWrite": "“Hello Cal” vill ha åtkomst till och uppdatera dina {name}-data.",
       "messageRead": "“Hello Cal” vill ha åtkomst till dina {name}-data.",
+      "messageConnected": "Hello Cal är anslutet till {name}. Välj nedan vad som hämtas och skickas.",
       "turnOnAll": "Aktivera alla",
       "turnOffAll": "Inaktivera alla",
       "writeTitle": "Tillåt “Hello Cal” att skriva",
