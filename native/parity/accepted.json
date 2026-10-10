@@ -1429,7 +1429,7 @@
     "src/components/hf/BottomSheet.tsx": "2e09a9f4fae4c060",
     "src/components/hf/HfChevron.tsx": "11106e436ea8e3ef",
     "src/components/hf/HfSlider.tsx": "928920cf6486c3df",
-    "src/components/hf/PersonsSlider.tsx": "838724fc39e1b17c",
+    "src/components/hf/PersonsSlider.tsx": "25595da4fa2f0c65",
     "src/components/hf/ScreenHeader.tsx": "a7bbb02ab41e7756",
     "src/components/hf/Skeleton.tsx": "383d8a93fa858b4a",
     "src/components/icons/Favorite.tsx": "70f85dd37d71acbf",
