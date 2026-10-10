@@ -2072,6 +2072,7 @@
   },
   "photoDiary": {
     "title": "Journal photo",
+    "addPhoto": "Ajouter une nouvelle photo",
     "loading": "Chargement…",
     "loadError": "Impossible de charger le journal photo.",
     "requiresPasscode": "Le code de ton téléphone est requis pour afficher",

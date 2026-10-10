@@ -2071,6 +2071,7 @@
     "recentTitle": "Seneste registreringer"
   },
   "photoDiary": {
+    "addPhoto": "Tilføj nyt billede",
     "title": "Billeddagbog",
     "loading": "Henter…",
     "loadError": "Kunne ikke hente billeddagbog.",
