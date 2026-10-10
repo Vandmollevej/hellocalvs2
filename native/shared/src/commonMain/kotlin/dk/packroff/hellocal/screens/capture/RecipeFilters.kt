@@ -5,6 +5,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
@@ -18,6 +19,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
@@ -206,12 +208,13 @@ internal fun AccordionSection(title: String, icon: String? = null, count: Int? =
 
 /** src/components/hf/PersonsSlider.tsx — label + tappable/editable number + slider. */
 @Composable
-internal fun PersonsSlider(label: String, value: Int, max: Int, onChange: (Int) -> Unit, min: Int = 1) {
+internal fun PersonsSlider(label: String, value: Int, max: Int, onChange: (Int) -> Unit, min: Int = 1, unset: Boolean = false, centered: Boolean = false) {
     var editing by remember { mutableStateOf(false) }
     var editValue by remember { mutableStateOf("") }
     Column {
         Row(Modifier.fillMaxWidth().padding(bottom = 8.dp), verticalAlignment = Alignment.CenterVertically) {
             HcText(label, HcTypeRoles.Small, Modifier.weight(1f), color = HcColors.TextSecondary)
+            if (centered) Spacer(Modifier.weight(1f))
             if (editing) {
                 Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(4.dp)) {
                     CaptureFilledField(editValue, { editValue = it.filter(Char::isDigit) }, Modifier.widthIn(max = 64.dp), keyboardType = KeyboardType.Number, background = HcColors.White, minHeight = 36.dp)
@@ -224,8 +227,9 @@ internal fun PersonsSlider(label: String, value: Int, max: Int, onChange: (Int) 
                 HcText(value.toString(), HcTypeRoles.Body, Modifier.clickable {
                     editValue = value.toString()
                     editing = true
-                }.padding(horizontal = 4.dp), bold = true, color = HcColors.Black)
+                }.padding(horizontal = 4.dp).alpha(if (unset) 0.3f else 1f), bold = true, color = HcColors.Black)
             }
+            if (centered) Spacer(Modifier.weight(1f))
         }
         CaptureSlider(value = value, min = min, max = max, onChange = onChange)
     }

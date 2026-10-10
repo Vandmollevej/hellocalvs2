@@ -385,7 +385,7 @@ fun CreateDishScreen(args: RouteArgs) {
             }
 
             Column(Modifier.fillMaxWidth().clip(RoundedCornerShape(16.dp)).background(HcColors.Tan).padding(horizontal = 16.dp, vertical = 12.dp)) {
-                PersonsSlider(t.t("createDish.servings"), servings ?: 4, RecipePortions.MAX_PERSONS, { servings = it })
+                PersonsSlider(t.t("createDish.servings"), servings ?: 0, RecipePortions.MAX_PERSONS, { servings = if (it > 0) it else null }, min = 0, unset = servings == null, centered = true)
             }
 
             val searchBringIntoView = remember { BringIntoViewRequester() }

@@ -623,9 +623,12 @@ export default function CreateDishPage() {
                 <div className="rounded-2xl bg-hf-tan px-4 py-3">
                   <PersonsSlider
                     label={t("createDish.servings")}
-                    value={servings ?? 4}
+                    value={servings ?? 0}
+                    min={0}
                     max={MAX_RECIPE_PERSONS}
-                    onChange={setServings}
+                    unset={servings === null}
+                    centered
+                    onChange={(value) => setServings(value > 0 ? value : null)}
                   />
                 </div>
 
