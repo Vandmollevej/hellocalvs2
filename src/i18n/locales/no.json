@@ -2072,6 +2072,7 @@
   },
   "photoDiary": {
     "title": "Bildedagbok",
+    "addPhoto": "Legg til nytt bilde",
     "loading": "Henter…",
     "loadError": "Kunne ikke hente bildedagbok.",
     "requiresPasscode": "Krever telefonens passord for å vise",

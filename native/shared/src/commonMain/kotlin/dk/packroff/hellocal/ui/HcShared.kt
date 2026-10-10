@@ -32,6 +32,7 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
@@ -131,7 +132,7 @@ fun HcLine(modifier: Modifier = Modifier, color: Color = HcColors.TanDark) {
 
 /** .hf-search — 48 px white search field with a 16 px magnifier (design.md §6.5). */
 @Composable
-fun HcSearchField(value: String, onValueChange: (String) -> Unit, placeholder: String, modifier: Modifier = Modifier) {
+fun HcSearchField(value: String, onValueChange: (String) -> Unit, placeholder: String, modifier: Modifier = Modifier, onFocus: () -> Unit = {}) {
     val shape = RoundedCornerShape(HcDimens.RadiusCard)
     Row(
         modifier.fillMaxWidth().height(HcDimens.ControlHeight).clip(shape).background(HcColors.Surface, shape)
@@ -147,7 +148,7 @@ fun HcSearchField(value: String, onValueChange: (String) -> Unit, placeholder: S
             textStyle = HcTypeRoles.Input.style(HcColors.Action),
             cursorBrush = SolidColor(HcColors.Action),
             keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
-            modifier = Modifier.weight(1f),
+            modifier = Modifier.weight(1f).onFocusChanged { if (it.isFocused) onFocus() },
             decorationBox = { inner ->
                 Box(contentAlignment = Alignment.CenterStart) {
                     if (value.isEmpty()) HcText(placeholder, HcTypeRoles.Input, color = HcColors.Black.copy(alpha = 0.5f), maxLines = 1)

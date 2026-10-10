@@ -7,9 +7,18 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.ui.draw.rotate
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -84,7 +93,12 @@ internal fun ProductResultList(
     }
 }
 
+/** Højst tre rækker pr. liste, til brugeren folder hele listen ud (som på weben). */
+private const val COLLAPSED_ROWS = 3
+private const val RECENT_LIMIT = 30
+
 /** Native port of src/app/search/page.tsx — Søg: favourites, recently added, live results. */
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun SearchScreen(args: RouteArgs) {
     val t = LocalTranslator.current
@@ -99,6 +113,9 @@ fun SearchScreen(args: RouteArgs) {
     var recentlyAdded by remember { mutableStateOf<List<FoodProductResult>>(emptyList()) }
     var favorites by remember { mutableStateOf<List<FoodProductResult>>(emptyList()) }
     val favoriteIds = favorites.map { it.id }.toSet()
+    var favoritesOpen by remember { mutableStateOf(false) }
+    var recentOpen by remember { mutableStateOf(false) }
+    val listState = rememberLazyListState()
     fun openProduct(productId: String) = nav.push("/add/$productId${if (forDish) "?for=ret" else ""}")
 
     fun toggleFavorite(productId: String, next: Boolean) {
@@ -149,7 +166,7 @@ fun SearchScreen(args: RouteArgs) {
                 val pid = r.productId ?: continue
                 if (!seen.add(pid)) continue
                 recent += FoodProductResult(pid, r.titleSnapshot, r.product?.imageUrl)
-                if (recent.size >= 5) break
+                if (recent.size >= RECENT_LIMIT) break
             }
             recent.toList().also { OfflineCache.saveRecent(it) }
         }.getOrElse { OfflineCache.recent() }
@@ -162,21 +179,50 @@ fun SearchScreen(args: RouteArgs) {
     val showFavorites = query.isBlank() && favorites.isNotEmpty()
     val showRecent = query.isBlank() && recentlyAdded.isNotEmpty()
 
-    HcScreen(t.t("search.title"), contentPadding = LIST_PAGE_PADDING) {
-        Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
+    HcScreen(t.t("search.title"), scroll = false, contentPadding = PaddingValues(0.dp)) {
+        Box(Modifier.fillMaxWidth().padding(start = HcDimens.Gutter, end = HcDimens.Gutter, top = HcDimens.SpaceBlock, bottom = HcDimens.SpaceBlock)) {
             FoodSearchField(query, { query = it }, t.t("search.searchPlaceholder"))
-            if (showFavorites) {
-                HcText(t.t("search.favorites"), HcTypeRoles.Small, color = HcColors.Black, bold = true)
-                FoodListCard { ProductResultList(favorites, favoriteIds, t, false, ::openProduct, ::toggleFavorite) }
+        }
+        if (query.isBlank()) {
+            // Fast søgefelt; listerne ruller under det, og overskrifterne klistrer til toppen,
+            // så en udfoldet liste altid kan foldes sammen igen.
+            val favHeaderIndex = 0
+            val recentHeaderIndex = if (showFavorites) 1 + (if (favoritesOpen) favorites.size else minOf(favorites.size, COLLAPSED_ROWS)) else 0
+            LazyColumn(
+                state = listState,
+                modifier = Modifier.weight(1f).fillMaxWidth(),
+                contentPadding = PaddingValues(start = HcDimens.Gutter, end = HcDimens.Gutter, bottom = HcDimens.SpaceSection),
+            ) {
+                if (showFavorites) {
+                    searchSection(
+                        title = t.t("search.favorites"),
+                        items = favorites,
+                        open = favoritesOpen,
+                        onToggle = { favoritesOpen = !favoritesOpen; scope.launch { listState.animateScrollToItem(favHeaderIndex) } },
+                        favoriteIds = favoriteIds, t = t, onOpen = ::openProduct, onToggleFavorite = ::toggleFavorite,
+                    )
+                }
+                if (showRecent) {
+                    searchSection(
+                        title = t.t("search.recentlyAdded"),
+                        items = recentlyAdded,
+                        open = recentOpen,
+                        onToggle = { recentOpen = !recentOpen; scope.launch { listState.animateScrollToItem(recentHeaderIndex) } },
+                        favoriteIds = favoriteIds, t = t, onOpen = ::openProduct, onToggleFavorite = ::toggleFavorite,
+                    )
+                }
+                if (!showFavorites && !showRecent) {
+                    item {
+                        HcText(t.t("search.emptyState"), HcTypeRoles.Body, Modifier.fillMaxWidth().padding(horizontal = 4.dp), color = HcColors.TextSecondary, align = TextAlign.Center)
+                    }
+                }
             }
-            if (showRecent) {
-                HcText(t.t("search.recentlyAdded"), HcTypeRoles.Small, color = HcColors.Black, bold = true)
-                FoodListCard { ProductResultList(recentlyAdded, favoriteIds, t, false, ::openProduct, ::toggleFavorite) }
-            }
-            if (query.isBlank() && !showFavorites && !showRecent) {
-                HcText(t.t("search.emptyState"), HcTypeRoles.Body, Modifier.fillMaxWidth().padding(horizontal = 4.dp), color = HcColors.TextSecondary, align = TextAlign.Center)
-            }
-            if (query.isNotBlank()) {
+        } else {
+            Column(
+                Modifier.weight(1f).fillMaxWidth().verticalScroll(rememberScrollState())
+                    .padding(start = HcDimens.Gutter, end = HcDimens.Gutter, bottom = HcDimens.SpaceSection),
+                verticalArrangement = Arrangement.spacedBy(16.dp),
+            ) {
                 HcText(t.t("search.searchResults"), HcTypeRoles.Small, color = HcColors.Black, bold = true)
                 FoodListCard {
                     when (resultsState) {
@@ -202,6 +248,53 @@ fun SearchScreen(args: RouteArgs) {
             }
         }
     }
+}
+
+/** Liste med klistret overskrift; foldepil når der er mere end tre rækker. */
+@OptIn(ExperimentalFoundationApi::class)
+private fun androidx.compose.foundation.lazy.LazyListScope.searchSection(
+    title: String,
+    items: List<FoodProductResult>,
+    open: Boolean,
+    onToggle: () -> Unit,
+    favoriteIds: Set<String>,
+    t: Translator,
+    onOpen: (String) -> Unit,
+    onToggleFavorite: (String, Boolean) -> Unit,
+) {
+    val canFold = items.size > COLLAPSED_ROWS
+    stickyHeader {
+        Row(
+            Modifier.fillMaxWidth().background(HcColors.Page).then(if (canFold) Modifier.clickable(onClick = onToggle) else Modifier).padding(vertical = 8.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(4.dp),
+        ) {
+            HcText(title, HcTypeRoles.Small, color = HcColors.Black, bold = true)
+            if (canFold) HcIcon("ChevronDown", size = 18.dp, stroke = 1.75f, color = HcColors.Black, modifier = Modifier.rotate(if (open) 180f else 0f))
+        }
+    }
+    val shown = if (open) items else items.take(COLLAPSED_ROWS)
+    items(shown.size) { index ->
+        val r = shown[index]
+        val itemShape = RoundedCornerShape(
+            topStart = if (index == 0) HcDimens.RadiusCard else 0.dp,
+            topEnd = if (index == 0) HcDimens.RadiusCard else 0.dp,
+            bottomStart = if (index == shown.lastIndex) HcDimens.RadiusCard else 0.dp,
+            bottomEnd = if (index == shown.lastIndex) HcDimens.RadiusCard else 0.dp,
+        )
+        Column(Modifier.fillMaxWidth().clip(itemShape).background(HcColors.Tan)) {
+            FoodProductResultRow(
+                result = r,
+                kcalText = null,
+                isFavorite = r.id in favoriteIds,
+                favoriteLabel = t.t(if (r.id in favoriteIds) "search.removeFavorite" else "search.addFavorite"),
+                onOpen = onOpen,
+                onToggleFavorite = onToggleFavorite,
+                divider = index < shown.lastIndex,
+            )
+        }
+    }
+    item { Spacer(Modifier.height(16.dp)) }
 }
 
 @Serializable

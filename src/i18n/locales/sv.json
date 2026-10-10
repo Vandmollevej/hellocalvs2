@@ -2072,6 +2072,7 @@
   },
   "photoDiary": {
     "title": "Bilddagbok",
+    "addPhoto": "Lägg till ny bild",
     "loading": "Hämtar…",
     "loadError": "Kunde inte hämta bilddagboken.",
     "requiresPasscode": "Kräver telefonens lösenkod för att visas",
