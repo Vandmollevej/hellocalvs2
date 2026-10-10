@@ -119,3 +119,15 @@ Kort version står også i `docs/REGLER.md`.
 - **Ord der allerede står i flertal** (dumplings, rejer, boller): ental-titlen bøjes også i flertal ("Frosne dumplings", ikke "Frosset dumplings"). Formlen i kolonne A bruger flertal, når `Product type plural` = productType.
 - Keyword "tilsat kulsyre" hedder "med kulsyre" (så "tilsat" ikke står dobbelt med "med tilsat sukker").
 - Står brandet (fx vandkilden) i et keyword ("fra Aqua d'Or kilden"), fjernes keywordet. Linjenavne i brandet flyttes til subbrand ("Arla Protein" → Arla + Protein) og fjernes så fra productType/keywords.
+
+## Decimaltegn: punktum i arkene (brugerens regel 2026-10-10, gælder alle ark)
+- Decimaler skrives altid med punktum i arkene: "1.5 l", "3.6%", "13.5%", "0.5% fedt", "462.50/Kg". Appen viser selv komma for Danmark og de andre komma-lande ("1,5 liter") og punktum for punktum-lande (docs/DECISIONS.md 2026-10-10 på master).
+- Intet tusindtalspunktum: "1.080 g" → "1080 g" (ellers læses det som 1.08 g). "8 x 24.125 g" er allerede et decimaltal og bliver stående.
+- Ødelagte decimaler med mellemrum ("0, 5 l", "462, 50/Kg", "3, 5-3, 7 kg") rettes til punktum i mængde, Clean Subtitle og produkttype. Komma med mellemrum i navne er en opremsning ("Batch 99, 75cl", "45+, med kommen") og røres ikke. Billedfilnavne og URL'er røres ikke (de peger på filer).
+- Gennemført 2026-10-10: `Excelark/bilka.xlsx` (23.150 celler), `Produkter/rema1000_version 2.xlsx` (191) og `Frida-ark/frida.xlsx` (11). Bilka række 2 (Björnsted mørk chokolade) havde "70%" kakao som tallet 0.7 i variant — ryddet (ingrediens-%). Backups `Excelark/backup/*_foer_decimalpunktum.xlsx`. De øvrige ark (SPAR, Nemlig, Wolt, DRK m.fl.) får reglen, når de tages op.
+
+## REMA: flavor er lagt ind i variant (brugerens regel 2026-10-10)
+- Kolonnen `flavor` er slettet; smagen står nu i `variant`. Tom variant → smagen; "med …"-led sættes efter ("grill med hvidløg", "med tykmælk og æg"); to smagsord → "vanilje og skovbær"; ellers med mellemrum som titlen viste før ("cultura hindbær", "max lime"). "røget" → `_is_cooked`, "saltet"/"usaltet" → `keyword1`. Titelformlerne bruger nu kun `variant`.
+
+## Engelsk "sugarfree" (brugerens regel 2026-10-10, gælder alle ark)
+- Kun sukkerfeltet rettes: står der engelsk sugarfree / sugar free / zero sugar / no sugar på varen, skal sukkerfeltet være "sukkerfri" ("no added sugar" → "uden tilsat sukker"). Ordet fjernes IKKE fra navn/variant, da det ofte er en del af det engelske produkt- eller brandnavn (Coca-Cola Zero Sugar). Rettet 2026-10-10: Bilka 1 række (Mirinda zero sugar); REMA's 6 rækker havde allerede "sukkerfri".
