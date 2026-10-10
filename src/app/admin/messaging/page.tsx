@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { requireAdminUser } from "@/lib/require-admin";
@@ -44,8 +45,14 @@ export default async function AdminMessagingPage() {
           Styr indhold og kanal for automatiske mails og pushbeskeder.
         </p>
         <p className="hf-type-small mt-2 text-text-muted">
-          SMTP: {smtpConfigured ? "opsat" : "IKKE opsat — beskeder lægges i kø, men sendes ikke"} ·
-          Web Push: {pushConfigured ? "opsat" : "IKKE opsat — beskeder lægges i kø, men sendes ikke"}
+          <Link href="/admin/api-keys#smtp" className="underline">
+            SMTP
+          </Link>
+          : {smtpConfigured ? "opsat" : "IKKE opsat — beskeder lægges i kø, men sendes ikke"} ·{" "}
+          <Link href="/admin/api-keys#push" className="underline">
+            Web Push
+          </Link>
+          : {pushConfigured ? "opsat" : "IKKE opsat — beskeder lægges i kø, men sendes ikke"}
         </p>
       </div>
 

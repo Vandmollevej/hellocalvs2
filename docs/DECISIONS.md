@@ -10,6 +10,15 @@ Ejerens krav: søgningen skal vise alt, indtil brugeren indsnævrer, og være in
 - **Accenter:** `hc_search_norm()` (små bogstaver + unaccent) bruges i et ekstra match på navn, flertalsnavn og mærke ("Nescafé" finder "Nescafe"); GIN-trigramindeks på kolonnerne.
 - **"Mente du …?":** materialiseret visning `search_words` (ord fra varenavne/mærker + hyppighed), genopbygget i baggrunden efter 6 timers uptime (`src/lib/search-correction.ts`). 0 hits → serveren søger på den rettede tekst og svarer med `correctedQuery` + `originalQuery`; 1-2 hits → `suggestedQuery`; `&exact=1` slår rettelse fra ("Søg i stedet efter …"). Et ord rettes kun, hvis det ikke findes og ikke er begyndelsen på et ord (ingen rettelse midt i indtastning); afstand ≤ 1 for 3-4 bogstaver, ≤ 2 ellers.
 - Rangeringens øvrige regler (minimumsscore, flere tegn for upopulære varer) er uændrede; kandidatpuljen er stadig 80 varer.
+## 2026-10-10: Præcise links til hvor eksterne nøgler styres
+
+Brugerens ønske: "I alle eksterne input i admin — API-nøgler, integrationer, SMTP-server, SMS-server og alt det — tilføj det præcise link dertil, hvor informationerne styres. Ikke kun forsiden, men det præcise link."
+
+- Hvert felt i `KEY_SERVICES` har et påkrævet `manage: { url, where }`. `where` er menustien hos udbyderen, så feltet kan findes, selv hvis siden flytter. Facebooks App secret bygger linket ud fra det gemte App ID (`/apps/<id>/settings/basic/`).
+- Hvor udbyderen ikke har en fast adresse til selve siden (Polar AccessLink, Passio, TeamMessage, Vipps MobilePay-portalen), linkes til det indloggede område, og `where` angiver den præcise menusti.
+- Systemværdier (kun `.env.production`) linker til skabelonen `.env.production.example` i repoet.
+- Egne API'er (admin → API-nøgler → Tilføj API) kræver et https-link til siden, hvor nøglen styres; ældre uden link får en advarsel.
+- Hver tjeneste har et anker (`/admin/api-keys#<id>`); forsidens "Mangler nøgle", Beskeder (SMTP/Web Push) og integrationssiderne linker direkte dertil.
 ## 2026-10-10: Withings-data i realtid (vægt, puls, søvn, EKG) og aktivitet ved næste åbning
 
 Brugerens ønske: "Jeg har lige vejet mig, men jeg får ingen popup" → "Kan det ikke gøres i realtid?" → "Vægten måler mere … det samme gælder aktiviteten og pulsen. Er det for ressourcetungt, så gør det næste gang appen er aktiv. Serveren må ikke blive meget ekstra belastet."

@@ -9,12 +9,22 @@ import {
   loadCustomApis,
 } from "@/lib/api-keys/custom";
 
-// Admin → API-nøgler: egne grupper og API'er (navn, ID, hemmelighed).
+// Admin → API-nøgler: egne grupper og API'er (navn, ID, hemmelighed og link
+// til den præcise side hos udbyderen, hvor nøglen styres).
 
 const MAX_LENGTH = 8000;
 
 function text(value: unknown, max = MAX_LENGTH) {
   return typeof value === "string" ? value.trim().slice(0, max) : "";
+}
+
+function httpsUrl(value: unknown) {
+  const raw = text(value, 2000);
+  try {
+    return new URL(raw).protocol === "https:" ? raw : "";
+  } catch {
+    return "";
+  }
 }
 
 export async function POST(req: Request) {
@@ -33,10 +43,14 @@ export async function POST(req: Request) {
     const name = text(body.name, 120);
     const keyId = text(body.keyId);
     const secret = text(body.secret);
+    const manageUrl = httpsUrl(body.manageUrl);
     if (!group || !name || !keyId || !secret) {
       return NextResponse.json({ message: "Udfyld navn, ID og hemmelighed" }, { status: 400 });
     }
-    await addCustomApi({ group, name, keyId, secret }, admin.id);
+    if (!manageUrl) {
+      return NextResponse.json({ message: "Indsæt et https-link til siden, hvor nøglen styres" }, { status: 400 });
+    }
+    await addCustomApi({ group, name, keyId, secret, manageUrl }, admin.id);
   } else {
     return NextResponse.json({ message: "Ukendt handling" }, { status: 400 });
   }
