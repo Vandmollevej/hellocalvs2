@@ -231,7 +231,7 @@ internal fun PersonsSlider(label: String, value: Int, max: Int, onChange: (Int) 
             }
             if (centered) Spacer(Modifier.weight(1f))
         }
-        CaptureSlider(value = value, min = min, max = max, onChange = onChange)
+        CaptureSlider(value = value, min = min, max = max, onChange = onChange, modifier = if (unset) Modifier.alpha(0.4f) else Modifier)
     }
 }
 
@@ -275,7 +275,7 @@ internal fun RecipeFiltersBody(onChange: ((RecipeFilters) -> Unit)? = null) {
     Column(verticalArrangement = Arrangement.spacedBy(HcDimens.SpaceBlock)) {
         AccordionSection(t.t("recipeFilters.personsTitle"), icon = "UsersGroup", count = filters.persons) {
             Column(Modifier.padding(horizontal = 16.dp, vertical = 8.dp)) {
-                PersonsSlider(t.t("recipeFilters.personsLabel"), filters.persons, RecipePortions.MAX_PERSONS, { update(filters.copy(persons = it)) })
+                PersonsSlider(t.t("recipeFilters.personsLabel"), filters.persons, RecipePortions.MAX_PERSONS, { update(filters.copy(persons = it)) }, min = 0, unset = filters.persons == 0)
                 portionKcal?.let { HcText(t.t("recipeFilters.portionHint", "kcal" to it), HcTypeRoles.Small, Modifier.padding(top = 12.dp), color = HcColors.TextSecondary) }
             }
         }

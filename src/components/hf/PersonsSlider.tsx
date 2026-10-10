@@ -75,7 +75,9 @@ export function PersonsSlider({
         )}
         {centered && <span />}
       </div>
-      <HfSlider value={value} min={min} max={max} onChange={onChange} aria-label={label} />
+      <div className={unset ? "opacity-40" : ""}>
+        <HfSlider value={value} min={min} max={max} onChange={onChange} aria-label={label} />
+      </div>
     </div>
   );
 }
