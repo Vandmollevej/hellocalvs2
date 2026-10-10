@@ -140,6 +140,7 @@ fun CreateDishScreen(args: RouteArgs) {
     var ingredients by remember { mutableStateOf(DishDraft.read()) }
     var saving by remember { mutableStateOf(false) }
     var saveError by remember { mutableStateOf<String?>(null) }
+    var ingredientError by remember { mutableStateOf(false) }
     // Pages: [import], title + description + duration, ingredients, one recipe step per page, pictures of the dish.
     var page by remember { mutableStateOf(0) }
     var importMode by remember { mutableStateOf(false) }
@@ -250,13 +251,14 @@ fun CreateDishScreen(args: RouteArgs) {
 
     fun save() {
         saveError = null
+        ingredientError = false
         if (details.name.isBlank()) {
             saveError = t.t("createDish.nameRequired")
             page = pageKinds.indexOf("title")
             return
         }
         if (ingredients.isEmpty()) {
-            saveError = t.t("createDish.ingredientRequired")
+            ingredientError = true
             page = pageKinds.indexOf("ingredients")
             return
         }
@@ -398,6 +400,9 @@ fun CreateDishScreen(args: RouteArgs) {
                         results = emptyList()
                     }
                 }, t.t("createDish.searchPlaceholder"), onFocus = { searchScope.launch { delay(50); searchBringIntoView.bringIntoView() } })
+                if (ingredientError && ingredients.isEmpty()) {
+                    HcText(t.t("createDish.ingredientRequired"), HcTypeRoles.Body, Modifier.fillMaxWidth().padding(top = 8.dp), color = HcColors.TextSecondary, align = TextAlign.Center)
+                }
                 if (query.isNotBlank()) {
                     FoodListCard(Modifier.padding(top = 8.dp)) {
                         when (searchState) {

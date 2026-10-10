@@ -119,6 +119,7 @@ export default function CreateDishPage() {
     useState<DishDraftIngredient[]>(readDishDraft);
   const [saving, setSaving] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
+  const [ingredientError, setIngredientError] = useState(false);
   // Flowets første trin: tre knapper midt på skærmen. Springes over, når der
   // allerede er en kladde (fx ved retur fra en vare).
   const [started, setStarted] = useState(
@@ -282,13 +283,14 @@ export default function CreateDishPage() {
 
   async function handleSave() {
     setSaveError(null);
+    setIngredientError(false);
     if (!name.trim()) {
       setSaveError(t("createDish.nameRequired"));
       setPage(pageKinds.findIndex((entry) => entry.kind === "title"));
       return;
     }
     if (ingredients.length === 0) {
-      setSaveError(t("createDish.ingredientRequired"));
+      setIngredientError(true);
       setPage(pageKinds.findIndex((entry) => entry.kind === "ingredients"));
       return;
     }
@@ -652,6 +654,12 @@ export default function CreateDishPage() {
                       placeholder={t("createDish.searchPlaceholder")}
                     />
                   </div>
+
+                  {ingredientError && ingredients.length === 0 && (
+                    <p className="hf-type-body text-text-secondary mt-2 text-center">
+                      {t("createDish.ingredientRequired")}
+                    </p>
+                  )}
 
                   {query.trim() && (
                     <div className="mt-2 overflow-hidden bg-hf-tan rounded-card">
