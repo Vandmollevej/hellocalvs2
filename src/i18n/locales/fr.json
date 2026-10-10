@@ -243,6 +243,7 @@
     "chatSaveError": "Enregistrement impossible. Réessaie."
   },
   "nav": {
+    "home": "Accueil",
     "screenings": "Dépistages",
     "add": "Ajouter",
     "foods": "Aliments",
@@ -623,6 +624,8 @@
     "sideLeft": "Gauche",
     "sideRight": "Droite",
     "sideHint": "Le curseur de chiffres s'affiche toujours du côté opposé : {side}.",
+    "mirrorNavTitle": "Inverser le menu du bas",
+    "mirrorNavHint": "Accueil reste fixe d'un côté et les icônes défilent de l'autre. Activez pour inverser, comme la page d'accueil.",
     "buttonsSectionTitle": "Boutons de la roue",
     "selectedCount": "{count} champ(s) sur {max} sélectionné(s)",
     "maxReachedHint": "Retire un champ pour pouvoir en ajouter un autre.",
