@@ -1,5 +1,6 @@
 package dk.packroff.hellocal.screens.food
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -17,6 +18,8 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.relocation.BringIntoViewRequester
+import androidx.compose.foundation.relocation.bringIntoViewRequester
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
@@ -119,6 +122,7 @@ private data class DishSearchResult(val id: String, val name: String, val imageU
 private data class ImportNote(val missing: List<String>, val nutrition: String?)
 
 /** Native port of src/app/create-dish/page.tsx — Opret ret. */
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun CreateDishScreen(args: RouteArgs) {
     val t = LocalTranslator.current
@@ -151,6 +155,7 @@ fun CreateDishScreen(args: RouteArgs) {
     var results by remember { mutableStateOf<List<DishSearchResult>>(emptyList()) }
     var searchState by remember { mutableStateOf("idle") }
     var searchError by remember { mutableStateOf<Throwable?>(null) }
+    val searchScope = rememberCoroutineScope()
 
     LaunchedEffect(query) {
         if (query.isBlank()) return@LaunchedEffect
@@ -441,7 +446,8 @@ fun CreateDishScreen(args: RouteArgs) {
                 }
             }
 
-            Column {
+            val searchBringIntoView = remember { BringIntoViewRequester() }
+            Column(Modifier.bringIntoViewRequester(searchBringIntoView)) {
                 HcText(t.t("createDish.addIngredient"), HcTypeRoles.Small, Modifier.padding(bottom = 8.dp), color = HcColors.Black, bold = true)
                 FoodSearchField(query, { value ->
                     query = value
@@ -449,7 +455,7 @@ fun CreateDishScreen(args: RouteArgs) {
                         searchState = "idle"
                         results = emptyList()
                     }
-                }, t.t("createDish.searchPlaceholder"))
+                }, t.t("createDish.searchPlaceholder"), onFocus = { searchScope.launch { delay(50); searchBringIntoView.bringIntoView() } })
                 if (query.isNotBlank()) {
                     FoodListCard(Modifier.padding(top = 8.dp)) {
                         when (searchState) {

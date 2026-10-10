@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { IconChevronRight, IconSoup } from "@tabler/icons-react";
 import { Skeleton, SkeletonTitleLines } from "@/components/hf/Skeleton";
+import { trackRecipeClick } from "@/lib/recipe-clicks";
 
 // En opskriftsrække (billede, navn, undertekst, pil). Bruges af Opskrifter
 // og Favoritter.
@@ -17,6 +18,8 @@ export type RecipeRowData = {
   // Rød advarsel under titlen (spor af allergener, docs/DECISIONS.md 2026-09-25).
   warnings?: string[];
   extra?: string;
+  // Klik-nøgle til "Trender netop nu" (src/lib/recipe-clicks.ts).
+  clickKey?: string;
 };
 
 // HelloFresh-opskrifter (Product-id "hf_…") har deres egen side i
@@ -45,7 +48,11 @@ export function RecipeRow({ row, loadingTitleWidth }: { row: RecipeRowData | nul
     );
   }
   return (
-    <Link href={row.href} className={RECIPE_ROW_CLASS}>
+    <Link
+      href={row.href}
+      className={RECIPE_ROW_CLASS}
+      onClick={() => row.clickKey && trackRecipeClick(row.clickKey)}
+    >
       <div className="flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden bg-hf-tan text-hf-black rounded-card">
         {row.imageUrl ? (
           // eslint-disable-next-line @next/next/no-img-element
@@ -73,5 +80,38 @@ export function RecipeRow({ row, loadingTitleWidth }: { row: RecipeRowData | nul
       </div>
       <IconChevronRight size={18} className="shrink-0 text-hf-black" />
     </Link>
+  );
+}
+
+// Kort i slider-rækken under "Trender netop nu": billede over navn og undertekst.
+export function RecipeCard({ row }: { row: RecipeRowData }) {
+  return (
+    <Link
+      href={row.href}
+      onClick={() => row.clickKey && trackRecipeClick(row.clickKey)}
+      className="block w-36 shrink-0 snap-start"
+    >
+      <div className="flex aspect-square w-full items-center justify-center overflow-hidden bg-hf-tan text-hf-black rounded-card">
+        {row.imageUrl ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img src={row.imageUrl} alt="" className="h-full w-full object-cover" />
+        ) : (
+          <IconSoup size={32} className="opacity-50" />
+        )}
+      </div>
+      <p className="hf-type-small hf-type-strong mt-2 line-clamp-2 text-hf-black">{row.name}</p>
+      {row.subtitle && <p className="hf-type-small text-text-secondary">{row.subtitle}</p>}
+    </Link>
+  );
+}
+
+export function RecipeCardSkeleton() {
+  return (
+    <div className="w-36 shrink-0" aria-hidden>
+      <Skeleton type="tile" width={144} height={144} />
+      <div className="mt-2">
+        <SkeletonTitleLines titleWidth={110} />
+      </div>
+    </div>
   );
 }

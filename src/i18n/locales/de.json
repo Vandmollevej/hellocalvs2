@@ -2071,6 +2071,7 @@
     "recentTitle": "Letzte Einträge"
   },
   "photoDiary": {
+    "addPhoto": "Neues Foto hinzufügen",
     "title": "Bildtagebuch",
     "loading": "Lädt…",
     "loadError": "Bildtagebuch konnte nicht geladen werden.",

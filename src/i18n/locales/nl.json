@@ -2071,6 +2071,7 @@
     "recentTitle": "Laatste registraties"
   },
   "photoDiary": {
+    "addPhoto": "Nieuwe foto toevoegen",
     "title": "Fotodagboek",
     "loading": "Laden…",
     "loadError": "Kon fotodagboek niet laden.",

@@ -4870,3 +4870,8 @@ Ejeren vælger selv adgangens udløb med en datepicker i Hello Doc-editoren (web
 ## 2026-10-09: Tal-sliderens mål-linje og grøn ved mål
 
 Hver række i forsidens tal-slider viser sit mål under tallet i stedet for pladsholdertekst. Kun minimumsmål (skridt, trapper, protein, vægtudsigt, chance) farver hovedtallet grønt; grænser (sukker, salt, fedt, kulhydrat, kalorier) forbliver sorte, fordi "nået" ellers ville betyde overskredet. Kalorieindtag bruger kniv og gaffel (afviger fra design.md §6.16, brugerens ønske); kulhydrater har brød-ikon. Pulszoner og valgt zone er pr. enhed i localStorage.
+
+## 2026-10-10: "Trender netop nu" — slider, klik som signal
+
+- Brugerens krav: mindst tre retter vises altid øverst, tilfældige når der ingen data/klik er; med flere data vises tendenser den seneste måned efter flest nye klik; 10 retter i en slider-række.
+- Signal er klik på retter i Delte retter (`recipe_clicks`), ikke tilføjelser. Score = klik seneste 30 dage, seneste 7 dage tæller dobbelt (stigning vinder). Tilfældig opfyldning er deterministisk pr. dag. Tommel op/ned og registreringer indgår ikke i rækken.
