@@ -2444,6 +2444,13 @@ input.hf-field[type="week"] {
   white-space: nowrap;
 }
 
+.hf-bottom-sheet__action {
+  display: flex;
+  flex: none;
+  justify-content: flex-end;
+  padding: 4px 16px 8px;
+}
+
 .hf-bottom-sheet__body {
   min-height: 0;
   flex: 1 1 auto;
@@ -2739,4 +2746,55 @@ input.hf-field[type="week"] {
     border-radius: var(--hf-radius-card);
     background: var(--hf-color-surface);
   }
+}
+
+/* HelloFresh-tekststil (prøve, kun siden Vægt kalibrering): størrelse og
+   linjeafstand målt fra HelloFresh-appens brødtekst (17 px / 31 px). Sættes
+   med klassen .hf-fresh-type på sidens container. */
+.hf-fresh-type :is(.hf-type-body, .hf-type-small, .hf-type-caption, .hf-type-label, .hf-type-body-lg) {
+  font-size: 17px;
+  line-height: 31px;
+}
+
+.hf-fresh-type :is(.hf-type-title, .hf-type-input) {
+  font-size: 17px;
+  line-height: 31px;
+}
+
+/* Højst tre linjer; "…Vis mere" ligger på tredje linje (bund-højre). */
+.hf-clamp {
+  position: relative;
+}
+
+.hf-clamp__text {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  overflow: hidden;
+}
+
+.hf-clamp__more {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  padding: 0 0 0 12px;
+  border: 0;
+  font: inherit;
+  font-weight: 700;
+  line-height: inherit;
+  color: var(--hf-color-black, #232323);
+  background: linear-gradient(to right, transparent, var(--hf-color-card) 12px);
+  cursor: pointer;
+}
+
+.hf-clamp__less {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font: inherit;
+  font-weight: 700;
+  color: var(--hf-color-black, #232323);
+  background: none;
+  cursor: pointer;
 }

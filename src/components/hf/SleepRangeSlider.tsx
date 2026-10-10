@@ -154,6 +154,7 @@ export function SleepRangeSlider({
 
       <div
         ref={trackRef}
+        data-sheet-no-drag
         onPointerMove={handlePointerMove}
         onPointerUp={handlePointerUp}
         onPointerCancel={handlePointerUp}

@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { resolveGenericIngredientNutrients, resolveProductNutrients } from "@/lib/nutrient-resolution";
+import { isEstimatedSource } from "@/lib/nutrients";
 import { getSessionUser } from "@/lib/session";
 import {
   PRODUCT_UPDATE_POINTS,
@@ -8,6 +9,7 @@ import {
   productGaps,
   updateKindsFor,
 } from "@/lib/product-update";
+import { findSubbrandLogoUrl } from "@/lib/subbrand-logo";
 
 export async function GET(
   _req: Request,
@@ -101,9 +103,16 @@ export async function GET(
         user && !product.privateOwnerId && !(await hasEarnedUpdatePoints(user.id, product.id).catch(() => true))
           ? updateKindsFor(productGaps(product))
           : [];
+      // Subbrandet står over brandet ved produktcirklen — som logo, hvis det
+      // findes (docs/DECISIONS.md 2026-10-10).
+      const subbrandLogoUrl = await findSubbrandLogoUrl(product.brand?.name, product.subbrand).catch((error) => {
+        console.error("Subbrand logo lookup failed", error);
+        return null;
+      });
       return NextResponse.json({
         product: {
           ...product,
+          subbrandLogoUrl,
           nutrients,
           updateOffer: updateKinds.length ? { kinds: updateKinds, points: PRODUCT_UPDATE_POINTS } : null,
           lastAmountGrams: last?.amountGrams ?? null,
@@ -111,6 +120,10 @@ export async function GET(
           // Butiksvare uden kalorietal (docs/DECISIONS.md 2026-10-02): 0 er en
           // pladsholder, så UI viser "Næringsindhold ukendt" i stedet for 0 kcal.
           hasKnownNutrition: !product.nutritionMissing,
+          // Frida-skøn (∼, docs/DECISIONS.md 2026-10-10): ∼ ved kalorietallet og
+          // Fridas kildeangivelse nederst i næringsfeltet, når en værdi er fra Frida.
+          kcalEstimated: isEstimatedSource((product.nutrientSources as Record<string, string> | null)?.kcal),
+          fridaSource: !!product.fridaEstimateId || nutrients.some((n) => n.frida),
         },
       });
     }

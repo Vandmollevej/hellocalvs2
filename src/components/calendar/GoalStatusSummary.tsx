@@ -11,11 +11,11 @@ export type GoalStatusKind = "met" | "missed" | "none";
  *   1. Højrestillet: rød flamme + grøn "+ N kcal" (kun når der er registreret
  *      motion — kalorierne lægges oven i målet).
  *   2. Én række: statusbjælken til venstre (cirkel + "Inden for målet" /
- *      "Målet ikke opnået" / "Intet registreret") og "Mål: X kcal" til højre.
+ *      "Målet ikke opnået" / "Intet registreret") og "Tilbage/Overskredet" til højre.
  *      De to SKAL stå i samme flex-række — aldrig som separate blokke under
  *      hinanden, så status forskydes en linje ned (brugerkrav 2026-10-03).
- *   3. Højrestillet under rækken: "Tilbage for i dag: N kcal" eller, ved
- *      overskridelse, "Overskredet med N kcal" i rødt.
+ *   3. Højrestillet under rækken: "Mål: X kcal" (byttet om med "Tilbage",
+ *      så "Tilbage" ikke skjules af halvcirklen i bunden, 2026-10-10).
  * "Tilbage"/"overskredet" regnes mod mål + motion.
  */
 export function GoalStatusSummary({
@@ -78,20 +78,21 @@ export function GoalStatusSummary({
         ) : (
           <span aria-hidden="true" />
         )}
-        {showTotals && (
-          <p className="hf-type-body shrink-0 whitespace-nowrap text-right tabular-nums text-text-muted">
-            {t("calendar.goalLabel", { goal: Math.round(goalKcal) })}
-          </p>
-        )}
+        {showTotals &&
+          (remaining >= 0 ? (
+            <p className="hf-type-body shrink-0 whitespace-nowrap text-right tabular-nums text-hf-black">
+              {t(period === "month" ? "calendar.remainingMonth" : "calendar.remainingToday", { amount: remaining })}
+            </p>
+          ) : (
+            <p className="hf-type-body hf-type-strong shrink-0 whitespace-nowrap text-right tabular-nums text-hf-red-dark">
+              {t("calendar.exceededCalories", { amount: Math.abs(remaining) })}
+            </p>
+          ))}
       </div>
 
-      {!showTotals ? null : remaining >= 0 ? (
-        <p className="hf-type-body whitespace-nowrap text-right tabular-nums text-hf-black">
-          {t(period === "month" ? "calendar.remainingMonth" : "calendar.remainingToday", { amount: remaining })}
-        </p>
-      ) : (
-        <p className="hf-type-body hf-type-strong whitespace-nowrap text-right tabular-nums text-hf-red-dark">
-          {t("calendar.exceededCalories", { amount: Math.abs(remaining) })}
+      {showTotals && (
+        <p className="hf-type-body whitespace-nowrap text-right tabular-nums text-text-muted">
+          {t("calendar.goalLabel", { goal: Math.round(goalKcal) })}
         </p>
       )}
     </div>

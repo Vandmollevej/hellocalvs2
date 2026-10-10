@@ -88,6 +88,9 @@ data class ProductDto(
     val servingSizeUnitSingular: String? = null,
     val servingSizeUnitPlural: String? = null,
     val brand: ProductBrand? = null,
+    // Product line shown above the brand by the circle — as a logo when one exists (DECISIONS 2026-10-10).
+    val subbrand: String? = null,
+    val subbrandLogoUrl: String? = null,
     val productCategory: String? = null,
     val packageSizeText: String? = null,
     val variant: String? = null,
@@ -121,6 +124,9 @@ data class ProductDto(
     val isGenericIngredient: Boolean = false,
     val hasKnownNutrition: Boolean? = null,
     val nutrients: List<ResolvedNutrient> = emptyList(),
+    // Frida-skøn (docs/DECISIONS.md 2026-10-10): ∼ ved kalorietallet og Fridas kildeangivelse.
+    val kcalEstimated: Boolean = false,
+    val fridaSource: Boolean = false,
     val keywords: JsonElement? = null,
     val dietaryTags: JsonElement? = null,
     val lastAmountGrams: Double? = null,
@@ -220,6 +226,8 @@ data class PhotoAwardsResponse(val awards: List<PhotoAward> = emptyList())
 data class ProductListItem(
     val id: String = "",
     val name: String = "",
+    /** Search hits only: "Brand Subbrand Name" (src/lib/search-result-title.ts). */
+    val searchTitle: String? = null,
     val imageUrl: String? = null,
     val kcalPer100g: Double = 0.0,
     val proteinPer100g: Double = 0.0,
@@ -227,10 +235,17 @@ data class ProductListItem(
     val fatPer100g: Double = 0.0,
     val brand: ProductBrand? = null,
     val nutrientSources: JsonElement? = null,
+    val nutritionMissing: Boolean = false,
 )
 
 @Serializable
-data class ProductListResponse(val products: List<ProductListItem> = emptyList(), val profileId: String? = null)
+data class ProductListResponse(
+    val products: List<ProductListItem> = emptyList(),
+    val profileId: String? = null,
+    val correctedQuery: String? = null,
+    val originalQuery: String? = null,
+    val suggestedQuery: String? = null,
+)
 
 /** src/lib/user-scans.ts UserScan. */
 @Serializable

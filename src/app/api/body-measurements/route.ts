@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { unauthorized } from "@/lib/session";
 import { getProfileUser } from "@/lib/family-access";
+import { BODY_MEASUREMENT_FIELDS, type BodyMeasurementField } from "@/lib/body-measurements";
 
 export async function GET() {
   try {
@@ -25,22 +26,21 @@ export async function GET() {
 }
 
 export async function POST(req: Request) {
-  const body = await req.json();
-  const { waistCm, hipCm, chestCm, thighCm, upperArmCm, neckCm, note, measuredAt } = body as {
-    waistCm?: number | null;
-    hipCm?: number | null;
-    chestCm?: number | null;
-    thighCm?: number | null;
-    upperArmCm?: number | null;
-    neckCm?: number | null;
+  const body = (await req.json()) as Partial<Record<BodyMeasurementField | "neckCm", number | null>> & {
     note?: string;
     // Same backdating pattern as WeightEntry.weighedAt.
     measuredAt?: string;
   };
+  const { note, measuredAt } = body;
 
-  if (!waistCm && !hipCm && !chestCm && !thighCm && !upperArmCm && !neckCm) {
+  // Kun kendte mål tages med (neckCm findes stadig i databasen, men vises ikke).
+  const values: Record<string, number | null> = {};
+  for (const { field } of BODY_MEASUREMENT_FIELDS) values[field] = body[field] ?? null;
+  values.neckCm = body.neckCm ?? null;
+
+  if (!Object.values(values).some(Boolean)) {
     return NextResponse.json(
-      { message: "Mindst ét mål (hals, talje, hofte, bryst, lår eller overarm) er påkrævet" },
+      { message: "Mindst ét kropsmål er påkrævet" },
       { status: 400 }
     );
   }
@@ -57,12 +57,7 @@ export async function POST(req: Request) {
     const entry = await prisma.bodyMeasurement.create({
       data: {
         userId: user.id,
-        waistCm: waistCm ?? null,
-        hipCm: hipCm ?? null,
-        chestCm: chestCm ?? null,
-        thighCm: thighCm ?? null,
-        upperArmCm: upperArmCm ?? null,
-        neckCm: neckCm ?? null,
+        ...values,
         note: note || null,
         ...(parsedMeasuredAt ? { measuredAt: parsedMeasuredAt } : {}),
       },

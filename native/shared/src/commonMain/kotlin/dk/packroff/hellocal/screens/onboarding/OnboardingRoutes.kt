@@ -32,6 +32,7 @@ object OnboardingRoutes {
         ScreenRoute("/viden-om/[category]") { KnowledgeSectionScreen(it) },
         ScreenRoute("/viden-om/[category]/[slug]") { KnowledgeEntryScreen(it) },
         ScreenRoute("/viden-om/e-numre") { KnowledgeENumbersScreen(it) },
+        ScreenRoute("/viden-om/omregning") { KnowledgeConversionScreen(it) },
         ScreenRoute("/e-numre", fullScreen = true) { ENumberDirectoryScreen(it) },
         ScreenRoute("/e-numre/[code]") { ENumberDetailScreen(it) },
     )

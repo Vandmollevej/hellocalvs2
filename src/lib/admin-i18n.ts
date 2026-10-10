@@ -34,6 +34,7 @@ const DICTIONARY = {
   nav_design_manual: { DA: "Designmanual", EN: "Design manual" },
   nav_page_tree: { DA: "Sidetræ", EN: "Page tree" },
   nav_statistics: { DA: "Statistik", EN: "Statistics" },
+  nav_search_analytics: { DA: "Søgning", EN: "Search" },
   nav_integrations: { DA: "Integrationer", EN: "Integrations" },
   nav_economy: { DA: "Economy", EN: "Economy" },
   nav_log: { DA: "Log", EN: "Log" },
@@ -53,6 +54,8 @@ const DICTIONARY = {
   nav_group_dishes: { DA: "Retter", EN: "Dishes" },
   nav_dishes_user: { DA: "Brugeroprettede", EN: "User-created" },
   nav_dishes_hellofresh: { DA: "HelloFresh", EN: "HelloFresh" },
+  nav_dishes_retnemt: { DA: "RetNemt", EN: "RetNemt" },
+  nav_dishes_betterfeast: { DA: "BetterFeast", EN: "BetterFeast" },
   nav_dishes_valdemarsro: { DA: "Valdemarsro", EN: "Valdemarsro" },
   nav_users_all: { DA: "Alle brugere", EN: "All users" },
   nav_grant_points: { DA: "Tildel points", EN: "Grant points" },
@@ -125,6 +128,11 @@ const DICTIONARY = {
   quality_control_filter_all: { DA: "Alle", EN: "All" },
   quality_control_issue_nutrition: { DA: "Næringsindhold", EN: "Nutrition" },
   quality_control_user_reported: { DA: "Brugerindberettet", EN: "User-reported" },
+  quality_control_warning: { DA: "Advarsel", EN: "Warning" },
+  quality_control_warning_hint: {
+    DA: "Brugeren har låst energifordelingen op, ændret den og gemt. Ændringen ligger kun i brugerens egen registrering; varen, som andre ser, er uændret.",
+    EN: "The user unlocked the energy distribution, changed it and saved. The change only lives in the user's own entry; the product other users see is unchanged.",
+  },
   quality_control_user_report_count: { DA: "brugerindberetninger", EN: "user reports" },
 
   products_title: { DA: "Nye varer", EN: "New products" },

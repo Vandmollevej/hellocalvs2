@@ -324,6 +324,9 @@ private fun SettingsIntegrationsAppContent(args: RouteArgs) {
     fun hubName(hub: String) = t.t("integrations.hubs.$hub")
     fun hubPage(hub: String) = "/settings/integrations/" + hub.lowercase().replace("_", "-")
     val connected = current.status != "DISCONNECTED"
+    // Connected with nothing missing: the sheet is a settings page, not a new
+    // consent — "Forbundet" at the top, Færdig/Frakobl and no terms bar.
+    val linked = isOAuth && connected && current.needsReconnect.isEmpty()
     val readTypes = current.capabilities.read
     val writeTypes = current.capabilities.write
     val settings = current.settings
@@ -376,7 +379,7 @@ private fun SettingsIntegrationsAppContent(args: RouteArgs) {
     // fetches data now; a companion app without a device code gets one. The sheet
     // only closes once the user has seen the result and taps "Færdig".
     fun allow() {
-        if (done) return close()
+        if (done || linked) return close()
         if (isVia && hubs.isNotEmpty()) return nav.push(hubPage(hubs[0]))
         if (isOAuth && (!connected || current.needsReconnect.isNotEmpty())) return connect()
         done = true
@@ -411,18 +414,19 @@ private fun SettingsIntegrationsAppContent(args: RouteArgs) {
         title = t.t("integrations.access.title", "name" to name),
         icon = { SettingsIntegrationsLogo(current.icon, name, 52.dp, rounded = false) },
         heading = name,
-        message = t.t(if (writeTypes.isNotEmpty()) "integrations.access.messageReadWrite" else "integrations.access.messageRead", "name" to name),
+        message = if (linked) t.t("integrations.access.messageConnected", "name" to name)
+        else t.t(if (writeTypes.isNotEmpty()) "integrations.access.messageReadWrite" else "integrations.access.messageRead", "name" to name),
         toggleAllLabel = if (hasTypes) t.t(if (allOn) "integrations.access.turnOffAll" else "integrations.access.turnOnAll") else null,
         onToggleAll = if (hasTypes) ::toggleAll else null,
-        allowLabel = t.t(if (done) "integrations.access.done" else "integrations.access.allow"),
-        denyLabel = t.t("integrations.access.deny"),
-        allowDisabled = busy || (!done && ((hasTypes && !anyOn) || (isOAuth && !current.configured))),
+        allowLabel = t.t(if (done || linked) "integrations.access.done" else "integrations.access.allow"),
+        denyLabel = t.t(if (linked) "integrations.disconnect" else "integrations.access.deny"),
+        allowDisabled = busy || (!done && !linked && ((hasTypes && !anyOn) || (isOAuth && !current.configured))),
         denyDisabled = busy,
         onAllow = ::allow,
         onDeny = ::deny,
         onDismiss = ::close,
         closeLabel = t.t("integrations.close"),
-        terms = { SettingsIntegrationsTermsSheet(paragraphs = settingsIntegrationTermsParagraphs(current.provider), href = SETTINGS_INTEGRATION_TERMS_HREF) },
+        terms = if (linked) null else ({ SettingsIntegrationsTermsSheet(paragraphs = settingsIntegrationTermsParagraphs(current.provider), href = SETTINGS_INTEGRATION_TERMS_HREF) }),
     ) {
         if (notice != null) SettingsAccessFooter(notice.text, error = notice.error)
         if (writeTypes.isNotEmpty()) SettingsAccessToggleGroup(t.t("integrations.access.writeTitle"), rows("write", writeTypes))

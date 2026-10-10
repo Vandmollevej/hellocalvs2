@@ -22,6 +22,7 @@ export type ShortcutTarget =
 export const ADMIN_PAGE_SHORTCUTS: Record<string, readonly string[]> = {
   "/admin": ["Alt+O"],
   "/admin/statistics": ["Alt+S"],
+  "/admin/statistics/search": ["Alt+Q"],
   "/admin/integrations": ["Alt+I"],
   "/admin/economy": ["Alt+Shift+E"],
   "/admin/hello-doc": ["Alt+H"],
@@ -46,6 +47,8 @@ export const ADMIN_PAGE_SHORTCUTS: Record<string, readonly string[]> = {
   "/admin/dishes/user": ["Alt+Shift+U"],
   "/admin/dishes/hellofresh": ["Alt+Shift+H"],
   "/admin/dishes/valdemarsro": ["Alt+V"],
+  "/admin/dishes/retnemt": ["Alt+X"],
+  "/admin/dishes/betterfeast": ["Alt+7"],
 
   // Flows
   "/admin/flows": ["Alt+Shift+W"],
@@ -71,6 +74,9 @@ export const ADMIN_PAGE_SHORTCUTS: Record<string, readonly string[]> = {
   "/admin/support/templates": ["Alt+Shift+S"],
   "/admin/messaging": ["Alt+Shift+M"],
   "/admin/search-ranking": ["Alt+Shift+Q"],
+  "/admin/search-synonyms": ["Alt+Y"],
+  "/admin/pet-food-filter": ["Alt+Shift+K"],
+  "/admin/weight-attire": ["Alt+Z"],
   "/admin/shortcuts": ["Alt+G"],
 
   // Administration

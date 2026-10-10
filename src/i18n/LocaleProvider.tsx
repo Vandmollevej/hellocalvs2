@@ -2,6 +2,7 @@
 
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { DEFAULT_LOCALE, Locale, isLocale, translate } from "./index";
+import { setUnitsRegion } from "@/lib/units";
 
 const STORAGE_KEY = "hello-cal-locale";
 
@@ -44,6 +45,8 @@ export function LocaleProvider({ children }: { children: React.ReactNode }) {
         if (isLocale(serverLocale)) {
           setLocaleState(serverLocale);
         }
+        // Profilens land på alle sider: enheder og decimaltegn følger det.
+        setUnitsRegion(data?.user?.region);
       })
       .catch(() => {
         // Offline/unavailable — keep whatever we already have (localStorage

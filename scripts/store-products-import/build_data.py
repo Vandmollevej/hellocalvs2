@@ -75,7 +75,31 @@ SUSPECT_CSV = os.path.join(SHEETS, "Tjekliste - mistænkelige rækker.csv")
 EAN_RE = re.compile(r"^\d{8,14}$")
 
 
-def load(path):
+# 2026-10-10: arkene bruger nu databasens kolonnenavne (se Excelark/NAVNEREGLER.md).
+# load() kopierer dem tilbage til de gamle navne, saa resten af scriptet er uaendret.
+NEW_ALIAS = {
+    "bilka": {"brand": "Brand", "subbrand": "Subbrand", "productType": "Product Type", "variant": "Variation",
+              "packageSizeText": "Quantity", "packCount": "Pack Count", "packaging": "Packaging", "category": "Category",
+              "barcode": "EAN", **{f"keyword{i}": f"Keyword {i}" for i in range(1, 6)}},
+    "rema": {"brand": "Brand", "subbrand": "Subbrand", "productType": "Product type", "variant": "Variant", "flavor": "taste",
+             "packageSizeText": "Quantity", "packCount": "Amount", "category": "Category", "barcode": "EAN",
+             **{f"keyword{i}": f"Keyword {i}" for i in range(1, 6)},
+             # 2026-10-10: fedt% staar i _is_fat, alkohol% i _is_alcohol; REMA faar Bilkas praecise kolonner (alkohol-% i
+             # 2. _is_alcohol). Gamle navne virker stadig.
+             "_is_fat": "fat", "_is_alcohol": "%", "_is_alcohol#2": "%", "_is_vegan": "is_vegan", "_is_meat": "is_meat",
+             "_is_lactose_free": "is_lactose_free", "_is_glutenfree": "is_gluten_free", "_is_sugar_free": "is_sugar_free",
+             "_is_alcohol_free": "is_alcohol_free", "_is_organic": "is_biological", "_is_whole_grain": "is_whole_grain",
+             "_is_animal_welfare": "is_animal_wellfare", "_is_country_of_origen": "is_country_of_origin",
+             "_is_allergy": "_is_allergies", "packaging": "is_Packaging", "Source URL": "Source url", "Image File": "Image file",
+             "Parse Status": "Parse status"},
+}
+
+
+def _cap(v):
+    return v[:1].upper() + v[1:] if isinstance(v, str) and v else v
+
+
+def load(path, kind=None):
     ws = openpyxl.load_workbook(path, read_only=True, data_only=True).worksheets[0]
     rows = ws.iter_rows(values_only=True)
     header = [str(h).strip() if h is not None else "" for h in next(rows)]
@@ -92,6 +116,22 @@ def load(path):
             if h in item:
                 h = h + "#2"
             item[h] = v
+        if kind and "productType" in item:  # nyt layout: databasenavne, smaa bogstaver
+            for new, old in NEW_ALIAS[kind].items():
+                if new in item:
+                    item[old] = item[new]
+            for k in list(item):
+                if k.startswith(("_is_", "is_", "Keyword ")) or k in ("Variation", "Variant", "taste"):
+                    if isinstance(item[k], str) and not re.match(r"^[\d,.%\s]+$", item[k]):
+                        item[k] = _cap(item[k])
+            if item.get("_is_alcohol_free") and not item.get("_is_alcohol"):
+                item["_is_alcohol"] = _cap(item["_is_alcohol_free"])
+            if kind == "bilka":
+                item["HelloCal_Title"] = item.get("Product title singular")
+                item["_new_title"] = True
+            else:
+                item["Hello Cal product title"] = item.get("Product title singular")
+                item["_new_title"] = True
         out.append(item)
     return out
 
@@ -383,7 +423,8 @@ def rema_filters(r, is_drink):
 
 
 def rema_keywords(r, is_drink):
-    out = [k for k in [text(r.get("Keyword 1"))] if k]
+    # 2026-10-10: REMA har Bilkas keyword1-5 ("light", "i skiver" m.fl. staar nu som keywords).
+    out = [k for k in (text(r.get(f"Keyword {i}")) for i in range(1, 6)) if k]
     # Package shapes go to Product.packaging and "Færdigretter" to the category;
     # only other values (e.g. "i Skiver") stay keywords.
     for part in split_list(r.get("is_Packaging")):
@@ -496,8 +537,10 @@ def product_category(b, r, quantity, product_type):
 
 
 def fix_decimals(s):
-    """The sheet cleanup turned "0,4%" into "0, 4%" — glue decimals back."""
-    return re.sub(r"(\d), (\d)", r"\1,\2", s) if s else s
+    """The sheet cleanup turned "0,4%" into "0, 4%" — glue decimals back.
+    2026-10-10: arkene skriver decimaler med punktum ("1.5 l"); appen viser
+    brugerens eget decimaltegn (src/lib/decimal-separator.ts)."""
+    return re.sub(r"(\d), (\d)", r"\1.\2", s) if s else s
 
 
 def strip_title(title):
@@ -513,6 +556,8 @@ def bilka_name(b):
     ("Coca Cola", "Carlsberg 1883", "Breezer m. appelsin") has nothing left
     but a digit of the quantity or a dangling "m": then the shop's own title
     is the name."""
+    if b.get("_new_title"):  # nyt layout: titlen er allerede uden maengde/brand
+        return text(b.get("Product title singular")) or strip_title(text(b.get("Product Name"))) or text(b.get("Product title plural"))
     name = strip_title(text(b.get("HelloCal_Title")))
     if not name or re.search(r"\s\w$", name):
         name = strip_title(text(b.get("Product Name"))) or name
@@ -526,6 +571,8 @@ def rema_name(r, brand):
     """REMA titles start with the brand ("Friland Hakket oksekød"); the brand
     is its own field, so it is not repeated in the name."""
     name = text(r.get("Hello Cal product title")) or ""
+    if r.get("_new_title"):
+        return name.strip() or text(r.get("Product title plural")) or text(r.get("Variant")) or ""
     if brand and name.lower().startswith(brand.lower() + " "):
         name = name[len(brand) + 1:]
     return name.strip() or text(r.get("Hello Cal product title"))
@@ -620,7 +667,7 @@ def classify(p, b, r):
     meat = (f.get("meatType") or "").lower()
     liquid = bool(p.get("quantity") and LIQUID_RE.search(p["quantity"]))
     drink_context = dept == "Drikkevarer" or rema_type == "drikkevare"
-    alcohol_free = f.get("alcohol") == "Alkoholfri" or has(r"alkoholfri|alcohol free|0,0 ?%|\b0 ?%", both)
+    alcohol_free = f.get("alcohol") == "Alkoholfri" or has(r"alkoholfri|alcohol free|0[,.]0 ?%|\b0 ?%", both)
 
     def is_(pattern):
         # Title decides; product type only when the title is silent.
@@ -1042,8 +1089,8 @@ def main():
     out_dir = args.out or OUT_DIR
     out_images = os.path.join(out_dir, "images")
 
-    bilka = load(BILKA_SHEET)
-    rema = load(REMA_SHEET)
+    bilka = load(BILKA_SHEET, "bilka")
+    rema = load(REMA_SHEET, "rema")
     bilka_info_rows = load(BILKA_INFO)
     bilka_info = {ean_of(x.get("EAN")): x for x in bilka_info_rows if ean_of(x.get("EAN"))}
     # Rows without an EAN are matched on the product page instead.

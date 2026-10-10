@@ -7,9 +7,18 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.ui.draw.rotate
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -26,6 +35,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import dk.packroff.hellocal.api.Api
 import dk.packroff.hellocal.api.ApiJson
+import dk.packroff.hellocal.api.OfflineCache
 import dk.packroff.hellocal.i18n.LocalTranslator
 import dk.packroff.hellocal.i18n.Translator
 import dk.packroff.hellocal.nav.LocalNavigator
@@ -73,7 +83,12 @@ internal fun ProductResultList(
     items.forEachIndexed { index, r ->
         FoodProductResultRow(
             result = r,
-            kcalText = if (showKcal && r.kcal != null) t.t("foods.kcalPer100g", "kcal" to jsRound(r.kcal)) else null,
+            kcalText = when {
+                !showKcal -> null
+                r.nutritionMissing -> t.t("addProduct.nutritionUnknown")
+                r.kcal != null -> t.t("foods.kcalPer100g", "kcal" to jsRound(r.kcal))
+                else -> null
+            },
             isFavorite = r.id in favoriteIds,
             favoriteLabel = t.t(if (r.id in favoriteIds) "search.removeFavorite" else "search.addFavorite"),
             onOpen = onOpen,
@@ -83,7 +98,12 @@ internal fun ProductResultList(
     }
 }
 
+/** Højst tre rækker pr. liste, til brugeren folder hele listen ud (som på weben). */
+private const val COLLAPSED_ROWS = 3
+private const val RECENT_LIMIT = 30
+
 /** Native port of src/app/search/page.tsx — Søg: favourites, recently added, live results. */
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun SearchScreen(args: RouteArgs) {
     val t = LocalTranslator.current
@@ -94,9 +114,15 @@ fun SearchScreen(args: RouteArgs) {
     var results by remember { mutableStateOf<List<FoodProductResult>>(emptyList()) }
     var resultsState by remember { mutableStateOf("loading") }
     var resultsError by remember { mutableStateOf<Throwable?>(null) }
+    var fromCache by remember { mutableStateOf(false) }
+    var correction by remember { mutableStateOf(SearchCorrection()) }
+    var exactQuery by remember { mutableStateOf<String?>(null) }
     var recentlyAdded by remember { mutableStateOf<List<FoodProductResult>>(emptyList()) }
     var favorites by remember { mutableStateOf<List<FoodProductResult>>(emptyList()) }
     val favoriteIds = favorites.map { it.id }.toSet()
+    var favoritesOpen by remember { mutableStateOf(false) }
+    var recentOpen by remember { mutableStateOf(false) }
+    val listState = rememberLazyListState()
     fun openProduct(productId: String) = nav.push("/add/$productId${if (forDish) "?for=ret" else ""}")
 
     fun toggleFavorite(productId: String, next: Boolean) {
@@ -110,20 +136,36 @@ fun SearchScreen(args: RouteArgs) {
         scope.launch { setFavorite(productId, next) }
     }
 
-    LaunchedEffect(query) {
+    LaunchedEffect(query, exactQuery) {
         if (query.isBlank()) return@LaunchedEffect
+        val exact = exactQuery == query
+        correction = SearchCorrection()
         delay(200)
         resultsState = "loading"
         try {
-            val data = ApiJson.decodeFromJsonElement(ProductListResponse.serializer(), Api.get("/api/products?q=${encodeUri(query)}"))
+            val data = ApiJson.decodeFromJsonElement(ProductListResponse.serializer(), Api.get("/api/products?q=${encodeUri(query)}${if (exact) "&exact=1" else ""}"))
+            correction = SearchCorrection.of(data)
             results = data.products.map {
-                FoodProductResult(it.id, it.name, it.imageUrl, it.brand?.name, it.kcalPer100g, hasEstimatedMacros(it.nutrientSources))
+                // Brand and subbrand lead the title, so the subtitle does not repeat the brand.
+                FoodProductResult(it.id, it.searchTitle ?: it.name, it.imageUrl, if (it.searchTitle != null) null else it.brand?.name, it.kcalPer100g, !it.nutritionMissing && hasEstimatedMacros(it.nutrientSources), it.nutritionMissing)
             }
+            if (!exact && !correction.isActive()) OfflineCache.saveSearch(query, results)
+            fromCache = false
             resultsState = "ready"
         } catch (e: Exception) {
-            resultsError = e
-            resultsState = "error"
-            results = emptyList()
+            // No connection: show saved results from earlier searches.
+            correction = SearchCorrection()
+            val cached = OfflineCache.findSearch(query)
+            if (cached != null) {
+                results = cached
+                fromCache = true
+                resultsState = "ready"
+            } else {
+                fromCache = false
+                resultsError = e
+                resultsState = "error"
+                results = emptyList()
+            }
         }
     }
 
@@ -136,34 +178,63 @@ fun SearchScreen(args: RouteArgs) {
                 val pid = r.productId ?: continue
                 if (!seen.add(pid)) continue
                 recent += FoodProductResult(pid, r.titleSnapshot, r.product?.imageUrl)
-                if (recent.size >= 5) break
+                if (recent.size >= RECENT_LIMIT) break
             }
-            recent.toList()
-        }.getOrDefault(emptyList())
+            recent.toList().also { OfflineCache.saveRecent(it) }
+        }.getOrElse { OfflineCache.recent() }
     }
 
     LaunchedEffect(Unit) {
-        favorites = runCatching { loadFavoriteProducts() }.getOrDefault(emptyList())
+        favorites = runCatching { loadFavoriteProducts().also { OfflineCache.saveFavorites(it) } }.getOrElse { OfflineCache.favorites() }
     }
 
     val showFavorites = query.isBlank() && favorites.isNotEmpty()
     val showRecent = query.isBlank() && recentlyAdded.isNotEmpty()
 
-    HcScreen(t.t("search.title"), contentPadding = LIST_PAGE_PADDING) {
-        Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
+    HcScreen(t.t("search.title"), scroll = false, contentPadding = PaddingValues(0.dp)) {
+        Box(Modifier.fillMaxWidth().padding(start = HcDimens.Gutter, end = HcDimens.Gutter, top = HcDimens.SpaceBlock, bottom = HcDimens.SpaceBlock)) {
             FoodSearchField(query, { query = it }, t.t("search.searchPlaceholder"))
-            if (showFavorites) {
-                HcText(t.t("search.favorites"), HcTypeRoles.Small, color = HcColors.Black, bold = true)
-                FoodListCard { ProductResultList(favorites, favoriteIds, t, false, ::openProduct, ::toggleFavorite) }
+        }
+        if (query.isBlank()) {
+            // Fast søgefelt; listerne ruller under det, og overskrifterne klistrer til toppen,
+            // så en udfoldet liste altid kan foldes sammen igen.
+            val favHeaderIndex = 0
+            val recentHeaderIndex = if (showFavorites) 1 + (if (favoritesOpen) favorites.size else minOf(favorites.size, COLLAPSED_ROWS)) else 0
+            LazyColumn(
+                state = listState,
+                modifier = Modifier.weight(1f).fillMaxWidth(),
+                contentPadding = PaddingValues(start = HcDimens.Gutter, end = HcDimens.Gutter, bottom = HcDimens.SpaceSection),
+            ) {
+                if (showFavorites) {
+                    searchSection(
+                        title = t.t("search.favorites"),
+                        items = favorites,
+                        open = favoritesOpen,
+                        onToggle = { favoritesOpen = !favoritesOpen; scope.launch { listState.animateScrollToItem(favHeaderIndex) } },
+                        favoriteIds = favoriteIds, t = t, onOpen = ::openProduct, onToggleFavorite = ::toggleFavorite,
+                    )
+                }
+                if (showRecent) {
+                    searchSection(
+                        title = t.t("search.recentlyAdded"),
+                        items = recentlyAdded,
+                        open = recentOpen,
+                        onToggle = { recentOpen = !recentOpen; scope.launch { listState.animateScrollToItem(recentHeaderIndex) } },
+                        favoriteIds = favoriteIds, t = t, onOpen = ::openProduct, onToggleFavorite = ::toggleFavorite,
+                    )
+                }
+                if (!showFavorites && !showRecent) {
+                    item {
+                        HcText(t.t("search.emptyState"), HcTypeRoles.Body, Modifier.fillMaxWidth().padding(horizontal = 4.dp), color = HcColors.TextSecondary, align = TextAlign.Center)
+                    }
+                }
             }
-            if (showRecent) {
-                HcText(t.t("search.recentlyAdded"), HcTypeRoles.Small, color = HcColors.Black, bold = true)
-                FoodListCard { ProductResultList(recentlyAdded, favoriteIds, t, false, ::openProduct, ::toggleFavorite) }
-            }
-            if (query.isBlank() && !showFavorites && !showRecent) {
-                HcText(t.t("search.emptyState"), HcTypeRoles.Body, Modifier.fillMaxWidth().padding(horizontal = 4.dp), color = HcColors.TextSecondary, align = TextAlign.Center)
-            }
-            if (query.isNotBlank()) {
+        } else {
+            Column(
+                Modifier.weight(1f).fillMaxWidth().verticalScroll(rememberScrollState())
+                    .padding(start = HcDimens.Gutter, end = HcDimens.Gutter, bottom = HcDimens.SpaceSection),
+                verticalArrangement = Arrangement.spacedBy(16.dp),
+            ) {
                 HcText(t.t("search.searchResults"), HcTypeRoles.Small, color = HcColors.Black, bold = true)
                 FoodListCard {
                     when (resultsState) {
@@ -176,7 +247,11 @@ fun SearchScreen(args: RouteArgs) {
                             align = TextAlign.Center,
                         )
                         else -> {
-                            ProductResultList(results.take(6), favoriteIds, t, true, ::openProduct, ::toggleFavorite)
+                            if (fromCache && results.isNotEmpty()) {
+                                HcText(t.t("offline.cachedResults"), HcTypeRoles.Caption, Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 12.dp), color = HcColors.TextSecondary, align = TextAlign.Center)
+                            }
+                            SearchCorrectionNotice(correction, onSearchInstead = { exactQuery = query }, onUseSuggestion = { query = it }, modifier = Modifier.padding(horizontal = 12.dp, vertical = 12.dp))
+                            ProductResultList(results, favoriteIds, t, true, ::openProduct, ::toggleFavorite)
                             if (results.isEmpty()) {
                                 HcText(t.t("search.noResults"), HcTypeRoles.Body, Modifier.fillMaxWidth().padding(16.dp), color = HcColors.TextSecondary, align = TextAlign.Center)
                             }
@@ -188,15 +263,73 @@ fun SearchScreen(args: RouteArgs) {
     }
 }
 
+/** Liste med klistret overskrift; foldepil når der er mere end tre rækker. */
+@OptIn(ExperimentalFoundationApi::class)
+private fun androidx.compose.foundation.lazy.LazyListScope.searchSection(
+    title: String,
+    items: List<FoodProductResult>,
+    open: Boolean,
+    onToggle: () -> Unit,
+    favoriteIds: Set<String>,
+    t: Translator,
+    onOpen: (String) -> Unit,
+    onToggleFavorite: (String, Boolean) -> Unit,
+) {
+    val canFold = items.size > COLLAPSED_ROWS
+    stickyHeader {
+        Row(
+            Modifier.fillMaxWidth().background(HcColors.Page).then(if (canFold) Modifier.clickable(onClick = onToggle) else Modifier).padding(vertical = 8.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(4.dp),
+        ) {
+            HcText(title, HcTypeRoles.Small, color = HcColors.Black, bold = true)
+            if (canFold) HcIcon("ChevronDown", size = 18.dp, stroke = 1.75f, color = HcColors.Black, modifier = Modifier.rotate(if (open) 180f else 0f))
+        }
+    }
+    val shown = if (open) items else items.take(COLLAPSED_ROWS)
+    items(shown.size) { index ->
+        val r = shown[index]
+        val itemShape = RoundedCornerShape(
+            topStart = if (index == 0) HcDimens.RadiusCard else 0.dp,
+            topEnd = if (index == 0) HcDimens.RadiusCard else 0.dp,
+            bottomStart = if (index == shown.lastIndex) HcDimens.RadiusCard else 0.dp,
+            bottomEnd = if (index == shown.lastIndex) HcDimens.RadiusCard else 0.dp,
+        )
+        Column(Modifier.fillMaxWidth().clip(itemShape).background(HcColors.Tan)) {
+            FoodProductResultRow(
+                result = r,
+                kcalText = null,
+                isFavorite = r.id in favoriteIds,
+                favoriteLabel = t.t(if (r.id in favoriteIds) "search.removeFavorite" else "search.addFavorite"),
+                onOpen = onOpen,
+                onToggleFavorite = onToggleFavorite,
+                divider = index < shown.lastIndex,
+            )
+        }
+    }
+    item { Spacer(Modifier.height(16.dp)) }
+}
+
 @Serializable
-private data class FavoriteRecipe(val id: String = "", val name: String = "", val kcal: Double = 0.0, val images: List<String> = emptyList())
+private data class FavoriteRecipe(
+    val id: String = "",
+    val name: String = "",
+    val kcal: Double = 0.0,
+    /** A meal-kit dish without serving weight (BetterFeast): kcal per 100 g. */
+    val per100g: Boolean = false,
+    val images: List<String> = emptyList(),
+)
 
 @Serializable
 private data class FavoriteRecipesResponse(val favorites: List<FavoriteRecipe> = emptyList())
 
-/** src/components/recipes/RecipeRow.tsx recipeHref — HelloFresh recipes have their own page. */
+/**
+ * src/components/recipes/RecipeRow.tsx recipeHref — meal-kit dishes (HelloFresh "hf_", RetNemt "rn_",
+ * BetterFeast "bf_"; src/lib/meal-kit-providers.ts) have their own page.
+ */
 fun recipeHref(id: String) =
-    if (id.startsWith("hf_")) "/profile/recipes/hellofresh/${encodeUri(id)}" else "/profile/recipes/${encodeUri(id)}?kind=shared"
+    if (listOf("hf_", "rn_", "bf_").any { id.startsWith(it) }) "/profile/recipes/hellofresh/${encodeUri(id)}"
+    else "/profile/recipes/${encodeUri(id)}?kind=shared"
 
 /** src/components/recipes/RecipeRow.tsx (image, name, subtitle, chevron). */
 @Composable
@@ -231,7 +364,7 @@ fun FavoritesScreen(args: RouteArgs) {
     var recipes by remember { mutableStateOf<List<FavoriteRecipe>?>(null) }
 
     LaunchedEffect(Unit) {
-        products = runCatching { loadFavoriteProducts() }.getOrDefault(emptyList())
+        products = runCatching { loadFavoriteProducts().also { OfflineCache.saveFavorites(it) } }.getOrElse { OfflineCache.favorites() }
     }
     LaunchedEffect(Unit) {
         recipes = runCatching {
@@ -266,7 +399,7 @@ fun FavoritesScreen(args: RouteArgs) {
                         FoodRecipeRow(
                             name = recipe.name,
                             imageUrl = recipe.images.firstOrNull(),
-                            subtitle = t.t("recipes.kcalTotal", "kcal" to jsRound(recipe.kcal)),
+                            subtitle = t.t(if (recipe.per100g) "recipeFilters.kcalPer100g" else "recipes.kcalTotal", "kcal" to jsRound(recipe.kcal)),
                             onClick = { nav.push(recipeHref(recipe.id)) },
                             divider = index < r.lastIndex,
                         )

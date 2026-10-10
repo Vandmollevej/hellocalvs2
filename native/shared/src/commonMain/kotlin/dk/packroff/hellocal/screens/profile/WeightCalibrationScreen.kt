@@ -31,9 +31,11 @@ import dk.packroff.hellocal.nav.RouteArgs
 import dk.packroff.hellocal.platform.NativeHooks
 import dk.packroff.hellocal.theme.HcColors
 import dk.packroff.hellocal.theme.HcDimens
+import dk.packroff.hellocal.theme.HcTypeRole
 import dk.packroff.hellocal.theme.HcTypeRoles
 import dk.packroff.hellocal.ui.HcButton
 import dk.packroff.hellocal.ui.HcCard
+import dk.packroff.hellocal.ui.HcClampedText
 import dk.packroff.hellocal.ui.HcScreen
 import dk.packroff.hellocal.ui.HcText
 import dk.packroff.hellocal.ui.ProfileEllipsisText
@@ -50,9 +52,14 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.LocalTime
+
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toInstant
 import kotlin.math.abs
+
+// HelloFresh-tekststil (prøve, kun denne side): 17 / 31 — samme som .hf-fresh-type på web.
+private val FreshBody = HcTypeRole(17f, androidx.compose.ui.text.font.FontWeight(400), 31f, false, null)
+private val FreshTitle = HcTypeRole(17f, androidx.compose.ui.text.font.FontWeight(700), 31f, true, null)
 
 private val TIME_GRID_HOURS = listOf(8, 10, 12, 14, 16, 18, 20, 22)
 
@@ -160,7 +167,7 @@ fun WeightCalibrationScreen(args: RouteArgs) {
 
     HcScreen(title = t.t("weightCalibration.title"), contentPadding = ProfilePagePadding) {
         ProfilePage(gap = HcDimens.SpaceSection) {
-            HcCard { HcText(t.t("weightCalibration.intro"), HcTypeRoles.Body, color = HcColors.Black) }
+            HcCard { HcClampedText(t.t("weightCalibration.intro"), FreshBody, color = HcColors.Black) }
 
             Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
                 pairs.forEach { (left, right) ->
@@ -169,7 +176,7 @@ fun WeightCalibrationScreen(args: RouteArgs) {
                             Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(8.dp)) {
                                 Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                                     condition.icon()
-                                    ProfileEllipsisText(condition.label, HcTypeRoles.Body, color = HcColors.Black, bold = true)
+                                    ProfileEllipsisText(condition.label, FreshBody, color = HcColors.Black, bold = true)
                                 }
                                 ProfileFilledField(
                                     conditionValues[condition.key] ?: "",
@@ -178,7 +185,7 @@ fun WeightCalibrationScreen(args: RouteArgs) {
                                     placeholder = if (weightUnit == WeightUnit.St) "11 5" else t.t("weightCalibration.weightPlaceholder"),
                                     keyboardType = inputKeyboard,
                                     suffix = Units.weightUnitLabel(weightUnit),
-                                    role = HcTypeRoles.Title,
+                                    role = FreshTitle,
                                     background = HcColors.White,
                                     borderColor = HcColors.GrayBorder,
                                     shape = RoundedCornerShape(8.dp),
@@ -190,11 +197,11 @@ fun WeightCalibrationScreen(args: RouteArgs) {
             }
 
             Column(Modifier.fillMaxWidth()) {
-                HcText(t.t("weightCalibration.timeGrid.title"), HcTypeRoles.Title, Modifier.padding(bottom = 8.dp), color = HcColors.Black)
+                HcText(t.t("weightCalibration.timeGrid.title"), FreshTitle, Modifier.padding(bottom = 8.dp), color = HcColors.Black)
                 ProfileLine(HcColors.TanDark)
                 TIME_GRID_HOURS.forEach { hour ->
                     Row(Modifier.fillMaxWidth().height(64.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(16.dp)) {
-                        HcText("${hour.toString().padStart(2, '0')}:00", HcTypeRoles.Body, Modifier.width(48.dp), bold = true, color = HcColors.Black.copy(alpha = 0.6f))
+                        HcText("${hour.toString().padStart(2, '0')}:00", FreshBody, Modifier.width(48.dp), bold = true, color = HcColors.Black.copy(alpha = 0.6f))
                         Box(Modifier.weight(1f)) {
                             ProfileFilledField(
                                 gridValues[hour] ?: "",
@@ -202,12 +209,12 @@ fun WeightCalibrationScreen(args: RouteArgs) {
                                 Modifier.fillMaxWidth(),
                                 placeholder = t.t("weightCalibration.timeGrid.placeholder"),
                                 keyboardType = inputKeyboard,
-                                role = HcTypeRoles.Title,
+                                role = FreshTitle,
                                 background = HcColors.Page,
                                 minHeight = 40.dp,
                             )
                         }
-                        HcText(Units.weightUnitLabel(weightUnit), HcTypeRoles.Body, bold = true, color = HcColors.Black.copy(alpha = 0.6f))
+                        HcText(Units.weightUnitLabel(weightUnit), FreshBody, bold = true, color = HcColors.Black.copy(alpha = 0.6f))
                     }
                     ProfileLine(HcColors.TanDark)
                 }
@@ -215,7 +222,7 @@ fun WeightCalibrationScreen(args: RouteArgs) {
 
             Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 if (status != "idle" && !saving) {
-                    HcText(t.t("weightCalibration.status.$status"), HcTypeRoles.Small, Modifier.fillMaxWidth(), color = HcColors.TextSecondary, align = TextAlign.Center)
+                    HcText(t.t("weightCalibration.status.$status"), FreshBody, Modifier.fillMaxWidth(), color = HcColors.TextSecondary, align = TextAlign.Center)
                 }
                 HcButton(
                     if (saving) t.t("weightCalibration.saving") else t.t("weightCalibration.submit"),

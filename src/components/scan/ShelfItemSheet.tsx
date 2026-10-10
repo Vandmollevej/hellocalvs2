@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { ActionLink } from "@/components/hf/ActionButton";
 import { TextField } from "@/components/hf/TextField";
+import { DecimalText } from "@/components/DecimalText";
 
 // Bundark for en vare på hyldebilledet: status, "Opret denne vare" og
 // "Ret tildeling" (manuel rettelse af et forkert AI-match).
@@ -69,7 +70,7 @@ export function ShelfItemSheet({ item, onClose, onChanged }: { item: ShelfItem; 
           {item.detectedBrand && <p className="hf-type-body">{item.detectedBrand}</p>}
           <p className="hf-type-caption text-hf-text-secondary">
             {STATUS_TEXT[item.status]}
-            {item.product ? ` · ${[item.product.brand?.name, item.product.name].filter(Boolean).join(" ")}` : ""}
+            {item.product ? <DecimalText text={` · ${[item.product.brand?.name, item.product.name].filter(Boolean).join(" ")}`} /> : ""}
             {item.matchConfidence != null && !item.manuallyAssigned ? ` · ${Math.round(item.matchConfidence * 100)} %` : ""}
           </p>
         </div>
@@ -91,7 +92,7 @@ export function ShelfItemSheet({ item, onClose, onChanged }: { item: ShelfItem; 
               {results.map((product) => (
                 <li key={product.id}>
                   <button type="button" onClick={() => void assign(product.id)} className="hf-type-body w-full px-4 py-3 text-left">
-                    {[product.brand?.name, product.name, product.packageSizeText].filter(Boolean).join(" · ")}
+                    <DecimalText text={[product.brand?.name, product.name, product.packageSizeText].filter(Boolean).join(" · ")} />
                   </button>
                 </li>
               ))}

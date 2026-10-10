@@ -66,6 +66,8 @@ export const NAV: NavEntry[] = [
     links: [
       { href: "/admin/dishes/user", key: "nav_dishes_user" },
       { href: "/admin/dishes/hellofresh", key: "nav_dishes_hellofresh" },
+      { href: "/admin/dishes/retnemt", key: "nav_dishes_retnemt" },
+      { href: "/admin/dishes/betterfeast", key: "nav_dishes_betterfeast" },
       { href: "/admin/dishes/valdemarsro", key: "nav_dishes_valdemarsro" },
     ],
   },
@@ -91,7 +93,17 @@ export const NAV: NavEntry[] = [
       { href: "/admin/page-tree", key: "nav_page_tree" },
     ],
   },
-  { kind: "link", href: "/admin/statistics", key: "nav_statistics", icon: "chart" },
+  // Analyse (docs/DECISIONS.md 2026-10-10): statistik og søgestatistik.
+  {
+    kind: "group",
+    id: "analysis",
+    key: "nav_analytics",
+    icon: "chart",
+    links: [
+      { href: "/admin/statistics", key: "nav_statistics" },
+      { href: "/admin/statistics/search", key: "nav_search_analytics" },
+    ],
+  },
   { kind: "link", href: "/admin/integrations", key: "nav_integrations", icon: "plug" },
   { kind: "link", href: "/admin/economy", key: "nav_economy", icon: "coin" },
   { kind: "link", href: "/admin/hello-doc", key: "nav_hello_doc", icon: "users" },

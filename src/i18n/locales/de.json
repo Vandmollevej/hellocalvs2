@@ -422,6 +422,8 @@
     "privacyPolicy": "Datenschutzerklärung",
     "dataTracking": "Datenerfassung",
     "languageAndRegion": "Sprache und Region",
+    "bodyMeasurementsDisplay": "Körpermaße",
+    "bodyMeasurementsDisplayDescription": "Wähle, welche Körpermaße auf der Seite Körpermaße angezeigt werden. Ausgeblendete Maße und ihre Einträge werden nicht gelöscht.",
     "resultsDisplay": "Ergebnisanzeige",
     "messages": "Nachrichten",
     "notifications": "Kommunikation",
@@ -531,90 +533,90 @@
     "toggleLabel": "Menstruationszyklus anzeigen",
     "toggleDescription": "Fügt \"Menstruation\" zum Hinzufügen-Menü hinzu, damit du den Beginn des Zyklus erfassen kannst."
   },
-    "customMeasure": {
-      "add": "Add own measurement",
-      "delete": "Delete",
-      "cancel": "Cancel",
-      "save": "Save measurement",
-      "nameLabel": "Name",
-      "descriptionLabel": "Description",
-      "paramLabel": "Parameter",
-      "paramPlaceholder": "Choose parameter",
-      "search": "Search parameter",
-      "noMatch": "No parameters found",
-      "periodLabel": "Period",
-      "periodHint": "Periods longer than a day show a daily average.",
-      "textLabel": "Text under the number",
-      "textHint": "At most {lines} lines of {chars} characters",
-      "group": {
-        "food": "Food and nutrition",
-        "activity": "Activity",
-        "sleep": "Sleep",
-        "heart": "Heart and readings",
-        "body": "Body"
-      },
-      "period": {
-        "today": "Today",
-        "yesterday": "Yesterday",
-        "last7": "Last 7 days",
-        "last30": "Last 30 days",
-        "thisWeek": "This week",
-        "lastWeek": "Last week",
-        "thisMonth": "This month",
-        "lastMonth": "Last month",
-        "thisYear": "This year",
-        "lastYear": "Last year"
-      },
-      "param": {
-        "kcalIntake": "Calories eaten",
-        "kcalRemaining": "Calories remaining",
-        "protein": "Protein",
-        "carbs": "Carbohydrates",
-        "fat": "Fat",
-        "kcalBurned": "Calories burned",
-        "restingEnergy": "Resting energy (kcal)",
-        "steps": "Steps",
-        "distance": "Kilometres",
-        "water": "Water",
-        "exerciseMinutes": "Active minutes",
-        "standMinutes": "Stand minutes",
-        "floors": "Floors climbed",
-        "zoneMinutes": "Zone minutes",
-        "cardioLoad": "Cardio load",
-        "sleepDuration": "Sleep",
-        "sleepInBed": "Time in bed",
-        "sleepAwake": "Awake during sleep",
-        "sleepRem": "REM sleep",
-        "sleepLight": "Light sleep",
-        "sleepDeep": "Deep sleep",
-        "sleepScore": "Sleep quality",
-        "sleepEfficiency": "Sleep efficiency",
-        "sleepAwakenings": "Awakenings",
-        "heartRate": "Heart rate",
-        "restingHeartRate": "Resting heart rate",
-        "heartRateMin": "Lowest heart rate",
-        "heartRateMax": "Highest heart rate",
-        "hrv": "HRV",
-        "vo2Max": "VO₂ max",
-        "heartRateRecovery": "Heart rate recovery",
-        "respiratoryRate": "Respiratory rate",
-        "spo2": "Oxygen saturation (SpO₂)",
-        "temperature": "Temperature",
-        "stress": "Stress",
-        "recoveryScore": "Recovery",
-        "strain": "Strain",
-        "bloodGlucose": "Blood glucose",
-        "bodyFat": "Body fat %",
-        "fatMass": "Fat mass",
-        "fatFreeMass": "Fat-free mass",
-        "muscleMass": "Muscle mass",
-        "boneMass": "Bone mass",
-        "bodyWater": "Body water",
-        "visceralFat": "Visceral fat",
-        "bmr": "Basal metabolic rate (BMR)",
-        "bmi": "BMI"
-      }
+  "customMeasure": {
+    "add": "Add own measurement",
+    "delete": "Delete",
+    "cancel": "Cancel",
+    "save": "Save measurement",
+    "nameLabel": "Name",
+    "descriptionLabel": "Description",
+    "paramLabel": "Parameter",
+    "paramPlaceholder": "Choose parameter",
+    "search": "Search parameter",
+    "noMatch": "No parameters found",
+    "periodLabel": "Period",
+    "periodHint": "Periods longer than a day show a daily average.",
+    "textLabel": "Text under the number",
+    "textHint": "At most {lines} lines of {chars} characters",
+    "group": {
+      "food": "Food and nutrition",
+      "activity": "Activity",
+      "sleep": "Sleep",
+      "heart": "Heart and readings",
+      "body": "Body"
     },
+    "period": {
+      "today": "Today",
+      "yesterday": "Yesterday",
+      "last7": "Last 7 days",
+      "last30": "Last 30 days",
+      "thisWeek": "This week",
+      "lastWeek": "Last week",
+      "thisMonth": "This month",
+      "lastMonth": "Last month",
+      "thisYear": "This year",
+      "lastYear": "Last year"
+    },
+    "param": {
+      "kcalIntake": "Calories eaten",
+      "kcalRemaining": "Calories remaining",
+      "protein": "Protein",
+      "carbs": "Carbohydrates",
+      "fat": "Fat",
+      "kcalBurned": "Calories burned",
+      "restingEnergy": "Resting energy (kcal)",
+      "steps": "Steps",
+      "distance": "Kilometres",
+      "water": "Water",
+      "exerciseMinutes": "Active minutes",
+      "standMinutes": "Stand minutes",
+      "floors": "Floors climbed",
+      "zoneMinutes": "Zone minutes",
+      "cardioLoad": "Cardio load",
+      "sleepDuration": "Sleep",
+      "sleepInBed": "Time in bed",
+      "sleepAwake": "Awake during sleep",
+      "sleepRem": "REM sleep",
+      "sleepLight": "Light sleep",
+      "sleepDeep": "Deep sleep",
+      "sleepScore": "Sleep quality",
+      "sleepEfficiency": "Sleep efficiency",
+      "sleepAwakenings": "Awakenings",
+      "heartRate": "Heart rate",
+      "restingHeartRate": "Resting heart rate",
+      "heartRateMin": "Lowest heart rate",
+      "heartRateMax": "Highest heart rate",
+      "hrv": "HRV",
+      "vo2Max": "VO₂ max",
+      "heartRateRecovery": "Heart rate recovery",
+      "respiratoryRate": "Respiratory rate",
+      "spo2": "Oxygen saturation (SpO₂)",
+      "temperature": "Temperature",
+      "stress": "Stress",
+      "recoveryScore": "Recovery",
+      "strain": "Strain",
+      "bloodGlucose": "Blood glucose",
+      "bodyFat": "Body fat %",
+      "fatMass": "Fat mass",
+      "fatFreeMass": "Fat-free mass",
+      "muscleMass": "Muscle mass",
+      "boneMass": "Bone mass",
+      "bodyWater": "Body water",
+      "visceralFat": "Visceral fat",
+      "bmr": "Basal metabolic rate (BMR)",
+      "bmi": "BMI"
+    }
+  },
   "frontPageSettings": {
     "intro": "Wähle, welche Felder im Rad auf der Startseite angezeigt werden. Das oberste Feld zeigt immer eine Liste aller Hinzufügen-Elemente.",
     "sideSectionTitle": "Startseitenansicht",
@@ -625,7 +627,12 @@
     "selectedCount": "{count} von {max} Feldern ausgewählt",
     "maxReachedHint": "Entferne ein Feld, um ein anderes hinzuzufügen.",
     "statsSectionTitle": "Zahlen im Zahlen-Slider",
-    "statsIntro": "Wähle, welche Zahlen im Zahlen-Slider auf der Startseite angezeigt werden können. Wird die Liste zu lang, kannst du einfach scrollen."
+    "statsIntro": "Wähle, welche Zahlen im Zahlen-Slider auf der Startseite angezeigt werden können. Wird die Liste zu lang, kannst du einfach scrollen.",
+    "zonesSectionTitle": "Heart-rate zones",
+    "zonesIntro": "Choose the zone the number slider shows time in, and adjust the limits (bpm) to your own pulse.",
+    "zoneLabel": "Zone {zone}",
+    "zoneMin": "Zone {zone} from (bpm)",
+    "zoneMax": "Zone {zone} to (bpm)"
   },
   "frontPageStats": {
     "calories": "Aufgenommene Kalorien",
@@ -648,7 +655,39 @@
     "water": "Wasser",
     "burned": "Kalorien durch Sport",
     "steps": "Schritte",
-    "distanceKm": "Zurückgelegte Kilometer"
+    "distanceKm": "Zurückgelegte Kilometer",
+    "goalMin": "Goal: {value}",
+    "goalMax": "Goal: at most {value}",
+    "kcalRemainingCaption": "Left today",
+    "burnedCaption": "Active calories",
+    "distanceCaption": "Distance today",
+    "floors": "Floors climbed",
+    "earnedKcal": "Extra calories",
+    "earnedCaption": "Earned",
+    "energySplit": "Energy split",
+    "energySplitCaption": "Goal P {p} F {f} C {k}",
+    "activityKcal": "Activity (calories)",
+    "activityNone": "None recorded",
+    "stepKcal": "Calories from steps",
+    "stepKcalCaption": "From steps today",
+    "intakeVsTypical": "Intake now vs. usual",
+    "intakeVsTypicalCaption": "{percent} % vs. usual",
+    "intakeNoBasis": "Nothing to compare with yet",
+    "restingTime": "Time at resting heart rate",
+    "restingBpm": "Resting {bpm} bpm",
+    "restingBpmNone": "Resting heart rate unknown",
+    "zoneTime": "Time in heart-rate zone",
+    "zoneCaption": "Zone {zone}",
+    "weightOnGoalDay": "Weight on goal day",
+    "weightGoalCaption": "Goal {goal} kg · {verdict}",
+    "noWeightGoal": "No weight goal set",
+    "verdict": {
+      "likely": "Likely",
+      "possible": "Possible",
+      "unlikely": "Unlikely"
+    },
+    "goalChance": "Chance of reaching the goal",
+    "goalChanceCaption": "Recommended at most {max} kg/week"
   },
   "footerArc": {
     "open": "Hinzufügen-Tasten öffnen",
@@ -1055,25 +1094,14 @@
     "tabMine": "Meine Gerichte",
     "tabShared": "Geteilte Gerichte",
     "statusNotShared": "Not shared",
-
     "sharedSearchPlaceholder": "In Titel, Zutaten suchen …",
-
     "createNew": "Neues Gericht anlegen",
-
-    "sourceAll": "Rezepte",
-
-    "sourceShared": "Geteilte Gerichte",
-
+    "sourceAll": "Alle anzeigen",
     "sourceHelloFresh": "Hello Fresh",
-
     "sourceValdemarsro": "Valdemarsro",
-
     "sourceFilterAria": "Rezeptquelle wählen",
-
     "filtersSheetTitle": "Filter",
-
     "goToRecipe": "Zum Rezept",
-
     "valdemarsroSource": "Valdemarsro",
     "sortRelevance": "Relevanz",
     "sortPopular": "Beliebtheit",
@@ -1089,7 +1117,11 @@
     "trendingTitle": "Gerade im Trend",
     "trendingEmpty": "Es gibt noch keine geteilten Gerichte",
     "favoritesTitle": "Meine Favoriten",
-    "favoritesEmpty": "Du hast noch keine Favoriten"
+    "favoritesEmpty": "Du hast noch keine Favoriten",
+    "sourceRetnemt": "RetNemt",
+    "sourceBetterfeast": "BetterFeast",
+    "retnemt": "RetNemt",
+    "betterfeast": "BetterFeast"
   },
   "recipeFilters": {
     "title": "Filter",
@@ -1168,7 +1200,8 @@
       "carbs-low": "Wenig Kohlenhydrate",
       "fat-high": "Viel Fett",
       "fat-low": "Wenig Fett"
-    }
+    },
+    "kcalPer100g": "{kcal} kcal pro 100 g"
   },
   "recipeSteps": {
     "title": "Zubereitung",
@@ -1180,7 +1213,8 @@
     "addStep": "Schritt hinzufügen",
     "addPhoto": "Foto zum Schritt aufnehmen",
     "removePhoto": "Foto entfernen",
-    "remove": "Schritt löschen"
+    "remove": "Schritt löschen",
+    "dropPhoto": "Mache ein Foto vom Schritt oder ziehe ein Bild hierher"
   },
   "recipeImages": {
     "title": "Bilder des Gerichts",
@@ -1230,18 +1264,11 @@
     }
   },
   "recipeDetail": {
-
+    "durationLabel": "{minutes} min.",
     "shareRejected": "Your dish is not shared with others because it was rejected. You keep it yourself.",
-
-
     "shareRejectedReason": "Reason: {reason}",
-
-
     "servingsLabel": "{count} people",
-
-
     "thumbUp": "Daumen hoch",
-
     "thumbDown": "Daumen runter",
     "loading": "Gericht wird geladen …",
     "notFound": "Das Gericht existiert nicht mehr",
@@ -1257,7 +1284,13 @@
     "report": "Melden",
     "reported": "Danke, das Gericht wurde gemeldet",
     "reportError": "Gericht konnte nicht gemeldet werden",
-    "shareError": "Die Freigabe konnte gerade nicht geändert werden"
+    "shareError": "Die Freigabe konnte gerade nicht geändert werden",
+    "measureKcal": "{amount} · {kcal} kcal"
+  },
+  "recipeUnits": {
+    "label": "Mengen anzeigen als",
+    "measures": "Maße",
+    "grams": "Gramm"
   },
   "hfRecipe": {
     "loading": "Rezept wird geladen …",
@@ -1305,57 +1338,50 @@
       "fiber": "Ballaststoffe",
       "protein": "Eiweiß",
       "salt": "Salz"
-    }
+    },
+    "register": "Gericht erfassen",
+    "declaration": "Zutatenverzeichnis",
+    "nutritionPer100g": "Nährwerte pro 100 g",
+    "nutritionNoteRetnemt": "Die Nährwerte pro Portion berechnet RetNemt aus den Zutaten des Rezepts.",
+    "nutritionNoteBetterfeast": "Die Nährwerte pro 100 g stammen aus der Produktdeklaration von BetterFeast.",
+    "allergenNoteRetnemt": "Die Allergene sind Richtwerte auf Grundlage der Zutaten, nicht von Allergenspuren."
   },
   "createDish": {
+    "pageTitle": "Title and description",
+    "descriptionPlaceholder": "Description",
+    "durationLabel": "Duration",
+    "minutes": "min.",
+    "done": "Done",
+    "pageImport": "Import",
+    "pageBack": "Previous page",
+    "pageNext": "Next page",
+    "pageDots": "Page {current} of {total}",
+    "pageIngredients": "Ingredients",
+    "pageImages": "Pictures of the dish",
     "servings": "Number of people",
-
     "shareLabel": "Möchtest du das Gericht mit anderen Nutzern teilen?",
-
     "modeManual": "Manual",
-
     "modeText": "Paste text",
-
     "modeScan": "Scan",
-
     "shareQuestionTitle": "Share this dish?",
-
     "shareQuestionBody": "Other users can find and use your dish. No personal details are shared. You can also share it later from the dish.",
-
     "shareYes": "Share",
-
     "shareNo": "Not now",
-
     "pasteTitle": "Paste recipe text",
-
     "pastePlaceholder": "Paste the complete recipe text here",
-
     "pasteSourcePlaceholder": "Source link (optional)",
-
     "pasteInsert": "Insert",
-
     "pasteWorking": "Reading the recipe …",
-
     "pasteError": "Could not read the recipe",
-
     "scanTitle": "Scan recipe",
-
     "scanTake": "Take photo",
-
     "scanGallery": "From library",
-
     "scanFinish": "Done",
-
     "scanWorking": "Reading the pages …",
-
     "scanError": "Could not read the pages",
-
     "scanHint": "Add the pages in order. The first photo becomes the dish image.",
-
     "importMissing": "Missing a match or an amount — add these yourself:",
-
     "importDone": "The recipe was inserted",
-
     "importNutrition": "Nutrition in the text (per serving)",
     "shareInfo": "Beim Teilen eines Gerichts werden keine persönlichen Daten weitergegeben",
     "shareInfoAria": "Über das Teilen",
@@ -1379,7 +1405,7 @@
     "searchPlaceholder": "Nach Zutat suchen",
     "searching": "Suche läuft...",
     "noResults": "Keine Artikel passen zu deiner Suche",
-    "scan": "Foto aufnehmen",
+    "scan": "Barcode scannen",
     "scanWeb": "Bild hochladen oder hier ablegen",
     "scanWebWorking": "Bild wird gelesen …",
     "scanWebNotFound": "Wir konnten den Artikel auf dem Bild nicht erkennen. Versuche es mit einem Bild der Vorderseite oder suche nach dem Artikel.",
@@ -1463,6 +1489,7 @@
     "pendingBannerMany": "{count} Einträge warten auf Upload"
   },
   "offline": {
+    "cachedResults": "Gespeicherte Ergebnisse früherer Suchen (offline)",
     "message": "Keine Verbindung — dafür wird Internet benötigt. Versuche es erneut, sobald du online bist.",
     "banner": "Du bist offline — einige Funktionen sind nicht verfügbar",
     "barcodeLookup": "Der Barcode wurde gelesen, aber du hast keine Verbindung. Versuche es erneut, sobald du online bist."
@@ -1795,7 +1822,13 @@
     "thigh": "Oberschenkel (cm)",
     "upperArm": "Oberarm (cm)",
     "neck": "Hals (cm)",
+    "buttock": "Gesäß (cm)",
+    "calf": "Wade (cm)",
+    "ankle": "Knöchel (cm)",
     "names": {
+      "buttock": "Gesäß",
+      "calf": "Wade",
+      "ankle": "Knöchel",
       "neck": "Hals",
       "waist": "Taille",
       "hip": "Hüfte",
@@ -1891,8 +1924,24 @@
     "activityIntro": "Die WHO empfiehlt Erwachsenen mindestens 150 Min. moderate Aktivität pro Woche und Krafttraining an 2 Tagen pro Woche. Uhren und Aktivitätstracker können sie erfassen.",
     "activityUseWho": "WHO-Empfehlung verwenden",
     "activityHeartRateHint": "Puls über: Du musst den Wert mindestens einmal am Tag überschreiten. Moderate Intensität liegt bei etwa 64 % deiner maximalen Herzfrequenz (220 − dein Alter), z. B. etwa 120 bei einer 30-Jährigen.",
-    "activity": {"stepsPerDay":"Schritte","activeMinutesPerWeek":"Aktive Minuten","strengthDaysPerWeek":"Krafttraining","workoutsPerWeek":"Trainingseinheiten","runKmPerWeek":"Laufen","cycleKmPerWeek":"Radfahren","heartRateAboveBpm":"Puls über"},
-    "activityPlaceholder": {"stepsPerDay":"z. B. 8000","activeMinutesPerWeek":"z. B. 150","strengthDaysPerWeek":"z. B. 2","workoutsPerWeek":"z. B. 3","runKmPerWeek":"z. B. 15","cycleKmPerWeek":"z. B. 50","heartRateAboveBpm":"z. B. 120"},
+    "activity": {
+      "stepsPerDay": "Schritte",
+      "activeMinutesPerWeek": "Aktive Minuten",
+      "strengthDaysPerWeek": "Krafttraining",
+      "workoutsPerWeek": "Trainingseinheiten",
+      "runKmPerWeek": "Laufen",
+      "cycleKmPerWeek": "Radfahren",
+      "heartRateAboveBpm": "Puls über"
+    },
+    "activityPlaceholder": {
+      "stepsPerDay": "z. B. 8000",
+      "activeMinutesPerWeek": "z. B. 150",
+      "strengthDaysPerWeek": "z. B. 2",
+      "workoutsPerWeek": "z. B. 3",
+      "runKmPerWeek": "z. B. 15",
+      "cycleKmPerWeek": "z. B. 50",
+      "heartRateAboveBpm": "z. B. 120"
+    },
     "nutritionHeading": "Ernährung pro Tag",
     "nutrition": {
       "kcal": "Kalorien",
@@ -1908,86 +1957,86 @@
     }
   },
   "weighIn": {
-    "attireTitle": "What were you wearing?",
+    "attireTitle": "Was hattest du an?",
     "attireItem": {
-      "UNDERWEAR": "Underwear",
-      "PANTS": "Trousers",
-      "TOP": "Top / T-shirt",
-      "SWEATER": "Sweater",
-      "SHOES": "Shoes",
-      "POCKET_ITEMS": "Phone etc. in pocket",
-      "AFTER_TOILET": "After using the toilet"
+      "UNDERWEAR": "Mit Unterwäsche",
+      "PANTS": "Mit Hose",
+      "TOP": "Mit Top / T-Shirt",
+      "SWEATER": "Mit Oberteil",
+      "SHOES": "Mit Schuhen",
+      "POCKET_ITEMS": "Mit Handy und anderem in den Taschen",
+      "AFTER_TOILET": "Nach dem Toilettengang"
     },
-    "attireNaked": "Nothing selected = naked",
+    "attireNaked": "Nichts ausgewählt = nackt",
     "attire": {
-      "NAKED": "Naked",
-      "UNDERWEAR": "In underwear",
-      "CLOTHED": "Clothed",
-      "CLOTHED_PHONE": "Clothed, phone in pocket"
+      "NAKED": "Nackt",
+      "UNDERWEAR": "Mit Unterwäsche",
+      "CLOTHED": "Mit Kleidung",
+      "CLOTHED_PHONE": "Mit Kleidung und Handy in der Tasche"
     },
-    "save": "Save",
-    "saving": "Saving…",
-    "saveError": "Could not save. Try again.",
-    "later": "Later",
-    "continue": "Continue",
+    "save": "Speichern",
+    "saving": "Wird gespeichert…",
+    "saveError": "Speichern fehlgeschlagen. Versuche es erneut.",
+    "later": "Später",
+    "continue": "Weiter",
     "ago": {
-      "justNow": "just now",
-      "minutes": "{n} min. ago",
-      "hours": "{n} hours ago",
-      "days": "{n} days ago"
+      "justNow": "gerade eben",
+      "minutes": "vor {n} Min.",
+      "hours": "vor {n} Stunden",
+      "days": "vor {n} Tagen"
     },
     "sync": {
-      "now": "Sync now",
-      "syncing": "Syncing…",
-      "done": "Synced",
-      "failed": "Sync failed",
-      "error": "Error — reconnect",
-      "last": "Synced {ago}",
-      "never": "Not synced yet",
-      "open": "Open {name}",
-      "openShort": "Open",
-      "noneConnected": "No smart scale connected",
-      "connect": "Connect"
+      "now": "Jetzt synchronisieren",
+      "syncing": "Wird synchronisiert…",
+      "done": "Synchronisiert",
+      "failed": "Synchronisierung fehlgeschlagen",
+      "error": "Fehler — neu verbinden",
+      "last": "Synchronisiert {ago}",
+      "never": "Noch nicht synchronisiert",
+      "open": "{name} öffnen",
+      "openShort": "Öffnen",
+      "noneConnected": "Keine smarte Waage verbunden",
+      "connect": "Verbinden"
     },
     "stale": {
-      "title": "It has been a while since the last sync",
-      "body": "{name} was last synced {ago}. Sync so your latest weigh-ins come through.",
-      "bodyNever": "{name} has not been synced yet. Sync so your weigh-ins come through."
+      "title": "Die letzte Synchronisierung ist schon länger her",
+      "body": "{name} wurde zuletzt {ago} synchronisiert. Synchronisiere, damit deine neuesten Wiegungen ankommen.",
+      "bodyNever": "{name} wurde noch nicht synchronisiert. Synchronisiere, damit deine Wiegungen ankommen."
     },
     "prompt": {
-      "aria": "What were you wearing when you weighed in?",
-      "todayMorning": "You weighed yourself this morning.",
-      "past": "You weighed yourself {when}",
-      "andWeighed": "and weighed",
-      "question": "But was it:",
-      "older": "Older weigh-in",
-      "newer": "Newer weigh-in"
+      "aria": "Was hattest du beim Wiegen an?",
+      "todayMorning": "Du hast dich heute Morgen gewogen.",
+      "past": "Du hast dich {when} gewogen",
+      "andWeighed": "und hast",
+      "question": "Aber war es:",
+      "older": "Ältere Wiegung",
+      "newer": "Neuere Wiegung"
     },
     "when": {
       "today": {
-        "morning": "this morning",
-        "afternoon": "this afternoon",
-        "evening": "this evening",
-        "night": "last night"
+        "morning": "heute Morgen",
+        "afternoon": "heute Nachmittag",
+        "evening": "heute Abend",
+        "night": "heute Nacht"
       },
       "yesterday": {
-        "morning": "yesterday morning",
-        "afternoon": "yesterday afternoon",
-        "evening": "yesterday evening",
-        "night": "last night"
+        "morning": "gestern Morgen",
+        "afternoon": "gestern Nachmittag",
+        "evening": "gestern Abend",
+        "night": "heute Nacht"
       },
       "part": {
-        "morning": "morning",
-        "afternoon": "afternoon",
-        "evening": "evening",
-        "night": "night"
+        "morning": "Morgen",
+        "afternoon": "Nachmittag",
+        "evening": "Abend",
+        "night": "Nacht"
       },
       "weekday": "{weekday} {part}",
-      "lastWeek": "last {weekday}"
+      "lastWeek": "letzten {weekday}"
     },
     "details": {
-      "title": "Weigh-in",
-      "failed": "Could not load the weigh-in."
+      "title": "Wiegung",
+      "failed": "Die Wiegung konnte nicht geladen werden."
     }
   },
   "weightLog": {
@@ -2038,6 +2087,7 @@
     "recentTitle": "Letzte Einträge"
   },
   "photoDiary": {
+    "addPhoto": "Neues Foto hinzufügen",
     "title": "Bildtagebuch",
     "loading": "Lädt…",
     "loadError": "Bildtagebuch konnte nicht geladen werden.",
@@ -2177,6 +2227,7 @@
     "showLess": "Weniger anzeigen",
     "extendedNutrition": "Nährwerte",
     "extendedNutritionDisclaimer": "Wird nur angezeigt, wenn für dieses Produkt Daten vorhanden sind.",
+    "fridaSource": "Quelle: Fødevaredata (frida.fooddata.dk), DTU Fødevareinstituttet, Danmarks Tekniske Universitet",
     "toxins": "Giftstoffe",
     "toxinPregnancyBadge": "Schwanger/stillend",
     "toxinsDisclaimer": "Basierend auf der Zutatenliste — keine Messung dieses konkreten Produkts. Quellen: dänische Lebensmittelbehörde und EFSA.",
@@ -2213,7 +2264,8 @@
       "vitaminB7": "Vitamin B7 (Biotin)",
       "vitaminB9": "Vitamin B9 (Folat)",
       "vitaminB12": "Vitamin B12"
-    }
+    },
+    "swapLiquidUnit": "Zwischen Volumen und Gramm wechseln"
   },
   "photoAward": {
     "bannerSingle": "Du kannst {points} Punkte verdienen, indem du ein neues Foto von {photoType} machst.",
@@ -2393,6 +2445,7 @@
       "title": "Zugriff auf {name}",
       "messageReadWrite": "„Hello Cal“ möchte auf deine {name}-Daten zugreifen und sie aktualisieren.",
       "messageRead": "„Hello Cal“ möchte auf deine {name}-Daten zugreifen.",
+      "messageConnected": "Hello Cal ist mit {name} verbunden. Wähle unten, was abgerufen und gesendet wird.",
       "turnOnAll": "Alle einschalten",
       "turnOffAll": "Alle ausschalten",
       "writeTitle": "„Hello Cal“ das Schreiben erlauben",
@@ -2426,7 +2479,11 @@
         "water": "Wasser",
         "body": "Größe, BMI und Temperatur"
       }
-    }
+    },
+    "retNemtTitle": "RetNemt-Rezepte",
+    "retNemtDescription": "RetNemt-Rezepte zusammen mit den geteilten Gerichten unter Rezepte anzeigen",
+    "betterFeastTitle": "BetterFeast-Gerichte",
+    "betterFeastDescription": "Fertiggerichte von BetterFeast zusammen mit den geteilten Gerichten unter Rezepte anzeigen"
   },
   "payment": {
     "title": "Zahlung",
@@ -3094,12 +3151,19 @@
     },
     "sharing": {
       "title": "Mit anderen teilen",
-      "intro": "Hier siehst du, wer in der Familie dein Profil ansehen kann und was sie sehen können. {owner} bestimmt, wer Zugriff hat.",
+      "introSelf": "Choose who in the family may see your profile and who may also add entries on your behalf.",
+      "introSelfMember": "Choose who in the family may see your profile and who may also add entries on your behalf. This is your decision. {owner} pays for the family and always has access.",
+      "introOwner": "See who in the family can view your profile and what they can see. {owner} decides who has access.",
       "none": "Niemand sonst in der Familie kann dein Profil ansehen.",
+      "shareWith": "Share with {name}",
+      "allowWrite": "May also add entries for you",
+      "allowWriteFor": "{name} may also add entries for you",
       "sharedWith": "Geteilt mit {name}",
       "ownerNote": "{name} zahlt für die Familie und hat immer Zugriff auf dein Profil.",
       "grantNote": "{owner} hat {name} Zugriff auf dein Profil gegeben.",
+      "selfGrantNote": "You can change or stop sharing with {name} above.",
       "canEdit": "{name} kann auch Einträge in deinem Profil hinzufügen und bearbeiten. Alles steht in deinem Kontrollprotokoll.",
+      "viewOnly": "{name} can only view, not add or edit. Everything is in your control log.",
       "area": {
         "profile": "Profil (Name, Alter, Größe)",
         "registrations": "Mahlzeiteneinträge",
@@ -3563,5 +3627,33 @@
     "sugarFree": "Sugar free",
     "vegetarian": "Vegetarian",
     "vegan": "Vegan"
+  },
+  "forwardRecipe": {
+    "title": "Send to a friend",
+    "hint": "Send “{name}” as an encrypted link.",
+    "duration": "How long should the link work?",
+    "days": {
+      "1": "1 day",
+      "7": "7 days",
+      "30": "30 days",
+      "90": "90 days"
+    },
+    "toName": "Friend's name",
+    "toEmail": "Friend's email",
+    "fromName": "From (your name)",
+    "message": "Message (optional)",
+    "encrypted": "The link is encrypted and stops working when the time is up.",
+    "share": "Share",
+    "sending": "Creating the link …",
+    "missing": "Fill in name, email and from name (valid email).",
+    "error": "Could not create the link.",
+    "copied": "Link copied.",
+    "shareText": "Try “{name}” in Hello Cal!",
+    "button": "Send to a friend"
+  },
+  "searchCorrection": {
+    "showingFor": "Ergebnisse für {query}",
+    "searchInstead": "Stattdessen suchen nach {query}",
+    "didYouMean": "Meintest du {query}?"
   }
 }

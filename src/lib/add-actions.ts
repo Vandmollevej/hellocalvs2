@@ -1,5 +1,6 @@
 import { useEffect, useState, useSyncExternalStore } from "react";
 import {
+  IconActivity,
   IconCalendarHeart,
   IconCamera,
   IconClipboardHeart,
@@ -88,7 +89,8 @@ export const ADD_ACTIONS: AddAction[] = [
   {
     key: "activity",
     href: "/activity/create",
-    imageSrc: "/icons/activity-3d.png",
+    // Stregikon som de andre i bundcirklen — ikke det farvede 3D-billede.
+    icon: IconActivity,
     labelKey: "addButton.activity",
   },
   {

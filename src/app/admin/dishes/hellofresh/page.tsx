@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
 import { requireAdminUser } from "@/lib/require-admin";
-import { loadHelloFreshDishes, parseDishParams } from "@/lib/admin-dishes";
+import { loadImportedDishes, parseDishParams } from "@/lib/admin-dishes";
 import { DishListPage } from "@/components/admin/DishListPage";
 
 // Admin → Retter → HelloFresh (docs/DECISIONS.md 2026-09-28): alle
@@ -13,7 +13,7 @@ export default async function AdminHelloFreshDishesPage({
   const admin = await requireAdminUser();
   if (!admin) redirect("/admin/login");
   const { q, page } = parseDishParams(await searchParams);
-  const data = await loadHelloFreshDishes(q, page);
+  const data = await loadImportedDishes(q, page, "HELLOFRESH");
   return (
     <DishListPage
       title="HelloFresh-retter"

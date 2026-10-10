@@ -78,7 +78,7 @@ export function RecipeDescription({
   );
 }
 
-export function RecipeAllergens({ label, names, note }: { label: string; names: string[]; note: string }) {
+export function RecipeAllergens({ label, names, note }: { label: string; names: string[]; note?: string }) {
   return (
     <>
       {names.length > 0 && (
@@ -87,7 +87,7 @@ export function RecipeAllergens({ label, names, note }: { label: string; names: 
           {names.join(" • ")}
         </p>
       )}
-      <p className="rv-allergen-note">{note}</p>
+      {note && <p className="rv-allergen-note">{note}</p>}
     </>
   );
 }

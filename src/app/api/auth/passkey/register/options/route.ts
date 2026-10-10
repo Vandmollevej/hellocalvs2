@@ -25,7 +25,13 @@ export async function POST(req: Request) {
       transports: p.transports as AuthenticatorTransportFuture[],
     })),
     // Discoverable: login kræver ikke e-mail først; telefonen viser Face ID.
-    authenticatorSelection: { residentKey: "required", userVerification: "required" },
+    // "platform": kun enhedens egen Face ID/Touch ID/skærmlås — ellers tilbyder
+    // browseren en QR-kode til en anden enhed.
+    authenticatorSelection: {
+      authenticatorAttachment: "platform",
+      residentKey: "required",
+      userVerification: "required",
+    },
   });
 
   const response = NextResponse.json(options);

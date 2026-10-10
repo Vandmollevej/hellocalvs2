@@ -50,12 +50,16 @@ import dk.packroff.hellocal.i18n.LocalTranslator
 import dk.packroff.hellocal.nav.LocalNavigator
 import dk.packroff.hellocal.nav.RouteArgs
 import dk.packroff.hellocal.platform.NativeHooks
+import dk.packroff.hellocal.screens.onboarding.KitchenConversion
+import dk.packroff.hellocal.screens.onboarding.KitchenConversions
+import dk.packroff.hellocal.screens.onboarding.findConversionIn
 import dk.packroff.hellocal.theme.HcColors
 import dk.packroff.hellocal.theme.HcDimens
 import dk.packroff.hellocal.theme.HcTypeRoles
 import dk.packroff.hellocal.theme.style
 import dk.packroff.hellocal.ui.FoodFavoriteIcon
 import dk.packroff.hellocal.ui.FoodImage
+import dk.packroff.hellocal.ui.localizedDecimals
 import dk.packroff.hellocal.ui.FoodMacroSliderBar
 import dk.packroff.hellocal.ui.FoodOutlinedCard
 import dk.packroff.hellocal.ui.FoodPillButton
@@ -68,6 +72,11 @@ import dk.packroff.hellocal.ui.HcText
 import dk.packroff.hellocal.ui.icons.HcIcon
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlin.math.abs
+import kotlin.math.max
+import kotlin.math.min
+import kotlin.math.roundToInt
+import kotlin.math.sqrt
 
 private const val PENDING_POLL_MS = 2500L
 private const val CUTOUT_WAIT_MS = 3 * 60 * 1000L
@@ -94,7 +103,7 @@ private data class MacroValues(val amount: Double, val protein: Double, val carb
 
 private data class NutrientRow(
     val key: String,
-    val value: Double,
+    val value: Double?,
     val unit: String,
     val digits: Int,
     val estimated: Boolean,
@@ -146,6 +155,12 @@ fun AddProductView(
         amount = value
     }
     var amountUnit by remember { mutableStateOf("gram") }
+    // Væsker i Opret ret: rumfang eller gram som primært tal (FoodLogic.kt liquidAmountFor).
+    var liquidGrams by remember { mutableStateOf(false) }
+    var conversions by remember { mutableStateOf<List<KitchenConversion>>(emptyList()) }
+    LaunchedEffect(forDish) {
+        if (forDish) conversions = runCatching { KitchenConversions.table().items }.getOrDefault(emptyList())
+    }
     val time = remember { registration?.let { FoodTime.hhmm(it.createdAt) } ?: initialTime ?: FoodTime.currentTimeString() }
     val date = remember {
         registration?.let { r -> FoodTime.parse(r.createdAt)?.let { FoodTime.dateString(it) } } ?: initialDate ?: FoodTime.currentDateString()
@@ -273,6 +288,11 @@ fun AddProductView(
     val step = if (servingSizeGrams != null && servingSizeGrams > 0 && amountUnit == "personer") servingSizeGrams else 10.0
     val displayUnit = productDisplayUnit(product)
     val displayAmount = toDisplayAmount(amount, displayUnit)
+    // Kun når varen tilføjes fra Opret ret og er en væske (brugerens krav 2026-10-10).
+    val liquid = if (forDish && product != null && !(hasServingUnit && amountUnit == "personer")) {
+        val conversion = findConversionIn(conversions, product.name)
+        liquidAmountFor(displayUnit, conversion?.group, conversion?.gramsPerDl)
+    } else null
     val baseUnitLabel = when (displayUnit) {
         DisplayUnit.CL -> t.t("addProduct.centilitresUnit")
         DisplayUnit.ML -> t.t("addProduct.millilitresUnit")
@@ -308,8 +328,12 @@ fun AddProductView(
                 Triple("vitaminC", fromPer100(product.vitaminCPer100g), "mg" to 0),
                 Triple("calcium", fromExtra("calciumMg"), "mg" to 0),
                 Triple("iron", fromExtra("ironMg"), "mg" to 1),
-            ).mapNotNull { (key, value, unit) ->
-                value?.let { NutrientRow(key, it, unit.first, unit.second, false, null, t.t("addProduct.nutrient.$key")) }
+            ).let { all ->
+                // Manglende værdi vises som "–", men kun når mindst én værdi findes.
+                if (all.all { it.second == null }) emptyList()
+                else all.map { (key, value, unit) ->
+                    NutrientRow(key, value, unit.first, unit.second, false, null, t.t("addProduct.nutrient.$key"))
+                }
             }
         }
     }
@@ -429,13 +453,15 @@ fun AddProductView(
                                 favoriteLabel = t.t(if (isFavorite) "search.removeFavorite" else "search.addFavorite"),
                                 onToggleFavorite = ::toggleFavorite,
                                 brand = view.brand,
+                                subbrand = displayedSubbrand(view.brand?.name, view.subbrand),
+                                subbrandLogoUrl = view.subbrandLogoUrl,
                                 certifications = certifications,
                                 modifier = Modifier.align(Alignment.CenterHorizontally),
                             )
                             Column(Modifier.fillMaxWidth()) {
                                 if (isPending("name")) FoodSkeleton(Modifier.width(200.dp).height(36.dp))
-                                else HcText(productTitle, HcTypeRoles.Hero, color = HcColors.Black)
-                                HcText(subtitle.ifEmpty { " " }, HcTypeRoles.Hero, color = HcColors.Green)
+                                else HcText(localizedDecimals(productTitle), HcTypeRoles.Hero, color = HcColors.Black)
+                                HcText(localizedDecimals(subtitle).ifEmpty { " " }, HcTypeRoles.Hero, color = HcColors.Green)
                             }
                         }
 
@@ -469,34 +495,44 @@ fun AddProductView(
                             servingText = if (servingSizeGrams != null && servingSizeGrams > 0) {
                                 "${jsRound(amount / servingSizeGrams)} ${if (amount == servingSizeGrams) unitSingular else unitPlural}".replaceFirstChar { it.uppercase() }
                             } else "",
-                            displayAmount = displayAmount,
+                            displayAmount = if (liquid != null) liquidValue(amount, liquid, liquidGrams) else displayAmount,
                             displayUnit = displayUnit,
+                            unitLabel = if (liquid != null) liquidUnitLabel(liquid, liquidGrams) else displayUnit.label,
+                            cornerText = liquid?.let { liquidSecondaryText(amount, it, liquidGrams) },
+                            swapLabel = t.t("addProduct.swapLiquidUnit"),
+                            onSwap = if (liquid != null) ({ liquidGrams = !liquidGrams }) else null,
                             perPieceSuffix = if (!hasServingUnit && displayUnit == DisplayUnit.G && servingSizeGrams == amount) t.t("addProduct.perPiece") else "",
                             kcalLine = if (view.hasKnownNutrition == false) t.t("addProduct.nutritionUnknown")
                             else t.t("addProduct.kcalAmount", "kcal" to jsRound(view.kcalPer100g * amount / 100)),
+                            kcalEstimated = view.kcalEstimated && view.hasKnownNutrition != false,
                             onMinus = { setAmount(maxOf(step, amount - step)) },
                             onPlus = { setAmount(amount + step) },
-                            onTyped = { setAmount(maxOf(0.0, fromDisplayAmount(it, displayUnit))) },
+                            onTyped = { value ->
+                                setAmount(maxOf(0.0, if (liquid != null) liquidBaseFromValue(value, liquid, liquidGrams) else fromDisplayAmount(value, displayUnit)))
+                            },
                         )
 
                         Column(Modifier.fillMaxWidth().padding(bottom = 16.dp), horizontalAlignment = Alignment.CenterHorizontally) {
                             when {
                                 isPending("nutrition") -> FoodSkeleton(Modifier.width(150.dp).height(18.dp))
-                                else -> HcText(
-                                    when {
-                                        view.hasKnownNutrition == false -> t.t("addProduct.nutritionUnknown")
-                                        servingSizeGrams != null && hasServingUnit -> t.t(
-                                            "addProduct.kcalPerServing",
-                                            "kcal" to jsRound(view.kcalPer100g * servingSizeGrams / 100),
-                                            "unit" to unitSingular.orEmpty(),
-                                        )
-                                        displayUnit == DisplayUnit.G -> t.t("addProduct.kcalPer100g", "kcal" to jsRound(view.kcalPer100g))
-                                        else -> t.t("addProduct.kcalPer100ml", "kcal" to jsRound(view.kcalPer100g))
-                                    },
-                                    HcTypeRoles.Body,
-                                    color = HcColors.Black,
-                                    align = TextAlign.Center,
-                                )
+                                else -> Row(verticalAlignment = Alignment.CenterVertically) {
+                                    if (view.kcalEstimated && view.hasKnownNutrition != false) FoodUncertaintyTilde(small = true)
+                                    HcText(
+                                        when {
+                                            view.hasKnownNutrition == false -> t.t("addProduct.nutritionUnknown")
+                                            servingSizeGrams != null && hasServingUnit -> t.t(
+                                                "addProduct.kcalPerServing",
+                                                "kcal" to jsRound(view.kcalPer100g * servingSizeGrams / 100),
+                                                "unit" to unitSingular.orEmpty(),
+                                            )
+                                            displayUnit == DisplayUnit.G -> t.t("addProduct.kcalPer100g", "kcal" to jsRound(view.kcalPer100g))
+                                            else -> t.t("addProduct.kcalPer100ml", "kcal" to jsRound(view.kcalPer100g))
+                                        },
+                                        HcTypeRoles.Body,
+                                        color = HcColors.Black,
+                                        align = TextAlign.Center,
+                                    )
+                                }
                             }
                             confidentServings.forEach { serving ->
                                 HcText(
@@ -639,6 +675,7 @@ fun AddProductView(
                             toggled = uncertaintyToggled,
                             onToggleRow = { key -> uncertaintyToggled = if (key in uncertaintyToggled) uncertaintyToggled - key else uncertaintyToggled + key },
                             onMicronutrient = { openMicronutrient = it },
+                            fridaSource = view.fridaSource,
                         )
                     }
 
@@ -719,6 +756,8 @@ private fun ProductCircle(
     favoriteLabel: String,
     onToggleFavorite: () -> Unit,
     brand: ProductBrand?,
+    subbrand: String?,
+    subbrandLogoUrl: String?,
     certifications: List<NameCertification>,
     modifier: Modifier = Modifier,
 ) {
@@ -757,12 +796,54 @@ private fun ProductCircle(
                 }
             }
         }
+        if (subbrand != null) {
+            // Subbrand above the brand (logo if one exists, else the name), clear of the circle like the web.
+            val brandHeight = when {
+                brand == null -> 0
+                !brand.logoUrl.isNullOrEmpty() -> BRAND_LOGO_HEIGHT_DP
+                else -> BRAND_NAME_HEIGHT_DP
+            }
+            val bottom = if (brandHeight > 0) brandHeight + SUBBRAND_GAP_DP else 0
+            val height = if (!subbrandLogoUrl.isNullOrEmpty()) BRAND_LOGO_HEIGHT_DP else BRAND_NAME_HEIGHT_DP
+            Box(Modifier.align(Alignment.BottomStart).offset(x = logoLeftDp(height, bottom).dp, y = (-bottom).dp)) {
+                if (!subbrandLogoUrl.isNullOrEmpty()) {
+                    FoodImage(subbrandLogoUrl, Modifier.size(95.dp, BRAND_LOGO_HEIGHT_DP.dp), ContentScale.Fit, contentDescription = subbrand)
+                } else {
+                    Text(subbrand, style = HcTypeRoles.Title.style(HcColors.Green).copy(fontWeight = FontWeight.Bold), maxLines = 1, softWrap = false)
+                }
+            }
+        }
         if (certifications.isNotEmpty()) {
             Row(Modifier.align(Alignment.BottomStart).padding(bottom = 8.dp), horizontalArrangement = Arrangement.spacedBy(4.dp)) {
                 certifications.forEach { FoodImage("/certifications/${it.file}", Modifier.height(30.dp).widthIn(max = 60.dp), ContentScale.FillHeight, contentDescription = it.label) }
             }
         }
     }
+}
+
+private const val BRAND_LOGO_HEIGHT_DP = 66
+private const val BRAND_NAME_HEIGHT_DP = 22
+private const val SUBBRAND_GAP_DP = 6
+
+/** The subbrand to show above the brand — null when empty or just the brand again (src/lib/subbrand-names.ts). */
+private fun displayedSubbrand(brandName: String?, subbrand: String?): String? {
+    val sub = subbrand?.trim().orEmpty()
+    if (sub.isEmpty()) return null
+    fun key(value: String) = value.lowercase().filter { it.isLetterOrDigit() }
+    return if (brandName != null && key(brandName) == key(sub)) null else sub
+}
+
+/**
+ * Left edge (dp from the circle's left) for a logo/name [heightDp] tall whose bottom sits [bottomDp] above the
+ * circle's bottom: just outside the 180 dp circle plus 8 dp air (src/lib/brand-logo-layout.ts).
+ */
+private fun logoLeftDp(heightDp: Int, bottomDp: Int): Int {
+    val radius = 90.0
+    val top = 180.0 - bottomDp - heightDp
+    val bottom = 180.0 - bottomDp
+    val nearest = min(max(radius, top), bottom)
+    val dy = min(abs(nearest - radius), radius)
+    return (radius + sqrt(radius * radius - dy * dy) + 8).roundToInt()
 }
 
 /** − [amount] + with the kcal for the amount. */
@@ -779,12 +860,34 @@ private fun AmountStepper(
     onMinus: () -> Unit,
     onPlus: () -> Unit,
     onTyped: (Double) -> Unit,
+    unitLabel: String = displayUnit.label,
+    // Væsker i Opret ret: omregningen med småt i hjørnet + skifteikon yderst til højre; tryk bytter.
+    cornerText: String? = null,
+    swapLabel: String = "",
+    onSwap: (() -> Unit)? = null,
+    // Skøn (fx Frida-skøn, DECISIONS 2026-10-10): ∼ foran kalorietallet.
+    kcalEstimated: Boolean = false,
 ) {
     Row(Modifier.fillMaxWidth().padding(bottom = 8.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.Center) {
         Row(Modifier.widthIn(max = 320.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             GlyphButton("−", onMinus)
+            Box(
+                Modifier.weight(1f).clip(RoundedCornerShape(16.dp)).background(HcColors.Tan)
+                    .let { if (onSwap != null) it.clickable(onClick = onSwap) else it },
+            ) {
+            if (onSwap != null && !isLoading) {
+                if (cornerText != null) {
+                    HcText(cornerText, HcTypeRoles.Caption, Modifier.align(Alignment.TopEnd).padding(top = 6.dp, end = 12.dp), color = HcColors.TextSecondary)
+                }
+                Box(
+                    Modifier.align(Alignment.CenterEnd).padding(end = 8.dp).size(32.dp).clickable(onClickLabel = swapLabel, onClick = onSwap),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    HcIcon("ArrowsUpDown", size = 18.dp, stroke = 2f, color = HcColors.Black)
+                }
+            }
             Column(
-                Modifier.weight(1f).clip(RoundedCornerShape(16.dp)).background(HcColors.Tan).padding(vertical = 12.dp),
+                Modifier.fillMaxWidth().padding(vertical = 12.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 when {
@@ -805,12 +908,16 @@ private fun AmountStepper(
                                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                                 modifier = Modifier.width(((text.length.coerceAtLeast(1) + 0.5f) * 13).dp),
                             )
-                            HcText(" ${displayUnit.label}$perPieceSuffix", HcTypeRoles.PageTitle, color = HcColors.Black)
+                            HcText(" $unitLabel$perPieceSuffix", HcTypeRoles.PageTitle, color = HcColors.Black)
                         }
                     }
                 }
                 if (nutritionPending) FoodSkeleton(Modifier.padding(vertical = 2.dp).width(64.dp).height(14.dp))
-                else HcText(kcalLine, HcTypeRoles.Body, color = HcColors.TextSecondary, align = TextAlign.Center)
+                else Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically) {
+                    if (kcalEstimated) FoodUncertaintyTilde(small = true)
+                    HcText(kcalLine, HcTypeRoles.Body, color = HcColors.TextSecondary, align = TextAlign.Center)
+                }
+            }
             }
             GlyphButton("+", onPlus)
         }
@@ -848,7 +955,8 @@ private fun AdditivesCard(codes: List<String>, names: Map<String, String>, onOpe
     }
 }
 
-private val UNHEALTHY_FAT_KEYS = setOf("saturatedFat", "transFat")
+// Warning triangle only for salt and trans fat above the daily recommendation (WHO).
+private val WARNING_LIMITS = mapOf("salt" to 5.0, "transFat" to 2.2)
 
 /** "Næringsdetaljer" with "Vis mere": rows with the uncertainty ~ and the grey tolerance line. */
 @Composable
@@ -860,6 +968,7 @@ private fun ExtendedNutritionSection(
     toggled: Set<String>,
     onToggleRow: (String) -> Unit,
     onMicronutrient: (String) -> Unit,
+    fridaSource: Boolean = false,
 ) {
     val t = LocalTranslator.current
     Column(Modifier.fillMaxWidth().clip(RoundedCornerShape(16.dp)).background(HcColors.Tan)) {
@@ -872,14 +981,14 @@ private fun ExtendedNutritionSection(
             Column(Modifier.fillMaxWidth()) {
                 Box(Modifier.fillMaxWidth().height(1.dp).background(HcColors.TanDark))
                 rows.forEachIndexed { index, row ->
-                    val hasUncertainty = row.estimated || (row.tolerance ?: 0.0) > 0
+                    val hasUncertainty = (row.value ?: 0.0) > 0 && (row.estimated || (row.tolerance ?: 0.0) > 0)
                     val expanded = hasUncertainty && autoExpand != (row.key in toggled)
                     Column(
                         Modifier.fillMaxWidth().let { if (hasUncertainty) it.clickable { onToggleRow(row.key) } else it }.padding(horizontal = 16.dp, vertical = 10.dp),
                     ) {
                         Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
                             Row(Modifier.weight(1f), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(4.dp)) {
-                                if (row.key in UNHEALTHY_FAT_KEYS) HcIcon("AlertTriangle", size = 15.dp, color = HcColors.Black, contentDescription = t.t("addProduct.unhealthyFat"))
+                                if (WARNING_LIMITS[row.key]?.let { (row.value ?: return@let false) > it } == true) HcIcon("AlertTriangle", size = 15.dp, color = HcColors.Black, contentDescription = row.label)
                                 if (FoodReferenceData.micronutrientByKey.containsKey(row.key)) {
                                     HcText(row.label, HcTypeRoles.Small, Modifier.clickable { onMicronutrient(row.key) }, color = HcColors.Black, underline = true)
                                 } else {
@@ -888,12 +997,12 @@ private fun ExtendedNutritionSection(
                                 if (hasUncertainty) FoldChevron(expanded, 13.dp)
                             }
                             Row(verticalAlignment = Alignment.CenterVertically) {
-                                if (row.estimated) FoodUncertaintyTilde()
-                                HcText("${daNumber(row.value, row.digits)} ${row.unit}", HcTypeRoles.Small, color = HcColors.Black, bold = true)
+                                if (row.estimated && (row.value ?: 0.0) > 0) FoodUncertaintyTilde()
+                                HcText(row.value?.let { "${daNumber(it, row.digits)} ${row.unit}" } ?: "–", HcTypeRoles.Small, color = HcColors.Black, bold = true)
                             }
                         }
                         if (expanded) {
-                            val hasEstimate = row.estimated && row.value > 0
+                            val hasEstimate = row.estimated && (row.value ?: 0.0) > 0
                             val tolerance = row.tolerance?.takeIf { it > 0 }
                             if (hasEstimate || tolerance != null) {
                                 Row(Modifier.fillMaxWidth().padding(top = 4.dp), horizontalArrangement = Arrangement.End, verticalAlignment = Alignment.CenterVertically) {
@@ -901,7 +1010,7 @@ private fun ExtendedNutritionSection(
                                     if (tolerance != null && hasEstimate) HcText("  ", HcTypeRoles.Small)
                                     if (hasEstimate) {
                                         FoodUncertaintyTilde(small = true)
-                                        HcText("${daNumber(row.value, row.digits)} ${row.unit}", HcTypeRoles.Small, color = HcColors.Black.copy(alpha = 0.6f))
+                                        HcText("${daNumber(row.value ?: 0.0, row.digits)} ${row.unit}", HcTypeRoles.Small, color = HcColors.Black.copy(alpha = 0.6f))
                                     }
                                 }
                             }
@@ -910,6 +1019,14 @@ private fun ExtendedNutritionSection(
                     if (index < rows.lastIndex) Box(Modifier.fillMaxWidth().height(1.dp).background(HcColors.TanDark))
                 }
                 HcText(t.t("addProduct.extendedNutritionDisclaimer"), HcTypeRoles.Micro, Modifier.padding(horizontal = 16.dp, vertical = 10.dp), color = HcColors.TextSecondary)
+                // Fridas kildeangivelse (brugerens regel 2026-10-10): kun her, helt
+                // nederst i det udfoldede felt, og kun når en værdi kommer fra Frida.
+                if (fridaSource) {
+                    Row(Modifier.fillMaxWidth().padding(start = 16.dp, end = 16.dp, bottom = 10.dp), verticalAlignment = Alignment.CenterVertically) {
+                        FoodUncertaintyTilde(small = true)
+                        HcText(t.t("addProduct.fridaSource"), HcTypeRoles.Micro, color = HcColors.TextSecondary)
+                    }
+                }
             }
         }
     }

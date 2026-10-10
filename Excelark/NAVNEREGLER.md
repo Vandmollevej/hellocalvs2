@@ -3,6 +3,30 @@
 Brugerens regler 2026-10-09. Samme kolonner og samme regler i ALLE ark, så der er kontinuitet.
 Kort version står også i `docs/REGLER.md`.
 
+## Originalkolonnerne rettes ALDRIG (brugerens regel 2026-10-10, gælder alle ark)
+- Originalkolonner = det butikken/skraberen leverede: `Original Title`, `Product Name`, `Subtitle`, `Source URL`, `Manufacturer`, `Image File`, `Parse Status`, `Servings` (kolonne 38-45). De står bagerst i arket.
+- De rettes aldrig — hverken i hånden eller med scripts: ingen stavning, forkortelser (m./u.), decimaltegn, store/små bogstaver eller flytning af tekst. De må kun læses (fx for at finde 45+, "revet", produkttypen). Alle rettelser skrives i vores egne kolonner (Product Type, Variation, Keyword 1-5, `_is_*`, Brand, Subbrand, Quantity, Clean Subtitle …).
+- Markeringer fra vores egne scripts (fx PET_FOOD, BRAND_GUESS) skrives aldrig i `Parse Status`.
+- Er en originalkolonne blevet ændret, hentes den tilbage fra den rå skrabning (`omlaeg_til_bilka_kolonner.py` gør det automatisk).
+
+## Alle ark har Bilkas kolonner (2026-10-10)
+- Alle butiksark er 100 % identiske med `Excelark/bilka.xlsx`: de samme 45 kolonner med samme navne og rækkefølge (se "Kolonner — ens i ALLE ark" nederst), Bilkas titelformler i A og B og **ingen ekstra kolonner** (brugeren: "de skulle være fucking identiske").
+- Arbejdsarkene (altid de originale filnavne, aldrig `_ny`/`_ens`-kopier): `Excelark/bilka.xlsx`, `Produkter/rema1000_version 2.xlsx`, `Produkter/SPAR/spar.xlsx`, `Produkter/Nemlig/nemlig.xlsx`, `Excelark/wolt.xlsx`, `Excelark/drk.xlsx`, `Excelark/aarstiderne.xlsx`, `Excelark/dm.xlsx`, `Excelark/edeka.xlsx`, `Excelark/rewe.xlsx`. Dagens arbejde fra `dm_ny`/`edeka_ny`/`rewe_ny`/`wolt_ny` er flyttet ind i de originale filer 2026-10-10 (kopierne ligger i `Excelark/backup/*_ny_*_flyttet-til-*.xlsx`); de rå skrabninger, originalkolonnerne hentes fra, ligger i `Excelark/backup/<butik>_2026-10-10_raa-skrabning.xlsx` (REMA: `rema1000 - To be compaired.xlsx`).
+- Omlagt med `Excelark/omlaeg_til_bilka_kolonner.py` (REMA med `omlaeg_rema.py`). `--ens` gør et omlagt ark identisk med Bilka igen (navne, rækkefølge, Quantity-stil, EAN som tekst) uden at køre reglerne igen. Backups: `Excelark/backup/*_foer_bilka-kolonner.xlsx` og `*_foer_ens-stil.xlsx`.
+- Data fra de fjernede ekstra kolonner (SPAR `Subcategory`/`Vare`/`Variant`/`quantity`/`Alternativ vægt`/`_is_certificate`/`Packing`, Wolt `Price`/`Venue`, tyske `Flag` med PET_FOOD/BRAND_GUESS) ligger i `Excelark/backup/*_2026-10-10_1918_foer_ens-stil.xlsx`.
+
+## Quantity — samme stil i alle ark (brugerens regel 2026-10-10)
+- Som Bilka: tal, mellemrum, enhed med små bogstaver: `200 g`, `75 cl`, `1.5 l`, `500 ml`, `1 kg`, `6 stk`; flere stk: `6 x 0.33 l`; cirka: `ca. 600 g`. Aldrig `200g`, `1Ltr`, `200 g.`, `1 ltr.` eller `Stk`.
+- Pakninger skrives med småt: `1 bakke`, `1 pose`, `1 bdt`, `1 glas`, `1 potte`, `1 net`. SPAR's koder: "400 BK" (400 g i bakke) → `400 g`, "1 PT" → `1 potte`. Tekst uden tal og "_" er ikke en mængde og ryddes. Bilkas "5 L.B" (saft til opblanding) bevares.
+- Rettet 2026-10-10: Bilka 5, REMA 2773, SPAR 4904 (+ koderne), Nemlig 28, DRK 726, Årstiderne 2 (`norm_qty` i `omlaeg_til_bilka_kolonner.py`).
+- Danske ark har fået Bilka-reglerne (titel_ental_flertal + procent/ost + reglerne fra 2026-10-10: brand ud af productType, revet/i blok, ben, sukker i egen kolonne, "med kulsyre", dobbeltord, flertal fra Bilka, decimalpunktum). Keywords der bare er butikkens kategorinavne er fjernet; flag-ord (økologisk, glutenfri, vegansk, fuldkorn …) står i deres `_is_`-kolonne.
+- Tyske ark (dm, EDEKA, REWE): kun kolonnerne + tyske ord i stedet for "Yes" (`bio`, `glutenfrei`, `laktosefrei`, `vegan`, `zuckerfrei`, `süßungsmittel`, `alkoholfrei`) + decimalpunktum. Titelformlen skriver "Tiefgekühlt" i stedet for "Frosset" og beholder stort begyndelsesbogstav i tyske navneord. `Product type plural` er tom (ingen dansk bøjning).
+- Tyske ark, `_is_` og brand (2026-10-10): `Excelark/tyske_is_og_brand.py` udfylder tomme `_is_`-kolonner med tyske ord ud fra titlen/kategorien (bio, glutenfrei, laktosefrei, vegan, zuckerfrei/ohne zuckerzusatz, süßungsmittel, alkoholfrei, enthält alkohol + "4.8%", entkoffeiniert, light, frozen, geräuchert/gekocht/getrocknet …, roh/frisch, fedt "3.5%", kødtype rind/schwein/hähnchen …, haltungsform N, oprindelsesland) og kopierer brand/subbrand 1:1 med dansk stavemåde, når et mærke fra de danske ark står forrest i den tyske titel (subbrand kun hvis det også står i titlen). Intet eksisterende overskrives, undtagen samme mærke med anden stavemåde eller `BRAND_GUESS`. Match-listen gemmes som CSV i `Excelark/backup`. Kør: `python Excelark\tyske_is_og_brand.py` (Excel-arkene lukket).
+- Originalerne er hentet tilbage fra den rå skrabning, hvor tidligere omlægninger havde ændret dem: SPAR (Product Name og Original Title var byttet om), Wolt og de tyske ark (Product Name var overskrevet med en genereret titel; PET_FOOD/BRAND_GUESS i Parse Status er fjernet derfra).
+- Frost følger kategorien Frost/Dybfrost (som Bilka). SPAR's gamle Packaging "Frozen" stod også på vin, sodavand osv. og er fjernet dér (390 rækker).
+- Nemlig, DRK og Årstiderne er ikke gennemgået endnu: productType mangler for de fleste, og keywords er skraberens ord fra titlen — titlerne bliver først pæne, når de er gennemgået som Bilka.
+- REMA (`Produkter/rema1000_version 2.xlsx`) har stadig sine egne kolonnenavne (`is_vegan`, `Type`, `size` …) og er ikke omlagt.
+
 ## Produkttitel — rækkefølge
 1. `_is_cooked`
 2. Product Type (småt begyndelsesbogstav, hvis det ikke er første ord i sætningen)
@@ -17,6 +41,7 @@ Kort version står også i `docs/REGLER.md`.
 - Ordet fjernes fra Product Type/Variation (kun ét sted).
 
 ## Forkortelser i de originale felter (Product Name / Original Title / Subtitle)
+- Rettelsen skrives i Variation — selve originalfeltet røres ikke (se "Originalkolonnerne rettes ALDRIG").
 - `m.` `m/` `m` → **med**, `u.` `u/` → **uden**, samt `i`, `af`.
 - Det, der står efter dem og ligger i Variation, skrives med lille begyndelsesbogstav og får ordet foran:
   "Ymerdrys m. kanel" → Variation `med farin og kanel`.
@@ -28,7 +53,7 @@ Kort version står også i `docs/REGLER.md`.
 
 ## Andet
 - Instantkaffe hedder altid "Instantkaffe" (Product Type) — ikke "Kaffe, instant".
-- Kolonner er ens i alle ark (se Bilka som master): HelloCal_Title, Product Name, Original Title, Subtitle, Quantity, Brand, Subbrand, EAN, Pack Count, Product Type, Variation, Category, Packaging, `_is_*`, Keyword 1-5, Source URL, Manufacturer, Image File, Parse Status.
+- Kolonner er ens i alle ark (Bilka er master) — se "Alle ark har Bilkas kolonner" øverst.
 
 ## Lister, gram og fedt (tilføjet 2026-10-09)
 - `/` og komma i Variation og Keywords bliver til almindelig opremsning: "hindbær/ blåbær/ solbær" → "med hindbær, blåbær og solbær"; kun to led → "a og b".
@@ -83,6 +108,17 @@ Kort version står også i `docs/REGLER.md`.
 - "Sukrede" → "med sukker", "usukrede" → "uden sukker". "Hvedemel durum" → "Hvedemeldurum". "Høstsild/fedsild" → to rækker (Høstsild, Fed sild).
 - "blade" skrives altid sammen med ordet før: Teblade, Korianderblade, Spinatblade (aldrig "Koriander blade"). Gælder alle ark.
 
+## "ben" er del af produkttypen (brugerens regel 2026-10-10, alle ark)
+- "ben" alene i Variation hører til produkttypeordet og skrives sammen med det: "Skiver af okse" + "ben" → "Skiver af okseben" (som Okseben, Stegeben, Kamben). Variation ryddes.
+- "med ben" / "uden ben" flyttes samlet ind i produkttypen: "Ibérico kotelet med ben", "Koteletter af gris uden ben". `Product type plural` rettes ens.
+- Rettet i Bilka 2026-10-10: række 267, 268, 269 (backup `Excelark/backup/bilka_2026-10-10_0946_foer_ben.xlsx`). REMA har ingen tilsvarende rækker. "skind og ben og barbecuekrydderi" (række 3363) er en opremsning og er ikke rørt.
+
+## Ost: "revet" og "i blok" (brugerens regel 2026-10-10, alle ark)
+- Al revet ost: ordet "revet" fjernes fra produkttype/variant og står som keyword **`revet`** (titel: "Mozzarella (Revet)"). "Revet ost" → "Ost" + keyword `revet`.
+- Al fast ost og "i stykke" (samt "i blok", der stod i typen): fjernes fra produkttypen og står som keyword **`i blok`** (titel: "Modnet fast ost 45+ (I blok)"). "fast" bliver stående i typen.
+- Gælder ikke ost i skiver/tern/revet (skiveost, "i skiver", "i tern") og ikke "halvfast". Originaltitel afgør, hvis arket har mistet ordet ("Revet pastaost", "Salatost i blok").
+- Rettet 2026-10-10: Bilka 99 rækker, REMA 8 rækker (variant "revet" → keyword). Backups `Excelark/backup/*_foer_ost.xlsx`.
+
 ## Bilka/REMA: ental/flertal-titler og nye regler (2026-10-09, senest)
 - `HelloCal_Title` / `Hello Cal product title` er fjernet i `bilka_ny.xlsx` og `rema1000_version 2_ny.xlsx` (originalerne var låst af Excel). Erstattet af formelkolonnerne `Product title singular` / `Product title plural` (samme formler som Frida) + `Product type plural`, `_is_frozen`, `_is_raw`, `_is_cooked`. Genereret med `Excelark/titel_ental_flertal.py`; flertalsordet er gættet af regler og skal gennemses.
 - Kolonner hedder som i serverens database: brand, subbrand, productType, variant, flavor (REMA taste), packageSizeText, packCount, packaging, category, barcode, keyword1-5. `_is_*`-navne beholdt.
@@ -90,3 +126,22 @@ Kort version står også i `docs/REGLER.md`.
 - Alle `_is_`-værdier, variant og keywords med småt (undtagen store forkortelser og egennavne).
 - Sukkerfri / uden tilsat sukker står i sukker-kolonnen, aldrig i variant/keyword.
 - Intet ord må stå dobbelt på tværs af productType, `_is_`-felter, variant og keywords (funktionsord undtaget).
+- Opdatering 2026-10-10: `Excelark/bilka.xlsx` og `Produkter/rema1000_version 2.xlsx` er selv omskrevet (ikke kun `_ny`). `scripts/store-products-import/build_data.py` læser både nye (databasenavne) og gamle kolonnenavne via `NEW_ALIAS` i `load()`.
+
+## Tekst fra original titel → variant (2026-10-10, Bilka/REMA)
+- Det, der står efter m./m/med, u./uden, i, af, "smag af" i den originale titel, og som ikke findes på rækken i forvejen, skrives i **variant** (med "med/uden/i" foran, alt med småt). Undtagelse: "i bundt" og "i bakke" er nøgleord.
+- Kun hvis intet af ordene allerede findes et sted på rækken (produkttype, variant, nøgleord, `_is_`-felter, brand).
+- Mærkenavne i variant/nøgleord skrives med stort (fx "Tyrkisk Peber", "Aqua d'Or", "San Pellegrino"). Mærket i Brand (fx "M&M's") tilføjes aldrig til variant.
+- "m" i "M&M's" er ikke "med". HTML som `<BR>` i originalteksten skal ikke med.
+- 45+ (osteprocent i tørstof) står i variant, ikke i produkttype.
+
+## Frida-gennemgangen 2026-10-09/10 — samlet (gælder alle ark)
+- **Nøgleord (egne Keywords, ikke Variation)**: vild, raffinol, hydrogeneret, grove/groft/fint, parboiled, tør, sød/søde, "på dåse/ konserves", "på glas", "i saltlage", "uden sten", "hele eller knækkede", "ikke beriget", saltet/usaltet, fra opdræt, acidophilus, UHT = "langtidsholdbar", colostrum, årstider/måneder ("maj til september"), "med tilsat sukker"/"med tilsat kunstig sødestof", dobbelte, instant.
+- **Foran produkttypen i titlen**: sur, sød/søde, groft, fint, grove, dobbelte, instant ("Instant kakaopulver", "Groft knækbrød"). "Kaffe, instant" = Product Type "Instantkaffe".
+- **Sammensatte produkttyper i én celle**: Fennikelknold, Ægte kastanje, Torskerogn, Hvedemeldurum, Korianderblade; "blade" sættes altid sammen med ordet før (Teblade). Fast + ost = "Fast-ost".
+- **Delte varer**: to varer i én række deles (Rødvin/rosévin, Sortmundfilet/blåhvilling, Høstsild/fed sild, Riskiks/riskage, Sapote/stor sapodil, græsk/tyrkisk stil).
+- **`_is_cooked`**: "Færdigbagt" kun for kager/småkager; alt andet færdigt (brød, røræg, detailbageri) = "Færdiglavet".
+- **Små bogstaver**: alle `_is_`-værdier (også land), Keyword 1-5 og Variation starter med småt (undtagen egennavne: Beluga, Hokkaido, Thüringer, Serrano m.fl.).
+- **Ental/flertal**: `Product title singular`/`plural` er formler; flertalsord i `Product type plural` (tom for masse-ord → flertalstitel = ental-titel). Flagene bøjes: vegansk→veganske, -fri→-frie; "panerede" i flertal.
+- **Kommaer i Variation** fjernes (Frida brugte dem som adskiller): "med/uden/af/i/på"-led sættes med mellemrum, øvrige led "a, b og c".
+- **Frida publiceres til databasen** (`scripts/frida-import/build_sheet.py` → `sheet/frida_sheet.json`, `agent.py apply_sheet`); søgereglen (flertal → plural-titel, ental → singular-titel) står i `GET /api/products`. Se docs/FRIDA.md.

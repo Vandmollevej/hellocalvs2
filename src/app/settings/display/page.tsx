@@ -9,6 +9,7 @@ import {
   IconCalendarHeart,
   IconBulb,
   IconArrowsSort,
+  IconRuler,
 } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
 import { AccordionCard, ChevronRow } from "@/components/hf/AccordionCard";
@@ -50,6 +51,12 @@ export default function DisplaySettingsIndexPage() {
             icon={<IconHome2 size={20} />}
             label={t("settings.frontPage")}
             href="/settings/display/front-page"
+            divider
+          />
+          <ChevronRow
+            icon={<IconRuler size={20} />}
+            label={t("settings.bodyMeasurementsDisplay")}
+            href="/settings/display/body-measurements"
             divider
           />
           <ChevronRow

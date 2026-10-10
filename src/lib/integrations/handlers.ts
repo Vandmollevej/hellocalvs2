@@ -131,16 +131,39 @@ export async function callback(req: NextRequest, adapter: OAuthProviderAdapter) 
   return done("connected=1");
 }
 
+// Integrationer, hvis afterRefresh (Withings' notifikations-tilmelding) er kørt
+// siden serveren startede. Første synk efter en genstart/deploy kører den med
+// det gyldige token, så en ny eller rettet tilmelding virker inden for et
+// kvarter i stedet for først ved næste token-fornyelse (ca. 3 timer).
+const refreshHookRun = new Set<string>();
+
 export async function freshAccessToken(adapter: OAuthProviderAdapter, integration: Integration) {
   const expiresSoon = integration.expiresAt && integration.expiresAt.getTime() < Date.now() + 60_000;
-  if (!expiresSoon || !integration.refreshToken || !adapter.refresh) return integration.accessToken as string;
+  // Mangler bruger-ID'et (forbundet før notifikationerne), fornyes tokenet med
+  // det samme, så afterRefresh kan hente det og tilmelde notifikationer.
+  const needsIdentity = Boolean(adapter.afterRefresh) && !integration.externalUserId;
+  if ((!expiresSoon && !needsIdentity) || !integration.refreshToken || !adapter.refresh) {
+    const accessToken = integration.accessToken as string;
+    if (adapter.afterRefresh && !refreshHookRun.has(integration.id)) {
+      refreshHookRun.add(integration.id);
+      await adapter
+        .afterRefresh({ access_token: accessToken })
+        .catch((error) => console.error(`${adapter.label} afterRefresh fejlede`, errorMessage(error)));
+    }
+    return accessToken;
+  }
+  refreshHookRun.add(integration.id);
   const refreshed = await adapter.refresh(integration.refreshToken);
+  const extra = await adapter
+    .afterRefresh?.(refreshed)
+    .catch((error) => console.error(`${adapter.label} afterRefresh fejlede`, errorMessage(error)));
   await prisma.integration.update({
     where: { id: integration.id },
     data: {
       accessToken: refreshed.access_token,
       refreshToken: refreshed.refresh_token ?? integration.refreshToken,
       expiresAt: refreshed.expires_in ? new Date(Date.now() + refreshed.expires_in * 1000) : null,
+      ...(extra?.externalUserId ? { externalUserId: extra.externalUserId } : {}),
     },
   });
   return refreshed.access_token;

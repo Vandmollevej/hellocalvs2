@@ -37,7 +37,7 @@ export type ProductTablesMacros = {
   nutritionMissing?: boolean;
 };
 
-const MISSING = "Mangler – skjult i appen";
+const MISSING = "Mangler næring – vises i søgning, skjult i genkendelse";
 
 // Uden kalorietal er en makro på 0 kun pladsholderen; et tal fra arket vises.
 function placeholder(macros: ProductTablesMacros, value: number): Value {

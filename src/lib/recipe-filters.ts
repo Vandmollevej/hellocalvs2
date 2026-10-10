@@ -67,7 +67,7 @@ export type RecipeFilters = {
   // hinanden pr. makro.
   macros: Partial<Record<MacroKey, MacroLevel>>;
   // Visning (tæller ikke som filtre): antal personer retterne justeres til,
-  // og om kalorier/energifordeling vises i listen.
+  // og om kalorier/energifordeling vises i listen. 0 = ikke valgt (standard).
   persons: number;
   showKcal: boolean;
   showEnergySplit: boolean;
@@ -79,7 +79,7 @@ export const DEFAULT_RECIPE_FILTERS: RecipeFilters = {
   diets: [],
   nutrients: [],
   macros: {},
-  persons: 1,
+  persons: 0,
   showKcal: true,
   showEnergySplit: false,
 };
@@ -121,7 +121,7 @@ export function filtersFromParams(params: URLSearchParams): RecipeFilters {
     diets: pick(params.get("diets"), RECIPE_DIETS),
     nutrients: pick(params.get("nutrients"), RECIPE_NUTRIENTS),
     macros,
-    persons: Math.min(6, Math.max(1, Math.round(Number(params.get("persons")) || 1))),
+    persons: Math.min(6, Math.max(0, Math.round(Number(params.get("persons")) || 0))),
     showKcal: params.get("kcal") !== "0",
     showEnergySplit: params.get("split") === "1",
   };

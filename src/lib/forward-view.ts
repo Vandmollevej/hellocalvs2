@@ -38,7 +38,7 @@ export async function loadForwardView(token: string, userId: string): Promise<Fo
       : { status: "error", reason: "failed", message: "Kunne ikke åbne linket." };
   }
 
-  if (!forward) return { status: "invalid", message: "Linket er ikke gyldigt." };
+  if (!forward) return { status: "invalid", message: "Linket er ikke gyldigt eller er udløbet." };
 
   const item =
     forward.kind === "PRODUCT" && forward.productId

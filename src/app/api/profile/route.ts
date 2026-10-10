@@ -12,6 +12,7 @@ import { isValidHeightCm } from "@/lib/height";
 import type { Locale } from "@/i18n";
 import type { Prisma } from "@prisma/client";
 import { normalizeDisplayPrefs } from "@/lib/circle-badges";
+import { parseRecipeProviders } from "@/lib/meal-kit-providers";
 
 export async function GET() {
   try {
@@ -65,6 +66,7 @@ export async function PATCH(req: Request) {
     showAllergens,
     allergenVisibility,
     displayPrefs,
+    bodyMeasurementVisibility,
     showExtendedNutrition,
     showAdditives,
     showToxins,
@@ -77,6 +79,7 @@ export async function PATCH(req: Request) {
     wantsUpdateNewsEmails,
     wantsAdviceEmails,
     wantsPartnerOffersEmails,
+    recipeProviders,
   } = body as {
     displayName?: string;
     phone?: unknown;
@@ -104,6 +107,7 @@ export async function PATCH(req: Request) {
     showAllergens?: boolean;
     allergenVisibility?: Record<string, boolean>;
     displayPrefs?: unknown;
+    bodyMeasurementVisibility?: Record<string, boolean>;
     showExtendedNutrition?: boolean;
     showAdditives?: boolean;
     showToxins?: boolean;
@@ -116,6 +120,8 @@ export async function PATCH(req: Request) {
     wantsUpdateNewsEmails?: boolean;
     wantsAdviceEmails?: boolean;
     wantsPartnerOffersEmails?: boolean;
+    // Måltidskasse-integrationer (src/lib/meal-kit-providers.ts).
+    recipeProviders?: unknown;
   };
 
   try {
@@ -221,6 +227,7 @@ export async function PATCH(req: Request) {
         showAllergens,
         allergenVisibility,
         displayPrefs: displayPrefs === undefined ? undefined : (normalizeDisplayPrefs(displayPrefs) as Prisma.InputJsonValue),
+        bodyMeasurementVisibility,
         showExtendedNutrition,
         showAdditives,
         showToxins,
@@ -233,6 +240,7 @@ export async function PATCH(req: Request) {
         wantsUpdateNewsEmails,
         wantsAdviceEmails,
         wantsPartnerOffersEmails,
+        recipeProviders: recipeProviders === undefined ? undefined : parseRecipeProviders(recipeProviders),
       },
     });
 

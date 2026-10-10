@@ -1,18 +1,21 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getProfileUser } from "@/lib/family-access";
+import { MEAL_KIT_SOURCES } from "@/lib/meal-kit-providers";
 import { buildHfRecipeView } from "@/lib/hellofresh-recipe";
 
-// GET — en HelloFresh-opskrift til opskriftssiden (docs/DECISIONS.md
-// 2026-09-27), med brugerens favorit-status og kogebogsbilleder.
+// GET — en måltidskasse-opskrift (HelloFresh, RetNemt, BetterFeast) til
+// opskriftssiden (docs/DECISIONS.md 2026-09-27 og 2026-10-10), med brugerens
+// favorit-status og kogebogsbilleder.
 export async function GET(_req: Request, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   try {
     const product = await prisma.product.findFirst({
-      where: { id, externalSource: "HELLOFRESH" },
+      where: { id, externalSource: { in: MEAL_KIT_SOURCES } },
       select: {
         id: true,
         name: true,
+        externalSource: true,
         imageUrl: true,
         kcalPer100g: true,
         proteinPer100g: true,

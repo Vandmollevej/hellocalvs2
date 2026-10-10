@@ -422,6 +422,8 @@
     "privacyPolicy": "Privacybeleid",
     "dataTracking": "Gegevens bijhouden",
     "languageAndRegion": "Taal en regio",
+    "bodyMeasurementsDisplay": "Lichaamsmaten",
+    "bodyMeasurementsDisplayDescription": "Kies welke lichaamsmaten op de pagina Lichaamsmaten worden getoond. Verborgen maten en hun metingen worden niet verwijderd.",
     "resultsDisplay": "Resultaatweergave",
     "messages": "Berichten",
     "notifications": "Communicatie",
@@ -531,90 +533,90 @@
     "toggleLabel": "Menstruatiecyclus tonen",
     "toggleDescription": "Voegt \"Menstruatie\" toe aan het toevoegmenu, zodat je het begin van je cyclus kunt loggen."
   },
-    "customMeasure": {
-      "add": "Add own measurement",
-      "delete": "Delete",
-      "cancel": "Cancel",
-      "save": "Save measurement",
-      "nameLabel": "Name",
-      "descriptionLabel": "Description",
-      "paramLabel": "Parameter",
-      "paramPlaceholder": "Choose parameter",
-      "search": "Search parameter",
-      "noMatch": "No parameters found",
-      "periodLabel": "Period",
-      "periodHint": "Periods longer than a day show a daily average.",
-      "textLabel": "Text under the number",
-      "textHint": "At most {lines} lines of {chars} characters",
-      "group": {
-        "food": "Food and nutrition",
-        "activity": "Activity",
-        "sleep": "Sleep",
-        "heart": "Heart and readings",
-        "body": "Body"
-      },
-      "period": {
-        "today": "Today",
-        "yesterday": "Yesterday",
-        "last7": "Last 7 days",
-        "last30": "Last 30 days",
-        "thisWeek": "This week",
-        "lastWeek": "Last week",
-        "thisMonth": "This month",
-        "lastMonth": "Last month",
-        "thisYear": "This year",
-        "lastYear": "Last year"
-      },
-      "param": {
-        "kcalIntake": "Calories eaten",
-        "kcalRemaining": "Calories remaining",
-        "protein": "Protein",
-        "carbs": "Carbohydrates",
-        "fat": "Fat",
-        "kcalBurned": "Calories burned",
-        "restingEnergy": "Resting energy (kcal)",
-        "steps": "Steps",
-        "distance": "Kilometres",
-        "water": "Water",
-        "exerciseMinutes": "Active minutes",
-        "standMinutes": "Stand minutes",
-        "floors": "Floors climbed",
-        "zoneMinutes": "Zone minutes",
-        "cardioLoad": "Cardio load",
-        "sleepDuration": "Sleep",
-        "sleepInBed": "Time in bed",
-        "sleepAwake": "Awake during sleep",
-        "sleepRem": "REM sleep",
-        "sleepLight": "Light sleep",
-        "sleepDeep": "Deep sleep",
-        "sleepScore": "Sleep quality",
-        "sleepEfficiency": "Sleep efficiency",
-        "sleepAwakenings": "Awakenings",
-        "heartRate": "Heart rate",
-        "restingHeartRate": "Resting heart rate",
-        "heartRateMin": "Lowest heart rate",
-        "heartRateMax": "Highest heart rate",
-        "hrv": "HRV",
-        "vo2Max": "VO₂ max",
-        "heartRateRecovery": "Heart rate recovery",
-        "respiratoryRate": "Respiratory rate",
-        "spo2": "Oxygen saturation (SpO₂)",
-        "temperature": "Temperature",
-        "stress": "Stress",
-        "recoveryScore": "Recovery",
-        "strain": "Strain",
-        "bloodGlucose": "Blood glucose",
-        "bodyFat": "Body fat %",
-        "fatMass": "Fat mass",
-        "fatFreeMass": "Fat-free mass",
-        "muscleMass": "Muscle mass",
-        "boneMass": "Bone mass",
-        "bodyWater": "Body water",
-        "visceralFat": "Visceral fat",
-        "bmr": "Basal metabolic rate (BMR)",
-        "bmi": "BMI"
-      }
+  "customMeasure": {
+    "add": "Add own measurement",
+    "delete": "Delete",
+    "cancel": "Cancel",
+    "save": "Save measurement",
+    "nameLabel": "Name",
+    "descriptionLabel": "Description",
+    "paramLabel": "Parameter",
+    "paramPlaceholder": "Choose parameter",
+    "search": "Search parameter",
+    "noMatch": "No parameters found",
+    "periodLabel": "Period",
+    "periodHint": "Periods longer than a day show a daily average.",
+    "textLabel": "Text under the number",
+    "textHint": "At most {lines} lines of {chars} characters",
+    "group": {
+      "food": "Food and nutrition",
+      "activity": "Activity",
+      "sleep": "Sleep",
+      "heart": "Heart and readings",
+      "body": "Body"
     },
+    "period": {
+      "today": "Today",
+      "yesterday": "Yesterday",
+      "last7": "Last 7 days",
+      "last30": "Last 30 days",
+      "thisWeek": "This week",
+      "lastWeek": "Last week",
+      "thisMonth": "This month",
+      "lastMonth": "Last month",
+      "thisYear": "This year",
+      "lastYear": "Last year"
+    },
+    "param": {
+      "kcalIntake": "Calories eaten",
+      "kcalRemaining": "Calories remaining",
+      "protein": "Protein",
+      "carbs": "Carbohydrates",
+      "fat": "Fat",
+      "kcalBurned": "Calories burned",
+      "restingEnergy": "Resting energy (kcal)",
+      "steps": "Steps",
+      "distance": "Kilometres",
+      "water": "Water",
+      "exerciseMinutes": "Active minutes",
+      "standMinutes": "Stand minutes",
+      "floors": "Floors climbed",
+      "zoneMinutes": "Zone minutes",
+      "cardioLoad": "Cardio load",
+      "sleepDuration": "Sleep",
+      "sleepInBed": "Time in bed",
+      "sleepAwake": "Awake during sleep",
+      "sleepRem": "REM sleep",
+      "sleepLight": "Light sleep",
+      "sleepDeep": "Deep sleep",
+      "sleepScore": "Sleep quality",
+      "sleepEfficiency": "Sleep efficiency",
+      "sleepAwakenings": "Awakenings",
+      "heartRate": "Heart rate",
+      "restingHeartRate": "Resting heart rate",
+      "heartRateMin": "Lowest heart rate",
+      "heartRateMax": "Highest heart rate",
+      "hrv": "HRV",
+      "vo2Max": "VO₂ max",
+      "heartRateRecovery": "Heart rate recovery",
+      "respiratoryRate": "Respiratory rate",
+      "spo2": "Oxygen saturation (SpO₂)",
+      "temperature": "Temperature",
+      "stress": "Stress",
+      "recoveryScore": "Recovery",
+      "strain": "Strain",
+      "bloodGlucose": "Blood glucose",
+      "bodyFat": "Body fat %",
+      "fatMass": "Fat mass",
+      "fatFreeMass": "Fat-free mass",
+      "muscleMass": "Muscle mass",
+      "boneMass": "Bone mass",
+      "bodyWater": "Body water",
+      "visceralFat": "Visceral fat",
+      "bmr": "Basal metabolic rate (BMR)",
+      "bmi": "BMI"
+    }
+  },
   "frontPageSettings": {
     "intro": "Kies welke velden in het wiel op het startscherm worden getoond. Het bovenste veld toont altijd een lijst met alle toevoegopties.",
     "sideSectionTitle": "Weergave startscherm",
@@ -625,7 +627,12 @@
     "selectedCount": "{count} van {max} velden geselecteerd",
     "maxReachedHint": "Verwijder een veld om een ander toe te voegen.",
     "statsSectionTitle": "Cijfers in de cijferschuif",
-    "statsIntro": "Kies welke cijfers in de cijferschuif op het startscherm kunnen worden getoond. Wordt de lijst te lang, dan kun je gewoon scrollen."
+    "statsIntro": "Kies welke cijfers in de cijferschuif op het startscherm kunnen worden getoond. Wordt de lijst te lang, dan kun je gewoon scrollen.",
+    "zonesSectionTitle": "Heart-rate zones",
+    "zonesIntro": "Choose the zone the number slider shows time in, and adjust the limits (bpm) to your own pulse.",
+    "zoneLabel": "Zone {zone}",
+    "zoneMin": "Zone {zone} from (bpm)",
+    "zoneMax": "Zone {zone} to (bpm)"
   },
   "frontPageStats": {
     "calories": "Calorieën gegeten",
@@ -648,7 +655,39 @@
     "water": "Water",
     "burned": "Calorieën door sport",
     "steps": "Stappen",
-    "distanceKm": "Kilometers bewogen"
+    "distanceKm": "Kilometers bewogen",
+    "goalMin": "Goal: {value}",
+    "goalMax": "Goal: at most {value}",
+    "kcalRemainingCaption": "Left today",
+    "burnedCaption": "Active calories",
+    "distanceCaption": "Distance today",
+    "floors": "Floors climbed",
+    "earnedKcal": "Extra calories",
+    "earnedCaption": "Earned",
+    "energySplit": "Energy split",
+    "energySplitCaption": "Goal P {p} F {f} C {k}",
+    "activityKcal": "Activity (calories)",
+    "activityNone": "None recorded",
+    "stepKcal": "Calories from steps",
+    "stepKcalCaption": "From steps today",
+    "intakeVsTypical": "Intake now vs. usual",
+    "intakeVsTypicalCaption": "{percent} % vs. usual",
+    "intakeNoBasis": "Nothing to compare with yet",
+    "restingTime": "Time at resting heart rate",
+    "restingBpm": "Resting {bpm} bpm",
+    "restingBpmNone": "Resting heart rate unknown",
+    "zoneTime": "Time in heart-rate zone",
+    "zoneCaption": "Zone {zone}",
+    "weightOnGoalDay": "Weight on goal day",
+    "weightGoalCaption": "Goal {goal} kg · {verdict}",
+    "noWeightGoal": "No weight goal set",
+    "verdict": {
+      "likely": "Likely",
+      "possible": "Possible",
+      "unlikely": "Unlikely"
+    },
+    "goalChance": "Chance of reaching the goal",
+    "goalChanceCaption": "Recommended at most {max} kg/week"
   },
   "footerArc": {
     "open": "Toevoegknoppen openen",
@@ -1055,25 +1094,14 @@
     "tabMine": "Mijn gerechten",
     "tabShared": "Gedeelde gerechten",
     "statusNotShared": "Not shared",
-
     "sharedSearchPlaceholder": "Zoek op titel, ingrediënten …",
-
     "createNew": "Nieuw gerecht maken",
-
-    "sourceAll": "Recepten",
-
-    "sourceShared": "Gedeelde gerechten",
-
+    "sourceAll": "Alles tonen",
     "sourceHelloFresh": "Hello Fresh",
-
     "sourceValdemarsro": "Valdemarsro",
-
     "sourceFilterAria": "Kies receptbron",
-
     "filtersSheetTitle": "Filters",
-
     "goToRecipe": "Naar recept",
-
     "valdemarsroSource": "Valdemarsro",
     "sortRelevance": "Relevantie",
     "sortPopular": "Populariteit",
@@ -1089,7 +1117,11 @@
     "trendingTitle": "Nu in trek",
     "trendingEmpty": "Er zijn nog geen gedeelde gerechten",
     "favoritesTitle": "Mijn favorieten",
-    "favoritesEmpty": "Je hebt nog geen favorieten"
+    "favoritesEmpty": "Je hebt nog geen favorieten",
+    "sourceRetnemt": "RetNemt",
+    "sourceBetterfeast": "BetterFeast",
+    "retnemt": "RetNemt",
+    "betterfeast": "BetterFeast"
   },
   "recipeFilters": {
     "title": "Filters",
@@ -1168,7 +1200,8 @@
       "carbs-low": "Weinig koolhydraten",
       "fat-high": "Veel vet",
       "fat-low": "Weinig vet"
-    }
+    },
+    "kcalPer100g": "{kcal} kcal per 100 g"
   },
   "recipeSteps": {
     "title": "Bereiding",
@@ -1180,7 +1213,8 @@
     "addStep": "Stap toevoegen",
     "addPhoto": "Foto bij de stap maken",
     "removePhoto": "Foto verwijderen",
-    "remove": "Stap verwijderen"
+    "remove": "Stap verwijderen",
+    "dropPhoto": "Maak een foto van de stap of sleep een afbeelding hierheen"
   },
   "recipeImages": {
     "title": "Foto's van het gerecht",
@@ -1230,18 +1264,11 @@
     }
   },
   "recipeDetail": {
-
+    "durationLabel": "{minutes} min.",
     "shareRejected": "Your dish is not shared with others because it was rejected. You keep it yourself.",
-
-
     "shareRejectedReason": "Reason: {reason}",
-
-
     "servingsLabel": "{count} people",
-
-
     "thumbUp": "Duim omhoog",
-
     "thumbDown": "Duim omlaag",
     "loading": "Gerecht laden …",
     "notFound": "Het gerecht bestaat niet meer",
@@ -1257,7 +1284,13 @@
     "report": "Melden",
     "reported": "Bedankt, het gerecht is gemeld",
     "reportError": "Kon het gerecht niet melden",
-    "shareError": "Delen kon nu niet worden gewijzigd"
+    "shareError": "Delen kon nu niet worden gewijzigd",
+    "measureKcal": "{amount} · {kcal} kcal"
+  },
+  "recipeUnits": {
+    "label": "Hoeveelheden tonen als",
+    "measures": "Maten",
+    "grams": "Gram"
   },
   "hfRecipe": {
     "loading": "Recept laden …",
@@ -1305,57 +1338,50 @@
       "fiber": "Voedingsvezels",
       "protein": "Eiwit",
       "salt": "Zout"
-    }
+    },
+    "register": "Gerecht registreren",
+    "declaration": "Ingrediëntendeclaratie",
+    "nutritionPer100g": "Voedingswaarden per 100 g",
+    "nutritionNoteRetnemt": "De voedingswaarden per portie zijn door RetNemt berekend op basis van de ingrediënten van het recept.",
+    "nutritionNoteBetterfeast": "De voedingswaarden per 100 g komen uit de productdeclaratie van BetterFeast.",
+    "allergenNoteRetnemt": "De allergenen zijn indicatief en gebaseerd op de ingrediënten, niet op sporen van allergenen."
   },
   "createDish": {
+    "pageTitle": "Title and description",
+    "descriptionPlaceholder": "Description",
+    "durationLabel": "Duration",
+    "minutes": "min.",
+    "done": "Done",
+    "pageImport": "Import",
+    "pageBack": "Previous page",
+    "pageNext": "Next page",
+    "pageDots": "Page {current} of {total}",
+    "pageIngredients": "Ingredients",
+    "pageImages": "Pictures of the dish",
     "servings": "Number of people",
-
     "shareLabel": "Wil je het gerecht met andere gebruikers delen?",
-
     "modeManual": "Manual",
-
     "modeText": "Paste text",
-
     "modeScan": "Scan",
-
     "shareQuestionTitle": "Share this dish?",
-
     "shareQuestionBody": "Other users can find and use your dish. No personal details are shared. You can also share it later from the dish.",
-
     "shareYes": "Share",
-
     "shareNo": "Not now",
-
     "pasteTitle": "Paste recipe text",
-
     "pastePlaceholder": "Paste the complete recipe text here",
-
     "pasteSourcePlaceholder": "Source link (optional)",
-
     "pasteInsert": "Insert",
-
     "pasteWorking": "Reading the recipe …",
-
     "pasteError": "Could not read the recipe",
-
     "scanTitle": "Scan recipe",
-
     "scanTake": "Take photo",
-
     "scanGallery": "From library",
-
     "scanFinish": "Done",
-
     "scanWorking": "Reading the pages …",
-
     "scanError": "Could not read the pages",
-
     "scanHint": "Add the pages in order. The first photo becomes the dish image.",
-
     "importMissing": "Missing a match or an amount — add these yourself:",
-
     "importDone": "The recipe was inserted",
-
     "importNutrition": "Nutrition in the text (per serving)",
     "shareInfo": "Er worden geen persoonlijke gegevens gedeeld wanneer je een gerecht deelt",
     "shareInfoAria": "Over delen",
@@ -1379,7 +1405,7 @@
     "searchPlaceholder": "Zoek een ingrediënt",
     "searching": "Zoeken...",
     "noResults": "Geen producten gevonden voor je zoekopdracht",
-    "scan": "Foto maken",
+    "scan": "Barcode scannen",
     "scanWeb": "Upload een foto of sleep ze hierheen",
     "scanWebWorking": "Foto lezen …",
     "scanWebNotFound": "We konden het product op de foto niet herkennen. Probeer een foto van de voorkant of zoek naar het product.",
@@ -1463,6 +1489,7 @@
     "pendingBannerMany": "{count} aanmaakacties wachten op upload"
   },
   "offline": {
+    "cachedResults": "Opgeslagen resultaten van eerdere zoekopdrachten (offline)",
     "message": "Geen verbinding — hiervoor is internet nodig. Probeer het opnieuw als je online bent.",
     "banner": "Je bent offline — sommige functies werken niet",
     "barcodeLookup": "De barcode is gelezen, maar je hebt geen verbinding. Probeer het opnieuw als je online bent."
@@ -1795,7 +1822,13 @@
     "thigh": "Dij (cm)",
     "upperArm": "Bovenarm (cm)",
     "neck": "Nek (cm)",
+    "buttock": "Billen (cm)",
+    "calf": "Kuit (cm)",
+    "ankle": "Enkel (cm)",
     "names": {
+      "buttock": "Billen",
+      "calf": "Kuit",
+      "ankle": "Enkel",
       "neck": "Nek",
       "waist": "Taille",
       "hip": "Heup",
@@ -1891,8 +1924,24 @@
     "activityIntro": "De WHO adviseert volwassenen minstens 150 min matige activiteit per week en krachttraining op 2 dagen per week. Horloges en activiteitentrackers kunnen dit registreren.",
     "activityUseWho": "WHO-advies gebruiken",
     "activityHeartRateHint": "Hartslag boven: je moet deze waarde minstens één keer per dag overschrijden. Matige intensiteit is ongeveer 64% van je maximale hartslag (220 − je leeftijd), bijv. ongeveer 120 bij een 30-jarige.",
-    "activity": {"stepsPerDay":"Stappen","activeMinutesPerWeek":"Actieve minuten","strengthDaysPerWeek":"Krachttraining","workoutsPerWeek":"Trainingen","runKmPerWeek":"Hardlopen","cycleKmPerWeek":"Fietsen","heartRateAboveBpm":"Hartslag boven"},
-    "activityPlaceholder": {"stepsPerDay":"bijv. 8000","activeMinutesPerWeek":"bijv. 150","strengthDaysPerWeek":"bijv. 2","workoutsPerWeek":"bijv. 3","runKmPerWeek":"bijv. 15","cycleKmPerWeek":"bijv. 50","heartRateAboveBpm":"bijv. 120"},
+    "activity": {
+      "stepsPerDay": "Stappen",
+      "activeMinutesPerWeek": "Actieve minuten",
+      "strengthDaysPerWeek": "Krachttraining",
+      "workoutsPerWeek": "Trainingen",
+      "runKmPerWeek": "Hardlopen",
+      "cycleKmPerWeek": "Fietsen",
+      "heartRateAboveBpm": "Hartslag boven"
+    },
+    "activityPlaceholder": {
+      "stepsPerDay": "bijv. 8000",
+      "activeMinutesPerWeek": "bijv. 150",
+      "strengthDaysPerWeek": "bijv. 2",
+      "workoutsPerWeek": "bijv. 3",
+      "runKmPerWeek": "bijv. 15",
+      "cycleKmPerWeek": "bijv. 50",
+      "heartRateAboveBpm": "bijv. 120"
+    },
     "nutritionHeading": "Voeding per dag",
     "nutrition": {
       "kcal": "Calorieën",
@@ -1908,86 +1957,86 @@
     }
   },
   "weighIn": {
-    "attireTitle": "What were you wearing?",
+    "attireTitle": "Wat had je aan?",
     "attireItem": {
-      "UNDERWEAR": "Underwear",
-      "PANTS": "Trousers",
-      "TOP": "Top / T-shirt",
-      "SWEATER": "Sweater",
-      "SHOES": "Shoes",
-      "POCKET_ITEMS": "Phone etc. in pocket",
-      "AFTER_TOILET": "After using the toilet"
+      "UNDERWEAR": "Met ondergoed",
+      "PANTS": "Met broek",
+      "TOP": "Met top / T-shirt",
+      "SWEATER": "Met bovenkleding",
+      "SHOES": "Met schoenen",
+      "POCKET_ITEMS": "Met telefoon en andere spullen in de zakken",
+      "AFTER_TOILET": "Na toiletbezoek"
     },
-    "attireNaked": "Nothing selected = naked",
+    "attireNaked": "Niets gekozen = naakt",
     "attire": {
-      "NAKED": "Naked",
-      "UNDERWEAR": "In underwear",
-      "CLOTHED": "Clothed",
-      "CLOTHED_PHONE": "Clothed, phone in pocket"
+      "NAKED": "Naakt",
+      "UNDERWEAR": "In ondergoed",
+      "CLOTHED": "Gekleed",
+      "CLOTHED_PHONE": "Gekleed, telefoon in de zak"
     },
-    "save": "Save",
-    "saving": "Saving…",
-    "saveError": "Could not save. Try again.",
+    "save": "Opslaan",
+    "saving": "Opslaan…",
+    "saveError": "Opslaan mislukt. Probeer het opnieuw.",
     "later": "Later",
-    "continue": "Continue",
+    "continue": "Doorgaan",
     "ago": {
-      "justNow": "just now",
-      "minutes": "{n} min. ago",
-      "hours": "{n} hours ago",
-      "days": "{n} days ago"
+      "justNow": "zojuist",
+      "minutes": "{n} min. geleden",
+      "hours": "{n} uur geleden",
+      "days": "{n} dagen geleden"
     },
     "sync": {
-      "now": "Sync now",
-      "syncing": "Syncing…",
-      "done": "Synced",
-      "failed": "Sync failed",
-      "error": "Error — reconnect",
-      "last": "Synced {ago}",
-      "never": "Not synced yet",
-      "open": "Open {name}",
-      "openShort": "Open",
-      "noneConnected": "No smart scale connected",
-      "connect": "Connect"
+      "now": "Nu synchroniseren",
+      "syncing": "Synchroniseren…",
+      "done": "Gesynchroniseerd",
+      "failed": "Synchroniseren mislukt",
+      "error": "Fout — opnieuw verbinden",
+      "last": "Gesynchroniseerd {ago}",
+      "never": "Nog niet gesynchroniseerd",
+      "open": "{name} openen",
+      "openShort": "Openen",
+      "noneConnected": "Geen slimme weegschaal verbonden",
+      "connect": "Verbinden"
     },
     "stale": {
-      "title": "It has been a while since the last sync",
-      "body": "{name} was last synced {ago}. Sync so your latest weigh-ins come through.",
-      "bodyNever": "{name} has not been synced yet. Sync so your weigh-ins come through."
+      "title": "Het is al een tijd geleden dat er is gesynchroniseerd",
+      "body": "{name} is voor het laatst {ago} gesynchroniseerd. Synchroniseer, zodat je nieuwste wegingen binnenkomen.",
+      "bodyNever": "{name} is nog niet gesynchroniseerd. Synchroniseer, zodat je wegingen binnenkomen."
     },
     "prompt": {
-      "aria": "What were you wearing when you weighed in?",
-      "todayMorning": "You weighed yourself this morning.",
-      "past": "You weighed yourself {when}",
-      "andWeighed": "and weighed",
-      "question": "But was it:",
-      "older": "Older weigh-in",
-      "newer": "Newer weigh-in"
+      "aria": "Wat had je aan tijdens het wegen?",
+      "todayMorning": "Je hebt je vanochtend gewogen.",
+      "past": "Je hebt je {when} gewogen",
+      "andWeighed": "en woog",
+      "question": "Maar was het:",
+      "older": "Oudere weging",
+      "newer": "Nieuwere weging"
     },
     "when": {
       "today": {
-        "morning": "this morning",
-        "afternoon": "this afternoon",
-        "evening": "this evening",
-        "night": "last night"
+        "morning": "vanochtend",
+        "afternoon": "vanmiddag",
+        "evening": "vanavond",
+        "night": "vannacht"
       },
       "yesterday": {
-        "morning": "yesterday morning",
-        "afternoon": "yesterday afternoon",
-        "evening": "yesterday evening",
-        "night": "last night"
+        "morning": "gisterochtend",
+        "afternoon": "gistermiddag",
+        "evening": "gisteravond",
+        "night": "vannacht"
       },
       "part": {
-        "morning": "morning",
-        "afternoon": "afternoon",
-        "evening": "evening",
-        "night": "night"
+        "morning": "ochtend",
+        "afternoon": "middag",
+        "evening": "avond",
+        "night": "nacht"
       },
-      "weekday": "{weekday} {part}",
-      "lastWeek": "last {weekday}"
+      "weekday": "{weekday}{part}",
+      "lastWeek": "afgelopen {weekday}"
     },
     "details": {
-      "title": "Weigh-in",
-      "failed": "Could not load the weigh-in."
+      "title": "Weging",
+      "failed": "De weging kon niet worden geladen."
     }
   },
   "weightLog": {
@@ -2038,6 +2087,7 @@
     "recentTitle": "Laatste registraties"
   },
   "photoDiary": {
+    "addPhoto": "Nieuwe foto toevoegen",
     "title": "Fotodagboek",
     "loading": "Laden…",
     "loadError": "Kon fotodagboek niet laden.",
@@ -2177,6 +2227,7 @@
     "showLess": "Minder tonen",
     "extendedNutrition": "Voedingswaarde",
     "extendedNutritionDisclaimer": "Wordt alleen getoond als er gegevens voor dit product zijn.",
+    "fridaSource": "Bron: Fødevaredata (frida.fooddata.dk), DTU Fødevareinstituttet, Danmarks Tekniske Universitet",
     "toxins": "Toxines",
     "toxinPregnancyBadge": "Zwanger/borstvoeding",
     "toxinsDisclaimer": "Gebaseerd op de ingrediëntenlijst — geen meting van dit specifieke product. Bronnen: de Deense voedselautoriteit (Fødevarestyrelsen) en EFSA.",
@@ -2213,7 +2264,8 @@
       "vitaminB7": "Vitamine B7 (biotine)",
       "vitaminB9": "Vitamine B9 (foliumzuur)",
       "vitaminB12": "Vitamine B12"
-    }
+    },
+    "swapLiquidUnit": "Wisselen tussen volume en gram"
   },
   "photoAward": {
     "bannerSingle": "Je kunt {points} punten verdienen door een nieuwe foto te maken van {photoType}.",
@@ -2393,6 +2445,7 @@
       "title": "Toegang tot {name}",
       "messageReadWrite": "“Hello Cal” wil graag toegang tot je {name}-gegevens en deze bijwerken.",
       "messageRead": "“Hello Cal” wil graag toegang tot je {name}-gegevens.",
+      "messageConnected": "Hello Cal is verbonden met {name}. Kies hieronder wat er wordt opgehaald en verzonden.",
       "turnOnAll": "Alles inschakelen",
       "turnOffAll": "Alles uitschakelen",
       "writeTitle": "“Hello Cal” toestaan te schrijven",
@@ -2426,7 +2479,11 @@
         "water": "Water",
         "body": "Lengte, BMI en temperatuur"
       }
-    }
+    },
+    "retNemtTitle": "RetNemt-recepten",
+    "retNemtDescription": "RetNemt-recepten samen met de gedeelde gerechten onder Recepten tonen",
+    "betterFeastTitle": "BetterFeast-gerechten",
+    "betterFeastDescription": "Kant-en-klaarmaaltijden van BetterFeast samen met de gedeelde gerechten onder Recepten tonen"
   },
   "payment": {
     "title": "Betaling",
@@ -3094,12 +3151,19 @@
     },
     "sharing": {
       "title": "Delen met anderen",
-      "intro": "Hier zie je wie in het gezin je profiel kan bekijken en wat ze kunnen zien. {owner} bepaalt wie toegang heeft.",
+      "introSelf": "Choose who in the family may see your profile and who may also add entries on your behalf.",
+      "introSelfMember": "Choose who in the family may see your profile and who may also add entries on your behalf. This is your decision. {owner} pays for the family and always has access.",
+      "introOwner": "See who in the family can view your profile and what they can see. {owner} decides who has access.",
       "none": "Niemand anders in het gezin kan je profiel bekijken.",
+      "shareWith": "Share with {name}",
+      "allowWrite": "May also add entries for you",
+      "allowWriteFor": "{name} may also add entries for you",
       "sharedWith": "Gedeeld met {name}",
       "ownerNote": "{name} betaalt voor het gezin en heeft altijd toegang tot je profiel.",
       "grantNote": "{owner} heeft {name} toegang gegeven tot je profiel.",
+      "selfGrantNote": "You can change or stop sharing with {name} above.",
       "canEdit": "{name} kan ook invoeren en je profiel aanpassen. Alles staat in je Controlelog.",
+      "viewOnly": "{name} can only view, not add or edit. Everything is in your control log.",
       "area": {
         "profile": "Profiel (naam, leeftijd, lengte)",
         "registrations": "Voedselregistraties",
@@ -3563,5 +3627,33 @@
     "sugarFree": "Sugar free",
     "vegetarian": "Vegetarian",
     "vegan": "Vegan"
+  },
+  "forwardRecipe": {
+    "title": "Send to a friend",
+    "hint": "Send “{name}” as an encrypted link.",
+    "duration": "How long should the link work?",
+    "days": {
+      "1": "1 day",
+      "7": "7 days",
+      "30": "30 days",
+      "90": "90 days"
+    },
+    "toName": "Friend's name",
+    "toEmail": "Friend's email",
+    "fromName": "From (your name)",
+    "message": "Message (optional)",
+    "encrypted": "The link is encrypted and stops working when the time is up.",
+    "share": "Share",
+    "sending": "Creating the link …",
+    "missing": "Fill in name, email and from name (valid email).",
+    "error": "Could not create the link.",
+    "copied": "Link copied.",
+    "shareText": "Try “{name}” in Hello Cal!",
+    "button": "Send to a friend"
+  },
+  "searchCorrection": {
+    "showingFor": "Resultaten voor {query}",
+    "searchInstead": "Zoek in plaats daarvan naar {query}",
+    "didYouMean": "Bedoelde je {query}?"
   }
 }

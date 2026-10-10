@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import { requireAdminUser } from "@/lib/require-admin";
 import { UncertaintiesBoard } from "@/components/admin/UncertaintiesBoard";
 import { EnergySplitFlags } from "@/components/admin/EnergySplitFlags";
+import { FridaMatchReviews } from "@/components/admin/FridaMatchReviews";
 import { LegacyWarnings } from "@/components/admin/LegacyWarnings";
 import { UNCERTAINTY_FIELDS, UNCERTAINTY_TABS, listUncertainties } from "@/lib/uncertainties";
 import { HIDE_FROM_SEARCH_BELOW, UNCERTAINTY_TARGET, URGENT_BELOW } from "@/lib/uncertainty-thresholds";
@@ -38,6 +39,10 @@ export default async function AdminUncertaintiesPage() {
 
       <div className="border-t border-hf-tan-dark pt-6">
         <EnergySplitFlags />
+      </div>
+
+      <div className="border-t border-hf-tan-dark pt-6">
+        <FridaMatchReviews />
       </div>
 
       <div className="flex flex-col gap-8 border-t border-hf-tan-dark pt-6">

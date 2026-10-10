@@ -31,6 +31,25 @@ Status opdateret: 2026-10-06 — alle udestående opgaver slettet (klaret af en 
 
 ---
 
+## G-AABNE-PR — Åbne PR'er der IKKE blev flettet (2026-10-10)
+
+Flettet og deployet 2026-10-10: #339, #344, #348, #354, #355, #360, #361, #362, #363, #364. Resten står tilbage; ingen af dem er rørt.
+
+| Id | Opgave | Status | Næste skridt |
+| --- | --- | --- | --- |
+| #249, #261 | Søgning ord for ord / tolerant søgning (`src/app/api/products/route.ts`) | Overhalet | Master har allerede flerords-søgning + synonymer (DECISIONS 2026-10-04). Luk begge, eller byg kun accent-tolerancen ovenpå master |
+| #220 | Profil: Kontoopsætning-række øverst | Overhalet | Master har egen række med procentvisning. Luk |
+| #359, #281, #311, #266, #317, #327, #272 | Mange konflikter mod master (7–23 filer hver) | Ikke flettet | Genbyg ovenpå nuværende master (flet master ind, vurdér hvad der stadig mangler) i stedet for at tvinge konflikterne |
+
+## G-NAERING — Streg (–) for manglende næringsindhold (2026-10-09)
+Filer: `src/components/add/AddProductView.tsx`, `AddProductScreen.kt`, `docs/REGLER.md`. Branch `claude/nutrient-dash`, PR #252 (klar til review).
+
+| Id | Opgave | Status | Næste skridt |
+| --- | --- | --- | --- |
+| streg | Manglende næringsværdi vises som "–" (web + native) | Venter på CI | Min del er klar og godkendt i paritet. Tjekket "Web ↔ native in step" kan stadig være rødt pga. mål-siderne (`/profile/goals`, `/profile/goals/[id]/edit`) på master — ikke denne PR. Når master er grøn: flet master ind, kør `node scripts/native/parity.mjs`, og flet PR #252 |
+
+---
+
 ## G-NATIVE — Native Android + iPhone-app (helt native, Compose Multiplatform)
 Filer: `native/**`, `scripts/native/**`, `.github/workflows/native.yml`. Branch `claude/native-apps` (merges til master, når CI er grøn).
 Ejer: session "Native app" (e4e4d388), 2026-10-08. Fortsæt fra `native/README.md` + `native/PORTING.md`; status pr. skærm står i `native/parity/screens.json` (`node scripts/native/parity.mjs`).
@@ -183,7 +202,7 @@ Ejer: G8-sessionen, konto C (overtaget 2026-09-24)
 | --- | --- | --- | --- |
 | 69a1b2bd / 2c95590f | Dubletter af 6068f78a og 8d98b548 — læs dem for ekstra svar fra brugeren ("Så byg det, der mangler. Det skal jo bare virke!") | Dublet | Luk sammen med hovedopgaverne |
 | 5c45b0d7 | Opskrift-scrapere som Valdemarsro: Arla, Coop, REMA 1000, MENY, Hjerteforeningen, TV2 (+ Børnevenlig og måltidstype) | Færdig (kode) | Scrapere + kalorie-matcher i scripts/recipe-sites-import (README). Testet på de rigtige sider. Brugeren kører dem selv i VS Code; import i appen hører under Valdemarsro-integrationen |
-| 300489b5 | Push til Health/integrationer + egen side pr. app med til/fra (hent/send) ved tilkobling og bagefter | Færdig (ce1bc7f, deployet) | Brugeren: skriveadgang i Google Cloud-klienten (nutrition/health_metrics writeonly) og Strava-appen (activity:write); native app til Apple Health/Health Connect mangler |
+| 300489b5 | Push til Health/integrationer + egen side pr. app med til/fra (hent/send) ved tilkobling og bagefter | Færdig (ce1bc7f, deployet) | Google Cloud klar 2026-10-10 (writeonly-scopes findes, testbruger packroff@gmail.com tilføjet); mangler Strava-appen (activity:write); native app til Apple Health/Health Connect mangler |
 | admin-integrationer | Admin → Integrationer: oversigt (installationer, brug, frakoblinger) + side pr. integration med grafer | Færdig (kode), branch `claude/admin-integrationer` | Ny tabel `integration_events` (migration `20261002120000_integration_events`) skrives fra `handlers.ts`, `integrations-oauth.ts`, `companion.ts` og healthkit-/settings-ruterne. Næste: deploy + brugerens test på admin |
 | tester-popup | Popup "første testperson, 300 points" på hver integrations side + Admin → Brugere → Test-programmes | Færdig (kode, branch `claude/integration-tester-popup`) | Migration `20261002120000_integration_testers` ved deploy; brugerens test på telefon |
 
@@ -281,6 +300,11 @@ Ejer: cloud-session `claude/lucid-bell-s5vyhv` (2026-09-25)
 
 | Id | Opgave | Status | Næste skridt |
 | --- | --- | --- | --- |
+| family-rights | "Skift profil" fed under cirklen, "Tilføj familiemedlem" + "Tilføj barn (under 18)", rettigheder "se" / "oprette på deres vegne" | Venter på bruger | Bygget i draft-PR #212 (branch `claude/familie-tilfoej-rettigheder`), migration `20261003230000_family_grant_write`. Næste: brugerens test mod rigtig database |
+| family-qr | Familiekode bundet til e-mail, krypteret QR-kode på betalerens side, "x ud af y abonnenter" + "0/5 ekstra tilkøb" | Venter på bruger | Flettet i master og deployet 2026-10-03 (PR #196 + #200). Næste: brugerens test på telefon (scan QR med kameraet) og afklaring af pris/betaling for ekstra pladser |
+| — | Familieabonnement: forældre ser/taster for børn, adgangslog til barnet | I gang | Første version bygget og pushet (branch `claude/lucid-bell-s5vyhv`, ikke flettet). Næste: brugerens test og "Mangler" i `docs/FAMILY.md` (oprettelsesflow med alder er næste skridt) |
+| family-invite | "Inviter familiemedlem" (mail + valg af indsigt + "Tilføj barn under 18") og ejerens konto som Seriøs Familie | Venter på bruger | Flettet i master 2026-10-03 (PR #199) og deployet med de 2 migrationer. Næste: brugerens test på telefon |
+| family-share-self | "Del med andre": voksne med eget login (og børn fra 15) bestemmer selv, hvem i familien der ser deres profil ("se" / "oprette på dine vegne"); betaleren styrer kun profiler uden login og børn under 15 | Venter på bruger | Første del ("Familie" øverst på Profil + "Delt med {navn}") flettet i PR #216. Resten ligger i draft-PR #224 (branch `claude/familie-selv-bestemmer`, master flettet ind, lint/typecheck/build grønne, ingen migration). Session `session_01WPC8ibw3YrdqmQ7Ro7Po5e` (konto peter@packroff.dk) måtte ikke flette til master uden gennemgang. Næste: brugeren gennemgår og fletter #224 og tester på telefon med en voksen konto i familien |
 
 ## G-FLOWS — Admin "Flows" + telefon-editor
 Filer: `src/components/admin/PhonePreviewEditor.tsx`, `src/components/admin/FlowEditor.tsx`, `src/app/admin/flows/**`, `src/app/api/admin/flows/**`, `src/lib/flows.ts`.
@@ -434,9 +458,10 @@ Ejer: vægt-sessionen (2026-10-07)
 
 | Id | Opgave | Status | Næste skridt |
 | --- | --- | --- | --- |
-| vaegt-synk | Synk-status, synk-popup, tøj-popup, tøj-blok + admin-algoritme, kalibrer-link, klik ind på vejning, Tilføj-tekst tættere | Færdig (se git log "Vægt:") | Afventer brugerens test på telefon; de/fr/nl/sv/no mangler oversættelse af `weighIn.*` |
+| vaegt-synk | Synk-status, synk-popup, tøj-popup, tøj-blok + admin-algoritme, kalibrer-link, klik ind på vejning, Tilføj-tekst tættere | Færdig (se git log "Vægt:") | Afventer brugerens test på telefon. `weighIn.*` oversat til de/fr/nl/sv/no 2026-10-10 |
 | vaegt-kalender-ret | Timeoversigt: vejning alene på tidspunktet åbner info-vinduet direkte (ingen accordion), dublet-række og gammelt badevægt-ikon væk, vægt-linjen nederst ved kalorierne fjernet | Færdig (kode, `src/app/calendar/page.tsx`) | Brugerens test på telefon |
-| vaegt-tojslidere | Tøj ved vejning som flere til/fra-slidere (undertøj, bukser, top/T-shirt, sweater, sko, mobil m.m. i lommen, efter toiletbesøg); intet valgt = nøgen | Færdig (kode) | Migration 20261009100000 (`attireItems`, gamle valg omregnes) skal med deployet. Ikke prøvet i browser/mod rigtig database; de/fr/nl/sv/no har engelske tekster |
+| vaegt-tojslidere | Tøj ved vejning som flere til/fra-slidere (undertøj, bukser, top/T-shirt, sweater, sko, mobil m.m. i lommen, efter toiletbesøg); intet valgt = nøgen | Færdig (kode) | Migration 20261009100000 (`attireItems`, gamle valg omregnes) skal med deployet. Ikke prøvet i browser/mod rigtig database. Tekster oversat til de/fr/nl/sv/no 2026-10-10 |
+| vaegt-popup-webhook | Tøj-popup kom ikke: adgangsmuren afviste Withings' webhook (403); webhooks undtaget, tilmelding gentages efter deploy | Færdig (PR #379) | Brugerens test: vej dig med forsiden åben |
 ## G-VIDEN — Guide mig + Viden om mad
 Filer: `src/lib/help-guides.ts`, `src/components/help/**`, `src/lib/knowledge*.ts`, `src/app/viden-om/**`.
 Ejer: viden-hjaelp-guide-sessionen (2026-10-07)
@@ -461,3 +486,27 @@ Ejer: cloud-session `claude/help-center-shortcut-overlay-2cql8y` (2026-10-09)
 | --- | --- | --- | --- |
 | guide-hjaelpecenter | Understreget genvej øverst + "Guide mig" i Hjælpecenter-emner | Venter på bruger | Draft-PR #318. Brugeren tester på telefon: Hjælpecenter → "Hvordan registrerer jeg min vægt?" → Guide mig |
 
+---
+
+## Genscan-panel ("Optjen 10 points")
+Filer: `src/components/add/RescanBanner.tsx`, `src/lib/product-capture.ts`.
+Ejer: cloud-session `claude/rescan-panel-fix` (2026-10-03)
+
+| Id | Opgave | Status | Næste skridt |
+| --- | --- | --- | --- |
+| rescan-panel | Panel over hele skærmen, X-knap, 60 sek. tidsgrænse på afsendelse | Venter på bruger | Draft-PR #225. Brugeren skal teste på telefon (kan panelet lukkes; bliver kameraet sort efter sidste billede?) og godkende flet til master |
+## G-SLIDER — Tal-slider: valgbare felter, mål-linje, grøn ved mål
+Filer: `src/lib/frontpage-stats.ts`, `src/lib/frontpage-goal-math.ts`, `src/lib/pulse-zone-settings.ts`, `src/components/StatsWheel.tsx`, `src/app/settings/display/front-page/page.tsx`.
+Ejer: cloud-session `claude/slider-settings-goal-display-32jvk9` (2026-10-09)
+
+| Id | Opgave | Status | Næste skridt |
+| --- | --- | --- | --- |
+| slider-felter | 12 nye felter, mål under tallet, grøn ved nået mål, pulszoner i Visning → Forside | Færdig (kode, draft-PR #278) | Brugerens test på telefon + svar på antagelserne (sukkermål 10 % vs. 1 %, faste mål for trapper/skridt) |
+
+## Native-port af tal-sliderens nye felter (PR #278)
+Filer: `native/**/HomeStatsWheel.kt`, `SettingsFrontPageScreen.kt`; web-kilde `src/components/StatsWheel.tsx`, `src/lib/frontpage-stats.ts`, `src/lib/frontpage-goal-math.ts`, `src/lib/pulse-zone-settings.ts`.
+Ejer: ledig (2026-10-10)
+
+| Id | Opgave | Status | Næste skridt |
+| --- | --- | --- | --- |
+| slider-native | Valgbare felter, mål-linje, grøn ved mål, flere ikoner og pulszone-valg i native tal-hjul + Forside-indstillinger | Ikke startet (web flettet, paritet midlertidigt accepteret) | Port felterne fra `frontpage-stats.ts`/`frontpage-goal-math.ts` til Kotlin, derefter `parity.mjs --accept / /settings/display/front-page` |

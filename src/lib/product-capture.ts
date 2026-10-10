@@ -179,8 +179,10 @@ export async function createQuickProduct(data: CaptureData, marketRegion: string
 // "Scan varen igen" (docs/DECISIONS.md 2026-10-02): samme fotos som "opret
 // straks", men til en eksisterende vare (POST /api/products/[id]/rescan).
 export async function submitProductRescan(productId: string, data: CaptureData, marketRegion: string): Promise<void> {
+  // Uden tidsgrænse kan en hængende upload stå som sort kamera for evigt.
   const response = await fetch(`/api/products/${encodeURIComponent(productId)}/rescan`, {
     method: "POST",
+    signal: AbortSignal.timeout(60_000),
     headers: { "Content-Type": "application/json", ...scanFlowHeaders(data.flowId) },
     body: JSON.stringify({
       marketRegion,

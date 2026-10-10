@@ -16,6 +16,9 @@ export type CustomApi = {
   name: string;
   keyId: string;
   secret: string;
+  // Den præcise side hos udbyderen, hvor nøglen styres. Tom for API'er
+  // tilføjet før feltet fandtes.
+  manageUrl?: string;
 };
 
 export type CustomApiView = {
@@ -24,6 +27,7 @@ export type CustomApiView = {
   name: string;
   keyId: string;
   secretDisplay: string;
+  manageUrl: string | null;
 };
 
 function maskSecret(secret: string) {
@@ -73,6 +77,7 @@ export async function loadCustomApis() {
     name: a.name,
     keyId: a.keyId,
     secretDisplay: maskSecret(a.secret),
+    manageUrl: a.manageUrl || null,
   }));
   return { groups: names, apis: views };
 }

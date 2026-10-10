@@ -122,23 +122,30 @@ fun FoodsScreen(args: RouteArgs) {
         }
     }
 
+    var correction by remember { mutableStateOf(SearchCorrection()) }
+    var exactQuery by remember { mutableStateOf<String?>(null) }
     val q = query.trim()
     val isSearching = q.length >= SEARCH_MIN_LENGTH
     val cacheKey = q.lowercase()
-    LaunchedEffect(q) {
+    LaunchedEffect(q, exactQuery) {
         if (q.length < SEARCH_MIN_LENGTH) return@LaunchedEffect
-        val hadCacheHit = FoodsSearchCache.entries.containsKey(cacheKey)
+        val exact = exactQuery == q
+        // Exact ("search instead") results are never cached under the normal key.
+        val hadCacheHit = !exact && FoodsSearchCache.entries.containsKey(cacheKey)
+        correction = SearchCorrection()
         delay(SEARCH_DEBOUNCE_MS)
         try {
             val hour = FoodTime.local(FoodTime.now()).hour
-            val products = ApiJson.decodeFromJsonElement(ProductListResponse.serializer(), Api.get("/api/products?q=${encodeUri(q)}&hour=$hour&take=20")).products
-            FoodsSearchCache.entries[cacheKey] = (FoodTime.now().toEpochMilliseconds() + SEARCH_CACHE_TTL_MS) to products
+            val data = ApiJson.decodeFromJsonElement(ProductListResponse.serializer(), Api.get("/api/products?q=${encodeUri(q)}&hour=$hour&take=20${if (exact) "&exact=1" else ""}"))
+            val products = data.products
+            correction = SearchCorrection.of(data)
+            if (!exact) FoodsSearchCache.entries[cacheKey] = (FoodTime.now().toEpochMilliseconds() + SEARCH_CACHE_TTL_MS) to products
             searchResults = products
         } catch (_: Exception) {
             if (!hadCacheHit) searchResults = emptyList()
         }
     }
-    val cachedResults = if (isSearching) FoodsSearchCache.entries[cacheKey]?.second else null
+    val cachedResults = if (isSearching && exactQuery != q) FoodsSearchCache.entries[cacheKey]?.second else null
     val favorites = snapshot?.products ?: emptyList()
     val favoriteIds = snapshot?.favoriteIds?.toSet() ?: emptySet()
     val ready = snapshot != null
@@ -167,6 +174,9 @@ fun FoodsScreen(args: RouteArgs) {
             if (!isSearching && ready && favorites.isNotEmpty()) {
                 HcText(t.t("foods.mostUsed").uppercase(), HcTypeRoles.Small, Modifier.padding(horizontal = 4.dp), color = HcColors.TextSecondary, bold = true)
             }
+            if (isSearching) {
+                SearchCorrectionNotice(correction, onSearchInstead = { exactQuery = q }, onUseSuggestion = { query = it })
+            }
             FoodListCard {
                 if (waiting && skeletonDue) FoodSkeletonMediaRows(3, Modifier.padding(horizontal = 16.dp))
                 if (!ready && loadFailed) {
@@ -180,12 +190,17 @@ fun FoodsScreen(args: RouteArgs) {
                             nav.push("/add/${product.id}$prefill")
                         }) {
                             FoodRow(
-                                title = product.name,
+                                title = product.searchTitle ?: product.name,
                                 image = product.imageUrl,
                                 modifier = Modifier.padding(horizontal = 16.dp),
                                 subtitle = {
                                     HcText(
-                                        listOfNotNull(product.brand?.name, t.t("foods.kcalPer100g", "kcal" to jsRound(product.kcalPer100g))).joinToString(" · "),
+                                        listOfNotNull(
+                                            // The brand already leads a search hit's title.
+                                            if (product.searchTitle != null) null else product.brand?.name,
+                                            if (product.nutritionMissing) t.t("addProduct.nutritionUnknown")
+                                            else t.t("foods.kcalPer100g", "kcal" to jsRound(product.kcalPer100g)),
+                                        ).joinToString(" · "),
                                         HcTypeRoles.Small,
                                         color = HcColors.TextSecondary,
                                         maxLines = 1,

@@ -1,27 +1,45 @@
 // "Del med andre" på Familie-siden (docs/FAMILY.md): hvem i familien kan se
-// og taste ind på en profil, og hvad de kan se. Regnes ud fra familie-
-// oversigten i GET /api/family, så siden ikke skal hente mere.
+// og taste ind på en profil, hvad de kan se, og hvem der bestemmer det.
+// Ren logik uden database, så både server og klient bruger den.
 // Samme regel som canActFor i src/lib/family-access.ts: betaleren har altid
-// adgang, andre kun via en tildeling fra betaleren.
+// adgang, andre kun via en tildeling (FamilyAccessGrant).
 
-export type SharingPerson = { userId: string; displayName: string; isOwner: boolean };
+// Fra denne alder må et barn selv bestemme over sin profil (samme grænse som
+// udmelding af familien, docs/FAMILY.md punkt 3 + 4).
+export const FAMILY_SELF_CONSENT_AGE = 15;
+
+type SharingSubject = { userId: string; hasLogin: boolean; isChild: boolean; age: number | null };
+
+// Hvem bestemmer, hvem andre i familien må se profilen? Personen selv, når
+// vedkommende har eget login og ikke er et barn under 15 — det kommer ikke
+// betaleren ved (ejerens beslutning 2026-10-03). Profiler uden eget login og
+// børn under 15 styres af betaleren.
+export function sharingDeciderId(subject: SharingSubject, ownerId: string): string {
+  if (subject.userId === ownerId) return ownerId;
+  const tooYoung = subject.isChild && (subject.age === null || subject.age < FAMILY_SELF_CONSENT_AGE);
+  return subject.hasLogin && !tooYoung ? subject.userId : ownerId;
+}
+
+// canWrite: må også oprette på profilens vegne (ellers kun se den).
+export type SharingPerson = { userId: string; displayName: string; isOwner: boolean; canWrite: boolean };
 
 type FamilyForSharing = {
   ownerId: string;
   ownerName: string;
   members: { userId: string; displayName: string }[];
-  grants: { granteeId: string; subjectId: string }[];
+  grants: { granteeId: string; subjectId: string; canWrite: boolean }[];
 };
 
 export function peopleSharedWith(family: FamilyForSharing, subjectId: string): SharingPerson[] {
   const people: SharingPerson[] = [];
   if (family.ownerId !== subjectId) {
-    people.push({ userId: family.ownerId, displayName: family.ownerName, isOwner: true });
+    people.push({ userId: family.ownerId, displayName: family.ownerName, isOwner: true, canWrite: true });
   }
   for (const member of family.members) {
     if (member.userId === subjectId || member.userId === family.ownerId) continue;
-    if (family.grants.some((grant) => grant.granteeId === member.userId && grant.subjectId === subjectId)) {
-      people.push({ userId: member.userId, displayName: member.displayName, isOwner: false });
+    const grant = family.grants.find((item) => item.granteeId === member.userId && item.subjectId === subjectId);
+    if (grant) {
+      people.push({ userId: member.userId, displayName: member.displayName, isOwner: false, canWrite: grant.canWrite });
     }
   }
   return people;

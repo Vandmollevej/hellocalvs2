@@ -63,6 +63,7 @@ import dk.packroff.hellocal.ui.CalendarPartyPopperIcon
 import dk.packroff.hellocal.ui.CalendarPartyPopperImage
 import dk.packroff.hellocal.ui.HcLoader
 import dk.packroff.hellocal.ui.HcText
+import dk.packroff.hellocal.ui.localizedDecimals
 import dk.packroff.hellocal.ui.icons.HcIcon
 import kotlin.math.abs
 import kotlin.math.max
@@ -643,7 +644,7 @@ private fun DraggableEntryMarker(registration: CalRegistration, hourHeight: Floa
         contentAlignment = Alignment.CenterStart,
     ) {
         HcText(
-            if (dragMinutes != null) "${minutesToTime(display.toDouble())} · ${registration.title}" else registration.title,
+            localizedDecimals(if (dragMinutes != null) "${minutesToTime(display.toDouble())} · ${registration.title}" else registration.title),
             HcTypeRoles.Micro,
             bold = true,
             color = HcColors.White,

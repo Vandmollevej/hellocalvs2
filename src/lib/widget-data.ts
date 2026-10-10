@@ -10,6 +10,7 @@ import { DAILY_KCAL_GOAL, WEIGHT_GOAL_KG } from "@/lib/goals";
 import { currentDailyBudget } from "@/lib/activity-profile";
 import { getRetentionCutoffDate, getSubscriptionTier } from "@/lib/subscription";
 import { translate, type Locale } from "@/i18n";
+import { decimalSeparatorForRegion, localizeDecimals } from "@/lib/decimal-separator";
 import {
   RECENT_ENTRIES_MAX,
   WIDGET_ADD_ACTIONS,
@@ -54,7 +55,7 @@ export async function buildWidgetSnapshot(
   const labels = WIDGET_LABELS[locale];
 
   const [user, subscription] = await Promise.all([
-    prisma.user.findUnique({ where: { id: userId }, select: { sex: true, cycleTrackingEnabled: true } }),
+    prisma.user.findUnique({ where: { id: userId }, select: { sex: true, cycleTrackingEnabled: true, region: true } }),
     prisma.subscription.findUnique({ where: { userId } }),
   ]);
 
@@ -205,9 +206,10 @@ export async function buildWidgetSnapshot(
     }),
   );
 
+  const separator = decimalSeparatorForRegion(user?.region);
   const recentEntries: WidgetSnapshot["recentEntries"] = recent.map((r) => ({
     id: r.id,
-    title: r.titleSnapshot,
+    title: localizeDecimals(r.titleSnapshot, separator),
     kcal: Math.round(r.kcalSnapshot),
     amountGrams: r.amountGrams,
     createdAt: r.createdAt.toISOString(),
