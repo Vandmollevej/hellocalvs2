@@ -4794,11 +4794,11 @@ Google/Apple/Facebook-login og integrationstilkobling kører i system-browseren,
 - Ny global søgeregel: flertalssøgning viser `namePlural`, ental viser `name`.
 - Migration `20261009210000_product_name_plural` (`products."namePlural"`).
 
-## 2026-10-09: AI-opsætning af opskrifter (forberedt, ikke koblet på)
+## 2026-10-09: AI-opsætning af opskrifter (koblet på 2026-10-10)
 
 - Indsæt tekst og Scan opskrift skal lade AI sætte opskriften op: ingredienser (rent varenavn + gram), trin og hvilket sidebillede der hører til hvilket trin. Den regelbaserede `recipe-text-parser` kan ikke dele fri tekst pålideligt op.
 - Pris holdes nede ved at sende KUN tekst (ét kald pr. opskrift, `gpt-4o-mini` som standard via `OPENAI_RECIPE_IMPORT_MODEL`). Trykt tekst læses af telefonens OCR; kun håndskrift går som billede til `ocr-handwriting`. Billeder sendes aldrig til opsætningen — AI'en svarer med `imagePage` ud fra `[[SIDE n]]`-markørerne, og appen sætter sidebilledet ind ved trinnet. Overslag: ca. 1.500 tokens ind og 1.000 ud pr. opskrift, dvs. under 1 øre pr. opskrift ved gpt-4o-mini-priser (tjek aktuel pris før udrulning). Forslag: daglig grænse pr. bruger.
-- Prompt, JSON-skema og oprydning ligger i `src/lib/recipe-import-prompt.ts`. Mangler: ruten (`/api/dishes/parse-text` kalder AI og falder tilbage på den gamle tolker ved fejl/manglende nøgle), grænse pr. bruger og at titel, beskrivelse og varighed sættes ind i Opret ret.
+- Prompt, JSON-skema og oprydning: `src/lib/recipe-import-prompt.ts`. Kaldet: `src/lib/recipe-import-ai.ts` (OpenAI Responses API, `store: false`, kun tekst), brugt af `/api/dishes/parse-text`, som falder tilbage på den gamle tolker, hvis `OPENAI_API_KEY` mangler, grænsen er nået eller kaldet fejler. Blød grænse: 20 opsætninger pr. bruger pr. døgn (i hukommelsen, nulstilles ved genstart). Scan sender teksten pr. side; svaret peger på sidebillede pr. trin og forsiden. Titel, beskrivelse, varighed, trintitler og billeder sættes ind i Opret ret (web + native; native sender endnu kun samlet tekst, så sidebilleder pr. trin kommer kun på web).
 
 ## 2026-10-09: Videresend ret med krypteret link (Apples deleark)
 

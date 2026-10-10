@@ -102,6 +102,9 @@ data class ImportResult(
     val ingredients: List<ImportedIngredient> = emptyList(),
     val image: String? = null,
     val pageImages: List<String> = emptyList(),
+    val description: String? = null,
+    val durationMinutes: Int? = null,
+    val stepTitles: List<String>? = null,
 )
 
 private suspend fun parseRecipeText(text: String): ImportResult {
@@ -212,10 +215,12 @@ fun CreateDishScreen(args: RouteArgs) {
         ingredients = DishDraft.read()
         result.servings?.let { servings = it }
         val nextImages = if (result.image != null) listOf(result.image) + details.images else details.images
-        val nextSteps = result.steps.mapIndexed { index, text -> DishDraftStep("", text, result.pageImages.getOrNull(index)) }
+        val nextSteps = result.steps.mapIndexed { index, text -> DishDraftStep(result.stepTitles?.getOrNull(index) ?: "", text, result.pageImages.getOrNull(index)) }
         updateDetails(
             details.copy(
                 name = result.title.ifEmpty { details.name },
+                description = result.description?.takeIf { it.isNotBlank() } ?: details.description,
+                durationMinutes = result.durationMinutes ?: details.durationMinutes,
                 images = nextImages,
                 showImages = nextImages.isNotEmpty() || details.showImages,
                 steps = nextSteps.ifEmpty { details.steps },

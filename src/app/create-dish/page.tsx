@@ -215,12 +215,14 @@ export default function CreateDishPage() {
     const pageImages = result.pageImages ?? [];
     const nextImages = result.image ? [result.image, ...images] : images;
     const nextSteps = result.steps.map((text, index) => ({
-      title: "",
+      title: result.stepTitles?.[index] ?? "",
       text,
-      image: pageImages[index] ?? null,
+      image: pageImages[index] || null,
     }));
     updateDetails({
       name: result.title || name,
+      description: result.description || details.description,
+      durationMinutes: result.durationMinutes ?? details.durationMinutes,
       images: nextImages,
       showImages: nextImages.length > 0 || showImages,
       steps: nextSteps.length > 0 ? nextSteps : steps,

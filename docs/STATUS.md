@@ -2,6 +2,10 @@
 
 Last updated: 2026-10-09
 
+## 2026-10-10: AI-opsætning af opskrifter koblet på
+
+- Indsæt tekst og Scan opskrift bruger nu AI (gpt-4o-mini, kun tekst) til titel, beskrivelse, varighed, ingredienser (varenavn + gram), trin med overskrifter og sidebillede pr. trin; ellers den gamle tolker. Se DECISIONS. Kræver `OPENAI_API_KEY` (findes til de øvrige AI-ruter); model kan sættes med `OPENAI_RECIPE_IMPORT_MODEL`. Ikke testet mod OpenAI her (ingen nøgle i miljøet).
+
 ## 2026-10-09: Videresend ret til en ven
 
 - Knappen "Send til en ven" på egne retter åbner en helsides popup (varighed, venns navn + mail, Fra, valgfri besked) og deler et krypteret link via deleark (+ mail). Se DECISIONS 2026-10-09. Migration `20261009230000_forward_expiry_details` skal med deployet. Lint/tsc grønne for web; Kotlin ikke kompileret; ikke prøvet i browser/på telefon; mail afhænger af SMTP.
