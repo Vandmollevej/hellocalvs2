@@ -61,7 +61,7 @@ export const SYNC_CAPABILITIES: Partial<Record<IntegrationProvider, ProviderSync
     write: ["nutrition", "water", "weight", "activities"],
   },
   GOOGLE_HEALTH: {
-    read: ["weight", "bodyFat", "activities", "steps", "heart", "body"],
+    read: ["weight", "bodyFat", "activities", "steps", "energy", "heart", "body"],
     write: ["nutrition", "water", "weight"],
   },
   STRAVA: { read: ["activities"], write: ["activities"] },

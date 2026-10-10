@@ -243,6 +243,7 @@
     "chatSaveError": "Could not save. Try again."
   },
   "nav": {
+    "home": "Home",
     "screenings": "Screenings",
     "add": "Add",
     "foods": "Foods",
@@ -623,6 +624,8 @@
     "sideLeft": "Left",
     "sideRight": "Right",
     "sideHint": "The number slider always shows on the opposite side: {side}.",
+    "mirrorNavTitle": "Mirror the bottom menu",
+    "mirrorNavHint": "Home stays fixed on one side and the icons slide on the other. Turn on to swap sides, like the front page.",
     "buttonsSectionTitle": "Buttons in the wheel",
     "selectedCount": "{count} of {max} fields selected",
     "maxReachedHint": "Remove a field to add another one.",

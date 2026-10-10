@@ -82,7 +82,6 @@ private const val MIN_HOUR_HEIGHT = HOUR_HEIGHT
 private const val MAX_HOUR_HEIGHT = HOUR_HEIGHT * 4
 private const val ZOOM_SENSITIVITY = 220f
 private const val HOUR_HEIGHT_STORAGE_KEY = "hellocal.kalender.hourHeight"
-private const val VISIT_KEY = "hc_cal_visit"
 private const val DAY_TIME_GUTTER = 32
 private const val MOVE_ENTRY_HOLD_MS = 500L
 private const val MOVE_ENTRY_MOVE_TOLERANCE_DP = 10f
@@ -121,6 +120,7 @@ internal fun DayDetails(
     previousSleepWindow: SleepWindow,
     hasHistory: Boolean,
     dayGoalKcal: Double,
+    dayBonusKcal: Double,
     screenHeight: Dp,
     activeView: CalendarView,
     viewMenuOpen: Boolean,
@@ -145,7 +145,6 @@ internal fun DayDetails(
     var sleepRating by remember { mutableStateOf<Int?>(null) }
     val timelineScroll = rememberScrollState()
     var viewport by remember { mutableStateOf<Pair<Float, Float>?>(null) }
-    var visitedToday by remember { mutableStateOf<Boolean?>(null) }
     val latestWeighIn = weighIns.maxByOrNull { it.epochMs }
 
     // Oplevelse af søvn: the day's 1–5 rating as a black bar at the top.
@@ -179,26 +178,21 @@ internal fun DayDetails(
     val nightStart = if (isDaytimeSleep(liveWindow) || isDaytimeSleep(previousSleepWindow)) liveWindow.bedtime else previousSleepWindow.bedtime
     val nightSleepMinutes = (liveWindow.wakeTime - nightStart + 1440) % 1440
 
-    // Opening a day: the first visit today shows the morning with the night's sleep;
-    // later visits to today show now ±2 hours.
+    // Opening a day: the window follows the time of day (user rule 2026-10-10) — morning
+    // shows night + morning (top), midday morning + evening (middle), evening evening +
+    // night (bottom of the calendar).
     LaunchedEffect(loading, date) {
         if (loading) return@LaunchedEffect
         val wakeHour = sleepWindow.wakeTime / 60
         val now = nowLocal()
-        val todayKey = now.date.toString()
-        if (visitedToday == null) {
-            visitedToday = NativeHooks.secureStorage.get(VISIT_KEY) == todayKey
-            NativeHooks.secureStorage.set(VISIT_KEY, todayKey)
-        }
         timelineScroll.scrollWhenReady(0)
         val hourPx = hourHeight * density.density
-        val startHour = if (visitedToday == true && hasHistory && date == now.date) {
-            val nowHour = now.hour + now.minute / 60.0
-            val visibleHours = (viewport?.let { it.second - it.first } ?: 0f) / hourPx
-            if (nowHour + 1 - (wakeHour - 1) <= visibleHours) wakeHour - 1 else nowHour - 2
-        } else {
-            wakeHour - 1
-        }
+        val nowHour = now.hour + now.minute / 60.0
+        val visibleHours = (viewport?.let { it.second - it.first } ?: 0f) / hourPx
+        val maxStartHour = max(0.0, 24.0 - visibleHours)
+        var startHour = nowHour / 24.0 * maxStartHour
+        // In the morning the night's sleep (just above the wake handle) must stay visible.
+        if (nowHour < 12) startHour = min(startHour, max(0.0, (wakeHour - 1).toDouble()))
         timelineScroll.scrollTo(max(0, (startHour * hourPx).roundToInt()).coerceAtMost(timelineScroll.maxValue))
     }
     LaunchedEffect(Unit) {
@@ -206,7 +200,6 @@ internal fun DayDetails(
     }
 
     val dayKcal = registrations.sumOf { it.kcal }
-    val dayBonusKcal = activities.sumOf { it.caloriesBurned }
     val hasEntries = registrations.isNotEmpty()
     val met = hasEntries && dayKcal <= dayGoalKcal + dayBonusKcal
     val isFutureDay = date > today
@@ -320,7 +313,7 @@ internal fun DayDetails(
                         )
                         Box(
                             Modifier.fillMaxWidth()
-                                .heightIn(max = max(240f, screenHeight.value - 300f).dp)
+                                .heightIn(max = max(240f, screenHeight.value - 340f).dp)
                                 .clip(RoundedCornerShape(16.dp))
                                 .border(1.dp, HcColors.Tan, RoundedCornerShape(16.dp))
                                 .background(HcColors.White)

@@ -82,6 +82,7 @@ import dk.packroff.hellocal.ui.LocalCompactLandscape
 import dk.packroff.hellocal.ui.ProfileIcon
 import dk.packroff.hellocal.ui.ProfileVectorIcon
 import dk.packroff.hellocal.ui.ProfileWaistMeasureIcon
+import dk.packroff.hellocal.screens.settings.SettingsLocalPrefs
 import dk.packroff.hellocal.ui.icons.HcIcon
 import kotlinx.serialization.json.JsonArray
 import kotlinx.serialization.json.JsonObject
@@ -95,8 +96,8 @@ import kotlin.math.roundToInt
 
 /**
  * src/components/BottomNav.tsx + src/lib/navigation.ts. Same items, same keys,
- * same default four (Tilføj, Madvarer, Kalender, Statistik), same stored layout
- * ("hellocal:bottomnav:v1"). Pages of four icons that slide continuously with a
+ * Hjem fixed beside the slider (mirrorable) and the default three (Madvarer, Kalender, Statistik), same stored layout
+ * ("hellocal:bottomnav:v1"). Pages of three icons that slide continuously with a
  * swipe; long press (Seriøs) opens the edit panel: drag icons to reorder, drag
  * one up into the panel (or tap ×) to remove it, drag a panel icon down to
  * add it. "Skift konto" (family plan only) opens the profile switcher sheet.
@@ -107,7 +108,6 @@ object NavItems {
     const val SWITCH_PROFILE_KEY = "skiftkonto"
 
     val all = listOf(
-        NavItem("tilfoej", "/", "add", "Plus"),
         NavItem("madvarer", "/foods", "foods", "Apple"),
         NavItem("kalender", "/calendar", "calendar", "Calendar"),
         NavItem("statistik", "/statistics", "statistics", "trend"),
@@ -125,7 +125,10 @@ object NavItems {
         // Only with a family plan (canSwitchProfile below).
         NavItem(SWITCH_PROFILE_KEY, null, "switchProfile", "Users", action = "switchProfile"),
     )
-    val defaultActive = listOf("tilfoej", "madvarer", "kalender", "statistik")
+    val defaultActive = listOf("madvarer", "kalender", "statistik")
+
+    /** Hjem: mandatory and stationary, outside the editable slider (the old "tilfoej" key is dropped on load). */
+    val home = NavItem("hjem", "/", "home", "Home")
 
     fun byKey(key: String): NavItem? = all.firstOrNull { it.key == key }
 }
@@ -177,7 +180,7 @@ object BottomNavLayout {
     val activeHrefs: Set<String>
         get() {
             ensureLoaded()
-            return active.mapNotNull { NavItems.byKey(it)?.href }.toSet()
+            return (active.mapNotNull { NavItems.byKey(it)?.href } + listOfNotNull(NavItems.home.href)).toSet()
         }
 
     fun reset() = setAll(NavItems.defaultActive, defaultInactive)
@@ -204,7 +207,8 @@ object BottomNavLayout {
     }
 }
 
-private const val PAGE_SIZE = 4
+// The slider shows 3 icons at a time; Hjem fills the fourth place and stays put.
+private const val PAGE_SIZE = 3
 private const val LONG_PRESS_MS = 550L
 private const val FLIP_MS = 260
 private const val PAGE_ANIM_MS = 220
@@ -325,9 +329,21 @@ private fun NavBar(navigator: Navigator) {
     val drag = BottomNavEdit.drag
     val draggingOverPanel = drag != null && drag.moved && !drag.fromPanel && BottomNavEdit.panelBounds.contains(drag.position)
 
+    // Mirrored (Settings > Display > Front page): Hjem on the right, the slider on the left.
+    val mirrored = SettingsLocalPrefs.version >= 0 && SettingsLocalPrefs.bottomNavMirrored()
+    @Composable
+    fun HomeButton(modifier: Modifier) {
+        Box(modifier.height(60.dp), contentAlignment = Alignment.Center) {
+            Box(Modifier.clickable { openItem(NavItems.home, navigator) }) {
+                NavButton(NavItems.home, navigator.current.path == NavItems.home.href, editMode = false, isPlaceholder = false)
+            }
+        }
+    }
+
+    Row(Modifier.fillMaxWidth().padding(top = 8.dp, bottom = 4.dp)) {
+    if (!mirrored) HomeButton(Modifier.weight(1f))
     BoxWithConstraints(
-        Modifier.fillMaxWidth()
-            .padding(top = 8.dp, bottom = 4.dp)
+        Modifier.weight(3f)
             .let { if (draggingOverPanel) it.border(1.dp, HcColors.GrayDark) else it }
             .onGloballyPositioned { BottomNavEdit.barBounds = it.boundsInRoot() },
     ) {
@@ -420,6 +436,8 @@ private fun NavBar(navigator: Navigator) {
                 }
             }
         }
+    }
+    if (mirrored) HomeButton(Modifier.weight(1f))
     }
 }
 

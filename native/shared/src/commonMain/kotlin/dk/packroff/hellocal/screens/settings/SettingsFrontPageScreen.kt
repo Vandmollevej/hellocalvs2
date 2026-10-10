@@ -120,6 +120,22 @@ fun FrontPageSettingsScreen(args: RouteArgs) {
                 color = HcColors.TextSecondary,
             )
 
+            Row(
+                Modifier.fillMaxWidth().clip(RoundedCornerShape(16.dp)).background(HcColors.Tan, RoundedCornerShape(16.dp))
+                    .heightIn(min = HcDimens.ControlHeight).padding(horizontal = 16.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(12.dp),
+            ) {
+                HcText(t.t("frontPageSettings.mirrorNavTitle"), HcTypeRoles.Body, Modifier.weight(1f), color = HcColors.Black)
+                HcToggle(SettingsLocalPrefs.bottomNavMirrored(), { SettingsLocalPrefs.saveBottomNavMirrored(it) })
+            }
+            HcText(
+                t.t("frontPageSettings.mirrorNavHint"),
+                HcTypeRoles.Small,
+                Modifier.padding(horizontal = 4.dp),
+                color = HcColors.TextSecondary,
+            )
+
             Row(Modifier.fillMaxWidth().padding(top = 8.dp, start = 4.dp, end = 4.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                 SettingsWheelIcon()
                 Box(Modifier.weight(1f).height(1.dp).alpha(0.25f).background(HcColors.Black))

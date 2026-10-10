@@ -20,7 +20,10 @@ import type { ArcSlot } from "@/components/FooterArc";
 // kun lidt gennemsigtigt vindue åbner ovenpå. Samme greb som i footeren:
 // træk en knap ned i panelet for at fjerne den, tryk på (eller træk op) en
 // knap i panelet for at lægge den i cirklen, og træk en knap hen over en anden
-// for at bytte plads. "Alle" står fast i midten. Vist er kun 1/2 cirkel.
+// for at bytte plads (de to bytter, med glidende animation). Trækkes en knap
+// op fra panelet og slippes på en knap i cirklen, tager den pladsen, og den
+// ramte knap falder ned i panelet (ubrugt). "Alle" står fast i midten. Vist er
+// kun 1/2 cirkel, og den hviler på panelets overkant.
 
 const ICON_SIZE = 26;
 const MOVE_PX = 8;
@@ -58,11 +61,22 @@ export function FooterArcEditor({
   const [drag, setDrag] = useState<Drag | null>(null);
   const [panelHeight, setPanelHeight] = useState(180);
   const [mounted, setMounted] = useState(false);
+  // Knap der lige er skiftet plads/ramt: får en lille "pop"-animation.
+  const [popKey, setPopKey] = useState<string | null>(null);
+  // Plads i viften (key), som en knap fra panelet svæver over: den vil falde ned.
+  const [dropTarget, setDropTarget] = useState<string | null>(null);
 
   const userKeys = userSlots.map((slot) => slot.key as AddActionKey);
   useEffect(() => {
     userKeysRef.current = userKeys;
   });
+
+  // Pop-animationen er kort; klassen fjernes igen, så knappens jiggle ikke overstyres.
+  useEffect(() => {
+    if (!popKey) return;
+    const timer = setTimeout(() => setPopKey(null), 320);
+    return () => clearTimeout(timer);
+  }, [popKey]);
 
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect -- portal først efter mount (SSR)
@@ -113,9 +127,21 @@ export function FooterArcEditor({
     return best as { key: string; index: number; distance: number } | null;
   }
 
+  // Fra panelet: rammer knappen en plads i cirklen, bytter de (den ramte
+  // falder ned i panelet); ellers lægges den ind, hvis der er plads.
   function addAt(key: AddActionKey, x: number | null, y: number | null) {
     const current = userKeysRef.current;
-    if (current.includes(key) || current.length >= ARC_MAX_USER_ACTIONS) return;
+    if (current.includes(key)) return;
+    if (x !== null && y !== null) {
+      const hit = nearestUserSlot(x, y, ARC_ICON_CIRCLE * 0.8);
+      if (hit) {
+        const target = hit.key as AddActionKey;
+        onChange(current.map((existing) => (existing === target ? key : existing)));
+        setPopKey(target);
+        return;
+      }
+    }
+    if (current.length >= ARC_MAX_USER_ACTIONS) return;
     let position = current.length;
     if (x !== null && y !== null) {
       const near = nearestUserSlot(x, y, Infinity);
@@ -124,9 +150,16 @@ export function FooterArcEditor({
     const next = [...current];
     next.splice(Math.min(position, next.length), 0, key);
     onChange(next);
+    setPopKey(key);
+  }
+
+  function removeKey(key: string) {
+    onChange(userKeysRef.current.filter((existing) => existing !== key));
+    setPopKey(key);
   }
 
   function begin(key: string, source: Drag["source"], event: React.PointerEvent) {
+    setPopKey(null);
     const state: Drag = { key, source, x: event.clientX, y: event.clientY, moved: false, overPanel: false };
     dragRef.current = state;
     setDrag(state);
@@ -145,17 +178,20 @@ export function FooterArcEditor({
       dragRef.current = next;
       setDrag(next);
       if (moved && current.source === "active") {
-        const near = nearestUserSlot(event.clientX, event.clientY, ARC_ICON_CIRCLE * 0.7);
+        const near = nearestUserSlot(event.clientX, event.clientY, ARC_ICON_CIRCLE * 0.6);
         if (near && near.key !== current.key) {
+          // De to knapper bytter plads; pladserne glider til deres nye sted.
           const keys = [...userKeysRef.current];
           const from = keys.indexOf(current.key as AddActionKey);
           const to = keys.indexOf(near.key as AddActionKey);
           if (from !== -1 && to !== -1) {
-            keys.splice(from, 1);
-            keys.splice(to, 0, current.key as AddActionKey);
+            [keys[from], keys[to]] = [keys[to], keys[from]];
             onChange(keys);
           }
         }
+      } else if (moved && current.source === "pool") {
+        const near = nearestUserSlot(event.clientX, event.clientY, ARC_ICON_CIRCLE * 0.8);
+        setDropTarget(near ? near.key : null);
       }
     }
 
@@ -163,11 +199,10 @@ export function FooterArcEditor({
       const current = dragRef.current;
       dragRef.current = null;
       setDrag(null);
+      setDropTarget(null);
       if (!current) return;
       if (current.source === "active") {
-        if (current.moved && overPanel(event.clientX, event.clientY)) {
-          onChange(userKeysRef.current.filter((key) => key !== current.key));
-        }
+        if (current.moved && overPanel(event.clientX, event.clientY)) removeKey(current.key);
         return;
       }
       if (!current.moved) addAt(current.key as AddActionKey, null, null);
@@ -198,7 +233,7 @@ export function FooterArcEditor({
       {/* Halv cirkel med knapperne, over panelet. */}
       <div
         className="pointer-events-none absolute left-1/2"
-        style={{ bottom: panelHeight + 36, width: 0, height: 0 }}
+        style={{ bottom: panelHeight - 1, width: 0, height: 0 }}
       >
         <svg
           aria-hidden="true"
@@ -222,12 +257,21 @@ export function FooterArcEditor({
                 else slotRefs.current.delete(slot.key);
               }}
               className="absolute"
-              style={{ left: x - ARC_ICON_CIRCLE / 2, bottom: y - ARC_ICON_CIRCLE / 2, width: ARC_ICON_CIRCLE, height: ARC_ICON_CIRCLE }}
+              style={{
+                left: x - ARC_ICON_CIRCLE / 2,
+                bottom: y - ARC_ICON_CIRCLE / 2,
+                width: ARC_ICON_CIRCLE,
+                height: ARC_ICON_CIRCLE,
+                // Når to knapper bytter plads, glider de hen til hinandens plads.
+                transition: "left 240ms cubic-bezier(0.22, 1, 0.36, 1), bottom 240ms cubic-bezier(0.22, 1, 0.36, 1), transform 160ms ease, opacity 160ms ease",
+                transform: dropTarget === slot.key ? "scale(0.78)" : undefined,
+                opacity: dropTarget === slot.key ? 0.55 : 1,
+              }}
             >
               <div
                 className={`pointer-events-auto relative flex h-full w-full touch-none items-center justify-center rounded-full ${
                   placeholder ? "border border-dashed border-hf-gray-dark bg-transparent" : "bg-hf-tan"
-                } ${!isList && !placeholder ? "hf-nav-jiggle" : ""}`}
+                } ${!isList && !placeholder ? "hf-nav-jiggle" : ""} ${popKey === slot.key ? "hf-arc-pop" : ""}`}
                 onPointerDown={isList ? undefined : (event) => begin(slot.key, "active", event)}
                 aria-label={slot.label}
               >
@@ -239,7 +283,7 @@ export function FooterArcEditor({
                     onPointerDown={(event) => event.stopPropagation()}
                     onClick={(event) => {
                       event.stopPropagation();
-                      onChange(userKeysRef.current.filter((key) => key !== slot.key));
+                      removeKey(slot.key);
                     }}
                     className="absolute -right-1.5 -top-1.5 z-10 flex h-5 w-5 items-center justify-center rounded-full bg-hf-black"
                   >
@@ -284,7 +328,7 @@ export function FooterArcEditor({
                 aria-label={t("footerArc.addItem", { item: label })}
                 className={`flex h-[64px] min-w-16 flex-none touch-none flex-col items-center justify-center gap-1 rounded-xl border px-1 py-2 ${
                   placeholder ? "border-dashed border-hf-gray-dark bg-transparent" : "border-hf-tan-dark bg-hf-tan-dark"
-                }`}
+                } ${popKey === key ? "hf-arc-pop" : ""}`}
               >
                 <span className={`flex flex-col items-center gap-1 ${placeholder ? "invisible" : ""}`}>
                   <Glyph icon={action.icon} imageSrc={action.imageSrc} color="var(--hf-black)" />

@@ -11,7 +11,7 @@ export const BOTTOM_NAV_CHANGED_EVENT = "hellocal:bottomnav-changed";
 
 // Stable nav-item key → route. BottomNav renders its items from this map.
 export const BOTTOM_NAV_HREFS: Record<string, string> = {
-  tilfoej: "/",
+  hjem: "/",
   madvarer: "/foods",
   kalender: "/calendar",
   statistik: "/statistics",
@@ -28,7 +28,11 @@ export const BOTTOM_NAV_HREFS: Record<string, string> = {
   screeninger: "/profile/screenings",
 };
 
-export const DEFAULT_BOTTOM_NAV_ACTIVE = ["tilfoej", "madvarer", "kalender", "statistik"];
+// Hjem er obligatorisk og stationær: den står altid fast ved siden af slideren
+// og indgår ikke i den redigerbare liste. Gamle layouts kaldte den "tilfoej".
+export const HOME_NAV_KEY = "hjem";
+export const LEGACY_HOME_NAV_KEY = "tilfoej";
+export const DEFAULT_BOTTOM_NAV_ACTIVE = ["madvarer", "kalender", "statistik"];
 
 function normalizePath(pathname: string): string {
   return pathname.length > 1 && pathname.endsWith("/") ? pathname.slice(0, -1) : pathname;
@@ -40,7 +44,7 @@ export function isMainFooterRoute(pathname: string, footerHrefs: readonly string
 }
 
 function hrefsForKeys(keys: readonly string[]): string {
-  return keys
+  return [HOME_NAV_KEY, ...keys]
     .map((k) => BOTTOM_NAV_HREFS[k])
     .filter(Boolean)
     .join("|");

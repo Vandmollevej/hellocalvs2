@@ -2,6 +2,10 @@
 
 Last updated: 2026-10-10
 
+## 2026-10-10: Kalender — dagsvisningens timer følger klokken
+
+- Åbner man en dag, vises morgen+nat om morgenen, morgen+aften midt på dagen og aften+nat (bunden) om aftenen. Erstatter den gamle "stå-op-tid / nu ±2 timer"-logik og besøgs-cookien. Web + native. Se REGLER → UI. Tjekket: eslint, tsc, paritet; ikke prøvet på enhed.
+
 ## 2026-10-10: Søgeresultater viser "Brand Subbrand Varenavn"
 
 - Søgelisterne (web + native: Madvarer, Søg, Opret ret) viser nu brand og subbrand forrest i varens tekst via `searchTitle` fra `GET /api/products`; brandet står ikke igen i undertitlen. Se DECISIONS 2026-10-10 og REGLER → Søgning.

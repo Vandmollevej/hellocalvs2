@@ -4819,6 +4819,13 @@ klip-klister mellem sider, og telefon/webvisning må ikke have hver sine klasser
 - Tommel op/ned påvirker populariteten (tommel ned -3, op +1, højst +3 i alt) for at undgå selvforstærkende ekkokammer.
 - "Python på serveren" er TypeScript (brugerens ok 2026-10-08). de/fr/nl oversættes senere.
 
+## 2026-10-09 — Bundmenu: Hjem i stedet for plus, fast placering, spejlvending
+
+- Plus-ikonet ("Tilføj") i bundmenuen er erstattet af **Hjem** (`hjem`, route `/`). Hjem er obligatorisk og stationær: den kan ikke flyttes, fjernes eller trækkes i redigeringsarket og ligger uden for den redigerbare liste.
+- Slideren med ikoner viser 3 ad gangen ved siden af Hjem. Gamle gemte layouts med nøglen `tilfoej` droppes den nøgle (Hjem står fast).
+- Indstillinger → Visning → Forside har en kontakt "Spejlvend bundmenuen" (per enhed, localStorage `hellocal.bottomnav.mirrored`): Hjem til højre og slideren til venstre.
+- Native (`BottomNav.kt`, `SettingsFrontPageScreen.kt`) følger samme ændring med samme lagringsnøgle.
+
 ## 2026-10-09: Periodevalg på statistiksider er altid dropdown
 
 - Perioder (Sidste 7 dage … I år) vælges med `StatPeriodSelect` (`<select>`), aldrig med knapper/chips. Brugerens faste regel; gælder Søvnstatistik og Væskestatistik og alle fremtidige statistiksider.
@@ -5001,3 +5008,6 @@ Hver række i forsidens tal-slider viser sit mål under tallet i stedet for plad
 - Match på varenavn: nøgleord som helt ord (med bøjning), længste nøgleord vinder ("kokosmælk" før "mælk"). Køkkenmål: 1 spsk = 15 ml, 1 tsk = 5 ml.
 - Brug: Viden om mad → "Omregning: væsker til gram" (`/viden-om/omregning`, mængde + dl/spsk/tsk/ml øverst, søgning). Retter: Mål/Gram-skift over ingredienserne (HelloFresh-opskrift: standard Mål; egen/delt ret: standard Gram), kun vist når mindst én ingrediens kan omregnes. Opret ret → Indsæt tekst/Scan: rumfang regnes om med tabellen (både AI og regeltolker), så "2 dl hvedemel" giver 120 g, ikke 200 g.
 - Tilføj vare fra Opret ret (kun dér, og kun væsker: ml/cl-varer eller en vare der matcher en væskegruppe i tabellen — ikke tørvarer og æg): mængdeboksen viser omregningen med småt øverst til højre og et op/ned-skifteikon yderst til højre; et tryk på boksen bytter, så gram står som primært tal. Mængden gemmes uændret i basisenheden. `src/lib/liquid-amount.ts`, native `FoodLogic.kt`/`AddProductScreen.kt`.
+
+## 2026-10-10 — Enhedens aktive energi tæller med i dagens kaloriegrænse
+Kalenderens "Tilbage for i dag" lagde kun registrerede træningspas oven i målet, og Google Health-synkroniseringen hentede aldrig aktiv energi. Nu henter den dagens aktive energi (`ACTIVE_ENERGY_KCAL`, datatypens navn er ikke prøvet mod live-API'et: kandidaterne i `ACTIVE_ENERGY_TYPES` prøves i rækkefølge), og kalenderen (web + native) bruger pr. dag det største af træningspas-kcal og enhedens aktive energi, aldrig begge lagt sammen.
