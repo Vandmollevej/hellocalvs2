@@ -7,7 +7,7 @@ ikke her, er den ikke registreret og skal tilføjes.
 
 ## Screeninger
 
-- Profil → Screeninger er stedet for egne målinger (migræne, mavesmerter, humør, selvoprettede). Søvn er en fast række. "Opret ny screening" er et flow, ikke en enkelt formular. Se DECISIONS.md 2026-10-09.
+- Profil → Screeninger er stedet for egne målinger (migræne, mavesmerter, humør, selvoprettede). Søvn er en fast række (også øverst i Screeningrapporter, peger på /statistics/sleep). "Opret ny screening" er et flow, ikke en enkelt formular. Se DECISIONS.md 2026-10-09.
 - Valget "Screening" ligger nederst i Tilføj-menuen og kan vælges som bundmenu-ikon.
 
 ## Varer og navngivning
@@ -72,6 +72,7 @@ ikke her, er den ikke registreret og skal tilføjes.
 
 - **ALDRIG grå tekst på grøn baggrund (user rule 2026-10-09)**: tekst på grøn flade (`bg-hf-brand`, grønne knapper/kort) er altid hvid (`text-hf-white`). Kombinér aldrig `text-text-secondary` eller andre grå farver med hvid på grøn — den grå vinder og gør teksten ulæselig. Gælder web og native.
 
+- Sideoverskrifter er altid `hf-type-page-title` (22 px); `hf-type-hero` (32 px) er kun til tal/produktnavn i hero-kort, aldrig til en sides overskrift (bruger 2026-10-09).
 - "Overlay"/"popup" = den træk-bare BottomSheet (`.hf-bottom-sheet`), se KRAV.md.
 - Aktiviteten `open_water` hedder "Svømning i åbent vand" — aldrig "Havsvømning" (bruger 2026-10-09). "havsvømning" er kun et søgeord.
 - Visuelle ændringer: læs design.md; størrelse/vægt ændres i moderate trin.

@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { IconPlus, IconSearch } from "@tabler/icons-react";
 import { AccordionCard, ChevronRow } from "@/components/hf/AccordionCard";
+import { IconFavorite, IconFavoriteFilled } from "@/components/icons/Favorite";
 import { getSportMeta } from "@/lib/sport-icons";
 import type { ActivityOption } from "@/lib/activity-types";
 import { useTranslation } from "@/i18n/LocaleProvider";
@@ -51,6 +52,26 @@ export function ActivityPicker({ onPick, busy }: { onPick: (option: ActivityOpti
     }
   }
 
+  async function toggleFavorite(option: ActivityOption) {
+    const next = !option.favorite;
+    const apply = (value: boolean) =>
+      setOptions((current) => {
+        const updated = current.map((item) => (item.key === option.key ? { ...item, favorite: value } : item));
+        return [...updated.filter((item) => item.favorite), ...updated.filter((item) => !item.favorite)];
+      });
+    apply(next);
+    try {
+      const res = await fetch("/api/activity-types", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ key: option.key, favorite: next }),
+      });
+      if (!res.ok) apply(!next);
+    } catch {
+      apply(!next);
+    }
+  }
+
   const rows = [
     ...matches.map((option) => {
       const Icon = getSportMeta(option.key).icon;
@@ -59,6 +80,8 @@ export function ActivityPicker({ onPick, busy }: { onPick: (option: ActivityOpti
         icon: <Icon size={20} />,
         label: option.pending ? `${option.label} (${t("activity.pending")})` : option.label,
         onClick: () => onPick(option),
+        favorite: option.favorite === true,
+        onToggleFavorite: () => void toggleFavorite(option),
       };
     }),
     ...(trimmed.length >= 2 && !exact
@@ -68,6 +91,8 @@ export function ActivityPicker({ onPick, busy }: { onPick: (option: ActivityOpti
             icon: <IconPlus size={20} />,
             label: t("activity.addManual", { name: trimmed }),
             onClick: () => void addManual(),
+            favorite: undefined as boolean | undefined,
+            onToggleFavorite: undefined as (() => void) | undefined,
           },
         ]
       : []),
@@ -94,6 +119,18 @@ export function ActivityPicker({ onPick, busy }: { onPick: (option: ActivityOpti
               label={row.label}
               onClick={busy || adding ? undefined : row.onClick}
               divider={index < rows.length - 1}
+              trailing={
+                row.onToggleFavorite ? (
+                  <button
+                    type="button"
+                    onClick={row.onToggleFavorite}
+                    aria-label={t(row.favorite ? "search.removeFavorite" : "search.addFavorite")}
+                    className="flex h-12 items-center pl-1 pr-4 text-hf-green"
+                  >
+                    {row.favorite ? <IconFavoriteFilled size={20} /> : <IconFavorite size={20} />}
+                  </button>
+                ) : undefined
+              }
             />
           ))}
         </AccordionCard>

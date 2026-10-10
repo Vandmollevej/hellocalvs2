@@ -238,6 +238,7 @@ model User {
 
   registrations           Registration[]
   favorites               Favorite[]
+  activityFavorites       ActivityFavorite[]
   dishes                  Dish[]
   weightEntries           WeightEntry[]
   bodyMeasurements        BodyMeasurement[]
@@ -1022,6 +1023,19 @@ enum ActivityEnergySource {
 // (ikke i SPORT_TYPES, src/lib/sport-icons.ts). Brugeren kan bruge sin egen
 // straks; andre ser den først, når admin har godkendt den i
 // Kvalitetskontrol → Aktiviteter (docs/DECISIONS.md 2026-09-29).
+// Favoritaktiviteter (bookmark-ikon i aktivitetslisten, som favoritmadvarer).
+// activityKey = ActivityOption.key (fast sportstype eller egen aktivitets navn).
+model ActivityFavorite {
+  id          String   @id @default(cuid())
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId      String
+  activityKey String
+  createdAt   DateTime @default(now())
+
+  @@unique([userId, activityKey])
+  @@map("activity_favorites")
+}
+
 model CustomActivityType {
   id             String               @id @default(cuid())
   name           String
@@ -2631,6 +2645,9 @@ model BugReport {
   // { <sektionsnøgle>: "brugerens tekst" }, nøgler i
   // src/lib/bug-report-sections.ts. Null for ældre/generelle rapporter.
   sections      Json?
+  // Fotos taget direkte i "Indberet fejl" pr. sektion: { <sektionsnøgle>:
+  // "/product-images/bug-report-images/<uuid>.jpg" } (docs/DECISIONS.md 2026-10-10).
+  sectionPhotos Json?
   screenshotUrl String?
   status        BugReportStatus     @default(PENDING)
   createdAt     DateTime            @default(now())

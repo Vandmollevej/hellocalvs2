@@ -46,8 +46,6 @@ import dk.packroff.hellocal.ui.HcScreen
 import dk.packroff.hellocal.ui.HcText
 import dk.packroff.hellocal.ui.HcTextField
 import dk.packroff.hellocal.ui.HcToggle
-import dk.packroff.hellocal.ui.OnbChartPoint
-import dk.packroff.hellocal.ui.OnbMiniLineChart
 import dk.packroff.hellocal.ui.ProfileCenteredText
 import dk.packroff.hellocal.ui.ProfileChoiceChip
 import dk.packroff.hellocal.ui.ProfilePage
@@ -238,18 +236,11 @@ fun ScreeningsScreen(args: RouteArgs) {
     val scope = rememberCoroutineScope()
     var screenings by remember { mutableStateOf<List<Screening>?>(null) }
     var failed by remember { mutableStateOf(false) }
-    var period by remember { mutableStateOf("30") }
-    var entries by remember { mutableStateOf<List<ScreeningEntry>>(emptyList()) }
     var pendingDelete by remember { mutableStateOf<Screening?>(null) }
-    var periodOpen by remember { mutableStateOf(false) }
     var fillOpen by remember { mutableStateOf(args.opt("fill") == "1") }
-    var reload by remember { mutableStateOf(0) }
 
     LaunchedEffect(Unit) {
         try { screenings = ScreeningApi.load(t) } catch (e: Exception) { failed = true }
-    }
-    LaunchedEffect(period, reload) {
-        entries = runCatching { ScreeningApi.entriesInRange(ScreeningApi.daysAgo(period.toInt()), ScreeningApi.today()) }.getOrDefault(emptyList())
     }
 
     HcScreen(title = t.t("screenings.title"), contentPadding = ProfilePagePadding) {
@@ -263,8 +254,6 @@ fun ScreeningsScreen(args: RouteArgs) {
                 HcIcon("Plus", size = 20.dp, color = HcColors.Black)
                 HcText(t.t("screenings.createNew"), HcTypeRoles.Body, bold = true, color = HcColors.Black)
             }
-            HcButton(t.t("screenings.reports"), { nav.push("/profile/screenings/reports") }, kind = HcButtonKind.Secondary)
-
             val list = screenings
             when {
                 list == null && !failed -> HcLoader()
@@ -308,46 +297,16 @@ fun ScreeningsScreen(args: RouteArgs) {
                             }
                         }
                     }
-
-                    // Period dropdown.
-                    Box {
-                        Row(
-                            Modifier.fillMaxWidth().height(HcDimens.ControlHeight).clip(RoundedCornerShape(12.dp)).background(HcColors.White)
-                                .clickable { periodOpen = true }.padding(horizontal = 12.dp),
-                            verticalAlignment = Alignment.CenterVertically,
-                        ) {
-                            HcText(t.t("screenings.period.d$period"), HcTypeRoles.Body, Modifier.weight(1f), color = HcColors.Black)
-                            HcIcon("ChevronDown", size = 14.dp, color = HcColors.Black)
-                        }
-                        DropdownMenu(expanded = periodOpen, onDismissRequest = { periodOpen = false }) {
-                            SCREENING_PERIODS.forEach { key ->
-                                DropdownMenuItem(text = { HcText(t.t("screenings.period.d$key"), HcTypeRoles.Body) }, onClick = { period = key; periodOpen = false })
-                            }
-                        }
-                    }
-
-                    val withData = list.filter { s -> s.active && entries.any { it.screeningId == s.id } }
-                    if (withData.isEmpty()) {
-                        HcText(t.t("screenings.chartEmpty"), HcTypeRoles.Body, color = HcColors.TextSecondary)
-                    } else {
-                        withData.forEach { screening ->
-                            HcCard(Modifier.fillMaxWidth()) {
-                                HcText(screening.name, HcTypeRoles.Body, bold = true, color = HcColors.Black)
-                                OnbMiniLineChart(
-                                    points = entries.filter { it.screeningId == screening.id }.map { OnbChartPoint(it.date, it.value) },
-                                    emptyLabel = t.t("screenings.chartEmpty"),
-                                )
-                            }
-                        }
-                    }
                 }
             }
+
+            HcButton(t.t("screenings.reports"), { nav.push("/profile/screenings/reports") }, kind = HcButtonKind.Secondary)
         }
     }
 
     val list = screenings
     if (fillOpen && list != null) {
-        ScreeningFillSheet(list, onClose = { fillOpen = false }, onSaved = { reload++ })
+        ScreeningFillSheet(list, onClose = { fillOpen = false }, onSaved = {})
     }
     pendingDelete?.let { target ->
         HcBottomSheet(onDismiss = { pendingDelete = null }, title = t.t("screenings.deleteTitle")) {
@@ -460,6 +419,11 @@ private fun ScreeningFlowScreen(existing: Screening?) {
             )
             when (step) {
                 0 -> {
+                    HcToggle(
+                        draft.active, { draft = draft.copy(active = it) },
+                        if (draft.active) t.t("screenings.statusActive") else t.t("screenings.statusInactive"),
+                        t.t("screenings.activeDesc"),
+                    )
                     HcText(t.t("screenings.nameTitle"), HcTypeRoles.SectionTitle)
                     HcTextField(draft.name, { draft = draft.copy(name = it.take(60)) }, placeholder = t.t("screenings.namePlaceholder"), label = t.t("screenings.nameLabel"), standard = true)
                     HcText(t.t("screenings.purposeLabel"), HcTypeRoles.Label)
@@ -562,8 +526,22 @@ fun ScreeningReportsScreen(args: RouteArgs) {
             when {
                 list == null && !failed -> HcLoader()
                 list == null -> ProfileCenteredText(t.t("screenings.loadError"))
-                list.isEmpty() -> HcText(t.t("screenings.reportsEmpty"), HcTypeRoles.Body, color = HcColors.TextSecondary)
                 else -> HcCard(Modifier.fillMaxWidth()) {
+                    // Sleep is a fixed row that points at the sleep statistics.
+                    Row(
+                        Modifier.fillMaxWidth().clickable { nav.push("/statistics/sleep") }.padding(vertical = 10.dp),
+                        horizontalArrangement = Arrangement.spacedBy(10.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        Box(Modifier.size(44.dp).clip(RoundedCornerShape(8.dp)).background(HcColors.Tan), contentAlignment = Alignment.Center) {
+                            HcIcon("Moon", size = 22.dp, color = HcColors.Black)
+                        }
+                        Column(Modifier.weight(1f)) {
+                            HcText(t.t("screenings.sleep"), HcTypeRoles.Body, color = HcColors.Black, maxLines = 2)
+                            HcText(t.t("screenings.statusActive"), HcTypeRoles.Small, color = HcColors.TextSecondary)
+                        }
+                        HcIcon("ChevronRight", size = 18.dp, color = HcColors.Black)
+                    }
                     list.forEach { screening ->
                         // Same look as a food row: tile on the left, title and status, chevron.
                         Row(
