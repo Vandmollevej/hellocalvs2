@@ -596,6 +596,13 @@
       "note": "Admin er et skrivebordsværktøj og bliver på web."
     },
     {
+      "route": "/admin/statistics/search",
+      "web": "src/app/admin/statistics/search/page.tsx",
+      "status": "web-only",
+      "native": [],
+      "note": "Admin er et skrivebordsværktøj og bliver på web."
+    },
+    {
       "route": "/admin/support",
       "web": "src/app/admin/support/page.tsx",
       "status": "web-only",

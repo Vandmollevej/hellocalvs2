@@ -87,6 +87,12 @@ object Units {
         versionState.intValue++
     }
 
+    /** The user's country: the profile region, else the device region (useRegion). */
+    fun region(): String? {
+        @Suppress("UNUSED_VARIABLE") val version = versionState.intValue
+        return read(REGION_STORAGE_KEY) ?: runCatching { NativeHooks.deviceRegion() }.getOrNull()
+    }
+
     /** Remembers the profile region so the automatic default follows the user's country (setUnitsRegion). */
     fun setRegion(region: String?) {
         if (region.isNullOrEmpty() || read(REGION_STORAGE_KEY) == region) return

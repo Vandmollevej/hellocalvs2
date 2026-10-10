@@ -59,6 +59,7 @@ import dk.packroff.hellocal.theme.HcTypeRoles
 import dk.packroff.hellocal.theme.style
 import dk.packroff.hellocal.ui.FoodFavoriteIcon
 import dk.packroff.hellocal.ui.FoodImage
+import dk.packroff.hellocal.ui.localizedDecimals
 import dk.packroff.hellocal.ui.FoodMacroSliderBar
 import dk.packroff.hellocal.ui.FoodOutlinedCard
 import dk.packroff.hellocal.ui.FoodPillButton
@@ -459,8 +460,8 @@ fun AddProductView(
                             )
                             Column(Modifier.fillMaxWidth()) {
                                 if (isPending("name")) FoodSkeleton(Modifier.width(200.dp).height(36.dp))
-                                else HcText(productTitle, HcTypeRoles.Hero, color = HcColors.Black)
-                                HcText(subtitle.ifEmpty { " " }, HcTypeRoles.Hero, color = HcColors.Green)
+                                else HcText(localizedDecimals(productTitle), HcTypeRoles.Hero, color = HcColors.Black)
+                                HcText(localizedDecimals(subtitle).ifEmpty { " " }, HcTypeRoles.Hero, color = HcColors.Green)
                             }
                         }
 

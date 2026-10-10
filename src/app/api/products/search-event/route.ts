@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getSessionUser } from "@/lib/session";
+import { recordSearchClick } from "@/lib/search-analytics";
 
 function validHour(value: unknown): number | null {
   if (typeof value !== "number" || !Number.isInteger(value)) return null;
@@ -41,6 +42,12 @@ export async function POST(req: Request) {
     const sessionUser = await getSessionUser();
     const region = sessionUser?.region ?? "DK";
     const now = new Date();
+    // Søgestatistik: klikket afslutter brugerens seneste søgning (admin → Analyse → Søgning).
+    await recordSearchClick(req, {
+      userId: sessionUser?.id,
+      itemId: (productId ?? ingredientId ?? genericIngredientId) as string,
+      itemType: productId ? "product" : ingredientId ? "ingredient" : "generic",
+    });
 
     if (productId) {
       const product = await prisma.product.findUnique({

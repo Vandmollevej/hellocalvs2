@@ -38,3 +38,23 @@ export function productDetailsText(product: {
 }): string {
   return [product.subbrand, product.productType, product.variant, product.flavor].filter(Boolean).join(" ");
 }
+
+// Ordendelser til søgemotoren (docs/DECISIONS.md 2026-10-10): Meilisearch matcher
+// fra ordets start, men danske sammensatte ord skal også findes på sidste led —
+// "mælk" skal finde "Letmælk" og "Sødmælk", "brød" "Rugbrød". Hvert ord på
+// mindst 5 bogstaver giver sine endelser på mindst 3 bogstaver ("letmælk" →
+// "etmælk", "tmælk", "mælk", "ælk"), som indekseres i et felt med lavest vægt.
+const MIN_WORD = 5;
+const MIN_SUFFIX = 3;
+
+export function wordSuffixes(texts: Array<string | null | undefined>): string[] {
+  const out = new Set<string>();
+  for (const text of texts) {
+    if (!text) continue;
+    for (const word of text.toLocaleLowerCase("da").split(/[^\p{L}\p{N}]+/u)) {
+      if (word.length < MIN_WORD) continue;
+      for (let i = 1; i <= word.length - MIN_SUFFIX; i++) out.add(word.slice(i));
+    }
+  }
+  return [...out];
+}

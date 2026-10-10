@@ -130,6 +130,27 @@ export const JOBS: JobDefinition[] = [
     defaultRunAtTime: "02:30",
   },
   {
+    // Søgemotoren (docs/DECISIONS.md 2026-10-10): databasen er kilden, indekset en kopi.
+    key: "search-index",
+    name: "Søgemotor: opdater indeks",
+    description:
+      "Sammenligner alle søgbare varer (navn, flertalsnavn, mærke, serie, varetype, variant, smag, søgeord) med søgemotoren (Meilisearch) og sender kun ændrede varer og sletninger. Opdaterer også stavefejl-regler og synonymerne fra Søgesynonymer. Svarer søgemotoren ikke, søger appen i databasen i stedet.",
+    runtime: "app",
+    robot: true,
+    defaultIntervalMinutes: 5,
+    defaultRunAtTime: null,
+  },
+  {
+    key: "search-miss-review",
+    name: "Søgninger uden resultat: vurdering",
+    description:
+      "Vurderer nye søgninger uden resultat, så admin → Analyse → Søgning kan vise rene fejl: stavefejl (med rettelse) og meningsløse søgninger sorteres fra med regler og AI, og tilbage står varer og mærker, der mangler i databasen.",
+    runtime: "app",
+    robot: true,
+    defaultIntervalMinutes: null,
+    defaultRunAtTime: "03:30",
+  },
+  {
     key: "frida-import",
     name: "Frida-import",
     description:

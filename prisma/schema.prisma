@@ -4369,6 +4369,55 @@ model SearchMiss {
   @@map("search_misses")
 }
 
+// Søgestatistik (docs/DECISIONS.md 2026-10-10, admin → Analyse → Søgning): én
+// række pr. søgning i GET /api/products. Indtastning bogstav for bogstav samles
+// i samme række; en ny søgning uden klik på et resultat kort efter en tidligere
+// er en raffinering (refinedFromId). sessionKey er en anonym nøgle (hash af
+// bruger eller IP+browser og datoen) — ingen bruger-id gemmes.
+model SearchEvent {
+  id               String        @id @default(cuid())
+  query            String
+  normalizedQuery  String
+  region           String
+  device           String?
+  screen           String?
+  sessionKey       String
+  // Viste resultater, og hvor mange af dem der matchede alle søgeordene.
+  resultCount      Int
+  fullMatchCount   Int
+  engine           String
+  correctedQuery   String?
+  refinedFromId    String?
+  refinedFrom      SearchEvent?  @relation("SearchRefinement", fields: [refinedFromId], references: [id], onDelete: SetNull)
+  refinements      SearchEvent[] @relation("SearchRefinement")
+  clickedItemId    String?
+  clickedItemType  String?
+  clickedAt        DateTime?
+  createdAt        DateTime      @default(now())
+  updatedAt        DateTime      @updatedAt
+
+  @@index([createdAt])
+  @@index([sessionKey, updatedAt])
+  @@index([normalizedQuery])
+  @@index([region, createdAt])
+  @@map("search_events")
+}
+
+// Vurdering af søgninger uden resultat, så admin kan se rene fejl: TYPO
+// (stavefejl, med rettelse), NONSENSE (ikke rigtige ord), MISSING (en rigtig
+// vare/mærke vi mangler). Sættes af regler eller natlig AI-gennemgang.
+model SearchQueryReview {
+  normalizedQuery String   @id
+  kind            String
+  suggestion      String?
+  source          String
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@index([kind])
+  @@map("search_query_reviews")
+}
+
 // Admin "Log" (docs/DECISIONS.md 2026-09-28): test-log indtil appen går live.
 // Hvert trin i scan-flowet (flowId samler én scanning), hvert OpenAI-kald,
 // hver cron-kørsel og fejl i app-flowene. Slås til/fra på admin-siden

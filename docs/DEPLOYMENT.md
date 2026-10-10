@@ -270,6 +270,14 @@ New public routes (webhooks, OAuth callbacks) must be added to
 `PUBLIC_API_PREFIXES` in `src/lib/access-wall.ts`, otherwise anonymous calls
 get 401.
 
+## Søgemotor (Meilisearch, 2026-10-10)
+
+- Service `meilisearch` (`getmeili/meilisearch:${MEILI_TAG:-v1.53.2}`), kun på `backend`-netværket, data i `./data/meilisearch` (oprettes af deployet). Ingen port og intet tunnel-hostnavn.
+- `MEILI_MASTER_KEY` genereres én gang af deployet (trinnet "Ensure scan-app secrets") i `.env.production` og røres aldrig igen. Appen får `MEILI_URL` (standard `http://meilisearch:7700`) og nøglen.
+- Deployet starter `meilisearch` før appen (trinnet "Start search engine", `continue-on-error`). Starter den ikke, søger appen i databasen som før; intet andet stopper.
+- Indekset er en kopi af databasen og skal ikke tages backup af: slettes `./data/meilisearch`, bygger robotten "Søgemotor: opdater indeks" det op igen inden for 5 minutter (kan startes med det samme fra admin → Robotter).
+- Fejlsøgning: `docker compose ... logs meilisearch`; robottens seneste besked står i admin → Robotter.
+
 ## Backup
 
 Create a database backup before every application update and before applying a

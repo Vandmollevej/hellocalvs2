@@ -270,7 +270,10 @@ export function rankProducts<T extends RankableProduct>(
   localHour: number,
   take: number,
   weights: SearchRankingWeights = DEFAULT_SEARCH_RANKING_WEIGHTS,
-  synonyms: Array<{ term: string; similarity: number }> = []
+  synonyms: Array<{ term: string; similarity: number }> = [],
+  // Søgemotorens relevans pr. vare (0..1, docs/DECISIONS.md 2026-10-10): tæller
+  // som tekstmatch, hvis den er højere end vores egen tekstsammenligning.
+  engineScores?: Map<string, number>
 ): RankedProduct<T>[] {
   const popularityValues = products.map((product) => regionalPopularity(product, region));
   const maxPopularity = Math.max(0, ...popularityValues);
@@ -296,6 +299,7 @@ export function rankProducts<T extends RankableProduct>(
           textSimilarity(synonym.term, product.name, product.brand?.name, details) * synonym.similarity
         );
       }
+      similarity = Math.max(similarity, engineScores?.get(product.id) ?? 0);
       const brandNamed = namesBrand[index] ? 1 : 0;
       const subbrandNamed = namesSubbrand[index] ? 1 : 0;
       if (brandNamed || subbrandNamed) {
