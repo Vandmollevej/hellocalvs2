@@ -308,6 +308,14 @@ export default function CreateDishPage() {
   // Indsæt tekst / Scan opskrift: importen er side 1, titlen kommer først på side 2.
   const [importMode, setImportMode] = useState(false);
   const swipeStart = useRef<{ x: number; y: number } | null>(null);
+  const searchSectionRef = useRef<HTMLDivElement>(null);
+
+  // Tapping the ingredient search animates the page up so the many results fit above the keyboard.
+  function scrollSearchToTop() {
+    window.setTimeout(() => {
+      searchSectionRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }, 50);
+  }
   const stepList = steps.length ? steps : [EMPTY_STEP];
   type PageKind =
     | { kind: "import" | "title" | "ingredients" | "images" }
@@ -697,7 +705,7 @@ export default function CreateDishPage() {
                   </div>
                 )}
 
-                <div>
+                <div ref={searchSectionRef}>
                   <p className="hf-type-small hf-type-strong mb-2 text-hf-black">
                     {t("createDish.addIngredient")}
                   </p>
@@ -713,6 +721,7 @@ export default function CreateDishPage() {
                           setResults([]);
                         }
                       }}
+                      onFocus={scrollSearchToTop}
                       placeholder={t("createDish.searchPlaceholder")}
                     />
                   </div>
