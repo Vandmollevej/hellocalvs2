@@ -146,7 +146,8 @@ fun SearchScreen(args: RouteArgs) {
             val data = ApiJson.decodeFromJsonElement(ProductListResponse.serializer(), Api.get("/api/products?q=${encodeUri(query)}${if (exact) "&exact=1" else ""}"))
             correction = SearchCorrection.of(data)
             results = data.products.map {
-                FoodProductResult(it.id, it.name, it.imageUrl, it.brand?.name, it.kcalPer100g, !it.nutritionMissing && hasEstimatedMacros(it.nutrientSources), it.nutritionMissing)
+                // Brand and subbrand lead the title, so the subtitle does not repeat the brand.
+                FoodProductResult(it.id, it.searchTitle ?: it.name, it.imageUrl, if (it.searchTitle != null) null else it.brand?.name, it.kcalPer100g, !it.nutritionMissing && hasEstimatedMacros(it.nutrientSources), it.nutritionMissing)
             }
             if (!exact && !correction.isActive()) OfflineCache.saveSearch(query, results)
             fromCache = false

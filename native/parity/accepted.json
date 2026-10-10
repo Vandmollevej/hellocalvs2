@@ -367,7 +367,7 @@
     "src/components/web/WebShell.tsx": "5f2646ffd79af9cc"
   },
   "/create-dish": {
-    "src/app/create-dish/page.tsx": "d9531d2d59a5a3b2",
+    "src/app/create-dish/page.tsx": "83dfda7e0e240e60",
     "src/app/layout.tsx": "ce9cce1fff73600a",
     "src/components/AuthGate.tsx": "94db96b768f9f95f",
     "src/components/BottomNav.tsx": "5bab069a374d4d04",
@@ -603,7 +603,7 @@
     "src/components/web/WebShell.tsx": "5f2646ffd79af9cc"
   },
   "/foods": {
-    "src/app/foods/page.tsx": "bafd02dd65e9f305",
+    "src/app/foods/page.tsx": "dcbc8dfec5cb2962",
     "src/app/layout.tsx": "ce9cce1fff73600a",
     "src/components/AuthGate.tsx": "94db96b768f9f95f",
     "src/components/BottomNav.tsx": "5bab069a374d4d04",
@@ -2100,7 +2100,7 @@
   },
   "/search": {
     "src/app/layout.tsx": "ce9cce1fff73600a",
-    "src/app/search/page.tsx": "6b2394b4a2468b74",
+    "src/app/search/page.tsx": "d02050a2fda93767",
     "src/components/AuthGate.tsx": "94db96b768f9f95f",
     "src/components/BottomNav.tsx": "5bab069a374d4d04",
     "src/components/DecimalText.tsx": "ae5809b34b60c7a0",

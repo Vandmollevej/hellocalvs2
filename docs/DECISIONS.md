@@ -2,6 +2,14 @@
 
 This file records durable decisions. Add a dated entry when a later decision changes one of them.
 
+## 2026-10-10: Søgeresultatets tekst begynder med brand og subbrand
+
+Brugerens krav: "brandnavn og subbrand er det vigtigste og skal komme først i søgeresultatets tekststreng på produktet". Før viste søgelisterne kun varenavnet (fx "Gold") og brandet i undertitlen; subbrandet slet ikke.
+
+- `GET /api/products` sender `searchTitle` = `Brand Subbrand Navn` (`searchResultTitle`, `src/lib/search-result-title.ts`). Navnet er det, ental/flertal-reglen vælger. Brand/subbrand, der allerede står som hele ord i navnet, flyttes frem i stedet for at gentages (store/små bogstaver og accenter udlignes); et subbrand, der begynder med brandet ("Arla Protein"), giver ikke brandet to gange.
+- Web (`/foods`, `/search`, `/create-dish`) og native (Madvarer, Søg, Opret ret) viser `searchTitle`, og brandet står ikke igen i undertitlen. Seneste, favoritter og indscanninger er ikke søgeresultater og er uændrede. `Product.name` i databasen røres ikke.
+- Søgningen matcher fortsat i navn, flertalsnavn, brand, subbrand, varetype, variant, smag, søgeord og påstande (DECISIONS 2026-10-10, "Søgemotor").
+
 ## 2026-10-10: Søgemotor (Meilisearch) og søgestatistik i admin
 
 Ejeren: søgningen skal være "perfekt dynamisk", ikke lappeløsninger, og admin skal kunne se alle søgninger, raffinerede søgninger og rene fejl. **Afløser** valget "Postgres (ingen Meilisearch)" fra samme dag. Ejeren overlod valget af motor til Claude.

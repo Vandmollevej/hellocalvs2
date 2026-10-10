@@ -226,6 +226,8 @@ data class PhotoAwardsResponse(val awards: List<PhotoAward> = emptyList())
 data class ProductListItem(
     val id: String = "",
     val name: String = "",
+    /** Search hits only: "Brand Subbrand Name" (src/lib/search-result-title.ts). */
+    val searchTitle: String? = null,
     val imageUrl: String? = null,
     val kcalPer100g: Double = 0.0,
     val proteinPer100g: Double = 0.0,

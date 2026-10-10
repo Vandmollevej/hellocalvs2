@@ -85,6 +85,13 @@ ikke her, er den ikke registreret og skal tilføjes.
   ("arla skyr" → Arla skyr før Arla mælk). Parametrene "Brand nævnt i
   søgningen"/"Subbrand nævnt i søgningen" ligger i admin → Søgealgoritmer
   (standard 100; fra 20 altid øverst; 0 slår fra). Se DECISIONS.md 2026-10-10.
+- **Brand og subbrand først i søgeresultatets tekst (bruger 2026-10-10)**: hvert
+  søgeresultat (Madvarer, Søg, Opret ret; web og native) viser
+  `Brand Subbrand Varenavn` — brand og subbrand er det vigtigste og står altid
+  forrest. Står de allerede i varenavnet, flyttes de frem uden gentagelse, og
+  brandet står ikke igen i undertitlen. Feltet `searchTitle` fra
+  `GET /api/products` (`src/lib/search-result-title.ts`). Søgningen matcher
+  stadig i alle tekstfelter, ikke kun titlen.
 
 ## UI
 
