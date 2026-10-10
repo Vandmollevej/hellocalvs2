@@ -33,7 +33,7 @@ Status opdateret: 2026-10-06 — alle udestående opgaver slettet (klaret af en 
 
 ## G-AABNE-PR — Åbne PR'er der IKKE blev flettet (2026-10-10)
 
-Flettet og deployet 2026-10-10: #339, #344, #348, #354, #355, #360, #361, #362, #363, #364. Resten står tilbage; ingen af dem er rør­t.
+Flettet og deployet 2026-10-10: #339, #344, #348, #354, #355, #360, #361, #362, #363, #364. Resten står tilbage; ingen af dem er rørt.
 
 | Id | Opgave | Status | Næste skridt |
 | --- | --- | --- | --- |
