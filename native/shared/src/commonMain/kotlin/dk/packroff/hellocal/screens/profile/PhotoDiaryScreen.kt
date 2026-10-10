@@ -7,6 +7,18 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
+import dk.packroff.hellocal.ui.icons.HcIcon
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.ui.Modifier
@@ -226,7 +238,20 @@ private fun PhotoDiary() {
                             }
                         }
                     }
-                    HcButton(if (saving) t.t("photoDiary.saving") else t.t("photoDiary.takePhoto"), onClick = ::openCamera, enabled = !saving)
+                }
+                // The add button always stands in the middle with a big camera — also while the photos are locked.
+                Column(Modifier.fillMaxWidth().padding(vertical = 48.dp), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                    Box(
+                        Modifier
+                            .size(112.dp)
+                            .shadow(8.dp, CircleShape)
+                            .clip(CircleShape)
+                            .background(HcColors.Green)
+                            .alpha(if (saving) 0.5f else 1f)
+                            .clickable(enabled = !saving, onClick = ::openCamera),
+                        contentAlignment = Alignment.Center,
+                    ) { HcIcon("Camera", size = 56.dp, stroke = 1.6f, color = HcColors.White, contentDescription = t.t("photoDiary.takePhoto")) }
+                    HcText(if (saving) t.t("photoDiary.saving") else t.t("photoDiary.addPhoto"), HcTypeRoles.Button, color = HcColors.Black, align = TextAlign.Center)
                     storageError?.let { kind ->
                         HcText(
                             t.t(

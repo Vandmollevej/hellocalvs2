@@ -2071,6 +2071,7 @@
     "recentTitle": "Recent entries"
   },
   "photoDiary": {
+    "addPhoto": "Add new photo",
     "compare": {
       "selectAria": "Select photo for before/after",
       "title": "Before and after",
