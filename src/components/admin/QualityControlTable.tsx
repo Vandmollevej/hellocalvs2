@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
+import { IconAlertTriangle } from "@tabler/icons-react";
 import type { Locale } from "@prisma/client";
 import { t } from "@/lib/admin-i18n";
 import type { QualityControlPhotoType } from "@/lib/quality-control-photo-types";
@@ -173,6 +174,13 @@ export function QualityControlTable({ rows, locale }: { rows: Row[]; locale: Loc
                   ) : (
                     <span className="flex flex-wrap items-center gap-1.5">
                       {t(locale, "quality_control_issue_nutrition")}
+                      <span
+                        title={t(locale, "quality_control_warning_hint")}
+                        className="hf-type-small hf-type-strong inline-flex items-center gap-1 rounded-full bg-hf-red-dark px-2 py-0.5 text-hf-white"
+                      >
+                        <IconAlertTriangle size={14} aria-hidden="true" />
+                        {t(locale, "quality_control_warning")}
+                      </span>
                       <span className="hf-type-small hf-type-strong rounded-full bg-hf-tan-dark px-2 py-0.5 text-text-secondary">
                         {t(locale, "quality_control_user_reported")}
                       </span>
