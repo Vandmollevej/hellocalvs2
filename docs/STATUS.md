@@ -2,6 +2,12 @@
 
 Last updated: 2026-10-09
 
+## 2026-10-09: Favorit-bookmark på aktiviteter (web + native)
+
+- Aktivitetslisten (`/activity/create`, `ActivityPicker`) har nu samme bookmark-ikon som madvarer til højre i hver række. Favoritter står øverst, resten alfabetisk.
+- Ny tabel `activity_favorites` (migration `20261009220000_activity_favorites`), `PUT /api/activity-types { key, favorite }`, `favorite` på `ActivityOption`.
+- `ChevronRow`/`HcChevronRow` har fået valgfri `trailing`-knap. Native `ActivityCreateScreen.kt` følger med. Migrationen skal med deployet; ikke prøvet mod rigtig database.
+
 ## 2026-10-09: Statistik — ingen tomme rækker efter redigering
 
 - Når redigeringen af kort afsluttes (og når et gemt layout indlæses), fjernes nu alle helt tomme rækker i kort-gitteret, uanset hvor de står (`dropEmptyRows` i `src/lib/stat-layout.ts` + native `StatsLayout.kt`). En række med ét kort og ét tomt felt bliver. Under redigering er felterne stadig blanke, så kort kan flyttes. Test i `stat-layout.test.mjs` grøn; lint/tsc ikke kørt (ingen `node_modules`), Kotlin ikke kompileret lokalt, ikke prøvet på telefon.
