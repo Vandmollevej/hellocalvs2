@@ -53,7 +53,9 @@ NEW_ALIAS = {
               "packageSizeText": "Quantity", "packCount": "Pack Count", "packaging": "Packaging", "category": "Category",
               "barcode": "EAN", **{f"keyword{i}": f"Keyword {i}" for i in range(1, 6)}},
     "rema": {"brand": "Brand", "subbrand": "Subbrand", "productType": "Product type", "variant": "Variant", "flavor": "taste",
-             "packageSizeText": "Quantity", "packCount": "Amount", "category": "Category", "barcode": "EAN", "keyword1": "Keyword 1"},
+             "packageSizeText": "Quantity", "packCount": "Amount", "category": "Category", "barcode": "EAN", "keyword1": "Keyword 1",
+             # 2026-10-10: "%"-kolonnen er fjernet; fedt% staar i _is_fat, alkohol% i _is_alcohol.
+             "_is_fat": "fat", "_is_alcohol": "%"},
 }
 
 
