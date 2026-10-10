@@ -4067,9 +4067,13 @@ model BrandLogoUpload {
   status          BrandLogoUploadStatus
   brand           Brand?                @relation(fields: [brandId], references: [id], onDelete: SetNull)
   brandId         String?
+  // Hedder intet brand som filen, men et subbrand gør, bliver filen
+  // subbrandets logo (docs/DECISIONS.md 2026-10-10).
+  subbrandLogo    SubbrandLogo?         @relation(fields: [subbrandName], references: [name], onDelete: SetNull, onUpdate: Cascade)
+  subbrandName    String?
   // Den behandlede PNG (/product-images/brand-logos/uploads/<uuid>.png).
   imageUrl        String?
-  // Brandets logo, før denne fil blev sat på det — gendannes ved sletning.
+  // Brandets (eller subbrandets) logo, før denne fil blev sat på det — gendannes ved sletning.
   previousLogoUrl String?
   // Om filen blev sat som brandets logo ved upload (ekstra udgaver og filer
   // uden brand sættes ikke).
@@ -4088,7 +4092,24 @@ model BrandLogoUpload {
 
   @@index([batchId])
   @@index([brandId])
+  @@index([subbrandName])
   @@map("brand_logo_uploads")
+}
+
+// Subbrandets logo (produktserien, fx "Det Gode" fra Schulstad), docs/DECISIONS.md
+// 2026-10-10. Product.subbrand er fri tekst, så logoet hører til et navn:
+// `name` er "<brand> <subbrand>" eller subbrandet alene, som det står på
+// varerne, og varesiden matcher det normaliseret (src/lib/subbrand-logo.ts).
+// Sættes af logo-uploaden i admin og logo-robottens import (_import-mappen).
+model SubbrandLogo {
+  id        String            @id @default(cuid())
+  name      String            @unique
+  logoUrl   String
+  createdAt DateTime          @default(now())
+  updatedAt DateTime          @updatedAt
+  uploads   BrandLogoUpload[]
+
+  @@map("subbrand_logos")
 }
 
 // Admin → Varedatabase → Billed-upload (docs/DECISIONS.md 2026-10-04):

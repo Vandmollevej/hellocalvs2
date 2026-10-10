@@ -67,6 +67,11 @@ ikke her, er den ikke registreret og skal tilføjes.
   foretræk rent wordmark uden tagline. Se docs/LOGO-AGENT.md.
 - Brugerens uploadede PNG-kunst bruges som den er (skaleret/CSS-mask), aldrig
   gen-tegnet som SVG.
+- **Brand og subbrand ved produktcirklen (bruger 2026-10-10)**: brandet står til
+  højre for cirklen, subbrandet oven over det. Begge vises som logo, når det
+  findes, ellers som navn i fed grøn tekst. Subbrand-logofiler hedder
+  `<brand> <subbrand>.png` eller `<subbrand>.png` og lægges ind som brand-logoer
+  (admin-upload eller `_import`). Se DECISIONS.md 2026-10-10.
 
 ## UI
 

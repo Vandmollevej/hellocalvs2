@@ -71,6 +71,11 @@ import dk.packroff.hellocal.ui.HcText
 import dk.packroff.hellocal.ui.icons.HcIcon
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlin.math.abs
+import kotlin.math.max
+import kotlin.math.min
+import kotlin.math.roundToInt
+import kotlin.math.sqrt
 
 private const val PENDING_POLL_MS = 2500L
 private const val CUTOUT_WAIT_MS = 3 * 60 * 1000L
@@ -447,6 +452,8 @@ fun AddProductView(
                                 favoriteLabel = t.t(if (isFavorite) "search.removeFavorite" else "search.addFavorite"),
                                 onToggleFavorite = ::toggleFavorite,
                                 brand = view.brand,
+                                subbrand = displayedSubbrand(view.brand?.name, view.subbrand),
+                                subbrandLogoUrl = view.subbrandLogoUrl,
                                 certifications = certifications,
                                 modifier = Modifier.align(Alignment.CenterHorizontally),
                             )
@@ -743,6 +750,8 @@ private fun ProductCircle(
     favoriteLabel: String,
     onToggleFavorite: () -> Unit,
     brand: ProductBrand?,
+    subbrand: String?,
+    subbrandLogoUrl: String?,
     certifications: List<NameCertification>,
     modifier: Modifier = Modifier,
 ) {
@@ -781,12 +790,54 @@ private fun ProductCircle(
                 }
             }
         }
+        if (subbrand != null) {
+            // Subbrand above the brand (logo if one exists, else the name), clear of the circle like the web.
+            val brandHeight = when {
+                brand == null -> 0
+                !brand.logoUrl.isNullOrEmpty() -> BRAND_LOGO_HEIGHT_DP
+                else -> BRAND_NAME_HEIGHT_DP
+            }
+            val bottom = if (brandHeight > 0) brandHeight + SUBBRAND_GAP_DP else 0
+            val height = if (!subbrandLogoUrl.isNullOrEmpty()) BRAND_LOGO_HEIGHT_DP else BRAND_NAME_HEIGHT_DP
+            Box(Modifier.align(Alignment.BottomStart).offset(x = logoLeftDp(height, bottom).dp, y = (-bottom).dp)) {
+                if (!subbrandLogoUrl.isNullOrEmpty()) {
+                    FoodImage(subbrandLogoUrl, Modifier.size(95.dp, BRAND_LOGO_HEIGHT_DP.dp), ContentScale.Fit, contentDescription = subbrand)
+                } else {
+                    Text(subbrand, style = HcTypeRoles.Title.style(HcColors.Green).copy(fontWeight = FontWeight.Bold), maxLines = 1, softWrap = false)
+                }
+            }
+        }
         if (certifications.isNotEmpty()) {
             Row(Modifier.align(Alignment.BottomStart).padding(bottom = 8.dp), horizontalArrangement = Arrangement.spacedBy(4.dp)) {
                 certifications.forEach { FoodImage("/certifications/${it.file}", Modifier.height(30.dp).widthIn(max = 60.dp), ContentScale.FillHeight, contentDescription = it.label) }
             }
         }
     }
+}
+
+private const val BRAND_LOGO_HEIGHT_DP = 66
+private const val BRAND_NAME_HEIGHT_DP = 22
+private const val SUBBRAND_GAP_DP = 6
+
+/** The subbrand to show above the brand — null when empty or just the brand again (src/lib/subbrand-names.ts). */
+private fun displayedSubbrand(brandName: String?, subbrand: String?): String? {
+    val sub = subbrand?.trim().orEmpty()
+    if (sub.isEmpty()) return null
+    fun key(value: String) = value.lowercase().filter { it.isLetterOrDigit() }
+    return if (brandName != null && key(brandName) == key(sub)) null else sub
+}
+
+/**
+ * Left edge (dp from the circle's left) for a logo/name [heightDp] tall whose bottom sits [bottomDp] above the
+ * circle's bottom: just outside the 180 dp circle plus 8 dp air (src/lib/brand-logo-layout.ts).
+ */
+private fun logoLeftDp(heightDp: Int, bottomDp: Int): Int {
+    val radius = 90.0
+    val top = 180.0 - bottomDp - heightDp
+    val bottom = 180.0 - bottomDp
+    val nearest = min(max(radius, top), bottom)
+    val dy = min(abs(nearest - radius), radius)
+    return (radius + sqrt(radius * radius - dy * dy) + 8).roundToInt()
 }
 
 /** − [amount] + with the kcal for the amount. */

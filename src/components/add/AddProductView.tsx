@@ -2,7 +2,14 @@
 
 import { defaultAmountGrams } from "@/lib/default-amount";
 import { mealShareBody } from "@/lib/meal-share";
-import { BRAND_NAME_HEIGHT_PX, brandLogoLeftPx, brandLogoRenderedHeight } from "@/lib/brand-logo-layout";
+import {
+  BRAND_NAME_HEIGHT_PX,
+  brandLogoLeftPx,
+  brandLogoRenderedHeight,
+  brandSlotHeight,
+  subbrandBottomPx,
+} from "@/lib/brand-logo-layout";
+import { displayedSubbrand } from "@/lib/subbrand-names";
 import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
@@ -108,6 +115,10 @@ type Product = {
   servingSizeUnitSingular?: string | null;
   servingSizeUnitPlural?: string | null;
   brand: { name: string; logoUrl?: string | null } | null;
+  // Subbrandet (produktserien) står over brandet ved cirklen — som logo, når
+  // der findes et (docs/DECISIONS.md 2026-10-10).
+  subbrand?: string | null;
+  subbrandLogoUrl?: string | null;
   // Produktkategori + pakningsstørrelse bestemmer mængdeenheden (drikkevare =
   // ml/cl, ellers g), se src/lib/product-display-unit.ts.
   productCategory?: string | null;
@@ -334,6 +345,7 @@ export function AddProductView({
   // Brand-logoets bredde/højde — bestemmer hvor langt ud det står, så der er
   // luft mellem logoet og cirklen (src/lib/brand-logo-layout.ts).
   const [brandLogoRatio, setBrandLogoRatio] = useState<number | null>(null);
+  const [subbrandLogoRatio, setSubbrandLogoRatio] = useState<number | null>(null);
   const extendedNutritionOpen = extendedNutritionToggle ?? Boolean(profile?.showExtendedNutrition);
   const [toxinsOpen, setToxinsOpen] = useState(false);
   const [openToxin, setOpenToxin] = useState<ToxinInfo | null>(null);
@@ -722,6 +734,9 @@ export function AddProductView({
   // Siden tegnes med en tom vare, mens den rigtige hentes.
   const view = state.status === "loaded" ? state.product : isLoading ? LOADING_PRODUCT : null;
   const subtitle = view ? [view.packageSizeText, ...heading.variants].filter(Boolean).join(" · ") : "";
+  // Subbrandet står over brandet ved cirklen (docs/DECISIONS.md 2026-10-10).
+  const subbrand = view ? displayedSubbrand(view.brand?.name, view.subbrand) : null;
+  const subbrandBottom = subbrandBottomPx(brandSlotHeight(view?.brand, brandLogoRatio));
 
   const title = forDish ? t("addProduct.titleForDish") : t("addProduct.title");
   const Frame = inSheet ? SheetFrame : ScreenFrame;
@@ -893,6 +908,32 @@ export function AddProductView({
                         className="hf-type-title hf-type-strong pointer-events-none absolute bottom-0 z-10 whitespace-nowrap text-hf-green"
                       >
                         {view.brand.name}
+                      </p>
+                    ))}
+                  {/* Subbrandet står oven over brandet efter samme regel:
+                      logoet, hvis det findes, ellers navnet i fed grøn tekst
+                      (DECISIONS 2026-10-10). Uden brand står det i bunden. */}
+                  {subbrand &&
+                    (view.subbrandLogoUrl ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img
+                        src={view.subbrandLogoUrl}
+                        alt={subbrand}
+                        onLoad={(event) =>
+                          setSubbrandLogoRatio(event.currentTarget.naturalWidth / (event.currentTarget.naturalHeight || 1))
+                        }
+                        style={{
+                          bottom: subbrandBottom,
+                          left: brandLogoLeftPx(brandLogoRenderedHeight(subbrandLogoRatio), subbrandBottom),
+                        }}
+                        className="pointer-events-none absolute z-10 h-[66px] w-[95px] object-contain object-left-bottom"
+                      />
+                    ) : (
+                      <p
+                        style={{ bottom: subbrandBottom, left: brandLogoLeftPx(BRAND_NAME_HEIGHT_PX, subbrandBottom) }}
+                        className="hf-type-title hf-type-strong pointer-events-none absolute z-10 whitespace-nowrap text-hf-green"
+                      >
+                        {subbrand}
                       </p>
                     ))}
                   {/* Certificeringslogoer (Øko m.fl.) på produktcirklen; uden

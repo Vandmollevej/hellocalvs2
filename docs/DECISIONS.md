@@ -2,6 +2,15 @@
 
 This file records durable decisions. Add a dated entry when a later decision changes one of them.
 
+## 2026-10-10: Subbrand over brandet ved produktcirklen — logo når det findes
+
+Brugerens ønske: "I dag vises brandnavn til højre for produktet. Fremover skal vises subbrand ovenover. Begge skal vise ikon i stedet, hvis de findes."
+
+- Varesiden (web `AddProductView` + native `AddProductScreen`): subbrandet står oven over brandet til højre for cirklen, 6 px luft, med samme regel for venstre kant som brandet (lige uden for cirklen + 8 px, `src/lib/brand-logo-layout.ts`). Logo hvis det findes, ellers navnet i fed grøn tekst som brandnavnet. Uden brand står subbrandet i bunden. Er subbrandet bare brandet igen (normaliseret ens), vises det ikke.
+- Product.subbrand er fri tekst, så subbrand-logoer ligger i ny tabel `subbrand_logos` (`SubbrandLogo`, navn unikt). Navnet er "<brand> <subbrand>" eller subbrandet alene, som det står på varerne; varesiden matcher normaliseret og prøver "<brand> <subbrand>" først (`src/lib/subbrand-logo.ts`, `subbrand-names.ts`). `/api/products/[id]` sender `subbrandLogoUrl` med.
+- Logoer kommer ind samme veje som brand-logoer: logo-uploaden i admin og logo-robottens `_import`-mappe. Hedder intet brand som filen, men et subbrand på varerne gør ("Ota Solgryn.png", "Kinder Bueno.png"), bliver filen subbrandets logo i stedet for at blive afvist. Uploaden husker det tidligere logo (`brand_logo_uploads.subbrandName` + `previousLogoUrl`), så sletning gendanner det. Robotten gemmer under `brand-logos/subbrands/<id>.png`.
+- Migration `20261010120000_subbrand_logos`.
+
 ## 2026-10-10: Indberet fejl — bundark pr. punkt med kamera
 
 Ejerens krav: under "Indberet fejl" er punkterne ikke dropdowns, men åbner hver et bundark nedefra med punktet som overskrift, notefelt og derunder kamera, så man kan tage et nyt billede direkte og sende det ind. Send-knappen nederst er sort. Efter indsendelse står man på samme oversigt, men banneret er erstattet af et sort felt med "TAK! Vi har modtaget din indberetning. Du vil få svar på din henvendelse og points i din indbakke, når vi har behandlet din sag."
