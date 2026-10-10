@@ -125,6 +125,8 @@ function normalize(value: string): string {
   return value
     .normalize("NFKD")
     .replace(/\p{Diacritic}/gu, "")
+    // "1,5" og "1.5" er samme tal (src/lib/decimal-separator.ts).
+    .replace(/(\d),(\d)/g, "$1.$2")
     .toLocaleLowerCase()
     .trim();
 }

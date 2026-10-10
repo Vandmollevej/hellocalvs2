@@ -15,6 +15,7 @@ import { linkCutoutJobsToProduct } from "@/lib/image-cutout-jobs";
 import { recordNutrientSources } from "@/lib/product-nutrient-sources";
 import { getSynonymExpansions } from "@/lib/search-synonyms";
 import { accentVariants } from "@/lib/accent-variants";
+import { decimalVariants } from "@/lib/decimal-separator";
 import { HIDE_FROM_SEARCH_BELOW } from "@/lib/uncertainty-thresholds";
 import { petFoodBlockReason } from "@/lib/pet-food-blacklist";
 import { recordPetFoodAttempt } from "@/lib/pet-food-strikes";
@@ -158,6 +159,8 @@ async function searchProducts({
                   { brand: { name: { contains: v, mode: "insensitive" as const } } },
                 ]),
                 ...synonyms.map((s) => ({ name: { contains: s.term, mode: "insensitive" as const } })),
+                // "1,5 l" finder "1.5 l" og omvendt (src/lib/decimal-separator.ts).
+                ...decimalVariants(q).map((v) => ({ name: { contains: v, mode: "insensitive" as const } })),
                 // Sukkerpåstande kan søges ("sukkerfri", "uden tilsat sukker",
                 // "reduceret", "light", "lavt sukker"), men vises ikke som mærker
                 // (docs/DECISIONS.md 2026-10-02).
@@ -178,6 +181,10 @@ async function searchProducts({
                             { productType: { contains: word, mode: "insensitive" } },
                             { subbrand: { contains: word, mode: "insensitive" } },
                             { variant: { contains: word, mode: "insensitive" } },
+                            ...decimalVariants(word).flatMap((v) => [
+                              { name: { contains: v, mode: "insensitive" as const } },
+                              { variant: { contains: v, mode: "insensitive" as const } },
+                            ]),
                           ],
                         })),
                       },

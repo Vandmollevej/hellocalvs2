@@ -81,6 +81,7 @@ ikke her, er den ikke registreret og skal tilføjes.
 - "Overlay"/"popup" = den træk-bare BottomSheet (`.hf-bottom-sheet`), se KRAV.md.
 - Aktiviteten `open_water` hedder "Svømning i åbent vand" — aldrig "Havsvømning" (bruger 2026-10-09). "havsvømning" er kun et søgeord.
 - Visuelle ændringer: læs design.md; størrelse/vægt ændres i moderate trin.
+- **Decimaltegn (user rule 2026-10-10)**: arkene (og databasen) skriver decimaler med punktum ("1.5 l", "3.5% fedt"); appen viser brugerens eget decimaltegn efter landet i profilen — komma i Danmark og de andre komma-lande ("1,5 l"), punktum i fx GB/IE/US/CA/AU/NZ/CH. Vis varetekster via `DecimalText`/`localizeDecimals` (`src/lib/decimal-separator.ts`); søgning finder begge skrivemåder. Se DECISIONS.md.
 - **Knapper står ALTID øverst (user rule 2026-10-10)**: handlingsknapper (Send, Gem, Tilføj, Indsend osv.) placeres øverst i formularen/siden, aldrig nederst under indholdet, så de aldrig skjules af menuen/bundcirklen eller kræver scroll. Gælder web og native.
 - Ikonerne i bundcirklen (FooterArc/tilføj-hjulet) er altid ensartede sorte stregikoner — aldrig farvede 3D-billeder (bruger 2026-10-10; Aktivitet bruger `IconActivity`). Gælder web og native.
 - Faste bundknapper (Tilføj/Gem i `HfScreen`-footeren) skal ligge over bundcirklen (FooterArc, 40 px over menuen), aldrig bag den (bruger 2026-10-09).

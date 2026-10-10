@@ -6,6 +6,13 @@ This file records durable decisions. Add a dated entry when a later decision cha
 
 - Butiksvarer (Bilka/REMA-arkene) hedder ofte kun fx "Gold" med mærket Nescafé og varetypen "Instant kaffe" i `productType`. Søgningen læste kun navn og mærke, så "Nescafé instant kaffe" og "instantkaffe" fandt dem ikke.
 - Nu: hvert søgeord skal stå i navn, flertalsnavn, mærke, serie, varetype, variant, smag eller søgeord (`keywords`) — accent-ufølsomt, og også når teksten læses uden mellemrum, så "instantkaffe" finder "Instant Kaffe" og "instant kaffe" finder "Instantkaffe". Opslaget er `accentInsensitiveProductIds` (`src/lib/search-correction.ts`); rangeringen bruger de samme felter (`src/lib/search-text-match.ts`, `textSimilarity`). Navn/mærke-match rangerer stadig over varetype-match.
+## 2026-10-10: Decimalpunktum i arkene, landets decimaltegn i appen
+
+Brugerens regel: i arkene skrives decimaler med punktum ("1.5 liter"), men i appen vises de med komma for Danmark og alle andre lande, der bruger komma ("1,5 liter"); punktum-lande ser punktum.
+
+- **Lagring**: arkene og dermed databasens varetekster (navn, mængde, variant) bruger punktum. Danske tusindtalspunktummer er fjernet i arkene ("1.080 g" → "1080 g"), så et punktum altid er et decimaltegn. Ældre varer og registreringernes `titleSnapshot` har stadig komma og ændres ikke (snapshot-reglen).
+- **Visning** (`src/lib/decimal-separator.ts`): `decimalSeparatorForRegion` slår landets decimaltegn op i CLDR via `Intl` (fast liste som reserve; ukendt land = DK = komma). `localizeDecimals` omskriver begge veje, men kun tal med ét decimaltegn uden mellemrum — opremsninger ("Omega 3,6,9", "45+, med kommen") og datoer røres ikke, og et gammelt "1.080 g" bliver stående i komma-lande. Brugerens land kommer fra profilen: `/api/auth/me` sender `region`, og `LocaleProvider` gemmer det i enheds-lageret (`src/lib/units.ts`, `useRegion()`), så også enhedernes standard følger profilen. Klientkomponenten `DecimalText` bruges i `FoodRow` (søgning, dagbog, kalender, Mine madvarer), på varesiden (navn og mængde/variant), i kalenderens tidslinje, Opret ret og hyldescanningen; widgetten omskriver serverside med brugerens land. Konverteringen sker kun ved visning — API'erne sender den gemte tekst, så intet lokaliseret skrives tilbage i databasen.
+- **Søgning**: "1,5" finder "1.5" og omvendt (`decimalVariants` i `/api/products` og `/api/generic-ingredients`; rangeringen sidestiller de to).
 
 ## 2026-10-10: Frida-skøn (∼) på varer uden energimærkning
 

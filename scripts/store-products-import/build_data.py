@@ -527,8 +527,10 @@ def product_category(b, r, quantity, product_type):
 
 
 def fix_decimals(s):
-    """The sheet cleanup turned "0,4%" into "0, 4%" — glue decimals back."""
-    return re.sub(r"(\d), (\d)", r"\1,\2", s) if s else s
+    """The sheet cleanup turned "0,4%" into "0, 4%" — glue decimals back.
+    2026-10-10: arkene skriver decimaler med punktum ("1.5 l"); appen viser
+    brugerens eget decimaltegn (src/lib/decimal-separator.ts)."""
+    return re.sub(r"(\d), (\d)", r"\1.\2", s) if s else s
 
 
 def strip_title(title):
@@ -655,7 +657,7 @@ def classify(p, b, r):
     meat = (f.get("meatType") or "").lower()
     liquid = bool(p.get("quantity") and LIQUID_RE.search(p["quantity"]))
     drink_context = dept == "Drikkevarer" or rema_type == "drikkevare"
-    alcohol_free = f.get("alcohol") == "Alkoholfri" or has(r"alkoholfri|alcohol free|0,0 ?%|\b0 ?%", both)
+    alcohol_free = f.get("alcohol") == "Alkoholfri" or has(r"alkoholfri|alcohol free|0[,.]0 ?%|\b0 ?%", both)
 
     def is_(pattern):
         # Title decides; product type only when the title is silent.

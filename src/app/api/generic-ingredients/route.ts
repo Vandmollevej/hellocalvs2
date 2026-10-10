@@ -5,6 +5,7 @@ import { getSessionUser } from "@/lib/session";
 import { rankProducts } from "@/lib/product-search-ranking";
 import { getActiveSearchRankingWeights } from "@/lib/search-ranking-config";
 import { getSynonymExpansions } from "@/lib/search-synonyms";
+import { decimalVariants } from "@/lib/decimal-separator";
 import { matchFridaProduct } from "@/lib/generic-ingredient-match";
 import { deriveNumberForms, displayNameForQuery, matchesNumberQuery, parseNumberQuery } from "@/lib/danish-number";
 
@@ -33,6 +34,7 @@ export async function GET(req: Request) {
               { nameSingular: { contains: numberQuery.term, mode: "insensitive" } },
               { namePlural: { contains: numberQuery.term, mode: "insensitive" } },
               ...synonyms.map((s) => ({ name: { contains: s.term, mode: "insensitive" as const } })),
+              ...decimalVariants(numberQuery.term).map((v) => ({ name: { contains: v, mode: "insensitive" as const } })),
             ],
           }
         : {},
