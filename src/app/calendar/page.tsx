@@ -245,15 +245,21 @@ function totalKcalForDate(dailyTotals: Map<string, number>, date: Date) {
 // `effective` = budget + dagens registrerede motion (Activity.caloriesBurned):
 // det er den grænse, alle "inden for målet"-afgørelser i kalenderen bruger
 // (DECISIONS 2026-10-02). `base` er budgettet alene og vises som "Mål: X kcal".
-type DailyGoalLookup = { base: (date: Date) => number; effective: (date: Date) => number };
+type DailyGoalLookup = { base: (date: Date) => number; effective: (date: Date) => number; bonus: (date: Date) => number };
 const DailyGoalContext = createContext<DailyGoalLookup>({
   base: () => DAILY_KCAL_GOAL,
   effective: () => DAILY_KCAL_GOAL,
+  bonus: () => 0,
 });
 
 /** Mål inkl. motion — bruges til nået/ikke nået, "over" og balancer. */
 function useDailyGoal() {
   return useContext(DailyGoalContext).effective;
+}
+
+/** Dagens motion-tillæg (træningspas eller enhedens aktive energi). */
+function useDailyBonus() {
+  return useContext(DailyGoalContext).bonus;
 }
 
 /** Mål uden motion — kun til visning af "Mål: X kcal". */
@@ -474,8 +480,8 @@ function CalendarPageContent() {
     [baseGoalForDate, activityBonusByDay],
   );
   const dailyGoalLookup = useMemo<DailyGoalLookup>(
-    () => ({ base: baseGoalForDate, effective: goalForDate }),
-    [baseGoalForDate, goalForDate],
+    () => ({ base: baseGoalForDate, effective: goalForDate, bonus: (date: Date) => activityBonusByDay.get(dayKey(date)) ?? 0 }),
+    [baseGoalForDate, goalForDate, activityBonusByDay],
   );
   const [weekdaySchedules, setWeekdaySchedules] = useState<Record<number, SleepScheduleEntry>>({});
   const [workShifts, setWorkShifts] = useState<Record<string, WorkShiftEntry>>({});
@@ -2259,7 +2265,7 @@ function DayDetails({
   }, [loading, dateKey]);
 
   const dayKcal = registrations.reduce((sum, registration) => sum + registration.kcalSnapshot, 0);
-  const dayBonusKcal = activities.reduce((sum, activity) => sum + activity.caloriesBurned, 0);
+  const dayBonusKcal = useDailyBonus()(date);
   // Mål uden motion til visning; nået/ikke nået regnes mod mål + motion.
   const dayGoalKcal = useBaseDailyGoal()(date);
   const hasEntries = registrations.length > 0;

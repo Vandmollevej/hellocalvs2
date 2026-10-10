@@ -353,6 +353,7 @@ fun CalendarScreen(args: RouteArgs) {
                     previousSleepWindow = sleepWindowFor(day.plusDays(-1)),
                     hasHistory = registrations.isNotEmpty(),
                     dayGoalKcal = goalLookup.base(day),
+                    dayBonusKcal = goalLookup.bonus(day),
                     screenHeight = screenHeight,
                     activeView = view,
                     viewMenuOpen = viewMenuOpen,

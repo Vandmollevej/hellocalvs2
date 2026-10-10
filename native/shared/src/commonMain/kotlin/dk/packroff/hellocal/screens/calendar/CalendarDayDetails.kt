@@ -119,6 +119,7 @@ internal fun DayDetails(
     previousSleepWindow: SleepWindow,
     hasHistory: Boolean,
     dayGoalKcal: Double,
+    dayBonusKcal: Double,
     screenHeight: Dp,
     activeView: CalendarView,
     viewMenuOpen: Boolean,
@@ -204,7 +205,6 @@ internal fun DayDetails(
     }
 
     val dayKcal = registrations.sumOf { it.kcal }
-    val dayBonusKcal = activities.sumOf { it.caloriesBurned }
     val hasEntries = registrations.isNotEmpty()
     val met = hasEntries && dayKcal <= dayGoalKcal + dayBonusKcal
     val isFutureDay = date > today
