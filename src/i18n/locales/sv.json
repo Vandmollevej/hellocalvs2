@@ -422,6 +422,8 @@
     "privacyPolicy": "Integritetspolicy",
     "dataTracking": "Dataspårning",
     "languageAndRegion": "Språk och region",
+    "bodyMeasurementsDisplay": "Kroppsmått",
+    "bodyMeasurementsDisplayDescription": "Välj vilka kroppsmått som visas på sidan Kroppsmått. Dolda mått och deras mätningar raderas inte.",
     "resultsDisplay": "Resultatvisning",
     "messages": "Meddelanden",
     "notifications": "Kommunikation",
@@ -531,90 +533,90 @@
     "toggleLabel": "Visa menstruationscykel",
     "toggleDescription": "Lägger till \"Mens\" i lägg till-menyn så att du kan logga cykelns start."
   },
-    "customMeasure": {
-      "add": "Add own measurement",
-      "delete": "Delete",
-      "cancel": "Cancel",
-      "save": "Save measurement",
-      "nameLabel": "Name",
-      "descriptionLabel": "Description",
-      "paramLabel": "Parameter",
-      "paramPlaceholder": "Choose parameter",
-      "search": "Search parameter",
-      "noMatch": "No parameters found",
-      "periodLabel": "Period",
-      "periodHint": "Periods longer than a day show a daily average.",
-      "textLabel": "Text under the number",
-      "textHint": "At most {lines} lines of {chars} characters",
-      "group": {
-        "food": "Food and nutrition",
-        "activity": "Activity",
-        "sleep": "Sleep",
-        "heart": "Heart and readings",
-        "body": "Body"
-      },
-      "period": {
-        "today": "Today",
-        "yesterday": "Yesterday",
-        "last7": "Last 7 days",
-        "last30": "Last 30 days",
-        "thisWeek": "This week",
-        "lastWeek": "Last week",
-        "thisMonth": "This month",
-        "lastMonth": "Last month",
-        "thisYear": "This year",
-        "lastYear": "Last year"
-      },
-      "param": {
-        "kcalIntake": "Calories eaten",
-        "kcalRemaining": "Calories remaining",
-        "protein": "Protein",
-        "carbs": "Carbohydrates",
-        "fat": "Fat",
-        "kcalBurned": "Calories burned",
-        "restingEnergy": "Resting energy (kcal)",
-        "steps": "Steps",
-        "distance": "Kilometres",
-        "water": "Water",
-        "exerciseMinutes": "Active minutes",
-        "standMinutes": "Stand minutes",
-        "floors": "Floors climbed",
-        "zoneMinutes": "Zone minutes",
-        "cardioLoad": "Cardio load",
-        "sleepDuration": "Sleep",
-        "sleepInBed": "Time in bed",
-        "sleepAwake": "Awake during sleep",
-        "sleepRem": "REM sleep",
-        "sleepLight": "Light sleep",
-        "sleepDeep": "Deep sleep",
-        "sleepScore": "Sleep quality",
-        "sleepEfficiency": "Sleep efficiency",
-        "sleepAwakenings": "Awakenings",
-        "heartRate": "Heart rate",
-        "restingHeartRate": "Resting heart rate",
-        "heartRateMin": "Lowest heart rate",
-        "heartRateMax": "Highest heart rate",
-        "hrv": "HRV",
-        "vo2Max": "VO₂ max",
-        "heartRateRecovery": "Heart rate recovery",
-        "respiratoryRate": "Respiratory rate",
-        "spo2": "Oxygen saturation (SpO₂)",
-        "temperature": "Temperature",
-        "stress": "Stress",
-        "recoveryScore": "Recovery",
-        "strain": "Strain",
-        "bloodGlucose": "Blood glucose",
-        "bodyFat": "Body fat %",
-        "fatMass": "Fat mass",
-        "fatFreeMass": "Fat-free mass",
-        "muscleMass": "Muscle mass",
-        "boneMass": "Bone mass",
-        "bodyWater": "Body water",
-        "visceralFat": "Visceral fat",
-        "bmr": "Basal metabolic rate (BMR)",
-        "bmi": "BMI"
-      }
+  "customMeasure": {
+    "add": "Add own measurement",
+    "delete": "Delete",
+    "cancel": "Cancel",
+    "save": "Save measurement",
+    "nameLabel": "Name",
+    "descriptionLabel": "Description",
+    "paramLabel": "Parameter",
+    "paramPlaceholder": "Choose parameter",
+    "search": "Search parameter",
+    "noMatch": "No parameters found",
+    "periodLabel": "Period",
+    "periodHint": "Periods longer than a day show a daily average.",
+    "textLabel": "Text under the number",
+    "textHint": "At most {lines} lines of {chars} characters",
+    "group": {
+      "food": "Food and nutrition",
+      "activity": "Activity",
+      "sleep": "Sleep",
+      "heart": "Heart and readings",
+      "body": "Body"
     },
+    "period": {
+      "today": "Today",
+      "yesterday": "Yesterday",
+      "last7": "Last 7 days",
+      "last30": "Last 30 days",
+      "thisWeek": "This week",
+      "lastWeek": "Last week",
+      "thisMonth": "This month",
+      "lastMonth": "Last month",
+      "thisYear": "This year",
+      "lastYear": "Last year"
+    },
+    "param": {
+      "kcalIntake": "Calories eaten",
+      "kcalRemaining": "Calories remaining",
+      "protein": "Protein",
+      "carbs": "Carbohydrates",
+      "fat": "Fat",
+      "kcalBurned": "Calories burned",
+      "restingEnergy": "Resting energy (kcal)",
+      "steps": "Steps",
+      "distance": "Kilometres",
+      "water": "Water",
+      "exerciseMinutes": "Active minutes",
+      "standMinutes": "Stand minutes",
+      "floors": "Floors climbed",
+      "zoneMinutes": "Zone minutes",
+      "cardioLoad": "Cardio load",
+      "sleepDuration": "Sleep",
+      "sleepInBed": "Time in bed",
+      "sleepAwake": "Awake during sleep",
+      "sleepRem": "REM sleep",
+      "sleepLight": "Light sleep",
+      "sleepDeep": "Deep sleep",
+      "sleepScore": "Sleep quality",
+      "sleepEfficiency": "Sleep efficiency",
+      "sleepAwakenings": "Awakenings",
+      "heartRate": "Heart rate",
+      "restingHeartRate": "Resting heart rate",
+      "heartRateMin": "Lowest heart rate",
+      "heartRateMax": "Highest heart rate",
+      "hrv": "HRV",
+      "vo2Max": "VO₂ max",
+      "heartRateRecovery": "Heart rate recovery",
+      "respiratoryRate": "Respiratory rate",
+      "spo2": "Oxygen saturation (SpO₂)",
+      "temperature": "Temperature",
+      "stress": "Stress",
+      "recoveryScore": "Recovery",
+      "strain": "Strain",
+      "bloodGlucose": "Blood glucose",
+      "bodyFat": "Body fat %",
+      "fatMass": "Fat mass",
+      "fatFreeMass": "Fat-free mass",
+      "muscleMass": "Muscle mass",
+      "boneMass": "Bone mass",
+      "bodyWater": "Body water",
+      "visceralFat": "Visceral fat",
+      "bmr": "Basal metabolic rate (BMR)",
+      "bmi": "BMI"
+    }
+  },
   "frontPageSettings": {
     "intro": "Välj vilka fält som ska visas i hjulet på startsidan. Det översta fältet visar alltid en lista med samtliga lägg till-alternativ.",
     "sideSectionTitle": "Startsidesvisning",
@@ -625,7 +627,12 @@
     "selectedCount": "{count} av {max} fält valda",
     "maxReachedHint": "Ta bort ett fält för att kunna lägga till ett annat.",
     "statsSectionTitle": "Siffror i sifferreglaget",
-    "statsIntro": "Välj vilka siffror som kan visas i sifferreglaget på startsidan. Blir listan för lång kan du bara scrolla."
+    "statsIntro": "Välj vilka siffror som kan visas i sifferreglaget på startsidan. Blir listan för lång kan du bara scrolla.",
+    "zonesSectionTitle": "Heart-rate zones",
+    "zonesIntro": "Choose the zone the number slider shows time in, and adjust the limits (bpm) to your own pulse.",
+    "zoneLabel": "Zone {zone}",
+    "zoneMin": "Zone {zone} from (bpm)",
+    "zoneMax": "Zone {zone} to (bpm)"
   },
   "frontPageStats": {
     "calories": "Kalorier intagna",
@@ -648,7 +655,39 @@
     "water": "Vatten",
     "burned": "Kalorier vid sport",
     "steps": "Steg",
-    "distanceKm": "Kilometer rört"
+    "distanceKm": "Kilometer rört",
+    "goalMin": "Goal: {value}",
+    "goalMax": "Goal: at most {value}",
+    "kcalRemainingCaption": "Left today",
+    "burnedCaption": "Active calories",
+    "distanceCaption": "Distance today",
+    "floors": "Floors climbed",
+    "earnedKcal": "Extra calories",
+    "earnedCaption": "Earned",
+    "energySplit": "Energy split",
+    "energySplitCaption": "Goal P {p} F {f} C {k}",
+    "activityKcal": "Activity (calories)",
+    "activityNone": "None recorded",
+    "stepKcal": "Calories from steps",
+    "stepKcalCaption": "From steps today",
+    "intakeVsTypical": "Intake now vs. usual",
+    "intakeVsTypicalCaption": "{percent} % vs. usual",
+    "intakeNoBasis": "Nothing to compare with yet",
+    "restingTime": "Time at resting heart rate",
+    "restingBpm": "Resting {bpm} bpm",
+    "restingBpmNone": "Resting heart rate unknown",
+    "zoneTime": "Time in heart-rate zone",
+    "zoneCaption": "Zone {zone}",
+    "weightOnGoalDay": "Weight on goal day",
+    "weightGoalCaption": "Goal {goal} kg · {verdict}",
+    "noWeightGoal": "No weight goal set",
+    "verdict": {
+      "likely": "Likely",
+      "possible": "Possible",
+      "unlikely": "Unlikely"
+    },
+    "goalChance": "Chance of reaching the goal",
+    "goalChanceCaption": "Recommended at most {max} kg/week"
   },
   "footerArc": {
     "open": "Öppna lägg till-knappar",
@@ -1055,25 +1094,15 @@
     "tabMine": "Mina rätter",
     "tabShared": "Delade rätter",
     "statusNotShared": "Not shared",
-
     "sharedSearchPlaceholder": "Sök i titel, ingredienser …",
-
     "createNew": "Skapa ny rätt",
-
     "sourceAll": "Recept",
-
     "sourceShared": "Delade rätter",
-
     "sourceHelloFresh": "Hello Fresh",
-
     "sourceValdemarsro": "Valdemarsro",
-
     "sourceFilterAria": "Välj receptkälla",
-
     "filtersSheetTitle": "Filter",
-
     "goToRecipe": "Gå till recept",
-
     "valdemarsroSource": "Valdemarsro",
     "sortRelevance": "Relevans",
     "sortPopular": "Popularitet",
@@ -1180,7 +1209,8 @@
     "addStep": "Lägg till steg",
     "addPhoto": "Ta en bild till steget",
     "removePhoto": "Ta bort bilden",
-    "remove": "Ta bort steg"
+    "remove": "Ta bort steg",
+    "dropPhoto": "Drag a picture here, or tap to add one"
   },
   "recipeImages": {
     "title": "Bilder på rätten",
@@ -1230,18 +1260,11 @@
     }
   },
   "recipeDetail": {
-
+    "durationLabel": "{minutes} min.",
     "shareRejected": "Your dish is not shared with others because it was rejected. You keep it yourself.",
-
-
     "shareRejectedReason": "Reason: {reason}",
-
-
     "servingsLabel": "{count} people",
-
-
     "thumbUp": "Tummen upp",
-
     "thumbDown": "Tummen ner",
     "loading": "Hämtar rätten …",
     "notFound": "Rätten finns inte längre",
@@ -1308,54 +1331,41 @@
     }
   },
   "createDish": {
+    "pageTitle": "Title and description",
+    "descriptionPlaceholder": "Description",
+    "durationLabel": "Duration",
+    "minutes": "min.",
+    "done": "Done",
+    "pageImport": "Import",
+    "pageBack": "Previous page",
+    "pageNext": "Next page",
+    "pageDots": "Page {current} of {total}",
+    "pageIngredients": "Ingredients",
+    "pageImages": "Pictures of the dish",
     "servings": "Number of people",
-
     "shareLabel": "Vill du dela rätten med andra användare?",
-
     "modeManual": "Manuellt",
-
     "modeText": "Klistra in text",
-
     "modeScan": "Skanna",
-
     "shareQuestionTitle": "Vill du dela rätten?",
-
     "shareQuestionBody": "Andra användare kan hitta och använda din rätt. Inga personuppgifter delas. Du kan också dela den senare.",
-
     "shareYes": "Dela",
-
     "shareNo": "Inte nu",
-
     "pasteTitle": "Klistra in receptet",
-
     "pastePlaceholder": "Klistra in hela receptet här",
-
     "pasteSourcePlaceholder": "Länk till källan (valfritt)",
-
     "pasteInsert": "Klistra in",
-
     "pasteWorking": "Läser receptet …",
-
     "pasteError": "Kunde inte läsa receptet",
-
     "scanTitle": "Skanna recept",
-
     "scanTake": "Ta bild",
-
     "scanGallery": "Från bibliotek",
-
     "scanFinish": "Klar",
-
     "scanWorking": "Läser sidorna …",
-
     "scanError": "Kunde inte läsa sidorna",
-
     "scanHint": "Lägg till sidorna i ordning. Första bilden blir rättens bild.",
-
     "importMissing": "Saknar match eller mängd — lägg till själv:",
-
     "importDone": "Receptet har lagts in",
-
     "importNutrition": "Näring i texten (per portion)",
     "shareInfo": "Inga personuppgifter delas när du delar en rätt",
     "shareInfoAria": "Om delning",
@@ -1463,6 +1473,7 @@
     "pendingBannerMany": "{count} skapade väntar på uppladdning"
   },
   "offline": {
+    "cachedResults": "Visar sparade resultat från tidigare sökningar (offline)",
     "message": "Ingen anslutning — det här kräver internet. Försök igen när du är online.",
     "banner": "Du är offline — vissa funktioner fungerar inte",
     "barcodeLookup": "Streckkoden lästes, men du har ingen anslutning. Försök igen när du är online."
@@ -1795,7 +1806,13 @@
     "thigh": "Lår (cm)",
     "upperArm": "Överarm (cm)",
     "neck": "Hals (cm)",
+    "buttock": "Skinkor (cm)",
+    "calf": "Vad (cm)",
+    "ankle": "Fotled (cm)",
     "names": {
+      "buttock": "Skinkor",
+      "calf": "Vad",
+      "ankle": "Fotled",
       "neck": "Hals",
       "waist": "Midja",
       "hip": "Höft",
@@ -1891,8 +1908,24 @@
     "activityIntro": "WHO rekommenderar vuxna minst 150 min måttlig aktivitet i veckan och styrketräning 2 dagar i veckan. Klockor och aktivitetsmätare kan registrera dem.",
     "activityUseWho": "Använd WHO:s rekommendation",
     "activityHeartRateHint": "Puls över: du måste komma över värdet minst en gång om dagen. Måttlig intensitet är ca 64 % av din maxpuls (220 − din ålder), t.ex. ca 120 för en 30-åring.",
-    "activity": {"stepsPerDay":"Steg","activeMinutesPerWeek":"Aktiva minuter","strengthDaysPerWeek":"Styrketräning","workoutsPerWeek":"Träningspass","runKmPerWeek":"Löpning","cycleKmPerWeek":"Cykling","heartRateAboveBpm":"Puls över"},
-    "activityPlaceholder": {"stepsPerDay":"t.ex. 8000","activeMinutesPerWeek":"t.ex. 150","strengthDaysPerWeek":"t.ex. 2","workoutsPerWeek":"t.ex. 3","runKmPerWeek":"t.ex. 15","cycleKmPerWeek":"t.ex. 50","heartRateAboveBpm":"t.ex. 120"},
+    "activity": {
+      "stepsPerDay": "Steg",
+      "activeMinutesPerWeek": "Aktiva minuter",
+      "strengthDaysPerWeek": "Styrketräning",
+      "workoutsPerWeek": "Träningspass",
+      "runKmPerWeek": "Löpning",
+      "cycleKmPerWeek": "Cykling",
+      "heartRateAboveBpm": "Puls över"
+    },
+    "activityPlaceholder": {
+      "stepsPerDay": "t.ex. 8000",
+      "activeMinutesPerWeek": "t.ex. 150",
+      "strengthDaysPerWeek": "t.ex. 2",
+      "workoutsPerWeek": "t.ex. 3",
+      "runKmPerWeek": "t.ex. 15",
+      "cycleKmPerWeek": "t.ex. 50",
+      "heartRateAboveBpm": "t.ex. 120"
+    },
     "nutritionHeading": "Näring per dag",
     "nutrition": {
       "kcal": "Kalorier",
@@ -1910,12 +1943,12 @@
   "weighIn": {
     "attireTitle": "What were you wearing?",
     "attireItem": {
-      "UNDERWEAR": "Underwear",
-      "PANTS": "Trousers",
-      "TOP": "Top / T-shirt",
-      "SWEATER": "Sweater",
-      "SHOES": "Shoes",
-      "POCKET_ITEMS": "Phone etc. in pocket",
+      "UNDERWEAR": "With underwear",
+      "PANTS": "With trousers",
+      "TOP": "With top / T-shirt",
+      "SWEATER": "With upper layer",
+      "SHOES": "With shoes",
+      "POCKET_ITEMS": "With phone and other items in pockets",
       "AFTER_TOILET": "After using the toilet"
     },
     "attireNaked": "Nothing selected = naked",
@@ -3094,12 +3127,19 @@
     },
     "sharing": {
       "title": "Dela med andra",
-      "intro": "Här kan du se vilka i familjen som kan se din profil och vad de kan se. {owner} bestämmer vem som har åtkomst.",
+      "introSelf": "Choose who in the family may see your profile and who may also add entries on your behalf.",
+      "introSelfMember": "Choose who in the family may see your profile and who may also add entries on your behalf. This is your decision. {owner} pays for the family and always has access.",
+      "introOwner": "See who in the family can view your profile and what they can see. {owner} decides who has access.",
       "none": "Ingen annan i familjen kan se din profil.",
+      "shareWith": "Share with {name}",
+      "allowWrite": "May also add entries for you",
+      "allowWriteFor": "{name} may also add entries for you",
       "sharedWith": "Delad med {name}",
       "ownerNote": "{name} betalar för familjen och har alltid åtkomst till din profil.",
       "grantNote": "{owner} har gett {name} åtkomst till din profil.",
+      "selfGrantNote": "You can change or stop sharing with {name} above.",
       "canEdit": "{name} kan också registrera och ändra på din profil. Allt står i din Kontrolllogg.",
+      "viewOnly": "{name} can only view, not add or edit. Everything is in your control log.",
       "area": {
         "profile": "Profil (namn, ålder, längd)",
         "registrations": "Matregistreringar",
@@ -3408,6 +3448,7 @@
     "sleep": "Sömn",
     "statusActive": "Aktiv",
     "statusInactive": "Inaktiv",
+    "activeDesc": "Inactive screenings are hidden and send no reminders, but your entries are kept.",
     "activate": "Aktivera",
     "deactivate": "Inaktivera",
     "delete": "Radera",
@@ -3520,5 +3561,28 @@
       "INPUT": "Inmatningsfält",
       "STEPPER": "Plus och minus"
     }
+  },
+  "forwardRecipe": {
+    "title": "Send to a friend",
+    "hint": "Send “{name}” as an encrypted link.",
+    "duration": "How long should the link work?",
+    "days": {
+      "1": "1 day",
+      "7": "7 days",
+      "30": "30 days",
+      "90": "90 days"
+    },
+    "toName": "Friend's name",
+    "toEmail": "Friend's email",
+    "fromName": "From (your name)",
+    "message": "Message (optional)",
+    "encrypted": "The link is encrypted and stops working when the time is up.",
+    "share": "Share",
+    "sending": "Creating the link …",
+    "missing": "Fill in name, email and from name (valid email).",
+    "error": "Could not create the link.",
+    "copied": "Link copied.",
+    "shareText": "Try “{name}” in Hello Cal!",
+    "button": "Send to a friend"
   }
 }

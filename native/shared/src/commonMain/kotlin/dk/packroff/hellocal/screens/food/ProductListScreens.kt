@@ -35,6 +35,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import dk.packroff.hellocal.api.Api
 import dk.packroff.hellocal.api.ApiJson
+import dk.packroff.hellocal.api.OfflineCache
 import dk.packroff.hellocal.i18n.LocalTranslator
 import dk.packroff.hellocal.i18n.Translator
 import dk.packroff.hellocal.nav.LocalNavigator
@@ -108,6 +109,7 @@ fun SearchScreen(args: RouteArgs) {
     var results by remember { mutableStateOf<List<FoodProductResult>>(emptyList()) }
     var resultsState by remember { mutableStateOf("loading") }
     var resultsError by remember { mutableStateOf<Throwable?>(null) }
+    var fromCache by remember { mutableStateOf(false) }
     var recentlyAdded by remember { mutableStateOf<List<FoodProductResult>>(emptyList()) }
     var favorites by remember { mutableStateOf<List<FoodProductResult>>(emptyList()) }
     val favoriteIds = favorites.map { it.id }.toSet()
@@ -136,11 +138,22 @@ fun SearchScreen(args: RouteArgs) {
             results = data.products.map {
                 FoodProductResult(it.id, it.name, it.imageUrl, it.brand?.name, it.kcalPer100g, hasEstimatedMacros(it.nutrientSources))
             }
+            OfflineCache.saveSearch(query, results)
+            fromCache = false
             resultsState = "ready"
         } catch (e: Exception) {
-            resultsError = e
-            resultsState = "error"
-            results = emptyList()
+            // No connection: show saved results from earlier searches.
+            val cached = OfflineCache.findSearch(query)
+            if (cached != null) {
+                results = cached
+                fromCache = true
+                resultsState = "ready"
+            } else {
+                fromCache = false
+                resultsError = e
+                resultsState = "error"
+                results = emptyList()
+            }
         }
     }
 
@@ -155,12 +168,12 @@ fun SearchScreen(args: RouteArgs) {
                 recent += FoodProductResult(pid, r.titleSnapshot, r.product?.imageUrl)
                 if (recent.size >= RECENT_LIMIT) break
             }
-            recent.toList()
-        }.getOrDefault(emptyList())
+            recent.toList().also { OfflineCache.saveRecent(it) }
+        }.getOrElse { OfflineCache.recent() }
     }
 
     LaunchedEffect(Unit) {
-        favorites = runCatching { loadFavoriteProducts() }.getOrDefault(emptyList())
+        favorites = runCatching { loadFavoriteProducts().also { OfflineCache.saveFavorites(it) } }.getOrElse { OfflineCache.favorites() }
     }
 
     val showFavorites = query.isBlank() && favorites.isNotEmpty()
@@ -222,6 +235,9 @@ fun SearchScreen(args: RouteArgs) {
                             align = TextAlign.Center,
                         )
                         else -> {
+                            if (fromCache && results.isNotEmpty()) {
+                                HcText(t.t("offline.cachedResults"), HcTypeRoles.Caption, Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 12.dp), color = HcColors.TextSecondary, align = TextAlign.Center)
+                            }
                             ProductResultList(results.take(6), favoriteIds, t, true, ::openProduct, ::toggleFavorite)
                             if (results.isEmpty()) {
                                 HcText(t.t("search.noResults"), HcTypeRoles.Body, Modifier.fillMaxWidth().padding(16.dp), color = HcColors.TextSecondary, align = TextAlign.Center)
@@ -324,7 +340,7 @@ fun FavoritesScreen(args: RouteArgs) {
     var recipes by remember { mutableStateOf<List<FavoriteRecipe>?>(null) }
 
     LaunchedEffect(Unit) {
-        products = runCatching { loadFavoriteProducts() }.getOrDefault(emptyList())
+        products = runCatching { loadFavoriteProducts().also { OfflineCache.saveFavorites(it) } }.getOrElse { OfflineCache.favorites() }
     }
     LaunchedEffect(Unit) {
         recipes = runCatching {

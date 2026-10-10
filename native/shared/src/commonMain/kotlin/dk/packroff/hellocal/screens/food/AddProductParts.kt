@@ -302,7 +302,8 @@ fun UpdatePointsBanner(href: String, text: String, toggleLabel: String, tiles: L
     val nav = LocalNavigator.current
     // 0 = collapsed, 1 = banner, 2 = panel
     var stage by remember { mutableStateOf(1) }
-    Column(Modifier.fillMaxWidth().shadow(4.dp).background(HcColors.White)) {
+    val bannerShape = RoundedCornerShape(bottomStart = 16.dp, bottomEnd = 16.dp)
+    Column(Modifier.fillMaxWidth().shadow(4.dp, bannerShape).background(HcColors.White, bannerShape)) {
         if (stage >= 1) {
             HcText(
                 text,
@@ -376,9 +377,10 @@ fun ForwardButton(kind: String, itemId: String, name: String) {
                 scope.launch {
                     try {
                         val body = if (kind == "PRODUCT") mapOf("kind" to kind, "productId" to itemId) else mapOf("kind" to kind, "dishId" to itemId)
-                        val token = Api.post("/api/forwards", body).obj("forward").str("token")
+                        val created = Api.post("/api/forwards", body)
+                        val token = created.obj("forward").str("token")
                         if (token != null) {
-                            val url = "${HelloCalConfig.BASE_URL}/forward/$token"
+                            val url = created.str("link") ?: "${HelloCalConfig.BASE_URL}/forward/$token"
                             val shared = FoodPlatform.share?.invoke(name, "Prøv \"$name\" i Hello Cal!", url) == true
                             if (!shared) clipboard.setText(AnnotatedString(url))
                         }

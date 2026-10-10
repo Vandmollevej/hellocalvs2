@@ -43,6 +43,7 @@ import dk.packroff.hellocal.theme.HcTypeRoles
 import dk.packroff.hellocal.ui.HcLine
 import dk.packroff.hellocal.ui.HcMaskIcon
 import dk.packroff.hellocal.ui.HcButton
+import dk.packroff.hellocal.ui.HcButtonKind
 import dk.packroff.hellocal.ui.HcCard
 import dk.packroff.hellocal.ui.HcLoader
 import dk.packroff.hellocal.ui.HcRemoteImage
@@ -78,6 +79,8 @@ private data class OwnDishIngredient(val id: String, val grams: Double = 0.0, va
 private data class OwnDish(
     val name: String,
     val servings: Int? = null,
+    val description: String? = null,
+    val durationMinutes: Int? = null,
     val shareRejected: Boolean = false,
     val shareRejectionReason: String? = null,
     val sharedRecipeId: String? = null,
@@ -152,6 +155,9 @@ fun RecipeDetailScreen(args: RouteArgs) {
     var rejection by remember { mutableStateOf<String?>(null) }
     var rejected by remember { mutableStateOf(false) }
     var dishServings by remember { mutableStateOf<Int?>(null) }
+    var forwardOpen by remember { mutableStateOf(false) }
+    var dishDescription by remember { mutableStateOf<String?>(null) }
+    var dishDuration by remember { mutableStateOf<Int?>(null) }
     var showShareInfo by remember { mutableStateOf(false) }
     var isFavorite by remember { mutableStateOf(false) }
     var canReport by remember { mutableStateOf(false) }
@@ -168,6 +174,8 @@ fun RecipeDetailScreen(args: RouteArgs) {
                 rejected = dish.shareRejected
                 rejection = dish.shareRejectionReason
                 dishServings = dish.servings
+                dishDescription = dish.description
+                dishDuration = dish.durationMinutes
                 view = RecipeView(
                     dish.name,
                     dish.ingredients.map { i ->
@@ -309,6 +317,13 @@ fun RecipeDetailScreen(args: RouteArgs) {
                             rejection?.let { HcText(t.t("recipeDetail.shareRejectedReason", "reason" to it), HcTypeRoles.Small, Modifier.padding(top = 4.dp), color = HcColors.TextSecondary) }
                         }
                     }
+                    HcButton(t.t("forwardRecipe.button"), onClick = { forwardOpen = true }, kind = HcButtonKind.Secondary, leading = { HcIcon("Share3", size = 18.dp, color = HcColors.Action) })
+                    dishDescription?.takeIf { it.isNotBlank() }?.let {
+                        HcText(it, HcTypeRoles.Body, color = HcColors.Black)
+                    }
+                    dishDuration?.takeIf { it > 0 }?.let {
+                        HcText(t.t("recipeDetail.durationLabel", "minutes" to it), HcTypeRoles.Small, color = HcColors.TextSecondary)
+                    }
                     dishServings?.takeIf { it > 0 }?.let {
                         HcText(t.t("recipeDetail.servingsLabel", "count" to it), HcTypeRoles.Small, color = HcColors.TextSecondary)
                     }
@@ -411,6 +426,7 @@ fun RecipeDetailScreen(args: RouteArgs) {
             }
         }
     }
+    if (forwardOpen && id != null) ForwardRecipeSheet(id, view?.name ?: "", onClose = { forwardOpen = false })
 }
 
 /** Horizontal strip of dish photos (4:3, 85 % wide when several). */
