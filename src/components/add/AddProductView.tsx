@@ -1283,7 +1283,7 @@ export function AddProductView({
                         // ind, medmindre brugeren har slået automatisk udfoldning
                         // til — et tryk på rækken vender det.
                         // Ingen bølge/pil ved 0-værdier.
-                        const hasUncertainty = row.value > 0 && (row.estimated || (row.tolerance ?? 0) > 0);
+                        const hasUncertainty = (row.value ?? 0) > 0 && (row.estimated || (row.tolerance ?? 0) > 0);
                         const expanded =
                           hasUncertainty &&
                           Boolean(profile?.autoExpandUncertainty) !== uncertaintyToggled.has(row.key);
@@ -1293,7 +1293,7 @@ export function AddProductView({
                         const content = (
                           <>
                             <span className="flex items-center gap-1">
-                              {row.key in WARNING_LIMITS && row.value > WARNING_LIMITS[row.key] && (
+                              {row.value !== null && row.key in WARNING_LIMITS && row.value > WARNING_LIMITS[row.key] && (
                                 <IconAlertTriangle size={15} className="shrink-0" aria-label={row.label} />
                               )}
                               {MICRONUTRIENT_INFO_BY_KEY[row.key] ? (
