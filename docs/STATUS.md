@@ -22,6 +22,9 @@ Last updated: 2026-10-09
 ## 2026-10-09: Tekst under tallene i tal-hjulet
 
 - Alle rækker i tal-hjulet har nu den grå tekst under tallet (web `StatsWheel.tsx`, native `HomeStatsWheel.kt`): standardtal får deres navn (fx "Kalorier indtaget" på to linjer), eksempelrækkerne "Søvn"/"Puls". Egne målinger beholder deres egen tekst. Lint og native-paritet grønne; ikke visuelt testet.
+## 2026-10-09: Hello Doc-invitation — mindre overskrift
+
+- `/settings/hello-doc/invite` (web + `SettingsHelloDocInviteScreen.kt`): overskriften var 32 px (`hf-type-hero`) og beskrivelsen `body-lg`; nu standard sidetitel 22 px og brødtekst som på de andre sider. Paritet accepteret. Kotlin ikke kompileret lokalt; ikke visuelt prøvet.
 
 ## 2026-10-09: Børn kan ikke lukke konto eller melde sig ud
 
