@@ -114,6 +114,9 @@ model User {
   showAllergens      Boolean @default(false)
   allergenVisibility Json?
 
+  // Mærker på produktcirklen (2026-10-10, src/lib/circle-badges.ts): rækkefølge
+  // af blokke, hvilke blokke der er slået til og visningstilstand pr. allergen.
+  displayPrefs Json?
   // Personal setting (2026-10-09): which body measurements are shown on the
   // Kropsmål page (Indstillinger → Visning). Map from BodyMeasurementField to
   // boolean; null = all are shown.

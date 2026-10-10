@@ -3,13 +3,17 @@
 import { useEffect, useState } from "react";
 import { HfScreen } from "@/components/HfScreen";
 import { ALLERGEN_CATALOG } from "@/lib/allergens";
+import Link from "next/link";
 import { Toggle } from "@/components/ui/Toggle";
+import { BottomSheet } from "@/components/hf/BottomSheet";
+import { normalizeDisplayPrefs, type AllergenDisplayMode, type DisplayPrefs } from "@/lib/circle-badges";
 import { useTranslation } from "@/i18n/LocaleProvider";
 import { SkeletonScreen, SkeletonToggle } from "@/components/hf/Skeleton";
 
 type ResultsUser = {
   showAllergens: boolean;
   allergenVisibility: Record<string, boolean> | null;
+  displayPrefs?: unknown;
   showExtendedNutrition: boolean;
   showAdditives: boolean;
   showToxins: boolean;
@@ -29,6 +33,7 @@ export default function ResultsDisplayPage() {
   const { t } = useTranslation();
   const [user, setUser] = useState<ResultsUser | null>(null);
   const [loading, setLoading] = useState(true);
+  const [sheetAllergen, setSheetAllergen] = useState<string | null>(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -66,6 +71,17 @@ export default function ResultsDisplayPage() {
   function toggleProductFlag(key: "showAdditives" | "showToxins", value: boolean) {
     setUser((current) => (current ? { ...current, [key]: value } : current));
     patchProfile({ [key]: value });
+  }
+
+  const prefs = normalizeDisplayPrefs(user?.displayPrefs);
+
+  function savePrefs(next: DisplayPrefs) {
+    setUser((current) => (current ? { ...current, displayPrefs: next } : current));
+    patchProfile({ displayPrefs: next });
+  }
+
+  function setAllergenMode(key: string, mode: AllergenDisplayMode) {
+    savePrefs({ ...prefs, allergenMode: { ...prefs.allergenMode, [key]: mode } });
   }
 
   function toggleAllergen(key: string, value: boolean) {
@@ -120,16 +136,37 @@ export default function ResultsDisplayPage() {
                       index < ALLERGEN_CATALOG.length - 1 ? "border-b border-hf-tan-dark" : ""
                     }`}
                   >
-                    <span className="hf-type-body flex-1 text-hf-black">{allergen.label}</span>
-                    <Toggle
-                      checked={isAllergenVisible(allergen.key)}
-                      onChange={(value) => toggleAllergen(allergen.key, value)}
-                    />
+                    <button
+                      type="button"
+                      onClick={() => setSheetAllergen(allergen.key)}
+                      className="flex flex-1 items-center justify-between gap-3 text-left"
+                    >
+                      <span className="hf-type-body text-hf-black">{allergen.label}</span>
+                      <span className="text-text-secondary hf-type-small">
+                        {isAllergenVisible(allergen.key)
+                          ? t(`circleBadges.mode.${prefs.allergenMode[allergen.key] ?? "contains"}`)
+                          : t("circleBadges.mode.off")}
+                      </span>
+                    </button>
                   </div>
                 ))}
               </div>
             )}
           </div>
+
+          {(["sugar", "diets", "flags", "vegan"] as const).map((block) => (
+            <Toggle
+              key={block}
+              label={t(`circleBadges.blocks.${block}`)}
+              description={t(`circleBadges.blockDescription.${block}`)}
+              checked={prefs[block]}
+              onChange={(value) => savePrefs({ ...prefs, [block]: value })}
+            />
+          ))}
+
+          <Link href="/settings/display/priority" className="hf-type-body hf-type-strong px-1 text-hf-green underline">
+            {t("circleBadges.priorityTitle")}
+          </Link>
 
           <Toggle
             label={t("settings.showExtendedNutrition")}
@@ -156,6 +193,35 @@ export default function ResultsDisplayPage() {
             {t("settings.thirdPartyDisclaimer")}
           </p>
         </div>
+      )}
+      {sheetAllergen && user && (
+        <BottomSheet onClose={() => setSheetAllergen(null)} title={ALLERGEN_CATALOG.find((a) => a.key === sheetAllergen)?.label}>
+          <div className="flex flex-col gap-3 px-4 pb-6">
+            <Toggle
+              label={isAllergenVisible(sheetAllergen) ? t("circleBadges.sheet.deactivate") : t("circleBadges.sheet.activate")}
+              checked={isAllergenVisible(sheetAllergen)}
+              onChange={(value) => toggleAllergen(sheetAllergen, value)}
+            />
+            {isAllergenVisible(sheetAllergen) && (
+              <div className="flex flex-col overflow-hidden rounded-2xl bg-hf-tan">
+                {((["gluten", "milk"].includes(sheetAllergen) ? ["contains", "free", "both"] : ["contains"]) as AllergenDisplayMode[]).map(
+                  (mode) => (
+                    <button
+                      key={mode}
+                      type="button"
+                      onClick={() => setAllergenMode(sheetAllergen, mode)}
+                      aria-pressed={(prefs.allergenMode[sheetAllergen] ?? "contains") === mode}
+                      className="hf-type-body flex items-center justify-between border-b border-hf-tan-dark px-4 py-3 text-left text-hf-black last:border-b-0"
+                    >
+                      {t(`circleBadges.mode.${mode}`)}
+                      {(prefs.allergenMode[sheetAllergen] ?? "contains") === mode && <span aria-hidden="true">✓</span>}
+                    </button>
+                  ),
+                )}
+              </div>
+            )}
+          </div>
+        </BottomSheet>
       )}
     </HfScreen>
   );

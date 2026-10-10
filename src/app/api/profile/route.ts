@@ -10,6 +10,8 @@ import { GOAL_MODES, type GoalMode } from "@/lib/energy-budget";
 import { validatePhone } from "@/lib/phone";
 import { isValidHeightCm } from "@/lib/height";
 import type { Locale } from "@/i18n";
+import type { Prisma } from "@prisma/client";
+import { normalizeDisplayPrefs } from "@/lib/circle-badges";
 import { parseRecipeProviders } from "@/lib/meal-kit-providers";
 
 export async function GET() {
@@ -63,6 +65,7 @@ export async function PATCH(req: Request) {
     onboardingDismissed,
     showAllergens,
     allergenVisibility,
+    displayPrefs,
     bodyMeasurementVisibility,
     showExtendedNutrition,
     showAdditives,
@@ -103,6 +106,7 @@ export async function PATCH(req: Request) {
     onboardingDismissed?: boolean;
     showAllergens?: boolean;
     allergenVisibility?: Record<string, boolean>;
+    displayPrefs?: unknown;
     bodyMeasurementVisibility?: Record<string, boolean>;
     showExtendedNutrition?: boolean;
     showAdditives?: boolean;
@@ -222,6 +226,7 @@ export async function PATCH(req: Request) {
         onboardingDismissed,
         showAllergens,
         allergenVisibility,
+        displayPrefs: displayPrefs === undefined ? undefined : (normalizeDisplayPrefs(displayPrefs) as Prisma.InputJsonValue),
         bodyMeasurementVisibility,
         showExtendedNutrition,
         showAdditives,

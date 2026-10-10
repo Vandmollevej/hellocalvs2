@@ -64,6 +64,16 @@ Ejer: session "Native app" (e4e4d388), 2026-10-08. Fortsæt fra `native/README.m
 
 ---
 
+## G-CIRKEL — Mærker på produktcirklen (2026-10-10)
+Filer: `src/lib/circle-badges.ts`, `src/components/hf/ProductCircleBadges.tsx`, `src/components/hf/SortableList.tsx`, `src/app/settings/display/priority/**`.
+Ejer: cloud-session på branch `claude/certificates-icons-layout-8fnzpi`.
+
+| Id | Opgave | Status | Næste skridt |
+| --- | --- | --- | --- |
+| cirkel-maerker | Web færdig (se STATUS 2026-10-10) | Færdig (web) | Port til native: `AddProductScreen.kt`/`RegistrationScreens.kt` (badge-kolonner), `SettingsSetupScreens.kt` (allergen-bundark + blok-til/fra), `SettingsDisplayScreens.kt` + ny skærm for `/settings/display/priority` (træk-og-slip), derefter `parity.mjs --accept`. Paritet er accepteret uden port |
+
+---
+
 ## G-NAVNE — Stavning, Nøgleord-punkt, Integrationer-navn (2026-10-07)
 Filer: se commit. Ejer: session "Varer/Integrationer-navne", 2026-10-07.
 

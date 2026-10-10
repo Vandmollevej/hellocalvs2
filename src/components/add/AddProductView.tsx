@@ -31,8 +31,15 @@ import { ForwardButton } from "@/components/ForwardButton";
 import { appendDishDraftIngredient } from "@/lib/dish-draft";
 import { selectRawContextImageUrl } from "@/lib/image-tags";
 import { MacroSliderBar } from "@/components/hf/MacroSliderBar";
-import { CertificationLogos } from "@/components/hf/CertificationLogos";
-import { certificationBadges, type CertificationFilters, type ProductLabelView } from "@/lib/certification-badges";
+import { ProductCircleBadges } from "@/components/hf/ProductCircleBadges";
+import {
+  certificationBadges,
+  type CertificationFilters,
+  type CertificationKind,
+  type ProductLabelView,
+} from "@/lib/certification-badges";
+
+const ORGANIC_KINDS = new Set<CertificationKind>(["organic", "euOrganic", "bioGermany", "landbau", "bioland"]);
 import { AdditiveInfoModal } from "@/components/hf/AdditiveInfoModal";
 import { getAdditiveInfo, splitENumbers } from "@/lib/additives";
 import { IngredientsText } from "@/components/hf/IngredientsText";
@@ -60,7 +67,8 @@ import { UncertaintyTilde } from "@/components/ui/UncertaintyTilde";
 import { UncertaintyLine } from "@/components/ui/UncertaintyLine";
 import { extractCertifications } from "@/lib/product-certifications";
 import { splitProductHeading } from "@/lib/product-naming";
-import { CertificationLogo } from "@/components/hf/CertificationLogo";
+import { activeBlocks, buildTopBadges, normalizeDisplayPrefs, type BadgeFilters } from "@/lib/circle-badges";
+import { ALLERGEN_CATALOG } from "@/lib/allergens";
 import { Skeleton } from "@/components/hf/Skeleton";
 import { HandSizePicker } from "@/components/hf/HandSizePicker";
 import { findHandSizeItem, mediumHandSizeGrams } from "@/lib/hand-sizes";
@@ -201,6 +209,7 @@ type ProfileUser = {
   id: string;
   showAllergens: boolean;
   allergenVisibility: Record<string, boolean> | null;
+  displayPrefs?: unknown;
   showExtendedNutrition: boolean;
   // Indstillinger → Visning → Usikkerhed: fold de grå linjer ud automatisk.
   autoExpandUncertainty?: boolean;
@@ -636,6 +645,45 @@ export function AddProductView({
     [product, profile?.showToxins]
   );
 
+  const displayPrefs = useMemo(() => normalizeDisplayPrefs(profile?.displayPrefs), [profile?.displayPrefs]);
+
+  // Øverste ikoner (advarsler/kost) i brugerens prioritering — se src/lib/circle-badges.ts.
+  const topBadges = useMemo(() => {
+    if (!product || !profile) return [];
+    const blocks = activeBlocks(displayPrefs, {
+      showAllergens: profile.showAllergens,
+      showAdditives: profile.showAdditives,
+    });
+    const hiddenAllergens = new Set(
+      ALLERGEN_CATALOG.map((a) => a.key).filter((key) => profile.allergenVisibility?.[key] === false),
+    );
+    return buildTopBadges({
+      blocks,
+      prefs: displayPrefs,
+      allergens: product.allergens ?? [],
+      hiddenAllergens,
+      additives: product.additives ?? [],
+      filters: product.filters as BadgeFilters | null | undefined,
+      sugarPer100g: product.nutrients?.find((n) => n.key === "sugar")?.per100g ?? null,
+      kcalPer100g: product.kcalPer100g ?? null,
+      proteinPer100g: product.proteinPer100g ?? null,
+      text: {
+        allergen: (key) => t(`filters.allergens.${key}`),
+        contains: (name) => t("circleBadges.contains", { name }),
+        free: (name) => t("circleBadges.free", { name }),
+        sugar: (grams) => t("circleBadges.sugar", { grams: Math.round(grams * 10) / 10 }),
+        additives: (count) => t("circleBadges.additives", { count }),
+        highProtein: t("circleBadges.highProtein"),
+        lowSugar: t("circleBadges.lowSugar"),
+        noAddedSugar: t("circleBadges.noAddedSugar"),
+        alcohol: t("circleBadges.alcohol"),
+        sugarFree: t("circleBadges.sugarFree"),
+        vegetarian: t("circleBadges.vegetarian"),
+        vegan: t("circleBadges.vegan"),
+      },
+    });
+  }, [product, profile, displayPrefs, t]);
+
   function toggleUncertainty(key: string) {
     setUncertaintyToggled((current) => {
       const next = new Set(current);
@@ -737,6 +785,24 @@ export function AddProductView({
     state.status === "loaded" ? splitProductHeading(state.product) : { title: "", variants: [] as string[] };
   const { title: productTitle, certifications } =
     state.status === "loaded" ? extractCertifications(heading.title) : { title: "", certifications: [] };
+  // Certifikater på cirklen: økologi altid nederst, de øvrige ovenover.
+  const circleCertificates = (() => {
+    if (state.status !== "loaded") return [];
+    const badges = certificationBadges(state.product.filters, state.product.labels);
+    const fromName: Record<string, { kind: CertificationKind; label: string }> = {
+      organic: { kind: "organic", label: "Økologisk" },
+      keyhole: { kind: "keyhole", label: "Nøglehulsmærket" },
+      fairtrade: { kind: "fairtrade", label: "Fairtrade" },
+      msc: { kind: "msc", label: "MSC" },
+    };
+    for (const key of certifications) {
+      const extra = fromName[key];
+      if (extra && !badges.some((b) => b.kind === extra.kind || (key === "organic" && ORGANIC_KINDS.has(b.kind)))) {
+        badges.push(extra);
+      }
+    }
+    return [...badges.filter((b) => !ORGANIC_KINDS.has(b.kind)), ...badges.filter((b) => ORGANIC_KINDS.has(b.kind))];
+  })();
   const isCutoutImage = Boolean(displayImageUrl && displayImageUrl.includes("/cutouts/"));
   // Siden tegnes med en tom vare, mens den rigtige hentes.
   const view = state.status === "loaded" ? state.product : isLoading ? LOADING_PRODUCT : null;
@@ -846,7 +912,8 @@ export function AddProductView({
                   og 62 px under appbaren (16 + 46), 33 px fra
                   cirklen til titlen, titel + grøn linje er én tekstblok uden
                   mellemrum, 14 px videre til næste blok (20 px ink-til-ink som HF). */}
-              <div className="flex flex-col items-start gap-[33px] pt-[46px] text-left">
+              <div className="relative flex flex-col items-start gap-[33px] pt-[46px] text-left">
+                <ProductCircleBadges topBadges={topBadges} certificates={circleCertificates} />
                 <div className="relative self-center h-[180px] w-[180px] min-h-[180px] min-w-[180px] max-h-[180px] max-w-[180px] shrink-0 overflow-visible">
                   <div className="flex h-[180px] w-[180px] min-h-[180px] min-w-[180px] items-center justify-center overflow-hidden rounded-full bg-hf-tan">
                     {displayImageUrl && !isCutoutImage ? (
@@ -943,15 +1010,6 @@ export function AddProductView({
                         {subbrand}
                       </p>
                     ))}
-                  {/* Certificeringslogoer (Øko m.fl.) på produktcirklen; uden
-                      certificering vises intet logo (docs/DECISIONS.md 2026-09-28). */}
-                  {certifications.length > 0 && (
-                    <div className="pointer-events-none absolute bottom-2 left-0 z-10 flex gap-1">
-                      {certifications.map((certification) => (
-                        <CertificationLogo key={certification} certification={certification} />
-                      ))}
-                    </div>
-                  )}
                 </div>
                 <div className="flex w-full flex-col items-start">
                 {isPending("name") ? (
@@ -1258,7 +1316,6 @@ export function AddProductView({
                   />
                 </div>
                 )}
-                <CertificationLogos badges={certificationBadges(view.filters, view.labels)} className="mt-4" />
               </div>
 
               {/* Toksiner (G11): kendte stoffer ud fra navn + indholdsfortegnelse,

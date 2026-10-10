@@ -8,6 +8,7 @@ import {
   IconMoon,
   IconCalendarHeart,
   IconBulb,
+  IconArrowsSort,
   IconRuler,
 } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
@@ -40,6 +41,12 @@ export default function DisplaySettingsIndexPage() {
     <HfScreen title={t("settings.display")}>
       <div className="hf-page">
         <AccordionCard>
+          <ChevronRow
+            icon={<IconArrowsSort size={20} />}
+            label={t("circleBadges.priorityTitle")}
+            href="/settings/display/priority"
+            divider
+          />
           <ChevronRow
             icon={<IconHome2 size={20} />}
             label={t("settings.frontPage")}

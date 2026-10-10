@@ -4977,6 +4977,10 @@ Brugerens ord: pulsen skal gå normal hastighed igen (65 bpm), sporet må ikke b
 ## 2026-10-09 — Hello Doc: udløbsdato vælges med datepicker (ingen fast 14 dage)
 
 Ejeren vælger selv adgangens udløb med en datepicker i Hello Doc-editoren (web + native), med valget "Intet udløb". `DoctorShare.expiresAt` er den valgte dato (til og med den dag) eller `null` = intet udløb. Den faste 14-dages frist er fjernet; udløb gælder både ventende og aktive delinger. "Forny adgang" åbner uden udløbsdato.
+
+## 2026-10-10 — Mærker på produktcirklen: prioritering og pladsfordeling
+
+Certifikater står nederst til venstre (økologi nederst), advarsels-/kostikoner øverst. De øverste har altid førsteret: rækken rykker op til den grønne bjælke og æder derefter certifikaterne én ad gangen, økologi sidst. Standardrækkefølge sukker → allergener → E-numre → kosthensyn → mærker → vegansk; brugeren kan trække alt frit og kun aktiverede blokke vises. Allergen-visning er Indeholder / Indeholder ikke / Begge — "indeholder ikke" kun hvor varen har en fri-for-påstand. Gemt i `User.displayPrefs`.
 ## 2026-10-09: AI-opsætning af opskrifter (koblet på 2026-10-10)
 
 - Indsæt tekst og Scan opskrift skal lade AI sætte opskriften op: ingredienser (rent varenavn + gram), trin og hvilket sidebillede der hører til hvilket trin. Den regelbaserede `recipe-text-parser` kan ikke dele fri tekst pålideligt op.

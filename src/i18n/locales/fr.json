@@ -3589,6 +3589,48 @@
       "STEPPER": "Plus et moins"
     }
   },
+  "circleBadges": {
+    "priorityTitle": "Display priority",
+    "priorityIntro": "Drag the blocks up and down. The top one has the highest priority and is shown first on the product circle; certificates make room.",
+    "priorityEmpty": "Turn on displays under Result display to prioritise them here.",
+    "priorityDrag": "Drag to reorder",
+    "priorityReset": "Reset order",
+    "blocks": {
+      "sugar": "Sugar content",
+      "allergens": "Allergens",
+      "additives": "E-numbers",
+      "diets": "Dietary needs",
+      "flags": "Labels (alcohol, sugar free etc.)",
+      "vegan": "Vegan"
+    },
+    "blockDescription": {
+      "sugar": "Shows sugar per 100 g on the product circle, e.g. for diabetes.",
+      "diets": "Dietary needs such as high in protein and low sugar.",
+      "flags": "Labels such as contains alcohol, sugar free and vegetarian.",
+      "vegan": "Shows when the product is vegan."
+    },
+    "mode": {
+      "contains": "Contains",
+      "free": "Does not contain",
+      "both": "Both",
+      "off": "Deactivated"
+    },
+    "sheet": {
+      "activate": "Activate",
+      "deactivate": "Deactivate"
+    },
+    "contains": "Contains {name}",
+    "free": "{name} free",
+    "sugar": "Sugar: {grams} g per 100 g",
+    "additives": "{count} E-numbers",
+    "highProtein": "High in protein",
+    "lowSugar": "Low sugar",
+    "noAddedSugar": "No added sugar",
+    "alcohol": "Contains alcohol",
+    "sugarFree": "Sugar free",
+    "vegetarian": "Vegetarian",
+    "vegan": "Vegan"
+  },
   "forwardRecipe": {
     "title": "Send to a friend",
     "hint": "Send “{name}” as an encrypted link.",

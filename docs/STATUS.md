@@ -2,6 +2,14 @@
 
 Last updated: 2026-10-10
 
+## 2026-10-10: Mærker på produktcirklen + prioritering af visning
+
+- Venstre side af produktcirklen (`ProductCircleBadges`, `src/lib/circle-badges.ts`): certifikater nederst flugtende med cirklens bund (økologi altid nederst, øvrige ovenover), advarsels-/kostikoner øverst flugtende med cirklens top. Øverste række rykker op til den grønne bjælke (46 px) og æder derefter certifikaterne én ad gangen — økologi sidst. Den gamle certifikatliste under energifordelingen og navne-overlayet på cirklen er erstattet.
+- Ny **Visning → Prioritering af visning** (`/settings/display/priority`, første punkt) med træk-og-slip (`SortableList`). Kun slåede-til blokke vises. Standard: sukker → allergener → E-numre → kosthensyn → mærker → vegansk. Alt kan flyttes frit.
+- **Resultatvisning:** nye til/fra for sukker, kosthensyn, mærker og vegansk. Allergen-rækker åbner et bundark med Aktivér/Deaktivér og Indeholder / Indeholder ikke / Begge dele ("indeholder ikke" kun for gluten (glutenfri) og mælk (laktosefri), der har fri-for-påstand i `ProductFilters`).
+- DB: `User.displayPrefs` (JSON, migration `20261011000000_user_display_prefs`) — skal med deployet. Tekster ligger i `circleBadges` (da/en; øvrige sprog har engelsk indtil oversat).
+- **Ikke gjort:** native-skærmene er ikke porteret (Kotlin kan ikke kompileres her); paritet er accepteret og gælden står i OPEN-TASKS (`cirkel-maerker`). Ikke prøvet i browser/mod rigtig database. Ikoner for is_*-mærker er midlertidige Tabler-ikoner; kosthensyn "høj på protein" udledes af ≥ 20 % energi fra protein.
+
 ## 2026-10-10: Kalender — dagsvisningens timer følger klokken
 
 - Åbner man en dag, vises morgen+nat om morgenen, morgen+aften midt på dagen og aften+nat (bunden) om aftenen. Erstatter den gamle "stå-op-tid / nu ±2 timer"-logik og besøgs-cookien. Web + native. Se REGLER → UI. Tjekket: eslint, tsc, paritet; ikke prøvet på enhed.

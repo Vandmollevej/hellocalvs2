@@ -1490,6 +1490,12 @@
       ]
     },
     {
+      "route": "/settings/display/priority",
+      "web": "src/app/settings/display/priority/page.tsx",
+      "status": "pending",
+      "native": []
+    },
+    {
       "route": "/settings/display/sleep-quality",
       "web": "src/app/settings/display/sleep-quality/page.tsx",
       "status": "ported",
