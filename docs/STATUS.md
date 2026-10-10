@@ -2,6 +2,14 @@
 
 Last updated: 2026-10-10
 
+## 2026-10-10: Søgemotor (Meilisearch) og Analyse → Søgning i admin
+
+- Søgningen kører nu på Meilisearch: stavefejl ("nescfe gold", "rugbrd", "mælj"), sammensatte ord begge veje, varetype/mærke/variant med, præfiks mens man skriver og synonymer. Postgres-søgningen er reserve, hvis motoren ikke svarer. Robotten "Søgemotor: opdater indeks" holder indekset ajour hvert 5. minut. Se DECISIONS og DEPLOYMENT 2026-10-10.
+- Admin → Analyse → Søgning: alle søgninger (periode, land, sortering), raffinerede søgninger (søgte på A, så på B, fandt det bagefter?) og søgninger uden resultat med filteret "Kun rene fejl" (stavefejl og meningsløse sorteret fra af regler + natlig AI-vurdering, knappen "Vurdér nye søgninger nu").
+- Migration `20261010210000_search_events` og ny container `meilisearch` skal med deployet (begge håndteres af `build.yml`).
+- Samtidig rettet: de to røde tests på master (admin-genveje: genveje til Søgning, Synonymordbog, Dyrefoder-filter, Vejning: tøj; sidetræet: 55 manglende sider).
+- Tjekket: tsc, eslint, `npm test` (315/315 grønne), paritet, build. Lokalt mod Meilisearch v1.53.2 + Postgres 16 med de 2.830 REMA-/butiksvarer fra repoet: søgninger, indekssynk (2.830 varer på 5 s; anden kørsel 0 ændringer), statistik, raffinering, klik og admin-siden. AI-vurderingen er ikke prøvet (ingen OpenAI-nøgle lokalt), og intet er prøvet mod produktionsdata.
+
 ## 2026-10-10: Søgning — "Nescafé instant kaffe" og "instantkaffe" finder Nescafé
 
 - Årsag: butiksvarerne hedder fx "Gold" (mærke Nescafé, varetype "Instant kaffe"), og søgningen læste kun navn og mærke; "instantkaffe" i ét ord matchede heller ikke "Instant Kaffe". Nu læses varetype, serie, variant, smag og søgeord med, og sammensatte ord matcher. Gælder web og native (samme API). Se DECISIONS 2026-10-10.

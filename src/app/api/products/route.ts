@@ -21,6 +21,9 @@ import { recordPetFoodAttempt } from "@/lib/pet-food-strikes";
 import { saveDataUrlImage } from "@/lib/qc-image-storage";
 import { accentInsensitiveProductIds, correctedQuery } from "@/lib/search-correction";
 import { productDetailsText } from "@/lib/search-text-match";
+import { searchProductIndex, type MeiliHit } from "@/lib/search-engine/meili";
+import { cachedSearch, storeSearch } from "@/lib/search-engine/search-cache";
+import { recordSearchEvent } from "@/lib/search-analytics";
 
 // GET /api/products?q=rugbrød — search in our own product database only. Results are ranked by src/lib/product-search-ranking.ts: text match
 // is always dominant, and hidden regional search/click/hour-of-day statistics
@@ -60,7 +63,9 @@ export async function GET(req: Request) {
   }
 
   try {
-    let products = await searchProducts({ q, source, take, localHour });
+    const first = await searchProducts({ q, source, take, localHour });
+    let products = first.products;
+    let fullMatchCount = first.fullMatchCount;
 
     // "Mente du …?" (docs/DECISIONS.md 2026-10-10): ingen hits → søg på den
     // rettede tekst og sig til, hvad der blev rettet; 1-2 hits → foreslå
@@ -71,15 +76,30 @@ export async function GET(req: Request) {
       const fixed = await correctedQuery(q);
       if (fixed && fixed.toLowerCase() !== q.toLowerCase()) {
         if (products.length === 0) {
-          const fixedProducts = await searchProducts({ q: fixed, source, take, localHour });
-          if (fixedProducts.length > 0) {
-            products = fixedProducts;
+          const fixedResult = await searchProducts({ q: fixed, source, take, localHour });
+          if (fixedResult.products.length > 0) {
+            products = fixedResult.products;
             searchedQuery = fixed;
           }
         } else {
           suggestedQuery = fixed;
         }
       }
+    }
+
+    // Søgestatistik (admin → Analyse → Søgning). En rettet søgning viser
+    // resultater, men selve søgeteksten gav intet fuldt match.
+    if (q && !source) {
+      if (searchedQuery) fullMatchCount = 0;
+      void recordSearchEvent(req, {
+        userId: first.userId,
+        query: q,
+        region: first.region,
+        resultCount: products.length,
+        fullMatchCount,
+        engine: first.engine,
+        correctedQuery: searchedQuery,
+      });
     }
 
     return NextResponse.json({
@@ -114,13 +134,35 @@ async function searchProducts({
   // low-popularity-but-exact match further down createdAt-order must still
   // be able to surface once ranked.
   const synonyms = q && !source ? await getSynonymExpansions(q) : [];
+  const candidateTake = q ? Math.max(take * 6, 80) : take;
+  // Søgemotoren (Meilisearch, docs/DECISIONS.md 2026-10-10) finder kandidaterne
+  // med stavefejl, sammensatte ord, præfiks og vægtede felter. Svarer den ikke,
+  // bruges Postgres-søgningen nedenfor som reserve.
+  const engine = q && !source ? await engineCandidates(q, candidateTake) : null;
   // Accent-ufølsomt match ("Nescafé" finder "Nescafe") og sammensatte ord
   // ("instantkaffe" finder "Instant Kaffe") på tværs af navn, mærke, varetype,
   // serie, variant, smag og søgeord: Prismas contains kan ingen af delene, så
   // id'erne hentes med hc_search_norm() og lægges til nedenfor.
-  const accentIds = q && !source ? await accentInsensitiveProductIds(q) : [];
-  const candidateTake = q ? Math.max(take * 6, 80) : take;
+  const accentIds = q && !source && !engine ? await accentInsensitiveProductIds(q) : [];
   const queryWords = q.split(/\s+/).filter((word) => word.length >= 2).slice(0, 6);
+  const sourceFilter: Prisma.ProductWhereInput = source
+    ? { externalSource: source }
+    : {
+        OR: [
+          { externalSource: null },
+          { externalSource: { notIn: ["HELLOFRESH", "OPEN_FOOD_FACTS"] } },
+        ],
+      };
+  // Synlighed uden tekstfilter — gælder også søgemotorens træffere, hvis
+  // indekset endnu ikke har nået en ændring.
+  const visibleWhere: Prisma.ProductWhereInput = {
+    discontinued: false,
+    privateOwnerId: null,
+    AND: [
+      { NOT: { aiAnalyses: { some: { reviewedAt: null, confidence: { lt: HIDE_FROM_SEARCH_BELOW } } } } },
+      sourceFilter,
+    ],
+  };
   const where: Prisma.ProductWhereInput = {
     discontinued: false,
     // Varer uden kalorietal vises i søgningen (docs/DECISIONS.md 2026-10-10,
@@ -187,20 +229,13 @@ async function searchProducts({
             } satisfies Prisma.ProductWhereInput,
           ]
         : []),
-      source
-        ? { externalSource: source }
-        : {
-            OR: [
-              { externalSource: null },
-              { externalSource: { notIn: ["HELLOFRESH", "OPEN_FOOD_FACTS"] } },
-            ],
-          },
+      sourceFilter,
     ],
   };
   // ids: kandidatpuljen, valgt efter tekstmatch (candidateIdsByTextMatch).
   const findProducts = (ids?: string[]) =>
     prisma.product.findMany({
-      where: ids ? { id: { in: ids } } : where,
+      where: ids ? { AND: [visibleWhere, { id: { in: ids } }] } : where,
       include: {
         // Altid samme include-form (ikke betinget på q/source), så Prisma's
         // udledte returtype er ét fast skema — undgår en union-type der
@@ -221,12 +256,16 @@ async function searchProducts({
     });
 
   let products = await findProducts(
-    q && !source ? await candidateIdsByTextMatch(where, q, synonyms, candidateTake) : undefined
+    engine
+      ? engine.hits.map((hit) => hit.id)
+      : q && !source
+        ? await candidateIdsByTextMatch(where, q, synonyms, candidateTake)
+        : undefined
   );
+  const sessionUser = q && !source ? await getSessionUser() : null;
+  const user = { region: sessionUser?.region ?? "DK" };
 
   if (q && !source) {
-    const sessionUser = await getSessionUser();
-    const user = { region: sessionUser?.region ?? "DK" };
     const weights = await getActiveSearchRankingWeights();
 
     // Personlig historik (2026-09-19, se docs/DECISIONS.md) — kun for en
@@ -251,7 +290,12 @@ async function searchProducts({
       entityBias: -1, // "Generiske ingredienser vs. varer" — et rigtigt Product
     }));
 
-    const ranked = rankProducts(rankable, q, user.region, localHour, take, weights, synonyms);
+    // Søgemotorens relevans tæller som tekstmatch, så en stavefejl eller et
+    // sammensat ord, den har fundet, ikke filtreres fra af rangeringen. Dens
+    // score er relativ (en stavefejl kan give 0,08), så den lægges i 0,55-1:
+    // altid over minimumsmatchet, men en svag træffer under et præcist navn.
+    const engineScores = engine ? new Map(engine.hits.map((hit) => [hit.id, 0.55 + 0.45 * hit.score])) : undefined;
+    const ranked = rankProducts(rankable, q, user.region, localHour, take, weights, synonyms, engineScores);
     products = ranked.map((entry) => entry.product);
     // "Søgninger uden resultat" i admin-statistikken (/admin/statistics).
     if (products.length === 0 && q.length >= 3) {
@@ -364,7 +408,26 @@ async function searchProducts({
     return { ...publicProduct, name: matchesPlural ? (publicProduct.namePlural as string) : publicProduct.name, brand };
   });
 
-  return publicProducts;
+  return {
+    products: publicProducts,
+    // Postgres-søgningen kræver tekstmatch i forvejen; søgemotoren kan svare
+    // med de nærmeste, når ikke alle ord findes (matchingStrategy "last").
+    fullMatchCount: engine && !engine.fullMatch ? 0 : publicProducts.length,
+    engine: (engine ? "meilisearch" : "postgres") as "meilisearch" | "postgres",
+    userId: sessionUser?.id ?? null,
+    region: user.region,
+  };
+}
+
+// Søgemotorens kandidater, cachet kort (src/lib/search-engine/search-cache.ts).
+// null = søgemotoren er ikke sat op eller svarede ikke → Postgres.
+async function engineCandidates(q: string, limit: number) {
+  const key = `${q.toLocaleLowerCase("da")}|${limit}`;
+  const cached = cachedSearch<{ hits: MeiliHit[]; fullMatch: boolean }>(key);
+  if (cached) return cached;
+  const result = await searchProductIndex(q, limit);
+  if (result) storeSearch(key, result);
+  return result;
 }
 
 // Kandidatpuljen vælges efter tekstmatch, ikke blot de nyeste (docs/DECISIONS.md

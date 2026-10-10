@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import {
   COUNTRY_OPTIONS,
   REGION_GROUPS,
@@ -15,9 +15,24 @@ import {
 // Knapper: hvide med sort kant (hf-btn-secondary), valgt = sort (hf-btn-primary).
 const btn = (active: boolean) => `${active ? "hf-btn-primary" : "hf-btn-secondary"} h-10 px-3 !text-sm`;
 
-export function StatsFilters({ filter, fromDay, toDay }: { filter: StatsFilterInput; fromDay: string; toDay: string }) {
+// hideTier: uden abonnementsfilter (fx Analyse → Søgning, hvor søgningerne er
+// anonyme). keep: sidens egne URL-parametre (fane, sortering), som bevares.
+export function StatsFilters({
+  filter,
+  fromDay,
+  toDay,
+  hideTier = false,
+  keep = [],
+}: {
+  filter: StatsFilterInput;
+  fromDay: string;
+  toDay: string;
+  hideTier?: boolean;
+  keep?: string[];
+}) {
   const router = useRouter();
   const pathname = usePathname();
+  const currentParams = useSearchParams();
   const [from, setFrom] = useState(filter.from ?? fromDay);
   const [to, setTo] = useState(filter.to ?? toDay);
   const regionOptions = [{ value: "all", label: "Alle" }, ...REGION_GROUPS, ...COUNTRY_OPTIONS];
@@ -27,6 +42,10 @@ export function StatsFilters({ filter, fromDay, toDay }: { filter: StatsFilterIn
   function apply(next: Partial<StatsFilterInput>) {
     const merged = { ...filter, ...next };
     const params = new URLSearchParams();
+    for (const key of keep) {
+      const value = currentParams.get(key);
+      if (value) params.set(key, value);
+    }
     if (merged.preset !== "month") params.set("preset", merged.preset);
     if (merged.preset === "custom") {
       params.set("from", merged.from ?? from);
@@ -99,21 +118,23 @@ export function StatsFilters({ filter, fromDay, toDay }: { filter: StatsFilterIn
             ))}
           </datalist>
         </label>
-        <div className="flex flex-col gap-1 text-text-secondary">
-          Abonnement
-          <div className="flex flex-wrap gap-1.5">
-            {STATS_TIERS.map((tier) => (
-              <button
-                key={tier.value}
-                type="button"
-                onClick={() => apply({ tier: tier.value })}
-                className={btn(filter.tier === tier.value)}
-              >
-                {tier.label}
-              </button>
-            ))}
+        {!hideTier && (
+          <div className="flex flex-col gap-1 text-text-secondary">
+            Abonnement
+            <div className="flex flex-wrap gap-1.5">
+              {STATS_TIERS.map((tier) => (
+                <button
+                  key={tier.value}
+                  type="button"
+                  onClick={() => apply({ tier: tier.value })}
+                  className={btn(filter.tier === tier.value)}
+                >
+                  {tier.label}
+                </button>
+              ))}
+            </div>
           </div>
-        </div>
+        )}
       </div>
     </div>
   );

@@ -145,6 +145,7 @@ ikke her, er den ikke registreret og skal tilføjes.
 
 - Admin-lister: til/fra-knappen (Toggle) står ALTID yderst til højre, aldrig tick-bokse, og "Rediger" står til venstre for knapperne. Event-koder (fx SUPPORT_RECEIVED) vises aldrig for admin — kun danske navne, grupperet med overskrifter og filtre (Besked automatisering, 2026-10-09).
 - **Søgning viser alt og retter sig selv (2026-10-10)**: ingen varer skjules for manglende kalorietal; accenter ignoreres; 0 hits → "Viser resultater for X · Søg i stedet efter Y", 1-2 hits → "Mente du X?". Se DECISIONS 2026-10-10.
+- **Søgemotor (2026-10-10)**: søgningen kører på Meilisearch; databasen er kilden, og robotten "search-index" synker hvert 5. min. Nye søgbare felter skal med i `src/lib/search-engine/product-index.ts`. Postgres er reserve. Søgestatistik ligger i admin → Analyse → Søgning. Se DECISIONS 2026-10-10.
 - **Søgning læser alle varens tekstfelter (2026-10-10)**: navn, flertalsnavn, mærke, serie, varetype, variant, smag og søgeord; sammensatte ord matcher i ét eller flere ord ("instantkaffe" = "instant kaffe"). Se DECISIONS 2026-10-10.
 - **Søgeregel (global, 2026-10-09)**: søger brugeren i flertal, vises Product title plural (`namePlural`); i ental vises Product title singular (`name`). Se docs/FRIDA.md.
 - Bilka/REMA ental/flertal + DB-kolonnenavne: se Excelark/NAVNEREGLER.md (status 2026-10-09: _ny-ark lavet, ikke gennemgået).

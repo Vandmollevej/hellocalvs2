@@ -535,7 +535,14 @@ export const PAGE_TREE: PageArea[] = [
             path: "/admin/statistics",
             label: "Statistik",
             note: "Dashboards med filtre; fanen Trafik (?view=traffic) er besøgsstatistik fra Umami",
-            children: [{ path: "/admin/analytics", label: "Analyse", note: "Gammel adresse — sender videre til Statistik: Trafik" }],
+            children: [
+              { path: "/admin/analytics", label: "Analyse", note: "Gammel adresse — sender videre til Statistik: Trafik" },
+              {
+                path: "/admin/statistics/search",
+                label: "Søgning",
+                note: "Søgestatistik: alle søgninger, raffinerede søgninger og søgninger uden resultat (rene fejl)",
+              },
+            ],
           },
           { path: "/admin/jobs", label: "Jobs", note: "Jobs sat op af AI-agenter (åbne/afsluttede)" },
           { path: "/admin/agents", label: "Agenter", note: "AI-agenter med MCP-adgang" },

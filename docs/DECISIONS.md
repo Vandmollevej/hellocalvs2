@@ -2,6 +2,17 @@
 
 This file records durable decisions. Add a dated entry when a later decision changes one of them.
 
+## 2026-10-10: Søgemotor (Meilisearch) og søgestatistik i admin
+
+Ejeren: søgningen skal være "perfekt dynamisk", ikke lappeløsninger, og admin skal kunne se alle søgninger, raffinerede søgninger og rene fejl. **Afløser** valget "Postgres (ingen Meilisearch)" fra samme dag. Ejeren overlod valget af motor til Claude.
+
+- **Motor:** Meilisearch (`getmeili/meilisearch`, fast version i `compose.production.yaml`) som egen container på `backend`-netværket. Valgt frem for Elasticsearch (Java, 1-2 GB RAM på NAS'en) og frem for flere lag hjemmebygget Postgres-logik. Meilisearch giver stavefejl, præfiks mens man skriver, sammensatte ord i begge retninger ("instantkaffe" ↔ "instant kaffe"), vægtede felter og synonymer.
+- **Databasen er kilden.** Robotten `search-index` (app-job hvert 5. min., admin → Robotter) sammenligner hver søgbar vare med indekset via en hash på dokumentet og sender kun ændringer/sletninger. Søgbare felter i vægtorden: navn, flertalsnavn, mærke, serie, varetype, variant, smag, søgeord, sukkerpåstande og ordendelser. Ordendelserne (endelser på ≥ 3 bogstaver af ord på ≥ 5, uden stavefejl) gør sidste led i sammensatte ord søgbart: "mælk" finder "Letmælk"/"Sødmælk", "brød" "Rugbrød". Rangeringsregel `exactness` før `attribute`, så et helt ord vinder over et ord, der kun begynder med søgningen. Søgemotorens relative score lægges i 0,55-1, når den kombineres med appens rangering. Synonymer fra Søgesynonymer (≥ 50 %) følger med. Synlighed som før (ikke udgået/privat/HelloFresh/OFF/usikker AI).
+- **GET /api/products:** søgemotoren finder kandidaterne (`matchingStrategy: all`; giver det intet, `last`, så brugeren ser det nærmeste). Rangeringen efter popularitet, region, tidspunkt og egen historik er uændret; søgemotorens relevans tæller som tekstmatch. Svarer motoren ikke (eller er ikke sat op), bruges Postgres-søgningen som reserve. Træfferlisten caches 5 min. (tømmes ved indeksændring).
+- **Søgestatistik:** tabel `search_events`, én række pr. søgning. Indtastning bogstav for bogstav samles i én række; en ny søgning uden klik inden for 2 min. er en raffinering (`refinedFromId`); sletter brugeren tilbage efter en søgning uden fuldt match, er det også en raffinering. Klik (`POST /api/products/search-event`) afslutter søgningen. Anonymt: kun en hash af bruger eller IP + browser pr. døgn, intet bruger-id.
+- **Rene fejl:** "uden resultat" = ingen vare matchede alle ord. Robotten `search-miss-review` (kl. 03.30, eller "Vurdér nu" i admin) vurderer nye søgninger i `search_query_reviews`: meningsløse tegn og søgninger, appen selv rettede, med regler; resten med AI (TYPO med rettelse / NONSENSE / MISSING). Filteret "Kun rene fejl" viser MISSING.
+- **Admin → Analyse → Søgning** (`/admin/statistics/search`): periode og land, nøgletal, lande, fanerne Alle søgninger / Raffinerede søgninger / Uden resultat, sortering. "Statistik" er flyttet ind i menugruppen Analyse.
+
 ## 2026-10-10: Søgning læser varetype og tåler sammensatte ord
 
 - Butiksvarer (Bilka/REMA-arkene) hedder ofte kun fx "Gold" med mærket Nescafé og varetypen "Instant kaffe" i `productType`. Søgningen læste kun navn og mærke, så "Nescafé instant kaffe" og "instantkaffe" fandt dem ikke.

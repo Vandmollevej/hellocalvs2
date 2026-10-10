@@ -57,7 +57,12 @@ test("every page in the admin menu has a shortcut", () => {
   assert.ok(hrefs.length > 40, "fandt ikke menuen i AdminShell.tsx");
   const missing = hrefs.filter((href) => !(ADMIN_PAGE_SHORTCUTS[href]?.length > 0));
   assert.deepEqual(missing, [], "tilføj en genvej i src/lib/admin-shortcuts.ts");
-  const unknown = Object.keys(ADMIN_PAGE_SHORTCUTS).filter((href) => !hrefs.includes(href) && href !== "/admin/admin-users");
+  // Sider uden eget menupunkt, der stadig har en genvej: brugermenuen, sider der
+  // markerer et menupunkt (alsoActive, fx Logoer under Billedbehandling) og
+  // fritlægningskøen (åbnes fra Billedbehandling).
+  const alsoActive = [...nav.matchAll(/alsoActive: \[([^\]]*)\]/g)].flatMap((match) => [...match[1].matchAll(/"([^"]+)"/g)].map((m) => m[1]));
+  const outsideMenu = new Set(["/admin/admin-users", "/admin/images/cutout-queue", ...alsoActive]);
+  const unknown = Object.keys(ADMIN_PAGE_SHORTCUTS).filter((href) => !hrefs.includes(href) && !outsideMenu.has(href));
   assert.deepEqual(unknown, [], "genvej til en side, der ikke er i menuen");
 });
 

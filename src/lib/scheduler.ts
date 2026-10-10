@@ -12,6 +12,8 @@ import { analyzeDeclinedExternalImages } from "@/lib/external-image-ai";
 import { recoverQuickEnrichments } from "@/lib/quick-enrichment-jobs";
 import { checkEnergySplits } from "@/lib/energy-split-check";
 import { runFridaEstimates } from "@/lib/frida-estimates";
+import { syncProductIndex } from "@/lib/search-engine/product-index";
+import { reviewSearchMisses } from "@/lib/search-miss-review";
 import { grantEligibleReferralRewards } from "@/lib/referrals";
 import { runMobilePayTick } from "@/lib/payments/mobilepay-subscription";
 import { runStripeTick } from "@/lib/payments/stripe-subscription";
@@ -139,6 +141,8 @@ export function startScheduler() {
       "quick-enrichment-recovery": () => recoverQuickEnrichments(),
       "energy-split-check": checkEnergySplits,
       "frida-estimates": runFridaEstimates,
+      "search-index": syncProductIndex,
+      "search-miss-review": reviewSearchMisses,
     }).catch((error) => {
       console.error("[scheduler] tick fejlede", error);
     });
