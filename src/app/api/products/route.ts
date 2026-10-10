@@ -14,6 +14,7 @@ import { isProductCategory } from "@/lib/product-display-unit";
 import { linkCutoutJobsToProduct } from "@/lib/image-cutout-jobs";
 import { recordNutrientSources } from "@/lib/product-nutrient-sources";
 import { getSynonymExpansions } from "@/lib/search-synonyms";
+import { accentVariants } from "@/lib/accent-variants";
 import { HIDE_FROM_SEARCH_BELOW } from "@/lib/uncertainty-thresholds";
 import { petFoodBlockReason } from "@/lib/pet-food-blacklist";
 import { recordPetFoodAttempt } from "@/lib/pet-food-strikes";
@@ -90,6 +91,11 @@ export async function GET(req: Request) {
                       { namePlural: { contains: q, mode: "insensitive" } },
                       { brand: { name: { contains: q, mode: "insensitive" } } },
                       ...synonyms.map((s) => ({ name: { contains: s.term, mode: "insensitive" as const } })),
+                      // "nescafe" finder "Nescafé" (navn og brand).
+                      ...accentVariants(q).flatMap((v) => [
+                        { name: { contains: v, mode: "insensitive" as const } },
+                        { brand: { name: { contains: v, mode: "insensitive" as const } } },
+                      ]),
                       // Sukkerpåstande kan søges ("sukkerfri", "uden tilsat sukker",
                       // "reduceret", "light", "lavt sukker"), men vises ikke som mærker
                       // (docs/DECISIONS.md 2026-10-02).
