@@ -6,6 +6,7 @@ import { getIntegrationDetail, type PersonRow } from "@/lib/admin-integration-st
 import type { ReadType, WriteType } from "@/lib/integrations/sync-settings";
 import { StatsBarChart } from "@/components/admin/stats/StatsBarChart";
 import { DivergingBarChart } from "@/components/admin/integrations/DivergingBarChart";
+import { serviceById } from "@/lib/api-keys/catalog";
 import {
   Card,
   IntegrationIcon,
@@ -149,6 +150,11 @@ export default async function AdminIntegrationDetailPage({
             <div className="flex flex-wrap items-center gap-2">
               <h1 className="text-text-primary hf-type-title hf-type-strong">{d.meta.label}</h1>
               <KindBadge kind={d.meta.kind} configured={d.configured} />
+              {serviceById(slug) && (
+                <Link href={`/admin/api-keys#${slug}`} className="text-text-secondary underline hover:text-text-primary hf-type-small">
+                  Nøgler og links til udbyderen
+                </Link>
+              )}
             </div>
             <p className="text-text-secondary hf-type-body">{d.meta.description}</p>
           </div>

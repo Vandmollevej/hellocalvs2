@@ -2,6 +2,15 @@
 
 This file records durable decisions. Add a dated entry when a later decision changes one of them.
 
+## 2026-10-10: Præcise links til hvor eksterne nøgler styres
+
+Brugerens ønske: "I alle eksterne input i admin — API-nøgler, integrationer, SMTP-server, SMS-server og alt det — tilføj det præcise link dertil, hvor informationerne styres. Ikke kun forsiden, men det præcise link."
+
+- Hvert felt i `KEY_SERVICES` har et påkrævet `manage: { url, where }`. `where` er menustien hos udbyderen, så feltet kan findes, selv hvis siden flytter. Facebooks App secret bygger linket ud fra det gemte App ID (`/apps/<id>/settings/basic/`).
+- Hvor udbyderen ikke har en fast adresse til selve siden (Polar AccessLink, Passio, TeamMessage, Vipps MobilePay-portalen), linkes til det indloggede område, og `where` angiver den præcise menusti.
+- Systemværdier (kun `.env.production`) linker til skabelonen `.env.production.example` i repoet.
+- Egne API'er (admin → API-nøgler → Tilføj API) kræver et https-link til siden, hvor nøglen styres; ældre uden link får en advarsel.
+- Hver tjeneste har et anker (`/admin/api-keys#<id>`); forsidens "Mangler nøgle", Beskeder (SMTP/Web Push) og integrationssiderne linker direkte dertil.
 ## 2026-10-10: Withings-data i realtid (vægt, puls, søvn, EKG) og aktivitet ved næste åbning
 
 Brugerens ønske: "Jeg har lige vejet mig, men jeg får ingen popup" → "Kan det ikke gøres i realtid?" → "Vægten måler mere … det samme gælder aktiviteten og pulsen. Er det for ressourcetungt, så gør det næste gang appen er aktiv. Serveren må ikke blive meget ekstra belastet."
