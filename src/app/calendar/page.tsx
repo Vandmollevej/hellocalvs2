@@ -1,6 +1,7 @@
 "use client";
 
 import { IconBathScale } from "@/components/hf/IconBathScale";
+import { SwipeableRow } from "@/components/SwipeableRow";
 import { SINNERS_ENABLED } from "@/lib/food-classification";
 import { useEffect, useMemo, useRef, useState, createContext, useContext } from "react";
 import Link from "next/link";
@@ -533,6 +534,20 @@ function CalendarPageContent() {
       stripTime(date).getTime() < stripTime(today).getTime(),
     ),
   );
+
+  function deleteMetrics(ids: string[]) {
+    const removed = healthMetrics;
+    setHealthMetrics((current) => current.filter((m) => !m.id || !ids.includes(m.id)));
+    fetch("/api/health-metrics", {
+      method: "DELETE",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ ids }),
+    })
+      .then((response) => {
+        if (!response.ok) setHealthMetrics(removed);
+      })
+      .catch(() => setHealthMetrics(removed));
+  }
 
   const deviceData = useMemo(() => deviceDataByDay(healthMetrics), [healthMetrics]);
 
@@ -1081,6 +1096,7 @@ function CalendarPageContent() {
           activities={activities.filter((activity) => isSameDay(new Date(activity.startedAt), selectedDate))}
           waterEntries={waterEntries.filter((entry) => isSameDay(new Date(entry.loggedAt), selectedDate))}
           measurements={measurementsForDay(weighIns, healthMetrics, (time) => isSameDay(time, selectedDate))}
+          onDeleteMetrics={deleteMetrics}
           goals={goalsForDate(goalsByDate, selectedDate)}
           weighIns={weighInsForDate(weighInsByDate, selectedDate)}
           loading={registrationsLoading}
@@ -2049,6 +2065,7 @@ function DayDetails({
   activities,
   waterEntries,
   measurements,
+  onDeleteMetrics,
   goals,
   weighIns,
   loading,
@@ -2072,6 +2089,7 @@ function DayDetails({
   waterEntries: WaterEntry[];
   /** Dagens vejninger og kropsmålinger (Withings m.fl. eller manuelle). */
   measurements: CalendarMeasurement[];
+  onDeleteMetrics: (ids: string[]) => void;
   goals: GoalDTO[];
   weighIns: WeightEntry[];
   loading: boolean;
@@ -2577,6 +2595,7 @@ function DayDetails({
           registrations={registrations.filter((registration) => new Date(registration.createdAt).getHours() === openHour)}
           waterEntries={waterEntries.filter((entry) => new Date(entry.loggedAt).getHours() === openHour)}
           measurements={measurements.filter((item) => item.time.getHours() === openHour)}
+          onDeleteMetrics={onDeleteMetrics}
           goals={openHour === GOAL_HOUR ? goals : []}
           onClose={() => setOpenHour(null)}
         />
@@ -2943,6 +2962,7 @@ function HourEntriesOverlay({
   registrations,
   waterEntries,
   measurements,
+  onDeleteMetrics,
   goals,
   onClose,
 }: {
@@ -2950,6 +2970,7 @@ function HourEntriesOverlay({
   registrations: Registration[];
   waterEntries: WaterEntry[];
   measurements: CalendarMeasurement[];
+  onDeleteMetrics: (ids: string[]) => void;
   goals: GoalDTO[];
   onClose: () => void;
 }) {
@@ -3091,6 +3112,7 @@ function HourEntriesOverlay({
                           measurement={item.measurement}
                           className={rowClass}
                           hideWeight={item === groupWeight}
+                          onDeleteMetrics={onDeleteMetrics}
                         />
                       );
                     }
@@ -3158,13 +3180,24 @@ function WeightGroupRow({ time, measurement }: { time: Date; measurement: Calend
 // En vejning med vægtens øvrige målinger (fedtprocent, muskelmasse …) eller
 // en måling uden vejning (fx blodtryk) — alt, integrationen har leveret.
 // Vægten står allerede i gruppens overskrift (hideWeight), så rækken viser den ikke igen.
-function MeasurementRow({ measurement, className, hideWeight = false }: { measurement: CalendarMeasurement; className: string; hideWeight?: boolean }) {
+function MeasurementRow({
+  measurement,
+  className,
+  hideWeight = false,
+  onDeleteMetrics,
+}: {
+  measurement: CalendarMeasurement;
+  className: string;
+  hideWeight?: boolean;
+  onDeleteMetrics: (ids: string[]) => void;
+}) {
   const { t } = useTranslation();
   const [open, setOpen] = useState(false);
   const weighInId = measurement.id.startsWith("weight-") ? measurement.id.slice("weight-".length) : null;
   const source = measurement.source && measurement.source !== "MANUAL" ? t(`calendar.measurement.source.${measurement.source}`) : null;
   const sourceIcon = integrationIconForSource(measurement.source);
-  return (
+  const metricIds = measurement.weightKg === null ? measurement.metrics.flatMap((m) => (m.id ? [m.id] : [])) : [];
+  const row = (
     <div
       className={`${className} ${weighInId ? "cursor-pointer" : ""}`}
       {...(weighInId
@@ -3215,6 +3248,13 @@ function MeasurementRow({ measurement, className, hideWeight = false }: { measur
         </span>
       )}
     </div>
+  );
+  // Målinger uden vægt (iltmætning, puls …) kan swipes væk; vejninger slettes fra deres eget ark.
+  if (metricIds.length === 0 || metricIds.length !== measurement.metrics.length) return row;
+  return (
+    <SwipeableRow onDelete={() => onDeleteMetrics(metricIds)}>
+      {row}
+    </SwipeableRow>
   );
 }
 

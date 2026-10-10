@@ -250,7 +250,7 @@
     "src/components/web/WebShell.tsx": "5f2646ffd79af9cc"
   },
   "/calendar": {
-    "src/app/calendar/page.tsx": "289ac9368a7463f5",
+    "src/app/calendar/page.tsx": "afba7e9218f2d8fb",
     "src/app/layout.tsx": "ce9cce1fff73600a",
     "src/components/AuthGate.tsx": "94db96b768f9f95f",
     "src/components/BottomNav.tsx": "5bab069a374d4d04",
@@ -262,6 +262,7 @@
     "src/components/HfScreen.tsx": "da45f5d47f897b57",
     "src/components/IntegrationIcon.tsx": "36551d87b956c315",
     "src/components/ProfileAvatarLink.tsx": "598cd23c3331619d",
+    "src/components/SwipeableRow.tsx": "7d580c5b4a7f2edf",
     "src/components/activity/ActivityPicker.tsx": "4a380b9c9a346059",
     "src/components/activity/HeartRateSpikeChart.tsx": "b909536735a0d1b8",
     "src/components/activity/PulseEventSheet.tsx": "1ed90bb53e956115",
