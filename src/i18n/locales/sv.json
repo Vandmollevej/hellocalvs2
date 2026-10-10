@@ -1210,7 +1210,7 @@
     "addPhoto": "Ta en bild till steget",
     "removePhoto": "Ta bort bilden",
     "remove": "Ta bort steg",
-    "dropPhoto": "Drag a picture here, or tap to add one"
+    "dropPhoto": "Ta en bild av steget, eller släpp en bild här"
   },
   "recipeImages": {
     "title": "Bilder på rätten",

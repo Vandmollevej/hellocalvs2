@@ -1210,7 +1210,7 @@
     "addPhoto": "Take a photo for this step",
     "removePhoto": "Remove photo",
     "remove": "Delete step",
-    "dropPhoto": "Drag a picture here, or tap to add one"
+    "dropPhoto": "Take a photo of this step, or drop a picture here"
   },
   "recipeImages": {
     "title": "Photos of the dish",
