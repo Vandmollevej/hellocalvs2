@@ -2,7 +2,7 @@
 
 import { Suspense, useEffect, useState } from "react";
 import { useParams, useSearchParams } from "next/navigation";
-import { IconInfoCircle, IconSoup } from "@tabler/icons-react";
+import { IconInfoCircle, IconShare3, IconSoup } from "@tabler/icons-react";
 import { IconFavorite as IconBookmark, IconFavoriteFilled as IconBookmarkFilled } from "@/components/icons/Favorite";
 import { HfScreen } from "@/components/HfScreen";
 import { PersonsSlider } from "@/components/hf/PersonsSlider";
@@ -10,6 +10,7 @@ import { Toggle } from "@/components/ui/Toggle";
 import { useTranslation } from "@/i18n/LocaleProvider";
 import { loadRecipeFilters, saveRecipeFilters } from "@/lib/recipe-filters";
 import { MAX_RECIPE_PERSONS, portionKcalFor, scaleFactorFor, type PortionProfile } from "@/lib/recipe-portions";
+import { ForwardRecipeSheet } from "@/components/recipes/ForwardRecipeSheet";
 import { RecipeThumbs } from "@/components/recipes/RecipeThumbs";
 import { Skeleton, SkeletonTitleLines } from "@/components/hf/Skeleton";
 
@@ -28,6 +29,8 @@ type View = { name: string; ingredients: Ingredient[]; images: string[]; steps: 
 type OwnDish = {
   name: string;
   servings?: number | null;
+  description?: string | null;
+  durationMinutes?: number | null;
   shareRejected?: boolean;
   shareRejectionReason?: string | null;
   sharedRecipeId?: string | null;
@@ -82,7 +85,10 @@ function RecipeDetailContent() {
   // Egen ret
   const [shared, setShared] = useState(false);
   const [rejection, setRejection] = useState<{ reason: string | null } | null>(null);
+  const [forwardOpen, setForwardOpen] = useState(false);
   const [dishServings, setDishServings] = useState<number | null>(null);
+  const [dishDescription, setDishDescription] = useState<string | null>(null);
+  const [dishDuration, setDishDuration] = useState<number | null>(null);
   const [showShareInfo, setShowShareInfo] = useState(false);
   // Delt ret
   const [isFavorite, setIsFavorite] = useState(false);
@@ -114,6 +120,8 @@ function RecipeDetailContent() {
           setShared(Boolean(dish.sharedRecipeId));
           setRejection(dish.shareRejected ? { reason: dish.shareRejectionReason ?? null } : null);
           setDishServings(dish.servings ?? null);
+          setDishDescription(dish.description ?? null);
+          setDishDuration(dish.durationMinutes ?? null);
           setView({
             name: dish.name,
             images: dish.images ?? [],
@@ -311,6 +319,18 @@ function RecipeDetailContent() {
                 )}
               </div>
             )}
+            {kind === "own" && dishDescription && (
+              <p className="hf-type-body text-hf-black whitespace-pre-line">{dishDescription}</p>
+            )}
+            {kind === "own" && dishDuration && (
+              <p className="hf-type-small text-text-secondary">{t("recipeDetail.durationLabel", { minutes: dishDuration })}</p>
+            )}
+            {kind === "own" && (
+              <button type="button" onClick={() => setForwardOpen(true)} className="hf-control hf-btn-secondary flex w-full items-center justify-center gap-2">
+                <IconShare3 size={18} />
+                {t("forwardRecipe.button")}
+              </button>
+            )}
             {kind === "own" && dishServings && (
               <p className="hf-type-small text-text-secondary">{t("recipeDetail.servingsLabel", { count: dishServings })}</p>
             )}
@@ -444,6 +464,9 @@ function RecipeDetailContent() {
           </>
         )}
       </div>
+      {forwardOpen && (
+        <ForwardRecipeSheet dishId={id} name={view?.name ?? ""} onClose={() => setForwardOpen(false)} />
+      )}
     </HfScreen>
   );
 }

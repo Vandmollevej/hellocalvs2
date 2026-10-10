@@ -2429,6 +2429,13 @@ textarea::selection,
   white-space: nowrap;
 }
 
+.hf-bottom-sheet__action {
+  position: absolute;
+  top: 8px;
+  right: 16px;
+  z-index: 2;
+}
+
 .hf-bottom-sheet__body {
   min-height: 0;
   flex: 1 1 auto;

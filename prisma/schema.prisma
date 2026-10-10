@@ -2424,6 +2424,9 @@ model Dish {
   sharedRecipeId String?
   // Antal personer retten er til (fra Indsæt tekst/Scan eller manuelt).
   servings       Int?
+  // Kort beskrivelse og varighed i minutter (Opret ret, side 1).
+  description    String?
+  durationMinutes Int?
   // Op til 3 billeder af den færdige ret (offentlige stier under
   // /product-images/recipe-images). Det første er forsidebillede.
   images         String[]  @default([])
@@ -2824,6 +2827,13 @@ model Forward {
   createdAt   DateTime      @default(now())
   openedAt    DateTime?
   fulfilledAt DateTime?
+  // Videresend en ret med Apples deleark (2026-10-09): linket udløber, og
+  // afsenderen kan angive modtagerens navn/mail, en hilsen og et afsendernavn.
+  expiresAt      DateTime?
+  recipientName  String?
+  recipientEmail String?
+  message        String?
+  fromName       String?
 
   pointsTransactions PointsTransaction[]
 

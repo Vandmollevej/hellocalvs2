@@ -26,6 +26,23 @@ Last updated: 2026-10-09
 ## 2026-10-09: Børn kan ikke lukke konto eller melde sig ud
 
 - Kun forælderen kan lukke/fjerne et barns konto. Serveren afviser børn på `/api/account/close` (403) og `leaveFamily` (`childCannotLeave`); "Luk konto"/"Slet mine data" og "Meld dig ud" er skjult for børn i web og native (`meIsChild` fra `/api/family`). Barnet kan kun se, hvad forælderen viser (uændret). Se DECISIONS.md samme dato. Lint, tsc og native-paritet grønne; Kotlin ikke kompileret lokalt; ikke prøvet mod rigtig database.
+## 2026-10-10: AI-opsætning af opskrifter koblet på
+
+- Indsæt tekst og Scan opskrift bruger nu AI (gpt-4o-mini, kun tekst) til titel, beskrivelse, varighed, ingredienser (varenavn + gram), trin med overskrifter og sidebillede pr. trin; ellers den gamle tolker. Se DECISIONS. Kræver `OPENAI_API_KEY` (findes til de øvrige AI-ruter); model kan sættes med `OPENAI_RECIPE_IMPORT_MODEL`. Ikke testet mod OpenAI her (ingen nøgle i miljøet).
+
+## 2026-10-09: Videresend ret til en ven
+
+- Knappen "Send til en ven" på egne retter åbner en helsides popup (varighed, venns navn + mail, Fra, valgfri besked) og deler et krypteret link via deleark (+ mail). Se DECISIONS 2026-10-09. Migration `20261009230000_forward_expiry_details` skal med deployet. Lint/tsc grønne for web; Kotlin ikke kompileret; ikke prøvet i browser/på telefon; mail afhænger af SMTP.
+
+## 2026-10-09: Opret ret som flow — startskærm med tre knapper
+
+- Rettelse (bruger 2026-10-09): side 1 er Titel + beskrivelse + varighed (nye felter `Dish.description`, `Dish.durationMinutes`, migration 20261009220000 — skal med deployet). Færdig-knap øverst til højre gemmer retten fra enhver side (springer til siden, der mangler navn/ingredienser). Indsæt tekst/Scan: importen er side 1, titlen kommer først på side 2. Ingen beskrivelse/varighed fra importen endnu.
+- Trin-flow (bruger 2026-10-09): Opret manuelt er sider i popuppen — side 1 alle ingredienser (navn, personer, søgning), derefter ét trin af fremgangsmåden pr. side (overskrift, tekst, billede nederst; på web også drag and drop), til sidst billeder af retten med Gem. Navigation med pile + prikker i bunden, og et stryg mod højre går tilbage. `RecipeStepPage.tsx` / `CreateDishScreen.kt`. Lint/tsc grønne for web; Kotlin ikke kompileret lokalt; ikke prøvet i browser/på telefon. Sessionen arkiveres først, når brugeren siger til.
+
+- `/create-dish` (web + `CreateDishScreen.kt`) åbner nu med et startskærm-trin: tre knapper midt på skærmen — Scan, Indsæt tekst, Manuelt (de to første åbner deres ark, den sidste går til formularen). Springes over, når der allerede er en kladde (fx retur fra en vare). Knap-rækken i formularen er fjernet.
+- Opdateret: hele flowet ligger i en helsides popup (`BottomSheet size="full"`); knapperne hedder Indsæt tekst, Scan opskrift, Opret manuelt (se REGLER.md). Ingredienser tilføjes én ad gangen via søgningen.
+- Ikonerne er midlertidige Tabler-ikoner (kamera, udklipsholder, blyant); brugeren laver de rigtige. Layoutet (tre knapper under hinanden, centreret) er et gæt på "to en ned" — ret hvis det skulle være to ved siden af hinanden og én under.
+- Lint og native-paritet grønne; Kotlin ikke kompileret lokalt; ikke prøvet i browser/telefon.
 
 ## 2026-10-09: "Opret egen ingrediens" fjernet
 

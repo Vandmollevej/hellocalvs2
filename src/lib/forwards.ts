@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import { awardForwardPointsIfUnderCap } from "@/lib/points";
 import { queueMessage } from "@/lib/messaging";
+import { openForwardToken } from "@/lib/forward-link";
 
 // "Videresend ret/produkt til en ven" (docs/DECISIONS.md 2026-09-02).
 
@@ -39,9 +40,23 @@ async function checkCrossSendAbuse(senderId: string, recipientId: string, now: D
 // Ved oprettelse kendes modtageren typisk ikke endnu (anonymt delelink) —
 // krydsspærringen kan derfor først tjekkes ved claimForward(), hvor
 // modtageren rent faktisk identificeres.
-export async function createForward(senderId: string, kind: "PRODUCT" | "DISH", itemId: string) {
+export type ForwardDetails = {
+  expiresAt?: Date | null;
+  recipientName?: string | null;
+  recipientEmail?: string | null;
+  message?: string | null;
+  fromName?: string | null;
+};
+
+export async function createForward(
+  senderId: string,
+  kind: "PRODUCT" | "DISH",
+  itemId: string,
+  details: ForwardDetails = {},
+) {
   return prisma.forward.create({
     data: {
+      ...details,
       senderId,
       kind,
       productId: kind === "PRODUCT" ? itemId : undefined,
@@ -53,9 +68,14 @@ export async function createForward(senderId: string, kind: "PRODUCT" | "DISH", 
 // Kaldes når en logget ind bruger åbner /forward/[token] første gang.
 // Idempotent: en allerede-claimet forward returneres blot uændret, så et
 // gensyn af siden ikke fejler eller tjekker misbrug igen.
-export async function claimForward(token: string, recipientId: string, now: Date = new Date()) {
+export async function claimForward(linkToken: string, recipientId: string, now: Date = new Date()) {
+  // Krypteret link (segl) eller et gammelt almindeligt token.
+  const sealed = openForwardToken(linkToken);
+  if (sealed?.expiresAt && sealed.expiresAt.getTime() < now.getTime()) return null;
+  const token = sealed?.token ?? linkToken;
   const forward = await prisma.forward.findUnique({ where: { token } });
   if (!forward) return null;
+  if (forward.expiresAt && forward.expiresAt.getTime() < now.getTime()) return null;
   if (forward.recipientId) return forward;
 
   if (forward.senderId === recipientId) {

@@ -180,8 +180,6 @@
     "haveAccount": "Har du allerede en konto?",
     "logIn": "Log ind",
     "title": "Opret konto",
-    "haveAccount": "Har du allerede en konto?",
-    "logIn": "Log ind",
     "back": "Tilbage",
     "nameLabel": "Navn",
     "namePlaceholder": "Dit navn",
@@ -207,42 +205,42 @@
   },
   "web": {
     "createDish": "Opret ret",
-      "collapse": "Skjul sidemenu",
+    "collapse": "Skjul sidemenu",
     "expand": "Vis sidemenu",
     "shortcuts": "Genveje",
-      "settings": "Indstillinger",
-      "searchPlaceholder": "Søg",
-      "noResults": "Ingen resultater",
-      "mainNav": "Hovednavigation",
-      "sideNav": "Sidemenu",
-      "chat": "Indtast",
-      "recipes": "Retter",
-      "ingredients": "Ingredienser",
-      "water": "Vand",
-      "weight": "Vægt",
-      "activity": "Aktivitet",
-      "editProfile": "Rediger profil",
-      "goals": "Målsætning",
-      "subscription": "Abonnement",
-      "integrations": "Integrationer",
-      "display": "Visning",
-      "payment": "Betaling",
-      "support": "Support",
-      "allSettings": "Alle indstillinger",
-      "profileSettings": "Profilindstillinger",
-      "chatTitle": "Indtast",
-      "chatIntro": "Skriv, hvad du har spist eller drukket, fx “2 æg og en skive rugbrød”.",
-      "chatPlaceholder": "Skriv et måltid…",
-      "chatSend": "Send",
-      "chatThinking": "Tolker…",
-      "chatSave": "Tilføj til dagen",
-      "chatSaved": "Tilføjet",
-      "chatAdd": "Tilføj",
-      "chatAddAll": "Tilføj alle forslag",
-      "chatSuggested": "Foreslået",
-      "chatNothing": "Jeg kunne ikke finde noget spiseligt i beskeden.",
-      "chatError": "Noget gik galt. Prøv igen.",
-      "chatSaveError": "Kunne ikke gemme. Prøv igen."
+    "settings": "Indstillinger",
+    "searchPlaceholder": "Søg",
+    "noResults": "Ingen resultater",
+    "mainNav": "Hovednavigation",
+    "sideNav": "Sidemenu",
+    "chat": "Indtast",
+    "recipes": "Retter",
+    "ingredients": "Ingredienser",
+    "water": "Vand",
+    "weight": "Vægt",
+    "activity": "Aktivitet",
+    "editProfile": "Rediger profil",
+    "goals": "Målsætning",
+    "subscription": "Abonnement",
+    "integrations": "Integrationer",
+    "display": "Visning",
+    "payment": "Betaling",
+    "support": "Support",
+    "allSettings": "Alle indstillinger",
+    "profileSettings": "Profilindstillinger",
+    "chatTitle": "Indtast",
+    "chatIntro": "Skriv, hvad du har spist eller drukket, fx “2 æg og en skive rugbrød”.",
+    "chatPlaceholder": "Skriv et måltid…",
+    "chatSend": "Send",
+    "chatThinking": "Tolker…",
+    "chatSave": "Tilføj til dagen",
+    "chatSaved": "Tilføjet",
+    "chatAdd": "Tilføj",
+    "chatAddAll": "Tilføj alle forslag",
+    "chatSuggested": "Foreslået",
+    "chatNothing": "Jeg kunne ikke finde noget spiseligt i beskeden.",
+    "chatError": "Noget gik galt. Prøv igen.",
+    "chatSaveError": "Kunne ikke gemme. Prøv igen."
   },
   "nav": {
     "screenings": "Screeninger",
@@ -533,90 +531,90 @@
     "toggleLabel": "Vis menstruationscyklus",
     "toggleDescription": "Tilføjer \"Menstruation\" til tilføj-menuen, så du kan logge cyklussens start."
   },
-    "customMeasure": {
-      "add": "Tilføj egen måling",
-      "delete": "Slet",
-      "cancel": "Annullér",
-      "save": "Gem måling",
-      "nameLabel": "Navn",
-      "descriptionLabel": "Beskrivelse",
-      "paramLabel": "Parameter",
-      "paramPlaceholder": "Vælg parameter",
-      "search": "Søg parameter",
-      "noMatch": "Ingen parametre fundet",
-      "periodLabel": "Periode",
-      "periodHint": "Perioder over én dag viser dagsgennemsnit.",
-      "textLabel": "Tekst under tallet",
-      "textHint": "Højst {lines} linjer á {chars} tegn",
-      "group": {
-        "food": "Mad og næring",
-        "activity": "Aktivitet",
-        "sleep": "Søvn",
-        "heart": "Hjerte og målinger",
-        "body": "Krop"
-      },
-      "period": {
-        "today": "I dag",
-        "yesterday": "I går",
-        "last7": "Seneste 7 dage",
-        "last30": "Seneste 30 dage",
-        "thisWeek": "Denne uge",
-        "lastWeek": "Sidste uge",
-        "thisMonth": "Denne måned",
-        "lastMonth": "Sidste måned",
-        "thisYear": "I år",
-        "lastYear": "Sidste år"
-      },
-      "param": {
-        "kcalIntake": "Kalorier indtaget",
-        "kcalRemaining": "Kalorier tilbage",
-        "protein": "Protein",
-        "carbs": "Kulhydrat",
-        "fat": "Fedt",
-        "kcalBurned": "Kalorier forbrændt",
-        "restingEnergy": "Hvileenergi (kcal)",
-        "steps": "Skridt",
-        "distance": "Kilometer",
-        "water": "Vand",
-        "exerciseMinutes": "Aktive minutter",
-        "standMinutes": "Stående minutter",
-        "floors": "Etager",
-        "zoneMinutes": "Zoneminutter",
-        "cardioLoad": "Cardio load",
-        "sleepDuration": "Søvn",
-        "sleepInBed": "Tid i seng",
-        "sleepAwake": "Vågen under søvn",
-        "sleepRem": "REM-søvn",
-        "sleepLight": "Let søvn",
-        "sleepDeep": "Dyb søvn",
-        "sleepScore": "Søvnkvalitet",
-        "sleepEfficiency": "Søvneffektivitet",
-        "sleepAwakenings": "Opvågninger",
-        "heartRate": "Puls",
-        "restingHeartRate": "Hvilepuls",
-        "heartRateMin": "Laveste puls",
-        "heartRateMax": "Højeste puls",
-        "hrv": "HRV",
-        "vo2Max": "VO₂ max",
-        "heartRateRecovery": "Pulsrestitution",
-        "respiratoryRate": "Vejrtrækningsfrekvens",
-        "spo2": "Iltmætning (SpO₂)",
-        "temperature": "Temperatur",
-        "stress": "Stress",
-        "recoveryScore": "Restitution",
-        "strain": "Belastning",
-        "bloodGlucose": "Blodsukker",
-        "bodyFat": "Fedtprocent",
-        "fatMass": "Fedtmasse",
-        "fatFreeMass": "Fedtfri masse",
-        "muscleMass": "Muskelmasse",
-        "boneMass": "Knoglemasse",
-        "bodyWater": "Kropsvand",
-        "visceralFat": "Visceralt fedt",
-        "bmr": "Hvilestofskifte (BMR)",
-        "bmi": "BMI"
-      }
+  "customMeasure": {
+    "add": "Tilføj egen måling",
+    "delete": "Slet",
+    "cancel": "Annullér",
+    "save": "Gem måling",
+    "nameLabel": "Navn",
+    "descriptionLabel": "Beskrivelse",
+    "paramLabel": "Parameter",
+    "paramPlaceholder": "Vælg parameter",
+    "search": "Søg parameter",
+    "noMatch": "Ingen parametre fundet",
+    "periodLabel": "Periode",
+    "periodHint": "Perioder over én dag viser dagsgennemsnit.",
+    "textLabel": "Tekst under tallet",
+    "textHint": "Højst {lines} linjer á {chars} tegn",
+    "group": {
+      "food": "Mad og næring",
+      "activity": "Aktivitet",
+      "sleep": "Søvn",
+      "heart": "Hjerte og målinger",
+      "body": "Krop"
     },
+    "period": {
+      "today": "I dag",
+      "yesterday": "I går",
+      "last7": "Seneste 7 dage",
+      "last30": "Seneste 30 dage",
+      "thisWeek": "Denne uge",
+      "lastWeek": "Sidste uge",
+      "thisMonth": "Denne måned",
+      "lastMonth": "Sidste måned",
+      "thisYear": "I år",
+      "lastYear": "Sidste år"
+    },
+    "param": {
+      "kcalIntake": "Kalorier indtaget",
+      "kcalRemaining": "Kalorier tilbage",
+      "protein": "Protein",
+      "carbs": "Kulhydrat",
+      "fat": "Fedt",
+      "kcalBurned": "Kalorier forbrændt",
+      "restingEnergy": "Hvileenergi (kcal)",
+      "steps": "Skridt",
+      "distance": "Kilometer",
+      "water": "Vand",
+      "exerciseMinutes": "Aktive minutter",
+      "standMinutes": "Stående minutter",
+      "floors": "Etager",
+      "zoneMinutes": "Zoneminutter",
+      "cardioLoad": "Cardio load",
+      "sleepDuration": "Søvn",
+      "sleepInBed": "Tid i seng",
+      "sleepAwake": "Vågen under søvn",
+      "sleepRem": "REM-søvn",
+      "sleepLight": "Let søvn",
+      "sleepDeep": "Dyb søvn",
+      "sleepScore": "Søvnkvalitet",
+      "sleepEfficiency": "Søvneffektivitet",
+      "sleepAwakenings": "Opvågninger",
+      "heartRate": "Puls",
+      "restingHeartRate": "Hvilepuls",
+      "heartRateMin": "Laveste puls",
+      "heartRateMax": "Højeste puls",
+      "hrv": "HRV",
+      "vo2Max": "VO₂ max",
+      "heartRateRecovery": "Pulsrestitution",
+      "respiratoryRate": "Vejrtrækningsfrekvens",
+      "spo2": "Iltmætning (SpO₂)",
+      "temperature": "Temperatur",
+      "stress": "Stress",
+      "recoveryScore": "Restitution",
+      "strain": "Belastning",
+      "bloodGlucose": "Blodsukker",
+      "bodyFat": "Fedtprocent",
+      "fatMass": "Fedtmasse",
+      "fatFreeMass": "Fedtfri masse",
+      "muscleMass": "Muskelmasse",
+      "boneMass": "Knoglemasse",
+      "bodyWater": "Kropsvand",
+      "visceralFat": "Visceralt fedt",
+      "bmr": "Hvilestofskifte (BMR)",
+      "bmi": "BMI"
+    }
+  },
   "frontPageSettings": {
     "intro": "Vælg hvilke felter, der skal vises i hjulet på forsiden. Det øverste felt viser altid en liste med samtlige tilføj-elementer.",
     "sideSectionTitle": "Forsidevisning",
@@ -1057,7 +1055,6 @@
     "tabMine": "Mine retter",
     "tabShared": "Delte retter",
     "statusNotShared": "Ikke delt",
-
     "sharedSearchPlaceholder": "Søg i titel, ingredienser …",
     "createNew": "Opret ny ret",
     "sourceAll": "Opskrifter",
@@ -1173,7 +1170,8 @@
     "addStep": "Tilføj trin",
     "addPhoto": "Tag billede til trinnet",
     "removePhoto": "Fjern billedet",
-    "remove": "Slet trin"
+    "remove": "Slet trin",
+    "dropPhoto": "Træk et billede hertil, eller tryk for at tilføje"
   },
   "recipeImages": {
     "title": "Billeder af retten",
@@ -1223,18 +1221,11 @@
     }
   },
   "recipeDetail": {
-
+    "durationLabel": "{minutes} min.",
     "shareRejected": "Din ret er ikke delt med andre, fordi den blev afvist. Du beholder den selv.",
-
-
     "shareRejectedReason": "Begrundelse: {reason}",
-
-
     "servingsLabel": "{count} personer",
-
-
     "thumbUp": "Tommel op",
-
     "thumbDown": "Tommel ned",
     "loading": "Henter retten …",
     "notFound": "Retten findes ikke længere",
@@ -1301,54 +1292,41 @@
     }
   },
   "createDish": {
+    "pageTitle": "Titel og beskrivelse",
+    "descriptionPlaceholder": "Beskrivelse",
+    "durationLabel": "Varighed",
+    "minutes": "min.",
+    "done": "Færdig",
+    "pageImport": "Importér",
+    "pageBack": "Forrige side",
+    "pageNext": "Næste side",
+    "pageDots": "Side {current} af {total}",
+    "pageIngredients": "Ingredienser",
+    "pageImages": "Billeder af retten",
     "servings": "Antal personer",
-
     "shareLabel": "Ønsker du at dele retten med andre brugere?",
-
-    "modeManual": "Manuelt",
-
+    "modeManual": "Opret manuelt",
     "modeText": "Indsæt tekst",
-
-    "modeScan": "Scan",
-
+    "modeScan": "Scan opskrift",
     "shareQuestionTitle": "Vil du dele retten?",
-
     "shareQuestionBody": "Andre brugere kan finde og bruge din ret. Ingen personlige detaljer deles. Du kan også dele den senere under retten.",
-
     "shareYes": "Del",
-
     "shareNo": "Ikke nu",
-
     "pasteTitle": "Indsæt opskriftstekst",
-
     "pastePlaceholder": "Indsæt hele opskriftsteksten her",
-
     "pasteSourcePlaceholder": "Link til kilden (valgfrit)",
-
     "pasteInsert": "Indsæt",
-
     "pasteWorking": "Læser opskriften …",
-
     "pasteError": "Kunne ikke læse opskriften",
-
     "scanTitle": "Scan opskrift",
-
     "scanTake": "Tag billede",
-
     "scanGallery": "Fra arkiv",
-
     "scanFinish": "Afslut",
-
     "scanWorking": "Læser siderne …",
-
     "scanError": "Kunne ikke læse siderne",
-
     "scanHint": "Tilføj siderne i rækkefølge. Første billede bliver rettens billede.",
-
     "importMissing": "Mangler match eller mængde — tilføj selv:",
-
     "importDone": "Opskriften er indsat",
-
     "importNutrition": "Næring i teksten (pr. portion)",
     "shareInfo": "Ingen personlige detaljer deles, når du deler en ret",
     "shareInfoAria": "Om deling",
@@ -1464,8 +1442,8 @@
     "title": "Mine oplysninger",
     "loading": "Henter…",
     "loadError": "Kunne ikke hente profil.",
-    "phoneHint": "Bruges kun til at sende en kode, hvis du glemmer din adgangskode.",
-    "phoneInvalid": "Angiv et gyldigt mobilnummer (8 cifre eller med landekode).",
+    "phoneHint": "Bruges til tofaktor-godkendelse. Kan rettes, men ikke slettes.",
+    "phoneInvalid": "Angiv et gyldigt telefonnummer, fx +45 12 34 56 78.",
     "completion": {
       "label": "Profilens færdiggørelse",
       "aboutYou": "Om dig",
@@ -1491,17 +1469,35 @@
       "female": "Kvinde",
       "male": "Mand"
     },
-    "phoneHint": "Bruges til tofaktor-godkendelse. Kan rettes, men ikke slettes.",
     "phoneRequired": "Angiv dit telefonnummer.",
-    "phoneInvalid": "Angiv et gyldigt telefonnummer, fx +45 12 34 56 78.",
     "activityLevel": {
       "notSet": "Vælg det trin, der passer bedst på din hverdag.",
       "note": "Træning, du logger, lægges oveni.",
-      "VERY_LOW": { "short": "Meget lidt", "label": "Meget lav", "description": "Sidder det meste af dagen og går næsten ikke." },
-      "LOW": { "short": "Stillesid.", "label": "Lav", "description": "Stillesiddende arbejde med lidt gang og let bevægelse i hverdagen." },
-      "MODERATE": { "short": "Alm.", "label": "Moderat", "description": "Står og går en stor del af dagen, fx i butik, skole eller institution." },
-      "HIGH": { "short": "Meget", "label": "Høj", "description": "Fysisk arbejde det meste af dagen, fx håndværker eller lager." },
-      "VERY_HIGH": { "short": "Ekstremt", "label": "Meget høj", "description": "Hårdt fysisk arbejde hele dagen, fx byggeri, landbrug eller skov." }
+      "VERY_LOW": {
+        "short": "Meget lidt",
+        "label": "Meget lav",
+        "description": "Sidder det meste af dagen og går næsten ikke."
+      },
+      "LOW": {
+        "short": "Stillesid.",
+        "label": "Lav",
+        "description": "Stillesiddende arbejde med lidt gang og let bevægelse i hverdagen."
+      },
+      "MODERATE": {
+        "short": "Alm.",
+        "label": "Moderat",
+        "description": "Står og går en stor del af dagen, fx i butik, skole eller institution."
+      },
+      "HIGH": {
+        "short": "Meget",
+        "label": "Høj",
+        "description": "Fysisk arbejde det meste af dagen, fx håndværker eller lager."
+      },
+      "VERY_HIGH": {
+        "short": "Ekstremt",
+        "label": "Meget høj",
+        "description": "Hårdt fysisk arbejde hele dagen, fx byggeri, landbrug eller skov."
+      }
     },
     "age": "{age} år",
     "trendWeight": "Trendvægt (AI-estimat): {value}",
@@ -1675,9 +1671,17 @@
       "buyCta": "Abonner",
       "buyError": "Købet kunne ikke startes lige nu",
       "summaryPrice": "{price} pr. {unit}",
-      "unit": { "1": "måned", "3": "kvartal (3 måneder)", "12": "år" },
+      "unit": {
+        "1": "måned",
+        "3": "kvartal (3 måneder)",
+        "12": "år"
+      },
       "summaryBinding": "Bindingsperiode: {period}. Betales forud for hele perioden.",
-      "bindingPeriod": { "1": "1 måned", "3": "3 måneder", "12": "12 måneder" },
+      "bindingPeriod": {
+        "1": "1 måned",
+        "3": "3 måneder",
+        "12": "12 måneder"
+      },
       "fromPrice": "Fra {price} kr. pr. måned · binding fra 1 måned"
     }
   },
@@ -1868,8 +1872,14 @@
       "heartRateAboveBpm": "fx 120"
     },
     "compositionHeading": "Kropssammensætning",
-    "composition": {"bodyFatPercent":"Fedtprocent","muscleMassKg":"Muskelmasse"},
-    "compositionPlaceholder": {"bodyFatPercent":"fx 20","muscleMassKg":"fx 35"},
+    "composition": {
+      "bodyFatPercent": "Fedtprocent",
+      "muscleMassKg": "Muskelmasse"
+    },
+    "compositionPlaceholder": {
+      "bodyFatPercent": "fx 20",
+      "muscleMassKg": "fx 35"
+    },
     "nutritionHeading": "Ernæring pr. dag",
     "nutrition": {
       "kcal": "Kalorier",
@@ -2324,7 +2334,10 @@
     "howTo": "Sådan gør du",
     "viaHowTo": "{name} har ingen åben forbindelse, så dine data kommer ind via {hubs}. Slå deling til {hubs} til i {app}, og vælg dine data på siden for {hubs}. Hello Cal sender intet om dig til {name}.",
     "hubsOr": " eller ",
-    "hubs": { "HEALTH_CONNECT": "Health Connect", "APPLE_HEALTH": "Apple Health" },
+    "hubs": {
+      "HEALTH_CONNECT": "Health Connect",
+      "APPLE_HEALTH": "Apple Health"
+    },
     "openHub": "Åbn {hub}",
     "partnerPending": "En direkte forbindelse til {name} kræver en partneraftale, som endnu ikke er på plads.",
     "companionHowTo": "Hello Cal-appen på telefonen henter og skriver dine data efter valgene ovenfor. Den bruger en enhedskode til at logge ind.",
@@ -2411,7 +2424,6 @@
     "recurringNote": "Trækkes automatisk ved hver fornyelse.",
     "testCard": "Stripe-testkort",
     "walletCard": "{brand} •••• {last4}",
-
     "status": {
       "inactive": "Intet aktivt abonnement",
       "active": "Aktivt abonnement",
@@ -2451,7 +2463,15 @@
       "back": "Til Betaling"
     },
     "stopSubscription": "Opsig abonnement",
-    "methodLabel": { "MOBILEPAY": "MobilePay", "VISA": "Visa", "MASTERCARD": "Mastercard", "GIROCARD": "EC-kort (girocard)", "CARD": "Kort", "APPLE_PAY": "Apple Pay", "GOOGLE_PAY": "Google Pay" },
+    "methodLabel": {
+      "MOBILEPAY": "MobilePay",
+      "VISA": "Visa",
+      "MASTERCARD": "Mastercard",
+      "GIROCARD": "EC-kort (girocard)",
+      "CARD": "Kort",
+      "APPLE_PAY": "Apple Pay",
+      "GOOGLE_PAY": "Google Pay"
+    },
     "supportedMethodsTitle": "Understøttede metoder",
     "noPaymentMethodHint": "Kommer, når Hello Cal har en betalingsudbyder tilknyttet. Understøtter Visa, Apple Pay, Google Pay og MobilePay, når det er klar."
   },
@@ -2775,7 +2795,11 @@
     "title": "Kaloriemål",
     "intro": "Vælg, hvad du vil med din vægt. Vi regner et dagligt budget ud fra dit energibehov — altid inden for det, der er sundt.",
     "mode": "Hvad vil du?",
-    "modes": { "MAINTAIN": "Holde vægten", "LOSE": "Tabe mig", "GAIN": "Tage på" },
+    "modes": {
+      "MAINTAIN": "Holde vægten",
+      "LOSE": "Tabe mig",
+      "GAIN": "Tage på"
+    },
     "pace": "Tempo",
     "paceValue": "{value}/uge",
     "paceHintLose": "Sundt tempo for dig: højst {value} om ugen. Hurtigere kan ikke vælges.",
@@ -3490,5 +3514,28 @@
       "INPUT": "Inputfelt",
       "STEPPER": "Plus og minus"
     }
+  },
+  "forwardRecipe": {
+    "title": "Send til en ven",
+    "hint": "Send “{name}” som et krypteret link.",
+    "duration": "Hvor længe skal linket virke?",
+    "days": {
+      "1": "1 dag",
+      "7": "7 dage",
+      "30": "30 dage",
+      "90": "90 dage"
+    },
+    "toName": "Venns navn",
+    "toEmail": "Venns e-mail",
+    "fromName": "Fra (dit navn)",
+    "message": "Besked (valgfri)",
+    "encrypted": "Linket er krypteret og holder op med at virke, når tiden er gået.",
+    "share": "Del",
+    "sending": "Opretter linket …",
+    "missing": "Udfyld navn, e-mail og fra-navn (gyldig e-mail).",
+    "error": "Kunne ikke oprette linket.",
+    "copied": "Linket er kopieret.",
+    "shareText": "Prøv “{name}” i Hello Cal!",
+    "button": "Send til en ven"
   }
 }

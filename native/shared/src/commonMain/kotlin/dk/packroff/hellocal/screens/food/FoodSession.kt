@@ -43,6 +43,8 @@ data class DishDraftStep(val title: String = "", val text: String = "", val imag
 
 data class DishDraftDetails(
     val name: String = "",
+    val description: String = "",
+    val durationMinutes: Int? = null,
     val images: List<String> = emptyList(),
     val steps: List<DishDraftStep> = emptyList(),
     val showImages: Boolean = false,
