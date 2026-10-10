@@ -147,6 +147,7 @@ ikke her, er den ikke registreret og skal tilføjes.
 - **Søgeregel (global, 2026-10-09)**: søger brugeren i flertal, vises Product title plural (`namePlural`); i ental vises Product title singular (`name`). Se docs/FRIDA.md.
 - Bilka/REMA ental/flertal + DB-kolonnenavne: se Excelark/NAVNEREGLER.md (status 2026-10-09: _ny-ark lavet, ikke gennemgået).
 - **"ben" hører til produkttypen** (alle ark, brugerens regel 2026-10-10): står "ben" alene i Variation, er det del af produkttypeordet og skrives sammen med det: "Skiver af okse" + "ben" → "Skiver af okseben". Står der "med ben", følger "med ben" med ind i produkttypen ("Ibérico kotelet med ben", som "Koteletter af gris uden ben"). Variation ryddes; `Product type plural` rettes tilsvarende. Se Excelark/NAVNEREGLER.md.
+- **Ost: "revet" og "i blok"** (alle ark, brugerens regel 2026-10-10): al revet ost får keyword `revet` (ordet fjernes fra typen: "Revet mozzarella" → "Mozzarella (Revet)"). Al fast ost og "i stykke" (også "i blok") får keyword `i blok` ("Modnet fast ost 45+ (I blok)"); ikke ost i skiver/tern/revet og ikke "halvfast". Se Excelark/NAVNEREGLER.md.
 - **Børn i familien (bruger 2026-10-09):** et barn kan hverken lukke kontoen, slette sine data eller melde sig ud — kun forælderen (betaleren). Barnet kan ikke fravælge at vise detaljer; det kan kun se, hvad forælderen viser. Gælder web og native. Se DECISIONS.md samme dato.
 
 ## Valgte knapper (user rule 2026-10-09)
