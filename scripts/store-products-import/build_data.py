@@ -82,7 +82,15 @@ NEW_ALIAS = {
               "packageSizeText": "Quantity", "packCount": "Pack Count", "packaging": "Packaging", "category": "Category",
               "barcode": "EAN", **{f"keyword{i}": f"Keyword {i}" for i in range(1, 6)}},
     "rema": {"brand": "Brand", "subbrand": "Subbrand", "productType": "Product type", "variant": "Variant", "flavor": "taste",
-             "packageSizeText": "Quantity", "packCount": "Amount", "category": "Category", "barcode": "EAN", "keyword1": "Keyword 1"},
+             "packageSizeText": "Quantity", "packCount": "Amount", "category": "Category", "barcode": "EAN", "keyword1": "Keyword 1",
+             # 2026-10-10: fedt% staar i _is_fat, alkohol% i _is_alcohol; REMA faar Bilkas praecise kolonner (alkohol-% i
+             # 2. _is_alcohol). Gamle navne virker stadig.
+             "_is_fat": "fat", "_is_alcohol": "%", "_is_alcohol#2": "%", "_is_vegan": "is_vegan", "_is_meat": "is_meat",
+             "_is_lactose_free": "is_lactose_free", "_is_glutenfree": "is_gluten_free", "_is_sugar_free": "is_sugar_free",
+             "_is_alcohol_free": "is_alcohol_free", "_is_organic": "is_biological", "_is_whole_grain": "is_whole_grain",
+             "_is_animal_welfare": "is_animal_wellfare", "_is_country_of_origen": "is_country_of_origin",
+             "_is_allergy": "_is_allergies", "packaging": "is_Packaging", "Source URL": "Source url", "Image File": "Image file",
+             "Parse Status": "Parse status"},
 }
 
 
