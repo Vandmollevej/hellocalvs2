@@ -72,6 +72,7 @@ ikke her, er den ikke registreret og skal tilføjes.
 
 - **ALDRIG grå tekst på grøn baggrund (user rule 2026-10-09)**: tekst på grøn flade (`bg-hf-brand`, grønne knapper/kort) er altid hvid (`text-hf-white`). Kombinér aldrig `text-text-secondary` eller andre grå farver med hvid på grøn — den grå vinder og gør teksten ulæselig. Gælder web og native.
 
+- Sideoverskrifter er altid `hf-type-page-title` (22 px); `hf-type-hero` (32 px) er kun til tal/produktnavn i hero-kort, aldrig til en sides overskrift (bruger 2026-10-09).
 - "Overlay"/"popup" = den træk-bare BottomSheet (`.hf-bottom-sheet`), se KRAV.md.
 - Aktiviteten `open_water` hedder "Svømning i åbent vand" — aldrig "Havsvømning" (bruger 2026-10-09). "havsvømning" er kun et søgeord.
 - Visuelle ændringer: læs design.md; størrelse/vægt ændres i moderate trin.
