@@ -15,6 +15,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -38,6 +39,7 @@ import dk.packroff.hellocal.i18n.Locale
 import dk.packroff.hellocal.i18n.LocalTranslator
 import dk.packroff.hellocal.i18n.Translator
 import dk.packroff.hellocal.nav.LocalNavigator
+import dk.packroff.hellocal.platform.Device
 import dk.packroff.hellocal.platform.NativeHooks
 import dk.packroff.hellocal.screens.capture.AttireToggles
 import dk.packroff.hellocal.screens.capture.SyncStatusItem
@@ -58,6 +60,7 @@ import dk.packroff.hellocal.ui.icons.HcIcon
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.daysUntil
@@ -71,9 +74,17 @@ import kotlin.math.min
 // 2) "Du har vejet dig i morges. Men var det: nøgen / med tøj / …" for every
 //    smart-scale weigh-in whose attire is not confirmed (up to a week back).
 // The "later" flags are the web's sessionStorage keys (HomeSessionFlags).
+// Sheet 2 is also real-time (2026-10-10): while the front page is shown and the
+// app is in the foreground, pending weigh-ins are checked every 15 s and right
+// when the app returns. "Later" covers only the weigh-ins shown; a new one
+// opens the sheet again.
 
 private const val SYNC_LATER_KEY = "hf-weight-sync-later"
 private const val WEIGH_LATER_KEY = "hf-weigh-attire-later"
+private const val POLL_MS = 15_000L
+
+private fun weighLaterKey(id: String) = "$WEIGH_LATER_KEY:$id"
+private fun hasNewWeighIn(list: List<WeighPendingEntry>) = list.any { !HomeSessionFlags.has(weighLaterKey(it.id)) }
 
 @Serializable
 private data class WeighPendingSource(val label: String = "", val icon: String? = null)
@@ -130,7 +141,32 @@ fun HomeWeighInPrompts() {
         stale = staleItems
         pending = pendingList
         if (staleItems.isNotEmpty() && !HomeSessionFlags.has(SYNC_LATER_KEY)) stage = "sync"
-        else if (pendingList.isNotEmpty() && !HomeSessionFlags.has(WEIGH_LATER_KEY)) stage = "weigh"
+        else if (hasNewWeighIn(pendingList)) stage = "weigh"
+    }
+
+    // Real-time: Withings reports new weigh-ins to the server at once
+    // (api/integrations/withings/webhook); fetched here while in the foreground.
+    val foregroundCount = Device.appForegroundCount
+    val backgroundCount = Device.appBackgroundCount
+    var seenBackground by remember { mutableIntStateOf(backgroundCount) }
+    var seenForeground by remember { mutableIntStateOf(foregroundCount) }
+    LaunchedEffect(stage, foregroundCount, backgroundCount) {
+        val returned = foregroundCount != seenForeground
+        val wentBack = backgroundCount != seenBackground && !returned
+        seenBackground = backgroundCount
+        seenForeground = foregroundCount
+        if (stage != "none" || wentBack) return@LaunchedEffect
+        // The opening check above covers the first load; a return checks at once.
+        if (!returned) delay(POLL_MS)
+        while (true) {
+            val list = loadWeighPending()
+            if (hasNewWeighIn(list)) {
+                pending = list
+                stage = "weigh"
+                return@LaunchedEffect
+            }
+            delay(POLL_MS)
+        }
     }
 
     if (stage == "sync" && stale.isNotEmpty()) {
@@ -139,7 +175,7 @@ fun HomeWeighInPrompts() {
             onSynced = { scope.launch { pending = loadWeighPending() } },
             onClose = {
                 HomeSessionFlags.set(SYNC_LATER_KEY)
-                stage = if (pending.isNotEmpty() && !HomeSessionFlags.has(WEIGH_LATER_KEY)) "weigh" else "none"
+                stage = if (hasNewWeighIn(pending)) "weigh" else "none"
             },
         )
     } else if (stage == "weigh" && pending.isNotEmpty()) {
@@ -147,7 +183,7 @@ fun HomeWeighInPrompts() {
             pending,
             onDone = { stage = "none" },
             onLater = {
-                HomeSessionFlags.set(WEIGH_LATER_KEY)
+                pending.forEach { HomeSessionFlags.set(weighLaterKey(it.id)) }
                 stage = "none"
             },
         )

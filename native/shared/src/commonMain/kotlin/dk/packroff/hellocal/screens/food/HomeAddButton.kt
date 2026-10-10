@@ -76,7 +76,7 @@ object AddActions {
         AddAction("search", "/search", FoodIconSpec.Tabler("Search"), "addButton.search"),
         AddAction("weight", "/weight/create", FoodIconSpec.Mask("/icons/bathroom-scale.png"), "addButton.weight"),
         AddAction("water", "/water/create", FoodIconSpec.Mask("/icons/water-glass.png"), "addButton.water"),
-        AddAction("activity", "/activity/create", FoodIconSpec.Picture("/icons/activity-3d.png"), "addButton.activity"),
+        AddAction("activity", "/activity/create", FoodIconSpec.Tabler("Activity"), "addButton.activity"),
         AddAction("camera", "/camera?mode=product", FoodIconSpec.Tabler("Camera"), "addButton.camera"),
         AddAction("targetWeight", "/profile/goals", FoodIconSpec.Mask("/icons/party-popper.png"), "profile.actions.target"),
         AddAction("bodyMeasurements", "/profile/body-measurements", FoodIconSpec.Mask("/icons/body-measurements/waist-male.png"), "profile.row.bodyMeasurements"),

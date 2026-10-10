@@ -1,6 +1,6 @@
 {
   "/": {
-    "src/app/layout.tsx": "32a09f6743aabdc5",
+    "src/app/layout.tsx": "ce9cce1fff73600a",
     "src/app/page.tsx": "1925ba0d73864b12",
     "src/components/AddButton.tsx": "8ac29d8e1ea0b42a",
     "src/components/AuthGate.tsx": "94db96b768f9f95f",
@@ -53,16 +53,16 @@
     "src/components/onboarding/ActivityStep.tsx": "1825e0f2fd58523f",
     "src/components/ui/Toggle.tsx": "8fc97afe3b61a5a3",
     "src/components/weight/AttireToggles.tsx": "e5ce3e4e1da336dc",
-    "src/components/weight/WeighInPrompts.tsx": "757b76feecbf8527"
+    "src/components/weight/WeighInPrompts.tsx": "dae9e0da737a08e8"
   },
   "/account/phone": {
     "src/app/account/phone/page.tsx": "113c8d9cf805a8d7",
-    "src/app/layout.tsx": "32a09f6743aabdc5",
+    "src/app/layout.tsx": "ce9cce1fff73600a",
     "src/components/hf/TextField.tsx": "8339609e420b5315"
   },
   "/activity/create": {
     "src/app/activity/create/page.tsx": "4a73b65ce85e58ec",
-    "src/app/layout.tsx": "32a09f6743aabdc5",
+    "src/app/layout.tsx": "ce9cce1fff73600a",
     "src/components/AuthGate.tsx": "94db96b768f9f95f",
     "src/components/BottomNav.tsx": "5bab069a374d4d04",
     "src/components/EmailVerifySheet.tsx": "42e52d85f9bf57d9",
@@ -90,7 +90,7 @@
   },
   "/add/[id]": {
     "src/app/add/[id]/page.tsx": "74dbe4cc1a6ecb2c",
-    "src/app/layout.tsx": "32a09f6743aabdc5",
+    "src/app/layout.tsx": "ce9cce1fff73600a",
     "src/components/AuthGate.tsx": "94db96b768f9f95f",
     "src/components/BottomNav.tsx": "5bab069a374d4d04",
     "src/components/EmailVerifySheet.tsx": "42e52d85f9bf57d9",
@@ -130,7 +130,7 @@
   },
   "/add/[id]/photo-award": {
     "src/app/add/[id]/photo-award/page.tsx": "ba9d7909c9efed26",
-    "src/app/layout.tsx": "32a09f6743aabdc5",
+    "src/app/layout.tsx": "ce9cce1fff73600a",
     "src/components/AuthGate.tsx": "94db96b768f9f95f",
     "src/components/BottomNav.tsx": "5bab069a374d4d04",
     "src/components/EmailVerifySheet.tsx": "42e52d85f9bf57d9",
@@ -156,7 +156,7 @@
   },
   "/add/[id]/update": {
     "src/app/add/[id]/update/page.tsx": "893fe0f2ea5f95fd",
-    "src/app/layout.tsx": "32a09f6743aabdc5",
+    "src/app/layout.tsx": "ce9cce1fff73600a",
     "src/components/AuthGate.tsx": "94db96b768f9f95f",
     "src/components/BottomNav.tsx": "5bab069a374d4d04",
     "src/components/EmailVerifySheet.tsx": "42e52d85f9bf57d9",
@@ -182,7 +182,7 @@
   },
   "/add/menu": {
     "src/app/add/menu/page.tsx": "6f7ec4fe6ec83c9e",
-    "src/app/layout.tsx": "32a09f6743aabdc5",
+    "src/app/layout.tsx": "ce9cce1fff73600a",
     "src/components/AuthGate.tsx": "94db96b768f9f95f",
     "src/components/BottomNav.tsx": "5bab069a374d4d04",
     "src/components/EmailVerifySheet.tsx": "42e52d85f9bf57d9",
@@ -208,7 +208,7 @@
   },
   "/approve-login": {
     "src/app/approve-login/page.tsx": "ae74889702e13c6d",
-    "src/app/layout.tsx": "32a09f6743aabdc5",
+    "src/app/layout.tsx": "ce9cce1fff73600a",
     "src/components/AuthGate.tsx": "94db96b768f9f95f",
     "src/components/BottomNav.tsx": "5bab069a374d4d04",
     "src/components/EmailVerifySheet.tsx": "42e52d85f9bf57d9",
@@ -234,7 +234,7 @@
   },
   "/betingelser": {
     "src/app/betingelser/page.tsx": "8d4890d7ee28ef7f",
-    "src/app/layout.tsx": "32a09f6743aabdc5",
+    "src/app/layout.tsx": "ce9cce1fff73600a",
     "src/components/AuthGate.tsx": "94db96b768f9f95f",
     "src/components/EmailVerifySheet.tsx": "42e52d85f9bf57d9",
     "src/components/ProfileAvatarLink.tsx": "598cd23c3331619d",
@@ -249,7 +249,7 @@
   },
   "/calendar": {
     "src/app/calendar/page.tsx": "9f093a428c60e110",
-    "src/app/layout.tsx": "32a09f6743aabdc5",
+    "src/app/layout.tsx": "ce9cce1fff73600a",
     "src/components/AuthGate.tsx": "94db96b768f9f95f",
     "src/components/BottomNav.tsx": "5bab069a374d4d04",
     "src/components/EmailVerifySheet.tsx": "42e52d85f9bf57d9",
@@ -291,7 +291,7 @@
   },
   "/camera": {
     "src/app/camera/page.tsx": "462e40e531fb8252",
-    "src/app/layout.tsx": "32a09f6743aabdc5",
+    "src/app/layout.tsx": "ce9cce1fff73600a",
     "src/components/AuthGate.tsx": "94db96b768f9f95f",
     "src/components/BottomNav.tsx": "5bab069a374d4d04",
     "src/components/EmailVerifySheet.tsx": "42e52d85f9bf57d9",
@@ -330,11 +330,11 @@
   },
   "/camera/create": {
     "src/app/camera/create/page.tsx": "b7aab59d18e4f8c5",
-    "src/app/layout.tsx": "32a09f6743aabdc5"
+    "src/app/layout.tsx": "ce9cce1fff73600a"
   },
   "/chat": {
     "src/app/chat/page.tsx": "3846c35519650dfc",
-    "src/app/layout.tsx": "32a09f6743aabdc5",
+    "src/app/layout.tsx": "ce9cce1fff73600a",
     "src/components/AuthGate.tsx": "94db96b768f9f95f",
     "src/components/BottomNav.tsx": "5bab069a374d4d04",
     "src/components/EmailVerifySheet.tsx": "42e52d85f9bf57d9",
@@ -365,7 +365,7 @@
   },
   "/create-dish": {
     "src/app/create-dish/page.tsx": "820b3ea50c73ef56",
-    "src/app/layout.tsx": "32a09f6743aabdc5",
+    "src/app/layout.tsx": "ce9cce1fff73600a",
     "src/components/AuthGate.tsx": "94db96b768f9f95f",
     "src/components/BottomNav.tsx": "5bab069a374d4d04",
     "src/components/EmailVerifySheet.tsx": "42e52d85f9bf57d9",
@@ -403,7 +403,7 @@
   },
   "/drinks": {
     "src/app/drinks/page.tsx": "f616415550b91a4d",
-    "src/app/layout.tsx": "32a09f6743aabdc5",
+    "src/app/layout.tsx": "ce9cce1fff73600a",
     "src/components/AuthGate.tsx": "94db96b768f9f95f",
     "src/components/BottomNav.tsx": "5bab069a374d4d04",
     "src/components/EmailVerifySheet.tsx": "42e52d85f9bf57d9",
@@ -430,7 +430,7 @@
   },
   "/drinks/[id]": {
     "src/app/drinks/[id]/page.tsx": "08b7c1b7c5fb6de4",
-    "src/app/layout.tsx": "32a09f6743aabdc5",
+    "src/app/layout.tsx": "ce9cce1fff73600a",
     "src/components/AuthGate.tsx": "94db96b768f9f95f",
     "src/components/BottomNav.tsx": "5bab069a374d4d04",
     "src/components/EmailVerifySheet.tsx": "42e52d85f9bf57d9",
@@ -459,11 +459,11 @@
   "/e-numre": {
     "src/app/e-numre/ENumberDirectory.tsx": "3fd0efdc60a3af09",
     "src/app/e-numre/page.tsx": "e819064a086b27a6",
-    "src/app/layout.tsx": "32a09f6743aabdc5"
+    "src/app/layout.tsx": "ce9cce1fff73600a"
   },
   "/e-numre/[code]": {
     "src/app/e-numre/[code]/page.tsx": "08b07c79d05dde7c",
-    "src/app/layout.tsx": "32a09f6743aabdc5",
+    "src/app/layout.tsx": "ce9cce1fff73600a",
     "src/components/AuthGate.tsx": "94db96b768f9f95f",
     "src/components/BottomNav.tsx": "5bab069a374d4d04",
     "src/components/EmailVerifySheet.tsx": "42e52d85f9bf57d9",
@@ -489,7 +489,7 @@
   },
   "/family-code": {
     "src/app/family-code/page.tsx": "1df9fe6acfdcacec",
-    "src/app/layout.tsx": "32a09f6743aabdc5",
+    "src/app/layout.tsx": "ce9cce1fff73600a",
     "src/components/AuthGate.tsx": "94db96b768f9f95f",
     "src/components/BottomNav.tsx": "5bab069a374d4d04",
     "src/components/EmailVerifySheet.tsx": "42e52d85f9bf57d9",
@@ -516,7 +516,7 @@
   },
   "/family-code/join": {
     "src/app/family-code/join/page.tsx": "a4677aa8e5b8b5b4",
-    "src/app/layout.tsx": "32a09f6743aabdc5",
+    "src/app/layout.tsx": "ce9cce1fff73600a",
     "src/components/AuthGate.tsx": "94db96b768f9f95f",
     "src/components/BottomNav.tsx": "5bab069a374d4d04",
     "src/components/EmailVerifySheet.tsx": "42e52d85f9bf57d9",
@@ -542,7 +542,7 @@
   },
   "/family-code/scan": {
     "src/app/family-code/scan/page.tsx": "4f1b958e2be69097",
-    "src/app/layout.tsx": "32a09f6743aabdc5",
+    "src/app/layout.tsx": "ce9cce1fff73600a",
     "src/components/AuthGate.tsx": "94db96b768f9f95f",
     "src/components/BottomNav.tsx": "5bab069a374d4d04",
     "src/components/EmailVerifySheet.tsx": "42e52d85f9bf57d9",
@@ -568,7 +568,7 @@
   },
   "/favorites": {
     "src/app/favorites/page.tsx": "c84fc3104f0b87e1",
-    "src/app/layout.tsx": "32a09f6743aabdc5",
+    "src/app/layout.tsx": "ce9cce1fff73600a",
     "src/components/AuthGate.tsx": "94db96b768f9f95f",
     "src/components/BottomNav.tsx": "5bab069a374d4d04",
     "src/components/EmailVerifySheet.tsx": "42e52d85f9bf57d9",
@@ -599,7 +599,7 @@
   },
   "/foods": {
     "src/app/foods/page.tsx": "d96bf8b888d6bee7",
-    "src/app/layout.tsx": "32a09f6743aabdc5",
+    "src/app/layout.tsx": "ce9cce1fff73600a",
     "src/components/AuthGate.tsx": "94db96b768f9f95f",
     "src/components/BottomNav.tsx": "5bab069a374d4d04",
     "src/components/EmailVerifySheet.tsx": "42e52d85f9bf57d9",
@@ -629,22 +629,22 @@
   },
   "/foods/new": {
     "src/app/foods/new/page.tsx": "663b228ffd38150f",
-    "src/app/layout.tsx": "32a09f6743aabdc5"
+    "src/app/layout.tsx": "ce9cce1fff73600a"
   },
   "/forgot-password": {
     "src/app/forgot-password/page.tsx": "cd52c24fb389092f",
-    "src/app/layout.tsx": "32a09f6743aabdc5",
+    "src/app/layout.tsx": "ce9cce1fff73600a",
     "src/components/hf/HfChevron.tsx": "11106e436ea8e3ef",
     "src/components/hf/TextField.tsx": "8339609e420b5315"
   },
   "/forward/[token]": {
     "src/app/forward/[token]/page.tsx": "754b9f5e94114d6b",
-    "src/app/layout.tsx": "32a09f6743aabdc5",
+    "src/app/layout.tsx": "ce9cce1fff73600a",
     "src/components/AddForwardedItemButton.tsx": "d95f5ca4e4d48a74"
   },
   "/hello-doc/[token]": {
     "src/app/hello-doc/[token]/page.tsx": "bc2fb67fbdfa33f5",
-    "src/app/layout.tsx": "32a09f6743aabdc5",
+    "src/app/layout.tsx": "ce9cce1fff73600a",
     "src/components/hf/HelloDocInsight.tsx": "fd0818c6f02274be",
     "src/components/hf/InsightMenu.tsx": "51e32abb44913626",
     "src/components/hf/MiniChart.tsx": "14a7b60675b63296",
@@ -706,7 +706,7 @@
     "src/components/web/WebShell.tsx": "5f2646ffd79af9cc"
   },
   "/login": {
-    "src/app/layout.tsx": "32a09f6743aabdc5",
+    "src/app/layout.tsx": "ce9cce1fff73600a",
     "src/app/login/page.tsx": "91f688e234e530c4",
     "src/components/FaceIdAnimation.tsx": "fb12bbf8a00c5490",
     "src/components/hf/BottomSheet.tsx": "2e09a9f4fae4c060",
@@ -715,22 +715,22 @@
     "src/components/hf/TextField.tsx": "8339609e420b5315"
   },
   "/login/country": {
-    "src/app/layout.tsx": "32a09f6743aabdc5",
+    "src/app/layout.tsx": "ce9cce1fff73600a",
     "src/app/login/country/page.tsx": "957ac8fca1f28dc6",
     "src/components/hf/HfChevron.tsx": "11106e436ea8e3ef"
   },
   "/login/face-id": {
-    "src/app/layout.tsx": "32a09f6743aabdc5",
+    "src/app/layout.tsx": "ce9cce1fff73600a",
     "src/app/login/face-id/page.tsx": "36d6ac00cace8137",
     "src/components/FaceIdAnimation.tsx": "fb12bbf8a00c5490"
   },
   "/mad-paa-latin": {
-    "src/app/layout.tsx": "32a09f6743aabdc5",
+    "src/app/layout.tsx": "ce9cce1fff73600a",
     "src/app/mad-paa-latin/FoodTermDirectory.tsx": "29ace886a2e934d8",
     "src/app/mad-paa-latin/page.tsx": "27c27f52ad49f3a3"
   },
   "/my-scans": {
-    "src/app/layout.tsx": "32a09f6743aabdc5",
+    "src/app/layout.tsx": "ce9cce1fff73600a",
     "src/app/my-scans/page.tsx": "119589cfb3561d9b",
     "src/components/AuthGate.tsx": "94db96b768f9f95f",
     "src/components/BottomNav.tsx": "5bab069a374d4d04",
@@ -760,11 +760,11 @@
     "src/components/web/WebShell.tsx": "5f2646ffd79af9cc"
   },
   "/om-os": {
-    "src/app/layout.tsx": "32a09f6743aabdc5",
+    "src/app/layout.tsx": "ce9cce1fff73600a",
     "src/app/om-os/page.tsx": "8261e623bcc9587f"
   },
   "/period/create": {
-    "src/app/layout.tsx": "32a09f6743aabdc5",
+    "src/app/layout.tsx": "ce9cce1fff73600a",
     "src/app/period/create/page.tsx": "994dd19907dc53a2",
     "src/components/AuthGate.tsx": "94db96b768f9f95f",
     "src/components/BottomNav.tsx": "5bab069a374d4d04",
@@ -791,12 +791,12 @@
     "src/components/web/WebShell.tsx": "5f2646ffd79af9cc"
   },
   "/presse": {
-    "src/app/layout.tsx": "32a09f6743aabdc5",
+    "src/app/layout.tsx": "ce9cce1fff73600a",
     "src/app/presse/page.tsx": "e70ef243d77c4553",
     "src/components/landing/MarketingShell.tsx": "578e777d557415bb"
   },
   "/privatlivspolitik": {
-    "src/app/layout.tsx": "32a09f6743aabdc5",
+    "src/app/layout.tsx": "ce9cce1fff73600a",
     "src/app/privatlivspolitik/page.tsx": "49b61223b262bcb6",
     "src/components/AuthGate.tsx": "94db96b768f9f95f",
     "src/components/EmailVerifySheet.tsx": "42e52d85f9bf57d9",
@@ -811,7 +811,7 @@
     "src/components/web/WebShell.tsx": "5f2646ffd79af9cc"
   },
   "/product/create": {
-    "src/app/layout.tsx": "32a09f6743aabdc5",
+    "src/app/layout.tsx": "ce9cce1fff73600a",
     "src/app/product/create/page.tsx": "d21124148d3a98be",
     "src/components/AuthGate.tsx": "94db96b768f9f95f",
     "src/components/BottomNav.tsx": "5bab069a374d4d04",
@@ -842,7 +842,7 @@
     "src/components/web/WebShell.tsx": "5f2646ffd79af9cc"
   },
   "/profile": {
-    "src/app/layout.tsx": "32a09f6743aabdc5",
+    "src/app/layout.tsx": "ce9cce1fff73600a",
     "src/app/profile/page.tsx": "dc1f2b29089c7fbb",
     "src/components/AuthGate.tsx": "94db96b768f9f95f",
     "src/components/BottomNav.tsx": "5bab069a374d4d04",
@@ -878,7 +878,7 @@
     "src/components/web/WebShell.tsx": "5f2646ffd79af9cc"
   },
   "/profile/body-measurements": {
-    "src/app/layout.tsx": "32a09f6743aabdc5",
+    "src/app/layout.tsx": "ce9cce1fff73600a",
     "src/app/profile/body-measurements/page.tsx": "df399cfebe9cf12d",
     "src/components/AuthGate.tsx": "94db96b768f9f95f",
     "src/components/BottomNav.tsx": "5bab069a374d4d04",
@@ -905,7 +905,7 @@
     "src/components/web/WebShell.tsx": "5f2646ffd79af9cc"
   },
   "/profile/change-password": {
-    "src/app/layout.tsx": "32a09f6743aabdc5",
+    "src/app/layout.tsx": "ce9cce1fff73600a",
     "src/app/profile/change-password/page.tsx": "c2a3d7255541dfe6",
     "src/components/AuthGate.tsx": "94db96b768f9f95f",
     "src/components/BottomNav.tsx": "5bab069a374d4d04",
@@ -933,7 +933,7 @@
     "src/components/web/WebShell.tsx": "5f2646ffd79af9cc"
   },
   "/profile/edit": {
-    "src/app/layout.tsx": "32a09f6743aabdc5",
+    "src/app/layout.tsx": "ce9cce1fff73600a",
     "src/app/profile/edit/page.tsx": "a817e4d911077c81",
     "src/components/AuthGate.tsx": "94db96b768f9f95f",
     "src/components/BottomNav.tsx": "5bab069a374d4d04",
@@ -970,7 +970,7 @@
     "src/components/web/WebShell.tsx": "5f2646ffd79af9cc"
   },
   "/profile/energy-goal": {
-    "src/app/layout.tsx": "32a09f6743aabdc5",
+    "src/app/layout.tsx": "ce9cce1fff73600a",
     "src/app/profile/energy-goal/page.tsx": "0d353cd0add14a15",
     "src/components/AuthGate.tsx": "94db96b768f9f95f",
     "src/components/BottomNav.tsx": "5bab069a374d4d04",
@@ -1000,7 +1000,7 @@
     "src/components/web/WebShell.tsx": "5f2646ffd79af9cc"
   },
   "/profile/family": {
-    "src/app/layout.tsx": "32a09f6743aabdc5",
+    "src/app/layout.tsx": "ce9cce1fff73600a",
     "src/app/profile/family/page.tsx": "dd37328502751ae6",
     "src/components/AuthGate.tsx": "94db96b768f9f95f",
     "src/components/BottomNav.tsx": "5bab069a374d4d04",
@@ -1033,7 +1033,7 @@
     "src/components/web/WebShell.tsx": "5f2646ffd79af9cc"
   },
   "/profile/goals": {
-    "src/app/layout.tsx": "32a09f6743aabdc5",
+    "src/app/layout.tsx": "ce9cce1fff73600a",
     "src/app/profile/goals/page.tsx": "fecf106e0bf04fd7",
     "src/components/AuthGate.tsx": "94db96b768f9f95f",
     "src/components/BottomNav.tsx": "5bab069a374d4d04",
@@ -1068,7 +1068,7 @@
     "src/components/web/WebShell.tsx": "5f2646ffd79af9cc"
   },
   "/profile/goals/[id]": {
-    "src/app/layout.tsx": "32a09f6743aabdc5",
+    "src/app/layout.tsx": "ce9cce1fff73600a",
     "src/app/profile/goals/[id]/page.tsx": "b3c96f678c98c83b",
     "src/components/AuthGate.tsx": "94db96b768f9f95f",
     "src/components/BottomNav.tsx": "5bab069a374d4d04",
@@ -1096,7 +1096,7 @@
     "src/components/web/WebShell.tsx": "5f2646ffd79af9cc"
   },
   "/profile/goals/[id]/edit": {
-    "src/app/layout.tsx": "32a09f6743aabdc5",
+    "src/app/layout.tsx": "ce9cce1fff73600a",
     "src/app/profile/goals/[id]/edit/layout.tsx": "74dcb771aa80ad1c",
     "src/app/profile/goals/[id]/edit/page.tsx": "971078ed5766f73f",
     "src/components/AuthGate.tsx": "94db96b768f9f95f",
@@ -1126,7 +1126,7 @@
     "src/components/web/WebShell.tsx": "5f2646ffd79af9cc"
   },
   "/profile/goals/new": {
-    "src/app/layout.tsx": "32a09f6743aabdc5",
+    "src/app/layout.tsx": "ce9cce1fff73600a",
     "src/app/profile/goals/new/layout.tsx": "16ade635a89de7a7",
     "src/app/profile/goals/new/page.tsx": "d8e0682ff13a5f66",
     "src/components/AuthGate.tsx": "94db96b768f9f95f",
@@ -1156,7 +1156,7 @@
     "src/components/web/WebShell.tsx": "5f2646ffd79af9cc"
   },
   "/profile/goals/upcoming": {
-    "src/app/layout.tsx": "32a09f6743aabdc5",
+    "src/app/layout.tsx": "ce9cce1fff73600a",
     "src/app/profile/goals/upcoming/page.tsx": "c22e0a51382441a7",
     "src/components/AuthGate.tsx": "94db96b768f9f95f",
     "src/components/BottomNav.tsx": "5bab069a374d4d04",
@@ -1185,7 +1185,7 @@
     "src/components/web/WebShell.tsx": "5f2646ffd79af9cc"
   },
   "/profile/height": {
-    "src/app/layout.tsx": "32a09f6743aabdc5",
+    "src/app/layout.tsx": "ce9cce1fff73600a",
     "src/app/profile/height/page.tsx": "5185f1d28e2ac94f",
     "src/components/AuthGate.tsx": "94db96b768f9f95f",
     "src/components/BottomNav.tsx": "5bab069a374d4d04",
@@ -1211,7 +1211,7 @@
     "src/components/web/WebShell.tsx": "5f2646ffd79af9cc"
   },
   "/profile/invite": {
-    "src/app/layout.tsx": "32a09f6743aabdc5",
+    "src/app/layout.tsx": "ce9cce1fff73600a",
     "src/app/profile/invite/page.tsx": "2509900f4957488d",
     "src/components/AuthGate.tsx": "94db96b768f9f95f",
     "src/components/BottomNav.tsx": "5bab069a374d4d04",
@@ -1239,7 +1239,7 @@
     "src/components/web/WebShell.tsx": "5f2646ffd79af9cc"
   },
   "/profile/login-approval": {
-    "src/app/layout.tsx": "32a09f6743aabdc5",
+    "src/app/layout.tsx": "ce9cce1fff73600a",
     "src/app/profile/login-approval/page.tsx": "9c4531a73eaece8e",
     "src/components/AuthGate.tsx": "94db96b768f9f95f",
     "src/components/BottomNav.tsx": "5bab069a374d4d04",
@@ -1265,7 +1265,7 @@
     "src/components/web/WebShell.tsx": "5f2646ffd79af9cc"
   },
   "/profile/messages": {
-    "src/app/layout.tsx": "32a09f6743aabdc5",
+    "src/app/layout.tsx": "ce9cce1fff73600a",
     "src/app/profile/messages/page.tsx": "53570be20d318e43",
     "src/components/AuthGate.tsx": "94db96b768f9f95f",
     "src/components/BottomNav.tsx": "5bab069a374d4d04",
@@ -1293,7 +1293,7 @@
     "src/components/web/WebShell.tsx": "5f2646ffd79af9cc"
   },
   "/profile/messages/trash": {
-    "src/app/layout.tsx": "32a09f6743aabdc5",
+    "src/app/layout.tsx": "ce9cce1fff73600a",
     "src/app/profile/messages/trash/page.tsx": "08d1613fc54fbd22",
     "src/components/AuthGate.tsx": "94db96b768f9f95f",
     "src/components/BottomNav.tsx": "5bab069a374d4d04",
@@ -1321,7 +1321,7 @@
     "src/components/web/WebShell.tsx": "5f2646ffd79af9cc"
   },
   "/profile/notifications": {
-    "src/app/layout.tsx": "32a09f6743aabdc5",
+    "src/app/layout.tsx": "ce9cce1fff73600a",
     "src/app/profile/notifications/page.tsx": "e137b6157effbc7b",
     "src/components/AuthGate.tsx": "94db96b768f9f95f",
     "src/components/BottomNav.tsx": "5bab069a374d4d04",
@@ -1349,7 +1349,7 @@
     "src/components/web/WebShell.tsx": "5f2646ffd79af9cc"
   },
   "/profile/photo-diary": {
-    "src/app/layout.tsx": "32a09f6743aabdc5",
+    "src/app/layout.tsx": "ce9cce1fff73600a",
     "src/app/profile/photo-diary/layout.tsx": "bacdb346d82ac7cc",
     "src/app/profile/photo-diary/page.tsx": "c4c418f2f59ca484",
     "src/components/AuthGate.tsx": "94db96b768f9f95f",
@@ -1383,7 +1383,7 @@
     "src/components/web/WebShell.tsx": "5f2646ffd79af9cc"
   },
   "/profile/points": {
-    "src/app/layout.tsx": "32a09f6743aabdc5",
+    "src/app/layout.tsx": "ce9cce1fff73600a",
     "src/app/profile/points/page.tsx": "7faea8d5441b9007",
     "src/components/AuthGate.tsx": "94db96b768f9f95f",
     "src/components/BottomNav.tsx": "5bab069a374d4d04",
@@ -1409,7 +1409,7 @@
     "src/components/web/WebShell.tsx": "5f2646ffd79af9cc"
   },
   "/profile/recipes": {
-    "src/app/layout.tsx": "32a09f6743aabdc5",
+    "src/app/layout.tsx": "ce9cce1fff73600a",
     "src/app/profile/recipes/page.tsx": "7df01eba57fcabbb",
     "src/components/AuthGate.tsx": "94db96b768f9f95f",
     "src/components/BottomNav.tsx": "5bab069a374d4d04",
@@ -1443,7 +1443,7 @@
     "src/components/web/WebShell.tsx": "5f2646ffd79af9cc"
   },
   "/profile/recipes/[id]": {
-    "src/app/layout.tsx": "32a09f6743aabdc5",
+    "src/app/layout.tsx": "ce9cce1fff73600a",
     "src/app/profile/recipes/[id]/page.tsx": "b3b9cd4d514e905c",
     "src/components/AuthGate.tsx": "94db96b768f9f95f",
     "src/components/BottomNav.tsx": "5bab069a374d4d04",
@@ -1476,7 +1476,7 @@
     "src/components/web/WebShell.tsx": "5f2646ffd79af9cc"
   },
   "/profile/recipes/filters": {
-    "src/app/layout.tsx": "32a09f6743aabdc5",
+    "src/app/layout.tsx": "ce9cce1fff73600a",
     "src/app/profile/recipes/filters/page.tsx": "2edb805e2aba17fd",
     "src/components/AuthGate.tsx": "94db96b768f9f95f",
     "src/components/BottomNav.tsx": "5bab069a374d4d04",
@@ -1507,7 +1507,7 @@
     "src/components/web/WebShell.tsx": "5f2646ffd79af9cc"
   },
   "/profile/recipes/hellofresh/[id]": {
-    "src/app/layout.tsx": "32a09f6743aabdc5",
+    "src/app/layout.tsx": "ce9cce1fff73600a",
     "src/app/profile/recipes/hellofresh/[id]/page.tsx": "06a95d6e5438788c",
     "src/components/hf/HfChevron.tsx": "11106e436ea8e3ef",
     "src/components/icons/Favorite.tsx": "70f85dd37d71acbf",
@@ -1520,7 +1520,7 @@
     "src/components/recipes/RecipeThumbs.tsx": "894c8710e8ee4305"
   },
   "/profile/report-bug": {
-    "src/app/layout.tsx": "32a09f6743aabdc5",
+    "src/app/layout.tsx": "ce9cce1fff73600a",
     "src/app/profile/report-bug/page.tsx": "cd4ab0b93442a09f",
     "src/components/AuthGate.tsx": "94db96b768f9f95f",
     "src/components/BottomNav.tsx": "5bab069a374d4d04",
@@ -1548,7 +1548,7 @@
     "src/components/web/WebShell.tsx": "5f2646ffd79af9cc"
   },
   "/profile/screenings": {
-    "src/app/layout.tsx": "32a09f6743aabdc5",
+    "src/app/layout.tsx": "ce9cce1fff73600a",
     "src/app/profile/screenings/page.tsx": "2833b219e9d94930",
     "src/components/AuthGate.tsx": "94db96b768f9f95f",
     "src/components/BottomNav.tsx": "5bab069a374d4d04",
@@ -1580,7 +1580,7 @@
     "src/components/web/WebShell.tsx": "5f2646ffd79af9cc"
   },
   "/profile/screenings/[id]": {
-    "src/app/layout.tsx": "32a09f6743aabdc5",
+    "src/app/layout.tsx": "ce9cce1fff73600a",
     "src/app/profile/screenings/[id]/page.tsx": "59a5b4672c456e68",
     "src/components/AuthGate.tsx": "94db96b768f9f95f",
     "src/components/BottomNav.tsx": "5bab069a374d4d04",
@@ -1614,7 +1614,7 @@
     "src/components/web/WebShell.tsx": "5f2646ffd79af9cc"
   },
   "/profile/screenings/new": {
-    "src/app/layout.tsx": "32a09f6743aabdc5",
+    "src/app/layout.tsx": "ce9cce1fff73600a",
     "src/app/profile/screenings/new/page.tsx": "dcbcec4a0901f2aa",
     "src/components/AuthGate.tsx": "94db96b768f9f95f",
     "src/components/BottomNav.tsx": "5bab069a374d4d04",
@@ -1647,7 +1647,7 @@
     "src/components/web/WebShell.tsx": "5f2646ffd79af9cc"
   },
   "/profile/screenings/reports": {
-    "src/app/layout.tsx": "32a09f6743aabdc5",
+    "src/app/layout.tsx": "ce9cce1fff73600a",
     "src/app/profile/screenings/reports/page.tsx": "f76750c9016bdc95",
     "src/components/AuthGate.tsx": "94db96b768f9f95f",
     "src/components/BottomNav.tsx": "5bab069a374d4d04",
@@ -1675,7 +1675,7 @@
     "src/components/web/WebShell.tsx": "5f2646ffd79af9cc"
   },
   "/profile/screenings/reports/[id]": {
-    "src/app/layout.tsx": "32a09f6743aabdc5",
+    "src/app/layout.tsx": "ce9cce1fff73600a",
     "src/app/profile/screenings/reports/[id]/page.tsx": "cae44f699a538829",
     "src/components/AuthGate.tsx": "94db96b768f9f95f",
     "src/components/BottomNav.tsx": "5bab069a374d4d04",
@@ -1703,7 +1703,7 @@
     "src/components/web/WebShell.tsx": "5f2646ffd79af9cc"
   },
   "/profile/settings": {
-    "src/app/layout.tsx": "32a09f6743aabdc5",
+    "src/app/layout.tsx": "ce9cce1fff73600a",
     "src/app/profile/settings/page.tsx": "b8780c72d6d6a2f7",
     "src/components/AuthGate.tsx": "94db96b768f9f95f",
     "src/components/BottomNav.tsx": "5bab069a374d4d04",
@@ -1730,7 +1730,7 @@
     "src/components/web/WebShell.tsx": "5f2646ffd79af9cc"
   },
   "/profile/settings/language-region": {
-    "src/app/layout.tsx": "32a09f6743aabdc5",
+    "src/app/layout.tsx": "ce9cce1fff73600a",
     "src/app/profile/settings/language-region/page.tsx": "4c66c8750840dfba",
     "src/components/AuthGate.tsx": "94db96b768f9f95f",
     "src/components/BottomNav.tsx": "5bab069a374d4d04",
@@ -1758,7 +1758,7 @@
     "src/components/web/WebShell.tsx": "5f2646ffd79af9cc"
   },
   "/profile/settings/results": {
-    "src/app/layout.tsx": "32a09f6743aabdc5",
+    "src/app/layout.tsx": "ce9cce1fff73600a",
     "src/app/profile/settings/results/layout.tsx": "61e3314031aa7701",
     "src/app/profile/settings/results/page.tsx": "0de57eb876f8c888",
     "src/components/AuthGate.tsx": "94db96b768f9f95f",
@@ -1787,7 +1787,7 @@
     "src/components/web/WebShell.tsx": "5f2646ffd79af9cc"
   },
   "/profile/sleep": {
-    "src/app/layout.tsx": "32a09f6743aabdc5",
+    "src/app/layout.tsx": "ce9cce1fff73600a",
     "src/app/profile/sleep/page.tsx": "d6f467adaf97c37b",
     "src/components/AuthGate.tsx": "94db96b768f9f95f",
     "src/components/BottomNav.tsx": "5bab069a374d4d04",
@@ -1816,7 +1816,7 @@
     "src/components/web/WebShell.tsx": "5f2646ffd79af9cc"
   },
   "/profile/start-weight": {
-    "src/app/layout.tsx": "32a09f6743aabdc5",
+    "src/app/layout.tsx": "ce9cce1fff73600a",
     "src/app/profile/start-weight/page.tsx": "af24feb78c0a6a5e",
     "src/components/AuthGate.tsx": "94db96b768f9f95f",
     "src/components/BottomNav.tsx": "5bab069a374d4d04",
@@ -1842,7 +1842,7 @@
     "src/components/web/WebShell.tsx": "5f2646ffd79af9cc"
   },
   "/profile/start-weight/verify": {
-    "src/app/layout.tsx": "32a09f6743aabdc5",
+    "src/app/layout.tsx": "ce9cce1fff73600a",
     "src/app/profile/start-weight/verify/page.tsx": "84e3361bdb5e3068",
     "src/components/AuthGate.tsx": "94db96b768f9f95f",
     "src/components/BottomNav.tsx": "5bab069a374d4d04",
@@ -1868,7 +1868,7 @@
     "src/components/web/WebShell.tsx": "5f2646ffd79af9cc"
   },
   "/profile/status": {
-    "src/app/layout.tsx": "32a09f6743aabdc5",
+    "src/app/layout.tsx": "ce9cce1fff73600a",
     "src/app/profile/status/page.tsx": "8797eea8be65f3bf",
     "src/components/AuthGate.tsx": "94db96b768f9f95f",
     "src/components/BottomNav.tsx": "5bab069a374d4d04",
@@ -1897,7 +1897,7 @@
     "src/components/web/WebShell.tsx": "5f2646ffd79af9cc"
   },
   "/profile/subscription": {
-    "src/app/layout.tsx": "32a09f6743aabdc5",
+    "src/app/layout.tsx": "ce9cce1fff73600a",
     "src/app/profile/subscription/page.tsx": "33bd407b479a358a",
     "src/components/AuthGate.tsx": "94db96b768f9f95f",
     "src/components/BottomNav.tsx": "5bab069a374d4d04",
@@ -1928,7 +1928,7 @@
     "src/components/web/WebShell.tsx": "5f2646ffd79af9cc"
   },
   "/profile/subscription/[plan]": {
-    "src/app/layout.tsx": "32a09f6743aabdc5",
+    "src/app/layout.tsx": "ce9cce1fff73600a",
     "src/app/profile/subscription/[plan]/page.tsx": "aca90df99eae5d83",
     "src/components/AuthGate.tsx": "94db96b768f9f95f",
     "src/components/BottomNav.tsx": "5bab069a374d4d04",
@@ -1957,7 +1957,7 @@
     "src/components/web/WebShell.tsx": "5f2646ffd79af9cc"
   },
   "/profile/subscription/redeem-points": {
-    "src/app/layout.tsx": "32a09f6743aabdc5",
+    "src/app/layout.tsx": "ce9cce1fff73600a",
     "src/app/profile/subscription/redeem-points/page.tsx": "6cd62617f96a31b8",
     "src/components/AuthGate.tsx": "94db96b768f9f95f",
     "src/components/BottomNav.tsx": "5bab069a374d4d04",
@@ -1984,11 +1984,11 @@
     "src/components/web/WebShell.tsx": "5f2646ffd79af9cc"
   },
   "/profile/target-weight": {
-    "src/app/layout.tsx": "32a09f6743aabdc5",
+    "src/app/layout.tsx": "ce9cce1fff73600a",
     "src/app/profile/target-weight/page.tsx": "93cb4b53e12696e5"
   },
   "/profile/weight-calibration": {
-    "src/app/layout.tsx": "32a09f6743aabdc5",
+    "src/app/layout.tsx": "ce9cce1fff73600a",
     "src/app/profile/weight-calibration/page.tsx": "cb8b311adcf0e0df",
     "src/components/AuthGate.tsx": "94db96b768f9f95f",
     "src/components/BottomNav.tsx": "5bab069a374d4d04",
@@ -2017,7 +2017,7 @@
     "src/components/web/WebShell.tsx": "5f2646ffd79af9cc"
   },
   "/registration/[id]": {
-    "src/app/layout.tsx": "32a09f6743aabdc5",
+    "src/app/layout.tsx": "ce9cce1fff73600a",
     "src/app/registration/[id]/page.tsx": "07e701138977f14d",
     "src/components/AuthGate.tsx": "94db96b768f9f95f",
     "src/components/BottomNav.tsx": "5bab069a374d4d04",
@@ -2057,7 +2057,7 @@
     "src/components/web/WebShell.tsx": "5f2646ffd79af9cc"
   },
   "/registration/[id]/report-error": {
-    "src/app/layout.tsx": "32a09f6743aabdc5",
+    "src/app/layout.tsx": "ce9cce1fff73600a",
     "src/app/registration/[id]/report-error/page.tsx": "122ca32c3b6af2dc",
     "src/components/AuthGate.tsx": "94db96b768f9f95f",
     "src/components/BottomNav.tsx": "5bab069a374d4d04",
@@ -2083,13 +2083,13 @@
     "src/components/web/WebShell.tsx": "5f2646ffd79af9cc"
   },
   "/reset-password": {
-    "src/app/layout.tsx": "32a09f6743aabdc5",
+    "src/app/layout.tsx": "ce9cce1fff73600a",
     "src/app/reset-password/page.tsx": "844a483c4209e316",
     "src/components/hf/HfChevron.tsx": "11106e436ea8e3ef",
     "src/components/hf/TextField.tsx": "8339609e420b5315"
   },
   "/search": {
-    "src/app/layout.tsx": "32a09f6743aabdc5",
+    "src/app/layout.tsx": "ce9cce1fff73600a",
     "src/app/search/page.tsx": "3b6a0fa518350844",
     "src/components/AuthGate.tsx": "94db96b768f9f95f",
     "src/components/BottomNav.tsx": "5bab069a374d4d04",
@@ -2120,7 +2120,7 @@
     "src/components/web/WebShell.tsx": "5f2646ffd79af9cc"
   },
   "/settings": {
-    "src/app/layout.tsx": "32a09f6743aabdc5",
+    "src/app/layout.tsx": "ce9cce1fff73600a",
     "src/app/settings/page.tsx": "73c52cc3fb5d38ec",
     "src/components/AuthGate.tsx": "94db96b768f9f95f",
     "src/components/BottomNav.tsx": "5bab069a374d4d04",
@@ -2153,7 +2153,7 @@
     "src/components/web/WebShell.tsx": "5f2646ffd79af9cc"
   },
   "/settings/control-log": {
-    "src/app/layout.tsx": "32a09f6743aabdc5",
+    "src/app/layout.tsx": "ce9cce1fff73600a",
     "src/app/settings/control-log/page.tsx": "1fcf875480a6bef4",
     "src/components/AuthGate.tsx": "94db96b768f9f95f",
     "src/components/BottomNav.tsx": "5bab069a374d4d04",
@@ -2181,7 +2181,7 @@
     "src/components/web/WebShell.tsx": "5f2646ffd79af9cc"
   },
   "/settings/delete-permissions": {
-    "src/app/layout.tsx": "32a09f6743aabdc5",
+    "src/app/layout.tsx": "ce9cce1fff73600a",
     "src/app/settings/delete-permissions/page.tsx": "1588378b755e9783",
     "src/components/AuthGate.tsx": "94db96b768f9f95f",
     "src/components/BottomNav.tsx": "5bab069a374d4d04",
@@ -2209,7 +2209,7 @@
     "src/components/web/WebShell.tsx": "5f2646ffd79af9cc"
   },
   "/settings/display": {
-    "src/app/layout.tsx": "32a09f6743aabdc5",
+    "src/app/layout.tsx": "ce9cce1fff73600a",
     "src/app/settings/display/layout.tsx": "16954dbc0f673cf7",
     "src/app/settings/display/page.tsx": "ace98115db1fd5c9",
     "src/components/AuthGate.tsx": "94db96b768f9f95f",
@@ -2236,7 +2236,7 @@
     "src/components/web/WebShell.tsx": "5f2646ffd79af9cc"
   },
   "/settings/display/calendar-view": {
-    "src/app/layout.tsx": "32a09f6743aabdc5",
+    "src/app/layout.tsx": "ce9cce1fff73600a",
     "src/app/settings/display/calendar-view/page.tsx": "56a52f11ea5979f7",
     "src/app/settings/display/layout.tsx": "16954dbc0f673cf7",
     "src/components/AuthGate.tsx": "94db96b768f9f95f",
@@ -2263,7 +2263,7 @@
     "src/components/web/WebShell.tsx": "5f2646ffd79af9cc"
   },
   "/settings/display/front-page": {
-    "src/app/layout.tsx": "32a09f6743aabdc5",
+    "src/app/layout.tsx": "ce9cce1fff73600a",
     "src/app/settings/display/front-page/page.tsx": "c75aa75572dbc30b",
     "src/app/settings/display/layout.tsx": "16954dbc0f673cf7",
     "src/components/AuthGate.tsx": "94db96b768f9f95f",
@@ -2293,7 +2293,7 @@
     "src/components/web/WebShell.tsx": "5f2646ffd79af9cc"
   },
   "/settings/display/limits": {
-    "src/app/layout.tsx": "32a09f6743aabdc5",
+    "src/app/layout.tsx": "ce9cce1fff73600a",
     "src/app/settings/display/layout.tsx": "16954dbc0f673cf7",
     "src/app/settings/display/limits/page.tsx": "db864adbd013b14a",
     "src/components/AuthGate.tsx": "94db96b768f9f95f",
@@ -2322,7 +2322,7 @@
     "src/components/web/WebShell.tsx": "5f2646ffd79af9cc"
   },
   "/settings/display/menstrual-cycle": {
-    "src/app/layout.tsx": "32a09f6743aabdc5",
+    "src/app/layout.tsx": "ce9cce1fff73600a",
     "src/app/settings/display/layout.tsx": "16954dbc0f673cf7",
     "src/app/settings/display/menstrual-cycle/page.tsx": "0fc1e35b1662e811",
     "src/components/AuthGate.tsx": "94db96b768f9f95f",
@@ -2351,7 +2351,7 @@
     "src/components/web/WebShell.tsx": "5f2646ffd79af9cc"
   },
   "/settings/display/sleep-quality": {
-    "src/app/layout.tsx": "32a09f6743aabdc5",
+    "src/app/layout.tsx": "ce9cce1fff73600a",
     "src/app/settings/display/layout.tsx": "16954dbc0f673cf7",
     "src/app/settings/display/sleep-quality/page.tsx": "7812edb56b231b12",
     "src/components/AuthGate.tsx": "94db96b768f9f95f",
@@ -2380,7 +2380,7 @@
     "src/components/web/WebShell.tsx": "5f2646ffd79af9cc"
   },
   "/settings/display/tips": {
-    "src/app/layout.tsx": "32a09f6743aabdc5",
+    "src/app/layout.tsx": "ce9cce1fff73600a",
     "src/app/settings/display/layout.tsx": "16954dbc0f673cf7",
     "src/app/settings/display/tips/page.tsx": "4e9b4e0042e7620c",
     "src/components/AuthGate.tsx": "94db96b768f9f95f",
@@ -2409,7 +2409,7 @@
     "src/components/web/WebShell.tsx": "5f2646ffd79af9cc"
   },
   "/settings/display/uncertainty": {
-    "src/app/layout.tsx": "32a09f6743aabdc5",
+    "src/app/layout.tsx": "ce9cce1fff73600a",
     "src/app/settings/display/layout.tsx": "16954dbc0f673cf7",
     "src/app/settings/display/uncertainty/page.tsx": "f2a00facdd98a856",
     "src/components/AuthGate.tsx": "94db96b768f9f95f",
@@ -2440,7 +2440,7 @@
     "src/components/web/WebShell.tsx": "5f2646ffd79af9cc"
   },
   "/settings/hello-doc": {
-    "src/app/layout.tsx": "32a09f6743aabdc5",
+    "src/app/layout.tsx": "ce9cce1fff73600a",
     "src/app/settings/hello-doc/page.tsx": "8889179c4b9b9051",
     "src/components/AuthGate.tsx": "94db96b768f9f95f",
     "src/components/BottomNav.tsx": "5bab069a374d4d04",
@@ -2467,7 +2467,7 @@
     "src/components/web/WebShell.tsx": "5f2646ffd79af9cc"
   },
   "/settings/hello-doc/[id]": {
-    "src/app/layout.tsx": "32a09f6743aabdc5",
+    "src/app/layout.tsx": "ce9cce1fff73600a",
     "src/app/settings/hello-doc/[id]/page.tsx": "41406137a112213e",
     "src/components/AuthGate.tsx": "94db96b768f9f95f",
     "src/components/BottomNav.tsx": "5bab069a374d4d04",
@@ -2497,7 +2497,7 @@
     "src/components/web/WebShell.tsx": "5f2646ffd79af9cc"
   },
   "/settings/hello-doc/invite": {
-    "src/app/layout.tsx": "32a09f6743aabdc5",
+    "src/app/layout.tsx": "ce9cce1fff73600a",
     "src/app/settings/hello-doc/invite/page.tsx": "25b07d229472adcd",
     "src/components/AuthGate.tsx": "94db96b768f9f95f",
     "src/components/BottomNav.tsx": "5bab069a374d4d04",
@@ -2526,7 +2526,7 @@
     "src/components/web/WebShell.tsx": "5f2646ffd79af9cc"
   },
   "/settings/hello-doc/preview": {
-    "src/app/layout.tsx": "32a09f6743aabdc5",
+    "src/app/layout.tsx": "ce9cce1fff73600a",
     "src/app/settings/hello-doc/preview/page.tsx": "3973a0deca48acbc",
     "src/components/hf/HelloDocInsight.tsx": "fd0818c6f02274be",
     "src/components/hf/InsightMenu.tsx": "51e32abb44913626",
@@ -2534,7 +2534,7 @@
     "src/components/hf/Skeleton.tsx": "383d8a93fa858b4a"
   },
   "/settings/import": {
-    "src/app/layout.tsx": "32a09f6743aabdc5",
+    "src/app/layout.tsx": "ce9cce1fff73600a",
     "src/app/settings/import/page.tsx": "faadfc93b8b6afb9",
     "src/components/AuthGate.tsx": "94db96b768f9f95f",
     "src/components/BottomNav.tsx": "5bab069a374d4d04",
@@ -2562,7 +2562,7 @@
     "src/components/web/WebShell.tsx": "5f2646ffd79af9cc"
   },
   "/settings/integrations": {
-    "src/app/layout.tsx": "32a09f6743aabdc5",
+    "src/app/layout.tsx": "ce9cce1fff73600a",
     "src/app/settings/integrations/layout.tsx": "c7cf9d6642d4284e",
     "src/app/settings/integrations/page.tsx": "c82c237ca091c50c",
     "src/app/settings/integrations/status-badge.tsx": "872c13d7dcef8c2e",
@@ -2592,7 +2592,7 @@
     "src/components/web/WebShell.tsx": "5f2646ffd79af9cc"
   },
   "/settings/integrations/[app]": {
-    "src/app/layout.tsx": "32a09f6743aabdc5",
+    "src/app/layout.tsx": "ce9cce1fff73600a",
     "src/app/settings/integrations/[app]/page.tsx": "46f3217d2d9cb460",
     "src/app/settings/integrations/layout.tsx": "c7cf9d6642d4284e",
     "src/app/settings/integrations/status-badge.tsx": "872c13d7dcef8c2e",
@@ -2605,7 +2605,7 @@
     "src/components/hf/TesterPromoSheet.tsx": "fb75b0b084e53afe"
   },
   "/settings/payment": {
-    "src/app/layout.tsx": "32a09f6743aabdc5",
+    "src/app/layout.tsx": "ce9cce1fff73600a",
     "src/app/settings/payment/page.tsx": "46fd2ef39c416e85",
     "src/components/AuthGate.tsx": "94db96b768f9f95f",
     "src/components/BottomNav.tsx": "5bab069a374d4d04",
@@ -2634,7 +2634,7 @@
     "src/components/web/WebShell.tsx": "5f2646ffd79af9cc"
   },
   "/settings/payment/mobilepay": {
-    "src/app/layout.tsx": "32a09f6743aabdc5",
+    "src/app/layout.tsx": "ce9cce1fff73600a",
     "src/app/settings/payment/mobilepay/page.tsx": "9d004f305294afa0",
     "src/components/AuthGate.tsx": "94db96b768f9f95f",
     "src/components/BottomNav.tsx": "5bab069a374d4d04",
@@ -2660,7 +2660,7 @@
     "src/components/web/WebShell.tsx": "5f2646ffd79af9cc"
   },
   "/settings/payment/stripe": {
-    "src/app/layout.tsx": "32a09f6743aabdc5",
+    "src/app/layout.tsx": "ce9cce1fff73600a",
     "src/app/settings/payment/stripe/page.tsx": "03fe9af9de5cd2f2",
     "src/components/AuthGate.tsx": "94db96b768f9f95f",
     "src/components/BottomNav.tsx": "5bab069a374d4d04",
@@ -2686,7 +2686,7 @@
     "src/components/web/WebShell.tsx": "5f2646ffd79af9cc"
   },
   "/settings/support": {
-    "src/app/layout.tsx": "32a09f6743aabdc5",
+    "src/app/layout.tsx": "ce9cce1fff73600a",
     "src/app/settings/support/page.tsx": "7d4844de10ef4743",
     "src/components/AuthGate.tsx": "94db96b768f9f95f",
     "src/components/BottomNav.tsx": "5bab069a374d4d04",
@@ -2714,7 +2714,7 @@
     "src/components/web/WebShell.tsx": "5f2646ffd79af9cc"
   },
   "/settings/support/contact": {
-    "src/app/layout.tsx": "32a09f6743aabdc5",
+    "src/app/layout.tsx": "ce9cce1fff73600a",
     "src/app/settings/support/contact/page.tsx": "a6890673e405d7f5",
     "src/components/AuthGate.tsx": "94db96b768f9f95f",
     "src/components/BottomNav.tsx": "5bab069a374d4d04",
@@ -2742,7 +2742,7 @@
     "src/components/web/WebShell.tsx": "5f2646ffd79af9cc"
   },
   "/settings/support/requests": {
-    "src/app/layout.tsx": "32a09f6743aabdc5",
+    "src/app/layout.tsx": "ce9cce1fff73600a",
     "src/app/settings/support/requests/page.tsx": "b6f7cc460357a6aa",
     "src/components/AuthGate.tsx": "94db96b768f9f95f",
     "src/components/BottomNav.tsx": "5bab069a374d4d04",
@@ -2769,7 +2769,7 @@
     "src/components/web/WebShell.tsx": "5f2646ffd79af9cc"
   },
   "/settings/support/requests/[id]": {
-    "src/app/layout.tsx": "32a09f6743aabdc5",
+    "src/app/layout.tsx": "ce9cce1fff73600a",
     "src/app/settings/support/requests/[id]/page.tsx": "3e2b3c969c41d589",
     "src/components/AuthGate.tsx": "94db96b768f9f95f",
     "src/components/BottomNav.tsx": "5bab069a374d4d04",
@@ -2797,7 +2797,7 @@
     "src/components/web/WebShell.tsx": "5f2646ffd79af9cc"
   },
   "/signup": {
-    "src/app/layout.tsx": "32a09f6743aabdc5",
+    "src/app/layout.tsx": "ce9cce1fff73600a",
     "src/app/signup/page.tsx": "47613383a9b9cb64",
     "src/components/hf/HealthConsentToggle.tsx": "f8e0e34bb7185218",
     "src/components/hf/HfChevron.tsx": "11106e436ea8e3ef",
@@ -2806,7 +2806,7 @@
     "src/components/ui/Toggle.tsx": "8fc97afe3b61a5a3"
   },
   "/statistics": {
-    "src/app/layout.tsx": "32a09f6743aabdc5",
+    "src/app/layout.tsx": "ce9cce1fff73600a",
     "src/app/statistics/layout.tsx": "d1017a8f06f0e0fb",
     "src/app/statistics/page.tsx": "036dfff77a5bacc0",
     "src/components/AuthGate.tsx": "94db96b768f9f95f",
@@ -2851,7 +2851,7 @@
     "src/components/web/WebShell.tsx": "5f2646ffd79af9cc"
   },
   "/statistics/body-water": {
-    "src/app/layout.tsx": "32a09f6743aabdc5",
+    "src/app/layout.tsx": "ce9cce1fff73600a",
     "src/app/statistics/body-water/page.tsx": "99aa190a37b1f7e1",
     "src/app/statistics/layout.tsx": "d1017a8f06f0e0fb",
     "src/components/AuthGate.tsx": "94db96b768f9f95f",
@@ -2879,7 +2879,7 @@
     "src/components/web/WebShell.tsx": "5f2646ffd79af9cc"
   },
   "/statistics/month-sinners": {
-    "src/app/layout.tsx": "32a09f6743aabdc5",
+    "src/app/layout.tsx": "ce9cce1fff73600a",
     "src/app/statistics/layout.tsx": "d1017a8f06f0e0fb",
     "src/app/statistics/month-sinners/page.tsx": "f6ce15a66be6e6a7",
     "src/components/AuthGate.tsx": "94db96b768f9f95f",
@@ -2909,7 +2909,7 @@
     "src/components/web/WebShell.tsx": "5f2646ffd79af9cc"
   },
   "/statistics/sleep": {
-    "src/app/layout.tsx": "32a09f6743aabdc5",
+    "src/app/layout.tsx": "ce9cce1fff73600a",
     "src/app/statistics/layout.tsx": "d1017a8f06f0e0fb",
     "src/app/statistics/sleep/page.tsx": "68a6c6dd74cda00e",
     "src/components/AuthGate.tsx": "94db96b768f9f95f",
@@ -2939,7 +2939,7 @@
     "src/components/web/WebShell.tsx": "5f2646ffd79af9cc"
   },
   "/statistics/unused-cards": {
-    "src/app/layout.tsx": "32a09f6743aabdc5",
+    "src/app/layout.tsx": "ce9cce1fff73600a",
     "src/app/statistics/layout.tsx": "d1017a8f06f0e0fb",
     "src/app/statistics/unused-cards/page.tsx": "d92f538df6ac99e4",
     "src/components/AuthGate.tsx": "94db96b768f9f95f",
@@ -2975,7 +2975,7 @@
     "src/components/web/WebShell.tsx": "5f2646ffd79af9cc"
   },
   "/statistics/unused-charts": {
-    "src/app/layout.tsx": "32a09f6743aabdc5",
+    "src/app/layout.tsx": "ce9cce1fff73600a",
     "src/app/statistics/layout.tsx": "d1017a8f06f0e0fb",
     "src/app/statistics/unused-charts/page.tsx": "cd970eeaf30dcd4d",
     "src/components/AuthGate.tsx": "94db96b768f9f95f",
@@ -3010,11 +3010,11 @@
     "src/components/web/WebShell.tsx": "5f2646ffd79af9cc"
   },
   "/verify-email": {
-    "src/app/layout.tsx": "32a09f6743aabdc5",
+    "src/app/layout.tsx": "ce9cce1fff73600a",
     "src/app/verify-email/page.tsx": "cf90e76d284c3c52"
   },
   "/viden-om": {
-    "src/app/layout.tsx": "32a09f6743aabdc5",
+    "src/app/layout.tsx": "ce9cce1fff73600a",
     "src/app/viden-om/page.tsx": "8f1dec941fa3c3f4",
     "src/components/AuthGate.tsx": "94db96b768f9f95f",
     "src/components/BottomNav.tsx": "5bab069a374d4d04",
@@ -3042,7 +3042,7 @@
     "src/components/web/WebShell.tsx": "5f2646ffd79af9cc"
   },
   "/viden-om/[category]": {
-    "src/app/layout.tsx": "32a09f6743aabdc5",
+    "src/app/layout.tsx": "ce9cce1fff73600a",
     "src/app/viden-om/[category]/page.tsx": "f0f331b21f3f4864",
     "src/components/AuthGate.tsx": "94db96b768f9f95f",
     "src/components/BottomNav.tsx": "5bab069a374d4d04",
@@ -3070,7 +3070,7 @@
     "src/components/web/WebShell.tsx": "5f2646ffd79af9cc"
   },
   "/viden-om/[category]/[slug]": {
-    "src/app/layout.tsx": "32a09f6743aabdc5",
+    "src/app/layout.tsx": "ce9cce1fff73600a",
     "src/app/viden-om/[category]/[slug]/page.tsx": "fd6b54e515d1563b",
     "src/components/AuthGate.tsx": "94db96b768f9f95f",
     "src/components/BottomNav.tsx": "5bab069a374d4d04",
@@ -3096,7 +3096,7 @@
     "src/components/web/WebShell.tsx": "5f2646ffd79af9cc"
   },
   "/viden-om/e-numre": {
-    "src/app/layout.tsx": "32a09f6743aabdc5",
+    "src/app/layout.tsx": "ce9cce1fff73600a",
     "src/app/viden-om/e-numre/page.tsx": "5cb0153e6a9f9189",
     "src/components/AuthGate.tsx": "94db96b768f9f95f",
     "src/components/BottomNav.tsx": "5bab069a374d4d04",
@@ -3124,7 +3124,7 @@
     "src/components/web/WebShell.tsx": "5f2646ffd79af9cc"
   },
   "/viden-om/omregning": {
-    "src/app/layout.tsx": "32a09f6743aabdc5",
+    "src/app/layout.tsx": "ce9cce1fff73600a",
     "src/app/viden-om/omregning/page.tsx": "71b343c105536fc5",
     "src/components/AuthGate.tsx": "94db96b768f9f95f",
     "src/components/BottomNav.tsx": "5bab069a374d4d04",
@@ -3151,12 +3151,12 @@
     "src/components/web/WebShell.tsx": "5f2646ffd79af9cc"
   },
   "/vitaminer": {
-    "src/app/layout.tsx": "32a09f6743aabdc5",
+    "src/app/layout.tsx": "ce9cce1fff73600a",
     "src/app/vitaminer/MicronutrientDirectory.tsx": "7e538ec4e0f9f840",
     "src/app/vitaminer/page.tsx": "05b07feb701be843"
   },
   "/voice": {
-    "src/app/layout.tsx": "32a09f6743aabdc5",
+    "src/app/layout.tsx": "ce9cce1fff73600a",
     "src/app/voice/page.tsx": "ed2f2c7a6b2ce504",
     "src/components/AuthGate.tsx": "94db96b768f9f95f",
     "src/components/BottomNav.tsx": "5bab069a374d4d04",
@@ -3187,7 +3187,7 @@
     "src/components/web/WebShell.tsx": "5f2646ffd79af9cc"
   },
   "/water/create": {
-    "src/app/layout.tsx": "32a09f6743aabdc5",
+    "src/app/layout.tsx": "ce9cce1fff73600a",
     "src/app/water/create/page.tsx": "16b988aee46794e6",
     "src/components/AuthGate.tsx": "94db96b768f9f95f",
     "src/components/BottomNav.tsx": "5bab069a374d4d04",
@@ -3217,7 +3217,7 @@
     "src/components/web/WebShell.tsx": "5f2646ffd79af9cc"
   },
   "/weigh-reminders": {
-    "src/app/layout.tsx": "32a09f6743aabdc5",
+    "src/app/layout.tsx": "ce9cce1fff73600a",
     "src/app/weigh-reminders/page.tsx": "a3167df5701d4075",
     "src/components/AuthGate.tsx": "94db96b768f9f95f",
     "src/components/BottomNav.tsx": "5bab069a374d4d04",
@@ -3244,7 +3244,7 @@
     "src/components/web/WebShell.tsx": "5f2646ffd79af9cc"
   },
   "/weight/create": {
-    "src/app/layout.tsx": "32a09f6743aabdc5",
+    "src/app/layout.tsx": "ce9cce1fff73600a",
     "src/app/weight/create/page.tsx": "9b984f00d46f8aa4",
     "src/components/AuthGate.tsx": "94db96b768f9f95f",
     "src/components/BottomNav.tsx": "5bab069a374d4d04",
@@ -3273,12 +3273,12 @@
     "src/components/icons/WaistMeasure.tsx": "47f849581ff0f288",
     "src/components/web/WebShell.tsx": "5f2646ffd79af9cc",
     "src/components/weight/AttireToggles.tsx": "e5ce3e4e1da336dc",
-    "src/components/weight/WeighInPrompts.tsx": "757b76feecbf8527",
+    "src/components/weight/WeighInPrompts.tsx": "dae9e0da737a08e8",
     "src/components/weight/WeightEntryDetailsSheet.tsx": "1dd31caa5c2a8f18",
     "src/components/weight/WeightSyncStatus.tsx": "35e33268e7403c4e"
   },
   "/welcome": {
-    "src/app/layout.tsx": "32a09f6743aabdc5",
+    "src/app/layout.tsx": "ce9cce1fff73600a",
     "src/app/welcome/page.tsx": "136fa81a059455e2",
     "src/components/hf/HfChevron.tsx": "11106e436ea8e3ef"
   }
