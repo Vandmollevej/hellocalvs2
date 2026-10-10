@@ -73,6 +73,19 @@ ikke her, er den ikke registreret og skal tilføjes.
   `<brand> <subbrand>.png` eller `<subbrand>.png` og lægges ind som brand-logoer
   (admin-upload eller `_import`). Se DECISIONS.md 2026-10-10.
 
+## Søgning
+
+- **Brand og subbrand er søgbare (bruger 2026-10-10)**, også når varesiden kun
+  viser dem som logo: søgningen kigger i titel (ental og flertal), brand,
+  subbrand, varetype, variant, smag, søgeord, synonymer og sukkerpåstande, uden
+  hensyn til accenter (se også "Søgning læser alle varens tekstfelter").
+- **Brand først (bruger 2026-10-10)**: står et brand eller subbrand som helt ord
+  i søgningen, står dets varer altid øverst — også når produkttypen passer
+  bedre på en anden vare. Indbyrdes sorteres de efter resten af søgningen
+  ("arla skyr" → Arla skyr før Arla mælk). Parametrene "Brand nævnt i
+  søgningen"/"Subbrand nævnt i søgningen" ligger i admin → Søgealgoritmer
+  (standard 100; fra 20 altid øverst; 0 slår fra). Se DECISIONS.md 2026-10-10.
+
 ## UI
 
 - **ALDRIG grå tekst på grøn baggrund (user rule 2026-10-09)**: tekst på grøn flade (`bg-hf-brand`, grønne knapper/kort) er altid hvid (`text-hf-white`). Kombinér aldrig `text-text-secondary` eller andre grå farver med hvid på grøn — den grå vinder og gør teksten ulæselig. Gælder web og native.

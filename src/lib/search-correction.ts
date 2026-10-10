@@ -7,6 +7,7 @@ import {
   maxEditDistance,
   splitQueryTokens,
 } from "@/lib/search-correction-rules";
+import { queryNamesBrand, queryNamesSubbrand } from "@/lib/search-brand-intent";
 
 // Accent-ufølsom søgning og "Mente du …?" (docs/DECISIONS.md 2026-10-10).
 // Bygger på hc_search_norm() og materialiseret visning search_words
@@ -74,6 +75,52 @@ export async function accentInsensitiveProductIds(query: string, limit = 1000): 
   } catch (error) {
     console.error("Accent-insensitive search failed", error);
     return [];
+  }
+}
+
+// Brand/subbrand først (docs/DECISIONS.md 2026-10-10): de brands og subbrands,
+// hvis navn står som hele ord i søgningen ("arla skyr" → Arla), så alle deres
+// varer kommer med i puljen — også når produkttypen ikke passer. Trigram-
+// indeksene finder kandidater pr. ord; hele-ord-tjekket sker bagefter.
+export async function brandsNamedInQuery(
+  query: string
+): Promise<{ brandIds: string[]; subbrands: string[] }> {
+  const q = query.trim();
+  const words = splitQueryTokens(q).filter((word) => word.length >= 2).slice(0, 6);
+  if (words.length === 0) return { brandIds: [], subbrands: [] };
+  const anyWord = (column: Prisma.Sql) =>
+    Prisma.join(
+      words.map((word) => Prisma.sql`hc_search_norm(${column}) LIKE ${likePattern(word)}`),
+      " OR "
+    );
+  // Et navn, der står helt i søgningen, kan ikke være meget længere end den.
+  const maxLength = q.length + 3;
+  try {
+    const [brands, subbrands] = await Promise.all([
+      prisma.$queryRaw<{ id: string; name: string }[]>`
+        SELECT b."id", b."name" FROM "brands" b
+        WHERE length(b."name") <= ${maxLength}::int AND (${anyWord(Prisma.sql`b."name"`)})
+        LIMIT 300`,
+      prisma.$queryRaw<{ subbrand: string; brand: string | null }[]>`
+        SELECT DISTINCT p."subbrand", b."name" AS "brand"
+        FROM "products" p LEFT JOIN "brands" b ON b."id" = p."brandId"
+        WHERE p."subbrand" IS NOT NULL AND NOT p."discontinued" AND p."privateOwnerId" IS NULL
+          AND length(p."subbrand") <= ${maxLength}::int AND (${anyWord(Prisma.sql`p."subbrand"`)})
+        LIMIT 300`,
+    ]);
+    return {
+      brandIds: brands.filter((brand) => queryNamesBrand(q, [brand.name])).map((brand) => brand.id),
+      subbrands: [
+        ...new Set(
+          subbrands
+            .filter((row) => queryNamesSubbrand(q, row.subbrand, row.brand))
+            .map((row) => row.subbrand)
+        ),
+      ],
+    };
+  } catch (error) {
+    console.error("Brand lookup for search failed", error);
+    return { brandIds: [], subbrands: [] };
   }
 }
 

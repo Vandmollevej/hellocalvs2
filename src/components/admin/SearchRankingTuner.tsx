@@ -33,6 +33,18 @@ type WeightCategory = {
 
 const CATEGORIES: WeightCategory[] = [
   {
+    key: "brandInQuery",
+    title: "Brand nævnt i søgningen",
+    description:
+      "Står et brand som helt ord i søgningen (\"arla\", \"arla skyr\"), kommer alle brandets varer øverst — også selvom produkttypen passer bedre på en anden vare. Brandet tæller, selvom varesiden kun viser logoet. Fra 20 og op står brandets varer altid øverst; 0 slår reglen fra.",
+  },
+  {
+    key: "subbrandInQuery",
+    title: "Subbrand nævnt i søgningen",
+    description:
+      "Som brand-reglen, men for produktserien (fx \"Cheasy\" eller \"Arla Cheasy\"). Står både brand og subbrand i søgningen, kommer varer med begge først. Fra 20 og op står subbrandets varer altid øverst; 0 slår reglen fra.",
+  },
+  {
     key: "verification",
     title: "Verificering",
     description:
