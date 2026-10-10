@@ -50,9 +50,7 @@ export function ScreeningInput({
               disabled={readOnly}
               aria-pressed={value === option}
               onClick={() => onChange(option)}
-              className={`hf-type-body hf-type-strong h-11 rounded-xl ${
-                value === option ? "bg-hf-green text-hf-white" : "bg-hf-tan text-hf-black"
-              }`}
+              className="hf-choice h-11 px-0"
             >
               {option}
             </button>
@@ -93,7 +91,7 @@ export function ScreeningInput({
             disabled={readOnly || current <= min}
             aria-label="−"
             onClick={() => onChange(clamp(current - step))}
-            className="flex size-12 items-center justify-center rounded-full bg-hf-tan text-hf-black disabled:opacity-40"
+            className="hf-btn-icon"
           >
             <IconMinus size={22} />
           </button>
@@ -105,7 +103,7 @@ export function ScreeningInput({
             disabled={readOnly || current >= max}
             aria-label="+"
             onClick={() => onChange(clamp(current + step))}
-            className="flex size-12 items-center justify-center rounded-full bg-hf-tan text-hf-black disabled:opacity-40"
+            className="hf-btn-icon"
           >
             <IconPlus size={22} />
           </button>
