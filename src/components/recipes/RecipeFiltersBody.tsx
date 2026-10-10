@@ -110,6 +110,7 @@ export function RecipeFiltersBody({ onChange }: { onChange?: (filters: RecipeFil
             label={t("recipeFilters.personsLabel")}
             value={filters.persons}
             min={0}
+            unset={filters.persons === 0}
             max={MAX_RECIPE_PERSONS}
             onChange={(persons) => update({ ...filters, persons })}
           />

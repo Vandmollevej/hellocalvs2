@@ -5,6 +5,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
@@ -70,7 +71,7 @@ internal data class RecipeFilters(
     val diets: List<String> = emptyList(),
     val nutrients: List<String> = emptyList(),
     val macros: Map<String, String> = emptyMap(),
-    val persons: Int = 0,
+    val persons: Int = 1,
     val showKcal: Boolean = true,
     val showEnergySplit: Boolean = false,
 ) {
@@ -102,7 +103,7 @@ internal data class RecipeFilters(
                 diets = pick(params["diets"], RecipeFilterLists.diets),
                 nutrients = pick(params["nutrients"], RecipeFilterLists.nutrients),
                 macros = RecipeFilterLists.macroKeys.mapNotNull { key -> params[key]?.takeIf { it == "high" || it == "low" }?.let { key to it } }.toMap(),
-                persons = min(6, max(0, (params["persons"]?.toDoubleOrNull() ?: 0.0).roundToInt())),
+                persons = min(6, max(1, (params["persons"]?.toDoubleOrNull() ?: 1.0).roundToInt().let { if (it == 0) 1 else it })),
                 showKcal = params["kcal"] != "0",
                 showEnergySplit = params["split"] == "1",
             )
@@ -207,12 +208,13 @@ internal fun AccordionSection(title: String, icon: String? = null, count: Int? =
 
 /** src/components/hf/PersonsSlider.tsx — label + tappable/editable number + slider. */
 @Composable
-internal fun PersonsSlider(label: String, value: Int, max: Int, onChange: (Int) -> Unit, min: Int = 1) {
+internal fun PersonsSlider(label: String, value: Int, max: Int, onChange: (Int) -> Unit, min: Int = 1, unset: Boolean = false, centered: Boolean = false) {
     var editing by remember { mutableStateOf(false) }
     var editValue by remember { mutableStateOf("") }
     Column {
         Row(Modifier.fillMaxWidth().padding(bottom = 8.dp), verticalAlignment = Alignment.CenterVertically) {
             HcText(label, HcTypeRoles.Small, Modifier.weight(1f), color = HcColors.TextSecondary)
+            if (centered) Spacer(Modifier.weight(1f))
             if (editing) {
                 Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(4.dp)) {
                     CaptureFilledField(editValue, { editValue = it.filter(Char::isDigit) }, Modifier.widthIn(max = 64.dp), keyboardType = KeyboardType.Number, background = HcColors.White, minHeight = 36.dp)
@@ -225,10 +227,11 @@ internal fun PersonsSlider(label: String, value: Int, max: Int, onChange: (Int) 
                 HcText(value.toString(), HcTypeRoles.Body, Modifier.clickable {
                     editValue = value.toString()
                     editing = true
-                }.padding(horizontal = 4.dp), bold = true, color = if (value == 0) HcColors.Inactive else HcColors.Black)
+                }.padding(horizontal = 4.dp).alpha(if (unset) 0.3f else 1f), bold = true, color = HcColors.Black)
             }
+            if (centered) Spacer(Modifier.weight(1f))
         }
-        CaptureSlider(value = value, min = min, max = max, onChange = onChange, modifier = if (value == 0) Modifier.alpha(0.4f) else Modifier)
+        CaptureSlider(value = value, min = min, max = max, onChange = onChange, modifier = if (unset) Modifier.alpha(0.4f) else Modifier)
     }
 }
 
@@ -270,9 +273,9 @@ internal fun RecipeFiltersBody(onChange: ((RecipeFilters) -> Unit)? = null) {
     val allergens = remember(t) { RecipeFilterLists.allergens.map { it to t.t("recipeFilters.allergens.$it") }.sortedBy { it.second.lowercase() } }
 
     Column(verticalArrangement = Arrangement.spacedBy(HcDimens.SpaceBlock)) {
-        AccordionSection(t.t("recipeFilters.personsTitle"), icon = "UsersGroup", count = filters.persons.takeIf { it > 0 }) {
+        AccordionSection(t.t("recipeFilters.personsTitle"), icon = "UsersGroup", count = filters.persons) {
             Column(Modifier.padding(horizontal = 16.dp, vertical = 8.dp)) {
-                PersonsSlider(t.t("recipeFilters.personsLabel"), filters.persons, RecipePortions.MAX_PERSONS, { update(filters.copy(persons = it)) }, min = 0)
+                PersonsSlider(t.t("recipeFilters.personsLabel"), filters.persons, RecipePortions.MAX_PERSONS, { update(filters.copy(persons = it)) }, min = 0, unset = filters.persons == 0)
                 portionKcal?.let { HcText(t.t("recipeFilters.portionHint", "kcal" to it), HcTypeRoles.Small, Modifier.padding(top = 12.dp), color = HcColors.TextSecondary) }
             }
         }
