@@ -62,6 +62,12 @@ const CATEGORIES: WeightCategory[] = [
     positiveLabel: "Favoriser ingredienser",
   },
   {
+    key: "genericBroadSearch",
+    title: "Generiske varer ved bred søgning",
+    description:
+      "Varer uden brand (fx letmælk) kommer først, når søgningen ikke nævner et brand. Søges der på et brand (\"arla\", \"arla letmælk\"), gælder den ikke.",
+  },
+  {
     key: "personalHistory",
     title: "Personlig historik",
     description:

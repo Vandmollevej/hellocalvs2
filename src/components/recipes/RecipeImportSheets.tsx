@@ -32,24 +32,45 @@ export type ImportResult = {
   title: string;
   servings: number | null;
   steps: string[];
-  nutrition: { kcal: number | null; protein: number | null; carbs: number | null; fat: number | null; perServing: boolean } | null;
+  nutrition: {
+    kcal: number | null;
+    protein: number | null;
+    carbs: number | null;
+    fat: number | null;
+    perServing: boolean;
+  } | null;
   ingredients: ImportedIngredient[];
   image: string | null;
   // Scan: sidebillederne i rækkefølge; billede 2, 3 … sættes ind ved trinene.
   pageImages?: string[];
+  // AI-opsætning (valgfri): beskrivelse, varighed og hvilken side hvert trin/forsiden hører til.
+  description?: string | null;
+  durationMinutes?: number | null;
+  stepTitles?: string[] | null;
+  stepPages?: (number | null)[] | null;
+  coverPage?: number | null;
 };
 
-async function parseText(text: string): Promise<ImportResult> {
+async function parseText(
+  text: string,
+  pages?: string[],
+): Promise<ImportResult> {
   const res = await fetch("/api/dishes/parse-text", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ text }),
+    body: JSON.stringify(pages ? { pages } : { text }),
   });
   if (!res.ok) throw new Error("parse");
   return (await res.json()) as ImportResult;
 }
 
-export function PasteTextSheet({ onClose, onResult }: { onClose: () => void; onResult: (result: ImportResult) => void }) {
+export function PasteTextSheet({
+  onClose,
+  onResult,
+}: {
+  onClose: () => void;
+  onResult: (result: ImportResult) => void;
+}) {
   const { t } = useTranslation();
   const [text, setText] = useState("");
   const [working, setWorking] = useState(false);
@@ -97,7 +118,11 @@ export function PasteTextSheet({ onClose, onResult }: { onClose: () => void; onR
               rows={12}
               className="hf-type-body w-full text-hf-black outline-none hf-card"
             />
-            {error && <p className="hf-type-body text-text-secondary text-center">{t("createDish.pasteError")}</p>}
+            {error && (
+              <p className="hf-type-body text-text-secondary text-center">
+                {t("createDish.pasteError")}
+              </p>
+            )}
           </>
         )}
       </div>
@@ -112,7 +137,12 @@ async function readPage(image: string): Promise<string> {
     const { recognize } = await import("tesseract.js");
     const result = await recognize(image, "dan+eng");
     const text = result.data.text ?? "";
-    if (result.data.confidence >= 60 && hasMeaningfulText(text) && text.trim().length > 40) return text;
+    if (
+      result.data.confidence >= 60 &&
+      hasMeaningfulText(text) &&
+      text.trim().length > 40
+    )
+      return text;
   } catch {
     // Lokal OCR kunne ikke køre: behandl siden som håndskrift.
   }
@@ -125,7 +155,13 @@ async function readPage(image: string): Promise<string> {
   return String(((await res.json()) as { text?: string }).text ?? "");
 }
 
-export function ScanSheet({ onClose, onResult }: { onClose: () => void; onResult: (result: ImportResult) => void }) {
+export function ScanSheet({
+  onClose,
+  onResult,
+}: {
+  onClose: () => void;
+  onResult: (result: ImportResult) => void;
+}) {
   const { t } = useTranslation();
   const [pages, setPages] = useState<string[]>([]);
   const [working, setWorking] = useState(false);
@@ -136,7 +172,8 @@ export function ScanSheet({ onClose, onResult }: { onClose: () => void; onResult
   async function addFiles(files: FileList | null) {
     if (!files) return;
     const added: string[] = [];
-    for (const file of Array.from(files)) added.push(await fileToDownscaledDataUrl(file, 1800, 0.85));
+    for (const file of Array.from(files))
+      added.push(await fileToDownscaledDataUrl(file, 1800, 0.85));
     setPages((current) => [...current, ...added]);
   }
 
@@ -147,9 +184,25 @@ export function ScanSheet({ onClose, onResult }: { onClose: () => void; onResult
     try {
       const texts: string[] = [];
       for (const page of pages) texts.push(await readPage(page));
-      const result = await parseText(texts.join("\n\n"));
-      // Første billede er rettens billede øverst; de øvrige hører til trinene.
-      onResult({ ...result, image: pages[0] ?? null, pageImages: pages.slice(1) });
+      const result = await parseText("", texts);
+      if (result.stepPages) {
+        // AI'en har peget på siderne: forsiden og hvert trins eget sidebillede.
+        const cover = pages[(result.coverPage ?? 1) - 1] ?? pages[0] ?? null;
+        onResult({
+          ...result,
+          image: cover,
+          pageImages: result.stepPages.map((n) =>
+            n ? (pages[n - 1] ?? "") : "",
+          ),
+        });
+      } else {
+        // Første billede er rettens billede øverst; de øvrige hører til trinene.
+        onResult({
+          ...result,
+          image: pages[0] ?? null,
+          pageImages: pages.slice(1),
+        });
+      }
       onClose();
     } catch {
       setError(true);
@@ -180,7 +233,9 @@ export function ScanSheet({ onClose, onResult }: { onClose: () => void; onResult
           </SkeletonScreen>
         ) : (
           <>
-            <p className="hf-type-small text-text-secondary">{t("createDish.scanHint")}</p>
+            <p className="hf-type-small text-text-secondary">
+              {t("createDish.scanHint")}
+            </p>
             <div className="grid grid-cols-2 gap-2">
               <button
                 type="button"
@@ -188,7 +243,9 @@ export function ScanSheet({ onClose, onResult }: { onClose: () => void; onResult
                 className="flex flex-col items-center gap-2 rounded-2xl bg-hf-tan py-3 text-center"
               >
                 <IconCamera size={20} color="var(--hf-black)" />
-                <span className="hf-type-small hf-type-strong text-hf-black">{t("createDish.scanTake")}</span>
+                <span className="hf-type-small hf-type-strong text-hf-black">
+                  {t("createDish.scanTake")}
+                </span>
               </button>
               <button
                 type="button"
@@ -196,7 +253,9 @@ export function ScanSheet({ onClose, onResult }: { onClose: () => void; onResult
                 className="flex flex-col items-center gap-2 rounded-2xl bg-hf-tan py-3 text-center"
               >
                 <IconPhoto size={20} color="var(--hf-black)" />
-                <span className="hf-type-small hf-type-strong text-hf-black">{t("createDish.scanGallery")}</span>
+                <span className="hf-type-small hf-type-strong text-hf-black">
+                  {t("createDish.scanGallery")}
+                </span>
               </button>
             </div>
             <input
@@ -224,12 +283,23 @@ export function ScanSheet({ onClose, onResult }: { onClose: () => void; onResult
             {pages.length > 0 && (
               <div className="grid grid-cols-3 gap-2">
                 {pages.map((page, index) => (
-                  <div key={index} className="relative aspect-[3/4] overflow-hidden rounded-xl bg-hf-tan">
+                  <div
+                    key={index}
+                    className="relative aspect-[3/4] overflow-hidden rounded-xl bg-hf-tan"
+                  >
                     {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={page} alt="" className="h-full w-full object-cover" />
+                    <img
+                      src={page}
+                      alt=""
+                      className="h-full w-full object-cover"
+                    />
                     <button
                       type="button"
-                      onClick={() => setPages((current) => current.filter((_, i) => i !== index))}
+                      onClick={() =>
+                        setPages((current) =>
+                          current.filter((_, i) => i !== index),
+                        )
+                      }
                       aria-label={t("createDish.removeIngredient")}
                       className="absolute right-1 top-1 flex h-7 w-7 items-center justify-center rounded-full bg-hf-white text-hf-black"
                     >
@@ -239,7 +309,11 @@ export function ScanSheet({ onClose, onResult }: { onClose: () => void; onResult
                 ))}
               </div>
             )}
-            {error && <p className="hf-type-body text-text-secondary text-center">{t("createDish.scanError")}</p>}
+            {error && (
+              <p className="hf-type-body text-text-secondary text-center">
+                {t("createDish.scanError")}
+              </p>
+            )}
           </>
         )}
       </div>

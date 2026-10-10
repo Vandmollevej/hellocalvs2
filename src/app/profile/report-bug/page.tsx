@@ -195,6 +195,13 @@ function ReportBugContent() {
           </div>
         ) : showForm ? (
           <form onSubmit={handleSubmit} className="mt-8 flex flex-col gap-4">
+            <button
+              type="submit"
+              disabled={submitting}
+              className="hf-control hf-btn-primary mb-0 w-full"
+            >
+              {submitting ? "Sender…" : "Send indberetning"}
+            </button>
             {productId ? (
               <>
                 <p className="hf-type-label">Hvad er forkert på varen?</p>
@@ -273,13 +280,7 @@ function ReportBugContent() {
             </div>
             </>
             )}
-            <button
-              type="submit"
-              disabled={submitting}
-              className="hf-control hf-btn-primary mb-28 mt-2 w-full"
-            >
-              {submitting ? "Sender…" : "Send indberetning"}
-            </button>
+            <div className="mb-28" />
           </form>
         ) : null}
       </div>

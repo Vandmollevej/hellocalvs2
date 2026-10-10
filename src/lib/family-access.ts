@@ -41,8 +41,9 @@ export type ProfileArea =
 export type AccessMode = "read" | "write";
 
 // Må actorId se (eller oprette for) subjectId? Betaleren har fuld adgang til
-// alle familiens profiler; andre kun via en FamilyAccessGrant fra betaleren,
-// hvor canWrite afgør, om de også må oprette på profilens vegne.
+// alle familiens profiler; andre kun via en FamilyAccessGrant (givet af
+// personen selv eller, for profiler uden eget login og børn under 15, af
+// betaleren), hvor canWrite afgør, om de også må oprette på profilens vegne.
 export async function canActFor(actorId: string, subjectId: string, mode: AccessMode = "read"): Promise<boolean> {
   if (actorId === subjectId) return true;
   const membership = await prisma.familyMember.findUnique({

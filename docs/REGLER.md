@@ -76,6 +76,7 @@ ikke her, er den ikke registreret og skal tilføjes.
 - "Overlay"/"popup" = den træk-bare BottomSheet (`.hf-bottom-sheet`), se KRAV.md.
 - Aktiviteten `open_water` hedder "Svømning i åbent vand" — aldrig "Havsvømning" (bruger 2026-10-09). "havsvømning" er kun et søgeord.
 - Visuelle ændringer: læs design.md; størrelse/vægt ændres i moderate trin.
+- **Knapper står ALTID øverst (user rule 2026-10-10)**: handlingsknapper (Send, Gem, Tilføj, Indsend osv.) placeres øverst i formularen/siden, aldrig nederst under indholdet, så de aldrig skjules af menuen/bundcirklen eller kræver scroll. Gælder web og native.
 - Faste bundknapper (Tilføj/Gem i `HfScreen`-footeren) skal ligge over bundcirklen (FooterArc, 40 px over menuen), aldrig bag den (bruger 2026-10-09).
 
 - Ingen ikke-bestilte tekster: ingen disclaimers, forklaringer eller
@@ -111,6 +112,8 @@ ikke her, er den ikke registreret og skal tilføjes.
 
 - **Menstruation (bruger 2026-10-09):** alt om menstruation/cyklus vises slet ikke for mænd — heller ikke som deaktiveret række eller med "(kun for kvinder)". Vises kun når `sex = FEMALE`. Gælder web og native (fx Hello Doc "Rediger adgang").
 - **Frida** (DTU-fødevaredatabasen): opbygning, nøgler og rå/kogt-fund står i `docs/FRIDA.md`.
+- Næringsindhold (produktsiden): mangler en værdi, vises "–" (en streg) i stedet for rækken udeladt — blokken vises dog kun, når mindst én værdi findes (brugerens regel 2026-10-09).
+
 
 - Opret ret → Indsæt tekst: kun tekstfeltet og "Indsæt" — ingen ekstra felter (fx kilde-link). Antal personer bruger den eksisterende PersonsSlider, ikke et nyt talfelt (brugerens krav 2026-10-09).
 - **Startmængde** (`src/lib/default-amount.ts`, brugerens regel 2026-10-09): forslaget må aldrig overstige pakkens indhold (g/ml fra pakningsstørrelsen). Al instantkaffe (instant, Nescafé, pulverkaffe …) starter på 2 g (pr. kop).
@@ -123,6 +126,7 @@ ikke her, er den ikke registreret og skal tilføjes.
 ## Valgte knapper (user rule 2026-10-09)
 
 Valgte knapper/faner/chips/planvalg har ALTID den lysegrønne farve (`--hf-color-accent`, #BBF06A) med sort kant og tekst — brug `.hf-selected` / `.hf-choice` / `.hf-chip`, aldrig sort, mørkegrøn eller beige som valgt-flade. Eneste undtagelse: kalenderens dags dato (`.hf-cal-current`). Native bruger `HcColors.SelectedBg`.
+- **Flows er helsides popups (bruger 2026-10-09):** alle flows overalt (fx Opret ret: Indsæt tekst / Scan opskrift / Opret manuelt, hvor man tilføjer én ingrediens ad gangen) åbner som en helsides popup (`BottomSheet size="full"`), ikke som en almindelig side.
 
 ## Trinindikator (HfProgressStepper)
 

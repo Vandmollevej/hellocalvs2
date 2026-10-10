@@ -94,7 +94,7 @@ private data class MacroValues(val amount: Double, val protein: Double, val carb
 
 private data class NutrientRow(
     val key: String,
-    val value: Double,
+    val value: Double?,
     val unit: String,
     val digits: Int,
     val estimated: Boolean,
@@ -308,8 +308,12 @@ fun AddProductView(
                 Triple("vitaminC", fromPer100(product.vitaminCPer100g), "mg" to 0),
                 Triple("calcium", fromExtra("calciumMg"), "mg" to 0),
                 Triple("iron", fromExtra("ironMg"), "mg" to 1),
-            ).mapNotNull { (key, value, unit) ->
-                value?.let { NutrientRow(key, it, unit.first, unit.second, false, null, t.t("addProduct.nutrient.$key")) }
+            ).let { all ->
+                // Manglende værdi vises som "–", men kun når mindst én værdi findes.
+                if (all.all { it.second == null }) emptyList()
+                else all.map { (key, value, unit) ->
+                    NutrientRow(key, value, unit.first, unit.second, false, null, t.t("addProduct.nutrient.$key"))
+                }
             }
         }
     }
@@ -848,7 +852,8 @@ private fun AdditivesCard(codes: List<String>, names: Map<String, String>, onOpe
     }
 }
 
-private val UNHEALTHY_FAT_KEYS = setOf("saturatedFat", "transFat")
+// Warning triangle only for salt and trans fat above the daily recommendation (WHO).
+private val WARNING_LIMITS = mapOf("salt" to 5.0, "transFat" to 2.2)
 
 /** "Næringsdetaljer" with "Vis mere": rows with the uncertainty ~ and the grey tolerance line. */
 @Composable
@@ -872,14 +877,14 @@ private fun ExtendedNutritionSection(
             Column(Modifier.fillMaxWidth()) {
                 Box(Modifier.fillMaxWidth().height(1.dp).background(HcColors.TanDark))
                 rows.forEachIndexed { index, row ->
-                    val hasUncertainty = row.estimated || (row.tolerance ?: 0.0) > 0
+                    val hasUncertainty = (row.value ?: 0.0) > 0 && (row.estimated || (row.tolerance ?: 0.0) > 0)
                     val expanded = hasUncertainty && autoExpand != (row.key in toggled)
                     Column(
                         Modifier.fillMaxWidth().let { if (hasUncertainty) it.clickable { onToggleRow(row.key) } else it }.padding(horizontal = 16.dp, vertical = 10.dp),
                     ) {
                         Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
                             Row(Modifier.weight(1f), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(4.dp)) {
-                                if (row.key in UNHEALTHY_FAT_KEYS) HcIcon("AlertTriangle", size = 15.dp, color = HcColors.Black, contentDescription = t.t("addProduct.unhealthyFat"))
+                                if (WARNING_LIMITS[row.key]?.let { (row.value ?: return@let false) > it } == true) HcIcon("AlertTriangle", size = 15.dp, color = HcColors.Black, contentDescription = row.label)
                                 if (FoodReferenceData.micronutrientByKey.containsKey(row.key)) {
                                     HcText(row.label, HcTypeRoles.Small, Modifier.clickable { onMicronutrient(row.key) }, color = HcColors.Black, underline = true)
                                 } else {
@@ -888,12 +893,12 @@ private fun ExtendedNutritionSection(
                                 if (hasUncertainty) FoldChevron(expanded, 13.dp)
                             }
                             Row(verticalAlignment = Alignment.CenterVertically) {
-                                if (row.estimated) FoodUncertaintyTilde()
-                                HcText("${daNumber(row.value, row.digits)} ${row.unit}", HcTypeRoles.Small, color = HcColors.Black, bold = true)
+                                if (row.estimated && (row.value ?: 0.0) > 0) FoodUncertaintyTilde()
+                                HcText(row.value?.let { "${daNumber(it, row.digits)} ${row.unit}" } ?: "–", HcTypeRoles.Small, color = HcColors.Black, bold = true)
                             }
                         }
                         if (expanded) {
-                            val hasEstimate = row.estimated && row.value > 0
+                            val hasEstimate = row.estimated && (row.value ?: 0.0) > 0
                             val tolerance = row.tolerance?.takeIf { it > 0 }
                             if (hasEstimate || tolerance != null) {
                                 Row(Modifier.fillMaxWidth().padding(top = 4.dp), horizontalArrangement = Arrangement.End, verticalAlignment = Alignment.CenterVertically) {
@@ -901,7 +906,7 @@ private fun ExtendedNutritionSection(
                                     if (tolerance != null && hasEstimate) HcText("  ", HcTypeRoles.Small)
                                     if (hasEstimate) {
                                         FoodUncertaintyTilde(small = true)
-                                        HcText("${daNumber(row.value, row.digits)} ${row.unit}", HcTypeRoles.Small, color = HcColors.Black.copy(alpha = 0.6f))
+                                        HcText("${daNumber(row.value ?: 0.0, row.digits)} ${row.unit}", HcTypeRoles.Small, color = HcColors.Black.copy(alpha = 0.6f))
                                     }
                                 }
                             }
