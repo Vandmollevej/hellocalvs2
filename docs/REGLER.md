@@ -67,6 +67,11 @@ ikke her, er den ikke registreret og skal tilføjes.
   foretræk rent wordmark uden tagline. Se docs/LOGO-AGENT.md.
 - Brugerens uploadede PNG-kunst bruges som den er (skaleret/CSS-mask), aldrig
   gen-tegnet som SVG.
+- **Brand og subbrand ved produktcirklen (bruger 2026-10-10)**: brandet står til
+  højre for cirklen, subbrandet oven over det. Begge vises som logo, når det
+  findes, ellers som navn i fed grøn tekst. Subbrand-logofiler hedder
+  `<brand> <subbrand>.png` eller `<subbrand>.png` og lægges ind som brand-logoer
+  (admin-upload eller `_import`). Se DECISIONS.md 2026-10-10.
 
 ## UI
 
@@ -76,6 +81,7 @@ ikke her, er den ikke registreret og skal tilføjes.
 - "Overlay"/"popup" = den træk-bare BottomSheet (`.hf-bottom-sheet`), se KRAV.md.
 - Aktiviteten `open_water` hedder "Svømning i åbent vand" — aldrig "Havsvømning" (bruger 2026-10-09). "havsvømning" er kun et søgeord.
 - Visuelle ændringer: læs design.md; størrelse/vægt ændres i moderate trin.
+- **Knapper står ALTID øverst (user rule 2026-10-10)**: handlingsknapper (Send, Gem, Tilføj, Indsend osv.) placeres øverst i formularen/siden, aldrig nederst under indholdet, så de aldrig skjules af menuen/bundcirklen eller kræver scroll. Gælder web og native.
 - Faste bundknapper (Tilføj/Gem i `HfScreen`-footeren) skal ligge over bundcirklen (FooterArc, 40 px over menuen), aldrig bag den (bruger 2026-10-09).
 
 - Ingen ikke-bestilte tekster: ingen disclaimers, forklaringer eller
@@ -94,6 +100,7 @@ ikke her, er den ikke registreret og skal tilføjes.
 - Spørgsmål til brugeren stilles ALTID i spørgsmålsboksen (AskUserQuestion),
   aldrig som almindelig tekst i et svar og aldrig midt i en opgave: tekst giver
   ingen gul prik, så brugeren ser den ikke (brugerens regel 2026-10-09, global).
+- **Aldrig hænge (bruger 2026-10-10, global, ufravigelig):** en opgave må aldrig stå stille. Slut aldrig en tur, mens CI, deploy, review eller en PR venter, uden at et tidsbestemt tjek er sat (`send_later`, højst 5 minutter frem; gentag, til det er gjort). Hvert tjek handler: grøn CI → flet nu; rød CI → ret og push nu; konflikt → løs nu; stående deploy-trin → læs jobloggen og meld den præcise årsag. Opgaven er først færdig, når den er flettet OG deployet. Må deployet ikke kunne gå igennem, skrives årsagen og næste skridt straks i `docs/handoffs/OPEN-TASKS.md`. Sig hvert 10. minut kort, hvad der sker, mens der ventes. At vente passivt på en hændelse er forbudt.
 - Flere parallelle sessioner: stage snævert, deploy-linjen er origin/master.
 - Alle opgaver auto-arkiveres umiddelbart, så snart de melder klar til arkivering – i samme tur, uden at vente (bruger 2026-10-09, gentaget).
 - Færdig opgave: slut med "arkiver mig", og arkivér derefter selv sessionen (`archive_session`), når PR er flettet. Manglende test er aldrig en gyldig grund til ikke at arkivere (global regel, bruger 2026-10-09). Stop-hook `scripts/archive-reminder.mjs` minder om det (bruger 2026-10-09; AGENTS.md).
@@ -115,15 +122,25 @@ ikke her, er den ikke registreret og skal tilføjes.
 
 
 - Opret ret → Indsæt tekst: kun tekstfeltet og "Indsæt" — ingen ekstra felter (fx kilde-link). Antal personer bruger den eksisterende PersonsSlider, ikke et nyt talfelt (brugerens krav 2026-10-09).
+- **cl = færdig drikkevare (bruger 2026-10-10)**: står varens mængde i cl, vises og vælges den altid i cl — aldrig gram — uanset kategori (`src/lib/product-display-unit.ts`).
+- **Omregning væsker → gram (bruger 2026-10-10)**: én tabel, `src/data/kitchen-conversions.json` (bygges af `scripts/kitchen-conversions-build.py`), bruges overalt: Viden om mad → Omregning, Mål/Gram-skift på retter og dl→gram i Opret ret. Nye væsker tilføjes dér. 1 spsk = 15 ml, 1 tsk = 5 ml. Gram-omregningen i mængdeboksen (småt i hjørnet + op/ned-ikon, tryk bytter) vises KUN for væsker og KUN når varen tilføjes fra Opret ret.
 - **Startmængde** (`src/lib/default-amount.ts`, brugerens regel 2026-10-09): forslaget må aldrig overstige pakkens indhold (g/ml fra pakningsstørrelsen). Al instantkaffe (instant, Nescafé, pulverkaffe …) starter på 2 g (pr. kop).
 
 - Admin-lister: til/fra-knappen (Toggle) står ALTID yderst til højre, aldrig tick-bokse, og "Rediger" står til venstre for knapperne. Event-koder (fx SUPPORT_RECEIVED) vises aldrig for admin — kun danske navne, grupperet med overskrifter og filtre (Besked automatisering, 2026-10-09).
 - **Søgning viser alt og retter sig selv (2026-10-10)**: ingen varer skjules for manglende kalorietal; accenter ignoreres; 0 hits → "Viser resultater for X · Søg i stedet efter Y", 1-2 hits → "Mente du X?". Se DECISIONS 2026-10-10.
 - **Søgeregel (global, 2026-10-09)**: søger brugeren i flertal, vises Product title plural (`namePlural`); i ental vises Product title singular (`name`). Se docs/FRIDA.md.
 - Bilka/REMA ental/flertal + DB-kolonnenavne: se Excelark/NAVNEREGLER.md (status 2026-10-09: _ny-ark lavet, ikke gennemgået).
+- **"ben" hører til produkttypen** (alle ark, brugerens regel 2026-10-10): står "ben" alene i Variation, er det del af produkttypeordet og skrives sammen med det: "Skiver af okse" + "ben" → "Skiver af okseben". Står der "med ben", følger "med ben" med ind i produkttypen ("Ibérico kotelet med ben", som "Koteletter af gris uden ben"). Variation ryddes; `Product type plural` rettes tilsvarende. Se Excelark/NAVNEREGLER.md.
 - **Børn i familien (bruger 2026-10-09):** et barn kan hverken lukke kontoen, slette sine data eller melde sig ud — kun forælderen (betaleren). Barnet kan ikke fravælge at vise detaljer; det kan kun se, hvad forælderen viser. Gælder web og native. Se DECISIONS.md samme dato.
 
 ## Valgte knapper (user rule 2026-10-09)
 
 Valgte knapper/faner/chips/planvalg har ALTID den lysegrønne farve (`--hf-color-accent`, #BBF06A) med sort kant og tekst — brug `.hf-selected` / `.hf-choice` / `.hf-chip`, aldrig sort, mørkegrøn eller beige som valgt-flade. Eneste undtagelse: kalenderens dags dato (`.hf-cal-current`). Native bruger `HcColors.SelectedBg`.
 - **Flows er helsides popups (bruger 2026-10-09):** alle flows overalt (fx Opret ret: Indsæt tekst / Scan opskrift / Opret manuelt, hvor man tilføjer én ingrediens ad gangen) åbner som en helsides popup (`BottomSheet size="full"`), ikke som en almindelig side.
+
+## Trinindikator (HfProgressStepper)
+
+- Flows med mange trin (fx "Opret ny screening") viser kun teksten under det aktive trin (`activeLabelOnly`), og prikkerne i bjælken er tryk-bare (`onSelect`): tilbage altid, frem kun når de forudgående trin er udfyldt (`isStepEnabled`). Web og native (`ProfileProgressStepper`). 2026-10-10.
+
+- Opskrifter → fanen "Delte retter": kildeknapperne under søgefeltet er "Vis alle", Valdemarsro og Hello Fresh. Ingen separat "Delte retter"-knap (den gentog fanen) (2026-10-10).
+- Opskrifter → filter → Antal personer: standard 0 = ikke valgt, vist lysegråt/underordnet; ingen person er valgt som default. Receptsiden bruger mindst 1 (brugerens krav 2026-10-10).

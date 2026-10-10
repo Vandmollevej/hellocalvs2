@@ -83,6 +83,11 @@ Kort version står også i `docs/REGLER.md`.
 - "Sukrede" → "med sukker", "usukrede" → "uden sukker". "Hvedemel durum" → "Hvedemeldurum". "Høstsild/fedsild" → to rækker (Høstsild, Fed sild).
 - "blade" skrives altid sammen med ordet før: Teblade, Korianderblade, Spinatblade (aldrig "Koriander blade"). Gælder alle ark.
 
+## "ben" er del af produkttypen (brugerens regel 2026-10-10, alle ark)
+- "ben" alene i Variation hører til produkttypeordet og skrives sammen med det: "Skiver af okse" + "ben" → "Skiver af okseben" (som Okseben, Stegeben, Kamben). Variation ryddes.
+- "med ben" / "uden ben" flyttes samlet ind i produkttypen: "Ibérico kotelet med ben", "Koteletter af gris uden ben". `Product type plural` rettes ens.
+- Rettet i Bilka 2026-10-10: række 267, 268, 269 (backup `Excelark/backup/bilka_2026-10-10_0946_foer_ben.xlsx`). REMA har ingen tilsvarende rækker. "skind og ben og barbecuekrydderi" (række 3363) er en opremsning og er ikke rørt.
+
 ## Bilka/REMA: ental/flertal-titler og nye regler (2026-10-09, senest)
 - `HelloCal_Title` / `Hello Cal product title` er fjernet i `bilka_ny.xlsx` og `rema1000_version 2_ny.xlsx` (originalerne var låst af Excel). Erstattet af formelkolonnerne `Product title singular` / `Product title plural` (samme formler som Frida) + `Product type plural`, `_is_frozen`, `_is_raw`, `_is_cooked`. Genereret med `Excelark/titel_ental_flertal.py`; flertalsordet er gættet af regler og skal gennemses.
 - Kolonner hedder som i serverens database: brand, subbrand, productType, variant, flavor (REMA taste), packageSizeText, packCount, packaging, category, barcode, keyword1-5. `_is_*`-navne beholdt.
@@ -90,3 +95,4 @@ Kort version står også i `docs/REGLER.md`.
 - Alle `_is_`-værdier, variant og keywords med småt (undtagen store forkortelser og egennavne).
 - Sukkerfri / uden tilsat sukker står i sukker-kolonnen, aldrig i variant/keyword.
 - Intet ord må stå dobbelt på tværs af productType, `_is_`-felter, variant og keywords (funktionsord undtaget).
+- Opdatering 2026-10-10: `Excelark/bilka.xlsx` og `Produkter/rema1000_version 2.xlsx` er selv omskrevet (ikke kun `_ny`). `scripts/store-products-import/build_data.py` læser både nye (databasenavne) og gamle kolonnenavne via `NEW_ALIAS` i `load()`.

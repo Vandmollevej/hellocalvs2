@@ -1096,8 +1096,7 @@
     "statusNotShared": "Not shared",
     "sharedSearchPlaceholder": "Sök i titel, ingredienser …",
     "createNew": "Skapa ny rätt",
-    "sourceAll": "Recept",
-    "sourceShared": "Delade rätter",
+    "sourceAll": "Visa alla",
     "sourceHelloFresh": "Hello Fresh",
     "sourceValdemarsro": "Valdemarsro",
     "sourceFilterAria": "Välj receptkälla",
@@ -1210,7 +1209,7 @@
     "addPhoto": "Ta en bild till steget",
     "removePhoto": "Ta bort bilden",
     "remove": "Ta bort steg",
-    "dropPhoto": "Drag a picture here, or tap to add one"
+    "dropPhoto": "Ta en bild av steget, eller släpp en bild här"
   },
   "recipeImages": {
     "title": "Bilder på rätten",
@@ -1280,7 +1279,13 @@
     "report": "Anmäl",
     "reported": "Tack, rätten är anmäld",
     "reportError": "Kunde inte anmäla rätten",
-    "shareError": "Delningen kunde inte ändras just nu"
+    "shareError": "Delningen kunde inte ändras just nu",
+    "measureKcal": "{amount} · {kcal} kcal"
+  },
+  "recipeUnits": {
+    "label": "Visa mängder som",
+    "measures": "Mått",
+    "grams": "Gram"
   },
   "hfRecipe": {
     "loading": "Hämtar receptet …",
@@ -1389,7 +1394,7 @@
     "searchPlaceholder": "Sök efter ingrediens",
     "searching": "Söker...",
     "noResults": "Inga varor matchar din sökning",
-    "scan": "Ta bild",
+    "scan": "Skanna streckkod",
     "scanWeb": "Ladda upp bild eller släpp dem här",
     "scanWebWorking": "Läser bilden …",
     "scanWebNotFound": "Vi kunde inte känna igen varan på bilden. Prova en bild på framsidan, eller sök efter varan.",
@@ -2072,6 +2077,7 @@
   },
   "photoDiary": {
     "title": "Bilddagbok",
+    "addPhoto": "Lägg till ny bild",
     "loading": "Hämtar…",
     "loadError": "Kunde inte hämta bilddagboken.",
     "requiresPasscode": "Kräver telefonens lösenkod för att visas",
@@ -2246,7 +2252,8 @@
       "vitaminB7": "Vitamin B7 (biotin)",
       "vitaminB9": "Vitamin B9 (folat)",
       "vitaminB12": "Vitamin B12"
-    }
+    },
+    "swapLiquidUnit": "Växla mellan volym och gram"
   },
   "photoAward": {
     "bannerSingle": "Du kan tjäna {points} poäng genom att ta en ny bild av {photoType}.",

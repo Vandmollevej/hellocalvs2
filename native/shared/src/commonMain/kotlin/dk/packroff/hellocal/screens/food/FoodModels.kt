@@ -88,6 +88,9 @@ data class ProductDto(
     val servingSizeUnitSingular: String? = null,
     val servingSizeUnitPlural: String? = null,
     val brand: ProductBrand? = null,
+    // Product line shown above the brand by the circle — as a logo when one exists (DECISIONS 2026-10-10).
+    val subbrand: String? = null,
+    val subbrandLogoUrl: String? = null,
     val productCategory: String? = null,
     val packageSizeText: String? = null,
     val variant: String? = null,

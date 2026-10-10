@@ -5,13 +5,15 @@ import { FOOD_TERMS, foodTermAnchor, matchesFoodTerm } from "@/lib/food-latin";
 
 export type KnowledgeSection = "vitaminer" | "sundhedstips" | "kalorieforbraending" | "who-og-kilder" | "mad-paa-latin";
 
-export const KNOWLEDGE_SECTIONS: { id: KnowledgeSection | "e-numre"; title: string }[] = [
+// "e-numre" og "omregning" har deres egne sider (/viden-om/e-numre, /viden-om/omregning).
+export const KNOWLEDGE_SECTIONS: { id: KnowledgeSection | "e-numre" | "omregning"; title: string }[] = [
   { id: "vitaminer", title: "Vitaminer" },
   { id: "e-numre", title: "E-numre" },
   { id: "sundhedstips", title: "Sundhedstips" },
   { id: "kalorieforbraending", title: "Kalorieforbrænding" },
   { id: "who-og-kilder", title: "WHO og officielle kilder" },
   { id: "mad-paa-latin", title: "Mad på latin" },
+  { id: "omregning", title: "Omregning: væsker til gram" },
 ];
 
 export type KnowledgeEntry = { section: KnowledgeSection; slug: string; title: string; subtitle: string };

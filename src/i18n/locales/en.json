@@ -1096,8 +1096,7 @@
     "statusNotShared": "Not shared",
     "sharedSearchPlaceholder": "Search title, ingredients …",
     "createNew": "Create new dish",
-    "sourceAll": "Recipes",
-    "sourceShared": "Shared dishes",
+    "sourceAll": "Show all",
     "sourceHelloFresh": "Hello Fresh",
     "sourceValdemarsro": "Valdemarsro",
     "sourceFilterAria": "Choose recipe source",
@@ -1210,7 +1209,7 @@
     "addPhoto": "Take a photo for this step",
     "removePhoto": "Remove photo",
     "remove": "Delete step",
-    "dropPhoto": "Drag a picture here, or tap to add one"
+    "dropPhoto": "Take a photo of this step, or drop a picture here"
   },
   "recipeImages": {
     "title": "Photos of the dish",
@@ -1280,7 +1279,13 @@
     "report": "Report",
     "reported": "Thanks, the dish has been reported",
     "reportError": "Couldn't report the dish",
-    "shareError": "Sharing couldn't be changed right now"
+    "shareError": "Sharing couldn't be changed right now",
+    "measureKcal": "{amount} · {kcal} kcal"
+  },
+  "recipeUnits": {
+    "label": "Show amounts as",
+    "measures": "Measures",
+    "grams": "Grams"
   },
   "hfRecipe": {
     "loading": "Loading the recipe …",
@@ -1389,7 +1394,7 @@
     "searchPlaceholder": "Search for ingredient",
     "searching": "Searching...",
     "noResults": "No products match your search",
-    "scan": "Take photo",
+    "scan": "Scan barcode",
     "scanWeb": "Upload an image or drop them here",
     "scanWebWorking": "Reading the image …",
     "scanWebNotFound": "We couldn't recognise the product in the image. Try a photo of the front, or search for it.",
@@ -2071,6 +2076,7 @@
     "recentTitle": "Recent entries"
   },
   "photoDiary": {
+    "addPhoto": "Add new photo",
     "compare": {
       "selectAria": "Select photo for before/after",
       "title": "Before and after",
@@ -2246,7 +2252,8 @@
       "vitaminB7": "Vitamin B7 (biotin)",
       "vitaminB9": "Vitamin B9 (folate)",
       "vitaminB12": "Vitamin B12"
-    }
+    },
+    "swapLiquidUnit": "Switch between volume and grams"
   },
   "photoAward": {
     "bannerSingle": "You can earn {points} points by taking a new photo of {photoType}.",

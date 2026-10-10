@@ -1096,8 +1096,7 @@
     "statusNotShared": "Not shared",
     "sharedSearchPlaceholder": "Søk i tittel, ingredienser …",
     "createNew": "Opprett ny rett",
-    "sourceAll": "Oppskrifter",
-    "sourceShared": "Delte retter",
+    "sourceAll": "Vis alle",
     "sourceHelloFresh": "Hello Fresh",
     "sourceValdemarsro": "Valdemarsro",
     "sourceFilterAria": "Velg oppskriftskilde",
@@ -1210,7 +1209,7 @@
     "addPhoto": "Ta bilde til trinnet",
     "removePhoto": "Fjern bildet",
     "remove": "Slett trinn",
-    "dropPhoto": "Drag a picture here, or tap to add one"
+    "dropPhoto": "Ta et bilde av trinnet, eller slipp et bilde her"
   },
   "recipeImages": {
     "title": "Bilder av retten",
@@ -1280,7 +1279,13 @@
     "report": "Rapporter",
     "reported": "Takk, retten er rapportert",
     "reportError": "Kunne ikke rapportere retten",
-    "shareError": "Delingen kunne ikke endres akkurat nå"
+    "shareError": "Delingen kunne ikke endres akkurat nå",
+    "measureKcal": "{amount} · {kcal} kcal"
+  },
+  "recipeUnits": {
+    "label": "Vis mengder som",
+    "measures": "Mål",
+    "grams": "Gram"
   },
   "hfRecipe": {
     "loading": "Henter oppskriften …",
@@ -1389,7 +1394,7 @@
     "searchPlaceholder": "Søk etter ingrediens",
     "searching": "Søker...",
     "noResults": "Ingen varer samsvarer med søket ditt",
-    "scan": "Ta bilde",
+    "scan": "Skann strekkode",
     "scanWeb": "Last opp bilde eller slipp dem her",
     "scanWebWorking": "Leser bildet …",
     "scanWebNotFound": "Vi kunne ikke gjenkjenne varen på bildet. Prøv et bilde av forsiden, eller søk etter varen.",
@@ -2072,6 +2077,7 @@
   },
   "photoDiary": {
     "title": "Bildedagbok",
+    "addPhoto": "Legg til nytt bilde",
     "loading": "Henter…",
     "loadError": "Kunne ikke hente bildedagbok.",
     "requiresPasscode": "Krever telefonens passord for å vise",
@@ -2246,7 +2252,8 @@
       "vitaminB7": "Vitamin B7 (biotin)",
       "vitaminB9": "Vitamin B9 (folat)",
       "vitaminB12": "Vitamin B12"
-    }
+    },
+    "swapLiquidUnit": "Bytt mellom volum og gram"
   },
   "photoAward": {
     "bannerSingle": "Du kan tjene {points} poeng ved å ta et nytt bilde av {photoType}.",

@@ -1096,8 +1096,7 @@
     "statusNotShared": "Not shared",
     "sharedSearchPlaceholder": "Zoek op titel, ingrediënten …",
     "createNew": "Nieuw gerecht maken",
-    "sourceAll": "Recepten",
-    "sourceShared": "Gedeelde gerechten",
+    "sourceAll": "Alles tonen",
     "sourceHelloFresh": "Hello Fresh",
     "sourceValdemarsro": "Valdemarsro",
     "sourceFilterAria": "Kies receptbron",
@@ -1210,7 +1209,7 @@
     "addPhoto": "Foto bij de stap maken",
     "removePhoto": "Foto verwijderen",
     "remove": "Stap verwijderen",
-    "dropPhoto": "Drag a picture here, or tap to add one"
+    "dropPhoto": "Maak een foto van de stap of sleep een afbeelding hierheen"
   },
   "recipeImages": {
     "title": "Foto's van het gerecht",
@@ -1280,7 +1279,13 @@
     "report": "Melden",
     "reported": "Bedankt, het gerecht is gemeld",
     "reportError": "Kon het gerecht niet melden",
-    "shareError": "Delen kon nu niet worden gewijzigd"
+    "shareError": "Delen kon nu niet worden gewijzigd",
+    "measureKcal": "{amount} · {kcal} kcal"
+  },
+  "recipeUnits": {
+    "label": "Hoeveelheden tonen als",
+    "measures": "Maten",
+    "grams": "Gram"
   },
   "hfRecipe": {
     "loading": "Recept laden …",
@@ -1389,7 +1394,7 @@
     "searchPlaceholder": "Zoek een ingrediënt",
     "searching": "Zoeken...",
     "noResults": "Geen producten gevonden voor je zoekopdracht",
-    "scan": "Foto maken",
+    "scan": "Barcode scannen",
     "scanWeb": "Upload een foto of sleep ze hierheen",
     "scanWebWorking": "Foto lezen …",
     "scanWebNotFound": "We konden het product op de foto niet herkennen. Probeer een foto van de voorkant of zoek naar het product.",
@@ -2071,6 +2076,7 @@
     "recentTitle": "Laatste registraties"
   },
   "photoDiary": {
+    "addPhoto": "Nieuwe foto toevoegen",
     "title": "Fotodagboek",
     "loading": "Laden…",
     "loadError": "Kon fotodagboek niet laden.",
@@ -2246,7 +2252,8 @@
       "vitaminB7": "Vitamine B7 (biotine)",
       "vitaminB9": "Vitamine B9 (foliumzuur)",
       "vitaminB12": "Vitamine B12"
-    }
+    },
+    "swapLiquidUnit": "Wisselen tussen volume en gram"
   },
   "photoAward": {
     "bannerSingle": "Je kunt {points} punten verdienen door een nieuwe foto te maken van {photoType}.",

@@ -2,7 +2,14 @@
 
 import { defaultAmountGrams } from "@/lib/default-amount";
 import { mealShareBody } from "@/lib/meal-share";
-import { BRAND_NAME_HEIGHT_PX, brandLogoLeftPx, brandLogoRenderedHeight } from "@/lib/brand-logo-layout";
+import {
+  BRAND_NAME_HEIGHT_PX,
+  brandLogoLeftPx,
+  brandLogoRenderedHeight,
+  brandSlotHeight,
+  subbrandBottomPx,
+} from "@/lib/brand-logo-layout";
+import { displayedSubbrand } from "@/lib/subbrand-names";
 import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
@@ -14,6 +21,7 @@ import {
   IconLock,
   IconLockOpen,
   IconRefresh,
+  IconArrowsUpDown,
 } from "@tabler/icons-react";
 import { IconFavorite, IconFavoriteFilled } from "@/components/icons/Favorite";
 import { HfScreen } from "@/components/HfScreen";
@@ -37,6 +45,15 @@ import { useTranslation } from "@/i18n/LocaleProvider";
 import { isAlternativeServingConfident } from "@/lib/alternative-servings";
 import type { AlternativeServing } from "@/lib/product-analysis-types";
 import { fromDisplayAmount, getProductDisplayUnit, toDisplayAmount } from "@/lib/product-display-unit";
+import { findKitchenConversion } from "@/lib/kitchen-conversions";
+import {
+  liquidAmountFor,
+  liquidBaseFromValue,
+  liquidSecondaryText,
+  liquidUnitLabel,
+  liquidValue,
+  type LiquidPrimary,
+} from "@/lib/liquid-amount";
 import { NUTRIENT_BY_KEY, type ResolvedNutrient } from "@/lib/nutrients";
 import { UncertaintyTilde } from "@/components/ui/UncertaintyTilde";
 import { UncertaintyLine } from "@/components/ui/UncertaintyLine";
@@ -98,6 +115,10 @@ type Product = {
   servingSizeUnitSingular?: string | null;
   servingSizeUnitPlural?: string | null;
   brand: { name: string; logoUrl?: string | null } | null;
+  // Subbrandet (produktserien) står over brandet ved cirklen — som logo, når
+  // der findes et (docs/DECISIONS.md 2026-10-10).
+  subbrand?: string | null;
+  subbrandLogoUrl?: string | null;
   // Produktkategori + pakningsstørrelse bestemmer mængdeenheden (drikkevare =
   // ml/cl, ellers g), se src/lib/product-display-unit.ts.
   productCategory?: string | null;
@@ -299,6 +320,8 @@ export function AddProductView({
   // er kun en mulighed, når varen faktisk har en defineret portionsstørrelse,
   // og må ikke være default-valget selv når den findes.
   const [amountUnit, setAmountUnit] = useState<"personer" | "gram">("gram");
+  // Væsker i Opret ret: rumfang eller gram som primært tal (src/lib/liquid-amount.ts).
+  const [liquidPrimary, setLiquidPrimary] = useState<LiquidPrimary>("volume");
   const [time] = useState(
     () => (registration ? localTimeString(new Date(registration.createdAt)) : initialTime) ?? currentTimeString(),
   );
@@ -322,6 +345,7 @@ export function AddProductView({
   // Brand-logoets bredde/højde — bestemmer hvor langt ud det står, så der er
   // luft mellem logoet og cirklen (src/lib/brand-logo-layout.ts).
   const [brandLogoRatio, setBrandLogoRatio] = useState<number | null>(null);
+  const [subbrandLogoRatio, setSubbrandLogoRatio] = useState<number | null>(null);
   const extendedNutritionOpen = extendedNutritionToggle ?? Boolean(profile?.showExtendedNutrition);
   const [toxinsOpen, setToxinsOpen] = useState(false);
   const [openToxin, setOpenToxin] = useState<ToxinInfo | null>(null);
@@ -478,6 +502,11 @@ export function AddProductView({
   // +/−; amount er altid i basisenheden (g/ml), cl er kun visning.
   const displayUnit = getProductDisplayUnit(product);
   const displayAmount = toDisplayAmount(amount, displayUnit);
+  // Kun når varen tilføjes fra Opret ret og er en væske (brugerens krav 2026-10-10).
+  const liquid =
+    forDish && product && !(hasServingUnit && amountUnit === "personer")
+      ? liquidAmountFor(displayUnit, findKitchenConversion(product.name))
+      : null;
   const baseUnitLabel =
     displayUnit === "cl"
       ? t("addProduct.centilitresUnit")
@@ -705,6 +734,9 @@ export function AddProductView({
   // Siden tegnes med en tom vare, mens den rigtige hentes.
   const view = state.status === "loaded" ? state.product : isLoading ? LOADING_PRODUCT : null;
   const subtitle = view ? [view.packageSizeText, ...heading.variants].filter(Boolean).join(" · ") : "";
+  // Subbrandet står over brandet ved cirklen (docs/DECISIONS.md 2026-10-10).
+  const subbrand = view ? displayedSubbrand(view.brand?.name, view.subbrand) : null;
+  const subbrandBottom = subbrandBottomPx(brandSlotHeight(view?.brand, brandLogoRatio));
 
   const title = forDish ? t("addProduct.titleForDish") : t("addProduct.title");
   const Frame = inSheet ? SheetFrame : ScreenFrame;
@@ -878,6 +910,32 @@ export function AddProductView({
                         {view.brand.name}
                       </p>
                     ))}
+                  {/* Subbrandet står oven over brandet efter samme regel:
+                      logoet, hvis det findes, ellers navnet i fed grøn tekst
+                      (DECISIONS 2026-10-10). Uden brand står det i bunden. */}
+                  {subbrand &&
+                    (view.subbrandLogoUrl ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img
+                        src={view.subbrandLogoUrl}
+                        alt={subbrand}
+                        onLoad={(event) =>
+                          setSubbrandLogoRatio(event.currentTarget.naturalWidth / (event.currentTarget.naturalHeight || 1))
+                        }
+                        style={{
+                          bottom: subbrandBottom,
+                          left: brandLogoLeftPx(brandLogoRenderedHeight(subbrandLogoRatio), subbrandBottom),
+                        }}
+                        className="pointer-events-none absolute z-10 h-[66px] w-[95px] object-contain object-left-bottom"
+                      />
+                    ) : (
+                      <p
+                        style={{ bottom: subbrandBottom, left: brandLogoLeftPx(BRAND_NAME_HEIGHT_PX, subbrandBottom) }}
+                        className="hf-type-title hf-type-strong pointer-events-none absolute z-10 whitespace-nowrap text-hf-green"
+                      >
+                        {subbrand}
+                      </p>
+                    ))}
                   {/* Certificeringslogoer (Øko m.fl.) på produktcirklen; uden
                       certificering vises intet logo (docs/DECISIONS.md 2026-09-28). */}
                   {certifications.length > 0 && (
@@ -958,7 +1016,28 @@ export function AddProductView({
                 >
                   −
                 </button>
-                <div className="flex-1 rounded-2xl bg-hf-tan py-3 text-center text-hf-black">
+                <div
+                  className={`relative flex-1 rounded-2xl bg-hf-tan py-3 text-center text-hf-black ${liquid ? "cursor-pointer" : ""}`}
+                  onClick={(event) => {
+                    if (!liquid || (event.target as HTMLElement).closest("input, button")) return;
+                    setLiquidPrimary((current) => (current === "volume" ? "grams" : "volume"));
+                  }}
+                >
+                  {liquid && !isLoading && (
+                    <>
+                      <span className="hf-type-caption absolute right-3 top-1.5 text-text-secondary">
+                        {liquidSecondaryText(amount, liquid, liquidPrimary)}
+                      </span>
+                      <button
+                        type="button"
+                        aria-label={t("addProduct.swapLiquidUnit")}
+                        onClick={() => setLiquidPrimary((current) => (current === "volume" ? "grams" : "volume"))}
+                        className="absolute right-2 top-1/2 flex h-8 w-8 -translate-y-1/2 items-center justify-center text-hf-black"
+                      >
+                        <IconArrowsUpDown size={18} stroke={2} />
+                      </button>
+                    </>
+                  )}
                   {isLoading ? (
                     <ReadingSkeleton label={t("addProduct.reading")}>
                       <Skeleton type="page-title" width={96} />
@@ -969,6 +1048,23 @@ export function AddProductView({
                         amount === servingSizeGrams ? servingSizeUnitSingular : servingSizeUnitPlural
                       }`}
                     </p>
+                  ) : liquid ? (
+                    <label className="hf-type-page-title flex items-baseline justify-center text-hf-black">
+                      <input
+                        type="number"
+                        inputMode="numeric"
+                        min={0}
+                        step={liquidPrimary === "volume" && liquid.volumeUnit === "cl" ? 1 : 10}
+                        value={liquidValue(amount, liquid, liquidPrimary)}
+                        onChange={(event) => {
+                          const value = Number(event.target.value);
+                          if (Number.isFinite(value)) setAmount(Math.max(0, liquidBaseFromValue(value, liquid, liquidPrimary)));
+                        }}
+                        style={{ width: `${Math.max(1, String(liquidValue(amount, liquid, liquidPrimary)).length) + 0.5}ch` }}
+                        className="bg-transparent text-right outline-none"
+                      />
+                      <span>&nbsp;{liquidUnitLabel(liquid, liquidPrimary)}</span>
+                    </label>
                   ) : (
                     <label className="hf-type-page-title flex items-baseline justify-center text-hf-black">
                       <input

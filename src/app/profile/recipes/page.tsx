@@ -18,7 +18,14 @@ import {
 import { SkeletonScreen } from "@/components/hf/Skeleton";
 import { BottomSheet } from "@/components/hf/BottomSheet";
 import { RecipeFiltersBody } from "@/components/recipes/RecipeFiltersBody";
-import { RecipeRow, recipeHref, type RecipeRowData as Row } from "@/components/recipes/RecipeRow";
+import {
+  RecipeCard,
+  RecipeCardSkeleton,
+  RecipeRow,
+  recipeHref,
+  type RecipeRowData as Row,
+} from "@/components/recipes/RecipeRow";
+import { recipeClickKey } from "@/lib/recipe-clicks";
 
 // Indstillinger → Opskrifter (docs/DECISIONS.md 2026-09-24): to faner,
 // "Mine retter" (egne retter og favoritter fra delte retter, fra boksen) og
@@ -136,8 +143,9 @@ function MineTab({ t }: { t: Translate }) {
   );
 }
 
-// Antal retter under "Trender netop nu", før brugeren har søgt.
-const TRENDING_COUNT = 3;
+// "Trender netop nu" er en slider-række med op til 10 retter; serveren
+// fylder op med tilfældige, så der altid er mindst tre (DECISIONS 2026-10-10).
+const TRENDING_SKELETONS = 3;
 
 type FavoriteSnapshot = { id: string; name: string; kcal: number; images?: string[] };
 
@@ -167,7 +175,7 @@ function SharedTab({ t }: { t: Translate }) {
       .catch(() => setFavorites([]));
   }, []);
 
-  // Uden søgning hentes de mest populære retter til "Trender netop nu";
+  // Uden søgning hentes de retter med flest nye klik til "Trender netop nu";
   // med søgning hentes resultaterne i den valgte sortering.
   useEffect(() => {
     if (helloFresh === null || isSerious === null) return;
@@ -177,7 +185,7 @@ function SharedTab({ t }: { t: Translate }) {
       try {
         const params = isSerious ? filtersToParams(filters) : new URLSearchParams({ sort: "relevance" });
         if (query.trim()) params.set("q", query.trim());
-        else params.set("sort", "popular");
+        else params.set("trending", "1");
         if (helloFresh && isSerious) params.set("hellofresh", "1");
         // Integrationsknapperne under søgefeltet: "Opskrifter" viser alle,
         // en enkelt integration viser kun dens retter.
@@ -198,7 +206,6 @@ function SharedTab({ t }: { t: Translate }) {
 
   const sourceOptions: { value: Source; label: string }[] = [
     { value: "all", label: t("recipes.sourceAll") },
-    { value: "shared", label: t("recipes.sourceShared") },
     ...(helloFresh ? [{ value: "hellofresh" as const, label: t("recipes.sourceHelloFresh") }] : []),
     { value: "valdemarsro", label: t("recipes.sourceValdemarsro") },
   ];
@@ -229,6 +236,7 @@ function SharedTab({ t }: { t: Translate }) {
     return result.kind !== "shared"
       ? {
           key: result.id,
+          clickKey: recipeClickKey(result.kind, result.id),
           // Valdemarsro-retter åbnes som produktsiden (tilføj + gram, "Gå til
           // opskrift", ingredienser og næring); HelloFresh har sin egen visning.
           href: result.kind === "valdemarsro" ? `/add/${encodeURIComponent(result.id)}` : recipeHref(result.id),
@@ -243,6 +251,7 @@ function SharedTab({ t }: { t: Translate }) {
         }
       : {
           key: result.id,
+          clickKey: recipeClickKey(result.kind, result.id),
           href: `/profile/recipes/${encodeURIComponent(result.id)}?kind=shared`,
           name: result.name,
           imageUrl: result.imageUrl,
@@ -252,7 +261,7 @@ function SharedTab({ t }: { t: Translate }) {
   }
 
   const status = (text: string) => <p className="hf-type-body text-text-secondary text-center">{text}</p>;
-  const trending = results.slice(0, TRENDING_COUNT);
+  const trending = results;
 
   return (
     <div className="hf-page">
@@ -334,13 +343,19 @@ function SharedTab({ t }: { t: Translate }) {
       ) : (
         <>
           <h2 className="hf-type-section-title">{t("recipes.trendingTitle")}</h2>
-          {state === "loading" && <LoadingRows count={TRENDING_COUNT} />}
+          {state === "loading" && (
+            <div className="-mx-4 flex gap-3 overflow-hidden px-4">
+              {Array.from({ length: TRENDING_SKELETONS }, (_, index) => (
+                <RecipeCardSkeleton key={index} />
+              ))}
+            </div>
+          )}
           {state === "error" && status(connectionMessage(t("recipes.loadError")))}
           {state === "ready" && trending.length === 0 && status(t("recipes.trendingEmpty"))}
           {state === "ready" && trending.length > 0 && (
-            <div>
+            <div className="-mx-4 flex snap-x gap-3 overflow-x-auto px-4 pb-1">
               {trending.map((result) => (
-                <RecipeRow key={`${result.kind}-${result.id}`} row={rowFor(result)} />
+                <RecipeCard key={`${result.kind}-${result.id}`} row={rowFor(result)} />
               ))}
             </div>
           )}

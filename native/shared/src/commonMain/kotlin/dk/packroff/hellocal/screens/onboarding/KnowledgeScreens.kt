@@ -103,6 +103,7 @@ internal val KNOWLEDGE_SECTIONS = listOf(
     "kalorieforbraending" to "Kalorieforbrænding",
     "who-og-kilder" to "WHO og officielle kilder",
     "mad-paa-latin" to "Mad på latin",
+    "omregning" to "Omregning: væsker til gram",
 )
 
 private val SEARCHABLE_SECTIONS = listOf("vitaminer", "sundhedstips", "kalorieforbraending", "who-og-kilder", "mad-paa-latin")
@@ -138,7 +139,7 @@ internal fun searchEntries(query: String, section: String? = null): List<Knowled
 }
 
 /** .hf-page with "flex flex-col gap-3". */
-private val KnowledgePadding = PaddingValues(start = HcDimens.Gutter, end = HcDimens.Gutter, top = HcDimens.SpaceBlock, bottom = HcDimens.SpaceSection)
+internal val KnowledgePadding = PaddingValues(start = HcDimens.Gutter, end = HcDimens.Gutter, top = HcDimens.SpaceBlock, bottom = HcDimens.SpaceSection)
 
 // --- /viden-om ------------------------------------------------------------
 
@@ -151,12 +152,17 @@ fun KnowledgeScreen(@Suppress("UNUSED_PARAMETER") args: RouteArgs) {
     val nav = LocalNavigator.current
     var query by remember { mutableStateOf("") }
     var additives by remember { mutableStateOf<List<AdditiveInfo>>(emptyList()) }
+    var conversions by remember { mutableStateOf<List<KitchenConversion>>(emptyList()) }
     LaunchedEffect(Unit) { additives = runCatching { Additives.list() }.getOrDefault(emptyList()) }
+    LaunchedEffect(Unit) { conversions = runCatching { KitchenConversions.table().items }.getOrDefault(emptyList()) }
 
     val q = query.trim()
     val rows = if (q.isNotEmpty()) {
         searchEntries(q).map { OnbRow("${it.section}/${it.slug}", it.title, entryHref(it.section, it.slug)) } +
             (if (q.length >= 2 && "e-numre".startsWith(q.lowercase())) listOf(OnbRow("e-numre", "E-numre", "/viden-om/e-numre")) else emptyList()) +
+            (if (q.length >= 2 && "omregning".startsWith(q.lowercase())) listOf(OnbRow("omregning", "Omregning: væsker til gram", "/viden-om/omregning")) else emptyList()) +
+            (if (q.length >= 2) conversions.filter { it.name.lowercase().contains(q.lowercase()) }.take(10)
+                .map { OnbRow("omregning/${it.id}", "${it.name} · 1 dl = ${formatKitchenNumber(it.gramsPerDl, 0)} g", "/viden-om/omregning") } else emptyList()) +
             additives.filter { matchesAdditive(it, q) }.take(30).map(::additiveRow)
     } else {
         KNOWLEDGE_SECTIONS.map { (id, title) -> OnbRow(id, title, "/viden-om/$id") }
@@ -179,7 +185,7 @@ fun KnowledgeSectionScreen(args: RouteArgs) {
     val category = args["category"]
     var query by remember { mutableStateOf("") }
     val title = sectionTitle(category)
-    if (title == null || category == "e-numre") {
+    if (title == null || category == "e-numre" || category == "omregning") {
         NotFoundScreen()
         return
     }

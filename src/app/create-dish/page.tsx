@@ -4,18 +4,17 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import {
-  IconCamera,
+  IconBarcode,
   IconMinus,
   IconPlus,
   IconChevronLeft,
   IconChevronRight,
-  IconClipboardText,
-  IconPencil,
   IconSearch,
   IconX,
   IconSoup,
 } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
+import { AccordionCard } from "@/components/hf/AccordionCard";
 import {
   BottomSheet,
   BottomSheetCloseButton,
@@ -61,6 +60,37 @@ function round(value: number, decimals = 0) {
   return Math.round(value * factor) / factor;
 }
 
+// Start-valgene som vandrette felter i stil med ikonfelterne i Tilføj-menuen
+// (AddMenuList). Ikonpladsen er tom, indtil ejerens ikoner kommer (2026-10-10).
+function StartOptionTiles<T extends { key: string; label: string }>({
+  options,
+  onPick,
+}: {
+  options: T[];
+  onPick: (option: T) => void;
+}) {
+  return (
+    <AccordionCard>
+      <div
+        className="grid gap-2 p-3"
+        style={{ gridTemplateColumns: `repeat(${options.length}, minmax(0, 1fr))` }}
+      >
+        {options.map((option) => (
+          <button
+            key={option.key}
+            type="button"
+            onClick={() => onPick(option)}
+            className="rounded-card flex flex-col items-center gap-0 border border-transparent p-2 text-center"
+          >
+            <span aria-hidden className="h-24 w-24" />
+            <span className="hf-type-body">{option.label}</span>
+          </button>
+        ))}
+      </div>
+    </AccordionCard>
+  );
+}
+
 export default function CreateDishPage() {
   const { t, locale } = useTranslation();
   const connectionMessage = useConnectionMessage();
@@ -91,6 +121,7 @@ export default function CreateDishPage() {
     useState<DishDraftIngredient[]>(readDishDraft);
   const [saving, setSaving] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
+  const [ingredientError, setIngredientError] = useState(false);
   // Flowets første trin: tre knapper midt på skærmen. Springes over, når der
   // allerede er en kladde (fx ved retur fra en vare).
   const [started, setStarted] = useState(
@@ -258,13 +289,14 @@ export default function CreateDishPage() {
 
   async function handleSave() {
     setSaveError(null);
+    setIngredientError(false);
     if (!name.trim()) {
       setSaveError(t("createDish.nameRequired"));
       setPage(pageKinds.findIndex((entry) => entry.kind === "title"));
       return;
     }
     if (ingredients.length === 0) {
-      setSaveError(t("createDish.ingredientRequired"));
+      setIngredientError(true);
       setPage(pageKinds.findIndex((entry) => entry.kind === "ingredients"));
       return;
     }
@@ -314,6 +346,14 @@ export default function CreateDishPage() {
   // Indsæt tekst / Scan opskrift: importen er side 1, titlen kommer først på side 2.
   const [importMode, setImportMode] = useState(false);
   const swipeStart = useRef<{ x: number; y: number } | null>(null);
+  const searchSectionRef = useRef<HTMLDivElement>(null);
+
+  // Tapping the ingredient search animates the page up so the many results fit above the keyboard.
+  function scrollSearchToTop() {
+    window.setTimeout(() => {
+      searchSectionRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }, 50);
+  }
   const stepList = steps.length ? steps : [EMPTY_STEP];
   type PageKind =
     | { kind: "import" | "title" | "ingredients" | "images" }
@@ -360,19 +400,16 @@ export default function CreateDishPage() {
     {
       key: "text",
       label: t("createDish.modeText"),
-      icon: <IconClipboardText size={28} />,
       sheet: "paste" as const,
     },
     {
       key: "scan",
       label: t("createDish.modeScan"),
-      icon: <IconCamera size={28} />,
       sheet: "scan" as const,
     },
     {
       key: "manual",
       label: t("createDish.modeManual"),
-      icon: <IconPencil size={28} />,
       sheet: "none" as const,
     },
   ];
@@ -441,24 +478,15 @@ export default function CreateDishPage() {
         }
       >
         {!started ? (
-          <div className="hf-page flex min-h-[50vh] flex-col items-center justify-center gap-3">
-            {startOptions.map((option) => (
-              <button
-                key={option.key}
-                type="button"
-                onClick={() => {
-                  setImportMode(option.sheet !== "none");
-                  setSheet(option.sheet);
-                  setStarted(true);
-                }}
-                className="flex w-full max-w-xs flex-col items-center gap-2 rounded-2xl bg-hf-tan py-5 text-hf-black"
-              >
-                {option.icon}
-                <span className="hf-type-body hf-type-strong">
-                  {option.label}
-                </span>
-              </button>
-            ))}
+          <div className="hf-page">
+            <StartOptionTiles
+              options={startOptions}
+              onPick={(option) => {
+                setImportMode(option.sheet !== "none");
+                setSheet(option.sheet);
+                setStarted(true);
+              }}
+            />
           </div>
         ) : (
           <div
@@ -480,23 +508,10 @@ export default function CreateDishPage() {
             }}
           >
             {current.kind === "import" && (
-              <div className="flex min-h-[40vh] flex-col items-center justify-center gap-3">
-                {startOptions
-                  .filter((option) => option.sheet !== "none")
-                  .map((option) => (
-                    <button
-                      key={option.key}
-                      type="button"
-                      onClick={() => setSheet(option.sheet)}
-                      className="flex w-full max-w-xs flex-col items-center gap-2 rounded-2xl bg-hf-tan py-5 text-hf-black"
-                    >
-                      {option.icon}
-                      <span className="hf-type-body hf-type-strong">
-                        {option.label}
-                      </span>
-                    </button>
-                  ))}
-              </div>
+              <StartOptionTiles
+                options={startOptions.filter((option) => option.sheet !== "none")}
+                onPick={(option) => setSheet(option.sheet)}
+              />
             )}
 
             {current.kind === "title" && (
@@ -616,10 +631,112 @@ export default function CreateDishPage() {
                 <div className="rounded-2xl bg-hf-tan px-4 py-3">
                   <PersonsSlider
                     label={t("createDish.servings")}
-                    value={servings ?? 4}
+                    value={servings ?? 0}
+                    min={0}
                     max={MAX_RECIPE_PERSONS}
-                    onChange={setServings}
+                    unset={servings === null}
+                    centered
+                    onChange={(value) => setServings(value > 0 ? value : null)}
                   />
+                </div>
+
+                <div ref={searchSectionRef}>
+                  <p className="hf-type-small hf-type-strong mb-2 text-hf-black">
+                    {t("createDish.addIngredient")}
+                  </p>
+                  <div className="hf-search">
+                    <IconSearch size={16} color="var(--hf-black)" />
+                    <input
+                      value={query}
+                      onChange={(event) => {
+                        const value = event.target.value;
+                        setQuery(value);
+                        if (!value.trim()) {
+                          setSearchState("idle");
+                          setResults([]);
+                        }
+                      }}
+                      onFocus={scrollSearchToTop}
+                      placeholder={t("createDish.searchPlaceholder")}
+                    />
+                    {!inWebShell && (
+                      <a
+                        href="/camera?mode=product&for=ret"
+                        aria-label={t("createDish.scan")}
+                        className="flex h-full items-center pl-1 text-hf-black"
+                      >
+                        <IconBarcode size={30} stroke={1.75} />
+                      </a>
+                    )}
+                  </div>
+
+                  {ingredientError && ingredients.length === 0 && (
+                    <p className="hf-type-body text-text-secondary mt-2 text-center">
+                      {t("createDish.ingredientRequired")}
+                    </p>
+                  )}
+
+                  {query.trim() && (
+                    <div className="mt-2 overflow-hidden bg-hf-tan rounded-card">
+                      {searchState === "loading" && (
+                        <SkeletonScreen className="px-4">
+                          <SkeletonMediaRows rows={4} />
+                        </SkeletonScreen>
+                      )}
+                      {searchState === "error" && (
+                        <p className="hf-type-body text-text-secondary px-4 py-4 text-center">
+                          {connectionMessage(t("createDish.noResults"))}
+                        </p>
+                      )}
+                      {searchState === "ready" && correction?.forQuery === query && (
+                        <div className="px-4 pt-3">
+                          <SearchCorrectionNotice
+                            correction={correction}
+                            onSearchExact={() => setExactFor(query)}
+                            onUseSuggestion={setQuery}
+                          />
+                        </div>
+                      )}
+                      {searchState === "ready" && results.length === 0 && (
+                        <p className="hf-type-body text-text-secondary px-4 py-4 text-center">
+                          {t("createDish.noResults")}
+                        </p>
+                      )}
+                      {searchState === "ready" &&
+                        results.map((product, index) => (
+                          <Link
+                            key={product.id}
+                            href={`/add/${product.id}?for=ret`}
+                            className={`flex items-center gap-2.5 px-4 py-3 ${
+                              index < results.length - 1
+                                ? "border-b border-hf-tan-dark"
+                                : ""
+                            }`}
+                          >
+                            <div className="h-9 w-9 flex-shrink-0">
+                              {product.imageUrl && (
+                                // eslint-disable-next-line @next/next/no-img-element
+                                <img
+                                  src={product.imageUrl}
+                                  alt=""
+                                  className="h-full w-full object-contain"
+                                />
+                              )}
+                            </div>
+                            <span className="hf-type-body hf-type-strong flex-1 text-hf-black">
+                              {product.name}
+                            </span>
+                          </Link>
+                        ))}
+                    </div>
+                  )}
+
+                  {/* Nye varer oprettes kun ved scanning — ingen manuel formular (DECISIONS 2026-10-02). */}
+                  {inWebShell && (
+                    <div className="mt-4">
+                      <ProductPhotoDropZone returnSuffix="?for=ret" />
+                    </div>
+                  )}
                 </div>
 
                 <div>
@@ -702,99 +819,6 @@ export default function CreateDishPage() {
                     </p>
                   </div>
                 )}
-
-                <div>
-                  <p className="hf-type-small hf-type-strong mb-2 text-hf-black">
-                    {t("createDish.addIngredient")}
-                  </p>
-                  <div className="hf-search">
-                    <IconSearch size={16} color="var(--hf-black)" />
-                    <input
-                      value={query}
-                      onChange={(event) => {
-                        const value = event.target.value;
-                        setQuery(value);
-                        if (!value.trim()) {
-                          setSearchState("idle");
-                          setResults([]);
-                        }
-                      }}
-                      placeholder={t("createDish.searchPlaceholder")}
-                    />
-                  </div>
-
-                  {query.trim() && (
-                    <div className="mt-2 overflow-hidden bg-hf-tan rounded-card">
-                      {searchState === "loading" && (
-                        <SkeletonScreen className="px-4">
-                          <SkeletonMediaRows rows={4} />
-                        </SkeletonScreen>
-                      )}
-                      {searchState === "error" && (
-                        <p className="hf-type-body text-text-secondary px-4 py-4 text-center">
-                          {connectionMessage(t("createDish.noResults"))}
-                        </p>
-                      )}
-                      {searchState === "ready" && correction?.forQuery === query && (
-                        <div className="px-4 pt-3">
-                          <SearchCorrectionNotice
-                            correction={correction}
-                            onSearchExact={() => setExactFor(query)}
-                            onUseSuggestion={setQuery}
-                          />
-                        </div>
-                      )}
-                      {searchState === "ready" && results.length === 0 && (
-                        <p className="hf-type-body text-text-secondary px-4 py-4 text-center">
-                          {t("createDish.noResults")}
-                        </p>
-                      )}
-                      {searchState === "ready" &&
-                        results.map((product, index) => (
-                          <Link
-                            key={product.id}
-                            href={`/add/${product.id}?for=ret`}
-                            className={`flex items-center gap-2.5 px-4 py-3 ${
-                              index < results.length - 1
-                                ? "border-b border-hf-tan-dark"
-                                : ""
-                            }`}
-                          >
-                            <div className="h-9 w-9 flex-shrink-0">
-                              {product.imageUrl && (
-                                // eslint-disable-next-line @next/next/no-img-element
-                                <img
-                                  src={product.imageUrl}
-                                  alt=""
-                                  className="h-full w-full object-contain"
-                                />
-                              )}
-                            </div>
-                            <span className="hf-type-body hf-type-strong flex-1 text-hf-black">
-                              {product.name}
-                            </span>
-                          </Link>
-                        ))}
-                    </div>
-                  )}
-
-                  {/* Nye varer oprettes kun ved scanning — ingen manuel formular (DECISIONS 2026-10-02). */}
-                  <div className="mt-4">
-                    {inWebShell ? (
-                      <ProductPhotoDropZone returnSuffix="?for=ret" />
-                    ) : (
-                      <a
-                        href="/camera?mode=product&for=ret"
-                        className="flex flex-col items-center gap-2 rounded-2xl bg-hf-tan py-3 text-center"
-                      >
-                        <IconCamera size={20} color="var(--hf-black)" />
-                        <span className="hf-type-small hf-type-strong text-hf-black">
-                          {t("createDish.scan")}
-                        </span>
-                      </a>
-                    )}
-                  </div>
-                </div>
               </>
             )}
 

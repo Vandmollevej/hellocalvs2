@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { requireAdminUser } from "@/lib/require-admin";
-import { toUploadItem } from "@/lib/brand-logo-upload";
+import { logoUploadInclude, toUploadItem } from "@/lib/brand-logo-upload";
 import { toProductImageItem } from "@/lib/product-image-upload";
 import { BrandLogoUploader } from "@/components/admin/BrandLogoUploader";
 import { BrandLogoUploadHistory } from "@/components/admin/BrandLogoUploadHistory";
@@ -37,7 +37,7 @@ export default async function AdminImagesPage() {
       include: {
         items: {
           orderBy: [{ createdAt: "asc" }, { id: "asc" }],
-          include: { brand: { select: { name: true, logoUrl: true } } },
+          include: logoUploadInclude,
         },
       },
     }),

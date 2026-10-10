@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { IconCamera } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
 import { PhotoCarousel } from "@/components/photo-diary/PhotoCarousel";
 import { PhotoCompare } from "@/components/photo-diary/PhotoCompare";
@@ -292,35 +293,44 @@ export default function BilledeDagbogPage() {
                   />
                 )}
               </div>
-              <input
-                ref={fileInputRef}
-                type="file"
-                accept="image/*"
-                capture="environment"
-                className="hidden"
-                onChange={onFileSelected}
-              />
-              <button
-                type="button"
-                onClick={openCamera}
-                disabled={saving}
-                className="hf-control hf-btn-primary w-full"
-              >
-                {saving ? t("photoDiary.saving") : t("photoDiary.takePhoto")}
-              </button>
-              {storageError && (
-                <p className="hf-type-small text-center text-hf-red-dark">
-                  {t(
-                    storageError === "load"
-                      ? "photoDiary.storageLoadError"
-                      : storageError === "save"
-                        ? "photoDiary.saveError"
-                        : "photoDiary.deleteError"
-                  )}
-                </p>
-              )}
             </>
           )}
+
+          {/* Tilføj-knappen står altid i midten med et stort kamera — også når billederne er låst. */}
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept="image/*"
+            capture="environment"
+            className="hidden"
+            onChange={onFileSelected}
+          />
+          <div className="flex flex-col items-center gap-3 py-12">
+            <button
+              type="button"
+              onClick={openCamera}
+              disabled={saving}
+              aria-label={t("photoDiary.takePhoto")}
+              className="flex h-28 w-28 items-center justify-center rounded-full border-0 bg-hf-green text-hf-white disabled:opacity-50"
+              style={{ boxShadow: "0 4px 12px rgba(0,0,0,0.18), 0 2px 4px rgba(0,0,0,0.10)" }}
+            >
+              <IconCamera size={56} stroke={1.6} />
+            </button>
+            <p className="hf-type-button text-center">
+              {saving ? t("photoDiary.saving") : t("photoDiary.addPhoto")}
+            </p>
+            {storageError && (
+              <p className="hf-type-small text-center text-hf-red-dark">
+                {t(
+                  storageError === "load"
+                    ? "photoDiary.storageLoadError"
+                    : storageError === "save"
+                      ? "photoDiary.saveError"
+                      : "photoDiary.deleteError"
+                )}
+              </p>
+            )}
+          </div>
         </div>
       )}
 

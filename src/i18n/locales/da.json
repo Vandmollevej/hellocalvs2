@@ -1096,8 +1096,7 @@
     "statusNotShared": "Ikke delt",
     "sharedSearchPlaceholder": "Søg i titel, ingredienser …",
     "createNew": "Opret ny ret",
-    "sourceAll": "Opskrifter",
-    "sourceShared": "Delte retter",
+    "sourceAll": "Vis alle",
     "sourceHelloFresh": "Hello Fresh",
     "sourceValdemarsro": "Valdemarsro",
     "sourceFilterAria": "Vælg opskriftskilde",
@@ -1210,7 +1209,7 @@
     "addPhoto": "Tag billede til trinnet",
     "removePhoto": "Fjern billedet",
     "remove": "Slet trin",
-    "dropPhoto": "Træk et billede hertil, eller tryk for at tilføje"
+    "dropPhoto": "Tag et billede af trinnet, eller træk et billede hertil"
   },
   "recipeImages": {
     "title": "Billeder af retten",
@@ -1280,7 +1279,13 @@
     "report": "Anmeld",
     "reported": "Tak, retten er anmeldt",
     "reportError": "Kunne ikke anmelde retten",
-    "shareError": "Delingen kunne ikke ændres lige nu"
+    "shareError": "Delingen kunne ikke ændres lige nu",
+    "measureKcal": "{amount} · {kcal} kcal"
+  },
+  "recipeUnits": {
+    "label": "Vis mængder som",
+    "measures": "Mål",
+    "grams": "Gram"
   },
   "hfRecipe": {
     "loading": "Henter opskriften …",
@@ -1389,7 +1394,7 @@
     "searchPlaceholder": "Søg efter ingrediens",
     "searching": "Søger...",
     "noResults": "Ingen varer matcher din søgning",
-    "scan": "Tag billede",
+    "scan": "Scan stregkode",
     "scanWeb": "Upload billede eller drop dem her",
     "scanWebWorking": "Læser billedet …",
     "scanWebNotFound": "Vi kunne ikke genkende varen på billedet. Prøv et billede af forsiden, eller søg efter varen.",
@@ -2071,6 +2076,7 @@
     "recentTitle": "Seneste registreringer"
   },
   "photoDiary": {
+    "addPhoto": "Tilføj nyt billede",
     "title": "Billeddagbog",
     "loading": "Henter…",
     "loadError": "Kunne ikke hente billeddagbog.",
@@ -2246,7 +2252,8 @@
       "vitaminB7": "Vitamin B7 (biotin)",
       "vitaminB9": "Vitamin B9 (folat)",
       "vitaminB12": "Vitamin B12"
-    }
+    },
+    "swapLiquidUnit": "Skift mellem rumfang og gram"
   },
   "photoAward": {
     "bannerSingle": "Du kan optjene {points} points ved at tage et nyt billede af {photoType}.",

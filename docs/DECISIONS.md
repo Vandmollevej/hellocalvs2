@@ -10,6 +10,14 @@ Ejerens krav: søgningen skal vise alt, indtil brugeren indsnævrer, og være in
 - **Accenter:** `hc_search_norm()` (små bogstaver + unaccent) bruges i et ekstra match på navn, flertalsnavn og mærke ("Nescafé" finder "Nescafe"); GIN-trigramindeks på kolonnerne.
 - **"Mente du …?":** materialiseret visning `search_words` (ord fra varenavne/mærker + hyppighed), genopbygget i baggrunden efter 6 timers uptime (`src/lib/search-correction.ts`). 0 hits → serveren søger på den rettede tekst og svarer med `correctedQuery` + `originalQuery`; 1-2 hits → `suggestedQuery`; `&exact=1` slår rettelse fra ("Søg i stedet efter …"). Et ord rettes kun, hvis det ikke findes og ikke er begyndelsen på et ord (ingen rettelse midt i indtastning); afstand ≤ 1 for 3-4 bogstaver, ≤ 2 ellers.
 - Rangeringens øvrige regler (minimumsscore, flere tegn for upopulære varer) er uændrede; kandidatpuljen er stadig 80 varer.
+## 2026-10-10: Subbrand over brandet ved produktcirklen — logo når det findes
+
+Brugerens ønske: "I dag vises brandnavn til højre for produktet. Fremover skal vises subbrand ovenover. Begge skal vise ikon i stedet, hvis de findes."
+
+- Varesiden (web `AddProductView` + native `AddProductScreen`): subbrandet står oven over brandet til højre for cirklen, 6 px luft, med samme regel for venstre kant som brandet (lige uden for cirklen + 8 px, `src/lib/brand-logo-layout.ts`). Logo hvis det findes, ellers navnet i fed grøn tekst som brandnavnet. Uden brand står subbrandet i bunden. Er subbrandet bare brandet igen (normaliseret ens), vises det ikke.
+- Product.subbrand er fri tekst, så subbrand-logoer ligger i ny tabel `subbrand_logos` (`SubbrandLogo`, navn unikt). Navnet er "<brand> <subbrand>" eller subbrandet alene, som det står på varerne; varesiden matcher normaliseret og prøver "<brand> <subbrand>" først (`src/lib/subbrand-logo.ts`, `subbrand-names.ts`). `/api/products/[id]` sender `subbrandLogoUrl` med.
+- Logoer kommer ind samme veje som brand-logoer: logo-uploaden i admin og logo-robottens `_import`-mappe. Hedder intet brand som filen, men et subbrand på varerne gør ("Ota Solgryn.png", "Kinder Bueno.png"), bliver filen subbrandets logo i stedet for at blive afvist. Uploaden husker det tidligere logo (`brand_logo_uploads.subbrandName` + `previousLogoUrl`), så sletning gendanner det. Robotten gemmer under `brand-logos/subbrands/<id>.png`.
+- Migration `20261010120000_subbrand_logos`.
 
 ## 2026-10-10: Indberet fejl — bundark pr. punkt med kamera
 
@@ -4879,3 +4887,16 @@ Ejeren vælger selv adgangens udløb med en datepicker i Hello Doc-editoren (web
 ## 2026-10-09: Tal-sliderens mål-linje og grøn ved mål
 
 Hver række i forsidens tal-slider viser sit mål under tallet i stedet for pladsholdertekst. Kun minimumsmål (skridt, trapper, protein, vægtudsigt, chance) farver hovedtallet grønt; grænser (sukker, salt, fedt, kulhydrat, kalorier) forbliver sorte, fordi "nået" ellers ville betyde overskredet. Kalorieindtag bruger kniv og gaffel (afviger fra design.md §6.16, brugerens ønske); kulhydrater har brød-ikon. Pulszoner og valgt zone er pr. enhed i localStorage.
+
+## 2026-10-10: "Trender netop nu" — slider, klik som signal
+
+- Brugerens krav: mindst tre retter vises altid øverst, tilfældige når der ingen data/klik er; med flere data vises tendenser den seneste måned efter flest nye klik; 10 retter i en slider-række.
+- Signal er klik på retter i Delte retter (`recipe_clicks`), ikke tilføjelser. Score = klik seneste 30 dage, seneste 7 dage tæller dobbelt (stigning vinder). Tilfældig opfyldning er deterministisk pr. dag. Tommel op/ned og registreringer indgår ikke i rækken.
+
+## 2026-10-10: cl-varer vises altid i cl + omregningstabel væsker → gram
+
+- Brugerens regel: en vare, hvis mængde er angivet i cl (pakningsstørrelse, ellers navnet, fx "Cola 33 cl"), er en færdig drikkevare og vises ALTID i cl — aldrig i gram — uanset `productCategory`. Afløser for cl-tilfældet "alt andet end DRINK → g" fra 2026-09-24; ml/l uden DRINK-kategori giver stadig g. `src/lib/product-display-unit.ts` + native `FoodLogic.kt`.
+- Omregningstabel (137 rækker): alle væsker fra Frida-grupperne (vand, mælk, fløde/syrnet, plantedrikke, juice/saft/sodavand, olie/fedt, øl/vin/spiritus, honning/sirup, saucer/eddike/bouillon, flydende æg) plus tørvarer, der måles i dl (mel, sukker, havregryn, ris …). Én kilde: `scripts/kitchen-conversions-build.py` → `src/data/kitchen-conversions.json`; massefylder fra FAO/INFOODS Density Database og USDA-mål, tørvarer efter danske køkkenmål (fx 1 dl hvedemel = 60 g, sukker 85 g, honning 142 g). Native henter den via `GET /api/kitchen-conversions`.
+- Match på varenavn: nøgleord som helt ord (med bøjning), længste nøgleord vinder ("kokosmælk" før "mælk"). Køkkenmål: 1 spsk = 15 ml, 1 tsk = 5 ml.
+- Brug: Viden om mad → "Omregning: væsker til gram" (`/viden-om/omregning`, mængde + dl/spsk/tsk/ml øverst, søgning). Retter: Mål/Gram-skift over ingredienserne (HelloFresh-opskrift: standard Mål; egen/delt ret: standard Gram), kun vist når mindst én ingrediens kan omregnes. Opret ret → Indsæt tekst/Scan: rumfang regnes om med tabellen (både AI og regeltolker), så "2 dl hvedemel" giver 120 g, ikke 200 g.
+- Tilføj vare fra Opret ret (kun dér, og kun væsker: ml/cl-varer eller en vare der matcher en væskegruppe i tabellen — ikke tørvarer og æg): mængdeboksen viser omregningen med småt øverst til højre og et op/ned-skifteikon yderst til højre; et tryk på boksen bytter, så gram står som primært tal. Mængden gemmes uændret i basisenheden. `src/lib/liquid-amount.ts`, native `FoodLogic.kt`/`AddProductScreen.kt`.

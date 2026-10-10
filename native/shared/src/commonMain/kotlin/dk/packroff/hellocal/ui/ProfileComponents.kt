@@ -92,15 +92,36 @@ fun ProfileChevronRow(
     centerText: String? = null,
 ) = HcChevronRow(label, onClick, divider = divider, badgeCount = badgeCount, wrapLabel = wrapLabel, iconContent = icon, centerText = centerText)
 
-/** src/components/hf/HfProgressStepper.tsx — dot per step, lines between, label under each dot. */
+/**
+ * src/components/hf/HfProgressStepper.tsx — dot per step, lines between, label under each dot.
+ * [activeLabelOnly] shows just the active step's label; [onSelect] makes the dots tappable
+ * ([isStepEnabled] locks steps that cannot be reached yet).
+ */
 @Composable
-fun ProfileProgressStepper(steps: List<String>, current: Int, progress: Float, modifier: Modifier = Modifier) {
+fun ProfileProgressStepper(
+    steps: List<String>,
+    current: Int,
+    progress: Float,
+    modifier: Modifier = Modifier,
+    activeLabelOnly: Boolean = false,
+    onSelect: ((Int) -> Unit)? = null,
+    isStepEnabled: (Int) -> Boolean = { true },
+) {
     val last = steps.size - 1
     val fraction = progress.coerceIn(0f, 1f)
     Column(modifier.fillMaxWidth()) {
-        Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+        Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(if (onSelect != null) 0.dp else 8.dp)) {
             steps.forEachIndexed { index, _ ->
-                Box(Modifier.size(8.dp).clip(CircleShape).background(if (index <= current) HcColors.ProgressDark else HcColors.Inactive))
+                val dot = Modifier.size(8.dp).clip(CircleShape).background(if (index <= current) HcColors.ProgressDark else HcColors.Inactive)
+                if (onSelect != null) {
+                    // 24 dp touch target around the 8 dp dot (its 8 dp sides replace the row gap).
+                    Box(
+                        Modifier.size(24.dp).clickable(enabled = isStepEnabled(index)) { onSelect(index) },
+                        contentAlignment = Alignment.Center,
+                    ) { Box(dot) }
+                } else {
+                    Box(dot)
+                }
                 if (index < last) {
                     val fill = when {
                         index < current -> 1f
@@ -116,6 +137,7 @@ fun ProfileProgressStepper(steps: List<String>, current: Int, progress: Float, m
         Layout(
             content = {
                 steps.forEachIndexed { index, step ->
+                    if (activeLabelOnly && index != current) return@forEachIndexed
                     HcText(step, if (index == current) HcTypeRoles.ProgressActive else HcTypeRoles.ProgressInactive, maxLines = 1)
                 }
             },
@@ -125,7 +147,8 @@ fun ProfileProgressStepper(steps: List<String>, current: Int, progress: Float, m
             val width = constraints.maxWidth
             val height = placeables.maxOfOrNull { it.height } ?: 0
             layout(width, height) {
-                placeables.forEachIndexed { index, placeable ->
+                placeables.forEachIndexed { placed, placeable ->
+                    val index = if (activeLabelOnly) current else placed
                     val x = when (index) {
                         0 -> 0
                         last -> width - placeable.width

@@ -8,6 +8,7 @@ import {
   productGaps,
   updateKindsFor,
 } from "@/lib/product-update";
+import { findSubbrandLogoUrl } from "@/lib/subbrand-logo";
 
 export async function GET(
   _req: Request,
@@ -101,9 +102,16 @@ export async function GET(
         user && !product.privateOwnerId && !(await hasEarnedUpdatePoints(user.id, product.id).catch(() => true))
           ? updateKindsFor(productGaps(product))
           : [];
+      // Subbrandet står over brandet ved produktcirklen — som logo, hvis det
+      // findes (docs/DECISIONS.md 2026-10-10).
+      const subbrandLogoUrl = await findSubbrandLogoUrl(product.brand?.name, product.subbrand).catch((error) => {
+        console.error("Subbrand logo lookup failed", error);
+        return null;
+      });
       return NextResponse.json({
         product: {
           ...product,
+          subbrandLogoUrl,
           nutrients,
           updateOffer: updateKinds.length ? { kinds: updateKinds, points: PRODUCT_UPDATE_POINTS } : null,
           lastAmountGrams: last?.amountGrams ?? null,

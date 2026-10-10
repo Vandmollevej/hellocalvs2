@@ -252,8 +252,8 @@ fun FoodListCard(modifier: Modifier = Modifier, radius: Dp = HcDimens.RadiusCard
 
 /** .hf-search — 48 px search field with the magnifier (design.md §6.5). */
 @Composable
-fun FoodSearchField(value: String, onValueChange: (String) -> Unit, placeholder: String, modifier: Modifier = Modifier) =
-    HcSearchField(value, onValueChange, placeholder, modifier)
+fun FoodSearchField(value: String, onValueChange: (String) -> Unit, placeholder: String, modifier: Modifier = Modifier, onFocus: () -> Unit = {}, trailing: (@Composable () -> Unit)? = null) =
+    HcSearchField(value, onValueChange, placeholder, modifier, onFocus, trailing)
 
 /** Pill input on tan (Opret ret's name field and similar). */
 @Composable
@@ -370,7 +370,8 @@ fun FoodSlider(
         return stepped.coerceIn(min, max)
     }
     val fraction = if (max > min) ((value - min) / (max - min)).coerceIn(0.0, 1.0).toFloat() else 0f
-    BoxWithConstraints(modifier.fillMaxWidth().height(20.dp)) {
+    // 24 dp luft i hver side (som HfSlider.tsx), så et træk ikke starter ved skærmkanten.
+    BoxWithConstraints(modifier.fillMaxWidth().padding(horizontal = 24.dp).height(20.dp)) {
         val widthPx = constraints.maxWidth.toFloat().coerceAtLeast(1f)
         val trackWidth = maxWidth
         val track = Modifier.fillMaxWidth().height(20.dp).let { base ->

@@ -25,6 +25,8 @@ import {
   RecipeStepList,
 } from "@/components/recipe-view/RecipeViewLists";
 import { RecipeDifficultyIcon, RecipeHealthAppIcon, RecipeProteinIcon } from "@/components/recipe-view/RecipeIcons";
+import { RecipeUnitToggle, type RecipeUnitMode } from "@/components/recipe-view/RecipeUnitToggle";
+import { measureAsGramsText } from "@/lib/kitchen-conversions";
 
 // En HelloFresh-opskrift vist præcis som i HelloFresh-appen
 // (docs/DECISIONS.md 2026-09-27). Kun HelloFresh-opskrifter bruger denne
@@ -46,6 +48,8 @@ export default function HelloFreshRecipePage() {
   const [state, setState] = useState<"loading" | "ready" | "missing">("loading");
   const [notice, setNotice] = useState<string | null>(null);
   const [sections, setSections] = useState<Sections>({ ingredients: true, steps: true, nutrition: false, photos: true });
+  // Mål (dl, spsk) som i opskriften, eller omregnet til gram (src/lib/kitchen-conversions.ts).
+  const [unitMode, setUnitMode] = useState<RecipeUnitMode>("measures");
 
   useEffect(() => {
     fetch(`/api/hellofresh-recipes/${encodeURIComponent(id)}`)
@@ -209,11 +213,17 @@ export default function HelloFreshRecipePage() {
           <RecipeAllergens label={t("hfRecipe.allergens")} names={allergenNames} note={t("hfRecipe.allergenNote")} />
 
           <RecipeAccordion title={t("hfRecipe.ingredients")} open={sections.ingredients} onToggle={() => toggle("ingredients")}>
+            {recipe.ingredients.some((i) => measureAsGramsText(i.amount, i.unit, i.name) !== null) && (
+              <div className="rv-no-print mb-3">
+                <RecipeUnitToggle mode={unitMode} onChange={setUnitMode} />
+              </div>
+            )}
             <RecipeIngredientList
               items={recipe.ingredients.map((i) => ({
                 key: i.key,
                 name: i.name,
-                amount: amountText(i.amount, i.unit),
+                amount:
+                  (unitMode === "grams" ? measureAsGramsText(i.amount, i.unit, i.name) : null) ?? amountText(i.amount, i.unit),
                 imageUrl: i.imageUrl,
               }))}
             />

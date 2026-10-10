@@ -1,5 +1,6 @@
 package dk.packroff.hellocal.screens.food
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -10,6 +11,7 @@ import androidx.compose.foundation.gestures.detectHorizontalDragGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -17,6 +19,8 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.relocation.BringIntoViewRequester
+import androidx.compose.foundation.relocation.bringIntoViewRequester
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
@@ -43,6 +47,7 @@ import dk.packroff.hellocal.screens.capture.RecipePortions
 import dk.packroff.hellocal.nav.LocalNavigator
 import dk.packroff.hellocal.nav.RouteArgs
 import dk.packroff.hellocal.theme.HcColors
+import dk.packroff.hellocal.ui.HcAccordionCard
 import dk.packroff.hellocal.theme.HcDimens
 import dk.packroff.hellocal.theme.HcTypeRoles
 import dk.packroff.hellocal.ui.FoodDivider
@@ -119,6 +124,7 @@ private data class DishSearchResult(val id: String, val name: String, val imageU
 private data class ImportNote(val missing: List<String>, val nutrition: String?)
 
 /** Native port of src/app/create-dish/page.tsx — Opret ret. */
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun CreateDishScreen(args: RouteArgs) {
     val t = LocalTranslator.current
@@ -134,6 +140,7 @@ fun CreateDishScreen(args: RouteArgs) {
     var ingredients by remember { mutableStateOf(DishDraft.read()) }
     var saving by remember { mutableStateOf(false) }
     var saveError by remember { mutableStateOf<String?>(null) }
+    var ingredientError by remember { mutableStateOf(false) }
     // Pages: [import], title + description + duration, ingredients, one recipe step per page, pictures of the dish.
     var page by remember { mutableStateOf(0) }
     var importMode by remember { mutableStateOf(false) }
@@ -153,6 +160,7 @@ fun CreateDishScreen(args: RouteArgs) {
     var searchError by remember { mutableStateOf<Throwable?>(null) }
     var correction by remember { mutableStateOf(SearchCorrection()) }
     var exactQuery by remember { mutableStateOf<String?>(null) }
+    val searchScope = rememberCoroutineScope()
 
     LaunchedEffect(query, exactQuery) {
         if (query.isBlank()) return@LaunchedEffect
@@ -249,13 +257,14 @@ fun CreateDishScreen(args: RouteArgs) {
 
     fun save() {
         saveError = null
+        ingredientError = false
         if (details.name.isBlank()) {
             saveError = t.t("createDish.nameRequired")
             page = pageKinds.indexOf("title")
             return
         }
         if (ingredients.isEmpty()) {
-            saveError = t.t("createDish.ingredientRequired")
+            ingredientError = true
             page = pageKinds.indexOf("ingredients")
             return
         }
@@ -296,23 +305,13 @@ fun CreateDishScreen(args: RouteArgs) {
             icon = { HcIcon("Soup", size = 20.dp, stroke = 2f, color = HcColors.White) },
             contentPadding = LIST_PAGE_PADDING,
         ) {
-            Column(Modifier.fillMaxWidth().heightIn(min = 420.dp), verticalArrangement = Arrangement.spacedBy(12.dp, Alignment.CenterVertically), horizontalAlignment = Alignment.CenterHorizontally) {
+            StartOptionTiles(
                 listOf(
-                    Triple("ClipboardText", t.t("createDish.modeText"), "paste"),
-                    Triple("Camera", t.t("createDish.modeScan"), "scan"),
-                    Triple("Pencil", t.t("createDish.modeManual"), "none"),
-                ).forEach { (icon, label, target) ->
-                    Column(
-                        Modifier.fillMaxWidth().clip(RoundedCornerShape(16.dp)).background(HcColors.Tan)
-                            .clickable { importMode = target != "none"; sheet = target; started = true }.padding(vertical = 20.dp),
-                        verticalArrangement = Arrangement.spacedBy(8.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                    ) {
-                        HcIcon(icon, size = 28.dp, color = HcColors.Black)
-                        HcText(label, HcTypeRoles.Body, color = HcColors.Black, bold = true)
-                    }
-                }
-            }
+                    t.t("createDish.modeText") to "paste",
+                    t.t("createDish.modeScan") to "scan",
+                    t.t("createDish.modeManual") to "none",
+                ),
+            ) { target -> importMode = target != "none"; sheet = target; started = true }
         }
         if (sheet == "paste") PasteTextSheet(onClose = { sheet = "none" }, onResult = ::applyImport)
         if (sheet == "scan") ScanSheet(onClose = { sheet = "none" }, onResult = ::applyImport)
@@ -351,21 +350,12 @@ fun CreateDishScreen(args: RouteArgs) {
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
           if (current == "import") {
-            Column(Modifier.fillMaxWidth().heightIn(min = 320.dp), verticalArrangement = Arrangement.spacedBy(12.dp, Alignment.CenterVertically), horizontalAlignment = Alignment.CenterHorizontally) {
+            StartOptionTiles(
                 listOf(
-                    Triple("ClipboardText", t.t("createDish.modeText"), "paste"),
-                    Triple("Camera", t.t("createDish.modeScan"), "scan"),
-                ).forEach { (icon, label, target) ->
-                    Column(
-                        Modifier.fillMaxWidth().clip(RoundedCornerShape(16.dp)).background(HcColors.Tan).clickable { sheet = target }.padding(vertical = 20.dp),
-                        verticalArrangement = Arrangement.spacedBy(8.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                    ) {
-                        HcIcon(icon, size = 28.dp, color = HcColors.Black)
-                        HcText(label, HcTypeRoles.Body, color = HcColors.Black, bold = true)
-                    }
-                }
-            }
+                    t.t("createDish.modeText") to "paste",
+                    t.t("createDish.modeScan") to "scan",
+                ),
+            ) { target -> sheet = target }
           } else if (current == "title") {
             HcText(t.t("createDish.pageTitle"), HcTypeRoles.Small, color = HcColors.Black, bold = true)
             FoodPillField(details.name, { updateDetails(details.copy(name = it)) }, t.t("createDish.namePlaceholder"), Modifier.fillMaxWidth())
@@ -403,7 +393,50 @@ fun CreateDishScreen(args: RouteArgs) {
             }
 
             Column(Modifier.fillMaxWidth().clip(RoundedCornerShape(16.dp)).background(HcColors.Tan).padding(horizontal = 16.dp, vertical = 12.dp)) {
-                PersonsSlider(t.t("createDish.servings"), servings ?: 4, RecipePortions.MAX_PERSONS, { servings = it })
+                PersonsSlider(t.t("createDish.servings"), servings ?: 0, RecipePortions.MAX_PERSONS, { servings = if (it > 0) it else null }, min = 0, unset = servings == null, centered = true)
+            }
+
+            val searchBringIntoView = remember { BringIntoViewRequester() }
+            Column(Modifier.bringIntoViewRequester(searchBringIntoView)) {
+                HcText(t.t("createDish.addIngredient"), HcTypeRoles.Small, Modifier.padding(bottom = 8.dp), color = HcColors.Black, bold = true)
+                FoodSearchField(query, { value ->
+                    query = value
+                    if (value.isBlank()) {
+                        searchState = "idle"
+                        results = emptyList()
+                    }
+                }, t.t("createDish.searchPlaceholder"), onFocus = { searchScope.launch { delay(50); searchBringIntoView.bringIntoView() } }, trailing = {
+                    HcIcon("Barcode", size = 30.dp, color = HcColors.Black, modifier = Modifier.clickable { nav.push("/camera?mode=product&for=ret") })
+                })
+                if (ingredientError && ingredients.isEmpty()) {
+                    HcText(t.t("createDish.ingredientRequired"), HcTypeRoles.Body, Modifier.fillMaxWidth().padding(top = 8.dp), color = HcColors.TextSecondary, align = TextAlign.Center)
+                }
+                if (query.isNotBlank()) {
+                    FoodListCard(Modifier.padding(top = 8.dp)) {
+                        when (searchState) {
+                            "loading" -> FoodSkeletonMediaRows(4, Modifier.padding(horizontal = 16.dp))
+                            "error" -> HcText(connectionMessage(t, searchError, t.t("createDish.noResults")), HcTypeRoles.Body, Modifier.fillMaxWidth().padding(16.dp), color = HcColors.TextSecondary, align = TextAlign.Center)
+                            "ready" -> {
+                                SearchCorrectionNotice(correction, onSearchInstead = { exactQuery = query }, onUseSuggestion = { query = it }, modifier = Modifier.padding(horizontal = 12.dp, vertical = 12.dp))
+                                if (results.isEmpty()) HcText(t.t("createDish.noResults"), HcTypeRoles.Body, Modifier.fillMaxWidth().padding(16.dp), color = HcColors.TextSecondary, align = TextAlign.Center)
+                                val shown = results
+                                shown.forEachIndexed { index, product ->
+                                    Row(
+                                        Modifier.fillMaxWidth().clickable {
+                                            nav.push("/add/${product.id}?for=ret")
+                                        }.padding(horizontal = 16.dp, vertical = 12.dp),
+                                        verticalAlignment = Alignment.CenterVertically,
+                                        horizontalArrangement = Arrangement.spacedBy(10.dp),
+                                    ) {
+                                        Box(Modifier.size(36.dp)) { if (product.imageUrl != null) FoodImage(product.imageUrl, Modifier.size(36.dp)) }
+                                        HcText(product.name, HcTypeRoles.Body, Modifier.weight(1f), color = HcColors.Black, bold = true)
+                                    }
+                                    if (index < shown.lastIndex) FoodDivider()
+                                }
+                            }
+                        }
+                    }
+                }
             }
 
             Column {
@@ -445,45 +478,6 @@ fun CreateDishScreen(args: RouteArgs) {
                         color = HcColors.TextSecondary,
                     )
                 }
-            }
-
-            Column {
-                HcText(t.t("createDish.addIngredient"), HcTypeRoles.Small, Modifier.padding(bottom = 8.dp), color = HcColors.Black, bold = true)
-                FoodSearchField(query, { value ->
-                    query = value
-                    if (value.isBlank()) {
-                        searchState = "idle"
-                        results = emptyList()
-                    }
-                }, t.t("createDish.searchPlaceholder"))
-                if (query.isNotBlank()) {
-                    FoodListCard(Modifier.padding(top = 8.dp)) {
-                        when (searchState) {
-                            "loading" -> FoodSkeletonMediaRows(4, Modifier.padding(horizontal = 16.dp))
-                            "error" -> HcText(connectionMessage(t, searchError, t.t("createDish.noResults")), HcTypeRoles.Body, Modifier.fillMaxWidth().padding(16.dp), color = HcColors.TextSecondary, align = TextAlign.Center)
-                            "ready" -> {
-                                SearchCorrectionNotice(correction, onSearchInstead = { exactQuery = query }, onUseSuggestion = { query = it }, modifier = Modifier.padding(horizontal = 12.dp, vertical = 12.dp))
-                                if (results.isEmpty()) HcText(t.t("createDish.noResults"), HcTypeRoles.Body, Modifier.fillMaxWidth().padding(16.dp), color = HcColors.TextSecondary, align = TextAlign.Center)
-                                val shown = results
-                                shown.forEachIndexed { index, product ->
-                                    Row(
-                                        Modifier.fillMaxWidth().clickable {
-                                            nav.push("/add/${product.id}?for=ret")
-                                        }.padding(horizontal = 16.dp, vertical = 12.dp),
-                                        verticalAlignment = Alignment.CenterVertically,
-                                        horizontalArrangement = Arrangement.spacedBy(10.dp),
-                                    ) {
-                                        Box(Modifier.size(36.dp)) { if (product.imageUrl != null) FoodImage(product.imageUrl, Modifier.size(36.dp)) }
-                                        HcText(product.name, HcTypeRoles.Body, Modifier.weight(1f), color = HcColors.Black, bold = true)
-                                    }
-                                    if (index < shown.lastIndex) FoodDivider()
-                                }
-                            }
-                        }
-                    }
-                }
-                // New products are only created by scanning (DECISIONS 2026-10-02).
-                FoodTileButton(t.t("createDish.scan"), "Camera", { nav.push("/camera?mode=product&for=ret") }, Modifier.fillMaxWidth().padding(top = 16.dp))
             }
 
           } else if (current.startsWith("step:")) {
@@ -810,6 +804,24 @@ private fun RecipeCategoriesSheet(dishId: String, initialTags: List<String>, onC
         }
         Box(Modifier.padding(top = 16.dp)) {
             HcButton(t.t("recipeCategories.close"), onClick = ::close, enabled = !busy)
+        }
+    }
+}
+
+/** Web: StartOptionTiles in create-dish/page.tsx — horizontal tiles like the Add menu; icon slot left empty. */
+@Composable
+private fun StartOptionTiles(options: List<Pair<String, String>>, onPick: (String) -> Unit) {
+    HcAccordionCard {
+        Row(Modifier.fillMaxWidth().padding(12.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            options.forEach { (label, target) ->
+                Column(
+                    Modifier.weight(1f).clip(RoundedCornerShape(16.dp)).clickable { onPick(target) }.padding(8.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                ) {
+                    Spacer(Modifier.size(96.dp))
+                    HcText(label, HcTypeRoles.Body, color = HcColors.Black, align = TextAlign.Center)
+                }
+            }
         }
     }
 }

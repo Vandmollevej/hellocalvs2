@@ -7,9 +7,10 @@ import { KnowledgeRows } from "@/components/knowledge/KnowledgeRows";
 import { SearchField } from "@/components/knowledge/SearchField";
 import { KNOWLEDGE_SECTIONS, entryHref, searchEntries } from "@/lib/knowledge-index";
 import { listAdditives, matchesAdditive, type AdditiveInfo } from "@/lib/additives";
+import { KITCHEN_CONVERSIONS } from "@/lib/kitchen-conversions";
 
 // "Viden om mad" (åbnes fra profilsiden): blokke for vitaminer, E-numre,
-// sundhedstips, kalorieforbrænding, WHO og Mad på latin. Søgningen på
+// sundhedstips, kalorieforbrænding, WHO, Mad på latin og Omregning. Søgningen på
 // forsiden dækker alt, også de enkelte E-numre; undersiderne søger kun i
 // deres eget afsnit.
 export default function KnowledgePage() {
@@ -30,6 +31,18 @@ export default function KnowledgePage() {
         })),
         ...(q.length >= 2 && "e-numre".startsWith(q.toLowerCase())
           ? [{ key: "e-numre", label: "E-numre", href: "/viden-om/e-numre" }]
+          : []),
+        ...(q.length >= 2 && "omregning".startsWith(q.toLowerCase())
+          ? [{ key: "omregning", label: "Omregning: væsker til gram", href: "/viden-om/omregning" }]
+          : []),
+        ...(q.length >= 2
+          ? KITCHEN_CONVERSIONS.filter((item) => item.name.toLowerCase().includes(q.toLowerCase()))
+              .slice(0, 10)
+              .map((item) => ({
+                key: `omregning/${item.id}`,
+                label: `${item.name} · 1 dl = ${item.gramsPerDl} g`,
+                href: "/viden-om/omregning",
+              }))
           : []),
         ...additives
           .filter((item) => matchesAdditive(item, q))

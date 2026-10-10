@@ -61,28 +61,33 @@ export function HfSlider({
   }
 
   return (
+    // Det ydre felt er hele trykfladen: 24 px luft i hver side, så et træk
+    // ikke starter helt ude ved skærmkanten (iOS' tilbage-swipe), og
+    // data-sheet-no-drag, så et lodret fingertræk ikke trækker bundarket med.
     <div
-      ref={trackRef}
       role="slider"
       tabIndex={0}
       aria-label={ariaLabel}
       aria-valuemin={min}
       aria-valuemax={max}
       aria-valuenow={value}
+      data-sheet-no-drag
       onPointerDown={handlePointerDown}
       onPointerMove={handlePointerMove}
       onKeyDown={handleKeyDown}
-      className={`relative flex h-5 touch-none items-center outline-none ${largeOnWeb ? "lg:h-7" : ""}`}
+      className={`flex h-10 touch-none items-center px-6 outline-none ${largeOnWeb ? "lg:h-12" : ""}`}
     >
-      <div className={`relative h-1 w-full rounded bg-hf-tan-dark ${largeOnWeb ? "lg:h-1.5" : ""}`}>
-        <div className="absolute inset-y-0 left-0 rounded bg-hf-green" style={{ width: `${pct}%` }} />
+      <div ref={trackRef} className="relative flex w-full items-center">
+        <div className={`relative h-1 w-full rounded bg-hf-tan-dark ${largeOnWeb ? "lg:h-1.5" : ""}`}>
+          <div className="absolute inset-y-0 left-0 rounded bg-hf-green" style={{ width: `${pct}%` }} />
+        </div>
+        <div
+          className={`absolute h-[18px] w-[18px] -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-hf-green bg-hf-white ${
+            largeOnWeb ? "lg:h-6 lg:w-6" : ""
+          }`}
+          style={{ left: `${pct}%`, top: "50%" }}
+        />
       </div>
-      <div
-        className={`absolute h-[18px] w-[18px] -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-hf-green bg-hf-white ${
-          largeOnWeb ? "lg:h-6 lg:w-6" : ""
-        }`}
-        style={{ left: `${pct}%`, top: "50%" }}
-      />
     </div>
   );
 }
