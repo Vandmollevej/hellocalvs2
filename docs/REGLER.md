@@ -7,7 +7,7 @@ ikke her, er den ikke registreret og skal tilføjes.
 
 ## Screeninger
 
-- Profil → Screeninger er stedet for egne målinger (migræne, mavesmerter, humør, selvoprettede). Søvn er en fast række. "Opret ny screening" er et flow, ikke en enkelt formular. Se DECISIONS.md 2026-10-09.
+- Profil → Screeninger er stedet for egne målinger (migræne, mavesmerter, humør, selvoprettede). Søvn er en fast række (også øverst i Screeningrapporter, peger på /statistics/sleep). "Opret ny screening" er et flow, ikke en enkelt formular. Se DECISIONS.md 2026-10-09.
 - Valget "Screening" ligger nederst i Tilføj-menuen og kan vælges som bundmenu-ikon.
 
 ## Varer og navngivning

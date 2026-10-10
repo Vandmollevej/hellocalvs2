@@ -552,8 +552,22 @@ fun ScreeningReportsScreen(args: RouteArgs) {
             when {
                 list == null && !failed -> HcLoader()
                 list == null -> ProfileCenteredText(t.t("screenings.loadError"))
-                list.isEmpty() -> HcText(t.t("screenings.reportsEmpty"), HcTypeRoles.Body, color = HcColors.TextSecondary)
                 else -> HcCard(Modifier.fillMaxWidth()) {
+                    // Sleep is a fixed row that points at the sleep statistics.
+                    Row(
+                        Modifier.fillMaxWidth().clickable { nav.push("/statistics/sleep") }.padding(vertical = 10.dp),
+                        horizontalArrangement = Arrangement.spacedBy(10.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        Box(Modifier.size(44.dp).clip(RoundedCornerShape(8.dp)).background(HcColors.Tan), contentAlignment = Alignment.Center) {
+                            HcIcon("Moon", size = 22.dp, color = HcColors.Black)
+                        }
+                        Column(Modifier.weight(1f)) {
+                            HcText(t.t("screenings.sleep"), HcTypeRoles.Body, color = HcColors.Black, maxLines = 2)
+                            HcText(t.t("screenings.statusActive"), HcTypeRoles.Small, color = HcColors.TextSecondary)
+                        }
+                        HcIcon("ChevronRight", size = 18.dp, color = HcColors.Black)
+                    }
                     list.forEach { screening ->
                         // Same look as a food row: tile on the left, title and status, chevron.
                         Row(
