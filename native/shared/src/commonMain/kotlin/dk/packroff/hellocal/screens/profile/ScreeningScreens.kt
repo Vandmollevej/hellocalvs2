@@ -297,10 +297,10 @@ fun ScreeningsScreen(args: RouteArgs) {
                             }
                         }
                     }
-
-            HcButton(t.t("screenings.reports"), { nav.push("/profile/screenings/reports") }, kind = HcButtonKind.Secondary)
                 }
             }
+
+            HcButton(t.t("screenings.reports"), { nav.push("/profile/screenings/reports") }, kind = HcButtonKind.Secondary)
         }
     }
 
