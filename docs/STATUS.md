@@ -281,6 +281,12 @@ Retter → HelloFresh åbner nu en skrivebeskyttet side under Retter (ikke Nye v
 - Admin → Brugere → Point: søgning er nu kun præcis e-mail eller bruger-id (navn/e-mail kan ikke delvist søges i krypterede felter).
 - Tjek: `npm test` (krypto + transform), lint og type-tjek af de nye filer er rene. `npm run build -- --webpack` kompilerer, men stopper på en eksisterende typefejl i `src/app/admin/product-database/products/page.tsx:343` (`"details"` vs. `"list"`), som ikke stammer fra denne ændring. Ikke prøvet mod en rigtig database.
 
+## 2026-10-04: Generiske varer først ved bred søgning
+
+- "letmælk" viser nu varer uden brand før brand-varer; søges der på et brand ("arla", "arla letmælk"), gælder det ikke. Nyt skydeknap-signal "Generiske varer ved bred søgning" på admin → Søgealgoritmer (standard 45). Se DECISIONS.
+- "arla letmælk" (flere ord) finder nu varer, hvor hvert ord står i navnet eller brandet.
+- Lint, typecheck og ny enhedstest grønne. Ikke prøvet mod rigtige data (ingen lokal DB) — prøv "letmælk" og "arla letmælk" i søgeprøven på Søgealgoritmer efter deploy.
+
 ## 2026-10-04: Billed-upload for produktbilleder (admin → Varedatabase → Billed-upload)
 
 - Ny side `/admin/product-database/image-upload` (også knappen "Upload billeder" på Varer). Samme mønster som Logo-upload: træk filer eller en hel mappe ind, hvert slip er et parti med tidsstempel, oversigt med størrelse / original-dimensioner / filstørrelse / proces, og "Slet valgte" / "Slet hele partiet" gendanner de tidligere billeder.

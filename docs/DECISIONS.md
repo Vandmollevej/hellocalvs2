@@ -76,6 +76,15 @@ Brugerens ord: intervallet var for voldsomt; uden tilsluttet måler skal pulsen 
 - `DEFAULT_PULSE_BPM` er 15 (ét slag hvert 4. sekund) i stedet for 60; linjens nedre tempogrænse er 10 bpm. Målt puls (30–220 bpm) er uændret.
 - Grundlinjen ligger `PULSE_ABOVE_LAST_ROW` (25 px) over midten af hjulets nederste række (`HomeWaves.tsx`), så slagets laveste punkt står lige over tallet. Erstatter "midt mellem nederste tal og Dagens tilføjelser" (2026-10-03).
 
+## 2026-10-04: Generiske varer først ved bred søgning
+
+Ejerens krav: søger brugeren ikke specifikt på et brand, skal generiske varer have højere prioritet — "letmælk" skal vise letmælk (uden brand) før Arla Letmælk.
+
+- **Nyt signal i Søgealgoritmer:** "Generiske varer ved bred søgning" (`genericBroadSearch` i `src/lib/product-search-ranking.ts`), standard **45** — slået til fra start, fordi det er ejerens beslutning. Generisk = varen har intet brand (Frida-varer, generiske ingredienser, varer oprettet på produkttype).
+- **Brand-søgning slår det fra:** nævner søgningen et brand som helt ord ("arla", "arla letmælk"), får ingen vare boostet (`queryNamesBrand`, `src/lib/search-brand-intent.ts`). Brandene læses fra kandidaterne selv; et halvt skrevet brand ("arl") tæller ikke.
+- **Tekstmatch er stadig styrende:** boostet gælder kun ved ord-/præfiksmatch (tekstlighed ≥ 0,8), så en kun "lignende" generisk vare aldrig springer et klart brand-match over. 45 er valgt, så en generisk letmælk slår et populært brand med dansk EAN (op til ca. 18 + 12 + 12 point); kan justeres og prøves live på admin → Søgealgoritmer. En gemt konfiguration uden nøglen får automatisk standarden (`sanitizeWeights`).
+- **Søgning med flere ord:** `/api/products` fandt intet ved "arla letmælk", fordi hele teksten skulle stå i navnet eller brandet. Nu er det også et match, når hvert ord står i navnet eller brandet, og "brand + navn" giver samme tekstlighed som "navn + brand".
+
 ## 2026-10-04: Admin → Indstillinger → Genveje, og faste mærker til AutoHotkey
 
 Ejerens krav: menupunktet "Genveje" under Indstillinger med en genvej til hvert menupunkt (fx Ctrl P for produkter), og om menuer og felter er mærket til senere automatisering med AutoHotkey (UIA / felt-klasser). Intet var mærket før (ingen `id`/`data-*`).
