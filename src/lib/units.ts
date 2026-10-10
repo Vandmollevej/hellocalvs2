@@ -156,6 +156,16 @@ export function useUnits(): UnitPrefs {
   return useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
 }
 
+function getRegionSnapshot(): string {
+  if (typeof window === "undefined") return "DK";
+  return readStored().region ?? browserRegion() ?? "DK";
+}
+
+/** The user's country (profile region, else the browser's, else DK), reactive and SSR-safe. */
+export function useRegion(): string {
+  return useSyncExternalStore(subscribe, getRegionSnapshot, () => "DK");
+}
+
 // ---------- Conversion (storage is always kg / cm) ----------
 
 export const kgToLb = (kg: number) => kg / KG_PER_LB;

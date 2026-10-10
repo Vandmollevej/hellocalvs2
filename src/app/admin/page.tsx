@@ -111,7 +111,12 @@ export default async function AdminDashboardPage() {
     { href: "/admin/messaging", label: "Mails/push fejlet (24 t)", value: messages.failed24h, alert: true },
     { href: "/admin/messaging", label: "Mails/push i kø", value: messages.queued },
     { href: "/admin/cron-jobs", label: "Cron-jobs med fejl", value: failingJobs, alert: true },
-    { href: "/admin/api-keys", label: "Tjenester uden API-nøgle", value: missingApiKeys.length, alert: true },
+    {
+      href: missingApiKeys[0] ? `/admin/api-keys#${missingApiKeys[0].id}` : "/admin/api-keys",
+      label: "Tjenester uden API-nøgle",
+      value: missingApiKeys.length,
+      alert: true,
+    },
   ];
 
   const keyFigures = [
@@ -380,10 +385,16 @@ export default async function AdminDashboardPage() {
           <TaskList tasks={deliveryTasks} />
           {missingApiKeys.length > 0 && (
             <p className="hf-type-small border-t border-border-strong px-4 py-3 text-text-muted">
-              Mangler nøgle: {missingApiKeys.join(", ")}.{" "}
-              <Link href="/admin/api-keys" className="text-hf-black underline hf-type-strong">
-                Indsæt nøglen under API-nøgler
-              </Link>
+              Mangler nøgle:{" "}
+              {missingApiKeys.map((service, i) => (
+                <span key={service.id}>
+                  {i > 0 && ", "}
+                  <Link href={`/admin/api-keys#${service.id}`} className="text-hf-black underline hf-type-strong">
+                    {service.name}
+                  </Link>
+                </span>
+              ))}
+              . Linket går direkte til tjenesten under API-nøgler.
             </p>
           )}
         </Widget>

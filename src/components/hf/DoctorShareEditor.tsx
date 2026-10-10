@@ -1,10 +1,12 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import { IconChevronDown } from "@tabler/icons-react";
 import { TextField } from "@/components/hf/TextField";
 import { Toggle } from "@/components/ui/Toggle";
 import { useTranslation } from "@/i18n/LocaleProvider";
+import { useAddActionsProfile } from "@/lib/add-actions";
 import {
   DOCTOR_SHARE_CATEGORIES,
   DOCTOR_SHARE_UNAVAILABLE_CATEGORIES,
@@ -51,6 +53,8 @@ export function DoctorShareEditor({
   onCategoriesChange,
   historyRange,
   onHistoryRangeChange,
+  expiresAt,
+  onExpiresAtChange,
   previewHref,
   previewExternal = false,
 }: {
@@ -62,10 +66,20 @@ export function DoctorShareEditor({
   onCategoriesChange: (categories: DoctorShareCategory[]) => void;
   historyRange: DoctorShareHistoryRange;
   onHistoryRangeChange: (range: DoctorShareHistoryRange) => void;
+  // "YYYY-MM-DD" fra datepickeren; tom streng = intet udløb.
+  expiresAt: string;
+  onExpiresAtChange: (value: string) => void;
   previewHref: string;
   previewExternal?: boolean;
 }) {
   const { t } = useTranslation();
+  // Menstruation exists only for women — not shown at all for men (user rule 2026-10-09).
+  const { sex } = useAddActionsProfile();
+
+  const [minDate] = useState(() => {
+    const tomorrow = new Date(Date.now() + 24 * 60 * 60 * 1000);
+    return `${tomorrow.getFullYear()}-${String(tomorrow.getMonth() + 1).padStart(2, "0")}-${String(tomorrow.getDate()).padStart(2, "0")}`;
+  });
 
   function toggleCategory(category: DoctorShareCategory, checked: boolean) {
     if (checked) onCategoriesChange([...categories, category]);
@@ -103,7 +117,7 @@ export function DoctorShareEditor({
       <div>
         <h2 className="hf-type-section-title">{t("helloDoc.shareDataTitle")}</h2>
         <div className="flex flex-col gap-2">
-          {DOCTOR_SHARE_CATEGORIES.map((category) => {
+          {DOCTOR_SHARE_CATEGORIES.filter((category) => category !== "menstrualCycle" || sex === "FEMALE").map((category) => {
             const unavailable = DOCTOR_SHARE_UNAVAILABLE_CATEGORIES.includes(category);
             return (
               <Toggle
@@ -139,6 +153,26 @@ export function DoctorShareEditor({
             className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-hf-black"
           />
         </div>
+      </div>
+
+      <div>
+        <h2 className="hf-type-section-title">{t("helloDoc.expiryTitle")}</h2>
+        <Toggle
+          label={t("helloDoc.expiryNone")}
+          checked={!expiresAt}
+          onChange={(checked) => onExpiresAtChange(checked ? "" : minDate)}
+        />
+        {expiresAt && (
+          <input
+            type="date"
+            aria-label={t("helloDoc.expiryDateAria")}
+            value={expiresAt}
+            min={minDate}
+            onChange={(event) => onExpiresAtChange(event.target.value)}
+            className="hf-field hf-type-input mt-2 w-full border bg-hf-cream px-4 outline-none border-hf-field-border rounded-card"
+          />
+        )}
+        <p className="hf-type-caption text-text-secondary mt-2">{t("helloDoc.expiryHint")}</p>
       </div>
     </div>
   );

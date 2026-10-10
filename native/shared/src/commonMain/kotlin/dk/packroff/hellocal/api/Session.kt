@@ -82,6 +82,7 @@ object Session {
     suspend fun logout() {
         runCatching { Api.post("/api/auth/logout") }
         PersistentCookies.clear()
+        OfflineCache.clear()
         NativeHooks.secureStorage.set(DEVICE_TOKEN_KEY, null)
         NativeHooks.onLogout()
         markLoggedOut()

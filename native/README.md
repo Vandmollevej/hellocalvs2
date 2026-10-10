@@ -46,6 +46,40 @@ Der er tre mekanismer, så en rettelse ikke kun lander ét sted:
 Kun UI tæller (`src/app/**` undtagen `api/`, og `src/components/**`).
 Forretningslogik i `src/lib` når native via de samme `/api`-ruter som web.
 
+## Telefon-funktioner (platform)
+
+Alt der kræver telefonen selv, går gennem ét lag:
+`shared/src/commonMain/.../platform/Device.kt`. Skærmene kalder `Device.*`
+(suspend-funktioner) eller områdets lille facade (`CaptureHooks`,
+`FoodPlatform`, `OnboardingHooks`, `ProfileNativeBridge`, `SettingsImportMedia`,
+`SettingsSupportHooks`), som sender videre til `Device`. Platformene
+implementerer `DevicePlatform` (callback-baseret, så Swift kan implementere den
+direkte) og sætter `Device.platform` ved opstart.
+
+| Funktion | Android (`androidApp/.../device/AndroidDevice.kt`) | iPhone (`iosApp/HelloCal/IosDevice.swift`) |
+| --- | --- | --- |
+| Tag foto (JPEG, maks. 1600 px) | `TakePicture` + FileProvider, EXIF-rotation | `UIImagePickerController` |
+| Vælg fotos / filer (også video) | Systemets fotovælger (`PickVisualMedia`) | `PHPickerViewController` |
+| Video → billeder (hvert 1,2 s, maks. 900 px, dubletter fjernes i fælles kode) | `MediaMetadataRetriever` | `AVAssetImageGenerator` |
+| Tekstgenkendelse (OCR) | ML Kit Text Recognition (i appen, offline) | Vision `VNRecognizeTextRequest` |
+| Stregkode/QR live | Google code scanner (Play-tjenester) | Egen AVFoundation-scanner |
+| Stregkode i foto | ML Kit Barcode (Play-tjenester) | Vision `VNDetectBarcodesRequest` |
+| Tale → tekst | `SpeechRecognizer` | `SFSpeechRecognizer` + `AVAudioEngine` |
+| Del | `ACTION_SEND`-vælger | `UIActivityViewController` |
+| Bekræft ejer (billeddagbog) | `BiometricPrompt` (fingeraftryk/ansigt/kode) | `LAContext` (Face ID/Touch ID/kode) |
+| App i baggrunden | `MainActivity.onStop` | `didEnterBackgroundNotification` |
+| App tilbage i forgrunden (fx efter Stripe-portalen) | `MainActivity.onStart` | `willEnterForegroundNotification` |
+
+Ikke slået til endnu (kræver eksterne konti/opsætning, svarer `"unsupported"`):
+
+- **Passkeys/Face ID-login:** Android kræver `/.well-known/assetlinks.json` på
+  hellocal.packroff.dk med appens signeringscertifikat + `androidx.credentials`;
+  iPhone kræver Associated Domains (`webcredentials:hellocal.packroff.dk`) og
+  `apple-app-site-association` på serveren.
+- **Push (login-godkendelse):** Android kræver et Firebase-projekt
+  (`google-services.json`) og FCM på serveren; iPhone kræver Push
+  Notifications-capability og en APNs-nøgle på serveren.
+
 ## Widgets og Health Connect
 
 Widget-kildekoden er beskrevet i `docs/WIDGETS.md`. Designet svarer til

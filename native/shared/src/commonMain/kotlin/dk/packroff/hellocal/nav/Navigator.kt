@@ -11,19 +11,30 @@ import androidx.compose.runtime.setValue
  * "/camera?mode=product"), so links, deep links (hellocal://<path>) and the
  * parity manifest (native/parity/screens.json) all line up 1:1 with the web.
  */
-data class Location(val path: String, val query: Map<String, String> = emptyMap()) {
-    val full: String get() = if (query.isEmpty()) path else "$path?" + query.entries.joinToString("&") { "${it.key}=${it.value}" }
+data class Location(
+    val path: String,
+    val query: Map<String, String> = emptyMap(),
+    /** The "#anchor" part (web: location.hash without "#"), e.g. /viden/vitaminer#vitamin-c. */
+    val fragment: String? = null,
+) {
+    val full: String
+        get() = buildString {
+            append(path)
+            if (query.isNotEmpty()) append("?").append(query.entries.joinToString("&") { "${it.key}=${it.value}" })
+            if (!fragment.isNullOrEmpty()) append("#").append(fragment)
+        }
 
     companion object {
         fun parse(href: String): Location {
-            val clean = href
+            val withoutScheme = href
                 .removePrefix("hellocal://").let { if (it.startsWith("/")) it else "/$it" }
-                .substringBefore('#')
+            val clean = withoutScheme.substringBefore('#')
+            val fragment = withoutScheme.substringAfter('#', "").ifEmpty { null }?.let { decode(it) }
             val path = clean.substringBefore('?').trimEnd('/').ifEmpty { "/" }
             val query = clean.substringAfter('?', "").split('&').filter { it.contains('=') }.associate {
                 decode(it.substringBefore('=')) to decode(it.substringAfter('='))
             }
-            return Location(path, query)
+            return Location(path, query, fragment)
         }
 
         /** URL-decodes a query component (UTF-8 percent escapes, '+' = space). */
@@ -72,6 +83,14 @@ class Navigator(start: Location) {
     /** Footer roots show no back arrow (docs/DECISIONS.md 2026-09-22). */
     val showBack: Boolean get() = stack.size > 1 && current.path !in TAB_ROOTS
 
+    /** The current page is one of the icons in the bottom bar (web isMainFooterRoute). */
+    val isTabRoot: Boolean get() = current.path in TAB_ROOTS
+
+    /** ScreenHeader.handleBack: back, or the front page when the page was opened directly. */
+    fun backOrHome() {
+        if (!back()) replace("/")
+    }
+
     /** Replaces the current screen (web: router.replace). */
     fun replace(href: String) {
         val location = Location.parse(href)
@@ -94,8 +113,8 @@ class Navigator(start: Location) {
     fun resetTo(href: String) = switchTab(Location.parse(href))
 
     companion object {
-        /** Footer roots (src/lib/navigation.ts BOTTOM_NAV_HREFS): no back arrow, reset the stack. */
-        val TAB_ROOTS: Set<String> get() = dk.packroff.hellocal.app.NavItems.all.map { it.href }.toSet()
+        /** Footer roots (useFooterRootHrefs): the hrefs of the icons the user has in the bottom bar. */
+        val TAB_ROOTS: Set<String> get() = dk.packroff.hellocal.app.BottomNavLayout.activeHrefs
     }
 }
 

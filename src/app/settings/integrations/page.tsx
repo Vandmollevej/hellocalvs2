@@ -10,6 +10,7 @@ import type { IntegrationProvider } from "@prisma/client";
 import { useTranslation } from "@/i18n/LocaleProvider";
 import { formatDateTime } from "./status-badge";
 import { SkeletonCards, SkeletonScreen, SkeletonSectionTitle } from "@/components/hf/Skeleton";
+import { MEAL_KIT_PROVIDERS, parseRecipeProviders, type MealKitKey } from "@/lib/meal-kit-providers";
 
 // Sektioner og rækkefølge (docs/DECISIONS.md 2026-09-25 "Integrationssiden"):
 // Aktive integrationer → Oftest anvendt → Opskrifter → Apps.
@@ -19,6 +20,14 @@ import { SkeletonCards, SkeletonScreen, SkeletonSectionTitle } from "@/component
 const POPULAR: IntegrationProvider[] = ["APPLE_HEALTH", "GOOGLE_HEALTH", "STRAVA"];
 
 const isActive = (integration: IntegrationCardStatus) => integration.status !== "DISCONNECTED";
+
+// Måltidskasserne under "Opskrifter" (docs/DECISIONS.md 2026-10-10): titel og
+// beskrivelse pr. udbyder (i18n-nøgler).
+const MEAL_KIT_TEXTS: Record<MealKitKey, { title: string; description: string }> = {
+  hellofresh: { title: "integrations.helloFreshTitle", description: "integrations.helloFreshDescription" },
+  retnemt: { title: "integrations.retNemtTitle", description: "integrations.retNemtDescription" },
+  betterfeast: { title: "integrations.betterFeastTitle", description: "integrations.betterFeastDescription" },
+};
 
 function Card({
   icon,
@@ -59,25 +68,28 @@ function IntegrationerContent() {
   const { t } = useTranslation();
   const [integrations, setIntegrations] = useState<IntegrationCardStatus[]>([]);
   const [loading, setLoading] = useState(true);
-  // HelloFresh-opskrifter i "Delte retter" (docs/DECISIONS.md 2026-09-24).
-  const [helloFresh, setHelloFresh] = useState<boolean | null>(null);
+  // Måltidskassernes retter i "Delte retter" (docs/DECISIONS.md 2026-09-24
+  // og 2026-10-10), gemt i User.recipeProviders.
+  const [providers, setProviders] = useState<MealKitKey[] | null>(null);
   const autoSynced = useRef(false);
 
   useEffect(() => {
     fetch("/api/profile")
-      .then(async (res) => (res.ok ? ((await res.json()) as { user?: { helloFreshEnabled?: boolean } }) : {}))
-      .then((data) => setHelloFresh(Boolean(data.user?.helloFreshEnabled)))
-      .catch(() => setHelloFresh(false));
+      .then(async (res) => (res.ok ? ((await res.json()) as { user?: { recipeProviders?: unknown } }) : {}))
+      .then((data) => setProviders(parseRecipeProviders(data.user?.recipeProviders)))
+      .catch(() => setProviders([]));
   }, []);
 
-  async function changeHelloFresh(next: boolean) {
-    setHelloFresh(next);
+  async function changeProvider(key: MealKitKey, enabled: boolean) {
+    const previous = providers ?? [];
+    const next = parseRecipeProviders(enabled ? [...previous, key] : previous.filter((p) => p !== key));
+    setProviders(next);
     const res = await fetch("/api/profile", {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ helloFreshEnabled: next }),
+      body: JSON.stringify({ recipeProviders: next }),
     }).catch(() => null);
-    if (!res?.ok) setHelloFresh(!next);
+    if (!res?.ok) setProviders(previous);
   }
 
   function load() {
@@ -156,23 +168,24 @@ function IntegrationerContent() {
     );
   }
 
-  const helloFreshCard =
-    helloFresh === null ? null : (
+  const mealKitCard = (key: MealKitKey) => {
+    const enabled = providers?.includes(key) ?? false;
+    return (
       <Card
-        key="hellofresh"
-        active={helloFresh}
-        title={t("integrations.helloFreshTitle")}
-        description={t("integrations.helloFreshDescription")}
+        key={key}
+        active={enabled}
+        title={t(MEAL_KIT_TEXTS[key].title)}
+        description={t(MEAL_KIT_TEXTS[key].description)}
         icon={
           <span className="mt-1 flex h-9 w-9 shrink-0 items-center justify-center text-hf-black">
             <IconChefHat size={24} />
           </span>
         }
       >
-        {helloFresh ? (
+        {enabled ? (
           <button
             type="button"
-            onClick={() => changeHelloFresh(false)}
+            onClick={() => changeProvider(key, false)}
             className="hf-type-small self-start text-hf-red-dark"
           >
             {t("integrations.remove")}
@@ -180,7 +193,7 @@ function IntegrationerContent() {
         ) : (
           <button
             type="button"
-            onClick={() => changeHelloFresh(true)}
+            onClick={() => changeProvider(key, true)}
             className="hf-control hf-btn-primary block w-full text-center"
           >
             {t("integrations.enable")}
@@ -188,6 +201,9 @@ function IntegrationerContent() {
         )}
       </Card>
     );
+  };
+  const enabledMealKits = providers === null ? [] : MEAL_KIT_PROVIDERS.filter((p) => providers.includes(p.key));
+  const otherMealKits = providers === null ? [] : MEAL_KIT_PROVIDERS.filter((p) => !providers.includes(p.key));
 
   const activeIntegrations = integrations.filter(isActive);
   const inactive = integrations.filter((i) => !isActive(i));
@@ -218,10 +234,10 @@ function IntegrationerContent() {
           <>
             {section(t("integrations.sections.active"), [
               ...activeIntegrations.map(integrationCard),
-              ...(helloFresh ? [helloFreshCard] : []),
+              ...enabledMealKits.map((p) => mealKitCard(p.key)),
             ])}
             {section(t("integrations.sections.popular"), popular.map(integrationCard))}
-            {section(t("integrations.sections.recipes"), helloFresh === false ? [helloFreshCard] : [])}
+            {section(t("integrations.sections.recipes"), otherMealKits.map((p) => mealKitCard(p.key)))}
             {section(t("integrations.sections.apps"), apps.map(integrationCard))}
             {section(t("integrations.sections.moveFrom"), [
               <Link key="migration-import" href="/settings/import" className="block">

@@ -6,7 +6,8 @@
 import { useMemo, useState } from "react";
 import { HfScreen } from "@/components/HfScreen";
 import { useTranslation } from "@/i18n/LocaleProvider";
-import { SLEEP_STAT_PERIODS, sleepPeriodDays, type SleepStatPeriodKey } from "@/lib/sleep-stats";
+import { StatPeriodSelect } from "@/components/hf/StatPeriodSelect";
+import { sleepPeriodDays, type SleepStatPeriodKey } from "@/lib/sleep-stats";
 import { useSleepStatInputs } from "@/lib/use-sleep-stat-inputs";
 import { buildWaterStatDays, waterCorrelation, WATER_FACTORS, type WaterFactorKey } from "@/lib/water-stats";
 import type { RegistrationTotals } from "@/lib/daily-totals";
@@ -60,13 +61,7 @@ export default function BodyWaterStatisticsPage() {
         <div className="hf-card hf-card--brand">
           <p className="hf-type-small">{t("waterStats.intro")}</p>
         </div>
-        <div className="flex flex-wrap gap-2" role="group" aria-label={t("sleepStats.periodAria")}>
-          {SLEEP_STAT_PERIODS.map((key) => (
-            <button key={key} type="button" aria-pressed={period === key} onClick={() => setPeriod(key)} className="hf-choice px-3 py-1.5">
-              {t(`sleepStats.period.${key}`)}
-            </button>
-          ))}
-        </div>
+        <StatPeriodSelect value={period} onChange={setPeriod} />
         <div className="flex flex-wrap gap-2" role="group">
           {WATER_FACTORS.map(({ key }) => (
             <button key={key} type="button" aria-pressed={factor === key} onClick={() => setFactor(key)} className="hf-choice px-3 py-1.5">

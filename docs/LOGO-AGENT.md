@@ -75,6 +75,11 @@ docker exec hellocal-v2-logo-agent-1 python /app/import_logos.py
   samme normaliserede navn, får de alle logoet.
 - Eksisterende logoer erstattes (brugerens egne filer vinder) og får
   `?v=<tid>` på `logoUrl`, så telefoner ikke viser det gamle.
+- Subbrands (2026-10-10): hedder intet brand som filen, men et subbrand på
+  varerne gør (`<brand> <subbrand>.png`, fx `Ota Solgryn.png`, eller
+  `<subbrand>.png`, fx `Kinder Bueno.png`), gemmes logoet i `subbrand_logos`
+  (fil `brand-logos/subbrands/<id>.png`) og vises over brandet på varesiden.
+  Admin-uploaden gør det samme. Se DECISIONS.md 2026-10-10.
 - `Navn_2.png`, `Navn_3.png` … er alternative udgaver af samme brand og
   bruges ikke; den uden suffiks er valgt.
 - Billedet skaleres til højst 640 px og beskæres; uigennemsigtig ensfarvet eller

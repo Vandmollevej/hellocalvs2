@@ -250,7 +250,7 @@ og `SMTP_FROM=Hello Cal <no-reply@hellocal.io>` (kræver at `hellocal.io` er
 verificeret afsenderdomæne i Mailjet: SPF + DKIM-TXT i Cloudflare-zonen).
 Kontaktadresse `support@hellocal.io` videresendes med Cloudflare Email
 Routing. OAuth-redirect-URI'er hos Google, Facebook, Apple, Strava, Withings,
-Polar, Garmin, WHOOP, Huawei m.fl. og MobilePay-webhooken skal pege på `hellocal.io`. Garmins ping-adresse er `https://hellocal.io/api/integrations/garmin/webhook?key=<GARMIN_WEBHOOK_KEY>`. Passkeys er
+Polar, Garmin, WHOOP, Huawei m.fl. og MobilePay-webhooken skal pege på `hellocal.io`. Garmins ping-adresse er `https://hellocal.io/api/integrations/garmin/webhook?key=<GARMIN_WEBHOOK_KEY>`. Withings' notifikationsadresse `https://hellocal.io/api/integrations/withings/webhook` tilmeldes automatisk pr. bruger (ud fra `APP_BASE_URL`) og skal kunne nås udefra. Passkeys er
 bundet til hostnavnet og skal oprettes igen på det nye domæne.
 
 ## Search indexing and crawler protection
@@ -269,6 +269,14 @@ on; a rate-limiting rule on `/api/auth/*` (e.g. 10 requests/min per IP).
 New public routes (webhooks, OAuth callbacks) must be added to
 `PUBLIC_API_PREFIXES` in `src/lib/access-wall.ts`, otherwise anonymous calls
 get 401.
+
+## Søgemotor (Meilisearch, 2026-10-10)
+
+- Service `meilisearch` (`getmeili/meilisearch:${MEILI_TAG:-v1.53.2}`), kun på `backend`-netværket, data i `./data/meilisearch` (oprettes af deployet). Ingen port og intet tunnel-hostnavn.
+- `MEILI_MASTER_KEY` genereres én gang af deployet (trinnet "Ensure scan-app secrets") i `.env.production` og røres aldrig igen. Appen får `MEILI_URL` (standard `http://meilisearch:7700`) og nøglen.
+- Deployet starter `meilisearch` før appen (trinnet "Start search engine", `continue-on-error`). Starter den ikke, søger appen i databasen som før; intet andet stopper.
+- Indekset er en kopi af databasen og skal ikke tages backup af: slettes `./data/meilisearch`, bygger robotten "Søgemotor: opdater indeks" det op igen inden for 5 minutter (kan startes med det samme fra admin → Robotter).
+- Fejlsøgning: `docker compose ... logs meilisearch`; robottens seneste besked står i admin → Robotter.
 
 ## Backup
 
@@ -460,6 +468,12 @@ Sikringer:
 - **Overvågning:** `.github/workflows/uptime.yml` kalder `https://hellocal.io/api/health?deep=1` hvert 5. minut fra GitHubs servere (virker også, når NAS'en er nede; tre forsøg før alarm). En fejlet kørsel giver mail/push fra GitHub til den, der sidst ændrede workflowet (GitHub-indstilling: Notifications → Actions → "Only notify for failed workflows").
 - **Admin:** forsiden viser en rød boks "Deploy blokeret", når en migrering står som fejlet.
 - Gendannelsen 2026-10-07 skete via en midlertidig `prisma migrate resolve --rolled-back …` i `migrate`-servicen (c245f4cb), fjernet igen efter migreringen var anvendt. Samme fremgangsmåde bruges, hvis en migrering igen står som fejlet.
+
+### Hændelse 2026-10-10: søge-migrationen fejlede i produktion trods prøvekørslen
+
+`20261010120000_search_unaccent_trgm` fejlede på prøvekørslen (Postgres 17 bygger indeks/visninger med begrænset `search_path`, så `unaccent()` ikke fandtes), og deployet blev stoppet. Men trinnet "Build and start amount-suggestion agent" har `if: ${{ !cancelled() }}` og afhænger af `migrate` (compose `depends_on`), så det kørte `migrate deploy` mod **produktionen** straks efter og efterlod migrationen som fejlet (P3009) — prøvekørslens beskyttelse blev omgået. Migrationens DDL kører i én transaktion og blev rullet tilbage; kun rækken i `_prisma_migrations` står som fejlet. Gendannelse: midlertidig `migrate resolve --rolled-back` i `migrate`-servicen (PR #377); migrationen blev anvendt i produktion af deployet 2026-10-10 kl. 12.28 (dansk tid), og kommandoen er fjernet igen.
+
+Forslag (kræver ejerens godkendelse, ændret ikke): lad agent-trinnene kun køre, når trinnet "Test database migrations on a schema copy" ikke fejlede (fx `if: ${{ !cancelled() && steps.migrate-test.conclusion != 'failure' }}`), så en fejlet prøvekørsel aldrig udløser `migrate` i produktion.
 
 ### Overvågning (2026-10-08)
 

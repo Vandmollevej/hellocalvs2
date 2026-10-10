@@ -76,9 +76,20 @@ const PUBLIC_API_PREFIXES = [
   "/api/business-contact", // kontaktformularen på /business
 ];
 
-// API'er med eget Bearer-/URL-token (enheder, widgets, agenter). De må ikke
-// afvises som bots, fordi klienterne ikke er browsere.
-const TOKEN_API_PREFIXES = ["/api/widgets/snapshot", "/api/mcp/", "/api/integrations/healthkit/"];
+// API'er med eget Bearer-/URL-token (enheder, widgets, agenter) og webhooks,
+// som udbyderens servere kalder (Withings, Garmin, Stripe, MobilePay). De må
+// ikke afvises som bots, fordi klienterne ikke er browsere: Withings' tjek og
+// notifikationer blev før afvist med 403, så vejninger kom først med
+// baggrundsjobbet (2026-10-10). Hver rute validerer selv sit token/signatur.
+const TOKEN_API_PREFIXES = [
+  "/api/widgets/snapshot",
+  "/api/mcp/",
+  "/api/integrations/healthkit/",
+  "/api/integrations/withings/webhook",
+  "/api/integrations/garmin/webhook",
+  "/api/payments/stripe/webhook",
+  "/api/payments/mobilepay/webhook",
+];
 
 // Statiske filer, der skal kunne vises på de åbne sider (logo, ikoner, flag).
 const PUBLIC_STATIC_PREFIXES = [
@@ -128,6 +139,16 @@ export function isPublicHealthPath(pathname: string): boolean {
   return pathname === "/api/health";
 }
 
+// Statiske filer til de åbne sider (ikoner, flag, logoer). Brug ægte
+// filendelse, så /icons/... kun åbnes som billede og ikke som side.
+export function isPublicStaticAsset(pathname: string): boolean {
+  if (isProtectedImagePath(pathname)) return false;
+  return (
+    /\.(png|jpe?g|svg|webp|ico|woff2?|webmanifest|js|css|txt)$/i.test(pathname) &&
+    startsWithAny(pathname, PUBLIC_STATIC_PREFIXES)
+  );
+}
+
 export function isAnonymousAllowed(pathname: string): boolean {
   if (isProtectedImagePath(pathname)) return false;
   if (PUBLIC_PAGE_EXACT.has(pathname)) return true;
@@ -135,12 +156,7 @@ export function isAnonymousAllowed(pathname: string): boolean {
     return matchesPrefix(pathname, PUBLIC_API_PREFIXES) || isTokenApiPath(pathname);
   }
   if (matchesPrefix(pathname, PUBLIC_PAGE_PREFIXES)) return true;
-  // Statiske filer til de åbne sider. Brug ægte filendelse, så /icons/... kun
-  // åbnes som billede og ikke som side.
-  return (
-    /\.(png|jpe?g|svg|webp|ico|woff2?|webmanifest|js|css|txt)$/i.test(pathname) &&
-    startsWithAny(pathname, PUBLIC_STATIC_PREFIXES)
-  );
+  return isPublicStaticAsset(pathname);
 }
 
 // ---- Hotlink-/direkte-adgang til beskyttede billeder -----------------------

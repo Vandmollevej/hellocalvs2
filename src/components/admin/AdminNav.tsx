@@ -25,8 +25,10 @@ const LINK_DEFS: { href: string; key: AdminI18nKey }[] = [
   { href: "/admin/duplicate-products", key: "nav_duplicate_products" },
   { href: "/admin/search", key: "nav_search" },
   { href: "/admin/search-ranking", key: "nav_search_ranking" },
+  { href: "/admin/search-synonyms", key: "nav_search_synonyms" },
   { href: "/admin/passkeys", key: "nav_passkeys" },
   { href: "/admin/scan-invites", key: "nav_scan_invites" },
+  { href: "/admin/scan-invites/afvisningsaarsager", key: "nav_rejection_reasons" },
   { href: "/admin/logos", key: "nav_logos" },
   { href: "/admin/api-keys", key: "nav_api_keys" },
   { href: "/admin/designmanual", key: "nav_design_manual" },
@@ -119,7 +121,7 @@ export function AdminNav({
                 type="button"
                 onClick={() => changeLocale(option)}
                 className={`px-2 py-1 ${
-                  currentLocale === option ? "bg-hf-green-dark text-hf-white" : "text-text-secondary hover:bg-hf-tan"
+                  currentLocale === option ? "hf-selected" : "text-text-secondary hover:bg-hf-tan"
                 }`}
               >
                 {option}

@@ -3,10 +3,13 @@ import { notFound, redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { requireAdminUser } from "@/lib/require-admin";
 import { buildHfRecipeView, formatHfAmount } from "@/lib/hellofresh-recipe";
+import { DISH_SOURCE_PATHS } from "@/lib/admin-dishes";
+import { mealKitBySource } from "@/lib/meal-kit-providers";
 
-// Admin → Retter → HelloFresh → ret (docs/DECISIONS.md 2026-10-07): kun
-// visning. HelloFresh-retter kan ikke redigeres og hører ikke under
-// Varegodkendelse/Nye varer.
+// Admin → Retter → HelloFresh/RetNemt/BetterFeast → ret (docs/DECISIONS.md
+// 2026-10-07 og 2026-10-10): kun visning. Måltidskassernes retter kan ikke
+// redigeres og hører ikke under Varegodkendelse/Nye varer. Samme side
+// bruges under /admin/dishes/retnemt/[id] og /admin/dishes/betterfeast/[id].
 
 const NUTRIENT_LABELS: Record<string, string> = {
   kcal: "Energi",
@@ -24,7 +27,7 @@ function amountText(amount: number | null, unit: string | null) {
   return [amount === null ? null : formatHfAmount(amount), unit].filter(Boolean).join(" ");
 }
 
-export default async function AdminHelloFreshDishPage({ params }: { params: Promise<{ id: string }> }) {
+export default async function AdminMealKitDishPage({ params }: { params: Promise<{ id: string }> }) {
   const admin = await requireAdminUser();
   if (!admin) redirect("/admin/login");
 
@@ -49,7 +52,8 @@ export default async function AdminHelloFreshDishPage({ params }: { params: Prom
       },
     },
   });
-  if (!product || product.externalSource !== "HELLOFRESH") notFound();
+  const provider = mealKitBySource(product?.externalSource);
+  if (!product || !provider) notFound();
 
   const view = buildHfRecipeView(product, { isFavorite: false, photos: [] });
   const meta = [
@@ -61,8 +65,8 @@ export default async function AdminHelloFreshDishPage({ params }: { params: Prom
 
   return (
     <div className="flex flex-col gap-6">
-      <Link href="/admin/dishes/hellofresh" className="hf-type-small text-text-secondary hover:text-hf-black">
-        ← HelloFresh-retter
+      <Link href={DISH_SOURCE_PATHS[provider.source]} className="hf-type-small text-text-secondary hover:text-hf-black">
+        ← {provider.name}-retter
       </Link>
 
       <div className="flex flex-col gap-4 sm:flex-row">
@@ -90,6 +94,13 @@ export default async function AdminHelloFreshDishPage({ params }: { params: Prom
           </span>
         </summary>
         <div className="flex flex-col gap-6 border-t border-hf-tan-dark px-4 py-4">
+          {view.declaration && (
+            <section className="flex flex-col gap-2">
+              <h2 className="hf-type-body hf-type-strong text-hf-black">Varedeklaration</h2>
+              <p className="hf-type-small text-hf-black">{view.declaration}</p>
+            </section>
+          )}
+
           <section className="flex flex-col gap-2">
             <h2 className="hf-type-body hf-type-strong text-hf-black">Ingredienser</h2>
             {view.ingredients.length === 0 ? (
@@ -111,7 +122,9 @@ export default async function AdminHelloFreshDishPage({ params }: { params: Prom
 
           {view.nutrition.length > 0 && (
             <section className="flex flex-col gap-2">
-              <h2 className="hf-type-body hf-type-strong text-hf-black">Næringsværdier pr. portion</h2>
+              <h2 className="hf-type-body hf-type-strong text-hf-black">
+                Næringsværdier pr. {view.nutritionBasis === "100g" ? "100 g" : "portion"}
+              </h2>
               <ul className="divide-y divide-border-strong">
                 {view.nutrition.map((row, index) => (
                   <li key={`${row.name ?? row.key}-${index}`} className="hf-type-small flex justify-between gap-4 py-1.5 text-hf-black">

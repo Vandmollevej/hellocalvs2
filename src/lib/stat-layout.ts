@@ -153,13 +153,42 @@ export function normalizeStatLayout(layout: StatGridLayoutItem[]): StatGridLayou
   return next;
 }
 
+/**
+ * Drops every completely empty row (two empty slots side by side) from the
+ * normalized layout, wherever it sits. Used when editing ends and when a
+ * saved layout is loaded, so deleted cards never leave blank space behind.
+ * A row with one card and one empty slot is the user's layout and stays.
+ */
+export function dropEmptyRows(layout: StatGridLayoutItem[]): StatGridLayoutItem[] {
+  const next: StatGridLayoutItem[] = [];
+  let run: StatGridLayoutItem[] = [];
+  function flush() {
+    for (let i = 0; i < run.length; i += 2) {
+      const pair = run.slice(i, i + 2);
+      if (pair.length === 2 && pair.every((item) => item.type === "empty")) continue;
+      next.push(...pair);
+    }
+    run = [];
+  }
+  for (const item of normalizeStatLayout(layout)) {
+    if (isHalfWidthStatItem(item)) {
+      run.push(item);
+      continue;
+    }
+    flush();
+    next.push(item);
+  }
+  flush();
+  return next;
+}
+
 export function loadStatLayout(defaultLayout: StatGridLayoutItem[]): StatGridLayoutItem[] {
   if (typeof window === "undefined") return normalizeStatLayout(defaultLayout);
   try {
     const raw = window.localStorage.getItem(STAT_LAYOUT_STORAGE_KEY);
     if (!raw) return normalizeStatLayout(defaultLayout);
     const parsed = JSON.parse(raw);
-    if (Array.isArray(parsed)) return normalizeStatLayout(parsed);
+    if (Array.isArray(parsed)) return dropEmptyRows(parsed);
     return normalizeStatLayout(defaultLayout);
   } catch {
     return normalizeStatLayout(defaultLayout);

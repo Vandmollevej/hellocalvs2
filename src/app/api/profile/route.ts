@@ -10,6 +10,7 @@ import { GOAL_MODES, type GoalMode } from "@/lib/energy-budget";
 import { validatePhone } from "@/lib/phone";
 import { isValidHeightCm } from "@/lib/height";
 import type { Locale } from "@/i18n";
+import { parseRecipeProviders } from "@/lib/meal-kit-providers";
 
 export async function GET() {
   try {
@@ -62,6 +63,7 @@ export async function PATCH(req: Request) {
     onboardingDismissed,
     showAllergens,
     allergenVisibility,
+    bodyMeasurementVisibility,
     showExtendedNutrition,
     showAdditives,
     showToxins,
@@ -74,6 +76,7 @@ export async function PATCH(req: Request) {
     wantsUpdateNewsEmails,
     wantsAdviceEmails,
     wantsPartnerOffersEmails,
+    recipeProviders,
   } = body as {
     displayName?: string;
     phone?: unknown;
@@ -100,6 +103,7 @@ export async function PATCH(req: Request) {
     onboardingDismissed?: boolean;
     showAllergens?: boolean;
     allergenVisibility?: Record<string, boolean>;
+    bodyMeasurementVisibility?: Record<string, boolean>;
     showExtendedNutrition?: boolean;
     showAdditives?: boolean;
     showToxins?: boolean;
@@ -112,6 +116,8 @@ export async function PATCH(req: Request) {
     wantsUpdateNewsEmails?: boolean;
     wantsAdviceEmails?: boolean;
     wantsPartnerOffersEmails?: boolean;
+    // Måltidskasse-integrationer (src/lib/meal-kit-providers.ts).
+    recipeProviders?: unknown;
   };
 
   try {
@@ -216,6 +222,7 @@ export async function PATCH(req: Request) {
         onboardingDismissed,
         showAllergens,
         allergenVisibility,
+        bodyMeasurementVisibility,
         showExtendedNutrition,
         showAdditives,
         showToxins,
@@ -228,6 +235,7 @@ export async function PATCH(req: Request) {
         wantsUpdateNewsEmails,
         wantsAdviceEmails,
         wantsPartnerOffersEmails,
+        recipeProviders: recipeProviders === undefined ? undefined : parseRecipeProviders(recipeProviders),
       },
     });
 

@@ -151,7 +151,7 @@ export default function BetingelserPage() {
             <li>10 points, når du scanner en vare igen via banneret &ldquo;Optjen 10 points&rdquo; på varesiden, højst én gang pr. vare.</li>
             <li>10 points, når en fejlindberetning, du har sendt, bliver godkendt og rettet.</li>
             <li>5 points, hver gang en ven rent faktisk tilføjer en vare eller en ret, du har videresendt, dog højst 50 points pr. kalendermåned.</li>
-            <li>300 points til både dig og din ven, når en ven, du har inviteret, har haft en konto i mindst 3 måneder.</li>
+            <li>300 points, når en ven, du har inviteret, har haft en konto i mindst 3 måneder. Din ven får ikke points, men i stedet 1 gratis måned af det betalte abonnement, når kontoen oprettes via dit link.</li>
             <li>300 points, hvis du er den første, der tilmelder sig som testperson af en integration, og vi har godkendt, at forbindelsen virker. Der er én testperson pr. integration.</li>
           </ul>
           <p>

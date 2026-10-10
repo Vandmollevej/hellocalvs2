@@ -122,6 +122,9 @@ services:
       UMAMI_URL: ${UMAMI_URL:-http://umami:3000}
       UMAMI_USERNAME: ${UMAMI_USERNAME:-}
       UMAMI_PASSWORD: ${UMAMI_PASSWORD:-}
+      # Søgemotoren (containeren "meilisearch"). Svarer den ikke, søges i databasen.
+      MEILI_URL: ${MEILI_URL:-http://meilisearch:7700}
+      MEILI_MASTER_KEY: ${MEILI_MASTER_KEY:-}
       NODE_ENV: production
       PORT: 3000
     # Ingen udgivet port: edge-proxy ejer port ${HELLOCAL_HTTP_PORT:-3100} og sender til alle app-containere,
@@ -332,6 +335,43 @@ services:
       - backend
       - edge
 
+  # Måltidskasse-integrationer (docs/DECISIONS.md 2026-10-10): RetNemt- og
+  # BetterFeast-retter som Product-rækker; billeder i den delte retmappe.
+  retnemt-agent:
+    build: ./scripts/retnemt-agent
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: ${DATABASE_URL:?Set DATABASE_URL in .env.production}
+      RETNEMT_RUN_AT_TIME: ${RETNEMT_AGENT_RUN_AT_TIME:-03:45}
+      RETNEMT_BATCH_SIZE: ${RETNEMT_AGENT_BATCH_SIZE:-1000}
+    volumes:
+      - ./data/hellofresh-images:/images
+    depends_on:
+      db:
+        condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
+    networks:
+      - backend
+      - edge
+
+  betterfeast-agent:
+    build: ./scripts/betterfeast-agent
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: ${DATABASE_URL:?Set DATABASE_URL in .env.production}
+      BETTERFEAST_RUN_AT_TIME: ${BETTERFEAST_AGENT_RUN_AT_TIME:-04:00}
+    volumes:
+      - ./data/hellofresh-images:/images
+    depends_on:
+      db:
+        condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
+    networks:
+      - backend
+      - edge
+
   rema1000-agent:
     build: ./scripts/rema1000-import
     restart: "no"
@@ -451,6 +491,30 @@ services:
       timeout: 5s
       retries: 5
       start_period: 60s
+    networks:
+      - backend
+
+  # Søgemotor (docs/DECISIONS.md 2026-10-10, docs/DEPLOYMENT.md "Søgemotor").
+  # Kun på backend-netværket. Indekset er en kopi af databasen, som appens robot
+  # "search-index" holder opdateret; mangler eller svarer den ikke, søger appen
+  # i databasen. MEILI_MASTER_KEY genereres af deployet (build.yml).
+  meilisearch:
+    image: getmeili/meilisearch:${MEILI_TAG:-v1.53.2}
+    restart: unless-stopped
+    environment:
+      # Tom = Meilisearch starter ikke (production kræver nøgle), og appen søger i databasen.
+      MEILI_MASTER_KEY: ${MEILI_MASTER_KEY:-}
+      MEILI_ENV: production
+      MEILI_NO_ANALYTICS: "true"
+      MEILI_MAX_INDEXING_MEMORY: 512Mb
+    volumes:
+      - ./data/meilisearch:/meili_data
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fs http://127.0.0.1:7700/health || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
     networks:
       - backend
 

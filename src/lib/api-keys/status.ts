@@ -12,6 +12,8 @@ export type FieldStatus = {
   editable: boolean;
   multiline: boolean;
   hint: string | null;
+  manageUrl: string;
+  manageWhere: string;
   display: string | null;
   source: KeySource;
   updatedAt: string | null;
@@ -60,6 +62,8 @@ export function serviceStatus(service: KeyService): ServiceStatus {
         editable: field.editable !== false,
         multiline: Boolean(field.multiline),
         hint: field.hint ?? null,
+        manageUrl: typeof field.manage.url === "function" ? field.manage.url() : field.manage.url,
+        manageWhere: field.manage.where,
         display: displayValue(field.kind, process.env[field.key]?.trim()),
         source: source.source,
         updatedAt: source.updatedAt?.toISOString() ?? null,

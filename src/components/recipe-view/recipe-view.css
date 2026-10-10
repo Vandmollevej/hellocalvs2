@@ -394,6 +394,13 @@
   line-height: 23px;
 }
 
+/* Varedeklarationen på færdigretter (BetterFeast), som brødtekst. */
+.rv-declaration {
+  margin: 0 0 16px;
+  font-size: 17px;
+  line-height: 23px;
+}
+
 .rv-photos {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));

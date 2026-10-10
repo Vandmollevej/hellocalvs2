@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState, type ReactNode } from "react";
 import { IconMoon, IconShoe, IconShoeOff, IconSun } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
 import { ActionButton } from "@/components/hf/ActionButton";
+import { ClampedText } from "@/components/hf/ClampedText";
 import {
   IconPersonClothed,
   IconPersonUnclothed,
@@ -225,9 +226,9 @@ export default function WeightCalibrationPage() {
 
   return (
     <HfScreen title={t("weightCalibration.title")}>
-      <div className="hf-page hf-page--sections">
+      <div className="hf-page hf-page--sections hf-fresh-type">
         <div className="hf-card">
-          <p className="hf-type-body text-hf-black">{t("weightCalibration.intro")}</p>
+          <ClampedText className="hf-type-body text-hf-black" text={t("weightCalibration.intro")} />
         </div>
 
         <section className="flex flex-col gap-4">

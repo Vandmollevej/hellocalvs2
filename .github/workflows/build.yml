@@ -61,7 +61,7 @@ jobs:
           cp compose.production.yaml /deploy/compose.production.yaml
           # Alle agenter, som compose.production.yaml bygger lokalt (build: ./scripts/...).
           # (edge-proxy er nginx-konfigurationen foran app, ingen agent.)
-          for agent in image-agent frida-import hellofresh-import valdemarsro-agent rema1000-import store-products-import quality-control-agent logo-agent amount-suggestion-agent uptime-agent edge-proxy; do
+          for agent in image-agent frida-import hellofresh-import valdemarsro-agent retnemt-agent betterfeast-agent rema1000-import store-products-import quality-control-agent logo-agent amount-suggestion-agent uptime-agent edge-proxy; do
             mkdir -p "/deploy/scripts/$agent"
             cp -R "scripts/$agent/." "/deploy/scripts/$agent/"
           done
@@ -79,7 +79,7 @@ jobs:
             ln -s /deploy /volume1/docker/App/hellocal-v2
           fi
           # Bind mount-mapper i compose.production.yaml skal findes, før containerne starter.
-          mkdir -p /deploy/data/product-images /deploy/data/hellofresh-images /deploy/data/quality-control-model-cache
+          mkdir -p /deploy/data/product-images /deploy/data/hellofresh-images /deploy/data/quality-control-model-cache /deploy/data/meilisearch
           # Servicekonto-nøgler (fx Google Vision til logo-agent) lægges manuelt her.
           mkdir -p /deploy/secrets
 
@@ -90,7 +90,8 @@ jobs:
           # Oprettelses-appens egne hemmeligheder: genereres én gang på serveren,
           # hvis de mangler eller stadig er eksempelværdien. Eksisterende værdier
           # røres aldrig (SCAN_PII_KEY må ikke skiftes). Værdier skrives aldrig i loggen.
-          for name in SCAN_SESSION_SECRET SCAN_PII_KEY; do
+          # MEILI_MASTER_KEY: søgemotorens nøgle (docs/DEPLOYMENT.md "Søgemotor").
+          for name in SCAN_SESSION_SECRET SCAN_PII_KEY MEILI_MASTER_KEY; do
             current="$(grep -E "^${name}=" .env.production | tail -n1 | cut -d= -f2- || true)"
             if [ -z "$current" ] || [ "$current" = "replace-with-a-long-random-secret" ]; then
               [ -f .env.production.bak-scan-secrets ] || cp -p .env.production .env.production.bak-scan-secrets
@@ -121,6 +122,15 @@ jobs:
           cd /deploy
           docker compose --project-directory /volume1/docker/App/hellocal-v2 -f compose.production.yaml --env-file .env.production up -d --build --no-deps uptime-agent
 
+      # Søgemotoren startes før appen, så den nye app kan bruge den med det samme.
+      # En fejl her stopper ikke deployet: appen søger så i databasen.
+      - name: Start search engine
+        continue-on-error: true
+        run: |
+          set -euo pipefail
+          cd /deploy
+          docker compose --project-directory /volume1/docker/App/hellocal-v2 -f compose.production.yaml --env-file .env.production up -d --no-deps meilisearch
+
       # Migreringerne prøves først på en kopi af produktionens skema (scripts/deploy/test-migrations.sh).
       - name: Test database migrations on a schema copy
         run: bash scripts/deploy/test-migrations.sh
@@ -134,7 +144,7 @@ jobs:
         run: |
           set -euo pipefail
           cd /deploy
-          docker compose --project-directory /volume1/docker/App/hellocal-v2 -f compose.production.yaml --env-file .env.production up -d --build image-agent frida-agent hellofresh-agent valdemarsro-agent rema1000-agent store-products-agent
+          docker compose --project-directory /volume1/docker/App/hellocal-v2 -f compose.production.yaml --env-file .env.production up -d --build image-agent frida-agent hellofresh-agent valdemarsro-agent retnemt-agent betterfeast-agent rema1000-agent store-products-agent
 
       - name: Build and start quality-control agent
         run: |

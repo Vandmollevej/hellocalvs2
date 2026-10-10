@@ -2,7 +2,14 @@
 
 import { defaultAmountGrams } from "@/lib/default-amount";
 import { mealShareBody } from "@/lib/meal-share";
-import { BRAND_NAME_HEIGHT_PX, brandLogoLeftPx, brandLogoRenderedHeight } from "@/lib/brand-logo-layout";
+import {
+  BRAND_NAME_HEIGHT_PX,
+  brandLogoLeftPx,
+  brandLogoRenderedHeight,
+  brandSlotHeight,
+  subbrandBottomPx,
+} from "@/lib/brand-logo-layout";
+import { displayedSubbrand } from "@/lib/subbrand-names";
 import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
@@ -14,6 +21,7 @@ import {
   IconLock,
   IconLockOpen,
   IconRefresh,
+  IconArrowsUpDown,
 } from "@tabler/icons-react";
 import { IconFavorite, IconFavoriteFilled } from "@/components/icons/Favorite";
 import { HfScreen } from "@/components/HfScreen";
@@ -34,9 +42,19 @@ import { ToxinInfoModal } from "@/components/hf/ToxinInfoModal";
 import { MicronutrientInfoModal } from "@/components/hf/MicronutrientInfoModal";
 import { MICRONUTRIENT_INFO_BY_KEY } from "@/lib/micronutrient-info";
 import { useTranslation } from "@/i18n/LocaleProvider";
+import { DecimalText } from "@/components/DecimalText";
 import { isAlternativeServingConfident } from "@/lib/alternative-servings";
 import type { AlternativeServing } from "@/lib/product-analysis-types";
 import { fromDisplayAmount, getProductDisplayUnit, toDisplayAmount } from "@/lib/product-display-unit";
+import { findKitchenConversion } from "@/lib/kitchen-conversions";
+import {
+  liquidAmountFor,
+  liquidBaseFromValue,
+  liquidSecondaryText,
+  liquidUnitLabel,
+  liquidValue,
+  type LiquidPrimary,
+} from "@/lib/liquid-amount";
 import { NUTRIENT_BY_KEY, type ResolvedNutrient } from "@/lib/nutrients";
 import { UncertaintyTilde } from "@/components/ui/UncertaintyTilde";
 import { UncertaintyLine } from "@/components/ui/UncertaintyLine";
@@ -98,6 +116,10 @@ type Product = {
   servingSizeUnitSingular?: string | null;
   servingSizeUnitPlural?: string | null;
   brand: { name: string; logoUrl?: string | null } | null;
+  // Subbrandet (produktserien) står over brandet ved cirklen — som logo, når
+  // der findes et (docs/DECISIONS.md 2026-10-10).
+  subbrand?: string | null;
+  subbrandLogoUrl?: string | null;
   // Produktkategori + pakningsstørrelse bestemmer mængdeenheden (drikkevare =
   // ml/cl, ellers g), se src/lib/product-display-unit.ts.
   productCategory?: string | null;
@@ -167,6 +189,12 @@ type Product = {
   // Usikkerheds-~ (docs/DECISIONS.md 2026-09-24): alle næringsstoffer ud
   // over makroerne pr. 100 g fra /api/products/[id], med estimeret-flag.
   nutrients?: ResolvedNutrient[];
+  // Kalorietallet er et skøn (fx Frida-skøn, DECISIONS 2026-10-10) → ∼
+  // foran kalorietallet.
+  kcalEstimated?: boolean;
+  // Mindst én værdi kommer fra Frida → Fridas kildeangivelse nederst i det
+  // udfoldede næringsfelt (DECISIONS 2026-10-10).
+  fridaSource?: boolean;
 };
 
 type ProfileUser = {
@@ -181,7 +209,10 @@ type ProfileUser = {
 };
 
 // Mættet fedt og transfedt får en advarselstrekant (G11, 56f30763).
-const UNHEALTHY_FAT_KEYS = new Set(["saturatedFat", "transFat"]);
+// Advarselstrekant kun ved salt og transfedt, og kun når mængden i rækken
+// overstiger den anbefalede grænse pr. dag (WHO: salt 5 g, transfedt < 1 % af
+// energien ≈ 2,2 g ved 2000 kcal).
+const WARNING_LIMITS: Record<string, number> = { salt: 5, transFat: 2.2 };
 
 // En allerede tilføjet registrering, der redigeres (/registration/[id]).
 export type EditableRegistration = {
@@ -296,6 +327,8 @@ export function AddProductView({
   // er kun en mulighed, når varen faktisk har en defineret portionsstørrelse,
   // og må ikke være default-valget selv når den findes.
   const [amountUnit, setAmountUnit] = useState<"personer" | "gram">("gram");
+  // Væsker i Opret ret: rumfang eller gram som primært tal (src/lib/liquid-amount.ts).
+  const [liquidPrimary, setLiquidPrimary] = useState<LiquidPrimary>("volume");
   const [time] = useState(
     () => (registration ? localTimeString(new Date(registration.createdAt)) : initialTime) ?? currentTimeString(),
   );
@@ -319,6 +352,7 @@ export function AddProductView({
   // Brand-logoets bredde/højde — bestemmer hvor langt ud det står, så der er
   // luft mellem logoet og cirklen (src/lib/brand-logo-layout.ts).
   const [brandLogoRatio, setBrandLogoRatio] = useState<number | null>(null);
+  const [subbrandLogoRatio, setSubbrandLogoRatio] = useState<number | null>(null);
   const extendedNutritionOpen = extendedNutritionToggle ?? Boolean(profile?.showExtendedNutrition);
   const [toxinsOpen, setToxinsOpen] = useState(false);
   const [openToxin, setOpenToxin] = useState<ToxinInfo | null>(null);
@@ -475,6 +509,11 @@ export function AddProductView({
   // +/−; amount er altid i basisenheden (g/ml), cl er kun visning.
   const displayUnit = getProductDisplayUnit(product);
   const displayAmount = toDisplayAmount(amount, displayUnit);
+  // Kun når varen tilføjes fra Opret ret og er en væske (brugerens krav 2026-10-10).
+  const liquid =
+    forDish && product && !(hasServingUnit && amountUnit === "personer")
+      ? liquidAmountFor(displayUnit, findKitchenConversion(product.name))
+      : null;
   const baseUnitLabel =
     displayUnit === "cl"
       ? t("addProduct.centilitresUnit")
@@ -574,14 +613,15 @@ export function AddProductView({
       { key: "iron", value: fromExtra("ironMg"), unit: "mg", digits: 1 },
     ];
 
-    return rows
-      .filter((row): row is { key: string; value: number; unit: string; digits?: number } => row.value !== null)
-      .map((row) => ({
-        ...row,
-        estimated: false,
-        tolerance: null as number | null,
-        label: t(`addProduct.nutrient.${row.key}`),
-      }));
+    // Mangler en værdi, vises rækken med en streg (–) — men kun når mindst én
+    // værdi findes, så blokken aldrig er helt tom.
+    if (rows.every((row) => row.value === null)) return [];
+    return rows.map((row) => ({
+      ...row,
+      estimated: false,
+      tolerance: null as number | null,
+      label: t(`addProduct.nutrient.${row.key}`),
+    }));
   }, [product, amount, factor, t]);
 
   const visibleAllergens = useMemo(() => {
@@ -701,16 +741,33 @@ export function AddProductView({
   // Siden tegnes med en tom vare, mens den rigtige hentes.
   const view = state.status === "loaded" ? state.product : isLoading ? LOADING_PRODUCT : null;
   const subtitle = view ? [view.packageSizeText, ...heading.variants].filter(Boolean).join(" · ") : "";
+  // Subbrandet står over brandet ved cirklen (docs/DECISIONS.md 2026-10-10).
+  const subbrand = view ? displayedSubbrand(view.brand?.name, view.subbrand) : null;
+  const subbrandBottom = subbrandBottomPx(brandSlotHeight(view?.brand, brandLogoRatio));
 
   const title = forDish ? t("addProduct.titleForDish") : t("addProduct.title");
   const Frame = inSheet ? SheetFrame : ScreenFrame;
-  // Opdater-banneret sidder fast direkte under topbaren, uden for scroll-området.
+  // Opdater-banneret ligger som lag oven på siden og skubber den aldrig.
   const updateBanner =
     !isLoading && !forDish && !isEditing && !!id && state.status === "loaded" && state.product.updateOffer ? (
             <UpdatePointsBanner
               href={`/add/${encodeURIComponent(id)}/update`}
               text={t("productUpdate.banner", { points: state.product.updateOffer.points })}
               toggleLabel={t("productUpdate.toggle")}
+              tiles={state.product.updateOffer.kinds.map((kind) => ({
+                kind,
+                label: t(UPDATE_TILE_LABELS[kind]),
+              }))}
+              action={
+                state.product.ingredientsUnreadable ? (
+                  <Link
+                    href={`/camera?mode=product&retake=ingredients&product=${encodeURIComponent(id)}`}
+                    className="hf-control hf-btn-secondary justify-center gap-2"
+                  >
+                    <IconCamera size={19} /> {t("addProduct.retakeIngredients")}
+                  </Link>
+                ) : undefined
+              }
             />
     ) : null;
 
@@ -860,6 +917,32 @@ export function AddProductView({
                         {view.brand.name}
                       </p>
                     ))}
+                  {/* Subbrandet står oven over brandet efter samme regel:
+                      logoet, hvis det findes, ellers navnet i fed grøn tekst
+                      (DECISIONS 2026-10-10). Uden brand står det i bunden. */}
+                  {subbrand &&
+                    (view.subbrandLogoUrl ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img
+                        src={view.subbrandLogoUrl}
+                        alt={subbrand}
+                        onLoad={(event) =>
+                          setSubbrandLogoRatio(event.currentTarget.naturalWidth / (event.currentTarget.naturalHeight || 1))
+                        }
+                        style={{
+                          bottom: subbrandBottom,
+                          left: brandLogoLeftPx(brandLogoRenderedHeight(subbrandLogoRatio), subbrandBottom),
+                        }}
+                        className="pointer-events-none absolute z-10 h-[66px] w-[95px] object-contain object-left-bottom"
+                      />
+                    ) : (
+                      <p
+                        style={{ bottom: subbrandBottom, left: brandLogoLeftPx(BRAND_NAME_HEIGHT_PX, subbrandBottom) }}
+                        className="hf-type-title hf-type-strong pointer-events-none absolute z-10 whitespace-nowrap text-hf-green"
+                      >
+                        {subbrand}
+                      </p>
+                    ))}
                   {/* Certificeringslogoer (Øko m.fl.) på produktcirklen; uden
                       certificering vises intet logo (docs/DECISIONS.md 2026-09-28). */}
                   {certifications.length > 0 && (
@@ -876,11 +959,11 @@ export function AddProductView({
                     <Skeleton type="hero" width={200} />
                   </ReadingSkeleton>
                 ) : (
-                  <h1 className="hf-type-hero text-hf-black">{productTitle}</h1>
+                  <h1 className="hf-type-hero text-hf-black"><DecimalText text={productTitle} /></h1>
                 )}
                 {/* Uden grøn linje står luften tilbage, så resten ikke rykker op. */}
                 {subtitle ? (
-                  <h2 className="hf-type-hero text-hf-green">{subtitle}</h2>
+                  <h2 className="hf-type-hero text-hf-green"><DecimalText text={subtitle} /></h2>
                 ) : (
                   <div aria-hidden="true" className="hf-type-hero">&nbsp;</div>
                 )}
@@ -940,7 +1023,28 @@ export function AddProductView({
                 >
                   −
                 </button>
-                <div className="flex-1 rounded-2xl bg-hf-tan py-3 text-center text-hf-black">
+                <div
+                  className={`relative flex-1 rounded-2xl bg-hf-tan py-3 text-center text-hf-black ${liquid ? "cursor-pointer" : ""}`}
+                  onClick={(event) => {
+                    if (!liquid || (event.target as HTMLElement).closest("input, button")) return;
+                    setLiquidPrimary((current) => (current === "volume" ? "grams" : "volume"));
+                  }}
+                >
+                  {liquid && !isLoading && (
+                    <>
+                      <span className="hf-type-caption absolute right-3 top-1.5 text-text-secondary">
+                        {liquidSecondaryText(amount, liquid, liquidPrimary)}
+                      </span>
+                      <button
+                        type="button"
+                        aria-label={t("addProduct.swapLiquidUnit")}
+                        onClick={() => setLiquidPrimary((current) => (current === "volume" ? "grams" : "volume"))}
+                        className="absolute right-2 top-1/2 flex h-8 w-8 -translate-y-1/2 items-center justify-center text-hf-black"
+                      >
+                        <IconArrowsUpDown size={18} stroke={2} />
+                      </button>
+                    </>
+                  )}
                   {isLoading ? (
                     <ReadingSkeleton label={t("addProduct.reading")}>
                       <Skeleton type="page-title" width={96} />
@@ -951,6 +1055,23 @@ export function AddProductView({
                         amount === servingSizeGrams ? servingSizeUnitSingular : servingSizeUnitPlural
                       }`}
                     </p>
+                  ) : liquid ? (
+                    <label className="hf-type-page-title flex items-baseline justify-center text-hf-black">
+                      <input
+                        type="number"
+                        inputMode="numeric"
+                        min={0}
+                        step={liquidPrimary === "volume" && liquid.volumeUnit === "cl" ? 1 : 10}
+                        value={liquidValue(amount, liquid, liquidPrimary)}
+                        onChange={(event) => {
+                          const value = Number(event.target.value);
+                          if (Number.isFinite(value)) setAmount(Math.max(0, liquidBaseFromValue(value, liquid, liquidPrimary)));
+                        }}
+                        style={{ width: `${Math.max(1, String(liquidValue(amount, liquid, liquidPrimary)).length) + 0.5}ch` }}
+                        className="bg-transparent text-right outline-none"
+                      />
+                      <span>&nbsp;{liquidUnitLabel(liquid, liquidPrimary)}</span>
+                    </label>
                   ) : (
                     <label className="hf-type-page-title flex items-baseline justify-center text-hf-black">
                       <input
@@ -976,7 +1097,12 @@ export function AddProductView({
                       </ReadingSkeleton>
                     ) : view.hasKnownNutrition === false
                       ? t("addProduct.nutritionUnknown")
-                      : t("addProduct.kcalAmount", { kcal: Math.round((view.kcalPer100g * amount) / 100) })}
+                      : (
+                        <>
+                          {view.kcalEstimated && <UncertaintyTilde small />}
+                          {t("addProduct.kcalAmount", { kcal: Math.round((view.kcalPer100g * amount) / 100) })}
+                        </>
+                      )}
                   </p>
                 </div>
                 <button
@@ -996,14 +1122,19 @@ export function AddProductView({
                     </ReadingSkeleton>
                   ) : view.hasKnownNutrition === false
                     ? t("addProduct.nutritionUnknown")
-                    : servingSizeGrams && hasServingUnit
-                    ? t("addProduct.kcalPerServing", {
-                        kcal: Math.round((view.kcalPer100g * servingSizeGrams) / 100),
-                        unit: servingSizeUnitSingular as string,
-                      })
-                    : displayUnit === "g"
-                    ? t("addProduct.kcalPer100g", { kcal: Math.round(view.kcalPer100g) })
-                    : t("addProduct.kcalPer100ml", { kcal: Math.round(view.kcalPer100g) })}
+                    : (
+                      <>
+                        {view.kcalEstimated && <UncertaintyTilde small />}
+                        {servingSizeGrams && hasServingUnit
+                          ? t("addProduct.kcalPerServing", {
+                              kcal: Math.round((view.kcalPer100g * servingSizeGrams) / 100),
+                              unit: servingSizeUnitSingular as string,
+                            })
+                          : displayUnit === "g"
+                          ? t("addProduct.kcalPer100g", { kcal: Math.round(view.kcalPer100g) })
+                          : t("addProduct.kcalPer100ml", { kcal: Math.round(view.kcalPer100g) })}
+                      </>
+                    )}
                 </p>
                 {!!confidentAlternativeServings.length && (
                   <div className="mt-1 flex flex-col items-center gap-0.5">
@@ -1206,25 +1337,15 @@ export function AddProductView({
                 </div>
               )}
 
-              {(isPending("ingredients") || !!view.ingredientsText || !!view.ingredientsUnreadable) && (
+              {(isPending("ingredients") || !!view.ingredientsText) && (
                 <div>
-                  <p className="hf-type-body mb-2 text-hf-black">{t("createDish.ingredients")}</p>
+                  <p className="hf-type-body hf-heading mb-2 text-hf-black">{t("createDish.ingredients")}</p>
                   {isPending("ingredients") ? (
                     <div role="status" aria-busy="true" className="flex flex-col gap-2">
                       <span className="sr-only">{t("addProduct.reading")}</span>
                       {["94%", "82%", "88%", "46%"].map((width) => (
                         <Skeleton key={width} type="body-sm" width={width} height={16} />
                       ))}
-                    </div>
-                  ) : !view.ingredientsText ? (
-                    <div className="flex flex-col gap-3">
-                      <p className="hf-type-small text-text-secondary">{t("addProduct.ingredientsUnreadable")}</p>
-                      <Link
-                        href={`/camera?mode=product&retake=ingredients&product=${encodeURIComponent(id)}`}
-                        className="hf-control hf-btn-secondary justify-center gap-2"
-                      >
-                        <IconCamera size={19} /> {t("addProduct.retakeIngredients")}
-                      </Link>
                     </div>
                   ) : (
                     <p className="hf-type-small text-text-secondary">
@@ -1252,11 +1373,11 @@ export function AddProductView({
                   sammen bag "Vis mere", åben for brugere der har prioriteret
                   udvidet næringsindhold i Opsætning. */}
               {!!extendedNutrition.length && (
-                <div>
+                <div className="overflow-hidden rounded-2xl bg-hf-tan">
                   <button
                     type="button"
                     onClick={() => setExtendedNutritionToggle(!extendedNutritionOpen)}
-                    className="flex w-full items-center justify-between"
+                    className="flex w-full items-center justify-between px-4 py-3"
                   >
                     <p className="hf-type-body hf-heading text-hf-black">{t("addProduct.extendedNutrition")}</p>
                     <span className="hf-type-small hf-type-strong flex items-center gap-1 text-hf-black underline underline-offset-2">
@@ -1268,13 +1389,14 @@ export function AddProductView({
                     </span>
                   </button>
                   {extendedNutritionOpen && (
-                    <div className="mt-4 flex flex-col overflow-hidden rounded-2xl bg-hf-tan">
+                    <div className="flex flex-col border-t border-hf-tan-dark">
                       {extendedNutrition.map((row, index) => {
                         // Usikkerheds-~ (docs/DECISIONS.md 2026-09-24): ~ vises
                         // altid ved estimerede værdier; den grå linje er foldet
                         // ind, medmindre brugeren har slået automatisk udfoldning
                         // til — et tryk på rækken vender det.
-                        const hasUncertainty = row.estimated || (row.tolerance ?? 0) > 0;
+                        // Ingen bølge/pil ved 0-værdier.
+                        const hasUncertainty = (row.value ?? 0) > 0 && (row.estimated || (row.tolerance ?? 0) > 0);
                         const expanded =
                           hasUncertainty &&
                           Boolean(profile?.autoExpandUncertainty) !== uncertaintyToggled.has(row.key);
@@ -1284,8 +1406,8 @@ export function AddProductView({
                         const content = (
                           <>
                             <span className="flex items-center gap-1">
-                              {UNHEALTHY_FAT_KEYS.has(row.key) && (
-                                <IconAlertTriangle size={15} className="shrink-0" aria-label={t("addProduct.unhealthyFat")} />
+                              {row.value !== null && row.key in WARNING_LIMITS && row.value > WARNING_LIMITS[row.key] && (
+                                <IconAlertTriangle size={15} className="shrink-0" aria-label={row.label} />
                               )}
                               {MICRONUTRIENT_INFO_BY_KEY[row.key] ? (
                                 // Vitaminer og mineraler er klikbare som E-numre.
@@ -1310,13 +1432,13 @@ export function AddProductView({
                               )}
                             </span>
                             <span className="hf-type-strong">
-                              {row.estimated && <UncertaintyTilde />}
-                              {formatDaNumber(row.value, row.digits ?? 0)} {row.unit}
+                              {row.estimated && (row.value ?? 0) > 0 && <UncertaintyTilde />}
+                              {row.value === null ? "–" : `${formatDaNumber(row.value, row.digits ?? 0)} ${row.unit}`}
                             </span>
                             {expanded && (
                               <UncertaintyLine
                                 className="mt-1 w-full text-right"
-                                estimated={row.estimated ? row.value : null}
+                                estimated={row.estimated ? (row.value ?? null) : null}
                                 tolerance={row.tolerance}
                                 unit={row.unit}
                                 digits={row.digits ?? 0}
@@ -1353,6 +1475,15 @@ export function AddProductView({
                       <p className="hf-type-micro text-text-secondary px-4 py-2.5">
                         {t("addProduct.extendedNutritionDisclaimer")}
                       </p>
+                      {/* Fridas kildeangivelse (brugerens regel 2026-10-10): kun
+                          her, helt nederst i det udfoldede felt, og kun når en
+                          værdi på varen kommer fra Frida. */}
+                      {view.fridaSource && (
+                        <p className="hf-type-micro text-text-secondary px-4 pb-2.5">
+                          <UncertaintyTilde small />
+                          {t("addProduct.fridaSource")}
+                        </p>
+                      )}
                     </div>
                   )}
                 </div>
@@ -1382,6 +1513,12 @@ export function AddProductView({
   );
 }
 
+const UPDATE_TILE_LABELS = {
+  FRONT: "productUpdate.tileFront",
+  NUTRITION: "productUpdate.tileNutrition",
+  INGREDIENTS: "productUpdate.tileIngredients",
+} as const;
+
 type FrameProps = {
   title: string;
   banner?: React.ReactNode;
@@ -1402,7 +1539,7 @@ function ScreenFrame({ title, footer, banner, children }: FrameProps) {
 function SheetFrame({ title, footer, banner, onClose, children }: FrameProps) {
   return (
     <BottomSheet title={title} footer={footer} size="full" onClose={() => onClose?.()}>
-      {banner}
+      {banner && <div className="relative h-0">{banner}</div>}
       {children}
     </BottomSheet>
   );

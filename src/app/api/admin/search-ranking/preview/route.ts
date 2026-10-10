@@ -1,8 +1,11 @@
+import { MEAL_KIT_SOURCES } from "@/lib/meal-kit-providers";
 import { NextResponse } from "next/server";
+import type { Prisma } from "@prisma/client";
 import { requireAdminUser } from "@/lib/require-admin";
 import { prisma } from "@/lib/prisma";
 import { deriveIsVerified, rankProducts, type RankableProduct } from "@/lib/product-search-ranking";
 import { sanitizeWeights } from "@/lib/search-ranking-config";
+import { brandsNamedInQuery } from "@/lib/search-correction";
 
 const CANDIDATE_TAKE = 120;
 const RESULT_TAKE = 25;
@@ -42,18 +45,39 @@ export async function POST(req: Request) {
     return NextResponse.json({ results: [] });
   }
 
+  const queryWords = query.split(/\s+/).filter((word) => word.length >= 2).slice(0, 6);
+
   try {
+    // Samme brand/subbrand-regel som /api/products: et nævnt brand/subbrand
+    // tager alle dets varer med (docs/DECISIONS.md 2026-10-10).
+    const named = await brandsNamedInQuery(query);
     const [products, ingredients] = await Promise.all([
       prisma.product.findMany({
         where: {
           discontinued: false,
-          nutritionMissing: false,
           OR: [
             { name: { contains: query, mode: "insensitive" } },
             { brand: { name: { contains: query, mode: "insensitive" } } },
+            { subbrand: { contains: query, mode: "insensitive" } },
+            ...(named.brandIds.length > 0 ? [{ brandId: { in: named.brandIds } }] : []),
+            ...(named.subbrands.length > 0 ? [{ subbrand: { in: named.subbrands } }] : []),
+            // Samme flerords-regel som /api/products ("arla letmælk").
+            ...(queryWords.length > 1
+              ? [
+                  {
+                    AND: queryWords.map((word): Prisma.ProductWhereInput => ({
+                      OR: [
+                        { name: { contains: word, mode: "insensitive" } },
+                        { brand: { name: { contains: word, mode: "insensitive" } } },
+                        { subbrand: { contains: word, mode: "insensitive" } },
+                      ],
+                    })),
+                  },
+                ]
+              : []),
           ],
           AND: {
-            OR: [{ externalSource: null }, { externalSource: { notIn: ["HELLOFRESH", "OPEN_FOOD_FACTS"] } }],
+            OR: [{ externalSource: null }, { externalSource: { notIn: [...MEAL_KIT_SOURCES, "OPEN_FOOD_FACTS"] } }],
           },
         },
         include: {
@@ -96,6 +120,10 @@ export async function POST(req: Request) {
       id: product.id,
       name: product.name,
       brand: product.brand,
+      subbrand: product.subbrand,
+      productType: product.productType,
+      variant: product.variant,
+      flavor: product.flavor,
       originCountryCode: product.originCountryCode,
       barcodes: product.barcodes,
       regionSearchStats: product.regionSearchStats,
@@ -110,7 +138,7 @@ export async function POST(req: Request) {
       personalClickCount: personalByProductId.get(product.id)?.clickCount,
       entityBias: -1,
       type: "product",
-      displayName: product.brand ? `${product.brand.name} ${product.name}` : product.name,
+      displayName: [product.brand?.name, product.subbrand, product.name].filter(Boolean).join(" "),
     }));
 
     const rankableIngredients: PreviewEntry[] = ingredients.map((ingredient) => ({

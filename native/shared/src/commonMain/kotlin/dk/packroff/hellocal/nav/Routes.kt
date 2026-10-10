@@ -2,8 +2,8 @@ package dk.packroff.hellocal.nav
 
 import androidx.compose.runtime.Composable
 
-/** What a screen receives: path params from "[id]" segments and the query string. */
-class RouteArgs(val params: Map<String, String>, val query: Map<String, String>) {
+/** What a screen receives: path params from "[id]" segments, the query string and the "#fragment". */
+class RouteArgs(val params: Map<String, String>, val query: Map<String, String>, val fragment: String? = null) {
     operator fun get(name: String): String = params[name] ?: query[name] ?: ""
     fun opt(name: String): String? = params[name] ?: query[name]
 }

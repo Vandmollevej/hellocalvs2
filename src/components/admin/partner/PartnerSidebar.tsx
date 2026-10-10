@@ -61,7 +61,7 @@ function Menu({ id }: { id: string }) {
             key={item.href}
             href={item.href}
             aria-current={active ? "page" : undefined}
-            className={`hf-type-body rounded-md px-3 py-2 ${active ? "hf-type-strong bg-hf-tan text-hf-green-dark" : "text-text-secondary hover:bg-hf-tan"}`}
+            className={`hf-type-body rounded-md px-3 py-2 ${active ? "hf-type-strong hf-selected" : "text-text-secondary hover:bg-hf-tan"}`}
           >
             {item.label}
           </Link>

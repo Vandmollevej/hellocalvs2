@@ -12,6 +12,11 @@ Brugeren lægger logofiler (<brandnavn>.png/.webp/.jpg) i
 3. gemmer resultatet som brand-logos/<brandId>.png og sætter Brand.logoUrl,
 4. flytter den behandlede fil til _import/done.
 
+Hedder intet brand som filen, men et subbrand gør ("Ota Solgryn.png" =
+brand + subbrand, eller "Kinder Bueno.png" = subbrandet alene), gemmes logoet
+som brand-logos/subbrands/<id>.png i tabellen subbrand_logos og vises over
+brandet på varesiden (docs/DECISIONS.md 2026-10-10).
+
 Filer med suffiks _2, _3 … ("Choco Bella_2.png") er alternative udgaver af det
 samme brand; kun den uden suffiks bruges, resten ligger uberørt som alternativer.
 Filer uden match ændres ikke — scriptet skriver de nærmeste brandnavne, så
@@ -28,6 +33,7 @@ import shutil
 import sys
 import time
 import unicodedata
+import uuid
 
 from PIL import Image, ImageDraw
 
@@ -40,6 +46,8 @@ LOGO_DIR = os.path.join(IMAGES_DIR, "brand-logos")
 LOGO_PREFIX = f"{PUBLIC_PATH_PREFIX}/brand-logos"
 IMPORT_DIR = os.path.join(LOGO_DIR, "_import")
 DONE_DIR = os.path.join(IMPORT_DIR, "done")
+SUBBRAND_DIR = os.path.join(LOGO_DIR, "subbrands")
+SUBBRAND_PREFIX = f"{LOGO_PREFIX}/subbrands"
 MAX_SIDE = 640
 EXTENSIONS = {".png", ".webp", ".jpg", ".jpeg"}
 
@@ -129,6 +137,60 @@ def brand_name_for(filename):
     return re.sub(r"_\d+$", "", stem).strip(), alternative
 
 
+def subbrand_names(brand_name, subbrand):
+    """Navnene et subbrand-logo kan hedde (som src/lib/subbrand-names.ts)."""
+    sub = (subbrand or "").strip()
+    brand = (brand_name or "").strip()
+    if not sub or (brand and normalize(brand) == normalize(sub)):
+        return []
+    return [f"{brand} {sub}", sub] if brand else [sub]
+
+
+def load_subbrands(conn):
+    """normaliseret navn -> subbrandets navn, som det står på varerne.
+    Tom, hvis tabellen subbrand_logos ikke findes endnu (migrationen kører med web-deployet)."""
+    try:
+        with conn.cursor() as cur:
+            cur.execute("SELECT to_regclass('public.subbrand_logos')")
+            if cur.fetchone()[0] is None:
+                log.info("tabellen subbrand_logos findes ikke endnu — subbrand-logoer springes over")
+                return {}
+            cur.execute(
+                'SELECT DISTINCT p.subbrand, b.name FROM products p LEFT JOIN brands b ON b.id = p."brandId" '
+                "WHERE p.subbrand IS NOT NULL AND btrim(p.subbrand) <> '' ORDER BY p.subbrand, b.name"
+            )
+            rows = cur.fetchall()
+    except Exception as error:  # subbrands må ikke stoppe brand-importen
+        conn.rollback()
+        log.warning("kunne ikke læse subbrands: %s", error)
+        return {}
+    by_key = {}
+    for subbrand, brand_name in rows:
+        for name in subbrand_names(brand_name, subbrand):
+            by_key.setdefault(normalize(name), name)
+    return by_key
+
+
+def save_subbrand_logo(conn, name, image):
+    """Gemmer logoet for subbrandet `name` og sætter rækken i subbrand_logos."""
+    with conn.cursor() as cur:
+        cur.execute('SELECT id FROM subbrand_logos WHERE name = %s', (name,))
+        row = cur.fetchone()
+    logo_id = row[0] if row else f"sb{uuid.uuid4().hex}"
+    os.makedirs(SUBBRAND_DIR, exist_ok=True)
+    image.save(os.path.join(SUBBRAND_DIR, f"{logo_id}.png"), format="PNG", optimize=True)
+    # Ny forespørgselsstreng hver gang, så telefoner ikke viser et gammelt logo.
+    logo_url = f"{SUBBRAND_PREFIX}/{logo_id}.png?v={int(time.time())}"
+    with conn.cursor() as cur:
+        cur.execute(
+            'INSERT INTO subbrand_logos (id, name, "logoUrl", "createdAt", "updatedAt") VALUES (%s, %s, %s, now(), now()) '
+            'ON CONFLICT (name) DO UPDATE SET "logoUrl" = EXCLUDED."logoUrl", "updatedAt" = now()',
+            (logo_id, name, logo_url),
+        )
+    conn.commit()
+    return bool(row)
+
+
 def main(dry_run):
     import psycopg2
 
@@ -145,8 +207,9 @@ def main(dry_run):
     by_key = {}
     for brand_id, name, logo_url in brands:
         by_key.setdefault(normalize(name), []).append((brand_id, name, logo_url))
+    subbrands = load_subbrands(conn)
 
-    applied, replaced, alternatives, unmatched = 0, 0, [], []
+    applied, replaced, sub_applied, alternatives, unmatched = 0, 0, 0, [], []
     os.makedirs(DONE_DIR, exist_ok=True)
     for filename in files:
         name, is_alternative = brand_name_for(filename)
@@ -154,11 +217,26 @@ def main(dry_run):
             alternatives.append(filename)
             continue
         matches = by_key.get(normalize(name))
-        if not matches:
+        subbrand = None if matches else subbrands.get(normalize(name))
+        if not matches and not subbrand:
             near = difflib.get_close_matches(normalize(name), list(by_key), n=3, cutoff=0.6)
             unmatched.append((filename, [by_key[key][0][1] for key in near]))
             continue
         path = os.path.join(IMPORT_DIR, filename)
+        if subbrand:
+            try:
+                image = process_image(path)
+            except Exception as error:  # et enkelt dårligt billede må ikke stoppe importen
+                log.warning("kunne ikke læse %s: %s", filename, error)
+                unmatched.append((filename, ["(ulæseligt billede)"]))
+                continue
+            log.info("%s -> subbrand %s", filename, subbrand)
+            if not dry_run:
+                if save_subbrand_logo(conn, subbrand, image):
+                    replaced += 1
+                shutil.move(path, os.path.join(DONE_DIR, filename))
+            sub_applied += 1
+            continue
         try:
             image = process_image(path)
         except Exception as error:  # et enkelt dårligt billede må ikke stoppe importen
@@ -181,8 +259,9 @@ def main(dry_run):
         if not dry_run:
             shutil.move(path, os.path.join(DONE_DIR, filename))
 
-    log.info("%d logoer sat (%d erstattede et eksisterende), %d alternative udgaver sprunget over, %d uden match%s",
-             applied, replaced, len(alternatives), len(unmatched), " [DRY RUN]" if dry_run else "")
+    log.info("%d brand-logoer og %d subbrand-logoer sat (%d erstattede et eksisterende), "
+             "%d alternative udgaver sprunget over, %d uden match%s",
+             applied, sub_applied, replaced, len(alternatives), len(unmatched), " [DRY RUN]" if dry_run else "")
     for filename in alternatives:
         log.info("alternativ (ikke brugt): %s", filename)
     for filename, near in unmatched:

@@ -8,13 +8,14 @@ import {
 } from "@/lib/body-measurements";
 import { COMPOSITION_GOAL_FIELDS, isCompositionGoalField, type CompositionGoalField } from "@/lib/goal-composition";
 import { isNutritionGoalField, NUTRITION_GOAL_FIELDS, type NutritionGoalField } from "@/lib/goal-nutrition";
+import { ACTIVITY_GOAL_FIELDS, isActivityGoalField, type ActivityGoalField } from "@/lib/goal-activity";
 
 // Målsætninger (docs/DECISIONS.md, 2026-09-22). En målsætning er et dateret
 // sæt targets — vægt, kropsmål og/eller ernæring (dagligt kcal/makroer). Gennemført-status beregnes her
 // server-side og gemmes som completedAt, der aldrig ryddes igen.
 
 export const WEIGHT_TARGET = "weight";
-export type GoalTargetType = typeof WEIGHT_TARGET | BodyMeasurementField | CompositionGoalField | NutritionGoalField;
+export type GoalTargetType = typeof WEIGHT_TARGET | BodyMeasurementField | CompositionGoalField | NutritionGoalField | ActivityGoalField;
 
 // Rækkefølgen målsætningens targets vises i: vægt øverst, derefter kropsmålene
 // i samme rækkefølge som på Kropsmål-siden, til sidst ernæring.
@@ -23,10 +24,11 @@ export const GOAL_TARGET_TYPES: GoalTargetType[] = [
   ...BODY_MEASUREMENT_FIELDS.map(({ field }) => field),
   ...COMPOSITION_GOAL_FIELDS.map(({ field }) => field),
   ...NUTRITION_GOAL_FIELDS.map(({ field }) => field),
+  ...ACTIVITY_GOAL_FIELDS.map(({ field }) => field),
 ];
 
 export function isGoalTargetType(value: string): value is GoalTargetType {
-  return value === WEIGHT_TARGET || isBodyMeasurementField(value) || isCompositionGoalField(value) || isNutritionGoalField(value);
+  return value === WEIGHT_TARGET || isBodyMeasurementField(value) || isCompositionGoalField(value) || isNutritionGoalField(value) || isActivityGoalField(value);
 }
 
 export function unitForTarget(type: GoalTargetType) {
@@ -34,7 +36,9 @@ export function unitForTarget(type: GoalTargetType) {
   const composition = COMPOSITION_GOAL_FIELDS.find(({ field }) => field === type);
   if (composition) return composition.unit;
   const nutrition = NUTRITION_GOAL_FIELDS.find(({ field }) => field === type);
-  return nutrition ? nutrition.unit : BODY_MEASUREMENT_UNIT;
+  if (nutrition) return nutrition.unit;
+  const activity = ACTIVITY_GOAL_FIELDS.find(({ field }) => field === type);
+  return activity ? activity.unit : BODY_MEASUREMENT_UNIT;
 }
 
 // Floats fra input/DB sammenlignes med en lille tolerance; "fasthold" regnes

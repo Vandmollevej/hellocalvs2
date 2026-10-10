@@ -1,11 +1,11 @@
 import { redirect } from "next/navigation";
 import { requireAdminUser } from "@/lib/require-admin";
-import { loadHelloFreshDishes, parseDishParams } from "@/lib/admin-dishes";
+import { loadImportedDishes, parseDishParams } from "@/lib/admin-dishes";
 import { DishListPage } from "@/components/admin/DishListPage";
-import { setDishDisabled } from "../actions";
 
-// Admin → Retter → Valdemarsro (docs/DECISIONS.md 2026-09-28). Retterne
+// Admin → Retter → Valdemarsro (docs/DECISIONS.md 2026-10-08). Retterne
 // hentes hver nat af scripts/valdemarsro-agent; døde links spærres automatisk.
+// Rækken åbner produktsiden (tilføj, "Gå til opskrift").
 export default async function AdminValdemarsroDishesPage({
   searchParams,
 }: {
@@ -14,16 +14,16 @@ export default async function AdminValdemarsroDishesPage({
   const admin = await requireAdminUser();
   if (!admin) redirect("/admin/login");
   const { q, page } = parseDishParams(await searchParams);
-  const data = await loadHelloFreshDishes(q, page, "VALDEMARSRO");
+  const data = await loadImportedDishes(q, page, "VALDEMARSRO");
   return (
     <DishListPage
       title="Valdemarsro-retter"
-      intro="Retter fra Valdemarsro. Det natlige job finder nye retter og spærrer døde links."
+      intro="Retter fra Valdemarsro. Det natlige job finder nye retter og spærrer døde links. Du kan kun deaktivere en ret."
       basePath="/admin/dishes/valdemarsro"
       q={q}
       data={data}
+      canDisable
       empty={q ? "Ingen retter matcher søgningen." : "Ingen Valdemarsro-retter er importeret endnu."}
-      disableAction={setDishDisabled}
     />
   );
 }

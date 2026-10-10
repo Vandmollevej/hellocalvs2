@@ -55,6 +55,9 @@ const DETAILS_KEY = "hellocal.dishDraftDetails";
 export type DishDraftStep = { title: string; text: string; image: string | null };
 export type DishDraftDetails = {
   name: string;
+  description: string;
+  /** Varighed i minutter; null = ikke angivet. */
+  durationMinutes: number | null;
   images: string[];
   steps: DishDraftStep[];
   showImages: boolean;
@@ -63,6 +66,8 @@ export type DishDraftDetails = {
 
 export const EMPTY_DISH_DRAFT_DETAILS: DishDraftDetails = {
   name: "",
+  description: "",
+  durationMinutes: null,
   images: [],
   steps: [],
   showImages: false,

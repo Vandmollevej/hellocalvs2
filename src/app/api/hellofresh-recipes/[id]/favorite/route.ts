@@ -3,6 +3,7 @@ import type { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { unauthorized } from "@/lib/session";
 import { getProfileUser } from "@/lib/family-access";
+import { MEAL_KIT_SOURCES } from "@/lib/meal-kit-providers";
 
 // "Gem" på en HelloFresh-opskrift (docs/DECISIONS.md 2026-09-27). Gemmes
 // sammen med favoritterne fra delte retter, som samme slags snapshot
@@ -13,15 +14,17 @@ export async function POST(_req: Request, { params }: { params: Promise<{ id: st
   if (!user) return unauthorized();
   const { id } = await params;
   const product = await prisma.product.findFirst({
-    where: { id, externalSource: "HELLOFRESH" },
+    where: { id, externalSource: { in: MEAL_KIT_SOURCES } },
     select: { id: true, name: true, imageUrl: true, kcalPer100g: true, servingSizeGrams: true },
   });
   if (!product) return NextResponse.json({ message: "Opskriften findes ikke" }, { status: 404 });
 
+  // Uden portionsvægt (BetterFeast) er kcal pr. 100 g og markeres som det.
   const snapshot = {
     id: product.id,
     name: product.name,
     kcal: Math.round((product.kcalPer100g * (product.servingSizeGrams ?? 100)) / 100),
+    ...(product.servingSizeGrams ? {} : { per100g: true }),
     images: product.imageUrl ? [product.imageUrl] : [],
   };
   await prisma.sharedRecipeFavorite.upsert({

@@ -8,6 +8,7 @@ import QRCode from "qrcode";
 import { prisma } from "@/lib/prisma";
 import { createInviteToken, decryptFamilyValue, encryptFamilyValue, inviteUrl, readInviteToken } from "@/lib/family-invite-token";
 import { computeAge } from "@/lib/age";
+import { FAMILY_SELF_CONSENT_AGE, sharingDeciderId } from "@/lib/family-sharing";
 import { getSubscriptionTier } from "@/lib/subscription";
 import { queueMessage } from "@/lib/messaging";
 
@@ -15,9 +16,9 @@ export const MAX_FAMILY_PROFILES = 5;
 // Højst så mange ekstra pladser kan tilkøbes ud over de 5 (ejerens valg
 // 2026-10-03: "0/5 ekstra tilkøb"). Selve købet er ikke bygget endnu.
 export const MAX_EXTRA_SEATS = 5;
-// Under denne alder kan man ikke selv oprette en konto eller melde sig ud af
-// familien (databeskyttelsesloven § 6, stk. 2, se docs/FAMILY.md).
-export const FAMILY_SELF_CONSENT_AGE = 15;
+// Under denne alder kan man ikke selv oprette en konto, og børn kan aldrig selv
+// melde sig ud (databeskyttelsesloven § 6, stk. 2, se docs/FAMILY.md).
+export { FAMILY_SELF_CONSENT_AGE };
 const CODE_TTL_MS = 7 * 24 * 60 * 60 * 1000;
 
 export class FamilyError extends Error {
@@ -89,17 +90,26 @@ export async function getFamilyOverview(userId: string) {
     extraSeats: family.extraSeats,
     maxExtraSeats: MAX_EXTRA_SEATS,
     capacity: familyCapacity(family.extraSeats),
-    members: family.members.map((member) => ({
-      userId: member.userId,
-      displayName: member.user.displayName,
-      isChild: member.isChild,
-      age: computeAge(member.user.birthDate),
-      hasLogin: Boolean(member.user.passwordHash) || member.user.oauthAccounts.length > 0,
-      createdByOwner: member.createdById === family.ownerId,
-      // Den, der styrer medlemmets sletteret: profilens opretter, ellers betaleren.
-      controllerId: member.createdById ?? family.ownerId,
-      canDeleteOthersEntries: member.canDeleteOthersEntries,
-    })),
+    members: family.members.map((member) => {
+      const age = computeAge(member.user.birthDate);
+      const hasLogin = Boolean(member.user.passwordHash) || member.user.oauthAccounts.length > 0;
+      return {
+        userId: member.userId,
+        displayName: member.user.displayName,
+        isChild: member.isChild,
+        age,
+        hasLogin,
+        createdByOwner: member.createdById === family.ownerId,
+        // Den, der styrer medlemmets sletteret: profilens opretter, ellers betaleren.
+        controllerId: member.createdById ?? family.ownerId,
+        canDeleteOthersEntries: member.canDeleteOthersEntries,
+        // Den, der bestemmer, hvem andre i familien må se profilen.
+        sharingDeciderId: sharingDeciderId(
+          { userId: member.userId, hasLogin, isChild: member.isChild, age },
+          family.ownerId
+        ),
+      };
+    }),
     grants: family.grants,
   };
 }
@@ -178,7 +188,13 @@ export async function createFamilyProfile(
   if (family.members.length >= familyCapacity(family.extraSeats)) throw new FamilyError("familyFull", 409);
   if (!input.displayName.trim()) throw new FamilyError("nameRequired");
   const memberIds = new Set(family.members.map((m) => m.userId));
-  const access = (input.access ?? []).filter((entry) => entry.personId !== ownerId && memberIds.has(entry.personId));
+  // Den nye profil har intet login, så betaleren bestemmer, hvem der må se den.
+  // Adgang for den nye profil til andre gives kun, hvor betaleren bestemmer
+  // over den anden profil (ikke voksne med eget login, se sharingDeciderId).
+  const deciders = await sharingDeciders(family.id, ownerId);
+  const access = (input.access ?? [])
+    .filter((entry) => entry.personId !== ownerId && memberIds.has(entry.personId))
+    .map((entry) => (deciders.get(entry.personId) === ownerId ? entry : { ...entry, newOnPerson: "none" as const }));
 
   return prisma.$transaction(async (tx) => {
     const user = await tx.user.create({
@@ -243,11 +259,47 @@ export async function setMemberDeletePermission(actorId: string, memberUserId: s
   await prisma.familyMember.update({ where: { id: member.id }, data: { canDeleteOthersEntries: allowed } });
 }
 
-export async function setAccessGrant(ownerId: string, granteeId: string, subjectId: string, level: AccessLevel) {
-  const family = await requireOwnedFamily(ownerId);
-  const memberIds = new Set(family.members.map((m) => m.userId));
-  if (!memberIds.has(granteeId) || !memberIds.has(subjectId)) throw new FamilyError("notMember", 404);
-  if (granteeId === subjectId || granteeId === ownerId) throw new FamilyError("notAllowed");
+// Hvem bestemmer over hver profils deling (sharingDeciderId), for familiens
+// medlemmer. Bruges, når der gives eller fjernes adgang.
+async function sharingDeciders(familyId: string, ownerId: string) {
+  const members = await prisma.familyMember.findMany({
+    where: { familyId },
+    select: {
+      userId: true,
+      isChild: true,
+      user: { select: { birthDate: true, passwordHash: true, oauthAccounts: { select: { id: true } } } },
+    },
+  });
+  return new Map(
+    members.map((member) => [
+      member.userId,
+      sharingDeciderId(
+        {
+          userId: member.userId,
+          isChild: member.isChild,
+          age: computeAge(member.user.birthDate),
+          hasLogin: Boolean(member.user.passwordHash) || member.user.oauthAccounts.length > 0,
+        },
+        ownerId
+      ),
+    ])
+  );
+}
+
+// Sætter granteeId's adgang til subjectId's profil. Kun den, der bestemmer
+// over profilen, må: personen selv (voksne med eget login), ellers betaleren
+// (ejerens beslutning 2026-10-03). Betaleren har altid fuld adgang.
+export async function setAccessGrant(actorId: string, granteeId: string, subjectId: string, level: AccessLevel) {
+  const membership = await prisma.familyMember.findUnique({
+    where: { userId: actorId },
+    select: { family: { select: { id: true, ownerId: true } } },
+  });
+  if (!membership) throw new FamilyError("notMember", 404);
+  const family = membership.family;
+  const deciders = await sharingDeciders(family.id, family.ownerId);
+  if (!deciders.has(granteeId) || !deciders.has(subjectId)) throw new FamilyError("notMember", 404);
+  if (granteeId === subjectId || granteeId === family.ownerId) throw new FamilyError("notAllowed");
+  if (deciders.get(subjectId) !== actorId) throw new FamilyError("notAllowed", 403);
   if (level !== "none") {
     const canWrite = level === "write";
     await prisma.familyAccessGrant.upsert({
@@ -359,8 +411,10 @@ export async function createFamilyInvitation(
   const family = await ensureOwnedFamily(ownerId);
   const { code, email, expiresAt } = await createFamilyCode(ownerId, null, input.email);
 
-  const memberIds = new Set(family.members.map((m) => m.userId));
-  const subjectIds = [...new Set(input.subjectIds)].filter((id) => memberIds.has(id));
+  // Betaleren kan kun give adgang til profiler, betaleren selv bestemmer over
+  // (sin egen, profiler uden eget login og børn under 15).
+  const deciders = await sharingDeciders(family.id, ownerId);
+  const subjectIds = [...new Set(input.subjectIds)].filter((id) => deciders.get(id) === ownerId);
   // At oprette på nogens vegne kræver, at man også kan se profilen.
   const writeSubjectIds = [...new Set(input.writeSubjectIds ?? [])].filter((id) => subjectIds.includes(id));
   await prisma.familyLoginCode.update({
@@ -480,8 +534,10 @@ export async function joinFamily(userId: string, input: FamilyCodeInput) {
   // Invitationer giver adgang til de profiler, betaleren valgte — kun dem, der
   // stadig er med i familien: "se" for alle, "oprette" kun for dem i
   // grantWriteSubjectIds.
-  const memberIds = new Set(family.members.map((member) => member.userId));
-  const subjectIds = row.grantSubjectIds.filter((id) => memberIds.has(id) && id !== userId);
+  // Kun profiler, betaleren stadig bestemmer over (ikke voksne med eget login).
+  const owner = await prisma.family.findUnique({ where: { id: row.familyId }, select: { ownerId: true } });
+  const deciders = owner ? await sharingDeciders(row.familyId, owner.ownerId) : new Map<string, string>();
+  const subjectIds = row.grantSubjectIds.filter((id) => id !== userId && deciders.get(id) === owner?.ownerId);
   await prisma.$transaction([
     prisma.familyLoginCode.update({ where: { id: row.id }, data: { usedAt: new Date() } }),
     prisma.familyMember.create({ data: { familyId: row.familyId, userId, isChild: false } }),
@@ -506,19 +562,25 @@ async function detachMember(familyId: string, userId: string) {
   ]);
 }
 
-// Medlemmet låser de andre ude. Kræver eget login og — for børn — at barnet
-// er fyldt 15 (docs/FAMILY.md, fortolkning af punkt 3 + 4).
+// Er brugeren et barn i en andens familie? Børn kan hverken lukke kontoen eller
+// melde sig ud — det kan kun forælderen (brugerens regel 2026-10-09).
+export async function isChildMember(userId: string) {
+  const member = await prisma.familyMember.findUnique({ where: { userId }, select: { isChild: true } });
+  return member?.isChild === true;
+}
+
+// Medlemmet låser de andre ude. Kræver eget login. Børn kan aldrig selv melde
+// sig ud — kun forælderen (betaleren) kan fjerne dem (docs/FAMILY.md punkt 4).
 export async function leaveFamily(userId: string) {
   const member = await prisma.familyMember.findUnique({
     where: { userId },
-    include: { family: true, user: { select: { birthDate: true, passwordHash: true, oauthAccounts: { select: { id: true } } } } },
+    include: { family: true, user: { select: { passwordHash: true, oauthAccounts: { select: { id: true } } } } },
   });
   if (!member) throw new FamilyError("notMember", 404);
   if (member.family.ownerId === userId) throw new FamilyError("ownerCannotLeave");
   const hasLogin = Boolean(member.user.passwordHash) || member.user.oauthAccounts.length > 0;
   if (!hasLogin) throw new FamilyError("notAllowed", 403);
-  const age = computeAge(member.user.birthDate);
-  if (member.isChild && (age === null || age < FAMILY_SELF_CONSENT_AGE)) throw new FamilyError("tooYoungToLeave", 403);
+  if (member.isChild) throw new FamilyError("childCannotLeave", 403);
   await detachMember(member.familyId, userId);
 }
 

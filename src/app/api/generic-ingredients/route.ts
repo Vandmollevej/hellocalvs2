@@ -1,10 +1,13 @@
 import { NextResponse } from "next/server";
-import { GenericIngredientCategory } from "@prisma/client";
+import { GenericIngredientCategory, GenericIngredientCookingState } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { getSessionUser } from "@/lib/session";
 import { rankProducts } from "@/lib/product-search-ranking";
 import { getActiveSearchRankingWeights } from "@/lib/search-ranking-config";
+import { getSynonymExpansions } from "@/lib/search-synonyms";
+import { decimalVariants } from "@/lib/decimal-separator";
 import { matchFridaProduct } from "@/lib/generic-ingredient-match";
+import { deriveNumberForms, displayNameForQuery, matchesNumberQuery, parseNumberQuery } from "@/lib/danish-number";
 
 // GET /api/generic-ingredients?q=æble — search generic (non-scanned)
 // ingredients, e.g. for the "Ingrediens" branch of manual food creation
@@ -18,14 +21,28 @@ export async function GET(req: Request) {
   const q = params.get("q")?.trim() ?? "";
   const take = Math.min(Math.max(parseInt(params.get("take") ?? "20", 10) || 20, 1), 100);
   const localHour = new Date().getHours();
+  // "et æble" = kun ental, "nogle æbler" = kun flertal (src/lib/danish-number.ts).
+  const numberQuery = parseNumberQuery(q);
 
   try {
-    const ingredients = await prisma.genericIngredient.findMany({
-      where: q ? { name: { contains: q, mode: "insensitive" } } : {},
+    const synonyms = q ? await getSynonymExpansions(numberQuery.term) : [];
+    const found = await prisma.genericIngredient.findMany({
+      where: q
+        ? {
+            OR: [
+              { name: { contains: numberQuery.term, mode: "insensitive" } },
+              { nameSingular: { contains: numberQuery.term, mode: "insensitive" } },
+              { namePlural: { contains: numberQuery.term, mode: "insensitive" } },
+              ...synonyms.map((s) => ({ name: { contains: s.term, mode: "insensitive" as const } })),
+              ...decimalVariants(numberQuery.term).map((v) => ({ name: { contains: v, mode: "insensitive" as const } })),
+            ],
+          }
+        : {},
       include: { regionSearchStats: true, regionHourStats: true },
       take: q ? Math.max(take * 4, 60) : take,
       orderBy: { createdAt: "desc" },
     });
+    const ingredients = found.filter((ingredient) => matchesNumberQuery(ingredient, numberQuery));
 
     const sessionUser = await getSessionUser();
     const user = { region: sessionUser?.region ?? "DK" };
@@ -53,7 +70,7 @@ export async function GET(req: Request) {
         personalClickCount: personalByIngredientId.get(ingredient.id)?.clickCount,
         entityBias: 1, // "Generiske ingredienser vs. varer" — en GenericIngredient
       }));
-      const ranked = rankProducts(rankable, q, user.region, localHour, take, weights);
+      const ranked = rankProducts(rankable, numberQuery.term, user.region, localHour, take, weights, synonyms);
       results = ranked.map((entry) => entry.product);
 
       if (results.length > 0) {
@@ -107,7 +124,8 @@ export async function GET(req: Request) {
         entityBias?: unknown;
       };
       /* eslint-enable @typescript-eslint/no-unused-vars */
-      return rest;
+      // "et æble" viser ental, "nogle æbler" viser flertal (src/lib/danish-number.ts).
+      return { ...rest, displayName: displayNameForQuery(ingredient, numberQuery) };
     });
     return NextResponse.json({ ingredients: publicIngredients });
   } catch (error) {
@@ -138,6 +156,10 @@ export async function POST(req: Request) {
     ? (categoryRaw as GenericIngredientCategory)
     : GenericIngredientCategory.OTHER;
   const imageUrl = typeof body.imageUrl === "string" ? body.imageUrl : undefined;
+  const cookingState =
+    body.cookingState === GenericIngredientCookingState.COOKED
+      ? GenericIngredientCookingState.COOKED
+      : GenericIngredientCookingState.RAW;
 
   if (!name) {
     return NextResponse.json({ message: "Navn skal udfyldes" }, { status: 400 });
@@ -160,10 +182,14 @@ export async function POST(req: Request) {
     });
     const match = matchFridaProduct(name, fridaCandidates);
 
+    const forms = deriveNumberForms(name);
     const ingredient = await prisma.genericIngredient.create({
       data: {
         name,
+        nameSingular: forms.singular,
+        namePlural: forms.plural,
         category,
+        cookingState,
         imageUrl,
         fridaProductId: match?.id,
         kcalPer100g: match?.kcalPer100g,

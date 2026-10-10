@@ -126,7 +126,7 @@ const DEFAULT_TEMPLATES: Record<MessageEventType, { subject: string; bodyHtml: s
   },
   FRIEND_REFERRAL: {
     subject: "Din ven er nu med i Hello Cal",
-    bodyHtml: "<p>Hej {{displayName}},</p><p>{{friendName}} har oprettet en konto via dit invite-link. I har begge optjent 300 points!</p>",
+    bodyHtml: "<p>Hej {{displayName}},</p><p>{{friendName}} har nu været med i Hello Cal i 3 måneder via dit invite-link. Du har optjent 300 points!</p>",
     channel: "BOTH",
     },
   PRODUCT_APPROVED: {
@@ -182,7 +182,7 @@ const DEFAULT_TEMPLATES: Record<MessageEventType, { subject: string; bodyHtml: s
   },
   FRIEND_INVITATION: {
     subject: "{{inviterName}} har inviteret dig til Hello Cal",
-    bodyHtml: "<p>{{inviterName}} synes du skulle prøve Hello Cal.</p>{{personalMessage}}<p><a href=\"{{inviteUrl}}\">Opret din konto</a> — I optjener begge 300 points, når du er med. Linket er gyldigt i 7 dage.</p>",
+    bodyHtml: "<p>{{inviterName}} synes du skulle prøve Hello Cal.</p>{{personalMessage}}<p><a href=\"{{inviteUrl}}\">Opret din konto</a> — så får du 1 gratis måned med Seriøs. Linket er gyldigt i 7 dage.</p>",
     channel: "EMAIL",
   },
   DOCTOR_SHARE_INVITATION: {
@@ -233,9 +233,13 @@ const DEFAULT_TEMPLATES: Record<MessageEventType, { subject: string; bodyHtml: s
 
 // Tidligere standardtekster, der opgraderes automatisk, så længe admin ikke
 // har redigeret dem (fx fik FRIEND_INVITATION {{personalMessage}} 2026-09-25).
-const LEGACY_DEFAULT_BODIES: Partial<Record<MessageEventType, string>> = {
-  FRIEND_INVITATION:
+const LEGACY_DEFAULT_BODIES: Partial<Record<MessageEventType, string | string[]>> = {
+  // "Invitér en ven" 2026-10-03: kun afsenderen får 300 points, vennen 1 gratis måned.
+  FRIEND_INVITATION: [
     "<p>{{inviterName}} synes du skulle prøve Hello Cal.</p><p><a href=\"{{inviteUrl}}\">Opret din konto</a> — I optjener begge 300 points, når du er med. Linket er gyldigt i 7 dage.</p>",
+    "<p>{{inviterName}} synes du skulle prøve Hello Cal.</p>{{personalMessage}}<p><a href=\"{{inviteUrl}}\">Opret din konto</a> — I optjener begge 300 points, når du er med. Linket er gyldigt i 7 dage.</p>",
+  ],
+  FRIEND_REFERRAL: "<p>Hej {{displayName}},</p><p>{{friendName}} har oprettet en konto via dit invite-link. I har begge optjent 300 points!</p>",
   // Almindelige links + "kopiér dette link" → sort knap (2026-09-28).
   EMAIL_VERIFICATION:
     "<p>Hej {{displayName}},</p><p><a href=\"{{verificationLink}}\">Bekræft din e-mail</a></p><p>Virker knappen ikke, så kopiér dette link: {{verificationLink}}</p>",
@@ -245,17 +249,22 @@ const LEGACY_DEFAULT_BODIES: Partial<Record<MessageEventType, string>> = {
     "<p>Hej {{displayName}},</p><p>Du har bedt om adgang til at ændre din startvægt i Hello Cal.</p><p>Tryk på linket nedenfor for at fortsætte.</p><p><a href=\"{{verificationLink}}\">Ændr startvægt</a></p><p>Linket kan kun bruges én gang og udløber efter 30 minutter.</p><p>Hvis du ikke har bedt om denne ændring, kan du ignorere denne e-mail.</p>",
 };
 
+function legacyBodies(event: MessageEventType): string[] {
+  const legacy = LEGACY_DEFAULT_BODIES[event];
+  return legacy === undefined ? [] : Array.isArray(legacy) ? legacy : [legacy];
+}
+
 // Uredigeret gammel standardtekst i databasen → brug den nye med det samme,
 // også før admin har åbnet "Besked automatisering".
 function currentBody(event: MessageEventType, bodyHtml: string) {
-  return LEGACY_DEFAULT_BODIES[event] === bodyHtml ? DEFAULT_TEMPLATES[event].bodyHtml : bodyHtml;
+  return legacyBodies(event).includes(bodyHtml) ? DEFAULT_TEMPLATES[event].bodyHtml : bodyHtml;
 }
 
 export async function ensureDefaultMessageTemplates() {
   await Promise.all(
-    (Object.entries(LEGACY_DEFAULT_BODIES) as [MessageEventType, string][]).map(([event, legacyBody]) =>
+    (Object.keys(LEGACY_DEFAULT_BODIES) as MessageEventType[]).map((event) =>
       prisma.messageTemplate.updateMany({
-        where: { event, bodyHtml: legacyBody },
+        where: { event, bodyHtml: { in: legacyBodies(event) } },
         data: { bodyHtml: DEFAULT_TEMPLATES[event].bodyHtml },
       })
     )

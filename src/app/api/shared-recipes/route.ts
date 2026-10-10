@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import type { Prisma } from "@prisma/client";
+import type { ExternalProductSource, Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { getSessionUser } from "@/lib/session";
 import {
@@ -20,13 +20,22 @@ import {
 import { portionKcalFor, servingsFor } from "@/lib/recipe-portions";
 import { parseRecipeSteps, stepsText } from "@/lib/recipe-categories";
 import { isRecipeImagePath } from "@/lib/recipe-image-storage";
+import {
+  isMealKitKey,
+  mealKitByKey,
+  mealKitBySource,
+  MEAL_KIT_KEYS,
+  type MealKitKey,
+} from "@/lib/meal-kit-providers";
 
 // Delte brugeropskrifter (docs/DECISIONS.md 2026-09-24).
 //
-// GET ?q=&sort=relevance|popular|date&hellofresh=1 — søg i delte retter.
-// Afviste retter og retter fra blokerede udgivere vises ikke. Med
-// hellofresh=1 (brugeren har slået HelloFresh til under Integrationer)
-// medtages HelloFresh-opskrifterne i samme liste.
+// GET ?q=&sort=relevance|popular|date&providers=hellofresh,retnemt — søg i
+// delte retter. Afviste retter og retter fra blokerede udgivere vises ikke.
+// providers= er de måltidskasse-integrationer (HelloFresh, RetNemt,
+// BetterFeast), brugeren har slået til under Integrationer; deres retter
+// medtages i samme liste (docs/DECISIONS.md 2026-10-10). hellofresh=1 er den
+// gamle form og betyder providers=hellofresh.
 //
 // Filtre (docs/DECISIONS.md 2026-09-25, src/lib/recipe-filters.ts):
 // allergens=, diets=, nutrients= (kommaseparerede) og protein=/carbs=/fat=
@@ -34,12 +43,14 @@ import { isRecipeImagePath } from "@/lib/recipe-image-storage";
 // portion (src/lib/recipe-portions.ts), energifordeling og allergiadvarsler.
 
 type Item = {
-  kind: "shared" | "hellofresh" | "valdemarsro";
+  kind: "shared" | "valdemarsro" | MealKitKey;
   id: string;
   name: string;
   imageUrl: string | null;
-  // Hele retten (delte retter) eller én servering (HelloFresh).
+  // Hele retten (delte retter), én servering (HelloFresh/RetNemt) eller
+  // 100 g, når udbyderen kun oplyser næring pr. 100 g (BetterFeast).
   kcal: number;
+  per100g: boolean;
   servings: number;
   split: { protein: number; carbs: number; fat: number } | null;
   warnings: RecipeWarning[];
@@ -47,6 +58,19 @@ type Item = {
   createdAt: string;
   score: number;
 };
+
+const TRENDING_LIMIT = 10;
+
+// Deterministisk "tilfældig" rækkefølge (FNV-1a), så tilfældigt udvalg ikke
+// skifter ved hver genindlæsning, men først næste dag.
+function dailyOrder(text: string) {
+  let hash = 2166136261;
+  for (let i = 0; i < text.length; i += 1) {
+    hash ^= text.charCodeAt(i);
+    hash = Math.imul(hash, 16777619);
+  }
+  return hash >>> 0;
+}
 
 function relevance(name: string, searchText: string, q: string) {
   if (!q) return 0;
@@ -115,13 +139,27 @@ export async function GET(req: Request) {
   const q = (params.get("q") ?? "").trim().toLowerCase().slice(0, 100);
   const filters = filtersFromParams(params);
   // source = integration-knapperne under søgefeltet: "all" (standard),
-  // "shared" (kun brugernes delte retter), "hellofresh" eller "valdemarsro".
+  // "shared" (kun brugernes delte retter), "valdemarsro" eller en
+  // måltidskasse ("hellofresh", "retnemt", "betterfeast").
   const sourceParam = params.get("source") ?? "all";
-  const source = ["shared", "hellofresh", "valdemarsro"].includes(sourceParam) ? sourceParam : "all";
-  const includeHelloFresh = source === "hellofresh" || (source === "all" && params.get("hellofresh") === "1");
-  const includeValdemarsro = source === "valdemarsro" || (source === "all" && params.get("valdemarsro") === "1");
+  const source =
+    sourceParam === "shared" || sourceParam === "valdemarsro" || isMealKitKey(sourceParam) ? sourceParam : "all";
+  const enabledProviders = new Set(
+    (params.get("providers") ?? "").split(",").filter(isMealKitKey),
+  );
+  if (params.get("hellofresh") === "1") enabledProviders.add("hellofresh");
+  const mealKits: MealKitKey[] = isMealKitKey(source)
+    ? [source]
+    : source === "all"
+      ? MEAL_KIT_KEYS.filter((key) => enabledProviders.has(key))
+      : [];
+  // Valdemarsro er ikke en integration, brugeren skal slå til: med "Opskrifter"
+  // (all) medtages de altid.
+  const includeValdemarsro = source === "valdemarsro" || source === "all";
   const includeShared = source === "all" || source === "shared";
   const withIngredientData = needsIngredientData(filters);
+  // trending=1: kun til "Trender netop nu" (ingen søgning), se nedenfor.
+  const trending = params.get("trending") === "1" && !q;
 
   try {
     const user = await getSessionUser();
@@ -186,6 +224,7 @@ export async function GET(req: Request) {
         name: r.name,
         imageUrl: r.images[0] ?? null,
         kcal: Math.round(r.kcal),
+        per100g: false,
         servings: servingsFor(r.kcal, portionKcal),
         split: energyPercents(facts),
         warnings: result.warnings,
@@ -195,9 +234,8 @@ export async function GET(req: Request) {
       });
     }
 
-    if (includeHelloFresh || includeValdemarsro) {
-      const externalSources: ("HELLOFRESH" | "VALDEMARSRO")[] = [];
-      if (includeHelloFresh) externalSources.push("HELLOFRESH");
+    if (mealKits.length > 0 || includeValdemarsro) {
+      const externalSources: ExternalProductSource[] = mealKits.map((key) => mealKitByKey(key).source);
       if (includeValdemarsro) externalSources.push("VALDEMARSRO");
       const hfProducts = await prisma.product.findMany({
         where: {
@@ -235,7 +273,8 @@ export async function GET(req: Request) {
         : [];
       const usageById = new Map(usage.map((u) => [u.productId, u._count._all]));
       for (const p of hfProducts) {
-        // Én servering af opskriften.
+        // Én servering af opskriften (100 g, når udbyderen ikke oplyser
+        // portionsvægt, fx BetterFeast).
         const grams = p.servingSizeGrams ?? 100;
         const f = grams / 100;
         const facts: RecipeFacts = {
@@ -256,11 +295,12 @@ export async function GET(req: Request) {
         const result = evaluateRecipe(facts, filters);
         if (!result.pass) continue;
         items.push({
-          kind: p.externalSource === "VALDEMARSRO" ? "valdemarsro" : "hellofresh",
+          kind: mealKitBySource(p.externalSource)?.key ?? "valdemarsro",
           id: p.id,
           name: p.name,
           imageUrl: p.imageUrl,
           kcal: Math.round(facts.kcal),
+          per100g: p.servingSizeGrams === null && p.externalSource !== "VALDEMARSRO",
           servings: 1,
           split: energyPercents(facts),
           warnings: result.warnings,
@@ -292,8 +332,40 @@ export async function GET(req: Request) {
       }
     }
 
+    // "Trender netop nu" (brugerens krav 2026-10-10): de 10 retter med flest nye
+    // klik den seneste måned (seneste uge tæller dobbelt, så stigning vinder).
+    // Er der færre end 10 med klik, fyldes op med tilfældige retter (samme
+    // rækkefølge hele dagen), så der altid vises mindst tre, når de findes.
+    if (trending) {
+      const keyOf = (item: Item) => `${item.kind === "shared" ? "shared" : "hf"}:${item.id}`;
+      const now = Date.now();
+      const weekAgo = new Date(now - 7 * 24 * 60 * 60 * 1000);
+      const clicks = items.length
+        ? await prisma.recipeClick
+            .findMany({
+              where: { recipeKey: { in: items.map(keyOf) }, createdAt: { gte: new Date(now - 30 * 24 * 60 * 60 * 1000) } },
+              select: { recipeKey: true, createdAt: true },
+            })
+            .catch(() => [])
+        : [];
+      const clickScore = new Map<string, number>();
+      for (const click of clicks) {
+        clickScore.set(click.recipeKey, (clickScore.get(click.recipeKey) ?? 0) + (click.createdAt >= weekAgo ? 2 : 1));
+      }
+      const day = new Date(now).toISOString().slice(0, 10);
+      const shuffled = items
+        .map((item) => ({ item, order: dailyOrder(`${day}:${keyOf(item)}`) }))
+        .sort((a, b) => a.order - b.order)
+        .map((entry) => entry.item);
+      const clicked = shuffled
+        .filter((item) => (clickScore.get(keyOf(item)) ?? 0) > 0)
+        .sort((a, b) => (clickScore.get(keyOf(b)) ?? 0) - (clickScore.get(keyOf(a)) ?? 0));
+      const rest = shuffled.filter((item) => !clickScore.has(keyOf(item)));
+      items.splice(0, items.length, ...[...clicked, ...rest].slice(0, TRENDING_LIMIT));
+    }
+
     const sort = filters.sort;
-    items.sort((a, b) => {
+    if (!trending) items.sort((a, b) => {
       if (sort === "popular") return b.popularity - a.popularity || b.createdAt.localeCompare(a.createdAt);
       if (sort === "date") return b.createdAt.localeCompare(a.createdAt);
       return b.score - a.score || b.popularity - a.popularity || b.createdAt.localeCompare(a.createdAt);
@@ -307,6 +379,7 @@ export async function GET(req: Request) {
         name: item.name,
         imageUrl: item.imageUrl,
         kcal: item.kcal,
+        per100g: item.per100g,
         servings: item.servings,
         split: item.split && {
           protein: Math.round(item.split.protein),

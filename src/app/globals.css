@@ -1573,7 +1573,7 @@ textarea::selection,
     background: transparent;
   }
 
-  /* Valgknap (segment/filter/periode): beige flade; valgt = sort flade, hvid tekst. */
+  /* Valgknap (segment/filter/periode): beige flade; valgt = lime flade, sort kant og tekst. */
   .hf-choice {
     display: inline-flex;
     min-height: 40px;
@@ -1604,6 +1604,8 @@ textarea::selection,
    rund mørk overlay-knap, 8px fra top og højre billedkant. */
 .hf-favorite-button {
   position: absolute;
+  /* Altid forreste lag – over produktbillede, logo og certificeringer. */
+  z-index: 30;
   top: 8px;
   right: 8px;
   display: flex;
@@ -1646,6 +1648,14 @@ textarea::selection,
   color: var(--hf-color-selected-text) !important;
 }
 
+/* Kalenderens valgte/dags dato: hvid flade med dyb grøn kant (brugerbeslutning
+   2026-10-09 — ikke lime). Kun kalenderen; øvrige valg bruger .hf-selected. */
+.hf-cal-current {
+  background: var(--hf-color-white, #fff) !important;
+  box-shadow: inset 0 0 0 2px var(--hf-color-brand);
+  color: var(--hf-color-action) !important;
+}
+
 /* Fælles kontrolhøjde (design.md §6, brugerbeslutning 2026-09-26): alle
    enkeltlinje-felter, dropdowns, madindtastninger, fuldbredde-knapper og
    listerækker er 48 px. Klasserne ejer højden og den vertikale padding og
@@ -1658,6 +1668,21 @@ textarea::selection,
    Undtaget med vilje: footer, fliser, statistik-kort, ikonknapper, små
    filter-/periodeknapper og flerlinjefelter (textarea).
    Højden (--hf-control-height) står i :root øverst. */
+/* iOS Safari giver date/time-felter en indbygget minimumsbredde, så de løber
+   ud over siden. Nulstil udseende og bredde, så feltet følger sin container. */
+input.hf-field[type="time"],
+input.hf-field[type="date"],
+input.hf-field[type="datetime-local"],
+input.hf-field[type="month"],
+input.hf-field[type="week"] {
+  -webkit-appearance: none;
+  appearance: none;
+  display: block;
+  min-width: 0;
+  max-width: 100%;
+  width: 100%;
+}
+
 .hf-field,
 .hf-control {
   box-sizing: border-box;
@@ -1831,6 +1856,19 @@ textarea::selection,
   animation: hf-nav-panel-in 180ms ease-out;
 }
 
+@keyframes hf-nav-ghost-lift {
+  from {
+    transform: scale(1);
+  }
+  to {
+    transform: scale(1.18);
+  }
+}
+
+.hf-nav-ghost {
+  animation: hf-nav-ghost-lift 140ms ease-out forwards;
+}
+
 @keyframes hf-arc-pop {
   0% {
     transform: scale(0.4);
@@ -1852,6 +1890,7 @@ textarea::selection,
 @media (prefers-reduced-motion: reduce) {
   .hf-nav-jiggle,
   .hf-nav-panel-in,
+  .hf-nav-ghost,
   .hf-arc-pop {
     animation: none;
   }
@@ -2401,14 +2440,14 @@ textarea::selection,
   display: flex;
   flex-shrink: 0;
   justify-content: center;
-  padding: 12px 0 8px;
+  padding: 8px 0 16px;
   cursor: grab;
   touch-action: none;
 }
 
 .hf-bottom-sheet__handle {
   display: block;
-  width: 40px;
+  width: 36px;
   height: 4px;
   border-radius: 9999px;
   background: var(--hf-gray);
@@ -2422,6 +2461,13 @@ textarea::selection,
   overflow: hidden;
   clip: rect(0 0 0 0);
   white-space: nowrap;
+}
+
+.hf-bottom-sheet__action {
+  display: flex;
+  flex: none;
+  justify-content: flex-end;
+  padding: 4px 16px 8px;
 }
 
 .hf-bottom-sheet__body {
@@ -2719,4 +2765,55 @@ textarea::selection,
     border-radius: var(--hf-radius-card);
     background: var(--hf-color-surface);
   }
+}
+
+/* HelloFresh-tekststil (prøve, kun siden Vægt kalibrering): størrelse og
+   linjeafstand målt fra HelloFresh-appens brødtekst (17 px / 31 px). Sættes
+   med klassen .hf-fresh-type på sidens container. */
+.hf-fresh-type :is(.hf-type-body, .hf-type-small, .hf-type-caption, .hf-type-label, .hf-type-body-lg) {
+  font-size: 17px;
+  line-height: 31px;
+}
+
+.hf-fresh-type :is(.hf-type-title, .hf-type-input) {
+  font-size: 17px;
+  line-height: 31px;
+}
+
+/* Højst tre linjer; "…Vis mere" ligger på tredje linje (bund-højre). */
+.hf-clamp {
+  position: relative;
+}
+
+.hf-clamp__text {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  overflow: hidden;
+}
+
+.hf-clamp__more {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  padding: 0 0 0 12px;
+  border: 0;
+  font: inherit;
+  font-weight: 700;
+  line-height: inherit;
+  color: var(--hf-color-black, #232323);
+  background: linear-gradient(to right, transparent, var(--hf-color-card) 12px);
+  cursor: pointer;
+}
+
+.hf-clamp__less {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font: inherit;
+  font-weight: 700;
+  color: var(--hf-color-black, #232323);
+  background: none;
+  cursor: pointer;
 }

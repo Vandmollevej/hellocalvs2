@@ -5,6 +5,7 @@ import type { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { normalizeBrandName } from "@/lib/brand-match";
 import { stripImageMetadata } from "@/lib/image-metadata";
+import { findSubbrandName, invalidateSubbrandLogoCache } from "@/lib/subbrand-logo";
 import {
   LOGO_MAX_UPLOAD_BYTES,
   formatBytes,
@@ -116,7 +117,9 @@ async function withBrandLock<T>(brandId: string, work: () => Promise<T>): Promis
 
 // --- visning -------------------------------------------------------------
 
-type UploadRow = Prisma.BrandLogoUploadGetPayload<{ include: { brand: { select: { name: true; logoUrl: true } } } }>;
+type UploadRow = Prisma.BrandLogoUploadGetPayload<{
+  include: { brand: { select: { name: true; logoUrl: true } }; subbrandLogo: { select: { logoUrl: true } } };
+}>;
 
 export function toUploadItem(row: UploadRow): LogoUploadItem {
   return {
@@ -126,10 +129,15 @@ export function toUploadItem(row: UploadRow): LogoUploadItem {
     suggestedName: parseLogoFileName(row.fileName).baseName,
     status: row.status,
     brandId: row.brandId,
-    brandName: row.brand?.name ?? null,
+    // Et subbrand-logo (docs/DECISIONS.md 2026-10-10) vises med navnet + "(subbrand)".
+    brandName: row.brand?.name ?? (row.subbrandName ? `${row.subbrandName} (subbrand)` : null),
     imageUrl: row.imageUrl,
     applied: row.applied,
-    inUse: Boolean(row.imageUrl && row.brand && row.brand.logoUrl === row.imageUrl),
+    inUse: Boolean(
+      row.imageUrl &&
+        ((row.brand && row.brand.logoUrl === row.imageUrl) ||
+          (row.subbrandLogo && row.subbrandLogo.logoUrl === row.imageUrl)),
+    ),
     hadPreviousLogo: Boolean(row.previousLogoUrl),
     originalWidth: row.originalWidth,
     originalHeight: row.originalHeight,
@@ -144,7 +152,110 @@ export function toUploadItem(row: UploadRow): LogoUploadItem {
   };
 }
 
-const withBrand = { brand: { select: { name: true, logoUrl: true } } } as const;
+export const logoUploadInclude = {
+  brand: { select: { name: true, logoUrl: true } },
+  subbrandLogo: { select: { logoUrl: true } },
+} as const;
+
+type LogoFileData = {
+  batchId: string;
+  fileName: string;
+  originalWidth: number | null;
+  originalHeight: number | null;
+  originalBytes: number | null;
+  originalType: string | null;
+  imageUrl: string;
+  width: number;
+  height: number;
+  bytes: number;
+};
+
+// Gemmer PNG'en med nyt navn pr. upload, så ingen gammel cache rammer.
+async function storeLogoFile(png: Buffer, steps: LogoStep[]): Promise<string> {
+  const started = performance.now();
+  const fileName = `${randomUUID()}.png`;
+  const imageUrl = `${LOGO_UPLOAD_PUBLIC_PREFIX}/${fileName}`;
+  await mkdir(LOGO_UPLOAD_DIR, { recursive: true });
+  await writeFile(path.join(LOGO_UPLOAD_DIR, fileName), png);
+  steps.push({
+    key: "store",
+    label: "Gemmer filen",
+    status: "ok",
+    ms: Math.round(performance.now() - started),
+    detail: imageUrl,
+  });
+  return imageUrl;
+}
+
+// Sætter filen som subbrandets logo (docs/DECISIONS.md 2026-10-10). Som ved
+// brands sættes en ekstra udgave ikke, hvis subbrandet allerede har fået logo
+// fra samme parti, og det tidligere logo huskes, så sletning gendanner det.
+async function applySubbrandUpload(
+  batchId: string,
+  subbrandName: string,
+  variant: number | null,
+  fileData: LogoFileData,
+  steps: LogoStep[],
+): Promise<LogoUploadItem> {
+  try {
+    return await withBrandLock(`subbrand:${normalizeBrandName(subbrandName)}`, async () => {
+      const started = performance.now();
+      const current = await prisma.subbrandLogo.findUnique({ where: { name: subbrandName }, select: { logoUrl: true } });
+      const alreadyFromBatch =
+        variant !== null &&
+        (await prisma.brandLogoUpload.count({ where: { batchId, subbrandName, applied: true } })) > 0;
+
+      if (alreadyFromBatch) {
+        steps.push({
+          key: "apply",
+          label: "Sætter som logo",
+          status: "skipped",
+          ms: Math.round(performance.now() - started),
+          detail: `Ekstra udgave — subbrandet ${subbrandName} har allerede fået logo fra dette parti`,
+        });
+        const row = await prisma.brandLogoUpload.create({
+          data: { ...fileData, subbrandName, status: "DONE", applied: false, steps: steps as unknown as Prisma.InputJsonValue },
+          include: logoUploadInclude,
+        });
+        return toUploadItem(row);
+      }
+
+      const previousLogoUrl = current?.logoUrl ?? null;
+      steps.push({
+        key: "apply",
+        label: "Sætter som logo",
+        status: "ok",
+        ms: Math.round(performance.now() - started),
+        detail: previousLogoUrl
+          ? `Sat på subbrandet ${subbrandName} — erstattede det tidligere logo (gendannes ved sletning)`
+          : `Sat på subbrandet ${subbrandName}`,
+      });
+      const [, row] = await prisma.$transaction([
+        prisma.subbrandLogo.upsert({
+          where: { name: subbrandName },
+          create: { name: subbrandName, logoUrl: fileData.imageUrl },
+          update: { logoUrl: fileData.imageUrl },
+        }),
+        prisma.brandLogoUpload.create({
+          data: {
+            ...fileData,
+            subbrandName,
+            status: "DONE",
+            applied: true,
+            previousLogoUrl,
+            steps: steps as unknown as Prisma.InputJsonValue,
+          },
+          include: logoUploadInclude,
+        }),
+      ]);
+      invalidateSubbrandLogoCache();
+      return toUploadItem(row);
+    });
+  } catch (error) {
+    await removeLogoFiles([fileData.imageUrl]);
+    throw error;
+  }
+}
 
 // --- upload --------------------------------------------------------------
 
@@ -167,7 +278,7 @@ export async function ingestLogoUpload(batchId: string, meta: LogoClientMeta, up
         steps: meta.steps as unknown as Prisma.InputJsonValue,
         message: meta.failed ?? "Ingen billedfil modtaget",
       },
-      include: withBrand,
+      include: logoUploadInclude,
     });
     return toUploadItem(row);
   }
@@ -177,7 +288,7 @@ export async function ingestLogoUpload(batchId: string, meta: LogoClientMeta, up
     steps.push({ key: "receive", label, status: "error", detail: message });
     const row = await prisma.brandLogoUpload.create({
       data: { ...common, status: "FAILED", steps: steps as unknown as Prisma.InputJsonValue, message },
-      include: withBrand,
+      include: logoUploadInclude,
     });
     return toUploadItem(row);
   };
@@ -209,13 +320,28 @@ export async function ingestLogoUpload(batchId: string, meta: LogoClientMeta, up
   const { baseName, variant } = parseLogoFileName(meta.fileName);
   const brand = (await brandsByKey()).get(normalizeBrandName(baseName)) ?? null;
   if (!brand) {
-    // Uden præcist brand-match afvises filen og gemmes ikke, så databasen ikke
+    // Hedder et subbrand på varerne som filen, bliver den subbrandets logo
+    // (docs/DECISIONS.md 2026-10-10).
+    const subbrandName = await findSubbrandName(baseName);
+    if (subbrandName) {
+      steps.push({
+        key: "match",
+        label: "Finder brand",
+        status: "ok",
+        ms: Math.round(performance.now() - started),
+        detail: `«${baseName}» = subbrandet ${subbrandName}${variant ? ` (ekstra udgave ${variant})` : ""}`,
+      });
+      const imageUrl = await storeLogoFile(png, steps);
+      const fileData = { ...common, imageUrl, width: size.width, height: size.height, bytes: png.length };
+      return applySubbrandUpload(batchId, subbrandName, variant, fileData, steps);
+    }
+    // Uden præcist brand-/subbrand-match afvises filen og gemmes ikke, så databasen ikke
     // fyldes med logoer uden ejer (kun afvisningen står i oversigten).
-    const message = `Afvist: intet brand hedder «${baseName}»`;
+    const message = `Afvist: intet brand eller subbrand hedder «${baseName}»`;
     steps.push({ key: "match", label: "Finder brand", status: "error", ms: Math.round(performance.now() - started), detail: message });
     const row = await prisma.brandLogoUpload.create({
       data: { ...common, status: "FAILED", steps: steps as unknown as Prisma.InputJsonValue, message },
-      include: withBrand,
+      include: logoUploadInclude,
     });
     return toUploadItem(row);
   }
@@ -227,19 +353,8 @@ export async function ingestLogoUpload(batchId: string, meta: LogoClientMeta, up
     detail: `«${baseName}» = brandet ${brand.name}${variant ? ` (ekstra udgave ${variant})` : ""}`,
   });
 
-  // 3. Gem filen (nyt navn pr. upload, så ingen gammel cache rammer)
-  started = performance.now();
-  const fileName = `${randomUUID()}.png`;
-  const imageUrl = `${LOGO_UPLOAD_PUBLIC_PREFIX}/${fileName}`;
-  await mkdir(LOGO_UPLOAD_DIR, { recursive: true });
-  await writeFile(path.join(LOGO_UPLOAD_DIR, fileName), png);
-  steps.push({
-    key: "store",
-    label: "Gemmer filen",
-    status: "ok",
-    ms: Math.round(performance.now() - started),
-    detail: imageUrl,
-  });
+  // 3. Gem filen
+  const imageUrl = await storeLogoFile(png, steps);
 
   const fileData = { ...common, imageUrl, width: size.width, height: size.height, bytes: png.length };
 
@@ -263,7 +378,7 @@ export async function ingestLogoUpload(batchId: string, meta: LogoClientMeta, up
         });
         const row = await prisma.brandLogoUpload.create({
           data: { ...fileData, brandId: brand.id, status: "DONE", applied: false, steps: steps as unknown as Prisma.InputJsonValue },
-          include: withBrand,
+          include: logoUploadInclude,
         });
         return toUploadItem(row);
       }
@@ -286,7 +401,7 @@ export async function ingestLogoUpload(batchId: string, meta: LogoClientMeta, up
             previousLogoUrl,
             steps: steps as unknown as Prisma.InputJsonValue,
           },
-          include: withBrand,
+          include: logoUploadInclude,
         }),
         prisma.brand.update({ where: { id: brand.id }, data: { logoUrl: imageUrl } }),
       ]);
@@ -377,6 +492,18 @@ export async function deleteLogoUploads(ids: string[]): Promise<{ deleted: numbe
               restored += 1;
             }
           }
+          // Subbrandets logo: det tidligere gendannes, ellers fjernes subbrand-logoet.
+          if (item.subbrandName) {
+            const logo = await tx.subbrandLogo.findUnique({ where: { name: item.subbrandName }, select: { logoUrl: true } });
+            if (logo && logo.logoUrl === item.imageUrl) {
+              if (item.previousLogoUrl) {
+                await tx.subbrandLogo.update({ where: { name: item.subbrandName }, data: { logoUrl: item.previousLogoUrl } });
+              } else {
+                await tx.subbrandLogo.delete({ where: { name: item.subbrandName } });
+              }
+              restored += 1;
+            }
+          }
           // Filer, der huskede denne fil som "tidligere logo", husker nu den, der kom før.
           await tx.brandLogoUpload.updateMany({
             where: { previousLogoUrl: item.imageUrl },
@@ -395,6 +522,7 @@ export async function deleteLogoUploads(ids: string[]): Promise<{ deleted: numbe
     { timeout: 120_000, maxWait: 10_000 },
   );
 
+  invalidateSubbrandLogoCache();
   await removeLogoFiles(files);
   return { deleted: ordered.length, restored };
 }

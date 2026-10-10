@@ -19,7 +19,7 @@ import { useConfirmSheet, useTypedConfirmSheet } from "@/lib/use-confirm-sheet";
 
 // Familien (docs/FAMILY.md): betaleren opretter profiler, markerer børn,
 // laver login-koder og bestemmer, hvem der må se og taste ind for hvem.
-// Et almindeligt medlem ser, hvem der bestemmer, og kan melde sig ud.
+// Et almindeligt medlem ser, hvem der bestemmer, og kan melde sig ud (ikke børn).
 // Koder er bundet til en e-mail og vises med QR-kode, indtil de er brugt.
 
 type PendingCode = {
@@ -160,6 +160,9 @@ function FamilyPageContent() {
   const family = status.family;
   const members = family?.members ?? [];
   const nonOwners = members.filter((member) => member.userId !== family?.ownerId);
+  // Betaleren styrer kun adgangen til profiler uden eget login og børn under
+  // 15; voksne med eget login bestemmer selv under "Del med andre".
+  const ownerManagedSubjects = nonOwners.filter((member) => member.sharingDeciderId === family?.ownerId);
   const grantLevel = (granteeId: string, subjectId: string): AccessLevel => {
     const grant = family?.grants.find((item) => item.granteeId === granteeId && item.subjectId === subjectId);
     return grant ? (grant.canWrite ? "write" : "read") : "none";
@@ -297,7 +300,16 @@ function FamilyPageContent() {
         </>
       )}
 
-      {family && !family.isOwner && <FamilySharingSection family={family} meId={status.me.id} />}
+      {family && (
+        <FamilySharingSection
+          family={family}
+          meId={status.me.id}
+          busy={busy}
+          onShare={(granteeId, level) =>
+            void run("/api/family/grants", "PUT", { granteeId, subjectId: status.me.id, level })
+          }
+        />
+      )}
 
       {family && !family.isOwner && (
         <section>
@@ -307,18 +319,22 @@ function FamilyPageContent() {
             <Link href="/settings/control-log" className="hf-type-body underline">
               {t("family.member.seeLog")}
             </Link>
-            <button
-              type="button"
-              disabled={busy}
-              onClick={() => {
-                ask(t("family.member.leaveConfirm", { owner: family.ownerName }), () => {
-                  void run("/api/family/leave", "POST");
-                });
-              }}
-              className="hf-control hf-btn-secondary w-full px-4"
-            >
-              {t("family.member.leave")}
-            </button>
+            {status.meIsChild ? (
+              <p className="hf-type-caption text-text-secondary">{t("family.member.childNote", { owner: family.ownerName })}</p>
+            ) : (
+              <button
+                type="button"
+                disabled={busy}
+                onClick={() => {
+                  ask(t("family.member.leaveConfirm", { owner: family.ownerName }), () => {
+                    void run("/api/family/leave", "POST");
+                  });
+                }}
+                className="hf-control hf-btn-secondary w-full px-4"
+              >
+                {t("family.member.leave")}
+              </button>
+            )}
           </div>
         </section>
       )}
@@ -545,13 +561,18 @@ function FamilyPageContent() {
                             level={newLevel(person.userId, "personOnNew")}
                             onChange={(level) => setNewLevel(person.userId, "personOnNew", level)}
                           />
-                          <p className="userback-ignore userback-block hf-type-body hf-type-strong">
-                            {t("family.rights.personOn", { person: newName, profile: person.displayName })}
-                          </p>
-                          <AccessToggles
-                            level={newLevel(person.userId, "newOnPerson")}
-                            onChange={(level) => setNewLevel(person.userId, "newOnPerson", level)}
-                          />
+                          {/* Voksne med eget login bestemmer selv, hvem der ser dem. */}
+                          {person.sharingDeciderId === family?.ownerId && (
+                            <>
+                              <p className="userback-ignore userback-block hf-type-body hf-type-strong">
+                                {t("family.rights.personOn", { person: newName, profile: person.displayName })}
+                              </p>
+                              <AccessToggles
+                                level={newLevel(person.userId, "newOnPerson")}
+                                onChange={(level) => setNewLevel(person.userId, "newOnPerson", level)}
+                              />
+                            </>
+                          )}
                         </div>
                       ))}
                     </div>
@@ -572,11 +593,11 @@ function FamilyPageContent() {
             </section>
           )}
 
-          {nonOwners.length > 1 && (
+          {ownerManagedSubjects.length > 0 && nonOwners.length > 1 && (
             <section>
               <h2 className="hf-type-section-title">{t("family.access.title")}</h2>
               <p className="hf-type-body">{t("family.access.intro")}</p>
-              {nonOwners.map((subject) => (
+              {ownerManagedSubjects.map((subject) => (
                 <div key={subject.userId} className="hf-card mt-2 hf-stack">
                   <p className="userback-ignore userback-block hf-type-card-title">{t("family.access.who", { name: subject.displayName })}</p>
                   {nonOwners

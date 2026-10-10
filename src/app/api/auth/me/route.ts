@@ -18,6 +18,8 @@ export async function GET() {
       email: user.email,
       displayName: user.displayName,
       appLocale: user.appLocale,
+      // Landet styrer enheder og decimaltegn (src/lib/units.ts, src/lib/decimal-separator.ts).
+      region: user.region,
       hasPasskey: passkeys > 0,
       hasHealthDataConsent: user.healthDataConsentAt !== null,
       emailVerified: Boolean(user.emailVerifiedAt),

@@ -47,6 +47,25 @@ export const BODY_MEASUREMENT_FIELDS = [
     nameKey: "bodyMeasurements.names.thigh",
     image: drawing("leg"),
   },
+  // Bagdel, ankel og læg har endnu ingen godkendt tegning (2026-10-09).
+  {
+    field: "buttockCm",
+    labelKey: "bodyMeasurements.buttock",
+    nameKey: "bodyMeasurements.names.buttock",
+    image: null,
+  },
+  {
+    field: "calfCm",
+    labelKey: "bodyMeasurements.calf",
+    nameKey: "bodyMeasurements.names.calf",
+    image: null,
+  },
+  {
+    field: "ankleCm",
+    labelKey: "bodyMeasurements.ankle",
+    nameKey: "bodyMeasurements.names.ankle",
+    image: null,
+  },
 ] as const;
 
 export type BodyMeasurementField = (typeof BODY_MEASUREMENT_FIELDS)[number]["field"];
@@ -62,4 +81,16 @@ export function emptyBodyMeasurementValues(): Record<BodyMeasurementField, strin
     BodyMeasurementField,
     string
   >;
+}
+
+// Brugerens valg under Indstillinger → Visning: hvilke mål Kropsmål-siden
+// viser. Null (aldrig valgt) = alle vises; et mål skjules kun, når det
+// eksplicit er sat til false.
+export type BodyMeasurementVisibility = Partial<Record<BodyMeasurementField, boolean>>;
+
+export function isBodyMeasurementVisible(
+  visibility: BodyMeasurementVisibility | null | undefined,
+  field: BodyMeasurementField,
+): boolean {
+  return visibility?.[field] !== false;
 }

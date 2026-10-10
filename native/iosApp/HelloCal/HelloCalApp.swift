@@ -1,5 +1,6 @@
 // The iPhone app: hosts the shared Kotlin screens (native/shared) and wires in
-// Keychain storage, deep links and the WidgetKit widgets.
+// Keychain storage, deep links, the WidgetKit widgets and the phone features
+// (IosDevice.swift).
 import Shared
 import SwiftUI
 import UIKit
@@ -22,6 +23,26 @@ struct HelloCalApp: App {
         }
         NativeHooks.shared.openExternalUrl = { url in
             if let target = URL(string: url) { UIApplication.shared.open(target) }
+        }
+        // The phone's region (unit defaults before the profile region is known).
+        NativeHooks.shared.deviceRegion = { Locale.current.regionCode }
+        // Camera, photo library, scanner, OCR, speech, share sheet, Face ID (IosDevice.swift).
+        Device.shared.platform = IosDevice.shared
+        // web visibilitychange → hidden: the photo diary locks again.
+        NotificationCenter.default.addObserver(
+            forName: UIApplication.didEnterBackgroundNotification,
+            object: nil,
+            queue: .main
+        ) { _ in
+            Device.shared.notifyAppBackground()
+        }
+        // Back on screen (e.g. from Stripe's portal in Safari): pages that wait for it reload.
+        NotificationCenter.default.addObserver(
+            forName: UIApplication.willEnterForegroundNotification,
+            object: nil,
+            queue: .main
+        ) { _ in
+            Device.shared.notifyAppForeground()
         }
     }
 

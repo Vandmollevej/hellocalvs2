@@ -1,4 +1,4 @@
-// Transparent kryptering af User.email / User.displayName (docs/DECISIONS.md
+// Transparent kryptering af User.email / User.displayName / User.phone (docs/DECISIONS.md
 // 2026-10-04). Rene funktioner der omskriver Prisma-argumenter og -resultater;
 // koblet paa klienten i src/lib/prisma.ts. Relationer foelges via Prisma.dmmf,
 // saa ogsaa nested select/include/where/create/update paa andre modeller rammer.
@@ -60,8 +60,8 @@ export function transformWhere(model: string, where: unknown, unique: boolean, k
       }
       continue;
     }
-    if (model === "User" && k === "displayName" && v !== undefined) {
-      throw new Error("User.displayName er krypteret og kan ikke bruges i where.");
+    if (model === "User" && (k === "displayName" || k === "phone") && v !== undefined) {
+      throw new Error(`User.${k} er krypteret og kan ikke bruges i where.`);
     }
     const rel = rels.get(k);
     if (rel && isObj(v)) {
@@ -99,7 +99,7 @@ export function transformData(model: string, data: unknown): unknown {
       } else out[k] = v;
       continue;
     }
-    if (model === "User" && k === "displayName") {
+    if (model === "User" && (k === "displayName" || k === "phone")) {
       const plain = plainOf(v);
       out[k] = plain !== undefined && cryptoConfigured() ? encryptField(plain) : v;
       continue;
@@ -191,7 +191,7 @@ export function decryptResult(model: string, result: unknown): unknown {
   if (!isObj(result)) return result;
   const rels = relations(model);
   for (const [k, v] of Object.entries(result)) {
-    if (model === "User" && (k === "email" || k === "displayName") && typeof v === "string") {
+    if (model === "User" && (k === "email" || k === "displayName" || k === "phone") && typeof v === "string") {
       result[k] = decryptField(v);
       continue;
     }

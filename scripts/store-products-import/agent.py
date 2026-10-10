@@ -19,9 +19,9 @@ fields (product_source_records) are stored for admin "Dubletter"; what admin
 has reviewed there is not overwritten (docs/DECISIONS.md 2026-09-28).
 
 Products the sheets have no kcal for are imported too (docs/DECISIONS.md
-2026-10-02): hidden ("nutritionMissing", 0 as placeholder, no barcode row)
-until they get nutrition, so nobody logs 0 kcal and scanning the barcode
-still lets a user create the product. A product that already has nutrition
+2026-10-02): "nutritionMissing", 0 as placeholder. Since 2026-10-10 they are
+shown and get their barcode row like every other product; the app robot
+"frida-estimates" fills the missing fields from Frida (∼). A product that already has nutrition
 from elsewhere keeps it. Rows without an EAN are keyed by "externalId".
 
 Rows deleted from other store sheets as EAN duplicates keep their chain:
@@ -176,9 +176,9 @@ def find_product(cur, p):
 
 
 def drop_hidden_twin(cur, p, product_id):
-    """A product hidden for lack of nutrition has no barcode row, so the same
-    barcode may have been created since (a user's scan, Open Food Facts). That
-    product is the one updated from now on; the hidden copy goes."""
+    """A product without nutrition had no barcode row before 2026-10-10, so the
+    same barcode may have been created since (a user's scan, Open Food Facts).
+    That product is the one updated from now on; the copy without nutrition goes."""
     cur.execute("SAVEPOINT twin")
     try:
         cur.execute(
@@ -345,12 +345,13 @@ def upsert_product(cur, p, store_ids, category_ids):
                WHERE id = %s AND "servingSizeGrams" IS NULL""",
             (p["sliceWeightGrams"], product_id),
         )
-    # A hidden product gets no barcode row: scanning must still end in Open
-    # Food Facts or the camera flow, where a user can create the product.
+    # Every product gets its barcode, also without nutrition (owner's rule
+    # 2026-10-10: products are shown whether or not they have nutrition). It
+    # then shows Frida's estimate (∼) or "Næringsindhold ukendt" plus the
+    # 20-point update banner.
     if p.get("ean"):
         cur.execute(
-            """INSERT INTO "barcodes" (code, "productId")
-               SELECT %s, id FROM "products" WHERE id = %s AND NOT "nutritionMissing"
+            """INSERT INTO "barcodes" (code, "productId") VALUES (%s, %s)
                ON CONFLICT (code) DO NOTHING""",
             (p["ean"], product_id),
         )
@@ -481,6 +482,14 @@ def apply_store_links(cur):
     return linked, waiting
 
 
+def request_frida_estimates(conn):
+    """Beder app-robotten "frida-estimates" om en kørsel lige efter importen
+    (docs/DECISIONS.md 2026-10-10): varer uden energimærkning får Frida-skøn."""
+    with conn.cursor() as cur:
+        cur.execute("""UPDATE "scheduled_jobs" SET "runRequestedAt" = now() WHERE key = 'frida-estimates'""")
+    conn.commit()
+
+
 def run(conn):
     with open(os.path.join(DATA_DIR, "store_products.json"), "r", encoding="utf-8") as f:
         products = json.load(f)
@@ -507,15 +516,16 @@ def run(conn):
         """SELECT count(*) FROM "products" WHERE "nutritionMissing"
            AND "externalSource" IN ('BILKA'::"ExternalProductSource", 'REMA1000'::"ExternalProductSource")"""
     )
-    hidden = cur.fetchone()[0]
+    without_nutrition = cur.fetchone()[0]
     linked, waiting = apply_store_links(cur)
     conn.commit()
     cur.close()
     message = (
-        f"{imported} af {len(products)} butiksvarer importeret/opdateret ({hidden} skjult: ingen næring endnu); "
+        f"{imported} af {len(products)} butiksvarer importeret/opdateret ({without_nutrition} uden næring endnu, Frida-skøn følger); "
         f"{linked} kædekoblinger fra slettede gengangere ({waiting} stregkoder venter på varen)"
     )
     log.info(message)
+    request_frida_estimates(conn)
     # (besked, antal udført) til admin "Robotter"/"Nattens kørsler".
     return message, imported
 

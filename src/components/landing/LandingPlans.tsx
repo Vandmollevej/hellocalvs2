@@ -100,7 +100,7 @@ function CheckoutSheet({ plan, name, onClose }: { plan: SubscriptionPlan; name: 
                 aria-checked={selected}
                 onClick={() => setMonths(period)}
                 className={`flex min-w-0 flex-col items-center gap-1 rounded-lg border-2 px-1 py-3 text-center ${
-                  selected ? "border-hf-black bg-hf-tan" : "border-transparent bg-hf-white"
+                  selected ? "border-hf-black hf-selected" : "border-transparent bg-hf-white"
                 }`}
               >
                 <span className="hf-type-small hf-type-strong">{PERIOD_LABEL[period]}</span>

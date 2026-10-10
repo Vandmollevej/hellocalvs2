@@ -20,10 +20,14 @@ export type FamilyMemberInfo = {
   createdByOwner: boolean;
   controllerId: string;
   canDeleteOthersEntries: boolean;
+  // Den, der bestemmer, hvem andre i familien må se profilen (src/lib/family-sharing.ts).
+  sharingDeciderId: string;
 };
 
 export type FamilyStatus = {
   me: { id: string; displayName: string };
+  // Børn kan ikke selv lukke kontoen eller melde sig ud (kun forælderen).
+  meIsChild: boolean;
   activeProfile: FamilyProfile;
   profiles: FamilyProfile[];
   family: {

@@ -2,7 +2,7 @@
 
 import { Suspense, useEffect, useState } from "react";
 import { useParams, useSearchParams } from "next/navigation";
-import { IconInfoCircle, IconSoup } from "@tabler/icons-react";
+import { IconInfoCircle, IconShare3, IconSoup } from "@tabler/icons-react";
 import { IconFavorite as IconBookmark, IconFavoriteFilled as IconBookmarkFilled } from "@/components/icons/Favorite";
 import { HfScreen } from "@/components/HfScreen";
 import { PersonsSlider } from "@/components/hf/PersonsSlider";
@@ -10,8 +10,11 @@ import { Toggle } from "@/components/ui/Toggle";
 import { useTranslation } from "@/i18n/LocaleProvider";
 import { loadRecipeFilters, saveRecipeFilters } from "@/lib/recipe-filters";
 import { MAX_RECIPE_PERSONS, portionKcalFor, scaleFactorFor, type PortionProfile } from "@/lib/recipe-portions";
+import { ForwardRecipeSheet } from "@/components/recipes/ForwardRecipeSheet";
 import { RecipeThumbs } from "@/components/recipes/RecipeThumbs";
 import { Skeleton, SkeletonTitleLines } from "@/components/hf/Skeleton";
+import { RecipeUnitToggle, type RecipeUnitMode } from "@/components/recipe-view/RecipeUnitToggle";
+import { gramsAsMeasureText } from "@/lib/kitchen-conversions";
 
 // En ret fra Indstillinger → Opskrifter (docs/DECISIONS.md 2026-09-24).
 // kind=own: brugerens egen ret fra boksen, med deling til/fra.
@@ -28,6 +31,8 @@ type View = { name: string; ingredients: Ingredient[]; images: string[]; steps: 
 type OwnDish = {
   name: string;
   servings?: number | null;
+  description?: string | null;
+  durationMinutes?: number | null;
   shareRejected?: boolean;
   shareRejectionReason?: string | null;
   sharedRecipeId?: string | null;
@@ -82,14 +87,19 @@ function RecipeDetailContent() {
   // Egen ret
   const [shared, setShared] = useState(false);
   const [rejection, setRejection] = useState<{ reason: string | null } | null>(null);
+  const [forwardOpen, setForwardOpen] = useState(false);
   const [dishServings, setDishServings] = useState<number | null>(null);
+  const [dishDescription, setDishDescription] = useState<string | null>(null);
+  const [dishDuration, setDishDuration] = useState<number | null>(null);
   const [showShareInfo, setShowShareInfo] = useState(false);
   // Delt ret
   const [isFavorite, setIsFavorite] = useState(false);
   const [canReport, setCanReport] = useState(false);
   // Justering til antal personer
-  const [persons, setPersons] = useState(() => loadRecipeFilters().persons);
+  const [persons, setPersons] = useState(() => Math.max(1, loadRecipeFilters().persons));
   const [portionKcal, setPortionKcal] = useState<number | null>(null);
+  // Gram (som retten er gemt) eller køkkenmål (dl, spsk) via src/lib/kitchen-conversions.ts.
+  const [unitMode, setUnitMode] = useState<RecipeUnitMode>("grams");
 
   useEffect(() => {
     fetch("/api/profile")
@@ -114,6 +124,8 @@ function RecipeDetailContent() {
           setShared(Boolean(dish.sharedRecipeId));
           setRejection(dish.shareRejected ? { reason: dish.shareRejectionReason ?? null } : null);
           setDishServings(dish.servings ?? null);
+          setDishDescription(dish.description ?? null);
+          setDishDuration(dish.durationMinutes ?? null);
           setView({
             name: dish.name,
             images: dish.images ?? [],
@@ -311,6 +323,18 @@ function RecipeDetailContent() {
                 )}
               </div>
             )}
+            {kind === "own" && dishDescription && (
+              <p className="hf-type-body text-hf-black whitespace-pre-line">{dishDescription}</p>
+            )}
+            {kind === "own" && dishDuration && (
+              <p className="hf-type-small text-text-secondary">{t("recipeDetail.durationLabel", { minutes: dishDuration })}</p>
+            )}
+            {kind === "own" && (
+              <button type="button" onClick={() => setForwardOpen(true)} className="hf-control hf-btn-secondary flex w-full items-center justify-center gap-2">
+                <IconShare3 size={18} />
+                {t("forwardRecipe.button")}
+              </button>
+            )}
             {kind === "own" && dishServings && (
               <p className="hf-type-small text-text-secondary">{t("recipeDetail.servingsLabel", { count: dishServings })}</p>
             )}
@@ -363,7 +387,12 @@ function RecipeDetailContent() {
             )}
 
             <div>
-              <p className="hf-type-small hf-type-strong mb-2 text-hf-black">{t("recipeDetail.ingredients")}</p>
+              <div className="mb-2 flex items-center justify-between gap-2">
+                <p className="hf-type-small hf-type-strong text-hf-black">{t("recipeDetail.ingredients")}</p>
+                {ingredients.some((ingredient) => gramsAsMeasureText(ingredient.grams, ingredient.name) !== null) && (
+                  <RecipeUnitToggle mode={unitMode} onChange={setUnitMode} />
+                )}
+              </div>
               <div className="overflow-hidden rounded-2xl bg-hf-tan">
                 {loading &&
                   LOADING_INGREDIENT_WIDTHS.map((width) => (
@@ -391,7 +420,12 @@ function RecipeDetailContent() {
                     <div className="flex-1">
                       <p className="hf-type-body hf-type-strong text-hf-black">{ingredient.name}</p>
                       <p className="hf-type-small text-text-secondary">
-                        {t("recipeDetail.gramsKcal", { grams: round(ingredient.grams), kcal: round(ingredient.kcal) })}
+                        {(() => {
+                          const measure = unitMode === "measures" ? gramsAsMeasureText(ingredient.grams, ingredient.name) : null;
+                          return measure
+                            ? t("recipeDetail.measureKcal", { amount: measure, kcal: round(ingredient.kcal) })
+                            : t("recipeDetail.gramsKcal", { grams: round(ingredient.grams), kcal: round(ingredient.kcal) });
+                        })()}
                       </p>
                     </div>
                   </div>
@@ -444,6 +478,9 @@ function RecipeDetailContent() {
           </>
         )}
       </div>
+      {forwardOpen && (
+        <ForwardRecipeSheet dishId={id} name={view?.name ?? ""} onClose={() => setForwardOpen(false)} />
+      )}
     </HfScreen>
   );
 }
