@@ -124,6 +124,7 @@ ikke her, er den ikke registreret og skal tilføjes.
 - Admin-lister: til/fra-knappen (Toggle) står ALTID yderst til højre, aldrig tick-bokse, og "Rediger" står til venstre for knapperne. Event-koder (fx SUPPORT_RECEIVED) vises aldrig for admin — kun danske navne, grupperet med overskrifter og filtre (Besked automatisering, 2026-10-09).
 - **Søgeregel (global, 2026-10-09)**: søger brugeren i flertal, vises Product title plural (`namePlural`); i ental vises Product title singular (`name`). Se docs/FRIDA.md.
 - Bilka/REMA ental/flertal + DB-kolonnenavne: se Excelark/NAVNEREGLER.md (status 2026-10-09: _ny-ark lavet, ikke gennemgået).
+- **"ben" hører til produkttypen** (alle ark, brugerens regel 2026-10-10): står "ben" alene i Variation, er det del af produkttypeordet og skrives sammen med det: "Skiver af okse" + "ben" → "Skiver af okseben". Står der "med ben", følger "med ben" med ind i produkttypen ("Ibérico kotelet med ben", som "Koteletter af gris uden ben"). Variation ryddes; `Product type plural` rettes tilsvarende. Se Excelark/NAVNEREGLER.md.
 - **Børn i familien (bruger 2026-10-09):** et barn kan hverken lukke kontoen, slette sine data eller melde sig ud — kun forælderen (betaleren). Barnet kan ikke fravælge at vise detaljer; det kan kun se, hvad forælderen viser. Gælder web og native. Se DECISIONS.md samme dato.
 
 ## Valgte knapper (user rule 2026-10-09)
