@@ -11,6 +11,7 @@ import androidx.compose.foundation.gestures.detectHorizontalDragGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -46,6 +47,7 @@ import dk.packroff.hellocal.screens.capture.RecipePortions
 import dk.packroff.hellocal.nav.LocalNavigator
 import dk.packroff.hellocal.nav.RouteArgs
 import dk.packroff.hellocal.theme.HcColors
+import dk.packroff.hellocal.ui.HcAccordionCard
 import dk.packroff.hellocal.theme.HcDimens
 import dk.packroff.hellocal.theme.HcTypeRoles
 import dk.packroff.hellocal.ui.FoodDivider
@@ -295,23 +297,13 @@ fun CreateDishScreen(args: RouteArgs) {
             icon = { HcIcon("Soup", size = 20.dp, stroke = 2f, color = HcColors.White) },
             contentPadding = LIST_PAGE_PADDING,
         ) {
-            Column(Modifier.fillMaxWidth().heightIn(min = 420.dp), verticalArrangement = Arrangement.spacedBy(12.dp, Alignment.CenterVertically), horizontalAlignment = Alignment.CenterHorizontally) {
+            StartOptionTiles(
                 listOf(
-                    Triple("ClipboardText", t.t("createDish.modeText"), "paste"),
-                    Triple("Camera", t.t("createDish.modeScan"), "scan"),
-                    Triple("Pencil", t.t("createDish.modeManual"), "none"),
-                ).forEach { (icon, label, target) ->
-                    Column(
-                        Modifier.fillMaxWidth().clip(RoundedCornerShape(16.dp)).background(HcColors.Tan)
-                            .clickable { importMode = target != "none"; sheet = target; started = true }.padding(vertical = 20.dp),
-                        verticalArrangement = Arrangement.spacedBy(8.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                    ) {
-                        HcIcon(icon, size = 28.dp, color = HcColors.Black)
-                        HcText(label, HcTypeRoles.Body, color = HcColors.Black, bold = true)
-                    }
-                }
-            }
+                    t.t("createDish.modeText") to "paste",
+                    t.t("createDish.modeScan") to "scan",
+                    t.t("createDish.modeManual") to "none",
+                ),
+            ) { target -> importMode = target != "none"; sheet = target; started = true }
         }
         if (sheet == "paste") PasteTextSheet(onClose = { sheet = "none" }, onResult = ::applyImport)
         if (sheet == "scan") ScanSheet(onClose = { sheet = "none" }, onResult = ::applyImport)
@@ -350,21 +342,12 @@ fun CreateDishScreen(args: RouteArgs) {
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
           if (current == "import") {
-            Column(Modifier.fillMaxWidth().heightIn(min = 320.dp), verticalArrangement = Arrangement.spacedBy(12.dp, Alignment.CenterVertically), horizontalAlignment = Alignment.CenterHorizontally) {
+            StartOptionTiles(
                 listOf(
-                    Triple("ClipboardText", t.t("createDish.modeText"), "paste"),
-                    Triple("Camera", t.t("createDish.modeScan"), "scan"),
-                ).forEach { (icon, label, target) ->
-                    Column(
-                        Modifier.fillMaxWidth().clip(RoundedCornerShape(16.dp)).background(HcColors.Tan).clickable { sheet = target }.padding(vertical = 20.dp),
-                        verticalArrangement = Arrangement.spacedBy(8.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                    ) {
-                        HcIcon(icon, size = 28.dp, color = HcColors.Black)
-                        HcText(label, HcTypeRoles.Body, color = HcColors.Black, bold = true)
-                    }
-                }
-            }
+                    t.t("createDish.modeText") to "paste",
+                    t.t("createDish.modeScan") to "scan",
+                ),
+            ) { target -> sheet = target }
           } else if (current == "title") {
             HcText(t.t("createDish.pageTitle"), HcTypeRoles.Small, color = HcColors.Black, bold = true)
             FoodPillField(details.name, { updateDetails(details.copy(name = it)) }, t.t("createDish.namePlaceholder"), Modifier.fillMaxWidth())
@@ -809,6 +792,24 @@ private fun RecipeCategoriesSheet(dishId: String, initialTags: List<String>, onC
         }
         Box(Modifier.padding(top = 16.dp)) {
             HcButton(t.t("recipeCategories.close"), onClick = ::close, enabled = !busy)
+        }
+    }
+}
+
+/** Web: StartOptionTiles in create-dish/page.tsx — horizontal tiles like the Add menu; icon slot left empty. */
+@Composable
+private fun StartOptionTiles(options: List<Pair<String, String>>, onPick: (String) -> Unit) {
+    HcAccordionCard {
+        Row(Modifier.fillMaxWidth().padding(12.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            options.forEach { (label, target) ->
+                Column(
+                    Modifier.weight(1f).clip(RoundedCornerShape(16.dp)).clickable { onPick(target) }.padding(8.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                ) {
+                    Spacer(Modifier.size(96.dp))
+                    HcText(label, HcTypeRoles.Body, color = HcColors.Black, align = TextAlign.Center)
+                }
+            }
         }
     }
 }

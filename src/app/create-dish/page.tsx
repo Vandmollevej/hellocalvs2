@@ -9,13 +9,12 @@ import {
   IconPlus,
   IconChevronLeft,
   IconChevronRight,
-  IconClipboardText,
-  IconPencil,
   IconSearch,
   IconX,
   IconSoup,
 } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
+import { AccordionCard } from "@/components/hf/AccordionCard";
 import {
   BottomSheet,
   BottomSheetCloseButton,
@@ -57,6 +56,37 @@ import { SkeletonMediaRows, SkeletonScreen } from "@/components/hf/Skeleton";
 function round(value: number, decimals = 0) {
   const factor = 10 ** decimals;
   return Math.round(value * factor) / factor;
+}
+
+// Start-valgene som vandrette felter i stil med ikonfelterne i Tilføj-menuen
+// (AddMenuList). Ikonpladsen er tom, indtil ejerens ikoner kommer (2026-10-10).
+function StartOptionTiles<T extends { key: string; label: string }>({
+  options,
+  onPick,
+}: {
+  options: T[];
+  onPick: (option: T) => void;
+}) {
+  return (
+    <AccordionCard>
+      <div
+        className="grid gap-2 p-3"
+        style={{ gridTemplateColumns: `repeat(${options.length}, minmax(0, 1fr))` }}
+      >
+        {options.map((option) => (
+          <button
+            key={option.key}
+            type="button"
+            onClick={() => onPick(option)}
+            className="rounded-card flex flex-col items-center gap-0 border border-transparent p-2 text-center"
+          >
+            <span aria-hidden className="h-24 w-24" />
+            <span className="hf-type-body">{option.label}</span>
+          </button>
+        ))}
+      </div>
+    </AccordionCard>
+  );
 }
 
 export default function CreateDishPage() {
@@ -362,19 +392,16 @@ export default function CreateDishPage() {
     {
       key: "text",
       label: t("createDish.modeText"),
-      icon: <IconClipboardText size={28} />,
       sheet: "paste" as const,
     },
     {
       key: "scan",
       label: t("createDish.modeScan"),
-      icon: <IconCamera size={28} />,
       sheet: "scan" as const,
     },
     {
       key: "manual",
       label: t("createDish.modeManual"),
-      icon: <IconPencil size={28} />,
       sheet: "none" as const,
     },
   ];
@@ -443,24 +470,15 @@ export default function CreateDishPage() {
         }
       >
         {!started ? (
-          <div className="hf-page flex min-h-[50vh] flex-col items-center justify-center gap-3">
-            {startOptions.map((option) => (
-              <button
-                key={option.key}
-                type="button"
-                onClick={() => {
-                  setImportMode(option.sheet !== "none");
-                  setSheet(option.sheet);
-                  setStarted(true);
-                }}
-                className="flex w-full max-w-xs flex-col items-center gap-2 rounded-2xl bg-hf-tan py-5 text-hf-black"
-              >
-                {option.icon}
-                <span className="hf-type-body hf-type-strong">
-                  {option.label}
-                </span>
-              </button>
-            ))}
+          <div className="hf-page">
+            <StartOptionTiles
+              options={startOptions}
+              onPick={(option) => {
+                setImportMode(option.sheet !== "none");
+                setSheet(option.sheet);
+                setStarted(true);
+              }}
+            />
           </div>
         ) : (
           <div
@@ -482,23 +500,10 @@ export default function CreateDishPage() {
             }}
           >
             {current.kind === "import" && (
-              <div className="flex min-h-[40vh] flex-col items-center justify-center gap-3">
-                {startOptions
-                  .filter((option) => option.sheet !== "none")
-                  .map((option) => (
-                    <button
-                      key={option.key}
-                      type="button"
-                      onClick={() => setSheet(option.sheet)}
-                      className="flex w-full max-w-xs flex-col items-center gap-2 rounded-2xl bg-hf-tan py-5 text-hf-black"
-                    >
-                      {option.icon}
-                      <span className="hf-type-body hf-type-strong">
-                        {option.label}
-                      </span>
-                    </button>
-                  ))}
-              </div>
+              <StartOptionTiles
+                options={startOptions.filter((option) => option.sheet !== "none")}
+                onPick={(option) => setSheet(option.sheet)}
+              />
             )}
 
             {current.kind === "title" && (
