@@ -31,6 +31,15 @@ Status opdateret: 2026-10-06 — alle udestående opgaver slettet (klaret af en 
 
 ---
 
+## G-NAERING — Streg (–) for manglende næringsindhold (2026-10-09)
+Filer: `src/components/add/AddProductView.tsx`, `AddProductScreen.kt`, `docs/REGLER.md`. Branch `claude/nutrient-dash`, PR #252 (klar til review).
+
+| Id | Opgave | Status | Næste skridt |
+| --- | --- | --- | --- |
+| streg | Manglende næringsværdi vises som "–" (web + native) | Venter på CI | Min del er klar og godkendt i paritet. Tjekket "Web ↔ native in step" kan stadig være rødt pga. mål-siderne (`/profile/goals`, `/profile/goals/[id]/edit`) på master — ikke denne PR. Når master er grøn: flet master ind, kør `node scripts/native/parity.mjs`, og flet PR #252 |
+
+---
+
 ## G-NATIVE — Native Android + iPhone-app (helt native, Compose Multiplatform)
 Filer: `native/**`, `scripts/native/**`, `.github/workflows/native.yml`. Branch `claude/native-apps` (merges til master, når CI er grøn).
 Ejer: session "Native app" (e4e4d388), 2026-10-08. Fortsæt fra `native/README.md` + `native/PORTING.md`; status pr. skærm står i `native/parity/screens.json` (`node scripts/native/parity.mjs`).
