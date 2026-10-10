@@ -99,6 +99,7 @@ export function ScreeningFlow({ existing }: { existing?: ScreeningDto }) {
         <div className="flex flex-col gap-2">
           {error && <p className="hf-type-small text-center text-hf-red-dark">{t("screenings.saveError")}</p>}
           <ActionButton
+            className="h-12 px-4"
             disabled={!canContinue || saving}
             onClick={() => (last ? save() : setStep(step + 1))}
           >
@@ -189,7 +190,7 @@ export function ScreeningFlow({ existing }: { existing?: ScreeningDto }) {
                     type="button"
                     aria-label={t("screenings.removeQuestion")}
                     onClick={() => update({ questions: draft.questions.filter((q) => q.id !== question.id) })}
-                    className="flex h-12 w-10 items-center justify-center text-hf-red-dark"
+                    className="hf-btn-icon h-12 w-10 text-hf-red-dark"
                   >
                     <IconTrash size={20} />
                   </button>
@@ -200,7 +201,7 @@ export function ScreeningFlow({ existing }: { existing?: ScreeningDto }) {
               <button
                 type="button"
                 onClick={() => update({ questions: [...draft.questions, { id: newQuestionId(), text: "" }] })}
-                className="hf-type-body hf-type-strong flex items-center gap-2 text-hf-black"
+                className="hf-btn-secondary h-12 w-full px-4"
               >
                 <IconPlus size={20} />
                 {t("screenings.addQuestion")}
@@ -223,6 +224,7 @@ export function ScreeningFlow({ existing }: { existing?: ScreeningDto }) {
                 variant="standard"
                 type="time"
                 label={t("screenings.notifTime")}
+                className="min-w-0 max-w-full appearance-none text-left"
                 value={draft.notificationTime ?? "20:00"}
                 onChange={(event) => update({ notificationTime: event.target.value })}
               />
@@ -240,7 +242,7 @@ export function ScreeningFlow({ existing }: { existing?: ScreeningDto }) {
                   <button
                     key={key}
                     type="button"
-                    className="hf-chip text-center"
+                    className="hf-choice w-full"
                     aria-pressed={draft.scale === key}
                     onClick={() => {
                       update({ scale: key });

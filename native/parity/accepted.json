@@ -58,7 +58,7 @@
   "/account/phone": {
     "src/app/account/phone/page.tsx": "113c8d9cf805a8d7",
     "src/app/layout.tsx": "32a09f6743aabdc5",
-    "src/components/hf/TextField.tsx": "f44c94024c219168"
+    "src/components/hf/TextField.tsx": "8339609e420b5315"
   },
   "/activity/create": {
     "src/app/activity/create/page.tsx": "4a73b65ce85e58ec",
@@ -506,7 +506,7 @@
     "src/components/hf/BottomSheet.tsx": "feac121d59e8efa0",
     "src/components/hf/HfChevron.tsx": "11106e436ea8e3ef",
     "src/components/hf/ScreenHeader.tsx": "a7bbb02ab41e7756",
-    "src/components/hf/TextField.tsx": "f44c94024c219168",
+    "src/components/hf/TextField.tsx": "8339609e420b5315",
     "src/components/icons/Favorite.tsx": "70f85dd37d71acbf",
     "src/components/icons/PhotoFrame.tsx": "20ffbe92a0057321",
     "src/components/icons/WaistMeasure.tsx": "47f849581ff0f288",
@@ -632,7 +632,7 @@
     "src/app/forgot-password/page.tsx": "cd52c24fb389092f",
     "src/app/layout.tsx": "32a09f6743aabdc5",
     "src/components/hf/HfChevron.tsx": "11106e436ea8e3ef",
-    "src/components/hf/TextField.tsx": "f44c94024c219168"
+    "src/components/hf/TextField.tsx": "8339609e420b5315"
   },
   "/forward/[token]": {
     "src/app/forward/[token]/page.tsx": "754b9f5e94114d6b",
@@ -709,7 +709,7 @@
     "src/components/hf/BottomSheet.tsx": "feac121d59e8efa0",
     "src/components/hf/HfChevron.tsx": "11106e436ea8e3ef",
     "src/components/hf/SocialLoginButton.tsx": "cbc50261c17d058e",
-    "src/components/hf/TextField.tsx": "f44c94024c219168"
+    "src/components/hf/TextField.tsx": "8339609e420b5315"
   },
   "/login/country": {
     "src/app/layout.tsx": "32a09f6743aabdc5",
@@ -831,7 +831,7 @@
     "src/components/hf/HfChevron.tsx": "11106e436ea8e3ef",
     "src/components/hf/NumberedBadge.tsx": "4c8a89ba7ebf6126",
     "src/components/hf/ScreenHeader.tsx": "a7bbb02ab41e7756",
-    "src/components/hf/TextField.tsx": "f44c94024c219168",
+    "src/components/hf/TextField.tsx": "8339609e420b5315",
     "src/components/icons/BarcodeCard.tsx": "cb5f5cab58ebb485",
     "src/components/icons/Favorite.tsx": "70f85dd37d71acbf",
     "src/components/icons/PhotoFrame.tsx": "20ffbe92a0057321",
@@ -923,7 +923,7 @@
     "src/components/hf/BottomSheet.tsx": "feac121d59e8efa0",
     "src/components/hf/HfChevron.tsx": "11106e436ea8e3ef",
     "src/components/hf/ScreenHeader.tsx": "a7bbb02ab41e7756",
-    "src/components/hf/TextField.tsx": "f44c94024c219168",
+    "src/components/hf/TextField.tsx": "8339609e420b5315",
     "src/components/icons/Favorite.tsx": "70f85dd37d71acbf",
     "src/components/icons/PhotoFrame.tsx": "20ffbe92a0057321",
     "src/components/icons/WaistMeasure.tsx": "47f849581ff0f288",
@@ -1022,7 +1022,7 @@
     "src/components/hf/HfChevron.tsx": "11106e436ea8e3ef",
     "src/components/hf/ScreenHeader.tsx": "a7bbb02ab41e7756",
     "src/components/hf/Skeleton.tsx": "383d8a93fa858b4a",
-    "src/components/hf/TextField.tsx": "f44c94024c219168",
+    "src/components/hf/TextField.tsx": "8339609e420b5315",
     "src/components/icons/Favorite.tsx": "70f85dd37d71acbf",
     "src/components/icons/PhotoFrame.tsx": "20ffbe92a0057321",
     "src/components/icons/WaistMeasure.tsx": "47f849581ff0f288",
@@ -1229,7 +1229,7 @@
     "src/components/hf/HfChevron.tsx": "11106e436ea8e3ef",
     "src/components/hf/PointsPromoBanner.tsx": "d492abe018be6945",
     "src/components/hf/ScreenHeader.tsx": "a7bbb02ab41e7756",
-    "src/components/hf/TextField.tsx": "f44c94024c219168",
+    "src/components/hf/TextField.tsx": "8339609e420b5315",
     "src/components/icons/Favorite.tsx": "70f85dd37d71acbf",
     "src/components/icons/PhotoFrame.tsx": "20ffbe92a0057321",
     "src/components/icons/WaistMeasure.tsx": "47f849581ff0f288",
@@ -1570,7 +1570,7 @@
     "src/components/icons/PhotoFrame.tsx": "20ffbe92a0057321",
     "src/components/icons/WaistMeasure.tsx": "47f849581ff0f288",
     "src/components/screenings/ScreeningFillSheet.tsx": "573201fd2f0c7922",
-    "src/components/screenings/ScreeningInput.tsx": "c575dcfd4a13972d",
+    "src/components/screenings/ScreeningInput.tsx": "44ba4dfd251859bb",
     "src/components/screenings/ScreeningSwipeRow.tsx": "f9fbfb1b9f589566",
     "src/components/web/WebShell.tsx": "5f2646ffd79af9cc"
   },
@@ -1599,12 +1599,12 @@
     "src/components/hf/HfProgressStepper.tsx": "3c5f8fb4be3662ed",
     "src/components/hf/HfSlider.tsx": "c28c1c881aec9215",
     "src/components/hf/ScreenHeader.tsx": "a7bbb02ab41e7756",
-    "src/components/hf/TextField.tsx": "f44c94024c219168",
+    "src/components/hf/TextField.tsx": "8339609e420b5315",
     "src/components/icons/Favorite.tsx": "70f85dd37d71acbf",
     "src/components/icons/PhotoFrame.tsx": "20ffbe92a0057321",
     "src/components/icons/WaistMeasure.tsx": "47f849581ff0f288",
-    "src/components/screenings/ScreeningFlow.tsx": "2ac9f7b1e3617d1a",
-    "src/components/screenings/ScreeningInput.tsx": "c575dcfd4a13972d",
+    "src/components/screenings/ScreeningFlow.tsx": "7720c28072e29af2",
+    "src/components/screenings/ScreeningInput.tsx": "44ba4dfd251859bb",
     "src/components/ui/Toggle.tsx": "8fc97afe3b61a5a3",
     "src/components/web/WebShell.tsx": "5f2646ffd79af9cc"
   },
@@ -1632,12 +1632,12 @@
     "src/components/hf/HfProgressStepper.tsx": "3c5f8fb4be3662ed",
     "src/components/hf/HfSlider.tsx": "c28c1c881aec9215",
     "src/components/hf/ScreenHeader.tsx": "a7bbb02ab41e7756",
-    "src/components/hf/TextField.tsx": "f44c94024c219168",
+    "src/components/hf/TextField.tsx": "8339609e420b5315",
     "src/components/icons/Favorite.tsx": "70f85dd37d71acbf",
     "src/components/icons/PhotoFrame.tsx": "20ffbe92a0057321",
     "src/components/icons/WaistMeasure.tsx": "47f849581ff0f288",
-    "src/components/screenings/ScreeningFlow.tsx": "2ac9f7b1e3617d1a",
-    "src/components/screenings/ScreeningInput.tsx": "c575dcfd4a13972d",
+    "src/components/screenings/ScreeningFlow.tsx": "7720c28072e29af2",
+    "src/components/screenings/ScreeningInput.tsx": "44ba4dfd251859bb",
     "src/components/ui/Toggle.tsx": "8fc97afe3b61a5a3",
     "src/components/web/WebShell.tsx": "5f2646ffd79af9cc"
   },
@@ -2080,7 +2080,7 @@
     "src/app/layout.tsx": "32a09f6743aabdc5",
     "src/app/reset-password/page.tsx": "844a483c4209e316",
     "src/components/hf/HfChevron.tsx": "11106e436ea8e3ef",
-    "src/components/hf/TextField.tsx": "f44c94024c219168"
+    "src/components/hf/TextField.tsx": "8339609e420b5315"
   },
   "/search": {
     "src/app/layout.tsx": "32a09f6743aabdc5",
@@ -2482,7 +2482,7 @@
     "src/components/hf/HfChevron.tsx": "11106e436ea8e3ef",
     "src/components/hf/ScreenHeader.tsx": "a7bbb02ab41e7756",
     "src/components/hf/Skeleton.tsx": "383d8a93fa858b4a",
-    "src/components/hf/TextField.tsx": "f44c94024c219168",
+    "src/components/hf/TextField.tsx": "8339609e420b5315",
     "src/components/icons/Favorite.tsx": "70f85dd37d71acbf",
     "src/components/icons/PhotoFrame.tsx": "20ffbe92a0057321",
     "src/components/icons/WaistMeasure.tsx": "47f849581ff0f288",
@@ -2511,7 +2511,7 @@
     "src/components/hf/DoctorShareEditor.tsx": "ab028803743b3917",
     "src/components/hf/HfChevron.tsx": "11106e436ea8e3ef",
     "src/components/hf/ScreenHeader.tsx": "a7bbb02ab41e7756",
-    "src/components/hf/TextField.tsx": "f44c94024c219168",
+    "src/components/hf/TextField.tsx": "8339609e420b5315",
     "src/components/icons/Favorite.tsx": "70f85dd37d71acbf",
     "src/components/icons/PhotoFrame.tsx": "20ffbe92a0057321",
     "src/components/icons/WaistMeasure.tsx": "47f849581ff0f288",
@@ -2699,7 +2699,7 @@
     "src/components/hf/BottomSheet.tsx": "feac121d59e8efa0",
     "src/components/hf/HfChevron.tsx": "11106e436ea8e3ef",
     "src/components/hf/ScreenHeader.tsx": "a7bbb02ab41e7756",
-    "src/components/hf/TextField.tsx": "f44c94024c219168",
+    "src/components/hf/TextField.tsx": "8339609e420b5315",
     "src/components/icons/Favorite.tsx": "70f85dd37d71acbf",
     "src/components/icons/PhotoFrame.tsx": "20ffbe92a0057321",
     "src/components/icons/WaistMeasure.tsx": "47f849581ff0f288",
@@ -2728,7 +2728,7 @@
     "src/components/hf/BottomSheet.tsx": "feac121d59e8efa0",
     "src/components/hf/HfChevron.tsx": "11106e436ea8e3ef",
     "src/components/hf/ScreenHeader.tsx": "a7bbb02ab41e7756",
-    "src/components/hf/TextField.tsx": "f44c94024c219168",
+    "src/components/hf/TextField.tsx": "8339609e420b5315",
     "src/components/icons/Favorite.tsx": "70f85dd37d71acbf",
     "src/components/icons/PhotoFrame.tsx": "20ffbe92a0057321",
     "src/components/icons/WaistMeasure.tsx": "47f849581ff0f288",
@@ -2795,7 +2795,7 @@
     "src/components/hf/HealthConsentToggle.tsx": "f8e0e34bb7185218",
     "src/components/hf/HfChevron.tsx": "11106e436ea8e3ef",
     "src/components/hf/SocialLoginButton.tsx": "cbc50261c17d058e",
-    "src/components/hf/TextField.tsx": "f44c94024c219168",
+    "src/components/hf/TextField.tsx": "8339609e420b5315",
     "src/components/ui/Toggle.tsx": "8fc97afe3b61a5a3"
   },
   "/statistics": {
@@ -3232,7 +3232,7 @@
     "src/components/hf/HfChevron.tsx": "11106e436ea8e3ef",
     "src/components/hf/ScreenHeader.tsx": "a7bbb02ab41e7756",
     "src/components/hf/Skeleton.tsx": "383d8a93fa858b4a",
-    "src/components/hf/TextField.tsx": "f44c94024c219168",
+    "src/components/hf/TextField.tsx": "8339609e420b5315",
     "src/components/icons/BathroomScale.tsx": "5cfbc71ebbc7eae3",
     "src/components/icons/Favorite.tsx": "70f85dd37d71acbf",
     "src/components/icons/PhotoFrame.tsx": "20ffbe92a0057321",
