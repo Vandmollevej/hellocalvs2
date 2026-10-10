@@ -192,7 +192,8 @@ export const JOBS: JobDefinition[] = [
   {
     key: "hellofresh-import",
     name: "HelloFresh-import",
-    description: "Henter nye/ændrede HelloFresh-opskrifter i små portioner og matcher ingredienserne mod varer.",
+    description:
+      "Henter nye og ændrede HelloFresh-opskrifter løbende, henter hver opskrift igen mindst hver 30. dag (og igen efter et døgn, hvis billedet mangler) og spærrer retter, HelloFresh har fjernet.",
     runtime: "agent",
     container: "hellofresh-agent",
     defaultIntervalMinutes: 2,

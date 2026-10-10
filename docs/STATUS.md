@@ -9,6 +9,11 @@ Last updated: 2026-10-10
 - Migration `20261010210000_search_events` og ny container `meilisearch` skal med deployet (begge håndteres af `build.yml`).
 - Samtidig rettet: de to røde tests på master (admin-genveje: genveje til Søgning, Synonymordbog, Dyrefoder-filter, Vejning: tøj; sidetræet: 55 manglende sider).
 - Tjekket: tsc, eslint, `npm test` (315/315 grønne), paritet, build. Lokalt mod Meilisearch v1.53.2 + Postgres 16 med de 2.830 REMA-/butiksvarer fra repoet: søgninger, indekssynk (2.830 varer på 5 s; anden kørsel 0 ændringer), statistik, raffinering, klik og admin-siden. AI-vurderingen er ikke prøvet (ingen OpenAI-nøgle lokalt), og intet er prøvet mod produktionsdata.
+## 2026-10-10: HelloFresh-robotten opdaterer og rydder op automatisk
+
+- `hellofresh-import` henter nu hver opskrift igen mindst hver 30. dag, prøver retter uden billede igen og spærrer retter, HelloFresh har fjernet (genåbner dem, hvis de kommer tilbage). Nye opskrifter hentes som før løbende fra sitemap'en; ugemenuernes retter viderestiller til opskrifter, der allerede er i kataloget.
+- Tjekket mod en lokal Postgres med rigtige HelloFresh-sider: import, opdatering med billede, spærring af fjernet ret, genåbning og at admins deaktivering ikke røres.
+
 ## 2026-10-10: RetNemt og BetterFeast som integrationer (som HelloFresh)
 
 - To nye natlige robotter: `retnemt-agent` (job `retnemt-import`, 03:45; ugens menu + hele opskriftsarkivet ugentligt, ca. 150 retter på menuen) og `betterfeast-agent` (job `betterfeast-import`, 04:00; ugens menu, ca. 100 unikke færdigretter med deklaration). Første kørsel sker straks efter deploy (jobbene har ikke kørt før). Styres under admin → Cron-jobs.

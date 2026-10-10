@@ -27,6 +27,17 @@ Genkørsel opdaterer eksisterende rækker (matchet på recipeId) i stedet for
 at duplikere — HelloFresh genudgiver ofte den samme ret med et nyt recipeId
 hver uge/sæson; en fuld "samme ret, ny kloning"-kæde er ikke forsøgt
 sammenkædet i denne første version (se docs/DECISIONS.md, 2026-08-29).
+Ugemenuernes retter (/menus/<uge>) er sådanne kloner, som viderestiller til
+opskrifter, der allerede står i sitemap'en, så sitemap'en er fortsat kilden.
+
+Automatisk vedligehold (docs/DECISIONS.md 2026-10-10), ved siden af nye og
+ændrede opskrifter:
+  - Opdatering: sitemap'ens lastmod ændres sjældent, så hver opskrift hentes
+    igen, når den er ældre end HELLOFRESH_REFRESH_DAYS (et par stykker pr.
+    kørsel); opskrifter uden billede prøves igen efter et døgn.
+  - Fjernede retter: en ret, der ikke længere står i sitemap'en, og hvis side
+    svarer 404/410, spærres (discontinued, markeret retiredByAgent); står den
+    i sitemap'en igen, åbnes den. En ret, admin har deaktiveret, røres ikke.
 """
 
 import json
@@ -51,6 +62,9 @@ DATABASE_URL = os.environ["DATABASE_URL"].split("?")[0]
 POLL_INTERVAL_SECONDS = int(os.environ.get("HELLOFRESH_POLL_INTERVAL_SECONDS", "120"))
 REQUEST_DELAY_SECONDS = float(os.environ.get("HELLOFRESH_REQUEST_DELAY_SECONDS", "0.6"))
 BATCH_SIZE = int(os.environ.get("HELLOFRESH_BATCH_SIZE", "30"))
+REFRESH_DAYS = int(os.environ.get("HELLOFRESH_REFRESH_DAYS", "30"))
+REFRESH_BATCH = int(os.environ.get("HELLOFRESH_REFRESH_BATCH", "2"))
+REMOVED_CHECK_BATCH = int(os.environ.get("HELLOFRESH_REMOVED_CHECK_BATCH", "5"))
 OUTPUT_DIR = os.environ.get("IMAGE_OUTPUT_DIR", "/images")
 PUBLIC_PATH_PREFIX = os.environ.get("PUBLIC_PATH_PREFIX", "/hellofresh-images")
 
@@ -402,6 +416,132 @@ def upsert_recipe_ingredients(conn, product_id, recipe):
             )
 
 
+def skipped_urls(conn):
+    """Sider uden brugbar opskrift (fx uden næring) -> lastmod, så de ikke
+    hentes igen hver kørsel, før HelloFresh ændrer dem."""
+    with conn.cursor() as cur:
+        cur.execute("""SELECT url, lastmod FROM recipe_source_urls WHERE source = 'HELLOFRESH' AND "isRecipe" = false""")
+        return {url: lastmod or "" for url, lastmod in cur.fetchall()}
+
+
+def remember_skipped(conn, url, lastmod):
+    with conn.cursor() as cur:
+        cur.execute(
+            """
+            INSERT INTO recipe_source_urls (url, source, "isRecipe", lastmod, "httpStatus", "checkedAt")
+            VALUES (%s, 'HELLOFRESH', false, %s, 200, NOW())
+            ON CONFLICT (url) DO UPDATE SET "isRecipe" = false, lastmod = EXCLUDED.lastmod, "checkedAt" = NOW()
+            """,
+            (url, lastmod or None),
+        )
+
+
+def import_one(conn, url, retter_category_id):
+    """Henter og gemmer én opskrift; returnerer product_id eller None."""
+    recipe = fetch_recipe(url)
+    time.sleep(REQUEST_DELAY_SECONDS)
+    if not recipe:
+        log.warning("no recipe JSON found at %s", url)
+        return None
+    product_id = upsert_recipe(conn, recipe, retter_category_id)
+    if product_id:
+        upsert_recipe_ingredients(conn, product_id, recipe)
+    return product_id
+
+
+def refresh_stale(conn, url_by_id, retter_category_id):
+    """Henter de ældste opskrifter igen (og dem uden billede), så kataloget
+    holdes opdateret, selvom sitemap'ens lastmod ikke ændres."""
+    with conn.cursor() as cur:
+        cur.execute(
+            """SELECT "externalId" FROM products
+               WHERE "externalSource" = 'HELLOFRESH' AND discontinued = false
+                 AND ("sourceCheckedAt" IS NULL
+                      OR "sourceCheckedAt" < now() - make_interval(days => %s)
+                      OR ("imageUrl" IS NULL AND "sourceCheckedAt" < now() - interval '1 day'))
+               ORDER BY ("imageUrl" IS NULL) DESC, "sourceCheckedAt" ASC NULLS FIRST
+               LIMIT %s""",
+            (REFRESH_DAYS, REFRESH_BATCH),
+        )
+        ids = [row[0] for row in cur.fetchall()]
+    refreshed = 0
+    for recipe_id in ids:
+        url = url_by_id.get(recipe_id)
+        if not url:
+            continue  # ikke i sitemap'en: håndteres af sync_removed
+        try:
+            if import_one(conn, url, retter_category_id):
+                conn.commit()
+                refreshed += 1
+        except Exception:  # noqa: BLE001 - én fejlende opskrift må ikke stoppe kørslen
+            conn.rollback()
+            log.exception("failed to refresh recipe %s", recipe_id)
+    return refreshed
+
+
+def page_is_gone(url):
+    resp = requests.get(url, headers={"User-Agent": USER_AGENT}, timeout=20, allow_redirects=True)
+    if resp.status_code >= 500:
+        return None  # midlertidig fejl: ændr intet
+    return resp.status_code in (404, 410)
+
+
+def sync_removed(conn, sitemap_ids):
+    """Spærrer retter, HelloFresh har fjernet, og genåbner dem, der er tilbage."""
+    with conn.cursor() as cur:
+        cur.execute(
+            """SELECT count(*) FROM products WHERE "externalSource" = 'HELLOFRESH'"""
+        )
+        known = cur.fetchone()[0]
+    # En halv eller tom sitemap må aldrig spærre kataloget.
+    if not sitemap_ids or len(sitemap_ids) < 0.8 * known:
+        log.warning("sitemap has %d ids for %d known recipes — skipping removal check", len(sitemap_ids), known)
+        return 0, 0
+    reopened = 0
+    with conn.cursor() as cur:
+        cur.execute(
+            """UPDATE products SET discontinued = false, "recipeDetails" = "recipeDetails" - 'retiredByAgent'
+               WHERE "externalSource" = 'HELLOFRESH' AND discontinued = true
+                 AND ("recipeDetails"->>'retiredByAgent') = 'true' AND "externalId" = ANY(%s)""",
+            (list(sitemap_ids),),
+        )
+        reopened = cur.rowcount
+        cur.execute(
+            """SELECT id, "externalId", "recipeDetails"->>'websiteUrl' FROM products
+               WHERE "externalSource" = 'HELLOFRESH' AND discontinued = false
+                 AND NOT ("externalId" = ANY(%s))
+                 AND "recipeDetails"->>'websiteUrl' IS NOT NULL
+                 AND ("sourceCheckedAt" IS NULL OR "sourceCheckedAt" < now() - interval '7 days')
+               ORDER BY "sourceCheckedAt" ASC NULLS FIRST LIMIT %s""",
+            (list(sitemap_ids), REMOVED_CHECK_BATCH),
+        )
+        candidates = cur.fetchall()
+    conn.commit()
+    closed = 0
+    for product_id, recipe_id, url in candidates:
+        try:
+            gone = page_is_gone(url)
+            time.sleep(REQUEST_DELAY_SECONDS)
+            if gone is None:
+                continue
+            with conn.cursor() as cur:
+                if gone:
+                    cur.execute(
+                        """UPDATE products SET discontinued = true,
+                               "recipeDetails" = COALESCE("recipeDetails", '{}'::jsonb) || '{"retiredByAgent": true}'::jsonb
+                           WHERE id = %s""",
+                        (product_id,),
+                    )
+                    closed += 1
+                    log.info("recipe %s is gone from HelloFresh — disabled", recipe_id)
+                cur.execute('UPDATE products SET "sourceCheckedAt" = NOW() WHERE id = %s', (product_id,))
+            conn.commit()
+        except Exception:  # noqa: BLE001
+            conn.rollback()
+            log.warning("removal check failed for %s", url)
+    return closed, reopened
+
+
 def run_once(conn):
     # Returnerer (besked, antal udført) til admin "Robotter"/"Nattens kørsler".
     retter_category_id = get_category_id(conn, "Retter")
@@ -414,38 +554,52 @@ def run_once(conn):
 
     processed = 0
     failed = 0
+    skipped = skipped_urls(conn)
     for url, lastmod in entries:
         if processed >= BATCH_SIZE:
             break
         recipe_id = recipe_id_from_url(url)
-        if not recipe_id or already_up_to_date(conn, recipe_id, lastmod):
+        if not recipe_id or skipped.get(url) == (lastmod or "") or already_up_to_date(conn, recipe_id, lastmod):
             continue
 
         try:
-            recipe = fetch_recipe(url)
-            time.sleep(REQUEST_DELAY_SECONDS)
-            if not recipe:
-                log.warning("no recipe JSON found at %s", url)
-                continue
-
-            product_id = upsert_recipe(conn, recipe, retter_category_id)
+            product_id = import_one(conn, url, retter_category_id)
             if product_id:
-                upsert_recipe_ingredients(conn, product_id, recipe)
-                conn.commit()
                 processed += 1
-                log.info("imported %s (%s)", recipe.get("name"), recipe_id)
+                log.info("imported %s", recipe_id)
+            else:
+                remember_skipped(conn, url, lastmod)
+            conn.commit()
         except Exception:  # noqa: BLE001 - one bad recipe must not stop the batch
             conn.rollback()
             failed += 1
             log.exception("failed to import recipe at %s", url)
 
-    log.info("cycle complete — processed %d recipes this pass", processed)
-    if processed == 0 and failed == 0:
+    url_by_id = {}
+    for url, _ in entries:
+        recipe_id = recipe_id_from_url(url)
+        if recipe_id:
+            url_by_id[recipe_id] = url
+    refreshed = refresh_stale(conn, url_by_id, retter_category_id)
+    closed, reopened = sync_removed(conn, set(url_by_id))
+
+    log.info(
+        "cycle complete — %d imported, %d refreshed, %d disabled, %d reopened",
+        processed, refreshed, closed, reopened,
+    )
+    total = processed + refreshed + closed + reopened
+    if total == 0 and failed == 0:
         return "Ingen nye eller ændrede opskrifter", 0
-    message = f"{processed} opskrifter importeret"
+    parts = [f"{processed} opskrifter importeret"]
+    if refreshed:
+        parts.append(f"{refreshed} opdateret")
+    if closed:
+        parts.append(f"{closed} fjernet af HelloFresh spærret")
+    if reopened:
+        parts.append(f"{reopened} genåbnet")
     if failed:
-        message += f", {failed} fejlede"
-    return message, processed
+        parts.append(f"{failed} fejlede")
+    return ", ".join(parts), total
 
 
 def main():
