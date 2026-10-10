@@ -365,6 +365,12 @@ siden, men ikke i filtertypen/parseren/vælgeren. Nu tilføjet, så buildet går
 
 - Banneret/kortene vises kun for manglende produktbillede, energi eller indhold; manglende logo alene udløser dem ikke. Points kræver et friskt kamerabillede; billedet tagges `photo_source` CAMERA/UPLOAD. **Migration `20261003250000_photo_source` skal køre ved deploy.** Lint (0 fejl), typecheck og build grønne; ikke set på telefon. Fritlagt PNG rager allerede 10 % op over cirklen (`isCutoutImage`, kun filer under `/cutouts/`).
 
+## 2026-10-03: Genscan-panelet ("Optjen 10 points") ligger over hele skærmen
+
+- Det åbne panel var kun placeret i sidens indholdsområde, så "Tilføj"-knappen og menuen stod uden for det som et eget vindue, og et sort kamera uden svar kunne ikke lukkes. Nu er panel og mørk baggrund `fixed` over hele skærmen (også over "Tilføj" og menuen), og der er en X-knap øverst i panelet ud over trækstregen (`RescanBanner.tsx`).
+- Afsendelsen af genscanningen har en tidsgrænse på 60 sek. (`submitProductRescan`), så et hængende kald giver "Prøv igen" i stedet for et evigt sort kamera.
+- Lint (0 fejl), typecheck og build er grønne. Ikke set på telefon — tjek, at panelet kan lukkes, og at kameraet ikke bliver sort efter sidste billede.
+
 ## 2026-10-03: Beskeder på Profil, Resultatvisning under Visning, Opsætning uden Sprog og region
 
 - Beskeder er flyttet fra Indstillinger til Profil som egen række lige under "Profil" øverst. Ulæst-tallet er en grøn cirkel (`--hf-color-brand`) med hvidt tal (`ChevronRow.badgeCount`, også Kontrol-log).

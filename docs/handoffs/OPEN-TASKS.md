@@ -451,3 +451,12 @@ Ejer: cloud-session `claude/help-center-shortcut-overlay-2cql8y` (2026-10-09)
 | --- | --- | --- | --- |
 | guide-hjaelpecenter | Understreget genvej øverst + "Guide mig" i Hjælpecenter-emner | Venter på bruger | Draft-PR #318. Brugeren tester på telefon: Hjælpecenter → "Hvordan registrerer jeg min vægt?" → Guide mig |
 
+---
+
+## Genscan-panel ("Optjen 10 points")
+Filer: `src/components/add/RescanBanner.tsx`, `src/lib/product-capture.ts`.
+Ejer: cloud-session `claude/rescan-panel-fix` (2026-10-03)
+
+| Id | Opgave | Status | Næste skridt |
+| --- | --- | --- | --- |
+| rescan-panel | Panel over hele skærmen, X-knap, 60 sek. tidsgrænse på afsendelse | Venter på bruger | Draft-PR #225. Brugeren skal teste på telefon (kan panelet lukkes; bliver kameraet sort efter sidste billede?) og godkende flet til master |
