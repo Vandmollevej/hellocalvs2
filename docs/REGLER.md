@@ -95,6 +95,7 @@ ikke her, er den ikke registreret og skal tilføjes.
 - Spørgsmål til brugeren stilles ALTID i spørgsmålsboksen (AskUserQuestion),
   aldrig som almindelig tekst i et svar og aldrig midt i en opgave: tekst giver
   ingen gul prik, så brugeren ser den ikke (brugerens regel 2026-10-09, global).
+- **Aldrig hænge (bruger 2026-10-10, global, ufravigelig):** en opgave må aldrig stå stille. Slut aldrig en tur, mens CI, deploy, review eller en PR venter, uden at et tidsbestemt tjek er sat (`send_later`, højst 5 minutter frem; gentag, til det er gjort). Hvert tjek handler: grøn CI → flet nu; rød CI → ret og push nu; konflikt → løs nu; stående deploy-trin → læs jobloggen og meld den præcise årsag. Opgaven er først færdig, når den er flettet OG deployet. Må deployet ikke kunne gå igennem, skrives årsagen og næste skridt straks i `docs/handoffs/OPEN-TASKS.md`. Sig hvert 10. minut kort, hvad der sker, mens der ventes. At vente passivt på en hændelse er forbudt.
 - Flere parallelle sessioner: stage snævert, deploy-linjen er origin/master.
 - Alle opgaver auto-arkiveres umiddelbart, så snart de melder klar til arkivering – i samme tur, uden at vente (bruger 2026-10-09, gentaget).
 - Færdig opgave: slut med "arkiver mig", og arkivér derefter selv sessionen (`archive_session`), når PR er flettet. Manglende test er aldrig en gyldig grund til ikke at arkivere (global regel, bruger 2026-10-09). Stop-hook `scripts/archive-reminder.mjs` minder om det (bruger 2026-10-09; AGENTS.md).
