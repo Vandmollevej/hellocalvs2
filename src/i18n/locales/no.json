@@ -1210,7 +1210,7 @@
     "addPhoto": "Ta bilde til trinnet",
     "removePhoto": "Fjern bildet",
     "remove": "Slett trinn",
-    "dropPhoto": "Drag a picture here, or tap to add one"
+    "dropPhoto": "Ta et bilde av trinnet, eller slipp et bilde her"
   },
   "recipeImages": {
     "title": "Bilder av retten",
@@ -1395,7 +1395,7 @@
     "searchPlaceholder": "Søk etter ingrediens",
     "searching": "Søker...",
     "noResults": "Ingen varer samsvarer med søket ditt",
-    "scan": "Ta bilde",
+    "scan": "Skann strekkode",
     "scanWeb": "Last opp bilde eller slipp dem her",
     "scanWebWorking": "Leser bildet …",
     "scanWebNotFound": "Vi kunne ikke gjenkjenne varen på bildet. Prøv et bilde av forsiden, eller søk etter varen.",

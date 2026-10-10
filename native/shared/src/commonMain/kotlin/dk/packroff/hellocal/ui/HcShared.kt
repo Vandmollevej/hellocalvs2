@@ -132,7 +132,7 @@ fun HcLine(modifier: Modifier = Modifier, color: Color = HcColors.TanDark) {
 
 /** .hf-search — 48 px white search field with a 16 px magnifier (design.md §6.5). */
 @Composable
-fun HcSearchField(value: String, onValueChange: (String) -> Unit, placeholder: String, modifier: Modifier = Modifier, onFocus: () -> Unit = {}) {
+fun HcSearchField(value: String, onValueChange: (String) -> Unit, placeholder: String, modifier: Modifier = Modifier, onFocus: () -> Unit = {}, trailing: (@Composable () -> Unit)? = null) {
     val shape = RoundedCornerShape(HcDimens.RadiusCard)
     Row(
         modifier.fillMaxWidth().height(HcDimens.ControlHeight).clip(shape).background(HcColors.Surface, shape)
@@ -156,6 +156,7 @@ fun HcSearchField(value: String, onValueChange: (String) -> Unit, placeholder: S
                 }
             },
         )
+        trailing?.invoke()
     }
 }
 
