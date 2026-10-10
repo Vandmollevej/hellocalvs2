@@ -146,7 +146,14 @@ fun CalendarScreen(args: RouteArgs) {
     }
 
     val totals = remember(registrations) { dailyTotalsOf(registrations) }
-    val activityBonus = remember(activities) { activityKcalByDay(activities) }
+    // Enhedens aktive energi indeholder også træningspas: største tal pr. dag, aldrig begge.
+    val activityBonus = remember(activities, metrics) {
+        val map = activityKcalByDay(activities).toMutableMap()
+        for ((day, kcal) in deviceDataByDay(metrics).activeKcalByDay) {
+            map[day] = maxOf(map[day] ?: 0.0, kotlin.math.round(kcal))
+        }
+        map
+    }
     val goalLookup = remember(budgets, activityBonus) { GoalLookup(budgets, activityBonus) }
     val goalsByDate = remember(goals) { goals.filter { it.targetDate != null }.groupBy { it.targetDate!! } }
     val goalDates = goalsByDate.keys

@@ -456,14 +456,19 @@ function CalendarPageContent() {
   const [budgetSnapshots, setBudgetSnapshots] = useState<BudgetSnapshot[]>([]);
   const baseGoalForDate = useMemo(() => makeBudgetLookup(budgetSnapshots, DAILY_KCAL_GOAL), [budgetSnapshots]);
   // Registreret motion pr. dag lægges oven i dagens mål (DECISIONS 2026-10-02).
+  // Enhedens aktive energi for dagen indeholder også træningspas, så dagen får
+  // det største af de to tal (aldrig begge lagt sammen).
   const activityBonusByDay = useMemo(() => {
     const map = new Map<string, number>();
     for (const activity of activities) {
       const key = dayKey(new Date(activity.startedAt));
       map.set(key, (map.get(key) ?? 0) + activity.caloriesBurned);
     }
+    for (const [key, deviceKcal] of deviceDataByDay(healthMetrics).activeKcalByDay) {
+      map.set(key, Math.max(map.get(key) ?? 0, Math.round(deviceKcal)));
+    }
     return map;
-  }, [activities]);
+  }, [activities, healthMetrics]);
   const goalForDate = useMemo(
     () => (date: Date) => baseGoalForDate(date) + (activityBonusByDay.get(dayKey(date)) ?? 0),
     [baseGoalForDate, activityBonusByDay],

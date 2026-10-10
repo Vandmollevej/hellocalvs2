@@ -146,6 +146,43 @@ async function dailySteps(accessToken: string, since: Date): Promise<Integration
   }));
 }
 
+// Dagens aktive energi (kcal), lagt sammen pr. lokal dag som skridtene. Så en
+// dag med gåture og almindelig bevægelse også giver kalorier, ikke kun
+// loggede træningspas. Datatypens navn er ikke prøvet mod live-API'et, så
+// kandidaterne prøves i rækkefølge; den første, der giver data, bruges.
+const ACTIVE_ENERGY_TYPES = ["active-energy-burned", "active-calories", "calories-burned"];
+
+async function dailyActiveEnergy(accessToken: string, since: Date): Promise<IntegrationItem[]> {
+  const from = new Date(Math.floor(since.getTime() / DAY_MS) * DAY_MS - DAY_MS);
+  let lastError: unknown;
+  for (const dataType of ACTIVE_ENERGY_TYPES) {
+    try {
+      const field = dataType.replace(/-/g, "_");
+      const points = await listDataPoints(accessToken, dataType, `${field}.interval.start_time >= "${from.toISOString()}"`, 10000);
+      const byDay = new Map<string, number>();
+      for (const p of points) {
+        const inner = innerOf(p as unknown as Record<string, unknown>, dataType);
+        const kcal = inner ? firstNumber(inner) : null;
+        const at = inner?.interval?.startTime;
+        if (kcal === null || kcal <= 0 || !at) continue;
+        const offset = seconds((inner?.interval as Interval | undefined)?.startUtcOffset) ?? 0;
+        const day = new Date(new Date(at).getTime() + offset * 1000).toISOString().slice(0, 10);
+        byDay.set(day, (byDay.get(day) ?? 0) + kcal);
+      }
+      if (byDay.size === 0) continue;
+      // Første dag kan være ufuldstændig og springes over (som skridtene).
+      return [...byDay.keys()].sort().slice(1).map((day) => ({
+        kind: "metric",
+        payload: { source: "GOOGLE_HEALTH", type: "ACTIVE_ENERGY_KCAL", value: Math.round(byDay.get(day)!), recordedAt: `${day}T00:00:00.000Z` },
+      }));
+    } catch (error) {
+      lastError = error;
+    }
+  }
+  if (lastError) throw lastError;
+  return [];
+}
+
 // Enkeltmålinger (2026-10-03). Feltnavnet på selve tallet er ikke prøvet mod
 // live-API'et, så værdien findes som første tal i datapunktet uden for
 // tidsfelterne; data-typens navn følger samme mønster som weight/body-fat.
@@ -248,6 +285,7 @@ export const googleHealth: OAuthProviderAdapter = {
       bodyFat(accessToken, since),
       exercises(accessToken, since),
       dailySteps(accessToken, since),
+      dailyActiveEnergy(accessToken, since),
       ...SAMPLE_TYPES.map((spec) => samples(accessToken, since, spec)),
     ]);
     const ok = results.filter((r): r is PromiseFulfilledResult<IntegrationItem[]> => r.status === "fulfilled");
