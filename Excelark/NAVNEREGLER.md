@@ -102,3 +102,10 @@ Kort version står også i `docs/REGLER.md`.
 - Sukkerfri / uden tilsat sukker står i sukker-kolonnen, aldrig i variant/keyword.
 - Intet ord må stå dobbelt på tværs af productType, `_is_`-felter, variant og keywords (funktionsord undtaget).
 - Opdatering 2026-10-10: `Excelark/bilka.xlsx` og `Produkter/rema1000_version 2.xlsx` er selv omskrevet (ikke kun `_ny`). `scripts/store-products-import/build_data.py` læser både nye (databasenavne) og gamle kolonnenavne via `NEW_ALIAS` i `load()`.
+
+## Tekst fra original titel → variant (2026-10-10, Bilka/REMA)
+- Det, der står efter m./m/med, u./uden, i, af, "smag af" i den originale titel, og som ikke findes på rækken i forvejen, skrives i **variant** (med "med/uden/i" foran, alt med småt). Undtagelse: "i bundt" og "i bakke" er nøgleord.
+- Kun hvis intet af ordene allerede findes et sted på rækken (produkttype, variant, nøgleord, `_is_`-felter, brand).
+- Mærkenavne i variant/nøgleord skrives med stort (fx "Tyrkisk Peber", "Aqua d'Or", "San Pellegrino"). Mærket i Brand (fx "M&M's") tilføjes aldrig til variant.
+- "m" i "M&M's" er ikke "med". HTML som `<BR>` i originalteksten skal ikke med.
+- 45+ (osteprocent i tørstof) står i variant, ikke i produkttype.
