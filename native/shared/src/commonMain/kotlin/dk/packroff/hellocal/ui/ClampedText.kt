@@ -18,6 +18,7 @@ import androidx.compose.material3.Text
 import dk.packroff.hellocal.i18n.LocalTranslator
 import dk.packroff.hellocal.theme.HcColors
 import dk.packroff.hellocal.theme.HcTypeRole
+import dk.packroff.hellocal.theme.style
 
 /** src/components/hf/ClampedText.tsx — højst tre linjer, "…Vis mere" på tredje linje. */
 @Composable

@@ -53,12 +53,13 @@ import kotlinx.coroutines.launch
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.LocalTime
 
-// HelloFresh-tekststil (prøve, kun denne side): 17 / 31 — samme som .hf-fresh-type på web.
-private val FreshBody = HcTypeRole(17f, androidx.compose.ui.text.font.FontWeight(400), 31f, false, null)
-private val FreshTitle = HcTypeRole(17f, androidx.compose.ui.text.font.FontWeight(700), 31f, true, null)
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toInstant
 import kotlin.math.abs
+
+// HelloFresh-tekststil (prøve, kun denne side): 17 / 31 — samme som .hf-fresh-type på web.
+private val FreshBody = HcTypeRole(17f, androidx.compose.ui.text.font.FontWeight(400), 31f, false, null)
+private val FreshTitle = HcTypeRole(17f, androidx.compose.ui.text.font.FontWeight(700), 31f, true, null)
 
 private val TIME_GRID_HOURS = listOf(8, 10, 12, 14, 16, 18, 20, 22)
 
