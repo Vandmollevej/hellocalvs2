@@ -1946,86 +1946,86 @@
     }
   },
   "weighIn": {
-    "attireTitle": "What were you wearing?",
+    "attireTitle": "Vad hade du på dig?",
     "attireItem": {
-      "UNDERWEAR": "With underwear",
-      "PANTS": "With trousers",
-      "TOP": "With top / T-shirt",
-      "SWEATER": "With upper layer",
-      "SHOES": "With shoes",
-      "POCKET_ITEMS": "With phone and other items in pockets",
-      "AFTER_TOILET": "After using the toilet"
+      "UNDERWEAR": "Med underkläder",
+      "PANTS": "Med byxor",
+      "TOP": "Med topp / T-shirt",
+      "SWEATER": "Med överdel",
+      "SHOES": "Med skor",
+      "POCKET_ITEMS": "Med mobil och annat i fickorna",
+      "AFTER_TOILET": "Efter toalettbesök"
     },
-    "attireNaked": "Nothing selected = naked",
+    "attireNaked": "Inget valt = naken",
     "attire": {
-      "NAKED": "Naked",
-      "UNDERWEAR": "In underwear",
-      "CLOTHED": "Clothed",
-      "CLOTHED_PHONE": "Clothed, phone in pocket"
+      "NAKED": "Naken",
+      "UNDERWEAR": "I underkläder",
+      "CLOTHED": "Påklädd",
+      "CLOTHED_PHONE": "Påklädd, mobil i fickan"
     },
-    "save": "Save",
-    "saving": "Saving…",
-    "saveError": "Could not save. Try again.",
-    "later": "Later",
-    "continue": "Continue",
+    "save": "Spara",
+    "saving": "Sparar…",
+    "saveError": "Kunde inte spara. Försök igen.",
+    "later": "Senare",
+    "continue": "Fortsätt",
     "ago": {
-      "justNow": "just now",
-      "minutes": "{n} min. ago",
-      "hours": "{n} hours ago",
-      "days": "{n} days ago"
+      "justNow": "just nu",
+      "minutes": "för {n} min sedan",
+      "hours": "för {n} timmar sedan",
+      "days": "för {n} dagar sedan"
     },
     "sync": {
-      "now": "Sync now",
-      "syncing": "Syncing…",
-      "done": "Synced",
-      "failed": "Sync failed",
-      "error": "Error — reconnect",
-      "last": "Synced {ago}",
-      "never": "Not synced yet",
-      "open": "Open {name}",
-      "openShort": "Open",
-      "noneConnected": "No smart scale connected",
-      "connect": "Connect"
+      "now": "Synka nu",
+      "syncing": "Synkar…",
+      "done": "Synkad",
+      "failed": "Synkningen misslyckades",
+      "error": "Fel — anslut igen",
+      "last": "Synkad {ago}",
+      "never": "Inte synkad än",
+      "open": "Öppna {name}",
+      "openShort": "Öppna",
+      "noneConnected": "Ingen smart våg är ansluten",
+      "connect": "Anslut"
     },
     "stale": {
-      "title": "It has been a while since the last sync",
-      "body": "{name} was last synced {ago}. Sync so your latest weigh-ins come through.",
-      "bodyNever": "{name} has not been synced yet. Sync so your weigh-ins come through."
+      "title": "Det var länge sedan det synkades",
+      "body": "{name} synkades senast {ago}. Synka så att dina senaste vägningar kommer med.",
+      "bodyNever": "{name} har inte synkats än. Synka så att dina vägningar kommer med."
     },
     "prompt": {
-      "aria": "What were you wearing when you weighed in?",
-      "todayMorning": "You weighed yourself this morning.",
-      "past": "You weighed yourself {when}",
-      "andWeighed": "and weighed",
-      "question": "But was it:",
-      "older": "Older weigh-in",
-      "newer": "Newer weigh-in"
+      "aria": "Vad hade du på dig vid vägningen?",
+      "todayMorning": "Du vägde dig i morse.",
+      "past": "Du vägde dig {when}",
+      "andWeighed": "och vägde",
+      "question": "Men var det:",
+      "older": "Äldre vägning",
+      "newer": "Nyare vägning"
     },
     "when": {
       "today": {
-        "morning": "this morning",
-        "afternoon": "this afternoon",
-        "evening": "this evening",
-        "night": "last night"
+        "morning": "i morse",
+        "afternoon": "i eftermiddags",
+        "evening": "i kväll",
+        "night": "i natt"
       },
       "yesterday": {
-        "morning": "yesterday morning",
-        "afternoon": "yesterday afternoon",
-        "evening": "yesterday evening",
-        "night": "last night"
+        "morning": "i går morse",
+        "afternoon": "i går eftermiddag",
+        "evening": "i går kväll",
+        "night": "i natt"
       },
       "part": {
-        "morning": "morning",
-        "afternoon": "afternoon",
-        "evening": "evening",
-        "night": "night"
+        "morning": "morgon",
+        "afternoon": "eftermiddag",
+        "evening": "kväll",
+        "night": "natt"
       },
       "weekday": "{weekday} {part}",
-      "lastWeek": "last {weekday}"
+      "lastWeek": "i {weekday}s"
     },
     "details": {
-      "title": "Weigh-in",
-      "failed": "Could not load the weigh-in."
+      "title": "Vägning",
+      "failed": "Vägningen kunde inte hämtas."
     }
   },
   "weightLog": {

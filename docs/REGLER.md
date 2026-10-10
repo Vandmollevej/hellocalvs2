@@ -114,6 +114,7 @@ ikke her, er den ikke registreret og skal tilføjes.
   aldrig som almindelig tekst i et svar og aldrig midt i en opgave: tekst giver
   ingen gul prik, så brugeren ser den ikke (brugerens regel 2026-10-09, global).
 - **Aldrig hænge (bruger 2026-10-10, global, ufravigelig):** en opgave må aldrig stå stille. Slut aldrig en tur, mens CI, deploy, review eller en PR venter, uden at et tidsbestemt tjek er sat (`send_later`, højst 5 minutter frem; gentag, til det er gjort). Hvert tjek handler: grøn CI → flet nu; rød CI → ret og push nu; konflikt → løs nu; stående deploy-trin → læs jobloggen og meld den præcise årsag. Opgaven er først færdig, når den er flettet OG deployet. Må deployet ikke kunne gå igennem, skrives årsagen og næste skridt straks i `docs/handoffs/OPEN-TASKS.md`. Sig hvert 10. minut kort, hvad der sker, mens der ventes. At vente passivt på en hændelse er forbudt.
+- **Udestående rettes altid (bruger 2026-10-10, generelt):** finder du noget udestående i det område, du arbejder i (manglende oversættelser, forældede noter i OPEN-TASKS, halvfærdige dele af samme funktion), så ret det i samme opgave i stedet for blot at notere det. Gælder ikke andre gruppers filer eller ting, der kræver brugerens beslutning.
 - **Tidspunkter altid i dansk tid** (Europe/Copenhagen, sommer-/vintertid) over for brugeren, aldrig UTC (bruger 2026-10-10).
 - Flere parallelle sessioner: stage snævert, deploy-linjen er origin/master.
 - Alle opgaver auto-arkiveres umiddelbart, så snart de melder klar til arkivering – i samme tur, uden at vente (bruger 2026-10-09, gentaget).

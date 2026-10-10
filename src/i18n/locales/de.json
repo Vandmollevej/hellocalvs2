@@ -1946,86 +1946,86 @@
     }
   },
   "weighIn": {
-    "attireTitle": "What were you wearing?",
+    "attireTitle": "Was hattest du an?",
     "attireItem": {
-      "UNDERWEAR": "With underwear",
-      "PANTS": "With trousers",
-      "TOP": "With top / T-shirt",
-      "SWEATER": "With upper layer",
-      "SHOES": "With shoes",
-      "POCKET_ITEMS": "With phone and other items in pockets",
-      "AFTER_TOILET": "After using the toilet"
+      "UNDERWEAR": "Mit Unterwäsche",
+      "PANTS": "Mit Hose",
+      "TOP": "Mit Top / T-Shirt",
+      "SWEATER": "Mit Oberteil",
+      "SHOES": "Mit Schuhen",
+      "POCKET_ITEMS": "Mit Handy und anderem in den Taschen",
+      "AFTER_TOILET": "Nach dem Toilettengang"
     },
-    "attireNaked": "Nothing selected = naked",
+    "attireNaked": "Nichts ausgewählt = nackt",
     "attire": {
-      "NAKED": "Naked",
-      "UNDERWEAR": "In underwear",
-      "CLOTHED": "Clothed",
-      "CLOTHED_PHONE": "Clothed, phone in pocket"
+      "NAKED": "Nackt",
+      "UNDERWEAR": "Mit Unterwäsche",
+      "CLOTHED": "Mit Kleidung",
+      "CLOTHED_PHONE": "Mit Kleidung und Handy in der Tasche"
     },
-    "save": "Save",
-    "saving": "Saving…",
-    "saveError": "Could not save. Try again.",
-    "later": "Later",
-    "continue": "Continue",
+    "save": "Speichern",
+    "saving": "Wird gespeichert…",
+    "saveError": "Speichern fehlgeschlagen. Versuche es erneut.",
+    "later": "Später",
+    "continue": "Weiter",
     "ago": {
-      "justNow": "just now",
-      "minutes": "{n} min. ago",
-      "hours": "{n} hours ago",
-      "days": "{n} days ago"
+      "justNow": "gerade eben",
+      "minutes": "vor {n} Min.",
+      "hours": "vor {n} Stunden",
+      "days": "vor {n} Tagen"
     },
     "sync": {
-      "now": "Sync now",
-      "syncing": "Syncing…",
-      "done": "Synced",
-      "failed": "Sync failed",
-      "error": "Error — reconnect",
-      "last": "Synced {ago}",
-      "never": "Not synced yet",
-      "open": "Open {name}",
-      "openShort": "Open",
-      "noneConnected": "No smart scale connected",
-      "connect": "Connect"
+      "now": "Jetzt synchronisieren",
+      "syncing": "Wird synchronisiert…",
+      "done": "Synchronisiert",
+      "failed": "Synchronisierung fehlgeschlagen",
+      "error": "Fehler — neu verbinden",
+      "last": "Synchronisiert {ago}",
+      "never": "Noch nicht synchronisiert",
+      "open": "{name} öffnen",
+      "openShort": "Öffnen",
+      "noneConnected": "Keine smarte Waage verbunden",
+      "connect": "Verbinden"
     },
     "stale": {
-      "title": "It has been a while since the last sync",
-      "body": "{name} was last synced {ago}. Sync so your latest weigh-ins come through.",
-      "bodyNever": "{name} has not been synced yet. Sync so your weigh-ins come through."
+      "title": "Die letzte Synchronisierung ist schon länger her",
+      "body": "{name} wurde zuletzt {ago} synchronisiert. Synchronisiere, damit deine neuesten Wiegungen ankommen.",
+      "bodyNever": "{name} wurde noch nicht synchronisiert. Synchronisiere, damit deine Wiegungen ankommen."
     },
     "prompt": {
-      "aria": "What were you wearing when you weighed in?",
-      "todayMorning": "You weighed yourself this morning.",
-      "past": "You weighed yourself {when}",
-      "andWeighed": "and weighed",
-      "question": "But was it:",
-      "older": "Older weigh-in",
-      "newer": "Newer weigh-in"
+      "aria": "Was hattest du beim Wiegen an?",
+      "todayMorning": "Du hast dich heute Morgen gewogen.",
+      "past": "Du hast dich {when} gewogen",
+      "andWeighed": "und hast",
+      "question": "Aber war es:",
+      "older": "Ältere Wiegung",
+      "newer": "Neuere Wiegung"
     },
     "when": {
       "today": {
-        "morning": "this morning",
-        "afternoon": "this afternoon",
-        "evening": "this evening",
-        "night": "last night"
+        "morning": "heute Morgen",
+        "afternoon": "heute Nachmittag",
+        "evening": "heute Abend",
+        "night": "heute Nacht"
       },
       "yesterday": {
-        "morning": "yesterday morning",
-        "afternoon": "yesterday afternoon",
-        "evening": "yesterday evening",
-        "night": "last night"
+        "morning": "gestern Morgen",
+        "afternoon": "gestern Nachmittag",
+        "evening": "gestern Abend",
+        "night": "heute Nacht"
       },
       "part": {
-        "morning": "morning",
-        "afternoon": "afternoon",
-        "evening": "evening",
-        "night": "night"
+        "morning": "Morgen",
+        "afternoon": "Nachmittag",
+        "evening": "Abend",
+        "night": "Nacht"
       },
       "weekday": "{weekday} {part}",
-      "lastWeek": "last {weekday}"
+      "lastWeek": "letzten {weekday}"
     },
     "details": {
-      "title": "Weigh-in",
-      "failed": "Could not load the weigh-in."
+      "title": "Wiegung",
+      "failed": "Die Wiegung konnte nicht geladen werden."
     }
   },
   "weightLog": {
