@@ -87,6 +87,19 @@ ikke her, er den ikke registreret og skal tilføjes.
 
 ## Produktnavne i ark (globale regler, gælder ALLE ark — brugerens regel 2026-10-09)
 
+- **Originalkolonnerne rettes ALDRIG** (alle ark, brugerens regel 2026-10-10):
+  `Original Title`, `Product Name`, `Subtitle`, `Source URL`, `Image File`,
+  `Parse Status` og butikkens øvrige skrabede kolonner (`Manufacturer`,
+  `Servings`, `Price`, `Venue`, SPAR `Subcategory`/`Vare`/`Variant`/`quantity`)
+  står bagerst og er præcis som skrabet — ingen stavning, forkortelser,
+  decimaltegn eller m./u. i dem, hverken i hånden eller med scripts. De må kun
+  læses; alle rettelser skrives i vores egne kolonner. Er de ændret, hentes de
+  tilbage fra den rå skrabning. Se Excelark/NAVNEREGLER.md.
+- **Alle ark har Bilkas kolonner** (2026-10-10): kolonne 1-43 præcis som
+  `Excelark/bilka.xlsx` (samme navne, rækkefølge og titelformler); butikkens
+  ekstra kolonner står bagerst. SPAR, Nemlig, Wolt, DRK, Årstiderne, dm, EDEKA
+  og REWE er omlagt med `Excelark/omlaeg_til_bilka_kolonner.py`. Se
+  Excelark/NAVNEREGLER.md.
 - **Titelrækkefølge**: `_is_cooked` > Product Type (småt begyndelsesbogstav
   hvis det ikke er første ord) > Variation > `_is_light`, `_is_alcohol`,
   `_is_glutenfree`, `_is_vegan`, `_is_lactose_free` > `(Packaging, Keyword 1-3,
@@ -99,6 +112,7 @@ ikke her, er den ikke registreret og skal tilføjes.
   Subtitle): `m.` `m/` → "med", `u.` `u/` → "uden", `i`, `af`. Det der står
   efter dem og ligger i Variation skrives med småt begyndelsesbogstav og
   får ordet foran: "Ymerdrys m. kanel" → Variation "med farin og kanel".
+  Rettelsen skrives kun i Variation — selve originalfeltet røres ikke.
 - med/uden/i/af/på/fra/tilsat står altid med småt i Variation og titel.
 - Keywords må aldrig deles op midt i en frase: "Uden tilsat sukker" er ét
   keyword (ikke "Uden" + "Tilsat sukker").

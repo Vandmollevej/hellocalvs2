@@ -3,6 +3,22 @@
 Brugerens regler 2026-10-09. Samme kolonner og samme regler i ALLE ark, så der er kontinuitet.
 Kort version står også i `docs/REGLER.md`.
 
+## Originalkolonnerne rettes ALDRIG (brugerens regel 2026-10-10, gælder alle ark)
+- Originalkolonner = det butikken/skraberen leverede: `Original Title`, `Product Name`, `Subtitle`, `Source URL`, `Image File`, `Parse Status` + butikkens øvrige skrabede kolonner (`Manufacturer`, `Servings`, `Price`, `Venue`, SPAR `Subcategory`/`Vare`/`Variant`/`quantity`). De står bagerst i arket.
+- De rettes aldrig — hverken i hånden eller med scripts: ingen stavning, forkortelser (m./u.), decimaltegn, store/små bogstaver eller flytning af tekst. De må kun læses (fx for at finde 45+, "revet", produkttypen). Alle rettelser skrives i vores egne kolonner (productType, variant, keyword1-5, `_is_*`, brand, subbrand, packageSizeText, Clean Subtitle …).
+- Markeringer fra vores egne scripts (fx PET_FOOD, BRAND_GUESS) skrives i kolonnen `Flag`, aldrig i `Parse Status`.
+- Er en originalkolonne blevet ændret, hentes den tilbage fra den rå skrabning (`omlaeg_til_bilka_kolonner.py` gør det automatisk).
+
+## Alle ark har Bilkas kolonner (2026-10-10)
+- Kolonne 1-43 er præcis som `Excelark/bilka.xlsx`: samme navne, samme rækkefølge og Bilkas titelformler i A (`Product title singular`) og B (`Product title plural`). Butikkens ekstra kolonner står bagerst efter `Parse Status`: først skrabede originaler, så vores egne (SPAR `Alternativ vægt`, `_is_certificate`, `Packing`; tyske ark `Flag`).
+- Omlagt 2026-10-10 med `Excelark/omlaeg_til_bilka_kolonner.py`: `Produkter/SPAR/spar.xlsx`, `Produkter/Nemlig/nemlig.xlsx`, `Excelark/wolt_ny.xlsx`, `Excelark/drk.xlsx`, `Excelark/aarstiderne.xlsx`, `Excelark/dm_ny.xlsx`, `Excelark/edeka_ny.xlsx`, `Excelark/rewe_ny.xlsx`. Backups: `Excelark/backup/*_foer_bilka-kolonner.xlsx`. Scriptet kan køres igen fra en backup: `python omlaeg_til_bilka_kolonner.py spar --fra=backup/<fil>`.
+- Danske ark har fået Bilka-reglerne (titel_ental_flertal + procent/ost + reglerne fra 2026-10-10: brand ud af productType, revet/i blok, ben, sukker i egen kolonne, "med kulsyre", dobbeltord, flertal fra Bilka, decimalpunktum). Keywords der bare er butikkens kategorinavne er fjernet; flag-ord (økologisk, glutenfri, vegansk, fuldkorn …) står i deres `_is_`-kolonne.
+- Tyske ark (dm, EDEKA, REWE): kun kolonnerne + tyske ord i stedet for "Yes" (`bio`, `glutenfrei`, `laktosefrei`, `vegan`, `zuckerfrei`, `süßungsmittel`, `alkoholfrei`) + decimalpunktum. Titelformlen skriver "Tiefgekühlt" i stedet for "Frosset" og beholder stort begyndelsesbogstav i tyske navneord. `Product type plural` er tom (ingen dansk bøjning).
+- Originalerne er hentet tilbage fra den rå skrabning, hvor tidligere omlægninger havde ændret dem: SPAR (Product Name og Original Title var byttet om), Wolt og de tyske ark (Product Name var overskrevet med en genereret titel; PET_FOOD/BRAND_GUESS i Parse Status → `Flag`).
+- Frost følger kategorien Frost/Dybfrost (som Bilka). SPAR's gamle Packaging "Frozen" stod også på vin, sodavand osv. og er fjernet dér (390 rækker).
+- Nemlig, DRK og Årstiderne er ikke gennemgået endnu: productType mangler for de fleste, og keywords er skraberens ord fra titlen — titlerne bliver først pæne, når de er gennemgået som Bilka.
+- REMA (`Produkter/rema1000_version 2.xlsx`) har stadig sine egne kolonnenavne (`is_vegan`, `Type`, `size` …) og er ikke omlagt.
+
 ## Produkttitel — rækkefølge
 1. `_is_cooked`
 2. Product Type (småt begyndelsesbogstav, hvis det ikke er første ord i sætningen)
@@ -17,6 +33,7 @@ Kort version står også i `docs/REGLER.md`.
 - Ordet fjernes fra Product Type/Variation (kun ét sted).
 
 ## Forkortelser i de originale felter (Product Name / Original Title / Subtitle)
+- Rettelsen skrives i Variation — selve originalfeltet røres ikke (se "Originalkolonnerne rettes ALDRIG").
 - `m.` `m/` `m` → **med**, `u.` `u/` → **uden**, samt `i`, `af`.
 - Det, der står efter dem og ligger i Variation, skrives med lille begyndelsesbogstav og får ordet foran:
   "Ymerdrys m. kanel" → Variation `med farin og kanel`.
@@ -28,7 +45,7 @@ Kort version står også i `docs/REGLER.md`.
 
 ## Andet
 - Instantkaffe hedder altid "Instantkaffe" (Product Type) — ikke "Kaffe, instant".
-- Kolonner er ens i alle ark (se Bilka som master): HelloCal_Title, Product Name, Original Title, Subtitle, Quantity, Brand, Subbrand, EAN, Pack Count, Product Type, Variation, Category, Packaging, `_is_*`, Keyword 1-5, Source URL, Manufacturer, Image File, Parse Status.
+- Kolonner er ens i alle ark (Bilka er master) — se "Alle ark har Bilkas kolonner" øverst.
 
 ## Lister, gram og fedt (tilføjet 2026-10-09)
 - `/` og komma i Variation og Keywords bliver til almindelig opremsning: "hindbær/ blåbær/ solbær" → "med hindbær, blåbær og solbær"; kun to led → "a og b".
@@ -125,6 +142,7 @@ Kort version står også i `docs/REGLER.md`.
 - Intet tusindtalspunktum: "1.080 g" → "1080 g" (ellers læses det som 1.08 g). "8 x 24.125 g" er allerede et decimaltal og bliver stående.
 - Ødelagte decimaler med mellemrum ("0, 5 l", "462, 50/Kg", "3, 5-3, 7 kg") rettes til punktum i mængde, Clean Subtitle og produkttype. Komma med mellemrum i navne er en opremsning ("Batch 99, 75cl", "45+, med kommen") og røres ikke. Billedfilnavne og URL'er røres ikke (de peger på filer).
 - Gennemført 2026-10-10: `Excelark/bilka.xlsx` (23.150 celler), `Produkter/rema1000_version 2.xlsx` (191) og `Frida-ark/frida.xlsx` (11). Bilka række 2 (Björnsted mørk chokolade) havde "70%" kakao som tallet 0.7 i variant — ryddet (ingrediens-%). Backups `Excelark/backup/*_foer_decimalpunktum.xlsx`. De øvrige ark (SPAR, Nemlig, Wolt, DRK m.fl.) får reglen, når de tages op.
+- Indført 2026-10-10 i SPAR, Nemlig, Wolt, DRK, Årstiderne, dm, EDEKA og REWE — kun i vores egne kolonner. Originalkolonnerne får aldrig punktum (se "Originalkolonnerne rettes ALDRIG"). NB: decimal-passet på Bilka ændrede også Bilkas originaler (Original Title 150, Product Name 1291, Subtitle alle rækker); de kan hentes tilbage fra `Excelark/backup/bilka_2026-10-10_1445_foer_decimalpunktum.xlsx`.
 
 ## REMA: flavor er lagt ind i variant (brugerens regel 2026-10-10)
 - Kolonnen `flavor` er slettet; smagen står nu i `variant`. Tom variant → smagen; "med …"-led sættes efter ("grill med hvidløg", "med tykmælk og æg"); to smagsord → "vanilje og skovbær"; ellers med mellemrum som titlen viste før ("cultura hindbær", "max lime"). "røget" → `_is_cooked`, "saltet"/"usaltet" → `keyword1`. Titelformlerne bruger nu kun `variant`.
