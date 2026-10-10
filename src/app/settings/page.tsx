@@ -11,6 +11,7 @@ import {
   IconCreditCard,
   IconBell,
   IconEye,
+  IconRuler,
   IconHome2,
   IconCalendarHeart,
   IconCalendarWeek,
@@ -31,6 +32,7 @@ import { OnboardingWizard } from "@/components/OnboardingWizard";
 import { useTranslation } from "@/i18n/LocaleProvider";
 import { helpPagePath } from "@/i18n";
 import { SearchField } from "@/components/knowledge/SearchField";
+import { clearOfflineCache } from "@/lib/offline-cache";
 import { useFamilyStatus } from "@/components/family/FamilyStatusProvider";
 
 function resetOnboardingProgress() {
@@ -112,6 +114,7 @@ export default function SettingsPage() {
     { icon: <IconBell size={20} />, label: t("settings.notifications"), href: "/profile/notifications" },
     { icon: <IconHome2 size={20} />, label: t("settings.frontPage"), href: "/settings/display/front-page" },
     { icon: <IconEye size={20} />, label: t("settings.resultsDisplay"), href: "/profile/settings/results" },
+    { icon: <IconRuler size={20} />, label: t("settings.bodyMeasurementsDisplay"), href: "/settings/display/body-measurements" },
     { icon: <IconAlertTriangle size={20} />, label: t("settings.recommendedLimits"), href: "/settings/display/limits" },
     { icon: <IconAdjustments size={20} />, label: t("displaySettings.uncertainty"), href: "/settings/display/uncertainty" },
     { icon: <IconCalendarWeek size={20} />, label: t("settings.calendarView"), href: "/settings/display/calendar-view" },
@@ -257,6 +260,12 @@ export default function SettingsPage() {
               divider
             />
             <ChevronRow
+              icon={<IconRuler size={20} />}
+              label={t("settings.bodyMeasurementsDisplay")}
+              href="/settings/display/body-measurements"
+              divider
+            />
+            <ChevronRow
               icon={<IconAlertTriangle size={20} />}
               label={t("settings.recommendedLimits")}
               href="/settings/display/limits"
@@ -325,6 +334,7 @@ export default function SettingsPage() {
           type="button"
           onClick={() => {
             fetch("/api/auth/logout", { method: "POST" }).finally(() => {
+              clearOfflineCache();
               router.push("/login");
               router.refresh();
             });

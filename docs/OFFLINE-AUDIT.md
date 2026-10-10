@@ -37,8 +37,19 @@ Brugerens spørgsmål: "Vis mig alle de steder offline-besked bliver vist. Har d
 | `src/components/family/FamilyStatusProvider.tsx:80` | Beholder sidste kendte familiestatus |
 | `src/app/search/page.tsx:130,153` + `src/app/favorites/page.tsx:44,50` | Seneste/favoritter bliver tomme uden besked (dækket af det globale banner) |
 
+## Lokal læsecache (2026-10-09)
+
+`src/lib/offline-cache.ts` (localStorage, nøgler `hc-offcache:*`) gemmer sidste vellykkede svar. Cachen bruges kun, når hentningen fejler, og ryddes ved log ud (`settings/page.tsx`).
+
+| Sted | Offline-adfærd |
+| --- | --- |
+| Søg: favoritter og senest anvendte (`search/page.tsx`) | Sidst hentede liste vises |
+| Favoritter (`favorites/page.tsx`) | Sidst hentede liste vises |
+| Produktsøgning | De 20 seneste søgninger gemmes; offline vises præcist match, ellers varer fra gemte søgninger hvis titel indeholder søgeordet, med teksten `offline.cachedResults`. Uden træf: den almindelige offline-besked |
+
 ## Hvad der **ikke** virker offline (kendte huller, ikke bygget)
 
+- Opskrifts-favoritter og andre skærme bruger endnu ikke cachen.
 - Ingen service worker / PWA-cache: appen kan ikke åbnes helt uden net, kun allerede indlæste sider virker.
 - Registreringer (`/api/registrations`) lægges **ikke** i kø offline — brugeren får offline-besked og må prøve igen. Kun nye varer køes. At køe registreringer kræver en beslutning om konfliktløsning (snapshot-semantik) og er ikke lavet.
 - Etiket-/ingrediens-læsning (OCR/AI) i kamera-flowet fejler uden net og viser flowets almindelige fejl; det globale banner forklarer hvorfor.

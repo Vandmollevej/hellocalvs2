@@ -8,6 +8,8 @@ import { useTranslation } from "@/i18n/LocaleProvider";
 import {
   BODY_MEASUREMENT_FIELDS,
   emptyBodyMeasurementValues,
+  isBodyMeasurementVisible,
+  type BodyMeasurementVisibility,
   type BodyMeasurementField,
   type BodyMeasurementSex,
 } from "@/lib/body-measurements";
@@ -23,6 +25,9 @@ type BodyMeasurementEntry = {
   thighCm: number | null;
   upperArmCm: number | null;
   neckCm: number | null;
+  buttockCm: number | null;
+  ankleCm: number | null;
+  calfCm: number | null;
   measuredAt: string;
 };
 
@@ -104,15 +109,20 @@ export default function BodyMeasurementsPage() {
   // (brugerkrav 2026-09-30: en mand må aldrig få vist de kvindelige figurer).
   const [sex, setSex] = useState<BodyMeasurementSex | null>(null);
   const [sexLoaded, setSexLoaded] = useState(false);
+  // Hvilke mål brugeren har valgt at vise (Indstillinger → Visning → Kropsmål).
+  const [visibility, setVisibility] = useState<BodyMeasurementVisibility | null>(null);
 
   useEffect(() => {
     fetch("/api/profile")
       .then(async (response) => {
         if (!response.ok) throw new Error("Kunne ikke hente profil");
-        return (await response.json()) as { user: { sex: BodyMeasurementSex | null } };
+        return (await response.json()) as {
+          user: { sex: BodyMeasurementSex | null; bodyMeasurementVisibility: BodyMeasurementVisibility | null };
+        };
       })
       .then((data) => {
         setSex(data.user.sex ?? null);
+        setVisibility(data.user.bodyMeasurementVisibility ?? null);
         setSexLoaded(true);
       })
       .catch(() => {});
@@ -201,7 +211,7 @@ export default function BodyMeasurementsPage() {
         {/* Ét kort pr. mål i Statistik-kortenes stil: tegning til venstre i fast
             bredde (så titlerne flugter), titel og felt på samme linje til højre. */}
         <div className="flex flex-col gap-3">
-          {BODY_MEASUREMENT_FIELDS.map(({ field, labelKey, image }) => (
+          {BODY_MEASUREMENT_FIELDS.filter(({ field }) => isBodyMeasurementVisible(visibility, field)).map(({ field, labelKey, image }) => (
             <label key={field} className="items-center text-left hf-card--row hf-card--form hf-card">
               <span className="flex h-[108px] w-20 shrink-0 items-center justify-center">
                 {image && sex && (

@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { IconChevronRight, IconClipboardHeart } from "@tabler/icons-react";
+import { IconChevronRight, IconClipboardHeart, IconMoon } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
 import { FoodRow } from "@/components/FoodRow";
 import { HfLoader } from "@/components/hf/HfLoader";
@@ -33,11 +33,19 @@ export default function ScreeningReportsPage() {
           </div>
         )}
         {failed && <p className="hf-type-body text-text-secondary">{t("screenings.loadError")}</p>}
-        {screenings && screenings.length === 0 && (
-          <p className="hf-type-body text-text-secondary">{t("screenings.reportsEmpty")}</p>
-        )}
-        {screenings && screenings.length > 0 && (
+        {screenings && (
           <div className="hf-card !py-0">
+            {/* Søvn er en fast række (som på Screeninger-siden) og peger på søvnstatistikken. */}
+            <div className={screenings.length > 0 ? "border-b border-hf-tan-dark" : ""}>
+              <Link href="/statistics/sleep" className="block">
+                <FoodRow
+                  thumbnail={<IconMoon size={22} />}
+                  title={t("screenings.sleep")}
+                  subtitle={<p className="hf-type-small text-text-secondary">{t("screenings.statusActive")}</p>}
+                  right={<IconChevronRight size={18} />}
+                />
+              </Link>
+            </div>
             {screenings.map((screening, index) => (
               <div key={screening.id} className={index < screenings.length - 1 ? "border-b border-hf-tan-dark" : ""}>
                 <Link href={`/profile/screenings/reports/${screening.id}`} className="block">

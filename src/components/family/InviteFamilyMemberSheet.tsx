@@ -37,8 +37,10 @@ export function InviteFamilyMemberSheet({ onClose }: { onClose: () => void }) {
 
   if (!status) return null;
   const me = status.me;
-  const members = status.family?.members ?? [{ userId: me.id, displayName: me.displayName, isChild: false }];
-  const canAddChild = members.length < (status.family?.capacity ?? status.maxProfiles);
+  const allMembers = status.family?.members ?? [{ userId: me.id, displayName: me.displayName, isChild: false, sharingDeciderId: me.id }];
+  const canAddChild = allMembers.length < (status.family?.capacity ?? status.maxProfiles);
+  // Kun profiler, betaleren selv bestemmer over; voksne med eget login deler selv.
+  const members = allMembers.filter((member) => member.sharingDeciderId === me.id);
 
   function errorText(data: Record<string, unknown>) {
     return t(`family.error.${typeof data.code === "string" ? data.code : "unknown"}`);

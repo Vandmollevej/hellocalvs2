@@ -30,7 +30,9 @@ export async function passkeyChallengeResponse(req: Request, allowUserId?: strin
         }
       : {}),
   });
-  const response = NextResponse.json(options);
+  // "client-device": bed browseren bruge enhedens egen låsning frem for
+  // QR-koden til en anden enhed.
+  const response = NextResponse.json({ ...options, hints: ["client-device"] });
   response.cookies.set(USER_WEBAUTHN_AUTH_COOKIE, await signUserWebauthnChallenge("auth", options.challenge), {
     httpOnly: true,
     secure: true,

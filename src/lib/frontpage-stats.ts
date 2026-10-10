@@ -9,7 +9,13 @@ import {
   IconApple,
   IconAtom2,
   IconBone,
+  IconBread,
   IconCandy,
+  IconClock,
+  IconActivity,
+  IconMoon,
+  IconRun,
+  IconStairsUp,
   IconDroplet,
   IconEgg,
   IconFlame,
@@ -18,6 +24,8 @@ import {
   IconLeaf,
   IconLemon2,
   IconRoute,
+  IconScale,
+  IconTarget,
   IconSalt,
   IconToolsKitchen2,
   type Icon,
@@ -25,6 +33,16 @@ import {
 import { IconDrumstick } from "@/components/icons/Drumstick";
 import { IconWaterGlass } from "@/components/icons/WaterGlass";
 import { DAILY_PROTEIN_GOAL } from "@/lib/goals";
+import {
+  DEFAULT_ENERGY_SPLIT,
+  DEFAULT_FLOORS_GOAL,
+  DEFAULT_STEPS_GOAL,
+  KCAL_PER_STEP,
+  energySplitPercent,
+  macroGoalsFor,
+  type MacroGoals,
+  type WeightOutlook,
+} from "@/lib/frontpage-goal-math";
 
 export type FrontpageStatKey =
   | "calories"
@@ -47,7 +65,17 @@ export type FrontpageStatKey =
   | "water"
   | "burned"
   | "steps"
-  | "distanceKm";
+  | "distanceKm"
+  | "floors"
+  | "earnedKcal"
+  | "energySplit"
+  | "activityKcal"
+  | "stepKcal"
+  | "intakeVsTypical"
+  | "restingTime"
+  | "zoneTime"
+  | "weightOnGoalDay"
+  | "goalChance";
 
 // Today's summed registration snapshots (see src/lib/daily-totals.ts, whose
 // per-day shape this reuses — the front page just never groups by day, it
@@ -78,6 +106,24 @@ export type FrontpageMetricTotals = {
   waterMl: number | null;
   burnedKcal: number | null;
   distanceKm: number | null;
+  floors: number | null;
+  restingMinutes: number | null;
+  restingBpm: number | null;
+};
+
+/** Data ud over dagens summer, hentet af StatsWheel til de nyere felter. */
+export type FrontpageExtraData = {
+  /** Dagens registrerede sport (Activity), seneste først. */
+  activities: { sportType: string; kcal: number }[];
+  intakeComparison: { today: number; typical: number | null; percent: number | null };
+  /** Minutter i den valgte pulszone i dag — null uden pulsmålinger. */
+  zoneMinutes: number | null;
+  /** 1–5. */
+  zoneNumber: number;
+  /** Egne mål (Målsætning → ernæring), hvis sat. */
+  ownGoals: { proteinG?: number; fatG?: number; carbsG?: number };
+  weightOutlook: WeightOutlook | null;
+  weightGoalKg: number | null;
 };
 
 export type FrontpageStatData = {
@@ -85,24 +131,66 @@ export type FrontpageStatData = {
   metrics: FrontpageMetricTotals;
   /** Dagens kaloriemål (DailyBudgetSnapshot, ellers DAILY_KCAL_GOAL). */
   goalKcal: number;
+  extra: FrontpageExtraData;
 };
+
+export type FrontpageStatResult = {
+  value: string;
+  unit: string;
+  /** Mål-linjen under tallet (erstatter pladsholderteksten). */
+  caption?: string;
+  /** Målet er nået → hovedtallet bliver grønt. */
+  reached?: boolean;
+  /** Ikoner til højre for tallet i stedet for def.icon (fx flamme + skridt). */
+  icons?: Icon[];
+};
+
+type Translate = (key: string, params?: Record<string, string | number>) => string;
 
 function formatNumber(value: number, maximumFractionDigits = 0) {
   return new Intl.NumberFormat("da-DK", { maximumFractionDigits }).format(value);
+}
+
+function macroGoals(data: FrontpageStatData): MacroGoals {
+  return macroGoalsFor(data.goalKcal, data.extra.ownGoals, DAILY_PROTEIN_GOAL);
+}
+
+/** "Mål: 120 g" under et tal, hvor målet er et minimum (grønt når nået). */
+function minGoal(t: Translate, value: number, unit: string, digits = 0) {
+  return t("frontPageStats.goalMin", { value: `${formatNumber(value, digits)}${unit ? ` ${unit}` : ""}` });
+}
+
+/** "Mål: højst 6 g" under et tal, hvor målet er en grænse. */
+function maxGoal(t: Translate, value: number, unit: string, digits = 0) {
+  return t("frontPageStats.goalMax", { value: `${formatNumber(value, digits)}${unit ? ` ${unit}` : ""}` });
+}
+
+function formatDuration(minutes: number) {
+  const hours = Math.floor(minutes / 60);
+  const rest = Math.round(minutes % 60);
+  return hours > 0 ? `${hours} t ${rest} min` : `${rest} min`;
+}
+
+function signed(value: number) {
+  return `${value > 0 ? "+" : value < 0 ? "−" : ""}${formatNumber(Math.abs(value))}`;
 }
 
 export const FRONTPAGE_STAT_DEFS: {
   key: FrontpageStatKey;
   labelKey: string;
   icon: Icon;
-  compute: (data: FrontpageStatData) => { value: string; unit: string; goal?: number };
+  compute: (data: FrontpageStatData, t: Translate) => FrontpageStatResult;
 }[] = [
   {
     key: "calories",
     labelKey: "frontPageStats.calories",
-    // Kyllingelår = indtagne kalorier; ikonet supplerer enheden "kcal" (design.md §6.16).
-    icon: IconDrumstick,
-    compute: (data) => ({ value: formatNumber(data.totals.kcal), unit: "kcal", goal: data.goalKcal }),
+    // Kniv og gaffel = kalorieindtag (brugerens ønske 2026-10-09; erstatter kyllingelåret).
+    icon: IconToolsKitchen2,
+    compute: (data, t) => ({
+      value: formatNumber(data.totals.kcal),
+      unit: "kcal",
+      caption: maxGoal(t, data.goalKcal, "kcal"),
+    }),
   },
   {
     key: "kcalRemaining",
@@ -110,31 +198,55 @@ export const FRONTPAGE_STAT_DEFS: {
     // (mål minus indtag, aldrig negativ) — ikke det samme som en overskridelse.
     labelKey: "frontPageStats.kcalRemaining",
     icon: IconDrumstick,
-    compute: (data) => ({ value: formatNumber(Math.max(0, data.goalKcal - data.totals.kcal)), unit: "kcal" }),
+    compute: (data, t) => ({
+      value: formatNumber(Math.max(0, data.goalKcal - data.totals.kcal)),
+      unit: "kcal",
+      caption: t("frontPageStats.kcalRemainingCaption"),
+    }),
   },
   {
     key: "protein",
     labelKey: "frontPageStats.protein",
     icon: IconEgg,
-    compute: (data) => ({ value: formatNumber(data.totals.protein), unit: "g", goal: DAILY_PROTEIN_GOAL }),
+    compute: (data, t) => {
+      const goal = macroGoals(data).proteinG;
+      return {
+        value: formatNumber(data.totals.protein),
+        unit: "g",
+        caption: minGoal(t, goal, "g"),
+        reached: data.totals.protein >= goal,
+      };
+    },
   },
   {
     key: "carbs",
     labelKey: "frontPageStats.carbs",
-    icon: IconToolsKitchen2,
-    compute: (data) => ({ value: formatNumber(data.totals.carbs), unit: "g" }),
+    icon: IconBread,
+    compute: (data, t) => ({
+      value: formatNumber(data.totals.carbs),
+      unit: "g",
+      caption: maxGoal(t, macroGoals(data).carbsG, "g"),
+    }),
   },
   {
     key: "fat",
     labelKey: "frontPageStats.fat",
     icon: IconDroplet,
-    compute: (data) => ({ value: formatNumber(data.totals.fat), unit: "g" }),
+    compute: (data, t) => ({
+      value: formatNumber(data.totals.fat),
+      unit: "g",
+      caption: maxGoal(t, macroGoals(data).fatG, "g"),
+    }),
   },
   {
     key: "sugar",
     labelKey: "frontPageStats.sugar",
     icon: IconCandy,
-    compute: (data) => ({ value: formatNumber(data.totals.sugar, 1), unit: "g" }),
+    compute: (data, t) => ({
+      value: formatNumber(data.totals.sugar, 1),
+      unit: "g",
+      caption: maxGoal(t, macroGoals(data).sugarG, "g"),
+    }),
   },
   {
     key: "fiber",
@@ -146,7 +258,11 @@ export const FRONTPAGE_STAT_DEFS: {
     key: "salt",
     labelKey: "frontPageStats.salt",
     icon: IconSalt,
-    compute: (data) => ({ value: formatNumber(data.totals.salt, 1), unit: "g" }),
+    compute: (data, t) => ({
+      value: formatNumber(data.totals.salt, 1),
+      unit: "g",
+      caption: maxGoal(t, macroGoals(data).saltG, "g"),
+    }),
   },
   {
     key: "potassium",
@@ -209,7 +325,7 @@ export const FRONTPAGE_STAT_DEFS: {
     // Same "1,6 l" placeholder src/lib/stat-cards.ts has always shown until a
     // HealthKit/Health Connect companion app sends real WATER_ML readings.
     compute: (data) => ({
-      value: data.metrics.waterMl !== null ? formatNumber(data.metrics.waterMl / 1000, 1) : "1,6",
+      value: data.metrics.waterMl !== null ? formatNumber(data.metrics.waterMl / 1000, 1) : "–",
       unit: "l",
     }),
   },
@@ -218,18 +334,21 @@ export const FRONTPAGE_STAT_DEFS: {
     labelKey: "frontPageStats.burned",
     // Flamme = forbrændte kalorier (design.md §6.16).
     icon: IconFlame,
-    compute: (data) => ({
-      value: data.metrics.burnedKcal !== null ? formatNumber(data.metrics.burnedKcal) : "642",
+    compute: (data, t) => ({
+      value: data.metrics.burnedKcal !== null ? formatNumber(data.metrics.burnedKcal) : "–",
       unit: "kcal",
+      caption: t("frontPageStats.burnedCaption"),
     }),
   },
   {
     key: "steps",
     labelKey: "frontPageStats.steps",
     icon: IconFootsteps,
-    compute: (data) => ({
-      value: data.metrics.steps !== null ? formatNumber(data.metrics.steps) : "6.210",
+    compute: (data, t) => ({
+      value: data.metrics.steps !== null ? formatNumber(data.metrics.steps) : "–",
       unit: "",
+      caption: minGoal(t, DEFAULT_STEPS_GOAL, ""),
+      reached: (data.metrics.steps ?? 0) >= DEFAULT_STEPS_GOAL,
     }),
   },
   {
@@ -240,10 +359,153 @@ export const FRONTPAGE_STAT_DEFS: {
     // app sends it yet, so unlike steps/water/burned above there is no
     // pre-existing baked-in demo number to preserve; show a plain dash
     // instead of inventing one.
-    compute: (data) => ({
+    compute: (data, t) => ({
       value: data.metrics.distanceKm !== null ? formatNumber(data.metrics.distanceKm, 1) : "–",
       unit: "km",
+      caption: t("frontPageStats.distanceCaption"),
     }),
+  },
+  {
+    key: "floors",
+    labelKey: "frontPageStats.floors",
+    icon: IconStairsUp,
+    compute: (data, t) => ({
+      value: data.metrics.floors !== null ? formatNumber(data.metrics.floors) : "–",
+      unit: "",
+      caption: minGoal(t, DEFAULT_FLOORS_GOAL, ""),
+      reached: (data.metrics.floors ?? 0) >= DEFAULT_FLOORS_GOAL,
+    }),
+  },
+  {
+    key: "earnedKcal",
+    // Alt der er forbrændt ud over standardforbruget ("Optjent").
+    labelKey: "frontPageStats.earnedKcal",
+    icon: IconFlame,
+    compute: (data, t) => {
+      const sport = data.extra.activities.reduce((sum, a) => sum + a.kcal, 0);
+      const earned = data.metrics.burnedKcal ?? (sport > 0 ? sport : null);
+      return {
+        value: earned !== null ? `+${formatNumber(earned)}` : "–",
+        unit: "kcal",
+        caption: t("frontPageStats.earnedCaption"),
+      };
+    },
+  },
+  {
+    key: "energySplit",
+    labelKey: "frontPageStats.energySplit",
+    icon: IconAtom2,
+    compute: (data, t) => {
+      const split = energySplitPercent(data.totals.protein, data.totals.fat, data.totals.carbs);
+      const goal = DEFAULT_ENERGY_SPLIT;
+      return {
+        value: split ? `P ${split.protein} F ${split.fat} K ${split.carbs}` : "–",
+        unit: "%",
+        caption: t("frontPageStats.energySplitCaption", { p: goal.protein, f: goal.fat, k: goal.carbs }),
+      };
+    },
+  },
+  {
+    key: "activityKcal",
+    labelKey: "frontPageStats.activityKcal",
+    icon: IconActivity,
+    compute: (data, t) => {
+      const total = data.extra.activities.reduce((sum, a) => sum + a.kcal, 0);
+      const running = data.extra.activities.some((a) => /run|løb|jog/i.test(a.sportType));
+      return {
+        value: data.extra.activities.length > 0 ? formatNumber(total) : "–",
+        unit: "kcal",
+        caption: data.extra.activities[0]?.sportType ?? t("frontPageStats.activityNone"),
+        icons: [running ? IconRun : IconActivity],
+      };
+    },
+  },
+  {
+    key: "stepKcal",
+    labelKey: "frontPageStats.stepKcal",
+    icon: IconFlame,
+    compute: (data, t) => ({
+      value: data.metrics.steps !== null ? formatNumber(data.metrics.steps * KCAL_PER_STEP) : "–",
+      unit: "kcal",
+      caption: t("frontPageStats.stepKcalCaption"),
+      icons: [IconFlame, IconFootsteps],
+    }),
+  },
+  {
+    key: "intakeVsTypical",
+    labelKey: "frontPageStats.intakeVsTypical",
+    icon: IconClock,
+    compute: (data, t) => {
+      const { today, percent } = data.extra.intakeComparison;
+      return {
+        value: formatNumber(today),
+        unit: "kcal",
+        caption:
+          percent === null
+            ? t("frontPageStats.intakeNoBasis")
+            : t("frontPageStats.intakeVsTypicalCaption", { percent: signed(percent) }),
+      };
+    },
+  },
+  {
+    key: "restingTime",
+    labelKey: "frontPageStats.restingTime",
+    icon: IconMoon,
+    compute: (data, t) => ({
+      value: data.metrics.restingMinutes !== null ? formatDuration(data.metrics.restingMinutes) : "–",
+      unit: "",
+      caption:
+        data.metrics.restingBpm !== null
+          ? t("frontPageStats.restingBpm", { bpm: formatNumber(data.metrics.restingBpm) })
+          : t("frontPageStats.restingBpmNone"),
+    }),
+  },
+  {
+    key: "zoneTime",
+    labelKey: "frontPageStats.zoneTime",
+    icon: IconHeartbeat,
+    compute: (data, t) => ({
+      value: data.extra.zoneMinutes !== null ? formatDuration(data.extra.zoneMinutes) : "–",
+      unit: "",
+      caption: t("frontPageStats.zoneCaption", { zone: data.extra.zoneNumber }),
+    }),
+  },
+  {
+    key: "weightOnGoalDay",
+    labelKey: "frontPageStats.weightOnGoalDay",
+    icon: IconScale,
+    compute: (data, t) => {
+      const outlook = data.extra.weightOutlook;
+      if (!outlook || data.extra.weightGoalKg === null) {
+        return { value: "–", unit: "kg", caption: t("frontPageStats.noWeightGoal") };
+      }
+      return {
+        value: formatNumber(outlook.predictedKg, 1),
+        unit: "kg",
+        caption: t("frontPageStats.weightGoalCaption", {
+          goal: formatNumber(data.extra.weightGoalKg, 1),
+          verdict: t(`frontPageStats.verdict.${outlook.verdict}`),
+        }),
+        reached: outlook.verdict === "likely",
+      };
+    },
+  },
+  {
+    key: "goalChance",
+    labelKey: "frontPageStats.goalChance",
+    icon: IconTarget,
+    compute: (data, t) => {
+      const outlook = data.extra.weightOutlook;
+      if (!outlook) return { value: "–", unit: "", caption: t("frontPageStats.noWeightGoal") };
+      return {
+        value: formatNumber(outlook.chancePercent),
+        unit: "%",
+        caption: t("frontPageStats.goalChanceCaption", {
+          max: formatNumber(outlook.recommendedKgPerWeek, 2),
+        }),
+        reached: outlook.chancePercent >= 60,
+      };
+    },
   },
 ];
 

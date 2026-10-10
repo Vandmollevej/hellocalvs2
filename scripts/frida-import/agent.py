@@ -449,7 +449,14 @@ def main():
     log.info("frida agent started, polling every %ss", POLL_INTERVAL_SECONDS)
     # Planlægning/pause/"kør nu" styres fra admin "Cron-jobs" (job_control.py);
     # POLL_INTERVAL_SECONDS er kun standard-intervallet første gang.
-    run_forever(DATABASE_URL, "frida-import", run_once, interval_minutes=max(1, POLL_INTERVAL_SECONDS // 60))
+    run_forever(
+        DATABASE_URL,
+        "frida-import",
+        run_once,
+        interval_minutes=max(1, POLL_INTERVAL_SECONDS // 60),
+        # Kør også ved hver container-start, så et nyt Frida-ark (sheet/frida_sheet.json) går live ved deploy.
+        run_on_start=True,
+    )
 
 
 if __name__ == "__main__":

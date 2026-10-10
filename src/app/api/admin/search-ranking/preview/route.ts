@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import type { Prisma } from "@prisma/client";
 import { requireAdminUser } from "@/lib/require-admin";
 import { prisma } from "@/lib/prisma";
 import { deriveIsVerified, rankProducts, type RankableProduct } from "@/lib/product-search-ranking";
@@ -42,6 +43,8 @@ export async function POST(req: Request) {
     return NextResponse.json({ results: [] });
   }
 
+  const queryWords = query.split(/\s+/).filter((word) => word.length >= 2).slice(0, 6);
+
   try {
     const [products, ingredients] = await Promise.all([
       prisma.product.findMany({
@@ -51,6 +54,19 @@ export async function POST(req: Request) {
           OR: [
             { name: { contains: query, mode: "insensitive" } },
             { brand: { name: { contains: query, mode: "insensitive" } } },
+            // Samme flerords-regel som /api/products ("arla letmælk").
+            ...(queryWords.length > 1
+              ? [
+                  {
+                    AND: queryWords.map((word): Prisma.ProductWhereInput => ({
+                      OR: [
+                        { name: { contains: word, mode: "insensitive" } },
+                        { brand: { name: { contains: word, mode: "insensitive" } } },
+                      ],
+                    })),
+                  },
+                ]
+              : []),
           ],
           AND: {
             OR: [{ externalSource: null }, { externalSource: { notIn: ["HELLOFRESH", "OPEN_FOOD_FACTS"] } }],

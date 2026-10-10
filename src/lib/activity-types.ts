@@ -10,6 +10,8 @@ export type ActivityOption = {
   label: string;
   custom: boolean;
   pending: boolean;
+  /** Brugerens favorit (bookmark) — vises øverst. */
+  favorite?: boolean;
   /** Ekstra søgeord fra kataloget (synonymer, underformer). */
   words?: string[];
 };
@@ -35,13 +37,32 @@ export async function listActivityOptions(userId: string): Promise<ActivityOptio
     .sort((a, b) => a.label.localeCompare(b.label, "da"));
   const other = SPORT_TYPES.find((sport) => sport.key === "other");
   const builtInNames = new Set(builtIn.map((option) => normalizeActivityName(option.label)));
-  return [
+  const favoriteKeys = new Set(
+    (await prisma.activityFavorite.findMany({ where: { userId }, select: { activityKey: true } })).map((row) => row.activityKey),
+  );
+  const all = [
     ...builtIn,
     ...custom
       .filter((row) => !builtInNames.has(row.normalizedName))
       .map((row) => ({ key: row.name, label: row.name, custom: true, pending: row.status === "PENDING" })),
     ...(other ? [{ key: other.key, label: other.label, custom: false, pending: false }] : []),
-  ];
+  ].map((option): ActivityOption => ({ ...option, favorite: favoriteKeys.has(option.key) }));
+  // Favoritter øverst (stabil sortering bevarer alfabetet indeni).
+  return [...all.filter((option) => option.favorite), ...all.filter((option) => !option.favorite)];
+}
+
+export async function setActivityFavorite(userId: string, activityKey: string, favorite: boolean) {
+  const key = activityKey.trim().slice(0, 80);
+  if (!key) return;
+  if (favorite) {
+    await prisma.activityFavorite.upsert({
+      where: { userId_activityKey: { userId, activityKey: key } },
+      create: { userId, activityKey: key },
+      update: {},
+    });
+  } else {
+    await prisma.activityFavorite.deleteMany({ where: { userId, activityKey: key } });
+  }
 }
 
 /** Opretter (eller genbruger) en brugertilføjet aktivitet; nye venter i kvalitetskontrol. */
