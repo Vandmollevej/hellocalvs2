@@ -12,7 +12,7 @@ export default function KnowledgeSectionPage() {
   const { category } = useParams<{ category: string }>();
   const [query, setQuery] = useState("");
   const title = sectionTitle(category);
-  if (!title || category === "e-numre") notFound();
+  if (!title || category === "e-numre" || category === "omregning") notFound();
   const rows = searchEntries(query, category as KnowledgeSection).map((entry) => ({
     key: entry.slug,
     label: entry.title,

@@ -1280,7 +1280,13 @@
     "report": "Rapporter",
     "reported": "Takk, retten er rapportert",
     "reportError": "Kunne ikke rapportere retten",
-    "shareError": "Delingen kunne ikke endres akkurat nå"
+    "shareError": "Delingen kunne ikke endres akkurat nå",
+    "measureKcal": "{amount} · {kcal} kcal"
+  },
+  "recipeUnits": {
+    "label": "Vis mengder som",
+    "measures": "Mål",
+    "grams": "Gram"
   },
   "hfRecipe": {
     "loading": "Henter oppskriften …",

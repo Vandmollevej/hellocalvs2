@@ -1280,7 +1280,13 @@
     "report": "Signaler",
     "reported": "Merci, le plat a été signalé",
     "reportError": "Impossible de signaler le plat",
-    "shareError": "Impossible de modifier le partage pour le moment"
+    "shareError": "Impossible de modifier le partage pour le moment",
+    "measureKcal": "{amount} · {kcal} kcal"
+  },
+  "recipeUnits": {
+    "label": "Afficher les quantités en",
+    "measures": "Mesures",
+    "grams": "Grammes"
   },
   "hfRecipe": {
     "loading": "Chargement de la recette …",

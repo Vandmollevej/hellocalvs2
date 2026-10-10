@@ -1280,7 +1280,13 @@
     "report": "Report",
     "reported": "Thanks, the dish has been reported",
     "reportError": "Couldn't report the dish",
-    "shareError": "Sharing couldn't be changed right now"
+    "shareError": "Sharing couldn't be changed right now",
+    "measureKcal": "{amount} · {kcal} kcal"
+  },
+  "recipeUnits": {
+    "label": "Show amounts as",
+    "measures": "Measures",
+    "grams": "Grams"
   },
   "hfRecipe": {
     "loading": "Loading the recipe …",

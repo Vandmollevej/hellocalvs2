@@ -1280,7 +1280,13 @@
     "report": "Melden",
     "reported": "Danke, das Gericht wurde gemeldet",
     "reportError": "Gericht konnte nicht gemeldet werden",
-    "shareError": "Die Freigabe konnte gerade nicht geändert werden"
+    "shareError": "Die Freigabe konnte gerade nicht geändert werden",
+    "measureKcal": "{amount} · {kcal} kcal"
+  },
+  "recipeUnits": {
+    "label": "Mengen anzeigen als",
+    "measures": "Maße",
+    "grams": "Gramm"
   },
   "hfRecipe": {
     "loading": "Rezept wird geladen …",

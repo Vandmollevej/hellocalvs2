@@ -35,6 +35,7 @@ import dk.packroff.hellocal.api.Api
 import dk.packroff.hellocal.api.ApiJson
 import dk.packroff.hellocal.i18n.Locale
 import dk.packroff.hellocal.i18n.LocalTranslator
+import dk.packroff.hellocal.screens.onboarding.gramsAsMeasureText
 import dk.packroff.hellocal.nav.Location
 import dk.packroff.hellocal.nav.RouteArgs
 import dk.packroff.hellocal.theme.HcColors
@@ -163,6 +164,9 @@ fun RecipeDetailScreen(args: RouteArgs) {
     var canReport by remember { mutableStateOf(false) }
     var persons by remember { mutableStateOf(RecipeFilters.load().persons) }
     var portionKcal by remember { mutableStateOf<Int?>(null) }
+    // Gram (som retten er gemt) eller køkkenmål (dl, spsk) via KitchenConversions.kt.
+    var showGrams by remember { mutableStateOf(true) }
+    val conversions = rememberKitchenConversions()
 
     LaunchedEffect(Unit) { portionKcal = RecipePortions.portionKcal(loadProfileUser()) }
 
@@ -365,7 +369,12 @@ fun RecipeDetailScreen(args: RouteArgs) {
                 }
 
                 Column {
-                    HcText(t.t("recipeDetail.ingredients"), HcTypeRoles.Small, Modifier.padding(bottom = 8.dp), bold = true, color = HcColors.Black)
+                    Row(Modifier.fillMaxWidth().padding(bottom = 8.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                        HcText(t.t("recipeDetail.ingredients"), HcTypeRoles.Small, Modifier.weight(1f), bold = true, color = HcColors.Black)
+                        if (ingredients.any { gramsAsMeasureText(conversions, it.grams, it.name) != null }) {
+                            RecipeUnitToggle(showGrams, { showGrams = it })
+                        }
+                    }
                     val shape = RoundedCornerShape(16.dp)
                     Column(Modifier.fillMaxWidth().clip(shape).background(HcColors.Tan, shape)) {
                         ingredients.forEachIndexed { index, ingredient ->
@@ -376,7 +385,9 @@ fun RecipeDetailScreen(args: RouteArgs) {
                                 Column(Modifier.weight(1f)) {
                                     HcText(ingredient.name, HcTypeRoles.Body, bold = true, color = HcColors.Black)
                                     HcText(
-                                        t.t("recipeDetail.gramsKcal", "grams" to round(ingredient.grams), "kcal" to round(ingredient.kcal)),
+                                        (if (showGrams) null else gramsAsMeasureText(conversions, ingredient.grams, ingredient.name))
+                                            ?.let { t.t("recipeDetail.measureKcal", "amount" to it, "kcal" to round(ingredient.kcal)) }
+                                            ?: t.t("recipeDetail.gramsKcal", "grams" to round(ingredient.grams), "kcal" to round(ingredient.kcal)),
                                         HcTypeRoles.Small,
                                         color = HcColors.TextSecondary,
                                     )

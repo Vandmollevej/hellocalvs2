@@ -1280,7 +1280,13 @@
     "report": "Melden",
     "reported": "Bedankt, het gerecht is gemeld",
     "reportError": "Kon het gerecht niet melden",
-    "shareError": "Delen kon nu niet worden gewijzigd"
+    "shareError": "Delen kon nu niet worden gewijzigd",
+    "measureKcal": "{amount} · {kcal} kcal"
+  },
+  "recipeUnits": {
+    "label": "Hoeveelheden tonen als",
+    "measures": "Maten",
+    "grams": "Gram"
   },
   "hfRecipe": {
     "loading": "Recept laden …",

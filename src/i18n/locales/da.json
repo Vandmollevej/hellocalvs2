@@ -1280,7 +1280,13 @@
     "report": "Anmeld",
     "reported": "Tak, retten er anmeldt",
     "reportError": "Kunne ikke anmelde retten",
-    "shareError": "Delingen kunne ikke ændres lige nu"
+    "shareError": "Delingen kunne ikke ændres lige nu",
+    "measureKcal": "{amount} · {kcal} kcal"
+  },
+  "recipeUnits": {
+    "label": "Vis mængder som",
+    "measures": "Mål",
+    "grams": "Gram"
   },
   "hfRecipe": {
     "loading": "Henter opskriften …",

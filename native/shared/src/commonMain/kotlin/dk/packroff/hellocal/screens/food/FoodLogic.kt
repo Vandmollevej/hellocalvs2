@@ -47,10 +47,12 @@ private val PACKAGE_UNIT = Regex("\\d\\s*(ml|cl|dl|g|gr\\.?|gram|l|ltr|liter|mil
 
 fun unitFromPackageSize(text: String?): DisplayUnit? = text?.let { PACKAGE_UNIT.find(it)?.groupValues?.get(1) }?.let(::normalizeUnit)
 
+/** Mængde angivet i cl = færdig drikkevare → altid cl, uanset kategori (brugerens regel 2026-10-10). */
 fun productDisplayUnit(product: ProductDto?): DisplayUnit {
+    val unit = unitFromPackageSize(product?.packageSizeText) ?: unitFromPackageSize(product?.name)
+    if (unit == DisplayUnit.CL) return DisplayUnit.CL
     if (product?.productCategory != "DRINK") return DisplayUnit.G
-    val unit = unitFromPackageSize(product.packageSizeText) ?: unitFromPackageSize(product.name)
-    return if (unit == DisplayUnit.CL) DisplayUnit.CL else DisplayUnit.ML
+    return DisplayUnit.ML
 }
 
 fun toDisplayAmount(base: Double, unit: DisplayUnit): Double = if (unit == DisplayUnit.CL) jsRound(base) / 10.0 else base
