@@ -103,7 +103,13 @@ ikke her, er den ikke registreret og skal tilføjes.
 - Visuelle ændringer: læs design.md; størrelse/vægt ændres i moderate trin.
 - **Decimaltegn (user rule 2026-10-10)**: arkene (og databasen) skriver decimaler med punktum ("1.5 l", "3.5% fedt"); appen viser brugerens eget decimaltegn efter landet i profilen — komma i Danmark og de andre komma-lande ("1,5 l"), punktum i fx GB/IE/US/CA/AU/NZ/CH. Vis varetekster via `DecimalText`/`localizeDecimals` (`src/lib/decimal-separator.ts`); søgning finder begge skrivemåder. Se DECISIONS.md.
 - **Originalkolonnerne i produktarkene rettes ALDRIG (user rule 2026-10-10)**: `Original Title`, `Product Name`, `Subtitle`, `Source URL`, `Image File`, `Parse Status` og butikkens øvrige skrabede kolonner (`Manufacturer`, `Servings`, `Price`, `Venue`, SPAR `Subcategory`/`Vare`/`Variant`/`quantity`) er præcis som skrabet — ingen stavning, forkortelser, decimaltegn eller m./u., hverken i hånden eller med scripts. Alle rettelser skrives i vores egne kolonner; er de ændret, hentes de tilbage fra den rå skrabning. Se Excelark/NAVNEREGLER.md.
-- **Alle produktark har Bilkas kolonner (2026-10-10)**: kolonne 1-43 præcis som `Excelark/bilka.xlsx` (samme navne, rækkefølge og titelformler); SPAR, Nemlig, Wolt, DRK, Årstiderne, dm, EDEKA og REWE er omlagt med `Excelark/omlaeg_til_bilka_kolonner.py` (deploy-grenen). Se Excelark/NAVNEREGLER.md.
+- **Alle ark er 100 % identiske med Bilka** (2026-10-10): de samme 45 kolonner
+  (navne, rækkefølge, titelformler), ingen ekstra kolonner. Arbejdsarkene og
+  scriptet (`Excelark/omlaeg_til_bilka_kolonner.py --ens`) står i
+  Excelark/NAVNEREGLER.md.
+- **Quantity i samme stil** (alle ark, brugerens regel 2026-10-10): tal,
+  mellemrum, enhed med småt som Bilka — `200 g`, `75 cl`, `1.5 l`, `6 stk`,
+  `6 x 0.33 l`, `ca. 600 g`, `1 bakke`; aldrig `200g`, `1Ltr` eller `200 g.`.
 - **Tyske ark: `_is_` og brand (2026-10-10)**: `Excelark/tyske_is_og_brand.py` (deploy-grenen) udfylder tomme `_is_`-kolonner med tyske ord og kopierer brand/subbrand 1:1 fra de danske ark, når mærket står forrest i den tyske titel. Se Excelark/NAVNEREGLER.md.
 - **Knapper står ALTID øverst (user rule 2026-10-10)**: handlingsknapper (Send, Gem, Tilføj, Indsend osv.) placeres øverst i formularen/siden, aldrig nederst under indholdet, så de aldrig skjules af menuen/bundcirklen eller kræver scroll. Gælder web og native.
 - Ikonerne i bundcirklen (FooterArc/tilføj-hjulet) er altid ensartede sorte stregikoner — aldrig farvede 3D-billeder (bruger 2026-10-10; Aktivitet bruger `IconActivity`). Gælder web og native.
