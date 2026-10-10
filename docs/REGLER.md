@@ -134,6 +134,7 @@ ikke her, er den ikke registreret og skal tilføjes.
 
 - **Menstruation (bruger 2026-10-09):** alt om menstruation/cyklus vises slet ikke for mænd — heller ikke som deaktiveret række eller med "(kun for kvinder)". Vises kun når `sex = FEMALE`. Gælder web og native (fx Hello Doc "Rediger adgang").
 - **Frida** (DTU-fødevaredatabasen): opbygning, nøgler og rå/kogt-fund står i `docs/FRIDA.md`.
+- **Frida-skøn ∼ (bruger 2026-10-10)**: varer uden energimærkning får Fridas tal i de felter, butikken ikke selv har udfyldt, når produkttypen passer mindst 90 % (ental/flertal og stavemåder udlignes); tvivl afgøres af admin (Usikkerheder → Frida-match). Retter får kun et skøn, hvis ALLE ingredienslinjer kan regnes med. Varer vises og kan scannes uanset om de har næring. Kildeangivelsen "∼ Kilde: Fødevaredata (frida.fooddata.dk), DTU Fødevareinstituttet, Danmarks Tekniske Universitet" står KUN helt nederst i det udfoldede næringsfelt på varesiden, når en værdi kommer fra Frida — ingen andre steder. Se DECISIONS.md 2026-10-10.
 - Næringsindhold (produktsiden): mangler en værdi, vises "–" (en streg) i stedet for rækken udeladt — blokken vises dog kun, når mindst én værdi findes (brugerens regel 2026-10-09).
 
 

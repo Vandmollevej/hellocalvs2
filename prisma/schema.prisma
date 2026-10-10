@@ -1517,10 +1517,15 @@ model Product {
   discontinued     Boolean                @default(false)
   // Butiksvare uden kalorietal i produktarkene (docs/DECISIONS.md 2026-10-02):
   // kcal/protein/kulhydrat/fedt er 0 som pladsholder, ikke målte værdier.
-  // Varen er skjult i søgning og genkendelse og har ingen stregkode-række,
-  // før den har fået næring (planlagt: fra Frida). Sættes og fjernes af
-  // scripts/store-products-import/agent.py.
+  // Siden 2026-10-10 vises varen og har sin stregkode; robotten
+  // "frida-estimates" udfylder de tomme felter fra Frida (∼) og sætter feltet
+  // til false. Sættes af scripts/store-products-import/agent.py.
   nutritionMissing Boolean                @default(false)
+  // Frida-skøn (∼) for varer uden energimærkning (docs/DECISIONS.md
+  // 2026-10-10): id på den Frida-vare (externalSource=FRIDA), robotten
+  // "frida-estimates" udfyldte de manglende felter fra. Felterne står med
+  // kilden "FRIDA" i nutrientSources. null = ingen Frida-skøn.
+  fridaEstimateId  String?
   createdAt        DateTime               @default(now())
 
   // Login-frit admin-godkendelseslink (points-system 2026-09-02, se
@@ -2126,6 +2131,28 @@ model ScheduledJobRun {
 
   @@index([jobKey, finishedAt])
   @@map("scheduled_job_runs")
+}
+
+// Frida-match, robotten ikke selv kunne afgøre (docs/DECISIONS.md
+// 2026-10-10): flere lige gode Frida-varer til samme produkttype + tilstand +
+// kendetegn (reviewKey). Admin vælger én (chosenFridaProductId) eller "ingen
+// passer" (decidedAt sat, chosen null); valget gælder alle varer med samme nøgle.
+model FridaEstimateReview {
+  id                   String    @id @default(cuid())
+  reviewKey            String    @unique
+  typeLabel            String
+  reason               String
+  candidateIds         String[]  @default([])
+  productCount         Int       @default(0)
+  exampleNames         String[]  @default([])
+  chosenFridaProductId String?
+  decidedAt            DateTime?
+  seenAt               DateTime  @default(now())
+  createdAt            DateTime  @default(now())
+  updatedAt            DateTime  @updatedAt
+
+  @@index([decidedAt])
+  @@map("frida_estimate_reviews")
 }
 
 model FridaImportState {

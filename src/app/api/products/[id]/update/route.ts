@@ -1,3 +1,4 @@
+import { Prisma } from "@prisma/client";
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getSessionUser } from "@/lib/session";
@@ -26,6 +27,17 @@ import { debugLog, errorText, flowIdFromRequest } from "@/lib/debug-log";
 const KINDS: ProductUpdateKind[] = ["FRONT", "NUTRITION", "INGREDIENTS"];
 const MIN_FRONT_CONFIDENCE = 0.5;
 
+// Frida-skønnets mikrodata fjernes, så deklarationens egne tal står alene
+// (manglende felter lånes igen live fra Frida med ∼).
+function withoutFridaMicros(product: { nutrientSources: unknown; micronutrientsPer100g: unknown }) {
+  const sources = (product.nutrientSources ?? {}) as Record<string, string>;
+  const fridaKeys = Object.keys(sources).filter((key) => sources[key] === "FRIDA");
+  if (!fridaKeys.length) return {};
+  const micros = { ...((product.micronutrientsPer100g ?? {}) as Record<string, number>) };
+  for (const key of fridaKeys) delete micros[key];
+  return { micronutrientsPer100g: Object.keys(micros).length ? micros : Prisma.DbNull };
+}
+
 export async function POST(req: Request, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const startedAt = Date.now();
@@ -49,6 +61,9 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
       pendingImageUrl: true,
       ingredientsText: true,
       nutritionMissing: true,
+      fridaEstimateId: true,
+      nutrientSources: true,
+      micronutrientsPer100g: true,
       pendingFields: true,
       privateOwnerId: true,
       brand: { select: { logoUrl: true } },
@@ -109,6 +124,9 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
             carbsPer100g: result.carbsPer100g!,
             fatPer100g: result.fatPer100g!,
             nutritionMissing: false,
+            // Deklarationen afløser Frida-skønnet (DECISIONS 2026-10-10).
+            fridaEstimateId: null,
+            ...withoutFridaMicros(product),
           },
         });
         await recordNutrientSources(id, analysisId).catch(() => {});

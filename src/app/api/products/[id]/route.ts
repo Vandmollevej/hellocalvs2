@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { resolveGenericIngredientNutrients, resolveProductNutrients } from "@/lib/nutrient-resolution";
+import { isEstimatedSource } from "@/lib/nutrients";
 import { getSessionUser } from "@/lib/session";
 import {
   PRODUCT_UPDATE_POINTS,
@@ -119,6 +120,10 @@ export async function GET(
           // Butiksvare uden kalorietal (docs/DECISIONS.md 2026-10-02): 0 er en
           // pladsholder, så UI viser "Næringsindhold ukendt" i stedet for 0 kcal.
           hasKnownNutrition: !product.nutritionMissing,
+          // Frida-skøn (∼, docs/DECISIONS.md 2026-10-10): ∼ ved kalorietallet og
+          // Fridas kildeangivelse nederst i næringsfeltet, når en værdi er fra Frida.
+          kcalEstimated: isEstimatedSource((product.nutrientSources as Record<string, string> | null)?.kcal),
+          fridaSource: !!product.fridaEstimateId || nutrients.some((n) => n.frida),
         },
       });
     }

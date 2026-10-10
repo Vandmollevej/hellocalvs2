@@ -269,6 +269,8 @@ def upsert_recipe(conn, http, url, parsed, category_id):
         "nutrition": [],
         "websiteUrl": url,
         "source": "valdemarsro",
+        # Til Frida-skønnet af retter uden næring (src/lib/frida-estimates.ts).
+        "servings": servings,
     }
     image_url = download_image(http, parsed["image_url"], slug)
     ingredients_text = ", ".join(name or raw for raw, (_, _, name) in zip(parsed["lines"], parsed_lines))
@@ -291,6 +293,8 @@ def upsert_recipe(conn, http, url, parsed, category_id):
                 "ingredientsText" = EXCLUDED."ingredientsText",
                 "recipeDetails" = EXCLUDED."recipeDetails",
                 "nutritionMissing" = EXCLUDED."nutritionMissing",
+                -- Et tidligere Frida-skøn gælder ikke længere; robotten regner igen.
+                "nutrientSources" = NULL, "fridaEstimateId" = NULL,
                 discontinued = false,
                 "sourceCheckedAt" = NOW()
             """,
@@ -392,6 +396,14 @@ def check_links(conn, http):
     return closed, reopened
 
 
+def request_frida_estimates(conn):
+    """Beder app-robotten "frida-estimates" om en kørsel lige efter importen
+    (docs/DECISIONS.md 2026-10-10): varer uden energimærkning får Frida-skøn."""
+    with conn.cursor() as cur:
+        cur.execute("""UPDATE "scheduled_jobs" SET "runRequestedAt" = now() WHERE key = 'frida-estimates'""")
+    conn.commit()
+
+
 def run_once(conn):
     category_id = get_category_id(conn, "Retter")
     if not category_id:
@@ -399,6 +411,8 @@ def run_once(conn):
     http = session()
     imported, failed = import_new(conn, http, category_id)
     closed, reopened = check_links(conn, http)
+    if imported:
+        request_frida_estimates(conn)
     message = f"{imported} nye/ændrede opskrifter, {closed} døde links spærret, {reopened} genåbnet"
     if failed:
         message += f", {failed} fejlede"

@@ -71,6 +71,11 @@ Eksempel: `FoodID 1` = "Jordbær, rå"; `ParameterID 137` = Energi (kJ) = 161,95
   (se STATUS.md 2026-08-29) — kør `sudo rm -rf scripts/frida-import` én gang og kopiér igen,
   næste gang `agent.py` skal ændres.
 
+## Frida-skøn på andre varer (2026-10-10)
+
+- Robotten `frida-estimates` (`src/lib/frida-estimates.ts`, matchelogik i `src/lib/frida-estimate-match.ts`) giver varer uden energimærkning Fridas tal med kilden `FRIDA` (∼). Regler: `docs/REGLER.md` og `docs/DECISIONS.md` 2026-10-10.
+- Kildeangivelse (Fridas vilkår): "Fødevaredata (frida.fooddata.dk), DTU Fødevareinstituttet, Danmarks Tekniske Universitet" — vist nederst i det udfoldede næringsfelt, når en værdi kommer fra Frida.
+
 ## Ikke bygget endnu
 
 - Frida-AI-beregning af kødandel i sammensatte retter.

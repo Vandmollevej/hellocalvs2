@@ -760,12 +760,12 @@ val NUTRIENT_DEFS: Map<String, NutrientDef> = mapOf(
     "vitaminB12" to NutrientDef("µg", 1),
 )
 
-/** hasEstimatedMacros: one of kcal/protein/carbs/fat came from ESTIMATED or AI. */
+/** hasEstimatedMacros: one of kcal/protein/carbs/fat came from ESTIMATED, AI or FRIDA (src/lib/nutrients.ts). */
 fun hasEstimatedMacros(nutrientSources: kotlinx.serialization.json.JsonElement?): Boolean {
     val sources = nutrientSources as? JsonObject ?: return false
     return listOf("kcal", "protein", "carbs", "fat").any {
         val v = (sources[it] as? JsonPrimitive)?.contentOrNull
-        v == "ESTIMATED" || v == "AI"
+        v == "ESTIMATED" || v == "AI" || v == "FRIDA"
     }
 }
 

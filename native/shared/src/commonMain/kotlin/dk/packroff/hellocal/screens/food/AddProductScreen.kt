@@ -503,6 +503,7 @@ fun AddProductView(
                             perPieceSuffix = if (!hasServingUnit && displayUnit == DisplayUnit.G && servingSizeGrams == amount) t.t("addProduct.perPiece") else "",
                             kcalLine = if (view.hasKnownNutrition == false) t.t("addProduct.nutritionUnknown")
                             else t.t("addProduct.kcalAmount", "kcal" to jsRound(view.kcalPer100g * amount / 100)),
+                            kcalEstimated = view.kcalEstimated && view.hasKnownNutrition != false,
                             onMinus = { setAmount(maxOf(step, amount - step)) },
                             onPlus = { setAmount(amount + step) },
                             onTyped = { value ->
@@ -513,21 +514,24 @@ fun AddProductView(
                         Column(Modifier.fillMaxWidth().padding(bottom = 16.dp), horizontalAlignment = Alignment.CenterHorizontally) {
                             when {
                                 isPending("nutrition") -> FoodSkeleton(Modifier.width(150.dp).height(18.dp))
-                                else -> HcText(
-                                    when {
-                                        view.hasKnownNutrition == false -> t.t("addProduct.nutritionUnknown")
-                                        servingSizeGrams != null && hasServingUnit -> t.t(
-                                            "addProduct.kcalPerServing",
-                                            "kcal" to jsRound(view.kcalPer100g * servingSizeGrams / 100),
-                                            "unit" to unitSingular.orEmpty(),
-                                        )
-                                        displayUnit == DisplayUnit.G -> t.t("addProduct.kcalPer100g", "kcal" to jsRound(view.kcalPer100g))
-                                        else -> t.t("addProduct.kcalPer100ml", "kcal" to jsRound(view.kcalPer100g))
-                                    },
-                                    HcTypeRoles.Body,
-                                    color = HcColors.Black,
-                                    align = TextAlign.Center,
-                                )
+                                else -> Row(verticalAlignment = Alignment.CenterVertically) {
+                                    if (view.kcalEstimated && view.hasKnownNutrition != false) FoodUncertaintyTilde(small = true)
+                                    HcText(
+                                        when {
+                                            view.hasKnownNutrition == false -> t.t("addProduct.nutritionUnknown")
+                                            servingSizeGrams != null && hasServingUnit -> t.t(
+                                                "addProduct.kcalPerServing",
+                                                "kcal" to jsRound(view.kcalPer100g * servingSizeGrams / 100),
+                                                "unit" to unitSingular.orEmpty(),
+                                            )
+                                            displayUnit == DisplayUnit.G -> t.t("addProduct.kcalPer100g", "kcal" to jsRound(view.kcalPer100g))
+                                            else -> t.t("addProduct.kcalPer100ml", "kcal" to jsRound(view.kcalPer100g))
+                                        },
+                                        HcTypeRoles.Body,
+                                        color = HcColors.Black,
+                                        align = TextAlign.Center,
+                                    )
+                                }
                             }
                             confidentServings.forEach { serving ->
                                 HcText(
@@ -670,6 +674,7 @@ fun AddProductView(
                             toggled = uncertaintyToggled,
                             onToggleRow = { key -> uncertaintyToggled = if (key in uncertaintyToggled) uncertaintyToggled - key else uncertaintyToggled + key },
                             onMicronutrient = { openMicronutrient = it },
+                            fridaSource = view.fridaSource,
                         )
                     }
 
@@ -859,6 +864,8 @@ private fun AmountStepper(
     cornerText: String? = null,
     swapLabel: String = "",
     onSwap: (() -> Unit)? = null,
+    // Skøn (fx Frida-skøn, DECISIONS 2026-10-10): ∼ foran kalorietallet.
+    kcalEstimated: Boolean = false,
 ) {
     Row(Modifier.fillMaxWidth().padding(bottom = 8.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.Center) {
         Row(Modifier.widthIn(max = 320.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -905,7 +912,10 @@ private fun AmountStepper(
                     }
                 }
                 if (nutritionPending) FoodSkeleton(Modifier.padding(vertical = 2.dp).width(64.dp).height(14.dp))
-                else HcText(kcalLine, HcTypeRoles.Body, color = HcColors.TextSecondary, align = TextAlign.Center)
+                else Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically) {
+                    if (kcalEstimated) FoodUncertaintyTilde(small = true)
+                    HcText(kcalLine, HcTypeRoles.Body, color = HcColors.TextSecondary, align = TextAlign.Center)
+                }
             }
             }
             GlyphButton("+", onPlus)
@@ -957,6 +967,7 @@ private fun ExtendedNutritionSection(
     toggled: Set<String>,
     onToggleRow: (String) -> Unit,
     onMicronutrient: (String) -> Unit,
+    fridaSource: Boolean = false,
 ) {
     val t = LocalTranslator.current
     Column(Modifier.fillMaxWidth().clip(RoundedCornerShape(16.dp)).background(HcColors.Tan)) {
@@ -1007,6 +1018,14 @@ private fun ExtendedNutritionSection(
                     if (index < rows.lastIndex) Box(Modifier.fillMaxWidth().height(1.dp).background(HcColors.TanDark))
                 }
                 HcText(t.t("addProduct.extendedNutritionDisclaimer"), HcTypeRoles.Micro, Modifier.padding(horizontal = 16.dp, vertical = 10.dp), color = HcColors.TextSecondary)
+                // Fridas kildeangivelse (brugerens regel 2026-10-10): kun her, helt
+                // nederst i det udfoldede felt, og kun når en værdi kommer fra Frida.
+                if (fridaSource) {
+                    Row(Modifier.fillMaxWidth().padding(start = 16.dp, end = 16.dp, bottom = 10.dp), verticalAlignment = Alignment.CenterVertically) {
+                        FoodUncertaintyTilde(small = true)
+                        HcText(t.t("addProduct.fridaSource"), HcTypeRoles.Micro, color = HcColors.TextSecondary)
+                    }
+                }
             }
         }
     }

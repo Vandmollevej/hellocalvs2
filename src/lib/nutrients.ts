@@ -99,11 +99,13 @@ export function isNutrientKey(value: string): value is NutrientKey {
 // egen varedeklaration/producentdata, REFERENCE = officiel database (Frida)
 // på selve den generiske vare — begge er "sikre". ESTIMATED = lånt fra en
 // generisk/lignende vare fordi producenten ikke oplyser feltet, AI = AI-
-// udfyldt uden deklaration — begge får ~ (DECISIONS 2026-09-24).
-export type NutrientSource = "LABEL" | "REFERENCE" | "ESTIMATED" | "AI";
+// udfyldt uden deklaration — begge får ~ (DECISIONS 2026-09-24). FRIDA =
+// Frida-skøn på en vare uden energimærkning (robotten "frida-estimates",
+// DECISIONS 2026-10-10) — får ~ og Fridas kildeangivelse på varesiden.
+export type NutrientSource = "LABEL" | "REFERENCE" | "ESTIMATED" | "AI" | "FRIDA";
 
 export function isEstimatedSource(source: string | null | undefined): boolean {
-  return source === "ESTIMATED" || source === "AI";
+  return source === "ESTIMATED" || source === "AI" || source === "FRIDA";
 }
 
 // Én opløst værdi pr. 100 g, som /api/products/[id] sender til klienten.
@@ -114,6 +116,9 @@ export type ResolvedNutrient = {
   per100g: number;
   estimated: boolean;
   tolerancePer100g: number | null;
+  // Værdien kommer fra Frida (skøn eller lånt) → Fridas kildeangivelse
+  // nederst i næringsfeltet (DECISIONS 2026-10-10).
+  frida?: boolean;
 };
 
 // Makroerne, der udløser ~ ved kalorietallet i søgeresultater, når én af
