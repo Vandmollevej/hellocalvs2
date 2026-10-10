@@ -221,13 +221,19 @@ def split_list(v):
     return [p.strip() for p in re.split(r"\s*,\s*", s) if p.strip()]
 
 
+def added_sugar(v):
+    """2026-10-10: "med tilsat sukker" staar nu i sukker-kolonnen (ikke som keyword) - det er ikke sukkerfrit."""
+    s = text(v)
+    return bool(s) and s.lower().startswith("med ")
+
+
 def bilka_filters(b):
     alcohol_label = text(b.get("_is_alcohol"))
     return {
         "organic": "Økologisk" if b.get("_is_organic") else None,
         "glutenFree": "Glutenfri" if b.get("_is_glutenfree") else None,
         "lactoseFree": "Laktosefri" if b.get("_is_lactose_free") else None,
-        "sugarFree": "Sukkerfri" if b.get("_is_sugar_free") else None,
+        "sugarFree": "Sukkerfri" if b.get("_is_sugar_free") and not added_sugar(b.get("_is_sugar_free")) else None,
         "sweeteners": "Sødemidler" if b.get("_is_sweeteners") else None,
         "vegan": "Vegansk" if b.get("_is_vegan") else None,
         "vegetarian": None,
@@ -240,7 +246,7 @@ def bilka_filters(b):
         "keyhole": None,
         "animalWelfare": [],
         "certifications": [],
-        "storage": "Frost" if text(b.get("Packaging")) == "Frozen" else None,
+        "storage": "Frost" if b.get("_is_frozen") or text(b.get("Packaging")) == "Frozen" else None,
         "size": None,
         "toxins": [],
     }
@@ -712,8 +718,12 @@ def build_product(ean, b, r, b_info, r_info, cutouts, originals):
     keywords = []
     if b:
         keywords += [text(b.get(f"Keyword {i}")) for i in range(1, 6)]
+        if added_sugar(b.get("_is_sugar_free")):
+            keywords.append("Med tilsat sukker")
     if r:
         keywords += rema_keywords(r, is_drink)
+        if added_sugar(r.get("is_sugar_free")):
+            keywords.append("Med tilsat sukker")
     seen = set()
     keywords = [k for k in keywords if k and not (k.lower() in seen or seen.add(k.lower()))]
 
