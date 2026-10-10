@@ -76,9 +76,20 @@ const PUBLIC_API_PREFIXES = [
   "/api/business-contact", // kontaktformularen på /business
 ];
 
-// API'er med eget Bearer-/URL-token (enheder, widgets, agenter). De må ikke
-// afvises som bots, fordi klienterne ikke er browsere.
-const TOKEN_API_PREFIXES = ["/api/widgets/snapshot", "/api/mcp/", "/api/integrations/healthkit/"];
+// API'er med eget Bearer-/URL-token (enheder, widgets, agenter) og webhooks,
+// som udbyderens servere kalder (Withings, Garmin, Stripe, MobilePay). De må
+// ikke afvises som bots, fordi klienterne ikke er browsere: Withings' tjek og
+// notifikationer blev før afvist med 403, så vejninger kom først med
+// baggrundsjobbet (2026-10-10). Hver rute validerer selv sit token/signatur.
+const TOKEN_API_PREFIXES = [
+  "/api/widgets/snapshot",
+  "/api/mcp/",
+  "/api/integrations/healthkit/",
+  "/api/integrations/withings/webhook",
+  "/api/integrations/garmin/webhook",
+  "/api/payments/stripe/webhook",
+  "/api/payments/mobilepay/webhook",
+];
 
 // Statiske filer, der skal kunne vises på de åbne sider (logo, ikoner, flag).
 const PUBLIC_STATIC_PREFIXES = [

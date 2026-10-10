@@ -1946,86 +1946,86 @@
     }
   },
   "weighIn": {
-    "attireTitle": "What were you wearing?",
+    "attireTitle": "Wat had je aan?",
     "attireItem": {
-      "UNDERWEAR": "With underwear",
-      "PANTS": "With trousers",
-      "TOP": "With top / T-shirt",
-      "SWEATER": "With upper layer",
-      "SHOES": "With shoes",
-      "POCKET_ITEMS": "With phone and other items in pockets",
-      "AFTER_TOILET": "After using the toilet"
+      "UNDERWEAR": "Met ondergoed",
+      "PANTS": "Met broek",
+      "TOP": "Met top / T-shirt",
+      "SWEATER": "Met bovenkleding",
+      "SHOES": "Met schoenen",
+      "POCKET_ITEMS": "Met telefoon en andere spullen in de zakken",
+      "AFTER_TOILET": "Na toiletbezoek"
     },
-    "attireNaked": "Nothing selected = naked",
+    "attireNaked": "Niets gekozen = naakt",
     "attire": {
-      "NAKED": "Naked",
-      "UNDERWEAR": "In underwear",
-      "CLOTHED": "Clothed",
-      "CLOTHED_PHONE": "Clothed, phone in pocket"
+      "NAKED": "Naakt",
+      "UNDERWEAR": "In ondergoed",
+      "CLOTHED": "Gekleed",
+      "CLOTHED_PHONE": "Gekleed, telefoon in de zak"
     },
-    "save": "Save",
-    "saving": "Saving…",
-    "saveError": "Could not save. Try again.",
+    "save": "Opslaan",
+    "saving": "Opslaan…",
+    "saveError": "Opslaan mislukt. Probeer het opnieuw.",
     "later": "Later",
-    "continue": "Continue",
+    "continue": "Doorgaan",
     "ago": {
-      "justNow": "just now",
-      "minutes": "{n} min. ago",
-      "hours": "{n} hours ago",
-      "days": "{n} days ago"
+      "justNow": "zojuist",
+      "minutes": "{n} min. geleden",
+      "hours": "{n} uur geleden",
+      "days": "{n} dagen geleden"
     },
     "sync": {
-      "now": "Sync now",
-      "syncing": "Syncing…",
-      "done": "Synced",
-      "failed": "Sync failed",
-      "error": "Error — reconnect",
-      "last": "Synced {ago}",
-      "never": "Not synced yet",
-      "open": "Open {name}",
-      "openShort": "Open",
-      "noneConnected": "No smart scale connected",
-      "connect": "Connect"
+      "now": "Nu synchroniseren",
+      "syncing": "Synchroniseren…",
+      "done": "Gesynchroniseerd",
+      "failed": "Synchroniseren mislukt",
+      "error": "Fout — opnieuw verbinden",
+      "last": "Gesynchroniseerd {ago}",
+      "never": "Nog niet gesynchroniseerd",
+      "open": "{name} openen",
+      "openShort": "Openen",
+      "noneConnected": "Geen slimme weegschaal verbonden",
+      "connect": "Verbinden"
     },
     "stale": {
-      "title": "It has been a while since the last sync",
-      "body": "{name} was last synced {ago}. Sync so your latest weigh-ins come through.",
-      "bodyNever": "{name} has not been synced yet. Sync so your weigh-ins come through."
+      "title": "Het is al een tijd geleden dat er is gesynchroniseerd",
+      "body": "{name} is voor het laatst {ago} gesynchroniseerd. Synchroniseer, zodat je nieuwste wegingen binnenkomen.",
+      "bodyNever": "{name} is nog niet gesynchroniseerd. Synchroniseer, zodat je wegingen binnenkomen."
     },
     "prompt": {
-      "aria": "What were you wearing when you weighed in?",
-      "todayMorning": "You weighed yourself this morning.",
-      "past": "You weighed yourself {when}",
-      "andWeighed": "and weighed",
-      "question": "But was it:",
-      "older": "Older weigh-in",
-      "newer": "Newer weigh-in"
+      "aria": "Wat had je aan tijdens het wegen?",
+      "todayMorning": "Je hebt je vanochtend gewogen.",
+      "past": "Je hebt je {when} gewogen",
+      "andWeighed": "en woog",
+      "question": "Maar was het:",
+      "older": "Oudere weging",
+      "newer": "Nieuwere weging"
     },
     "when": {
       "today": {
-        "morning": "this morning",
-        "afternoon": "this afternoon",
-        "evening": "this evening",
-        "night": "last night"
+        "morning": "vanochtend",
+        "afternoon": "vanmiddag",
+        "evening": "vanavond",
+        "night": "vannacht"
       },
       "yesterday": {
-        "morning": "yesterday morning",
-        "afternoon": "yesterday afternoon",
-        "evening": "yesterday evening",
-        "night": "last night"
+        "morning": "gisterochtend",
+        "afternoon": "gistermiddag",
+        "evening": "gisteravond",
+        "night": "vannacht"
       },
       "part": {
-        "morning": "morning",
-        "afternoon": "afternoon",
-        "evening": "evening",
-        "night": "night"
+        "morning": "ochtend",
+        "afternoon": "middag",
+        "evening": "avond",
+        "night": "nacht"
       },
-      "weekday": "{weekday} {part}",
-      "lastWeek": "last {weekday}"
+      "weekday": "{weekday}{part}",
+      "lastWeek": "afgelopen {weekday}"
     },
     "details": {
-      "title": "Weigh-in",
-      "failed": "Could not load the weigh-in."
+      "title": "Weging",
+      "failed": "De weging kon niet worden geladen."
     }
   },
   "weightLog": {

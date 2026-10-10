@@ -1946,86 +1946,86 @@
     }
   },
   "weighIn": {
-    "attireTitle": "What were you wearing?",
+    "attireTitle": "Hva hadde du på deg?",
     "attireItem": {
-      "UNDERWEAR": "With underwear",
-      "PANTS": "With trousers",
-      "TOP": "With top / T-shirt",
-      "SWEATER": "With upper layer",
-      "SHOES": "With shoes",
-      "POCKET_ITEMS": "With phone and other items in pockets",
-      "AFTER_TOILET": "After using the toilet"
+      "UNDERWEAR": "Med undertøy",
+      "PANTS": "Med bukse",
+      "TOP": "Med topp / T-skjorte",
+      "SWEATER": "Med overdel",
+      "SHOES": "Med sko",
+      "POCKET_ITEMS": "Med mobil og annet i lommene",
+      "AFTER_TOILET": "Etter toalettbesøk"
     },
-    "attireNaked": "Nothing selected = naked",
+    "attireNaked": "Ingenting valgt = naken",
     "attire": {
-      "NAKED": "Naked",
-      "UNDERWEAR": "In underwear",
-      "CLOTHED": "Clothed",
-      "CLOTHED_PHONE": "Clothed, phone in pocket"
+      "NAKED": "Naken",
+      "UNDERWEAR": "Med undertøy",
+      "CLOTHED": "Med klær",
+      "CLOTHED_PHONE": "Med klær og mobil i lommen"
     },
-    "save": "Save",
-    "saving": "Saving…",
-    "saveError": "Could not save. Try again.",
-    "later": "Later",
-    "continue": "Continue",
+    "save": "Lagre",
+    "saving": "Lagrer…",
+    "saveError": "Kunne ikke lagre. Prøv igjen.",
+    "later": "Senere",
+    "continue": "Fortsett",
     "ago": {
-      "justNow": "just now",
-      "minutes": "{n} min. ago",
-      "hours": "{n} hours ago",
-      "days": "{n} days ago"
+      "justNow": "akkurat nå",
+      "minutes": "for {n} min. siden",
+      "hours": "for {n} timer siden",
+      "days": "for {n} dager siden"
     },
     "sync": {
-      "now": "Sync now",
-      "syncing": "Syncing…",
-      "done": "Synced",
-      "failed": "Sync failed",
-      "error": "Error — reconnect",
-      "last": "Synced {ago}",
-      "never": "Not synced yet",
-      "open": "Open {name}",
-      "openShort": "Open",
-      "noneConnected": "No smart scale connected",
-      "connect": "Connect"
+      "now": "Synk nå",
+      "syncing": "Synkroniserer…",
+      "done": "Synkronisert",
+      "failed": "Synkroniseringen mislyktes",
+      "error": "Feil — koble til igjen",
+      "last": "Synkronisert {ago}",
+      "never": "Ikke synkronisert ennå",
+      "open": "Åpne {name}",
+      "openShort": "Åpne",
+      "noneConnected": "Ingen smartvekt er koblet til",
+      "connect": "Koble til"
     },
     "stale": {
-      "title": "It has been a while since the last sync",
-      "body": "{name} was last synced {ago}. Sync so your latest weigh-ins come through.",
-      "bodyNever": "{name} has not been synced yet. Sync so your weigh-ins come through."
+      "title": "Det er lenge siden det ble synkronisert",
+      "body": "{name} ble sist synkronisert {ago}. Synkroniser, så de nyeste veiingene dine kommer med.",
+      "bodyNever": "{name} er ikke synkronisert ennå. Synkroniser, så veiingene dine kommer med."
     },
     "prompt": {
-      "aria": "What were you wearing when you weighed in?",
-      "todayMorning": "You weighed yourself this morning.",
-      "past": "You weighed yourself {when}",
-      "andWeighed": "and weighed",
-      "question": "But was it:",
-      "older": "Older weigh-in",
-      "newer": "Newer weigh-in"
+      "aria": "Hva hadde du på deg ved veiingen?",
+      "todayMorning": "Du veide deg i morges.",
+      "past": "Du veide deg {when}",
+      "andWeighed": "og veide",
+      "question": "Men var det:",
+      "older": "Eldre veiing",
+      "newer": "Nyere veiing"
     },
     "when": {
       "today": {
-        "morning": "this morning",
-        "afternoon": "this afternoon",
-        "evening": "this evening",
-        "night": "last night"
+        "morning": "i morges",
+        "afternoon": "i ettermiddag",
+        "evening": "i kveld",
+        "night": "i natt"
       },
       "yesterday": {
-        "morning": "yesterday morning",
-        "afternoon": "yesterday afternoon",
-        "evening": "yesterday evening",
-        "night": "last night"
+        "morning": "i går morges",
+        "afternoon": "i går ettermiddag",
+        "evening": "i går kveld",
+        "night": "i natt"
       },
       "part": {
-        "morning": "morning",
-        "afternoon": "afternoon",
-        "evening": "evening",
-        "night": "night"
+        "morning": "morgen",
+        "afternoon": "ettermiddag",
+        "evening": "kveld",
+        "night": "natt"
       },
       "weekday": "{weekday} {part}",
-      "lastWeek": "last {weekday}"
+      "lastWeek": "forrige {weekday}"
     },
     "details": {
-      "title": "Weigh-in",
-      "failed": "Could not load the weigh-in."
+      "title": "Veiing",
+      "failed": "Kunne ikke hente veiingen."
     }
   },
   "weightLog": {

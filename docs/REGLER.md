@@ -105,13 +105,17 @@ ikke her, er den ikke registreret og skal tilføjes.
   ikke kan tilføjes uden). Egne API'er kræver et https-link ved oprettelse.
 - Interne henvisninger til en nøgle går til tjenestens anker
   (`/admin/api-keys#<id>`), ikke kun til API-nøgle-siden.
+- Webhooks, som en udbyders server kalder, skal stå i `TOKEN_API_PREFIXES`
+  i `src/lib/access-wall.ts`; ellers afviser adgangsmuren dem som bots (403).
 
 ## Proces
 
 - Spørgsmål til brugeren stilles ALTID i spørgsmålsboksen (AskUserQuestion),
   aldrig som almindelig tekst i et svar og aldrig midt i en opgave: tekst giver
   ingen gul prik, så brugeren ser den ikke (brugerens regel 2026-10-09, global).
-- **Aldrig hænge (bruger 2026-10-10, global, ufravigelig):** en opgave må aldrig stå stille. Slut aldrig en tur, mens CI, deploy, review eller en PR venter, uden at et tidsbestemt tjek er sat (`send_later`, højst 5 minutter frem; gentag, til det er gjort). Hvert tjek handler: grøn CI → flet nu; rød CI → ret og push nu; konflikt → løs nu; stående deploy-trin → læs jobloggen og meld den præcise årsag. Opgaven er først færdig, når den er flettet OG deployet. Må deployet ikke kunne gå igennem, skrives årsagen og næste skridt straks i `docs/handoffs/OPEN-TASKS.md`. Sig hvert 10. minut kort, hvad der sker, mens der ventes. At vente passivt på en hændelse er forbudt.
+- **Aldrig hænge (bruger 2026-10-10, global, ufravigelig):** en opgave må aldrig stå stille. Slut aldrig en tur, mens CI, deploy, review eller en PR venter, uden at et tidsbestemt tjek er sat (`send_later`, højst 5 minutter frem; gentag, til det er gjort). Hvert tjek handler: grøn CI → flet nu; rød CI → ret og push nu; konflikt → løs nu; stående deploy-trin → læs jobloggen og meld den præcise årsag. Opgaven er først færdig, når den er flettet OG deployet. Må deployet ikke kunne gå igennem, skrives årsagen og næste skridt straks i `docs/handoffs/OPEN-TASKS.md`. (Ingen mellemstatus til brugeren, se næste punkt.) At vente passivt på en hændelse er forbudt.
+- **Udestående rettes altid (bruger 2026-10-10, generelt):** finder du noget udestående i det område, du arbejder i (manglende oversættelser, forældede noter i OPEN-TASKS, halvfærdige dele af samme funktion), så ret det i samme opgave i stedet for blot at notere det. Gælder ikke andre gruppers filer eller ting, der kræver brugerens beslutning.
+- **Brugeren er ligeglad med mellemstatus (bruger 2026-10-10, global):** meld ikke automatiske hændelser (PR-abonnement, ventende CI, planlagte tjek, "tests kører stadig") til brugeren. Gør arbejdet færdigt i stilhed, og skriv kun, når der er et resultat, en blokering eller et spørgsmål (i spørgsmålsboksen). Afløser kravet om at melde status hvert 10. minut under "Aldrig hænge". Brugeren gider ikke høre om, hvordan det gøres — det skal bare komme til at virke: løs problemet helt (også følgefejl og deploy), og meld kort, at det virker.
 - **Tidspunkter altid i dansk tid** (Europe/Copenhagen, sommer-/vintertid) over for brugeren, aldrig UTC (bruger 2026-10-10).
 - Flere parallelle sessioner: stage snævert, deploy-linjen er origin/master.
 - Alle opgaver auto-arkiveres umiddelbart, så snart de melder klar til arkivering – i samme tur, uden at vente (bruger 2026-10-09, gentaget).

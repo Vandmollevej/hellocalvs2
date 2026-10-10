@@ -2,6 +2,11 @@
 
 This file records durable decisions. Add a dated entry when a later decision changes one of them.
 
+## 2026-10-10: Webhooks er undtaget adgangsmurens bot-spærre
+
+- Udbyderes servere (Withings, Garmin, Stripe, MobilePay) er ikke browsere og blev afvist som bots (403). Deres webhook-stier står nu i `TOKEN_API_PREFIXES` i `src/lib/access-wall.ts`; nye webhooks skal også stå der. Hver rute validerer selv sin afsender.
+- `afterRefresh` (Withings' notifikations-tilmelding) kører også én gang ved første synk efter serverstart, ikke kun ved token-fornyelse.
+
 ## 2026-10-10: Søgning viser alt, retter stavefejl og ignorerer accenter
 
 Ejerens krav: søgningen skal vise alt, indtil brugeren indsnævrer, og være intelligent som Google ved stavefejl. Valgt: Postgres (ingen Elasticsearch/Meilisearch) — `unaccent` + `pg_trgm` + `fuzzystrmatch` (migration `20261010120000_search_unaccent_trgm`).
