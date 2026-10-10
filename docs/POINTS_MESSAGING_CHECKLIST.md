@@ -26,8 +26,9 @@ deploy, jf. `AGENTS.md`/`design.md` §12.
 - [x] 5 points pr. gennemført "videresend til en ven" (modtager har rent
       faktisk tilføjet produktet/retten til sin egen dag)
 - [x] Loft: maks. 50 videresend-points pr. kalendermåned pr. bruger
-- [x] 300 points ved gennemført "invitér en ven" — til BÅDE afsender og ny
-      bruger, ikke direkte en gratis måned
+- [x] 300 points ved gennemført "invitér en ven" — kun til afsenderen, når
+      vennen har haft en konto i ≥3 måneder. Vennen får i stedet 1 gratis
+      måned med Seriøs ved oprettelsen (ændret 2026-10-03)
 - [x] 20 points for at udfylde manglende indhold, energi, logo eller
       produktbillede på en eksisterende vare (opdater-varen-banneret), højst
       én gang pr. bruger og vare (2026-10-03)
@@ -114,8 +115,8 @@ deploy, jf. `AGENTS.md`/`design.md` §12.
 - [x] Egen fane under Profil
 - [x] Delbart invite-link med unik kode pr. bruger
 - [x] Ny bruger, der opretter sig via linket, matches til afsenderen
-- [x] Begge parter får 300 points ved gennemført tilmelding (efter samme
-      ventetid-regel som i dag, ≥3 måneder)
+- [x] Afsenderen får 300 points, når vennen har haft en konto i ≥3 måneder;
+      vennen får 1 gratis måned med Seriøs ved oprettelsen (2026-10-03)
 
 ## Betaling
 

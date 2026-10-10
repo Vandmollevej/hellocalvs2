@@ -62,6 +62,7 @@ export async function PATCH(req: Request) {
     onboardingDismissed,
     showAllergens,
     allergenVisibility,
+    bodyMeasurementVisibility,
     showExtendedNutrition,
     showAdditives,
     showToxins,
@@ -100,6 +101,7 @@ export async function PATCH(req: Request) {
     onboardingDismissed?: boolean;
     showAllergens?: boolean;
     allergenVisibility?: Record<string, boolean>;
+    bodyMeasurementVisibility?: Record<string, boolean>;
     showExtendedNutrition?: boolean;
     showAdditives?: boolean;
     showToxins?: boolean;
@@ -216,6 +218,7 @@ export async function PATCH(req: Request) {
         onboardingDismissed,
         showAllergens,
         allergenVisibility,
+        bodyMeasurementVisibility,
         showExtendedNutrition,
         showAdditives,
         showToxins,

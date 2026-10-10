@@ -2,6 +2,16 @@
 
 Last updated: 2026-10-10
 
+## 2026-10-10: Tøjvalg ved vejning formuleret som "Med …"
+
+- Tilføj vægt (web + native, via sprogfilerne): rækkerne hedder nu "Med undertøj", "Med bukser", "Med top / T-shirt", "Med overdel" (tidl. Sweater), "Med sko" og "Med mobil og andet i lommerne"; "Efter toiletbesøg" uændret. Ingen kodeændring; nøglerne er de samme. Paritet grøn; ikke visuelt testet.
+
+## 2026-10-10: Indberet fejl — bundark pr. punkt, kamera og tak-boks
+
+- `/profile/report-bug` (fra en vare): punkterne er ikke længere dropdowns, men rækker der åbner et bundark med punktet som overskrift, notefelt og under det kamera ("Tag billede", fjern/tag nyt). "Gem" lukker arket; den sorte "Send indberetning"-knap nederst sender alt. Efter indsendelse bliver siden stående, og banneret er erstattet af et sort felt "TAK! Vi har modtaget din indberetning…".
+- Fotos: ny kolonne `bug_reports.sectionPhotos` (migration `20261010080000_bug_report_section_photos`), gemt uden EXIF i `public/product-images/bug-report-images` (`src/lib/bug-report-image-storage.ts`), sendt som `sectionPhotos` i POST/PATCH `/api/bug-reports`, vist under hvert punkt i admin. Et punkt med kun foto får teksten "Se vedhæftet foto".
+- Native `ReportBugScreen.kt` følger med (`HcBottomSheet`, `Device.takePhoto`). Migrationen skal med deployet. Ikke prøvet i browser/på telefon; Kotlin ikke kompileret lokalt.
+
 ## 2026-10-10: Screening-flowet holdt til designklasserne
 
 - `ScreeningFlow`/`ScreeningInput`: Næste/Gem bruger nu `h-12` (var en tynd streg), målefelt-knapper bruger `.hf-choice` (valgt = lime), +/− og slet bruger `.hf-btn-icon`, "Tilføj spørgsmål" `.hf-btn-secondary`; tidsfeltet løber ikke længere ud af skærmen. Trinnet "Måling" hedder "Skala" (da/no/sv), så trin-labels ikke støder sammen. Native uændret i kode (bruger allerede HcButton/ProfileChoiceChip); tekster synkroniseret, paritet accepteret. Lint/build ikke kørt (ingen `node_modules`), ikke visuelt testet.
@@ -39,6 +49,23 @@ Last updated: 2026-10-10
 ## 2026-10-09: Børn kan ikke lukke konto eller melde sig ud
 
 - Kun forælderen kan lukke/fjerne et barns konto. Serveren afviser børn på `/api/account/close` (403) og `leaveFamily` (`childCannotLeave`); "Luk konto"/"Slet mine data" og "Meld dig ud" er skjult for børn i web og native (`meIsChild` fra `/api/family`). Barnet kan kun se, hvad forælderen viser (uændret). Se DECISIONS.md samme dato. Lint, tsc og native-paritet grønne; Kotlin ikke kompileret lokalt; ikke prøvet mod rigtig database.
+## 2026-10-10: AI-opsætning af opskrifter koblet på
+
+- Indsæt tekst og Scan opskrift bruger nu AI (gpt-4o-mini, kun tekst) til titel, beskrivelse, varighed, ingredienser (varenavn + gram), trin med overskrifter og sidebillede pr. trin; ellers den gamle tolker. Se DECISIONS. Kræver `OPENAI_API_KEY` (findes til de øvrige AI-ruter); model kan sættes med `OPENAI_RECIPE_IMPORT_MODEL`. Ikke testet mod OpenAI her (ingen nøgle i miljøet).
+
+## 2026-10-09: Videresend ret til en ven
+
+- Knappen "Send til en ven" på egne retter åbner en helsides popup (varighed, venns navn + mail, Fra, valgfri besked) og deler et krypteret link via deleark (+ mail). Se DECISIONS 2026-10-09. Migration `20261009230000_forward_expiry_details` skal med deployet. Lint/tsc grønne for web; Kotlin ikke kompileret; ikke prøvet i browser/på telefon; mail afhænger af SMTP.
+
+## 2026-10-09: Opret ret som flow — startskærm med tre knapper
+
+- Rettelse (bruger 2026-10-09): side 1 er Titel + beskrivelse + varighed (nye felter `Dish.description`, `Dish.durationMinutes`, migration 20261009220000 — skal med deployet). Færdig-knap øverst til højre gemmer retten fra enhver side (springer til siden, der mangler navn/ingredienser). Indsæt tekst/Scan: importen er side 1, titlen kommer først på side 2. Ingen beskrivelse/varighed fra importen endnu.
+- Trin-flow (bruger 2026-10-09): Opret manuelt er sider i popuppen — side 1 alle ingredienser (navn, personer, søgning), derefter ét trin af fremgangsmåden pr. side (overskrift, tekst, billede nederst; på web også drag and drop), til sidst billeder af retten med Gem. Navigation med pile + prikker i bunden, og et stryg mod højre går tilbage. `RecipeStepPage.tsx` / `CreateDishScreen.kt`. Lint/tsc grønne for web; Kotlin ikke kompileret lokalt; ikke prøvet i browser/på telefon. Sessionen arkiveres først, når brugeren siger til.
+
+- `/create-dish` (web + `CreateDishScreen.kt`) åbner nu med et startskærm-trin: tre knapper midt på skærmen — Scan, Indsæt tekst, Manuelt (de to første åbner deres ark, den sidste går til formularen). Springes over, når der allerede er en kladde (fx retur fra en vare). Knap-rækken i formularen er fjernet.
+- Opdateret: hele flowet ligger i en helsides popup (`BottomSheet size="full"`); knapperne hedder Indsæt tekst, Scan opskrift, Opret manuelt (se REGLER.md). Ingredienser tilføjes én ad gangen via søgningen.
+- Ikonerne er midlertidige Tabler-ikoner (kamera, udklipsholder, blyant); brugeren laver de rigtige. Layoutet (tre knapper under hinanden, centreret) er et gæt på "to en ned" — ret hvis det skulle være to ved siden af hinanden og én under.
+- Lint og native-paritet grønne; Kotlin ikke kompileret lokalt; ikke prøvet i browser/telefon.
 
 ## 2026-10-09: "Opret egen ingrediens" fjernet
 
@@ -171,6 +198,19 @@ Last updated: 2026-10-08
 
 ## 2026-10-09: Kalender uden totaler i uge/måned
 Statusblokken i uge-/månedsvisning viser kun status (gennemsnit af forgangne dage mod delmålets dagsmål). Dagsvisningen er uændret. Lint + tsc grønne; ikke prøvet i browser.
+## 2026-10-09: Vælg selv, hvilke kropsmål der vises + bagdel, læg og ankel
+
+- Indstillinger → Visning → **Kropsmål** (`/settings/display/body-measurements`): til/fra pr. mål; gemmes løbende i `User.bodyMeasurementVisibility` (null = alle vises). Skjulte mål og deres målinger slettes ikke.
+- Tre nye mål: bagdel (`buttockCm`), læg (`calfCm`), ankel (`ankleCm`) — uden tegning endnu. De følger automatisk med i Målsætning, Statistik-grafer og Status, fordi alle bygger på `BODY_MEASUREMENT_FIELDS`.
+- Migration `20261009100000_body_measurement_visibility` skal med deployet. Lint og build grønne; ikke visuelt testet.
+## 2026-10-09: Tal-slideren — flere valgbare felter, mål-linje og grøn ved mål
+
+- Dummytekst og opfundne eksempelrækker (Søvn/Puls) er fjernet; under hvert tal står nu feltets mål (`caption`), og hovedtallet bliver grønt, når et minimumsmål er nået (skridt, trapper, protein, vægtudsigt, chance).
+- Nye valgbare felter under Indstillinger → Visning → Forside: trapper, skridt, optjente kalorier, energifordeling (P/F/K), aktivitet (løbe-ikon ved løb), kalorier ved skridt (flamme + skridt), kalorieindtag (kniv og gaffel), indtag nu mod normalt (ur, ± %), tid med hvilepuls, tid i valgt pulszone, vægt på måldagen (sandsynligt/muligt/usandsynligt) og chance for at nå målet.
+- Pulszoner (5, bpm-grænser, valgt zone) sættes samme sted og gemmes pr. enhed (`src/lib/pulse-zone-settings.ts`). Beregninger i `src/lib/frontpage-goal-math.ts`.
+- Antagelser: sukker-mål = 10 % af kcal-målet (WHO; brugeren skrev "1 %"), salt 6 g, fedt 30 % og kulhydrat 55 % af energien medmindre Målsætning har egne gram-mål. Grænse-felter (sukker, salt, fedt, kulhydrat) bliver ikke grønne. Trapper 10 og skridt 10.000 er faste mål.
+- Tid i pulszone regnes af dagens pulsmålinger (hver gælder til næste, højst 5 min). Nye tekster er kun oversat til da/en; de/fr/nl/sv/no bruger engelsk.
+- Ikke testet i browser (kræver login og data). tsc og eslint på de ændrede filer er grønne.
 
 ## 2026-10-07: Alle popups som bundark + brand-logoets luft
 
@@ -294,6 +334,24 @@ Retter → HelloFresh åbner nu en skrivebeskyttet side under Retter (ikke Nye v
 - Admin → Brugere → Point: søgning er nu kun præcis e-mail eller bruger-id (navn/e-mail kan ikke delvist søges i krypterede felter).
 - Tjek: `npm test` (krypto + transform), lint og type-tjek af de nye filer er rene. `npm run build -- --webpack` kompilerer, men stopper på en eksisterende typefejl i `src/app/admin/product-database/products/page.tsx:343` (`"details"` vs. `"list"`), som ikke stammer fra denne ændring. Ikke prøvet mod en rigtig database.
 
+## 2026-10-04: Generiske varer først ved bred søgning
+
+- "letmælk" viser nu varer uden brand før brand-varer; søges der på et brand ("arla", "arla letmælk"), gælder det ikke. Nyt skydeknap-signal "Generiske varer ved bred søgning" på admin → Søgealgoritmer (standard 45). Se DECISIONS.
+- "arla letmælk" (flere ord) finder nu varer, hvor hvert ord står i navnet eller brandet.
+- Lint, typecheck og ny enhedstest grønne. Ikke prøvet mod rigtige data (ingen lokal DB) — prøv "letmælk" og "arla letmælk" i søgeprøven på Søgealgoritmer efter deploy.
+
+## 2026-10-04: Fotodagbog-lås viser ikke længere QR-kode
+
+"Vis billeder" åbner browserens passkey-dialog. Uden begrænsning tilbød den en
+QR-kode til en anden enhed (kan ikke skærmbilledes). Registrering kræver nu
+`authenticatorAttachment: "platform"`, og login/reauth sender
+`hints: ["client-device"]`. Ikke afprøvet på en rigtig enhed; `npm run lint` (0 fejl) og
+`npm run build` er kørt og grønne.
+Allerede oprettede passkeys ændres ikke; hvis QR-koden stadig kommer, skal
+Face ID slås fra og til igen.
+Builden var rød af en ældre fejl: Varedatabase-visningen "Detaljer" fandtes i
+siden, men ikke i filtertypen/parseren/vælgeren. Nu tilføjet, så buildet går igennem.
+
 ## 2026-10-04: Billed-upload for produktbilleder (admin → Varedatabase → Billed-upload)
 
 - Ny side `/admin/product-database/image-upload` (også knappen "Upload billeder" på Varer). Samme mønster som Logo-upload: træk filer eller en hel mappe ind, hvert slip er et parti med tidsstempel, oversigt med størrelse / original-dimensioner / filstørrelse / proces, og "Slet valgte" / "Slet hele partiet" gendanner de tidligere billeder.
@@ -359,6 +417,19 @@ Retter → HelloFresh åbner nu en skrivebeskyttet side under Retter (ikke Nye v
 ## 2026-10-03: Opdater-varen — kun tre områder, ingen points for net-billeder
 
 - Banneret/kortene vises kun for manglende produktbillede, energi eller indhold; manglende logo alene udløser dem ikke. Points kræver et friskt kamerabillede; billedet tagges `photo_source` CAMERA/UPLOAD. **Migration `20261003250000_photo_source` skal køre ved deploy.** Lint (0 fejl), typecheck og build grønne; ikke set på telefon. Fritlagt PNG rager allerede 10 % op over cirklen (`isCutoutImage`, kun filer under `/cutouts/`).
+
+## 2026-10-03: Genscan-panelet ("Optjen 10 points") ligger over hele skærmen
+
+- Det åbne panel var kun placeret i sidens indholdsområde, så "Tilføj"-knappen og menuen stod uden for det som et eget vindue, og et sort kamera uden svar kunne ikke lukkes. Nu er panel og mørk baggrund `fixed` over hele skærmen (også over "Tilføj" og menuen), og der er en X-knap øverst i panelet ud over trækstregen (`RescanBanner.tsx`).
+- Afsendelsen af genscanningen har en tidsgrænse på 60 sek. (`submitProductRescan`), så et hængende kald giver "Prøv igen" i stedet for et evigt sort kamera.
+- Lint (0 fejl), typecheck og build er grønne. Ikke set på telefon — tjek, at panelet kan lukkes, og at kameraet ikke bliver sort efter sidste billede.
+
+## 2026-10-03: Voksne bestemmer selv, hvem i familien der ser deres profil
+
+- Ejerens svar på "Del med andre" (PR #216): det kommer ikke betaleren ved, om andre kan se hinandens konti. Voksne med eget login (og børn fra 15) vælger nu selv under "Del med andre" pr. familiemedlem, om personen må se profilen, og om personen også må oprette på deres vegne. "Delt med {navn}" viser, om personen kun kan se eller også oprette. Betaleren ser også "Del med andre" for sin egen profil og har altid fuld adgang.
+- Betaleren styrer kun profiler uden eget login og børn under 15 (Adgang, invitationens adgangsvalg, rettigheder ved Tilføj familiemedlem/barn). Se `docs/DECISIONS.md`.
+- Regel og test: `sharingDeciderId`/`peopleSharedWith` i `src/lib/family-sharing.ts` (`family-sharing.test.mjs`); `setAccessGrant` i `src/lib/family.ts` håndhæver den. Ingen migration.
+- Lint (0 fejl), typecheck, test (kun den kendte `page-tree`-fejl, som også fejler på master) og build grønne; skærmbillede med mockede API-svar. Ikke testet med login mod en rigtig database.
 
 ## 2026-10-03: Beskeder på Profil, Resultatvisning under Visning, Opsætning uden Sprog og region
 
@@ -479,6 +550,12 @@ Retter → HelloFresh åbner nu en skrivebeskyttet side under Retter (ikke Nye v
 - Under felterne vises kropsmålenes mål fra Målsætning (nyeste målsætning pr. mål), kun hvis der er nogen. Kropsmålets mål tegnes også som mållinje i dets graf.
 - Fold-ud-rækkerne (Vægt + hvert kropsmål) viser seneste måling i ikke-fed skrift: "d. 3. okt. 82,4 kg" (årstal kun, hvis ikke i år). `DropdownSection` har fået en valgfri `detail`.
 - Ingen nye API'er — siden henter også `/api/goals` (fejler den, vises siden uden kropsmålenes mål). Lint, typecheck, `profile-status`-tests og build grønne. Ikke set med login (ingen lokal DB) — test på telefon: Profil → Status.
+
+## 2026-10-03: "Invitér en ven" — 300 points kun til afsenderen, vennen får 1 gratis måned
+
+- Ejerens beslutning (DECISIONS samme dato): den, der inviterer, får 300 points, når vennen har været med i 3 måneder. Vennen får ingen points, men 1 gratis måned med Seriøs, når kontoen oprettes via linket.
+- Rettet i `src/lib/referrals.ts` (kun afsenderen krediteres + ny `grantReferredFriendFreeMonth`), `/api/auth/register`, invitationssiden, delbar invitationstekst, mails `FRIEND_INVITATION`/`FRIEND_REFERRAL` (uredigerede gamle standardtekster opgraderes automatisk), Betingelser §8, i18n og tjeklisten.
+- Lint, typecheck og build grønne. Ikke testet live — test: opret en konto via et invite-link og tjek Profil → Abonnement (Gratis måned).
 
 ## 2026-10-03: Alle points-typer vises nu i oversigterne
 
@@ -6267,6 +6344,6 @@ Skema, migration, `src/lib/danish-number.ts` og søgning/oprettelse er lavet (se
 - 2026-10-09: Halvcirklen over footeren kan ikke længere trækkes til siden (web + native); står altid midt over footeren.
 
 - 2026-10-09: Master bragt i takt igen efter #314/#315: lint-fejlen i `FooterArc.tsx` rettet (fingerens top gemmes i state i stedet for at læse ref under render), og paritet accepteret for alle skærme. Native (`HomeFooterArc.kt`, `HomeWeighInPrompts.kt`) var allerede opdateret i #305–#315; kun godkendelserne manglede.
+## 2026-10-09: Offline læsecache (favoritter, senest anvendte, seneste søgninger)
 
-## 2026-10-10: Advarsel-mærke ved ændret energifordeling
-- Admin → Kvalitetskontrol: rødt "Advarsel"-mærke på brugerindberettede næringsændringer. Rapporten oprettes nu også, når en eksisterende registrering redigeres (PATCH) med ændret fordeling. Lint + typecheck grønne; ikke prøvet mod rigtig database.
+`src/lib/offline-cache.ts` gemmer sidste svar lokalt og bruges kun ved fejlet hentning; ryddes ved log ud. Søgning viser gemte resultater med en tydelig tekst (`offline.cachedResults`, 7 sprog). Se `docs/OFFLINE-AUDIT.md`. Ikke testet i browser mod rigtig database.

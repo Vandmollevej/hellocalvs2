@@ -2,7 +2,8 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getSessionUser } from "@/lib/session";
 import { BugReportCategory, Prisma } from "@prisma/client";
-import { categoriesForSections, describeSections, parseSections } from "@/lib/bug-report-sections";
+import { categoriesForSections, describeSections, parseSections, withPhotoOnlySections } from "@/lib/bug-report-sections";
+import { storeSectionPhotos } from "@/lib/bug-report-image-storage";
 
 const BUG_REPORT_CATEGORIES = Object.values(BugReportCategory);
 
@@ -57,7 +58,8 @@ export async function POST(req: Request) {
 
   // Produktrapporter er opdelt i sektioner (docs/DECISIONS.md 2026-09-28);
   // beskrivelsen bygges så ud fra dem, så ældre visninger stadig virker.
-  const sections = parseSections(body.sections);
+  const sectionPhotos = await storeSectionPhotos(body.sectionPhotos);
+  const sections = withPhotoOnlySections(parseSections(body.sections), sectionPhotos);
   const description = sections
     ? describeSections(sections)
     : typeof body.description === "string"
@@ -95,6 +97,7 @@ export async function POST(req: Request) {
       description,
       categories,
       sections: sections ?? Prisma.DbNull,
+      sectionPhotos: sectionPhotos ?? Prisma.DbNull,
       screenshotUrl,
       productId,
     },

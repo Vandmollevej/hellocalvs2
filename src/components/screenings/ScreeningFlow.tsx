@@ -26,7 +26,7 @@ import {
 // laveste/højeste værdi) → kalender. Samme flow redigerer en eksisterende.
 const STEPS = ["stepName", "stepFrequency", "stepQuestions", "stepNotifications", "stepMeasure", "stepCalendar"] as const;
 
-type Draft = Omit<ScreeningDto, "id" | "presetKey" | "sortOrder" | "active">;
+type Draft = Omit<ScreeningDto, "id" | "presetKey" | "sortOrder">;
 
 function newQuestionId() {
   return `q${Date.now().toString(36)}${Math.random().toString(36).slice(2, 5)}`;
@@ -46,6 +46,7 @@ function emptyDraft(): Draft {
     minLabel: "",
     maxLabel: "",
     showInCalendar: false,
+    active: true,
   };
 }
 
@@ -117,6 +118,12 @@ export function ScreeningFlow({ existing }: { existing?: ScreeningDto }) {
 
         {step === 0 && (
           <section className="flex flex-col gap-4">
+            <Toggle
+              checked={draft.active}
+              onChange={(value) => update({ active: value })}
+              label={draft.active ? t("screenings.statusActive") : t("screenings.statusInactive")}
+              description={t("screenings.activeDesc")}
+            />
             <h2 className="hf-type-section-title">{t("screenings.nameTitle")}</h2>
             <TextField
               variant="standard"

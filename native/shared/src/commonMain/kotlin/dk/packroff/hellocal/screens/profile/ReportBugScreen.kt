@@ -26,6 +26,14 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.ui.layout.ContentScale
+import dk.packroff.hellocal.platform.Device
+import dk.packroff.hellocal.ui.HcBottomSheet
+import dk.packroff.hellocal.ui.HcRemoteImage
+import dk.packroff.hellocal.ui.HcSheetSize
+import dk.packroff.hellocal.ui.SettingsSupportBytesImage
 import dk.packroff.hellocal.api.Api
 import dk.packroff.hellocal.api.ApiException
 import dk.packroff.hellocal.api.ApiJson
@@ -55,6 +63,7 @@ private data class BugReport(
     val status: String = "",
     val categories: List<String>? = null,
     val sections: Map<String, String>? = null,
+    val sectionPhotos: Map<String, String>? = null,
 )
 
 @Serializable
@@ -102,6 +111,12 @@ private fun ReportBugContent(productId: String?) {
     val categories = remember { mutableStateListOf<String>() }
     // An open section = a key in the map, also while empty.
     val sections = remember { mutableStateMapOf<String, String>() }
+    // A photo per section: a data URL from the camera, or a stored path while editing (+ the bytes for the preview).
+    val photos = remember { mutableStateMapOf<String, String>() }
+    val photoBytes = remember { mutableStateMapOf<String, ByteArray>() }
+    var openSection by remember { mutableStateOf<String?>(null) }
+    // Black thank-you box instead of the banner after a submission.
+    var thanked by remember { mutableStateOf(false) }
     var error by remember { mutableStateOf<String?>(null) }
     var submitting by remember { mutableStateOf(false) }
     // false while the product's pending report is still loading (web: pending === undefined).
@@ -124,13 +139,17 @@ private fun ReportBugContent(productId: String?) {
         noteOpen = true
         sections.clear()
         sections.putAll(report.sections ?: emptyMap())
+        photos.clear()
+        photoBytes.clear()
+        photos.putAll(report.sectionPhotos ?: emptyMap())
+        thanked = false
         editing = true
     }
 
     fun submit() {
         error = null
-        if (productId != null && sections.values.none { it.isNotBlank() }) {
-            error = "Vælg mindst én sektion og beskriv, hvad der er forkert"
+        if (productId != null && sections.values.none { it.isNotBlank() } && photos.isEmpty()) {
+            error = "Vælg mindst ét punkt og beskriv, hvad der er forkert"
             return
         }
         if (productId == null && description.trim().length < 10) {
@@ -141,8 +160,8 @@ private fun ReportBugContent(productId: String?) {
         submitting = true
         val editingExisting = if (editing) pending else null
         val body: Map<String, Any?> = when {
-            productId != null && editingExisting != null -> mapOf("sections" to sections.toMap())
-            productId != null -> mapOf("sections" to sections.toMap(), "productId" to productId)
+            productId != null && editingExisting != null -> mapOf("sections" to sections.toMap(), "sectionPhotos" to photos.toMap())
+            productId != null -> mapOf("sections" to sections.toMap(), "sectionPhotos" to photos.toMap(), "productId" to productId)
             else -> mapOf("description" to description, "categories" to categories.toList())
         }
         scope.launch {
@@ -150,6 +169,10 @@ private fun ReportBugContent(productId: String?) {
                 val response = if (editingExisting != null) Api.patch("/api/bug-reports/${editingExisting.id}", body) else Api.post("/api/bug-reports", body)
                 pending = decodeReport((response as? JsonObject)?.get("bugReport"))
                 editing = false
+                sections.clear()
+                photos.clear()
+                photoBytes.clear()
+                thanked = true
             } catch (e: ApiException) {
                 // Race with another device that already submitted one — show the overlay instead.
                 val existing = decodeReport((e.body as? JsonObject)?.get("bugReport"))
@@ -171,10 +194,21 @@ private fun ReportBugContent(productId: String?) {
     val showForm = if (productId == null) current == null else editing || (pendingLoaded && current == null)
 
     HcScreen(title = "Har du fundet en fejl?", contentPadding = PaddingValues(start = 16.dp, end = 16.dp, top = 16.dp)) {
-        ProfilePointsPromoBanner(
-            headline = "Indberet en fejl og optjen 10 points, når den godkendes og rettes.",
-            onTermsClick = { nav.push("/betingelser#pointsystem") },
-        )
+        if (thanked) {
+            val shape = RoundedCornerShape(HcDimens.RadiusCard)
+            Column(Modifier.fillMaxWidth().clip(shape).background(HcColors.Black, shape).padding(16.dp)) {
+                HcText(
+                    "TAK! Vi har modtaget din indberetning. Du vil få svar på din henvendelse og points i din indbakke, når vi har behandlet din sag.",
+                    HcTypeRoles.Body,
+                    color = HcColors.White,
+                )
+            }
+        } else {
+            ProfilePointsPromoBanner(
+                headline = "Indberet en fejl og optjen 10 points, når den godkendes og rettes.",
+                onTermsClick = { nav.push("/betingelser#pointsystem") },
+            )
+        }
         when {
             !pendingLoaded -> HcText("Henter…", HcTypeRoles.Body, Modifier.padding(top = 32.dp), color = HcColors.TextSecondary)
             showOverlay && current != null -> Column(
@@ -187,28 +221,25 @@ private fun ReportBugContent(productId: String?) {
                 Column(Modifier.fillMaxWidth().padding(top = 16.dp, bottom = 32.dp)) { BugReportNotes(current.id) }
             }
             showForm -> Column(Modifier.fillMaxWidth().padding(top = 32.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
+                HcButton(
+                    if (submitting) "Sender…" else "Send indberetning",
+                    onClick = ::submit,
+                    enabled = !submitting,
+                )
                 if (productId != null) {
                     HcText("Hvad er forkert på varen?", HcTypeRoles.Label)
                     BUG_REPORT_SECTIONS.forEach { (sectionKey, label) ->
-                        val open = sections.containsKey(sectionKey)
+                        val filled = !sections[sectionKey].isNullOrBlank() || photos.containsKey(sectionKey)
                         val shape = RoundedCornerShape(HcDimens.RadiusCard)
-                        Column(Modifier.fillMaxWidth().clip(shape).border(1.dp, if (open) HcColors.Action else HcColors.FieldBorder, shape)) {
-                            Row(
-                                Modifier.fillMaxWidth().clickable { if (open) sections.remove(sectionKey) else sections[sectionKey] = "" }.padding(12.dp),
-                                verticalAlignment = Alignment.CenterVertically,
-                            ) {
-                                HcText(label, HcTypeRoles.Body, Modifier.weight(1f))
-                                HcText(if (open) "−" else "+", HcTypeRoles.Body)
-                            }
-                            if (open) {
-                                ProfileTextArea(
-                                    sections[sectionKey] ?: "",
-                                    { sections[sectionKey] = it },
-                                    Modifier.padding(start = 12.dp, end = 12.dp, bottom = 12.dp),
-                                    placeholder = "Hvad er forkert, og hvad burde der stå?",
-                                    minLines = 3,
-                                )
-                            }
+                        Row(
+                            Modifier.fillMaxWidth().clip(shape)
+                                .border(1.dp, if (filled) HcColors.Action else HcColors.FieldBorder, shape)
+                                .clickable { openSection = sectionKey }
+                                .padding(12.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                        ) {
+                            HcText(label, HcTypeRoles.Body, Modifier.weight(1f))
+                            HcIcon(if (filled) "Check" else "Plus", size = 20.dp, stroke = 1.75f, color = HcColors.Action)
                         }
                     }
                     HcError(error)
@@ -243,13 +274,84 @@ private fun ReportBugContent(productId: String?) {
                         }
                     }
                 }
-                HcButton(
-                    if (submitting) "Sender…" else "Send indberetning",
-                    onClick = ::submit,
-                    enabled = !submitting,
-                    modifier = Modifier.padding(top = 8.dp, bottom = 32.dp),
-                )
+                Spacer(Modifier.height(96.dp))
             }
+        }
+    }
+
+    val sheetKey = openSection
+    if (sheetKey != null) {
+        val label = BUG_REPORT_SECTIONS.firstOrNull { it.first == sheetKey }?.second ?: ""
+        BugReportSectionSheet(
+            label = label,
+            text = sections[sheetKey] ?: "",
+            photo = photos[sheetKey],
+            photoBytes = photoBytes[sheetKey],
+            onText = { sections[sheetKey] = it },
+            onPhoto = { bytes ->
+                if (bytes == null) {
+                    photos.remove(sheetKey)
+                    photoBytes.remove(sheetKey)
+                } else {
+                    photos[sheetKey] = Device.jpegDataUrl(bytes)
+                    photoBytes[sheetKey] = bytes
+                }
+            },
+            onDismiss = { openSection = null },
+        )
+    }
+}
+
+/**
+ * The bottom sheet for one point (user decision 2026-10-10): the point as the
+ * title, a note field and under it the camera, so a new photo can be taken
+ * right away. "Gem" only closes the sheet — the black "Send indberetning"
+ * button on the page sends.
+ */
+@Composable
+private fun BugReportSectionSheet(
+    label: String,
+    text: String,
+    photo: String?,
+    photoBytes: ByteArray?,
+    onText: (String) -> Unit,
+    onPhoto: (ByteArray?) -> Unit,
+    onDismiss: () -> Unit,
+) {
+    val scope = rememberCoroutineScope()
+    var photoError by remember { mutableStateOf<String?>(null) }
+    HcBottomSheet(
+        onDismiss = onDismiss,
+        title = label,
+        size = HcSheetSize.Full,
+        scrollable = true,
+        footer = { HcButton("Gem", onClick = onDismiss, modifier = Modifier.fillMaxWidth()) },
+    ) {
+        Column(Modifier.fillMaxWidth().padding(start = 16.dp, end = 16.dp, bottom = 16.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
+            ProfileTextArea(text, onText, placeholder = "Hvad er forkert, og hvad burde der stå?", minLines = 5)
+            if (photo != null) {
+                val shape = RoundedCornerShape(HcDimens.RadiusCard)
+                val imageModifier = Modifier.fillMaxWidth().height(256.dp).clip(shape).border(1.dp, HcColors.FieldBorder, shape)
+                if (photoBytes != null) SettingsSupportBytesImage(photoBytes, imageModifier, ContentScale.Fit)
+                else HcRemoteImage(photo, imageModifier, label, ContentScale.Fit)
+            }
+            HcButton(
+                if (photo != null) "Tag nyt billede" else "Tag billede",
+                onClick = {
+                    photoError = null
+                    scope.launch {
+                        try {
+                            Device.takePhoto()?.let { onPhoto(it) }
+                        } catch (e: Exception) {
+                            photoError = "Kunne ikke tage billedet — prøv igen"
+                        }
+                    }
+                },
+                kind = HcButtonKind.Secondary,
+                modifier = Modifier.fillMaxWidth(),
+            )
+            if (photo != null) HcButton("Fjern billede", onClick = { onPhoto(null) }, kind = HcButtonKind.Text)
+            HcError(photoError)
         }
     }
 }
