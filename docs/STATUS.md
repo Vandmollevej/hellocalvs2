@@ -1,6 +1,10 @@
 # HELLO CAL — project status
 
-Last updated: 2026-10-09
+Last updated: 2026-10-10
+
+## 2026-10-10: Screening-flowet holdt til designklasserne
+
+- `ScreeningFlow`/`ScreeningInput`: Næste/Gem bruger nu `h-12` (var en tynd streg), målefelt-knapper bruger `.hf-choice` (valgt = lime), +/− og slet bruger `.hf-btn-icon`, "Tilføj spørgsmål" `.hf-btn-secondary`; tidsfeltet løber ikke længere ud af skærmen. Trinnet "Måling" hedder "Skala" (da/no/sv), så trin-labels ikke støder sammen. Native uændret i kode (bruger allerede HcButton/ProfileChoiceChip); tekster synkroniseret, paritet accepteret. Lint/build ikke kørt (ingen `node_modules`), ikke visuelt testet.
 
 ## 2026-10-09: Favorit-bookmark på aktiviteter (web + native)
 
