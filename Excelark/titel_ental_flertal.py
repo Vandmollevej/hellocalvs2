@@ -271,8 +271,13 @@ def frida_rules(nr, vi, ki, nix, cfg, stats):
             v = fmt_list(re.split(r'\s*/\s*', v))
             stats['liste'] += 1
         elif ',' in v and i in vi:
-            v = fmt_list(re.split(r'\s*,\s*', v))
-            stats['liste'] += 1
+            parts = re.split(r'\s*,\s*', v)
+            if ' og ' in parts[-1]:  # allerede "a, b og c" -> ikke "a og b og c"
+                parts = parts[:-1] + parts[-1].rsplit(' og ', 1)
+            new = fmt_list(parts)
+            if new != v:
+                stats['liste'] += 1
+            v = new
         nr[i] = clean_phrase(v.strip()) or None
     for i in vi:
         v = nr[i]
