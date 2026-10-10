@@ -302,7 +302,8 @@ fun UpdatePointsBanner(href: String, text: String, toggleLabel: String, tiles: L
     val nav = LocalNavigator.current
     // 0 = collapsed, 1 = banner, 2 = panel
     var stage by remember { mutableStateOf(1) }
-    Column(Modifier.fillMaxWidth().shadow(4.dp).background(HcColors.White)) {
+    val bannerShape = RoundedCornerShape(bottomStart = 16.dp, bottomEnd = 16.dp)
+    Column(Modifier.fillMaxWidth().shadow(4.dp, bannerShape).background(HcColors.White, bannerShape)) {
         if (stage >= 1) {
             HcText(
                 text,
