@@ -243,6 +243,7 @@
     "chatSaveError": "Det gick inte att spara. Försök igen."
   },
   "nav": {
+    "home": "Hem",
     "screenings": "Screeningar",
     "add": "Lägg till",
     "foods": "Livsmedel",
@@ -623,6 +624,8 @@
     "sideLeft": "Vänster",
     "sideRight": "Höger",
     "sideHint": "Sifferreglaget visas alltid på motsatt sida: {side}.",
+    "mirrorNavTitle": "Spegelvänd bottenmenyn",
+    "mirrorNavHint": "Hem står fast på ena sidan och ikonerna kan skjutas på den andra. Slå på för att byta sida, som på startsidan.",
     "buttonsSectionTitle": "Knappar i hjulet",
     "selectedCount": "{count} av {max} fält valda",
     "maxReachedHint": "Ta bort ett fält för att kunna lägga till ett annat.",

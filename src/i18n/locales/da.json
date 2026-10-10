@@ -243,6 +243,7 @@
     "chatSaveError": "Kunne ikke gemme. Prøv igen."
   },
   "nav": {
+    "home": "Hjem",
     "screenings": "Screeninger",
     "add": "Tilføj",
     "foods": "Madvarer",
@@ -623,6 +624,8 @@
     "sideLeft": "Venstre",
     "sideRight": "Højre",
     "sideHint": "Tal-slideren vises altid i den modsatte side: {side}.",
+    "mirrorNavTitle": "Spejlvend bundmenuen",
+    "mirrorNavHint": "Hjem står fast på den ene side og ikonerne kan skubbes på den anden. Slå til for at bytte plads, ligesom forsiden.",
     "buttonsSectionTitle": "Knapper i hjulet",
     "selectedCount": "{count} af {max} felter valgt",
     "maxReachedHint": "Fjern et felt for at kunne tilføje et andet.",

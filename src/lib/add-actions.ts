@@ -1,10 +1,10 @@
 import { useEffect, useState, useSyncExternalStore } from "react";
 import {
-  IconActivity,
   IconCalendarHeart,
   IconCamera,
   IconClipboardHeart,
   IconGlassCocktail,
+  IconHeartbeat,
   IconMicrophone,
   IconSearch,
   type Icon,
@@ -89,8 +89,8 @@ export const ADD_ACTIONS: AddAction[] = [
   {
     key: "activity",
     href: "/activity/create",
-    // Stregikon som de andre i bundcirklen — ikke det farvede 3D-billede.
-    icon: IconActivity,
+    // Stregikon som de andre i bundcirklen.
+    icon: IconHeartbeat,
     labelKey: "addButton.activity",
   },
   {

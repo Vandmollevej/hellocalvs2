@@ -13,6 +13,7 @@ import kotlinx.serialization.json.contentOrNull
  * in NativeHooks.secureStorage here (PORTING.md rule 7):
  * - src/lib/calendar-view-pref.ts hellocal.kalender.defaultView
  * - src/lib/frontpage-layout.ts  hellocal.frontpage.fabSide
+ * - src/lib/bottom-nav-mirror.ts hellocal.bottomnav.mirrored
  * - src/lib/add-actions.ts       hellocal.frontpage.wheelActions
  * - src/lib/frontpage-stats.ts   hellocal.frontpage.statKeys
  * - src/lib/help-prefs.ts        hellocal.help.showTooltips / showStartupTips / showGoalTips
@@ -48,6 +49,12 @@ object SettingsLocalPrefs {
     fun fabSide(): String = read(FAB_SIDE_KEY)?.takeIf { it == "left" || it == "right" } ?: "left"
     fun saveFabSide(side: String) = write(FAB_SIDE_KEY, side)
     fun oppositeSide(side: String): String = if (side == "left") "right" else "left"
+
+    // ---- Mirrored bottom menu (src/lib/bottom-nav-mirror.ts) ----
+
+    private const val BOTTOM_NAV_MIRRORED_KEY = "hellocal.bottomnav.mirrored"
+    fun bottomNavMirrored(): Boolean = read(BOTTOM_NAV_MIRRORED_KEY) == "1"
+    fun saveBottomNavMirrored(mirrored: Boolean) = write(BOTTOM_NAV_MIRRORED_KEY, if (mirrored) "1" else "0")
 
     // ---- Wheel actions (src/lib/add-actions.ts) ----
 
