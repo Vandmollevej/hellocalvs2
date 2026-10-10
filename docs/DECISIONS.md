@@ -110,6 +110,11 @@ Ejerens krav: "Om natten kan en kørsel køre (tilføj den til robotterne i admi
 - Den, der bestemmer over en profils deling (`sharingDeciderId` i `src/lib/family-sharing.ts`): personen selv, når vedkommende har eget login og ikke er et barn under 15; ellers betaleren (profiler uden eget login og børn under 15, samme aldersgrænse som udmelding). Betaleren bestemmer også over sin egen profil.
 - Gælder begge niveauer ("se profilen" og "oprette på deres vegne"). Betaleren har stadig altid fuld adgang til alle familiens profiler og kan ikke slås fra.
 - `PUT /api/family/grants` afviser andre end den, der bestemmer. Betalerens "Adgang", invitationens adgangsvalg og "Tilføj familiemedlem/barn" (den nye profils adgang til andre) viser og gemmer kun adgang til profiler, betaleren bestemmer over; `joinFamily` giver kun den. Tildelinger, betaleren gav før, bliver liggende, men personen kan nu selv ændre dem.
+## 2026-10-03: "Invitér en ven" — kun afsenderen får 300 points, vennen 1 gratis måned
+
+- Ejerens beslutning (erstatter "300 points til begge parter" fra 2026-09-02): kun den, der inviterer, får 300 points (`FRIEND_REFERRAL`), når vennen har haft en konto i mindst 3 måneder. Ventetiden er uændret.
+- Vennen får ingen points, men 1 gratis måned med Seriøs med det samme, når kontoen oprettes via invite-linket (`grantReferredFriendFreeMonth` i `src/lib/referrals.ts`). Den gives som `FREE_MONTH` med `currentPeriodEnd` = oprettelse + 1 måned (samme spor som gavekoder) og tæller ikke med i loftet på 12 gratis måneder fra points.
+- Gælder kun nye tilmeldinger. Allerede ventende invitationer udbetaler fremover kun til afsenderen; vennen i dem får ikke en gratis måned med tilbagevirkende kraft.
 
 ## 2026-10-03: Beskeder på Profil, Resultatvisning under Visning
 
