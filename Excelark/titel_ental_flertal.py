@@ -313,11 +313,14 @@ def frida_rules(nr, vi, ki, nix, cfg, stats):
 
 
 def main(which):
-    cfg = CFG[which]
+    cfg = dict(CFG[which])
+    if os.environ.get('SRC_' + which.upper()):
+        cfg['src'] = os.environ['SRC_' + which.upper()]
     fr = load_frida_plurals()
     tplB, tplC = load_templates()
     os.makedirs(os.path.join(ROOT, 'Backup'), exist_ok=True)
-    shutil.copy2(cfg['src'], os.path.join(ROOT, 'Backup', os.path.basename(cfg['src']).replace('.xlsx', '_foer_ental-flertal.xlsx')))
+    if not os.environ.get('SRC_' + which.upper()):
+        shutil.copy2(cfg['src'], os.path.join(ROOT, 'Backup', os.path.basename(cfg['src']).replace('.xlsx', '_foer_ental-flertal.xlsx')))
     wb = openpyxl.load_workbook(cfg['src'])
     ws = wb.active
     hdr = [c.value for c in ws[1]]
