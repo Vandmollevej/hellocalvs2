@@ -124,6 +124,9 @@ data class ProductDto(
     val isGenericIngredient: Boolean = false,
     val hasKnownNutrition: Boolean? = null,
     val nutrients: List<ResolvedNutrient> = emptyList(),
+    // Frida-skøn (docs/DECISIONS.md 2026-10-10): ∼ ved kalorietallet og Fridas kildeangivelse.
+    val kcalEstimated: Boolean = false,
+    val fridaSource: Boolean = false,
     val keywords: JsonElement? = null,
     val dietaryTags: JsonElement? = null,
     val lastAmountGrams: Double? = null,
@@ -250,7 +253,7 @@ data class UserScan(
     val imageUrl: String? = null,
     val brand: String? = null,
     val kcalPer100g: Double = 0.0,
-    val macrosEstimated: Boolean = false,
+    val kcalEstimated: Boolean = false,
     val createdAt: String = "",
     val added: Boolean = false,
 )

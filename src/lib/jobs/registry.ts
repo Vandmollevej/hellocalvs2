@@ -118,6 +118,18 @@ export const JOBS: JobDefinition[] = [
     defaultRunAtTime: "04:30",
   },
   {
+    // Frida-skøn (∼) for varer uden energimærkning (docs/DECISIONS.md 2026-10-10).
+    // Agenterne for Bilka/REMA, Frida og Valdemarsro beder om en kørsel, når de har importeret.
+    key: "frida-estimates",
+    name: "Frida-skøn: varer uden energimærkning",
+    description:
+      "Giver varer uden energimærkning Fridas tal (vist med ∼) i de felter, butikken ikke selv har udfyldt: produkttypen skal ligne en Frida-produkttype mindst 90 % (ental/flertal og stavemåder udlignes), og tilstand, variant og fedtprocent vælger Frida-varen. Tvivlstilfælde står under Frida-match til admin. Opretter stregkoderne på alle butiksvarer, regner Valdemarsro-retter ud, når alle ingredienslinjer kan regnes med, og udfylder delte retter, hvor en ingrediens manglede næring.",
+    runtime: "app",
+    robot: true,
+    defaultIntervalMinutes: null,
+    defaultRunAtTime: "02:30",
+  },
+  {
     key: "frida-import",
     name: "Frida-import",
     description:

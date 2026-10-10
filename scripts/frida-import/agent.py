@@ -388,6 +388,14 @@ def mark_imported(conn, article_id, title):
         )
 
 
+def request_frida_estimates(conn):
+    """Beder app-robotten "frida-estimates" om en kørsel lige efter importen
+    (docs/DECISIONS.md 2026-10-10): varer uden energimærkning får Frida-skøn."""
+    with conn.cursor() as cur:
+        cur.execute("""UPDATE "scheduled_jobs" SET "runRequestedAt" = now() WHERE key = 'frida-estimates'""")
+    conn.commit()
+
+
 def run_once(conn):
     # Returnerer (besked, antal udført) til admin "Robotter"/"Nattens kørsler".
     sheet_items, sheet_digest = load_sheet()
@@ -403,6 +411,8 @@ def run_once(conn):
         )
         log.info(sheet_message)
     message, count = run_figshare(conn, sheet_managed=sheet_items is not None)
+    if sheet_count or count:
+        request_frida_estimates(conn)
     if sheet_message:
         return f"{sheet_message}. {message}", sheet_count + count
     return message, count

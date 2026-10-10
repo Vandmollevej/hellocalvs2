@@ -2216,6 +2216,7 @@
     "showLess": "Vis mindre",
     "extendedNutrition": "Næringsinnhold",
     "extendedNutritionDisclaimer": "Vises bare når det finnes data for dette produktet.",
+    "fridaSource": "Kilde: Fødevaredata (frida.fooddata.dk), DTU Fødevareinstituttet, Danmarks Tekniske Universitet",
     "toxins": "Giftstoffer",
     "toxinPregnancyBadge": "Gravid/ammende",
     "toxinsDisclaimer": "Basert på innholdsfortegnelsen — ikke en måling av akkurat dette produktet. Kilder: Mattilsynet og EFSA.",

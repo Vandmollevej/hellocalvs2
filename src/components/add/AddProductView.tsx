@@ -188,6 +188,12 @@ type Product = {
   // Usikkerheds-~ (docs/DECISIONS.md 2026-09-24): alle næringsstoffer ud
   // over makroerne pr. 100 g fra /api/products/[id], med estimeret-flag.
   nutrients?: ResolvedNutrient[];
+  // Kalorietallet er et skøn (fx Frida-skøn, DECISIONS 2026-10-10) → ∼
+  // foran kalorietallet.
+  kcalEstimated?: boolean;
+  // Mindst én værdi kommer fra Frida → Fridas kildeangivelse nederst i det
+  // udfoldede næringsfelt (DECISIONS 2026-10-10).
+  fridaSource?: boolean;
 };
 
 type ProfileUser = {
@@ -1090,7 +1096,12 @@ export function AddProductView({
                       </ReadingSkeleton>
                     ) : view.hasKnownNutrition === false
                       ? t("addProduct.nutritionUnknown")
-                      : t("addProduct.kcalAmount", { kcal: Math.round((view.kcalPer100g * amount) / 100) })}
+                      : (
+                        <>
+                          {view.kcalEstimated && <UncertaintyTilde small />}
+                          {t("addProduct.kcalAmount", { kcal: Math.round((view.kcalPer100g * amount) / 100) })}
+                        </>
+                      )}
                   </p>
                 </div>
                 <button
@@ -1110,14 +1121,19 @@ export function AddProductView({
                     </ReadingSkeleton>
                   ) : view.hasKnownNutrition === false
                     ? t("addProduct.nutritionUnknown")
-                    : servingSizeGrams && hasServingUnit
-                    ? t("addProduct.kcalPerServing", {
-                        kcal: Math.round((view.kcalPer100g * servingSizeGrams) / 100),
-                        unit: servingSizeUnitSingular as string,
-                      })
-                    : displayUnit === "g"
-                    ? t("addProduct.kcalPer100g", { kcal: Math.round(view.kcalPer100g) })
-                    : t("addProduct.kcalPer100ml", { kcal: Math.round(view.kcalPer100g) })}
+                    : (
+                      <>
+                        {view.kcalEstimated && <UncertaintyTilde small />}
+                        {servingSizeGrams && hasServingUnit
+                          ? t("addProduct.kcalPerServing", {
+                              kcal: Math.round((view.kcalPer100g * servingSizeGrams) / 100),
+                              unit: servingSizeUnitSingular as string,
+                            })
+                          : displayUnit === "g"
+                          ? t("addProduct.kcalPer100g", { kcal: Math.round(view.kcalPer100g) })
+                          : t("addProduct.kcalPer100ml", { kcal: Math.round(view.kcalPer100g) })}
+                      </>
+                    )}
                 </p>
                 {!!confidentAlternativeServings.length && (
                   <div className="mt-1 flex flex-col items-center gap-0.5">
@@ -1458,6 +1474,15 @@ export function AddProductView({
                       <p className="hf-type-micro text-text-secondary px-4 py-2.5">
                         {t("addProduct.extendedNutritionDisclaimer")}
                       </p>
+                      {/* Fridas kildeangivelse (brugerens regel 2026-10-10): kun
+                          her, helt nederst i det udfoldede felt, og kun når en
+                          værdi på varen kommer fra Frida. */}
+                      {view.fridaSource && (
+                        <p className="hf-type-micro text-text-secondary px-4 pb-2.5">
+                          <UncertaintyTilde small />
+                          {t("addProduct.fridaSource")}
+                        </p>
+                      )}
                     </div>
                   )}
                 </div>
