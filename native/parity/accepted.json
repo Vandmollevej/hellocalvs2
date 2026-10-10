@@ -53,7 +53,7 @@
     "src/components/onboarding/ActivityStep.tsx": "1825e0f2fd58523f",
     "src/components/ui/Toggle.tsx": "8fc97afe3b61a5a3",
     "src/components/weight/AttireToggles.tsx": "e5ce3e4e1da336dc",
-    "src/components/weight/WeighInPrompts.tsx": "757b76feecbf8527"
+    "src/components/weight/WeighInPrompts.tsx": "dae9e0da737a08e8"
   },
   "/account/phone": {
     "src/app/account/phone/page.tsx": "113c8d9cf805a8d7",
@@ -3270,7 +3270,7 @@
     "src/components/icons/WaistMeasure.tsx": "47f849581ff0f288",
     "src/components/web/WebShell.tsx": "5f2646ffd79af9cc",
     "src/components/weight/AttireToggles.tsx": "e5ce3e4e1da336dc",
-    "src/components/weight/WeighInPrompts.tsx": "757b76feecbf8527",
+    "src/components/weight/WeighInPrompts.tsx": "dae9e0da737a08e8",
     "src/components/weight/WeightEntryDetailsSheet.tsx": "1dd31caa5c2a8f18",
     "src/components/weight/WeightSyncStatus.tsx": "35e33268e7403c4e"
   },

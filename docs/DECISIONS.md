@@ -2,6 +2,16 @@
 
 This file records durable decisions. Add a dated entry when a later decision changes one of them.
 
+## 2026-10-10: Vejning fra Withings giver popup i realtid
+
+Brugerens ønske: "Jeg har lige vejet mig, men jeg får ingen popup" → "Kan det ikke gøres i realtid?"
+
+- **Withings-notifikationer:** ved tilkobling og ved hver token-fornyelse (ca. hver 3. time) tilmelder Hello Cal sig Withings' notifikationer for vægt (`notify` action=subscribe, appli 1) med adressen `<APP_BASE_URL>/api/integrations/withings/webhook`. Det gentages, fordi Withings selv kan slå en adresse fra efter fejl. Mangler `APP_BASE_URL`, tilmeldes der ikke.
+- **Bruger-ID:** Withings' `userid` fra token-svaret gemmes i `Integration.externalUserId`. Ældre forbindelser uden ID får tokenet fornyet ved næste synkronisering (`OAuthProviderAdapter.afterRefresh`), så de også bliver tilmeldt uden at forbinde igen.
+- **Webhook:** notifikationen er ikke signeret og indeholder kun `userid`, så Hello Cal henter selv målingerne med brugerens token (`runIntegrationSync`, tvungen). Højst én hentning pr. bruger hvert 10. sekund (`withings-webhook.ts`). HEAD/GET svarer 200, da Withings tjekker adressen ved tilmelding.
+- **Appen (web + native):** mens forsiden er synlig og appen er i forgrunden, spørges `/api/weight-attire/pending` hvert 15. sekund og straks, når appen kommer frem igen. "Senere" gælder nu kun de viste vejninger (flag pr. vejnings-id); en ny vejning åbner popuppen igen i samme session.
+- Andre integrationer end Withings og Garmin har stadig kun baggrundsjobbet (hvert 15. minut).
+
 ## 2026-10-10: Subbrand over brandet ved produktcirklen — logo når det findes
 
 Brugerens ønske: "I dag vises brandnavn til højre for produktet. Fremover skal vises subbrand ovenover. Begge skal vise ikon i stedet, hvis de findes."

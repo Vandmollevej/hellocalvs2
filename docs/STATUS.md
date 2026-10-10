@@ -2,6 +2,12 @@
 
 Last updated: 2026-10-10
 
+## 2026-10-10: Withings-vejning giver popup i realtid
+
+- Withings melder nu nye vejninger til `/api/integrations/withings/webhook` med det samme, og Hello Cal henter dem straks. Forsiden (web + native) tjekker hvert 15. sekund og når appen kommer frem igen, så tøj-popuppen kommer inden for få sekunder. Se DECISIONS 2026-10-10.
+- Eksisterende Withings-forbindelser tilmeldes automatisk ved første synkronisering efter deploy; ingen ny tilkobling og ingen migration. Kræver `APP_BASE_URL` på serveren (er sat).
+- Tjekket: tsc, eslint på ændrede filer, paritet. Kotlin kompileres i GitHub Actions. Ikke prøvet mod Withings' rigtige notifikationer endnu.
+
 ## 2026-10-10: Subbrand over brandet ved produktcirklen
 
 - Varesiden (web + native): subbrandet står oven over brandet til højre for cirklen; begge vises som logo, når det findes, ellers som navn i fed grøn tekst. Se DECISIONS 2026-10-10.

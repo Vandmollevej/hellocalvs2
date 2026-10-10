@@ -13,6 +13,8 @@ export type OAuthTokens = {
   // Sekunder til udløb. Mangler den, udløber tokenet ikke (Polar).
   expires_in?: number | null;
   scope?: string;
+  // Withings sender sit bruger-ID med i token-svaret (bruges til notifikationer).
+  userid?: string | number;
 };
 
 export type OAuthProviderAdapter = {
@@ -39,6 +41,9 @@ export type OAuthProviderAdapter = {
   // Kører én gang efter tilkobling (Polar kræver brugerregistrering; Garmin
   // giver et pseudonymt bruger-ID til push-notifikationer).
   afterConnect?(tokens: OAuthTokens): Promise<{ externalUserId?: string } | void>;
+  // Kører efter hver token-fornyelse (Withings: tilmeld notifikationer igen,
+  // så nye vejninger kommer med det samme).
+  afterRefresh?(tokens: OAuthTokens): Promise<{ externalUserId?: string } | void>;
   // Kaldes ved frakobling, så appen stopper adgangen og ikke sender mere.
   revoke?(accessToken: string): Promise<void>;
   fetchItems(accessToken: string, since: Date): Promise<IntegrationItem[]>;
