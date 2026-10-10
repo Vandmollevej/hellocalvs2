@@ -624,7 +624,7 @@ fun AddProductView(
 
                     if (isPending("ingredients") || !view.ingredientsText.isNullOrEmpty()) {
                         Column {
-                            HcText(t.t("createDish.ingredients"), HcTypeRoles.Body, Modifier.padding(bottom = 8.dp), color = HcColors.Black)
+                            HcText(t.t("createDish.ingredients"), HcTypeRoles.Body, Modifier.padding(bottom = 8.dp), color = HcColors.Black, bold = true)
                             when {
                                 isPending("ingredients") -> Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                                     listOf(0.94f, 0.82f, 0.88f, 0.46f).forEach { FoodSkeleton(Modifier.fillMaxWidth(it).height(16.dp)) }
@@ -867,14 +867,15 @@ private fun ExtendedNutritionSection(
     onMicronutrient: (String) -> Unit,
 ) {
     val t = LocalTranslator.current
-    Column {
-        Row(Modifier.fillMaxWidth().clickable(onClick = onToggle), verticalAlignment = Alignment.CenterVertically) {
+    Column(Modifier.fillMaxWidth().clip(RoundedCornerShape(16.dp)).background(HcColors.Tan)) {
+        Row(Modifier.fillMaxWidth().clickable(onClick = onToggle).padding(horizontal = 16.dp, vertical = 12.dp), verticalAlignment = Alignment.CenterVertically) {
             HcText(t.t("addProduct.extendedNutrition"), HcTypeRoles.Body, Modifier.weight(1f), color = HcColors.Black, bold = true)
             HcText(if (open) t.t("addProduct.showLess") else t.t("addProduct.showMore"), HcTypeRoles.Small, color = HcColors.Black, bold = true, underline = true)
             FoldChevron(open)
         }
         if (open) {
-            Column(Modifier.padding(top = 16.dp).fillMaxWidth().clip(RoundedCornerShape(16.dp)).background(HcColors.Tan)) {
+            Column(Modifier.fillMaxWidth()) {
+                Box(Modifier.fillMaxWidth().height(1.dp).background(HcColors.TanDark))
                 rows.forEachIndexed { index, row ->
                     val hasUncertainty = (row.value ?: 0.0) > 0 && (row.estimated || (row.tolerance ?: 0.0) > 0)
                     val expanded = hasUncertainty && autoExpand != (row.key in toggled)

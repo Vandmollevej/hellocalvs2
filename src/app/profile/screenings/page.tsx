@@ -3,42 +3,30 @@
 import { Suspense, useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { IconChevronDown, IconChevronRight, IconMoon, IconPlus } from "@tabler/icons-react";
+import { IconChevronRight, IconMoon, IconPlus } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
 import { ActionLink } from "@/components/hf/ActionButton";
 import { HfLoader } from "@/components/hf/HfLoader";
-import { MiniLineChart } from "@/components/hf/MiniChart";
 import { BottomSheet, BottomSheetCloseButton } from "@/components/hf/BottomSheet";
 import { ScreeningFillSheet } from "@/components/screenings/ScreeningFillSheet";
 import { ScreeningSwipeRow } from "@/components/screenings/ScreeningSwipeRow";
 import { useTranslation } from "@/i18n/LocaleProvider";
 import {
   deleteScreening,
-  fetchEntriesInRange,
   fetchScreenings,
-  isoDaysAgo,
   patchScreening,
-  todayIso,
 } from "@/lib/screenings-client";
-import {
-  SCREENING_PERIODS,
-  type ScreeningDto,
-  type ScreeningEntryDto,
-  type ScreeningPeriodKey,
-} from "@/lib/screenings";
+import type { ScreeningDto } from "@/lib/screenings";
 
 // Profil → Screeninger (docs/DECISIONS.md 2026-10-09): "Opret ny screening"
-// øverst, Screeningrapporter, listen med swipe (aktivér/deaktivér/slet) og en
-// graf pr. screening for den valgte periode. ?fill=1 åbner udfyldningsarket
-// (valget i Tilføj-menuen).
+// øverst, Screeningrapporter, listen med swipe (aktivér/deaktivér/slet).
+// ?fill=1 åbner udfyldningsarket (valget i Tilføj-menuen). Ingen grafer i bunden.
 function ScreeningsContent() {
   const { t } = useTranslation();
   const router = useRouter();
   const searchParams = useSearchParams();
   const [screenings, setScreenings] = useState<ScreeningDto[] | null>(null);
   const [failed, setFailed] = useState(false);
-  const [period, setPeriod] = useState<ScreeningPeriodKey>("30");
-  const [entries, setEntries] = useState<ScreeningEntryDto[]>([]);
   const [pendingDelete, setPendingDelete] = useState<ScreeningDto | null>(null);
   const fillOpen = searchParams.get("fill") === "1";
 
@@ -53,16 +41,6 @@ function ScreeningsContent() {
     load();
   }, [load]);
 
-  const loadEntries = useCallback(() => {
-    fetchEntriesInRange(isoDaysAgo(Number(period)), todayIso())
-      .then(setEntries)
-      .catch(() => setEntries([]));
-  }, [period]);
-
-  useEffect(() => {
-    loadEntries();
-  }, [loadEntries]);
-
   async function toggleActive(screening: ScreeningDto) {
     setScreenings((list) => list?.map((s) => (s.id === screening.id ? { ...s, active: !s.active } : s)) ?? null);
     await patchScreening(screening.id, { active: !screening.active });
@@ -76,8 +54,6 @@ function ScreeningsContent() {
     await deleteScreening(id);
   }
 
-  const withData = (screenings ?? []).filter((s) => s.active && entries.some((e) => e.screeningId === s.id));
-
   return (
     <HfScreen title={t("screenings.title")}>
       <div className="hf-page">
@@ -90,10 +66,6 @@ function ScreeningsContent() {
           <IconPlus size={20} />
           {t("screenings.createNew")}
         </Link>
-
-        <ActionLink variant="secondary" href="/profile/screenings/reports">
-          {t("screenings.reports")}
-        </ActionLink>
 
         {!screenings && !failed && (
           <div className="flex justify-center py-6">
@@ -141,48 +113,15 @@ function ScreeningsContent() {
           </div>
         )}
 
-        <div className="relative">
-          <select
-            aria-label={t("screenings.periodAria")}
-            className="hf-field hf-type-body w-full appearance-none rounded-xl border border-hf-tan-dark bg-hf-white pl-3 pr-9 text-hf-black"
-            value={period}
-            onChange={(event) => setPeriod(event.target.value as ScreeningPeriodKey)}
-          >
-            {SCREENING_PERIODS.map((key) => (
-              <option key={key} value={key}>
-                {t(`screenings.period.d${key}`)}
-              </option>
-            ))}
-          </select>
-          <IconChevronDown
-            size={14}
-            stroke={2.5}
-            className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-hf-black"
-          />
-        </div>
-
-        {withData.length === 0 ? (
-          <p className="hf-type-body text-text-secondary">{t("screenings.chartEmpty")}</p>
-        ) : (
-          withData.map((screening) => (
-            <div key={screening.id} className="hf-card flex flex-col gap-2">
-              <h3 className="hf-type-body hf-type-strong text-hf-black">{screening.name}</h3>
-              <MiniLineChart
-                points={entries
-                  .filter((e) => e.screeningId === screening.id)
-                  .map((e) => ({ label: e.date, value: e.value }))}
-                emptyLabel={t("screenings.chartEmpty")}
-              />
-            </div>
-          ))
-        )}
+        <ActionLink variant="secondary" href="/profile/screenings/reports">
+          {t("screenings.reports")}
+        </ActionLink>
       </div>
 
       {fillOpen && screenings && (
         <ScreeningFillSheet
           screenings={screenings}
           onClose={() => router.replace("/profile/screenings")}
-          onSaved={loadEntries}
         />
       )}
       {pendingDelete && (
