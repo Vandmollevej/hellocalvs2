@@ -130,3 +130,7 @@ ikke her, er den ikke registreret og skal tilføjes.
 
 Valgte knapper/faner/chips/planvalg har ALTID den lysegrønne farve (`--hf-color-accent`, #BBF06A) med sort kant og tekst — brug `.hf-selected` / `.hf-choice` / `.hf-chip`, aldrig sort, mørkegrøn eller beige som valgt-flade. Eneste undtagelse: kalenderens dags dato (`.hf-cal-current`). Native bruger `HcColors.SelectedBg`.
 - **Flows er helsides popups (bruger 2026-10-09):** alle flows overalt (fx Opret ret: Indsæt tekst / Scan opskrift / Opret manuelt, hvor man tilføjer én ingrediens ad gangen) åbner som en helsides popup (`BottomSheet size="full"`), ikke som en almindelig side.
+
+## Trinindikator (HfProgressStepper)
+
+- Flows med mange trin (fx "Opret ny screening") viser kun teksten under det aktive trin (`activeLabelOnly`), og prikkerne i bjælken er tryk-bare (`onSelect`): tilbage altid, frem kun når de forudgående trin er udfyldt (`isStepEnabled`). Web og native (`ProfileProgressStepper`). 2026-10-10.
