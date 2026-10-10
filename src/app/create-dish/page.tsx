@@ -49,6 +49,8 @@ import {
 } from "@/components/recipes/RecipeStepsEditor";
 import { RecipeCategoriesDialog } from "@/components/recipes/RecipeCategoriesDialog";
 import { useTranslation } from "@/i18n/LocaleProvider";
+import { SearchCorrectionNotice } from "@/components/hf/SearchCorrectionNotice";
+import { readSearchCorrection, type SearchCorrection } from "@/lib/search-notice";
 import { useConnectionMessage } from "@/lib/use-online-status";
 import { useInWebShell } from "@/components/web/WebShell";
 import { isPrivateIngredientId } from "@/lib/private-ingredient-ids";
@@ -102,6 +104,8 @@ export default function CreateDishPage() {
   const [results, setResults] = useState<
     { id: string; name: string; imageUrl?: string | null }[]
   >([]);
+  const [correction, setCorrection] = useState<SearchCorrection | null>(null);
+  const [exactFor, setExactFor] = useState<string | null>(null);
   const [searchState, setSearchState] = useState<
     "idle" | "loading" | "ready" | "error"
   >("idle");
@@ -113,16 +117,18 @@ export default function CreateDishPage() {
       setSearchState("loading");
       try {
         const res = await fetch(
-          `/api/products?q=${encodeURIComponent(query)}`,
+          `/api/products?q=${encodeURIComponent(query)}${exactFor === query ? "&exact=1" : ""}`,
           { signal: controller.signal },
         );
         if (!res.ok) throw new Error("offline");
         const data = await res.json();
         setResults(data.products ?? []);
+        setCorrection(readSearchCorrection(data, query));
         setSearchState("ready");
       } catch {
         setSearchState("error");
         setResults([]);
+        setCorrection(null);
       }
     }, 200);
 
@@ -130,7 +136,7 @@ export default function CreateDishPage() {
       controller.abort();
       clearTimeout(timeout);
     };
-  }, [query]);
+  }, [query, exactFor]);
 
   const hasPrivateIngredient = ingredients.some((i) =>
     isPrivateIngredientId(i.productId),
@@ -729,18 +735,27 @@ export default function CreateDishPage() {
                           {connectionMessage(t("createDish.noResults"))}
                         </p>
                       )}
+                      {searchState === "ready" && correction?.forQuery === query && (
+                        <div className="px-4 pt-3">
+                          <SearchCorrectionNotice
+                            correction={correction}
+                            onSearchExact={() => setExactFor(query)}
+                            onUseSuggestion={setQuery}
+                          />
+                        </div>
+                      )}
                       {searchState === "ready" && results.length === 0 && (
                         <p className="hf-type-body text-text-secondary px-4 py-4 text-center">
                           {t("createDish.noResults")}
                         </p>
                       )}
                       {searchState === "ready" &&
-                        results.slice(0, 6).map((product, index) => (
+                        results.map((product, index) => (
                           <Link
                             key={product.id}
                             href={`/add/${product.id}?for=ret`}
                             className={`flex items-center gap-2.5 px-4 py-3 ${
-                              index < Math.min(results.length, 6) - 1
+                              index < results.length - 1
                                 ? "border-b border-hf-tan-dark"
                                 : ""
                             }`}

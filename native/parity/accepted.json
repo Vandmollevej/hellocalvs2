@@ -364,7 +364,7 @@
     "src/components/web/WebShell.tsx": "5f2646ffd79af9cc"
   },
   "/create-dish": {
-    "src/app/create-dish/page.tsx": "8d1da46583036bea",
+    "src/app/create-dish/page.tsx": "9248e4bc0a7b0ab0",
     "src/app/layout.tsx": "32a09f6743aabdc5",
     "src/components/AuthGate.tsx": "94db96b768f9f95f",
     "src/components/BottomNav.tsx": "d645fd71889835c6",
@@ -387,6 +387,7 @@
     "src/components/hf/HfSlider.tsx": "c28c1c881aec9215",
     "src/components/hf/PersonsSlider.tsx": "838724fc39e1b17c",
     "src/components/hf/ScreenHeader.tsx": "a7bbb02ab41e7756",
+    "src/components/hf/SearchCorrectionNotice.tsx": "268d6e683918aaa9",
     "src/components/hf/Skeleton.tsx": "383d8a93fa858b4a",
     "src/components/icons/Favorite.tsx": "70f85dd37d71acbf",
     "src/components/icons/PhotoFrame.tsx": "20ffbe92a0057321",
@@ -597,7 +598,7 @@
     "src/components/web/WebShell.tsx": "5f2646ffd79af9cc"
   },
   "/foods": {
-    "src/app/foods/page.tsx": "aec078d1f7e67bc8",
+    "src/app/foods/page.tsx": "d96bf8b888d6bee7",
     "src/app/layout.tsx": "32a09f6743aabdc5",
     "src/components/AuthGate.tsx": "94db96b768f9f95f",
     "src/components/BottomNav.tsx": "d645fd71889835c6",
@@ -619,6 +620,7 @@
     "src/components/hf/BottomSheet.tsx": "2e09a9f4fae4c060",
     "src/components/hf/HfChevron.tsx": "11106e436ea8e3ef",
     "src/components/hf/ScreenHeader.tsx": "a7bbb02ab41e7756",
+    "src/components/hf/SearchCorrectionNotice.tsx": "268d6e683918aaa9",
     "src/components/hf/Skeleton.tsx": "383d8a93fa858b4a",
     "src/components/icons/Favorite.tsx": "70f85dd37d71acbf",
     "src/components/icons/PhotoFrame.tsx": "20ffbe92a0057321",
@@ -2085,7 +2087,7 @@
   },
   "/search": {
     "src/app/layout.tsx": "32a09f6743aabdc5",
-    "src/app/search/page.tsx": "75a3b7412cd16ae3",
+    "src/app/search/page.tsx": "79a854fb59ae64d6",
     "src/components/AuthGate.tsx": "94db96b768f9f95f",
     "src/components/BottomNav.tsx": "d645fd71889835c6",
     "src/components/EmailVerifySheet.tsx": "42e52d85f9bf57d9",
@@ -2106,6 +2108,7 @@
     "src/components/hf/BottomSheet.tsx": "2e09a9f4fae4c060",
     "src/components/hf/HfChevron.tsx": "11106e436ea8e3ef",
     "src/components/hf/ScreenHeader.tsx": "a7bbb02ab41e7756",
+    "src/components/hf/SearchCorrectionNotice.tsx": "268d6e683918aaa9",
     "src/components/hf/Skeleton.tsx": "383d8a93fa858b4a",
     "src/components/icons/Favorite.tsx": "70f85dd37d71acbf",
     "src/components/icons/PhotoFrame.tsx": "20ffbe92a0057321",

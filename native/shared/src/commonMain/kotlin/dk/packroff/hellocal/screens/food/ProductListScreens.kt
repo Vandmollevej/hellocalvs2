@@ -96,6 +96,8 @@ fun SearchScreen(args: RouteArgs) {
     var resultsState by remember { mutableStateOf("loading") }
     var resultsError by remember { mutableStateOf<Throwable?>(null) }
     var fromCache by remember { mutableStateOf(false) }
+    var correction by remember { mutableStateOf(SearchCorrection()) }
+    var exactQuery by remember { mutableStateOf<String?>(null) }
     var recentlyAdded by remember { mutableStateOf<List<FoodProductResult>>(emptyList()) }
     var favorites by remember { mutableStateOf<List<FoodProductResult>>(emptyList()) }
     val favoriteIds = favorites.map { it.id }.toSet()
@@ -112,20 +114,24 @@ fun SearchScreen(args: RouteArgs) {
         scope.launch { setFavorite(productId, next) }
     }
 
-    LaunchedEffect(query) {
+    LaunchedEffect(query, exactQuery) {
         if (query.isBlank()) return@LaunchedEffect
+        val exact = exactQuery == query
+        correction = SearchCorrection()
         delay(200)
         resultsState = "loading"
         try {
-            val data = ApiJson.decodeFromJsonElement(ProductListResponse.serializer(), Api.get("/api/products?q=${encodeUri(query)}"))
+            val data = ApiJson.decodeFromJsonElement(ProductListResponse.serializer(), Api.get("/api/products?q=${encodeUri(query)}${if (exact) "&exact=1" else ""}"))
+            correction = SearchCorrection.of(data)
             results = data.products.map {
                 FoodProductResult(it.id, it.name, it.imageUrl, it.brand?.name, it.kcalPer100g, hasEstimatedMacros(it.nutrientSources))
             }
-            OfflineCache.saveSearch(query, results)
+            if (!exact && !correction.isActive()) OfflineCache.saveSearch(query, results)
             fromCache = false
             resultsState = "ready"
         } catch (e: Exception) {
             // No connection: show saved results from earlier searches.
+            correction = SearchCorrection()
             val cached = OfflineCache.findSearch(query)
             if (cached != null) {
                 results = cached
@@ -192,7 +198,8 @@ fun SearchScreen(args: RouteArgs) {
                             if (fromCache && results.isNotEmpty()) {
                                 HcText(t.t("offline.cachedResults"), HcTypeRoles.Caption, Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 12.dp), color = HcColors.TextSecondary, align = TextAlign.Center)
                             }
-                            ProductResultList(results.take(6), favoriteIds, t, true, ::openProduct, ::toggleFavorite)
+                            SearchCorrectionNotice(correction, onSearchInstead = { exactQuery = query }, onUseSuggestion = { query = it }, modifier = Modifier.padding(horizontal = 12.dp, vertical = 12.dp))
+                            ProductResultList(results, favoriteIds, t, true, ::openProduct, ::toggleFavorite)
                             if (results.isEmpty()) {
                                 HcText(t.t("search.noResults"), HcTypeRoles.Body, Modifier.fillMaxWidth().padding(16.dp), color = HcColors.TextSecondary, align = TextAlign.Center)
                             }

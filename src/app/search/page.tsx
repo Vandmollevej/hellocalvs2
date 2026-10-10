@@ -6,6 +6,8 @@ import { IconSearch } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
 import { ProductResultRow as ResultRow, type ProductResult as Result } from "@/components/ProductResultRow";
 import { useTranslation } from "@/i18n/LocaleProvider";
+import { SearchCorrectionNotice } from "@/components/hf/SearchCorrectionNotice";
+import { readSearchCorrection, type SearchCorrection } from "@/lib/search-notice";
 import { useConnectionMessage } from "@/lib/use-online-status";
 import { findCachedSearch, readCache, saveSearchResults, writeCache, type CachedProduct } from "@/lib/offline-cache";
 import { hasEstimatedMacros } from "@/lib/nutrients";
@@ -33,6 +35,8 @@ function SoegContent() {
   const [results, setResults] = useState<Result[]>([]);
   const [resultsState, setResultsState] = useState<LoadState>("loading");
   const [fromCache, setFromCache] = useState(false);
+  const [correction, setCorrection] = useState<SearchCorrection | null>(null);
+  const [exactFor, setExactFor] = useState<string | null>(null);
   const [recentlyAdded, setRecentlyAdded] = useState<Result[]>([]);
   const [favorites, setFavorites] = useState<Result[]>([]);
   const router = useRouter();
@@ -73,7 +77,7 @@ function SoegContent() {
       setResultsState("loading");
       try {
         const res = await fetch(
-          `/api/products?q=${encodeURIComponent(query)}`,
+          `/api/products?q=${encodeURIComponent(query)}${exactFor === query ? "&exact=1" : ""}`,
           { signal: controller.signal }
         );
         if (!res.ok) throw new Error("offline");
@@ -96,7 +100,10 @@ function SoegContent() {
             })
         );
         setResults(mapped);
-        saveSearchResults(query, mapped);
+        const info = readSearchCorrection(data, query);
+        setCorrection(info);
+        // Rettede/foreslåede svar gemmes ikke offline under den skrevne tekst.
+        if (!info) saveSearchResults(query, mapped);
         setFromCache(false);
         setResultsState("ready");
       } catch {
@@ -106,10 +113,12 @@ function SoegContent() {
         if (cached) {
           setResults(cached);
           setFromCache(true);
+          setCorrection(null);
           setResultsState("ready");
           return;
         }
         setFromCache(false);
+        setCorrection(null);
         setResultsState("error");
         setResults([]);
       }
@@ -119,7 +128,7 @@ function SoegContent() {
       controller.abort();
       clearTimeout(timeout);
     };
-  }, [query]);
+  }, [query, exactFor]);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -248,10 +257,19 @@ function SoegContent() {
                   {connectionMessage(t("foods.loadError"))}
                 </p>
               )}
+              {resultsState === "ready" && correction?.forQuery === query && (
+                <div className="px-4 pt-3">
+                  <SearchCorrectionNotice
+                    correction={correction}
+                    onSearchExact={() => setExactFor(query)}
+                    onUseSuggestion={setQuery}
+                  />
+                </div>
+              )}
               {resultsState === "ready" && fromCache && results.length > 0 && (
                 <p className="hf-type-caption text-text-secondary px-4 pt-3 text-center">{t("offline.cachedResults")}</p>
               )}
-              {resultsState === "ready" && results.slice(0, 6).map((r) => (
+              {resultsState === "ready" && results.map((r) => (
                 <ResultRow
                   key={r.id}
                   id={r.id}
