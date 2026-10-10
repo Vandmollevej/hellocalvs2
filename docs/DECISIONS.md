@@ -11,6 +11,16 @@ Brugerens ønske: "I alle eksterne input i admin — API-nøgler, integrationer,
 - Systemværdier (kun `.env.production`) linker til skabelonen `.env.production.example` i repoet.
 - Egne API'er (admin → API-nøgler → Tilføj API) kræver et https-link til siden, hvor nøglen styres; ældre uden link får en advarsel.
 - Hver tjeneste har et anker (`/admin/api-keys#<id>`); forsidens "Mangler nøgle", Beskeder (SMTP/Web Push) og integrationssiderne linker direkte dertil.
+## 2026-10-10: Withings-data i realtid (vægt, puls, søvn, EKG) og aktivitet ved næste åbning
+
+Brugerens ønske: "Jeg har lige vejet mig, men jeg får ingen popup" → "Kan det ikke gøres i realtid?" → "Vægten måler mere … det samme gælder aktiviteten og pulsen. Er det for ressourcetungt, så gør det næste gang appen er aktiv. Serveren må ikke blive meget ekstra belastet."
+
+- **Withings-notifikationer:** ved tilkobling og ved hver token-fornyelse (ca. hver 3. time) tilmelder Hello Cal sig alle Withings' notifikationstyper for data (`notify` action=subscribe, appli 1 vægt/kropssammensætning, 2 temperatur, 4 puls/blodtryk/iltmætning/pulsbølgehastighed, 16 aktivitet, 44 søvn, 54 EKG) med adressen `<APP_BASE_URL>/api/integrations/withings/webhook`. Det gentages, fordi Withings selv kan slå en adresse fra efter fejl. Mangler `APP_BASE_URL`, tilmeldes der ikke.
+- **Realtid vs. næste åbning:** målinger (vægt, puls, blodtryk, temperatur, EKG) og søvn kommer sjældent og hentes straks. Aktivitet (appli 16) kommer ofte i løbet af dagen og hentes først, når appen er fremme: notifikationen markeres i hukommelsen (`open-refresh.ts`), og `POST /api/integrations/app-open` henter den. Web kalder det ved ny side/genindlæsning og når fanen bliver synlig; native ved start og hver gang appen kommer i forgrunden (ikke afhængigt af log ud/ind). Uden markering gør kaldet intet. Går markeringen tabt ved genstart, henter baggrundsjobbet dataene som før.
+- **Bruger-ID:** Withings' `userid` fra token-svaret gemmes i `Integration.externalUserId`. Ældre forbindelser uden ID får tokenet fornyet ved næste synkronisering (`OAuthProviderAdapter.afterRefresh`), så de også bliver tilmeldt uden at forbinde igen.
+- **Webhook:** notifikationen er ikke signeret og indeholder kun `userid`/`appli`, så Hello Cal henter selv dataene med brugerens token (`runIntegrationSync`, tvungen). Højst én hentning pr. bruger hvert 10. sekund (`withings-webhook.ts`); vægt + puls fra samme vejning giver én hentning. HEAD/GET svarer 200, da Withings tjekker adressen ved tilmelding.
+- **Appen (web + native):** mens forsiden er synlig og appen er i forgrunden, spørges `/api/weight-attire/pending` hvert 15. sekund og straks, når appen kommer frem igen. "Senere" gælder nu kun de viste vejninger (flag pr. vejnings-id); en ny vejning åbner popuppen igen i samme session.
+- Andre integrationer end Withings og Garmin har stadig kun baggrundsjobbet (hvert 15. minut).
 
 ## 2026-10-10: Subbrand over brandet ved produktcirklen — logo når det findes
 
