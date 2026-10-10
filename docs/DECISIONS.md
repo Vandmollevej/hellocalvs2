@@ -4857,3 +4857,7 @@ Ejeren vælger selv adgangens udløb med en datepicker i Hello Doc-editoren (web
 - Rettens side har knappen "Send til en ven": en helsides popup (`ForwardRecipeSheet`) med varighed (1/7/30/90 dage), venns navn og e-mail, afsendernavn ("Fra", forudfyldt med profilnavnet) og en valgfri besked. "Del" kalder `POST /api/forwards` (nye felter `expiresAt`, `recipientName`, `recipientEmail`, `message`, `fromName`; migration 20261009230000) og åbner telefonens/Apples deleark; uden deleark kopieres linket. Er e-mail angivet, sendes linket også på mail (best effort via `sendTransientMail`).
 - Linket er krypteret: `/forward/<segl>`, hvor seglet er forwardens token + udløb AES-256-GCM-krypteret (`src/lib/forward-link.ts`, nøgle afledt af `ADMIN_SESSION_SECRET`). Udløbet tjekkes både i seglet og i databasen; gamle almindelige tokens virker stadig. Point-reglerne er uændrede (kun når modtageren tilføjer retten).
 - Native: `ForwardRecipeSheet.kt` (samme popup) og native `ForwardButton` bruger det krypterede link.
+## 2026-10-09: Kropsmål-synlighed som Json på brugeren
+
+- Hvilke kropsmål Kropsmål-siden viser, gemmes som `User.bodyMeasurementVisibility` (Json, felt → boolean; null/manglende = vist), samme mønster som `allergenVisibility`. Kun siden filtreres — Målsætning, Statistik og Status viser stadig alle mål med data.
+- Bagdel, læg og ankel er tilføjet som kolonner på `BodyMeasurement` (ikke en generisk nøgle/værdi-tabel), så de følger de eksisterende mål.

@@ -114,6 +114,11 @@ model User {
   showAllergens      Boolean @default(false)
   allergenVisibility Json?
 
+  // Personal setting (2026-10-09): which body measurements are shown on the
+  // Kropsmål page (Indstillinger → Visning). Map from BodyMeasurementField to
+  // boolean; null = all are shown.
+  bodyMeasurementVisibility Json?
+
   // Personal setting (2026-09-11): shows the MyFitnessPal-style extended
   // nutrition panel (saturated/unsaturated/trans fat, cholesterol, sodium,
   // potassium, fibre, sugar, vitamin A/C, calcium, iron) as a collapsed
@@ -673,6 +678,10 @@ model BodyMeasurement {
   upperArmCm   Float?
   // Halsmål (2026-09-26), så alle brugerens fem kropsmålstegninger har et felt.
   neckCm       Float?
+  // Bagdel, ankel og læg (2026-10-09).
+  buttockCm    Float?
+  ankleCm      Float?
+  calfCm       Float?
   note         String?
   measuredAt   DateTime @default(now())
 

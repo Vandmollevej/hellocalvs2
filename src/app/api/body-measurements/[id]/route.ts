@@ -2,20 +2,20 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { unauthorized } from "@/lib/session";
 import { getProfileUser } from "@/lib/family-access";
+import { BODY_MEASUREMENT_FIELDS, type BodyMeasurementField } from "@/lib/body-measurements";
 
 type RouteContext = { params: Promise<{ id: string }> };
 
 export async function PATCH(req: Request, { params }: RouteContext) {
   const { id } = await params;
-  const { waistCm, hipCm, chestCm, thighCm, upperArmCm, neckCm, note } = (await req.json()) as {
-    waistCm?: number | null;
-    hipCm?: number | null;
-    chestCm?: number | null;
-    thighCm?: number | null;
-    upperArmCm?: number | null;
-    neckCm?: number | null;
+  const body = (await req.json()) as Partial<Record<BodyMeasurementField | "neckCm", number | null>> & {
     note?: string | null;
   };
+  const { note } = body;
+  const values: Record<string, number | null> = {};
+  for (const field of [...BODY_MEASUREMENT_FIELDS.map((def) => def.field), "neckCm" as const]) {
+    if (body[field] !== undefined) values[field] = body[field] ?? null;
+  }
 
   try {
     const user = await getProfileUser("bodyMeasurements", "UPDATED");
@@ -24,12 +24,7 @@ export async function PATCH(req: Request, { params }: RouteContext) {
     const result = await prisma.bodyMeasurement.updateMany({
       where: { id, userId: user.id },
       data: {
-        ...(waistCm !== undefined ? { waistCm } : {}),
-        ...(hipCm !== undefined ? { hipCm } : {}),
-        ...(chestCm !== undefined ? { chestCm } : {}),
-        ...(thighCm !== undefined ? { thighCm } : {}),
-        ...(upperArmCm !== undefined ? { upperArmCm } : {}),
-        ...(neckCm !== undefined ? { neckCm } : {}),
+        ...values,
         ...(note !== undefined ? { note: note || null } : {}),
       },
     });

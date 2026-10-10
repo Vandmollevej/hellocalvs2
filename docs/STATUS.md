@@ -175,6 +175,11 @@ Last updated: 2026-10-08
 
 ## 2026-10-09: Kalender uden totaler i uge/måned
 Statusblokken i uge-/månedsvisning viser kun status (gennemsnit af forgangne dage mod delmålets dagsmål). Dagsvisningen er uændret. Lint + tsc grønne; ikke prøvet i browser.
+## 2026-10-09: Vælg selv, hvilke kropsmål der vises + bagdel, læg og ankel
+
+- Indstillinger → Visning → **Kropsmål** (`/settings/display/body-measurements`): til/fra pr. mål; gemmes løbende i `User.bodyMeasurementVisibility` (null = alle vises). Skjulte mål og deres målinger slettes ikke.
+- Tre nye mål: bagdel (`buttockCm`), læg (`calfCm`), ankel (`ankleCm`) — uden tegning endnu. De følger automatisk med i Målsætning, Statistik-grafer og Status, fordi alle bygger på `BODY_MEASUREMENT_FIELDS`.
+- Migration `20261009100000_body_measurement_visibility` skal med deployet. Lint og build grønne; ikke visuelt testet.
 
 ## 2026-10-07: Alle popups som bundark + brand-logoets luft
 
