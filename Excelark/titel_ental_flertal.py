@@ -5,6 +5,7 @@ Brug: python titel_ental_flertal.py bilka|rema   (originalerne roeres ikke; skri
 import re, sys, shutil, os, collections
 import openpyxl
 from openpyxl.utils import get_column_letter as L
+import procent_ost_regler
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 FRIDA = os.path.join(ROOT, 'Frida-ark', 'frida.xlsx')
@@ -375,6 +376,20 @@ def main(which):
             if isinstance(v, str):
                 nr[i] = lower_phrase(v)
         frida_rules(nr, vi, ki, nix, cfg, stats)
+        # procent- og ost-regler (2026-10-10): ingen % i tekst, NN+ forrest i variant
+        ai_ = [i for i, h in enumerate(new_hdr) if cfg['alc'] and h == cfg['alc']]
+        g = lambda name: nr[nix[name]] if name in nix else None
+        pr = procent_ost_regler.process(dict(
+            type=nr[nix[cfg['type']]], variant=nr[vi[0]] if vi else None, kw=[nr[i] for i in ki], fat=nr[nix[cfg['fat']]],
+            alc=nr[ai_[-1]] if ai_ else None, alcflag=bool(ai_) and str(nr[ai_[0]] or '').lower() == 'indeholder alkohol',
+            plural=None, orig=g('Original Title'), cat=g('Category') or g('category'), ean=g('EAN')))
+        nr[nix[cfg['type']]], nr[nix[cfg['fat']]] = pr['type'], pr['fat']
+        if vi:
+            nr[vi[0]] = pr['variant']
+        if ai_:
+            nr[ai_[-1]] = pr['alc']
+        for i, v in zip(ki, pr['kw']):
+            nr[i] = v
         # sukker-ord som i Frida: 'tilsat sukker' o.l. er keyword med 'med' foran, sødestof -> _is_sweeteners
         swi = nix.get('_is_sweeteners')
         for i in ki:

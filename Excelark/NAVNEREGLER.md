@@ -92,3 +92,9 @@ Kort version står også i `docs/REGLER.md`.
 - Intet ord må stå dobbelt på tværs af productType, `_is_`-felter, variant og keywords (funktionsord undtaget). Undtagelse: `_is_meat`/`is_meat` må gentage ordet (brugerens regel 2026-10-10).
 - Frost står kun i `_is_frozen` — aldrig "Frozen" i packaging (fjernet i Bilka 2026-10-10, 531 rækker; packaging beholdes pga. Bakke/Dåse/Tube).
 - Opdatering 2026-10-10: `Excelark/bilka.xlsx` og `Produkter/rema1000_version 2.xlsx` er selv omskrevet (ikke kun `_ny`). `scripts/store-products-import/build_data.py` læser både nye (databasenavne) og gamle kolonnenavne via `NEW_ALIAS` i `load()`.
+
+## Procent og ost (brugerens regel 2026-10-10) — gælder alle ark
+- **% må aldrig stå i produkttype, variant eller keywords.** Fedt-% → `_is_fat` (mejeri, kød "8-12% fedt", fedtstoffer, plantedrikke); alkohol-% → `_is_alcohol` (spiritus, øl, vin, likør, cocktails). Ingrediens-% (fx "49% nougat", "70% kakao", "80% kød", "mindst 50% frugtindhold") er hverken fedt eller alkohol og fjernes fra teksten (står stadig i Original Title).
+- **"45+" o.l. (NN+) betyder ost**: står altid FØRST i variant, adskilt med komma fra resten: "45+", "45+, med kommen". Står det kun i Original Title, hentes det derfra. Blandinger af flere oste beholder NN+ ved hver ost ("hvid cheddar 50+, hård modnet ost 40+ og maasdammer 45+"). Er ostens NN+ (≥45) fejlagtigt lagt i `_is_fat` som "NN%", fjernes den.
+- **Produkttype der starter med %** er fejlet: typen findes i Original Title (fx P-tærter → "Fransknougat"); ingredienserne flyttes til variant hvis den er tom, ellers til et keyword.
+- Gennemført i `Excelark/bilka.xlsx` 2026-10-10 (562 rækker) med `Excelark/procent_ost_regler.py`; reglen er også bygget ind i `titel_ental_flertal.py`. REMA havde ingen % i tekstfelterne.
