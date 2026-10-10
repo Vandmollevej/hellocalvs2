@@ -6267,3 +6267,6 @@ Skema, migration, `src/lib/danish-number.ts` og søgning/oprettelse er lavet (se
 - 2026-10-09: Halvcirklen over footeren kan ikke længere trækkes til siden (web + native); står altid midt over footeren.
 
 - 2026-10-09: Master bragt i takt igen efter #314/#315: lint-fejlen i `FooterArc.tsx` rettet (fingerens top gemmes i state i stedet for at læse ref under render), og paritet accepteret for alle skærme. Native (`HomeFooterArc.kt`, `HomeWeighInPrompts.kt`) var allerede opdateret i #305–#315; kun godkendelserne manglede.
+
+## 2026-10-10: Advarsel-mærke ved ændret energifordeling
+- Admin → Kvalitetskontrol: rødt "Advarsel"-mærke på brugerindberettede næringsændringer. Rapporten oprettes nu også, når en eksisterende registrering redigeres (PATCH) med ændret fordeling. Lint + typecheck grønne; ikke prøvet mod rigtig database.

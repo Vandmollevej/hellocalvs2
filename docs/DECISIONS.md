@@ -4826,3 +4826,12 @@ Brugerens ord: pulsen skal gå normal hastighed igen (65 bpm), sporet må ikke b
 ## 2026-10-09 — Hello Doc: udløbsdato vælges med datepicker (ingen fast 14 dage)
 
 Ejeren vælger selv adgangens udløb med en datepicker i Hello Doc-editoren (web + native), med valget "Intet udløb". `DoctorShare.expiresAt` er den valgte dato (til og med den dag) eller `null` = intet udløb. Den faste 14-dages frist er fjernet; udløb gælder både ventende og aktive delinger. "Forny adgang" åbner uden udløbsdato.
+
+## 2026-10-10: Låst op + ændret energifordeling + gemt → "Advarsel" i admin Kvalitetskontrol
+
+Udvider 2026-09-23 "Brugerindberettede næringsrettelser". Oplåsning alene udløser intet; kun når brugeren
+faktisk har ændret protein/kulhydrat/fedt og gemmer, oprettes en `ProductNutritionReport` (nu også ved
+`PATCH /api/registrations/[id]`, kun hvis værdierne er ændret ift. registreringens tidligere snapshot, så
+gentagen gem ikke giver dubletter). Ændringen ligger kun i brugerens egen registrering; varen, andre ser, røres
+først ved admin-godkendelse. Kvalitetskontrol-rækken har et rødt "Advarsel"-mærke (tooltip forklarer det) ved
+siden af "Brugerindberettet".
