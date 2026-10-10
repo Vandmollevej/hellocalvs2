@@ -95,11 +95,13 @@ ikke her, er den ikke registreret og skal tilføjes.
   decimaltegn eller m./u. i dem, hverken i hånden eller med scripts. De må kun
   læses; alle rettelser skrives i vores egne kolonner. Er de ændret, hentes de
   tilbage fra den rå skrabning. Se Excelark/NAVNEREGLER.md.
-- **Alle ark har Bilkas kolonner** (2026-10-10): kolonne 1-43 præcis som
-  `Excelark/bilka.xlsx` (samme navne, rækkefølge og titelformler); butikkens
-  ekstra kolonner står bagerst. SPAR, Nemlig, Wolt, DRK, Årstiderne, dm, EDEKA
-  og REWE er omlagt med `Excelark/omlaeg_til_bilka_kolonner.py`. Se
+- **Alle ark er 100 % identiske med Bilka** (2026-10-10): de samme 45 kolonner
+  (navne, rækkefølge, titelformler), ingen ekstra kolonner. Arbejdsarkene og
+  scriptet (`Excelark/omlaeg_til_bilka_kolonner.py --ens`) står i
   Excelark/NAVNEREGLER.md.
+- **Quantity i samme stil** (alle ark, brugerens regel 2026-10-10): tal,
+  mellemrum, enhed med småt som Bilka — `200 g`, `75 cl`, `1.5 l`, `6 stk`,
+  `6 x 0.33 l`, `ca. 600 g`, `1 bakke`; aldrig `200g`, `1Ltr` eller `200 g.`.
 - **Titelrækkefølge**: `_is_cooked` > Product Type (småt begyndelsesbogstav
   hvis det ikke er første ord) > Variation > `_is_light`, `_is_alcohol`,
   `_is_glutenfree`, `_is_vegan`, `_is_lactose_free` > `(Packaging, Keyword 1-3,

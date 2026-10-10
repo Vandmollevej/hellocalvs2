@@ -42,8 +42,8 @@ STORES = {  # raw = tidligste raa skrabning; originalkolonnerne hentes derfra
 HEADER_ALIAS = {'Source url': 'Source URL', 'Image file': 'Image File', 'Parse status': 'Parse Status', 'Original title': 'Original Title',
                 'Hellocal_title': 'Product Name'}  # REMA: skraberens sammensatte navn svarer til Bilkas Product Name
 
-ORIG = ['Original Title', 'Product Name', 'Subtitle', 'Source URL', 'Image File', 'Parse Status']
-ORIG_EXTRA = ['Manufacturer', 'Servings', 'Price', 'Venue', 'Subcategory', 'Vare', 'Variant', 'quantity', 'Kategori', 'Sort']
+ORIG = ['Original Title', 'Product Name', 'Subtitle', 'Source URL', 'Manufacturer', 'Image File', 'Parse Status', 'Servings']
+ORIG_EXTRA = ['Price', 'Venue', 'Subcategory', 'Vare', 'Variant', 'quantity', 'Kategori', 'Sort']
 SRC = {  # Bilka-kolonne -> kildekolonner (foerste udfyldte vinder); is_*-navnene er REMA's
     'packageSizeText': ['packageSizeText', 'Quantity'], 'brand': ['brand', 'Brand'], 'subbrand': ['subbrand', 'Subbrand'],
     'barcode': ['barcode', 'EAN'], 'packCount': ['packCount', 'Pack Count'],
@@ -57,6 +57,41 @@ SRC = {  # Bilka-kolonne -> kildekolonner (foerste udfyldte vinder); is_*-navnen
     '_is_alcohol_free': ['_is_alcohol_free', 'is_alcohol_free'],
     **{f'keyword{n}': [f'keyword{n}', f'Keyword {n}'] for n in range(1, 6)},
 }
+CANON = {'Quantity': 'packageSizeText', 'Brand': 'brand', 'Subbrand': 'subbrand', 'EAN': 'barcode', 'Pack Count': 'packCount',
+         'Product Type': 'productType', 'Variation': 'variant', 'Category': 'category', 'Packaging': 'packaging',
+         **{f'Keyword {n}': f'keyword{n}' for n in range(1, 6)}}  # Bilkas kolonnenavn -> navnet scriptet bruger internt
+QTY_UNIT = {'g': 'g', 'gr': 'g', 'gram': 'g', 'kg': 'kg', 'mg': 'mg', 'ml': 'ml', 'cl': 'cl', 'l': 'l', 'ltr': 'l', 'lt': 'l',
+            'liter': 'l', 'stk': 'stk', 'st': 'stk', 'bakke': 'bakke', 'pose': 'pose', 'bdt': 'bdt'}
+QTY_RE = re.compile(r'(?i)(?<![A-Za-zæøå])(\d+(?:\.\d+)?)\s*(' + '|'.join(sorted(QTY_UNIT, key=len, reverse=True)) +
+                    r')(?:\.(?![A-Za-zæøå]))?(?![A-Za-zæøå.])')
+
+
+SPAR_CODE = {'bk': 'bakke', 'ps': 'pose', 'gl': 'glas', 'pt': 'potte', 'nt': 'net', 'bx': 'box', 'sp': 'spand', 'bd': 'bdt'}
+BARE_UNIT = {'gr': 'g', 'g': 'g', 'kg': 'kg', 'st': 'stk', 'stk': 'stk', 'ml': 'ml', 'l': 'l'}
+
+
+def norm_qty(v):
+    """Quantity i Bilka-stil (brugerens regel 2026-10-10): tal, mellemrum, enhed med smaat - "200 g", "1.5 l", "6 x 0.33 l", "ca. 600 g".
+    Bilkas "5 L.B" (saft til opblanding) roeres ikke. SPAR's pakningskoder: "400 BK" = 400 g i bakke -> "400 g", "1 PT" -> "1 potte".
+    Tekst uden tal (fx et produktnavn) og "_" er ikke en maengde og ryddes."""
+    if not isinstance(v, str):
+        return v
+    s = v.strip()
+    m = re.fullmatch(r'(?i)(\d+(?:[.,]\d+)?)\s*(' + '|'.join(SPAR_CODE) + r')', s)
+    if m:
+        n = m.group(1).replace(',', '.')
+        return f'{n} g' if float(n) >= 10 else f'{n} {SPAR_CODE[m.group(2).lower()]}'
+    if s.lower() in BARE_UNIT:
+        return BARE_UNIT[s.lower()]
+    if not re.search(r'\d', s) or re.fullmatch(r'[\d.,\s]*_', s):
+        return None
+    s = re.sub(r'(?<=\d),(?=\d)', '.', s)
+    s = re.sub(r'(?i)(\d)\s*x\s*(?=\d)', r'\1 x ', s)
+    s = QTY_RE.sub(lambda m: m.group(1) + ' ' + QTY_UNIT[m.group(2).lower()], s)
+    s = re.sub(r'(?i)^ca\.?\s*', 'ca. ', s)
+    return re.sub(r'\s+', ' ', s).strip()
+
+
 DROP = {'HelloCal_Title', 'Hellocal_title', 'Hello Cal product title', 'Key', 'Product Title (ny)'}  # titlen er nu formlerne i kolonne A/B
 ALC_SRC = {'_is_alcohol', '_is_alcohol_pct'}
 YES = {'yes', 'ja', 'true', 'x'}
@@ -118,13 +153,16 @@ def bilka_master():
     assert row_formula(a2, 3) == a3, 'Bilkas formel kan ikke flyttes til en anden raekke'
     # flertal pr. produkttype (Bilka er master): flertallet af raekkerne afgoer, tom = intet flertal
     vote = collections.defaultdict(collections.Counter)
-    ti, pi = hdr.index('productType'), hdr.index('Product type plural')
+    ih = [CANON.get(h, h) for h in hdr]
+    ti, pi = ih.index('productType'), ih.index('Product type plural')
     for r in ws.iter_rows(min_row=2, values_only=True):
         if r[ti]:
             vote[str(r[ti]).strip().lower()][(str(r[pi]).strip() if r[pi] else '')] += 1
     plural = {k: c.most_common(1)[0][0] for k, c in vote.items()}
     wb.close()
-    return hdr[:43], a2, b2, plural
+    while hdr and hdr[-1] in (None, ''):
+        hdr.pop()
+    return hdr, a2, b2, plural  # alle Bilkas kolonner (45 siden 2026-10-10: + Manufacturer og Servings)
 
 
 def row_formula(tpl, row):
@@ -342,6 +380,8 @@ def decimal_points(nr, out_hdr, orig_ix):
 # ---------- omlaegning ----------
 def convert(name, cfg, bhdr, a2, b2, master, fr, dry):
     src, lang = cfg['src'], cfg['lang']
+    bnames = list(bhdr)  # Bilkas egne kolonnenavne skrives i arket; internt bruges CANON-navnene
+    bhdr = [CANON.get(h, h) for h in bhdr]
     lock = os.path.join(os.path.dirname(src), '~$' + os.path.basename(src))
     if os.path.exists(lock) and not dry:
         print(f'{name}: SPRUNGET OVER - {os.path.basename(src)} er aaben i Excel')
@@ -373,10 +413,10 @@ def convert(name, cfg, bhdr, a2, b2, master, fr, dry):
     cats |= {'kolonial', 'kiosk', 'køl', 'drikke', 'drikkevarer', 'frost', 'frugt', 'grønt', 'frugt & grønt', 'mejeri', 'pålæg', 'slik', 'brød', 'kød', 'fisk'}
     cats -= set(FLAG_KW) | {'frost'}  # frost -> _is_frozen (frida_rules)
     # ekstra kolonner bagerst: foerst skrabede (originale), saa vores egne
-    used = set(DROP) | ALC_SRC | set(bhdr) | {s for v in SRC.values() for s in v}
+    used = set(DROP) | ALC_SRC | set(bhdr) | set(bnames) | {s for v in SRC.values() for s in v}
     orig_extra = [h for h in ORIG_EXTRA if (h in pos and col_fill(rows, pos[h][0])) or (raw_hdr and h in raw_hdr and col_fill(raw_rows, raw_hdr.index(h)))]
     own_extra = [h for h in dict.fromkeys(hdr) if h and h not in used and h not in ORIG_EXTRA and col_fill(rows, pos[h][0])]
-    if cfg.get('identical'):  # brugeren 2026-10-10: kolonnerne skal vaere 100% som Bilkas, ingen ekstra bagerst
+    if cfg.get('identical', True):  # brugeren 2026-10-10: arkene skal vaere 100% identiske med Bilka, ingen ekstra kolonner
         orig_extra, own_extra = [], []
     out_hdr = list(bhdr) + orig_extra + own_extra
     nix = {}
@@ -456,16 +496,20 @@ def convert(name, cfg, bhdr, a2, b2, master, fr, dry):
             stats['frost_fra_kategori'] += 1
         if rules:  # REMA har allerede faaet decimalpunktum
             stats['decimal_punktum'] += decimal_points(nr, out_hdr, orig_ix)
+        q = nr[nix['packageSizeText']]
+        if isinstance(q, str) and norm_qty(q) != q:
+            nr[nix['packageSizeText']] = norm_qty(q)
+            stats['quantity_bilka_stil'] += 1
         out_rows.append(nr)
-    if any(flags) and not cfg.get('identical'):
+    if any(flags) and not cfg.get('identical', True):
         out_hdr.append('Flag')
         for nr, f in zip(out_rows, flags):
             nr.append(f)
-    # skriv
+    # skriv (med Bilkas egne kolonnenavne)
     wb = openpyxl.Workbook()
     ws = wb.active
     ws.title = 'Products'
-    ws.append(out_hdr)
+    ws.append(bnames + out_hdr[len(bnames):])
     fa, fb = (german_formula(a2), german_formula(b2)) if lang == 'de' else (a2, b2)
     for rn, nr in enumerate(out_rows, 2):
         nr[0] = row_formula(fa, rn)
@@ -529,9 +573,108 @@ def decimal_pass(name, path):
     print(f'{name}: {n} celler med decimalpunktum -> {path}')
 
 
+def _restore_values(path, cols):
+    """vaerdier for kolonner der mangler i arket, hentet fra dagens foerste backup der har dem (match paa Source URL)"""
+    import glob
+    stem = os.path.splitext(os.path.basename(path))[0]
+    for bk in sorted(glob.glob(os.path.join(BACKUP, f'{glob.escape(stem)}_2026-10-10_*_foer_*.xlsx')), reverse=True):  # nyeste foerst
+        h, rows = read(bk)
+        have = [c for c in cols if c in h and col_fill(rows, h.index(c))]
+        if have and 'Source URL' in h:
+            ui = h.index('Source URL')
+            return {c: {r[ui]: r[h.index(c)] for r in rows} for c in have}, bk
+    return {}, None
+
+
+def style_pass(name, path, bnames):
+    """--ens: et allerede omlagt ark faar praecis Bilkas kolonner (navne, raekkefoelge, ingen ekstra), Quantity i Bilka-stil
+    og EAN som tekst. Koerer ikke reglerne igen. Originalkolonnerne roeres ikke (manglende hentes fra backup)."""
+    lock = os.path.join(os.path.dirname(path), '~$' + os.path.basename(path))
+    if os.path.exists(lock):
+        print(f'{name}: SPRUNGET OVER - aaben i Excel')
+        return
+    mtime = os.path.getmtime(path)
+    wb = openpyxl.load_workbook(path)
+    ws = wb.active
+    hdr = [c.value for c in ws[1]]
+    while hdr and hdr[-1] in (None, ''):
+        hdr.pop()
+    ih, it = [CANON.get(h, h) for h in hdr], [CANON.get(h, h) for h in bnames]
+    taken, src_idx = set(), []
+    for t in it:  # kolonne i arket for hver Bilka-kolonne (_is_alcohol findes to gange: i raekkefoelge)
+        j = next((k for k, h in enumerate(ih) if h == t and k not in taken), None)
+        if j is not None:
+            taken.add(j)
+        src_idx.append(j)
+    if any(src_idx[k] != k for k in range(37)):  # titelformlerne peger paa kolonne A-AK
+        print(f'{name}: SPRUNGET OVER - de foerste 37 kolonner staar ikke som i Bilka')
+        return
+    dropped = [hdr[k] for k in range(len(hdr)) if k not in taken and hdr[k] not in (None, '')]
+    missing = [bnames[i] for i, j in enumerate(src_idx) if j is None]
+    restore, bk = _restore_values(path, missing) if missing else ({}, None)
+    qi, ei, ui = bnames.index('Quantity'), bnames.index('EAN'), bnames.index('Source URL')
+    nq = ne = nr_ = 0
+    same_layout = hdr == bnames
+    rows = []
+    for row in ws.iter_rows(min_row=2):
+        vals = [c.value for c in row]
+        new = [vals[j] if j is not None and j < len(vals) else None for j in src_idx]
+        for i, j in enumerate(src_idx):
+            if j is None and bnames[i] in restore:
+                new[i] = restore[bnames[i]].get(new[ui])
+                nr_ += new[i] not in (None, '')
+        if isinstance(new[qi], str) and norm_qty(new[qi]) != new[qi]:
+            new[qi] = norm_qty(new[qi])
+            nq += 1
+        if isinstance(new[ei], (int, float)) and not isinstance(new[ei], bool):
+            new[ei] = str(int(new[ei]))
+            ne += 1
+        rows.append((row, new))
+    if same_layout and not (nq or ne):
+        print(f'{name}: allerede ens')
+        return
+    if same_layout:  # kun celler aendres; resten af arket (formatering) bevares
+        for row, new in rows:
+            for c, v in zip(row, new):
+                if c.value != v:
+                    c.value = v
+    else:  # nyt ark med Bilkas kolonner
+        wb = openpyxl.Workbook()
+        out = wb.active
+        out.title = 'Products'
+        out.append(bnames)
+        for _, new in rows:
+            out.append(new)
+        for c in out[1]:
+            c.font = Font(bold=True)
+        out.freeze_panes = 'C2'
+        out.auto_filter.ref = f'A1:{L(len(bnames))}{len(rows) + 1}'
+        for c, w in (('A', 40), ('B', 40)):
+            out.column_dimensions[c].width = w
+        wb.calculation.fullCalcOnLoad = True
+    fd, tmp = tempfile.mkstemp(suffix='.xlsx', dir=os.environ.get('TEMP'))
+    os.close(fd)
+    wb.save(tmp)
+    if os.path.getmtime(path) != mtime or os.path.exists(lock):
+        print(f'{name}: SPRUNGET OVER - aendret/aabnet imens')
+        os.remove(tmp)
+        return
+    stamp = datetime.datetime.now().strftime('%Y-%m-%d_%H%M')
+    shutil.copy2(path, os.path.join(BACKUP, f'{os.path.splitext(os.path.basename(path))[0]}_{stamp}_foer_ens-stil.xlsx'))
+    shutil.move(tmp, path)
+    print(f'{name}: quantity {nq}, EAN som tekst {ne}, fjernet {dropped}, tilfoejet {missing}'
+          + (f' ({nr_} vaerdier hentet fra {os.path.basename(bk)})' if bk else ''))
+
+
 def main(args):
     dry = '--dry' in args
     names = [a for a in args if not a.startswith('--')] or list(STORES)
+    if '--ens' in args:  # Bilka selv + alle omlagte ark (REMA kun hvis den er lukket)
+        bnames = bilka_master()[0]
+        paths = {'bilka': BILKA, 'rema': P_('Produkter', 'rema1000_version 2.xlsx'), **{n: c['src'] for n, c in STORES.items()}}
+        for n in [a for a in args if not a.startswith('--')] or list(paths):
+            style_pass(n, paths[n], bnames)
+        return
     if '--kun-decimaler' in args:
         for n in names:
             decimal_pass(n, STORES[n]['src'])
