@@ -1,5 +1,6 @@
 import { barcodeMatchesRegion } from "@/lib/regions";
 import { queryNamesBrand } from "@/lib/search-brand-intent";
+import { allWordsMatch, compactText, productDetailsText } from "@/lib/search-text-match";
 
 // Regional search ranking (2026-09-19, see docs/DECISIONS.md): text match is
 // always dominant, and regional popularity/history/origin only reorder
@@ -25,6 +26,12 @@ export type RankableProduct = {
   id: string;
   name: string;
   brand: { name: string } | null;
+  // Varetype, serie, variant og smag læses med i tekstmatchet: butiksvarer
+  // hedder ofte kun "Gold" med varetypen "Instant kaffe" (docs/DECISIONS.md 2026-10-10).
+  productType?: string | null;
+  subbrand?: string | null;
+  variant?: string | null;
+  flavor?: string | null;
   originCountryCode?: string | null;
   barcodes: Array<{ code: string }>;
   regionSearchStats?: SearchStat[];
@@ -151,7 +158,12 @@ function diceSimilarity(left: string, right: string): number {
   return (2 * overlap) / (a.length + b.length);
 }
 
-export function textSimilarity(query: string, productName: string, brandName?: string | null): number {
+export function textSimilarity(
+  query: string,
+  productName: string,
+  brandName?: string | null,
+  details?: string | null
+): number {
   const q = normalize(query);
   const name = normalize(productName);
   const brand = normalize(brandName ?? "");
@@ -164,7 +176,14 @@ export function textSimilarity(query: string, productName: string, brandName?: s
   // "arla letmælk" — brand written before the name.
   if (brand && `${brand} ${name}`.startsWith(q)) return 0.94;
   if (name.includes(q)) return 0.88;
+  // Sammensatte ord: "instantkaffe" i "Instant Kaffe, Gold Crema" og omvendt.
+  const tightQuery = compactText(q);
+  if (tightQuery.length >= 4 && compactText(name).includes(tightQuery)) return 0.86;
   if (searchable.includes(q)) return 0.82;
+  // Varetype/variant med: "nescafé instant kaffe" → "Gold" (Nescafé, Instant kaffe).
+  const full = `${searchable} ${normalize(details ?? "")}`;
+  if (tightQuery.length >= 4 && compactText(full).includes(tightQuery)) return 0.8;
+  if (allWordsMatch(q, full)) return 0.78;
 
   return Math.max(diceSimilarity(q, name), diceSimilarity(q, searchable));
 }
@@ -246,11 +265,12 @@ export function rankProducts<T extends RankableProduct>(
     .map((product, index) => {
       // Admin synonym dictionary: a hit via a synonym counts at its
       // similarity (0..1) share of a direct text match.
-      let similarity = textSimilarity(query, product.name, product.brand?.name);
+      const details = productDetailsText(product);
+      let similarity = textSimilarity(query, product.name, product.brand?.name, details);
       for (const synonym of synonyms) {
         similarity = Math.max(
           similarity,
-          textSimilarity(synonym.term, product.name, product.brand?.name) * synonym.similarity
+          textSimilarity(synonym.term, product.name, product.brand?.name, details) * synonym.similarity
         );
       }
       const popularity = popularityValues[index];

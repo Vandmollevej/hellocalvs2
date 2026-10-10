@@ -2,6 +2,11 @@
 
 This file records durable decisions. Add a dated entry when a later decision changes one of them.
 
+## 2026-10-10: Søgning læser varetype og tåler sammensatte ord
+
+- Butiksvarer (Bilka/REMA-arkene) hedder ofte kun fx "Gold" med mærket Nescafé og varetypen "Instant kaffe" i `productType`. Søgningen læste kun navn og mærke, så "Nescafé instant kaffe" og "instantkaffe" fandt dem ikke.
+- Nu: hvert søgeord skal stå i navn, flertalsnavn, mærke, serie, varetype, variant, smag eller søgeord (`keywords`) — accent-ufølsomt, og også når teksten læses uden mellemrum, så "instantkaffe" finder "Instant Kaffe" og "instant kaffe" finder "Instantkaffe". Opslaget er `accentInsensitiveProductIds` (`src/lib/search-correction.ts`); rangeringen bruger de samme felter (`src/lib/search-text-match.ts`, `textSimilarity`). Navn/mærke-match rangerer stadig over varetype-match.
+
 ## 2026-10-10: Frida-skøn (∼) på varer uden energimærkning
 
 Brugerens krav: nu hvor Frida-arket er lagt ind, skal varer uden energimærkning have Fridas tal med ∼, når produkttypen passer mindst 90 % (ental/flertal og stavemåder udlignes). Afklaret med brugeren i spørgsmålsboksen samme dag:

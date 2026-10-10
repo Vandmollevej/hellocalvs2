@@ -20,6 +20,7 @@ import { petFoodBlockReason } from "@/lib/pet-food-blacklist";
 import { recordPetFoodAttempt } from "@/lib/pet-food-strikes";
 import { saveDataUrlImage } from "@/lib/qc-image-storage";
 import { accentInsensitiveProductIds, correctedQuery } from "@/lib/search-correction";
+import { productDetailsText } from "@/lib/search-text-match";
 
 // GET /api/products?q=rugbrød — search in our own product database only. Results are ranked by src/lib/product-search-ranking.ts: text match
 // is always dominant, and hidden regional search/click/hour-of-day statistics
@@ -113,8 +114,10 @@ async function searchProducts({
   // low-popularity-but-exact match further down createdAt-order must still
   // be able to surface once ranked.
   const synonyms = q && !source ? await getSynonymExpansions(q) : [];
-  // Accent-ufølsomt match ("Nescafé" finder "Nescafe"): Prismas contains kender
-  // ikke accenter, så id'erne hentes med hc_search_norm() og lægges til nedenfor.
+  // Accent-ufølsomt match ("Nescafé" finder "Nescafe") og sammensatte ord
+  // ("instantkaffe" finder "Instant Kaffe") på tværs af navn, mærke, varetype,
+  // serie, variant, smag og søgeord: Prismas contains kan ingen af delene, så
+  // id'erne hentes med hc_search_norm() og lægges til nedenfor.
   const accentIds = q && !source ? await accentInsensitiveProductIds(q) : [];
   const candidateTake = q ? Math.max(take * 6, 80) : take;
   const queryWords = q.split(/\s+/).filter((word) => word.length >= 2).slice(0, 6);
@@ -144,6 +147,10 @@ async function searchProducts({
                 { name: { contains: q, mode: "insensitive" } },
                 { namePlural: { contains: q, mode: "insensitive" } },
                 { brand: { name: { contains: q, mode: "insensitive" } } },
+                // Butiksvarer hedder ofte kun "Gold" med varetypen "Instant kaffe".
+                { productType: { contains: q, mode: "insensitive" } },
+                { subbrand: { contains: q, mode: "insensitive" } },
+                { variant: { contains: q, mode: "insensitive" } },
                 ...(accentIds.length > 0 ? [{ id: { in: accentIds } }] : []),
                 // "nescafe" finder "Nescafé" (navn og brand), jf. accent-variants.ts.
                 ...accentVariants(q).flatMap((v) => [
@@ -168,6 +175,9 @@ async function searchProducts({
                           OR: [
                             { name: { contains: word, mode: "insensitive" } },
                             { brand: { name: { contains: word, mode: "insensitive" } } },
+                            { productType: { contains: word, mode: "insensitive" } },
+                            { subbrand: { contains: word, mode: "insensitive" } },
+                            { variant: { contains: word, mode: "insensitive" } },
                           ],
                         })),
                       },
@@ -371,21 +381,36 @@ async function candidateIdsByTextMatch(
 ) {
   const rows = await prisma.product.findMany({
     where,
-    select: { id: true, name: true, namePlural: true, brand: { select: { name: true } } },
+    select: {
+      id: true,
+      name: true,
+      namePlural: true,
+      productType: true,
+      subbrand: true,
+      variant: true,
+      flavor: true,
+      brand: { select: { name: true } },
+    },
     take: CANDIDATE_SCAN_LIMIT,
     orderBy: { createdAt: "desc" },
   });
-  const match = (name: string, brand: string | null | undefined) =>
+  const match = (name: string, brand: string | null | undefined, details: string) =>
     Math.max(
-      textSimilarity(q, name, brand),
-      ...synonyms.map((synonym) => textSimilarity(synonym.term, name, brand) * synonym.similarity)
+      textSimilarity(q, name, brand, details),
+      ...synonyms.map((synonym) => textSimilarity(synonym.term, name, brand, details) * synonym.similarity)
     );
   return rows
-    .map((row, index) => ({
-      id: row.id,
-      index,
-      score: Math.max(match(row.name, row.brand?.name), row.namePlural ? match(row.namePlural, row.brand?.name) : 0),
-    }))
+    .map((row, index) => {
+      const details = productDetailsText(row);
+      return {
+        id: row.id,
+        index,
+        score: Math.max(
+          match(row.name, row.brand?.name, details),
+          row.namePlural ? match(row.namePlural, row.brand?.name, details) : 0
+        ),
+      };
+    })
     .sort((a, b) => b.score - a.score || a.index - b.index)
     .slice(0, take)
     .map((entry) => entry.id);
