@@ -277,6 +277,7 @@ model User {
   sharedRecipeFavorites  SharedRecipeFavorite[]
   recipeCookbookPhotos    RecipeCookbookPhoto[]
   recipeRatings           RecipeRating[]
+  recipeClicks            RecipeClick[]
   nutritionReportsFiled   ProductNutritionReport[] @relation("NutritionReportReporter")
   referralsMade           Referral[]               @relation("ReferralsMade")
   referralReceived        Referral?                @relation("ReferralReceived")
@@ -3522,6 +3523,20 @@ model RecipeCookbookPhoto {
 
 // Tommel op/ned på en opskrift (HelloFresh, delt eller egen ret). recipeKey er
 // "shared:<id>", "hf:<produktId>" eller "own:<id>"; value er 1 eller -1.
+// Klik på en ret i Delte retter (web + native). Bruges til "Trender netop nu":
+// retter med flest klik den seneste måned (docs/DECISIONS.md 2026-10-10).
+model RecipeClick {
+  id        String   @id @default(cuid())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String
+  recipeKey String
+  createdAt DateTime @default(now())
+
+  @@index([createdAt, recipeKey])
+  @@index([userId, recipeKey, createdAt])
+  @@map("recipe_clicks")
+}
+
 model RecipeRating {
   id        String   @id @default(cuid())
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)

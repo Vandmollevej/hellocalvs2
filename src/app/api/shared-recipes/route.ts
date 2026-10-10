@@ -48,6 +48,19 @@ type Item = {
   score: number;
 };
 
+const TRENDING_LIMIT = 10;
+
+// Deterministisk "tilfældig" rækkefølge (FNV-1a), så tilfældigt udvalg ikke
+// skifter ved hver genindlæsning, men først næste dag.
+function dailyOrder(text: string) {
+  let hash = 2166136261;
+  for (let i = 0; i < text.length; i += 1) {
+    hash ^= text.charCodeAt(i);
+    hash = Math.imul(hash, 16777619);
+  }
+  return hash >>> 0;
+}
+
 function relevance(name: string, searchText: string, q: string) {
   if (!q) return 0;
   const lower = name.toLowerCase();
@@ -124,6 +137,8 @@ export async function GET(req: Request) {
   const includeValdemarsro = source === "valdemarsro" || source === "all";
   const includeShared = source === "all" || source === "shared";
   const withIngredientData = needsIngredientData(filters);
+  // trending=1: kun til "Trender netop nu" (ingen søgning), se nedenfor.
+  const trending = params.get("trending") === "1" && !q;
 
   try {
     const user = await getSessionUser();
@@ -294,8 +309,40 @@ export async function GET(req: Request) {
       }
     }
 
+    // "Trender netop nu" (brugerens krav 2026-10-10): de 10 retter med flest nye
+    // klik den seneste måned (seneste uge tæller dobbelt, så stigning vinder).
+    // Er der færre end 10 med klik, fyldes op med tilfældige retter (samme
+    // rækkefølge hele dagen), så der altid vises mindst tre, når de findes.
+    if (trending) {
+      const keyOf = (item: Item) => `${item.kind === "shared" ? "shared" : "hf"}:${item.id}`;
+      const now = Date.now();
+      const weekAgo = new Date(now - 7 * 24 * 60 * 60 * 1000);
+      const clicks = items.length
+        ? await prisma.recipeClick
+            .findMany({
+              where: { recipeKey: { in: items.map(keyOf) }, createdAt: { gte: new Date(now - 30 * 24 * 60 * 60 * 1000) } },
+              select: { recipeKey: true, createdAt: true },
+            })
+            .catch(() => [])
+        : [];
+      const clickScore = new Map<string, number>();
+      for (const click of clicks) {
+        clickScore.set(click.recipeKey, (clickScore.get(click.recipeKey) ?? 0) + (click.createdAt >= weekAgo ? 2 : 1));
+      }
+      const day = new Date(now).toISOString().slice(0, 10);
+      const shuffled = items
+        .map((item) => ({ item, order: dailyOrder(`${day}:${keyOf(item)}`) }))
+        .sort((a, b) => a.order - b.order)
+        .map((entry) => entry.item);
+      const clicked = shuffled
+        .filter((item) => (clickScore.get(keyOf(item)) ?? 0) > 0)
+        .sort((a, b) => (clickScore.get(keyOf(b)) ?? 0) - (clickScore.get(keyOf(a)) ?? 0));
+      const rest = shuffled.filter((item) => !clickScore.has(keyOf(item)));
+      items.splice(0, items.length, ...[...clicked, ...rest].slice(0, TRENDING_LIMIT));
+    }
+
     const sort = filters.sort;
-    items.sort((a, b) => {
+    if (!trending) items.sort((a, b) => {
       if (sort === "popular") return b.popularity - a.popularity || b.createdAt.localeCompare(a.createdAt);
       if (sort === "date") return b.createdAt.localeCompare(a.createdAt);
       return b.score - a.score || b.popularity - a.popularity || b.createdAt.localeCompare(a.createdAt);
