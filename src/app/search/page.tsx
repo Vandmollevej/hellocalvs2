@@ -148,6 +148,7 @@ function SoegContent() {
               kcalPer100g?: number;
               brand?: { name: string } | null;
               nutrientSources?: unknown;
+              nutritionMissing?: boolean;
             }) => ({
               id: p.id,
               title: p.name,
@@ -155,6 +156,7 @@ function SoegContent() {
               brand: p.brand?.name ?? null,
               kcal: p.kcalPer100g,
               macrosEstimated: hasEstimatedMacros(p.nutrientSources),
+              nutritionMissing: p.nutritionMissing === true,
             })
         );
         setResults(mapped);
@@ -343,6 +345,7 @@ function SoegContent() {
                   brand={r.brand}
                   kcal={r.kcal}
                   macrosEstimated={r.macrosEstimated}
+                  nutritionMissing={r.nutritionMissing}
                   onAdd={openProduct}
                   isFavorite={favoriteIds.has(r.id)}
                   onToggleFavorite={toggleFavorite}

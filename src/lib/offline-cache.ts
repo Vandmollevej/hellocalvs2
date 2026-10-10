@@ -14,6 +14,7 @@ export type CachedProduct = {
   brand?: string | null;
   kcal?: number;
   macrosEstimated?: boolean;
+  nutritionMissing?: boolean;
 };
 
 export function readCache<T>(key: string): Entry<T> | null {

@@ -195,7 +195,11 @@ fun FoodsScreen(args: RouteArgs) {
                                 modifier = Modifier.padding(horizontal = 16.dp),
                                 subtitle = {
                                     HcText(
-                                        listOfNotNull(product.brand?.name, t.t("foods.kcalPer100g", "kcal" to jsRound(product.kcalPer100g))).joinToString(" · "),
+                                        listOfNotNull(
+                                            product.brand?.name,
+                                            if (product.nutritionMissing) t.t("addProduct.nutritionUnknown")
+                                            else t.t("foods.kcalPer100g", "kcal" to jsRound(product.kcalPer100g)),
+                                        ).joinToString(" · "),
                                         HcTypeRoles.Small,
                                         color = HcColors.TextSecondary,
                                         maxLines = 1,

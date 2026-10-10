@@ -10,6 +10,8 @@ export type FoodsProduct = {
   imageUrl: string | null;
   kcalPer100g: number;
   brand: { name: string } | null;
+  // Vare uden energitabel: kcalPer100g = 0 er en pladsholder.
+  nutritionMissing?: boolean;
 };
 
 export type FoodsSnapshot = {

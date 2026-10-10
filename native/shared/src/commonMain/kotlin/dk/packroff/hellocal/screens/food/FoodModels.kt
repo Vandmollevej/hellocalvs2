@@ -230,6 +230,7 @@ data class ProductListItem(
     val fatPer100g: Double = 0.0,
     val brand: ProductBrand? = null,
     val nutrientSources: JsonElement? = null,
+    val nutritionMissing: Boolean = false,
 )
 
 @Serializable

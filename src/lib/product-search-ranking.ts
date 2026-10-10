@@ -4,8 +4,10 @@ import { queryNamesBrand } from "@/lib/search-brand-intent";
 // Regional search ranking (2026-09-19, see docs/DECISIONS.md): text match is
 // always dominant, and regional popularity/history/origin only reorder
 // otherwise-comparable matches — a popular-but-wrong product can never
-// outrank a clear text match. Low-popularity products additionally need more
-// typed characters and a higher text similarity before they can surface.
+// outrank a clear text match. Low popularity only moves a product down; it
+// never hides it (docs/DECISIONS.md 2026-10-10: søgningen viser alt). A
+// product nobody has seen yet — e.g. one without nutrition, hidden until
+// 2026-10-10 — has no impressions and would otherwise never surface.
 
 export type SearchStat = {
   region: string;
@@ -106,9 +108,7 @@ export const DEFAULT_SEARCH_RANKING_WEIGHTS: SearchRankingWeights = {
   genericBroadSearch: 45,
 };
 
-const LOW_POPULARITY_QUERY_PENALTY_MAX = 3;
 const MIN_SIMILARITY = 0.18;
-const LOW_POPULARITY_MIN_SIMILARITY = 0.42;
 // The generic boost only applies to a real word/prefix match (textSimilarity
 // returns ≥ 0.82 for those), so a fuzzy, merely similar generic item can
 // never jump a clear branded text match.
@@ -254,19 +254,9 @@ export function rankProducts<T extends RankableProduct>(
         );
       }
       const popularity = popularityValues[index];
-      const popularityRatio = maxPopularity > 0 ? popularity / maxPopularity : 0.5;
-      const lowPopularity = Math.max(0, 1 - popularityRatio);
 
-      // Low-priority products need more typed characters and a better text match
-      // before they are allowed near the top of the suggestions.
-      const extraChars = Math.round(lowPopularity * LOW_POPULARITY_QUERY_PENALTY_MAX);
-      const minimumChars = 2 + extraChars;
-      const minimumSimilarity =
-        MIN_SIMILARITY +
-        lowPopularity * (LOW_POPULARITY_MIN_SIMILARITY - MIN_SIMILARITY);
-
-      if (normalize(query).length < minimumChars && lowPopularity > 0.34) return null;
-      if (similarity < minimumSimilarity) return null;
+      // Only a real text match counts; popularity just orders (score below).
+      if (similarity < MIN_SIMILARITY) return null;
 
       const regional = maxPopularity > 0 ? popularity / maxPopularity : 0;
       const hour = hourPopularity(product, region, localHour);

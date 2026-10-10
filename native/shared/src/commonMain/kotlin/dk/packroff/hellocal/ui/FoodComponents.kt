@@ -192,6 +192,8 @@ data class FoodProductResult(
     val brand: String? = null,
     val kcal: Double? = null,
     val macrosEstimated: Boolean = false,
+    /** No nutrition table: kcal 0 is only a placeholder ("Næringsindhold ukendt"). */
+    val nutritionMissing: Boolean = false,
 )
 
 /** The green uncertainty "~" (src/components/ui/UncertaintyTilde.tsx). */

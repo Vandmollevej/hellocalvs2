@@ -61,7 +61,13 @@ function ProductRow({
           title={product.name}
           subtitle={
             <p className="hf-type-small text-text-secondary truncate">
-              {[product.brand?.name, t("foods.kcalPer100g", { kcal: Math.round(product.kcalPer100g) })]
+              {[
+                product.brand?.name,
+                // Uden energitabel (nutritionMissing) er 0 kun en pladsholder.
+                product.nutritionMissing
+                  ? t("addProduct.nutritionUnknown")
+                  : t("foods.kcalPer100g", { kcal: Math.round(product.kcalPer100g) }),
+              ]
                 .filter(Boolean)
                 .join(" · ")}
             </p>
@@ -99,7 +105,9 @@ function MadvarerContent() {
     return query ? `?${query}` : "";
   })();
   const [query, setQuery] = useState("");
-  const [searchResults, setSearchResults] = useState<Product[]>([]);
+  // Det friske svar gemmes med den søgning, det hører til, så det erstatter
+  // cachens svar for netop den søgning, så snart det er landet.
+  const [searchResults, setSearchResults] = useState<{ key: string; products: Product[] }>({ key: "", products: [] });
   const [correction, setCorrection] = useState<SearchCorrection | null>(null);
   const [exactFor, setExactFor] = useState<string | null>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
@@ -210,6 +218,8 @@ function MadvarerContent() {
     if (q.length < SEARCH_MIN_LENGTH) return;
 
     const cacheKey = q.toLocaleLowerCase();
+    const cached = searchCache.get(cacheKey);
+    if (cached && cached.expiresAt <= Date.now()) searchCache.delete(cacheKey);
     const hadCacheHit = searchCache.has(cacheKey);
     const controller = new AbortController();
     const timer = window.setTimeout(async () => {
@@ -235,10 +245,10 @@ function MadvarerContent() {
             products: data.products,
           });
         }
-        setSearchResults(data.products);
+        setSearchResults({ key: cacheKey, products: data.products });
       } catch (error) {
         if ((error as Error).name !== "AbortError" && !hadCacheHit) {
-          setSearchResults([]);
+          setSearchResults({ key: cacheKey, products: [] });
         }
       }
     }, SEARCH_DEBOUNCE_MS);
@@ -277,8 +287,14 @@ function MadvarerContent() {
   // synchronous setState-in-effect; the state is simply irrelevant while
   // isSearching is false and gets overwritten by the next real query anyway).
   // While searching, prefer the cached instant result until the live,
-  // re-ranked fetch for this exact query has actually landed.
-  const visibleProducts = isSearching ? cachedResults ?? searchResults : favorites;
+  // re-ranked fetch for this exact query has actually landed — then the live
+  // one wins (before, a cached answer stuck for as long as the page lived).
+  const liveIsCurrent = searchResults.key === normalizedQuery.toLocaleLowerCase();
+  const visibleProducts = isSearching
+    ? liveIsCurrent
+      ? searchResults.products
+      : cachedResults ?? searchResults.products
+    : favorites;
 
   return (
     <HfScreen title={t("foods.title")} icon={<IconApple size={20} stroke={2} />}>

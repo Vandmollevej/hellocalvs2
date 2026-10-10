@@ -83,7 +83,12 @@ internal fun ProductResultList(
     items.forEachIndexed { index, r ->
         FoodProductResultRow(
             result = r,
-            kcalText = if (showKcal && r.kcal != null) t.t("foods.kcalPer100g", "kcal" to jsRound(r.kcal)) else null,
+            kcalText = when {
+                !showKcal -> null
+                r.nutritionMissing -> t.t("addProduct.nutritionUnknown")
+                r.kcal != null -> t.t("foods.kcalPer100g", "kcal" to jsRound(r.kcal))
+                else -> null
+            },
             isFavorite = r.id in favoriteIds,
             favoriteLabel = t.t(if (r.id in favoriteIds) "search.removeFavorite" else "search.addFavorite"),
             onOpen = onOpen,
@@ -141,7 +146,7 @@ fun SearchScreen(args: RouteArgs) {
             val data = ApiJson.decodeFromJsonElement(ProductListResponse.serializer(), Api.get("/api/products?q=${encodeUri(query)}${if (exact) "&exact=1" else ""}"))
             correction = SearchCorrection.of(data)
             results = data.products.map {
-                FoodProductResult(it.id, it.name, it.imageUrl, it.brand?.name, it.kcalPer100g, hasEstimatedMacros(it.nutrientSources))
+                FoodProductResult(it.id, it.name, it.imageUrl, it.brand?.name, it.kcalPer100g, !it.nutritionMissing && hasEstimatedMacros(it.nutrientSources), it.nutritionMissing)
             }
             if (!exact && !correction.isActive()) OfflineCache.saveSearch(query, results)
             fromCache = false

@@ -4,7 +4,7 @@ import { prisma } from "@/lib/prisma";
 import { inferGs1OriginCountryCode } from "@/lib/regions";
 import { getSessionUser } from "@/lib/session";
 import { flagSimultaneousDuplicates } from "@/lib/product-duplicates";
-import { deriveIsVerified, rankProducts } from "@/lib/product-search-ranking";
+import { deriveIsVerified, rankProducts, textSimilarity } from "@/lib/product-search-ranking";
 import { getActiveSearchRankingWeights } from "@/lib/search-ranking-config";
 import { cleanAlternativeServings } from "@/lib/alternative-servings";
 import { flagUncertainAlternativeServings } from "@/lib/alternative-servings-review";
@@ -118,77 +118,79 @@ async function searchProducts({
   const accentIds = q && !source ? await accentInsensitiveProductIds(q) : [];
   const candidateTake = q ? Math.max(take * 6, 80) : take;
   const queryWords = q.split(/\s+/).filter((word) => word.length >= 2).slice(0, 6);
-  const findProducts = () =>
-    prisma.product.findMany({
-      where: {
-        discontinued: false,
-        // Varer uden kalorietal vises i søgningen (docs/DECISIONS.md 2026-10-10,
-        // afløser 2026-10-02): søgningen viser alt, til brugeren indsnævrer.
-        // Varesiden viser "Næringsindhold ukendt".
-        // Egne private ingredienser vises kun for ejeren (via /api/private-ingredients).
-        privateOwnerId: null,
-        // Ét samlet AND: en objekt-literal må kun have én AND-nøgle, og
-        // tekstfilter og kildefilter er begge OR-betingelser, som ellers
-        // ville overskrive hinanden.
-        AND: [
-          // Admin "Uncertainties" (docs/DECISIONS.md 2026-09-25): et produkt,
-          // hvor AI'en var under 50 % sikker på en aflæsning, skjules i
-          // søgningen, indtil en admin har gennemgået den.
-          {
-            NOT: {
-              aiAnalyses: { some: { reviewedAt: null, confidence: { lt: HIDE_FROM_SEARCH_BELOW } } },
-            },
-          },
-          ...(q
-            ? [
-                {
-                  OR: [
-                    { name: { contains: q, mode: "insensitive" } },
-                    { namePlural: { contains: q, mode: "insensitive" } },
-                    { brand: { name: { contains: q, mode: "insensitive" } } },
-                    ...(accentIds.length > 0 ? [{ id: { in: accentIds } }] : []),
-                    // "nescafe" finder "Nescafé" (navn og brand), jf. accent-variants.ts.
-                    ...accentVariants(q).flatMap((v) => [
-                      { name: { contains: v, mode: "insensitive" as const } },
-                      { brand: { name: { contains: v, mode: "insensitive" as const } } },
-                    ]),
-                    ...synonyms.map((s) => ({ name: { contains: s.term, mode: "insensitive" as const } })),
-                    // Sukkerpåstande kan søges ("sukkerfri", "uden tilsat sukker",
-                    // "reduceret", "light", "lavt sukker"), men vises ikke som mærker
-                    // (docs/DECISIONS.md 2026-10-02).
-                    { filters: { is: { sugarFree: { contains: q, mode: "insensitive" } } } },
-                    { filters: { is: { noAddedSugar: { contains: q, mode: "insensitive" } } } },
-                    { filters: { is: { reducedSugar: { contains: q, mode: "insensitive" } } } },
-                    { filters: { is: { lightSugar: { contains: q, mode: "insensitive" } } } },
-                    { filters: { is: { lowSugar: { contains: q, mode: "insensitive" } } } },
-                    // Flere ord ("arla letmælk"): hvert ord skal stå i navnet
-                    // eller brandet (docs/DECISIONS.md 2026-10-04).
-                    ...(queryWords.length > 1
-                      ? [
-                          {
-                            AND: queryWords.map((word): Prisma.ProductWhereInput => ({
-                              OR: [
-                                { name: { contains: word, mode: "insensitive" } },
-                                { brand: { name: { contains: word, mode: "insensitive" } } },
-                              ],
-                            })),
-                          },
-                        ]
-                      : []),
-                  ],
-                } satisfies Prisma.ProductWhereInput,
-              ]
-            : []),
-          source
-            ? { externalSource: source }
-            : {
-                OR: [
-                  { externalSource: null },
-                  { externalSource: { notIn: ["HELLOFRESH", "OPEN_FOOD_FACTS"] } },
-                ],
-              },
-        ],
+  const where: Prisma.ProductWhereInput = {
+    discontinued: false,
+    // Varer uden kalorietal vises i søgningen (docs/DECISIONS.md 2026-10-10,
+    // afløser 2026-10-02): søgningen viser alt, til brugeren indsnævrer.
+    // Varesiden viser "Næringsindhold ukendt".
+    // Egne private ingredienser vises kun for ejeren (via /api/private-ingredients).
+    privateOwnerId: null,
+    // Ét samlet AND: en objekt-literal må kun have én AND-nøgle, og
+    // tekstfilter og kildefilter er begge OR-betingelser, som ellers
+    // ville overskrive hinanden.
+    AND: [
+      // Admin "Uncertainties" (docs/DECISIONS.md 2026-09-25): et produkt,
+      // hvor AI'en var under 50 % sikker på en aflæsning, skjules i
+      // søgningen, indtil en admin har gennemgået den.
+      {
+        NOT: {
+          aiAnalyses: { some: { reviewedAt: null, confidence: { lt: HIDE_FROM_SEARCH_BELOW } } },
+        },
       },
+      ...(q
+        ? [
+            {
+              OR: [
+                { name: { contains: q, mode: "insensitive" } },
+                { namePlural: { contains: q, mode: "insensitive" } },
+                { brand: { name: { contains: q, mode: "insensitive" } } },
+                ...(accentIds.length > 0 ? [{ id: { in: accentIds } }] : []),
+                // "nescafe" finder "Nescafé" (navn og brand), jf. accent-variants.ts.
+                ...accentVariants(q).flatMap((v) => [
+                  { name: { contains: v, mode: "insensitive" as const } },
+                  { brand: { name: { contains: v, mode: "insensitive" as const } } },
+                ]),
+                ...synonyms.map((s) => ({ name: { contains: s.term, mode: "insensitive" as const } })),
+                // Sukkerpåstande kan søges ("sukkerfri", "uden tilsat sukker",
+                // "reduceret", "light", "lavt sukker"), men vises ikke som mærker
+                // (docs/DECISIONS.md 2026-10-02).
+                { filters: { is: { sugarFree: { contains: q, mode: "insensitive" } } } },
+                { filters: { is: { noAddedSugar: { contains: q, mode: "insensitive" } } } },
+                { filters: { is: { reducedSugar: { contains: q, mode: "insensitive" } } } },
+                { filters: { is: { lightSugar: { contains: q, mode: "insensitive" } } } },
+                { filters: { is: { lowSugar: { contains: q, mode: "insensitive" } } } },
+                // Flere ord ("arla letmælk"): hvert ord skal stå i navnet
+                // eller brandet (docs/DECISIONS.md 2026-10-04).
+                ...(queryWords.length > 1
+                  ? [
+                      {
+                        AND: queryWords.map((word): Prisma.ProductWhereInput => ({
+                          OR: [
+                            { name: { contains: word, mode: "insensitive" } },
+                            { brand: { name: { contains: word, mode: "insensitive" } } },
+                          ],
+                        })),
+                      },
+                    ]
+                  : []),
+              ],
+            } satisfies Prisma.ProductWhereInput,
+          ]
+        : []),
+      source
+        ? { externalSource: source }
+        : {
+            OR: [
+              { externalSource: null },
+              { externalSource: { notIn: ["HELLOFRESH", "OPEN_FOOD_FACTS"] } },
+            ],
+          },
+    ],
+  };
+  // ids: kandidatpuljen, valgt efter tekstmatch (candidateIdsByTextMatch).
+  const findProducts = (ids?: string[]) =>
+    prisma.product.findMany({
+      where: ids ? { id: { in: ids } } : where,
       include: {
         // Altid samme include-form (ikke betinget på q/source), så Prisma's
         // udledte returtype er ét fast skema — undgår en union-type der
@@ -204,11 +206,13 @@ async function searchProducts({
         _count: { select: { images: true } },
         aiAnalyses: { select: { kind: true } },
       },
-      take: candidateTake,
+      take: ids ? undefined : candidateTake,
       orderBy: { createdAt: "desc" },
     });
 
-  let products = await findProducts();
+  let products = await findProducts(
+    q && !source ? await candidateIdsByTextMatch(where, q, synonyms, candidateTake) : undefined
+  );
 
   if (q && !source) {
     const sessionUser = await getSessionUser();
@@ -351,6 +355,40 @@ async function searchProducts({
   });
 
   return publicProducts;
+}
+
+// Kandidatpuljen vælges efter tekstmatch, ikke blot de nyeste (docs/DECISIONS.md
+// 2026-10-10): en bred søgning ("vin", "kaffe") matcher flere hundrede varer, og
+// de 80 nyeste skar ellers ældre varer fra — fx butiksvarerne uden energitabel.
+// Kun id, navn og mærke hentes for hele mængden; resten kun for puljen.
+const CANDIDATE_SCAN_LIMIT = 2000;
+
+async function candidateIdsByTextMatch(
+  where: Prisma.ProductWhereInput,
+  q: string,
+  synonyms: Array<{ term: string; similarity: number }>,
+  take: number
+) {
+  const rows = await prisma.product.findMany({
+    where,
+    select: { id: true, name: true, namePlural: true, brand: { select: { name: true } } },
+    take: CANDIDATE_SCAN_LIMIT,
+    orderBy: { createdAt: "desc" },
+  });
+  const match = (name: string, brand: string | null | undefined) =>
+    Math.max(
+      textSimilarity(q, name, brand),
+      ...synonyms.map((synonym) => textSimilarity(synonym.term, name, brand) * synonym.similarity)
+    );
+  return rows
+    .map((row, index) => ({
+      id: row.id,
+      index,
+      score: Math.max(match(row.name, row.brand?.name), row.namePlural ? match(row.namePlural, row.brand?.name) : 0),
+    }))
+    .sort((a, b) => b.score - a.score || a.index - b.index)
+    .slice(0, take)
+    .map((entry) => entry.id);
 }
 
 function parsePositiveNumber(value: unknown): number | null {
