@@ -113,3 +113,4 @@ ikke her, er den ikke registreret og skal tilføjes.
 - **`_is_decaf`** (global, alle ark): kun værdien "Koffeinfri"; "koffeinfri" flyttes fra Variation/titel hertil. Gælder alle ark (Bilka, REMA, Nemlig, DRK, Wolt m.fl.) — indføres i hvert ark når det tages igen. Se Excelark/NAVNEREGLER.md.
 - Frida-ark: navngivningsreglerne i Excelark/NAVNEREGLER.md (afsnittene "Nøgleord-regler", "Flere Frida-regler", "Nye globale felter") er globale og gælder alle ark.
 - Bilka/REMA ental/flertal + DB-kolonnenavne: se Excelark/NAVNEREGLER.md (status 2026-10-09: _ny-ark lavet, ikke gennemgået).
+- **Ingen dobbeltord** i samme række i de kolonner vi retter i (alle ark); `_is_meat` er undtaget. Frost står kun i `_is_frozen`, aldrig "Frozen" i packaging (brugerens regel 2026-10-10).
