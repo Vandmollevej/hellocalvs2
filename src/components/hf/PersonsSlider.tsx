@@ -61,13 +61,18 @@ export function PersonsSlider({
             type="button"
             onClick={openEditor}
             aria-label={label}
-            className="hf-type-body hf-type-strong min-w-[36px] rounded px-1 text-right text-hf-black active:bg-hf-tan-dark"
+            className={`hf-type-body hf-type-strong min-w-[36px] rounded px-1 text-right active:bg-hf-tan-dark ${
+              value === 0 ? "text-text-muted" : "text-hf-black"
+            }`}
           >
             {value}
           </button>
         )}
       </div>
-      <HfSlider value={value} min={min} max={max} onChange={onChange} aria-label={label} />
+      {/* 0 = ikke valgt: slideren vises lysegrå/underordnet. */}
+      <div className={value === 0 ? "opacity-40" : ""}>
+        <HfSlider value={value} min={min} max={max} onChange={onChange} aria-label={label} />
+      </div>
     </div>
   );
 }

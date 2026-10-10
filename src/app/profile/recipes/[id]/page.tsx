@@ -96,7 +96,7 @@ function RecipeDetailContent() {
   const [isFavorite, setIsFavorite] = useState(false);
   const [canReport, setCanReport] = useState(false);
   // Justering til antal personer
-  const [persons, setPersons] = useState(() => loadRecipeFilters().persons);
+  const [persons, setPersons] = useState(() => Math.max(1, loadRecipeFilters().persons));
   const [portionKcal, setPortionKcal] = useState<number | null>(null);
   // Gram (som retten er gemt) eller køkkenmål (dl, spsk) via src/lib/kitchen-conversions.ts.
   const [unitMode, setUnitMode] = useState<RecipeUnitMode>("grams");

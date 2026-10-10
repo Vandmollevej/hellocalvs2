@@ -103,12 +103,13 @@ export function RecipeFiltersBody({ onChange }: { onChange?: (filters: RecipeFil
       <AccordionSection
         title={t("recipeFilters.personsTitle")}
         icon={<IconUsersGroup size={20} stroke={1.75} />}
-        count={filters.persons}
+        count={filters.persons || undefined}
       >
         <div className="bg-hf-cream px-4 py-2">
           <PersonsSlider
             label={t("recipeFilters.personsLabel")}
             value={filters.persons}
+            min={0}
             max={MAX_RECIPE_PERSONS}
             onChange={(persons) => update({ ...filters, persons })}
           />

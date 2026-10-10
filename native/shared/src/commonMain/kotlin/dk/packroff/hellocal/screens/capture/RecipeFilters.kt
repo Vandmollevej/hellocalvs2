@@ -18,6 +18,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
@@ -69,7 +70,7 @@ internal data class RecipeFilters(
     val diets: List<String> = emptyList(),
     val nutrients: List<String> = emptyList(),
     val macros: Map<String, String> = emptyMap(),
-    val persons: Int = 1,
+    val persons: Int = 0,
     val showKcal: Boolean = true,
     val showEnergySplit: Boolean = false,
 ) {
@@ -101,7 +102,7 @@ internal data class RecipeFilters(
                 diets = pick(params["diets"], RecipeFilterLists.diets),
                 nutrients = pick(params["nutrients"], RecipeFilterLists.nutrients),
                 macros = RecipeFilterLists.macroKeys.mapNotNull { key -> params[key]?.takeIf { it == "high" || it == "low" }?.let { key to it } }.toMap(),
-                persons = min(6, max(1, (params["persons"]?.toDoubleOrNull() ?: 1.0).roundToInt().let { if (it == 0) 1 else it })),
+                persons = min(6, max(0, (params["persons"]?.toDoubleOrNull() ?: 0.0).roundToInt())),
                 showKcal = params["kcal"] != "0",
                 showEnergySplit = params["split"] == "1",
             )
@@ -224,10 +225,10 @@ internal fun PersonsSlider(label: String, value: Int, max: Int, onChange: (Int) 
                 HcText(value.toString(), HcTypeRoles.Body, Modifier.clickable {
                     editValue = value.toString()
                     editing = true
-                }.padding(horizontal = 4.dp), bold = true, color = HcColors.Black)
+                }.padding(horizontal = 4.dp), bold = true, color = if (value == 0) HcColors.Inactive else HcColors.Black)
             }
         }
-        CaptureSlider(value = value, min = min, max = max, onChange = onChange)
+        CaptureSlider(value = value, min = min, max = max, onChange = onChange, modifier = if (value == 0) Modifier.alpha(0.4f) else Modifier)
     }
 }
 
@@ -269,9 +270,9 @@ internal fun RecipeFiltersBody(onChange: ((RecipeFilters) -> Unit)? = null) {
     val allergens = remember(t) { RecipeFilterLists.allergens.map { it to t.t("recipeFilters.allergens.$it") }.sortedBy { it.second.lowercase() } }
 
     Column(verticalArrangement = Arrangement.spacedBy(HcDimens.SpaceBlock)) {
-        AccordionSection(t.t("recipeFilters.personsTitle"), icon = "UsersGroup", count = filters.persons) {
+        AccordionSection(t.t("recipeFilters.personsTitle"), icon = "UsersGroup", count = filters.persons.takeIf { it > 0 }) {
             Column(Modifier.padding(horizontal = 16.dp, vertical = 8.dp)) {
-                PersonsSlider(t.t("recipeFilters.personsLabel"), filters.persons, RecipePortions.MAX_PERSONS, { update(filters.copy(persons = it)) })
+                PersonsSlider(t.t("recipeFilters.personsLabel"), filters.persons, RecipePortions.MAX_PERSONS, { update(filters.copy(persons = it)) }, min = 0)
                 portionKcal?.let { HcText(t.t("recipeFilters.portionHint", "kcal" to it), HcTypeRoles.Small, Modifier.padding(top = 12.dp), color = HcColors.TextSecondary) }
             }
         }
