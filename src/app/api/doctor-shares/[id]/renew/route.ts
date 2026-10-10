@@ -2,11 +2,10 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getSessionUser } from "@/lib/session";
 import { queueMessage } from "@/lib/messaging";
-import { DOCTOR_SHARE_INVITATION_VALID_DAYS } from "@/lib/doctor-share";
 
 // "Forny adgang" for en udløbet eller fjernet adgang. Har modtageren allerede
 // accepteret, åbnes adgangen igen direkte; ellers sendes invitationen igen
-// med ny frist.
+// uden udløbsdato (ejeren kan vælge en ny dato bagefter).
 export async function POST(_request: Request, { params }: { params: Promise<{ id: string }> }) {
   const user = await getSessionUser();
   if (!user) return NextResponse.json({ message: "Log ind for at forny denne adgang" }, { status: 401 });
@@ -24,10 +23,9 @@ export async function POST(_request: Request, { params }: { params: Promise<{ id
   }
 
   const now = new Date();
-  const expiresAt = new Date(now.getTime() + DOCTOR_SHARE_INVITATION_VALID_DAYS * 24 * 60 * 60 * 1000);
   const updated = await prisma.doctorShare.update({
     where: { id },
-    data: { status: "PENDING", revokedAt: null, sentAt: now, expiresAt },
+    data: { status: "PENDING", revokedAt: null, sentAt: now, expiresAt: null },
   });
 
   const viewUrl = `${process.env.APP_BASE_URL ?? "https://hellocal.io"}/hello-doc/${updated.token}`;

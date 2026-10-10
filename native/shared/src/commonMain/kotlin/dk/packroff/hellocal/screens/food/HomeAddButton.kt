@@ -82,6 +82,8 @@ object AddActions {
         AddAction("bodyMeasurements", "/profile/body-measurements", FoodIconSpec.Mask("/icons/body-measurements/waist-male.png"), "profile.row.bodyMeasurements"),
         AddAction("menstrualCycle", "/period/create", FoodIconSpec.Tabler("CalendarHeart"), "addButton.menstrualCycle", requiresCycleTracking = true),
         AddAction("drinks", "/drinks", FoodIconSpec.Tabler("GlassCocktail"), "addButton.drinks"),
+        // Screeninger: opens the fill-in sheet; always last.
+        AddAction("screenings", "/profile/screenings?fill=1", FoodIconSpec.Tabler("ClipboardHeart"), "addButton.screenings"),
     )
 
     /** "Kropsmål" shows the female waist figure for women, the male one otherwise. */

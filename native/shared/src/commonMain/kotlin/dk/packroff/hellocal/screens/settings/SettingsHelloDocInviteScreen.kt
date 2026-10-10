@@ -42,6 +42,7 @@ fun SettingsHelloDocInviteScreen(args: RouteArgs) {
     var email by remember { mutableStateOf("") }
     var categories by remember { mutableStateOf(SettingsHelloDoc.DefaultCategories) }
     var historyRange by remember { mutableStateOf("ALL") }
+    var expiresAt by remember { mutableStateOf("") }
     var sending by remember { mutableStateOf(false) }
     var error by remember { mutableStateOf<String?>(null) }
 
@@ -52,7 +53,7 @@ fun SettingsHelloDocInviteScreen(args: RouteArgs) {
             try {
                 Api.post(
                     "/api/doctor-shares",
-                    mapOf("name" to name, "email" to email, "categories" to categories, "historyRange" to historyRange),
+                    mapOf("name" to name, "email" to email, "categories" to categories, "historyRange" to historyRange, "expiresAt" to expiresAt.ifEmpty { null }),
                 )
                 // web: router.replace("/settings/hello-doc"). When the list is the
                 // screen below, go back to it instead of stacking a second copy.
@@ -106,6 +107,8 @@ fun SettingsHelloDocInviteScreen(args: RouteArgs) {
             onCategoriesChange = { categories = it },
             historyRange = historyRange,
             onHistoryRangeChange = { historyRange = it },
+            expiresAt = expiresAt,
+            onExpiresAtChange = { expiresAt = it },
             onPreview = { nav.push("/settings/hello-doc/preview") },
         )
     }

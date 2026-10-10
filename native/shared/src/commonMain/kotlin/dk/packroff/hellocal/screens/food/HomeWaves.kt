@@ -36,7 +36,7 @@ import kotlin.random.Random
 // (heart-rate monitor) behind the top bar and the hero. The wave bundles and
 // the fog were removed on the web (user 2026-10-05: `bundles: [], fog: []`),
 // so only the pulse is drawn. It beats in the watch's measured pulse
-// (/api/health-metrics/heart-rate, polled every minute), 15 bpm without a watch.
+// (/api/health-metrics/heart-rate, polled every minute), 65 bpm without a watch.
 // All geometry below is in CSS px = dp, exactly as the web canvas.
 
 /** Pixels drawn outside the view (WAVE_BLEED). */
@@ -45,18 +45,15 @@ private const val WAVE_BLEED = 48f
 /** The top layer reaches this far below the hero (PULSE_BELOW_HERO). */
 private const val PULSE_BELOW_HERO = 18f
 
-/** Px from the pulse baseline up to the middle of the wheel's last row (PULSE_ABOVE_LAST_ROW). */
-internal const val PULSE_ABOVE_LAST_ROW = 25f
-
 private const val FRAME_MS = 1000.0 / 30
 private const val HEART_RATE_POLL_MS = 60_000L
 
-/** Pulse without a connected watch: one beat every 4 seconds (DEFAULT_PULSE_BPM). */
-private const val DEFAULT_PULSE_BPM = 15.0
+/** Pulse without a connected watch: 65 beats a minute (DEFAULT_PULSE_BPM). */
+private const val DEFAULT_PULSE_BPM = 65.0
 private const val MIN_PULSE_BPM = 10.0
 
-/** Px over which the old trace's trailing edge fades while it is removed. */
-private const val PULSE_TAIL_TAPER = 60f
+/** Trail length behind the tip as a share of the screen width (PULSE_TRAIL): the trace is a snake. */
+private const val PULSE_TRAIL = 0.35
 private const val PULSE_STEP = 1.5f
 
 /** Small, fast seeded random generator (mulberry32), same bits as the web. */
@@ -149,8 +146,9 @@ private fun pulseTrace(pulse: PulseScene, cycle: Int, bpm: Double, width: Float)
 
 /**
  * drawPulse: a lime trace drawn from the left edge to the right like a heart
- * monitor. The next sweep starts at once from the left and removes the previous
- * one from behind (with a soft edge), at the same pace as the trace appeared.
+ * monitor. It is a snake: the tail follows the tip at a fixed distance
+ * (PULSE_TRAIL) and fades out behind, so the trace disappears shortly after it
+ * is drawn. When the tail has left the right edge the next sweep starts at once.
  */
 private fun DrawScope.drawPulse(
     pulse: PulseScene,
@@ -162,55 +160,43 @@ private fun DrawScope.drawPulse(
     coreColor: Color,
 ) {
     val time = t + pulse.offset
-    val cycle = floor(time / pulse.sweep).toInt()
-    val progress = (time - cycle * pulse.sweep) / pulse.sweep
+    val cycleLength = pulse.sweep * (1 + PULSE_TRAIL)
+    val cycle = floor(time / cycleLength).toInt()
+    // 0 = tip at the left edge, 1 = tip at the right edge, 1 + PULSE_TRAIL = tail gone.
+    val progress = (time - cycle * cycleLength) / pulse.sweep
     val left = -WAVE_BLEED
     val right = width + WAVE_BLEED
-    val head = (left + progress * (right - left)).toFloat()
+    val span = right - left
+    val head = (left + min(1.0, progress) * span).toFloat()
+    val tail = max(left, (left + (progress - PULSE_TRAIL) * span).toFloat())
 
-    // A little fainter at the edge than at the tip, but visible all the way in.
-    fun fade(color: Color, to: Float, taperFrom: Float?): Brush {
-        val end = max(to, left + 1)
-        val stops = ArrayList<Pair<Float, Color>>()
-        stops += 0f to color.copy(alpha = 0.55f)
-        if (taperFrom != null) {
-            val span = end - left
-            val start = min(1f, max(0f, (taperFrom - left) / span))
-            val stop = min(1f, max(start, (taperFrom + PULSE_TAIL_TAPER - left) / span))
-            stops += start to color.copy(alpha = 0f)
-            stops += stop to color.copy(alpha = 0.55f + 0.45f * stop)
-        }
-        stops += 1f to color.copy(alpha = 1f)
-        return Brush.linearGradient(*stops.toTypedArray(), start = Offset(left, 0f), end = Offset(end, 0f))
-    }
+    fun fade(color: Color): Brush = Brush.linearGradient(
+        0f to color.copy(alpha = 0f),
+        1f to color.copy(alpha = 1f),
+        start = Offset(tail, 0f),
+        end = Offset(max(head, tail + 1f), 0f),
+    )
 
-    fun strokeTrace(from: Float, to: Float, yAt: (Float) -> Float, gradientEnd: Float, taperFrom: Float?) {
+    val yAt = pulseTrace(pulse, cycle, bpmForCycle(pulse, cycle, bpm), width)
+    if (head > tail) {
         val path = Path()
-        path.moveTo(from, baseY + yAt(from))
-        var x = from + PULSE_STEP
-        while (x < to) {
+        path.moveTo(tail, baseY + yAt(tail))
+        var x = tail + PULSE_STEP
+        while (x < head) {
             path.lineTo(x, baseY + yAt(x))
             x += PULSE_STEP
         }
-        path.lineTo(to, baseY + yAt(to))
-        drawPath(path, fade(pulseColor, gradientEnd, taperFrom), alpha = 0.25f, style = Stroke(width = 5f, cap = StrokeCap.Round, join = StrokeJoin.Round))
-        drawPath(path, fade(coreColor, gradientEnd, taperFrom), alpha = 0.85f, style = Stroke(width = 1.6f, cap = StrokeCap.Round, join = StrokeJoin.Round))
+        path.lineTo(head, baseY + yAt(head))
+        drawPath(path, fade(pulseColor), alpha = 0.25f, style = Stroke(width = 5f, cap = StrokeCap.Round, join = StrokeJoin.Round))
+        drawPath(path, fade(coreColor), alpha = 0.85f, style = Stroke(width = 1.6f, cap = StrokeCap.Round, join = StrokeJoin.Round))
     }
 
-    val yAt = pulseTrace(pulse, cycle, bpmForCycle(pulse, cycle, bpm), width)
-    if (head > left) strokeTrace(left, head, yAt, head, null)
-
-    // The previous sweep stays unchanged ahead of the tip and is removed from behind.
-    val eraseFrom = head + 28
-    if (eraseFrom < right) {
-        val previous = pulseTrace(pulse, cycle - 1, bpmForCycle(pulse, cycle - 1, bpm), width)
-        strokeTrace(eraseFrom, right, previous, right, eraseFrom)
+    // Small glowing point at the tip while it is crossing the screen.
+    if (progress <= 1.0) {
+        val tip = Offset(head, baseY + yAt(head))
+        drawCircle(pulseColor, radius = 4.5f, center = tip, alpha = 0.3f)
+        drawCircle(coreColor, radius = 1.5f, center = tip, alpha = 1f)
     }
-
-    // Small glowing point at the tip (a round-capped 0.01 px line = a dot).
-    val tip = Offset(head, baseY + yAt(head))
-    drawCircle(pulseColor, radius = 4.5f, center = tip, alpha = 0.3f)
-    drawCircle(coreColor, radius = 1.5f, center = tip, alpha = 1f)
 }
 
 /** The watch's current pulse, or DEFAULT_PULSE_BPM without a watch/fresh measurement. */

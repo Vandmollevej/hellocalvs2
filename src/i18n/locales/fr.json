@@ -243,6 +243,7 @@
     "chatSaveError": "Enregistrement impossible. Réessaie."
   },
   "nav": {
+    "screenings": "Dépistages",
     "add": "Ajouter",
     "foods": "Aliments",
     "calendar": "Calendrier",
@@ -659,6 +660,7 @@
     "allInUse": "Tous les boutons sont utilisés"
   },
   "addMenu": {
+    "screenings": "Dépistage",
     "editEditHint": "Maintenez une tuile pour la déplacer ou la supprimer",
     "editDone": "Terminé",
     "editAdd": "Ajouter",
@@ -700,7 +702,10 @@
     "emailLabel": "E-mail",
     "emailPlaceholder": "nom@exemple.fr",
     "sendInvitation": "Envoyer l'invitation",
-    "invitationExpiryHint": "L'invitation expire dans 14 jours",
+    "expiryTitle": "Expiration",
+    "expiryNone": "Sans expiration",
+    "expiryDateAria": "Date d'expiration",
+    "expiryHint": "L'accès est valable jusqu'à la date choisie incluse.",
     "saveChanges": "Enregistrer les modifications",
     "resend": "Renvoyer",
     "resending": "Envoi…",
@@ -1557,6 +1562,7 @@
       "bodyMeasurements": "Mensurations"
     },
     "row": {
+      "screenings": "Dépistages",
       "subscription": "Abonnement",
       "paymentMethods": "Paiement",
       "weightCalibration": "Calibrage du poids",
@@ -2658,6 +2664,7 @@
     "saveError": "Impossible d'enregistrer l'activité."
   },
   "addButton": {
+    "screenings": "Dépistages",
     "closeMenu": "Fermer le menu d'ajout",
     "openMenu": "Ouvrir le menu d'ajout",
     "microphone": "Dicter",
@@ -3387,6 +3394,131 @@
       "lunch": "Lunch",
       "dinner": "Dinner",
       "snack": "Snack"
+    }
+  },
+  "screenings": {
+    "title": "Dépistages",
+    "intro": "Gardez un œil sur votre santé. Explorez vos données et découvrez de nouveaux aspects de votre santé et leurs liens.",
+    "createNew": "Créer un nouveau dépistage",
+    "reports": "Rapports de dépistage",
+    "reportsTitle": "Rapports de dépistage",
+    "chartTitle": "Toutes les mesures",
+    "chartEmpty": "Aucune mesure sur cette période.",
+    "periodAria": "Choisir la période",
+    "sleep": "Sommeil",
+    "statusActive": "Actif",
+    "statusInactive": "Inactif",
+    "activate": "Activer",
+    "deactivate": "Désactiver",
+    "delete": "Supprimer",
+    "deleteTitle": "Supprimer le dépistage ?",
+    "deleteBody": "Le dépistage et toutes ses mesures sont supprimés définitivement.",
+    "loadError": "Impossible de charger les dépistages.",
+    "loading": "Chargement…",
+    "newTitle": "Créer un nouveau dépistage",
+    "editTitle": "Modifier le dépistage",
+    "stepAria": "Progression",
+    "stepName": "Nom",
+    "stepFrequency": "Fréquence",
+    "stepQuestions": "Questions",
+    "stepNotifications": "Alertes",
+    "stepMeasure": "Échelle",
+    "stepCalendar": "Calendrier",
+    "nameTitle": "Nom et objectif",
+    "nameLabel": "Nom",
+    "namePlaceholder": "p. ex. Mal de tête",
+    "purposeLabel": "Objectif",
+    "purposePlaceholder": "Que voulez-vous mieux comprendre ?",
+    "frequencyTitle": "À quelle fréquence être interrogé ?",
+    "questionsTitle": "Questions",
+    "questionLabel": "Question {n}",
+    "questionPlaceholder": "p. ex. Quelle est l'intensité du mal de tête ?",
+    "addQuestion": "Ajouter une question",
+    "removeQuestion": "Supprimer la question",
+    "notifTitle": "Notifications",
+    "notifLabel": "Me rappeler",
+    "notifDesc": "Vous recevez un message quand il est temps de répondre.",
+    "notifTime": "Heure",
+    "measureTitle": "Mesure",
+    "scaleTitle": "Échelle",
+    "inputTitle": "Choisir le champ",
+    "preview": "Voici le rendu",
+    "notesLabel": "Champ de note",
+    "notesDesc": "Écrivez une courte note avec la mesure.",
+    "minLabel": "Valeur la plus basse",
+    "maxLabel": "Valeur la plus haute",
+    "minPlaceholder": "p. ex. Aucune douleur",
+    "maxPlaceholder": "p. ex. Pire imaginable",
+    "calendarTitle": "Calendrier",
+    "calendarLabel": "Afficher dans le calendrier",
+    "calendarDesc": "Les mesures apparaissent sur leurs jours dans le calendrier.",
+    "next": "Suivant",
+    "back": "Retour",
+    "save": "Enregistrer le dépistage",
+    "saving": "Enregistrement…",
+    "saveError": "Échec de l'enregistrement. Réessayez.",
+    "fillTitle": "Remplir le dépistage",
+    "fillPick": "Quel dépistage voulez-vous remplir ?",
+    "fillEmpty": "Aucun dépistage actif. Créez-en un dans Profil.",
+    "questionOf": "Question {n} sur {total}",
+    "noteLabel": "Note",
+    "notePlaceholder": "Écrire une note",
+    "saveEntry": "Enregistrer la mesure",
+    "done": "Enregistré",
+    "dotsAria": "Questions",
+    "reportsEmpty": "Aucun dépistage pour l'instant.",
+    "entries": "{n} mesures",
+    "noEntries": "Aucune mesure pour l'instant.",
+    "sortDate": "Date",
+    "sortValue": "Valeur",
+    "sortAria": "Trier par",
+    "hasNote": "A une note",
+    "average": "Moyenne",
+    "presets": {
+      "migraine": {
+        "name": "Migraine",
+        "purpose": "Suivez la fréquence et l'intensité de vos migraines.",
+        "question": "Quelle est l'intensité de votre migraine aujourd'hui ?",
+        "min": "Aucune",
+        "max": "Pire imaginable"
+      },
+      "stomachPain": {
+        "name": "Douleurs d'estomac",
+        "purpose": "Voyez quand et à quel point votre ventre fait mal.",
+        "question": "Quelle est l'intensité de vos douleurs d'estomac aujourd'hui ?",
+        "min": "Aucune",
+        "max": "Pire imaginable"
+      },
+      "mood": {
+        "name": "Humeur",
+        "purpose": "Suivez votre humeur dans le temps et trouvez des liens.",
+        "question": "Comment est votre humeur aujourd'hui ?",
+        "min": "Mauvaise",
+        "max": "Excellente"
+      }
+    },
+    "period": {
+      "d7": "7 derniers jours",
+      "d30": "30 derniers jours",
+      "d90": "3 derniers mois",
+      "d365": "Dernière année"
+    },
+    "scale": {
+      "FIVE": "1–5",
+      "TEN": "1–10",
+      "PERCENT": "Pourcentage"
+    },
+    "frequency": {
+      "DAILY": "Chaque jour",
+      "WEEKLY": "Chaque semaine",
+      "MONTHLY": "Chaque mois",
+      "MANUAL": "Seulement quand je veux"
+    },
+    "input": {
+      "BUTTONS": "Boutons",
+      "SLIDER": "Curseur",
+      "INPUT": "Champ de saisie",
+      "STEPPER": "Plus et moins"
     }
   }
 }

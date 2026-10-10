@@ -58,6 +58,7 @@ private fun HelloDocEditContent(id: String) {
     var email by remember { mutableStateOf("") }
     var categories by remember { mutableStateOf(SettingsHelloDoc.DefaultCategories) }
     var historyRange by remember { mutableStateOf("ALL") }
+    var expiresAt by remember { mutableStateOf("") }
     var loadError by remember { mutableStateOf(false) }
     var saving by remember { mutableStateOf(false) }
     var renewing by remember { mutableStateOf(false) }
@@ -77,6 +78,7 @@ private fun HelloDocEditContent(id: String) {
             email = loaded.email
             categories = SettingsHelloDoc.sanitizeCategories(loaded.categories)
             historyRange = loaded.historyRange
+            expiresAt = SettingsHelloDoc.expiryDateInput(loaded.expiresAt)
         } catch (e: CancellationException) {
             throw e
         } catch (e: Exception) {
@@ -89,9 +91,13 @@ private fun HelloDocEditContent(id: String) {
         error = null
         scope.launch {
             try {
-                share = decodeShare(
-                    Api.patch(path, mapOf("name" to name, "email" to email, "categories" to categories, "historyRange" to historyRange)),
+                val body = mutableMapOf<String, Any?>(
+                    "name" to name, "email" to email, "categories" to categories, "historyRange" to historyRange,
                 )
+                // Only when changed — an expired share is reopened by picking a new date or no expiry.
+                if (expiresAt != SettingsHelloDoc.expiryDateInput(share?.expiresAt)) body["expiresAt"] = expiresAt.ifEmpty { null }
+                share = decodeShare(Api.patch(path, body))
+                expiresAt = SettingsHelloDoc.expiryDateInput(share?.expiresAt)
             } catch (e: CancellationException) {
                 throw e
             } catch (e: Exception) {
@@ -108,6 +114,7 @@ private fun HelloDocEditContent(id: String) {
         scope.launch {
             try {
                 share = decodeShare(Api.post("$path/renew"))
+                expiresAt = SettingsHelloDoc.expiryDateInput(share?.expiresAt)
             } catch (e: CancellationException) {
                 throw e
             } catch (e: Exception) {
@@ -180,6 +187,8 @@ private fun HelloDocEditContent(id: String) {
                 onCategoriesChange = { categories = it },
                 historyRange = historyRange,
                 onHistoryRangeChange = { historyRange = it },
+                expiresAt = expiresAt,
+                onExpiresAtChange = { expiresAt = it },
                 // web: <Link href="/hello-doc/{token}" target="_blank"> — the recipient's view, outside the app.
                 onPreview = { NativeHooks.openExternalUrl("${HelloCalConfig.BASE_URL}/hello-doc/${current.token}") },
             )

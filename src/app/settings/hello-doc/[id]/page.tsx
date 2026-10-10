@@ -26,6 +26,12 @@ type DoctorShare = {
   expiresAt: string | null;
 };
 
+function toDateInput(value: string | null): string {
+  if (!value) return "";
+  const date = new Date(value);
+  return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
+}
+
 // The "already invited user" screen — almost identical to
 // /settings/hello-doc/invite per the user's own request, sharing
 // DoctorShareEditor for the body. Lets the owner adjust which data
@@ -41,6 +47,7 @@ export default function EditHelloDocUserPage() {
   const [email, setEmail] = useState("");
   const [categories, setCategories] = useState<DoctorShareCategory[]>(DEFAULT_DOCTOR_SHARE_CATEGORIES);
   const [historyRange, setHistoryRange] = useState<DoctorShareHistoryRange>("ALL");
+  const [expiresAt, setExpiresAt] = useState("");
   const [loadError, setLoadError] = useState(false);
   const [saving, setSaving] = useState(false);
   const [renewing, setRenewing] = useState(false);
@@ -56,6 +63,7 @@ export default function EditHelloDocUserPage() {
         setEmail(loaded.email);
         setCategories(sanitizeDoctorShareCategories(loaded.categories));
         setHistoryRange(loaded.historyRange);
+        setExpiresAt(toDateInput(loaded.expiresAt));
       })
       .catch(() => setLoadError(true));
   }, [params.id]);
@@ -67,7 +75,14 @@ export default function EditHelloDocUserPage() {
       const res = await fetch(`/api/doctor-shares/${params.id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, email, categories, historyRange }),
+        body: JSON.stringify({
+          name,
+          email,
+          categories,
+          historyRange,
+          // Kun hvis datoen er ændret — en udløbet adgang åbnes igen ved at vælge ny dato eller intet udløb.
+          ...(expiresAt !== toDateInput(share?.expiresAt ?? null) ? { expiresAt: expiresAt || null } : {}),
+        }),
       });
       const data = await res.json();
       if (!res.ok) {
@@ -75,6 +90,7 @@ export default function EditHelloDocUserPage() {
         return;
       }
       setShare(data.share);
+      setExpiresAt(toDateInput(data.share.expiresAt));
     } catch {
       setError(t("helloDoc.errorGeneric"));
     } finally {
@@ -93,6 +109,7 @@ export default function EditHelloDocUserPage() {
         return;
       }
       setShare(data.share);
+      setExpiresAt(toDateInput(data.share.expiresAt));
     } finally {
       setRenewing(false);
     }
@@ -127,7 +144,7 @@ export default function EditHelloDocUserPage() {
   }
 
   const hasAccess =
-    share.status === "ACTIVE" || (share.status === "PENDING" && !!share.expiresAt && new Date(share.expiresAt) > new Date());
+    share.status === "ACTIVE" || (share.status === "PENDING" && (!share.expiresAt || new Date(share.expiresAt) > new Date()));
 
   return (
     <HfScreen
@@ -177,6 +194,8 @@ export default function EditHelloDocUserPage() {
           onCategoriesChange={setCategories}
           historyRange={historyRange}
           onHistoryRangeChange={setHistoryRange}
+          expiresAt={expiresAt}
+          onExpiresAtChange={setExpiresAt}
           previewHref={`/hello-doc/${share.token}`}
           previewExternal
         />

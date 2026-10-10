@@ -255,7 +255,7 @@ private class GridState(
         accordionTarget = null
         insertAt = null
         editingHeaderId = null
-        layout = normalizeStatLayout(layout)
+        layout = dropEmptyRows(layout)
     }
 
     fun removeItem(id: String) {

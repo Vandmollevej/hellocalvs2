@@ -63,8 +63,6 @@ fun HomeScreen(args: RouteArgs) {
     var showGuide by remember { mutableStateOf(false) }
     var rootTop by remember { mutableStateOf(0f) }
     var rootBottom by remember { mutableStateOf(0f) }
-    var heroTop by remember { mutableStateOf(0f) }
-    var heroMeasured by remember { mutableStateOf(false) }
     var topBlockTop by remember { mutableStateOf(0f) }
 
     LaunchedEffect(Unit) {
@@ -91,16 +89,13 @@ fun HomeScreen(args: RouteArgs) {
             Box(
                 Modifier.fillMaxWidth().onGloballyPositioned { topBlockTop = it.positionInRoot().y / density },
             ) {
-                // The pulse's lowest point sits just above the wheel's last number.
-                val pulseY = if (heroMeasured) heroTop - topBlockTop + statsWheelLastRowY() - PULSE_ABOVE_LAST_ROW else null
+                // The pulse runs through the middle of the whole screen (user 2026-10-09).
+                val pulseY = if (rootBottom > rootTop) (rootTop + rootBottom) / 2 - topBlockTop else null
                 HomeWaves(pulseY, Modifier.matchParentSize())
                 Column(Modifier.fillMaxWidth()) {
                     HomeTopBar()
                     Box(
-                        Modifier.padding(top = 32.dp).fillMaxWidth().height(HERO_HEIGHT.dp).onGloballyPositioned {
-                            heroTop = it.positionInRoot().y / density
-                            heroMeasured = true
-                        },
+                        Modifier.padding(top = 32.dp).fillMaxWidth().height(HERO_HEIGHT.dp),
                     ) {
                         HomeStatsWheel(if (FoodPrefs.fabSide == "left") "right" else "left")
                     }

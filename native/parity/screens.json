@@ -1140,6 +1140,46 @@
       ]
     },
     {
+      "route": "/profile/screenings",
+      "web": "src/app/profile/screenings/page.tsx",
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/profile/ScreeningScreens.kt"
+      ]
+    },
+    {
+      "route": "/profile/screenings/[id]",
+      "web": "src/app/profile/screenings/[id]/page.tsx",
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/profile/ScreeningScreens.kt"
+      ]
+    },
+    {
+      "route": "/profile/screenings/new",
+      "web": "src/app/profile/screenings/new/page.tsx",
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/profile/ScreeningScreens.kt"
+      ]
+    },
+    {
+      "route": "/profile/screenings/reports",
+      "web": "src/app/profile/screenings/reports/page.tsx",
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/profile/ScreeningScreens.kt"
+      ]
+    },
+    {
+      "route": "/profile/screenings/reports/[id]",
+      "web": "src/app/profile/screenings/reports/[id]/page.tsx",
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/profile/ScreeningScreens.kt"
+      ]
+    },
+    {
       "route": "/profile/settings",
       "web": "src/app/profile/settings/page.tsx",
       "status": "ported",

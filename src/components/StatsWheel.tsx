@@ -12,7 +12,7 @@ import {
 } from "@/lib/frontpage-stats";
 import { groupByDay } from "@/lib/daily-totals";
 import { computeMeasurement, useCustomMeasurements } from "@/lib/custom-measurements";
-import { measureTextLines } from "@/lib/custom-measure-text";
+import { measureTextLines, suggestMeasureText } from "@/lib/custom-measure-text";
 import { useTranslation } from "@/i18n/LocaleProvider";
 import { HERO_HEIGHT } from "./AddButton";
 
@@ -126,8 +126,8 @@ const DIVIDER_BELOW_HERO = 18;
 // They only fill the slots the user's own fields (Indstillinger → Visning →
 // Forside) leave empty, and drop out by themselves as more fields are enabled.
 const PLACEHOLDER_STATS: Stat[] = [
-  { key: "placeholder-sleep", label: "Søvn (eksempel)", icon: IconMoon, value: "7,5", unit: "t" },
-  { key: "placeholder-pulse", label: "Puls (eksempel)", icon: IconHeartbeat, value: "62", unit: "bpm" },
+  { key: "placeholder-sleep", label: "Søvn (eksempel)", icon: IconMoon, value: "7,5", unit: "t", caption: ["Søvn"] },
+  { key: "placeholder-pulse", label: "Puls (eksempel)", icon: IconHeartbeat, value: "62", unit: "bpm", caption: ["Puls"] },
 ];
 
 function rowOffset(absDistance: number) {
@@ -257,6 +257,7 @@ export function StatsWheel({ side }: { side: "left" | "right" }) {
           icon: def.icon,
           value: loading ? "—" : value,
           unit,
+          caption: measureTextLines(suggestMeasureText(t(def.labelKey))),
         };
       });
     const customDays = customMeasurements.length > 0 ? groupByDay(allRegistrations) : [];

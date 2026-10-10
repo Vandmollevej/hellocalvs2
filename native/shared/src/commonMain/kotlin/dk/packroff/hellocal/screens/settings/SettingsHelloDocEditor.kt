@@ -25,6 +25,10 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import dk.packroff.hellocal.i18n.LocalTranslator
 import dk.packroff.hellocal.theme.HcColors
+import dk.packroff.hellocal.ui.CaptureDatePickerSheet
+import dk.packroff.hellocal.ui.CaptureDates
+import kotlinx.datetime.DateTimeUnit
+import kotlinx.datetime.plus
 import dk.packroff.hellocal.theme.HcDimens
 import dk.packroff.hellocal.theme.HcTypeRoles
 import dk.packroff.hellocal.ui.HcBottomSheet
@@ -52,6 +56,9 @@ fun SettingsHelloDocEditor(
     onCategoriesChange: (List<String>) -> Unit,
     historyRange: String,
     onHistoryRangeChange: (String) -> Unit,
+    /** "YYYY-MM-DD" from the date picker; "" = no expiry. */
+    expiresAt: String,
+    onExpiresAtChange: (String) -> Unit,
     onPreview: () -> Unit,
 ) {
     val t = LocalTranslator.current
@@ -113,6 +120,45 @@ fun SettingsHelloDocEditor(
                 onChange = onHistoryRangeChange,
                 sheetTitle = t.t("helloDoc.historyTitle"),
             )
+        }
+
+        Column(Modifier.fillMaxWidth()) {
+            HcSectionTitle(t.t("helloDoc.expiryTitle"))
+            VSpace(HcDimens.SpaceBlock)
+            val tomorrow = remember { CaptureDates.today().plus(1, DateTimeUnit.DAY) }
+            var picking by remember { mutableStateOf(false) }
+            HcToggle(
+                checked = expiresAt.isEmpty(),
+                onChange = { none -> onExpiresAtChange(if (none) "" else CaptureDates.isoDate(tomorrow)) },
+                label = t.t("helloDoc.expiryNone"),
+            )
+            if (expiresAt.isNotEmpty()) {
+                VSpace(HcDimens.SpaceInline)
+                val shape = RoundedCornerShape(HcDimens.RadiusCard)
+                Box(
+                    Modifier
+                        .fillMaxWidth()
+                        .heightIn(min = HcDimens.ControlHeight)
+                        .clip(shape)
+                        .background(HcColors.Cream, shape)
+                        .border(1.dp, HcColors.FieldBorder, shape)
+                        .clickable { picking = true },
+                    contentAlignment = Alignment.CenterStart,
+                ) {
+                    HcText(expiresAt, HcTypeRoles.Input, Modifier.padding(horizontal = 16.dp), maxLines = 1)
+                }
+            }
+            VSpace(HcDimens.SpaceInline)
+            HcText(t.t("helloDoc.expiryHint"), HcTypeRoles.Caption, color = HcColors.TextSecondary)
+            if (picking) {
+                CaptureDatePickerSheet(
+                    initial = CaptureDates.parseDate(expiresAt) ?: tomorrow,
+                    min = tomorrow,
+                    onPick = { onExpiresAtChange(CaptureDates.isoDate(it)) },
+                    onDismiss = { picking = false },
+                    title = t.t("helloDoc.expiryDateAria"),
+                )
+            }
         }
     }
 }
