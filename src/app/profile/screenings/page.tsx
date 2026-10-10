@@ -67,10 +67,6 @@ function ScreeningsContent() {
           {t("screenings.createNew")}
         </Link>
 
-        <ActionLink variant="secondary" href="/profile/screenings/reports">
-          {t("screenings.reports")}
-        </ActionLink>
-
         {!screenings && !failed && (
           <div className="flex justify-center py-6">
             <HfLoader />
@@ -116,6 +112,10 @@ function ScreeningsContent() {
             ))}
           </div>
         )}
+
+        <ActionLink variant="secondary" href="/profile/screenings/reports">
+          {t("screenings.reports")}
+        </ActionLink>
       </div>
 
       {fillOpen && screenings && (

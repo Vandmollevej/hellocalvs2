@@ -254,8 +254,6 @@ fun ScreeningsScreen(args: RouteArgs) {
                 HcIcon("Plus", size = 20.dp, color = HcColors.Black)
                 HcText(t.t("screenings.createNew"), HcTypeRoles.Body, bold = true, color = HcColors.Black)
             }
-            HcButton(t.t("screenings.reports"), { nav.push("/profile/screenings/reports") }, kind = HcButtonKind.Secondary)
-
             val list = screenings
             when {
                 list == null && !failed -> HcLoader()
@@ -299,6 +297,8 @@ fun ScreeningsScreen(args: RouteArgs) {
                             }
                         }
                     }
+
+            HcButton(t.t("screenings.reports"), { nav.push("/profile/screenings/reports") }, kind = HcButtonKind.Secondary)
                 }
             }
         }
