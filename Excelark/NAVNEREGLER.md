@@ -138,6 +138,8 @@ Kort version står også i `docs/REGLER.md`.
 - **Ord der allerede står i flertal** (dumplings, rejer, boller): ental-titlen bøjes også i flertal ("Frosne dumplings", ikke "Frosset dumplings"). Formlen i kolonne A bruger flertal, når `Product type plural` = productType.
 - Keyword "tilsat kulsyre" hedder "med kulsyre" (så "tilsat" ikke står dobbelt med "med tilsat sukker").
 - Står brandet (fx vandkilden) i et keyword ("fra Aqua d'Or kilden"), fjernes keywordet. Linjenavne i brandet flyttes til subbrand ("Arla Protein" → Arla + Protein) og fjernes så fra productType/keywords.
+- **Lande og "/" står aldrig i brand** (brugerens regel 2026-10-10): et land eller en oprindelse i brand ("Peru", "Danmark/Tyskland", "Hollandsk") flyttes til `_is_country_of_origen` (små bogstaver, flere lande med " / ": "danmark / tyskland"), og brand tømmes. "/" alene er aldrig et brand.
+- **Ord fra brandet må aldrig bare forsvinde** (brugerens regel 2026-10-10): når brandfeltet renses, flyttes logo-ord til subbrand ("Mini Babybel" → Babybel + subbrand Mini), varianter til variant ("Tic Tac Exotic Escape" → variant "Exotic Escape"). Kun varekoder ("G54 X 24") slettes.
 
 ## Decimaltegn: punktum i arkene (brugerens regel 2026-10-10, gælder alle ark)
 - Decimaler skrives altid med punktum i arkene: "1.5 l", "3.6%", "13.5%", "0.5% fedt", "462.50/Kg". Appen viser selv komma for Danmark og de andre komma-lande ("1,5 liter") og punktum for punktum-lande (docs/DECISIONS.md 2026-10-10 på master).
