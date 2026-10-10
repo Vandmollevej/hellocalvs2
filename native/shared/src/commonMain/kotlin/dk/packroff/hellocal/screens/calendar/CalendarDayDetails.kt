@@ -318,7 +318,7 @@ internal fun DayDetails(
                         )
                         Box(
                             Modifier.fillMaxWidth()
-                                .heightIn(max = max(240f, screenHeight.value - 300f).dp)
+                                .heightIn(max = max(240f, screenHeight.value - 340f).dp)
                                 .clip(RoundedCornerShape(16.dp))
                                 .border(1.dp, HcColors.Tan, RoundedCornerShape(16.dp))
                                 .background(HcColors.White)

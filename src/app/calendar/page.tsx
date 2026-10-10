@@ -2426,7 +2426,7 @@ function DayDetails({
             <div
               ref={timelineScrollRef}
               className="no-scrollbar relative touch-pan-y overflow-y-auto rounded-2xl border border-hf-tan bg-hf-white"
-              style={{ maxHeight: "calc(100vh - 300px)" }}
+              style={{ maxHeight: "calc(100vh - 340px)" }}
               onPointerDown={handleTimelinePointerDown}
               onPointerMove={handleTimelinePointerMove}
               onPointerUp={handleTimelinePointerEnd}
