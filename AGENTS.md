@@ -57,7 +57,7 @@ on the web must be carried over to the native screen in the same task:
 - Commit, push, flet PR'en og gør alt andet, der skal til for at få opgaven helt i mål, uden at spørge først (user rule 2026-10-09). Gælder ikke ting, reglerne ovenfor udtrykkeligt forbyder (fx hemmeligheder, større arkitekturændringer uden godkendelse).
 - Kan din ændring følge med en anden åben opgaves push/PR (samme filer eller gruppe, jf. `docs/handoffs/OPEN-TASKS.md`), så lad være med selv at pushe eller åbne en PR: læg den til den anden opgave, og arkivér blot (user rule 2026-10-09).
 - Aldrig hænge (user rule 2026-10-10, global): se `docs/REGLER.md` → Proces. Slut aldrig en tur, mens CI/deploy/PR venter, uden et tidsbestemt tjek (`send_later`, højst 5 min.), og handl ved hvert tjek (flet, ret, løs konflikt, find årsag). Færdig = flettet OG deployet.
-- Brugeren er ligeglad med mellemstatus: meld ikke automatiske hændelser, ventende CI eller planlagte tjek; skriv kun ved resultat, blokering eller spørgsmål (user rule 2026-10-10, global; se `docs/REGLER.md` → Proces).
+- Brugeren er ligeglad med mellemstatus: meld ikke automatiske hændelser, ventende CI eller planlagte tjek; skriv kun ved resultat, blokering eller spørgsmål. Brugeren gider ikke høre om det — det skal bare komme til at virke (user rule 2026-10-10, global; se `docs/REGLER.md` → Proces).
 - Er der noget udestående, så fix det — generelt, ikke kun i den aktuelle opgave (user rule 2026-10-10; se `docs/REGLER.md` → Proces).
 - Update `docs/STATUS.md` after material work and add durable architectural or product decisions to `docs/DECISIONS.md`.
 
