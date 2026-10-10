@@ -253,7 +253,7 @@ data class UserScan(
     val imageUrl: String? = null,
     val brand: String? = null,
     val kcalPer100g: Double = 0.0,
-    val kcalEstimated: Boolean = false,
+    val macrosEstimated: Boolean = false,
     val createdAt: String = "",
     val added: Boolean = false,
 )
