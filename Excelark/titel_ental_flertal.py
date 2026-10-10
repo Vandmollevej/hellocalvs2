@@ -183,16 +183,16 @@ def build_formula(tpl, row, m, extra_fl=None, var_expr=None):
     def sub(mo):
         col = mo.group(1)
         v = m.get(col, '""')
-        if v == '""':
+        if v.startswith('"'):
             return v
         return f'{v}{row}'
     t = tpl
     if extra_fl:
         assert t.count('LOWER(Z2))') == 1
-        t = t.replace('LOWER(Z2))', 'LOWER(Z2),' + ','.join(f'LOWER({c}2)' for c in extra_fl) + ')')
+        t = t.replace('LOWER(Z2))', 'LOWER(Z2),' + ','.join(f'LOWER(@@X{n}@@)' for n in range(len(extra_fl))) + ')')
     t = re.sub(r'(?<![A-Za-z_.])([A-Z]{1,2})2(?![0-9A-Za-z])', sub, t)
-    if var_expr:
-        t = t.replace(f'D{row}', var_expr(row))
+    for n, c in enumerate(extra_fl or []):
+        t = t.replace(f'@@X{n}@@', f'{c}{row}')
     return t
 
 
