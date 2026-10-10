@@ -1943,12 +1943,12 @@
   "weighIn": {
     "attireTitle": "Hvad havde du på?",
     "attireItem": {
-      "UNDERWEAR": "Undertøj",
-      "PANTS": "Bukser",
-      "TOP": "Top / T-shirt",
-      "SWEATER": "Sweater",
-      "SHOES": "Sko",
-      "POCKET_ITEMS": "Mobil og lign. i lommen",
+      "UNDERWEAR": "Med undertøj",
+      "PANTS": "Med bukser",
+      "TOP": "Med top / T-shirt",
+      "SWEATER": "Med overdel",
+      "SHOES": "Med sko",
+      "POCKET_ITEMS": "Med mobil og andet i lommerne",
       "AFTER_TOILET": "Efter toiletbesøg"
     },
     "attireNaked": "Intet valgt = nøgen",
