@@ -82,7 +82,8 @@ NEW_ALIAS = {
               "packageSizeText": "Quantity", "packCount": "Pack Count", "packaging": "Packaging", "category": "Category",
               "barcode": "EAN", **{f"keyword{i}": f"Keyword {i}" for i in range(1, 6)}},
     "rema": {"brand": "Brand", "subbrand": "Subbrand", "productType": "Product type", "variant": "Variant", "flavor": "taste",
-             "packageSizeText": "Quantity", "packCount": "Amount", "category": "Category", "barcode": "EAN", "keyword1": "Keyword 1",
+             "packageSizeText": "Quantity", "packCount": "Amount", "category": "Category", "barcode": "EAN",
+             **{f"keyword{i}": f"Keyword {i}" for i in range(1, 6)},
              # 2026-10-10: fedt% staar i _is_fat, alkohol% i _is_alcohol; REMA faar Bilkas praecise kolonner (alkohol-% i
              # 2. _is_alcohol). Gamle navne virker stadig.
              "_is_fat": "fat", "_is_alcohol": "%", "_is_alcohol#2": "%", "_is_vegan": "is_vegan", "_is_meat": "is_meat",
@@ -422,7 +423,8 @@ def rema_filters(r, is_drink):
 
 
 def rema_keywords(r, is_drink):
-    out = [k for k in [text(r.get("Keyword 1"))] if k]
+    # 2026-10-10: REMA har Bilkas keyword1-5 ("light", "i skiver" m.fl. staar nu som keywords).
+    out = [k for k in (text(r.get(f"Keyword {i}")) for i in range(1, 6)) if k]
     # Package shapes go to Product.packaging and "Færdigretter" to the category;
     # only other values (e.g. "i Skiver") stay keywords.
     for part in split_list(r.get("is_Packaging")):
