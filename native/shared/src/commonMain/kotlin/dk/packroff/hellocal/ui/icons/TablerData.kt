@@ -17,6 +17,7 @@ internal object TablerData {
         "ArrowUp" to (false to listOf("M12 5l0 14", "M18 11l-6 -6", "M6 11l6 -6")),
         "ArrowsLeftRight" to (false to listOf("M21 17l-18 0", "M6 10l-3 -3l3 -3", "M3 7l18 0", "M18 20l3 -3l-3 -3")),
         "ArrowsSort" to (false to listOf("M3 9l4 -4l4 4m-4 -4v14", "M21 15l-4 4l-4 -4m4 4v-14")),
+        "ArrowsUpDown" to (false to listOf("M7 3l0 18", "M10 6l-3 -3l-3 3", "M20 18l-3 3l-3 -3", "M17 21l0 -18")),
         "Atom2" to (false to listOf("M9 12a3 3 0 1 0 6 0a3 3 0 1 0 -6 0", "M12 21l0 .01", "M3 9l0 .01", "M21 9l0 .01", "M8 20.1a9 9 0 0 1 -5 -7.1", "M16 20.1a9 9 0 0 0 5 -7.1", "M6.2 5a9 9 0 0 1 11.4 0")),
         "Axe" to (false to listOf("M13 9l7.383 7.418c.823 .82 .823 2.148 0 2.967a2.11 2.11 0 0 1 -2.976 0l-7.407 -7.385", "M6.66 15.66l-3.32 -3.32a1.25 1.25 0 0 1 .42 -2.044l3.24 -1.296l6 -6l3 3l-6 6l-1.296 3.24a1.25 1.25 0 0 1 -2.044 .42")),
         "BallBasketball" to (false to listOf("M3 12a9 9 0 1 0 18 0a9 9 0 1 0 -18 0", "M5.65 5.65l12.7 12.7", "M5.65 18.35l12.7 -12.7", "M12 3a9 9 0 0 0 9 9", "M3 12a9 9 0 0 1 9 9")),

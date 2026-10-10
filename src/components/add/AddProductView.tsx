@@ -14,6 +14,7 @@ import {
   IconLock,
   IconLockOpen,
   IconRefresh,
+  IconArrowsUpDown,
 } from "@tabler/icons-react";
 import { IconFavorite, IconFavoriteFilled } from "@/components/icons/Favorite";
 import { HfScreen } from "@/components/HfScreen";
@@ -37,6 +38,15 @@ import { useTranslation } from "@/i18n/LocaleProvider";
 import { isAlternativeServingConfident } from "@/lib/alternative-servings";
 import type { AlternativeServing } from "@/lib/product-analysis-types";
 import { fromDisplayAmount, getProductDisplayUnit, toDisplayAmount } from "@/lib/product-display-unit";
+import { findKitchenConversion } from "@/lib/kitchen-conversions";
+import {
+  liquidAmountFor,
+  liquidBaseFromValue,
+  liquidSecondaryText,
+  liquidUnitLabel,
+  liquidValue,
+  type LiquidPrimary,
+} from "@/lib/liquid-amount";
 import { NUTRIENT_BY_KEY, type ResolvedNutrient } from "@/lib/nutrients";
 import { UncertaintyTilde } from "@/components/ui/UncertaintyTilde";
 import { UncertaintyLine } from "@/components/ui/UncertaintyLine";
@@ -299,6 +309,8 @@ export function AddProductView({
   // er kun en mulighed, når varen faktisk har en defineret portionsstørrelse,
   // og må ikke være default-valget selv når den findes.
   const [amountUnit, setAmountUnit] = useState<"personer" | "gram">("gram");
+  // Væsker i Opret ret: rumfang eller gram som primært tal (src/lib/liquid-amount.ts).
+  const [liquidPrimary, setLiquidPrimary] = useState<LiquidPrimary>("volume");
   const [time] = useState(
     () => (registration ? localTimeString(new Date(registration.createdAt)) : initialTime) ?? currentTimeString(),
   );
@@ -478,6 +490,11 @@ export function AddProductView({
   // +/−; amount er altid i basisenheden (g/ml), cl er kun visning.
   const displayUnit = getProductDisplayUnit(product);
   const displayAmount = toDisplayAmount(amount, displayUnit);
+  // Kun når varen tilføjes fra Opret ret og er en væske (brugerens krav 2026-10-10).
+  const liquid =
+    forDish && product && !(hasServingUnit && amountUnit === "personer")
+      ? liquidAmountFor(displayUnit, findKitchenConversion(product.name))
+      : null;
   const baseUnitLabel =
     displayUnit === "cl"
       ? t("addProduct.centilitresUnit")
@@ -958,7 +975,28 @@ export function AddProductView({
                 >
                   −
                 </button>
-                <div className="flex-1 rounded-2xl bg-hf-tan py-3 text-center text-hf-black">
+                <div
+                  className={`relative flex-1 rounded-2xl bg-hf-tan py-3 text-center text-hf-black ${liquid ? "cursor-pointer" : ""}`}
+                  onClick={(event) => {
+                    if (!liquid || (event.target as HTMLElement).closest("input, button")) return;
+                    setLiquidPrimary((current) => (current === "volume" ? "grams" : "volume"));
+                  }}
+                >
+                  {liquid && !isLoading && (
+                    <>
+                      <span className="hf-type-caption absolute right-3 top-1.5 text-text-secondary">
+                        {liquidSecondaryText(amount, liquid, liquidPrimary)}
+                      </span>
+                      <button
+                        type="button"
+                        aria-label={t("addProduct.swapLiquidUnit")}
+                        onClick={() => setLiquidPrimary((current) => (current === "volume" ? "grams" : "volume"))}
+                        className="absolute right-2 top-1/2 flex h-8 w-8 -translate-y-1/2 items-center justify-center text-hf-black"
+                      >
+                        <IconArrowsUpDown size={18} stroke={2} />
+                      </button>
+                    </>
+                  )}
                   {isLoading ? (
                     <ReadingSkeleton label={t("addProduct.reading")}>
                       <Skeleton type="page-title" width={96} />
@@ -969,6 +1007,23 @@ export function AddProductView({
                         amount === servingSizeGrams ? servingSizeUnitSingular : servingSizeUnitPlural
                       }`}
                     </p>
+                  ) : liquid ? (
+                    <label className="hf-type-page-title flex items-baseline justify-center text-hf-black">
+                      <input
+                        type="number"
+                        inputMode="numeric"
+                        min={0}
+                        step={liquidPrimary === "volume" && liquid.volumeUnit === "cl" ? 1 : 10}
+                        value={liquidValue(amount, liquid, liquidPrimary)}
+                        onChange={(event) => {
+                          const value = Number(event.target.value);
+                          if (Number.isFinite(value)) setAmount(Math.max(0, liquidBaseFromValue(value, liquid, liquidPrimary)));
+                        }}
+                        style={{ width: `${Math.max(1, String(liquidValue(amount, liquid, liquidPrimary)).length) + 0.5}ch` }}
+                        className="bg-transparent text-right outline-none"
+                      />
+                      <span>&nbsp;{liquidUnitLabel(liquid, liquidPrimary)}</span>
+                    </label>
                   ) : (
                     <label className="hf-type-page-title flex items-baseline justify-center text-hf-black">
                       <input

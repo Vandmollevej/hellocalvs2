@@ -1280,7 +1280,13 @@
     "report": "Signaler",
     "reported": "Merci, le plat a été signalé",
     "reportError": "Impossible de signaler le plat",
-    "shareError": "Impossible de modifier le partage pour le moment"
+    "shareError": "Impossible de modifier le partage pour le moment",
+    "measureKcal": "{amount} · {kcal} kcal"
+  },
+  "recipeUnits": {
+    "label": "Afficher les quantités en",
+    "measures": "Mesures",
+    "grams": "Grammes"
   },
   "hfRecipe": {
     "loading": "Chargement de la recette …",
@@ -2247,7 +2253,8 @@
       "vitaminB7": "Vitamine B7 (biotine)",
       "vitaminB9": "Vitamine B9 (folate)",
       "vitaminB12": "Vitamine B12"
-    }
+    },
+    "swapLiquidUnit": "Basculer entre volume et grammes"
   },
   "photoAward": {
     "bannerSingle": "Tu peux gagner {points} points en prenant une nouvelle photo de {photoType}.",

@@ -54,6 +54,7 @@ import dk.packroff.hellocal.api.Api
 import dk.packroff.hellocal.api.ApiJson
 import dk.packroff.hellocal.api.HelloCalConfig
 import dk.packroff.hellocal.i18n.LocalTranslator
+import dk.packroff.hellocal.screens.onboarding.measureAsGramsText
 import dk.packroff.hellocal.nav.LocalNavigator
 import dk.packroff.hellocal.nav.Location
 import dk.packroff.hellocal.nav.RouteArgs
@@ -138,6 +139,9 @@ fun HelloFreshRecipeScreen(args: RouteArgs) {
     var openSteps by remember { mutableStateOf(true) }
     var openNutrition by remember { mutableStateOf(false) }
     var openPhotos by remember { mutableStateOf(true) }
+    // Mål (dl, spsk) som i opskriften, eller omregnet til gram (KitchenConversions.kt).
+    var showGrams by remember { mutableStateOf(false) }
+    val conversions = rememberKitchenConversions()
     var heroHeight by remember { mutableIntStateOf(0) }
     var stepsY by remember { mutableIntStateOf(0) }
 
@@ -265,7 +269,13 @@ fun HelloFreshRecipeScreen(args: RouteArgs) {
                         HcText(t.t("hfRecipe.allergenNote"), HcTypeRoles.Body, color = HcColors.TextSecondary)
 
                         RecipeAccordion(t.t("hfRecipe.ingredients"), openIngredients, { openIngredients = !openIngredients }) {
-                            r.ingredients.forEach { i -> IngredientRow(i.name, amountText(i.amount, i.unit), i.imageUrl) }
+                            if (r.ingredients.any { measureAsGramsText(conversions, it.amount, it.unit, it.name) != null }) {
+                                RecipeUnitToggle(showGrams, { showGrams = it }, Modifier.padding(bottom = 12.dp))
+                            }
+                            r.ingredients.forEach { i ->
+                                val amount = (if (showGrams) measureAsGramsText(conversions, i.amount, i.unit, i.name) else null) ?: amountText(i.amount, i.unit)
+                                IngredientRow(i.name, amount, i.imageUrl)
+                            }
                         }
 
                         Box(Modifier.onGloballyPositioned { stepsY = it.positionInParent().y.toInt() + heroHeight }) {

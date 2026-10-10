@@ -1,7 +1,9 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getSessionUser, unauthorized } from "@/lib/session";
-import { parseRecipeText, type ParsedRecipe } from "@/lib/recipe-text-parser";
+import { parseIngredientLine, parseRecipeText, type ParsedRecipe } from "@/lib/recipe-text-parser";
+import { findKitchenConversion } from "@/lib/kitchen-conversions";
+import { volumeToGrams } from "@/lib/kitchen-conversion-units";
 import { fetchSourceImage } from "@/lib/recipe-source-image";
 import { aiParseRecipe } from "@/lib/recipe-import-ai";
 
@@ -63,6 +65,17 @@ async function findProduct(name: string) {
   return best;
 }
 
+// Rumfang (dl, spsk, tsk …) regnes om med omregningstabellen
+// (src/lib/kitchen-conversions.ts), så "2 dl hvedemel" bliver 120 g og ikke
+// 200 g. Gælder både AI'ens og den regelbaserede tolkers mængder.
+function tableGrams(raw: string, name: string): number | null {
+  const line = parseIngredientLine(raw);
+  if (line.amount === null) return null;
+  const item = findKitchenConversion(name) ?? findKitchenConversion(line.name);
+  const grams = item ? volumeToGrams(line.amount, line.unit, item) : null;
+  return grams === null ? null : Math.round(grams * 10) / 10;
+}
+
 export async function POST(req: Request) {
   const user = await getSessionUser();
   if (!user) return unauthorized();
@@ -118,6 +131,7 @@ export async function POST(req: Request) {
     ]);
     const ingredients = parsed.ingredients.map((ingredient, index) => ({
       ...ingredient,
+      grams: tableGrams(ingredient.raw, ingredient.name) ?? ingredient.grams,
       product: matches[index],
     }));
     return NextResponse.json({

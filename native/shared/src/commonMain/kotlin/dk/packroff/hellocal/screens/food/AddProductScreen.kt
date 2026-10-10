@@ -50,6 +50,9 @@ import dk.packroff.hellocal.i18n.LocalTranslator
 import dk.packroff.hellocal.nav.LocalNavigator
 import dk.packroff.hellocal.nav.RouteArgs
 import dk.packroff.hellocal.platform.NativeHooks
+import dk.packroff.hellocal.screens.onboarding.KitchenConversion
+import dk.packroff.hellocal.screens.onboarding.KitchenConversions
+import dk.packroff.hellocal.screens.onboarding.findConversionIn
 import dk.packroff.hellocal.theme.HcColors
 import dk.packroff.hellocal.theme.HcDimens
 import dk.packroff.hellocal.theme.HcTypeRoles
@@ -146,6 +149,12 @@ fun AddProductView(
         amount = value
     }
     var amountUnit by remember { mutableStateOf("gram") }
+    // Væsker i Opret ret: rumfang eller gram som primært tal (FoodLogic.kt liquidAmountFor).
+    var liquidGrams by remember { mutableStateOf(false) }
+    var conversions by remember { mutableStateOf<List<KitchenConversion>>(emptyList()) }
+    LaunchedEffect(forDish) {
+        if (forDish) conversions = runCatching { KitchenConversions.table().items }.getOrDefault(emptyList())
+    }
     val time = remember { registration?.let { FoodTime.hhmm(it.createdAt) } ?: initialTime ?: FoodTime.currentTimeString() }
     val date = remember {
         registration?.let { r -> FoodTime.parse(r.createdAt)?.let { FoodTime.dateString(it) } } ?: initialDate ?: FoodTime.currentDateString()
@@ -273,6 +282,11 @@ fun AddProductView(
     val step = if (servingSizeGrams != null && servingSizeGrams > 0 && amountUnit == "personer") servingSizeGrams else 10.0
     val displayUnit = productDisplayUnit(product)
     val displayAmount = toDisplayAmount(amount, displayUnit)
+    // Kun når varen tilføjes fra Opret ret og er en væske (brugerens krav 2026-10-10).
+    val liquid = if (forDish && product != null && !(hasServingUnit && amountUnit == "personer")) {
+        val conversion = findConversionIn(conversions, product.name)
+        liquidAmountFor(displayUnit, conversion?.group, conversion?.gramsPerDl)
+    } else null
     val baseUnitLabel = when (displayUnit) {
         DisplayUnit.CL -> t.t("addProduct.centilitresUnit")
         DisplayUnit.ML -> t.t("addProduct.millilitresUnit")
@@ -473,14 +487,20 @@ fun AddProductView(
                             servingText = if (servingSizeGrams != null && servingSizeGrams > 0) {
                                 "${jsRound(amount / servingSizeGrams)} ${if (amount == servingSizeGrams) unitSingular else unitPlural}".replaceFirstChar { it.uppercase() }
                             } else "",
-                            displayAmount = displayAmount,
+                            displayAmount = if (liquid != null) liquidValue(amount, liquid, liquidGrams) else displayAmount,
                             displayUnit = displayUnit,
+                            unitLabel = if (liquid != null) liquidUnitLabel(liquid, liquidGrams) else displayUnit.label,
+                            cornerText = liquid?.let { liquidSecondaryText(amount, it, liquidGrams) },
+                            swapLabel = t.t("addProduct.swapLiquidUnit"),
+                            onSwap = if (liquid != null) ({ liquidGrams = !liquidGrams }) else null,
                             perPieceSuffix = if (!hasServingUnit && displayUnit == DisplayUnit.G && servingSizeGrams == amount) t.t("addProduct.perPiece") else "",
                             kcalLine = if (view.hasKnownNutrition == false) t.t("addProduct.nutritionUnknown")
                             else t.t("addProduct.kcalAmount", "kcal" to jsRound(view.kcalPer100g * amount / 100)),
                             onMinus = { setAmount(maxOf(step, amount - step)) },
                             onPlus = { setAmount(amount + step) },
-                            onTyped = { setAmount(maxOf(0.0, fromDisplayAmount(it, displayUnit))) },
+                            onTyped = { value ->
+                                setAmount(maxOf(0.0, if (liquid != null) liquidBaseFromValue(value, liquid, liquidGrams) else fromDisplayAmount(value, displayUnit)))
+                            },
                         )
 
                         Column(Modifier.fillMaxWidth().padding(bottom = 16.dp), horizontalAlignment = Alignment.CenterHorizontally) {
@@ -783,12 +803,32 @@ private fun AmountStepper(
     onMinus: () -> Unit,
     onPlus: () -> Unit,
     onTyped: (Double) -> Unit,
+    unitLabel: String = displayUnit.label,
+    // Væsker i Opret ret: omregningen med småt i hjørnet + skifteikon yderst til højre; tryk bytter.
+    cornerText: String? = null,
+    swapLabel: String = "",
+    onSwap: (() -> Unit)? = null,
 ) {
     Row(Modifier.fillMaxWidth().padding(bottom = 8.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.Center) {
         Row(Modifier.widthIn(max = 320.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             GlyphButton("−", onMinus)
+            Box(
+                Modifier.weight(1f).clip(RoundedCornerShape(16.dp)).background(HcColors.Tan)
+                    .let { if (onSwap != null) it.clickable(onClick = onSwap) else it },
+            ) {
+            if (onSwap != null && !isLoading) {
+                if (cornerText != null) {
+                    HcText(cornerText, HcTypeRoles.Caption, Modifier.align(Alignment.TopEnd).padding(top = 6.dp, end = 12.dp), color = HcColors.TextSecondary)
+                }
+                Box(
+                    Modifier.align(Alignment.CenterEnd).padding(end = 8.dp).size(32.dp).clickable(onClickLabel = swapLabel, onClick = onSwap),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    HcIcon("ArrowsUpDown", size = 18.dp, stroke = 2f, color = HcColors.Black)
+                }
+            }
             Column(
-                Modifier.weight(1f).clip(RoundedCornerShape(16.dp)).background(HcColors.Tan).padding(vertical = 12.dp),
+                Modifier.fillMaxWidth().padding(vertical = 12.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 when {
@@ -809,12 +849,13 @@ private fun AmountStepper(
                                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                                 modifier = Modifier.width(((text.length.coerceAtLeast(1) + 0.5f) * 13).dp),
                             )
-                            HcText(" ${displayUnit.label}$perPieceSuffix", HcTypeRoles.PageTitle, color = HcColors.Black)
+                            HcText(" $unitLabel$perPieceSuffix", HcTypeRoles.PageTitle, color = HcColors.Black)
                         }
                     }
                 }
                 if (nutritionPending) FoodSkeleton(Modifier.padding(vertical = 2.dp).width(64.dp).height(14.dp))
                 else HcText(kcalLine, HcTypeRoles.Body, color = HcColors.TextSecondary, align = TextAlign.Center)
+            }
             }
             GlyphButton("+", onPlus)
         }

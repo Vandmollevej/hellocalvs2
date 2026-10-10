@@ -1,8 +1,10 @@
 // Visningsenhed for mængdevælgeren (docs/DECISIONS.md 2026-09-24).
 //
 // Produktets registrerede produktkategori (Product.productCategory) er
-// autoritativ: drikkevarer vises i ml/cl, alt andet i g. Enheden gættes aldrig
-// ud fra produktnavnet. Mængden gemmes altid i basisenheden (g eller ml), som
+// autoritativ: drikkevarer vises i ml/cl, alt andet i g. Undtagelse (brugerens
+// regel 2026-10-10): en vare hvis mængde er angivet i cl ("Cola 33 cl") er en
+// færdig drikkevare og vises altid i cl — aldrig i gram — også når kategorien
+// mangler eller er forkert. Mængden gemmes altid i basisenheden (g eller ml), som
 // næringsværdierne pr. 100 er regnet ud fra — cl er kun en visning (1 cl =
 // 10 ml), så kcal-beregningen er uændret.
 
@@ -67,10 +69,11 @@ export function unitFromPackageSize(text?: string | null): ProductDisplayUnit | 
 }
 
 export function getProductDisplayUnit(product: ProductUnitSource | null | undefined): ProductDisplayUnit {
+  const unit = unitFromPackageSize(product?.packageSizeText) ?? unitFromPackageSize(product?.name);
+  if (unit === "cl") return "cl";
   if (product?.productCategory !== "DRINK") return "g";
   // Et fejlagtigt "g" på en drikkevare må aldrig give gram.
-  const unit = unitFromPackageSize(product.packageSizeText) ?? unitFromPackageSize(product.name);
-  return unit === "cl" ? "cl" : "ml";
+  return "ml";
 }
 
 // Basismængde (g/ml) → tal i visningsenheden.

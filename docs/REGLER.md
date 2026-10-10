@@ -117,6 +117,8 @@ ikke her, er den ikke registreret og skal tilføjes.
 
 
 - Opret ret → Indsæt tekst: kun tekstfeltet og "Indsæt" — ingen ekstra felter (fx kilde-link). Antal personer bruger den eksisterende PersonsSlider, ikke et nyt talfelt (brugerens krav 2026-10-09).
+- **cl = færdig drikkevare (bruger 2026-10-10)**: står varens mængde i cl, vises og vælges den altid i cl — aldrig gram — uanset kategori (`src/lib/product-display-unit.ts`).
+- **Omregning væsker → gram (bruger 2026-10-10)**: én tabel, `src/data/kitchen-conversions.json` (bygges af `scripts/kitchen-conversions-build.py`), bruges overalt: Viden om mad → Omregning, Mål/Gram-skift på retter og dl→gram i Opret ret. Nye væsker tilføjes dér. 1 spsk = 15 ml, 1 tsk = 5 ml. Gram-omregningen i mængdeboksen (småt i hjørnet + op/ned-ikon, tryk bytter) vises KUN for væsker og KUN når varen tilføjes fra Opret ret.
 - **Startmængde** (`src/lib/default-amount.ts`, brugerens regel 2026-10-09): forslaget må aldrig overstige pakkens indhold (g/ml fra pakningsstørrelsen). Al instantkaffe (instant, Nescafé, pulverkaffe …) starter på 2 g (pr. kop).
 
 - Admin-lister: til/fra-knappen (Toggle) står ALTID yderst til højre, aldrig tick-bokse, og "Rediger" står til venstre for knapperne. Event-koder (fx SUPPORT_RECEIVED) vises aldrig for admin — kun danske navne, grupperet med overskrifter og filtre (Besked automatisering, 2026-10-09).

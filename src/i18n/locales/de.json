@@ -1280,7 +1280,13 @@
     "report": "Melden",
     "reported": "Danke, das Gericht wurde gemeldet",
     "reportError": "Gericht konnte nicht gemeldet werden",
-    "shareError": "Die Freigabe konnte gerade nicht geändert werden"
+    "shareError": "Die Freigabe konnte gerade nicht geändert werden",
+    "measureKcal": "{amount} · {kcal} kcal"
+  },
+  "recipeUnits": {
+    "label": "Mengen anzeigen als",
+    "measures": "Maße",
+    "grams": "Gramm"
   },
   "hfRecipe": {
     "loading": "Rezept wird geladen …",
@@ -2247,7 +2253,8 @@
       "vitaminB7": "Vitamin B7 (Biotin)",
       "vitaminB9": "Vitamin B9 (Folat)",
       "vitaminB12": "Vitamin B12"
-    }
+    },
+    "swapLiquidUnit": "Zwischen Volumen und Gramm wechseln"
   },
   "photoAward": {
     "bannerSingle": "Du kannst {points} Punkte verdienen, indem du ein neues Foto von {photoType} machst.",

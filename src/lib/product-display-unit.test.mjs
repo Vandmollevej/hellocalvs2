@@ -32,8 +32,18 @@ test("drikkevare med fejlagtigt g viser aldrig gram", () => {
 
 test("alle øvrige kategorier viser g", () => {
   for (const productCategory of ["PROCESSED", "GENERIC", "RAW", "INGREDIENT"]) {
-    assert.equal(unitAndAmount({ productCategory, packageSizeText: "33 cl" }, 100), "100 g");
+    assert.equal(unitAndAmount({ productCategory, packageSizeText: "500 g" }, 100), "100 g");
+    assert.equal(unitAndAmount({ productCategory, packageSizeText: "1 l" }, 100), "100 g");
   }
+});
+
+test("mængde i cl er altid cl, uanset kategori (færdige drikkevarer)", () => {
+  for (const productCategory of [null, "PROCESSED", "GENERIC", "RAW", "INGREDIENT", "DRINK"]) {
+    assert.equal(unitAndAmount({ productCategory, packageSizeText: "33 cl" }, 330), "33 cl");
+    assert.equal(unitAndAmount({ productCategory, name: "Faxe Kondi 150 cl" }, 250), "25 cl");
+  }
+  // Pakningsstørrelsen vinder over navnet.
+  assert.equal(unitAndAmount({ productCategory: "PROCESSED", packageSizeText: "500 g", name: "Noget 33 cl" }, 100), "100 g");
 });
 
 test("ukendt eller manglende kategori viser g", () => {

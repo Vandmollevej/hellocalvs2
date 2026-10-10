@@ -1280,7 +1280,13 @@
     "report": "Anmäl",
     "reported": "Tack, rätten är anmäld",
     "reportError": "Kunde inte anmäla rätten",
-    "shareError": "Delningen kunde inte ändras just nu"
+    "shareError": "Delningen kunde inte ändras just nu",
+    "measureKcal": "{amount} · {kcal} kcal"
+  },
+  "recipeUnits": {
+    "label": "Visa mängder som",
+    "measures": "Mått",
+    "grams": "Gram"
   },
   "hfRecipe": {
     "loading": "Hämtar receptet …",
@@ -2247,7 +2253,8 @@
       "vitaminB7": "Vitamin B7 (biotin)",
       "vitaminB9": "Vitamin B9 (folat)",
       "vitaminB12": "Vitamin B12"
-    }
+    },
+    "swapLiquidUnit": "Växla mellan volym och gram"
   },
   "photoAward": {
     "bannerSingle": "Du kan tjäna {points} poäng genom att ta en ny bild av {photoType}.",

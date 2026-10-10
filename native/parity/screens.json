@@ -1687,6 +1687,14 @@
       ]
     },
     {
+      "route": "/viden-om/omregning",
+      "web": "src/app/viden-om/omregning/page.tsx",
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/onboarding/KitchenConversions.kt"
+      ]
+    },
+    {
       "route": "/vitaminer",
       "web": "src/app/vitaminer/page.tsx",
       "status": "ported",
