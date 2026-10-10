@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.shape.CircleShape
@@ -24,6 +25,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -54,9 +56,11 @@ import dk.packroff.hellocal.ui.HcScreen
 import dk.packroff.hellocal.ui.HcSectionTitle
 import dk.packroff.hellocal.ui.HcText
 import dk.packroff.hellocal.ui.icons.HcIcon
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.booleanOrNull
@@ -75,6 +79,8 @@ internal class RecipeRowData(
     val label: Pair<String, Boolean>? = null,
     val warnings: List<String> = emptyList(),
     val extra: String? = null,
+    /** Click key for "Trender netop nu" (src/lib/recipe-clicks.ts). */
+    val clickKey: String? = null,
 )
 
 /** HelloFresh recipes (id "hf_…") have their own page (docs/DECISIONS.md 2026-09-27). */
@@ -85,9 +91,10 @@ internal fun recipeHref(id: String) =
 @Composable
 internal fun RecipeRow(row: RecipeRowData, divider: Boolean = true) {
     val nav = LocalNavigator.current
+    val scope = rememberCoroutineScope()
     Column {
         Row(
-            Modifier.fillMaxWidth().clickable { nav.push(row.href) }.padding(vertical = 10.dp),
+            Modifier.fillMaxWidth().clickable { trackRecipeClick(scope, row.clickKey); nav.push(row.href) }.padding(vertical = 10.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(12.dp),
         ) {
@@ -108,6 +115,28 @@ internal fun RecipeRow(row: RecipeRowData, divider: Boolean = true) {
             HcIcon("ChevronRight", size = 18.dp, color = HcColors.Black)
         }
         if (divider) HcLine()
+    }
+}
+
+/** src/lib/recipe-clicks.ts — tell the server a dish was opened; errors are ignored. */
+private fun trackRecipeClick(scope: CoroutineScope, key: String?) {
+    if (key == null) return
+    scope.launch { runCatching { Api.post("/api/recipe-clicks", mapOf("key" to key)) } }
+}
+
+/** src/components/recipes/RecipeRow.tsx RecipeCard — image over name and subtitle, in the "Trender netop nu" slider. */
+@Composable
+private fun RecipeCard(row: RecipeRowData) {
+    val nav = LocalNavigator.current
+    val scope = rememberCoroutineScope()
+    val shape = RoundedCornerShape(HcDimens.RadiusCard)
+    Column(Modifier.width(144.dp).clickable { trackRecipeClick(scope, row.clickKey); nav.push(row.href) }) {
+        Box(Modifier.size(144.dp).clip(shape).background(HcColors.Tan, shape), contentAlignment = Alignment.Center) {
+            if (row.imageUrl != null) HcRemoteImage(row.imageUrl, Modifier.fillMaxSize(), contentScale = ContentScale.Crop)
+            else HcIcon("Soup", size = 32.dp, color = HcColors.Black, modifier = Modifier.alpha(0.5f))
+        }
+        HcText(row.name, HcTypeRoles.Small, Modifier.padding(top = 8.dp), bold = true, color = HcColors.Black, maxLines = 2)
+        if (row.subtitle.isNotEmpty()) HcText(row.subtitle, HcTypeRoles.Small, color = HcColors.TextSecondary)
     }
 }
 
@@ -264,8 +293,6 @@ private data class SearchResult(
 @Serializable
 private data class SearchResponse(val recipes: List<SearchResult> = emptyList())
 
-private const val TRENDING_COUNT = 3
-
 @Composable
 private fun SharedTab(t: Translator) {
     val nav = LocalNavigator.current
@@ -301,7 +328,7 @@ private fun SharedTab(t: Translator) {
             if (query.isNotBlank()) params += "q" to query.trim()
             else {
                 params.removeAll { it.first == "sort" }
-                params += "sort" to "popular"
+                params += "trending" to "1"
             }
             if (hf && serious) params += "hellofresh" to "1"
             if (source != "all") params += "source" to source
@@ -336,8 +363,10 @@ private fun SharedTab(t: Translator) {
         val split = result.split
         val extra = if (filters.showEnergySplit && split != null)
             t.t("recipeFilters.split", "protein" to jsNumber(split.protein), "carbs" to jsNumber(split.carbs), "fat" to jsNumber(split.fat)) else null
+        val clickKey = (if (result.kind == "shared") "shared" else "hf") + ":" + result.id
         return if (result.kind != "shared") RecipeRowData(
             key = result.id,
+            clickKey = clickKey,
             // Valdemarsro dishes open as the product page; HelloFresh has its own view.
             href = if (result.kind == "valdemarsro") "/add/${Location.encode(result.id)}" else recipeHref(result.id),
             name = result.name,
@@ -348,6 +377,7 @@ private fun SharedTab(t: Translator) {
             extra = extra,
         ) else RecipeRowData(
             key = result.id,
+            clickKey = clickKey,
             href = "/profile/recipes/${Location.encode(result.id)}?kind=shared",
             name = result.name,
             imageUrl = result.imageUrl,
@@ -397,12 +427,14 @@ private fun SharedTab(t: Translator) {
             }
         } else {
             HcSectionTitle(t.t("recipes.trendingTitle"))
-            val trending = results.take(TRENDING_COUNT)
             when {
                 state == "loading" -> HcLoader()
                 state == "error" -> StatusText(t.t("recipes.loadError"))
-                trending.isEmpty() -> StatusText(t.t("recipes.trendingEmpty"))
-                else -> RecipeRows(trending.map(::rowFor))
+                results.isEmpty() -> StatusText(t.t("recipes.trendingEmpty"))
+                else -> Row(
+                    Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()),
+                    horizontalArrangement = Arrangement.spacedBy(12.dp),
+                ) { results.map(::rowFor).forEach { RecipeCard(it) } }
             }
 
             HcSectionTitle(t.t("recipes.favoritesTitle"))
