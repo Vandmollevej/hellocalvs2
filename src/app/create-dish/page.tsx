@@ -629,87 +629,6 @@ export default function CreateDishPage() {
                   />
                 </div>
 
-                <div>
-                  <p className="hf-type-small hf-type-strong mb-2 text-hf-black">
-                    {t("createDish.ingredients")}
-                  </p>
-                  {ingredients.length === 0 ? (
-                    <div className="hf-card text-center">
-                      <p className="hf-type-body text-text-secondary">
-                        {t("createDish.noIngredientsYet")}
-                      </p>
-                    </div>
-                  ) : (
-                    <div className="overflow-hidden rounded-2xl bg-hf-tan">
-                      {ingredients.map((ingredient, index) => (
-                        <div
-                          key={`${ingredient.productId}-${index}`}
-                          className="flex items-center gap-2.5 border-b border-hf-tan-dark px-4 py-3 last:border-b-0"
-                        >
-                          <div className="h-9 w-9 flex-shrink-0">
-                            {ingredient.imageUrl && (
-                              // eslint-disable-next-line @next/next/no-img-element
-                              <img
-                                src={ingredient.imageUrl}
-                                alt=""
-                                className="h-full w-full object-contain"
-                              />
-                            )}
-                          </div>
-                          <div className="flex-1">
-                            <p className="hf-type-body hf-type-strong text-hf-black">
-                              {ingredient.name}
-                            </p>
-                            <p className="hf-type-small text-text-secondary">
-                              {isPrivateIngredientId(ingredient.productId)
-                                ? t("createDish.kcalUnknown", {
-                                    grams: ingredient.grams,
-                                  })
-                                : t("createDish.gramsKcal", {
-                                    grams: ingredient.grams,
-                                    kcal: round(
-                                      (ingredient.kcalPer100g *
-                                        ingredient.grams) /
-                                        100,
-                                    ),
-                                  })}
-                            </p>
-                          </div>
-                          <button
-                            type="button"
-                            onClick={() => handleRemove(index)}
-                            aria-label={t("createDish.removeIngredient")}
-                            className="flex h-7 w-7 items-center justify-center rounded-full bg-hf-white text-hf-black"
-                          >
-                            <IconX size={14} />
-                          </button>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </div>
-
-                {ingredients.length > 0 && (
-                  <div className="hf-card">
-                    <p className="hf-type-small hf-type-strong text-hf-black">
-                      {t("createDish.total")}
-                    </p>
-                    <p className="hf-type-body text-hf-black">
-                      {t("createDish.gramsKcal", {
-                        grams: round(totals.grams),
-                        kcal: round(totals.kcal),
-                      })}
-                    </p>
-                    <p className="hf-type-small text-text-secondary">
-                      {t("createDish.macrosSummary", {
-                        protein: round(totals.protein, 1),
-                        carbs: round(totals.carbs, 1),
-                        fat: round(totals.fat, 1),
-                      })}
-                    </p>
-                  </div>
-                )}
-
                 <div ref={searchSectionRef}>
                   <p className="hf-type-small hf-type-strong mb-2 text-hf-black">
                     {t("createDish.addIngredient")}
@@ -794,6 +713,87 @@ export default function CreateDishPage() {
                     )}
                   </div>
                 </div>
+
+                <div>
+                  <p className="hf-type-small hf-type-strong mb-2 text-hf-black">
+                    {t("createDish.ingredients")}
+                  </p>
+                  {ingredients.length === 0 ? (
+                    <div className="hf-card text-center">
+                      <p className="hf-type-body text-text-secondary">
+                        {t("createDish.noIngredientsYet")}
+                      </p>
+                    </div>
+                  ) : (
+                    <div className="overflow-hidden rounded-2xl bg-hf-tan">
+                      {ingredients.map((ingredient, index) => (
+                        <div
+                          key={`${ingredient.productId}-${index}`}
+                          className="flex items-center gap-2.5 border-b border-hf-tan-dark px-4 py-3 last:border-b-0"
+                        >
+                          <div className="h-9 w-9 flex-shrink-0">
+                            {ingredient.imageUrl && (
+                              // eslint-disable-next-line @next/next/no-img-element
+                              <img
+                                src={ingredient.imageUrl}
+                                alt=""
+                                className="h-full w-full object-contain"
+                              />
+                            )}
+                          </div>
+                          <div className="flex-1">
+                            <p className="hf-type-body hf-type-strong text-hf-black">
+                              {ingredient.name}
+                            </p>
+                            <p className="hf-type-small text-text-secondary">
+                              {isPrivateIngredientId(ingredient.productId)
+                                ? t("createDish.kcalUnknown", {
+                                    grams: ingredient.grams,
+                                  })
+                                : t("createDish.gramsKcal", {
+                                    grams: ingredient.grams,
+                                    kcal: round(
+                                      (ingredient.kcalPer100g *
+                                        ingredient.grams) /
+                                        100,
+                                    ),
+                                  })}
+                            </p>
+                          </div>
+                          <button
+                            type="button"
+                            onClick={() => handleRemove(index)}
+                            aria-label={t("createDish.removeIngredient")}
+                            className="flex h-7 w-7 items-center justify-center rounded-full bg-hf-white text-hf-black"
+                          >
+                            <IconX size={14} />
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+
+                {ingredients.length > 0 && (
+                  <div className="hf-card">
+                    <p className="hf-type-small hf-type-strong text-hf-black">
+                      {t("createDish.total")}
+                    </p>
+                    <p className="hf-type-body text-hf-black">
+                      {t("createDish.gramsKcal", {
+                        grams: round(totals.grams),
+                        kcal: round(totals.kcal),
+                      })}
+                    </p>
+                    <p className="hf-type-small text-text-secondary">
+                      {t("createDish.macrosSummary", {
+                        protein: round(totals.protein, 1),
+                        carbs: round(totals.carbs, 1),
+                        fat: round(totals.fat, 1),
+                      })}
+                    </p>
+                  </div>
+                )}
               </>
             )}
 

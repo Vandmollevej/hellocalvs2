@@ -388,6 +388,45 @@ fun CreateDishScreen(args: RouteArgs) {
                 PersonsSlider(t.t("createDish.servings"), servings ?: 4, RecipePortions.MAX_PERSONS, { servings = it })
             }
 
+            val searchBringIntoView = remember { BringIntoViewRequester() }
+            Column(Modifier.bringIntoViewRequester(searchBringIntoView)) {
+                HcText(t.t("createDish.addIngredient"), HcTypeRoles.Small, Modifier.padding(bottom = 8.dp), color = HcColors.Black, bold = true)
+                FoodSearchField(query, { value ->
+                    query = value
+                    if (value.isBlank()) {
+                        searchState = "idle"
+                        results = emptyList()
+                    }
+                }, t.t("createDish.searchPlaceholder"), onFocus = { searchScope.launch { delay(50); searchBringIntoView.bringIntoView() } })
+                if (query.isNotBlank()) {
+                    FoodListCard(Modifier.padding(top = 8.dp)) {
+                        when (searchState) {
+                            "loading" -> FoodSkeletonMediaRows(4, Modifier.padding(horizontal = 16.dp))
+                            "error" -> HcText(connectionMessage(t, searchError, t.t("createDish.noResults")), HcTypeRoles.Body, Modifier.fillMaxWidth().padding(16.dp), color = HcColors.TextSecondary, align = TextAlign.Center)
+                            "ready" -> {
+                                if (results.isEmpty()) HcText(t.t("createDish.noResults"), HcTypeRoles.Body, Modifier.fillMaxWidth().padding(16.dp), color = HcColors.TextSecondary, align = TextAlign.Center)
+                                val shown = results.take(6)
+                                shown.forEachIndexed { index, product ->
+                                    Row(
+                                        Modifier.fillMaxWidth().clickable {
+                                            nav.push("/add/${product.id}?for=ret")
+                                        }.padding(horizontal = 16.dp, vertical = 12.dp),
+                                        verticalAlignment = Alignment.CenterVertically,
+                                        horizontalArrangement = Arrangement.spacedBy(10.dp),
+                                    ) {
+                                        Box(Modifier.size(36.dp)) { if (product.imageUrl != null) FoodImage(product.imageUrl, Modifier.size(36.dp)) }
+                                        HcText(product.name, HcTypeRoles.Body, Modifier.weight(1f), color = HcColors.Black, bold = true)
+                                    }
+                                    if (index < shown.lastIndex) FoodDivider()
+                                }
+                            }
+                        }
+                    }
+                }
+                // New products are only created by scanning (DECISIONS 2026-10-02).
+                FoodTileButton(t.t("createDish.scan"), "Camera", { nav.push("/camera?mode=product&for=ret") }, Modifier.fillMaxWidth().padding(top = 16.dp))
+            }
+
             Column {
                 HcText(t.t("createDish.ingredients"), HcTypeRoles.Small, Modifier.padding(bottom = 8.dp), color = HcColors.Black, bold = true)
                 if (ingredients.isEmpty()) {
@@ -427,45 +466,6 @@ fun CreateDishScreen(args: RouteArgs) {
                         color = HcColors.TextSecondary,
                     )
                 }
-            }
-
-            val searchBringIntoView = remember { BringIntoViewRequester() }
-            Column(Modifier.bringIntoViewRequester(searchBringIntoView)) {
-                HcText(t.t("createDish.addIngredient"), HcTypeRoles.Small, Modifier.padding(bottom = 8.dp), color = HcColors.Black, bold = true)
-                FoodSearchField(query, { value ->
-                    query = value
-                    if (value.isBlank()) {
-                        searchState = "idle"
-                        results = emptyList()
-                    }
-                }, t.t("createDish.searchPlaceholder"), onFocus = { searchScope.launch { delay(50); searchBringIntoView.bringIntoView() } })
-                if (query.isNotBlank()) {
-                    FoodListCard(Modifier.padding(top = 8.dp)) {
-                        when (searchState) {
-                            "loading" -> FoodSkeletonMediaRows(4, Modifier.padding(horizontal = 16.dp))
-                            "error" -> HcText(connectionMessage(t, searchError, t.t("createDish.noResults")), HcTypeRoles.Body, Modifier.fillMaxWidth().padding(16.dp), color = HcColors.TextSecondary, align = TextAlign.Center)
-                            "ready" -> {
-                                if (results.isEmpty()) HcText(t.t("createDish.noResults"), HcTypeRoles.Body, Modifier.fillMaxWidth().padding(16.dp), color = HcColors.TextSecondary, align = TextAlign.Center)
-                                val shown = results.take(6)
-                                shown.forEachIndexed { index, product ->
-                                    Row(
-                                        Modifier.fillMaxWidth().clickable {
-                                            nav.push("/add/${product.id}?for=ret")
-                                        }.padding(horizontal = 16.dp, vertical = 12.dp),
-                                        verticalAlignment = Alignment.CenterVertically,
-                                        horizontalArrangement = Arrangement.spacedBy(10.dp),
-                                    ) {
-                                        Box(Modifier.size(36.dp)) { if (product.imageUrl != null) FoodImage(product.imageUrl, Modifier.size(36.dp)) }
-                                        HcText(product.name, HcTypeRoles.Body, Modifier.weight(1f), color = HcColors.Black, bold = true)
-                                    }
-                                    if (index < shown.lastIndex) FoodDivider()
-                                }
-                            }
-                        }
-                    }
-                }
-                // New products are only created by scanning (DECISIONS 2026-10-02).
-                FoodTileButton(t.t("createDish.scan"), "Camera", { nav.push("/camera?mode=product&for=ret") }, Modifier.fillMaxWidth().padding(top = 16.dp))
             }
 
           } else if (current.startsWith("step:")) {

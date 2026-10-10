@@ -2445,10 +2445,10 @@ input.hf-field[type="week"] {
 }
 
 .hf-bottom-sheet__action {
-  position: absolute;
-  top: 8px;
-  right: 16px;
-  z-index: 2;
+  display: flex;
+  flex: none;
+  justify-content: flex-end;
+  padding: 4px 16px 8px;
 }
 
 .hf-bottom-sheet__body {
