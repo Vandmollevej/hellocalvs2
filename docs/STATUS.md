@@ -6254,3 +6254,7 @@ Skema, migration, `src/lib/danish-number.ts` og søgning/oprettelse er lavet (se
 - 2026-10-09: Halvcirklen over footeren kan ikke længere trækkes til siden (web + native); står altid midt over footeren.
 
 - 2026-10-09: Master bragt i takt igen efter #314/#315: lint-fejlen i `FooterArc.tsx` rettet (fingerens top gemmes i state i stedet for at læse ref under render), og paritet accepteret for alle skærme. Native (`HomeFooterArc.kt`, `HomeWeighInPrompts.kt`) var allerede opdateret i #305–#315; kun godkendelserne manglede.
+
+## 2026-10-10 — Trinbjælke i screening-flowet
+
+`HfProgressStepper` / `ProfileProgressStepper` har nye valgfrie parametre `activeLabelOnly`, `onSelect`, `isStepEnabled`. "Opret ny screening" viser kun det aktive trins tekst, og prikkerne kan trykkes. lint/tsc kunne ikke køres lokalt (node_modules mangler); native ikke kompileret lokalt.

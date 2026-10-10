@@ -122,3 +122,7 @@ ikke her, er den ikke registreret og skal tilføjes.
 ## Valgte knapper (user rule 2026-10-09)
 
 Valgte knapper/faner/chips/planvalg har ALTID den lysegrønne farve (`--hf-color-accent`, #BBF06A) med sort kant og tekst — brug `.hf-selected` / `.hf-choice` / `.hf-chip`, aldrig sort, mørkegrøn eller beige som valgt-flade. Eneste undtagelse: kalenderens dags dato (`.hf-cal-current`). Native bruger `HcColors.SelectedBg`.
+
+## Trinindikator (HfProgressStepper)
+
+- Flows med mange trin (fx "Opret ny screening") viser kun teksten under det aktive trin (`activeLabelOnly`), og prikkerne i bjælken er tryk-bare (`onSelect`): tilbage altid, frem kun når de forudgående trin er udfyldt (`isStepEnabled`). Web og native (`ProfileProgressStepper`). 2026-10-10.

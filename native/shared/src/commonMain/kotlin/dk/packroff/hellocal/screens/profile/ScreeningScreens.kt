@@ -447,7 +447,17 @@ private fun ScreeningFlowScreen(existing: Screening?) {
         },
     ) {
         ProfilePage {
-            ProfileProgressStepper(FLOW_STEPS.map { t.t("screenings.$it") }, step, 0f)
+            ProfileProgressStepper(
+                FLOW_STEPS.map { t.t("screenings.$it") },
+                step,
+                0f,
+                activeLabelOnly = true,
+                onSelect = { step = it },
+                // Back is always open; forward needs a name (step 1) and a question (step 3).
+                isStepEnabled = { i ->
+                    i <= step || ((i < 1 || draft.name.isNotBlank()) && (i < 3 || draft.questions.any { it.text.isNotBlank() }))
+                },
+            )
             when (step) {
                 0 -> {
                     HcText(t.t("screenings.nameTitle"), HcTypeRoles.SectionTitle)

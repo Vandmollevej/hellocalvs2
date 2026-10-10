@@ -65,6 +65,9 @@ export function ScreeningFlow({ existing }: { existing?: ScreeningDto }) {
   const canContinue =
     step === 0 ? draft.name.trim().length > 0 : step === 2 ? questionTexts.some((text) => text.length > 0) : true;
   const last = step === STEPS.length - 1;
+  // Tilbage kan altid vælges; frem kun når navn (trin 1) og spørgsmål (trin 3) er udfyldt.
+  const canReach = (index: number) =>
+    index <= step || ((index < 1 || draft.name.trim().length > 0) && (index < 3 || questionTexts.some((text) => text.length > 0)));
 
   async function save() {
     setSaving(true);
@@ -112,6 +115,9 @@ export function ScreeningFlow({ existing }: { existing?: ScreeningDto }) {
           current={step}
           progress={0}
           label={t("screenings.stepAria")}
+          activeLabelOnly
+          onSelect={setStep}
+          isStepEnabled={canReach}
         />
 
         {step === 0 && (
