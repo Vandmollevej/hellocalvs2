@@ -287,6 +287,18 @@ Retter → HelloFresh åbner nu en skrivebeskyttet side under Retter (ikke Nye v
 - "arla letmælk" (flere ord) finder nu varer, hvor hvert ord står i navnet eller brandet.
 - Lint, typecheck og ny enhedstest grønne. Ikke prøvet mod rigtige data (ingen lokal DB) — prøv "letmælk" og "arla letmælk" i søgeprøven på Søgealgoritmer efter deploy.
 
+## 2026-10-04: Fotodagbog-lås viser ikke længere QR-kode
+
+"Vis billeder" åbner browserens passkey-dialog. Uden begrænsning tilbød den en
+QR-kode til en anden enhed (kan ikke skærmbilledes). Registrering kræver nu
+`authenticatorAttachment: "platform"`, og login/reauth sender
+`hints: ["client-device"]`. Ikke afprøvet på en rigtig enhed; `npm run lint` (0 fejl) og
+`npm run build` er kørt og grønne.
+Allerede oprettede passkeys ændres ikke; hvis QR-koden stadig kommer, skal
+Face ID slås fra og til igen.
+Builden var rød af en ældre fejl: Varedatabase-visningen "Detaljer" fandtes i
+siden, men ikke i filtertypen/parseren/vælgeren. Nu tilføjet, så buildet går igennem.
+
 ## 2026-10-04: Billed-upload for produktbilleder (admin → Varedatabase → Billed-upload)
 
 - Ny side `/admin/product-database/image-upload` (også knappen "Upload billeder" på Varer). Samme mønster som Logo-upload: træk filer eller en hel mappe ind, hvert slip er et parti med tidsstempel, oversigt med størrelse / original-dimensioner / filstørrelse / proces, og "Slet valgte" / "Slet hele partiet" gendanner de tidligere billeder.
