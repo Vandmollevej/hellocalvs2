@@ -105,6 +105,8 @@ ikke her, er den ikke registreret og skal tilføjes.
   ikke kan tilføjes uden). Egne API'er kræver et https-link ved oprettelse.
 - Interne henvisninger til en nøgle går til tjenestens anker
   (`/admin/api-keys#<id>`), ikke kun til API-nøgle-siden.
+- Webhooks, som en udbyders server kalder, skal stå i `TOKEN_API_PREFIXES`
+  i `src/lib/access-wall.ts`; ellers afviser adgangsmuren dem som bots (403).
 
 ## Proces
 
