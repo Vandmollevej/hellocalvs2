@@ -840,3 +840,41 @@ fun foodTermHref(term: String): String {
         .replace(Regex("[^a-z0-9]+"), "-").trim('-')
     return "/viden-om/mad-paa-latin/$anchor"
 }
+
+// ---------------------------------------------------------------------------
+// src/lib/liquid-amount.ts — væsker i Opret ret: rumfang eller gram som primært
+// tal; mængden gemmes uændret i basisenheden (ml for drikkevarer, ellers g).
+
+private val NOT_LIQUID_GROUPS = setOf("torvarer", "aeg")
+
+data class LiquidAmount(val baseIsVolume: Boolean, val volumeUnit: DisplayUnit, val gramsPerDl: Double)
+
+/** Null = ikke en væske. [conversionGroup]/[gramsPerDl] fra omregningstabellen (null = intet match). */
+fun liquidAmountFor(displayUnit: DisplayUnit, conversionGroup: String?, gramsPerDl: Double?): LiquidAmount? {
+    val liquidDensity = if (conversionGroup != null && conversionGroup !in NOT_LIQUID_GROUPS) gramsPerDl else null
+    if (displayUnit == DisplayUnit.ML || displayUnit == DisplayUnit.CL) return LiquidAmount(true, displayUnit, liquidDensity ?: 100.0)
+    return liquidDensity?.let { LiquidAmount(false, DisplayUnit.ML, it) }
+}
+
+private fun LiquidAmount.ml(base: Double) = if (baseIsVolume) base else base * 100 / gramsPerDl
+private fun LiquidAmount.grams(base: Double) = if (baseIsVolume) base * gramsPerDl / 100 else base
+
+/** Tallet i den viste enhed (ml heltal, cl med én decimal, g heltal). */
+fun liquidValue(base: Double, liquid: LiquidAmount, grams: Boolean): Double {
+    if (grams) return jsRound(liquid.grams(base)).toDouble()
+    val ml = jsRound(liquid.ml(base)).toDouble()
+    return if (liquid.volumeUnit == DisplayUnit.CL) ml / 10 else ml
+}
+
+fun liquidUnitLabel(liquid: LiquidAmount, grams: Boolean) = if (grams) "g" else liquid.volumeUnit.label
+
+/** Indtastet tal i den viste enhed → basismængde. */
+fun liquidBaseFromValue(value: Double, liquid: LiquidAmount, grams: Boolean): Double {
+    if (grams) return if (liquid.baseIsVolume) jsRound(value * 100 / liquid.gramsPerDl).toDouble() else value
+    val ml = if (liquid.volumeUnit == DisplayUnit.CL) jsRound(value * 10).toDouble() else value
+    return if (liquid.baseIsVolume) ml else jsRound(ml * liquid.gramsPerDl / 100).toDouble()
+}
+
+/** Den lille omregning i hjørnet: den anden enhed end den primære. */
+fun liquidSecondaryText(base: Double, liquid: LiquidAmount, gramsPrimary: Boolean): String =
+    "${formatNumber(liquidValue(base, liquid, !gramsPrimary), 1)} ${liquidUnitLabel(liquid, !gramsPrimary)}"
