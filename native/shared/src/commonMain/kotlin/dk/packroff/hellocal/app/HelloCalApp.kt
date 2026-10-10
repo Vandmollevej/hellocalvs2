@@ -36,6 +36,7 @@ import dk.packroff.hellocal.api.Api
 import dk.packroff.hellocal.api.LoginResult
 import dk.packroff.hellocal.api.NativeAuth
 import dk.packroff.hellocal.api.Session
+import dk.packroff.hellocal.platform.Device
 import dk.packroff.hellocal.i18n.AppLocale
 import dk.packroff.hellocal.i18n.LocalTranslator
 import dk.packroff.hellocal.i18n.rememberTranslator
@@ -104,6 +105,19 @@ fun HelloCalApp() {
                     completeOAuth(Location.parse(DeepLinks.consume()!!), navigator)
                 } else if (Session.state == Session.State.LoggedIn) {
                     openDeepLink(DeepLinks.consume()!!, navigator)
+                }
+            }
+        }
+        // src/components/IntegrationAppOpen.tsx: the app is in front (start or
+        // back to the foreground) → the server fetches integration data that was
+        // postponed until the next open (Withings activity).
+        val foregroundCount = Device.appForegroundCount
+        LaunchedEffect(Session.state, foregroundCount) {
+            if (Session.state == Session.State.LoggedIn) {
+                try {
+                    Api.post("/api/integrations/app-open")
+                } catch (e: Exception) {
+                    // Not important; the background job fetches the data anyway.
                 }
             }
         }

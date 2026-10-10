@@ -10,13 +10,19 @@ import { handleWithingsNotification } from "@/lib/integrations/withings-webhook"
 // POST /api/integrations/withings/webhook
 // Tilmeldes automatisk pr. bruger (src/lib/integrations/withings.ts). Withings
 // sender userid/appli som formular og skal have svar inden for 2 sekunder.
+// Aktivitet (appli 16) hentes først ved næste åbning af appen.
 export async function POST(req: NextRequest, ctx: { params: Promise<{ provider: string }> }) {
   const provider = (await ctx.params).provider;
   if (provider === "withings") {
     const form = await req.formData().catch(() => null);
     const userId = form?.get("userid");
     if (typeof userId !== "string" || !userId) return NextResponse.json({ message: "Ugyldig notifikation" }, { status: 400 });
-    after(() => handleWithingsNotification(userId).catch((error) => console.error("Withings notifikation fejlede", error)));
+    const appli = Number(form?.get("appli"));
+    after(() =>
+      handleWithingsNotification(userId, Number.isFinite(appli) ? appli : null).catch((error) =>
+        console.error("Withings notifikation fejlede", error)
+      )
+    );
     return NextResponse.json({ ok: true });
   }
   if (provider !== "garmin") return NextResponse.json({ message: "Ukendt integration" }, { status: 404 });

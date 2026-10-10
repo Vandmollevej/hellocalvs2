@@ -26,9 +26,10 @@ const MEASURE_URL = "https://wbsapi.withings.net/measure";
 const MEASURE_V2_URL = "https://wbsapi.withings.net/v2/measure";
 const SLEEP_V2_URL = "https://wbsapi.withings.net/v2/sleep";
 const NOTIFY_URL = "https://wbsapi.withings.net/notify";
-// appli 1 = vægt og kropsmålinger. Withings kalder adressen, så snart en
-// vejning er uploadet, og Hello Cal henter den med det samme.
-const NOTIFY_APPLI_WEIGHT = "1";
+// Withings' notifikationstyper (appli): 1 vægt og kropssammensætning,
+// 2 temperatur, 4 puls/blodtryk/iltmætning/pulsbølgehastighed (også vægtens
+// puls), 16 aktivitet, 44 søvn, 54 EKG. Alt, Withings måler, er dermed med.
+export const WITHINGS_NOTIFY_APPLIS = [1, 2, 4, 16, 44, 54];
 // user.activity giver aktivitet, søvn og træning. Brugere, der forbandt før
 // 2026-10-03, har kun user.metrics og skal forbinde igen for at få dem med.
 const SCOPES = "user.info,user.metrics,user.activity";
@@ -92,22 +93,24 @@ export function withingsNotifyUrl(): string | null {
   return base ? `${base}/api/integrations/withings/webhook` : null;
 }
 
-// Tilmelder notifikationer om nye vejninger (gentages ved hver token-fornyelse,
+// Tilmelder notifikationer om nye data (gentages ved hver token-fornyelse,
 // da Withings selv kan slå en adresse fra efter fejl). Fejl stopper ikke
-// tilkoblingen; så kommer vejningerne blot med baggrundsjobbet.
-async function subscribeWeightNotifications(tokens: OAuthTokens) {
+// tilkoblingen; så kommer dataene blot med baggrundsjobbet.
+async function subscribeNotifications(tokens: OAuthTokens) {
   const callbackurl = withingsNotifyUrl();
   if (callbackurl) {
-    try {
-      const data = await postForm<WithingsEnvelope<unknown>>(
-        NOTIFY_URL,
-        { action: "subscribe", callbackurl, appli: NOTIFY_APPLI_WEIGHT, comment: "Hello Cal" },
-        "Withings notifikations-tilmelding",
-        { Authorization: `Bearer ${tokens.access_token}` }
-      );
-      if (data.status !== 0) console.error(`Withings notifikations-tilmelding: status ${data.status}`);
-    } catch (error) {
-      console.error("Withings notifikations-tilmelding fejlede", error instanceof Error ? error.message : "ukendt");
+    for (const appli of WITHINGS_NOTIFY_APPLIS) {
+      try {
+        const data = await postForm<WithingsEnvelope<unknown>>(
+          NOTIFY_URL,
+          { action: "subscribe", callbackurl, appli: String(appli), comment: "Hello Cal" },
+          "Withings notifikations-tilmelding",
+          { Authorization: `Bearer ${tokens.access_token}` }
+        );
+        if (data.status !== 0) console.error(`Withings notifikations-tilmelding (appli ${appli}): status ${data.status}`);
+      } catch (error) {
+        console.error(`Withings notifikations-tilmelding (appli ${appli}) fejlede`, error instanceof Error ? error.message : "ukendt");
+      }
     }
   }
   return tokens.userid !== undefined && tokens.userid !== null ? { externalUserId: String(tokens.userid) } : undefined;
@@ -135,8 +138,8 @@ export const withings: OAuthProviderAdapter = {
   refresh(refreshToken) {
     return callOAuth({ grant_type: "refresh_token", refresh_token: refreshToken });
   },
-  afterConnect: subscribeWeightNotifications,
-  afterRefresh: subscribeWeightNotifications,
+  afterConnect: subscribeNotifications,
+  afterRefresh: subscribeNotifications,
   readScopes: { activities: "user.activity", steps: "user.activity", energy: "user.activity", sleep: "user.activity" },
   // Målinger, aktivitet, søvn og træning hentes hver for sig: mangler
   // user.activity (ældre forbindelser), kommer målingerne stadig ind. Kun hvis
