@@ -37,8 +37,7 @@ STORES = {  # raw = tidligste raa skrabning; originalkolonnerne hentes derfra
     'dm': dict(src=P_('Excelark', 'dm_ny.xlsx'), raw=P_('Excelark', 'dm.xlsx'), lang='de'),
     'edeka': dict(src=P_('Excelark', 'edeka_ny.xlsx'), raw=P_('Excelark', 'edeka.xlsx'), lang='de'),
     'rewe': dict(src=P_('Excelark', 'rewe_ny.xlsx'), raw=P_('Excelark', 'rewe.xlsx'), lang='de'),
-    # REMA er allerede rettet efter reglerne (andre sessioner) -> kun kolonnerne; originalerne hentes fra den raa skrabning
-    'rema': dict(src=P_('Produkter', 'rema1000_version 2.xlsx'), raw=P_('Excelark', 'rema1000.xlsx'), lang='da', rules=False),
+    # REMA omlaegges af Excelark/omlaeg_rema.py (bygger paa dette script; raa skrabning 'rema1000 - To be compaired.xlsx')
 }
 HEADER_ALIAS = {'Source url': 'Source URL', 'Image file': 'Image File', 'Parse status': 'Parse Status', 'Original title': 'Original Title',
                 'Hellocal_title': 'Product Name'}  # REMA: skraberens sammensatte navn svarer til Bilkas Product Name

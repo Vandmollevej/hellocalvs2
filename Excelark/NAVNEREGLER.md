@@ -18,7 +18,7 @@ Kort version står også i `docs/REGLER.md`.
 - Originalerne er hentet tilbage fra den rå skrabning, hvor tidligere omlægninger havde ændret dem: SPAR (Product Name og Original Title var byttet om), Wolt og de tyske ark (Product Name var overskrevet med en genereret titel; PET_FOOD/BRAND_GUESS i Parse Status → `Flag`).
 - Frost følger kategorien Frost/Dybfrost (som Bilka). SPAR's gamle Packaging "Frozen" stod også på vin, sodavand osv. og er fjernet dér (390 rækker).
 - Nemlig, DRK og Årstiderne er ikke gennemgået endnu: productType mangler for de fleste, og keywords er skraberens ord fra titlen — titlerne bliver først pæne, når de er gennemgået som Bilka.
-- REMA (`Produkter/rema1000_version 2.xlsx`) har stadig sine egne kolonnenavne (`is_vegan`, `Type`, `size` …) og er ikke omlagt.
+- REMA (`Produkter/rema1000_version 2.xlsx`) er omlagt 2026-10-10 med `Excelark/omlaeg_rema.py` (bygger på `omlaeg_til_bilka_kolonner.py`; originaler fra `Excelark/rema1000 - To be compaired.xlsx`). REMA's ekstra kolonner `Type`, `size`, `is_healthy`, `is_social_responsibility` står bagerst; importen (`build_data.py`) læser både de gamle og de nye navne.
 
 ## Produkttitel — rækkefølge
 1. `_is_cooked`
