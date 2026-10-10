@@ -2,11 +2,18 @@
 
 import { Suspense, useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
-import { IconBarcode, IconBolt, IconChevronDown, IconList, IconPhoto } from "@tabler/icons-react";
+import { IconBarcode, IconBolt, IconCamera, IconChevronDown, IconList, IconPhoto, IconPlus, IconCheck } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
 import { PointsPromoBanner } from "@/components/hf/PointsPromoBanner";
 import { BugReportNotes } from "@/components/BugReportNotes";
-import { BUG_REPORT_SECTIONS, type BugReportSectionKey, type BugReportSections } from "@/lib/bug-report-sections";
+import { BottomSheet, BottomSheetCloseButton } from "@/components/hf/BottomSheet";
+import { fileToDownscaledDataUrl } from "@/lib/image-downscale";
+import {
+  BUG_REPORT_SECTIONS,
+  type BugReportPhotos,
+  type BugReportSectionKey,
+  type BugReportSections,
+} from "@/lib/bug-report-sections";
 
 type BugReport = {
   id: string;
@@ -14,6 +21,7 @@ type BugReport = {
   status: string;
   categories?: string[];
   sections?: BugReportSections | null;
+  sectionPhotos?: BugReportPhotos | null;
 };
 
 // Fire ikon-knapper der lader brugeren tagge hvilken del af produktets data
@@ -42,6 +50,12 @@ function ReportBugContent() {
   // Produktrapporter opdeles i varens sektioner (docs/DECISIONS.md
   // 2026-09-28): en åben sektion = en nøgle i objektet, også mens tom.
   const [sections, setSections] = useState<BugReportSections>({});
+  // Foto pr. sektion (data-URL fra kameraet, eller gemt sti ved redigering) og
+  // den sektion, hvis bundark er åbent (brugerbeslutning 2026-10-10).
+  const [photos, setPhotos] = useState<BugReportPhotos>({});
+  const [openSection, setOpenSection] = useState<BugReportSectionKey | null>(null);
+  // Sort tak-boks i stedet for banneret efter en indsendelse.
+  const [thanked, setThanked] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [pending, setPending] = useState<BugReport | null | undefined>(productId ? undefined : null);
@@ -67,14 +81,20 @@ function ReportBugContent() {
     setCategories(report.categories ?? []);
     setNoteOpen(true);
     setSections(report.sections ?? {});
+    setPhotos(report.sectionPhotos ?? {});
+    setThanked(false);
     setEditing(true);
   }
 
-  function toggleSection(key: BugReportSectionKey) {
-    setSections((prev) => {
+  function setSectionText(key: BugReportSectionKey, text: string) {
+    setSections((prev) => ({ ...prev, [key]: text }));
+  }
+
+  function setSectionPhoto(key: BugReportSectionKey, photo: string | null) {
+    setPhotos((prev) => {
       const next = { ...prev };
-      if (key in next) delete next[key];
-      else next[key] = "";
+      if (photo) next[key] = photo;
+      else delete next[key];
       return next;
     });
   }
@@ -82,8 +102,8 @@ function ReportBugContent() {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError(null);
-    if (productId && !Object.values(sections).some((text) => text?.trim())) {
-      setError("Vælg mindst én sektion og beskriv, hvad der er forkert");
+    if (productId && !Object.values(sections).some((text) => text?.trim()) && Object.keys(photos).length === 0) {
+      setError("Vælg mindst ét punkt og beskriv, hvad der er forkert");
       return;
     }
     if (!productId && description.trim().length < 10) {
@@ -102,8 +122,8 @@ function ReportBugContent() {
           body: JSON.stringify(
             productId
               ? editingExisting
-                ? { sections }
-                : { sections, productId }
+                ? { sections, sectionPhotos: photos }
+                : { sections, sectionPhotos: photos, productId }
               : { description, categories }
           ),
         }
@@ -124,6 +144,9 @@ function ReportBugContent() {
       }
       setPending(data.bugReport);
       setEditing(false);
+      setSections({});
+      setPhotos({});
+      setThanked(true);
       setSubmitting(false);
     } catch {
       setError("Kunne ikke sende fejlrapporten — tjek din forbindelse og prøv igen");
@@ -139,10 +162,18 @@ function ReportBugContent() {
       title="Har du fundet en fejl?"
     >
       <div className="px-4 pt-4">
-        <PointsPromoBanner
-          headline="Indberet en fejl og optjen 10 points, når den godkendes og rettes."
-          href="/betingelser#pointsystem"
-        />
+        {thanked ? (
+          <div className="rounded-lg bg-hf-black p-4" role="status">
+            <p className="hf-type-body text-hf-white">
+              TAK! Vi har modtaget din indberetning. Du vil få svar på din henvendelse og points i din indbakke, når vi har behandlet din sag.
+            </p>
+          </div>
+        ) : (
+          <PointsPromoBanner
+            headline="Indberet en fejl og optjen 10 points, når den godkendes og rettes."
+            href="/betingelser#pointsystem"
+          />
+        )}
 
         {pending === undefined ? (
           <p className="text-text-secondary hf-type-body mt-8">Henter…</p>
@@ -168,33 +199,19 @@ function ReportBugContent() {
               <>
                 <p className="hf-type-label">Hvad er forkert på varen?</p>
                 {BUG_REPORT_SECTIONS.map((section) => {
-                  const open = section.key in sections;
+                  const filled = Boolean(sections[section.key]?.trim() || photos[section.key]);
                   return (
-                    <div
+                    <button
                       key={section.key}
-                      className="border rounded-card"
-                      style={{ borderColor: open ? "var(--hf-color-action)" : "var(--hf-color-field-border)" }}
+                      type="button"
+                      onClick={() => setOpenSection(section.key)}
+                      aria-haspopup="dialog"
+                      className="hf-type-body flex w-full items-center justify-between border rounded-card p-3 text-left"
+                      style={{ borderColor: filled ? "var(--hf-color-action)" : "var(--hf-color-field-border)" }}
                     >
-                      <button
-                        type="button"
-                        onClick={() => toggleSection(section.key)}
-                        aria-expanded={open}
-                        className="hf-type-body flex w-full items-center justify-between p-3 text-left"
-                      >
-                        <span>{section.label}</span>
-                        <span aria-hidden>{open ? "−" : "+"}</span>
-                      </button>
-                      {open && (
-                        <textarea
-                          rows={3}
-                          value={sections[section.key] ?? ""}
-                          onChange={(e) => setSections((prev) => ({ ...prev, [section.key]: e.target.value }))}
-                          placeholder="Hvad er forkert, og hvad burde der stå?"
-                          aria-label={section.label}
-                          className="hf-type-input mx-3 mb-3 w-[calc(100%-1.5rem)] border bg-hf-cream p-3 outline-none border-hf-field-border rounded-sm"
-                        />
-                      )}
-                    </div>
+                      <span>{section.label}</span>
+                      <span aria-hidden>{filled ? <IconCheck size={20} stroke={1.75} /> : <IconPlus size={20} stroke={1.75} />}</span>
+                    </button>
                   );
                 })}
                 {error && <p className="hf-type-caption text-hf-red-dark">{error}</p>}
@@ -259,14 +276,103 @@ function ReportBugContent() {
             <button
               type="submit"
               disabled={submitting}
-              className="hf-control hf-btn-primary mb-8 mt-2 w-full"
+              className="hf-control hf-btn-primary mb-28 mt-2 w-full"
             >
               {submitting ? "Sender…" : "Send indberetning"}
             </button>
           </form>
         ) : null}
       </div>
+      {openSection && (
+        <BugReportSectionSheet
+          label={BUG_REPORT_SECTIONS.find((section) => section.key === openSection)?.label ?? ""}
+          text={sections[openSection] ?? ""}
+          photo={photos[openSection] ?? null}
+          onText={(text) => setSectionText(openSection, text)}
+          onPhoto={(photo) => setSectionPhoto(openSection, photo)}
+          onClose={() => setOpenSection(null)}
+        />
+      )}
     </HfScreen>
+  );
+}
+
+// Bundark for ét punkt (brugerbeslutning 2026-10-10): punktet som overskrift,
+// notefelt og under det kamera, så brugeren kan tage et nyt billede direkte.
+// Gem lukker arket; det er først den sorte "Send indberetning"-knap på siden,
+// der sender.
+function BugReportSectionSheet({
+  label,
+  text,
+  photo,
+  onText,
+  onPhoto,
+  onClose,
+}: {
+  label: string;
+  text: string;
+  photo: string | null;
+  onText: (text: string) => void;
+  onPhoto: (photo: string | null) => void;
+  onClose: () => void;
+}) {
+  const [photoError, setPhotoError] = useState<string | null>(null);
+
+  async function handleFile(files: FileList | null) {
+    const file = files?.[0];
+    if (!file) return;
+    setPhotoError(null);
+    try {
+      onPhoto(await fileToDownscaledDataUrl(file));
+    } catch {
+      setPhotoError("Kunne ikke læse billedet — prøv igen");
+    }
+  }
+
+  return (
+    <BottomSheet
+      onClose={onClose}
+      title={label}
+      size="full"
+      footer={
+        <BottomSheetCloseButton className="hf-control hf-btn-primary w-full">Gem</BottomSheetCloseButton>
+      }
+    >
+      <div className="flex flex-col gap-4 px-4 pb-4">
+        <textarea
+          rows={5}
+          value={text}
+          onChange={(e) => onText(e.target.value)}
+          placeholder="Hvad er forkert, og hvad burde der stå?"
+          aria-label={label}
+          className="hf-type-input w-full border bg-hf-cream p-3 outline-none border-hf-field-border rounded-sm"
+        />
+        {photo && (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img src={photo} alt={label} className="max-h-64 w-full rounded-card border border-hf-field-border object-contain" />
+        )}
+        <label className="hf-control hf-btn-secondary flex w-full cursor-pointer items-center justify-center gap-2">
+          <IconCamera size={20} stroke={1.75} />
+          {photo ? "Tag nyt billede" : "Tag billede"}
+          <input
+            type="file"
+            accept="image/*"
+            capture="environment"
+            hidden
+            onChange={(event) => {
+              void handleFile(event.target.files);
+              event.target.value = "";
+            }}
+          />
+        </label>
+        {photo && (
+          <button type="button" onClick={() => onPhoto(null)} className="hf-btn-text self-start">
+            Fjern billede
+          </button>
+        )}
+        {photoError && <p className="hf-type-caption text-hf-red-dark">{photoError}</p>}
+      </div>
+    </BottomSheet>
   );
 }
 

@@ -9,6 +9,7 @@ type BugReport = {
   description: string;
   screenshotUrl: string | null;
   sections: BugReportSections | null;
+  sectionPhotos: BugReportSections | null;
   createdAt: string;
   // Null for source = "AI" (auto-filed by the product-recognition pipeline,
   // e.g. an uncertain alternative calorie display — see
@@ -59,6 +60,14 @@ export function PendingBugReportCard({ report }: { report: BugReport }) {
                 <div key={s.key}>
                   <dt className="hf-type-small hf-type-strong text-text-muted">{s.label}</dt>
                   <dd className="hf-type-body whitespace-pre-wrap text-hf-black">{report.sections?.[s.key]}</dd>
+                  {report.sectionPhotos?.[s.key] && (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                      src={report.sectionPhotos[s.key]}
+                      alt={s.label}
+                      className="mt-1 max-h-48 rounded-md border border-hf-tan-dark"
+                    />
+                  )}
                 </div>
               ))}
             </dl>
