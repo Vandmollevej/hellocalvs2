@@ -110,7 +110,7 @@ val SETTINGS_ADD_ACTIONS = listOf(
     SettingsAddAction("search", "/search", "addButton.search", icon = "Search"),
     SettingsAddAction("weight", "/weight/create", "addButton.weight", imageSrc = "/icons/bathroom-scale.png"),
     SettingsAddAction("water", "/water/create", "addButton.water", imageSrc = "/icons/water-glass.png"),
-    SettingsAddAction("activity", "/activity/create", "addButton.activity", imageSrc = "/icons/activity-3d.png"),
+    SettingsAddAction("activity", "/activity/create", "addButton.activity", icon = "Activity"),
     SettingsAddAction("camera", "/camera?mode=product", "addButton.camera", icon = "Camera"),
     SettingsAddAction("targetWeight", "/profile/goals", "profile.actions.target", imageSrc = "/icons/party-popper.png"),
     SettingsAddAction("bodyMeasurements", "/profile/body-measurements", "profile.row.bodyMeasurements", imageSrc = "/icons/body-measurements/waist-male.png"),
