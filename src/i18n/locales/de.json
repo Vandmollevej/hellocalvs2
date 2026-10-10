@@ -1395,7 +1395,7 @@
     "searchPlaceholder": "Nach Zutat suchen",
     "searching": "Suche läuft...",
     "noResults": "Keine Artikel passen zu deiner Suche",
-    "scan": "Foto aufnehmen",
+    "scan": "Barcode scannen",
     "scanWeb": "Bild hochladen oder hier ablegen",
     "scanWebWorking": "Bild wird gelesen …",
     "scanWebNotFound": "Wir konnten den Artikel auf dem Bild nicht erkennen. Versuche es mit einem Bild der Vorderseite oder suche nach dem Artikel.",

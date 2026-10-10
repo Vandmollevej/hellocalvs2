@@ -4,7 +4,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import {
-  IconCamera,
+  IconBarcode,
   IconMinus,
   IconPlus,
   IconChevronLeft,
@@ -653,6 +653,15 @@ export default function CreateDishPage() {
                       onFocus={scrollSearchToTop}
                       placeholder={t("createDish.searchPlaceholder")}
                     />
+                    {!inWebShell && (
+                      <a
+                        href="/camera?mode=product&for=ret"
+                        aria-label={t("createDish.scan")}
+                        className="flex h-full items-center pl-1 text-hf-black"
+                      >
+                        <IconBarcode size={30} stroke={1.75} />
+                      </a>
+                    )}
                   </div>
 
                   {ingredientError && ingredients.length === 0 && (
@@ -708,21 +717,11 @@ export default function CreateDishPage() {
                   )}
 
                   {/* Nye varer oprettes kun ved scanning — ingen manuel formular (DECISIONS 2026-10-02). */}
-                  <div className="mt-4">
-                    {inWebShell ? (
+                  {inWebShell && (
+                    <div className="mt-4">
                       <ProductPhotoDropZone returnSuffix="?for=ret" />
-                    ) : (
-                      <a
-                        href="/camera?mode=product&for=ret"
-                        className="flex flex-col items-center gap-2 rounded-2xl bg-hf-tan py-3 text-center"
-                      >
-                        <IconCamera size={20} color="var(--hf-black)" />
-                        <span className="hf-type-small hf-type-strong text-hf-black">
-                          {t("createDish.scan")}
-                        </span>
-                      </a>
-                    )}
-                  </div>
+                    </div>
+                  )}
                 </div>
 
                 <div>

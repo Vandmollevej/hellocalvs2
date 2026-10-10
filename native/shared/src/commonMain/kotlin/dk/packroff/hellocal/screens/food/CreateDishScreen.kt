@@ -399,7 +399,9 @@ fun CreateDishScreen(args: RouteArgs) {
                         searchState = "idle"
                         results = emptyList()
                     }
-                }, t.t("createDish.searchPlaceholder"), onFocus = { searchScope.launch { delay(50); searchBringIntoView.bringIntoView() } })
+                }, t.t("createDish.searchPlaceholder"), onFocus = { searchScope.launch { delay(50); searchBringIntoView.bringIntoView() } }, trailing = {
+                    HcIcon("Barcode", size = 30.dp, color = HcColors.Black, modifier = Modifier.clickable { nav.push("/camera?mode=product&for=ret") })
+                })
                 if (ingredientError && ingredients.isEmpty()) {
                     HcText(t.t("createDish.ingredientRequired"), HcTypeRoles.Body, Modifier.fillMaxWidth().padding(top = 8.dp), color = HcColors.TextSecondary, align = TextAlign.Center)
                 }
@@ -428,8 +430,6 @@ fun CreateDishScreen(args: RouteArgs) {
                         }
                     }
                 }
-                // New products are only created by scanning (DECISIONS 2026-10-02).
-                FoodTileButton(t.t("createDish.scan"), "Camera", { nav.push("/camera?mode=product&for=ret") }, Modifier.fillMaxWidth().padding(top = 16.dp))
             }
 
             Column {

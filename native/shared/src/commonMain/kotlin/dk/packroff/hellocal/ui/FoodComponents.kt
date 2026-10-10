@@ -252,8 +252,8 @@ fun FoodListCard(modifier: Modifier = Modifier, radius: Dp = HcDimens.RadiusCard
 
 /** .hf-search — 48 px search field with the magnifier (design.md §6.5). */
 @Composable
-fun FoodSearchField(value: String, onValueChange: (String) -> Unit, placeholder: String, modifier: Modifier = Modifier, onFocus: () -> Unit = {}) =
-    HcSearchField(value, onValueChange, placeholder, modifier, onFocus)
+fun FoodSearchField(value: String, onValueChange: (String) -> Unit, placeholder: String, modifier: Modifier = Modifier, onFocus: () -> Unit = {}, trailing: (@Composable () -> Unit)? = null) =
+    HcSearchField(value, onValueChange, placeholder, modifier, onFocus, trailing)
 
 /** Pill input on tan (Opret ret's name field and similar). */
 @Composable
