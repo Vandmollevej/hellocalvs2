@@ -2,6 +2,10 @@
 
 Last updated: 2026-10-10
 
+## 2026-10-10: Søg — foldbare lister (Favoritter / Senest tilføjet)
+
+- `/search` (web + native `SearchScreen`): højst tre rækker pr. liste. Er der flere, står en foldepil ved overskriften; udfoldet fylder listen rullefladen med klistret overskrift, så den altid kan lukkes. Søgefeltet er fast øverst. "Senest tilføjet" henter nu op til 30 forskellige varer (var 5). Lint/build ikke kørt (ingen `node_modules`), Kotlin ikke kompileret, ikke visuelt testet.
+
 ## 2026-10-10: Screening-flowet holdt til designklasserne
 
 - `ScreeningFlow`/`ScreeningInput`: Næste/Gem bruger nu `h-12` (var en tynd streg), målefelt-knapper bruger `.hf-choice` (valgt = lime), +/− og slet bruger `.hf-btn-icon`, "Tilføj spørgsmål" `.hf-btn-secondary`; tidsfeltet løber ikke længere ud af skærmen. Trinnet "Måling" hedder "Skala" (da/no/sv), så trin-labels ikke støder sammen. Native uændret i kode (bruger allerede HcButton/ProfileChoiceChip); tekster synkroniseret, paritet accepteret. Lint/build ikke kørt (ingen `node_modules`), ikke visuelt testet.
