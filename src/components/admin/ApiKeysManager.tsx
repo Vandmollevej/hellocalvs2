@@ -30,6 +30,31 @@ function formatDate(iso: string) {
   return new Date(iso).toLocaleString("da-DK", { timeZone: "Europe/Copenhagen", dateStyle: "short", timeStyle: "short" });
 }
 
+// Logoer til de tjenester, vi har billeder til (public/integrations).
+const SERVICE_LOGO: Record<string, string> = {
+  withings: "withings",
+  "google-health": "google-health",
+  strava: "strava",
+  polar: "polar-flow",
+  garmin: "garmin",
+};
+
+function ServiceLogo({ service, inactive }: { service: ServiceStatus; inactive: boolean }) {
+  const slug = SERVICE_LOGO[service.id];
+  // Rød ring om tjenester, der mangler nøgler (inaktive).
+  const ring = inactive ? "border-2 border-hf-red-dark" : "border border-hf-tan-dark";
+  return (
+    <span className={`flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-full bg-hf-white ${ring}`}>
+      {slug ? (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img src={`/integrations/${slug}.png`} alt="" className="h-full w-full object-cover" />
+      ) : (
+        <span className="hf-type-strong text-text-secondary">{service.name.charAt(0)}</span>
+      )}
+    </span>
+  );
+}
+
 function missingFields(service: ServiceStatus) {
   return service.fields.filter((f) => !f.optional && !f.display);
 }
@@ -164,13 +189,19 @@ export function ApiKeysManager({
               const test = tests[s.id] as CheckResult;
               return (
                 <li key={`p-${s.id}`} className={test.status === "fail" ? "text-hf-red-dark" : "text-hf-warning"}>
-                  <span className="hf-type-strong">{s.name}:</span> {test.message}
+                  <a href={`#${s.id}`} className="hf-type-strong underline">
+                    {s.name}:
+                  </a>{" "}
+                  {test.message}
                 </li>
               );
             })}
             {incomplete.map((s) => (
               <li key={`m-${s.id}`} className="text-text-secondary">
-                <span className="hf-type-strong text-hf-black">{s.name}</span> mangler{" "}
+                <a href={`#${s.id}`} className="hf-type-strong text-hf-black underline">
+                  {s.name}
+                </a>{" "}
+                mangler{" "}
                 {missingFields(s)
                   .map((f) => f.label)
                   .join(", ")}
@@ -245,6 +276,13 @@ export function ApiKeysManager({
                   <p className="hf-type-small text-text-muted">Hemmelighed</p>
                   <p className="hf-type-body break-all font-mono text-text-secondary">{api.secretDisplay}</p>
                 </div>
+                {api.manageUrl ? (
+                  <ManageLinkLine url={api.manageUrl} where={api.manageUrl} />
+                ) : (
+                  <p className="hf-type-small text-hf-warning">
+                    Mangler link til siden, hvor nøglen styres — slet og tilføj API’et igen med linket.
+                  </p>
+                )}
               </div>
             ))}
           </section>
@@ -303,16 +341,17 @@ function AddApiForm({
 }: {
   groups: string[];
   initialGroup: string;
-  onSave: (input: { group: string; name: string; keyId: string; secret: string }) => Promise<void>;
+  onSave: (input: { group: string; name: string; keyId: string; secret: string; manageUrl: string }) => Promise<void>;
   onCancel: () => void;
 }) {
   const [group, setGroup] = useState(initialGroup);
   const [name, setName] = useState("");
   const [keyId, setKeyId] = useState("");
   const [secret, setSecret] = useState("");
+  const [manageUrl, setManageUrl] = useState("");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const ready = group && name.trim() && keyId.trim() && secret.trim();
+  const ready = group && name.trim() && keyId.trim() && secret.trim() && manageUrl.trim();
   return (
     <form
       className="flex flex-col gap-2 border-t border-hf-tan-dark pt-3"
@@ -321,7 +360,7 @@ function AddApiForm({
         setBusy(true);
         setError(null);
         try {
-          await onSave({ group, name, keyId, secret });
+          await onSave({ group, name, keyId, secret, manageUrl });
         } catch (err) {
           setError(err instanceof Error ? err.message : "Kunne ikke gemme");
           setBusy(false);
@@ -354,6 +393,18 @@ function AddApiForm({
         spellCheck={false}
         className={`${formInputClass} font-mono`}
       />
+      <input
+        type="url"
+        value={manageUrl}
+        onChange={(e) => setManageUrl(e.target.value)}
+        placeholder="Link til siden hos udbyderen, hvor nøglen styres (https://…)"
+        autoComplete="off"
+        spellCheck={false}
+        className={formInputClass}
+      />
+      <p className="hf-type-small text-text-muted">
+        Indsæt den præcise side, hvor ID og hemmelighed findes — ikke udbyderens forside.
+      </p>
       {error && <p className="hf-type-body text-hf-red-dark">{error}</p>}
       <div className="flex gap-2">
         <button
@@ -383,11 +434,14 @@ function ServiceCard({
   onChanged: (service: ServiceStatus) => void;
 }) {
   return (
-    <div className="hf-panel">
+    <div id={service.id} className="hf-panel scroll-mt-20">
       <div className="flex flex-wrap items-start justify-between gap-3">
-        <div className="min-w-0 flex-1">
-          <p className="hf-type-strong text-hf-black">{service.name}</p>
-          <p className="hf-type-body text-text-secondary">{service.purpose}</p>
+        <div className="flex min-w-0 flex-1 items-center gap-3">
+          <ServiceLogo service={service} inactive={missingFields(service).length > 0} />
+          <div className="min-w-0">
+            <p className="hf-type-strong text-hf-black">{service.name}</p>
+            <p className="hf-type-body text-text-secondary">{service.purpose}</p>
+          </div>
         </div>
         <div className="flex items-center gap-2">
           {test && test !== "running" && (
@@ -400,7 +454,7 @@ function ServiceCard({
               type="button"
               onClick={onTest}
               disabled={test === "running"}
-              className="hf-type-body rounded-md border border-hf-green-dark px-3 py-1 text-hf-green-dark disabled:opacity-50"
+              className="hf-btn-secondary hf-btn--compact"
             >
               {test === "running" ? "Tester…" : "Test"}
             </button>
@@ -431,7 +485,7 @@ function ServiceCard({
           {service.note && service.setupUrl && " "}
           {service.setupUrl && (
             <a href={service.setupUrl} target="_blank" rel="noreferrer" className="text-hf-green-dark underline">
-              Åbn udbyderens opsætning
+              Opret eller åbn appen hos udbyderen
             </a>
           )}
         </p>
@@ -447,7 +501,7 @@ function SourceTag({ field }: { field: FieldStatus }) {
   if (field.source === "admin") {
     return <span className="hf-type-small text-hf-green-dark">Rettet i admin {field.updatedAt && formatDate(field.updatedAt)}</span>;
   }
-  if (field.source === "env") return <span className="hf-type-small text-text-muted">Fra .env</span>;
+  if (field.source === "env") return <span className="hf-type-small text-text-muted">Sat på serveren (.env-filen)</span>;
   return (
     <span className={`hf-type-small ${field.optional ? "text-text-muted" : "text-hf-red-dark"}`}>
       {field.optional ? "Ikke sat (valgfri)" : "Mangler"}
@@ -516,6 +570,8 @@ function FieldRow({ field, onChanged }: { field: FieldStatus; onChanged: (servic
         <p className="hf-type-body break-all font-mono text-text-secondary">{field.display}</p>
       )}
 
+      <ManageLinkLine url={field.manageUrl} where={field.manageWhere} />
+
       {editing && (
         <form
           className="flex flex-col gap-2"
@@ -565,6 +621,17 @@ function FieldRow({ field, onChanged }: { field: FieldStatus; onChanged: (servic
       )}
       {!editing && error && <p className="hf-type-body text-hf-red-dark">{error}</p>}
     </div>
+  );
+}
+
+function ManageLinkLine({ url, where }: { url: string; where: string }) {
+  return (
+    <p className="hf-type-small text-text-muted">
+      Styres her:{" "}
+      <a href={url} target="_blank" rel="noreferrer" className="break-all text-hf-green-dark underline">
+        {where}
+      </a>
+    </p>
   );
 }
 

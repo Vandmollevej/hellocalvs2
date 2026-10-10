@@ -248,7 +248,7 @@ export default async function DesignManualPage() {
             <Rules
               items={[
                 "Bundark (standard): klassen .hf-bottom-sheet, komponenten BottomSheet (src/components/hf/BottomSheet.tsx). Glider op nedefra på scrim, 16 px radius foroven, baggrund #FAF8F3.",
-                "Trækstregen øverst (.hf-bottom-sheet__handle) er samme streg som kalenderens nat/dag-håndtag: 40 × 4 px, grå, rund.",
+                "Trækstregen øverst (.hf-bottom-sheet__handle) følger iOS' native ark: 36 × 4 px, grå, rund, 8 px over og 16 px under.",
                 "Arket kan trækkes ned. Et hurtigt swipe ned eller et træk forbi 30 % af højden lukker det; ellers glider det tilbage. Klik på scrim og Escape lukker også.",
                 "Fast bund: prikker (aktiv = brand-grøn) og pil ved flere sider, primær knap i fuld bredde og tekstknappen \"Spring over\" (.hf-bottom-sheet__skip), som lukker med samme animation.",
                 "Bruges ved velkomst efter kontooprettelse, guiden, e-mailbekræftelse, kalenderens \"Tilføj\" og \"Se alle\" i tilføj-hjulet, opstartstips, adgangslog, hjul-/datovælgere og alle bekræftelser (useConfirmSheet i stedet for window.confirm, useTypedConfirmSheet i stedet for window.prompt).",

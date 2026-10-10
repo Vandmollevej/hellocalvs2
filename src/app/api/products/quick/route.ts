@@ -75,7 +75,7 @@ export async function POST(req: Request) {
 
   // Dyrefoder-spærring (stregkode, src/lib/pet-food-blacklist.ts). Ordmønstrene
   // køres bagefter på det AI læser (quick-product-enrichment.ts).
-  const petFoodBlock = petFoodBlockReason({ barcode, texts: [localIngredients, ingredientsOcrText, nutritionOcrText] });
+  const petFoodBlock = await petFoodBlockReason({ barcode, texts: [localIngredients, ingredientsOcrText, nutritionOcrText] });
   if (petFoodBlock) {
     void debugLog({
       category: "scan",

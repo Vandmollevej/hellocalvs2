@@ -6,6 +6,7 @@ import { sendEmailVerification } from "@/lib/email-verification";
 import { normalizePhone } from "@/lib/phone";
 import { checkVerificationCode } from "@/lib/sms-verification";
 import { awardSignupBonus } from "@/lib/points";
+import { grantReferredFriendFreeMonth } from "@/lib/referrals";
 
 // Rigtig e-mail-tilmelding (kalder ikke admin-login-koden). Blød bekræftelse
 // (docs/DECISIONS.md 2026-09-25): brugeren logges ind med det samme, men
@@ -82,13 +83,14 @@ export async function POST(req: Request) {
     select: { id: true, email: true, displayName: true },
   });
 
-  // "Invitér en ven" (docs/DECISIONS.md 2026-09-02): kun opret koblingen her.
-  // Selve 300-points-belønningen gives først efter ventetiden, se
-  // src/lib/referrals.ts og src/lib/scheduler.ts.
+  // "Invitér en ven" (docs/DECISIONS.md 2026-10-03): vennen får 1 gratis
+  // måned med det samme; afsenderens 300 points gives først efter
+  // ventetiden, se src/lib/referrals.ts og src/lib/scheduler.ts.
   if (referrer && referrer.id !== user.id) {
     await prisma.referral.create({
       data: { referrerId: referrer.id, referredUserId: user.id, referredRegisteredAt: new Date() },
     });
+    await grantReferredFriendFreeMonth(user.id);
   }
 
   await awardSignupBonus(user.id);

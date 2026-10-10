@@ -54,7 +54,7 @@ async function missingApiKeyServices() {
   await ensureSecretsLoaded();
   return allServiceStatuses()
     .filter((service) => service.fields.some((field) => !field.optional && !field.display))
-    .map((service) => service.name);
+    .map((service) => ({ id: service.id, name: service.name }));
 }
 
 export async function loadAdminDashboard(now: Date = new Date()) {
@@ -176,7 +176,7 @@ export async function loadAdminDashboard(now: Date = new Date()) {
     ),
     safe(prisma.scheduledJob.findMany(), []),
     safe(loadNightRuns(now), null),
-    safe(missingApiKeyServices(), [] as string[]),
+    safe(missingApiKeyServices(), [] as { id: string; name: string }[]),
     safe(prisma.user.count({ where: { role: "USER" } }), 0),
     safe(prisma.user.count({ where: { role: "USER", createdAt: { gte: startOfToday } } }), 0),
     safe(prisma.user.count({ where: { role: "USER", createdAt: { gte: weekAgo } } }), 0),

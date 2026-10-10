@@ -10,12 +10,15 @@ import { intlLocale } from "@/i18n";
 import { useTranslation } from "@/i18n/LocaleProvider";
 import { formatWeight, useUnits } from "@/lib/units";
 import { agoLabel, capitalize, weighWhen } from "@/lib/weigh-labels";
-import type { WeighAttire } from "@/lib/weigh-attire";
+import type { AttireItem } from "@/lib/weigh-attire";
 
 // To popups ved åbning af appen (2026-10-07), begge bundark (KRAV.md):
 // 1) "Det er længe siden, der er synkroniseret" med Synk nu / link til integrationen.
 // 2) "Du har vejet dig i morges. Men var det: nøgen / med tøj / …" for hver
 //    smartvægt-vejning, hvor tøjet ikke er bekræftet (op til en uge tilbage).
+// Popup 2 kommer også i realtid (2026-10-10): mens forsiden er synlig, spørges
+// der hvert 15. sekund og straks, når appen kommer frem igen. "Senere" gælder
+// kun de vejninger, der blev vist; en ny vejning åbner popuppen igen.
 
 export type SyncStatusItem = {
   provider: string;
@@ -34,11 +37,15 @@ type PendingWeighIn = {
   weightKg: number;
   weighedAt: string;
   source: { label: string; icon: string | null };
-  suggestion: WeighAttire;
+  suggestion: AttireItem[];
 };
 
 const SYNC_LATER_KEY = "hf-weight-sync-later";
 const WEIGH_LATER_KEY = "hf-weigh-attire-later";
+const POLL_MS = 15_000;
+
+const weighLaterKey = (id: string) => `${WEIGH_LATER_KEY}:${id}`;
+const hasNewWeighIn = (list: PendingWeighIn[]) => list.some((entry) => !flag(weighLaterKey(entry.id)));
 
 function flag(key: string) {
   try {
@@ -96,12 +103,34 @@ export function WeighInPrompts() {
       setStale(staleItems);
       setPending(pendingList);
       if (staleItems.length > 0 && !flag(SYNC_LATER_KEY)) setStage("sync");
-      else if (pendingList.length > 0 && !flag(WEIGH_LATER_KEY)) setStage("weigh");
+      else if (hasNewWeighIn(pendingList)) setStage("weigh");
     })();
     return () => {
       cancelled = true;
     };
   }, [loadPending]);
+
+  // Realtid: Withings melder nye vejninger til serveren med det samme
+  // (api/integrations/withings/webhook); her hentes de, mens siden er synlig.
+  useEffect(() => {
+    if (stage !== "none") return;
+    let cancelled = false;
+    async function check() {
+      if (document.visibilityState !== "visible") return;
+      const list = await loadPending();
+      if (cancelled || !hasNewWeighIn(list)) return;
+      setPending(list);
+      setStage("weigh");
+    }
+    const timer = window.setInterval(() => void check(), POLL_MS);
+    const onVisible = () => void check();
+    document.addEventListener("visibilitychange", onVisible);
+    return () => {
+      cancelled = true;
+      window.clearInterval(timer);
+      document.removeEventListener("visibilitychange", onVisible);
+    };
+  }, [stage, loadPending]);
 
   if (stage === "sync" && stale.length > 0) {
     return (
@@ -110,7 +139,7 @@ export function WeighInPrompts() {
         onSynced={async () => setPending(await loadPending())}
         onClose={() => {
           setFlag(SYNC_LATER_KEY);
-          setStage(pending.length > 0 && !flag(WEIGH_LATER_KEY) ? "weigh" : "none");
+          setStage(hasNewWeighIn(pending) ? "weigh" : "none");
         }}
       />
     );
@@ -121,7 +150,7 @@ export function WeighInPrompts() {
         entries={pending}
         onDone={() => setStage("none")}
         onLater={() => {
-          setFlag(WEIGH_LATER_KEY);
+          for (const entry of pending) setFlag(weighLaterKey(entry.id));
           setStage("none");
         }}
       />
@@ -218,7 +247,7 @@ function PendingWeighInSheet({
   const [list, setList] = useState(entries);
   // Ældste først; start ved den nyeste.
   const [index, setIndex] = useState(entries.length - 1);
-  const [choices, setChoices] = useState<Record<string, WeighAttire | null>>(() =>
+  const [choices, setChoices] = useState<Record<string, AttireItem[]>>(() =>
     Object.fromEntries(entries.map((entry) => [entry.id, entry.suggestion]))
   );
   const [saving, setSaving] = useState(false);
@@ -232,15 +261,14 @@ function PendingWeighInSheet({
     when.today && when.part === "morning" ? t("weighIn.prompt.todayMorning") : t("weighIn.prompt.past", { when: when.label });
 
   async function save() {
-    const attire = choices[entry.id];
-    if (!attire) return;
+    const attire = choices[entry.id] ?? [];
     setSaving(true);
     setError(false);
     try {
       const response = await fetch(`/api/weight-entries/${entry.id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ attire }),
+        body: JSON.stringify({ attireItems: attire }),
       });
       if (!response.ok) throw new Error("failed");
       const rest = list.filter((item) => item.id !== entry.id);
@@ -270,7 +298,7 @@ function PendingWeighInSheet({
           )}
           <button
             type="button"
-            disabled={saving || !choices[entry.id]}
+            disabled={saving}
             onClick={() => void save()}
             className="hf-btn-primary h-12 w-full px-4"
           >
@@ -317,7 +345,7 @@ function PendingWeighInSheet({
         </div>
 
         <AttireToggles
-          value={choices[entry.id] ?? null}
+          value={choices[entry.id] ?? []}
           onChange={(value) => setChoices((current) => ({ ...current, [entry.id]: value }))}
         />
         {error && (

@@ -2,14 +2,20 @@
 
 import { activitySummaryUrl } from "@/lib/daily-budget";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { IconHeartbeat, IconMoon, type Icon } from "@tabler/icons-react";
+import { IconHeartbeat, IconMoon, IconRuler2, type Icon } from "@tabler/icons-react";
 import { DAILY_KCAL_GOAL } from "@/lib/goals";
 import {
   FRONTPAGE_STAT_DEFS,
   useFrontpageStatKeys,
+  type FrontpageExtraData,
   type FrontpageMetricTotals,
   type FrontpageNutritionTotals,
 } from "@/lib/frontpage-stats";
+import { groupByDay } from "@/lib/daily-totals";
+import { computeMeasurement, useCustomMeasurements } from "@/lib/custom-measurements";
+import { measureTextLines, suggestMeasureText } from "@/lib/custom-measure-text";
+import { intakeVsTypical, minutesInZone, weightOutlook, type PulseSample } from "@/lib/frontpage-goal-math";
+import { usePulseZoneSettings } from "@/lib/pulse-zone-settings";
 import { useTranslation } from "@/i18n/LocaleProvider";
 import { HERO_HEIGHT } from "./AddButton";
 
@@ -35,13 +41,34 @@ type Registration = {
 
 type HealthMetric = { type: string; value: number; recordedAt: string };
 
+type ActivityRow = { sportType: string; startedAt: string; caloriesBurned: number };
+type WeightRow = { weightKg: number; weighedAt: string };
+type GoalRow = {
+  createdAt: string;
+  targetDate: string | null;
+  targets: { type: string; value: number }[];
+};
+
 type Stat = {
   key: string;
   label: string;
-  icon: Icon;
+  icons: Icon[];
   value: string;
   unit: string;
+  /** Den grå tekst under tallet (højst 2 linjer). */
+  caption?: string[];
+  /** Målet er nået: tallet vises grønt. */
+  reached?: boolean;
 };
+
+/** Seneste vægt-/ernæringsmål blandt brugerens målsætninger (nyeste først). */
+function latestGoal(goals: GoalRow[], type: string) {
+  for (const goal of goals) {
+    const target = goal.targets.find((item) => item.type === type);
+    if (target) return { goal, value: target.value };
+  }
+  return null;
+}
 
 function isToday(dateString: string) {
   const date = new Date(dateString);
@@ -81,6 +108,13 @@ function sumMetricToday(metrics: HealthMetric[], type: string): number | null {
   return matching.reduce((sum, m) => sum + m.value, 0);
 }
 
+/** Seneste måling i dag af en type (til værdier som hvilepuls, der ikke summeres). */
+function latestMetricToday(metrics: HealthMetric[], type: string): number | null {
+  const matching = metrics.filter((m) => m.type === type && isToday(m.recordedAt));
+  if (matching.length === 0) return null;
+  return matching.reduce((latest, m) => (m.recordedAt > latest.recordedAt ? m : latest)).value;
+}
+
 // Wheel geometry (user's requests 2026-09-25): every stat on one line with the
 // icon to the right of the number, up to 3 rows above and below the center,
 // the same empty space between all neighbouring rows, a slight fan tilt, and
@@ -115,17 +149,14 @@ const EDGE_OFFSET = { left: 13, right: 7 } as const;
 const VERTICAL_SHIFT = -7;
 /** The divider line lies 18px below the hero: the list's `pt-2` + half the 20px title line. */
 const DIVIDER_BELOW_HERO = 18;
-// Temporary grey caption under every number (user 2026-09-27) until
-// the real text is decided.
-const CAPTION_PLACEHOLDER = "Dummytekst";
 
 // Temporary made-up numbers (user 2026-09-25: "opfind et indtil jeg har dem
 // alle opsat") so the wheel can show all its rows while the visuals are tuned.
 // They only fill the slots the user's own fields (Indstillinger → Visning →
 // Forside) leave empty, and drop out by themselves as more fields are enabled.
 const PLACEHOLDER_STATS: Stat[] = [
-  { key: "placeholder-sleep", label: "Søvn (eksempel)", icon: IconMoon, value: "7,5", unit: "t" },
-  { key: "placeholder-pulse", label: "Puls (eksempel)", icon: IconHeartbeat, value: "62", unit: "bpm" },
+  { key: "placeholder-sleep", label: "Søvn (eksempel)", icons: [IconMoon], value: "7,5", unit: "t", caption: ["Søvn"] },
+  { key: "placeholder-pulse", label: "Puls (eksempel)", icons: [IconHeartbeat], value: "62", unit: "bpm", caption: ["Puls"] },
 ];
 
 function rowOffset(absDistance: number) {
@@ -154,10 +185,17 @@ function offsetAt(absDistance: number) {
 export function StatsWheel({ side }: { side: "left" | "right" }) {
   const { t } = useTranslation();
   const activeKeys = useFrontpageStatKeys();
+  const customMeasurements = useCustomMeasurements();
   const [activeIndex, setActiveIndex] = useState(0);
   const [dragPixels, setDragPixels] = useState(0);
   const [dragging, setDragging] = useState(false);
   const [registrations, setRegistrations] = useState<Registration[]>([]);
+  // Alle registreringer, til egne målinger og mål-felter med andre perioder end i dag.
+  const [allRegistrations, setAllRegistrations] = useState<Registration[]>([]);
+  const [activities, setActivities] = useState<ActivityRow[]>([]);
+  const [weights, setWeights] = useState<WeightRow[]>([]);
+  const [goals, setGoals] = useState<GoalRow[]>([]);
+  const pulseSettings = usePulseZoneSettings();
   const [metrics, setMetrics] = useState<HealthMetric[]>([]);
   const [goalKcal, setGoalKcal] = useState<number>(DAILY_KCAL_GOAL);
   const [loading, setLoading] = useState(true);
@@ -179,7 +217,9 @@ export function StatsWheel({ side }: { side: "left" | "right" }) {
     ])
       .then(([registrationData, metricData]) => {
         if (cancelled) return;
+        setAllRegistrations(registrationData.registrations);
         setRegistrations(registrationData.registrations.filter((item) => isToday(item.createdAt)));
+        
         setMetrics(metricData.metrics);
       })
       .catch(() => {
@@ -192,6 +232,25 @@ export function StatsWheel({ side }: { side: "left" | "right" }) {
         if (!cancelled) setLoading(false);
       });
 
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  // Sport, vejninger og målsætninger til de nyere felter. Hver hentning er
+  // uafhængig: mangler en, vises dens felter blot som "–".
+  useEffect(() => {
+    let cancelled = false;
+    const load = <T,>(url: string, apply: (data: T) => void) =>
+      fetch(url)
+        .then(async (response) => (response.ok ? ((await response.json()) as T) : null))
+        .then((data) => {
+          if (!cancelled && data) apply(data);
+        })
+        .catch(() => {});
+    load<{ activities: ActivityRow[] }>("/api/activities", (data) => setActivities(data.activities));
+    load<{ entries: WeightRow[] }>("/api/weight-entries", (data) => setWeights(data.entries));
+    load<{ goals: GoalRow[] }>("/api/goals", (data) => setGoals(data.goals));
     return () => {
       cancelled = true;
     };
@@ -238,29 +297,99 @@ export function StatsWheel({ side }: { side: "left" | "right" }) {
       waterMl: sumMetricToday(metrics, "WATER_ML"),
       burnedKcal: sumMetricToday(metrics, "ACTIVE_ENERGY_KCAL"),
       distanceKm: sumMetricToday(metrics, "DISTANCE_KM"),
+      floors: sumMetricToday(metrics, "FLOORS_CLIMBED"),
+      restingMinutes: sumMetricToday(metrics, "RESTING_HEART_RATE_MINUTES"),
+      restingBpm: latestMetricToday(metrics, "RESTING_HEART_RATE_BPM"),
+    };
+
+    const now = new Date();
+    const pulseSamples: PulseSample[] = metrics
+      .filter((m) => m.type === "HEART_RATE_BPM" && isToday(m.recordedAt))
+      .map((m) => ({ bpm: m.value, at: m.recordedAt }));
+    const weightGoal = latestGoal(goals, "weight");
+    const targetDate = weightGoal?.goal.targetDate ? new Date(`${weightGoal.goal.targetDate}T12:00:00`) : null;
+    const nutritionGoal = (type: string) => latestGoal(goals, type)?.value;
+    const extra: FrontpageExtraData = {
+      activities: activities
+        .filter((item) => isToday(item.startedAt))
+        .map((item) => ({ sportType: item.sportType, kcal: item.caloriesBurned })),
+      intakeComparison: intakeVsTypical(
+        allRegistrations.map((item) => ({ at: item.createdAt, kcal: item.kcalSnapshot })),
+        now,
+      ),
+      zoneMinutes: pulseSamples.length > 0 ? minutesInZone(pulseSamples, pulseSettings.zones[pulseSettings.selected]) : null,
+      zoneNumber: pulseSettings.selected + 1,
+      ownGoals: {
+        proteinG: nutritionGoal("proteinG"),
+        fatG: nutritionGoal("fatG"),
+        carbsG: nutritionGoal("carbsG"),
+      },
+      weightGoalKg: weightGoal?.value ?? null,
+      weightOutlook:
+        weightGoal && targetDate
+          ? weightOutlook(
+              weights.map((entry) => ({ weightKg: entry.weightKg, at: entry.weighedAt })),
+              new Date(weightGoal.goal.createdAt),
+              targetDate,
+              weightGoal.value,
+              now,
+            )
+          : null,
     };
 
     const own = activeKeys
       .map((key) => FRONTPAGE_STAT_DEFS.find((def) => def.key === key))
       .filter((def): def is NonNullable<typeof def> => Boolean(def))
       .map((def) => {
-        const { value, unit } = def.compute({ totals, metrics: metricTotals, goalKcal });
+        const result = def.compute({ totals, metrics: metricTotals, goalKcal, extra }, t);
         return {
           key: def.key,
           label: t(def.labelKey),
-          icon: def.icon,
-          value: loading ? "—" : value,
-          unit,
+          icons: result.icons ?? [def.icon],
+          value: loading ? "—" : result.value,
+          unit: result.unit,
+          caption: result.caption ? [result.caption] : measureTextLines(suggestMeasureText(t(def.labelKey))),
+          reached: !loading && result.reached,
         };
       });
-    const missing = Math.max(0, SIDE_ROWS * 2 + 1 - own.length);
-    return [...own, ...PLACEHOLDER_STATS.slice(0, missing)];
-  }, [activeKeys, goalKcal, loading, metrics, registrations, t]);
+    const customDays = customMeasurements.length > 0 ? groupByDay(allRegistrations) : [];
+    const custom: Stat[] = customMeasurements.map((measurement) => {
+      const { value, unit } = computeMeasurement(measurement, {
+        days: customDays,
+        metrics,
+        goalKcal,
+      });
+      return {
+        key: `custom:${measurement.id}`,
+        label: measurement.name,
+        icons: [IconRuler2],
+        value: loading ? "—" : value,
+        unit,
+        caption: measureTextLines(measurement.text),
+      };
+    });
+    const all = [...own, ...custom];
+    const missing = Math.max(0, SIDE_ROWS * 2 + 1 - all.length);
+    return [...all, ...PLACEHOLDER_STATS.slice(0, missing)];
+  }, [
+    activeKeys,
+    activities,
+    allRegistrations,
+    customMeasurements,
+    goalKcal,
+    goals,
+    loading,
+    metrics,
+    pulseSettings,
+    registrations,
+    t,
+    weights,
+  ]);
 
   // Rows fade out half a row past the outermost visible one. With too few
   // stats for all 7 rows, the range shrinks so the item that wraps from the
   // bottom to the top of the wheel is always fully faded out when it jumps.
-  const visibleRange = Math.min(SIDE_ROWS, Math.floor((stats.length - 1) / 2)) + 0.5;
+  const visibleRange = Math.min(SIDE_ROWS, Math.max(0, Math.floor((stats.length - 1) / 2))) + 0.5;
 
   function move(direction: -1 | 1) {
     if (stats.length === 0) return;
@@ -412,7 +541,6 @@ function WheelItem({
   animate: boolean;
   onClick?: () => void;
 }) {
-  const StatIcon = stat.icon;
   const absDistance = Math.min(Math.abs(distance), visibleRange);
   const isActive = absDistance < 0.05;
   // Fully faded out (a lap that is just turning in or out): not tappable or focusable.
@@ -483,26 +611,37 @@ function WheelItem({
         className="hf-type-strong relative leading-none"
         style={{ fontSize: FONT_SIZE, textBox: "trim-both cap alphabetic" } as React.CSSProperties}
       >
-        <span className={transition} style={{ opacity }}>
+        <span
+          className={transition}
+          style={{ opacity, color: stat.reached ? "var(--hf-green)" : undefined }}
+        >
           {stat.value}
           {stat.unit && <span className="hf-type-strong"> {stat.unit}</span>}
         </span>
         {/* The caption only fades out at the wheel's ends, not with the
             neighbour dimming (user 2026-09-28: it vanished as soon as a row
             left the center). */}
-        <span
-          aria-hidden="true"
-          className={`hf-type-small absolute right-0 top-full mt-1 text-text-secondary ${transition}`}
-          style={{ opacity: captionOpacity }}
-        >
-          {CAPTION_PLACEHOLDER}
-        </span>
+        {stat.caption && (
+          <span
+            aria-hidden="true"
+            className={`hf-type-small absolute right-0 top-full mt-1 text-text-secondary ${transition}`}
+            style={{ opacity: captionOpacity, lineHeight: 1.15 }}
+          >
+            {stat.caption.map((line, lineIndex) => (
+              <span key={lineIndex} className="block">
+                {line}
+              </span>
+            ))}
+          </span>
+        )}
       </span>
       <span
-        className={`flex ${transition}`}
+        className={`flex gap-1 ${transition}`}
         style={{ opacity, color: `color-mix(in srgb, var(--hf-green) ${Math.round(focus * 100)}%, var(--hf-black))` }}
       >
-        <StatIcon size={ICON_SIZE} color="currentColor" stroke={2.2} aria-hidden="true" />
+        {stat.icons.map((StatIcon, iconIndex) => (
+          <StatIcon key={iconIndex} size={ICON_SIZE} color="currentColor" stroke={2.2} aria-hidden="true" />
+        ))}
       </span>
     </button>
   );

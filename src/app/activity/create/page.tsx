@@ -9,7 +9,8 @@ import type { ActivityOption } from "@/lib/activity-types";
 import { useTranslation } from "@/i18n/LocaleProvider";
 import { TRAINING_INTENSITIES, type TrainingIntensity } from "@/lib/pal-model";
 import type { ActivityEstimate } from "@/lib/activity-met";
-import { durationMinutes, endClock, minutesUntil, splitDuration } from "@/lib/activity-duration";
+import { SleepRangeSlider } from "@/components/hf/SleepRangeSlider";
+import { clockToMinutes, durationMinutes, setStartClock, splitDuration, stepDuration } from "@/lib/activity-duration";
 
 // Tilføj aktivitet (tilføj-menuen og kalenderens "Tilføj"). date/time fra
 // kalenderen forudfylder starttidspunktet.
@@ -35,7 +36,6 @@ function ActivityCreateContent() {
   const [intensity, setIntensity] = useState<TrainingIntensity>("MODERATE");
   const [distanceKm, setDistanceKm] = useState("");
   const [estimate, setEstimate] = useState<ActivityEstimate | null>(null);
-  const [hasWeight, setHasWeight] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -49,10 +49,9 @@ function ActivityCreateContent() {
     let cancelled = false;
     fetch(`/api/activities/estimate?${query}`)
       .then((res) => (res.ok ? res.json() : null))
-      .then((data: { estimate: ActivityEstimate; hasWeight: boolean } | null) => {
+      .then((data: { estimate: ActivityEstimate } | null) => {
         if (cancelled || !data) return;
         setEstimate(data.estimate);
-        setHasWeight(data.hasWeight);
       })
       .catch(() => {});
     return () => {
@@ -60,12 +59,33 @@ function ActivityCreateContent() {
     };
   }, [option, minutes, intensity, distanceKm, showsDistance]);
 
-  function setEnd(value: string) {
-    const next = minutesUntil(startedAt, value);
-    if (next === null) return;
-    const split = splitDuration(next);
+  function applyDuration(total: number) {
+    const split = splitDuration(total);
     setHours(split.hours);
     setMins(split.minutes);
+  }
+
+  const startMinutes = clockToMinutes(startedAt.split("T")[1] ?? "") ?? 0;
+  // Banen viser kun den valgte dag (00:00-23:59): slutningen går aldrig over midnat.
+  const endMinutes = Math.min(startMinutes + totalMinutes, LAST_MINUTE);
+
+  // Slut-håndtaget ændrer varigheden; start-håndtaget flytter starten, så
+  // sluttidspunktet bliver stående (varigheden regnes om). Begge holdes inden
+  // for dagen, og slut ligger altid efter start.
+  function setEnd(value: number) {
+    const end = Math.min(LAST_MINUTE, Math.max(startMinutes + 1, value));
+    applyDuration(end - startMinutes);
+  }
+
+  function setStart(value: number) {
+    const nextStart = Math.min(LAST_MINUTE - 1, value);
+    const end = Math.min(LAST_MINUTE, Math.max(endMinutes, nextStart + 5));
+    setStartedAt(setStartClock(startedAt, minutesToClock(nextStart)));
+    applyDuration(end - nextStart);
+  }
+
+  function stepWithinDay(direction: 1 | -1) {
+    applyDuration(Math.min(stepDuration(totalMinutes, direction), LAST_MINUTE - startMinutes));
   }
 
   async function save() {
@@ -110,16 +130,35 @@ function ActivityCreateContent() {
             <button type="button" className="hf-btn-text self-start text-hf-black" onClick={() => setOption(null)}>
               {option.label} · {t("activity.change")}
             </button>
-            <label className="flex flex-col gap-1">
+            <div className="flex flex-col gap-2">
               <span className="hf-type-small text-text-secondary">{t("activity.startedAt")}</span>
-              <input className={FIELD} type="datetime-local" value={startedAt} onChange={(e) => setStartedAt(e.target.value)} />
-            </label>
+              <input
+                className={FIELD}
+                type="date"
+                value={startedAt.split("T")[0]}
+                onChange={(e) => e.target.value && setStartedAt(`${e.target.value}T${startedAt.split("T")[1] ?? "00:00"}`)}
+              />
+              <SleepRangeSlider
+                bedtimeFirst
+                bedtimeMinutes={startMinutes}
+                wakeMinutes={endMinutes}
+                onChangeBedtime={setStart}
+                onChangeWake={setEnd}
+              />
+            </div>
             <div className="flex flex-col gap-1">
               <span className="hf-type-small text-text-secondary">{t("activity.duration")}</span>
-              <div className="grid grid-cols-3 gap-2">
-                <label className="flex flex-col gap-1">
+              <div className="mx-auto flex w-full max-w-[320px] items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => stepWithinDay(-1)}
+                  className="h-11 w-11 text-hf-black hf-glyph-lg"
+                  aria-label="−5 min"
+                >
+                  −
+                </button>
+                <div className="flex flex-1 items-baseline justify-center gap-1 rounded-2xl bg-hf-tan py-3 text-center text-hf-black">
                   <input
-                    className={FIELD}
                     type="number"
                     inputMode="numeric"
                     min={0}
@@ -127,12 +166,11 @@ function ActivityCreateContent() {
                     value={hours}
                     onChange={(e) => setHours(e.target.value)}
                     aria-label={t("activity.hours")}
+                    style={{ width: `${Math.max(1, hours.length) + 0.5}ch` }}
+                    className="hf-type-page-title bg-transparent text-right outline-none"
                   />
-                  <span className="hf-type-small text-text-secondary">{t("activity.hours")}</span>
-                </label>
-                <label className="flex flex-col gap-1">
+                  <span className="hf-type-page-title">{t("activity.hours")}</span>
                   <input
-                    className={FIELD}
                     type="number"
                     inputMode="numeric"
                     min={0}
@@ -140,35 +178,41 @@ function ActivityCreateContent() {
                     value={mins}
                     onChange={(e) => setMins(e.target.value)}
                     aria-label={t("activity.minutesShort")}
+                    style={{ width: `${Math.max(1, mins.length) + 0.5}ch` }}
+                    className="hf-type-page-title ml-2 bg-transparent text-right outline-none"
                   />
-                  <span className="hf-type-small text-text-secondary">{t("activity.minutesShort")}</span>
-                </label>
-                <label className="flex flex-col gap-1">
-                  <input
-                    className={FIELD}
-                    type="time"
-                    value={endClock(startedAt, totalMinutes)}
-                    onChange={(e) => setEnd(e.target.value)}
-                    aria-label={t("activity.endedAt")}
-                  />
-                  <span className="hf-type-small text-text-secondary">{t("activity.endedAt")}</span>
-                </label>
+                  <span className="hf-type-page-title">{t("activity.minutesShort")}</span>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => stepWithinDay(1)}
+                  className="h-11 w-11 text-hf-black hf-glyph-lg"
+                  aria-label="+5 min"
+                >
+                  +
+                </button>
               </div>
             </div>
             <div className="flex flex-col gap-2">
               <span className="hf-type-small text-text-secondary">{t("activity.intensity")}</span>
               <p className="hf-type-small text-text-secondary">{t("activity.intensityHint")}</p>
-              {TRAINING_INTENSITIES.map((key) => (
-                <button
-                  key={key}
-                  type="button"
-                  className="hf-choice hf-control w-full text-left"
-                  aria-pressed={intensity === key}
-                  onClick={() => setIntensity(key)}
-                >
-                  {t(`onboarding.activity.intensity.${key}`)}
-                </button>
-              ))}
+              <div className="flex items-end gap-2" role="radiogroup" aria-label={t("activity.intensity")}>
+                {TRAINING_INTENSITIES.map((key, index) => (
+                  <button
+                    key={key}
+                    type="button"
+                    role="radio"
+                    aria-checked={index <= TRAINING_INTENSITIES.indexOf(intensity)}
+                    aria-label={t(`onboarding.activity.intensity.${key}`)}
+                    className={`flex-1 rounded-card transition-colors ${
+                      index <= TRAINING_INTENSITIES.indexOf(intensity) ? "bg-hf-accent" : "bg-hf-card"
+                    }`}
+                    style={{ height: 24 + index * 16 }}
+                    onClick={() => setIntensity(key)}
+                  />
+                ))}
+              </div>
+              <p className="hf-type-body hf-type-strong text-center">{t(`onboarding.activity.intensity.${intensity}`)}</p>
             </div>
             {showsDistance && (
               <label className="flex flex-col gap-1">
@@ -183,17 +227,9 @@ function ActivityCreateContent() {
                 type="number"
                 inputMode="numeric"
                 min={1}
-                value={kcal}
-                placeholder={estimate?.kcal ? t("activity.kcalEstimated", { kcal: estimate.kcal }) : ""}
+                value={kcal !== "" ? kcal : estimate?.kcal ? String(estimate.kcal) : ""}
                 onChange={(e) => setKcal(e.target.value)}
               />
-              <span className="hf-type-small text-text-secondary">
-                {!hasWeight
-                  ? t("activity.kcalNoWeight")
-                  : estimate
-                    ? t(estimate.method === "SPEED" ? "activity.kcalHintSpeed" : "activity.kcalHintMet", { met: estimate.met })
-                    : ""}
-              </span>
             </label>
             {error && <p className="hf-type-small text-hf-red-dark">{error}</p>}
             <button type="button" className="hf-control hf-btn-primary w-full px-4" onClick={() => void save()} disabled={saving}>
@@ -204,6 +240,12 @@ function ActivityCreateContent() {
       </div>
     </HfScreen>
   );
+}
+
+const LAST_MINUTE = 24 * 60 - 1;
+
+function minutesToClock(value: number) {
+  return `${String(Math.floor(value / 60)).padStart(2, "0")}:${String(value % 60).padStart(2, "0")}`;
 }
 
 const FIELD =

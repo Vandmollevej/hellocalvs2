@@ -11,8 +11,10 @@ import { FamilyWatchFrame } from "@/components/family/FamilyWatchFrame";
 import { AccessLogPanel } from "@/components/family/AccessLogPanel";
 import { StartupTipsGate } from "@/components/StartupTipsGate";
 import { FlowGate } from "@/components/FlowGate";
+import { IntegrationAppOpen } from "@/components/IntegrationAppOpen";
 import { GoalTipCard } from "@/components/GoalTipCard";
 import { KcalGoalPrompt } from "@/components/KcalGoalPrompt";
+import { StaleSyncPrompt } from "@/components/StaleSyncPrompt";
 import { SentMessageNotice } from "@/components/SentMessageNotice";
 import { SleepQualityGate } from "@/components/SleepQualityGate";
 import { UmamiTracker } from "@/components/UmamiTracker";
@@ -69,7 +71,9 @@ export default function RootLayout({
           <AuthGate />
           <StartupTipsGate />
           <FlowGate />
+          <IntegrationAppOpen />
           <KcalGoalPrompt />
+          <StaleSyncPrompt />
           <GoalTipCard />
           <SentMessageNotice />
           <SleepQualityGate />

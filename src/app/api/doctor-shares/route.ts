@@ -4,7 +4,7 @@ import { getSessionUser } from "@/lib/session";
 import { queueMessage } from "@/lib/messaging";
 import { getUserSubscriptionTier } from "@/lib/subscription";
 import {
-  DOCTOR_SHARE_INVITATION_VALID_DAYS,
+  parseDoctorShareExpiry,
   sanitizeDoctorShareCategories,
   isDoctorShareHistoryRange,
 } from "@/lib/doctor-share";
@@ -36,7 +36,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ message: "Hello Doc kræver abonnementet Seriøs" }, { status: 403 });
   }
 
-  let body: { name?: string; email?: string; categories?: unknown; historyRange?: unknown };
+  let body: { name?: string; email?: string; categories?: unknown; historyRange?: unknown; expiresAt?: unknown };
   try {
     body = await request.json();
   } catch {
@@ -53,8 +53,13 @@ export async function POST(request: Request) {
   const categories = sanitizeDoctorShareCategories(body.categories);
   const historyRange = isDoctorShareHistoryRange(body.historyRange) ? body.historyRange : "ALL";
 
+  const expiresAt = parseDoctorShareExpiry(body.expiresAt ?? null);
+  if (expiresAt === undefined) return NextResponse.json({ message: "Ugyldig udløbsdato" }, { status: 400 });
+  if (expiresAt && expiresAt.getTime() <= Date.now()) {
+    return NextResponse.json({ message: "Udløbsdatoen skal ligge i fremtiden" }, { status: 400 });
+  }
+
   const now = new Date();
-  const expiresAt = new Date(now.getTime() + DOCTOR_SHARE_INVITATION_VALID_DAYS * 24 * 60 * 60 * 1000);
 
   const share = await prisma.doctorShare.create({
     data: { ownerId: user.id, name, email, categories, historyRange, sentAt: now, expiresAt },

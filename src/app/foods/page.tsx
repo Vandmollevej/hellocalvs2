@@ -9,6 +9,8 @@ import { HfScreen } from "@/components/HfScreen";
 import { FoodRow } from "@/components/FoodRow";
 import { ActionLink } from "@/components/hf/ActionButton";
 import { useTranslation } from "@/i18n/LocaleProvider";
+import { SearchCorrectionNotice } from "@/components/hf/SearchCorrectionNotice";
+import { readSearchCorrection, type SearchCorrection } from "@/lib/search-notice";
 import { useConnectionMessage } from "@/lib/use-online-status";
 import { SkeletonMediaRows, SkeletonScreen } from "@/components/hf/Skeleton";
 import { useFamilyStatus } from "@/components/family/FamilyStatusProvider";
@@ -56,10 +58,17 @@ function ProductRow({
       <Link href={`/add/${product.id}${prefillQuery}`} onClick={() => onOpen?.(product.id)} className="block">
         <FoodRow
           image={product.imageUrl}
-          title={product.name}
+          title={product.searchTitle ?? product.name}
           subtitle={
             <p className="hf-type-small text-text-secondary truncate">
-              {[product.brand?.name, t("foods.kcalPer100g", { kcal: Math.round(product.kcalPer100g) })]
+              {[
+                // Brandet står allerede forrest i søgeresultatets titel.
+                product.searchTitle ? null : product.brand?.name,
+                // Uden energitabel (nutritionMissing) er 0 kun en pladsholder.
+                product.nutritionMissing
+                  ? t("addProduct.nutritionUnknown")
+                  : t("foods.kcalPer100g", { kcal: Math.round(product.kcalPer100g) }),
+              ]
                 .filter(Boolean)
                 .join(" · ")}
             </p>
@@ -97,7 +106,11 @@ function MadvarerContent() {
     return query ? `?${query}` : "";
   })();
   const [query, setQuery] = useState("");
-  const [searchResults, setSearchResults] = useState<Product[]>([]);
+  // Det friske svar gemmes med den søgning, det hører til, så det erstatter
+  // cachens svar for netop den søgning, så snart det er landet.
+  const [searchResults, setSearchResults] = useState<{ key: string; products: Product[] }>({ key: "", products: [] });
+  const [correction, setCorrection] = useState<SearchCorrection | null>(null);
+  const [exactFor, setExactFor] = useState<string | null>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
 
   // Sidste liste for den aktive profil tegnes med det samme (også ved klik i
@@ -206,25 +219,37 @@ function MadvarerContent() {
     if (q.length < SEARCH_MIN_LENGTH) return;
 
     const cacheKey = q.toLocaleLowerCase();
+    const cached = searchCache.get(cacheKey);
+    if (cached && cached.expiresAt <= Date.now()) searchCache.delete(cacheKey);
     const hadCacheHit = searchCache.has(cacheKey);
     const controller = new AbortController();
     const timer = window.setTimeout(async () => {
       try {
         const hour = new Date().getHours();
         const response = await fetch(
-          `/api/products?q=${encodeURIComponent(q)}&hour=${hour}&take=20`,
+          `/api/products?q=${encodeURIComponent(q)}&hour=${hour}&take=20${exactFor === q ? "&exact=1" : ""}`,
           { signal: controller.signal }
         );
         if (!response.ok) throw new Error("search failed");
-        const data = (await response.json()) as { products: Product[] };
-        searchCache.set(cacheKey, {
-          expiresAt: Date.now() + SEARCH_CACHE_TTL_MS,
-          products: data.products,
-        });
-        setSearchResults(data.products);
+        const data = (await response.json()) as {
+          products: Product[];
+          correctedQuery?: string;
+          originalQuery?: string;
+          suggestedQuery?: string;
+        };
+        const info = readSearchCorrection(data, q);
+        setCorrection(info);
+        // Rettede/foreslåede svar caches ikke, så cachen aldrig viser forkert linje.
+        if (!info) {
+          searchCache.set(cacheKey, {
+            expiresAt: Date.now() + SEARCH_CACHE_TTL_MS,
+            products: data.products,
+          });
+        }
+        setSearchResults({ key: cacheKey, products: data.products });
       } catch (error) {
         if ((error as Error).name !== "AbortError" && !hadCacheHit) {
-          setSearchResults([]);
+          setSearchResults({ key: cacheKey, products: [] });
         }
       }
     }, SEARCH_DEBOUNCE_MS);
@@ -233,7 +258,7 @@ function MadvarerContent() {
       window.clearTimeout(timer);
       controller.abort();
     };
-  }, [query]);
+  }, [query, exactFor]);
 
   function trackSearchClick(productId: string) {
     if (query.trim().length < SEARCH_MIN_LENGTH) return;
@@ -263,8 +288,14 @@ function MadvarerContent() {
   // synchronous setState-in-effect; the state is simply irrelevant while
   // isSearching is false and gets overwritten by the next real query anyway).
   // While searching, prefer the cached instant result until the live,
-  // re-ranked fetch for this exact query has actually landed.
-  const visibleProducts = isSearching ? cachedResults ?? searchResults : favorites;
+  // re-ranked fetch for this exact query has actually landed — then the live
+  // one wins (before, a cached answer stuck for as long as the page lived).
+  const liveIsCurrent = searchResults.key === normalizedQuery.toLocaleLowerCase();
+  const visibleProducts = isSearching
+    ? liveIsCurrent
+      ? searchResults.products
+      : cachedResults ?? searchResults.products
+    : favorites;
 
   return (
     <HfScreen title={t("foods.title")} icon={<IconApple size={20} stroke={2} />}>
@@ -278,6 +309,14 @@ function MadvarerContent() {
             placeholder={t("foods.searchPlaceholder")}
           />
         </div>
+
+        {isSearching && correction?.forQuery === normalizedQuery && (
+          <SearchCorrectionNotice
+            correction={correction}
+            onSearchExact={() => setExactFor(normalizedQuery)}
+            onUseSuggestion={setQuery}
+          />
+        )}
 
         {!isSearching && ready && favorites.length > 0 && (
           <p className="hf-type-small hf-type-strong text-text-secondary px-1 uppercase tracking-[0.08em]">

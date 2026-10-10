@@ -174,3 +174,11 @@ Filer: `src/components/hf/UpdatePointsBanner.tsx`, `src/components/add/AddProduc
 | Id | Opgave | Status | Næste skridt |
 | --- | --- | --- | --- |
 | — | Grønt "Scan varen igen"-banner koblet af; hvidt opdater-banner har grønnes grå trækstreg | Færdig (PR #226) | Brugeren bad om merge 2026-10-03; ikke testet på telefon |
+
+## G-MADKASSER — RetNemt og BetterFeast som integrationer (som HelloFresh)
+Filer: `scripts/retnemt-agent/**`, `scripts/betterfeast-agent/**`, `src/lib/meal-kit-providers.ts`, `src/lib/admin-dishes.ts`, `src/app/admin/dishes/**`, `src/app/api/hellofresh-recipes/**`, `src/app/profile/recipes/hellofresh/**`, migration `20261010235000_meal_kit_providers`; desuden små rettelser i `shared-recipes`, `profile`, integrations- og Retter-siden og de tilsvarende native skærme.
+Ejer: session "Måltidskasser som integrationer" (bede0566), 2026-10-10
+
+| Id | Opgave | Status | Næste skridt |
+| --- | --- | --- | --- |
+| madkasser | Skrab alle retter fra måltidskasserne med fuld energioplysning (RetNemt, BetterFeast) og opret dem som integrationer som HelloFresh | Færdig (3f672eb5, deployet 2026-10-10) | Første kørsel af `retnemt-import` og `betterfeast-import` ses under admin → Cron-jobs |

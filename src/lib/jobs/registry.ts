@@ -118,6 +118,39 @@ export const JOBS: JobDefinition[] = [
     defaultRunAtTime: "04:30",
   },
   {
+    // Frida-skøn (∼) for varer uden energimærkning (docs/DECISIONS.md 2026-10-10).
+    // Agenterne for Bilka/REMA, Frida og Valdemarsro beder om en kørsel, når de har importeret.
+    key: "frida-estimates",
+    name: "Frida-skøn: varer uden energimærkning",
+    description:
+      "Giver varer uden energimærkning Fridas tal (vist med ∼) i de felter, butikken ikke selv har udfyldt: produkttypen skal ligne en Frida-produkttype mindst 90 % (ental/flertal og stavemåder udlignes), og tilstand, variant og fedtprocent vælger Frida-varen. Tvivlstilfælde står under Frida-match til admin. Opretter stregkoderne på alle butiksvarer, regner Valdemarsro-retter ud, når alle ingredienslinjer kan regnes med, og udfylder delte retter, hvor en ingrediens manglede næring.",
+    runtime: "app",
+    robot: true,
+    defaultIntervalMinutes: null,
+    defaultRunAtTime: "02:30",
+  },
+  {
+    // Søgemotoren (docs/DECISIONS.md 2026-10-10): databasen er kilden, indekset en kopi.
+    key: "search-index",
+    name: "Søgemotor: opdater indeks",
+    description:
+      "Sammenligner alle søgbare varer (navn, flertalsnavn, mærke, serie, varetype, variant, smag, søgeord) med søgemotoren (Meilisearch) og sender kun ændrede varer og sletninger. Opdaterer også stavefejl-regler og synonymerne fra Søgesynonymer. Svarer søgemotoren ikke, søger appen i databasen i stedet.",
+    runtime: "app",
+    robot: true,
+    defaultIntervalMinutes: 5,
+    defaultRunAtTime: null,
+  },
+  {
+    key: "search-miss-review",
+    name: "Søgninger uden resultat: vurdering",
+    description:
+      "Vurderer nye søgninger uden resultat, så admin → Analyse → Søgning kan vise rene fejl: stavefejl (med rettelse) og meningsløse søgninger sorteres fra med regler og AI, og tilbage står varer og mærker, der mangler i databasen.",
+    runtime: "app",
+    robot: true,
+    defaultIntervalMinutes: null,
+    defaultRunAtTime: "03:30",
+  },
+  {
     key: "frida-import",
     name: "Frida-import",
     description:
@@ -137,9 +170,30 @@ export const JOBS: JobDefinition[] = [
     defaultRunAtTime: "03:30",
   },
   {
+    key: "retnemt-import",
+    name: "RetNemt-import",
+    description:
+      "Henter RetNemts retter (ugens menu hver nat, hele opskriftsarkivet en gang om ugen) med næring, ingredienser og billeder, og spærrer retter, hvis side er forsvundet.",
+    runtime: "agent",
+    container: "retnemt-agent",
+    defaultIntervalMinutes: null,
+    defaultRunAtTime: "03:45",
+  },
+  {
+    key: "betterfeast-import",
+    name: "BetterFeast-import",
+    description:
+      "Henter BetterFeasts færdigretter fra ugens menu med varedeklaration og næring pr. 100 g, og spærrer retter, der ikke har været på menuen i fire måneder.",
+    runtime: "agent",
+    container: "betterfeast-agent",
+    defaultIntervalMinutes: null,
+    defaultRunAtTime: "04:00",
+  },
+  {
     key: "hellofresh-import",
     name: "HelloFresh-import",
-    description: "Henter nye/ændrede HelloFresh-opskrifter i små portioner og matcher ingredienserne mod varer.",
+    description:
+      "Henter nye og ændrede HelloFresh-opskrifter løbende, henter hver opskrift igen mindst hver 30. dag (og igen efter et døgn, hvis billedet mangler) og spærrer retter, HelloFresh har fjernet.",
     runtime: "agent",
     container: "hellofresh-agent",
     defaultIntervalMinutes: 2,

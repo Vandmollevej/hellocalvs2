@@ -24,7 +24,7 @@ export function HfScreen({
   alwaysShowBackButton?: boolean;
   showAppSettingsButton?: boolean;
   leading?: React.ReactNode;
-  /** Fast bjælke direkte under topbaren (fx opdater-banneret på varesiden) — uden luft over. */
+  /** Lag oven på indholdet, forankret under topbaren (fx opdater-banneret på varesiden) — skubber aldrig siden. */
   topBanner?: React.ReactNode;
 }) {
   return (
@@ -39,10 +39,13 @@ export function HfScreen({
         showAppSettingsButton={showAppSettingsButton}
         leading={leading}
       />
-      {topBanner}
-      <div className="relative min-h-0 flex-1 overflow-y-auto overscroll-contain">{children}</div>
+      <div className="relative min-h-0 flex-1">
+        {topBanner}
+        <div className="h-full overflow-y-auto overscroll-contain">{children}</div>
+      </div>
+      {/* pb: bundcirklen (FooterArc, 40 px) rager op over menuen — knapperne skal ligge over den */}
       {footer && (
-        <div className="flex-shrink-0 bg-hf-cream p-4">{footer}</div>
+        <div className="flex-shrink-0 bg-hf-cream px-4 pb-[calc(1rem+40px)] pt-4">{footer}</div>
       )}
       <BottomNav />
     </div>

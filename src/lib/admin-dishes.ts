@@ -1,10 +1,23 @@
 import type { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
+import type { IMPORTED_DISH_SOURCES } from "@/lib/meal-kit-providers";
 
 // Admin → Retter (docs/DECISIONS.md 2026-09-28): opskrifter er ikke
 // produkter. Brugeroprettede = delte brugerretter (SharedRecipe — private
-// retter i brugernes egne lister vises aldrig, docs/PRIVACY.md), HelloFresh =
-// HelloFresh-importens retter (Product-rækker med kilde HELLOFRESH).
+// retter i brugernes egne lister vises aldrig, docs/PRIVACY.md). HelloFresh,
+// RetNemt, BetterFeast og Valdemarsro = importernes retter (Product-rækker
+// med den kilde, docs/DECISIONS.md 2026-10-10).
+
+export type ImportedDishSource = (typeof IMPORTED_DISH_SOURCES)[number];
+
+// Listens sti pr. kilde; måltidskassernes retter åbnes på en visningsside
+// under stien, Valdemarsro-retter som produktsiden.
+export const DISH_SOURCE_PATHS: Record<ImportedDishSource, string> = {
+  HELLOFRESH: "/admin/dishes/hellofresh",
+  RETNEMT: "/admin/dishes/retnemt",
+  BETTERFEAST: "/admin/dishes/betterfeast",
+  VALDEMARSRO: "/admin/dishes/valdemarsro",
+};
 
 export const DISHES_PAGE_SIZE = 48;
 
@@ -17,7 +30,8 @@ export type DishRow = {
   status: "PENDING" | "APPROVED" | "REJECTED";
   href: string | null;
   note: string | null;
-  // Deaktiveret i admin (Product.discontinued) — vises ikke for brugerne.
+  // Deaktiveret af admin eller af importens linktjek (Product.discontinued):
+  // vises ikke for brugerne.
   disabled: boolean;
 };
 
@@ -34,12 +48,7 @@ function words(q: string) {
   return q.split(/\s+/).filter(Boolean).slice(0, 8);
 }
 
-// Integrationernes retter (Product-rækker med kilde HELLOFRESH eller VALDEMARSRO).
-export async function loadHelloFreshDishes(
-  q: string,
-  page: number,
-  source: "HELLOFRESH" | "VALDEMARSRO" = "HELLOFRESH",
-): Promise<DishPage> {
+export async function loadImportedDishes(q: string, page: number, source: ImportedDishSource): Promise<DishPage> {
   const where: Prisma.ProductWhereInput = {
     externalSource: source,
     AND: words(q).map((word) => ({ name: { contains: word, mode: "insensitive" as const } })),
@@ -73,8 +82,7 @@ export async function loadHelloFreshDishes(
       kcal: p.kcalPer100g,
       kcalLabel: "kcal/100 g",
       status: p.status,
-      // Valdemarsro-retter åbnes som produktsiden (tilføj, "Gå til opskrift").
-      href: source === "VALDEMARSRO" ? `/add/${p.id}` : `/admin/dishes/hellofresh/${p.id}`,
+      href: source === "VALDEMARSRO" ? `/add/${encodeURIComponent(p.id)}` : `${DISH_SOURCE_PATHS[source]}/${encodeURIComponent(p.id)}`,
       note: p._count.ingredients > 0 ? `${p._count.ingredients} ingredienser` : null,
       disabled: p.discontinued,
     })),

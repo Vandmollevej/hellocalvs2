@@ -250,17 +250,33 @@ og `SMTP_FROM=Hello Cal <no-reply@hellocal.io>` (kræver at `hellocal.io` er
 verificeret afsenderdomæne i Mailjet: SPF + DKIM-TXT i Cloudflare-zonen).
 Kontaktadresse `support@hellocal.io` videresendes med Cloudflare Email
 Routing. OAuth-redirect-URI'er hos Google, Facebook, Apple, Strava, Withings,
-Polar, Garmin, WHOOP, Huawei m.fl. og MobilePay-webhooken skal pege på `hellocal.io`. Garmins ping-adresse er `https://hellocal.io/api/integrations/garmin/webhook?key=<GARMIN_WEBHOOK_KEY>`. Passkeys er
+Polar, Garmin, WHOOP, Huawei m.fl. og MobilePay-webhooken skal pege på `hellocal.io`. Garmins ping-adresse er `https://hellocal.io/api/integrations/garmin/webhook?key=<GARMIN_WEBHOOK_KEY>`. Withings' notifikationsadresse `https://hellocal.io/api/integrations/withings/webhook` tilmeldes automatisk pr. bruger (ud fra `APP_BASE_URL`) og skal kunne nås udefra. Passkeys er
 bundet til hostnavnet og skal oprettes igen på det nye domæne.
 
-## Search indexing
+## Search indexing and crawler protection
 
-The application adds `X-Robots-Tag: noindex, nofollow, noarchive, nosnippet,
-noimageindex` to every response. This lets search engines crawl the public app
-only to see that it must not be indexed. Do not use `robots.txt` to block the
-app while relying on `noindex`, because a blocked crawler cannot read that
-instruction. If the application must be private rather than merely hidden from
-search, protect it with an access-control layer such as Cloudflare Access.
+Every response carries `X-Robots-Tag: noindex, nofollow, noarchive, nosnippet,
+noimageindex`, and `public/robots.txt` is `Disallow: /`. This is only a request
+to well-behaved bots. The real protection is the access wall in
+`middleware.ts` / `src/lib/access-wall.ts` (docs/DECISIONS.md 2026-10-08):
+known crawlers and script clients get 403, anonymous visitors only reach the
+front page, login and legal pages, and everything else (pages, APIs, product
+images) needs a valid user session.
+
+Recommended Cloudflare settings for hellocal.io (dashboard, not code):
+Security → Bots → Bot Fight Mode on; "Block AI bots" / AI Scrapers and Crawlers
+on; a rate-limiting rule on `/api/auth/*` (e.g. 10 requests/min per IP).
+New public routes (webhooks, OAuth callbacks) must be added to
+`PUBLIC_API_PREFIXES` in `src/lib/access-wall.ts`, otherwise anonymous calls
+get 401.
+
+## Søgemotor (Meilisearch, 2026-10-10)
+
+- Service `meilisearch` (`getmeili/meilisearch:${MEILI_TAG:-v1.53.2}`), kun på `backend`-netværket, data i `./data/meilisearch` (oprettes af deployet). Ingen port og intet tunnel-hostnavn.
+- `MEILI_MASTER_KEY` genereres én gang af deployet (trinnet "Ensure scan-app secrets") i `.env.production` og røres aldrig igen. Appen får `MEILI_URL` (standard `http://meilisearch:7700`) og nøglen.
+- Deployet starter `meilisearch` før appen (trinnet "Start search engine", `continue-on-error`). Starter den ikke, søger appen i databasen som før; intet andet stopper.
+- Indekset er en kopi af databasen og skal ikke tages backup af: slettes `./data/meilisearch`, bygger robotten "Søgemotor: opdater indeks" det op igen inden for 5 minutter (kan startes med det samme fra admin → Robotter).
+- Fejlsøgning: `docker compose ... logs meilisearch`; robottens seneste besked står i admin → Robotter.
 
 ## Backup
 
@@ -452,6 +468,20 @@ Sikringer:
 - **Overvågning:** `.github/workflows/uptime.yml` kalder `https://hellocal.io/api/health?deep=1` hvert 5. minut fra GitHubs servere (virker også, når NAS'en er nede; tre forsøg før alarm). En fejlet kørsel giver mail/push fra GitHub til den, der sidst ændrede workflowet (GitHub-indstilling: Notifications → Actions → "Only notify for failed workflows").
 - **Admin:** forsiden viser en rød boks "Deploy blokeret", når en migrering står som fejlet.
 - Gendannelsen 2026-10-07 skete via en midlertidig `prisma migrate resolve --rolled-back …` i `migrate`-servicen (c245f4cb), fjernet igen efter migreringen var anvendt. Samme fremgangsmåde bruges, hvis en migrering igen står som fejlet.
+
+### Hændelse 2026-10-10: søge-migrationen fejlede i produktion trods prøvekørslen
+
+`20261010120000_search_unaccent_trgm` fejlede på prøvekørslen (Postgres 17 bygger indeks/visninger med begrænset `search_path`, så `unaccent()` ikke fandtes), og deployet blev stoppet. Men trinnet "Build and start amount-suggestion agent" har `if: ${{ !cancelled() }}` og afhænger af `migrate` (compose `depends_on`), så det kørte `migrate deploy` mod **produktionen** straks efter og efterlod migrationen som fejlet (P3009) — prøvekørslens beskyttelse blev omgået. Migrationens DDL kører i én transaktion og blev rullet tilbage; kun rækken i `_prisma_migrations` står som fejlet. Gendannelse: midlertidig `migrate resolve --rolled-back` i `migrate`-servicen (PR #377); migrationen blev anvendt i produktion af deployet 2026-10-10 kl. 12.28 (dansk tid), og kommandoen er fjernet igen.
+
+Forslag (kræver ejerens godkendelse, ændret ikke): lad agent-trinnene kun køre, når trinnet "Test database migrations on a schema copy" ikke fejlede (fx `if: ${{ !cancelled() && steps.migrate-test.conclusion != 'failure' }}`), så en fejlet prøvekørsel aldrig udløser `migrate` i produktion.
+
+### Overvågning (2026-10-08)
+
+Tre lag, så en fejl altid giver besked:
+
+1. **GitHub** (`.github/workflows/uptime.yml`): hvert 5. minut udefra; virker også, når NAS'en er slukket. Mail/push fra GitHub.
+2. **Vagt-robot på NAS'en** (`scripts/uptime-agent`, service `uptime-agent`): hver time (`UPTIME_CHECK_INTERVAL_SECONDS`, standard 3600) tjekkes `hellocal.io` udefra (gennem tunnelen), appen indefra (`http://app:3000`, uden om Cloudflare — skelner tunnel- fra app-fejl), alle `hellocal-v2`-containere (Docker-socket, kun læsning; afsluttede containere med `restart: "no"` springes over) og ledig plads på `/volume1` (alarm under 10 %). Mail til `UPTIME_ALERT_EMAIL` (standard `peter@packroff.dk`) ved ny fejl, påmindelse hver 6. time og "løst"-mail, når det virker igen; en "vagt-robot startet"-mail ved hver opstart bekræfter, at mail virker (og afslører en NAS-genstart). SMTP som appen: `.env.production` overskrevet af admin-gemte nøgler i `app_secrets` (dekrypteres med `ADMIN_SESSION_SECRET`). Startes i deploy-jobbet før migreringer og app, uden `depends_on`, så den kører, selv om de fejler.
+3. **Cloudflare** (sættes op i Cloudflare-dashboardet af brugeren, ikke i koden): Notifications → "Tunnel Health Alert" for tunnelen og evt. "Passive Origin Monitoring" for hellocal.io — mail, når tunnelen eller NAS'en ikke svarer Cloudflare.
 
 ## Feltkryptering af brugerdata (2026-10-04)
 

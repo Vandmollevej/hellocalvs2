@@ -3,6 +3,7 @@
 import { MiniBarChart, MiniLineChart, type MiniChartPoint } from "@/components/hf/MiniChart";
 import { useTranslation } from "@/i18n/LocaleProvider";
 import { intlLocale, type Locale } from "@/i18n";
+import { INSIGHT_PANELS, type InsightLayout, type InsightPanelId } from "@/lib/insight-layout";
 
 // Fælles visning af Hello Doc-indsigten (profilkolonne + grafpaneler), bygget
 // på .hf-insight-/.hf-panel-klasserne i globals.css (adminfladens design).
@@ -64,7 +65,7 @@ export function InsightKpi({ label, value }: { label: string; value: string }) {
   );
 }
 
-export function InsightGrid({ data }: { data: InsightData }) {
+export function InsightGrid({ data, layout }: { data: InsightData; layout?: InsightLayout }) {
   const { t, locale } = useTranslation();
   const noData = t("helloDoc.preview.noChartData");
 
@@ -94,33 +95,37 @@ export function InsightGrid({ data }: { data: InsightData }) {
       ]
     : [];
 
+  const panels: Record<InsightPanelId, React.ReactNode> = {
+    weight: data.weight && (
+      <InsightPanel key="weight" title={t("helloDoc.preview.weightSection")}>
+        <MiniLineChart points={weightPoints} unit=" kg" emptyLabel={noData} />
+      </InsightPanel>
+    ),
+    food: data.dailyNutrition && data.show?.food !== false && (
+      <InsightPanel key="food" title={t("helloDoc.preview.foodSection")} footnote={`${t("helloDoc.preview.kcalUnit")}/dag`}>
+        <MiniBarChart points={kcalPoints} emptyLabel={noData} />
+      </InsightPanel>
+    ),
+    vitamins: data.dailyNutrition && data.show?.vitamins !== false && (
+      <InsightPanel key="vitamins" title={t("helloDoc.preview.vitaminsSection")}>
+        <MiniBarChart points={vitaminPoints} color="var(--hf-color-appbar)" emptyLabel={noData} />
+      </InsightPanel>
+    ),
+    fluid: data.fluidHistory && (
+      <InsightPanel key="fluid" title={t("helloDoc.preview.fluidSection")}>
+        <MiniBarChart points={fluidPoints} color="var(--hf-color-google)" emptyLabel={noData} />
+      </InsightPanel>
+    ),
+  };
+
   return (
     <div className="hf-insight__grid">
-      {data.weight && (
-        <InsightPanel title={t("helloDoc.preview.weightSection")}>
-          <MiniLineChart points={weightPoints} unit=" kg" emptyLabel={noData} />
-        </InsightPanel>
-      )}
-      {data.dailyNutrition && data.show?.food !== false && (
-        <InsightPanel title={t("helloDoc.preview.foodSection")} footnote={`${t("helloDoc.preview.kcalUnit")}/dag`}>
-          <MiniBarChart points={kcalPoints} emptyLabel={noData} />
-        </InsightPanel>
-      )}
-      {data.dailyNutrition && data.show?.vitamins !== false && (
-        <InsightPanel title={t("helloDoc.preview.vitaminsSection")}>
-          <MiniBarChart points={vitaminPoints} color="var(--hf-color-appbar)" emptyLabel={noData} />
-        </InsightPanel>
-      )}
-      {data.fluidHistory && (
-        <InsightPanel title={t("helloDoc.preview.fluidSection")}>
-          <MiniBarChart points={fluidPoints} color="var(--hf-color-google)" emptyLabel={noData} />
-        </InsightPanel>
-      )}
+      {(layout?.order ?? INSIGHT_PANELS).filter((id) => !layout?.hidden.includes(id)).map((id) => panels[id])}
     </div>
   );
 }
 
-export function HelloDocInsight({ data, greeting }: { data: InsightData; greeting?: string }) {
+export function HelloDocInsight({ data, greeting, layout }: { data: InsightData; greeting?: string; layout?: InsightLayout }) {
   const { t, locale } = useTranslation();
   const hasFacts = data.weight || data.goals || data.sleep;
 
@@ -170,7 +175,7 @@ export function HelloDocInsight({ data, greeting }: { data: InsightData; greetin
       </aside>
 
       <div className="hf-insight__content">
-        <InsightGrid data={data} />
+        <InsightGrid data={data} layout={layout} />
       </div>
     </div>
   );

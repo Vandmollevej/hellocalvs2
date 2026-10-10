@@ -7,6 +7,7 @@ import { GoalForm, emptyGoalFormValues, type GoalFormValues } from "@/components
 import { useTranslation } from "@/i18n/LocaleProvider";
 import { isBodyMeasurementField } from "@/lib/body-measurements";
 import { isCompositionGoalField } from "@/lib/goal-composition";
+import { isActivityGoalField } from "@/lib/goal-activity";
 import { isNutritionGoalField } from "@/lib/goal-nutrition";
 import type { GoalDTO } from "@/lib/user-goals";
 
@@ -23,6 +24,7 @@ function toFormValues(goal: GoalDTO): GoalFormValues {
     else if (isBodyMeasurementField(target.type)) values.measurements[target.type] = toInput(target.value);
     else if (isCompositionGoalField(target.type)) values.composition[target.type] = toInput(target.value);
     else if (isNutritionGoalField(target.type)) values.nutrition[target.type] = toInput(target.value);
+    else if (isActivityGoalField(target.type)) values.activity[target.type] = toInput(target.value);
   }
   return values;
 }

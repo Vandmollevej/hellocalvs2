@@ -60,15 +60,19 @@ export function historyRangeToDays(range: DoctorShareHistoryRange): number | nul
   }
 }
 
-export const DOCTOR_SHARE_INVITATION_VALID_DAYS = 14;
+// Udløbsdatoen vælges af ejeren med en datepicker ("YYYY-MM-DD") — tom/null
+// betyder intet udløb. Adgangen gælder til og med den valgte dag.
+export function parseDoctorShareExpiry(value: unknown): Date | null | undefined {
+  if (value === null || value === "") return null;
+  if (typeof value !== "string" || !/^\d{4}-\d{2}-\d{2}$/.test(value)) return undefined;
+  const date = new Date(`${value}T23:59:59.999`);
+  return Number.isNaN(date.getTime()) ? undefined : date;
+}
 
-// A PENDING invitation whose 14-day acceptance window has passed — used by
-// both the token-authenticated external view (/hello-doc/[token]) and its
-// accept action to decide whether to flip the share to EXPIRED instead of
-// ACTIVE. Only meaningful for PENDING shares; ACTIVE access has no
-// expiry (see docs/DECISIONS.md 2026-09-12).
-export function isDoctorSharePendingExpired(share: { status: string; expiresAt: Date | string | null }) {
-  if (share.status !== "PENDING" || !share.expiresAt) return false;
+// True når den valgte udløbsdato er passeret — gælder både en ventende
+// invitation og en aktiv adgang. Uden udløbsdato udløber intet.
+export function isDoctorShareExpired(share: { status: string; expiresAt: Date | string | null }) {
+  if ((share.status !== "PENDING" && share.status !== "ACTIVE") || !share.expiresAt) return false;
   return new Date(share.expiresAt).getTime() <= Date.now();
 }
 

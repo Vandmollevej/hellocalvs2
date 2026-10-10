@@ -7,6 +7,7 @@ import { ProductResultRow, type ProductResult } from "@/components/ProductResult
 import { RecipeRow, recipeHref } from "@/components/recipes/RecipeRow";
 import { SkeletonMediaRows, SkeletonScreen } from "@/components/hf/Skeleton";
 import { useTranslation } from "@/i18n/LocaleProvider";
+import { readCache, writeCache, type CachedProduct } from "@/lib/offline-cache";
 
 // Favoritter (kan lægges i bundmenuen): brugerens favoritmadvarer
 // (/api/favorites) og favoritopskrifter fra delte retter (/api/recipe-favorites)
@@ -15,7 +16,8 @@ import { useTranslation } from "@/i18n/LocaleProvider";
 type FavoriteResponse = {
   favorites: Array<{ id: string; product: { id: string; name: string; imageUrl: string | null } | null }>;
 };
-type FavoriteRecipe = { id: string; name: string; kcal: number; images?: string[] };
+// per100g: måltidskasse-ret uden portionsvægt (BetterFeast), kcal pr. 100 g.
+type FavoriteRecipe = { id: string; name: string; kcal: number; per100g?: boolean; images?: string[] };
 
 export default function FavoritesPage() {
   const { t } = useTranslation();
@@ -32,19 +34,19 @@ export default function FavoritesPage() {
         if (!response.ok) throw new Error("offline");
         return (await response.json()) as FavoriteResponse;
       })
-      .then((data) =>
-        setProducts(
-          data.favorites
-            .filter((favorite) => favorite.product)
-            .map((favorite) => ({
-              id: favorite.product!.id,
-              title: favorite.product!.name,
-              image: favorite.product!.imageUrl,
-            }))
-        )
-      )
+      .then((data) => {
+        const mapped = data.favorites
+          .filter((favorite) => favorite.product)
+          .map((favorite) => ({
+            id: favorite.product!.id,
+            title: favorite.product!.name,
+            image: favorite.product!.imageUrl,
+          }));
+        setProducts(mapped);
+        writeCache<CachedProduct[]>("favorites", mapped);
+      })
       .catch(() => {
-        if (!controller.signal.aborted) setProducts([]);
+        if (!controller.signal.aborted) setProducts(readCache<CachedProduct[]>("favorites")?.data ?? []);
       });
     fetch("/api/recipe-favorites", { signal: controller.signal })
       .then(async (response) => (response.ok ? ((await response.json()) as { favorites: FavoriteRecipe[] }).favorites : []))
@@ -106,7 +108,9 @@ export default function FavoritesPage() {
                   href: recipeHref(recipe.id),
                   name: recipe.name,
                   imageUrl: recipe.images?.[0] ?? null,
-                  subtitle: t("recipes.kcalTotal", { kcal: Math.round(recipe.kcal) }),
+                  subtitle: t(recipe.per100g ? "recipeFilters.kcalPer100g" : "recipes.kcalTotal", {
+                    kcal: Math.round(recipe.kcal),
+                  }),
                 }}
               />
             ))}

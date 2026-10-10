@@ -33,6 +33,9 @@ const SOURCE_LABELS: Partial<Record<ExternalProductSource, string>> = {
   OPEN_FOOD_FACTS: "Open Food Facts",
   FRIDA: "Frida",
   HELLOFRESH: "HelloFresh",
+  RETNEMT: "RetNemt",
+  BETTERFEAST: "BetterFeast",
+  VALDEMARSRO: "Valdemarsro",
   USDA: "USDA",
 };
 

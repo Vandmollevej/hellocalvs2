@@ -22,6 +22,9 @@ export function productGaps(product: {
   pendingImageUrl: string | null;
   ingredientsText: string | null;
   nutritionMissing: boolean;
+  // Frida-skøn (∼, DECISIONS 2026-10-10) er stadig et hul: en rigtig
+  // næringsdeklaration afløser det.
+  fridaEstimateId?: string | null;
   pendingFields: string[];
   brand: { logoUrl: string | null } | null;
 }): ProductGaps {
@@ -29,7 +32,7 @@ export function productGaps(product: {
   return {
     image: !product.imageUrl && !product.pendingImageUrl,
     logo: !product.brand?.logoUrl,
-    nutrition: product.nutritionMissing && !reading("nutrition"),
+    nutrition: (product.nutritionMissing || !!product.fridaEstimateId) && !reading("nutrition"),
     ingredients: !product.ingredientsText?.trim() && !reading("ingredients"),
   };
 }

@@ -126,15 +126,23 @@ export async function storeIntegrationItems(userId: string, items: IntegrationIt
 
   // Upsert: en dagssum (fx dagens skridt) hentes delvist og vokser ved næste
   // synkronisering, så en eksisterende række skal opdateres, ikke springes over.
-  for (const m of metrics) {
+  // Samme måling kan komme flere gange i ét svar (fx Google Health), og to
+  // synkroniseringer kan køre samtidig — seneste værdi pr. nøgle vinder.
+  const unique = new Map(metrics.map((m) => [`${m.source}|${m.type}|${m.recordedAt.getTime()}`, m]));
+  for (const m of unique.values()) {
     const key = { userId: m.userId, source: m.source, type: m.type, recordedAt: m.recordedAt };
     const existing = await prisma.healthMetric.findUnique({
       where: { userId_source_type_recordedAt: key },
       select: { id: true, value: true },
     });
     if (!existing) {
-      await prisma.healthMetric.create({ data: m });
-      stored += 1;
+      try {
+        await prisma.healthMetric.create({ data: m });
+        stored += 1;
+      } catch (err) {
+        if ((err as { code?: string }).code !== "P2002") throw err;
+        await prisma.healthMetric.update({ where: { userId_source_type_recordedAt: key }, data: { value: m.value } });
+      }
     } else if (existing.value !== m.value) {
       await prisma.healthMetric.update({ where: { id: existing.id }, data: { value: m.value } });
     }

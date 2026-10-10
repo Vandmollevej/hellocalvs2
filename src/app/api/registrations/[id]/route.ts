@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { productImageForViewer } from "@/lib/product-display-image";
 import { unauthorized } from "@/lib/session";
 import { getProfileContext, getProfileUser, mayDeleteRegistration } from "@/lib/family-access";
+import { detectNutritionChanges, USER_EDIT_CONFIDENCE } from "@/lib/nutrition-reports";
 
 type RouteContext = { params: Promise<{ id: string }> };
 
@@ -138,6 +139,33 @@ export async function PATCH(req: Request, { params }: RouteContext) {
     }
 
     const scale = existing.amountGrams > 0 ? (amountGrams as number) / existing.amountGrams : 1;
+    // Samme kontrolsag som ved ny registrering (docs/DECISIONS.md 2026-10-10):
+    // kun når protein/kulhydrat/fedt faktisk er ændret i forhold til det, der
+    // allerede lå i registreringen, så en gentagen gem ikke giver dubletter.
+    const macroSnapshotChanged =
+      user.role !== "ADMIN" &&
+      existing.productId !== null &&
+      (
+        [
+          [proteinSnapshot, existing.proteinSnapshot],
+          [carbsSnapshot, existing.carbsSnapshot],
+          [fatSnapshot, existing.fatSnapshot],
+        ] as [number, number][]
+      ).some(([next, before]) => Math.abs(next - before * scale) >= 0.05);
+    const product = macroSnapshotChanged
+      ? await prisma.product.findUnique({
+          where: { id: existing.productId as string },
+          select: { proteinPer100g: true, carbsPer100g: true, fatPer100g: true },
+        })
+      : null;
+    const nutritionChanges = product
+      ? detectNutritionChanges(product, amountGrams as number, {
+          proteinPer100g: proteinSnapshot,
+          carbsPer100g: carbsSnapshot,
+          fatPer100g: fatSnapshot,
+        })
+      : [];
+
     const registration = await prisma.registration.update({
       where: { id: existing.id },
       data: {
@@ -164,6 +192,19 @@ export async function PATCH(req: Request, { params }: RouteContext) {
         ...(parsedCreatedAt ? { createdAt: parsedCreatedAt } : {}),
       },
     });
+
+    if (nutritionChanges.length > 0 && existing.productId) {
+      await prisma.productNutritionReport.create({
+        data: {
+          productId: existing.productId,
+          reporterUserId: user.id,
+          source: "USER_EDIT",
+          amountGrams: amountGrams as number,
+          changes: nutritionChanges,
+          confidence: USER_EDIT_CONFIDENCE,
+        },
+      });
+    }
 
     return NextResponse.json({ ok: true, registration });
   } catch (error) {

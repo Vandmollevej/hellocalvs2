@@ -15,6 +15,7 @@ export default function InviteHelloDocUserPage() {
   const [email, setEmail] = useState("");
   const [categories, setCategories] = useState<DoctorShareCategory[]>(DEFAULT_DOCTOR_SHARE_CATEGORIES);
   const [historyRange, setHistoryRange] = useState<DoctorShareHistoryRange>("ALL");
+  const [expiresAt, setExpiresAt] = useState("");
   const [sending, setSending] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -25,7 +26,7 @@ export default function InviteHelloDocUserPage() {
       const res = await fetch("/api/doctor-shares", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, email, categories, historyRange }),
+        body: JSON.stringify({ name, email, categories, historyRange, expiresAt: expiresAt || null }),
       });
       const data = await res.json();
       if (!res.ok) {
@@ -53,18 +54,15 @@ export default function InviteHelloDocUserPage() {
           >
             {sending ? t("helloDoc.sending") : t("helloDoc.sendInvitation")}
           </button>
-          <p className="text-text-secondary hf-type-caption text-center">{t("helloDoc.invitationExpiryHint")}</p>
           {error && <p className="hf-type-caption text-center text-hf-red-dark">{error}</p>}
         </div>
       }
     >
       <div className="px-4 pb-8 pt-4">
-        {/* Heading/description + field styling matches the HelloFresh
-            checkout reference the user supplied (docs/DECISIONS.md
-            2026-09-12), deliberately departing from the standard page-title
-            treatment for this one screen. */}
-        <h1 className="hf-type-hero mb-2 text-hf-black">{t("helloDoc.inviteHeading")}</h1>
-        <p className="text-text-secondary hf-type-body-lg mb-8">{t("helloDoc.inviteHeadingDescription")}</p>
+        {/* Standard sidetitel (22 px) som alle andre sider; den tidligere
+            32 px-overskrift var for stor (bruger 2026-10-09). */}
+        <h1 className="hf-type-page-title mb-2 text-hf-black">{t("helloDoc.inviteHeading")}</h1>
+        <p className="text-text-secondary hf-type-body mb-8">{t("helloDoc.inviteHeadingDescription")}</p>
 
         <DoctorShareEditor
           name={name}
@@ -75,6 +73,8 @@ export default function InviteHelloDocUserPage() {
           onCategoriesChange={setCategories}
           historyRange={historyRange}
           onHistoryRangeChange={setHistoryRange}
+          expiresAt={expiresAt}
+          onExpiresAtChange={setExpiresAt}
           previewHref="/settings/hello-doc/preview"
         />
       </div>

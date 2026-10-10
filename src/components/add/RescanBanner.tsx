@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState, type PointerEvent as ReactPointerEvent } from "react";
-import { IconCamera } from "@tabler/icons-react";
+import { IconCamera, IconX } from "@tabler/icons-react";
 import { ProductCaptureFlow } from "@/components/camera/ProductCaptureFlow";
 import { RESCAN_POINTS, type RescanStep } from "@/lib/product-rescan-offer";
 import { useTranslation } from "@/i18n/LocaleProvider";
@@ -130,12 +130,12 @@ export function RescanBanner({
           type="button"
           aria-label={t("rescan.collapse")}
           onClick={() => setState("peek")}
-          className="absolute inset-0 z-30 bg-hf-overlay"
+          className="fixed inset-0 z-[55] bg-hf-overlay"
         />
       )}
       <div
-        className={`pointer-events-none absolute inset-x-0 top-0 z-40 flex items-start justify-center ${
-          state === "open" ? "bottom-0" : ""
+        className={`pointer-events-none flex items-start justify-center ${
+          state === "open" ? "fixed inset-0 z-[60]" : "absolute inset-x-0 top-0 z-40"
         }`}
         style={{ transform, transition }}
       >
@@ -150,9 +150,18 @@ export function RescanBanner({
           </button>
         ) : state === "open" ? (
           <div
-            className="pointer-events-auto flex w-full flex-col rounded-b-[16px] shadow-lg bg-hf-page max-h-[calc(100%-24px)]"
+            className="pointer-events-auto relative flex w-full flex-col rounded-b-[16px] shadow-lg bg-hf-page max-h-[calc(100%-24px)]"
           >
-            <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain p-4">
+            <button
+              type="button"
+              aria-label={t("rescan.collapse")}
+              onClick={() => setState("peek")}
+              className="absolute right-2 top-2 z-10 flex h-10 w-10 items-center justify-center rounded-full text-hf-black"
+              style={{ background: "var(--hf-color-card)" }}
+            >
+              <IconX size={20} stroke={1.8} aria-hidden="true" />
+            </button>
+            <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain p-4 pr-14">
               <p className="hf-type-body hf-type-strong text-hf-black">
                 {t("rescan.headline", { points: RESCAN_POINTS })}
               </p>

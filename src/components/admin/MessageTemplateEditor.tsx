@@ -4,6 +4,8 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import type { MessageTemplateData } from "@/components/admin/MessageTemplateRow";
 import { MailPreview, PhonePreviewEditor, PreviewTabs, PushPreview } from "@/components/admin/PhonePreviewEditor";
+import { Toggle } from "@/components/ui/Toggle";
+import { channelFlags, channelFromFlags } from "@/lib/message-event-labels";
 
 type View = "mail" | "push";
 
@@ -18,9 +20,10 @@ export function MessageTemplateEditor({ template, label }: { template: MessageTe
   const [message, setMessage] = useState<string | null>(null);
 
   const dirty = JSON.stringify(form) !== JSON.stringify(saved);
+  const { email, push } = channelFlags(form.channel);
   const views: { value: View; label: string }[] = [];
-  if (form.channel !== "PUSH") views.push({ value: "mail", label: "Mail" });
-  if (form.channel !== "EMAIL") views.push({ value: "push", label: "Notifikation" });
+  if (email) views.push({ value: "mail", label: "Mail" });
+  if (push) views.push({ value: "push", label: "Notifikation" });
   const activeView = views.some((option) => option.value === view) ? view : views[0].value;
 
   async function save() {
@@ -65,36 +68,26 @@ export function MessageTemplateEditor({ template, label }: { template: MessageTe
         )
       }
     >
-      <div>
-        <h1 className="hf-type-title text-hf-black">{label}</h1>
-        <p className="mt-1 hf-type-small text-text-muted">{template.event}</p>
-      </div>
+      <h1 className="hf-type-title text-hf-black">{label}</h1>
 
-      <div className="flex flex-wrap items-center gap-4">
-        <label className="flex items-center gap-2 hf-type-body text-text-secondary">
-          Kanal
-          <select
-            value={form.channel}
-            onChange={(event) => setForm({ ...form, channel: event.target.value })}
-            className={fieldClass}
-          >
-            <option value="EMAIL">E-mail</option>
-            <option value="PUSH">Push</option>
-            <option value="BOTH">Begge</option>
-          </select>
-        </label>
-        <label className="flex items-center gap-2 hf-type-body text-text-secondary">
-          <input
-            type="checkbox"
-            checked={form.enabled}
-            onChange={(event) => setForm({ ...form, enabled: event.target.checked })}
-          />
-          Aktiv
-        </label>
+      <div className="flex flex-col gap-2">
+        <Toggle
+          label="E-mail"
+          checked={email}
+          disabled={email && !push}
+          onChange={(value) => setForm({ ...form, channel: channelFromFlags(value, push) })}
+        />
+        <Toggle
+          label="Push"
+          checked={push}
+          disabled={push && !email}
+          onChange={(value) => setForm({ ...form, channel: channelFromFlags(email, value) })}
+        />
+        <Toggle label="Aktiv" checked={form.enabled} onChange={(value) => setForm({ ...form, enabled: value })} />
       </div>
 
       <label className="flex flex-col gap-1 hf-type-small text-text-secondary">
-        {form.channel === "PUSH" ? "Titel" : "Emne (bruges også som titel på notifikationen)"}
+        {email ? "Emne (bruges også som titel på notifikationen)" : "Titel"}
         <input
           value={form.subject}
           onChange={(event) => setForm({ ...form, subject: event.target.value })}
@@ -111,9 +104,7 @@ export function MessageTemplateEditor({ template, label }: { template: MessageTe
           className={`${fieldClass} hf-type-small font-mono`}
         />
       </label>
-      {form.channel !== "EMAIL" && (
-        <p className="hf-type-small text-text-muted">Notifikationen viser teksten uden HTML-formatering.</p>
-      )}
+      {push && <p className="hf-type-small text-text-muted">Notifikationen viser teksten uden HTML-formatering.</p>}
 
       <div className="flex items-center justify-end gap-3">
         {message && <span className="mr-auto hf-type-body text-text-secondary">{message}</span>}
@@ -121,7 +112,7 @@ export function MessageTemplateEditor({ template, label }: { template: MessageTe
           type="button"
           disabled={busy || !dirty}
           onClick={() => setForm(saved)}
-          className="hf-btn-secondary"
+          className="hf-btn-secondary h-12 px-4"
         >
           Fortryd
         </button>
@@ -129,7 +120,7 @@ export function MessageTemplateEditor({ template, label }: { template: MessageTe
           type="button"
           disabled={busy || !dirty}
           onClick={save}
-          className="hf-btn-primary"
+          className="hf-btn-primary h-12 px-4"
         >
           Gem
         </button>

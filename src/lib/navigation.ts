@@ -25,6 +25,7 @@ export const BOTTOM_NAV_HREFS: Record<string, string> = {
   status: "/profile/status",
   billeddagbog: "/profile/photo-diary",
   kropsmaal: "/profile/body-measurements",
+  screeninger: "/profile/screenings",
 };
 
 // Hjem er obligatorisk og stationær: den står altid fast ved siden af slideren

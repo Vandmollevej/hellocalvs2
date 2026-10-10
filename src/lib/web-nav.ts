@@ -90,12 +90,9 @@ export const WEB_SETTINGS: WebNavItem[] = [
   { key: "support", href: "/settings/support", labelKey: "web.support", icon: IconLifebuoy },
 ];
 
-// Sider, der ikke længere har eget menupunkt, men stadig er topniveau (ingen
-// tilbagepil): Ingredienser nås fra Opret ret.
-const EXTRA_ROOT_PATHS = ["/ingredients"];
 // Topniveau-sider i desktop-skallen: alt, sidebjælken og topbjælken linker
 // direkte til. De får ingen tilbagepil i sideoverskriften (som admin).
-const WEB_ROOT_PATHS = new Set([...WEB_TOP_NAV, ...WEB_SHORTCUTS, ...WEB_SETTINGS.flatMap((item) => [item, ...(item.children ?? [])])].map((item) => item.href.split("?")[0]).concat(EXTRA_ROOT_PATHS));
+const WEB_ROOT_PATHS = new Set([...WEB_TOP_NAV, ...WEB_SHORTCUTS, ...WEB_SETTINGS.flatMap((item) => [item, ...(item.children ?? [])])].map((item) => item.href.split("?")[0]));
 
 export function isWebRootPath(pathname: string) {
   const path = pathname.length > 1 && pathname.endsWith("/") ? pathname.slice(0, -1) : pathname;

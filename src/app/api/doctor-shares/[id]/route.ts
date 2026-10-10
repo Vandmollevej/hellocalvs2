@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import type { DoctorShareHistoryRange } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { getSessionUser } from "@/lib/session";
-import { sanitizeDoctorShareCategories, isDoctorShareHistoryRange } from "@/lib/doctor-share";
+import { sanitizeDoctorShareCategories, isDoctorShareHistoryRange, parseDoctorShareExpiry } from "@/lib/doctor-share";
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -25,7 +25,7 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
   const existing = await prisma.doctorShare.findFirst({ where: { id, ownerId: user.id } });
   if (!existing) return NextResponse.json({ message: "Ikke fundet" }, { status: 404 });
 
-  let body: { name?: string; email?: string; categories?: unknown; historyRange?: unknown };
+  let body: { name?: string; email?: string; categories?: unknown; historyRange?: unknown; expiresAt?: unknown };
   try {
     body = await request.json();
   } catch {
@@ -37,6 +37,8 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
     email?: string;
     categories?: string[];
     historyRange?: DoctorShareHistoryRange;
+    expiresAt?: Date | null;
+    status?: "ACTIVE" | "PENDING";
   } = {};
 
   if (body.name !== undefined) {
@@ -56,6 +58,17 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
   }
   if (body.historyRange !== undefined && isDoctorShareHistoryRange(body.historyRange)) {
     data.historyRange = body.historyRange;
+  }
+
+  if (body.expiresAt !== undefined) {
+    const expiresAt = parseDoctorShareExpiry(body.expiresAt);
+    if (expiresAt === undefined) return NextResponse.json({ message: "Ugyldig udløbsdato" }, { status: 400 });
+    if (expiresAt && expiresAt.getTime() <= Date.now()) {
+      return NextResponse.json({ message: "Udløbsdatoen skal ligge i fremtiden" }, { status: 400 });
+    }
+    data.expiresAt = expiresAt;
+    // En udløbet adgang åbnes igen, når ejeren vælger en ny dato eller intet udløb.
+    if (existing.status === "EXPIRED") data.status = existing.acceptedAt ? "ACTIVE" : "PENDING";
   }
 
   const share = await prisma.doctorShare.update({ where: { id }, data });

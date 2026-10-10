@@ -82,6 +82,14 @@ export default async function AdminProductsPage({
     servingSizeGrams: p.servingSizeGrams,
     servingSizeUnitSingular: p.servingSizeUnitSingular,
     ingredientsText: p.ingredientsText,
+    translation:
+      p.translationStatus === "PENDING"
+        ? {
+            sourceLang: p.translationSourceLang,
+            nameOriginal: p.nameOriginal,
+            ingredientsOriginal: p.ingredientsOriginal,
+          }
+        : null,
     allergens: p.allergens,
     additives: p.additives,
     createdBy: p.createdBy ? userLabel(p.createdBy) : null,
@@ -113,7 +121,7 @@ export default async function AdminProductsPage({
   });
 
   const tabClass = (active: boolean) =>
-    `hf-type-body rounded-md px-3 py-1.5 ${active ? "bg-hf-green-dark text-hf-white" : "border border-hf-tan-dark text-text-secondary"}`;
+    `hf-type-body rounded-md px-3 py-1.5 ${active ? "hf-selected" : "border border-hf-tan-dark text-text-secondary"}`;
   const activeSort = SORTS.find((s) => s.key === sort)!;
 
   return (

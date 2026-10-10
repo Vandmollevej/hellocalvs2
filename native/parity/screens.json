@@ -1,0 +1,1788 @@
+{
+  "screens": [
+    {
+      "route": "/",
+      "web": "src/app/page.tsx",
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/food/HomeScreen.kt"
+      ]
+    },
+    {
+      "route": "/account/phone",
+      "web": "src/app/account/phone/page.tsx",
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/onboarding/PhoneRequiredScreen.kt"
+      ]
+    },
+    {
+      "route": "/activity/create",
+      "web": "src/app/activity/create/page.tsx",
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/capture/ActivityCreateScreen.kt"
+      ]
+    },
+    {
+      "route": "/add/[id]",
+      "web": "src/app/add/[id]/page.tsx",
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/food/AddProductScreen.kt"
+      ]
+    },
+    {
+      "route": "/add/[id]/photo-award",
+      "web": "src/app/add/[id]/photo-award/page.tsx",
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/food/RegistrationScreens.kt"
+      ]
+    },
+    {
+      "route": "/add/[id]/update",
+      "web": "src/app/add/[id]/update/page.tsx",
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/food/RegistrationScreens.kt"
+      ]
+    },
+    {
+      "route": "/add/menu",
+      "web": "src/app/add/menu/page.tsx",
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/food/AddMenu.kt"
+      ]
+    },
+    {
+      "route": "/admin",
+      "web": "src/app/admin/page.tsx",
+      "status": "web-only",
+      "native": [],
+      "note": "Admin er et skrivebordsværktøj og bliver på web."
+    },
+    {
+      "route": "/admin/activities",
+      "web": "src/app/admin/activities/page.tsx",
+      "status": "web-only",
+      "native": [],
+      "note": "Admin er et skrivebordsværktøj og bliver på web."
+    },
+    {
+      "route": "/admin/admin-users",
+      "web": "src/app/admin/admin-users/page.tsx",
+      "status": "web-only",
+      "native": [],
+      "note": "Admin er et skrivebordsværktøj og bliver på web."
+    },
+    {
+      "route": "/admin/agents",
+      "web": "src/app/admin/agents/page.tsx",
+      "status": "web-only",
+      "native": [],
+      "note": "Admin er et skrivebordsværktøj og bliver på web."
+    },
+    {
+      "route": "/admin/analytics",
+      "web": "src/app/admin/analytics/page.tsx",
+      "status": "web-only",
+      "native": [],
+      "note": "Admin er et skrivebordsværktøj og bliver på web."
+    },
+    {
+      "route": "/admin/api-keys",
+      "web": "src/app/admin/api-keys/page.tsx",
+      "status": "web-only",
+      "native": [],
+      "note": "Admin er et skrivebordsværktøj og bliver på web."
+    },
+    {
+      "route": "/admin/approve/[token]",
+      "web": "src/app/admin/approve/[token]/page.tsx",
+      "status": "web-only",
+      "native": [],
+      "note": "Admin er et skrivebordsværktøj og bliver på web."
+    },
+    {
+      "route": "/admin/bug-reports",
+      "web": "src/app/admin/bug-reports/page.tsx",
+      "status": "web-only",
+      "native": [],
+      "note": "Admin er et skrivebordsværktøj og bliver på web."
+    },
+    {
+      "route": "/admin/chatbot",
+      "web": "src/app/admin/chatbot/page.tsx",
+      "status": "web-only",
+      "native": [],
+      "note": "Admin er et skrivebordsværktøj og bliver på web."
+    },
+    {
+      "route": "/admin/chatbot/[id]",
+      "web": "src/app/admin/chatbot/[id]/page.tsx",
+      "status": "web-only",
+      "native": [],
+      "note": "Admin er et skrivebordsværktøj og bliver på web."
+    },
+    {
+      "route": "/admin/claude",
+      "web": "src/app/admin/claude/page.tsx",
+      "status": "web-only",
+      "native": [],
+      "note": "Admin er et skrivebordsværktøj og bliver på web."
+    },
+    {
+      "route": "/admin/cron-jobs",
+      "web": "src/app/admin/cron-jobs/page.tsx",
+      "status": "web-only",
+      "native": [],
+      "note": "Admin er et skrivebordsværktøj og bliver på web."
+    },
+    {
+      "route": "/admin/designmanual",
+      "web": "src/app/admin/designmanual/page.tsx",
+      "status": "web-only",
+      "native": [],
+      "note": "Admin er et skrivebordsværktøj og bliver på web."
+    },
+    {
+      "route": "/admin/designmanual/skitser",
+      "web": "src/app/admin/designmanual/skitser/page.tsx",
+      "status": "web-only",
+      "native": [],
+      "note": "Admin er et skrivebordsværktøj og bliver på web."
+    },
+    {
+      "route": "/admin/dishes",
+      "web": "src/app/admin/dishes/page.tsx",
+      "status": "web-only",
+      "native": [],
+      "note": "Admin er et skrivebordsværktøj og bliver på web."
+    },
+    {
+      "route": "/admin/dishes/betterfeast",
+      "web": "src/app/admin/dishes/betterfeast/page.tsx",
+      "status": "web-only",
+      "native": [],
+      "note": "Admin er et skrivebordsværktøj og bliver på web."
+    },
+    {
+      "route": "/admin/dishes/betterfeast/[id]",
+      "web": "src/app/admin/dishes/betterfeast/[id]/page.tsx",
+      "status": "web-only",
+      "native": [],
+      "note": "Admin er et skrivebordsværktøj og bliver på web."
+    },
+    {
+      "route": "/admin/dishes/hellofresh",
+      "web": "src/app/admin/dishes/hellofresh/page.tsx",
+      "status": "web-only",
+      "native": [],
+      "note": "Admin er et skrivebordsværktøj og bliver på web."
+    },
+    {
+      "route": "/admin/dishes/hellofresh/[id]",
+      "web": "src/app/admin/dishes/hellofresh/[id]/page.tsx",
+      "status": "web-only",
+      "native": [],
+      "note": "Admin er et skrivebordsværktøj og bliver på web."
+    },
+    {
+      "route": "/admin/dishes/retnemt",
+      "web": "src/app/admin/dishes/retnemt/page.tsx",
+      "status": "web-only",
+      "native": [],
+      "note": "Admin er et skrivebordsværktøj og bliver på web."
+    },
+    {
+      "route": "/admin/dishes/retnemt/[id]",
+      "web": "src/app/admin/dishes/retnemt/[id]/page.tsx",
+      "status": "web-only",
+      "native": [],
+      "note": "Admin er et skrivebordsværktøj og bliver på web."
+    },
+    {
+      "route": "/admin/dishes/user",
+      "web": "src/app/admin/dishes/user/page.tsx",
+      "status": "web-only",
+      "native": [],
+      "note": "Admin er et skrivebordsværktøj og bliver på web."
+    },
+    {
+      "route": "/admin/dishes/valdemarsro",
+      "web": "src/app/admin/dishes/valdemarsro/page.tsx",
+      "status": "web-only",
+      "native": [],
+      "note": "Admin er et skrivebordsværktøj og bliver på web."
+    },
+    {
+      "route": "/admin/duplicate-products",
+      "web": "src/app/admin/duplicate-products/page.tsx",
+      "status": "web-only",
+      "native": [],
+      "note": "Admin er et skrivebordsværktøj og bliver på web."
+    },
+    {
+      "route": "/admin/economy",
+      "web": "src/app/admin/economy/page.tsx",
+      "status": "web-only",
+      "native": [],
+      "note": "Admin er et skrivebordsværktøj og bliver på web."
+    },
+    {
+      "route": "/admin/flows",
+      "web": "src/app/admin/flows/page.tsx",
+      "status": "web-only",
+      "native": [],
+      "note": "Admin er et skrivebordsværktøj og bliver på web."
+    },
+    {
+      "route": "/admin/flows/[id]",
+      "web": "src/app/admin/flows/[id]/page.tsx",
+      "status": "web-only",
+      "native": [],
+      "note": "Admin er et skrivebordsværktøj og bliver på web."
+    },
+    {
+      "route": "/admin/forgot-password",
+      "web": "src/app/admin/forgot-password/page.tsx",
+      "status": "web-only",
+      "native": [],
+      "note": "Admin er et skrivebordsværktøj og bliver på web."
+    },
+    {
+      "route": "/admin/guide-builder",
+      "web": "src/app/admin/guide-builder/page.tsx",
+      "status": "web-only",
+      "native": [],
+      "note": "Admin er et skrivebordsværktøj og bliver på web."
+    },
+    {
+      "route": "/admin/hello-doc",
+      "web": "src/app/admin/hello-doc/page.tsx",
+      "status": "web-only",
+      "native": [],
+      "note": "Admin er et skrivebordsværktøj og bliver på web."
+    },
+    {
+      "route": "/admin/images",
+      "web": "src/app/admin/images/page.tsx",
+      "status": "web-only",
+      "native": [],
+      "note": "Admin er et skrivebordsværktøj og bliver på web."
+    },
+    {
+      "route": "/admin/images/cutout-queue",
+      "web": "src/app/admin/images/cutout-queue/page.tsx",
+      "status": "web-only",
+      "native": [],
+      "note": "Admin er et skrivebordsværktøj og bliver på web."
+    },
+    {
+      "route": "/admin/ingredient-requests",
+      "web": "src/app/admin/ingredient-requests/page.tsx",
+      "status": "web-only",
+      "native": [],
+      "note": "Admin er et skrivebordsværktøj og bliver på web."
+    },
+    {
+      "route": "/admin/integrations",
+      "web": "src/app/admin/integrations/page.tsx",
+      "status": "web-only",
+      "native": [],
+      "note": "Admin er et skrivebordsværktøj og bliver på web."
+    },
+    {
+      "route": "/admin/integrations/[slug]",
+      "web": "src/app/admin/integrations/[slug]/page.tsx",
+      "status": "web-only",
+      "native": [],
+      "note": "Admin er et skrivebordsværktøj og bliver på web."
+    },
+    {
+      "route": "/admin/invite/[token]",
+      "web": "src/app/admin/invite/[token]/page.tsx",
+      "status": "web-only",
+      "native": [],
+      "note": "Admin er et skrivebordsværktøj og bliver på web."
+    },
+    {
+      "route": "/admin/jobs",
+      "web": "src/app/admin/jobs/page.tsx",
+      "status": "web-only",
+      "native": [],
+      "note": "Admin er et skrivebordsværktøj og bliver på web."
+    },
+    {
+      "route": "/admin/log",
+      "web": "src/app/admin/log/page.tsx",
+      "status": "web-only",
+      "native": [],
+      "note": "Admin er et skrivebordsværktøj og bliver på web."
+    },
+    {
+      "route": "/admin/login",
+      "web": "src/app/admin/login/page.tsx",
+      "status": "web-only",
+      "native": [],
+      "note": "Admin er et skrivebordsværktøj og bliver på web."
+    },
+    {
+      "route": "/admin/login-approval/[token]",
+      "web": "src/app/admin/login-approval/[token]/page.tsx",
+      "status": "web-only",
+      "native": [],
+      "note": "Admin er et skrivebordsværktøj og bliver på web."
+    },
+    {
+      "route": "/admin/login-approval/wait",
+      "web": "src/app/admin/login-approval/wait/page.tsx",
+      "status": "web-only",
+      "native": [],
+      "note": "Admin er et skrivebordsværktøj og bliver på web."
+    },
+    {
+      "route": "/admin/logos",
+      "web": "src/app/admin/logos/page.tsx",
+      "status": "web-only",
+      "native": [],
+      "note": "Admin er et skrivebordsværktøj og bliver på web."
+    },
+    {
+      "route": "/admin/messaging",
+      "web": "src/app/admin/messaging/page.tsx",
+      "status": "web-only",
+      "native": [],
+      "note": "Admin er et skrivebordsværktøj og bliver på web."
+    },
+    {
+      "route": "/admin/messaging/[event]",
+      "web": "src/app/admin/messaging/[event]/page.tsx",
+      "status": "web-only",
+      "native": [],
+      "note": "Admin er et skrivebordsværktøj og bliver på web."
+    },
+    {
+      "route": "/admin/messaging/kladde",
+      "web": "src/app/admin/messaging/kladde/page.tsx",
+      "status": "web-only",
+      "native": [],
+      "note": "Admin er et skrivebordsværktøj og bliver på web."
+    },
+    {
+      "route": "/admin/page-tree",
+      "web": "src/app/admin/page-tree/page.tsx",
+      "status": "web-only",
+      "native": [],
+      "note": "Admin er et skrivebordsværktøj og bliver på web."
+    },
+    {
+      "route": "/admin/partners",
+      "web": "src/app/admin/partners/page.tsx",
+      "status": "web-only",
+      "native": [],
+      "note": "Admin er et skrivebordsværktøj og bliver på web."
+    },
+    {
+      "route": "/admin/partners/[id]",
+      "web": "src/app/admin/partners/[id]/page.tsx",
+      "status": "web-only",
+      "native": [],
+      "note": "Admin er et skrivebordsværktøj og bliver på web."
+    },
+    {
+      "route": "/admin/partners/[id]/billing",
+      "web": "src/app/admin/partners/[id]/billing/page.tsx",
+      "status": "web-only",
+      "native": [],
+      "note": "Admin er et skrivebordsværktøj og bliver på web."
+    },
+    {
+      "route": "/admin/partners/[id]/payment",
+      "web": "src/app/admin/partners/[id]/payment/page.tsx",
+      "status": "web-only",
+      "native": [],
+      "note": "Admin er et skrivebordsværktøj og bliver på web."
+    },
+    {
+      "route": "/admin/partners/[id]/performance",
+      "web": "src/app/admin/partners/[id]/performance/page.tsx",
+      "status": "web-only",
+      "native": [],
+      "note": "Admin er et skrivebordsværktøj og bliver på web."
+    },
+    {
+      "route": "/admin/partners/ads",
+      "web": "src/app/admin/partners/ads/page.tsx",
+      "status": "web-only",
+      "native": [],
+      "note": "Admin er et skrivebordsværktøj og bliver på web."
+    },
+    {
+      "route": "/admin/partners/contacts",
+      "web": "src/app/admin/partners/contacts/page.tsx",
+      "status": "web-only",
+      "native": [],
+      "note": "Admin er et skrivebordsværktøj og bliver på web."
+    },
+    {
+      "route": "/admin/partners/reports",
+      "web": "src/app/admin/partners/reports/page.tsx",
+      "status": "web-only",
+      "native": [],
+      "note": "Admin er et skrivebordsværktøj og bliver på web."
+    },
+    {
+      "route": "/admin/partners/users",
+      "web": "src/app/admin/partners/users/page.tsx",
+      "status": "web-only",
+      "native": [],
+      "note": "Admin er et skrivebordsværktøj og bliver på web."
+    },
+    {
+      "route": "/admin/passkeys",
+      "web": "src/app/admin/passkeys/page.tsx",
+      "status": "web-only",
+      "native": [],
+      "note": "Admin er et skrivebordsværktøj og bliver på web."
+    },
+    {
+      "route": "/admin/pet-food-filter",
+      "web": "src/app/admin/pet-food-filter/page.tsx",
+      "status": "web-only",
+      "native": [],
+      "note": "Admin er et skrivebordsværktøj og bliver på web."
+    },
+    {
+      "route": "/admin/product-database",
+      "web": "src/app/admin/product-database/page.tsx",
+      "status": "web-only",
+      "native": [],
+      "note": "Admin er et skrivebordsværktøj og bliver på web."
+    },
+    {
+      "route": "/admin/product-database/brands",
+      "web": "src/app/admin/product-database/brands/page.tsx",
+      "status": "web-only",
+      "native": [],
+      "note": "Admin er et skrivebordsværktøj og bliver på web."
+    },
+    {
+      "route": "/admin/product-database/image-upload",
+      "web": "src/app/admin/product-database/image-upload/page.tsx",
+      "status": "web-only",
+      "native": [],
+      "note": "Admin er et skrivebordsværktøj og bliver på web."
+    },
+    {
+      "route": "/admin/product-database/images",
+      "web": "src/app/admin/product-database/images/page.tsx",
+      "status": "web-only",
+      "native": [],
+      "note": "Admin er et skrivebordsværktøj og bliver på web."
+    },
+    {
+      "route": "/admin/product-database/logo-upload",
+      "web": "src/app/admin/product-database/logo-upload/page.tsx",
+      "status": "web-only",
+      "native": [],
+      "note": "Admin er et skrivebordsværktøj og bliver på web."
+    },
+    {
+      "route": "/admin/product-database/products",
+      "web": "src/app/admin/product-database/products/page.tsx",
+      "status": "web-only",
+      "native": [],
+      "note": "Admin er et skrivebordsværktøj og bliver på web."
+    },
+    {
+      "route": "/admin/products",
+      "web": "src/app/admin/products/page.tsx",
+      "status": "web-only",
+      "native": [],
+      "note": "Admin er et skrivebordsværktøj og bliver på web."
+    },
+    {
+      "route": "/admin/products/[id]",
+      "web": "src/app/admin/products/[id]/page.tsx",
+      "status": "web-only",
+      "native": [],
+      "note": "Admin er et skrivebordsværktøj og bliver på web."
+    },
+    {
+      "route": "/admin/quality-control",
+      "web": "src/app/admin/quality-control/page.tsx",
+      "status": "web-only",
+      "native": [],
+      "note": "Admin er et skrivebordsværktøj og bliver på web."
+    },
+    {
+      "route": "/admin/quality-control/activities",
+      "web": "src/app/admin/quality-control/activities/page.tsx",
+      "status": "web-only",
+      "native": [],
+      "note": "Admin er et skrivebordsværktøj og bliver på web."
+    },
+    {
+      "route": "/admin/quality-control/shared-recipes",
+      "web": "src/app/admin/quality-control/shared-recipes/page.tsx",
+      "status": "web-only",
+      "native": [],
+      "note": "Admin er et skrivebordsværktøj og bliver på web."
+    },
+    {
+      "route": "/admin/reset-password",
+      "web": "src/app/admin/reset-password/page.tsx",
+      "status": "web-only",
+      "native": [],
+      "note": "Admin er et skrivebordsværktøj og bliver på web."
+    },
+    {
+      "route": "/admin/roadmap",
+      "web": "src/app/admin/roadmap/page.tsx",
+      "status": "web-only",
+      "native": [],
+      "note": "Admin er et skrivebordsværktøj og bliver på web."
+    },
+    {
+      "route": "/admin/robots",
+      "web": "src/app/admin/robots/page.tsx",
+      "status": "web-only",
+      "native": [],
+      "note": "Admin er et skrivebordsværktøj og bliver på web."
+    },
+    {
+      "route": "/admin/scan-invites",
+      "web": "src/app/admin/scan-invites/page.tsx",
+      "status": "web-only",
+      "native": [],
+      "note": "Admin er et skrivebordsværktøj og bliver på web."
+    },
+    {
+      "route": "/admin/scan-invites/[id]",
+      "web": "src/app/admin/scan-invites/[id]/page.tsx",
+      "status": "web-only",
+      "native": [],
+      "note": "Admin er et skrivebordsværktøj og bliver på web."
+    },
+    {
+      "route": "/admin/scan-invites/afvisningsaarsager",
+      "web": "src/app/admin/scan-invites/afvisningsaarsager/page.tsx",
+      "status": "web-only",
+      "native": [],
+      "note": "Admin er et skrivebordsværktøj og bliver på web."
+    },
+    {
+      "route": "/admin/search",
+      "web": "src/app/admin/search/page.tsx",
+      "status": "web-only",
+      "native": [],
+      "note": "Admin er et skrivebordsværktøj og bliver på web."
+    },
+    {
+      "route": "/admin/search-ranking",
+      "web": "src/app/admin/search-ranking/page.tsx",
+      "status": "web-only",
+      "native": [],
+      "note": "Admin er et skrivebordsværktøj og bliver på web."
+    },
+    {
+      "route": "/admin/search-synonyms",
+      "web": "src/app/admin/search-synonyms/page.tsx",
+      "status": "web-only",
+      "native": [],
+      "note": "Admin er et skrivebordsværktøj og bliver på web."
+    },
+    {
+      "route": "/admin/search-synonyms",
+      "web": "src/app/admin/search-synonyms/page.tsx",
+      "status": "web-only",
+      "native": [],
+      "note": "Admin er et skrivebordsværktøj og bliver på web."
+    },
+    {
+      "route": "/admin/setup",
+      "web": "src/app/admin/setup/page.tsx",
+      "status": "web-only",
+      "native": [],
+      "note": "Admin er et skrivebordsværktøj og bliver på web."
+    },
+    {
+      "route": "/admin/shortcuts",
+      "web": "src/app/admin/shortcuts/page.tsx",
+      "status": "web-only",
+      "native": [],
+      "note": "Admin er et skrivebordsværktøj og bliver på web."
+    },
+    {
+      "route": "/admin/statistics",
+      "web": "src/app/admin/statistics/page.tsx",
+      "status": "web-only",
+      "native": [],
+      "note": "Admin er et skrivebordsværktøj og bliver på web."
+    },
+    {
+      "route": "/admin/statistics/search",
+      "web": "src/app/admin/statistics/search/page.tsx",
+      "status": "web-only",
+      "native": [],
+      "note": "Admin er et skrivebordsværktøj og bliver på web."
+    },
+    {
+      "route": "/admin/support",
+      "web": "src/app/admin/support/page.tsx",
+      "status": "web-only",
+      "native": [],
+      "note": "Admin er et skrivebordsværktøj og bliver på web."
+    },
+    {
+      "route": "/admin/support/[id]",
+      "web": "src/app/admin/support/[id]/page.tsx",
+      "status": "web-only",
+      "native": [],
+      "note": "Admin er et skrivebordsværktøj og bliver på web."
+    },
+    {
+      "route": "/admin/support/templates",
+      "web": "src/app/admin/support/templates/page.tsx",
+      "status": "web-only",
+      "native": [],
+      "note": "Admin er et skrivebordsværktøj og bliver på web."
+    },
+    {
+      "route": "/admin/test-programmes",
+      "web": "src/app/admin/test-programmes/page.tsx",
+      "status": "web-only",
+      "native": [],
+      "note": "Admin er et skrivebordsværktøj og bliver på web."
+    },
+    {
+      "route": "/admin/uncertainties",
+      "web": "src/app/admin/uncertainties/page.tsx",
+      "status": "web-only",
+      "native": [],
+      "note": "Admin er et skrivebordsværktøj og bliver på web."
+    },
+    {
+      "route": "/admin/users",
+      "web": "src/app/admin/users/page.tsx",
+      "status": "web-only",
+      "native": [],
+      "note": "Admin er et skrivebordsværktøj og bliver på web."
+    },
+    {
+      "route": "/admin/users/personas",
+      "web": "src/app/admin/users/personas/page.tsx",
+      "status": "web-only",
+      "native": [],
+      "note": "Admin er et skrivebordsværktøj og bliver på web."
+    },
+    {
+      "route": "/admin/users/points",
+      "web": "src/app/admin/users/points/page.tsx",
+      "status": "web-only",
+      "native": [],
+      "note": "Admin er et skrivebordsværktøj og bliver på web."
+    },
+    {
+      "route": "/admin/verify",
+      "web": "src/app/admin/verify/page.tsx",
+      "status": "web-only",
+      "native": [],
+      "note": "Admin er et skrivebordsværktøj og bliver på web."
+    },
+    {
+      "route": "/admin/warnings",
+      "web": "src/app/admin/warnings/page.tsx",
+      "status": "web-only",
+      "native": [],
+      "note": "Admin er et skrivebordsværktøj og bliver på web."
+    },
+    {
+      "route": "/admin/weight-attire",
+      "web": "src/app/admin/weight-attire/page.tsx",
+      "status": "web-only",
+      "native": [],
+      "note": "Admin er et skrivebordsværktøj og bliver på web."
+    },
+    {
+      "route": "/approve-login",
+      "web": "src/app/approve-login/page.tsx",
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/onboarding/ApproveLoginScreen.kt"
+      ]
+    },
+    {
+      "route": "/betingelser",
+      "web": "src/app/betingelser/page.tsx",
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/onboarding/TermsScreen.kt"
+      ]
+    },
+    {
+      "route": "/business",
+      "web": "src/app/business/page.tsx",
+      "status": "web-only",
+      "native": [],
+      "note": "Erhvervsside, ikke en del af forbruger-appen."
+    },
+    {
+      "route": "/calendar",
+      "web": "src/app/calendar/page.tsx",
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/calendar/CalendarViews.kt"
+      ]
+    },
+    {
+      "route": "/camera",
+      "web": "src/app/camera/page.tsx",
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/capture/CameraScreen.kt"
+      ]
+    },
+    {
+      "route": "/camera/create",
+      "web": "src/app/camera/create/page.tsx",
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/capture/CameraScreen.kt"
+      ]
+    },
+    {
+      "route": "/chat",
+      "web": "src/app/chat/page.tsx",
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/capture/ChatScreen.kt"
+      ]
+    },
+    {
+      "route": "/create-dish",
+      "web": "src/app/create-dish/page.tsx",
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/food/CreateDishScreen.kt"
+      ]
+    },
+    {
+      "route": "/drinks",
+      "web": "src/app/drinks/page.tsx",
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/food/FoodsScreens.kt"
+      ]
+    },
+    {
+      "route": "/drinks/[id]",
+      "web": "src/app/drinks/[id]/page.tsx",
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/food/FoodsScreens.kt"
+      ]
+    },
+    {
+      "route": "/e-numre",
+      "web": "src/app/e-numre/page.tsx",
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/onboarding/ENumberScreens.kt"
+      ]
+    },
+    {
+      "route": "/e-numre/[code]",
+      "web": "src/app/e-numre/[code]/page.tsx",
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/onboarding/ENumberScreens.kt"
+      ]
+    },
+    {
+      "route": "/family-code",
+      "web": "src/app/family-code/page.tsx",
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/onboarding/FamilyCodeScreen.kt"
+      ]
+    },
+    {
+      "route": "/family-code/join",
+      "web": "src/app/family-code/join/page.tsx",
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/onboarding/FamilyJoinScreen.kt"
+      ]
+    },
+    {
+      "route": "/family-code/scan",
+      "web": "src/app/family-code/scan/page.tsx",
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/onboarding/FamilyScanScreen.kt"
+      ]
+    },
+    {
+      "route": "/favorites",
+      "web": "src/app/favorites/page.tsx",
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/food/ProductListScreens.kt"
+      ]
+    },
+    {
+      "route": "/foods",
+      "web": "src/app/foods/page.tsx",
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/food/FoodsScreens.kt"
+      ]
+    },
+    {
+      "route": "/foods/new",
+      "web": "src/app/foods/new/page.tsx",
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/food/FoodsScreens.kt"
+      ]
+    },
+    {
+      "route": "/forgot-password",
+      "web": "src/app/forgot-password/page.tsx",
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/onboarding/ForgotPasswordScreen.kt"
+      ]
+    },
+    {
+      "route": "/forward/[token]",
+      "web": "src/app/forward/[token]/page.tsx",
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/onboarding/ForwardScreen.kt"
+      ]
+    },
+    {
+      "route": "/hello-doc/[token]",
+      "web": "src/app/hello-doc/[token]/page.tsx",
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/onboarding/HelloDocTokenScreen.kt"
+      ]
+    },
+    {
+      "route": "/login",
+      "web": "src/app/login/page.tsx",
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/auth/LoginScreen.kt"
+      ]
+    },
+    {
+      "route": "/login/country",
+      "web": "src/app/login/country/page.tsx",
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/onboarding/LoginCountryScreen.kt"
+      ]
+    },
+    {
+      "route": "/login/face-id",
+      "web": "src/app/login/face-id/page.tsx",
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/onboarding/FaceIdOfferScreen.kt"
+      ]
+    },
+    {
+      "route": "/mad-paa-latin",
+      "web": "src/app/mad-paa-latin/page.tsx",
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/onboarding/FoodLatinScreen.kt"
+      ]
+    },
+    {
+      "route": "/my-scans",
+      "web": "src/app/my-scans/page.tsx",
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/food/ProductListScreens.kt"
+      ]
+    },
+    {
+      "route": "/om-os",
+      "web": "src/app/om-os/page.tsx",
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/onboarding/AboutScreen.kt"
+      ]
+    },
+    {
+      "route": "/partner",
+      "web": "src/app/partner/page.tsx",
+      "status": "web-only",
+      "native": [],
+      "note": "Partnerportal for virksomheder, ikke en del af forbruger-appen."
+    },
+    {
+      "route": "/partner/invite/[token]",
+      "web": "src/app/partner/invite/[token]/page.tsx",
+      "status": "web-only",
+      "native": [],
+      "note": "Partnerportal for virksomheder, ikke en del af forbruger-appen."
+    },
+    {
+      "route": "/partner/login",
+      "web": "src/app/partner/login/page.tsx",
+      "status": "web-only",
+      "native": [],
+      "note": "Partnerportal for virksomheder, ikke en del af forbruger-appen."
+    },
+    {
+      "route": "/partner/verify",
+      "web": "src/app/partner/verify/page.tsx",
+      "status": "web-only",
+      "native": [],
+      "note": "Partnerportal for virksomheder, ikke en del af forbruger-appen."
+    },
+    {
+      "route": "/period/create",
+      "web": "src/app/period/create/page.tsx",
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/capture/PeriodCreateScreen.kt"
+      ]
+    },
+    {
+      "route": "/presse",
+      "web": "src/app/presse/page.tsx",
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/onboarding/PressScreen.kt"
+      ]
+    },
+    {
+      "route": "/privatlivspolitik",
+      "web": "src/app/privatlivspolitik/page.tsx",
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/onboarding/PrivacyScreen.kt"
+      ]
+    },
+    {
+      "route": "/product/create",
+      "web": "src/app/product/create/page.tsx",
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/food/ProductCreateScreen.kt"
+      ]
+    },
+    {
+      "route": "/profile",
+      "web": "src/app/profile/page.tsx",
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/profile/ProfileScreen.kt"
+      ]
+    },
+    {
+      "route": "/profile/body-measurements",
+      "web": "src/app/profile/body-measurements/page.tsx",
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/profile/BodyMeasurementsScreen.kt"
+      ]
+    },
+    {
+      "route": "/profile/change-password",
+      "web": "src/app/profile/change-password/page.tsx",
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/profile/ProfileAccountScreens.kt"
+      ]
+    },
+    {
+      "route": "/profile/edit",
+      "web": "src/app/profile/edit/page.tsx",
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/profile/ProfileEditScreen.kt"
+      ]
+    },
+    {
+      "route": "/profile/energy-goal",
+      "web": "src/app/profile/energy-goal/page.tsx",
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/profile/EnergyGoalScreen.kt"
+      ]
+    },
+    {
+      "route": "/profile/family",
+      "web": "src/app/profile/family/page.tsx",
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/capture/FamilyScreen.kt"
+      ]
+    },
+    {
+      "route": "/profile/goals",
+      "web": "src/app/profile/goals/page.tsx",
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/profile/GoalsScreens.kt"
+      ]
+    },
+    {
+      "route": "/profile/goals/[id]",
+      "web": "src/app/profile/goals/[id]/page.tsx",
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/profile/GoalsScreens.kt"
+      ]
+    },
+    {
+      "route": "/profile/goals/[id]/edit",
+      "web": "src/app/profile/goals/[id]/edit/page.tsx",
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/profile/GoalFormScreens.kt"
+      ]
+    },
+    {
+      "route": "/profile/goals/new",
+      "web": "src/app/profile/goals/new/page.tsx",
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/profile/GoalFormScreens.kt"
+      ]
+    },
+    {
+      "route": "/profile/goals/upcoming",
+      "web": "src/app/profile/goals/upcoming/page.tsx",
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/profile/GoalsScreens.kt"
+      ]
+    },
+    {
+      "route": "/profile/height",
+      "web": "src/app/profile/height/page.tsx",
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/profile/ProfileAccountScreens.kt"
+      ]
+    },
+    {
+      "route": "/profile/invite",
+      "web": "src/app/profile/invite/page.tsx",
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/profile/InviteScreen.kt"
+      ]
+    },
+    {
+      "route": "/profile/login-approval",
+      "web": "src/app/profile/login-approval/page.tsx",
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/profile/LoginApprovalScreen.kt"
+      ]
+    },
+    {
+      "route": "/profile/messages",
+      "web": "src/app/profile/messages/page.tsx",
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/profile/MessagesScreen.kt"
+      ]
+    },
+    {
+      "route": "/profile/messages/trash",
+      "web": "src/app/profile/messages/trash/page.tsx",
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/profile/MessagesScreen.kt"
+      ]
+    },
+    {
+      "route": "/profile/notifications",
+      "web": "src/app/profile/notifications/page.tsx",
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/profile/NotificationsScreen.kt"
+      ]
+    },
+    {
+      "route": "/profile/photo-diary",
+      "web": "src/app/profile/photo-diary/page.tsx",
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/profile/PhotoDiaryScreen.kt"
+      ]
+    },
+    {
+      "route": "/profile/points",
+      "web": "src/app/profile/points/page.tsx",
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/profile/PointsScreen.kt"
+      ]
+    },
+    {
+      "route": "/profile/recipes",
+      "web": "src/app/profile/recipes/page.tsx",
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/capture/RecipesScreen.kt"
+      ]
+    },
+    {
+      "route": "/profile/recipes/[id]",
+      "web": "src/app/profile/recipes/[id]/page.tsx",
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/capture/RecipeDetailScreen.kt"
+      ]
+    },
+    {
+      "route": "/profile/recipes/filters",
+      "web": "src/app/profile/recipes/filters/page.tsx",
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/capture/RecipeFilters.kt"
+      ]
+    },
+    {
+      "route": "/profile/recipes/hellofresh/[id]",
+      "web": "src/app/profile/recipes/hellofresh/[id]/page.tsx",
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/capture/HelloFreshRecipeScreen.kt"
+      ]
+    },
+    {
+      "route": "/profile/report-bug",
+      "web": "src/app/profile/report-bug/page.tsx",
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/profile/ReportBugScreen.kt"
+      ]
+    },
+    {
+      "route": "/profile/screenings",
+      "web": "src/app/profile/screenings/page.tsx",
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/profile/ScreeningScreens.kt"
+      ]
+    },
+    {
+      "route": "/profile/screenings/[id]",
+      "web": "src/app/profile/screenings/[id]/page.tsx",
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/profile/ScreeningScreens.kt"
+      ]
+    },
+    {
+      "route": "/profile/screenings/new",
+      "web": "src/app/profile/screenings/new/page.tsx",
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/profile/ScreeningScreens.kt"
+      ]
+    },
+    {
+      "route": "/profile/screenings/reports",
+      "web": "src/app/profile/screenings/reports/page.tsx",
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/profile/ScreeningScreens.kt"
+      ]
+    },
+    {
+      "route": "/profile/screenings/reports/[id]",
+      "web": "src/app/profile/screenings/reports/[id]/page.tsx",
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/profile/ScreeningScreens.kt"
+      ]
+    },
+    {
+      "route": "/profile/settings",
+      "web": "src/app/profile/settings/page.tsx",
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/settings/SettingsSetupScreens.kt"
+      ]
+    },
+    {
+      "route": "/profile/settings/language-region",
+      "web": "src/app/profile/settings/language-region/page.tsx",
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/settings/SettingsSetupScreens.kt"
+      ]
+    },
+    {
+      "route": "/profile/settings/results",
+      "web": "src/app/profile/settings/results/page.tsx",
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/settings/SettingsSetupScreens.kt"
+      ]
+    },
+    {
+      "route": "/profile/sleep",
+      "web": "src/app/profile/sleep/page.tsx",
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/profile/SleepScreen.kt"
+      ]
+    },
+    {
+      "route": "/profile/start-weight",
+      "web": "src/app/profile/start-weight/page.tsx",
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/profile/ProfileAccountScreens.kt"
+      ]
+    },
+    {
+      "route": "/profile/start-weight/verify",
+      "web": "src/app/profile/start-weight/verify/page.tsx",
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/profile/ProfileAccountScreens.kt"
+      ]
+    },
+    {
+      "route": "/profile/status",
+      "web": "src/app/profile/status/page.tsx",
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/statistics/ProfileStatusScreen.kt"
+      ]
+    },
+    {
+      "route": "/profile/subscription",
+      "web": "src/app/profile/subscription/page.tsx",
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/profile/SubscriptionScreens.kt"
+      ]
+    },
+    {
+      "route": "/profile/subscription/[plan]",
+      "web": "src/app/profile/subscription/[plan]/page.tsx",
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/profile/SubscriptionScreens.kt"
+      ]
+    },
+    {
+      "route": "/profile/subscription/redeem-points",
+      "web": "src/app/profile/subscription/redeem-points/page.tsx",
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/profile/SubscriptionScreens.kt"
+      ]
+    },
+    {
+      "route": "/profile/target-weight",
+      "web": "src/app/profile/target-weight/page.tsx",
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/profile/ProfileAccountScreens.kt"
+      ]
+    },
+    {
+      "route": "/profile/weight-calibration",
+      "web": "src/app/profile/weight-calibration/page.tsx",
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/profile/WeightCalibrationScreen.kt"
+      ]
+    },
+    {
+      "route": "/registration/[id]",
+      "web": "src/app/registration/[id]/page.tsx",
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/food/RegistrationScreens.kt"
+      ]
+    },
+    {
+      "route": "/registration/[id]/report-error",
+      "web": "src/app/registration/[id]/report-error/page.tsx",
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/food/RegistrationScreens.kt"
+      ]
+    },
+    {
+      "route": "/reset-password",
+      "web": "src/app/reset-password/page.tsx",
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/onboarding/ResetPasswordScreen.kt"
+      ]
+    },
+    {
+      "route": "/scan",
+      "web": "src/app/scan/page.tsx",
+      "status": "web-only",
+      "native": [],
+      "note": "Butiks-scanner-portal, separat fra forbruger-appen."
+    },
+    {
+      "route": "/scan/bank",
+      "web": "src/app/scan/bank/page.tsx",
+      "status": "web-only",
+      "native": [],
+      "note": "Butiks-scanner-portal, separat fra forbruger-appen."
+    },
+    {
+      "route": "/scan/beskeder",
+      "web": "src/app/scan/beskeder/page.tsx",
+      "status": "web-only",
+      "native": [],
+      "note": "Butiks-scanner-portal, separat fra forbruger-appen."
+    },
+    {
+      "route": "/scan/historik",
+      "web": "src/app/scan/historik/page.tsx",
+      "status": "web-only",
+      "native": [],
+      "note": "Butiks-scanner-portal, separat fra forbruger-appen."
+    },
+    {
+      "route": "/scan/ikke-afregnet",
+      "web": "src/app/scan/ikke-afregnet/page.tsx",
+      "status": "web-only",
+      "native": [],
+      "note": "Butiks-scanner-portal, separat fra forbruger-appen."
+    },
+    {
+      "route": "/scan/login",
+      "web": "src/app/scan/login/page.tsx",
+      "status": "web-only",
+      "native": [],
+      "note": "Butiks-scanner-portal, separat fra forbruger-appen."
+    },
+    {
+      "route": "/scan/menu",
+      "web": "src/app/scan/menu/page.tsx",
+      "status": "web-only",
+      "native": [],
+      "note": "Butiks-scanner-portal, separat fra forbruger-appen."
+    },
+    {
+      "route": "/scan/opret",
+      "web": "src/app/scan/opret/page.tsx",
+      "status": "web-only",
+      "native": [],
+      "note": "Butiks-scanner-portal, separat fra forbruger-appen."
+    },
+    {
+      "route": "/scan/profil",
+      "web": "src/app/scan/profil/page.tsx",
+      "status": "web-only",
+      "native": [],
+      "note": "Butiks-scanner-portal, separat fra forbruger-appen."
+    },
+    {
+      "route": "/scan/setup/[token]",
+      "web": "src/app/scan/setup/[token]/page.tsx",
+      "status": "web-only",
+      "native": [],
+      "note": "Butiks-scanner-portal, separat fra forbruger-appen."
+    },
+    {
+      "route": "/scan/verify",
+      "web": "src/app/scan/verify/page.tsx",
+      "status": "web-only",
+      "native": [],
+      "note": "Butiks-scanner-portal, separat fra forbruger-appen."
+    },
+    {
+      "route": "/search",
+      "web": "src/app/search/page.tsx",
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/food/ProductListScreens.kt"
+      ]
+    },
+    {
+      "route": "/settings",
+      "web": "src/app/settings/page.tsx",
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/settings/SettingsScreen.kt"
+      ]
+    },
+    {
+      "route": "/settings/control-log",
+      "web": "src/app/settings/control-log/page.tsx",
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/settings/SettingsControlLogScreen.kt"
+      ]
+    },
+    {
+      "route": "/settings/delete-permissions",
+      "web": "src/app/settings/delete-permissions/page.tsx",
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/settings/SettingsDeletePermissionsScreen.kt"
+      ]
+    },
+    {
+      "route": "/settings/display",
+      "web": "src/app/settings/display/page.tsx",
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/settings/SettingsDisplayScreens.kt"
+      ]
+    },
+    {
+      "route": "/settings/display/body-measurements",
+      "web": "src/app/settings/display/body-measurements/page.tsx",
+      "status": "pending",
+      "native": []
+    },
+    {
+      "route": "/settings/display/calendar-view",
+      "web": "src/app/settings/display/calendar-view/page.tsx",
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/settings/SettingsDisplayScreens.kt"
+      ]
+    },
+    {
+      "route": "/settings/display/front-page",
+      "web": "src/app/settings/display/front-page/page.tsx",
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/settings/SettingsFrontPageScreen.kt"
+      ]
+    },
+    {
+      "route": "/settings/display/limits",
+      "web": "src/app/settings/display/limits/page.tsx",
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/settings/SettingsDisplayScreens.kt"
+      ]
+    },
+    {
+      "route": "/settings/display/menstrual-cycle",
+      "web": "src/app/settings/display/menstrual-cycle/page.tsx",
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/settings/SettingsDisplayScreens.kt"
+      ]
+    },
+    {
+      "route": "/settings/display/sleep-quality",
+      "web": "src/app/settings/display/sleep-quality/page.tsx",
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/settings/SettingsDisplayScreens.kt"
+      ]
+    },
+    {
+      "route": "/settings/display/tips",
+      "web": "src/app/settings/display/tips/page.tsx",
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/settings/SettingsDisplayScreens.kt"
+      ]
+    },
+    {
+      "route": "/settings/display/uncertainty",
+      "web": "src/app/settings/display/uncertainty/page.tsx",
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/settings/SettingsDisplayScreens.kt"
+      ]
+    },
+    {
+      "route": "/settings/hello-doc",
+      "web": "src/app/settings/hello-doc/page.tsx",
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/settings/SettingsHelloDocScreen.kt"
+      ]
+    },
+    {
+      "route": "/settings/hello-doc/[id]",
+      "web": "src/app/settings/hello-doc/[id]/page.tsx",
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/settings/SettingsHelloDocEditScreen.kt"
+      ]
+    },
+    {
+      "route": "/settings/hello-doc/invite",
+      "web": "src/app/settings/hello-doc/invite/page.tsx",
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/settings/SettingsHelloDocInviteScreen.kt"
+      ]
+    },
+    {
+      "route": "/settings/hello-doc/preview",
+      "web": "src/app/settings/hello-doc/preview/page.tsx",
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/settings/SettingsHelloDocPreviewScreen.kt"
+      ]
+    },
+    {
+      "route": "/settings/import",
+      "web": "src/app/settings/import/page.tsx",
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/settings/SettingsImportScreen.kt"
+      ]
+    },
+    {
+      "route": "/settings/integrations",
+      "web": "src/app/settings/integrations/page.tsx",
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/settings/SettingsIntegrationsScreen.kt"
+      ]
+    },
+    {
+      "route": "/settings/integrations/[app]",
+      "web": "src/app/settings/integrations/[app]/page.tsx",
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/settings/SettingsIntegrationsAppScreen.kt"
+      ]
+    },
+    {
+      "route": "/settings/payment",
+      "web": "src/app/settings/payment/page.tsx",
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/settings/SettingsPaymentScreen.kt"
+      ]
+    },
+    {
+      "route": "/settings/payment/mobilepay",
+      "web": "src/app/settings/payment/mobilepay/page.tsx",
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/settings/SettingsPaymentReturnScreens.kt"
+      ]
+    },
+    {
+      "route": "/settings/payment/stripe",
+      "web": "src/app/settings/payment/stripe/page.tsx",
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/settings/SettingsPaymentReturnScreens.kt"
+      ]
+    },
+    {
+      "route": "/settings/support",
+      "web": "src/app/settings/support/page.tsx",
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/settings/SettingsSupportScreen.kt"
+      ]
+    },
+    {
+      "route": "/settings/support/contact",
+      "web": "src/app/settings/support/contact/page.tsx",
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/settings/SettingsSupportContactScreen.kt"
+      ]
+    },
+    {
+      "route": "/settings/support/requests",
+      "web": "src/app/settings/support/requests/page.tsx",
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/settings/SettingsSupportRequestsScreen.kt"
+      ]
+    },
+    {
+      "route": "/settings/support/requests/[id]",
+      "web": "src/app/settings/support/requests/[id]/page.tsx",
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/settings/SettingsSupportRequestThreadScreen.kt"
+      ]
+    },
+    {
+      "route": "/signup",
+      "web": "src/app/signup/page.tsx",
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/onboarding/SignupScreen.kt"
+      ]
+    },
+    {
+      "route": "/statistics",
+      "web": "src/app/statistics/page.tsx",
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/statistics/StatisticsScreen.kt"
+      ]
+    },
+    {
+      "route": "/statistics/body-water",
+      "web": "src/app/statistics/body-water/page.tsx",
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/statistics/BodyWaterStatisticsScreen.kt"
+      ]
+    },
+    {
+      "route": "/statistics/month-sinners",
+      "web": "src/app/statistics/month-sinners/page.tsx",
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/statistics/MonthSinnersScreen.kt"
+      ]
+    },
+    {
+      "route": "/statistics/sleep",
+      "web": "src/app/statistics/sleep/page.tsx",
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/statistics/SleepStatisticsScreen.kt"
+      ]
+    },
+    {
+      "route": "/statistics/unused-cards",
+      "web": "src/app/statistics/unused-cards/page.tsx",
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/statistics/UnusedStatCardsScreen.kt"
+      ]
+    },
+    {
+      "route": "/statistics/unused-charts",
+      "web": "src/app/statistics/unused-charts/page.tsx",
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/statistics/UnusedStatChartsScreen.kt"
+      ]
+    },
+    {
+      "route": "/verify-email",
+      "web": "src/app/verify-email/page.tsx",
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/onboarding/VerifyEmailScreen.kt"
+      ]
+    },
+    {
+      "route": "/viden-om",
+      "web": "src/app/viden-om/page.tsx",
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/onboarding/KnowledgeScreens.kt"
+      ]
+    },
+    {
+      "route": "/viden-om/[category]",
+      "web": "src/app/viden-om/[category]/page.tsx",
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/onboarding/KnowledgeScreens.kt"
+      ]
+    },
+    {
+      "route": "/viden-om/[category]/[slug]",
+      "web": "src/app/viden-om/[category]/[slug]/page.tsx",
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/onboarding/KnowledgeScreens.kt"
+      ]
+    },
+    {
+      "route": "/viden-om/e-numre",
+      "web": "src/app/viden-om/e-numre/page.tsx",
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/onboarding/KnowledgeScreens.kt"
+      ]
+    },
+    {
+      "route": "/viden-om/omregning",
+      "web": "src/app/viden-om/omregning/page.tsx",
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/onboarding/KitchenConversions.kt"
+      ]
+    },
+    {
+      "route": "/vitaminer",
+      "web": "src/app/vitaminer/page.tsx",
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/onboarding/MicronutrientScreen.kt"
+      ]
+    },
+    {
+      "route": "/voice",
+      "web": "src/app/voice/page.tsx",
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/capture/VoiceScreen.kt"
+      ]
+    },
+    {
+      "route": "/water/create",
+      "web": "src/app/water/create/page.tsx",
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/capture/WaterCreateScreen.kt"
+      ]
+    },
+    {
+      "route": "/weigh-reminders",
+      "web": "src/app/weigh-reminders/page.tsx",
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/capture/WeighRemindersScreen.kt"
+      ]
+    },
+    {
+      "route": "/weight/create",
+      "web": "src/app/weight/create/page.tsx",
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/capture/WeightCreateScreen.kt"
+      ]
+    },
+    {
+      "route": "/welcome",
+      "web": "src/app/welcome/page.tsx",
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/onboarding/WelcomeScreen.kt"
+      ]
+    },
+    {
+      "route": "/widgets",
+      "web": "src/app/widgets/page.tsx",
+      "status": "web-only",
+      "native": [],
+      "note": "Web-forhåndsvisning af widgets; de native widgets findes i native/android/widgets og native/ios/HelloCalWidgets."
+    }
+  ]
+}

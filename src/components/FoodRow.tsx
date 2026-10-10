@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { DecimalText } from "@/components/DecimalText";
 
 /**
  * Global row for a single food/product entry — used by the front-page
@@ -34,7 +35,7 @@ export function FoodRow({
       </div>
       <div className="min-w-0 flex-1">
         {overline}
-        <p className="hf-type-body line-clamp-2 text-hf-black">{title}</p>
+        <p className="hf-type-body line-clamp-2 text-hf-black"><DecimalText text={title} /></p>
         {subtitle}
       </div>
       {right && <div className="flex flex-shrink-0 items-center gap-2">{right}</div>}

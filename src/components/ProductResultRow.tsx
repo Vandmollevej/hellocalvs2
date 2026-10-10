@@ -17,6 +17,8 @@ export type ProductResult = {
   brand?: string | null;
   kcal?: number;
   macrosEstimated?: boolean;
+  // Vare uden energitabel: "Næringsindhold ukendt" i stedet for 0 kcal.
+  nutritionMissing?: boolean;
 };
 
 export function ProductResultRow({
@@ -26,6 +28,7 @@ export function ProductResultRow({
   brand,
   kcal,
   macrosEstimated,
+  nutritionMissing,
   onAdd,
   isFavorite,
   onToggleFavorite,
@@ -53,8 +56,14 @@ export function ProductResultRow({
           kcal !== undefined ? (
             <p className="hf-type-small text-text-secondary truncate">
               {brand ? `${brand} · ` : ""}
-              {macrosEstimated && <UncertaintyTilde />}
-              {t("foods.kcalPer100g", { kcal: Math.round(kcal) })}
+              {nutritionMissing ? (
+                t("addProduct.nutritionUnknown")
+              ) : (
+                <>
+                  {macrosEstimated && <UncertaintyTilde />}
+                  {t("foods.kcalPer100g", { kcal: Math.round(kcal) })}
+                </>
+              )}
             </p>
           ) : undefined
         }

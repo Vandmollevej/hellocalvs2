@@ -1,7 +1,10 @@
 // HelloFresh-opskriftssiden (docs/DECISIONS.md 2026-09-27). Visningsdata
 // fra Product.recipeDetails (scripts/hellofresh-import/agent.py) med
 // fallback til de ældre kolonner for rækker, der endnu ikke er genimporteret.
-// Værdierne vises præcis som HelloFresh angiver dem.
+// Værdierne vises præcis som HelloFresh angiver dem. Samme side viser RetNemt-
+// og BetterFeast-retter (src/lib/meal-kit-providers.ts, DECISIONS 2026-10-10).
+
+import { mealKitBySource, type MealKitKey } from "@/lib/meal-kit-providers";
 
 export type HfNutritionRow = {
   // HelloFreshs egen betegnelse (fx "Mættet fedt"), eller en i18n-nøgle
@@ -14,6 +17,8 @@ export type HfNutritionRow = {
 
 export type HfRecipeView = {
   id: string;
+  // Udbyderen (HelloFresh, RetNemt, BetterFeast) styrer kildetekster og noter.
+  provider: MealKitKey;
   name: string;
   headline: string | null;
   description: string | null;
@@ -27,6 +32,11 @@ export type HfRecipeView = {
   ingredients: { key: string; name: string; amount: number | null; unit: string | null; imageUrl: string | null }[];
   steps: { text: string }[];
   nutrition: HfNutritionRow[];
+  // "portion" (HelloFresh/RetNemt) eller "100g" (BetterFeast: færdigretter
+  // uden portionsvægt).
+  nutritionBasis: "portion" | "100g";
+  // Hele varedeklarationen, når udbyderen kun har den (BetterFeast).
+  declaration: string | null;
   isFavorite: boolean;
   photos: { id: string; image: string }[];
 };
@@ -42,11 +52,14 @@ type StoredDetails = {
   ingredients?: unknown;
   steps?: unknown;
   nutrition?: unknown;
+  nutritionBasis?: unknown;
+  declaration?: unknown;
 };
 
 type ProductForView = {
   id: string;
   name: string;
+  externalSource?: string | null;
   imageUrl: string | null;
   kcalPer100g: number;
   proteinPer100g: number;
@@ -145,6 +158,7 @@ export function buildHfRecipeView(
 
   return {
     id: product.id,
+    provider: mealKitBySource(product.externalSource ?? "HELLOFRESH")?.key ?? "hellofresh",
     name: product.name,
     headline: text(details.headline),
     description: text(details.description),
@@ -170,6 +184,8 @@ export function buildHfRecipeView(
         })
       : [],
     nutrition: storedNutrition.length ? storedNutrition : fallbackNutrition(product),
+    nutritionBasis: details.nutritionBasis === "100g" ? "100g" : "portion",
+    declaration: text(details.declaration),
     ...extras,
   };
 }

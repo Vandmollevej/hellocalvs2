@@ -138,7 +138,7 @@ export function SupportThreadActions({
               type="button"
               onClick={() => setKind(option)}
               className={`px-2.5 py-1 ${
-                kind === option ? "bg-hf-green-dark text-hf-white" : "text-text-secondary hover:bg-hf-tan"
+                kind === option ? "hf-selected" : "text-text-secondary hover:bg-hf-tan"
               }`}
             >
               {option === "REPLY" ? "Svar til bruger" : "Intern note"}

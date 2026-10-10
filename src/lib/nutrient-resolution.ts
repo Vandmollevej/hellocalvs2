@@ -16,11 +16,13 @@ import {
 // - Producentens egne tal (varedeklaration/producentdata/Open Food Facts)
 //   og Frida på selve den generiske vare er sikre → ingen ~.
 // - Mangler producenten et felt, lånes værdien fra den nærmeste Frida-vare
-//   → estimeret (~). Det er den eneste kilde til estimater i dag.
+//   → estimeret (~).
+// - Varer uden energimærkning får Frida-skøn af robotten "frida-estimates"
+//   (kilde "FRIDA" i nutrientSources, DECISIONS 2026-10-10) → også ~.
 // - Producentens egen ± (nutrientTolerances) sendes med 1:1; vi beregner
 //   aldrig selv en ±.
 
-type ProductForResolution = {
+export type ProductForResolution = {
   name: string;
   fatPer100g?: number | null;
   productType?: string | null;
@@ -104,7 +106,7 @@ const EXTRA_KEYS: Record<string, NutrientKey> = {
   ironMg: "iron",
 };
 
-function ownValues(product: ProductForResolution) {
+export function ownValues(product: ProductForResolution) {
   const values: Partial<Record<NutrientKey, number>> = {};
   const featureSources: Partial<Record<NutrientKey, string>> = {};
 
@@ -182,9 +184,10 @@ export async function resolveProductNutrients(product: ProductForResolution): Pr
         per100g: own,
         estimated: isEstimatedSource(sources[key] ?? featureSources[key]),
         tolerancePer100g: tolerances[key] ?? null,
+        ...(sources[key] === "FRIDA" ? { frida: true } : {}),
       });
     } else if (borrowed[key] !== undefined) {
-      resolved.push({ key, per100g: borrowed[key], estimated: true, tolerancePer100g: null });
+      resolved.push({ key, per100g: borrowed[key], estimated: true, tolerancePer100g: null, frida: true });
     }
   }
   return resolved;

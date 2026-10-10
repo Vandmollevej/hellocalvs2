@@ -17,6 +17,7 @@ Kildeangivelse (Frida-vilkår): "Fødevaredata (frida.fooddata.dk), DTU
 Fødevareinstituttet, Danmarks Tekniske Universitet".
 """
 
+import hashlib
 import io
 import json
 import logging
@@ -25,6 +26,7 @@ import time
 
 import openpyxl
 import psycopg2
+import psycopg2.errors
 
 from job_control import run_forever
 import requests
@@ -85,6 +87,13 @@ MICRO_PARAMS = {
     "vitaminB12": [38],
 }
 WANTED_PARAMS = MACRO_PARAMS | {pid for ids in MICRO_PARAMS.values() for pid in ids}
+
+# Det færdige Frida-ark (docs/FRIDA.md): titler (ental/flertal), nøgleord, _is_-felter og
+# næring pr. række, bygget lokalt med build_sheet.py og lagt i Docker-imaget. Når filen
+# findes, er arket sandheden: varer der ikke står i arket slettes, og Figshare-importen
+# opdaterer kun næringen på arkets varer (aldrig navne, og opretter ingen nye).
+SHEET_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "sheet", "frida_sheet.json")
+SHEET_STATE_ID = -1  # sentinel i frida_import_state.figshareArticleId
 
 # En allerede importeret Frida-version genimporteres én gang, når denne
 # markør mangler i frida_import_state.title — så mikrodata også kommer ind
@@ -175,10 +184,135 @@ def already_imported(conn, article_id):
         return row is not None and IMPORT_MARKER in (row[0] or "")
 
 
-def upsert_foods(conn, foods):
+def load_sheet():
+    """Returnerer (rækker, sha256) for det publicerede Frida-ark, eller (None, None)."""
+    if not os.path.exists(SHEET_PATH):
+        return None, None
+    with open(SHEET_PATH, "rb") as fh:
+        raw = fh.read()
+    return json.loads(raw.decode("utf-8")), hashlib.sha256(raw).hexdigest()
+
+
+def sheet_already_applied(conn, digest):
+    with conn.cursor() as cur:
+        cur.execute('SELECT title FROM frida_import_state WHERE "figshareArticleId" = %s', (SHEET_STATE_ID,))
+        row = cur.fetchone()
+        return row is not None and row[0] == f"sheet:{digest}"
+
+
+def mark_sheet_applied(conn, digest):
+    with conn.cursor() as cur:
+        cur.execute(
+            """
+            INSERT INTO frida_import_state ("figshareArticleId", title) VALUES (%s, %s)
+            ON CONFLICT ("figshareArticleId") DO UPDATE SET title = EXCLUDED.title, "importedAt" = NOW()
+            """,
+            (SHEET_STATE_ID, f"sheet:{digest}"),
+        )
+
+
+def apply_sheet(conn, items):
+    """Gør databasens Frida-varer lig med arket: opdater, opret og slet resten.
+
+    Match på (externalSource='FRIDA', externalId); rækker der deler FoodID får
+    externalId "<FoodID>-2" osv. En vare der ikke længere står i arket slettes —
+    hvis noget andet i databasen refererer til den (fx en logget registrering),
+    skjules den i stedet (discontinued), så ingen historik brydes.
+    """
+    inserted = updated = deleted = hidden = 0
+    keep_ids = [item["external_id"] for item in items]
+    with conn.cursor() as cur:
+        for item in items:
+            values = (
+                item["name"],
+                item.get("name_plural"),
+                item.get("product_type"),
+                item.get("variant"),
+                item.get("keywords") or [],
+                json.dumps(item.get("tags") or {}),
+                item["kcal"],
+                item["protein"],
+                item["carbs"],
+                item["fat"],
+                json.dumps(item["micros"]),
+            )
+            cur.execute(
+                """SELECT id FROM products WHERE "externalSource" = 'FRIDA' AND "externalId" = %s""",
+                (item["external_id"],),
+            )
+            existing = cur.fetchone()
+            if existing:
+                cur.execute(
+                    """
+                    UPDATE products
+                    SET name = %s, "namePlural" = %s, "productType" = %s, variant = %s, keywords = %s,
+                        "dietaryTags" = %s::jsonb, "kcalPer100g" = %s, "proteinPer100g" = %s,
+                        "carbsPer100g" = %s, "fatPer100g" = %s, "micronutrientsPer100g" = %s::jsonb,
+                        discontinued = false, "sourceCheckedAt" = NOW()
+                    WHERE id = %s
+                    """,
+                    values + (existing[0],),
+                )
+                updated += 1
+            else:
+                cur.execute(
+                    """
+                    INSERT INTO products
+                        (id, name, "namePlural", "productType", variant, keywords, "dietaryTags",
+                         "kcalPer100g", "proteinPer100g", "carbsPer100g", "fatPer100g", "micronutrientsPer100g",
+                         "externalSource", "externalId", "sourceCheckedAt", status, discontinued, "createdAt")
+                    VALUES
+                        (%s, %s, %s, %s, %s, %s, %s::jsonb, %s, %s, %s, %s, %s::jsonb,
+                         'FRIDA', %s, NOW(), 'APPROVED', false, NOW())
+                    """,
+                    (f"frida_{item['external_id']}",) + values + (item["external_id"],),
+                )
+                inserted += 1
+
+        cur.execute(
+            """SELECT id, "externalId" FROM products
+               WHERE "externalSource" = 'FRIDA' AND NOT ("externalId" = ANY(%s))""",
+            (keep_ids,),
+        )
+        for product_id, external_id in cur.fetchall():
+            cur.execute("SAVEPOINT remove_frida_product")
+            try:
+                cur.execute("DELETE FROM products WHERE id = %s", (product_id,))
+                deleted += 1
+            except psycopg2.errors.ForeignKeyViolation:
+                cur.execute("ROLLBACK TO SAVEPOINT remove_frida_product")
+                cur.execute("UPDATE products SET discontinued = true WHERE id = %s", (product_id,))
+                hidden += 1
+            cur.execute("RELEASE SAVEPOINT remove_frida_product")
+    return inserted, updated, deleted, hidden
+
+
+def upsert_foods(conn, foods, sheet_managed=False):
     inserted = updated = 0
     with conn.cursor() as cur:
         for food in foods:
+            if sheet_managed:
+                # Arket ejer navne/nøgleord/_is_-felter og varesættet: kun næringen opdateres.
+                cur.execute(
+                    """
+                    UPDATE products
+                    SET "kcalPer100g" = %s, "proteinPer100g" = %s, "carbsPer100g" = %s, "fatPer100g" = %s,
+                        "micronutrientsPer100g" = %s::jsonb, "sourceCheckedAt" = NOW()
+                    WHERE "externalSource" = 'FRIDA'
+                      AND ("externalId" = %s OR "externalId" LIKE %s)
+                    """,
+                    (
+                        food["kcal"],
+                        food["protein"],
+                        food["carbs"],
+                        food["fat"],
+                        json.dumps(food["micros"]),
+                        food["external_id"],
+                        f"{food['external_id']}-%",
+                    ),
+                )
+                updated += cur.rowcount
+                continue
             cur.execute(
                 """SELECT id FROM products WHERE "externalSource" = 'FRIDA' AND "externalId" = %s""",
                 (food["external_id"],),
@@ -254,8 +388,37 @@ def mark_imported(conn, article_id, title):
         )
 
 
+def request_frida_estimates(conn):
+    """Beder app-robotten "frida-estimates" om en kørsel lige efter importen
+    (docs/DECISIONS.md 2026-10-10): varer uden energimærkning får Frida-skøn."""
+    with conn.cursor() as cur:
+        cur.execute("""UPDATE "scheduled_jobs" SET "runRequestedAt" = now() WHERE key = 'frida-estimates'""")
+    conn.commit()
+
+
 def run_once(conn):
     # Returnerer (besked, antal udført) til admin "Robotter"/"Nattens kørsler".
+    sheet_items, sheet_digest = load_sheet()
+    sheet_message, sheet_count = None, 0
+    if sheet_items is not None and not sheet_already_applied(conn, sheet_digest):
+        inserted, updated, deleted, hidden = apply_sheet(conn, sheet_items)
+        mark_sheet_applied(conn, sheet_digest)
+        conn.commit()
+        sheet_count = inserted + updated + deleted + hidden
+        sheet_message = (
+            f"Frida-ark publiceret: {inserted} nye, {updated} opdaterede, "
+            f"{deleted} slettede, {hidden} skjulte (refereret andetsteds)"
+        )
+        log.info(sheet_message)
+    message, count = run_figshare(conn, sheet_managed=sheet_items is not None)
+    if sheet_count or count:
+        request_frida_estimates(conn)
+    if sheet_message:
+        return f"{sheet_message}. {message}", sheet_count + count
+    return message, count
+
+
+def run_figshare(conn, sheet_managed=False):
     article = find_latest_article()
     if not article:
         log.warning("no Frida dataset found via Figshare search")
@@ -276,7 +439,7 @@ def run_once(conn):
     foods = parse_foods(workbook)
     log.info("parsed %d foods with all four macros", len(foods))
 
-    inserted, updated = upsert_foods(conn, foods)
+    inserted, updated = upsert_foods(conn, foods, sheet_managed=sheet_managed)
     backfilled = backfill_generic_ingredients(conn)
     mark_imported(conn, article_id, title)
     conn.commit()
@@ -296,7 +459,14 @@ def main():
     log.info("frida agent started, polling every %ss", POLL_INTERVAL_SECONDS)
     # Planlægning/pause/"kør nu" styres fra admin "Cron-jobs" (job_control.py);
     # POLL_INTERVAL_SECONDS er kun standard-intervallet første gang.
-    run_forever(DATABASE_URL, "frida-import", run_once, interval_minutes=max(1, POLL_INTERVAL_SECONDS // 60))
+    run_forever(
+        DATABASE_URL,
+        "frida-import",
+        run_once,
+        interval_minutes=max(1, POLL_INTERVAL_SECONDS // 60),
+        # Kør også ved hver container-start, så et nyt Frida-ark (sheet/frida_sheet.json) går live ved deploy.
+        run_on_start=True,
+    )
 
 
 if __name__ == "__main__":

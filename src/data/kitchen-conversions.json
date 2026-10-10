@@ -1,0 +1,1521 @@
+{
+ "groups": [
+  {
+   "id": "vand",
+   "title": "Vand, kaffe og te"
+  },
+  {
+   "id": "maelk",
+   "title": "Mælk og mælkeprodukter"
+  },
+  {
+   "id": "flode",
+   "title": "Fløde, yoghurt og syrnet"
+  },
+  {
+   "id": "plante",
+   "title": "Plantedrikke"
+  },
+  {
+   "id": "juice",
+   "title": "Juice, saft og sodavand"
+  },
+  {
+   "id": "olie",
+   "title": "Olie og flydende fedt"
+  },
+  {
+   "id": "alkohol",
+   "title": "Øl, vin og spiritus"
+  },
+  {
+   "id": "sodt",
+   "title": "Honning og sirup"
+  },
+  {
+   "id": "sauce",
+   "title": "Saucer, eddike og bouillon"
+  },
+  {
+   "id": "aeg",
+   "title": "Æg (flydende)"
+  },
+  {
+   "id": "torvarer",
+   "title": "Tørvarer målt i dl"
+  }
+ ],
+ "items": [
+  {
+   "id": "vand",
+   "group": "vand",
+   "name": "Vand (postevand, mineralvand, danskvand)",
+   "gramsPerDl": 100,
+   "keywords": [
+    "danskvand",
+    "isvand",
+    "kildevand",
+    "kogende vand",
+    "koldt vand",
+    "lunkent vand",
+    "mineralvand",
+    "postevand",
+    "sodavandsvand",
+    "vand"
+   ]
+  },
+  {
+   "id": "kaffe",
+   "group": "vand",
+   "name": "Kaffe (brygget)",
+   "gramsPerDl": 100,
+   "keywords": [
+    "espresso",
+    "filterkaffe",
+    "kaffe"
+   ]
+  },
+  {
+   "id": "te",
+   "group": "vand",
+   "name": "Te (brygget)",
+   "gramsPerDl": 100,
+   "keywords": [
+    "iste usødet",
+    "te"
+   ]
+  },
+  {
+   "id": "soedmaelk",
+   "group": "maelk",
+   "name": "Sødmælk",
+   "gramsPerDl": 103,
+   "keywords": [
+    "kogemælk",
+    "mælk",
+    "sødmælk"
+   ]
+  },
+  {
+   "id": "letmaelk",
+   "group": "maelk",
+   "name": "Letmælk",
+   "gramsPerDl": 103,
+   "keywords": [
+    "letmælk"
+   ]
+  },
+  {
+   "id": "minimaelk",
+   "group": "maelk",
+   "name": "Minimælk",
+   "gramsPerDl": 103,
+   "keywords": [
+    "minimælk"
+   ]
+  },
+  {
+   "id": "skummetmaelk",
+   "group": "maelk",
+   "name": "Skummetmælk",
+   "gramsPerDl": 104,
+   "keywords": [
+    "skummetmælk"
+   ]
+  },
+  {
+   "id": "kaernemaelk",
+   "group": "maelk",
+   "name": "Kærnemælk",
+   "gramsPerDl": 103,
+   "keywords": [
+    "kærnemælk"
+   ]
+  },
+  {
+   "id": "kakaomaelk",
+   "group": "maelk",
+   "name": "Kakaomælk",
+   "gramsPerDl": 106,
+   "keywords": [
+    "cacaomælk",
+    "cacaoskummetmælk",
+    "chokolademælk",
+    "kakaomælk"
+   ]
+  },
+  {
+   "id": "gedemaelk",
+   "group": "maelk",
+   "name": "Gedemælk",
+   "gramsPerDl": 103,
+   "keywords": [
+    "gedemælk"
+   ]
+  },
+  {
+   "id": "kefir",
+   "group": "maelk",
+   "name": "Kefir",
+   "gramsPerDl": 103,
+   "keywords": [
+    "kefir",
+    "letmælkskefir"
+   ]
+  },
+  {
+   "id": "valle",
+   "group": "maelk",
+   "name": "Valle",
+   "gramsPerDl": 102,
+   "keywords": [
+    "valle"
+   ]
+  },
+  {
+   "id": "modermaelk",
+   "group": "maelk",
+   "name": "Modermælk",
+   "gramsPerDl": 103,
+   "keywords": [
+    "modermælk"
+   ]
+  },
+  {
+   "id": "milkshake",
+   "group": "maelk",
+   "name": "Milkshake",
+   "gramsPerDl": 105,
+   "keywords": [
+    "milkshake"
+   ]
+  },
+  {
+   "id": "soedet-kondenseret-maelk",
+   "group": "maelk",
+   "name": "Sødet kondenseret mælk",
+   "gramsPerDl": 130,
+   "keywords": [
+    "kondenseret mælk",
+    "kondensmælk",
+    "sødet kondenseret mælk"
+   ]
+  },
+  {
+   "id": "piskefloede-38",
+   "group": "flode",
+   "name": "Piskefløde 38 %",
+   "gramsPerDl": 99,
+   "keywords": [
+    "fløde 38",
+    "flødeskum",
+    "piskefløde"
+   ]
+  },
+  {
+   "id": "madlavningsfloede-13-18",
+   "group": "flode",
+   "name": "Madlavningsfløde 13-18 %",
+   "gramsPerDl": 101,
+   "keywords": [
+    "fløde",
+    "fløde 13",
+    "fløde 15",
+    "fløde 18",
+    "madlavningsfløde"
+   ]
+  },
+  {
+   "id": "kaffefloede-9",
+   "group": "flode",
+   "name": "Kaffefløde 9 %",
+   "gramsPerDl": 102,
+   "keywords": [
+    "fløde 9",
+    "kaffefløde"
+   ]
+  },
+  {
+   "id": "creme-fraiche-38",
+   "group": "flode",
+   "name": "Creme fraiche 38 %",
+   "gramsPerDl": 99,
+   "keywords": [
+    "creme fraiche 38",
+    "cremefraiche 38",
+    "crème fraîche 38"
+   ]
+  },
+  {
+   "id": "creme-fraiche-18",
+   "group": "flode",
+   "name": "Creme fraiche 18 %",
+   "gramsPerDl": 102,
+   "keywords": [
+    "creme fraiche",
+    "creme fraiche 18",
+    "cremefraiche",
+    "crème fraîche"
+   ]
+  },
+  {
+   "id": "creme-fraiche-9",
+   "group": "flode",
+   "name": "Creme fraiche 9 % / fraiche",
+   "gramsPerDl": 104,
+   "keywords": [
+    "creme fraiche 9",
+    "fraiche 9",
+    "syrnet fløde"
+   ]
+  },
+  {
+   "id": "yoghurt-naturel",
+   "group": "flode",
+   "name": "Yoghurt naturel",
+   "gramsPerDl": 104,
+   "keywords": [
+    "drikkeyoghurt",
+    "yoghurt",
+    "yoghurt naturel"
+   ]
+  },
+  {
+   "id": "graesk",
+   "group": "flode",
+   "name": "Græsk / tyrkisk yoghurt",
+   "gramsPerDl": 105,
+   "keywords": [
+    "flødeyoghurt",
+    "græsk yoghurt",
+    "tyrkisk yoghurt"
+   ]
+  },
+  {
+   "id": "skyr",
+   "group": "flode",
+   "name": "Skyr",
+   "gramsPerDl": 106,
+   "keywords": [
+    "skyr"
+   ]
+  },
+  {
+   "id": "ymer-ylette-og-tykmaelk",
+   "group": "flode",
+   "name": "Ymer, ylette og tykmælk",
+   "gramsPerDl": 104,
+   "keywords": [
+    "a38",
+    "tykmælk",
+    "ylette",
+    "ymer"
+   ]
+  },
+  {
+   "id": "koldskaal",
+   "group": "flode",
+   "name": "Koldskål",
+   "gramsPerDl": 104,
+   "keywords": [
+    "koldskål"
+   ]
+  },
+  {
+   "id": "havredrik",
+   "group": "plante",
+   "name": "Havredrik",
+   "gramsPerDl": 103,
+   "keywords": [
+    "havredrik",
+    "havrefløde",
+    "havremælk"
+   ]
+  },
+  {
+   "id": "sojadrik",
+   "group": "plante",
+   "name": "Sojadrik",
+   "gramsPerDl": 103,
+   "keywords": [
+    "sojadrik",
+    "sojamælk"
+   ]
+  },
+  {
+   "id": "mandeldrik",
+   "group": "plante",
+   "name": "Mandeldrik",
+   "gramsPerDl": 102,
+   "keywords": [
+    "mandeldrik",
+    "mandelmælk"
+   ]
+  },
+  {
+   "id": "risdrik",
+   "group": "plante",
+   "name": "Risdrik",
+   "gramsPerDl": 103,
+   "keywords": [
+    "risdrik",
+    "rismælk"
+   ]
+  },
+  {
+   "id": "kokosmaelk",
+   "group": "plante",
+   "name": "Kokosmælk",
+   "gramsPerDl": 98,
+   "keywords": [
+    "kokosdrik",
+    "kokosmælk"
+   ]
+  },
+  {
+   "id": "kokosfloede",
+   "group": "plante",
+   "name": "Kokosfløde",
+   "gramsPerDl": 99,
+   "keywords": [
+    "kokoscreme",
+    "kokosfløde"
+   ]
+  },
+  {
+   "id": "appelsinjuice",
+   "group": "juice",
+   "name": "Appelsinjuice",
+   "gramsPerDl": 104,
+   "keywords": [
+    "appelsin juice",
+    "appelsinjuice",
+    "appelsinsaft"
+   ]
+  },
+  {
+   "id": "aeblejuice",
+   "group": "juice",
+   "name": "Æblejuice / æblemost",
+   "gramsPerDl": 105,
+   "keywords": [
+    "æblejuice",
+    "æblemost",
+    "æblesaft"
+   ]
+  },
+  {
+   "id": "ananasjuice",
+   "group": "juice",
+   "name": "Ananasjuice",
+   "gramsPerDl": 105,
+   "keywords": [
+    "ananasjuice",
+    "ananassaft"
+   ]
+  },
+  {
+   "id": "druesaft",
+   "group": "juice",
+   "name": "Druesaft / druejuice",
+   "gramsPerDl": 106,
+   "keywords": [
+    "druejuice",
+    "druesaft"
+   ]
+  },
+  {
+   "id": "grapefrugtjuice",
+   "group": "juice",
+   "name": "Grapefrugtjuice",
+   "gramsPerDl": 104,
+   "keywords": [
+    "grapefrugtjuice",
+    "grapejuice"
+   ]
+  },
+  {
+   "id": "tomatjuice",
+   "group": "juice",
+   "name": "Tomatjuice",
+   "gramsPerDl": 103,
+   "keywords": [
+    "tomatjuice"
+   ]
+  },
+  {
+   "id": "gulerodsjuice",
+   "group": "juice",
+   "name": "Gulerodsjuice",
+   "gramsPerDl": 103,
+   "keywords": [
+    "gulerodsjuice"
+   ]
+  },
+  {
+   "id": "groentsagsjuice",
+   "group": "juice",
+   "name": "Grøntsagsjuice",
+   "gramsPerDl": 103,
+   "keywords": [
+    "grøntsagsjuice"
+   ]
+  },
+  {
+   "id": "sveskejuice",
+   "group": "juice",
+   "name": "Sveskejuice",
+   "gramsPerDl": 107,
+   "keywords": [
+    "sveskejuice"
+   ]
+  },
+  {
+   "id": "citron-og-limesaft",
+   "group": "juice",
+   "name": "Citron- og limesaft",
+   "gramsPerDl": 103,
+   "keywords": [
+    "citronjuice",
+    "citronsaft",
+    "limejuice",
+    "limesaft"
+   ]
+  },
+  {
+   "id": "smoothie",
+   "group": "juice",
+   "name": "Smoothie",
+   "gramsPerDl": 105,
+   "keywords": [
+    "smoothie"
+   ]
+  },
+  {
+   "id": "frugtnektar",
+   "group": "juice",
+   "name": "Frugtnektar",
+   "gramsPerDl": 105,
+   "keywords": [
+    "frugtnektar",
+    "nektar"
+   ]
+  },
+  {
+   "id": "saft-koncentreret",
+   "group": "juice",
+   "name": "Saft, koncentreret (sød)",
+   "gramsPerDl": 123,
+   "keywords": [
+    "hindbærsaft",
+    "hybensaft",
+    "hyldeblomstsaft",
+    "hyldebærsaft",
+    "jordbærsaft",
+    "kirsebærsaft",
+    "koncentreret saft",
+    "rabarbersaft",
+    "ribssaft",
+    "saft",
+    "solbærsaft",
+    "sød saft"
+   ]
+  },
+  {
+   "id": "saft-koncentreret-2",
+   "group": "juice",
+   "name": "Saft, koncentreret (sur, usødet)",
+   "gramsPerDl": 103,
+   "keywords": [
+    "sur saft",
+    "usødet saft"
+   ]
+  },
+  {
+   "id": "saftevand",
+   "group": "juice",
+   "name": "Saftevand (drikkeklar)",
+   "gramsPerDl": 103,
+   "keywords": [
+    "saftevand"
+   ]
+  },
+  {
+   "id": "sodavand-med-sukker",
+   "group": "juice",
+   "name": "Sodavand med sukker",
+   "gramsPerDl": 104,
+   "keywords": [
+    "appelsinvand",
+    "citronvand",
+    "cola",
+    "ginger ale",
+    "ginger beer",
+    "lemonade",
+    "limonade",
+    "sodavand",
+    "tonic"
+   ]
+  },
+  {
+   "id": "sodavand-uden-sukker",
+   "group": "juice",
+   "name": "Sodavand uden sukker (light)",
+   "gramsPerDl": 100,
+   "keywords": [
+    "cola light",
+    "cola zero",
+    "light sodavand",
+    "sodavand light",
+    "sukkerfri sodavand"
+   ]
+  },
+  {
+   "id": "energidrik-med-sukker",
+   "group": "juice",
+   "name": "Energidrik med sukker",
+   "gramsPerDl": 104,
+   "keywords": [
+    "energidrik",
+    "energidrink"
+   ]
+  },
+  {
+   "id": "energidrik-uden-sukker",
+   "group": "juice",
+   "name": "Energidrik uden sukker",
+   "gramsPerDl": 100,
+   "keywords": [
+    "energidrik sukkerfri",
+    "sukkerfri energidrik"
+   ]
+  },
+  {
+   "id": "iste-med-sukker",
+   "group": "juice",
+   "name": "Iste med sukker",
+   "gramsPerDl": 103,
+   "keywords": [
+    "ice tea",
+    "iste"
+   ]
+  },
+  {
+   "id": "olivenolie",
+   "group": "olie",
+   "name": "Olivenolie",
+   "gramsPerDl": 91,
+   "keywords": [
+    "jomfruolivenolie",
+    "olivenolie",
+    "olivenolie ekstra jomfru"
+   ]
+  },
+  {
+   "id": "rapsolie",
+   "group": "olie",
+   "name": "Rapsolie",
+   "gramsPerDl": 92,
+   "keywords": [
+    "koldpresset rapsolie",
+    "rapsolie"
+   ]
+  },
+  {
+   "id": "solsikkeolie",
+   "group": "olie",
+   "name": "Solsikkeolie",
+   "gramsPerDl": 92,
+   "keywords": [
+    "solsikkeolie"
+   ]
+  },
+  {
+   "id": "sesamolie",
+   "group": "olie",
+   "name": "Sesamolie",
+   "gramsPerDl": 92,
+   "keywords": [
+    "ristet sesamolie",
+    "sesamolie"
+   ]
+  },
+  {
+   "id": "majsolie",
+   "group": "olie",
+   "name": "Majsolie",
+   "gramsPerDl": 92,
+   "keywords": [
+    "majskimolie",
+    "majsolie"
+   ]
+  },
+  {
+   "id": "sojaolie",
+   "group": "olie",
+   "name": "Sojaolie",
+   "gramsPerDl": 92,
+   "keywords": [
+    "sojaolie"
+   ]
+  },
+  {
+   "id": "jordnoeddeolie",
+   "group": "olie",
+   "name": "Jordnøddeolie",
+   "gramsPerDl": 91,
+   "keywords": [
+    "jordnøddeolie"
+   ]
+  },
+  {
+   "id": "hoerfroeolie",
+   "group": "olie",
+   "name": "Hørfrøolie",
+   "gramsPerDl": 93,
+   "keywords": [
+    "hørfrøolie"
+   ]
+  },
+  {
+   "id": "valnoeddeolie",
+   "group": "olie",
+   "name": "Valnøddeolie",
+   "gramsPerDl": 92,
+   "keywords": [
+    "valnøddeolie"
+   ]
+  },
+  {
+   "id": "vindruekerneolie",
+   "group": "olie",
+   "name": "Vindruekerneolie",
+   "gramsPerDl": 92,
+   "keywords": [
+    "druekerneolie",
+    "vindruekerneolie"
+   ]
+  },
+  {
+   "id": "tidselolie",
+   "group": "olie",
+   "name": "Tidselolie",
+   "gramsPerDl": 92,
+   "keywords": [
+    "safflorolie",
+    "tidselolie"
+   ]
+  },
+  {
+   "id": "hvedekimolie",
+   "group": "olie",
+   "name": "Hvedekimolie",
+   "gramsPerDl": 92,
+   "keywords": [
+    "hvedekimolie"
+   ]
+  },
+  {
+   "id": "bomuldsfroeolie",
+   "group": "olie",
+   "name": "Bomuldsfrøolie",
+   "gramsPerDl": 92,
+   "keywords": [
+    "bomuldsfrøolie"
+   ]
+  },
+  {
+   "id": "avocadoolie",
+   "group": "olie",
+   "name": "Avocadoolie",
+   "gramsPerDl": 91,
+   "keywords": [
+    "avocadoolie"
+   ]
+  },
+  {
+   "id": "kokosolie",
+   "group": "olie",
+   "name": "Kokosolie (smeltet)",
+   "gramsPerDl": 92,
+   "keywords": [
+    "kokosfedt",
+    "kokosolie"
+   ]
+  },
+  {
+   "id": "palmeolie",
+   "group": "olie",
+   "name": "Palmeolie (smeltet)",
+   "gramsPerDl": 89,
+   "keywords": [
+    "palmekerneolie",
+    "palmeolie"
+   ]
+  },
+  {
+   "id": "fiskeolie",
+   "group": "olie",
+   "name": "Fiskeolie / levertran",
+   "gramsPerDl": 92,
+   "keywords": [
+    "fiskeolie",
+    "levertran",
+    "torskelevertran"
+   ]
+  },
+  {
+   "id": "olie-neutral",
+   "group": "olie",
+   "name": "Olie, neutral (madolie)",
+   "gramsPerDl": 92,
+   "keywords": [
+    "fritureolie",
+    "madolie",
+    "neutral olie",
+    "olie",
+    "stegeolie",
+    "vegetabilsk olie"
+   ]
+  },
+  {
+   "id": "smoer-smeltet",
+   "group": "olie",
+   "name": "Smør, smeltet",
+   "gramsPerDl": 91,
+   "keywords": [
+    "ghee",
+    "klaret smør",
+    "smeltet smør",
+    "smør smeltet"
+   ]
+  },
+  {
+   "id": "andefedt-gaasefedt-og-svinefedt",
+   "group": "olie",
+   "name": "Andefedt, gåsefedt og svinefedt (smeltet)",
+   "gramsPerDl": 90,
+   "keywords": [
+    "andefedt",
+    "grisefedt",
+    "gåsefedt",
+    "oksetalg",
+    "svinefedt"
+   ]
+  },
+  {
+   "id": "oel",
+   "group": "alkohol",
+   "name": "Øl (pilsner, lager, ale)",
+   "gramsPerDl": 101,
+   "keywords": [
+    "ale",
+    "guldøl",
+    "hvedeøl",
+    "ipa",
+    "julebryg",
+    "lagerøl",
+    "pilsner",
+    "påskebryg",
+    "øl"
+   ]
+  },
+  {
+   "id": "oel-alkoholfri",
+   "group": "alkohol",
+   "name": "Øl, alkoholfri",
+   "gramsPerDl": 102,
+   "keywords": [
+    "alkoholfri pilsner",
+    "alkoholfri øl",
+    "pilsner alkoholfri"
+   ]
+  },
+  {
+   "id": "porter",
+   "group": "alkohol",
+   "name": "Porter / stout",
+   "gramsPerDl": 102,
+   "keywords": [
+    "porter",
+    "stout"
+   ]
+  },
+  {
+   "id": "hvidtoel",
+   "group": "alkohol",
+   "name": "Hvidtøl / maltøl",
+   "gramsPerDl": 104,
+   "keywords": [
+    "hvidtøl",
+    "maltøl",
+    "nisseøl"
+   ]
+  },
+  {
+   "id": "roedvin",
+   "group": "alkohol",
+   "name": "Rødvin",
+   "gramsPerDl": 99,
+   "keywords": [
+    "rødvin",
+    "vin"
+   ]
+  },
+  {
+   "id": "hvidvin-toer",
+   "group": "alkohol",
+   "name": "Hvidvin, tør",
+   "gramsPerDl": 99,
+   "keywords": [
+    "hvidvin",
+    "tør hvidvin"
+   ]
+  },
+  {
+   "id": "hvidvin-soed",
+   "group": "alkohol",
+   "name": "Hvidvin, sød / dessertvin",
+   "gramsPerDl": 102,
+   "keywords": [
+    "dessertvin",
+    "sød hvidvin"
+   ]
+  },
+  {
+   "id": "rosevin",
+   "group": "alkohol",
+   "name": "Rosévin",
+   "gramsPerDl": 99,
+   "keywords": [
+    "rosevin",
+    "rosévin"
+   ]
+  },
+  {
+   "id": "mousserende-vin",
+   "group": "alkohol",
+   "name": "Mousserende vin",
+   "gramsPerDl": 99,
+   "keywords": [
+    "asti",
+    "cava",
+    "champagne",
+    "cremant",
+    "crémant",
+    "mousserende vin",
+    "prosecco"
+   ]
+  },
+  {
+   "id": "vin-alkoholfri",
+   "group": "alkohol",
+   "name": "Vin, alkoholfri",
+   "gramsPerDl": 102,
+   "keywords": [
+    "alkoholfri hvidvin",
+    "alkoholfri rosévin",
+    "alkoholfri rødvin",
+    "alkoholfri vin"
+   ]
+  },
+  {
+   "id": "hedvin",
+   "group": "alkohol",
+   "name": "Hedvin (portvin, sherry, madeira)",
+   "gramsPerDl": 102,
+   "keywords": [
+    "hedvin",
+    "madeira",
+    "marsala",
+    "portvin",
+    "sherry"
+   ]
+  },
+  {
+   "id": "vermouth",
+   "group": "alkohol",
+   "name": "Vermouth",
+   "gramsPerDl": 102,
+   "keywords": [
+    "vermouth",
+    "vermut"
+   ]
+  },
+  {
+   "id": "cider",
+   "group": "alkohol",
+   "name": "Cider",
+   "gramsPerDl": 102,
+   "keywords": [
+    "cider",
+    "pærecider",
+    "æblecider"
+   ]
+  },
+  {
+   "id": "spiritus-40",
+   "group": "alkohol",
+   "name": "Spiritus 40 % (vodka, gin, rom, whisky)",
+   "gramsPerDl": 95,
+   "keywords": [
+    "akvavit",
+    "brandy",
+    "calvados",
+    "cognac",
+    "gin",
+    "rom",
+    "snaps",
+    "spiritus",
+    "tequila",
+    "vodka",
+    "whiskey",
+    "whisky"
+   ]
+  },
+  {
+   "id": "likoer",
+   "group": "alkohol",
+   "name": "Likør",
+   "gramsPerDl": 108,
+   "keywords": [
+    "amaretto",
+    "curacao",
+    "fløde likør",
+    "flødelikør",
+    "kaffelikør",
+    "likør",
+    "limoncello"
+   ]
+  },
+  {
+   "id": "bitter",
+   "group": "alkohol",
+   "name": "Bitter (Campari o.l.)",
+   "gramsPerDl": 104,
+   "keywords": [
+    "aperol",
+    "bitter",
+    "campari"
+   ]
+  },
+  {
+   "id": "honning",
+   "group": "sodt",
+   "name": "Honning (flydende)",
+   "gramsPerDl": 142,
+   "keywords": [
+    "akaciehonning",
+    "flydende honning",
+    "honning"
+   ]
+  },
+  {
+   "id": "lys-sirup",
+   "group": "sodt",
+   "name": "Lys sirup",
+   "gramsPerDl": 140,
+   "keywords": [
+    "lys sirup",
+    "sirup"
+   ]
+  },
+  {
+   "id": "moerk-sirup",
+   "group": "sodt",
+   "name": "Mørk sirup",
+   "gramsPerDl": 140,
+   "keywords": [
+    "mørk sirup"
+   ]
+  },
+  {
+   "id": "ahornsirup",
+   "group": "sodt",
+   "name": "Ahornsirup",
+   "gramsPerDl": 132,
+   "keywords": [
+    "ahornsirup",
+    "maple syrup"
+   ]
+  },
+  {
+   "id": "agavesirup",
+   "group": "sodt",
+   "name": "Agavesirup",
+   "gramsPerDl": 135,
+   "keywords": [
+    "agave sirup",
+    "agavesirup"
+   ]
+  },
+  {
+   "id": "glukosesirup",
+   "group": "sodt",
+   "name": "Glukosesirup",
+   "gramsPerDl": 143,
+   "keywords": [
+    "glucosesirup",
+    "glukosesirup"
+   ]
+  },
+  {
+   "id": "melasse",
+   "group": "sodt",
+   "name": "Melasse",
+   "gramsPerDl": 140,
+   "keywords": [
+    "melasse"
+   ]
+  },
+  {
+   "id": "sojasauce",
+   "group": "sauce",
+   "name": "Sojasauce",
+   "gramsPerDl": 115,
+   "keywords": [
+    "soja",
+    "sojasauce",
+    "soya",
+    "soyasauce",
+    "tamari"
+   ]
+  },
+  {
+   "id": "fiskesauce",
+   "group": "sauce",
+   "name": "Fiskesauce",
+   "gramsPerDl": 120,
+   "keywords": [
+    "fiskesauce"
+   ]
+  },
+  {
+   "id": "oesterssauce",
+   "group": "sauce",
+   "name": "Østerssauce",
+   "gramsPerDl": 120,
+   "keywords": [
+    "østerssauce"
+   ]
+  },
+  {
+   "id": "eddike",
+   "group": "sauce",
+   "name": "Eddike (husholdnings-, vin- og æbleeddike)",
+   "gramsPerDl": 101,
+   "keywords": [
+    "eddike",
+    "husholdningseddike",
+    "hvidvinseddike",
+    "lageeddike",
+    "riseddike",
+    "risvinseddike",
+    "rødvinseddike",
+    "vineddike",
+    "æbleeddike"
+   ]
+  },
+  {
+   "id": "balsamico",
+   "group": "sauce",
+   "name": "Balsamico",
+   "gramsPerDl": 110,
+   "keywords": [
+    "balsamico",
+    "balsamicoeddike"
+   ]
+  },
+  {
+   "id": "bouillon-og-fond",
+   "group": "sauce",
+   "name": "Bouillon og fond",
+   "gramsPerDl": 100,
+   "keywords": [
+    "bouillon",
+    "fond",
+    "grøntsagsbouillon",
+    "hønsebouillon",
+    "kalvefond",
+    "kyllingefond",
+    "oksebouillon"
+   ]
+  },
+  {
+   "id": "suppe",
+   "group": "sauce",
+   "name": "Suppe",
+   "gramsPerDl": 103,
+   "keywords": [
+    "aspargessuppe",
+    "karrysuppe",
+    "suppe",
+    "tomatsuppe"
+   ]
+  },
+  {
+   "id": "passata",
+   "group": "sauce",
+   "name": "Passata / hakkede tomater",
+   "gramsPerDl": 103,
+   "keywords": [
+    "flåede tomater",
+    "hakkede tomater",
+    "passata",
+    "tomatpassata"
+   ]
+  },
+  {
+   "id": "ketchup",
+   "group": "sauce",
+   "name": "Ketchup",
+   "gramsPerDl": 115,
+   "keywords": [
+    "ketchup"
+   ]
+  },
+  {
+   "id": "bbq-sauce",
+   "group": "sauce",
+   "name": "BBQ-sauce",
+   "gramsPerDl": 110,
+   "keywords": [
+    "barbecuesauce",
+    "bbq sauce",
+    "bbq-sauce"
+   ]
+  },
+  {
+   "id": "sennep",
+   "group": "sauce",
+   "name": "Sennep",
+   "gramsPerDl": 105,
+   "keywords": [
+    "dijonsennep",
+    "grov sennep",
+    "sennep"
+   ]
+  },
+  {
+   "id": "mayonnaise-og-remoulade",
+   "group": "sauce",
+   "name": "Mayonnaise og remoulade",
+   "gramsPerDl": 95,
+   "keywords": [
+    "aioli",
+    "mayonnaise",
+    "remoulade"
+   ]
+  },
+  {
+   "id": "dressing",
+   "group": "sauce",
+   "name": "Dressing",
+   "gramsPerDl": 100,
+   "keywords": [
+    "dressing",
+    "salatdressing",
+    "vinaigrette"
+   ]
+  },
+  {
+   "id": "hele-aeg",
+   "group": "aeg",
+   "name": "Hele æg (pisket)",
+   "gramsPerDl": 103,
+   "keywords": [
+    "hele æg",
+    "pasteuriseret æg",
+    "sammenpisket æg",
+    "æg"
+   ]
+  },
+  {
+   "id": "aeggehvide",
+   "group": "aeg",
+   "name": "Æggehvide",
+   "gramsPerDl": 103,
+   "keywords": [
+    "æggehvide"
+   ]
+  },
+  {
+   "id": "aeggeblomme",
+   "group": "aeg",
+   "name": "Æggeblomme",
+   "gramsPerDl": 104,
+   "keywords": [
+    "æggeblomme"
+   ]
+  },
+  {
+   "id": "hvedemel",
+   "group": "torvarer",
+   "name": "Hvedemel",
+   "gramsPerDl": 60,
+   "keywords": [
+    "durummel",
+    "hvedemel",
+    "manitobamel",
+    "mel",
+    "tipo 00"
+   ]
+  },
+  {
+   "id": "fuldkornshvedemel",
+   "group": "torvarer",
+   "name": "Fuldkornshvedemel / grahamsmel",
+   "gramsPerDl": 55,
+   "keywords": [
+    "fuldkornshvedemel",
+    "fuldkornsmel",
+    "grahamsmel"
+   ]
+  },
+  {
+   "id": "rugmel",
+   "group": "torvarer",
+   "name": "Rugmel",
+   "gramsPerDl": 55,
+   "keywords": [
+    "fuldkornsrugmel",
+    "rugmel"
+   ]
+  },
+  {
+   "id": "speltmel",
+   "group": "torvarer",
+   "name": "Speltmel",
+   "gramsPerDl": 55,
+   "keywords": [
+    "fuldkornsspeltmel",
+    "speltmel"
+   ]
+  },
+  {
+   "id": "kartoffelmel",
+   "group": "torvarer",
+   "name": "Kartoffelmel",
+   "gramsPerDl": 70,
+   "keywords": [
+    "kartoffelmel"
+   ]
+  },
+  {
+   "id": "majsstivelse",
+   "group": "torvarer",
+   "name": "Majsstivelse",
+   "gramsPerDl": 55,
+   "keywords": [
+    "maizena",
+    "majsstivelse"
+   ]
+  },
+  {
+   "id": "sukker",
+   "group": "torvarer",
+   "name": "Sukker",
+   "gramsPerDl": 85,
+   "keywords": [
+    "perlesukker",
+    "rørsukker",
+    "stødt melis",
+    "sukker"
+   ]
+  },
+  {
+   "id": "flormelis",
+   "group": "torvarer",
+   "name": "Flormelis",
+   "gramsPerDl": 50,
+   "keywords": [
+    "flormelis"
+   ]
+  },
+  {
+   "id": "brun-farin",
+   "group": "torvarer",
+   "name": "Brun farin",
+   "gramsPerDl": 70,
+   "keywords": [
+    "brun farin",
+    "brunt rørsukker",
+    "brunt sukker",
+    "farin"
+   ]
+  },
+  {
+   "id": "havregryn",
+   "group": "torvarer",
+   "name": "Havregryn",
+   "gramsPerDl": 35,
+   "keywords": [
+    "finvalsede havregryn",
+    "grovvalsede havregryn",
+    "havregryn"
+   ]
+  },
+  {
+   "id": "ris",
+   "group": "torvarer",
+   "name": "Ris (rå)",
+   "gramsPerDl": 85,
+   "keywords": [
+    "basmatiris",
+    "fuldkornsris",
+    "grødris",
+    "jasminris",
+    "ris",
+    "risottoris"
+   ]
+  },
+  {
+   "id": "couscous",
+   "group": "torvarer",
+   "name": "Couscous",
+   "gramsPerDl": 75,
+   "keywords": [
+    "couscous"
+   ]
+  },
+  {
+   "id": "bulgur",
+   "group": "torvarer",
+   "name": "Bulgur",
+   "gramsPerDl": 80,
+   "keywords": [
+    "bulgur"
+   ]
+  },
+  {
+   "id": "quinoa",
+   "group": "torvarer",
+   "name": "Quinoa",
+   "gramsPerDl": 85,
+   "keywords": [
+    "quinoa"
+   ]
+  },
+  {
+   "id": "linser",
+   "group": "torvarer",
+   "name": "Linser (tørrede)",
+   "gramsPerDl": 85,
+   "keywords": [
+    "beluga linser",
+    "grønne linser",
+    "linser",
+    "røde linser"
+   ]
+  },
+  {
+   "id": "kakaopulver",
+   "group": "torvarer",
+   "name": "Kakaopulver",
+   "gramsPerDl": 40,
+   "keywords": [
+    "kakao",
+    "kakaopulver"
+   ]
+  },
+  {
+   "id": "salt",
+   "group": "torvarer",
+   "name": "Salt (fint)",
+   "gramsPerDl": 120,
+   "keywords": [
+    "bordsalt",
+    "fint salt",
+    "havsalt",
+    "salt"
+   ]
+  },
+  {
+   "id": "bagepulver",
+   "group": "torvarer",
+   "name": "Bagepulver",
+   "gramsPerDl": 80,
+   "keywords": [
+    "bagepulver"
+   ]
+  },
+  {
+   "id": "natron",
+   "group": "torvarer",
+   "name": "Natron",
+   "gramsPerDl": 90,
+   "keywords": [
+    "natron"
+   ]
+  },
+  {
+   "id": "revet-ost",
+   "group": "torvarer",
+   "name": "Revet ost",
+   "gramsPerDl": 40,
+   "keywords": [
+    "revet ost",
+    "revet parmesan"
+   ]
+  },
+  {
+   "id": "kokosmel",
+   "group": "torvarer",
+   "name": "Kokosmel",
+   "gramsPerDl": 35,
+   "keywords": [
+    "kokosmel"
+   ]
+  },
+  {
+   "id": "mandelmel",
+   "group": "torvarer",
+   "name": "Mandelmel",
+   "gramsPerDl": 45,
+   "keywords": [
+    "mandelmel"
+   ]
+  },
+  {
+   "id": "rasp",
+   "group": "torvarer",
+   "name": "Rasp / paneermel",
+   "gramsPerDl": 45,
+   "keywords": [
+    "paneermel",
+    "panko",
+    "rasp"
+   ]
+  },
+  {
+   "id": "rosiner",
+   "group": "torvarer",
+   "name": "Rosiner",
+   "gramsPerDl": 65,
+   "keywords": [
+    "rosiner"
+   ]
+  },
+  {
+   "id": "hakkede-noedder",
+   "group": "torvarer",
+   "name": "Hakkede nødder",
+   "gramsPerDl": 55,
+   "keywords": [
+    "hakkede hasselnødder",
+    "hakkede mandler",
+    "hakkede nødder"
+   ]
+  },
+  {
+   "id": "sesamfroe",
+   "group": "torvarer",
+   "name": "Sesamfrø",
+   "gramsPerDl": 65,
+   "keywords": [
+    "sesam",
+    "sesamfrø"
+   ]
+  }
+ ]
+}

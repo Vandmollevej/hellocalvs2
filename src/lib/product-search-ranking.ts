@@ -1,10 +1,18 @@
-import { barcodeMatchesRegion } from "@/lib/regions";
+// Relative .ts imports so `npm test` (node --test) can load this module.
+import { barcodeMatchesRegion } from "./regions.ts";
+import { queryNamesBrand, queryNamesSubbrand, queryWithoutNames } from "./search-brand-intent.ts";
+import { allWordsMatch, compactText, productDetailsText } from "./search-text-match.ts";
 
 // Regional search ranking (2026-09-19, see docs/DECISIONS.md): text match is
 // always dominant, and regional popularity/history/origin only reorder
 // otherwise-comparable matches — a popular-but-wrong product can never
-// outrank a clear text match. Low-popularity products additionally need more
-// typed characters and a higher text similarity before they can surface.
+// outrank a clear text match. Low popularity only moves a product down; it
+// never hides it (docs/DECISIONS.md 2026-10-10: søgningen viser alt). A
+// product nobody has seen yet — e.g. one without nutrition, hidden until
+// 2026-10-10 — has no impressions and would otherwise never surface.
+// Exception (brugerens krav 2026-10-10): when the query names a product's
+// brand or subbrand, that product goes above everything else, even when its
+// product type matches the rest of the query worse than another product.
 
 export type SearchStat = {
   region: string;
@@ -22,6 +30,12 @@ export type RankableProduct = {
   id: string;
   name: string;
   brand: { name: string } | null;
+  // Varetype, serie, variant og smag læses med i tekstmatchet: butiksvarer
+  // hedder ofte kun "Gold" med varetypen "Instant kaffe" (docs/DECISIONS.md 2026-10-10).
+  productType?: string | null;
+  subbrand?: string | null;
+  variant?: string | null;
+  flavor?: string | null;
   originCountryCode?: string | null;
   barcodes: Array<{ code: string }>;
   regionSearchStats?: SearchStat[];
@@ -62,6 +76,9 @@ export type SearchRankingBreakdown = {
   regionBrand: number;
   personalHistory: number;
   genericVsProduct: number;
+  genericBroadSearch: number;
+  brandInQuery: number;
+  subbrandInQuery: number;
 };
 
 export type RankedProduct<T extends RankableProduct> = {
@@ -87,7 +104,16 @@ export type SearchRankingWeights = {
   regionBrand: number; // "Region-specifikke brands/mærker"
   personalHistory: number; // "Personligt tidligere søgte produkter"
   genericVsProduct: number; // "Generiske ingredienser vs. varer" (signed: negative favors products, positive favors ingredients)
+  genericBroadSearch: number; // "Generiske varer ved bred søgning" — brand-less items first unless the query names a brand
+  brandInQuery: number; // "Brand nævnt i søgningen" — the brand's products always on top
+  subbrandInQuery: number; // "Subbrand nævnt i søgningen" — the subbrand's products always on top
 };
+
+// Brand/subbrand-prioritet (2026-10-10): the signal is worth this many points
+// per weight unit, so the default weight 100 adds 10.000 points. Every other
+// signal together tops out at ~1.900 (all weights at 100), so from weight 20
+// up a named brand/subbrand is always above everything else.
+export const NAMED_BRAND_POINTS = 100;
 
 export const DEFAULT_SEARCH_RANKING_WEIGHTS: SearchRankingWeights = {
   regionalPopularity: 18,
@@ -97,16 +123,28 @@ export const DEFAULT_SEARCH_RANKING_WEIGHTS: SearchRankingWeights = {
   regionBrand: 0,
   personalHistory: 0,
   genericVsProduct: 0,
+  // On by default (user decision 2026-10-04): "letmælk" must show generic
+  // letmælk before branded ones. Large enough to beat a branded item's
+  // regional EAN + popularity lead, see docs/DECISIONS.md.
+  genericBroadSearch: 45,
+  // Brugerens krav 2026-10-10: nævner søgningen et brand/subbrand, står dets
+  // varer altid øverst — også over en vare, hvis produkttype passer bedre.
+  brandInQuery: 100,
+  subbrandInQuery: 100,
 };
 
-const LOW_POPULARITY_QUERY_PENALTY_MAX = 3;
 const MIN_SIMILARITY = 0.18;
-const LOW_POPULARITY_MIN_SIMILARITY = 0.42;
+// The generic boost only applies to a real word/prefix match (textSimilarity
+// returns ≥ 0.82 for those), so a fuzzy, merely similar generic item can
+// never jump a clear branded text match.
+const GENERIC_BOOST_MIN_SIMILARITY = 0.8;
 
 function normalize(value: string): string {
   return value
     .normalize("NFKD")
     .replace(/\p{Diacritic}/gu, "")
+    // "1,5" og "1.5" er samme tal (src/lib/decimal-separator.ts).
+    .replace(/(\d),(\d)/g, "$1.$2")
     .toLocaleLowerCase()
     .trim();
 }
@@ -140,7 +178,12 @@ function diceSimilarity(left: string, right: string): number {
   return (2 * overlap) / (a.length + b.length);
 }
 
-export function textSimilarity(query: string, productName: string, brandName?: string | null): number {
+export function textSimilarity(
+  query: string,
+  productName: string,
+  brandName?: string | null,
+  details?: string | null
+): number {
   const q = normalize(query);
   const name = normalize(productName);
   const brand = normalize(brandName ?? "");
@@ -150,8 +193,17 @@ export function textSimilarity(query: string, productName: string, brandName?: s
   if (name === q) return 1;
   if (name.startsWith(q)) return 0.97;
   if (searchable.startsWith(q)) return 0.94;
+  // "arla letmælk" — brand written before the name.
+  if (brand && `${brand} ${name}`.startsWith(q)) return 0.94;
   if (name.includes(q)) return 0.88;
+  // Sammensatte ord: "instantkaffe" i "Instant Kaffe, Gold Crema" og omvendt.
+  const tightQuery = compactText(q);
+  if (tightQuery.length >= 4 && compactText(name).includes(tightQuery)) return 0.86;
   if (searchable.includes(q)) return 0.82;
+  // Varetype/variant med: "nescafé instant kaffe" → "Gold" (Nescafé, Instant kaffe).
+  const full = `${searchable} ${normalize(details ?? "")}`;
+  if (tightQuery.length >= 4 && compactText(full).includes(tightQuery)) return 0.8;
+  if (allWordsMatch(q, full)) return 0.78;
 
   return Math.max(diceSimilarity(q, name), diceSimilarity(q, searchable));
 }
@@ -217,28 +269,54 @@ export function rankProducts<T extends RankableProduct>(
   region: string,
   localHour: number,
   take: number,
-  weights: SearchRankingWeights = DEFAULT_SEARCH_RANKING_WEIGHTS
+  weights: SearchRankingWeights = DEFAULT_SEARCH_RANKING_WEIGHTS,
+  synonyms: Array<{ term: string; similarity: number }> = [],
+  // Søgemotorens relevans pr. vare (0..1, docs/DECISIONS.md 2026-10-10): tæller
+  // som tekstmatch, hvis den er højere end vores egen tekstsammenligning.
+  engineScores?: Map<string, number>
 ): RankedProduct<T>[] {
   const popularityValues = products.map((product) => regionalPopularity(product, region));
   const maxPopularity = Math.max(0, ...popularityValues);
+  const namesBrand = products.map((product) =>
+    product.brand ? queryNamesBrand(query, [product.brand.name]) : false
+  );
+  const namesSubbrand = products.map((product) =>
+    queryNamesSubbrand(query, product.subbrand, product.brand?.name)
+  );
+  // Brand intent is read from the candidates' own brands/subbrands: the
+  // database filter already pulls in their products when the query names one.
+  const brandSearch = namesBrand.some(Boolean) || namesSubbrand.some(Boolean);
 
   return products
     .map((product, index) => {
-      const similarity = textSimilarity(query, product.name, product.brand?.name);
+      // Admin synonym dictionary: a hit via a synonym counts at its
+      // similarity (0..1) share of a direct text match.
+      const details = productDetailsText(product);
+      let similarity = textSimilarity(query, product.name, product.brand?.name, details);
+      for (const synonym of synonyms) {
+        similarity = Math.max(
+          similarity,
+          textSimilarity(synonym.term, product.name, product.brand?.name, details) * synonym.similarity
+        );
+      }
+      similarity = Math.max(similarity, engineScores?.get(product.id) ?? 0);
+      const brandNamed = namesBrand[index] ? 1 : 0;
+      const subbrandNamed = namesSubbrand[index] ? 1 : 0;
+      if (brandNamed || subbrandNamed) {
+        // Inside the brand's own group, the rest of the query ("arla skyr"
+        // → "skyr") orders its products against their name and product type.
+        const rest = queryWithoutNames(query, [
+          product.brand ? `${product.brand.name} ${product.subbrand ?? ""}` : null,
+          product.brand?.name,
+          product.subbrand,
+        ]);
+        if (rest) similarity = Math.max(similarity, textSimilarity(rest, product.name, null, details));
+      }
       const popularity = popularityValues[index];
-      const popularityRatio = maxPopularity > 0 ? popularity / maxPopularity : 0.5;
-      const lowPopularity = Math.max(0, 1 - popularityRatio);
 
-      // Low-priority products need more typed characters and a better text match
-      // before they are allowed near the top of the suggestions.
-      const extraChars = Math.round(lowPopularity * LOW_POPULARITY_QUERY_PENALTY_MAX);
-      const minimumChars = 2 + extraChars;
-      const minimumSimilarity =
-        MIN_SIMILARITY +
-        lowPopularity * (LOW_POPULARITY_MIN_SIMILARITY - MIN_SIMILARITY);
-
-      if (normalize(query).length < minimumChars && lowPopularity > 0.34) return null;
-      if (similarity < minimumSimilarity) return null;
+      // Only a real text match counts; popularity just orders (score below).
+      // A named brand/subbrand is a match in itself, whatever the product type.
+      if (similarity < MIN_SIMILARITY && !brandNamed && !subbrandNamed) return null;
 
       const regional = maxPopularity > 0 ? popularity / maxPopularity : 0;
       const hour = hourPopularity(product, region, localHour);
@@ -252,6 +330,8 @@ export function rankProducts<T extends RankableProduct>(
       const hourCapped = Math.min(hour, 3);
       const verification = product.isVerified ? 1 : 0;
       const entityBias = product.entityBias ?? 0;
+      const genericBroad =
+        !brandSearch && !product.brand && similarity >= GENERIC_BOOST_MIN_SIMILARITY ? 1 : 0;
 
       const score =
         similarity * 100 +
@@ -261,7 +341,10 @@ export function rankProducts<T extends RankableProduct>(
         verification * weights.verification +
         brandRegional * weights.regionBrand +
         personal * weights.personalHistory +
-        entityBias * weights.genericVsProduct;
+        entityBias * weights.genericVsProduct +
+        genericBroad * weights.genericBroadSearch +
+        brandNamed * NAMED_BRAND_POINTS * weights.brandInQuery +
+        subbrandNamed * NAMED_BRAND_POINTS * weights.subbrandInQuery;
 
       const breakdown: SearchRankingBreakdown = {
         similarity,
@@ -272,6 +355,9 @@ export function rankProducts<T extends RankableProduct>(
         regionBrand: brandRegional,
         personalHistory: personal,
         genericVsProduct: entityBias,
+        genericBroadSearch: genericBroad,
+        brandInQuery: brandNamed * NAMED_BRAND_POINTS,
+        subbrandInQuery: subbrandNamed * NAMED_BRAND_POINTS,
       };
 
       return { product, score, similarity, breakdown };

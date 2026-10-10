@@ -13,6 +13,24 @@ export const BUG_REPORT_SECTIONS = [
 
 export type BugReportSectionKey = (typeof BUG_REPORT_SECTIONS)[number]["key"];
 export type BugReportSections = Partial<Record<BugReportSectionKey, string>>;
+/** Foto pr. sektion: gemt sti (eller data-URL, mens klienten sender det). */
+export type BugReportPhotos = Partial<Record<BugReportSectionKey, string>>;
+
+/** Tekst til en sektion, der kun har et foto og ingen note. */
+export const PHOTO_ONLY_TEXT = "Se vedhæftet foto";
+
+/** Sektioner med foto men uden note får en kort tekst, så fotoet ikke går tabt. */
+export function withPhotoOnlySections(
+  sections: BugReportSections | null,
+  photos: BugReportPhotos | null
+): BugReportSections | null {
+  if (!photos) return sections;
+  const result: BugReportSections = { ...(sections ?? {}) };
+  for (const key of Object.keys(photos) as BugReportSectionKey[]) {
+    if (!result[key]) result[key] = PHOTO_ONLY_TEXT;
+  }
+  return result;
+}
 
 const SECTION_KEYS = BUG_REPORT_SECTIONS.map((s) => s.key) as string[];
 const MAX_SECTION_LENGTH = 2000;

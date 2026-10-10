@@ -44,7 +44,7 @@ export function PeriodPicker({ basePath, active }: { basePath: string; active: s
             href={`${basePath}?preset=${period.value}`}
             aria-current={on ? "page" : undefined}
             className={`rounded-full border px-3 py-1 ${
-              on ? "border-hf-green-dark bg-hf-green-dark text-white" : "border-border-strong bg-surface-1 text-text-secondary hover:text-text-primary"
+              on ? "border-hf-black hf-selected" : "border-border-strong bg-surface-1 text-text-secondary hover:text-text-primary"
             }`}
           >
             {period.label}
