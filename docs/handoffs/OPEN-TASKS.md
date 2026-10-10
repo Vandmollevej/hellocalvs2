@@ -31,6 +31,15 @@ Status opdateret: 2026-10-06 — alle udestående opgaver slettet (klaret af en 
 
 ---
 
+## G-NAERING — Streg (–) for manglende næringsindhold (2026-10-09)
+Filer: `src/components/add/AddProductView.tsx`, `AddProductScreen.kt`, `docs/REGLER.md`. Branch `claude/nutrient-dash`, PR #252 (klar til review).
+
+| Id | Opgave | Status | Næste skridt |
+| --- | --- | --- | --- |
+| streg | Manglende næringsværdi vises som "–" (web + native) | Venter på CI | Min del er klar og godkendt i paritet. Tjekket "Web ↔ native in step" kan stadig være rødt pga. mål-siderne (`/profile/goals`, `/profile/goals/[id]/edit`) på master — ikke denne PR. Når master er grøn: flet master ind, kør `node scripts/native/parity.mjs`, og flet PR #252 |
+
+---
+
 ## G-NATIVE — Native Android + iPhone-app (helt native, Compose Multiplatform)
 Filer: `native/**`, `scripts/native/**`, `.github/workflows/native.yml`. Branch `claude/native-apps` (merges til master, når CI er grøn).
 Ejer: session "Native app" (e4e4d388), 2026-10-08. Fortsæt fra `native/README.md` + `native/PORTING.md`; status pr. skærm står i `native/parity/screens.json` (`node scripts/native/parity.mjs`).
@@ -271,6 +280,11 @@ Ejer: cloud-session `claude/lucid-bell-s5vyhv` (2026-09-25)
 
 | Id | Opgave | Status | Næste skridt |
 | --- | --- | --- | --- |
+| family-rights | "Skift profil" fed under cirklen, "Tilføj familiemedlem" + "Tilføj barn (under 18)", rettigheder "se" / "oprette på deres vegne" | Venter på bruger | Bygget i draft-PR #212 (branch `claude/familie-tilfoej-rettigheder`), migration `20261003230000_family_grant_write`. Næste: brugerens test mod rigtig database |
+| family-qr | Familiekode bundet til e-mail, krypteret QR-kode på betalerens side, "x ud af y abonnenter" + "0/5 ekstra tilkøb" | Venter på bruger | Flettet i master og deployet 2026-10-03 (PR #196 + #200). Næste: brugerens test på telefon (scan QR med kameraet) og afklaring af pris/betaling for ekstra pladser |
+| — | Familieabonnement: forældre ser/taster for børn, adgangslog til barnet | I gang | Første version bygget og pushet (branch `claude/lucid-bell-s5vyhv`, ikke flettet). Næste: brugerens test og "Mangler" i `docs/FAMILY.md` (oprettelsesflow med alder er næste skridt) |
+| family-invite | "Inviter familiemedlem" (mail + valg af indsigt + "Tilføj barn under 18") og ejerens konto som Seriøs Familie | Venter på bruger | Flettet i master 2026-10-03 (PR #199) og deployet med de 2 migrationer. Næste: brugerens test på telefon |
+| family-share-self | "Del med andre": voksne med eget login (og børn fra 15) bestemmer selv, hvem i familien der ser deres profil ("se" / "oprette på dine vegne"); betaleren styrer kun profiler uden login og børn under 15 | Venter på bruger | Første del ("Familie" øverst på Profil + "Delt med {navn}") flettet i PR #216. Resten ligger i draft-PR #224 (branch `claude/familie-selv-bestemmer`, master flettet ind, lint/typecheck/build grønne, ingen migration). Session `session_01WPC8ibw3YrdqmQ7Ro7Po5e` (konto peter@packroff.dk) måtte ikke flette til master uden gennemgang. Næste: brugeren gennemgår og fletter #224 og tester på telefon med en voksen konto i familien |
 
 ## G-FLOWS — Admin "Flows" + telefon-editor
 Filer: `src/components/admin/PhonePreviewEditor.tsx`, `src/components/admin/FlowEditor.tsx`, `src/app/admin/flows/**`, `src/app/api/admin/flows/**`, `src/lib/flows.ts`.
@@ -451,3 +465,27 @@ Ejer: cloud-session `claude/help-center-shortcut-overlay-2cql8y` (2026-10-09)
 | --- | --- | --- | --- |
 | guide-hjaelpecenter | Understreget genvej øverst + "Guide mig" i Hjælpecenter-emner | Venter på bruger | Draft-PR #318. Brugeren tester på telefon: Hjælpecenter → "Hvordan registrerer jeg min vægt?" → Guide mig |
 
+---
+
+## Genscan-panel ("Optjen 10 points")
+Filer: `src/components/add/RescanBanner.tsx`, `src/lib/product-capture.ts`.
+Ejer: cloud-session `claude/rescan-panel-fix` (2026-10-03)
+
+| Id | Opgave | Status | Næste skridt |
+| --- | --- | --- | --- |
+| rescan-panel | Panel over hele skærmen, X-knap, 60 sek. tidsgrænse på afsendelse | Venter på bruger | Draft-PR #225. Brugeren skal teste på telefon (kan panelet lukkes; bliver kameraet sort efter sidste billede?) og godkende flet til master |
+## G-SLIDER — Tal-slider: valgbare felter, mål-linje, grøn ved mål
+Filer: `src/lib/frontpage-stats.ts`, `src/lib/frontpage-goal-math.ts`, `src/lib/pulse-zone-settings.ts`, `src/components/StatsWheel.tsx`, `src/app/settings/display/front-page/page.tsx`.
+Ejer: cloud-session `claude/slider-settings-goal-display-32jvk9` (2026-10-09)
+
+| Id | Opgave | Status | Næste skridt |
+| --- | --- | --- | --- |
+| slider-felter | 12 nye felter, mål under tallet, grøn ved nået mål, pulszoner i Visning → Forside | Færdig (kode, draft-PR #278) | Brugerens test på telefon + svar på antagelserne (sukkermål 10 % vs. 1 %, faste mål for trapper/skridt) |
+
+## Native-port af tal-sliderens nye felter (PR #278)
+Filer: `native/**/HomeStatsWheel.kt`, `SettingsFrontPageScreen.kt`; web-kilde `src/components/StatsWheel.tsx`, `src/lib/frontpage-stats.ts`, `src/lib/frontpage-goal-math.ts`, `src/lib/pulse-zone-settings.ts`.
+Ejer: ledig (2026-10-10)
+
+| Id | Opgave | Status | Næste skridt |
+| --- | --- | --- | --- |
+| slider-native | Valgbare felter, mål-linje, grøn ved mål, flere ikoner og pulszone-valg i native tal-hjul + Forside-indstillinger | Ikke startet (web flettet, paritet midlertidigt accepteret) | Port felterne fra `frontpage-stats.ts`/`frontpage-goal-math.ts` til Kotlin, derefter `parity.mjs --accept / /settings/display/front-page` |

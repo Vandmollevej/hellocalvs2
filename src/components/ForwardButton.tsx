@@ -24,7 +24,7 @@ export function ForwardButton({ kind, itemId, name }: { kind: "PRODUCT" | "DISH"
         setError(data.message ?? "Kunne ikke videresende");
         return;
       }
-      const url = `${window.location.origin}/forward/${data.forward.token}`;
+      const url: string = data.link ?? `${window.location.origin}/forward/${data.forward.token}`;
       const shareData = { title: name, text: `Prøv "${name}" i Hello Cal!`, url };
       if (navigator.share) {
         try {

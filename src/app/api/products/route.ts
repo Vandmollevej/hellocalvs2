@@ -60,6 +60,7 @@ export async function GET(req: Request) {
     // be able to surface once ranked.
     const synonyms = q && !source ? await getSynonymExpansions(q) : [];
     const candidateTake = q ? Math.max(take * 6, 80) : take;
+    const queryWords = q.split(/\s+/).filter((word) => word.length >= 2).slice(0, 6);
     const findProducts = () =>
       prisma.product.findMany({
         where: {
@@ -97,6 +98,20 @@ export async function GET(req: Request) {
                       { filters: { is: { reducedSugar: { contains: q, mode: "insensitive" } } } },
                       { filters: { is: { lightSugar: { contains: q, mode: "insensitive" } } } },
                       { filters: { is: { lowSugar: { contains: q, mode: "insensitive" } } } },
+                      // Flere ord ("arla letmælk"): hvert ord skal stå i navnet
+                      // eller brandet (docs/DECISIONS.md 2026-10-04).
+                      ...(queryWords.length > 1
+                        ? [
+                            {
+                              AND: queryWords.map((word): Prisma.ProductWhereInput => ({
+                                OR: [
+                                  { name: { contains: word, mode: "insensitive" } },
+                                  { brand: { name: { contains: word, mode: "insensitive" } } },
+                                ],
+                              })),
+                            },
+                          ]
+                        : []),
                     ],
                   } satisfies Prisma.ProductWhereInput,
                 ]

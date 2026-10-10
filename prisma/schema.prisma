@@ -114,6 +114,11 @@ model User {
   showAllergens      Boolean @default(false)
   allergenVisibility Json?
 
+  // Personal setting (2026-10-09): which body measurements are shown on the
+  // Kropsmål page (Indstillinger → Visning). Map from BodyMeasurementField to
+  // boolean; null = all are shown.
+  bodyMeasurementVisibility Json?
+
   // Personal setting (2026-09-11): shows the MyFitnessPal-style extended
   // nutrition panel (saturated/unsaturated/trans fat, cholesterol, sodium,
   // potassium, fibre, sugar, vitamin A/C, calcium, iron) as a collapsed
@@ -171,9 +176,9 @@ model User {
   wantsPartnerOffersEmails Boolean @default(false)
 
   // "Invitér en ven": kort delbar kode brugt i invite-linket
-  // (https://.../tilmeld?ref=<referralCode>). Belønning er 300 points til
-  // både afsender og ny bruger ved gennemført tilmelding (PointsReason
-  // FRIEND_REFERRAL), IKKE en direkte gratis måned — se Referral-modellen.
+  // (https://.../tilmeld?ref=<referralCode>). Belønning (2026-10-03): 300
+  // points til afsenderen efter 3 måneder (PointsReason FRIEND_REFERRAL); den
+  // nye bruger får 1 gratis måned ved oprettelsen — se Referral-modellen.
   referralCode String @unique @default(cuid())
 
   // Lifetime-loft: maks. 12 gratis måneder nogensinde, uanset om de kommer
@@ -343,9 +348,9 @@ model User {
 
 // "Invitér en ven"-bogføring. Attribueres ved tilmelding via
 // User.referralCode i invite-linket (src/app/api/auth/register/route.ts).
-// Belønning (docs/DECISIONS.md 2026-09-02): 300 points til BÅDE referrer og
-// referredUser, tildelt af src/lib/referrals.ts når referredRegisteredAt er
-// ≥3 måneder gammel (uændret ventetid-regel). Points indløses separat til
+// Belønning (docs/DECISIONS.md 2026-10-03): 300 points kun til referrer,
+// tildelt af src/lib/referrals.ts når referredRegisteredAt er ≥3 måneder
+// gammel; referredUser får i stedet 1 gratis måned ved oprettelsen. Points indløses separat til
 // gratis måneder (300 points = 1 måned, kræver gemt betalingsmetode så
 // abonnementet fortsætter automatisk bagefter) — se PointsReason
 // FREE_MONTH_REDEEMED og src/app/profile/points/page.tsx.
@@ -674,6 +679,10 @@ model BodyMeasurement {
   upperArmCm   Float?
   // Halsmål (2026-09-26), så alle brugerens fem kropsmålstegninger har et felt.
   neckCm       Float?
+  // Bagdel, ankel og læg (2026-10-09).
+  buttockCm    Float?
+  ankleCm      Float?
+  calfCm       Float?
   note         String?
   measuredAt   DateTime @default(now())
 
@@ -2438,6 +2447,9 @@ model Dish {
   sharedRecipeId String?
   // Antal personer retten er til (fra Indsæt tekst/Scan eller manuelt).
   servings       Int?
+  // Kort beskrivelse og varighed i minutter (Opret ret, side 1).
+  description    String?
+  durationMinutes Int?
   // Op til 3 billeder af den færdige ret (offentlige stier under
   // /product-images/recipe-images). Det første er forsidebillede.
   images         String[]  @default([])
@@ -2841,6 +2853,13 @@ model Forward {
   createdAt   DateTime      @default(now())
   openedAt    DateTime?
   fulfilledAt DateTime?
+  // Videresend en ret med Apples deleark (2026-10-09): linket udløber, og
+  // afsenderen kan angive modtagerens navn/mail, en hilsen og et afsendernavn.
+  expiresAt      DateTime?
+  recipientName  String?
+  recipientEmail String?
+  message        String?
+  fromName       String?
 
   pointsTransactions PointsTransaction[]
 

@@ -82,6 +82,15 @@ Brugerens ord: intervallet var for voldsomt; uden tilsluttet måler skal pulsen 
 - `DEFAULT_PULSE_BPM` er 15 (ét slag hvert 4. sekund) i stedet for 60; linjens nedre tempogrænse er 10 bpm. Målt puls (30–220 bpm) er uændret.
 - Grundlinjen ligger `PULSE_ABOVE_LAST_ROW` (25 px) over midten af hjulets nederste række (`HomeWaves.tsx`), så slagets laveste punkt står lige over tallet. Erstatter "midt mellem nederste tal og Dagens tilføjelser" (2026-10-03).
 
+## 2026-10-04: Generiske varer først ved bred søgning
+
+Ejerens krav: søger brugeren ikke specifikt på et brand, skal generiske varer have højere prioritet — "letmælk" skal vise letmælk (uden brand) før Arla Letmælk.
+
+- **Nyt signal i Søgealgoritmer:** "Generiske varer ved bred søgning" (`genericBroadSearch` i `src/lib/product-search-ranking.ts`), standard **45** — slået til fra start, fordi det er ejerens beslutning. Generisk = varen har intet brand (Frida-varer, generiske ingredienser, varer oprettet på produkttype).
+- **Brand-søgning slår det fra:** nævner søgningen et brand som helt ord ("arla", "arla letmælk"), får ingen vare boostet (`queryNamesBrand`, `src/lib/search-brand-intent.ts`). Brandene læses fra kandidaterne selv; et halvt skrevet brand ("arl") tæller ikke.
+- **Tekstmatch er stadig styrende:** boostet gælder kun ved ord-/præfiksmatch (tekstlighed ≥ 0,8), så en kun "lignende" generisk vare aldrig springer et klart brand-match over. 45 er valgt, så en generisk letmælk slår et populært brand med dansk EAN (op til ca. 18 + 12 + 12 point); kan justeres og prøves live på admin → Søgealgoritmer. En gemt konfiguration uden nøglen får automatisk standarden (`sanitizeWeights`).
+- **Søgning med flere ord:** `/api/products` fandt intet ved "arla letmælk", fordi hele teksten skulle stå i navnet eller brandet. Nu er det også et match, når hvert ord står i navnet eller brandet, og "brand + navn" giver samme tekstlighed som "navn + brand".
+
 ## 2026-10-04: Admin → Indstillinger → Genveje, og faste mærker til AutoHotkey
 
 Ejerens krav: menupunktet "Genveje" under Indstillinger med en genvej til hvert menupunkt (fx Ctrl P for produkter), og om menuer og felter er mærket til senere automatisering med AutoHotkey (UIA / felt-klasser). Intet var mærket før (ingen `id`/`data-*`).
@@ -101,6 +110,17 @@ Ejerens krav: "Om natten kan en kørsel køre (tilføj den til robotterne i admi
 - **Privatliv:** al beregning sker på egen server; ingen pulsdata sendes til OpenAI eller andre. Skridttal kan ikke bruges (integrationerne leverer kun dagssummer, ikke trin pr. minut), så løb/cykling skelnes af belastning, varighed og brugerens egne eksempler.
 - **Spørgsmålet** (`HeartRateSpikePrompt`) er nu et bundark (KRAV.md "Bundark"), også på desktop: overskrift "Vi kan se, at din puls var højere end sædvanlig i går" (i dag / i går / ugedag + dato), graf, **ugen mandag–søndag vandret med datoer** (✓ + klokkeslæt ved registreret sport, "?" + klokkeslæt ved det udsving, der spørges om), robottens forslag med "Ja, det var …" og to alternativer, og aktivitetssøgningen. Swipe/scrim = "senere" (spørges igen næste åbning, ikke igen i samme fane); "Spring over" spørger aldrig igen. Op til tre ubesvarede pr. besøg.
 - Svaret gemmes på fundet (`answeredSport`), så robotten lærer af det.
+## 2026-10-03: Voksne bestemmer selv, hvem i familien der ser deres profil
+
+- Ejerens svar: "Det kommer ikke ejeren ved, om andre kan se hinandens konti." Ændrer beslutning 2 ("betaleren giver andre adgang") for voksne medlemmer.
+- Den, der bestemmer over en profils deling (`sharingDeciderId` i `src/lib/family-sharing.ts`): personen selv, når vedkommende har eget login og ikke er et barn under 15; ellers betaleren (profiler uden eget login og børn under 15, samme aldersgrænse som udmelding). Betaleren bestemmer også over sin egen profil.
+- Gælder begge niveauer ("se profilen" og "oprette på deres vegne"). Betaleren har stadig altid fuld adgang til alle familiens profiler og kan ikke slås fra.
+- `PUT /api/family/grants` afviser andre end den, der bestemmer. Betalerens "Adgang", invitationens adgangsvalg og "Tilføj familiemedlem/barn" (den nye profils adgang til andre) viser og gemmer kun adgang til profiler, betaleren bestemmer over; `joinFamily` giver kun den. Tildelinger, betaleren gav før, bliver liggende, men personen kan nu selv ændre dem.
+## 2026-10-03: "Invitér en ven" — kun afsenderen får 300 points, vennen 1 gratis måned
+
+- Ejerens beslutning (erstatter "300 points til begge parter" fra 2026-09-02): kun den, der inviterer, får 300 points (`FRIEND_REFERRAL`), når vennen har haft en konto i mindst 3 måneder. Ventetiden er uændret.
+- Vennen får ingen points, men 1 gratis måned med Seriøs med det samme, når kontoen oprettes via invite-linket (`grantReferredFriendFreeMonth` i `src/lib/referrals.ts`). Den gives som `FREE_MONTH` med `currentPeriodEnd` = oprettelse + 1 måned (samme spor som gavekoder) og tæller ikke med i loftet på 12 gratis måneder fra points.
+- Gælder kun nye tilmeldinger. Allerede ventende invitationer udbetaler fremover kun til afsenderen; vennen i dem får ikke en gratis måned med tilbagevirkende kraft.
 
 ## 2026-10-03: Beskeder på Profil, Resultatvisning under Visning
 
@@ -4832,3 +4852,21 @@ Brugerens ord: pulsen skal gå normal hastighed igen (65 bpm), sporet må ikke b
 ## 2026-10-09 — Hello Doc: udløbsdato vælges med datepicker (ingen fast 14 dage)
 
 Ejeren vælger selv adgangens udløb med en datepicker i Hello Doc-editoren (web + native), med valget "Intet udløb". `DoctorShare.expiresAt` er den valgte dato (til og med den dag) eller `null` = intet udløb. Den faste 14-dages frist er fjernet; udløb gælder både ventende og aktive delinger. "Forny adgang" åbner uden udløbsdato.
+## 2026-10-09: AI-opsætning af opskrifter (koblet på 2026-10-10)
+
+- Indsæt tekst og Scan opskrift skal lade AI sætte opskriften op: ingredienser (rent varenavn + gram), trin og hvilket sidebillede der hører til hvilket trin. Den regelbaserede `recipe-text-parser` kan ikke dele fri tekst pålideligt op.
+- Pris holdes nede ved at sende KUN tekst (ét kald pr. opskrift, `gpt-4o-mini` som standard via `OPENAI_RECIPE_IMPORT_MODEL`). Trykt tekst læses af telefonens OCR; kun håndskrift går som billede til `ocr-handwriting`. Billeder sendes aldrig til opsætningen — AI'en svarer med `imagePage` ud fra `[[SIDE n]]`-markørerne, og appen sætter sidebilledet ind ved trinnet. Overslag: ca. 1.500 tokens ind og 1.000 ud pr. opskrift, dvs. under 1 øre pr. opskrift ved gpt-4o-mini-priser (tjek aktuel pris før udrulning). Forslag: daglig grænse pr. bruger.
+- Prompt, JSON-skema og oprydning: `src/lib/recipe-import-prompt.ts`. Kaldet: `src/lib/recipe-import-ai.ts` (OpenAI Responses API, `store: false`, kun tekst), brugt af `/api/dishes/parse-text`, som falder tilbage på den gamle tolker, hvis `OPENAI_API_KEY` mangler, grænsen er nået eller kaldet fejler. Blød grænse: 20 opsætninger pr. bruger pr. døgn (i hukommelsen, nulstilles ved genstart). Scan sender teksten pr. side; svaret peger på sidebillede pr. trin og forsiden. Titel, beskrivelse, varighed, trintitler og billeder sættes ind i Opret ret (web + native; native sender endnu kun samlet tekst, så sidebilleder pr. trin kommer kun på web).
+
+## 2026-10-09: Videresend ret med krypteret link (Apples deleark)
+
+- Rettens side har knappen "Send til en ven": en helsides popup (`ForwardRecipeSheet`) med varighed (1/7/30/90 dage), venns navn og e-mail, afsendernavn ("Fra", forudfyldt med profilnavnet) og en valgfri besked. "Del" kalder `POST /api/forwards` (nye felter `expiresAt`, `recipientName`, `recipientEmail`, `message`, `fromName`; migration 20261009230000) og åbner telefonens/Apples deleark; uden deleark kopieres linket. Er e-mail angivet, sendes linket også på mail (best effort via `sendTransientMail`).
+- Linket er krypteret: `/forward/<segl>`, hvor seglet er forwardens token + udløb AES-256-GCM-krypteret (`src/lib/forward-link.ts`, nøgle afledt af `ADMIN_SESSION_SECRET`). Udløbet tjekkes både i seglet og i databasen; gamle almindelige tokens virker stadig. Point-reglerne er uændrede (kun når modtageren tilføjer retten).
+- Native: `ForwardRecipeSheet.kt` (samme popup) og native `ForwardButton` bruger det krypterede link.
+## 2026-10-09: Kropsmål-synlighed som Json på brugeren
+
+- Hvilke kropsmål Kropsmål-siden viser, gemmes som `User.bodyMeasurementVisibility` (Json, felt → boolean; null/manglende = vist), samme mønster som `allergenVisibility`. Kun siden filtreres — Målsætning, Statistik og Status viser stadig alle mål med data.
+- Bagdel, læg og ankel er tilføjet som kolonner på `BodyMeasurement` (ikke en generisk nøgle/værdi-tabel), så de følger de eksisterende mål.
+## 2026-10-09: Tal-sliderens mål-linje og grøn ved mål
+
+Hver række i forsidens tal-slider viser sit mål under tallet i stedet for pladsholdertekst. Kun minimumsmål (skridt, trapper, protein, vægtudsigt, chance) farver hovedtallet grønt; grænser (sukker, salt, fedt, kulhydrat, kalorier) forbliver sorte, fordi "nået" ellers ville betyde overskredet. Kalorieindtag bruger kniv og gaffel (afviger fra design.md §6.16, brugerens ønske); kulhydrater har brød-ikon. Pulszoner og valgt zone er pr. enhed i localStorage.
