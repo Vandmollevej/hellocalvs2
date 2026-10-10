@@ -2,6 +2,17 @@
 
 This file records durable decisions. Add a dated entry when a later decision changes one of them.
 
+## 2026-10-09: Screeninger under Profil
+
+Ejerens krav: egne screeninger under Profil → Screeninger. Søvn ligger som fast række (peger på søvnmønsteret); migræne, mavesmerter og humør oprettes som almindelige screeninger første gang siden åbnes (`User.screeningsSeeded`, tekster på brugerens sprog) og kan redigeres, deaktiveres og slettes.
+
+- Siden (`/profile/screenings`): intro, "+ Opret ny screening" (sort tekst med plus), knappen "Screeningrapporter", listen med swipe (Aktivér/Deaktivér/Slet) og farveprik + tekst for aktiv/inaktiv, periode-dropdown (7/30/90/365 dage) og en graf pr. aktiv screening med målinger.
+- "Opret ny screening" er et flow i seks trin (`ScreeningFlow`): navn og formål → frekvens → spørgsmål (flere mulige) → notifikationer → måling (skala 1–5, 1–10 eller procent; felt: knapper, slider, inputfelt eller plus/minus, vist som det ser ud og valgt ved tryk; notefelt til/fra; tekst for laveste/højeste værdi) → vis i kalenderen. Samme flow redigerer en eksisterende.
+- Udfyldning: bundark med ét spørgsmål ad gangen og prikker under; sidste side har noten. Åbnes fra valget "Screening" nederst i Tilføj-menuen (`/profile/screenings?fill=1`) og fra bundmenuen (nøgle `screeninger`, vælges som øvrige ikoner).
+- Rapporter: `/profile/screenings/reports` lister alle screeninger i madvare-rækkernes stil; `/reports/[id]` viser målingerne sorteret efter dato eller værdi med noteikon på dage med note. Screeninger med "Vis i kalenderen" giver en sort bjælke pr. måling i kalenderens dagvisning.
+- Data: `Screening` (spørgsmål som JSON) og `ScreeningEntry` (én måling pr. screening pr. dag, `value` = gennemsnit af svarene). Én måling pr. dag erstattes af den nyeste. Migration 20261009140000.
+- Ikke bygget endnu: selve notifikationsudsendelsen (valget gemmes: `notificationsEnabled`/`notificationTime`) og frekvens-styret påmindelse i appen.
+
 ## 2026-10-09: Egne målinger i tal-hjulet gemmes pr. enhed
 
 - Brugerens ønske: under Visning → Forside kan man bygge sin egen måling (navn, beskrivelse, parameter, periode, tekst under tallet). Teksten må højst være 2 linjer á 15 tegn.
@@ -4802,6 +4813,15 @@ Brugerens rettelse: "Et barn kan ikke selv lukke konto — det er kun forældere
 - Kun forælderen/betaleren kan fjerne eller slette et barns profil (eksisterende `removeFamilyMember` / `deleteFamilyProfile`).
 - Barnet har ingen kontakter til at skjule detaljer: "Del med andre" er kun visning, og betaleren bestemmer adgangen (uændret).
 - Afløser "Barnet kan melde sig ud" i beslutningen 2026-09-25 og tilsvarende i `docs/FAMILY.md`.
+
+## 2026-10-09: Pulsen — 65 bpm, slange-spor og midt på skærmen
+
+Brugerens ord: pulsen skal gå normal hastighed igen (65 bpm), sporet må ikke blive stående, men forsvinde kort efter som en slange, og pulsen flyttes op til midten af skærmen (målt totalt).
+
+- `DEFAULT_PULSE_BPM` er 65 (uden ur). Pausen mellem fejene (`PULSE_REST`) og det gamle spor foran spidsen er væk.
+- Sporet er en slange: halen følger spidsen i en fast afstand (`PULSE_TRAIL` = 35 % af bredden) og toner ud bagtil. Når halen har forladt højre kant, starter næste fej straks.
+- Grundlinjen ligger i midten af hele visningen (`window.innerHeight / 2`), ikke længere over hjulets nederste tal. "Mindstemål" er tolket som "midten".
+- Web (`home-waves.ts`, `HomeWaves.tsx`) og native (`HomeWaves.kt`, `HomeScreen.kt`) er ændret sammen.
 
 ## 2026-10-09 — Hello Doc: udløbsdato vælges med datepicker (ingen fast 14 dage)
 

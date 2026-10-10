@@ -181,8 +181,8 @@ fun ProfileSleepRangeSlider(
                 val wakeX = wakeMinutes / MINUTES_PER_DAY.toFloat() * w
                 val bedX = bedtimeMinutes / MINUTES_PER_DAY.toFloat() * w
                 drawLine(HcColors.TanDark, Offset(0f, cy), Offset(w, cy), strokeWidth = track, cap = StrokeCap.Round)
-                // Bedtime is in the evening and wake-up in the morning, so the sleep wraps over midnight.
-                if (bedX > wakeX) {
+                // Bedtime is in the evening and wake-up in the morning, so the sleep wraps over midnight (not for activities: one day, 00:00-23:59).
+                if (!bedtimeFirst && bedX > wakeX) {
                     drawLine(HcColors.Green, Offset(bedX, cy), Offset(w, cy), strokeWidth = track)
                     drawLine(HcColors.Green, Offset(0f, cy), Offset(wakeX, cy), strokeWidth = track)
                 } else {

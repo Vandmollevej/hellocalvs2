@@ -8,6 +8,7 @@ import {
   loadStatLayout,
   makeEmptyStatSlot,
   normalizeStatLayout,
+  dropEmptyRows,
   saveStatLayout,
   type StatCardValue,
   type StatGridLayoutItem as LayoutItem,
@@ -462,7 +463,7 @@ export function StatCardsGrid({
     setAccordionTarget(null);
     setInsertAt(null);
     setEditingHeaderId(null);
-    setLayout((prev) => normalizeStatLayout(prev));
+    setLayout((prev) => dropEmptyRows(prev));
   }
 
   function removeItem(id: string) {

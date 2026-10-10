@@ -2,6 +2,7 @@ import { useEffect, useState, useSyncExternalStore } from "react";
 import {
   IconCalendarHeart,
   IconCamera,
+  IconClipboardHeart,
   IconGlassCocktail,
   IconMicrophone,
   IconSearch,
@@ -28,7 +29,8 @@ export type AddActionKey =
   | "targetWeight"
   | "bodyMeasurements"
   | "menstrualCycle"
-  | "drinks";
+  | "drinks"
+  | "screenings";
 
 export type AddAction = {
   key: AddActionKey;
@@ -120,6 +122,13 @@ export const ADD_ACTIONS: AddAction[] = [
     href: "/drinks",
     icon: IconGlassCocktail,
     labelKey: "addButton.drinks",
+  },
+  // Screeninger (docs/DECISIONS.md 2026-10-09): åbner udfyldningsarket; ligger nederst.
+  {
+    key: "screenings",
+    href: "/profile/screenings?fill=1",
+    icon: IconClipboardHeart,
+    labelKey: "addButton.screenings",
   },
 ];
 

@@ -10,7 +10,7 @@ import { useTranslation } from "@/i18n/LocaleProvider";
 import { TRAINING_INTENSITIES, type TrainingIntensity } from "@/lib/pal-model";
 import type { ActivityEstimate } from "@/lib/activity-met";
 import { SleepRangeSlider } from "@/components/hf/SleepRangeSlider";
-import { clockToMinutes, durationMinutes, endClock, minutesUntil, setStartClock, splitDuration, stepDuration } from "@/lib/activity-duration";
+import { clockToMinutes, durationMinutes, setStartClock, splitDuration, stepDuration } from "@/lib/activity-duration";
 
 // Tilføj aktivitet (tilføj-menuen og kalenderens "Tilføj"). date/time fra
 // kalenderen forudfylder starttidspunktet.
@@ -66,21 +66,26 @@ function ActivityCreateContent() {
   }
 
   const startMinutes = clockToMinutes(startedAt.split("T")[1] ?? "") ?? 0;
-  const endMinutes = clockToMinutes(endClock(startedAt, totalMinutes)) ?? 0;
+  // Banen viser kun den valgte dag (00:00-23:59): slutningen går aldrig over midnat.
+  const endMinutes = Math.min(startMinutes + totalMinutes, LAST_MINUTE);
 
   // Slut-håndtaget ændrer varigheden; start-håndtaget flytter starten, så
-  // sluttidspunktet bliver stående (varigheden regnes om).
+  // sluttidspunktet bliver stående (varigheden regnes om). Begge holdes inden
+  // for dagen, og slut ligger altid efter start.
   function setEnd(value: number) {
-    const next = minutesUntil(startedAt, minutesToClock(value));
-    if (next !== null) applyDuration(next);
+    const end = Math.min(LAST_MINUTE, Math.max(startMinutes + 1, value));
+    applyDuration(end - startMinutes);
   }
 
   function setStart(value: number) {
-    const end = endClock(startedAt, totalMinutes);
-    const nextStart = setStartClock(startedAt, minutesToClock(value));
-    setStartedAt(nextStart);
-    const next = minutesUntil(nextStart, end);
-    if (next !== null) applyDuration(next);
+    const nextStart = Math.min(LAST_MINUTE - 1, value);
+    const end = Math.min(LAST_MINUTE, Math.max(endMinutes, nextStart + 5));
+    setStartedAt(setStartClock(startedAt, minutesToClock(nextStart)));
+    applyDuration(end - nextStart);
+  }
+
+  function stepWithinDay(direction: 1 | -1) {
+    applyDuration(Math.min(stepDuration(totalMinutes, direction), LAST_MINUTE - startMinutes));
   }
 
   async function save() {
@@ -146,7 +151,7 @@ function ActivityCreateContent() {
               <div className="mx-auto flex w-full max-w-[320px] items-center gap-2">
                 <button
                   type="button"
-                  onClick={() => applyDuration(stepDuration(totalMinutes, -1))}
+                  onClick={() => stepWithinDay(-1)}
                   className="h-11 w-11 text-hf-black hf-glyph-lg"
                   aria-label="−5 min"
                 >
@@ -180,7 +185,7 @@ function ActivityCreateContent() {
                 </div>
                 <button
                   type="button"
-                  onClick={() => applyDuration(stepDuration(totalMinutes, 1))}
+                  onClick={() => stepWithinDay(1)}
                   className="h-11 w-11 text-hf-black hf-glyph-lg"
                   aria-label="+5 min"
                 >
@@ -236,6 +241,8 @@ function ActivityCreateContent() {
     </HfScreen>
   );
 }
+
+const LAST_MINUTE = 24 * 60 - 1;
 
 function minutesToClock(value: number) {
   return `${String(Math.floor(value / 60)).padStart(2, "0")}:${String(value % 60).padStart(2, "0")}`;

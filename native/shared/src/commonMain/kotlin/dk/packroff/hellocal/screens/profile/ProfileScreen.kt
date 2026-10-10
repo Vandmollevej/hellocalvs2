@@ -140,6 +140,7 @@ fun ProfileScreen(args: RouteArgs) {
                     ProfileChevronRow(t.t("profile.row.weightCalibration"), { nav.push("/profile/weight-calibration") }, { ProfileBathScaleIcon(20.dp) })
                     ProfileChevronRow(t.t("profile.row.bodyMeasurements"), { nav.push("/profile/body-measurements") }, { ProfileWaistMeasureIcon(current.sex, 20.dp) })
                     ProfileChevronRow(t.t("profile.row.sleep"), { nav.push("/profile/sleep") }, { HcIcon("Moon", size = 20.dp, color = HcColors.Black) })
+                    ProfileChevronRow(t.t("profile.row.screenings"), { nav.push("/profile/screenings") }, { HcIcon("ClipboardHeart", size = 20.dp, color = HcColors.Black) })
                     ProfileChevronRow(t.t("profile.row.photoDiary"), { nav.push("/profile/photo-diary") }, { ProfileIcon(ProfileVectorIcon.PhotoFrame, 20.dp) }, divider = false)
                 }
                 ProfileAccordionCard {

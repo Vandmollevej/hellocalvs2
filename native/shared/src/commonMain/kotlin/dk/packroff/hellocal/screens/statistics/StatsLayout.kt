@@ -178,6 +178,28 @@ internal fun normalizeStatLayout(layout: List<LayoutItem>): List<LayoutItem> {
     return next
 }
 
+/**
+ * Drops every completely empty row (two empty slots side by side), wherever it
+ * sits — when editing ends and a saved layout is loaded, so deleted cards never
+ * leave blank space. A row with one card and one empty slot stays.
+ */
+internal fun dropEmptyRows(layout: List<LayoutItem>): List<LayoutItem> {
+    val next = mutableListOf<LayoutItem>()
+    val run = mutableListOf<LayoutItem>()
+    fun flush() {
+        for (pair in run.chunked(2)) {
+            if (pair.size == 2 && pair.all { it is EmptyLayoutItem }) continue
+            next += pair
+        }
+        run.clear()
+    }
+    for (item in normalizeStatLayout(layout)) {
+        if (item.isHalfWidth()) run += item else { flush(); next += item }
+    }
+    flush()
+    return next
+}
+
 private fun layoutItemToJson(item: LayoutItem): JsonObject = buildJsonObject {
     when (item) {
         is StatLayoutItem -> { put("type", "stat"); put("key", item.key) }
@@ -206,7 +228,7 @@ internal fun defaultStatLayout(): List<LayoutItem> = DEFAULT_ACTIVE_STAT_KEYS.ma
 
 internal fun loadStatLayout(defaultLayout: List<LayoutItem> = defaultStatLayout()): List<LayoutItem> {
     val saved = readJson(STAT_LAYOUT_STORAGE_KEY) as? JsonArray ?: return normalizeStatLayout(defaultLayout)
-    return normalizeStatLayout(saved.mapNotNull { (it as? JsonObject)?.let(::layoutItemFromJson) })
+    return dropEmptyRows(saved.mapNotNull { (it as? JsonObject)?.let(::layoutItemFromJson) })
 }
 
 internal fun saveStatLayout(layout: List<LayoutItem>) =
