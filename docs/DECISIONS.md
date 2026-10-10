@@ -4819,6 +4819,13 @@ klip-klister mellem sider, og telefon/webvisning må ikke have hver sine klasser
 - Tommel op/ned påvirker populariteten (tommel ned -3, op +1, højst +3 i alt) for at undgå selvforstærkende ekkokammer.
 - "Python på serveren" er TypeScript (brugerens ok 2026-10-08). de/fr/nl oversættes senere.
 
+## 2026-10-09 — Bundmenu: Hjem i stedet for plus, fast placering, spejlvending
+
+- Plus-ikonet ("Tilføj") i bundmenuen er erstattet af **Hjem** (`hjem`, route `/`). Hjem er obligatorisk og stationær: den kan ikke flyttes, fjernes eller trækkes i redigeringsarket og ligger uden for den redigerbare liste.
+- Slideren med ikoner viser 3 ad gangen ved siden af Hjem. Gamle gemte layouts med nøglen `tilfoej` droppes den nøgle (Hjem står fast).
+- Indstillinger → Visning → Forside har en kontakt "Spejlvend bundmenuen" (per enhed, localStorage `hellocal.bottomnav.mirrored`): Hjem til højre og slideren til venstre.
+- Native (`BottomNav.kt`, `SettingsFrontPageScreen.kt`) følger samme ændring med samme lagringsnøgle.
+
 ## 2026-10-09: Periodevalg på statistiksider er altid dropdown
 
 - Perioder (Sidste 7 dage … I år) vælges med `StatPeriodSelect` (`<select>`), aldrig med knapper/chips. Brugerens faste regel; gælder Søvnstatistik og Væskestatistik og alle fremtidige statistiksider.

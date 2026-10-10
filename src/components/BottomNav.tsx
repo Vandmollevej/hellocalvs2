@@ -4,7 +4,7 @@ import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react
 import { createPortal } from "react-dom";
 import { useRouter, usePathname } from "next/navigation";
 import {
-  IconPlus,
+  IconHome,
   IconApple,
   IconCalendar,
   IconCamera,
@@ -33,8 +33,11 @@ import {
   BOTTOM_NAV_HREFS,
   BOTTOM_NAV_STORAGE_KEY,
   DEFAULT_BOTTOM_NAV_ACTIVE,
+  HOME_NAV_KEY,
+  LEGACY_HOME_NAV_KEY,
 } from "@/lib/navigation";
 import { FooterArc } from "@/components/FooterArc";
+import { useBottomNavMirrored } from "@/lib/bottom-nav-mirror";
 
 const ICON_SIZE = 24;
 // Aktiv/inaktiv fane: tekstfarven og den sekundære grå (tokens i globals.css).
@@ -49,7 +52,8 @@ const SHEET_CLOSE_PX = 60;
 const FLIP_MS = 220;
 const FLIP_EASING = "cubic-bezier(0.2, 0, 0, 1)";
 const SLIDE_ANIMATION_ID = "nav-slide";
-const PAGE_SIZE = 4;
+// Slideren viser 3 ikoner ad gangen; Hjem fylder den fjerde plads og står fast.
+const PAGE_SIZE = 3;
 // Som i statistik-gitteret: i redigering løfter et kort, stille tryk ikonet;
 // bevæger fingeren sig først, er det et swipe, der ruller rækken.
 const EDIT_LIFT_DELAY_MS = 250;
@@ -88,13 +92,15 @@ type NavItem = {
   render: (color: string, size: number) => React.ReactNode;
 };
 
+// Hjem: obligatorisk og stationær — ikke en del af den redigerbare slider.
+const HOME_ITEM: NavItem = {
+  key: HOME_NAV_KEY,
+  href: BOTTOM_NAV_HREFS[HOME_NAV_KEY],
+  labelKey: "home",
+  render: (color, size) => <IconHome size={size} stroke={1.6} color={color} />,
+};
+
 const NAV_ITEMS: NavItem[] = [
-  {
-    key: "tilfoej",
-    href: BOTTOM_NAV_HREFS.tilfoej,
-    labelKey: "add",
-    render: (color, size) => <IconPlus size={size} stroke={1.6} color={color} />,
-  },
   {
     key: "madvarer",
     href: BOTTOM_NAV_HREFS.madvarer,
@@ -212,7 +218,9 @@ function loadLayout(): { active: string[]; inactive: string[] } {
     if (!raw) return { active: DEFAULT_ACTIVE, inactive: DEFAULT_INACTIVE };
     const parsed = JSON.parse(raw) as { active?: string[]; inactive?: string[] };
     const knownKeys = new Set(NAV_ITEMS.map((i) => i.key));
-    const active = (parsed.active ?? []).filter((k) => knownKeys.has(k));
+    const active = (parsed.active ?? []).filter(
+      (k) => k !== LEGACY_HOME_NAV_KEY && knownKeys.has(k),
+    );
     const placed = new Set(active);
     const inactive = (parsed.inactive ?? []).filter((k) => knownKeys.has(k) && !placed.has(k));
     NAV_ITEMS.forEach((item) => {
@@ -335,6 +343,8 @@ export function BottomNav() {
   const [pageSwipe, setPageSwipe] = useState<PageSwipeState | null>(null);
 
   const barRef = useRef<HTMLDivElement>(null);
+  const sliderRef = useRef<HTMLDivElement>(null);
+  const mirrored = useBottomNavMirrored();
   const panelRef = useRef<HTMLDivElement>(null);
   const itemRefs = useRef(new Map<string, HTMLElement>());
   const longPressTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -428,13 +438,13 @@ export function BottomNav() {
   const dragging = drag !== null;
   const lastEditMode = useRef(false);
   useLayoutEffect(() => {
-    const barWidth = barRef.current?.getBoundingClientRect().width ?? 0;
+    const barWidth = sliderRef.current?.getBoundingClientRect().width ?? 0;
     const next = new Map<string, IconPlace>();
     // Målt på cellen om knappen: selve knappen vibrerer (roterer) og glider,
     // og det fik hver måling til at ligne en flytning, så ikonerne flimrede.
     itemRefs.current.forEach((el, key) => {
       const r = (el.parentElement ?? el).getBoundingClientRect();
-      const inBar = barRef.current?.contains(el) ?? false;
+      const inBar = sliderRef.current?.contains(el) ?? false;
       const sx = r.left + r.width / 2;
       next.set(key, { sx, nx: sx + (inBar ? shownScroll * barWidth : 0), y: r.top + r.height / 2, inBar });
     });
@@ -500,8 +510,8 @@ export function BottomNav() {
     }
 
     if (current.source === "inactive") {
-      if (overRect(barRef.current, clientX, clientY)) {
-        const target = slotIndexAt(barRef.current, clientX, scrollPagesRef.current);
+      if (overRect(sliderRef.current, clientX, clientY)) {
+        const target = slotIndexAt(sliderRef.current, clientX, scrollPagesRef.current);
         setInactiveKeys((prev) => prev.filter((k) => k !== current.key));
         setActiveKeys((prev) => {
           if (prev.includes(current.key)) return prev;
@@ -517,8 +527,8 @@ export function BottomNav() {
   // fingeren er fri (kun mens fingeren er over selve baren).
   const reorderUnderFinger = useCallback(
     (key: string, source: "active" | "inactive", x: number, y: number) => {
-      if (source !== "active" || !overRect(barRef.current, x, y)) return;
-      const target = slotIndexAt(barRef.current, x, scrollPagesRef.current);
+      if (source !== "active" || !overRect(sliderRef.current, x, y)) return;
+      const target = slotIndexAt(sliderRef.current, x, scrollPagesRef.current);
       if (target === null) return;
       setActiveKeys((prev) => {
         const from = prev.indexOf(key);
@@ -548,7 +558,7 @@ export function BottomNav() {
       const overTarget = moved
         ? current.source === "active"
           ? overRect(panelRef.current, e.clientX, e.clientY)
-          : overRect(barRef.current, e.clientX, e.clientY)
+          : overRect(sliderRef.current, e.clientX, e.clientY)
         : false;
       const next = { ...current, x: e.clientX, y: e.clientY, moved, overTarget };
 
@@ -556,7 +566,7 @@ export function BottomNav() {
       // samme, så de andre rykker og gør plads. Derefter opfører det sig som
       // et ikon, der allerede er i menuen (kan flyttes, eller trækkes tilbage).
       if (moved && current.source === "inactive" && overTarget) {
-        const at = gapIndexAt(barRef.current, e.clientX, scrollPagesRef.current);
+        const at = gapIndexAt(sliderRef.current, e.clientX, scrollPagesRef.current);
         next.source = "active";
         setInactiveKeys((prev) => prev.filter((k) => k !== current.key));
         setActiveKeys((prev) => {
@@ -598,7 +608,7 @@ export function BottomNav() {
       const dt = Math.min(0.05, (now - last) / 1000);
       last = now;
       const current = dragRef.current;
-      const bar = barRef.current;
+      const bar = sliderRef.current;
       if (current?.moved && bar) {
         const r = bar.getBoundingClientRect();
         const inBarBand = current.y >= r.top - 24 && current.y <= r.bottom + 24;
@@ -648,7 +658,7 @@ export function BottomNav() {
       if (!current || e.pointerId !== current.pointerId) return;
       const totalPages = Math.max(1, Math.ceil(activeKeysRef.current.length / PAGE_SIZE));
       const maxPages = totalPages - 1;
-      const rect = barRef.current?.getBoundingClientRect();
+      const rect = sliderRef.current?.getBoundingClientRect();
       const width = rect?.width || 1;
       const deltaPages = (current.startX - e.clientX) / width;
       let next = current.startScrollPages + deltaPages;
@@ -984,7 +994,31 @@ export function BottomNav() {
             )}
         {/* overflow-x-clip (ikke -hidden): -hidden tvinger også lodret
             klipning, så slette-krydserne over ikonerne blev skåret af. */}
-        <div className="overflow-x-clip overflow-y-visible pt-1">
+        <div className={`flex items-start ${mirrored ? "flex-row-reverse" : ""}`}>
+        <div className="flex w-1/4 flex-none justify-center pt-1">
+          {(() => {
+            const active = pathname === HOME_ITEM.href;
+            const color = active ? NAV_ACTIVE_COLOR : NAV_INACTIVE_COLOR;
+            return (
+              <button
+                type="button"
+                aria-label={t(`nav.${HOME_ITEM.labelKey}`)}
+                data-guide={`nav-${HOME_ITEM.key}`}
+                aria-current={active ? "page" : undefined}
+                onClick={() => router.push(HOME_ITEM.href!)}
+                className="relative flex h-14 w-16 flex-none flex-col items-center justify-center gap-1 rounded-xl border border-transparent py-1.5 select-none"
+              >
+                <span className="flex flex-col items-center gap-2">
+                  {HOME_ITEM.render(color, ICON_SIZE)}
+                  <span className="hf-type-tab whitespace-nowrap" style={{ color }}>
+                    {t(`nav.${HOME_ITEM.labelKey}`)}
+                  </span>
+                </span>
+              </button>
+            );
+          })()}
+        </div>
+        <div ref={sliderRef} className="w-3/4 flex-none overflow-x-clip overflow-y-visible pt-1">
           <div
             className="flex"
             style={{
@@ -995,7 +1029,7 @@ export function BottomNav() {
             {pages.map((pageKeys, pageIndex) => (
               <div
                 key={pageIndex}
-                className="grid w-full flex-none grid-cols-4 items-start justify-items-center"
+                className="grid w-full flex-none grid-cols-3 items-start justify-items-center"
                 aria-hidden={pageIndex !== roundedPage}
               >
                 {Array.from({ length: PAGE_SIZE }, (_, slotIndex) => {
@@ -1068,6 +1102,7 @@ export function BottomNav() {
               </div>
             ))}
           </div>
+        </div>
         </div>
           </>
         )}

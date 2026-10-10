@@ -10,6 +10,10 @@ Last updated: 2026-10-10
 - DB: `User.displayPrefs` (JSON, migration `20261011000000_user_display_prefs`) — skal med deployet. Tekster ligger i `circleBadges` (da/en; øvrige sprog har engelsk indtil oversat).
 - **Ikke gjort:** native-skærmene er ikke porteret (Kotlin kan ikke kompileres her); paritet er accepteret og gælden står i OPEN-TASKS (`cirkel-maerker`). Ikke prøvet i browser/mod rigtig database. Ikoner for is_*-mærker er midlertidige Tabler-ikoner; kosthensyn "høj på protein" udledes af ≥ 20 % energi fra protein.
 
+## 2026-10-10: Kalender — dagsvisningens timer følger klokken
+
+- Åbner man en dag, vises morgen+nat om morgenen, morgen+aften midt på dagen og aften+nat (bunden) om aftenen. Erstatter den gamle "stå-op-tid / nu ±2 timer"-logik og besøgs-cookien. Web + native. Se REGLER → UI. Tjekket: eslint, tsc, paritet; ikke prøvet på enhed.
+
 ## 2026-10-10: Søgeresultater viser "Brand Subbrand Varenavn"
 
 - Søgelisterne (web + native: Madvarer, Søg, Opret ret) viser nu brand og subbrand forrest i varens tekst via `searchTitle` fra `GET /api/products`; brandet står ikke igen i undertitlen. Se DECISIONS 2026-10-10 og REGLER → Søgning.

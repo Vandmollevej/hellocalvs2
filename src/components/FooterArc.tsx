@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-import { IconList, IconPlus, type Icon } from "@tabler/icons-react";
+import { IconLayoutGrid, IconPlus, type Icon } from "@tabler/icons-react";
 import {
   MAX_WHEEL_ACTIONS,
   addActionByKey,
@@ -100,7 +100,10 @@ export function FooterArc() {
   const [editing, setEditing] = useState(false);
   const [menuSheetOpen, setMenuSheetOpen] = useState(false);
   const gestureRef = useRef<Gesture | null>(null);
+  const iconHeldRef = useRef(false);
   const animationRef = useRef<number | null>(null);
+  // Hold fingeren på en åben knap i viften: redigering (som på selve cirklen).
+  const iconPressRef = useRef<{ pointerId: number; x: number; y: number; timer: ReturnType<typeof setTimeout> } | null>(null);
 
   const allowed = new Set(visibleAddActions(profile).map((action) => action.key));
   const userKeys = keys.filter((key) => allowed.has(key)).slice(0, ARC_MAX_USER_ACTIONS);
@@ -114,7 +117,7 @@ export function FooterArc() {
       icon: action.icon,
       imageSrc: action.imageSrc,
     }));
-  const listSlot: ArcSlot = { key: "list", href: "/add/menu", label: t("addButton.list"), icon: IconList };
+  const listSlot: ArcSlot = { key: "list", href: "/add/menu", label: t("addButton.list"), icon: IconLayoutGrid };
   const mid = listSlotIndex(userSlots.length);
   const slots = [...userSlots.slice(0, mid), listSlot, ...userSlots.slice(mid)];
   const angles = fanAngles(userSlots.length);
@@ -133,6 +136,7 @@ export function FooterArc() {
   useEffect(
     () => () => {
       if (animationRef.current) cancelAnimationFrame(animationRef.current);
+      if (iconPressRef.current) clearTimeout(iconPressRef.current.timer);
       document.body.classList.remove("select-none");
     },
     [],
@@ -219,6 +223,29 @@ export function FooterArc() {
       clearTimeout(gesture.timer);
       gesture.timer = null;
     }
+  }
+
+  function cancelIconPress() {
+    if (iconPressRef.current) clearTimeout(iconPressRef.current.timer);
+    iconPressRef.current = null;
+  }
+
+  function handleIconPointerDown(event: React.PointerEvent<HTMLButtonElement>) {
+    if (!isSerious || !openRef.current || event.button !== 0) return;
+    cancelIconPress();
+    iconHeldRef.current = false;
+    const timer = setTimeout(() => {
+      iconPressRef.current = null;
+      iconHeldRef.current = true;
+      setEditing(true);
+    }, LONG_PRESS_MS);
+    iconPressRef.current = { pointerId: event.pointerId, x: event.clientX, y: event.clientY, timer };
+  }
+
+  function handleIconPointerMove(event: React.PointerEvent<HTMLButtonElement>) {
+    const press = iconPressRef.current;
+    if (!press || press.pointerId !== event.pointerId) return;
+    if (Math.hypot(event.clientX - press.x, event.clientY - press.y) > MOVE_PX) cancelIconPress();
   }
 
   function handlePointerDown(event: React.PointerEvent<HTMLButtonElement>) {
@@ -424,7 +451,16 @@ export function FooterArc() {
               type="button"
               aria-label={slot.label}
               tabIndex={open ? 0 : -1}
+              onPointerDown={handleIconPointerDown}
+              onPointerMove={handleIconPointerMove}
+              onPointerUp={cancelIconPress}
+              onPointerCancel={cancelIconPress}
+              onContextMenu={(event) => event.preventDefault()}
               onClick={() => {
+                if (iconHeldRef.current) {
+                  iconHeldRef.current = false;
+                  return;
+                }
                 if (!open || gesturing) return;
                 setOpenState(false);
                 activate(slot);
@@ -441,6 +477,7 @@ export function FooterArc() {
                   ? "0 8px 18px rgba(0,0,0,0.15), 0 3px 8px rgba(0,0,0,0.08)"
                   : "0 2px 5px rgba(0,0,0,0.10), 0 1px 2px rgba(0,0,0,0.05)",
                 transition: "transform 150ms ease, opacity 150ms ease, background-color 120ms ease",
+                touchAction: "none",
               }}
             >
               {Icon ? (
@@ -504,6 +541,7 @@ export function FooterArc() {
           }}
           onClose={() => {
             setEditing(false);
+            iconHeldRef.current = false;
             setOpenState(false);
           }}
         />

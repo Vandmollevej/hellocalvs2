@@ -243,6 +243,7 @@
     "chatSaveError": "Speichern fehlgeschlagen. Versuche es erneut."
   },
   "nav": {
+    "home": "Start",
     "screenings": "Screenings",
     "add": "Hinzufügen",
     "foods": "Lebensmittel",
@@ -623,6 +624,8 @@
     "sideLeft": "Links",
     "sideRight": "Rechts",
     "sideHint": "Der Zahlen-Slider wird immer auf der gegenüberliegenden Seite angezeigt: {side}.",
+    "mirrorNavTitle": "Untere Leiste spiegeln",
+    "mirrorNavHint": "Start bleibt auf einer Seite fest, die Symbole lassen sich auf der anderen verschieben. Einschalten, um die Seiten zu tauschen, wie auf der Startseite.",
     "buttonsSectionTitle": "Schaltflächen im Rad",
     "selectedCount": "{count} von {max} Feldern ausgewählt",
     "maxReachedHint": "Entferne ein Feld, um ein anderes hinzuzufügen.",

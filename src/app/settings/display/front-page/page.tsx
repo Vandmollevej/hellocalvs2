@@ -19,6 +19,7 @@ import {
   useFrontpageStatKeys,
   type FrontpageStatKey,
 } from "@/lib/frontpage-stats";
+import { saveBottomNavMirrored, useBottomNavMirrored } from "@/lib/bottom-nav-mirror";
 import { CustomMeasureSection } from "@/components/CustomMeasureSection";
 import { savePulseZoneSettings, usePulseZoneSettings } from "@/lib/pulse-zone-settings";
 import { useTranslation } from "@/i18n/LocaleProvider";
@@ -37,6 +38,7 @@ export default function FrontPageDisplaySettingsPage() {
   const profile = useAddActionsProfile();
   const actions = visibleAddActions(profile);
   const fabSide = useFabSide();
+  const navMirrored = useBottomNavMirrored();
   const activeStatKeys = useFrontpageStatKeys();
   const pulse = usePulseZoneSettings();
 
@@ -106,6 +108,12 @@ export default function FrontPageDisplaySettingsPage() {
             side: t(oppositeSide(fabSide) === "left" ? "frontPageSettings.sideLeft" : "frontPageSettings.sideRight"),
           })}
         </p>
+
+        <div className="hf-control-row flex items-center gap-3 overflow-hidden rounded-2xl bg-hf-tan px-4">
+          <span className="hf-type-body flex-1 text-hf-black">{t("frontPageSettings.mirrorNavTitle")}</span>
+          <Toggle checked={navMirrored} onChange={saveBottomNavMirrored} />
+        </div>
+        <p className="hf-type-small text-text-secondary px-1">{t("frontPageSettings.mirrorNavHint")}</p>
 
         <div className="mt-2 flex items-center gap-3 px-1">
           <WheelIcon />

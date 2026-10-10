@@ -296,7 +296,6 @@ const MOVE_ENTRY_HOLD_MS = 500;
 const MOVE_ENTRY_MOVE_TOLERANCE = 10;
 const MIN_HOUR_HEIGHT = HOUR_HEIGHT;
 const MAX_HOUR_HEIGHT = HOUR_HEIGHT * 4;
-const VISIT_COOKIE = "hc_cal_visit";
 const ZOOM_SENSITIVITY = 220; // px to fingers must move for a full 1x scale step
 const HOUR_HEIGHT_STORAGE_KEY = "hellocal.kalender.hourHeight";
 
@@ -1086,7 +1085,6 @@ function CalendarPageContent() {
           error={registrationsError}
           sleepWindow={resolveSleepWindow(selectedDate)}
           previousSleepWindow={resolveSleepWindow(addDays(selectedDate, -1))}
-          hasHistory={registrations.length > 0}
           onEntryMoved={handleEntryMoved}
           onSleepAdjust={(type, minutes) => requestSleepAdjust(selectedDate, type, minutes)}
           onClose={() => setSelectedDate(null)}
@@ -2054,7 +2052,6 @@ function DayDetails({
   error,
   sleepWindow,
   previousSleepWindow,
-  hasHistory,
   onSleepAdjust,
   onEntryMoved,
   onClose,
@@ -2079,7 +2076,6 @@ function DayDetails({
   /** The day before's window — its bedtime starts the night that ends this morning. */
   previousSleepWindow: SleepWindow;
   /** Har brugeren registreret noget før? Ellers vises altid morgenen. */
-  hasHistory: boolean;
   onSleepAdjust: (type: SleepAdjustType, minutes: number) => void;
   onEntryMoved: (registrationId: string, newCreatedAt: Date) => void;
   onClose: () => void;
@@ -2111,7 +2107,6 @@ function DayDetails({
   const zoomStart = useRef<{ avgY: number; hourHeight: number } | null>(null);
   const mouseDrag = useRef<{ y: number; scrollTop: number } | null>(null);
   const timelineScrollRef = useRef<HTMLDivElement | null>(null);
-  const visitedTodayRef = useRef<boolean | null>(null);
   const [sleepDrag, setSleepDrag] = useState<{ type: SleepAdjustType; minutes: number } | null>(null);
   // Oplevelse af søvn (docs/DECISIONS.md 2026-09-26): the day's 1–5 rating,
   // shown as a black bar at the top. DayDetails is keyed by date, so this
@@ -2217,39 +2212,24 @@ function DayDetails({
   const minuteStep = hourHeight >= HOUR_HEIGHT * 3 ? 5 : inWebShell ? 30 : 15;
 
   // Tidslinjen løber altid fra 00:00 (top) til 24:00 (bund) — ikke roteret om
-  // stå-op-tiden. Ved åbning af en dag scroller vi ned, så den sidste hele
-  // time af nattens grå felt (med "Nattens søvn: …") er synlig lige over
-  // stå-op-håndtaget, og resten af visningen er dagens indhold. Brugeren kan
-  // stadig scrolle helt op til 00:00 (Fejlretninger/FEJLLISTE.md #27-opfølgning).
+  // stå-op-tiden. Ved åbning af en dag scrolles vinduet efter klokken (se
+  // nedenfor). Brugeren kan stadig scrolle frit mellem 00:00 og 24:00.
   const dateKey = dayKey(date);
   useEffect(() => {
     const node = timelineScrollRef.current;
     if (!node) return;
     const wakeHour = sleepWindow.wakeTime / 60;
-    // Første besøg i dag (cookie): morgenen med nattens søvn. Derefter, for
-    // i dag: nu ±2 timer i fokus.
-    const todayStr = localDateKey(new Date());
-    // Cookien læses kun første gang pr. visning (effekten kører igen ved indlæsning).
-    if (visitedTodayRef.current === null) {
-      try {
-        visitedTodayRef.current = document.cookie.split("; ").some((c) => c === `${VISIT_COOKIE}=${todayStr}`);
-        document.cookie = `${VISIT_COOKIE}=${todayStr}; path=/; max-age=172800; SameSite=Lax`;
-      } catch {
-        visitedTodayRef.current = false;
-      }
-    }
-    const visitedToday = visitedTodayRef.current;
-    if (visitedToday && hasHistory && localDateKey(date) === todayStr) {
-      const now = new Date();
-      const nowHour = now.getHours() + now.getMinutes() / 60;
-      // Kan nattens sidste time og "nu" ses på samme skærm (fx kl. 9 med
-      // stå-op kl. 7), vises natten stadig — ellers forsvandt den om morgenen.
-      const visibleHours = node.clientHeight / hourHeight;
-      const startHour = nowHour + 1 - (wakeHour - 1) <= visibleHours ? wakeHour - 1 : nowHour - 2;
-      node.scrollTop = Math.max(0, startHour * hourHeight);
-    } else {
-      node.scrollTop = Math.max(0, (wakeHour - 1) * hourHeight);
-    }
+    // Vinduet følger dagens timer (user rule 2026-10-10): om morgenen ses
+    // natten + morgenen (øverst), midt på dagen morgen + aften (midten) og
+    // om aftenen aften + nat (bunden af kalenderen).
+    const now = new Date();
+    const nowHour = now.getHours() + now.getMinutes() / 60;
+    const visibleHours = node.clientHeight / hourHeight;
+    const maxStartHour = Math.max(0, 24 - visibleHours);
+    let startHour = (nowHour / 24) * maxStartHour;
+    // Om morgenen skal nattens søvn (lige over stå-op-håndtaget) stadig ses.
+    if (nowHour < 12) startHour = Math.min(startHour, Math.max(0, wakeHour - 1));
+    node.scrollTop = Math.max(0, startHour * hourHeight);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loading, dateKey]);
 

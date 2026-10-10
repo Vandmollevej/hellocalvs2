@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
-import { IconList, type Icon } from "@tabler/icons-react";
+import { IconLayoutGrid, type Icon } from "@tabler/icons-react";
 import {
   addActionByKey,
   useAddActionsProfile,
@@ -180,7 +180,7 @@ function buildActions(
   const listAction: Action = {
     key: "list",
     href: "/add/menu",
-    icon: IconList,
+    icon: IconLayoutGrid,
     label: t("addButton.list"),
     hint: t("addButton.hint.list"),
   };
