@@ -123,3 +123,5 @@ ikke her, er den ikke registreret og skal tilføjes.
 ## Valgte knapper (user rule 2026-10-09)
 
 Valgte knapper/faner/chips/planvalg har ALTID den lysegrønne farve (`--hf-color-accent`, #BBF06A) med sort kant og tekst — brug `.hf-selected` / `.hf-choice` / `.hf-chip`, aldrig sort, mørkegrøn eller beige som valgt-flade. Eneste undtagelse: kalenderens dags dato (`.hf-cal-current`). Native bruger `HcColors.SelectedBg`.
+
+- **HelloFresh-tekststil (prøve 2026-10-10, kun Profil → Vægt kalibrering)**: siden bruger `.hf-fresh-type` (17 px / 31 px linjeafstand, målt fra HelloFresh-appen) i stedet for de normale roller. Tekst over tre linjer afkortes med "…Vis mere" på tredje linje (`ClampedText` på web, `HcClampedText` i native). Udrulles først til andre sider, når brugeren har godkendt prøven.
