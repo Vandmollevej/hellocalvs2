@@ -1222,7 +1222,7 @@ export function AddProductView({
 
               {(isPending("ingredients") || !!view.ingredientsText) && (
                 <div>
-                  <p className="hf-type-body mb-2 text-hf-black">{t("createDish.ingredients")}</p>
+                  <p className="hf-type-body hf-heading mb-2 text-hf-black">{t("createDish.ingredients")}</p>
                   {isPending("ingredients") ? (
                     <div role="status" aria-busy="true" className="flex flex-col gap-2">
                       <span className="sr-only">{t("addProduct.reading")}</span>
@@ -1256,11 +1256,11 @@ export function AddProductView({
                   sammen bag "Vis mere", åben for brugere der har prioriteret
                   udvidet næringsindhold i Opsætning. */}
               {!!extendedNutrition.length && (
-                <div>
+                <div className="overflow-hidden rounded-2xl bg-hf-tan">
                   <button
                     type="button"
                     onClick={() => setExtendedNutritionToggle(!extendedNutritionOpen)}
-                    className="flex w-full items-center justify-between"
+                    className="flex w-full items-center justify-between px-4 py-3"
                   >
                     <p className="hf-type-body hf-heading text-hf-black">{t("addProduct.extendedNutrition")}</p>
                     <span className="hf-type-small hf-type-strong flex items-center gap-1 text-hf-black underline underline-offset-2">
@@ -1272,7 +1272,7 @@ export function AddProductView({
                     </span>
                   </button>
                   {extendedNutritionOpen && (
-                    <div className="mt-4 flex flex-col overflow-hidden rounded-2xl bg-hf-tan">
+                    <div className="flex flex-col border-t border-hf-tan-dark">
                       {extendedNutrition.map((row, index) => {
                         // Usikkerheds-~ (docs/DECISIONS.md 2026-09-24): ~ vises
                         // altid ved estimerede værdier; den grå linje er foldet
