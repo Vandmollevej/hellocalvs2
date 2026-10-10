@@ -1209,7 +1209,7 @@
     "addPhoto": "Take a photo for this step",
     "removePhoto": "Remove photo",
     "remove": "Delete step",
-    "dropPhoto": "Drag a picture here, or tap to add one"
+    "dropPhoto": "Take a photo of this step, or drop a picture here"
   },
   "recipeImages": {
     "title": "Photos of the dish",
@@ -1394,7 +1394,7 @@
     "searchPlaceholder": "Search for ingredient",
     "searching": "Searching...",
     "noResults": "No products match your search",
-    "scan": "Take photo",
+    "scan": "Scan barcode",
     "scanWeb": "Upload an image or drop them here",
     "scanWebWorking": "Reading the image …",
     "scanWebNotFound": "We couldn't recognise the product in the image. Try a photo of the front, or search for it.",

@@ -1209,7 +1209,7 @@
     "addPhoto": "Ta en bild till steget",
     "removePhoto": "Ta bort bilden",
     "remove": "Ta bort steg",
-    "dropPhoto": "Drag a picture here, or tap to add one"
+    "dropPhoto": "Ta en bild av steget, eller släpp en bild här"
   },
   "recipeImages": {
     "title": "Bilder på rätten",
@@ -1394,7 +1394,7 @@
     "searchPlaceholder": "Sök efter ingrediens",
     "searching": "Söker...",
     "noResults": "Inga varor matchar din sökning",
-    "scan": "Ta bild",
+    "scan": "Skanna streckkod",
     "scanWeb": "Ladda upp bild eller släpp dem här",
     "scanWebWorking": "Läser bilden …",
     "scanWebNotFound": "Vi kunde inte känna igen varan på bilden. Prova en bild på framsidan, eller sök efter varan.",

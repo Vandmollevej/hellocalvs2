@@ -1209,7 +1209,7 @@
     "addPhoto": "Prendre une photo de l'étape",
     "removePhoto": "Supprimer la photo",
     "remove": "Supprimer l'étape",
-    "dropPhoto": "Drag a picture here, or tap to add one"
+    "dropPhoto": "Prenez l'étape en photo ou déposez une image ici"
   },
   "recipeImages": {
     "title": "Photos du plat",
@@ -1394,7 +1394,7 @@
     "searchPlaceholder": "Rechercher un ingrédient",
     "searching": "Recherche...",
     "noResults": "Aucun produit ne correspond à ta recherche",
-    "scan": "Prendre une photo",
+    "scan": "Scanner le code-barres",
     "scanWeb": "Importe une photo ou dépose-la ici",
     "scanWebWorking": "Lecture de l'image …",
     "scanWebNotFound": "Nous n'avons pas pu reconnaître le produit sur l'image. Essaie avec une photo de l'avant, ou cherche le produit.",
