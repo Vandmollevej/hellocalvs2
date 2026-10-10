@@ -207,25 +207,25 @@ internal fun GoalStatusSummary(
             } else {
                 Spacer(Modifier.weight(1f))
             }
-            if (showTotals) HcText(t.t("calendar.goalLabel", "goal" to jsRound(goalKcal)), HcTypeRoles.Body, color = HcColors.Inactive, maxLines = 1)
+            if (showTotals) {
+                if (remaining >= 0) {
+                    HcText(
+                        t.t(if (month) "calendar.remainingMonth" else "calendar.remainingToday", "amount" to remaining),
+                        HcTypeRoles.Body,
+                        color = HcColors.Black,
+                        maxLines = 1,
+                    )
+                } else {
+                    HcText(t.t("calendar.exceededCalories", "amount" to -remaining), HcTypeRoles.Body, color = HcColors.RedDark, bold = true, maxLines = 1)
+                }
+            }
         }
-        if (!showTotals) {
-            // Periodevisning: kun status, ingen totaler.
-        } else if (remaining >= 0) {
+        if (showTotals) {
             HcText(
-                t.t(if (month) "calendar.remainingMonth" else "calendar.remainingToday", "amount" to remaining),
+                t.t("calendar.goalLabel", "goal" to jsRound(goalKcal)),
                 HcTypeRoles.Body,
                 Modifier.fillMaxWidth(),
-                color = HcColors.Black,
-                align = TextAlign.End,
-            )
-        } else {
-            HcText(
-                t.t("calendar.exceededCalories", "amount" to -remaining),
-                HcTypeRoles.Body,
-                Modifier.fillMaxWidth(),
-                color = HcColors.RedDark,
-                bold = true,
+                color = HcColors.Inactive,
                 align = TextAlign.End,
             )
         }

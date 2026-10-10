@@ -271,7 +271,7 @@
     "src/components/add/AddMenuList.tsx": "d3654b280c54de9e",
     "src/components/add/AddMenuSheet.tsx": "da5cc2553ea30e9e",
     "src/components/calendar/EnergyChip.tsx": "956bbe8b5462c133",
-    "src/components/calendar/GoalStatusSummary.tsx": "033fdc5cb15d8e9a",
+    "src/components/calendar/GoalStatusSummary.tsx": "8a3aea7183e93a26",
     "src/components/family/FamilyStatusProvider.tsx": "7fd1f1ff7807171c",
     "src/components/family/MealShareBar.tsx": "1a89f02c26cffff5",
     "src/components/family/ProfileCircle.tsx": "08fe8d4db2620525",
