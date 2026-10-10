@@ -20,7 +20,7 @@ export function TextField({
   if (!label) return input;
 
   return (
-    <label className="flex flex-col gap-1">
+    <label className="flex min-w-0 flex-col gap-1">
       <span className="hf-type-label">{label}</span>
       {input}
     </label>
