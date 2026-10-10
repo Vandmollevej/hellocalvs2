@@ -1,5 +1,6 @@
 package dk.packroff.hellocal.screens.calendar
 
+import dk.packroff.hellocal.ui.CalendarBathScaleIcon
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -287,7 +288,7 @@ internal fun WeekTimelineView(
                             HcText(date.dayOfMonth.toString(), HcTypeRoles.Body, bold = true, color = HcColors.Black)
                             if (met) HcIcon("Check", size = 15.dp, stroke = 3.5f, color = HcColors.Green)
                             if (date in goalDates) CalendarPartyPopperIcon(15.dp, HcColors.Black)
-                            if (!weighInsByDate[date].isNullOrEmpty()) HcIcon("Scale", size = 15.dp, color = HcColors.Black)
+                            if (!weighInsByDate[date].isNullOrEmpty()) CalendarBathScaleIcon(15.dp, HcColors.Black)
                             PulseHeartMark(date, 15.dp)
                         }
                     }
@@ -344,7 +345,7 @@ internal fun WeekTimelineView(
                                     verticalAlignment = Alignment.CenterVertically,
                                     horizontalArrangement = Arrangement.spacedBy(4.dp),
                                 ) {
-                                    HcIcon("Scale", size = 12.dp, color = HcColors.Black)
+                                    CalendarBathScaleIcon(12.dp, HcColors.Black)
                                     HcText("${formatKg(entry.weightKg)} kg", HcTypeRoles.Micro, bold = true, color = HcColors.Black, maxLines = 1)
                                 }
                             }

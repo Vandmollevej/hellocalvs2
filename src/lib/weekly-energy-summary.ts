@@ -185,7 +185,7 @@ export function activityKcalByDay(activities: ActivityBurn[]): Map<string, numbe
   return map;
 }
 
-export type HealthMetricSample = { type: string; source: string; value: number; recordedAt: string };
+export type HealthMetricSample = { id?: string; type: string; source: string; value: number; recordedAt: string };
 
 /**
  * Device data per day from HealthMetric rows. Several sources (Apple Health,

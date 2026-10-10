@@ -42,3 +42,21 @@ export async function GET() {
     return NextResponse.json({ metrics: [], message: "Database ikke tilgængelig" }, { status: 503 });
   }
 }
+
+// DELETE /api/health-metrics — sletter enkeltmålinger (iltmætning, puls …) fra kalenderen.
+// Næste synkronisering kan hente dem igen, hvis integrationen stadig leverer dem.
+export async function DELETE(req: Request) {
+  try {
+    const user = await getProfileUser("healthMetrics", "DELETED");
+    if (!user) return unauthorized();
+    const { ids } = (await req.json()) as { ids?: unknown };
+    if (!Array.isArray(ids) || ids.length === 0 || ids.length > 500 || ids.some((id) => typeof id !== "string")) {
+      return NextResponse.json({ message: "ids er påkrævet" }, { status: 400 });
+    }
+    const result = await prisma.healthMetric.deleteMany({ where: { id: { in: ids as string[] }, userId: user.id } });
+    return NextResponse.json({ deleted: result.count });
+  } catch (error) {
+    console.error("Health metric delete failed", error);
+    return NextResponse.json({ message: "Database ikke tilgængelig" }, { status: 503 });
+  }
+}

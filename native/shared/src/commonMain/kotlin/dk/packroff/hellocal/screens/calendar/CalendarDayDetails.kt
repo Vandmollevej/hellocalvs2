@@ -1,5 +1,6 @@
 package dk.packroff.hellocal.screens.calendar
 
+import dk.packroff.hellocal.ui.CalendarBathScaleIcon
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -110,6 +111,7 @@ internal fun DayDetails(
     activities: List<CalActivity>,
     waterEntries: List<CalWater>,
     measurements: List<CalendarMeasurement>,
+    onDeleteMetrics: (List<String>) -> Unit,
     goals: List<CalGoal>,
     weighIns: List<CalWeighIn>,
     loading: Boolean,
@@ -400,6 +402,7 @@ internal fun DayDetails(
                 registrations = registrations.filter { it.at.hour == hour },
                 waterEntries = waterEntries.filter { it.at.hour == hour },
                 measurements = measurements.filter { it.time.hour == hour },
+                onDeleteMetrics = onDeleteMetrics,
                 goals = if (hour == GOAL_HOUR) goals else emptyList(),
                 onClose = { openHour = null },
             )
@@ -535,7 +538,7 @@ private fun HourRow(
                 if (hasGoal) CalendarPartyPopperIcon(16.dp, HcColors.Black)
                 for (entry in data.weighIns) {
                     Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(4.dp)) {
-                        HcIcon("Scale", size = 16.dp, color = HcColors.Black)
+                        CalendarBathScaleIcon(16.dp, HcColors.Black)
                         HcText("${formatKg(entry.weightKg)} kg", HcTypeRoles.Small, bold = true, color = HcColors.Black, maxLines = 1)
                     }
                 }
@@ -557,7 +560,7 @@ private fun HourRow(
                 if (data.waterMl > 0) EnergyChip(EnergyChipKind.Water, data.waterMl)
                 if (data.hasMeasurement && data.weighIns.isEmpty()) {
                     Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(4.dp)) {
-                        HcIcon("Scale", size = 16.dp, color = HcColors.Black)
+                        if (data.weightKg != null) CalendarBathScaleIcon(16.dp, HcColors.Black) else HcIcon("Heartbeat", size = 16.dp, color = HcColors.Black)
                         data.weightKg?.let { HcText(formatWeightKg(it), HcTypeRoles.Small, bold = true, color = HcColors.Black, maxLines = 1) }
                     }
                 }

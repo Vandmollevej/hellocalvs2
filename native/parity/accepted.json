@@ -249,7 +249,7 @@
     "src/components/web/WebShell.tsx": "5f2646ffd79af9cc"
   },
   "/calendar": {
-    "src/app/calendar/page.tsx": "c2811faf856bd1ae",
+    "src/app/calendar/page.tsx": "9ab32bff26f17b04",
     "src/app/layout.tsx": "ce9cce1fff73600a",
     "src/components/AuthGate.tsx": "94db96b768f9f95f",
     "src/components/BottomNav.tsx": "6dbfc954cd0db43d",
@@ -261,6 +261,7 @@
     "src/components/HfScreen.tsx": "da45f5d47f897b57",
     "src/components/IntegrationIcon.tsx": "36551d87b956c315",
     "src/components/ProfileAvatarLink.tsx": "598cd23c3331619d",
+    "src/components/SwipeableRow.tsx": "7d580c5b4a7f2edf",
     "src/components/activity/ActivityPicker.tsx": "4a380b9c9a346059",
     "src/components/activity/HeartRateSpikeChart.tsx": "b909536735a0d1b8",
     "src/components/activity/PulseEventSheet.tsx": "1ed90bb53e956115",
@@ -280,8 +281,10 @@
     "src/components/hf/ActionButton.tsx": "c70a6e85a68ad4fe",
     "src/components/hf/BottomSheet.tsx": "2e09a9f4fae4c060",
     "src/components/hf/HfChevron.tsx": "11106e436ea8e3ef",
+    "src/components/hf/IconBathScale.tsx": "5313c88fe0912b00",
     "src/components/hf/ScreenHeader.tsx": "a7bbb02ab41e7756",
     "src/components/hf/Skeleton.tsx": "383d8a93fa858b4a",
+    "src/components/icons/BathroomScale.tsx": "5cfbc71ebbc7eae3",
     "src/components/icons/Favorite.tsx": "70f85dd37d71acbf",
     "src/components/icons/PartyPopper.tsx": "2d79b13702e0df51",
     "src/components/icons/PhotoFrame.tsx": "20ffbe92a0057321",

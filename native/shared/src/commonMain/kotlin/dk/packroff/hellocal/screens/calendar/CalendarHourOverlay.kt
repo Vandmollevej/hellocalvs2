@@ -1,5 +1,6 @@
 package dk.packroff.hellocal.screens.calendar
 
+import dk.packroff.hellocal.ui.CalendarBathScaleIcon
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -32,6 +33,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import dk.packroff.hellocal.api.Api
+import dk.packroff.hellocal.ui.CaptureSwipeableRow
 import dk.packroff.hellocal.app.BackHandler
 import dk.packroff.hellocal.i18n.LocalTranslator
 import dk.packroff.hellocal.nav.LocalNavigator
@@ -72,6 +74,7 @@ internal fun HourEntriesOverlay(
     registrations: List<CalRegistration>,
     waterEntries: List<CalWater>,
     measurements: List<CalendarMeasurement>,
+    onDeleteMetrics: (List<String>) -> Unit,
     goals: List<CalGoal>,
     onClose: () -> Unit,
 ) {
@@ -138,7 +141,7 @@ internal fun HourEntriesOverlay(
                             if (groupWaterMl > 0) EnergyChip(EnergyChipKind.Water, groupWaterMl, iconSize = 18.dp, role = HcTypeRoles.Body)
                             if (groupWeight != null) {
                                 Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(4.dp)) {
-                                    HcIcon("Scale", size = 18.dp, color = HcColors.Black)
+                                    CalendarBathScaleIcon(18.dp, HcColors.Black)
                                     HcText(formatWeightKg(groupWeight), HcTypeRoles.Body, bold = true, color = HcColors.Black)
                                 }
                             }
@@ -150,7 +153,7 @@ internal fun HourEntriesOverlay(
                     if (isOpen) {
                         Column(Modifier.fillMaxWidth().background(HcColors.Cream).padding(horizontal = 16.dp)) {
                             items.forEachIndexed { index, item ->
-                                HourItemRow(item, hideWeight = item === groupMeasurement)
+                                HourItemRow(item, hideWeight = item === groupMeasurement, onDeleteMetrics = onDeleteMetrics)
                                 if (index < items.lastIndex) Box(Modifier.fillMaxWidth().height(1.dp).background(HcColors.TanDark))
                             }
                         }
@@ -171,7 +174,7 @@ private fun SoloWeightRow(time: LocalDateTime, measurement: CalendarMeasurement)
     ) {
         HcText(clock(time), HcTypeRoles.Body, Modifier.weight(1f), bold = true, color = HcColors.Black)
         Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            HcIcon("Scale", size = 18.dp, color = HcColors.Black)
+            CalendarBathScaleIcon(18.dp, HcColors.Black)
             HcText(formatWeightKg(measurement.weightKg ?: 0.0), HcTypeRoles.Body, bold = true, color = HcColors.Black)
             Box(Modifier.offset(x = (-4).dp)) { HcChevron(ChevronDirection.Right, color = HcColors.Black) }
         }
@@ -180,7 +183,7 @@ private fun SoloWeightRow(time: LocalDateTime, measurement: CalendarMeasurement)
 }
 
 @Composable
-private fun HourItemRow(item: HourItem, hideWeight: Boolean = false) {
+private fun HourItemRow(item: HourItem, hideWeight: Boolean = false, onDeleteMetrics: (List<String>) -> Unit = {}) {
     val t = LocalTranslator.current
     val nav = LocalNavigator.current
     when (item) {
@@ -189,7 +192,7 @@ private fun HourItemRow(item: HourItem, hideWeight: Boolean = false) {
             thumbnail = { CalendarWaterGlassIcon(22.dp, HcColors.Black) },
             right = { EnergyChip(EnergyChipKind.Water, item.entry.amountMl, iconSize = 18.dp, role = HcTypeRoles.Body) },
         )
-        is HourItem.Measurement -> MeasurementRow(item.measurement, hideWeight)
+        is HourItem.Measurement -> MeasurementRow(item.measurement, hideWeight, onDeleteMetrics)
         is HourItem.Registration -> {
             val registration = item.registration
             val isWater = isWaterRegistration(registration)
@@ -266,7 +269,7 @@ private fun GoalAccordion(goal: CalGoal) {
  * details sheet.
  */
 @Composable
-private fun MeasurementRow(measurement: CalendarMeasurement, hideWeight: Boolean = false) {
+private fun MeasurementRow(measurement: CalendarMeasurement, hideWeight: Boolean = false, onDeleteMetrics: (List<String>) -> Unit = {}) {
     val t = LocalTranslator.current
     val scope = rememberCoroutineScope()
     var open by remember { mutableStateOf(false) }
@@ -283,13 +286,20 @@ private fun MeasurementRow(measurement: CalendarMeasurement, hideWeight: Boolean
     } else {
         null
     }
+    // Readings without a weigh-in (SpO2, pulse …) can be swiped away; weigh-ins are deleted from their own sheet.
+    val metricIds = if (weightKg == null) measurement.metrics.mapNotNull { it.id } else emptyList()
+    val swipeable = metricIds.isNotEmpty() && metricIds.size == measurement.metrics.size
+    val wrap: @Composable (@Composable () -> Unit) -> Unit = { body ->
+        if (swipeable) CaptureSwipeableRow(onDelete = { onDeleteMetrics(metricIds) }, content = body) else body()
+    }
+    wrap {
     Column(Modifier.fillMaxWidth().let { if (weighInId != null) it.clickable { open = true } else it }) {
         CalendarFoodRow(
             title = if (weightKg != null) t.t("calendar.measurement.weight") else t.t("calendar.measurement.title"),
             thumbnail = {
                 val sourceIcon = integrationIconForSource(measurement.source)
                 if (sourceIcon != null) HcRemoteImage(sourceIcon, Modifier.size(44.dp).padding(4.dp))
-                else HcIcon("Scale", size = 22.dp, color = HcColors.Black)
+                else HcIcon("Heartbeat", size = 22.dp, color = HcColors.Black)
             },
             subtitle = subtitle,
             right = right,
@@ -304,6 +314,7 @@ private fun MeasurementRow(measurement: CalendarMeasurement, hideWeight: Boolean
                 }
             }
         }
+    }
     }
     // The shared weigh-in sheet (src/components/weight/WeightEntryDetailsSheet.tsx) — unit-aware.
     if (open && weighInId != null) WeightEntryDetailsSheet(weighInId, onClose = { open = false })

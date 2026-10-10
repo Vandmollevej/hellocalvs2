@@ -1,5 +1,6 @@
 package dk.packroff.hellocal.screens.calendar
 
+import dk.packroff.hellocal.ui.CalendarBathScaleIcon
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -377,7 +378,7 @@ private fun WeighInMark(entries: List<CalWeighIn>) {
     val latest = entries.lastOrNull() ?: return
     // The weight itself is only read out (sr-only on the web) and shown in the day view.
     Box(Modifier.semantics { contentDescription = t.t("calendar.weighInSrLabel", "value" to formatKg(latest.weightKg)) }) {
-        HcIcon("Scale", size = 18.dp, color = HcColors.Black)
+        CalendarBathScaleIcon(18.dp, HcColors.Black)
     }
 }
 
