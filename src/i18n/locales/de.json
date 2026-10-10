@@ -1434,6 +1434,7 @@
     "pendingBannerMany": "{count} Einträge warten auf Upload"
   },
   "offline": {
+    "cachedResults": "Gespeicherte Ergebnisse früherer Suchen (offline)",
     "message": "Keine Verbindung — dafür wird Internet benötigt. Versuche es erneut, sobald du online bist.",
     "banner": "Du bist offline — einige Funktionen sind nicht verfügbar",
     "barcodeLookup": "Der Barcode wurde gelesen, aber du hast keine Verbindung. Versuche es erneut, sobald du online bist."

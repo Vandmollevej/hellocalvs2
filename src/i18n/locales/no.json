@@ -1434,6 +1434,7 @@
     "pendingBannerMany": "{count} opprettinger venter på opplasting"
   },
   "offline": {
+    "cachedResults": "Viser lagrede resultater fra tidligere søk (offline)",
     "message": "Ingen tilkobling — dette krever internett. Prøv igjen når du er online.",
     "banner": "Du er offline — noen funksjoner virker ikke",
     "barcodeLookup": "Strekkoden ble lest, men du har ingen tilkobling. Prøv igjen når du er online."
