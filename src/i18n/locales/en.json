@@ -1887,12 +1887,12 @@
   "weighIn": {
     "attireTitle": "What were you wearing?",
     "attireItem": {
-      "UNDERWEAR": "Underwear",
-      "PANTS": "Trousers",
-      "TOP": "Top / T-shirt",
-      "SWEATER": "Sweater",
-      "SHOES": "Shoes",
-      "POCKET_ITEMS": "Phone etc. in pocket",
+      "UNDERWEAR": "With underwear",
+      "PANTS": "With trousers",
+      "TOP": "With top / T-shirt",
+      "SWEATER": "With upper layer",
+      "SHOES": "With shoes",
+      "POCKET_ITEMS": "With phone and other items in pockets",
       "AFTER_TOILET": "After using the toilet"
     },
     "attireNaked": "Nothing selected = naked",
