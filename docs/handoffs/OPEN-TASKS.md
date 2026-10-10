@@ -474,3 +474,18 @@ Ejer: cloud-session `claude/rescan-panel-fix` (2026-10-03)
 | Id | Opgave | Status | Næste skridt |
 | --- | --- | --- | --- |
 | rescan-panel | Panel over hele skærmen, X-knap, 60 sek. tidsgrænse på afsendelse | Venter på bruger | Draft-PR #225. Brugeren skal teste på telefon (kan panelet lukkes; bliver kameraet sort efter sidste billede?) og godkende flet til master |
+## G-SLIDER — Tal-slider: valgbare felter, mål-linje, grøn ved mål
+Filer: `src/lib/frontpage-stats.ts`, `src/lib/frontpage-goal-math.ts`, `src/lib/pulse-zone-settings.ts`, `src/components/StatsWheel.tsx`, `src/app/settings/display/front-page/page.tsx`.
+Ejer: cloud-session `claude/slider-settings-goal-display-32jvk9` (2026-10-09)
+
+| Id | Opgave | Status | Næste skridt |
+| --- | --- | --- | --- |
+| slider-felter | 12 nye felter, mål under tallet, grøn ved nået mål, pulszoner i Visning → Forside | Færdig (kode, draft-PR #278) | Brugerens test på telefon + svar på antagelserne (sukkermål 10 % vs. 1 %, faste mål for trapper/skridt) |
+
+## Native-port af tal-sliderens nye felter (PR #278)
+Filer: `native/**/HomeStatsWheel.kt`, `SettingsFrontPageScreen.kt`; web-kilde `src/components/StatsWheel.tsx`, `src/lib/frontpage-stats.ts`, `src/lib/frontpage-goal-math.ts`, `src/lib/pulse-zone-settings.ts`.
+Ejer: ledig (2026-10-10)
+
+| Id | Opgave | Status | Næste skridt |
+| --- | --- | --- | --- |
+| slider-native | Valgbare felter, mål-linje, grøn ved mål, flere ikoner og pulszone-valg i native tal-hjul + Forside-indstillinger | Ikke startet (web flettet, paritet midlertidigt accepteret) | Port felterne fra `frontpage-stats.ts`/`frontpage-goal-math.ts` til Kotlin, derefter `parity.mjs --accept / /settings/display/front-page` |

@@ -4861,3 +4861,6 @@ Ejeren vælger selv adgangens udløb med en datepicker i Hello Doc-editoren (web
 
 - Hvilke kropsmål Kropsmål-siden viser, gemmes som `User.bodyMeasurementVisibility` (Json, felt → boolean; null/manglende = vist), samme mønster som `allergenVisibility`. Kun siden filtreres — Målsætning, Statistik og Status viser stadig alle mål med data.
 - Bagdel, læg og ankel er tilføjet som kolonner på `BodyMeasurement` (ikke en generisk nøgle/værdi-tabel), så de følger de eksisterende mål.
+## 2026-10-09: Tal-sliderens mål-linje og grøn ved mål
+
+Hver række i forsidens tal-slider viser sit mål under tallet i stedet for pladsholdertekst. Kun minimumsmål (skridt, trapper, protein, vægtudsigt, chance) farver hovedtallet grønt; grænser (sukker, salt, fedt, kulhydrat, kalorier) forbliver sorte, fordi "nået" ellers ville betyde overskredet. Kalorieindtag bruger kniv og gaffel (afviger fra design.md §6.16, brugerens ønske); kulhydrater har brød-ikon. Pulszoner og valgt zone er pr. enhed i localStorage.
