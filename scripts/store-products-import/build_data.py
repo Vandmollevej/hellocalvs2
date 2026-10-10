@@ -46,7 +46,22 @@ SUSPECT_CSV = os.path.join(SHEETS, "Tjekliste - mistænkelige rækker.csv")
 EAN_RE = re.compile(r"^\d{8,14}$")
 
 
-def load(path):
+# 2026-10-10: arkene bruger nu databasens kolonnenavne (se Excelark/NAVNEREGLER.md).
+# load() kopierer dem tilbage til de gamle navne, saa resten af scriptet er uaendret.
+NEW_ALIAS = {
+    "bilka": {"brand": "Brand", "subbrand": "Subbrand", "productType": "Product Type", "variant": "Variation",
+              "packageSizeText": "Quantity", "packCount": "Pack Count", "packaging": "Packaging", "category": "Category",
+              "barcode": "EAN", **{f"keyword{i}": f"Keyword {i}" for i in range(1, 6)}},
+    "rema": {"brand": "Brand", "subbrand": "Subbrand", "productType": "Product type", "variant": "Variant", "flavor": "taste",
+             "packageSizeText": "Quantity", "packCount": "Amount", "category": "Category", "barcode": "EAN", "keyword1": "Keyword 1"},
+}
+
+
+def _cap(v):
+    return v[:1].upper() + v[1:] if isinstance(v, str) and v else v
+
+
+def load(path, kind=None):
     ws = openpyxl.load_workbook(path, read_only=True, data_only=True).worksheets[0]
     rows = ws.iter_rows(values_only=True)
     header = [str(h).strip() if h is not None else "" for h in next(rows)]
@@ -63,6 +78,22 @@ def load(path):
             if h in item:
                 h = h + "#2"
             item[h] = v
+        if kind and "productType" in item:  # nyt layout: databasenavne, smaa bogstaver
+            for new, old in NEW_ALIAS[kind].items():
+                if new in item:
+                    item[old] = item[new]
+            for k in list(item):
+                if k.startswith(("_is_", "is_", "Keyword ")) or k in ("Variation", "Variant", "taste"):
+                    if isinstance(item[k], str) and not re.match(r"^[\d,.%\s]+$", item[k]):
+                        item[k] = _cap(item[k])
+            if item.get("_is_alcohol_free") and not item.get("_is_alcohol"):
+                item["_is_alcohol"] = _cap(item["_is_alcohol_free"])
+            if kind == "bilka":
+                item["HelloCal_Title"] = item.get("Product title singular")
+                item["_new_title"] = True
+            else:
+                item["Hello Cal product title"] = item.get("Product title singular")
+                item["_new_title"] = True
         out.append(item)
     return out
 
@@ -330,6 +361,8 @@ def bilka_name(b):
     """HelloCal_Title is "Name, quantity (Brand)" — the name is the part before.
     The cleanup cut abbreviations ("u. tilsat sukker" → "u"); then the
     uncut Product Name is used instead."""
+    if b.get("_new_title"):  # nyt layout: titlen er allerede uden maengde/brand
+        return text(b.get("Product title singular")) or strip_title(text(b.get("Product Name"))) or text(b.get("Product title plural"))
     name = strip_title(text(b.get("HelloCal_Title")))
     if not name or re.search(r"\s\w$", name):
         name = strip_title(text(b.get("Product Name"))) or name
@@ -340,6 +373,8 @@ def rema_name(r, brand):
     """REMA titles start with the brand ("Friland Hakket oksekød"); the brand
     is its own field, so it is not repeated in the name."""
     name = text(r.get("Hello Cal product title")) or ""
+    if r.get("_new_title"):
+        return name.strip() or text(r.get("Product title plural")) or text(r.get("Variant")) or ""
     if brand and name.lower().startswith(brand.lower() + " "):
         name = name[len(brand) + 1:]
     return name.strip() or text(r.get("Hello Cal product title"))
@@ -751,8 +786,8 @@ def main():
     out_dir = args.out or OUT_DIR
     out_images = os.path.join(out_dir, "images")
 
-    bilka = load(BILKA_SHEET)
-    rema = load(REMA_SHEET)
+    bilka = load(BILKA_SHEET, "bilka")
+    rema = load(REMA_SHEET, "rema")
     bilka_info = {ean_of(x.get("EAN")): x for x in load(BILKA_INFO) if ean_of(x.get("EAN"))}
     rema_info = {text(x.get("Source URL")).lower(): x for x in load(REMA_INFO) if text(x.get("Source URL"))}
 
