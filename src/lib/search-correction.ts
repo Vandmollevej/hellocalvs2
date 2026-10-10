@@ -37,33 +37,38 @@ function likePattern(word: string) {
   return Prisma.sql`'%' || hc_search_norm(${escapeLike(word)}) || '%'`;
 }
 
-// Id'er på varer, hvis navn, flertalsnavn eller mærke indeholder søgningen uden
-// hensyn til store/små bogstaver og accenter ("Nescafé" finder "Nescafe"). Flere
-// ord: hvert ord skal stå i navn eller mærke.
-export async function accentInsensitiveProductIds(query: string, limit = 400): Promise<string[]> {
+// Søgeordet uden mellemrum og tegn, til sammenligning med teksten uden mellemrum.
+function tightLikePattern(word: string) {
+  return Prisma.sql`'%' || regexp_replace(hc_search_norm(${escapeLike(word)}), '[[:space:][:punct:]]+', '', 'g') || '%'`;
+}
+
+// Id'er på varer, hvor hvert ord i søgningen står i navn, flertalsnavn, mærke,
+// serie, varetype, variant, smag eller søgeord — uden hensyn til store/små
+// bogstaver og accenter ("Nescafé" finder "Nescafe"), og også når teksten læses
+// uden mellemrum, så sammensatte ord matcher ("instantkaffe" finder "Instant
+// Kaffe", "instant kaffe" finder "Instantkaffe"). docs/DECISIONS.md 2026-10-10.
+export async function accentInsensitiveProductIds(query: string, limit = 1000): Promise<string[]> {
   const q = query.trim();
   if (q.length < 2) return [];
   const words = splitQueryTokens(q).filter((word) => word.length >= 2).slice(0, 6);
-  const phrase = likePattern(q);
-  const everyWord =
-    words.length > 1
-      ? Prisma.sql`OR (${Prisma.join(
-          words.map(
-            (word) =>
-              Prisma.sql`(hc_search_norm(p."name") LIKE ${likePattern(word)} OR hc_search_norm(b."name") LIKE ${likePattern(word)})`,
-          ),
-          " AND ",
-        )})`
-      : Prisma.empty;
+  if (words.length === 0) return [];
+  const everyWord = Prisma.join(
+    words.map((word) => Prisma.sql`(x."text" LIKE ${likePattern(word)} OR x."tight" LIKE ${tightLikePattern(word)})`),
+    " AND ",
+  );
   try {
     const rows = await prisma.$queryRaw<{ id: string }[]>`
-      SELECT p."id" FROM "products" p LEFT JOIN "brands" b ON b."id" = p."brandId"
-      WHERE NOT p."discontinued" AND p."privateOwnerId" IS NULL
-        AND (hc_search_norm(p."name") LIKE ${phrase}
-          OR hc_search_norm(p."namePlural") LIKE ${phrase}
-          OR hc_search_norm(b."name") LIKE ${phrase}
-          ${everyWord})
-      ORDER BY p."createdAt" DESC
+      SELECT x."id" FROM (
+        SELECT t."id", t."createdAt", t."text", regexp_replace(t."text", '[[:space:][:punct:]]+', '', 'g') AS "tight"
+        FROM (
+          SELECT p."id", p."createdAt", hc_search_norm(concat_ws(' ', p."name", p."namePlural", b."name",
+            p."subbrand", p."productType", p."variant", p."flavor", array_to_string(p."keywords", ' '))) AS "text"
+          FROM "products" p LEFT JOIN "brands" b ON b."id" = p."brandId"
+          WHERE NOT p."discontinued" AND p."privateOwnerId" IS NULL
+        ) t
+      ) x
+      WHERE ${everyWord}
+      ORDER BY x."createdAt" DESC
       LIMIT ${limit}`;
     return rows.map((row) => row.id);
   } catch (error) {
