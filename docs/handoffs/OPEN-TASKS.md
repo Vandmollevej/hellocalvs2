@@ -511,3 +511,9 @@ Ejer: ledig (2026-10-10)
 | Id | Opgave | Status | Næste skridt |
 | --- | --- | --- | --- |
 | slider-native | Valgbare felter, mål-linje, grøn ved mål, flere ikoner og pulszone-valg i native tal-hjul + Forside-indstillinger | Ikke startet (web flettet, paritet midlertidigt accepteret) | Port felterne fra `frontpage-stats.ts`/`frontpage-goal-math.ts` til Kotlin, derefter `parity.mjs --accept / /settings/display/front-page` |
+
+## G-PRODUKTTYPE — produkttype-gennemgang i butiksark (2026-10-11)
+
+| Opgave | Beskrivelse | Status | Næste skridt |
+| --- | --- | --- | --- |
+| **PRODUKTTYPE-GENNEMGANG (2026-10-11)** | Gendan forkerte produkttype-skrivninger i DRK/Årstiderne/DM/EDEKA/REWE, skriv regel-lint (20 regler), fjern dyremad, ret Quantity/Pack Count/MHD/lande, udtræk produkttype forsigtigt | Blokeret af bruger-gennemsyn | Se `docs/handoffs/2026-10-11-produkttype-gennemgang.md`. Gendan fra `Backup/*_2026-10-11_foer_produkttype.xlsx` først |

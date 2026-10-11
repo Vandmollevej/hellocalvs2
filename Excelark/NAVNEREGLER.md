@@ -145,3 +145,38 @@ Kort version står også i `docs/REGLER.md`.
 - **Ental/flertal**: `Product title singular`/`plural` er formler; flertalsord i `Product type plural` (tom for masse-ord → flertalstitel = ental-titel). Flagene bøjes: vegansk→veganske, -fri→-frie; "panerede" i flertal.
 - **Kommaer i Variation** fjernes (Frida brugte dem som adskiller): "med/uden/af/i/på"-led sættes med mellemrum, øvrige led "a, b og c".
 - **Frida publiceres til databasen** (`scripts/frida-import/build_sheet.py` → `sheet/frida_sheet.json`, `agent.py apply_sheet`); søgereglen (flertal → plural-titel, ental → singular-titel) står i `GET /api/products`. Se docs/FRIDA.md.
+
+## Brugerens regler 2026-10-11 (DRK- og EDEKA-gennemgangen) — gælder ALLE ark
+
+Kilde: brugerens ordrette kommentarer efter første produkttype-kørsel i DRK, Årstiderne, Wolt, SPAR, DM, EDEKA og REWE.
+Disse regler var ikke noteret før, og de blev brudt. Tjek ALLE punkter før et ark afleveres.
+
+### Mængde, antal og enheder
+1. **Quantity må aldrig indeholde både vægt/volumen og stk-tal** ("6 stk 370 g" er forbudt). Quantity = kun vægt/volumen (`370 g`, `0.5 l`).
+2. **Antal stk/pak/N-pak/N x står kun i `Pack Count`** (heltal, uden tekst). Står stk-tallet også i Quantity eller titel, fjernes det dér — **ingen gentagelser på tværs af kolonner**. Var Quantity kun "N stk", ryddes Quantity (brugerens eget mønster, `Produkter/Bilka/Bilka_moenster_egne_felter.md`, punkt 6).
+3. **"XX stk" må ikke stå i Quantity noget sted** (heller ikke i andre ark) — ret alle ark.
+4. **Liter hedder ens på tværs af ark** (`l`; aldrig ltr/Ltr/liter/L). **Pack Count angives ens på tværs af ark** (kun tal; ikke "6-pak", "10 stk", "1 bakke").
+5. **MHD og datoer ("MHD 29.09.2026") fjernes fra alt** i vores kolonner — PÅ ALLE ARK.
+
+### Brand, produkttype, variation
+6. **Brand og subbrand er egne kolonner.** Produktlinjer/underbrands (Lotus **Biscoff**, Dr. Oetker **Zitronello/Aranca**, Milka, Kanzen …) er `Subbrand`/`Brand` — aldrig i Product Type eller Variation. **Brandnavn må aldrig gentages** i Product Type, Variation eller Keywords (hverken helt eller delvist).
+7. **Brandgæt må kun ske på ord der ikke er almindelige ord.** "Indbagt", "Fuldkorns", "Riesling," er ikke brands. Hellere tomt Brand end forkert brand.
+8. **Product Type = selve varen** (Cider, Pils, Rotwein, Puddingcreme, Brausebonbon, Haselnüsse, Rooibos …). **Aldrig butikkens kategori** (Aromen, Getränk, Alkoholisches Getränk, Bonbons & Kaugummi, Backen & Desserts, Backzutaten & Dekor, Aromatisiertes Getränkepulver, Konserven …) og **aldrig et tal** ("5 Pils", "5 Original Weizenbier" — 5 er alkoholprocent → `_is_alcohol`).
+9. **Variation = smagsvarianter og særlige kendetegn der er centrale for navn og produktbeskrivelse.** Ikke hele titlen, og ikke "hele lortet i Keyword" (DRK).
+10. **Ingen ord to gange på tværs af Product Type, Variation, Keywords, Brand/Subbrand og `_is_`-felter** ("Rotwein"/"rot"; "Haselnüsse"/"Haselnüssen"/"Ganze"; "Alpenmilch…" i både type og variation).
+11. **Sammensatte ord må ikke deles** ("Artischockenherzen", "Edamamebohnen") og der må ikke efterlades bindestregs-rester ("Husten-").
+12. **Ordet skal være fordelt**: som udgangspunkt må intet ord fra original-teksten stå tilbage uden at være fordelt til en kolonne (Brand, Subbrand, Product Type, Variation, Keyword, `_is_`, Quantity, Pack Count). Findes der et rest-ord, er det en fejl, og der skal reageres (markeres/rettes).
+
+### `_is_`-felter og lande
+13. **Flag-ord flyttes automatisk til `_is_`-kolonnerne**: alkoholfri, sukkerfri, glutenfri, laktosefri, vegansk, økologisk/bio … — og fjernes fra Product Type/Variation/Keywords.
+14. **Oprindelses-adjektiver (fransk, italiensk, chilensk …) i Variation flyttes til `_is_country_of_origen`** som landenavn (Frankrig, Italien) — **undtagen vin**, hvor de må blive i Variation.
+15. **Alkoholprocent ("Alkoholgehalt: 14% vol", "5% vol")** → `_is_alcohol` (procent-kolonnen) — ikke i tekst.
+16. **Certifikater (MSC, ASC, Fairtrade …) renses ud som certifikat** — ikke i Product Type/Variation.
+17. **Farvestof ("Farbstoff") er Keyword; "Rosa"/farve er Variation.**
+
+### Fjern helt
+18. **Dyremad (kattemad, hundefoder …) skal fjernes fra arkene og være blacklistet** (`Produkter/Blacklistede produkter`, `src/data/pet-food-*.json`, `docs/PET-FOOD-FILTER.md`). Rækker som "Alleinfuttermittel für ausgewachsene Katzen", "Feine Mahlzeit in Gelee" skal væk.
+
+### Arbejdsgang
+19. **Overskriv aldrig tidligere korrekt udfyldte felter.** Udfyld kun tomme eller åbenlyst forkerte (kategori, tal, brand-ord, dato). Tag backup, markér ændringer med **gul** baggrund, og lad Keyword/`_is_`-kolonner være, medmindre en regel kræver det.
+20. **Gennemgå → rens → kontrollér mod ALLE reglerne → ret → åbn arkene.** Ret ikke noget, før hele arket er gennemgået mod reglerne.
