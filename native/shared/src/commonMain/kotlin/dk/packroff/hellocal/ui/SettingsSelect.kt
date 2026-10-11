@@ -22,6 +22,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import dk.packroff.hellocal.theme.HcColors
 import dk.packroff.hellocal.theme.HcDimens
@@ -91,6 +93,33 @@ fun SettingsSelectCard(
                     HcIcon("ChevronDown", size = 14.dp, stroke = 2.5f, color = HcColors.Black)
                 }
             }
+        }
+    }
+}
+
+/**
+ * A full-width white <select className="hf-field … rounded-xl border border-hf-tan-dark bg-hf-white pl-3 pr-9">
+ * (period choices): 48 px field, value left, chevron right. [description] is the
+ * select's aria-label.
+ */
+@Composable
+fun SettingsFieldSelect(
+    value: String,
+    options: List<SettingsOption>,
+    onChange: (String) -> Unit,
+    modifier: Modifier = Modifier,
+    description: String? = null,
+) {
+    SettingsDropdown(value, options, onChange, modifier.fillMaxWidth()) { selectedLabel ->
+        val shape = RoundedCornerShape(12.dp)
+        Row(
+            Modifier.fillMaxWidth().heightIn(min = HcDimens.ControlHeight).clip(shape).background(HcColors.White, shape)
+                .border(1.dp, HcColors.TanDark, shape).padding(start = 12.dp, end = 12.dp)
+                .let { if (description != null) it.semantics { contentDescription = description } else it },
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            HcText(selectedLabel, HcTypeRoles.Body, Modifier.weight(1f), color = HcColors.Black, maxLines = 1)
+            HcIcon("ChevronDown", size = 14.dp, stroke = 2.5f, color = HcColors.Black)
         }
     }
 }

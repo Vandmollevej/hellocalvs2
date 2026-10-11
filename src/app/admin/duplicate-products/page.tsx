@@ -13,7 +13,8 @@ import {
 // /admin/duplicate-products — "Dubletter" (docs/DECISIONS.md 2026-09-28).
 // To faner, der håndteres hver for sig:
 // - Produktbilleder (?tab=billeder): billed-varianter af samme vare
-//   (EAN.png, EAN_2.png …) på én linje; vælg hovedbillede og fravælg resten.
+//   (EAN.png, EAN_2.png …): billedet i dag ved siden af ét alternativ;
+//   "Behold" eller "Erstat med dette" sletter de øvrige (2026-10-11).
 // - Produkter (?tab=varer): op til 6 kolonner side om side; vælg felt
 //   for felt, hvad der skal i den endelige (grøn ramme). Logik i
 //   src/lib/duplicate-review.ts.
@@ -48,7 +49,7 @@ export default async function AdminDuplicateProductsPage({
         <h1 className="hf-type-title text-hf-black">Dubletter</h1>
         <p className="hf-type-body text-text-secondary">
           {tab === "billeder"
-            ? "Flere billeder af samme vare (fx _1, _2, _3). Sammenlign dem på linjen, vælg hovedbilledet og fravælg dem, der ikke skal bruges."
+            ? "Flere billeder af samme vare (fx _1, _2, _3). Behold billedet, der vises i dag, eller erstat det med alternativet — de øvrige billeder slettes. Klik på et billede for at se det i stor størrelse."
             : "Samme vare flere gange. Kolonnerne står side om side; klik på en grøn pil for at tage værdien over i den endelige (grøn ramme)."}
         </p>
       </div>

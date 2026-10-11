@@ -212,6 +212,7 @@ Ejer: G8-sessionen, konto C (overtaget 2026-09-24)
 | 5c45b0d7 | Opskrift-scrapere som Valdemarsro: Arla, Coop, REMA 1000, MENY, Hjerteforeningen, TV2 (+ Børnevenlig og måltidstype) | Færdig (kode) | Scrapere + kalorie-matcher i scripts/recipe-sites-import (README). Testet på de rigtige sider. Brugeren kører dem selv i VS Code; import i appen hører under Valdemarsro-integrationen |
 | 300489b5 | Push til Health/integrationer + egen side pr. app med til/fra (hent/send) ved tilkobling og bagefter | Færdig (ce1bc7f, deployet) | Google Cloud klar 2026-10-10 (writeonly-scopes findes, testbruger packroff@gmail.com tilføjet); mangler Strava-appen (activity:write); native app til Apple Health/Health Connect mangler |
 | admin-integrationer | Admin → Integrationer: oversigt (installationer, brug, frakoblinger) + side pr. integration med grafer | Færdig (kode), branch `claude/admin-integrationer` | Ny tabel `integration_events` (migration `20261002120000_integration_events`) skrives fra `handlers.ts`, `integrations-oauth.ts`, `companion.ts` og healthkit-/settings-ruterne. Næste: deploy + brugerens test på admin |
+| sync-side | Synkroniseringssiden for forbundne integrationer: Rediger visning, Aktiveret, dagslog, historik, Deaktiver (+ Google Health timegennemsnit/migration) | Færdig (kode), branch `claude/sync-side` | Migration `20261011080000_google_health_hourly_collapse` ved deploy; brugerens test på telefon; native kompileres kun i CI |
 | tester-popup | Popup "første testperson, 300 points" på hver integrations side + Admin → Brugere → Test-programmes | Færdig (kode, branch `claude/integration-tester-popup`) | Migration `20261002120000_integration_testers` ved deploy; brugerens test på telefon |
 
 ## G9 — Ikoner (forside + vand)
@@ -525,3 +526,5 @@ Ejer: ledig (2026-10-10)
 | Opgave | Beskrivelse | Status | Næste skridt |
 | --- | --- | --- | --- |
 | **PRODUKTTYPE-GENNEMGANG (2026-10-11)** | Gendan forkerte produkttype-skrivninger i DRK/Årstiderne/DM/EDEKA/REWE, skriv regel-lint (20 regler), fjern dyremad, ret Quantity/Pack Count/MHD/lande, udtræk produkttype forsigtigt | Blokeret af bruger-gennemsyn | Se `docs/handoffs/2026-10-11-produkttype-gennemgang.md`. Gendan fra `Backup/*_2026-10-11_foer_produkttype.xlsx` først |
+
+| forside-infoboks | Port forsidens InfoBox (puls over dagen, swipe-visninger) til `HomeScreen.kt` + AI-statistikvisninger | Ikke startet | Se STATUS 2026-10-11 |

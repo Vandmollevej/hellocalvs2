@@ -150,6 +150,12 @@ const VERTICAL_SHIFT = -7;
 /** The divider line lies 18px below the hero: the list's `pt-2` + half the 20px title line. */
 const DIVIDER_BELOW_HERO = 18;
 
+/** Lodret udstrækning af hjulets rækker nr. 2 over til nr. 2 under midten (bruges af infoboksen i modsat side). */
+export const WHEEL_SPAN = {
+  half: rowOffset(2) + ROW_HEIGHT / 2,
+  shift: VERTICAL_SHIFT,
+};
+
 // Temporary made-up numbers (user 2026-09-25: "opfind et indtil jeg har dem
 // alle opsat") so the wheel can show all its rows while the visuals are tuned.
 // They only fill the slots the user's own fields (Indstillinger → Visning →

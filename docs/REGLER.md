@@ -73,6 +73,17 @@ ikke her, er den ikke registreret og skal tilføjes.
   findes, ellers som navn i fed grøn tekst. Subbrand-logofiler hedder
   `<brand> <subbrand>.png` eller `<subbrand>.png` og lægges ind som brand-logoer
   (admin-upload eller `_import`). Se DECISIONS.md 2026-10-10.
+- **Dublet-billeder: kun "Behold" og "Erstat med dette" (bruger 2026-10-11)**:
+  billedet der vises i dag står ved siden af ét alternativ; begge knapper
+  sletter de øvrige varianter. Øvrige alternativer vises som miniaturer under
+  (klik = byt ind). Ingen stregkode over billederne. Klik på et billede åbner
+  samme visning i en lightbox (bladr i hele sidekolonnen, tal i bunden).
+- **"Anbefalet" billede (bruger 2026-10-11)**: er et alternativ tydeligt bedre
+  end billedet i dag (mindst 25 % flere pixels, eller samme opløsning og PNG
+  frem for JPG, eller mærkbart højere mætning), får det en tynd lysegrøn ramme
+  og "Anbefalet" i mørkegrøn øverst til højre — og det er altid det alternativ,
+  der vises ved siden af originalen, også selvom det er _3 eller _4.
+  Regel i `src/lib/image-quality.ts`.
 
 ## Søgning
 
@@ -121,10 +132,11 @@ ikke her, er den ikke registreret og skal tilføjes.
   mellemrum, enhed med småt som Bilka — `200 g`, `75 cl`, `1.5 l`, `6 stk`,
   `6 x 0.33 l`, `ca. 600 g`, `1 bakke`; aldrig `200g`, `1Ltr` eller `200 g.`.
 - **Tyske ark: `_is_` og brand (2026-10-10)**: `Excelark/tyske_is_og_brand.py` (deploy-grenen) udfylder tomme `_is_`-kolonner med tyske ord og kopierer brand/subbrand 1:1 fra de danske ark, når mærket står forrest i den tyske titel. Se Excelark/NAVNEREGLER.md.
-- **Knapper står ALTID øverst (user rule 2026-10-10)**: handlingsknapper (Send, Gem, Tilføj, Indsend osv.) placeres øverst i formularen/siden, aldrig nederst under indholdet, så de aldrig skjules af menuen/bundcirklen eller kræver scroll. Gælder web og native.
+- **Knapper står ALTID nederst (bruger 2026-10-11, afløser en fejlagtig regel fra 2026-10-10)**: handlingsknapper (Gem, Tilføj, Færdig, Deaktiver osv.) står nederst og fast over bundcirklen (`HfScreen`-footeren, 40 px over menuen) — aldrig øverst. Der er ingen knapper øverst nogen steder i appen; kun hvor brugeren udtrykkeligt placerer én dér (fx den hvide "Rediger visning" øverst på synkroniseringssiden). Gælder web og native.
 - Vægt-ikonet er ALTID badevægten (`IconBathScale` / `CalendarBathScaleIcon`) — aldrig Tablers vægtskål (`IconScale`/`Scale`), heller ikke i kalenderen (bruger 2026-10-10, gentaget). Målinger uden vægt (fx iltmætning, puls) får `Heartbeat`, aldrig vægtikonet. Web og native.
 - Enkeltmålinger uden vægt i kalenderen (iltmætning, puls …) kan swipes til venstre og slettes (`DELETE /api/health-metrics`, web + native); vejninger slettes fra deres eget ark. En ny synkronisering kan hente en slettet måling igen (bruger 2026-10-10).
-- Google Health leverer iltmætning/åndedræt/HRV hvert minut; de gemmes som ét gennemsnit pr. time (`averagePerHour` i `google-health.ts`), så kalenderen ikke oversvømmes.
+- Google Health leverer iltmætning/åndedræt/HRV/temperatur hvert minut; de gemmes som ét gennemsnit pr. time (`averagePerHour` i `google-health-items.ts`), så kalenderen ikke oversvømmes. Dagsværdier (kl. 00:00 UTC) blandes aldrig ind i timegennemsnittene. Migration `20261011080000_google_health_hourly_collapse` samlede de minutmålinger, der allerede lå i databasen.
+- **Synkroniseringssiden (forbundet integration, bruger 2026-10-11)**: `src/app/settings/integrations/[app]/ConnectedView.tsx` (web + native). Rækkefølge: hvid knap **Rediger visning** allerøverst (bundark med til/fra pr. datatype, gemmes straks, loggen følger valgene) → "Sidst synkroniseret" + **Aktiveret** med grøn cirkel til højre → **I dag**-log → **Historik**-dropdown (I går / Sidste uge / Sidste måned / Sidste år / Altid, historikken slutter ved midnat i dag) → sort **Deaktiver** fast nederst. Loggen: `GET /api/integrations/<app>/log?range=…`. Kun OAuth-integrationer, der er forbundet og ikke mangler adgang; de øvrige har stadig godkendelsesarket.
 - Ikonerne i bundcirklen (FooterArc/tilføj-hjulet) er altid ensartede sorte stregikoner — aldrig farvede 3D-billeder (bruger 2026-10-10; Aktivitet bruger `IconActivity`). Gælder web og native.
 - Faste bundknapper (Tilføj/Gem i `HfScreen`-footeren) skal ligge over bundcirklen (FooterArc, 40 px over menuen), aldrig bag den (bruger 2026-10-09).
 
@@ -218,3 +230,7 @@ Certifikater står nederst til venstre ud for cirklens bund (økologi altid nede
 - Fanerne/accordions i venstre menu — både webversionen (`WebShell`) og admin (`AdminShell`) — er foldet ud som standard, hver gang man logger ind eller åbner siden på ny efter at den har været lukket. Sidebjælken er også udvidet (ikke ikon-skinne) ved nyt besøg.
 - Brugerens egne fold/sammenklap huskes kun, mens fanen er åben (`sessionStorage`, `src/lib/sidebar-state.ts`) og nulstilles ved login/logout. Aldrig `localStorage` til fold-tilstand.
 - **Ark-gennemgang 2026-10-11 (bruger)**: 20 nye/præciserede regler (Quantity uden stk, Pack Count ens, MHD/datoer væk, brand/subbrand egne kolonner, kategori er aldrig produkttype, ingen dobbelte ord, dyremad fjernes, lande i `_is_country_of_origen` undtagen vin, certifikater/alkohol-% til egne felter). Fuld liste: `Excelark/NAVNEREGLER.md` → "Brugerens regler 2026-10-11". Overlevering: `docs/handoffs/2026-10-11-produkttype-gennemgang.md`.
+## Middleware: /_next/ på admin-værten (2026-10-11)
+
+- På admin-værten (dmin.hellocal.io) får alle stier /admin foran i middleware.ts, undtagen rod-assets (billedfiler, /icons/, /_next/). /_next/image SKAL være undtaget — ellers lander alle 
+ext/image-billeder (logoet i sidebjælken) på /admin/login og forsvinder. Matcheren har siden Adgangsmuren (2026-10-08) ladet /_next/image gå gennem middleware.

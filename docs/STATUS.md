@@ -2,6 +2,11 @@
 
 Last updated: 2026-10-11
 
+## 2026-10-11: Forsidens infoboks (venstre side)
+
+- Ny `InfoBox` (`src/components/InfoBox.tsx`): hvid boks, 1 px sort kant, takket bund, fra hjulets række 2 over til række 2 under midten og til lidt før skærmens midte. Hele boksen er touch-område; swipe op/ned bladrer. Første visning: "puls over dagen" (vågne timer, y-akse fra lidt under hvilepuls til makspuls = zone 5's max).
+- **Ikke gjort:** native-skærmen (`HomeScreen.kt`) er ikke porteret (Kotlin kan ikke kompileres her); paritet accepteret, gæld i OPEN-TASKS (`forside-infoboks`). Flere AI-statistikvisninger mangler (afventer brugerens ønsker). Ikke prøvet i browser/på enhed.
+
 ## 2026-10-11: Open Food Facts i egen tabel + admin-menu
 
 - **Ny menu** Varedatabase → Open Food Facts (`/admin/product-database/open-food-facts`, Alt+8): alle varer hentet fra OFF med navnet delt op (mærke, sub brand, produkttype, variation, nøgleord, mængde) og en sikkerhed i %. Se DECISIONS 2026-10-11.
@@ -15,6 +20,15 @@ Last updated: 2026-10-11
 - Scan-appen: sendte varer står som ikke scannede (minus + "Skal scannes" på hyldeoverlayet, "Scan varen" i bundarket) og i den nye liste Menu → Skal scannes; de klares, når en agent scanner varen.
 - Natlig robot `off-quality` (05:00) + knappen "Vurdér nu". Migration `20261011120000_product_quality_review` skal med deployet.
 - Tjekket: tsc mod isoleret Prisma-klient, nye tests (`off-quality.test.mjs`), genvejs- og sidetræs-tests. Ikke prøvet mod produktionsdata; vurderingen er første gang først tilgængelig efter "Vurdér nu" eller natkørslen.
+## 2026-10-11: Dubletter → Varebilleder — Behold / Erstat med dette
+
+- Kun to knapper (Behold / Erstat med dette, begge sletter de øvrige varianter), øvrige alternativer som miniaturer under, ingen stregkode, lightbox med sidekolonner til at bladre og tal i bunden, og "Anbefalet" (lysegrøn ramme) for et tydeligt bedre alternativ, som så vises som standard. Se DECISIONS.md 2026-10-11 og REGLER.md.
+## 2026-10-11: Synkroniseringssiden for forbundne integrationer
+
+- **Ny side** (`src/app/settings/integrations/[app]/ConnectedView.tsx`): hvid "Rediger visning" allerøverst (bundark med til/fra), "Aktiveret" + grøn cirkel, dagens log, historik-dropdown og sort "Deaktiver" fast nederst. Ny rute `GET /api/integrations/<app>/log?range=…`. Se DECISIONS 2026-10-11 og REGLER → UI.
+- **Google Health, iltmætning m.fl.:** timegennemsnit blander ikke længere dagsværdier ind, og migrationen `20261011080000_google_health_hourly_collapse` samler de eksisterende minutmålinger (skal med deployet).
+- **Rettet regel:** "Knapper står altid øverst" var forkert → nederst (REGLER → UI).
+- **Ikke prøvet i browser eller mod rigtig database** (ingen skærmtjek efter brugerens regel); web typecheckes/lintes, native kompileres kun i GitHub Actions.
 
 ## 2026-10-11: Google Health — aktiv energi løfter kaloriegrænsen
 

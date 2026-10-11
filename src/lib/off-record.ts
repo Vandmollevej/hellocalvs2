@@ -219,7 +219,7 @@ export function productFiltersFromOff(split: OffSplitResult, raw: OffRaw, nutrit
     wholeGrain: certs.wholeGrain ?? f.wholeGrain,
     keyhole: certs.keyhole,
     animalWelfare,
-    certifications: certs.certifications,
+    certifications: Array.from(new Set([...certs.certifications, ...f.certifications])),
     storage: f.storage,
     size: null,
     toxins: [],
