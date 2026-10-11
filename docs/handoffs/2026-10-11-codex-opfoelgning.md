@@ -19,6 +19,8 @@ Arbejdskopi: `worktrees/opfoelgning`, gren `codex/claude-opfoelgning`.
 
 ## Kontrol efter genoptagelse
 
+- Heartbeat-kontrol: gengangere-fund.xlsx genåbnet og alle otte faner kontrolleret uden Excel-fejlceller. 704 usikre og 1.174 samme-par stemmer med vurderingerne (981 mangler én stregkode, 97 uden stregkode, 96 med to). Desuden 32 DK-DE-stregkoder, 222 billedmangler og 36 stregkodeproblemer. Samlet rapport og originalarksrettelser udestår fortsat. Autoarkivering er konfigureret til først at ske efter alle ni opgaver og vellykket åbning af færdige Excelark.
+
 - PR #399 er nu flettet som 53e86336. Cardio-deploy ae9c4b7e er grønt. Ingen Actions-kørsel for 53e86336 blev returneret ved sidste API-kontrol; deploy af denne merge skal derfor stadig verificeres.
 - Gengangerrapporten er skrevet til hovedmappens Excelark/gengangere-fund.xlsx. Alle 5.388 kandidatpar er vurderet; de sidste 137 skeptikerpar er afsluttet (114 accepteret, 23 afvist). Rapportens endelige kontrol og samlet rapport mangler.
 - DRK har 700 tomme produkttyper, Årstiderne 413. Genfundne kopier ligger i Gennemgang/mine_skrivninger_2026-10-11; de har 718 henholdsvis 413 udfyldte typer og ingen ændrede originalfelter. Forslagene indeholder dog fejl (fx kaffe angivet som Proexo, krydderi som Stødt) og må ikke kopieres ukritisk. Mængde/antal i originalerne er nyere og skal bevares. Sammenligninger ligger i Temp/codex-opfoelgning/recovered_drk.json og recovered_aarstiderne.json.
