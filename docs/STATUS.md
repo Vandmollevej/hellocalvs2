@@ -237,3 +237,5 @@ Last updated: 2026-10-11
 - Codex23:32: yderligere155 Nemlig-typer verificeret; Nemlig3489 tomme, alle10ark3974 tomme typer. Øvrige celler/formler bevaret. Samlet navnekontrol/OFF/rapporter/live-verifikation udestår; Excel ikke færdig.
 
 - Codex23:42:192 yderligere Nemlig-typer færdigverificeret;3297 tomme Nemlig,3782 samlet alle10ark. Andre celler/formler bevaret. Navneregler/OFF/rapport og funktionel slutkontrol fortsat udestår.
+
+- Codex23:52:199 yderligere Nemlig-typer verificeret;3098 tomme Nemlig,3583 samlet alle10ark. Andre celler/formler bevaret; samlet opfølgning stadig ikke afsluttet.
