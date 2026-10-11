@@ -20,13 +20,32 @@
   velkomst efter kontooprettelse, guiden (onboarding + admin-guidebyggerens
   startup-guide/tooltips), manglende e-mailbekræftelse, "Tilføj" ud for et
   produkt i søgelisten, "Tilføj" i kalenderen og "Se alle" i tilføj-hjulet.
-- Popups vises **aldrig** som fuldskærms-overlay, centreret dialog eller
-  `window.confirm`/`prompt` — kun som bundark nedefra (ejerens regel
-  2026-10-07). Swipe ned = annullér. Bundark har ingen synlig overskrift.
+- Popups vises **aldrig** som fuldskærms-overlay eller
+  `window.confirm`/`prompt` — på mobil kun som bundark nedefra (ejerens regel
+  2026-10-07). På web er de en lightbox, se "Popups på web" nedenfor.
+  Swipe ned = annullér. Bundark har ingen synlig overskrift.
   Bekræftelser: `useConfirmSheet`/`useTypedConfirmSheet`
   (`src/lib/use-confirm-sheet.tsx`). Vælgere med hjul markeres med
   `data-sheet-no-drag`.
 - Vist live i admin → Designmanual → Overlay.
+
+## Popups på web (lightbox) — ejerens regel 2026-10-11
+
+- Et bundark er mobilens form og ser forkert ud på en bred skærm. Fra
+  1024 px bredde (samme grænse som desktop-skallen `WebShell`;
+  `useDesktopViewport` i `src/lib/use-desktop-viewport.ts`) er en popup derfor
+  en **lightbox**: centreret over en mørk scrim, alle hjørner runde og
+  rummelig — 680 px bred, `size="full"` 960 px og næsten fuld højde,
+  bekræftelser (`useConfirmSheet`) 480 px. Ingen trækstreg og intet swipe.
+- Lukkes med X øverst til højre, klik på scrim eller Escape. Arkets
+  `headerAction` (fx "Færdig") står til venstre for X.
+- Samme komponent og API som bundarket (`BottomSheet`): en ny popup bygges
+  stadig kun med `BottomSheet`, og den bliver automatisk lightbox på web.
+- Popups, der ellers kommer ind fra oven eller bunden uden at bruge
+  `BottomSheet` (fx `StaleSyncPrompt`, rescan-banneret når det er åbent og
+  scan-appens ark), er på web også en lightbox midt på skærmen (`lg:`-klasser).
+- Under 1024 px (mobil) er alt uændret: bundark med trækstreg. Native
+  (iOS/Android) er uændret.
 
 ## Navngivning
 

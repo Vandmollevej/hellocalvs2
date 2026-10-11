@@ -5,6 +5,44 @@ Last updated: 2026-10-11
 ## 2026-10-11: Scan-kontekst (land + sprog) på varer
 
 - Nye kolonner `scannedCountry`, `scannedLanguage`, `scannedDeviceLocale` på varer og scanninger; migration `20261011170000_scan_context` skal med deployet (backfill DK/da). Ikke typetjekket / kørt her (node_modules mangler). Se DECISIONS.
+## 2026-10-11: Admin langsom ved sideskift — hurtigere sider + valg mellem evigheds-scroll og sideinddelt
+
+- **Årsager:** ingen indlæsningsskelet (`loading.tsx`) i admin, så siden stod stille, til alle databasekald var færdige; Usikkerheder hentede op til 4000 rækker med joins og sendte dem alle til browseren, og "Øvrige advarsler" læste hele varekataloget for at finde dubletter; Dubletter kørte de tunge gruppe-opslag to gange pr. visning (tælling + side); admin-oversigten brugte hele usikkerhedslisten blot til at tælle; ingen cache.
+- **Rettet:** `src/app/admin/loading.tsx`; `src/lib/ttl-cache.ts` (hukommelses-cache 30–60 s, nulstilles ved rettelser); Usikkerheder henter lette rækker gradvist fra `/api/admin/uncertainties` og detaljer først ved "Rediger"; Dubletter → Varer, øvrige advarsler, Varer til godkendelse og Kvalitetskontrol tegnes gradvist; Varer til godkendelse sorteres på lette felter og henter højst 200 med detaljer ad gangen.
+- **Valg øverst** (`ListModeToggle`, `src/components/admin/ListMode.tsx`): evigheds-scroll eller sideinddelt; huskes i browseren og gælder alle lister. Billed-fanerne (Dubletter → Varebilleder, Billedforslag) har deres egen størrelses-/sidevælger og er uændrede.
+- Typetjek og lint grønne på de ændrede filer; ikke prøvet i browser (ingen lokal DB/login) — tjek Usikkerheder (fanerne, sortering, "Rediger"), Dubletter → Varer og Varer til godkendelse på en stor database.
+
+## 2026-10-11: Forsiden er væk i webversionen
+
+- `AppHomeGate` (`src/components/AppHomeGate.tsx`) pakker den indloggede forside ind: på desktop-skallen (≥ 1024 px) monteres hjul, liste, bundmenu og prompter aldrig, så siden ikke længere starter med at loade drejehjul/spinnere, før kalenderen åbner. Delt breakpoint i `src/lib/desktop-query.ts`. Se DECISIONS 2026-10-11 og REGLER "Webversionen har ingen forside".
+- Ikke prøvet i browser/på enhed (ingen lokal DB/login). Telefon/tablet uændret.
+
+## 2026-10-11: Forsidens infoboks (venstre side)
+
+- Ny `InfoBox` (`src/components/InfoBox.tsx`): hvid boks, 1 px sort kant, takket bund, fra hjulets række 2 over til række 2 under midten og til lidt før skærmens midte. Hele boksen er touch-område; swipe op/ned bladrer. Første visning: "puls over dagen" (vågne timer, y-akse fra lidt under hvilepuls til makspuls = zone 5's max).
+- **Ikke gjort:** native-skærmen (`HomeScreen.kt`) er ikke porteret (Kotlin kan ikke kompileres her); paritet accepteret, gæld i OPEN-TASKS (`forside-infoboks`). Flere AI-statistikvisninger mangler (afventer brugerens ønsker). Ikke prøvet i browser/på enhed.
+## 2026-10-11: Webvisningen — Support nederst, større profilcirkel, tilføj-dropdown og sprogvælger
+
+- **Support** står nu nederst til venstre i sidebjælken i en egen boks under en skillelinje (`WEB_SUPPORT` i `web-nav.ts`, `.hf-shell__footer`); ikke længere sidste punkt blandt indstillingerne.
+- **Profilcirklen** i topbjælken er 44 px (før 32) og står uden teksten "Profilindstillinger" (kun tooltip/aria-label).
+- **Den grønne tilføj-dropdown** viser de samme ikon-firkanter som mobilens "Tilføj"-vindue (`AddMenuList`, uden redigering og uden "Optag"); lukker ved klik udenfor.
+- **Sprogvælgeren på chat-siden** er en dropdown med landekode ("DK ▾") i stedet for flaget og bundarket; mobil (tale-siden) er uændret.
+- Ikke live-testet (login kræves). Tjek på desktop ≥ 1280 px: Support-boksen, cirklens størrelse, dropdownens rækker, "DK"-menuen på /chat.
+## 2026-10-11: Open Food Facts → Billeder i admin (gennemgang af OFF-billeder)
+
+- Nyt undermenupunkt **Varedatabase → Open Food Facts → Billeder** (`/admin/product-database/open-food-facts/images`): alle OFF-billeder i et gitter, faner Til gennemgang / Godkendt / Afvist, størrelsesskyder (1 = ét billede ad gangen), sortering på interaktioner / tidspunkt i databasen / dato ændret, filter på mindst N interaktioner, pr. side 10–200, sidetal, "Marker alle som godkendt", klikbare halvdele og knapper. Se DECISIONS 2026-10-11.
+- Afviste billeder sendes til scan-appens **Skal scannes** (samme mekanisme som Open Food Facts-kontrollen); forsidefotoet fra "Opret vare" erstatter billedet. Banneret "Optjen 10 points" består, og natrobotten `external-image-ai` springer afviste billeder over.
+- DB: `Product.offImageReview*` (migration `20261011170000_off_image_review`) — skal med deployet.
+- **Ikke gjort/ikke prøvet:** ikke prøvet i browser eller mod rigtig database. Det afviste billede vises stadig for brugerne, indtil en ny forside er taget. Poster der kun findes i `off_products` (uden vare) er ikke med.
+## 2026-10-11: Retter uden kendt energi vises aldrig
+
+- "0 kcal pr. servering" under Trender netop nu er rettet: retter med ukendt energi (nutritionMissing / 0 kcal) udelades i `/api/shared-recipes`, og web + native viser aldrig et nul. Se docs/DECISIONS.md og docs/REGLER.md.
+- **Ved deploy:** ingen migration. Ikke live-testet (ingen lokal DB/login): tjek Retter → Trender netop nu og Valdemarsro-retter uden Frida-match.
+## 2026-10-11: Popups på web er lightboxe
+
+- Fra 1024 px er `BottomSheet` en centreret lightbox (680 px, `full` 960 px, bekræftelser 480 px, X øverst til højre, ingen trækstreg) i stedet for mobilens bundark; under 1024 px er alt uændret. Samme breakpoint som `AppFrame` (`src/lib/desktop-query.ts`), som hook i `src/lib/use-desktop-viewport.ts`.
+- Samme på web for popups fra oven/bunden uden `BottomSheet`: `StaleSyncPrompt`, åben `RescanBanner`, scan-appens `ShelfItemSheet` og "Slet billedet?". Regel: KRAV.md "Popups på web", DECISIONS 2026-10-11, REGLER (UI).
+- **Ikke prøvet i browser** (bevidst ingen skærmbilleder); breddemål og afstande kan finjusteres. Native uændret.
 
 ## 2026-10-11: Open Food Facts i egen tabel + admin-menu
 
@@ -19,6 +57,15 @@ Last updated: 2026-10-11
 - Scan-appen: sendte varer står som ikke scannede (minus + "Skal scannes" på hyldeoverlayet, "Scan varen" i bundarket) og i den nye liste Menu → Skal scannes; de klares, når en agent scanner varen.
 - Natlig robot `off-quality` (05:00) + knappen "Vurdér nu". Migration `20261011120000_product_quality_review` skal med deployet.
 - Tjekket: tsc mod isoleret Prisma-klient, nye tests (`off-quality.test.mjs`), genvejs- og sidetræs-tests. Ikke prøvet mod produktionsdata; vurderingen er første gang først tilgængelig efter "Vurdér nu" eller natkørslen.
+## 2026-10-11: Dubletter → Varebilleder — Behold / Erstat med dette
+
+- Kun to knapper (Behold / Erstat med dette, begge sletter de øvrige varianter), øvrige alternativer som miniaturer under, ingen stregkode, lightbox med sidekolonner til at bladre og tal i bunden, og "Anbefalet" (lysegrøn ramme) for et tydeligt bedre alternativ, som så vises som standard. Se DECISIONS.md 2026-10-11 og REGLER.md.
+## 2026-10-11: Synkroniseringssiden for forbundne integrationer
+
+- **Ny side** (`src/app/settings/integrations/[app]/ConnectedView.tsx`): hvid "Rediger visning" allerøverst (bundark med til/fra), "Aktiveret" + grøn cirkel, dagens log, historik-dropdown og sort "Deaktiver" fast nederst. Ny rute `GET /api/integrations/<app>/log?range=…`. Se DECISIONS 2026-10-11 og REGLER → UI.
+- **Google Health, iltmætning m.fl.:** timegennemsnit blander ikke længere dagsværdier ind, og migrationen `20261011080000_google_health_hourly_collapse` samler de eksisterende minutmålinger (skal med deployet).
+- **Rettet regel:** "Knapper står altid øverst" var forkert → nederst (REGLER → UI).
+- **Ikke prøvet i browser eller mod rigtig database** (ingen skærmtjek efter brugerens regel); web typecheckes/lintes, native kompileres kun i GitHub Actions.
 
 ## 2026-10-11: Google Health — aktiv energi løfter kaloriegrænsen
 

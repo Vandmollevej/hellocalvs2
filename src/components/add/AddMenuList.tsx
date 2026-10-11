@@ -54,12 +54,27 @@ const MOVE_CANCEL_PX = 10;
 type Tile = (typeof TILES)[number];
 type Drag = { key: string; x: number; y: number };
 
-export function AddMenuList({ date, time }: { date?: string | null; time?: string | null }) {
+// Webbens grønne dropdown viser de samme felter: `editable={false}` slår
+// hold-for-at-redigere fra (ingen fingre på en mus), og `excludeKeys` udelader
+// felter, desktop ikke har (Optag — chat afløser mikrofonen).
+export function AddMenuList({
+  date,
+  time,
+  editable = true,
+  excludeKeys = [],
+}: {
+  date?: string | null;
+  time?: string | null;
+  editable?: boolean;
+  excludeKeys?: string[];
+}) {
   const { t } = useTranslation();
   const profile = useAddActionsProfile();
   const isSerious = useIsSerious();
   const showPeriod = visibleAddActions(profile).some((action) => action.key === "menstrualCycle");
-  const available = TILES.filter((tile) => !("requiresCycleTracking" in tile) || showPeriod);
+  const available = TILES.filter(
+    (tile) => (!("requiresCycleTracking" in tile) || showPeriod) && !excludeKeys.includes(tile.key),
+  );
 
   const [layout, setLayout] = useState<AddMenuLayout>(() => defaultAddMenuLayout(TILE_KEYS));
   const [editMode, setEditMode] = useState(false);
@@ -181,7 +196,7 @@ export function AddMenuList({ date, time }: { date?: string | null; time?: strin
       beginDrag(key, event.clientX, event.clientY);
       return;
     }
-    if (!isSerious) return;
+    if (!isSerious || !editable) return;
     clearPress();
     const x = event.clientX;
     const y = event.clientY;

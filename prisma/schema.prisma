@@ -1528,6 +1528,14 @@ model Product {
   rescannedAt             DateTime?
   rescannedByUserId       String?
   externalImageAnalyzedAt DateTime?
+  // Gennemgang af Open Food Facts-billedet (docs/DECISIONS.md 2026-10-11, admin
+  // Varedatabase → Open Food Facts → Billeder): null = til gennemgang,
+  // APPROVED/REJECTED = admins dom. REJECTED sender varen til scan-appens
+  // "Skal scannes" (ProductQualityReview.scanRequestedAt) og holder billedet
+  // ude af den natlige AI-aflæsning. offImageReviewedAt/-ById = hvornår/hvem.
+  offImageReview          OffImageReview?
+  offImageReviewedAt      DateTime?
+  offImageReviewedById    String?
   discontinued     Boolean                @default(false)
   // Butiksvare uden kalorietal i produktarkene (docs/DECISIONS.md 2026-10-02):
   // kcal/protein/kulhydrat/fedt er 0 som pladsholder, ikke målte værdier.
@@ -1644,6 +1652,7 @@ model Product {
   scanSubmissions    ScanSubmission[]
 
   @@index([externalSource, externalId])
+  @@index([externalSource, offImageReview, offImageReviewedAt])
   @@map("products")
 }
 
@@ -2536,6 +2545,12 @@ enum ProductStatus {
 enum ImageStatus {
   NONE
   PENDING
+  APPROVED
+  REJECTED
+}
+
+// Admins dom over et Open Food Facts-billede (Product.offImageReview).
+enum OffImageReview {
   APPROVED
   REJECTED
 }

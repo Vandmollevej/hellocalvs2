@@ -84,7 +84,13 @@ export function ScreenHeader({
         isCompact ? "hf-appbar--compact" : ""
       }`}
     >
-      <div className="hf-appbar__slot relative">
+      {/* Webvisningen: et bredt venstre-element (sprogvælgerens "DK ▾") får
+          slottet til at vokse i stedet for at ligge ovenpå titlen. */}
+      <div
+        className={`hf-appbar__slot relative ${
+          inWebShell && leading && !showBack ? "hf-appbar__slot--auto" : ""
+        }`}
+      >
         {leading && !showBack && leading}
         {leading && showBack && <span className="absolute left-full ml-1 flex items-center">{leading}</span>}
         {showBack && (

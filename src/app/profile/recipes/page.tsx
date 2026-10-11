@@ -70,13 +70,21 @@ const MEAL_KIT_LABELS: Record<MealKitKey, { source: string; label: string }> = {
   betterfeast: { source: "recipes.sourceBetterfeast", label: "recipes.betterfeast" },
 };
 
+// Regel (brugerens krav 2026-10-11): en ret vises aldrig med "0 kcal". Er
+// energien 0 eller ukendt, står der ingen kcal-tekst i stedet for et nul.
 function favoriteKcalText(t: Translate, recipe: { kcal: number; per100g?: boolean }) {
   const kcal = Math.round(recipe.kcal);
+  if (!(kcal > 0)) return "";
   return recipe.per100g ? t("recipeFilters.kcalPer100g", { kcal }) : t("recipes.kcalTotal", { kcal });
 }
 
 function dishKcal(dish: OwnDish) {
   return Math.round(dish.ingredients.reduce((sum, i) => sum + (i.product.kcalPer100g * i.grams) / 100, 0));
+}
+
+function dishKcalText(t: Translate, dish: OwnDish) {
+  const kcal = dishKcal(dish);
+  return kcal > 0 ? t("recipes.kcalTotal", { kcal }) : "";
 }
 
 // Titelbredder (px) til rækker under hentning, så de ligner rigtige retnavne.
@@ -115,7 +123,7 @@ function MineTab({ t }: { t: Translate }) {
             href: `/profile/recipes/${encodeURIComponent(dish.id)}?kind=own`,
             name: dish.name,
             imageUrl: dish.images?.[0] ?? null,
-            subtitle: t("recipes.kcalTotal", { kcal: dishKcal(dish) }),
+            subtitle: dishKcalText(t, dish),
             label: dish.sharedRecipeId
               ? { text: t("recipes.statusShared"), tone: "green" as const }
               : dish.shareRejected
@@ -235,6 +243,8 @@ function SharedTab({ t }: { t: Translate }) {
   function subtitleFor(result: SearchResult) {
     if (!view.showKcal) return "";
     const perServing = Math.round(result.kcal / Math.max(1, result.servings));
+    // Aldrig "0 kcal" (se favoriteKcalText); serveren sender dem heller ikke.
+    if (!(Math.round(result.kcal) > 0) || !(perServing > 0)) return "";
     if (result.per100g) return t("recipeFilters.kcalPer100g", { kcal: result.kcal });
     return result.kind === "shared" && result.servings > 1
       ? `${t("recipeFilters.kcalPerServing", { kcal: perServing })} · ${t("recipeFilters.servings", { count: result.servings })}`

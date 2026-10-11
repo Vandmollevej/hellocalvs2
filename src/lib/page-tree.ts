@@ -317,6 +317,7 @@ export const PAGE_TREE: PageArea[] = [
               { path: "/settings/display/tips", label: "Visning: tips og hjælpetekster" },
               { path: "/settings/display/menstrual-cycle", label: "Visning: menstruationscyklus" },
               { path: "/settings/display/body-measurements", label: "Visning: kropsmål", note: "Hvilke kropsmål Kropsmål-siden viser" },
+              { path: "/settings/display/priority", label: "Visning: prioritering", note: "Rækkefølgen af mærker/blokke på produktcirklen" },
             ],
           },
           { path: "/betingelser", label: "Betingelser" },
@@ -486,7 +487,14 @@ export const PAGE_TREE: PageArea[] = [
                 path: "/admin/product-database/open-food-facts",
                 label: "Open Food Facts",
                 note: "Varer hentet fra Open Food Facts, navnet opdelt efter vores regler med sikkerhed i %",
-                children: [{ path: "/admin/product-database/open-food-facts/[barcode]", label: "Enkelt OFF-vare" }],
+                children: [
+                  { path: "/admin/product-database/open-food-facts/[barcode]", label: "Enkelt OFF-vare" },
+                  {
+                    path: "/admin/product-database/open-food-facts/images",
+                    label: "Billeder",
+                    note: "Alle OFF-billeder til gennemgang / godkendt / afvist; afviste sendes til scan-appens Skal scannes",
+                  },
+                ],
               },
               {
                 path: "/admin/product-database/images",

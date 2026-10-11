@@ -8,6 +8,7 @@ import {
   GOOGLE_DAILY_SPECS,
   GOOGLE_INTERVAL_SPECS,
   MG_DL_PER_MMOL_L,
+  averagePerHour,
   googleDailyItems,
   googleHeartRateItems,
   googleIntervalDayItems,
@@ -60,10 +61,10 @@ type DataPoint = {
 // 400, som Promise.allSettled slugte, så ingen skridt/træning/energi kom ind.
 const civilStart = (field: string, since: Date) => `${field}.interval.civil_start_time >= "${since.toISOString().slice(0, 19)}"`;
 
-async function listDataPoints(accessToken: string, dataType: string, filter: string, pageSize: number) {
+async function listDataPoints(accessToken: string, dataType: string, filter: string, pageSize: number, maxPages = 40) {
   const points: DataPoint[] = [];
   let pageToken: string | undefined;
-  for (let page = 0; page < 40; page++) {
+  for (let page = 0; page < maxPages; page++) {
     const url = new URL(`${API}/${dataType}/dataPoints`);
     url.searchParams.set("filter", filter);
     url.searchParams.set("pageSize", String(pageSize));
@@ -275,37 +276,6 @@ async function samples(accessToken: string, since: Date, spec: (typeof SAMPLE_TY
   });
 }
 
-// Iltmætning, åndedræt og HRV kommer som en måling hvert minut; det fylder
-// kalenderen med 60 rækker i timen. De samles til ét gennemsnit pr. time.
-const HOURLY_TYPES = new Set(["OXYGEN_SATURATION_PERCENT", "RESPIRATORY_RATE_BPM", "HEART_RATE_VARIABILITY_MS", "TEMPERATURE_C"]);
-
-type MetricPayload = { type: string; value: number; recordedAt: string };
-
-export function averagePerHour(items: IntegrationItem[]): IntegrationItem[] {
-  const groups = new Map<string, { sum: number; count: number; first: IntegrationItem }>();
-  const rest: IntegrationItem[] = [];
-  for (const item of items) {
-    const p = item.payload as MetricPayload;
-    if (item.kind !== "metric" || !HOURLY_TYPES.has(p.type)) {
-      rest.push(item);
-      continue;
-    }
-    const key = `${p.type}|${p.recordedAt.slice(0, 13)}`;
-    const group = groups.get(key);
-    if (group) {
-      group.sum += p.value;
-      group.count += 1;
-      if (p.recordedAt < (group.first.payload as MetricPayload).recordedAt) group.first = item;
-    } else {
-      groups.set(key, { sum: p.value, count: 1, first: item });
-    }
-  }
-  for (const { sum, count, first } of groups.values()) {
-    rest.push({ ...first, payload: { ...(first.payload as MetricPayload), value: Math.round((sum / count) * 100) / 100 } });
-  }
-  return rest;
-}
-
 // Dagsværdier (hvilepuls, HRV, SpO2, åndedræt, VO2 max, søvntemperatur).
 // Filter: `<type>.date >= "ÅÅÅÅ-MM-DD"` (developers.google.com/health/filters).
 async function dailyValues(accessToken: string, since: Date, spec: DailySpec): Promise<IntegrationItem[]> {
@@ -335,12 +305,13 @@ async function intervalDays(accessToken: string, since: Date, spec: IntervalSpec
 // Puls kommer med få sekunders mellemrum under træning; kun de seneste 14 dage
 // hentes, så sider og kald holder sig inden for grænsen.
 async function heartRates(accessToken: string, since: Date): Promise<IntegrationItem[]> {
-  const from = new Date(Math.max(since.getTime(), Date.now() - 14 * DAY_MS));
+  const from = new Date(Math.max(since.getTime(), Date.now() - 3 * DAY_MS));
   const points = await listDataPoints(
     accessToken,
     "heart-rate",
     `heart_rate.sample_time.physical_time >= "${from.toISOString()}"`,
-    1000
+    1000,
+    200
   );
   return googleHeartRateItems(points as unknown as GooglePoint[]);
 }

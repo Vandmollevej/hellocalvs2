@@ -3,6 +3,20 @@ import type { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { requireAdminUser } from "@/lib/require-admin";
 import { CORRECTION_ERRORS, applyAnalysisValues } from "@/lib/uncertainty-corrections";
+import { getUncertaintyDetail, invalidateUncertaintyCache } from "@/lib/uncertainties";
+
+// GET ?source=analysis|matchCheck — fulde detaljer (foto, regioner, værdier)
+// til redigerings-lightboxen; listen indeholder kun lette rækker.
+export async function GET(req: Request, { params }: { params: Promise<{ id: string }> }) {
+  const admin = await requireAdminUser();
+  if (!admin) return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+
+  const { id } = await params;
+  const source = new URL(req.url).searchParams.get("source") === "matchCheck" ? "matchCheck" : "analysis";
+  const row = await getUncertaintyDetail(id, source);
+  if (!row) return NextResponse.json({ message: "Rækken findes ikke længere" }, { status: 404 });
+  return NextResponse.json({ row });
+}
 
 // Admin "Uncertainties" (docs/DECISIONS.md 2026-09-24/25): gemmer adminens
 // rettelse fra redigerings-lightboxen. Værdierne skrives til produktet, og
@@ -42,5 +56,6 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
     return NextResponse.json({ message: "Database ikke tilgængelig" }, { status: 503 });
   }
 
+  invalidateUncertaintyCache();
   return NextResponse.json({ ok: true });
 }

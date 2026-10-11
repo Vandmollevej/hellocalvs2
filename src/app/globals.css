@@ -885,6 +885,14 @@ textarea::selection,
     padding: 10px;
   }
 
+  /* Nederste boks i sidebjælken (webvisningens Support): fast i bunden under
+     en tynd skillelinje, uden for den scrollende menu. */
+  .hf-shell__footer {
+    flex-shrink: 0;
+    padding: 10px;
+    border-top: 1px solid var(--hf-color-nav);
+  }
+
   /* Gruppe i sidebjælken med tynd skillelinje (webvisningens Indstillinger). */
   .hf-shell__section + .hf-shell__section {
     margin-top: 12px;
@@ -2513,6 +2521,72 @@ input.hf-field[type="week"] {
   color: var(--hf-color-text);
 }
 
+/* Lightbox (KRAV.md "Popups på web"): på web — fra 1024 px, samme grænse som
+   desktop-skallen — er bundarket en centreret lightbox i stedet for et smalt
+   mobilark: rummeligere, alle hjørner runde, ingen trækstreg (luk-knap X
+   øverst til højre). Klassen sættes af BottomSheet.tsx. */
+.hf-bottom-sheet--lightbox {
+  align-items: center;
+  padding: 32px;
+}
+
+.hf-bottom-sheet--lightbox .hf-bottom-sheet__scrim {
+  background: rgb(35 35 35 / 55%);
+}
+
+.hf-bottom-sheet--lightbox .hf-bottom-sheet__panel {
+  width: min(680px, 100%);
+  max-width: none;
+  max-height: min(88dvh, 900px);
+  border-radius: 20px;
+  box-shadow: 0 24px 64px rgb(35 35 35 / 28%);
+}
+
+/* "full" = de store flows (opret ret, guider): bredere og næsten fuld højde. */
+.hf-bottom-sheet--lightbox.hf-bottom-sheet--full .hf-bottom-sheet__panel {
+  width: min(960px, 100%);
+  height: min(88dvh, 900px);
+}
+
+.hf-bottom-sheet--lightbox.hf-bottom-sheet--half .hf-bottom-sheet__panel {
+  height: min(640px, 72dvh);
+}
+
+/* Bekræftelser (useConfirmSheet): en lille dialog, ikke en stor lightbox. */
+.hf-bottom-sheet--lightbox.hf-bottom-sheet--confirm .hf-bottom-sheet__panel {
+  width: min(480px, 100%);
+}
+
+.hf-bottom-sheet__topbar {
+  display: flex;
+  flex: none;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  padding: 16px 16px 4px 24px;
+}
+
+.hf-bottom-sheet__close {
+  display: flex;
+  width: 40px;
+  height: 40px;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px;
+  background: var(--hf-color-card);
+  color: var(--hf-color-text);
+  transition: background-color 120ms ease;
+}
+
+.hf-bottom-sheet__close:hover {
+  background: var(--hf-color-nav);
+}
+
+.hf-bottom-sheet--lightbox .hf-bottom-sheet__footer {
+  padding: 16px 24px 24px;
+}
+
 /* Desktop-skallen (WebShell) har egen topbjælke, så appens bundmenu skjules. */
 .web-shell .hf-bottom-nav {
   display: none;
@@ -2559,6 +2633,13 @@ input.hf-field[type="week"] {
 
 .web-shell .hf-appbar__slot:first-child:empty {
   width: 0;
+}
+
+/* Bredt element i venstre slot (sprogvælgerens "DK ▾" på chat-siden): slottet
+   vokser, og titlen rykker lidt til højre. */
+.web-shell .hf-appbar__slot--auto {
+  width: auto;
+  margin-right: 12px;
 }
 
 /* Forsidens bølge-baggrund (bruger 2026-10-01), src/components/HomeWaves.tsx.
@@ -2754,6 +2835,69 @@ input.hf-field[type="week"] {
   .hf-pick-thumb.is-selected {
     border-color: var(--hf-color-selected-border);
     box-shadow: inset 0 0 0 0.5px var(--hf-color-selected-border);
+  }
+
+  /* "Anbefalet" (Dubletter → Varebilleder): tynd lysegrøn ramme om billedet. */
+  .hf-pick-frame.is-recommended {
+    border: 2px solid var(--hf-color-accent);
+  }
+
+  .hf-pick-thumb.is-recommended {
+    border-color: var(--hf-color-accent);
+    box-shadow: inset 0 0 0 0.5px var(--hf-color-accent);
+  }
+
+  /* Samme kort i lightboxen: billedet fylder den ledige højde. */
+  .hf-pick-card.is-large {
+    height: 100%;
+    min-height: 0;
+  }
+
+  .hf-pick-card.is-large .hf-pick-frame {
+    flex: 1 1 0;
+    min-height: 0;
+    aspect-ratio: auto;
+  }
+
+  /* Lightbox: hele kolonnen ude i siden bladrer, ikke kun pilen. */
+  .hf-pick-side {
+    display: flex;
+    width: 96px;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .hf-pick-side-arrow {
+    display: flex;
+    width: 64px;
+    height: 64px;
+    align-items: center;
+    justify-content: center;
+    border-radius: 9999px;
+    background: rgb(255 255 255 / 85%);
+    color: var(--hf-color-text);
+    font-size: 40px;
+    line-height: 1;
+    transition: background 120ms ease, transform 120ms ease;
+  }
+
+  .hf-pick-side:hover .hf-pick-side-arrow,
+  .hf-pick-side:focus-visible .hf-pick-side-arrow {
+    background: rgb(255 255 255);
+    transform: scale(1.06);
+  }
+
+  @media (max-width: 767px) {
+    .hf-pick-side {
+      width: 52px;
+    }
+
+    .hf-pick-side-arrow {
+      width: 44px;
+      height: 44px;
+      font-size: 28px;
+    }
   }
 
   /* Visningsvælger (2/4/8 firkanter) — samme på alle billedsider. */

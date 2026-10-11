@@ -10,7 +10,6 @@ import {
   AccessToggleGroup,
   AccessTrailingButton,
   HfAccessSheet,
-  type AccessCategory,
   type AccessToggleRow,
 } from "@/components/hf/HfAccessSheet";
 import type { ReadType, SyncSettings, WriteType } from "@/lib/integrations/sync-settings";
@@ -22,35 +21,20 @@ import { integrationTerms } from "@/lib/terms-hints";
 import { IntegrationIcon } from "@/components/IntegrationIcon";
 import type { HubProvider, IntegrationCardStatus } from "@/lib/integrations";
 import { formatDateTime, integrationStatusKey } from "../status-badge";
+import { ACCESS_CATEGORY } from "./access-categories";
+import { ConnectedView } from "./ConnectedView";
 
 // Én side pr. integration (docs/DECISIONS.md 2026-09-26), vist som iOS'
 // integrationsside (docs/DECISIONS.md 2026-09-27): brugeren vælger til/fra pr.
 // datatype — hvad Hello Cal skriver til appen, og hvad Hello Cal læser —
 // både før tilkobling og når som helst bagefter. Valget gemmes med det samme.
+// Er appen forbundet, vises i stedet synkroniseringssiden (ConnectedView,
+// bruger 2026-10-11): Rediger visning, status, log, historik og Deaktiver.
 
 type DeviceToken = { id: string; label: string; createdAt: string; lastUsedAt: string | null };
 
 // Ældre enhedskoder fra før kortene fik hver deres (docs/DECISIONS.md 2026-09-24).
 const LEGACY_TOKEN_LABEL = "Companion-app";
-
-// Health-appens kategori (ikon og farve) for hver datatype.
-const CATEGORY: Record<ReadType | WriteType, AccessCategory> = {
-  nutrition: "nutrition",
-  water: "nutrition",
-  weight: "body",
-  bodyFat: "body",
-  muscleMass: "body",
-  fatFreeMass: "body",
-  bodyWater: "body",
-  boneMass: "body",
-  visceralFat: "body",
-  body: "body",
-  activities: "activity",
-  steps: "activity",
-  energy: "activity",
-  heart: "heart",
-  sleep: "sleep",
-};
 
 const OVERVIEW = "/settings/integrations";
 
@@ -267,6 +251,19 @@ function IntegrationContent() {
           }
         : null);
 
+  if (linked) {
+    return (
+      <ConnectedView
+        integration={integration}
+        busy={busy}
+        saveError={saveError}
+        notice={notice}
+        onSaveSettings={(next) => void saveSettings(next)}
+        onDisconnect={disconnect}
+      />
+    );
+  }
+
   const hasTypes = readTypes.length + writeTypes.length > 0;
   const allOn =
     readTypes.every((type) => settings.read[type]) && writeTypes.every((type) => settings.write[type]);
@@ -284,7 +281,7 @@ function IntegrationContent() {
     return types.map((type) => ({
       key: type,
       label: t(`integrations.access.${direction}.${type}`),
-      category: CATEGORY[type],
+      category: ACCESS_CATEGORY[type],
       checked: Boolean(settings[direction][type as never]),
       onChange: (value) =>
         void saveSettings({
@@ -299,7 +296,7 @@ function IntegrationContent() {
   // appen forbundet, hentes data nu; en companion-app uden enhedskode får en.
   // Arket lukker først, når brugeren har set resultatet og trykker "Færdig".
   function allow() {
-    if (done || linked) return close();
+    if (done) return close();
     if (isVia && hubs[0]) return router.push(hubPage(hubs[0]));
     if (isOAuth && (!connected || integration!.needsReconnect.length > 0)) return connect();
     setDone(true);
@@ -333,24 +330,20 @@ function IntegrationContent() {
       title={t("integrations.access.title", { name })}
       icon={<IntegrationIcon icon={integration.icon} label={name} size={64} />}
       heading={name}
-      message={
-        linked
-          ? t("integrations.access.messageConnected", { name })
-          : t(writeTypes.length > 0 ? "integrations.access.messageReadWrite" : "integrations.access.messageRead", {
-              name,
-            })
-      }
+      message={t(writeTypes.length > 0 ? "integrations.access.messageReadWrite" : "integrations.access.messageRead", {
+        name,
+      })}
       toggleAllLabel={hasTypes ? t(allOn ? "integrations.access.turnOffAll" : "integrations.access.turnOnAll") : undefined}
       onToggleAll={hasTypes ? toggleAll : undefined}
-      allowLabel={t(done || linked ? "integrations.access.done" : "integrations.access.allow")}
-      denyLabel={t(linked ? "integrations.disconnect" : "integrations.access.deny")}
-      allowDisabled={busy || (!done && !linked && ((hasTypes && !anyOn) || (isOAuth && !integration.configured)))}
+      allowLabel={t(done ? "integrations.access.done" : "integrations.access.allow")}
+      denyLabel={t("integrations.access.deny")}
+      allowDisabled={busy || (!done && ((hasTypes && !anyOn) || (isOAuth && !integration.configured)))}
       denyDisabled={busy}
       onAllow={allow}
       onDeny={deny}
       onDismiss={close}
       closeLabel={t("integrations.close")}
-      terms={linked ? undefined : <TermsSheet hint={integrationTerms(integration.provider)} />}
+      terms={<TermsSheet hint={integrationTerms(integration.provider)} />}
     >
       {notice && (
         <div role="status" aria-live="polite">

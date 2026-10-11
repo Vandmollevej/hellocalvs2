@@ -4,7 +4,7 @@
 
 import { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
-import { splitOffProduct, type OffSplitResult } from "@/lib/off-name-split";
+import { compactKey, splitOffProduct, type OffSplitResult } from "@/lib/off-name-split";
 import { getOffVocab } from "@/lib/off-vocab";
 import {
   buildOffRecordData,
@@ -17,6 +17,12 @@ import { petFoodBlockReason } from "@/lib/pet-food-blacklist";
 
 export type OffRecordSource = "SCAN" | "IMPORT" | "ADMIN";
 
+function offStoreNames(raw: OffRaw): string[] {
+  const tags = Array.isArray(raw.stores_tags) ? raw.stores_tags.filter((t): t is string => typeof t === "string") : [];
+  const text = typeof raw.stores === "string" ? raw.stores.split(",") : [];
+  return Array.from(new Set([...tags, ...text].map((t) => t.replace(/^[a-z]{2}:/, "").trim()).filter(Boolean)));
+}
+
 async function loadBrandNames() {
   const rows = await prisma.brand.findMany({ select: { name: true }, take: 50000 });
   return rows.map((row) => row.name);
@@ -24,6 +30,11 @@ async function loadBrandNames() {
 
 export async function loadOffVocab() {
   return getOffVocab(loadBrandNames);
+}
+
+// JSONB kan ikke indeholde NUL-tegn; OFF-tekster kan i sjældne tilfælde gøre.
+function stripNul<T>(value: T): T {
+  return JSON.parse(JSON.stringify(value).split("\\u0000").join("")) as T;
 }
 
 const json = (value: unknown) => value as Prisma.InputJsonValue;
@@ -66,6 +77,8 @@ function dataFor(args: { barcode: string; raw: OffRaw; split: OffSplitResult }) 
 
 export type SavedOffRecord = {
   id: string;
+  /** butikker OFF nævner (stores_tags + stores), til product_stores */
+  storesTags: string[];
   split: OffSplitResult;
   filters: OffProductFiltersData;
   nutrition: ReturnType<typeof buildOffRecordData>["nutrition"];
@@ -81,7 +94,7 @@ export async function saveOffRecord(args: {
   productId?: string | null;
 }): Promise<SavedOffRecord> {
   const translatedName = args.translatedName?.trim() || null;
-  const raw: OffRaw = { ...pickOffRaw(args.raw), ...(translatedName ? { _translated_name: translatedName } : {}) };
+  const raw: OffRaw = stripNul({ ...pickOffRaw(args.raw), ...(translatedName ? { _translated_name: translatedName } : {}) });
   const vocab = await loadOffVocab();
   const split = splitOffProduct(offSplitInputFromRaw(raw), vocab);
   const data = dataFor({ barcode: args.barcode, raw, split });
@@ -92,7 +105,7 @@ export async function saveOffRecord(args: {
     select: { id: true },
   });
   const built = buildOffRecordData({ barcode: args.barcode, raw, split });
-  return { id: record.id, split, filters: built.filters, nutrition: built.nutrition };
+  return { id: record.id, storesTags: offStoreNames(raw), split, filters: built.filters, nutrition: built.nutrition };
 }
 
 // Fejl ved gemning må aldrig vælte et stregkodeopslag.
@@ -151,6 +164,7 @@ export async function importOffProducts(products: unknown[], source: OffRecordSo
   let saved = 0;
   let skipped = 0;
   let blocked = 0;
+  let failed = 0;
   const seen = new Set<string>();
   for (const item of products) {
     if (!item || typeof item !== "object") {
@@ -164,7 +178,7 @@ export async function importOffProducts(products: unknown[], source: OffRecordSo
       continue;
     }
     seen.add(code);
-    const raw = pickOffRaw({ ...product, code });
+    const raw = stripNul(pickOffRaw({ ...product, code }));
     const name = String(raw.product_name_da ?? raw.product_name ?? "").trim();
     if (!name && !raw.generic_name) {
       skipped += 1;
@@ -178,17 +192,22 @@ export async function importOffProducts(products: unknown[], source: OffRecordSo
       blocked += 1;
       continue;
     }
-    const split = splitOffProduct(offSplitInputFromRaw(raw), vocab);
-    const data = dataFor({ barcode: code, raw, split });
-    const linked = await prisma.barcode.findUnique({ where: { code }, select: { productId: true } });
-    await prisma.offProductRecord.upsert({
-      where: { barcode: code },
-      create: { barcode: code, source, productId: linked?.productId ?? null, ...data },
-      update: { ...data, fetchedAt: new Date(), ...(linked ? { productId: linked.productId } : {}) },
-    });
-    saved += 1;
+    try {
+      const split = splitOffProduct(offSplitInputFromRaw(raw), vocab);
+      const data = dataFor({ barcode: code, raw, split });
+      const linked = await prisma.barcode.findUnique({ where: { code }, select: { productId: true } });
+      await prisma.offProductRecord.upsert({
+        where: { barcode: code },
+        create: { barcode: code, source, productId: linked?.productId ?? null, ...data },
+        update: { ...data, fetchedAt: new Date(), ...(linked ? { productId: linked.productId } : {}) },
+      });
+      saved += 1;
+    } catch (error) {
+      console.error("OFF import: could not save", code, error);
+      failed += 1;
+    }
   }
-  return { saved, skipped, blocked };
+  return { saved, skipped, blocked, failed };
 }
 
 // Efter at en Product er oprettet ud fra en OFF-post: knyt posten til varen og udfyld
@@ -226,6 +245,21 @@ export async function applyOffRecordToProduct(productId: string, barcode: string
     create: { productId, ...filterData },
     update: filterData,
   });
+
+  // tabel 1: product_stores — kun kæder, der allerede findes som Store (ingen nye oprettes)
+  if (saved.storesTags.length > 0) {
+    const stores = await prisma.store.findMany({ select: { id: true, name: true } });
+    const byKey = new Map(stores.map((store) => [compactKey(store.name), store.id]));
+    for (const tag of saved.storesTags) {
+      const storeId = byKey.get(compactKey(tag));
+      if (!storeId) continue;
+      await prisma.productStore.upsert({
+        where: { productId_storeId: { productId, storeId } },
+        create: { productId, storeId },
+        update: {},
+      });
+    }
+  }
 
   const n = saved.nutrition;
   if (!n) return;

@@ -212,6 +212,7 @@ Ejer: G8-sessionen, konto C (overtaget 2026-09-24)
 | 5c45b0d7 | Opskrift-scrapere som Valdemarsro: Arla, Coop, REMA 1000, MENY, Hjerteforeningen, TV2 (+ Børnevenlig og måltidstype) | Færdig (kode) | Scrapere + kalorie-matcher i scripts/recipe-sites-import (README). Testet på de rigtige sider. Brugeren kører dem selv i VS Code; import i appen hører under Valdemarsro-integrationen |
 | 300489b5 | Push til Health/integrationer + egen side pr. app med til/fra (hent/send) ved tilkobling og bagefter | Færdig (ce1bc7f, deployet) | Google Cloud klar 2026-10-10 (writeonly-scopes findes, testbruger packroff@gmail.com tilføjet); mangler Strava-appen (activity:write); native app til Apple Health/Health Connect mangler |
 | admin-integrationer | Admin → Integrationer: oversigt (installationer, brug, frakoblinger) + side pr. integration med grafer | Færdig (kode), branch `claude/admin-integrationer` | Ny tabel `integration_events` (migration `20261002120000_integration_events`) skrives fra `handlers.ts`, `integrations-oauth.ts`, `companion.ts` og healthkit-/settings-ruterne. Næste: deploy + brugerens test på admin |
+| sync-side | Synkroniseringssiden for forbundne integrationer: Rediger visning, Aktiveret, dagslog, historik, Deaktiver (+ Google Health timegennemsnit/migration) | Færdig og deployet (web, API, migration kørt 2026-10-11; commits e2ba8263 + 893664cf). Native er skrevet men IKKE kompileret af CI | Jobbet "Web ↔ native in step" fejler på master (andres ændringer i `ScreenHeader.tsx`, `WebShell.tsx`, `AddMenuList.tsx` + uregistrerede `/admin/product-database/open-food-facts/*`), så Android/iPhone-builden springes over. Når gaten er grøn: tjek at `SettingsIntegrationsAppScreen.kt`/`SettingsIntegrationsLog.kt`/`SettingsSelect.kt` kompilerer og ret fejl; kør derefter `node scripts/native/parity.mjs --accept "/settings/integrations/[app]"`. Brugerens test på telefon |
 | tester-popup | Popup "første testperson, 300 points" på hver integrations side + Admin → Brugere → Test-programmes | Færdig (kode, branch `claude/integration-tester-popup`) | Migration `20261002120000_integration_testers` ved deploy; brugerens test på telefon |
 
 ## G9 — Ikoner (forside + vand)
@@ -262,6 +263,14 @@ Ejer: cloud-session `claude/kontoopsaetning` (2026-10-03)
 | Id | Opgave | Status | Næste skridt |
 | --- | --- | --- | --- |
 | konto-procent | Kontoopsætning: mørkegrøn "XX%" (andel udfyldte felter) midt mellem tekst og pil | Færdig (kode) | Brugerens test på telefon |
+
+## G-OFF-BILLEDER — Admin "Open Food Facts → Billeder"
+Filer: `src/lib/off-image-review*.ts`, `src/components/admin/OffImageReview.tsx`, `src/app/admin/product-database/open-food-facts/images/**`, `src/app/api/admin/off-images/**`, `Product.offImageReview*` i skemaet. Rører også menuen (`AdminShell.tsx`, `NavLink.child`), `admin-i18n.ts`, `page-tree.ts`, `admin-shortcuts.ts`, `src/app/api/scan/products/route.ts` (supplering erstatter afvist billede) og `src/lib/external-image-ai.ts`.
+Ejer: session "OFF-billeder" (2026-10-11)
+
+| Id | Opgave | Status | Næste skridt |
+| --- | --- | --- | --- |
+| off-billeder | Gennemgang af OFF-billeder (til gennemgang / godkendt / afvist), afviste → "Skal scannes" + banner | Færdig (kode) | Migration `20261011170000_off_image_review` skal med deployet. Ikke prøvet i browser/mod rigtig database |
 
 ## Venter på dig (ingen gruppe)
 | Id | Opgave | Status | Næste skridt |
@@ -334,6 +343,7 @@ Ejer: session ddf69bff, konto A (2026-10-07)
 | 8 | Brand-logo: luft mellem logoet/Ø'et og cirklen | Færdig (44b2a341) | Logoets venstre kant beregnes af dets højde (`src/lib/brand-logo-layout.ts`), 8 px luft til cirklen. Afventer brugerens test på telefon |
 | 10 | Alle popups/modaler som bundark (swipe ned = annullér), ingen `window.confirm`/centrerede overlays | Færdig (44b2a341) | Hjulvælgere, fødselsdato, startup-tip, adgangslog, familie-sletning, 15 admin-bekræftelser og admin-detaljevinduer. Undtagelser: DECISIONS 2026-10-07. Afventer brugerens test |
 | fredag-vejning | Fredags-flow + vejepåmindelser, måltips til/fra, Udregn (Seriøs) | Færdig (kode, se git log 2026-10-07) | Migration 20261007140000 + aktivér flowet i admin |
+| web-lightbox | Web (≥ 1024 px): alle popups som lightbox i stedet for smalt bundark; også popups fra oven/bunden (`BottomSheet.tsx`, `use-desktop-viewport.ts`, `globals.css`, `StaleSyncPrompt`, `RescanBanner`, scan-arkene; KRAV.md "Popups på web") | Færdig (kode) | Afventer brugerens test på bred skærm; finjustér bredder (680/960/480 px) efter behov. Native uændret |
 
 ## G-CHAT — Hjælpe-chatbot (app + web) og admin "Chatbot"
 Filer: `src/lib/chatbot*.ts`, `src/lib/help-chat-events.ts`, `src/components/help/**`, `src/app/api/chatbot/**`, `src/app/admin/chatbot/**`, `src/components/admin/chatbot/**`. Små indgreb i `ScreenHeader`, `TopBar`, `WebShell`, `layout.tsx`, `AdminShell` og `globals.css` (`.hf-appbar--help`).
@@ -525,3 +535,5 @@ Ejer: ledig (2026-10-10)
 | Opgave | Beskrivelse | Status | Næste skridt |
 | --- | --- | --- | --- |
 | **PRODUKTTYPE-GENNEMGANG (2026-10-11)** | Gendan forkerte produkttype-skrivninger i DRK/Årstiderne/DM/EDEKA/REWE, skriv regel-lint (20 regler), fjern dyremad, ret Quantity/Pack Count/MHD/lande, udtræk produkttype forsigtigt | Blokeret af bruger-gennemsyn | Se `docs/handoffs/2026-10-11-produkttype-gennemgang.md`. Gendan fra `Backup/*_2026-10-11_foer_produkttype.xlsx` først |
+
+| forside-infoboks | Port forsidens InfoBox (puls over dagen, swipe-visninger) til `HomeScreen.kt` + AI-statistikvisninger | Ikke startet | Se STATUS 2026-10-11 |

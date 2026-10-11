@@ -1,6 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { countSupportInbox } from "@/lib/support-inbox";
-import { UNCERTAINTY_TABS, listUncertainties, type UncertaintyRow } from "@/lib/uncertainties";
+import { UNCERTAINTY_TABS, listAllUncertaintySummaries, type UncertaintySummary } from "@/lib/uncertainties";
 import { HIDE_FROM_SEARCH_BELOW } from "@/lib/uncertainty-thresholds";
 import { countDuplicateReviews } from "@/lib/duplicate-review";
 import { QUALITY_CONTROL_PHOTO_TYPES } from "@/lib/quality-control-photo-types";
@@ -25,7 +25,7 @@ function safe<T>(promise: Promise<T>, fallback: T): Promise<T> {
   return promise.catch(() => fallback);
 }
 
-function summarizeUncertainties(rows: UncertaintyRow[]) {
+function summarizeUncertainties(rows: UncertaintySummary[]) {
   const hideAbove = Math.round((1 - HIDE_FROM_SEARCH_BELOW) * 100);
   return {
     total: rows.length,
@@ -94,7 +94,7 @@ export async function loadAdminDashboard(now: Date = new Date()) {
   ] = await Promise.all([
     safe(countSupportInbox(), { unanswered: 0, overdue: 0 }),
     safe(prisma.product.count({ where: { status: "PENDING", privateOwnerId: null } }), 0),
-    safe(listUncertainties().then(summarizeUncertainties), summarizeUncertainties([])),
+    safe(listAllUncertaintySummaries().then(summarizeUncertainties), summarizeUncertainties([])),
     safe(prisma.bugReport.count({ where: { status: "PENDING" } }), 0),
     safe(prisma.product.count({ where: { imageStatus: "PENDING" } }), 0),
     safe(prisma.brandLogoSearch.count({ where: { status: "PENDING_REVIEW" } }), 0),

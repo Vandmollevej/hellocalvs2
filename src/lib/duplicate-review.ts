@@ -1,5 +1,6 @@
 import { Prisma, type ExternalProductSource, type ProductCategory } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
+import { cached, invalidateCache } from "@/lib/ttl-cache";
 import {
   DUPLICATE_FIELDS,
   FILTER_LIST_KEYS,
@@ -268,19 +269,41 @@ async function loadProductGroups(sets: { ids: string[]; reason: string }[]): Pro
   return groups;
 }
 
-export async function loadDuplicateProductPage(page: number) {
-  const [sourceIds, sets] = await Promise.all([sourceConflictProductIds(), productDuplicateSets()]);
-  // Én samlet liste: butiks-konflikter først, derefter produkt-grupper.
-  const entries = [
-    ...sourceIds.map((id) => ({ type: "sources" as const, id })),
-    ...sets.map((set) => ({ type: "products" as const, set })),
-  ];
-  const slice = entries.slice((page - 1) * GROUPS_PER_PAGE, page * GROUPS_PER_PAGE);
+// De tunge opslag (navnegrupper, links, butiks-konflikter) køres højst én gang
+// pr. minut og deles af tælling og sider; nulstilles ved enhver rettelse
+// (invalidateDuplicateCache). Se docs/DECISIONS.md 2026-10-11.
+const DUPLICATE_CACHE_MS = 60_000;
+
+export function invalidateDuplicateCache() {
+  invalidateCache("duplicates:");
+}
+
+async function duplicateProductEntries() {
+  return cached("duplicates:entries", DUPLICATE_CACHE_MS, async () => {
+    const [sourceIds, sets] = await Promise.all([sourceConflictProductIds(), productDuplicateSets()]);
+    // Én samlet liste: butiks-konflikter først, derefter produkt-grupper.
+    return [
+      ...sourceIds.map((id) => ({ type: "sources" as const, id })),
+      ...sets.map((set) => ({ type: "products" as const, set })),
+    ];
+  });
+}
+
+// `consumed` = hvor mange poster i den samlede liste udsnittet dækker (kan være
+// flere end `groups`, hvis en butiks-konflikt viste sig ikke at afvige) — bruges
+// af evigheds-scroll til at finde næste udsnit.
+export async function loadDuplicateProductSlice(offset: number, limit: number) {
+  const entries = await duplicateProductEntries();
+  const slice = entries.slice(offset, offset + limit);
   const [sourceGroups, productGroups] = await Promise.all([
     loadSourceGroups(slice.flatMap((e) => (e.type === "sources" ? [e.id] : []))),
     loadProductGroups(slice.flatMap((e) => (e.type === "products" ? [e.set] : []))),
   ]);
-  return { total: entries.length, groups: [...sourceGroups, ...productGroups] };
+  return { total: entries.length, consumed: slice.length, groups: [...sourceGroups, ...productGroups] };
+}
+
+export function loadDuplicateProductPage(page: number) {
+  return loadDuplicateProductSlice((page - 1) * GROUPS_PER_PAGE, GROUPS_PER_PAGE);
 }
 
 // ---------- Produktbilleder ----------
@@ -294,21 +317,29 @@ export type ImageGroup = {
   images: ImageCandidate[];
 };
 
-export async function loadDuplicateImagePage(page: number) {
-  const tags = REVIEW_IMAGE_TAGS;
-  const [countRows, idRows] = await Promise.all([
-    prisma.$queryRaw<{ n: bigint }[]>`
+export function countDuplicateImageGroups() {
+  return cached("duplicates:image-count", DUPLICATE_CACHE_MS, async () => {
+    const tags = REVIEW_IMAGE_TAGS;
+    const rows = await prisma.$queryRaw<{ n: bigint }[]>`
       SELECT count(*) AS n FROM (
         SELECT pi."productId" FROM "product_images" pi JOIN "products" p ON p.id = pi."productId"
         WHERE p."imagesReviewedAt" IS NULL AND pi.tags && ${tags}::text[]
         GROUP BY pi."productId" HAVING count(DISTINCT pi.url) >= 2
-      ) t`,
+      ) t`;
+    return Number(rows[0]?.n ?? 0);
+  });
+}
+
+export async function loadDuplicateImageSlice(offset: number, limit: number) {
+  const tags = REVIEW_IMAGE_TAGS;
+  const [total, idRows] = await Promise.all([
+    countDuplicateImageGroups(),
     prisma.$queryRaw<{ productId: string }[]>`
       SELECT pi."productId" FROM "product_images" pi JOIN "products" p ON p.id = pi."productId"
       WHERE p."imagesReviewedAt" IS NULL AND pi.tags && ${tags}::text[]
       GROUP BY pi."productId" HAVING count(DISTINCT pi.url) >= 2
       ORDER BY pi."productId"
-      LIMIT ${GROUPS_PER_PAGE} OFFSET ${(page - 1) * GROUPS_PER_PAGE}`,
+      LIMIT ${limit} OFFSET ${offset}`,
   ]);
   const products = await prisma.product.findMany({
     where: { id: { in: idRows.map((r) => r.productId) } },
@@ -333,15 +364,18 @@ export async function loadDuplicateImagePage(page: number) {
       images,
     };
   });
-  return { total: Number(countRows[0]?.n ?? 0), groups };
+  return { total, consumed: idRows.length, groups };
 }
 
+export function loadDuplicateImagePage(page: number) {
+  return loadDuplicateImageSlice((page - 1) * GROUPS_PER_PAGE, GROUPS_PER_PAGE);
+}
+
+// Kun tal til fanerne — henter ingen varer (tidligere blev hele første side
+// hentet bare for at tælle).
 export async function countDuplicateReviews() {
-  const [images, products] = await Promise.all([
-    loadDuplicateImagePage(1).then((r) => r.total),
-    Promise.all([sourceConflictProductIds(), productDuplicateSets()]).then(([a, b]) => a.length + b.length),
-  ]);
-  return { images, products };
+  const [images, entries] = await Promise.all([countDuplicateImageGroups(), duplicateProductEntries()]);
+  return { images, products: entries.length };
 }
 
 // ---------- Gem ----------

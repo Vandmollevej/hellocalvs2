@@ -2,6 +2,56 @@
 
 This file records durable decisions. Add a dated entry when a later decision changes one of them.
 
+## 2026-10-11: Admin-hastighed — lange lister hentes gradvist, tunge opslag caches kort
+
+Brugeren oplevede admin som ekstremt langsom ved sideskift, og at Usikkerheder og Dubletter viste alt på én gang (evigt scroll for at læse det ind).
+
+- Lange admin-lister (Usikkerheder, Dubletter → Varer, Varer til godkendelse, Kvalitetskontrol, øvrige advarsler) hentes/tegnes gradvist. Valget **evigheds-scroll eller sideinddelt** står øverst (`ListModeToggle`), huskes i browseren (`hc-admin-list-mode`) og gælder alle lister.
+- Serveren sender kun lette rækker pr. udsnit; detaljer (fx redigerings-lightboxen under Usikkerheder) hentes først, når de åbnes.
+- Tunge opslag caches 30–60 s i hukommelsen (`src/lib/ttl-cache.ts`, på `globalThis`) og nulstilles af de ruter, der ændrer data. Cachen er pr. Node-proces; op til TTL gammel data accepteres.
+- `src/app/admin/loading.tsx` giver øjeblikkelig respons ved sideskift; tunge sektioner nederst på en side streames med Suspense i stedet for at holde hele siden tilbage.
+
+## 2026-10-11: Webvisning — Support i egen boks, profilcirkel uden tekst, tilføj-dropdown = mobilens firkanter, sprog som "DK"-dropdown
+
+Brugerens krav til desktop-skallen (`WebShell`):
+
+- Support ligger nederst til venstre i sidebjælken i en egen boks med skillelinje ovenover — ikke blandt indstillingerne.
+- Profilcirklen i topbjælken står alene (ingen tekst "Profilindstillinger") og er større (44 px).
+- Den grønne tilføj-dropdown viser de samme ikon-firkanter som mobilens tilføj-vindue (`AddMenuList`): ét sted at ændre felterne, så web og mobil ikke driver fra hinanden. "Optag" udelades på desktop (chat afløser mikrofonen).
+- Sprogvalget (måltidssprog på chat-siden) er en dropdown med landekoden ("DK") i stedet for flaget i webvisningen; telefonen beholder flag + bundark.
+## 2026-10-11: Open Food Facts → Billeder (gennemgang af OFF-billeder, afviste → "Skal scannes")
+
+Brugerens krav: under menupunktet Open Food Facts kommer undermenuen "Billeder" med alle billeder hentet fra OFF i et gitter (størrelse kan ændres, størst = ét billede i højden, scrollhjulet skifter billede), sidetal nederst, valgfrit antal pr. side, "marker alle", to knapper pr. billede (Godkendt / Afvist) og hel højre/venstre halvdel af billedet klikbar. Faner: Til gennemgang, Godkendt, Afvist. Afviste billeder skal i scan-appens kategori, hvor medarbejdere får penge for at scanne forsiden, og i bannerets point-tilbud om at scanne forsiden igen.
+
+- **Data:** `Product.offImageReview` (APPROVED/REJECTED, null = til gennemgang), `offImageReviewedAt`, `offImageReviewedById` (migration `20261011170000_off_image_review`). Omfatter varer med `externalSource = OPEN_FOOD_FACTS` (samme afgrænsning som Open Food Facts-kontrollen: ikke private, ikke udgåede, ikke afviste) hvor billedet stadig er OFF's egen https-adresse; erstattes billedet af et eget foto, forsvinder varen af sig selv fra listerne. Gennemgangen hænger på varen, så poster, der kun findes i `off_products` uden vare, er ikke med.
+- **Side:** `/admin/product-database/open-food-facts/images` (menu: Varedatabase → Open Food Facts → Billeder, indrykket under Open Food Facts via `NavLink.child`; genvej Alt+0). Server: `src/lib/off-image-review.ts` (forespørgsel med interaktionstal, `setOffImageReview`), API `POST /api/admin/off-images/review` (kun fuld admin; ids + APPROVED/REJECTED/RESET). Klient: `src/components/admin/OffImageReview.tsx`.
+- **Interaktioner** = stregkodeopslag (`debug_logs` category scan / event barcode_lookup, tælles via stregkoden) + registreringer + favoritter + videresendelser. Admin kan rydde debug-loggen, så scanningstallet er et mindstetal. Standard i "Til gennemgang": flest interaktioner først; valgbart: færrest først, nyest/ældst i databasen, og filter "mindst 2/3/5/10 interaktioner" (= "kun 1 scanning fra"). Godkendt/Afvist sorteres standard på dato ændret.
+- **Afgørelse:** gemmes med det samme; tryk på samme side igen fortryder (billedet tilbage til gennemgang). Sidetal bruger offset, så afgjorte varer, der forsvinder fra "Til gennemgang", ikke får næste side til at springe en side over. "Marker alle" godkender kun billeder på siden uden afgørelse (afviste røres aldrig) og kræver bekræftelse.
+- **Afvist =** (1) varen sendes til scan-appen med samme mekanisme som "Send til scan-appen" i Open Food Facts-kontrollen (`ProductQualityReview.scanRequestedAt`, vurderingsrækken oprettes med `reassessOffProduct`, hvis robotten ikke har nået varen): den står under "Skal scannes" og som "ikke scannet" på hyldeoverlayet; godkendes/fortrydes den, trækkes forespørgslen tilbage. Når en agent supplerer varen med "Opret vare", ERSTATTER forsidefotoet det afviste billede (`POST /api/scan/products`, kobles til billedrobotten); (2) genscan-banneret ("Optjen 10 points") tilbydes uændret for alle OFF-varer, og den natlige `external-image-ai` springer afviste billeder over, så de ikke fritlægges. Det afviste billede vises stadig for brugerne, indtil en ny forside er taget (ikke ændret).
+## 2026-10-11: Retter uden kendt energi vises aldrig
+
+Brugeren fandt "0 kcal pr. servering" under Trender netop nu ("grotesk"; et nul må ikke kunne stå uden reaktion).
+
+- **Årsag:** importrobotterne (Valdemarsro, BetterFeast, RetNemt) gemmer `kcalPer100g = 0` + `nutritionMissing = true`, når næringen er ukendt. `/api/shared-recipes` hentede dem alligevel (uden at tjekke `nutritionMissing`), og "Trender netop nu" fylder op med tilfældige retter, så en ret uden energi kunne havne på forsiden. Klienterne formaterede blot 0 som "0 kcal pr. servering".
+- **Rettelse:** serveren udelader retter uden kendt energi (`nutritionMissing: false`, `kcalPer100g > 0`, delte retter `kcal > 0`, plus et sikkerhedsnet på den afrundede værdi), og web og native viser ingen kcal-tekst, hvis tallet alligevel er 0 (også favoritter og Mine retter).
+- Retter uden energi dukker op igen, så snart robotten har beregnet næringen (`nutritionMissing = false`).
+## 2026-10-11: Forsiden findes ikke i webversionen — den monteres aldrig
+
+Brugerens krav: når man åbner Hello Cal web, startede siden med at loade drejehjul og spinnere som appens forside. Den side skal slet ikke være tilgængelig i webversionen. Præciserer 2026-09-29 ("roden `/` sender videre til kalenderen"), som kun gjorde det efter at forsiden var renderet.
+
+- **Webversion = desktop-skallen** (`WebShell`, skærmbredde ≥ 1024 px). Grænsen står ét sted: `src/lib/desktop-query.ts`, brugt af `AppFrame` og forsidens port.
+- `src/app/page.tsx` pakker den indloggede forside ind i `AppHomeGate` (klient). I webversionen renderer porten en tom flade: Hero, hjul, tilføj-cirkel, dagens liste, bundmenu, puls- og vejeprompter monteres ikke, og der hentes ingen data. `WebShell` sender derefter roden videre til `/calendar?view=day` som før.
+- **Første rendering:** serveren giver kun et hint ud fra User-Agent (iPhone/iPad/Android/Mobile → forsiden i server-HTML'en som hidtil, ellers tom flade). Afgørelsen tages altid på skærmbredden i klienten, så en iPad i bred visning også får webskallen, og en smal desktop-rude får appen som den er.
+- Appen på telefon og tablet er uændret. Udloggede besøgende ser stadig `LandingPage`.
+## 2026-10-11: Popups på web er lightboxe, ikke bundark
+
+Ejerens krav: bundarket er mobilens form og ser "åndssvagt" ud på en bred skærm (smalt, klistret til bunden, højt og kompakt). Popups skal tænkes om til web — og det samme gælder popups, der kommer ind fra oven eller bunden: på web kan de bare være lightboxe.
+
+- **Skift:** fra 1024 px (samme grænse som `WebShell`, defineret i `src/lib/desktop-query.ts`; hooken `useDesktopViewport` i `src/lib/use-desktop-viewport.ts` bruges af `BottomSheet`) renderer `BottomSheet` som lightbox: centreret, runde hjørner, 680 px bred (`full` 960 px × 88 dvh, bekræftelser 480 px), uden trækstreg/swipe, X øverst til højre, tones ind. Under 1024 px er bundarket uændret.
+- **Ingen kald ændres:** alle 58 brugere af `BottomSheet` (og `useConfirmSheet`/`useTypedConfirmSheet`) får lightbox automatisk. `headerAction` står til venstre for X.
+- **Øvrige top/bund-popups uden `BottomSheet`** er lightbox på web via `lg:`-klasser: `StaleSyncPrompt`, åben `RescanBanner` (skuffe fra oven), scan-appens `ShelfItemSheet` og "Slet billedet?". Bevidst udeladt: `HfAccessSheet` (iOS-kopi, er en side, ikke en popup).
+- **Erstatter** formuleringen "aldrig centreret dialog" i KRAV.md/design.md for web; på mobil står den fast. Native uændret.
+
 ## 2026-10-11: Open Food Facts-kontrol — vurdering pr. kategori og "send til scan-appen"
 
 Brugerens krav: en liste over Open Food Facts-varer, hvor hver vare er vurderet i kategorier med en kommentar om, hvorfor den ikke lever op til kvaliteten; admin skal kunne krydse varer af, sortere på vurdering og sende dem til review i scan-appen, så de står som ikke scannede.
@@ -5060,3 +5110,28 @@ Brugerens krav: en separat menu "Open Food Facts" under Varedatabase, alle samme
 
 - `products` og `scan_submissions` har `scannedCountry` (ISO, fx DK), `scannedLanguage` (da) og `scannedDeviceLocale` (da-DK). Udledes server-side af `Accept-Language` + værtens landeheader (`readScanContext`, `src/lib/scan/device-context.ts`); første scanning vinder på varen. Formål: kunne optimere visningen af varer pr. land/sprog.
 - Migration `20261011170000_scan_context` sætter alt hidtil scannet til DK/da/da-DK.
+## 2026-10-11 — Låst startvægt og højde: popup med "alligevel"-link
+
+- Tryk på den låste startvægt eller højde på Profil åbner et **bundark (popup)**, ikke en separat side. De gamle ruter `/profile/start-weight` og `/profile/height` sender videre til `/profile/edit`.
+- Startvægt: forklaring, stor sort knap "Sæt dagsvægt" og understreget "Rediger startvægt alligevel" under (sender verificeringsmailen; ændringen sker via mail-linket).
+- Højde: kun advarsel (ingen henvisning til integrationer) og understreget "Rediger højde alligevel", som låser feltet op. Det er låst igen ved næste side eller når appen lukkes.
+- Web og native ens (`ProfileEditScreen.kt`).
+
+## 2026-10-11: Dubletter → Varebilleder: Behold / Erstat med dette, lightbox og "Anbefalet"
+
+Brugerens krav (afløser "Vælg/Valgt" + "Slet de øvrige billeder"/"Gem hovedbillede" fra 2026-10-07):
+- Kun to handlinger: "Behold" under billedet der vises i dag og "Erstat med dette" (sort) under alternativet. Begge gemmer straks og sletter de øvrige varianter (samme `POST /api/admin/duplicate-products/images` med ét billede i `keepImageIds`; filerne bliver liggende).
+- Ét alternativ ad gangen ved siden af originalen; de øvrige alternativer står som miniaturer i fuld bredde under begge kort, og klik bytter miniaturen ind som alternativ. Ingen stregkode over billederne.
+- Klik på et billede åbner samme visning i en lightbox (næsten fuld skærm) med Behold/Erstat under de store billeder. Hele kolonnen ude i hver side bladrer (også piletaster og swipe); efter varens sidste alternativ fortsætter den til næste vare. Tallene i bunden er varens alternativer, det aktive er fremhævet. Efter Behold/Erstat i lightboxen vises næste vare.
+- "Anbefalet" (`src/lib/image-quality.ts`, måles i browseren i `useImageQuality`): et alternativ er tydeligt bedre end billedet i dag, når det har mindst 25 % flere pixels, eller samme opløsning (±10 %) og et bedre format (PNG > WEBP/AVIF > JPG), eller samme format og mindst 0,05 højere gennemsnitlig mætning (hvid baggrund tæller ikke med). Lavere opløsning er aldrig bedre; kan billedet i dag ikke indlæses, er ethvert alternativ bedre. Det bedste af de bedre (pixels, så format, så mætning) får tynd lysegrøn ramme (`--hf-color-accent`) og "Anbefalet" i mørkegrøn, står først blandt alternativerne og vises som standard ved siden af originalen — også når det er _3 eller _4.
+## 2026-10-11 — Synkroniseringssiden: Rediger visning, dagslog, historik og Deaktiver
+Brugerens krav: en forbundet integration viser ikke længere godkendelsesarket. Siden har en hvid knap "Rediger visning" allerøverst (til/fra pr. datatype), derunder "Aktiveret" med grøn cirkel til højre, en log over dagens seneste data, en historik-dropdown (I går, sidste uge, sidste måned, sidste år, altid) og nederst en sort "Deaktiver"-knap.
+- Loggen læses fra de almindelige tabeller (`health_metrics`, `weight_entries`, `activities`) med integrationens egen kilde, filtreret efter `syncSettings.read` — slår man en datatype fra under "Rediger visning", forsvinder den også fra loggen. Vitaminer/mineraler (…_MG/_UG) vises ikke. Højst 300 rækker pr. kald; `total` fortæller, hvor mange der er i perioden. Dage regnes i dansk tid; historikken slutter ved midnat i dag, så den aldrig gentager "I dag".
+- Kun OAuth-integrationer (Google Health, Withings, Strava …), der er forbundet og ikke mangler adgang, bruger siden. Companion-integrationer (Apple Health/Health Connect), "via"-mærker og alt ikke-forbundet bruger stadig godkendelsesarket.
+- "Deaktiver" er den eksisterende frakobling (`POST /api/integrations/<slug>/disconnect`); gemte data bliver liggende.
+- Siden henter nyt fra appen, når den åbnes (serveren springer over, hvis det skete for nylig).
+- Google Health-timegennemsnittene (`averagePerHour`) blander ikke længere dagsværdier (kl. 00:00 UTC) ind i nattens første time, og en engangsmigration (`20261011080000_google_health_hourly_collapse`) samler minutmålingerne, der allerede lå i databasen: første måling i timen beholdes med timens gennemsnit, resten slettes (bruger 2026-10-11: iltmætning kom med 4-5 målinger på få minutter).
+- Reglen "Knapper står altid øverst" (2026-10-10) var fejlagtig og er rettet til "nederst" i docs/REGLER.md.
+- **Brugerens regler 2026-10-11 er med:** Quantity er kun vægt/volumen ("6 x 33 cl" → Quantity `33 cl`, Pack Count 6; stk kun i Pack Count), MHD/datoer fjernes, certifikater (MSC/ASC/Fairtrade) → `certifications`, oprindelses-adjektiver (fransk, italiensk …) → `countryOfOrigin` (ikke i vin, og ikke "græsk yoghurt"/"fransk dressing"), Instantkaffe, "tilsat kulsyre" → nøgleordet `med kulsyre`, `/` i opremsninger → "og".
+- **Butikker:** OFF's `stores_tags`/`stores` kobles til eksisterende `Store` i `product_stores` ved oprettelse (ingen nye kæder oprettes).
+- **Ikke gjort:** admin kan endnu ikke rette de opdelte felter i hånden (kun køre opdelingen igen og markere som gennemgået); OFF-søgning vises stadig aldrig i søgeresultater (DECISIONS 2026-09-28).

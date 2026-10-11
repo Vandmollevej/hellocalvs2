@@ -1,29 +1,35 @@
 "use client";
 
 import Image from "next/image";
-import { useState } from "react";
-import { IconCheck } from "@tabler/icons-react";
+import { useEffect, useRef, useState } from "react";
+import { IconCheck, IconChevronDown } from "@tabler/icons-react";
 import { BottomSheet, BottomSheetCloseButton } from "@/components/hf/BottomSheet";
+import { useInWebShell } from "@/components/web/WebShell";
 import { useTranslation } from "@/i18n/LocaleProvider";
 import {
   MEAL_INPUT_LANGUAGES,
+  countryCodeFor,
   flagFor,
   getMealInputLanguage,
   type MealInputLanguageCode,
 } from "@/lib/meal-input-language";
 
-// Flaget i headerens venstre hjørne på tale- og chat-siden. Åbner et bundark
-// (KRAV.md "Bundark") med sprogene; valget styrer både talegenkendelsen og
-// AI-tolkningen.
-export function MealLanguagePicker({
-  language,
-  region,
-  onChange,
-}: {
+type PickerProps = {
   language: MealInputLanguageCode;
   region: string | null;
   onChange: (code: MealInputLanguageCode) => void;
-}) {
+};
+
+// Flaget i headerens venstre hjørne på tale- og chat-siden. Åbner et bundark
+// (KRAV.md "Bundark") med sprogene; valget styrer både talegenkendelsen og
+// AI-tolkningen. I webvisningen er det en dropdown med landekoden ("DK") i
+// stedet for flaget (brugerens ønske 2026-10-11).
+export function MealLanguagePicker(props: PickerProps) {
+  const inWebShell = useInWebShell();
+  return inWebShell ? <WebLanguageDropdown {...props} /> : <SheetLanguagePicker {...props} />;
+}
+
+function SheetLanguagePicker({ language, region, onChange }: PickerProps) {
   const { t, locale } = useTranslation();
   const [open, setOpen] = useState(false);
   const nameLocale = locale === "da" ? "da" : "en";
@@ -69,5 +75,73 @@ export function MealLanguagePicker({
         </BottomSheet>
       )}
     </>
+  );
+}
+
+// Webvisningen: "DK ▾" i headeren og en almindelig dropdown (.hf-menu, som
+// profilmenuen) med landekode + sprognavn pr. række.
+function WebLanguageDropdown({ language, region, onChange }: PickerProps) {
+  const { t, locale } = useTranslation();
+  const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+  const nameLocale = locale === "da" ? "da" : "en";
+  const current = getMealInputLanguage(language);
+
+  // Luk ved klik udenfor og Escape.
+  useEffect(() => {
+    if (!open) return;
+    const onDown = (event: MouseEvent) => {
+      if (!ref.current?.contains(event.target as Node)) setOpen(false);
+    };
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setOpen(false);
+    };
+    document.addEventListener("mousedown", onDown);
+    document.addEventListener("keydown", onKey);
+    return () => {
+      document.removeEventListener("mousedown", onDown);
+      document.removeEventListener("keydown", onKey);
+    };
+  }, [open]);
+
+  return (
+    <div ref={ref} className="relative">
+      <button
+        type="button"
+        onClick={() => setOpen((value) => !value)}
+        aria-label={t("voice.language.button", { language: current.names[nameLocale] })}
+        aria-haspopup="menu"
+        aria-expanded={open}
+        className="hf-navrow hf-navrow--inline"
+      >
+        <span className="hf-type-strong">{countryCodeFor(language, region)}</span>
+        <IconChevronDown size={16} stroke={1.75} />
+      </button>
+      {open && (
+        <ul role="menu" className="hf-menu absolute left-0 top-full mt-1 w-56">
+          {MEAL_INPUT_LANGUAGES.map((option) => {
+            const selected = option.code === language;
+            return (
+              <li key={option.code} role="none">
+                <button
+                  type="button"
+                  role="menuitemradio"
+                  aria-checked={selected}
+                  onClick={() => {
+                    onChange(option.code);
+                    setOpen(false);
+                  }}
+                  className={`hf-navrow ${selected ? "is-active" : ""}`}
+                >
+                  <span className="hf-type-strong w-7">{countryCodeFor(option.code, region)}</span>
+                  <span className="flex-1">{option.names[nameLocale]}</span>
+                  {selected && <IconCheck size={18} stroke={2.5} aria-label={t("voice.language.selected")} />}
+                </button>
+              </li>
+            );
+          })}
+        </ul>
+      )}
+    </div>
   );
 }

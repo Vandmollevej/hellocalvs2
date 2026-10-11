@@ -6,6 +6,8 @@ import { getPayPerItemOre, isOwnEarlierProduct, parseLocation } from "@/lib/scan
 import { lookupStoreName } from "@/lib/scan/storage";
 import { readScanContext } from "@/lib/scan/device-context";
 import { completeScanRequest } from "@/lib/scan/review-requests";
+import { saveDataUrlImage } from "@/lib/qc-image-storage";
+import { linkCutoutJobsToProduct } from "@/lib/image-cutout-jobs";
 
 // "Opret vare" i Oprettelses-appen (docs/OPRETTELSES-APP.md). Produktet
 // oprettes "på præcis samme måde" som i Hello Cal: body'en sendes uændret
@@ -50,13 +52,33 @@ export async function POST(req: Request) {
     const product = existing.product;
     kind = "SUPPLEMENT";
     payable = !(await isOwnEarlierProduct(worker.id, product.id));
+
+    // Afvist Open Food Facts-billede (admin Open Food Facts → Billeder,
+    // docs/DECISIONS.md 2026-10-11): det nye forsidefoto ERSTATTER det afviste
+    // billede (ellers bliver det aldrig udskiftet) og kobles til
+    // billedrobotten, så varen bliver fritlagt som ved en scanning.
+    const frontAnalysisId = typeof analysisIds.front === "string" ? analysisIds.front : null;
+    const replacedImageUrl =
+      product.offImageReview === "REJECTED" && product.imageUrl?.startsWith("https://") && imageUrl?.startsWith("data:image/")
+        ? await saveDataUrlImage(imageUrl).catch(() => null)
+        : null;
+
     await prisma.product.update({
       where: { id: product.id },
       data: {
-        imageUrl: product.imageUrl ?? imageUrl ?? undefined,
+        imageUrl: replacedImageUrl ?? product.imageUrl ?? imageUrl ?? undefined,
         ingredientsText: product.ingredientsText ?? (ingredientsText || undefined),
       },
     });
+    if (replacedImageUrl && frontAnalysisId) {
+      try {
+        await prisma.aiProductAnalysis.update({ where: { id: frontAnalysisId }, data: { productId: product.id, imageUrl: replacedImageUrl } });
+        const withBrand = await prisma.product.findUnique({ where: { id: product.id }, select: { brand: { select: { id: true, name: true } } } });
+        await linkCutoutJobsToProduct({ frontAnalysisId, productId: product.id, brand: withBrand?.brand ?? null });
+      } catch (error) {
+        console.error("Front cutout link failed for rejected-image supplement", product.id, error);
+      }
+    }
     productId = product.id;
   } else {
     const response = await createHelloCalProduct(

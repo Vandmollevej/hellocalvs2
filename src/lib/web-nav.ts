@@ -87,12 +87,20 @@ export const WEB_SETTINGS: WebNavItem[] = [
     ],
   },
   { key: "betaling", href: "/settings/payment", labelKey: "web.payment", icon: IconWallet },
-  { key: "support", href: "/settings/support", labelKey: "web.support", icon: IconLifebuoy },
 ];
+
+// Support står for sig nederst i sidebjælken, i en egen boks under en
+// skillelinje (bruger 2026-10-11), ikke blandt indstillingerne.
+export const WEB_SUPPORT: WebNavItem = {
+  key: "support",
+  href: "/settings/support",
+  labelKey: "web.support",
+  icon: IconLifebuoy,
+};
 
 // Topniveau-sider i desktop-skallen: alt, sidebjælken og topbjælken linker
 // direkte til. De får ingen tilbagepil i sideoverskriften (som admin).
-const WEB_ROOT_PATHS = new Set([...WEB_TOP_NAV, ...WEB_SHORTCUTS, ...WEB_SETTINGS.flatMap((item) => [item, ...(item.children ?? [])])].map((item) => item.href.split("?")[0]));
+const WEB_ROOT_PATHS = new Set([...WEB_TOP_NAV, ...WEB_SHORTCUTS, ...WEB_SETTINGS.flatMap((item) => [item, ...(item.children ?? [])]), WEB_SUPPORT].map((item) => item.href.split("?")[0]));
 
 export function isWebRootPath(pathname: string) {
   const path = pathname.length > 1 && pathname.endsWith("/") ? pathname.slice(0, -1) : pathname;

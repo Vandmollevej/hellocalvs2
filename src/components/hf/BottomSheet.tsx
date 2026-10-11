@@ -10,12 +10,20 @@ import {
   useState,
 } from "react";
 import { createPortal } from "react-dom";
+import { IconX } from "@tabler/icons-react";
+import { useTranslation } from "@/i18n/LocaleProvider";
+import { useDesktopViewport } from "@/lib/use-desktop-viewport";
 
 // Bundarket (KRAV.md "Bundark", docs/DECISIONS.md 2026-09-27): det faste
 // vindue for alle screen-overlays/popups. Glider op nedefra, har trækstregen
 // øverst (samme streg som kalenderens nat/dag-håndtag) og kan trækkes ned.
 // Et hurtigt nedadgående swipe — eller et træk forbi 30 % af højden — lukker
 // det; ellers glider det tilbage. Klik på scrim og Escape lukker også.
+//
+// På web (fra 1024 px, useDesktopViewport) er det ikke et bundark men en
+// lightbox: centreret over en scrim, bredere og højere, uden trækstreg og
+// swipe, med en luk-knap (X) øverst til højre. Samme komponent, samme API —
+// kun fladen skifter (KRAV.md "Popups på web").
 //
 // Renderes betinget af forælderen ({open && <BottomSheet …/>}). Knapper inde
 // i arket ("Spring over", "Luk") skal bruge useBottomSheetClose(), så de får
@@ -132,6 +140,9 @@ export function BottomSheet({
   panelStyle?: React.CSSProperties;
 }) {
   const titleId = useId();
+  const { t } = useTranslation();
+  // Web: lightbox i stedet for bundark (se kommentaren øverst).
+  const lightbox = useDesktopViewport();
   const rootRef = useRef<HTMLDivElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
   const grabRef = useRef<HTMLDivElement>(null);
@@ -183,7 +194,8 @@ export function BottomSheet({
   // toppen af indholdet flytter arket i stedet for at scrolle/overscrolle.
   useEffect(() => {
     const panel = panelRef.current;
-    if (!panel) return;
+    // Lightboxen kan ikke trækkes ned — den lukkes med X, scrim eller Escape.
+    if (!panel || lightbox) return;
 
     function begin(y: number, target: EventTarget | null) {
       if (closingRef.current) return;
@@ -284,7 +296,7 @@ export function BottomSheet({
       window.removeEventListener("mousemove", onMouseMove);
       window.removeEventListener("mouseup", onMouseUp);
     };
-  }, [close]);
+  }, [close, lightbox]);
 
   if (typeof document === "undefined") return null;
 
@@ -301,7 +313,7 @@ export function BottomSheet({
           (fx kalenderens swipe/zoom-håndtering) — stop dem ved arkets rod. */}
       <div
         ref={rootRef}
-        className={`hf-bottom-sheet ${size === "auto" ? "" : `hf-bottom-sheet--${size}`} ${className}`}
+        className={`hf-bottom-sheet ${size === "auto" ? "" : `hf-bottom-sheet--${size}`} ${lightbox ? "hf-bottom-sheet--lightbox" : ""} ${className}`}
         onClick={stopPropagation}
         onPointerDown={stopPropagation}
         onPointerMove={stopPropagation}
@@ -331,25 +343,47 @@ export function BottomSheet({
             ...panelStyle,
             // I hvile: ingen transform, ellers bliver panelet containing block
             // for position:fixed-modaler inde i arket (fx tilsætningsstof-info).
+            // Lightboxen toner ind med et lille løft i stedet for at glide op.
             transform: !shown
-              ? "translateY(100%)"
+              ? lightbox
+                ? "translateY(12px) scale(0.98)"
+                : "translateY(100%)"
               : offset > 0
                 ? `translateY(${offset}px)`
                 : "none",
+            ...(lightbox ? { opacity: shown ? 1 : 0 } : null),
             transition: dragging
               ? "none"
-              : `transform ${CLOSE_MS}ms cubic-bezier(0.32, 0.72, 0, 1)`,
+              : lightbox
+                ? `transform ${CLOSE_MS}ms ease, opacity ${CLOSE_MS}ms ease`
+                : `transform ${CLOSE_MS}ms cubic-bezier(0.32, 0.72, 0, 1)`,
           }}
         >
-          <div
-            ref={grabRef}
-            className="hf-bottom-sheet__grab"
-            aria-hidden="true"
-          >
-            <span className="hf-bottom-sheet__handle" />
-          </div>
-          {headerAction && (
-            <div className="hf-bottom-sheet__action">{headerAction}</div>
+          {lightbox ? (
+            <div className="hf-bottom-sheet__topbar">
+              {headerAction}
+              <button
+                type="button"
+                className="hf-bottom-sheet__close"
+                onClick={close}
+                aria-label={t("common.close")}
+              >
+                <IconX size={20} stroke={2} aria-hidden="true" />
+              </button>
+            </div>
+          ) : (
+            <>
+              <div
+                ref={grabRef}
+                className="hf-bottom-sheet__grab"
+                aria-hidden="true"
+              >
+                <span className="hf-bottom-sheet__handle" />
+              </div>
+              {headerAction && (
+                <div className="hf-bottom-sheet__action">{headerAction}</div>
+              )}
+            </>
           )}
           {title && (
             <h2

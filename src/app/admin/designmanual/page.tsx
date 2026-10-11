@@ -254,6 +254,7 @@ export default async function DesignManualPage() {
                 "Bruges ved velkomst efter kontooprettelse, guiden, e-mailbekræftelse, kalenderens \"Tilføj\" og \"Se alle\" i tilføj-hjulet, opstartstips, adgangslog, hjul-/datovælgere og alle bekræftelser (useConfirmSheet i stedet for window.confirm, useTypedConfirmSheet i stedet for window.prompt).",
                 "Arket har ingen synlig overskrift (kun aria-label); hjulvælgere markeres med data-sheet-no-drag, så de scroller uden at trække arket.",
                 "Opstartstips: ikon + titel + tekst, \"Luk\" nederst til venstre og \"Slå fra\" nederst til højre; slår man \"Slå fra\" fra, tæller \"Luk\" ned 3–1, før arket lukker og tips slås fra.",
+                "Web (fra 1024 px) er samme komponent en lightbox: centreret, runde hjørner på alle sider, 680 px bred (store flows 960 px, bekræftelser 480 px), uden trækstreg og swipe — luk med X øverst til højre, scrim eller Escape. Åbn eksemplet nedenfor på en bred skærm for at se den.",
                 "Arket bruger role=\"dialog\" og aria-modal=\"true\".",
               ]}
             />

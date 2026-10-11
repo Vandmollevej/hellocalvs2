@@ -26,7 +26,8 @@ import {
 // Farverne er de eksisterende Hello Cal-tokens.
 
 type IconName = "home" | "chart" | "box" | "database" | "users" | "handshake" | "shield" | "cog" | "palette" | "road" | "flow" | "pot" | "log" | "plug" | "coin";
-export type NavLink = { href: string; key: AdminI18nKey; alsoActive?: string[] };
+// child: undermenupunkt under linket lige over (rykkes ind), fx Open Food Facts → Billeder.
+export type NavLink = { href: string; key: AdminI18nKey; alsoActive?: string[]; child?: boolean };
 export type NavEntry =
   | { kind: "link"; href: string; key: AdminI18nKey; icon: IconName }
   | { kind: "group"; id: string; key: AdminI18nKey; icon: IconName; links: NavLink[] };
@@ -61,6 +62,7 @@ export const NAV: NavEntry[] = [
       { href: "/admin/product-database/products", key: "nav_product_database_products" },
       { href: "/admin/product-database/brands", key: "nav_product_database_brands" },
       { href: "/admin/product-database/open-food-facts", key: "nav_product_database_off" },
+      { href: "/admin/product-database/open-food-facts/images", key: "nav_product_database_off_images", child: true },
       { href: "/admin/product-database/images", key: "nav_product_database_images" },
     ],
   },
@@ -438,6 +440,7 @@ function SidebarNav({
                         aria-current={active ? "page" : undefined}
                         {...automationProps(`${idPrefix}-${navSlug(link.key)}`)}
                         className="hf-navrow hf-navrow--sub"
+                        style={link.child ? { paddingLeft: 60 } : undefined}
                       >
                         <span className="hf-navrow__label">{t(locale, link.key)}</span>
                         <LinkBadge href={link.href} badges={badges} />

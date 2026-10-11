@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { requireAdminUser } from "@/lib/require-admin";
+import { invalidateDuplicateCache } from "@/lib/duplicate-review";
 
 // POST /api/admin/duplicate-products/images — admin "Dubletter" →
 // Produktbilleder (docs/DECISIONS.md 2026-09-28).
@@ -50,5 +51,6 @@ export async function POST(req: Request) {
       data: { imageUrl: primaryUrl, imagesReviewedAt: new Date() },
     });
   });
+  invalidateDuplicateCache();
   return NextResponse.json({ ok: true });
 }

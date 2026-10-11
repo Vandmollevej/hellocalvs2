@@ -170,6 +170,8 @@ export async function GET(req: Request) {
       : await prisma.sharedRecipe.findMany({
       where: {
         status: { not: "REJECTED" },
+        // En ret uden kendt energi vises aldrig (ingen "0 kcal").
+        kcal: { gt: 0 },
         // Retter flagget som kopi skjules, til admin har godkendt dem.
         OR: [{ copyFlagged: false }, { status: "APPROVED" }],
         publisherHash: { notIn: blocked.map((b) => b.publisherHash) },
@@ -190,6 +192,8 @@ export async function GET(req: Request) {
 
     const items: Item[] = [];
     for (const { recipe: r, ingredients } of parsed) {
+      // Sikkerhedsnet oven i where-filteret: en vist kcal-værdi er aldrig 0.
+      if (!(Math.round(r.kcal) > 0)) continue;
       const parts = ingredients.map((i) => ({ grams: i.grams, product: productById.get(i.productId) }));
       const sugar = withIngredientData ? totalOf(parts, "sugar") : null;
       const facts: RecipeFacts = {
@@ -241,6 +245,11 @@ export async function GET(req: Request) {
         where: {
           externalSource: { in: externalSources },
           discontinued: false,
+          // Importrobotterne gemmer 0 kcal + nutritionMissing, når næringen
+          // er ukendt (fx Valdemarsro uden Frida-match). Sådanne retter må
+          // aldrig vises med "0 kcal" — de skjules, til energien er beregnet.
+          nutritionMissing: false,
+          kcalPer100g: { gt: 0 },
           ...(q
             ? {
                 OR: [
@@ -277,6 +286,8 @@ export async function GET(req: Request) {
         // portionsvægt, fx BetterFeast).
         const grams = p.servingSizeGrams ?? 100;
         const f = grams / 100;
+        // Sikkerhedsnet oven i where-filteret: en vist kcal-værdi er aldrig 0.
+        if (!(Math.round(p.kcalPer100g * f) > 0)) continue;
         const facts: RecipeFacts = {
           title: p.name,
           segments: [{ name: p.name, text: p.ingredientsText ?? "", allergens: p.allergens }],

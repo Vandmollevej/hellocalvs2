@@ -207,8 +207,10 @@ export function googleHeartRateItems(points: GooglePoint[]): IntegrationItem[] {
     const bpm = googleNumber(inner?.beatsPerMinute);
     const time = typeof sample?.physicalTime === "string" ? new Date(sample.physicalTime) : null;
     if (!inner || bpm === null || bpm <= 0 || !time || Number.isNaN(time.getTime())) continue;
-    const hour = time.toISOString().slice(0, 13);
-    const h = hourly.get(hour) ?? { sum: 0, count: 0, at: `${hour}:00:00.000Z` };
+    // 5-minutters spande (ikke timer): et træningspas på 30–45 min forsvinder ellers i timegennemsnittet.
+    const bucket = new Date(Math.floor(time.getTime() / 300_000) * 300_000).toISOString();
+    const hour = bucket;
+    const h = hourly.get(hour) ?? { sum: 0, count: 0, at: bucket };
     h.sum += bpm;
     h.count += 1;
     hourly.set(hour, h);
@@ -231,3 +233,37 @@ export function googleHeartRateItems(points: GooglePoint[]): IntegrationItem[] {
 
 // mg/dL → mmol/L (som HealthMetricType BLOOD_GLUCOSE_MMOL_L).
 export const MG_DL_PER_MMOL_L = 18.016;
+
+// Iltmætning, åndedræt, HRV og temperatur kommer som en måling hvert minut;
+// det fylder kalenderen med 60 rækker i timen (bruger 2026-10-11: "4-5
+// målinger på få minutter"). De samles til ét gennemsnit pr. time, gemt på
+// timens første måling. Dagsværdier (kl. 00:00:00.000 UTC) står for sig og
+// blandes aldrig ind i nattens første time.
+export const HOURLY_TYPES = new Set(["OXYGEN_SATURATION_PERCENT", "RESPIRATORY_RATE_BPM", "HEART_RATE_VARIABILITY_MS", "TEMPERATURE_C"]);
+
+type MetricPayload = { type: string; value: number; recordedAt: string };
+
+export function averagePerHour(items: IntegrationItem[]): IntegrationItem[] {
+  const groups = new Map<string, { sum: number; count: number; first: IntegrationItem }>();
+  const rest: IntegrationItem[] = [];
+  for (const item of items) {
+    const p = item.payload as MetricPayload;
+    if (item.kind !== "metric" || !HOURLY_TYPES.has(p.type) || p.recordedAt.endsWith("T00:00:00.000Z")) {
+      rest.push(item);
+      continue;
+    }
+    const key = `${p.type}|${p.recordedAt.slice(0, 13)}`;
+    const group = groups.get(key);
+    if (group) {
+      group.sum += p.value;
+      group.count += 1;
+      if (p.recordedAt < (group.first.payload as MetricPayload).recordedAt) group.first = item;
+    } else {
+      groups.set(key, { sum: p.value, count: 1, first: item });
+    }
+  }
+  for (const { sum, count, first } of groups.values()) {
+    rest.push({ ...first, payload: { ...(first.payload as MetricPayload), value: Math.round((sum / count) * 100) / 100 } });
+  }
+  return rest;
+}

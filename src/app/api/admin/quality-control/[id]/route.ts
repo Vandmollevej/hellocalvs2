@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { requireAdminUser } from "@/lib/require-admin";
+import { invalidateUncertaintyCache } from "@/lib/uncertainties";
 
 // Admin-afgørelse på en ProductMatchCheck (docs/DECISIONS.md, 2026-09-19):
 // CORRECT/WRONG/UNCERTAIN gemmes permanent som fremtidig træningsdata til en
@@ -21,5 +22,6 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
     where: { id },
     data: { adminVerdict: verdict, status: "REVIEWED", reviewedAt: new Date() },
   });
+  invalidateUncertaintyCache();
   return NextResponse.json({ matchCheck });
 }

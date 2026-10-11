@@ -59,7 +59,7 @@ function ValueView({
   );
 }
 
-export function DuplicateCompareGroup({ group }: { group: CompareGroup }) {
+export function DuplicateCompareGroup({ group, onDone }: { group: CompareGroup; onDone?: () => void }) {
   const router = useRouter();
   const [finalId, setFinalId] = useState(group.finalColumnId);
   const finalColumn = group.columns.find((c) => c.id === finalId) ?? group.columns[group.columns.length - 1];
@@ -130,6 +130,7 @@ export function DuplicateCompareGroup({ group }: { group: CompareGroup }) {
         return;
       }
       setDone(true);
+      onDone?.();
       router.refresh();
     } finally {
       setBusy(null);

@@ -275,9 +275,13 @@ export async function middleware(req: NextRequest) {
 
   // Metadata files (icon.png, apple-icon.png, manifest.webmanifest, /icons/*)
   // live at the root; prefixing them with /admin would 404 and leave the
-  // browser on the low-res favicon.ico only.
+  // browser on the low-res favicon.ico only. Det gælder også Next's egen
+  // billed-optimerer (/_next/image): fik den /admin foran, røg alle
+  // next/image-billeder (logoet) til /admin/login i stedet for at blive vist.
   const isRootAsset =
-    /\.(png|jpe?g|svg|webp|ico|woff2?|webmanifest)$/i.test(pathname) || pathname.startsWith("/icons/");
+    /\.(png|jpe?g|svg|webp|ico|woff2?|webmanifest)$/i.test(pathname) ||
+    pathname.startsWith("/icons/") ||
+    pathname.startsWith("/_next/");
   if (isAdminHost && !isRootAsset && !pathname.startsWith("/admin") && !pathname.startsWith("/api/admin")) {
     pathname = pathname === "/" ? "/admin" : `/admin${pathname}`;
   }

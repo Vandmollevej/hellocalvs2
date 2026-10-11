@@ -1,8 +1,8 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { requireAdminUser } from "@/lib/require-admin";
-import { DuplicateCompareGroup } from "@/components/admin/DuplicateCompareGroup";
 import { DuplicateImageList } from "@/components/admin/DuplicateImageList";
+import { DuplicateList } from "@/components/admin/DuplicateList";
 import {
   countDuplicateReviews,
   GROUPS_PER_PAGE,
@@ -13,10 +13,12 @@ import {
 // /admin/duplicate-products — "Dubletter" (docs/DECISIONS.md 2026-09-28).
 // To faner, der håndteres hver for sig:
 // - Produktbilleder (?tab=billeder): billed-varianter af samme vare
-//   (EAN.png, EAN_2.png …) på én linje; vælg hovedbillede og fravælg resten.
+//   (EAN.png, EAN_2.png …): billedet i dag ved siden af ét alternativ;
+//   "Behold" eller "Erstat med dette" sletter de øvrige (2026-10-11).
 // - Produkter (?tab=varer): op til 6 kolonner side om side; vælg felt
 //   for felt, hvad der skal i den endelige (grøn ramme). Logik i
-//   src/lib/duplicate-review.ts.
+//   src/lib/duplicate-review.ts. Listen kan vises som evigheds-scroll eller
+//   sideinddelt (DuplicateList, docs/DECISIONS.md 2026-10-11).
 export default async function AdminDuplicateProductsPage({
   searchParams,
 }: {
@@ -48,7 +50,7 @@ export default async function AdminDuplicateProductsPage({
         <h1 className="hf-type-title text-hf-black">Dubletter</h1>
         <p className="hf-type-body text-text-secondary">
           {tab === "billeder"
-            ? "Flere billeder af samme vare (fx _1, _2, _3). Sammenlign dem på linjen, vælg hovedbilledet og fravælg dem, der ikke skal bruges."
+            ? "Flere billeder af samme vare (fx _1, _2, _3). Behold billedet, der vises i dag, eller erstat det med alternativet — de øvrige billeder slettes. Klik på et billede for at se det i stor størrelse."
             : "Samme vare flere gange. Kolonnerne står side om side; klik på en grøn pil for at tage værdien over i den endelige (grøn ramme)."}
         </p>
       </div>
@@ -76,18 +78,7 @@ export default async function AdminDuplicateProductsPage({
           <DuplicateImageList groups={images.groups} />
         ))}
 
-      {products &&
-        (products.groups.length === 0 ? (
-          <p className="hf-type-body text-text-secondary">Ingen vare-dubletter afventer gennemgang.</p>
-        ) : (
-          <div className="flex flex-col gap-4">
-            {products.groups.map((group) => (
-              <DuplicateCompareGroup key={group.key} group={group} />
-            ))}
-          </div>
-        ))}
-
-      {pages > 1 && (
+      {images && pages > 1 && (
         <div className="hf-type-small flex items-center justify-between text-text-secondary">
           {page > 1 ? (
             <Link href={`/admin/duplicate-products?tab=${tab}&side=${page - 1}`} className="text-hf-green-dark">
@@ -107,6 +98,18 @@ export default async function AdminDuplicateProductsPage({
             <span />
           )}
         </div>
+      )}
+
+      {products && (
+        <DuplicateList
+          key={page}
+          page={page}
+          pages={pages}
+          total={total}
+          perPage={GROUPS_PER_PAGE}
+          initialGroups={products.groups}
+          initialConsumed={products.consumed}
+        />
       )}
     </div>
   );

@@ -107,8 +107,9 @@ export function StaleSyncPrompt() {
   const lastSync = current.lastSyncedAt ? formatDateTime(current.lastSyncedAt) : t("staleSyncPrompt.never");
 
   return (
-    <div className="fixed inset-0 z-50 flex flex-col justify-end bg-black/40" role="dialog" aria-modal="true" aria-labelledby="stale-sync-title">
-      <div className="hf-page rounded-t-3xl bg-hf-cream pb-8 pt-6">
+    // Web (lg): lightbox midt på skærmen i stedet for bundark (KRAV.md "Popups på web").
+    <div className="fixed inset-0 z-50 flex flex-col justify-end bg-black/50 lg:items-center lg:justify-center lg:p-8" role="dialog" aria-modal="true" aria-labelledby="stale-sync-title">
+      <div className="hf-page rounded-t-3xl bg-hf-cream pb-8 pt-6 lg:w-full lg:max-w-xl lg:rounded-3xl lg:px-8 lg:pb-8 lg:pt-8 lg:shadow-2xl">
         <h2 id="stale-sync-title" className="hf-type-page-title hf-heading text-hf-black">
           {t("staleSyncPrompt.title", { name: current.label })}
         </h2>

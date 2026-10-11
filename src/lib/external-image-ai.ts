@@ -28,6 +28,10 @@ export async function analyzeDeclinedExternalImages(): Promise<string> {
       rescannedAt: null,
       externalImageAnalyzedAt: null,
       imageUrl: { startsWith: "https://" },
+      // Et afvist Open Food Facts-billede (admin Open Food Facts → Billeder)
+      // dur ikke som forside og må ikke fritlægges; varen venter på en ny
+      // forside via genscanning eller scan-appens "Skal scannes".
+      OR: [{ offImageReview: null }, { offImageReview: "APPROVED" }],
     },
     orderBy: { rescanOfferedAt: "asc" },
     take: MAX_PER_RUN,

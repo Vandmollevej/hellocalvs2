@@ -33,6 +33,7 @@ import dk.packroff.hellocal.nav.RouteArgs
 import dk.packroff.hellocal.theme.HcColors
 import dk.packroff.hellocal.theme.HcTypeRoles
 import dk.packroff.hellocal.ui.HcBottomSheet
+import dk.packroff.hellocal.api.Api
 import dk.packroff.hellocal.ui.HcButton
 import dk.packroff.hellocal.ui.HcLoader
 import dk.packroff.hellocal.ui.HcScreen
@@ -78,6 +79,11 @@ fun ProfileEditScreen(args: RouteArgs) {
     // Phone (docs/DECISIONS.md 2026-10-02): required, can be corrected but not deleted.
     var phoneDraft by remember { mutableStateOf<String?>(null) }
     var phoneError by remember { mutableStateOf<String?>(null) }
+    // Lock popups: start weight and height are locked; the popup explains why and offers to unlock anyway.
+    // The height stays unlocked only while this screen is open.
+    var lockSheet by remember { mutableStateOf<String?>(null) }
+    var heightUnlocked by remember { mutableStateOf(false) }
+    var verifyStatus by remember { mutableStateOf("idle") }
 
     LaunchedEffect(Unit) {
         user = runCatching { ProfileApi.loadUser() }.getOrNull()
@@ -172,7 +178,7 @@ fun ProfileEditScreen(args: RouteArgs) {
                         ProfileFieldLabel(t.t("profile.field.weight"))
                         ProfileValueButton(
                             text = (current.weightKg?.let { Units.formatWeight(it, units.weight) } ?: Units.weightUnitLabel(units.weight)).uppercase(),
-                            onClick = { nav.push("/profile/start-weight") },
+                            onClick = { lockSheet = "weight" },
                             dimmed = true,
                             leading = { HcIcon("Lock", size = 18.dp, color = HcColors.Black) },
                         )
@@ -191,10 +197,10 @@ fun ProfileEditScreen(args: RouteArgs) {
                     Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(8.dp)) {
                         ProfileFieldLabel(t.t("profile.field.height"))
                         val heightCm = current.heightCm
-                        if (heightCm != null) {
+                        if (heightCm != null && !heightUnlocked) {
                             ProfileValueButton(
                                 text = Units.formatLength(heightCm, units.height).uppercase(),
-                                onClick = { nav.push("/profile/height") },
+                                onClick = { lockSheet = "height" },
                                 dimmed = true,
                                 leading = { HcIcon("Lock", size = 18.dp, color = HcColors.Black) },
                             )
@@ -202,7 +208,7 @@ fun ProfileEditScreen(args: RouteArgs) {
                             val inches = units.height == HeightUnit.In
                             ProfileWheelPicker(
                                 label = t.t("profile.field.height"),
-                                value = null,
+                                value = current.heightCm?.let { if (inches) Units.cmToIn(it).roundToInt() else it.roundToInt() },
                                 min = if (inches) 39 else 100,
                                 max = if (inches) 91 else 230,
                                 unit = units.height.code.uppercase(),
@@ -250,6 +256,57 @@ fun ProfileEditScreen(args: RouteArgs) {
             }
         }
     }
+    if (lockSheet == "weight") {
+        HcBottomSheet(onDismiss = { lockSheet = null; verifyStatus = "idle" }, title = t.t("profile.startWeight.lockTitle")) {
+            Column(Modifier.padding(start = 16.dp, end = 16.dp, bottom = 16.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
+                HcText(t.t("profile.startWeight.lockBody"), HcTypeRoles.Body, color = HcColors.Black)
+                HcButton(t.t("profile.startWeight.setDailyWeight"), onClick = { lockSheet = null; nav.push("/profile/weight-calibration") })
+                if (verifyStatus == "sent" || verifyStatus == "error") {
+                    HcText(
+                        t.t(if (verifyStatus == "sent") "profile.startWeight.verificationSent" else "profile.startWeight.verificationError"),
+                        HcTypeRoles.Caption,
+                        color = HcColors.TextSecondary,
+                        align = TextAlign.Center,
+                    )
+                }
+                if (verifyStatus != "sent") {
+                    HcText(
+                        t.t("profile.startWeight.editAnyway"),
+                        HcTypeRoles.Body,
+                        Modifier.padding(top = 24.dp).align(Alignment.CenterHorizontally).clickable(enabled = verifyStatus != "sending") {
+                            verifyStatus = "sending"
+                            scope.launch {
+                                verifyStatus = try {
+                                    Api.post("/api/profile/start-weight/verification", emptyMap<String, String>())
+                                    "sent"
+                                } catch (e: Exception) {
+                                    "error"
+                                }
+                            }
+                        },
+                        color = HcColors.Black,
+                        underline = true,
+                    )
+                }
+            }
+        }
+    }
+    if (lockSheet == "height") {
+        HcBottomSheet(onDismiss = { lockSheet = null }, title = t.t("profile.height.lockTitle")) {
+            Column(Modifier.padding(start = 16.dp, end = 16.dp, bottom = 16.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
+                HcText(t.t("profile.height.lockBody"), HcTypeRoles.Body, color = HcColors.Black)
+                Box(Modifier.align(Alignment.CenterHorizontally)) {
+                    HcSheetSkipButtonUnderlined(t.t("profile.height.editAnyway")) { heightUnlocked = true }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun HcSheetSkipButtonUnderlined(label: String, onClick: () -> Unit) {
+    val close = dk.packroff.hellocal.ui.LocalHcSheetClose.current
+    HcText(label, HcTypeRoles.Body, Modifier.clickable { onClick(); close() }, color = HcColors.Black, underline = true)
 }
 
 @Composable
