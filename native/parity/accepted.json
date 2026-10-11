@@ -2637,7 +2637,7 @@
     "src/components/icons/Favorite.tsx": "70f85dd37d71acbf",
     "src/components/icons/PhotoFrame.tsx": "20ffbe92a0057321",
     "src/components/icons/WaistMeasure.tsx": "47f849581ff0f288",
-    "src/components/web/WebShell.tsx": "5f2646ffd79af9cc"
+    "src/components/web/WebShell.tsx": "140f689fa503d8f4"
   },
   "/settings/payment": {
     "src/app/layout.tsx": "ce9cce1fff73600a",
