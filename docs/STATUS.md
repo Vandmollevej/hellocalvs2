@@ -253,3 +253,5 @@ Last updated: 2026-10-11
 - Codex12okt00:52:289 yderligere Nemlig-typer verificeret;1364 tomme Nemlig,1849 samlet alle10ark. Kaffeformer afklaret fra faktisk Subtitle kol40. Andre celler/formler bevaret; samlet opfølgning stadig uafsluttet.
 
 - Codex12okt01:02:531yderligereNemlig-typer verificeret. Ny audit alle10ark bekræfter833tommeNemlig og1318samlet. Andre celler/formlerbevaret. Samletopfølgningstadiguafsluttet.
+
+- Codex12okt01:12:128yderligereNemlig-typer verificeret;705tommeNemlig,1190samlet. Primærkilderogfaktiskeundertitler afklarermærkevarianter. Øvrige celler/formlerbevaret;samletopfølgningikkeafsluttet.
