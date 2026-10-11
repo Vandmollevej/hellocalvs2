@@ -4,13 +4,35 @@
 // Env: GOOGLE_HEALTH_CLIENT_ID/GOOGLE_HEALTH_CLIENT_SECRET (Google Cloud OAuth-klient).
 
 import type { IntegrationItem } from "@/lib/integrations/store-items";
+import {
+  GOOGLE_DAILY_SPECS,
+  GOOGLE_INTERVAL_SPECS,
+  MG_DL_PER_MMOL_L,
+  googleDailyItems,
+  googleHeartRateItems,
+  googleIntervalDayItems,
+  googleNumber,
+  googleSleepItems,
+  type DailySpec,
+  type GooglePoint,
+  type IntervalSpec,
+} from "./google-health-items";
 import { DAY_MS, clientCredentials, getJson, postForm, postJson, type OAuthProviderAdapter, type OAuthTokens } from "./types";
 
 const AUTHORIZE_URL = "https://accounts.google.com/o/oauth2/v2/auth";
 const TOKEN_URL = "https://oauth2.googleapis.com/token";
 const API = "https://health.googleapis.com/v4/users/me/dataTypes";
 const SCOPE = "https://www.googleapis.com/auth/googlehealth";
-const READ_SCOPES = [`${SCOPE}.activity_and_fitness.readonly`, `${SCOPE}.health_metrics_and_measurements.readonly`];
+// Søvn og vand (hydration-log) har egne scopes (2026-10-11); ældre forbindelser
+// skal forbinde igen for at få dem med (readScopes nedenfor).
+const SLEEP_SCOPE = `${SCOPE}.sleep.readonly`;
+const NUTRITION_READ_SCOPE = `${SCOPE}.nutrition.readonly`;
+const READ_SCOPES = [
+  `${SCOPE}.activity_and_fitness.readonly`,
+  `${SCOPE}.health_metrics_and_measurements.readonly`,
+  SLEEP_SCOPE,
+  NUTRITION_READ_SCOPE,
+];
 // Skriveadgang pr. datatype, der sendes fra Hello Cal (developers.google.com/health/scopes).
 const WRITE_SCOPES = {
   nutrition: `${SCOPE}.nutrition.writeonly`,
@@ -189,18 +211,23 @@ async function dailyActiveEnergy(accessToken: string, since: Date): Promise<Inte
   return [];
 }
 
-// Enkeltmålinger (2026-10-03). Feltnavnet på selve tallet er ikke prøvet mod
-// live-API'et, så værdien findes som første tal i datapunktet uden for
-// tidsfelterne; data-typens navn følger samme mønster som weight/body-fat.
-const SAMPLE_TYPES: { dataType: string; type: string; convert?: (value: number) => number }[] = [
-  // Højde: mm, cm eller m afhængigt af størrelsen → cm.
-  { dataType: "height", type: "HEIGHT_CM", convert: (v) => Math.round((v > 1000 ? v / 10 : v > 3 ? v : v * 100) * 10) / 10 },
-  { dataType: "resting-heart-rate", type: "RESTING_HEART_RATE_BPM" },
-  { dataType: "heart-rate-variability", type: "HEART_RATE_VARIABILITY_MS" },
-  { dataType: "oxygen-saturation", type: "OXYGEN_SATURATION_PERCENT" },
-  { dataType: "respiratory-rate", type: "RESPIRATORY_RATE_BPM" },
-  { dataType: "body-temperature", type: "TEMPERATURE_C" },
-  { dataType: "vo2-max", type: "VO2_MAX" },
+// Enkeltmålinger. `field` er det præcise felt i datapunktet
+// (developers.google.com/health/reference); uden det bruges første tal.
+// Dagsværdier (hvilepuls, HRV, SpO2, åndedræt, VO2 max) hentes som daily-typer.
+const SAMPLE_TYPES: { dataType: string; type: string; field?: string; convert?: (value: number) => number }[] = [
+  // Højde i mm → cm.
+  { dataType: "height", type: "HEIGHT_CM", field: "heightMillimeters", convert: (v) => Math.round((v / 10) * 10) / 10 },
+  { dataType: "heart-rate-variability", type: "HEART_RATE_VARIABILITY_MS", field: "rootMeanSquareOfSuccessiveDifferencesMilliseconds" },
+  { dataType: "oxygen-saturation", type: "OXYGEN_SATURATION_PERCENT", field: "percentage" },
+  { dataType: "core-body-temperature", type: "TEMPERATURE_C", field: "temperatureCelsius" },
+  { dataType: "vo2-max", type: "VO2_MAX", field: "vo2Max" },
+  // mg/dL → mmol/L.
+  {
+    dataType: "blood-glucose",
+    type: "BLOOD_GLUCOSE_MMOL_L",
+    field: "bloodGlucoseMilligramsPerDeciliter",
+    convert: (v) => Math.round((v / MG_DL_PER_MMOL_L) * 100) / 100,
+  },
 ];
 
 const TIME_KEYS = new Set(["sampleTime", "interval", "physicalTime", "startTime", "endTime", "startUtcOffset", "endUtcOffset", "utcOffset", "civilTime"]);
@@ -240,7 +267,8 @@ async function samples(accessToken: string, since: Date, spec: (typeof SAMPLE_TY
   return points.flatMap((p) => {
     const inner = innerOf(p as unknown as Record<string, unknown>, spec.dataType);
     const at = inner ? sampleTimeOf(inner) : null;
-    const raw = inner ? firstNumber(inner) : null;
+    const exact = inner && spec.field ? googleNumber((inner as Record<string, unknown>)[spec.field]) : null;
+    const raw = exact ?? (inner ? firstNumber(inner) : null);
     if (!at || raw === null || raw <= 0) return [];
     const value = spec.convert ? spec.convert(raw) : Math.round(raw * 100) / 100;
     return [{ kind: "metric", payload: { source: "GOOGLE_HEALTH", type: spec.type, value, recordedAt: at } }];
@@ -249,7 +277,7 @@ async function samples(accessToken: string, since: Date, spec: (typeof SAMPLE_TY
 
 // Iltmætning, åndedræt og HRV kommer som en måling hvert minut; det fylder
 // kalenderen med 60 rækker i timen. De samles til ét gennemsnit pr. time.
-const HOURLY_TYPES = new Set(["OXYGEN_SATURATION_PERCENT", "RESPIRATORY_RATE_BPM", "HEART_RATE_VARIABILITY_MS"]);
+const HOURLY_TYPES = new Set(["OXYGEN_SATURATION_PERCENT", "RESPIRATORY_RATE_BPM", "HEART_RATE_VARIABILITY_MS", "TEMPERATURE_C"]);
 
 type MetricPayload = { type: string; value: number; recordedAt: string };
 
@@ -278,6 +306,45 @@ export function averagePerHour(items: IntegrationItem[]): IntegrationItem[] {
   return rest;
 }
 
+// Dagsværdier (hvilepuls, HRV, SpO2, åndedræt, VO2 max, søvntemperatur).
+// Filter: `<type>.date >= "ÅÅÅÅ-MM-DD"` (developers.google.com/health/filters).
+async function dailyValues(accessToken: string, since: Date, spec: DailySpec): Promise<IntegrationItem[]> {
+  const field = spec.dataType.replace(/-/g, "_");
+  const points = await listDataPoints(accessToken, spec.dataType, `${field}.date >= "${since.toISOString().slice(0, 10)}"`, 1000);
+  return googleDailyItems(spec, points as unknown as GooglePoint[]);
+}
+
+// Søvn (session): filtreres på slutdatoen, så natten hører til den dag, man vågner.
+async function sleeps(accessToken: string, since: Date): Promise<IntegrationItem[]> {
+  const points = await listDataPoints(
+    accessToken,
+    "sleep",
+    `sleep.interval.civil_end_time >= "${since.toISOString().slice(0, 19)}"`,
+    100
+  );
+  return googleSleepItems(points as unknown as GooglePoint[]);
+}
+
+async function intervalDays(accessToken: string, since: Date, spec: IntervalSpec): Promise<IntegrationItem[]> {
+  const from = new Date(Math.floor(since.getTime() / DAY_MS) * DAY_MS - DAY_MS);
+  const field = spec.dataType.replace(/-/g, "_");
+  const points = await listDataPoints(accessToken, spec.dataType, civilStart(field, from), 10000);
+  return googleIntervalDayItems(spec, points as unknown as GooglePoint[]);
+}
+
+// Puls kommer med få sekunders mellemrum under træning; kun de seneste 14 dage
+// hentes, så sider og kald holder sig inden for grænsen.
+async function heartRates(accessToken: string, since: Date): Promise<IntegrationItem[]> {
+  const from = new Date(Math.max(since.getTime(), Date.now() - 14 * DAY_MS));
+  const points = await listDataPoints(
+    accessToken,
+    "heart-rate",
+    `heart_rate.sample_time.physical_time >= "${from.toISOString()}"`,
+    1000
+  );
+  return googleHeartRateItems(points as unknown as GooglePoint[]);
+}
+
 export const googleHealth: OAuthProviderAdapter = {
   provider: "GOOGLE_HEALTH",
   slug: "google-health",
@@ -285,7 +352,9 @@ export const googleHealth: OAuthProviderAdapter = {
   envPrefix: "GOOGLE_HEALTH",
   initialDays: 90,
   // 1: skridt, træning og aktiv energi blev før hentet med et afvist filter; hent de 90 dage igen én gang.
-  fetchVersion: 1,
+  // 2 (2026-10-11): søvn, puls, dagsværdier, distance, etager, zoneminutter, vand, blodsukker.
+  fetchVersion: 2,
+  readScopes: { sleep: SLEEP_SCOPE, water: NUTRITION_READ_SCOPE },
   buildAuthorizeUrl(state, redirectUri, settings) {
     const url = new URL(AUTHORIZE_URL);
     url.searchParams.set("client_id", clientCredentials("GOOGLE_HEALTH").clientId);
@@ -326,6 +395,10 @@ export const googleHealth: OAuthProviderAdapter = {
       dailySteps(accessToken, since),
       dailyActiveEnergy(accessToken, since),
       ...SAMPLE_TYPES.map((spec) => samples(accessToken, since, spec)),
+      sleeps(accessToken, since),
+      heartRates(accessToken, since),
+      ...GOOGLE_DAILY_SPECS.map((spec) => dailyValues(accessToken, since, spec)),
+      ...GOOGLE_INTERVAL_SPECS.map((spec) => intervalDays(accessToken, since, spec)),
     ]);
     results.forEach((r, i) => {
       if (r.status === "rejected") console.error(`Google Health datatype #${i} fejlede`, r.reason);

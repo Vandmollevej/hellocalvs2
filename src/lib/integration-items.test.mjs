@@ -9,6 +9,14 @@ import { readTypeOf } from "./integrations/sync-settings.ts";
 import { withingsActivityItems, withingsMeasureItems, withingsSleepItems, withingsWorkoutItems } from "./integrations/withings-items.ts";
 import { polarCardioLoadItems, polarRechargeItems, polarSleepItems } from "./integrations/polar-items.ts";
 import { fitbitNumber, fitbitSeriesItems, fitbitSleepItems } from "./integrations/fitbit-items.ts";
+import {
+  GOOGLE_DAILY_SPECS,
+  GOOGLE_INTERVAL_SPECS,
+  googleDailyItems,
+  googleHeartRateItems,
+  googleIntervalDayItems,
+  googleSleepItems,
+} from "./integrations/google-health-items.ts";
 import { huaweiSampleItems, HUAWEI_SAMPLE_TYPES } from "./integrations/huawei-items.ts";
 
 const byType = (items) => Object.fromEntries(items.filter((i) => i.kind === "metric").map((i) => [i.payload.type, i.payload]));
@@ -268,4 +276,93 @@ test("Hver kropsmåling har sin egen til/fra-række", () => {
   assert.equal(readTypeOf(metric("BONE_MASS_KG")), "boneMass");
   assert.equal(readTypeOf(metric("VISCERAL_FAT_INDEX")), "visceralFat");
   assert.equal(readTypeOf(metric("HEIGHT_CM")), "body");
+});
+
+test("Google Health: søvn bliver til nattens målinger på vågne-dagen, lure springes over", () => {
+  const night = {
+    sleep: {
+      interval: { startTime: "2026-10-01T20:30:00Z", startUtcOffset: "7200s", endTime: "2026-10-02T04:30:00Z", endUtcOffset: "7200s" },
+      metadata: { mainSleep: true },
+      summary: {
+        minutesAsleep: "420",
+        minutesInSleepPeriod: "480",
+        minutesAwake: "60",
+        stagesSummary: [
+          { type: "DEEP", minutes: "80" },
+          { type: "LIGHT", minutes: "240" },
+          { type: "REM", minutes: "100" },
+          { type: "AWAKE", minutes: "60" },
+        ],
+      },
+      shortAwakenings: [{}, {}, {}],
+    },
+  };
+  const nap = { sleep: { interval: { startTime: "2026-10-02T11:00:00Z", endTime: "2026-10-02T11:30:00Z" }, metadata: { nap: true } } };
+  const m = byType(googleSleepItems([night, nap]));
+  assert.equal(m.SLEEP_MINUTES.value, 420);
+  assert.equal(m.SLEEP_MINUTES.recordedAt, "2026-10-02T00:00:00.000Z");
+  assert.equal(m.SLEEP_IN_BED_MINUTES.value, 480);
+  assert.equal(m.SLEEP_DEEP_MINUTES.value, 80);
+  assert.equal(m.SLEEP_REM_MINUTES.value, 100);
+  assert.equal(m.SLEEP_AWAKENINGS.value, 3);
+  assert.equal(m.SLEEP_EFFICIENCY_PERCENT.value, 87.5);
+  assert.equal(m.SLEEP_START_MINUTE_OF_DAY.value, 22 * 60 + 30);
+  assert.equal(m.SLEEP_END_MINUTE_OF_DAY.value, 6 * 60 + 30);
+});
+
+test("Google Health: søvn uden summary regnes ud fra faserne", () => {
+  const items = googleSleepItems([
+    {
+      sleep: {
+        interval: { startTime: "2026-10-01T22:00:00Z", endTime: "2026-10-02T06:00:00Z" },
+        stages: [
+          { type: "LIGHT", startTime: "2026-10-01T22:00:00Z", endTime: "2026-10-01T23:00:00Z" },
+          { type: "DEEP", startTime: "2026-10-01T23:00:00Z", endTime: "2026-10-02T00:00:00Z" },
+          { type: "AWAKE", startTime: "2026-10-02T00:00:00Z", endTime: "2026-10-02T00:30:00Z" },
+        ],
+      },
+    },
+  ]);
+  const m = byType(items);
+  assert.equal(m.SLEEP_MINUTES.value, 120);
+  assert.equal(m.SLEEP_AWAKE_MINUTES.value, 30);
+});
+
+test("Google Health: dagsværdier, intervalsummer og puls", () => {
+  const spec = (dataType) => GOOGLE_DAILY_SPECS.find((s) => s.dataType === dataType);
+  const resting = googleDailyItems(spec("daily-resting-heart-rate"), [
+    { dailyRestingHeartRate: { date: { year: 2026, month: 10, day: 3 }, beatsPerMinute: "56" } },
+  ]);
+  assert.equal(byType(resting).RESTING_HEART_RATE_BPM.value, 56);
+  assert.equal(byType(resting).RESTING_HEART_RATE_BPM.recordedAt, "2026-10-03T00:00:00.000Z");
+  const hrv = googleDailyItems(spec("daily-heart-rate-variability"), [
+    { dailyHeartRateVariability: { date: { year: 2026, month: 10, day: 3 }, averageHeartRateVariabilityMilliseconds: 41.5 } },
+  ]);
+  assert.equal(byType(hrv).HEART_RATE_VARIABILITY_MS.value, 41.5);
+
+  const distance = GOOGLE_INTERVAL_SPECS.find((s) => s.dataType === "distance");
+  const km = googleIntervalDayItems(distance, [
+    { distance: { interval: { startTime: "2026-10-01T10:00:00Z" }, millimeters: "1000000" } },
+    { distance: { interval: { startTime: "2026-10-02T10:00:00Z" }, millimeters: "2500000" } },
+    { distance: { interval: { startTime: "2026-10-02T12:00:00Z" }, millimeters: "500000" } },
+  ]);
+  // Første dag springes over (kan være ufuldstændig).
+  assert.equal(km.length, 1);
+  assert.equal(km[0].payload.value, 3);
+
+  const bpm = googleHeartRateItems([
+    { heartRate: { sampleTime: { physicalTime: "2026-10-02T10:05:00Z" }, beatsPerMinute: "60" } },
+    { heartRate: { sampleTime: { physicalTime: "2026-10-02T10:35:00Z" }, beatsPerMinute: "100" } },
+  ]);
+  const hr = Object.fromEntries(bpm.map((i) => [i.payload.type, i.payload.value]));
+  assert.equal(hr.HEART_RATE_BPM, 80);
+  assert.equal(hr.HEART_RATE_MIN_BPM, 60);
+  assert.equal(hr.HEART_RATE_MAX_BPM, 100);
+});
+
+test("Google Health: søvn og vand findes som til/fra-valg", async () => {
+  const { capabilitiesFor } = await import("./integrations/sync-settings.ts");
+  const read = capabilitiesFor("GOOGLE_HEALTH").read;
+  assert.ok(read.includes("sleep"));
+  assert.ok(read.includes("water"));
 });

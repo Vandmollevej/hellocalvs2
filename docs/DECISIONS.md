@@ -5018,3 +5018,11 @@ Kalenderens "Tilbage for i dag" lagde kun registrerede træningspas oven i måle
 
 ## 2026-10-11 — Google Health: intervaldata filtreres på civil_start_time
 Skridt, træning og aktiv energi blev hentet med `<type>.interval.start_time >= "…Z"`, som Google afviser (400). Fejlen blev slugt af `Promise.allSettled`, så kun vægt/målinger kom ind og kaloriegrænsen aldrig rykkede sig. Filteret er nu `<type>.interval.civil_start_time >= "ÅÅÅÅ-MM-DDTHH:MM:SS"` (uden Z), afviste datatyper logges, og `fetchVersion` = 1 henter de 90 dage igen én gang.
+
+## 2026-10-11: Google Health henter alt, API'et kan levere
+
+Brugerens krav: hent alt sundhedsdata, hver app kan levere — også envejs, ikke kun det der kan synkroniseres tovejs.
+- Google Health manglede søvn og de fleste sundhedsmålinger. Nu hentes (`src/lib/integrations/google-health.ts` + `google-health-items.ts`): søvn med faser/effektivitet/leje-tidspunkter (nye scope `sleep.readonly`), puls (time-gennemsnit + dagens min/max, 14 dage), hvilepuls, HRV, SpO2, åndedræt, VO2 max, søvntemperatur, kernetemperatur, blodsukker, højde, distance, etager, zoneminutter, træningsminutter og vand (`nutrition.readonly`).
+- Søvn og vand er nye læsevalg for Google Health. Ældre forbindelser skal forbinde igen for dem (`readScopes`); `fetchVersion` 2 henter de 90 dage igen.
+- Google Cloud-klienten skal have `sleep.readonly` og `nutrition.readonly` slået til (brugeren).
+- Withings, Polar, Fitbit, Garmin, WHOOP og Huawei var allerede udvidet 2026-10-03; Strava leverer kun træning.
