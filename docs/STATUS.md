@@ -225,3 +225,5 @@ Last updated: 2026-10-11
 - Codex 20:34: DRK nu 15 tomme produkttyper; fire nye kildekontrollerede typer, alle øvrige celler/formler bevaret. Deploykontrol af admin-merge skal fortsat afklares.
 
 - Codex 20:44: sidste admin-kode deployet grønt i abd501c7/PR #400; efterfølgende PR #399 kun docs, derfor korrekt intet nyt deploy. DRK nu 13 tomme produkttyper. Arkene er fortsat under arbejde.
+
+- Codex 20:54: fem yderligere kildekontrollerede typer. DRK ni tomme typer, Årstiderne to. Andre celler/formler bevaret; samlet opfølgning og Excel endnu ikke afsluttet.
