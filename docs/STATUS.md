@@ -2,6 +2,9 @@
 
 Last updated: 2026-10-11
 
+## 2026-10-11: Scan-kontekst (land + sprog) på varer
+
+- Nye kolonner `scannedCountry`, `scannedLanguage`, `scannedDeviceLocale` på varer og scanninger; migration `20261011180000_scan_context` skal med deployet (backfill DK/da). Ikke typetjekket / kørt her (node_modules mangler). Se DECISIONS.
 ## 2026-10-11: Admin langsom ved sideskift — hurtigere sider + valg mellem evigheds-scroll og sideinddelt
 
 - **Årsager:** ingen indlæsningsskelet (`loading.tsx`) i admin, så siden stod stille, til alle databasekald var færdige; Usikkerheder hentede op til 4000 rækker med joins og sendte dem alle til browseren, og "Øvrige advarsler" læste hele varekataloget for at finde dubletter; Dubletter kørte de tunge gruppe-opslag to gange pr. visning (tælling + side); admin-oversigten brugte hele usikkerhedslisten blot til at tælle; ingen cache.

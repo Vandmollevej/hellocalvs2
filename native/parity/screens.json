@@ -503,6 +503,12 @@
       "native": []
     },
     {
+      "route": "/admin/product-database/open-food-facts/images",
+      "web": "src/app/admin/product-database/open-food-facts/images/page.tsx",
+      "status": "pending",
+      "native": []
+    },
+    {
       "route": "/admin/product-database/products",
       "web": "src/app/admin/product-database/products/page.tsx",
       "status": "web-only",

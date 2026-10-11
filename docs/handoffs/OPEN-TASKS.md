@@ -537,3 +537,7 @@ Ejer: ledig (2026-10-10)
 | **PRODUKTTYPE-GENNEMGANG (2026-10-11)** | Gendan forkerte produkttype-skrivninger i DRK/Årstiderne/DM/EDEKA/REWE, skriv regel-lint (20 regler), fjern dyremad, ret Quantity/Pack Count/MHD/lande, udtræk produkttype forsigtigt | Blokeret af bruger-gennemsyn | Se `docs/handoffs/2026-10-11-produkttype-gennemgang.md`. Gendan fra `Backup/*_2026-10-11_foer_produkttype.xlsx` først |
 
 | forside-infoboks | Port forsidens InfoBox (puls over dagen, swipe-visninger) til `HomeScreen.kt` + AI-statistikvisninger | Ikke startet | Se STATUS 2026-10-11 |
+
+## G-PARITET-GAELD — Native-skærme accepteret uden at være porteret (2026-10-11)
+
+Master var rød i "Web ↔ native in step" (menu/header-ændringer i `AddMenuList`, `ScreenHeader`, `WebShell` + nye Open Food Facts-adminsider). PR #396 kørte `--register` og `--accept-all` for at få CI grøn efter brugerens udtrykkelige ordre. Native-skærmene er IKKE gennemgået; Kotlin kan ikke kompileres i cloud-sessionen. Næste skridt: sammenlign menu/header på web og native og ret forskelle.

@@ -4,6 +4,7 @@ import { POST as createHelloCalProduct } from "@/app/api/products/route";
 import { requireScanWorker } from "@/lib/scan/require-worker";
 import { getPayPerItemOre, isOwnEarlierProduct, parseLocation } from "@/lib/scan/submissions";
 import { lookupStoreName } from "@/lib/scan/storage";
+import { readScanContext } from "@/lib/scan/device-context";
 import { completeScanRequest } from "@/lib/scan/review-requests";
 import { saveDataUrlImage } from "@/lib/qc-image-storage";
 import { linkCutoutJobsToProduct } from "@/lib/image-cutout-jobs";
@@ -95,7 +96,14 @@ export async function POST(req: Request) {
     kind = "NEW_PRODUCT";
   }
 
-  const product = await prisma.product.findUnique({ where: { id: productId }, select: { ingredientsText: true } });
+  const scanContext = readScanContext(req);
+  const product = await prisma.product.findUnique({
+    where: { id: productId },
+    select: { ingredientsText: true, scannedCountry: true },
+  });
+  if (product && !product.scannedCountry && scanContext.scannedCountry) {
+    await prisma.product.update({ where: { id: productId }, data: scanContext });
+  }
   const submission = await prisma.scanSubmission.create({
     data: {
       workerId: worker.id,
@@ -111,6 +119,7 @@ export async function POST(req: Request) {
       capturedAt: location.capturedAt,
       storeName: await lookupStoreName(location.latitude, location.longitude),
       amountOre: await getPayPerItemOre(),
+      ...scanContext,
     },
   });
 

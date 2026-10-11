@@ -1451,6 +1451,12 @@ model Product {
   // prefix was issued, not necessarily where the product was made — used only
   // as a country/market ranking proxy, see inferGs1OriginCountryCode().
   originCountryCode String?
+  // Scan context (2026-10-11): where the product was scanned (ISO country,
+  // e.g. "DK"), the phone's language ("da") and full region setting
+  // ("da-DK"). First scan wins. Used to tune how products are shown.
+  scannedCountry      String?
+  scannedLanguage     String?
+  scannedDeviceLocale String?
   // Extra nutrition values that don't fit in the fixed per-100g fields above
   // (e.g. HelloFresh recipes' fiber/sugar/salt/potassium/calcium/iron per
   // serving size). See docs/DECISIONS.md (2026-08-29).
@@ -4046,6 +4052,9 @@ model ScanSubmission {
   longitude          Float
   accuracyM          Float?
   storeName          String?
+  scannedCountry      String?
+  scannedLanguage     String?
+  scannedDeviceLocale String?
   // Tidspunkt for billedet vs. createdAt = tidspunkt for produktoprettelsen.
   capturedAt         DateTime
   createdAt          DateTime             @default(now())
