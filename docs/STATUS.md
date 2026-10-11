@@ -241,3 +241,5 @@ Last updated: 2026-10-11
 - Codex23:52:199 yderligere Nemlig-typer verificeret;3098 tomme Nemlig,3583 samlet alle10ark. Andre celler/formler bevaret; samlet opfølgning stadig ikke afsluttet.
 
 - Codex12okt00:02:260 yderligere Nemlig-typer verificeret;2838 tomme Nemlig,3323 samlet alle10ark. Andre celler/formler bevaret. Samlet opfølgning fortsat uafsluttet.
+
+- Codex12okt00:12:275 yderligere Nemlig-typer verificeret;2563 tomme Nemlig,3048 samlet alle10ark. Andre celler/formler bevaret. Samlet opfølgning ikke afsluttet.
