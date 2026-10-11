@@ -6,7 +6,7 @@ export type GenericImageRow = { id: string; name: string; imageUrl: string | nul
 export function GenericImageList({ rows }: { rows: GenericImageRow[] }) {
   return (
     <section className="flex flex-col gap-3">
-      <h3 className="hf-type-body hf-type-strong text-hf-black">Generiske billeder</h3>
+      <h3 className="hf-type-card-title text-hf-black">Generiske billeder</h3>
       {rows.length === 0 ? (
         <p className="hf-type-body text-text-secondary">Ingen generiske varer endnu.</p>
       ) : (

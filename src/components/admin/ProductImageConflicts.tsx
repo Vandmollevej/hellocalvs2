@@ -60,7 +60,7 @@ export function ProductImageConflicts({ items, canEdit }: { items: ProductImageU
   return (
     <section id="findes-allerede" className="flex scroll-mt-4 flex-col gap-3 rounded-lg border-2 border-hf-warning bg-hf-warning-bg p-4" aria-busy={pending}>
       <div className="flex flex-col gap-1">
-        <h2 className="hf-type-card-title text-hf-black">Findes allerede ({items.length})</h2>
+        <h3 className="hf-type-card-title text-hf-black">Findes allerede ({items.length})</h3>
         <p className="hf-type-body text-text-secondary">
           Disse varer har allerede et billede, så de nye er <span className="hf-type-strong">ikke</span> lagt op. Vælg for hvert billede — eller for alle på én gang.
         </p>

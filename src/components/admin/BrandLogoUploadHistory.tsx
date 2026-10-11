@@ -86,7 +86,7 @@ export function BrandLogoUploadHistory({ batches, canEdit }: { batches: LogoUplo
 
   return (
     <section className="flex flex-col gap-4" aria-busy={pending}>
-      <h2 className="hf-type-card-title text-hf-black">Uploads</h2>
+      <h3 className="hf-type-card-title text-hf-black">Uploads</h3>
       {notice && (
         <p className={`hf-type-body ${notice.ok ? "text-hf-green-dark" : "text-hf-red-dark"}`} role="status">
           {notice.text}
@@ -106,7 +106,7 @@ export function BrandLogoUploadHistory({ batches, canEdit }: { batches: LogoUplo
           <article key={batch.id} className="hf-panel">
             <header className="flex flex-col gap-2">
               <div className="flex flex-wrap items-baseline justify-between gap-2">
-                <h3 className="hf-type-body-lg hf-type-strong text-hf-black">Parti {formatTimestamp(batch.createdAt)}</h3>
+                <h4 className="hf-type-body-lg hf-type-strong text-hf-black">Parti {formatTimestamp(batch.createdAt)}</h4>
                 <p className="hf-type-body text-text-secondary">
                   {batch.items.length} {batch.items.length === 1 ? "fil" : "filer"} · <span className="text-hf-green-dark">{inUse} i brug</span>
                   {unmatched > 0 && <span className="text-hf-warning"> · {unmatched} mangler brand</span>}

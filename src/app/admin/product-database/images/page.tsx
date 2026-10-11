@@ -52,33 +52,40 @@ export default async function AdminImagesPage() {
         </p>
       </div>
 
-      <div className="grid grid-cols-1 gap-6 xl:grid-cols-2">
-        <section className="flex min-w-0 flex-col gap-6">
-          <h2 className="hf-type-body hf-type-strong text-hf-black">Produktbilleder</h2>
+      {/* Kolonneoverskrifterne er den globale sektionsoverskrift (.hf-type-section-title, design.md §4.3):
+          den ejer selv afstanden til indholdet, så overskriften står direkte over upload-feltet, og de to
+          upload-felter starter i samme højde. */}
+      <div className="grid grid-cols-1 items-start gap-x-6 gap-y-8 xl:grid-cols-2">
+        <section className="flex min-w-0 flex-col">
+          <h2 className="hf-type-section-title text-hf-black">Produktbilleder</h2>
           <ProductImageUploader canEdit={canEdit} />
-          <GenericImageList rows={generics.map((g) => ({ id: g.id, name: g.name, imageUrl: g.imageUrl, cooked: g.cookingState !== "RAW" }))} />
-          <ProductImageConflicts items={conflicts.map(toProductImageItem)} canEdit={canEdit} />
-          <ProductImageUploadHistory
-            canEdit={canEdit}
-            batches={imageBatches.map((batch) => ({
-              id: batch.id,
-              createdAt: batch.createdAt.toISOString(),
-              items: batch.items.map(toProductImageItem),
-            }))}
-          />
+          <div className="mt-6 flex flex-col gap-6">
+            <GenericImageList rows={generics.map((g) => ({ id: g.id, name: g.name, imageUrl: g.imageUrl, cooked: g.cookingState !== "RAW" }))} />
+            <ProductImageConflicts items={conflicts.map(toProductImageItem)} canEdit={canEdit} />
+            <ProductImageUploadHistory
+              canEdit={canEdit}
+              batches={imageBatches.map((batch) => ({
+                id: batch.id,
+                createdAt: batch.createdAt.toISOString(),
+                items: batch.items.map(toProductImageItem),
+              }))}
+            />
+          </div>
         </section>
 
-        <section className="flex min-w-0 flex-col gap-6">
-          <h2 className="hf-type-body hf-type-strong text-hf-black">Logoer</h2>
+        <section className="flex min-w-0 flex-col">
+          <h2 className="hf-type-section-title text-hf-black">Logoer</h2>
           <BrandLogoUploader canEdit={canEdit} />
-          <BrandLogoUploadHistory
-            canEdit={canEdit}
-            batches={logoBatches.map((batch) => ({
-              id: batch.id,
-              createdAt: batch.createdAt.toISOString(),
-              items: batch.items.map(toUploadItem),
-            }))}
-          />
+          <div className="mt-6 flex flex-col gap-6">
+            <BrandLogoUploadHistory
+              canEdit={canEdit}
+              batches={logoBatches.map((batch) => ({
+                id: batch.id,
+                createdAt: batch.createdAt.toISOString(),
+                items: batch.items.map(toUploadItem),
+              }))}
+            />
+          </div>
         </section>
       </div>
     </div>

@@ -103,6 +103,13 @@ ikke her, er den ikke registreret og skal tilføjes.
 - "Overlay"/"popup" = den træk-bare BottomSheet (`.hf-bottom-sheet`), se KRAV.md.
 - Aktiviteten `open_water` hedder "Svømning i åbent vand" — aldrig "Havsvømning" (bruger 2026-10-09). "havsvømning" er kun et søgeord.
 - Visuelle ændringer: læs design.md; størrelse/vægt ændres i moderate trin.
+- **Kolonne-/sektionsoverskrifter i admin** (brugerens regel 2026-10-11): den
+  globale overskrift er `.hf-type-section-title` ("──── Tekst ────", design.md
+  §4.3) — brug den som `<h2>` over hver kolonne/sektion, aldrig en lille fed
+  `hf-type-body hf-type-strong`. Underoverskrifter (Uploads, Findes allerede)
+  er `<h3 className="hf-type-card-title">`. Står to kolonner side om side
+  (fx Admin → Billeder), skal deres felter starte i samme højde: vælgere/faner
+  hører til INDE i feltet, ikke over det.
 - **Decimaltegn (user rule 2026-10-10)**: arkene (og databasen) skriver decimaler med punktum ("1.5 l", "3.5% fedt"); appen viser brugerens eget decimaltegn efter landet i profilen — komma i Danmark og de andre komma-lande ("1,5 l"), punktum i fx GB/IE/US/CA/AU/NZ/CH. Vis varetekster via `DecimalText`/`localizeDecimals` (`src/lib/decimal-separator.ts`); søgning finder begge skrivemåder. Se DECISIONS.md.
 - **Originalkolonnerne i produktarkene rettes ALDRIG (user rule 2026-10-10)**: `Original Title`, `Product Name`, `Subtitle`, `Source URL`, `Image File`, `Parse Status` og butikkens øvrige skrabede kolonner (`Manufacturer`, `Servings`, `Price`, `Venue`, SPAR `Subcategory`/`Vare`/`Variant`/`quantity`) er præcis som skrabet — ingen stavning, forkortelser, decimaltegn eller m./u., hverken i hånden eller med scripts. Alle rettelser skrives i vores egne kolonner; er de ændret, hentes de tilbage fra den rå skrabning. Se Excelark/NAVNEREGLER.md.
 - **Alle ark er 100 % identiske med Bilka** (2026-10-10): de samme 45 kolonner

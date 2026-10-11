@@ -199,7 +199,7 @@ export function BrandLogoUploader({ canEdit }: { canEdit: boolean }) {
         }}
         onDrop={onDrop}
         className={
-          "flex flex-col items-center gap-3 rounded-lg border-2 border-dashed px-4 py-10 text-center transition-colors " +
+          "flex min-h-64 flex-col items-center gap-3 rounded-lg border-2 border-dashed px-4 py-10 text-center transition-colors " +
           (dragOver ? "border-hf-green-dark bg-hf-green-light" : "border-hf-tan-dark bg-hf-white")
         }
       >
@@ -207,7 +207,7 @@ export function BrandLogoUploader({ canEdit }: { canEdit: boolean }) {
           {busy ? "Upload i gang…" : canEdit ? "Træk logoer eller en hel mappe hertil" : "Kun fuld admin-adgang kan uploade logoer"}
         </p>
         <p className="hf-type-body text-text-secondary">Filnavnet skal være brandets navn</p>
-        <div className="flex flex-wrap justify-center gap-2">
+        <div className="mt-auto flex flex-wrap justify-center gap-2">
           <button
             type="button"
             disabled={!canEdit || busy}
