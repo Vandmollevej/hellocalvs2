@@ -5055,3 +5055,10 @@ Brugerens krav: en separat menu "Open Food Facts" under Varedatabase, alle samme
 - **Admin** → Varedatabase → Open Food Facts (`/admin/product-database/open-food-facts`, genvej Alt+8): nøgletal, filtre (sikkerhed, findes som vare, sprog, årsag), liste med OFF-navn → opdelte felter, enkeltside med OFF's felter, de tre tabeller og rå svar, "kør opdelingen igen" (én vare/alle), "markér som gennemgået", hent én stregkode og indlæs et OFF-udtræk (`Backup/off_raa/*.json` fra `off_hent.py`) via `/api/admin/off`.
 - **OFF-enheder rettet:** `<næringsstof>_100g` er altid gram pr. 100 g (målt mod live-API: calcium_100g 0.158 = 158 mg), uanset `_unit`. `offNutrientAs` (A-/C-vitamin, kolesterol) dividerede før med 1000 ved `_unit` = mg; nu regnes `_100g` altid som gram.
 - **Ikke gjort:** admin kan endnu ikke rette de opdelte felter i hånden (kun køre opdelingen igen og markere som gennemgået); OFF-søgning vises stadig aldrig i søgeresultater (DECISIONS 2026-09-28); butikskæder fra `stores_tags` kobles ikke til `product_stores`.
+
+## 2026-10-11 — Låst startvægt og højde: popup med "alligevel"-link
+
+- Tryk på den låste startvægt eller højde på Profil åbner et **bundark (popup)**, ikke en separat side. De gamle ruter `/profile/start-weight` og `/profile/height` sender videre til `/profile/edit`.
+- Startvægt: forklaring, stor sort knap "Sæt dagsvægt" og understreget "Rediger startvægt alligevel" under (sender verificeringsmailen; ændringen sker via mail-linket).
+- Højde: kun advarsel (ingen henvisning til integrationer) og understreget "Rediger højde alligevel", som låser feltet op. Det er låst igen ved næste side eller når appen lukkes.
+- Web og native ens (`ProfileEditScreen.kt`).

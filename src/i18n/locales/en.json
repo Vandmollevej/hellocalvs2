@@ -1563,9 +1563,9 @@
     "startWeightUpdated": "Updated on {date}",
     "height": {
       "lockTitle": "Lock",
-      "lockBody": "Your height is locked so your energy balance and BMI are always calculated from the same number. It updates automatically when a connected integration (e.g. Withings, Apple Health or Health Connect) measures a new height.",
-      "goToIntegrations": "Go to integrations",
-      "openLockedInfo": "Open information about locked height"
+      "lockBody": "Your height is locked so your energy balance and BMI are always calculated from the same number. Changing it affects those calculations, so only change it if the current value is wrong.",
+      "openLockedInfo": "Open information about locked height",
+      "editAnyway": "Edit height anyway"
     },
     "startWeight": {
       "title": "Starting weight",
@@ -1583,7 +1583,10 @@
       "saving": "Saving…",
       "saveError": "Could not save the starting weight. Please try again.",
       "saved": "Starting weight saved",
-      "backToApp": "Go back to the app"
+      "backToApp": "Go back to the app",
+      "editAnyway": "Edit starting weight anyway",
+      "verificationSent": "We have sent a verification link to your email. Open it to change your starting weight.",
+      "verificationError": "Could not send the verification email. Please try again."
     },
     "actions": {
       "photoDiary": "Diary",

@@ -1563,9 +1563,9 @@
     "startWeightUpdated": "Bijgewerkt op {date}",
     "height": {
       "lockTitle": "Vergrendeld",
-      "lockBody": "Je lengte is vergrendeld, zodat je energiebalans en BMI altijd met hetzelfde getal worden berekend. Ze wordt automatisch bijgewerkt wanneer een gekoppelde integratie (bijv. Withings, Apple Health of Health Connect) een nieuwe lengte meet.",
-      "goToIntegrations": "Naar integraties",
-      "openLockedInfo": "Open informatie over vergrendelde lengte"
+      "lockBody": "Your height is locked so your energy balance and BMI are always calculated from the same number. Changing it affects those calculations, so only change it if the current value is wrong.",
+      "openLockedInfo": "Open informatie over vergrendelde lengte",
+      "editAnyway": "Edit height anyway"
     },
     "startWeight": {
       "title": "Startgewicht",
@@ -1583,7 +1583,10 @@
       "saving": "Opslaan…",
       "saveError": "Kon het startgewicht niet opslaan. Probeer het opnieuw.",
       "saved": "Het startgewicht is opgeslagen",
-      "backToApp": "Terug naar de app"
+      "backToApp": "Terug naar de app",
+      "editAnyway": "Edit starting weight anyway",
+      "verificationSent": "We have sent a verification link to your email. Open it to change your starting weight.",
+      "verificationError": "Could not send the verification email. Please try again."
     },
     "actions": {
       "photoDiary": "Dagboek",

@@ -1563,9 +1563,9 @@
     "startWeightUpdated": "Oppdatert {date}",
     "height": {
       "lockTitle": "Lås",
-      "lockBody": "Høyden din er låst, slik at energiregnskapet og BMI alltid regnes ut fra samme tall. Den oppdateres automatisk når en tilkoblet integrasjon (f.eks. Withings, Apple Health eller Health Connect) måler en ny høyde.",
-      "goToIntegrations": "Gå til integrasjoner",
-      "openLockedInfo": "Åpne informasjon om låst høyde"
+      "lockBody": "Your height is locked so your energy balance and BMI are always calculated from the same number. Changing it affects those calculations, so only change it if the current value is wrong.",
+      "openLockedInfo": "Åpne informasjon om låst høyde",
+      "editAnyway": "Edit height anyway"
     },
     "startWeight": {
       "title": "Startvekt",
@@ -1583,7 +1583,10 @@
       "saving": "Lagrer…",
       "saveError": "Kunne ikke lagre startvekten. Prøv igjen.",
       "saved": "Startvekten er lagret",
-      "backToApp": "Gå tilbake til appen"
+      "backToApp": "Gå tilbake til appen",
+      "editAnyway": "Edit starting weight anyway",
+      "verificationSent": "We have sent a verification link to your email. Open it to change your starting weight.",
+      "verificationError": "Could not send the verification email. Please try again."
     },
     "actions": {
       "photoDiary": "Dagbok",

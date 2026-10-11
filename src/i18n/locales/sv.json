@@ -1563,9 +1563,9 @@
     "startWeightUpdated": "Uppdaterad den {date}",
     "height": {
       "lockTitle": "Lås",
-      "lockBody": "Din längd är låst så att din energiberäkning och BMI alltid räknas ut från samma värde. Den uppdateras automatiskt när en ansluten integration (t.ex. Withings, Apple Health eller Health Connect) mäter en ny längd.",
-      "goToIntegrations": "Gå till integrationer",
-      "openLockedInfo": "Öppna information om låst längd"
+      "lockBody": "Your height is locked so your energy balance and BMI are always calculated from the same number. Changing it affects those calculations, so only change it if the current value is wrong.",
+      "openLockedInfo": "Öppna information om låst längd",
+      "editAnyway": "Edit height anyway"
     },
     "startWeight": {
       "title": "Startvikt",
@@ -1583,7 +1583,10 @@
       "saving": "Sparar…",
       "saveError": "Kunde inte spara startvikten. Försök igen.",
       "saved": "Startvikten är sparad",
-      "backToApp": "Tillbaka till appen"
+      "backToApp": "Tillbaka till appen",
+      "editAnyway": "Edit starting weight anyway",
+      "verificationSent": "We have sent a verification link to your email. Open it to change your starting weight.",
+      "verificationError": "Could not send the verification email. Please try again."
     },
     "actions": {
       "photoDiary": "Dagbok",

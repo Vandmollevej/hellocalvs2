@@ -1563,9 +1563,9 @@
     "startWeightUpdated": "Aktualisiert am {date}",
     "height": {
       "lockTitle": "Sperre",
-      "lockBody": "Deine Größe ist gesperrt, damit deine Energiebilanz und dein BMI immer mit demselben Wert berechnet werden. Sie wird automatisch aktualisiert, wenn eine verbundene Integration (z. B. Withings, Apple Health oder Health Connect) eine neue Größe misst.",
-      "goToIntegrations": "Zu den Integrationen",
-      "openLockedInfo": "Informationen zur gesperrten Größe öffnen"
+      "lockBody": "Your height is locked so your energy balance and BMI are always calculated from the same number. Changing it affects those calculations, so only change it if the current value is wrong.",
+      "openLockedInfo": "Informationen zur gesperrten Größe öffnen",
+      "editAnyway": "Edit height anyway"
     },
     "startWeight": {
       "title": "Startgewicht",
@@ -1583,7 +1583,10 @@
       "saving": "Speichert…",
       "saveError": "Das Startgewicht konnte nicht gespeichert werden. Versuche es erneut.",
       "saved": "Startgewicht gespeichert",
-      "backToApp": "Zurück zur App"
+      "backToApp": "Zurück zur App",
+      "editAnyway": "Edit starting weight anyway",
+      "verificationSent": "We have sent a verification link to your email. Open it to change your starting weight.",
+      "verificationError": "Could not send the verification email. Please try again."
     },
     "actions": {
       "photoDiary": "Tagebuch",

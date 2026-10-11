@@ -10,6 +10,7 @@ import { IconWaistMeasure } from "@/components/icons/WaistMeasure";
 import { HfScreen } from "@/components/HfScreen";
 import { IconBathScale } from "@/components/hf/IconBathScale";
 import { BIRTH_DATE_MIN_AGE_YEARS, BirthDatePicker } from "@/components/ui/BirthDatePicker";
+import { BottomSheet, BottomSheetCloseButton } from "@/components/hf/BottomSheet";
 import { WheelPicker } from "@/components/ui/WheelPicker";
 import { latestTrendWeight, type MealSample, type WeightSample } from "@/lib/weight-trend";
 import { computeAge } from "@/lib/age";
@@ -137,6 +138,21 @@ export default function ProfileEditPage() {
   // men ikke slettes. Kladden gemmes først, når den er et gyldigt nummer.
   const [phoneDraft, setPhoneDraft] = useState<string | null>(null);
   const [phoneError, setPhoneError] = useState<string | null>(null);
+  // Låse-popups: startvægt og højde er låst; popup'en forklarer hvorfor og
+  // tilbyder at låse op alligevel. Højden er kun låst op, mens siden er åben.
+  const [lockSheet, setLockSheet] = useState<"weight" | "height" | null>(null);
+  const [heightUnlocked, setHeightUnlocked] = useState(false);
+  const [verifyStatus, setVerifyStatus] = useState<"idle" | "sending" | "sent" | "error">("idle");
+
+  async function sendStartWeightMail() {
+    setVerifyStatus("sending");
+    try {
+      const res = await fetch("/api/profile/start-weight/verification", { method: "POST" });
+      setVerifyStatus(res.ok ? "sent" : "error");
+    } catch {
+      setVerifyStatus("error");
+    }
+  }
 
   // Regnestykket (docs/ACTIVITY-PAL.md) hentes igen, hver gang profilen
   // gemmes, så det følger vægt, højde, alder, køn og niveau.
@@ -323,7 +339,7 @@ export default function ProfileEditPage() {
                   dagsvægt. Tom start-vægt sættes af første vejning. */}
               <button
                 type="button"
-                onClick={() => router.push("/profile/start-weight")}
+                onClick={() => setLockSheet("weight")}
                 aria-label={t("profile.startWeight.openLockedInfo")}
                 className={`${inputClass} flex items-center gap-2 text-left opacity-60`}
               >
@@ -356,10 +372,10 @@ export default function ProfileEditPage() {
                   vælges, mens den er tom; derefter opdateres den kun fra en
                   integration, og et tryk åbner "Lås"-siden. Ikke i et <label>,
                   så hjulets "Færdig" ikke sendes videre til åbne-knappen. */}
-              {user.heightCm !== null ? (
+              {user.heightCm !== null && !heightUnlocked ? (
                 <button
                   type="button"
-                  onClick={() => router.push("/profile/height")}
+                  onClick={() => setLockSheet("height")}
                   aria-label={t("profile.height.openLockedInfo")}
                   className={`${inputClass} flex items-center gap-2 text-left opacity-60`}
                 >
@@ -371,7 +387,7 @@ export default function ProfileEditPage() {
               ) : (
                 <WheelPicker
                   label={t("profile.field.height")}
-                  value={null}
+                  value={user.heightCm === null ? null : units.height === "in" ? Math.round(cmToIn(user.heightCm)) : user.heightCm}
                   min={units.height === "in" ? 39 : 100}
                   max={units.height === "in" ? 91 : 230}
                   unit={units.height.toUpperCase()}
@@ -442,6 +458,54 @@ export default function ProfileEditPage() {
 
           {!family.status?.meIsChild && <AccountDeletionSection />}
         </div>
+      )}
+      {lockSheet === "weight" && (
+        <BottomSheet
+          title={t("profile.startWeight.lockTitle")}
+          onClose={() => {
+            setLockSheet(null);
+            setVerifyStatus("idle");
+          }}
+        >
+          <div className="flex flex-col gap-4 px-4 pb-4">
+            <p className="hf-type-body text-hf-black">{t("profile.startWeight.lockBody")}</p>
+            <button
+              type="button"
+              onClick={() => router.push("/profile/weight-calibration")}
+              className="hf-control hf-btn-primary w-full px-4"
+            >
+              {t("profile.startWeight.setDailyWeight")}
+            </button>
+            {(verifyStatus === "sent" || verifyStatus === "error") && (
+              <p role="status" className="hf-type-small text-center text-text-secondary">
+                {verifyStatus === "sent" ? t("profile.startWeight.verificationSent") : t("profile.startWeight.verificationError")}
+              </p>
+            )}
+            {verifyStatus !== "sent" && (
+              <button
+                type="button"
+                onClick={sendStartWeightMail}
+                disabled={verifyStatus === "sending"}
+                className="hf-type-body mt-6 self-center text-hf-black underline disabled:opacity-50"
+              >
+                {t("profile.startWeight.editAnyway")}
+              </button>
+            )}
+          </div>
+        </BottomSheet>
+      )}
+      {lockSheet === "height" && (
+        <BottomSheet title={t("profile.height.lockTitle")} onClose={() => setLockSheet(null)}>
+          <div className="flex flex-col gap-4 px-4 pb-4">
+            <p className="hf-type-body text-hf-black">{t("profile.height.lockBody")}</p>
+            <BottomSheetCloseButton
+              onClick={() => setHeightUnlocked(true)}
+              className="hf-type-body mt-2 self-center text-hf-black underline"
+            >
+              {t("profile.height.editAnyway")}
+            </BottomSheetCloseButton>
+          </div>
+        </BottomSheet>
       )}
     </HfScreen>
   );

@@ -132,30 +132,18 @@ fun ChangePasswordScreen(args: RouteArgs) {
     }
 }
 
-/** Native port of src/app/profile/height/page.tsx — the "lock" page behind the locked height. */
+/** Native port of src/app/profile/height/page.tsx — the lock info now lives in a popup on Profil; the old route forwards there. */
 @Composable
 fun HeightLockScreen(args: RouteArgs) {
-    val t = LocalTranslator.current
     val nav = LocalNavigator.current
-    HcScreen(title = t.t("profile.height.lockTitle"), contentPadding = ProfilePagePadding) {
-        ProfilePage {
-            HcText(t.t("profile.height.lockBody"), HcTypeRoles.Body, color = HcColors.Black)
-            HcButton(t.t("profile.height.goToIntegrations"), onClick = { nav.push("/settings/integrations") })
-        }
-    }
+    LaunchedEffect(Unit) { nav.replace("/profile/edit") }
 }
 
-/** Native port of src/app/profile/start-weight/page.tsx — the start weight cannot be changed; go to daily weight. */
+/** Native port of src/app/profile/start-weight/page.tsx — the lock info now lives in a popup on Profil; the old route forwards there. */
 @Composable
 fun StartWeightLockScreen(args: RouteArgs) {
-    val t = LocalTranslator.current
     val nav = LocalNavigator.current
-    HcScreen(title = t.t("profile.startWeight.lockTitle"), contentPadding = ProfilePagePadding) {
-        ProfilePage {
-            HcText(t.t("profile.startWeight.lockBody"), HcTypeRoles.Body, color = HcColors.Black)
-            HcButton(t.t("profile.startWeight.setDailyWeight"), onClick = { nav.push("/profile/weight-calibration") })
-        }
-    }
+    LaunchedEffect(Unit) { nav.replace("/profile/edit") }
 }
 
 /** Native port of src/app/profile/target-weight/page.tsx — the old page now redirects to Målsætning. */

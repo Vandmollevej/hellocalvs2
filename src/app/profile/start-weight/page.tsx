@@ -1,27 +1,14 @@
 "use client";
 
+import { useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { HfScreen } from "@/components/HfScreen";
-import { useTranslation } from "@/i18n/LocaleProvider";
 
-// "Lås"-siden bag den låste start-vægt på Profil (docs/DECISIONS.md
-// 2026-09-25). Start-vægten kan ikke ændres; brugeren henvises til dagsvægt.
+// Låse-informationen er flyttet til en popup på Profil (docs/DECISIONS.md
+// 2026-10-11); den gamle rute sender videre dertil.
 export default function StartWeightLockPage() {
-  const { t } = useTranslation();
   const router = useRouter();
-
-  return (
-    <HfScreen title={t("profile.startWeight.lockTitle")} onBack={() => router.back()}>
-      <div className="hf-page">
-        <p className="hf-type-body text-hf-black">{t("profile.startWeight.lockBody")}</p>
-        <button
-          type="button"
-          onClick={() => router.push("/profile/weight-calibration")}
-          className="hf-control hf-btn-primary w-full px-4"
-        >
-          {t("profile.startWeight.setDailyWeight")}
-        </button>
-      </div>
-    </HfScreen>
-  );
+  useEffect(() => {
+    router.replace("/profile/edit");
+  }, [router]);
+  return null;
 }
