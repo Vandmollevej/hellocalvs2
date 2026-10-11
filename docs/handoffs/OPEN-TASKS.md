@@ -526,3 +526,5 @@ Ejer: ledig (2026-10-10)
 | Opgave | Beskrivelse | Status | Næste skridt |
 | --- | --- | --- | --- |
 | **PRODUKTTYPE-GENNEMGANG (2026-10-11)** | Gendan forkerte produkttype-skrivninger i DRK/Årstiderne/DM/EDEKA/REWE, skriv regel-lint (20 regler), fjern dyremad, ret Quantity/Pack Count/MHD/lande, udtræk produkttype forsigtigt | Blokeret af bruger-gennemsyn | Se `docs/handoffs/2026-10-11-produkttype-gennemgang.md`. Gendan fra `Backup/*_2026-10-11_foer_produkttype.xlsx` først |
+
+| forside-infoboks | Port forsidens InfoBox (puls over dagen, swipe-visninger) til `HomeScreen.kt` + AI-statistikvisninger | Ikke startet | Se STATUS 2026-10-11 |
