@@ -6,6 +6,7 @@ import { useRouter, usePathname } from "next/navigation";
 import { createContext, useContext, useEffect, useRef, useState } from "react";
 import {
   IconChevronDown,
+  IconLogout,
   IconPlus,
   IconSettings,
   IconUser,
@@ -14,17 +15,20 @@ import {
 import { AddMenuList } from "@/components/add/AddMenuList";
 import { useFamilyStatus } from "@/components/family/FamilyStatusProvider";
 import { ProfileCircle } from "@/components/family/ProfileCircle";
+import { helpPagePath } from "@/i18n";
 import { useTranslation } from "@/i18n/LocaleProvider";
+import { clearOfflineCache } from "@/lib/offline-cache";
 import {
   WEB_HOME,
-  WEB_SETTINGS,
-  WEB_SHORTCUTS,
+  WEB_SECTIONS,
   WEB_SUPPORT,
   WEB_TOP_NAV,
+  flattenWebNav,
   isWebRootPath,
+  type WebNavBadge,
   type WebNavItem,
 } from "@/lib/web-nav";
-import { WEB_COLLAPSED_KEY, readSidebarState, writeSidebarState } from "@/lib/sidebar-state";
+import { WEB_COLLAPSED_KEY, clearSidebarState, readSidebarState, writeSidebarState } from "@/lib/sidebar-state";
 
 // Desktop-version af appen (docs/DECISIONS.md 2026-09-29), bygget på
 // admin-skallen (`AdminShell`): sidebjælke i fuld højde med logo og søgefelt,
@@ -47,6 +51,37 @@ export function useInWebShell() {
   return useContext(WebShellContext);
 }
 
+// Hvilke betingede punkter og tal sidebjælken viser for den indloggede profil.
+type NavState = {
+  isFemale: boolean;
+  showFamily: boolean;
+  controlsOthers: boolean;
+  controlled: boolean;
+  badges: Record<WebNavBadge, number>;
+};
+const NavStateContext = createContext<NavState>({
+  isFemale: false,
+  showFamily: false,
+  controlsOthers: false,
+  controlled: false,
+  badges: { messages: 0, controlLog: 0 },
+});
+
+function isVisible(item: WebNavItem, state: NavState) {
+  switch (item.requires) {
+    case "female":
+      return state.isFemale;
+    case "family":
+      return state.showFamily;
+    case "controlsOthers":
+      return state.controlsOthers;
+    case "controlled":
+      return state.controlled;
+    default:
+      return true;
+  }
+}
+
 function isActive(pathname: string, href: string) {
   const path = href.split("?")[0];
   if (path === "/") return pathname === "/";
@@ -54,12 +89,15 @@ function isActive(pathname: string, href: string) {
 }
 
 // Kun det længste match er aktivt, så /profile/edit ikke også markerer /profile.
-const ALL_ITEMS: WebNavItem[] = [...WEB_SHORTCUTS, ...WEB_SETTINGS, WEB_SUPPORT].flatMap((item) => [
-  item,
-  ...(item.children ?? []),
-]);
-const ALL_HREFS = ALL_ITEMS.map((item) => item.href.split("?")[0]);
-function isBestMatch(pathname: string, href: string) {
+// Handlingspunkter (fx "Kontoopsætning" → /settings?guide=1) deltager ikke.
+const ALL_ITEMS: WebNavItem[] = [
+  ...WEB_SECTIONS.flatMap((section) => flattenWebNav(section.items)),
+  WEB_SUPPORT,
+];
+const ALL_HREFS = ALL_ITEMS.filter((item) => !item.action).map((item) => item.href.split("?")[0]);
+function isBestMatch(pathname: string, item: WebNavItem) {
+  if (item.action) return false;
+  const href = item.href.split("?")[0];
   if (!isActive(pathname, href)) return false;
   return !ALL_HREFS.some(
     (other) => other.length > href.length && isActive(pathname, other),
@@ -83,19 +121,46 @@ function SideLink({
   label: string;
   collapsed: boolean;
 }) {
-  const active = isBestMatch(pathname, item.href);
+  const { locale } = useTranslation();
+  const { badges } = useContext(NavStateContext);
+  const active = isBestMatch(pathname, item);
   const Icon = item.icon;
+  const count = item.badge ? badges[item.badge] : 0;
+  const className = `hf-navrow ${collapsed ? "hf-navrow--rail" : ""}`;
+  const content = (
+    <>
+      <Icon size={20} stroke={1.75} />
+      {!collapsed && <span className="hf-navrow__label">{label}</span>}
+      {count > 0 &&
+        (collapsed ? (
+          <span className="hf-navrow__dot" aria-hidden="true" />
+        ) : (
+          <span
+            className="hf-type-caption flex h-5 min-w-5 items-center justify-center rounded-full bg-hf-brand px-1 text-hf-white"
+            aria-label={`${count}`}
+          >
+            {count > 99 ? "99+" : count}
+          </span>
+        ))}
+    </>
+  );
   return (
     <li>
-      <Link
-        href={item.href}
-        title={collapsed ? label : undefined}
-        aria-current={active ? "page" : undefined}
-        className={`hf-navrow ${collapsed ? "hf-navrow--rail" : ""}`}
-      >
-        <Icon size={20} stroke={1.75} />
-        {!collapsed && <span className="hf-navrow__label">{label}</span>}
-      </Link>
+      {item.external === "help" ? (
+        // Hjælpecentret er en statisk side i public/ — fuld sideindlæsning.
+        <a href={helpPagePath(locale)} title={collapsed ? label : undefined} className={className}>
+          {content}
+        </a>
+      ) : (
+        <Link
+          href={item.href}
+          title={collapsed ? label : undefined}
+          aria-current={active ? "page" : undefined}
+          className={className}
+        >
+          {content}
+        </Link>
+      )}
     </li>
   );
 }
@@ -108,17 +173,16 @@ function SideGroup({
   pathname,
   label,
   collapsed,
-  isFemale,
 }: {
   item: WebNavItem;
   pathname: string;
   label: string;
   collapsed: boolean;
-  isFemale: boolean;
 }) {
   const { t } = useTranslation();
-  const children = (item.children ?? []).filter((child) => !child.femaleOnly || isFemale);
-  const inside = children.some((child) => isActive(pathname, child.href));
+  const state = useContext(NavStateContext);
+  const children = (item.children ?? []).filter((child) => isVisible(child, state));
+  const inside = children.some((child) => isBestMatch(pathname, child));
   const [open, setOpen] = useState(true);
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
@@ -190,7 +254,9 @@ function Crumbs({ pathname }: { pathname: string }) {
   );
 }
 
-export function WebShell({ children }: { children: React.ReactNode }) {
+// `overlays` vises inde i indholdsfladen (bundark er position: fixed inde i
+// transform-holderen) — se WebStartPrompts.
+export function WebShell({ children, overlays }: { children: React.ReactNode; overlays?: React.ReactNode }) {
   const { t } = useTranslation();
   const pathname = usePathname() ?? "/";
   const router = useRouter();
@@ -228,6 +294,7 @@ export function WebShell({ children }: { children: React.ReactNode }) {
     setProfileOpen(false);
   }, [pathname]);
   const [isFemale, setIsFemale] = useState(false);
+  const [unreadMessages, setUnreadMessages] = useState(0);
 
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
@@ -246,6 +313,46 @@ export function WebShell({ children }: { children: React.ReactNode }) {
       cancelled = true;
     };
   }, []);
+
+  // Ulæste beskeder (grønt tal ved Beskeder i sidebjælken, som på Profil-siden).
+  // Hentes igen ved sideskift, så tallet falder, når beskeder er læst. Kun for
+  // indloggede (status findes ikke på offentlige sider).
+  const loggedIn = Boolean(status);
+  useEffect(() => {
+    if (!loggedIn) return;
+    let cancelled = false;
+    fetch("/api/messages")
+      .then(async (response) => (response.ok ? ((await response.json()) as { unreadCount?: number }) : null))
+      .then((data) => {
+        if (!cancelled && data) setUnreadMessages(data.unreadCount ?? 0);
+      })
+      .catch(() => {});
+    return () => {
+      cancelled = true;
+    };
+  }, [loggedIn, pathname]);
+
+  // Samme betingelser som appens Indstillinger (src/app/settings/page.tsx).
+  const navState: NavState = {
+    isFemale,
+    showFamily: Boolean(status?.hasFamilyPlan || status?.family),
+    controlsOthers: Boolean(
+      status?.family?.members.some(
+        (member) => member.controllerId === status.me.id && member.userId !== status.me.id,
+      ),
+    ),
+    controlled: Boolean(status?.family && !status.family.isOwner),
+    badges: { messages: unreadMessages, controlLog: status?.unseenCount ?? 0 },
+  };
+
+  function logOut() {
+    fetch("/api/auth/logout", { method: "POST" }).finally(() => {
+      clearOfflineCache();
+      clearSidebarState();
+      router.push("/login");
+      router.refresh();
+    });
+  }
 
   useEffect(() => {
     // localStorage findes først efter hydrering.
@@ -266,14 +373,12 @@ export function WebShell({ children }: { children: React.ReactNode }) {
     });
   }
 
-  const shortcuts = WEB_SHORTCUTS;
-  const settings = WEB_SETTINGS;
-
   const profileActive =
     isActive(pathname, "/profile") || isActive(pathname, "/settings");
 
   return (
     <WebShellContext.Provider value={true}>
+     <NavStateContext.Provider value={navState}>
       {/* Fælles skal-klasser med admin (globals.css, design.md §6.17). */}
       <div className="web-shell hf-shell hf-shell--tall hf-shell--fixed">
         <aside aria-label={t("web.sideNav")} className={`hf-shell__sidebar ${collapsed ? "is-collapsed" : ""}`}>
@@ -290,49 +395,36 @@ export function WebShell({ children }: { children: React.ReactNode }) {
           </div>
 
           <nav className="hf-shell__nav">
-            {shortcuts.length > 0 && (
-              <section className="hf-shell__section">
-                {!collapsed && <h2 className="hf-shell__section-title">{t("web.shortcuts")}</h2>}
-                <ul className="hf-shell__list">
-                  {shortcuts.map((item) => (
-                    <SideLink
-                      key={item.key}
-                      item={item}
-                      pathname={pathname}
-                      label={t(item.labelKey)}
-                      collapsed={collapsed}
-                    />
-                  ))}
-                </ul>
-              </section>
-            )}
-            {settings.length > 0 && (
-              <section className="hf-shell__section">
-                {!collapsed && <h2 className="hf-shell__section-title">{t("web.settings")}</h2>}
-                <ul className="hf-shell__list">
-                  {settings.map((item) =>
-                    item.children ? (
-                      <SideGroup
-                        key={item.key}
-                        item={item}
-                        pathname={pathname}
-                        label={t(item.labelKey)}
-                        collapsed={collapsed}
-                        isFemale={isFemale}
-                      />
-                    ) : (
-                      <SideLink
-                        key={item.key}
-                        item={item}
-                        pathname={pathname}
-                        label={t(item.labelKey)}
-                        collapsed={collapsed}
-                      />
-                    ),
-                  )}
-                </ul>
-              </section>
-            )}
+            {WEB_SECTIONS.map((section) => {
+              const items = section.items.filter((item) => isVisible(item, navState));
+              if (items.length === 0) return null;
+              return (
+                <section key={section.key} className="hf-shell__section">
+                  {!collapsed && <h2 className="hf-shell__section-title">{t(section.titleKey)}</h2>}
+                  <ul className="hf-shell__list">
+                    {items.map((item) =>
+                      item.children ? (
+                        <SideGroup
+                          key={item.key}
+                          item={item}
+                          pathname={pathname}
+                          label={t(item.labelKey)}
+                          collapsed={collapsed}
+                        />
+                      ) : (
+                        <SideLink
+                          key={item.key}
+                          item={item}
+                          pathname={pathname}
+                          label={t(item.labelKey)}
+                          collapsed={collapsed}
+                        />
+                      ),
+                    )}
+                  </ul>
+                </section>
+              );
+            })}
           </nav>
 
           {/* Support: egen boks nederst til venstre under en skillelinje. */}
@@ -423,19 +515,27 @@ export function WebShell({ children }: { children: React.ReactNode }) {
                       </li>
                     );
                   })}
+                  <li role="none">
+                    <button type="button" role="menuitem" onClick={logOut} className="hf-navrow">
+                      <IconLogout size={18} stroke={1.75} />
+                      {t("settings.logOut")}
+                    </button>
+                  </li>
                 </ul>
               )}
             </div>
             </div>
             {addOpen && (
-              // Samme ikon-firkanter som mobilens tilføj-vindue (AddMenuList);
-              // Optag udelades, fordi chat afløser mikrofonen på desktop.
+              // Samme ikon-firkanter som mobilens tilføj-vindue (AddMenuList).
+              // Optag udelades, fordi chat afløser mikrofonen på desktop, og
+              // Scan og Tallerkenbillede, fordi kameraet ikke kan bruges på en
+              // computer (bruger 2026-10-11).
               <div
                 ref={addPanelRef}
                 className="absolute left-0 right-0 top-full z-20 max-h-[calc(100dvh-var(--hf-shell-bar))] overflow-y-auto border-b border-hf-tan-dark bg-hf-white shadow-sm"
               >
                 <div className="mx-auto max-w-4xl">
-                  <AddMenuList editable={false} excludeKeys={["voice"]} />
+                  <AddMenuList editable={false} excludeKeys={["voice", "scan", "platePhoto"]} />
                 </div>
               </div>
             )}
@@ -448,10 +548,12 @@ export function WebShell({ children }: { children: React.ReactNode }) {
             >
               {!isWebRootPath(pathname) && <Crumbs pathname={pathname} />}
               <div className="flex min-h-0 flex-1 flex-col">{children}</div>
+              {overlays}
             </div>
           </main>
         </div>
       </div>
+     </NavStateContext.Provider>
     </WebShellContext.Provider>
   );
 }

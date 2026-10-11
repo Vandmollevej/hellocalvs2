@@ -261,3 +261,9 @@ ext/image-billeder (logoet i sidebjælken) på /admin/login og forsvinder. Match
 - Enhver admin-liste, der kan blive lang, hentes/tegnes gradvist og har øverst valget "Evigheds-scroll / Sideinddelt" (`ListModeToggle` + `useListMode` i `src/components/admin/ListMode.tsx`). Valget huskes i browseren og gælder alle lister.
 - Send aldrig hele tabellen til browseren: lette rækker pr. udsnit, detaljer først ved åbning. Tunge opslag caches kort (`src/lib/ttl-cache.ts`) og nulstilles af ruter, der ændrer data.
 - Admin-sider har altid en `loading.tsx`, så sideskift reagerer med det samme.
+
+## Webversionen følger appen (user rule 2026-10-11)
+
+- Webversionen (desktop-skallen `WebShell`, bredde ≥ 1024 px) skal kunne alt, hvad appen kan — undtagen det, der kræver kameraet: Scan med kamera, Billeddagbog og stemme (Chat/Indtast afløser mikrofonen). Plus-cirklen i topbjælken viser hele tilføj-menuen minus mikrofon og kamera.
+- Sidebjælken (`src/lib/web-nav.ts`) følger appens Profil- og Indstillinger-sider punkt for punkt (Beskeder med ulæst-tal, Status, Point, Vægtkalibrering, Kropsmål, Søvnmønster, Screeninger, Viden om, Hello Doc, Familie, Kommunikation, Visning med alle undersider, Support …). Nyt menupunkt i appen = nyt punkt i `web-nav.ts` i samme opgave. `src/lib/web-nav.test.mjs` læser appens menuer og fejler, når webben mangler et punkt (eller et nyt udeladt punkt ikke står i testens `NOT_ON_WEB` med begrundelse).
+- Alt, der kun er monteret på appens forside (`src/app/page.tsx`), findes ikke på desktop, fordi roden sender videre til kalenderen. Sådanne popups (vægt/tøj, "Det er længe siden, der er synkroniseret", pulsudsving → "Hvad foretog du dig?") monteres derfor også i `src/components/web/WebStartPrompts.tsx` (vises på kalenderen). Testen kræver det.

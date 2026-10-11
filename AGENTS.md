@@ -33,6 +33,15 @@ on the web must be carried over to the native screen in the same task:
   (`.claude/settings.json`) and the CI job "Web ↔ native in step" enforce it.
   Details: `native/README.md`.
 
+## The web version must keep up with the app (user rule 2026-10-11)
+
+The desktop web version (`WebShell`) must offer everything the app does, except
+what needs the camera (scan, photo diary, voice). A new app menu row means a new
+row in `src/lib/web-nav.ts` in the same task; anything mounted only on the
+front page (`src/app/page.tsx`) must also be mounted in
+`src/components/web/WebStartPrompts.tsx`. `npm test` (`src/lib/web-nav.test.mjs`)
+fails when the web menu is behind. Details: `docs/REGLER.md`.
+
 ## Working rules
 
 - Preserve unrelated and uncommitted user changes.

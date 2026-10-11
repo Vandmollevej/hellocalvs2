@@ -3,6 +3,7 @@
 import { useSyncExternalStore } from "react";
 import { usePathname } from "next/navigation";
 import { WebShell } from "@/components/web/WebShell";
+import { WebStartPrompts } from "@/components/web/WebStartPrompts";
 import { getDesktopSnapshot, subscribeDesktop } from "@/lib/desktop-query";
 
 // Appen fylder altid hele browserens viewport (bruger 2026-09-29). Bred
@@ -28,7 +29,7 @@ export function AppFrame({ children }: { children: React.ReactNode }) {
   if (isDesktop) {
     // Alle sider på desktop vises i skallen (sidebjælke, topmenu, brødkrummer),
     // også login og betingelser — aldrig alene (bruger 2026-10-02).
-    return <WebShell>{children}</WebShell>;
+    return <WebShell overlays={<WebStartPrompts />}>{children}</WebShell>;
   }
 
   return (
