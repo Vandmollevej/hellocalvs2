@@ -264,6 +264,14 @@ Ejer: cloud-session `claude/kontoopsaetning` (2026-10-03)
 | --- | --- | --- | --- |
 | konto-procent | Kontoopsætning: mørkegrøn "XX%" (andel udfyldte felter) midt mellem tekst og pil | Færdig (kode) | Brugerens test på telefon |
 
+## G-OFF-BILLEDER — Admin "Open Food Facts → Billeder"
+Filer: `src/lib/off-image-review*.ts`, `src/components/admin/OffImageReview.tsx`, `src/app/admin/product-database/open-food-facts/images/**`, `src/app/api/admin/off-images/**`, `Product.offImageReview*` i skemaet. Rører også menuen (`AdminShell.tsx`, `NavLink.child`), `admin-i18n.ts`, `page-tree.ts`, `admin-shortcuts.ts`, `src/app/api/scan/products/route.ts` (supplering erstatter afvist billede) og `src/lib/external-image-ai.ts`.
+Ejer: session "OFF-billeder" (2026-10-11)
+
+| Id | Opgave | Status | Næste skridt |
+| --- | --- | --- | --- |
+| off-billeder | Gennemgang af OFF-billeder (til gennemgang / godkendt / afvist), afviste → "Skal scannes" + banner | Færdig (kode) | Migration `20261011170000_off_image_review` skal med deployet. Ikke prøvet i browser/mod rigtig database |
+
 ## Venter på dig (ingen gruppe)
 | Id | Opgave | Status | Næste skridt |
 | --- | --- | --- | --- |
