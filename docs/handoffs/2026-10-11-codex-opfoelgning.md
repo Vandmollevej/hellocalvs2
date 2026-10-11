@@ -19,6 +19,8 @@ Arbejdskopi: `worktrees/opfoelgning`, gren `codex/claude-opfoelgning`.
 
 ## Kontrol efter genoptagelse
 
+- 18:44-opfølgning: 14 manglende EDEKA-produkttyper er nu indskrevet i originalen Excelark/edeka.xlsx ud fra entydige navne/kildeadresser (Whisky, Proteinriegel, Lebkuchenherzen, Lebkuchen, Rieslingsekt). Artifact Tool har skrevet rettelsesværdierne; en afgrænset XML-overførsel bevarer originalens formler og øvrige ZIP-dele byte for byte. Backup: Excelark/backup/edeka_2026-10-11_foer_codex_produkttyper.xlsx. Rettelsesliste og genkørbare værktøjer: Temp/codex-opfoelgning/type-patch.json, patch_types.mjs, apply_types_xml.py. De to dyrefoderrækker mangler stadig at blive eksporteret og slettet. EDEKA må derfor ikke åbnes som færdigt endnu.
+
 - Heartbeat-kontrol: gengangere-fund.xlsx genåbnet og alle otte faner kontrolleret uden Excel-fejlceller. 704 usikre og 1.174 samme-par stemmer med vurderingerne (981 mangler én stregkode, 97 uden stregkode, 96 med to). Desuden 32 DK-DE-stregkoder, 222 billedmangler og 36 stregkodeproblemer. Samlet rapport og originalarksrettelser udestår fortsat. Autoarkivering er konfigureret til først at ske efter alle ni opgaver og vellykket åbning af færdige Excelark.
 
 - PR #399 er nu flettet som 53e86336. Cardio-deploy ae9c4b7e er grønt. Ingen Actions-kørsel for 53e86336 blev returneret ved sidste API-kontrol; deploy af denne merge skal derfor stadig verificeres.

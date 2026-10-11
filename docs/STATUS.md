@@ -2,6 +2,8 @@
 
 Last updated: 2026-10-11
 
+- Codex-opfølgning: de 14 manglende EDEKA-produkttyper er skrevet til originalarket med backup og bevarelse af originalfelter/formler. To dyrefoderrækker og øvrige arksrettelser udestår; se samlet handoff.
+
 ## 2026-10-11: Codex overtager ni afbrudte opgaver
 
 - Samlet overlevering: `docs/handoffs/2026-10-11-codex-opfoelgning.md`.
