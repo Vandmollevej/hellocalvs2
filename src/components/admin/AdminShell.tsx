@@ -156,6 +156,7 @@ export const NAV: NavEntry[] = [
     links: [
       { href: "/admin/scan-invites", key: "nav_scan_invites" },
       { href: "/admin/scan-invites/afvisningsaarsager", key: "nav_rejection_reasons" },
+      { href: "/admin/scan-invites/off-kvalitet", key: "nav_off_quality" },
       { href: "/admin/jobs", key: "nav_jobs" },
       { href: "/admin/agents", key: "nav_agents" },
       { href: "/admin/robots", key: "nav_robots" },

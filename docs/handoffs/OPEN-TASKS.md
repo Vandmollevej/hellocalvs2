@@ -162,6 +162,14 @@ Ejer: G4-sessionen, konto B (overtaget 2026-09-24)
 | d2f522ca / 52205f52 | Globalt bølgeikon for usikre varer + mikrodata, margin i grå, on/off i indstillinger | Færdig (pushet til master 2026-09-25) | Specifikation: samtale ef2ba16f + DECISIONS 2026-09-25. Live-tjek kræver login |
 | ff7fc6a5 | Admin "Uncertainties" (5 faner inkl. Billeder, 70/50 %-tærskler), natlig AI-genkørsel, admin "Cron-jobs" | Færdig (pushet til master 2026-09-25) | Live-tjek kræver admin-login |
 
+## G-OFFKVALITET — Open Food Facts-kontrol + "Skal scannes" (2026-10-11)
+Filer: `src/lib/off-quality*.ts`, `src/app/admin/scan-invites/off-kvalitet/**`, `src/lib/scan/review-requests.ts`, `src/app/scan/skal-scannes/**`, overlay i `src/app/scan/page.tsx` + `ShelfItemSheet.tsx`.
+Ejer: OFF-kontrol-sessionen (2026-10-11), branch `claude/off-kvalitet-scan`
+
+| Id | Opgave | Status | Næste skridt |
+| --- | --- | --- | --- |
+| off-kvalitet | Liste over OFF-varer med vurdering pr. kategori + kommentar, afkrydsning/sortering, send til scan-appen som ikke scannede | I gang (kode skrevet, typetjekket) | Migration 20261011120000 skal med deployet; tryk "Vurdér nu" første gang. Brugerens test i admin |
+
 ## G5 — Agent-app + logo-robot
 Filer: ny agent-app, admin "scan-invites", logo-agent (Python/container).
 Ejer: G5-overtagelse, konto B (2026-09-24)

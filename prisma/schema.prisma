@@ -1600,6 +1600,8 @@ model Product {
   nutritionFeatures  ProductNutritionFeatures?
   // Natlig robot "energy-split-check": afvigende energifordeling (docs/DECISIONS.md 2026-10-07).
   energySplitFlag    ProductEnergySplitFlag?
+  // Open Food Facts-kontrol (docs/DECISIONS.md 2026-10-11): vurdering + "send til scan-appen".
+  qualityReview      ProductQualityReview?
   // Filtertabellen (økologisk, glutenfri, kødtype, nøglehul …), højst én
   // række pr. produkt — docs/DECISIONS.md 2026-09-27.
   filters            ProductFilters?
@@ -5098,6 +5100,35 @@ model ProductEnergySplitFlag {
 
   @@index([reviewedAt])
   @@map("product_energy_split_flags")
+}
+
+// Open Food Facts-kontrol (docs/DECISIONS.md 2026-10-11): robotten "off-quality"
+// vurderer hver Open Food Facts-vare i kategorier (billede, navn, mærke,
+// næring, ingredienser, pakning, varetype, stregkode, oversættelse) og gemmer
+// pointtal + en kommentar pr. fund. Admin kan sende varer til scan-appen
+// (Scan-invites → Open Food Facts-kontrol); de står så som "ikke scannet" på
+// hyldeoverlayet og i listen "Skal scannes", til en agent har oprettet/
+// suppleret varen. Højst én række pr. vare.
+model ProductQualityReview {
+  product                Product   @relation(fields: [productId], references: [id], onDelete: Cascade)
+  productId              String    @id
+  // 0..100 (100 = intet at udsætte) og rating POOR | WEAK | OK | GOOD afledt af tallet.
+  score                  Int
+  rating                 String
+  // Kategorinøgler med mindst ét fund (src/lib/off-quality.ts).
+  categories             String[]  @default([])
+  // [{ category, code, severity, comment }]
+  findings               Json
+  assessedAt             DateTime  @default(now())
+  // Sendt til scan-appen af admin; scanDoneAt = en agent har oprettet/suppleret varen.
+  scanRequestedAt        DateTime?
+  scanRequestedByAdminId String?
+  scanDoneAt             DateTime?
+  scanDoneByWorkerId     String?
+
+  @@index([rating, score])
+  @@index([scanRequestedAt, scanDoneAt])
+  @@map("product_quality_reviews")
 }
 
 // Dyrefoder-forsøg pr. bruger (docs/DECISIONS.md 2026-10-07). Gentagelser inden for

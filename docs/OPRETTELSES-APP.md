@@ -223,6 +223,12 @@ lortet". Bygget i denne omgang:
 - **Butik**: udledes af koordinaterne via Google Places, hvis
   `GOOGLE_PLACES_API_KEY` er sat; ellers "ukendt butik".
 
+**Open Food Facts-kontrol (2026-10-11):** admin → Scan-invites-gruppen har siden
+`/admin/scan-invites/off-kvalitet`, hvor Open Food Facts-varer vurderes pr.
+kategori og kan sendes til appen som "ikke scannet". I appen vises de med
+minus + "Skal scannes" på hyldeoverlayet og i Menu → Skal scannes, til en agent
+har scannet dem (se DECISIONS 2026-10-11).
+
 Mangler før den kan bruges i drift (kræver brugeren/serveren):
 
 1. `scan-app` startes ikke automatisk af GitHub-deployet endnu: linjen

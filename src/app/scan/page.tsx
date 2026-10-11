@@ -4,7 +4,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { IconCamera, IconCheck, IconMinus, IconQuestionMark, IconSettings } from "@tabler/icons-react";
 import { ScanScreen } from "@/components/scan/ScanScreen";
 import { useScanPosition } from "@/components/scan/ScanLocation";
-import { ShelfItemSheet, type ShelfItem } from "@/components/scan/ShelfItemSheet";
+import { ShelfItemSheet, needsScan, type ShelfItem } from "@/components/scan/ShelfItemSheet";
 import { downscaleImageFile } from "@/components/scan/image";
 
 // "Billede af hylde" (docs/OPRETTELSES-APP.md): seneste hyldebillede med
@@ -26,6 +26,8 @@ const STATUS_STYLE = {
   EXISTS: { border: "var(--hf-color-brand)", badge: "var(--hf-color-brand)", Icon: IconCheck, label: "Oprettet" },
   MISSING: { border: "var(--hf-color-white)", badge: "var(--hf-color-action)", Icon: IconMinus, label: "Mangler" },
   UNCERTAIN: { border: "var(--hf-color-positive)", badge: "var(--hf-color-inactive)", Icon: IconQuestionMark, label: "Usikkert match" },
+  // Findes, men admin har bedt om en ny scanning (Open Food Facts-kontrol).
+  NEEDS_SCAN: { border: "var(--hf-color-white)", badge: "var(--hf-color-action)", Icon: IconMinus, label: "Skal scannes" },
 } as const;
 
 function Slide({ photo, onSelect }: { photo: ShelfPhoto; onSelect: (item: ShelfItem) => void }) {
@@ -35,7 +37,7 @@ function Slide({ photo, onSelect }: { photo: ShelfPhoto; onSelect: (item: ShelfI
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img src={photo.imageUrl} alt="Hyldebillede" className="block h-auto w-full" draggable={false} />
         {photo.items.map((item) => {
-          const style = STATUS_STYLE[item.status];
+          const style = STATUS_STYLE[needsScan(item) ? "NEEDS_SCAN" : item.status];
           return (
             <button
               key={item.id}

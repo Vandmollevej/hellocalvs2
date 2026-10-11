@@ -29,6 +29,7 @@ const DICTIONARY = {
   nav_admin_users: { DA: "Admin-brugere", EN: "Admin users" },
   nav_scan_invites: { DA: "Scan-invites", EN: "Scan invites" },
   nav_rejection_reasons: { DA: "Afvisningsårsager", EN: "Rejection reasons" },
+  nav_off_quality: { DA: "Open Food Facts-kontrol", EN: "Open Food Facts review" },
   nav_logos: { DA: "Logoer", EN: "Logos" },
   nav_api_keys: { DA: "API-nøgler", EN: "API keys" },
   nav_design_manual: { DA: "Designmanual", EN: "Design manual" },

@@ -575,6 +575,13 @@
       "note": "Admin er et skrivebordsværktøj og bliver på web."
     },
     {
+      "route": "/admin/scan-invites/off-kvalitet",
+      "web": "src/app/admin/scan-invites/off-kvalitet/page.tsx",
+      "status": "web-only",
+      "native": [],
+      "note": "Admin er et skrivebordsværktøj og bliver på web."
+    },
+    {
       "route": "/admin/search",
       "web": "src/app/admin/search/page.tsx",
       "status": "web-only",
@@ -1400,6 +1407,13 @@
     {
       "route": "/scan/setup/[token]",
       "web": "src/app/scan/setup/[token]/page.tsx",
+      "status": "web-only",
+      "native": [],
+      "note": "Butiks-scanner-portal, separat fra forbruger-appen."
+    },
+    {
+      "route": "/scan/skal-scannes",
+      "web": "src/app/scan/skal-scannes/page.tsx",
       "status": "web-only",
       "native": [],
       "note": "Butiks-scanner-portal, separat fra forbruger-appen."

@@ -29,6 +29,7 @@ const LINK_DEFS: { href: string; key: AdminI18nKey }[] = [
   { href: "/admin/passkeys", key: "nav_passkeys" },
   { href: "/admin/scan-invites", key: "nav_scan_invites" },
   { href: "/admin/scan-invites/afvisningsaarsager", key: "nav_rejection_reasons" },
+  { href: "/admin/scan-invites/off-kvalitet", key: "nav_off_quality" },
   { href: "/admin/logos", key: "nav_logos" },
   { href: "/admin/api-keys", key: "nav_api_keys" },
   { href: "/admin/designmanual", key: "nav_design_manual" },

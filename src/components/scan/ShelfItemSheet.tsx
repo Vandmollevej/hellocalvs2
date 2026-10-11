@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { ActionLink } from "@/components/hf/ActionButton";
 import { TextField } from "@/components/hf/TextField";
 import { DecimalText } from "@/components/DecimalText";
+import { OFF_QUALITY_CATEGORY_LABELS, type OffQualityCategory } from "@/lib/off-quality";
 
 // Bundark for en vare på hyldebilledet: status, "Opret denne vare" og
 // "Ret tildeling" (manuel rettelse af et forkert AI-match).
@@ -19,8 +20,20 @@ export type ShelfItem = {
   status: "MISSING" | "EXISTS" | "UNCERTAIN";
   matchConfidence: number | null;
   manuallyAssigned: boolean;
-  product: { id: string; name: string; brand: { name: string } | null } | null;
+  product: {
+    id: string;
+    name: string;
+    brand: { name: string } | null;
+    qualityReview?: { scanRequestedAt: string | null; scanDoneAt: string | null; categories: string[] } | null;
+  } | null;
 };
+
+// Admin har sendt varen til scan-appen (Open Food Facts-kontrol), og ingen agent
+// har scannet den endnu: den står som ikke scannet, selv om den findes.
+export function needsScan(item: Pick<ShelfItem, "product">): boolean {
+  const review = item.product?.qualityReview;
+  return Boolean(review?.scanRequestedAt && !review.scanDoneAt);
+}
 
 type SearchResult = { id: string; name: string; packageSizeText: string | null; brand: { name: string } | null };
 
@@ -31,6 +44,10 @@ const STATUS_TEXT = {
 };
 
 export function ShelfItemSheet({ item, onClose, onChanged }: { item: ShelfItem; onClose: () => void; onChanged: () => void }) {
+  const scanNeeded = needsScan(item);
+  const scanCategories = (item.product?.qualityReview?.categories ?? [])
+    .map((key) => OFF_QUALITY_CATEGORY_LABELS[key as OffQualityCategory] ?? key)
+    .join(", ");
   const [reassigning, setReassigning] = useState(false);
   const [query, setQuery] = useState(item.detectedName);
   const [results, setResults] = useState<SearchResult[]>([]);
@@ -69,15 +86,19 @@ export function ShelfItemSheet({ item, onClose, onChanged }: { item: ShelfItem; 
           <h2 className="hf-type-section-title">{item.detectedName}</h2>
           {item.detectedBrand && <p className="hf-type-body">{item.detectedBrand}</p>}
           <p className="hf-type-caption text-hf-text-secondary">
-            {STATUS_TEXT[item.status]}
+            {scanNeeded ? "Findes i Hello Cal, men er ikke scannet" : STATUS_TEXT[item.status]}
             {item.product ? <DecimalText text={` · ${[item.product.brand?.name, item.product.name].filter(Boolean).join(" ")}`} /> : ""}
             {item.matchConfidence != null && !item.manuallyAssigned ? ` · ${Math.round(item.matchConfidence * 100)} %` : ""}
           </p>
         </div>
 
-        {item.status !== "EXISTS" && (
+        {scanNeeded && scanCategories && (
+          <p className="hf-type-caption text-hf-text-secondary">Mangler kvalitet: {scanCategories}</p>
+        )}
+
+        {(item.status !== "EXISTS" || scanNeeded) && (
           <ActionLink href={`/scan/opret?item=${item.id}`} className="hf-control">
-            <span className="hf-type-button">Opret denne vare</span>
+            <span className="hf-type-button">{scanNeeded ? "Scan varen" : "Opret denne vare"}</span>
           </ActionLink>
         )}
 

@@ -11,6 +11,7 @@ import { scanProductsForPetFood } from "@/lib/pet-food-scan";
 import { analyzeDeclinedExternalImages } from "@/lib/external-image-ai";
 import { recoverQuickEnrichments } from "@/lib/quick-enrichment-jobs";
 import { checkEnergySplits } from "@/lib/energy-split-check";
+import { assessOffProducts } from "@/lib/off-quality-job";
 import { runFridaEstimates } from "@/lib/frida-estimates";
 import { syncProductIndex } from "@/lib/search-engine/product-index";
 import { reviewSearchMisses } from "@/lib/search-miss-review";
@@ -140,6 +141,7 @@ export function startScheduler() {
       "external-image-ai": analyzeDeclinedExternalImages,
       "quick-enrichment-recovery": () => recoverQuickEnrichments(),
       "energy-split-check": checkEnergySplits,
+      "off-quality": assessOffProducts,
       "frida-estimates": runFridaEstimates,
       "search-index": syncProductIndex,
       "search-miss-review": reviewSearchMisses,

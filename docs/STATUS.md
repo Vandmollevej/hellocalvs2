@@ -9,6 +9,12 @@ Last updated: 2026-10-11
 - **Opdeleren** er målt mod arkene (produkttype forenelig 92 %, alt rigtigt 61 % hvor navnet indeholder typen); sikkerhedstallet er kalibreret derefter. `scripts/off-import/` har ordforrådsbygger, evaluering og `split-dump.mjs` til at køre på `Backup/off_raa`.
 - **Ved deploy:** migration `20261011150000_off_products` kører. Ikke live-testet (ingen lokal DB/login): tjek en scanning af en ukendt stregkode, listen og enkeltsiden, og "Indlæs udtræk" med en fil fra `Backup/off_raa`.
 - **Næste:** manuel rettelse af de opdelte felter i admin; genbyg `src/data/off-vocab.json` og kalibreringen, når arkene er rettet færdige; `npm test` fejler på `/settings/display/priority` (mangler i page-tree, ikke fra denne ændring).
+## 2026-10-11: Open Food Facts-kontrol (admin → Scan-invites) + "Skal scannes" i scan-appen
+
+- Ny admin-side `/admin/scan-invites/off-kvalitet`: alle Open Food Facts-varer med vurdering (Dårlig/Svag/Acceptabel/God, 0–100), kategorier med kommentar pr. fund, søgning, filtre (vurdering, kategori, sendt/ikke sendt/scannet), sortering, afkrydsning og "Send til scan-appen" / "Træk tilbage" / "Send alle, der matcher filteret". Se DECISIONS 2026-10-11.
+- Scan-appen: sendte varer står som ikke scannede (minus + "Skal scannes" på hyldeoverlayet, "Scan varen" i bundarket) og i den nye liste Menu → Skal scannes; de klares, når en agent scanner varen.
+- Natlig robot `off-quality` (05:00) + knappen "Vurdér nu". Migration `20261011120000_product_quality_review` skal med deployet.
+- Tjekket: tsc mod isoleret Prisma-klient, nye tests (`off-quality.test.mjs`), genvejs- og sidetræs-tests. Ikke prøvet mod produktionsdata; vurderingen er første gang først tilgængelig efter "Vurdér nu" eller natkørslen.
 
 ## 2026-10-11: Google Health — aktiv energi løfter kaloriegrænsen
 

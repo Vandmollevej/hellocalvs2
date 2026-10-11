@@ -118,6 +118,18 @@ export const JOBS: JobDefinition[] = [
     defaultRunAtTime: "04:30",
   },
   {
+    // Open Food Facts-kontrol (docs/DECISIONS.md 2026-10-11): grundlaget for
+    // listen under admin → Scan-invites → Open Food Facts-kontrol.
+    key: "off-quality",
+    name: "Open Food Facts: kvalitetsvurdering",
+    description:
+      "Vurderer alle Open Food Facts-varer i kategorier (billede, navn, mærke, næring, ingredienser, pakning, varetype, stregkode, oversættelse) med et pointtal og en kommentar pr. fund. Resultatet vises under Scan-invites → Open Food Facts-kontrol, hvor admin kan sende varerne til scan-appen som ikke scannede. Ændrer ikke varerne.",
+    runtime: "app",
+    robot: true,
+    defaultIntervalMinutes: null,
+    defaultRunAtTime: "05:00",
+  },
+  {
     // Frida-skøn (∼) for varer uden energimærkning (docs/DECISIONS.md 2026-10-10).
     // Agenterne for Bilka/REMA, Frida og Valdemarsro beder om en kørsel, når de har importeret.
     key: "frida-estimates",

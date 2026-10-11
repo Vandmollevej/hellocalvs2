@@ -4,6 +4,7 @@ import { POST as createHelloCalProduct } from "@/app/api/products/route";
 import { requireScanWorker } from "@/lib/scan/require-worker";
 import { getPayPerItemOre, isOwnEarlierProduct, parseLocation } from "@/lib/scan/submissions";
 import { lookupStoreName } from "@/lib/scan/storage";
+import { completeScanRequest } from "@/lib/scan/review-requests";
 
 // "Opret vare" i Oprettelses-appen (docs/OPRETTELSES-APP.md). Produktet
 // oprettes "på præcis samme måde" som i Hello Cal: body'en sendes uændret
@@ -90,6 +91,9 @@ export async function POST(req: Request) {
       amountOre: await getPayPerItemOre(),
     },
   });
+
+  // Varen var sendt hertil fra admin (Open Food Facts-kontrol): nu er den scannet.
+  await completeScanRequest(productId, worker.id);
 
   // Varen holdt op mod hyldebilledet → grønt flueben med det samme.
   if (shelfItem) {

@@ -2,13 +2,14 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { IconBuildingBank, IconHistory, IconLogout, IconMail, IconMessage, IconReceipt, IconUser } from "@tabler/icons-react";
+import { IconBuildingBank, IconHistory, IconListCheck, IconLogout, IconMail, IconMessage, IconReceipt, IconUser } from "@tabler/icons-react";
 import { ScanScreen } from "@/components/scan/ScanScreen";
 import { HfChevron } from "@/components/hf/HfChevron";
 
 // Brugerikonets menu (docs/OPRETTELSES-APP.md). "Beskeder" og "Kontakt" er
 // samme tovejs-tråd med admin (brugerbeslutning 2026-09-24).
 const ITEMS = [
+  { href: "/scan/skal-scannes", label: "Skal scannes", Icon: IconListCheck },
   { href: "/scan/profil", label: "Profil", Icon: IconUser },
   { href: "/scan/bank", label: "Bankoplysninger", Icon: IconBuildingBank },
   { href: "/scan/historik", label: "Historik", Icon: IconHistory },

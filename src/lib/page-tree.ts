@@ -354,6 +354,7 @@ export const PAGE_TREE: PageArea[] = [
           { path: "/scan/opret", label: "Opret vare" },
           { path: "/scan/historik", label: "Historik" },
           { path: "/scan/ikke-afregnet", label: "Ikke afregnet" },
+          { path: "/scan/skal-scannes", label: "Skal scannes" },
           { path: "/scan/bank", label: "Bank" },
           { path: "/scan/beskeder", label: "Beskeder" },
           { path: "/scan/profil", label: "Profil" },
@@ -510,6 +511,7 @@ export const PAGE_TREE: PageArea[] = [
             children: [
               { path: "/admin/scan-invites/[id]", label: "Agent" },
               { path: "/admin/scan-invites/afvisningsaarsager", label: "Afvisningsårsager" },
+              { path: "/admin/scan-invites/off-kvalitet", label: "Open Food Facts-kontrol", note: "Vurdering pr. kategori + send til scan-appen" },
             ],
           },
           { path: "/admin/logos", label: "Logoer" },
