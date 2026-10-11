@@ -10,7 +10,7 @@ Last updated: 2026-10-11
   nyere produkt-/kontoregler bevaret. Labels-siden kobles til adminmenuen og
   bruger de eksisterende certifikatlogoer.
 - Detaljer og resterende arbejde: `docs/handoffs/2026-10-11-github-samling.md`.
-- Lokalt verificeret: 378 tests, lint uden fejl, build, Prisma, Python-syntaks og native sync/paritet. PR #400 er flettet som abd501c7. Android/iPhone og web/native er grønne på samlingscommitten. Build/deploy #714 kontrolleres før afslutning.
+- Lokalt verificeret: 378 tests, lint uden fejl, build, Prisma, Python-syntaks og native sync/paritet. PR #400 er flettet som abd501c7. Android/iPhone og web/native er grønne på samlingscommitten. Build/deploy #714 er grønt, inklusive migration og alle robotter. Deep health svarer HTTP 200/status ok efter udrulningen.
 ## 2026-10-11: Codex overtager ni afbrudte opgaver
 
 - Samlet overlevering: `docs/handoffs/2026-10-11-codex-opfoelgning.md`.

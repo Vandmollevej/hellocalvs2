@@ -182,3 +182,11 @@ Ejer: session "Måltidskasser som integrationer" (bede0566), 2026-10-10
 | Id | Opgave | Status | Næste skridt |
 | --- | --- | --- | --- |
 | madkasser | Skrab alle retter fra måltidskasserne med fuld energioplysning (RetNemt, BetterFeast) og opret dem som integrationer som HelloFresh | Færdig (3f672eb5, deployet 2026-10-10) | Første kørsel af `retnemt-import` og `betterfeast-import` ses under admin → Cron-jobs |
+
+## G-GITHUB-SAMLING — Upushet arbejde (2026-10-11)
+
+Ejer: Codex, chat om GitHub-forbindelsen. Audit: `2026-10-11-github-samling.md`.
+
+| Id | Opgave | Status | Næste skridt |
+| --- | --- | --- | --- |
+| github-samling | Gennemgå lokale branches og 160 worktrees og saml manglende arbejde sikkert | Færdig (PR #400, abd501c7, deploy #714 grøn) | Ingen kodeopgave tilbage. Manuel adminkontrol kræver login; telefonkontrol kræver enhed. Lokale data og andre worktrees bevaret. |

@@ -59,16 +59,25 @@ lokale forbindelsesindstillinger og miljøfiler medtages aldrig.
 Håndrettelser til OFF-importen er almindelige produktdata og samles
 sammen med scripts, når de er gennemgået.
 
-## Verifikation og næste skridt
+## Afsluttet 2026-10-11
 
-Lokalt verificeret: 378/378 tests, lint med 0 fejl (12 eksisterende advarsler),
-build, Prisma validate/generate, Python-syntaks, native sync og paritet.
-Paritet: 126 porteret, 6 eksisterende mangler, 113 kun web.
-Næste skridt: push, GitHub-checks, fletning og deploykontrol. Migrationen
-er ikke kørt mod live data; deploy tester den først på en skemakopi.
-
-PR #400 er flettet som abd501c7d1d9370c88e24c4712c1d3d7d47997bc.
-Native push-run #845 er grøn på 6fa997f2 (Android, iPhone, paritet).
-Alle commits fra deploy er nu forfædre til origin/master.
-Build/deploy #714: https://github.com/Vandmollevej/hellocalvs2/actions/runs/38144958492
-Afventer produktions-build og deployment; lokal hovedmappe er stadig urørt.
+- PR #400 er flettet som abd501c7d1d9370c88e24c4712c1d3d7d47997bc.
+  https://github.com/Vandmollevej/hellocalvs2/pull/400
+- Alle commits fra deploy er nu forfædre til origin/master.
+- Lokalt: 378/378 tests; lint med 0 fejl og 12 eksisterende advarsler;
+  build; Prisma validate/generate; syntaks af 18 Python-scripts;
+  native sync/paritet (126 porteret, 6 eksisterende mangler, 113 kun web).
+- Alle otte PR-checks er grønne. Native-buildet på den flettede commit
+  er også grønt for Android, iPhone og paritet (run 38144958505).
+- Build/deploy #714 er grønt, inklusive samtlige robotter:
+  https://github.com/Vandmollevej/hellocalvs2/actions/runs/38144958492
+- Serveren prøvekørte migrationen på en skemakopi og anvendte derefter
+  20261011190000_remove_untouched_duplicate_flow uden fejl.
+  Den nye app-container blev sund og erstattede den gamle.
+- https://hellocal.io/api/health?deep=1 svarer HTTP 200 / status ok efter deploy.
+- Manuel kontrol af Labels og dubletlister kræver admin-login; browseren
+  var ikke logget ind. Python-scripts er ikke kørt mod brugerens regneark,
+  og telefonfunktionerne er bygget i CI, ikke prøvet på en fysisk telefon.
+- Hovedmappen, andre worktrees, lokale importdata og hemmeligheder er bevaret.
+  Gamle supersederede branches beholdes som lokal historik. Rootens gamle
+  deploy-checkout skiftes ikke automatisk, fordi det har brugerændringer.
