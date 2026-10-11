@@ -238,7 +238,7 @@ async function checkMobilePay(): Promise<CheckResult> {
   try {
     await getAccessToken();
   } catch (error) {
-    return { status: "fail", message: error instanceof MobilePayError ? `MobilePay afviser nøglerne (${error.status}).` : "MobilePay svarer ikke." };
+    return { status: "fail", message: error instanceof MobilePayError ? `Vipps afviser nøglerne (${error.status}).` : "Vipps svarer ikke." };
   }
   try {
     await listWebhooks();

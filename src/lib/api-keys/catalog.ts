@@ -455,9 +455,9 @@ export const KEY_SERVICES: KeyService[] = [
   },
   {
     id: "stripe",
-    name: "Stripe (MobilePay i Danmark, kort/EC i Tyskland)",
+    name: "Stripe (Vipps i Danmark, kort/EC i Tyskland)",
     group: "payment",
-    purpose: "Abonnementsbetaling: MobilePay for danske og kort inkl. EC-kort (girocard) for tyske brugere.",
+    purpose: "Abonnementsbetaling: Vipps (tidligere MobilePay) for danske og kort inkl. EC-kort (girocard) for tyske brugere.",
     fields: [
       {
         key: "STRIPE_SECRET_KEY",
@@ -483,9 +483,9 @@ export const KEY_SERVICES: KeyService[] = [
   },
   {
     id: "mobilepay",
-    name: "MobilePay (Vipps MobilePay Recurring)",
+    name: "Vipps (tidligere MobilePay)",
     group: "payment",
-    purpose: "Abonnementsbetaling med MobilePay: aftaler, månedlige træk og opsigelse.",
+    purpose: "Abonnementsbetaling med Vipps (Vipps MobilePay Recurring): aftaler, månedlige træk og opsigelse.",
     fields: [
       { key: "MOBILEPAY_CLIENT_ID", label: "client_id", kind: "id", manage: VIPPS_DEVELOPER_KEYS },
       { key: "MOBILEPAY_CLIENT_SECRET", label: "client_secret", kind: "secret", manage: VIPPS_DEVELOPER_KEYS },

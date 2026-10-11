@@ -68,6 +68,14 @@ ikke her, er den ikke registreret og skal tilføjes.
   foretræk rent wordmark uden tagline. Se docs/LOGO-AGENT.md.
 - Brugerens uploadede PNG-kunst bruges som den er (skaleret/CSS-mask), aldrig
   gen-tegnet som SVG.
+- **API-logoer (bruger 2026-10-11)**: hver tjeneste under admin → API-nøgler har
+  et transparent, kvadratisk (1:1, 512×512) bomærke i `public/api-logos/<tjeneste-id>.png`
+  — aldrig et bogstav i en cirkel. Ny tjeneste i `src/lib/api-keys/catalog.ts`
+  = nyt logo med samme id. Det samme gælder integrationskortene i
+  `src/lib/integrations.ts` (`public/integrations/<slug>.png`, `icon: null` bruges
+  ikke længere). Kilder: simple-icons (CC0), Wikimedia Commons,
+  udbyderens egen favicon/app-ikon (App Store 1024 px), mærket frigjort fra
+  flisen. Se DECISIONS.md 2026-10-11.
 - **Brand og subbrand ved produktcirklen (bruger 2026-10-10)**: brandet står til
   højre for cirklen, subbrandet oven over det. Begge vises som logo, når det
   findes, ellers som navn i fed grøn tekst. Subbrand-logofiler hedder

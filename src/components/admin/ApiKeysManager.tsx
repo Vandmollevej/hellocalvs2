@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { IconChevronDown } from "@tabler/icons-react";
 import type { KeyGroupId } from "@/lib/api-keys/catalog";
 import type { CheckResult } from "@/lib/api-keys/checks";
 import type { FieldStatus, ServiceStatus } from "@/lib/api-keys/status";
@@ -30,27 +31,15 @@ function formatDate(iso: string) {
   return new Date(iso).toLocaleString("da-DK", { timeZone: "Europe/Copenhagen", dateStyle: "short", timeStyle: "short" });
 }
 
-// Logoer til de tjenester, vi har billeder til (public/integrations).
-const SERVICE_LOGO: Record<string, string> = {
-  withings: "withings",
-  "google-health": "google-health",
-  strava: "strava",
-  polar: "polar-flow",
-  garmin: "garmin",
-};
-
+// Alle tjenester har deres eget transparente 1:1-bomærke i public/api-logos/<id>.png
+// (kilder og fremgangsmåde: docs/REGLER.md → "API-logoer").
 function ServiceLogo({ service, inactive }: { service: ServiceStatus; inactive: boolean }) {
-  const slug = SERVICE_LOGO[service.id];
   // Rød ring om tjenester, der mangler nøgler (inaktive).
   const ring = inactive ? "border-2 border-hf-red-dark" : "border border-hf-tan-dark";
   return (
-    <span className={`flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-full bg-hf-white ${ring}`}>
-      {slug ? (
-        // eslint-disable-next-line @next/next/no-img-element
-        <img src={`/integrations/${slug}.png`} alt="" className="h-full w-full object-cover" />
-      ) : (
-        <span className="hf-type-strong text-text-secondary">{service.name.charAt(0)}</span>
-      )}
+    <span className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-hf-white ${ring}`}>
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img src={`/api-logos/${service.id}.png`} alt="" className="h-7 w-7 object-contain" />
     </span>
   );
 }
@@ -98,6 +87,26 @@ export function ApiKeysManager({
   const [custom, setCustom] = useState(initialCustom);
   const [addingGroup, setAddingGroup] = useState(false);
   const [addingApiIn, setAddingApiIn] = useState<string | null>(null);
+  // Tjenestekortene er foldet sammen som standard; kun første linje (logo, navn, test) vises.
+  const [openIds, setOpenIds] = useState<Record<string, boolean>>({});
+
+  function setOpen(id: string, open: boolean) {
+    setOpenIds((prev) => ({ ...prev, [id]: open }));
+  }
+
+  // Et link med #tjeneste (fx fra statuslisten) folder det rigtige kort ud.
+  useEffect(() => {
+    const openFromHash = () => {
+      const id = window.location.hash.slice(1);
+      if (id) setOpenIds((prev) => ({ ...prev, [id]: true }));
+    };
+    const first = window.setTimeout(openFromHash, 0);
+    window.addEventListener("hashchange", openFromHash);
+    return () => {
+      window.clearTimeout(first);
+      window.removeEventListener("hashchange", openFromHash);
+    };
+  }, []);
 
   const allGroupTitles = [...groups.map((g) => g.title), ...custom.groups.filter((g) => !groups.some((b) => b.title === g))];
 
@@ -189,7 +198,7 @@ export function ApiKeysManager({
               const test = tests[s.id] as CheckResult;
               return (
                 <li key={`p-${s.id}`} className={test.status === "fail" ? "text-hf-red-dark" : "text-hf-warning"}>
-                  <a href={`#${s.id}`} className="hf-type-strong underline">
+                  <a href={`#${s.id}`} onClick={() => setOpen(s.id, true)} className="hf-type-strong underline">
                     {s.name}:
                   </a>{" "}
                   {test.message}
@@ -198,7 +207,7 @@ export function ApiKeysManager({
             })}
             {incomplete.map((s) => (
               <li key={`m-${s.id}`} className="text-text-secondary">
-                <a href={`#${s.id}`} className="hf-type-strong text-hf-black underline">
+                <a href={`#${s.id}`} onClick={() => setOpen(s.id, true)} className="hf-type-strong text-hf-black underline">
                   {s.name}
                 </a>{" "}
                 mangler{" "}
@@ -222,6 +231,8 @@ export function ApiKeysManager({
                 key={service.id}
                 service={service}
                 test={tests[service.id]}
+                open={Boolean(openIds[service.id])}
+                onToggle={() => setOpen(service.id, !openIds[service.id])}
                 onTest={() => runTest(service.id)}
                 onChanged={replaceService}
               />
@@ -425,25 +436,35 @@ function AddApiForm({
 function ServiceCard({
   service,
   test,
+  open,
+  onToggle,
   onTest,
   onChanged,
 }: {
   service: ServiceStatus;
   test: TestState | undefined;
+  open: boolean;
+  onToggle: () => void;
   onTest: () => void;
   onChanged: (service: ServiceStatus) => void;
 }) {
   return (
     <div id={service.id} className="hf-panel scroll-mt-20">
-      <div className="flex flex-wrap items-start justify-between gap-3">
-        <div className="flex min-w-0 flex-1 items-center gap-3">
+      {/* Første linje (logo, navn, test) er altid synlig og folder resten ud/sammen. */}
+      <div className="flex items-center gap-3">
+        <button
+          type="button"
+          onClick={onToggle}
+          aria-expanded={open}
+          className="flex min-w-0 flex-1 items-center gap-3 text-left"
+        >
           <ServiceLogo service={service} inactive={missingFields(service).length > 0} />
-          <div className="min-w-0">
-            <p className="hf-type-strong text-hf-black">{service.name}</p>
-            <p className="hf-type-body text-text-secondary">{service.purpose}</p>
-          </div>
-        </div>
-        <div className="flex items-center gap-2">
+          <span className="min-w-0">
+            <span className="hf-type-strong block text-hf-black">{service.name}</span>
+            <span className="hf-type-body block text-text-secondary">{service.purpose}</span>
+          </span>
+        </button>
+        <div className="flex shrink-0 items-center gap-2">
           {test && test !== "running" && (
             <span className={`hf-type-small hf-type-strong rounded-full px-2 py-0.5 ${RESULT_STYLE[test.status]}`}>
               {RESULT_LABEL[test.status]}
@@ -459,36 +480,49 @@ function ServiceCard({
               {test === "running" ? "Tester…" : "Test"}
             </button>
           )}
+          <button
+            type="button"
+            onClick={onToggle}
+            aria-expanded={open}
+            title={open ? "Fold sammen" : "Fold ud"}
+            className="flex h-8 w-8 items-center justify-center text-text-muted"
+          >
+            <IconChevronDown size={18} className={`transition-transform ${open ? "" : "-rotate-90"}`} />
+          </button>
         </div>
       </div>
 
-      {test && test !== "running" && <p className="hf-type-body text-text-secondary">{test.message}</p>}
+      {open && (
+        <>
+          {test && test !== "running" && <p className="hf-type-body text-text-secondary">{test.message}</p>}
 
-      <div className="flex flex-col divide-y divide-border-strong/60">
-        {service.fields.map((field) => (
-          <FieldRow key={field.key} field={field} onChanged={onChanged} />
-        ))}
-      </div>
+          <div className="flex flex-col divide-y divide-border-strong/60">
+            {service.fields.map((field) => (
+              <FieldRow key={field.key} field={field} onChanged={onChanged} />
+            ))}
+          </div>
 
-      {service.redirectUris.length > 0 && (
-        <div className="hf-type-body flex flex-col gap-1">
-          <p className="text-text-muted">Redirect-URI, der skal være registreret hos udbyderen:</p>
-          {service.redirectUris.map((uri) => (
-            <CopyValue key={uri} value={uri} />
-          ))}
-        </div>
-      )}
-
-      {(service.note || service.setupUrl) && (
-        <p className="hf-type-small text-text-muted">
-          {service.note}
-          {service.note && service.setupUrl && " "}
-          {service.setupUrl && (
-            <a href={service.setupUrl} target="_blank" rel="noreferrer" className="text-hf-green-dark underline">
-              Opret eller åbn appen hos udbyderen
-            </a>
+          {service.redirectUris.length > 0 && (
+            <div className="hf-type-body flex flex-col gap-1">
+              <p className="text-text-muted">Redirect-URI, der skal være registreret hos udbyderen:</p>
+              {service.redirectUris.map((uri) => (
+                <CopyValue key={uri} value={uri} />
+              ))}
+            </div>
           )}
-        </p>
+
+          {(service.note || service.setupUrl) && (
+            <p className="hf-type-small text-text-muted">
+              {service.note}
+              {service.note && service.setupUrl && " "}
+              {service.setupUrl && (
+                <a href={service.setupUrl} target="_blank" rel="noreferrer" className="break-all text-hf-green-dark underline">
+                  {service.setupUrl}
+                </a>
+              )}
+            </p>
+          )}
+        </>
       )}
     </div>
   );

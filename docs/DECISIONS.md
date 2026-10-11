@@ -51,6 +51,14 @@ Ejerens krav: bundarket er mobilens form og ser "åndssvagt" ud på en bred skæ
 - **Ingen kald ændres:** alle 58 brugere af `BottomSheet` (og `useConfirmSheet`/`useTypedConfirmSheet`) får lightbox automatisk. `headerAction` står til venstre for X.
 - **Øvrige top/bund-popups uden `BottomSheet`** er lightbox på web via `lg:`-klasser: `StaleSyncPrompt`, åben `RescanBanner` (skuffe fra oven), scan-appens `ShelfItemSheet` og "Slet billedet?". Bevidst udeladt: `HfAccessSheet` (iOS-kopi, er en side, ikke en popup).
 - **Erstatter** formuleringen "aldrig centreret dialog" i KRAV.md/design.md for web; på mobil står den fast. Native uændret.
+## 2026-10-11: Admin → API-nøgler — logoer til alle tjenester, foldbare kort, Vipps
+
+Brugerens krav: ingen cirkel med første bogstav; hver integration/API skal have sit rigtige logo som transparent 1:1 PNG-bomærke. Første linje (logo, navn, test) kan foldes sammen. "Opret eller åbn appen hos udbyderen" erstattes af selve adressen som link. MobilePay hedder nu Vipps.
+
+- **Logoer:** `public/api-logos/<tjeneste-id>.png`, 512×512, transparent, mærket centreret med luft. Alle 21 tjenester i `KEY_SERVICES` har ét; `ServiceLogo` i `ApiKeysManager` læser filen direkte (ingen bogstav-reserve). Integrationskortene på brugersiden (`src/lib/integrations.ts`) fik samme slags logoer i `public/integrations/` til de seks, der kun havde forbogstav: WHOOP, Huawei Health, Xiaomi, Renpho, eufy og Tuya. De øvrige (app-ikoner på tile) er urørt.
+- **Kilder:** simple-icons (CC0) til Apple, Facebook, Strava, Fitbit, Huawei, Stripe; Wikimedia Commons til Google "G", Google Maps og USDA; udbyderens egen favicon/app-ikon (App Store 1024 px, mærket frigjort fra flisen) til Withings, Google Health, Polar, Garmin, WHOOP, Vipps, Mailjet, Passio, TeamMessage, OpenAI. Web Push og Server er egne neutrale ikoner i brandgrøn.
+- **Kort:** tjenestekortene er foldet sammen som standard (kun logo, navn, status og Test). Statuslistens links (#tjeneste) og et `#tjeneste` i adressen folder det rigtige kort ud. Fold-tilstanden huskes ikke (ingen `localStorage`).
+- **Vipps:** MobilePay omdøbes til Vipps i Danmark og Finland fra januar 2027 (appen har siden 6. oktober 2026 Vipps-smilet som ikon). Admin-oversigten hedder "Vipps (tidligere MobilePay)"; selve Stripe-menuen hedder stadig "MobilePay" hos Stripe. Slutbruger-tekster (sprogfiler, betalingssider, `mobilepay-*`-kode og `MOBILEPAY_*`-nøgler) er uændrede indtil brugeren beslutter, hvornår de omdøbes.
 
 ## 2026-10-11: Open Food Facts-kontrol — vurdering pr. kategori og "send til scan-appen"
 

@@ -118,7 +118,7 @@ export const INTEGRATION_CATALOG: IntegrationMeta[] = [
   {
     provider: "WHOOP",
     label: "WHOOP",
-    icon: null,
+    icon: icon("whoop"),
     kind: "oauth",
     description: "Træning, søvn, hvilepuls og HRV fra WHOOP.",
     connectable: true,
@@ -126,7 +126,7 @@ export const INTEGRATION_CATALOG: IntegrationMeta[] = [
   {
     provider: "HUAWEI_HEALTH",
     label: "Huawei Health",
-    icon: null,
+    icon: icon("huawei-health"),
     kind: "oauth",
     description: "Skridt, træning, søvn og vægt fra Huawei-ure, -bånd og -vægte.",
     connectable: true,
@@ -134,7 +134,7 @@ export const INTEGRATION_CATALOG: IntegrationMeta[] = [
   {
     provider: "XIAOMI",
     label: "Xiaomi",
-    icon: null,
+    icon: icon("xiaomi"),
     kind: "via",
     description: "Vægt, skridt, søvn og træning fra Xiaomi-vægte, Mi Band og ure.",
     connectable: false,
@@ -145,7 +145,7 @@ export const INTEGRATION_CATALOG: IntegrationMeta[] = [
   {
     provider: "RENPHO",
     label: "Renpho",
-    icon: null,
+    icon: icon("renpho"),
     kind: "via",
     description: "Vægt og kropssammensætning fra din Renpho-vægt.",
     connectable: false,
@@ -156,7 +156,7 @@ export const INTEGRATION_CATALOG: IntegrationMeta[] = [
   {
     provider: "EUFY",
     label: "eufy",
-    icon: null,
+    icon: icon("eufy"),
     kind: "via",
     description: "Vægt og kropssammensætning fra din eufy-vægt.",
     connectable: false,
@@ -167,7 +167,7 @@ export const INTEGRATION_CATALOG: IntegrationMeta[] = [
   {
     provider: "TUYA",
     label: "Tuya / Smart Life",
-    icon: null,
+    icon: icon("tuya"),
     kind: "via",
     description: "Smart-vægte, der bruger Tuya Smart eller Smart Life.",
     connectable: false,
