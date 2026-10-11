@@ -885,6 +885,14 @@ textarea::selection,
     padding: 10px;
   }
 
+  /* Nederste boks i sidebjælken (webvisningens Support): fast i bunden under
+     en tynd skillelinje, uden for den scrollende menu. */
+  .hf-shell__footer {
+    flex-shrink: 0;
+    padding: 10px;
+    border-top: 1px solid var(--hf-color-nav);
+  }
+
   /* Gruppe i sidebjælken med tynd skillelinje (webvisningens Indstillinger). */
   .hf-shell__section + .hf-shell__section {
     margin-top: 12px;
@@ -2559,6 +2567,13 @@ input.hf-field[type="week"] {
 
 .web-shell .hf-appbar__slot:first-child:empty {
   width: 0;
+}
+
+/* Bredt element i venstre slot (sprogvælgerens "DK ▾" på chat-siden): slottet
+   vokser, og titlen rykker lidt til højre. */
+.web-shell .hf-appbar__slot--auto {
+  width: auto;
+  margin-right: 12px;
 }
 
 /* Forsidens bølge-baggrund (bruger 2026-10-01), src/components/HomeWaves.tsx.

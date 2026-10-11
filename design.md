@@ -908,6 +908,7 @@ menurækker, brødkrummer, dropdowns eller hvide flader med egne Tailwind-kæder
 | `.hf-shell__brand` | Logo-felt i samme højde som topbjælken |
 | `.hf-shell__search-slot` / `.hf-shell__search` (`--rail`) | "Gå til…"-felt |
 | `.hf-shell__nav` / `__section` / `__section-title` / `__list` (`--sub`) | Menuområde, grupper og overskrifter |
+| `.hf-shell__footer` | Nederste boks i sidebjælken under en skillelinje (webvisningens Support); uden for den scrollende menu |
 | `.hf-navrow` (+ `--rail`, `--sub`, `--inline`, `.is-active`, `.is-inside`, `__label`, `__dot`) | Én menurække til sidebjælke, topmenu og dropdown: 15 px grå, aktiv = beige flade + mørkegrøn fed |
 | `.hf-shell__handle` | Sammenfold-håndtag på sidebjælkens kant |
 | `.hf-shell__body` / `__topbar` (`--bottom`) / `__topnav` / `__main` / `__content` | Topbjælke og indholdsbredde (maks 80 rem, 16 → 32 px gutter) |

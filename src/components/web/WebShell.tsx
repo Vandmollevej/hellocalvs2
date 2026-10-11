@@ -11,7 +11,7 @@ import {
   IconUser,
   IconWorld,
 } from "@tabler/icons-react";
-import { useAddActionsProfile, visibleAddActions } from "@/lib/add-actions";
+import { AddMenuList } from "@/components/add/AddMenuList";
 import { useFamilyStatus } from "@/components/family/FamilyStatusProvider";
 import { ProfileCircle } from "@/components/family/ProfileCircle";
 import { useTranslation } from "@/i18n/LocaleProvider";
@@ -19,6 +19,7 @@ import {
   WEB_HOME,
   WEB_SETTINGS,
   WEB_SHORTCUTS,
+  WEB_SUPPORT,
   WEB_TOP_NAV,
   isWebRootPath,
   type WebNavItem,
@@ -53,7 +54,7 @@ function isActive(pathname: string, href: string) {
 }
 
 // Kun det længste match er aktivt, så /profile/edit ikke også markerer /profile.
-const ALL_ITEMS: WebNavItem[] = [...WEB_SHORTCUTS, ...WEB_SETTINGS].flatMap((item) => [
+const ALL_ITEMS: WebNavItem[] = [...WEB_SHORTCUTS, ...WEB_SETTINGS, WEB_SUPPORT].flatMap((item) => [
   item,
   ...(item.children ?? []),
 ]);
@@ -198,6 +199,20 @@ export function WebShell({ children }: { children: React.ReactNode }) {
   const [addOpen, setAddOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
   const profileMenuRef = useRef<HTMLDivElement>(null);
+  const addButtonRef = useRef<HTMLButtonElement>(null);
+  const addPanelRef = useRef<HTMLDivElement>(null);
+
+  // Luk den grønne tilføj-dropdown ved klik udenfor.
+  useEffect(() => {
+    if (!addOpen) return;
+    const onDown = (e: MouseEvent) => {
+      const target = e.target as Node;
+      if (addButtonRef.current?.contains(target) || addPanelRef.current?.contains(target)) return;
+      setAddOpen(false);
+    };
+    document.addEventListener("mousedown", onDown);
+    return () => document.removeEventListener("mousedown", onDown);
+  }, [addOpen]);
 
   // Luk profil-dropdown ved klik udenfor og ved sideskift.
   useEffect(() => {
@@ -213,9 +228,6 @@ export function WebShell({ children }: { children: React.ReactNode }) {
     setProfileOpen(false);
   }, [pathname]);
   const [isFemale, setIsFemale] = useState(false);
-  const addProfile = useAddActionsProfile();
-  // Mikrofonen findes ikke på desktop (chat afløser den).
-  const addActions = visibleAddActions(addProfile).filter((a) => a.key !== "microphone");
 
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
@@ -323,6 +335,18 @@ export function WebShell({ children }: { children: React.ReactNode }) {
             )}
           </nav>
 
+          {/* Support: egen boks nederst til venstre under en skillelinje. */}
+          <div className="hf-shell__footer">
+            <ul className="hf-shell__list">
+              <SideLink
+                item={WEB_SUPPORT}
+                pathname={pathname}
+                label={t(WEB_SUPPORT.labelKey)}
+                collapsed={collapsed}
+              />
+            </ul>
+          </div>
+
           <button
             type="button"
             onClick={toggleCollapsed}
@@ -358,6 +382,7 @@ export function WebShell({ children }: { children: React.ReactNode }) {
             <div className="flex items-end gap-4">
             {/* Grøn cirkel med hvidt plus; 20 % af den hænger ned over headerens streg. */}
             <button
+              ref={addButtonRef}
               type="button"
               onClick={() => setAddOpen((value) => !value)}
               aria-expanded={addOpen}
@@ -374,14 +399,15 @@ export function WebShell({ children }: { children: React.ReactNode }) {
                 aria-haspopup="menu"
                 aria-expanded={profileOpen}
                 onClick={() => setProfileOpen((open) => !open)}
+                title={t("web.profileSettings")}
                 className={`hf-navrow hf-navrow--inline py-0.5 pl-1.5 pr-3 ${profileActive || profileOpen ? "is-active" : ""}`}
               >
+                {/* Kun cirklen (ingen tekst ved siden af), 44 px i den høje topbjælke. */}
                 <ProfileCircle
                   name={status?.activeProfile.displayName ?? ""}
-                  size={32}
+                  size={44}
                   className="hf-avatar--outlined"
                 />
-                <span className="hf-shell__toplabel">{t("web.profileSettings")}</span>
                 <IconChevronDown size={16} stroke={1.75} />
               </button>
               {profileOpen && (
@@ -402,23 +428,15 @@ export function WebShell({ children }: { children: React.ReactNode }) {
             </div>
             </div>
             {addOpen && (
-              <div className="absolute left-0 right-0 top-full z-20 border-b border-hf-tan-dark bg-hf-white pt-4 shadow-sm">
-                <ul className="flex items-start justify-center gap-2 overflow-x-auto px-4 py-3 lg:px-8">
-                  {addActions.map((action) => {
-                    const Icon = action.icon;
-                    return (
-                      <li key={action.key}>
-                        <Link
-                          href={action.href}
-                          className="hf-type-small flex w-24 flex-col items-center gap-1.5 rounded-md px-2 py-2 text-center text-text-secondary hover:bg-hf-tan hover:text-text-primary"
-                        >
-                          {Icon && <Icon size={28} stroke={1.75} />}
-                          <span>{t(action.labelKey)}</span>
-                        </Link>
-                      </li>
-                    );
-                  })}
-                </ul>
+              // Samme ikon-firkanter som mobilens tilføj-vindue (AddMenuList);
+              // Optag udelades, fordi chat afløser mikrofonen på desktop.
+              <div
+                ref={addPanelRef}
+                className="absolute left-0 right-0 top-full z-20 max-h-[calc(100dvh-var(--hf-shell-bar))] overflow-y-auto border-b border-hf-tan-dark bg-hf-white shadow-sm"
+              >
+                <div className="mx-auto max-w-4xl">
+                  <AddMenuList editable={false} excludeKeys={["voice"]} />
+                </div>
               </div>
             )}
           </header>

@@ -68,6 +68,31 @@ export function flagFor(code: MealInputLanguageCode, region: string | null | und
   return getMealInputLanguage(code).flag;
 }
 
+const FLAG_COUNTRY_CODE: Record<string, string> = {
+  denmark: "DK",
+  sweden: "SE",
+  norway: "NO",
+  germany: "DE",
+  netherlands: "NL",
+  france: "FR",
+  italy: "IT",
+  spain: "ES",
+  "united-kingdom": "GB",
+  austria: "AT",
+  switzerland: "CH",
+  belgium: "BE",
+  usa: "US",
+  canada: "CA",
+  australia: "AU",
+  "new-zealand": "NZ",
+  ireland: "IE",
+};
+
+/** Landekoden, der står i stedet for flaget i webvisningen ("DK", "GB" …). */
+export function countryCodeFor(code: MealInputLanguageCode, region: string | null | undefined): string {
+  return FLAG_COUNTRY_CODE[flagFor(code, region)] ?? code.toUpperCase();
+}
+
 export const MEAL_INPUT_LANGUAGE_STORAGE_KEY = "hf-meal-input-language";
 
 export function readStoredMealInputLanguage(): MealInputLanguageCode | null {

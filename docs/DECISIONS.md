@@ -2,6 +2,15 @@
 
 This file records durable decisions. Add a dated entry when a later decision changes one of them.
 
+## 2026-10-11: Webvisning — Support i egen boks, profilcirkel uden tekst, tilføj-dropdown = mobilens firkanter, sprog som "DK"-dropdown
+
+Brugerens krav til desktop-skallen (`WebShell`):
+
+- Support ligger nederst til venstre i sidebjælken i en egen boks med skillelinje ovenover — ikke blandt indstillingerne.
+- Profilcirklen i topbjælken står alene (ingen tekst "Profilindstillinger") og er større (44 px).
+- Den grønne tilføj-dropdown viser de samme ikon-firkanter som mobilens tilføj-vindue (`AddMenuList`): ét sted at ændre felterne, så web og mobil ikke driver fra hinanden. "Optag" udelades på desktop (chat afløser mikrofonen).
+- Sprogvalget (måltidssprog på chat-siden) er en dropdown med landekoden ("DK") i stedet for flaget i webvisningen; telefonen beholder flag + bundark.
+
 ## 2026-10-11: Open Food Facts-kontrol — vurdering pr. kategori og "send til scan-appen"
 
 Brugerens krav: en liste over Open Food Facts-varer, hvor hver vare er vurderet i kategorier med en kommentar om, hvorfor den ikke lever op til kvaliteten; admin skal kunne krydse varer af, sortere på vurdering og sende dem til review i scan-appen, så de står som ikke scannede.
