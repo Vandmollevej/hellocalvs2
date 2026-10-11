@@ -233,3 +233,5 @@ Last updated: 2026-10-11
 - Codex direkte genoptagelse: 222 entydige Nemlig-typer indskrevet med øvrige data/formler verificeret uændrede; 5663 blanke tilbage. SPAR 10 sikre titelmatch overføres. Fortsat arbejde kræves.
 
 - Codex 21:42: yderligere298 Nemlig-typer verificeret; samlet520 indskrevet,5365 blanke tilbage. Andre celler/formler bevaret. Arbejdet fortsætter.
+
+- Codex23:32: yderligere155 Nemlig-typer verificeret; Nemlig3489 tomme, alle10ark3974 tomme typer. Øvrige celler/formler bevaret. Samlet navnekontrol/OFF/rapporter/live-verifikation udestår; Excel ikke færdig.
