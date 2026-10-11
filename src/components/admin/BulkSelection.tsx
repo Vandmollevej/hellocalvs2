@@ -248,7 +248,7 @@ export function BulkActionsBar() {
   }
 
   return (
-    <div className="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-hf-tan-dark bg-hf-white px-4 py-2">
+    <div className="hf-surface flex flex-wrap items-center justify-between gap-3 px-4 py-2">
       <div className="flex min-w-0 flex-wrap items-center gap-x-4 gap-y-1">
         <p className="hf-type-body text-text-secondary" role="status">
           {none ? (
@@ -263,9 +263,7 @@ export function BulkActionsBar() {
           type="button"
           aria-pressed={selection.selectMode}
           onClick={() => selection.setSelectMode(!selection.selectMode)}
-          className={`hf-type-small rounded-md border px-3 py-1 ${
-            selection.selectMode ? "border-hf-green bg-hf-tan text-hf-green-dark" : "border-hf-tan-dark text-hf-black hover:border-hf-green"
-          }`}
+          className="hf-choice"
         >
           Markér
         </button>
@@ -292,7 +290,7 @@ export function BulkActionsBar() {
           aria-expanded={open}
           disabled={busy}
           onClick={() => setOpen((value) => !value)}
-          className="hf-type-body hf-control inline-flex items-center gap-2 rounded-md bg-hf-green-dark px-4 text-hf-white disabled:opacity-60"
+          className="hf-btn-brand hf-btn--inline hf-btn--large"
         >
           Handlinger
           <svg viewBox="0 0 24 24" className={`h-4 w-4 transition-transform ${open ? "rotate-180" : ""}`} fill="none" stroke="currentColor" strokeWidth={2.5} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
@@ -300,7 +298,7 @@ export function BulkActionsBar() {
           </svg>
         </button>
         {open && (
-          <div role="menu" className="absolute right-0 z-30 mt-2 w-72 overflow-hidden rounded-lg border border-hf-tan-dark bg-hf-white py-1 shadow-lg">
+          <div role="menu" className="hf-surface absolute right-0 z-30 mt-2 w-72 overflow-hidden py-1 shadow-lg">
             {none && <p className="hf-type-small border-b border-hf-tan-dark px-4 py-2 text-text-muted">Markér først en eller flere rækker.</p>}
             {actions.map((action) => (
               <button
@@ -309,8 +307,8 @@ export function BulkActionsBar() {
                 role="menuitem"
                 disabled={none}
                 onClick={() => void run(action)}
-                className={`flex w-full flex-col px-4 py-2 text-left hover:bg-hf-tan disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:bg-transparent ${
-                  action === "DELETE" ? "text-hf-red-dark" : "text-hf-black"
+                className={`hf-navrow flex-col items-start justify-center text-left disabled:opacity-50 ${
+                  action === "DELETE" ? "text-hf-red-dark" : ""
                 }`}
               >
                 <span className="hf-type-body">{BULK_ACTION_LABELS[action]}</span>

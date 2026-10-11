@@ -360,7 +360,7 @@ export default async function AdminProductDatabasePage({
           </p>
         </div>
         <div className="flex flex-wrap items-center gap-2">
-          <div className="flex gap-1 rounded-md border border-hf-tan-dark bg-hf-white p-1" role="group" aria-label="Aktive eller slettede">
+          <div className="hf-surface flex gap-1 p-1" role="group" aria-label="Aktive eller slettede">
             <Link href={productDatabaseHref(filters, { deleted: "" })} aria-current={!deletedView ? "page" : undefined} className={tabClass(!deletedView)}>
               Aktive
             </Link>
