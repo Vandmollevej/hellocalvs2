@@ -255,3 +255,5 @@ Last updated: 2026-10-11
 - Codex12okt01:02:531yderligereNemlig-typer verificeret. Ny audit alle10ark bekræfter833tommeNemlig og1318samlet. Andre celler/formlerbevaret. Samletopfølgningstadiguafsluttet.
 
 - Codex12okt01:12:128yderligereNemlig-typer verificeret;705tommeNemlig,1190samlet. Primærkilderogfaktiskeundertitler afklarermærkevarianter. Øvrige celler/formlerbevaret;samletopfølgningikkeafsluttet.
+
+- Codex12okt01:22:80typerrettetog4billedbekræftededyrefodervarer eksporteret/slettet. Nemlig6596produkter,621tomme typer;samlet1106. Bevaredeværdierogtitelformlerverificeret. Samletopfølgninguafsluttet.
