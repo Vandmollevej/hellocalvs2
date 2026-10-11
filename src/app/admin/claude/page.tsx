@@ -23,7 +23,7 @@ export default async function ClaudeIntegrationPage() {
   const example = mcpUrlForToken("<din-nøgle>");
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className="hf-admin-page">
       <div>
         <h1 className="hf-type-title text-hf-black">Claude-integration</h1>
         <p className="hf-type-body text-text-secondary">

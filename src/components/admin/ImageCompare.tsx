@@ -23,13 +23,13 @@ export const CHECKER_STYLE: CSSProperties = {
 export function CheckerThumb({ src, alt, className = "h-12 w-16" }: { src: string | null; alt: string; className?: string }) {
   if (!src) {
     return (
-      <div className={`hf-type-micro flex items-center justify-center rounded border border-hf-tan-dark bg-hf-tan text-text-muted ${className}`}>
+      <div className={`hf-surface hf-type-micro flex items-center justify-center bg-hf-tan text-text-muted ${className}`}>
         Intet
       </div>
     );
   }
   return (
-    <div className={`flex items-center justify-center overflow-hidden rounded border border-hf-tan-dark bg-hf-white ${className}`}>
+    <div className={`hf-surface flex items-center justify-center overflow-hidden ${className}`}>
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img src={src} alt={alt} loading="lazy" style={CHECKER_STYLE} className="max-h-full max-w-full object-contain" />
     </div>
@@ -53,7 +53,7 @@ function FitImage({ src, alt, onSize }: { src: string; alt: string; onSize: (wid
 
   const scale = box && natural ? Math.min(box.width / natural.width, box.height / natural.height) : null;
   return (
-    <div ref={boxRef} className="flex min-h-0 flex-1 items-center justify-center overflow-hidden rounded-md border border-hf-tan-dark bg-hf-tan">
+    <div ref={boxRef} className="hf-surface flex min-h-0 flex-1 items-center justify-center overflow-hidden bg-hf-tan">
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
         src={src}
@@ -106,7 +106,6 @@ export function DiffDialog({
     return () => controller.abort();
   }, [existingUrl]);
 
-  const buttonClass = "hf-type-body hf-control rounded-md px-6 disabled:opacity-60";
   // Bundark (KRAV.md "Bundark"): swipe ned, scrim og Escape lukker.
   return (
     <BottomSheet size="full" ariaLabel={`Forskel for ${item.fileName}`} onClose={onClose}>
@@ -130,7 +129,7 @@ export function DiffDialog({
             {existingUrl ? (
               <FitImage src={existingUrl} alt="Nuværende billede" onSize={(width, height) => setExistingSize({ width, height })} />
             ) : (
-              <div className="hf-type-body flex min-h-0 flex-1 items-center justify-center rounded-md border border-hf-tan-dark bg-hf-tan text-text-muted">
+              <div className="hf-surface hf-type-body flex min-h-0 flex-1 items-center justify-center bg-hf-tan text-text-muted">
                 Intet nuværende billede
               </div>
             )}
@@ -146,7 +145,7 @@ export function DiffDialog({
             {item.imageUrl ? (
               <FitImage src={item.imageUrl} alt="Nyt billede" onSize={() => undefined} />
             ) : (
-              <div className="hf-type-body flex min-h-0 flex-1 items-center justify-center rounded-md border border-hf-tan-dark bg-hf-tan text-text-muted">
+              <div className="hf-surface hf-type-body flex min-h-0 flex-1 items-center justify-center bg-hf-tan text-text-muted">
                 Filen findes ikke længere
               </div>
             )}
@@ -160,15 +159,15 @@ export function DiffDialog({
         <div className="flex flex-wrap items-center justify-center gap-3">
           {canEdit && item.status === "CONFLICT" && (
             <>
-              <button type="button" disabled={pending} onClick={() => onDecide("ignore")} className={`${buttonClass} border border-hf-tan-dark bg-hf-white text-hf-black`}>
+              <button type="button" disabled={pending} onClick={() => onDecide("ignore")} className="hf-btn-secondary hf-btn--inline hf-btn--large">
                 Ignorer
               </button>
-              <button type="button" disabled={pending} onClick={() => onDecide("replace")} className={`${buttonClass} bg-hf-green-dark text-hf-white`}>
+              <button type="button" disabled={pending} onClick={() => onDecide("replace")} className="hf-btn-brand hf-btn--inline hf-btn--large">
                 Erstat
               </button>
             </>
           )}
-          <BottomSheetCloseButton className={`${buttonClass} border border-hf-tan-dark bg-hf-white text-hf-black`}>
+          <BottomSheetCloseButton className="hf-btn-secondary hf-btn--inline hf-btn--large">
             Luk
           </BottomSheetCloseButton>
         </div>

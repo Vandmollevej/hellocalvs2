@@ -825,6 +825,9 @@ textarea::selection,
     height: 100dvh;
     overflow-y: auto;
     overflow-x: hidden;
+    /* Scrollbaren reserverer altid sin plads, så indholdet ikke skifter bredde
+       (flimrer) når man går mellem en kort og en lang side. */
+    scrollbar-gutter: stable;
     background: var(--hf-color-page);
     color: var(--hf-color-text);
   }
@@ -1125,6 +1128,14 @@ textarea::selection,
     min-width: 0;
   }
 
+  /* Admin-sidens rod: titel, intro og indhold i ét lodret forløb med samme
+     afstand på alle sider (var gap-4/-6/-8 efter side). */
+  .hf-admin-page {
+    display: flex;
+    flex-direction: column;
+    gap: var(--hf-space-block);
+  }
+
   /* Indholdsbredde: maks 80 rem, 16 px gutter (32 px fra 1024 px). */
   .hf-shell__content,
   .hf-insight__main {
@@ -1408,6 +1419,37 @@ textarea::selection,
     overscroll-behavior-x: contain;
   }
 
+  /* Statusmærke (pille): neutral som standard; --success, --warning, --danger.
+     Ingen side må selv sætte pille-radius, baggrund eller skrift. */
+  .hf-badge {
+    display: inline-flex;
+    flex-shrink: 0;
+    align-items: center;
+    padding: 2px 8px;
+    border-radius: 9999px;
+    background: var(--hf-tan);
+    color: var(--hf-color-text-secondary);
+    font-family: var(--font-hf-body);
+    font-size: 13px;
+    font-weight: 700;
+    line-height: 18px;
+  }
+
+  .hf-badge--success {
+    background: var(--hf-green-light);
+    color: var(--hf-green-dark);
+  }
+
+  .hf-badge--warning {
+    background: var(--hf-color-warning-bg);
+    color: var(--hf-color-warning);
+  }
+
+  .hf-badge--danger {
+    background: var(--hf-red-dark);
+    color: var(--hf-white);
+  }
+
   /* Nøgletal: lille label over stor værdi på kortfarven. */
   .hf-kpi {
     display: flex;
@@ -1527,6 +1569,21 @@ textarea::selection,
     line-height: 22px;
   }
 
+  /* Knap i sin naturlige bredde (som en almindelig <button>), i stedet for
+     den fulde bredde .hf-btn-primary/-secondary/-danger/-brand har som
+     standard. Bruges i værktøjslinjer, rækker og formularers handlingsrække. */
+  /* Stor udgave (48 px, 17 px skrift): formularers hovedknap og bekræftelser.
+     Ingen px-/h-/py- på elementet. */
+  .hf-btn--large {
+    min-height: var(--hf-control-height);
+    padding: 0 var(--hf-space-block);
+  }
+
+  .hf-btn--inline {
+    display: inline-flex;
+    width: auto;
+  }
+
   /* Sekundær handling: sort kant, sort tekst. */
   .hf-btn-secondary {
     background: transparent;
@@ -1553,6 +1610,14 @@ textarea::selection,
   /* Primærknapper forbliver sorte, også deaktiveret (DECISIONS 2026-09-25). */
   .hf-btn-primary:disabled {
     opacity: 1 !important;
+  }
+
+  /* Link/span udgivet som knap, der ikke kan bruges (fx "Forrige" på side 1). */
+  .hf-btn-secondary[aria-disabled="true"],
+  .hf-btn-danger[aria-disabled="true"],
+  .hf-btn-brand[aria-disabled="true"] {
+    opacity: 0.4;
+    pointer-events: none;
   }
 
   /* Tekstknap/link-knap: 15 px fed, understreget, arver farve. */
@@ -1596,6 +1661,12 @@ textarea::selection,
     font-size: 13px;
     font-weight: 700;
     line-height: 18px;
+  }
+
+  /* Kvadratisk ikon-/tal-valg uden indre luft (fx størrelsesvælger, flueben). */
+  .hf-choice--icon {
+    min-width: 40px;
+    padding: 0;
   }
 
   .hf-choice[aria-pressed="true"],
@@ -1733,6 +1804,71 @@ input.hf-field[type="week"] {
 .hf-search input::placeholder {
   color: var(--hf-black);
   opacity: 0.5;
+}
+
+/* Formularfelt: ét fælles udseende for <input>, <select> og <textarea> i admin
+   og andre formularer (design.md §6.4). Højde 48 px; .hf-input--compact = 40 px
+   til værktøjslinjer og filtre; textarea vokser efter indhold. Sider sætter
+   hverken kant, baggrund, radius, skrift eller h-/py-/px- ved siden af —
+   kun bredde (w-full, flex-1, min-w-0). Uden for @layer, så klassen vinder
+   over Tailwind-utilities. */
+.hf-input {
+  box-sizing: border-box;
+  height: var(--hf-control-height);
+  min-height: var(--hf-control-height);
+  padding: 0 12px;
+  border: 1px solid var(--hf-color-field-border);
+  border-radius: var(--hf-radius-card);
+  background: var(--hf-color-surface);
+  color: var(--hf-color-text);
+  font-family: var(--font-hf-body);
+  font-size: 17px;
+  font-weight: 400;
+  line-height: 24px;
+}
+
+.hf-input:hover:not(:disabled) {
+  border-color: var(--hf-color-field-hover);
+}
+
+.hf-input:focus,
+.hf-input:focus-visible {
+  outline: none;
+  border-color: var(--hf-color-field-focus);
+  box-shadow: inset 0 0 0 1px var(--hf-color-field-focus);
+}
+
+.hf-input::placeholder {
+  color: var(--hf-color-placeholder);
+  opacity: 1;
+}
+
+.hf-input:disabled {
+  opacity: 0.6;
+}
+
+.hf-input[readonly] {
+  background: var(--hf-color-page);
+}
+
+/* Notefelt (intern note frem for svar): stiplet advarselskant. */
+.hf-input--note {
+  border-style: dashed;
+  border-color: var(--hf-color-warning);
+}
+
+.hf-input--compact {
+  height: 40px;
+  min-height: 40px;
+  font-size: 15px;
+  line-height: 22px;
+}
+
+textarea.hf-input {
+  height: auto;
+  min-height: 96px;
+  padding-top: 10px;
+  padding-bottom: 10px;
 }
 
 /* Accordion-kort (udvidelig varerække) */

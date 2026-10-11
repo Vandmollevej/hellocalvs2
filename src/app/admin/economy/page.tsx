@@ -46,7 +46,7 @@ export default async function EconomyPage() {
   const maxRunway = Math.max(1, ...cover.runway.map((r) => r.securedDkk));
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="hf-admin-page">
       <h1 className="hf-type-title text-hf-black">Economy</h1>
       <p className="hf-type-small text-text-muted">
         {data.payingNow} betalende abonnementer · løbende indtægt pr. måned: {kr.format(data.mrrDkk)} kr.

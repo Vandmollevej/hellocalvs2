@@ -15,14 +15,19 @@ import {
 
 const insensitive = { mode: "insensitive" as const };
 
-// Kun rigtige produkter: private ingredienser og retter (HelloFresh o.l.) er udeladt.
-export const PRODUCTS_ONLY: Prisma.ProductWhereInput = {
+// Rigtige produkter, slettede med: private ingredienser og retter (HelloFresh
+// o.l.) er udeladt.
+const PRODUCTS_BASE: Prisma.ProductWhereInput = {
   privateOwnerId: null,
   OR: [{ externalSource: null }, { externalSource: { notIn: [...DISH_SOURCES] } }],
 };
 
+// Kun aktive produkter (ikke slettet af admin, docs/DECISIONS.md 2026-10-11).
+export const PRODUCTS_ONLY: Prisma.ProductWhereInput = { ...PRODUCTS_BASE, deletedAt: null };
+
 function buildWhere(filters: ProductDatabaseFilters): Prisma.ProductWhereInput {
-  const and: Prisma.ProductWhereInput[] = [PRODUCTS_ONLY];
+  // "Slettede" er en visning for sig: kun de slettede varer.
+  const and: Prisma.ProductWhereInput[] = filters.deleted ? [PRODUCTS_BASE, { deletedAt: { not: null } }] : [PRODUCTS_ONLY];
 
   if (filters.q) {
     // Hvert ord skal findes i navn, mærke, sub brand, variant, produkttype
@@ -69,6 +74,7 @@ function buildWhere(filters: ProductDatabaseFilters): Prisma.ProductWhereInput {
   if (filters.image === "without") and.push({ imageUrl: null });
   if (filters.barcode === "with") and.push({ barcodes: { some: {} } });
   if (filters.barcode === "without") and.push({ barcodes: { none: {} } });
+  if (filters.nutrition === "missing") and.push({ nutritionMissing: true });
 
   return { AND: and };
 }
@@ -120,6 +126,10 @@ export type ProductDatabaseRow = {
   // Butiksvare uden kalorietal: vises i søgning, skjult i genkendelse (docs/DECISIONS.md 2026-10-10).
   nutritionMissing: boolean;
   status: ProductStatus;
+  // Deaktiveret af admin (Product.discontinued): skjult for brugerne.
+  disabled: boolean;
+  // Slettet af admin (kun i "Slettede"-visningen).
+  deleted: boolean;
   sourceLabel: string;
   categoryLabel: string | null;
   stores: string[];
@@ -132,6 +142,10 @@ export type ProductDatabaseRow = {
 export type ProductDatabaseOverview = {
   total: number;
   withImage: number;
+  // Aktive varer med en mangel, til den røde linje over listen.
+  missingNutrition: number;
+  // Antal slettede varer (siden "Slettede").
+  deleted: number;
   approved: number;
   pending: number;
   // Opdeling Total / EAN (med stregkode) / Generisk (uden stregkode):
@@ -189,6 +203,8 @@ export async function loadProductDatabase(filters: ProductDatabaseFilters) {
         kcalPer100g: true,
         nutritionMissing: true,
         status: true,
+        discontinued: true,
+        deletedAt: true,
         externalSource: true,
         productCategory: true,
         brand: { select: { name: true } },
@@ -228,6 +244,8 @@ export async function loadProductDatabase(filters: ProductDatabaseFilters) {
     kcalPer100g: p.kcalPer100g,
     nutritionMissing: p.nutritionMissing,
     status: p.status,
+    disabled: p.discontinued,
+    deleted: p.deletedAt !== null,
     // Nye kilder i skemaet (fx en kommende kæde-import) vises med deres rå navn.
     sourceLabel: (PRODUCT_SOURCE_LABELS as Record<string, string>)[p.externalSource ?? "USER"] ?? String(p.externalSource),
     categoryLabel: (p.category ? [p.category.parent?.name, p.category.name].filter(Boolean).join(" › ") : null) ?? (p.productCategory ? PRODUCT_CATEGORY_LABELS[p.productCategory] : null),
@@ -251,9 +269,11 @@ async function loadOverview(): Promise<ProductDatabaseOverview> {
   const withBarcode: Prisma.ProductWhereInput = { barcodes: { some: {} } };
   const withoutBarcode: Prisma.ProductWhereInput = { barcodes: { none: {} } };
   const approvedBase: Prisma.ProductWhereInput = { ...base, status: "APPROVED" };
-  const [total, withImage, approved, pending, ean, addTotal, addEan, addGeneric] = await Promise.all([
+  const [total, withImage, missingNutrition, deleted, approved, pending, ean, addTotal, addEan, addGeneric] = await Promise.all([
     prisma.product.count({ where: base }),
     prisma.product.count({ where: { ...base, imageUrl: { not: null } } }),
+    prisma.product.count({ where: { ...base, nutritionMissing: true } }),
+    prisma.product.count({ where: { ...PRODUCTS_BASE, deletedAt: { not: null } } }),
     prisma.product.count({ where: { ...base, status: "APPROVED" } }),
     prisma.product.count({ where: { ...base, status: "PENDING" } }),
     prisma.product.count({ where: { AND: [base, withBarcode] } }),
@@ -264,6 +284,8 @@ async function loadOverview(): Promise<ProductDatabaseOverview> {
   return {
     total,
     withImage,
+    missingNutrition,
+    deleted,
     approved,
     pending,
     segments: {

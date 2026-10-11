@@ -21,7 +21,7 @@ function CropThumb({ src, cropBox }: { src: string; cropBox: CutoutCropBox | nul
       }
     : undefined;
   return (
-    <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded border border-hf-tan-dark bg-hf-white">
+    <div className="hf-surface relative h-16 w-16 shrink-0 overflow-hidden">
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
         src={src}

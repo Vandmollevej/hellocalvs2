@@ -36,7 +36,7 @@ function PasskeyNameForm({ onSave }: { onSave: (name?: string) => void }) {
           value={name}
           onChange={(event) => setName(event.target.value)}
           maxLength={60}
-          className="hf-field hf-type-body rounded-md border border-hf-tan-dark bg-page-bg px-3 text-hf-black outline-none focus:border-hf-green"
+          className="hf-input"
         />
       </label>
       <button
@@ -45,7 +45,7 @@ function PasskeyNameForm({ onSave }: { onSave: (name?: string) => void }) {
           onSave(name.trim() || undefined);
           close();
         }}
-        className="hf-control hf-btn-primary w-full px-4"
+        className="hf-btn-primary w-full hf-btn--large"
       >
         Gem
       </button>
@@ -130,7 +130,7 @@ export function PasskeyManager() {
           type="button"
           onClick={addPasskey}
           disabled={busy}
-          className="hf-btn-primary flex-shrink-0 px-3 py-1.5"
+          className="hf-btn-primary flex-shrink-0 hf-btn--compact"
         >
           {busy ? "…" : "Tilføj passkey"}
         </button>
@@ -156,7 +156,7 @@ export function PasskeyManager() {
               <button
                 type="button"
                 onClick={() => removePasskey(p.id)}
-                className="hf-type-small rounded-md border border-hf-tan-dark px-2.5 py-1 text-hf-red-dark"
+                className="hf-btn-danger hf-btn--compact hf-btn--inline"
               >
                 Fjern
               </button>

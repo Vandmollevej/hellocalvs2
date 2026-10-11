@@ -79,7 +79,7 @@ export function StatsFilters({
             value={from}
             max={to}
             onChange={(event) => setFrom(event.target.value)}
-            className="hf-field rounded-md border border-border-strong bg-surface-1 px-2 text-text-primary"
+            className="hf-input"
           />
         </label>
         <label className="flex flex-col gap-1 text-text-secondary">
@@ -89,7 +89,7 @@ export function StatsFilters({
             value={to}
             min={from}
             onChange={(event) => setTo(event.target.value)}
-            className="hf-field rounded-md border border-border-strong bg-surface-1 px-2 text-text-primary"
+            className="hf-input"
           />
         </label>
         <button type="button" onClick={() => apply({ preset: "custom", from, to })} className={btn(filter.preset === "custom")}>
@@ -110,7 +110,7 @@ export function StatsFilters({
               if (match) apply({ region: match.value });
             }}
             onBlur={() => setRegionText(regionLabel(filter.region))}
-            className="hf-field rounded-md border border-border-strong bg-surface-1 px-2 text-text-primary"
+            className="hf-input"
           />
           <datalist id="stats-region-options">
             {regionOptions.map((o) => (

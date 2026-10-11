@@ -18,7 +18,7 @@ export default async function AdminFlowPage({ params }: { params: Promise<{ id: 
   if (!flow) notFound();
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="hf-admin-page">
       <Link href="/admin/flows" className="hf-btn-text w-fit text-hf-black">
         <HfChevron direction="left" compact />
         Alle flows

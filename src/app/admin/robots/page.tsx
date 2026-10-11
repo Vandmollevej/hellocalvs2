@@ -31,7 +31,7 @@ export default async function AdminRobotsPage() {
   const pulseStats = await pulseRobotStats().catch(() => null);
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className="hf-admin-page">
       <div>
         <h1 className="hf-type-title text-hf-black">Robotter</h1>
         <p className="hf-type-body text-text-secondary">

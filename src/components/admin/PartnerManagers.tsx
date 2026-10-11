@@ -12,9 +12,10 @@ export async function postJson(url: string, body: Record<string, unknown>) {
   return { ok: res.ok, status: res.status, data };
 }
 
-const INPUT = "hf-type-body h-10 rounded-md border border-hf-tan-dark bg-hf-white px-3";
-const BTN = "hf-type-small rounded-md border border-hf-tan-dark px-3 py-1.5 text-text-secondary hover:bg-hf-tan disabled:opacity-50";
-const PRIMARY = "hf-type-small rounded-md bg-hf-black px-3 py-1.5 text-hf-white disabled:opacity-50";
+const INPUT = "hf-input hf-input--compact";
+const BTN = "hf-btn-secondary hf-btn--compact hf-btn--inline";
+const DANGER = "hf-btn-danger hf-btn--compact hf-btn--inline";
+const PRIMARY = "hf-btn-brand hf-btn--compact hf-btn--inline";
 
 function useAction() {
   const router = useRouter();
@@ -83,7 +84,7 @@ export function ContactsManager({ partners }: { partners: PartnerWithContacts[] 
             <div className="flex items-center justify-between gap-3">
               <Link href={`/admin/partners/${partner.id}`} className="hf-type-strong text-hf-black hover:underline">{partner.name}</Link>
               <button
-                className={BTN}
+                className={DANGER}
                 disabled={busy}
                 onClick={() => run({ action: "deletePartner", id: partner.id }, `Slet ${partner.name} med alle kontakter, lokationer og rapportplaner?`)}
               >
@@ -101,7 +102,7 @@ export function ContactsManager({ partners }: { partners: PartnerWithContacts[] 
                     <button className={BTN} disabled={busy} onClick={() => run({ action: "toggleContact", id: contact.id, active: !contact.active })}>
                       {contact.active ? "Deaktivér" : "Aktivér"}
                     </button>
-                    <button className={BTN} disabled={busy} onClick={() => run({ action: "deleteContact", id: contact.id }, `Slet ${contact.name}?`)}>
+                    <button className={DANGER} disabled={busy} onClick={() => run({ action: "deleteContact", id: contact.id }, `Slet ${contact.name}?`)}>
                       Slet
                     </button>
                   </span>
@@ -161,7 +162,7 @@ export function LocationForm({ partners }: { partners: { id: string; name: strin
 export function DeleteLocationButton({ id, name }: { id: string; name: string }) {
   const { busy, run } = useAction();
   return (
-    <button className={BTN} disabled={busy} onClick={() => run({ action: "deleteLocation", id }, `Slet lokationen ${name} og dens tal?`)}>
+    <button className={DANGER} disabled={busy} onClick={() => run({ action: "deleteLocation", id }, `Slet lokationen ${name} og dens tal?`)}>
       Slet
     </button>
   );

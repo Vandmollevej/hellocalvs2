@@ -13,7 +13,7 @@ export default async function AdminQualityControlActivitiesPage() {
   const rows = await loadActivityTypeRows({ status: "PENDING" });
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="hf-admin-page">
       <h1 className="hf-type-title text-hf-black">{t(admin.locale, "quality_control_title")}</h1>
       <QualityControlTabs active="activities" locale={admin.locale} />
       <p className="hf-type-small text-text-secondary">{t(admin.locale, "activities_hint")}</p>

@@ -55,7 +55,7 @@ export default async function AdminPersonasPage({
   const personas = snapshot?.personas ?? null;
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className="hf-admin-page">
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
           <h1 className="hf-type-title text-hf-black">Personas</h1>
@@ -243,7 +243,7 @@ function Section({ title, intro, children }: { title: string; intro?: string; ch
 
 function Card({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <div className="flex flex-col gap-2 rounded-lg border border-border-strong bg-surface-2 p-4">
+    <div className="hf-surface flex flex-col gap-2 p-4">
       <p className="text-text-primary hf-type-body hf-type-strong">{title}</p>
       {children}
     </div>

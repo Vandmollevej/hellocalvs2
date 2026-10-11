@@ -148,16 +148,14 @@ export function FilterDropdown(props: SingleProps | MultiProps) {
         aria-expanded={open}
         aria-labelledby={labelId}
         onClick={toggleOpen}
-        className={`hf-type-body hf-field flex w-full min-w-0 items-center justify-between gap-2 rounded-md border bg-hf-white px-3 text-left ${
-          open || active ? "border-hf-green" : "border-hf-tan-dark"
-        } ${isPlaceholder ? "text-text-muted" : "text-hf-black"}`}
+        className={`hf-input flex w-full min-w-0 items-center justify-between gap-2 text-left ${active && !isPlaceholder ? "hf-selected" : ""}`}
       >
         <span className="min-w-0 truncate">{summary}</span>
         <HfChevron direction={open ? "up" : "down"} compact className="shrink-0 text-hf-black" />
       </button>
 
       {open && (
-        <div className={`absolute ${alignRight ? "right-0" : "left-0"} top-full z-30 mt-1 flex w-full min-w-64 flex-col overflow-hidden rounded-md border border-hf-tan-dark bg-hf-white shadow-lg`}>
+        <div className={`absolute ${alignRight ? "right-0" : "left-0"} top-full z-30 mt-1 flex w-full min-w-64 flex-col overflow-hidden hf-surface shadow-lg`}>
           {searchable && (
             <div className="border-b border-hf-tan-dark p-2">
               <input
@@ -166,7 +164,7 @@ export function FilterDropdown(props: SingleProps | MultiProps) {
                 value={search}
                 onChange={(event) => setSearch(event.target.value)}
                 placeholder={`Søg i ${label.toLowerCase()}…`}
-                className="hf-type-body hf-field w-full min-w-0 rounded-md border border-hf-tan-dark bg-page-bg px-3 text-hf-black outline-none placeholder:text-text-muted focus:border-hf-green"
+                className="hf-input w-full min-w-0"
               />
             </div>
           )}
@@ -179,9 +177,7 @@ export function FilterDropdown(props: SingleProps | MultiProps) {
                   <button
                     type="button"
                     onClick={() => choose(option.value)}
-                    className={`hf-type-body flex w-full items-center gap-3 px-3 py-2 text-left text-hf-black hover:bg-hf-tan ${
-                      !props.multiple && selected ? "hf-type-strong" : ""
-                    }`}
+                    className={`hf-navrow ${!props.multiple && selected ? "is-active" : ""}`}
                   >
                     {props.multiple && (
                       <span
@@ -206,10 +202,10 @@ export function FilterDropdown(props: SingleProps | MultiProps) {
           </ul>
           {props.multiple && (
             <div className="flex items-center justify-between gap-3 border-t border-hf-tan-dark px-3 py-2">
-              <button type="button" onClick={clearAll} disabled={draft.length === 0} className="hf-btn-text text-hf-green-dark disabled:text-text-muted">
+              <button type="button" onClick={clearAll} disabled={draft.length === 0} className="hf-btn-text">
                 Ryd
               </button>
-              <button type="button" onClick={() => setOpen(false)} className="hf-btn-text text-hf-black">
+              <button type="button" onClick={() => setOpen(false)} className="hf-btn-text">
                 Færdig{draft.length > 0 ? ` (${draft.length})` : ""}
               </button>
             </div>

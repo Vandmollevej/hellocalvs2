@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import { AdminPagination } from "@/components/admin/AdminPagination";
 import { BrandGrid } from "@/components/admin/BrandGrid";
 import { requireAdminUser, requireFullAdminUser } from "@/lib/require-admin";
 import {
@@ -28,30 +29,7 @@ function StatCard({ href, label, value, note }: { href: string; label: string; v
 }
 
 function Pagination({ filters, page, pageCount }: { filters: AdminBrandsFilters; page: number; pageCount: number }) {
-  if (pageCount <= 1) return null;
-  const linkClass = "hf-type-body rounded-md border border-hf-tan-dark bg-hf-white px-4 py-2 text-hf-black hover:border-hf-green";
-  const disabledClass = "hf-type-body rounded-md border border-hf-tan-dark px-4 py-2 text-text-muted";
-  return (
-    <nav aria-label="Sider" className="flex items-center justify-between gap-3">
-      {page > 1 ? (
-        <Link href={adminBrandsHref(filters, { page: page - 1 })} className={linkClass}>
-          ← Forrige
-        </Link>
-      ) : (
-        <span className={disabledClass}>← Forrige</span>
-      )}
-      <span className="hf-type-body text-text-secondary">
-        Side {numberFormat.format(page)} af {numberFormat.format(pageCount)}
-      </span>
-      {page < pageCount ? (
-        <Link href={adminBrandsHref(filters, { page: page + 1 })} className={linkClass}>
-          Næste →
-        </Link>
-      ) : (
-        <span className={disabledClass}>Næste →</span>
-      )}
-    </nav>
-  );
+  return <AdminPagination page={page} pageCount={pageCount} hrefFor={(next) => adminBrandsHref(filters, { page: next })} />;
 }
 
 export default async function AdminBrandsPage({ searchParams }: { searchParams: Promise<AdminBrandsSearchParams> }) {
@@ -76,7 +54,7 @@ export default async function AdminBrandsPage({ searchParams }: { searchParams: 
   ];
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className="hf-admin-page">
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div className="flex flex-col gap-1">
           <h1 className="hf-type-title text-hf-black">Brands</h1>
@@ -108,10 +86,10 @@ export default async function AdminBrandsPage({ searchParams }: { searchParams: 
           name="q"
           defaultValue={filters.q}
           placeholder="Søg efter brand"
-          className="hf-type-body h-10 w-full rounded-md border border-hf-tan-dark bg-hf-white px-3 text-hf-black outline-none placeholder:text-text-muted focus:border-hf-green sm:max-w-sm"
+          className="hf-input hf-input--compact w-full sm:max-w-sm"
         />
         {filters.logo && <input type="hidden" name="logo" value={filters.logo} />}
-        <div className="hf-type-small flex overflow-hidden rounded-md border border-hf-tan-dark">
+        <div className="hf-surface hf-type-small flex overflow-hidden">
           {logoOptions.map((option) => (
             <Link
               key={option.value || "all"}

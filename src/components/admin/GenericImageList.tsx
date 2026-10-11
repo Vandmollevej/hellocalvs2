@@ -13,7 +13,7 @@ export function GenericImageList({ rows }: { rows: GenericImageRow[] }) {
         <ul className="hf-surface max-h-[40rem] divide-y divide-border-strong overflow-y-auto">
           {rows.map((row) => (
             <li key={row.id} className="flex items-center gap-4 px-4 py-2">
-              <div className="flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-md border border-hf-tan-dark bg-hf-white">
+              <div className="hf-surface flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden">
                 {row.imageUrl ? (
                   // eslint-disable-next-line @next/next/no-img-element
                   <img src={row.imageUrl} alt="" loading="lazy" className="h-full w-full object-contain p-0.5" />

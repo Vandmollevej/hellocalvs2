@@ -29,7 +29,7 @@ export default async function AdminSupportPage({
   const now = new Date();
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="hf-admin-page">
       <div>
         <div className="flex flex-wrap items-baseline justify-between gap-2">
           <h1 className="hf-type-title text-hf-black">{t(admin.locale, "support_title")}</h1>
@@ -85,10 +85,10 @@ export default async function AdminSupportPage({
                       </span>
                     )}
                     {request.status === "RESOLVED" && (
-                      <span className="rounded-full bg-hf-tan px-2 py-0.5 text-text-secondary">Løst</span>
+                      <span className="hf-badge">Løst</span>
                     )}
                     {request.status === "OPEN" && !unanswered && (
-                      <span className="rounded-full bg-hf-green-dark px-2 py-0.5 text-hf-white">Besvaret</span>
+                      <span className="hf-badge hf-badge--success">Besvaret</span>
                     )}
                     <span className="flex items-center gap-1 text-text-secondary">
                       <PriorityDot priority={request.priority} />

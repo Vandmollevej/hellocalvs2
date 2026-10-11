@@ -51,10 +51,10 @@ export function DebugLogControls({ enabled, total }: { enabled: boolean; total: 
         </p>
       </div>
       <div className="flex flex-wrap gap-2">
-        <button type="button" onClick={toggle} disabled={busy} className="hf-btn-secondary h-10 px-4">
+        <button type="button" onClick={toggle} disabled={busy} className="hf-btn-secondary hf-btn--compact">
           {enabled ? "Slå fra" : "Slå til"}
         </button>
-        <button type="button" onClick={clear} disabled={busy || total === 0} className="hf-btn-danger h-10 px-4">
+        <button type="button" onClick={clear} disabled={busy || total === 0} className="hf-btn-danger hf-btn--compact">
           Ryd log
         </button>
       </div>

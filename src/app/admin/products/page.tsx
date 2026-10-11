@@ -163,9 +163,9 @@ export default async function AdminProductsPage({
   const activeSort = SORTS.find((s) => s.key === sort)!;
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="hf-admin-page">
       <div className="flex items-center justify-between gap-2">
-        <h1 className="hf-type-title min-w-0 truncate text-hf-black">{t(admin.locale, "products_title")}</h1>
+        <h1 className="hf-type-title text-hf-black min-w-0 truncate">{t(admin.locale, "products_title")}</h1>
         <details className="relative">
           <summary
             title={`Sortér: ${activeSort.label}`}
@@ -176,7 +176,7 @@ export default async function AdminProductsPage({
               <path d="M3 6h18M6 12h12M10 18h4" />
             </svg>
           </summary>
-          <div className="absolute right-0 z-10 mt-1 flex w-max max-w-[calc(100vw-2rem)] flex-col rounded-md border border-hf-tan-dark bg-hf-white py-1 shadow-lg">
+          <div className="hf-surface absolute right-0 z-10 mt-1 flex w-max max-w-[calc(100vw-2rem)] flex-col py-1 shadow-lg">
             {SORTS.map((s) => (
               <Link
                 key={s.key}

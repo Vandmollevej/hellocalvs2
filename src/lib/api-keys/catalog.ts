@@ -148,7 +148,7 @@ const ENV_PRODUCTION: ManageLink = {
 
 const VIPPS_DEVELOPER_KEYS: ManageLink = {
   url: "https://portal.vippsmobilepay.com",
-  where: "Vipps MobilePay-portalen → For developers → Production → salgsstedet → Show keys",
+  where: "Vipps-portalen → For developers → Production → salgsstedet → Show keys",
 };
 
 export const KEY_SERVICES: KeyService[] = [
@@ -455,9 +455,9 @@ export const KEY_SERVICES: KeyService[] = [
   },
   {
     id: "stripe",
-    name: "Stripe (MobilePay i Danmark, kort/EC i Tyskland)",
+    name: "Stripe (Vipps i Danmark, kort/EC i Tyskland)",
     group: "payment",
-    purpose: "Abonnementsbetaling: MobilePay for danske og kort inkl. EC-kort (girocard) for tyske brugere.",
+    purpose: "Abonnementsbetaling: Vipps for danske og kort inkl. EC-kort (girocard) for tyske brugere.",
     fields: [
       {
         key: "STRIPE_SECRET_KEY",
@@ -479,13 +479,13 @@ export const KEY_SERVICES: KeyService[] = [
     ],
     setupUrl: "https://dashboard.stripe.com/apikeys",
     testable: true,
-    note: "Slå MobilePay og kort til under Indstillinger → Betalingsmetoder i Stripe (dashboard.stripe.com/settings/payment_methods). Webhooken (/api/payments/stripe/webhook) registreres automatisk af serveren.",
+    note: "Slå Vipps og kort til under Indstillinger → Betalingsmetoder i Stripe (dashboard.stripe.com/settings/payment_methods). Webhooken (/api/payments/stripe/webhook) registreres automatisk af serveren.",
   },
   {
     id: "mobilepay",
-    name: "MobilePay (Vipps MobilePay Recurring)",
+    name: "Vipps",
     group: "payment",
-    purpose: "Abonnementsbetaling med MobilePay: aftaler, månedlige træk og opsigelse.",
+    purpose: "Abonnementsbetaling med Vipps: aftaler, månedlige træk og opsigelse.",
     fields: [
       { key: "MOBILEPAY_CLIENT_ID", label: "client_id", kind: "id", manage: VIPPS_DEVELOPER_KEYS },
       { key: "MOBILEPAY_CLIENT_SECRET", label: "client_secret", kind: "secret", manage: VIPPS_DEVELOPER_KEYS },
@@ -509,7 +509,7 @@ export const KEY_SERVICES: KeyService[] = [
         hint: "Skriv “test” for testmiljøet. Tomt = produktion.",
         manage: {
           url: "https://portal.vippsmobilepay.com",
-          where: "Vipps MobilePay-portalen → For developers → fanen Test eller Production",
+          where: "Vipps-portalen → For developers → fanen Test eller Production",
         },
       },
     ],

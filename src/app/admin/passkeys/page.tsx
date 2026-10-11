@@ -7,7 +7,7 @@ export default async function AdminPasskeysPage() {
   if (!admin) redirect("/admin/login");
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="hf-admin-page">
       <h1 className="hf-type-title text-hf-black">Passkeys</h1>
       <PasskeyManager />
     </div>

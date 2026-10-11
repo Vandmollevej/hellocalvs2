@@ -159,7 +159,7 @@ export function ProductImageGallery({
             type="button"
             onClick={() => fileInputRef.current?.click()}
             disabled={savingPrimary}
-            className="hf-type-small rounded border border-hf-tan-dark px-1.5 disabled:opacity-60"
+            className="hf-btn-secondary hf-btn--compact hf-btn--inline"
           >
             Vælg fil
           </button>
@@ -184,16 +184,16 @@ export function ProductImageGallery({
               label="Øvrigt billede"
             />
             <div className="flex gap-1">
-              <button type="button" onClick={() => move(img.id, "up")} className="hf-type-small rounded border border-hf-tan-dark px-1.5">
+              <button type="button" onClick={() => move(img.id, "up")} className="hf-btn-secondary hf-btn--compact hf-btn--inline">
                 ↑
               </button>
-              <button type="button" onClick={() => move(img.id, "down")} className="hf-type-small rounded border border-hf-tan-dark px-1.5">
+              <button type="button" onClick={() => move(img.id, "down")} className="hf-btn-secondary hf-btn--compact hf-btn--inline">
                 ↓
               </button>
               <button
                 type="button"
                 onClick={() => removeSecondary(img.id)}
-                className="hf-type-small rounded border border-hf-tan-dark px-1.5 text-hf-red-dark"
+                className="hf-btn-danger hf-btn--compact hf-btn--inline"
               >
                 Slet
               </button>
@@ -206,12 +206,8 @@ export function ProductImageGallery({
                     key={tag}
                     type="button"
                     onClick={() => toggleTag(img, tag)}
-                    className={
-                      "hf-type-micro rounded-full border px-1.5 py-0.5 " +
-                      (active
-                        ? "border-hf-black bg-hf-white text-hf-black"
-                        : "border-hf-tan-dark text-text-muted")
-                    }
+                    aria-pressed={active}
+                    className="hf-choice"
                   >
                     {label}
                   </button>
@@ -234,14 +230,14 @@ export function ProductImageGallery({
             value={primaryUrl}
             onChange={(e) => setPrimaryUrl(e.target.value)}
             placeholder="https://…"
-            className="hf-type-body hf-field w-64 rounded-md border border-hf-tan-dark px-2"
+            className="hf-input w-64"
           />
         </label>
         <button
           type="button"
           onClick={() => savePrimary()}
           disabled={savingPrimary}
-          className="hf-type-body rounded-md border border-hf-black bg-hf-white px-3 py-1.5 text-hf-black disabled:opacity-60"
+          className="hf-btn-secondary hf-btn--compact hf-btn--inline"
         >
           {savingPrimary ? "Gemmer…" : "Gem hovedbillede"}
         </button>
@@ -255,14 +251,14 @@ export function ProductImageGallery({
               value={newUrl}
               onChange={(e) => setNewUrl(e.target.value)}
               placeholder="https://…"
-              className="hf-type-body hf-field w-64 rounded-md border border-hf-tan-dark px-2"
+              className="hf-input w-64"
             />
           </label>
           <button
             type="button"
             onClick={addSecondary}
             disabled={adding}
-            className="hf-type-body rounded-md border border-hf-black bg-hf-white px-3 py-1.5 text-hf-black disabled:opacity-60"
+            className="hf-btn-secondary hf-btn--compact hf-btn--inline"
           >
             {adding ? "Tilføjer…" : "Tilføj"}
           </button>

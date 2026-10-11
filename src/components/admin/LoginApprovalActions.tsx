@@ -52,7 +52,7 @@ export function LoginApprovalActions({ token }: { token: string }) {
         type="button"
         onClick={() => act("deny")}
         disabled={loading !== null}
-        className="hf-type-body rounded-md border border-hf-tan-dark px-4 py-2.5 text-hf-red-dark disabled:opacity-60"
+        className="hf-btn-danger hf-btn--compact hf-btn--inline"
       >
         {loading === "deny" ? "…" : "Nej, det er ikke mig"}
       </button>

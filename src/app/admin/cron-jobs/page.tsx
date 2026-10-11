@@ -18,7 +18,7 @@ export default async function AdminCronJobsPage() {
   const rowByKey = new Map(rows.map((row) => [row.key, row]));
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className="hf-admin-page">
       <div>
         <h1 className="hf-type-title text-hf-black">Cron-jobs</h1>
         <p className="hf-type-body text-text-secondary">

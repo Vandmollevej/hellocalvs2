@@ -178,7 +178,7 @@ function TrendList({ items }: { items: TrendItem[] }) {
             </span>
             <span className={notable ? "text-text-primary" : "text-text-secondary"}>{text}</span>
             {notable && !same && (
-              <span className="ml-auto shrink-0 hf-type-small rounded-full bg-hf-tan px-2 py-0.5 text-text-secondary">
+              <span className="hf-badge ml-auto shrink-0">
                 Markant
               </span>
             )}
@@ -224,11 +224,11 @@ export default async function AdminStatisticsPage({
   const r = s.retention;
 
   return (
-    <div className="flex flex-col gap-8">
+    <div className="hf-admin-page">
       <StatsTabs active="users" />
       <div className="flex flex-col gap-3">
         <div>
-          <h1 className="hf-type-page-title text-text-primary">Statistik</h1>
+          <h1 className="hf-type-title text-hf-black">Statistik</h1>
           <p className="hf-type-body text-text-secondary">
             {s.range.label}: {s.range.fromDay} – {s.range.toDay} · {num.format(s.scopeUserCount)} brugere i filteret · alle
             procenter sammenlignes med en lige så lang periode lige før.

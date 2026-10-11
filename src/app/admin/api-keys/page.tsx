@@ -16,7 +16,7 @@ export default async function AdminApiKeysPage() {
   const custom = await loadCustomApis();
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="hf-admin-page">
       <div>
         <h1 className="hf-type-title text-hf-black">API-nøgler</h1>
         <p className="hf-type-body mt-1 text-text-secondary">

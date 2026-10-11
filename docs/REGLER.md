@@ -68,6 +68,14 @@ ikke her, er den ikke registreret og skal tilføjes.
   foretræk rent wordmark uden tagline. Se docs/LOGO-AGENT.md.
 - Brugerens uploadede PNG-kunst bruges som den er (skaleret/CSS-mask), aldrig
   gen-tegnet som SVG.
+- **API-logoer (bruger 2026-10-11)**: hver tjeneste under admin → API-nøgler har
+  et transparent, kvadratisk (1:1, 512×512) bomærke i `public/api-logos/<tjeneste-id>.png`
+  — aldrig et bogstav i en cirkel. Ny tjeneste i `src/lib/api-keys/catalog.ts`
+  = nyt logo med samme id. Det samme gælder integrationskortene i
+  `src/lib/integrations.ts` (`public/integrations/<slug>.png`, `icon: null` bruges
+  ikke længere). Kilder: simple-icons (CC0), Wikimedia Commons,
+  udbyderens egen favicon/app-ikon (App Store 1024 px), mærket frigjort fra
+  flisen. Se DECISIONS.md 2026-10-11.
 - **Brand og subbrand ved produktcirklen (bruger 2026-10-10)**: brandet står til
   højre for cirklen, subbrandet oven over det. Begge vises som logo, når det
   findes, ellers som navn i fed grøn tekst. Subbrand-logofiler hedder
@@ -106,6 +114,9 @@ ikke her, er den ikke registreret og skal tilføjes.
   stadig i alle tekstfelter, ikke kun titlen.
 
 ## UI
+
+- **Admin-lister over varer og retter (user rule 2026-10-11)**: (1) en række uden billede/næring har tynd rød kant + rød tekst, og listen har en rød linje øverst med tal og filter — en mangelfuld ret må aldrig stå som en almindelig "Godkendt" række; (2) status til højre er teksten (Godkendt …) + en on/off-knap, aldrig en farvet kasse; (3) rækker kan markeres med klik/Ctrl/Shift og behandles under "Handlinger" (Disable, Godkend, Send til gennemsyn, Slet; altid synlig); (4) Slet er blød, de slettede findes under "Slettede" øverst på listen. Komponenter: `BulkSelection`/`BulkRow`/`BulkActionsBar`, `StatusToggle`, `admin-list-problems.ts`. Se DECISIONS.md 2026-10-11.
+- **Admin bruger kun fælles klasser (user rule 2026-10-11)**: knapper = `.hf-btn-primary/-brand/-secondary/-danger/-text/-icon` eller `.hf-choice` (+ `.hf-btn--compact .hf-btn--inline`); felter = `.hf-input` (+ `--compact`); hvide kort = `.hf-surface`/`.hf-panel`; mærker = `.hf-badge`; søgefelt = `.hf-search` (ingen understreget "Søg"-knap, Enter søger); Forrige/Næste = `AdminPagination`; side-rod = `.hf-admin-page`. Hjemmelavede kant-/baggrund-/radius-/skrift-klasser på `<button>/<input>/<select>/<textarea>` i admin fejler `npm run lint` (`design-tokens/admin-controls`). Siden må aldrig skifte bredde mellem sider (`scrollbar-gutter: stable` på `.hf-shell`).
 
 - **Kalenderens dagsvisning følger klokken (user rule 2026-10-10)**: når man åbner en dag, scrolles tidslinjen efter tidspunktet på dagen — om morgenen ses natten + morgenen (øverst), midt på dagen morgen + aften (midten), om aftenen aften + nat (bunden af kalenderen). Nattens søvn skal stadig ses om morgenen. Web (`src/app/calendar/page.tsx`) og native (`CalendarDayDetails.kt`).
 
@@ -252,3 +263,9 @@ ext/image-billeder (logoet i sidebjælken) på /admin/login og forsvinder. Match
 - Enhver admin-liste, der kan blive lang, hentes/tegnes gradvist og har øverst valget "Evigheds-scroll / Sideinddelt" (`ListModeToggle` + `useListMode` i `src/components/admin/ListMode.tsx`). Valget huskes i browseren og gælder alle lister.
 - Send aldrig hele tabellen til browseren: lette rækker pr. udsnit, detaljer først ved åbning. Tunge opslag caches kort (`src/lib/ttl-cache.ts`) og nulstilles af ruter, der ændrer data.
 - Admin-sider har altid en `loading.tsx`, så sideskift reagerer med det samme.
+
+## Webversionen følger appen (user rule 2026-10-11)
+
+- Webversionen (desktop-skallen `WebShell`, bredde ≥ 1024 px) skal kunne alt, hvad appen kan — undtagen det, der kræver kameraet: Scan med kamera, Billeddagbog og stemme (Chat/Indtast afløser mikrofonen). Plus-cirklen i topbjælken viser hele tilføj-menuen minus mikrofon og kamera.
+- Sidebjælken (`src/lib/web-nav.ts`) følger appens Profil- og Indstillinger-sider punkt for punkt (Beskeder med ulæst-tal, Status, Point, Vægtkalibrering, Kropsmål, Søvnmønster, Screeninger, Viden om, Hello Doc, Familie, Kommunikation, Visning med alle undersider, Support …). Nyt menupunkt i appen = nyt punkt i `web-nav.ts` i samme opgave. `src/lib/web-nav.test.mjs` læser appens menuer og fejler, når webben mangler et punkt (eller et nyt udeladt punkt ikke står i testens `NOT_ON_WEB` med begrundelse).
+- Alt, der kun er monteret på appens forside (`src/app/page.tsx`), findes ikke på desktop, fordi roden sender videre til kalenderen. Sådanne popups (vægt/tøj, "Det er længe siden, der er synkroniseret", pulsudsving → "Hvad foretog du dig?") monteres derfor også i `src/components/web/WebStartPrompts.tsx` (vises på kalenderen). Testen kræver det.

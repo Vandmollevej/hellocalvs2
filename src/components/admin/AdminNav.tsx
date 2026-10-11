@@ -115,15 +115,14 @@ export function AdminNav({
           ))}
         </nav>
         <div className="flex items-center gap-3 text-text-muted hf-type-small">
-          <div className="flex overflow-hidden rounded-md border border-border-strong">
+          <div className="hf-surface flex overflow-hidden">
             {(["DA", "EN"] as const).map((option) => (
               <button
                 key={option}
                 type="button"
                 onClick={() => changeLocale(option)}
-                className={`px-2 py-1 ${
-                  currentLocale === option ? "hf-selected" : "text-text-secondary hover:bg-hf-tan"
-                }`}
+                aria-pressed={currentLocale === option}
+                className="hf-choice"
               >
                 {option}
               </button>
@@ -133,7 +132,7 @@ export function AdminNav({
           <button
             type="button"
             onClick={logout}
-            className="rounded-md border border-border-strong px-2.5 py-1 text-text-secondary hover:bg-hf-tan"
+            className="hf-btn-secondary hf-btn--compact hf-btn--inline"
           >
             {t(currentLocale, "nav_logout")}
           </button>

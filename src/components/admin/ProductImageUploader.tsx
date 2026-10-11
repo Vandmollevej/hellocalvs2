@@ -241,10 +241,7 @@ export function ProductImageUploader({ canEdit }: { canEdit: boolean }) {
               role="tab"
               aria-selected={tab === entry.id}
               onClick={() => setTab(entry.id)}
-              className={
-                "hf-type-body hf-control rounded-md px-4 " +
-                (tab === entry.id ? "bg-hf-green-dark text-hf-white" : "border border-hf-tan-dark text-hf-black")
-              }
+              className="hf-choice"
             >
               {entry.label}
             </button>
@@ -256,7 +253,7 @@ export function ProductImageUploader({ canEdit }: { canEdit: boolean }) {
             type="button"
             disabled={!canEdit || busy}
             onClick={() => filesInput.current?.click()}
-            className="hf-type-body hf-control rounded-md bg-hf-green-dark px-4 text-hf-white disabled:opacity-60"
+            className="hf-btn-brand hf-btn--inline hf-btn--large"
           >
             Vælg filer
           </button>
@@ -264,7 +261,7 @@ export function ProductImageUploader({ canEdit }: { canEdit: boolean }) {
             type="button"
             disabled={!canEdit || busy}
             onClick={() => folderInput.current?.click()}
-            className="hf-type-body hf-control rounded-md border border-hf-green-dark px-4 text-hf-green-dark disabled:opacity-60"
+            className="hf-btn-secondary hf-btn--inline hf-btn--large"
           >
             Vælg mappe
           </button>
@@ -331,7 +328,7 @@ export function ProductImageUploader({ canEdit }: { canEdit: boolean }) {
           )}
 
           {jobs.length > 0 && (
-            <ul className="flex max-h-[32rem] flex-col divide-y divide-hf-tan-dark overflow-y-auto rounded-md border border-hf-tan-dark bg-hf-white">
+            <ul className="hf-surface flex max-h-[32rem] flex-col divide-y divide-hf-tan-dark overflow-y-auto">
               {jobs.map((job) => (
                 <JobRow key={job.id} job={job} open={openJob === job.id} onToggle={() => setOpenJob(openJob === job.id ? null : job.id)} />
               ))}
@@ -343,7 +340,7 @@ export function ProductImageUploader({ canEdit }: { canEdit: boolean }) {
               <button
                 type="button"
                 onClick={() => setRun(null)}
-                className="hf-type-body hf-control rounded-md border border-hf-tan-dark px-4 text-hf-black"
+                className="hf-btn-secondary hf-btn--inline hf-btn--large"
               >
                 Luk visningen
               </button>
@@ -375,7 +372,7 @@ function JobRow({ job, open, onToggle }: { job: Job; open: boolean; onToggle: ()
 
   return (
     <li className="px-3 py-2">
-      <button type="button" onClick={onToggle} className="flex w-full flex-col gap-1 text-left" aria-expanded={open}>
+      <button type="button" onClick={onToggle} className="hf-btn-text w-full flex-col" aria-expanded={open}>
         <span className="flex flex-wrap items-baseline justify-between gap-x-3">
           <span className="hf-type-body hf-type-strong min-w-0 truncate text-hf-black">{job.name}</span>
           <span className={`hf-type-small ${outcomeClass}`}>{outcome}</span>

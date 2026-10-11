@@ -11,7 +11,7 @@ export default async function AdminActivitiesPage() {
   const rows = await loadActivityTypeRows({ includeBuiltIn: true });
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="hf-admin-page">
       <h1 className="hf-type-title text-hf-black">{t(admin.locale, "activities_title")}</h1>
       <p className="hf-type-small text-text-secondary">{t(admin.locale, "activities_hint")}</p>
       <ActivityTypeTable rows={rows} locale={admin.locale} />

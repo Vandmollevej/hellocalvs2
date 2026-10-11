@@ -96,7 +96,7 @@ export default async function AdminOffDetailPage({ params }: { params: Promise<{
   const categories = Array.isArray(raw.categories_tags) ? (raw.categories_tags as string[]) : [];
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className="hf-admin-page">
       <div className="flex flex-col gap-2">
         <Link href="/admin/product-database/open-food-facts" className="hf-type-small text-text-secondary hover:text-hf-black">
           ← Open Food Facts

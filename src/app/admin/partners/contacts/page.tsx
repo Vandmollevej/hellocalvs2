@@ -17,7 +17,7 @@ export default async function PartnerContactsPage() {
   });
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="hf-admin-page">
       <h1 className="hf-type-title text-hf-black">Kontakter</h1>
       <p className="hf-type-body text-text-secondary">
         Kontaktpersoner pr. partner. Rapporter sendes kun til den partners egne aktive kontakter.

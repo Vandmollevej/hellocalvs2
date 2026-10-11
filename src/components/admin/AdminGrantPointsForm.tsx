@@ -56,7 +56,7 @@ export function AdminGrantPointsForm({ userId, displayName }: { userId: string; 
           required
           value={amount}
           onChange={(event) => setAmount(event.target.value)}
-          className="hf-field rounded-md border border-hf-tan-dark bg-hf-white px-3"
+          className="hf-input"
         />
       </label>
       <label className="hf-type-body flex flex-col gap-1">
@@ -68,7 +68,7 @@ export function AdminGrantPointsForm({ userId, displayName }: { userId: string; 
           value={note}
           onChange={(event) => setNote(event.target.value)}
           placeholder="Fx kompensation for nedetid 2. oktober"
-          className="rounded-md border border-hf-tan-dark bg-hf-white px-3 py-2"
+          className="hf-input"
         />
       </label>
       {error && <p className="hf-type-body text-hf-red-dark">{error}</p>}

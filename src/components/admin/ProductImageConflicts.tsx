@@ -12,8 +12,8 @@ import { CheckerThumb, DiffDialog } from "@/components/admin/ImageCompare";
 // Ignorer (behold det nuværende), Erstat (læg det nye op; det gamle kommer
 // tilbage, hvis partiet slettes) eller Vis forskel (begge billeder side om side).
 
-const buttonClass = "hf-type-body rounded-md border border-hf-tan-dark bg-hf-white px-4 py-2 text-hf-black hover:border-hf-green disabled:opacity-60";
-const primaryClass = "hf-type-body rounded-md bg-hf-green-dark px-4 py-2 text-hf-white disabled:opacity-60";
+const buttonClass = "hf-btn-secondary hf-btn--compact hf-btn--inline";
+const primaryClass = "hf-btn-brand hf-btn--compact hf-btn--inline";
 
 export function ProductImageConflicts({ items, canEdit }: { items: ProductImageUploadItem[]; canEdit: boolean }) {
   const router = useRouter();

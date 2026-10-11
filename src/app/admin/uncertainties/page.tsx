@@ -27,7 +27,7 @@ function SectionFallback({ label }: { label: string }) {
   return (
     <div className="flex flex-col gap-2" role="status" aria-busy="true">
       <p className="hf-type-small text-text-muted">{label}</p>
-      <div className="h-16 animate-pulse rounded-lg border border-hf-tan-dark bg-hf-white" />
+      <div className="hf-surface h-16 animate-pulse" />
     </div>
   );
 }
@@ -42,7 +42,7 @@ export default async function AdminUncertaintiesPage() {
   ]);
 
   return (
-    <div className="flex flex-col gap-8">
+    <div className="hf-admin-page">
       <div>
         <h1 className="hf-type-title text-hf-black">Usikkerheder</h1>
         <p className="hf-type-body text-text-secondary">

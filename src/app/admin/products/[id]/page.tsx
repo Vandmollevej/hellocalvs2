@@ -49,7 +49,7 @@ export default async function AdminProductDetailPage({ params }: { params: Promi
   if (product.externalSource === "HELLOFRESH") redirect(`/admin/dishes/hellofresh/${product.id}`);
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="hf-admin-page">
       <h1 className="hf-type-title text-hf-black">{product.name}</h1>
       <QualityControlPanel
         matchChecks={matchChecks.filter(hasQualityControlPhotoType).map((check) => ({

@@ -128,7 +128,7 @@ export function OffToolsPanel({ canEdit }: Props) {
           onChange={(event) => setBarcode(event.target.value)}
           placeholder="Stregkode (EAN)"
           disabled={busy}
-          className="hf-type-body hf-field w-full rounded-md border border-hf-tan-dark bg-hf-white px-3 text-hf-black outline-none placeholder:text-text-muted focus:border-hf-green sm:max-w-xs"
+          className="hf-input w-full sm:max-w-xs"
         />
         <button type="button" onClick={fetchOne} disabled={busy || !barcode.trim()} className="hf-btn-secondary hf-btn--compact">
           Hent fra OFF
@@ -143,7 +143,6 @@ export function OffToolsPanel({ canEdit }: Props) {
           multiple
           disabled={busy}
           onChange={(event) => void importFiles(event.target.files)}
-          className="hf-type-body text-text-secondary"
         />
         <button type="button" onClick={resplitAll} disabled={busy} className="hf-btn-secondary hf-btn--compact">
           Kør opdelingen igen på alle

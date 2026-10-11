@@ -45,7 +45,7 @@ function SheetDemo({ onClose }: { onClose: () => void }) {
               </button>
             )}
           </div>
-          <BottomSheetCloseButton className="hf-control hf-btn-primary mt-4 w-full">Primær handling</BottomSheetCloseButton>
+          <BottomSheetCloseButton className="hf-btn-primary mt-4 w-full hf-btn--large">Primær handling</BottomSheetCloseButton>
           <BottomSheetCloseButton className="hf-bottom-sheet__skip">Spring over</BottomSheetCloseButton>
         </>
       }

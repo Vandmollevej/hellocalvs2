@@ -13,9 +13,9 @@ export default async function AdminWeightAttirePage() {
   const row = await prisma.weightAttireSettings.findUnique({ where: { id: 1 } });
   const s = row ?? DEFAULT_ATTIRE_SETTINGS;
 
-  const field = "w-28 rounded border border-hf-tan-dark bg-page-bg px-3 py-2";
+  const field = "hf-input w-28";
   return (
-    <div className="flex flex-col gap-4">
+    <div className="hf-admin-page">
       <div>
         <h1 className="hf-type-title text-hf-black">Vejning: tøj-algoritme</h1>
         <p className="hf-type-body text-text-secondary">
@@ -45,7 +45,7 @@ export default async function AdminWeightAttirePage() {
           <span className="hf-type-body hf-type-strong">Synk-popup når der er gået (timer)</span>
           <input name="syncStaleHours" type="number" min={1} defaultValue={s.syncStaleHours} className={field} />
         </label>
-        <button type="submit" className="hf-btn-primary h-12 px-4">
+        <button type="submit" className="hf-btn-primary hf-btn--large">
           Gem
         </button>
       </form>

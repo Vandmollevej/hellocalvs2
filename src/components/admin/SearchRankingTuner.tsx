@@ -231,14 +231,14 @@ export function SearchRankingTuner({
 
   return (
     <div className="flex flex-col gap-8">
-      <div className="flex flex-wrap items-end gap-3 rounded-md border border-hf-tan-dark bg-hf-white p-4">
+      <div className="hf-surface flex flex-wrap items-end gap-3 p-4">
         <label className="hf-type-body flex flex-1 min-w-[200px] flex-col gap-1">
           <span className="text-text-secondary">Testsøgning</span>
           <input
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Skriv en søgning for at teste live..."
-            className="hf-type-body hf-field rounded-md border border-hf-tan-dark px-3"
+            className="hf-input"
           />
         </label>
         <label className="hf-type-body flex flex-col gap-1">
@@ -246,7 +246,7 @@ export function SearchRankingTuner({
           <select
             value={region}
             onChange={(e) => setRegion(e.target.value)}
-            className="hf-type-body hf-field rounded-md border border-hf-tan-dark px-3"
+            className="hf-input"
           >
             {REGIONS.map((r) => (
               <option key={r.code} value={r.code}>
@@ -260,7 +260,7 @@ export function SearchRankingTuner({
           <select
             value={hour}
             onChange={(e) => setHour(Number(e.target.value))}
-            className="hf-type-body hf-field rounded-md border border-hf-tan-dark px-3"
+            className="hf-input"
           >
             {Array.from({ length: 24 }, (_, h) => (
               <option key={h} value={h}>
@@ -275,7 +275,7 @@ export function SearchRankingTuner({
             value={previewUserId}
             onChange={(e) => setPreviewUserId(e.target.value)}
             placeholder="cly..."
-            className="hf-type-body hf-field rounded-md border border-hf-tan-dark px-3"
+            className="hf-input"
           />
         </label>
       </div>
@@ -283,7 +283,7 @@ export function SearchRankingTuner({
       <div className="grid grid-cols-1 gap-8 lg:grid-cols-[1fr_1.1fr]">
         <div className="flex flex-col gap-4">
           {CATEGORIES.map((category) => (
-            <details key={category.key} className="rounded-md border border-hf-tan-dark bg-hf-white" open>
+            <details key={category.key} className="hf-surface" open>
               <summary className="hf-type-body hf-type-strong cursor-pointer select-none px-4 py-3 text-hf-black">
                 {category.title}
                 <span className="hf-type-small ml-2 text-text-muted">({weights[category.key]})</span>
@@ -306,7 +306,7 @@ export function SearchRankingTuner({
             </details>
           ))}
 
-          <div className="flex flex-col gap-2 rounded-md border border-hf-tan-dark bg-hf-white p-4">
+          <div className="hf-surface flex flex-col gap-2 p-4">
             <p className="hf-type-body text-text-secondary">
               Ændringerne herover testes kun live i panelet til højre, indtil du klikker &quot;Commit&quot;. Den rigtige
               søgning i appen bruger stadig den senest aktiverede version.
@@ -315,21 +315,21 @@ export function SearchRankingTuner({
               value={note}
               onChange={(e) => setNote(e.target.value)}
               placeholder="Valgfri note til denne version..."
-              className="hf-type-body hf-field rounded-md border border-hf-tan-dark px-3"
+              className="hf-input"
             />
             <div className="flex items-center gap-3">
               <button
                 type="button"
                 onClick={commit}
                 disabled={committing || !isDirty}
-                className="hf-type-body hf-type-strong rounded-md bg-hf-green-dark px-4 py-2 text-hf-white disabled:opacity-50"
+                className="hf-btn-brand hf-btn--compact hf-btn--inline"
               >
                 {committing ? "Gemmer..." : "Commit — gør denne version aktiv"}
               </button>
               <button
                 type="button"
                 onClick={() => setWeights(defaultWeights)}
-                className="hf-type-body rounded-md border border-hf-tan-dark px-3 py-2 text-text-secondary hover:bg-hf-tan"
+                className="hf-btn-secondary hf-btn--compact hf-btn--inline"
               >
                 Nulstil til standard
               </button>
@@ -337,13 +337,13 @@ export function SearchRankingTuner({
             </div>
           </div>
 
-          <div className="flex flex-col gap-2 rounded-md border border-hf-tan-dark bg-hf-white p-4">
+          <div className="hf-surface flex flex-col gap-2 p-4">
             <h2 className="hf-type-body hf-type-strong text-hf-black">Tidligere versioner (backup)</h2>
             <ul className="flex flex-col gap-2">
               {history.map((entry) => (
                 <li
                   key={entry.id}
-                  className="hf-type-small flex items-center justify-between gap-3 rounded-md border border-hf-tan-dark px-3 py-2"
+                  className="hf-surface hf-type-small flex items-center justify-between gap-3 px-3 py-2"
                 >
                   <div>
                     <div className={entry.isActive ? "hf-type-strong text-hf-green-dark" : "text-text-secondary"}>
@@ -356,7 +356,7 @@ export function SearchRankingTuner({
                       type="button"
                       onClick={() => restore(entry.id)}
                       disabled={committing}
-                      className="rounded-md border border-hf-tan-dark px-2 py-1 text-text-secondary hover:bg-hf-tan"
+                      className="hf-btn-secondary hf-btn--compact hf-btn--inline"
                     >
                       Gendan
                     </button>
@@ -368,7 +368,7 @@ export function SearchRankingTuner({
           </div>
         </div>
 
-        <div className="flex flex-col gap-2 rounded-md border border-hf-tan-dark bg-hf-white p-4">
+        <div className="hf-surface flex flex-col gap-2 p-4">
           <h2 className="hf-type-body hf-type-strong text-hf-black">Live testresultat</h2>
           {previewLoading && <p className="hf-type-small text-text-muted">Søger...</p>}
           {previewError && <p className="hf-type-small text-hf-red-dark">{previewError}</p>}
@@ -377,7 +377,7 @@ export function SearchRankingTuner({
           )}
           <ul className="flex flex-col gap-2">
             {results.map((result, index) => (
-              <li key={`${result.type}-${result.id}`} className="hf-type-small rounded-md border border-hf-tan-dark px-3 py-2">
+              <li key={`${result.type}-${result.id}`} className="hf-surface hf-type-small px-3 py-2">
                 <div className="flex items-center justify-between gap-2">
                   <span className="hf-type-strong text-hf-black">
                     {index + 1}. {result.name}

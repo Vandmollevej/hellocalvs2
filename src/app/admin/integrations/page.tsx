@@ -52,10 +52,10 @@ export default async function AdminIntegrationsPage({
   const activeTotal = o.totals.active.current;
 
   return (
-    <div className="flex flex-col gap-8">
+    <div className="hf-admin-page">
       <div className="flex flex-col gap-3">
         <div>
-          <h1 className="text-text-primary hf-type-title hf-type-strong">Integrationer</h1>
+          <h1 className="hf-type-title text-hf-black">Integrationer</h1>
           <p className="text-text-secondary hf-type-body">
             {o.range.label}: {o.range.fromDay} – {o.range.toDay} · procenter sammenlignes med en lige så lang periode lige før.
             Til-/frakoblinger og synkroniseringer registreres fra 2. oktober 2026; forbindelser, der var aktive

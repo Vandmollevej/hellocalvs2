@@ -117,7 +117,7 @@ export function DivergingBarChart({
         {empty && <p className="absolute inset-0 flex items-center justify-center text-text-muted hf-type-body">{emptyText}</p>}
         {hover !== null && points[hover] && (
           <div
-            className="pointer-events-none absolute top-0 z-10 min-w-36 rounded-md border border-border-strong bg-surface-1 px-2.5 py-1.5 shadow hf-type-small"
+            className="hf-surface pointer-events-none absolute top-0 z-10 min-w-36 bg-surface-1 px-2.5 py-1.5 shadow hf-type-small"
             style={{
               left: `${((PAD.left + slot * hover + slot / 2) / WIDTH) * 100}%`,
               transform: hover > points.length / 2 ? "translateX(-105%)" : "translateX(5%)",

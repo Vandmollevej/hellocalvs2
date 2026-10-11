@@ -148,8 +148,8 @@ export function InventoryPanel({
         </span>
       </span>
       <span className="flex gap-3">
-        <button className="hf-type-small text-text-secondary hover:underline" onClick={() => editSpot(s)}>Redigér</button>
-        <button className="hf-type-small text-text-secondary hover:underline" disabled={busy} onClick={() => run({ action: "deleteLocation", id: s.id }, `Slet spottet ${s.name} og dets tal?`)}>Slet</button>
+        <button className="hf-btn-text" onClick={() => editSpot(s)}>Redigér</button>
+        <button className="hf-btn-text" disabled={busy} onClick={() => run({ action: "deleteLocation", id: s.id }, `Slet spottet ${s.name} og dets tal?`)}>Slet</button>
       </span>
     </li>
   );
@@ -175,7 +175,6 @@ export function InventoryPanel({
                   type="file"
                   accept="image/png,image/jpeg,image/webp"
                   disabled={busy}
-                  className="hf-type-small"
                   onChange={(e) => {
                     const file = e.target.files?.[0];
                     e.target.value = "";
@@ -237,7 +236,7 @@ export function InventoryPanel({
               </div>
               <p className="hf-type-small text-text-secondary">{i.description}</p>
               {mine.length > 0 && <ul className="flex flex-col gap-2">{mine.map(spotRow)}</ul>}
-              <button className="hf-type-small self-start text-text-secondary hover:underline" onClick={() => setDraft(blank(i.key, `${i.name}`))}>
+              <button className="hf-btn-text self-start" onClick={() => setDraft(blank(i.key, `${i.name}`))}>
                 + Tilføj reklamespot
               </button>
             </div>

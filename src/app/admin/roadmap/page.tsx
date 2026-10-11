@@ -28,7 +28,7 @@ export default async function RoadmapPage({ searchParams }: { searchParams: Prom
   for (const item of items) byStatus.get(item.status)?.push(item);
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className="hf-admin-page">
       <div>
         <h1 className="hf-type-title text-hf-black">Roadmap</h1>
         <p className="hf-type-body text-text-secondary">
@@ -40,11 +40,11 @@ export default async function RoadmapPage({ searchParams }: { searchParams: Prom
         <div className="flex flex-col gap-3 sm:flex-row">
           <label className="hf-type-body flex flex-1 flex-col gap-1">
             Titel
-            <input name="title" required maxLength={200} className="hf-field rounded border border-hf-tan-dark bg-page-bg px-3" />
+            <input name="title" required maxLength={200} className="hf-input" />
           </label>
           <label className="hf-type-body flex flex-col gap-1 sm:w-44">
             Kolonne
-            <select name="status" defaultValue="IDEA" className="hf-field rounded border border-hf-tan-dark bg-page-bg px-3">
+            <select name="status" defaultValue="IDEA" className="hf-input">
               {ROADMAP_STATUSES.map((status) => (
                 <option key={status} value={status}>
                   {ROADMAP_STATUS_LABEL[status]}
@@ -55,10 +55,10 @@ export default async function RoadmapPage({ searchParams }: { searchParams: Prom
         </div>
         <label className="hf-type-body flex flex-col gap-1">
           Beskrivelse
-          <textarea name="description" rows={2} maxLength={4000} className="rounded border border-hf-tan-dark bg-page-bg px-3 py-2" />
+          <textarea name="description" rows={2} maxLength={4000} className="hf-input" />
         </label>
         <div>
-          <button type="submit" className="hf-type-body hf-type-strong hf-control rounded bg-hf-green-dark px-4 text-hf-white">
+          <button type="submit" className="hf-btn-brand hf-btn--inline hf-btn--large">
             Tilføj punkt
           </button>
         </div>
@@ -69,7 +69,7 @@ export default async function RoadmapPage({ searchParams }: { searchParams: Prom
         {ROADMAP_STATUSES.map((status, columnIndex) => {
           const columnItems = byStatus.get(status) ?? [];
           return (
-            <section key={status} className="flex flex-col gap-3 rounded-lg bg-hf-white p-3">
+            <section key={status} className="hf-surface flex flex-col gap-3 p-3">
               <header className="flex items-center gap-2 px-1">
                 <span className={`h-2.5 w-2.5 rounded-full ${COLUMN_ACCENT[status]}`} />
                 <h2 className="hf-type-body hf-type-strong text-hf-black">{ROADMAP_STATUS_LABEL[status]}</h2>
@@ -77,7 +77,7 @@ export default async function RoadmapPage({ searchParams }: { searchParams: Prom
               </header>
               {columnItems.length === 0 && <p className="hf-type-small px-1 text-text-muted">Ingen punkter</p>}
               {columnItems.map((item) => (
-                <article key={item.id} className="flex flex-col gap-2 rounded-md border border-hf-tan-dark bg-page-bg p-3">
+                <article key={item.id} className="hf-surface flex flex-col gap-2 p-3">
                   <p className="hf-type-body hf-type-strong text-hf-black">{item.title}</p>
                   {item.description && (
                     <p className="hf-type-small whitespace-pre-wrap text-text-secondary">{item.description}</p>
@@ -101,7 +101,7 @@ export default async function RoadmapPage({ searchParams }: { searchParams: Prom
                       )}
                       <form action={deleteRoadmapItem}>
                         <input type="hidden" name="id" value={item.id} />
-                        <button type="submit" aria-label="Slet" className="rounded p-1 hover:bg-hf-tan">
+                        <button type="submit" aria-label="Slet" className="hf-btn-icon">
                           <IconTrash size={14} />
                         </button>
                       </form>
@@ -122,7 +122,7 @@ function MoveButton({ id, status, label, children }: { id: string; status: Roadm
     <form action={moveRoadmapItem}>
       <input type="hidden" name="id" value={id} />
       <input type="hidden" name="status" value={status} />
-      <button type="submit" aria-label={label} title={label} className="rounded p-1 hover:bg-hf-tan">
+      <button type="submit" aria-label={label} title={label} className="hf-btn-icon">
         {children}
       </button>
     </form>

@@ -104,7 +104,7 @@ export function ProductDetailEditor({ product }: { product: Product }) {
             <input
               value={form.name}
               onChange={(e) => setForm({ ...form, name: e.target.value })}
-              className="hf-type-body hf-field rounded-md border border-hf-tan-dark px-2"
+              className="hf-input"
             />
           </label>
           <label className="hf-type-small flex flex-col gap-1 text-text-secondary">
@@ -112,7 +112,7 @@ export function ProductDetailEditor({ product }: { product: Product }) {
             <input
               value={form.brand}
               onChange={(e) => setForm({ ...form, brand: e.target.value })}
-              className="hf-type-body hf-field rounded-md border border-hf-tan-dark px-2"
+              className="hf-input"
             />
           </label>
         </div>
@@ -123,7 +123,7 @@ export function ProductDetailEditor({ product }: { product: Product }) {
               type="number"
               value={form.kcalPer100g}
               onChange={(e) => setForm({ ...form, kcalPer100g: e.target.value })}
-              className="hf-type-body hf-field rounded-md border border-hf-tan-dark px-2"
+              className="hf-input"
             />
           </label>
           <label className="hf-type-small flex flex-col gap-1 text-text-secondary">
@@ -132,7 +132,7 @@ export function ProductDetailEditor({ product }: { product: Product }) {
               type="number"
               value={form.proteinPer100g}
               onChange={(e) => setForm({ ...form, proteinPer100g: e.target.value })}
-              className="hf-type-body hf-field rounded-md border border-hf-tan-dark px-2"
+              className="hf-input"
             />
           </label>
           <label className="hf-type-small flex flex-col gap-1 text-text-secondary">
@@ -141,7 +141,7 @@ export function ProductDetailEditor({ product }: { product: Product }) {
               type="number"
               value={form.carbsPer100g}
               onChange={(e) => setForm({ ...form, carbsPer100g: e.target.value })}
-              className="hf-type-body hf-field rounded-md border border-hf-tan-dark px-2"
+              className="hf-input"
             />
           </label>
           <label className="hf-type-small flex flex-col gap-1 text-text-secondary">
@@ -150,7 +150,7 @@ export function ProductDetailEditor({ product }: { product: Product }) {
               type="number"
               value={form.fatPer100g}
               onChange={(e) => setForm({ ...form, fatPer100g: e.target.value })}
-              className="hf-type-body hf-field rounded-md border border-hf-tan-dark px-2"
+              className="hf-input"
             />
           </label>
         </div>
@@ -159,7 +159,7 @@ export function ProductDetailEditor({ product }: { product: Product }) {
             type="button"
             onClick={save}
             disabled={saving}
-            className="hf-type-body rounded-md bg-hf-green-dark px-4 py-1.5 text-hf-white disabled:opacity-60"
+            className="hf-btn-brand hf-btn--compact hf-btn--inline"
           >
             {saving ? "Gemmer…" : "Gem ændringer"}
           </button>
@@ -177,7 +177,7 @@ export function ProductDetailEditor({ product }: { product: Product }) {
         <button
           type="button"
           onClick={() => setMergeOpen((v) => !v)}
-          className="hf-type-body rounded-md border border-hf-green-dark px-3 py-1.5 text-hf-green-dark hover:bg-hf-cream"
+          className="hf-btn-secondary hf-btn--compact hf-btn--inline"
         >
           Merge
         </button>
@@ -193,7 +193,7 @@ export function ProductDetailEditor({ product }: { product: Product }) {
               value={mergeQuery}
               onChange={(e) => searchMergeTargets(e.target.value)}
               placeholder="Søg efter vare at flette ind i…"
-              className="hf-type-body hf-field w-full rounded-md border border-hf-tan-dark px-2"
+              className="hf-input w-full"
             />
             <div className="mt-2 flex flex-col gap-1">
               {mergeResults.map((r) => (
@@ -201,10 +201,8 @@ export function ProductDetailEditor({ product }: { product: Product }) {
                   key={r.id}
                   type="button"
                   onClick={() => setMergeTarget(r)}
-                  className={
-                    "hf-type-small rounded-md border px-2 py-1 text-left " +
-                    (mergeTarget?.id === r.id ? "border-hf-green-dark bg-hf-cream" : "border-hf-tan-dark")
-                  }
+                  aria-pressed={mergeTarget?.id === r.id}
+                  className="hf-choice justify-start text-left"
                 >
                   {r.name}
                   {r.brand?.name ? ` — ${r.brand.name}` : ""}
@@ -216,7 +214,7 @@ export function ProductDetailEditor({ product }: { product: Product }) {
                 type="button"
                 onClick={confirmMerge}
                 disabled={mergeBusy}
-                className="hf-type-body mt-4 w-full rounded-md bg-hf-red-dark px-3 py-1.5 text-hf-white disabled:opacity-60"
+                className="hf-btn-danger hf-btn--compact hf-btn--inline mt-4 w-full"
               >
                 {mergeBusy ? "Fletter…" : `Flet ind i "${mergeTarget.name}"`}
               </button>

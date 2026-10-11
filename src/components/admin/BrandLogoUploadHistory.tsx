@@ -27,8 +27,8 @@ import { StepList } from "@/components/admin/BrandLogoSteps";
 
 type Confirm = { ids: string[]; text: string };
 
-const buttonClass = "hf-type-small rounded-md border border-hf-tan-dark bg-hf-white px-3 py-1.5 text-hf-black hover:border-hf-green disabled:opacity-60";
-const dangerButtonClass = "hf-type-small rounded-md border border-hf-red-dark bg-hf-white px-3 py-1.5 text-hf-red-dark hover:bg-hf-red-muted disabled:opacity-60";
+const buttonClass = "hf-btn-secondary hf-btn--compact hf-btn--inline";
+const dangerButtonClass = "hf-btn-danger hf-btn--compact hf-btn--inline";
 
 export function BrandLogoUploadHistory({ batches, canEdit }: { batches: LogoUploadBatch[]; canEdit: boolean }) {
   const router = useRouter();
@@ -276,13 +276,13 @@ export function BrandLogoUploadHistory({ batches, canEdit }: { batches: LogoUplo
 function Thumb({ item }: { item: LogoUploadItem }) {
   if (!item.imageUrl) {
     return (
-      <div className="hf-type-micro flex h-12 w-16 items-center justify-center rounded border border-hf-tan-dark bg-hf-tan text-text-muted">
+      <div className="hf-surface hf-type-micro flex h-12 w-16 items-center justify-center bg-hf-tan text-text-muted">
         Intet
       </div>
     );
   }
   return (
-    <div className="flex h-12 w-16 items-center justify-center overflow-hidden rounded border border-hf-tan-dark bg-hf-white">
+    <div className="hf-surface flex h-12 w-16 items-center justify-center overflow-hidden">
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img src={item.imageUrl} alt={item.brandName ?? item.fileName} loading="lazy" className="h-full w-full object-contain p-1" />
     </div>
@@ -355,17 +355,17 @@ function BrandPicker({ item, onChanged }: { item: LogoUploadItem; onChanged: (me
         onChange={(event) => setQuery(event.target.value)}
         placeholder="Søg efter brand"
         aria-label={`Brand for ${item.fileName}`}
-        className="hf-type-body hf-field w-full rounded-md border border-hf-tan-dark bg-hf-white px-2 text-hf-black"
+        className="hf-input w-full"
       />
       {shown.length > 0 && (
-        <ul className="flex flex-col overflow-hidden rounded-md border border-hf-tan-dark bg-hf-white">
+        <ul className="hf-surface flex flex-col overflow-hidden">
           {shown.map((hit) => (
             <li key={hit.id}>
               <button
                 type="button"
                 disabled={busy}
                 onClick={() => void assign(hit)}
-                className="hf-type-body flex w-full items-center justify-between gap-2 px-2 py-1.5 text-left text-hf-black hover:bg-hf-tan disabled:opacity-60"
+                className="hf-btn-text w-full"
               >
                 <span className="truncate">{hit.name}</span>
                 {hit.logoUrl && <span className="hf-type-micro flex-none text-text-muted">har logo — erstattes</span>}
@@ -379,7 +379,7 @@ function BrandPicker({ item, onChanged }: { item: LogoUploadItem; onChanged: (me
           type="button"
           disabled={busy}
           onClick={() => void create()}
-          className="hf-type-small rounded-md border border-hf-green-dark px-3 py-1.5 text-left text-hf-green-dark disabled:opacity-60"
+          className="hf-btn-secondary hf-btn--compact hf-btn--inline"
         >
           Opret nyt brand «{trimmed}»
         </button>

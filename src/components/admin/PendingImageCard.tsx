@@ -66,7 +66,7 @@ export function PendingImageCard({ product }: { product: Product }) {
           type="button"
           onClick={() => act("reject")}
           disabled={loading !== null}
-          className="hf-type-body flex-1 rounded-md border border-hf-tan-dark px-3 py-1.5 text-hf-red-dark disabled:opacity-60"
+          className="hf-btn-danger hf-btn--compact hf-btn--inline flex-1"
         >
           {loading === "reject" ? "…" : "Afvis"}
         </button>
@@ -74,7 +74,7 @@ export function PendingImageCard({ product }: { product: Product }) {
           type="button"
           onClick={() => act("accept")}
           disabled={loading !== null}
-          className="hf-btn-primary flex-1 px-3 py-1.5"
+          className="hf-btn-primary flex-1 hf-btn--compact"
         >
           {loading === "accept" ? "…" : "Godkend forslag"}
         </button>

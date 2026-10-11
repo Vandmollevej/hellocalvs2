@@ -204,7 +204,7 @@ export function FlowPagePreview({
       <SandboxedHtml html={fillSampleVars(html)} css={APP_CSS} />
       {/* Handlingsknap som i appen (design.md §6.2): sort, radius 8, 48 px høj. */}
       <div className="shrink-0 px-4 pb-8 pt-3">
-        <div className="hf-btn-primary h-12 w-full px-4">
+        <div className="hf-btn-primary w-full hf-btn--large">
           {buttonLabel || "Næste"}
         </div>
       </div>

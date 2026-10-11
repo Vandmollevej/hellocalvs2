@@ -13,7 +13,7 @@ export default async function AdminPetFoodFilterPage() {
   const view = await loadFilterView();
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="hf-admin-page">
       <div>
         <h1 className="hf-type-title text-hf-black">Dyrefoder-filter</h1>
         <p className="hf-type-body text-text-secondary">

@@ -102,7 +102,7 @@ export function Section({ id, title, intro, children }: { id?: string; title: st
 
 export function Card({ title, children }: { title?: string; children: React.ReactNode }) {
   return (
-    <div className="flex flex-col gap-2 rounded-lg border border-border-strong bg-surface-2 p-4">
+    <div className="hf-surface flex flex-col gap-2 p-4">
       {title && <p className="text-text-primary hf-type-body hf-type-strong">{title}</p>}
       {children}
     </div>

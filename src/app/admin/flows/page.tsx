@@ -16,9 +16,9 @@ export default async function AdminFlowsPage() {
   const flows = await listFlows();
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className="hf-admin-page">
       <div>
-        <h1 className="hf-type-page-title text-hf-black">Flow-sider</h1>
+        <h1 className="hf-type-title text-hf-black">Flow-sider</h1>
         <p className="mt-1 hf-type-body text-text-secondary">
           Egne flows: en række sider, der vises efter hinanden. Tryk på et flow for at redigere siderne på telefonen og vælge, hvornår og for hvem det vises.
         </p>

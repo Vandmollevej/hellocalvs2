@@ -75,6 +75,10 @@ export type ProductDatabaseFilters = {
   status: ProductDatabaseStatus | "";
   image: "with" | "without" | "";
   barcode: "with" | "without" | "";
+  // "missing" = butiksvarer uden kalorietal (Product.nutritionMissing).
+  nutrition: "missing" | "";
+  // "1" = vis de slettede varer (Product.deletedAt) i stedet for de aktive.
+  deleted: "1" | "";
   sort: ProductDatabaseSort;
   view: "list" | "grid" | "details";
   // Synlige felter; altid mindst ét (ingen i URL'en = alle).
@@ -99,6 +103,7 @@ export const PRODUCT_DATABASE_FILTER_KEYS = [
   "status",
   "image",
   "barcode",
+  "nutrition",
 ] as const;
 
 function one(value: string | string[] | undefined) {
@@ -138,6 +143,8 @@ export function parseProductDatabaseFilters(params: ProductDatabaseSearchParams)
     status: pick(one(params.status), PRODUCT_STATUSES),
     image: pick(one(params.image), ["with", "without"] as const),
     barcode: pick(one(params.barcode), ["with", "without"] as const),
+    nutrition: pick(one(params.nutrition), ["missing"] as const),
+    deleted: pick(one(params.deleted), ["1"] as const),
     sort:
       pick(
         one(params.sort),

@@ -295,7 +295,7 @@ async function ScanTab({ q, flow, show }: { q: string; flow: string; show: ScanF
   };
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="hf-admin-page">
       <form className="flex flex-wrap gap-2" action="/admin/log">
         <input type="hidden" name="tab" value="scan" />
         {filter.key !== "all" && <input type="hidden" name="show" value={filter.key} />}
@@ -303,9 +303,9 @@ async function ScanTab({ q, flow, show }: { q: string; flow: string; show: ScanF
           name="q"
           defaultValue={q}
           placeholder="Søg stregkode, vare-id eller tekst"
-          className="hf-type-input h-10 min-w-0 flex-1 rounded-md border border-hf-tan-dark bg-hf-white px-3"
+          className="hf-input hf-input--compact min-w-0 flex-1"
         />
-        <button type="submit" className="hf-btn-secondary h-10 px-4">
+        <button type="submit" className="hf-btn-secondary hf-btn--compact">
           Søg
         </button>
         {(q || flow) && (
@@ -474,9 +474,9 @@ export default async function AdminLogPage({
   const [enabled, total] = await Promise.all([isDebugLogEnabled(), prisma.debugLog.count()]);
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className="hf-admin-page">
       <div>
-        <h1 className="hf-type-page-title text-hf-black">Log</h1>
+        <h1 className="hf-type-title text-hf-black">Log</h1>
         <p className="hf-type-body text-text-secondary">
           Test-log indtil appen går live: hver scannet vare trin for trin, alle OpenAI-kald, cron-kørsler og fejl.
           Tider er dansk tid.

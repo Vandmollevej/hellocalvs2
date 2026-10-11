@@ -134,7 +134,7 @@ export function PageTreeView({ areas }: { areas: PageArea[] }) {
             type="button"
             onClick={resetTested}
             disabled={testedCount === 0}
-            className="hf-type-small ml-auto rounded-md border border-hf-tan-dark px-2.5 py-1 text-text-secondary hover:bg-hf-tan disabled:opacity-40"
+            className="hf-btn-secondary hf-btn--compact hf-btn--inline ml-auto"
           >
             Nulstil flueben
           </button>
@@ -142,14 +142,14 @@ export function PageTreeView({ areas }: { areas: PageArea[] }) {
         <div className="h-2 overflow-hidden rounded-full bg-hf-tan">
           <div className="h-full rounded-full bg-hf-green-dark transition-all" style={{ width: `${progress}%` }} />
         </div>
-        <label className="flex items-center gap-2 rounded-md border border-hf-tan-dark bg-page-bg px-3 py-2">
+        <label className="hf-search">
           <IconSearch size={16} className="shrink-0 text-text-muted" />
           <input
             type="search"
             value={query}
             onChange={(event) => setQuery(event.target.value)}
             placeholder="Søg efter side eller adresse, fx “vægt” eller /settings"
-            className="hf-type-body w-full bg-transparent text-hf-black outline-none placeholder:text-text-muted"
+            className="w-full"
           />
         </label>
         <div className="flex flex-wrap gap-2">
@@ -157,7 +157,7 @@ export function PageTreeView({ areas }: { areas: PageArea[] }) {
             <a
               key={area.id}
               href={`#area-${area.id}`}
-              className="hf-type-small rounded-full border border-hf-tan-dark px-3 py-1 text-text-secondary hover:bg-hf-tan"
+              className="hf-choice"
             >
               {area.title}
             </a>
@@ -174,12 +174,12 @@ export function PageTreeView({ areas }: { areas: PageArea[] }) {
           <section
             key={area.id}
             id={`area-${area.id}`}
-            className="scroll-mt-4 rounded-xl border border-hf-tan-dark bg-hf-cream"
+            className="hf-surface scroll-mt-4"
           >
             <button
               type="button"
               onClick={() => toggleArea(area.id)}
-              className="flex w-full items-center gap-3 rounded-t-xl border-b border-hf-tan-dark bg-hf-green-dark px-4 py-3 text-left text-hf-white"
+              className="hf-btn-brand hf-btn--compact hf-btn--inline w-full"
             >
               <span className="flex-1">
                 <span className="hf-type-strong block">{area.title}</span>
@@ -261,7 +261,7 @@ function PageCard({
       <span className="flex flex-wrap items-center gap-x-2 gap-y-0.5">
         <span className="hf-type-strong text-hf-black">{node.label}</span>
         {dynamic ? (
-          <span className="hf-type-micro rounded-full bg-hf-warning-fill px-2 py-0.5 text-text-secondary">
+          <span className="hf-badge hf-badge--warning">
             kræver id — åbnes inde fra appen
           </span>
         ) : (
@@ -275,18 +275,14 @@ function PageCard({
 
   return (
     <div
-      className={`inline-flex min-h-10 min-w-64 max-w-full items-center gap-3 rounded-lg border px-3 py-2 shadow-sm ${
-        isTested ? "border-hf-green bg-hf-green-light/40" : "border-hf-tan-dark bg-page-bg"
-      }`}
+      className={`hf-surface inline-flex min-h-10 min-w-64 max-w-full items-center gap-3 px-3 py-2 ${isTested ? "hf-selected" : ""}`}
     >
       <button
         type="button"
         onClick={() => onToggle(node.path)}
         aria-pressed={isTested}
         aria-label={isTested ? `Fjern flueben for ${node.label}` : `Markér ${node.label} som testet`}
-        className={`flex h-5 w-5 shrink-0 items-center justify-center rounded border-2 ${
-          isTested ? "border-hf-green-dark bg-hf-green-dark text-hf-white" : "border-hf-tan-dark bg-hf-white"
-        }`}
+        className={`hf-choice hf-choice--icon shrink-0 ${isTested ? "is-selected" : ""}`}
       >
         {isTested && <IconCheck size={14} stroke={3} />}
       </button>

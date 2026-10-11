@@ -24,7 +24,7 @@ export function ReviewMissesButton() {
 
   return (
     <div className="flex flex-wrap items-center gap-3">
-      <button type="button" onClick={run} disabled={busy} className="hf-btn-secondary h-10 px-3 !text-sm">
+      <button type="button" onClick={run} disabled={busy} className="hf-btn-secondary hf-btn--compact">
         {busy ? "Vurderer …" : "Vurdér nye søgninger nu"}
       </button>
       {message && <span className="hf-type-small text-text-secondary">{message}</span>}

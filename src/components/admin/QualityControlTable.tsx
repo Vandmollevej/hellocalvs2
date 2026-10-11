@@ -35,7 +35,7 @@ function IssueThumbnail({ imageUrl, confidence }: { imageUrl: string | null; con
         // eslint-disable-next-line @next/next/no-img-element
         <img src={imageUrl} alt="" loading="lazy" className="h-10 w-10 rounded-md border border-hf-tan-dark object-cover" />
       ) : (
-        <div className="h-10 w-10 rounded-md border border-hf-tan-dark bg-hf-tan-dark" />
+        <div className="hf-surface h-10 w-10 bg-hf-tan-dark" />
       )}
       <span
         className={`hf-type-micro hf-type-strong absolute -bottom-1.5 -right-1.5 flex h-5 w-5 items-center justify-center rounded-full border border-surface-2 leading-none ${confidenceBadgeClasses(
@@ -154,18 +154,15 @@ export function QualityControlTable({ rows, locale }: { rows: Row[]; locale: Loc
               resetWindow();
               setFilter(option);
             }}
-            className={`rounded-md border px-2.5 py-1 ${
-              filter === option
-                ? "border-hf-green-dark bg-hf-green-dark text-hf-white"
-                : "border-hf-tan-dark text-text-secondary hover:bg-hf-tan"
-            }`}
+            aria-pressed={filter === option}
+            className="hf-choice"
           >
             {option === "under80" ? "< 80%" : option === "all" ? t(locale, "quality_control_filter_all") : option}
           </button>
         ))}
       </div>
 
-      <div className="hf-table-scroll rounded-lg border border-hf-tan-dark">
+      <div className="hf-surface hf-table-scroll">
         <table className="hf-type-body w-full text-left">
           <thead className="hf-type-small bg-hf-white text-text-secondary">
             <tr>
@@ -207,12 +204,12 @@ export function QualityControlTable({ rows, locale }: { rows: Row[]; locale: Loc
                       {t(locale, "quality_control_issue_nutrition")}
                       <span
                         title={t(locale, "quality_control_warning_hint")}
-                        className="hf-type-small hf-type-strong inline-flex items-center gap-1 rounded-full bg-hf-red-dark px-2 py-0.5 text-hf-white"
+                        className="hf-badge hf-badge--danger"
                       >
                         <IconAlertTriangle size={14} aria-hidden="true" />
                         {t(locale, "quality_control_warning")}
                       </span>
-                      <span className="hf-type-small hf-type-strong rounded-full bg-hf-tan-dark px-2 py-0.5 text-text-secondary">
+                      <span className="hf-badge">
                         {t(locale, "quality_control_user_reported")}
                       </span>
                       {row.reportCount > 1 && (

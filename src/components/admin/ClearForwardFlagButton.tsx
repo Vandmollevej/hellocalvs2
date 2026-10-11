@@ -22,7 +22,7 @@ export function ClearForwardFlagButton({ userId }: { userId: string }) {
       type="button"
       onClick={clear}
       disabled={loading}
-      className="hf-type-small rounded-md border border-hf-tan-dark px-3 py-1.5 text-hf-green-dark disabled:opacity-60"
+      className="hf-btn-secondary hf-btn--compact hf-btn--inline"
     >
       {loading ? "…" : "Ryd flag"}
     </button>

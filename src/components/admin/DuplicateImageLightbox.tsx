@@ -66,7 +66,7 @@ export function DuplicateImageLightbox({
       <button
         type="button"
         onClick={() => onStep(delta)}
-        className="hf-pick-side"
+        className="hf-btn-text hf-pick-side"
         aria-label={delta < 0 ? "Forrige billede" : "Næste billede"}
       >
         <span className="hf-pick-side-arrow" aria-hidden="true">
@@ -148,9 +148,7 @@ export function DuplicateImageLightbox({
                   onClick={() => onPick(img.id)}
                   aria-current={active}
                   aria-label={`Alternativ ${index + 1}${img.id === recommendedId ? " (anbefalet)" : ""}`}
-                  className={`hf-type-small h-8 min-w-8 rounded-full px-2 ${
-                    active ? "hf-type-strong bg-hf-white text-hf-black" : "text-hf-white/80 hover:bg-hf-white/20"
-                  }`}
+                  className={`hf-choice hf-choice--icon ${active ? "is-selected" : ""}`}
                 >
                   {index + 1}
                 </button>

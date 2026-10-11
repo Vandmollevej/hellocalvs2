@@ -130,14 +130,14 @@ export function BrandGrid({ rows, productHrefs, canEdit }: { rows: AdminBrandRow
             role="switch"
             aria-checked={dragDrop}
             onClick={() => setDragDrop((on) => !on)}
-            className={`hf-type-body hf-type-strong ${dragDrop ? "text-hf-green-dark" : "text-text-muted"}`}
+            className="hf-choice"
           >
             Drag n drop: {dragDrop ? "on" : "off"}
           </button>
         )}
         <Link
           href="/admin/product-database/images"
-          className="hf-type-body hf-control inline-flex items-center rounded-md bg-hf-green-dark px-4 text-hf-white"
+          className="hf-btn-brand hf-btn--inline hf-btn--large"
         >
           Upload logoer
         </Link>
@@ -166,7 +166,7 @@ export function BrandGrid({ rows, productHrefs, canEdit }: { rows: AdminBrandRow
                 <Link
                   href={productHrefs[brand.id]}
                   draggable={false}
-                  className={`flex flex-1 flex-col gap-2 hf-surface p-2 hover:border-hf-green ${overId === brand.id ? "border-hf-green-dark bg-hf-green-light" : ""}`}
+                  className={`flex flex-1 flex-col gap-2 hf-surface p-2 hover:border-hf-green ${overId === brand.id ? "hf-selected" : ""}`}
                 >
                   <BrandLogo name={brand.name} logoUrl={logos[brand.id] ?? brand.logoUrl} />
                   <div className="flex min-w-0 flex-col gap-0.5 px-1 pb-1">
@@ -184,7 +184,7 @@ export function BrandGrid({ rows, productHrefs, canEdit }: { rows: AdminBrandRow
                 {canEdit && (
                   <div className="mt-1 flex gap-2">
                     <label
-                      className={`hf-type-small hf-type-strong flex-1 cursor-pointer rounded-md border border-hf-tan-dark bg-hf-white px-2 py-1.5 text-center text-hf-black hover:border-hf-green ${state?.phase === "busy" ? "pointer-events-none opacity-50" : ""}`}
+                      className={`hf-btn-secondary hf-btn--compact hf-btn--inline flex-1 cursor-pointer ${state?.phase === "busy" ? "pointer-events-none opacity-50" : ""}`}
                     >
                       Erstat logo
                       <input
@@ -203,7 +203,7 @@ export function BrandGrid({ rows, productHrefs, canEdit }: { rows: AdminBrandRow
                         type="button"
                         disabled={state?.phase === "busy"}
                         onClick={() => rerun(brand)}
-                        className="hf-type-small hf-type-strong flex-1 rounded-md border border-hf-tan-dark bg-hf-white px-2 py-1.5 text-hf-black hover:border-hf-green disabled:opacity-50"
+                        className="hf-btn-secondary hf-btn--compact hf-btn--inline flex-1"
                       >
                         Genkør logo
                       </button>

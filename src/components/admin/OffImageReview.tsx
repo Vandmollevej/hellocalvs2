@@ -96,9 +96,9 @@ function Card({ item, mark, single, compact, height, canEdit, onDecide }: CardPr
               aria-label={`Afvis billedet af ${item.name}`}
               title={mark === "REJECTED" ? "Afvist — tryk igen for at fortryde" : "Afvis billedet"}
               onClick={() => onDecide(item.id, "REJECTED")}
-              className="group absolute inset-y-0 left-0 flex w-1/2 cursor-pointer items-center justify-start pl-2 transition-colors hover:bg-hf-red-dark/10 focus-visible:bg-hf-red-dark/10"
+              className="hf-btn-text group absolute inset-y-0 left-0 w-1/2"
             >
-              <span className="hf-type-caption rounded-full bg-hf-red-dark px-2 py-0.5 text-hf-white opacity-0 transition-opacity group-hover:opacity-100 group-focus-visible:opacity-100">
+              <span className="hf-badge hf-badge--danger">
                 Afvis
               </span>
             </button>
@@ -107,9 +107,9 @@ function Card({ item, mark, single, compact, height, canEdit, onDecide }: CardPr
               aria-label={`Godkend billedet af ${item.name}`}
               title={mark === "APPROVED" ? "Godkendt — tryk igen for at fortryde" : "Godkend billedet"}
               onClick={() => onDecide(item.id, "APPROVED")}
-              className="group absolute inset-y-0 right-0 flex w-1/2 cursor-pointer items-center justify-end pr-2 transition-colors hover:bg-hf-green-dark/10 focus-visible:bg-hf-green-dark/10"
+              className="hf-btn-text group absolute inset-y-0 right-0 w-1/2"
             >
-              <span className="hf-type-caption rounded-full bg-hf-green-dark px-2 py-0.5 text-hf-white opacity-0 transition-opacity group-hover:opacity-100 group-focus-visible:opacity-100">
+              <span className="hf-badge hf-badge--success">
                 Godkend
               </span>
             </button>
@@ -145,9 +145,7 @@ function Card({ item, mark, single, compact, height, canEdit, onDecide }: CardPr
             type="button"
             onClick={() => onDecide(item.id, "REJECTED")}
             aria-pressed={mark === "REJECTED"}
-            className={`hf-type-small h-9 rounded-card border ${
-              mark === "REJECTED" ? "border-hf-red-dark bg-hf-red-dark text-hf-white" : "border-hf-tan-dark bg-hf-white text-hf-red-dark"
-            }`}
+            className="hf-choice"
           >
             Afvist
           </button>
@@ -155,9 +153,7 @@ function Card({ item, mark, single, compact, height, canEdit, onDecide }: CardPr
             type="button"
             onClick={() => onDecide(item.id, "APPROVED")}
             aria-pressed={mark === "APPROVED"}
-            className={`hf-type-small h-9 rounded-card border ${
-              mark === "APPROVED" ? "border-hf-green-dark bg-hf-green-dark text-hf-white" : "border-hf-tan-dark bg-hf-white text-hf-green-dark"
-            }`}
+            className="hf-choice"
           >
             Godkendt
           </button>
@@ -348,7 +344,7 @@ export function OffImageReview({
           <select
             value={query.sort}
             onChange={(event) => router.push(hrefFor({ sort: event.target.value }))}
-            className="hf-field h-9 rounded-card border border-hf-tan-dark bg-hf-white px-2 text-hf-black"
+            className="hf-input hf-input--compact"
           >
             {sortOptions.map((sort) => (
               <option key={sort} value={sort}>
@@ -363,7 +359,7 @@ export function OffImageReview({
           <select
             value={query.perPage}
             onChange={(event) => router.push(hrefFor({ perPage: event.target.value }))}
-            className="hf-field h-9 rounded-card border border-hf-tan-dark bg-hf-white px-2 text-hf-black"
+            className="hf-input hf-input--compact"
           >
             {OFF_IMAGE_PER_PAGE.map((n) => (
               <option key={n} value={n}>
@@ -378,7 +374,7 @@ export function OffImageReview({
           <select
             value={query.minInteractions}
             onChange={(event) => router.push(hrefFor({ min: event.target.value }))}
-            className="hf-field h-9 rounded-card border border-hf-tan-dark bg-hf-white px-2 text-hf-black"
+            className="hf-input hf-input--compact"
           >
             {OFF_IMAGE_MIN_INTERACTIONS.map((n) => (
               <option key={n} value={n}>
@@ -399,9 +395,9 @@ export function OffImageReview({
             value={search}
             onChange={(event) => setSearch(event.target.value)}
             placeholder="Navn eller stregkode"
-            className="hf-field hf-type-small h-9 w-44 rounded-card border border-hf-tan-dark bg-hf-white px-2 text-hf-black"
+            className="hf-input hf-input--compact w-44"
           />
-          <button type="submit" className="hf-type-small h-9 rounded-card border border-hf-tan-dark bg-hf-white px-3 text-hf-black">
+          <button type="submit" className="hf-btn-secondary hf-btn--compact hf-btn--inline">
             Søg
           </button>
         </form>
@@ -430,7 +426,7 @@ export function OffImageReview({
             type="button"
             disabled={saving || unmarked === 0}
             onClick={() => setConfirmAll(true)}
-            className="hf-type-small h-9 rounded-card border border-hf-green-dark bg-hf-white px-3 text-hf-green-dark disabled:opacity-50"
+            className="hf-btn-secondary hf-btn--compact hf-btn--inline"
           >
             Marker alle som godkendt
           </button>
@@ -441,14 +437,14 @@ export function OffImageReview({
             <button
               type="button"
               onClick={() => void markAll()}
-              className="hf-type-small h-9 rounded-card bg-hf-green-dark px-3 text-hf-white"
+              className="hf-btn-brand hf-btn--compact hf-btn--inline"
             >
               Ja, godkend alle
             </button>
             <button
               type="button"
               onClick={() => setConfirmAll(false)}
-              className="hf-type-small h-9 rounded-card border border-hf-tan-dark bg-hf-white px-3 text-hf-black"
+              className="hf-btn-secondary hf-btn--compact hf-btn--inline"
             >
               Annullér
             </button>
@@ -497,7 +493,7 @@ export function OffImageReview({
             type="button"
             disabled={currentPage <= 1}
             onClick={() => goToPage(currentPage - 1)}
-            className="hf-type-small h-9 rounded-card border border-hf-tan-dark bg-hf-white px-3 text-hf-black disabled:opacity-40"
+            className="hf-btn-secondary hf-btn--compact hf-btn--inline"
           >
             Forrige
           </button>
@@ -512,9 +508,7 @@ export function OffImageReview({
                 type="button"
                 aria-current={entry === currentPage ? "page" : undefined}
                 onClick={() => goToPage(entry)}
-                className={`hf-type-small h-9 min-w-9 rounded-card border px-2 ${
-                  entry === currentPage ? "border-hf-black bg-hf-black text-hf-white" : "border-hf-tan-dark bg-hf-white text-hf-black"
-                }`}
+                className={`hf-choice hf-choice--icon ${entry === currentPage ? "is-selected" : ""}`}
               >
                 {entry}
               </button>
@@ -524,7 +518,7 @@ export function OffImageReview({
             type="button"
             disabled={currentPage >= lastPage}
             onClick={() => goToPage(currentPage + 1)}
-            className="hf-type-small h-9 rounded-card border border-hf-tan-dark bg-hf-white px-3 text-hf-black disabled:opacity-40"
+            className="hf-btn-secondary hf-btn--compact hf-btn--inline"
           >
             Næste
           </button>

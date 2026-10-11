@@ -209,11 +209,8 @@ export function UncertaintiesBoard({
             key={t.key}
             type="button"
             onClick={() => t.key !== tab && void start(t.key, sort)}
-            className={`hf-type-body -mb-px border-b-2 px-3 py-2 ${
-              tab === t.key
-                ? "hf-type-strong border-hf-green-dark text-hf-green-dark"
-                : "border-transparent text-text-secondary hover:text-text-primary"
-            }`}
+            aria-pressed={tab === t.key}
+            className="hf-choice"
           >
             {t.label} ({counts[t.key]})
           </button>
@@ -227,11 +224,8 @@ export function UncertaintiesBoard({
             key={s.key}
             type="button"
             onClick={() => s.key !== sort && void start(tab, s.key)}
-            className={`rounded-full border px-2.5 py-1 ${
-              sort === s.key
-                ? "border-hf-green-dark bg-hf-green-dark text-hf-white"
-                : "border-hf-tan-dark text-text-secondary hover:bg-hf-tan"
-            }`}
+            aria-pressed={sort === s.key}
+            className="hf-choice"
           >
             {s.label}
           </button>
@@ -250,7 +244,7 @@ export function UncertaintiesBoard({
         ) : error ? (
           <div className="flex items-center gap-3">
             <p className="hf-type-body text-hf-red-dark">{error}</p>
-            <button type="button" onClick={() => void start(tab, sort)} className="hf-btn-secondary px-3 py-1">
+            <button type="button" onClick={() => void start(tab, sort)} className="hf-btn-secondary hf-btn--compact">
               Prøv igen
             </button>
           </div>
@@ -291,7 +285,7 @@ export function UncertaintiesBoard({
                 type="button"
                 disabled={opening === row.id}
                 onClick={() => void openEditor(row)}
-                className="hf-btn-secondary px-2.5 py-1 disabled:opacity-50"
+                className="hf-btn-secondary disabled:opacity-50 hf-btn--compact"
               >
                 {opening === row.id ? "Åbner…" : "Rediger"}
               </button>
@@ -481,7 +475,7 @@ function EditLightbox({ row, fields, onSaved }: { row: UncertaintyRow; fields: F
           type="button"
           disabled={saving}
           onClick={save}
-          className="hf-btn-primary px-4 py-2"
+          className="hf-btn-primary hf-btn--compact"
         >
           {saving ? "Gemmer…" : "Gem rettelse"}
         </button>
@@ -549,7 +543,7 @@ function ImageLightbox({ row, onSaved }: { row: UncertaintyRow; onSaved: () => v
           type="button"
           disabled={saving}
           onClick={() => decide("WRONG")}
-          className="hf-type-body rounded-md border border-hf-red-dark px-3 py-2 text-hf-red-dark disabled:opacity-50"
+          className="hf-btn-danger hf-btn--compact hf-btn--inline"
         >
           Forkert vare
         </button>
@@ -557,7 +551,7 @@ function ImageLightbox({ row, onSaved }: { row: UncertaintyRow; onSaved: () => v
           type="button"
           disabled={saving}
           onClick={() => decide("UNCERTAIN")}
-          className="hf-type-body rounded-md border border-hf-tan-dark px-3 py-2 text-text-secondary disabled:opacity-50"
+          className="hf-btn-secondary hf-btn--compact hf-btn--inline"
         >
           Usikker
         </button>
@@ -565,7 +559,7 @@ function ImageLightbox({ row, onSaved }: { row: UncertaintyRow; onSaved: () => v
           type="button"
           disabled={saving}
           onClick={() => decide("CORRECT")}
-          className="hf-btn-primary px-3 py-2"
+          className="hf-btn-primary hf-btn--compact"
         >
           Samme vare
         </button>

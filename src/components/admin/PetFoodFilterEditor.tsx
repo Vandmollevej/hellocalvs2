@@ -96,7 +96,6 @@ export function PetFoodFilterEditor({ view, canEdit }: { view: FilterView; canEd
   }
 
   const listTab = tab !== "barcode";
-  const btn = "hf-type-small rounded-full px-3 py-1 disabled:opacity-50";
 
   return (
     <div className="flex flex-col gap-6">
@@ -114,7 +113,7 @@ export function PetFoodFilterEditor({ view, canEdit }: { view: FilterView; canEd
               onChange={(e) => setTestText(e.target.value)}
               rows={2}
               placeholder="fx: Royal Canin Mini Adult"
-              className="hf-type-body rounded-md border border-hf-tan-dark px-3 py-2"
+              className="hf-input"
             />
           </label>
           <label className="hf-type-body flex flex-col gap-1">
@@ -123,10 +122,10 @@ export function PetFoodFilterEditor({ view, canEdit }: { view: FilterView; canEd
               value={testBarcode}
               onChange={(e) => setTestBarcode(e.target.value)}
               placeholder="5712873…"
-              className="hf-type-body hf-field rounded-md border border-hf-tan-dark px-3"
+              className="hf-input"
             />
           </label>
-          <button type="button" onClick={runTest} disabled={busy} className={`${btn} bg-hf-green-dark text-hf-white`}>
+          <button type="button" onClick={runTest} disabled={busy} className="hf-btn-brand hf-btn--inline hf-btn--large">
             Afprøv
           </button>
         </div>
@@ -157,7 +156,8 @@ export function PetFoodFilterEditor({ view, canEdit }: { view: FilterView; canEd
               type="button"
               disabled={busy || !canEdit}
               onClick={() => run({ op: "setMinWeak", value: n }, `Antal svage træf er nu ${n}.`)}
-              className={`${btn} ${view.minWeakHits.effective === n ? "bg-hf-green-dark text-hf-white" : "bg-hf-tan text-text-secondary"}`}
+              aria-pressed={view.minWeakHits.effective === n}
+              className="hf-choice"
             >
               {n}
             </button>
@@ -176,7 +176,8 @@ export function PetFoodFilterEditor({ view, canEdit }: { view: FilterView; canEd
                 setQuery("");
                 setMessage(null);
               }}
-              className={`${btn} ${tab === item.key ? "bg-hf-green-dark text-hf-white" : "bg-hf-tan text-text-secondary"}`}
+              aria-pressed={tab === item.key}
+              className="hf-choice"
             >
               {item.label}{" "}
               {item.key === "barcode"
@@ -195,7 +196,7 @@ export function PetFoodFilterEditor({ view, canEdit }: { view: FilterView; canEd
                 value={newValue}
                 onChange={(e) => setNewValue(e.target.value)}
                 onKeyDown={(e) => e.key === "Enter" && add()}
-                className="hf-type-body hf-field rounded-md border border-hf-tan-dark px-3"
+                className="hf-input"
               />
             </label>
             <label className="hf-type-body flex min-w-[160px] flex-1 flex-col gap-1">
@@ -203,10 +204,10 @@ export function PetFoodFilterEditor({ view, canEdit }: { view: FilterView; canEd
               <input
                 value={newNote}
                 onChange={(e) => setNewNote(e.target.value)}
-                className="hf-type-body hf-field rounded-md border border-hf-tan-dark px-3"
+                className="hf-input"
               />
             </label>
-            <button type="button" onClick={add} disabled={busy || !newValue.trim()} className={`${btn} bg-hf-green-dark text-hf-white`}>
+            <button type="button" onClick={add} disabled={busy || !newValue.trim()} className="hf-btn-brand hf-btn--inline hf-btn--large">
               Tilføj
             </button>
           </div>
@@ -219,9 +220,9 @@ export function PetFoodFilterEditor({ view, canEdit }: { view: FilterView; canEd
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder="Søg i listen …"
-              className="hf-type-body hf-field rounded-md border border-hf-tan-dark px-3"
+              className="hf-input"
             />
-            <ul className="max-h-[480px] divide-y divide-border-strong overflow-y-auto rounded-md border border-hf-tan-dark">
+            <ul className="hf-surface max-h-[480px] divide-y divide-border-strong overflow-y-auto">
               {rows.map((row) => (
                 <li key={row.value} className="flex items-center justify-between gap-3 px-3 py-2">
                   <div className="min-w-0">
@@ -239,7 +240,7 @@ export function PetFoodFilterEditor({ view, canEdit }: { view: FilterView; canEd
                         type="button"
                         disabled={busy}
                         onClick={() => run({ op: "restore", list: tab, value: row.value }, "Gendannet.")}
-                        className={`${btn} bg-hf-tan text-text-secondary`}
+                        className="hf-btn-secondary hf-btn--compact hf-btn--inline"
                       >
                         Gendan
                       </button>
@@ -248,7 +249,7 @@ export function PetFoodFilterEditor({ view, canEdit }: { view: FilterView; canEd
                         type="button"
                         disabled={busy}
                         onClick={() => run({ op: "remove", list: tab, value: row.value }, row.state === "added" ? "Slettet." : "Slået fra.")}
-                        className={`${btn} bg-hf-red-dark text-hf-white`}
+                        className="hf-btn-danger hf-btn--compact hf-btn--inline"
                       >
                         {row.state === "added" ? "Slet" : "Slå fra"}
                       </button>
@@ -264,7 +265,7 @@ export function PetFoodFilterEditor({ view, canEdit }: { view: FilterView; canEd
               {view.barcodes.baselineCount.toLocaleString("da-DK")} stregkoder i standardlisten (dyrefoder scrapet fra Bilka, Nemlig, SPAR, Maxi Zoo, Zooplus, Fressnapf, EDEKA24 m.fl.).
               Brug “Afprøv filteret” ovenfor til at se, om en bestemt stregkode er spærret.
             </p>
-            <ul className="divide-y divide-border-strong rounded-md border border-hf-tan-dark">
+            <ul className="hf-surface divide-y divide-border-strong">
               {view.barcodes.edits.map((edit) => (
                 <li key={edit.value} className="flex items-center justify-between gap-3 px-3 py-2">
                   <div>
@@ -286,7 +287,7 @@ export function PetFoodFilterEditor({ view, canEdit }: { view: FilterView; canEd
                           "Gemt.",
                         )
                       }
-                      className={`${btn} bg-hf-tan text-text-secondary`}
+                      className="hf-btn-secondary hf-btn--compact hf-btn--inline"
                     >
                       {edit.action === "ADD" ? "Slet" : "Gendan"}
                     </button>
@@ -314,7 +315,7 @@ function BarcodeAllow({ busy, onAllow }: { busy: boolean; onAllow: (value: strin
         <input
           value={value}
           onChange={(e) => setValue(e.target.value)}
-          className="hf-type-body hf-field rounded-md border border-hf-tan-dark px-3"
+          className="hf-input"
         />
       </label>
       <button
@@ -323,7 +324,7 @@ function BarcodeAllow({ busy, onAllow }: { busy: boolean; onAllow: (value: strin
         onClick={async () => {
           if (await onAllow(value)) setValue("");
         }}
-        className="hf-type-small rounded-full bg-hf-red-dark px-3 py-1 text-hf-white disabled:opacity-50"
+        className="hf-btn-danger hf-btn--inline hf-btn--large"
       >
         Slå fra
       </button>

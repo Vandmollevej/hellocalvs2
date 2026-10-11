@@ -32,7 +32,7 @@ export function AdminForgotPasswordForm() {
 
   return (
     <div className="mx-auto flex min-h-[70vh] max-w-sm flex-col justify-center px-4">
-      <h1 className="hf-type-page-title mb-1 text-text-primary">Glemt adgangskode</h1>
+      <h1 className="hf-type-title text-hf-black">Glemt adgangskode</h1>
       <p className="hf-type-body mb-6 text-text-secondary">
         Vi sender et link til admin-mailen. Via linket vælger du ny adgangskode og ny authenticator-kode.
       </p>
@@ -48,7 +48,7 @@ export function AdminForgotPasswordForm() {
               autoComplete="username"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="hf-type-body hf-field rounded-md border border-hf-tan-dark bg-hf-white px-3"
+              className="hf-input"
             />
           </label>
           {error && <p className="hf-type-body text-hf-red-dark">{error}</p>}

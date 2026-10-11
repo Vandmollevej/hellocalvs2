@@ -101,8 +101,8 @@ export function AgreementsPanel({ partnerId, agreements }: { partnerId: string; 
           </p>
         </div>
         <div className="flex gap-2">
-          <button className="hf-type-small text-text-secondary hover:underline" onClick={() => edit(a)}>Redigér</button>
-          <button className="hf-type-small text-text-secondary hover:underline" disabled={busy} onClick={() => run({ action: "deleteAgreement", id: a.id }, `Slet aftalen "${a.title}"? Spots beholdes, men mister aftalen.`)}>Slet</button>
+          <button className="hf-btn-text" onClick={() => edit(a)}>Redigér</button>
+          <button className="hf-btn-text" disabled={busy} onClick={() => run({ action: "deleteAgreement", id: a.id }, `Slet aftalen "${a.title}"? Spots beholdes, men mister aftalen.`)}>Slet</button>
         </div>
       </div>
       {a.budgetDkk > 0 ? <UsageBar spent={a.spentDkk} budget={a.budgetDkk} /> : <p className="hf-type-small text-text-muted">Intet budget angivet. Forbrug {dkk(a.spentDkk)}.</p>}
@@ -134,7 +134,7 @@ export function AgreementsPanel({ partnerId, agreements }: { partnerId: string; 
             <label className="hf-type-body flex items-center gap-2 self-end pb-2">
               <input type="checkbox" checked={draft.active} onChange={(e) => setDraft((d) => (d ? { ...d, active: e.target.checked } : d))} /> Aktiv
             </label>
-            <label className="flex flex-col gap-1 sm:col-span-2"><span className={LABEL}>Noter</span><textarea className={`${INPUT} h-20 py-2`} value={draft.notes} onChange={set("notes")} /></label>
+            <label className="flex flex-col gap-1 sm:col-span-2"><span className={LABEL}>Noter</span><textarea className="hf-input w-full" value={draft.notes} onChange={set("notes")} /></label>
           </div>
           <div className="flex gap-2">
             <button className={PRIMARY} disabled={busy || !draft.title.trim()}>Gem</button>

@@ -139,7 +139,7 @@ export default async function AdminIntegrationDetailPage({
   const canWrite = d.writeSettings.length > 0;
 
   return (
-    <div className="flex flex-col gap-8">
+    <div className="hf-admin-page">
       <div className="flex flex-col gap-3">
         <Link href={`/admin/integrations?preset=${filter.preset}`} className="text-text-secondary underline hover:text-text-primary hf-type-body">
           ← Alle integrationer
@@ -148,7 +148,7 @@ export default async function AdminIntegrationDetailPage({
           <IntegrationIcon src={d.meta.icon} size={44} />
           <div className="flex flex-col gap-1">
             <div className="flex flex-wrap items-center gap-2">
-              <h1 className="text-text-primary hf-type-title hf-type-strong">{d.meta.label}</h1>
+              <h1 className="hf-type-title text-hf-black">{d.meta.label}</h1>
               <KindBadge kind={d.meta.kind} configured={d.configured} />
               {serviceById(slug) && (
                 <Link href={`/admin/api-keys#${slug}`} className="text-text-secondary underline hover:text-text-primary hf-type-small">

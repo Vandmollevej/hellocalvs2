@@ -51,6 +51,14 @@ Ejerens krav: bundarket er mobilens form og ser "åndssvagt" ud på en bred skæ
 - **Ingen kald ændres:** alle 58 brugere af `BottomSheet` (og `useConfirmSheet`/`useTypedConfirmSheet`) får lightbox automatisk. `headerAction` står til venstre for X.
 - **Øvrige top/bund-popups uden `BottomSheet`** er lightbox på web via `lg:`-klasser: `StaleSyncPrompt`, åben `RescanBanner` (skuffe fra oven), scan-appens `ShelfItemSheet` og "Slet billedet?". Bevidst udeladt: `HfAccessSheet` (iOS-kopi, er en side, ikke en popup).
 - **Erstatter** formuleringen "aldrig centreret dialog" i KRAV.md/design.md for web; på mobil står den fast. Native uændret.
+## 2026-10-11: Admin → API-nøgler — logoer til alle tjenester, foldbare kort, Vipps
+
+Brugerens krav: ingen cirkel med første bogstav; hver integration/API skal have sit rigtige logo som transparent 1:1 PNG-bomærke. Første linje (logo, navn, test) kan foldes sammen. "Opret eller åbn appen hos udbyderen" erstattes af selve adressen som link. MobilePay hedder nu Vipps.
+
+- **Logoer:** `public/api-logos/<tjeneste-id>.png`, 512×512, transparent, mærket centreret med luft. Alle 21 tjenester i `KEY_SERVICES` har ét; `ServiceLogo` i `ApiKeysManager` læser filen direkte (ingen bogstav-reserve). Integrationskortene på brugersiden (`src/lib/integrations.ts`) fik samme slags logoer i `public/integrations/` til de seks, der kun havde forbogstav: WHOOP, Huawei Health, Xiaomi, Renpho, eufy og Tuya. De øvrige (app-ikoner på tile) er urørt.
+- **Kilder:** simple-icons (CC0) til Apple, Facebook, Strava, Fitbit, Huawei, Stripe; Wikimedia Commons til Google "G", Google Maps og USDA; udbyderens egen favicon/app-ikon (App Store 1024 px, mærket frigjort fra flisen) til Withings, Google Health, Polar, Garmin, WHOOP, Vipps, Mailjet, Passio, TeamMessage, OpenAI. Web Push og Server er egne neutrale ikoner i brandgrøn.
+- **Kort:** tjenestekortene er foldet sammen som standard (kun logo, navn, status og Test). Statuslistens links (#tjeneste) og et `#tjeneste` i adressen folder det rigtige kort ud. Fold-tilstanden huskes ikke (ingen `localStorage`).
+- **Vipps:** MobilePay omdøbes til Vipps i Danmark og Finland fra januar 2027 (appen har siden 6. oktober 2026 Vipps-smilet som ikon). Admin-oversigten (API-nøgler, Stripe-teksterne og testbeskeder) siger kun "Vipps" — brugerens ord: "Bare Vipps", aldrig "tidligere MobilePay" eller "Vipps MobilePay". Slutbruger-tekster (sprogfiler, betalingssider, `mobilepay-*`-kode og `MOBILEPAY_*`-nøgler) er uændrede indtil brugeren beslutter, hvornår de omdøbes.
 
 ## 2026-10-11: Open Food Facts-kontrol — vurdering pr. kategori og "send til scan-appen"
 
@@ -63,6 +71,16 @@ Brugerens krav: en liste over Open Food Facts-varer, hvor hver vare er vurderet 
 - **Klaret:** når en agent opretter/supplerer varen via "Opret vare" (`POST /api/scan/products`, stregkoden findes allerede), sættes `scanDoneAt`, og varen vurderes igen. Admin kan sende en vare igen.
 - **Uændret:** en suppleringsscanning udfylder fortsat kun tomme felter på varen (OPRETTELSES-APP.md D); en scanning overskriver altså ikke Open Food Facts' værdier.
 - Migration `20261011120000_product_quality_review`.
+## 2026-10-11: Admin-lister — mangler flages, status er til/fra, flere rækker behandles samlet, sletning er blød
+
+Brugerens krav: en ret uden billede stod som "Godkendt" uden nogen advarsel; status skal være "Godkendt" + en on/off-knap; alle produktlister i admin skal kunne markeres (klik, Ctrl, Shift) med en "Handlinger"-knap (disable, godkend, send til gennemsyn, slet), og slettede varer skal kunne findes.
+
+- **Mangler flages** (`src/lib/admin-list-problems.ts`): en række uden billede (alle), uden næring (butiksvare med `nutritionMissing`, ret med kcal ≤ 0) eller uden ingredienser (kun HelloFresh) får en tynd rød kant og en rød tekst under navnet; ikonet for manglende billede er rødt. Øverst på listen står en rød linje med tal ("N varer mangler billede · M mangler næring") hvor hvert led er et filter (Varer: `image=without` / `nutrition=missing`; Retter: `problem=image|nutrition|ingredients`). Tællerne gælder hele listen, ikke kun siden.
+- **Status** (`StatusToggle`): teksten Godkendt/Afventer/Afvist + en on/off-knap (`Toggle`). Til = godkendt og vist; fra = skjult for brugerne (`Product.discontinued`; for brugerretter status REJECTED). Fra → til på en række, der ikke er godkendt, godkender den (varer: med points/besked som ved enkelt-godkendelse).
+- **Markering + Handlinger** (`BulkSelection`): Ctrl/⌘ + klik markerer enkeltvis, Shift + klik en hel stribe fra den sidst markerede, "Markér" i bjælken gør klik til markering uden tastatur, "Markér alle på siden", Esc rydder. Ingen afkrydsningsfelter (2026-09-02). "Handlinger" vises altid; menuen: Disable, Aktivér, Godkend, Send til gennemsyn, Slet (i Slettede: Gendan). Alt går via `POST /api/admin/bulk` (`src/lib/admin-bulk.ts`).
+- **Blød sletning**: `Product.deletedAt` og `SharedRecipe.deletedAt` (migration `20261011120000_admin_soft_delete`). Slet sætter `deletedAt`, status REJECTED og `discontinued`, så al eksisterende søgning også udelader rækken. Slettede findes under "Slettede (N)" øverst på Varer og på hver retteliste; Gendan lægger dem tilbage som Afventer (gennemsyn).
+- **"(Brug 126228 i stedet) …"-retter** er HelloFreshs egen mærkning af en udgået dublet, ikke noget vi genererer. Migrationen deaktiverer de eksisterende (kan aktiveres igen), og `scripts/hellofresh-import/agent.py` springer dem over.
+- Dækker nu: Varer (liste, detaljer, galleri) og alle Retter-lister (bruger, HelloFresh, RetNemt, BetterFeast, Valdemarsro). Kvalitetskontrol-boards (godkendelseskø, dubletter, energifordeling m.fl.) har egne handlinger og er ikke ændret.
 
 ## 2026-10-10: Søgeresultatets tekst begynder med brand og subbrand
 
@@ -5135,3 +5153,18 @@ Brugerens krav: en forbundet integration viser ikke længere godkendelsesarket. 
 - **Brugerens regler 2026-10-11 er med:** Quantity er kun vægt/volumen ("6 x 33 cl" → Quantity `33 cl`, Pack Count 6; stk kun i Pack Count), MHD/datoer fjernes, certifikater (MSC/ASC/Fairtrade) → `certifications`, oprindelses-adjektiver (fransk, italiensk …) → `countryOfOrigin` (ikke i vin, og ikke "græsk yoghurt"/"fransk dressing"), Instantkaffe, "tilsat kulsyre" → nøgleordet `med kulsyre`, `/` i opremsninger → "og".
 - **Butikker:** OFF's `stores_tags`/`stores` kobles til eksisterende `Store` i `product_stores` ved oprettelse (ingen nye kæder oprettes).
 - **Ikke gjort:** admin kan endnu ikke rette de opdelte felter i hånden (kun køre opdelingen igen og markere som gennemgået); OFF-søgning vises stadig aldrig i søgeresultater (DECISIONS 2026-09-28).
+
+## 2026-10-11: Webversionen følger appens menuer og forside-popups
+
+Brugerens krav: webversionen var bagud — fx lå "Oplevelse af søvn" som eget punkt, mens Screeninger (Profil → Screeninger, med fast Søvn-række) slet ikke fandtes. Alle appens funktioner skal med i webversionen, undtagen det, der kræver kameraet.
+- **Årsag:** `src/lib/web-nav.ts` var en håndskrevet kort liste, sidst rørt 2026-10-09. Profilens Beskeder/Status/Point/Vægtkalibrering/Kropsmål/Søvnmønster/Screeninger/Viden om/Hello Doc, Kommunikation, Opsætning, Prioritering af visning, Resultatvisning, Kropsmål-visning, Tips, Support-undersider og Log ud var ikke med. Forsidens popups (vægt/tøj, synk-påmindelse, pulsudsving) sidder kun på `/`, som desktop sender videre til kalenderen — de blev aldrig vist.
+- **Nu:** sidebjælken har tre afsnit (Genveje, Profil, Indstillinger) i appens egen rækkefølge, betingede punkter vises som i appen (Familie, Sletning af registreringer, Kontrol-log, Menstruationscyklus), Beskeder og Kontrol-log har grønt tal, hjælpecentret åbner den statiske side, "Kontoopsætning" starter guiden, og profil-dropdownen har Log ud. Plus-cirklen udelader kun mikrofon og kamera. `WebStartPrompts` (monteret af `AppFrame` via `WebShell overlays`) viser forsidens popups på kalenderen.
+- **Udeladt bevidst:** Scan med kamera, Billeddagbog (kræver kamera), stemme (Chat afløser den), forsidens drejehjul og dagsliste (kalenderens dagsvisning er forsiden).
+- **Vagt:** `src/lib/web-nav.test.mjs` (kører i `npm test`) sammenligner appens menuer (Profil, Indstillinger, Visning, bundmenuens ikoner) og forsidens popups med webben og fejler, når webben mangler noget. Se REGLER → "Webversionen følger appen".
+- Ikke prøvet i browser (ingen lokal DB/login); lint og typecheck på de ændrede filer er rene, og alle 104 native skærme er accepteret i paritetsvagten (kun `WebShell.tsx`, som er desktop-only, er ændret).
+## 2026-10-11: Admin bruger kun fælles klasser (knapper, felter, kort, mærker, sidenavigation)
+
+- Brugerens klage: siden "flimrede" i bredden mellem Retter-listerne, og "Søg" var understreget igen. Årsag 1: `.hf-shell` er scroll-containeren, og scrollbaren kom og gik efter sidelængde; nu reserverer `scrollbar-gutter: stable` pladsen. Årsag 2: en senere omskrivning af `DishListPage` (Disable-knappen) overskrev den fælles `.hf-search`; søgefeltet er genindsat.
+- Nye fælles klasser: `.hf-input` (+ `--compact`), `.hf-btn--inline`, `.hf-badge` (+ `--success/--warning/--danger`), `.hf-admin-page`; komponent `AdminPagination` erstatter fire hjemmelavede Forrige/Næste-rækker.
+- Alle admin-knapper/-felter/-kort/-mærker er omlagt til klasserne (kodemod + gennemgang). Lint-regel `design-tokens/admin-controls` fejler på hjemmelavet kant/baggrund/radius/skrift/padding på `<button>/<input>/<select>/<textarea>` i admin.
+- Retter-listerne har samme kolonnebredder med og uden Disable-knap.

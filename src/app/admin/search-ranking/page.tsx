@@ -37,7 +37,7 @@ export default async function AdminSearchRankingPage() {
   const active = configs.find((config) => config.isActive);
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="hf-admin-page">
       <div>
         <h1 className="hf-type-title text-hf-black">Søgealgoritmer</h1>
         <p className="hf-type-body text-text-secondary">
@@ -48,7 +48,7 @@ export default async function AdminSearchRankingPage() {
           nævnt i søgningen&quot;).
         </p>
       </div>
-      <div className="flex flex-col gap-2 rounded-md border border-hf-tan-dark bg-hf-white p-4">
+      <div className="hf-surface flex flex-col gap-2 p-4">
         <h2 className="hf-type-body hf-type-strong text-hf-black">Søgeparametre</h2>
         <p className="hf-type-small text-text-secondary">Søgningen finder varer på:</p>
         <ul className="hf-type-small flex list-disc flex-col gap-1 pl-5 text-text-secondary">

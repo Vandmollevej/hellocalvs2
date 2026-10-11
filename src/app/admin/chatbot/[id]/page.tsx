@@ -29,7 +29,7 @@ export default async function AdminChatbotThreadPage({ params }: { params: Promi
   const user = conversation.user;
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="hf-admin-page">
       <div>
         <Link href="/admin/chatbot" className="hf-type-small text-text-secondary underline">
           ← Chatbot

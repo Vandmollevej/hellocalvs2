@@ -12,7 +12,7 @@ export default async function AdminPageTreePage() {
   if (!admin) redirect("/admin/login");
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className="hf-admin-page">
       <div>
         <h1 className="hf-type-title text-hf-black">Page tree</h1>
         <p className="hf-type-body text-text-secondary">

@@ -38,7 +38,7 @@ export default async function AgentsPage({ searchParams }: { searchParams: Promi
   const openByAgent = new Map(openJobs.map((row) => [row.agentId, row._count._all]));
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className="hf-admin-page">
       <div>
         <h1 className="hf-type-title text-hf-black">Agenter</h1>
         <p className="hf-type-body text-text-secondary">
@@ -64,13 +64,13 @@ export default async function AgentsPage({ searchParams }: { searchParams: Promi
       >
         <label className="hf-type-body flex flex-1 flex-col gap-1">
           Navn
-          <input name="name" required maxLength={80} placeholder="Fx Claude.ai (Peter)" className="hf-field rounded border border-hf-tan-dark bg-page-bg px-3" />
+          <input name="name" required maxLength={80} placeholder="Fx Claude.ai (Peter)" className="hf-input" />
         </label>
         <label className="hf-type-body flex flex-1 flex-col gap-1">
           Beskrivelse
-          <input name="description" maxLength={300} className="hf-field rounded border border-hf-tan-dark bg-page-bg px-3" />
+          <input name="description" maxLength={300} className="hf-input" />
         </label>
-        <button type="submit" className="hf-type-body hf-type-strong hf-control rounded bg-hf-green-dark px-4 text-hf-white">
+        <button type="submit" className="hf-btn-brand hf-btn--inline hf-btn--large">
           Opret agent
         </button>
       </form>
@@ -108,19 +108,19 @@ export default async function AgentsPage({ searchParams }: { searchParams: Promi
                     <div className="flex flex-wrap gap-2">
                       <form action={toggleAgent}>
                         <input type="hidden" name="id" value={agent.id} />
-                        <button type="submit" className="hf-type-small rounded border border-hf-tan-dark px-2 py-1 hover:bg-hf-tan">
+                        <button type="submit" className="hf-btn-secondary hf-btn--compact hf-btn--inline">
                           {agent.disabled ? "Genaktivér" : "Spær"}
                         </button>
                       </form>
                       <form action={rotateAgentToken}>
                         <input type="hidden" name="id" value={agent.id} />
-                        <button type="submit" className="hf-type-small rounded border border-hf-tan-dark px-2 py-1 hover:bg-hf-tan">
+                        <button type="submit" className="hf-btn-secondary hf-btn--compact hf-btn--inline">
                           Ny adresse
                         </button>
                       </form>
                       <form action={deleteAgent}>
                         <input type="hidden" name="id" value={agent.id} />
-                        <button type="submit" className="hf-type-small rounded border border-hf-tan-dark px-2 py-1 text-[var(--hf-color-danger)] hover:bg-hf-tan">
+                        <button type="submit" className="hf-btn-danger hf-btn--compact hf-btn--inline">
                           Slet
                         </button>
                       </form>

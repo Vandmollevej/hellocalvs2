@@ -32,7 +32,7 @@ export default async function JobsPage({ searchParams }: { searchParams: Promise
   ];
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className="hf-admin-page">
       <div>
         <h1 className="hf-type-title text-hf-black">Jobs</h1>
         <p className="hf-type-body text-text-secondary">Jobs som agenterne har sat op. Agenter oprettes under Agenter.</p>
@@ -73,13 +73,13 @@ export default async function JobsPage({ searchParams }: { searchParams: Promise
                 <div className="flex gap-2">
                   <form action={status === "OPEN" ? closeJob : reopenJob}>
                     <input type="hidden" name="id" value={job.id} />
-                    <button type="submit" className="hf-type-small rounded border border-hf-tan-dark px-2 py-1 hover:bg-hf-tan">
+                    <button type="submit" className="hf-btn-secondary hf-btn--compact hf-btn--inline">
                       {status === "OPEN" ? "Afslut" : "Genåbn"}
                     </button>
                   </form>
                   <form action={deleteJob}>
                     <input type="hidden" name="id" value={job.id} />
-                    <button type="submit" className="hf-type-small rounded border border-hf-tan-dark px-2 py-1 text-[var(--hf-color-danger)] hover:bg-hf-tan">
+                    <button type="submit" className="hf-btn-danger hf-btn--compact hf-btn--inline">
                       Slet
                     </button>
                   </form>

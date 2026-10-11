@@ -66,8 +66,8 @@ type EditablePage =FlowPage & { key: string };
 
 // Felter og kort følger design.md §6.4/§6.6: 48 px høje felter, radius 8,
 // 1 px kant, 17 px inputtekst og 13 px label over feltet.
-const fieldClass = "hf-field w-full rounded-lg border border-hf-gray-border bg-hf-white px-4 hf-type-input text-hf-black";
-const textareaClass = "w-full rounded-lg border border-hf-gray-border bg-hf-white px-4 py-3 hf-type-small font-mono text-hf-black";
+const fieldClass = "hf-input w-full";
+const textareaClass = "hf-input w-full";
 const labelClass = "flex flex-col gap-1 hf-type-label text-text-secondary";
 const cardClass = "flex flex-col gap-4 hf-surface p-4";
 
@@ -139,7 +139,7 @@ export function NewFlowForm() {
       <button
         type="submit"
         disabled={busy || !name.trim()}
-        className="hf-btn-primary h-12 w-full shrink-0 px-4 sm:w-auto"
+        className="hf-btn-primary hf-btn--inline w-full shrink-0 sm:w-auto hf-btn--large"
       >
         Opret flow
       </button>
@@ -329,7 +329,7 @@ export function FlowEditor({ flow }: { flow: Flow }) {
                   setEnabled(option.value);
                   touch();
                 }}
-                className="hf-choice flex-1 sm:flex-none sm:px-6"
+                className="hf-choice flex-1 sm:flex-none"
               >
                 {option.label}
               </button>
@@ -357,7 +357,7 @@ export function FlowEditor({ flow }: { flow: Flow }) {
                   setKind(option.value);
                   touch();
                 }}
-                className="hf-choice flex-1 sm:flex-none sm:px-6"
+                className="hf-choice flex-1 sm:flex-none"
               >
                 {option.label}
               </button>
@@ -444,7 +444,7 @@ export function FlowEditor({ flow }: { flow: Flow }) {
                     const next = on ? current.filter((d) => d !== day.value) : [...current, day.value].sort();
                     setCondition({ weekdays: next.length ? next : undefined });
                   }}
-                  className={`hf-choice px-4 ${on ? "hf-selected" : ""}`}
+                  className="hf-choice"
                 >
                   {day.label}
                 </button>
@@ -481,19 +481,13 @@ export function FlowEditor({ flow }: { flow: Flow }) {
           {pages.map((page, index) => (
             <li
               key={page.key}
-              className={`hf-control-row flex items-center gap-1 rounded-lg pl-4 pr-1 ${
-                index === currentIndex
-                  ? "border-[1.5px] border-hf-black bg-hf-tan"
-                  : "border border-hf-tan-dark bg-hf-white"
-              }`}
+              className="hf-surface hf-control-row flex items-center gap-1 pl-4 pr-1"
             >
               <button
                 type="button"
                 onClick={() => setSelected(index)}
                 aria-current={index === currentIndex ? "step" : undefined}
-                className={`flex min-w-0 flex-1 items-center gap-3 text-left text-hf-black ${
-                  index === currentIndex ? "hf-type-body hf-type-strong" : "hf-type-body"
-                }`}
+                className={`hf-navrow min-w-0 flex-1 ${index === currentIndex ? "is-active" : ""}`}
               >
                 <span className="shrink-0 tabular-nums text-text-secondary">{index + 1}</span>
                 <span className="truncate">{page.title || "(uden titel)"}</span>
@@ -503,7 +497,7 @@ export function FlowEditor({ flow }: { flow: Flow }) {
                 onClick={() => movePage(index, -1)}
                 disabled={index === 0}
                 aria-label="Flyt op"
-                className="hf-btn-icon text-hf-black hover:bg-hf-tan"
+                className="hf-btn-icon"
               >
                 <HfChevron direction="up" compact />
               </button>
@@ -512,7 +506,7 @@ export function FlowEditor({ flow }: { flow: Flow }) {
                 onClick={() => movePage(index, 1)}
                 disabled={index === pages.length - 1}
                 aria-label="Flyt ned"
-                className="hf-btn-icon text-hf-black hover:bg-hf-tan"
+                className="hf-btn-icon"
               >
                 <HfChevron direction="down" compact />
               </button>
@@ -520,7 +514,7 @@ export function FlowEditor({ flow }: { flow: Flow }) {
                 type="button"
                 onClick={() => removePage(index)}
                 aria-label="Slet side"
-                className="hf-btn-icon text-hf-red-dark hover:bg-hf-tan"
+                className="hf-btn-icon"
               >
                 <CloseIcon />
               </button>
@@ -530,7 +524,7 @@ export function FlowEditor({ flow }: { flow: Flow }) {
         <button
           type="button"
           onClick={addPage}
-          className="hf-btn-secondary h-12 w-full px-4 sm:w-fit"
+          className="hf-btn-secondary hf-btn--inline w-full sm:w-fit hf-btn--large"
         >
           <PlusIcon />
           Tilføj side
@@ -600,7 +594,7 @@ export function FlowEditor({ flow }: { flow: Flow }) {
           type="button"
           onClick={remove}
           disabled={busy}
-          className="hf-btn-danger order-2 h-12 w-full px-4 sm:order-none sm:w-auto"
+          className="hf-btn-danger hf-btn--inline order-2 w-full sm:order-none sm:w-auto hf-btn--large"
         >
           Slet flow
         </button>
@@ -608,7 +602,7 @@ export function FlowEditor({ flow }: { flow: Flow }) {
           type="button"
           onClick={save}
           disabled={busy || !dirty || !name.trim()}
-          className="hf-btn-primary order-1 h-12 w-full px-6 sm:order-none sm:w-auto"
+          className="hf-btn-primary hf-btn--inline order-1 w-full sm:order-none sm:w-auto hf-btn--large"
         >
           Gem
         </button>

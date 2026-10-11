@@ -64,11 +64,7 @@ export function ListModeToggle({ summary }: { summary?: string }) {
           type="button"
           aria-pressed={mode === option.key}
           onClick={() => setMode(option.key)}
-          className={`rounded-full border px-2.5 py-1 ${
-            mode === option.key
-              ? "border-hf-green-dark bg-hf-green-dark text-hf-white"
-              : "border-hf-tan-dark text-text-secondary hover:bg-hf-tan"
-          }`}
+          className="hf-choice"
         >
           {option.label}
         </button>
@@ -114,7 +110,7 @@ export function LoadMoreSentinel({
       {loading ? (
         <span>Henter flere…</span>
       ) : (
-        <button type="button" onClick={onVisible} className="hf-btn-secondary px-3 py-1">
+        <button type="button" onClick={onVisible} className="hf-btn-secondary hf-btn--compact">
           {error ? "Prøv igen" : "Hent flere"}
         </button>
       )}
@@ -138,7 +134,7 @@ export function ListPager({
   return (
     <div className="hf-type-small flex items-center justify-between text-text-secondary">
       {page > 1 ? (
-        <button type="button" disabled={busy} onClick={() => onPage(page - 1)} className="text-hf-green-dark disabled:opacity-50">
+        <button type="button" disabled={busy} onClick={() => onPage(page - 1)} className="hf-btn-text text-hf-green-dark">
           ← Forrige
         </button>
       ) : (
@@ -148,7 +144,7 @@ export function ListPager({
         Side {page} af {pages}
       </span>
       {page < pages ? (
-        <button type="button" disabled={busy} onClick={() => onPage(page + 1)} className="text-hf-green-dark disabled:opacity-50">
+        <button type="button" disabled={busy} onClick={() => onPage(page + 1)} className="hf-btn-text text-hf-green-dark">
           Næste →
         </button>
       ) : (

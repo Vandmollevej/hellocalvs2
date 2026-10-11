@@ -34,7 +34,7 @@ export async function FridaMatchReviews() {
           <div key={review.id} className="hf-panel flex flex-col gap-3">
             <div className="flex items-start justify-between gap-3">
               <p className="hf-type-body hf-type-strong text-hf-black">{review.typeLabel}</p>
-              <span className="hf-type-small shrink-0 rounded-full bg-hf-tan px-2 py-0.5 text-hf-black">
+              <span className="hf-badge shrink-0">
                 {review.productCount} {review.productCount === 1 ? "vare" : "varer"}
               </span>
             </div>

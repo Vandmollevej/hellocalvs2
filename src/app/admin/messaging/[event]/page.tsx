@@ -22,7 +22,7 @@ export default async function AdminMessageTemplatePage({ params }: { params: Pro
   if (!template) notFound();
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="hf-admin-page">
       <Link href="/admin/messaging" className="hf-type-body text-text-secondary hover:text-hf-black">
         ← Tilbage til besked automatisering
       </Link>

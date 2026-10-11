@@ -84,23 +84,21 @@ export function SupportThreadActions({
     }
   }
 
-  const buttonClass =
-    "rounded-md border border-hf-tan-dark px-2.5 py-1 text-text-secondary hover:bg-hf-tan disabled:opacity-50";
+  const buttonClass = "hf-btn-secondary hf-btn--compact hf-btn--inline";
 
   return (
     <div className="hf-type-small flex flex-col gap-3 hf-surface p-3">
       <div className="flex flex-wrap items-center gap-2">
         <span className="text-text-secondary">Prioritet:</span>
-        <div className="flex overflow-hidden rounded-md border border-hf-tan-dark">
+        <div className="flex flex-wrap gap-1">
           {PRIORITIES.map((option) => (
             <button
               key={option.key}
               type="button"
               disabled={busy}
               onClick={() => option.key !== priority && patch({ priority: option.key })}
-              className={`flex items-center gap-1.5 px-2.5 py-1 ${
-                priority === option.key ? "bg-hf-green-dark text-hf-white" : "text-text-secondary hover:bg-hf-tan"
-              }`}
+              aria-pressed={priority === option.key}
+              className="hf-choice"
             >
               <PriorityDot priority={option.key} />
               {option.label}
@@ -131,15 +129,14 @@ export function SupportThreadActions({
 
       <div className="flex flex-col gap-2 border-t border-hf-tan-dark pt-3">
         <div className="flex flex-wrap items-center gap-2">
-        <div className="flex overflow-hidden rounded-md border border-hf-tan-dark">
+        <div className="flex flex-wrap gap-1">
           {(["REPLY", "NOTE"] as const).map((option) => (
             <button
               key={option}
               type="button"
               onClick={() => setKind(option)}
-              className={`px-2.5 py-1 ${
-                kind === option ? "hf-selected" : "text-text-secondary hover:bg-hf-tan"
-              }`}
+              aria-pressed={kind === option}
+              className="hf-choice"
             >
               {option === "REPLY" ? "Svar til bruger" : "Intern note"}
             </button>
@@ -148,7 +145,7 @@ export function SupportThreadActions({
         <select
           value=""
           onChange={(event) => insertTemplate(event.target.value)}
-          className="rounded-md border border-hf-tan-dark bg-hf-cream px-2 py-1 text-hf-black"
+          className="hf-input hf-input--compact"
           aria-label="Indsæt svarskabelon"
         >
           <option value="">{templates.length ? "Indsæt skabelon…" : "Ingen skabeloner endnu"}</option>
@@ -158,7 +155,7 @@ export function SupportThreadActions({
             </option>
           ))}
         </select>
-        <Link href="/admin/support/templates" className="text-text-secondary underline hover:text-text-primary">
+        <Link href="/admin/support/templates" className="hf-btn-text">
           Rediger skabeloner
         </Link>
         </div>
@@ -172,9 +169,7 @@ export function SupportThreadActions({
               ? "Skriv dit svar. Brugeren får det i appen og på mail."
               : "Kun synlig for admin — brugeren ser den aldrig."
           }
-          className={`hf-type-body w-full rounded-md border bg-hf-cream p-2 text-hf-black ${
-            kind === "NOTE" ? "border-dashed border-hf-warning" : "border-hf-tan-dark"
-          }`}
+          className={`hf-input w-full ${kind === "NOTE" ? "hf-input--note" : ""}`}
         />
         {error && (
           <p role="alert" className="text-hf-red-dark">
@@ -191,7 +186,7 @@ export function SupportThreadActions({
                 type="button"
                 disabled={busy || !text.trim()}
                 onClick={() => send(false)}
-                className="rounded-md bg-hf-green-dark px-3 py-1 text-hf-white disabled:opacity-50"
+                className="hf-btn-brand hf-btn--compact hf-btn--inline"
               >
                 Send svar
               </button>
@@ -201,7 +196,7 @@ export function SupportThreadActions({
               type="button"
               disabled={busy || !text.trim()}
               onClick={() => send(false)}
-              className="rounded-md bg-hf-green-dark px-3 py-1 text-hf-white disabled:opacity-50"
+              className="hf-btn-brand hf-btn--compact hf-btn--inline"
             >
               Gem note
             </button>

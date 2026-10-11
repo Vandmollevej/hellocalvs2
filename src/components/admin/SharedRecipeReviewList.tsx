@@ -131,7 +131,7 @@ export function SharedRecipeReviewList({ rows, locale }: { rows: SharedRecipeRev
           <p className="hf-type-small mt-1 text-text-secondary">{row.ingredients.join(", ")}</p>
           {row.copyCheck && <CopyWarning check={row.copyCheck} />}
           {rejectingId === row.id && (
-            <div className="mt-3 rounded-lg border border-hf-tan-dark bg-hf-cream p-3">
+            <div className="hf-surface mt-3 p-3">
               <label className="hf-type-small hf-type-strong text-hf-black" htmlFor={`reason-${row.id}`}>
                 Begrundelse for afvisning
               </label>
@@ -140,7 +140,7 @@ export function SharedRecipeReviewList({ rows, locale }: { rows: SharedRecipeRev
                 value={reason}
                 onChange={(event) => setReason(event.target.value)}
                 rows={3}
-                className="hf-type-body mt-1 w-full p-2 text-hf-black hf-surface"
+                className="hf-input mt-1 w-full hf-surface"
               />
               <div className="hf-type-small hf-type-strong mt-2 flex gap-4">
                 <button

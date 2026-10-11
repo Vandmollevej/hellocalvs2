@@ -23,7 +23,7 @@ export type SidebarPartner = {
   managerEmail: string;
 };
 
-const INPUT = "hf-type-body h-10 w-full rounded-md border border-hf-tan-dark bg-hf-white px-3";
+const INPUT = "hf-input hf-input--compact w-full";
 const LABEL = "hf-type-caption";
 
 function Field({ label, value, href }: { label: string; value: string; href?: string }) {
@@ -61,7 +61,7 @@ function Menu({ id }: { id: string }) {
             key={item.href}
             href={item.href}
             aria-current={active ? "page" : undefined}
-            className={`hf-type-body rounded-md px-3 py-2 ${active ? "hf-type-strong hf-selected" : "text-text-secondary hover:bg-hf-tan"}`}
+            className={`hf-choice justify-start${active ? " is-selected" : ""}`}
           >
             {item.label}
           </Link>
@@ -126,7 +126,7 @@ export function PartnerSidebar({ partner, canEdit }: { partner: SidebarPartner; 
           <div className="flex items-start justify-between gap-2">
             <h1 className="hf-type-title text-hf-black">{partner.name}</h1>
             {canEdit && (
-              <button type="button" className="hf-type-small text-text-secondary hover:underline" onClick={() => { setDraft(partner); setEditing(true); }}>
+              <button type="button" className="hf-btn-text" onClick={() => { setDraft(partner); setEditing(true); }}>
                 Redigér
               </button>
             )}

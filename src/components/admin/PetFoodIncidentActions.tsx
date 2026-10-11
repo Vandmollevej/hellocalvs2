@@ -26,14 +26,13 @@ export function PetFoodIncidentActions({ id, canRejectProduct }: { id: string; c
     }
   }
 
-  const base = "hf-type-small rounded-full px-3 py-1 disabled:opacity-50";
   return (
     <div className="flex flex-wrap gap-2">
       <button
         type="button"
         onClick={() => act("false-positive")}
         disabled={busy !== null}
-        className={`${base} bg-hf-green-dark text-hf-white`}
+        className="hf-btn-brand hf-btn--compact hf-btn--inline"
       >
         Fejl – frikend
       </button>
@@ -42,12 +41,12 @@ export function PetFoodIncidentActions({ id, canRejectProduct }: { id: string; c
           type="button"
           onClick={() => act("reject-product")}
           disabled={busy !== null}
-          className={`${base} bg-hf-red-dark text-hf-white`}
+          className="hf-btn-danger hf-btn--compact hf-btn--inline"
         >
           Afvis vare
         </button>
       )}
-      <button type="button" onClick={() => act("confirm")} disabled={busy !== null} className={`${base} bg-hf-tan text-text-secondary`}>
+      <button type="button" onClick={() => act("confirm")} disabled={busy !== null} className="hf-btn-secondary hf-btn--compact hf-btn--inline">
         Var dyrefoder
       </button>
     </div>
