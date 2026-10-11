@@ -1194,6 +1194,8 @@ enum HealthMetricSource {
   HEALTH_CONNECT
   WHOOP
   HUAWEI_HEALTH
+  // 2026-10-11: manuelt indtastede cardio-målinger (/profile/cardio).
+  MANUAL
 }
 
 enum HealthMetricType {

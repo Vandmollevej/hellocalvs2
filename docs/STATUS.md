@@ -2,6 +2,12 @@
 
 Last updated: 2026-10-11
 
+## 2026-10-11: Codex overtager ni afbrudte opgaver
+
+- Samlet overlevering: `docs/handoffs/2026-10-11-codex-opfoelgning.md`.
+- Cardio PR #398 flettet sammen med master i isoleret arbejdskopi; konflikter i native-sideliste og genererede oversættelser løst uden at fjerne masters nye sider. Cardio tilføjet i webmenuen, så desktop-paritet følger profilmenuen.
+- Verifikation og deploykontrol er i gang; dette er ikke en afslutning af de ni opgaver.
+
 ## 2026-10-11: Scan-kontekst (land + sprog) på varer
 
 - Nye kolonner `scannedCountry`, `scannedLanguage`, `scannedDeviceLocale` på varer og scanninger; migration `20261011180000_scan_context` skal med deployet (backfill DK/da). Ikke typetjekket / kørt her (node_modules mangler). Se DECISIONS.
@@ -49,6 +55,11 @@ Last updated: 2026-10-11
 - Vægt/tøj-popup, synk-påmindelse og pulsudsving ("Hvad foretog du dig?") vises nu også på desktop (kalenderen) via `WebStartPrompts`.
 - Ny test `src/lib/web-nav.test.mjs` holder webben i takt med appens menuer og forsidens popups. Se DECISIONS og REGLER samme dato.
 - Ikke prøvet i browser/mod rigtig login. **Tjek efter deploy:** at Screeninger/Beskeder/Status/Point står i sidebjælken, at Log ud virker, og at vægt-popuppen kommer på kalenderen.
+## 2026-10-11: Cardio (Profil → Cardio)
+
+- Ny side `/profile/cardio` lige under Søvn: laveste hvilepuls, maxpuls, VO₂ max, iltmætning, HRV, åndedrætsfrekvens og pulsfald, hver med forløbsgraf (`HistoryLineChart`) og dropdown øverst for tidsinterval (30 dage – alt). Data læses automatisk fra de eksisterende ur-integrationer (`HealthMetric`) og kan indtastes manuelt som kropsmål (`POST /api/cardio`, kilde `MANUAL`, én værdi pr. type og dag).
+- Migration `20261011170000_health_metric_manual` skal med deployet. Tekster i `cardio.*` (da/en; øvrige sprog har engelsk).
+- **Ikke gjort:** native-skærm (Kotlin kan ikke kompileres her); paritet for `/profile` er accepteret, `/profile/cardio` står som pending i `native/parity/screens.json`. Ikke prøvet i browser/mod rigtig database. `npm test` fejler kun på `/settings/display/priority` (kendt).
 
 ## 2026-10-11: Open Food Facts i egen tabel + admin-menu
 

@@ -1610,7 +1610,8 @@
       "reportBug": "Har du funnet en feil?",
       "recipes": "Oppskrifter",
       "knowledge": "Kunnskap om mat",
-      "settings": "Innstillinger"
+      "settings": "Innstillinger",
+      "cardio": "Cardio"
     },
     "changePasswordButton": "Bytt passord",
     "changePassword": {
@@ -3756,5 +3757,26 @@
     "showingFor": "Viser resultater for {query}",
     "searchInstead": "Søk i stedet etter {query}",
     "didYouMean": "Mente du {query}?"
+  },
+  "cardio": {
+    "title": "Cardio",
+    "intro": "Resting heart rate, max heart rate, VO₂ max, blood oxygen and more. Values are read automatically from your watch through an integration — or enter them yourself below each chart.",
+    "range": "Time range",
+    "placeholder": "Enter",
+    "empty": "No cardio measurements yet.",
+    "restingHr": "Lowest resting heart rate",
+    "maxHr": "Max heart rate",
+    "vo2Max": "VO₂ max",
+    "spo2": "Blood oxygen",
+    "hrv": "Heart rate variability (HRV)",
+    "respiratoryRate": "Respiratory rate",
+    "hrRecovery": "Heart rate recovery",
+    "ranges": {
+      "30": "Last 30 days",
+      "90": "Last 3 months",
+      "180": "Last 6 months",
+      "365": "Last year",
+      "all": "All time"
+    }
   }
 }

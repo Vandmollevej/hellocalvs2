@@ -13,7 +13,7 @@ const MIN_BPM = 30;
 const MAX_BPM = 220;
 
 // HealthMetricSource-værdierne har samme navn som integrationen, der leverer dem.
-const SOURCE_PROVIDER: Record<HealthMetricSource, IntegrationProvider> = {
+const SOURCE_PROVIDER: Record<Exclude<HealthMetricSource, "MANUAL">, IntegrationProvider> = {
   APPLE_HEALTH: "APPLE_HEALTH",
   GOOGLE_HEALTH: "GOOGLE_HEALTH",
   FITBIT: "FITBIT",
@@ -32,7 +32,7 @@ export async function findLiveHeartRate(userId: string, now = new Date()): Promi
     select: { provider: true },
   });
   const providers = new Set(connected.map((row) => row.provider));
-  const sources = (Object.keys(SOURCE_PROVIDER) as HealthMetricSource[]).filter((source) =>
+  const sources = (Object.keys(SOURCE_PROVIDER) as Exclude<HealthMetricSource, "MANUAL">[]).filter((source) =>
     providers.has(SOURCE_PROVIDER[source])
   );
   if (sources.length === 0) return null;
