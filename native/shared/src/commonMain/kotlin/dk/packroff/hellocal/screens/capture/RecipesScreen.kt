@@ -116,8 +116,11 @@ internal fun recipeHref(id: String) =
     else "/profile/recipes/${Location.encode(id)}?kind=shared"
 
 /** favoriteKcalText: a BetterFeast favourite without serving weight shows kcal per 100 g. */
-private fun favoriteKcalText(t: Translator, kcal: Double, per100g: Boolean) =
-    if (per100g) t.t("recipeFilters.kcalPer100g", "kcal" to kcal.roundToInt()) else t.t("recipes.kcalTotal", "kcal" to kcal.roundToInt())
+private fun favoriteKcalText(t: Translator, kcal: Double, per100g: Boolean): String =
+    // A recipe is never shown with "0 kcal" (user rule 2026-10-11): 0 or unknown energy shows no kcal text.
+    if (kcal.roundToInt() <= 0) ""
+    else if (per100g) t.t("recipeFilters.kcalPer100g", "kcal" to kcal.roundToInt())
+    else t.t("recipes.kcalTotal", "kcal" to kcal.roundToInt())
 
 /** RecipeRow: image (or soup icon), name, warnings, subtitle + label, extra, chevron. */
 @Composable
@@ -269,7 +272,7 @@ private fun MineTab(t: Translator) {
                         href = "/profile/recipes/${Location.encode(dish.id)}?kind=own",
                         name = dish.name,
                         imageUrl = dish.images.firstOrNull(),
-                        subtitle = t.t("recipes.kcalTotal", "kcal" to kcal),
+                        subtitle = if (kcal > 0) t.t("recipes.kcalTotal", "kcal" to kcal) else "",
                         label = when {
                             dish.sharedRecipeId != null -> t.t("recipes.statusShared") to true
                             dish.shareRejected -> t.t("recipes.statusNotShared") to false
@@ -383,6 +386,8 @@ private fun SharedTab(t: Translator) {
     fun subtitleFor(result: SearchResult): String {
         if (!filters.showKcal) return ""
         val perServing = (result.kcal / max(1, result.servings)).roundToInt()
+        // Never "0 kcal" (see favoriteKcalText); the server does not send such recipes either.
+        if (result.kcal.roundToInt() <= 0 || perServing <= 0) return ""
         if (result.per100g) return t.t("recipeFilters.kcalPer100g", "kcal" to result.kcal.roundToInt())
         return if (result.kind == "shared" && result.servings > 1)
             "${t.t("recipeFilters.kcalPerServing", "kcal" to perServing)} · ${t.t("recipeFilters.servings", "count" to result.servings)}"

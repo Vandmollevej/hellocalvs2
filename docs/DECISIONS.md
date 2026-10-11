@@ -19,6 +19,13 @@ Brugerens krav: under menupunktet Open Food Facts kommer undermenuen "Billeder" 
 - **Interaktioner** = stregkodeopslag (`debug_logs` category scan / event barcode_lookup, tælles via stregkoden) + registreringer + favoritter + videresendelser. Admin kan rydde debug-loggen, så scanningstallet er et mindstetal. Standard i "Til gennemgang": flest interaktioner først; valgbart: færrest først, nyest/ældst i databasen, og filter "mindst 2/3/5/10 interaktioner" (= "kun 1 scanning fra"). Godkendt/Afvist sorteres standard på dato ændret.
 - **Afgørelse:** gemmes med det samme; tryk på samme side igen fortryder (billedet tilbage til gennemgang). Sidetal bruger offset, så afgjorte varer, der forsvinder fra "Til gennemgang", ikke får næste side til at springe en side over. "Marker alle" godkender kun billeder på siden uden afgørelse (afviste røres aldrig) og kræver bekræftelse.
 - **Afvist =** (1) varen sendes til scan-appen med samme mekanisme som "Send til scan-appen" i Open Food Facts-kontrollen (`ProductQualityReview.scanRequestedAt`, vurderingsrækken oprettes med `reassessOffProduct`, hvis robotten ikke har nået varen): den står under "Skal scannes" og som "ikke scannet" på hyldeoverlayet; godkendes/fortrydes den, trækkes forespørgslen tilbage. Når en agent supplerer varen med "Opret vare", ERSTATTER forsidefotoet det afviste billede (`POST /api/scan/products`, kobles til billedrobotten); (2) genscan-banneret ("Optjen 10 points") tilbydes uændret for alle OFF-varer, og den natlige `external-image-ai` springer afviste billeder over, så de ikke fritlægges. Det afviste billede vises stadig for brugerne, indtil en ny forside er taget (ikke ændret).
+## 2026-10-11: Retter uden kendt energi vises aldrig
+
+Brugeren fandt "0 kcal pr. servering" under Trender netop nu ("grotesk"; et nul må ikke kunne stå uden reaktion).
+
+- **Årsag:** importrobotterne (Valdemarsro, BetterFeast, RetNemt) gemmer `kcalPer100g = 0` + `nutritionMissing = true`, når næringen er ukendt. `/api/shared-recipes` hentede dem alligevel (uden at tjekke `nutritionMissing`), og "Trender netop nu" fylder op med tilfældige retter, så en ret uden energi kunne havne på forsiden. Klienterne formaterede blot 0 som "0 kcal pr. servering".
+- **Rettelse:** serveren udelader retter uden kendt energi (`nutritionMissing: false`, `kcalPer100g > 0`, delte retter `kcal > 0`, plus et sikkerhedsnet på den afrundede værdi), og web og native viser ingen kcal-tekst, hvis tallet alligevel er 0 (også favoritter og Mine retter).
+- Retter uden energi dukker op igen, så snart robotten har beregnet næringen (`nutritionMissing = false`).
 
 ## 2026-10-11: Open Food Facts-kontrol — vurdering pr. kategori og "send til scan-appen"
 

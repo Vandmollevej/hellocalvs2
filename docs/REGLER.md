@@ -234,3 +234,10 @@ Certifikater står nederst til venstre ud for cirklens bund (økologi altid nede
 
 - På admin-værten (dmin.hellocal.io) får alle stier /admin foran i middleware.ts, undtagen rod-assets (billedfiler, /icons/, /_next/). /_next/image SKAL være undtaget — ellers lander alle 
 ext/image-billeder (logoet i sidebjælken) på /admin/login og forsvinder. Matcheren har siden Adgangsmuren (2026-10-08) ladet /_next/image gå gennem middleware.
+
+
+## Aldrig 0 kcal på en ret (user rule 2026-10-11)
+
+- En ret (Trender netop nu, søgning, favoritter, Mine retter, web og native) vises **aldrig** med "0 kcal". Er energien 0 eller ukendt, skjules retten på serveren (`/api/shared-recipes`: `nutritionMissing = false`, `kcalPer100g > 0`, delte retter `kcal > 0`), og klienterne viser ingen kcal-tekst i stedet for et nul.
+- Importrobotterne gemmer 0 kcal + `nutritionMissing = true`, når næringen er ukendt (Valdemarsro uden Frida-match, BetterFeast/RetNemt uden tal). 0 er en pladsholder, aldrig en værdi — tjek altid `nutritionMissing`, når en liste hentes direkte fra `products`.
+- Nye lister, der viser kcal for retter/varer, skal følge samme regel; et nul må aldrig stå uden, at nogen har reageret på det.

@@ -19,6 +19,10 @@ Last updated: 2026-10-11
 - Afviste billeder sendes til scan-appens **Skal scannes** (samme mekanisme som Open Food Facts-kontrollen); forsidefotoet fra "Opret vare" erstatter billedet. Banneret "Optjen 10 points" består, og natrobotten `external-image-ai` springer afviste billeder over.
 - DB: `Product.offImageReview*` (migration `20261011170000_off_image_review`) — skal med deployet.
 - **Ikke gjort/ikke prøvet:** ikke prøvet i browser eller mod rigtig database. Det afviste billede vises stadig for brugerne, indtil en ny forside er taget. Poster der kun findes i `off_products` (uden vare) er ikke med.
+## 2026-10-11: Retter uden kendt energi vises aldrig
+
+- "0 kcal pr. servering" under Trender netop nu er rettet: retter med ukendt energi (nutritionMissing / 0 kcal) udelades i `/api/shared-recipes`, og web + native viser aldrig et nul. Se docs/DECISIONS.md og docs/REGLER.md.
+- **Ved deploy:** ingen migration. Ikke live-testet (ingen lokal DB/login): tjek Retter → Trender netop nu og Valdemarsro-retter uden Frida-match.
 
 ## 2026-10-11: Open Food Facts i egen tabel + admin-menu
 
