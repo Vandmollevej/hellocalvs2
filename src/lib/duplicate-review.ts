@@ -129,17 +129,18 @@ function differs(columns: CompareColumn[]) {
 
 async function sourceConflictProductIds() {
   const rows = await prisma.$queryRaw<{ productId: string }[]>`
-    SELECT "productId" FROM "product_source_records"
-    WHERE "reviewedAt" IS NULL
-    GROUP BY "productId" HAVING count(*) >= 2
-    ORDER BY "productId"`;
+    SELECT records."productId" FROM "product_source_records" records
+    JOIN "products" p ON p.id = records."productId"
+    WHERE records."reviewedAt" IS NULL AND p."deletedAt" IS NULL
+    GROUP BY records."productId" HAVING count(*) >= 2
+    ORDER BY records."productId"`;
   return rows.map((r) => r.productId);
 }
 
 async function loadSourceGroups(productIds: string[]): Promise<CompareGroup[]> {
   if (productIds.length === 0) return [];
   const products = await prisma.product.findMany({
-    where: { id: { in: productIds } },
+    where: { id: { in: productIds }, deletedAt: null },
     include: { ...productCompareInclude, sourceRecords: { orderBy: { source: "asc" } } },
   });
   const groups: CompareGroup[] = [];
@@ -176,7 +177,7 @@ function pairKey(a: string, b: string) {
 async function productDuplicateSets(): Promise<{ ids: string[]; reason: string }[]> {
   const [pending, resolved, nameGroups] = await Promise.all([
     prisma.productDuplicateLink.findMany({
-      where: { status: "PENDING" },
+      where: { status: "PENDING", productA: { deletedAt: null }, productB: { deletedAt: null } },
       select: { productAId: true, productBId: true },
     }),
     prisma.productDuplicateLink.findMany({
@@ -185,7 +186,7 @@ async function productDuplicateSets(): Promise<{ ids: string[]; reason: string }
     }),
     prisma.$queryRaw<{ ids: string[] }[]>`
       SELECT array_agg(id ORDER BY "createdAt") AS ids FROM "products"
-      WHERE "privateOwnerId" IS NULL AND status <> 'REJECTED'
+      WHERE "privateOwnerId" IS NULL AND "deletedAt" IS NULL AND status <> 'REJECTED'
       GROUP BY lower(btrim(name)), "brandId", lower(coalesce(btrim("packageSizeText"), ''))
       HAVING count(*) > 1
       LIMIT 500`,
@@ -243,7 +244,7 @@ async function productDuplicateSets(): Promise<{ ids: string[]; reason: string }
 async function loadProductGroups(sets: { ids: string[]; reason: string }[]): Promise<CompareGroup[]> {
   if (sets.length === 0) return [];
   const products = await prisma.product.findMany({
-    where: { id: { in: sets.flatMap((s) => s.ids.slice(0, MAX_COLUMNS)) } },
+    where: { id: { in: sets.flatMap((s) => s.ids.slice(0, MAX_COLUMNS)) }, deletedAt: null },
     include: productCompareInclude,
   });
   const byId = new Map(products.map((p) => [p.id, p]));
@@ -323,7 +324,7 @@ export function countDuplicateImageGroups() {
     const rows = await prisma.$queryRaw<{ n: bigint }[]>`
       SELECT count(*) AS n FROM (
         SELECT pi."productId" FROM "product_images" pi JOIN "products" p ON p.id = pi."productId"
-        WHERE p."imagesReviewedAt" IS NULL AND pi.tags && ${tags}::text[]
+        WHERE p."imagesReviewedAt" IS NULL AND p."deletedAt" IS NULL AND pi.tags && ${tags}::text[]
         GROUP BY pi."productId" HAVING count(DISTINCT pi.url) >= 2
       ) t`;
     return Number(rows[0]?.n ?? 0);
@@ -336,7 +337,7 @@ export async function loadDuplicateImageSlice(offset: number, limit: number) {
     countDuplicateImageGroups(),
     prisma.$queryRaw<{ productId: string }[]>`
       SELECT pi."productId" FROM "product_images" pi JOIN "products" p ON p.id = pi."productId"
-      WHERE p."imagesReviewedAt" IS NULL AND pi.tags && ${tags}::text[]
+      WHERE p."imagesReviewedAt" IS NULL AND p."deletedAt" IS NULL AND pi.tags && ${tags}::text[]
       GROUP BY pi."productId" HAVING count(DISTINCT pi.url) >= 2
       ORDER BY pi."productId"
       LIMIT ${limit} OFFSET ${offset}`,

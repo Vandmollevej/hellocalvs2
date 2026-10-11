@@ -17,6 +17,13 @@ Arbejdskopi: `worktrees/opfoelgning`, gren `codex/claude-opfoelgning`.
 | 8 | API-logoer, foldbare kort, fuld URL og kun Vipps | 571f86f5 og 6c425727 er i origin/master | Kontroller alle 21 PNG'er, tekster og deploy |
 | 9 | Cardio PR #398 | Åben PR med konflikter; konflikter løst i arbejdskopi, native-tekster regenereret; webmenu suppleret | Lint, build, skema og paritet; commit/push til claude/cardio; flet efter grønne checks |
 
-GitHub-connectorens opslag af workflow runs for master og Cardio returnerede
-tomme lister. Det er ikke bevis for grønt deploy. Ingen opgave er afsluttet
-alene på grundlag af tidligere chats påstande.
+## Kontrol efter genoptagelse
+
+- Cardio er pushet som b0d400bd til claude/cardio; PR #398 har grønne checks. Connectorens merge-adgang giver 403. Normal PR-fletning afventer browserlogin. Automatisk godkendelseskontrol afviste direkte master-push; den vej må ikke bruges som omgåelse.
+- Sidste dubletændringer fandtes i Claude scratchpad cee053bd, ikke den tidligere kontrollerede rene arbejdskopi. De er overført hertil og suppleret med filtre i tælling/grupper, cacheinvalidering og scroll-genindlæsning efter bulk.
+- Lint: 0 fejl, 12 eksisterende advarsler. Build: alle 402 sider. Webmenu: 6 tests grønne. Native-paritet og skemavalidering grønne.
+- Actions API viser deploy e3a67698 stadig i databasemigrations-/apptrinnet; senere master-deploys står i kø. Ingen live-bekræftelse endnu.
+- dm/Wolt/EDEKA/REWE: originalkolonner og titelformler uændrede; EDEKA har 36 færre rækker. Wolt har 5 og EDEKA 14 tomme produkttyper, der kræver kontrol.
+- Gengangervurdering: alle 5.388 par har forfatterresultat; 137 positive par mangler skeptikerkontrol før den endelige rapport.
+- Coop-rådata indeholder 1.000 unikke varer af forventede 1.072. Forsøg på de sidste sider gav HTTP 401/503 og ændrede ikke rådata.
+- Alle 21 API-logoer er kontrolleret som kvadratiske RGBA-PNG med transparens.

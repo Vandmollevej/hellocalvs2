@@ -1,7 +1,8 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useState, type CSSProperties, type ReactNode } from "react";
 import { useRouter } from "next/navigation";
+import { BulkRow } from "@/components/admin/BulkSelection";
 import {
   DUPLICATE_FIELDS,
   formatFieldValue,
@@ -56,6 +57,35 @@ function ValueView({
     <span className={`break-words ${field.kind === "longtext" && !expanded ? "line-clamp-4" : ""}`} title={text}>
       {text}
     </span>
+  );
+}
+
+// En kolonne, der er en vare i databasen, kan markeres (Ctrl/Shift) og behandles
+// under "Handlinger" (docs/DECISIONS.md 2026-10-11); butikkens egne data kan ikke.
+function ColumnShell({
+  id,
+  selectable,
+  className,
+  style,
+  children,
+}: {
+  id: string;
+  selectable: boolean;
+  className: string;
+  style: CSSProperties;
+  children: ReactNode;
+}) {
+  if (!selectable) {
+    return (
+      <div className={className} style={style}>
+        {children}
+      </div>
+    );
+  }
+  return (
+    <BulkRow as="div" id={id} ignoreInteractive className={className} style={style}>
+      {children}
+    </BulkRow>
   );
 }
 
@@ -179,11 +209,15 @@ export function DuplicateCompareGroup({ group, onDone }: { group: CompareGroup; 
           {group.columns.map((column, colIndex) => {
             const isFinal = column.id === finalColumn.id;
             const direction = colIndex < finalIndex ? "right" : "left";
+            const columnClass = `hf-surface grid grid-rows-subgrid px-2 pb-2 ${isFinal ? "hf-selected" : ""}`;
+            const columnStyle = { gridColumn: colIndex + 2, gridRow: `1 / span ${rows.length}` };
             return (
-              <div
+              <ColumnShell
                 key={column.id}
-                className={`hf-surface grid grid-rows-subgrid px-2 pb-2 ${isFinal ? "hf-selected" : ""}`}
-                style={{ gridColumn: colIndex + 2, gridRow: `1 / span ${rows.length}` }}
+                id={column.id}
+                selectable={Boolean(column.productId)}
+                className={columnClass}
+                style={columnStyle}
               >
                 {rows.map((row, i) => {
                   if (row.type === "header") {
@@ -268,7 +302,7 @@ export function DuplicateCompareGroup({ group, onDone }: { group: CompareGroup; 
                     </div>
                   );
                 })}
-              </div>
+              </ColumnShell>
             );
           })}
         </div>

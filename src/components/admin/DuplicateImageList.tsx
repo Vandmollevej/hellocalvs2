@@ -8,6 +8,7 @@ import { DuplicateImageGroup } from "@/components/admin/DuplicateImageGroup";
 import { DuplicateImageLightbox } from "@/components/admin/DuplicateImageLightbox";
 import { ReviewSizePicker, useReviewSize } from "@/components/admin/ReviewSizePicker";
 import { useImageQuality } from "@/components/admin/useImageQuality";
+import { BulkActionsBar, BulkSelection } from "@/components/admin/BulkSelection";
 
 // Billed-dubletter med samme visningsvælger som Logoer og Billedforslag:
 // 1/2/4 varer ad gangen af de varer, serveren har hentet til siden. Valgt
@@ -95,6 +96,7 @@ export function DuplicateImageList({ groups }: { groups: ImageGroup[] }) {
   };
 
   return (
+    <BulkSelection kind="product" ids={visible.map(({ group }) => group.productId)}>
     <div className="flex flex-col gap-4">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <p className="hf-type-small text-text-secondary">
@@ -102,6 +104,7 @@ export function DuplicateImageList({ groups }: { groups: ImageGroup[] }) {
         </p>
         <ReviewSizePicker sizeIdx={sizeIdx} onChoose={choose} />
       </div>
+      <BulkActionsBar />
       <div className={`grid gap-4 ${perPage === 4 ? "md:grid-cols-2" : "grid-cols-1"}`}>
         {visible.map(({ group, view }) => (
           <DuplicateImageGroup
@@ -147,5 +150,6 @@ export function DuplicateImageList({ groups }: { groups: ImageGroup[] }) {
         />
       )}
     </div>
+    </BulkSelection>
   );
 }
