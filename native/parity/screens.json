@@ -491,6 +491,18 @@
       "note": "Admin er et skrivebordsværktøj og bliver på web."
     },
     {
+      "route": "/admin/product-database/open-food-facts",
+      "web": "src/app/admin/product-database/open-food-facts/page.tsx",
+      "status": "pending",
+      "native": []
+    },
+    {
+      "route": "/admin/product-database/open-food-facts/[barcode]",
+      "web": "src/app/admin/product-database/open-food-facts/[barcode]/page.tsx",
+      "status": "pending",
+      "native": []
+    },
+    {
       "route": "/admin/product-database/products",
       "web": "src/app/admin/product-database/products/page.tsx",
       "status": "web-only",
