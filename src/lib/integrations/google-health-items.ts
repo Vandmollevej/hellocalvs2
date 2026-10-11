@@ -207,8 +207,10 @@ export function googleHeartRateItems(points: GooglePoint[]): IntegrationItem[] {
     const bpm = googleNumber(inner?.beatsPerMinute);
     const time = typeof sample?.physicalTime === "string" ? new Date(sample.physicalTime) : null;
     if (!inner || bpm === null || bpm <= 0 || !time || Number.isNaN(time.getTime())) continue;
-    const hour = time.toISOString().slice(0, 13);
-    const h = hourly.get(hour) ?? { sum: 0, count: 0, at: `${hour}:00:00.000Z` };
+    // 5-minutters spande (ikke timer): et træningspas på 30–45 min forsvinder ellers i timegennemsnittet.
+    const bucket = new Date(Math.floor(time.getTime() / 300_000) * 300_000).toISOString();
+    const hour = bucket;
+    const h = hourly.get(hour) ?? { sum: 0, count: 0, at: bucket };
     h.sum += bpm;
     h.count += 1;
     hourly.set(hour, h);
