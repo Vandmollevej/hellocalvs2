@@ -16,7 +16,7 @@ export function useConfirmSheet() {
   }
 
   const sheet = pending ? (
-    <BottomSheet ariaLabel={pending.message} onClose={() => setPending(null)}>
+    <BottomSheet ariaLabel={pending.message} className="hf-bottom-sheet--confirm" onClose={() => setPending(null)}>
       <div className="flex flex-col gap-3 p-4">
         <p className="hf-type-body">{pending.message}</p>
         <BottomSheetCloseButton onClick={pending.action} className="hf-control hf-btn-primary w-full px-4">
@@ -72,7 +72,7 @@ export function useTypedConfirmSheet() {
   }
 
   const sheet = pending ? (
-    <BottomSheet ariaLabel={pending.message} onClose={() => setPending(null)}>
+    <BottomSheet ariaLabel={pending.message} className="hf-bottom-sheet--confirm" onClose={() => setPending(null)}>
       <TypedConfirmBody message={pending.message} word={pending.word} onConfirm={pending.action} />
     </BottomSheet>
   ) : null;

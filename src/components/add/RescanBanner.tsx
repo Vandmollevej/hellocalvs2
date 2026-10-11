@@ -135,7 +135,8 @@ export function RescanBanner({
       )}
       <div
         className={`pointer-events-none flex items-start justify-center ${
-          state === "open" ? "fixed inset-0 z-[60]" : "absolute inset-x-0 top-0 z-40"
+          // Åben på web (lg): lightbox midt på skærmen i stedet for en skuffe fra oven.
+          state === "open" ? "fixed inset-0 z-[60] lg:items-center lg:p-8" : "absolute inset-x-0 top-0 z-40"
         }`}
         style={{ transform, transition }}
       >
@@ -150,7 +151,7 @@ export function RescanBanner({
           </button>
         ) : state === "open" ? (
           <div
-            className="pointer-events-auto relative flex w-full flex-col rounded-b-[16px] shadow-lg bg-hf-page max-h-[calc(100%-24px)]"
+            className="pointer-events-auto relative flex w-full flex-col rounded-b-[16px] shadow-lg bg-hf-page max-h-[calc(100%-24px)] lg:max-h-[88dvh] lg:max-w-3xl lg:rounded-[20px] lg:shadow-2xl"
           >
             <button
               type="button"
@@ -184,7 +185,7 @@ export function RescanBanner({
             <button
               type="button"
               aria-label={handleLabel}
-              className="flex h-8 shrink-0 touch-none items-center justify-center"
+              className="flex h-8 shrink-0 touch-none items-center justify-center lg:hidden"
               {...dragHandlers}
             >
               <Handle tone="dark" />

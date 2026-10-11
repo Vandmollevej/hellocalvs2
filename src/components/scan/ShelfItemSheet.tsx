@@ -77,9 +77,10 @@ export function ShelfItemSheet({ item, onClose, onChanged }: { item: ShelfItem; 
   }
 
   return (
-    <div className="absolute inset-0 z-20 flex items-end bg-hf-black/40" onClick={onClose}>
+    // Web (lg): lightbox midt i vinduet i stedet for bundark (KRAV.md "Popups på web").
+    <div className="absolute inset-0 z-20 flex items-end bg-hf-black/40 lg:items-center lg:justify-center lg:p-8" onClick={onClose}>
       <div
-        className="flex max-h-[80%] w-full flex-col gap-3 overflow-y-auto rounded-t-[12px] bg-hf-cream p-4"
+        className="flex max-h-[80%] w-full flex-col gap-3 overflow-y-auto rounded-t-[12px] bg-hf-cream p-4 lg:max-w-xl lg:rounded-[20px] lg:p-6 lg:shadow-2xl"
         onClick={(event) => event.stopPropagation()}
       >
         <div>

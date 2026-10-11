@@ -745,9 +745,15 @@ Standard for alle screen-overlays og popups (KRAV.md "Bundark"). Klasse
   padding: prikker 8 px (aktiv brand-grøn), primær knap i fuld bredde og
   tekstknap `.hf-bottom-sheet__skip` (48 px, fed).
 - Træk ned flytter arket; hurtigt swipe eller > 30 % lukker, ellers tilbage.
-- Ingen synlig titel (kun `aria-label`); aldrig fuldskærms-overlay, centreret
-  dialog eller `window.confirm` (ejerens regel 2026-10-07). Hjulvælgere
+- Ingen synlig titel (kun `aria-label`); aldrig fuldskærms-overlay eller
+  `window.confirm` (ejerens regel 2026-10-07). Hjulvælgere
   (`data-sheet-no-drag`) scroller uden at trække arket.
+- **Web (≥ 1024 px) = lightbox** (ejerens regel 2026-10-11, KRAV.md "Popups på
+  web"): `.hf-bottom-sheet--lightbox` — centreret, radius 20 px på alle
+  hjørner, panel 680 px (`--full` 960 px × 88 dvh, `--confirm` 480 px),
+  scrim `rgb(35 35 35 / 55%)`, skygge `0 24px 64px`, ingen trækstreg; luk-knap
+  `.hf-bottom-sheet__close` (40 px rund, `--hf-color-card`, X) øverst til
+  højre. Tones ind (op til 12 px løft + 98 % skala), glider ikke.
 
 ### 6.12 Produktsidens billedområde — fast geometri, uafhængig af billedet
 

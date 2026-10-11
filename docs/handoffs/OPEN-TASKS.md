@@ -343,6 +343,7 @@ Ejer: session ddf69bff, konto A (2026-10-07)
 | 8 | Brand-logo: luft mellem logoet/Ø'et og cirklen | Færdig (44b2a341) | Logoets venstre kant beregnes af dets højde (`src/lib/brand-logo-layout.ts`), 8 px luft til cirklen. Afventer brugerens test på telefon |
 | 10 | Alle popups/modaler som bundark (swipe ned = annullér), ingen `window.confirm`/centrerede overlays | Færdig (44b2a341) | Hjulvælgere, fødselsdato, startup-tip, adgangslog, familie-sletning, 15 admin-bekræftelser og admin-detaljevinduer. Undtagelser: DECISIONS 2026-10-07. Afventer brugerens test |
 | fredag-vejning | Fredags-flow + vejepåmindelser, måltips til/fra, Udregn (Seriøs) | Færdig (kode, se git log 2026-10-07) | Migration 20261007140000 + aktivér flowet i admin |
+| web-lightbox | Web (≥ 1024 px): alle popups som lightbox i stedet for smalt bundark; også popups fra oven/bunden (`BottomSheet.tsx`, `use-desktop-viewport.ts`, `globals.css`, `StaleSyncPrompt`, `RescanBanner`, scan-arkene; KRAV.md "Popups på web") | Færdig (kode) | Afventer brugerens test på bred skærm; finjustér bredder (680/960/480 px) efter behov. Native uændret |
 
 ## G-CHAT — Hjælpe-chatbot (app + web) og admin "Chatbot"
 Filer: `src/lib/chatbot*.ts`, `src/lib/help-chat-events.ts`, `src/components/help/**`, `src/app/api/chatbot/**`, `src/app/admin/chatbot/**`, `src/components/admin/chatbot/**`. Små indgreb i `ScreenHeader`, `TopBar`, `WebShell`, `layout.tsx`, `AdminShell` og `globals.css` (`.hf-appbar--help`).

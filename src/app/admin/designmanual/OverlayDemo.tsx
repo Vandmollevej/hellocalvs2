@@ -6,8 +6,8 @@ import { BottomSheet, BottomSheetCloseButton, BottomSheetDots } from "@/componen
 
 // Live eksempel til designmanualen: åbner bundarket — den eneste godkendte
 // overlay-type (KRAV.md "Bundark", ejerens regel 2026-10-07: popups vises
-// aldrig som fuldskærms-overlay eller centreret dialog) — så admin kan se det
-// i den rigtige størrelse og opførsel.
+// aldrig som fuldskærms-overlay). På web (≥ 1024 px) er det en lightbox
+// (KRAV.md "Popups på web") — admin ser den rigtige størrelse og opførsel.
 export function OverlayDemo() {
   const [open, setOpen] = useState(false);
 

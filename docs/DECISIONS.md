@@ -34,6 +34,14 @@ Brugerens krav: når man åbner Hello Cal web, startede siden med at loade dreje
 - `src/app/page.tsx` pakker den indloggede forside ind i `AppHomeGate` (klient). I webversionen renderer porten en tom flade: Hero, hjul, tilføj-cirkel, dagens liste, bundmenu, puls- og vejeprompter monteres ikke, og der hentes ingen data. `WebShell` sender derefter roden videre til `/calendar?view=day` som før.
 - **Første rendering:** serveren giver kun et hint ud fra User-Agent (iPhone/iPad/Android/Mobile → forsiden i server-HTML'en som hidtil, ellers tom flade). Afgørelsen tages altid på skærmbredden i klienten, så en iPad i bred visning også får webskallen, og en smal desktop-rude får appen som den er.
 - Appen på telefon og tablet er uændret. Udloggede besøgende ser stadig `LandingPage`.
+## 2026-10-11: Popups på web er lightboxe, ikke bundark
+
+Ejerens krav: bundarket er mobilens form og ser "åndssvagt" ud på en bred skærm (smalt, klistret til bunden, højt og kompakt). Popups skal tænkes om til web — og det samme gælder popups, der kommer ind fra oven eller bunden: på web kan de bare være lightboxe.
+
+- **Skift:** fra 1024 px (samme grænse som `WebShell`, defineret i `src/lib/desktop-query.ts`; hooken `useDesktopViewport` i `src/lib/use-desktop-viewport.ts` bruges af `BottomSheet`) renderer `BottomSheet` som lightbox: centreret, runde hjørner, 680 px bred (`full` 960 px × 88 dvh, bekræftelser 480 px), uden trækstreg/swipe, X øverst til højre, tones ind. Under 1024 px er bundarket uændret.
+- **Ingen kald ændres:** alle 58 brugere af `BottomSheet` (og `useConfirmSheet`/`useTypedConfirmSheet`) får lightbox automatisk. `headerAction` står til venstre for X.
+- **Øvrige top/bund-popups uden `BottomSheet`** er lightbox på web via `lg:`-klasser: `StaleSyncPrompt`, åben `RescanBanner` (skuffe fra oven), scan-appens `ShelfItemSheet` og "Slet billedet?". Bevidst udeladt: `HfAccessSheet` (iOS-kopi, er en side, ikke en popup).
+- **Erstatter** formuleringen "aldrig centreret dialog" i KRAV.md/design.md for web; på mobil står den fast. Native uændret.
 
 ## 2026-10-11: Open Food Facts-kontrol — vurdering pr. kategori og "send til scan-appen"
 
