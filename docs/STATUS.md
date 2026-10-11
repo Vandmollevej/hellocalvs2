@@ -2,6 +2,14 @@
 
 Last updated: 2026-10-11
 
+## 2026-10-11: Open Food Facts i egen tabel + admin-menu
+
+- **Ny menu** Varedatabase → Open Food Facts (`/admin/product-database/open-food-facts`, Alt+8): alle varer hentet fra OFF med navnet delt op (mærke, sub brand, produkttype, variation, nøgleord, mængde) og en sikkerhed i %. Se DECISIONS 2026-10-11.
+- **Scanning gemmer nu hele OFF-varen lokalt** (`off_products`: rå svar + opdeling + filtre + næring), også tynde poster, og opretter varen ud fra de opdelte felter (ikke kun titlen). Filtre → `product_filters`, næring → `product_nutrition_features`/`micronutrientsPer100g`.
+- **Opdeleren** er målt mod arkene (produkttype forenelig 92 %, alt rigtigt 61 % hvor navnet indeholder typen); sikkerhedstallet er kalibreret derefter. `scripts/off-import/` har ordforrådsbygger, evaluering og `split-dump.mjs` til at køre på `Backup/off_raa`.
+- **Ved deploy:** migration `20261011150000_off_products` kører. Ikke live-testet (ingen lokal DB/login): tjek en scanning af en ukendt stregkode, listen og enkeltsiden, og "Indlæs udtræk" med en fil fra `Backup/off_raa`.
+- **Næste:** manuel rettelse af de opdelte felter i admin; genbyg `src/data/off-vocab.json` og kalibreringen, når arkene er rettet færdige; `npm test` fejler på `/settings/display/priority` (mangler i page-tree, ikke fra denne ændring).
+
 ## 2026-10-11: Google Health — aktiv energi løfter kaloriegrænsen
 
 - **Årsag til at grænsen stod stille:** skridt, træning og aktiv energi blev hentet med filteret `<type>.interval.start_time >= "…Z"`, som Google afviser (400). `Promise.allSettled` skjulte fejlen, så kun vægt/målinger kom ind. Nu `<type>.interval.civil_start_time >= "ÅÅÅÅ-MM-DDTHH:MM:SS"` (uden Z), afviste datatyper logges, og `fetchVersion` = 1 henter de 90 dage igen én gang (PR #391).

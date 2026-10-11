@@ -482,6 +482,12 @@ export const PAGE_TREE: PageArea[] = [
               { path: "/admin/product-database/products", label: "Varer" },
               { path: "/admin/product-database/brands", label: "Brands" },
               {
+                path: "/admin/product-database/open-food-facts",
+                label: "Open Food Facts",
+                note: "Varer hentet fra Open Food Facts, navnet opdelt efter vores regler med sikkerhed i %",
+                children: [{ path: "/admin/product-database/open-food-facts/[barcode]", label: "Enkelt OFF-vare" }],
+              },
+              {
                 path: "/admin/product-database/images",
                 label: "Billeder",
                 note: "Træk produktbilleder (EAN/produkttype) og brand-logoer (filnavn = brand) ind, to kolonner",

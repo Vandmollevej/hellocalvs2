@@ -50,6 +50,7 @@ const DICTIONARY = {
   nav_product_database: { DA: "Varedatabase", EN: "Product database" },
   nav_product_database_products: { DA: "Varer", EN: "Products" },
   nav_product_database_brands: { DA: "Brands", EN: "Brands" },
+  nav_product_database_off: { DA: "Open Food Facts", EN: "Open Food Facts" },
   nav_product_database_images: { DA: "Billeder", EN: "Images" },
   nav_group_dishes: { DA: "Retter", EN: "Dishes" },
   nav_dishes_user: { DA: "Brugeroprettede", EN: "User-created" },

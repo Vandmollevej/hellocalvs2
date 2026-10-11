@@ -37,6 +37,7 @@ ikke her, er den ikke registreret og skal tilføjes.
     tal (`100.png`, `1068.png`) — kilde ukendt.
   - Skal gælde alle steder: originale, til gennemgang, færdige. Filer i
     Færdig-mapper må også ligge i Original, men aldrig i Fejlet/Til gennemgang.
+- **Open Food Facts** (2026-10-11): OFF-varer gemmes lokalt i `off_products` med rå svar + navnet opdelt efter reglerne her (`src/lib/off-name-split.ts`), med en sikkerhed i %. Samme navneregler som arkene; ordforrådet bygges af arkene (`scripts/off-import/build_vocab.py`). Rettes en navneregel, skal opdeleren følge med (og kalibreringen køres igen). Se DECISIONS 2026-10-11.
 - **Boolske felter**: aldrig "Ja"; brug beskrivende ord (Sukkerfri, Laktosefri,
   Vegansk).
 - **Dyrefoder**: spærres (blacklist) — se docs/DECISIONS.md "Pet-food blacklist".

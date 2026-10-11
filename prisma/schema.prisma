@@ -2047,6 +2047,76 @@ model ProductSourceRecord {
   @@map("product_source_records")
 }
 
+// Open Food Facts-varer i vores egen tabel (docs/DECISIONS.md 2026-10-11 "Open
+// Food Facts i egen tabel"). Hver vare vi har hentet fra OFF — ved scanning
+// eller admin-import — ligger her med OFF's rå svar og navnet opdelt efter
+// vores navneregler (src/lib/off-name-split.ts) i de samme felter som
+// products / product_nutrition_features / product_filters. `splitConfidence`
+// er et kalibreret skøn (0–100) for, at opdelingen er korrekt. Ingen FK til
+// products: varen findes via stregkoden (barcodes.code), og productId er kun
+// en genvej, sat når en Product er oprettet ud fra posten.
+model OffProductRecord {
+  id        String  @id @default(cuid())
+  barcode   String  @unique
+  productId String?
+
+  // SCAN | IMPORT | ADMIN
+  source        String    @default("SCAN")
+  fetchedAt     DateTime  @default(now())
+  offModifiedAt DateTime?
+  lang          String?
+  // OFF's svar (de felter off-hent/opslag beder om): bevares uændret, så
+  // opdelingen kan køres om uden at hente igen.
+  raw           Json
+
+  // OFF's egne tekster (til listen)
+  rawName       String?
+  rawBrands     String?
+  rawQuantity   String?
+  rawCategories String?
+  imageUrl      String?
+
+  // Opdelingen — samme felter som products
+  name              String?
+  brand             String?
+  brandKnown        Boolean  @default(false)
+  extraBrands       String[] @default([])
+  subbrand          String?
+  productType       String?
+  productTypePlural String?
+  variant           String?
+  keywords          String[] @default([])
+  packaging         String?
+  category          String?
+  packageSizeText   String?
+  packCount         Int?
+  // ProductFilters-formen (organic, glutenFree, … fatPercent, countryOfOrigin)
+  filters           Json?
+  // Næring pr. 100 g/ml: { kcal, protein, carbs, fat, saturatedFat, …, micronutrients }
+  nutrition         Json?
+
+  // Kvalitet
+  splitConfidence Int       @default(0)
+  splitIssues     String[]  @default([])
+  // { brand, type, variation, language } 0–100
+  splitFields     Json?
+  splitLanguage   String?
+  splitVersion    Int       @default(0)
+  splitAt         DateTime?
+  // Sat, når admin har gennemgået opdelingen
+  reviewedAt      DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([splitConfidence])
+  @@index([brand])
+  @@index([productType])
+  @@index([fetchedAt])
+  @@index([productId])
+  @@map("off_products")
+}
+
 // Up to 3 additional photos alongside the primary Product.imageUrl (e.g. the
 // other sides of a milk carton or box). Admin-managed only (docs/ADMIN.md,
 // "Merge og øvrige billeder") — the image-agent's automated suggestion flow

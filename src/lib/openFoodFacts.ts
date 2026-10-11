@@ -1,5 +1,6 @@
 import { mapOffAllergenTags } from "./allergens";
 import { offLabelNames } from "./label-certifications";
+import { OFF_RAW_KEYS, pickOffRaw } from "./off-record";
 
 export type OffProduct = {
   barcode: string;
@@ -40,6 +41,9 @@ export type OffProduct = {
   // Ingen dansk tekst hos OFF → navn/ingredienser er på et andet sprog og skal oversættes.
   needsTranslation: boolean;
   sourceLang: string | null;
+  // OFF's svar (kun de felter vi gemmer, se OFF_RAW_KEYS) — lægges uændret i
+  // off_products, så navnet kan opdeles igen uden at hente på ny.
+  raw: Record<string, unknown>;
 };
 
 // OFF-poster er ofte tynde (kun navn, brand og kalorier). En vare uden
@@ -53,11 +57,10 @@ export function missingOffFields(product: OffProduct): ("image" | "ingredients" 
   return missing;
 }
 
-// OFF reports most nutriments in the nutrient's own canonical unit (g, mg or
-// µg), with a companion "<nutrient>_unit" field naming which one was used —
-// normalizes to a fixed target unit instead of assuming. Returns null rather
-// than guess when the value is missing or the unit isn't a plain mass unit
-// (e.g. "IU", which needs a per-nutrient conversion factor this app doesn't have).
+// OFF's "<næringsstof>_100g" er altid gram pr. 100 g — uanset "<næringsstof>_unit", der
+// kun er den enhed etiketten brugte (målt mod live-API 2026-10-11: calcium_100g 0.158 =
+// 158 mg, vitamin-a_100g 4.9E-05 = 49 µg). Omregner til målenheden; null i stedet for et
+// gæt, når værdien mangler, eller enheden ikke er masse (fx "IU", "% DV").
 function offNutrientAs(
   n: Record<string, unknown>,
   key: string,
@@ -68,17 +71,9 @@ function offNutrientAs(
   if (!Number.isFinite(value)) return null;
 
   const unit = String(n[`${key}_unit`] ?? "g").toLowerCase();
-  const grams =
-    unit === "g"
-      ? value
-      : unit === "mg"
-        ? value / 1000
-        : unit === "µg" || unit === "mcg" || unit === "ug"
-          ? value / 1_000_000
-          : null;
-  if (grams === null) return null;
+  if (unit === "iu" || unit === "% dv" || unit === "%") return null;
 
-  return targetUnit === "mg" ? grams * 1000 : grams * 1_000_000;
+  return targetUnit === "mg" ? value * 1000 : value * 1_000_000;
 }
 
 function mapOffProduct(p: Record<string, unknown>): OffProduct | null {
@@ -143,6 +138,7 @@ function mapOffProduct(p: Record<string, unknown>): OffProduct | null {
     sourceLang: typeof p.lang === "string" ? p.lang : null,
     packageSizeText: typeof p.quantity === "string" && p.quantity.trim() ? p.quantity.trim() : null,
     certificationLabels: offLabelNames(p.labels_tags),
+    raw: pickOffRaw(p),
   };
 }
 
@@ -163,10 +159,16 @@ function offPer100Extra(n: Record<string, unknown>): OffProduct["nutritionExtraP
 export async function lookupOpenFoodFacts(
   barcode: string
 ): Promise<OffProduct | null> {
+  const product = await fetchOffProductRaw(barcode);
+  return product ? mapOffProduct({ ...product, code: barcode }) : null;
+}
+
+// OFF's svar for én stregkode (kun de felter vi bruger), eller null.
+export async function fetchOffProductRaw(barcode: string): Promise<Record<string, unknown> | null> {
   const res = await fetch(
     `https://world.openfoodfacts.org/api/v2/product/${encodeURIComponent(
       barcode
-    )}.json`,
+    )}.json?fields=${OFF_RAW_KEYS.join(",")}`,
     { headers: { "User-Agent": "HelloCal/0.1 (prototype)" } }
   );
 
@@ -174,8 +176,12 @@ export async function lookupOpenFoodFacts(
 
   const data = await res.json();
   if (data.status !== 1 || !data.product) return null;
+  return data.product as Record<string, unknown>;
+}
 
-  return mapOffProduct({ ...data.product, code: barcode });
+// Til importen: samme afbildning som scanningen bruger.
+export function mapOffRawProduct(raw: Record<string, unknown>, barcode: string): OffProduct | null {
+  return mapOffProduct({ ...raw, code: barcode });
 }
 
 // En vare, som et tidligere stregkodeopslag oprettede ud fra en tynd OFF-post

@@ -7,6 +7,8 @@ import { inferGs1OriginCountryCode } from "@/lib/regions";
 import { createExternalImageCutoutJob } from "@/lib/image-cutout-jobs";
 import { syncProductNutritionFeaturesSafely } from "@/lib/product-nutrition-features";
 import { translateToDanish } from "@/lib/translate-da";
+import { applyOffRecordToProduct, saveOffRecordSafely } from "@/lib/off-store";
+import { OFF_USE_FIELDS_MIN_CONFIDENCE, OFF_USE_NAME_MIN_CONFIDENCE } from "@/lib/off-record";
 import { debugLog, errorText, flowIdFromRequest } from "@/lib/debug-log";
 import { petFoodBlockReason } from "@/lib/pet-food-blacklist";
 import { recordPetFoodAttempt } from "@/lib/pet-food-strikes";
@@ -22,6 +24,9 @@ import { getSessionUser } from "@/lib/session";
 //    answer is 404 so the camera flow goes on to the photos, and the photos
 //    fill the product (docs/DECISIONS.md 2026-10-02). The same goes for a thin
 //    OFF product saved before that rule — /api/products/quick fills it up.
+// 4. Every OFF hit (thin or not) is also kept in our own table off_products with
+//    OFF raw answer and the name split by our naming rules, and the product is
+//    created from the split fields (docs/DECISIONS.md 2026-10-11).
 // Every lookup is written to admin "Log" (docs/DECISIONS.md 2026-09-28).
 export async function GET(
   req: Request,
@@ -113,6 +118,10 @@ export async function GET(
 
     const offMissing = offProduct ? missingOffFields(offProduct) : [];
     if (offMissing.length) {
+      // En tynd OFF-post gemmes ikke som vare, men ligger lokalt i off_products.
+      if (offProduct && !(await petFoodBlockReason({ texts: [offProduct.name, offProduct.brand, offProduct.ingredientsText] }))) {
+        await saveOffRecordSafely({ barcode, raw: offProduct.raw, source: "SCAN" });
+      }
       log("barcode_lookup", `Open Food Facts mangler ${offMissing.join(", ")} for "${offProduct!.name}" — gemmes ikke, kameraflowet fortsætter til fotoene`, {
         level: "warn",
         data: { source: "openfoodfacts-incomplete", missing: offMissing },
@@ -125,23 +134,46 @@ export async function GET(
     });
     if (externalBlock) return blockedResponse(externalBlock.reason, externalBlock.match, externalProduct.name);
 
-    const brand = externalProduct.brand
-      ? await prisma.brand.upsert({
-          where: { name: externalProduct.brand },
-          update: {},
-          create: { name: externalProduct.brand },
-        })
-      : null;
-
     // OFF-tekst på fremmedsprog oversættes; originalen gemmes til admins side-om-side-godkendelse.
     const needsTranslation = !!offProduct?.needsTranslation;
     const translated = needsTranslation
       ? await translateToDanish({ name: externalProduct.name, ingredients: offProduct?.ingredientsText ?? null })
       : null;
 
+    // OFF-varen gemmes i off_products med navnet opdelt efter vores navneregler
+    // (mærke, sub brand, produkttype, variation, nøgleord, mængde, filtre).
+    const savedOff = offProduct
+      ? await saveOffRecordSafely({ barcode, raw: offProduct.raw, source: "SCAN", translatedName: translated?.name ?? null })
+      : null;
+    const split = savedOff?.split ?? null;
+    const useFields = !!split && split.confidence >= OFF_USE_FIELDS_MIN_CONFIDENCE;
+    const useName = !!split && split.confidence >= OFF_USE_NAME_MIN_CONFIDENCE && !!split.title;
+    const offNutrition = savedOff?.nutrition ?? null;
+    const microKeys = offNutrition ? Object.keys(offNutrition.micronutrients) : [];
+
+    // OFF's "brands" kan være en liste ("Butcher's, Penny"); mærket er det første egentlige.
+    const brandName = (split?.brand ?? externalProduct.brand ?? "").trim() || null;
+    const brand = brandName
+      ? await prisma.brand.upsert({
+          where: { name: brandName },
+          update: {},
+          create: { name: brandName },
+        })
+      : null;
+
     const product = await prisma.product.create({
       data: {
-        name: translated?.name ?? externalProduct.name,
+        name: useName ? split!.title : (translated?.name ?? externalProduct.name),
+        ...(useFields
+          ? {
+              subbrand: split!.subbrand ?? undefined,
+              productType: split!.productType ?? undefined,
+              variant: split!.variant ?? undefined,
+              keywords: split!.keywords,
+              packaging: split!.packaging ?? undefined,
+              packCount: split!.packCount ?? undefined,
+            }
+          : {}),
         ...(needsTranslation
           ? {
               nameOriginal: externalProduct.name,
@@ -170,7 +202,13 @@ export async function GET(
         vitaminAPer100g: offProduct?.vitaminAPer100g ?? null,
         vitaminCPer100g: offProduct?.vitaminCPer100g ?? null,
         nutritionExtra: offProduct?.nutritionExtraPer100 ?? undefined,
-        packageSizeText: offProduct?.packageSizeText ?? undefined,
+        packageSizeText: split?.quantityText ?? offProduct?.packageSizeText ?? undefined,
+        ...(microKeys.length
+          ? {
+              micronutrientsPer100g: offNutrition!.micronutrients,
+              nutrientSources: Object.fromEntries(microKeys.map((key) => [key, "LABEL"])),
+            }
+          : {}),
         externalSource,
         externalId,
         sourceCheckedAt: new Date(),
@@ -181,6 +219,12 @@ export async function GET(
       include: { brand: true },
     });
     await syncProductNutritionFeaturesSafely(product.id);
+    if (savedOff) {
+      // tabel 1-3: stregkode ↔ off_products, filtre (product_filters) og næringsfelterne i product_nutrition_features
+      await applyOffRecordToProduct(product.id, barcode, savedOff).catch((error) =>
+        console.error("Could not apply OFF record to product", error),
+      );
+    }
     if (offProduct?.certificationLabels.length) {
       await addCertificationFilters(product.id, offProduct.certificationLabels).catch((error) =>
         console.error("Could not save OFF certifications", error),
