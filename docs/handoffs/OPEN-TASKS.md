@@ -33,6 +33,16 @@ Status opdateret: 2026-10-06 — alle udestående opgaver slettet (klaret af en 
 
 ## G-AABNE-PR — Åbne PR'er der IKKE blev flettet (2026-10-10)
 
+## G-GITHUB-SAMLING — Upushet arbejde (2026-10-11)
+Ejer: Codex, chat om GitHub-forbindelsen. Filer: isoleret samlingskopi
+`worktrees/github-samling`; se `2026-10-11-github-samling.md` for gennemgangen.
+
+| Id | Opgave | Status | Næste skridt |
+| --- | --- | --- | --- |
+| github-samling | Gennemgå lokale branches/worktrees og saml manglende arbejde uden at overskrive nyere master | I gang | Sammenflet, verificer og push; bevar lokale importdata og andre worktrees |
+
+## G-AABNE-PR — Fortsat
+
 Flettet og deployet 2026-10-10: #339, #344, #348, #354, #355, #360, #361, #362, #363, #364. Resten står tilbage; ingen af dem er rørt.
 
 | Id | Opgave | Status | Næste skridt |

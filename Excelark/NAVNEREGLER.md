@@ -180,3 +180,99 @@ Disse regler var ikke noteret før, og de blev brudt. Tjek ALLE punkter før et 
 ### Arbejdsgang
 19. **Overskriv aldrig tidligere korrekt udfyldte felter.** Udfyld kun tomme eller åbenlyst forkerte (kategori, tal, brand-ord, dato). Tag backup, markér ændringer med **gul** baggrund, og lad Keyword/`_is_`-kolonner være, medmindre en regel kræver det.
 20. **Gennemgå → rens → kontrollér mod ALLE reglerne → ret → åbn arkene.** Ret ikke noget, før hele arket er gennemgået mod reglerne.
+
+## Procent og ost (brugerens regel 2026-10-10) — gælder alle ark
+- **% må aldrig stå i produkttype, variant eller keywords.** Fedt-% → `_is_fat` (mejeri, kød "8-12% fedt", fedtstoffer, plantedrikke); alkohol-% → `_is_alcohol` (spiritus, øl, vin, likør, cocktails). Ingrediens-% (fx "49% nougat", "70% kakao", "80% kød", "mindst 50% frugtindhold") er hverken fedt eller alkohol og fjernes fra teksten (står stadig i Original Title).
+- **"45+" o.l. (NN+) betyder ost**: står altid FØRST i variant, adskilt med komma fra resten: "45+", "45+, med kommen". Står det kun i Original Title, hentes det derfra. Blandinger af flere oste beholder NN+ ved hver ost ("hvid cheddar 50+, hård modnet ost 40+ og maasdammer 45+"). Er ostens NN+ (≥45) fejlagtigt lagt i `_is_fat` som "NN%", fjernes den.
+- **Produkttype der starter med %** er fejlet: typen findes i Original Title (fx P-tærter → "Fransknougat"); ingredienserne flyttes til variant hvis den er tom, ellers til et keyword.
+- Gennemført i `Excelark/bilka.xlsx` 2026-10-10 (562 rækker) med `Excelark/procent_ost_regler.py`; reglen er også bygget ind i `titel_ental_flertal.py`. REMA havde ingen % i tekstfelterne.
+
+
+## Titel: én parentes og tekst-flag (2026-10-10, gælder alle ark)
+- **Brand og subbrand** vises som ikoner — aldrig i titlen. Det samme gælder de fleste `_is_`-felter, men **sukkerfri, glutenfri og alkoholfri** (samt koffeinfri) står også i selve teksten, fordi de er så vigtige.
+- Rækkefølge i titlen: `_is_cooked` / `_is_frozen` først (som "Tørrede …", "Frosne …") → foranstillede ord (sur, sød, groft, fint, dobbelte, instant) → Product Type → Variation (lige efter produkttypen) → tekst-flag i rækkefølge: `_is_decaf`, `_is_sugar_free`, `_is_glutenfree`, `_is_lactose_free`, `_is_alcohol_free`, `_is_vegan`, light, "indeholder alkohol" → **én** parentes sidst.
+- **Kun ÉN parentes**: `_is_raw` står først i parentesen efterfulgt af nøgleordene, adskilt med komma: "Skinke (fersk, afpudset)". Står der en parentes i Product Type eller Variation ("Æg (burhøns)"), flettes dens indhold ind i den samme parentes — aldrig to parenteser.
+- Flertal bøjer også flagene: vegansk → veganske, -fri → -frie ("sukkerfrie").
+- `_is_meat` bruges kun til vegetarer/veganere og statistik — ikke i titlen.
+
+
+## Dobbeltord, brand, sukker/fedt/alkohol og flertal (brugerens regler 2026-10-10, gælder alle ark)
+- **Intet ord to gange i samme celle** ("Carpaccio Carpaccio", "med chokoladesmag, med chokoladesmag" → ét). Undtaget er brandnavne, der selv gentager et ord (Mogu Mogu, Yum Yum, Chop Chop).
+- **Brandnavnet står aldrig i productType**: står hele brand-/subbrandnavnet i productType, fjernes det derfra ("Carlsberg Pilsner" → "Pilsner", "Gulerod Rema1000" → "Gulerod"). Brandet selv ændres ikke, og et ord der bare er en del af brandet bliver stående ("To Øl" + "Øl", "Pasta Di Maria" + "Frisk pasta").
+- **Sukker, fedt og alkohol står kun i deres egne kolonner** og fjernes fra productType/variant/keywords: "med tilsat sukker", "uden tilsat sukker", "sukkerfri", "usødet" → `_is_sugar_free`; "fedtreduceret", "med mindre fedt", fedt-% → `_is_fat`; "alkoholfri" → `_is_alcohol_free`, "indeholder alkohol"/alkohol-% → `_is_alcohol`. Ingredienser og produktnavne (rørsukker, vaniljesukker, svinefedt) bliver stående. Importen (`build_data.py`) læser "med tilsat sukker" i sukker-kolonnen som keyword, ikke som sukkerfri.
+- **`Product type plural` må aldrig stå tom** (brugerens regel 2026-10-11). Har ordet ingen anden flertalsform, står samme ord (kylling, is, kaffe). Ryddet 2026-10-10 ved en fejl og sat tilbage fra backup 2026-10-11 (Bilka 692, REMA 1.493).
+- **Ord der allerede står i flertal** (dumplings, rejer, boller): ental-titlen bøjes også i flertal ("Frosne dumplings", ikke "Frosset dumplings"), men masse-ord bliver i ental ("Kogt kylling"). Formlen i kolonne A bøjer i flertal, når `Product type plural` = productType OG hovedordet (sidste ord før " i ") ender på -er/-s og ikke er laks, is, ris, majs, ananas, gyros, lakrids, fars, mos, sukker, peber, lever, cider eller pulver.
+- Keyword "tilsat kulsyre" hedder "med kulsyre" (så "tilsat" ikke står dobbelt med "med tilsat sukker").
+- Står brandet (fx vandkilden) i et keyword ("fra Aqua d'Or kilden"), fjernes keywordet. Linjenavne i brandet flyttes til subbrand ("Arla Protein" → Arla + Protein) og fjernes så fra productType/keywords.
+- **Lande og "/" står aldrig i brand** (brugerens regel 2026-10-10): et land eller en oprindelse i brand ("Peru", "Danmark/Tyskland", "Hollandsk") flyttes til `_is_country_of_origen` (med stort begyndelsesbogstav, flere lande med " / ": "Danmark / Tyskland" — ændret 2026-10-10 fra små bogstaver, se "SPAR: anb, zinf, bdt, øko, lande"), og brand tømmes. "/" alene er aldrig et brand.
+- **Ord fra brandet må aldrig bare forsvinde** (brugerens regel 2026-10-10): når brandfeltet renses, flyttes logo-ord til subbrand ("Mini Babybel" → Babybel + subbrand Mini), varianter til variant ("Tic Tac Exotic Escape" → variant "Exotic Escape"). Kun varekoder ("G54 X 24") slettes.
+
+
+## Decimaltegn: punktum i arkene (brugerens regel 2026-10-10, gælder alle ark)
+- Decimaler skrives altid med punktum i arkene: "1.5 l", "3.6%", "13.5%", "0.5% fedt", "462.50/Kg". Appen viser selv komma for Danmark og de andre komma-lande ("1,5 liter") og punktum for punktum-lande (docs/DECISIONS.md 2026-10-10 på master).
+- Intet tusindtalspunktum: "1.080 g" → "1080 g" (ellers læses det som 1.08 g). "8 x 24.125 g" er allerede et decimaltal og bliver stående.
+- Ødelagte decimaler med mellemrum ("0, 5 l", "462, 50/Kg", "3, 5-3, 7 kg") rettes til punktum i mængde, Clean Subtitle og produkttype. Komma med mellemrum i navne er en opremsning ("Batch 99, 75cl", "45+, med kommen") og røres ikke. Originalkolonnerne (Original Title, Product Name, Subtitle, Source URL, Image File) røres aldrig.
+- Gennemført 2026-10-10 i vores egne kolonner: `Excelark/bilka.xlsx`, `Produkter/rema1000_version 2.xlsx` (191) og `Frida-ark/frida.xlsx` (11). Bilkas originalkolonner (Original Title, Product Name, Subtitle — 12.207 celler), som ved en fejl også blev rettet, er hentet tilbage fra backuppen. Bilka række 2 (Björnsted mørk chokolade) havde "70%" kakao som tallet 0.7 i variant — ryddet (ingrediens-%). Backups `Excelark/backup/*_foer_decimalpunktum.xlsx`. De øvrige ark (SPAR, Nemlig, Wolt, DRK m.fl.) får reglen, når de tages op.
+- Indført 2026-10-10 i SPAR, Nemlig, Wolt, DRK, Årstiderne, dm, EDEKA og REWE — kun i vores egne kolonner. Originalkolonnerne får aldrig punktum (se "Originalkolonnerne rettes ALDRIG"). NB: decimal-passet på Bilka ændrede også Bilkas originaler (Original Title 150, Product Name 1291, Subtitle alle rækker); de kan hentes tilbage fra `Excelark/backup/bilka_2026-10-10_1445_foer_decimalpunktum.xlsx`.
+
+
+## REMA: flavor er lagt ind i variant (brugerens regel 2026-10-10)
+- Kolonnen `flavor` er slettet; smagen står nu i `variant`. Tom variant → smagen; "med …"-led sættes efter ("grill med hvidløg", "med tykmælk og æg"); to smagsord → "vanilje og skovbær"; ellers med mellemrum som titlen viste før ("cultura hindbær", "max lime"). "røget" → `_is_cooked`, "saltet"/"usaltet" → `keyword1`. Titelformlerne bruger nu kun `variant`.
+
+
+## Engelsk "sugarfree" (brugerens regel 2026-10-10, gælder alle ark)
+- Kun sukkerfeltet rettes: står der engelsk sugarfree / sugar free / zero sugar / no sugar på varen, skal sukkerfeltet være "sukkerfri" ("no added sugar" → "uden tilsat sukker"). Ordet fjernes IKKE fra navn/variant, da det ofte er en del af det engelske produkt- eller brandnavn (Coca-Cola Zero Sugar). Rettet 2026-10-10: Bilka 1 række (Mirinda zero sugar); REMA's 6 rækker havde allerede "sukkerfri".
+
+
+## Kolonner — ens i ALLE ark (2026-10-10, også de tyske)
+Samme navne og rækkefølge i Frida, Bilka, REMA, Årstiderne, DRK, Nemlig, DM, Edeka m.fl. (kontrolleret):
+1 Product title singular · 2 Product title plural · 3 Quantity · 4 Brand · 5 Subbrand · 6 EAN · 7 Pack Count · 8 Product Type · 9 Variation · 10 Category · 11 Packaging ·
+12 _is_alcohol · 13 _is_country_of_origen · 14 _is_organic · 15 _is_glutenfree · 16 _is_lactose_free · 17-21 Keyword 1-5 · 22 _is_sweeteners · 23 _is_meat · 24 _is_vegan ·
+25 _is_allergy · 26 _is_sugar_free · 27 _is_fat · 28 _is_alcohol (%) · 29 Clean Subtitle · 30 _is_whole_grain · 31 _is_animal_welfare · 32 _is_frozen · 33 _is_raw ·
+34 _is_cooked · 35 _is_decaf · 36 _is_alcohol_free · 37 Product type plural · 38 Original Title · 39 Product Name · 40 Subtitle · 41 Source URL · 42 Manufacturer · 43 Image File ·
+44 Parse Status · 45 Servings · derefter ark-specifikke kolonner (fx FoodID, _is_processed, _is_light).
+- Aldrig `barcode`/`variant`/`keyword1` — kolonnerne hedder `EAN`, `Variation`, `Keyword 1`. EAN vises som helt tal (talformat 0).
+
+
+## SPAR: anb, zinf, bdt, øko, lande (brugerens regler 2026-10-10, gælder alle ark)
+- **anb / anbrud** = anbrud (åbnet/brudt kolli): ordet slettes fra alle egne kolonner (Keyword, Product Type, Variation, Subbrand); aldrig i originalkolonnerne.
+- **zinf** (også zinfa/zinfandl/zinfandel14) = **zinfandel**: erstattes; står ordet allerede i Variation, slettes keywordet (intet dobbeltord).
+- **Nbdt** (fx 14bdt) = **N per bundt**: keywordet skrives "14 per bundt".
+- **Øko** (økol, øko, økoo, Øko-… og sammensætninger som Økohavregryn): `_is_organic` = "økologisk", og selve øko-ordet slettes fra de øvrige egne kolonner (Økohavregryn → Havregryn). Et brand der hedder Økolandet bliver stående, men rækken får `_is_organic`. NB: "Org" i slik/snack betyder Original, ikke økologisk.
+- **Lande** i `_is_country_of_origen` skrives med stort begyndelsesbogstav ("Frankrig", "New Zealand", "Danmark / Irland").
+- **Keyword 1-5**: ord der allerede står i brand/subbrand/produkttype/variant/`_is_`-felter (eller er afkortede/stavefejl af dem) slettes; delte fraser samles ("ice" + "cream" → "ice cream"); huller lukkes mod venstre. Script: `Excelark/spar_ikke_vin_rettelser.py` (kører på alle rækker undtagen Category "Vin og spiritus", som vin-sessionen ejer). Indført i SPAR 2026-10-10.
+- Samme regler kørt på SPAR, Wolt, Årstiderne og Frida 2026-10-10 (brandnavn som keyword slettes, sukker/fedt/alkohol i egne kolonner, "med kulsyre"). "med tilsat kunstig sødestof" → `_is_sweeteners` = sødestoffer. Flertal (ental = flertal) rettes IKKE automatisk — gennemgås med brugeren til sidst. Nemlig og DRK venter, til produkttypen er flyttet ud af Keyword 1.
+
+
+
+## Vin: produkttype, brand, subbrand, variation og nøgleord (brugerens ønske 2026-10-10, alle ark)
+- **Omfang**: alle vin-rækker i Bilka, REMA, SPAR, Nemlig, Wolt, DRK, EDEKA og REWE (Årstiderne og dm har ingen vin). Hvor spiritus ligger sammen med vin (SPAR "Vin og spiritus", Nemlig, DRK, REMA) er den med; spiritus får kun ryddet brand/subbrand/variation/nøgleord.
+- **Product Type** (ental, stort begyndelsesbogstav): Rødvin, Hvidvin, Rosévin, Orangevin, Mousserende vin, Champagne, Cava, Prosecco, Crémant, Portvin, Sherry, Madeira, Marsala, Vermouth, Hedvin, Dessertvin, Sangria, Kirsebærvin/Frugtvin, "Vin" kun når farven umulig kan afgøres. Tysk: Rotwein, Weißwein (altid ß), Roséwein, Schaumwein, Sekt, Prosecco, Champagner, Crémant, Cava, Perlwein, Portwein, Sherry, Wermut, Glühwein, Fruchtwein. Alkoholfri vin har samme type som vinen + `_is_alcohol_free`. Kategorinavne ("Prosecco & Perlwein", "Weinspezialitäten") og beskrivende tekster er aldrig produkttype. `Product type plural`: Rødvine, Hvidvine, Rosévine …; Champagne/Cava/Prosecco/Crémant = samme ord; Sherry/Vermouth/Madeira/Marsala tom; tyske ark tom.
+- **Brand** = producent/mærke fuldt udskrevet ("El" → "El Coto", "Finca" → "Finca de la Vega"). Aldrig druesort, appellation, land, farve eller importør.
+- **Subbrand** kun for en linje under brandet med eget logo ("B by Black Tower", "Cordon Negro"). Appellationer og cuvéenavne står i Variation (SPAR havde ~195 appellationer i Subbrand). Er man i tvivl: tom.
+- **Variation** = vinens navn efter brand og type: appellation + cuvée + druesorter, i titlens rækkefølge ("chablis la pierrelée", "pinot noir", "côtes du rhône, grenache og syrah"). Små bogstaver i danske ark, tysk stavning i tyske. Lister "a, b og c" / "a, b und c". Farveordet (rød/hvid/rosé) er typen og står ikke igen. Brandord fjernes kun, hvor de bare gentager brandet.
+- **Nøgleord** (højst 5): sødme/stil (tør, brut, sec, demi-sec / Trocken, Halbtrocken, Feinherb), kvalitet (reserva, gran reserva, crianza, riserva, DOC, DOCG, AOC, IGT, Kabinett, Spätlese), årgang (4 cifre). Tyske ark: region (Baden, Pfalz …) først. Afkortede ord (cab, sauv, chard, zinf, rosä, bib, tempranil) er rettet eller slettet; brandord står aldrig som nøgleord.
+- **Egne felter**: `_is_country_of_origen` (stort begyndelsesbogstav; kun hvis angivet eller entydigt af appellation/producent — aldrig udledt af EAN-præfiks eller pris), `_is_organic` (øko/bio), `_is_alcohol_free`, alkohol-% i anden `_is_alcohol`-kolonne (decimalpunktum, tom for alkoholfri), `Packaging` = "Bag-in-box"/"Karton" kun hvis teksten selv siger det. Årstal står som nøgleord; anb/anbrud slettes; zinf → zinfandel.
+- **Gennemført 2026-10-10** (backup `Backup\*_foer_vin.xlsx`; kun egne celler, rækker matchet på Source URL, originalkolonner uændrede): Bilka 1.499 celler i 635 rækker, REMA 281/141, SPAR 2.291/782, Nemlig 760/85, EDEKA 1.009/406, REWE 531/254, Wolt 65/15, DRK 262/39 (i alt 6.698). 5 rækker (SPAR 3, Wolt 2) blev sprunget over, fordi andre ændrede dem undervejs. Kvalitet: 1.201 usikre rækker gennemgået af en anden agent, uafhængig stikprøve (128 rækker) gav samme resultat i ~94 %.
+- **Kendt rest**: ~17 småfund — spiritus uden produkttype (fx Ga-Jol, Sevablødda), "&" i tre REWE-variationer ("Steitz & Beck" under brandet Weinfreunde), "Hakket grisekød" med produkttype Hvidvin i Bilka er rettet.
+- **Værktøj**: reglerne som agenterne fik står i `Excelark/vin_regler_spec.md`; skrivningen (backup, match på Source URL, kun egne celler) er `Excelark/vin_regler.py` + `vinlib.py`.
+
+
+## Open Food Facts-import: Lidl, Aldi, Kvickly/Coop (brugerens ønske 2026-10-11)
+- **Ark**: `Excelark/lidl.xlsx`, `aldi.xlsx`, `kvickly.xlsx` (Coop-mærkerne) — Bilkas 45 kolonner, Bilkas titelformler, ingen ekstra kolonner. Menu/Meny har ingen egne mærker ud over Dagrofas (Gestus, First Price, Grøn Balance, Omhu, Spicefield, Banderos), som allerede står i `spar.xlsx`.
+- **Kilde**: `Excelark/off_hent.py` henter rå OFF-poster (kun `countries_tags` = Danmark) til `Backup/off_raa/brand_<slug>.json` / `store_<slug>.json`; `Excelark/off_import.py` bygger arkene. Rækkerne er kun varer med et af butikkens egne mærker (listen står i `STORES` i `off_import.py`); kædenavnet alene (Lidl/Aldi/Coop) tæller kun, hvis varen er registreret i den butik.
+- **Originalkolonnerne = rå OFF** (`Original Title` = `product_name`, `Product Name` = `product_name_da` eller `product_name`, `Subtitle` = generic name, `Source URL` = OFF-siden, `Image File` = OFF-billed-URL, `Manufacturer` = andre mærker på varen, `Servings` = serving_size). De rettes aldrig; `Parse Status` er tom.
+- **Felter krydstjekkes mellem OFF's signaler** (label, navn, ingredienser, allergener, næringsindhold): økologisk = label og/eller navn (ikke "ikke økologisk"); glutenfri sættes ikke, hvis allergenerne har gluten; vegansk sættes ikke, hvis allergenerne har mælk/æg; sukkerfri sættes ikke, hvis sukker pr. 100 g er over 2,5 (så "uden tilsat sukker"); sødestoffer fra ingredienslisten; fedt-% kun for mejeri/kød/fedtstoffer og krydstjekkes mod næringsindholdet; alkohol-% kun i anden `_is_alcohol`; kategorien Frost sætter `_is_frozen`.
+- **Product Type** hentes først fra de eksisterende arks vokabular (Bilka, SPAR, REMA, Wolt; længste hele-ord-match), derefter OFF's mest specifikke danske kategori, ellers navnet. Kategori og flertal følger vokabularet. Alt der ikke er i vokabularet står som "Mistanke" i `Excelark/off_kvalitetskontrol.xlsx`.
+- **Håndrettelser**: `Excelark/off_rettelser.txt` (`EAN|Product Type|Variation|Category|nøgle=værdi;…`, `~` = tøm, `drop` = fjern, `qa=` = note) lægges ovenpå reglerne ved hver kørsel; før/efter logges i kvalitetskontrollen. Fremmedsprogede OFF-poster uden dansk dokumentation er fravalgt (fanen "Fravalgt manuelt").
+- Kør: `py -3 Excelark\off_hent.py brand <slug> …` / `store <slug> …`, derefter `py -3 Excelark\off_import.py` (Excel-arkene lukket). Backups: `Backup/<butik>_*_foer_off-import.xlsx`.
+- **Flertalstitlen (kolonne B)** = ental-titlen, når `Product type plural` = Product Type og hovedordet er et masse-ord (samme test som kolonne A). Så står der aldrig "Kogte kylling" — hverken i ental eller flertal. Lagt ind i alle ark 2026-10-11 (bilka, rema, spar, wolt, aarstiderne, frida, drk, nemlig).
+
+
+## Optimering af dm, EDEKA, REWE og Wolt efter Bilka-mønsteret (brugerens opgave 2026-10-10/11)
+- **Trin 1 – faste regler** (`Excelark/optimer_ark.py dm edeka rewe wolt`, backup `Excelark/backup/*_foer_optimering.xlsx`, alle ændringer i `Excelark/backup/optimering_<tid>.csv`): mellemrum/EAN som tekst/Quantity-stil; `_is_`-værdier med småt (lande med stort); brand-stavemåde (kun store/små bogstaver og tegnsætning) og blankt brand udfyldt fra titlen via kendte mærker (almindelige ord som "Frisk"/"Original" er ikke mærker); skrald i brandfeltet ryddet; brand/subbrand ud af Product Type; mængde/antal/procent ud af Product Type og Variation (fedt-% → `_is_fat`, alkohol-% → `_is_alcohol`, "NN % Fett i. Tr." → "NN+", ingrediens-% fjernet); "/" i Variation → "a, b und c"; dobbeltord; keywords der egentlig er en anden kolonne (ohne Zuckerzusatz, entkoffeiniert, Dose/Glas → Packaging) flyttet; `_is_` udfyldt fra titlen kun ved eksplicitte ord (bio, glutenfrei, laktosefrei, vegan, zuckerfrei, alkoholfrei, entkoffeiniert, vollkorn, Haltungsform N, "aus Italien"); frost fra kategorien (Tiefkühl-*, Eis im Becher …); Clean Subtitle = "Brand | Quantity" følger brand/mængde.
+- **Ikke udfyldt automatisk i de tyske ark**: `_is_cooked` og `_is_raw` (titelformlen sætter dem forrest uden tysk bøjning → "Geräuchert Lachs"), `_is_meat` (for mange falske hits som "Chili con Carne"). Flertal er tomt (ingen tysk bøjning).
+- **Vin/spiritus/øl** (rækker med `_is_alcohol`) røres kun hygiejnisk — de ejes af vin-sessionen (se afsnittet ovenfor).
+- **Trin 2 – AI-gennemgang** af Product Type/Variation/Keywords (workflow `produkttype-gennemgang`, 30 rækker pr. agent + uafhængig kontrol af usikre rækker og hver 8. række): forslagene anvendes af `Excelark/anvend_ai_forslag.py <butik> <resultatmappe>` — sikkerhed ≥ 4 erstatter, 3 kun hvor feltet er tomt/butikkens kategori, ≤ 2 skrives ikke (liste til gennemgang). Celler der er ændret siden forslaget blev lavet springes over. Ikke-mad og dyrefoder samles i egne lister (rækkerne slettes ikke).
+- **Gengangere** (`Excelark/gengangere-fund.xlsx`, kun rapport): samme produkt kan have forskellig stregkode i to lande; derfor sammenlignes brand + mængde + navn, ikke kun EAN. Vin hvor kun årgangen adskiller er en egen fane.
+

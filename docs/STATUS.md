@@ -2,6 +2,16 @@
 
 Last updated: 2026-10-11
 
+## 2026-10-11: Samling af upushet arbejde
+
+- Gennemgået 160 registrerede worktrees og lokale branches mod den aktuelle
+  master. Arbejdet samles i `worktrees/github-samling`; hovedmappen bevares.
+- Manglende regnearksscripts og navneregler fra `deploy` medtages med masters
+  nyere produkt-/kontoregler bevaret. Labels-siden kobles til adminmenuen og
+  bruger de eksisterende certifikatlogoer.
+- Detaljer og resterende arbejde: `docs/handoffs/2026-10-11-github-samling.md`.
+- Verifikation og push er endnu ikke afsluttet.
+
 ## 2026-10-11: Scan-kontekst (land + sprog) på varer
 
 - Nye kolonner `scannedCountry`, `scannedLanguage`, `scannedDeviceLocale` på varer og scanninger; migration `20261011180000_scan_context` skal med deployet (backfill DK/da). Ikke typetjekket / kørt her (node_modules mangler). Se DECISIONS.
