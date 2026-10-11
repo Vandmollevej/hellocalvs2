@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import {
+  IconHeartbeat,
   IconMoon,
   IconUser,
   IconStar,
@@ -176,6 +177,11 @@ export default function ProfilePage() {
               icon={<IconMoon size={20} />}
               label={t("profile.row.sleep")}
               href="/profile/sleep"
+            />
+            <ChevronRow
+              icon={<IconHeartbeat size={20} />}
+              label={t("profile.row.cardio")}
+              href="/profile/cardio"
             />
             <ChevronRow
               icon={<IconClipboardHeart size={20} />}

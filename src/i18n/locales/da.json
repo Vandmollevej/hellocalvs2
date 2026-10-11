@@ -1607,7 +1607,8 @@
       "reportBug": "Har du fundet en fejl?",
       "recipes": "Opskrifter",
       "knowledge": "Viden om mad",
-      "settings": "Indstillinger"
+      "settings": "Indstillinger",
+      "cardio": "Cardio"
     },
     "changePasswordButton": "Skift adgangskode",
     "changePassword": {
@@ -3658,5 +3659,26 @@
     "showingFor": "Viser resultater for {query}",
     "searchInstead": "Søg i stedet efter {query}",
     "didYouMean": "Mente du {query}?"
+  },
+  "cardio": {
+    "title": "Cardio",
+    "intro": "Hvilepuls, maxpuls, VO₂ max, iltmætning m.m. Tallene hentes automatisk fra dit ur via en integration — eller indtast dem selv i feltet under hver graf.",
+    "range": "Tidsinterval",
+    "placeholder": "Indtast",
+    "empty": "Ingen cardio-målinger endnu.",
+    "restingHr": "Laveste hvilepuls",
+    "maxHr": "Maxpuls",
+    "vo2Max": "VO₂ max",
+    "spo2": "Iltmætning",
+    "hrv": "Pulsvariation (HRV)",
+    "respiratoryRate": "Åndedrætsfrekvens",
+    "hrRecovery": "Pulsfald efter træning",
+    "ranges": {
+      "30": "Seneste 30 dage",
+      "90": "Seneste 3 måneder",
+      "180": "Seneste 6 måneder",
+      "365": "Seneste år",
+      "all": "Alt"
+    }
   }
 }

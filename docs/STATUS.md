@@ -2,6 +2,12 @@
 
 Last updated: 2026-10-11
 
+## 2026-10-11: Cardio (Profil → Cardio)
+
+- Ny side `/profile/cardio` lige under Søvn: laveste hvilepuls, maxpuls, VO₂ max, iltmætning, HRV, åndedrætsfrekvens og pulsfald, hver med forløbsgraf (`HistoryLineChart`) og dropdown øverst for tidsinterval (30 dage – alt). Data læses automatisk fra de eksisterende ur-integrationer (`HealthMetric`) og kan indtastes manuelt som kropsmål (`POST /api/cardio`, kilde `MANUAL`, én værdi pr. type og dag).
+- Migration `20261011170000_health_metric_manual` skal med deployet. Tekster i `cardio.*` (da/en; øvrige sprog har engelsk).
+- **Ikke gjort:** native-skærm (Kotlin kan ikke kompileres her); paritet for `/profile` er accepteret, `/profile/cardio` står som pending i `native/parity/screens.json`. Ikke prøvet i browser/mod rigtig database. `npm test` fejler kun på `/settings/display/priority` (kendt).
+
 ## 2026-10-11: Open Food Facts i egen tabel + admin-menu
 
 - **Ny menu** Varedatabase → Open Food Facts (`/admin/product-database/open-food-facts`, Alt+8): alle varer hentet fra OFF med navnet delt op (mærke, sub brand, produkttype, variation, nøgleord, mængde) og en sikkerhed i %. Se DECISIONS 2026-10-11.
